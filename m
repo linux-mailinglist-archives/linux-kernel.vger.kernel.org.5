@@ -1,442 +1,471 @@
-Return-Path: <linux-kernel+bounces-111645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2641D886EFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:47:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD97886EFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90A9BB23063
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:47:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EAE01F23208
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ACC24AED9;
-	Fri, 22 Mar 2024 14:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E2A4E1C4;
+	Fri, 22 Mar 2024 14:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SUVExRj1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="WbeS+geU"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB8F4AEC3
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E0243AB2;
+	Fri, 22 Mar 2024 14:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711118784; cv=none; b=MGw3jD9KNkvIgV6v74/nkjyL/laYPe2weNWD8I6VjAfhuk2AL1IWXGMKLQCOUOK6PhWL8ZaYpl7UACL6l6KApI/osXBh6PpneuN1Qb12sLg4YBV+MkVsN+uPGhvYS7kjkSn4yA4kDD/xeOiWvuO1FTp9i7nsFyPAF0wXDYMP59M=
+	t=1711118811; cv=none; b=oI6QxEbBrwTZbCUyMTm3KL7gfsB6TFdukACG7e911W4121zt1XDkpniCM1F+dp5I5YDsruiSupREYrnaL3UJS2ga6l/vxUtDEl/E8eAoU95S9P88PEnP+GpZ80qazqourYBRmVi1792m/3VXFoZqOjyMzTZxcyPBiX8EOBFqxKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711118784; c=relaxed/simple;
-	bh=2OLBSmKbfWl0mQMfplJ+EOUjrlXFxoKD3AFdSuW0tt4=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=Kmy9qoCVYZZmVMDO2oMmFq/CZrC2CrcBJ3qGkBVPElRqB0ES+QCBA8JkCVMWZw6g+qP37QfPH58P2WhCuUmEnHfmtV1wb6Jk4S3kxGo2LfnlkevrzcZGr3DAZwLKxKx9jnUDZWceaOncXGAPgh47VVRjN1acVO1BgHRBi3hthx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SUVExRj1; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711118781;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oYy4v+/sbdKYlL+/8ZdK/bGpwxS4+Wt4hNJ2lCaZCH4=;
-	b=SUVExRj1D9GMm/nqYsnTnpo3lXlM4Uzp1Of4jix5LaON8XEQAiDZFFiPY/cvf0RJ4Ly5us
-	PpgllA5FkBMsMRaF0vg3nTCvs2jpGzxfXEzbjh3mnWswAXTe7g0hd5wmMkwq2uzRS19qDR
-	DsvcJGtg+z/Y7XzRq/3vR2hUumz9nXY=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-449-dzdY3O5wMX2sqeDtP-A7ig-1; Fri, 22 Mar 2024 10:46:19 -0400
-X-MC-Unique: dzdY3O5wMX2sqeDtP-A7ig-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-29dfc072e95so1471314a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 07:46:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711118778; x=1711723578;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oYy4v+/sbdKYlL+/8ZdK/bGpwxS4+Wt4hNJ2lCaZCH4=;
-        b=rL9AknEKa0nRMFix1tQQR/RyBjho83OnhdCkZf0OGb0zwkNRmlm9+wCcEpEXOxGlGq
-         bqwfjszC1tQA8xXTNUpgfTWjaxV3hfOxsdhoUXu8fu2OPS80C2TGbslUdMqRgeEL8Hil
-         LioFo7HKh0kn1cVlIqUFWB+4ZkVgNt5z+pNK9OXaHPfqmdFds4cJxfk7PfC6hM11Hzf2
-         wHh5aCwVBsp3t5hQBPzEwNEJfmemowT5kyQSbZxpCyTN038lZn4rMOVKYv7uSnvg25uU
-         bTQ4ErrxBGmpB3h46u+BU0Z+seM6kOH+pb/GHgtFVHrnH6YyZJmFyS/C490h7C4Pwr48
-         3fpQ==
-X-Gm-Message-State: AOJu0YyMQHpOpxEvqRKSxp/PRGgnKnOCfr8Sn/Pq3Ciyqrrm1XFGzZpN
-	rKhq6Lhaf7dn+MogIn0BoRsxBLAXpmQjv+CuddwwGFpH3ChzVEyJ4eK1myi5VfZfE84dhnOsYYw
-	KpVz5xYtO+GbzkCu8gTMloKH9p6zoclSqs/Bg5bB5xSmjCmXTv21+6PwRJ0ZiWQ==
-X-Received: by 2002:a17:90a:38e5:b0:29d:51ce:607d with SMTP id x92-20020a17090a38e500b0029d51ce607dmr2360079pjb.27.1711118778083;
-        Fri, 22 Mar 2024 07:46:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGSjp+uaT2DD87oSORZR5+2BC3aOkH3HGNr8n5s8pOXFfO0noAQeF10rj+7LdHcJuM02X8MOA==
-X-Received: by 2002:a17:90a:38e5:b0:29d:51ce:607d with SMTP id x92-20020a17090a38e500b0029d51ce607dmr2360049pjb.27.1711118777573;
-        Fri, 22 Mar 2024 07:46:17 -0700 (PDT)
-Received: from smtpclient.apple ([115.96.118.209])
-        by smtp.gmail.com with ESMTPSA id sm17-20020a17090b2e5100b002a027bf39a7sm1970543pjb.43.2024.03.22.07.46.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Mar 2024 07:46:17 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1711118811; c=relaxed/simple;
+	bh=98QETCGIHkdgYpvIwsUEur/uq8S+jJry1m1T4w+tZF8=;
+	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=m8eiaqObykB2dxTioNW1zghvXYo+Q8/k6okBQhN/nIuI4x9GFSOfKYwte68NSTUyYNrEnjmSGHii0boEZ86cuZQewQPq186b6VpFEmUmLhhqizPBwKNQHIIkYrD/c+2PcwGi7SWhtcYjpK1OSU6GYvAjLwx72S2K3Tm8Kj/C+wQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=WbeS+geU; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=hdWSUblIAhBCFuFaOk6u2svGrIkZZkPKoOp1rt58JlE=; b=WbeS+geUR11xYKqiw5nT16IHfp
+	lbY7wrEq9jqjc+eyok0ndbb5ebR8QucaS3ylIccKXjzOaSgORJzeidejaeCZ0RdGTN1BX6CBvS1mo
+	pWj4OJ0/NXu50yecMZPfhnllyJ2wlIbRSW0mKkFnf9K8uNtMkev54Fvt9kleIbZmg0oIO6+F5U98H
+	p2iYNSsu3C73bAq/a0U91fTfDALDfxbuDjb1NlyeJmeRdl9O7Ke/YUEY4aNxUGH9l6SNHD7IIFFrr
+	kyHE21hYkbzRemMlwnPkYuVNZ4ip02rpbiKGyaD5/cGJjb/YqlPGqWJERCnIvlR0uYnG7TjuNm1l2
+	BBFQYzCg==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rng9m-000Bnr-9C; Fri, 22 Mar 2024 15:46:06 +0100
+Received: from [178.197.248.30] (helo=linux.home)
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rng9k-000Jyn-2o;
+	Fri, 22 Mar 2024 15:46:04 +0100
+Subject: Re: [PATCH bpf v4] bpf: verifier: prevent userspace memory access
+To: Puranjay Mohan <puranjay12@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Ilya Leoshkevich <iii@linux.ibm.com>
+References: <20240321124640.8870-1-puranjay12@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9f2b63b5-569c-1e00-a635-93d9cd695517@iogearbox.net>
+Date: Fri, 22 Mar 2024 15:46:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH v5] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
- keyfile format
-From: Ani Sinha <anisinha@redhat.com>
-In-Reply-To: <1711115162-11629-1-git-send-email-shradhagupta@linux.microsoft.com>
-Date: Fri, 22 Mar 2024 20:16:02 +0530
-Cc: linux-kernel@vger.kernel.org,
- linux-hyperv@vger.kernel.org,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>,
- Long Li <longli@microsoft.com>,
- Olaf Hering <olaf@aepfle.de>,
- Shradha Gupta <shradhagupta@microsoft.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8767986C-0984-45ED-85E9-8F2271A16CCE@redhat.com>
-References: <1711115162-11629-1-git-send-email-shradhagupta@linux.microsoft.com>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+In-Reply-To: <20240321124640.8870-1-puranjay12@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27222/Fri Mar 22 09:30:59 2024)
 
-
-
-> On 22 Mar 2024, at 19:16, Shradha Gupta =
-<shradhagupta@linux.microsoft.com> wrote:
->=20
-> If the network configuration strings are passed as a combination of =
-IPv4
-> and IPv6 addresses, the current KVP daemon does not handle processing =
-for
-> the keyfile configuration format.
-> With these changes, the keyfile config generation logic scans through =
-the
-> list twice to generate IPv4 and IPv6 sections for the configuration =
-files
-> to handle this support.
->=20
-> Testcases ran:Rhel 9, Hyper-V VMs
->              (IPv4 only, IPv6 only, IPv4 and IPv6 combination)
->=20
-> Co-developed-by: Ani Sinha <anisinha@redhat.com>
-> Signed-off-by: Ani Sinha <anisinha@redhat.com>
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-
-Tested-by: Ani Sinha <anisinha@redhat.com>
-Reviewed-by: Ani Sinha <anisinha@redhat.com>
-
+On 3/21/24 1:46 PM, Puranjay Mohan wrote:
+> With BPF_PROBE_MEM, BPF allows de-referencing an untrusted pointer. To
+> thwart invalid memory accesses, the JITs add an exception table entry
+> for all such accesses. But in case the src_reg + offset overflows and
+> turns into a userspace address, the BPF program might read that memory if
+> the user has mapped it.
+> 
+> There are architectural features that prevent the kernel from accessing
+> userspace memory, like Privileged Access Never (PAN) on ARM64,
+> Supervisor Mode Access Prevention (SMAP) on x86-64, Supervisor User
+> Memory access (SUM) on RISC-V, etc. But BPF should not rely on the
+> existence of these features.
+> 
+> Make the verifier add guard instructions around such memory accesses and
+> skip the load if the address falls into the userspace region.
+> 
+> The JITs need to implement bpf_arch_uaddress_limit() to define where
+> the userspace addresses end for that architecture or TASK_SIZE is taken
+> as default.
+> 
+> The implementation is as follows:
+> 
+> REG_AX =  SRC_REG
+> if(offset)
+> 	REG_AX += offset;
+> REG_AX >>= 32;
+> if (REG_AX <= (uaddress_limit >> 32))
+> 	DST_REG = 0;
+> else
+> 	DST_REG = *(size *)(SRC_REG + offset);
+> 
+> Comparing just the upper 32 bits of the load address with the upper
+> 32 bits of uaddress_limit implies that the values are being aligned down
+> to a 4GB boundary before comparison.
+> 
+> The above means that all loads with address <= uaddress_limit + 4GB are
+> skipped. This is acceptable because there is a large hole (much larger
+> than 4GB) between userspace and kernel space memory, therefore a
+> correctly functioning BPF program should not access this 4GB memory
+> above the userspace.
+> 
+> Let's analyze what this patch does to the following fentry program
+> dereferencing an untrusted pointer:
+> 
+>    SEC("fentry/tcp_v4_connect")
+>    int BPF_PROG(fentry_tcp_v4_connect, struct sock *sk)
+>    {
+>                  *(volatile long *)sk;
+>                  return 0;
+>    }
+> 
+>      BPF Program before              |           BPF Program after
+>      ------------------              |           -----------------
+> 
+>    0: (79) r1 = *(u64 *)(r1 +0)          0: (79) r1 = *(u64 *)(r1 +0)
+>    -----------------------------------------------------------------------
+>    1: (79) r1 = *(u64 *)(r1 +0) --\      1: (bf) r11 = r1
+>    ----------------------------\   \     2: (77) r11 >>= 32
+>    2: (b7) r0 = 0               \   \    3: (b5) if r11 <= 0x8000 goto pc+2
+>    3: (95) exit                  \   \-> 4: (79) r1 = *(u64 *)(r1 +0)
+>                                   \      5: (05) goto pc+1
+>                                    \     6: (b7) r1 = 0
+>                                     \--------------------------------------
+>                                          7: (b7) r0 = 0
+>                                          8: (95) exit
+> 
+> As you can see from above, in the best case (off=0), 5 extra instructions
+> are emitted.
+> 
+> Now, we analyse the same program after it has gone through the JITs of
+> X86-64, ARM64, and RISC-V architectures. We follow the single load
+> instruction that has the untrusted pointer and see what instrumentation
+> has been added around it.
+> 
+>                                  x86-64 JIT
+>                                  ==========
+>       JIT's Instrumentation                  Verifier's Instrumentation
+>            (upstream)                               (This patch)
+>       ---------------------                  --------------------------
+> 
+>     0:   nopl   0x0(%rax,%rax,1)             0:   nopl   0x0(%rax,%rax,1)
+>     5:   xchg   %ax,%ax                      5:   xchg   %ax,%ax
+>     7:   push   %rbp                         7:   push   %rbp
+>     8:   mov    %rsp,%rbp                    8:   mov    %rsp,%rbp
+>     b:   mov    0x0(%rdi),%rdi               b:   mov    0x0(%rdi),%rdi
+>    ------------------------------------------------------------------------
+>     f:   movabs $0x800000000000,%r11         f:   mov    %rdi,%r10
+>    19:   cmp    %r11,%rdi                   12:   shr    $0x20,%r10
+>    1c:   jb     0x000000000000002a          16:   cmp    $0x8000,%r10
+>    1e:   mov    %rdi,%r11                   1d:   jbe    0x0000000000000025
+>    21:   add    $0x0,%r11              /--> 1f:   mov    0x0(%rdi),%rdi
+>    28:   jae    0x000000000000002e    /     23:   jmp    0x0000000000000027
+>    2a:   xor    %edi,%edi            /      25:   xor    %edi,%edi
+>    2c:   jmp    0x0000000000000032  / /------------------------------------
+>    2e:   mov    0x0(%rdi),%rdi  ---/ /      27:   xor    %eax,%eax
+>    ---------------------------------/       29:   leave
+>    32:   xor    %eax,%eax                   2a:   ret
+>    34:   leave
+>    35:   ret
+> 
+> The x86-64 JIT already emits some instructions to protect against user
+> memory access. The implementation in this patch leads to a smaller
+> number of instructions being emitted. In the worst case the JIT will
+> emit 9 extra instructions and this patch decreases it to 7.
+> 
+>                                    ARM64 JIT
+>                                    =========
+> 
+>          No Intrumentation                       Verifier's Instrumentation
+>             (upstream)                                  (This patch)
+>          -----------------                       --------------------------
+> 
+>     0:   add     x9, x30, #0x0                0:   add     x9, x30, #0x0
+>     4:   nop                                  4:   nop
+>     8:   paciasp                              8:   paciasp
+>     c:   stp     x29, x30, [sp, #-16]!        c:   stp     x29, x30, [sp, #-16]!
+>    10:   mov     x29, sp                     10:   mov     x29, sp
+>    14:   stp     x19, x20, [sp, #-16]!       14:   stp     x19, x20, [sp, #-16]!
+>    18:   stp     x21, x22, [sp, #-16]!       18:   stp     x21, x22, [sp, #-16]!
+>    1c:   stp     x25, x26, [sp, #-16]!       1c:   stp     x25, x26, [sp, #-16]!
+>    20:   stp     x27, x28, [sp, #-16]!       20:   stp     x27, x28, [sp, #-16]!
+>    24:   mov     x25, sp                     24:   mov     x25, sp
+>    28:   mov     x26, #0x0                   28:   mov     x26, #0x0
+>    2c:   sub     x27, x25, #0x0              2c:   sub     x27, x25, #0x0
+>    30:   sub     sp, sp, #0x0                30:   sub     sp, sp, #0x0
+>    34:   ldr     x0, [x0]                    34:   ldr     x0, [x0]
+> --------------------------------------------------------------------------------
+>    38:   ldr     x0, [x0] ----------\        38:   add     x9, x0, #0x0
+> -----------------------------------\\       3c:   lsr     x9, x9, #32
+>    3c:   mov     x7, #0x0            \\      40:   cmp     x9, #0x10, lsl #12
+>    40:   mov     sp, sp               \\     44:   b.ls    0x0000000000000050
+>    44:   ldp     x27, x28, [sp], #16   \\--> 48:   ldr     x0, [x0]
+>    48:   ldp     x25, x26, [sp], #16    \    4c:   b       0x0000000000000054
+>    4c:   ldp     x21, x22, [sp], #16     \   50:   mov     x0, #0x0
+>    50:   ldp     x19, x20, [sp], #16      \---------------------------------------
+>    54:   ldp     x29, x30, [sp], #16         54:   mov     x7, #0x0
+>    58:   add     x0, x7, #0x0                58:   mov     sp, sp
+>    5c:   autiasp                             5c:   ldp     x27, x28, [sp], #16
+>    60:   ret                                 60:   ldp     x25, x26, [sp], #16
+>    64:   nop                                 64:   ldp     x21, x22, [sp], #16
+>    68:   ldr     x10, 0x0000000000000070     68:   ldp     x19, x20, [sp], #16
+>    6c:   br      x10                         6c:   ldp     x29, x30, [sp], #16
+>                                              70:   add     x0, x7, #0x0
+>                                              74:   autiasp
+>                                              78:   ret
+>                                              7c:   nop
+>                                              80:   ldr     x10, 0x0000000000000088
+>                                              84:   br      x10
+> 
+> There are 6 extra instructions added in ARM64 in the best case. This will
+> become 7 in the worst case (off != 0).
+> 
+>                             RISC-V JIT (RISCV_ISA_C Disabled)
+>                             ==========
+> 
+>          No Intrumentation           Verifier's Instrumentation
+>             (upstream)                      (This patch)
+>          -----------------           --------------------------
+> 
+>     0:   nop                            0:   nop
+>     4:   nop                            4:   nop
+>     8:   li      a6, 33                 8:   li      a6, 33
+>     c:   addi    sp, sp, -16            c:   addi    sp, sp, -16
+>    10:   sd      s0, 8(sp)             10:   sd      s0, 8(sp)
+>    14:   addi    s0, sp, 16            14:   addi    s0, sp, 16
+>    18:   ld      a0, 0(a0)             18:   ld      a0, 0(a0)
+> ---------------------------------------------------------------
+>    1c:   ld      a0, 0(a0) --\         1c:   mv      t0, a0
+> --------------------------\  \        20:   srli    t0, t0, 32
+>    20:   li      a5, 0      \  \       24:   lui     t1, 4096
+>    24:   ld      s0, 8(sp)   \  \      28:   sext.w  t1, t1
+>    28:   addi    sp, sp, 16   \  \     2c:   bgeu    t1, t0, 12
+>    2c:   sext.w  a0, a5        \  \--> 30:   ld      a0, 0(a0)
+>    30:   ret                    \      34:   j       8
+>                                  \     38:   li      a0, 0
+>                                   \------------------------------
+>                                        3c:   li      a5, 0
+>                                        40:   ld      s0, 8(sp)
+>                                        44:   addi    sp, sp, 16
+>                                        48:   sext.w  a0, a5
+>                                        4c:   ret
+> 
+> There are 7 extra instructions added in RISC-V.
+> 
+> Fixes: 800834285361 ("bpf, arm64: Add BPF exception tables")
+> Reported-by: Breno Leitao <leitao@debian.org>
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 > ---
-> Changes in v5
-> * Included Ani's proposed patch and added him as co-author
+> V3: https://lore.kernel.org/bpf/20240321120842.78983-1-puranjay12@gmail.com/
+> Changes in V4:
+> - Disable this feature on architectures that don't define
+>    CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
+> - By doing the above, we don't need anything explicitly for s390x.
+> 
+> V2: https://lore.kernel.org/bpf/20240321101058.68530-1-puranjay12@gmail.com/
+> Changes in V3:
+> - Return 0 from bpf_arch_uaddress_limit() in disabled case because it
+>    returns u64.
+> - Modify the check in verifier to no do instrumentation when uaddress_limit
+>    is 0.
+> 
+> V1: https://lore.kernel.org/bpf/20240320105436.4781-1-puranjay12@gmail.com/
+> Changes in V2:
+> - Disable this feature on s390x.
 > ---
-> tools/hv/hv_kvp_daemon.c | 213 +++++++++++++++++++++++++++++++--------
-> 1 file changed, 172 insertions(+), 41 deletions(-)
->=20
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index 318e2dad27e0..ae57bf69ad4a 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -76,6 +76,12 @@ enum {
-> DNS
-> };
->=20
-> +enum {
-> + IPV4 =3D 1,
-> + IPV6,
-> + IP_TYPE_MAX
-> +};
-> +
-> static int in_hand_shake;
->=20
-> static char *os_name =3D "";
-> @@ -102,6 +108,11 @@ static struct utsname uts_buf;
->=20
-> #define MAX_FILE_NAME 100
-> #define ENTRIES_PER_BLOCK 50
-> +/*
-> + * Change this entry if the number of addresses increases in future
-> + */
-> +#define MAX_IP_ENTRIES 64
-> +#define OUTSTR_BUF_SIZE ((INET6_ADDRSTRLEN + 1) * MAX_IP_ENTRIES)
->=20
-> struct kvp_record {
-> char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
-> @@ -1171,6 +1182,18 @@ static int process_ip_string(FILE *f, char =
-*ip_string, int type)
-> return 0;
-> }
->=20
-> +int ip_version_check(const char *input_addr)
-> +{
-> + struct in6_addr addr;
-> +
-> + if (inet_pton(AF_INET, input_addr, &addr))
-> + return IPV4;
-> + else if (inet_pton(AF_INET6, input_addr, &addr))
-> + return IPV6;
-> +
-> + return -EINVAL;
-> +}
-> +
-> /*
->  * Only IPv4 subnet strings needs to be converted to plen
->  * For IPv6 the subnet is already privided in plen format
-> @@ -1197,14 +1220,75 @@ static int kvp_subnet_to_plen(char =
-*subnet_addr_str)
-> return plen;
-> }
->=20
-> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-> +  int ip_sec)
-> +{
-> + char addr[INET6_ADDRSTRLEN], *output_str;
-> + int ip_offset =3D 0, error =3D 0, ip_ver;
-> + char *param_name;
-> +
-> + if (type =3D=3D DNS)
-> + param_name =3D "dns";
-> + else if (type =3D=3D GATEWAY)
-> + param_name =3D "gateway";
-> + else
-> + return -EINVAL;
-> +
-> + output_str =3D (char *)calloc(OUTSTR_BUF_SIZE, sizeof(char));
-> + if (!output_str)
-> + return -ENOMEM;
-> +
-> + while (1) {
-> + memset(addr, 0, sizeof(addr));
-> +
-> + if (!parse_ip_val_buffer(ip_string, &ip_offset, addr,
-> + (MAX_IP_ADDR_SIZE * 2)))
-> + break;
-> +
-> + ip_ver =3D ip_version_check(addr);
-> + if (ip_ver < 0)
-> + continue;
-> +
-> + if ((ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4) ||
-> +    (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)) {
-> + /*
-> + * do a bound check to avoid out-of bound writes
-> + */
-> + if ((OUTSTR_BUF_SIZE - strlen(output_str)) >
-> +    (strlen(addr) + 1)) {
-> + strncat(output_str, addr,
-> + OUTSTR_BUF_SIZE -
-> + strlen(output_str) - 1);
-> + strncat(output_str, ",",
-> + OUTSTR_BUF_SIZE -
-> + strlen(output_str) - 1);
-> + }
-> + } else {
-> + continue;
-> + }
-> + }
-> +
-> + if (strlen(output_str)) {
-> + /*
-> + * This is to get rid of that extra comma character
-> + * in the end of the string
-> + */
-> + output_str[strlen(output_str) - 1] =3D '\0';
-> + error =3D fprintf(f, "%s=3D%s\n", param_name, output_str);
-> + }
-> +
-> + free(output_str);
-> + return error;
-> +}
-> +
-> static int process_ip_string_nm(FILE *f, char *ip_string, char =
-*subnet,
-> - int is_ipv6)
-> + int ip_sec)
-> {
-> char addr[INET6_ADDRSTRLEN];
-> char subnet_addr[INET6_ADDRSTRLEN];
-> - int error, i =3D 0;
-> + int error =3D 0, i =3D 0;
-> int ip_offset =3D 0, subnet_offset =3D 0;
-> - int plen;
-> + int plen, ip_ver;
->=20
-> memset(addr, 0, sizeof(addr));
-> memset(subnet_addr, 0, sizeof(subnet_addr));
-> @@ -1216,10 +1300,16 @@ static int process_ip_string_nm(FILE *f, char =
-*ip_string, char *subnet,
->       subnet_addr,
->       (MAX_IP_ADDR_SIZE *
-> 2))) {
-> - if (!is_ipv6)
-> + ip_ver =3D ip_version_check(addr);
-> + if (ip_ver < 0)
-> + continue;
-> +
-> + if (ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4)
-> plen =3D kvp_subnet_to_plen((char *)subnet_addr);
-> - else
-> + else if (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)
-> plen =3D atoi(subnet_addr);
-> + else
-> + continue;
->=20
-> if (plen < 0)
-> return plen;
-> @@ -1233,17 +1323,16 @@ static int process_ip_string_nm(FILE *f, char =
-*ip_string, char *subnet,
-> memset(subnet_addr, 0, sizeof(subnet_addr));
-> }
->=20
-> - return 0;
-> + return error;
-> }
->=20
-> static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value =
-*new_val)
-> {
-> - int error =3D 0;
-> + int error =3D 0, ip_ver;
-> char if_filename[PATH_MAX];
-> char nm_filename[PATH_MAX];
-> FILE *ifcfg_file, *nmfile;
-> char cmd[PATH_MAX];
-> - int is_ipv6 =3D 0;
-> char *mac_addr;
-> int str_len;
->=20
-> @@ -1421,52 +1510,94 @@ static int kvp_set_ip_info(char *if_name, =
-struct hv_kvp_ipaddr_value *new_val)
-> if (error)
-> goto setval_error;
->=20
-> - if (new_val->addr_family & ADDR_FAMILY_IPV6) {
-> - error =3D fprintf(nmfile, "\n[ipv6]\n");
-> - if (error < 0)
-> - goto setval_error;
-> - is_ipv6 =3D 1;
-> - } else {
-> - error =3D fprintf(nmfile, "\n[ipv4]\n");
-> - if (error < 0)
-> - goto setval_error;
-> - }
+>   arch/x86/net/bpf_jit_comp.c | 72 +++++--------------------------------
+>   include/linux/filter.h      |  1 +
+>   kernel/bpf/core.c           |  9 +++++
+>   kernel/bpf/verifier.c       | 30 ++++++++++++++++
+>   4 files changed, 48 insertions(+), 64 deletions(-)
+> 
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 4900b1ee019f..9b3136187938 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1327,7 +1327,6 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+>   		u8 b2 = 0, b3 = 0;
+>   		u8 *start_of_ldx;
+>   		s64 jmp_offset;
+> -		s16 insn_off;
+>   		u8 jmp_cond;
+>   		u8 *func;
+>   		int nops;
+> @@ -1802,78 +1801,18 @@ st:			if (is_imm8(insn->off))
+>   		case BPF_LDX | BPF_PROBE_MEMSX | BPF_B:
+>   		case BPF_LDX | BPF_PROBE_MEMSX | BPF_H:
+>   		case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
+> -			insn_off = insn->off;
 > -
-> /*
-> * Now we populate the keyfile format
-> + *
-> + * The keyfile format expects the IPv6 and IPv4 configuration in
-> + * different sections. Therefore we iterate through the list twice,
-> + * once to populate the IPv4 section and the next time for IPv6
-> */
-> + ip_ver =3D IPV4;
-> + do {
-> + if (ip_ver =3D=3D IPV4) {
-> + error =3D fprintf(nmfile, "\n[ipv4]\n");
-> + if (error < 0)
-> + goto setval_error;
-> + } else {
-> + error =3D fprintf(nmfile, "\n[ipv6]\n");
-> + if (error < 0)
-> + goto setval_error;
-> + }
->=20
-> - if (new_val->dhcp_enabled) {
-> - error =3D kvp_write_file(nmfile, "method", "", "auto");
-> - if (error < 0)
-> - goto setval_error;
-> - } else {
-> - error =3D kvp_write_file(nmfile, "method", "", "manual");
-> + /*
-> + * Write the configuration for ipaddress, netmask, gateway and
-> + * name services
-> + */
-> + error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> +     (char *)new_val->sub_net,
-> +     ip_ver);
-> if (error < 0)
-> goto setval_error;
-> - }
->=20
-> - /*
-> - * Write the configuration for ipaddress, netmask, gateway and
-> - * name services
-> - */
-> - error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> -     (char *)new_val->sub_net, is_ipv6);
-> - if (error < 0)
-> - goto setval_error;
-> + /*
-> + * As dhcp_enabled is only valid for ipv4, we do not set dhcp
-> + * methods for ipv6 based on dhcp_enabled flag.
-> + *
-> + * For ipv4, set method to manual only when dhcp_enabled is
-> + * false and specific ipv4 addresses are configured. If neither
-> + * dhcp_enabled is true and no ipv4 addresses are configured,
-> + * set method to 'disabled'.
-> + *
-> + * For ipv6, set method to manual when we configure ipv6
-> + * addresses. Otherwise set method to 'auto' so that SLAAC from
-> + * RA may be used.
-> + */
-> + if (ip_ver =3D=3D IPV4) {
-> + if (new_val->dhcp_enabled) {
-> + error =3D kvp_write_file(nmfile, "method", "",
-> +       "auto");
-> + if (error < 0)
-> + goto setval_error;
-> + } else if (error) {
-> + error =3D kvp_write_file(nmfile, "method", "",
-> +       "manual");
-> + if (error < 0)
-> + goto setval_error;
-> + } else {
-> + error =3D kvp_write_file(nmfile, "method", "",
-> +       "disabled");
-> + if (error < 0)
-> + goto setval_error;
-> + }
-> + } else if (ip_ver =3D=3D IPV6) {
-> + if (error) {
-> + error =3D kvp_write_file(nmfile, "method", "",
-> +       "manual");
-> + if (error < 0)
-> + goto setval_error;
-> + } else {
-> + error =3D kvp_write_file(nmfile, "method", "",
-> +       "auto");
-> + if (error < 0)
-> + goto setval_error;
-> + }
-> + }
->=20
-> - /* we do not want ipv4 addresses in ipv6 section and vice versa */
-> - if (is_ipv6 !=3D is_ipv4((char *)new_val->gate_way)) {
-> - error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
-*)new_val->gate_way);
-> + error =3D process_dns_gateway_nm(nmfile,
-> +       (char *)new_val->gate_way,
-> +       GATEWAY, ip_ver);
-> if (error < 0)
-> goto setval_error;
-> - }
->=20
-> - if (is_ipv6 !=3D is_ipv4((char *)new_val->dns_addr)) {
-> - error =3D fprintf(nmfile, "dns=3D%s\n", (char *)new_val->dns_addr);
-> + error =3D process_dns_gateway_nm(nmfile,
-> +       (char *)new_val->dns_addr, DNS,
-> +       ip_ver);
-> if (error < 0)
-> goto setval_error;
-> - }
+> -			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+> -			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
+> -				/* Conservatively check that src_reg + insn->off is a kernel address:
+> -				 *   src_reg + insn->off >= TASK_SIZE_MAX + PAGE_SIZE
+> -				 * src_reg is used as scratch for src_reg += insn->off and restored
+> -				 * after emit_ldx if necessary
+> -				 */
+> -
+> -				u64 limit = TASK_SIZE_MAX + PAGE_SIZE;
+> -				u8 *end_of_jmp;
+> -
+> -				/* At end of these emitted checks, insn->off will have been added
+> -				 * to src_reg, so no need to do relative load with insn->off offset
+> -				 */
+> -				insn_off = 0;
+> -
+> -				/* movabsq r11, limit */
+> -				EMIT2(add_1mod(0x48, AUX_REG), add_1reg(0xB8, AUX_REG));
+> -				EMIT((u32)limit, 4);
+> -				EMIT(limit >> 32, 4);
+> -
+> -				if (insn->off) {
+> -					/* add src_reg, insn->off */
+> -					maybe_emit_1mod(&prog, src_reg, true);
+> -					EMIT2_off32(0x81, add_1reg(0xC0, src_reg), insn->off);
+> -				}
+> -
+> -				/* cmp src_reg, r11 */
+> -				maybe_emit_mod(&prog, src_reg, AUX_REG, true);
+> -				EMIT2(0x39, add_2reg(0xC0, src_reg, AUX_REG));
+> -
+> -				/* if unsigned '>=', goto load */
+> -				EMIT2(X86_JAE, 0);
+> -				end_of_jmp = prog;
+> -
+> -				/* xor dst_reg, dst_reg */
+> -				emit_mov_imm32(&prog, false, dst_reg, 0);
+> -				/* jmp byte_after_ldx */
+> -				EMIT2(0xEB, 0);
+> -
+> -				/* populate jmp_offset for JAE above to jump to start_of_ldx */
+> -				start_of_ldx = prog;
+> -				end_of_jmp[-1] = start_of_ldx - end_of_jmp;
+> -			}
+> +			start_of_ldx = prog;
+>   			if (BPF_MODE(insn->code) == BPF_PROBE_MEMSX ||
+>   			    BPF_MODE(insn->code) == BPF_MEMSX)
+> -				emit_ldsx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn_off);
+> +				emit_ldsx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
+>   			else
+> -				emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn_off);
+> +				emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
+>   			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+>   			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
+>   				struct exception_table_entry *ex;
+>   				u8 *_insn = image + proglen + (start_of_ldx - temp);
+>   				s64 delta;
+>   
+> -				/* populate jmp_offset for JMP above */
+> -				start_of_ldx[-1] = prog - start_of_ldx;
+> -
+> -				if (insn->off && src_reg != dst_reg) {
+> -					/* sub src_reg, insn->off
+> -					 * Restore src_reg after "add src_reg, insn->off" in prev
+> -					 * if statement. But if src_reg == dst_reg, emit_ldx
+> -					 * above already clobbered src_reg, so no need to restore.
+> -					 * If add src_reg, insn->off was unnecessary, no need to
+> -					 * restore either.
+> -					 */
+> -					maybe_emit_1mod(&prog, src_reg, true);
+> -					EMIT2_off32(0x81, add_1reg(0xE8, src_reg), insn->off);
+> -				}
+> -
+>   				if (!bpf_prog->aux->extable)
+>   					break;
+>   
+> @@ -3473,3 +3412,8 @@ bool bpf_jit_supports_ptr_xchg(void)
+>   {
+>   	return true;
+>   }
 > +
-> + ip_ver++;
-> + } while (ip_ver < IP_TYPE_MAX);
+> +u64 bpf_arch_uaddress_limit(void)
+> +{
+> +	return TASK_SIZE_MAX + PAGE_SIZE;
+> +}
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index c0d51bff8f96..cf12bfa2a78c 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -965,6 +965,7 @@ bool bpf_jit_supports_far_kfunc_call(void);
+>   bool bpf_jit_supports_exceptions(void);
+>   bool bpf_jit_supports_ptr_xchg(void);
+>   bool bpf_jit_supports_arena(void);
+> +u64 bpf_arch_uaddress_limit(void);
+>   void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
+>   bool bpf_helper_changes_pkt_data(void *func);
+>   
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 5aacb1d3c4cc..a04695ca82b9 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2958,6 +2958,15 @@ bool __weak bpf_jit_supports_arena(void)
+>   	return false;
+>   }
+>   
+> +u64 __weak bpf_arch_uaddress_limit(void)
+> +{
+> +#if defined(CONFIG_64BIT) && defined(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE)
+> +	return TASK_SIZE;
+> +#else
+> +	return 0;
+> +#endif
+> +}
 > +
-> fclose(nmfile);
-> fclose(ifcfg_file);
->=20
-> --=20
-> 2.34.1
->=20
+>   /* Return TRUE if the JIT backend satisfies the following two conditions:
+>    * 1) JIT backend supports atomic_xchg() on pointer-sized words.
+>    * 2) Under the specific arch, the implementation of xchg() is the same
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index de7813947981..7ce56da6cfa4 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -19657,6 +19657,36 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>   			goto next_insn;
+>   		}
+>   
+> +		/* Make it impossible to de-reference a userspace address */
+> +		if (BPF_CLASS(insn->code) == BPF_LDX &&
+> +		    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+> +		     BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
+> +			struct bpf_insn *patch = &insn_buf[0];
+> +			u64 uaddress_limit = bpf_arch_uaddress_limit();
+> +
+> +			if (!uaddress_limit)
+> +				goto next_insn;
+> +
+> +			*patch++ = BPF_MOV64_REG(BPF_REG_AX, insn->src_reg);
+> +			if (insn->off)
+> +				*patch++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_AX, insn->off);
+> +			*patch++ = BPF_ALU64_IMM(BPF_RSH, BPF_REG_AX, 32);
+> +			*patch++ = BPF_JMP_IMM(BPF_JLE, BPF_REG_AX, uaddress_limit >> 32, 2);
+> +			*patch++ = *insn;
+> +			*patch++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
+> +			*patch++ = BPF_MOV64_IMM(insn->dst_reg, 0);
 
+But how does this address other cases where we could fault e.g. non-canonical,
+vsyscall page, etc? Technically, we would have to call to copy_from_kernel_nofault_allowed()
+to really address all the cases aside from the overflow (good catch btw!) where kernel
+turns into user address.
+
+Thanks,
+Daniel
 
