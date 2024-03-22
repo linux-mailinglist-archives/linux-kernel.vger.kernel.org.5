@@ -1,173 +1,90 @@
-Return-Path: <linux-kernel+bounces-111743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2750E887046
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80FBC887049
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:05:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0CBC281492
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:05:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C28A281AAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797D757864;
-	Fri, 22 Mar 2024 16:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sNV5udq8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B485F56B80;
+	Fri, 22 Mar 2024 16:05:30 +0000 (UTC)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A0C481A0;
-	Fri, 22 Mar 2024 16:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049AC50249;
+	Fri, 22 Mar 2024 16:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.40.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711123504; cv=none; b=V8zh2l468MrefuaVWcFwh7Fi4/7nWfyH34LmEVO9+UJcf7BX90vSxaaS6A4riqZ4AZoq4eA1PzebtdAaAvrba+TcXzxcwT+60xpaor9waB3jvgEouxO5x46s9y75WEgA9jtT8x9YR6yFw5TPkrWwu72JcwUvHFrdBAS+R3KsZUs=
+	t=1711123530; cv=none; b=fHveUWzMCOoLeCL4q8P65JfO5psBC1tfpUz0jgvMRLDyOdvK4pHhm+dlvZzLKVsbjCMpH9OrNnrddipfGa9s564YYsFjZBAQw79e++PQ/XKVZ0HC+k6j+h4STJefMyAZ8qgvdnkgAZNiWetiT/Xs9lKMJdHXNtF3P07PoHObpAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711123504; c=relaxed/simple;
-	bh=pU676GFAED0poswPTfyBT5GkBYVJPMcwY8WVLXctuBo=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=llepuJcltc85HmnRM+2Pw6DPBho6lpVE8WU1BNeYAd7aSIlnA3UinSbcKRZkuFDipDg5IL/uERKkSNuaV+vHX/8UhOBn404OsufXkM6gieIEf1CwU0/r+twCS1xFd84teuz9rz0XrmvzYo6F/MQuuEdsIt+UXz9qCj0B0r9u0yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sNV5udq8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C2BBC433C7;
-	Fri, 22 Mar 2024 16:05:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711123503;
-	bh=pU676GFAED0poswPTfyBT5GkBYVJPMcwY8WVLXctuBo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sNV5udq8Io5AIDHW9FgD7zcq57bDQSVadRUpGCrWONB22OGzkpZipbImWpeB4GZlD
-	 kIaCue/uKQ6cPGNWS+pem1hsXnnu1Y+dAoFmmun/ovE2woh43rxfRhc66DfLXpH4pJ
-	 bJ8NLeyGS/86ktSd8VUHIeoui2v/QUkPnj3imj31nRsGZkCreFuRxBc/xEHZXPc26r
-	 B8WZjQggLOqQZMNHYsYBESo/vGsbO2qRUzYRxyPNEgHk4ksylUcUKGLbiVmt950RnS
-	 yXyXt08sPngMk8DxTrrAW24Q6/xqGxR82yRfBu/+1sEy9sNJF5g6QvaqFTHob2DnFC
-	 FXbLYZNpUamEQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rnhO8-00EYGR-P1;
-	Fri, 22 Mar 2024 16:05:00 +0000
-Date: Fri, 22 Mar 2024 16:05:00 +0000
-Message-ID: <86il1ez1zn.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Mostafa Saleh <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/5] KVM: arm64: Add support for PSCI v1.2 and v1.3
-In-Reply-To: <20240319130957.1050637-3-dwmw2@infradead.org>
-References: <20240319130957.1050637-1-dwmw2@infradead.org>
-	<20240319130957.1050637-3-dwmw2@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1711123530; c=relaxed/simple;
+	bh=IV+OAjI9wnnxfMCGrBCAD3gzlO25uVV33QSEA4X33AM=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=oaCKmfTb37XAcaAgXh3fy9IVC/iL1cqc94jT95vMjZPQtFgA9IphRY6W0ywK00PD4ttqgdHGQoQNVYgw8d0U+PMEzR5K8acKAzRMsia6tve7SkiEb5z5dUVYC9qHN2MixSzpBvts5EG1Y8wZncYLxhX+u1i1ngaqshFwVpF0ipw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at; spf=fail smtp.mailfrom=nod.at; arc=none smtp.client-ip=195.201.40.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 6223C6450948;
+	Fri, 22 Mar 2024 17:05:19 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id apiN5osYyNZi; Fri, 22 Mar 2024 17:05:19 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id F245161F0A9F;
+	Fri, 22 Mar 2024 17:05:18 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id EYt00MZaZPo2; Fri, 22 Mar 2024 17:05:18 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id B6A4B61F0A9D;
+	Fri, 22 Mar 2024 17:05:18 +0100 (CET)
+Date: Fri, 22 Mar 2024 17:05:18 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	devicetree <devicetree@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	david oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <2125862147.90778.1711123518626.JavaMail.zimbra@nod.at>
+In-Reply-To: <Zf2qQSRWYDzKd4--@makrotopia.org>
+References: <cover.1702952891.git.daniel@makrotopia.org> <20240219120156.383a1427@xps-13> <1209094181.98490.1708899174329.JavaMail.zimbra@nod.at> <ZdvV1KABu_UCSL7B@makrotopia.org> <1754825522.38834.1710105437883.JavaMail.zimbra@nod.at> <Ze5uUyUuEDBM3p43@makrotopia.org> <1196553263.78350.1710887478387.JavaMail.zimbra@nod.at> <Zf2qQSRWYDzKd4--@makrotopia.org>
+Subject: Re: [PATCH v7 7/7] mtd: ubi: provide NVMEM layer over UBI volumes
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, dwmw@amazon.co.uk, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: provide NVMEM layer over UBI volumes
+Thread-Index: tOfo7y+yLt5SSiGVRI1o4gXoH7tsLw==
 
-On Tue, 19 Mar 2024 12:59:03 +0000,
-David Woodhouse <dwmw2@infradead.org> wrote:
-> 
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> Since the v1.3 specification is still in Alpha, only default to v1.2
-> unless userspace explicitly requests v1.3 for now.
-> 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->  arch/arm64/kvm/hypercalls.c | 2 ++
->  arch/arm64/kvm/psci.c       | 6 +++++-
->  include/kvm/arm_psci.h      | 4 +++-
->  3 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-> index 5763d979d8ca..9c6267ca2b82 100644
-> --- a/arch/arm64/kvm/hypercalls.c
-> +++ b/arch/arm64/kvm/hypercalls.c
-> @@ -575,6 +575,8 @@ int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
->  		case KVM_ARM_PSCI_0_2:
->  		case KVM_ARM_PSCI_1_0:
->  		case KVM_ARM_PSCI_1_1:
-> +		case KVM_ARM_PSCI_1_2:
-> +		case KVM_ARM_PSCI_1_3:
->  			if (!wants_02)
->  				return -EINVAL;
->  			vcpu->kvm->arch.psci_version = val;
-> diff --git a/arch/arm64/kvm/psci.c b/arch/arm64/kvm/psci.c
-> index 1f69b667332b..f689ef3f2f10 100644
-> --- a/arch/arm64/kvm/psci.c
-> +++ b/arch/arm64/kvm/psci.c
-> @@ -322,7 +322,7 @@ static int kvm_psci_1_x_call(struct kvm_vcpu *vcpu, u32 minor)
->  
->  	switch(psci_fn) {
->  	case PSCI_0_2_FN_PSCI_VERSION:
-> -		val = minor == 0 ? KVM_ARM_PSCI_1_0 : KVM_ARM_PSCI_1_1;
-> +		val = PSCI_VERSION(1, minor);
->  		break;
->  	case PSCI_1_0_FN_PSCI_FEATURES:
->  		arg = smccc_get_arg1(vcpu);
-> @@ -449,6 +449,10 @@ int kvm_psci_call(struct kvm_vcpu *vcpu)
->  	}
->  
->  	switch (version) {
-> +	case KVM_ARM_PSCI_1_3:
-> +		return kvm_psci_1_x_call(vcpu, 3);
-> +	case KVM_ARM_PSCI_1_2:
-> +		return kvm_psci_1_x_call(vcpu, 2);
->  	case KVM_ARM_PSCI_1_1:
->  		return kvm_psci_1_x_call(vcpu, 1);
->  	case KVM_ARM_PSCI_1_0:
-> diff --git a/include/kvm/arm_psci.h b/include/kvm/arm_psci.h
-> index e8fb624013d1..ebd7d9a12790 100644
-> --- a/include/kvm/arm_psci.h
-> +++ b/include/kvm/arm_psci.h
-> @@ -14,8 +14,10 @@
->  #define KVM_ARM_PSCI_0_2	PSCI_VERSION(0, 2)
->  #define KVM_ARM_PSCI_1_0	PSCI_VERSION(1, 0)
->  #define KVM_ARM_PSCI_1_1	PSCI_VERSION(1, 1)
-> +#define KVM_ARM_PSCI_1_2	PSCI_VERSION(1, 2)
-> +#define KVM_ARM_PSCI_1_3	PSCI_VERSION(1, 3)
->  
-> -#define KVM_ARM_PSCI_LATEST	KVM_ARM_PSCI_1_1
-> +#define KVM_ARM_PSCI_LATEST	KVM_ARM_PSCI_1_2 /* v1.3 is still Alpha */
->  
->  static inline int kvm_psci_version(struct kvm_vcpu *vcpu)
->  {
+----- Urspr=C3=BCngliche Mail -----
+> Von: "Daniel Golle" <daniel@makrotopia.org>
+> So: hold my beer, I'll be back shortly ;)
+>=20
+> If anyone has better ideas on how to utilize support for raw NAND or the
+> OneNAND controller in QEMU in a device-tree environment which actually
+> works, that'd be great. Obviously I don't care about other peripherals
+> like Bluetooth and all the complicated stuff of the N80x...
 
-Consider making the visibility of v1.2/1.3 to userspace and guest the
-last patch in the series, so that there is no transient support for
-some oddball PSCI version with no feature (keeps bisection clean).
+Speaking of "hold my beer", maybe we can hack something into nandsim
+to act like a device tree attachable device?
+In theory, device tree is also available on x86 and other non-embedded arch=
+s.
 
 Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+//richard
 
