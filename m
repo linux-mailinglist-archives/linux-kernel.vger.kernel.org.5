@@ -1,342 +1,209 @@
-Return-Path: <linux-kernel+bounces-111253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39938869C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:53:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59DE58869C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5E411C22E55
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:53:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF48F285298
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E269224C7;
-	Fri, 22 Mar 2024 09:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E27225AF;
+	Fri, 22 Mar 2024 09:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="QNQvcl/r"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2119.outbound.protection.outlook.com [40.107.95.119])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aouaI61O"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB77922331;
-	Fri, 22 Mar 2024 09:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.119
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711101227; cv=fail; b=bbTOoaVcIdAx7wcO4XuxBxE5QAtTvMSlBCDSVp4I1hpq+2paCUEDRUjkrfw64OWGPR6KGWR9k27Ryp7gB0YfxqrXPOn4XqXpManKlVoIdb2ZrACWdggPZAO0KGPxF+ZNk2YXxywp4uX90ZDpyBI3+cF7X4avy9g1g6V3sh94s4Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711101227; c=relaxed/simple;
-	bh=tJLEqsv0GOiQY4bNXClIz+CkefM0IdNvM1Iq+5UtcKw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=gn+aM3m7EXtnxKXs/OMexXgygffKZpiiUuWjriv0xxIzpUZrBBzghYZCRIkmCuitjv9q5oqLYq/hlLSUG18y693LB2MHGXydRUpvQ452aDKIGroHetH3wG3xdplAGBs/q9/G525CPYKXQC8S/KhxLvc4iV3hL8Vc5wXTgvTtpcU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=QNQvcl/r reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.95.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YT5Mx2J2qPiJt8ogPsgDnzyPbERJ2M3usc7/xBrXcLH5losKmYwTj/gOt1syhF+CM1cIbTNj7g1b0XUiqGVe5kqdAGeGVPsWrvd2/VPSaiIj8exZn0fJtF0DDff3/FhUiA6F9Mm7EKxdtLdiVsCHMunWGbQwzzEBG5R5mMbYF2mqXXMekQEIcPxyKvYuqOyQdpPS21jXBQf9jOsZuIMJ22aX0hEhKWAG2YPeeAJLgBMb0Gbui3pD6/zV3pOp/HWOpHA85WBcRyFBHhBTgcK0PJFSmt08dZLd3hAke1DAk2waz3bkzxafpKsDic7Dg+EeC23NQPXJrWHuO+qIQBKeOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0H7NitF17piND1xkvkM0wQqIck0PKS20irKLz1MvAQo=;
- b=oI4FkvXxrV6Fq8zz+XVvqOg3Qqlk5+DYxCn1qAoUTtbloB76zQoIJRcIfyUuE4GlRiwC+FECd6TAADh0MEo6YDYlKfRfWzlqTrUNHI6SPt3BtOejhpi7qTWZvPR+miARhwsV9Wk4WxPIpaRf7sWu4lShAVq2E59j4U11y7wM5dfUjQuFvTWiw0UtdFpkxxHcE2tOMpopPC+UAfm9hH8q/VjtPSpDhpU8Udps8yg7IbLD2FcKFaxqDlGNcCsc2FiCMLBhJwxJ+vUAgIQ+UbVFXCkYIETlNVmzPEjw9FAJj1HYJ+7Sy0KZCqZbhQtaULTQrjgESdpvgWaHm8GnzC2agQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CFA383BA
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711101243; cv=none; b=VRqL4d3wmktPdnJuugJxrikgzXMJ8EHlqqRih/gYX7MVdZbcajSJ2MwSGrOUVTXn419XY4r98IyQD4J6+BbCj8Cbo082oMUvsUGHY+e0uLPPY7rDkHAgCBuxdmE+LqsMaUBGA2hDsvdeH3st8yKuGQYNymX42WPnKwIDcwZpv8I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711101243; c=relaxed/simple;
+	bh=vjqEObL0QUT0FRkhgE1k7Zaz2Z1i6sWZd0ubJaupmIc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=najr+jhC8D4oFokJ3wiMi5ES/NFQn25TxRjFhArnfT++CLShOJ5IBTsj/9Musw1COYKPPw48KYn0ShKw+ysRORvBE4cCqGW3vKBln5B44DUUmbLmxkpEmBiyONHevvgnYl3PS0sDwDxMc+S+pZ1vt14vtDPJ0NnNNJRsUFfGF1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aouaI61O; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42a0ba5098bso13664681cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 02:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0H7NitF17piND1xkvkM0wQqIck0PKS20irKLz1MvAQo=;
- b=QNQvcl/rOAroOomuEhFTLbF+BE8Gd4OxS9krS/cxieKLinvH6dZ/qsteneINS5QCY60PcYXKJkuTlrcx/0eAV6XGaYtJZxVzjTk1qwBCBYPgmg533GtIMFv5twkONzlOC2CfqeAuERVqRFPWBxQ5dTN3pM/APLfgFTu41Rw9H4A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
-Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
- MW4PR01MB6129.prod.exchangelabs.com (2603:10b6:303:77::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.15; Fri, 22 Mar 2024 09:53:39 +0000
-Received: from DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7409.023; Fri, 22 Mar 2024
- 09:53:38 +0000
-Message-ID: <21256600-d94d-4287-b22f-f22258121668@amperemail.onmicrosoft.com>
-Date: Fri, 22 Mar 2024 16:53:28 +0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: hwmon: Add maxim max31790 driver
- bindings
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Chanh Nguyen <chanh@os.amperecomputing.com>, Jean Delvare
- <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Justin Ledford
- <justinledford@google.com>, devicetree@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
- OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- Open Source Submission <patches@amperecomputing.com>
-Cc: Phong Vo <phong@os.amperecomputing.com>,
- Thang Nguyen <thang@os.amperecomputing.com>,
- Quan Nguyen <quan@os.amperecomputing.com>
-References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
- <20240311111347.23067-2-chanh@os.amperecomputing.com>
- <6fb70adb-aa85-4b9c-b093-afa4ec7ed056@linaro.org>
- <ab8b45c5-2ef0-4a87-87bf-f797954b4574@amperemail.onmicrosoft.com>
- <a224e752-d99b-45d3-b5db-761a698c347e@linaro.org>
-From: Chanh Nguyen <chanh@amperemail.onmicrosoft.com>
-In-Reply-To: <a224e752-d99b-45d3-b5db-761a698c347e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0117.apcprd02.prod.outlook.com
- (2603:1096:4:92::33) To DM6PR01MB5947.prod.exchangelabs.com
- (2603:10b6:5:1dd::12)
+        d=chromium.org; s=google; t=1711101240; x=1711706040; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8WbPf4u/guZtL0UBxRr9aD1eeF4y1ReSS6bv+KKsBZY=;
+        b=aouaI61O10wMESOg5XL662lDhULohs7faebQWsCOuGc1CQ5xUeiufqpsQJygwG1zk0
+         sdXNuQhBEsqypSKYfLghR+Mlqb9NSVcXtwsZqSquVP+lZSfGi9Vt7d9GR5k6tSRsdGcd
+         wHLZ7wre65LSlQ7Yqj1C7nN9VuBcbVEK7YSec=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711101240; x=1711706040;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8WbPf4u/guZtL0UBxRr9aD1eeF4y1ReSS6bv+KKsBZY=;
+        b=OGw2bgzejZ0/pKY+YJBOEo/yCYl1hCUWpwpV+Az/ALfmThF26yTrDQvA0upwteRS7K
+         BhjcsyElNED8tYHFrCSsAnIxl+4RDMxdgcYo/LfArRfk218TjaPGPCoGEKXzUYSjD2T/
+         9Kp1lpoElFj0GYT2oAzH3WdF14Ilb0x+Shn99dv3JxxM4q3gcYF3rAmW2YToWvuQSjhq
+         It4XtuR8NiL127zU2M884z+E3ud6boaax+6ncmX4dkLgMkT+vZeXnDXsd9K4xdl80q4D
+         0XL4HJNS/KfS5sJThRt2Blaw4MiLK44AREjhO5a9DL9wR6EZaP+F79xT+9rU9MfLJ/Cm
+         mFcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUOyFSQ+uRHNVtbjTJQFJACY/qWpp1kHTTW/E/dLsfZt20g72nXVbM3innW5Cl4J7qZ0ezzn7oV7y2ffvKTiJ5/QAx88v5roUANSqLg
+X-Gm-Message-State: AOJu0YzFxgoaGQ5OkZHOnqfIAlrv/v+oyJ+5GhSmAlQDV7swSHaURa5F
+	vw9n5C0OTJPR+ZVUspam1fLVz98QmjBjD2MUVRndpx/ofBLtNbeQKFWjVF+O14x+oTlMHiI7rA4
+	=
+X-Google-Smtp-Source: AGHT+IEDAuZ746jQsVlJxHcmOv82BqhMpt/e/MpO+zwOqoaDEw9vHSz/yZncpHLSQwz07egVU6VKBQ==
+X-Received: by 2002:a05:622a:103:b0:431:2a9d:9429 with SMTP id u3-20020a05622a010300b004312a9d9429mr1709066qtw.2.1711101239943;
+        Fri, 22 Mar 2024 02:53:59 -0700 (PDT)
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com. [209.85.219.43])
+        by smtp.gmail.com with ESMTPSA id br14-20020a05622a1e0e00b0042efe24b76esm723471qtb.58.2024.03.22.02.53.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 02:53:59 -0700 (PDT)
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6967312fadaso218246d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 02:53:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWc4YFE1jGiY0GXcvuprbNhFk2TvTv8VwoboWXMgkhySeAMBsTlBsLdVUSbILknMhGLZry2IH+OgAFn+kdvVJCYn3nF3a0QFG3cw4r6
+X-Received: by 2002:ad4:5e89:0:b0:696:45f2:a3f4 with SMTP id
+ jl9-20020ad45e89000000b0069645f2a3f4mr1891856qvb.63.1711101238442; Fri, 22
+ Mar 2024 02:53:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|MW4PR01MB6129:EE_
-X-MS-Office365-Filtering-Correlation-Id: 44a47a26-8412-42f8-8d3a-08dc4a55f29e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	jKkAW8OVhvAEez6TIN1o3eMCTiXoAw5dT+GmoMkriH3A07Nx6N09bmP1REH0P8r5LewGo8mGc5bplY5mlrZA/N+wbciHi5YYnRh5WEz3sR6Wi818ZsJRO9d1HOHrYh/9iDNBs4Gf6OtUfStErZHULg1hoYSvGlWt6AB83gzl8xoB+72mGhQl/0NQ0X3eKoxFwySF2ahTOSKWoGJ/KGHPgoj1G7zB38RDSxHH+mt1GhTKswOawrB5A6rsZEAlF+ReO4Bu2UWj8AlOr2HzskC7+S/Z12lnl8L+JTQ1x7Bzu8xog6cc+Rnq9hW39aZk7kTrqR0YcDhuwKO2oTvGs/0gz9pnilUA3gRWEQzfMElF/aMW6GGgEt7jZj4SRcnF1xCwzuA+4vJx29SfScSEBwmfzTsJCMceR6mgRqRLWIFLEEhnXszBHDl1VqedZLZRprrDztZ8CV9L81zevzvNk21xEBSh1KeDMNdj9urbZ4D4Rd72LM2ad8RwvVDFkhk0b1jddiL6Y8MYynCks0Ex3Yp8yaRgwGJ2Z/iQ62zng4Ay72PPGq8wwaIfs5nEsCWne3pVRvoYBdrwzrRPGuy7DDwulYL3Zcf9h5kj7WjHOEinoSg3iOe9WMYPraUJLInuH5bWw+853df8P2/qSbYfYIMChw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007)(921011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Q2dUYlZrcFVib2ZPQ0hRbTRwNnAwQUxpNWt4QUQ5c0dqRyswUkt2TENtQ0N1?=
- =?utf-8?B?dWMyb3RvSFN0bnE1aFNHTnJIQXFDdmh5OE04T0E2VUNySUZDbGE2UHRST2FS?=
- =?utf-8?B?dEJBQk0wbmRoa0JTNUZ6a2tTWStoamRSRzVlR3hmUy8rejUyZWthUjVIWTho?=
- =?utf-8?B?STZQZ3pHQ1NqdklndHNRMFhKSGkrc29XTTFuWGNrVWt0NlpjWHdMUTlkd21C?=
- =?utf-8?B?Nm9DemlBWHRzNEJGb2k4eG5PTm9SemRBbHJlWHFuSk1KRDNqM1U5YWZBUVd3?=
- =?utf-8?B?LzVWc2FhUWlVNmtrdGhTS00xQ245Yyt2K2x2RW1BTUdOV09kbjFVS2pVcmlK?=
- =?utf-8?B?LzdsWHV3Zm16eXF0WHdyaWtLWTNTQzI5Slk0bWtHVlhzdDV5WlFWQm9BMWo3?=
- =?utf-8?B?RHYrVk1uZXpHRXBWUDlkNWpXSk5EbHR6V3hVdXp2OTJwOEc5eTJsanZGeGVE?=
- =?utf-8?B?SVN4QmI2amY3VndzZWtJanlCTjlKZ2dIMHozMU9UWlBFRy9yTGN2Zko5QzF6?=
- =?utf-8?B?NTZGTlk4NFJtc0hMUEczWmxhWW04akFVVUVmbE1iQ3NDYUZKZC9XOXdwbVF1?=
- =?utf-8?B?Y1EyUVVJQndWMW9TQXh4VVMvZ2srdjcyUXdyTU12clNSWlV5ejNHSERFekJJ?=
- =?utf-8?B?OUQwamtTVGppTkJTWWw0Wnl0Ri9hR1dTUzdEbnhzanIvTmlHOVhQenJUbFd6?=
- =?utf-8?B?bUpJU1ErOHhZYXI4RWszOWg5RDZ2dmtqRkVyeHhMTHI2Szh3NHdjVGdEOVRN?=
- =?utf-8?B?NU1ja21NQm1nTWFFSG42blQxeVV2clNRRi82akp6eDRYcG1YdVg1eWI3a1o1?=
- =?utf-8?B?WTJiL3ZrM1NaN2poOUZkM1VmMEFMQjhORFhFVzhnVi8wdVhMV1A4ZmtlcFBF?=
- =?utf-8?B?ck9FQkk4OW4zMjlKd0l4WFpuVllmd0Jvc29RcnhiSVpUaTFOZmM3R05INUR4?=
- =?utf-8?B?Y0xHdlVPWldIMUVmWDYybXplN09EdUV2QXZENVdnZ3B1aTM3Z2RseUVNd3B5?=
- =?utf-8?B?QzdnSno0RmdEbjRxZms1QnVPUXJTQ0dnbXplY3cxdWZ5NlRkVTZSbnc2TER3?=
- =?utf-8?B?SlBLL3pHdmQ5U0l5VGdSUTVQU1RSbVovZU5hczlySjEzT0lzc0Y3RzNSVWhB?=
- =?utf-8?B?blM5SktOVHR4S21VZlIxR25lMGxJcDZDZmxySkpuZDV6dzhLSFlZNmJsVndq?=
- =?utf-8?B?N1p2WVliUmhtcHg3ZmZYdXZ6ZmZDWnNyUHlYbjkrOEFJWnVoVEV3NFJTQ3BM?=
- =?utf-8?B?aHVSd1FnZ0hvdHZTNmZvYTIxQXpWUFhYR3ludENKYWNlRSsxamJCZkVnaWNz?=
- =?utf-8?B?Y3RYTzFmQm54MFZtV0hUZkc5ak0wd2t5TStQR0Z4Q05KMU5XWlVOc0FqOEND?=
- =?utf-8?B?NS9vQW0wSEp3TlJHeHJRbVNucnJoN1BBWXNIeEx5dStEb0RZSFgwRC9Xb0V4?=
- =?utf-8?B?U2FnNmRjaERjN2pDbitwcnoxc1plWkE5Z2hzcElUV2JtUTNGMXQ4VnRlUmcy?=
- =?utf-8?B?dXpRRGVPRE5JOXpYWnJBT3p5UDEwaVJLMFQ2dTJzMUpubkJuT01nMDBQcFlD?=
- =?utf-8?B?dGJlU2VLbEtIa3phK05mYUdqbnk2ZFU4MWlsMmUva0pYNkNzdm9GRVAzQnEx?=
- =?utf-8?B?S0lvdFNjcStmTS84T2ZGNUhSS3RUYW9kRXR6L2U2SDV4QlQralFmUnFmeDJr?=
- =?utf-8?B?aFVOVlF6U0lLaG4yTi95ZHhkSlZHeEZDRGZTamVGUVF2WXY2T2xTaWR0Ly9x?=
- =?utf-8?B?aC9YTFhXdVppNjF3VVFteHIzT0VKQ01WUVpnYmJWdU5mU1hFQXJraW5LSnRj?=
- =?utf-8?B?Vjh2UFVEVFZWeXJ1ZTZMSHZNUmxYMnVDbVlWV1lyMEJGQWIvYkIvMEMvc08v?=
- =?utf-8?B?SWRydnU4a0IwV1FET3BnSFR2LzdBTFFuTmk2YmRnUGJhcFNzRnlGVSt4dVJY?=
- =?utf-8?B?YmgxSTRsWnBVUDBPVUQ3Yy91SXRBWDJUbXpCVk1lWjNLTkVpbmNyK0kzTUdh?=
- =?utf-8?B?bnNDbDJ5K1pyQWc3eDBmK2wycy90dW1XK3JrRy95QVNpMWZ4MURsTTNVbVRt?=
- =?utf-8?B?VmdkNExGNDBFdmdBeVNudmtoQ0xybHNyNzdMcXY3bys4TjYrWnNOaGEzV29o?=
- =?utf-8?B?V1dIYWtVYlpXMFVHeXppOUFyQ0VuR0V0Qk9lemdVMFBzMGhLMVB4MVNMN2Nr?=
- =?utf-8?Q?SbVVhXBh38v9XsW7kefgFjc=3D?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44a47a26-8412-42f8-8d3a-08dc4a55f29e
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 09:53:38.6376
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a4pkiwUNXc9TlDYog3ejAwkKZcHohafIbP+eNy3nG83xoK3iW9Pqcht0NvCkcIQJz+KMk38Sm6X9HbdVY1lZ6o5JsVlyXzrEIJvwpn1juYI/gBD5xnHk0cYCJQRzQ9cb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6129
+References: <20220920-resend-hwtimestamp-v9-0-55a89f46f6be@chromium.org>
+ <20220920-resend-hwtimestamp-v9-6-55a89f46f6be@chromium.org> <20240322093522.GN18799@pendragon.ideasonboard.com>
+In-Reply-To: <20240322093522.GN18799@pendragon.ideasonboard.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Fri, 22 Mar 2024 10:53:42 +0100
+X-Gmail-Original-Message-ID: <CANiDSCvZc9CyqkJ5Noz_vzisErVk+dzHW2GUGchQnG2h=d6oTw@mail.gmail.com>
+Message-ID: <CANiDSCvZc9CyqkJ5Noz_vzisErVk+dzHW2GUGchQnG2h=d6oTw@mail.gmail.com>
+Subject: Re: [PATCH v9 6/6] media: uvcvideo: Fix hw timestamp handling for
+ slow FPS
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>, 
+	linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+
+Hi
+
+On Fri, 22 Mar 2024 at 10:35, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
+>
+> On Wed, Mar 15, 2023 at 02:30:17PM +0100, Ricardo Ribalda wrote:
+> > In UVC 1.5 we get a single clock value per frame. With the current
+> > buffer size of 32, FPS slowers than 32 might roll-over twice.
+> >
+> > The current code cannot handle two roll-over and provide invalid
+> > timestamps.
+> >
+> > Revome all the samples from the circular buffer that are more than two
+>
+> s/Revome/Remove/
+>
+> > rollovers old, so the algorithm always provides good timestamps.
+>
+> Wouldn't it be better to support multiple rollovers instead ?
+
+I believe one second is enough to provide a good ramp for the clock
+interpolation,
+with as little as 1/4 we are getting results good enough to pass CTS.
+
+To support multiple roll-ups we would need to keep track of the
+"generation" of every timestamp, and numerical overflows will start to
+be an issue....
+
+IMO it is better to fix what we have broken and If we ever need more
+accuracy we could add a follow-up patch later.
+
+
+>
+> > Note that we are removing values that are more than one second old,
+> > which means that there is enough distance between the two points that
+> > we use for the interpolation to provide good values.
+> >
+> > Tested-by: HungNien Chen <hn.chen@sunplusit.com>
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_video.c | 24 ++++++++++++++++++++++++
+> >  drivers/media/usb/uvc/uvcvideo.h  |  1 +
+> >  2 files changed, 25 insertions(+)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > index 1db0d1bc80e6..c58b51207be6 100644
+> > --- a/drivers/media/usb/uvc/uvc_video.c
+> > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > @@ -471,8 +471,31 @@ static void uvc_video_clock_add_sample(struct uvc_clock *clock,
+> >  {
+> >       unsigned long flags;
+> >
+> > +     /*
+> > +      * If we write new data on the position where we had the last
+> > +      * overflow, remove the overflow pointer. There is no overflow
+> > +      * on the whole circular buffer.
+> > +      */
+> > +     if (clock->head == clock->last_sof_overflow)
+> > +             clock->last_sof_overflow = -1;
+> > +
+> >       spin_lock_irqsave(&clock->lock, flags);
+> >
+> > +     /* Handle overflows */
+> > +     if (clock->count > 0 && clock->last_sof > sample->dev_sof) {
+> > +             /*
+> > +              * Remove data from the circular buffer that is older than the
+> > +              * last overflow. We only support one overflow per circular
+> > +              * buffer.
+> > +              */
+> > +             if (clock->last_sof_overflow != -1) {
+> > +                     clock->count = (clock->head - clock->last_sof_overflow
+> > +                                     + clock->count) % clock->count;
+> > +             }
+> > +             clock->last_sof_overflow = clock->head;
+> > +     }
+> > +
+> > +     /* Add sample */
+> >       memcpy(&clock->samples[clock->head], sample, sizeof(*sample));
+> >       clock->head = (clock->head + 1) % clock->size;
+> >       clock->count = min(clock->count + 1, clock->size);
+> > @@ -605,6 +628,7 @@ static void uvc_video_clock_reset(struct uvc_clock *clock)
+> >       clock->head = 0;
+> >       clock->count = 0;
+> >       clock->last_sof = -1;
+> > +     clock->last_sof_overflow = -1;
+> >       clock->sof_offset = -1;
+> >  }
+> >
+> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > index 07b2fdb80adf..bf9f5162b833 100644
+> > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > @@ -499,6 +499,7 @@ struct uvc_streaming {
+> >               unsigned int head;
+> >               unsigned int count;
+> >               unsigned int size;
+> > +             unsigned int last_sof_overflow;
+> >
+> >               u16 last_sof;
+> >               u16 sof_offset;
+> >
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
 
 
-On 18/03/2024 17:00, Krzysztof Kozlowski wrote:
-> On 18/03/2024 10:51, Chanh Nguyen wrote:
->>
->>> It does not look like you tested the bindings, at least after quick
->>> look. Please run `make dt_binding_check` (see
->>> Documentation/devicetree/bindings/writing-schema.rst for instructions).
->>> Maybe you need to update your dtschema and yamllint.
->>>
->>
->>
->> I tested the binding, I didn't see any warning/error log. Please review
->> my logs as below
-> 
-> Hm, I don't remember what brought my attention to possible error. Maybe
-> I mistyped my template.
-> 
->>
->> => make dt_binding_check DT_SCHEMA_FILES=/hwmon/max31790.yaml
->> make[1]: Entering directory '/DISK4T/work/community/linux/out'
->>     DTEX    Documentation/devicetree/bindings/hwmon/max31790.example.dts
->>     DTC_CHK Documentation/devicetree/bindings/hwmon/max31790.example.dtb
->> make[1]: Leaving directory '/DISK4T/work/community/linux/out'
->>
->>>>
->>>> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
->>>> ---
->>>>    .../devicetree/bindings/hwmon/max31790.yaml   | 44 +++++++++++++++++++
->>>>    1 file changed, 44 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/hwmon/max31790.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/hwmon/max31790.yaml b/Documentation/devicetree/bindings/hwmon/max31790.yaml
->>>> new file mode 100644
->>>> index 000000000000..5a93e6bdebda
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/hwmon/max31790.yaml
->>>
->>> Filename like compatible.
->>
->> Yes, I'll update that in v2
->>
->>>
->>>> @@ -0,0 +1,44 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/hwmon/max31790.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: The Maxim MAX31790 Fan Controller
->>>> +
->>>> +maintainers:
->>>> +  - Jean Delvare <jdelvare@suse.com>
->>>> +  - Guenter Roeck <linux@roeck-us.net>
->>>
->>> You should have here someone responsible for hardware, not subsystem
->>> maintainers.
->>>
->>
->> Hi Krzysztof,
->> I checked the history of the drivers/hwmon/max31790.c and see Guenter
->> Roeck <linux@roeck-us.net> as an important maintainer. I saw many
->> commits from him. So, I add him to maintainer list.
-> 
-> OK
-> 
->>
->>>> +
->>>> +description: >
->>>> +  The MAX31790 controls the speeds of up to six fans using six
->>>> +  independent PWM outputs. The desired fan speeds (or PWM duty cycles)
->>>> +  are written through the I2C interface.
->>>> +
->>>> +  Datasheets:
->>>> +    https://datasheets.maximintegrated.com/en/ds/MAX31790.pdf
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    const: maxim,max31790
->>>> +
->>>> +  reg:
->>>> +    maxItems: 1
->>>
->>> That's weirdly empty.
->>>
->>
->> Hi Krzysztof,
->> I have not yet understood your comment here. Please help give more
->> details for my missing! Thank Krzysztof!
-> 
-> I expect many more properties of a fan controller. Resources (clocks,
-> PWMs, supplies) and FAN specific properties.
-> 
-
-Hi Krzysztof,
-
-I'm creating a base binding document for the max31790 driver. I'm basing 
-it on the drivers/hwmon/max31790.c. Currently, the max31790.c driver has 
-not yet implemented other properties, such as clocks, fan-supply, pwms, 
-etc. So I just introduced the "compatible" and "reg" properties.
-
-In the near future, if any other properties are necessary, I think we 
-will implement them in drivers/hwmon/max31790.c then update this binding 
-document.
-
-I look at other binding documents, I also see something similar. They 
-just introduce the "compatible" and "reg" properties.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/hwmon/adi,max31760.yaml 
-
-
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/hwmon/adt7475.yaml
-
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/hwmon/adi,ad741x.yaml
-
-This is only my view. It's a pleasure to hear your advice. Thanks!
-
-
-> 
->>>> +
->>>> +required:
->>>> +  - compatible
->>>> +  - reg
->>>> +
->>>
->>> You miss allOf: with $ref to fan controller schema.
->>>
->>
->> Thank Krzysztof,
->> I'll add the allOf at v2.
->>
->>>> +additionalProperties: false
->>>> +
->>>> +examples:
->>>> +  - |
->>>> +    i2c {
->>>> +      #address-cells = <1>;
->>>> +      #size-cells = <0>;
->>>> +
->>>> +      max31790@20 {
->>>
->>> Node names should be generic. See also an explanation and list of
->>> examples (not exhaustive) in DT specification:
->>> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
->>>
->>
->> I suggest some node names, such as "i2c-fan" or "fan-controller" . Can
->> you please share your ideas with me!
-> 
-> Look at recent commits and patches for similar type of a device.
-> 
-
-Hi Krzysztof,
-
-I checked on recent commits and found something of a similar type.
-
-adi,max31760.yaml
-         fan-controller@50 {
-             reg = <0x50>;
-             compatible = "adi,max31760";
-         };
-
-hpe,gxp-fan-ctrl.yaml
-     fan-controller@1000c00 {
-       compatible = "hpe,gxp-fan-ctrl";
-       reg = <0x1000c00 0x200>, <0xd1000000 0xff>, <0x80200000 0x100000>;
-       reg-names = "base", "pl", "fn2";
-     };
-
-
-adi,axi-fan-control.yaml
-         axi_fan_control: axi-fan-control@80000000 {
-             compatible = "adi,axi-fan-control-1.00.a";
-             reg = <0x0 0x80000000 0x10000>;
-             clocks = <&clk 71>;
-             interrupts = <0 110 0>;
-             pulses-per-revolution = <2>;
-         };
-
-I think "fan-controller" is a good node name. Do you think so?
-
-> Best regards,
-> Krzysztof
-> 
+-- 
+Ricardo Ribalda
 
