@@ -1,134 +1,161 @@
-Return-Path: <linux-kernel+bounces-111103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9794A8867F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:10:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9661B886819
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:17:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 529D82819CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:10:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37CD6B244AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8E4168D9;
-	Fri, 22 Mar 2024 08:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="B9InOQ+P"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B99217597;
+	Fri, 22 Mar 2024 08:17:32 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADBE14AAE
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:09:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7FE18AE8;
+	Fri, 22 Mar 2024 08:17:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711094994; cv=none; b=bQOrXSU51XSaeTofaLrJrXHc6IbvdBi6bQN0frj6snqAygpzdyCJW4ea74oe4SY4leG2vOb+27cOHFnuHCA1wQsanXPPyFLflquKfE5Ta848PqbTStxbvTu/Dpu8GwgJ/wIUplxzVlwGCbpbkMeLklJ+ZNgpfJJBcaN1WIFqUX8=
+	t=1711095451; cv=none; b=OVHAmvWsr1bH6WSJHEXFOUt/A80pydsIlBRQBOXzKAO6/Tz+HPuOvVcqRv0OAhlnwQxjzkSy+LQVAQXXwu4vFK35eVNdfkXDXlybjB+ZzP/CPfqFQgLZ1B2L6Q1IWW56SBvulOy5R84F+rsxA2HQCrR6thiQ2EI6T+b6S4hG1ys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711094994; c=relaxed/simple;
-	bh=RXpY8uaT9EOvBi9I6yC5dPQJDGkDvO2f0RD5A5oINvM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IUnjpkf7aI0LQRfNU7oZo6B2Ma/vqNB4afSj2FSfWDVmoSMnuxXWVPh3+JhYrE4DcS5SNoHlBuuw0Zlg2SIabzsiTAJgABXMHbo7sTQ27T5SCid3R/B0IwTLvtiUT95YCXsTy8mE7Dk33g7BMt4tvEYf9Xw0qZcOSlFyu8Mjkbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=B9InOQ+P; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4147e283d1cso104345e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1711094991; x=1711699791; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GE5LhZmpwjg/Vlr/58M0lzDTSb9NjpNMdXrf3nX1bH4=;
-        b=B9InOQ+PPsQ4o98v6jbhqxusFM6ok4lzPoiplSY06dm5w1ilqY8EhDCfhNBiS9pvTA
-         iAZlf/9iraFY47KZXYHnhMl3m1P3YjZsTiOmpuyCMjkyBpa5pw7SdJL2ownJJiuDhqD1
-         8ahLsiAbIsgN0HXOqZ8vdbCFwvcCm9JlbFtYlc9Z/HIoae/mZwsGJcQFjTuOjJDkOxxP
-         qGAZMrOs8Cwm58s6c1XRf7hD8AT1CEvSveKp7sP7iEbI+FmvlOBmwMEIA1sJ/MsDKyqz
-         A6ABXwaxk22ujwn2lZxF54JaQZM1Cxbwzwdnd0WgDrvT8MWXjL6G1ZgBgjz7pTcxTBsD
-         /cdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711094991; x=1711699791;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GE5LhZmpwjg/Vlr/58M0lzDTSb9NjpNMdXrf3nX1bH4=;
-        b=T112gPMj8rSy6EOiW+WUDUgM3KU+jODQSlJDVOgWZ82jl+FcJbcvG9yG9eJ4zEi7ne
-         APFPScFhIi1w13+uYH967nsYmJp6w9iBA5wya4nfSjmvBuqnzeqZgC8S7dF4Y2EBZcVF
-         lxW8+TB9coBXergPkG87hKOUoNCVMeFBB9ZwKyAYggK5SEie2dUm7BUVGERLI3Wl76nq
-         MEAEQ6AuM+ZQ6NdW7fnriqRWxGTjyHCL7WV/uO3FL+CoRMS2wR0fQvRsJJrWKxN0iIiD
-         iblPc9AKCICQln8tu3IPhDgbpFrItP1mMjwtQgHl+1qHlNG1WVcGpOnuL+Ngg9zl8jGp
-         iRZw==
-X-Forwarded-Encrypted: i=1; AJvYcCXRBjfQliB69/vpqUseTEN2VCdAeyJQeuWoFbpk1RNE/LbT9bvDJApymlYf9LnZkvYcxbkLf9YAyArsff5TUP2cyeel60rtAE/UQKll
-X-Gm-Message-State: AOJu0Ywo0c4WBu/Gq9DmY1qVuP2ilLXQs0OhZWe8uy8AV1SSN9Qqqzlq
-	MIpRHQDIN263Gee63B0fzWz2d0kYo6XHwqRP+sEHQy6+1byDvN3jXf9KW4FMNZc=
-X-Google-Smtp-Source: AGHT+IHLQHBi7qQwYV/Vh2cMH5xV/FtpkfvFnaz2JqA5AbMTziv+62cDRdiytui2Ed6ojUwu7J0rsg==
-X-Received: by 2002:a05:600c:1c26:b0:414:a89:3443 with SMTP id j38-20020a05600c1c2600b004140a893443mr902935wms.25.1711094990861;
-        Fri, 22 Mar 2024 01:09:50 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id s16-20020a05600c45d000b00413f4cb62e1sm2291207wmo.23.2024.03.22.01.09.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 01:09:50 -0700 (PDT)
-Date: Fri, 22 Mar 2024 09:09:49 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Deepak Gupta <debug@rivosinc.com>
-Cc: Samuel Holland <samuel.holland@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
-	Catalin Marinas <catalin.marinas@arm.com>, linux-kernel@vger.kernel.org, tech-j-ext@lists.risc-v.org, 
-	Conor Dooley <conor@kernel.org>, kasan-dev@googlegroups.com, 
-	Evgenii Stepanov <eugenis@google.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, Guo Ren <guoren@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
-	Paul Walmsley <paul.walmsley@sifive.com>
-Subject: Re: [RISC-V] [tech-j-ext] [RFC PATCH 5/9] riscv: Split per-CPU and
- per-thread envcfg bits
-Message-ID: <20240322-3c32873c4021477383a15f7d@orel>
-References: <20240319215915.832127-1-samuel.holland@sifive.com>
- <20240319215915.832127-6-samuel.holland@sifive.com>
- <CAKC1njSg9-hJo6hibcM9a-=FUmMWyR39QUYqQ1uwiWhpBZQb9A@mail.gmail.com>
- <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com>
- <CAKC1njQYZHbQJ71mapeG1DEw=A+aGx77xsuQGecsNFpoJ=tzGQ@mail.gmail.com>
+	s=arc-20240116; t=1711095451; c=relaxed/simple;
+	bh=s4XNSovHtSMoBIu/QGtMEdY/hgRXDsNSpZP95H+CZ9A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nJMC3dm660GoYjTYurfD09Qcp3e3koMd0FXVHB8QzGZgF8bUnMl2xyHfIPnXqSgo2ykq1q71g7eMgGx9eN38JCpRT11PNRr2K+Q/w18Z7lzLVeu1L3ZEWADMtBu4tHQ6uuJmCyKnU4DaSLZEnatSfc0ZdXZtswko0xTs26ATwQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V1FYV2XJKz4f3jYJ;
+	Fri, 22 Mar 2024 16:17:18 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 664211A0B2D;
+	Fri, 22 Mar 2024 16:17:24 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RGRPv1lh7rgHg--.49644S4;
+	Fri, 22 Mar 2024 16:17:23 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: song@kernel.org,
+	logang@deltatee.com,
+	dan@danm.net,
+	junxiao.bi@oracle.com,
+	xni@redhat.com
+Cc: linux-raid@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH] md/raid5: fix deadlock that raid5d() wait for itself to clear MD_SB_CHANGE_PENDING
+Date: Fri, 22 Mar 2024 16:10:05 +0800
+Message-Id: <20240322081005.1112401-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKC1njQYZHbQJ71mapeG1DEw=A+aGx77xsuQGecsNFpoJ=tzGQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RGRPv1lh7rgHg--.49644S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZFy5uFykAw1kWF4kAr1rCrg_yoW5WFW8pr
+	Z3ZFsIgrWUGrykua1DCa4UWFWjvF9F9rWjqrW7K3WkZ3WIvrWSq34rArWDtrykAFZYvFWq
+	q3W5GrnxXw18u3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	UdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Tue, Mar 19, 2024 at 09:39:52PM -0700, Deepak Gupta wrote:
-..
-> I am not sure of the practicality of this heterogeneity for Zicboz and
-> for that matter any of the upcoming
-> features that'll be enabled via senvcfg (control flow integrity,
-> pointer masking, etc).
-> 
-> As an example if cache zeroing instructions are used by app binary, I
-> expect it to be used in following
-> manner
-> 
->  - Explicitly inserting cbo.zero by application developer
->  - Some compiler flag which ensures that structures larger than cache
-> line gets zeroed by cbo.zero
-> 
-> In either of the cases, the developer is not expecting to target it to
-> a specific hart on SoC and instead expect it to work.
-> There might be libraries (installed via sudo apt get) with cache zero
-> support in them which may run in different address spaces.
-> Should the library be aware of the CPU on which it's running. Now
-> whoever is running these binaries should be aware which CPUs
-> they get assigned to in order to avoid faults?
-> 
-> That seems excessive, doesn't it?
->
+From: Yu Kuai <yukuai3@huawei.com>
 
-It might be safe to assume extensions like Zicboz will be on all harts if
-any, but I wouldn't expect all extensions in the future to be present on
-all available harts. For example, some Arm big.LITTLE boards only have
-virt extensions on big CPUs. When a VMM wants to launch a guest it must
-be aware of which CPUs it will use for the VCPU threads. For riscv, we
-have the which-cpus variant of the hwprobe syscall to try and make this
-type of thing easier to manage, but I agree it will still be a pain for
-software since it will need to make that query and then set its affinity,
-which is something it hasn't needed to do before.
+Xiao reported that lvm2 test lvconvert-raid-takeover.sh can hang with
+small possibility, the root cause is exactly the same as commit
+bed9e27baf52 ("Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING in raid5d"")
 
-Thanks,
-drew
+However, Dan reported another hang after that, and junxiao investigated
+the problem and found out that this is caused by plugged bio can't issue
+from raid5d().
+
+Current implementation in raid5d() has a weird dependence:
+
+1) md_check_recovery() from raid5d() must hold 'reconfig_mutex' to clear
+   MD_SB_CHANGE_PENDING;
+2) raid5d() handles IO in a deadloop, until all IO are issued;
+3) IO from raid5d() must wait for MD_SB_CHANGE_PENDING to be cleared;
+
+This behaviour is introduce before v2.6, and for consequence, if other
+context hold 'reconfig_mutex', and md_check_recovery() can't update
+super_block, then raid5d() will waste one cpu 100% by the deadloop, until
+'reconfig_mutex' is released.
+
+Refer to the implementation from raid1 and raid10, fix this problem by
+skipping issue IO if MD_SB_CHANGE_PENDING is still set after
+md_check_recovery(), daemon thread will be woken up when 'reconfig_mutex'
+is released. Meanwhile, the hang problem will be fixed as well.
+
+Fixes: 5e2cf333b7bd ("md/raid5: Wait for MD_SB_CHANGE_PENDING in raid5d")
+Reported-and-tested-by: Dan Moulding <dan@danm.net>
+Closes: https://lore.kernel.org/all/20240123005700.9302-1-dan@danm.net/
+Investigated-by: Junxiao Bi <junxiao.bi@oracle.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/md/raid5.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index d874abfc1836..2bd1ce9b3922 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -36,7 +36,6 @@
+  */
+ 
+ #include <linux/blkdev.h>
+-#include <linux/delay.h>
+ #include <linux/kthread.h>
+ #include <linux/raid/pq.h>
+ #include <linux/async_tx.h>
+@@ -6734,6 +6733,9 @@ static void raid5d(struct md_thread *thread)
+ 		int batch_size, released;
+ 		unsigned int offset;
+ 
++		if (test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags))
++			break;
++
+ 		released = release_stripe_list(conf, conf->temp_inactive_list);
+ 		if (released)
+ 			clear_bit(R5_DID_ALLOC, &conf->cache_state);
+@@ -6770,18 +6772,7 @@ static void raid5d(struct md_thread *thread)
+ 			spin_unlock_irq(&conf->device_lock);
+ 			md_check_recovery(mddev);
+ 			spin_lock_irq(&conf->device_lock);
+-
+-			/*
+-			 * Waiting on MD_SB_CHANGE_PENDING below may deadlock
+-			 * seeing md_check_recovery() is needed to clear
+-			 * the flag when using mdmon.
+-			 */
+-			continue;
+ 		}
+-
+-		wait_event_lock_irq(mddev->sb_wait,
+-			!test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags),
+-			conf->device_lock);
+ 	}
+ 	pr_debug("%d stripes handled\n", handled);
+ 
+-- 
+2.39.2
+
 
