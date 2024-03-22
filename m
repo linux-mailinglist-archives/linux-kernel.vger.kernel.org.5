@@ -1,201 +1,134 @@
-Return-Path: <linux-kernel+bounces-111780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B108870E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:31:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069718870EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:31:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40D2B1C20CE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:31:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BA171F21D9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195455D468;
-	Fri, 22 Mar 2024 16:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875C15D479;
+	Fri, 22 Mar 2024 16:31:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jLpe1wis"
-Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com [209.85.167.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="in9L/Owx"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B307E4411;
-	Fri, 22 Mar 2024 16:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26065D468;
+	Fri, 22 Mar 2024 16:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711125087; cv=none; b=Lvo3R1r4GwW3/Ds+A2L0W/KR8iD3jYoeIONberTuJWVfZilzBGHA6ai86rR15e5BCcrdyBfuOUPv0Eg4F1xvNcCe49MUmliQ4r6V5PrjhbcbZTzNJ7kWAdmjeOFdvWJKfwpDyyEoF0gSHpfLGebcSx5v7RNY9xTtgq13R8rszxY=
+	t=1711125105; cv=none; b=JYHU+JSjugnr/rD8Lt6Ud6SvZQIEpQUC7LEs2aT+i05MAWo7efl0O4sHCr7ppjIdL5hJs0sW6e2s4oCuZE21W7Mac+sBoKDpHcWR3SGKj6xtcEFzwXqt4xvOnuxq1IZbT8Sx/MHfT7In6JnNQ9/TNKVDdtV5wv3Kl2mfV7ZPY74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711125087; c=relaxed/simple;
-	bh=jv4xl30OffQdBcNiHQX8Jw9miue7Rq0L2m7x+7lmBos=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GSih7O4VXt9rs3eLPTeARkdfOe7n+GNJvU1Jzbp6I9dVLqQMxZ5IcdofZAaGLWOO0XyHDO34qQKwyopYn/P/GNc1B47jj+vsxGGK6MKvPkfM4X52ThsUiK6xRz4KfQ+bcdlGCTs27/CAMMWm1iijaV7NmKKxQJC/fKS1zdTFnYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jLpe1wis; arc=none smtp.client-ip=209.85.167.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f193.google.com with SMTP id 5614622812f47-3c36dcb305cso1058020b6e.0;
-        Fri, 22 Mar 2024 09:31:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711125085; x=1711729885; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=31Xzl+gdQnZUFvRLDH3yOLlBVWmU9n4CWu1bwRmZ1EY=;
-        b=jLpe1wisjOyiSRMK+9OA7/fntUNLoD0yCRmo+LZYjEqkBS3XpOYnGKAtRF2hu2DsL3
-         MAu+ZQ/mlAvRgP99VJeASQTC4NWim4bA3t15gnl6guaU3ZFSSLvCyOQBl9rP2mpmElvZ
-         eR5iEgatEedbrBEB88vPA3xjjF1tGo4T+I8WN/7kFuDNZHByYrL7wW+nmP04jfGE4fqV
-         t/NBsVJgxB4dZug1zzP3BHZ9rnynRhO8KfF1712b9yhKHOi8CCchiGjYgviJUsCiZ8YA
-         sophhBFQ9gLzrl5F3uozZ5I+blvWGUhtnorHQS4UjpUA6ufBQrsVNmyRBEKCbrvKSdzq
-         gO4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711125085; x=1711729885;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=31Xzl+gdQnZUFvRLDH3yOLlBVWmU9n4CWu1bwRmZ1EY=;
-        b=ODn5xLfDDo+4Ho74xsnrs/RTPUtmKQh0vFQMPi968ZLvHtAo5BCQtieVOTF37WDLzw
-         uxAVZAotdq5d1qYPB7fDjZHb0r62MOGZB4rltNl1q7gDg0RV3jVoFuglp6Bx7fNi/6l5
-         i0FCxCkZAc7PxWVMnTC+OeDE+46UUm/OieC6oyUvfV9ddvQaJB8bVR7kcihNcuCeN+rj
-         CzTyYHcVjcExi+p0Ed6RI2wadI8ZpK28Bmh1GOP9mfVQH7T8wFOZPg523HH6Ma160XLa
-         xzwXihQSPYFIZaR1BBv7usRTXTdl25OTl8dMbr1pP6DjkSh51QHbRlbSxF463PXP0Tf9
-         D/8g==
-X-Forwarded-Encrypted: i=1; AJvYcCUS6Ls3QwyjBIvANu2up1BoW9QLfO6wZ8RqwNFnkL61kepDxxjd2VJynAH/oPGpU+k3HNw76/9JoYIV/FpMMroBj5EfYx30ML3LpT0HfXSfzuXFhtWX4dvB919QrHSt63fwJxWMQ7Rk47NNjVPjQN1IjCzKt1804zLm52nGOLQxHsBP
-X-Gm-Message-State: AOJu0YyqoqqhvREnw0gyE0UC3ChPSjaKcu3Tir8UMF7ii4EiVEsTHvMY
-	A2LYgMFa/ZJ2L0cOceQDABrtWCZdbCO56GU3BKiXjF4fbbJEZb4T+8Rldyy1PzaTbaK7cCSDWvK
-	I0lM/F3VZFe/Jm2jbp9UOqWRhQkY=
-X-Google-Smtp-Source: AGHT+IHE3n0KTkYfD8Yj8NNJsSoEmcC2B+raJBYpEdqfWFILSH7LndOJX5ZQH98sJ9VDaqaGMoFzmRcrK7N+VhyrjD8=
-X-Received: by 2002:a05:6808:bce:b0:3c3:85f9:550a with SMTP id
- o14-20020a0568080bce00b003c385f9550amr1087400oik.17.1711125084644; Fri, 22
- Mar 2024 09:31:24 -0700 (PDT)
+	s=arc-20240116; t=1711125105; c=relaxed/simple;
+	bh=8LJhxXCQD+wqtKoDkgpPXOqd45cr4Vf2KPCBquLBOjo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m51hG468eSifZ5qKyD2lPxylsd+GR+8qimLKm8+6C/D/e+BH2tg0nImlGNv1KsMFwC/FOaedeEt44J/o8R1iqMjyqSEtQFmtP6G9ANqr16Kg4uLXO2JptZ+OmXAoZssawByqqtfcR6VJ7+tYTtPXa6uJkcgLo40SmVfM9lUM7nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=in9L/Owx; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1711125098;
+	bh=8LJhxXCQD+wqtKoDkgpPXOqd45cr4Vf2KPCBquLBOjo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=in9L/OwxVLBeWYnkf8nGXvSJmViCoHW5+lzOtfOpf/PwuJqIUlGjqh1QGOQeYRzEf
+	 e8RtkjcnB5s8/M5RNO5OAeJkcLiraaToEUIwlJ4kmYdrDaY1e8GY40M3AOHAU9Um4K
+	 JbzvoN3HXduDPwuqh3jAVV7/k/IC3UeVMiRF4TQA=
+Date: Fri, 22 Mar 2024 17:31:37 +0100
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] sysctl: treewide: prepare ctl_table_root for
+ ctl_table constification
+Message-ID: <e4de72dc-8dad-4c57-85b3-174272bd1530@t-8ch.de>
+References: <CGME20240315181141eucas1p267385cd08f77d720e58b038be06d292e@eucas1p2.samsung.com>
+ <20240315-sysctl-const-ownership-v3-0-b86680eae02e@weissschuh.net>
+ <20240322124709.w5ntjwb5tbumltoy@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org> <20240322-hid-bpf-sleepable-v5-2-179c7b59eaaa@kernel.org>
-In-Reply-To: <20240322-hid-bpf-sleepable-v5-2-179c7b59eaaa@kernel.org>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 22 Mar 2024 17:30:46 +0100
-Message-ID: <CAP01T76oYpkNdgxXo+6v53afjObvYU4LWRLfkg2S7pNivzaEvg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/6] bpf/verifier: add bpf_timer as a kfunc
- capable type
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240322124709.w5ntjwb5tbumltoy@joelS2.panther.com>
 
-On Fri, 22 Mar 2024 at 15:57, Benjamin Tissoires <bentiss@kernel.org> wrote:
->
-> We need to extend the bpf_timer API, but the way forward relies on kfuncs.
-> So make bpf_timer known for kfuncs from the verifier PoV
->
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
->
-> ---
->
-> changes in v5:
-> - also check for the reg offset
->
-> changes in v4:
-> - enforce KF_ARG_PTR_TO_TIMER to be of type PTR_TO_MAP_VALUE
->
-> new in v3 (split from v2 02/10)
-> ---
->  kernel/bpf/verifier.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 63749ad5ac6b..24a604e26ec7 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10826,6 +10826,7 @@ enum {
->         KF_ARG_LIST_NODE_ID,
->         KF_ARG_RB_ROOT_ID,
->         KF_ARG_RB_NODE_ID,
-> +       KF_ARG_TIMER_ID,
->  };
->
->  BTF_ID_LIST(kf_arg_btf_ids)
-> @@ -10834,6 +10835,7 @@ BTF_ID(struct, bpf_list_head)
->  BTF_ID(struct, bpf_list_node)
->  BTF_ID(struct, bpf_rb_root)
->  BTF_ID(struct, bpf_rb_node)
-> +BTF_ID(struct, bpf_timer_kern)
->
->  static bool __is_kfunc_ptr_arg_type(const struct btf *btf,
->                                     const struct btf_param *arg, int type)
-> @@ -10877,6 +10879,12 @@ static bool is_kfunc_arg_rbtree_node(const struct btf *btf, const struct btf_par
->         return __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_RB_NODE_ID);
->  }
->
-> +static bool is_kfunc_arg_timer(const struct btf *btf, const struct btf_param *arg)
-> +{
-> +       bool ret = __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_TIMER_ID);
-> +       return ret;
-> +}
-> +
->  static bool is_kfunc_arg_callback(struct bpf_verifier_env *env, const struct btf *btf,
->                                   const struct btf_param *arg)
->  {
-> @@ -10946,6 +10954,7 @@ enum kfunc_ptr_arg_type {
->         KF_ARG_PTR_TO_NULL,
->         KF_ARG_PTR_TO_CONST_STR,
->         KF_ARG_PTR_TO_MAP,
-> +       KF_ARG_PTR_TO_TIMER,
->  };
->
->  enum special_kfunc_type {
-> @@ -11102,6 +11111,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
->         if (is_kfunc_arg_map(meta->btf, &args[argno]))
->                 return KF_ARG_PTR_TO_MAP;
->
-> +       if (is_kfunc_arg_timer(meta->btf, &args[argno]))
-> +               return KF_ARG_PTR_TO_TIMER;
-> +
->         if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
->                 if (!btf_type_is_struct(ref_t)) {
->                         verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
-> @@ -11735,6 +11747,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->                 case KF_ARG_PTR_TO_CALLBACK:
->                 case KF_ARG_PTR_TO_REFCOUNTED_KPTR:
->                 case KF_ARG_PTR_TO_CONST_STR:
-> +               case KF_ARG_PTR_TO_TIMER:
->                         /* Trusted by default */
->                         break;
->                 default:
-> @@ -12021,6 +12034,16 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->                         if (ret)
->                                 return ret;
->                         break;
-> +               case KF_ARG_PTR_TO_TIMER:
-> +                       if (reg->type != PTR_TO_MAP_VALUE) {
-> +                               verbose(env, "arg#%d doesn't point to a map value\n", i);
-> +                               return -EINVAL;
-> +                       }
-> +                       if (reg->off) {
-> +                               verbose(env, "arg#%d offset can not be greater than 0\n", i);
-> +                               return -EINVAL;
-> +                       }
+On 2024-03-22 13:47:09+0100, Joel Granados wrote:
+> On Fri, Mar 15, 2024 at 07:11:29PM +0100, Thomas Weißschuh wrote:
+> > The two patches were previously submitted on their own.
+> > In commit f9436a5d0497
+> > ("sysctl: allow to change limits for posix messages queues")
+> > a code dependency was introduced between the two callbacks.
+> > This code dependency results in a dependency between the two patches, so
+> > now they are submitted as a series.
+> > 
+> > The series is meant to be merged via the sysctl tree.
+> > 
+> > There is an upcoming series that will introduce a new implementation of
+> > .set_ownership and .permissions which would need to be adapted [0].
+> > 
+> > These changes ere originally part of the sysctl-const series [1].
+> > To slim down that series and reduce the message load on other
+> > maintainers to a minimum, the patches are split out.
+> > 
+> > [0] https://lore.kernel.org/lkml/20240222160915.315255-1-aleksandr.mikhalitsyn@canonical.com/
+> > [1] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-2-7a5060b11447@weissschuh.net/
+> > 
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > ---
+> > Changes in v3:
+> > - Drop now spurious argument in fs/proc/proc_sysctl.c
+> > - Rebase on next-20240315
+> > - Incorporate permissions patch.
+> > - Link to v2 (ownership): https://lore.kernel.org/r/20240223-sysctl-const-ownership-v2-1-f9ba1795aaf2@weissschuh.net
+> > - Link to v1 (permissions): https://lore.kernel.org/r/20231226-sysctl-const-permissions-v1-1-5cd3c91f6299@weissschuh.net
+> > 
+> > Changes in v2:
+> > - Rework commit message
+> > - Mention potential conflict with upcoming per-namespace kernel.pid_max
+> >   sysctl
+> > - Delete unused parameter table
+> > - Link to v1: https://lore.kernel.org/r/20231226-sysctl-const-ownership-v1-1-d78fdd744ba1@weissschuh.net
+> > 
+> > ---
+> > Thomas Weißschuh (2):
+> >       sysctl: treewide: drop unused argument ctl_table_root::set_ownership(table)
+> >       sysctl: treewide: constify argument ctl_table_root::permissions(table)
+> > 
+> >  fs/proc/proc_sysctl.c  | 2 +-
+> >  include/linux/sysctl.h | 3 +--
+> >  ipc/ipc_sysctl.c       | 5 ++---
+> >  ipc/mq_sysctl.c        | 5 ++---
+> >  kernel/ucount.c        | 2 +-
+> >  net/sysctl_net.c       | 3 +--
+> >  6 files changed, 8 insertions(+), 12 deletions(-)
+> > ---
+> > base-commit: a1e7655b77e3391b58ac28256789ea45b1685abb
+> > change-id: 20231226-sysctl-const-ownership-ff75e67b4eea
+> > 
+> > Best regards,
+> > -- 
+> > Thomas Weißschuh <linux@weissschuh.net>
+> > 
+> 
+> Will put this to test and then try to rebase it to 6.9-rc1 once it comes
+> out.
 
-This won't be correct. You don't really check whether the timer exists
-at reg->off (and if you did, this would still restrict it to 0 offset,
-and not check the variable offset which would be non-zero). What I
-would suggest is calling process_timer_func (see how dynptr calls the
-same underlying process_dynptr_func to enforce type invariants). This
-would allow sharing the same checks and avoid bugs from creeping in.
-It does all checks wrt constant/variable offset and looking up the
-timer field offset and matching it against the one in the pointer.
+Thanks!
+Your changes to the commit messages look good.
 
-> +                       break;
->                 }
->         }
->
->
-> --
-> 2.44.0
->
->
+For my other changes I'm planning to resubmit all of them during the
+weekend or next week.
+
+
+Thomas
 
