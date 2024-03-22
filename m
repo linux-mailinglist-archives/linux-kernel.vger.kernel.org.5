@@ -1,171 +1,83 @@
-Return-Path: <linux-kernel+bounces-110870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1787886508
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:10:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3031D886505
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15E8DB216B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:10:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DEA82851F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B256979CC;
-	Fri, 22 Mar 2024 02:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7561A38D7;
+	Fri, 22 Mar 2024 02:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="n2ww5tPe"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tp2U6+oe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF1E6ABA;
-	Fri, 22 Mar 2024 02:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A74C10FA;
+	Fri, 22 Mar 2024 02:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711073389; cv=none; b=LiBlWpb4jsmhdMuzLGIBkWcnhNUog+STOz/SI/UNSxg+n1/MImlGKHxlaEw05xOe/CYu+CgY2TPosk6xb3vluAYlxdp3mUCcDn5OLaWVIUS5DD9oO7xMS5++N8ZL7i7BibM/5tPtCVoeuHrJjpjfApKf15zMd5qn7rlbweevijA=
+	t=1711073384; cv=none; b=YC8GSmC92ra6b5xVSwGwnalyJjWEHt/1UNGXd5lC8bfGXsKVKJZqfLZdyQjTLt3rYsrSwoe1jEseL3ApxW4cMSRulfXvk/sFWWI6YKIFu8jHuuKlWZbQes5I2xD9cdHuTI+Wbl3awLkcMSup7eT9nMFAownkhvknV/3/N4TRVpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711073389; c=relaxed/simple;
-	bh=28UgqqrJiALHfXA47nVVHJe296bE4Shv43fdZnADgWk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nb+tRsSA0i/91KJL8cTQjOIAi4+QXy04UukP/OJACtZhcc+T3oe7DlObvIy3HcriD0FhHo4uElmPe9YuS4LpxsgU00HQoOAfP/mQ0gRCbu3OAfzvn3twI52vMnQjQb64LMGv5douq/uFcCa8Opjb2Lb82Z3PqAB6hmpYOaiS+QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=n2ww5tPe; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42M1QSSV022596;
-	Fri, 22 Mar 2024 02:09:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=vNsCjSi1j5/EI3nXw5S3bozjUYto7C8vDTz/nXtktDs=; b=n2
-	ww5tPeoLGgGSSRNUVmzWQm7ULj5aNL8OOuoGRfOcnEfCzUwbfXtbZ1lJgrMxHtIU
-	r9Q+xrQtscnDqHlk6UIUcgwxtKHE/OfWEiTUWvv5uWagDkGMfjuMzKP4MzUymRkr
-	mP+/V2DuMl17ze9BZVpy3JDNCSbAJzmGDsvROUXwmO0mGuJGDyEtt0NvJNgS+AkD
-	0kL2pOJhTRrG/S5dfU6dg7mhM28fD2Y3/YnbG+yGFrZQOP/hY0s8zvxuZ2wqJbDC
-	GtZu8FCQnl3GSFA2d34rjRw152i2Od4BFbDbECr5AE3AvIVZnI8j/lMedqo3zSGr
-	5SJAxRx9DICWUCJnL4Xg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x0wy9gch9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Mar 2024 02:09:37 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42M29bCc001189
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Mar 2024 02:09:37 GMT
-Received: from [10.231.195.68] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Mar
- 2024 19:09:35 -0700
-Message-ID: <87f0c6c9-43e5-4ea3-8f4c-9425e6a74b10@quicinc.com>
-Date: Fri, 22 Mar 2024 10:09:33 +0800
+	s=arc-20240116; t=1711073384; c=relaxed/simple;
+	bh=M9+buGGHVmbN+4X6XpKSvLDFMQ8s19IDF8A0yS4tJUI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mnvm5N4cAVTx3Arscoc2FdybWGNQAmsA4yMtiHaH8ANyilH5RAyMwnYwbF3PFpDyocmRe/8zSFl552f0CH7kPLrrfEZHhAZnB+lMCd6CxRJbh9g7NvcnHURYBPIgKMlTV1iECla+e4ml52HGZWTYfHi/4qUAZUpHzag9iwUP1FY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tp2U6+oe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66438C433F1;
+	Fri, 22 Mar 2024 02:09:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711073383;
+	bh=M9+buGGHVmbN+4X6XpKSvLDFMQ8s19IDF8A0yS4tJUI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tp2U6+oeUQLkvsxfCYuiGMcrs0zupHrf3kazneQj9/8dXWwVPTbQOYA3zv+Upxy9C
+	 gWrWgT04vVfQoN06P0SXnwsKzCaMrhhXd73xQeuduZcCAfk1NjuFjWS7wV/p80sEkf
+	 jST3+fPwcHTaSDl4dFXF/r2VwuyGaGv6YGohPpulGhkKXTKY72O7HrIU8xUy4jZoOL
+	 Rw8pXQhydJGnC9Zi9HCbfeuI9RcnIeWbGQlpEJkE5tDK0k7aFoUVFf0NgrO9kderwW
+	 1w24lQl9Z8OEw3twRZe5WEXxStah5Yq7vmRUxUZ6xs9uGUflCRIIZLfblahlzDRIEI
+	 yqoxEdXN/2jDw==
+Date: Thu, 21 Mar 2024 21:09:41 -0500
+From: Rob Herring <robh@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Matt Ranostay <matt@ranostay.sg>, devicetree@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: iio: health: maxim,max30102: add
+ max30101
+Message-ID: <171107337852.3410745.14506483547163918471.robh@kernel.org>
+References: <20240321-max30101-v1-0-00b83e966824@gmail.com>
+ <20240321-max30101-v1-1-00b83e966824@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: ath11k: workaround to use VMs
-Content-Language: en-US
-To: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>, <kvalo@kernel.org>,
-        <jjohnson@kernel.org>, <linux-wireless@vger.kernel.org>,
-        <ath11k@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240321172402.346191-1-jtornosm@redhat.com>
-From: Baochen Qiang <quic_bqiang@quicinc.com>
-In-Reply-To: <20240321172402.346191-1-jtornosm@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VZAIN0bIqX9dIjtMgGppOotNdHZwq3oQ
-X-Proofpoint-ORIG-GUID: VZAIN0bIqX9dIjtMgGppOotNdHZwq3oQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_14,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 spamscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2403220014
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321-max30101-v1-1-00b83e966824@gmail.com>
 
 
-
-On 3/22/2024 1:23 AM, Jose Ignacio Tornos Martinez wrote:
-> Currently, this driver is not working when the device is handled in a
-> Virtual Machine (PCI pass-through), as it was already reported here:
-> https://lore.kernel.org/all/fc6bd06f-d52b-4dee-ab1b-4bb845cc0b95@quicinc.com/T/
-> Baochen Qiang focused the problem and described how to have it working
-> for a specific real MSI vector from host that needs to be used in VM too.
-> And this value, as it was commented, can change.
+On Thu, 21 Mar 2024 19:33:48 +0100, Javier Carrasco wrote:
+> The Maxim max30101 irs the replacement for the max30105, which is no
+> longer recommended for future designs.
 > 
-> The problem seems complex to me and I don't know if there is any easy way
-> to solve it. Meanwhile and using the information from Baochen Qiang,
-> since the use of VMs is very interesting for testing procedures,
-> I would like to just add this workaround that consists on adding a
-> parameter to pass the real MSI vector from host to the VM. In that way,
-> checking the 'lscpi' command output from host, it could be handled manually
-> or with some user tool in order to have the VM with the driver working.
-> Of course, if this parameter is not configured (zero value and default),
-> we will have the same behavior as always.
+> The max30101 does not require new properties, and it can be described
+> with the existing ones for the max30105.
 > 
-> Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 > ---
->   drivers/net/wireless/ath/ath11k/pci.c | 20 ++++++++++++++++++++
->   1 file changed, 20 insertions(+)
+>  Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/wireless/ath/ath11k/pci.c b/drivers/net/wireless/ath/ath11k/pci.c
-> index be9d2c69cc41..0e322956b10f 100644
-> --- a/drivers/net/wireless/ath/ath11k/pci.c
-> +++ b/drivers/net/wireless/ath/ath11k/pci.c
-> @@ -31,6 +31,11 @@
->   
->   #define TCSR_SOC_HW_SUB_VER	0x1910010
->   
-> +static ulong ath11k_host_msi_addr = 0;
-> +module_param_named(host_msi_addr, ath11k_host_msi_addr, ulong, 0644);
-> +MODULE_PARM_DESC(host_msi_addr,
-> +		 "Workaround to configure the MSI address that is used from host in order to be used in VM");
-MSI vector contains two parts: the address and the data. So you need to 
-add a parameter for MSI data as well.
 
-> +
->   static const struct pci_device_id ath11k_pci_id_table[] = {
->   	{ PCI_VDEVICE(QCOM, QCA6390_DEVICE_ID) },
->   	{ PCI_VDEVICE(QCOM, WCN6855_DEVICE_ID) },
-> @@ -443,6 +448,18 @@ static int ath11k_pci_alloc_msi(struct ath11k_pci *ab_pci)
->   
->   	ath11k_pci_msi_disable(ab_pci);
->   
-> +	if (ath11k_host_msi_addr) {
-> +		ab_pci->ab->pci.msi.ep_base_data = 0;
-Here, I guess you are assigning 0 because I gave it in my example. But 
-it is not always that, it changes from machine to machine, configuration 
-to configuration, and even time to time.
+Acked-by: Rob Herring <robh@kernel.org>
 
-The right way should be to use the MSI data parameter mentioned above.
-
-> +		ab->pci.msi.addr_hi = (u32)(ath11k_host_msi_addr >> 32);
-> +		ab->pci.msi.addr_lo = (u32)(ath11k_host_msi_addr & 0xffffffff);
-> +
-> +		ath11k_dbg(ab, ATH11K_DBG_PCI, "msi addr hi 0x%x lo 0x%x base data is %d\n",
-> +			   ab->pci.msi.addr_hi,
-> +			   ab->pci.msi.addr_lo,
-> +			   ab->pci.msi.ep_base_data);
-> +		return 0;
-> +	}
-> +
->   	msi_desc = irq_get_msi_desc(ab_pci->pdev->irq);
->   	if (!msi_desc) {
->   		ath11k_err(ab, "msi_desc is NULL!\n");
-> @@ -482,6 +499,9 @@ static int ath11k_pci_config_msi_data(struct ath11k_pci *ab_pci)
->   {
->   	struct msi_desc *msi_desc;
->   
-> +	if (ath11k_host_msi_addr)
-> +		return 0;
-> +
->   	msi_desc = irq_get_msi_desc(ab_pci->pdev->irq);
->   	if (!msi_desc) {
->   		ath11k_err(ab_pci->ab, "msi_desc is NULL!\n");
 
