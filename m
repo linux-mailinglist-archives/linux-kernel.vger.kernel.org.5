@@ -1,73 +1,39 @@
-Return-Path: <linux-kernel+bounces-111230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C481188696C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:39:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 142E788696D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:39:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F740283CF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:39:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E9A1C216D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1498120DCC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D264B2230F;
 	Fri, 22 Mar 2024 09:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jVy5mMyf"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92605224ED
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2108A224F1
 	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711100376; cv=none; b=g/yF+An0ltJKDC+K/Atq4NKcXABRDcT2wx/efWuACTIzK/6IO4/E1LSwOobOz9JjYTSurcdh0LJG2hU8lcFxHIgwwZ4mMRyjdn0fsipjkNvS2tF1t1s1q4JMhaWBk7NlHMgoW0iZS1pZPMPGh6uhINm+T/eoloNkK6IB7bXgMok=
+	t=1711100377; cv=none; b=rQSlI3DuJFrr9cLthY3fI2iv5vHquV0dL47aV1RitR2+uO9D/AZBrUSUlL07xf6tmAwncq9+NZ0KT2+UM+YqeDRZcCMvGQ3pTRerod/g2fEWBwzqxtVLG2ZlasEp83BkQ9hQktUm18Ct4isr7sx/4fuypwipOwtHSKnJk18cEK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711100376; c=relaxed/simple;
-	bh=iKaGHu7VFDCljo+X/R+DU525M8eOtDFvQLYVkXGWhqI=;
+	s=arc-20240116; t=1711100377; c=relaxed/simple;
+	bh=OJoEnYOjFTP4CHdGTPSIyur2cVGQFbj8igAcc8O+R/0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AuGUp4WUgYFD+gJZYsfKQBgLC7PUVJdUQ106FX1ZGCAH2QXy4sByFiGcOGA4O01Z7jCWfuzeL/8zhYM/ObHBZ8siX+g/DquNEJOFN3MrvTu28A/6vf23G6CE+CzwWRrkZbBLX6SBS46S7aiBTSCxAmM34+cakR6RkWRVHAphWy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jVy5mMyf; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a46cca2a979so116031666b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 02:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711100373; x=1711705173; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iKaGHu7VFDCljo+X/R+DU525M8eOtDFvQLYVkXGWhqI=;
-        b=jVy5mMyf03ong1J59SH6krVcSb9h2IDh706zO7jaRQORnVimOxcg2bbPqGh4POyFVj
-         0oDtd+KQaM/Zr3RnTWCjV8KFdid1jr4+P1jL4GNowY7RH/0gsnQ/mNQIl9wQ7fDOMkuj
-         vH/A6mr3Jnyb+46eJFe6J49/McvQ02cpx1QK5uU/T8RKIKQ3IZ/Wfe2F0E+q+yq0kO5s
-         yWZXfRykVD/Kc7n3dGYZW5UNQa7rUA94OuE/vhbJLQKu0wVSClXL4tBtzJHimKD0/KHM
-         fPe19xoRrpBS02EqbahTFBDLK4il7QBBdVwgjGmIvJQoIGIMfG+N/g3VW1nZw5UGKm4z
-         VwHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711100373; x=1711705173;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iKaGHu7VFDCljo+X/R+DU525M8eOtDFvQLYVkXGWhqI=;
-        b=THQh7/tE5dCpiugEnPwMYsnqnS8rWIAcF27e02wvjxQcdOKaCK4Pdhh4wRBTU9ai2s
-         K21PreNIc0eqcsA2asjZhpKrvmNT7biwFE6zv6yhL6zoYx8VQ5Z9ke9T8aBHzRcS0EeD
-         uh5zf79qVtsJNbQyK727k0w1/odtmcml4s8eDaUstb/BSm1IksdCOEsraGohFpO15Ol8
-         9NXIH5d0+Lwea3pn4Pea1ilw6Y4kV/1p3FpkL8+sFefcGc92xKf/m8OG5F8HMJcGDPGE
-         Rw8cqIZlsRo9hUjzMA6lAijpeuuwPzFu9Lc5GKfZP5Ejoux96SfhIkCN+FqdF9dXtA5q
-         yI+g==
-X-Forwarded-Encrypted: i=1; AJvYcCW5uA9ScXeNRaDaX5ApnPwBmKcoM1ehYjZN6TKrtHgv1N0l1qVWEXGaS7c6SLLWlyPS0/C63VKJBtHGiplkSKcV69f06MzYB6IDJQG/
-X-Gm-Message-State: AOJu0Ywt1BxOS01KcqxSQEa2rwnUsP4Nurn0k4nuiEwQZAyhsk2bPymm
-	jRYHgmS24HbrwyenBOg2kTLRAqzdKW9VBzvyf1wKV+KjpfH7eHz5MVjBiep1gl8=
-X-Google-Smtp-Source: AGHT+IFdS/wNfVkgLAzNBLe3/39onavyj4PwvV6BXzaBahe1ih49oGZqJ0APqPhqlZak3M8FXBrluA==
-X-Received: by 2002:a50:8a84:0:b0:565:6e34:da30 with SMTP id j4-20020a508a84000000b005656e34da30mr1483570edj.21.1711100372846;
-        Fri, 22 Mar 2024 02:39:32 -0700 (PDT)
-Received: from [172.20.10.10] ([213.233.108.187])
-        by smtp.gmail.com with ESMTPSA id ek14-20020a056402370e00b00562d908daf4sm817450edb.84.2024.03.22.02.39.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 02:39:32 -0700 (PDT)
-Message-ID: <867158d7-0d98-4058-9c2e-6b573ec68516@linaro.org>
-Date: Fri, 22 Mar 2024 09:39:28 +0000
+	 In-Reply-To:Content-Type; b=TRyM5G9p8i6qAdQ0P8xDrb4gEw0jgQYVy9G28ZHCKURIybGmL+ci4OdQBitvM14rPpbSejedsKk5M4chsk9cO6TIiyn5IsMyrixqiJ2fB7OkJ9wQAUyG3wu501EwVREPKNF5wPANMX3O9InEa15MmHopx4OdCHUJpFR5ja7+m/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71DC51007;
+	Fri, 22 Mar 2024 02:40:08 -0700 (PDT)
+Received: from [10.57.72.175] (unknown [10.57.72.175])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1DD13F64C;
+	Fri, 22 Mar 2024 02:39:31 -0700 (PDT)
+Message-ID: <32ca7e47-4a85-4170-a34a-d007494cc262@arm.com>
+Date: Fri, 22 Mar 2024 09:39:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,46 +41,133 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] clk: samsung: exynos850: fix propagation of SPI IPCLK
- rate
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>,
- =?UTF-8?B?6rmA7J6s7JuQL0pBRVdPTiBLSU0=?= <jaewon02.kim@samsung.com>
-Cc: krzysztof.kozlowski@linaro.org, s.nawrocki@samsung.com,
- cw00.choi@samsung.com, alim.akhtar@samsung.com, mturquette@baylibre.com,
- sboyd@kernel.org, peter.griffin@linaro.org, andre.draszik@linaro.org,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- willmcvicker@google.com, kernel-team@android.com
-References: <20240229122021.1901785-1-tudor.ambarus@linaro.org>
- <20240229122021.1901785-5-tudor.ambarus@linaro.org>
- <CAPLW+4=jSr6ZsB7XekXsiUBm0SmVpVFnqpgjViuF3=HpT4gRAg@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4=jSr6ZsB7XekXsiUBm0SmVpVFnqpgjViuF3=HpT4gRAg@mail.gmail.com>
+Subject: Re: [PATCH v4 4/6] mm: swap: Allow storage of all mTHP orders
+Content-Language: en-GB
+To: "Huang, Ying" <ying.huang@intel.com>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <20240311150058.1122862-5-ryan.roberts@arm.com>
+ <87jzm751n3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <d6ac1097-2ca3-4e6d-902d-1b942cacf0fb@arm.com>
+ <8734skryev.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <b22a222b-7fd8-4648-84a7-21d35f529f27@arm.com>
+ <87plvnq9ap.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87plvnq9ap.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi, Sam!
+On 22/03/2024 02:39, Huang, Ying wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+>> On 21/03/2024 04:39, Huang, Ying wrote:
+>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>
+>>>> Hi Huang, Ying,
+>>>>
+>>>>
+>>>> On 12/03/2024 07:51, Huang, Ying wrote:
+>>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>> [...]
+>>>>
+>>>>>> @@ -905,17 +961,18 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+>>>>>>  	}
+>>>>>>  
+>>>>>>  	if (si->swap_map[offset]) {
+>>>>>> +		VM_WARN_ON(order > 0);
+>>>>>>  		unlock_cluster(ci);
+>>>>>>  		if (!n_ret)
+>>>>>>  			goto scan;
+>>>>>>  		else
+>>>>>>  			goto done;
+>>>>>>  	}
+>>>>>> -	WRITE_ONCE(si->swap_map[offset], usage);
+>>>>>> -	inc_cluster_info_page(si, si->cluster_info, offset);
+>>>>>> +	memset(si->swap_map + offset, usage, nr_pages);
+>>>>>
+>>>>> Add barrier() here corresponds to original WRITE_ONCE()?
+>>>>> unlock_cluster(ci) may be NOP for some swap devices.
+>>>>
+>>>> Looking at this a bit more closely, I'm not sure this is needed. Even if there
+>>>> is no cluster, the swap_info is still locked, so unlocking that will act as a
+>>>> barrier. There are a number of other callsites that memset(si->swap_map) without
+>>>> an explicit barrier and with the swap_info locked.
+>>>>
+>>>> Looking at the original commit that added the WRITE_ONCE() it was worried about
+>>>> a race with reading swap_map in _swap_info_get(). But that site is now annotated
+>>>> with a data_race(), which will suppress the warning. And I don't believe there
+>>>> are any places that read swap_map locklessly and depend upon observing ordering
+>>>> between it and other state? So I think the si unlock is sufficient?
+>>>>
+>>>> I'm not planning to add barrier() here. Let me know if you disagree.
+>>>
+>>> swap_map[] may be read locklessly in swap_offset_available_and_locked()
+>>> in parallel.  IIUC, WRITE_ONCE() here is to make the writing take effect
+>>> as early as possible there.
+>>
+>> Afraid I'm not convinced by that argument; if it's racing, it's racing - the
+> 
+> It's not a race.
+> 
+>> lockless side needs to be robust (it is). Adding the compiler barrier limits the
+>> compiler's options which could lead to slower code in this path. If your
+>> argument is that you want to reduce the window where
+>> swap_offset_available_and_locked() could observe a free swap slot but then see
+>> that its taken after it gets the si lock, that seems like a micro-optimization
+>> to me, which we should avoid if we can.
+> 
+> Yes.  I think that it is a micro-optimization too.  I had thought that
+> it is a common practice to use WRITE_ONCE()/READ_ONCE() or barrier() in
+> intentional racy data accessing to make the change available as soon as
+> possible.  But I may be wrong here.
 
-On 3/1/24 00:13, Sam Protsenko wrote:
-> I fail to see how this patch fixes anything. Instead it looks to me it
-> replaces the (already) correctly implemented logic with incorrect one.
+My understanding is that WRITE_ONCE() forces the compiler to emit a store at
+that point in the program; it can't just rely on knowing that it has previously
+written the same value to that location, it can't reorder the load to later in
+the program and it must store the whole word atomically so that no tearing can
+be observed. But given that swap_map is only ever written with the si lock held,
+I don't believe we require the first two of those semantics. It should be enough
+to know that the compiler has emitted all the stores (if it determines they are
+required) prior to the spin_unlock(). I'm not sure about the anti-tearing
+guarrantee.
 
-I opened another thread asking for feedback on whether it's safe to
-re-parent the USI MUX to OSCCLK at run-time, find it here:
-https://lore.kernel.org/linux-samsung-soc/71df1d6b-f40b-4896-a672-c5f0f526fb1f@linaro.org/T/#m588abb87eb5fd8817d71d06b94c91eb84928e06b
+Happy to be told I'm wrong here!
 
-Jaewon came up with the idea on verifying what the downstream clock
-driver does. I added some prints in the driver, and indeed the USI MUX
-re-parents to OSCCLK on low SPI clock rates in the GS101 case.
+> 
+>> By remnoving the WRITE_ONCE() and using memset, the lockless reader could
+>> observe tearing though. I don't think that should cause a problem (because
+>> everything is rechecked with under the lock), but if we want to avoid it, then
+>> perhaps we just need to loop over WRITE_ONCE() here instead of using memset?
+> 
+> IIUC, in practice that isn't necessary, because type of si->swap_map[]
+> is "unsigned char".  It isn't possible to tear "unsigned char".  
 
-Thus I'll respin this patch set fixing GS101 on low USI clock rates by
-re-parenting the USI MUX to OSCCLK. I'll leave exynos850 out if I don't
-hear back from you, but I think it deserves the same fix. Allowing SPI
-to modify the clock rate of HSI2C/I3C at run-time is bad IMO.
-Re-parenting the USI MUX to OSCCLK fixes this problem, HSI2C/I3C will no
-longer be affected on low SPI clock rates.
+In practice, perhaps. But I guess the compiler is free to update the char
+bit-by-bit if it wants to, if the store is not marked WRITE_ONCE()?
 
-Cheers,
-ta
+> In
+> theory, it may be better to use WRITE_ONCE() because we may change the
+> type of si->swap_map[] at some time (who knows).  I don't have a strong
+> opinion here.
+
+The way I see it, the precedent is already set; there are a number of places
+that already use memset to update swap_map. They are all under the si lock, and
+none use barrier(). If its wrong here, then its wrong in those places too, I
+believe.
+
+> 
+>>>>>> +	add_cluster_info_page(si, si->cluster_info, offset, nr_pages);
+>>>>>>  	unlock_cluster(ci);
+> 
+> --
+> Best Regards,
+> Huang, Ying
+
 
