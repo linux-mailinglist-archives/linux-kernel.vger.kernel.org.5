@@ -1,54 +1,65 @@
-Return-Path: <linux-kernel+bounces-111463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0730F886CB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:21:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D2F7886CB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0D991F22D77
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:20:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EF611C21A06
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4854945BF3;
-	Fri, 22 Mar 2024 13:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3CD46557;
+	Fri, 22 Mar 2024 13:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qq3mjn6v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SDIyjHHY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C91D44C89
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3351F46436;
+	Fri, 22 Mar 2024 13:21:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711113653; cv=none; b=UkHF97Ki1Lo3qv0ZGmXw3HY6h8dnJVFPHc3aNP7F5d3g6DJ8HaR3EClLt6AoE+p374RyJHnJgcQOjK1tSN2tghdBGjj5C3a/VxdMHBz0rp4894e8LKfSAdr6QwSJSFdKHLpfGV7v0QBtpxYueKhXV9bLRgFgbY1eZ0bl22AIKGg=
+	t=1711113684; cv=none; b=Jt3l9mnHhorap+AaUPRlSxU6i6Gp04VQwaOWxZ6efyRfHrIm7j0La3Blru46sL3pI2EXIkkZTCVBs2/Cvqi7NNa0QJJTdFx1TrDlBw+tb/ZzOiq53M/Eaodq3WTUxHIu8v3fJGa2kiL6I+ylAFuhMUgaDKV8yR3YmOOrR8nPX48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711113653; c=relaxed/simple;
-	bh=dhmhIvje5pxo5icHU70XN8P5F1o5mH5/DMloOr13o3A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QEz+REk7QJLB9FqAxj7gCtP2HiL5DBjHFvzpbEaEq7yL6LVIZbI1K7ACX/Kg6qSd3vU48F7j82bIKn7+guAE8xxBDvFe1N78lsL9EhHHTz9UsdmofnhEP6CK7CuwvCWkX7ijLF94Y6AyfATReeb+Du+4d96WB1mQHhNMyCp7x18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qq3mjn6v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A9C2C433F1;
-	Fri, 22 Mar 2024 13:20:51 +0000 (UTC)
+	s=arc-20240116; t=1711113684; c=relaxed/simple;
+	bh=jvyFcumM0Kgc3cvxmljqPEI3TA1ssaHzM5qXST5wFWU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GJkVKGaZKewCP/4D9+YKUBa3QgrhlA3MxM9/Kt2IVIogdVDnqk8GnQxKZmi+1rPuL7T1DQ+h8ulXUq34Vu6OYOq/j1WUuMG/bmstwvuSHzEIl22dJihhrCFdMpMEl5QVtC2IIqfqb/tMc7BaUDRsGPVL88UKyckLIfl+RiOW164=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SDIyjHHY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38A03C433A6;
+	Fri, 22 Mar 2024 13:21:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711113653;
-	bh=dhmhIvje5pxo5icHU70XN8P5F1o5mH5/DMloOr13o3A=;
+	s=k20201202; t=1711113683;
+	bh=jvyFcumM0Kgc3cvxmljqPEI3TA1ssaHzM5qXST5wFWU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=Qq3mjn6vj8RZWJYxfxxnpEvc+V64Pv2z1S7DaLBh2S95ywbixFJKMZi8eUqot7ise
-	 akn8sLWuI5u/riMOd2j+hmDYdSugsywayXQN11pf4YjegBDE13Ks7C4opHlJJ94sii
-	 kZ3dkDCjKBjvD7NLkxyQDzgFwccG8nAZA7fP/0pTskSed9Qrta3KrSbBSEFEHuTULt
-	 QWE+KhCk8vm0FCAv3F+uOqGGGcYfPuaQ9SazmOsz2PSiaweG/8xDi1FsvKtQOACjMv
-	 LIbGu8bgispM5m3wDkjOoZkZqERgKBkzjYZ2oC2voGB2RrdSIXbT19JbGnZwkngC6N
-	 JZvH0sfHImUrw==
+	b=SDIyjHHYzIzkM1ZxDVfDOZHT6vMxkUjSs4aE6DL1byMVyt+l9ZVvb56So8nucENaA
+	 PCTY15jtxyqPU6g5mgcvJGodAaiN+2fOjHh323i4WnkcJkBsEV7ZC+KNr/G5+U6gr5
+	 c/FOW+tZPpXXMPrqOUxDHc3ybQ5pLQ5aGCdcdy0dvN5QZ6nRoofp06wb1IYr6jiipF
+	 GujyavHdDLOPUjAzrNCI02AHdLyLHyWi1QCxjRwFk+JlV+HksHB8XD4P3jGVvbyfyh
+	 ST7nvBUKQx3qFnH9hi60KK2k9/3JqR9RGfdsP246vhWM45efhlJ97d+YyR9QN50rBo
+	 naQOrMhliewpQ==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Vinod Koul <vkoul@kernel.org>,
+	=?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Nathan Chancellor <nathan@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] irqflags: explicitly ignore lockdep_hrtimer_exit() argument
-Date: Fri, 22 Mar 2024 14:20:41 +0100
-Message-Id: <20240322132048.906325-1-arnd@kernel.org>
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Rob Herring <robh@kernel.org>,
+	Zhang Jianhua <chris.zjh@huawei.com>,
+	dmaengine@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-actions@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH] dmaengine: owl: fix register access functions
+Date: Fri, 22 Mar 2024 14:21:07 +0100
+Message-Id: <20240322132116.906475-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -60,32 +71,47 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When building with 'make W=1' but CONFIG_TRACE_IRQFLAGS=n, the
-unused argument to lockdep_hrtimer_exit() causes a warning:
+When building with 'make W=1', clang notices that the computed register
+values are never actually written back but instead the wrong variable
+is set:
 
-kernel/time/hrtimer.c:1655:14: error: variable 'expires_in_hardirq' set but not used [-Werror=unused-but-set-variable]
+drivers/dma/owl-dma.c:244:6: error: variable 'regval' set but not used [-Werror,-Wunused-but-set-variable]
+  244 |         u32 regval;
+      |             ^
+drivers/dma/owl-dma.c:268:6: error: variable 'regval' set but not used [-Werror,-Wunused-but-set-variable]
+  268 |         u32 regval;
+      |             ^
 
-This is intentional behavior, so add a cast to void to shut up the warning.
+Change these to what was most likely intended.
 
-Fixes: 73d20564e0dc ("hrtimer: Don't dereference the hrtimer pointer after the callback")
+Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA driver")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/irqflags.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/owl-dma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-index 147feebd508c..3f003d5fde53 100644
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -114,7 +114,7 @@ do {						\
- # define lockdep_softirq_enter()		do { } while (0)
- # define lockdep_softirq_exit()			do { } while (0)
- # define lockdep_hrtimer_enter(__hrtimer)	false
--# define lockdep_hrtimer_exit(__context)	do { } while (0)
-+# define lockdep_hrtimer_exit(__context)	do { (void)(__context); } while (0)
- # define lockdep_posixtimer_enter()		do { } while (0)
- # define lockdep_posixtimer_exit()		do { } while (0)
- # define lockdep_irq_work_enter(__work)		do { } while (0)
+diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
+index 4e76c4ec2d39..e001f4f7aa64 100644
+--- a/drivers/dma/owl-dma.c
++++ b/drivers/dma/owl-dma.c
+@@ -250,7 +250,7 @@ static void pchan_update(struct owl_dma_pchan *pchan, u32 reg,
+ 	else
+ 		regval &= ~val;
+ 
+-	writel(val, pchan->base + reg);
++	writel(regval, pchan->base + reg);
+ }
+ 
+ static void pchan_writel(struct owl_dma_pchan *pchan, u32 reg, u32 data)
+@@ -274,7 +274,7 @@ static void dma_update(struct owl_dma *od, u32 reg, u32 val, bool state)
+ 	else
+ 		regval &= ~val;
+ 
+-	writel(val, od->base + reg);
++	writel(regval, od->base + reg);
+ }
+ 
+ static void dma_writel(struct owl_dma *od, u32 reg, u32 data)
 -- 
 2.39.2
 
