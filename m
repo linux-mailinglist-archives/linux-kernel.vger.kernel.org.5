@@ -1,54 +1,74 @@
-Return-Path: <linux-kernel+bounces-111396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08BC2886BC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:00:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE8F886BEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8BB0285438
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:00:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62464B228D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304D03FB8E;
-	Fri, 22 Mar 2024 12:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D51D3FE4B;
+	Fri, 22 Mar 2024 12:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="MYVppFiD"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=mork.no header.i=@mork.no header.b="kkHOLx4B"
+Received: from dilbert.mork.no (dilbert.mork.no [65.108.154.246])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A8F3EA83;
-	Fri, 22 Mar 2024 12:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A727171C1;
+	Fri, 22 Mar 2024 12:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.108.154.246
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711108821; cv=none; b=GyKcxRbFTEV2bEa9YPHsqKYmdQS7Jlr5V0yoFG5tpydrQiW3Bl8XUyoq/hzt/BNqH7u3VCG42t10qDpLIwhxEwYjCJ7V8mMv4m/PpoPGeCIwIOL8dcj0eDxywkysFLunhi70eSZy1/AtXjeFkNsS4qdyVzRG9gdg5cNrGH2S4Dg=
+	t=1711109757; cv=none; b=X4K3DK/xN1ZxXfzavrWX0DrlWLLNGtaLhnE5SEiHOv3hF/JS3nn5te3mIWu1HaxBvQGUduNFHNciR6a2phLR7Ul9BTn/UmK/MAYqnlSZgrDOJJdQFL3v37cNv9C0Wm0vEYG2T5vxCCiIjS0Dm2dnfm1r8BDM5q/05GKBk4c2wMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711108821; c=relaxed/simple;
-	bh=jDhCT7dJ9tH0LwY9EC0UdWhXPwXS80zRmC0TNEUs6/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gkSUTjqGHEXHiaKppuLPJb6WFFoNNY72kD2Ojb9aROgG7nPTowbCeduMW0MbSvj7+Boh61qNoxxpvxxNXeVyB4a9kmhMi10rTBZOblgDMdSg8gTjrBvCcrISk8xiX87GdcjmTCWXooO4D66elYNqNs7FP8WMFfGMI2bsA6Q1hrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=MYVppFiD; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9416B8CC;
-	Fri, 22 Mar 2024 12:59:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711108789;
-	bh=jDhCT7dJ9tH0LwY9EC0UdWhXPwXS80zRmC0TNEUs6/c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MYVppFiDvrieB9bi/On5r+xzbJqi5hHDrBsIaL+C0BYJ5+2Jyc43bdnah7mq3X9Z4
-	 mMN+lSXO4zEIFOHc0OZS39Fa6qdGjXZlxzPJhtiz255dotoMkRObfIyb5Ru+XP5ROH
-	 afoCqSZmyOXYNpzGmOHw294UkIdnp3kOx+JfcTNE=
-Date: Fri, 22 Mar 2024 14:00:14 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Yunke Cao <yunkec@google.com>
-Subject: Re: [PATCH v2] media: uvcvideo: Fix power line control for
- Shine-Optics Camera
-Message-ID: <20240322120014.GC31979@pendragon.ideasonboard.com>
-References: <20240108-shine-v2-1-ddff959dab89@chromium.org>
+	s=arc-20240116; t=1711109757; c=relaxed/simple;
+	bh=JWlzNTdBPfHAxnqkWziniLXSJYrdVDBFRm2ImvbfiSc=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=QGYzJW/eckdZfrNWiZpOEvmNdIH861cyuvHEVJPnTyNr7JBWM6vxinv81vPg/s7LsvAR6mjbtCmEIYerU+0JHmNfojbLXnn+RtL/jvhhCjt+UmZ1xYZ+72P+GowrxKcACKSt85o4X+J6C09PLHWo9EV+21KgMd2iZZunz049AUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mork.no; spf=pass smtp.mailfrom=miraculix.mork.no; dkim=pass (1024-bit key) header.d=mork.no header.i=@mork.no header.b=kkHOLx4B; arc=none smtp.client-ip=65.108.154.246
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mork.no
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=miraculix.mork.no
+Received: from canardo.dyn.mork.no ([IPv6:2a01:799:10da:6900:0:0:0:1])
+	(authenticated bits=0)
+	by dilbert.mork.no (8.17.1.9/8.17.1.9) with ESMTPSA id 42MC0OpO490219
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Fri, 22 Mar 2024 12:00:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+	t=1711108824; bh=v1Mw2t0DHAqma4CLFbfsRIpr8UUgEMDDKtBpdTfFWZo=;
+	h=From:To:Cc:Subject:References:Date:Message-ID:From;
+	b=kkHOLx4BY4hrINWm3v7suVdWXoyKOo9sC95WCxewPn7sSlV7Lq/GGm9SGPg3uiBu6
+	 0nNN2clcjmde6NDBXGWgN15PezfcHA8pRYU6YjCp3/aGAwS6dK28zDcMkHrzxtmheO
+	 5wldMRSxgX0W4n+7aPuuNQ47As7rQfhSMrfuheVM=
+Received: from miraculix.mork.no ([IPv6:2a01:799:10da:690a:d43d:737:5289:b66f])
+	(authenticated bits=0)
+	by canardo.dyn.mork.no (8.17.1.9/8.17.1.9) with ESMTPSA id 42MC0N8w3345610
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Fri, 22 Mar 2024 13:00:23 +0100
+Received: (nullmailer pid 1671577 invoked by uid 1000);
+	Fri, 22 Mar 2024 12:00:22 -0000
+From: =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To: Liviu Dudau <liviu@dudau.co.uk>
+Cc: Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+        Haijun Liu <haijun.liu@mediatek.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: net: wwan: t7xx: BUG: Unaligned access when loading mtk_t7xx
+ module
+Organization: m
+References: <Zfxlj3pYUk4ys47T@bart.dudau.co.uk>
+Date: Fri, 22 Mar 2024 13:00:22 +0100
+In-Reply-To: <Zfxlj3pYUk4ys47T@bart.dudau.co.uk> (Liviu Dudau's message of
+	"Thu, 21 Mar 2024 16:51:27 +0000")
+Message-ID: <87il1ezdbd.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,80 +76,24 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240108-shine-v2-1-ddff959dab89@chromium.org>
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 1.0.3 at canardo
+X-Virus-Status: Clean
 
-Hi Ricardo,
+Liviu Dudau <liviu@dudau.co.uk> writes:
 
-Thank you for the patch.
+>  I had a
+> go at guessing that UL registers are at 0x8 and 0x48 offsets and DL
+> registers are at 0x0478 and 0x04b8, but while that fixes the alignment
+> exception, I now get a "CLDMA{0,1} queue 0 is not empty" message.
 
-On Mon, Jan 08, 2024 at 02:04:16PM +0000, Ricardo Ribalda wrote:
-> The device does not implement the power line frequency control
-> correctly. It is a UVC 1.5 device, but implements the control as a UVC
-> 1.1 device.
-> 
-> Add the corresponding control mapping override.
-> 
-> Bus 003 Device 002: ID 3277:009e Shine-Optics Integrated Camera
-> Device Descriptor:
->   bLength                18
->   bDescriptorType         1
->   bcdUSB               2.01
->   bDeviceClass          239 Miscellaneous Device
->   bDeviceSubClass         2
->   bDeviceProtocol         1 Interface Association
->   bMaxPacketSize0        64
->   idVendor           0x3277
->   idProduct          0x009e
->   bcdDevice            0.01
->   iManufacturer           3 Shine-Optics
->   iProduct                1 Integrated Camera
->   iSerial                 2 0001
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+I don't think you can assume the register offsets are wrong.  It looks
+more like the device doesn't care about alignment.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+But given that the driver includes <linux/io-64-nonatomic-lo-hi.h>, you
+can probably replace those unaligned 64bit accesses with two nonatomic
+32bit accesses.
 
-> ---
-> Changes in v2:
-> - Fix camera name in subject
-> - Link to v1: https://lore.kernel.org/r/20240108-shine-v1-1-9d7b03a1a901@chromium.org
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 08fcd2ffa727..ceca1addd7e0 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -3012,6 +3012,15 @@ static const struct usb_device_id uvc_ids[] = {
->  	  .bInterfaceSubClass	= 1,
->  	  .bInterfaceProtocol	= 0,
->  	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_limited },
-> +	/* Shine-Optics Integrated Camera */
-> +	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-> +				| USB_DEVICE_ID_MATCH_INT_INFO,
-> +	  .idVendor		= 0x3277,
-> +	  .idProduct		= 0x009e,
-> +	  .bInterfaceClass	= USB_CLASS_VIDEO,
-> +	  .bInterfaceSubClass	= 1,
-> +	  .bInterfaceProtocol	= UVC_PC_PROTOCOL_15,
-> +	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_uvc11 },
->  	/* Acer EasyCamera */
->  	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
->  				| USB_DEVICE_ID_MATCH_INT_INFO,
-> 
-> ---
-> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-> change-id: 20240108-shine-06c600d17a2a
-> 
-> Best regards,
-> -- 
-> Ricardo Ribalda <ribalda@chromium.org>
-> 
 
--- 
-Regards,
-
-Laurent Pinchart
+Bj=C3=B8rn
 
