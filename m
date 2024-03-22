@@ -1,145 +1,136 @@
-Return-Path: <linux-kernel+bounces-111806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A471887140
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D2265887142
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1999D1F225B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:51:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 726D61F238FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E035DF3B;
-	Fri, 22 Mar 2024 16:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A4E5FBA5;
+	Fri, 22 Mar 2024 16:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mvwRa8y8"
-Received: from mail-oa1-f66.google.com (mail-oa1-f66.google.com [209.85.160.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NxlmZODE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963DE5674C;
-	Fri, 22 Mar 2024 16:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C525FB86;
+	Fri, 22 Mar 2024 16:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711126251; cv=none; b=ICf4M0iS91CF60xBVRBTSxMtNN7aB0gwji4gH1HpygOs4QsrNx95y0hsQcF4tyVG9NxDzI8hNATI/nXsUHExklLh6A/fKhxwuTdMpBMEbwN7u0H9/inNC5toiTHtOK8yc4XwtosZ0V8BiD7v5mC3FIljTQO20P4Z2jm3hCGyFRM=
+	t=1711126319; cv=none; b=D7kIaEeCpyePlpejLxo3xXIXXgVTqwJnNYi8rOfL1V+L1GZCvrL+/PDAwOVOnKniOTahppl+V/w14DjEZLg4KoQ/KabIwuPTlwAAZ4FVHY3yPwhRnQCuYECW46zlEtlpcDDUHEBTroH/cz9ML36H0pB4ozPhl4ogDw3sjUsmLJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711126251; c=relaxed/simple;
-	bh=zWVaHDgjOuHVfjlI/i15WMIyLZ98z083v88nOntCkzE=;
+	s=arc-20240116; t=1711126319; c=relaxed/simple;
+	bh=lE+j9KmSnjltzBjQCfhK7TmKOK+5AHSKNREDslpxLpU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P7khhA9i2mQ5iZ7ptcIZdkRHgsyUtUp3Byofhi81Qr+73ChhOi3UaxjfBQ9IZc9Qeo0NcguMKHRjkgdZEE5xg7eRyxqpgInvDJBZNbIWMFzZqlvNedmbBve47JUgewTnEzRf+sKlS29FJgRAV0/6bnwjU72vF7w7GfW4g9IEv8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mvwRa8y8; arc=none smtp.client-ip=209.85.160.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f66.google.com with SMTP id 586e51a60fabf-221e76cad07so1447972fac.0;
-        Fri, 22 Mar 2024 09:50:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711126248; x=1711731048; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IMFU2MbnOsDAXDgvuXOEwtIjtmzVMSKHwsLZ0yMQ728=;
-        b=mvwRa8y8y0NVCZQTP6gYYfL2NdtzJDBAszJKffHH2YUiClTQGqOc4A7sJCPL61vwFa
-         z4PToPUrBUUDrnF+APL75PiEC1ITnc5R5mDLijFRhQ3uwnBGoZXJIwGOavBZXSaS4ejD
-         SpcvzKWPDQaj4cO9ZlnXJv9PGhxJUQyVOkBlRtwkc+k9vlV9FYpkm94dWrEeGoy+R4rn
-         OEtG6oR7qji5iF/3NBZ2eu+yXAEjJZvY9S0zUPMJJ7K8hAVRNz5oT6cScVPErrxfTk3b
-         1Ms9zj9ZjcubL+BRApkOR1Ura0h0w54rJys7J3y+TP/xalGkttS3FBIaPXQAjt3fX5/p
-         /xbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711126248; x=1711731048;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IMFU2MbnOsDAXDgvuXOEwtIjtmzVMSKHwsLZ0yMQ728=;
-        b=tnBbXGiMUIrYpBFRR1FCrbJmtQw7nBLZaxD2fSkwFoMMmJjMJ3HwVNbAJmcyO3MvWS
-         sM5eJ32dt8v6/J6oBVu/WrqTzPezrppidA3vMYpM++CdH6KciVysm+2AbcashsQ4Ovxo
-         yW51nfT0MfVwgRok/I74qCmU6aPe2hv8XvyybGPSfVYiPqbE1bybCNyDHEyXe08Qry/a
-         dry/OqcatJ7l7tFAeBu4979y6uMH6w708KEqjqLuYaJKoI0RPnnCnpbQ4lf2x5OLveAq
-         k8+w/7P44IzGxauH0gG1Os/cpl2oFMq7E7t2bSmwHUSmJ3C61L7A6J6fOu2psCBEd5+s
-         17hg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3U2JZrFi+3ZV3WoudLu2vis1Un1wQzzidnHqQlFh2ATdruRfs36tLZjYh5+kvYQFMwxgk23b3v60FsIZwPVHC2hzP5lGMPU5tUW0Uoa1bgODczvXblNzmmPXGpA4evHb7XqBKW1/WY2odLGYKmNzn1atltaHvzbl54plPP6QkZs5L
-X-Gm-Message-State: AOJu0Ywcrsq8mqsZP7OIGEtlFApCeuYCXa+aN3YWJT7Kak2LKvNLPuHQ
-	C9yv0xXv7fYvAmR7U1WkNVCJzNMhkioR0ZGAeAjPmSgbS++F8h/MbjNmNI9+A+q6yjuzJdNGLoY
-	5D0WYQlh87M45lwcR95x2ppfhNI0=
-X-Google-Smtp-Source: AGHT+IGPOoEEYRbtKYoZlOJzHAn0rx0HGoNUpSFoPMOl2wuDeaJmXaacZVSR2+zxC3yP7RBZl0VWSvbJ/3xnqjcqyb8=
-X-Received: by 2002:a05:6870:332a:b0:229:b0b5:a3db with SMTP id
- x42-20020a056870332a00b00229b0b5a3dbmr63284oae.3.1711126248523; Fri, 22 Mar
- 2024 09:50:48 -0700 (PDT)
+	 To:Cc:Content-Type; b=OZV4nkhVeVMThkGm0HCdJ/mHb7gBN9N+iOkZIWWVjltE1I9MAFaE+zw8gAXxrL3EOLFIP/kJP8LtxaHXIHvcjDwR1+Id/wo81GTccV4Ql7GT2NHu3iozbCnS/FXsvWIVC3fjsHMj9q49y+2g359S/tYVYBkKKb/nhck0IVjh9YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NxlmZODE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B04AC433B1;
+	Fri, 22 Mar 2024 16:51:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711126319;
+	bh=lE+j9KmSnjltzBjQCfhK7TmKOK+5AHSKNREDslpxLpU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NxlmZODEEA0ISb7ievayKFW0t96UaeZconP+faJmHR9A0TeQjfHBdohc5UI5rtjW8
+	 87eAbnW8X+9elu9p+o/j/Og0NeeqdBEJuc8ijaWzoXAvKGqy9MlMpUeHTg8dMVQH+p
+	 wod7/zlDWxJEBNLVgYjMoMGbHHyKY1DBX3H+HveCzZ7q8JOiIf8bW+7EvOSMwfLdg+
+	 lPz+LesocOyBQPZhrlV2tXvwc4jeUHlZkhC7QB6S3ujQQVz/jhzoVcEkFFVCLPR+nC
+	 wagd+8ZW6e1RNcvf4WFOe0C1uzf7cQPUUDSn8BOxwkgf6asx7/XL22YDjfVczey5Zf
+	 BOaXs+/pdcZGg==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51588f70d2dso2725202e87.3;
+        Fri, 22 Mar 2024 09:51:59 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWUv9d60lO/+jsoYDCXMutjYw7vKmbNcZlkG6Mg+gAtA89CbYYjohXbK659WnbG0m11uWfHRx7qAT+PL+2UPjdcErfNn2m5DR13//Ev6k/KTIrAIVG2ghaEFXuEe1K1Lz8FjlKy2B/x
+X-Gm-Message-State: AOJu0Yx4xoTmEHndvEfRJaPEg8aLaIGMTZ9+oSYIHgSPx0Svc1Edz434
+	9ATxAnUIqYcbEIdrRNhVl9jWqBoyQM6Z4lZflMW48TzGs4O1hVackySYrv4H5F6ZPuoiPSX3CA6
+	jnx31KtmXdwv7YuG37kzLFhrbwzY=
+X-Google-Smtp-Source: AGHT+IEZsoLGEBUw8HqAozJH8a40krnMcztaIt8FfqJgaMyd5W2p+IJDw4vv0XGWJS29LGQ4L0XJs/l7n89iFIg5d+8=
+X-Received: by 2002:ac2:5bc5:0:b0:513:c28e:8215 with SMTP id
+ u5-20020ac25bc5000000b00513c28e8215mr1985077lfn.64.1711126317477; Fri, 22 Mar
+ 2024 09:51:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org> <20240322-hid-bpf-sleepable-v5-3-179c7b59eaaa@kernel.org>
-In-Reply-To: <20240322-hid-bpf-sleepable-v5-3-179c7b59eaaa@kernel.org>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Fri, 22 Mar 2024 17:50:11 +0100
-Message-ID: <CAP01T74+naPau2_=1G2_TUSjY_ZCAWQ2XVBKxs9xSKHobZcEeQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/6] bpf/helpers: introduce
- bpf_timer_set_sleepable_cb() kfunc
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+References: <20240321150510.GI8211@craftyguy.net> <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+ <20240321170641.GK8211@craftyguy.net> <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
+ <20240322091857.GM8211@craftyguy.net>
+In-Reply-To: <20240322091857.GM8211@craftyguy.net>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 22 Mar 2024 18:51:46 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
+Message-ID: <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
+Subject: Re: x86_64 32-bit EFI mixed mode boot broken
+To: Clayton Craft <clayton@craftyguy.net>
+Cc: Hans de Goede <hdegoede@redhat.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-efi@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 22 Mar 2024 at 15:57, Benjamin Tissoires <bentiss@kernel.org> wrote:
+On Fri, 22 Mar 2024 at 18:19, Clayton Craft <clayton@craftyguy.net> wrote:
 >
-> In this patch, bpf_timer_set_sleepable_cb() is functionally equivalent
-> to bpf_timer_set_callback(), to the exception that it enforces
-> the timer to be started with BPF_F_TIMER_SLEEPABLE.
+> On Fri, 22 Mar 2024 13:52:05 +0100 Ard Biesheuvel <ardb@kernel.org> wrote:
+> > That depends on the bootloader. One of the changes around that time is
+> > the introduction of this Kconfig symbol: before that, the EFI handover
+> > protocol was always supported but now it can be compiled out. So the
+> > safe choice is to enable it.
 >
-> But given that bpf_timer_set_callback() is a helper when
-> bpf_timer_set_sleepable_cb() is a kfunc, we need to teach the verifier
-> about its attached callback.
-> Marking that callback as sleepable will be done in a separate patch
->
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
->
-> ---
-> [...]
->
-> @@ -19548,6 +19582,28 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->                    desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
->                 insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
->                 *cnt = 1;
-> +       } else if (is_bpf_timer_set_sleepable_cb_impl_kfunc(desc->func_id)) {
-> +               /* The verifier will process callback_fn as many times as necessary
-> +                * with different maps and the register states prepared by
-> +                * set_timer_callback_state will be accurate.
-> +                *
-> +                * The following use case is valid:
-> +                *   map1 is shared by prog1, prog2, prog3.
-> +                *   prog1 calls bpf_timer_init for some map1 elements
-> +                *   prog2 calls bpf_timer_set_callback for some map1 elements.
-> +                *     Those that were not bpf_timer_init-ed will return -EINVAL.
-> +                *   prog3 calls bpf_timer_start for some map1 elements.
-> +                *     Those that were not both bpf_timer_init-ed and
-> +                *     bpf_timer_set_callback-ed will return -EINVAL.
-> +                */
-> +               struct bpf_insn ld_addrs[2] = {
-> +                       BPF_LD_IMM64(BPF_REG_3, (long)env->prog->aux),
-> +               };
-> +
-> +               insn_buf[0] = ld_addrs[0];
-> +               insn_buf[1] = ld_addrs[1];
-> +               insn_buf[2] = *insn;
-> +               *cnt = 3;
->         }
+> I am using systemd-boot, and based on my understanding of its source it seems to
+> only use handover on old kernels that don't support LINUX_INITRD_MEDIA_GUID.
 
-Would be better to handle the fixup of all kfuncs in one place, i.e.
-fixup_kfunc_call.
+That does ring a bell. So that means you must be using the .compat
+entry point, which is what 32-bit OVMF uses too.
 
->         return 0;
->  }
+> >
+> > However, while looking more deeply into this, I noticed that we are
+> > running quite low own stack space. Mixed mode is different because it
+> > calls into the boot services using the decompressor's boot stack,
+> > rather than using the one that was provided by firmware at entry.
+> > (Note that the UEFI spec mandates 128k of stack space)
+> >
+> > In my case, I bisected the regression to
+> >
+> > commit 5c4feadb0011983bbc4587bc61056c7b379d9969 (HEAD)
+> > Author: Ard Biesheuvel <ardb@kernel.org>
+> > Date:   Mon Aug 7 18:27:16 2023 +0200
+> >
+> >     x86/decompressor: Move global symbol references to C code
+> >
+> > which moves the boot stack into a different memory region. Formerly,
+> > we'd end up at the far end of the heap when overrunning the stack but
+> > now, we end up crashing. Of course, overwriting the heap can cause
+> > problems of its own, so we'll need to bump this in any case.
+> >
+> > Could you give this a try please?
+> >
+> >
+> > --- a/arch/x86/include/asm/boot.h
+> > +++ b/arch/x86/include/asm/boot.h
+> > @@ -38,7 +38,7 @@
+> >  #endif
+> >
+> >  #ifdef CONFIG_X86_64
+> > -# define BOOT_STACK_SIZE       0x4000
+> > +# define BOOT_STACK_SIZE       0x10000
+> >
+> >  /*
+> >   * Used by decompressor's startup_32() to allocate page tables for identity
 >
-> --
-> 2.44.0
+> Just gave this a try, on 6.1.82, and the system still reboots after selecting
+> the kernel in the bootloader. So it seems like my problem is different.
 >
+
+Yeah, it was a long shot.
+
+> As I mentioned initially, I bisected my failure to e2ab9eab32. Does that give
+> any hint about what might be the problem?
 >
+
+Not at all, unfortunately. What we might try is to back out the
+changes step by step. I can prepare a branch for you if you like.
 
