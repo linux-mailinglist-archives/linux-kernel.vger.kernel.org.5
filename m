@@ -1,169 +1,90 @@
-Return-Path: <linux-kernel+bounces-111432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E60B1886C4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:40:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1878886C50
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:41:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 161E61C22EB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:40:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D7AC288225
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87BD46441;
-	Fri, 22 Mar 2024 12:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F2D3FB85;
+	Fri, 22 Mar 2024 12:41:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mVGCCVpJ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="hMA50/00"
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C264502B;
-	Fri, 22 Mar 2024 12:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ADFE446A0
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711111224; cv=none; b=Q3x/TQ0fQ05sJgJSqIe5rtQ+q9TWBISOu5yTSrWCT9d3PmDZoa1fiqQJBp+3MvI+RjR+Xl5++ge4QpA+Po9I0Y0C/XSuTxuacm1mnmb9f18jYZ3R/99xKKeh4UV7QgSq92aMazr7QQf+HA6k96wvtM6u474nQifRgZy3n+L5XrY=
+	t=1711111291; cv=none; b=TaGkgm2o96CG98E/dNY49K1J6kUNEEl9N+1fN4ojgSo5V+l/C5RU1Hv0JQ8xYjTp/mo0LZEE8JBfubk06oVp3LWkIe4B5SbZHihyHgApKqgucYVoMkoByjxSOfWjTaJtdODpV/Nxx3u+xDvKQ9CgN+X9Ego2gdiIDgk+L6t09KE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711111224; c=relaxed/simple;
-	bh=rKJH0cMhl2rdDAcqYQpxuR3bOt42lSv3aYu8/7XXITc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CNOZLtNe8vDDqfS8FAS32kBx0MZ3w8Z9Jjdnti3szg3LDtzSOM5d5dXhPH88Bef7JObLTNOpu65JvsTaNlUow3jGf87HZzz1A0g+EwXfLVlFPNl9GWwYuHRKnoJ3vVqSH264Qf4PnV0+i2WSA9AtOFRtdbhBg7AfVINuTqx79/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mVGCCVpJ; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711111222; x=1742647222;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rKJH0cMhl2rdDAcqYQpxuR3bOt42lSv3aYu8/7XXITc=;
-  b=mVGCCVpJwL6F0UPaMdvALMB0sfLdvpNmyRmK19/fBUlhn/YiQwadV7Mj
-   bN09BOIT08nT09FlI3xDnsiU/su/BOlb4XnEBb2NaR95/8af0glLffYAe
-   h51Y9wfRdijIApTaJviuEe1D6eQC05eNESEpqV9XRED/1Suy1oVbzcRME
-   6/JeB9XLXxzTnGsRkUwZZp603vK5mKYPzG10hoXMibk3pnMbTJCoCZw5m
-   YUbrwp+lK073nEkVrWSoZ3WJt4pxSONg30QAn/6PMBjpwLBmwQfVx0vUS
-   imL5+gp/nQTbnNp+RpRFbYaoRP6K643GXQlBAEnp4RjfIv9ow8Ff5wcf9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6011690"
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="6011690"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:40:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="15325388"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.18])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:40:20 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 2/2] PCI/ASPM: Cleanup ASPM disable/enable mask calculation
-Date: Fri, 22 Mar 2024 14:39:52 +0200
-Message-Id: <20240322123952.6384-3-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240322123952.6384-1-ilpo.jarvinen@linux.intel.com>
-References: <20240322123952.6384-1-ilpo.jarvinen@linux.intel.com>
+	s=arc-20240116; t=1711111291; c=relaxed/simple;
+	bh=3Je8w2bAEmEHX1T7e/jY+IL0n4dVZyCdK5mweC9BXJA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n6Ik67isztT7wBTzSpXD1+5IyGVzEBJZnilM51tE9ykzbVufL3MYjrA12ELBtMa7y3SC5g7CxQPqJlIecm5040Wt+jowLwxbAUlVu6wSAzxfIagWFs7ldawIp5Gb7lZwL9ICD+dUFwUUUfTnqKQNbYC8Am1KmS7LF6IQklvSemo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=hMA50/00; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711111285; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=xAE0vYbfun0EnTckxuzzM5D85GyEmtWY8TOlqPzbd/Y=;
+	b=hMA50/00zeA21SJQUWwZxZTPiC/PUTtGo7apBlhDHTNBGhbI34Ih1WLuWS6rpoICll+Ft257bZ79l+VMvHNoIRvogm/uhqzR/Hvtsd4kQruyq0Yu7zNX33Xlvzch68401Q+QAaDjSLXObbvbROe4X8mdGscYxJxtHwJfa2dM25I=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W327Cer_1711111284;
+Received: from 30.221.128.129(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0W327Cer_1711111284)
+          by smtp.aliyun-inc.com;
+          Fri, 22 Mar 2024 20:41:25 +0800
+Message-ID: <23f6cc23-9f9b-405b-8c8e-5cda14e79587@linux.alibaba.com>
+Date: Fri, 22 Mar 2024 20:41:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] fs: Add kernel-doc comments to
+ ocfs2_prepare_orphan_dir()
+Content-Language: en-US
+To: Yang Li <yang.lee@linux.alibaba.com>, akpm <akpm@linux-foundation.org>
+Cc: ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240322063718.88183-1-yang.lee@linux.alibaba.com>
+From: Joseph Qi <joseph.qi@linux.alibaba.com>
+In-Reply-To: <20240322063718.88183-1-yang.lee@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-With only one set of defines remaining, state can be almost used as is
-to set ->aspm_disable/default. Only CLKPM and L1 PM substates need
-special handling.
 
-Remove unnecessary if conditions that can use the state variable bits
-directly. Move the ASPM mask calculation code into
-pci_calc_aspm_{disable,enable}_mask() helpers which makes it easier to
-alter state variable directly.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- drivers/pci/pcie/aspm.c | 51 +++++++++++++++++++----------------------
- 1 file changed, 24 insertions(+), 27 deletions(-)
+On 3/22/24 2:37 PM, Yang Li wrote:
+> This commit adds kernel-doc style comments with complete parameter
+> descriptions for the function ocfs2_prepare_orphan_dir.
+> 
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index 505af49f48de..14d13fc519d8 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -1323,6 +1323,28 @@ static struct pcie_link_state *pcie_aspm_get_link(struct pci_dev *pdev)
- 	return bridge->link_state;
- }
- 
-+static u8 pci_calc_aspm_disable_mask(int state)
-+{
-+	state &= ~PCIE_LINK_STATE_CLKPM;
-+
-+	/* L1 PM substates require L1 */
-+	if (state & PCIE_LINK_STATE_L1)
-+		state |= PCIE_LINK_STATE_L1SS;
-+
-+	return state;
-+}
-+
-+static u8 pci_calc_aspm_enable_mask(int state)
-+{
-+	state &= ~PCIE_LINK_STATE_CLKPM;
-+
-+	/* L1 PM substates require L1 */
-+	if (state & PCIE_LINK_STATE_L1SS)
-+		state |= PCIE_LINK_STATE_L1;
-+
-+	return state;
-+}
-+
- static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool locked)
- {
- 	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
-@@ -1345,19 +1367,7 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool locked
- 	if (!locked)
- 		down_read(&pci_bus_sem);
- 	mutex_lock(&aspm_lock);
--	if (state & PCIE_LINK_STATE_L0S)
--		link->aspm_disable |= PCIE_LINK_STATE_L0S;
--	if (state & PCIE_LINK_STATE_L1)
--		/* L1 PM substates require L1 */
--		link->aspm_disable |= PCIE_LINK_STATE_L1 | PCIE_LINK_STATE_L1SS;
--	if (state & PCIE_LINK_STATE_L1_1)
--		link->aspm_disable |= PCIE_LINK_STATE_L1_1;
--	if (state & PCIE_LINK_STATE_L1_2)
--		link->aspm_disable |= PCIE_LINK_STATE_L1_2;
--	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
--		link->aspm_disable |= PCIE_LINK_STATE_L1_1_PCIPM;
--	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
--		link->aspm_disable |= PCIE_LINK_STATE_L1_2_PCIPM;
-+	link->aspm_disable |= pci_calc_aspm_disable_mask(state);
- 	pcie_config_aspm_link(link, policy_to_aspm_state(link));
- 
- 	if (state & PCIE_LINK_STATE_CLKPM)
-@@ -1413,20 +1423,7 @@ static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked)
- 	if (!locked)
- 		down_read(&pci_bus_sem);
- 	mutex_lock(&aspm_lock);
--	link->aspm_default = 0;
--	if (state & PCIE_LINK_STATE_L0S)
--		link->aspm_default |= PCIE_LINK_STATE_L0S;
--	if (state & PCIE_LINK_STATE_L1)
--		link->aspm_default |= PCIE_LINK_STATE_L1;
--	/* L1 PM substates require L1 */
--	if (state & PCIE_LINK_STATE_L1_1)
--		link->aspm_default |= PCIE_LINK_STATE_L1_1 | PCIE_LINK_STATE_L1;
--	if (state & PCIE_LINK_STATE_L1_2)
--		link->aspm_default |= PCIE_LINK_STATE_L1_2 | PCIE_LINK_STATE_L1;
--	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
--		link->aspm_default |= PCIE_LINK_STATE_L1_1_PCIPM | PCIE_LINK_STATE_L1;
--	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
--		link->aspm_default |= PCIE_LINK_STATE_L1_2_PCIPM | PCIE_LINK_STATE_L1;
-+	link->aspm_default = pci_calc_aspm_enable_mask(state);
- 	pcie_config_aspm_link(link, policy_to_aspm_state(link));
- 
- 	link->clkpm_default = (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
--- 
-2.39.2
-
+Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> ---
+>  fs/ocfs2/namei.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
+> index 9221a33f917b..8a61c5f94533 100644
+> --- a/fs/ocfs2/namei.c
+> +++ b/fs/ocfs2/namei.c
+> @@ -2187,8 +2187,10 @@ static int __ocfs2_prepare_orphan_dir(struct inode *orphan_dir_inode,
+>   * @osb: ocfs2 file system
+>   * @ret_orphan_dir: Orphan dir inode - returned locked!
+>   * @blkno: Actual block number of the inode to be inserted into orphan dir.
+> + * @name: Buffer to store the name of the orphan.
+>   * @lookup: dir lookup result, to be passed back into functions like
+>   *          ocfs2_orphan_add
+> + * @dio: Flag indicating if direct IO is being used or not.
+>   *
+>   * Returns zero on success and the ret_orphan_dir, name and lookup
+>   * fields will be populated.
 
