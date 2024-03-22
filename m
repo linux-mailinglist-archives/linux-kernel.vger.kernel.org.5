@@ -1,116 +1,308 @@
-Return-Path: <linux-kernel+bounces-111375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA444886B6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:41:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC40886B5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:36:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A15EB227BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:41:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E69F2841EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F753F9D9;
-	Fri, 22 Mar 2024 11:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XkM9cqo/"
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A543F9C1;
+	Fri, 22 Mar 2024 11:36:26 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061723EA9C;
-	Fri, 22 Mar 2024 11:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00273EA88
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:36:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711107707; cv=none; b=QlbhVbr7Zc0q4w+T3PTxWSv3Nn76gMK1nIKiipM5dIE3jSXm8XlBlFL4n8kDiWafd5mEdd9K+rBpkAxGuplmqk6b2GweoMm2JOOYYzOYQshAKSZ9pqVf8D8MnD/ggSK2VO8XXZV9DNGVNyt0T3kWMSNhyEdy5rhhFzDADt0QSr8=
+	t=1711107386; cv=none; b=i/NyxCZa0H4EkFoFVAIfvZB5byJmSQ2rWFsV7EUyvKIwT0pTOLaVSLlecmsmsPdlhxAdeZsAc1fkLiifxz/roHWLP7hFZcWji5pl9AxFfAKYx4W5BciTkpYe8b4cLz+KsMsm9dH5Hdx/9zuLUiR1bxMtMLAGS3WA0KOY9NLJACQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711107707; c=relaxed/simple;
-	bh=DnLFfeW1AMMJ/5y4K8wzGOftS7A6Z+PTU6bFKYYbMD8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aGP6N9L+6GU1yDSNCf3v2WpY00CUd2jUJ5ShsAX/EO7w5Kz8LRDHOGt52Uy79jYLFFfpD3sDmjyS/ZtEpZXx1GlaKkpFIW0PwyTX6qU0o0oaIDZEBszp3ps+HJ4y4T5sQSoCor2zg1S7DA9ytbXTZ/7cvV9zPX8Jh6pFXF+5vW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XkM9cqo/; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-789e83637e0so126389485a.2;
-        Fri, 22 Mar 2024 04:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711107705; x=1711712505; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8evdBv9wfzyxMz+KpHh32wSrhwaXKbA+tqAPHK3l3vc=;
-        b=XkM9cqo/Ojd3gW26ZFoCUJ4nmQywIpC5VR9LrN0RE6HI7BrgsaT4NIOAEfZPch/tmd
-         hSSBa3GpdIz2c7DbdkpA3EluYsebNoEdst3N+WUQgVV1edsHZMUgpGt1zGqPtPggNuS+
-         tSbABDFrhPfNo0qUBAfCa7y7G7oHTIYJgIrcNsGDp5tR6c+nLJLcEj+NyfMd6vEYfQAr
-         DFwPvxtBcg2SbVB3kjhx7jYJGdfo4RZjxgHUU1z3xl2V+KEwfttDyaCvIVoIsSiS4EGK
-         tP0zKzFG0F0lNuOUeC5cp8F5aGdZSehaVnxyVTaVSkLUuessaB67dgbjouxlC4FJEafT
-         Scmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711107705; x=1711712505;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8evdBv9wfzyxMz+KpHh32wSrhwaXKbA+tqAPHK3l3vc=;
-        b=c2lkvi1dLx8WqA/AksRL0dnIsa6hleMBmuh9HaGyE7xxbGjuqWPJh6owd4bJyiktGw
-         EQwPf/TDFRgBurLOHVyvoBQdkntcWZH9NWe7LLxyzHgFX8R53tu5faQTQ4vHplgBkNk3
-         2Z/+iLiBB6Gxqow7mu47qZPz/6fBWjDuMD7usOVSJshOw6EUE1AjB2OurJp6cieLPNFj
-         Kg/akYNYMwYe6bGHSTZvM9myuKPMA9IQJPmz597onKJg1upGXOBWpvj+IY6jK2MfsVvQ
-         czvL8f785avotqDjtt41C96X4PbcAX5k3e49tBTKPiRV+7NQpI9InOeb3rMJ9j5lF7FX
-         ZsTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWBkjR+Ht769FX2LauhQIJm+I59xM01IYmdYFByjHcCbpH0nBA4dZciNmwrFmjcTSK9yiTcv/lEYDUTbL4RYq+YRQiYAcGMoCsnLk0UYQ82beIfGBbJC/3l3aKEEJcfghZN
-X-Gm-Message-State: AOJu0YyK5h7VyDmRgnurFiLGLF+T6yvjFuxOLSugAsuUz1VAMNhfBfC9
-	+mxrQLlO9bIeJ4JWKwFqX7jnUZxOc8eBXLH33dm0Mqi2aymZngo4j0tAIwNsRkPOjA==
-X-Google-Smtp-Source: AGHT+IHYXA++eriMaFp3DVL8xL47iq28Kzs2KTpZk5Dga3q6r6IomxL2a7u8Kbi2GZjdsrCkllcNxQ==
-X-Received: by 2002:a05:6358:4894:b0:17e:edfd:89bb with SMTP id pe20-20020a056358489400b0017eedfd89bbmr1963530rwc.15.1711107354301;
-        Fri, 22 Mar 2024 04:35:54 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.27])
-        by smtp.gmail.com with ESMTPSA id h190-20020a6383c7000000b005dc4fc80b21sm1382661pge.70.2024.03.22.04.35.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 04:35:53 -0700 (PDT)
-Message-ID: <f44de7d9-e03d-483d-96d3-76c63158061d@gmail.com>
-Date: Fri, 22 Mar 2024 19:35:49 +0800
+	s=arc-20240116; t=1711107386; c=relaxed/simple;
+	bh=yPrcCze0EHpTuHszj5s6YaVUl58c+kw1BbdxRZvNuNA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=i8JTkfVhGxFkXpdnu/7r9UsMqrplyKutZ76TsuAf0wY4hSkr52WnHMB9eb054oLGdQBveXNWRtFa7vjvI6x9jHHs+AjNx5EsHC09O97GRtgAQsHe2pbszII5+8WMzAqT82uGKGtio3zLxzdf+9LBGKWdswmOjwRXjW3actvqPxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V1Kwm52D6z1xsML;
+	Fri, 22 Mar 2024 19:34:16 +0800 (CST)
+Received: from kwepemd500012.china.huawei.com (unknown [7.221.188.25])
+	by mail.maildlp.com (Postfix) with ESMTPS id BD4F21A016C;
+	Fri, 22 Mar 2024 19:36:11 +0800 (CST)
+Received: from [10.67.111.176] (10.67.111.176) by
+ kwepemd500012.china.huawei.com (7.221.188.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 22 Mar 2024 19:36:11 +0800
+Message-ID: <6e0a0e04-1495-aec0-0ff3-d8df43ee9f16@huawei.com>
+Date: Fri, 22 Mar 2024 19:36:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] KVM RISC-V APLIC fixes
-To: Anup Patel <apatel@ventanamicro.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Atish Patra <atishp@atishpatra.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Andrew Jones <ajones@ventanamicro.com>, Anup Patel <anup@brainfault.org>,
- kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240321085041.1955293-1-apatel@ventanamicro.com>
-From: Bing Fan <hptsfb@gmail.com>
-In-Reply-To: <20240321085041.1955293-1-apatel@ventanamicro.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [RFC PATCH 1/5] ubifs: Implement POSIX Access Control Lists
+ (ACLs)
+To: Zhihao Cheng <chengzhihao1@huawei.com>, <richard@nod.at>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+References: <20240319161646.2153867-1-lizetao1@huawei.com>
+ <20240319161646.2153867-2-lizetao1@huawei.com>
+ <61bf91fb-f926-8fdf-0157-20f5ad2ae279@huawei.com>
+Content-Language: en-US
+From: Li Zetao <lizetao1@huawei.com>
+In-Reply-To: <61bf91fb-f926-8fdf-0157-20f5ad2ae279@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-
+X-ClientProxiedBy: dggpeml100008.china.huawei.com (7.185.36.48) To
+ kwepemd500012.china.huawei.com (7.221.188.25)
 
 Hi,
 
-
-As you mentioned as below, riscv's aia patch in 
-https://github.com/avpatel/linux.git
-
-Why is this series of patches not merged into upstream?
-
-
-在 2024/3/21 16:50, Anup Patel 写道:
-> Few fixes for KVM RISC-V in-kernel APLIC emulation which were discovered
-> during Linux AIA driver patch reviews.
->
-> These patches can also be found in the riscv_kvm_aplic_fixes_v1
-> branch at: https://github.com/avpatel/linux.git
->
-> Anup Patel (2):
->    RISC-V: KVM: Fix APLIC setipnum_le/be write emulation
->    RISC-V: KVM: Fix APLIC in_clrip[x] read emulation
->
->   arch/riscv/kvm/aia_aplic.c | 37 +++++++++++++++++++++++++++++++------
->   1 file changed, 31 insertions(+), 6 deletions(-)
->
+On 2024/3/21 10:55, Zhihao Cheng wrote:
+> 在 2024/3/20 0:16, Li Zetao 写道:
+>> Implement the ACLs feature for ubifs based on vfs Posix ACLs,
+>> details as follows:
+>>    * Initialize acl for newly created inode.
+>>    * Provides get/set interface to access ACLs.
+>>
+>> ACLs feature relies on xattr implementation which using specific key
+>> names "system.posix_acl_default" and "system.posix_acl_access". Now Only
+>> the v2 version of POSIX ACLs is supported, and ubifs does not need to
+>> customize the storage format, which can simplify the implementation.
+>>
+>> Signed-off-by: Li Zetao <lizetao1@huawei.com>
+>> ---
+>>   fs/ubifs/acl.c   | 140 +++++++++++++++++++++++++++++++++++++++++++++++
+>>   fs/ubifs/ubifs.h |  13 +++++
+>>   fs/ubifs/xattr.c |   1 -
+>>   3 files changed, 153 insertions(+), 1 deletion(-)
+>>   create mode 100644 fs/ubifs/acl.c
+>>
+>> diff --git a/fs/ubifs/acl.c b/fs/ubifs/acl.c
+>> new file mode 100644
+>> index 000000000000..253568baf097
+>> --- /dev/null
+>> +++ b/fs/ubifs/acl.c
+>> @@ -0,0 +1,140 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * This file is part of UBIFS.
+>> + *
+>> + * Copyright (C) 2024 Huawei Tech. Co., Ltd.
+>> + *
+>> + * Authors: Li Zetao <lizetao1@huawei.com>
+>> + */
+>> +
+>> +/* This file implements POSIX Access Control Lists (ACLs) */
+>> +
+>> +#include "ubifs.h"
+>> +
+>> +#include <linux/posix_acl_xattr.h>
+>> +
+>> +struct posix_acl *ubifs_get_inode_acl(struct inode *inode, int type, 
+>> bool rcu)
+>> +{
+>> +    char *xattr_value = NULL;
+>> +    const char *xattr_name;
+>> +    struct posix_acl *acl;
+>> +    ssize_t size;
+>> +
+>> +    if (rcu)
+>> +        return ERR_PTR(-ECHILD);
+>> +
+>> +    xattr_name = posix_acl_xattr_name(type);
+>> +    if (unlikely(!strcmp(xattr_name, "")))
+>> +        return ERR_PTR(-EINVAL);
+> The acl type has been guaranteed valid from vfs caller, there is no need 
+> to check converted name by 'strcmp', in theory, we can use it directly 
+> just like f2fs does. For this case, I suggest to unfold the 
+> posix_acl_xattr_name and convert it to corresponding name just like 
+> btrfs does.
+Ok, I will modify it in the next version.
+>> +
+>> +    size = ubifs_xattr_get(inode, xattr_name, NULL, 0);
+>> +    if (size > 0) {
+>> +        xattr_value = kzalloc(size, GFP_KERNEL);
+>> +        if (unlikely(!xattr_value))
+>> +            return ERR_PTR(-ENOMEM);
+>> +
+>> +        size = ubifs_xattr_get(inode, xattr_name, xattr_value, size);
+>> +    }
+>> +
+>> +    if (size > 0)
+>> +        acl = posix_acl_from_xattr(&init_user_ns, xattr_value, size);
+>> +    else if (size == -ENODATA || size == 0)
+>> +        acl = NULL;
+>> +    else
+>> +        acl = ERR_PTR(size);
+>> +
+>> +    kfree(xattr_value);
+>> +
+>> +    return acl;
+>> +}
+>> +
+>> +static int __ubifs_set_acl(struct inode *inode, int type, struct 
+>> posix_acl *acl, int flags)
+>> +{
+>> +    void *xattr_value = NULL;
+>> +    const char *xattr_name;
+>> +    size_t size = 0;
+>> +    int error;
+>> +
+> 
+>> +    xattr_name = posix_acl_xattr_name(type);
+>> +    if (unlikely(!strcmp(xattr_name, "")))
+>> +        return -EINVAL;
+>> +
+>> +    if (unlikely(!strcmp(xattr_name, XATTR_NAME_POSIX_ACL_DEFAULT) && 
+>> !S_ISDIR(inode->i_mode)))
+>> +        return acl ? -EACCES : 0;
+>> +
+> Similar to previous, replace above 6 lines, refer to __btrfs_set_acl but 
+> keep the error code same with __ext4_set_acl.
+Ok.
+>> +    if (acl) {
+>> +        size = posix_acl_xattr_size(acl->a_count);
+>> +        xattr_value = kmalloc(size, GFP_KERNEL);
+>> +        if (unlikely(!xattr_value))
+>> +            return -ENOMEM;
+>> +
+>> +        error = posix_acl_to_xattr(&init_user_ns, acl, xattr_value, 
+>> size);
+>> +        if (unlikely(error < 0))
+>> +            goto out;
+>> +    }
+>> +
+>> +    error = ubifs_xattr_set(inode, xattr_name, xattr_value, size, 
+>> flags, false);
+> There are 2 situations here, Updating acl and Removing acl. For the 
+> later case, funcion vfs_remove_acl will remove corresponding xattr, the 
+> xattr removing function in ubifs is ubifs_xattr_remove.
+Thanks. Indeed, ubifs_xattr_set() is is different from other file 
+systems, it will not delete xattr when value is NULL.
+>> +    if (likely(!error))
+> I prefer to remove the 'likely', UBIFS limits the max xattr count for 
+> each file(Goto create_xattr), non zero error returned is a common case 
+> on a small LEB flash.
+Ok.
+>> +        set_cached_acl(inode, type, acl);
+>> +out:
+>> +    kfree(xattr_value);
+>> +    return error;
+>> +}
+>> +
+>> +int ubifs_set_acl(struct mnt_idmap *idmap, struct dentry *dentry, 
+>> struct posix_acl *acl, int type)
+>> +{
+>> +    struct inode *inode = d_inode(dentry);
+>> +    umode_t old_mode = inode->i_mode;
+>> +    int error;
+>> +
+>> +    if (type == ACL_TYPE_ACCESS && acl) {
+>> +        error = posix_acl_update_mode(idmap, inode, &inode->i_mode, 
+>> &acl);
+>> +        if (unlikely(error))
+>> +            return error;
+>> +    }
+>> +
+>> +    error = __ubifs_set_acl(inode, type, acl, 0);
+>> +    if (unlikely(error))
+> Mentioned in __ubifs_set_acl, error could be returned, just remove 
+> 'unlikely'.
+Ok.
+>> +        inode->i_mode = old_mode;
+>> +
+>> +    return error;
+>> +
+>> +}
+>> +
+>> +/**
+>> + * ubifs_init_acl - initialize the ACLs for a new inode.
+>> + * @inode: newly created inode
+>> + * @dir: parent directory inode
+>> + *
+>> + * This function initialize ACLs, including inheriting the
+> initialize -> initializes
+Ok.
+>> + * default ACLs of parent directory or modifying the default
+>> + * ACLs according to the mode parameter in open() / creat()
+>> + * system calls.
+>> + */
+>> +int ubifs_init_acl(struct inode *inode, struct inode *dir)
+>> +{
+>> +    struct posix_acl *default_acl;
+>> +    struct posix_acl *acl;
+>> +    int error;
+>> +
+>> +    error = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
+>> +    if (unlikely(error))
+>> +        return error;
+>> +
+>> +    if (default_acl) {
+>> +        error = __ubifs_set_acl(inode, ACL_TYPE_DEFAULT, default_acl, 
+>> XATTR_CREATE);
+>> +        posix_acl_release(default_acl);
+>> +    } else {
+>> +        inode->i_default_acl = NULL;
+>> +    }
+>> +
+>> +    if (acl) {
+>> +        if (likely(!error))
+> Remove 'likely'.
+Ok.
+>> +            error = __ubifs_set_acl(inode, ACL_TYPE_ACCESS, acl, 
+>> XATTR_CREATE);
+>> +        posix_acl_release(acl);
+>> +    } else {
+>> +        inode->i_acl = NULL;
+>> +    }
+>> +
+>> +    return error;
+>> +}
+>> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+>> index 3916dc4f30ca..b0d3b076290d 100644
+>> --- a/fs/ubifs/ubifs.h
+>> +++ b/fs/ubifs/ubifs.h
+>> @@ -2069,6 +2069,19 @@ static inline int ubifs_init_security(struct 
+>> inode *dentry,
+>>   }
+>>   #endif
+>> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+>> +struct posix_acl *ubifs_get_inode_acl(struct inode *inode, int type, 
+>> bool rcu);
+>> +int ubifs_set_acl(struct mnt_idmap *idmap, struct dentry *dentry, 
+>> struct posix_acl *acl, int type);
+>> +int ubifs_init_acl(struct inode *inode, struct inode *dir);
+>> +
+>> +#else /* CONFIG_UBIFS_FS_POSIX_ACL */
+>> +#define ubifs_get_inode_acl NULL
+>> +#define ubifs_set_acl NULL
+>> +static inline int ubifs_init_acl(struct inode *inode, struct inode *dir)
+>> +{
+>> +    return 0;
+>> +}
+>> +#endif /* CONFIG_UBIFS_FS_POSIX_ACL */
+>>   /* super.c */
+>>   struct inode *ubifs_iget(struct super_block *sb, unsigned long inum);
+>> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+>> index 0847db521984..eb1c1f5d10df 100644
+>> --- a/fs/ubifs/xattr.c
+>> +++ b/fs/ubifs/xattr.c
+>> @@ -40,7 +40,6 @@
+>>    * in the VFS inode cache. The xentries are cached in the LNC cache 
+>> (see
+>>    * tnc.c).
+>>    *
+>> - * ACL support is not implemented.
+>>    */
+>>   #include "ubifs.h"
+>>
+> 
 
