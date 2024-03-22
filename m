@@ -1,187 +1,101 @@
-Return-Path: <linux-kernel+bounces-112003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 127DE887401
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:47:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82383887403
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DAFDB228FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:47:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 206DD28316F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6F57EF0C;
-	Fri, 22 Mar 2024 19:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752737EF09;
+	Fri, 22 Mar 2024 19:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ckpGz2m1"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nhBdMSh+"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3805C745C0;
-	Fri, 22 Mar 2024 19:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CF517589
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711136849; cv=none; b=DtwwojI1uD4v8f3DKgrr35s76zJC/Ao2HXP0Cs+dAw634ASWSEIan2EUpaserULDf8TabkWWjhGzdfqBo5hPelr4esiMfReMjdreumWdnVk9dBajeICEiA3AZs8pgUZyZU9tc5l8edKdfnO9ePMIwsDQmUDDHHwGvnTPxfr8feg=
+	t=1711136971; cv=none; b=tnczrkD8ajZ8B8wJKAuxNy63qunPdsDbD9+B2vJxYS/8MTxP41TEUVL4bx71vBTuSZehEDSk5ofRxWZ26ot5pggajxpjfFCo1RdrEbj/TEQTvH4unOGQl3u+Yr4iKnamLYznY8x1/frlHF82L8r4j8SM+zZa9VYVScDBRA5lTRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711136849; c=relaxed/simple;
-	bh=nxEGXVhNhN4RVfE3d1n+2+C+HEvgFuhkK+1tNpRSEbI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KoBldVl8oLJHSJy8zzlgj89x/5P1TibY5V2be6nfn4P8RmTt2dcUTd8orsDAygizjO3ZB6rkikbbUSgjDIfnfbel8+R8PZnouSWamnu9veFcPrcvErjFmjLxqzlO5TxLR0dzXvnv5sjGlUQP1wCcrsY6NDqB4D1Bi4fW4lsdk+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ckpGz2m1; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9257640E01B5;
-	Fri, 22 Mar 2024 19:47:23 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id kApiESXmhvFM; Fri, 22 Mar 2024 19:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711136839; bh=DmmHov9qZK91tSR+f8HXIJGfm9hhKvVNviRTerX3QXY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ckpGz2m1aGeUUEDfnOnKk9xVdwdmhnREG+tzE5h8RE7AfMrFLNlH8UrsEgn3tJsWw
-	 fwHwEDhhLhMClv7vG/qKyFfIkAj9ywkLmCo9EtW74crm+v/Su7Q2aiVOdTLki0e13J
-	 rD37/jrKQKcQhccrjftN3UaozrDvndrCkf1MVmHmBtsuVtTcZjKSTopfG8m59coe/8
-	 fviSpb614HLGADaxdL8UNAfMQGeZ4Us5XO30RnkrH5mRO4Fbpnhg3leKvlVQCynmBq
-	 PBWjsyv0yQ3U49VWA/KoD1Xm9nInT6eYoCLpeY3HhpgOniBH8thYfd537GpzefKz9P
-	 ritHXTamlK42Zj4g3JB5gnuGA0oyKwKSORrQ7ZR0jSjERcD1ABzTT3jTYlCB5tFn7v
-	 oz/Mm1eSu511R0eO3TA4qAQjevxtDXIQAA9S0lzt153p9Le8SEmua6MDsP/Jx0Xtc0
-	 HBhEkxAuiYoywM446zI2Aimu6lYj2x92lrfm3Lyxn71emU55NuVvOaaEK08GltA1cN
-	 zNrHbN/oDiKz6PE8/KsWr0f34JXlgW2lRyVd19krBGdUDBrGGIY435NPP84Lv/pOmv
-	 wWa0MXIsFqi/ELXTRXAFXCDF2KL2umRKCi45DGWJlSmf1cZtYqsR64HI6DG22ULa/a
-	 wAxDiyGY+fVZpW/FlVazaCcs=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1637840E00B2;
-	Fri, 22 Mar 2024 19:47:05 +0000 (UTC)
-Date: Fri, 22 Mar 2024 20:46:58 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Kees Cook <keescook@chromium.org>
-Cc: tglx@linutronix.de, Guixiong Wei <weiguixiong@bytedance.com>,
-	jgross@suse.com, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, peterz@infradead.org,
-	gregkh@linuxfoundation.org, tony.luck@intel.com,
-	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] x86, relocs: Ignore relocations in .notes section on
- walk_relocs
-Message-ID: <20240322194658.GCZf3gMphnWeR9upN6@fat_crate.local>
-References: <20240317150547.24910-1-weiguixiong@bytedance.com>
- <171079804927.224083.15609364452504732018.b4-ty@chromium.org>
- <20240318215612.GDZfi4fG52DTgra51p@fat_crate.local>
- <202403181644.690285D3@keescook>
- <20240319081640.GAZflJ6IBQ7TEKD2Ll@fat_crate.local>
- <202403190955.25E5E03E6@keescook>
+	s=arc-20240116; t=1711136971; c=relaxed/simple;
+	bh=EQ7DBIXYnRLKJLYv8JBf91ZtttnplOpDVAnjNcCqIis=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TNWXq3UzXpiGKobcww85F8m9zlmhQeGPX/8wtbEsIZ2fP+HIY7Ze5nCAeK+97Xi7CsObehjGJwnA4ymTj9qXIwfEp0/NoBMA40u54ShB7FZZoZ4PT2MbvU6CZIbTo5lYUy6IUpp6VNojo+vgH32UCBvPkLETVkaFkl3JFo05rCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nhBdMSh+; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-568c3888ad7so331a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:49:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711136968; x=1711741768; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EQ7DBIXYnRLKJLYv8JBf91ZtttnplOpDVAnjNcCqIis=;
+        b=nhBdMSh+OAJyyoEuRllkELIN0317hsrGNkFYv1GBSUyACW2d0zntJFvqRnzwFFhwb0
+         9BR9hMZAAlgRAPviVYbXxvxfRDxw+21+85H79HNnlC6LnijKXxDLOefi+SyUt/39h5QL
+         ihxFe6svez8VCjFQ9qBVp3s6F/qXSrIIFg12Bk7zOTL1DsfATPtgGgzNAJFz3+8b+KNe
+         jIupJRssU1RC1hWP5O+ywRgroAIl17qH29DQaeLEzzPr0027zE9OC1F3tn3XoIcNIK6q
+         9Xd1yyLdLXp9KaT/7kppUUzWI9eJIgbWt1OV1iJOYOy/iOAB+Pk6YTbNl0rwAOydtf1C
+         1PAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711136968; x=1711741768;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EQ7DBIXYnRLKJLYv8JBf91ZtttnplOpDVAnjNcCqIis=;
+        b=Wx4mjTvmFd3BlpjM6FEJy+Qgn8zERdTAEw4sOhtPgSmQEV7/evAM0hAy58ZqxgSisT
+         BDdRgosxixj4d6NYBsZFRZ3AKa/Mu4qZ4+PHHBDjcBROn5R7wA37my5zZwpMFR6uxtYD
+         8LvfRO6rZVfYoQA873dNBRjR3QnzEur68rx++i1dgnNyj2UqsrrmuswPoK4yhMCtaNMX
+         F5ZHremAXx3151fZenWg+qcthaYSmNvKM/eJcUIdoRVC06yNKTSzSwqJ3va/llob3Yh7
+         GXJgt3wT3O6hYdc0F30PdKzeJUM12WBSCE+BESRyUt7SMu+XBYuXXB9yYNCoeBsMAjW/
+         smaA==
+X-Forwarded-Encrypted: i=1; AJvYcCVQFl14A4rI0cNejr19g/fZxbNZdr4dLC2HfiqFXiDBLbak+bxQrlLlLVXfL/pMVefuIzpdYJJgXdcIxrYpQseBP0AoPORs+UfBVqim
+X-Gm-Message-State: AOJu0YwVxuGytsI7DUJtEhKZc2jk3Hk42pDKWPw8LONV0XUQdNBuBDzm
+	SdnyCOf1LqrinqroDBytMVtf+9XFTe29JHQZhPcsogKWD3waL3wo5ajZCcAktv1eG+Q2plNyFV9
+	KEoYCxv1+d+OqmZj7sujcQpcPt3B2+wu1iSY7
+X-Google-Smtp-Source: AGHT+IFz5yYEU1ipAp/ZOWOzhs6gnAbSpfTfDGEsEgc5DMOpyj8hhaxftpCv4UaDseItpyDuTpGuvo3OqaeIE6Q3rvU=
+X-Received: by 2002:aa7:cd12:0:b0:56b:b464:d529 with SMTP id
+ b18-20020aa7cd12000000b0056bb464d529mr479593edw.2.1711136968389; Fri, 22 Mar
+ 2024 12:49:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202403190955.25E5E03E6@keescook>
+References: <20220825122726.20819-1-vincent.guittot@linaro.org>
+ <20220825122726.20819-2-vincent.guittot@linaro.org> <CABk29NsQf_xStzWg8bB_hpNpPC_LduMs-M058LjdhnDG16wN_A@mail.gmail.com>
+ <CAKfTPtDSC25N8TvszDAjseqdLdGy4qiDnwobNThkt8piSL_5Pw@mail.gmail.com>
+ <CABk29NuU30DHproFY-i3_baEhXxofCyLQx-Z5LV74y8_6m7uGA@mail.gmail.com> <CAKfTPtCf3US76sLObK=iRNtid2hL8s-6Denha71F6W4J0MyAoA@mail.gmail.com>
+In-Reply-To: <CAKfTPtCf3US76sLObK=iRNtid2hL8s-6Denha71F6W4J0MyAoA@mail.gmail.com>
+From: Josh Don <joshdon@google.com>
+Date: Fri, 22 Mar 2024 12:49:15 -0700
+Message-ID: <CABk29NvL=fKwuO=p7iDUOVDd5=F1J-_WTRGivqVnJACVutEGnA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] sched/fair: make sure to try to detach at least one
+ movable task
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	linux-kernel@vger.kernel.org, zhangqiao22@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Mar 19, 2024 at 09:56:29AM -0700, Kees Cook wrote:
-> > Yes, please. Just send a Reviewed-by and it'll get picked up.
-> 
-> Okay, thanks!
+> > Another idea then: what about separating the number of tasks we can
+> > move from the number of tasks we can search? You effectively want to
+> > keep the number of tasks that can be migrated small (nr_migrate), but
+> > be able to search deeper in the list for things to pull (a larger
+> > search_depth).
+>
+> That could be a solution indeed
 
-Dammit, how did this commit land upstream and in stable?!
+Cool, I'll try spinning up a patch for that then.
 
-Forgot to zap it from your tree and sent the branch to Linus anyway?
-
-Kees, please refrain from taking tip patches in the future. You know how
-this works - get_maintainers.pl.
-
-Thx.
-
-Date: Fri, 22 Mar 2024 14:47:05 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: stable-commits@vger.kernel.org, keescook@chromium.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Patch "x86, relocs: Ignore relocations in .notes section" has been
- added to the 5.4-stable tree
-X-Mailer: git-send-email 2.43.0
-Message-ID: <20240322184705.144463-1-sashal@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8
-
-This is a note to let you know that I've just added the patch titled
-
-    x86, relocs: Ignore relocations in .notes section
-
-to the 5.4-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     x86-relocs-ignore-relocations-in-.notes-section.patch
-and it can be found in the queue-5.4 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
-
-commit 91aa857ccbd1212a23cd80bb45f71715f2db7144
-Author: Kees Cook <keescook@chromium.org>
-Date:   Tue Feb 27 09:51:12 2024 -0800
-
-    x86, relocs: Ignore relocations in .notes section
-    
-    [ Upstream commit aaa8736370db1a78f0e8434344a484f9fd20be3b ]
-    
-    When building with CONFIG_XEN_PV=y, .text symbols are emitted into
-    the .notes section so that Xen can find the "startup_xen" entry point.
-    This information is used prior to booting the kernel, so relocations
-    are not useful. In fact, performing relocations against the .notes
-    section means that the KASLR base is exposed since /sys/kernel/notes
-    is world-readable.
-    
-    To avoid leaking the KASLR base without breaking unprivileged tools that
-    are expecting to read /sys/kernel/notes, skip performing relocations in
-    the .notes section. The values readable in .notes are then identical to
-    those found in System.map.
-    
-    Reported-by: Guixiong Wei <guixiongwei@gmail.com>
-    Closes: https://lore.kernel.org/all/20240218073501.54555-1-guixiongwei@gmail.com/
-    Fixes: 5ead97c84fa7 ("xen: Core Xen implementation")
-    Fixes: da1a679cde9b ("Add /sys/kernel/notes")
-    Reviewed-by: Juergen Gross <jgross@suse.com>
-    Signed-off-by: Kees Cook <keescook@chromium.org>
-    Signed-off-by: Sasha Levin <sashal@kernel.org>
-
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index 1c3a1962cade6..0043fd374a62f 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -596,6 +596,14 @@ static void print_absolute_relocs(void)
- 		if (!(sec_applies->shdr.sh_flags & SHF_ALLOC)) {
- 			continue;
- 		}
-+		/*
-+		 * Do not perform relocations in .notes section; any
-+		 * values there are meant for pre-boot consumption (e.g.
-+		 * startup_xen).
-+		 */
-+		if (sec_applies->shdr.sh_type == SHT_NOTE) {
-+			continue;
-+		}
- 		sh_symtab  = sec_symtab->symtab;
- 		sym_strtab = sec_symtab->link->strtab;
- 		for (j = 0; j < sec->shdr.sh_size/sizeof(Elf_Rel); j++) {
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Best,
+Josh
 
