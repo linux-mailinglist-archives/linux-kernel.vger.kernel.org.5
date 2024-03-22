@@ -1,206 +1,262 @@
-Return-Path: <linux-kernel+bounces-111572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0F12886DF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:04:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4025B886E3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:13:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2CFFB220A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:04:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71C351C21CAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C5546522;
-	Fri, 22 Mar 2024 14:03:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3E347A40;
+	Fri, 22 Mar 2024 14:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aEFVnYEn"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="gKTvbo0I"
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12F920DD2;
-	Fri, 22 Mar 2024 14:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B6E46546
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711116237; cv=none; b=PM7t0QL1d01WVbUCNNEsvtrmCv9HQCxsRSPHOAoF7r69fat3OcjbrMPnE51CEWNDqlZdUuICMAYVTC68MpKpVZqqFlMg9RaNBLwMJ4bEgO/29Cr1iqxcCqlSvwA+yryIQ0KKv82JsepHkR/r7dqunGSp8kEvMjMWrz8LJMBgw8A=
+	t=1711116822; cv=none; b=qAn6L2CgdMIOQIwL8CpNC2kvonNVvhRq4ANGq36ZC86yGoO+4jHLiOLc1eUSZRvcRTDp7ejbUbifXA+vABjVfGbooPf0NmTAvgPvywcVPAvZeTKkwVLEY2bJeTHDghs3bGhVkVlB7CgMXUiuK9YFwtsgP6C2bZiBC0Zm3rn5188=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711116237; c=relaxed/simple;
-	bh=GTwkfSYY8fF/JTgbFZ19PtI5w8z3w4e7RmofZKCLLX4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HRcLP46Ls1cyM5u1XacdFBTuL+No+dpnmNJKRSKoTlEVmOfmt0VRDBtaJoRFoLDENNPHMCDvVDr4eG2zrP3vdBOaIuBYm2qLTaL9aDZinhpDB8DJMWv701k4n3pXIZec++OLBt9/BvGTALAKG1NUZvtc7uL2f/5laXm1osxPk4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aEFVnYEn; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42MDrlfG007691;
-	Fri, 22 Mar 2024 14:03:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=8LjoMCe0DGuL79iPsx8E9aBSx33d5vNWq5IDmlmWEHU=;
- b=aEFVnYEnrQo9X9eTn62cMAsHDBd/9O/L+fBvpgxfId66LX1+lwzS3aT00ptCVhGhv4nO
- J6/jHPfzD2DDbINY+8EluYrNxC/M8yfULoAO4e4muViayzwOYgme0kxJ/IhZZKodKnNX
- KzJcBXk7FyYKd3bHmNihaoyfowBMaWwHtCdmZZJK5/3MhGATGldGb29OhnhcRmxbNrk+
- 2rv+JBmK0+Iya2IiDNHhYf7QDiHOMUrzIXr4NJ+F2Ness7X8PFoMRRW02Pmy+61q9As8
- ZWyy7zEDcOBRxKh9LAJZTwEmJd9380VdaIhHvu1xTrpHEVLblcwJq0RuJJKLXKhvKhYF Uw== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x1b91033h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Mar 2024 14:03:29 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42MDh8lM026678;
-	Fri, 22 Mar 2024 14:03:29 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x0x1756yv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Mar 2024 14:03:29 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42ME3PZl26411734
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 22 Mar 2024 14:03:27 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7454C58065;
-	Fri, 22 Mar 2024 14:03:25 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 085DD58068;
-	Fri, 22 Mar 2024 14:03:25 +0000 (GMT)
-Received: from sbct-3.bos2.lab (unknown [9.47.158.153])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 22 Mar 2024 14:03:24 +0000 (GMT)
-From: Stefan Berger <stefanb@linux.ibm.com>
-To: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
-        roberto.sassu@huawei.com, Stefan Berger <stefanb@linux.ibm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH] ima: Fix use-after-free on a dentry's dname.name
-Date: Fri, 22 Mar 2024 10:03:12 -0400
-Message-ID: <20240322140312.1804404-1-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.44.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: i-UhdwlGxaLYS8DRbaBtV0I1H82ZOiJr
-X-Proofpoint-ORIG-GUID: i-UhdwlGxaLYS8DRbaBtV0I1H82ZOiJr
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1711116822; c=relaxed/simple;
+	bh=uabN1U09dpaxwPgK5zBOg/0q/WFlWJn6j0Uu62VmsG0=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=Jeh6+OHNPGYnQb/BXjKJwb1lenJ/zp2nnXrhLusQifv8YQA0bMHi6Qj2r+j3P/8nv6unpO0EQak45LZrr6VKsw6YqrQCBLHKb9j/Jve7GxG72F7pfSDZss923TB/j46y4AImC+t8mAjUPftuC7MLOqhYkp0QtyEaOk9Yxpio+/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=gKTvbo0I; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-221ffba5c8bso1303421fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 07:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1711116819; x=1711721619; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yMwbsV2lr5D+n8eq4lwX8uN+1JbL7Okl9fmvTySMdOM=;
+        b=gKTvbo0IA+i7JFCQLZvD+KJF0i8JF3DVuaCwE8ZRucJZHBbjrCGOy54L1OqjzCZLm9
+         AADl/UPodDrfgKeGJdAqmLBlM5MuUJt6Noxa31zXMIpNphBMd4h1vPAHjVqVFGtb7Bvs
+         08LHgWkGvw9ajQFkdrdSWlGVm628iF82zbqrLjcZ51ImJS0l5TtiGFczKyXz9j0CUs/1
+         q3sQjh1GrKFa/rVWzYQxacrcg1GFKGOlAEFo8ocV2wjp34Widk7uN2ltQnxc8JRNOmQC
+         HirmLqMECEvrheftAUByk5256asN6dNCsaUVl76Hai+FlHyhu9bFuT03WHy4dvuQAjek
+         01qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711116819; x=1711721619;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yMwbsV2lr5D+n8eq4lwX8uN+1JbL7Okl9fmvTySMdOM=;
+        b=hWT/eIKd/c8ZpLumAHkoWR26it+v7Zgoys2HG+KpOr2cT6SHITxERpslNnhSP1cJBP
+         FDonPZ5U9vS34WCI8IDj+a6ykH2uk8O6RPuEL47MOf0l48lw1jFAmlaCx89X4tHaUt8/
+         /XQzX6Eog4qWkLwPV2jCGiffXGSmSieXnuF+FnapNvrSi9hMVtIe+cW7HvBFhkdDkWSi
+         yPxz+fd7Ji9pN1Vn/y6a947TO1jbAD4X7JkUBe+OF7nUaiktFUzCqqffcrNoj0W56TVg
+         uNogrfn/s/XDrtXANfqPFfbVkUmhc8e0WJgRkhKRzS40lwDeieLlUPn4RvhQ00U5EMqX
+         dI8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUCde/9XQUmj1EoS0yyn3oJ58iNJa3u3aIz+NN9hy2oikZ29P4b2ddxb4kPTt/Vu1GMRJz+PtMzmUGZZtplceAYPWZAOPLbbz1jLA6v
+X-Gm-Message-State: AOJu0YwJq4PtWwQFwIIktzOKc2l+4oisxcxr/ABUePCD6qtTSphVscoz
+	oxt4EaBOx2vEz79LXvNREmLYge0xzCKDGZyN3tkPWB/aN0m5Df9K5rriB3hKoJbmeF/abLQ0XWg
+	/
+X-Google-Smtp-Source: AGHT+IF67p/WhASEEUOaMLQ7DminN+c4zr/4NoTc7CLi/rZc+sVKHX93JtQeh2Zc4uFIFtVUaKoXtg==
+X-Received: by 2002:a05:6a21:920a:b0:1a3:7b9a:4dd6 with SMTP id tl10-20020a056a21920a00b001a37b9a4dd6mr2763771pzb.54.1711116379234;
+        Fri, 22 Mar 2024 07:06:19 -0700 (PDT)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id x8-20020a056a000bc800b006ea918dab9csm94982pfu.157.2024.03.22.07.06.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 07:06:18 -0700 (PDT)
+Date: Fri, 22 Mar 2024 07:06:18 -0700 (PDT)
+X-Google-Original-Date: Fri, 22 Mar 2024 07:06:16 PDT (-0700)
+Subject:     Re: [PATCH v3 1/3] riscv: mm: Use hint address in mmap if available
+In-Reply-To: <ZbxTNjQPFKBatMq+@ghost>
+CC: cyy@cyyself.name, alexghiti@rivosinc.com,
+  Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, shuah@kernel.org, corbet@lwn.net, linux-mm@kvack.org,
+  linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+  linux-doc@vger.kernel.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Message-ID: <mhng-5d9bb6c0-9f40-44b2-b9dc-3823cf6dbdef@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-22_08,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 bulkscore=0 impostorscore=0 phishscore=0 spamscore=0
- mlxscore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403220099
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-->d_name.name can change on rename and the earlier value can be freed;
-there are conditions sufficient to stabilize it (->d_lock on dentry,
-->d_lock on its parent, ->i_rwsem exclusive on the parent's inode,
-rename_lock), but none of those are met at any of the sites. Take a stable
-snapshot of the name instead.
+On Thu, 01 Feb 2024 18:28:06 PST (-0800), Charlie Jenkins wrote:
+> On Wed, Jan 31, 2024 at 11:59:43PM +0800, Yangyu Chen wrote:
+>> On Wed, 2024-01-31 at 22:41 +0800, Yangyu Chen wrote:
+>> > On Tue, 2024-01-30 at 17:07 -0800, Charlie Jenkins wrote:
+>> > > On riscv it is guaranteed that the address returned by mmap is less
+>> > > than
+>> > > the hint address. Allow mmap to return an address all the way up to
+>> > > addr, if provided, rather than just up to the lower address space.
+>> > > 
+>> > > This provides a performance benefit as well, allowing mmap to exit
+>> > > after
+>> > > checking that the address is in range rather than searching for a
+>> > > valid
+>> > > address.
+>> > > 
+>> > > It is possible to provide an address that uses at most the same
+>> > > number
+>> > > of bits, however it is significantly more computationally expensive
+>> > > to
+>> > > provide that number rather than setting the max to be the hint
+>> > > address.
+>> > > There is the instruction clz/clzw in Zbb that returns the highest
+>> > > set
+>> > > bit
+>> > > which could be used to performantly implement this, but it would
+>> > > still
+>> > > be slower than the current implementation. At worst case, half of
+>> > > the
+>> > > address would not be able to be allocated when a hint address is
+>> > > provided.
+>> > > 
+>> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+>> > > ---
+>> > >  arch/riscv/include/asm/processor.h | 27 +++++++++++---------------
+>> > > -
+>> > >  1 file changed, 11 insertions(+), 16 deletions(-)
+>> > > 
+>> > > diff --git a/arch/riscv/include/asm/processor.h
+>> > > b/arch/riscv/include/asm/processor.h
+>> > > index f19f861cda54..8ece7a8f0e18 100644
+>> > > --- a/arch/riscv/include/asm/processor.h
+>> > > +++ b/arch/riscv/include/asm/processor.h
+>> > > @@ -14,22 +14,16 @@
+>> > >  
+>> > >  #include <asm/ptrace.h>
+>> > >  
+>> > > -#ifdef CONFIG_64BIT
+>> > > -#define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+>> > > -#define STACK_TOP_MAX		TASK_SIZE_64
+>> > > -
+>> > >  #define arch_get_mmap_end(addr, len, flags)			\
+>> > >  ({								\
+>> > >  	unsigned long
+>> > > mmap_end;					\
+>> > >  	typeof(addr) _addr = (addr);				\
+>> > > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) &&
+>> > > is_compat_task())) \
+>> > > +	if ((_addr) == 0 ||					\
+>> > > +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
+>> > > +	    ((_addr + len) > BIT(VA_BITS -
+>> > > 1)))			\
+>> > >  		mmap_end = STACK_TOP_MAX;			\
+>> > > -	else if ((_addr) >= VA_USER_SV57)			\
+>> > > -		mmap_end = STACK_TOP_MAX;			\
+>> > > -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >=
+>> > > VA_BITS_SV48)) \
+>> > > -		mmap_end = VA_USER_SV48;			\
+>> > >  	else							\
+>> > > -		mmap_end = VA_USER_SV39;			\
+>> > > +		mmap_end = (_addr + len);			\
+>> > >  	mmap_end;						\
+>> > >  })
+>> > >  
+>> > > @@ -39,17 +33,18 @@
+>> > >  	typeof(addr) _addr = (addr);				\
+>> > >  	typeof(base) _base = (base);				\
+>> > >  	unsigned long rnd_gap = DEFAULT_MAP_WINDOW - (_base);	\
+>> > > -	if ((_addr) == 0 || (IS_ENABLED(CONFIG_COMPAT) &&
+>> > > is_compat_task())) \
+>> > > +	if ((_addr) == 0 ||					\
+>> > > +	    (IS_ENABLED(CONFIG_COMPAT) && is_compat_task()) ||	\
+>> > > +	    ((_addr + len) > BIT(VA_BITS -
+>> > > 1)))			\
+>> > >  		mmap_base = (_base);				\
+>> > > -	else if (((_addr) >= VA_USER_SV57) && (VA_BITS >=
+>> > > VA_BITS_SV57)) \
+>> > > -		mmap_base = VA_USER_SV57 - rnd_gap;		\
+>> > > -	else if ((((_addr) >= VA_USER_SV48)) && (VA_BITS >=
+>> > > VA_BITS_SV48)) \
+>> > > -		mmap_base = VA_USER_SV48 - rnd_gap;		\
+>> > >  	else							\
+>> > > -		mmap_base = VA_USER_SV39 - rnd_gap;		\
+>> > > +		mmap_base = (_addr + len) - rnd_gap;		\
+>> > >  	mmap_base;						\
+>> > >  })
+>> > >  
+>> > > +#ifdef CONFIG_64BIT
+>> > > +#define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+>> > > +#define STACK_TOP_MAX		TASK_SIZE_64
+>> > >  #else
+>> > >  #define DEFAULT_MAP_WINDOW	TASK_SIZE
+>> > >  #define STACK_TOP_MAX		TASK_SIZE
+>> > > 
+>> > 
+>> > I have carefully tested your patch on qemu with sv57. A bug that
+>> > needs
+>> > to be solved is that mmap with the same hint address without
+>> > MAP_FIXED
+>> > set will fail the second time.
+>> > 
+>> > Userspace code to reproduce the bug:
+>> > 
+>> > #include <sys/mman.h>
+>> > #include <stdio.h>
+>> > #include <stdint.h>
+>> > 
+>> > void test(char *addr) {
+>> >     char *res = mmap(addr, 4096, PROT_READ | PROT_WRITE,
+>> > MAP_ANONYMOUS
+>> > > MAP_PRIVATE, -1, 0);
+>> >     printf("hint %p got %p.\n", addr, res);
+>> > }
+>> > 
+>> > int main (void) {
+>> >     test(1<<30);
+>> >     test(1<<30);
+>> >     test(1<<30);
+>> >     return 0;
+>> > }
+>> > 
+>> > output:
+>> > 
+>> > hint 0x40000000 got 0x40000000.
+>> > hint 0x40000000 got 0xffffffffffffffff.
+>> > hint 0x40000000 got 0xffffffffffffffff.
+>> > 
+>> > output on x86:
+>> > 
+>> > hint 0x40000000 got 0x40000000.
+>> > hint 0x40000000 got 0x7f9171363000.
+>> > hint 0x40000000 got 0x7f9171362000.
+>> > 
+>> > It may need to implement a special arch_get_unmapped_area and
+>> > arch_get_unmapped_area_topdown function.
+>> > 
+>> 
+>> This is because hint address < rnd_gap. I have tried to let mmap_base =
+>> min((_addr + len), (base) + TASK_SIZE - DEFAULT_MAP_WINDOW). However it
+>> does not work for bottom-up while ulimit -s is unlimited. You said this
+>> behavior is expected from patch v2 review. However it brings a new
+>> regression even on sv39 systems.
+>> 
+>> I still don't know the reason why use addr+len as the upper-bound. I
+>> think solution like x86/arm64/powerpc provide two address space switch
+>> based on whether hint address above the default map window is enough.
+>> 
+>
+> Yep this is expected. It is up to the maintainers to decide.
 
-Link: https://lore.kernel.org/all/20240202182732.GE2087318@ZenIV/
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
----
- security/integrity/ima/ima_api.c          | 16 ++++++++++++----
- security/integrity/ima/ima_template_lib.c | 17 ++++++++++++++---
- 2 files changed, 26 insertions(+), 7 deletions(-)
+Sorry I forgot to reply to this, I had a buffer sitting around somewhere 
+but I must have lost it.
 
-diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-index b37d043d5748..1856981e33df 100644
---- a/security/integrity/ima/ima_api.c
-+++ b/security/integrity/ima/ima_api.c
-@@ -245,8 +245,8 @@ int ima_collect_measurement(struct ima_iint_cache *iint, struct file *file,
- 	const char *audit_cause = "failed";
- 	struct inode *inode = file_inode(file);
- 	struct inode *real_inode = d_real_inode(file_dentry(file));
--	const char *filename = file->f_path.dentry->d_name.name;
- 	struct ima_max_digest_data hash;
-+	struct name_snapshot filename;
- 	struct kstat stat;
- 	int result = 0;
- 	int length;
-@@ -317,9 +317,13 @@ int ima_collect_measurement(struct ima_iint_cache *iint, struct file *file,
- 		if (file->f_flags & O_DIRECT)
- 			audit_cause = "failed(directio)";
- 
-+		take_dentry_name_snapshot(&filename, file->f_path.dentry);
-+
- 		integrity_audit_msg(AUDIT_INTEGRITY_DATA, inode,
--				    filename, "collect_data", audit_cause,
--				    result, 0);
-+				    filename.name.name, "collect_data",
-+				    audit_cause, result, 0);
-+
-+		release_dentry_name_snapshot(&filename);
- 	}
- 	return result;
- }
-@@ -432,6 +436,7 @@ void ima_audit_measurement(struct ima_iint_cache *iint,
-  */
- const char *ima_d_path(const struct path *path, char **pathbuf, char *namebuf)
- {
-+	struct name_snapshot filename;
- 	char *pathname = NULL;
- 
- 	*pathbuf = __getname();
-@@ -445,7 +450,10 @@ const char *ima_d_path(const struct path *path, char **pathbuf, char *namebuf)
- 	}
- 
- 	if (!pathname) {
--		strscpy(namebuf, path->dentry->d_name.name, NAME_MAX);
-+		take_dentry_name_snapshot(&filename, path->dentry);
-+		strscpy(namebuf, filename.name.name, NAME_MAX);
-+		release_dentry_name_snapshot(&filename);
-+
- 		pathname = namebuf;
- 	}
- 
-diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
-index 6cd0add524cd..3b2cb8f1002e 100644
---- a/security/integrity/ima/ima_template_lib.c
-+++ b/security/integrity/ima/ima_template_lib.c
-@@ -483,7 +483,10 @@ static int ima_eventname_init_common(struct ima_event_data *event_data,
- 				     bool size_limit)
- {
- 	const char *cur_filename = NULL;
-+	struct name_snapshot filename;
- 	u32 cur_filename_len = 0;
-+	bool snapshot = false;
-+	int ret;
- 
- 	BUG_ON(event_data->filename == NULL && event_data->file == NULL);
- 
-@@ -496,7 +499,10 @@ static int ima_eventname_init_common(struct ima_event_data *event_data,
- 	}
- 
- 	if (event_data->file) {
--		cur_filename = event_data->file->f_path.dentry->d_name.name;
-+		take_dentry_name_snapshot(&filename,
-+					  event_data->file->f_path.dentry);
-+		snapshot = true;
-+		cur_filename = filename.name.name;
- 		cur_filename_len = strlen(cur_filename);
- 	} else
- 		/*
-@@ -505,8 +511,13 @@ static int ima_eventname_init_common(struct ima_event_data *event_data,
- 		 */
- 		cur_filename_len = IMA_EVENT_NAME_LEN_MAX;
- out:
--	return ima_write_template_field_data(cur_filename, cur_filename_len,
--					     DATA_FMT_STRING, field_data);
-+	ret = ima_write_template_field_data(cur_filename, cur_filename_len,
-+					    DATA_FMT_STRING, field_data);
-+
-+	if (snapshot)
-+		release_dentry_name_snapshot(&filename);
-+
-+	return ret;
- }
- 
- /*
--- 
-2.43.0
+I think Charlie's approach is the right way to go.  Putting my userspace 
+hat on, I'd much rather have my allocations fail rather than silently 
+ignore the hint when there's memory pressure.
 
+If there's some real use case that needs these low hints to be silently 
+ignored under VA pressure then we can try and figure something out that 
+makes those applications work.
+
+>
+> - Charlie
 
