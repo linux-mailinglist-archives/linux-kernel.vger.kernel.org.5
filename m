@@ -1,79 +1,81 @@
-Return-Path: <linux-kernel+bounces-111336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E799886AD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:59:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F973886ADA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:00:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABB0E1C22201
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:59:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55E281F22FF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0FD3F8F7;
-	Fri, 22 Mar 2024 10:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80233FB1E;
+	Fri, 22 Mar 2024 10:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="g7xSHxCi";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K32R0Kag"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BH9EoFAh";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uDqzv2c8"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3C63F9C7;
-	Fri, 22 Mar 2024 10:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3B03F9D3;
+	Fri, 22 Mar 2024 10:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711105164; cv=none; b=mL6h4ugnxZztsOCvb6NzgN0XzllUfEcG6kSF/9DHlrii5WBmU1jwqbEvKLseI8ckMbOPmV3tww4ZS5OPXJjb7oSDVslkCZsMF88/XtsCaK1m5xZhKU6owsvnHZivkUdoG8euZInW+YJ4DBgtAaxcJwlFe463iE4ELVK5K3E4vRg=
+	t=1711105164; cv=none; b=I7jbpXLlvhvXV93P2KYegj63qjpiKgINpjPQzinNJ6MH0LG10QRYr1C5A/GqFoLz26QYoxWYMyby1F1H8IJeLS7WneOlTyXRxfx58z1SjeNBTtLvItPcV20kXWAZmr0eIc/VTOUtjXBn04euQHqRttKySVSQ0QL470ctLSrFOv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711105164; c=relaxed/simple;
-	bh=oP9af5cniF5p3gxbjXvqLtOL4dq5x8JKZhk0IbRuazE=;
+	bh=dai3Xz5wzRtRT0lWJ11EnIuZzgBwMopKTyJcyTZEMyY=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=qjWRe27G19lYMpLXQnXEQzlLy0ez7FZ51TsPZHXP0Aa/oQ5TAqs+4Fkyf1kMw/ceD1jg9kReiLGTm3gi0t+14vsXCu1MMIHKGBP8kE275HN+sPaOP/H6ht7VTE4TGrUQu8B4JshzVK9xeunKBeohLyBkKm3maUlLFIP4f+orJvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=g7xSHxCi; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K32R0Kag; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=q2L3KKrYbyq/GrEp+x7/GE1MshqTouq78lc57WJ+6FL9nGBENU56TpsJdz2miFh+y58K1mn4uweoA/7MahknpFYr32TBkc3Hdxe6/y7YPH3NMTXzFM2qPG9I5SiYYSoBfi1FmWNmNBZHNoVe5XH//RvKFL6s5ZwqjzIYr/L28nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BH9EoFAh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uDqzv2c8; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 22 Mar 2024 10:59:19 -0000
+Date: Fri, 22 Mar 2024 10:59:20 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711105160;
+	s=2020; t=1711105161;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cRim6UUbWRNh7EONqTeNK/OtRjMbw8SQJ84ILN6n3Nk=;
-	b=g7xSHxCiMBUnzzRuARnHtu/mNVS9vPVXtHTkpod1i+CVtICssNyzkDSVhOtnVwUJaSaPOE
-	OvhoSc+uXGnUKbV67hHr60pV4xwzXVO2pDvAp0VRwa4vbppB5XBqx91wkXfUBv1ZUpC7Kc
-	QcpLqG9gUXfMhfxwFrUsHShONJj1yMdRwcBcPogExeMbhoLAf9rVYu3smMiCAh9r13pbtL
-	H10GbUF1T0RjTiP8Osj8O6PZtaek02kj9K0IQZMuJlJ0WYqSKzLTQRW3/CTT5922NA3iDH
-	iomQE9lPX+16bDincCMaQBqqT1jRgmhlrbTPyFPYlO9XzTHiuRkt5PFYCRRNng==
+	bh=YLwdPRNNuZ5nU1ClEQFU5fW1R3tmWVNtHDAtg0XsDkU=;
+	b=BH9EoFAhXMHXYfwCFm3oxADFSC3cMdOirbbSNWVmLQuauNmxUVaucMJT6ORs7r/caqcaVQ
+	+PAt8OAHf/PykwO4LdGyGE5if8bkX7oYtVj2HmDE24CHlPYj4FvKr5Ur2tsc8OIeEQhgvW
+	HRqKj1irkcZSbhvWlP/JlerbfCJx6JnQrpGiO9HM4dUToZ4LZzVp7M+eo/l723rtNcus65
+	R+CuqfdGI6wsKAooKBzocQw1kGRQ/Y+wPf3t5jJV8otmNFUaNZEoDCFvxh4UzvasYh3P8N
+	qHPnXf2yuTIN+2gkfEmtK7hVtYo0/iWW38rimfAGo/VqfUuR5T9HUyfB3vUrfA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711105160;
+	s=2020e; t=1711105161;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cRim6UUbWRNh7EONqTeNK/OtRjMbw8SQJ84ILN6n3Nk=;
-	b=K32R0KagLm5QKck5xSuUyGqnLV0u166lw1fy8+kpqoDmYxGwrGKOlYf371PyvZlbn2Kdwv
-	gJ5iezYoj2HdyVCQ==
-From: "tip-bot2 for Anton Altaparmakov" <tip-bot2@linutronix.de>
+	bh=YLwdPRNNuZ5nU1ClEQFU5fW1R3tmWVNtHDAtg0XsDkU=;
+	b=uDqzv2c8+fl2/C3ENmzhA8CDcKdwdpFg9DBUaMCgiGE5h0ipA613H8Rvujbet/V6PvsEpV
+	7Ed1M0N3Jvm09eAA==
+From: "tip-bot2 for Dave Young" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/pm: Work around false positive kmemleak report
- in msr_build_context()
-Cc: Anton Altaparmakov <anton@tuxera.com>, Ingo Molnar <mingo@kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, stable@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+Subject:
+ [tip: x86/urgent] x86/kexec: Do not update E820 kexec table for setup_data
+Cc: Dave Young <dyoung@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+ Jiri Bohac <jbohac@suse.cz>, Eric DeVolder <eric.devolder@oracle.com>,
+ Baoquan He <bhe@redhat.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Kees Cook <keescook@chromium.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240314142656.17699-1-anton@tuxera.com>
-References: <20240314142656.17699-1-anton@tuxera.com>
+In-Reply-To: <Zf0T3HCG-790K-pZ@darkstar.users.ipa.redhat.com>
+References: <Zf0T3HCG-790K-pZ@darkstar.users.ipa.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171110515988.10875.8051105643716026412.tip-bot2@tip-bot2>
+Message-ID: <171110516060.10875.9405979047736972683.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -83,101 +85,112 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     e3f269ed0accbb22aa8f25d2daffa23c3fccd407
-Gitweb:        https://git.kernel.org/tip/e3f269ed0accbb22aa8f25d2daffa23c3fccd407
-Author:        Anton Altaparmakov <anton@tuxera.com>
-AuthorDate:    Thu, 14 Mar 2024 14:26:56 
+Commit-ID:     fc7f27cda843ce294c71767d42b9d8abd015d7cb
+Gitweb:        https://git.kernel.org/tip/fc7f27cda843ce294c71767d42b9d8abd015d7cb
+Author:        Dave Young <dyoung@redhat.com>
+AuthorDate:    Fri, 22 Mar 2024 13:15:08 +08:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 22 Mar 2024 11:01:31 +01:00
+CommitterDate: Fri, 22 Mar 2024 10:07:45 +01:00
 
-x86/pm: Work around false positive kmemleak report in msr_build_context()
+x86/kexec: Do not update E820 kexec table for setup_data
 
-Since:
+crashkernel reservation failed on a Thinkpad t440s laptop recently.
+Actually the memblock reservation succeeded, but later insert_resource()
+failed.
 
-  7ee18d677989 ("x86/power: Make restore_processor_context() sane")
+Test steps:
+  kexec load -> /* make sure add crashkernel param eg. crashkernel=160M */
+    kexec reboot ->
+        dmesg|grep "crashkernel reserved";
+            crashkernel memory range like below reserved successfully:
+              0x00000000d0000000 - 0x00000000da000000
+        But no such "Crash kernel" region in /proc/iomem
 
-kmemleak reports this issue:
+The background story:
 
-  unreferenced object 0xf68241e0 (size 32):
-    comm "swapper/0", pid 1, jiffies 4294668610 (age 68.432s)
-    hex dump (first 32 bytes):
-      00 cc cc cc 29 10 01 c0 00 00 00 00 00 00 00 00  ....)...........
-      00 42 82 f6 cc cc cc cc cc cc cc cc cc cc cc cc  .B..............
-    backtrace:
-      [<461c1d50>] __kmem_cache_alloc_node+0x106/0x260
-      [<ea65e13b>] __kmalloc+0x54/0x160
-      [<c3858cd2>] msr_build_context.constprop.0+0x35/0x100
-      [<46635aff>] pm_check_save_msr+0x63/0x80
-      [<6b6bb938>] do_one_initcall+0x41/0x1f0
-      [<3f3add60>] kernel_init_freeable+0x199/0x1e8
-      [<3b538fde>] kernel_init+0x1a/0x110
-      [<938ae2b2>] ret_from_fork+0x1c/0x28
+Currently the E820 code reserves setup_data regions for both the current
+kernel and the kexec kernel, and it inserts them into the resources list.
 
-Which is a false positive.
+Before the kexec kernel reboots nobody passes the old setup_data, and
+kexec only passes fresh SETUP_EFI/SETUP_IMA/SETUP_RNG_SEED if needed.
+Thus the old setup data memory is not used at all.
 
-Reproducer:
+Due to old kernel updates the kexec e820 table as well so kexec kernel
+sees them as E820_TYPE_RESERVED_KERN regions, and later the old setup_data
+regions are inserted into resources list in the kexec kernel by
+e820__reserve_resources().
 
-  - Run rsync of whole kernel tree (multiple times if needed).
-  - start a kmemleak scan
-  - Note this is just an example: a lot of our internal tests hit these.
+Note, due to no setup_data is passed in for those old regions they are not
+early reserved (by function early_reserve_memory), and the crashkernel
+memblock reservation will just treat them as usable memory and it could
+reserve the crashkernel region which overlaps with the old setup_data
+regions. And just like the bug I noticed here, kdump insert_resource
+failed because e820__reserve_resources has added the overlapped chunks
+in /proc/iomem already.
 
-The root cause is similar to the fix in:
+Finally, looking at the code, the old setup_data regions are not used
+at all as no setup_data is passed in by the kexec boot loader. Although
+something like SETUP_PCI etc could be needed, kexec should pass
+the info as new setup_data so that kexec kernel can take care of them.
+This should be taken care of in other separate patches if needed.
 
-  b0b592cf0836 x86/pm: Fix false positive kmemleak report in msr_build_context()
+Thus drop the useless buggy code here.
 
-ie. the alignment within the packed struct saved_context
-which has everything unaligned as there is only "u16 gs;" at start of
-struct where in the past there were four u16 there thus aligning
-everything afterwards.  The issue is with the fact that Kmemleak only
-searches for pointers that are aligned (see how pointers are scanned in
-kmemleak.c) so when the struct members are not aligned it doesn't see
-them.
-
-Testing:
-
-We run a lot of tests with our CI, and after applying this fix we do not
-see any kmemleak issues any more whilst without it we see hundreds of
-the above report. From a single, simple test run consisting of 416 individual test
-cases on kernel 5.10 x86 with kmemleak enabled we got 20 failures due to this,
-which is quite a lot. With this fix applied we get zero kmemleak related failures.
-
-Fixes: 7ee18d677989 ("x86/power: Make restore_processor_context() sane")
-Signed-off-by: Anton Altaparmakov <anton@tuxera.com>
+Signed-off-by: Dave Young <dyoung@redhat.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20240314142656.17699-1-anton@tuxera.com
+Cc: Jiri Bohac <jbohac@suse.cz>
+Cc: Eric DeVolder <eric.devolder@oracle.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Link: https://lore.kernel.org/r/Zf0T3HCG-790K-pZ@darkstar.users.ipa.redhat.com
 ---
- arch/x86/include/asm/suspend_32.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/kernel/e820.c | 17 +----------------
+ 1 file changed, 1 insertion(+), 16 deletions(-)
 
-diff --git a/arch/x86/include/asm/suspend_32.h b/arch/x86/include/asm/suspend_32.h
-index a800abb..d8416b3 100644
---- a/arch/x86/include/asm/suspend_32.h
-+++ b/arch/x86/include/asm/suspend_32.h
-@@ -12,11 +12,6 @@
+diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+index b66f540..6f1b379 100644
+--- a/arch/x86/kernel/e820.c
++++ b/arch/x86/kernel/e820.c
+@@ -1016,17 +1016,6 @@ void __init e820__reserve_setup_data(void)
  
- /* image of the saved processor state */
- struct saved_context {
--	/*
--	 * On x86_32, all segment registers except gs are saved at kernel
--	 * entry in pt_regs.
--	 */
--	u16 gs;
- 	unsigned long cr0, cr2, cr3, cr4;
- 	u64 misc_enable;
- 	struct saved_msrs saved_msrs;
-@@ -27,6 +22,11 @@ struct saved_context {
- 	unsigned long tr;
- 	unsigned long safety;
- 	unsigned long return_address;
-+	/*
-+	 * On x86_32, all segment registers except gs are saved at kernel
-+	 * entry in pt_regs.
-+	 */
-+	u16 gs;
- 	bool misc_enable_saved;
- } __attribute__((packed));
+ 		e820__range_update(pa_data, sizeof(*data)+data->len, E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
  
+-		/*
+-		 * SETUP_EFI, SETUP_IMA and SETUP_RNG_SEED are supplied by
+-		 * kexec and do not need to be reserved.
+-		 */
+-		if (data->type != SETUP_EFI &&
+-		    data->type != SETUP_IMA &&
+-		    data->type != SETUP_RNG_SEED)
+-			e820__range_update_kexec(pa_data,
+-						 sizeof(*data) + data->len,
+-						 E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
+-
+ 		if (data->type == SETUP_INDIRECT) {
+ 			len += data->len;
+ 			early_memunmap(data, sizeof(*data));
+@@ -1038,12 +1027,9 @@ void __init e820__reserve_setup_data(void)
+ 
+ 			indirect = (struct setup_indirect *)data->data;
+ 
+-			if (indirect->type != SETUP_INDIRECT) {
++			if (indirect->type != SETUP_INDIRECT)
+ 				e820__range_update(indirect->addr, indirect->len,
+ 						   E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
+-				e820__range_update_kexec(indirect->addr, indirect->len,
+-							 E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
+-			}
+ 		}
+ 
+ 		pa_data = pa_next;
+@@ -1051,7 +1037,6 @@ void __init e820__reserve_setup_data(void)
+ 	}
+ 
+ 	e820__update_table(e820_table);
+-	e820__update_table(e820_table_kexec);
+ 
+ 	pr_info("extended physical RAM map:\n");
+ 	e820__print_table("reserve setup_data");
 
