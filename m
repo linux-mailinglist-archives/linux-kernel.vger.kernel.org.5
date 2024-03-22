@@ -1,126 +1,187 @@
-Return-Path: <linux-kernel+bounces-112002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C33E48873FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:47:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 127DE887401
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27B1D2852D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:47:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DAFDB228FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BDE7F460;
-	Fri, 22 Mar 2024 19:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6F57EF0C;
+	Fri, 22 Mar 2024 19:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="nwxJph4F"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ckpGz2m1"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1B47EEE6
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3805C745C0;
+	Fri, 22 Mar 2024 19:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711136816; cv=none; b=CbmKc9hEaxFJZOBXb5jlQtRgErD5ml98YGIwjPXmgY+cMPgiILmMvr+Xsi0j/D1RA8nh79Sf7cI+puEDa/9pisnxRvnzVvIt62bHGIQ7S1lSfHtxQy1E5zPCmOmix3+4r6gorqAcKGo91pG8Fr94hr3ctCO6Ofv5tKbPQOqSB/E=
+	t=1711136849; cv=none; b=DtwwojI1uD4v8f3DKgrr35s76zJC/Ao2HXP0Cs+dAw634ASWSEIan2EUpaserULDf8TabkWWjhGzdfqBo5hPelr4esiMfReMjdreumWdnVk9dBajeICEiA3AZs8pgUZyZU9tc5l8edKdfnO9ePMIwsDQmUDDHHwGvnTPxfr8feg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711136816; c=relaxed/simple;
-	bh=U7eZoHi3uHnPeiiWjIrWr64IsGQF0wptDk5u+PKR+OI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tKBOKglb7Mjy3QuCbvY7Fh3SQbvoEAhHR+xDZmfGPPSTxpyWAzx0fBgBOadApGAAJqyjSAEecs3bUQzEAvV5kchUkhpSFDWsec0XYNWZnHoIjyoCjORPMSY3D9K7RrCoKC9Zuu9/RgYUg7TSMghVxzXBGudtJB9BqIJr1g3ucWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=nwxJph4F; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a466e53f8c0so350772066b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1711136812; x=1711741612; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DgSSYjlN4+EDU0hEA5qrEbHHQ7GX2ErZACZlkqCEZ+A=;
-        b=nwxJph4Fk6QUjHMrTgATgnSKHU4KRBy7OYgOHhNLs+7PilnlqKXB+OiIb91nwi5gfT
-         bGHaR4cSw9nFKtOi9fbEuqHUQrUG9n6gOC6SnR19OAiN8FH6qReffoz/p1UgFC0DAW0Z
-         Q6d4vl0gK3xMEU0+t9Hst138AR7M58qhy0LwM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711136812; x=1711741612;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DgSSYjlN4+EDU0hEA5qrEbHHQ7GX2ErZACZlkqCEZ+A=;
-        b=s7rI0ppLcmlLPtTD6WQLcNnYHcvYAhXIrt7UquleuCHz4DxfRSCctVXDbw2UVefdRb
-         7AF42sfbBQZeuJo0tGUnFa/znkeZ2y0NiI98xPc1SwfGV66F1hk+vrf4FIBxSd4zidyz
-         tzyjEbdxWybkjDpawJXGVuidVK9ViGJgfgnRQmibW+qTzfM2qFUVZxhwAfng89ct27Xx
-         p62lZp4Je0F+674bCLjZplD2cmVF9Ej+OEOGXmA4Ju0pMd8NftvEdbIgBgX/BoDydyRy
-         HvYVMXzofaWUHEG+D41vDOd6Uz+sXtmNwsyhfyzqQcMeBQsOgYOyUmDwfiRHvfVMcBUw
-         S+3A==
-X-Forwarded-Encrypted: i=1; AJvYcCVXw1ZKwP0JxK2xDYugwQgXeoghhIaTN6KXf0Yx6ZE9+Uo6igWBeaVqkBWj76S74E9303v5qUy5Y9oTPCUtnuAtJcsnIIMlqwk+jlD6
-X-Gm-Message-State: AOJu0YwzSiQvCXhmS+XHOkc+p83KeZVcOZhjT80TeUHm+z/cmTp0pWhs
-	bPMIyHUV41fiKQBlnQyJwOrHsy9lFGm9Mvc+9RR9/3QEd6fv7fC1/cOEmRmbcW2pNBDo0gI1r+Y
-	93hFUNz1IOnuBSBIjK7tiTYV670RdVi4CL0HbLQ==
-X-Google-Smtp-Source: AGHT+IG+hLVuzSz1xNzlyW3HKUHdwEY6Nk4mkZw/FiNiVTqnWPqumkuOIWEw3KgJCkSCJ8+TFRk6s8gjzxX68YelxYk=
-X-Received: by 2002:a17:906:61a:b0:a46:5f04:134 with SMTP id
- s26-20020a170906061a00b00a465f040134mr512071ejb.70.1711136812445; Fri, 22 Mar
- 2024 12:46:52 -0700 (PDT)
+	s=arc-20240116; t=1711136849; c=relaxed/simple;
+	bh=nxEGXVhNhN4RVfE3d1n+2+C+HEvgFuhkK+1tNpRSEbI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KoBldVl8oLJHSJy8zzlgj89x/5P1TibY5V2be6nfn4P8RmTt2dcUTd8orsDAygizjO3ZB6rkikbbUSgjDIfnfbel8+R8PZnouSWamnu9veFcPrcvErjFmjLxqzlO5TxLR0dzXvnv5sjGlUQP1wCcrsY6NDqB4D1Bi4fW4lsdk+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ckpGz2m1; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9257640E01B5;
+	Fri, 22 Mar 2024 19:47:23 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id kApiESXmhvFM; Fri, 22 Mar 2024 19:47:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711136839; bh=DmmHov9qZK91tSR+f8HXIJGfm9hhKvVNviRTerX3QXY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ckpGz2m1aGeUUEDfnOnKk9xVdwdmhnREG+tzE5h8RE7AfMrFLNlH8UrsEgn3tJsWw
+	 fwHwEDhhLhMClv7vG/qKyFfIkAj9ywkLmCo9EtW74crm+v/Su7Q2aiVOdTLki0e13J
+	 rD37/jrKQKcQhccrjftN3UaozrDvndrCkf1MVmHmBtsuVtTcZjKSTopfG8m59coe/8
+	 fviSpb614HLGADaxdL8UNAfMQGeZ4Us5XO30RnkrH5mRO4Fbpnhg3leKvlVQCynmBq
+	 PBWjsyv0yQ3U49VWA/KoD1Xm9nInT6eYoCLpeY3HhpgOniBH8thYfd537GpzefKz9P
+	 ritHXTamlK42Zj4g3JB5gnuGA0oyKwKSORrQ7ZR0jSjERcD1ABzTT3jTYlCB5tFn7v
+	 oz/Mm1eSu511R0eO3TA4qAQjevxtDXIQAA9S0lzt153p9Le8SEmua6MDsP/Jx0Xtc0
+	 HBhEkxAuiYoywM446zI2Aimu6lYj2x92lrfm3Lyxn71emU55NuVvOaaEK08GltA1cN
+	 zNrHbN/oDiKz6PE8/KsWr0f34JXlgW2lRyVd19krBGdUDBrGGIY435NPP84Lv/pOmv
+	 wWa0MXIsFqi/ELXTRXAFXCDF2KL2umRKCi45DGWJlSmf1cZtYqsR64HI6DG22ULa/a
+	 wAxDiyGY+fVZpW/FlVazaCcs=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1637840E00B2;
+	Fri, 22 Mar 2024 19:47:05 +0000 (UTC)
+Date: Fri, 22 Mar 2024 20:46:58 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Kees Cook <keescook@chromium.org>
+Cc: tglx@linutronix.de, Guixiong Wei <weiguixiong@bytedance.com>,
+	jgross@suse.com, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, peterz@infradead.org,
+	gregkh@linuxfoundation.org, tony.luck@intel.com,
+	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] x86, relocs: Ignore relocations in .notes section on
+ walk_relocs
+Message-ID: <20240322194658.GCZf3gMphnWeR9upN6@fat_crate.local>
+References: <20240317150547.24910-1-weiguixiong@bytedance.com>
+ <171079804927.224083.15609364452504732018.b4-ty@chromium.org>
+ <20240318215612.GDZfi4fG52DTgra51p@fat_crate.local>
+ <202403181644.690285D3@keescook>
+ <20240319081640.GAZflJ6IBQ7TEKD2Ll@fat_crate.local>
+ <202403190955.25E5E03E6@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABOYnLyevJeravW=QrH0JUPYEcDN160aZFb7kwndm-J2rmz0HQ@mail.gmail.com>
- <CAJfpegu8qTARQBftZSaiif0E6dbRcbBvZvW7dQf8sf_ymoogCA@mail.gmail.com> <c58a8dc8-5346-4247-9a0a-8b1be286e779@redhat.com>
-In-Reply-To: <c58a8dc8-5346-4247-9a0a-8b1be286e779@redhat.com>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Fri, 22 Mar 2024 20:46:40 +0100
-Message-ID: <CAJfpegt3UCsMmxd0taOY11Uaw5U=eS1fE5dn0wZX3HF0oy8-oQ@mail.gmail.com>
-Subject: Re: BUG: unable to handle kernel paging request in fuse_copy_do
-To: David Hildenbrand <david@redhat.com>
-Cc: xingwei lee <xrivendell7@gmail.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, samsun1006219@gmail.com, 
-	syzkaller-bugs@googlegroups.com, linux-mm <linux-mm@kvack.org>, 
-	Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202403190955.25E5E03E6@keescook>
 
-On Fri, 22 Mar 2024 at 16:41, David Hildenbrand <david@redhat.com> wrote:
+On Tue, Mar 19, 2024 at 09:56:29AM -0700, Kees Cook wrote:
+> > Yes, please. Just send a Reviewed-by and it'll get picked up.
+> 
+> Okay, thanks!
 
-> But at least the vmsplice() just seems to work. Which is weird, because
-> GUP-fast should not apply (page not faulted in?)
+Dammit, how did this commit land upstream and in stable?!
 
-But it is faulted in, and that indeed seems to be the root cause.
-Improved repro:
+Forgot to zap it from your tree and sent the branch to Linus anyway?
 
-#define _GNU_SOURCE
+Kees, please refrain from taking tip patches in the future. You know how
+this works - get_maintainers.pl.
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-#include <sys/mman.h>
-#include <sys/syscall.h>
+Thx.
 
-int main(void)
-{
-        int fd1, fd2;
-        int pip[2];
-        struct iovec iov;
-        char *addr;
-        int ret;
+Date: Fri, 22 Mar 2024 14:47:05 -0400
+From: Sasha Levin <sashal@kernel.org>
+To: stable-commits@vger.kernel.org, keescook@chromium.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Patch "x86, relocs: Ignore relocations in .notes section" has been
+ added to the 5.4-stable tree
+X-Mailer: git-send-email 2.43.0
+Message-ID: <20240322184705.144463-1-sashal@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
 
-        fd1 = syscall(__NR_memfd_secret, 0);
-        addr = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, fd1, 0);
-        ftruncate(fd1, 7);
-        addr[0] = 1; /* fault in page */
-        pipe(pip);
-        iov.iov_base = addr;
-        iov.iov_len = 0x50;
-        ret = vmsplice(pip[1], &iov, 1, 0);
-        if (ret == -1 && errno == EFAULT) {
-                printf("Success\n");
-                return 0;
-        }
+This is a note to let you know that I've just added the patch titled
 
-        fd2 = open("/tmp/repro-secretmem.test", O_RDWR | O_CREAT, 0x600);
-        splice(pip[0], NULL, fd2, NULL, 0x50, 0);
+    x86, relocs: Ignore relocations in .notes section
 
-        return 0;
-}
+to the 5.4-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     x86-relocs-ignore-relocations-in-.notes-section.patch
+and it can be found in the queue-5.4 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+
+commit 91aa857ccbd1212a23cd80bb45f71715f2db7144
+Author: Kees Cook <keescook@chromium.org>
+Date:   Tue Feb 27 09:51:12 2024 -0800
+
+    x86, relocs: Ignore relocations in .notes section
+    
+    [ Upstream commit aaa8736370db1a78f0e8434344a484f9fd20be3b ]
+    
+    When building with CONFIG_XEN_PV=y, .text symbols are emitted into
+    the .notes section so that Xen can find the "startup_xen" entry point.
+    This information is used prior to booting the kernel, so relocations
+    are not useful. In fact, performing relocations against the .notes
+    section means that the KASLR base is exposed since /sys/kernel/notes
+    is world-readable.
+    
+    To avoid leaking the KASLR base without breaking unprivileged tools that
+    are expecting to read /sys/kernel/notes, skip performing relocations in
+    the .notes section. The values readable in .notes are then identical to
+    those found in System.map.
+    
+    Reported-by: Guixiong Wei <guixiongwei@gmail.com>
+    Closes: https://lore.kernel.org/all/20240218073501.54555-1-guixiongwei@gmail.com/
+    Fixes: 5ead97c84fa7 ("xen: Core Xen implementation")
+    Fixes: da1a679cde9b ("Add /sys/kernel/notes")
+    Reviewed-by: Juergen Gross <jgross@suse.com>
+    Signed-off-by: Kees Cook <keescook@chromium.org>
+    Signed-off-by: Sasha Levin <sashal@kernel.org>
+
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index 1c3a1962cade6..0043fd374a62f 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -596,6 +596,14 @@ static void print_absolute_relocs(void)
+ 		if (!(sec_applies->shdr.sh_flags & SHF_ALLOC)) {
+ 			continue;
+ 		}
++		/*
++		 * Do not perform relocations in .notes section; any
++		 * values there are meant for pre-boot consumption (e.g.
++		 * startup_xen).
++		 */
++		if (sec_applies->shdr.sh_type == SHT_NOTE) {
++			continue;
++		}
+ 		sh_symtab  = sec_symtab->symtab;
+ 		sym_strtab = sec_symtab->link->strtab;
+ 		for (j = 0; j < sec->shdr.sh_size/sizeof(Elf_Rel); j++) {
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
