@@ -1,207 +1,155 @@
-Return-Path: <linux-kernel+bounces-111052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4D9886768
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:19:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F17888676D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:22:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAA93B220C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:19:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50CE1286317
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:22:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E89EF12E51;
-	Fri, 22 Mar 2024 07:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UkbRVOSP"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A96D125CF;
+	Fri, 22 Mar 2024 07:22:26 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A75310A3E;
-	Fri, 22 Mar 2024 07:18:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E671170A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 07:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711091932; cv=none; b=F24H1dDifwmxBg/Md6R/rexFMScUold9oPFgxMGGUj45hQ+1eLrOCpKQFPN7pUYyM0SmWHvMGmgqU+NZ/2qsqV4xuyNsyka7PcTU5bjIPzti1VEo9ryOo5RqMe4lF3v7mPUHATQZumFNwrQqfMDf7+nj8C3gJGVbAZBlS0TahH0=
+	t=1711092146; cv=none; b=cWhekyfoV52mfLNwkLXDvDF2ajEL4CWaUYTA2I/nDEjMLmeje6qKkzsazNAq6OWqnZAeaCfBTZnU7eFk5/J7JG+dRqPJ56GhOIGoswKOdNwgCUyqSDLaNaEypGx7cLYfaJcYEvRfSjSv5D3ibOth1s3Tm+d87s3Wsau0nUXatoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711091932; c=relaxed/simple;
-	bh=NPlRInHwRJ6iohau5+kZ/oUQSv6uulok/FeJjsPteg8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b11GOBldnNMIr9k613nn49P9ZfqJy2CE6PyvdPADGB1a5Nxw3uj10wTBFUR/PgoFlMYbkxFst+1Tkeg1vFqBg3PZuHGySPC0Z/HUznPKYtiGRvUSnju3Z/H0Qy3KjfckSjMZqnKR/GmjEVGZjakCNfQabDvcbqSn+NfpSW94ebo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UkbRVOSP; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-414700cffd6so14093465e9.1;
-        Fri, 22 Mar 2024 00:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711091929; x=1711696729; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=St/cAfZevHpUSs708RoRbr6UCDF/rEtJSg31TN9Zl9c=;
-        b=UkbRVOSPyD2k5lUtBa5X7cgIyuuSjp26Nxx5G24InWnK3NjghycVsOZTrxKD0vb+8N
-         G2zNdNH9itU9EpPZl6i8iRUHjJ8e1dxlayTwieLEOWlrFqFCcs90ns16PlaKbTzJsuxk
-         5PckDJsJQ3S6Ve+i91JNCoE06vUv9c3lkaMIT9i9WFe+k8pmmRh/GrRrgFG0fZfn21QJ
-         e5isLSgVw5UHXphBxaW+OohGQe+T8xYo/QBSB5xQXaC2oFn1fqPZR+oGKk8R5kuBxmts
-         Ou0Lwpdwmazz/BXcskNVMslF7TRwH75yIHB1hw3g0aVGCD3EB1ODSYCeM3tVqMgbyRzQ
-         xZwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711091929; x=1711696729;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=St/cAfZevHpUSs708RoRbr6UCDF/rEtJSg31TN9Zl9c=;
-        b=I/T7MjISA23n9iTGcxl8BpEHMSigwRtAvry12lU15aeSlSy7w/nUfVOcXU7g9KQiBl
-         DCsuHSkNH4WJXyk8y2v+F+lu5MO1KOUtBf/9hZeKN6W+A5IiGEPQoQyxzUWDd4oM4LLV
-         QF091G7lTToRIQEJhlsS8vV9a90x50oVsZrkoLPrquxZKR0rT68WSZtUEYu26DOWDRUf
-         CCVJ9gOueWVVoKP+Q9XmlOOLFUOczxJllGiNfBPLzSHXks7OmiFfTpytEb25bl8ZT/h8
-         ZncPPD7KcPMMG/5KzNj7UxhZgwk0qfrtQO7oZd0SM/LJyKyobjjccOH+bmEpMyOgEAuK
-         rvyw==
-X-Forwarded-Encrypted: i=1; AJvYcCUORnGSlKNN0jAT8dETru1TIxz21YHzHIJMokUHOZdzx9cDy0oj4C4OrhT7auGd5qofkGbABdwGZ5aYDtmXJAErPg09hIQ77ILErvzWWxqbbMFHVvVSEVXnI0LWRb2y7SCI8LdI+JYuow==
-X-Gm-Message-State: AOJu0YyG1UFhawoHRUc4cUt2qjCbgT4AR8OpKFLWGuMghZy5+2KAOXkh
-	zfrlxZVuH5jpi0eiTXeoC24pniTA/J12Ss9MyRFBjVhSyHH/YFSG
-X-Google-Smtp-Source: AGHT+IHcp/K2WkruN9gpDQ2hrdMvHpSx8ArtcQIK2aNIjM1/GujN5ExwnsHE1sPbM4kmieRgrFYqfg==
-X-Received: by 2002:a05:600c:5716:b0:414:fcc:ff4b with SMTP id jv22-20020a05600c571600b004140fccff4bmr798757wmb.20.1711091928465;
-        Fri, 22 Mar 2024 00:18:48 -0700 (PDT)
-Received: from ?IPv6:2001:a61:343e:8301:d737:22b0:7431:8d01? ([2001:a61:343e:8301:d737:22b0:7431:8d01])
-        by smtp.gmail.com with ESMTPSA id t18-20020a05600c199200b00414612a43a9sm7928823wmq.28.2024.03.22.00.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 00:18:48 -0700 (PDT)
-Message-ID: <21b8933dc87ce76eb15abd3dbcb6f025f282eedf.camel@gmail.com>
-Subject: Re: [PATCH v2 1/3] iio: accel: adxl345: Update adxl345
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Lothar Rubusch
-	 <l.rubusch@gmail.com>, lars@metafoo.de, Michael.Hennerich@analog.com, 
-	jic23@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Date: Fri, 22 Mar 2024 08:18:47 +0100
-In-Reply-To: <51e3683f-be53-4bb7-a994-ffd05744a745@linaro.org>
-References: <20240322003713.6918-1-l.rubusch@gmail.com>
-	 <20240322003713.6918-2-l.rubusch@gmail.com>
-	 <51e3683f-be53-4bb7-a994-ffd05744a745@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1711092146; c=relaxed/simple;
+	bh=vA9V4rMxzBXvxWkJTH6dyTC2wPtZ0a7RH9Hx5DktLNg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dF5z7GIlblQncjQLVkZf0889WWCsXRfDeAsu1CJS15g9pLoRL/5xhCBTiWS+XT9hxR0YNh7zmn+kfdL3EMQPiKVSDg6lpc6b1XAkbtSKTXGVL6zCu0d3Sn+90YTW5NCmghrn0uke3BcYtcSFdWVtrDEixBocgjr3B8RUlKJZ8xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rnZEH-00076G-Pd; Fri, 22 Mar 2024 08:22:17 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rnZEG-007nie-TN; Fri, 22 Mar 2024 08:22:16 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rnZEG-009ZEN-2g;
+	Fri, 22 Mar 2024 08:22:16 +0100
+Date: Fri, 22 Mar 2024 08:22:16 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Thorsten Scherer <t.scherer@eckelmann.de>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PULL] siox changes for 6.9
+Message-ID: <mryuydqd7pqxwkvylp24fped57tsys4me4pazdg4ujwkwtthhp@26rnjgzjesrx>
+References: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
+ <ad141dd22c7d95ad0bd347f257ce586e1afb22a4.1708328466.git.u.kleine-koenig@pengutronix.de>
+ <ftvih5huvc72a76s7fe4zisrqtaax5tcgoukqoi2bkz47zcrq2@4fixszonixgl>
+ <2024030732-ocean-handbook-161f@gregkh>
+ <nuchb5aaywc5vr6cof4gqbavq4rkte3hvzgs6au3lbg6s6wlq4@bvbjevbum7kc>
+ <o52ptgjxknpxhtyemb5xdjyobidejvzluicsoc5ceajy4pz4xy@6e3aecoiz7eh>
+ <k7pd3oar3e3mogaokjl7mykqy3w3cifl4dgbukmnsynyqgk5ze@ch5mn5xln2j7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="dviotmiylxvmpowz"
+Content-Disposition: inline
+In-Reply-To: <k7pd3oar3e3mogaokjl7mykqy3w3cifl4dgbukmnsynyqgk5ze@ch5mn5xln2j7>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Fri, 2024-03-22 at 06:53 +0100, Krzysztof Kozlowski wrote:
-> On 22/03/2024 01:37, Lothar Rubusch wrote:
-> > Move driver wide constants and fields into the header.
->=20
-> Why?
->=20
-> > Let probe call a separate setup function. Provide
->=20
-> Why?
->=20
-> > possibility for an SPI/I2C specific setup to be passed
-> > as function pointer to core.
->=20
-> Why?
->=20
-> Your commit message *MUST* explain why you are doing things.
->=20
+
+--dviotmiylxvmpowz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Greg,
+
+On Sat, Mar 16, 2024 at 08:37:04AM +0100, Uwe Kleine-K=F6nig wrote:
+> On Fri, Mar 08, 2024 at 10:20:05PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Thu, Mar 07, 2024 at 09:38:07AM +0100, Uwe Kleine-K=F6nig wrote:
+> > > On Thu, Mar 07, 2024 at 07:29:59AM +0000, Greg Kroah-Hartman wrote:
+> > > > Can you send me a "real" git pull request so that I can verify it is
+> > > > what you say it is (ideally with a signed tag)?
+> > >=20
+> > > Sure, can do. I will do that tomorrow when (and if) my branch is in n=
+ext
+> > > and so got a bit more exposure.
 > >=20
-> > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-> > ---
-> > =C2=A0drivers/iio/accel/adxl345.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
- 44 +++++++++++-
-> > =C2=A0drivers/iio/accel/adxl345_core.c | 117 +++++++++++++++++---------=
------
-> > =C2=A0drivers/iio/accel/adxl345_i2c.c=C2=A0 |=C2=A0 30 ++++----
-> > =C2=A0drivers/iio/accel/adxl345_spi.c=C2=A0 |=C2=A0 28 ++++----
-> > =C2=A04 files changed, 134 insertions(+), 85 deletions(-)
+> > That has worked so far. So here comes the requested pull request. I
+> > dropped the two patches you collected in the meantime in your
+> > char-misc-next branch. The two branches (i.e. your char-misc-next and
+> > this PR's tag) merge without conflict.
 > >=20
-> > diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
-> > index 284bd387c..01493c999 100644
-> > --- a/drivers/iio/accel/adxl345.h
-> > +++ b/drivers/iio/accel/adxl345.h
-> > @@ -8,6 +8,39 @@
-> > =C2=A0#ifndef _ADXL345_H_
-> > =C2=A0#define _ADXL345_H_
-> > =C2=A0
-> > +#include <linux/iio/iio.h>
-> > +
-> > +/* ADXL345 register definitions */
-> > +#define ADXL345_REG_DEVID		0x00
-> > +#define ADXL345_REG_OFSX		0x1E
-> > +#define ADXL345_REG_OFSY		0x1F
-> > +#define ADXL345_REG_OFSZ		0x20
-> > +#define ADXL345_REG_OFS_AXIS(index)	(ADXL345_REG_OFSX + (index))
-> > +#define ADXL345_REG_BW_RATE		0x2C
-> > +#define ADXL345_REG_POWER_CTL		0x2D
-> > +#define ADXL345_REG_DATA_FORMAT		0x31
-> > +#define ADXL345_REG_DATAX0		0x32
-> > +#define ADXL345_REG_DATAY0		0x34
-> > +#define ADXL345_REG_DATAZ0		0x36
-> > +#define ADXL345_REG_DATA_AXIS(index)	\
-> > +	(ADXL345_REG_DATAX0 + (index) * sizeof(__le16))
-> > +
-> > +#define ADXL345_BW_RATE			GENMASK(3, 0)
-> > +#define ADXL345_BASE_RATE_NANO_HZ	97656250LL
-> > +
-> > +#define ADXL345_POWER_CTL_MEASURE	BIT(3)
-> > +#define ADXL345_POWER_CTL_STANDBY	0x00
-> > +
-> > +#define ADXL345_DATA_FORMAT_FULL_RES	BIT(3) /* Up to 13-bits resolutio=
-n */
-> > +#define ADXL345_DATA_FORMAT_SPI=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 BIT(6) /* spi-3wire */
-> > +#define ADXL345_DATA_FORMAT_2G		0
-> > +#define ADXL345_DATA_FORMAT_4G		1
-> > +#define ADXL345_DATA_FORMAT_8G		2
-> > +#define ADXL345_DATA_FORMAT_16G		3
-> > +#define ADXL345_DATA_FORMAT_MSK		~((u8) BIT(6)) /* ignore spi-
-> > 3wire */
-> > +
-> > +#define ADXL345_DEVID			0xE5
-> > +
-> > =C2=A0/*
-> > =C2=A0 * In full-resolution mode, scale factor is maintained at ~4 mg/L=
-SB
-> > =C2=A0 * in all g ranges.
-> > @@ -23,11 +56,20 @@
-> > =C2=A0 */
-> > =C2=A0#define ADXL375_USCALE	480000
-> > =C2=A0
-> > +enum adxl345_device_type {
-> > +	ADXL345,
-> > +	ADXL375,
-> > +};
-> > +
-> > =C2=A0struct adxl345_chip_info {
-> > =C2=A0	const char *name;
-> > =C2=A0	int uscale;
-> > =C2=A0};
-> > =C2=A0
-> > -int adxl345_core_probe(struct device *dev, struct regmap *regmap);
-> > +extern const struct adxl345_chip_info adxl3x5_chip_info[];
-> > +
-> > +int adxl345_core_probe(struct device *dev, struct regmap *regmap,
-> > +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct adxl345_chip_info =
-*chip_info,
-> > +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int (*setup)(struct device*, st=
-ruct regmap*));
+> > The following changes since commit 6613476e225e090cc9aad49be7fa504e290d=
+d33d:
+> >=20
+> >   Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+> >=20
+> > are available in the Git repository at:
+> >=20
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git ta=
+gs/siox/for-greg-6.9-rc1
+> >=20
+> > for you to fetch changes up to db418d5f1ca5b7bafc8eaa9393ea18a7901bb0ed:
+> >=20
+> >   siox: bus-gpio: Simplify using devm_siox_* functions (2024-03-08 22:0=
+1:10 +0100)
+> >=20
+> > Please pull this for the 6.9-rc1 merge window.
 >=20
-> Last setup argument is entirely unused. Drop this change, it's not
-> related to this patchset. Neither explained.
+> I didn't hear anything back from you and wonder if there is still a
+> chance to get this in. I guess that's just you being busy with other
+> (and more important) stuff. Would it help you if I sent a pull request
+> to Linus directly?
 >=20
+> The changes are in next leading to db418d5f1ca5 since next-20240308. (As
+> db418d5f1ca since next-20240312, I rebased as two of the six siox
+> patches got into char-misc-next that were picked up directly from the
+> mailing list. Before the rebase it was 4ab973203404.)
 
-Yeah, you need to make it explicit in the message that this change is in pr=
-eparation
-for a future change (adding the 3-wire spi mode). Otherwise it's natural fo=
-r
-reviewers to make questions about it... Maybe another one that could live i=
-n it#s own
-patch.
+You probably saw me being impatient and sending the PR to Linus
+directly. If not: These changes are already in the mainline now
+(00453419575d6b4f5ce0f370da9421cf5253f103) and this is the thread you
+can drop from your todo list. I removed the above tag from my repository
+to (hopefully) prevent future confusion.
 
-- Nuno S=C3=A1=20
->=20
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--dviotmiylxvmpowz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmX9MacACgkQj4D7WH0S
+/k5TgAf/dp9yPwOLSOijBryob6WgEuV4Pn3MW54oV8BiMvGdQMNCAX2BXe6vU3NU
+ISKlZ8EPZkrV5wu9jQ2Kpc+kcwQcTxC4KE6aJMIwOxq917OWW3M4avsrIMKHqLqk
+P5Xt6lyc3NhJFmNC52RDpwISoosz7h29yyWMAkByPUcoasXAGY8I1Dg0AlIR9oKv
+eswYxZUJPepBzXaF9D3Tp8EFGIkvoUn0j9wq3JRpBSiwoqiqxrczZ+hqbjiQ4zfz
+VYaPc4nXyAGy0yx+x3Q9CMFma2wL933D7R+7HxoBii1bpzCqCk0x20K/1XC9ZREY
+IPtdjB8VFcvSlAVbLrbwLhA3PxVwSw==
+=3pxP
+-----END PGP SIGNATURE-----
+
+--dviotmiylxvmpowz--
 
