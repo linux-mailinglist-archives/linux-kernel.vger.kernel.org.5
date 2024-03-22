@@ -1,172 +1,147 @@
-Return-Path: <linux-kernel+bounces-111161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E28886884
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:50:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E516288687D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFF3B1F21390
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:50:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 858B41F215AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2266C20DD2;
-	Fri, 22 Mar 2024 08:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C941A29F;
+	Fri, 22 Mar 2024 08:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bvVuvld4"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y8CNUMnj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="isbvmZQJ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y8CNUMnj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="isbvmZQJ"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96291B277;
-	Fri, 22 Mar 2024 08:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA5D19452;
+	Fri, 22 Mar 2024 08:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711097408; cv=none; b=p94Zt7Dfb4ZLcxxir6JbqdVZzeY/Viv8DiQi1BgS61ZzTKtCanPN229GldS1nnHvSDr96Wc1m209/IcJr1UH7CMPJpJLJV+QhDZvc6C5VfoIDc+SPTkAAD1dLRaC6vGiBxTL/lNI9UVH8zDKsCPeJRIKCQfm0imDD3RTyrr3yJM=
+	t=1711097387; cv=none; b=i6NGHouzsRCkhLaQDe3BnYpgwwOVICqwyFC1EQGdxArzOhBcpCwKFtvJ60Rw4gTiygs+Q1lKTHYvJuyhpKtuOfzo7EXLNv6X3kGEJrtzGZap6VhvuQGp6j9MKwfAHp7ocS9Ug3buic6uE9vuTT7Tkvve8CGIwWKRLILKtzmxRfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711097408; c=relaxed/simple;
-	bh=U9JfB1zvQO1sWnqC+teAftUQyKNdZFSLzpoIHEeAvGc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U3ey5xsQfVDdvnBjZg/nIO55VKvC4S5x1H6VcuzTnwqDhvEfykUL5wbZkYgcq//n1cGQltVGYLSdoNw30Hu2+5KY+V2Vt0eC+Mcu0VmN27phulSo+NKXQI8achb0h2hugTjPun/pll1lp7oHUnLhe0SoF/4cA8fCkUReXrXdnr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bvVuvld4; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e04ac4209eso16134575ad.1;
-        Fri, 22 Mar 2024 01:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711097406; x=1711702206; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UQPV7jUa05dU9iEMp/1ytAeEWTIcwBktdRO6vcJ++jM=;
-        b=bvVuvld4k82mKpuepUJOYBglPOV4ZtQNoUiZnOwGDJBhOIiF/jr8Wkabk0MO3+CURx
-         REnqFBl/d4mwUfLiAWGM4YhVXdJSKrv8rWKe4rIvsvcsxar3xwx+9TCJzBpuDJnYfv1n
-         1W99R5WviEnsH/QPjcx5zfbHxiytH1gosxTg3tfSvm85H4AxGmtsugaioZOlicK5o7BO
-         yybb4Z0NsVa79lUn/7Awzud0xtYTc8iQOyDglIbLBKWUm0lBftX5iqH5oUVMz7qRbmhi
-         AdkCovW+cd6JfF4coinaWtrr9J72lTqpGR2z8Ur4g3XQoVKakwMOHoUVQQWHvb82E7OB
-         FEgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711097406; x=1711702206;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UQPV7jUa05dU9iEMp/1ytAeEWTIcwBktdRO6vcJ++jM=;
-        b=wmUNBdYAFX0Y+v5/RwCi6xOKAcQmmWjbWzCo1LSl5uHDf9lYT9N35qqH1qYYk0Ka83
-         JhmB9Ykn8ppCYKKTkQBCTH4sQnDg3+r5cVTBUUrOEdXBxHC3kmxWjgSx9MPhzhaNunzX
-         mqYHuBi490SNXTx5VSYP2rqoPpxVZvcRwaTDV47jfoWx3ojcxowIQ3nF1ZHxPHQmOuNk
-         6ZF0q13hEPyjVW8SFsyvXuGQXPAFZxRdDyUDuRLu6b4zUo+E1C+dPgnkb88m3y12+jqw
-         0S3Pk5PlyuyCPd+mX7j8z3iPHkXzWGx6MITk7DNLjgHlGDumJXJ/vv/IsYgNzLqoH24P
-         NbYA==
-X-Forwarded-Encrypted: i=1; AJvYcCWlfdF018QLShzu3vs7Ded2w3okQcktujr5uVKr1ipwSX5T6e3HcCAiAYu9JjvsIodVGCj3RX+f6wi4hhREXSfQtEh3u+buNpilLEsOgwC7TxopfC1ozSVJSHJBnmx4EJm4hm0J
-X-Gm-Message-State: AOJu0YwAdfHJ9Hp+xHWakDt3/rIX92qj4J2a0uWxwhj/3072Z3JBMT5/
-	4ujA9zp+Ub/l0EKkCioL1Bo6lr+fpyQ6p5hzmuctRQkfqG1mqu1n
-X-Google-Smtp-Source: AGHT+IHaLY2PUDsp7RYl90sQQ2ebshPFnPejDPXg9sP1nM/Tb50mAgFOwo+CJmWObpJ6Ots5cmGUTA==
-X-Received: by 2002:a17:902:ce8d:b0:1df:ff0c:cccb with SMTP id f13-20020a170902ce8d00b001dfff0ccccbmr2177547plg.53.1711097406131;
-        Fri, 22 Mar 2024 01:50:06 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id u4-20020a170902e5c400b001dd5a0a20d6sm1328165plf.287.2024.03.22.01.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 01:50:05 -0700 (PDT)
-From: Barry Song <21cnbao@gmail.com>
-To: corbet@lwn.net,
-	workflows@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	apw@canonical.com,
-	joe@perches.com,
-	dwaipayanray1@gmail.com,
-	lukas.bulwahn@gmail.com
-Cc: linux-kernel@vger.kernel.org,
-	Xining Xu <ma.xxn@outlook.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chris Zankel <chris@zankel.net>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Mark Brown <broonie@kernel.org>,
-	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH v3 2/2] scripts: checkpatch: Check unused parameters for function-like macro
-Date: Fri, 22 Mar 2024 21:49:37 +1300
-Message-Id: <20240322084937.66018-3-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240322084937.66018-1-21cnbao@gmail.com>
-References: <20240322084937.66018-1-21cnbao@gmail.com>
+	s=arc-20240116; t=1711097387; c=relaxed/simple;
+	bh=Rus4EOlYjpMcjkHVpN+7Cwqd1GjzJuQxBDkGG/aunOE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=csYcT1BbFnWTREhTGKvqSuswm7ATlAe5xtTXMQKzwX1BqWRZuWC0dbdI0/H+GF1CLkOKUVlXwq86EdWv4zSiueDxNoH15rdhMoP5rIHnAA075c8csbjxIhCXJsPAqln/HfyYtS4yXMMnGAxdV1pRTKqVSf3FhawGATI7/x93hiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y8CNUMnj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=isbvmZQJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y8CNUMnj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=isbvmZQJ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from lion.mk-sys.cz (unknown [10.100.225.114])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 47F8D382B0;
+	Fri, 22 Mar 2024 08:49:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711097383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rus4EOlYjpMcjkHVpN+7Cwqd1GjzJuQxBDkGG/aunOE=;
+	b=y8CNUMnjl7AtHfrpc0fCXd2UwyPa4Ub748sc5+GmKAVam87psdAIPAC7ikpP5+eNbW7kHV
+	nJQ/ucT/uxS5CUGdqtjhIrd2jWWSa7bqB0zuCGGAMQo5mseCdrFm8s8d2Dv2EPwi6lXfst
+	e9b/S8vyVN3RndrdOX/3WFH60+l0HuM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711097383;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rus4EOlYjpMcjkHVpN+7Cwqd1GjzJuQxBDkGG/aunOE=;
+	b=isbvmZQJNTnQ8jY7mycgQAJVRRIpIj2W+R+OvPTNzi0y/6D5y08b+GP73P30B7zP6HOvDg
+	p7WTxlqS90PS4DDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711097383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rus4EOlYjpMcjkHVpN+7Cwqd1GjzJuQxBDkGG/aunOE=;
+	b=y8CNUMnjl7AtHfrpc0fCXd2UwyPa4Ub748sc5+GmKAVam87psdAIPAC7ikpP5+eNbW7kHV
+	nJQ/ucT/uxS5CUGdqtjhIrd2jWWSa7bqB0zuCGGAMQo5mseCdrFm8s8d2Dv2EPwi6lXfst
+	e9b/S8vyVN3RndrdOX/3WFH60+l0HuM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711097383;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rus4EOlYjpMcjkHVpN+7Cwqd1GjzJuQxBDkGG/aunOE=;
+	b=isbvmZQJNTnQ8jY7mycgQAJVRRIpIj2W+R+OvPTNzi0y/6D5y08b+GP73P30B7zP6HOvDg
+	p7WTxlqS90PS4DDw==
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+	id 332CF2013C; Fri, 22 Mar 2024 09:49:43 +0100 (CET)
+Date: Fri, 22 Mar 2024 09:49:43 +0100
+From: Michal Kubecek <mkubecek@suse.cz>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: gaoxingwang <gaoxingwang1@huawei.com>, idosch@nvidia.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	yanan@huawei.com, liaichun@huawei.com
+Subject: Re: [PATCH] netlink: fix typo
+Message-ID: <20240322084943.5xodsuxt45jr5l3l@lion.mk-sys.cz>
+References: <20240322072456.1251387-1-gaoxingwang1@huawei.com>
+ <Zf09wW36JcpObTPC@nanopsycho>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ukcioxpoksvkjmav"
+Content-Disposition: inline
+In-Reply-To: <Zf09wW36JcpObTPC@nanopsycho>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.50
+X-Spamd-Result: default: False [-3.50 / 50.00];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_SHORT(-0.18)[-0.900];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 SIGNED_PGP(-2.00)[];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 BAYES_HAM(-0.16)[69.36%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-0.96)[-0.962];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FUZZY_BLOCKED(0.00)[rspamd.com]
+X-Spam-Flag: NO
 
-From: Xining Xu <ma.xxn@outlook.com>
 
-If function-like macros do not utilize a parameter, it might result in a
-build warning. In our coding style guidelines, we advocate for utilizing
-static inline functions to replace such macros. This patch verifies
-compliance with the new rule.
+--ukcioxpoksvkjmav
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-For a macro such as the one below,
+On Fri, Mar 22, 2024 at 09:13:53AM +0100, Jiri Pirko wrote:
+> Please make clear indication which project/tree you target with your
+> patch by putting appropriate name in the [patch NAME] brackets
 
- #define test(a) do { } while (0)
+In this case, it should be "[PATCH ethtool]".
 
-The test result is as follows.
+Michal
 
- ERROR: Parameter 'a' is not used in function-like macro, please use static
- inline instead
- #21: FILE: mm/init-mm.c:20:
- +#define test(a) do { } while (0)
+--ukcioxpoksvkjmav
+Content-Type: application/pgp-signature; name="signature.asc"
 
- total: 1 errors, 0 warnings, 8 lines checked
+-----BEGIN PGP SIGNATURE-----
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Xining Xu <ma.xxn@outlook.com>
-Tested-by: Barry Song <v-songbaohua@oppo.com>
----
- scripts/checkpatch.pl | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmX9RiIACgkQ538sG/LR
+dpV54Qf9FtN1QlHG75yHE/hJz2aF1y3i5z0dOYv9E3lxYq+FZCZiJmupSZ8oprnw
+uU9WgpCodagxtfKvO3g9XQjAEe/wljfpoVebyHoKumDqQIh7RRUaVbPy1Vb+3I+J
+c/JrDUVGj5n360v0iFYVA6RP4Ss8dQRTLzVkZImrkuvMPP+Pw/+xENFHGrGRHca3
+1avhqxI3ypvNsA17+f9Nek4TRC+eGA/5JD28dW3LVshetkOmwFuyhauV++Cn/Yb/
+m+AiPuO+71cYNiMUgFbmhlu7Qe2pyGCPzW6nDQ75zi4il6dEJZ2szlUQOIWcdWH4
+h7MbPIvU4WHO16edrDyRUrZwGodz3A==
+=94wM
+-----END PGP SIGNATURE-----
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 9c4c4a61bc83..6f778f3403b5 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6109,6 +6109,30 @@ sub process {
- 				WARN("TRAILING_SEMICOLON",
- 				     "macros should not use a trailing semicolon\n" . "$herectx");
- 			}
-+
-+			if ($dstat =~ /^\+\s*#\s*define\s+$Ident\s*(\((?:[^\(\)]++|(?-1))*\))\s+(\S+.*)(\/\/.*)?/) {
-+				my $params = $1 || "";
-+				my $body = $2 || "";
-+
-+			    # get the individual params
-+				$params =~ tr/()//d;
-+				# remove leading and trailing whitespace
-+				$params =~ s/^\s+|\s+$//g;
-+
-+				$ctx =~ s/\n*$//;
-+				my $cnt = statement_rawlines($ctx);
-+				my $herectx = get_stat_here($linenr, $cnt, $here);
-+
-+				if ($params ne "") {
-+					my @paramList = split /,\s*/, $params;
-+					foreach my $param(@paramList) {
-+						if ($body !~ /\b$param\b/) {
-+							ERROR("UNUSED_PARAM_IN_MACRO",
-+							     "Parameter '$param' is not used in function-like macro, please use static inline instead\n" . "$herectx");
-+						}
-+					}
-+				}
-+			}
- 		}
- 
- # check for redundant bracing round if etc
--- 
-2.34.1
-
+--ukcioxpoksvkjmav--
 
