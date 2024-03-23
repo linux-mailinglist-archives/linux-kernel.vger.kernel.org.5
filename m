@@ -1,217 +1,158 @@
-Return-Path: <linux-kernel+bounces-112152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DBFD88764D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:05:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C89887650
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:06:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A23D1C22A2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:05:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5832B21FF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29426A55;
-	Sat, 23 Mar 2024 01:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280E61362;
+	Sat, 23 Mar 2024 01:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EcMiWiUk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DWrLVsnB"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C50F7F
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 01:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E1B7FD
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 01:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711155946; cv=none; b=pxK2Cxx7lFyiflf1kwlpk/PVVsbGUyM3RWiOJGT+F6cHieXbRJug0iZ8XZXA0/62SjbHoOhRlCXSh+lOxSprw6/eEuqdSnlSkx1lzwda5st1R4Fp3wfAI7Tc4CB0h/rGnG3VTRGOzIdm392oQvOT5GXW1v8cF/UZlCYi3GqtWho=
+	t=1711155986; cv=none; b=fXDjaln7q/Zu/GfRVHGoriZplUj7ykWXzZ9LQErSrZrtyIXTxPvU1FZ96xJyT2tKqjBFkBRp6E9ao9vUjI7k3rE91jCtRs5pEIu+Hvruc5C79xwFST8EOSuMjBAphrwHCWJX2E2tn46VxwO8tli2l0ZfYoFlf8VyMYfhUP+9YnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711155946; c=relaxed/simple;
-	bh=3+zZh3XFJnxQpCAGDeyGmKq33BNtz2+66eAEGL4876Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To; b=aCQdHLD0kmck5yROBP61AfUBC04zQlhbPF2xcqMiOJ/MS/rp5N+UIl3vxC6dGuQlvhU5pknCvoyUFKNtVZWIHVjPjGaVpw6H2kS74MgsaPRflxrjxGn7dcDE/dTw8k9HyTFcVzFYVd6aEOK38skT4Ay2pRILnI/texxygi4RONU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EcMiWiUk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04826C433F1;
-	Sat, 23 Mar 2024 01:05:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711155945;
-	bh=3+zZh3XFJnxQpCAGDeyGmKq33BNtz2+66eAEGL4876Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:From;
-	b=EcMiWiUkiXF0pmTkhVhDvP+BA3m6SBMpMePHLS3lgvhzbCdo9T5o6x2xTa8QoCvtQ
-	 ZiIr3laXn2TxW1OUddMIfS1+bJqiPdQdS/W9Rj6yvZxknL1k5q/DKyC9sWIyvTCsmL
-	 qjz9g+3k55UpMTkbn5Fmp2EPQC/vmOSHUkLHq5nPc1YFOdstql4q7f52P4kaf6kZOe
-	 OK6Xw3iZcQy36q6zjiD/Nq4FMHprCktSrO9wXGQN1nYHgDgHW9odHpf0M4qlTAphIv
-	 Qt9VjffONOVJFRHRVRK9EkkPxU/upViU53CWHBYVwXM057H2FC5cyRrlr1LY92qHmO
-	 G5ofpS5wd8PeQ==
-From: SeongJae Park <sj@kernel.org>
-To: Peter Xu <peterx@redhat.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yang Shi <shy828301@gmail.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	linux-arm-kernel@lists.infradead.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Mike Rapoport <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-riscv@lists.infradead.org,
-	James Houghton <jthoughton@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 03/12] mm: Make HPAGE_PXD_* macros even if !THP
-Date: Fri, 22 Mar 2024 18:05:28 -0700
-Message-Id: <20240323010528.10959-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <Zf4ioDkuSNJ0f1vR@x1n>
+	s=arc-20240116; t=1711155986; c=relaxed/simple;
+	bh=3gLvESUK5UC75YDBVHWZc2EJ/CKDDBHHCcGPHgFUCRk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oU/Bk1J1I0UUZGjsR20Dybs06WjAGQLYDl319n8M9+2bkg09VDybdiKKQzLRlUvK4aEG2S+7iIIJ1/9uYVStjaJlnKfg7thfILA1FIEp7adsCuU8wkca8x7Gd1KNDZT6DL4+fo6YwwJCIT7OSilZiYGDVVz8Xsdo9EtJe2IoSDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DWrLVsnB; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso1672346a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711155984; x=1711760784; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PoGw6YHEdglNmqSwRO2JM8exateakHGbGs5iaMd0pYI=;
+        b=DWrLVsnBSBhmDeE6oTdkS+Jiyp3sqU/Lf8S8ilR0XrAMu+DvVkNbvsoo1HAygz1IaS
+         8yWwNwfEvVyc2wOJT+ZQTWAHWlSumOJo33AZ47YH4b2ySUiimQ0Ny1vCw/bvdZyajc6p
+         zMwg0hLgqQTrHdSDcaHeMcMXF/QISjpj2V5uo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711155984; x=1711760784;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PoGw6YHEdglNmqSwRO2JM8exateakHGbGs5iaMd0pYI=;
+        b=Mw8ClJgEfNiDj+ABovgKItIr6q4198p4TLiLW6UVF6HBF9f4qku6fw41lBVNGVENzu
+         T0AJmEVBQdTBF6qxO9DQIHRouB5zsteegtNUnuve6l84kDwM6BJq6V9xmdEaelYAgrHQ
+         2Yl8ctf2JO18xltc0ucYxg/C4bP9K83orXlCG1NKRE+XCsf2om6jYzmC1qIQAFoQ8edG
+         QdBZhxbHs1eCpGlCBLur37cq3pS7sexW8OE3PRryVcgvjo0N005T+fWKSf72IsKTYyZc
+         ugkOR91W5HGg1j6jbMPl2mMmfN5WDc8W1wjpIObe1LNfXBJsCxer2vjPkiWQLRUKJub/
+         ByvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWLtOIhrTV04Q7bGCOt/a8uB9SqViOiyyb6JYfp8EIR1sIc/fWPEVekxki7Mq/RpL6xzuqOh8tMhjvQTk6jGwAt4HQl/wtefi1OQ8GR
+X-Gm-Message-State: AOJu0Yw6EsqrDrFXUnyGR7A9Yce6UK+0LZa/jIxPJrSJ4q3v/1vlbY2S
+	PzT6dFftJ0YTOlxLNjE1wlf158mEMAyyIW3vNWqxPgkmjRP8ZpcuqxfbFtOiuQ==
+X-Google-Smtp-Source: AGHT+IE9zfwMdjMcPEX9RGO6P8AKfFkD4sqloy7P8Uq/ZXC30MK+RiSuq41FRbT55B/cRzOu2/aSQw==
+X-Received: by 2002:a17:90a:bf02:b0:29b:2d64:68e5 with SMTP id c2-20020a17090abf0200b0029b2d6468e5mr1357425pjs.31.1711155984240;
+        Fri, 22 Mar 2024 18:06:24 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:c164:9ab4:de9f:5f33])
+        by smtp.gmail.com with UTF8SMTPSA id c5-20020a170902d48500b001dee4bd73e0sm391692plg.59.2024.03.22.18.06.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 18:06:23 -0700 (PDT)
+Date: Fri, 22 Mar 2024 18:06:22 -0700
+From: Brian Norris <briannorris@chromium.org>
+To: David Lin <yu-hao.lin@nxp.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>,
+	Francesco Dolcini <francesco@dolcini.it>,
+	"kvalo@kernel.org" <kvalo@kernel.org>,
+	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Pete Hsieh <tsung-hsien.hsieh@nxp.com>,
+	"rafael.beims" <rafael.beims@toradex.com>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [EXT] Re: [PATCH v9 0/2] wifi: mwifiex: add code to support host
+ mlme
+Message-ID: <Zf4rDifM6bLuqpX2@google.com>
+References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
+ <20240315094927.GA6624@francesco-nb>
+ <ZfTspRKFgrO9xCTH@google.com>
+ <969e95ccc4a1d35b45212b7fcb536ee90995e3b5.camel@sipsolutions.net>
+ <PA4PR04MB9638D253189D6DD330B198B2D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <PA4PR04MB9638BE73DDBCE1CE8AA32BA8D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <b2d9a7ef53c5ab4212617e8edf202bbafe52e2f8.camel@sipsolutions.net>
+ <ZftaJEIeNfV7YrVo@google.com>
+ <PA4PR04MB9638F5037D1AB9BCF51CC9D9D1322@PA4PR04MB9638.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PA4PR04MB9638F5037D1AB9BCF51CC9D9D1322@PA4PR04MB9638.eurprd04.prod.outlook.com>
 
-Hi Peter,
-
-On Fri, 22 Mar 2024 20:30:24 -0400 Peter Xu <peterx@redhat.com> wrote:
-
-> On Fri, Mar 22, 2024 at 10:14:56AM -0700, SeongJae Park wrote:
-> > Hi Peter,
-> 
-> Hi, SeongJae,
-> 
+On Thu, Mar 21, 2024 at 04:07:58AM +0000, David Lin wrote:
+> > From: Brian Norris <briannorris@chromium.org>
 > > 
-> > On Thu, 21 Mar 2024 18:07:53 -0400 peterx@redhat.com wrote:
+> > On Wed, Mar 20, 2024 at 10:12:45AM +0100, Johannes Berg wrote:
+> > > On Wed, 2024-03-20 at 01:10 +0000, David Lin wrote:
+
+> > > > BTW, vendor should have the choice to use cfg80211 or mac80211 for their
+> > chips, right?
+> > >
+> > > No, that's not how it works. The choice should be what makes sense
+> > > architecturally.
 > > 
-> > > From: Peter Xu <peterx@redhat.com>
-> > > 
-> > > These macros can be helpful when we plan to merge hugetlb code into generic
-> > > code.  Move them out and define them even if !THP.
-> > > 
-> > > We actually already defined HPAGE_PMD_NR for other reasons even if !THP.
-> > > Reorganize these macros.
-> > > 
-> > > Reviewed-by: Christoph Hellwig <hch@infradead.org>
-> > > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> > > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > > ---
-> > >  include/linux/huge_mm.h | 17 ++++++-----------
-> > >  1 file changed, 6 insertions(+), 11 deletions(-)
-> > > 
-> > > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> > > index de0c89105076..3bcdfc7e5d57 100644
-> > > --- a/include/linux/huge_mm.h
-> > > +++ b/include/linux/huge_mm.h
-> > > @@ -64,9 +64,6 @@ ssize_t single_hugepage_flag_show(struct kobject *kobj,
-> > >  				  enum transparent_hugepage_flag flag);
-> > >  extern struct kobj_attribute shmem_enabled_attr;
-> > >  
-> > > -#define HPAGE_PMD_ORDER (HPAGE_PMD_SHIFT-PAGE_SHIFT)
-> > > -#define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
-> > > -
-> > >  /*
-> > >   * Mask of all large folio orders supported for anonymous THP; all orders up to
-> > >   * and including PMD_ORDER, except order-0 (which is not "huge") and order-1
-> > > @@ -87,14 +84,19 @@ extern struct kobj_attribute shmem_enabled_attr;
-> > >  #define thp_vma_allowable_order(vma, vm_flags, smaps, in_pf, enforce_sysfs, order) \
-> > >  	(!!thp_vma_allowable_orders(vma, vm_flags, smaps, in_pf, enforce_sysfs, BIT(order)))
-> > >  
-> > > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > >  #define HPAGE_PMD_SHIFT PMD_SHIFT
-> > >  #define HPAGE_PMD_SIZE	((1UL) << HPAGE_PMD_SHIFT)
-> > >  #define HPAGE_PMD_MASK	(~(HPAGE_PMD_SIZE - 1))
-> > > +#define HPAGE_PMD_ORDER (HPAGE_PMD_SHIFT-PAGE_SHIFT)
-> > > +#define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
-> > >  
-> > >  #define HPAGE_PUD_SHIFT PUD_SHIFT
-> > >  #define HPAGE_PUD_SIZE	((1UL) << HPAGE_PUD_SHIFT)
-> > >  #define HPAGE_PUD_MASK	(~(HPAGE_PUD_SIZE - 1))
-> > > +#define HPAGE_PUD_ORDER (HPAGE_PUD_SHIFT-PAGE_SHIFT)
-> > > +#define HPAGE_PUD_NR (1<<HPAGE_PUD_ORDER)
+> > And to put some specifics on it, that's what's described here:
+
+[strip mangled URLs]
+
+> > "SoftMAC devices allow for a finer control of the hardware, allowing for
+> > 802.11 frame management to be done in software for them, for both parsing
+> > and generation of 802.11 wireless frames"
 > > 
-> > I just found latest mm-unstable fails one of my build configurations[1] with
-> > below error.  'git bisect' says this is the first patch set started the
-> > failure.  I haven't looked in deep, but just reporting first.
+> > AFAICT, mwifiex firmware still isn't allowing "parsing and generation of
+> > 802.11 wireless frames" in any general form -- everything I see is still wrapped
+> > in custom firmware command protocols. I do see that the AUTH frame looks
+> > like it's essentially duplicating the standard mgmt format, and uses the driver's
+> > TX path for it, but there isn't a corresponding ASSOC management frame that I
+> > can see...
+> > ...so I really can't tell how much control this firmware *does* give the host
+> > regarding arbitrary 802.11 frame management.
 > > 
-> >     In file included from .../include/linux/mm.h:1115,
-> >                      from .../mm/vmstat.c:14:
-> >     .../mm/vmstat.c: In function 'zoneinfo_show_print':
-> >     .../include/linux/huge_mm.h:87:25: error: 'PMD_SHIFT' undeclared (first use in this function); did you mean 'PUD_SHIFT'?
-> >        87 | #define HPAGE_PMD_SHIFT PMD_SHIFT
-> >           |                         ^~~~~~~~~
-> > 
-> > [1] https://github.com/awslabs/damon-tests/blob/next/corr/tests/build_m68k.sh
+> > But that's pretty much business as usual for anybody but the vendor in
+> > priorietary firmware land; I can't answer pretty much any question, other than
+> > what I can glean from a driver.
 > 
-> Apologies for the issue.
+> Yes. This change is to offload wpa3 features to host. It's well tested
+> and doesn't impact existing features.
 
-No problem at all, this blocks nothing in real :)
+We appreciate it's well tested, but testing is still orthogonal to the
+architectural questions. Architectural questions are important because
+they affect the future maintainability of the mainline Linux wireless
+stack. If the assumption is that *either* a driver is a cfg80211 driver
+(with firmware-MLME, etc.) or a mac80211 driver (with host MLME), then
+your series is breaking those assumptions. It may be harder to add
+future additions to the mac80211 stack [*], if we have to add new
+concerns of a non-mac80211 implementation in the mix.
 
-> This is caused by !CONFIG_MMU, I think.
-> 
-> I thought this would be fairly easy to fix by putting these macros under
-> CONFIG_PGTABLE_HAS_HUGE_LEAVES, however when doing this I could have found
-> some other issue that violates this rule.. mm/vmstat.c has referenced
-> HPAGE_PMD_NR even if vmstat_item_print_in_thp() wanted to guard it only
-> with CONFIG_THP.
-> 
-> /home/peterx/git/linux/mm/vmstat.c: In function 'zoneinfo_show_print':
-> /home/peterx/git/linux/mm/vmstat.c:1689:42: error: 'HPAGE_PMD_NR' undeclared (first use in this function)
->  1689 |                                 pages /= HPAGE_PMD_NR;
->       |                                          ^~~~~~~~~~~~
-> /home/peterx/git/linux/mm/vmstat.c:1689:42: note: each undeclared identifier is reported only once for each function it appears in
->   CC      drivers/tty/tty_port.o
-> /home/peterx/git/linux/mm/vmstat.c: In function 'vmstat_start':
-> /home/peterx/git/linux/mm/vmstat.c:1822:33: error: 'HPAGE_PMD_NR' undeclared (first use in this function)
->  1822 |                         v[i] /= HPAGE_PMD_NR;
->       |                                 ^~~~~~~~~~~~
-> make[4]: *** [/home/peterx/git/linux/scripts/Makefile.build:243: mm/vmstat.o] Error 1
-> 
-> static __always_inline bool vmstat_item_print_in_thp(enum node_stat_item item)
-> {
->         if (!IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
->                 return false;
->         ...
-> }
-> 
-> I think the problem is vmstat_item_print_in_thp() uses IS_ENABLED() however
-> that won't stop compiler from looking into the "if".. so it'll still try to
-> find the HPAGE_PMD_NR macro.
-> 
-> It means, I may need to further change vmstat_item_print_in_thp() to make
-> this work in the clean way.. by properly switching to a #ifdef.
-> 
-> For that I'll need to post a formal patch and add people to review.  I'll
-> keep you posted.
+Is it not possible to implement these features via CONNECT? Does your
+firmware not provide any kind of NL80211_EXT_FEATURE_SAE_OFFLOAD
+support, or otherwise handle WPA3 MLME?
 
-Thank you for this kind explanation, all makes sense to me.  Looking forward to
-the patch.
+Or, *does* your firmware also provide low-level 802.11 framing support?
+If so, then maybe Johannes is suggesting you'd need a (new)
+mac80211-based driver to go down this path... although I'm sure that's a
+lot of work on its own.
 
-> 
-> Side note: thank you for your script, just to mention make.cross has been
-> moved to kbuild/, and it'll also need kbuild.sh now to work.  So you may
-> want to fix your test script (and it worked for you because you kept the
-> old make.cross around), like:
-> 
->   wget https://raw.githubusercontent.com/intel/lkp-tests/master/kbuild/make.cross -O ./bin/make.cross
->   wget https://raw.githubusercontent.com/intel/lkp-tests/master/kbuild/kbuild.sh -O ./bin/kbuild.sh
+Anyway, I definitely want Johannes's thoughts, although some additional
+info from David might help too.
 
-And thank you so much for this nice suggestion.  I'll revisit the script soon.
+Brian
 
-
-Thanks,
-SJ
-
-> 
-> Thanks,
-> 
-> -- 
-> Peter Xu
+[*] We definitely need Johannes to weigh in here.
 
