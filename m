@@ -1,110 +1,168 @@
-Return-Path: <linux-kernel+bounces-112347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7838B8878AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:40:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C438878AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18DC1B22C68
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:40:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 710E61C221AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B3E3717D;
-	Sat, 23 Mar 2024 12:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0387E383AA;
+	Sat, 23 Mar 2024 12:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNOXMR9W"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="epygnKxe";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rWHPG+dj"
+Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69BBCA6F;
-	Sat, 23 Mar 2024 12:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498501DDC9;
+	Sat, 23 Mar 2024 12:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711197605; cv=none; b=Mkywwto2zkJ+jErmO6eS/ecxZO/i/AoxryuoSgjTT2YZ0YXR1QFh0ZiZGNmsiC6zsTctArCOmLimQHEoY2P7PltNrwP0aNTb+2PlwZtvWN7dbGsKkpEuN8TKPuEDPAWIZ5qwrzMceh9BlUj+D4IwybZtkewRXxnDTLsNxQ47qJA=
+	t=1711198075; cv=none; b=liZpDy2fHbUuua86gQKcF09V8g7K/qKITe6nXQIWMjrT5AjOfYC9yaNVFpQRUF0dZb1U2pSek52Ctx8lZU2oL09xcFYoD1cwyqsOX64Y/wE5uMk9JLA1vJy++ID3QExddUr0h1wUoBhlFGQOCd3pVyR6u598cUMJDODFblaviMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711197605; c=relaxed/simple;
-	bh=cbSZolRDzHHEJXXy+xiONqpLt3MC8VuAdPFXF38KDkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=alIdw9PrhmrlgeP+GKyaZohgvWmqWTqHjYKYpRCkDeM8sO2LgVgGGfoR9BLXjmfAAf5738PbMeS/nDz79ubOkT5UoaC1/6+uTzcHpUOFfmxXfT3QnwnIR3OLdsmbBqQnSRnvM9t6DjIQ62r4djCkP/nRr76Wyi4eYeqPrbos+Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNOXMR9W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C217C43399;
-	Sat, 23 Mar 2024 12:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711197605;
-	bh=cbSZolRDzHHEJXXy+xiONqpLt3MC8VuAdPFXF38KDkU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lNOXMR9WCZz1sx4YPMuxBR4aCsOYTQoGLWRdvInLWitHiKWJmADDfu7UgNKcdmolB
-	 bRPBPEMov9gMUpgXZ2GqrdeAy6rfyuQgCvhhR5J6zKXm8i1tDlAWkajoShtiv9cePP
-	 znZLByFqd+JlcM3q45TkKJI7iNAN7hh2GS12uO/Atgg4xUjxR+QC9P+DinDeZFBeZK
-	 QUjIdZrh1RtEabIY+qxh5F7jC3WtUbySjZAJPWkXxnmdiV5OX3UMbsuC3u5i4CEADt
-	 zDFrh/VDcMd9tE74JNUMg345+gY4e6HuaIp9xVoNPOCo8gBofJq4aAbjZtMCAfIBVm
-	 d75l4ueuSW4Ig==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d68651e253so50570571fa.0;
-        Sat, 23 Mar 2024 05:40:05 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUePTZ+5DLhBi93kCTA8wM+lsXPY5YyZuS1vvVlm3FNLcJvN7iYJGNVk8Js972mH2BVSdPzoSw+kBxGa1x8qPIbnidcf3bwB08wR5pR05DXAsJr8uZH/vMSRm8C9CPJiNP/ooQI1VVb
-X-Gm-Message-State: AOJu0Yyv3O6zD+ykQ1vBYsl8dREnIht2PLMcpAHQCQsFlgHEXY+lAEmq
-	Tr8k7UR0+GgOdQZ1NeFZIrbIYKN0VicX3VzJ3Z4dWy1nOSixJLWYujaetkLBNy+G7at1q5N/R4N
-	9SGsaSg0Fa9ILGYJ6+8+hTHJG2AM=
-X-Google-Smtp-Source: AGHT+IEJvtbme/eS1L6D9RG94EKx6mhtYiagbSFm78FWvwIqq+NA3C7kvVkTUtUFsPi+e1xNkbGDEo6a9nBFejMQlu4=
-X-Received: by 2002:a2e:3615:0:b0:2d4:3b15:5561 with SMTP id
- d21-20020a2e3615000000b002d43b155561mr1366070lja.40.1711197603491; Sat, 23
- Mar 2024 05:40:03 -0700 (PDT)
+	s=arc-20240116; t=1711198075; c=relaxed/simple;
+	bh=DK8kn31nMc4vLLNkopTWFlKbbvyPKPiFHunCkcXMieQ=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=K8xSfujddaxRiySNtUpQDm1JzursNXXEHIlF4+/JzcUvvJZoaEZTK0nUmPMbqDC6aB8C9NhvflgHZ4/bLzO+hCXsG+S9IIFJuZSD4GRZdFe5kMwefYEzlbMKRMK2JLnRi9D+Cr570wyvBxvCRNO/xel3NIxWAhU+QIYceaYCwfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=epygnKxe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rWHPG+dj; arc=none smtp.client-ip=64.147.123.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id DF3811C000A7;
+	Sat, 23 Mar 2024 08:47:50 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Sat, 23 Mar 2024 08:47:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1711198070; x=1711284470; bh=no3SxpIrjY
+	uNJG9JdLGwJceQHSCubNomtZhDzLJ/D4o=; b=epygnKxeUHDKv/1k8Tp6dWRUzA
+	QjRORAIJdjyi+4voAuYw3zil0q9w2xtCJLqnqIIltzo9zW/INN5mfqU28X9ykelU
+	uXDHsrwuHNXk5/IRa1SprNynh+6h4ca7nzjox4+tgdxd1kX3O8KX2Nut7Qy0Q2SU
+	aXcerVaYPHRjijlcAJZEM2jc1e9kgg3ASmI6RgCGwjOPaN8x+8Z10AtrWfo43Bl8
+	JTvSirUgRSD+Y4mNngF61z69NorJvRLPtzgfPUIewhr9q8JS9BdlrdwOcWZiwCd5
+	HW3ONw2gveusbmHYoMUWtZekbt63Pnq74V7hV6cgzjCLdYaXo6xQveGXrg8w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711198070; x=1711284470; bh=no3SxpIrjYuNJG9JdLGwJceQHSCu
+	bNomtZhDzLJ/D4o=; b=rWHPG+djIQkMTy7dtpYCukU5eXVYdVF5nJEwLAmtIyyx
+	YM+oSx2HAHvNEEORhOTWM3rFSj6opLGuLMjidwamWbdwG53Luv690zsJciwnNARl
+	xinbwufK1SVOY48KBufE9ZxdfgwJ3WcE4vpyr6ksu0KQahLl+EvjoDInVQEoMwDi
+	x2wPgy9v86CCvmWFMeeq9yROkRmtupo/0G7o07xkQN9Jv3xxx2abC0KzgPzJU4Gh
+	oKEZ7+u4Q1OYiI7NlJv3yGLIkJ6B0zOsKqbR6SuclltnHI1uEbmOTSKmVFi/OACl
+	nYwUl3O1XBZNLIbjvKXdlJfKeun386Wt1muNfoTuIQ==
+X-ME-Sender: <xms:dc_-ZQ4gwCN1jJ0xu5uLIMaaWJhffwOGRKdeAOztL7kqV5RtwTUPfg>
+    <xme:dc_-ZR5WeM5wrJ2DRRIIAcv59iD2m5SxaFrJwkuIvqaX4vlZqKOB49jrMaG9DBxoO
+    XDXbwWVQpORj2_xLkw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtgedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:dc_-Zff2o2V8MTNE4RremOsZn7Dy_Ia-JJMGAIwzgyveD9CnI-MrVA>
+    <xmx:dc_-ZVJ9Sbm1Rn6BzzZO2rKZ7l99487NeNWBupmjtR9jwu4pQX89gQ>
+    <xmx:dc_-ZULMvcrmDFTm8YLv1sKqam6W6iXv5UblEwUu_iaEtr_oQpukzQ>
+    <xmx:dc_-ZWzgEeLX_I2iwKUfqOlpibMl0A5a2TNpy1fPFSzUkVhU8FVbIA>
+    <xmx:ds_-ZV5-uap66XGLQza-C4SRX_Nj60UZXJGFt8P0zYkQBOTvyWEOvMMsk-g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 8DE76B6008D; Sat, 23 Mar 2024 08:47:49 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321150510.GI8211@craftyguy.net> <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
- <20240321170641.GK8211@craftyguy.net> <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
- <20240322091857.GM8211@craftyguy.net> <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
- <fe09869c2d853bde8ce0feb537c4dab09014f5d9@craftyguy.net> <CAMj1kXEH4CTnQ3d+Z-TnqNUhFaFc1yH+Eaa6cHk9-vZ_geQ2nw@mail.gmail.com>
- <8a64ba697d719bc9750e6fffc268e194dfde16e5@craftyguy.net>
-In-Reply-To: <8a64ba697d719bc9750e6fffc268e194dfde16e5@craftyguy.net>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sat, 23 Mar 2024 14:39:51 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEk=7_BoaavZtZs7giBq4Kwk-QQoNjMZS=rWLJP=LdVLw@mail.gmail.com>
-Message-ID: <CAMj1kXEk=7_BoaavZtZs7giBq4Kwk-QQoNjMZS=rWLJP=LdVLw@mail.gmail.com>
-Subject: Re: x86_64 32-bit EFI mixed mode boot broken
-To: Clayton Craft <clayton@craftyguy.net>
-Cc: Hans de Goede <hdegoede@redhat.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <a4a8e28d-ab9b-41cd-92e2-7ef111efd5a3@app.fastmail.com>
+In-Reply-To: <2ebe2ea5-b107-4020-8e60-ff8cf43a3aab@arm.com>
+References: <20240305221824.3300322-1-jeremy.linton@arm.com>
+ <20240305221824.3300322-2-jeremy.linton@arm.com>
+ <202403051526.0BE26F99E@keescook>
+ <34351804-ad1d-498f-932a-c1844b78589f@app.fastmail.com>
+ <38f9541b-dd88-4d49-af3b-bc7880a4e2f4@arm.com>
+ <f1dd15ce-69af-4315-8d7c-b7a480e541aa@app.fastmail.com>
+ <db7dfa2d-c7c6-4b10-981a-a7ecc87c8541@arm.com>
+ <acfc522a-5162-4b33-9d6c-1e25d0c44a71@app.fastmail.com>
+ <2ebe2ea5-b107-4020-8e60-ff8cf43a3aab@arm.com>
+Date: Sat, 23 Mar 2024 13:47:29 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Jeremy Linton" <jeremy.linton@arm.com>,
+ "Kees Cook" <keescook@chromium.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+ "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ "Mark Rutland" <mark.rutland@arm.com>,
+ "Steven Rostedt" <rostedt@goodmis.org>, "Mark Brown" <broonie@kernel.org>,
+ "Guo Hui" <guohui@uniontech.com>, Manoj.Iyer@arm.com,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ "James Yang" <james.yang@arm.com>, "Shiyou Huang" <shiyou.huang@arm.com>
+Subject: Re: [PATCH 1/1] arm64: syscall: Direct PRNG kstack randomization
+Content-Type: text/plain
 
-On Fri, 22 Mar 2024 at 21:34, Clayton Craft <clayton@craftyguy.net> wrote:
+On Sat, Mar 23, 2024, at 00:40, Jeremy Linton wrote:
+> On 3/8/24 14:29, Arnd Bergmann wrote:
+>> On Fri, Mar 8, 2024, at 17:49, Jeremy Linton wrote:
+>>> On 3/7/24 05:10, Arnd Bergmann wrote:
+>>>>
+>>>> I'm not sure I understand the logic. Do you mean that accessing
+>>>> CNTVCT itself is slow, or that reseeding based on CNTVCT is slow
+>>>> because of the overhead of reseeding?
+>>>
+>>> Slow, as in, its running at a much lower frequency than a cycle counter.
+>> 
+>> Ok, I see. Would it be possible to use PMEVCNTR0 instead?
 >
-> March 22, 2024 at 11:30 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
->
->
-> >
-> > On Fri, 22 Mar 2024 at 19:57, Clayton Craft <clayton@craftyguy.net> wrote:
-> >
-> > I have pushed a branch below that reverts the patch you identified in
-> >
-> > 4 separate steps. Could you please check which step makes your system
-> >
-> > boot again?
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=efi-clayton
-> >
->
-> Thanks a lot for doing this, I really appreciate the help!
->
-> It looks like if I build from 868a7245, booting breaks again on my Bay Trail systems. If I put back 00e85ab5, they boot again.
->
+> So, I presume you actually mean PMCCNTR_EL0 because I don't see the 
+> point of a dedicated event, although maybe...
 
-OK.
+Right, that would make more sense.
 
-I have reshuffled the branch and put the patch you identified as the
-one fixing the boot first. Please double check whether this change
-still fixes the boot for you.
+> So, the first and maybe largest problem is the PMxxx registers are all 
+> optional because the PMU is optional! Although, they are strongly 
+> recommended and most (AFAIK) machines do implement them. So, maybe if 
+> its just using a cycle counter to dump some entropy into rnd_state it 
+> becomes a statement that kstack randomization is slower or unsupported 
+> if there isn't a PMU?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=efi-clayton-2
+I think that sounds workable, especially as there is already
+the randomize_kstack_offset=on/off conditional at boot time, it
+could fall back to just not randomizing and print a warning
+if the feature is enabled but unavailable at boot time.
 
-If so, we can try applying it to mainline, and merge it if it works there too.
+> But then we have to basically enable the PMU cycle counter globally, 
+> which requires reworking how it works, because the cycle counter is 
+> enabled/disabled and reset on the fly depending on whether the user is 
+> trying to profile something. So, I have hacked that up, and it appears 
+> to be working, although i'm not sure what kind of interaction will 
+> happen with KVM yet.
+>
+> But I guess the larger question is whether its worth changing the PMU 
+> behavior for this?
 
-If not, we will need better debugging to figure out what the hell is going on.
+I don't know too much about how the PMU works in detail, but I'm
+also worried about two possible issues that end up preventing us
+from using it in practice:
+
+- if enabling PMCCNTR_EL0 takes away one of the limited number
+  of available counters, we probably don't want to go there
+
+- similarly, I would expect it to have a nonzero power
+  consumption if the default is to have the clock disabled
+  and non-counting. Probably not a big deal for server machines,
+  but could be an issue on battery powered embedded devices.
+
+     Arnd
 
