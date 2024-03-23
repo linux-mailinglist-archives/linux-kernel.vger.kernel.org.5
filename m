@@ -1,169 +1,165 @@
-Return-Path: <linux-kernel+bounces-112157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B631A88765B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:22:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 650AA88765D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:27:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA54D1C21A7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:22:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9872B21E02
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3D61388;
-	Sat, 23 Mar 2024 01:22:51 +0000 (UTC)
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16D0137E;
+	Sat, 23 Mar 2024 01:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sFtXcs4U"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A6FA48;
-	Sat, 23 Mar 2024 01:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3E4A31;
+	Sat, 23 Mar 2024 01:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711156970; cv=none; b=uHF2iqIvQr/M4OWDN3UbL3KlJc53qrNbtqkb8gwpV5N9Kw5IaYOJWPmZiUNBc+XdKGNDwCHT32/gXrPBkQ/w/eD7ajGhVkyiWmHKgWQFH+XUODFjWp7DnqacLkgy02aGLom52BweGyf0+KfeqnQF6esfKfqj3JKiXME/T1WENZM=
+	t=1711157268; cv=none; b=uIQEJgUSW651o5yg8I5YNDNJfvWFp63hRfsO0hZmCMuULH7c8Ox4mQof9QozEEJEZUKAuuZFjjO4uPp7wJW/wXC3v0E3WOy6bF8Hud9l+e/pXM8u6Gpw/ZNc/c1bDD5QtngFCiXKCqlK5B89f1tCteJwjTjijtLXDV5tkdFehsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711156970; c=relaxed/simple;
-	bh=g+qmIKlNwWrQDYzprQZoIGrFsxp3GGvahsrx0ZcmM2c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XhG0voiHRJWA3YQ/oP4xky/q2x6J6OMUnj+XX4JCQcLFBl+6pxDyj5zhcb9t3dbdWD/AzGyzZZMbmYgpKQgS1VjulnVpQuWIXzu7cI34DddcmeD58sB3CSbjVja6W+MiJjUuE/EKvUzSf/iStHaxl7JAsCkA0w2IKClTldCc6R0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so1892310a12.0;
-        Fri, 22 Mar 2024 18:22:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711156968; x=1711761768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N+0aYMbrnVXpxfNyD1kFQ/0ZCzbVxGiIosenue/Nirk=;
-        b=EDPLxeo3kmayxWMmehLbScRDb8PkotJoZjt6yr1iia7DuoVQB8lpDm7q1NknLqte3I
-         +PENvAZOSdYvWv/FJFsj29rcXsxmewT+ikJCLIzA7SlmIPiH0b+vkxI9LHxOY8gNqwKX
-         8aru82CtkAuwOUN4XnITmkq3hKVxkkbBVJT0CS70DLWakUHhrzsmOAfehYqbCvTTLuwd
-         w29xNNUlf1NPXMAKXM5Dnmy/avDTAlXEW5W5KK6oE8kEdH6aJPFWGoK9fHmg9jmROCzh
-         h91szPAYtxAojkpyj0eveN3ercn3GI9ZDhTQgur5rUxSW8mhu0lvJG5sSo2hxOahCkRy
-         KRkg==
-X-Forwarded-Encrypted: i=1; AJvYcCWnbsJvjNXXg5j2pdBuAvok21EOWHmdlfnvli/qlaLP4m20Wg0SE9owfg2iKiQoJrz3e5U1aCHAEfpStB6hS61NQ02pOqysuuBje2h0WrrvaCGDQFoaIS/31SoItSJust60+DB8xK+i2UcxrvmWVQ==
-X-Gm-Message-State: AOJu0YwUMWwvGeKnJNRRdxHQjtPUmoHUE61raeRlE9NyR4St7a4LS+0Y
-	Qj3BaMVYr+JRzjk6GDfU1smBogQ/zJU++jxtm6dqzzU833dRbWGQFqIv0ZmK6cJUjsNdsJZPa34
-	aG0EfxnQbfU5zG0us1NnR/2OxZzM=
-X-Google-Smtp-Source: AGHT+IG8AL/LCWLrgDYqEHDgy1TnH7Zrct2vQ47FKnUwlpTuTtVVj43GS4gR9sFC5t8aotRwe+0VGNGVZsDo1iMXwaw=
-X-Received: by 2002:a05:6a20:be11:b0:1a3:ab6f:ca83 with SMTP id
- ge17-20020a056a20be1100b001a3ab6fca83mr1173045pzb.46.1711156968170; Fri, 22
- Mar 2024 18:22:48 -0700 (PDT)
+	s=arc-20240116; t=1711157268; c=relaxed/simple;
+	bh=SnJw3WHU7mGXIfMu4X5OwlfqOErDGWfN6ynEqqaOkmY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MkcWtH520zhgNGQEtjzDF/eg0As8Nc2vlSGeBed0e9FqT+zcIJ8/LAySJ8Rv6rRGsoCIYiYFFSc2j3ebPVM9MoZ3b0Rc6Fk9WGXxFzNrLAbSVl96kRHNIxsY95RG9hNlrZmEHtC2SxKC2tt0MLhOgk3NXPXZgam9BXMYnB+iT2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sFtXcs4U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EA87C433F1;
+	Sat, 23 Mar 2024 01:27:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711157267;
+	bh=SnJw3WHU7mGXIfMu4X5OwlfqOErDGWfN6ynEqqaOkmY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sFtXcs4UiPC+Zkt0BcXfyJ69u9R0J549Sy/aI1d4HV2J7RtrutRDdQGru9lMJY00O
+	 zPSWuJ2HrnmtZZ/hwEWzDRRPNJv3dZOE1LSzg2GCJ0VOmQ/YfoAoEpB2ww0clVw0NB
+	 tGzBJNW4YOq0t6WHPXf2QYdaNDzpX7UgPCl6moTplpdF2cYu/+zuzO5AYY7GuTwmfN
+	 mUSEUl/t1mQOhQjOaZAju3CcNSVkGxPI3N5MmOMTUiCby8bVBuQgVlfSnJSCbnjOwv
+	 VMSwHGS8QW2MouRZAVcYkYQaac8ypNRM0X5xqIERO1l1R/nL+dCKeNPYt/B35+i6ON
+	 a5lU7bsVRaiZA==
+Date: Fri, 22 Mar 2024 18:27:45 -0700
+From: Saeed Mahameed <saeed@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	David Ahern <dsahern@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Arnd Bergmann <arnd@arndb.de>, Leon Romanovsky <leonro@nvidia.com>,
+	Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+	Itay Avraham <itayavr@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	linux-kernel@vger.kernel.org,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+Message-ID: <Zf4wEV4WPhoATm1C@x130>
+References: <ZczntnbWpxUFLxjp@C02YVCJELVCG.dhcp.broadcom.net>
+ <20240214175735.GG1088888@nvidia.com>
+ <20240304160237.GA2909161@nvidia.com>
+ <9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org>
+ <2024032248-ardently-ribcage-a495@gregkh>
+ <510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
+ <Zf2n02q0GevGdS-Z@C02YVCJELVCG>
+ <20240322135826.1c4655e2@kernel.org>
+ <20240322214423.GL159172@nvidia.com>
+ <20240322152924.64be7ec4@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322164237.203358-1-ben.gainey@arm.com>
-In-Reply-To: <20240322164237.203358-1-ben.gainey@arm.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Fri, 22 Mar 2024 18:22:36 -0700
-Message-ID: <CAM9d7chfXH0ynfT_PSPyjhE8ATa=fV-kbx_csgeQrWiv+1EiiQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] perf: Support PERF_SAMPLE_READ with inherit_stat
-To: Ben Gainey <ben.gainey@arm.com>
-Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
-	james.clark@arm.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240322152924.64be7ec4@kernel.org>
 
-On Fri, Mar 22, 2024 at 9:42=E2=80=AFAM Ben Gainey <ben.gainey@arm.com> wro=
-te:
+On 22 Mar 15:29, Jakub Kicinski wrote:
+>On Fri, 22 Mar 2024 18:44:23 -0300 Jason Gunthorpe wrote:
+>> On Fri, Mar 22, 2024 at 01:58:26PM -0700, Jakub Kicinski wrote:
+>> > > Well said, David.
+>> > >
+>> > > I would totally support doing something like this in a fairly generic
+>> > > way that could be leveraged/instantiated by drivers that will allow
+>> > > communication/inspection of hardware blocks in the datapath.  There are
+>> > > lots of different ways this could go, so feedback on this would help get
+>> > > us all moving in the right direction.
+>> >
+>> > The more I learn, the more I am convinced that the technical
+>> > justifications here are just smoke and mirrors.
+>>
+>> Let's see some evidence of this then, point to some sillicon devices
+>> in the multibillion gate space that don't have complex FW built into
+>> their design?
 >
-> This change allows events to use PERF_SAMPLE READ with inherit so long
-> as both inherit_stat and PERF_SAMPLE_TID are set.
+>Existence of complex FW does not imply that production systems must
+>have a backdoor to talk to that FW in kernel-unmitigated fashion.
 >
-> Currently it is not possible to use PERF_SAMPLE_READ with inherit. This
-> restriction assumes the user is interested in collecting aggregate
-> statistics as per `perf stat`. It prevents a user from collecting
-> per-thread samples using counter groups from a multi-threaded or
-> multi-process application, as with `perf record -e '{....}:S'`. Instead
-> users must use system-wide mode, or forgo the ability to sample counter
-> groups. System-wide mode is often problematic as it requires specific
-> permissions (no CAP_PERFMON / root access), or may lead to capture of
-> significant amounts of extra data from other processes running on the
-> system.
+>As an existence proof I give you NICs we use at Meta.
+>Or old Netronome NICs, you can pick.
 >
-> Perf already supports the ability to collect per-thread counts with
-> `inherit` via the `inherit_stat` flag. This patch changes
 
-I'm not sure about this part.  IIUC inherit and inherit_stat is not for
-per-thread counts, it only supports per-process (including children)
-events.
+This is not true at all, at least for our NICs. Our NICs do need
+non-netdev interfaces at least for debug and monitoring non-netdev
+functionality and use-cases at Meta. We can talk about this offline.
+Also below you mentioned another one of your vendors using proprietary
+mechanism for configuration. So you can't just have it both ways.
+
+It is obvious to everyone that in the AI era, everyone needs
+customization, this interface is the proposal for the standardization,
+if you cared to look at Jason's proposal you will see how he goes in
+length describing how abstraction can happen in user space.
+
+>> > The main motivation for nVidia, Broadcom, (and Enfabrica?) being to
+>> > hide as much as possible of what you consider your proprietary
+>> > advantage in the "AI gold rush".
+>>
+>> Despite all of those having built devices like this well before the
+>> "AI gold rush" and it being a general overall design principle for the
+>> industry because, yes, the silicon technology available actually
+>> demands it.
+>>
+>> It is not to say you couldn't do otherwise, it is just simply too
+>> expensive.
+>
+>I do agree that it is expensive, not sure if it's "too" expensive.
+>But Linux never promised that our way of doing SW development would
+>always be the most cost effective option, right? Especially short
+>term. Or that we'll be competitive time to market.
+>
+>> > RDMA is what it is but I really hate how you're trying to pretend
+>> > that it's is somehow an inherent need of advanced technology and
+>> > we need to lower the openness standards for all of the kernel.
+>>
+>> Open hardware has never been an "openness standard" for the kernel.
+>
+>I was in the meeting with a vendor this morning and when explicitly
+>asked by an SRE (not from my org nor in any way "primed" by me)
+>whether configuration of some run of the mill PCI thing can be exposed
+>via devlink params instead of whatever proprietary thing the vendor was
+>pitching, the vendor's answer was silence and then a pitch of another
+>proprietary mechanism.
+>
+
+Well, this is why we came up with fwctl interface, so nobody needs to sit
+in silence and all vendors can agree to one interface.
+
+We both know devlink params can't scale well enough and accommodate all
+vendors and don't forget it's netdev specifc!
+
+>So no, the "open hardware" is certainly not a requirement for the
+>kernel. But users can't get vendors to implement standard Linux
+>configuration interfaces, and your proposal will make it a lot worse.
+
+Vendors are already using proprietary configuration interfaces, using
+direct PCI access via sysfs.. So on the contrary to what you say, this
+proposal came to unify vendors, and improve the user's experience..
+with fwctl, and the proper use-space shared tooling as Jason's suggested
+you can force other vendors to follow the herd and implement the new
+standard interfaces that we already have 3 vendors agree to..
 
 
-> `perf_event_alloc` relaxing the restriction to combine `inherit` with
-> `PERF_SAMPLE_READ` so that the combination will be allowed so long as
-> `inherit_stat` and `PERF_SAMPLE_TID` are enabled.
-
-Anyway, does it really need 'inherit_stat'?  I think it's only for
-counting use cases (e.g. 'perf stat') not for sampling.
-
-Also technically, it can have PERF_SAMPLE_STREAM_ID instead
-of PERF_SAMPLE_TID to distinguish the counter values.
-
->
-> In this configuration stream ids (such as may appear in the read_format
-> field of a PERF_RECORD_SAMPLE) are no longer globally unique, rather
-> the pair of (stream id, tid) uniquely identify each event. Tools that
-> rely on this, for example to calculate a delta between samples, would
-> need updating to take this into account. Previously valid event
-> configurations (system-wide, no-inherit and so on) where each stream id
-> is the identifier are unaffected.
-
-I think you meant PERF_SAMPLE_ID not PERF_SAMPLE_STREAM_ID.
-IIUC the stream id is already unique.
-
-Thanks,
-Namhyung
-
->
->
-> Changes since v3:
->  - Cleaned up perf test data changes incorrectly included into this
->    series from elsewhere.
->
-> Changes since v2:
->  - Rebase on v6.8
->  - Respond to James Clarke's feedback; fixup some typos and move some
->    repeated checks into a helper macro.
->  - Cleaned up checkpatch lints.
->  - Updated perf test; fixed evsel handling so that existing tests pass
->    and added new tests to cover the new behaviour.
->
-> Changes since v1:
->  - Rebase on v6.8-rc1
->  - Fixed value written into sample after child exists.
->  - Modified handling of switch-out so that context with these events
->    take the slow path, so that the per-event/per-thread PMU state is
->    correctly switched.
->  - Modified perf tools to support this mode of operation.
->
-> Ben Gainey (4):
->   perf: Support PERF_SAMPLE_READ with inherit_stat
->   tools/perf: Track where perf_sample_ids need per-thread periods
->   tools/perf: Correctly calculate sample period for inherited
->     SAMPLE_READ values
->   tools/perf: Allow inherit + inherit_stat + PERF_SAMPLE_READ when
->     opening events
->
->  include/linux/perf_event.h                    |  1 +
->  kernel/events/core.c                          | 62 ++++++++++----
->  tools/lib/perf/evlist.c                       |  1 +
->  tools/lib/perf/evsel.c                        | 48 +++++++++++
->  tools/lib/perf/include/internal/evsel.h       | 55 ++++++++++++-
->  .../test-record-group-sampling-inherit-stat   | 62 ++++++++++++++
->  tools/perf/util/evsel.c                       | 82 ++++++++++++++++++-
->  tools/perf/util/evsel.h                       |  1 +
->  tools/perf/util/session.c                     | 11 ++-
->  9 files changed, 301 insertions(+), 22 deletions(-)
->  create mode 100644 tools/perf/tests/attr/test-record-group-sampling-inhe=
-rit-stat
->
-> --
-> 2.44.0
->
 
