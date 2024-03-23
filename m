@@ -1,76 +1,132 @@
-Return-Path: <linux-kernel+bounces-112148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C57C887642
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:47:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10889887645
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF8611F21A59
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:47:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD319281F6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F9010F9;
-	Sat, 23 Mar 2024 00:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D053D1C06;
+	Sat, 23 Mar 2024 00:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="D3t7J/ea"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IvqxBjo6"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043E7610E
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:47:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9763B621;
+	Sat, 23 Mar 2024 00:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711154868; cv=none; b=ZcYziB1emoZc2PH1kH8yTdYRc8SJovDt0wSETWVs/PlIfbS7HEYOFywstuKOmuSE+C1mYlknZY3IHA2/zxT+VNKqytAnPYhJ3ly9tNkyzs1ouaiDHwPOoA1UrzH5A6TtGsLKo2Igiu9Rs0nQEk+t5AXflv62niNfXVQVqI76mL0=
+	t=1711154991; cv=none; b=H5Wp9fNcSrbKJ+Dh6VrNm+UHAGeSHr7BBw19l4wvzdfKYX0/70vzsayrkxKUBieXB0C08lbROMQ19SsT2vjTFREyUlSa7pNnHUd4L2tls0O3d7ypDPAGOYfAsPDN6/7j5rxNoBjIKfB1Z5uJU4SN68O6BOLskPrw4/A0EKztayY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711154868; c=relaxed/simple;
-	bh=YPvEh8GGyAWNYBq9cCuktoirQCoSq8OiWTRgCg8BhaE=;
+	s=arc-20240116; t=1711154991; c=relaxed/simple;
+	bh=UQkYXrBRw3g/7sldWDk09B3+ow7yRo71hjCVT0Y7WMc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y0kBrzVb73VK0OOO74Y8uljHNE/tXIZrzrKS2cb9W1+vgs8UYpFD/NbYFZnVuL+JYS6K8xbJDbV51B6kuB99WmNGb8/EBOi2faNWVaT0X6qDwzZZcqPrgKE9+E2GzFxAJXKesrOUjoPiMjazKgO802JLEJdj3H9Kfa8++gI9+So=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=D3t7J/ea; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1def89f0cfdso28170355ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:47:46 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=mh7AVDzNkFyuuc7U5BkJnsXg5FxICDLEuKwnqslEaU/64LQFEBimNwcqovCOPAFfn31KmmXs8gcCeCKIa5KTNn8vcHJ+CYyZFHStSVQMu5DzbKqBysURAQQTLXsTGGnb8HzNyi9Zu83ev2R0/DC5jkAZCC2t4MJdy2FFc53HnXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IvqxBjo6; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-611248b4805so11023397b3.0;
+        Fri, 22 Mar 2024 17:49:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711154866; x=1711759666; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711154988; x=1711759788; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ifwO8MV+U8fHsEV380klKcwxmnbQH9YOBNoSAhp055c=;
-        b=D3t7J/eaKYOFmdRC2AjmQk0se5DsuyYrE3SCt5XOpc93UX2s0KznP84EnR8WNErd9T
-         1prm6rgEAjxP5j2ZEUNlXnqZGmJc1fmH4VltFmnOFhJ1D+iANwkF0YIc5ii9miOwxpM7
-         0DqxLFPMdy/mAGmegeTefZpe0POUetyJzrx6Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711154866; x=1711759666;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ifwO8MV+U8fHsEV380klKcwxmnbQH9YOBNoSAhp055c=;
-        b=oNI8dcHar+M0PgrKq51Pi71TsBhx2kbl4bpD8CkPWPr6bVx+GGVPapO/Ws/2MLztC+
-         H7T5yK8Z/YCvkPiEA2/vDW6hdMeIGpwxTRC6XjJkCJ0Oni1eXiXeR2tjfmk4/+DeEaaA
-         Z/6EUrlG/cBAc4ZMKNh+c/SPy8YjNT5+Vy5INrhakWLRnuSiD46w95IwgoKTai2Di9HO
-         /j4HSUqHCHQ0NnXmWoPCWCwkbq0DbbrfHOz3mrh9MkGXiZMhFvgKBRhgGfKZ//C8uQvv
-         mCy17B70ez2A1s5ykHBeaSItDmljgdRjy9x+4275bTFkayColafQ+xSk1zu33JUTg6t9
-         y2gA==
-X-Forwarded-Encrypted: i=1; AJvYcCVpbr7eY0Y+Igsr6xs1g4MEbGE387eg+oiuOD3p3Nsoga+XKkAWIXotJiFpgYFFscqOtZW7jS3mx6mgKTe1rNO2NGOh7JksTCdmsjkE
-X-Gm-Message-State: AOJu0YylGV9I2jZ/8SEd6jqpFLCmqFeCk4WX7rQcQPEyxRvPGp9iyXZ9
-	iqJYdHqU9ATaU5M16oLmySNZ9H/P3GAsNavGAl1QRUjqnhjKCTRN52M5MnpqCx7VkBkr5Y1agez
-	0WA==
-X-Google-Smtp-Source: AGHT+IEYYBQoPCbqgsoBTUzTjsAJmBtl5cuYEV05iAqCeBpp2CszE8iuxt/0ErPK9RSra4XpuJ9x2w==
-X-Received: by 2002:a17:903:234b:b0:1dd:69bb:7f96 with SMTP id c11-20020a170903234b00b001dd69bb7f96mr847427plh.6.1711154866269;
-        Fri, 22 Mar 2024 17:47:46 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:2:c164:9ab4:de9f:5f33])
-        by smtp.gmail.com with UTF8SMTPSA id t3-20020a170902e84300b001dcf91da5c8sm372788plg.95.2024.03.22.17.47.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 17:47:45 -0700 (PDT)
-Date: Fri, 22 Mar 2024 17:47:44 -0700
-From: Brian Norris <briannorris@chromium.org>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Kalle Valo <kvalo@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: add myself as mwifiex driver reviewer
-Message-ID: <Zf4msCV3eGqGL6-U@google.com>
-References: <20240321163420.11158-1-francesco@dolcini.it>
+        bh=ZJ5iJEyxp0TFbjOIBhDcRyFjdhS9GLo8uwaFuutf5pw=;
+        b=IvqxBjo6krSEE7mxdXJmMYMcxI84tZqeE1aHY/Co04IFHF1UG+E2ahn3SQ6ffu/+Gx
+         COctBBGvedXpvuWRa7FHT84t01ZNjtyK1gr2ETKrKggDDjtF1qyln4wx4R8IJhOGcPbQ
+         hwOz3Q7nH3wLozfNfA0d3vSLtdGKbS+zVUhDiYzgV2SR5bLTG427TgziQuJTLUmmFRZF
+         RmCWlrC/V7U7DWvqHB7kKapsqZ2SV6os1U01ih+Ly++ftXh5Ii9YgGIOWJTONjPyk4H9
+         uIPRYBWHX1aDLtR0bDbFiW3YaTsLjCNjYOfl2CMlMp/LYasAcp8aL+yYBMFLpWmdXFHl
+         Koag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711154988; x=1711759788;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZJ5iJEyxp0TFbjOIBhDcRyFjdhS9GLo8uwaFuutf5pw=;
+        b=uddkhN8p1+Q65e7cTCvMNex1L8/PYz2TEse4Qordj+Ze3w07D4mF58ru5/K+UIOyHo
+         9qA5CtTzfEkOVhjHUT3TxozCDEA27cAU1zSgRVKL8ialKVd0/XUtwl4+tQ26zotLNV4w
+         0vA9TrrW0GFmxfnLTJoC/R/1jkudJbXzZhGFBc3d6ijM6/6RSATys8C3/cYFjVSfxG63
+         Vp6rgtJaFhOgvv4y7gpNmDp3YZ3x4x5cLudIzNvq+NYYArylO9JCgeMkV24ehHbyopyj
+         7Fr4IZuNzhGSXTSidpmRV/8MGUgZvpKJmBFjks2UJOmai3pREIJrIqzbqW1TNh5tJP6v
+         ZVFg==
+X-Forwarded-Encrypted: i=1; AJvYcCXXqHy7pt4v9tcFpEhZJdOEbGrTfhUYPr1i2FJjq9Y2gsahBUXIpRYOOHsiPAwyVMNTdlr0AxAD6djwdEYTAkQt9iaEs6XAUY1h66pMR8oAASUSpY+UZwrD+Jh8xzDjjKvTkqkRBx9d8NwctsvyAyF6xgTrszJCsoQx1vXN4qbbURZW4Zlhtbo=
+X-Gm-Message-State: AOJu0YwAtwzsyNPp9H5CdUZ+IQr581mM1wsSglabs49+PjQCo+O1uBft
+	XxAK/FJONq9pRfCLZip8LVtR3eNFJ6UxrTZ9Giam/CNUf+mnv3XM
+X-Google-Smtp-Source: AGHT+IETDJYmnh9BWQauIg052TpIhJFT1IQ4W9EH99k2XBBCRGg9iBUv1l3y+OMtpyk3nKx/JVIcEA==
+X-Received: by 2002:a0d:e542:0:b0:609:879a:aef7 with SMTP id o63-20020a0de542000000b00609879aaef7mr1208456ywe.30.1711154988612;
+        Fri, 22 Mar 2024 17:49:48 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id fa12-20020a05622a4ccc00b00430ad0bda57sm337957qtb.21.2024.03.22.17.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 17:49:48 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 136631200066;
+	Fri, 22 Mar 2024 20:49:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 22 Mar 2024 20:49:47 -0400
+X-ME-Sender: <xms:KSf-ZVtFLxaw1-QrJZaVB7vB7kF6a7U779wLGmZubuDj7QEq57RoKw>
+    <xme:KSf-ZedlSgwPiOPAVyQrfKgA_RdAvf0Lau-_Nv5YAnjZvdq860CXtwMaQua0DXaTd
+    _j7w4aaiDHK31ir_A>
+X-ME-Received: <xmr:KSf-ZYxFj026LOkybOdzXXT8YJYaI7TpNYoKfo6vnzaxjvhj1LKz_2OIYn-hHg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtfedgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:KSf-ZcPQb4gCA79UNR0ibB1j77NLHhlWi9wSK_TzkxMOyrNn5DNGcg>
+    <xmx:Kif-ZV_ZMlcx9Z9vbHNS581uzFh7ZbqBDyx3VWylanHnLAHVouUHyA>
+    <xmx:Kif-ZcWDbBYs9r6572BITnmxBijz9q51BRA2H2_bMd3MTd4LjCAxWw>
+    <xmx:Kif-ZWeq0MwLMUpEW6beMQ63RriD4s7-o59J_yeVCidHIseVxgcK-A>
+    <xmx:Kyf-Ze8pkFofcyO3vmT79bm9VwCUDMNzsaiiqVRPuNVg9_TcmoFZyzdA18fR0zrJ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Mar 2024 20:49:45 -0400 (EDT)
+Date: Fri, 22 Mar 2024 17:49:23 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+	Miguel Ojeda <ojeda@kernel.org>,	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
+	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,	torvalds@linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org,	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <Zf4nE_AvHPx9F2nQ@boqun-archlinux>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <Zf4fDJNBeRN5HOYo@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,14 +135,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240321163420.11158-1-francesco@dolcini.it>
+In-Reply-To: <Zf4fDJNBeRN5HOYo@boqun-archlinux>
 
-On Thu, Mar 21, 2024 at 05:34:20PM +0100, Francesco Dolcini wrote:
-> As discussed on the mailing list [1], add myself as mwifiex driver reviewer.
+On Fri, Mar 22, 2024 at 05:15:08PM -0700, Boqun Feng wrote:
+[...]
+> > 
+> > I wonder about that. The disadvantage of only supporting LKMM atomics is
+> > that we'll be incompatible with third party code, and we don't want to
+> > be rolling all of our own data structures forever.
+> > 
 > 
-> [1] https://lore.kernel.org/all/20240318112830.GA9565@francesco-nb/
+> A possible solution to that is a set of C++ memory model atomics
+> implemented by LKMM atomics. That should be possible.
 > 
-> Signed-off-by: Francesco Dolcini <francesco@dolcini.it>
 
-Acked-by: Brian Norris <briannorris@chromium.org>
+Another possible "solution" works in the opposite direction, since the
+folder rust/kernel/sync/atomic is quite stand-alone, we can export that
+as a Rust crate (library), and third party code can support using LKMM
+atomics instead of Rust own atomics ;-) Of course if the project is
+supposed to work with Linux kernel.
+
+Regards,
+Boqun
 
