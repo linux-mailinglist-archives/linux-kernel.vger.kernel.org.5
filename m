@@ -1,114 +1,100 @@
-Return-Path: <linux-kernel+bounces-112476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD988887A4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:39:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FFC7887A4F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 670B2B21434
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:38:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B78D2820CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD79C1EB5A;
-	Sat, 23 Mar 2024 20:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E27FC1E51D;
+	Sat, 23 Mar 2024 20:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="iOA1vw0C"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WrK5nNS9"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05BC4443D
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 20:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E911DFD6
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 20:39:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711226328; cv=none; b=n1Fi75UFOPyq/D1yQTFuTcHjnbanLsM8Spv2gljos7BsxtiuZ8h9aAlx9fedYTPqUozOFzexAI4RFP5XN5wiAFj9tn/5QStNwZXF/6Wm1SG7E3dG2/3PSvqs9++IsCqZzoZWzaMrLdKKHQg2c3gc4Q+POT0M/LwfnMuUtyTHGok=
+	t=1711226360; cv=none; b=NFz7NmgBr9qw3M87qgOfNhzBSd9ZiP2Y5V2srNUNcAwXcPR4bs4HSPusUV4Okc044zA9yb7stcoyJmQJrEIwhXFrWbof+Qbssv9sHMubrSsMjruOYVPoqG3C9jbiwCjGGLWA+v4H02vNxqkBZMGgeKTOx7Bk7O5BSDB3sPc5DY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711226328; c=relaxed/simple;
-	bh=vcSa+/XZIEqadCu5SXdhOSO9Qef7nSbtGvHRiqFxrGI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OkzhMFYHD65D3kpCaRqAG38hvj/9aWrGneIvKlD5kzzJhiDvUFX29Zzctk4GxeexXHowTbTspcRrCdCSMTfvsnmWNUjYGo46T812QasCLLR6tSMUleOqBdF4lhqtPaEYPNpNX4i1Go7zSGBfoaG/m8OO0C8UZdyR8XT/kT3x8dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=iOA1vw0C; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d4360ab3daso53856681fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 13:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711226324; x=1711831124; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fDxvg9UbnnX+rObAJA4VzsyPDBq51ZQBy54uGmarkxI=;
-        b=iOA1vw0CXvBljxsIEAd0sWOL057EOFDWjcSrhmLgjxf4TO+m9p++NBDSH4DodZVEC1
-         a1B+V0iuTtBergqf8TzLu2hko94nv05zgHaxUYPhBCxczC97lWQvk8EATNRtSaiSuZ/2
-         jAmv2Jgpd0poHCqXw/QCG9IBaIhZEF3QxrdeO2tfoFAKhwgfUOjgVaQV/+KGU3lXq5Lj
-         X1wOdgpALol/L/8bZ/hJXK11+tB1cmePSHXAun1V5S24YT1I14/d0zxqyDId4uVwPnUi
-         3NS30gx3M6kOES54Q06kSHeSRDDu13Pxf4ANfNPd5mP4GhBAPOQLsMAYiCENp8HunClH
-         iyrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711226324; x=1711831124;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fDxvg9UbnnX+rObAJA4VzsyPDBq51ZQBy54uGmarkxI=;
-        b=b5XjVeEfPrbGJqrPJMsTt8ndJelGQ0eILCOv5EqUwA9o3CuJCb03RSdkwvfXZeN3SZ
-         l+ps4WGKtUjDfLtM7mmCLW7D7ffKwqjMxDnUpnKhGYRTJuxx57rY9d10iCvhoLaKcKGd
-         EOhJ9IhcdtShaSRAUZjXef32cIQgM1wd6v3GFz49leLEcLc6mKlMUq0GVPFHe3ZfQaQc
-         Vh8LBzjjYY8lz739zgyIcQBPHBxhX62mm2IvbJ42oLRAGH0msOCHQGwVIWFWeOfWnwUo
-         6xZtfIcTABd10lWg+G+rPvBVYRwV7W8MWZ2Isb6qujKs5wz1eLasQjVj1BTJSdiQnywE
-         njcg==
-X-Forwarded-Encrypted: i=1; AJvYcCWZhTRLtl2BiP0GgML/MobLrk1oOoRFcaMacRk3HRqQmhEwyNt8r56MdQYNlbBeReiejhkFRlhfJIWgRLunj0P3PkjW4yB6vyll40Dl
-X-Gm-Message-State: AOJu0YwgQR9r6QQI3YSY2RCR8Ms9A98mtMeIG/XNJHCOWbgzFA9MTkeg
-	f8ttLUTG+Njd8TV+3kE2n7SUMfgejlFXtrn0+gGG3o41Opr0CUC64NgRwRnfzwyGij74BR0W3Xw
-	V8zLb/xLYeWGctsjaCOTol4830CEjTNe/f5eW8Q==
-X-Google-Smtp-Source: AGHT+IHr0pE+R57iPjnjYEDRZYdDxbFdYp7TmFmdO2MPAFrT/tVKn7D5ShflgfmdKDfqHqMrZkB3iCx040qJhegMFII=
-X-Received: by 2002:a05:651c:386:b0:2d2:b840:1c78 with SMTP id
- e6-20020a05651c038600b002d2b8401c78mr1744597ljp.48.1711226324183; Sat, 23 Mar
- 2024 13:38:44 -0700 (PDT)
+	s=arc-20240116; t=1711226360; c=relaxed/simple;
+	bh=gOL+PAsgYiNI15/W22l27PdytPI0/m2kt+zHs8oEr+g=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=i8r8qE4h5Kg3O8YqomGBnKi7KKhsxgtZinRAS3ryaeGY+NHByO0IzbPnpHFDmPira4gRPYtIqp2XVJMzoVSUj1vwq4CBK9FhF7c6F9ffNEHxlrU88IkvWg5Nkz04o7w7c64IsEPgAoPiA89KG2lVTeJ4tyg0OMTXahMhhogtsps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WrK5nNS9; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711226357; x=1742762357;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=gOL+PAsgYiNI15/W22l27PdytPI0/m2kt+zHs8oEr+g=;
+  b=WrK5nNS9ZK+4DUnBGBV1WPNXv+jPGg5Yo7yknIzYXrShfchRu2/g3bTs
+   WBHB3xe9xu1g0/rrtyZrcvtdFDbK7cnREynMV8cYRVuefAAX4R4nl2txM
+   XcxbRYwRnkBMUV9Qde+w9EVj64R9vB9KGYNGpfZun+cw4OkkjnXokLbes
+   Dx9QvRpydKSHhKCm26umEoHhwCEtV2qzw9D3QekcX646HnPH5ZJ9MbXe0
+   hM08EAvBskjbWxTGMiZ9N/JOB1wjReqherYPeXL686sELGtc/l8e3fr3S
+   kLRKRz+zLJfB5D9VMrKNMGGl9V0IuBfri1axNVzv/2mbktYVrCQgpV4sN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11022"; a="6449322"
+X-IronPort-AV: E=Sophos;i="6.07,150,1708416000"; 
+   d="scan'208";a="6449322"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2024 13:39:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,150,1708416000"; 
+   d="scan'208";a="15125583"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 23 Mar 2024 13:39:15 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ro893-000LSB-0M;
+	Sat, 23 Mar 2024 20:39:13 +0000
+Date: Sun, 24 Mar 2024 04:39:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko]
+ undefined!
+Message-ID: <202403240422.Abh1O9vI-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1711131830.git.marcelo.schmitt@analog.com>
- <81665b5f0d37d593e6d299528de8d68da8574077.1711131830.git.marcelo.schmitt@analog.com>
- <20240323184454.201edbc3@jic23-huawei> <CAMknhBFRa-AwM3o-AdDDmPnwLAer8x=9TJNasSbY2bu5h9mMdQ@mail.gmail.com>
-In-Reply-To: <CAMknhBFRa-AwM3o-AdDDmPnwLAer8x=9TJNasSbY2bu5h9mMdQ@mail.gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Sat, 23 Mar 2024 15:38:33 -0500
-Message-ID: <CAMknhBFZa4eQ1bbJQb+ESZdsbLh5xSBn+feMwmWbc58mT2UWPA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add AD4000
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Marcelo Schmitt <marcelo.schmitt@analog.com>, lars@metafoo.de, 
-	Michael.Hennerich@analog.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	marcelo.schmitt1@gmail.com, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sat, Mar 23, 2024 at 3:18=E2=80=AFPM David Lechner <dlechner@baylibre.co=
-m> wrote:
+Hi Masahiro,
 
-..
+First bad commit (maybe != root cause):
 
-> Here is what I would consider a reasonably complete binding for the
-> AD40XX chips (excluding ADAQ for now as I suggested).
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   484193fecd2b6349a6fd1554d306aec646ae1a6a
+commit: fc93a4cdce1db7568fcdff608924324f5754efe5 kbuild: make *.mod not depend on *.o
+date:   1 year, 11 months ago
+config: sh-randconfig-002-20240323 (https://download.01.org/0day-ci/archive/20240324/202403240422.Abh1O9vI-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240324/202403240422.Abh1O9vI-lkp@intel.com/reproduce)
 
-I missed one...
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403240422.Abh1O9vI-lkp@intel.com/
 
-I also think it makes sense for the High-Z mode selection to be a DT
-property since needing to enable it or disable it depends entirely on
-what is connected to the analog input pins.
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
----
+ERROR: modpost: missing MODULE_LICENSE() in drivers/iio/afe/iio-rescale.o
+>> ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko] undefined!
 
-  adi,high-z-input:
-    type: boolean
-    description:
-      High-Z mode allows the amplifier and RC filter in front of the ADC to=
- be
-      chosen based on the signal bandwidth of interest, rather than the set=
-tling
-      requirements of the switched capacitor SAR ADC inputs.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
