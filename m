@@ -1,227 +1,110 @@
-Return-Path: <linux-kernel+bounces-112131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F13D6887605
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:20:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6906E887606
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20BAB1C2135B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:20:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09D7F1F2204A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6252739B;
-	Sat, 23 Mar 2024 00:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB90C7FD;
+	Sat, 23 Mar 2024 00:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZJVhwlKr"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J5hqVNg1"
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3247F
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428BA7F
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711153245; cv=none; b=Yuzg0Bha+QbB1BfafB3Ig8dSlZxLQ5KzhYNk5cF7il+1a08QizoPc6fs52ySIja7h2vOnQOFXgs8N5AEMxUfA5ZyfD1z2v10dVVeYefDwQl4sJM0odACZTbparinKK3XpFktzQKMCsEFHPyPTE1LErYHHacriA+GpHOeL0LcxDY=
+	t=1711153295; cv=none; b=Zb13Hb/iI4pn5adQgoaVWiKMIVxknO0s30ScR18rrp6J+9WPTPfrtZx9pCK7JiwLIUJ4msWYUQD1HzG0zvTAz6CKXhuQcQxvgPX41EWuczCKZIgtgrgDSRISr4C9oMBwOdi1dvcwaOh0jk5WLWkXEmF0ev84t2EVYru5bLZ4S14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711153245; c=relaxed/simple;
-	bh=OzA7VIM+UrjmE9Rh4uMisW39h0qT9s9d5S3vxF8rfxk=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=twNNfepLtt2xeDrqOliyxZD2Mkw9GIMDmyZU3ILsnVH6TcJcm0paNDt64zafVVr6zewOuN2wZJGNLsHbmBWRllM+qIXuWA6QYn2hw14X2C9ZVR+EY7JlebuQb0eHtB5xXiM77rhWHICqeKTyedLFetP4HFpcZoOglifu6qnHHZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZJVhwlKr; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711153244; x=1742689244;
-  h=date:from:to:cc:subject:message-id;
-  bh=OzA7VIM+UrjmE9Rh4uMisW39h0qT9s9d5S3vxF8rfxk=;
-  b=ZJVhwlKr7jPUDXGSabxqyy0yjXVCRnJxFx4UpfDyrHJAFsihdBvinUO0
-   5AbxKVapcx9MKG3svk5fvCI9t2GcJF6noeCpk1Bnz10s9vtuR49ERQCq8
-   6HC7EnWYU1lsPlaRJAO33zXT39INj0Yl9sWDGMUK4qLl8MfDz5/Ra2ttl
-   fXhS32j0BzqShlTZlN5vxTrHNZ1BM/7DbX2GvoHIKASAZG9BWkU7JAL5A
-   alrITrFnm70h9efCKmvrnTQ7XVYSJiniwgcVZlu8VztKm3ga7RjclqTou
-   U5yEzUxeST8P4ppWNKzX3tzolHGCnEL/O4RtIiiD6glq978rDKzIbuTCe
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="9171760"
-X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="9171760"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 17:20:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="15100898"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 22 Mar 2024 17:20:42 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rnp7o-000KjH-0P;
-	Sat, 23 Mar 2024 00:20:40 +0000
-Date: Sat, 23 Mar 2024 08:19:53 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 30052fd948a3b43506c83590eaaada12d1f2dd09
-Message-ID: <202403230850.cdnhJ0PR-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1711153295; c=relaxed/simple;
+	bh=3oVdTJIWwBdIc+TKQQRMm1GvKnrkgkGxIRm7Lek5enI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IGhvQv8E3oPDET9E7nSE1FbizkbVoQAVHxMlHZSxmGqbwbi0R7kFR7XpMBkPe3qRVoqXYKLdwBmtfjnP3WKnXSYAGl1lhmD4IOG0uWoeeSv4F0nnrFe0xsHPmbBWiZTNhoYfbAKzqFDBU1R2AXtW/U2de+J35NVnoLPHJkzc27Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J5hqVNg1; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 22 Mar 2024 20:21:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711153290;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RdNz/STIRdapZrDiaLvH7XN2qY1HG1kHxZd/Wx1Un8Y=;
+	b=J5hqVNg1ovC1cbzfglT1Aem53QApQiVgxGvj1QDflZlBhq5mrj7tPfnyEQpgE2h10cg3/9
+	iRsZTFnNWZV/re8Qg/Q5rC5Kx+tv0Q0j1AXf9fr6v6KVn0TMsvEebKi9uxB9gZHRpvMlyO
+	TPZkam0JSNG3vbeP00+HbzXJYh36TUE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, llvm@lists.linux.dev, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <parri.andrea@gmail.com>, 
+	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, 
+	Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
+	Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	kent.overstreet@gmail.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 30052fd948a3b43506c83590eaaada12d1f2dd09  Merge branch into tip/master: 'x86/shstk'
+On Fri, Mar 22, 2024 at 05:12:29PM -0700, Linus Torvalds wrote:
+> On Fri, 22 Mar 2024 at 16:57, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > I wonder about that. The disadvantage of only supporting LKMM atomics is
+> > that we'll be incompatible with third party code, and we don't want to
+> > be rolling all of our own data structures forever.
+> 
+> Honestly, having seen the shit-show that is language standards bodies
+> and incomplete compiler support, I do not understand why people think
+> that we wouldn't want to roll our own.
+> 
+> The C++ memory model may be reliable in another decade. And then a
+> decade after *that*, we can drop support for the pre-reliable
+> compilers.
+> 
+> People who think that compilers do things right just because they are
+> automated simply don't know what they are talking about.
+> 
+> It was just a couple of days ago that I was pointed at
+> 
+>     https://github.com/llvm/llvm-project/issues/64188
 
-elapsed time: 735m
+Besides that there's cross arch support to think about - it's hard to
+imagine us ever ditching our own atomics.
 
-configs tested: 139
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240323   gcc  
-arc                   randconfig-002-20240323   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240323   clang
-arm                   randconfig-002-20240323   clang
-arm                   randconfig-003-20240323   clang
-arm                   randconfig-004-20240323   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240323   gcc  
-arm64                 randconfig-002-20240323   gcc  
-arm64                 randconfig-003-20240323   clang
-arm64                 randconfig-004-20240323   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240323   gcc  
-csky                  randconfig-002-20240323   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240323   clang
-hexagon               randconfig-002-20240323   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240323   gcc  
-i386         buildonly-randconfig-002-20240323   clang
-i386         buildonly-randconfig-003-20240323   clang
-i386         buildonly-randconfig-004-20240323   gcc  
-i386         buildonly-randconfig-005-20240323   gcc  
-i386         buildonly-randconfig-006-20240323   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240323   clang
-i386                  randconfig-002-20240323   clang
-i386                  randconfig-003-20240323   gcc  
-i386                  randconfig-004-20240323   gcc  
-i386                  randconfig-005-20240323   gcc  
-i386                  randconfig-006-20240323   gcc  
-i386                  randconfig-011-20240323   gcc  
-i386                  randconfig-012-20240323   gcc  
-i386                  randconfig-013-20240323   clang
-i386                  randconfig-014-20240323   gcc  
-i386                  randconfig-015-20240323   gcc  
-i386                  randconfig-016-20240323   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240323   gcc  
-loongarch             randconfig-002-20240323   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240323   gcc  
-nios2                 randconfig-002-20240323   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240323   gcc  
-parisc                randconfig-002-20240323   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240323   gcc  
-powerpc               randconfig-002-20240323   gcc  
-powerpc               randconfig-003-20240323   clang
-powerpc64             randconfig-001-20240323   clang
-powerpc64             randconfig-002-20240323   clang
-powerpc64             randconfig-003-20240323   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240323   clang
-riscv                 randconfig-002-20240323   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240323   clang
-s390                  randconfig-002-20240323   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240323   gcc  
-sh                    randconfig-002-20240323   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240323   gcc  
-sparc64               randconfig-002-20240323   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240323   gcc  
-um                    randconfig-002-20240323   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240323   gcc  
-xtensa                randconfig-002-20240323   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I was thinking about something more incremental - just an optional mode
+where our atomics were C atomics underneath. It'd probably give the
+compiler people a much more effective way to test their stuff than
+anything they have now.
 
