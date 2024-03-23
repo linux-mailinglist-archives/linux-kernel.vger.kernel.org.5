@@ -1,161 +1,111 @@
-Return-Path: <linux-kernel+bounces-112366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D43C8878F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:16:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E6998878F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:16:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDDFB1C20FC5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:15:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE57DB20F66
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7B33E495;
-	Sat, 23 Mar 2024 14:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C1C3F9C2;
+	Sat, 23 Mar 2024 14:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d+oqKXW6"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nZuunKFp"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C801B95C
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 14:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2673D0B3;
+	Sat, 23 Mar 2024 14:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711203350; cv=none; b=ddRoIIFbuw39atiVCfG9OV1+aTLY8g6GqQX3xecLshewNOZX/Z0CAnXGrn2L8f2MDRXMC00AgrTFxGhgWgrw9OvpfIbHaB24XCSnvUztHSGbvgiVA8EtE7fAkAlIG5c7NJcezvaBe+AggJ5BxntzRtHG58uJ8x5Ie4So5hMJGsY=
+	t=1711203371; cv=none; b=QWK9gI9Yf39ijoyADvnQfknia4Hq9/Sz5+zLV1eE+D6gLD2xfpd4DS88J7NNJf4dZB7n2eTXhNE9spR5jqGNZCyraxq9VrbpYTVUBRptNMVyX/HhFKNQlNGayCVHhkR4MRaGSRNnsb6vC+z7I3hDLFulTtGw+nqX+TJyx+ikdpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711203350; c=relaxed/simple;
-	bh=nMsZHOHHUsErMq1eXFha7P+a6ozFoPRny59WUBoRJ9c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oHHz4Igwi/pgJAdDbqaK7fRRX4UTgx/Uxrb6wTjKdtbMP+4GmT7T/vi6i4/GVpVjjnbvxKAPU5mTmH3pSu8JH/DQt7QBtGs1AoMJwKX7axrk4ynlZOODYtdRI9gdl7zu2B4ypVkwoMAV2lJIUC6eSbgfrTsGHWKgp2C1Ib4+66c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d+oqKXW6; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711203371; c=relaxed/simple;
+	bh=Zonfln1xYbt18YMcFcafYS5a3XzTEoVoGH/sk34xKoo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aY5bUFI2Y0ZLDVlUE/QUTxCLhrSiKQ/CmUiU3eI4Fx1r7O+/HvCY4QzxxGklw2a3UPE+7/axYdcfQg2eikfuNNLmggQvKcrUaFY3b2f/13UYHgcFIk08/CldtbOfUvsw+n0z+hycdK34MsMfgSH8DmMLczq2Y7M4qz6TNPZrjuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nZuunKFp; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513e10a4083so3473387e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 07:15:48 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dde26f7e1dso22014685ad.1;
+        Sat, 23 Mar 2024 07:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711203347; x=1711808147; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q39pmMHfSXy620p4ACbgyFL1kmjGFJZhr6o67AZsyVU=;
-        b=d+oqKXW6pvvH8HeMYe8+UEll17jsBC1PxJqmphWPP1TYZwuKpmUfcKaiC/8n2VmlfP
-         M++9OBvFaIJlsN2kt5lStnfMVrU8vf1z18F47G0DQgUwHL31BIkcmX+XVsVI9zNuqjeK
-         9HMhKIPNiRzAOIY65ZSJcQouJFkklHKI37cd3CoIHd8Ii5d4ZF1JOytZf4pUMybzLKfo
-         4/KNoAu4pBiV0ZDITJsEJiWFgr00OBTe1uNt9+VxHWZqew10FxKSQLLMQzTgcyPNyilT
-         0b8/T5BY2wJr5aZ6EsXaA/ZIv6J2hvrGdhVr3JFKfBozlAl9tGx9JbazZaZckoyheX+L
-         55gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711203347; x=1711808147;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1711203369; x=1711808169; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Q39pmMHfSXy620p4ACbgyFL1kmjGFJZhr6o67AZsyVU=;
-        b=UaE1/0VUXVEtaZ0TmUQAALDNV+sKHhqKtd7kp8yNSzD72MqfjEnar7BEnnuyfMFJ6M
-         bWr3TtrOPdFqWUuNCuB/qF0y9F57ou+5hfSckqrL2U/IyrMzIWGOKbdECasNGYEjxmzU
-         yhLCxeNKmrucXbTVsQaTL+cCNmndY5Z+zCMqz+hdcmmguHUb9ZNcPabti5aDeALWy/6d
-         VVK9ZzThdnJIfF0jCaTWWYdwvJgQ/+BHXnWfaAT4XMfyXvpRQIQSQFrHYwBif1GW1DHp
-         HsxbiFqKVXN5ygMnLzt2uwJnNC5WcLhxvPh8C4RbRijYY13Bujy1t2HV9VSamf4A+3vT
-         fO3Q==
-X-Gm-Message-State: AOJu0YyxoG/eED8uTCg4fY3504Bjb6ujPEdI2Hp8zMexJq/TJc4pq2m+
-	w2wERNF4Pb6IL17g1XK1aNSO2ZT5qqivqiNIqQ4ovnR9q+6/Cw5WC6xU/Q1V
-X-Google-Smtp-Source: AGHT+IEOcvSOI+g3mDtFgwckNpK2y/h8PWX/aXFX85Y+t0cl7kJaPnDU9DVeAuDHV8jbkyf237PTPA==
-X-Received: by 2002:a19:431a:0:b0:513:cffc:e74 with SMTP id q26-20020a19431a000000b00513cffc0e74mr1445334lfa.52.1711203346804;
-        Sat, 23 Mar 2024 07:15:46 -0700 (PDT)
-Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id w3-20020a05651203c300b005131c5285f8sm306892lfp.107.2024.03.23.07.15.46
+        bh=0yHZUKY2RezcV60fnvTvfbW3kfQRjFkJeR3hdq5nZuY=;
+        b=nZuunKFpCdBjogst9lnFIwPANpsSeI0QcIT/Q4B9PkCZHxSXBTccAIw3fUgaw16tX7
+         c9QVlbX0QtD44XwS2z8r9w86rL6+JFWiuCY1k3iGS/4AJl9PRvMph42LHqWF015bYxVA
+         kCMTFiE/w/pd1K3C3jG875s5nW4OR1QFdDmlohDO/KedRAJLr0ynMb1yM3EJMPssJwnA
+         h73jE74aVwaOM/hdvS5ZRLpNa13dafrOYv5mOPjqzAZaYeyEDvrsynOU9FLhnMLwE5Sq
+         lT/5Ri6xTsjRGL2zR6jI2YfVURN7COhoqRpSPBUC4R03i6Nkb2YrAnkpytNI7YA1wwNT
+         UYGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711203369; x=1711808169;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0yHZUKY2RezcV60fnvTvfbW3kfQRjFkJeR3hdq5nZuY=;
+        b=mu3v5vqxQa5tEMiz9We1iO6JyPugtkC+naR0gXNoPNymrBjzYee3MbjqzL2pzuz8kC
+         +lzeX3jWvI/nS3kv0+BglQMLDgbjGIlNP07HIba1brFH5srDEvfMeepYxtndsQEiRu01
+         9d36IdNpBqAltV7ECMQ78Hi1TKZk6VQB3cbArQkytCw+PJCL5lW85+kjClhxZVaegOPz
+         blfbIuQz3jBmYB8EnLz/3iQ8mqdWtPVvtwvXRkf23U6fUm4VTX2Ln7CAPYkALX3RwfO6
+         bfRq7tFm10bElpIgciYNfwr6gm3Ed235PlKbhnN/AUy2Qwz+2M+SBafZuH5E1JUgDdzl
+         WP+w==
+X-Forwarded-Encrypted: i=1; AJvYcCXH1+3krgdiPvdayNuvF/KxrsjiznFdIuO7+YqbY+lceTDfdkhSew61Gg3HgO2mKW4yR7i/XX7wJPdzyoAoY726/BT/vLJPODdgOMtj4GuUsLA9miQGBa3iWjuLrrpecjIl6RxK8pydkJqKEqDLHMUPEXOQfp7xKwyeHL8Ar1aw1t1GTsNm
+X-Gm-Message-State: AOJu0YxNUR2bm0ScmI+jTJsCVdybIIBIF2gTGdH1UMHGzJ/9LCMyCrT6
+	3JUYMB18hsFO4K6A3gXEd0HLQzDmaEaeRJ+8SGa7SL6drLSbZlbZjII3QCUh
+X-Google-Smtp-Source: AGHT+IE4Qp4YYnow/2jOmSjfy+hfB76Afq1NrBb0M4yGd34xRyXDm5SXGf+ljHUMeWADEY6YII99dA==
+X-Received: by 2002:a17:902:f641:b0:1e0:3f65:f503 with SMTP id m1-20020a170902f64100b001e03f65f503mr3201038plg.39.1711203369046;
+        Sat, 23 Mar 2024 07:16:09 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u4-20020a170902e5c400b001def0324a64sm1597237plf.135.2024.03.23.07.16.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 07:15:46 -0700 (PDT)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Baoquan He <bhe@redhat.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dave Chinner <david@fromorbit.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH 1/1] mm: vmalloc: Bail out early in find_vmap_area() if vmap is not init
-Date: Sat, 23 Mar 2024 15:15:44 +0100
-Message-Id: <20240323141544.4150-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Sat, 23 Mar 2024 07:16:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sat, 23 Mar 2024 07:16:07 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v3 1/5] dt-bindings: hwmon: as370: convert to dtschema
+Message-ID: <aabc0c6c-dbc2-4e63-ba7a-f8c15db714a2@roeck-us.net>
+References: <20240322-hwmon_dtschema-v3-0-6697de2a8228@gmail.com>
+ <20240322-hwmon_dtschema-v3-1-6697de2a8228@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322-hwmon_dtschema-v3-1-6697de2a8228@gmail.com>
 
-During the boot the s390 system triggers "spinlock bad magic" messages
-if the spinlock debugging is enabled:
+On Fri, Mar 22, 2024 at 08:24:35PM +0100, Javier Carrasco wrote:
+> Convert existing binding to support validation.
+> 
+> This is a straightforward conversion with now new properties.
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
-[    0.465445] BUG: spinlock bad magic on CPU#0, swapper/0
-[    0.465490]  lock: single+0x1860/0x1958, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-[    0.466067] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-12955-g8e938e398669 #1
-[    0.466188] Hardware name: QEMU 8561 QEMU (KVM/Linux)
-[    0.466270] Call Trace:
-[    0.466470]  [<00000000011f26c8>] dump_stack_lvl+0x98/0xd8
-[    0.466516]  [<00000000001dcc6a>] do_raw_spin_lock+0x8a/0x108
-[    0.466545]  [<000000000042146c>] find_vmap_area+0x6c/0x108
-[    0.466572]  [<000000000042175a>] find_vm_area+0x22/0x40
-[    0.466597]  [<000000000012f152>] __set_memory+0x132/0x150
-[    0.466624]  [<0000000001cc0398>] vmem_map_init+0x40/0x118
-[    0.466651]  [<0000000001cc0092>] paging_init+0x22/0x68
-[    0.466677]  [<0000000001cbbed2>] setup_arch+0x52a/0x708
-[    0.466702]  [<0000000001cb6140>] start_kernel+0x80/0x5c8
-[    0.466727]  [<0000000000100036>] startup_continue+0x36/0x40
+Applied to hwmon-next.
 
-it happens because such system tries to access some vmap areas
-whereas the vmalloc initialization is not even yet done:
+Please note that the branch will be pushed after the commit window closed.
 
-[    0.465490] lock: single+0x1860/0x1958, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-[    0.466067] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-12955-g8e938e398669 #1
-[    0.466188] Hardware name: QEMU 8561 QEMU (KVM/Linux)
-[    0.466270] Call Trace:
-[    0.466470] dump_stack_lvl (lib/dump_stack.c:117)
-[    0.466516] do_raw_spin_lock (kernel/locking/spinlock_debug.c:87 kernel/locking/spinlock_debug.c:115)
-[    0.466545] find_vmap_area (mm/vmalloc.c:1059 mm/vmalloc.c:2364)
-[    0.466572] find_vm_area (mm/vmalloc.c:3150)
-[    0.466597] __set_memory (arch/s390/mm/pageattr.c:360 arch/s390/mm/pageattr.c:393)
-[    0.466624] vmem_map_init (./arch/s390/include/asm/set_memory.h:55 arch/s390/mm/vmem.c:660)
-[    0.466651] paging_init (arch/s390/mm/init.c:97)
-[    0.466677] setup_arch (arch/s390/kernel/setup.c:972)
-[    0.466702] start_kernel (init/main.c:899)
-[    0.466727] startup_continue (arch/s390/kernel/head64.S:35)
-[    0.466811] INFO: lockdep is turned off.
-..
-[    0.718250] vmalloc init - busy lock init 0000000002871860
-[    0.718328] vmalloc init - busy lock init 00000000028731b8
-
-Some background. It worked before because the lock that is in question
-was statically defined and initialized. As of now, the locks and data
-structures are initialized in the vmalloc_init() function.
-
-To address that issue add the check whether the "vmap_initialized"
-variable is set, if not find_vmap_area() bails out on entry returning NULL.
-
-Fixes: 72210662c5a2 ("mm: vmalloc: offload free_vmap_area_lock lock")
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- mm/vmalloc.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 22aa63f4ef63..0d77d171b5d9 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2343,6 +2343,9 @@ struct vmap_area *find_vmap_area(unsigned long addr)
- 	struct vmap_area *va;
- 	int i, j;
- 
-+	if (unlikely(!vmap_initialized))
-+		return NULL;
-+
- 	/*
- 	 * An addr_to_node_id(addr) converts an address to a node index
- 	 * where a VA is located. If VA spans several zones and passed
--- 
-2.39.2
-
+Thanks,
+Guenter
 
