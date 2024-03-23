@@ -1,119 +1,166 @@
-Return-Path: <linux-kernel+bounces-112294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD77887807
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:39:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADD7E88780A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:42:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 510681F21CD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:39:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B431B1C20D05
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51BD210A24;
-	Sat, 23 Mar 2024 10:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163C51640B;
+	Sat, 23 Mar 2024 10:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="L4VqmnLZ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="G0joYf1P"
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CE9DDC5;
-	Sat, 23 Mar 2024 10:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777B7FBE9
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 10:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711190337; cv=none; b=N9/mcA30u+GTGya8aKhPSZTWNv1Ewen+djEDbT3fimw2x1Io1+J5Zqml+T8ivKXK7A3uA9/QKDpYl8CFYxyZXPjnBImtKDMX+rI1oJ/GgIGd3duZ9P5UreIqF6cVu4CtIwLE2pzFVkh8ZBoHfonmccvoNqtH6LEAeZhz/xMxAZE=
+	t=1711190511; cv=none; b=XQACcR4q8v+9UA35PSF3Q4OmekJzqJl+YqJA8C/nMK5I2REWL/Xju38QLxGekJDqw6eP6mgyEYnb7IGGdJO7Ygx90NSrgqnhPGBWjfrrQnZ9SiJX7wvKBgZFXgvTirTj5iWJmqfL94yWm6xbMc9aOOzZaQ23ow5mJ0DGs5P/Eoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711190337; c=relaxed/simple;
-	bh=418qgCaLlXO3MPU6Ka6LiclNSXYM4S3ZOWBDZXvKklI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FYLqlSRUl5XkeCjOz8MZIhtcdPQshNyGsDNdZyK8AeL2UCPfGL53p323D1XgNcyTGE1hcKJ9Xlqs6GBVcbhhCVRGcD/mIaDcVzc+nPMJNUkwN3jJ55CSVCrmAGb/yAh1L1Qy7fcGfwyJu6K81dNmLVfnv9W2cBkW/zbpYone2+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=L4VqmnLZ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7E99040E01A0;
-	Sat, 23 Mar 2024 10:38:51 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id fPnPB3Hhg2o7; Sat, 23 Mar 2024 10:38:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711190328; bh=4sdIsH0QNiHyOSUq6kRcc10Kjsh94zZ4I2nRDHEZGmI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L4VqmnLZZQqifJ3JvA4Su9QTQ77V+YKprG/yEukB4Xrd7hQWBbatbb+rwDYl8oZ/j
-	 Q2xP2ugqGOjdmLlTwPmbUwDP7zF8ZHVWTW+bxbqwSydb/Ma3engeoIBNhbhmhnmVWk
-	 CME+qb5JBIyPX1sUgNaKpZ9h0AxQTsSROOEJmoz0i3tIqhDkOLrmFDKB/cNPwhglZf
-	 4OjxamkJEjCxy/5ZnAXUAwrcMj95ej7uwxQXxPmqi9ux0UHUEmbN8bcwIbDsrOqren
-	 IpkheAdNIJGqdat5vMVazzS6GwdfCFgGONLMZx8Cw65m4n/UkaOz1Q7pAVZmfmMTui
-	 uGvpXUx+No2PxkgCZeB7qS0ZtTdf+R5v8xckiW8CtV/TSe5Nim42PSrBTDoUIul32C
-	 iEyVPKEo/WJj9epmMWtCqanvyXcJ4m+ME823hfoqf4OFON2Lay1ej7lD6ZWC+MZxfr
-	 OIv6B3/+1oP+03zuSN5EInIX3Eu4BBFhysrzDHYkce1x1ljOwygWHBsmJpMAOC/dcC
-	 oerTRO4C0r54XidaO6FiSe2rO7BBvDadjyfvWEmujdS+rMM4xTJZ6xexQjB94Y6i7n
-	 As07goRTST1T3mqiWMLnFE4K/0Dpmid75kefFyU6AvG19UENOQ5BOZCBxI4H3uwCaa
-	 Tz2wWWFR7JbRibHGltcNAxOY=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C667140E0140;
-	Sat, 23 Mar 2024 10:38:33 +0000 (UTC)
-Date: Sat, 23 Mar 2024 11:38:27 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Kees Cook <keescook@chromium.org>
-Cc: tglx@linutronix.de, Guixiong Wei <weiguixiong@bytedance.com>,
-	jgross@suse.com, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, peterz@infradead.org,
-	gregkh@linuxfoundation.org, tony.luck@intel.com,
-	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] x86, relocs: Ignore relocations in .notes section on
- walk_relocs
-Message-ID: <20240323103827.GAZf6xI94u8F9LGBIL@fat_crate.local>
-References: <20240317150547.24910-1-weiguixiong@bytedance.com>
- <171079804927.224083.15609364452504732018.b4-ty@chromium.org>
- <20240318215612.GDZfi4fG52DTgra51p@fat_crate.local>
- <202403181644.690285D3@keescook>
- <20240319081640.GAZflJ6IBQ7TEKD2Ll@fat_crate.local>
- <202403190955.25E5E03E6@keescook>
- <20240322194658.GCZf3gMphnWeR9upN6@fat_crate.local>
- <202403221622.6EA43547F@keescook>
+	s=arc-20240116; t=1711190511; c=relaxed/simple;
+	bh=M6hFOyItZwOgy5Kd6/uJLgI7Ba7+EEpjLR23hLUmnvs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=jtsQ/5gbmo7tNF1YsBC6JNOO9Ik3moz8o31nsSqbceoIkxPrAjzVju16lT1/cgG1iVSMVyyjqyMEK59NRTmbFLxIcYKbx1wof+SziRBk9mqReSfcCYrt6l7YTbFeivb5gv3KZMD6uGii22ZBdmeweZ6v9Fk04ywjhz8ZFerwx8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=G0joYf1P; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-69670267e87so8318566d6.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 03:41:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711190508; x=1711795308; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=l2gwNXawQpStaJd+f02miPwjOIqU+NiXYGgzo4fTuRc=;
+        b=G0joYf1PlC49rBHKyFRWkSCDEidzynHhxJisZ+kPgFlTCcIm/xR1t1RelLsAQc/43H
+         Dl2bLShyA4gN7eGoISnKFidiAvt/aO8K+Z5QNyDg0Um3CWlACNFmKeDBHlEucJmZ58wk
+         NOTi48E3W53XOUFhPIq2N1d3im2E9PEvEUugY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711190508; x=1711795308;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l2gwNXawQpStaJd+f02miPwjOIqU+NiXYGgzo4fTuRc=;
+        b=ndEKHE3U0Z19kksQtGX5FodU6hPrRA6Z3mORybpnukIbehTU5QKb3uvuJ6PCdd3M1u
+         qauhZ385cjKCxwGW1or1tm4CTViZComHY78e2nZqam3F9m+xm1rn7HaTY846lAmCpOV+
+         /chO5ajkjL1whpfWEtmsdZ1BVq6IAMMfVLzkhBlq4v4mQdBq7dNxgtw7kVDFExco0q4f
+         Z0nU6eZtKdMyyC/N5hLUfE2WvEJw6nQKEqLvGyR5wVlURSE9bQ4scMpIU1PjBN3TnMer
+         Sh5g9j1DykQXMJofy3MoYfPtEntKdf+qYlOjoUuZRgvY46Ub1NtBRd05Iqzd7bepAP70
+         d/AA==
+X-Forwarded-Encrypted: i=1; AJvYcCXLozFH/EnNOjVcW8SsiMiOAjF9o3DD+GRPrT6SWZp11/MjIZHCrgKEvcYmdt5NSM2qWbF0V5o9ySN0dsjosnzPilYT1FmhbJ0+Co4t
+X-Gm-Message-State: AOJu0YxMDGtS57GVHmrkgIuhbxIQHVdbuVtyIgAe+dPN08jxLpyBDxyk
+	6Gj/JcWRcRhNGmccJaq/taW4KkiPty9HKmeTj+JeAEGOfQTtJbx0VUZ4qejpvA==
+X-Google-Smtp-Source: AGHT+IEaPhPtGbxBcXY1FP3UFKXAsCzWgXyfVlLg736dP5Cvp8mmrWqcNtkrrNX+g2QszIFymtba4g==
+X-Received: by 2002:a05:6214:4009:b0:690:9a8a:855b with SMTP id kd9-20020a056214400900b006909a8a855bmr1658907qvb.29.1711190508331;
+        Sat, 23 Mar 2024 03:41:48 -0700 (PDT)
+Received: from denia.c.googlers.com (188.173.86.34.bc.googleusercontent.com. [34.86.173.188])
+        by smtp.gmail.com with ESMTPSA id 6-20020a0562140d4600b0068f75622543sm1998523qvr.1.2024.03.23.03.41.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Mar 2024 03:41:47 -0700 (PDT)
+From: Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH 0/3] media: Fix gcc warnings
+Date: Sat, 23 Mar 2024 10:41:44 +0000
+Message-Id: <20240323-gcc-arm-warnings-v1-0-0b45cc52f39e@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202403221622.6EA43547F@keescook>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAOix/mUC/x3MPQqAMAxA4atIZgP9c/Eq4lBjrBmskoIK4t0tj
+ t/w3gOFVbhA3zygfEqRPVfYtgFaY06MMleDMy4Y7zwmIoy64RU1S04FOZANjqYukoGaHcqL3P9
+ yGN/3A1hXP2ZiAAAA
+To: Thierry Reding <thierry.reding@gmail.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Sowjanya Komatineni <skomatineni@nvidia.com>, 
+ Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Hans Verkuil <hverkuil@xs4all.nl>
+Cc: linux-media@vger.kernel.org, linux-tegra@vger.kernel.org, 
+ linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.4
 
-On Fri, Mar 22, 2024 at 04:40:11PM -0700, Kees Cook wrote:
-> The earlier patch, commit aaa8736370db ("x86, relocs: Ignore relocations
-> in .notes section"), landed via my tree. It was sent out on Feb 22nd
-> (v1[1]) and got a suggestion from HPA and a Review from Juergen Gross.
-> I sent v2 Feb 27th[2] and it sat ignored for two weeks.
+drivers/staging/media/tegra-video/tegra20.c: In function ‘tegra20_vip_start_streaming’:
+    drivers/staging/media/tegra-video/tegra20.c:624:72: warning: ‘yuv_input_format’ may be used uninitialized [-Wmaybe-uninitialized]
+      624 |                          VI_INPUT_VIP_INPUT_ENABLE | main_input_format | yuv_input_format);
+    drivers/staging/media/tegra-video/tegra20.c:617:22: note: ‘yuv_input_format’ was declared here
+      617 |         unsigned int yuv_input_format;
+          |                      ^~~~~~~~~~~~~~~~
+    drivers/media/radio/radio-shark2.c: In function ‘usb_shark_probe’:
+    drivers/media/radio/radio-shark2.c:191:17: warning: ‘%s’ directive output may be truncated writing up to 35 bytes into a region of size 32 [-Wformat-truncation=]
+      191 |                 .name           = "%s:blue:",
+          |                 ^
+    In function ‘shark_register_leds’,
+        inlined from ‘usb_shark_probe’ at drivers/media/radio/radio-shark2.c:306:11:
+    drivers/media/radio/radio-shark2.c:212:17: note: ‘snprintf’ output between 7 and 42 bytes into a destination of size 32
+      212 |                 snprintf(shark->led_names[i], sizeof(shark->led_names[0]),
+          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      213 |                          shark->leds[i].name, shark->v4l2_dev.name);
+          |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    drivers/media/radio/radio-shark2.c: In function ‘usb_shark_probe’:
+    drivers/media/radio/radio-shark2.c:197:17: warning: ‘%s’ directive output may be truncated writing up to 35 bytes into a region of size 32 [-Wformat-truncation=]
+      197 |                 .name           = "%s:red:",
+          |                 ^
+    In function ‘shark_register_leds’,
+        inlined from ‘usb_shark_probe’ at drivers/media/radio/radio-shark2.c:306:11:
+    drivers/media/radio/radio-shark2.c:212:17: note: ‘snprintf’ output between 6 and 41 bytes into a destination of size 32
+      212 |                 snprintf(shark->led_names[i], sizeof(shark->led_names[0]),
+          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      213 |                          shark->leds[i].name, shark->v4l2_dev.name);
+          |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      AR      drivers/staging/media/tegra-video/built-in.a
+      AR      drivers/staging/media/built-in.a
+    In file included from ./include/asm-generic/preempt.h:5,
+                     from ./arch/arm/include/generated/asm/preempt.h:1,
+                     from ./include/linux/preempt.h:79,
+                     from ./include/linux/spinlock.h:56,
+                     from ./include/linux/mmzone.h:8,
+                     from ./include/linux/gfp.h:7,
+                     from ./include/linux/umh.h:4,
+                     from ./include/linux/kmod.h:9,
+                     from ./include/linux/module.h:17,
+                     from drivers/media/dvb-core/dvbdev.c:15:
+    In function ‘check_object_size’,
+        inlined from ‘check_copy_size’ at ./include/linux/thread_info.h:251:2,
+        inlined from ‘copy_from_user’ at ./include/linux/uaccess.h:182:6,
+        inlined from ‘dvb_usercopy’ at drivers/media/dvb-core/dvbdev.c:987:7:
+    ./include/linux/thread_info.h:215:17: warning: ‘sbuf’ may be used uninitialized [-Wmaybe-uninitialized]
+      215 |                 __check_object_size(ptr, n, to_user);
+          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ./include/linux/thread_info.h: In function ‘dvb_usercopy’:
+    ./include/linux/thread_info.h:208:13: note: by argument 1 of type ‘const void *’ to ‘__check_object_size’ declared here
+      208 | extern void __check_object_size(const void *ptr, unsigned long n,
+          |             ^~~~~~~~~~~~~~~~~~~
+    drivers/media/dvb-core/dvbdev.c:959:17: note: ‘sbuf’ declared here
+      959 |         char    sbuf[128];
+          |                 ^~~~
+      AR      drivers/media/radio/built-in.a
 
-s/ignored for two weeks/missed in the avalance of patches/
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+Ricardo Ribalda (3):
+      staging: media: tegra-video: Fix -Wmaybe-unitialized warn in gcc
+      media: radio-shark2: Avoid led_names truncations
+      media: dvbdev: Initialize sbuf
 
-> Since it was a 10 year old kernel address exposure, I sent it to Linus
-> on Mar 12th[3].
+ drivers/media/dvb-core/dvbdev.c             | 2 +-
+ drivers/media/radio/radio-shark2.c          | 2 +-
+ drivers/staging/media/tegra-video/tegra20.c | 1 +
+ 3 files changed, 3 insertions(+), 2 deletions(-)
+---
+base-commit: b14257abe7057def6127f6fb2f14f9adc8acabdb
+change-id: 20240323-gcc-arm-warnings-e4c142cb5ac0
 
-So is there some unwritten understanding somewhere which says that you
-should take tip patches through your tree?
-
-Maybe I've missed it.
-
-If there isn't, should we agree on something?
-
-Because there clearly is a need for clarification here...
-
-Thx.
-
+Best regards,
 -- 
-Regards/Gruss,
-    Boris.
+Ricardo Ribalda <ribalda@chromium.org>
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
