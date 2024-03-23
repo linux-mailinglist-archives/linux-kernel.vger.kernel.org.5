@@ -1,113 +1,128 @@
-Return-Path: <linux-kernel+bounces-112409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6DBE88796B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:38:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28FDA88796E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:41:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7911F1F219E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:38:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D93842825B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1CD42ABE;
-	Sat, 23 Mar 2024 16:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="vh6YNanG"
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A8747A74;
+	Sat, 23 Mar 2024 16:41:12 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15D722625
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 16:37:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1187014AA3;
+	Sat, 23 Mar 2024 16:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711211873; cv=none; b=HlkugIZS1YJm6cmSH0pXFhp8aVghl57eMMgClqbkIO8Cbl9nQ5mJy10E4W0yOIKxVTzdSbbd5DegoTiVIZ/L/pd3lGIVPDXYXotCHW57x8pMSXLz0HwNV2DKAS/wRsJ0lzPDeaJiDgs1BCzITa4xZE07HCn/vq0lVWJ2hHIL/kM=
+	t=1711212072; cv=none; b=t3l24/4WtxLKnLUtduJweuEYemEv1hoP57aweNO0tM5TKK6YyjycCtzgfpi+iqIUZJOuYBNaoenmlg8j3kNg0BxoaguEJPZWouH3bVnarnZNiM/TR4KxYCQV7cIdSWdMlXNV8OgkO5UYwC98MK6NM45Nagp9gC98mDAfbc4yfJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711211873; c=relaxed/simple;
-	bh=XEiB6i9LbUv2gvZ0g7Rzdz2DBRkWU14YeEGBU6bTRsc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pntMNLFoCV5SW17ZY+Ld+ojcTlD28XIvSNbXw1eM4blhuMK0cVB4UWmVcoRwRSpjFVxFcaRLzpMWy8xpKkbtWG2Uj/wYsZ2U+l0EXR3BTSVZt/7Y12xdgKQvCeD+IbMkDmeSjZLR8hS4Z7BAGZHBFUWL/HyrYf6a40Ku53Ni3Qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=vh6YNanG; arc=none smtp.client-ip=188.165.51.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1711211860; x=1711471060;
-	bh=XEiB6i9LbUv2gvZ0g7Rzdz2DBRkWU14YeEGBU6bTRsc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=vh6YNanGH1X20zGK1tfAaV4nESkLDgECUm44By3xP/rrepE0RC54y96FmF8vXXoAX
-	 C8OKoFzrhRaela23fr04aAr9c9G2k19VwHX2hon3KR5Ww1bdaSY3UiHRthffDJvkbO
-	 vGnHnfWrjy3AqBoDJlHzl0sN3UtpvfHC1wkQiFeZzIg2BjW8P4jyQJcs/uNsUOAo8b
-	 hRInHyvu2tAFYn2J7gbRiwVWNGTN3SKlnU3vwFFRAnSLfUFFaRPx7Zh8H1BW/APelU
-	 UOHoNnylCMXjdiHAPiN/8IXicIHHkO52kCjxeGvzWdlGLNNJYDuqcCv8wRFnta3igC
-	 6Wb2bQ5hnio2Q==
-Date: Sat, 23 Mar 2024 16:37:27 +0000
-To: Sam Ravnborg <sam@ravnborg.org>
-From: Koakuma <koachan@protonmail.com>
-Cc: "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, "ndesaulniers@google.com" <ndesaulniers@google.com>, "arnd@arndb.de" <arnd@arndb.de>
-Subject: Re: [sparc] Use of -fcall-used-* flags in Makefile?
-Message-ID: <FLtGz1AK53Qsar2xlt7KBdmT7JLz3H_NoxJQ0UaC0zqNmBtsQ2eSU6LA_lojbVQh8gArSmZoVikYxEuTC4j75PMP_BcnGPuAM2mv1YK7GHA=@protonmail.com>
-In-Reply-To: <20240319221615.GA379167@ravnborg.org>
-References: <JAYB7uS-EdLABTR4iWZdtFOVa5MvlKosIrD_cKTzgeozCOGRM7lhxeLigFB1g3exX445I_W5VKB-tAzl2_G1zCVJRQjp67ODfsSqiZWOZ9o=@protonmail.com> <20240319221615.GA379167@ravnborg.org>
-Feedback-ID: 6608610:user:proton
+	s=arc-20240116; t=1711212072; c=relaxed/simple;
+	bh=atvZrKiUAUvZM2NuYgS1vjg/ulbuXOUdayurW+vjXAY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:CC:From:
+	 In-Reply-To:Content-Type; b=U2N3fcye+CUPoudMd6BDvt5waqw6XlQ/gdMVW07PuqQELOnaulkzB7TYnkWRKT7a6itcWwOi/DN8vkV8nG235SdGbrz69lW3t3OitAh9Cnwe+EQdwnN4fzrFzdZtNrxIq11M4T4fBstgzEHI8xB1PqCPZeFtonkjtpRU0EbiATI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V24dB1K99z1h2m2;
+	Sun, 24 Mar 2024 00:38:22 +0800 (CST)
+Received: from kwepemd100009.china.huawei.com (unknown [7.221.188.135])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3C7521A0172;
+	Sun, 24 Mar 2024 00:40:58 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemd100009.china.huawei.com (7.221.188.135) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Sun, 24 Mar 2024 00:40:57 +0800
+Message-ID: <ea7ec9fe-a2e1-4e0f-b314-de7815bfd614@huawei.com>
+Date: Sun, 24 Mar 2024 00:40:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/2] bpf,riscv: Implement PROBE_MEM32 pseudo
+ instructions
+Content-Language: en-US
+To: Puranjay Mohan <puranjay12@gmail.com>
+References: <20240323154652.54572-1-puranjay12@gmail.com>
+ <20240323154652.54572-2-puranjay12@gmail.com>
+CC: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Luke Nelson
+	<luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, <bpf@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20240323154652.54572-2-puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd100009.china.huawei.com (7.221.188.135)
 
-Hello Sam,
 
-Sam Ravnborg <sam@ravnborg.org> wrote:
+On 2024/3/23 23:46, Puranjay Mohan wrote:
+> Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW]
+[snip]
+>   
+>   #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+>   #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+> +#define DONT_CLEAR		16	/* RV_REG_A6 unused in BPF */
 
-> Hi Koakuma,
-> Looking at https://github.com/gcc-mirror/gcc/blob/master/gcc/config/sparc=
-/sparc.h
-> I read that:
->=20
-> On v9 systems:
-> g1,g5 are free to use as temporaries, and are free to use between calls
-> ...
-> g6-g7 are reserved for the operating system (or application in
-> embedded case).
->=20
-> Based on the above I would assume gcc do not change behaviour with or
-> without -fcall-used-g7.
-> [...]
-> For sparc32 the above file says:
->=20
-> g5 through g7 are reserved for the operating system.
->=20
-> So again - it looks like -fcall-used-g5 -fcall-used-g7 should have no
-> effect here and verification on a real target would be nice.
->=20
-> Sam
+This is a bit misleading. RV_REG_A6 is actually used in riscv64. Maybe 
+"RV_REG_A6 unused in pt_regmap" or change to other register will be better.
 
-From my understanding (and looking at the codegen results) those flags
-forces GCC to treat the named register as volatile, despite what the ABI
-says. However, I also believe that removing them wouldn't be harmful?
+>   
+>   bool ex_handler_bpf(const struct exception_table_entry *ex,
+[snip]
+>   
+>   	stack_adjust = round_up(stack_adjust, 16);
+>   	stack_adjust += bpf_stack_adjust;
+> @@ -1794,6 +1974,10 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx, bool is_subprog)
+>   		emit_sd(RV_REG_SP, store_offset, RV_REG_S6, ctx);
+>   		store_offset -= 8;
+>   	}
+> +	if (ctx->arena_vm_start) {
+> +		emit_sd(RV_REG_SP, store_offset, RV_REG_S11, ctx);
+> +		store_offset -= 8;
+> +	}
 
-To quote my reasoning in the LLVM tracker:
-> omitting the flags shouldn't be harmful either - compilers will now
-> simply refuse to touch them, and any assembly code that happens
-> to touch them would still work like usual (because Linux' conventions
-> already treats them as volatile anyway).
+I think it's fine to use s7 and keep the original dynamic stack code style.
 
-But I am not entirely sure about it, that is why it'd be great if there's
-some explaination on why those flags were added in the first place.
+>   
+>   	emit_addi(RV_REG_FP, RV_REG_SP, stack_adjust, ctx);
+>   
+> @@ -1807,6 +1991,9 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx, bool is_subprog)
+>   		emit_mv(RV_REG_TCC_SAVED, RV_REG_TCC, ctx);
+>   
+>   	ctx->stack_size = stack_adjust;
+> +
+> +	if (ctx->arena_vm_start)
+> +		emit_imm(RV_REG_S11, ctx->arena_vm_start, ctx);
+>   }
+>   
+>   void bpf_jit_build_epilogue(struct rv_jit_context *ctx)
+> diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
+> index 6b3acac30c06..9b6696b1290a 100644
+> --- a/arch/riscv/net/bpf_jit_core.c
+> +++ b/arch/riscv/net/bpf_jit_core.c
+> @@ -50,6 +50,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   	int pass = 0, prev_ninsns = 0, i;
+>   	struct rv_jit_data *jit_data;
+>   	struct rv_jit_context *ctx;
+> +	u64 arena_vm_start;
 
-> I do not have a sparc64 system at my hands - and for this qemu may not
-> cut it. But it would be super if someone with a working sparc64 target
-> could verify if the kernel could be built and works without
-> -fcall-used-g7.
-
-I am currently running a build with those flags taken out on a T5120,
-and the kernel seems to be running okay for what I do (LLVM development),
-but I don't know if there are more comprehensive test suite for me
-to try on.
-
+unused variable
 
