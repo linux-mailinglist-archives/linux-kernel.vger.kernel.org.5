@@ -1,74 +1,59 @@
-Return-Path: <linux-kernel+bounces-112175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A3D7887691
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41E94887692
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:08:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77CA31C2151C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:07:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D7351C22BC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD0C440C;
-	Sat, 23 Mar 2024 02:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CDCE137E;
+	Sat, 23 Mar 2024 02:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V/reHql5"
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SDHpXhFd"
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73003A55
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC206EC2
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711159663; cv=none; b=WuEDSyEZWvmQabbrilkA/qo872j149PSeiw/aTd/8U8/ofdqg9Eepz4c086J1JmJ6HoeJko6pqw6VqJarIZ6q67Y86efOiboX0SIVLWaj5bmle1GXdJPqAekMeecZEi9opdHqIG92hHLC9WL9vH016NqSuHVPs+lTk/Z+u9Ah64=
+	t=1711159684; cv=none; b=CzydNXMRmO/5Jzo+95AFOqKvSYzPi+ulWldDl5zLr3EROIMruNFwlXjHnewXvis749B4Kk2ixodCKhi5s9ZSET4HcG2uqB/37DYQzmfLIekaqmg0m8b1RjGcRNiFxv29yyGXPiPgX81ZGWTn5yuWOr7z9ioducumZxRS2ahsYYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711159663; c=relaxed/simple;
-	bh=8GsXswQNH/fqxcYIQ/3ggaBwPgXRrvOcvLwU+gyR6g4=;
+	s=arc-20240116; t=1711159684; c=relaxed/simple;
+	bh=G0qqejbTt8x+fQsE2uIDzXF2fMgwgfYI1BMVmDEbtVw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oBxmT8TUftTYUAdb8JBbGrMRN6oKEZIZ3A43hT5LYZ9wVQ0V/V7XiP0IcQpZ4dypo1VbQCq6p7BeIo2OsPBhl80lmvfPBjgSBGjxf672KdKyly/ZhZnvaztarzKQdU/AbzTtrN7w7+g4jN69hvN2DEk0n5cnMWaTrouJebue8Qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V/reHql5; arc=none smtp.client-ip=91.218.175.183
+	 Content-Type:Content-Disposition:In-Reply-To; b=O1pK5Q4LAyAhB8d1CWofbh2Jw7OsQ8TZl9WlCE0KWvl173io7/IiujDxScFhWU2g2SDbtHnIsSSd/m1O12lCG+9XsC1fR6AT2Wq0s4qex1RnnZb1nlAJqAAT++QIHpsgHnqQizUohTTOT+xV7I1wQ1w4FiAMAKsiEcvRnQz2+sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SDHpXhFd; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 22 Mar 2024 22:07:31 -0400
+Date: Fri, 22 Mar 2024 19:07:52 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711159659;
+	t=1711159681;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ki2SqS4TDwK1+oUGgKMCMnFI/a9KHGHslLmG6vAgHw8=;
-	b=V/reHql5hOMS9gGdH79dzncDq6IdjoyZaApKWlC7cZ6OzX8l7LjRUbkts5M8RXXkuqXjV3
-	WyBun2puVO2pPSWekIesncvzcBvPaB2xEP+uyoKDGs2Khwkpocb7aoPvftDTHFQ9dBpOYJ
-	wktB04MA4OATeTiHsnGdycZwKQqlRdg=
+	bh=5VkD5z9YkAdX6FArt2jg1nT/B62sh2p7lPRadskyhS4=;
+	b=SDHpXhFdepH9Nj+WO/hIIjmvTRVCgXX6AKi+TQQXTYMd1JS/R4MWvwg2QeCz5Aza55n83d
+	GkB2zofd2b4riHxCi3zhFaTsWoBg0QiEQG46JIHRc+WKtDgpogxfMXOXnsnveH9HCUaWhT
+	pXFNjI9dkhah5sJIwmnK7NeD46SWwrs=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, llvm@lists.linux.dev, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
-	Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <parri.andrea@gmail.com>, 
-	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, 
-	Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
-	Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	kent.overstreet@gmail.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <3modld2dafaqjxa2b7jln47ws4ylzhbsvhvnphoklwvzange5p@wlir7276aitp>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
- <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Sebastian Ene <sebastianene@google.com>
+Cc: catalin.marinas@arm.com, james.morse@arm.com, jean-philippe@linaro.org,
+	maz@kernel.org, qperret@google.com, qwandor@google.com,
+	suzuki.poulose@arm.com, tabba@google.com, will@kernel.org,
+	yuzenghui@huawei.com, kvmarm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel-team@android.com
+Subject: Re: [PATCH 2/2] KVM: arm64: Allow only the specified FF-A calls to
+ be forwarded to TZ
+Message-ID: <Zf45eDs8Bd1UQ94Z@linux.dev>
+References: <20240322124303.309423-1-sebastianene@google.com>
+ <20240322124303.309423-2-sebastianene@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,85 +62,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+In-Reply-To: <20240322124303.309423-2-sebastianene@google.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 22, 2024 at 05:36:00PM -0700, Linus Torvalds wrote:
-> On Fri, 22 Mar 2024 at 17:21, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > Besides that there's cross arch support to think about - it's hard to
-> > imagine us ever ditching our own atomics.
-> 
-> Well, that's one of the advantages of using compiler builtins -
-> projects that do want cross-architecture support, but that aren't
-> actually maintaining their _own_ architecture support.
-> 
-> So I very much see the lure of compiler support for that kind of
-> situation - to write portable code without having to know or care
-> about architecture details.
-> 
-> This is one reason I think the kernel is kind of odd and special -
-> because in the kernel, we obviously very fundamentally have to care
-> about the architecture details _anyway_, so then having the
-> architecture also define things like atomics is just a pretty small
-> (and relatively straightforward) detail.
-> 
-> The same argument goes for compiler builtins vs inline asm. In the
-> kernel, we have to have people who are intimately familiar with the
-> architecture _anyway_, so inline asms and architecture-specific header
-> files aren't some big pain-point: they'd be needed _anyway_.
-> 
-> But in some random user level program, where all you want is an
-> efficient way to do "find first bit"? Then using a compiler intrinsic
-> makes a lot more sense.
+On Fri, Mar 22, 2024 at 12:43:03PM +0000, Sebastian Ene wrote:
+> The previous logic used a deny list to filter the FF-A calls. Because of
+> this, some of the calls escaped the check and they were forwarded by
+> default to Trustzone. (eg. FFA_MSG_SEND_DIRECT_REQ was denied but the 64
+> bit version of the call was not).
+> Modify the logic to use an allowlist and allow only the calls specified in
+> the filter function to be proxied to TZ from the hypervisor.
 
-We've got a whole spectrum of kernel code though, and a lot of it is
-code that - honestly, we'd be better off if it wasn't specific to the
-kernel.
+I had discussed this with Will back when the feature was upstreamed and
+he said there's a lot of off-label calls that necessitate a denylist
+implementation. Has anything changed to give us confidence that we can
+be restrictive, at least on the FF-A range?
 
-rhashtable comes to mind; it's a fully generic, excellent at what it
-does, but it's had a number of annoyingly subtle bugs and sharp edges
-over the years that are really just a result of it not having enough
-users.
-
-So I see some real value in regularizing things.
-
-> > I was thinking about something more incremental - just an optional mode
-> > where our atomics were C atomics underneath. It'd probably give the
-> > compiler people a much more effective way to test their stuff than
-> > anything they have now.
-> 
-> I suspect it might be painful, and some compiler people would throw
-> their hands up in horror, because the C++ atomics model is based
-> fairly solidly on atomic types, and the kernel memory model is much
-> more fluid.
-> 
-> Boqun already mentioned the "mixing access sizes", which is actually
-> quite fundamental in the kernel, where we play lots of games with that
-> (typically around locking, where you find patterns line unlock writing
-> a zero to a single byte, even though the whole lock data structure is
-> a word). And sometimes the access size games are very explicit (eg
-> lib/lockref.c).
-
-I don't think mixing access sizes should be a real barrier. On the read
-side we can obviously do that with a helper; the write side needs
-compiler help, but "writing just a byte out of a word" is no different
-from a compiler POV that "write a single bit", and we can already mix
-atomic_or() with atomic_add(), with both C atomics and LKMM atomics.
-
-> But it actually goes deeper than that. While we do have "atomic_t" etc
-> for arithmetic atomics, and that probably would map fairly well to C++
-> atomics, in other cases we simply base our atomics not on _types_, but
-> on code.
-> 
-> IOW, we do things like "cmpxchg()", and the target of that atomic
-> access is just a regular data structure field.
-
-Well, some of that's historical cruft; cmpxchg() and atomic_cmpxchg()
-have different orderings, and we can specify that more directly now.
-
-But we definitely need the ability to cmpxchg() any struct of a size the
-machine supports atomic access to. Rust should be able to manage that
-more easily than C/C++ though - they've got a type system that can
-sanely represent that.
+-- 
+Thanks,
+Oliver
 
