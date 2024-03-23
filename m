@@ -1,227 +1,354 @@
-Return-Path: <linux-kernel+bounces-112354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BF9B8878D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:25:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 019C78878D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18C372841E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:25:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24FCE1C22779
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E5541207;
-	Sat, 23 Mar 2024 13:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3D03D0B3;
+	Sat, 23 Mar 2024 13:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Eu4cQVQi";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/gmSf/lP"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uxnyygNc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B0F376FC;
-	Sat, 23 Mar 2024 13:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB419CA6F;
+	Sat, 23 Mar 2024 13:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711200301; cv=none; b=T425TXNwbrQ7LfF4sZyM8pLAwvXbvsHctY4KIDfpa3wtitCGgJYVeda30qijAMn/zR3KqypkGEBuJIEofXzuZVkkDe8ECvBBHelOKAjNPuqWN4z5p28ApcUg1GDe2YKV47m6KP6guYBrzwsdxL5txCNIyFC9EL8VUh7rRXE1roA=
+	t=1711200371; cv=none; b=TuHw1nVn5873IvaM05zFlwhKHL1JobpMR43EQi9w1JUzcSvFGrE8gBEOXQdpS1zRkDqUicE8YBTgJy140+NH5kliPMRKUqRb4Vr9aPpwQzhzdWImBahNXOAhk9FNQ29fN5XT9f3u0s7+woSu4L/Sbm7pZpPZSLsJYL7JOl/6rTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711200301; c=relaxed/simple;
-	bh=giUpDOquo0wGUWB5aOiAEKwHycSE+id3YWMRG+VI7Lk=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ZOyJAXSfRggr+wpmZkC4veYmer52rCUce1o+/ukmORWlAC7m0UEzrmycafgRX51NXke7nUwVnSfVvmDBEFQtt9T2JdI9laiKD47vgpfuwv3aBJ1Z0sgrJk5EVy91SXvtaOucceihqHFyMeCKRuQwkzEUhRjVNvKonaQasaalFHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Eu4cQVQi; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/gmSf/lP; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Sat, 23 Mar 2024 13:24:50 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711200291;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/Yknblz/LAqXJWfctfMltGiYL7kYAYN3zaEb0g8apq4=;
-	b=Eu4cQVQidMIDbrkyql4hSXatfIKj8zZ+7XJLa2r6eUuKuvK1Xa4GA1HevJpaMI5f3BQ5tv
-	jcb0EF1UUJB6gaSzLyukHlxaHbIpo81z/wQ9qmlP7gyfJcO86HiWW0ZKPMjdMfaPfDDUgS
-	r8Nw5m/XQbCGs/qi4CGd1RiP/eizbekA3FbhuNWbmvOUE3B4VOKjyIPLoPR7aKvDqGHKE1
-	3luC9uaJcuGsbxGRnMmVV5QjveBOJXEHr/oRDsWAIOSJLSfyJgq6k0UMIxVEeMZacYTkGO
-	bKeVH1RDN4ddmXfbl1Kj8l4AKkXL9N173wFxd/7cM90bhFq9PROtGhTy4l1q/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711200291;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/Yknblz/LAqXJWfctfMltGiYL7kYAYN3zaEb0g8apq4=;
-	b=/gmSf/lP5LmaN9FOXYZjD8EQbb6ngg7cHYo9c9OaqPjUlkVc27erhR7ff13pZ9eYKm/qho
-	H5nVOPya/Wx+/1AQ==
-From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/urgent] x86/cpu: Ensure that CPU info updates are propagated on UP
-Cc: Guenter Roeck <linux@roeck-us.net>, Thomas Gleixner <tglx@linutronix.de>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240322185305.127642785@linutronix.de>
-References: <20240322185305.127642785@linutronix.de>
+	s=arc-20240116; t=1711200371; c=relaxed/simple;
+	bh=ofTSoDtrxZISRXGkFAOEOhhLeS+oijtwq6/TO6rcW6c=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=q31o3G3uQ0TSB76I48b8Fl+RRm5K24rE9YF8rKSkU8nwrJ6rE/+A6yPoh/LbIoecVefhKQpHgjPOSvKLFEHqju2HNaPcjA0ix00e5H3nKCabSo6vAZNwm2t/0r/tIZghu9adFb5eRRDAxrGKSNmUwbyRCYizFs/HedGFyIx/9s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uxnyygNc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D907BC433F1;
+	Sat, 23 Mar 2024 13:26:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711200370;
+	bh=ofTSoDtrxZISRXGkFAOEOhhLeS+oijtwq6/TO6rcW6c=;
+	h=From:Date:Subject:To:Cc:From;
+	b=uxnyygNc72qqDv1lmuZDp68s529vKM1HgFsyL0SDfxLrFjMvHcLV2ymexxmDkK0eA
+	 qvTmGlF6ly4PR+1hWbnE0s3OrjUBUNZqR76FColi3ih6EWAbreoPEsNekptRS46pFZ
+	 ToQekbOCPg+PXs5EaKA0q5dtdEHLiQV6aclLrWo13IFUleZ2Tx7Nzzl3DeGcgqFwma
+	 yFdkEfCuLC+Uc9AUNw9rfGeulgvlWSVcVMHlgiyzzooJOvhsgHg8cGi6Td4n+I1hBR
+	 nRS1bpsQeiph1ARSe6nUJXzVNgprCXJXXR8fx/gzRLZO/jQoVmPVEuDtuEdXganDfY
+	 CgmVQ1z4Vs0Cg==
+From: Jeff Layton <jlayton@kernel.org>
+Date: Sat, 23 Mar 2024 09:25:54 -0400
+Subject: [PATCH v2] nfsd: trivial GET_DIR_DELEGATION support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171120029074.10875.2828451664654889730.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240323-nfs-gdd-trivial-v2-1-8549a4008daa@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAGHY/mUC/3WNwQqDMBBEf0X23C1JjKI99T+KBzWrLpVYNhJaJ
+ P/e1HuZ0xuYNwcEEqYAt+IAociBN5/BXAoYl97PhOwyg1HGqlI36KeAs3O4C0fuV9TtUI99XZW
+ N1ZBXL6GJ36fx0WVeOOybfM6DqH/tf1fUmFM1rbFDS0q5+5PE03rdZIYupfQFLxWlSK8AAAA=
+To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
+ Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+ Tom Talpey <tom@talpey.com>, 
+ Trond Myklebust <trond.myklebust@hammerspace.com>, 
+ Anna Schumaker <anna@kernel.org>
+Cc: linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8964; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=ofTSoDtrxZISRXGkFAOEOhhLeS+oijtwq6/TO6rcW6c=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBl/thu78xCRl8OJ6jg1lGJD97j/zt7WlaZfyAJ/
+ KEg9vyudRuJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZf7YbgAKCRAADmhBGVaC
+ FR/sD/462Lje2tQU0PRUoHgiKLApUDzbThFe51FUeL8Nzc7viIcnpDntmqUqy9KZKoHpuHR/NkN
+ ukOUnqE6/EahH7ohYggTbqzrcoyOyT/S+NP/8kEMq7il9V3czq5W/vOUVFa0+ncqMfJbXUMlWBK
+ UHhUoSBQ0g0D2IXXhmTK5fx/qRtRaf0BWVkQWWx3/m1uGDNef+fxDGOCDDGZzXtYBqnzTtNkBRe
+ MjWVb8c0h8iQwlE+2oZbpYysqj43KC0PFvNN7CX3zeA2Llv1GfJt1wkqF9gYJ71ejjnka6+h7NE
+ rcjrKV9+fIVTnkGwfF4bkcJttlPLFRNMwQ7O78Tm83lyPySxjL9i8wz6BA3HxgVdFXZQYB8iYQM
+ Gbl8ElPLrAiZPFyM+mS8E7IrDRoK5Ilu/asKW0nl44TWXdNrj3AGqD0h1SjU/UirSDE8af+3Lhm
+ fdpjuCQ5QTUttbE3rW9/aqOWwiXksJ2mVK5ULBfsn/BDn2JLd8giok1geAlsrliD97+5pctk6pC
+ 1UDByUmQBeZe9m+qYF6kk4asTvmOsNUoJzVKt1nZzN3zQhcFrhUkP8TYoKPDgobkK20lm0+kAyA
+ t1altabuYDGA5wDOb2b7MXa3kp/bzLitlmrBGrbNZa3u5nFIGusVQ8tk1Y9R+4HAFgxynZqXIaa
+ gIi3aIphHlsfAtA==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-The following commit has been merged into the x86/urgent branch of tip:
+This adds basic infrastructure for handing GET_DIR_DELEGATION calls from
+clients, including the decoders and encoders. For now, it always just
+returns NFS4_OK + GDD4_UNAVAIL.
 
-Commit-ID:     c90399fbd74a0713d5972a6d931e4a9918621e88
-Gitweb:        https://git.kernel.org/tip/c90399fbd74a0713d5972a6d931e4a9918621e88
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 22 Mar 2024 19:56:35 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Sat, 23 Mar 2024 12:22:04 +01:00
-
-x86/cpu: Ensure that CPU info updates are propagated on UP
-
-The boot sequence evaluates CPUID information twice:
-
-  1) During early boot
-
-  2) When finalizing the early setup right before
-     mitigations are selected and alternatives are patched.
-
-In both cases the evaluation is stored in boot_cpu_data, but on UP the
-copying of boot_cpu_data to the per CPU info of the boot CPU happens
-between #1 and #2. So any update which happens in #2 is never propagated to
-the per CPU info instance.
-
-Consolidate the whole logic and copy boot_cpu_data right before applying
-alternatives as that's the point where boot_cpu_data is in it's final
-state and not supposed to change anymore.
-
-This also removes the voodoo mb() from smp_prepare_cpus_common() which
-had absolutely no purpose.
-
-Fixes: 71eb4893cfaf ("x86/percpu: Cure per CPU madness on UP")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20240322185305.127642785@linutronix.de
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- arch/x86/kernel/cpu/common.c |  9 +++++++++
- arch/x86/kernel/setup.c      | 10 ----------
- arch/x86/kernel/smpboot.c    | 32 +++++---------------------------
- 3 files changed, 14 insertions(+), 37 deletions(-)
+Please consider this for v6.10. Eventually clients may start sending
+this operation, and it's better if we can return GDD4_UNAVAIL instead of
+having to abort the whole compound.
+---
+Changes in v2:
+- move nfsd4_encode_dir_delegation outside of CONFIG_NFS4_PNFS block
+- add comment to clarify the deviation from RFC8881
+---
+ fs/nfsd/nfs4proc.c   | 41 +++++++++++++++++++++++
+ fs/nfsd/nfs4xdr.c    | 91 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ fs/nfsd/xdr4.h       | 19 +++++++++++
+ include/linux/nfs4.h |  6 ++++
+ 4 files changed, 155 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index ba8cf5e..5c1e6d6 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -2307,6 +2307,8 @@ void arch_smt_update(void)
+diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+index 2927b1263f08..a581f58938e2 100644
+--- a/fs/nfsd/nfs4proc.c
++++ b/fs/nfsd/nfs4proc.c
+@@ -2154,6 +2154,29 @@ nfsd4_verify(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
+ 	return status == nfserr_same ? nfs_ok : status;
+ }
  
- void __init arch_cpu_finalize_init(void)
- {
-+	struct cpuinfo_x86 *c = this_cpu_ptr(&cpu_info);
++static __be32
++nfsd4_get_dir_delegation(struct svc_rqst *rqstp,
++			 struct nfsd4_compound_state *cstate,
++			 union nfsd4_op_u *u)
++{
++	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
 +
- 	identify_boot_cpu();
- 
- 	select_idle_routine();
-@@ -2345,6 +2347,13 @@ void __init arch_cpu_finalize_init(void)
- 	fpu__init_system();
- 	fpu__init_cpu();
- 
 +	/*
-+	 * Ensure that access to the per CPU representation has the initial
-+	 * boot CPU configuration.
++	 * RFC 8881, section 18.39.3 says:
++	 *
++	 * "The server may refuse to grant the delegation. In that case, the
++	 *  server will return NFS4ERR_DIRDELEG_UNAVAIL."
++	 *
++	 * This is sub-optimal, since it means that the server would need to
++	 * abort compound processing just because the delegation wasn't
++	 * available. RFC8881bis should change this to allow the server to
++	 * optionally return NFS4_OK with a non-fatal status of GDD4_UNAVAIL
++	 * in this situation.
 +	 */
-+	*c = boot_cpu_data;
-+	c->initialized = true;
++	gdd->gddrnf_status = GDD4_UNAVAIL;
++	return nfs_ok;
++}
 +
- 	alternative_instructions();
- 
- 	if (IS_ENABLED(CONFIG_X86_64)) {
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 3e1e96e..ef20650 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1206,16 +1206,6 @@ void __init i386_reserve_resources(void)
- 
- #endif /* CONFIG_X86_32 */
- 
--#ifndef CONFIG_SMP
--void __init smp_prepare_boot_cpu(void)
--{
--	struct cpuinfo_x86 *c = &cpu_data(0);
--
--	*c = boot_cpu_data;
--	c->initialized = true;
--}
--#endif
--
- static struct notifier_block kernel_offset_notifier = {
- 	.notifier_call = dump_kernel_offset
- };
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index fe355c8..76bb650 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -313,14 +313,6 @@ static void notrace start_secondary(void *unused)
- 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+ #ifdef CONFIG_NFSD_PNFS
+ static const struct nfsd4_layout_ops *
+ nfsd4_layout_verify(struct svc_export *exp, unsigned int layout_type)
+@@ -3082,6 +3105,18 @@ static u32 nfsd4_copy_notify_rsize(const struct svc_rqst *rqstp,
+ 		* sizeof(__be32);
  }
  
--static void __init smp_store_boot_cpu_info(void)
--{
--	struct cpuinfo_x86 *c = &cpu_data(0);
--
--	*c = boot_cpu_data;
--	c->initialized = true;
--}
--
- /*
-  * The bootstrap kernel entry code has set these up. Save them for
-  * a given CPU
-@@ -1039,29 +1031,15 @@ static __init void disable_smp(void)
- 	cpumask_set_cpu(0, topology_die_cpumask(0));
++static u32 nfsd4_get_dir_delegation_rsize(const struct svc_rqst *rqstp,
++					  const struct nfsd4_op *op)
++{
++	return (op_encode_hdr_size +
++		1 /* gddr_status */ +
++		op_encode_verifier_maxsz +
++		op_encode_stateid_maxsz +
++		2 /* gddr_notification */ +
++		2 /* gddr_child_attributes */ +
++		2 /* gddr_dir_attributes */);
++}
++
+ #ifdef CONFIG_NFSD_PNFS
+ static u32 nfsd4_getdeviceinfo_rsize(const struct svc_rqst *rqstp,
+ 				     const struct nfsd4_op *op)
+@@ -3470,6 +3505,12 @@ static const struct nfsd4_operation nfsd4_ops[] = {
+ 		.op_get_currentstateid = nfsd4_get_freestateid,
+ 		.op_rsize_bop = nfsd4_only_status_rsize,
+ 	},
++	[OP_GET_DIR_DELEGATION] = {
++		.op_func = nfsd4_get_dir_delegation,
++		.op_flags = OP_MODIFIES_SOMETHING,
++		.op_name = "OP_GET_DIR_DELEGATION",
++		.op_rsize_bop = nfsd4_get_dir_delegation_rsize,
++	},
+ #ifdef CONFIG_NFSD_PNFS
+ 	[OP_GETDEVICEINFO] = {
+ 		.op_func = nfsd4_getdeviceinfo,
+diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
+index fac938f563ad..4848ebf3e14e 100644
+--- a/fs/nfsd/nfs4xdr.c
++++ b/fs/nfsd/nfs4xdr.c
+@@ -1732,6 +1732,40 @@ nfsd4_decode_free_stateid(struct nfsd4_compoundargs *argp,
+ 	return nfsd4_decode_stateid4(argp, &free_stateid->fr_stateid);
  }
  
--static void __init smp_cpu_index_default(void)
--{
--	int i;
--	struct cpuinfo_x86 *c;
--
--	for_each_possible_cpu(i) {
--		c = &cpu_data(i);
--		/* mark all to hotplug */
--		c->cpu_index = nr_cpu_ids;
--	}
--}
--
- void __init smp_prepare_cpus_common(void)
- {
- 	unsigned int i;
++static __be32
++nfsd4_decode_get_dir_delegation(struct nfsd4_compoundargs *argp,
++		union nfsd4_op_u *u)
++{
++	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
++	__be32 status;
++
++	memset(gdd, 0, sizeof(*gdd));
++
++	if (xdr_stream_decode_bool(argp->xdr, &gdd->gdda_signal_deleg_avail) < 0)
++		return nfserr_bad_xdr;
++
++	status = nfsd4_decode_bitmap4(argp, gdd->gdda_notification_types,
++				      ARRAY_SIZE(gdd->gdda_notification_types));
++	if (status)
++		return status;
++
++	status = nfsd4_decode_nfstime4(argp, &gdd->gdda_child_attr_delay);
++	if (status)
++		return status;
++
++	status = nfsd4_decode_nfstime4(argp, &gdd->gdda_dir_attr_delay);
++	if (status)
++		return status;
++
++	status = nfsd4_decode_bitmap4(argp, gdd->gdda_child_attributes,
++					ARRAY_SIZE(gdd->gdda_child_attributes));
++	if (status)
++		return status;
++
++	return nfsd4_decode_bitmap4(argp, gdd->gdda_dir_attributes,
++					ARRAY_SIZE(gdd->gdda_dir_attributes));
++}
++
+ #ifdef CONFIG_NFSD_PNFS
+ static __be32
+ nfsd4_decode_getdeviceinfo(struct nfsd4_compoundargs *argp,
+@@ -2370,7 +2404,7 @@ static const nfsd4_dec nfsd4_dec_ops[] = {
+ 	[OP_CREATE_SESSION]	= nfsd4_decode_create_session,
+ 	[OP_DESTROY_SESSION]	= nfsd4_decode_destroy_session,
+ 	[OP_FREE_STATEID]	= nfsd4_decode_free_stateid,
+-	[OP_GET_DIR_DELEGATION]	= nfsd4_decode_notsupp,
++	[OP_GET_DIR_DELEGATION]	= nfsd4_decode_get_dir_delegation,
+ #ifdef CONFIG_NFSD_PNFS
+ 	[OP_GETDEVICEINFO]	= nfsd4_decode_getdeviceinfo,
+ 	[OP_GETDEVICELIST]	= nfsd4_decode_notsupp,
+@@ -4964,6 +4998,59 @@ nfsd4_encode_test_stateid(struct nfsd4_compoundres *resp, __be32 nfserr,
+ 	return nfs_ok;
+ }
  
--	smp_cpu_index_default();
--
--	/*
--	 * Setup boot CPU information
--	 */
--	smp_store_boot_cpu_info(); /* Final full version of the data */
--	mb();
-+	/* Mark all except the boot CPU as hotpluggable */
-+	for_each_possible_cpu(i) {
-+		if (i)
-+			per_cpu(cpu_info.cpu_index, i) = nr_cpu_ids;
++static __be32
++nfsd4_encode_get_dir_delegation(struct nfsd4_compoundres *resp, __be32 nfserr,
++				union nfsd4_op_u *u)
++{
++	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
++	struct xdr_stream *xdr = resp->xdr;
++	__be32 status = nfserr_resource;
++
++	switch(gdd->gddrnf_status) {
++	case GDD4_OK:
++		if (xdr_stream_encode_u32(xdr, GDD4_OK) != XDR_UNIT)
++			break;
++
++		status = nfsd4_encode_verifier4(xdr, &gdd->gddr_cookieverf);
++		if (status)
++			break;
++
++		status = nfsd4_encode_stateid4(xdr, &gdd->gddr_stateid);
++		if (status)
++			break;
++
++		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_notification[0], 0, 0);
++		if (status)
++			break;
++
++		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_child_attributes[0],
++						   gdd->gddr_child_attributes[1],
++						   gdd->gddr_child_attributes[2]);
++		if (status)
++			break;
++
++		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_dir_attributes[0],
++						   gdd->gddr_dir_attributes[1],
++						   gdd->gddr_dir_attributes[2]);
++		break;
++	default:
++		/*
++		 * If we don't recognize the gddrnf_status value, just treat it
++		 * like unavail + no notification, but print a warning too.
++		 */
++		pr_warn("nfsd: bad gddrnf_status (%u)\n", gdd->gddrnf_status);
++		gdd->gddrnf_will_signal_deleg_avail = 0;
++		fallthrough;
++	case GDD4_UNAVAIL:
++		if (xdr_stream_encode_u32(xdr, GDD4_UNAVAIL) != XDR_UNIT)
++			break;
++
++		status = nfsd4_encode_bool(xdr, gdd->gddrnf_will_signal_deleg_avail);
++		break;
 +	}
++	return status;
++}
++
+ #ifdef CONFIG_NFSD_PNFS
+ static __be32
+ nfsd4_encode_device_addr4(struct xdr_stream *xdr,
+@@ -5580,7 +5667,7 @@ static const nfsd4_enc nfsd4_enc_ops[] = {
+ 	[OP_CREATE_SESSION]	= nfsd4_encode_create_session,
+ 	[OP_DESTROY_SESSION]	= nfsd4_encode_noop,
+ 	[OP_FREE_STATEID]	= nfsd4_encode_noop,
+-	[OP_GET_DIR_DELEGATION]	= nfsd4_encode_noop,
++	[OP_GET_DIR_DELEGATION]	= nfsd4_encode_get_dir_delegation,
+ #ifdef CONFIG_NFSD_PNFS
+ 	[OP_GETDEVICEINFO]	= nfsd4_encode_getdeviceinfo,
+ 	[OP_GETDEVICELIST]	= nfsd4_encode_noop,
+diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
+index 415516c1b27e..446e72b0385e 100644
+--- a/fs/nfsd/xdr4.h
++++ b/fs/nfsd/xdr4.h
+@@ -518,6 +518,24 @@ struct nfsd4_free_stateid {
+ 	stateid_t	fr_stateid;         /* request */
+ };
  
- 	for_each_possible_cpu(i) {
- 		zalloc_cpumask_var(&per_cpu(cpu_sibling_map, i), GFP_KERNEL);
++struct nfsd4_get_dir_delegation {
++	/* request */
++	u32			gdda_signal_deleg_avail;
++	u32			gdda_notification_types[1];
++	struct timespec64	gdda_child_attr_delay;
++	struct timespec64	gdda_dir_attr_delay;
++	u32			gdda_child_attributes[3];
++	u32			gdda_dir_attributes[3];
++	/* response */
++	u32			gddrnf_status;
++	nfs4_verifier		gddr_cookieverf;
++	stateid_t		gddr_stateid;
++	u32			gddr_notification[1];
++	u32			gddr_child_attributes[3];
++	u32			gddr_dir_attributes[3];
++	bool			gddrnf_will_signal_deleg_avail;
++};
++
+ /* also used for NVERIFY */
+ struct nfsd4_verify {
+ 	u32		ve_bmval[3];        /* request */
+@@ -797,6 +815,7 @@ struct nfsd4_op {
+ 		struct nfsd4_reclaim_complete	reclaim_complete;
+ 		struct nfsd4_test_stateid	test_stateid;
+ 		struct nfsd4_free_stateid	free_stateid;
++		struct nfsd4_get_dir_delegation	get_dir_delegation;
+ 		struct nfsd4_getdeviceinfo	getdeviceinfo;
+ 		struct nfsd4_layoutget		layoutget;
+ 		struct nfsd4_layoutcommit	layoutcommit;
+diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
+index ef8d2d618d5b..0d896ce296ce 100644
+--- a/include/linux/nfs4.h
++++ b/include/linux/nfs4.h
+@@ -701,6 +701,12 @@ enum state_protect_how4 {
+ 	SP4_SSV		= 2
+ };
+ 
++/* GET_DIR_DELEGATION non-fatal status codes */
++enum gddrnf4_status {
++	GDD4_OK		= 0,
++	GDD4_UNAVAIL	= 1
++};
++
+ enum pnfs_layouttype {
+ 	LAYOUT_NFSV4_1_FILES  = 1,
+ 	LAYOUT_OSD2_OBJECTS = 2,
+
+---
+base-commit: 0a7b0acecea273c8816f4f5b0e189989470404cf
+change-id: 20240318-nfs-gdd-trivial-19b6ca653841
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
 
