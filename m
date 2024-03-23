@@ -1,149 +1,151 @@
-Return-Path: <linux-kernel+bounces-112123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40FDC8875F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:11:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47CAF8875F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:13:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 608881C20EBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:11:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A8731C20F4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA66625;
-	Sat, 23 Mar 2024 00:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86839EDE;
+	Sat, 23 Mar 2024 00:12:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H3oW9gJi"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Q6qapZI1"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8369E63D
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECAA537C
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711152699; cv=none; b=dheOB38UFE/z72OfNX/XK1+hQnuQdH73+Q/ToTfwJ6S84pPYULTBY01+5xPWA3mPjf4aww4KWaiiMtRddSBB7x1TnJrU5AjajZmj55CgTxluALPwfjG9NIjYiMiETbYQQmUFefXHL1TdSKU/ttOsSQzH9s6lcmIDA+tRQsQDFnY=
+	t=1711152771; cv=none; b=udiymNpjwVw/TZ/i7u92sUCrQ7+bsYR9WNGay7UAL9p+AnzFA8/EcmnQmp7VJmOV2HzJDsmf+66viAvppL172beJVxZIGpChcJ13gHZHzL17KUfb9LeyUARBoPsIfECFqrJxxTxG5xsIBwTYnkAJxDWC60J/DWBQs08pKVvM/y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711152699; c=relaxed/simple;
-	bh=P/EP+P6BnH9TyUaUed9aOUzEfM5ZQWRlxn2Pg6ia2PE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uToC+29tRkZszrHzerSGH5OJtwzYpwaUHfXUSoz+dLILtYajXYtY1NV788FRQ3MXi4PaVYvXI1hISlbIum1UTArUM0vi/VZ7qlMU8MoO7kQI/AG0lgVZMF9o2kXypMLVeEs+q+9tWc4i/+gxGiif/Gz6uQ3Pp5bSie/zXYzx2Kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=H3oW9gJi; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5148ea935b8so3049184e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:11:37 -0700 (PDT)
+	s=arc-20240116; t=1711152771; c=relaxed/simple;
+	bh=buaytYj6XnQEMslfX8wQQCXJQT/19Ph5hoNeBiv9PMs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VqvkkNlKTz2KyPixfl7/jK9yHu97AufDU2mCJ4+rSyR5BU0qU+s+c7fRbawRP+3/DlAYgb3/kz1xOq0B6OulXs8We40q3K2QK+CLzMHmpQQBQiKfKqVoLp0EkpPOdlWBaEGxaDel3UYcQbWMV2JDQSYtTjMEmt0+2AcECfx44zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Q6qapZI1; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56be4efb63fso1389286a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711152695; x=1711757495; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m3MCFSvMO/tlYKEIBdXDWMBZUwgIizoQXcUu+EHJkdE=;
-        b=H3oW9gJi0BtcFA5C8+buZiXV1xpIgH2zLlCZ1mb7+poN6srbvB7b/kW5OdV8pC08MT
-         SCkB1Iuowpf/8HClZicSLLzBF8d1UEFjJQqdPwQ61ne4Ex5p+CniK1qAwf3w7TXbC+5c
-         XT8KHYD8zPtIgcxEvhSX7aCmHtg32fWv9LTPJE8BObbr/naa0RVCijgmnqMGOAS0EaYL
-         SZPcA0ejWjU6/zOaK1ShEF/z1O+8butI+9yoMOrAxUjBEHYGzJuyyChBv02uV8Q+L26F
-         TnQbEOuAb3ZXs2GNzBwLgJCTvIch5Tq8ncbVGeSkmjsJyM07ktq7NhsThkbITvb01ljT
-         wKiQ==
+        d=linux-foundation.org; s=google; t=1711152768; x=1711757568; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/DcKs5LOC+9m7c+sQfRFSymnyXVGhlvaNbRKaUaILEw=;
+        b=Q6qapZI1NYRMQNNYtZidytYsBkiU2qaesQdjci/F7s0ZJE1Qj656NZyCKi8Jei6w0/
+         za8b07IjJ9Ry5yQLCiWdVLof2zCHQ74ZcG3zM5D7FRqUjFCtCzelfadqnnycszhSt822
+         trnFNO87MaVjDHsjBsPFvIHZw6nSBgRRLSvUg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711152695; x=1711757495;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m3MCFSvMO/tlYKEIBdXDWMBZUwgIizoQXcUu+EHJkdE=;
-        b=Wwh2do0vga4s7yu7nvPTyA0JVclyPw901setPuZzlBblWs3IF+Znr5uJA7tuuKWih5
-         g59w+u6qxdJwv93u+WilZiLTf/lcppdpDn4MKrKEsiZEc4VUiFxvVeT6i9ubcD2Uq2lC
-         cqfwUjFNsNtqCoK+L57mxGwuiZ+uCI0om+5vBH0jXi4xgjH0Txa9yEqdNSZuydbtHk4C
-         KL0BRnNlyZBhAvriUpcNDoqcBPKtajgvrHmGsqpd3GmOdvqzGLB6tgPa480bJw7UU6e0
-         iVaw+O6irI3FiXWvGGvVOgjaKt249R3DNLmAs1gfFzRDVfGNtxFNPnqMVv5577gKTz2b
-         h/UA==
-X-Forwarded-Encrypted: i=1; AJvYcCU29K7kDoVpe0/7x28vN+zh8sEOBg1t10QsPyZeRFc59Y3WMbOKX9XPIGWm0rTT1l2n3V8dRgHr0yS2DR/nwNKBEoiCRU7BGM4jWPcu
-X-Gm-Message-State: AOJu0Yz9NuJfPC16e/oMTNwCrlbEPey/T5QQ8zokXOhZNA2t+VH1CMJp
-	BVpva/x//bkwEc8vame0u8+118KXv6kKGMEPNQ4nTIoEChxq929uM0zmtZ7+XTo=
-X-Google-Smtp-Source: AGHT+IFry0RlYQGrAAhXRAPDON49IcLTGX1hJRc3YJNRYsvqjBsTp4W4Yr1IHjDKv2LU9H9QWOR04g==
-X-Received: by 2002:a19:5f46:0:b0:515:9aa9:ecb7 with SMTP id a6-20020a195f46000000b005159aa9ecb7mr667861lfj.27.1711152695471;
-        Fri, 22 Mar 2024 17:11:35 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id i8-20020a17090671c800b00a46d4e26301sm341615ejk.27.2024.03.22.17.11.34
+        d=1e100.net; s=20230601; t=1711152768; x=1711757568;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/DcKs5LOC+9m7c+sQfRFSymnyXVGhlvaNbRKaUaILEw=;
+        b=iCATbtWYXoYNe29PdDTKVPYANmfpLiUcbQ1dQ7YhxPzGcmAJFxeEWkV07fEfrbh1GK
+         xYkimVemFy/jg+dT4a7GQ++8W5Y4YkcOHlm+fwueqeJCYtDZXrZ3aNx2X/FB0TbKWhpp
+         5TbLAky5EGHwtGmhUhiGGkZinNc7YFLdN9v4TdgJtWD0bHg1s8Bs9Oq5QS7ZPhEsHXL9
+         1suSoxx6fOAMr7Ryf7XaXQSIAFV1k3EqXwecSyk1at3Cv029QV/l77KtLXM2PXOL+4mS
+         4EvDSPInxHyt9ACZmuxHH7nn3hxYeO4QNZW0Zq2lrz3T8oQXxbkOSbEsZKrqRPPMyYP8
+         zyyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX6B52bc0U1XYvNpq2LmHIT0+bAdgZ1CqsPmv+YQmE5jxb63VwlmikwuGL9HrBHWDxSCE1bq4DyRzMVdR+1iLXx/E424Km4E0+vRRfv
+X-Gm-Message-State: AOJu0Yy5/sf3SKvwLC4LQ4dGbI6qL3xSNpq8FH7NFHe8sV/WmqM2JnYs
+	9xiGl4gymVlSvz/Cb6d0oMOiNtzLbT3rCbGrBsUJwPfiOEBxhfQpuzZRmit5ubMAJwQCiqpPHlv
+	Zuu4=
+X-Google-Smtp-Source: AGHT+IHTtKT7KcxyYlf7FjMtwM/RQMUzdVCaBG9QRjzxySFC5e8mTTdM1Qpnb7aZP5SvlayDT1aF7w==
+X-Received: by 2002:a50:bb47:0:b0:56b:d139:490 with SMTP id y65-20020a50bb47000000b0056bd1390490mr677619ede.6.1711152768231;
+        Fri, 22 Mar 2024 17:12:48 -0700 (PDT)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id u21-20020aa7db95000000b005689a4b250fsm332338edt.48.2024.03.22.17.12.46
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 17:11:34 -0700 (PDT)
-Message-ID: <cf8fb32d-3061-42e7-aa7d-4624c2bf413b@linaro.org>
-Date: Sat, 23 Mar 2024 01:11:33 +0100
+        Fri, 22 Mar 2024 17:12:47 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a46ba938de0so370965366b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:12:46 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW9Cy9akqwVDvrGjg6WhX8OJX2qeIH4deyZzzImkE9jXzQ4+nSX/2uRr0Np0hvRlSItTxhbryLAR7jH8ciTSV5fGYJXCuGm+1jRhB7a
+X-Received: by 2002:a17:906:6b0b:b0:a46:7ee2:f834 with SMTP id
+ q11-20020a1709066b0b00b00a467ee2f834mr791117ejr.11.1711152766110; Fri, 22 Mar
+ 2024 17:12:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/21] Add PCIe bridge node in DT for Qcom SoCs
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org,
- Rob Herring <robh@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
-References: <20240321-pcie-qcom-bridge-dts-v2-0-1eb790c53e43@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240321-pcie-qcom-bridge-dts-v2-0-1eb790c53e43@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240322233838.868874-1-boqun.feng@gmail.com> <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+In-Reply-To: <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 22 Mar 2024 17:12:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+Message-ID: <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
+	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
+	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
+	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, 
+	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 21.03.2024 12:16, Manivannan Sadhasivam wrote:
-> On Qcom SoCs, the PCIe host bridge is connected to a single PCIe bridge
-> for each controller instance. Hence, this series adds a DT node for the
-> PCIe bridges across all SoCs.
-> 
-> There is no functionality change with this series, but the PCIe bridge
-> representation in DT will be necessary to add the DT node for the client
-> devices like the one proposed in power sequencing series [1].
-> 
-> - Mani
-> 
-> [1] https://lore.kernel.org/linux-arm-msm/20240216203215.40870-8-brgl@bgdev.pl/
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+On Fri, 22 Mar 2024 at 16:57, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>
+> I wonder about that. The disadvantage of only supporting LKMM atomics is
+> that we'll be incompatible with third party code, and we don't want to
+> be rolling all of our own data structures forever.
 
-Everything looks good
+Honestly, having seen the shit-show that is language standards bodies
+and incomplete compiler support, I do not understand why people think
+that we wouldn't want to roll our own.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+The C++ memory model may be reliable in another decade. And then a
+decade after *that*, we can drop support for the pre-reliable
+compilers.
 
-Konrad
+People who think that compilers do things right just because they are
+automated simply don't know what they are talking about.
+
+It was just a couple of days ago that I was pointed at
+
+    https://github.com/llvm/llvm-project/issues/64188
+
+which is literally the compiler completely missing a C++ memory barrier.
+
+And when the compiler itself is fundamentally buggy, you're kind of
+screwed. When you roll your own, you can work around the bugs in
+compilers.
+
+And this is all doubly true when it is something that the kernel does,
+and very few other projects do. For example, we're often better off
+using inline asm over dubious builtins that have "native" compiler
+support for them, but little actual real coverage. It really is often
+a "ok, this builtin has actually been used for a decade, so it's
+hopefully stable now".
+
+We have years of examples of builtins either being completely broken
+(as in "immediate crash" broken), or simply generating crap code that
+is actively worse than using the inline asm.
+
+The memory ordering isn't going to be at all different. Moving it into
+the compiler doesn't solve problems. It creates them.
+
+                 Linus
 
