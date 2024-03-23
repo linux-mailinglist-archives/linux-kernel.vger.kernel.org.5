@@ -1,161 +1,103 @@
-Return-Path: <linux-kernel+bounces-112190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA1D38876B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:42:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A2D8876BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A29BB22585
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:42:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2856B283C81
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489891388;
-	Sat, 23 Mar 2024 02:42:18 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7005315A4;
+	Sat, 23 Mar 2024 02:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SHczEdYL"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7128A522D;
-	Sat, 23 Mar 2024 02:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E22B372
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711161737; cv=none; b=aPf7VppVDLOvAPM3doB9wEFYGou9qqsKpyk9SmfTtmSoCb9iZ5nI5koUugwsyzPxkPdzEzO3lRuHHHFgkQyXRGZaHdFXjC+oz41mHSTtrkSUdMMZ4YuWd8ivHIXOJJCH+Z3yMNzJzXX3wh+E5GQuUrEknTuIC8wZYd+xFDqUha0=
+	t=1711162221; cv=none; b=TY4080p1uf/fbgV8nJ16yeSSo7uwh9IlEhUXyRQlell5DrXdUy7RPrfxqtcVCdBipgZRFOzHFZ5CCpJXyd8J+BfY58IkAU27x9ZnHE0vRf4r+50VJ6sOYugRPVte0rbT1jskBeziRqPJ8mOI39Qn7NocVwY+NaszcqLRTJmGw+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711161737; c=relaxed/simple;
-	bh=czPBDG49zGfpUS6gXvCHWxsa3SivPj6DFoItki3pQXA=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Z3sDw9eEswY5dPLVvbFI6WbVvjF6hs2JTP8IHE36ZM8vIUdhRtLqM9zVnkSmUTsaSZLYIjX3p9r/PYsxHHD5a6mKxcA7Q+teAE/rGPHIvDcpIREu7T0tsxuWeY8+4r6f6f/lO5JPq76FjZupcOI2n90HU8/YWqGOvLfYN++NuHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4V1k1L5ny6zwQ28;
-	Sat, 23 Mar 2024 10:39:34 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 599581400D7;
-	Sat, 23 Mar 2024 10:42:10 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 23 Mar 2024 10:42:09 +0800
-Subject: Re: [RFC PATCH v2 2/5] ubifs: Implement POSIX Access Control Lists
- (ACLs)
-To: Li Zetao <lizetao1@huawei.com>, <richard@nod.at>, <corbet@lwn.net>,
-	<kent.overstreet@linux.dev>, <agruenba@redhat.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240322154812.215369-1-lizetao1@huawei.com>
- <20240322154812.215369-3-lizetao1@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <daa0f858-ea85-1bf3-906c-4ef1a4998ccf@huawei.com>
-Date: Sat, 23 Mar 2024 10:42:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1711162221; c=relaxed/simple;
+	bh=CjqDCAtM8QdnSKe+aR6L9osj5SM3qFKSVUuHvvLOz1c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tvctBQDhPRokDtXXdzr+IyAK1ZYm9C/Ci/VNUxtBs+npGM6Bj6OYnzv8FHAumjDDB7Z4iXXe+nASVqptc96xWpwYmdKkiGwdWnUaCyl5Ru5ma5wtIywhhRLviXEf2lSFCSwot9NmSnTLcQYh3QbnJA9AWwLTQYZYmyTuW9G0dWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SHczEdYL; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <91c0a5aa-86b0-4dd3-884f-39a47c1ed6b8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711162216;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jo1kf1K5kDD2UFW1uYSmrg6RxPS+DXRGfZXC9+hP/j4=;
+	b=SHczEdYLYtVOHZSUtcy3mvfO7UD2g8kqTObI6e6o3mJOuRo5jP9fmQYj1fcUIl/8eFW/cf
+	vGlg8CqVNN69TSQySUWuBGFbNB7XwiWXBU8BL5+Q/AhaFlERQK5RoLJCUQFRVX+yb2FWsf
+	ETWOZbxsCeRle5PYTI/hmf4KLx4jsQI=
+Date: Sat, 23 Mar 2024 10:49:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240322154812.215369-3-lizetao1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
+Subject: Re: [RFC PATCH] mm: add folio in swapcache if swapin from zswap
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: hannes@cmpxchg.org, nphamcs@gmail.com, akpm@linux-foundation.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Zhongkun He <hezhongkun.hzk@bytedance.com>
+References: <20240322163939.17846-1-chengming.zhou@linux.dev>
+ <CAJD7tkYuYEsKFvjKKRxOx3fCekA03jPpOpmV7T20q=9K=Jb2bA@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <CAJD7tkYuYEsKFvjKKRxOx3fCekA03jPpOpmV7T20q=9K=Jb2bA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+X-Migadu-Flow: FLOW_OUT
 
-ÔÚ 2024/3/22 23:48, Li Zetao Ð´µÀ:
-> Implement the ACLs feature for ubifs based on vfs Posix ACLs,
-> details as follows:
->    * Initialize acl for newly created inode.
->    * Provides get/set interface to access ACLs.
+On 2024/3/23 03:37, Yosry Ahmed wrote:
+> On Fri, Mar 22, 2024 at 9:40â€¯AM <chengming.zhou@linux.dev> wrote:
+>>
+>> From: Chengming Zhou <chengming.zhou@linux.dev>
+>>
+>> There is a report of data corruption caused by double swapin, which is
+>> only possible in the skip swapcache path on SWP_SYNCHRONOUS_IO backends.
+>>
+>> The root cause is that zswap is not like other "normal" swap backends,
+>> it won't keep the copy of data after the first time of swapin. So if
+>> the folio in the first time of swapin can't be installed in the pagetable
+>> successfully and we just free it directly. Then in the second time of
+>> swapin, we can't find anything in zswap and read wrong data from swapfile,
+>> so this data corruption problem happened.
+>>
+>> We can fix it by always adding the folio into swapcache if we know the
+>> pinned swap entry can be found in zswap, so it won't get freed even though
+>> it can't be installed successfully in the first time of swapin.
 > 
-> ACLs feature relies on xattr implementation which using specific key
-> names "system.posix_acl_default" and "system.posix_acl_access". Now Only
-> the v2 version of POSIX ACLs is supported, and ubifs does not need to
-> customize the storage format, which can simplify the implementation.
-> 
-> It should be noted that Linux supports updating the file mode through
-> ACLs. However the acl may not exist, so ubifs_xattr_remove() returns
-> -ENODATA. Such a scenario needs to be specially handled. At the same
-> time, it needs to ensure that the updated inode is written to flash.
-> 
-> Signed-off-by: Li Zetao <lizetao1@huawei.com>
-> ---
-> v1 -> v2:
->    * Get xattr_name by direct expansion instead of posix_acl_xattr_name().
->    * Modify ubifs_xattr_remove to an external function to remove the xattr of ACL.
->    * Remove redundant likely() and unlikely().
->    * Fix updating file mode via ACL and support writing to flash.
-> 
-> v1: https://lore.kernel.org/all/20240319161646.2153867-2-lizetao1@huawei.com/
-> 
->   fs/ubifs/Makefile |   1 +
->   fs/ubifs/acl.c    | 192 ++++++++++++++++++++++++++++++++++++++++++++++
->   fs/ubifs/ubifs.h  |  14 ++++
->   fs/ubifs/xattr.c  |   3 +-
->   4 files changed, 208 insertions(+), 2 deletions(-)
->   create mode 100644 fs/ubifs/acl.c
-> 
-[...]
-> +static int ubifs_update_mode(struct inode *inode, umode_t mode)
-> +{
-> +	struct ubifs_inode *ui = ubifs_inode(inode);
-> +	struct ubifs_info *c = inode->i_sb->s_fs_info;
-> +	struct ubifs_budget_req req = { .dirtied_ino = 1,
-> +				.dirtied_ino_d = ALIGN(ui->data_len, 8) };
-> +	int release;
-> +	int err;
-> +
-> +	err = ubifs_budget_space(c, &req);
-> +	if (err)
-> +		return err;
-> +
-> +	mutex_lock(&ui->ui_mutex);
-> +	release = ui->dirty;
-> +	inode->i_mode = mode;
-> +	inode_set_ctime_current(inode);
-> +	mark_inode_dirty_sync(inode);
-> +	mutex_unlock(&ui->ui_mutex);
-> +
-> +	if (release)
-> +		ubifs_release_budget(c, &req);
-> +	if (IS_SYNC(inode))
-> +		err = inode->i_sb->s_op->write_inode(inode, NULL);
-> +
-> +	return err;
-> +}
-> +
-> +int ubifs_set_acl(struct mnt_idmap *idmap, struct dentry *dentry, struct posix_acl *acl, int type)
-> +{
-> +	struct inode *inode = d_inode(dentry);
-> +	umode_t mode = inode->i_mode;
-> +	bool update_mode = false;
-> +	int error;
-> +
-> +	if (type == ACL_TYPE_ACCESS && acl) {
-> +		error = posix_acl_update_mode(idmap, inode, &mode, &acl);
-> +		if (unlikely(error))
-> +			return error;
-> +
-> +		if (inode->i_mode != mode)
-> +			update_mode = true;
-> +	}
-> +
-> +	error = __ubifs_set_acl(inode, type, acl, 0);
-> +	if (!error && update_mode)
-> +		error = ubifs_update_mode(inode, mode);
+> A concurrent faulting thread could have already checked the swapcache
+> before we add the folio to it, right? In this case, that thread will
+> go ahead and call swap_read_folio() anyway.
 
-Updating inode mode to disk is a right thing. However, this makes 
-ubifs_set_acl is not atomic, which is manifested in two points:
-1. If ubifs_budget_space fails by ENOSPC, __ubifs_set_acl has stored 
-xattrs into disk, but inode mode is not updated, which makes inode->mode 
-be inconsistent with acl. This problem can be easily solved by moving 
-ubifs_budget_space before the __ubifs_set_acl.
-2. If ubifs_write_inode fails or a powercut happens between 
-__ubifs_set_acl and ubifs_write_inode, inode->mode becomes inconsistent 
-with acl. PS: Ext4 makes set_acl atomic by 'handle'.
-> +
-> +	return error;
-> +
-> +}
+Right, but it has to lock the folio to proceed.
+
+> 
+> Also, I suspect the zswap lookup might hurt performance. Would it be
+> better to add the folio back to zswap upon failure? This should be
+> detectable by checking if the folio is dirty as I mentioned in the bug
+> report thread.
+
+Yes, may hurt performance. As for adding back upon failure, the problem
+is that adding may fail too... and I don't know how to handle that.
+
+Anyway, I think the fix of Johannes is much better, we should take that way.
+
+Thanks.
 
