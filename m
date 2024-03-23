@@ -1,104 +1,101 @@
-Return-Path: <linux-kernel+bounces-112236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 314C088773E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:39:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11E6D887749
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:49:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E01292823A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 06:39:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFC421F2231F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 06:49:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E498F5B;
-	Sat, 23 Mar 2024 06:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68BDA944E;
+	Sat, 23 Mar 2024 06:49:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b="HxbItX1E"
-Received: from mail.nppct.ru (mail.nppct.ru [195.133.245.4])
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="KxJDs5kU"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B94446A0
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 06:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.133.245.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8CE4C6B;
+	Sat, 23 Mar 2024 06:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711175986; cv=none; b=pXR8F4rJFjGABrWugxN/SYCJvtHC1K5+1yJ4eT8DekOb7OZUqJWsu+g4APsHlyfxoDqeuzOPIOkcUiGS8EdHAQXLt03leKNBeitArFnzDev4w7WiKWBVi2uLwuhzbjlwGJWz1k2Fpl0Wxz6o3g2CeqN6T646MAMYQnVh1NyK4zc=
+	t=1711176587; cv=none; b=UuvkRsetT3+B6rh/NqIqMg5FxO+KIXk+kQurMLrva2yyeeGFGdXOs1LAnwBOfMRYJElPZFNBin4ivLvKVmVSFHmTLpeYPPglk0Df1aaZI1UnretPVzwO96fpSA5RlZDncDze6LCRPogCW2qk9FVX7n7/nSUwOvz8cWdkXx5UFhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711175986; c=relaxed/simple;
-	bh=8Ru1KtR1m4ULexCA5WK3GVpaEyvcpR5jkF1JflcEVtQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Aq2tQSGiZbQNYKBxkZlYwL5pq5oYUOWBMb1DblnQA1ZpZzzIy9b+11g/8mJJuEfuFZmj0NF0ysHinvIk1aWJe5aKL/T4x3blHf+jsmKGav2u+/RJf18SeORQArVcUCrqFeaNvIj9WNk+TJJwIkofM/VfyG6mgkZW6YBRdhjz8TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru; spf=pass smtp.mailfrom=nppct.ru; dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b=HxbItX1E; arc=none smtp.client-ip=195.133.245.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nppct.ru
-Received: from mail.nppct.ru (localhost [127.0.0.1])
-	by mail.nppct.ru (Postfix) with ESMTP id 639811C1413
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 09:39:38 +0300 (MSK)
-Authentication-Results: mail.nppct.ru (amavisd-new); dkim=pass (1024-bit key)
-	reason="pass (just generated, assumed good)" header.d=nppct.ru
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nppct.ru; h=
-	content-transfer-encoding:mime-version:x-mailer:message-id:date
-	:date:subject:subject:to:from:from; s=dkim; t=1711175978; x=
-	1712039979; bh=8Ru1KtR1m4ULexCA5WK3GVpaEyvcpR5jkF1JflcEVtQ=; b=H
-	xbItX1E7eNLuKU8HAcFtn+KjHLExvv1PNbmvQsMs6QYFmAHym9arCs/tsIfjOV4Q
-	mLFdht/gwHOCPfz2vdyignBhtag/DWqVquG+TqaMgNHkhklD01R2NrFsLN4Fz+GE
-	UEY3BFvx5IB1rTa5XiH+zEC+xYn9Hy/YvQyhBY6UJI=
-X-Virus-Scanned: Debian amavisd-new at mail.nppct.ru
-Received: from mail.nppct.ru ([127.0.0.1])
-	by mail.nppct.ru (mail.nppct.ru [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 0pRISDQqobYK for <linux-kernel@vger.kernel.org>;
-	Sat, 23 Mar 2024 09:39:38 +0300 (MSK)
-Received: from localhost.localdomain (mail.dev-ai-melanoma.ru [185.130.227.204])
-	by mail.nppct.ru (Postfix) with ESMTPSA id 1C6961C11FE;
-	Sat, 23 Mar 2024 09:39:35 +0300 (MSK)
-From: Andrey Shumilin <shum.sdl@nppct.ru>
-To: Karol Herbst <kherbst@redhat.com>
-Cc: Andrey Shumilin <shum.sdl@nppct.ru>,
-	Lyude Paul <lyude@redhat.com>,
-	Danilo Krummrich <dakr@redhat.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	khoroshilov@ispras.ru,
-	ykarpov@ispras.ru,
-	vmerzlyakov@ispras.ru,
-	vefanov@ispras.ru
-Subject: [PATCH] therm.c: Adding an array index check before accessing an element.
-Date: Sat, 23 Mar 2024 09:39:33 +0300
-Message-Id: <20240323063933.665695-1-shum.sdl@nppct.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1711176587; c=relaxed/simple;
+	bh=NqzzK0iz78KIPvtZ1w0JtdqyZDW7tedW5UnASOm5zGQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p/abi34v6ClC1f3Zfm7UTQ0MSu8QWWT8BSzwKEtjNt/RcRxoqb84c815IpkiKeIdgeqnNNeDEkpr0wM3ble1DH4VzmdamdjyOkqrYKmd2g4J+6Do5c2JkSJJdhxy3wE9D9dQb7kTRjgjFCRmaVkXy/laHCX6z8sXZ/gAK2BNgeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=KxJDs5kU; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id AF5B060412;
+	Sat, 23 Mar 2024 06:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1711176578;
+	bh=NqzzK0iz78KIPvtZ1w0JtdqyZDW7tedW5UnASOm5zGQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KxJDs5kUZdfOQ1L2jFBxRGef4vObdcMlhJiKC2R1m0lQiwuZHEusMKDibM79sSFbT
+	 8mjLaNPaxxtvaVcZm+n8s89byOt0z9FO0uGyRfJe90wE1t9ntm81v6rTQLUW5gYbD4
+	 PDWscr2BWoXto6AemF++NYujKC8EAM7hy5dAwiPo5A/wMU+t4OM0c0mtlyGE1hVjBa
+	 TZCpkxA5e1devphdXOcb3TeL1kQ3uftEzn/RxDMJ/htD6LStfpL5lIOIfi8W7NimuC
+	 JaIPkSznA7+8VrNajtNofg/glL1O1XuP/f5Aqv0aNEeiQPrJ83pw99hMWNlKnkWR2h
+	 Z1KWIGTU0fmjQ==
+Date: Sat, 23 Mar 2024 08:49:25 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Nick Bowler <nbowler@draconx.ca>
+Cc: linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
+	regressions@lists.linux.dev, linux-serial@vger.kernel.org
+Subject: Re: PROBLEM: Sun Ultra 60 hangs on boot since Linux 6.8
+Message-ID: <20240323064925.GE5132@atomide.com>
+References: <d84baa5d-a092-3647-8062-ed7081d329d4@draconx.ca>
+ <20240322051531.GA5132@atomide.com>
+ <d7337014-09ac-8a35-7159-e75ecd2707b6@draconx.ca>
+ <20240322064843.GC5132@atomide.com>
+ <20240322090657.GD5132@atomide.com>
+ <193a134c-f0da-4a45-b45a-a3605f91cfa4@draconx.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <193a134c-f0da-4a45-b45a-a3605f91cfa4@draconx.ca>
 
-It is possible to access an element at index -1 if at the
-first iteration of the loop the result of switch is equal to 0x25
-Added variable checking.
+* Nick Bowler <nbowler@draconx.ca> [240322 14:12]:
+> On 2024-03-22 05:06, Tony Lindgren wrote:
+> [...]
+> > I can't reproduce this on qemu-system-sparc64, probably as it does not use
+> > the sunsab driver.
+> > 
+> > I noticed something though, I think we need to test for the port device
+> > instead for being runtime PM enabled.
+> > 
+> > Can you please test if the updated patch below make things work again?
+> 
+> Yes, with the below patch applied on top of 6.8 things are working.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-Signed-off-by: Andrey Shumilin <shum.sdl@nppct.ru>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/bios/therm.c | 2 ++
- 1 file changed, 2 insertions(+)
+OK great thanks for testing, I'll send out a proper patch.
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/therm.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/therm.c
-index 5babc5a7c7d5..78387053f214 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/therm.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/therm.c
-@@ -180,6 +180,8 @@ nvbios_therm_fan_parse(struct nvkm_bios *bios, struct nvbios_therm_fan *fan)
- 			cur_trip->fan_duty = duty_lut[(value & 0xf000) >> 12];
- 			break;
- 		case 0x25:
-+			if (fan->nr_fan_trip == 0)
-+				fan->nr_fan_trip++;
- 			cur_trip = &fan->trip[fan->nr_fan_trip - 1];
- 			cur_trip->fan_duty = value;
- 			break;
--- 
-2.30.2
+Regards,
 
+Tony
+
+> > 8< -------------------
+> > diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> > --- a/drivers/tty/serial/serial_core.c
+> > +++ b/drivers/tty/serial/serial_core.c
+> > @@ -156,7 +156,7 @@ static void __uart_start(struct uart_state *state)
+> >  	 * enabled, serial_port_runtime_resume() calls start_tx() again
+> >  	 * after enabling the device.
+> >  	 */
+> > -	if (pm_runtime_active(&port_dev->dev))
+> > +	if (!pm_runtime_enabled(port->dev) || pm_runtime_active(&port_dev->dev))
+> >  		port->ops->start_tx(port);
+> >  	pm_runtime_mark_last_busy(&port_dev->dev);
+> >  	pm_runtime_put_autosuspend(&port_dev->dev)
 
