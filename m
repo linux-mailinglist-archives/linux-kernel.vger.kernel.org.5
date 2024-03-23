@@ -1,127 +1,140 @@
-Return-Path: <linux-kernel+bounces-112402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1359887955
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:10:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D473E887959
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:17:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ED3A1C20BEB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:10:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81AD41F217EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08FC4DA05;
-	Sat, 23 Mar 2024 16:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E5847796;
+	Sat, 23 Mar 2024 16:17:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FOBwvQY1"
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZHewTpwc"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A6145BE6;
-	Sat, 23 Mar 2024 16:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB6B8BE5
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 16:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711210182; cv=none; b=OsI9nRbCtbUkaSD/Yib3AlFPU+TsiplxADbn4/9JKSMSYwpekS6mQH3mE3O9kS36lPOlyov+Tk/k3Cl/GkZUzwLpi7uPkw0Mt/6CqiFwNhTw7gGAl9MCVYHLkpQf7f3H4Qa+MiIU8dtzJijKXxKUBDy/gy7K7o/wyypM9rNopjk=
+	t=1711210627; cv=none; b=Hv9G5AIhZmxnInfH/pUSN5ECHh0d7RQS2vSJN3NUef9ai/300zAUXQkSxZy3O/WvKSp20tJ6MV7KYUoR0Se/K8USmZUai6XZc5QLliNHGyYWV4k5G/rgguLNRI61OdLu7zAajnYyGEvOgR2WViI8HLi/PuAwwmbEZBiew7vqj68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711210182; c=relaxed/simple;
-	bh=uotAOhcliSJrtYGXeo+exsDcCUCxgu+573x2YVcdnp8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Igzk9Z1uJoeXMcVABDmZjCnpS6X/3qjmN5tkl0QhaBP0AASYaJdH5xMoZzWz9r+wYWqhbk4eTVj8nwHHaplS4HHRy48BE8SWiEQIwcC17FqeRepXid8oWrfa/5IbxFpaEWfBPe96DKRQZ2WOsuVygJxfgsNA+n/bN3tPeJTG1qY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FOBwvQY1; arc=none smtp.client-ip=209.85.161.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5a4f608432bso1756315eaf.2;
-        Sat, 23 Mar 2024 09:09:40 -0700 (PDT)
+	s=arc-20240116; t=1711210627; c=relaxed/simple;
+	bh=HrDbHTBQP7Kca/aKRq5bNPlXeDF/Ou08LysYfQoaFWM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CqgvHduyq0SuyQO0RVRR3KjS5rcbDoJIoDwH1gtlQ08Bf09+sTcXvhOpXjCw1duP2b+Ou0PhaL1nLY5bIk23+CZH2AOmcUjG0bJ+MoPNH69b1EjsAzBcKbzXGbb+I92+PI5EmSDay6xD8DEGzNztK++PNM63LWFK8FH23bibziM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZHewTpwc; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso43109191fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 09:17:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711210180; x=1711814980; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MfWnKi3XkBpJ+D0PBN2uriZjmLLr+s0y6bK0oDzXkOQ=;
-        b=FOBwvQY1YaKgVqgbMCGB4qMDVDhOVqLd9lwqegcToPJkZ4630SkPc7BNaXlrNBiHRt
-         79Chrh6506EXR66/n6oPbsMZLbrjLuyDbg8mEYAINjPq1nbflQzkGynfBnxWLolH/KqF
-         o5diC2eWEjxH0qINSnpbEzQWZVXgDeWDzPOXHRdSaiOgpMScbQNd3Y3tClWL3keqd6OY
-         rYccrtjwQVL3Bq+EzqB/fcmL7/dBWGPQBokTDrRpVG5d5FYtJyDj0cWq6BwqwfuRoola
-         3ZZZU0qW5+LbQf7AJUCL53s/LaoB6JmCsvLZsNuH8RR030Qzhfgv/EwhI6ZdHE7MEf3W
-         35fQ==
+        d=linux-foundation.org; s=google; t=1711210623; x=1711815423; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6zMFoIj7zZfTP4Vt0+D+vtNOkwelxdRNNrRRIlodJBg=;
+        b=ZHewTpwcbWFfJuhKMDU99bxJIp9irzXmpSwOKiNu7WSvmlpXyCUV3ItbpzE2woj3A8
+         rNTJ1QNDggJz+4HDbBBL3cq3yJfkx56AhKqFwtWs8Qk52Rh5iKHXidJoc5KJaHbFbk1R
+         eP3ukQvVj4SdJj1BRA/bCY3f8YPn7/bEh7vRg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711210180; x=1711814980;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MfWnKi3XkBpJ+D0PBN2uriZjmLLr+s0y6bK0oDzXkOQ=;
-        b=T6wB/c36oW2G385l2SC2f8Zzkdngpsdvolx8Vpeolqbk51uio1VYBdvx0Nb1HI16UE
-         3v0j4GCROHUM6i4Y/qELlF0JBA2gPNl3v54baxtiV1N8xm56N5zO2F9cuXrd0ktIJtxx
-         18NIZjLj1n60OKtyrWZCMyencTXqSPV9llqiGdXHpj8zuWjzY1/D67maArfKMO2TYrhk
-         d68BaxHEzemDJKFi+mqeDUDDIImSkM6jwstLeZVt+O4QWAIzLytIeEYFfvC1OeqTHiR9
-         JaZuezuO382eB9dp2fUG12GdZxvH6TphetAz/aEXdK8F+P/gUZRp6yL3WKvDnph36ePS
-         BdzA==
-X-Forwarded-Encrypted: i=1; AJvYcCVuTB7HC6Ut+vJOp85ykCL9jIcfiwWNQl5kE6qP5ea3qGdCORZ16iAh33HsYt317Qdr32Gr+f8kvCK6VcbBcXH+10afJtljFtymzdN/SCLBHOHUxQ3V72MYsHDpTihBbesdDTSrHfozMAw=
-X-Gm-Message-State: AOJu0YzGrCKm6kDd3hFLGqwgvYHTc7eFuR5oLObO4oJApXh9X3/IEJAy
-	FAAoC4poHSTS+AYsQtTq3ZyGjy2X+W2poPAp5z470bwn7UISrzaN
-X-Google-Smtp-Source: AGHT+IHnKICd6eQ08MBl3qIuOW5vkmBdfwH82arK41ExW8LxM20/g1/q+5+V7DKA43ltBe1KzY3x/Q==
-X-Received: by 2002:a05:6820:3087:b0:5a1:d2ad:ee36 with SMTP id eu7-20020a056820308700b005a1d2adee36mr2603709oob.7.1711210179916;
-        Sat, 23 Mar 2024 09:09:39 -0700 (PDT)
-Received: from nukework.lan (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id a4-20020a4aae44000000b005a4b2172e48sm738541oon.41.2024.03.23.09.09.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 09:09:38 -0700 (PDT)
-From: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-To: andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	robert.marko@sartura.hr,
-	ansuelsmth@gmail.com,
-	Alexandru Gagniuc <mr.nuke.me@gmail.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: ipq9574: add MDIO bus
-Date: Sat, 23 Mar 2024 11:09:35 -0500
-Message-Id: <20240323160935.2848095-2-mr.nuke.me@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240323160935.2848095-1-mr.nuke.me@gmail.com>
-References: <20240323160935.2848095-1-mr.nuke.me@gmail.com>
+        d=1e100.net; s=20230601; t=1711210623; x=1711815423;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6zMFoIj7zZfTP4Vt0+D+vtNOkwelxdRNNrRRIlodJBg=;
+        b=K18fmV+y8NTX9PnrwSUmb9WoIixieHR7VUymDPIGXvXgt+P984DWwo5iXKgcKG9v7/
+         pAjaQ0rzMY8oRrOlZU19JyiLNfjfTRpPyvRGq49wXbS4jrBYrvOvpB6bFU+DwZZg3nxN
+         zOjk8gTn4ntXLFeYdw2+nkCOUqSzVF3u40cMZgmzmAGt41VtYW/B4BxoUfjVuOKzzuoZ
+         503jP2ip5vwj9fUzs7SUg3EcuDKAH7AbrEXCLeRPVNKjFpziUJckXxI6g+43kHQIm0IW
+         aoUp6QAFo4gBIwtopCx1dspz+nF6ZL4vECyTqz4W8sxHoRlx6MqV2xWzOzuXoinARQ/Q
+         BgSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFGmCCrjsiTpRkiIduY1aqm5zfw//Ck9YTprF7cp2ZQ+j5x5k+zyiBG2ofQByk6328Nbu7oax+IQWTzt2cV1GCbV27B8XSam+83Miv
+X-Gm-Message-State: AOJu0YxAZPbn7fwEj4S6bnUH6m1W2tivJaq2Ru6+iBOZbxwZ70r4I5a9
+	3KXKV93SuVuTIW0xBnJE3zVzI89m7MD+CYgUVo1zSnUi2uahs6mSSuiHjpQ07v3K0cxt+6ZNlut
+	vU5YoVQ==
+X-Google-Smtp-Source: AGHT+IF8MFw9/YiOGtpBctAqFKLN5ngGWQvMEOBBhDzOxbDqil3B2rmxlDylWH8LBV1hyHKTE6BaTg==
+X-Received: by 2002:ac2:5b05:0:b0:515:9652:7f76 with SMTP id v5-20020ac25b05000000b0051596527f76mr1539481lfn.1.1711210622736;
+        Sat, 23 Mar 2024 09:17:02 -0700 (PDT)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id eo3-20020a056402530300b0056bf66a0c36sm897304edb.58.2024.03.23.09.17.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Mar 2024 09:17:02 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a472f8c6a55so202120566b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 09:17:01 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXCWgtD9jYv0LllenCS3R55OOwDMkk3J9iygPhDIRnHwgQzI6Spt7+654enNNCIEipSyuCa3t2D0+y7/vSPvgilRnLzvhTsM5rLwNdf
+X-Received: by 2002:a17:906:bb10:b0:a47:876:28b9 with SMTP id
+ jz16-20020a170906bb1000b00a47087628b9mr1783352ejb.42.1711210621595; Sat, 23
+ Mar 2024 09:17:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240322165233.71698-1-brgerst@gmail.com> <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
+ <CAMzpN2gOZEddWUgncaLutVDihcEK-oEUdSVxsgaaX9xiMWfqPw@mail.gmail.com>
+In-Reply-To: <CAMzpN2gOZEddWUgncaLutVDihcEK-oEUdSVxsgaaX9xiMWfqPw@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sat, 23 Mar 2024 09:16:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi0arqxMFFdM+jGv1YXXhY+ehxsmcfv+iAndD_dmpYjMA@mail.gmail.com>
+Message-ID: <CAHk-=wi0arqxMFFdM+jGv1YXXhY+ehxsmcfv+iAndD_dmpYjMA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
+To: Brian Gerst <brgerst@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+Cc: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
+	"H . Peter Anvin" <hpa@zytor.com>, David.Laight@aculab.com
+Content-Type: text/plain; charset="UTF-8"
 
-The IPQ95xx uses an IPQ4019 compatible MDIO controller that is already
-supported. Add a DT node to expose it.
+On Sat, 23 Mar 2024 at 06:23, Brian Gerst <brgerst@gmail.com> wrote:
+>
+> One small issue is that Kconfig would silently disable istackprotector
+> if the compiler doesn't support the new options.  That said, the
+> number of people that this would affect is very small, as just about
+> any modern distribution ships a compiler newer than 8.1.
 
-Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
----
- arch/arm64/boot/dts/qcom/ipq9574.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Yes, let's make the rule be that you can still compile the kernel with
+gcc-5.1+, but you can't get stackprotector support unless you have
+gcc-8.1+.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-index 7f2e5cbf3bbb..4ab9da9fffb6 100644
---- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-@@ -232,6 +232,16 @@ rng: rng@e3000 {
- 			clock-names = "core";
- 		};
- 
-+		mdio: mdio@90000 {
-+			compatible =  "qcom,ipq9574-mdio", "qcom,ipq4019-mdio";
-+			reg = <0x90000 0x64>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			clocks = <&gcc GCC_MDIO_AHB_CLK>;
-+			clock-names = "gcc_mdio_ahb_clk";
-+			status = "disabled";
-+		};
-+
- 		qfprom: efuse@a4000 {
- 			compatible = "qcom,ipq9574-qfprom", "qcom,qfprom";
- 			reg = <0x000a4000 0x5a1>;
--- 
-2.40.1
+I'd hate to add the objtool support for an old compiler - this is a
+hardening feature, not a core feature, and anybody who insists on old
+compilers just won't get it.
 
+And we have other cases like this where various debug features depend
+on the gcc version, eg
+
+  config CC_HAS_WORKING_NOSANITIZE_ADDRESS
+          def_bool !CC_IS_GCC || GCC_VERSION >= 80300
+
+so we could easily do the same for stack protector support.
+
+And we might as well also do the semi-yearly compiler version review.
+We raised the minimum to 4.9 almost four years ago, and then the jump
+to 5.1 was first for arm64 due to a serious gcc code generation bug
+and then globally in Sept 2021.
+
+So it's probably time to think about that anyway,
+
+That said, we don't actually have all that many gcc version checks
+around any more, so I think the jump to 5.1 got rid of the worst of
+the horrors. Most of the GCC_VERSION checks are either in gcc-plugins
+(which we should just remove, imnsho - not the version checks, the
+plugins entirely), or for various random minor details (warnign
+enablement and the asm goto workaround).
+
+So there doesn't seem to be a major reason to up the versioning, since
+the stack protector thing can just be disabled for older versions.
+
+But maybe even enterprise distros have upgraded anyway, and we should
+be proactive.
+
+Cc'ing Arnd, who has historically been one of the people pushing this.
+He may no longer care because we haven't had huge issues.
+
+               Linus
 
