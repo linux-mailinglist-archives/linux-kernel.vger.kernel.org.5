@@ -1,185 +1,145 @@
-Return-Path: <linux-kernel+bounces-112289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BEAA8877FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:25:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8110B8877FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:31:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11706282C16
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:25:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2024EB21549
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088341118C;
-	Sat, 23 Mar 2024 10:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122B310A36;
+	Sat, 23 Mar 2024 10:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Rr6zboSE"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kfq9SEhn"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81224101DA
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 10:24:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E901A38CF;
+	Sat, 23 Mar 2024 10:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711189491; cv=none; b=mY0Ty94u2ImdjZu0t9iCIZ55wVdcwsV+QA7R4PjdHC6gCYDsKUL0QAQ2AVW+dRJQdziWu43m3lVQZe/Bgcus2uxnRzp1zjsha61/aWLBodFSJ0bMwlQUFR5aqLOXsuawyJJkbI1ogNp9Hei4YiX/lw7wxhXMQVfeIn1hPeQGUk4=
+	t=1711189869; cv=none; b=eB6B6ZGgc+J2WkVGkHUgQwR6hxVz7R2DlN9TXZ6RIkZ14Zr0PqbJk2QZxpzFU2QL9l0NRkWueeLbv6NBmXQHZT4HikxxtETdIHRF3wsmC5iMquGFZfcDlMGWUCl4BlUn6/Cq1N3cpc2evr56QNZaUWKDsmJPRFraoZHxTuyYA1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711189491; c=relaxed/simple;
-	bh=EI4E2QPRZgdV+VYaFBNzKDcDkTtZXfPdSLG/1fRvzgw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WIX6Y6EBzVrB7A9/CSwOxcNgLeux6NmbmB3yJuPdWcYABtFfLZBK/mkuMRCUFYr3f04+sFOLXXSX4ycHx9RUcNdE09jfr5xQlhjXhr/xIAXvHyzzMDo7+W/uSmYO4sAfyjWpmBhatS0vNkGegrgd/r9P+lK/x2TwPKidYV3tJKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Rr6zboSE; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56bfa192ea1so418170a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 03:24:49 -0700 (PDT)
+	s=arc-20240116; t=1711189869; c=relaxed/simple;
+	bh=TkVXcG1d2qiILwljSbo4IShXE5Zgdx7k7NL3xCxtGag=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JH38tjng1SNoFJWoJ/XHmKwtSfZO3TjW1MsPptg41ukTbuPyqsm7Em5kO08WEmBF71UYzhoMBXtgFtwOkXrUOXAb4DpkSCCsYYEtjz2yBhVAyvHJIYkIoYQXdz4NuyVTTb82UkdLwanLshY8jxb7jaZAgeGZk7S/WNgtbucIEtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kfq9SEhn; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33e162b1b71so2278413f8f.1;
+        Sat, 23 Mar 2024 03:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711189488; x=1711794288; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=27eV0IsdHyW0CoX0dFZS8tHIPLcqxbkMkWnidM0bXYY=;
-        b=Rr6zboSE1nIuDsfatICRiiIPJO4Ee+sWRlIJ5ADV5K42zoubzLAnIUThu8iXReixF0
-         tK+Arq7OizleFgWZbO4gW8qKjDeLvP56RyyQ8DUdi7Ls/21vWx8oh9fPGySmva2FFIq+
-         SY4FEIq/Y2GphMCN7z2tnvyvv3h6Y8Ca9HOZraGiN2b/qHDeK5oCQnFvsv6I5c9ya4Cu
-         WKA7ajFRlGrixM/z+SQ+ijSFlGefLlhSqE6d5XJ8JPlFcOuzddZB1dFr77My5d4+DSX4
-         mGY1RFM4Gcud9VkpMB8zKoHs3+h3MKjTpfLYhEvBA4OFsL6+2E9CDb2t+cSseqoUilgR
-         FvKg==
+        d=gmail.com; s=20230601; t=1711189866; x=1711794666; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gwChgsiib61i/qQJ49UyZsVu/x/VLxOqlOZmuWY4oT4=;
+        b=Kfq9SEhnxjuFfkcUjm+PH0BM0ww0EZsQ/B0bztE0NiLSHWhVeIKVTqPA0cGJs8WiDQ
+         5Wp2Hy33w/UfmrEYlukjPnwPcAub2/jEqRj6ktGv/1TM6SQTcelS+gg/UFwBybX8yQ2F
+         U9ISZLC0ccObs6rwS8Erz2bV2ezu03xLTrpQAl+udqn5uZ/gpwTxtMoue9hm8+LUrJoY
+         tTX8fYWpdzJT8MOcTnWwLVJwSc2soLuxD7E31Npu8oF5a1BfLq0lr88kDaVuA2UlfmFn
+         haqVEf8AMxJs3Ugh4dL3uWgzQBRRVO9JVkf+1PUkXPXPileud828a21XcTbUh1j97KyL
+         rXUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711189488; x=1711794288;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=27eV0IsdHyW0CoX0dFZS8tHIPLcqxbkMkWnidM0bXYY=;
-        b=uHqFpSYfijgLuICt1WKnpTt6G50mLUTXRKTB9S7bBQFf1RxjegH2U4lwyxmZgfgczf
-         eNho6BPIpV80fYGX4VIYW3uTJL0P+asLQ1huB1mvTjUFUCl88YuXibCJ7aguUGiJ5InR
-         3UYHiRbX3xy/Xb6RHXornoni3yHJlyroqOBRnDqq+VmVSvMUqyIXnmKVnbWMeYEY9VB6
-         /q1JpYVC9CWfuhQOCBV15gTlawbXVo7cnjwqToTyzRokJMTLrarc7JiTKVi1jAU9B48t
-         tkMXP9ooTJBpGyOQCmULeBLpgGU62BZ5CKIkYfSLXAwTrjGEJQ5mJQBSsvdRIgalSes5
-         eadg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3iPId4l0i/Cr5Ofk3aO1HGtzj6IDjWG6nLK4FGIYrRxtkvzFNzk0WByBHiC9KVgzWyx3mNqk6xaoXQH3LsGohzmZwxfuoC3WFTf4q
-X-Gm-Message-State: AOJu0Yyq7mqJl8JHw4w56i3tdX2d1Wlb+AEFIh5ULWmlfOhXflj5QZbI
-	rMgqgN6+4MT8oP/alzCXC3nfpaemrFXGAgTcs+G3rCoMrKTtceuL+ckJ8+/hsWU=
-X-Google-Smtp-Source: AGHT+IElMB+eq0Nqv/BFxyyEAHz5MAomDs2zRpTTQQ7d1Mgzoga3P3xV4zoLW3fiI2kzGmV2lirrNg==
-X-Received: by 2002:a17:907:7d8b:b0:a46:d04b:66e7 with SMTP id oz11-20020a1709077d8b00b00a46d04b66e7mr1340567ejc.25.1711189487936;
-        Sat, 23 Mar 2024 03:24:47 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id m19-20020a1709060d9300b00a45c9945251sm753897eji.192.2024.03.23.03.24.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Mar 2024 03:24:47 -0700 (PDT)
-Message-ID: <703de50e-f271-4e65-bda4-85b1835afa6e@linaro.org>
-Date: Sat, 23 Mar 2024 11:24:44 +0100
+        d=1e100.net; s=20230601; t=1711189866; x=1711794666;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gwChgsiib61i/qQJ49UyZsVu/x/VLxOqlOZmuWY4oT4=;
+        b=T+Biov8CvdprcK82sikQ4/tfONVgqYvlA7H4YdUh/h5smcptBha1BBsIi559tLO6M9
+         D5J9Eg/H0QejegHzmfMdKYiPCP8GTZT8pCfBXAwz+xghgyLt8q+XbleZMgCg4IE7py3P
+         Kd1o5VIYm47DmCJfaNU2zbHp0eGVH3UQFeiHQhx59XP18Hs3v6McW0ePjts5TYVzhRrf
+         4BCS7F8iFXxlAtjv0XqFQbVbWAdnPb2ncNjEcZ6jCj9UNWzDzCCVL0WyHAir98vDGOPG
+         9RQzGlezYArO0Dwsisd9NmVodweMu+Aorln8ewITbdbqC+1tHysHYa/dE816RWD/OIFL
+         NQ9g==
+X-Forwarded-Encrypted: i=1; AJvYcCVLivo1gnKEh52IkQmlXskPiDHwbIyyWi4b0c8ATHuI6ldxIF67kjUfVZ7CCgcOxnPeUl8GvlNs8SdhazIQuZGmTTgGrvzMEhFsEJ1IKNUzIU0pxiekuEkbaY6bE40VTRFj
+X-Gm-Message-State: AOJu0Yw9dQwStMQ+3/bNO1zzZsqVxppcyO/Vz9bSxE31bknTrvrgaWxQ
+	FY7igvK8iUqCpP4illWcUIKjNYlxoFMhEIn5WpBXHVqnzGPzY/Ai
+X-Google-Smtp-Source: AGHT+IHn2IxSaPcrU6i/6QXeuvR+V3EUB67GVPfoglaJgXC/rAVyMkVYctlOSl18f7oqvhKUFkLsfA==
+X-Received: by 2002:adf:a4c5:0:b0:341:9db8:6269 with SMTP id h5-20020adfa4c5000000b003419db86269mr1094899wrb.48.1711189865964;
+        Sat, 23 Mar 2024 03:31:05 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id h20-20020adfa4d4000000b0033e68338fbasm4155621wrb.81.2024.03.23.03.31.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 23 Mar 2024 03:31:05 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Xu Kuohai <xukuohai@huawei.com>
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v3 0/2] bpf,arm64: Add support for BPF Arena
+Date: Sat, 23 Mar 2024 10:30:55 +0000
+Message-Id: <20240323103057.26499-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 12/12] dt-bindings: net: add Microchip's
- LAN865X 10BASE-T1S MACPHY
-To: Parthiban.Veerasooran@microchip.com, conor@kernel.org
-Cc: andrew@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
- anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
- ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
- vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
- Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
- Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
- benjamin.bigler@bernformulastudent.ch
-References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
- <20240306085017.21731-13-Parthiban.Veerasooran@microchip.com>
- <20240306-spree-islamist-957acf0ee368@spud>
- <4c5968a3-c043-45fc-8fff-2a9eaa6de341@lunn.ch>
- <20240306-ripeness-dimple-e360a031ccde@spud>
- <05a9a7ee-e4f0-443e-9c8a-8ee649a11448@microchip.com>
- <2f384a54-74a0-4a75-a325-8985257b5d66@linaro.org>
- <ba37c212-fb98-407d-9bee-6d14801754d9@microchip.com>
- <96493beb-afbf-42f2-88f0-ad645422ecdb@linaro.org>
- <1735add6-4a6a-452b-bf26-1cf19c95493e@microchip.com>
- <20240321-upcountry-finless-b0e9b1ab4deb@spud>
- <13a28ba3-2da4-428c-8091-25e75c6c11e8@microchip.com>
- <d41a53bd-ea1e-476a-a18c-ed51dbac0a98@linaro.org>
- <b3c5d217-a5e3-4957-884c-02e8c10aba9d@microchip.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <b3c5d217-a5e3-4957-884c-02e8c10aba9d@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 22/03/2024 09:28, Parthiban.Veerasooran@microchip.com wrote:
->>>
->>>         - const: microchip,lan8650
->>>
->>>         - items:
->>>
->>>             - const: microchip,lan8651
->>>
->>>             - const: microchip,lan8650
->>>
->>> Executed dt_binding_check with the above update and it was successful.
->>> Hope this is OK?
->>
->> This is the third time you ask us. None of the previous cases were
->> actually tested. Maybe this one was, maybe not. I assume the latter.
->>
->> First, test your code.
-> As I mentioned in the previous email itself, I tested this case and the 
-> previous case both in my RPI 4 setup before replying to the comment. The 
+Changes in V3
+V2: https://lore.kernel.org/bpf/20240321153102.103832-1-puranjay12@gmail.com/
+- Optimize bpf_addr_space_cast as suggested by Xu Kuohai
 
-I don't understand how one can test bindings and DTS on RPI 4. Testing
-is with dt_bindings_check and dtbs_check.
+Changes in V2
+V1: https://lore.kernel.org/bpf/20240314150003.123020-1-puranjay12@gmail.com/
+- Fix build warnings by using 5 in place of 32 as DONT_CLEAR marker.
+  R5 is not mapped to any BPF register so it can safely be used here.
 
+This series adds the support for PROBE_MEM32 and bpf_addr_space_cast
+instructions to the ARM64 BPF JIT. These two instructions allow the
+enablement of BPF Arena.
 
+All arena related selftests are passing.
 
-Best regards,
-Krzysztof
+  [root@ip-172-31-6-62 bpf]# ./test_progs -a "*arena*"
+  #3/1     arena_htab/arena_htab_llvm:OK
+  #3/2     arena_htab/arena_htab_asm:OK
+  #3       arena_htab:OK
+  #4/1     arena_list/arena_list_1:OK
+  #4/2     arena_list/arena_list_1000:OK
+  #4       arena_list:OK
+  #434/1   verifier_arena/basic_alloc1:OK
+  #434/2   verifier_arena/basic_alloc2:OK
+  #434/3   verifier_arena/basic_alloc3:OK
+  #434/4   verifier_arena/iter_maps1:OK
+  #434/5   verifier_arena/iter_maps2:OK
+  #434/6   verifier_arena/iter_maps3:OK
+  #434     verifier_arena:OK
+  Summary: 3/10 PASSED, 0 SKIPPED, 0 FAILED
+
+The verifier_arena selftest could fail in the CI because the following
+commit is missing from bpf-next:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=fa3550dca8f02ec312727653a94115ef3ab68445
+
+Puranjay Mohan (2):
+  bpf: Add arm64 JIT support for PROBE_MEM32 pseudo instructions.
+  bpf: Add arm64 JIT support for bpf_addr_space_cast instruction.
+
+ arch/arm64/net/bpf_jit_comp.c                | 87 +++++++++++++++++---
+ tools/testing/selftests/bpf/DENYLIST.aarch64 |  2 -
+ 2 files changed, 77 insertions(+), 12 deletions(-)
+
+-- 
+2.40.1
 
 
