@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-112251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5101F887773
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:44:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D889887776
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:44:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF357B217DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:44:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 229E7281FE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E88DC2D0;
-	Sat, 23 Mar 2024 07:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E55FFC05;
+	Sat, 23 Mar 2024 07:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m65fT+9W"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TNJcIgIh"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711D56107;
-	Sat, 23 Mar 2024 07:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E75D2E6;
+	Sat, 23 Mar 2024 07:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711179872; cv=none; b=Fpd8MxdQD762HzuwF29Fs9+q9jOvANaFyMoqeF4pUJyfRH9SSrgbydxKOhFxStynk9WrgNUxC1qLvt14NN/aJINzpDndQ9YTPMfGdx2jQVyFlFlldNpvWUGbrh5Z9mnzgABrtM4Uyw3AoRQEIPsuaxZM15KERZpVmEfwyQgYXfw=
+	t=1711179875; cv=none; b=mqEGdLv3aULBsycAGpjfBDlPHT74mCq6G3mXh5G4pSNxEJnbwooXvLwUdBc+7JqymsHSx3zx3ML69efou60jPXdDbW3xrHujGRQd+aP6h1TKYBXKfRxroRO9KgkXzRDCuX32dMrKOHpwRP9PRYqv0XIAC+QXNUNF3C9+Zrdva8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711179872; c=relaxed/simple;
-	bh=vG2ixD67oI7pZv/388uv2qcvWouiFsZXmP0odTodtpc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=evzWQbVv+XKtvM6g6iKjKqPwHSjpj1zPKO+h3fFS5WDyhMLNLIYEj1R1ImjOc7ds8Wyta2enPLsgZxojrN93vDcLVH6KRrmFx2tZwvJ7Gi1sZOVqX6+MbLNSxCjE9Ku4UXKSagxuU1VvHdJ/W2CoYHYxLFH5ouCgwwXvnVGz5Hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m65fT+9W; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1711179875; c=relaxed/simple;
+	bh=bX77DFXEDB/VnzhM4jOvfjO9QqNc6uuSmRLrF/pTirI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fhqsg362x7LDm1zecLn8nkYWEy/TQyaxywzzllfcpC5sI0ffWGdWxUHgQ+7qbYcryDu6dOTfmQVNXPtkkk684LYbJjuauWnU5G1FaZMCTJG4V2wBfSgEt+HPhTqJzHFJ7io4qwfHTLiW0kFniAGWtph46hse49VcA4YEH8iBVpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TNJcIgIh; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e08512cd8dso15886335ad.2;
-        Sat, 23 Mar 2024 00:44:31 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1def89f0cfdso29180345ad.0;
+        Sat, 23 Mar 2024 00:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711179871; x=1711784671; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pFIHxUfDhEjmdeRNyvzrzBdHaOdyGF17bN8Se5iKpPk=;
-        b=m65fT+9W0pxnmLbXRWx9sEntCLHjtqOluhcfs/POCXAPQwkQT82KqtWz/y6wqvyTFy
-         9aPD3mwSRml9RbwyQuMCcmz+zEpZ+KF6OSbLnfdpCPQq89CyZfm7r7QIVGZrPr1aeZeN
-         T51VqvYrP52rO/EOUMrpabemQS+/myb7m/vCSM3VZ55hdB8fsHtyu0uBPLgJk0qMBkA8
-         4J1GBJKZ3dIrkgIxR4hHSRlTuKC0T3DqZa3IOcmmy4ctw6VYZvcFFGK9UCxhjh/d7iQE
-         QuAhbhyIc7NAz9A91cNRnYB6xxpRCwMtN1/GpDCCbjZIer7wE95EV4AFgfB3spoKsRUF
-         JQDQ==
+        d=gmail.com; s=20230601; t=1711179873; x=1711784673; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZTIY4yTRBxvkkLS9ASNNrDGmsbUdt78o1hFukg6hNIw=;
+        b=TNJcIgIhJS/nk6uy7R3Js3vNpkW+AzAY1Pm+ATo8OU/n4aS3gG3JTMab4/tO1U2HKu
+         xrT1fx4X68O3/nKwyKZUGCYE8sB4x4otz9sG/4q8Q0P0J5Fgjq4wt0cBTZPZQdJDyD9r
+         lfVM+s1RvrNKoohqTOlOxTjuKOlPb6jXzppftWhTLsmvQ/sinh2uR4nTW25o2HTEFK/6
+         Okv3SHlWNaWK5KDbwTVA3nEQtWSxjaiFxnWHy5BC8XqiJMlr6CNozKOZNy7ubgRy40mr
+         G5nqpWTsbc67ztLVC77ES/Xsc26WyBt9ccAz9mjy9kapiM8lm8A/kzhJhcKdkZOoxpQa
+         qKSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711179871; x=1711784671;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pFIHxUfDhEjmdeRNyvzrzBdHaOdyGF17bN8Se5iKpPk=;
-        b=iCNy29OwkbIVwyycCwzXA1++yJ82sNxxAb8dE4/f1dd9PkZtXB5w+P4icbiTqspBUi
-         q2yTRqhTTpv0N71WUn/4/Kee3Aceo4+CEBfSKFLCoVl+8XqtvgV7BTq8heGbfKGH2aTc
-         X1GgbWFh121RCiDsX5lLsBM9xs7/g1tMWQt+KmjmGmJolDpzQOl5D1QjFNqvtQp1Ml5/
-         DWgxcGMIsSV9s2iX4k0zbUAiNP8lBFQiZZAjkpnqROqsuBpEfgGk1QXLWH9gpK7YCInG
-         O2nRCSVYR/a2gre7hVrfjfyqjJv6QfwT+iOSUseUxap1bbnRaNGcOMgepHYgoUx4RzQv
-         Bwlw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3AUo8iTOcM3BnRGSdKKwD6UfPUec+KO+iLEUum1IvAyHNh9cDjvJe7IHTl+uhH0CW+wg7nHyRowt5cSfQ/RZWKRKPhKN/1Bw7hliZygIdkS6AYTOSwuTDjGInI3XAqlYYEu5IhZCbAA==
-X-Gm-Message-State: AOJu0YzrbHDhbS0M+kpuFXc/nvVim/t6GlZzVyv2eOgczW9Sgc+sE9gk
-	rwRxUvhuJrTNAc+uT4Uka1rnzm5zENQ9ljvUoMAvbDe9TmDfwcOw
-X-Google-Smtp-Source: AGHT+IEj30C0v+2g9xEMtQMRIUC41VW6iffGnxv5pvPvgNMX+B7jKGvVtvW5+QBJZ7LipLK/kLtSmw==
-X-Received: by 2002:a05:6a20:a919:b0:1a1:4df8:1ec4 with SMTP id cd25-20020a056a20a91900b001a14df81ec4mr1394890pzb.19.1711179870652;
-        Sat, 23 Mar 2024 00:44:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711179873; x=1711784673;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZTIY4yTRBxvkkLS9ASNNrDGmsbUdt78o1hFukg6hNIw=;
+        b=w7ljeB77q21W6TsM2vVKDpmHrk7EYwlcWNklBSCvu1PXsdV14tPesG7+FDOZgiO1Hr
+         kU8VDrtODX2wi268NUKmvjRG13Jv+uqCJtOVZ2dc1DoNMcrGu2+uPK/N8qj308vrhpbB
+         2bkV3vY2SlA81ZIaEKvij0Ex/9PbHWJ4X0U64/v/se9j0DDvtQirB/eE5jCbZ2HLinfX
+         FB+hby5cNaw8RL4WQWVEPCiKkgtpbu5yLxKw6LyDLARM7741rAD2uvkpmK9KFeGRUkhp
+         FlV5GCtcqdIODuolj9krMWZrddWBIIA9HUi0q7nrmIh8PSN3FzWbARbHADVuqdUFBcGD
+         27vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/gCyLHEA/P5RAA1EQjPG70lfyOLUtsN3Mk7kVD5ki0KNoDX4wFBW0+unkwxZaRPd28VJl2cgzB479BFdbjwW2fBs8839hFvLV+ZNBs7KJ972sSfT2mo+4KTujhKgoH13tLy7FrmwnPw==
+X-Gm-Message-State: AOJu0YwIcK6DAF3m/E96AbID8K9RyxAOkUcrnlk0k0ZnyJh0WEJ40vlX
+	Uf3N4sXH+yua6fBK/6kDvyv02/yeWro328eWJKOn65MM3ChODxlz
+X-Google-Smtp-Source: AGHT+IHdc4Gm7WaeE+6u5G2RQlnuYHubN4Bx0O+eTcsJf5shPHDJ1OuAcYsWfWUuOeeUJ5jQIyLGBg==
+X-Received: by 2002:a17:902:ef4f:b0:1e0:1f53:a164 with SMTP id e15-20020a170902ef4f00b001e01f53a164mr1942133plx.0.1711179873313;
+        Sat, 23 Mar 2024 00:44:33 -0700 (PDT)
 Received: from localhost.localdomain (FL1-125-193-23-126.chb.mesh.ad.jp. [125.193.23.126])
-        by smtp.gmail.com with ESMTPSA id l17-20020a170902d05100b001e0410bfccasm976825pll.126.2024.03.23.00.44.28
+        by smtp.gmail.com with ESMTPSA id l17-20020a170902d05100b001e0410bfccasm976825pll.126.2024.03.23.00.44.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 00:44:30 -0700 (PDT)
+        Sat, 23 Mar 2024 00:44:33 -0700 (PDT)
 From: INAGAKI Hiroshi <musashino.open@gmail.com>
 To: pavel@ucw.cz,
 	lee@kernel.org,
@@ -73,11 +75,14 @@ To: pavel@ucw.cz,
 Cc: linux-leds@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	INAGAKI Hiroshi <musashino.open@gmail.com>
-Subject: [PATCH v2 0/2] dt-bindings: leds: add LED_FUNCTION_* mainly for router devices
-Date: Sat, 23 Mar 2024 16:36:08 +0900
-Message-ID: <20240323074326.1428-1-musashino.open@gmail.com>
+	INAGAKI Hiroshi <musashino.open@gmail.com>,
+	Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH v2 1/2] dt-bindings: leds: add LED_FUNCTION_MOBILE for mobile network
+Date: Sat, 23 Mar 2024 16:36:09 +0900
+Message-ID: <20240323074326.1428-2-musashino.open@gmail.com>
 X-Mailer: git-send-email 2.42.0.windows.2
+In-Reply-To: <20240323074326.1428-1-musashino.open@gmail.com>
+References: <20240323074326.1428-1-musashino.open@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,22 +91,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series adds some LED_FUNCTION_* definitions mainly for router
-devices.
-Those definitions are useful for OpenWrt or something.
+Add LED_FUNCTION_MOBILE for LEDs that indicate status of mobile network
+connection. This is useful to distinguish those LEDs from LEDs that
+indicates status of wired "wan" connection.
 
+example (on stock fw):
+
+IIJ SA-W2 has "Mobile" LEDs that indicate status (no signal, too low,
+low, good) of mobile network connection via dongle connected to USB
+port.
+
+- no signal: (none, turned off)
+-   too low: green:mobile & red:mobile (amber, blink)
+-       low: green:mobile & red:mobile (amber, turned on)
+-      good: green:mobile (turned on)
+
+Suggested-by: Hauke Mehrtens <hauke@hauke-m.de>
+Signed-off-by: INAGAKI Hiroshi <musashino.open@gmail.com>
+---
 v1 -> v2
 
-- fix sort order of LED_FUNCTION_MOBILE
-- improve the commit description of the first commit
+  - move _MOBILE before _MTD
+  - improve the commit description
 
-INAGAKI Hiroshi (2):
-  dt-bindings: leds: add LED_FUNCTION_MOBILE for mobile network
-  dt-bindings: leds: add LED_FUNCTION_SPEED_* for link speed on LAN/WAN
+ include/dt-bindings/leds/common.h | 1 +
+ 1 file changed, 1 insertion(+)
 
- include/dt-bindings/leds/common.h | 3 +++
- 1 file changed, 3 insertions(+)
-
+diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds/common.h
+index ecea167930d9..6216ecdb06c7 100644
+--- a/include/dt-bindings/leds/common.h
++++ b/include/dt-bindings/leds/common.h
+@@ -90,6 +90,7 @@
+ #define LED_FUNCTION_INDICATOR "indicator"
+ #define LED_FUNCTION_LAN "lan"
+ #define LED_FUNCTION_MAIL "mail"
++#define LED_FUNCTION_MOBILE "mobile"
+ #define LED_FUNCTION_MTD "mtd"
+ #define LED_FUNCTION_PANIC "panic"
+ #define LED_FUNCTION_PROGRAMMING "programming"
 -- 
 2.25.1
 
