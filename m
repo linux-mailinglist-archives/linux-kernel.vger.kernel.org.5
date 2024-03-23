@@ -1,170 +1,193 @@
-Return-Path: <linux-kernel+bounces-112305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFD9A887821
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAE99887823
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD1511C20E80
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:49:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ABE31C20E4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F73943167;
-	Sat, 23 Mar 2024 10:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBFCD14ABA;
+	Sat, 23 Mar 2024 10:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VC4GNxlr"
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="jJkd9oiZ"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70113AC0F
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 10:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2090610957;
+	Sat, 23 Mar 2024 10:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711190892; cv=none; b=Bb8JratF9vlJm5AByqvg4wihg49ZlYsFX8ZjKCyVV74RJ88kJ84E4eyI56W3dCVtgywt7LBFom4mR5FcvGxuNnet59ZiMSb4bN4W5JYb2zVrEZt4S5qfHOnMsiABRV60cbr1ZCZk1b5GZlPV+UafPjdP1B89SvUThr9MfbAuiPc=
+	t=1711191129; cv=none; b=es/pDlJFQ9eFtfuBQDMnu3vpBfwCZX0nVkjjwy9AbRWPmish6xVwZgWfAv2+OQ2niVIZ1MJj5xOy0xDvADJazvN2AfVwLxvjpcztw/ZpUOL71KO9/K/teFMa0WNZKI86zkjCP/8OgD2CLdMzsIXKCOs9IFbdK+U02tcoYRClr1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711190892; c=relaxed/simple;
-	bh=qFTxOQkBGu9erbw71YEZSqEyF/rK12RNgQVEwIyXB/k=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=C+fuEVjWiCwRDSqlC3dS4G0Z2riMIMM3anHwZjgDkJ1/jt4eZoSokLkL/UKG6KHsfay8UuPi3ZUZmE4do1bSn3n+X1g3qPj4PpLzJ6HMsqTCWJCVgKN+GzucNyT+47CEJPD2YEbmdg4A7UY8WgVuzA9cyi3IBLrG9wDU/ZJF/+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VC4GNxlr; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-430c32c04c7so20064791cf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 03:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711190890; x=1711795690; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ncSdPhx1Hg75PAaBeJCqYSddm8JVUZkcLxF1tdAmwuI=;
-        b=VC4GNxlrYy+DRkDj/pEx9XhsjjGXj26lf0ecxa60BL5swAlC0OCYI9GS3QjGVcu32N
-         mXDCQ+ylosV7iX9C+tB3wcPAq0YzRsJrz2v9sHZ/W2QQtgpWeY0SzXTVtghx3PBb8RLr
-         ACgcnaSFiHv2kne0bVhbFaUZPV7mlGyc6AaRc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711190890; x=1711795690;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ncSdPhx1Hg75PAaBeJCqYSddm8JVUZkcLxF1tdAmwuI=;
-        b=Ma7nKL48AozsDL1P7bZpv4LkSuAqROJ+doXOl5hD8dQGh8BilutlmkUm2802CEM/s4
-         9xGC12qf9PDGG9dj+miaKq5zam+wS56P1DLoFq5K4fMmIm2Z5i4W1To0Q/GziQReSfiE
-         9xtWXD8NHW14ds6V+gx/OcQFuzAKTxWi5j//ANbMUAFC22bUrFD6N3FHnqdTgNAm6Mt5
-         vPy2jBeHXOLWuHRw0P+ruInpRrUs91dHYHkFyaekjVmVf4aNwayulE5iWNxQaM+3ui3b
-         RVubxXdkSXxT9ly35ItRYHgviv7tV8pWxV0flbULAoZ6Q4qtX7XlMPUus0bF3Imw0iAY
-         Tm/A==
-X-Forwarded-Encrypted: i=1; AJvYcCW6CtWgjDu3NDpB6KJzeEgqzB7CLFVeLlk1cCOkimcM/rYT00jaK+E1bYXHg3smt/pZa9e5S1KeJSf9WRixoHHbVGCKj5CFEKo7yWa6
-X-Gm-Message-State: AOJu0Yzau+JFPlQDKuGGdayynxT++faaA1Qm8QGeM4kzZOnUZ8CpmzgZ
-	s0/+/gdmOB7tqn2y97eB5SbW0xX0MTULSMfTUXi7ZWIOcCdjPrx9W8jhYOXcPA==
-X-Google-Smtp-Source: AGHT+IFVWVDktDxkoCtudFjhetKiUmTOjHXaMQV/1GH3/G4PRJBMkJCGZASis3MEuqkYW6kx8rPH6w==
-X-Received: by 2002:a05:622a:289:b0:431:2b0d:5941 with SMTP id z9-20020a05622a028900b004312b0d5941mr1841942qtw.39.1711190889788;
-        Sat, 23 Mar 2024 03:48:09 -0700 (PDT)
-Received: from denia.c.googlers.com (188.173.86.34.bc.googleusercontent.com. [34.86.173.188])
-        by smtp.gmail.com with ESMTPSA id gd14-20020a05622a5c0e00b0042f21fe66f7sm697213qtb.73.2024.03.23.03.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 03:48:08 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Sat, 23 Mar 2024 10:48:07 +0000
-Subject: [PATCH v10 6/6] media: uvcvideo: Fix hw timestamp handling for
- slow FPS
+	s=arc-20240116; t=1711191129; c=relaxed/simple;
+	bh=lDUbweLZTFKaO03LACvqE5G6z4ibhw1S8CeSImz9FQs=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cFIADQ0lxmb3HU/hS8PyPpJXq5E5JsiribH0EX9AUI1lVbgZSjfpu7GKSlL+cKSBBrv9YF6kBXYOOIF125g+ZdqXdcr1hdE3pfFMntJ9gy0UBmR02zsUeVwACZC8mstU8x7ls122ER8FMbTrccKWsDBFfpLbpD9HfcY/ik4QuTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=jJkd9oiZ; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=7jitdd4ym5b4jkxz7i33jwzxwm.protonmail; t=1711191123; x=1711450323;
+	bh=pkgJxujshGHrdAmanmDwjDVhz1xUKbpjmGsOJY8+AlM=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=jJkd9oiZ69Ou2NS4nQHAOkC6/NYnkBCUOuAAFqkRAWVQIASX5+9jm5MmIO/EQ7bbc
+	 x7yv2gVUReEe5+QKwt7X+hqhsiQ+yWHzze+J9JmS7wbKhRwMCSVXgPMODAcnWbkawT
+	 hSw9d9h4yMFLpaz2YWeqocU9XCFYTQbEmKXl1aVsUE/fz9myzL8eUeIRgNFJeqS7Wo
+	 CNBXT7exxSLPKNbRcRDBRWUKfJF6xyNox8H1/gj/QjAsAKxKvtzV5eYIbde40RwXLi
+	 OpAym1nenCTvH+Sd0GsO/adsrrmghad3krGqQHOpHXnIPm2Z11V0rG/MofHSXH0wv2
+	 4ZKVcdyA7fenA==
+Date: Sat, 23 Mar 2024 10:51:57 +0000
+To: Andreas Hindborg <nmi@metaspace.dk>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Bart Van Assche <bvanassche@acm.org>, Hannes Reinecke <hare@suse.de>, "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, Andreas Hindborg <a.hindborg@samsung.com>, Niklas Cassel <Niklas.Cassel@wdc.com>, Greg KH <gregkh@linuxfoundation.org>, Matthew Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Alice Ryhl <aliceryhl@google.com>, Chaitanya Kulkarni <chaitanyak@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>, Yexuan Yang <1182282462@bupt.edu.cn>, =?utf-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, Joel Granados <j.granados@samsung.com>, "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, Daniel Gomez
+	<da.gomez@samsung.com>, open list <linux-kernel@vger.kernel.org>, "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>, "gost.dev@samsung.com" <gost.dev@samsung.com>
+Subject: Re: [RFC PATCH 3/5] rust: block: allow `hrtimer::Timer` in `RequestData`
+Message-ID: <sHRsbsEAgQZOgBjItL1A-a1BOEGTeH4CWqZsrdny4vCI06o56pmKluCTbY_EwRDO1hCjEp9Cuq9_8S8Co2I9c8wquHWZH_KGjOpmbF1YiJc=@proton.me>
+In-Reply-To: <20240313110515.70088-4-nmi@metaspace.dk>
+References: <20240313110515.70088-1-nmi@metaspace.dk> <20240313110515.70088-4-nmi@metaspace.dk>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240323-resend-hwtimestamp-v10-6-b08e590d97c7@chromium.org>
-References: <20240323-resend-hwtimestamp-v10-0-b08e590d97c7@chromium.org>
-In-Reply-To: <20240323-resend-hwtimestamp-v10-0-b08e590d97c7@chromium.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- "hn.chen" <hn.chen@sunplusit.com>, Hans Verkuil <hverkuil@xs4all.nl>, 
- Ricardo Ribalda <ribalda@chromium.org>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-In UVC 1.5 we get a single clock value per frame. With the current
-buffer size of 32, FPS slowers than 32 might roll-over twice.
+On 3/13/24 12:05, Andreas Hindborg wrote:> From: Andreas Hindborg <a.hindbo=
+rg@samsung.com>
+>=20
+> Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
+> ---
+>   rust/kernel/block/mq/request.rs | 67 ++++++++++++++++++++++++++++++++-
+>   1 file changed, 66 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/rust/kernel/block/mq/request.rs b/rust/kernel/block/mq/reque=
+st.rs
+> index cccffde45981..8b7f08f894be 100644
+> --- a/rust/kernel/block/mq/request.rs
+> +++ b/rust/kernel/block/mq/request.rs
+> @@ -4,13 +4,16 @@
+>   //!
+>   //! C header: [`include/linux/blk-mq.h`](srctree/include/linux/blk-mq.h=
+)
+>=20
+> +use kernel::hrtimer::RawTimer;
+> +
+>   use crate::{
+>       bindings,
+>       block::mq::Operations,
+>       error::{Error, Result},
+> +    hrtimer::{HasTimer, TimerCallback},
+>       types::{ARef, AlwaysRefCounted, Opaque},
+>   };
+> -use core::{ffi::c_void, marker::PhantomData, ops::Deref};
+> +use core::{ffi::c_void, marker::PhantomData, ops::Deref, ptr::NonNull};
+>=20
+>   use crate::block::bio::Bio;
+>   use crate::block::bio::BioIterator;
+> @@ -175,6 +178,68 @@ fn deref(&self) -> &Self::Target {
+>       }
+>   }
+>=20
+> +impl<T> RawTimer for RequestDataRef<T>
+> +where
+> +    T: Operations,
+> +    T::RequestData: HasTimer<T::RequestData>,
+> +    T::RequestData: Sync,
+> +{
+> +    fn schedule(self, expires: u64) {
+> +        let self_ptr =3D self.deref() as *const T::RequestData;
+> +        core::mem::forget(self);
+> +
+> +        // SAFETY: `self_ptr` is a valid pointer to a `T::RequestData`
+> +        let timer_ptr =3D unsafe { T::RequestData::raw_get_timer(self_pt=
+r) };
+> +
+> +        // `Timer` is `repr(transparent)`
+> +        let c_timer_ptr =3D timer_ptr.cast::<bindings::hrtimer>();
+> +
+> +        // Schedule the timer - if it is already scheduled it is removed=
+ and
+> +        // inserted
+> +
+> +        // SAFETY: c_timer_ptr points to a valid hrtimer instance that w=
+as
+> +        // initialized by `hrtimer_init`
+> +        unsafe {
+> +            bindings::hrtimer_start_range_ns(
+> +                c_timer_ptr as *mut _,
+> +                expires as i64,
+> +                0,
+> +                bindings::hrtimer_mode_HRTIMER_MODE_REL,
+> +            );
+> +        }
+> +    }
+> +}
+> +
+> +impl<T> kernel::hrtimer::RawTimerCallback for RequestDataRef<T>
+> +where
+> +    T: Operations,
+> +    T: Sync,
 
-The current code cannot handle two roll-over and provide invalid
-timestamps.
+Why is this needed? Shouldn't this be `T::RequestData: Sync`?
 
-Remove all the samples from the circular buffer that are more than two
-rollovers old, so the algorithm always provides good timestamps.
+Is the `run` function below executed on a different thread compared to
+the `schedule` function above?
+If yes, then `T::RequestData` probably also needs to be `Send`.
+You also would need to adjust the bounds in the impl above.
 
-Note that we are removing values that are more than one second old,
-which means that there is enough distance between the two points that
-we use for the interpolation to provide good values.
+--=20
+Cheers,
+Benno
 
-Tested-by: HungNien Chen <hn.chen@sunplusit.com>
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/usb/uvc/uvc_video.c | 24 ++++++++++++++++++++++++
- drivers/media/usb/uvc/uvcvideo.h  |  1 +
- 2 files changed, 25 insertions(+)
-
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index 5df8f61d39cd1..900b57afac93a 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -471,8 +471,31 @@ static void uvc_video_clock_add_sample(struct uvc_clock *clock,
- {
- 	unsigned long flags;
- 
-+	/*
-+	 * If we write new data on the position where we had the last
-+	 * overflow, remove the overflow pointer. There is no overflow
-+	 * on the whole circular buffer.
-+	 */
-+	if (clock->head == clock->last_sof_overflow)
-+		clock->last_sof_overflow = -1;
-+
- 	spin_lock_irqsave(&clock->lock, flags);
- 
-+	/* Handle overflows */
-+	if (clock->count > 0 && clock->last_sof > sample->dev_sof) {
-+		/*
-+		 * Remove data from the circular buffer that is older than the
-+		 * last overflow. We only support one overflow per circular
-+		 * buffer.
-+		 */
-+		if (clock->last_sof_overflow != -1) {
-+			clock->count = (clock->head - clock->last_sof_overflow
-+					+ clock->count) % clock->count;
-+		}
-+		clock->last_sof_overflow = clock->head;
-+	}
-+
-+	/* Add sample */
- 	clock->samples[clock->head] = *sample;
- 	clock->head = (clock->head + 1) % clock->size;
- 	clock->count = min(clock->count + 1, clock->size);
-@@ -616,6 +639,7 @@ static void uvc_video_clock_reset(struct uvc_clock *clock)
- 	clock->head = 0;
- 	clock->count = 0;
- 	clock->last_sof = -1;
-+	clock->last_sof_overflow = -1;
- 	clock->sof_offset = -1;
- }
- 
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index cb9dd50bba8ac..fb9f9771131ac 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -499,6 +499,7 @@ struct uvc_streaming {
- 		unsigned int head;
- 		unsigned int count;
- 		unsigned int size;
-+		unsigned int last_sof_overflow;
- 
- 		u16 last_sof;
- 		u16 sof_offset;
-
--- 
-2.44.0.396.g6e790dbe36-goog
-
+> +    T::RequestData: HasTimer<T::RequestData>,
+> +    T::RequestData: TimerCallback<Receiver =3D Self>,
+> +{
+> +    unsafe extern "C" fn run(ptr: *mut bindings::hrtimer) -> bindings::h=
+rtimer_restart {
+> +        // `Timer` is `repr(transparent)`
+> +        let timer_ptr =3D ptr.cast::<kernel::hrtimer::Timer<T::RequestDa=
+ta>>();
+> +
+> +        // SAFETY: By C API contract `ptr` is the pointer we passed when
+> +        // enqueing the timer, so it is a `Timer<T::RequestData>` embedd=
+ed in a `T::RequestData`
+> +        let receiver_ptr =3D unsafe { T::RequestData::timer_container_of=
+(timer_ptr) };
+> +
+> +        // SAFETY: The pointer was returned by `T::timer_container_of` s=
+o it
+> +        // points to a valid `T::RequestData`
+> +        let request_ptr =3D unsafe { bindings::blk_mq_rq_from_pdu(receiv=
+er_ptr.cast::<c_void>()) };
+> +
+> +        // SAFETY: We own a refcount that we leaked during `RawTimer::sc=
+hedule()`
+> +        let dref =3D RequestDataRef::new(unsafe {
+> +            ARef::from_raw(NonNull::new_unchecked(request_ptr.cast::<Req=
+uest<T>>()))
+> +        });
+> +
+> +        T::RequestData::run(dref);
+> +
+> +        bindings::hrtimer_restart_HRTIMER_NORESTART
+> +    }
+> +}
+> +
+>   // SAFETY: All instances of `Request<T>` are reference counted. This
+>   // implementation of `AlwaysRefCounted` ensure that increments to the r=
+ef count
+>   // keeps the object alive in memory at least until a matching reference=
+ count
+> --
+> 2.44.0
+> 
 
