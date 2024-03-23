@@ -1,130 +1,157 @@
-Return-Path: <linux-kernel+bounces-112222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 799ED88770B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 05:10:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 110AC88770E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 05:16:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F4561F2319B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 04:10:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C5C31F23FC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 04:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BD04A15;
-	Sat, 23 Mar 2024 04:10:06 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C268F6C;
+	Sat, 23 Mar 2024 04:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IDRcUmdN"
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841101A38C9;
-	Sat, 23 Mar 2024 04:10:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D3F4683
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 04:16:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711167006; cv=none; b=kFfm4r4qrf65XpKoFBojEvxCHIiiGL4zQMK4UJ4mM+3hWd3/Z8dJev96DhngX/FbiDmPCo75xyMnC/LmtkTRLt52Er4Y6wKABp/ycAvaQk5Yua3ST+pksWUj6dGcTCjZJrQ4RiB5RPgKU4ddKn8llBLS2DSNszh5IV7vhTNCDUc=
+	t=1711167380; cv=none; b=mPfYIVEIpYhE1n5OMqb2+JY7aM3N1RVe5GtVLdAj5MI9pS2L5fLDfL6KadQy4vMnISqhVO3bl1Sy5O9c+QYYZN70HQYbZGyBQaeTPzztecFbGeXDavI4Y34IEVH5dstx7V7SXCfqO4fe0Bk0yXLPkavxoneU1OGzvHkVQiN4nJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711167006; c=relaxed/simple;
-	bh=/s/4CkjZJs5Td7bDTyZ52hR+tKvru5vItbA30cuh/3I=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=K6lKzUaiOfy1Fz/hah3Jtg7rQTYifbpu4XL2aS2OtyKcQ2xKTlqKhjJSPx0YmJhhXHzj0ztVLcDearkyBzmAYE22QNz1WMMJo55VH5oJOfmJLn2/4XWDCtgFfqoMzG8K7OjbWpUsphGPj9BOQhUlJAFQe2w5kyOobN2Uo2MKEVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V1m1Z60qZz4f3jdd;
-	Sat, 23 Mar 2024 12:09:54 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E3C641A017A;
-	Sat, 23 Mar 2024 12:10:00 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxAXVv5li2w2Hw--.29792S3;
-	Sat, 23 Mar 2024 12:10:00 +0800 (CST)
-Subject: Re: [PATCH -next RFC] blk-throttle: remove
- CONFIG_BLK_DEV_THROTTLING_LOW
-To: Randy Dunlap <rdunlap@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>,
- axboe@kernel.dk, tj@kernel.org, hch@lst.de, ming.lei@redhat.com,
- josef@toxicpanda.com
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240323025322.1310935-1-yukuai1@huaweicloud.com>
- <bf3715e1-bf44-44e6-8877-4bbcfe5f3f98@infradead.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <faa30b1d-7f0d-40cb-a911-f6214785d8ab@huaweicloud.com>
-Date: Sat, 23 Mar 2024 12:09:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1711167380; c=relaxed/simple;
+	bh=oQwQPzepAo9xty2ZLMz/v4lfOpbZlyrOY1++1B41TBk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TJ9BchIehzRCvY+/ilSPbQd38zvUJsUho+aPf25io5+3PSfA67PoRWCDsPquY+cmzcS0ch3NEChWR2vziiCeTUVSNUYxs5m3rgSwO2pMgRd9eup0bPTWterlah7/51mmz97EYkEO5lZvqgAl8rp+03Z8pKus7kn+S87XgQ0Ajqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IDRcUmdN; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sat, 23 Mar 2024 00:16:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711167376;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y0TVAH0ZYdb3ue+80a0C1DdjCsmM6e0n7TfPjNRdLqQ=;
+	b=IDRcUmdN8orWoZ4O6XUTc0cdl71Ze4mloh1oBhIoF0zrSqXDQomr/bG5vKi/fR9JnYYoPv
+	Rk4vAube+jtJ/qUZcGEgFwatJoO7CRYtry2xosgiRsPu5tsnK4eT43YGs2Jtd3JyJTAPfP
+	E9PqylE35oFyzjlsZnYy+uumLQPen6A=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
+	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
+	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
+	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <4ciizx33vzooa33ikjn7env6kvkpcv44dsawm4i2avqou2kdk4@b4hj6252l22l>
+References: <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+ <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
+ <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+ <3modld2dafaqjxa2b7jln47ws4ylzhbsvhvnphoklwvzange5p@wlir7276aitp>
+ <Zf491DuptReGqvfd@Boquns-Mac-mini.home>
+ <34r4signulvsclmsiqgghskmj5xce3zs5hwgfulzaez2wdyklr@ck6zrj732c4m>
+ <Zf5FEFCfuy0TAjV6@Boquns-Mac-mini.home>
+ <qsw2v5ikt2w6m2xfr6h4e2xauobhy37nrskarlfjro4ek4qw4b@jgxhav7bia55>
+ <Zf5Rp0zR_fyZMADn@Boquns-Mac-mini.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <bf3715e1-bf44-44e6-8877-4bbcfe5f3f98@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxAXVv5li2w2Hw--.29792S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr1UCF43CF4fKw18Zr47Jwb_yoW8Xry3p3
-	y3Ja1akr4qyrnrCF17Jw1aqFWrtayUJr4UAwn8ur1fAryjk343tr1vvw18ZFy0qFZ2g3y8
-	uryUGrW5AF18A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8Jw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWr
-	Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x0JUZa9-UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zf5Rp0zR_fyZMADn@Boquns-Mac-mini.home>
+X-Migadu-Flow: FLOW_OUT
 
-Hi !
-
-在 2024/03/23 11:17, Randy Dunlap 写道:
-> Hi--
+On Fri, Mar 22, 2024 at 08:51:03PM -0700, Boqun Feng wrote:
+> On Fri, Mar 22, 2024 at 11:10:36PM -0400, Kent Overstreet wrote:
+> > On Fri, Mar 22, 2024 at 07:57:20PM -0700, Boqun Feng wrote:
+> > > On Fri, Mar 22, 2024 at 10:33:13PM -0400, Kent Overstreet wrote:
+> > > > On Fri, Mar 22, 2024 at 07:26:28PM -0700, Boqun Feng wrote:
+> > > > > On Fri, Mar 22, 2024 at 10:07:31PM -0400, Kent Overstreet wrote:
+> > > > > [...]
+> > > > > > > Boqun already mentioned the "mixing access sizes", which is actually
+> > > > > > > quite fundamental in the kernel, where we play lots of games with that
+> > > > > > > (typically around locking, where you find patterns line unlock writing
+> > > > > > > a zero to a single byte, even though the whole lock data structure is
+> > > > > > > a word). And sometimes the access size games are very explicit (eg
+> > > > > > > lib/lockref.c).
+> > > > > > 
+> > > > > > I don't think mixing access sizes should be a real barrier. On the read
+> > > > > 
+> > > > > Well, it actually is, since mixing access sizes is, guess what,
+> > > > > an undefined behavior:
+> > > > > 
+> > > > > (example in https://doc.rust-lang.org/std/sync/atomic/#memory-model-for-atomic-accesses)
+> > > > > 
+> > > > > 	thread::scope(|s| {
+> > > > > 	    // This is UB: using different-sized atomic accesses to the same data
+> > > > > 	    s.spawn(|| atomic.store(1, Ordering::Relaxed));
+> > > > > 	    s.spawn(|| unsafe {
+> > > > > 		let differently_sized = transmute::<&AtomicU16, &AtomicU8>(&atomic);
+> > > > > 		differently_sized.store(2, Ordering::Relaxed);
+> > > > > 	    });
+> > > > > 	});
+> > > > > 
+> > > > > Of course, you can say "I will just ignore the UB", but if you have to
+> > > > > ignore "compiler rules" to make your code work, why bother use compiler
+> > > > > builtin in the first place? Being UB means they are NOT guaranteed to
+> > > > > work.
+> > > > 
+> > > > That's not what I'm proposing - you'd need additional compiler support.
+> > > 
+> > > Ah, OK.
+> > > 
+> > > > but the new intrinsic would be no different, semantics wise for the
+> > > > compiler to model, than a "lock orb".
+> > > 
+> > > Be ready to be disappointed:
+> > > 
+> > > 	https://rust-lang.zulipchat.com/#narrow/stream/136281-t-opsem/topic/is.20atomic.20aliasing.20allowed.3F/near/402078545
+> > > 	https://rust-lang.zulipchat.com/#narrow/stream/136281-t-opsem/topic/is.20atomic.20aliasing.20allowed.3F/near/402082631
+> > > 
+> > > ;-)
+> > > 
+> > > In fact, if you get a chance to read the previous discussion links I
+> > > shared, you will find I was just like you in the beginning: hope we
+> > > could extend the model to support more kernel code properly. But my
+> > > overall feeling is that it's either very challenging or lack of
+> > > motivation to do.
+> > 
+> > That's casting - that doesn't work because compiler people hate
+> > aliasing.
+> > 
+> > But intrinsics for e.g.
+> > __atomic32_read_u8(atomic_u32_t *a, unsigned byte)
+> > __atomic32_write_u8(atomic_u32_t a*, unsigned byte)
+> > 
 > 
-> On 3/22/24 19:53, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> One the one hand, it's marked EXPERIMENTAL since 2017, and looks like
->> there are no users since then, and no testers and no developers, it's
->> just not active at all.
->>
->> On the other hand, even if the config is disabled, there are still many
->> fields in throtl_grp and throtl_data and many functions that are only
->> used for throtl low.
->>
->> At last, currently blk-throtl is initialized during disk initialization,
->> and destroyed during disk removal, and it exposes many functions to be
->> called directly from block layer. Hence I'm planning to optimize
->> blk-throtl and finially support building it as kernel module. Remove
->> throtl low will make the work much easier.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   block/Kconfig        |  11 -
->>   block/bio.c          |   1 -
->>   block/blk-stat.c     |   3 -
->>   block/blk-sysfs.c    |   7 -
->>   block/blk-throttle.c | 901 ++-----------------------------------------
->>   block/blk-throttle.h |  26 +-
->>   block/blk.h          |  11 -
->>   7 files changed, 45 insertions(+), 915 deletions(-)
-> 
-> Here are 2 more places to patch:
-> 
-> Documentation/ABI/stable/sysfs-block:           CONFIG_BLK_DEV_THROTTLING_LOW is enabled.
-> arch/loongarch/configs/loongson3_defconfig:CONFIG_BLK_DEV_THROTTLING_LOW=y
+> so "byte" here is the byte indexing in the u32? Hmm... I guess that'll
+> work. But I really don't know whether LLVM/Rust will support such an
+> intrinsic...
 
-Thanks for the notice, I'll update the patch if people agree to remove
-throttle low.
-
-Thanks,
-Kuai
-
-> 
-> 
-
+They're going to need this eventually - really, entire structs that can
+be marked as atomic. Types aren't limited to the integers.
 
