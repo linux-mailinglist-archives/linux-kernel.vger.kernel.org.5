@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-112342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341008878A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:22:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1D48878A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:22:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D5C5B24A23
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:22:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C1781F2403F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7460E4DA04;
-	Sat, 23 Mar 2024 12:20:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8C253E2D;
+	Sat, 23 Mar 2024 12:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PA35LcD0"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jK46ST+P"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D631E405F9;
-	Sat, 23 Mar 2024 12:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E6047F46;
+	Sat, 23 Mar 2024 12:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711196449; cv=none; b=MD4KwTfIifdExqVEaeWS12Ml5Nr/uLCu6KsIPspjUkM3uMKD/cTERdCLGgxCoWUpbEr4rBWfgV7EgRwkPftKVaCRmxgCfaccFP9eYbrQZ6Nxp0no721uk7zPOcocYBCIiNzz7oDsVc6RBsSubOpdxPnvJcOkfJXFcOVxEjgHOk0=
+	t=1711196451; cv=none; b=UrXutuQpFHOGWm8kVjyfdZClky5qK/MTnqMwIgS6aeFDOa5a1aBrRvcIBO0sUmo721CtpVpP9Hp7GXmRsBI4dWi7S+qmEcz5TIlPVvnaW0EoxzIsRqkY42MxHP66RmmeKpGlXkPOBCGtASm9EiXpfyFzXWUGbRqwcRPvVbCCHWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711196449; c=relaxed/simple;
-	bh=GXeXJ7p9rCjKuzMyD6PBhjw4946RJkUrBSuDdkeNakE=;
+	s=arc-20240116; t=1711196451; c=relaxed/simple;
+	bh=+hksS7cYoCxKlnPaPD0csY/wWZfTxuNPy2blg52hfXM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=subFMcDNaNmhUD+lVQlATslAYNHMbuhHqmyaNS+GO4pA+Mi8FJ9a/8Rfgomdqs+mLedNwtsMM/TKsXSdxVtrn2J+r1mny/iGHsXi5wTA7lBhKTdcjEDGX5lbcRuGCCCKSINKDejdwmu010VrPU+4xLaYBCA5jUSp1DF9arAmiFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PA35LcD0; arc=none smtp.client-ip=209.85.167.41
+	 MIME-Version; b=qZdDSOobr7SIW/KCFv/JDA+GE3XLqTHfbY7xIWzMZ2qRREXtiJ9vmZLwzBRRHNy0dlaoyQ9BhgsYiAY+9RjyZIhkaKS8Sxl8b8VgL3CPjrnFwgVJifnRpHD7P8HWi1NyH2gvjc6QLtJQy6OFvIZi8jVjz8zqR30bi7UIvqTxtI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jK46ST+P; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-513dd2d2415so3107905e87.3;
-        Sat, 23 Mar 2024 05:20:47 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513dd2d2415so3107914e87.3;
+        Sat, 23 Mar 2024 05:20:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711196446; x=1711801246; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711196447; x=1711801247; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GEF9k6OTzx0WzlkimL6gzHMA0JvM+lJpkyegtgtFp/I=;
-        b=PA35LcD0YRHoMv5nOlSASwa8JPWEETREc6cbWwRNqlB3FciE+9LA1w2Z4bx22Ag8fj
-         Hw13cUlHC7eUDdEh0pPPAt/XUQrf8Fhnwjrta2xfdaezpFmZXmcT/TIqsCu/9O1DUcVY
-         kj8KSUHXXCLEhZeivIMDdIv6Veg8OiMqvjVWVcnJlvlw2hahJ3esOXhJC1NGIfuJg9IP
-         uayib9UFQMJzVopr948P2USw9HTHXx1JvZzdLfdyFhelcPxWecokPyF9MpFl+OiTs7Nv
-         oXcgqRHdBi/QmRtch1xPdMoVMIMizcAldw71huWmpe3Ftq32YR3kOdw0D/w6xmLrjkW3
-         9sUg==
+        bh=wRpIX2NoDjrlLfYxowFXuiPiSun/0ui+T5NHiqb1OJc=;
+        b=jK46ST+PEfq2ANsEPZu3HSTXmX/5lyUxBmpRh4xb1kGEhv7bK9CiyY1HzkE362Fzck
+         2CgAwOT2EkEC+eISE/c7qVqUBvxnbWqevD9d+wmMexksX5W/H3kH2DWv6WpWpPVtaPTr
+         XWnvwZ706S++HesywxOfKrTGAewVrusiQV2tkpbVX0nRChD5OTaTqfDqmaJ1H5K0acoj
+         7ROqGwHIPGX5c3nCPMltFi/qRZEoIcXxDtMUI2Ep3jrLIkKUrlrhf/sVrkRPDe1v1buM
+         58BCicjkU7drYCxFS1dNT7zaFEtMUdjqM2i6QtJl0jAAOPbpzLiDauTRCQOCBJEl51yB
+         7cXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711196446; x=1711801246;
+        d=1e100.net; s=20230601; t=1711196447; x=1711801247;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GEF9k6OTzx0WzlkimL6gzHMA0JvM+lJpkyegtgtFp/I=;
-        b=ru++3aSdQusX193x5I5XQq6cm1rghgVUMCHXlYXhlbuMTp/c3fZt7GyoxMpo2K2+cO
-         bViTcQWJ5tclc3b582cTMNiq4oYtTJkmEPPXdfpYBqt9SEOxw/FB5NUn6b51ilFfhjNQ
-         Vxxeu/skvU+nSoVfec17xX6hnt9ay1dq5i21WVVg++s6JXUPdKVFfQe/Ti+OidcsTtvv
-         UHs4zqkquXR4+UdgiOZyc+glxtrr9nstBe+cuZFj+m3iB04MP2/+5aTf+KaNFgmBO2vK
-         ba3cVnQHZTXVd3zGePMy5EzarJscqQokLZ5+JN4yxNEtiAIh6otoVtLZCQ4w0+DxrQWn
-         SowQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUwGWSZK3Tqesit9hgVhZ2lwIElPVZ73dOUClDwBwsM6gEqjh5jeBWNL8EwmkZOWxz1sbYN5zcmxI3lBnhttGcQ7rUKDllZrYzYGcjqfM5uIv7Mquai0O3Q/meyfjrj5XI2aNHrttXCGg==
-X-Gm-Message-State: AOJu0Yz+XhmB/2u04NKQ8gc1qdB4bbLUi7VtffXMdA9jsj80zINAEiMC
-	cszYkg6w1NNDYFLTaXdNnNfsGy/2mBPqct90B5922O81DyuSXUIR
-X-Google-Smtp-Source: AGHT+IE6i1OaBSulAf2ARyIB2hJ0C0FiKBkWhCpQomvMTB0RP8G0v5EfHh642qgQUTQxmQMiGsdkIg==
-X-Received: by 2002:a05:6512:718:b0:515:8a62:682c with SMTP id b24-20020a056512071800b005158a62682cmr1380173lfs.58.1711196445872;
-        Sat, 23 Mar 2024 05:20:45 -0700 (PDT)
+        bh=wRpIX2NoDjrlLfYxowFXuiPiSun/0ui+T5NHiqb1OJc=;
+        b=vytiJT3WYpWRxKKsenj7nVEDtFprcpn99lwS4Gcr2eg9eAJ43HQKPdK24Z1LedYZSC
+         hQAEuGP4BgJ/QJ+beJyIFmFrVtgZp2QRz9aNZAUBTSIlTLPR+NnCLmKPpQKuEMGIk6VT
+         MtKpfL6vxmhG+anGyoYz82AaE+1mOdPfL/O8bidP03hrjcq0ILIYnDo+uEFNQXzyNkLu
+         Ox/k9HQxA8nkRX87Y8zWc61bLKGlzi3AE9InQPO2po04p6ph4kZsaqDGtcd7xgcjX3ac
+         IX4ki9GnoiwTFYqDPN1R8OSea8SyRI5Ns7S4U+mmeUQM2cEsSSW4wlYzhHbH1+zR8g+Z
+         ab9A==
+X-Forwarded-Encrypted: i=1; AJvYcCUEcGITihfY+WsHXYZPlh368HW6Yu1zNNeWloJ1RuP3Ofibw6vM1/zW7CTLb2BTQl4JxKCy0i3tfq27DzMZOUbALM3qlsAf9CcHt6iF//PuiR1/+VMcaC/REZWXY198hTdQlKoPSLkPGA==
+X-Gm-Message-State: AOJu0YyWNi2T9L1SGYaSYbrhVHooC7DUiSnfpX6iOUq+IT8VmniDhc6c
+	0jkhHuffBLxPSgMoKA+Hp3lMNG2do9/81JNbxUZ5W4w060oGQbD+
+X-Google-Smtp-Source: AGHT+IF0wwBYKx6UbRzIZR97lSbHApfDdyvelMsJ0GtqeayZj7rUfVL2duFLpeOlwyLJ2lOjfCUJRg==
+X-Received: by 2002:ac2:58c5:0:b0:513:994e:ace0 with SMTP id u5-20020ac258c5000000b00513994eace0mr1332346lfo.15.1711196447265;
+        Sat, 23 Mar 2024 05:20:47 -0700 (PDT)
 Received: from 764c7355c69b.v.cablecom.net (84-72-156-211.dclient.hispeed.ch. [84.72.156.211])
-        by smtp.gmail.com with ESMTPSA id gx24-20020a1709068a5800b00a46f0d133b9sm857265ejc.98.2024.03.23.05.20.44
+        by smtp.gmail.com with ESMTPSA id gx24-20020a1709068a5800b00a46f0d133b9sm857265ejc.98.2024.03.23.05.20.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 05:20:45 -0700 (PDT)
+        Sat, 23 Mar 2024 05:20:46 -0700 (PDT)
 From: Lothar Rubusch <l.rubusch@gmail.com>
 To: lars@metafoo.de,
 	Michael.Hennerich@analog.com,
@@ -78,9 +78,9 @@ Cc: linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	eraretuya@gmail.com,
 	l.rubusch@gmail.com
-Subject: [PATCH v3 4/6] iio: accel: adxl345: Remove single info instances
-Date: Sat, 23 Mar 2024 12:20:28 +0000
-Message-Id: <20240323122030.21800-5-l.rubusch@gmail.com>
+Subject: [PATCH v3 5/6] iio: accel: adxl345: Group bus configuration
+Date: Sat, 23 Mar 2024 12:20:29 +0000
+Message-Id: <20240323122030.21800-6-l.rubusch@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240323122030.21800-1-l.rubusch@gmail.com>
 References: <20240323122030.21800-1-l.rubusch@gmail.com>
@@ -92,148 +92,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a common array adxl3x5_chip_info and an enum for
-indexing. This allows to remove local redundantly
-initialized code in the bus specific modules.
+In the probe function group bus configuration and the
+indio_dev initialization to improve readability. Add a
+comment to the probe function to explain function arguments.
 
 Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
 ---
- drivers/iio/accel/adxl345.h      |  7 +++++++
- drivers/iio/accel/adxl345_core.c | 12 ++++++++++++
- drivers/iio/accel/adxl345_i2c.c  | 20 +++++---------------
- drivers/iio/accel/adxl345_spi.c  | 20 +++++---------------
- 4 files changed, 29 insertions(+), 30 deletions(-)
+ drivers/iio/accel/adxl345_core.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
-index 6b84a2cee..de6b1767d 100644
---- a/drivers/iio/accel/adxl345.h
-+++ b/drivers/iio/accel/adxl345.h
-@@ -26,11 +26,18 @@
-  */
- #define ADXL375_USCALE	480000
- 
-+enum adxl345_device_type {
-+	ADXL345,
-+	ADXL375,
-+};
-+
- struct adxl345_chip_info {
- 	const char *name;
- 	int uscale;
- };
- 
-+extern const struct adxl345_chip_info adxl3x5_chip_info[];
-+
- int adxl345_core_probe(struct device *dev, struct regmap *regmap,
- 		       int (*setup)(struct device*, struct regmap*));
- 
 diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adxl345_core.c
-index 33424edca..e3718d0dd 100644
+index e3718d0dd..662628cdf 100644
 --- a/drivers/iio/accel/adxl345_core.c
 +++ b/drivers/iio/accel/adxl345_core.c
-@@ -62,6 +62,18 @@ struct adxl345_data {
- 		BIT(IIO_CHAN_INFO_SAMP_FREQ),				\
+@@ -209,6 +209,16 @@ static void adxl345_powerdown(void *regmap)
+ 	regmap_write(regmap, ADXL345_REG_POWER_CTL, ADXL345_POWER_CTL_STANDBY);
  }
  
-+const struct adxl345_chip_info adxl3x5_chip_info[] = {
-+	[ADXL345] = {
-+		.name = "adxl345",
-+		.uscale = ADXL345_USCALE,
-+	},
-+	[ADXL375] = {
-+		.name = "adxl375",
-+		.uscale = ADXL375_USCALE,
-+	},
-+};
-+EXPORT_SYMBOL_NS_GPL(adxl3x5_chip_info, IIO_ADXL345);
++/**
++ * adxl345_core_probe() - probe and setup for the adxl345 accelerometer,
++ *                        also covers the adlx375 accelerometer
++ * @dev:	Driver model representation of the device
++ * @regmap:	Regmap instance for the device
++ * @setup:	Setup routine to be executed right before the standard device
++ *		setup, can also be set to NULL if not required
++ *
++ * Return: 0 on success, negative errno on error
++ */
+ int adxl345_core_probe(struct device *dev, struct regmap *regmap,
+ 	int (*setup)(struct device*, struct regmap*))
+ {
+@@ -238,22 +248,23 @@ int adxl345_core_probe(struct device *dev, struct regmap *regmap,
+ 
+ 	data = iio_priv(indio_dev);
+ 	data->regmap = regmap;
+-	/* Enable full-resolution mode */
 +
- static const struct iio_chan_spec adxl345_channels[] = {
- 	ADXL345_CHANNEL(0, X),
- 	ADXL345_CHANNEL(1, Y),
-diff --git a/drivers/iio/accel/adxl345_i2c.c b/drivers/iio/accel/adxl345_i2c.c
-index 4065b8f7c..afb2d0b79 100644
---- a/drivers/iio/accel/adxl345_i2c.c
-+++ b/drivers/iio/accel/adxl345_i2c.c
-@@ -30,32 +30,22 @@ static int adxl345_i2c_probe(struct i2c_client *client)
- 	return adxl345_core_probe(&client->dev, regmap, NULL);
- }
+ 	data->info = device_get_match_data(dev);
+ 	if (!data->info)
+ 		return -ENODEV;
  
--static const struct adxl345_chip_info adxl345_i2c_info = {
--	.name = "adxl345",
--	.uscale = ADXL345_USCALE,
--};
+-	ret = regmap_update_bits(regmap, ADXL345_REG_DATA_FORMAT,
+-				 ADXL345_DATA_FORMAT_MSK, ADXL345_DATA_FORMAT_FULL_RES);
+-	if (ret)
+-		return dev_err_probe(dev, ret, "Failed to set data range\n");
 -
--static const struct adxl345_chip_info adxl375_i2c_info = {
--	.name = "adxl375",
--	.uscale = ADXL375_USCALE,
--};
--
- static const struct i2c_device_id adxl345_i2c_id[] = {
--	{ "adxl345", (kernel_ulong_t)&adxl345_i2c_info },
--	{ "adxl375", (kernel_ulong_t)&adxl375_i2c_info },
-+	{ "adxl345", (kernel_ulong_t)&adxl3x5_chip_info[ADXL345] },
-+	{ "adxl375", (kernel_ulong_t)&adxl3x5_chip_info[ADXL375] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, adxl345_i2c_id);
+ 	indio_dev->name = data->info->name;
+ 	indio_dev->info = &adxl345_info;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->channels = adxl345_channels;
+ 	indio_dev->num_channels = ARRAY_SIZE(adxl345_channels);
  
- static const struct of_device_id adxl345_of_match[] = {
--	{ .compatible = "adi,adxl345", .data = &adxl345_i2c_info },
--	{ .compatible = "adi,adxl375", .data = &adxl375_i2c_info },
-+	{ .compatible = "adi,adxl345", .data = &adxl3x5_chip_info[ADXL345] },
-+	{ .compatible = "adi,adxl375", .data = &adxl3x5_chip_info[ADXL375] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, adxl345_of_match);
- 
- static const struct acpi_device_id adxl345_acpi_match[] = {
--	{ "ADS0345", (kernel_ulong_t)&adxl345_i2c_info },
-+	{ "ADS0345", (kernel_ulong_t)&adxl3x5_chip_info[ADXL345] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, adxl345_acpi_match);
-diff --git a/drivers/iio/accel/adxl345_spi.c b/drivers/iio/accel/adxl345_spi.c
-index 1094396ac..5c1109136 100644
---- a/drivers/iio/accel/adxl345_spi.c
-+++ b/drivers/iio/accel/adxl345_spi.c
-@@ -46,32 +46,22 @@ static int adxl345_spi_probe(struct spi_device *spi)
- 	return adxl345_core_probe(&spi->dev, regmap, &adxl345_spi_setup);
- }
- 
--static const struct adxl345_chip_info adxl345_spi_info = {
--	.name = "adxl345",
--	.uscale = ADXL345_USCALE,
--};
--
--static const struct adxl345_chip_info adxl375_spi_info = {
--	.name = "adxl375",
--	.uscale = ADXL375_USCALE,
--};
--
- static const struct spi_device_id adxl345_spi_id[] = {
--	{ "adxl345", (kernel_ulong_t)&adxl345_spi_info },
--	{ "adxl375", (kernel_ulong_t)&adxl375_spi_info },
-+	{ "adxl345", (kernel_ulong_t)&adxl3x5_chip_info[ADXL345] },
-+	{ "adxl375", (kernel_ulong_t)&adxl3x5_chip_info[ADXL375] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(spi, adxl345_spi_id);
- 
- static const struct of_device_id adxl345_of_match[] = {
--	{ .compatible = "adi,adxl345", .data = &adxl345_spi_info },
--	{ .compatible = "adi,adxl375", .data = &adxl375_spi_info },
-+	{ .compatible = "adi,adxl345", .data = &adxl3x5_chip_info[ADXL345] },
-+	{ .compatible = "adi,adxl375", .data = &adxl3x5_chip_info[ADXL375] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, adxl345_of_match);
- 
- static const struct acpi_device_id adxl345_acpi_match[] = {
--	{ "ADS0345", (kernel_ulong_t)&adxl345_spi_info },
-+	{ "ADS0345", (kernel_ulong_t)&adxl3x5_chip_info[ADXL345] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, adxl345_acpi_match);
++	/* Enable full-resolution mode */
++	ret = regmap_update_bits(regmap, ADXL345_REG_DATA_FORMAT,
++				 ADXL345_DATA_FORMAT_MSK, ADXL345_DATA_FORMAT_FULL_RES);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to set data range\n");
++
+ 	/* Enable measurement mode */
+ 	ret = adxl345_powerup(data->regmap);
+ 	if (ret < 0)
 -- 
 2.25.1
 
