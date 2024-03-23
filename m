@@ -1,173 +1,198 @@
-Return-Path: <linux-kernel+bounces-112126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10E78875F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4618875FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D66D1F2203D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:15:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3226E1F22321
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6155399;
-	Sat, 23 Mar 2024 00:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A302F138A;
+	Sat, 23 Mar 2024 00:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bKsMt7DQ"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k1kWeaxq"
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C56372
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CEC1FA1;
+	Sat, 23 Mar 2024 00:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711152917; cv=none; b=A00eqSPClBdqI/EyaBA+mWlY3G15sy3R8rJbiR0WY34HOq2B8X7jN8Xvt+V/mlPvOm+WNytCQrLr325O3kSfID+eprd5alhjDGxcL8Z9eYERgNHIMLcYYEfTI62fBfhk/wuaRve16+0HyMw33TEGR7CWy+VIqTK/AucH3tkz5HY=
+	t=1711152937; cv=none; b=q7qdFV2soRwRRfle4fuZlwJo0EaNrCewYId1qWniFEJ4Aa1zni6bFDlwliN5HXzS/D0Y24jF+D+SO6Rk408nPOyOeRRKeTgc2OIn+gpXh9Wei9TNDRtjpMHEFzBVMxn7IX9CAEqw8362VV/DCAA3+2g3uJA2WaU3H1kBUdI+Clo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711152917; c=relaxed/simple;
-	bh=mqueisu5sCA3A19tLhxtWR0sNXQ6O5QqUP9Dth96xrs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c3Jvg09ctGB2mnDlRLxxw4tslb2JNTlmyIM2bBCxhKCodMD9d/SvJgQ844q2I38aqLhfUYiLIxDlfSB1l8OXXv2Hd2U+ciYVuWahYOFsCvMQcpoihQJY/2KftraKn8jggm1l6cUkuF4EJefYQ2IV6h7OVSSsIpmO7GbikoBha/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bKsMt7DQ; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a471f77bf8eso244606366b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:15:15 -0700 (PDT)
+	s=arc-20240116; t=1711152937; c=relaxed/simple;
+	bh=VTI9Sf3VccnbABPGXsY1j2qF+SStz+OEfznm86+qGLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sMfn5lJhzTWNh6b+EX2ikc7hGsLITAznC7gomrRrmYVi64luhMf+/Et9MrPeDevGPul0hFuJMia9+lKIDvEi+o/Yd6OhusmOgHG2/BDvTFD1ji435vOJLuWaZkhAdGTAbPxhfCkWY+Ow7GyzNW9/fKvaCV35oKvkJ2fAGSVKc/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k1kWeaxq; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-690d7a8f904so34549316d6.1;
+        Fri, 22 Mar 2024 17:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711152913; x=1711757713; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VkUvhTBt1IYqiRZpIl+GFpvoPq0KklV0EtW5qagQ88k=;
-        b=bKsMt7DQoOKLx1Mi5DrVMZYaQlXz5Z3SdHT1bM3MJHG4fwdA3TMBK4TBRGRRh7aG/4
-         VUI7iTbjCzNL5jA7I+dIxp3AuOlXH+p/Fa5W9fkKt4Z3B4H2EpHsCvyuyfnVljrXkp49
-         CI0Gqsb1ZKF/jhKBJKRLUHLAGjI8jzB1xr85iEUxrDdv27TXqsYIm9CbVvdDpNOfDLFu
-         ZJFNej4rG0pCBFAqTN1Ma8xCoeU/MjumHBWkXxPpVlRUe/BpEFQnpAfo2s9YIP8Vr45Q
-         lm6eedracFA95NXGRF0DEff886HKigGWrcbQ7GWoNq4xLE+TIE5A99OYqJh9a/hNEDq+
-         WSfg==
+        d=gmail.com; s=20230601; t=1711152935; x=1711757735; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=whmVMHuEBXgRIj9diBxuHvfTM2nWAuNzeXBmM3HZHOY=;
+        b=k1kWeaxqCSkS5z1d046Rs4gFuYTzg/F7efu0e2m49a0LdRk9SSA3FiIdEGMixDWivT
+         +G+f8OVtc+haWHPUIVXvWWOCs3uBNTUH9LTZ9q9GcxuOj9KWkk+YUQVzRVJ4Ke14XuSl
+         WI2OfxbDuIVzSsop/nOvJYjpP/y9KoSrtvT3t9suc+txKEJacPuMzIuhXfUcJ1K0v4hI
+         1Civ2To5yc//w/fQBFnV5UC3qgiqJkE7J57gFWZJy6UN3DqYjG090biAXBdydHhFrWxs
+         CzNhuXZuMUFsuDTLLbMXg+LfUacN2QeMZUATGy93u2RmhbZ706EhAHw76Q8Kyc6SRm+q
+         JN3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711152913; x=1711757713;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VkUvhTBt1IYqiRZpIl+GFpvoPq0KklV0EtW5qagQ88k=;
-        b=sADe0/mitlhTySPZkKONv0b+bqTEJL1m8FLD8yV9ODfUiGgVIu9NfTvlmP+GIK2dqv
-         5TBbMXh40IHnxlpWeAV7avjJzhrs2tFHqXUpsi6vNRyPUfHahYotoDeFsNekBa5sQTOR
-         O3syRyWgfHCJjy9evGsQ8ibK9N1c16bz2sb4qES48ADuBwUU8pDZxVFN6reZ8jB588Ro
-         S7ZPNW1Lt3McSMyX45rpFae0q4BTs7xiy/xgpEzHY5plLZ5RvOvnjg+IR51KooiTryGU
-         6FlKu9DA3oJgxRQiYfYc6jOrMgNXBDs4iuBq5mfoCwqz7Jnm0k8UIMTWPthR9sRxhDRx
-         +V5g==
-X-Forwarded-Encrypted: i=1; AJvYcCWy+JgqMi3jdcmJDxnDAvlCal6ST9IJbPUnFoOX78rcBgVjkU8MRL0AgtcHFGXHyLl2jJ9BTW3DUIquuf0UHclXbfFhMBdntxrkfiRd
-X-Gm-Message-State: AOJu0YySeBz/SCOBjXLkFcms4tc/zqhiUciQ9d5vOI86pljRnRlCr7no
-	6+iuZHCN0HqG/3Ce2h+5a4JUp5TTOJtYIO19b3DIrcrhj9bjLTVzAjATs2dUfr5q8AMAeWU5v95
-	KvafTGZDqp2+pCJD0YR5td4ooDpevQXQIodS9I27u+3U2Q2UqUg==
-X-Google-Smtp-Source: AGHT+IHkVoCll4b8OJSRskIDAfCmLxIBXHf5fO+Fei9Lq6oSjF56LnVWN3ybeliChP/rwQTDV0/JY0E1UG6DpAlQ9jM=
-X-Received: by 2002:a17:906:a217:b0:a46:e8dc:5d51 with SMTP id
- r23-20020a170906a21700b00a46e8dc5d51mr731356ejy.25.1711152913434; Fri, 22 Mar
- 2024 17:15:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711152935; x=1711757735;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=whmVMHuEBXgRIj9diBxuHvfTM2nWAuNzeXBmM3HZHOY=;
+        b=S8gpeG8DGRZh75npbyXFtdKruG9MwpPSdnlmC1Wo0TA63PqZplFDUXBmIC6X6VOFPa
+         lV8gK3roTTqUDV72TCNAlzMKy07Dol0Y+8SATG/o7eKycrNLqqhpprrKAgw6JS+5fNvQ
+         4x8Hu6FWg5mUuCF/EmpoCgK/Bo7D4rx23G2P+JDIDHCqoF/cWcNCr8xzgdLJ2blpHzMB
+         wafdJKNjww89+z3W4J2otgx6sHuqSKtryaQ2tkRYAJBLFB4otlcLGCp3dRlwYIbkyCxF
+         oujYurA2dGPVfisn8YwfkJ65qyZQ3PYpOzdtRpiJnCN9hI3IV8OWf4KCFMADMXMV4/oW
+         qU4g==
+X-Forwarded-Encrypted: i=1; AJvYcCVmoHBpogub1u0zunyXe7bd5z2YlYTry2/X6okExnf6LzLPNl9AEn8roZsibrQzUPhAD2T0dlMZu7zs2LUzDDUzAZ0JH5RZxCRucupjCVb49acA7I5yadqz2OuofztbH7MBcUVDRJUXGSl4NIfdUk/zbj1N/eGTnvmdih24qwQoSflXqoRiKDE=
+X-Gm-Message-State: AOJu0Ywx6M2dtnXqaLMxOF0BSEylQdLRq7kIJfu6MXVqy61bof7fkD8F
+	jezp8nuOgT4b6ATNcTR0R4bw3ugM5iPd3ISXGJTi8+dWTDIcvttm
+X-Google-Smtp-Source: AGHT+IHOo27LLL5BHPFVw2rGuSB7QeBeHaMSJwGhonKrbQGbCwa6LdZz9tGDqQaK9+FrfZtfSfp36A==
+X-Received: by 2002:a05:6214:2124:b0:691:3d91:80bb with SMTP id r4-20020a056214212400b006913d9180bbmr1044086qvc.11.1711152935122;
+        Fri, 22 Mar 2024 17:15:35 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id i11-20020ad45c6b000000b0069068161388sm1558668qvh.131.2024.03.22.17.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 17:15:34 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailauth.nyi.internal (Postfix) with ESMTP id 8AF5227C005B;
+	Fri, 22 Mar 2024 20:15:32 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 22 Mar 2024 20:15:32 -0400
+X-ME-Sender: <xms:Ix_-ZUUr0Zr7P-rdVzLcnxOteaopQcoWP4M_QKcO5tgxJdwJSbrjRA>
+    <xme:Ix_-ZYmGgdko81K4NeYOyyDZYPTSMk-kdIfkwzg_5e8SHsrcYicuXooExU_kpz0QJ
+    qN_iU7d9tz9aAuU-w>
+X-ME-Received: <xmr:Ix_-ZYa2scaSM2UvwgHKVCQsqYKycZ1LXAfzgb9OIMoB1XqBWwYj8xYSGx0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtfedgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpefftdeihfeigedtvdeuueffieetvedtgeejuefhhffgudfgfeeggfeftdei
+    geehvdenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:Ix_-ZTWHEgAkmfjD2i9t-JnRVOM_exrp-qCXzEaBaEeIw_6QY-boOQ>
+    <xmx:Ix_-ZenzfIQS-GlYhhcrHv8B_gxu88-FH41lN5naq1F83dfGzs0bTg>
+    <xmx:Ix_-ZYfMCRZRWH96zPWn5dt2PCIy9q8P_mmdEZ29vSZL9wQN3OkdGw>
+    <xmx:Ix_-ZQHx_kACfeCCdbG3obFGRLJ1IKEWhOa38HM6rn2VyxigoUcvWQ>
+    <xmx:JB_-ZflHnfpFS5SSC4nwSvCuOGUk2HWQ8168jZGHQbpB-kR7ky5mhYcKTnI>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 22 Mar 2024 20:15:31 -0400 (EDT)
+Date: Fri, 22 Mar 2024 17:15:08 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+	Miguel Ojeda <ojeda@kernel.org>,	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
+	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,	torvalds@linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org,	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <Zf4fDJNBeRN5HOYo@boqun-archlinux>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322163939.17846-1-chengming.zhou@linux.dev>
- <CAJD7tkYuYEsKFvjKKRxOx3fCekA03jPpOpmV7T20q=9K=Jb2bA@mail.gmail.com>
- <CAGsJ_4yc-XB3+FkcZTy1aZ0n6ZKEkfWVYk_TjqqrdcROa5VYtA@mail.gmail.com>
- <Zf4HKUpKpDWZygni@google.com> <20240322234826.GA448621@cmpxchg.org> <CAJD7tkY2y_nGRq9ft80op6q0B3tfJvtyqYhS6t+x=TpyGy+AXg@mail.gmail.com>
-In-Reply-To: <CAJD7tkY2y_nGRq9ft80op6q0B3tfJvtyqYhS6t+x=TpyGy+AXg@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 22 Mar 2024 17:14:37 -0700
-Message-ID: <CAJD7tkZqrrXuYTMYOAP+arMLeNayafFeLocWu7bJtDFHCYjwDA@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: add folio in swapcache if swapin from zswap
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Barry Song <21cnbao@gmail.com>, chengming.zhou@linux.dev, nphamcs@gmail.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
 
-[..]
-> > > I don't think we want to stop doing exclusive loads in zswap due to this
-> > > interaction with zram, which shouldn't be common.
-> > >
-> > > I think we can solve this by just writing the folio back to zswap upon
-> > > failure as I mentioned.
-> >
-> > Instead of storing again, can we avoid invalidating the entry in the
-> > first place if the load is not "exclusive"?
-> >
-> > The reason for exclusive loads is that the ownership is transferred to
-> > the swapcache, so there is no point in keeping our copy. With an
-> > optimistic read that doesn't transfer ownership, this doesn't
-> > apply. And we can easily tell inside zswap_load() if we're dealing
-> > with a swapcache read or not by testing the folio.
-> >
-> > The synchronous read already has to pin the swp_entry_t to be safe,
-> > using swapcache_prepare(). That blocks __read_swap_cache_async() which
-> > means no other (exclusive) loads and no invalidates can occur.
-> >
-> > The zswap entry is freed during the regular swap_free() path, which
-> > the sync fault calls on success. Otherwise we keep it.
->
-> I thought about this, but I was particularly worried about the need to
-> bring back the refcount that was removed when we switched to only
-> supporting exclusive loads:
-> https://lore.kernel.org/lkml/20240201-b4-zswap-invalidate-entry-v2-6-99d4084260a0@bytedance.com/
->
-> It seems to be that we don't need it, because swap_free() will free
-> the entry as you mentioned before anyone else has the chance to load
-> it or invalidate it. Writeback used to grab a reference as well, but
-> it removes the entry from the tree anyway and takes full ownership of
-> it then frees it, so that should be okay.
->
-> It makes me nervous though to be honest. For example, not long ago
-> swap_free() didn't call zswap_invalidate() directly (used to happen to
-> swap slots cache draining). Without it, a subsequent load could race
-> with writeback without refcount protection, right? We would need to
-> make sure to backport 0827a1fb143f ("mm/zswap: invalidate zswap entry
-> when swap entry free") with the fix to stable for instance.
->
-> I can't find a problem with your diff, but it just makes me nervous to
-> have non-exclusive loads without a refcount.
->
-> >
-> > diff --git a/mm/zswap.c b/mm/zswap.c
-> > index 535c907345e0..686364a6dd86 100644
-> > --- a/mm/zswap.c
-> > +++ b/mm/zswap.c
-> > @@ -1622,6 +1622,7 @@ bool zswap_load(struct folio *folio)
-> >         swp_entry_t swp = folio->swap;
-> >         pgoff_t offset = swp_offset(swp);
-> >         struct page *page = &folio->page;
-> > +       bool swapcache = folio_test_swapcache(folio);
-> >         struct zswap_tree *tree = swap_zswap_tree(swp);
-> >         struct zswap_entry *entry;
-> >         u8 *dst;
-> > @@ -1634,7 +1635,8 @@ bool zswap_load(struct folio *folio)
-> >                 spin_unlock(&tree->lock);
-> >                 return false;
-> >         }
-> > -       zswap_rb_erase(&tree->rbroot, entry);
-> > +       if (swapcache)
-> > +               zswap_rb_erase(&tree->rbroot, entry);
+On Fri, Mar 22, 2024 at 07:57:41PM -0400, Kent Overstreet wrote:
+> On Fri, Mar 22, 2024 at 04:38:35PM -0700, Boqun Feng wrote:
+> > Hi,
+> > 
+> > Since I see more and more Rust code is comming in, I feel like this
+> > should be sent sooner rather than later, so here is a WIP to open the
+> > discussion and get feedback.
+> > 
+> > One of the most important questions we need to answer is: which
+> > memory (ordering) model we should use when developing Rust in Linux
+> > kernel, given Rust has its own memory ordering model[1]. I had some
+> > discussion with Rust language community to understand their position
+> > on this:
+> > 
+> > 	https://github.com/rust-lang/unsafe-code-guidelines/issues/348#issuecomment-1218407557
+> > 	https://github.com/rust-lang/unsafe-code-guidelines/issues/476#issue-2001382992
+> > 
+> > My takeaway from these discussions, along with other offline discussion
+> > is that supporting two memory models is challenging for both correctness
+> > reasoning (some one needs to provide a model) and implementation (one
+> > model needs to be aware of the other model). So that's not wise to do
+> > (at least at the beginning). So the most reasonable option to me is:
+> > 
+> > 	we only use LKMM for Rust code in kernel (i.e. avoid using
+> > 	Rust's own atomic).
+> > 
+> > Because kernel developers are more familiar with LKMM and when Rust code
+> > interacts with C code, it has to use the model that C code uses.
+> 
+> I wonder about that. The disadvantage of only supporting LKMM atomics is
+> that we'll be incompatible with third party code, and we don't want to
+> be rolling all of our own data structures forever.
+> 
 
-On second thought, if we don't remove the entry from the tree here,
-writeback could free the entry from under us after we drop the lock
-here, right?
+A possible solution to that is a set of C++ memory model atomics
+implemented by LKMM atomics. That should be possible.
 
-> >         spin_unlock(&tree->lock);
-> >
-> >         if (entry->length)
-> > @@ -1649,9 +1651,10 @@ bool zswap_load(struct folio *folio)
-> >         if (entry->objcg)
-> >                 count_objcg_event(entry->objcg, ZSWPIN);
-> >
-> > -       zswap_entry_free(entry);
-> > -
-> > -       folio_mark_dirty(folio);
-> > +       if (swapcache) {
-> > +               zswap_entry_free(entry);
-> > +               folio_mark_dirty(folio);
-> > +       }
-> >
-> >         return true;
-> >  }
+> Do we see a path towards eventually supporting the standard Rust model?
+> 
+
+Things that Rust/C++ memory model don't suppor but we use are at least:
+mixed size atomics (cmpxchg a u64, but read a u8 from another thread),
+dependencies (we used a lot in fast path), so it's not trivial.
+
+There are also issues like where one Rust thread does a store(..,
+RELEASE), and a C thread does a rcu_deference(), in practice, it
+probably works but no one works out (and no one would work out) a model
+to describe such an interaction.
+
+Regards,
+Boqun
+
+> Perhaps LKMM atomics could be reworked to be a layer on top of C/C++
+> atomics. When I last looked, they didn't look completely incompatible;
+> rather, there is a common subset that both support with the same
+> semantics, and either has some things that it supports and the other
+> doesn't (i.e., LKMLL atomics have smp_mb__after_atomic(); this is just a
+> straightforward optimization to avoid an unnecessary barrier on
+> architectures where the atomic already provided it).
 
