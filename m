@@ -1,202 +1,288 @@
-Return-Path: <linux-kernel+bounces-112449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2450C8879FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:41:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5ACB4887A02
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9003F1F216C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:41:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C47E3B21119
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:45:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297735811C;
-	Sat, 23 Mar 2024 18:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2CD56B78;
+	Sat, 23 Mar 2024 18:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mGmppBV6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dWZjGrdi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4617C63D;
-	Sat, 23 Mar 2024 18:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B9A51C49;
+	Sat, 23 Mar 2024 18:45:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711219253; cv=none; b=F/4s/IBf2ZF3pgZKdykjBUi3BBtwjqXR0Lzc6NmW5BgmFKNnyJhuEeKw6Ijhr7iYBzg9lj+YUe8zIKxUf3lnj/Kw83rP9lhjyXLjyPpVlu/Ly/9qN8LP3Uw5Rb31vRZHWtOOTeMpSikcd8A0sIldE0RuK82qiWQcgB43HrVxN5A=
+	t=1711219510; cv=none; b=cr5+3PHZ0hSzKqdr3BYvR2dDpg93fJBwJ2gWyxgkBUFG7mH6c38HRmT689ThizroU7IQY09EdBlXijdH7oreXYL8UdERQH0OSgkQ0ewMPvRE/QsRFT3ns9Hm0nfhp+SkQheCDJxKLcyPz5aMnXXEuypQqSdav97+bosIqp1nEw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711219253; c=relaxed/simple;
-	bh=mZVWkf5PRMU/jIt7zWsZvfPFC51ACZxEQ4jt8kEXNeU=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=jHhK5zRXItxuja5o24NgdgFzHMIIm68GL53/8W+HZTtRgjByswUjjgTTGdU3jzpI3QLeyanNd6Cl6tdem3eRlyLJW38fkOjw9TNR0ZXYstvuRpMvQ85Rh6WkVMWkrsdtK1USzhm827bD9za/ynWL7u85KpgXphWowARb55tTDCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mGmppBV6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 005AFC433C7;
-	Sat, 23 Mar 2024 18:40:49 +0000 (UTC)
+	s=arc-20240116; t=1711219510; c=relaxed/simple;
+	bh=qnY8bUQGz3q3YShhbANJdVaqAPOJZlTPY1PW4EUz5Y4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pDrDHuvk45/F2YGaBbLWPso84Rik1U0/fIkGqgOBugQrNUjTKxDQ4YoTtl62a/4MPBoOHPdcZe47C5Sj8jqoTxe/E/3PLh2WQqMRZdX604I5vUVEsXTSxMkfZl7qlc3zFDo2q1ktKRt1p14rE+RLDceL33mN2g5C8FAVp32gwgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dWZjGrdi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB379C433F1;
+	Sat, 23 Mar 2024 18:45:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711219252;
-	bh=mZVWkf5PRMU/jIt7zWsZvfPFC51ACZxEQ4jt8kEXNeU=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=mGmppBV6AflYiN7F3XzcCV+wLG8tivBw575Juq7TkQ2VDH0FQZGtuth1Nx8/7+Chi
-	 Cn7UIRuhYzdg6XxwpBGuTWgSDrw2RrxBAAlNRX3eErCV+vpdFKrnYRX7WwQ9d2bR9y
-	 RJL3QGguQEZELZo3x2Z1VWMNuQDkkvxEK8vugI4TbkE/hpN1WoQ5o6jbBAl9JCP9D9
-	 CzfH3KteLci9rfCSbh+jFcojF+Jgf+Cgo677NhtyDfhNJHG58PEUz4HWGUb/sLfa3g
-	 cuIXhFEq5T3vdAxfxew0SDDoDf+nV9sB6Tazgbsq/j5dwghbe7zkrTN4ezlEO2zWYr
-	 eX5pe9QASE+wA==
+	s=k20201202; t=1711219510;
+	bh=qnY8bUQGz3q3YShhbANJdVaqAPOJZlTPY1PW4EUz5Y4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dWZjGrdiUpIV4xQ0rhkoy3+cAeHAtQ6DwT1YA+1OaT0/V74kZ+rq+iznscZsfieCt
+	 h4IzVjCSDIAmuJigqeo6fXzr97TUrwwUJlA65AwUI47sRogdgI0aP1MkHsvG4h30Lj
+	 vpT1krkIuVTdQ3qPU2MJppZowKUjl7+6X1fua/qAOhSv2uFEn69PGla7j8qNKMAB9+
+	 fOxT/nO6tCOVLx43eITl4PmCaSnvxlwBzJZrQ+HvF/05RUy3B+WAIq6wfbPGrUsJ5F
+	 rsZ2kHBUYakqsM9hp08ZJbTfrrcfn/2hHK/3+3YQ7tu6AWoqF1eZX+EgQd+Cqg6Uzu
+	 lLWVaq18zUu7g==
+Date: Sat, 23 Mar 2024 18:44:54 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Marcelo Schmitt <marcelo.schmitt@analog.com>
+Cc: <lars@metafoo.de>, <Michael.Hennerich@analog.com>, <robh+dt@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+ <marcelo.schmitt1@gmail.com>, <linux-iio@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, David Lechner
+ <dlechner@baylibre.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add AD4000
+Message-ID: <20240323184454.201edbc3@jic23-huawei>
+In-Reply-To: <81665b5f0d37d593e6d299528de8d68da8574077.1711131830.git.marcelo.schmitt@analog.com>
+References: <cover.1711131830.git.marcelo.schmitt@analog.com>
+	<81665b5f0d37d593e6d299528de8d68da8574077.1711131830.git.marcelo.schmitt@analog.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sat, 23 Mar 2024 20:40:48 +0200
-Message-Id: <D01CLI2TC5SZ.1A48PDHM5F3UA@kernel.org>
-Cc: "Jonathan Corbet" <corbet@lwn.net>, "Lino Sanfilippo"
- <l.sanfilippo@kunbus.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Peter Huewe"
- <peterhuewe@gmx.de>, "James Bottomley"
- <James.Bottomley@HansenPartnership.com>, "Alexander Steffen"
- <Alexander.Steffen@infineon.com>, <keyrings@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Randy Dunlap"
- <rdunlap@infradead.org>, "Richard Cochran" <richardcochran@gmail.com>,
- "open list:PTP HARDWARE CLOCK SUPPORT:Keyword:(?:b|_)ptp(?:b|_)"
- <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4] Documentation: tpm_tis
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Daniel P. Smith" <dpsmith@apertussolutions.com>,
- <linux-integrity@vger.kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240322123542.24158-1-jarkko@kernel.org>
- <5a494de5-b004-440c-bcdf-7bdfa3a8c508@apertussolutions.com>
-In-Reply-To: <5a494de5-b004-440c-bcdf-7bdfa3a8c508@apertussolutions.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sat Mar 23, 2024 at 2:39 AM EET, Daniel P. Smith wrote:
-> Hi Jarkko,
->
-> On 3/22/24 08:35, Jarkko Sakkinen wrote:
-> > Based recent discussions on LKML, provide preliminary bits of tpm_tis_c=
-ore
-> > dependent drivers. Includes only bare essentials but can be extended la=
-ter
-> > on case by case. This way some people may even want to read it later on=
-.
-> >=20
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > CC: Daniel P. Smith <dpsmith@apertussolutions.com>
-> > Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Peter Huewe <peterhuewe@gmx.de>
-> > Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-> > Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
-> > Cc: keyrings@vger.kernel.org
-> > Cc: linux-doc@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: linux-integrity@vger.kernel.org
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> > v4:
-> > - Extended the text to address some of Stefan's concerns with v2.
-> > - Had to unfortunately remove Randy's reviewed-by because of this, give=
-n
-> >    the amount of text added.
-> > v3:
-> > - Fixed incorrect buffer size:
-> >    https://lore.kernel.org/linux-integrity/d957dbd3-4975-48d7-abc5-1a01=
-c0959ea3@linux.ibm.com/
-> > v2:
-> > - Fixed errors reported by Randy:
-> >    https://lore.kernel.org/all/aed28265-d677-491a-a045-24b351854b24@inf=
-radead.org/
-> > - Improved the text a bit to have a better presentation.
-> > ---
-> >   Documentation/security/tpm/index.rst   |  1 +
-> >   Documentation/security/tpm/tpm_tis.rst | 46 +++++++++++++++++++++++++=
-+
-> >   2 files changed, 47 insertions(+)
-> >   create mode 100644 Documentation/security/tpm/tpm_tis.rst
-> >=20
-> > diff --git a/Documentation/security/tpm/index.rst b/Documentation/secur=
-ity/tpm/index.rst
-> > index fc40e9f23c85..f27a17f60a96 100644
-> > --- a/Documentation/security/tpm/index.rst
-> > +++ b/Documentation/security/tpm/index.rst
-> > @@ -5,6 +5,7 @@ Trusted Platform Module documentation
-> >   .. toctree::
-> >  =20
-> >      tpm_event_log
-> > +   tpm_tis
-> >      tpm_vtpm_proxy
-> >      xen-tpmfront
-> >      tpm_ftpm_tee
-> > diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/sec=
-urity/tpm/tpm_tis.rst
-> > new file mode 100644
-> > index 000000000000..b448ea3db71d
-> > --- /dev/null
-> > +++ b/Documentation/security/tpm/tpm_tis.rst
-> > @@ -0,0 +1,46 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > +TPM FIFO interface driver
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > +
-> > +TCG PTP Specification defines two interface types: FIFO and CRB. The f=
-ormer is
->
-> I believe in the spec, the authors were specific to classify these as=20
-> software interfaces. Not sure if you would want to carry that=20
-> distinction into this document.
->
-> > +based on sequenced read and write operations,  and the latter is based=
- on a
-> > +buffer containing the full command or response.
-> > +
-> > +FIFO (First-In-First-Out) interface is used by the tpm_tis_core depend=
-ent
-> > +drivers. Originally Linux had only a driver called tpm_tis, which cove=
-red
-> > +memory mapped (aka MMIO) interface but it was later on extended to cov=
-er other
-> > +physical interfaces supported by the TCG standard.
->
-> Would it be worth clarifying here that one of those interfaces is=20
-> defined in the Mobile TPM specification, which also refers to its=20
-> interface as the CRB interface. In the past, this has caused great=20
-> confusion when working with individuals from the embedded community,=20
-> e.g., Arm. The Mobile TPM CRB interface, which can also be found being=20
-> used by some generations of AMD fTPM, is a doorbell style interface=20
-> using general-purpose memory. I would also point out that the Mobile TPM=
-=20
-> CRB interface does not provide for the concept of localities.
+On Fri, 22 Mar 2024 19:05:08 -0300
+Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
 
-I don't necessarily disagree but it is out of scope for this. I'm not
-sure tho why "mobile" CRB would ever need that sort of separate
-dicussion.
+> Add device tree documentation for AD4000 series of ADC devices.
+> 
+> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4000-4004-4008.pdf
+> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4001-4005.pdf
+> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4002-4006-4010.pdf
+> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4003-4007-4011.pdf
+> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4020-4021-4022.pdf
+> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4001.pdf
+> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4003.pdf
+> 
+> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
+> ---
+> Pasting relevant comment from cover letter here to aid reviewers.
+> 
+> These devices have the same SPI (Strange Peripheral Interface) as AD7944
+> devices, which has been documented in ad7944.rst [1].
+> The device tree description for SPI connections and mode can be the same as of
+> ad7944 adi,spi-mode [2].
+> Because ad4000 driver does not currently support daisy-chain mode, I simplified
+> things a little bit. If having a more complete doc is preferred, I'm fine
+> changing to that.
+> 
+> [1]: https://lore.kernel.org/linux-iio/20240313-mainline-ad7944-doc-v1-2-7860416726e4@baylibre.com/
+> [2]: https://lore.kernel.org/linux-iio/20240304-ad7944-mainline-v5-1-f0a38cea8901@baylibre.com/
+> 
+>  .../bindings/iio/adc/adi,ad4000.yaml          | 151 ++++++++++++++++++
+>  MAINTAINERS                                   |   7 +
+>  2 files changed, 158 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+> new file mode 100644
+> index 000000000000..9e3d6a3920ea
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+> @@ -0,0 +1,151 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/adi,ad4000.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices AD4000 ADC device driver
+> +
+> +maintainers:
+> +  - Marcelo Schmitt <marcelo.schmitt@analog.com>
+> +
+> +description: |
+> +  Analog Devices AD4000 family of Analog to Digital Converters with SPI support.
+> +  Specifications can be found at:
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4000-4004-4008.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4001-4005.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4002-4006-4010.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4003-4007-4011.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4020-4021-4022.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4001.pdf
+> +    https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4003.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ad4000
+> +      - adi,ad4001
+> +      - adi,ad4002
+> +      - adi,ad4003
+> +      - adi,ad4004
+> +      - adi,ad4005
+> +      - adi,ad4006
+> +      - adi,ad4007
+> +      - adi,ad4008
+> +      - adi,ad4010
+> +      - adi,ad4011
+> +      - adi,ad4020
+> +      - adi,ad4021
+> +      - adi,ad4022
+> +      - adi,adaq4001
+> +      - adi,adaq4003
+> +
+> +  reg: true
+> +  spi-max-frequency: true
+> +
+> +  vref-supply:
+> +    description: Phandle to the regulator for ADC reference voltage.
+> +
+> +  adi,gain-milli:
+> +    description: |
+> +      The hardware gain applied to the ADC input (in milli units).
+> +      The gain provided by the ADC input scaler is defined by the hardware
+> +      connections between chip pins OUT+, R1K-, R1K1-, R1K+, R1K1+, and OUT-.
+> +      If not present, default to 1000 (no actual gain applied).
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [454, 909, 1000, 1900]
+> +    default: 1000
+> +
+> +  adi,spi-cs-mode:
 
-Some CRB implementations have localities some don't, and also fTPM
-implementations on x86 vary, no need to state that separately for
-mobile.
+We've just merged a driver for the ad7944 and bindings which has a
+similar 3-wire-mode.  Please share the approach used in that binding.
+Whilst it seems we don't have the other mode here, I think we still want
+to use a similar enum.
++CC David to take a look at this one given he went through long
+discussions on how to deal with it for the driver he was working on
+so probably remembers the reasoning etc better than I do :)
 
-> In relation to the MMIO backed interfaces, I have heard comment that the=
-=20
-> software interfaces were not meant to require the physical interface be=
-=20
-> MMIO. In fact, in section 9.2, "Hardware Implementation of a TPM in a PC=
-=20
-> Client Platform", there is a comment about Locality 4 registers being=20
-> accessible via an implementation specific mechanism other than MMIO.=20
-> Additionally, there were some discussions about clarifying the PTP on=20
-> how the software interfaces might be expected to work for a=20
-> general-purpose memory backed implementation.
+Jonathan
 
-So what is the error in the current want, i.e. what do you want to
-change? I think this type of stuff can be extended but I don't want
-to pollute this with too much detail at this point.
 
-Only what matters for daily kernel development as reminder is what
-this type of doc's should contain.
 
-BR, Jarkko
+> +    type: boolean
+> +    description: |
+> +      This property indicates the SPI wiring configuration.
+> +
+> +      When this property is omitted, it indicates that the device SDI pin is
+> +      connected to SPI controller CS line and device CNV pin has been connected
+> +      to a GPIO. Datasheets call this "4-wire mode".
+> +
+> +      When this property is present, the driver must assume standard SPI
+> +      connections which, for these devices, consists of connecting the
+> +      controller CS line to device CNV pin. This configuration is
+> +      (misleadingly) called "3-wire mode" in datasheets.
+> +
+> +  cnv-gpios:
+> +    description: The GPIO connected to the CNV pin.
+> +    maxItems: 1
+> +
+> +patternProperties:
+> +  "^channel@([0-1])$":
+> +    $ref: adc.yaml
+> +    type: object
+> +    description: Represents the external channel connected to the ADC.
+> +
+> +    properties:
+> +      reg:
+> +        maxItems: 1
+> +
+> +      diff-channels: true
+> +
+> +    required:
+> +      - reg
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - vref-supply
+> +
+> +allOf:
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
+> +  - if:
+> +      properties:
+> +        adi,spi-cs-mode: false
+> +    then:
+> +      required:
+> +        - cnv-gpios
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        /* Example for a AD4000 devices */
+> +        adc@0 {
+> +            compatible = "adi,ad4020";
+> +            reg = <0>;
+> +            spi-max-frequency = <71000000>;
+> +            vref-supply = <&vref>;
+> +            cnv-gpios = <&gpio0 88 GPIO_ACTIVE_HIGH>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            channel@0 {
+> +                reg = <0>;
+> +                diff-channels = <0 1>;
+> +            };
+> +        };
+> +    };
+> +  - |
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        /* Example for a ADAQ4000 devices */
+> +        adc@0 {
+> +            compatible = "adi,adaq4003";
+> +            reg = <0>;
+> +            spi-max-frequency = <80000000>;
+> +            vref-supply = <&vref>;
+> +            adi,spi-cs-mode;
+> +            adi,gain-milli = <454>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            channel@0 {
+> +                reg = <0>;
+> +                diff-channels = <0 1>;
+> +            };
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 2662ec49b297..3ca90f842298 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1135,6 +1135,13 @@ W:	https://ez.analog.com/linux-software-drivers
+>  F:	Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+>  F:	drivers/iio/dac/ad3552r.c
+>  
+> +ANALOG DEVICES INC AD4000 DRIVER
+> +M:	Marcelo Schmitt <marcelo.schmitt@analog.com>
+> +L:	linux-iio@vger.kernel.org
+> +S:	Supported
+> +W:	https://ez.analog.com/linux-software-drivers
+> +F:	Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+> +
+>  ANALOG DEVICES INC AD4130 DRIVER
+>  M:	Cosmin Tanislav <cosmin.tanislav@analog.com>
+>  L:	linux-iio@vger.kernel.org
+
 
