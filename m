@@ -1,124 +1,106 @@
-Return-Path: <linux-kernel+bounces-112364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F405A8878EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:10:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CD3F8878EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:15:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E4F82844EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:10:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCBDC1C2102B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CFF3F8DF;
-	Sat, 23 Mar 2024 14:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C1E3F8C2;
+	Sat, 23 Mar 2024 14:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Mb97SIkc"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RW04hMgJ"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4421A38F4;
-	Sat, 23 Mar 2024 14:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB89B1B95C;
+	Sat, 23 Mar 2024 14:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711203034; cv=none; b=pJO5d9eBlKVfCGxIAHbcSNa48a/J7bPjrvTjkeJFjotbnId4XdtsQUKqxno0Kmag2Hj4VZ+0k3cfcjYJ6I1fmDEAz1idCNVNvehIHqQZqN1RO/Rd6LOSOO63JUHHGGLaas0Xr0cE7pcgeIwg+Qxz/xGoJ64/gHXCT+lGcHzW6eM=
+	t=1711203338; cv=none; b=GLrKnMbNVmEgk+mywzEFvzkUcp25/sMFqYvEpzk17jMKYJXznHZZzQZ2dCkveYeKaqdYS3eayEIucLiF9xWM3FfJpLF0m6v0+6OE53lEwYgkbxiGPeRtB4EistYyhHaAoP1g7cxvYlX5OTOjIpo9IbatGGskb09VzyMo3Xo+6Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711203034; c=relaxed/simple;
-	bh=vpI2jBHlh6dsG2SS2eT9xX6YVg4ZX5BR2WV/eWEg+MA=;
+	s=arc-20240116; t=1711203338; c=relaxed/simple;
+	bh=/2rP2NCZYEibjErMT+bFvN9pYgRHUm5yc0VMok5z74o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TjeLqe+Cs3jgklzYbL3cFbL3b7L90JujbgPM6iTgSCFVRXPPuaGT8BkEvRRuqJcGkHF6lJY0c/XpIS8ari/uOLyzckHSfPhray7qJHOV4BYyazOaT/15vQw/Le/v+M5Tn0IE9KU3115tTgzECKZo/H+6M0Egbld4aW3AimpYuI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Mb97SIkc; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=mMJIH5/fIvPZW8NeQXlIeeRpf5h3/o6asdfcYdeLYYU=; b=Mb
-	97SIkcFf6RiGosPIvWmz81W9Tp/neBsuP1WTUaUSrsWhsiDdOVBFU6SmKQvKIJU5t9HoTng5vbAHz
-	cee9x2n3fWh4zNNBCVa1YJLNPHa309YzyVDRdbNna5ABsrhzUGFbEqN+NhrfCEvPB8JwkajSLYHwu
-	kDuu1og5p4MP98w=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1ro24j-00B3OA-OU; Sat, 23 Mar 2024 15:10:21 +0100
-Date: Sat, 23 Mar 2024 15:10:21 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,
-	Luc Maranget <luc.maranget@inria.fr>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Akira Yokosawa <akiyks@gmail.com>,
-	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	kent.overstreet@gmail.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	torvalds@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 1/3] rust: Introduce atomic module
-Message-ID: <497668ec-c2d5-4cb4-9c2d-8e6f7129a42e@lunn.ch>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <20240322233838.868874-2-boqun.feng@gmail.com>
- <068a5983-8216-48a5-9eb5-784a42026836@lunn.ch>
- <CAH5fLggdVDccDwBa3z+3YfjKFLegh7ZvcSzfhnEbAGSk=THKrw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fDI2U7qeiGmOrM9eo+KaTLNWXmCo6Vo0ksZVlfgks37UMX/Qpp6+KWfoLqrS+EseFRW4a7zayfHuC3CAh296PfbmeyLzpjTKZXH4HNtZzAkW58O3gTRkgOW8385j9dIfN9HDKxe6XFAv9jgXtRwg+AdSieKULdCKJjk/sxTYCMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RW04hMgJ; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29f749b6667so2249435a91.0;
+        Sat, 23 Mar 2024 07:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711203336; x=1711808136; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K6HGrBZ7lr6jmzr5N2I7wdTvAdnswv+NQ/+myY51oNA=;
+        b=RW04hMgJacOeHntDH2E+BQzNfK6rQd43fhYCi9E0oHy1/ciP1kgs3MiGoi3L+TcEdU
+         Z3f9PDlTzdqSMxQCVU9Dpl4lAd0aWq+/5CKPc+guPIY3XlIS8WKBQWLeqXaLbrba2dEN
+         /P05+4SOWIb2h5fOM6JoDQjki9u5ksaSmSs3EjK+AkA41YD0u0wlshLsfNko8j6N4h2C
+         JY2zwKqpp5QtRmpRzoyXo4dk+X5aeEccaxZCiy0LtFIT3NgmvaNsG1p6jkvDHWTxCyP2
+         NEJhKi75Ob+yOeZ2TWfY9fWBoO7lU3dWzsEGj4XEXWEgBg9NmORzYFsia03dnJs9swpC
+         Wzbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711203336; x=1711808136;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K6HGrBZ7lr6jmzr5N2I7wdTvAdnswv+NQ/+myY51oNA=;
+        b=eS3ue7MSPA4ZFmyGEufZ0LzAZ9Jy0oqNb6VTT7zORRe7i3nCY/niP6WHoypQ4jsMCT
+         repbnt9ytGybcZOQEig3he25or3rcXR2+JoBCiAlgh9dGl/Rxe+8q9LuRviz5Yth3qmj
+         AavD2uAgLnUCHV9ieiH58Jb5vy4BFxSiFsDi0LFcDw1aa7/TFTTKnOkkrz5t+ZaMyJPy
+         bMTsdV3qpCs9BoASYq2l7vZ7IllJZYwzweZ9rdCLdiPbQy2c+DVpph9B4gcszMbEurUC
+         fa7pltGdCioKbRSdwtu2BDmP2sMwtszl8Qqyr7FMBLZK7fRqHqIKP+urCTEV9Axq6XhH
+         Zh9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUY2MBMYCXbwdKFfTNtyk7boWefxfxY0QpvtcxTSxOwFkAQlpGFrenXFhuWkl03W0FG+GCZ41QrG21oVHZL0MXhLph/PpDjUhoc2v0/R5KDsfpXWrwPGABdJXQPXi/MARHdnblE27xkc4NRxBa/8jS+uMpH+kZrB7Cf+bS2+pKvxaxfNWE6
+X-Gm-Message-State: AOJu0Yzmgt2VzGR24Smx5j3a2FImzrjG2AkxlbLNNFEJm7KRQ2xo1izm
+	7OHPnWK5x+2GDlERK64CrDlTpQ92803a/dEn5yHYL9+aTHY5cG/krmA+2727
+X-Google-Smtp-Source: AGHT+IHkr9pls9zsekeBxOPd/1818mdgK+5rIXEBs5KuZE7VQWkJRzPfO4NsM/O+NLgnZ5A/2xBJTg==
+X-Received: by 2002:a17:90a:bd08:b0:29f:ed40:4a8a with SMTP id y8-20020a17090abd0800b0029fed404a8amr2275027pjr.29.1711203336178;
+        Sat, 23 Mar 2024 07:15:36 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o19-20020a17090aac1300b0029b59bf77b4sm7203925pjq.42.2024.03.23.07.15.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Mar 2024 07:15:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sat, 23 Mar 2024 07:15:33 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, peiyu li <579lpy@gmail.com>,
+	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: hwmon: max6650: convert to dtschema
+Message-ID: <28756dda-2475-42e5-99a4-fd97254391f4@roeck-us.net>
+References: <20240321-hwmon_yaml-v2-0-74fa8eb60ec9@gmail.com>
+ <20240321-hwmon_yaml-v2-2-74fa8eb60ec9@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH5fLggdVDccDwBa3z+3YfjKFLegh7ZvcSzfhnEbAGSk=THKrw@mail.gmail.com>
+In-Reply-To: <20240321-hwmon_yaml-v2-2-74fa8eb60ec9@gmail.com>
 
-On Sat, Mar 23, 2024 at 10:58:16AM +0100, Alice Ryhl wrote:
-> On Sat, Mar 23, 2024 at 12:52 AM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > > +//! These primitives should have the same semantics as their C counterparts, for precise definitions
-> > > +//! of the semantics, please refer to tools/memory-model. Note that Linux Kernel Memory
-> > > +//! (Consistency) Model is the only model for Rust development in kernel right now, please avoid to
-> > > +//! use Rust's own atomics.
-> >
-> > Is it possible to somehow poison rusts own atomics?  I would not be
-> > too surprised if somebody with good Rust knowledge but new to the
-> > kernel tries using Rusts atomics. Either getting the compiler to fail
-> > the build, or it throws an Opps on first invocation would be good.
+On Thu, Mar 21, 2024 at 05:33:18PM +0100, Javier Carrasco wrote:
+> Convert existing bindings to dtschema to support validation.
 > 
-> We could try to get a flag added to the Rust standard library that
-> removes the core::sync::atomic module entirely, then pass that flag.
+> This is a straightforward conversion with no new properties.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Just looking down the road a bit, are there other features in the
-standard library which are not applicable to Linux kernel space?
-Ideally we want a solution not just for atomics but a generic solution
-which can disable a collection of features? Maybe one by one?
+Applied to hwmon-next.
 
-And i assume somebody will try to use Rust in uboot/barebox. It
-probably has similar requirements to the Linux kernel? But what about
-Zephyr? Or VxWorks? Darwin?
+Please note that the branch will be pushed after the commit window closed.
 
-	Andrew
+Thanks,
+Guenter
 
