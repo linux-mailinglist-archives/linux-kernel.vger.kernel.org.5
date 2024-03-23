@@ -1,136 +1,105 @@
-Return-Path: <linux-kernel+bounces-112229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 592E5887729
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E42088772E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:17:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00E241F22D3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 06:08:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 440481F22D87
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 06:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2415398;
-	Sat, 23 Mar 2024 06:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5557D610B;
+	Sat, 23 Mar 2024 06:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dh9TULn0"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=draconx-ca.20230601.gappssmtp.com header.i=@draconx-ca.20230601.gappssmtp.com header.b="N+9QMxOp"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082D81A38D0
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 06:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2385382
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 06:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711174092; cv=none; b=j5zBOTwEVU+wrxdXvu+GGortc6YJufJ6TIDMaenGnKDqcgCsGzv86TFe5gBwVsBOXCjIrAw5ih3cnFLQcUmLQbZPWyTgVz69eQTWKmSjSdmnhzJx4RChIHSb8ZEY0upK0vLt/i2JhM0CdACxnLuzllwioRYL9ZK0aeQp5v3MqHo=
+	t=1711174633; cv=none; b=Ri66juUHIwxf9vrHMRlTdiNn3TSyQaRCkw85m1siKJPxYw9D+12/RMFl9uc3SzrHYBn9QYLCf77mYSmX8V1TwGonn0vlPY4nSyu4GCPbP8HTrd+/0JmrdaYY1kG2Fcu2NSeHv8IWr/9NAhqAGzm9Vs4WZ7eVRrAaqvofAmLgxzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711174092; c=relaxed/simple;
-	bh=A061M311bWcKVJUUnbDDmTAmuBX7wijJeIlLtRN/XJ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=CGPFRXUxiXefJX3mfBZylA+E+ppuE9JmVR0lAtcKf2IaOo7duUhHkPdfqV6HL6maz8QOyliBWMPEgMWsu359YTAD6I85AVCzDPzFUVmqgNDxqCUJVQ/rfNS01IM6GlL1L6iCGyvXxCw5vBJPG2swp0fvamiuGjObgyITqmJnlIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dh9TULn0; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-414689ba80eso22781325e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 23:08:10 -0700 (PDT)
+	s=arc-20240116; t=1711174633; c=relaxed/simple;
+	bh=dqG0Z288zz1kSYusNKw5auggaqGEU0D07aewlJFuyP0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qJyO1/vXL+oIvSDAlwxm++lKmndAJnSoAgE1NCqbXJ5Dfa8KBu3xAYJRZvPSkR71nG7tc7CEB5ZHJS16B9Isz+/CZDLVLSIfUAprz2Pl78Vu1kUCwf0CoUL/jt57RjjvDEg9r2ky0MQ2GreKCWk2p0eKBSL+id88YCZEFi1TdO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=draconx.ca; spf=none smtp.mailfrom=draconx.ca; dkim=pass (2048-bit key) header.d=draconx-ca.20230601.gappssmtp.com header.i=@draconx-ca.20230601.gappssmtp.com header.b=N+9QMxOp; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=draconx.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=draconx.ca
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42a029c8e62so21325631cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 23:17:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711174089; x=1711778889; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=draconx-ca.20230601.gappssmtp.com; s=20230601; t=1711174631; x=1711779431; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=LTfLYfPTszY4IxTtf86oi/uzbGzPl0sBWBERhXVz2i0=;
-        b=Dh9TULn0nY+1h8yWN+R89N79xAGg3YY2lcRfbW9GKLSpr7DIxUY2cukdrpz8c+2NrR
-         JBnQQ/OjqCQ6rWc/A+K26ic4JgCgOqaAbqcSQGqSX0WfvId/WVbaHZ5uIhCaq/l7lw58
-         q36OS1G3Kwq+6NO65DAZPsNeu340ocSbsOW5rONyFPId+93IFZdgv5HgYOQGnJx9rKEh
-         +RZv7rov0FsWjz6uE0s2KLT5L+YVoZqpZzvSxh3aaGYMX5dzYXPRjeo431RvWaRtU6R6
-         eaCDfnNQWz8oDka9A0EyaYl7dtD8UJ2uX1yXVVmftaYxowAREduZKUtac6DF0gZKv9sU
-         cNug==
+        bh=YUD52ht+HR3l3eedQqUGqKmwp+yFV4q4zkif3Vs2Vr0=;
+        b=N+9QMxOpE0VJj9HzfPOcRHSV6xmUV/bor65C35aNwmZxESfBFPV0AEBi++5mqP0UmB
+         9fTFz2RyhrPeotg95inB9669MVDiP7Uc6RyBIDyRdACUUdDBDCS1IACWuDrQG6OJwg8K
+         5zTDiIkh+RT90TNKdnUwcubnQ5aW5R9nDtkS3/iXNpDX84mZnXry75hFWr+2VTzZyL2f
+         i69Y5MNkTETI5j6z1Fo2rRNsNIx6jS9CfW34mwC8N7BThAbNyp5KJ/r2zQmPSSPJVbux
+         PY/T6xp2SuiVh9uccdivjOvDkLw9o4BZLewGj3sK1HFXsOw4autrDA9e7Kv8bcBVyVP1
+         Dlyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711174089; x=1711778889;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1711174631; x=1711779431;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LTfLYfPTszY4IxTtf86oi/uzbGzPl0sBWBERhXVz2i0=;
-        b=n5IRv/nl8UwgoetzmTNFoKkgmnvTvpZ6Qsx7jG6o6+QeCsj6qOj7Wc5auTn0xs4Iy8
-         lryhPtaHrOh0tEtcnqbce6cgSTEL0TG6U3nYj3g79u4h/uLQEADZD0EjYTuVUB7Tsahy
-         lW0PDOT++q0f2FgBb2Y2ebTqMpre2hQWXezUZ7N/wTCGV9QIJUv4m2s+plRCu9nNCOSw
-         0wJR0zIh9ZIJWVfHahVi8zKw8j9LYxzRaOekIrZHc7Wn+/Mo9jEqQvx01OfxTpHX0bIo
-         AQhO+bWAIscDeQvszEHYjoQVtQbROPIK4IbVWMfFSiBzCJajrjg+R4vy4KvRVpUKJtfZ
-         znHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVrL+E0VJhTV4brwuciZGt3Tw6/rry7ElTUd88sMGCg9UNfbr1yPOVRv1MBAeYz3YQfHdKdNranqg0m2THXRY3y1m9VtuXNFsaMCQmM
-X-Gm-Message-State: AOJu0Yzi53cntB/5+h0NPmIapz0fmxKG5bFecQH6nAdlLzAoa8huJ3RY
-	BX1RkEz3qngdwybkIb8g2LKnWo11jK04vfhLnvicjp/sV60VNPOgvxIKWrfn7z4=
-X-Google-Smtp-Source: AGHT+IG6APMQ5kyFm5i3LcQZPi8VXo4S0XM4PdNtSagvA/6Yb3JobCgmHUgjMp1g4eYs1k973S5QxQ==
-X-Received: by 2002:adf:e28f:0:b0:33e:6833:8fa9 with SMTP id v15-20020adfe28f000000b0033e68338fa9mr1032710wri.44.1711174089020;
-        Fri, 22 Mar 2024 23:08:09 -0700 (PDT)
-Received: from MOLeToid ([129.0.78.251])
-        by smtp.gmail.com with ESMTPSA id s17-20020adfa291000000b00341b7388dafsm2954989wra.77.2024.03.22.23.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 23:08:08 -0700 (PDT)
-Date: Sat, 23 Mar 2024 07:08:05 +0100
-From: "Felix N. Kimbu" <felixkimbu1@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc: outreachy@lists.linux.dev
-Subject: [PATCH v2] staging: pi433: Correct comment typos in pi433_if.c
-Message-ID: <Zf5xxbEpFfU5GMiY@MOLeToid>
+        bh=YUD52ht+HR3l3eedQqUGqKmwp+yFV4q4zkif3Vs2Vr0=;
+        b=WrctcvgUF3LfS9D0veRpsODYDkks4vj/kbn7L1ep/FtWxAtcwklDliTu8GGN8ZLZ19
+         dY/swIWCwlrTkzeN1NabSfGX5M53YNn6TLO+nOctYjxzdMaWRj39uPguUNJvVvIfOa+R
+         AbQMIfD6WolR92/WRc+CucNEyl18riwJz0d3UNdpZy2jzlWsmdA+7s7KV9pbBg2oONhL
+         n0zZ0tVZ/Vgb3t8+ZrESAUZR+zxCZOtqIrFHbO8bUG6UEHX2lIWhTaqWd1RCF3byULRj
+         VM6U1zbHrlG9piyiIXRPKfd/sOog3oemx3qxcMn7TEK3OXFcU0tLIeUxba8v5Vh2t7C4
+         dv2w==
+X-Forwarded-Encrypted: i=1; AJvYcCVXQnfF0thv/mnjtG6k6PG5hZ85h5JJNMnDpy0oulhoBMxYP8OeazwDRNRxiWms1oty7yyKgh5KhKMoDFt8NJPaCMWVYsrXfhWT7ZJl
+X-Gm-Message-State: AOJu0YwbChrfKSu3hQgK6kBxBjXa8wPVZeblZVhDpTuZ+Vr/NwblDE88
+	PbBYIHG8HRFOV6zS82o+mUnqzOorjdWcmHP1nENNmSsQwTIYm9QyMu+szSPgvNE=
+X-Google-Smtp-Source: AGHT+IHsW+rCkfYvisR1ygy31z8BZc9G7J8m+4nL2/pwwjaGvRY/EyVRR4S6gmRAATdetLzbqae2KA==
+X-Received: by 2002:ac8:7c47:0:b0:431:458a:8ea5 with SMTP id o7-20020ac87c47000000b00431458a8ea5mr220141qtv.55.1711174631036;
+        Fri, 22 Mar 2024 23:17:11 -0700 (PDT)
+Received: from [192.168.0.50] (dhcp-24-53-241-2.cable.user.start.ca. [24.53.241.2])
+        by smtp.gmail.com with ESMTPSA id bb40-20020a05622a1b2800b00431435c34b1sm196691qtb.60.2024.03.22.23.17.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 23:17:10 -0700 (PDT)
+Message-ID: <25ecf18b-7533-410a-9b1f-6c11343b8565@draconx.ca>
+Date: Sat, 23 Mar 2024 02:17:08 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fbdev: Select I/O-memory framebuffer ops for SBus
+Content-Language: en-US
+To: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, stable@vger.kernel.org,
+ Javier Martinez Canillas <javierm@redhat.com>, deller@gmx.de
+References: <20240322083005.24269-1-tzimmermann@suse.de>
+ <877chu1r8s.fsf@minerva.mail-host-address-is-not-set>
+From: Nick Bowler <nbowler@draconx.ca>
+In-Reply-To: <877chu1r8s.fsf@minerva.mail-host-address-is-not-set>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Correct typos in comments accross driver file pi433_if.c.
+On 2024-03-22 06:43, Javier Martinez Canillas wrote:
+> Thomas Zimmermann <tzimmermann@suse.de> writes:
+> 
+>> Framebuffer I/O on the Sparc Sbus requires read/write helpers for
+>> I/O memory. Select FB_IOMEM_FOPS accordingly.
+>>
+>> Reported-by: Nick Bowler <nbowler@draconx.ca>
 
-Signed-off-by: Felix N. Kimbu <felixkimbu1@gmail.com>
----
-Changes in v2:
-- Trim commit message and log (AlisonS)
+Applied on top of 6.8 and the build is successful.
 
- drivers/staging/pi433/pi433_if.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
-index b6c4917d515e..81de98c0245a 100644
---- a/drivers/staging/pi433/pi433_if.c
-+++ b/drivers/staging/pi433/pi433_if.c
-@@ -10,7 +10,7 @@
-  * devices, basing on HopeRfs rf69.
-  *
-  * The driver can also be extended, to support other modules of
-- * HopeRf with a similar interace - e. g. RFM69HCW, RFM12, RFM95, ...
-+ * HopeRf with a similar interface - e. g. RFM69HCW, RFM12, RFM95, ...
-  *
-  * Copyright (C) 2016 Wolf-Entwicklungen
-  *	Marcus Wolf <linux@wolf-entwicklungen.de>
-@@ -68,7 +68,7 @@ static const struct class pi433_class = {
-  */
- /*
-  * rx config is device specific
-- * so we have just one rx config, ebedded in device struct
-+ * so we have just one rx config, embedded in device struct
-  */
- struct pi433_device {
- 	/* device handling related values */
-@@ -647,7 +647,7 @@ static int pi433_tx_thread(void *data)
- 
- 		/*
- 		 * prevent race conditions
--		 * irq will be reenabled after tx config is set
-+		 * irq will be re-enabled after tx config is set
- 		 */
- 		disable_irq(device->irq_num[DIO0]);
- 		device->tx_active = true;
-@@ -923,7 +923,7 @@ static long pi433_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 	case PI433_IOC_WR_RX_CFG:
- 		mutex_lock(&device->rx_lock);
- 
--		/* during pendig read request, change of config not allowed */
-+		/* during pending read request, change of config not allowed */
- 		if (device->rx_active) {
- 			mutex_unlock(&device->rx_lock);
- 			return -EAGAIN;
--- 
-2.34.1
-
+Thanks,
+  Nick
 
