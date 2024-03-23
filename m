@@ -1,233 +1,213 @@
-Return-Path: <linux-kernel+bounces-112286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0D098877EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:21:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC5128877F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D58B1F21C61
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:21:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38FBDB21486
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F9FD10A12;
-	Sat, 23 Mar 2024 10:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B3E10A12;
+	Sat, 23 Mar 2024 10:21:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gpoxnD/I"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UcyieKl0"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027A81A38C9
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 10:20:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8EDDF78;
+	Sat, 23 Mar 2024 10:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711189255; cv=none; b=dBimZe/W0Sf3gfP37vP995lEZCU1O545YDV7GxYY8VnEJSZutOHEip7m7w/QTL7Fhg2MrQAvEyzR0I8PBNhPOu/1Ve9VX9i6r6eJuS4/1BUzMhhqzcDYfF50s+H9LcmvKap9wdH4ndGg+EmwMU9QhfVWMwRrtYRAlsUrp9gTVTc=
+	t=1711189274; cv=none; b=VAhGO4sLrqAlqGTRXMAbQ4RZn9AMKVigNLIaeQmPN1lnfDsNVJEaSPc3NeArcl5ee8VO3OiORJXumg1tTFbFaiI6kPLhXjxc3Yje2i8mKLxwYjhzZma98TGQyUC5vgvgrAd7OIasKO7y5IJAUTgRA5SlI4LVGCi5MBsTdjM4DG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711189255; c=relaxed/simple;
-	bh=dvu4HMkciLRlA9Wv6uzSgwhF/+pW5hAcu4Hxgz8c3DI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZqpzrOp0dUpFwA3bccsA6ay3c9xCRtBVmBNuOikLfKHlFO/qAL5KCta8JKRuWlz/NRQbmVeVYbjZp2qUdfABQDb2MoG9f+ojFT+tihv/3JrTDptDSYqU1Uja0x+Fh8R6x89nE30+a4O0NvW66YRUqMRdDWUZree6bWMCus9A76w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gpoxnD/I; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56bfa192ea1so415442a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 03:20:51 -0700 (PDT)
+	s=arc-20240116; t=1711189274; c=relaxed/simple;
+	bh=FL6r5rz38S7l9+1xAvn38KLVHfx2Rp+dm8JmvJNJqPo=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QsBvUr2sHFnAy0zCPRDA2VEBjCELK8hU6tvYeLvNZIOoHGGqOOajSisJPp9+PTaZefCj7MUZYAV8iz46m5ehS7XQDV9U63DCQGUTfPGS+RQNAgLlq+Xl7RPNV/vGTowRLlTd8PH5lAixgIwPKU5SIsuQCJkMil+6TeRvFNqQQvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UcyieKl0; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41484cc3a16so400265e9.0;
+        Sat, 23 Mar 2024 03:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711189250; x=1711794050; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=mv+dntp0+Yd5x4FtxAoMVnrAVTs/kYox5gzBd17b5Sk=;
-        b=gpoxnD/IKa1guJRyM06Q/P8Mk2ztE4tOoFwpA49USwMpxS1gthx+QO+DYX04mlTUFz
-         pALwlxMa84xEX9RwNMCzhfzGgiFsOLwHeHgqtvJ/spa28xWJqcuNRNRBqPD71Mcs4gUZ
-         h6pfga3DfwzAYSx80ShDXiG4WgeMGM9G0exULttMhaTy2KLEHkLg3nBIMImv8Vq/a4OC
-         d3yCZvKQqZRCay83ZLfm9MH8sVfKXiwlVFz1Er9l15ajLfwfJAO5f0u2nuNEGfX+kOJK
-         AArVxkQnIX9wzJ1b+JJ69zhvux25VX/WVgJ3lG1bBqXutlD/6NcApoi6+vugzG3gxUkV
-         gY1A==
+        d=gmail.com; s=20230601; t=1711189271; x=1711794071; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9NQ40m1g0BVn9cfsR5PX8bbpzjpY5a0ph3Nz5Bz4Smk=;
+        b=UcyieKl0AJvMQFYUUawP346VgVeuKXceHE7YXeSc91D78JpGWzxWLu8bfq/3O31EBp
+         YFapPD8m/gaI0Fk6LiMiDS7QSIxoujREMgwlSOvTIFdfsm2Fop7zBwJJCkVN2ZV+pR8J
+         So1WPrSTmhgDLWU589Gz2VqkmsSnvNrpwvpJtVBKOH1LAHq7b2A3qm1qVf8N2geSjKMp
+         OzkMJrmnHMeltO4sTR5YwE9zeO0QK8/BorNtaHk51wUl5xnKLJDK4JrgBEilE1z+tf/A
+         SzPUV9goN+VQr+NPkyZkM7mmnlPpQjldFN16UAxSG26F7E/7w9PvtkVweKjaL9kffghF
+         uYow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711189250; x=1711794050;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mv+dntp0+Yd5x4FtxAoMVnrAVTs/kYox5gzBd17b5Sk=;
-        b=clbtP3GXyGIe0bhO9O1s8fayxJ7ysfAMgJ3wYw90ruqGc9TUjff3pwlb7QkioCC8wQ
-         IoKcHx/fu+g7pIgPyV9S4xuHtqyPYvEfd1DxIVO4AE9pOPL8O3DqbZCftV0i3ZLN3WZr
-         iu46bG9F0LIEfbUWRqwPo4Fw7hXNr++ov3x8LtgoBEO1KSzIpn8Vn6aKeZfkQ2CFJd5B
-         39Gbqhow0UZuBztVhLNIxRy8Np5cXMf13JRqqZ3+7aukk1UgBM2tjHruNRSTb69GhjFY
-         eolqtNZfiT3Br4vfmsm1ZqR6gfkLayfl6yA7mZHqa5ipm4rq4MT7QYr8qEKdU/VHtTbo
-         QaaA==
-X-Forwarded-Encrypted: i=1; AJvYcCUbnS+QimCJ+7GPUkDYd+79/2VxGcKn4Y5JxVigL7qg/Jp42CLeQrHLTDmHFrN3MbLadHFJf61OhKqTl/I7pJXbvZreGsigaL2o8311
-X-Gm-Message-State: AOJu0YwaaYC3XiCpjVDMukXhL2Cl/pLkAw2SuWpYp93HWqfj9r/nXza6
-	+N+5sMCpVG0kiG58x+luPGsWgqfKvMFC2ag9T1dCN7Gw9EFrQVpj+ZEcgY58svI=
-X-Google-Smtp-Source: AGHT+IF+QkBaa9f+5oBcdmnEhymDovwjZkQnW5un8gceEcxp2mRV4SYnZHHM4XYweYwBFQkG93ai3A==
-X-Received: by 2002:a17:906:8cc:b0:a47:3f10:b3c8 with SMTP id o12-20020a17090608cc00b00a473f10b3c8mr1216214eje.26.1711189250183;
-        Sat, 23 Mar 2024 03:20:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id o1-20020a1709061d4100b00a46b4c09670sm755351ejh.131.2024.03.23.03.20.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Mar 2024 03:20:49 -0700 (PDT)
-Message-ID: <c0d70ba9-34ef-4121-834d-4d107f03d7f0@linaro.org>
-Date: Sat, 23 Mar 2024 11:20:46 +0100
+        d=1e100.net; s=20230601; t=1711189271; x=1711794071;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9NQ40m1g0BVn9cfsR5PX8bbpzjpY5a0ph3Nz5Bz4Smk=;
+        b=m4KY7ZgbFVS3YvPusmVHjQQDWWH03sbQC+LJxlrTxiQnoRlx9S5HLIyuiBerckikU5
+         kRlS34a2gUFV0b8an9aSIBOEoeZLqMJACsnaRX5ERIGz3rEyJPtzZjieJv4HI7V5/9l/
+         voJOx8y9B5o4vMxzr6453ggRucgfXrMaqAZJl/bEFMZragn+ONKPdAYEKGmfOr16YXcJ
+         iLZqFyBRiFuJSj1Avs6oiAeH2bozjPUJks5oC5OMJPJ26UfK6YH2loVzlS53HZgezcrQ
+         BeWxTQfmOTkZiFFiQ2Z8a4MWsLksSTt+RuW0U3wlWl3ai1I1HezFL/N9AF57D3MAGOtB
+         sL4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVjlq9VdElxgx5+DMRJAGfQ98fsIbvS0FhlU5A2+gkDRCIIpU4hJIzIDDxKwb/vaQaNwmwLj071bugcZ28TLzxqGydVvJJCSb4g3ftJdccq2nZAwou7Zn97lxN8IPBlN9T2
+X-Gm-Message-State: AOJu0YyRT4soJx79KZWEy0PAefqThsJGQSk2NMz4GRHjGCHuH6vuZr44
+	LHS8GL7uz6z5QvyBHYjx48dPT698izdxXtuXABD55cR+eCBePpxj
+X-Google-Smtp-Source: AGHT+IGQ4MPAkOe7cQ4k/R8uDcbv4Jd9/G9hT8nhFYtDxEj4cdAlCc5M8bcYfOB01FMSkAVC2jd59Q==
+X-Received: by 2002:a1c:7701:0:b0:412:ed3f:1b4b with SMTP id t1-20020a1c7701000000b00412ed3f1b4bmr1279496wmi.11.1711189270383;
+        Sat, 23 Mar 2024 03:21:10 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id m29-20020a05600c3b1d00b004147b5dd6f8sm2095252wms.9.2024.03.23.03.21.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 23 Mar 2024 03:21:09 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Xu Kuohai <xukuohai@huaweicloud.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Add arm64 JIT support for
+ bpf_addr_space_cast instruction.
+In-Reply-To: <5c66cb9a-8f6e-4839-a590-ffc0d411333e@huaweicloud.com>
+References: <20240321153102.103832-1-puranjay12@gmail.com>
+ <20240321153102.103832-3-puranjay12@gmail.com>
+ <5c66cb9a-8f6e-4839-a590-ffc0d411333e@huaweicloud.com>
+Date: Sat, 23 Mar 2024 10:21:07 +0000
+Message-ID: <mb61pa5mp8d0s.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
-To: "Klymenko, Anatoliy" <Anatoliy.Klymenko@amd.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- "Simek, Michal" <michal.simek@amd.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
- <20240321-dp-live-fmt-v3-8-d5090d796b7e@amd.com>
- <a82d525c-737a-4ac4-9d71-e88f4ba69ea1@linaro.org>
- <MW4PR12MB7165889CE7F27A3F0B29DC7EE6312@MW4PR12MB7165.namprd12.prod.outlook.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <MW4PR12MB7165889CE7F27A3F0B29DC7EE6312@MW4PR12MB7165.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 22/03/2024 20:12, Klymenko, Anatoliy wrote:
-> Hi Krzysztof,
-> 
-> Thanks a lot for the review.
-> 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Thursday, March 21, 2024 10:59 PM
->> To: Klymenko, Anatoliy <Anatoliy.Klymenko@amd.com>; Laurent Pinchart
->> <laurent.pinchart@ideasonboard.com>; Maarten Lankhorst
->> <maarten.lankhorst@linux.intel.com>; Maxime Ripard <mripard@kernel.org>;
->> Thomas Zimmermann <tzimmermann@suse.de>; David Airlie
->> <airlied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Simek, Michal
->> <michal.simek@amd.com>; Andrzej Hajda <andrzej.hajda@intel.com>; Neil
->> Armstrong <neil.armstrong@linaro.org>; Robert Foss <rfoss@kernel.org>; Jonas
->> Karlman <jonas@kwiboo.se>; Jernej Skrabec <jernej.skrabec@gmail.com>; Rob
->> Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
->> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
->> Mauro Carvalho Chehab <mchehab@kernel.org>
->> Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>; dri-
->> devel@lists.freedesktop.org; linux-arm-kernel@lists.infradead.org; linux-
->> kernel@vger.kernel.org; devicetree@vger.kernel.org; linux-
->> media@vger.kernel.org
->> Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
->>
->> Caution: This message originated from an External Source. Use proper caution
->> when opening attachments, clicking links, or responding.
->>
->>
->> On 21/03/2024 21:43, Anatoliy Klymenko wrote:
->>> diff --git a/include/dt-bindings/media/media-bus-format.h b/include/dt-
->> bindings/media/media-bus-format.h
->>> new file mode 100644
->>> index 000000000000..60fc6e11dabc
->>> --- /dev/null
->>> +++ b/include/dt-bindings/media/media-bus-format.h
->>> @@ -0,0 +1,177 @@
->>> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
->>> +/*
->>> + * Media Bus API header
->>> + *
->>> + * Copyright (C) 2009, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
->>> + *
->>> + * This program is free software; you can redistribute it and/or modify
->>> + * it under the terms of the GNU General Public License version 2 as
->>> + * published by the Free Software Foundation.
->>
->> That's not true. Your SPDX tells something entirely different.
->>
-> 
-> Thank you - I'll see how to fix it.
-> 
->> Anyway, you did not explain why you need to copy anything anywhere.
->>
->> Specifically, random hex values *are not bindings*.
->>
-> 
-> The same media bus format values are being used by the reference driver in patch #9. And, as far as I know, we cannot use headers from Linux API headers directly (at least I 
+Xu Kuohai <xukuohai@huaweicloud.com> writes:
 
-I don't understand what does it mean. You can use in your driver
-whatever headers you wish, I don't care about them.
+> On 3/21/2024 11:31 PM, Puranjay Mohan wrote:
+>> LLVM generates bpf_addr_space_cast instruction while translating
+>> pointers between native (zero) address space and
+>> __attribute__((address_space(N))). The addr_space=1 is reserved as
+>> bpf_arena address space.
+>> 
+>> rY = addr_space_cast(rX, 0, 1) is processed by the verifier and
+>> converted to normal 32-bit move: wX = wY
+>> 
+>> rY = addr_space_cast(rX, 1, 0) has to be converted by JIT:
+>> 
+>> Here I explain using symbolic language what the JIT is supposed to do:
+>> We have:
+>> 	src = [src_upper32][src_lower32] // 64 bit src kernel pointer
+>> 	uvm = [uvm_upper32][uvm_lower32] // 64 bit user_vm_start
+>> 
+>> The JIT has to make the dst reg like following
+>> 	dst = [uvm_upper32][src_lower32] // if src_lower32 != 0
+>> 	dst = [00000000000][00000000000] // if src_lower32 == 0
+>> 
+>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+>> ---
+>>   arch/arm64/net/bpf_jit.h                     |  1 +
+>>   arch/arm64/net/bpf_jit_comp.c                | 35 ++++++++++++++++++++
+>>   tools/testing/selftests/bpf/DENYLIST.aarch64 |  2 --
+>>   3 files changed, 36 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
+>> index 23b1b34db088..813c3c428fde 100644
+>> --- a/arch/arm64/net/bpf_jit.h
+>> +++ b/arch/arm64/net/bpf_jit.h
+>> @@ -238,6 +238,7 @@
+>>   #define A64_LSLV(sf, Rd, Rn, Rm) A64_DATA2(sf, Rd, Rn, Rm, LSLV)
+>>   #define A64_LSRV(sf, Rd, Rn, Rm) A64_DATA2(sf, Rd, Rn, Rm, LSRV)
+>>   #define A64_ASRV(sf, Rd, Rn, Rm) A64_DATA2(sf, Rd, Rn, Rm, ASRV)
+>> +#define A64_RORV(sf, Rd, Rn, Rm) A64_DATA2(sf, Rd, Rn, Rm, RORV)
+>>   
+>>   /* Data-processing (3 source) */
+>>   /* Rd = Ra + Rn * Rm */
+>> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+>> index b9b5febe64f0..37c94ebd06b2 100644
+>> --- a/arch/arm64/net/bpf_jit_comp.c
+>> +++ b/arch/arm64/net/bpf_jit_comp.c
+>> @@ -82,6 +82,7 @@ struct jit_ctx {
+>>   	__le32 *ro_image;
+>>   	u32 stack_size;
+>>   	int fpb_offset;
+>> +	u64 user_vm_start;
+>>   };
+>>   
+>>   struct bpf_plt {
+>> @@ -868,6 +869,34 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>>   	/* dst = src */
+>>   	case BPF_ALU | BPF_MOV | BPF_X:
+>
+> is it legal to encode BPF_ADDR_SPACE_CAST with BPF_ALU?
 
+No, the verifier will reject BPF_ALU MOV that has off=BPF_ADDR_SPACE_CAST.
+So, a check is not required but I will add BPF_CLASS(code) == BPF_ALU64 below
+in the next version.
 
-noticed the same pattern in ../dt-bindings/sdtv-standarts.h for
-instance). What would be the best approach to reusing the same defines
-on DT and driver sides from your point of view? Symlink maybe?
-> 
+>>   	case BPF_ALU64 | BPF_MOV | BPF_X:
+>> +		if (insn->off == BPF_ADDR_SPACE_CAST &&
+>> +		    insn->imm == 1U << 16) {
+>> +			/* Zero out tmp2 */
+>> +			emit(A64_EOR(1, tmp2, tmp2, tmp2), ctx);
+>> +
+>> +			/* Move lo_32_bits(src) to dst */
+>> +			if (dst != src)
+>> +				emit(A64_MOV(0, dst, src), ctx);
+>> +
+>> +			/* Logical shift left by 32 bits */
+>> +			emit(A64_LSL(1, dst, dst, 32), ctx);
+>> +
+>> +			/* Get upper 32 bits of user_vm_start in tmp */
+>> +			emit_a64_mov_i(0, tmp, ctx->user_vm_start >> 32, ctx);
+>> +
+>> +			/* dst |= up_32_bits(user_vm_start) */
+>> +			emit(A64_ORR(1, dst, dst, tmp), ctx);
+>> +
+>> +			/* Rotate by 32 bits to get final result */
+>> +			emit_a64_mov_i(0, tmp, 32, ctx);
+>> +			emit(A64_RORV(1, dst, dst, tmp), ctx);
+>> +
+>> +			/* If lo_32_bits(dst) == 0, set dst = tmp2(0) */
+>> +			emit(A64_CBZ(0, dst, 2), ctx);
+>> +			emit(A64_MOV(1, tmp2, dst), ctx);
+>> +			emit(A64_MOV(1, dst, tmp2), ctx);
+>
+> seems we could simplify it to:
+>
+> emit_a64_mov_i(0, dst, ctx->user_vm_start >> 32, ctx);
+> emit(A64_LSL(1, dst, dst, 32), ctx);
+> emit(A64_MOV(0, tmp, src), ctx); // 32-bit mov clears the upper 32 bits
+> emit(A64_CBZ(1, tmp, 2), ctx);
+> emit(A64_ORR(1, tmp, dst, tmp), ctx);
+> emit(A64_MOV(1, dst, tmp), ctx);
 
-Wrap your messages to match mailing list discussion style. There are no
-defines used in DT. If there are, show me them in *THIS* or other
-*upstreamed* (being upstreamed) patchset.
+Thanks, I will use this in the next version. I will move the
+emit(A64_MOV(0, tmp, src), ctx); to the top so if the src and dst are same
+then src will be moved to tmp before it is overwritten through dst:
 
-Whatever you have out of tree or "DO NOT MERGE" does not matter and does
-not justify anything.
+emit(A64_MOV(0, tmp, src), ctx); // 32-bit mov clears the upper 32 bits
+emit_a64_mov_i(0, dst, ctx->user_vm_start >> 32, ctx);
+emit(A64_LSL(1, dst, dst, 32), ctx);
+emit(A64_CBZ(1, tmp, 2), ctx);
+emit(A64_ORR(1, tmp, dst, tmp), ctx);
+emit(A64_MOV(1, dst, tmp), ctx);
 
+>> +		break;
+>
+> not aligned
 
-Best regards,
-Krzysztof
+Will fix it in the next version.
 
+Thanks for the feedback.
+
+Puranjay
 
