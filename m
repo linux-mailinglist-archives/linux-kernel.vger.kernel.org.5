@@ -1,199 +1,120 @@
-Return-Path: <linux-kernel+bounces-112387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B28D887930
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:16:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 762C5887932
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:29:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8603A1F21A6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:16:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CE2D1C20CC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC19F405FB;
-	Sat, 23 Mar 2024 15:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BE441760;
+	Sat, 23 Mar 2024 15:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gR+wZuEP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tQbDpNn1"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D4E729CE7
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 15:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1648B1E522
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 15:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711207012; cv=none; b=kiNBCVDgTCAlk+CS0c8uCiaB8UM5gAridRAoqFlR9+9GD7TCdiqTYHTqbVkN81KpVT47pp2nmAP6d7palP/8h4na7HlBEM/7GLSXQoL8s+2Jd/DOMjWxB3dhkqFsrqEpDtKhVINuIlymU71guaQIqkoGsWDZfaYi1k9IDPGuTOQ=
+	t=1711207779; cv=none; b=B0WsXhGFoNUJ3aPFSgpOTL4OsLRBVXIM02WP7bup7V0kmwxxPKETYYYfzHmbGf0QNXdI+u0Qd+FNQl1ZTRQY4z+1ynzWG+9GCMMM7KuML6FlTM+9vAsL+MJ4tFZRb306lzanAIuBdhGNZO6gUetI/doO69aZ1D5ZCrgc9p+MFE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711207012; c=relaxed/simple;
-	bh=8/IejPvpjwyrmtQylLt92kAA0GQm47DMu4dF7mC0HCw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EjAJ/r690ERVdlDsqm2thbv7OtSt60wG+b4OqbmhwouUPWeJxIaH/uIUKofq2tmz4frGdN1LtZiUkJZT7h88nP37WwmyHMrZQ1Yy/S356/98F1GxONAaZP/qM7BUFPm7GUm+22e65/1BDN2NvmgtJ3qeaUf6PZ0zifLRaliWoB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gR+wZuEP; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711207009;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=HVVxUd0Zld9xbU0wa229w8cCSBmfZ2i7ESIOSMDwyXg=;
-	b=gR+wZuEP64Ivi26BjOscGph4NssvQ3MI9zG+HX1tFOb9cUUDielmdP9zJtEI70zQqRfJ92
-	F0gU/LhxDTnNjIKkAci5jeHuuRwuy1FPRmXZBapMM8OwCjkWdwZVac1Qr0eSvGEOMsMC5u
-	/24k0igggW4Y8deKEsqVVvNTNyjHLNc=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-342-lKTZifP0NJKrehMyAerRWA-1; Sat, 23 Mar 2024 11:16:47 -0400
-X-MC-Unique: lKTZifP0NJKrehMyAerRWA-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-69120b349c9so6925296d6.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 08:16:47 -0700 (PDT)
+	s=arc-20240116; t=1711207779; c=relaxed/simple;
+	bh=YO9gUTgaDfigG3pnRo6pI1UE2a7gJsLDI12TUEB7w6A=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=i8PVtv7OZPE/v9E/DgUGEWJmejFpX4q9yjsGXu0KZp3mEXXdzqYGHLGAHD3MTGT+IbrdYTtRE7nR9PUd31YGCqpSIQZGM24nlGqGLxGJgSADUU8k80L8mT1LQzWfhSETa8ERwuzLXZeD2eIXPWzB05HRkHcxpz6LpYztKEXaZ3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jsperbeck.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tQbDpNn1; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jsperbeck.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso4862075276.0
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 08:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711207777; x=1711812577; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=t7v2PUoOrrqBlYQ910Be8a+zXgflKBAv0+UOOU5fes8=;
+        b=tQbDpNn1AEDpcI/o3JSNAodRE41U7fJ6/7i9blNJv+wCuS97Z0vv2Gw8sQLcUqtq/W
+         cpqXniVXqlYfphPHFM8VDyJqO/La+cbSfpDlftxdOBvP6UqzSGz2lq35eNxepa+d4EEI
+         OOxGBrIpWtiwphnwRsKqVochgxm0th+NTwfo2IvcTXzS3P4e9ligFIPSLmqN4VW+aj/d
+         xRJO6duXAsb41593ygV8b9wKoS+npt+sBY6Fctp81V8L8NUFcGKLh/x1rr0HrpSc3YMB
+         7Sbq3Y7KS9J3dnaGgeKtXmFMYOT/ul6/noA/m+NIgOFgidjUBGsqjyFtggm79Ah7nrfK
+         bO/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711207006; x=1711811806;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HVVxUd0Zld9xbU0wa229w8cCSBmfZ2i7ESIOSMDwyXg=;
-        b=LcRO9dFyL/bI5qs4GgKCvnJum6NV8r3MC/JpjKD8f6T8EqtWvbKsxU+rMnVD9mjomQ
-         VapWhZxeZc9KUCFf2M3pUrRbAHHeNOJDjf4BwudF0QISO+ecS306cwFLXtJItvL3OGq1
-         a+9xaBpjOPbzZWizfCAscYppQu4ayhR9t4LIhKjZNWcYNL9F12zGoZzbRQZef3qU9FOZ
-         bfmYqI2jQ/p1hOsw5B/RJE3jk84mj3ENdhAYImCSe506CvNdzxGCT6VXYXry2tLDSMeh
-         mlGs3IVP19nmTUrme6m2OQpNXrOfOSd3RYzgJWd6+XUGmf+U0l4QUOqPkf1deoPyVA9H
-         MBzg==
-X-Gm-Message-State: AOJu0YyXOGAA0b0Q0Za2NbfiIoEgFPBF0AV57Dg1T5Kv+mU0AYwY/jnS
-	f50SH1vAa2zPZhZfcPyeAOIZyQGgZb4MCg2Zj6cCGpLN4+AoykaMeAM6yYuHyoOJUWWUCFMEgqo
-	1xp1CeMWXu7ZWZc1tuZf9yJUR0U0g1EvbJUnNUhtdIDz8sYyMX4eQ9jMqaKldSAFdHzYyxjwKA9
-	ozHcfeIi9Mm4CV/7U8hnEJv0OvRmhi+6DzN9qR6imcee0=
-X-Received: by 2002:a05:6214:5d81:b0:690:c64d:c2 with SMTP id mf1-20020a0562145d8100b00690c64d00c2mr2601820qvb.2.1711207006272;
-        Sat, 23 Mar 2024 08:16:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFt47SYAwH97tZePGJd4B1bbJ1slye2vSOQirjRSTPcAdv3shZNMWsbvi27EJpRwkH6JEhrfQ==
-X-Received: by 2002:a05:6214:5d81:b0:690:c64d:c2 with SMTP id mf1-20020a0562145d8100b00690c64d00c2mr2601777qvb.2.1711207005505;
-        Sat, 23 Mar 2024 08:16:45 -0700 (PDT)
-Received: from x1n.redhat.com ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id dm2-20020ad44e22000000b0069675bc7182sm1064916qvb.36.2024.03.23.08.16.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 08:16:45 -0700 (PDT)
-From: peterx@redhat.com
-To: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: peterx@redhat.com,
-	SeongJae Park <sj@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH] mm/arch: Provide pud_pfn() fallback
-Date: Sat, 23 Mar 2024 11:16:43 -0400
-Message-ID: <20240323151643.1047281-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1711207777; x=1711812577;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t7v2PUoOrrqBlYQ910Be8a+zXgflKBAv0+UOOU5fes8=;
+        b=Irzx8znH2a97KWWSpgfiaTegHZ/iNlg2b7gjnUHEt9hk7LeGVfPyTPP8tppb6jOGX5
+         qbSefdn97toMtXcJJ2YRAW0/DBrh9wDzXCJHZSfK/a/S9Of7jQh/ZzwFqejX8vNLQiVY
+         ag1OmC8Gapa1rCaHUWYyf8Wjffgk3JDnCx6+7JtAh54diZfBpkh2jXT7Ri5kmQcSx0FR
+         Ko0VfVKTKWlki4ioN395XpZU2yegVLkBYNjI0cLHmndcXDxVcTWzqXGd/0Ks6Lf1FtGJ
+         Y2TOIDW4+jiIdfLCIHAPPlhYXcEoeOkJ7basc4f2bzzErzvZlcyRbo29oUnCbDMFT8Jj
+         E8yw==
+X-Forwarded-Encrypted: i=1; AJvYcCVHvgmihK9gdZyi+OPYRrmThOBo+cuz1CUfuPtmKX7TdCVLgG+thjqTFB7oUKLbvO6QRBuvgif82g/V2gRSSuZV00tuA5Pp7jBTECVh
+X-Gm-Message-State: AOJu0YxYB5IrP0GuungSXd+XIp+NPmyQnIMgIar3WJIeMAA6uA+unzmW
+	H4smMs1KAheIzP2FIaylqPJ17T1XwoVa/BqMV4hQ24hi+O3G+N9hVudGFgnu1tvcG9brIddeF1F
+	XZyKVxQ/a2ZlEkQ==
+X-Google-Smtp-Source: AGHT+IH1aqpo+RMPBCE170zDzlc6ueuHMt1fRst/EWwK7w2daYEfs0yyjpcSlEJTd0vB8iyuPKyN2cM72lpsRnA=
+X-Received: from jsperbeck7.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:26dc])
+ (user=jsperbeck job=sendgmr) by 2002:a05:6902:1b09:b0:dc7:865b:22c6 with SMTP
+ id eh9-20020a0569021b0900b00dc7865b22c6mr71331ybb.8.1711207777038; Sat, 23
+ Mar 2024 08:29:37 -0700 (PDT)
+Date: Sat, 23 Mar 2024 08:29:34 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
+Message-ID: <20240323152934.3307391-1-jsperbeck@google.com>
+Subject: [PATCH] init: open output files from cpio unpacking with O_LARGEFILE
+From: John Sperbeck <jsperbeck@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, 
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	"ndesaulniers@google.com" <ndesaulniers@google.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org, 
+	John Sperbeck <jsperbeck@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Peter Xu <peterx@redhat.com>
+If a member of a cpio archive for an initrd or initrams is larger
+than 2Gb, we'll eventually fail to write to that file when we
+get to that limit, unless O_LARGEFILE is set.
 
-The comment in the code explains the reasons.  We took a different approach
-comparing to pmd_pfn() by providing a fallback function.
+The problem can be seen with this recipe, assuming that BLK_DEV_RAM
+is not configured:
 
-Another option is to provide some lower level config options (compare to
-HUGETLB_PAGE or THP) to identify which layer an arch can support for such
-huge mappings.  However that can be an overkill.
+cd /tmp
+dd if=/dev/zero of=BIGFILE bs=1048576 count=2200
+echo BIGFILE | cpio -o -H newc -R root:root > initrd.img
+kexec -l /boot/vmlinuz-$(uname -r) --initrd=initrd.img --reuse-cmdline
+kexec -e
 
-Cc: Mike Rapoport (IBM) <rppt@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202403231529.HRev1zcD-lkp@intel.com/
-Signed-off-by: Peter Xu <peterx@redhat.com>
+The console will show 'Initramfs unpacking failed: write error'.  With
+the patch, the error is gone.
+
+Signed-off-by: John Sperbeck <jsperbeck@google.com>
 ---
+ init/initramfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Andrew,
-
-If we care about per-commit build errors (and if it is ever feasible to
-reorder), we can move this patch to be before the patch "mm/gup: handle
-huge pud for follow_pud_mask()" in mm-unstable to unbreak build on that
-commit.
-
-Thanks,
----
- arch/riscv/include/asm/pgtable.h    |  1 +
- arch/s390/include/asm/pgtable.h     |  1 +
- arch/sparc/include/asm/pgtable_64.h |  1 +
- arch/x86/include/asm/pgtable.h      |  1 +
- include/linux/pgtable.h             | 10 ++++++++++
- 5 files changed, 14 insertions(+)
-
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 20242402fc11..0ca28cc8e3fa 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -646,6 +646,7 @@ static inline unsigned long pmd_pfn(pmd_t pmd)
- 
- #define __pud_to_phys(pud)  (__page_val_to_pfn(pud_val(pud)) << PAGE_SHIFT)
- 
-+#define pud_pfn pud_pfn
- static inline unsigned long pud_pfn(pud_t pud)
- {
- 	return ((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT);
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 1a71cb19c089..6cbbe473f680 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -1414,6 +1414,7 @@ static inline unsigned long pud_deref(pud_t pud)
- 	return (unsigned long)__va(pud_val(pud) & origin_mask);
- }
- 
-+#define pud_pfn pud_pfn
- static inline unsigned long pud_pfn(pud_t pud)
- {
- 	return __pa(pud_deref(pud)) >> PAGE_SHIFT;
-diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
-index 4d1bafaba942..26efc9bb644a 100644
---- a/arch/sparc/include/asm/pgtable_64.h
-+++ b/arch/sparc/include/asm/pgtable_64.h
-@@ -875,6 +875,7 @@ static inline bool pud_leaf(pud_t pud)
- 	return pte_val(pte) & _PAGE_PMD_HUGE;
- }
- 
-+#define pud_pfn pud_pfn
- static inline unsigned long pud_pfn(pud_t pud)
- {
- 	pte_t pte = __pte(pud_val(pud));
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index cefc7a84f7a4..273f7557218c 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -234,6 +234,7 @@ static inline unsigned long pmd_pfn(pmd_t pmd)
- 	return (pfn & pmd_pfn_mask(pmd)) >> PAGE_SHIFT;
- }
- 
-+#define pud_pfn pud_pfn
- static inline unsigned long pud_pfn(pud_t pud)
- {
- 	phys_addr_t pfn = pud_val(pud);
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 2a1c044ae467..deae9e50f1a8 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -1817,6 +1817,16 @@ typedef unsigned int pgtbl_mod_mask;
- #define pte_leaf_size(x) PAGE_SIZE
- #endif
- 
-+/*
-+ * We always define pmd_pfn for all archs as it's used in lots of generic
-+ * code.  Now it happens too for pud_pfn (and can happen for larger
-+ * mappings too in the future; we're not there yet).  Instead of defining
-+ * it for all archs (like pmd_pfn), provide a fallback.
-+ */
-+#ifndef pud_pfn
-+#define pud_pfn(x) ({ BUILD_BUG(); 0; })
-+#endif
-+
- /*
-  * Some architectures have MMUs that are configurable or selectable at boot
-  * time. These lead to variable PTRS_PER_x. For statically allocated arrays it
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 76deb48c38cb..b5ede45d2f7e 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -366,7 +366,7 @@ static int __init do_name(void)
+ 	if (S_ISREG(mode)) {
+ 		int ml = maybe_link();
+ 		if (ml >= 0) {
+-			int openflags = O_WRONLY|O_CREAT;
++			int openflags = O_WRONLY|O_CREAT|O_LARGEFILE;
+ 			if (ml != 1)
+ 				openflags |= O_TRUNC;
+ 			wfile = filp_open(collected, openflags, mode);
 -- 
-2.44.0
+2.44.0.396.g6e790dbe36-goog
 
 
