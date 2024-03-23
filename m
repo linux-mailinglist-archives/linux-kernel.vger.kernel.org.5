@@ -1,70 +1,73 @@
-Return-Path: <linux-kernel+bounces-112378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AAA988791C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:37:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B2B88791F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:40:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D158B284687
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:37:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF9341C20DB4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F2A3CF42;
-	Sat, 23 Mar 2024 14:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EACE405F9;
+	Sat, 23 Mar 2024 14:40:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="TafdsgGA"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D3p6ufTK"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5DBC1E526
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 14:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF813A1A3;
+	Sat, 23 Mar 2024 14:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711204629; cv=none; b=HhK3zT9e8ZDMVnjmmBNrF7novBkGBWH+6kzrg1s5pMIyIHAH0XReXxdPYV8DbMTzVS1I8weXKYXGRAVzg8PGqpNZilCAuYssMEJ+mrXOfFLPRNzAoq/tT0z5e+Wv/iJlorV0eQb5wFsoJSsb/EZ/GERhO1Z+FzBL7n3M7ll1DE4=
+	t=1711204815; cv=none; b=sOYlk3Sz05umFTtPhGKz2IzepUHnKxLeBF7RYKgzwm+B20C9Y17iUXyiKCj3YMPHMF+nQsP2k1kZMgntmxdyYwBv9DZHq5j8D8UDvEgllu+D1Hy0qwB0tM+lseQUnh5CryEEVhAY3eXK7Zc8VdTax7LbXqeoTuvlU5bbKA4Qqgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711204629; c=relaxed/simple;
-	bh=vpcyMVlI/DMXR+ERqbsS/zt6zwr1wOmpA5CiyYZ4s9c=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=LTFnC2CV2JhzFotNYSFbCRuurkVPGl6JtkRTzmTS3S5efBmv4zXRliFXPXjqIrzXfUq4GUTN/zcr1miV6oXX8P6GRfUdf97+nCkFNOqIje/dF+CiCdFqj3xEHRiN0eErxARV7QUrFAfe//3wIMIsQ8UBtc8nsCbtGDDiC9Q//ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=TafdsgGA; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-69675e3be15so6643786d6.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 07:37:07 -0700 (PDT)
+	s=arc-20240116; t=1711204815; c=relaxed/simple;
+	bh=LIfguKYB9Djf8kpPD3j30oGbgEFgX97d18NhdYb5nko=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PN5lU0qARbnAEgTy1zqUwEY9GPSdVEYanrfnpEKXa5LC5Df6htx39YSTtss8C5RVVfVV30iTX17T000g8kSMswhHBJ9KXKlHPAfv255A+TDUchm3oI0XfkH3aGYSXo6Ydb+bKYp6zxK+TtpYDdhFOEGXwYZOdmWSN+MBgAkPrr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D3p6ufTK; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e0878b76f3so12820105ad.0;
+        Sat, 23 Mar 2024 07:40:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1711204626; x=1711809426; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jgQmyRyGlaC2KW5X3WgrWzY8+HMuHxtZClDLidEb6N4=;
-        b=TafdsgGA+FpXt9smnvER+cAUDuvATwIE0vf2TV//QlhI1JVTEXz6ILJugGvvgn2NLD
-         8ed4vTsr8PGoQN7HdRCVld1qmeL6CimSSMiBplTgnDsWojhBZD8MVo+Bs4/IdXl4IElD
-         TCKD21F4Ue+5vD3buWJXm00NLubJe09ORQE4Q=
+        d=gmail.com; s=20230601; t=1711204813; x=1711809613; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rOjc2RPnmpiTXzEKcY++5BWeNTp0iE6fQolvtms4FQ8=;
+        b=D3p6ufTKYnYztabs4fVEtKohgqXCwBmAAlUdEAVydfxLz7inFwGVIFSj9PSr2dOTps
+         3i982m/rGPZQUOxqwxSAwBPA4jnrk4VEcrJfMr/X0JSvylRUWufoo7qTBS0AL9QUNuGp
+         1r8SyQupkaM7DQ7l+GRm1TF2PGixFYuAvIhjcAkNzwqi/Y19PqpbwMxpwQ6qcO/lO5aW
+         xv63yfIouKPKSrKowneMr6g+XVTR8PNAME8CEUMjUx8mhOfXhfxxXVPJJxlfIuSuVRR8
+         OIjki+lhzL5trO+DP9k7pHnMVcyU1y32Aj+p+53nxeISC2hd+2wszjbiJ2WDEnDHmmr1
+         WrbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711204626; x=1711809426;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jgQmyRyGlaC2KW5X3WgrWzY8+HMuHxtZClDLidEb6N4=;
-        b=qf0VzcL80almvRQL4TlfXzMJJaBmMI/PCPYPVyswwor6dfMsG7FEkIV6MMvd+Kde3o
-         3UbFIUZlk6diue8NOtGH94F0SAXtwE3jbnCZioRFOxuCKoqGxOzIZ0B21iOAira6t3H4
-         pbdKaPZrMQAwXdomV1PiPYUs9dJG8hCj2kIgMdpeWd2kyI5XxEX0vDVlS7Ku8mlO9rsF
-         xgp5bmds3r4RHE4AyHaD84qfD1xpoK1mrGNUhP6DgyRIIZdZtkYt9K4BWJsVZuDKET04
-         dYMa9IKsEn7CnZ09TFslSEpY9pko4OrKHyaHSUQFgwmcx2QrVJC209ezmlMkczBARCtb
-         SCeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWEnGe/d1VttbssFVL4lx57hoENOHcuXkFRJxl8rSEEZxRURynLN+GdqDhYvLCSWWBeL4j/OB+NapJvBB63oxBKGIUeOWy48dNF25nM
-X-Gm-Message-State: AOJu0Yw7PnZ7VJgGujoRIyHod5D/bVqpV+gX5IJNp1VBUvi9TJDqiH3n
-	1rZTjNPjt9a2jCf2XE45sFBtAH2MDr39W75+gMqB75uqO5Bf8PEUGuuBU1t506Q=
-X-Google-Smtp-Source: AGHT+IEpNj3HJ5rsk2hJiPONlgM54XS2X1t7dUDn+fuwrtVH/jR4T8ZI0tu9da7sbr6zd/uuro5wWA==
-X-Received: by 2002:a05:6214:496:b0:690:8a01:eb2b with SMTP id pt22-20020a056214049600b006908a01eb2bmr3006904qvb.56.1711204626416;
-        Sat, 23 Mar 2024 07:37:06 -0700 (PDT)
-Received: from [10.5.0.2] ([185.195.59.198])
-        by smtp.gmail.com with ESMTPSA id u11-20020ad45aab000000b00690fc99a836sm2105198qvg.105.2024.03.23.07.37.05
+        d=1e100.net; s=20230601; t=1711204813; x=1711809613;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rOjc2RPnmpiTXzEKcY++5BWeNTp0iE6fQolvtms4FQ8=;
+        b=qlBPCEt05wbEKdUs6ESeBxzhNqe0VaK/t8RkyS9oWb3hKA1iNCDEszs83PYYJuanDK
+         DWI73q3CQgLG7WGiQ298/0MG9VCR8iGWflLjuOZc+pVa+UEqC7+xHZlLxokvxtPP1cOt
+         FuQyAJBREDeeoTWoQMGSN454lOdPbQmv4RofGmt4+mEtOVgFKWYC0cbFfZPXWFeVepdt
+         6H7RTKxwnShj31Py/EH4mS91soWigVW/cZEh46nKG1omhfsKDlumdQNV8JeS7hCcSRz9
+         expE8LROpPLjrh+lyG5k4NC3AN57B7dkd4RglB8FERhRQ11Z3c7Lb2LwzP2x7rF7W1KO
+         GHVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV7Y04vosV12m/ZUupGvAAjbgGgyLjO0qmMyO/6T1w8bXpqA4SHnXYUC1fScxZuv9+Y1gXUcc8RfXiw6G7QGaY6HDVjjyVwJNDYy3u5d6FzZijf+ccbhOTcHj61anMtfXOV
+X-Gm-Message-State: AOJu0YyEBtywMj+3wxc9nXPfJZ5bgoghM+RA5QOrMxatz+uq8tBWZRCG
+	psHF4QDb77fQ/rZLWGoJC0H4Mndwu7t+viNVHA8iNMfwBxEt562U
+X-Google-Smtp-Source: AGHT+IH2QWiWWMKVd2VZ9/ojjVulzuuqr43nRxs9SFWCgDsm058vFxAPkDMrC+pBYKAnDZ3h6D/ZoQ==
+X-Received: by 2002:a17:903:234b:b0:1e0:2bce:d7e6 with SMTP id c11-20020a170903234b00b001e02bced7e6mr2624148plh.32.1711204812727;
+        Sat, 23 Mar 2024 07:40:12 -0700 (PDT)
+Received: from [192.168.2.64] ([60.163.62.105])
+        by smtp.gmail.com with ESMTPSA id s14-20020a170902b18e00b001def0c700e2sm1631450plr.119.2024.03.23.07.40.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Mar 2024 07:37:05 -0700 (PDT)
-Message-ID: <76ba5a16-5c77-47c3-ba93-0eeff22f936f@joelfernandes.org>
-Date: Sat, 23 Mar 2024 10:37:03 -0400
+        Sat, 23 Mar 2024 07:40:12 -0700 (PDT)
+Message-ID: <d3677b19-63fa-4787-8d5b-468ddbad173a@gmail.com>
+Date: Sat, 23 Mar 2024 22:40:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,75 +75,124 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-From: Joel Fernandes <joel@joelfernandes.org>
-To: Daniel Bristot de Oliveira <bristot@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
- Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
- Thomas Gleixner <tglx@linutronix.de>,
- Vineeth Pillai <vineeth@bitbyteword.org>,
- Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>,
- David Vernet <void@manifault.com>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <1e26ce6d-5567-477f-847b-445160b2f18c@joelfernandes.org>
- <d7d8540e-c417-41fa-aea9-acb80541a30d@kernel.org>
- <bf4a1255-4f70-4c41-8967-81e86c6c2d7f@joelfernandes.org>
-Content-Language: en-US
-In-Reply-To: <bf4a1255-4f70-4c41-8967-81e86c6c2d7f@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] libbpf: add specific btf name info when do core
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240321170444.388225-1-chen.dylane@gmail.com>
+ <CAEf4BzYJeEViQaRJb6u06GJSLa6uBmykRZa4JnWJ9VXw+WoX2g@mail.gmail.com>
+ <f5fe3709-bfc8-4906-a0cc-5fe9b388be6b@gmail.com>
+ <CAEf4Bzb-Wf5sTnDLu29KQ-zWfCnffdUZYLSe_tQTNW_bTSfnPg@mail.gmail.com>
+From: Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <CAEf4Bzb-Wf5sTnDLu29KQ-zWfCnffdUZYLSe_tQTNW_bTSfnPg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> On 3/20/2024 3:24 PM, Daniel Bristot de Oliveira wrote:
->>> On 11/4/2023 6:59 AM, Daniel Bristot de Oliveira wrote:
->>>> Among the motivations for the DL servers is the real-time throttling
->>>> mechanism. This mechanism works by throttling the rt_rq after
->>>> running for a long period without leaving space for fair tasks.
->>>>
->>>> The base dl server avoids this problem by boosting fair tasks instead
->>>> of throttling the rt_rq. The point is that it boosts without waiting
->>>> for potential starvation, causing some non-intuitive cases.
->>>>
->>>> For example, an IRQ dispatches two tasks on an idle system, a fair
->>>> and an RT. The DL server will be activated, running the fair task
->>>> before the RT one. This problem can be avoided by deferring the
->>>> dl server activation.
->>>>
->>>> By setting the zerolax option, the dl_server will dispatch an
->>>> SCHED_DEADLINE reservation with replenished runtime, but throttled.
->>>>
->>>> The dl_timer will be set for (period - runtime) ns from start time.
->>>> Thus boosting the fair rq on its 0-laxity time with respect to 
+Got it, thanks for your detailed reply.
+
+在 2024/3/23 上午1:57, Andrii Nakryiko 写道:
+> On Fri, Mar 22, 2024 at 6:37 AM Tao Chen <chen.dylane@gmail.com> wrote:
+>>
+>> Hi, Nakryiko, thank you for your reply. I try to familiarize with core
+>> in libbpf， the debug info is really helpful for me. But i use the old
+>> kernel btf, so origion debuginfo like:
+>>    struct task_struct___x: found target candidate [130] struct
+>> task_struct in [vmlinux]
 > 
-
-Hi,
-Upon reflection, might we simplify the solution by treating RT as a deadline
-reservation as well?
-
-The RT deadline reservation can have shorter deadline so it will be interrupted
-less immediately by CFS due to EDF. Would that work, or was that already tried
-and has other dragons?
-
-If we could pull that off, then we do not need all the deferral/timer stuff and
-could considering dropping this patch. Yes it is more code, but this 6th patch
-is also big and non trivial.
-
-Juri, Daniel, all, what do you think?
-
-(On the other hand if we want to keep this patch as a first step, and
-incrementally improve that is Ok, but  I believe we do need to make a decision..)
-
-By the way, is there a still a slot in OSPM available to discuss these? If so
-that would be great. I can put up some slides.
-
-cheers,
-
- - Joel
+> the idea here is to not emit path to BTF (otherwise we normally should
+> emit [/sys/kernel/btf/vmlinux], but rather distinguish whether it's a
+> kernel BTF ([vmlinux]) or some kernel module BTF ([<module-name>]).
+> 
+> In your case you are overriding vmlinux BTF by using btf_custom_path
+> option (so you should know where to find it, if you need to debug
+> something). It's still, conceptually, a [vmlinux], and I'd like to
+> keep it this way.
+> 
+>> I think it may be more clear, if we print btf name when we use old
+>> kernel btf like:
+>>    struct task_struct___x: found target candidate [130] struct
+>> task_struct in [/boot/***.btf]
+>> The patch just solve debug info show for newbies above.
+>>
+>> 在 2024/3/22 上午2:52, Andrii Nakryiko 写道:
+>>> On Thu, Mar 21, 2024 at 10:04 AM Tao Chen <chen.dylane@gmail.com> wrote:
+>>>>
+>>>> No logic changed, just add specific btf name when core info
+>>>> print, maybe it seems more understandable.
+>>>>
+>>>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+>>>> ---
+>>>>    tools/lib/bpf/libbpf.c | 14 +++++++++-----
+>>>>    1 file changed, 9 insertions(+), 5 deletions(-)
+>>>>
+>>>
+>>> Can you elaborate on what problem you are trying to solve?
+>>> Conceptually libbpf does look for types in vmlinux (meaning main
+>>> kernel BTF), even if user overrides BTF location (presumably because
+>>> of old kernel). So even when we emit "vmlinux" in logs, it seems
+>>> correct.
+>>>
+>>> pw-bot: cr
+>>>
+>>>
+>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>> index afd09571c482..b32154288b4a 100644
+>>>> --- a/tools/lib/bpf/libbpf.c
+>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>> @@ -5653,7 +5653,8 @@ static int load_module_btfs(struct bpf_object *obj)
+>>>>    }
+>>>>
+>>>>    static struct bpf_core_cand_list *
+>>>> -bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 local_type_id)
+>>>> +bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 local_type_id,
+>>>> +                   const char *targ_btf_path)
+>>>>    {
+>>>>           struct bpf_core_cand local_cand = {};
+>>>>           struct bpf_core_cand_list *cands;
+>>>> @@ -5680,7 +5681,8 @@ bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 l
+>>>>
+>>>>           /* Attempt to find target candidates in vmlinux BTF first */
+>>>>           main_btf = obj->btf_vmlinux_override ?: obj->btf_vmlinux;
+>>>> -       err = bpf_core_add_cands(&local_cand, local_essent_len, main_btf, "vmlinux", 1, cands);
+>>>> +       err = bpf_core_add_cands(&local_cand, local_essent_len, main_btf,
+>>>> +                                targ_btf_path ?: "vmlinux", 1, cands);
+>>>>           if (err)
+>>>>                   goto err_out;
+>>>>
+>>>> @@ -5793,7 +5795,8 @@ static int bpf_core_resolve_relo(struct bpf_program *prog,
+>>>>                                    int relo_idx,
+>>>>                                    const struct btf *local_btf,
+>>>>                                    struct hashmap *cand_cache,
+>>>> -                                struct bpf_core_relo_res *targ_res)
+>>>> +                                struct bpf_core_relo_res *targ_res,
+>>>> +                                const char *targ_btf_path)
+>>>>    {
+>>>>           struct bpf_core_spec specs_scratch[3] = {};
+>>>>           struct bpf_core_cand_list *cands = NULL;
+>>>> @@ -5813,7 +5816,7 @@ static int bpf_core_resolve_relo(struct bpf_program *prog,
+>>>>
+>>>>           if (relo->kind != BPF_CORE_TYPE_ID_LOCAL &&
+>>>>               !hashmap__find(cand_cache, local_id, &cands)) {
+>>>> -               cands = bpf_core_find_cands(prog->obj, local_btf, local_id);
+>>>> +               cands = bpf_core_find_cands(prog->obj, local_btf, local_id, targ_btf_path);
+>>>>                   if (IS_ERR(cands)) {
+>>>>                           pr_warn("prog '%s': relo #%d: target candidate search failed for [%d] %s %s: %ld\n",
+>>>>                                   prog_name, relo_idx, local_id, btf_kind_str(local_type),
+>>>> @@ -5920,7 +5923,8 @@ bpf_object__relocate_core(struct bpf_object *obj, const char *targ_btf_path)
+>>>>                           if (prog->obj->gen_loader)
+>>>>                                   continue;
+>>>>
+>>>> -                       err = bpf_core_resolve_relo(prog, rec, i, obj->btf, cand_cache, &targ_res);
+>>>> +                       err = bpf_core_resolve_relo(prog, rec, i, obj->btf, cand_cache, &targ_res,
+>>>> +                                                   targ_btf_path);
+>>>>                           if (err) {
+>>>>                                   pr_warn("prog '%s': relo #%d: failed to relocate: %d\n",
+>>>>                                           prog->name, i, err);
+>>>> --
+>>>> 2.34.1
+>>>>
 
