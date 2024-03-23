@@ -1,231 +1,213 @@
-Return-Path: <linux-kernel+bounces-112138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4035F887622
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:30:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECC0887627
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:33:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECF6D284CB5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:30:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35EF11F221AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F8B623;
-	Sat, 23 Mar 2024 00:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1FC01113;
+	Sat, 23 Mar 2024 00:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DvoqD8Lh"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zGlgkUMb"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3707EDE
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D60D7F
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711153833; cv=none; b=LF7iOF0ehE4HX9wSfE7XZ9y5x2td+oPvxQYtPaSRS4HHM9FZFJxB8bFX+cMP8hNT+bAggvuMP+xLmXkf77ytgyINAkki1Ph3JIVwQ+gok9jf/LnLxhCIkno58rVWxQy+E7Zj1gqzuGRvKZDKqharmm1HWZ4/LIPSc46qjbBVoGM=
+	t=1711154003; cv=none; b=TOMEdhDQzcVPEkwUSVM1O/xIujiPc7hp6Gcm4dj7ewvp+KIfPf7Vh9k3TRu8sbieY6eTzRPYqQ6VFZw8Eo88EO3b0+mZRAZ9kbX3d9LEqonMpVINfbO5SOukihVX/SLaROi0AjZ+qShUT6/fRBeAaRCzAAwOSpIDoH7IBsK2a9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711153833; c=relaxed/simple;
-	bh=eDUnmack5CR8AHJe5tuRk+RrWAFaU7DscA2eLcDKh8o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eqg1vfjQ2G3NT3FBrtUCc04RdSkvtPGN2IPAFIv2u0HXNfN9COwTey5ykG3M1wXMyCBgQlV/iS3QxM+vcPOvhNhD0mN/3a3hpvd+lMu+5j3XO6FbDERJza9eZajRdatSkBfFW/lM+grWMk0LL0oV5I/l9jdwb4aa6d46SjZgfFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DvoqD8Lh; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711153830;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dXzFSacRUGOz3guP7FE0TFnIIG/3J2Y+D5Xv5mcIJ4I=;
-	b=DvoqD8LhL6+PNudPvIUPa/bZZmtU+oguNK1vzlWrxy4yKM9weEpqAYEFUawxPlQuGKqHDr
-	0lQd4KT7Is1JZc03CrOjFKcmn5wC9+dp/awFWelBG1PRa8osrTT/YDxSV4BeoUT1MnmW4X
-	taJBca7ec6jeuRsfkalc/YoZmw+WBtk=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-M2IWI7AVOpO1XlzYdDg2xQ-1; Fri, 22 Mar 2024 20:30:29 -0400
-X-MC-Unique: M2IWI7AVOpO1XlzYdDg2xQ-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-43137863434so2142781cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:30:29 -0700 (PDT)
+	s=arc-20240116; t=1711154003; c=relaxed/simple;
+	bh=qRatC590E6b0IOeG6lRfhCABOutlgVwESB/qkgefRXU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i//P1jlQqd5gcoBd7WH+QzDBoocTPic823VV+pfqp1A83W4zYo5AmRW1A5XsVZHn6rbSzBr+IICRd2b57DBOdDMTcubDDJs8Nl5CwRnqa9YnHCZgfYBVcSRpjXTAPrsWEz8T9o354WgPEv6TIbdGpezbxwguRUglgeli9DS9HGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zGlgkUMb; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d220e39907so38328061fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711154000; x=1711758800; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1K9Gr4xxseb63O+ZIp/M+lMupGMpWBFPhuDFz3NoIi4=;
+        b=zGlgkUMbzclH1HSqRwzgDFzsqKGpOSwHKMAzNDPAoiYmY0Fm6NrkVA6lI2HVmYqp/2
+         LIhxqi1yRKTpYV2ZhMz+54Fo67Qt1IezGdvfja0RpntlON3Varc51V/ln//AY97riS8m
+         Q4ipJHNkROBYX8ZhEqSj2N7+KlLTE+fcg9BL1am+EHlhFoQqZ6E674/8nGMojhFMb0CI
+         uFRyXPGcUKli0KpwxxEVzGUMG0PlWgRYjpn3Pl6Wu6HpPuvCJVSSpUen587kBkw6tXQj
+         wBKcW+ooM5z2MIE6Be4CPdmalDASnqO2HPQ7jM0cOjTFldKUj91regDXr6cRfGNq2zGe
+         IBSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711153829; x=1711758629;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dXzFSacRUGOz3guP7FE0TFnIIG/3J2Y+D5Xv5mcIJ4I=;
-        b=EGDMHUxG7SPK6e7z2sfREocyEFKC+OAG/5wOVYD4jj0md0+gQnJwIdMq+/S+mNSRio
-         Ot9ww9lou5dGzJ9ggI0KX8Z7LA2bIK3hCZCCFIWxRnL8DA3WJDnwU6YzfsqNOsEQbNOw
-         QjF4xMMxXkj/8d6IukU1MkvZRWeudm4rd9L4IrZgGtZMjTAX7XOEvj55rEEjXzQDUQHI
-         Ta9ofPx+8Y7GUneR819youRm2+mjSmSD9p8QfBykm/toi8poNEYknfi/ha5PamOLG0DC
-         ab8RRFxi1SqWPAyIQiM2qW+l0zjkA9DkdqJ0cGr261NbRZ0DytO6KfFZWAOQvu7GygC8
-         0JaA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOnI6WHEiBw37wmk2j8n89nXXXfs7SuX5hZkg5NYGWATfSe8mUKVv03XNmYG9m1schjdc8wBztNmuaeLv77qvW5qKTAkPYA5GkWZDu
-X-Gm-Message-State: AOJu0Yyn1H2KrVEbAzQPiAChOeOuq9g9LTBxAc0luG50N0w8RhVacCKw
-	83Lb1iDcBycYWvhx1dfcnoe0nFsQjDXbF9EUkPG211x5PWO89hpLNCsXAl8juhl6wGL5/qPgJqR
-	ttXZeR9bI2Tv3NwrNiud9VPj/4ZAf/dc19tg73ZA4mC1i25uZuLdTQ148qacrLw==
-X-Received: by 2002:a05:622a:1a97:b0:430:c2dc:a5ef with SMTP id s23-20020a05622a1a9700b00430c2dca5efmr1126582qtc.2.1711153828673;
-        Fri, 22 Mar 2024 17:30:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE3Zwwie8lW8e1zjPdHeXjIabqqIya++N3e9UmqxHEMxwmGbP31eJT5HvpFdJCDH7G39Ns7UA==
-X-Received: by 2002:a05:622a:1a97:b0:430:c2dc:a5ef with SMTP id s23-20020a05622a1a9700b00430c2dca5efmr1126562qtc.2.1711153828186;
-        Fri, 22 Mar 2024 17:30:28 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id fy15-20020a05622a5a0f00b00430911bac01sm315722qtb.74.2024.03.22.17.30.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 17:30:27 -0700 (PDT)
-Date: Fri, 22 Mar 2024 20:30:24 -0400
-From: Peter Xu <peterx@redhat.com>
-To: SeongJae Park <sj@kernel.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
-	linux-arm-kernel@lists.infradead.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-riscv@lists.infradead.org,
-	James Houghton <jthoughton@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 03/12] mm: Make HPAGE_PXD_* macros even if !THP
-Message-ID: <Zf4ioDkuSNJ0f1vR@x1n>
-References: <20240321220802.679544-4-peterx@redhat.com>
- <20240322171456.118997-1-sj@kernel.org>
+        d=1e100.net; s=20230601; t=1711154000; x=1711758800;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1K9Gr4xxseb63O+ZIp/M+lMupGMpWBFPhuDFz3NoIi4=;
+        b=R+VmNYJ7cRGZfPsXF7mh1IWWHAvxAnzMuzU89ImiAvqLk+RHnsJ+ptkttqxki0Nz9J
+         Zx3JqMWFqwIGSwsk+AFe4LXrYn+I33hbD/4Y16WCcAhjMf1NKcEnjVBbcy1g7isv6gnw
+         y17aufNaWxkzjhtsraXV+MG3Fo9TQ43rTChP3N30NOJpiyJ/rV/JT4smwn1ju02lV03Y
+         EW0pgnCrV9bTPsNXMWdn6qWWm3TM0UDM/8GPXx+4zOKr37TN+WGNivyXQlv1n/K6n6WF
+         onZrgD4yC4TEg/QHrRc8EjIa0tnoDTD+qbsT/kCF4FyWpk5ndhFwRcudFtgtlRlhlD4O
+         91HA==
+X-Forwarded-Encrypted: i=1; AJvYcCXoEPDU2Eo/k1m50T1kB/CntqKDROlQ4hdx8uTnBh2BVuAYvEflkNH2WL66OlRCruQdMJoeHBqI6OparDRAA9W1wrbsSerPw1MBxxU8
+X-Gm-Message-State: AOJu0YyTJd6p38nkaLUQ8J1Qp2MJMaSOMJpNZQtTTsUPvS9VXU6fW7Yf
+	umSI/TUJXTh37WCfYPNdvukSQeszN3UPU7ETim9+U+x0cRBcOnEqKZG5TSZhAKc=
+X-Google-Smtp-Source: AGHT+IEnQFm26TVm1mHLqzW2v5Ftxjgc99itX5oz1q6CRFPx53zTkewQtYDpJdM5QfEG/6fafz+e6w==
+X-Received: by 2002:a05:6512:54e:b0:513:22f0:c3af with SMTP id h14-20020a056512054e00b0051322f0c3afmr547669lfl.4.1711154000463;
+        Fri, 22 Mar 2024 17:33:20 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id n19-20020a170906119300b00a4660b63502sm360863eja.12.2024.03.22.17.33.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 17:33:20 -0700 (PDT)
+Message-ID: <9ac4117c-755e-4e49-b3a2-661e7195a7ed@linaro.org>
+Date: Sat, 23 Mar 2024 01:33:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240322171456.118997-1-sj@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 RESEND 6/6] arm64: dts: qcom: sm8650: Add video and
+ camera clock controllers
+Content-Language: en-US
+To: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+ Jagadeesh Kona <quic_jkona@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Taniya Das <quic_tdas@quicinc.com>,
+ Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+ Ajit Pandey <quic_ajipan@quicinc.com>,
+ Imran Shaik <quic_imrashai@quicinc.com>
+References: <20240321092529.13362-1-quic_jkona@quicinc.com>
+ <20240321092529.13362-7-quic_jkona@quicinc.com>
+ <0a7da687-18fb-437f-b33a-e4a1de20177e@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <0a7da687-18fb-437f-b33a-e4a1de20177e@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 22, 2024 at 10:14:56AM -0700, SeongJae Park wrote:
-> Hi Peter,
-
-Hi, SeongJae,
-
+On 21.03.2024 14:07, Vladimir Zapolskiy wrote:
+> Hello Jagadeesh,
 > 
-> On Thu, 21 Mar 2024 18:07:53 -0400 peterx@redhat.com wrote:
+> On 3/21/24 11:25, Jagadeesh Kona wrote:
+>> Add device nodes for video and camera clock controllers on Qualcomm
+>> SM8650 platform.
+>>
+>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sm8650.dtsi | 28 ++++++++++++++++++++++++++++
+>>   1 file changed, 28 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+>> index 32c0a7b9aded..d862aa6be824 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+>> @@ -4,6 +4,8 @@
+>>    */
+>>     #include <dt-bindings/clock/qcom,rpmh.h>
+>> +#include <dt-bindings/clock/qcom,sm8450-videocc.h>
+>> +#include <dt-bindings/clock/qcom,sm8650-camcc.h>
+>>   #include <dt-bindings/clock/qcom,sm8650-dispcc.h>
+>>   #include <dt-bindings/clock/qcom,sm8650-gcc.h>
+>>   #include <dt-bindings/clock/qcom,sm8650-gpucc.h>
+>> @@ -3110,6 +3112,32 @@ opp-202000000 {
+>>               };
+>>           };
+>>   +        videocc: clock-controller@aaf0000 {
+>> +            compatible = "qcom,sm8650-videocc";
+>> +            reg = <0 0x0aaf0000 0 0x10000>;
+>> +            clocks = <&bi_tcxo_div2>,
+>> +                 <&gcc GCC_VIDEO_AHB_CLK>;
+>> +            power-domains = <&rpmhpd RPMHPD_MMCX>;
+>> +            required-opps = <&rpmhpd_opp_low_svs>;
 > 
-> > From: Peter Xu <peterx@redhat.com>
-> > 
-> > These macros can be helpful when we plan to merge hugetlb code into generic
-> > code.  Move them out and define them even if !THP.
-> > 
-> > We actually already defined HPAGE_PMD_NR for other reasons even if !THP.
-> > Reorganize these macros.
-> > 
-> > Reviewed-by: Christoph Hellwig <hch@infradead.org>
-> > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >  include/linux/huge_mm.h | 17 ++++++-----------
-> >  1 file changed, 6 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> > index de0c89105076..3bcdfc7e5d57 100644
-> > --- a/include/linux/huge_mm.h
-> > +++ b/include/linux/huge_mm.h
-> > @@ -64,9 +64,6 @@ ssize_t single_hugepage_flag_show(struct kobject *kobj,
-> >  				  enum transparent_hugepage_flag flag);
-> >  extern struct kobj_attribute shmem_enabled_attr;
-> >  
-> > -#define HPAGE_PMD_ORDER (HPAGE_PMD_SHIFT-PAGE_SHIFT)
-> > -#define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
-> > -
-> >  /*
-> >   * Mask of all large folio orders supported for anonymous THP; all orders up to
-> >   * and including PMD_ORDER, except order-0 (which is not "huge") and order-1
-> > @@ -87,14 +84,19 @@ extern struct kobj_attribute shmem_enabled_attr;
-> >  #define thp_vma_allowable_order(vma, vm_flags, smaps, in_pf, enforce_sysfs, order) \
-> >  	(!!thp_vma_allowable_orders(vma, vm_flags, smaps, in_pf, enforce_sysfs, BIT(order)))
-> >  
-> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  #define HPAGE_PMD_SHIFT PMD_SHIFT
-> >  #define HPAGE_PMD_SIZE	((1UL) << HPAGE_PMD_SHIFT)
-> >  #define HPAGE_PMD_MASK	(~(HPAGE_PMD_SIZE - 1))
-> > +#define HPAGE_PMD_ORDER (HPAGE_PMD_SHIFT-PAGE_SHIFT)
-> > +#define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
-> >  
-> >  #define HPAGE_PUD_SHIFT PUD_SHIFT
-> >  #define HPAGE_PUD_SIZE	((1UL) << HPAGE_PUD_SHIFT)
-> >  #define HPAGE_PUD_MASK	(~(HPAGE_PUD_SIZE - 1))
-> > +#define HPAGE_PUD_ORDER (HPAGE_PUD_SHIFT-PAGE_SHIFT)
-> > +#define HPAGE_PUD_NR (1<<HPAGE_PUD_ORDER)
+> Please add default status = "disabled";
 > 
-> I just found latest mm-unstable fails one of my build configurations[1] with
-> below error.  'git bisect' says this is the first patch set started the
-> failure.  I haven't looked in deep, but just reporting first.
+>> +            #clock-cells = <1>;
+>> +            #reset-cells = <1>;
+>> +            #power-domain-cells = <1>;
+>> +        };
+>> +
+>> +        camcc: clock-controller@ade0000 {
+>> +            compatible = "qcom,sm8650-camcc";
+>> +            reg = <0 0x0ade0000 0 0x20000>;
+>> +            clocks = <&gcc GCC_CAMERA_AHB_CLK>,
+>> +                 <&bi_tcxo_div2>,
+>> +                 <&bi_tcxo_ao_div2>,
+>> +                 <&sleep_clk>;
+>> +            power-domains = <&rpmhpd RPMHPD_MMCX>;
+>> +            required-opps = <&rpmhpd_opp_low_svs>;
 > 
->     In file included from .../include/linux/mm.h:1115,
->                      from .../mm/vmstat.c:14:
->     .../mm/vmstat.c: In function 'zoneinfo_show_print':
->     .../include/linux/huge_mm.h:87:25: error: 'PMD_SHIFT' undeclared (first use in this function); did you mean 'PUD_SHIFT'?
->        87 | #define HPAGE_PMD_SHIFT PMD_SHIFT
->           |                         ^~~~~~~~~
+> Please add default status = "disabled";
 > 
-> [1] https://github.com/awslabs/damon-tests/blob/next/corr/tests/build_m68k.sh
+>> +            #clock-cells = <1>;
+>> +            #reset-cells = <1>;
+>> +            #power-domain-cells = <1>;
+>> +        };
+>> +
+>>           mdss: display-subsystem@ae00000 {
+>>               compatible = "qcom,sm8650-mdss";
+>>               reg = <0 0x0ae00000 0 0x1000>;
+> 
+> After disabling the clock controllers
 
-Apologies for the issue.  This is caused by !CONFIG_MMU, I think.
+Clock controllers should never be disabled period, that defeats the
+entire point of having unused clk/pd cleanup.
 
-I thought this would be fairly easy to fix by putting these macros under
-CONFIG_PGTABLE_HAS_HUGE_LEAVES, however when doing this I could have found
-some other issue that violates this rule.. mm/vmstat.c has referenced
-HPAGE_PMD_NR even if vmstat_item_print_in_thp() wanted to guard it only
-with CONFIG_THP.
+The only reason for them to be disabled is for cases where platform
+crashes on access due to stinky "security" settings (like with audio
+clocks), or when people are too lazy to upstream panel drivers and
+end up partially upstreaming display-related changes and continue
+using the bootloader-initialized framebuffer. This takes away from
+the very little determinism we have.
 
-/home/peterx/git/linux/mm/vmstat.c: In function 'zoneinfo_show_print':
-/home/peterx/git/linux/mm/vmstat.c:1689:42: error: 'HPAGE_PMD_NR' undeclared (first use in this function)
- 1689 |                                 pages /= HPAGE_PMD_NR;
-      |                                          ^~~~~~~~~~~~
-/home/peterx/git/linux/mm/vmstat.c:1689:42: note: each undeclared identifier is reported only once for each function it appears in
-  CC      drivers/tty/tty_port.o
-/home/peterx/git/linux/mm/vmstat.c: In function 'vmstat_start':
-/home/peterx/git/linux/mm/vmstat.c:1822:33: error: 'HPAGE_PMD_NR' undeclared (first use in this function)
- 1822 |                         v[i] /= HPAGE_PMD_NR;
-      |                                 ^~~~~~~~~~~~
-make[4]: *** [/home/peterx/git/linux/scripts/Makefile.build:243: mm/vmstat.o] Error 1
-
-static __always_inline bool vmstat_item_print_in_thp(enum node_stat_item item)
-{
-        if (!IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
-                return false;
-        ...
-}
-
-I think the problem is vmstat_item_print_in_thp() uses IS_ENABLED() however
-that won't stop compiler from looking into the "if".. so it'll still try to
-find the HPAGE_PMD_NR macro.
-
-It means, I may need to further change vmstat_item_print_in_thp() to make
-this work in the clean way.. by properly switching to a #ifdef.
-
-For that I'll need to post a formal patch and add people to review.  I'll
-keep you posted.
-
-Side note: thank you for your script, just to mention make.cross has been
-moved to kbuild/, and it'll also need kbuild.sh now to work.  So you may
-want to fix your test script (and it worked for you because you kept the
-old make.cross around), like:
-
-  wget https://raw.githubusercontent.com/intel/lkp-tests/master/kbuild/make.cross -O ./bin/make.cross
-  wget https://raw.githubusercontent.com/intel/lkp-tests/master/kbuild/kbuild.sh -O ./bin/kbuild.sh
-
-Thanks,
-
--- 
-Peter Xu
-
+Konrad
 
