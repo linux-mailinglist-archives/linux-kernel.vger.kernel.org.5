@@ -1,52 +1,56 @@
-Return-Path: <linux-kernel+bounces-112254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF61688777B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 09:05:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A33C887780
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 09:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17AB81C20DF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:05:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6631CB21981
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F3FD267;
-	Sat, 23 Mar 2024 08:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="dxrmS6g9"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A7308F4E;
-	Sat, 23 Mar 2024 08:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3283FD515;
+	Sat, 23 Mar 2024 08:11:13 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58693FE4;
+	Sat, 23 Mar 2024 08:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711181092; cv=none; b=WSCR+mcE4uDaQVGqCvauR00PwI0HDU2EgFIho6NVyvxZTu/K3VWbi5lkUT6mM2XExuUbpTGaH7vhIYk42sWK9Zy5gpVOxN5Pu024laPqOSt9pBQU8Wg2XGzIAUftmum7ECpPeLxhUwUjfN7iX0sY4Z2c/lGjjZ0IBUdx9nicfEk=
+	t=1711181472; cv=none; b=SijNgqMh8mIMOSDOW1I8O0gTOJxDa1sZzhug/3qxy/hB3wodL6CgcgA9Ip/37xaz/Y36Z3Xz3g44bRkONvYIT5T55DrBpXieYk58q2ckOGXbbGY4IA5R47OB/CbEfk+w07Kdd5dx56yVG9LCJnDXUfMT/1bsuXpk2fvHANgg3cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711181092; c=relaxed/simple;
-	bh=LOzqZIJfq3GFDFYMFq76hbLnaXAucqVOGo9lZ9q+xnU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GaBorfcIrREGr7Bc4PkjdOsZcSPxv5Nbhkz4N0CD/I9xNhpzL1zSO41qwHTO+v9FOqf75UBCDP9asgsYUWV74xc0ObriJS7n3vGqORCYd0DCqHDuL2T4x4GpUfeCb8YBLlo9IuYxZ0MLEFA4xwA5uw9WH29Jn/hUTGn/NBNPSA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=dxrmS6g9; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=4sLPu
-	xdZiClCXB1J1+1mjIh7A/SbM4HGp17P+htLANo=; b=dxrmS6g96dfWIY7y+f21z
-	0br3Z1/bZVXl4IGz5SiCMg46a8UbjIrekITGNpMo/Jaoxw3uN61132PlcaQXVue3
-	x+YVm67xP7aBJr+PpbHtsgLhlaytZvPANkDYna/za4xDnUwKGIYUAGyVAoAGEW81
-	xA8F4dp4lTFcJza5XJmTHY=
-Received: from localhost.localdomain (unknown [111.198.54.11])
-	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wDX_m7_jP5l6aBtAw--.18544S2;
-	Sat, 23 Mar 2024 16:04:16 +0800 (CST)
-From: LuMingYin <lumingyindetect@163.com>
-To: linux-sound@vger.kernel.org,
+	s=arc-20240116; t=1711181472; c=relaxed/simple;
+	bh=FQKFKIoMV+BXJdStkMqVeeMG8DIkHc11klM8n2DscHc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MRe+J7ZdN1GTqu7sT+cU9rc++b9emh2g4eZHmvvtus/6q3nPgkYTTabh+gXY9n7SaPWxjo53oypI9XlauZJj2djjIWQhrhGLIhnIqQqA0qXoTdFKIstCtHwTc44Tv4ijuGtUMFJGlqEIRj5b5U3rioSy+aV2WevzqfDKc4oauUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from localhost.localdomain (unknown [95.90.237.163])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id C12CE61E5FE35;
+	Sat, 23 Mar 2024 09:09:58 +0100 (CET)
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+To: Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: Colin Ian King <colin.i.king@intel.com>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	minhuadotchen@gmail.com,
-	LuMingYin <lumingyindetect@163.com>
-Subject: [PATCH] sound:Fix a memory leak related to variable data
-Date: Sat, 23 Mar 2024 16:04:13 +0800
-Message-Id: <20240323080413.641089-1-lumingyindetect@163.com>
-X-Mailer: git-send-email 2.25.1
+Subject: [PATCH] KVM: VMX: make vmx_init a late init call to get to init process faster
+Date: Sat, 23 Mar 2024 09:05:42 +0100
+Message-ID: <20240323080541.10047-2-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,47 +58,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDX_m7_jP5l6aBtAw--.18544S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr1UKF4xJw1UGw4fAFWxtFb_yoW8Ww4fpF
-	W3Kry3tF97Ww1IkFn7tr4kWF1fZa1xZayDGwsrKw1UJFy3Xr10va4SyryrArZYy3ySkr4r
-	CF4jyrWfA39xAFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UTlksUUUUU=
-X-CM-SenderInfo: poxpx0hj1l0vphwhu3i6rwjhhfrp/1tbiTwKq92XAlCzcmAAAsJ
 
-In the file /linux/sound/core/control_compat.c, a pointer named 'data' is defined at line 82. This pointer allocates a block of dynamic memory using the 'kzalloc' function at line 85. When the if statement at line 86 returns false, it indicates successful allocation of the dynamic memory area pointed to by 'data'. However, when the if statement at line 90 returns true, the program returns at line 91. During this process, the dynamic memory area pointed to by 'data' is neither used as in the switch statement at line 108 nor deallocated, leading to a memory leak bug. The if statement at line 95 also has the same issue. This commit fixes this problem.
+From: Colin Ian King <colin.i.king@intel.com>
 
-Signed-off-by: LuMingYin <lumingyindetect@163.com>
+Making vmx_init a late initcall improves QEMU kernel boot times to
+get to the init process. Average of 100 boots, QEMU boot average
+reduced from 0.776 seconds to 0.622 seconds (~19.8% faster) on
+Alder Lake i9-12900 and ~0.5% faster for non-QEMU UEFI boots.
+
+Signed-off-by: Colin Ian King <colin.i.king@intel.com>
+[Take patch
+https://github.com/clearlinux-pkgs/linux/commit/797db35496031b19ba37b1639ac5fa5db9159a06
+and fix spelling of Alder Lake.]
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 ---
- sound/core/control_compat.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ arch/x86/kvm/vmx/vmx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-index 934bb945e702..32113eb06f68 100644
---- a/sound/core/control_compat.c
-+++ b/sound/core/control_compat.c
-@@ -87,13 +87,19 @@ static int snd_ctl_elem_info_compat(struct snd_ctl_file *ctl,
- 		return -ENOMEM;
- 
- 	/* copy id */
--	if (copy_from_user(&data->id, &data32->id, sizeof(data->id)))
-+	if (copy_from_user(&data->id, &data32->id, sizeof(data->id))){
-+		kfree(data);
-+		data = NULL;
- 		return -EFAULT;
-+	}
- 	/* we need to copy the item index.
- 	 * hope this doesn't break anything..
- 	 */
--	if (get_user(data->value.enumerated.item, &data32->value.enumerated.item))
-+	if (get_user(data->value.enumerated.item, &data32->value.enumerated.item)){
-+		kfree(data);
-+		data = NULL;
- 		return -EFAULT;
-+	}
- 
- 	err = snd_ctl_elem_info(ctl, data);
- 	if (err < 0)
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index c37a89eda90f..0a9f4b20fbda 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -8783,4 +8783,4 @@ static int __init vmx_init(void)
+ 	kvm_x86_vendor_exit();
+ 	return r;
+ }
+-module_init(vmx_init);
++late_initcall(vmx_init);
 -- 
-2.25.1
+2.43.0
 
 
