@@ -1,160 +1,139 @@
-Return-Path: <linux-kernel+bounces-112149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10889887645
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:50:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11BB0887646
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD319281F6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:50:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 229071C229B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D053D1C06;
-	Sat, 23 Mar 2024 00:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A349BA48;
+	Sat, 23 Mar 2024 00:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IvqxBjo6"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="dNi6vZJw"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9763B621;
-	Sat, 23 Mar 2024 00:49:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBA27F
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:54:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711154991; cv=none; b=H5Wp9fNcSrbKJ+Dh6VrNm+UHAGeSHr7BBw19l4wvzdfKYX0/70vzsayrkxKUBieXB0C08lbROMQ19SsT2vjTFREyUlSa7pNnHUd4L2tls0O3d7ypDPAGOYfAsPDN6/7j5rxNoBjIKfB1Z5uJU4SN68O6BOLskPrw4/A0EKztayY=
+	t=1711155298; cv=none; b=qrFkMYCyS/UzD9nQVpO/7t053ocOhkwmAimCK/pOfjTBWNjto2ZUtyzulnryeP48XIrGpqRfQU+u46uLrLYepOyGxokc6UlyNQTnW8lfltW2Ldj4CbZy5VqrPlQ3lKX/JVO8+mjck7r74fTlhuohGTsCaF5q3Og+V7DZoc6uetA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711154991; c=relaxed/simple;
-	bh=UQkYXrBRw3g/7sldWDk09B3+ow7yRo71hjCVT0Y7WMc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mh7AVDzNkFyuuc7U5BkJnsXg5FxICDLEuKwnqslEaU/64LQFEBimNwcqovCOPAFfn31KmmXs8gcCeCKIa5KTNn8vcHJ+CYyZFHStSVQMu5DzbKqBysURAQQTLXsTGGnb8HzNyi9Zu83ev2R0/DC5jkAZCC2t4MJdy2FFc53HnXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IvqxBjo6; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-611248b4805so11023397b3.0;
-        Fri, 22 Mar 2024 17:49:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711154988; x=1711759788; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZJ5iJEyxp0TFbjOIBhDcRyFjdhS9GLo8uwaFuutf5pw=;
-        b=IvqxBjo6krSEE7mxdXJmMYMcxI84tZqeE1aHY/Co04IFHF1UG+E2ahn3SQ6ffu/+Gx
-         COctBBGvedXpvuWRa7FHT84t01ZNjtyK1gr2ETKrKggDDjtF1qyln4wx4R8IJhOGcPbQ
-         hwOz3Q7nH3wLozfNfA0d3vSLtdGKbS+zVUhDiYzgV2SR5bLTG427TgziQuJTLUmmFRZF
-         RmCWlrC/V7U7DWvqHB7kKapsqZ2SV6os1U01ih+Ly++ftXh5Ii9YgGIOWJTONjPyk4H9
-         uIPRYBWHX1aDLtR0bDbFiW3YaTsLjCNjYOfl2CMlMp/LYasAcp8aL+yYBMFLpWmdXFHl
-         Koag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711154988; x=1711759788;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZJ5iJEyxp0TFbjOIBhDcRyFjdhS9GLo8uwaFuutf5pw=;
-        b=uddkhN8p1+Q65e7cTCvMNex1L8/PYz2TEse4Qordj+Ze3w07D4mF58ru5/K+UIOyHo
-         9qA5CtTzfEkOVhjHUT3TxozCDEA27cAU1zSgRVKL8ialKVd0/XUtwl4+tQ26zotLNV4w
-         0vA9TrrW0GFmxfnLTJoC/R/1jkudJbXzZhGFBc3d6ijM6/6RSATys8C3/cYFjVSfxG63
-         Vp6rgtJaFhOgvv4y7gpNmDp3YZ3x4x5cLudIzNvq+NYYArylO9JCgeMkV24ehHbyopyj
-         7Fr4IZuNzhGSXTSidpmRV/8MGUgZvpKJmBFjks2UJOmai3pREIJrIqzbqW1TNh5tJP6v
-         ZVFg==
-X-Forwarded-Encrypted: i=1; AJvYcCXXqHy7pt4v9tcFpEhZJdOEbGrTfhUYPr1i2FJjq9Y2gsahBUXIpRYOOHsiPAwyVMNTdlr0AxAD6djwdEYTAkQt9iaEs6XAUY1h66pMR8oAASUSpY+UZwrD+Jh8xzDjjKvTkqkRBx9d8NwctsvyAyF6xgTrszJCsoQx1vXN4qbbURZW4Zlhtbo=
-X-Gm-Message-State: AOJu0YwAtwzsyNPp9H5CdUZ+IQr581mM1wsSglabs49+PjQCo+O1uBft
-	XxAK/FJONq9pRfCLZip8LVtR3eNFJ6UxrTZ9Giam/CNUf+mnv3XM
-X-Google-Smtp-Source: AGHT+IETDJYmnh9BWQauIg052TpIhJFT1IQ4W9EH99k2XBBCRGg9iBUv1l3y+OMtpyk3nKx/JVIcEA==
-X-Received: by 2002:a0d:e542:0:b0:609:879a:aef7 with SMTP id o63-20020a0de542000000b00609879aaef7mr1208456ywe.30.1711154988612;
-        Fri, 22 Mar 2024 17:49:48 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id fa12-20020a05622a4ccc00b00430ad0bda57sm337957qtb.21.2024.03.22.17.49.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 17:49:48 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 136631200066;
-	Fri, 22 Mar 2024 20:49:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 22 Mar 2024 20:49:47 -0400
-X-ME-Sender: <xms:KSf-ZVtFLxaw1-QrJZaVB7vB7kF6a7U779wLGmZubuDj7QEq57RoKw>
-    <xme:KSf-ZedlSgwPiOPAVyQrfKgA_RdAvf0Lau-_Nv5YAnjZvdq860CXtwMaQua0DXaTd
-    _j7w4aaiDHK31ir_A>
-X-ME-Received: <xmr:KSf-ZYxFj026LOkybOdzXXT8YJYaI7TpNYoKfo6vnzaxjvhj1LKz_2OIYn-hHg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtfedgvdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:KSf-ZcPQb4gCA79UNR0ibB1j77NLHhlWi9wSK_TzkxMOyrNn5DNGcg>
-    <xmx:Kif-ZV_ZMlcx9Z9vbHNS581uzFh7ZbqBDyx3VWylanHnLAHVouUHyA>
-    <xmx:Kif-ZcWDbBYs9r6572BITnmxBijz9q51BRA2H2_bMd3MTd4LjCAxWw>
-    <xmx:Kif-ZWeq0MwLMUpEW6beMQ63RriD4s7-o59J_yeVCidHIseVxgcK-A>
-    <xmx:Kyf-Ze8pkFofcyO3vmT79bm9VwCUDMNzsaiiqVRPuNVg9_TcmoFZyzdA18fR0zrJ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Mar 2024 20:49:45 -0400 (EDT)
-Date: Fri, 22 Mar 2024 17:49:23 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev,
-	Miguel Ojeda <ojeda@kernel.org>,	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,	torvalds@linux-foundation.org,
- linux-arm-kernel@lists.infradead.org,	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <Zf4nE_AvHPx9F2nQ@boqun-archlinux>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <Zf4fDJNBeRN5HOYo@boqun-archlinux>
+	s=arc-20240116; t=1711155298; c=relaxed/simple;
+	bh=by+mnTSa2t2z4uApPvfsnyrCQ7PMfRU7O2P6IqMovI0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nVIwHURgpeSJDSgGBPE7kYXfw/3t/+nvZm2+zGr3wlMe/maP4msiR0uDXQiSuNBfx4B2Ssbrtn9vpRqVgtwkIcf1Ku505Tlr2j3ludNyQcXHopE87Ze1VHzBbNHLr3IofocByPZ+kHeM6dy83csomyTlMo6k/GPsezdmneOFyXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=dNi6vZJw; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1711155292;
+	bh=Q1ozhTLC0i5nJma6jn4h+gT4TZHIFCymNO4pKD/VVU8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dNi6vZJwyDbkp/Yq+28o/8e3ySxTXuCaIAF23CBOjAuLdpYRgLxvsLpBzaDkWP4Rs
+	 hp8fOw/pYwhdbLVHk+8fJqd/SyiDurShcrLWhX6OSzhYATgoTJJdG0xeSMw+007lth
+	 k1MQysQalKjGNe8BInC5uh5//nat4zvp2ewODhULn/TJfuy3Kc9O0l8IoE6XXGsfjr
+	 VnKLmVqLxuzKG6hgjlZG3x0DQ1mLGvMclEdBDMJXODu0QgWRQ1dApeyxtQ4HTp/amS
+	 Y7qTl5bS5b3KNJG5jDiF2ovweQi6EihbheQUCRtaNL23qQM6ydiVZjPK55mEiXP+D3
+	 aMpKHOBaVHwjg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V1ghX0QzCz4wx5;
+	Sat, 23 Mar 2024 11:54:51 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: bhe@redhat.com, christophe.leroy@csgroup.eu, hbathini@linux.ibm.com,
+ linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ kexec@lists.infradead.org
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.9-2 tag
+Date: Sat, 23 Mar 2024 11:54:50 +1100
+Message-ID: <87zfupix7p.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zf4fDJNBeRN5HOYo@boqun-archlinux>
+Content-Type: text/plain
 
-On Fri, Mar 22, 2024 at 05:15:08PM -0700, Boqun Feng wrote:
-[...]
-> > 
-> > I wonder about that. The disadvantage of only supporting LKMM atomics is
-> > that we'll be incompatible with third party code, and we don't want to
-> > be rolling all of our own data structures forever.
-> > 
-> 
-> A possible solution to that is a set of C++ memory model atomics
-> implemented by LKMM atomics. That should be possible.
-> 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Another possible "solution" works in the opposite direction, since the
-folder rust/kernel/sync/atomic is quite stand-alone, we can export that
-as a Rust crate (library), and third party code can support using LKMM
-atomics instead of Rust own atomics ;-) Of course if the project is
-supposed to work with Linux kernel.
+Hi Linus,
 
-Regards,
-Boqun
+Please pull some more powerpc updates for 6.9. These were posted before the
+merge window but had complicated dependencies and/or conflicts with other
+content that has gone into 6.9.
+
+cheers
+
+The following changes since commit 66a27abac311a30edbbb65fe8c41ff1b13876faa:
+
+  Merge tag 'powerpc-6.9-1' of git://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux (2024-03-15 17:53:48 -0700)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.9-2
+
+for you to fetch changes up to 5c4233cc0920cc90787aafe950b90f6c57a35b88:
+
+  powerpc/kdump: Split KEXEC_CORE and CRASH_DUMP dependency (2024-03-17 13:34:00 +1100)
+
+- ------------------------------------------------------------------
+powerpc updates for 6.9 #2
+
+ - Handle errors in mark_rodata_ro() and mark_initmem_nx().
+
+ - Make struct crash_mem available without CONFIG_CRASH_DUMP.
+
+Thanks to: Christophe Leroy, Hari Bathini.
+
+- ------------------------------------------------------------------
+Christophe Leroy (1):
+      powerpc: Handle error in mark_rodata_ro() and mark_initmem_nx()
+
+Hari Bathini (3):
+      kexec/kdump: make struct crash_mem available without CONFIG_CRASH_DUMP
+      powerpc/kexec: split CONFIG_KEXEC_FILE and CONFIG_CRASH_DUMP
+      powerpc/kdump: Split KEXEC_CORE and CRASH_DUMP dependency
+
+
+ arch/powerpc/Kconfig                 |   9 +-
+ arch/powerpc/include/asm/kexec.h     |  98 +++----
+ arch/powerpc/kernel/prom.c           |   2 +-
+ arch/powerpc/kernel/setup-common.c   |   2 +-
+ arch/powerpc/kernel/smp.c            |   4 +-
+ arch/powerpc/kexec/Makefile          |   3 +-
+ arch/powerpc/kexec/core.c            |   4 +
+ arch/powerpc/kexec/elf_64.c          |   4 +-
+ arch/powerpc/kexec/file_load_64.c    | 269 ++++++++++----------
+ arch/powerpc/mm/book3s32/mmu.c       |   7 +-
+ arch/powerpc/mm/mmu_decl.h           |   8 +-
+ arch/powerpc/mm/nohash/8xx.c         |  33 ++-
+ arch/powerpc/mm/nohash/e500.c        |  10 +-
+ arch/powerpc/mm/pgtable_32.c         |  38 ++-
+ arch/powerpc/platforms/powernv/smp.c |   2 +-
+ include/linux/crash_core.h           |  12 +-
+ 16 files changed, 274 insertions(+), 231 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmX+Jw4ACgkQUevqPMjh
+pYA6WA/+PVlWRRhMWDZ0BEMFKtVMwUlGJWSZGNGqX/5ZV40lcTIsuIruw8C6VY11
+Hq1J+CafM3H7LnqzYwruAYhpBYwb1Oje6IK208XiKH+eUmCzzk+hLfjGdbNbkTOx
+6xBqoV3Hjj+p4H6QRXYkZQihQDHy9IfuBGNtoaTaiVuqg9NOT9PLnVNYaI11uLBP
+qRS08hkORyJEOO/QRjoVXyXdP7pOwl1EbuYYg805BZ9NFlp7j105yT8XjKQ1X5w+
+yF4b2eSV78/Z55dpnBM1GqJqkOSaQjq42PKS+JNSBRpgVDZiLzTdVgWBHY1Q2zho
+H5XH9RHvT789vtGsXxhYqvSOSMsM+LgdZo82ZQuqHDA5djmwoMOVXcb/NkyVZ0o3
+E+glLdWe6X+0B8Fhx2PH4R5j5j1r3/B2Ighf9Qz60rXNCnbUfT8ZJefyUZg6pHMg
+Y/YwdftiqBRnVsK1VSvMrIW3/Sk47QHlM2d7B11R9sVw85zlVwg4FHFXlGtoVpFS
+cWZityzVY10wKcblhHYt0/X0n2eeMhjyZuq9lvgls2zypr1qxJ+x/URVVM4hzbNH
+P+1qvVUp9mHfSmUGqC5OWv/365BhPQy2t7vkK1NYmmfee2r2umHEY9zphu/yysUg
+OQvE+v0F7fETuYg/QTWLlsusEyU0uBCoJOxeB2M6KacrNZfE64A=
+=SfuI
+-----END PGP SIGNATURE-----
 
