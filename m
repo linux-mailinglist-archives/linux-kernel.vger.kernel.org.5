@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-112508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68B32887AAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 23:47:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 421DC887AB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 23:47:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24F88281EC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 22:47:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 655FA1C20BAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 22:47:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 659F95D747;
-	Sat, 23 Mar 2024 22:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8922B612EC;
+	Sat, 23 Mar 2024 22:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C/IX5rbZ"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CdRKT+V7"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58E75A781;
-	Sat, 23 Mar 2024 22:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD995CDEE;
+	Sat, 23 Mar 2024 22:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711233996; cv=none; b=VgMSE+//utlP3CPTvs0kU44i1ZsRa/2MPInhAM3q5pCNmDQ7uZFFXU+wNQpNmvlCZp+7Fb05uTY7ZFDztFl9Y8rebnCSp6xm0yXa4GjLNfrFqsT5RSXb/C3ZjNKCVQv9ybePaQpqUeyxv2TVrze0M6CVMHMLCbwiOcbJ2s6Rmoo=
+	t=1711233997; cv=none; b=AUQr8NVOqtod9i5QQHCEhO/IRpVMWGa7BZ0Y0FVaIjN8PkXaF/Hp4oJRYnOCz4wzCFAdfr+Bka54y/29BTgjbY9jMCkms+n/Owk2kAaxlZighTtejglJYu4iiUp4RbKHnewtyD9jfvjRWYC7CEadxLiYqxWXBJZLF10veIfkZTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711233996; c=relaxed/simple;
-	bh=KsOB1Cx1AE0hQx4b4ElDFKUK4NMTkP4wB55sSj+0OgE=;
+	s=arc-20240116; t=1711233997; c=relaxed/simple;
+	bh=tDhol2FcUGB60ncWKxOskxvWSaZiOqEgh32oNnukAEE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=dZjJkXvflbHL+ZlSaI/xstI7CSiPnPhSTiWJWOtAeamf+41Ry23rSD72mREZXImcLRXH5nwPkuHhln260FCjAH1c55SGmq9f1lqG2B6y2qt2ss+JeBVfUGX5OL4vcKpo4fYbsG4xnWaHNrOD+CsdisGNCSkXwXI56oPA+WT+bLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C/IX5rbZ; arc=none smtp.client-ip=209.85.167.53
+	 In-Reply-To:To:Cc; b=tes8J65s7sVv73RYdO7J4GWqWUDauNuT2EqcAMcRM5eRsrG5tg3W1GyE9HY00m9lL+ErFjuPBQ6kGgm3ZtzXp7Lhd1eNkw5RbqH0u9FfngIUQodRfTxIe+sctc3b41nOF8FZtYqjqYsLa4+1mgut4I8GtGYqQi0RskdMslRsvIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CdRKT+V7; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513e134f73aso4228107e87.2;
-        Sat, 23 Mar 2024 15:46:34 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a474d2d8ce6so32243566b.1;
+        Sat, 23 Mar 2024 15:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711233993; x=1711838793; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711233994; x=1711838794; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7F0fLmvFShDUvgX2kPM7vLCKKBKWroKRJEPwwDn+1rM=;
-        b=C/IX5rbZp2JIQxJ1dJpveFYREhkriRtDw/MXkdcDm+XS8CEMPyI7A6mTWim0Pt1MD8
-         gIBo7YoHvNCwqc9KG3E1U1deP6CCNbE5Q/jlUp4xJlQDS1clBqMG/vdLUb8aOq59YvcL
-         0dAcQQMqRxchIBpDORuOpN0sMOflySfOSHabckCmzp5lIUyVudWGuOGvx9CpJOm8kqe+
-         PmfxrORedHJq4RMbN/PgD59leIxSGLPqRyMPhBavLdmQD+zG+93TjowT8x3FrHskL/Ee
-         0SYHl/m/dEcdB7DHHNEePwbjsJ/YhLDigVi0R3HOWOmWVwhKNb0jDLvo7ptORphqTaQ6
-         MQ8g==
+        bh=2/SYA3orZiCrt6UMAkkZctPdfoSwlJljhgv136QIUdg=;
+        b=CdRKT+V74H7Sos4xgq88G76RhS50v7Cb6J/KBdzHs7bPypjZ2/W4sye2ArMyT40r/j
+         3uboFDlD/+ccsqMAob4qPRwhR2z4AunWQUIR2P2QZPS54VI8FI+UrK+G+AM1rwP+ZgIh
+         HWXuUWhMXJ4B2MDNIGmCA2m7JKtoQbG0R0qcsuaJ3Gg+7HQabQfira23CNi7I12y/VAW
+         mao+Y8pBD7nleEWF8TQKmzzUPO+qDYIFYoQvTmNxhwCofz1JRHqrRmtj6yxTQcMjXynf
+         3XXUGq6rH2WiWbiLefz1KkmvlMABv96OIQ/1vS/7huEaymC3Sb9qXY+/WtflV0DOKkzH
+         8BdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711233993; x=1711838793;
+        d=1e100.net; s=20230601; t=1711233994; x=1711838794;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7F0fLmvFShDUvgX2kPM7vLCKKBKWroKRJEPwwDn+1rM=;
-        b=LBLwnv3lcFG1VyhSDsAkBMFSBIF8/3tfQmcSGuxc9zs8pVjV6bq0XNxwRTkOPqqXF6
-         6ThCasfQqQPcBAUCIEp7DlC2kbAfL7jvVvaZoL3duQ+86DkJgRq2cxjEpxmFAgbciMtC
-         FCBgpUhBbsMYQ4uPbOvTAqP2NMZMxgbt5CUW0bhVI1KaTb3s0XXHsgoEw6dpA5nuoWFh
-         L6TAicnkHC7Dym+Ue8DEtzw2SnUaSfm06pij3i0gF4JoYT8ZrRR/moZOzqQOPJXMtZEu
-         eKZbAHTkjSaslR+0Y52U/x10AnRJDJ5f/6FIx3NHqyYxIh4XAMDgvyiDLcuQZtvXU8Ue
-         y9Ew==
-X-Forwarded-Encrypted: i=1; AJvYcCVcGl/UlMLQBJy+RhQG2OZZjexodo6DMmC4L0cx7tK97YSbdwxOSdzzhzHozDaJBNTo7AQUsXR2pL/IvJfCdJcr7UQb/FEOAtzXMLMAYTWCtLSB60ruBpMhm+qx6cdrBIG9FUtebd4SHg==
-X-Gm-Message-State: AOJu0Yzo+K7jyQAm+SaTn/KZWTggfsDmPwhZ29JWr4/HNGPXdcQeMfyk
-	uusqZJfJAOtPyOX9K+pGsM508l1cUKkFoJbqy6zP4Ur1q0RpWEUZ
-X-Google-Smtp-Source: AGHT+IFZOWf0rDuTu0xnQtuVLwD6mD8m50Yh0VA1IHGnSIjl3N3FqdbSHH6rWtY58DEtKlvfluppTw==
-X-Received: by 2002:a05:6512:32a2:b0:513:d482:a6c6 with SMTP id q2-20020a05651232a200b00513d482a6c6mr2612965lfe.30.1711233992726;
-        Sat, 23 Mar 2024 15:46:32 -0700 (PDT)
+        bh=2/SYA3orZiCrt6UMAkkZctPdfoSwlJljhgv136QIUdg=;
+        b=IdXXXxH9oIhuxSKBPVf9aXxVhR8GjIqVjJrOdmY9KhEQHyi2bHa0qrCfosdxLAurZZ
+         2OTiF51ItAuPvEc2MBqzfAV8ACxl3sCot/hueFXtrr4MjVQJvs3NN6LbgtBJhnrftc6a
+         SfYdCepkDOJCe38oePTnKEdzlYR29P+vQe9Ablxsa0HhBanwJXTyL2CIs5mAnYyXfss7
+         eT9RDLS0ZNgbUG/KHXEE+2+QAyWEy90JoczRPRU6NeeazV9IISQ4ap/RygPNFxMscd54
+         eIkygyTP7gnvMgjdWkQziFQxqF5gHbhLHfLNt4HEhaMUkBGsb9XqLiCr4dI7BdqvvKb9
+         MMng==
+X-Forwarded-Encrypted: i=1; AJvYcCW+w43Xc0yvdAFOZtlblRXOetdtHMWO21+6OAAqu/hGcnOq+OofBJjxoHMaa37jrtM7aFbRWO0gYVLJUtGEIiS3zYdBQm9iPKJw3VUKNczUIvQ4QNYGaQbwSUTzZdfh+CqppeRDk4ETYw==
+X-Gm-Message-State: AOJu0YzK7DKxheRhTaYo44M2SCZrFyjfFRlDLN5rdadPjkVdx9hvWbDg
+	iA/W8+OSDHetMK6HC11v0Pmkr7wuVvo7bbsN65n93eXjjgdFgenF
+X-Google-Smtp-Source: AGHT+IE4E5V6xQKFVc06Bc6OUnNbkY8byp2AQg2ojfzBoU85i+rvR6iVYMsMxQrMQ1tLDA7V7mTsJw==
+X-Received: by 2002:a17:906:bb10:b0:a47:876:28b9 with SMTP id jz16-20020a170906bb1000b00a47087628b9mr2121553ejb.42.1711233994149;
+        Sat, 23 Mar 2024 15:46:34 -0700 (PDT)
 Received: from [127.0.1.1] (2a02-8389-41cf-e200-195f-8ce5-d7d9-2242.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:195f:8ce5:d7d9:2242])
-        by smtp.gmail.com with ESMTPSA id bu22-20020a170906a15600b00a461d2a3374sm1350424ejb.47.2024.03.23.15.46.31
+        by smtp.gmail.com with ESMTPSA id bu22-20020a170906a15600b00a461d2a3374sm1350424ejb.47.2024.03.23.15.46.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 15:46:32 -0700 (PDT)
+        Sat, 23 Mar 2024 15:46:33 -0700 (PDT)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Sat, 23 Mar 2024 23:46:15 +0100
-Subject: [PATCH 3/4] dt-bindings: rtc: digicolor-rtc: convert to dtschema
+Date: Sat, 23 Mar 2024 23:46:16 +0100
+Subject: [PATCH 4/4] dt-bindings: rtc: nxp,lpc1788-rtc: convert to dtschema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240323-rtc-yaml-v1-3-0c5d12b1b89d@gmail.com>
+Message-Id: <20240323-rtc-yaml-v1-4-0c5d12b1b89d@gmail.com>
 References: <20240323-rtc-yaml-v1-0-0c5d12b1b89d@gmail.com>
 In-Reply-To: <20240323-rtc-yaml-v1-0-0c5d12b1b89d@gmail.com>
 To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
@@ -88,50 +88,90 @@ Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711233987; l=2259;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711233987; l=2951;
  i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=KsOB1Cx1AE0hQx4b4ElDFKUK4NMTkP4wB55sSj+0OgE=;
- b=PFEJjX81qC9arhreYmX19OiEZdS1JKEEqnL130OxQtBY2DNjl6Y2i3Gh8g2usogby3LELH+Ov
- E8MJYUf2RXhDFlBZrGMyaaWQoWTbeSVAF43QhNtBA6gQnBQrDxMEyS6
+ bh=tDhol2FcUGB60ncWKxOskxvWSaZiOqEgh32oNnukAEE=;
+ b=oJPdbot4N6v1SuCC2+5aXuS9QMZuvlR1aLfydfYT4s4EH8ge91JzhuwBTePdDJL7ScWZq9HPy
+ ql1HOUODczMC/yoeSF18b+lfuWyis3BYGBWC4f4caFcPwXaJiOf8ehp
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
 Convert existing binding to dtschema to support validation.
 
-The binding has been renamed to match its compatible. Apart from that,
-it is a direct conversion with no additions.
+This is a direct conversion with no additions.
 
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- .../devicetree/bindings/rtc/cnxt,cx92755-rtc.yaml  | 37 ++++++++++++++++++++++
- .../devicetree/bindings/rtc/digicolor-rtc.txt      | 17 ----------
- 2 files changed, 37 insertions(+), 17 deletions(-)
+ .../devicetree/bindings/rtc/nxp,lpc1788-rtc.txt    | 21 --------
+ .../devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml   | 57 ++++++++++++++++++++++
+ 2 files changed, 57 insertions(+), 21 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/rtc/cnxt,cx92755-rtc.yaml b/Documentation/devicetree/bindings/rtc/cnxt,cx92755-rtc.yaml
+diff --git a/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.txt b/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.txt
+deleted file mode 100644
+index 3c97bd180592..000000000000
+--- a/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-NXP LPC1788 real-time clock
+-
+-The LPC1788 RTC provides calendar and clock functionality
+-together with periodic tick and alarm interrupt support.
+-
+-Required properties:
+-- compatible	: must contain "nxp,lpc1788-rtc"
+-- reg		: Specifies base physical address and size of the registers.
+-- interrupts	: A single interrupt specifier.
+-- clocks	: Must contain clock specifiers for rtc and register clock
+-- clock-names	: Must contain "rtc" and "reg"
+-  See ../clocks/clock-bindings.txt for details.
+-
+-Example:
+-rtc: rtc@40046000 {
+-	compatible = "nxp,lpc1788-rtc";
+-	reg = <0x40046000 0x1000>;
+-	interrupts = <47>;
+-	clocks = <&creg_clk 0>, <&ccu1 CLK_CPU_BUS>;
+-	clock-names = "rtc", "reg";
+-};
+diff --git a/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml b/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml
 new file mode 100644
-index 000000000000..bdd6f0718b0a
+index 000000000000..af157ff24835
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/cnxt,cx92755-rtc.yaml
-@@ -0,0 +1,37 @@
++++ b/Documentation/devicetree/bindings/rtc/nxp,lpc1788-rtc.yaml
+@@ -0,0 +1,57 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/rtc/cnxt,cx92755-rtc.yaml#
++$id: http://devicetree.org/schemas/rtc/nxp,lpc1788-rtc.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Conexant Digicolor Real Time Clock Controller
++title: NXP LPC1788 real-time clock
++
++description:
++  The LPC1788 RTC provides calendar and clock functionality
++  together with periodic tick and alarm interrupt support.
 +
 +maintainers:
 +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
 +
 +properties:
 +  compatible:
-+    const: cnxt,cx92755-rtc
++    const: nxp,lpc1788-rtc
 +
 +  reg:
 +    description:
 +      Base address and length of the register region.
 +    maxItems: 1
++
++  clocks:
++    items:
++      - description: RTC clock
++      - description: Register clock
++
++  clock-names:
++    items:
++      - const: rtc
++      - const: reg
 +
 +  interrupts:
 +    maxItems: 1
@@ -139,40 +179,23 @@ index 000000000000..bdd6f0718b0a
 +required:
 +  - compatible
 +  - reg
++  - clocks
++  - clock-names
 +  - interrupts
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    rtc@f0000c30 {
-+        compatible = "cnxt,cx92755-rtc";
-+        reg = <0xf0000c30 0x18>;
-+        interrupts = <25>;
++    #include <dt-bindings/clock/lpc18xx-ccu.h>
++
++    rtc@40046000 {
++        compatible = "nxp,lpc1788-rtc";
++        reg = <0x40046000 0x1000>;
++        clocks = <&creg_clk 0>, <&ccu1 CLK_CPU_BUS>;
++        clock-names = "rtc", "reg";
++        interrupts = <47>;
 +    };
-diff --git a/Documentation/devicetree/bindings/rtc/digicolor-rtc.txt b/Documentation/devicetree/bindings/rtc/digicolor-rtc.txt
-deleted file mode 100644
-index d464986012cd..000000000000
---- a/Documentation/devicetree/bindings/rtc/digicolor-rtc.txt
-+++ /dev/null
-@@ -1,17 +0,0 @@
--Conexant Digicolor Real Time Clock controller
--
--This binding currently supports the CX92755 SoC.
--
--Required properties:
--- compatible: should be "cnxt,cx92755-rtc"
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- interrupts: rtc alarm interrupt
--
--Example:
--
--	rtc@f0000c30 {
--		compatible = "cnxt,cx92755-rtc";
--		reg = <0xf0000c30 0x18>;
--		interrupts = <25>;
--	};
 
 -- 
 2.40.1
