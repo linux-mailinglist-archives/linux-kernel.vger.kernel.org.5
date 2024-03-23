@@ -1,204 +1,137 @@
-Return-Path: <linux-kernel+bounces-112170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E6B887682
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:54:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0442688767F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:54:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C43E1F22B3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:54:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 401062836BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219BC1113;
-	Sat, 23 Mar 2024 01:54:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A621388;
+	Sat, 23 Mar 2024 01:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hk+hKWJ9"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lPn4e+vW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B624F522E
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 01:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB85A31;
+	Sat, 23 Mar 2024 01:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711158876; cv=none; b=pCMC6WCG/PgbhHfbp5VTp1rDwhJHqafwqCiAnC6LneJHnc+b2tcd7yEVReKv/Ye2ybkrGdUXXBtsnu9exzztbwqTd/2Py3hK23wtZik+7aLZ4D/XCwDL0GSvpuykZbZNLzmU9J7TDejxqfCpVB3OkordyRHxB4uTDbsQdq0Bim4=
+	t=1711158864; cv=none; b=A3dyZT3Q94jgkkeEXiLf/voJkzENnDJc/52PDWxGeM/7NUNpkCJ3Ia74uJphifFngHnensE82QbJwUn+tn/ZWEYWjdpL2PN7rppDJEz7Z0qrqymuBUwiXvYYcFkjXYjesVG9jvC/mhsCasnGvaGIsgK7F9/j6DgtG9gtcoH732k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711158876; c=relaxed/simple;
-	bh=MRVrKLMuWBszjs8xV63cU/2mn4oUBSIImMtBXLzstns=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sfJJ2c9KcHuTP2QiI9UF7BuzP2IO5SRuHwYsoj6c5F0UTxo8rYb4k3nHd0VJQB2AFsrE3hBcxotlvyyeFlwcsY65V+33qZZ7TAOUGa1q9fgKzzwAfRlJWfr7BBzwkDlzEz9E5w3oJ85J2/Gqkydud8aKGZnYZhK+pIBUAqhyPdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hk+hKWJ9; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-430d3fcc511so65451cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711158873; x=1711763673; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ugca23DDk1bNHPUabaB8d0i9NjKoaai/ycUEgKQclnI=;
-        b=hk+hKWJ9M/fJI9tImEsoYU4ZGd5SzkHC2XUtma2s1bkoNjxKT+2Q4wzKVvYHY/4Loo
-         q/R3/BI2Ss9N9EHaiANgKdxPAeFIGM0HkJx1wmHmd4EgeFMFqcAdw4KfPdun8C78FAjR
-         ODRHG2kLgsLEd1FnuT8GS16HjBI3Fm2t8AGfih0ZrqgGH2otZlt46aLd1oJBIko0W8+E
-         07k59mxzt3QfLNGh4oQ5oOWT9ZQsFdxJ228l2hhz1y0K+Fu/iJ1hZ5SPGrELsKt7LN7v
-         i0Bn7oFXv+yuYPPf1PULjvTahvD1tX6PTRi02d3eIJYf4NBAWQZeMMdhbTPxjT4FWcn/
-         SnvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711158873; x=1711763673;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ugca23DDk1bNHPUabaB8d0i9NjKoaai/ycUEgKQclnI=;
-        b=ZHZ4j2gNQgrHxa0FlyjCVSGrUNV3oWSnejzMXhXm+KmaM13E2AQcIK5DlUtgEjpAse
-         WaD0e0NY35aPGb71gSUDr9krdqrvqtJNXhWgx1kGx6KgTcGTN0GTu/xICEJ5LRB6zFMX
-         l4ttxFXHKllrSYmObmFZtyH2ujueEUC/V/elk+EaMomSvt1swMo9T4FZGxszzvqUe679
-         VHPtFj3lkXvV2tU0ninkbV+ZwRnw1mBYPa1VgianhP4cfsnisN+R0Jn+5i34aFe5Y7oD
-         6KZ3QOb86gtSYU8GBsZh/a+P8VpdxDLLTSBFJhdD5kMH2w0oltZpTURmyffzQcWJZf2j
-         MY6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV/XzCXgmlKoCn2TLy6K9AU0qz4OwXftQy/FvSkN8FgcimZJoK/csYwcbsQy8PluhYLKA/C8Bp/gBg8TxfGBfLTjiN8VDRCgWiSyxfw
-X-Gm-Message-State: AOJu0Yx/rXzPe7rgOuYDRozXh44cr7La4aCmFN3GXqOlN3k5n3wk1Y3u
-	ulLurS1z+6AnVj1coxTW+PWpUmg1G1OBkK+lCeSx39TXecxVVSXEaotO+D0F1oQVlgNqhOR5MRb
-	6A5E2iaPQXhjrpGm0hlQdIQnFjGwjU5cqICVK
-X-Google-Smtp-Source: AGHT+IFzIBb+r7DzCNc906s02/94DbigytEFLGsYFND2xTBDot/ogrkvddnbmb3E2U6uD+PDlPlePgNL+od6ESHOj7w=
-X-Received: by 2002:a05:622a:92:b0:430:a74f:b45e with SMTP id
- o18-20020a05622a009200b00430a74fb45emr784631qtw.17.1711158873468; Fri, 22 Mar
- 2024 18:54:33 -0700 (PDT)
+	s=arc-20240116; t=1711158864; c=relaxed/simple;
+	bh=kam8waLr/eysWsw1rWevDwTRepj3zWLidyXhVcMWhek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gXv03AvdEBQ4oyREMnQv0hKgvRx7I95NvzKcTHrZxnMsYnQkBb5vyKkbNoTdi4gnug1eQp9SFuqbKbyFYlgoYIZCFxwTx6arq3WklhB9uTcKVNVEfIAhF37gStzAjIWhHfnTxFEwqAe7RAy82YaiC/vxhW/XtQy9KITIAtjSgJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lPn4e+vW; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711158863; x=1742694863;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=kam8waLr/eysWsw1rWevDwTRepj3zWLidyXhVcMWhek=;
+  b=lPn4e+vWMCYW4PzW2gUxaR5yYiL7Fod5Z9tQZTri9Y8EgO7OSzHgnmsu
+   SE9lXNueQi/LSdXYOgOPrJByfUTNqPNka1HKR1zIIqY/KKzcY4FM0OgUg
+   5z48LpXzn+K6PO512qcGIPTAqGHBkaSYBuxwjYnd2x4eeFvGKG45c7apG
+   7yilywJK/BXu0AebjqIZSeKxlOA+BOuZdTl/wnMalybLmTOX/wzjSpwW1
+   rySzFVlGSRWzx6wEgmmRBLQgvhLQn1nJ/XQfmEu45cLMeq//YRawFQyBx
+   PLPe49f9tt0e37X0EDt8K34ljrXLUL+QOOH2MeaAPV5fWEPUIgsGMLeVI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="23716208"
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="23716208"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 18:54:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="15529086"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 18:54:22 -0700
+Date: Fri, 22 Mar 2024 18:54:20 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 130/130] RFC: KVM: x86, TDX: Add check for
+ KVM_SET_CPUID2
+Message-ID: <20240323015420.GF2357401@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <d394938197044b40bbe6d9ce2402f72a66a99e80.1708933498.git.isaku.yamahata@intel.com>
+ <e1eb51e258138cd145ec9a461677304cb404cc43.camel@intel.com>
+ <cfe0def93375acf0459f891cc77cb68d779bd08c.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240224052436.3552333-1-saravanak@google.com> <ZfvN5jDrftG-YRG4@titan>
-In-Reply-To: <ZfvN5jDrftG-YRG4@titan>
-From: Saravana Kannan <saravanak@google.com>
-Date: Fri, 22 Mar 2024 18:53:57 -0700
-Message-ID: <CAGETcx8+vw0Vr0NWzjOAvxAZ07M4U7BWPAgO9avCngW0-9e_kA@mail.gmail.com>
-Subject: Re: [PATCH] of: property: fw_devlink: Fix stupid bug in
- remote-endpoint parsing
-To: John Watts <contact@jookia.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	=?UTF-8?Q?Herv=C3=A9_Codina?= <herve.codina@bootlin.com>, 
-	Luca Ceresoli <luca.ceresoli@bootlin.com>, kernel-team@android.com, 
-	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cfe0def93375acf0459f891cc77cb68d779bd08c.camel@intel.com>
 
-On Wed, Mar 20, 2024 at 11:05=E2=80=AFPM John Watts <contact@jookia.org> wr=
-ote:
->
-> On Fri, Feb 23, 2024 at 09:24:35PM -0800, Saravana Kannan wrote:
-> > Introduced a stupid bug in commit 782bfd03c3ae ("of: property: Improve
-> > finding the supplier of a remote-endpoint property") due to a last minu=
-te
-> > incorrect edit of "index !=3D0" into "!index". This patch fixes it to b=
-e
-> > "index > 0" to match the comment right next to it.
-> >
-> > Reported-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> > Link: https://lore.kernel.org/lkml/20240223171849.10f9901d@booty/
-> > Fixes: 782bfd03c3ae ("of: property: Improve finding the supplier of a r=
-emote-endpoint property")
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> > Using Link: instead of Closes: because Luca reported two separate issue=
-s.
-> >
-> > Sorry about introducing a stupid bug in an -rcX Rob.
-> >
-> > -Saravana
->
-> Hi there,
->
-> Could this be reverted? It breaks my audio-graph-card2 setup:
->
-> [   17.116290] platform 2034000.i2s: deferred probe pending: platform: wa=
-it for supplier /sound/multi
-> [   17.125370] platform test_codec: deferred probe pending: platform: wai=
-t for supplier /sound/multi
-> [   17.134257] platform sound: deferred probe pending: asoc-audio-graph-c=
-ard2: parse error
+On Fri, Mar 22, 2024 at 07:10:42AM +0000,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-Hmmm.... cycle detection should work here and not enforce probe
-ordering. I'd appreciate help with debugging that. Let me look at it
-on Monday. Can you enabled all the debug logs in drivers/base/core.c
-and tell me what cycle detection is telling about these nodes?
+> On Thu, 2024-03-21 at 23:12 +0000, Edgecombe, Rick P wrote:
+> > On Mon, 2024-02-26 at 00:27 -0800, isaku.yamahata@intel.com wrote:
+> > > Implement a hook of KVM_SET_CPUID2 for additional consistency check.
+> > > 
+> > > Intel TDX or AMD SEV has a restriction on the value of cpuid.  For
+> > > example,
+> > > some values must be the same between all vcpus.  Check if the new
+> > > values
+> > > are consistent with the old values.  The check is light because the
+> > > cpuid
+> > > consistency is very model specific and complicated.  The user space
+> > > VMM
+> > > should set cpuid and MSRs consistently.
+> > 
+> > I see that this was suggested by Sean, but can you explain the problem
+> > that this is working around? From the linked thread, it seems like the
+> > problem is what to do when userspace also calls SET_CPUID after already
+> > configuring CPUID to the TDX module in the special way. The choices
+> > discussed included:
+> > 1. Reject the call
+> > 2. Check the consistency between the first CPUID configuration and the
+> > second one.
+> > 
+> > 1 is a lot simpler, but the reasoning for 2 is because "some KVM code
+> > paths rely on guest CPUID configuration" it seems. Is this a
+> > hypothetical or real issue? Which code paths are problematic for
+> > TDX/SNP?
+> 
+> There might be use case that TDX guest wants to use some CPUID which
+> isn't handled by the TDX module but purely by KVM.  These (PV) CPUIDs need to be
+> provided via KVM_SET_CPUID2.
+> 
+> 
+> Btw, Isaku, I don't understand why you tag the last two patches as RFC and put
+> them at last.  I think I've expressed this before.  Per the discussion with
+> Sean, my understanding is this isn't something optional but the right thing we
+> should do?
+> 
+> https://lore.kernel.org/lkml/ZDiGpCkXOcCm074O@google.com/
 
-But the better fix would be to use the new "post-init-providers"
-property. See below.
-
->
-> / {
->         ...
->
->
->         test_codec {
->                 compatible =3D "test-codec";
->                 prefix =3D "Test codec";
->                 #sound-dai-cells =3D <0>;
-
-post-init-provider =3D <&multi>;
-
-Right now there's a cyclic dependency between test_codec and multi and
-this tells the kernel that test codec needs to probe first.
-
-Similar additions to the other nodes blocked on multi.
-
-Thanks,
-Saravana
-
->                 port {
->                         test_ep: endpoint {
->                                 remote-endpoint =3D <&card_ep_2>;
->                         };
->                 };
->         };
->
->         sound {
->                 compatible =3D "audio-graph-card2";
->                 label =3D "CS5368";
->                 links =3D <&i2s2_port>;
->                 multi {
->                         #address-cells =3D <1>;
->                         #size-cells =3D <0>;
->                         convert-channels =3D <16>;
->                         port@0 {
->                                 reg =3D <0>;
->                                 card_ep_0: endpoint {
->                                         remote-endpoint =3D <&i2s2_ep>;
->                                 };
->                         };
->                         //port@1 {
->                         //      reg =3D <1>;
->                         //      card_ep_1: endpoint {
->                         //              remote-endpoint =3D <&cs5368_ep>;
->                         //      };
->                         //};
->                         port@1 {
->                                 reg =3D <1>;
->                                 card_ep_2: endpoint {
->                                         remote-endpoint =3D <&test_ep>;
->                                 };
->                         };
->                 };
->         };
-> };
->
->
-> &i2s2 {
->         pinctrl-0 =3D <&i2s2_pins>, <&i2s2_din_pins>;
->         pinctrl-names =3D "default";
->         status =3D "okay";
->         i2s2_port: port {
->                 i2s2_ep: endpoint {
->                         format =3D "dsp_a";
->                         bitclock-master;
->                         frame-master;
->                         remote-endpoint =3D <&card_ep_0>;
->                 };
->         };
-> };
->
-> John.
+Ok, let's remove RFC and reorder this patches.  Do you see any issue of the
+cpuid check logic itself?
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
