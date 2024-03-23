@@ -1,110 +1,178 @@
-Return-Path: <linux-kernel+bounces-112521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6047C887B1A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 00:31:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C96E5887B1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 00:38:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A7EB281FEE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 23:31:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69EB41F21700
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 23:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0BE5BACB;
-	Sat, 23 Mar 2024 23:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B78D5BADF;
+	Sat, 23 Mar 2024 23:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B+CT/nGK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="gh7qhQyh"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D761DFCE;
-	Sat, 23 Mar 2024 23:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF41CEECC;
+	Sat, 23 Mar 2024 23:37:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711236687; cv=none; b=S0wYIsTJGjqnywweMOK2BgxQupwApIgLdIju9WaRySEvpZN23UKdFCbqAp0NMEH5qPnIGnNYWO6t2t5nlwzuuDWjrpNd6emG7jqVg+rqRzvtBS1Ilr2SuciKJjLzPixGjSL5DHy17jF31crGR9e+IiEuL4eUq9SY5O52HssCZY4=
+	t=1711237075; cv=none; b=YJREvp7ahfKf0SkjfmHdaN3x2MvqvDeAqygudE4zX37Y8f+v6g3yga+OP2yr451GnnKnnZv9piZrVW4nMR7B0O04VW1stvWqpHiX34zRDWoaTlFP4cMf8BZk+96O5TPqhY7HCejNfnLjozdiUeVZSkZVkLlIDteIfolnNqVwOZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711236687; c=relaxed/simple;
-	bh=zaCzTXTmfGaOIRrExHx7AGoKpSQHIl2a+NZcwpR6yNg=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=fD8qAubZo6GDH11myjHKMZG4QZRhBdu7aQqYTNO7TqIl4ZfBTYQigXFOCkYkCIV5vpvjRLrd2bV1CLN+5PvLzRT/JoDgVgzAM9baK1fspTk47InfgkQ9JgbMA3qYZZZo6XecyJ7cgBjFzURSeUWGGrSBn9aywH2BzZp7E/cVozk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B+CT/nGK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FC63C433C7;
-	Sat, 23 Mar 2024 23:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711236687;
-	bh=zaCzTXTmfGaOIRrExHx7AGoKpSQHIl2a+NZcwpR6yNg=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=B+CT/nGKhqVVameavzKkjzu7u2X4gajroTTT/+9VaH8ooN8jgr3lBp9AdNC2aoCgd
-	 kORqLGS6Sb91q55FOXkNLnRjnRAYKKhEUNsJndVRAjnxEjlYQZEI9A3IvT5HyIEbko
-	 CBHJL+hMcBuZTXCdXE+FQZUVRop6QsIJjso8TMh4KTniE9zxoZzRK4hEkrVUxTcQ83
-	 +sEQf7sSKFkvoVHN8oM5BHI1ShLRhgtnFiIkSvYdWr2fwihvXRZLd2Zu53QE4A3dWd
-	 daE/S8+bPPNci8N927EFua7d8rek8C3Ov3g3xelOYZNJoAedMQXpfXXuzDEz9RL8Nr
-	 sB/UNVvMbWksg==
+	s=arc-20240116; t=1711237075; c=relaxed/simple;
+	bh=6ljQUXWnYOT6gSYK/RZsytm8Zc8/8u/MMm0rwQMMkXk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XsXw0ymU4A87rywdhha8yrS5a0vWcYeOMofggfFksh/AA3W00iUnEww9CqM8hcgUGHKWwdQ8LasMxWspuqXEci40Sjf0oiqPKnuBP0LASA+qABQNO7f9PlhUI7e67ZkFQag3TcBmQux6k7xxgTWPC4LehMvxPBdu0SlDrg5mb+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=gh7qhQyh; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 23E521BF203;
+	Sat, 23 Mar 2024 23:37:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711237064;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=stKi4Bkqfr5EzqU694IOdv3g32Vm41AKq7z++NU6pOI=;
+	b=gh7qhQyhVJVw9LXRfT6Besv2z0z9uXjECJ5BD7c8RrlHoQ5fiOzv2ZwEd0VHiVIEWDhd+e
+	r0IGe+5hLwYhiPl1s5hY3gng13mZpebFUD3oaCn03mVDGOJAk0dymkYfxgKImruWJZcnX3
+	O+jfHqZVqFHOWz67PGkJrpcDhdlpO+ALdg5x4N+PfqG0fK+AUmtyDVY5UaI2qYWO59e1bM
+	JIzfT/XxTiTkN3JE6gg71WAVvEBqq8h+DAHaV4lBTDoe6yExJYEeufdHkcxIBTm8gkWXWr
+	P3rUFQ5DegtIsayEqH8URuggon7lkoHMWvWYTynT81jQmuGlE8X4adsEu4wY8g==
+Date: Sun, 24 Mar 2024 00:37:42 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Baruch Siach <baruch@tkos.co.il>, linux-rtc@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/4] dt-bindings: rtc: armada-380-rtc: convert to dtschema
+Message-ID: <20240323233742bfb9ba4a@mail.local>
+References: <20240323-rtc-yaml-v1-0-0c5d12b1b89d@gmail.com>
+ <20240323-rtc-yaml-v1-1-0c5d12b1b89d@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 24 Mar 2024 01:31:23 +0200
-Message-Id: <D01IRZK3V45H.3594SKXE83TN9@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, <linux-riscv@lists.infradead.org>
-Cc: "Paul Walmsley" <paul.walmsley@sifive.com>, "Palmer Dabbelt"
- <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>,
- <linux-kernel@vger.kernel.org>, "Naveen N . Rao"
- <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
- <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240323232908.13261-1-jarkko@kernel.org>
-In-Reply-To: <20240323232908.13261-1-jarkko@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240323-rtc-yaml-v1-1-0c5d12b1b89d@gmail.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Sun Mar 24, 2024 at 1:29 AM EET, Jarkko Sakkinen wrote:
-> Tracing with kprobes while running a monolithic kernel is currently
-> impossible due the kernel module allocator dependency.
->
-> Address the issue by allowing architectures to implement module_alloc()
-> and module_memfree() independent of the module subsystem. An arch tree
-> can signal this by setting HAVE_KPROBES_ALLOC in its Kconfig file.
->
-> Realize the feature on RISC-V by separating allocator to module_alloc.c
-> and implementing module_memfree().
->
-> Link: https://www.sochub.fi # for power on testing new SoC's with a minim=
-al stack
-> Link: https://lore.kernel.org/all/20220608000014.3054333-1-jarkko@profian=
-com/ # continuation
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+On 23/03/2024 23:46:13+0100, Javier Carrasco wrote:
+> Convert existing binding to dtschema to support validation.
+> 
+> This is a direct conversion with no additions.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> ---
+>  .../devicetree/bindings/rtc/armada-380-rtc.txt     | 24 -----------
+>  .../bindings/rtc/marvell,armada-380-rtc.yaml       | 48 ++++++++++++++++++++++
+>  2 files changed, 48 insertions(+), 24 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/armada-380-rtc.txt b/Documentation/devicetree/bindings/rtc/armada-380-rtc.txt
+> deleted file mode 100644
+> index c3c9a1226f9a..000000000000
+> --- a/Documentation/devicetree/bindings/rtc/armada-380-rtc.txt
+> +++ /dev/null
+> @@ -1,24 +0,0 @@
+> -* Real Time Clock of the Armada 38x/7K/8K SoCs
+> -
+> -RTC controller for the Armada 38x, 7K and 8K SoCs
+> -
+> -Required properties:
+> -- compatible : Should be one of the following:
+> -	"marvell,armada-380-rtc" for Armada 38x SoC
+> -	"marvell,armada-8k-rtc" for Aramda 7K/8K SoCs
+> -- reg: a list of base address and size pairs, one for each entry in
+> -  reg-names
+> -- reg names: should contain:
+> -  * "rtc" for the RTC registers
+> -  * "rtc-soc" for the SoC related registers and among them the one
+> -    related to the interrupt.
+> -- interrupts: IRQ line for the RTC.
+> -
+> -Example:
+> -
+> -rtc@a3800 {
+> -	compatible = "marvell,armada-380-rtc";
+> -	reg = <0xa3800 0x20>, <0x184a0 0x0c>;
+> -	reg-names = "rtc", "rtc-soc";
+> -	interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/rtc/marvell,armada-380-rtc.yaml b/Documentation/devicetree/bindings/rtc/marvell,armada-380-rtc.yaml
+> new file mode 100644
+> index 000000000000..388c7d7a044d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/marvell,armada-380-rtc.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/marvell,armada-380-rtc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: RTC controller for the Armada 38x, 7K and 8K SoCs
+> +
+> +maintainers:
+> +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - marvell,armada-380-rtc
+> +      - marvell,armada-8k-rtc
+> +
+> +  reg:
+> +    items:
+> +      - description: RTC base address size
+> +      - description: Base address and size of SoC related registers
+> +
+> +  reg-names:
+> +    items:
+> +      - const: rtc
+> +      - const: rtc-soc
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +
+> +additionalProperties: false
 
-As for testing I tried the kprobes example for boottime tracing
-dcoumentation:
+This is not correct because at least start-year is supported. Please
+check for all your other submissions too.
 
-https://www.kernel.org/doc/html/v5.7/trace/boottime-trace.html
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    rtc@a3800 {
+> +        compatible = "marvell,armada-380-rtc";
+> +        reg = <0xa3800 0x20>, <0x184a0 0x0c>;
+> +        reg-names = "rtc", "rtc-soc";
+> +        interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+> +    };
+> 
+> -- 
+> 2.40.1
+> 
 
-I.e.
-
-ftrace.event {
-	kprobes.vfs_read {
-		probes =3D "vfs_read $arg1 $arg2"
-		filter =3D "common_pid < 100"
-		enable
-	}
-}
-
-kernel {
-	console =3D hvc0
-	earlycon =3D sbi
-	trace_options =3D sym-addr
-	trace_event =3D "initcall:*"
-	tp_printk
-	dump_on_oops =3D 2
-	trace_buf_size =3D 1M
-}
-
-BR, Jarkko
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
