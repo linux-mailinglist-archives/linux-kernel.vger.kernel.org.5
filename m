@@ -1,142 +1,149 @@
-Return-Path: <linux-kernel+bounces-112419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0C2887994
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:01:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14201887997
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D0CE1F21A9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:01:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 078B61C20D1D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229F44DA13;
-	Sat, 23 Mar 2024 17:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71E151C2A;
+	Sat, 23 Mar 2024 17:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VYQZ2hR8"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b="O1vMnH14"
+Received: from mail-40136.proton.ch (mail-40136.proton.ch [185.70.40.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E759545024
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 17:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB0545024;
+	Sat, 23 Mar 2024 17:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711213280; cv=none; b=jo+Fk9jiKPhCs51ESQexcRGvXMg7l4TiKRPFBNRStLjH0h5pYT07IFvFNz/UzxahNJGrSC5ky431lC0rsj378dstSSlRB0o2BhS1/IoyPhxIImDBBsr7pZR2/7UoWQkIvLLYZkeMJ7HKpOBBAXl5/eAONdS22AZx54EuJDqs10c=
+	t=1711213365; cv=none; b=G8GJHIudWs7qVSA4q35XL8w+qEDg7uhmTT5sSoJY+SZd3828KTsGghOPysksWOQ++eg+3dtuQkwFgFfu1i19EKmpTRMhaaINNKsgHG0neEdkBDy4esQOcS8EkCM4eyYm2LWKam94TcGCQhqXg2/qAlqfBSfs2a11tVWCEV34Be8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711213280; c=relaxed/simple;
-	bh=1sBnguAVfkUfiEkbapnN0YLn9KfTnORFOl8wc07Si0Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SiGNq4HLHJ1AqTRxhyidZhRGqTLbfN9Z3+Xlgc5z0dYe5/+2mTRsBOtaVYt/Re5+9AAKWqajBcIK8YYjCMgV6nJf+Y5Gr0cnYPjTZuBESlNekqWN/OgAYXLkzkBA5szz+RR/lBni87DnGIlMZl5b3zFjoxRBWpU3S6uKsOFCBgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VYQZ2hR8; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d68c6a4630so38599281fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 10:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711213277; x=1711818077; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N+lGh23g6J15PY5KwALiSxS7vG45fb3PifLq6Y840SM=;
-        b=VYQZ2hR8QnnxvyOA2vMnIKkmUFXTpWw30dEbuXsDfQCZD4QBADJhwqt9gYJat88K6p
-         Cl/dP3fLEF6hoBwf5beUXz5FeIAnDNvRU47K/FOQtQ5FPZ2E3j6s3qnBBfads4HZ5gUq
-         pQS1AX6duEmRrqJMU61xBSkWbdk5z4itYhEwJqx53UsO8PAG8Gq4BmoCi0lv380+OKb3
-         Zw4VzM9iXvJDZh6Ogiv3Sqy9tIWLwVdR9go82x0/8Y62KUt7HqYKGmonD31GjsQ7w6JD
-         QBCi6HT3GCIlVsguLnNSMAOZZmduyndlr/HjZ+UNFjtu9Olj0LNBt32UmLVM7nYMjC7n
-         TKiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711213277; x=1711818077;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N+lGh23g6J15PY5KwALiSxS7vG45fb3PifLq6Y840SM=;
-        b=jpDI63nspP99sBm60Rpw5VtCemkVq2DEq68cIwZpAXGoKu/Nudpm4erM4CAt4hcObO
-         X4n7s/sFGvbgJgy5GN176A7XUvfNi/Rmo0Ejz8PLUNi9uD1JxKZkPziM9Z3J6bNHreBS
-         tJ3RAq+NPnRwhF7qFUft49jdj+meIdnVCTNmy8NnM5OPzeJj6bfjf5kl/eWSv6JWFARB
-         RbTQHzzd1KxEqDbIrA5blNsP7fgFHAXQOl5V2+UGG1KwnyxgyeeYJSCyFQWD+9ZOo7oS
-         kbQJRVs07voGIyffOf+EryuTSA3Wunr6Sx3yeeUdfwZdyGLjY+xIokAB2AYEO5ma3a+K
-         07cQ==
-X-Gm-Message-State: AOJu0YyZu09DASPm7lu58p35jNkqOoN6OeqmTWryB0lI00Bnh77MyjrK
-	CYTKitxfjAwBxon9oorKLjqUAbM6C/hzlPfKZDyZAPeDjlfSf9K0BvNlBNYiyjqdRya1uTrzLHP
-	fCPenNfwwhfwurVQJ1eHbqngH0mE=
-X-Google-Smtp-Source: AGHT+IHKn/Ou+EVnVTSGJQIcUAv8ILNL7tKfgjx3POAOkZWpAPKdYFi9wk2W+8k3dczHnDNJpLDWW3q3AmerELT/mDM=
-X-Received: by 2002:a05:651c:199f:b0:2d6:cd05:1891 with SMTP id
- bx31-20020a05651c199f00b002d6cd051891mr116039ljb.15.1711213277028; Sat, 23
- Mar 2024 10:01:17 -0700 (PDT)
+	s=arc-20240116; t=1711213365; c=relaxed/simple;
+	bh=qvUqg6yRFXdlsTOpAmC16iOEVx9U+T5DcMXxNJwAodo=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=iN1x8Ot9uHv7Ju3X7W/jw1AyJZLYm44NHtNdEci+749UuV0ZBk8XSWASBtFmrwx9bSZFhi0lPv+PvS3/Tlm1NezGA7zI043OyhdB4Q4QHEb9j7TeA2TK1RjY+JAwj+Fo7uauipMrBlXx/x9MdtetZSrM0Z9kQ6bUP1VUhnMKmFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com; spf=pass smtp.mailfrom=thefossguy.com; dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b=O1vMnH14; arc=none smtp.client-ip=185.70.40.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thefossguy.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thefossguy.com;
+	s=protonmail; t=1711213358; x=1711472558;
+	bh=MOWxTE0LblY9DjHp6xvHXR+dNjwb9gyrT6Bdl3jULYM=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=O1vMnH14S9ECDduacDf1d5GXHglynF4vpqGjZ4VPv78aikkbNCNtwnYcbxzLxwkTn
+	 Ch+L8mISP8PYSya9toKglHel3tOn3RysBd73aKFcWtJDyqblvLdbQwNJ5k3h3EadFn
+	 0krL9oB83e0e76NnACDphttEP5ollFB4KKvspfJgasZ4JLheUcaY2+DDpOn4vNu68N
+	 mX/1tFCCGIFJK+RpEJeDb6Kb2c2BFa4QpD0iuv+QZAkF2UmlpWaqMx8XKmrOmd8wAa
+	 XBGupi7aO193oWcjMrUyUpLDUbUV6I6L8QSG0Vqzb1eZo6I2HJckRtMVPwaFAwf19V
+	 Us4jjW8dG5oyw==
+Date: Sat, 23 Mar 2024 17:02:19 +0000
+To: "sebastian.reichel@collabora.com" <sebastian.reichel@collabora.com>, "saravanak@google.com" <saravanak@google.com>
+From: Pratham Patel <prathampatel@thefossguy.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "regressions@lists.linux.dev" <regressions@lists.linux.dev>, "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Fixing the devicetree of Rock 5 Model B (and possibly others)
+Message-ID: <tQ0L3-34g4t-mzfQIP6KDe5OYelGnEo6Udzq6Kb_nEcljppSQUXOktpE__nL-CdLOu9gW-4tIIbjtSbqrdCrjEkdhZLPiiHTqRcCB6WORuM=@thefossguy.com>
+Feedback-ID: 104309535:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322165233.71698-1-brgerst@gmail.com> <20240322165233.71698-3-brgerst@gmail.com>
-In-Reply-To: <20240322165233.71698-3-brgerst@gmail.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Sat, 23 Mar 2024 18:01:15 +0100
-Message-ID: <CAFULd4adOp=5iBLMHEWiuo2RJ4y2rGFd2_tikx_4txLb+NFE=w@mail.gmail.com>
-Subject: Re: [PATCH v4 02/16] x86/stackprotector/64: Remove stack protector
- test script
-To: Brian Gerst <brgerst@gmail.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
-	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
-	"H . Peter Anvin" <hpa@zytor.com>, David.Laight@aculab.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha512; boundary="------9fbc6d827d5b25b8ec5d0d21b3f1f4a54ca515d16ca64f730918341a8d911348"; charset=utf-8
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------9fbc6d827d5b25b8ec5d0d21b3f1f4a54ca515d16ca64f730918341a8d911348
+Content-Type: multipart/mixed;boundary=---------------------87a844869beee976bdc9af190bfad2e7
+
+-----------------------87a844869beee976bdc9af190bfad2e7
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
 
-On Fri, Mar 22, 2024 at 5:52=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
-te:
->
-> This test for the stack protector was added in 2006 to make sure the
-> compiler had the PR28281 patch applied.  With GCC 5.1 being the minimum
-> supported compiler now, it is no longer necessary.
->
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
+Since the introduction of the `of: property: fw_devlink: Fix stupid bug in=
+ remote-endpoint parsing` patch, an issue with the device-tree of the Rock=
+ 5 Model B has been detected. All the stable kernels (6.7.y and 6.8.y) wor=
+k on the Orange Pi 5, which has the Rockchip RK3588S SoC (same as the RK35=
+88, but less I/O basically). So, being an owner of only two SBCs which use=
+ the RK3588* SoC, it appears that the Rock 5 Model B's DT is incorrect.
 
-Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
+I looked at the patch and tried several things, neither resulted in anythi=
+ng that would point me to the core issue. Then I tried this:
 
-> ---
->  arch/x86/Kconfig                          | 5 ++---
->  scripts/gcc-x86_64-has-stack-protector.sh | 4 ----
->  2 files changed, 2 insertions(+), 7 deletions(-)
->  delete mode 100755 scripts/gcc-x86_64-has-stack-protector.sh
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index f326903cbe67..88d72227e3cb 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -411,12 +411,11 @@ config PGTABLE_LEVELS
->
->  config CC_HAS_SANE_STACKPROTECTOR
->         bool
-> -       default $(success,$(srctree)/scripts/gcc-x86_64-has-stack-protect=
-or.sh $(CC) $(CLANG_FLAGS)) if 64BIT
-> +       default y if 64BIT
->         default $(cc-option,-mstack-protector-guard-reg=3Dfs -mstack-prot=
-ector-guard-symbol=3D__stack_chk_guard)
->         help
->           We have to make sure stack protector is unconditionally disable=
-d if
-> -         the compiler produces broken code or if it does not let us cont=
-rol
-> -         the segment on 32-bit kernels.
-> +         the compiler does not allow control of the segment and symbol.
->
->  menu "Processor type and features"
->
-> diff --git a/scripts/gcc-x86_64-has-stack-protector.sh b/scripts/gcc-x86_=
-64-has-stack-protector.sh
-> deleted file mode 100755
-> index 75e4e22b986a..000000000000
-> --- a/scripts/gcc-x86_64-has-stack-protector.sh
-> +++ /dev/null
-> @@ -1,4 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0
-> -
-> -echo "int foo(void) { char X[200]; return 3; }" | $* -S -x c -c -m64 -O0=
- -mcmodel=3Dkernel -fno-PIE -fstack-protector - -o - 2> /dev/null | grep -q=
- "%gs"
-> --
-> 2.44.0
->
+```
+$ grep -C 3 remote-endpoint arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dt=
+s
+
+                port {
+                        es8316_p0_0: endpoint {
+                                remote-endpoint =3D <&i2s0_8ch_p0_0>;
+                        };
+                };
+        };
+--
+                i2s0_8ch_p0_0: endpoint {
+                        dai-format =3D "i2s";
+                        mclk-fs =3D <256>;
+                        remote-endpoint =3D <&es8316_p0_0>;
+                };
+        };
+};
+```
+
+So, from a cursory look, the issue seems to be related to either the DT no=
+de for the audio codec or related to the es8316's binding itself. Though I=
+ doubt that the later is the issue because if that were the issue, _someon=
+e_ with a Pine64 Pinebook Pro would've raised alarms. So far, this seems t=
+o be related to the `rk3588-rock-5b.dts` and possibly with the `rk3588s-ro=
+ck-5a.dts` too.
+
+I would **love** to help but I'm afraid I device-trees are not something t=
+hat I am at-all familiar with. That said, I am open to methods of debuggin=
+g this issue to provide a fix myself.
+
+I would have replied to the patch's link but unfortunately, I haven't yet =
+setup neomutt and my email provider's web UI doesn't have a [straightforwa=
+rd] way to reply using the 'In-Reply-To' header, hence a new thread. Apolo=
+gies for the inconvenience caused.
+
+  -- Pratham Patel
+-----------------------87a844869beee976bdc9af190bfad2e7
+Content-Type: application/pgp-keys; filename="publickey - prathampatel@thefossguy.com - 0xF2DDE54D.asc"; name="publickey - prathampatel@thefossguy.com - 0xF2DDE54D.asc"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="publickey - prathampatel@thefossguy.com - 0xF2DDE54D.asc"; name="publickey - prathampatel@thefossguy.com - 0xF2DDE54D.asc"
+
+LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgp4ak1FWmZjR2RSWUpLd1lCQkFI
+YVJ3OEJBUWRBa2VYM3NrdFI1R0lZQTM5VXhoRTlZcitZMy8zd0ZXUmwKZlZ5T1hsaWdnS2ZOT1hC
+eVlYUm9ZVzF3WVhSbGJFQjBhR1ZtYjNOelozVjVMbU52YlNBOGNISmhkR2hoCmJYQmhkR1ZzUUhS
+b1pXWnZjM05uZFhrdVkyOXRQc0tNQkJBV0NnQStCWUpsOXdaMUJBc0pCd2dKa01lcApYbTlkS2Er
+V0F4VUlDZ1FXQUFJQkFoa0JBcHNEQWg0QkZpRUU4dDNsVFJRTDQ4NE9oNDE3eDZsZWIxMHAKcjVZ
+QUFDYlFBUDlMc1NwUlQwSTV2TC8ycHpBa2F2UVhLdStWR1BRMk44RUVYZGpSVkRseGl3RUFwMVpS
+ClB0M2k5RG9qcXg1OE9MQ2R3N2xHMlVwdkJGZ2dCeGVrV216d1dRbk9PQVJsOXdaMUVnb3JCZ0VF
+QVpkVgpBUVVCQVFkQXJlOWp5aVR3VFBGSjNaazJvTVd0ZDVxSi9zcWNKRUZrckZxNUpVVzRWalVE
+QVFnSHduZ0UKR0JZS0FDb0ZnbVgzQm5VSmtNZXBYbTlkS2ErV0Fwc01GaUVFOHQzbFRSUUw0ODRP
+aDQxN3g2bGViMTBwCnI1WUFBRFRGQVA5WUZIL0FxKzVFd3pHQ0xJZWhNNGJsUW5hK2t0cnNPRWlw
+VllVTVZMd0tjQUQvVktHQwo0eFRtTENUQUNDcFNqRjdVRzBVY2NNOVU0T21ZV2RlVU9HUk1hd1k9
+Cj01cTBtCi0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0K
+-----------------------87a844869beee976bdc9af190bfad2e7--
+
+--------9fbc6d827d5b25b8ec5d0d21b3f1f4a54ca515d16ca64f730918341a8d911348
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
+
+wnUEARYKACcFgmX/CwEJkMepXm9dKa+WFiEE8t3lTRQL484Oh417x6leb10p
+r5YAAKA/AQCkw7cy5Xleb1CszXzbi/+SMY/azZf3PhmHDQSDAXlD7AD/bGg/
+Hgdzv+VyRF3bwym4zEmt0uIwU8vj74qgQCGsaw8=
+=kvaJ
+-----END PGP SIGNATURE-----
+
+
+--------9fbc6d827d5b25b8ec5d0d21b3f1f4a54ca515d16ca64f730918341a8d911348--
+
 
