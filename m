@@ -1,96 +1,124 @@
-Return-Path: <linux-kernel+bounces-112400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87BDC88794F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FB40887952
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:09:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D8CDB215DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:05:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8ED58B2159A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42814087A;
-	Sat, 23 Mar 2024 16:05:27 +0000 (UTC)
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E2E4778B;
+	Sat, 23 Mar 2024 16:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rsub3pJB"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F06405FB
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 16:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307491EB34;
+	Sat, 23 Mar 2024 16:09:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711209927; cv=none; b=iWjmKRmOA26iTGstJoUt/1MCzSAASRwEvzwncuIeXuzEj90oIGuh5Sz4xc5GolCDm6nTzPhyh1/C0DNIaW5maQH7rfrgQMWdACqK6soDr6BXDtXxk8pfql5kdZSG3X9Ot3fP9vGKSNEJByM2xm8gINgAdEVOk/irpbIxokQGPLY=
+	t=1711210180; cv=none; b=aOUX0C1yxd+DLeLOXTxL5naxBxwB+1btG1Pklj4TRgTECLFIny5ihJC0FqrpP5XQj0DKCQxsENISgTLf43kMgUmOVbf2pcx6g6UhMmXk1UZ5UspTeZl7G+Yiarq8RYUTAIV1iBOaoA4X7jncEtx6dJGizHUrLJtiBDvaFn7A3Jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711209927; c=relaxed/simple;
-	bh=UTIcrrwXNx/qWXkxlQfJF7yP5zzW0DBI70wtwcfgnt0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ERIm8UxIdgxBti0+NQgwsL8Lu+AVHzev3H5MbmhaCNypvWb+NaPO5/XLme+2MAqWJ1Cdt5KurZcSN6BN6zFZS1b6NdLlJWpOXBSuFMB+hu/MNjieTJMLacQY3qfyrmIgjFH13lC2rt38hRTFl7D38vMwQMUf5CCYD23ujylM5NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69674639df2so7889626d6.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 09:05:25 -0700 (PDT)
+	s=arc-20240116; t=1711210180; c=relaxed/simple;
+	bh=m6YKeaBWA9+eTPNBqpCMMtgAOFs8walsrBarhHMj2qU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N3p9c/l9VIu3uhqS2/0nBjlne0T1v+K/cFF9PX/os9wdVTceHetZDPhb2cU9M67EiCtGBXAgmz0XD/e3i9EV1cepNmk49oq391vXRsMEp1ReJ/WvsdooUTRXONqrO0srm3hp+KXlcqpixtxLkFLFvAQfcD3y46mNJhRIi9NGjB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rsub3pJB; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a5362ceb7bso213986eaf.1;
+        Sat, 23 Mar 2024 09:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711210178; x=1711814978; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8UB+KuKZaFZgvy2nchrz2bMbfhDWrexGsWveT9dkxoo=;
+        b=Rsub3pJBxeyKV5rBTqkAZIbNJ24EutaJRsfSD5mCS+lDzjclxT9HJdNLzVhOVf7ocZ
+         XYQyrNEWGN3rBuTgF1cpBV/NOqYFGaK5MHg+rQYZIW7qMM2KOufp2itwuf62d+Nkxzuf
+         9RxM4MJialEDjXwHjFnUrUsu/c9GNeu8RZ1TeB8Z3kn1kUrfhSGXcbmzO6O1VjdMOJTy
+         Y+PZ/+1Wd+6SSRB3j8rbdxAWaFijOZF8nNEZqhSjWC1PwseWcIAj3o1r0FLQXzl8JC9T
+         Kk0S7ZW30Kcm4inUXb08XtZBPeuJ5IltwlPvymmd5y77G73FvLikp4FqmbwjDGT0Mx9E
+         kzIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711209924; x=1711814724;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LwgP8PLLhEZ4I/JPIIVutoqihwAKeS31/sLLIs4EdsA=;
-        b=iWLqAEF3of/me7RAQeMBazPW64BgnMEFZG9/mmb3k6OKQiu1k4zPL6jeb79t+HGEg0
-         iH6oIPG9H/goh/NYzC/n8Q95JKSaAX2Fw3QwHtFW3cwTl/JDaCDPOE/tsfmvG7Ny0VpI
-         YknUvtFmqHce4+fjhR/YCs5NK929I1xi0+sXq5mFU1ebg0fbWmyDRdZNKqXdDgV1Zv0h
-         WaTMiYjFMF2z88rObm+VdIcy2Q4V0SgelWDEas5F5C858vpgkpcX6VBG/bZezGjlmxUs
-         H9HQXitdcZ+GSspgpLlRh36ooDE/geOs2GmTLEmv/Tqxuz7wFaskJ47RILQw14twdWGy
-         vw/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWlYwSrYFQ2s5x8VV8WNXAh5KNdwyCVHwwW9ZTx3ZsEhiZDm1AnS+H9dOSoVMEzKm4cPsOy3QofNaud/wlBuWl7STRLho76XeRUnXrp
-X-Gm-Message-State: AOJu0YxTKUyeBGK+VwN8i7K6BimA7kdWS49F9GuHOgWUTcpZZ+LVbTp3
-	tdNH/CpKrw/JYt70MvYKjE7go7/4rpWBvGxApMqkCmY8w0KYjzAFngCgmDJCGQ==
-X-Google-Smtp-Source: AGHT+IEshk/dc6HBbutRsVAeN/yLgWxtrdsdReob4esfZAV/w/UrsUWSizBnvhEbX0jZww+wWyWm2A==
-X-Received: by 2002:ad4:4ea8:0:b0:691:1fcc:e26d with SMTP id ed8-20020ad44ea8000000b006911fcce26dmr2460772qvb.31.1711209924582;
-        Sat, 23 Mar 2024 09:05:24 -0700 (PDT)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id jr9-20020a0562142a8900b0069186a078b3sm2170108qvb.143.2024.03.23.09.05.23
+        d=1e100.net; s=20230601; t=1711210178; x=1711814978;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8UB+KuKZaFZgvy2nchrz2bMbfhDWrexGsWveT9dkxoo=;
+        b=L4fyos2aJs44tgliDCKY3DJBcY8v7YwhJhfZVhikJDiD+FwOMdY7tIeDi5gopvPFiY
+         WuJoLGZfvZVrSvwfkoVrnFUKtziWQxt703Mjf8XqDaUFc7oxbtvhHrNtBAJ2KbXzclnw
+         LYYAjjxtgPHIgoJV09gfVlgsrrR0TfJ0OcHZnAPwXVockYj23aOmLeiqJPjh0A9DOgR+
+         98QluwPn4EZee82MM3yuKFruYUl6xMZQcXOnSpInXxl3eKWAWXE2ga39mPwJVp8O3lCU
+         S0qNma0ZFDpCwq0a42k0Yfi65nTMzRma888dX98hVIbKHo0HxHN5N54OB3j+p8TnJqOm
+         EWQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUbltGJF6dUtMxQb4QYUR2oXSeobRwgDhHdRdMIUdPuZKNvzWsP6FJMAe7mzlSd/FKKFL40Gra5kzAli3va88O05q1A+Kodz4fKzvqKYFGB4WsI2i8QBPqsmkmxBofoXGE2xD3GrhuRr/0=
+X-Gm-Message-State: AOJu0Yyz4Cxtis9ZcRTvmEyLDZqLcLCDmP6yotiQ7Lx5ZCa6LPYg0TTH
+	S++eFCmakicOIN7+vAeAsgudTMQtdwWGWmHLLk1yRIVmmc7j1nPR
+X-Google-Smtp-Source: AGHT+IGdwsXmXfNfxsZ4yAelTOh54VWGb+rpl+SHlqXRmNqizUUIYJ6ecjBnzA1kVCAFqqxW5YscqA==
+X-Received: by 2002:a05:6820:3086:b0:5a4:852f:4c08 with SMTP id eu6-20020a056820308600b005a4852f4c08mr2752535oob.4.1711210178271;
+        Sat, 23 Mar 2024 09:09:38 -0700 (PDT)
+Received: from nukework.lan (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
+        by smtp.gmail.com with ESMTPSA id a4-20020a4aae44000000b005a4b2172e48sm738541oon.41.2024.03.23.09.09.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 09:05:24 -0700 (PDT)
-Date: Sat, 23 Mar 2024 12:05:23 -0400
-From: Mike Snitzer <snitzer@kernel.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: ming.lei@redhat.com, hch@lst.de, bvanassche@acm.org, axboe@kernel.dk,
-	mpatocka@redhat.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH 2/2] block: remove blk_mq_in_flight() and
- blk_mq_in_flight_rw()
-Message-ID: <Zf79w4Ip3fzSMCWh@redhat.com>
-References: <20240323035959.1397382-1-yukuai1@huaweicloud.com>
- <20240323035959.1397382-3-yukuai1@huaweicloud.com>
+        Sat, 23 Mar 2024 09:09:37 -0700 (PDT)
+From: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+To: andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	robert.marko@sartura.hr,
+	ansuelsmth@gmail.com,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Subject: [PATCH 1/2] dt-bindings: net: ipq4019-mdio: add IPQ9574 compatible
+Date: Sat, 23 Mar 2024 11:09:34 -0500
+Message-Id: <20240323160935.2848095-1-mr.nuke.me@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240323035959.1397382-3-yukuai1@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 22 2024 at 11:59P -0400,
-Yu Kuai <yukuai1@huaweicloud.com> wrote:
+Add a compatible property specific to IPQ9574. This should be used
+along with the IPQ4019 compatible. This second compatible serves the
+same purpose as the ipq{5,6,8} compatibles. This is to indicate that
+the clocks properties are required.
 
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Now that blk-mq also use per_cpu counter to trace inflight as bio-based
-> device, they can be replaced by part_in_flight() and part_in_flight_rw()
-> directly.
+Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+---
+ Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Please reference the commit that enabled this, e.g.:
+diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+index 0029e197a825..a94480e819ac 100644
+--- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
++++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+@@ -20,6 +20,7 @@ properties:
+           - enum:
+               - qcom,ipq6018-mdio
+               - qcom,ipq8074-mdio
++              - qcom,ipq9574-mdio
+           - const: qcom,ipq4019-mdio
+ 
+   "#address-cells":
+@@ -76,6 +77,7 @@ allOf:
+               - qcom,ipq5018-mdio
+               - qcom,ipq6018-mdio
+               - qcom,ipq8074-mdio
++              - qcom,ipq9574-mdio
+     then:
+       required:
+         - clocks
+-- 
+2.40.1
 
-With commit XXXXX ("commit subject") blk-mq was updated to use per_cpu
-counters to track inflight IO same as bio-based devices, so replace
-blk_mq_in_flight* with part_in_flight() and part_in_flight_rw()
-accordingly.
-
-(I'm not seeing the commit in question, but I only took a quick look).
-
-Mike
 
