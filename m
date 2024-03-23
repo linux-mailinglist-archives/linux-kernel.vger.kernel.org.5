@@ -1,126 +1,99 @@
-Return-Path: <linux-kernel+bounces-112480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6DB4887A56
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:44:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A26B887A59
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:44:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31FEB1F21E5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:44:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B14E4B21547
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833883D0B9;
-	Sat, 23 Mar 2024 20:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1835A0FA;
+	Sat, 23 Mar 2024 20:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aZaIhBrj"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TG8xN/Lf";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aLDuLGbK"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C775CB5;
-	Sat, 23 Mar 2024 20:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23F45CB5;
+	Sat, 23 Mar 2024 20:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711226633; cv=none; b=hi7CjbQ4kXommqiqditQ1W4AnITH8yHuvMClUPA6OeftJNkWZHir7kXirjmjKI+JQf+FANEJcirzYPgiA6HejKl16dJV127KZ35h9nz3fSp25GystNltz2SVs1Ha/CViQV7s6eYGkMQD2aP8e4aBMNey8KnrJUYhYBKRB18NphQ=
+	t=1711226642; cv=none; b=CMGwuq1HDnQyqjkoAs773EW7mTvVltttILq5SyjW4UCw6L4BEQ95tjohVY7Q+IU1X95R75Tzm1fDlG6YS0yEIQzr27wdjjB4a9HC1aQCmmXjMTKyVZK56M93mWyQOAPmfjQBDxMvVG11n8XBhjCePGR4E/AGDKY3qCcVXw8dA4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711226633; c=relaxed/simple;
-	bh=7J83nDc0jpvLlG/MqtJFdTwHHLhkW4RHRwbfxlwcv8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KoaCTgIn9B9MmpZ/AqqEjjIXXl/ERgtqLmZukuMShu0xZN/H2y8YTeoq7yAOfUT+jtKvu9xlWZi06OPkjqoe/cD28oCKUoRbIlK3UymNnOi0bLkHpgoaT7WkI8/VxTrm9g0hAkL2ylZlN4kKsx+S3sFNUGF+B/4KHbqJtAfn3NA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aZaIhBrj; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=fCPVmTKTDT9EyIJ0uHfdJM731Jbw/NCBwbfsJq5CekM=; b=aZaIhBrjz22jMwp0SM08sH/hLU
-	1bFkboFc7sPTz8pg01jpLcH5dV8yN9VUI+ED0rTwa813vL3E/n5erXdu09eINZ7/sN8zweecNHRzX
-	mvSjZ2NFZWrUBHnJjqaNglpLOnWma6AITNJSydKL2hT9QVZBHwUmyw1/oJl8VhsEYF1cFpTw/cUK8
-	eWQ8GLG+ijPEnmz/l5eObr1eLnwYTivbg4BBp8gCRK8XGaEGgL6fWJzVdeeFM7iRndcWMQABZ76Ub
-	xmJblPfdQBu/K9WUwJ4iseww5L9rgeOemIlHaK8XLugINBZGqTAQq89K6AIj56PiTs0c+kryHhLym
-	useNT0sQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ro8DJ-0000000CWBj-2jRk;
-	Sat, 23 Mar 2024 20:43:37 +0000
-Date: Sat, 23 Mar 2024 20:43:37 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Amogh Cheluvaraj <amogh.linux.kernel.dev@gmail.com>
-Cc: airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org, tzimmermann@suse.de, corbet@lwn.net,
-	javier.carrasco.cruz@gmail.com, skhan@linuxfoundation.org,
-	dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Fix duplicate C declaration warnings
-Message-ID: <Zf8--QSkEMDe9zyp@casper.infradead.org>
-References: <20240323163148.23497-1-amogh.linux.kernel.dev@gmail.com>
+	s=arc-20240116; t=1711226642; c=relaxed/simple;
+	bh=9OGV87C7lNe4Tm2I6F3pZZZwMrb6/RZRUSbGM5CS/+c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=UsZ+WSJs+WOnVInvtmsrUQwEruzyvz6Sm0HWsDCUIJaYYeSjgUD0rauJLWWlOy/7jlGSS2+/DvIoesAJ4jCUXB3FSlLLKUtA9liPIlHSC1nhuh++tGahcScRU2sr34oAyU2l2QopQqtYasSNacO8HekyuJn0SzJ5rYUcbpRGKeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TG8xN/Lf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aLDuLGbK; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711226639;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=498F8PEQ9wEXgdD7gmsVyIePv6lPN9KMgR9cake0cII=;
+	b=TG8xN/LfoRRdGRKLPJytQ0WbpsaWMv0WrL4DXHc0QF2TG12Q+SQKz6wiObWgnnW0HcR/Ql
+	F7NpwBCwlA2vJX8wi6bn4x4VVQlSM5xIJQKIHzRKU4I9+XuSiat0R7PfEeZifBlwk4bJAL
+	yvEB7eWVJx7O4K4GgJ3YXt6yO//Uay0/EmyvWT4oESAp+K6tUUEXEQ0ZBxK2rsiVEj8bEV
+	3Bzbt37hwIC0Ytzq/bSAlCawj2peBQWRNNvikh9Hcvrg0VIKo1H75ASOhVTq+sdlRR2Hkm
+	sjgXecrKKsUDj5FuF+LpeihW7o64DPQnycD8y6KM3vUmurhroDmduosVLQYLHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711226639;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=498F8PEQ9wEXgdD7gmsVyIePv6lPN9KMgR9cake0cII=;
+	b=aLDuLGbKEM9RIsVsNKRqttDQtUs33o/e8HGUnEg3BejCTi8TFZVBG6mVCOBMb9MEViBHMg
+	qYbmaaadEYPf6dDw==
+To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
+ liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
+ kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
+ tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+ jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ yaoma@linux.alibaba.com
+Subject: Re: [PATCHv12 4/4] watchdog/softlockup: report the most frequent
+ interrupts
+In-Reply-To: <20240306125208.71803-5-yaoma@linux.alibaba.com>
+References: <20240306125208.71803-1-yaoma@linux.alibaba.com>
+ <20240306125208.71803-5-yaoma@linux.alibaba.com>
+Date: Sat, 23 Mar 2024 21:43:58 +0100
+Message-ID: <87zfuofzld.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240323163148.23497-1-amogh.linux.kernel.dev@gmail.com>
+Content-Type: text/plain
 
-On Sat, Mar 23, 2024 at 10:01:47PM +0530, Amogh Cheluvaraj wrote:
-> Fix duplicate C declaration warnings at
-> Documentation/gpu/drm-kms.rst that was found by
-> compiling htmldocs
+On Wed, Mar 06 2024 at 20:52, Bitao Hu wrote:
+> +	if (__this_cpu_read(snapshot_taken)) {
+> +		for_each_active_irq(i) {
+> +			count = kstat_get_irq_since_snapshot(i);
+> +			tabulate_irq_count(irq_counts_sorted, i, count, NUM_HARDIRQ_REPORT);
+> +		}
+> +
+> +		/*
+> +		 * We do not want the "watchdog: " prefix on every line,
+> +		 * hence we use "printk" instead of "pr_crit".
+> +		 */
 
-I'm sure this removes the warning, but it removes all kernel-doc
-which exists in drivers/gpu/drm/drm_fourcc.c.  Isn't there a more
-granular fix than this?
+You are not providing any justification why the prefix is not
+wanted. Just saying 'We do not want' does not cut it and who is 'We'. I
+certainly not.
 
-> /home/amogh/Linux_Kernel_Workspace/linux-next/Documentation/gpu/drm-
-> kms:360: ./drivers/gpu/drm/drm_fourcc.c:344: WARNING: Duplicate C
-> declaration, also defined at gpu/drm-kms:39.
-> Declaration is '.. c:function:: const struct drm_format_info *
-> drm_format_info (u32 format)'.
-> /home/amogh/Linux_Kernel_Workspace/linux-next/Documentation/gpu/drm-
-> kms:461: ./drivers/gpu/drm/drm_modeset_lock.c:392: WARNING: Duplicate C
-> declaration, also defined at gpu/drm-kms:49.
-> Declaration is '.. c:function:: int drm_modeset_lock (struct
-> drm_modeset_lock *lock, struct drm_modeset_acquire_ctx *ctx)'.
-> 
-> Signed-off-by: Amogh Cheluvaraj <amogh.linux.kernel.dev@gmail.com>
-> ---
-> 
-> changes in v2
-> - add warnings found after compilation
-> - fix grammar in commit description
-> 
-> ---
->  Documentation/gpu/drm-kms.rst | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/Documentation/gpu/drm-kms.rst b/Documentation/gpu/drm-kms.rst
-> index 13d3627d8bc0..a4145f391e43 100644
-> --- a/Documentation/gpu/drm-kms.rst
-> +++ b/Documentation/gpu/drm-kms.rst
-> @@ -357,9 +357,6 @@ Format Functions Reference
->  .. kernel-doc:: include/drm/drm_fourcc.h
->     :internal:
->  
-> -.. kernel-doc:: drivers/gpu/drm/drm_fourcc.c
-> -   :export:
-> -
->  .. _kms_dumb_buffer_objects:
->  
->  Dumb Buffer Objects
-> @@ -458,9 +455,6 @@ KMS Locking
->  .. kernel-doc:: include/drm/drm_modeset_lock.h
->     :internal:
->  
-> -.. kernel-doc:: drivers/gpu/drm/drm_modeset_lock.c
-> -   :export:
-> -
->  KMS Properties
->  ==============
->  
-> -- 
-> 2.44.0
-> 
-> 
+I really disagree because the prefixes are very useful for searching log
+files. So not having it makes it harder to filter out for no reason.
+
+Thanks,
+
+        tglx
 
