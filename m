@@ -1,99 +1,130 @@
-Return-Path: <linux-kernel+bounces-112481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A26B887A59
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 957A5887A5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:44:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B14E4B21547
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:44:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37159B21977
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB1835A0FA;
-	Sat, 23 Mar 2024 20:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TG8xN/Lf";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aLDuLGbK"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4729241232;
+	Sat, 23 Mar 2024 20:44:48 +0000 (UTC)
+Received: from fgw21-7.mail.saunalahti.fi (fgw21-7.mail.saunalahti.fi [62.142.5.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C23F45CB5;
-	Sat, 23 Mar 2024 20:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC843201
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 20:44:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.82
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711226642; cv=none; b=CMGwuq1HDnQyqjkoAs773EW7mTvVltttILq5SyjW4UCw6L4BEQ95tjohVY7Q+IU1X95R75Tzm1fDlG6YS0yEIQzr27wdjjB4a9HC1aQCmmXjMTKyVZK56M93mWyQOAPmfjQBDxMvVG11n8XBhjCePGR4E/AGDKY3qCcVXw8dA4I=
+	t=1711226687; cv=none; b=JVoZmLNUvyRH5F9C71z4Wf5dGgwKbS200brGK5kZ5CPQvF4moKrpFzs92JuBP+iye4Gg8sofiKhNkG8joz9k4O2bhn62lgAuZuiDDjX0/7jg5+iavMcXHqVWuEnD7sdUOmrL+TQHdk8kzVW1fJZZu9bPKCV3iSFNdn80PwU6LxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711226642; c=relaxed/simple;
-	bh=9OGV87C7lNe4Tm2I6F3pZZZwMrb6/RZRUSbGM5CS/+c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UsZ+WSJs+WOnVInvtmsrUQwEruzyvz6Sm0HWsDCUIJaYYeSjgUD0rauJLWWlOy/7jlGSS2+/DvIoesAJ4jCUXB3FSlLLKUtA9liPIlHSC1nhuh++tGahcScRU2sr34oAyU2l2QopQqtYasSNacO8HekyuJn0SzJ5rYUcbpRGKeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TG8xN/Lf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aLDuLGbK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711226639;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=498F8PEQ9wEXgdD7gmsVyIePv6lPN9KMgR9cake0cII=;
-	b=TG8xN/LfoRRdGRKLPJytQ0WbpsaWMv0WrL4DXHc0QF2TG12Q+SQKz6wiObWgnnW0HcR/Ql
-	F7NpwBCwlA2vJX8wi6bn4x4VVQlSM5xIJQKIHzRKU4I9+XuSiat0R7PfEeZifBlwk4bJAL
-	yvEB7eWVJx7O4K4GgJ3YXt6yO//Uay0/EmyvWT4oESAp+K6tUUEXEQ0ZBxK2rsiVEj8bEV
-	3Bzbt37hwIC0Ytzq/bSAlCawj2peBQWRNNvikh9Hcvrg0VIKo1H75ASOhVTq+sdlRR2Hkm
-	sjgXecrKKsUDj5FuF+LpeihW7o64DPQnycD8y6KM3vUmurhroDmduosVLQYLHQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711226639;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=498F8PEQ9wEXgdD7gmsVyIePv6lPN9KMgR9cake0cII=;
-	b=aLDuLGbKEM9RIsVsNKRqttDQtUs33o/e8HGUnEg3BejCTi8TFZVBG6mVCOBMb9MEViBHMg
-	qYbmaaadEYPf6dDw==
-To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
- liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
- kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
- tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
- jan.kiszka@siemens.com
-Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- yaoma@linux.alibaba.com
-Subject: Re: [PATCHv12 4/4] watchdog/softlockup: report the most frequent
- interrupts
-In-Reply-To: <20240306125208.71803-5-yaoma@linux.alibaba.com>
-References: <20240306125208.71803-1-yaoma@linux.alibaba.com>
- <20240306125208.71803-5-yaoma@linux.alibaba.com>
-Date: Sat, 23 Mar 2024 21:43:58 +0100
-Message-ID: <87zfuofzld.ffs@tglx>
+	s=arc-20240116; t=1711226687; c=relaxed/simple;
+	bh=4cn7e1ZNgP9JRFS2MR28C3me8UKkrRDxTuHIiMG8WD0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q8ubAwY3AY5XBcorM6YEEIHFtc1Opyq9hVpePNWoB4lPL3BAwkXkU//JTwbjdD/CAjIKovYfMkY6KQU3w1omhPlfhtziSZlh+/iUNEiTBKUNejoP6bNUgRCLY3bAeeVvF9ho/KIny3JuJ1YnvXWAs7It9dL6EANDlEWoX0FhIhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
+	by fgw21.mail.saunalahti.fi (Halon) with ESMTP
+	id 29c2437a-e956-11ee-abf4-005056bdd08f;
+	Sat, 23 Mar 2024 22:44:37 +0200 (EET)
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sat, 23 Mar 2024 22:44:37 +0200
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: ad7944: simplify adi,spi-mode property
+ parsing
+Message-ID: <Zf8_NZ5cNb9TVThx@surfacebook.localdomain>
+References: <20240319-ad7944-cleanups-v2-1-50e77269351b@baylibre.com>
+ <CAHp75VeO_=r_pMBUTaQQYKDRAV-OVfTnPYPwV8f7KDzOhaBCvQ@mail.gmail.com>
+ <CAMknhBETEP123=EHycGtFEJjQ+NPssLXmw9ZdDoY8CRsWiSxVQ@mail.gmail.com>
+ <20240323182918.2cf624b6@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240323182918.2cf624b6@jic23-huawei>
 
-On Wed, Mar 06 2024 at 20:52, Bitao Hu wrote:
-> +	if (__this_cpu_read(snapshot_taken)) {
-> +		for_each_active_irq(i) {
-> +			count = kstat_get_irq_since_snapshot(i);
-> +			tabulate_irq_count(irq_counts_sorted, i, count, NUM_HARDIRQ_REPORT);
-> +		}
-> +
-> +		/*
-> +		 * We do not want the "watchdog: " prefix on every line,
-> +		 * hence we use "printk" instead of "pr_crit".
-> +		 */
+Sat, Mar 23, 2024 at 06:29:18PM +0000, Jonathan Cameron kirjoitti:
+> On Tue, 19 Mar 2024 10:28:31 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
+> > On Tue, Mar 19, 2024 at 10:01 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Tue, Mar 19, 2024 at 4:28 PM David Lechner <dlechner@baylibre.com> wrote:  
 
-You are not providing any justification why the prefix is not
-wanted. Just saying 'We do not want' does not cut it and who is 'We'. I
-certainly not.
+..
 
-I really disagree because the prefixes are very useful for searching log
-files. So not having it makes it harder to filter out for no reason.
+> > > > +       ret = device_property_match_property_string(dev, "adi,spi-mode",
+> > > > +                                                   ad7944_spi_modes,
+> > > > +                                                   ARRAY_SIZE(ad7944_spi_modes));
+> > > > +       if (ret < 0) {
+> > > > +               if (ret != -EINVAL)
+> > > > +                       return dev_err_probe(dev, ret,
+> > > > +                                            "getting adi,spi-mode property failed\n");  
+> > >  
+> > > > -               adc->spi_mode = ret;
+> > > > -       } else {  
+> > >
+> > > Actually we may even leave these unchanged
+> > >  
+> > > >                 /* absence of adi,spi-mode property means default mode */
+> > > >                 adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
+> > > > +       } else {
+> > > > +               adc->spi_mode = ret;
+> > > >         }  
+> > >
+> > >        ret = device_property_match_property_string(dev, "adi,spi-mode",
+> > >                                                    ad7944_spi_modes,
+> > >
+> > > ARRAY_SIZE(ad7944_spi_modes));
+> > >        if (ret >= 0) {
+> > >                adc->spi_mode = ret;
+> > >        } else if (ret != -EINVAL) {
+> > >                        return dev_err_probe(dev, ret,
+> > >                                             "getting adi,spi-mode
+> > > property failed\n");
+> > >        } else {
+> > >                /* absence of adi,spi-mode property means default mode */
+> > >                adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
+> > >        }
+> > >
+> > > But I can admit this is not an often used approach.
+> > >  
+> > 
+> > I think Jonathan prefers to have the error path first, so I would like
+> > to wait and see if he has an opinion here.
+> I do prefer error paths first.  Thanks.
 
-Thanks,
+Still the above can be refactored to have one line less
 
-        tglx
+	ret = device_property_match_property_string(dev, "adi,spi-mode",
+                                                    ad7944_spi_modes,
+						    ARRAY_SIZE(ad7944_spi_modes));
+	if (ret == -EINVAL) {
+		/* absence of adi,spi-mode property means default mode */
+		adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
+	} else if (ret < 0) {
+		return dev_err_probe(dev, ret, "getting adi,spi-mode property failed\n");
+	} else {
+		adc->spi_mode = ret;
+        }
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
