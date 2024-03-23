@@ -1,133 +1,340 @@
-Return-Path: <linux-kernel+bounces-112253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFD1D887779
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:45:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF91488776E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:37:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C1901F21D6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:45:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F34DD1C211BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:37:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5C511183;
-	Sat, 23 Mar 2024 07:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72269C139;
+	Sat, 23 Mar 2024 07:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nLXBOeed"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DN/McbRC"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4D7FC15;
-	Sat, 23 Mar 2024 07:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941FCBE62
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 07:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711179877; cv=none; b=sdIwsSiokVFyh6Zeb+5P8tSESfFFk0g/5gyAc2iMCAwQn8ZI+uA6tilqPJ5RjT3d0q0C92xfMEaNj0iRDOBD+HiCyEkBQHfVHiItERkxe0V1EJiHCJhPoPIzP/7F4WPUHqZHZBo6utQcOhWHxvrC++ROymaLpr9wDjdosfNaw3w=
+	t=1711179460; cv=none; b=h4SEB/U3gMeeeYJqXzTcHsmEevNYYWyIcn+y91XwrMdERW5ST/vERj7E9HRW1N5Ovt3LGpraU+Z3/LLt32eDONEk7Z2Y4gtfuELx0S7PiH877SGRNx6D1ggLw6SDgE8N1R4gv+TYWU39cr3+uOurxJrBnpt+F3C93Zrr77Ty17o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711179877; c=relaxed/simple;
-	bh=J6ORwki9sE6Fwu6kxTbKnijZCWru3bbSvkADbOc4ncc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nlUkBhC3ZPsCRW4w9b9rJmJPh4z9MJm/U7HfA7Oq2l+H69T0aJEfrf/84WqNJh/6U7Aa25QAJCEP8F2mgw+5eWInLrB0HXS3bks+Potn1j9T1HciS10wPBP7a9hcvKvZC3m9Oi/uo8fL5wuTD+bm5bm8bQYRWnS0ZA2FlYO0FW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nLXBOeed; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e036b76725so20979325ad.1;
-        Sat, 23 Mar 2024 00:44:36 -0700 (PDT)
+	s=arc-20240116; t=1711179460; c=relaxed/simple;
+	bh=J6zuRWK6EAf7BnngfEcXMxPEcrz3kG0CSq/RZcvammI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uCEI5deB1o1a36yap/Diz235LtwJtdN/vLusutwgFexfJF2m6P/lk9Id5z+K7QYqqzWcjVocuz9WjvGZGf5QwSDMo2YMTECn9Jrn/SIwlEcnX2wd8LuvTEVWMw0gam53Z1gC503I3t6aeI4TAHj1GNe8N+JtnoEB5Y+UpfKUv34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DN/McbRC; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56bb5b9ab89so3029a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711179876; x=1711784676; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hra+geuyvcxhPcwVOOCGooQH+Il9Z7Z3baHD814SLOI=;
-        b=nLXBOeedMWFblSf49Vf/0CgLbTfyA+VLYkcCUky2piK0BY0eT4ap1lZviSxo28UxRJ
-         apaQR3kPrawTOied+kAp18WpLs95xuxK108AEJpSJHm8lJRddBMyIon3OKKdSAlOsVXY
-         yjLmUmFnshdULFVDCfejU4qNIHLP5X3sLRJ262criS3LG8NVi7T3MfYYawPZ89CR5Qmv
-         KdI6TzXFdbR19WBIPe5LfbKhf00IyWuVWiBMhFYM/yzmEJa+KTCLZVu1tRW+QdZP0df5
-         Su0ejI06wcWUXArdfusC0gHO4ToTaxKPq0qmCQsi0iUVQxEG87qswgaK0coIYSGC0WN4
-         C/mg==
+        d=google.com; s=20230601; t=1711179456; x=1711784256; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/om5Vl4Nfvz+FJPPfzsfIT8RNbjc3+eMkpNP/DR6gxw=;
+        b=DN/McbRChwkEgZcbn6V3IptQ7RoFQEI4uco9vpQb7npILL2NG8s2urk8eRprHK2FD5
+         ZTY4Sydwf3aONEenWveuwUa4O7UL5lnByN5TbBMT0K4gU+q5fmlnZwF0arWmBCrq2Si9
+         AHBWKXq83+p9IgxPwCHfdhRI/VbJulzYT0Q5xV9GiDpHef8i9cNqe1EsZkwC/kThscGM
+         cD3KxyRZ/uNX52SHKC/oWfWq6j94V1zU+3gzQAgomN4yYyG1QWtFzOV2jT+d9ABbBjnX
+         j0DToxADOHFRTbN7d/6GQM950OH2A8mo6ld1pdB8hCQYfxRZGDxQBbqnK8p3idHzcZZL
+         pygg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711179876; x=1711784676;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hra+geuyvcxhPcwVOOCGooQH+Il9Z7Z3baHD814SLOI=;
-        b=kNH3FmWpRZ7p6hMK/JN5zgs0gznyhKciIUNrjnF+XTZJrjlv8pOEuKA0YK3cnQGTVk
-         f9pcXa07uHIui1FPUvshAYTvNFNyjzGEUq80478f54YnUDVME5xjWMuFfgK50/YvScUJ
-         rEg0ITbmJ1mjuDBB1E86iQlYKYE3PLNwB3VRoGvgOwWtCNsK3FzWXNPRxHUur8X/OAW4
-         QrpuI2ywIDs1sg/XN+pWLYK2GFmzA1G6RwOj2UQrocn1jCNXve72mL83HNUWhAACFRGB
-         HOz6ISGsp6tYzMBX21NROGfDkFEap8so090llHqj0kTIS39rUVUL8IuDxxz7TAeM7Jhp
-         dJqA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2GlgsbDIbYv3k8ctqc0iOIbq6ZXEjBqyXOGUVpxWdlN6gDoz7q3vz9/AMMT9EQ6ztHlEzxv+3ojpsAwvZLpgnlTTUvx3Ycs4upqjywhFQ55fnm/shSpVnyi7Bsgm8Y2tNvAiDOaGFrQ==
-X-Gm-Message-State: AOJu0YymXYM/J2uQtveiiVGtLrioHenijzCALTfK8hPMn71tq1BnHg0C
-	kGaFkLtRtEg/bQAkyeGgwONdcP6NMSpquDiPHf/PQy0+wFgJrpO9
-X-Google-Smtp-Source: AGHT+IFO2hWKOd7wO0tfAdxoFVMOzh2z9N87YGY6I7qxPnUXbcwpDNuftNICbcGT0W8xKyIslw7oTw==
-X-Received: by 2002:a17:902:f70b:b0:1e0:2b2d:53aa with SMTP id h11-20020a170902f70b00b001e02b2d53aamr2012238plo.53.1711179875781;
-        Sat, 23 Mar 2024 00:44:35 -0700 (PDT)
-Received: from localhost.localdomain (FL1-125-193-23-126.chb.mesh.ad.jp. [125.193.23.126])
-        by smtp.gmail.com with ESMTPSA id l17-20020a170902d05100b001e0410bfccasm976825pll.126.2024.03.23.00.44.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 00:44:35 -0700 (PDT)
-From: INAGAKI Hiroshi <musashino.open@gmail.com>
-To: pavel@ucw.cz,
-	lee@kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	INAGAKI Hiroshi <musashino.open@gmail.com>
-Subject: [PATCH v2 2/2] dt-bindings: leds: add LED_FUNCTION_SPEED_* for link speed on LAN/WAN
-Date: Sat, 23 Mar 2024 16:36:10 +0900
-Message-ID: <20240323074326.1428-3-musashino.open@gmail.com>
-X-Mailer: git-send-email 2.42.0.windows.2
-In-Reply-To: <20240323074326.1428-1-musashino.open@gmail.com>
-References: <20240323074326.1428-1-musashino.open@gmail.com>
+        d=1e100.net; s=20230601; t=1711179456; x=1711784256;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/om5Vl4Nfvz+FJPPfzsfIT8RNbjc3+eMkpNP/DR6gxw=;
+        b=nILiB5swN0QcQkXg/SZ2kjNnJZmuJdihrBo84K6Z/B6s8yueJiXYUJoMxbGy2QdhTl
+         ktgTLphRUPOSnh9EV2eTrSzCYWBroIkKjCYCe36Bi87kXbiWDJVOvdSCahlU6sJ8dKuw
+         NH3muUBZMZtF9lcFEf9d+DAZYvrgmfQKW1U+UgkvZlvqziyWrL4w8uPbJzO9CL8ybYLk
+         VI+yZoR1pRdP6K/rF+npupVsysPsCasr15u98N3WbyLjGg+4R9kgS867yDWNjhKVjm1b
+         FIfrn3mO8TK84Kt3et+4r3GLIX03JBmfpK4CM9/Pl8beWdIwst5FutqoGMzUfavDLj64
+         mcQw==
+X-Forwarded-Encrypted: i=1; AJvYcCX3tzOeQkla1Xqdn49gkIg+6YDSfUgwMRFGDhqwQV2i7jZt6TUfknWIDYkblxyenkFKpc/95R0SDuC2mzLLbuDLiY+grZzF0Tcvnx1f
+X-Gm-Message-State: AOJu0YzvB00Eayoh7X0TnooGMyQ+dtYTWsCk26uBXvi/c6laIvKAtp4F
+	+QcR+VR+TvFDzMcbvFKe3BA5clUUyKULG+75+P6VYzyZM/Oul27Tqus1CN55HJ2VI/7jr4MSkCG
+	wX169hMzZ2wkVEyiRzqeitW9C7NOZJg7ZwjDk
+X-Google-Smtp-Source: AGHT+IHoSCOy0iQP/pMF3d7tGchN3NXJm8dNECET/DoxfxKmnGUQPfY7JLX3nKLMol3Kg4hkIRlrgYhoFRIcHE3aVjY=
+X-Received: by 2002:a05:6402:612:b0:56b:fc63:5558 with SMTP id
+ n18-20020a056402061200b0056bfc635558mr8005edv.5.1711179455724; Sat, 23 Mar
+ 2024 00:37:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240319104857.70783-1-mic@digikod.net> <20240319104857.70783-5-mic@digikod.net>
+In-Reply-To: <20240319104857.70783-5-mic@digikod.net>
+From: David Gow <davidgow@google.com>
+Date: Sat, 23 Mar 2024 15:37:21 +0800
+Message-ID: <CABVgOSksVq5_AeObEBZFAezZpiQ41C7ZHWEtRBR_1d2UQQYXbw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] kunit: Handle test faults
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: Brendan Higgins <brendanhiggins@google.com>, Rae Moar <rmoar@google.com>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
+	James Morris <jamorris@linux.microsoft.com>, Kees Cook <keescook@chromium.org>, 
+	Luis Chamberlain <mcgrof@kernel.org>, 
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
+	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-um@lists.infradead.org, x86@kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000a31e7906144f030d"
 
-Add LED_FUNCTION_SPEED_LAN and LED_FUNCTION_SPEED_WAN for LEDs that
-indicate link speed of ethernet ports on LAN/WAN. This is useful to
-distinguish those LEDs from LEDs that indicate link status (up/down).
+--000000000000a31e7906144f030d
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-example:
+On Tue, 19 Mar 2024 at 18:49, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wr=
+ote:
+>
+> Previously, when a kernel test thread crashed (e.g. NULL pointer
+> dereference, general protection fault), the KUnit test hanged for 30
+> seconds and exited with a timeout error.
+>
+> Fix this issue by waiting on task_struct->vfork_done instead of the
+> custom kunit_try_catch.try_completion, and track the execution state by
+> initially setting try_result with -EINTR and only setting it to 0 if
+> the test passed.
+>
+> Fix kunit_generic_run_threadfn_adapter() signature by returning 0
+> instead of calling kthread_complete_and_exit().  Because thread's exit
+> code is never checked, always set it to 0 to make it clear.
+>
+> Fix the -EINTR error message, which couldn't be reached until now.
+>
+> This is tested with a following patch.
+>
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: David Gow <davidgow@google.com>
+> Tested-by: Rae Moar <rmoar@google.com>
+> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+> Link: https://lore.kernel.org/r/20240319104857.70783-5-mic@digikod.net
+> ---
+>
+> Changes since v2:
+> * s/-EFAULT/-EINTR/ in commit message as spotted by Rae.
+> * Add a comment explaining vfork_done as suggested by David.
+> * Add David's Reviewed-by.
+> * Add Rae's Tested-by.
+>
+> Changes since v1:
+> * Add Kees's Reviewed-by.
+> ---
+>  include/kunit/try-catch.h |  3 ---
+>  lib/kunit/try-catch.c     | 19 ++++++++++++-------
+>  2 files changed, 12 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
+> index c507dd43119d..7c966a1adbd3 100644
+> --- a/include/kunit/try-catch.h
+> +++ b/include/kunit/try-catch.h
+> @@ -14,13 +14,11 @@
+>
+>  typedef void (*kunit_try_catch_func_t)(void *);
+>
+> -struct completion;
+>  struct kunit;
+>
+>  /**
+>   * struct kunit_try_catch - provides a generic way to run code which mig=
+ht fail.
+>   * @test: The test case that is currently being executed.
+> - * @try_completion: Completion that the control thread waits on while te=
+st runs.
+>   * @try_result: Contains any errno obtained while running test case.
+>   * @try: The function, the test case, to attempt to run.
+>   * @catch: The function called if @try bails out.
+> @@ -46,7 +44,6 @@ struct kunit;
+>  struct kunit_try_catch {
+>         /* private: internal use only. */
+>         struct kunit *test;
+> -       struct completion *try_completion;
+>         int try_result;
+>         kunit_try_catch_func_t try;
+>         kunit_try_catch_func_t catch;
+> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
+> index cab8b24b5d5a..7a3910dd78a6 100644
+> --- a/lib/kunit/try-catch.c
+> +++ b/lib/kunit/try-catch.c
+> @@ -18,7 +18,7 @@
+>  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
+>  {
+>         try_catch->try_result =3D -EFAULT;
+> -       kthread_complete_and_exit(try_catch->try_completion, -EFAULT);
+> +       kthread_exit(0);
 
-Fortinet FortiGate 30E/50E have LEDs that indicate link speed on each
-of the ethernet ports in addition to LEDs that indicate link status
-(up/down).
+It turns out kthread_exit() is not exported, so this doesn't work if
+KUnit is built as a module.
 
-- 1000 Mbps: green:speed-(lan|wan)-N
--  100 Mbps: amber:speed-(lan|wan)-N
--   10 Mbps: (none, turned off)
+I think the options we have are:
+- Add EXPORT_SYMBOL(kthread_exit).
+- Keep using out own completion, and kthread_complete_and_exit()
+- try_get_module() before spawning the thread, and use
+module_put_and_kthread_exit().
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: INAGAKI Hiroshi <musashino.open@gmail.com>
----
-v1 -> v2
+I think all of these would be okay, but I could've missed something.
 
-  (no changes)
+-- David
 
- include/dt-bindings/leds/common.h | 2 ++
- 1 file changed, 2 insertions(+)
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
+>
+> @@ -26,9 +26,12 @@ static int kunit_generic_run_threadfn_adapter(void *da=
+ta)
+>  {
+>         struct kunit_try_catch *try_catch =3D data;
+>
+> +       try_catch->try_result =3D -EINTR;
+>         try_catch->try(try_catch->context);
+> +       if (try_catch->try_result =3D=3D -EINTR)
+> +               try_catch->try_result =3D 0;
+>
+> -       kthread_complete_and_exit(try_catch->try_completion, 0);
+> +       return 0;
+>  }
+>
+>  static unsigned long kunit_test_timeout(void)
+> @@ -58,13 +61,11 @@ static unsigned long kunit_test_timeout(void)
+>
+>  void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *contex=
+t)
+>  {
+> -       DECLARE_COMPLETION_ONSTACK(try_completion);
+>         struct kunit *test =3D try_catch->test;
+>         struct task_struct *task_struct;
+>         int exit_code, time_remaining;
+>
+>         try_catch->context =3D context;
+> -       try_catch->try_completion =3D &try_completion;
+>         try_catch->try_result =3D 0;
+>         task_struct =3D kthread_create(kunit_generic_run_threadfn_adapter=
+,
+>                                      try_catch, "kunit_try_catch_thread")=
+;
+> @@ -75,8 +76,12 @@ void kunit_try_catch_run(struct kunit_try_catch *try_c=
+atch, void *context)
+>         }
+>         get_task_struct(task_struct);
+>         wake_up_process(task_struct);
+> -
+> -       time_remaining =3D wait_for_completion_timeout(&try_completion,
+> +       /*
+> +        * As for a vfork(2), task_struct->vfork_done (pointing to the
+> +        * underlying kthread->exited) can be used to wait for the end of=
+ a
+> +        * kernel thread.
+> +        */
+> +       time_remaining =3D wait_for_completion_timeout(task_struct->vfork=
+_done,
+>                                                      kunit_test_timeout()=
+);
+>         if (time_remaining =3D=3D 0) {
+>                 try_catch->try_result =3D -ETIMEDOUT;
+> @@ -92,7 +97,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
+tch, void *context)
+>         if (exit_code =3D=3D -EFAULT)
+>                 try_catch->try_result =3D 0;
+>         else if (exit_code =3D=3D -EINTR)
+> -               kunit_err(test, "wake_up_process() was never called\n");
+> +               kunit_err(test, "try faulted\n");
+>         else if (exit_code =3D=3D -ETIMEDOUT)
+>                 kunit_err(test, "try timed out\n");
+>         else if (exit_code)
+> --
+> 2.44.0
+>
 
-diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds/common.h
-index 6216ecdb06c7..82a5769725ce 100644
---- a/include/dt-bindings/leds/common.h
-+++ b/include/dt-bindings/leds/common.h
-@@ -96,6 +96,8 @@
- #define LED_FUNCTION_PROGRAMMING "programming"
- #define LED_FUNCTION_RX "rx"
- #define LED_FUNCTION_SD "sd"
-+#define LED_FUNCTION_SPEED_LAN "speed-lan"
-+#define LED_FUNCTION_SPEED_WAN "speed-wan"
- #define LED_FUNCTION_STANDBY "standby"
- #define LED_FUNCTION_TORCH "torch"
- #define LED_FUNCTION_TX "tx"
--- 
-2.25.1
+--000000000000a31e7906144f030d
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
+MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+LmNybDBMBgNVHSAERTBDMEEGCSsGAQQBoDIBKDA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5n
+bG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzANBgkqhkiG9w0BAQsFAAOCAQEANyYcO+9JZYyqQt41
+TMwvFWAw3vLoLOQIfIn48/yea/ekOcParTb0mbhsvVSZ6sGn+txYAZb33wIb1f4wK4xQ7+RUYBfI
+TuTPL7olF9hDpojC2F6Eu8nuEf1XD9qNI8zFd4kfjg4rb+AME0L81WaCL/WhP2kDCnRU4jm6TryB
+CHhZqtxkIvXGPGHjwJJazJBnX5NayIce4fGuUEJ7HkuCthVZ3Rws0UyHSAXesT/0tXATND4mNr1X
+El6adiSQy619ybVERnRi5aDe1PTwE+qNiotEEaeujz1a/+yYaaTY+k+qJcVxi7tbyQ0hi0UB3myM
+A/z2HmGEwO8hx7hDjKmKbDCCA18wggJHoAMCAQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUA
+MEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9vdCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWdu
+MRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEg
+MB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzAR
+BgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4
+Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0EXyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuu
+l9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+JJ5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJ
+pij2aTv2y8gokeWdimFXN6x0FNx04Druci8unPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh
+6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTvriBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti
++w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8E
+BTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5NUPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEA
+S0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigHM8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9u
+bG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmUY/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaM
+ld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88
+q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcya5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/f
+hO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/XzCCBOMwggPLoAMCAQICEAHS+TgZvH/tCq5FcDC0
+n9IwDQYJKoZIhvcNAQELBQAwVDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYt
+c2ExKjAoBgNVBAMTIUdsb2JhbFNpZ24gQXRsYXMgUjMgU01JTUUgQ0EgMjAyMDAeFw0yNDAxMDcx
+MDQ5MDJaFw0yNDA3MDUxMDQ5MDJaMCQxIjAgBgkqhkiG9w0BCQEWE2RhdmlkZ293QGdvb2dsZS5j
+b20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDY2jJMFqnyVx9tBZhkuJguTnM4nHJI
+ZGdQAt5hic4KMUR2KbYKHuTQpTNJz6gZ54lsH26D/RS1fawr64fewddmUIPOuRxaecSFexpzGf3J
+Igkjzu54wULNQzFLp1SdF+mPjBSrcULSHBgrsFJqilQcudqXr6wMQsdRHyaEr3orDL9QFYBegYec
+fn7dqwoXKByjhyvs/juYwxoeAiLNR2hGWt4+URursrD4DJXaf13j/c4N+dTMLO3eCwykTBDufzyC
+t6G+O3dSXDzZ2OarW/miZvN/y+QD2ZRe+wl39x2HMo3Fc6Dhz2IWawh7E8p2FvbFSosBxRZyJH38
+84Qr8NSHAgMBAAGjggHfMIIB2zAeBgNVHREEFzAVgRNkYXZpZGdvd0Bnb29nbGUuY29tMA4GA1Ud
+DwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwHQYDVR0OBBYEFC+LS03D
+7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
+BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
+BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
+Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
+FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
+YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
+AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
+mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
+wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
+5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
+ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
+MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
+IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
+hvcNAQkEMSIEIJvt7h5o12z8IiD0t5jRS/DC8KtWReNf4h1gSZ0qRHv7MBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMyMzA3MzczNlowaQYJKoZIhvcNAQkPMVww
+WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBMTp5b
+Td1xJx+p44tCgJ0yL8S6nZE2lo5pXW1B1GdQtEXo9I2vKE9YysMJlUqVOOvMUtDJp2Kx5yZTqHPM
+GGkVnOZs8j7XrB9/G4FjLNsu/729mAgQe+7+1xYQGSzHuPEfXXj2Yh6DNVg7Vzp3Fnw7WgmNtL2Z
+XnCn0ezoSBk+76eTUX4Sox2U/QsZxeGT2tZNt370NDICs+QqCJMADye7y4balXahUPfOcsCjvV/S
+b5Ok+sXchNr05gJlfldWTsgAgl8IcCsL1duBN/2bU/sU2xR35XZyXQtH/lKVtxLh1fVCg4ne/MaU
+Q7KiSn5c0eY1Q/T3GmPMFYChhCiWnJ2Y
+--000000000000a31e7906144f030d--
 
