@@ -1,941 +1,793 @@
-Return-Path: <linux-kernel+bounces-112439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A9A38879DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:04:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ABF98879E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FC8828217A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:04:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2626D1F2168D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6748F54F8D;
-	Sat, 23 Mar 2024 18:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013695810D;
+	Sat, 23 Mar 2024 18:05:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="TUriHgVJ"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A+ZA0Yzp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1581EEF8;
-	Sat, 23 Mar 2024 18:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B85853361;
+	Sat, 23 Mar 2024 18:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711217039; cv=none; b=EmJVNM7wHbq22H+K/AVCVFXK4qsYbqhADRyZRdspCqn5GrPqh6KtUqVMWtx1SrxKjXDxKHebnSM92CtWTPxO4ewp/Qnr/z499VCFd2AfGJVl5mz0qb9VSKNSOHikkgljWzVm/LpNIMazgb3L3fFA+WiJdgfKdXG6Jumh+VS9N64=
+	t=1711217113; cv=none; b=cYg//07lnlanypNtcmHy3ES7kTSdADfQKP+yd/x7ZLYpO8XeP/LE92aZ0Dhl6YxuTyvb8Ajw40XPGXJ0DL47ZuS0kgoINlv1VvmdywgTSbOMZOb9/GKRzG+NxUhONCR8thIilAugIDsC+iXO4JkFQwWtjn/3n/S08z7duDBl9Ys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711217039; c=relaxed/simple;
-	bh=QqdXQ9UbEu3odgFfnA3u3lfBulQcn23C7SRBhz+SXlc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=B2dcl0/y4ai/8uHBQD0vVEjaVixdxi7bFJu4rJxkISb7t6F72n2ywyDIzcibkigaUq2d0uvZAj85pq7Y8AZeS1miroxYAMrRSfMh1klXuLkPLQ4nNS47DIqlfGSjr147xhHJuHN3hryYoxM91MxpP0NM12Pa1XAVR9sI0XS6x3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=TUriHgVJ; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 5B84A120007;
-	Sat, 23 Mar 2024 21:03:42 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5B84A120007
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1711217022;
-	bh=GQzDHFvZDk/z622gxb9X2TKeFYo21gc/RFiqMaTeuCY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=TUriHgVJDUvd4O4D57oSOK1+T9He6qScE1HqKQe68x/MzyH2vkMesNO9ckzYZhOSM
-	 93JpS0iMS3y5U0h9tgWLjfSHFc6PWwzVoaikRq6gFMopAzbQ+SgK9Gn/+j9Y1OJ6FC
-	 nmIOMV58BXuTVLVs2XnpdNwe4ZyaUUHDi4m3TxnF8L0gksPAj7gLRpOzKEngBV0OCO
-	 2Jvz08Z6qYLGENNRnXOObXkelg8bMr9sB9JapkeUrVj4N7Q1jgNhOmXtl6/LvqI1wW
-	 l8QqIS15Q0U7o8jdVMIMxwNak34hZzH1e2I8hLrEAzs3vG/jBtJ5Vmz+tkuZOlPGjl
-	 aRA3j9NI110NQ==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sat, 23 Mar 2024 21:03:42 +0300 (MSK)
-Received: from [10.8.0.10] (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
- (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 23 Mar
- 2024 21:03:37 +0300
-Message-ID: <0f4b2ec3-204f-44ea-a1b2-e47ea05def1f@salutedevices.com>
-Date: Sat, 23 Mar 2024 21:02:32 +0300
+	s=arc-20240116; t=1711217113; c=relaxed/simple;
+	bh=8MD7U6zh9lyFjW+z+tQZUZgTREWPu5nzXq2/F8h+Xk8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=NlsOdXNsWxiY6ukleSXoFxAaAcz0nOdZD445c5NZ18v87926XFNtcgYUFflcYz9qk9Gw36xF2roRHAcrkX/A2FavarJcMODG7Jxq4BbDwM43FDteUv1Jtn9bfo85Wn7S7iG3lNcFRbvEk5Y5LFcobTzJU+i3bNsSDTu+EV4edF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A+ZA0Yzp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B207C433F1;
+	Sat, 23 Mar 2024 18:05:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711217112;
+	bh=8MD7U6zh9lyFjW+z+tQZUZgTREWPu5nzXq2/F8h+Xk8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=A+ZA0YzpWODCG/jdhV3lf4Tsz6S9/bKHiI6l5BUilmluqoSPmNKOehZEZzxSzBg6h
+	 SPp9amNDbawTtaWRcfx8vUWcwkdawQd1h3lKqBsrlgYqdzCgy664gKqI+N5pVYs3F7
+	 I+jg1g4zn1I3q4ACwTq5GOCs8ZakkLpf4i9TdI6XmeQZ42qNUbUmxpul10A22fQf+e
+	 YHVeEGB6Z+AeKf/NJKsA/vg4HRORp6vxaJpqDIH9d6lUwUjoqSF6lI3IErkXIw9ihg
+	 ilNklz8EX7BTfYeiCqKmsDu0pwwdCwYx9TYJXZq5y4dJQGxKVxg53WdTWk6XrIi2hc
+	 cPtgOEYfmrkhA==
+From: SeongJae Park <sj@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org,
+	mhocko@suse.com,
+	vbabka@suse.cz,
+	hannes@cmpxchg.org,
+	roman.gushchin@linux.dev,
+	mgorman@suse.de,
+	dave@stgolabs.net,
+	willy@infradead.org,
+	liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp,
+	corbet@lwn.net,
+	void@manifault.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	arnd@arndb.de,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	peterx@redhat.com,
+	david@redhat.com,
+	axboe@kernel.dk,
+	mcgrof@kernel.org,
+	masahiroy@kernel.org,
+	nathan@kernel.org,
+	dennis@kernel.org,
+	jhubbard@nvidia.com,
+	tj@kernel.org,
+	muchun.song@linux.dev,
+	rppt@kernel.org,
+	paulmck@kernel.org,
+	pasha.tatashin@soleen.com,
+	yosryahmed@google.com,
+	yuzhao@google.com,
+	dhowells@redhat.com,
+	hughd@google.com,
+	andreyknvl@gmail.com,
+	keescook@chromium.org,
+	ndesaulniers@google.com,
+	vvvvvv@google.com,
+	gregkh@linuxfoundation.org,
+	ebiggers@google.com,
+	ytcoode@gmail.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	cl@linux.com,
+	penberg@kernel.org,
+	iamjoonsoo.kim@lge.com,
+	42.hyeyoo@gmail.com,
+	glider@google.com,
+	elver@google.com,
+	dvyukov@google.com,
+	songmuchun@bytedance.com,
+	jbaron@akamai.com,
+	aliceryhl@google.com,
+	rientjes@google.com,
+	minchan@google.com,
+	kaleshsingh@google.com,
+	kernel-team@android.com,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 30/37] mm: vmalloc: Enable memory allocation profiling
+Date: Sat, 23 Mar 2024 11:05:06 -0700
+Message-Id: <20240323180506.195396-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240321163705.3067592-31-surenb@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/25] clk: meson: a1: add the audio clock controller
- driver
-Content-Language: en-US
-To: Jerome Brunet <jbrunet@baylibre.com>
-CC: Neil Armstrong <neil.armstrong@linaro.org>, Michael Turquette
-	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob Herring
-	<robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
-	Kevin Hilman <khilman@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-	<kernel@salutedevices.com>
-References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-5-jan.dakinevich@salutedevices.com>
- <1j4jd7izx4.fsf@starbuckisacylon.baylibre.com>
- <6c129ee2-f08c-4575-a95f-667cc6472578@salutedevices.com>
- <1jo7bafv90.fsf@starbuckisacylon.baylibre.com>
-From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-In-Reply-To: <1jo7bafv90.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184371 [Mar 23 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 11 0.3.11 5ecf9895443a5066245fcb91e8430edf92b1b594, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/23 14:41:00 #24381071
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
 
-Jerome, I have reworked my driver reusing axg-audio code as most as I
-could and now I have one more question. Lets see on this definition from
-axg-audio:
+Hi Suren and Kent,
 
-#define AUD_MST_MUX(_name, _reg, _flag)				\
-	AUD_MUX(_name##_sel, _reg, 0x7, 24, _flag,		\
-		mst_mux_parent_data, 0)
+On Thu, 21 Mar 2024 09:36:52 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
 
-#define AUD_MST_MCLK_MUX(_name, _reg)				\
-	AUD_MST_MUX(_name, _reg, CLK_MUX_ROUND_CLOSEST)
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> This wrapps all external vmalloc allocation functions with the
+> alloc_hooks() wrapper, and switches internal allocations to _noprof
+> variants where appropriate, for the new memory allocation profiling
+> feature.
 
-CLK_SET_RATE_PARENT is not set here. But why? It means, that topmost pll
-clock will not be reconfigured at runtime to satisfy the rate that was
-requested from axg-tdm.
+I just noticed latest mm-unstable fails running kunit on my machine as below.
+'git-bisect' says this is the first commit of the failure.
+
+    $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
+    [10:59:53] Configuring KUnit Kernel ...
+    [10:59:53] Building KUnit Kernel ...
+    Populating config with:
+    $ make ARCH=um O=../kunit.out/ olddefconfig
+    Building with:
+    $ make ARCH=um O=../kunit.out/ --jobs=36
+    ERROR:root:/usr/bin/ld: arch/um/os-Linux/main.o: in function `__wrap_malloc':
+    main.c:(.text+0x10b): undefined reference to `vmalloc'
+    collect2: error: ld returned 1 exit status
+
+Haven't looked into the code yet, but reporting first.  May I ask your idea?
 
 
-On 3/19/24 11:30, Jerome Brunet wrote:
-> 
-> On Tue 19 Mar 2024 at 04:47, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-> 
->> Let's start from the end:
->>
->>> No - Looks to me you just have two clock controllers you are trying
->> force into one.
->>
->>> Again, this shows 2 devices. The one related to your 'map0' should
->> request AUD2_CLKID_AUDIOTOP as input and enable it right away.
->>
->> Most of fishy workarounds that you commented is caused the fact the mmio
->> of this clock controller is divided into two parts. Compare it with
->> axg-audio driver, things that was part of contigous memory region (like
->> pdm) here are moved to second region. Is this enough to make a guess
->> that these are two devices?
-> 
-> I see obsolutely no reason to think it is a single device nor to add all the quirks
-> you have the way you did. So yes, in that case, 2 zones, 2 devices.
-> 
->>
->> Concerning AUD2_CLKID_AUDIOTOP clock, as it turned out, it must be
->> enabled before enabling of clocks from second region too. That is
->> AUD2_CLKID_AUDIOTOP clock feeds both parts of this clock controller.
->>
-> 
-> Yes. I understood the first time around and already commented on that.
-> 
->>
->> On 3/15/24 12:20, Jerome Brunet wrote:
->>>
->>> On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
->>>
->>>> This controller provides clocks and reset functionality for audio
->>>> peripherals on Amlogic A1 SoC family.
->>>>
->>>> The driver is almost identical to 'axg-audio', however it would be better
->>>> to keep it separate due to following reasons:
->>>>
->>>>  - significant amount of bits has another definition. I will bring there
->>>>    a mess of new defines with A1_ suffixes.
->>>>
->>>>  - registers of this controller are located in two separate regions. It
->>>>    will give a lot of complications for 'axg-audio' to support this.
->>>>
->>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->>>> ---
->>>>  drivers/clk/meson/Kconfig    |  13 +
->>>>  drivers/clk/meson/Makefile   |   1 +
->>>>  drivers/clk/meson/a1-audio.c | 556 +++++++++++++++++++++++++++++++++++
->>>>  drivers/clk/meson/a1-audio.h |  58 ++++
->>>>  4 files changed, 628 insertions(+)
->>>>  create mode 100644 drivers/clk/meson/a1-audio.c
->>>>  create mode 100644 drivers/clk/meson/a1-audio.h
->>>>
->>>> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
->>>> index d6a2fa5f7e88..80c4a18c83d2 100644
->>>> --- a/drivers/clk/meson/Kconfig
->>>> +++ b/drivers/clk/meson/Kconfig
->>>> @@ -133,6 +133,19 @@ config COMMON_CLK_A1_PERIPHERALS
->>>>  	  device, A1 SoC Family. Say Y if you want A1 Peripherals clock
->>>>  	  controller to work.
->>>>  
->>>> +config COMMON_CLK_A1_AUDIO
->>>> +	tristate "Amlogic A1 SoC Audio clock controller support"
->>>> +	depends on ARM64
->>>> +	select COMMON_CLK_MESON_REGMAP
->>>> +	select COMMON_CLK_MESON_CLKC_UTILS
->>>> +	select COMMON_CLK_MESON_PHASE
->>>> +	select COMMON_CLK_MESON_SCLK_DIV
->>>> +	select COMMON_CLK_MESON_AUDIO_RSTC
->>>> +	help
->>>> +	  Support for the Audio clock controller on Amlogic A113L based
->>>> +	  device, A1 SoC Family. Say Y if you want A1 Audio clock controller
->>>> +	  to work.
->>>> +
->>>>  config COMMON_CLK_G12A
->>>>  	tristate "G12 and SM1 SoC clock controllers support"
->>>>  	depends on ARM64
->>>> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
->>>> index 88d94921a4dc..4968fc7ad555 100644
->>>> --- a/drivers/clk/meson/Makefile
->>>> +++ b/drivers/clk/meson/Makefile
->>>> @@ -20,6 +20,7 @@ obj-$(CONFIG_COMMON_CLK_AXG) += axg.o axg-aoclk.o
->>>>  obj-$(CONFIG_COMMON_CLK_AXG_AUDIO) += axg-audio.o
->>>>  obj-$(CONFIG_COMMON_CLK_A1_PLL) += a1-pll.o
->>>>  obj-$(CONFIG_COMMON_CLK_A1_PERIPHERALS) += a1-peripherals.o
->>>> +obj-$(CONFIG_COMMON_CLK_A1_AUDIO) += a1-audio.o
->>>>  obj-$(CONFIG_COMMON_CLK_GXBB) += gxbb.o gxbb-aoclk.o
->>>>  obj-$(CONFIG_COMMON_CLK_G12A) += g12a.o g12a-aoclk.o
->>>>  obj-$(CONFIG_COMMON_CLK_MESON8B) += meson8b.o meson8-ddr.o
->>>> diff --git a/drivers/clk/meson/a1-audio.c b/drivers/clk/meson/a1-audio.c
->>>> new file mode 100644
->>>> index 000000000000..6039116c93ba
->>>> --- /dev/null
->>>> +++ b/drivers/clk/meson/a1-audio.c
->>>> @@ -0,0 +1,556 @@
->>>> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
->>>> +/*
->>>> + * Copyright (c) 2024, SaluteDevices. All Rights Reserved.
->>>> + *
->>>> + * Author: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->>>> + */
->>>> +
->>>> +#include <linux/clk.h>
->>>> +#include <linux/clk-provider.h>
->>>> +#include <linux/init.h>
->>>> +#include <linux/of_device.h>
->>>> +#include <linux/module.h>
->>>> +#include <linux/platform_device.h>
->>>> +#include <linux/regmap.h>
->>>> +#include <linux/reset.h>
->>>> +#include <linux/reset-controller.h>
->>>> +#include <linux/slab.h>
->>>> +
->>>> +#include "meson-clkc-utils.h"
->>>> +#include "meson-audio-rstc.h"
->>>> +#include "clk-regmap.h"
->>>> +#include "clk-phase.h"
->>>> +#include "sclk-div.h"
->>>> +#include "a1-audio.h"
->>>> +
->>>> +#define AUDIO_PDATA(_name) \
->>>> +	((const struct clk_parent_data[]) { { .hw = &(_name).hw } })
->>>
->>> Not a fan - yet another level of macro.
->>>
->>>> +
->>>> +#define AUDIO_MUX(_name, _reg, _mask, _shift, _pdata)			\
->>>> +static struct clk_regmap _name = {					\
->>>> +	.map = AUDIO_REG_MAP(_reg),					\
->>>> +	.data = &(struct clk_regmap_mux_data){				\
->>>> +		.offset = AUDIO_REG_OFFSET(_reg),			\
->>>> +		.mask = (_mask),					\
->>>> +		.shift = (_shift),					\
->>>> +	},								\
->>>> +	.hw.init = &(struct clk_init_data) {				\
->>>> +		.name = #_name,						\
->>>> +		.ops = &clk_regmap_mux_ops,				\
->>>> +		.parent_data = (_pdata),				\
->>>> +		.num_parents = ARRAY_SIZE(_pdata),			\
->>>> +		.flags = CLK_SET_RATE_PARENT,				\
->>>> +	},								\
->>>> +}
->>>> +
->>>> +#define AUDIO_DIV(_name, _reg, _shift, _width, _pdata)			\
->>>> +static struct clk_regmap _name = {					\
->>>> +	.map = AUDIO_REG_MAP(_reg),					\
->>>> +	.data = &(struct clk_regmap_div_data){				\
->>>> +		.offset = AUDIO_REG_OFFSET(_reg),			\
->>>> +		.shift = (_shift),					\
->>>> +		.width = (_width),					\
->>>> +	},								\
->>>> +	.hw.init = &(struct clk_init_data) {				\
->>>> +		.name = #_name,						\
->>>> +		.ops = &clk_regmap_divider_ops,				\
->>>> +		.parent_data = (_pdata),				\
->>>> +		.num_parents = 1,					\
->>>> +		.flags = CLK_SET_RATE_PARENT,				\
->>>> +	},								\
->>>> +}
->>>> +
->>>> +#define AUDIO_GATE(_name, _reg, _bit, _pdata)				\
->>>> +static struct clk_regmap _name = {					\
->>>> +	.map = AUDIO_REG_MAP(_reg),					\
->>>> +	.data = &(struct clk_regmap_gate_data){				\
->>>> +		.offset = AUDIO_REG_OFFSET(_reg),			\
->>>> +		.bit_idx = (_bit),					\
->>>> +	},								\
->>>> +	.hw.init = &(struct clk_init_data) {				\
->>>> +		.name = #_name,						\
->>>> +		.ops = &clk_regmap_gate_ops,				\
->>>> +		.parent_data = (_pdata),				\
->>>> +		.num_parents = 1,					\
->>>> +		.flags = CLK_SET_RATE_PARENT,				\
->>>> +	},								\
->>>> +}
->>>> +
->>>> +#define AUDIO_SCLK_DIV(_name, _reg, _div_shift, _div_width,		\
->>>> +	_hi_shift, _hi_width, _pdata, _set_rate_parent)			\
->>>> +static struct clk_regmap _name = {					\
->>>> +	.map = AUDIO_REG_MAP(_reg),					\
->>>> +	.data = &(struct meson_sclk_div_data) {				\
->>>> +		.div = {						\
->>>> +			.reg_off = AUDIO_REG_OFFSET(_reg),		\
->>>> +			.shift = (_div_shift),				\
->>>> +			.width = (_div_width),				\
->>>> +		},							\
->>>> +		.hi = {							\
->>>> +			.reg_off = AUDIO_REG_OFFSET(_reg),		\
->>>> +			.shift = (_hi_shift),				\
->>>> +			.width = (_hi_width),				\
->>>> +		},							\
->>>> +	},								\
->>>> +	.hw.init = &(struct clk_init_data) {				\
->>>> +		.name = #_name,						\
->>>> +		.ops = &meson_sclk_div_ops,				\
->>>> +		.parent_data = (_pdata),				\
->>>> +		.num_parents = 1,					\
->>>> +		.flags = (_set_rate_parent) ? CLK_SET_RATE_PARENT : 0,	\
->>>
->>> Does not help readeability. Just pass the flag as axg-audio does.
->>>
->>>> +	},								\
->>>> +}
->>>> +
->>>> +#define AUDIO_TRIPHASE(_name, _reg, _width, _shift0, _shift1, _shift2,	\
->>>> +	_pdata)								\
->>>> +static struct clk_regmap _name = {					\
->>>> +	.map = AUDIO_REG_MAP(_reg),					\
->>>> +	.data = &(struct meson_clk_triphase_data) {			\
->>>> +		.ph0 = {						\
->>>> +			.reg_off = AUDIO_REG_OFFSET(_reg),		\
->>>> +			.shift = (_shift0),				\
->>>> +			.width = (_width),				\
->>>> +		},							\
->>>> +		.ph1 = {						\
->>>> +			.reg_off = AUDIO_REG_OFFSET(_reg),		\
->>>> +			.shift = (_shift1),				\
->>>> +			.width = (_width),				\
->>>> +		},							\
->>>> +		.ph2 = {						\
->>>> +			.reg_off = AUDIO_REG_OFFSET(_reg),		\
->>>> +			.shift = (_shift2),				\
->>>> +			.width = (_width),				\
->>>> +		},							\
->>>> +	},								\
->>>> +	.hw.init = &(struct clk_init_data) {				\
->>>> +		.name = #_name,						\
->>>> +		.ops = &meson_clk_triphase_ops,				\
->>>> +		.parent_data = (_pdata),				\
->>>> +		.num_parents = 1,					\
->>>> +		.flags = CLK_SET_RATE_PARENT | CLK_DUTY_CYCLE_PARENT,	\
->>>> +	},								\
->>>> +}
->>>> +
->>>> +#define AUDIO_SCLK_WS(_name, _reg, _width, _shift_ph, _shift_ws,	\
->>>> +	_pdata)								\
->>>> +static struct clk_regmap _name = {					\
->>>> +	.map = AUDIO_REG_MAP(_reg),					\
->>>> +	.data = &(struct meson_sclk_ws_inv_data) {			\
->>>> +		.ph = {							\
->>>> +			.reg_off = AUDIO_REG_OFFSET(_reg),		\
->>>> +			.shift = (_shift_ph),				\
->>>> +			.width = (_width),				\
->>>> +		},							\
->>>> +		.ws = {							\
->>>> +			.reg_off = AUDIO_REG_OFFSET(_reg),		\
->>>> +			.shift = (_shift_ws),				\
->>>> +			.width = (_width),				\
->>>> +		},							\
->>>> +	},								\
->>>> +	.hw.init = &(struct clk_init_data) {				\
->>>> +		.name = #_name,						\
->>>> +		.ops = &meson_sclk_ws_inv_ops,				\
->>>> +		.parent_data = (_pdata),				\
->>>> +		.num_parents = 1,					\
->>>> +		.flags = CLK_SET_RATE_PARENT | CLK_DUTY_CYCLE_PARENT,	\
->>>> +	},								\
->>>> +}
->>>
->>> All the above does essentially the same things as the macro of
->>> axg-audio, to some minor differences. Yet it is another set to maintain.
->>>
->>
->> Except one thing... Here I keep memory identifier to which this clock
->> belongs:
->>
->>     .map = AUDIO_REG_MAP(_reg),	
->>
->> It is workaround, but ->map the only common field in clk_regmap that
->> could be used for this purpose.
->>
->>
->>> I'd much prefer if you put the axg-audio macro in a header a re-used
->>> those. There would a single set to maintain. You may then specialize the
->>>  included in the driver C file, to avoid redundant parameters
->>>
->>> Rework axg-audio to use clk_parent_data if you must, but not in the same
->>> series please.
->>>
->>>> +
->>>> +static const struct clk_parent_data a1_pclk_pdata[] = {
->>>> +	{ .fw_name = "pclk", },
->>>> +};
->>>> +
->>>> +AUDIO_GATE(audio_ddr_arb, AUDIO_CLK_GATE_EN0, 0, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_tdmin_a, AUDIO_CLK_GATE_EN0, 1, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_tdmin_b, AUDIO_CLK_GATE_EN0, 2, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_tdmin_lb, AUDIO_CLK_GATE_EN0, 3, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_loopback, AUDIO_CLK_GATE_EN0, 4, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_tdmout_a, AUDIO_CLK_GATE_EN0, 5, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_tdmout_b, AUDIO_CLK_GATE_EN0, 6, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_frddr_a, AUDIO_CLK_GATE_EN0, 7, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_frddr_b, AUDIO_CLK_GATE_EN0, 8, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_toddr_a, AUDIO_CLK_GATE_EN0, 9, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_toddr_b, AUDIO_CLK_GATE_EN0, 10, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_spdifin, AUDIO_CLK_GATE_EN0, 11, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_resample, AUDIO_CLK_GATE_EN0, 12, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_eqdrc, AUDIO_CLK_GATE_EN0, 13, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio_audiolocker, AUDIO_CLK_GATE_EN0, 14, a1_pclk_pdata);
->>>               This is what I mean by redundant parameter ^
->>>
->>
->> Yep. I could define something like AUDIO_PCLK_GATE().
->>
->>>> +
->>>> +AUDIO_GATE(audio2_ddr_arb, AUDIO2_CLK_GATE_EN0, 0, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio2_pdm, AUDIO2_CLK_GATE_EN0, 1, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio2_tdmin_vad, AUDIO2_CLK_GATE_EN0, 2, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio2_toddr_vad, AUDIO2_CLK_GATE_EN0, 3, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio2_vad, AUDIO2_CLK_GATE_EN0, 4, a1_pclk_pdata);
->>>> +AUDIO_GATE(audio2_audiotop, AUDIO2_CLK_GATE_EN0, 7, a1_pclk_pdata);
->>>> +
->>>> +static const struct clk_parent_data a1_mst_pdata[] = {
->>>> +	{ .fw_name = "dds_in" },
->>>> +	{ .fw_name = "fclk_div2" },
->>>> +	{ .fw_name = "fclk_div3" },
->>>> +	{ .fw_name = "hifi_pll" },
->>>> +	{ .fw_name = "xtal" },
->>>> +};
->>>> +
->>>> +#define AUDIO_MST_MCLK(_name, _reg)					\
->>>> +	AUDIO_MUX(_name##_mux, (_reg), 0x7, 24, a1_mst_pdata);		\
->>>> +	AUDIO_DIV(_name##_div, (_reg), 0, 16,				\
->>>> +		AUDIO_PDATA(_name##_mux));				\
->>>> +	AUDIO_GATE(_name, (_reg), 31, AUDIO_PDATA(_name##_div))
->>>> +
->>>> +AUDIO_MST_MCLK(audio_mst_a_mclk, AUDIO_MCLK_A_CTRL);
->>>> +AUDIO_MST_MCLK(audio_mst_b_mclk, AUDIO_MCLK_B_CTRL);
->>>> +AUDIO_MST_MCLK(audio_mst_c_mclk, AUDIO_MCLK_C_CTRL);
->>>> +AUDIO_MST_MCLK(audio_mst_d_mclk, AUDIO_MCLK_D_CTRL);
->>>> +AUDIO_MST_MCLK(audio_spdifin_clk, AUDIO_CLK_SPDIFIN_CTRL);
->>>> +AUDIO_MST_MCLK(audio_eqdrc_clk, AUDIO_CLK_EQDRC_CTRL);
->>>> +
->>>> +AUDIO_MUX(audio_resample_clk_mux, AUDIO_CLK_RESAMPLE_CTRL, 0xf, 24,
->>>> +	a1_mst_pdata);
->>>> +AUDIO_DIV(audio_resample_clk_div, AUDIO_CLK_RESAMPLE_CTRL, 0, 8,
->>>> +	AUDIO_PDATA(audio_resample_clk_mux));
->>>> +AUDIO_GATE(audio_resample_clk, AUDIO_CLK_RESAMPLE_CTRL, 31,
->>>> +	AUDIO_PDATA(audio_resample_clk_div));
->>>> +
->>>> +AUDIO_MUX(audio_locker_in_clk_mux, AUDIO_CLK_LOCKER_CTRL, 0xf, 8,
->>>> +	a1_mst_pdata);
->>>> +AUDIO_DIV(audio_locker_in_clk_div, AUDIO_CLK_LOCKER_CTRL, 0, 8,
->>>> +	AUDIO_PDATA(audio_locker_in_clk_mux));
->>>> +AUDIO_GATE(audio_locker_in_clk, AUDIO_CLK_LOCKER_CTRL, 15,
->>>> +	AUDIO_PDATA(audio_locker_in_clk_div));
->>>> +
->>>> +AUDIO_MUX(audio_locker_out_clk_mux, AUDIO_CLK_LOCKER_CTRL, 0xf, 24,
->>>> +	a1_mst_pdata);
->>>> +AUDIO_DIV(audio_locker_out_clk_div, AUDIO_CLK_LOCKER_CTRL, 16, 8,
->>>> +	AUDIO_PDATA(audio_locker_out_clk_mux));
->>>> +AUDIO_GATE(audio_locker_out_clk, AUDIO_CLK_LOCKER_CTRL, 31,
->>>> +	AUDIO_PDATA(audio_locker_out_clk_div));
->>>> +
->>>> +AUDIO_MST_MCLK(audio2_vad_mclk, AUDIO2_MCLK_VAD_CTRL);
->>>> +AUDIO_MST_MCLK(audio2_vad_clk, AUDIO2_CLK_VAD_CTRL);
->>>> +AUDIO_MST_MCLK(audio2_pdm_dclk, AUDIO2_CLK_PDMIN_CTRL0);
->>>> +AUDIO_MST_MCLK(audio2_pdm_sysclk, AUDIO2_CLK_PDMIN_CTRL1);
->>>> +
->>>> +#define AUDIO_MST_SCLK(_name, _reg0, _reg1, _pdata)			\
->>>> +	AUDIO_GATE(_name##_pre_en, (_reg0), 31, (_pdata));		\
->>>> +	AUDIO_SCLK_DIV(_name##_div, (_reg0), 20, 10, 0, 0,		\
->>>> +		AUDIO_PDATA(_name##_pre_en), true);			\
->>>> +	AUDIO_GATE(_name##_post_en, (_reg0), 30,			\
->>>> +		AUDIO_PDATA(_name##_div));				\
->>>> +	AUDIO_TRIPHASE(_name, (_reg1), 1, 0, 2, 4,			\
->>>> +		AUDIO_PDATA(_name##_post_en))
->>>> +
->>>
->>> Again, I'm not a fan of this many levels of macro. I can live with it
->>> but certainly don't want the burden of reviewing and maintaining for
->>> clock driver. AXG / G12 and A1 are obviously closely related, so make it common.
->>>
->>>> +#define AUDIO_MST_LRCLK(_name, _reg0, _reg1, _pdata)			\
->>>> +	AUDIO_SCLK_DIV(_name##_div, (_reg0), 0, 10, 10, 10,		\
->>>> +		(_pdata), false);					\
->>>> +	AUDIO_TRIPHASE(_name, (_reg1), 1, 1, 3, 5,			\
->>>> +		AUDIO_PDATA(_name##_div))
->>>> +
->>>> +AUDIO_MST_SCLK(audio_mst_a_sclk, AUDIO_MST_A_SCLK_CTRL0, AUDIO_MST_A_SCLK_CTRL1,
->>>> +	AUDIO_PDATA(audio_mst_a_mclk));
->>>> +AUDIO_MST_SCLK(audio_mst_b_sclk, AUDIO_MST_B_SCLK_CTRL0, AUDIO_MST_B_SCLK_CTRL1,
->>>> +	AUDIO_PDATA(audio_mst_b_mclk));
->>>> +AUDIO_MST_SCLK(audio_mst_c_sclk, AUDIO_MST_C_SCLK_CTRL0, AUDIO_MST_C_SCLK_CTRL1,
->>>> +	AUDIO_PDATA(audio_mst_c_mclk));
->>>> +AUDIO_MST_SCLK(audio_mst_d_sclk, AUDIO_MST_D_SCLK_CTRL0, AUDIO_MST_D_SCLK_CTRL1,
->>>> +	AUDIO_PDATA(audio_mst_d_mclk));
->>>> +
->>>> +AUDIO_MST_LRCLK(audio_mst_a_lrclk, AUDIO_MST_A_SCLK_CTRL0, AUDIO_MST_A_SCLK_CTRL1,
->>>> +	AUDIO_PDATA(audio_mst_a_sclk_post_en));
->>>> +AUDIO_MST_LRCLK(audio_mst_b_lrclk, AUDIO_MST_B_SCLK_CTRL0, AUDIO_MST_B_SCLK_CTRL1,
->>>> +	AUDIO_PDATA(audio_mst_b_sclk_post_en));
->>>> +AUDIO_MST_LRCLK(audio_mst_c_lrclk, AUDIO_MST_C_SCLK_CTRL0, AUDIO_MST_C_SCLK_CTRL1,
->>>> +	AUDIO_PDATA(audio_mst_c_sclk_post_en));
->>>> +AUDIO_MST_LRCLK(audio_mst_d_lrclk, AUDIO_MST_D_SCLK_CTRL0, AUDIO_MST_D_SCLK_CTRL1,
->>>> +	AUDIO_PDATA(audio_mst_d_sclk_post_en));
->>>> +
->>>> +static const struct clk_parent_data a1_mst_sclk_pdata[] = {
->>>> +	{ .hw = &audio_mst_a_sclk.hw },
->>>> +	{ .hw = &audio_mst_b_sclk.hw },
->>>> +	{ .hw = &audio_mst_c_sclk.hw },
->>>> +	{ .hw = &audio_mst_d_sclk.hw },
->>>> +	{ .fw_name = "slv_sclk0" },
->>>> +	{ .fw_name = "slv_sclk1" },
->>>> +	{ .fw_name = "slv_sclk2" },
->>>> +	{ .fw_name = "slv_sclk3" },
->>>> +	{ .fw_name = "slv_sclk4" },
->>>> +	{ .fw_name = "slv_sclk5" },
->>>> +	{ .fw_name = "slv_sclk6" },
->>>> +	{ .fw_name = "slv_sclk7" },
->>>> +	{ .fw_name = "slv_sclk8" },
->>>> +	{ .fw_name = "slv_sclk9" },
->>>> +};
->>>> +
->>>> +static const struct clk_parent_data a1_mst_lrclk_pdata[] = {
->>>> +	{ .hw = &audio_mst_a_lrclk.hw },
->>>> +	{ .hw = &audio_mst_b_lrclk.hw },
->>>> +	{ .hw = &audio_mst_c_lrclk.hw },
->>>> +	{ .hw = &audio_mst_d_lrclk.hw },
->>>> +	{ .fw_name = "slv_lrclk0" },
->>>> +	{ .fw_name = "slv_lrclk1" },
->>>> +	{ .fw_name = "slv_lrclk2" },
->>>> +	{ .fw_name = "slv_lrclk3" },
->>>> +	{ .fw_name = "slv_lrclk4" },
->>>> +	{ .fw_name = "slv_lrclk5" },
->>>> +	{ .fw_name = "slv_lrclk6" },
->>>> +	{ .fw_name = "slv_lrclk7" },
->>>> +	{ .fw_name = "slv_lrclk8" },
->>>> +	{ .fw_name = "slv_lrclk9" },
->>>> +};
->>>> +
->>>> +#define AUDIO_TDM_SCLK(_name, _reg)					\
->>>> +	AUDIO_MUX(_name##_mux, (_reg), 0xf, 24, a1_mst_sclk_pdata);	\
->>>> +	AUDIO_GATE(_name##_pre_en, (_reg), 31,				\
->>>> +		AUDIO_PDATA(_name##_mux));				\
->>>> +	AUDIO_GATE(_name##_post_en, (_reg), 30,				\
->>>> +		AUDIO_PDATA(_name##_pre_en));				\
->>>> +	AUDIO_SCLK_WS(_name, (_reg), 1, 29, 28,				\
->>>> +		AUDIO_PDATA(_name##_post_en))
->>>> +
->>>> +#define AUDIO_TDM_LRCLK(_name, _reg)					\
->>>> +	AUDIO_MUX(_name, (_reg), 0xf, 20, a1_mst_lrclk_pdata)
->>>> +
->>>> +AUDIO_TDM_SCLK(audio_tdmin_a_sclk, AUDIO_CLK_TDMIN_A_CTRL);
->>>> +AUDIO_TDM_SCLK(audio_tdmin_b_sclk, AUDIO_CLK_TDMIN_B_CTRL);
->>>> +AUDIO_TDM_SCLK(audio_tdmin_lb_sclk, AUDIO_CLK_TDMIN_LB_CTRL);
->>>> +AUDIO_TDM_SCLK(audio_tdmout_a_sclk, AUDIO_CLK_TDMOUT_A_CTRL);
->>>> +AUDIO_TDM_SCLK(audio_tdmout_b_sclk, AUDIO_CLK_TDMOUT_B_CTRL);
->>>> +
->>>> +AUDIO_TDM_LRCLK(audio_tdmin_a_lrclk, AUDIO_CLK_TDMIN_A_CTRL);
->>>> +AUDIO_TDM_LRCLK(audio_tdmin_b_lrclk, AUDIO_CLK_TDMIN_B_CTRL);
->>>> +AUDIO_TDM_LRCLK(audio_tdmin_lb_lrclk, AUDIO_CLK_TDMIN_LB_CTRL);
->>>> +AUDIO_TDM_LRCLK(audio_tdmout_a_lrclk, AUDIO_CLK_TDMOUT_A_CTRL);
->>>> +AUDIO_TDM_LRCLK(audio_tdmout_b_lrclk, AUDIO_CLK_TDMOUT_B_CTRL);
->>>> +
->>>> +static struct clk_hw *a1_audio_hw_clks[] = {
->>>> +	[AUD_CLKID_DDR_ARB]		= &audio_ddr_arb.hw,
->>>> +	[AUD_CLKID_TDMIN_A]		= &audio_tdmin_a.hw,
->>>> +	[AUD_CLKID_TDMIN_B]		= &audio_tdmin_b.hw,
->>>> +	[AUD_CLKID_TDMIN_LB]		= &audio_tdmin_lb.hw,
->>>> +	[AUD_CLKID_LOOPBACK]		= &audio_loopback.hw,
->>>> +	[AUD_CLKID_TDMOUT_A]		= &audio_tdmout_a.hw,
->>>> +	[AUD_CLKID_TDMOUT_B]		= &audio_tdmout_b.hw,
->>>> +	[AUD_CLKID_FRDDR_A]		= &audio_frddr_a.hw,
->>>> +	[AUD_CLKID_FRDDR_B]		= &audio_frddr_b.hw,
->>>> +	[AUD_CLKID_TODDR_A]		= &audio_toddr_a.hw,
->>>> +	[AUD_CLKID_TODDR_B]		= &audio_toddr_b.hw,
->>>> +	[AUD_CLKID_SPDIFIN]		= &audio_spdifin.hw,
->>>> +	[AUD_CLKID_RESAMPLE]		= &audio_resample.hw,
->>>> +	[AUD_CLKID_EQDRC]		= &audio_eqdrc.hw,
->>>> +	[AUD_CLKID_LOCKER]		= &audio_audiolocker.hw,
->>>> +	[AUD_CLKID_MST_A_MCLK_SEL]	= &audio_mst_a_mclk_mux.hw,
->>>> +	[AUD_CLKID_MST_A_MCLK_DIV]	= &audio_mst_a_mclk_div.hw,
->>>> +	[AUD_CLKID_MST_A_MCLK]		= &audio_mst_a_mclk.hw,
->>>> +	[AUD_CLKID_MST_B_MCLK_SEL]	= &audio_mst_b_mclk_mux.hw,
->>>> +	[AUD_CLKID_MST_B_MCLK_DIV]	= &audio_mst_b_mclk_div.hw,
->>>> +	[AUD_CLKID_MST_B_MCLK]		= &audio_mst_b_mclk.hw,
->>>> +	[AUD_CLKID_MST_C_MCLK_SEL]	= &audio_mst_c_mclk_mux.hw,
->>>> +	[AUD_CLKID_MST_C_MCLK_DIV]	= &audio_mst_c_mclk_div.hw,
->>>> +	[AUD_CLKID_MST_C_MCLK]		= &audio_mst_c_mclk.hw,
->>>> +	[AUD_CLKID_MST_D_MCLK_SEL]	= &audio_mst_d_mclk_mux.hw,
->>>> +	[AUD_CLKID_MST_D_MCLK_DIV]	= &audio_mst_d_mclk_div.hw,
->>>> +	[AUD_CLKID_MST_D_MCLK]		= &audio_mst_d_mclk.hw,
->>>> +	[AUD_CLKID_RESAMPLE_CLK_SEL]	= &audio_resample_clk_mux.hw,
->>>> +	[AUD_CLKID_RESAMPLE_CLK_DIV]	= &audio_resample_clk_div.hw,
->>>> +	[AUD_CLKID_RESAMPLE_CLK]	= &audio_resample_clk.hw,
->>>> +	[AUD_CLKID_LOCKER_IN_CLK_SEL]	= &audio_locker_in_clk_mux.hw,
->>>> +	[AUD_CLKID_LOCKER_IN_CLK_DIV]	= &audio_locker_in_clk_div.hw,
->>>> +	[AUD_CLKID_LOCKER_IN_CLK]	= &audio_locker_in_clk.hw,
->>>> +	[AUD_CLKID_LOCKER_OUT_CLK_SEL]	= &audio_locker_out_clk_mux.hw,
->>>> +	[AUD_CLKID_LOCKER_OUT_CLK_DIV]	= &audio_locker_out_clk_div.hw,
->>>> +	[AUD_CLKID_LOCKER_OUT_CLK]	= &audio_locker_out_clk.hw,
->>>> +	[AUD_CLKID_SPDIFIN_CLK_SEL]	= &audio_spdifin_clk_mux.hw,
->>>> +	[AUD_CLKID_SPDIFIN_CLK_DIV]	= &audio_spdifin_clk_div.hw,
->>>> +	[AUD_CLKID_SPDIFIN_CLK]		= &audio_spdifin_clk.hw,
->>>> +	[AUD_CLKID_EQDRC_CLK_SEL]	= &audio_eqdrc_clk_mux.hw,
->>>> +	[AUD_CLKID_EQDRC_CLK_DIV]	= &audio_eqdrc_clk_div.hw,
->>>> +	[AUD_CLKID_EQDRC_CLK]		= &audio_eqdrc_clk.hw,
->>>> +	[AUD_CLKID_MST_A_SCLK_PRE_EN]	= &audio_mst_a_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_MST_A_SCLK_DIV]	= &audio_mst_a_sclk_div.hw,
->>>> +	[AUD_CLKID_MST_A_SCLK_POST_EN]	= &audio_mst_a_sclk_post_en.hw,
->>>> +	[AUD_CLKID_MST_A_SCLK]		= &audio_mst_a_sclk.hw,
->>>> +	[AUD_CLKID_MST_B_SCLK_PRE_EN]	= &audio_mst_b_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_MST_B_SCLK_DIV]	= &audio_mst_b_sclk_div.hw,
->>>> +	[AUD_CLKID_MST_B_SCLK_POST_EN]	= &audio_mst_b_sclk_post_en.hw,
->>>> +	[AUD_CLKID_MST_B_SCLK]		= &audio_mst_b_sclk.hw,
->>>> +	[AUD_CLKID_MST_C_SCLK_PRE_EN]	= &audio_mst_c_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_MST_C_SCLK_DIV]	= &audio_mst_c_sclk_div.hw,
->>>> +	[AUD_CLKID_MST_C_SCLK_POST_EN]	= &audio_mst_c_sclk_post_en.hw,
->>>> +	[AUD_CLKID_MST_C_SCLK]		= &audio_mst_c_sclk.hw,
->>>> +	[AUD_CLKID_MST_D_SCLK_PRE_EN]	= &audio_mst_d_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_MST_D_SCLK_DIV]	= &audio_mst_d_sclk_div.hw,
->>>> +	[AUD_CLKID_MST_D_SCLK_POST_EN]	= &audio_mst_d_sclk_post_en.hw,
->>>> +	[AUD_CLKID_MST_D_SCLK]		= &audio_mst_d_sclk.hw,
->>>> +	[AUD_CLKID_MST_A_LRCLK_DIV]	= &audio_mst_a_lrclk_div.hw,
->>>> +	[AUD_CLKID_MST_A_LRCLK]		= &audio_mst_a_lrclk.hw,
->>>> +	[AUD_CLKID_MST_B_LRCLK_DIV]	= &audio_mst_b_lrclk_div.hw,
->>>> +	[AUD_CLKID_MST_B_LRCLK]		= &audio_mst_b_lrclk.hw,
->>>> +	[AUD_CLKID_MST_C_LRCLK_DIV]	= &audio_mst_c_lrclk_div.hw,
->>>> +	[AUD_CLKID_MST_C_LRCLK]		= &audio_mst_c_lrclk.hw,
->>>> +	[AUD_CLKID_MST_D_LRCLK_DIV]	= &audio_mst_d_lrclk_div.hw,
->>>> +	[AUD_CLKID_MST_D_LRCLK]		= &audio_mst_d_lrclk.hw,
->>>> +	[AUD_CLKID_TDMIN_A_SCLK_SEL]	= &audio_tdmin_a_sclk_mux.hw,
->>>> +	[AUD_CLKID_TDMIN_A_SCLK_PRE_EN]	= &audio_tdmin_a_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_TDMIN_A_SCLK_POST_EN] = &audio_tdmin_a_sclk_post_en.hw,
->>>> +	[AUD_CLKID_TDMIN_A_SCLK]	= &audio_tdmin_a_sclk.hw,
->>>> +	[AUD_CLKID_TDMIN_A_LRCLK]	= &audio_tdmin_a_lrclk.hw,
->>>> +	[AUD_CLKID_TDMIN_B_SCLK_SEL]	= &audio_tdmin_b_sclk_mux.hw,
->>>> +	[AUD_CLKID_TDMIN_B_SCLK_PRE_EN]	= &audio_tdmin_b_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_TDMIN_B_SCLK_POST_EN] = &audio_tdmin_b_sclk_post_en.hw,
->>>> +	[AUD_CLKID_TDMIN_B_SCLK]	= &audio_tdmin_b_sclk.hw,
->>>> +	[AUD_CLKID_TDMIN_B_LRCLK]	= &audio_tdmin_b_lrclk.hw,
->>>> +	[AUD_CLKID_TDMIN_LB_SCLK_SEL]	= &audio_tdmin_lb_sclk_mux.hw,
->>>> +	[AUD_CLKID_TDMIN_LB_SCLK_PRE_EN] = &audio_tdmin_lb_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_TDMIN_LB_SCLK_POST_EN] = &audio_tdmin_lb_sclk_post_en.hw,
->>>> +	[AUD_CLKID_TDMIN_LB_SCLK]	= &audio_tdmin_lb_sclk.hw,
->>>> +	[AUD_CLKID_TDMIN_LB_LRCLK]	= &audio_tdmin_lb_lrclk.hw,
->>>> +	[AUD_CLKID_TDMOUT_A_SCLK_SEL]	= &audio_tdmout_a_sclk_mux.hw,
->>>> +	[AUD_CLKID_TDMOUT_A_SCLK_PRE_EN] = &audio_tdmout_a_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_TDMOUT_A_SCLK_POST_EN] = &audio_tdmout_a_sclk_post_en.hw,
->>>> +	[AUD_CLKID_TDMOUT_A_SCLK]	= &audio_tdmout_a_sclk.hw,
->>>> +	[AUD_CLKID_TDMOUT_A_LRCLK]	= &audio_tdmout_a_lrclk.hw,
->>>> +	[AUD_CLKID_TDMOUT_B_SCLK_SEL]	= &audio_tdmout_b_sclk_mux.hw,
->>>> +	[AUD_CLKID_TDMOUT_B_SCLK_PRE_EN] = &audio_tdmout_b_sclk_pre_en.hw,
->>>> +	[AUD_CLKID_TDMOUT_B_SCLK_POST_EN] = &audio_tdmout_b_sclk_post_en.hw,
->>>> +	[AUD_CLKID_TDMOUT_B_SCLK]	= &audio_tdmout_b_sclk.hw,
->>>> +	[AUD_CLKID_TDMOUT_B_LRCLK]	= &audio_tdmout_b_lrclk.hw,
->>>> +
->>>> +	[AUD2_CLKID_DDR_ARB]		= &audio2_ddr_arb.hw,
->>>> +	[AUD2_CLKID_PDM]		= &audio2_pdm.hw,
->>>> +	[AUD2_CLKID_TDMIN_VAD]		= &audio2_tdmin_vad.hw,
->>>> +	[AUD2_CLKID_TODDR_VAD]		= &audio2_toddr_vad.hw,
->>>> +	[AUD2_CLKID_VAD]		= &audio2_vad.hw,
->>>> +	[AUD2_CLKID_AUDIOTOP]		= &audio2_audiotop.hw,
->>>> +	[AUD2_CLKID_VAD_MCLK_SEL]	= &audio2_vad_mclk_mux.hw,
->>>> +	[AUD2_CLKID_VAD_MCLK_DIV]	= &audio2_vad_mclk_div.hw,
->>>> +	[AUD2_CLKID_VAD_MCLK]		= &audio2_vad_mclk.hw,
->>>> +	[AUD2_CLKID_VAD_CLK_SEL]	= &audio2_vad_clk_mux.hw,
->>>> +	[AUD2_CLKID_VAD_CLK_DIV]	= &audio2_vad_clk_div.hw,
->>>> +	[AUD2_CLKID_VAD_CLK]		= &audio2_vad_clk.hw,
->>>> +	[AUD2_CLKID_PDM_DCLK_SEL]	= &audio2_pdm_dclk_mux.hw,
->>>> +	[AUD2_CLKID_PDM_DCLK_DIV]	= &audio2_pdm_dclk_div.hw,
->>>> +	[AUD2_CLKID_PDM_DCLK]		= &audio2_pdm_dclk.hw,
->>>> +	[AUD2_CLKID_PDM_SYSCLK_SEL]	= &audio2_pdm_sysclk_mux.hw,
->>>> +	[AUD2_CLKID_PDM_SYSCLK_DIV]	= &audio2_pdm_sysclk_div.hw,
->>>> +	[AUD2_CLKID_PDM_SYSCLK]		= &audio2_pdm_sysclk.hw,
->>>> +};
->>>> +
->>>> +static struct meson_clk_hw_data a1_audio_clks = {
->>>> +	.hws = a1_audio_hw_clks,
->>>> +	.num = ARRAY_SIZE(a1_audio_hw_clks),
->>>> +};
->>>> +
->>>> +static struct regmap *a1_audio_map(struct platform_device *pdev,
->>>> +				   unsigned int index)
->>>> +{
->>>> +	char name[32];
->>>> +	const struct regmap_config cfg = {
->>>> +		.reg_bits = 32,
->>>> +		.val_bits = 32,
->>>> +		.reg_stride = 4,
->>>> +		.name = name,
->>>
->>> Not necessary
->>>
->>
->> This implementation uses two regmaps, and this field allow to avoid
->> errors like this:
->>
->> [    0.145530] debugfs: Directory 'fe050000.audio-clock-controller' with
->> parent 'regmap' already present!
->>
->>>> +	};
->>>> +	void __iomem *base;
->>>> +
->>>> +	base = devm_platform_ioremap_resource(pdev, index);
->>>> +	if (IS_ERR(base))
->>>> +		return base;
->>>> +
->>>> +	scnprintf(name, sizeof(name), "%d", index);
->>>> +	return devm_regmap_init_mmio(&pdev->dev, base, &cfg);
->>>> +}
->>>
->>> That is overengineered. Please keep it simple. Declare the regmap_config
->>> as static const global, and do it like axg-audio please.
->>>
->>
->> This only reason why it is not "static const" because I need to set
->> unique name for each regmap.
->>
->>>> +
->>>> +static int a1_register_clk(struct platform_device *pdev,
->>>> +			   struct regmap *map0, struct regmap *map1,
->>>> +			   struct clk_hw *hw)
->>>> +{
->>>> +	struct clk_regmap *clk = container_of(hw, struct clk_regmap, hw);
->>>> +
->>>> +	if (!hw)
->>>> +		return 0;
->>>> +
->>>> +	switch ((unsigned long)clk->map) {
->>>> +	case AUDIO_RANGE_0:
->>>> +		clk->map = map0;
->>>> +		break;
->>>> +	case AUDIO_RANGE_1:
->>>> +		clk->map = map1;
->>>> +		break;
->>>
->>> ... fishy
->>>
->>>> +	default:
->>>> +		WARN_ON(1);
->>>> +		return -EINVAL;
->>>> +	}
->>>> +
->>>> +	return devm_clk_hw_register(&pdev->dev, hw);
->>>> +}
->>>> +
->>>> +static int a1_audio_clkc_probe(struct platform_device *pdev)
->>>> +{
->>>> +	struct regmap *map0, *map1;
->>>> +	struct clk *clk;
->>>> +	unsigned int i;
->>>> +	int ret;
->>>> +
->>>> +	clk = devm_clk_get_enabled(&pdev->dev, "pclk");
->>>> +	if (WARN_ON(IS_ERR(clk)))
->>>> +		return PTR_ERR(clk);
->>>> +
->>>> +	map0 = a1_audio_map(pdev, 0);
->>>> +	if (IS_ERR(map0))
->>>> +		return PTR_ERR(map0);
->>>> +
->>>> +	map1 = a1_audio_map(pdev, 1);
->>>> +	if (IS_ERR(map1))
->>>> +		return PTR_ERR(map1);
->>>
->>> No - Looks to me you just have two clock controllers you are trying
->>> force into one.
->>>
->>
->> See the begining.
->>
->>>> +
->>>> +	/*
->>>> +	 * Register and enable AUD2_CLKID_AUDIOTOP clock first. Unless
->>>> +	 * it is enabled any read/write to 'map0' hangs the CPU.
->>>> +	 */
->>>> +
->>>> +	ret = a1_register_clk(pdev, map0, map1,
->>>> +			      a1_audio_clks.hws[AUD2_CLKID_AUDIOTOP]);
->>>> +	if (ret)
->>>> +		return ret;
->>>> +
->>>> +	ret = clk_prepare_enable(a1_audio_clks.hws[AUD2_CLKID_AUDIOTOP]->clk);
->>>> +	if (ret)
->>>> +		return ret;
->>>
->>> Again, this shows 2 devices. The one related to your 'map0' should
->>> request AUD2_CLKID_AUDIOTOP as input and enable it right away.
->>>
->>
->> See the begining.
->>
->>>> +
->>>> +	for (i = 0; i < a1_audio_clks.num; i++) {
->>>> +		if (i == AUD2_CLKID_AUDIOTOP)
->>>> +			continue;
->>>> +
->>>> +		ret = a1_register_clk(pdev, map0, map1, a1_audio_clks.hws[i]);
->>>> +		if (ret)
->>>> +			return ret;
->>>> +	}
->>>> +
->>>> +	ret = devm_of_clk_add_hw_provider(&pdev->dev, meson_clk_hw_get,
->>>> +					  &a1_audio_clks);
->>>> +	if (ret)
->>>> +		return ret;
->>>> +
->>>> +	BUILD_BUG_ON((unsigned long)AUDIO_REG_MAP(AUDIO_SW_RESET0) !=
->>>> +		     AUDIO_RANGE_0);
->>>
->>> Why is that necessary ?
->>>
->>
->> A little paranoia. Here AUDIO_SW_RESET0 is handled as map0's register,
->> and I want to assert it.
->>
->>>> +	return meson_audio_rstc_register(&pdev->dev, map0,
->>>> +					 AUDIO_REG_OFFSET(AUDIO_SW_RESET0), 32);
->>>> +}
->>>> +
->>>> +static const struct of_device_id a1_audio_clkc_match_table[] = {
->>>> +	{ .compatible = "amlogic,a1-audio-clkc", },
->>>> +	{}
->>>> +};
->>>> +MODULE_DEVICE_TABLE(of, a1_audio_clkc_match_table);
->>>> +
->>>> +static struct platform_driver a1_audio_clkc_driver = {
->>>> +	.probe = a1_audio_clkc_probe,
->>>> +	.driver = {
->>>> +		.name = "a1-audio-clkc",
->>>> +		.of_match_table = a1_audio_clkc_match_table,
->>>> +	},
->>>> +};
->>>> +module_platform_driver(a1_audio_clkc_driver);
->>>> +
->>>> +MODULE_DESCRIPTION("Amlogic A1 Audio Clock driver");
->>>> +MODULE_AUTHOR("Jan Dakinevich <jan.dakinevich@salutedevices.com>");
->>>> +MODULE_LICENSE("GPL");
->>>> diff --git a/drivers/clk/meson/a1-audio.h b/drivers/clk/meson/a1-audio.h
->>>> new file mode 100644
->>>> index 000000000000..f994e87276cd
->>>> --- /dev/null
->>>> +++ b/drivers/clk/meson/a1-audio.h
->>>> @@ -0,0 +1,58 @@
->>>> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
->>>> +/*
->>>> + * Copyright (c) 2024, SaluteDevices. All Rights Reserved.
->>>> + *
->>>> + * Author: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->>>> + */
->>>> +
->>>> +#ifndef __A1_AUDIO_H
->>>> +#define __A1_AUDIO_H
->>>> +
->>>> +#define AUDIO_RANGE_0		0xa
->>>> +#define AUDIO_RANGE_1		0xb
->>>> +#define AUDIO_RANGE_SHIFT	16
->>>> +
->>>> +#define AUDIO_REG(_range, _offset) \
->>>> +	(((_range) << AUDIO_RANGE_SHIFT) + (_offset))
->>>> +
->>>> +#define AUDIO_REG_OFFSET(_reg) \
->>>> +	((_reg) & ((1 << AUDIO_RANGE_SHIFT) - 1))
->>>> +
->>>> +#define AUDIO_REG_MAP(_reg) \
->>>> +	((void *)((_reg) >> AUDIO_RANGE_SHIFT))
->>>
->>> That is seriouly overengineered.
->>> The following are offset. Just write what they are.
->>>
->>
->> This is all in order to keep range's identifier together with offset and
->> then use it to store the identifier in clk_regmaps.
->>
->>> There is not reason to put that into a header. It is only going to be
->>> used by a single driver.
->>>>> +
->>>> +#define AUDIO_CLK_GATE_EN0	AUDIO_REG(AUDIO_RANGE_0, 0x000)
->>>> +#define AUDIO_MCLK_A_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x008)
->>>> +#define AUDIO_MCLK_B_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x00c)
->>>> +#define AUDIO_MCLK_C_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x010)
->>>> +#define AUDIO_MCLK_D_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x014)
->>>> +#define AUDIO_MCLK_E_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x018)
->>>> +#define AUDIO_MCLK_F_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x01c)
->>>> +#define AUDIO_SW_RESET0		AUDIO_REG(AUDIO_RANGE_0, 0x028)
->>>> +#define AUDIO_MST_A_SCLK_CTRL0	AUDIO_REG(AUDIO_RANGE_0, 0x040)
->>>> +#define AUDIO_MST_A_SCLK_CTRL1	AUDIO_REG(AUDIO_RANGE_0, 0x044)
->>>> +#define AUDIO_MST_B_SCLK_CTRL0	AUDIO_REG(AUDIO_RANGE_0, 0x048)
->>>> +#define AUDIO_MST_B_SCLK_CTRL1	AUDIO_REG(AUDIO_RANGE_0, 0x04c)
->>>> +#define AUDIO_MST_C_SCLK_CTRL0	AUDIO_REG(AUDIO_RANGE_0, 0x050)
->>>> +#define AUDIO_MST_C_SCLK_CTRL1	AUDIO_REG(AUDIO_RANGE_0, 0x054)
->>>> +#define AUDIO_MST_D_SCLK_CTRL0	AUDIO_REG(AUDIO_RANGE_0, 0x058)
->>>> +#define AUDIO_MST_D_SCLK_CTRL1	AUDIO_REG(AUDIO_RANGE_0, 0x05c)
->>>> +#define AUDIO_CLK_TDMIN_A_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x080)
->>>> +#define AUDIO_CLK_TDMIN_B_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x084)
->>>> +#define AUDIO_CLK_TDMIN_LB_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x08c)
->>>> +#define AUDIO_CLK_TDMOUT_A_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x090)
->>>> +#define AUDIO_CLK_TDMOUT_B_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x094)
->>>> +#define AUDIO_CLK_SPDIFIN_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x09c)
->>>> +#define AUDIO_CLK_RESAMPLE_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x0a4)
->>>> +#define AUDIO_CLK_LOCKER_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x0a8)
->>>> +#define AUDIO_CLK_EQDRC_CTRL	AUDIO_REG(AUDIO_RANGE_0, 0x0c0)
->>>> +
->>>> +#define AUDIO2_CLK_GATE_EN0	AUDIO_REG(AUDIO_RANGE_1, 0x00c)
->>>> +#define AUDIO2_MCLK_VAD_CTRL	AUDIO_REG(AUDIO_RANGE_1, 0x040)
->>>> +#define AUDIO2_CLK_VAD_CTRL	AUDIO_REG(AUDIO_RANGE_1, 0x044)
->>>> +#define AUDIO2_CLK_PDMIN_CTRL0	AUDIO_REG(AUDIO_RANGE_1, 0x058)
->>>> +#define AUDIO2_CLK_PDMIN_CTRL1	AUDIO_REG(AUDIO_RANGE_1, 0x05c)
->>>> +
->>>> +#include <dt-bindings/clock/amlogic,a1-audio-clkc.h>
->>>> +
->>>> +#endif /* __A1_AUDIO_H */
->>>
->>>
-> 
-> 
+Thanks,
+SJ
 
--- 
-Best regards
-Jan Dakinevich
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  drivers/staging/media/atomisp/pci/hmm/hmm.c |  2 +-
+>  include/linux/vmalloc.h                     | 60 ++++++++++----
+>  kernel/kallsyms_selftest.c                  |  2 +-
+>  mm/nommu.c                                  | 64 +++++++--------
+>  mm/util.c                                   | 24 +++---
+>  mm/vmalloc.c                                | 88 ++++++++++-----------
+>  6 files changed, 135 insertions(+), 105 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/hmm/hmm.c b/drivers/staging/media/atomisp/pci/hmm/hmm.c
+> index bb12644fd033..3e2899ad8517 100644
+> --- a/drivers/staging/media/atomisp/pci/hmm/hmm.c
+> +++ b/drivers/staging/media/atomisp/pci/hmm/hmm.c
+> @@ -205,7 +205,7 @@ static ia_css_ptr __hmm_alloc(size_t bytes, enum hmm_bo_type type,
+>  	}
+>  
+>  	dev_dbg(atomisp_dev, "pages: 0x%08x (%zu bytes), type: %d, vmalloc %p\n",
+> -		bo->start, bytes, type, vmalloc);
+> +		bo->start, bytes, type, vmalloc_noprof);
+>  
+>  	return bo->start;
+>  
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index 98ea90e90439..e4a631ec430b 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -2,6 +2,8 @@
+>  #ifndef _LINUX_VMALLOC_H
+>  #define _LINUX_VMALLOC_H
+>  
+> +#include <linux/alloc_tag.h>
+> +#include <linux/sched.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/init.h>
+>  #include <linux/list.h>
+> @@ -138,26 +140,54 @@ extern unsigned long vmalloc_nr_pages(void);
+>  static inline unsigned long vmalloc_nr_pages(void) { return 0; }
+>  #endif
+>  
+> -extern void *vmalloc(unsigned long size) __alloc_size(1);
+> -extern void *vzalloc(unsigned long size) __alloc_size(1);
+> -extern void *vmalloc_user(unsigned long size) __alloc_size(1);
+> -extern void *vmalloc_node(unsigned long size, int node) __alloc_size(1);
+> -extern void *vzalloc_node(unsigned long size, int node) __alloc_size(1);
+> -extern void *vmalloc_32(unsigned long size) __alloc_size(1);
+> -extern void *vmalloc_32_user(unsigned long size) __alloc_size(1);
+> -extern void *__vmalloc(unsigned long size, gfp_t gfp_mask) __alloc_size(1);
+> -extern void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> +extern void *vmalloc_noprof(unsigned long size) __alloc_size(1);
+> +#define vmalloc(...)		alloc_hooks(vmalloc_noprof(__VA_ARGS__))
+> +
+> +extern void *vzalloc_noprof(unsigned long size) __alloc_size(1);
+> +#define vzalloc(...)		alloc_hooks(vzalloc_noprof(__VA_ARGS__))
+> +
+> +extern void *vmalloc_user_noprof(unsigned long size) __alloc_size(1);
+> +#define vmalloc_user(...)	alloc_hooks(vmalloc_user_noprof(__VA_ARGS__))
+> +
+> +extern void *vmalloc_node_noprof(unsigned long size, int node) __alloc_size(1);
+> +#define vmalloc_node(...)	alloc_hooks(vmalloc_node_noprof(__VA_ARGS__))
+> +
+> +extern void *vzalloc_node_noprof(unsigned long size, int node) __alloc_size(1);
+> +#define vzalloc_node(...)	alloc_hooks(vzalloc_node_noprof(__VA_ARGS__))
+> +
+> +extern void *vmalloc_32_noprof(unsigned long size) __alloc_size(1);
+> +#define vmalloc_32(...)		alloc_hooks(vmalloc_32_noprof(__VA_ARGS__))
+> +
+> +extern void *vmalloc_32_user_noprof(unsigned long size) __alloc_size(1);
+> +#define vmalloc_32_user(...)	alloc_hooks(vmalloc_32_user_noprof(__VA_ARGS__))
+> +
+> +extern void *__vmalloc_noprof(unsigned long size, gfp_t gfp_mask) __alloc_size(1);
+> +#define __vmalloc(...)		alloc_hooks(__vmalloc_noprof(__VA_ARGS__))
+> +
+> +extern void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+>  			unsigned long start, unsigned long end, gfp_t gfp_mask,
+>  			pgprot_t prot, unsigned long vm_flags, int node,
+>  			const void *caller) __alloc_size(1);
+> -void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
+> +#define __vmalloc_node_range(...)	alloc_hooks(__vmalloc_node_range_noprof(__VA_ARGS__))
+> +
+> +void *__vmalloc_node_noprof(unsigned long size, unsigned long align, gfp_t gfp_mask,
+>  		int node, const void *caller) __alloc_size(1);
+> -void *vmalloc_huge(unsigned long size, gfp_t gfp_mask) __alloc_size(1);
+> +#define __vmalloc_node(...)	alloc_hooks(__vmalloc_node_noprof(__VA_ARGS__))
+> +
+> +void *vmalloc_huge_noprof(unsigned long size, gfp_t gfp_mask) __alloc_size(1);
+> +#define vmalloc_huge(...)	alloc_hooks(vmalloc_huge_noprof(__VA_ARGS__))
+> +
+> +extern void *__vmalloc_array_noprof(size_t n, size_t size, gfp_t flags) __alloc_size(1, 2);
+> +#define __vmalloc_array(...)	alloc_hooks(__vmalloc_array_noprof(__VA_ARGS__))
+> +
+> +extern void *vmalloc_array_noprof(size_t n, size_t size) __alloc_size(1, 2);
+> +#define vmalloc_array(...)	alloc_hooks(vmalloc_array_noprof(__VA_ARGS__))
+> +
+> +extern void *__vcalloc_noprof(size_t n, size_t size, gfp_t flags) __alloc_size(1, 2);
+> +#define __vcalloc(...)		alloc_hooks(__vcalloc_noprof(__VA_ARGS__))
+>  
+> -extern void *__vmalloc_array(size_t n, size_t size, gfp_t flags) __alloc_size(1, 2);
+> -extern void *vmalloc_array(size_t n, size_t size) __alloc_size(1, 2);
+> -extern void *__vcalloc(size_t n, size_t size, gfp_t flags) __alloc_size(1, 2);
+> -extern void *vcalloc(size_t n, size_t size) __alloc_size(1, 2);
+> +extern void *vcalloc_noprof(size_t n, size_t size) __alloc_size(1, 2);
+> +#define vcalloc(...)		alloc_hooks(vcalloc_noprof(__VA_ARGS__))
+>  
+>  extern void vfree(const void *addr);
+>  extern void vfree_atomic(const void *addr);
+> diff --git a/kernel/kallsyms_selftest.c b/kernel/kallsyms_selftest.c
+> index 8a689b4ff4f9..2f84896a7bcb 100644
+> --- a/kernel/kallsyms_selftest.c
+> +++ b/kernel/kallsyms_selftest.c
+> @@ -82,7 +82,7 @@ static struct test_item test_items[] = {
+>  	ITEM_FUNC(kallsyms_test_func_static),
+>  	ITEM_FUNC(kallsyms_test_func),
+>  	ITEM_FUNC(kallsyms_test_func_weak),
+> -	ITEM_FUNC(vmalloc),
+> +	ITEM_FUNC(vmalloc_noprof),
+>  	ITEM_FUNC(vfree),
+>  #ifdef CONFIG_KALLSYMS_ALL
+>  	ITEM_DATA(kallsyms_test_var_bss_static),
+> diff --git a/mm/nommu.c b/mm/nommu.c
+> index 5ec8f44e7ce9..69a6f3b4d156 100644
+> --- a/mm/nommu.c
+> +++ b/mm/nommu.c
+> @@ -137,28 +137,28 @@ void vfree(const void *addr)
+>  }
+>  EXPORT_SYMBOL(vfree);
+>  
+> -void *__vmalloc(unsigned long size, gfp_t gfp_mask)
+> +void *__vmalloc_noprof(unsigned long size, gfp_t gfp_mask)
+>  {
+>  	/*
+>  	 *  You can't specify __GFP_HIGHMEM with kmalloc() since kmalloc()
+>  	 * returns only a logical address.
+>  	 */
+> -	return kmalloc(size, (gfp_mask | __GFP_COMP) & ~__GFP_HIGHMEM);
+> +	return kmalloc_noprof(size, (gfp_mask | __GFP_COMP) & ~__GFP_HIGHMEM);
+>  }
+> -EXPORT_SYMBOL(__vmalloc);
+> +EXPORT_SYMBOL(__vmalloc_noprof);
+>  
+> -void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> +void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+>  		unsigned long start, unsigned long end, gfp_t gfp_mask,
+>  		pgprot_t prot, unsigned long vm_flags, int node,
+>  		const void *caller)
+>  {
+> -	return __vmalloc(size, gfp_mask);
+> +	return __vmalloc_noprof(size, gfp_mask);
+>  }
+>  
+> -void *__vmalloc_node(unsigned long size, unsigned long align, gfp_t gfp_mask,
+> +void *__vmalloc_node_noprof(unsigned long size, unsigned long align, gfp_t gfp_mask,
+>  		int node, const void *caller)
+>  {
+> -	return __vmalloc(size, gfp_mask);
+> +	return __vmalloc_noprof(size, gfp_mask);
+>  }
+>  
+>  static void *__vmalloc_user_flags(unsigned long size, gfp_t flags)
+> @@ -179,11 +179,11 @@ static void *__vmalloc_user_flags(unsigned long size, gfp_t flags)
+>  	return ret;
+>  }
+>  
+> -void *vmalloc_user(unsigned long size)
+> +void *vmalloc_user_noprof(unsigned long size)
+>  {
+>  	return __vmalloc_user_flags(size, GFP_KERNEL | __GFP_ZERO);
+>  }
+> -EXPORT_SYMBOL(vmalloc_user);
+> +EXPORT_SYMBOL(vmalloc_user_noprof);
+>  
+>  struct page *vmalloc_to_page(const void *addr)
+>  {
+> @@ -217,13 +217,13 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
+>   *	For tight control over page level allocator and protection flags
+>   *	use __vmalloc() instead.
+>   */
+> -void *vmalloc(unsigned long size)
+> +void *vmalloc_noprof(unsigned long size)
+>  {
+> -	return __vmalloc(size, GFP_KERNEL);
+> +	return __vmalloc_noprof(size, GFP_KERNEL);
+>  }
+> -EXPORT_SYMBOL(vmalloc);
+> +EXPORT_SYMBOL(vmalloc_noprof);
+>  
+> -void *vmalloc_huge(unsigned long size, gfp_t gfp_mask) __weak __alias(__vmalloc);
+> +void *vmalloc_huge_noprof(unsigned long size, gfp_t gfp_mask) __weak __alias(__vmalloc_noprof);
+>  
+>  /*
+>   *	vzalloc - allocate virtually contiguous memory with zero fill
+> @@ -237,14 +237,14 @@ void *vmalloc_huge(unsigned long size, gfp_t gfp_mask) __weak __alias(__vmalloc)
+>   *	For tight control over page level allocator and protection flags
+>   *	use __vmalloc() instead.
+>   */
+> -void *vzalloc(unsigned long size)
+> +void *vzalloc_noprof(unsigned long size)
+>  {
+> -	return __vmalloc(size, GFP_KERNEL | __GFP_ZERO);
+> +	return __vmalloc_noprof(size, GFP_KERNEL | __GFP_ZERO);
+>  }
+> -EXPORT_SYMBOL(vzalloc);
+> +EXPORT_SYMBOL(vzalloc_noprof);
+>  
+>  /**
+> - * vmalloc_node - allocate memory on a specific node
+> + * vmalloc_node_noprof - allocate memory on a specific node
+>   * @size:	allocation size
+>   * @node:	numa node
+>   *
+> @@ -254,14 +254,14 @@ EXPORT_SYMBOL(vzalloc);
+>   * For tight control over page level allocator and protection flags
+>   * use __vmalloc() instead.
+>   */
+> -void *vmalloc_node(unsigned long size, int node)
+> +void *vmalloc_node_noprof(unsigned long size, int node)
+>  {
+> -	return vmalloc(size);
+> +	return vmalloc_noprof(size);
+>  }
+> -EXPORT_SYMBOL(vmalloc_node);
+> +EXPORT_SYMBOL(vmalloc_node_noprof);
+>  
+>  /**
+> - * vzalloc_node - allocate memory on a specific node with zero fill
+> + * vzalloc_node_noprof - allocate memory on a specific node with zero fill
+>   * @size:	allocation size
+>   * @node:	numa node
+>   *
+> @@ -272,27 +272,27 @@ EXPORT_SYMBOL(vmalloc_node);
+>   * For tight control over page level allocator and protection flags
+>   * use __vmalloc() instead.
+>   */
+> -void *vzalloc_node(unsigned long size, int node)
+> +void *vzalloc_node_noprof(unsigned long size, int node)
+>  {
+> -	return vzalloc(size);
+> +	return vzalloc_noprof(size);
+>  }
+> -EXPORT_SYMBOL(vzalloc_node);
+> +EXPORT_SYMBOL(vzalloc_node_noprof);
+>  
+>  /**
+> - * vmalloc_32  -  allocate virtually contiguous memory (32bit addressable)
+> + * vmalloc_32_noprof  -  allocate virtually contiguous memory (32bit addressable)
+>   *	@size:		allocation size
+>   *
+>   *	Allocate enough 32bit PA addressable pages to cover @size from the
+>   *	page level allocator and map them into contiguous kernel virtual space.
+>   */
+> -void *vmalloc_32(unsigned long size)
+> +void *vmalloc_32_noprof(unsigned long size)
+>  {
+> -	return __vmalloc(size, GFP_KERNEL);
+> +	return __vmalloc_noprof(size, GFP_KERNEL);
+>  }
+> -EXPORT_SYMBOL(vmalloc_32);
+> +EXPORT_SYMBOL(vmalloc_32_noprof);
+>  
+>  /**
+> - * vmalloc_32_user - allocate zeroed virtually contiguous 32bit memory
+> + * vmalloc_32_user_noprof - allocate zeroed virtually contiguous 32bit memory
+>   *	@size:		allocation size
+>   *
+>   * The resulting memory area is 32bit addressable and zeroed so it can be
+> @@ -301,15 +301,15 @@ EXPORT_SYMBOL(vmalloc_32);
+>   * VM_USERMAP is set on the corresponding VMA so that subsequent calls to
+>   * remap_vmalloc_range() are permissible.
+>   */
+> -void *vmalloc_32_user(unsigned long size)
+> +void *vmalloc_32_user_noprof(unsigned long size)
+>  {
+>  	/*
+>  	 * We'll have to sort out the ZONE_DMA bits for 64-bit,
+>  	 * but for now this can simply use vmalloc_user() directly.
+>  	 */
+> -	return vmalloc_user(size);
+> +	return vmalloc_user_noprof(size);
+>  }
+> -EXPORT_SYMBOL(vmalloc_32_user);
+> +EXPORT_SYMBOL(vmalloc_32_user_noprof);
+>  
+>  void *vmap(struct page **pages, unsigned int count, unsigned long flags, pgprot_t prot)
+>  {
+> diff --git a/mm/util.c b/mm/util.c
+> index a79dce7546f1..157b5edcba75 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -656,7 +656,7 @@ void *kvmalloc_node_noprof(size_t size, gfp_t flags, int node)
+>  	 * about the resulting pointer, and cannot play
+>  	 * protection games.
+>  	 */
+> -	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+> +	return __vmalloc_node_range_noprof(size, 1, VMALLOC_START, VMALLOC_END,
+>  			flags, PAGE_KERNEL, VM_ALLOW_HUGE_VMAP,
+>  			node, __builtin_return_address(0));
+>  }
+> @@ -715,12 +715,12 @@ void *kvrealloc_noprof(const void *p, size_t oldsize, size_t newsize, gfp_t flag
+>  EXPORT_SYMBOL(kvrealloc_noprof);
+>  
+>  /**
+> - * __vmalloc_array - allocate memory for a virtually contiguous array.
+> + * __vmalloc_array_noprof - allocate memory for a virtually contiguous array.
+>   * @n: number of elements.
+>   * @size: element size.
+>   * @flags: the type of memory to allocate (see kmalloc).
+>   */
+> -void *__vmalloc_array(size_t n, size_t size, gfp_t flags)
+> +void *__vmalloc_array_noprof(size_t n, size_t size, gfp_t flags)
+>  {
+>  	size_t bytes;
+>  
+> @@ -728,18 +728,18 @@ void *__vmalloc_array(size_t n, size_t size, gfp_t flags)
+>  		return NULL;
+>  	return __vmalloc(bytes, flags);
+>  }
+> -EXPORT_SYMBOL(__vmalloc_array);
+> +EXPORT_SYMBOL(__vmalloc_array_noprof);
+>  
+>  /**
+> - * vmalloc_array - allocate memory for a virtually contiguous array.
+> + * vmalloc_array_noprof - allocate memory for a virtually contiguous array.
+>   * @n: number of elements.
+>   * @size: element size.
+>   */
+> -void *vmalloc_array(size_t n, size_t size)
+> +void *vmalloc_array_noprof(size_t n, size_t size)
+>  {
+>  	return __vmalloc_array(n, size, GFP_KERNEL);
+>  }
+> -EXPORT_SYMBOL(vmalloc_array);
+> +EXPORT_SYMBOL(vmalloc_array_noprof);
+>  
+>  /**
+>   * __vcalloc - allocate and zero memory for a virtually contiguous array.
+> @@ -747,22 +747,22 @@ EXPORT_SYMBOL(vmalloc_array);
+>   * @size: element size.
+>   * @flags: the type of memory to allocate (see kmalloc).
+>   */
+> -void *__vcalloc(size_t n, size_t size, gfp_t flags)
+> +void *__vcalloc_noprof(size_t n, size_t size, gfp_t flags)
+>  {
+>  	return __vmalloc_array(n, size, flags | __GFP_ZERO);
+>  }
+> -EXPORT_SYMBOL(__vcalloc);
+> +EXPORT_SYMBOL(__vcalloc_noprof);
+>  
+>  /**
+> - * vcalloc - allocate and zero memory for a virtually contiguous array.
+> + * vcalloc_noprof - allocate and zero memory for a virtually contiguous array.
+>   * @n: number of elements.
+>   * @size: element size.
+>   */
+> -void *vcalloc(size_t n, size_t size)
+> +void *vcalloc_noprof(size_t n, size_t size)
+>  {
+>  	return __vmalloc_array(n, size, GFP_KERNEL | __GFP_ZERO);
+>  }
+> -EXPORT_SYMBOL(vcalloc);
+> +EXPORT_SYMBOL(vcalloc_noprof);
+>  
+>  struct anon_vma *folio_anon_vma(struct folio *folio)
+>  {
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 22aa63f4ef63..b2f2248d85a9 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -3507,12 +3507,12 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>  			 * but mempolicy wants to alloc memory by interleaving.
+>  			 */
+>  			if (IS_ENABLED(CONFIG_NUMA) && nid == NUMA_NO_NODE)
+> -				nr = alloc_pages_bulk_array_mempolicy(bulk_gfp,
+> +				nr = alloc_pages_bulk_array_mempolicy_noprof(bulk_gfp,
+>  							nr_pages_request,
+>  							pages + nr_allocated);
+>  
+>  			else
+> -				nr = alloc_pages_bulk_array_node(bulk_gfp, nid,
+> +				nr = alloc_pages_bulk_array_node_noprof(bulk_gfp, nid,
+>  							nr_pages_request,
+>  							pages + nr_allocated);
+>  
+> @@ -3542,9 +3542,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>  			break;
+>  
+>  		if (nid == NUMA_NO_NODE)
+> -			page = alloc_pages(alloc_gfp, order);
+> +			page = alloc_pages_noprof(alloc_gfp, order);
+>  		else
+> -			page = alloc_pages_node(nid, alloc_gfp, order);
+> +			page = alloc_pages_node_noprof(nid, alloc_gfp, order);
+>  		if (unlikely(!page)) {
+>  			if (!nofail)
+>  				break;
+> @@ -3601,10 +3601,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  
+>  	/* Please note that the recursion is strictly bounded. */
+>  	if (array_size > PAGE_SIZE) {
+> -		area->pages = __vmalloc_node(array_size, 1, nested_gfp, node,
+> +		area->pages = __vmalloc_node_noprof(array_size, 1, nested_gfp, node,
+>  					area->caller);
+>  	} else {
+> -		area->pages = kmalloc_node(array_size, nested_gfp, node);
+> +		area->pages = kmalloc_node_noprof(array_size, nested_gfp, node);
+>  	}
+>  
+>  	if (!area->pages) {
+> @@ -3687,7 +3687,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  }
+>  
+>  /**
+> - * __vmalloc_node_range - allocate virtually contiguous memory
+> + * __vmalloc_node_range_noprof - allocate virtually contiguous memory
+>   * @size:		  allocation size
+>   * @align:		  desired alignment
+>   * @start:		  vm area range start
+> @@ -3714,7 +3714,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>   *
+>   * Return: the address of the area or %NULL on failure
+>   */
+> -void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> +void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+>  			unsigned long start, unsigned long end, gfp_t gfp_mask,
+>  			pgprot_t prot, unsigned long vm_flags, int node,
+>  			const void *caller)
+> @@ -3843,7 +3843,7 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+>  }
+>  
+>  /**
+> - * __vmalloc_node - allocate virtually contiguous memory
+> + * __vmalloc_node_noprof - allocate virtually contiguous memory
+>   * @size:	    allocation size
+>   * @align:	    desired alignment
+>   * @gfp_mask:	    flags for the page level allocator
+> @@ -3861,10 +3861,10 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *__vmalloc_node(unsigned long size, unsigned long align,
+> +void *__vmalloc_node_noprof(unsigned long size, unsigned long align,
+>  			    gfp_t gfp_mask, int node, const void *caller)
+>  {
+> -	return __vmalloc_node_range(size, align, VMALLOC_START, VMALLOC_END,
+> +	return __vmalloc_node_range_noprof(size, align, VMALLOC_START, VMALLOC_END,
+>  				gfp_mask, PAGE_KERNEL, 0, node, caller);
+>  }
+>  /*
+> @@ -3873,15 +3873,15 @@ void *__vmalloc_node(unsigned long size, unsigned long align,
+>   * than that.
+>   */
+>  #ifdef CONFIG_TEST_VMALLOC_MODULE
+> -EXPORT_SYMBOL_GPL(__vmalloc_node);
+> +EXPORT_SYMBOL_GPL(__vmalloc_node_noprof);
+>  #endif
+>  
+> -void *__vmalloc(unsigned long size, gfp_t gfp_mask)
+> +void *__vmalloc_noprof(unsigned long size, gfp_t gfp_mask)
+>  {
+> -	return __vmalloc_node(size, 1, gfp_mask, NUMA_NO_NODE,
+> +	return __vmalloc_node_noprof(size, 1, gfp_mask, NUMA_NO_NODE,
+>  				__builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL(__vmalloc);
+> +EXPORT_SYMBOL(__vmalloc_noprof);
+>  
+>  /**
+>   * vmalloc - allocate virtually contiguous memory
+> @@ -3895,12 +3895,12 @@ EXPORT_SYMBOL(__vmalloc);
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *vmalloc(unsigned long size)
+> +void *vmalloc_noprof(unsigned long size)
+>  {
+> -	return __vmalloc_node(size, 1, GFP_KERNEL, NUMA_NO_NODE,
+> +	return __vmalloc_node_noprof(size, 1, GFP_KERNEL, NUMA_NO_NODE,
+>  				__builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL(vmalloc);
+> +EXPORT_SYMBOL(vmalloc_noprof);
+>  
+>  /**
+>   * vmalloc_huge - allocate virtually contiguous memory, allow huge pages
+> @@ -3914,16 +3914,16 @@ EXPORT_SYMBOL(vmalloc);
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
+> +void *vmalloc_huge_noprof(unsigned long size, gfp_t gfp_mask)
+>  {
+> -	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+> +	return __vmalloc_node_range_noprof(size, 1, VMALLOC_START, VMALLOC_END,
+>  				    gfp_mask, PAGE_KERNEL, VM_ALLOW_HUGE_VMAP,
+>  				    NUMA_NO_NODE, __builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL_GPL(vmalloc_huge);
+> +EXPORT_SYMBOL_GPL(vmalloc_huge_noprof);
+>  
+>  /**
+> - * vzalloc - allocate virtually contiguous memory with zero fill
+> + * vzalloc_noprof - allocate virtually contiguous memory with zero fill
+>   * @size:    allocation size
+>   *
+>   * Allocate enough pages to cover @size from the page level
+> @@ -3935,12 +3935,12 @@ EXPORT_SYMBOL_GPL(vmalloc_huge);
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *vzalloc(unsigned long size)
+> +void *vzalloc_noprof(unsigned long size)
+>  {
+> -	return __vmalloc_node(size, 1, GFP_KERNEL | __GFP_ZERO, NUMA_NO_NODE,
+> +	return __vmalloc_node_noprof(size, 1, GFP_KERNEL | __GFP_ZERO, NUMA_NO_NODE,
+>  				__builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL(vzalloc);
+> +EXPORT_SYMBOL(vzalloc_noprof);
+>  
+>  /**
+>   * vmalloc_user - allocate zeroed virtually contiguous memory for userspace
+> @@ -3951,17 +3951,17 @@ EXPORT_SYMBOL(vzalloc);
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *vmalloc_user(unsigned long size)
+> +void *vmalloc_user_noprof(unsigned long size)
+>  {
+> -	return __vmalloc_node_range(size, SHMLBA,  VMALLOC_START, VMALLOC_END,
+> +	return __vmalloc_node_range_noprof(size, SHMLBA,  VMALLOC_START, VMALLOC_END,
+>  				    GFP_KERNEL | __GFP_ZERO, PAGE_KERNEL,
+>  				    VM_USERMAP, NUMA_NO_NODE,
+>  				    __builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL(vmalloc_user);
+> +EXPORT_SYMBOL(vmalloc_user_noprof);
+>  
+>  /**
+> - * vmalloc_node - allocate memory on a specific node
+> + * vmalloc_node_noprof - allocate memory on a specific node
+>   * @size:	  allocation size
+>   * @node:	  numa node
+>   *
+> @@ -3973,15 +3973,15 @@ EXPORT_SYMBOL(vmalloc_user);
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *vmalloc_node(unsigned long size, int node)
+> +void *vmalloc_node_noprof(unsigned long size, int node)
+>  {
+> -	return __vmalloc_node(size, 1, GFP_KERNEL, node,
+> +	return __vmalloc_node_noprof(size, 1, GFP_KERNEL, node,
+>  			__builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL(vmalloc_node);
+> +EXPORT_SYMBOL(vmalloc_node_noprof);
+>  
+>  /**
+> - * vzalloc_node - allocate memory on a specific node with zero fill
+> + * vzalloc_node_noprof - allocate memory on a specific node with zero fill
+>   * @size:	allocation size
+>   * @node:	numa node
+>   *
+> @@ -3991,12 +3991,12 @@ EXPORT_SYMBOL(vmalloc_node);
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *vzalloc_node(unsigned long size, int node)
+> +void *vzalloc_node_noprof(unsigned long size, int node)
+>  {
+> -	return __vmalloc_node(size, 1, GFP_KERNEL | __GFP_ZERO, node,
+> +	return __vmalloc_node_noprof(size, 1, GFP_KERNEL | __GFP_ZERO, node,
+>  				__builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL(vzalloc_node);
+> +EXPORT_SYMBOL(vzalloc_node_noprof);
+>  
+>  #if defined(CONFIG_64BIT) && defined(CONFIG_ZONE_DMA32)
+>  #define GFP_VMALLOC32 (GFP_DMA32 | GFP_KERNEL)
+> @@ -4011,7 +4011,7 @@ EXPORT_SYMBOL(vzalloc_node);
+>  #endif
+>  
+>  /**
+> - * vmalloc_32 - allocate virtually contiguous memory (32bit addressable)
+> + * vmalloc_32_noprof - allocate virtually contiguous memory (32bit addressable)
+>   * @size:	allocation size
+>   *
+>   * Allocate enough 32bit PA addressable pages to cover @size from the
+> @@ -4019,15 +4019,15 @@ EXPORT_SYMBOL(vzalloc_node);
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *vmalloc_32(unsigned long size)
+> +void *vmalloc_32_noprof(unsigned long size)
+>  {
+> -	return __vmalloc_node(size, 1, GFP_VMALLOC32, NUMA_NO_NODE,
+> +	return __vmalloc_node_noprof(size, 1, GFP_VMALLOC32, NUMA_NO_NODE,
+>  			__builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL(vmalloc_32);
+> +EXPORT_SYMBOL(vmalloc_32_noprof);
+>  
+>  /**
+> - * vmalloc_32_user - allocate zeroed virtually contiguous 32bit memory
+> + * vmalloc_32_user_noprof - allocate zeroed virtually contiguous 32bit memory
+>   * @size:	     allocation size
+>   *
+>   * The resulting memory area is 32bit addressable and zeroed so it can be
+> @@ -4035,14 +4035,14 @@ EXPORT_SYMBOL(vmalloc_32);
+>   *
+>   * Return: pointer to the allocated memory or %NULL on error
+>   */
+> -void *vmalloc_32_user(unsigned long size)
+> +void *vmalloc_32_user_noprof(unsigned long size)
+>  {
+> -	return __vmalloc_node_range(size, SHMLBA,  VMALLOC_START, VMALLOC_END,
+> +	return __vmalloc_node_range_noprof(size, SHMLBA,  VMALLOC_START, VMALLOC_END,
+>  				    GFP_VMALLOC32 | __GFP_ZERO, PAGE_KERNEL,
+>  				    VM_USERMAP, NUMA_NO_NODE,
+>  				    __builtin_return_address(0));
+>  }
+> -EXPORT_SYMBOL(vmalloc_32_user);
+> +EXPORT_SYMBOL(vmalloc_32_user_noprof);
+>  
+>  /*
+>   * Atomically zero bytes in the iterator.
+> -- 
+> 2.44.0.291.gc1ea87d7ee-goog
 
