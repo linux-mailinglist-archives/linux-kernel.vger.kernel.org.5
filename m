@@ -1,119 +1,92 @@
-Return-Path: <linux-kernel+bounces-112119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C13FF8875EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:58:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BDF48875EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:02:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C52E1F2414A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:58:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 604CA283855
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:02:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1550882D74;
-	Fri, 22 Mar 2024 23:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="u71BeYo8"
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDE538F;
+	Sat, 23 Mar 2024 00:02:48 +0000 (UTC)
+Received: from mail78-36.sinamail.sina.com.cn (mail78-36.sinamail.sina.com.cn [219.142.78.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 608158289E
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 23:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0178F623
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 00:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711151874; cv=none; b=OPq3fTs6TJaDKqvPvwZmOpCBt1LDcc99YwDSyQXpnMDEDB+nM7a1c7Yf44M8QiDaNNfTLWVy+F9MrytIr9dBml7hnVO9DtZFDJ/u/U0WPWUtb6NmjXiVocPPpJFK8qXnyt23T08gaWzqXmz5aUSAtXTHeoLXkXuVU5PGvTp95+0=
+	t=1711152168; cv=none; b=oa8jXoikEumm4oN2qSpY34DLremLeQOmE10FLTkeHAX0fijVKm6Mv47gQ66bdHgGFibGH9NYBkfKRONN1f2l8bpJewBbYcGmoUHLBhN4Ui93n1r6vHkxi/kgrNxf6fDc33buz3FAjZBuVHG4/mmDJx/LHf5NVqCwaOP1xOhHPTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711151874; c=relaxed/simple;
-	bh=gHKzUe8JzF89dHoFO0MdDMvtGmOiIhrk5YeCQO2D14Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q6jSYePefEyNOQhml6zgWT3kbbqftDPYJJ3emniIDy/T+tpUxg0SfQmkkEt94g8cJJ8j0ZEbvUgmQmNM8Rs0NFeFDsoTUZbO2n0cncqsCTj5H1nSyE7r9rS0uiCedEtxA7YccpDLBxTolFNNSQW20AH0e4rxrfHVgYVyuKimBdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=u71BeYo8; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 22 Mar 2024 19:57:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711151869;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hzaOVOcWvV/nA21QW9YCB5ZLkXvzMsM78SbUFC/cEIU=;
-	b=u71BeYo8ZPPBx6zr7bjzI7c8dcXHxeJlKAd5L/MOx7wYcQg4q0IZx9gmNGikve9VrVZYQy
-	ZefMTKuAcyE0DNidFJO0phvDd/T3yRH/CZvA7jq3XM6XsFq1j7rnE9x1MC1/FN7Qktod1f
-	QyjixmECOSwLtVmjm8Br0fFffn0ZVxk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
-	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
-	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
-	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, torvalds@linux-foundation.org, 
-	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
+	s=arc-20240116; t=1711152168; c=relaxed/simple;
+	bh=ktuAHPJXuWVXMDzzrOyXAsC9SsVMIHoG6YG0n4ziAQc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=sz4RzuPIFBTvUULE031hnuCbmFqZXMhajv9EtHdMS2tY1KNywXF7H59d+vYp9uN8wPOOVjgWyDfgAP311LiuRgCkYXq27fX4CHWWG5Vok23Q2fZEI/e+fRdetf/WJbdkRyFJTkcQoorZcpe2X+vX88hwRT2DB1ZWBkHLQiVcGto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.69.21])
+	by sina.com (172.16.235.25) with ESMTP
+	id 65FE1C1700001705; Sat, 23 Mar 2024 08:02:33 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 96954634209979
+X-SMAIL-UIID: 0B426B5A3FA247B4B995E5C70EBFEA9E-20240323-080233-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+10a41dc44eef71aa9450@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [tipc?] BUG: soft lockup in do_sock_setsockopt
+Date: Sat, 23 Mar 2024 08:02:23 +0800
+Message-Id: <20240323000223.2660-1-hdanton@sina.com>
+In-Reply-To: <000000000000bb900e061440909c@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322233838.868874-1-boqun.feng@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 22, 2024 at 04:38:35PM -0700, Boqun Feng wrote:
-> Hi,
+On Fri, 22 Mar 2024 07:23:18 -0700
+> syzbot found the following issue on:
 > 
-> Since I see more and more Rust code is comming in, I feel like this
-> should be sent sooner rather than later, so here is a WIP to open the
-> discussion and get feedback.
-> 
-> One of the most important questions we need to answer is: which
-> memory (ordering) model we should use when developing Rust in Linux
-> kernel, given Rust has its own memory ordering model[1]. I had some
-> discussion with Rust language community to understand their position
-> on this:
-> 
-> 	https://github.com/rust-lang/unsafe-code-guidelines/issues/348#issuecomment-1218407557
-> 	https://github.com/rust-lang/unsafe-code-guidelines/issues/476#issue-2001382992
-> 
-> My takeaway from these discussions, along with other offline discussion
-> is that supporting two memory models is challenging for both correctness
-> reasoning (some one needs to provide a model) and implementation (one
-> model needs to be aware of the other model). So that's not wise to do
-> (at least at the beginning). So the most reasonable option to me is:
-> 
-> 	we only use LKMM for Rust code in kernel (i.e. avoid using
-> 	Rust's own atomic).
-> 
-> Because kernel developers are more familiar with LKMM and when Rust code
-> interacts with C code, it has to use the model that C code uses.
+> HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114e4c81180000
 
-I wonder about that. The disadvantage of only supporting LKMM atomics is
-that we'll be incompatible with third party code, and we don't want to
-be rolling all of our own data structures forever.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git  for-kernelci
 
-Do we see a path towards eventually supporting the standard Rust model?
-
-Perhaps LKMM atomics could be reworked to be a layer on top of C/C++
-atomics. When I last looked, they didn't look completely incompatible;
-rather, there is a common subset that both support with the same
-semantics, and either has some things that it supports and the other
-doesn't (i.e., LKMLL atomics have smp_mb__after_atomic(); this is just a
-straightforward optimization to avoid an unnecessary barrier on
-architectures where the atomic already provided it).
+--- x/net/tipc/socket.c
++++ y/net/tipc/socket.c
+@@ -2488,6 +2488,11 @@ void tipc_sk_rcv(struct net *net, struct
+ 	struct tipc_sock *tsk;
+ 	struct sock *sk;
+ 	struct sk_buff *skb;
++	static int reent = 0;
++
++	if (reent)
++		return;
++	reent++;
+ 
+ 	__skb_queue_head_init(&xmitq);
+ 	while (skb_queue_len(inputq)) {
+@@ -2524,6 +2529,7 @@ xmit:
+ 		dnode = msg_destnode(buf_msg(skb));
+ 		tipc_node_xmit_skb(net, skb, dnode, dport);
+ 	}
++	--reent;
+ }
+ 
+ static int tipc_wait_for_connect(struct socket *sock, long *timeo_p)
+--
 
