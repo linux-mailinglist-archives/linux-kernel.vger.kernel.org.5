@@ -1,137 +1,153 @@
-Return-Path: <linux-kernel+bounces-112197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4494A8876D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 04:02:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F15448876D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 04:11:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 028281F22F20
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:02:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7B86284374
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3044A1B;
-	Sat, 23 Mar 2024 03:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CF7522D;
+	Sat, 23 Mar 2024 03:10:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uWLDtJig"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qRcnYUkK"
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB2E46A0
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 03:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C78137E
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 03:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711162927; cv=none; b=JJG/xSqntdI3OyhfgHS7dEZ8K/vud5MN+vwggKTSAtun69to/n7cXL7KTNSvJin1OOxsFot1inlTM9naUN9JgMAUtU8OU6lQUgSlFw8CjsLZ/NIMYFa/SAK22PznFuC/y3CcXYB8y5VQ4fUskSzayl9XPiPYdiHi3a0JigAm2Ro=
+	t=1711163449; cv=none; b=JrNcAWKcTAP4Z9HrmZBqC0r9BnC7uSv0RTfOP6dUhKoR0356PtVLUM6UMT4QrGViF9S3PXMNstinFLNaq5YdBCa/EXeT1s7QJpCKL8JnjZiSiKpsuPu9pfXn7nPFNKyspome1zseaGGQ9HyTAOq+SSWbZlkwhNDSDDHEz/qanNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711162927; c=relaxed/simple;
-	bh=5GIJqxzxojFxdQ6uIIWjC1JDm5Dr90WPqPXlxSOPtyM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MGe5vQh6t85aOaRrC5Jcc/Ijj0nD0+ZZkUgfqTgjyknVPe8zGx2N/lkJznp0RBaYSluIJXZDeqcAgO6UBrmOYL/oV6kYGKyR7r6lfOwkW4DlpwTcIndksyLgPSvKLdwyP68MCmGgw7ZQbmAw/KGas6f/uMhy5Yo33/YXBMpSqQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uWLDtJig; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5955C433F1;
-	Sat, 23 Mar 2024 03:02:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711162926;
-	bh=5GIJqxzxojFxdQ6uIIWjC1JDm5Dr90WPqPXlxSOPtyM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=uWLDtJig6t44CSErmiQQkXOyHKs95ufce5/43FubolkHCsdkBYcST5Qcs6T7TtJez
-	 xtdtaLI4R/16MI1KQcvxZ4XF7gXKLO2b4VqPNFuPBjrOwEIcnfJOyErcjz+ypXApdz
-	 X+jlvqY/V4b4jh73X7vJPLc/AcnoWZldZygvSJMO7ckF5pTWg7qiObA1DsFMMlOkli
-	 YbaDlIvwK16FJ5TYZwHaf6rMi+6SUJa8GUirD8eklv8qYE2kdcE02Y54JQE9iLMPlw
-	 7g1jKBVEeIYOLNADr5eaBh52FBj1OqVShYF9YfRCxKZIXVdNXUSLdR2RNDXSa2Ucru
-	 UOzDh/Z6IE8qw==
-Message-ID: <fa4686b5-5197-4130-bfa7-215f15bafe35@kernel.org>
-Date: Sat, 23 Mar 2024 11:02:04 +0800
+	s=arc-20240116; t=1711163449; c=relaxed/simple;
+	bh=XZ+oepjEpjTRHlPulS36z+3rH+ZNG2g9We+tEZ8XLkM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OndVA4mYQgrriW2S5dJ5qs2jSBCUnt0nhN+TS8Yjvpi8XTjSy+xuqWxpNxdNfCq3QbglriOHm43OSfhCgc5u8ASLc3/5Ygos2aZ1K3SfuFa6zg52hr8Cf3dFslo6HKFT0+9vRniBjqo7k6car20bu4w2UZeRcIKYFJUKQWuhFYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qRcnYUkK; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 22 Mar 2024 23:10:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711163444;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NRsLRl009I/kLedXp+jvC5j//X0aN6cM7vMnePx2fhQ=;
+	b=qRcnYUkKd/nFwSplScYeak6xiUsHIiT3V/t/TWhqR5Q20T4cNCZzmJtGAL4NPL60BnNZ3t
+	9Ng0i7CQGOkbXXf/IPAAd2KEQSci8DPYV4SDtUb5V9RgtWKx2H165dyE24xFfEq8WgvXm0
+	mEfYAi9Zi1BQEtd/byhxAkvV3IS5/vQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
+	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
+	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
+	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <qsw2v5ikt2w6m2xfr6h4e2xauobhy37nrskarlfjro4ek4qw4b@jgxhav7bia55>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+ <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
+ <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+ <3modld2dafaqjxa2b7jln47ws4ylzhbsvhvnphoklwvzange5p@wlir7276aitp>
+ <Zf491DuptReGqvfd@Boquns-Mac-mini.home>
+ <34r4signulvsclmsiqgghskmj5xce3zs5hwgfulzaez2wdyklr@ck6zrj732c4m>
+ <Zf5FEFCfuy0TAjV6@Boquns-Mac-mini.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: fix to adjust appropirate defragment pg_end
-To: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- niuzhiguo84@gmail.com, ke.wang@unisoc.com, hongyu.jin@unisoc.com
-References: <1711087390-23645-1-git-send-email-zhiguo.niu@unisoc.com>
-Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-Autocrypt: addr=chao@kernel.org; keydata=
- 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
-In-Reply-To: <1711087390-23645-1-git-send-email-zhiguo.niu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zf5FEFCfuy0TAjV6@Boquns-Mac-mini.home>
+X-Migadu-Flow: FLOW_OUT
 
-On 2024/3/22 14:03, Zhiguo Niu wrote:
-> A length that exceeds the real size of the inode may be
-> specified from user, although these out-of-range areas
-> are not mapped, but they still need to be check in
-> while loop, which is unnecessary.
+On Fri, Mar 22, 2024 at 07:57:20PM -0700, Boqun Feng wrote:
+> On Fri, Mar 22, 2024 at 10:33:13PM -0400, Kent Overstreet wrote:
+> > On Fri, Mar 22, 2024 at 07:26:28PM -0700, Boqun Feng wrote:
+> > > On Fri, Mar 22, 2024 at 10:07:31PM -0400, Kent Overstreet wrote:
+> > > [...]
+> > > > > Boqun already mentioned the "mixing access sizes", which is actually
+> > > > > quite fundamental in the kernel, where we play lots of games with that
+> > > > > (typically around locking, where you find patterns line unlock writing
+> > > > > a zero to a single byte, even though the whole lock data structure is
+> > > > > a word). And sometimes the access size games are very explicit (eg
+> > > > > lib/lockref.c).
+> > > > 
+> > > > I don't think mixing access sizes should be a real barrier. On the read
+> > > 
+> > > Well, it actually is, since mixing access sizes is, guess what,
+> > > an undefined behavior:
+> > > 
+> > > (example in https://doc.rust-lang.org/std/sync/atomic/#memory-model-for-atomic-accesses)
+> > > 
+> > > 	thread::scope(|s| {
+> > > 	    // This is UB: using different-sized atomic accesses to the same data
+> > > 	    s.spawn(|| atomic.store(1, Ordering::Relaxed));
+> > > 	    s.spawn(|| unsafe {
+> > > 		let differently_sized = transmute::<&AtomicU16, &AtomicU8>(&atomic);
+> > > 		differently_sized.store(2, Ordering::Relaxed);
+> > > 	    });
+> > > 	});
+> > > 
+> > > Of course, you can say "I will just ignore the UB", but if you have to
+> > > ignore "compiler rules" to make your code work, why bother use compiler
+> > > builtin in the first place? Being UB means they are NOT guaranteed to
+> > > work.
+> > 
+> > That's not what I'm proposing - you'd need additional compiler support.
 > 
-> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> ---
->   fs/f2fs/file.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
+> Ah, OK.
 > 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 128e53d..0e7eac6 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -2609,7 +2609,9 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
->   	int err;
->   
->   	pg_start = range->start >> PAGE_SHIFT;
-> -	pg_end = (range->start + range->len) >> PAGE_SHIFT;
-> +	pg_end = min_t(pgoff_t,
-> +			(range->start + range->len) >> PAGE_SHIFT,
-> +			DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE));
+> > but the new intrinsic would be no different, semantics wise for the
+> > compiler to model, than a "lock orb".
+> 
+> Be ready to be disappointed:
+> 
+> 	https://rust-lang.zulipchat.com/#narrow/stream/136281-t-opsem/topic/is.20atomic.20aliasing.20allowed.3F/near/402078545
+> 	https://rust-lang.zulipchat.com/#narrow/stream/136281-t-opsem/topic/is.20atomic.20aliasing.20allowed.3F/near/402082631
+> 
+> ;-)
+> 
+> In fact, if you get a chance to read the previous discussion links I
+> shared, you will find I was just like you in the beginning: hope we
+> could extend the model to support more kernel code properly. But my
+> overall feeling is that it's either very challenging or lack of
+> motivation to do.
 
-I guess we may check i_size w/ inode lock, it can avoid racing w/ append write
-or truncate.
+That's casting - that doesn't work because compiler people hate
+aliasing.
 
-Thanks,
+But intrinsics for e.g.
+__atomic32_read_u8(atomic_u32_t *a, unsigned byte)
+__atomic32_write_u8(atomic_u32_t a*, unsigned byte)
 
->   
->   	f2fs_balance_fs(sbi, true);
->   
+should be doable - that's perfectly fine for the compiler to model.
+
+That would admittedly be ugly to use. But, if Rust ever allowed for
+marking any struct up to word size as atomic (which we want anyways...),
+it could use that under the hood for setting a member variable without
+cmpxchg.
 
