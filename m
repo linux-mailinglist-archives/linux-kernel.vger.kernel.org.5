@@ -1,111 +1,139 @@
-Return-Path: <linux-kernel+bounces-112437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 653BE8879D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4AFD8879D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:02:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080CB1F2177F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:51:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78A7C1F21580
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 555EE53E0E;
-	Sat, 23 Mar 2024 17:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E823F55C35;
+	Sat, 23 Mar 2024 18:01:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HSTeGG53"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="iqUrlb+e"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CF41EEF8
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 17:51:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67AB763D;
+	Sat, 23 Mar 2024 18:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711216274; cv=none; b=HYQiaYz088Eou8I/Q2m/jggzullbBE+eX6reEUrc85pyejqDCI6XkNo4twpluZllNvz1sPVx6OJ173dphp/DRnbjFbkJBVIEYtHNKbk5A3f/0fQveK8fFp6mQh4RJ77jAQgIxhp10NiHdIv1K1GeTEupXbvV2vWzkvpOoyGj84c=
+	t=1711216915; cv=none; b=TC3EgJPtIFpr0kkNSsUI30Ctr5nCkERm+HAYYlwf15YMCN69wGR6WIB+CLx39+1WF9kxzCiRKCexBeguZiVKil/my7fBQA8ldOXNi9p1G8jemDDG67ucp+1NWhCUaGvPTy3SIQmstsxIJS8q4jHi/ZuIRUAq3vHaCTvYvTiE2Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711216274; c=relaxed/simple;
-	bh=aFUWgJ6j3eMxB7F6CqY23CeEG1BKUpbBLEIqU1EnFrs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RkAdIbproBGHMgqZX+Xy9cImFulBg/rLsQhxE76PANwlecsTukTkTWY8T+8iXs8V55zJ7OYiPJ9OQPix/CdWSB3rrzrO+EYH/shSaqNnjF35/GBmGxYLfxJNdKbG9O+W4Rw/zKOULUsTDM+mXV5G3mrT40x0Yf09Vo11HBMLPqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HSTeGG53; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A799BC433C7;
-	Sat, 23 Mar 2024 17:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711216274;
-	bh=aFUWgJ6j3eMxB7F6CqY23CeEG1BKUpbBLEIqU1EnFrs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HSTeGG53eIkpnVxUoYlxTV46JKoq61UKbSL9IGS2H8K3EKnu/K/mAfY7VEu+/8At1
-	 UDQRivswxnrXtpmVWL19v/1T7Kk6KeTy4CoUcK5s/BQYVFBthNGeCJ3Oyeve33b04g
-	 XnOLQHE8eLc3si8axSxOymM27FDs7L8YgavIOdU3Xp5IhnrZaWWUcU6AGCTPY331YD
-	 u2SHqrL0doHB06eLANtraxYzamJXa7pu10akyZCO4J98KqCSsfFPSW5/Mc2jpQC6iv
-	 Uw5X5DCxfMRsWMFdCY2pDE0ajq9Dt9MSkZM6MSnsPYN7ioh4LeNMSOv3vUw3c5VNMy
-	 gxAF3iOZUnWcw==
-From: SeongJae Park <sj@kernel.org>
-To: peterx@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 0/2] mm: small fixup series for mm-unstable
-Date: Sat, 23 Mar 2024 10:51:11 -0700
-Message-Id: <20240323175111.141475-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240323033310.971447-1-peterx@redhat.com>
-References: 
+	s=arc-20240116; t=1711216915; c=relaxed/simple;
+	bh=QVrfyERZB/O2NaoOaw/v0iV9cdqwocK7uYeLZ2eGZcI=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=u2LbysP78WDoMWOtYjYkUfDzzNH+/VSDlw8g/fUfB6IT6lDncBVLNcTriurq0ZkU2bQkP6nyXbq1Iicu5oRmiMY9BenYi5XxIG8f8IaChYkRmEh0UJIAT84FDjsn+RePru3xppgJy7FZ0jgm2SQ+LY7NJ5ZnceOC90yApevl3IE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=iqUrlb+e; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1711216868; x=1711821668; i=markus.elfring@web.de;
+	bh=PyL2Ioh4vlALFYGvyjWWeKkUOfZjj8evfoP8akboAlw=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=iqUrlb+eCxD5v3QWSGMGSn0sg84vRhtzyJ14IT2t7CKw2G+CREDGrIQ8SprUgNaa
+	 qwyEKTb10wlKWY2R74C2Qr4t4B81khDw7Wvb7KRVFH97aJSitVK40ZYIERFJgX8TU
+	 kBVb7EhbklERu95cuaUo3s6xac3NmzN8U7SerzDJaEeynueSvCGPV0CSDESu3V31o
+	 tpjJpKZxZR1VORFde0mRn/viCvKxnqsC8MqrTZFPDpA4gp17NLR+g1jTovYdhzpQc
+	 rXtuydO1w20NWNKzwcpZiP7ACBbbbYuzHN9C5T6GAHpBo+IlO14tWPvBpwOYcbJPx
+	 Rlp+mSnxwFSJsQ+x0g==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N3Xnj-1qnudT2Rxz-00zEZM; Sat, 23
+ Mar 2024 19:01:08 +0100
+Message-ID: <f3849725-b7b3-4edc-8220-aabeb79b8151@web.de>
+Date: Sat, 23 Mar 2024 19:01:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: Dan Williams <dan.j.williams@intel.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Ira Weiny <ira.weiny@intel.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Kevin Tian <kevin.tian@intel.com>,
+ Lukas Wunner <lukas.wunner@intel.com>
+References: <65fe1f9aadf51_2690d2948f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Subject: RE: [PATCH] cleanup: Add usage and style documentation
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <65fe1f9aadf51_2690d2948f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SmyqD010p0uwXhTqLFAT+MKBEAIrDaiCEBHBDDR0wyTqCIJfaTN
+ hhkOvtxDEjq2pESON3LwSrVFy/5Xu2I1SsB7NG4o5ftJB7ZkZLH4LOzUVFD0uKqtgGFZMFr
+ 8q5118J4thJ7hf5Y4Ub/QAmDfKjWBmU7udNDS7aLl6uVpMKyT8deDvoU3/NxrKA63mmdodS
+ skuSI80wdZBvkcGZVUEnw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:dUActWliC4w=;hdeZqY0mxakffsHlGyutv6l/x6V
+ 34T0aoeci1Pufl8ZUt98g5j4kqBglt7/6+xJLX20BZCxEPRVEyxgJOi6+vYlCX71SLR5DbsZV
+ kxtYuforeNfBXZR5B8/IlwPock3+ibJXaH8Rjr9GScuAZA1ua+N/cfgy7K2lZHZ7Z02vYHvrC
+ yQoXjLj93PxQGx3a/iHgoqpVkoGtMNl96sgYQK/cP4o1AKetq/43EUfZGheTq5rlryNYtK/aZ
+ byIESvgr2hfz0z6YzqJ7cejyvDMJGoqDYWYs6rMCERlsxiupcXmxpHEiRiXdAntXoGZsAN7vL
+ Ru+rIYBspjysvIeO/lxC0BnDKN4/ITZEygYocFdgxLCapf0Z1PqzpzRrB2rrt6rR0WO1R7wCG
+ BfBTs6bb3NYSBo2dOrewns61D3jj1VuAjop9G4bWRiu7IQ0kLkIeObE8Q5gGlx0+5aJsp3Gpu
+ KDlcASUKWOoo64SjR02m24SJICe5AS+7COIN3+xmM6s/EdsCWwngMUmOaguzq59TF3Q6a0drh
+ n5Z0/7IISQ2F9Tu/FkbziUvZT253ScXShp/JR9AAJ0r0AY6894x2HXkuSpcKQZxXiSVrH9pbY
+ vKfg5PSUUakfb019YxzC2bTQlFDOD5QRWxIQxTE6VGrIVFNbD4E3lBLk/6w60rBWVY+DbKilv
+ 4k6FGjglKA5vGIFNCrP85/rAA3yPIeTumJWOiAEJAAv2gwrSwB2evs6ZFWlA2u1dUigQIykgf
+ VuxVrYjlCypDlzqFSFPp0kwKucI1g43CGhcAGZZNmq8E/8RenBET09I+XJvko4X6V3AQch++o
+ Xn7twrHuWGHtQ+rOvu6glL7ivS+wJ/1BgNqA83P6JjDoI=
 
-On Fri, 22 Mar 2024 23:33:08 -0400 peterx@redhat.com wrote:
+> DEFINE_FREE(remove_free, struct object *, if (_T) remove_free(_T))
+> static int init(void)
+> {
+>         struct object *obj __free(remove_free) =3D NULL;
+>         int err;
+>
+>         guard(mutex)(lock);
+>         obj =3D alloc_add();
+>
+>         if (!obj)
+>                 return -ENOMEM;
+>
+>         err =3D other_init(obj);
+>         if (err)
+>                 return err; // remove_free() called without the lock!!
+>
+>         no_free_ptr(obj);
+>         return 0;
+> }
 
-> From: Peter Xu <peterx@redhat.com>
-> 
-> Andrew,
-> 
-> This is the small series that should fixes the two reported issues on
-> mm-unstable for this series:
-> 
-> https://lore.kernel.org/r/20240321220802.679544-1-peterx@redhat.com
-> 
-> This is build tested on (1) x86_64, allnoconfig+allmodconfig, (2) m68k,
-> allnoconfig+allmodconfig.
-> 
-> Please consider dropping below quickfix:
-> 
->   mm-gup-handle-hugepd-for-follow_page-fix
-> 
-> Then apply these two fixups.
-> 
-> Sorry this "small" fixup series is not that small.  Said that, I tested
-> apply and the fixup should auto-squash all fine on current mm-unstable with
-> a rebase.  If not, feel free to let me know if you want me to resend the
-> whole series with a base commit, or whatever easy for you.
-> 
-> Thanks,
-
-I confirmed this fixes the build issue I reported[1] yeterday.
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://lore.kernel.org/r/20240322171456.118997-1-sj@kernel.org
+You demonstrated an improvable lock granularity and a questionable combina=
+tion
+of variable scopes.
 
 
-Thanks,
-SJ
+> The fix for this bug is to replace the "__free(...) =3D NULL" pattern an=
+d
+> move the assignment to the declaration.
+>
+>         guard(mutex)(lock);
+>         struct object *obj __free(remove_free) =3D alloc_add();
 
-> 
-> Peter Xu (2):
->   fixup! mm: make HPAGE_PXD_* macros even if !THP
->   fixup! mm/gup: handle hugepd for follow_page()
-> 
->  include/linux/huge_mm.h |  16 ++-
->  mm/gup.c                | 287 ++++++++++++++++++++--------------------
->  2 files changed, 154 insertions(+), 149 deletions(-)
-> 
-> -- 
-> 2.44.0
+How do you think about to describe such a source code transformation
+as a conversion of a variable assignment to a variable definition
+at the place of a resource allocation?
+
+Would you like to increase the collaboration with the macros =E2=80=9CDEFI=
+NE_CLASS=E2=80=9D and =E2=80=9CCLASS=E2=80=9D?
+https://elixir.bootlin.com/linux/v6.8.1/source/include/linux/cleanup.h#L82
+
+Regards,
+Markus
 
