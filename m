@@ -1,98 +1,98 @@
-Return-Path: <linux-kernel+bounces-112278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 103078877CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:29:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1135C8877CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:31:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DE921C20CCD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 09:29:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB416282A5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 09:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A1BF9FE;
-	Sat, 23 Mar 2024 09:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D54F9FE;
+	Sat, 23 Mar 2024 09:31:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OPbChKgC";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZuIG7HtC";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RzmjmKcs";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="I9Lv+MVs"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Juk4anC+";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4ji9fY8b";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Juk4anC+";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4ji9fY8b"
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01902DDA7;
-	Sat, 23 Mar 2024 09:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CDDA611A;
+	Sat, 23 Mar 2024 09:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711186166; cv=none; b=P+FBZ6awl0mq1htINgLZZ+YpgSzHzD8SrZjfvkbRaWhDx+MZqz4YfnFRg3xtPb8Lm2qk7nry0AZAEv3amHBcEGgh9dJw4YUzcCyQorHD3u5XKpyzZrHJeqqK79mhPCbvrN3Qke1LB8JFGNkmshuFBDJB5JEPCkgO8FWbFID0gs0=
+	t=1711186272; cv=none; b=pIqrXPJdigv7ihdaVLwri5SlD3xQ7s7gQBcGaCncBbKupa9PN2pUJomD68Xrcspo8JYXTY0y79cICYNkko8ZaU8goMbl43voo+FY7lhv/uplBzH/MX9INXBqO3z/jIQgOWOY2Lw/Rc9AtKMIzive1P+JF9DciliXCGoZ82CVpUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711186166; c=relaxed/simple;
-	bh=H7oYposl0GwFoIb6IHUNAm2CvsLwYCv10sk+TgtI4Yc=;
+	s=arc-20240116; t=1711186272; c=relaxed/simple;
+	bh=6NpyDAgbjRw3OQ0pMhygod1k/+4qizrRRqzBiVimABA=;
 	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VuVXYLsjI53DDM4YrQkuD9QxIVcLp8uXXsyfaCEQ6O7lcLSZEgvGE3ZVDqipCcanXHVlL18iw/H8hAIRpDByNsthdNQLOniQieQff8YRaZEFV3ty+LmD6dmc7blaUhlfNd9PiauPTGNKZpI7JPj6evmfE/iKZJm7SYGUHsb4bPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OPbChKgC; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ZuIG7HtC; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RzmjmKcs; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=I9Lv+MVs; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version:Content-Type; b=NWfDQwzNTzQUaOtfD3v2vmIKC1hL80FvSMSlP1pIlgHMM+OBm8goZOc1KOW843Z37qycmJn14J84iELm31zYghca4M82ZKh4smIL77v6uEBYR9c9+5bHFk0ISEsVDHLmi5kFtmEl06wyp4u0Vh7NqUrAaoc8W4WEi2JCvgQ9pAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Juk4anC+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4ji9fY8b; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Juk4anC+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4ji9fY8b; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E73BA3E721;
-	Sat, 23 Mar 2024 09:29:22 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8A89E3ED7A;
+	Sat, 23 Mar 2024 09:31:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711186163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1711186268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=foR8jJ3NyeoOmucMmLm1YR46lFSkeRKHrCwZRfXvYhc=;
-	b=OPbChKgCcSBIlVKbl3/4HX5w6MDx71UsUPtzBjYYXfdl8Y9/6Fpp2Oy88ZLBDv8+zBpzrl
-	uxsEmgC6TsBk82Hw6YbDvMF0TvK+qpygfwzfELtRXCdvdOdnbL4wVbBpeSuQxTPhWMAjtL
-	lko41dBXgvDnjapGcEK8CFEmSwiJq0Q=
+	bh=3m9NH58/AaLMQRUBEgsCthtaq6BILqdmeuQvfjbMDxU=;
+	b=Juk4anC+ArAXOUxTB5FdYB6hGk+9YVzppOA3K/GNFA7BIBECqkSJgh8XsevXOVcF/b2brh
+	lvOj0Ad7TaALeB7i3TTReCFuTAlCjCGRZ7bNwqANoHeOaW2WVQYElvKc19Mi39wAcWyuTM
+	CWN/vqsS2KDq9UQtzeiu55cuzjgNGsU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711186163;
+	s=susede2_ed25519; t=1711186268;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=foR8jJ3NyeoOmucMmLm1YR46lFSkeRKHrCwZRfXvYhc=;
-	b=ZuIG7HtCP+C9HvccyF4URLF2X99l4HvlFf3MGvAgjh1pXhdS7CMGha4HrU5/ten02mjKWs
-	L2hjWBj4s3/LD1BQ==
+	bh=3m9NH58/AaLMQRUBEgsCthtaq6BILqdmeuQvfjbMDxU=;
+	b=4ji9fY8bAMagWrUv1xqzttshcJNKAu6QCUVyS3EGg+GxEiLfVGOrPvoQAnrXQyg2ZH0ATq
+	WxR/yfx5lBkGQfBg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711186162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1711186268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=foR8jJ3NyeoOmucMmLm1YR46lFSkeRKHrCwZRfXvYhc=;
-	b=RzmjmKcs0aS/J4xs9c1s2PVlnCkFt7WnGgImU+Emsytn+adZ08ICvPdUgNqn7YqY48F8rQ
-	d7G5pDBFcwETQuZv6QtkDoflwTzJmWKeHLlcbVOpALCwx/l2IyMmQDVQt5DxftRbi/tESr
-	vtxwfYokvjSlFxSUX0UzMB73RaFUa1o=
+	bh=3m9NH58/AaLMQRUBEgsCthtaq6BILqdmeuQvfjbMDxU=;
+	b=Juk4anC+ArAXOUxTB5FdYB6hGk+9YVzppOA3K/GNFA7BIBECqkSJgh8XsevXOVcF/b2brh
+	lvOj0Ad7TaALeB7i3TTReCFuTAlCjCGRZ7bNwqANoHeOaW2WVQYElvKc19Mi39wAcWyuTM
+	CWN/vqsS2KDq9UQtzeiu55cuzjgNGsU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711186162;
+	s=susede2_ed25519; t=1711186268;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=foR8jJ3NyeoOmucMmLm1YR46lFSkeRKHrCwZRfXvYhc=;
-	b=I9Lv+MVsZGS1FDrHalI5TaDAjkib65mYoTggHh/rfUbJAmPebRxrP8BRKbe3ijSpuS8G0D
-	LXnkLs9ijtu+zyDQ==
+	bh=3m9NH58/AaLMQRUBEgsCthtaq6BILqdmeuQvfjbMDxU=;
+	b=4ji9fY8bAMagWrUv1xqzttshcJNKAu6QCUVyS3EGg+GxEiLfVGOrPvoQAnrXQyg2ZH0ATq
+	WxR/yfx5lBkGQfBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE4A2136A1;
-	Sat, 23 Mar 2024 09:29:22 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 573C5136A1;
+	Sat, 23 Mar 2024 09:31:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id n1CgKPKg/mX9IgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sat, 23 Mar 2024 09:29:22 +0000
-Date: Sat, 23 Mar 2024 10:29:22 +0100
-Message-ID: <87msqpxpn1.wl-tiwai@suse.de>
+	id ZJnNE1yh/mVzIwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sat, 23 Mar 2024 09:31:08 +0000
+Date: Sat, 23 Mar 2024 10:31:08 +0100
+Message-ID: <87jzltxpk3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: LuMingYin <lumingyindetect@163.com>
 Cc: linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	tiwai@suse.com,
 	perex@perex.cz,
+	tiwai@suse.com,
 	minhuadotchen@gmail.com
-Subject: Re: [PATCH] sound:Fix a memory leak related to variable data
-In-Reply-To: <20240323080413.641089-1-lumingyindetect@163.com>
-References: <20240323080413.641089-1-lumingyindetect@163.com>
+Subject: Re: [PATCH] sound:Fix a memory leak in snd_ctl_elem_add_compat function
+In-Reply-To: <20240323092712.685675-1-lumingyindetect@163.com>
+References: <20240323092712.685675-1-lumingyindetect@163.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -101,10 +101,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-X-Spam-Score: -3.51
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.81
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Juk4anC+;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=4ji9fY8b
+X-Spamd-Bar: /
 X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.51 / 50.00];
+X-Spamd-Result: default: False [-0.81 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
@@ -126,62 +129,22 @@ X-Spamd-Result: default: False [-3.51 / 50.00];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,suse.com,perex.cz,gmail.com];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,perex.cz,suse.com,gmail.com];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
+	 BAYES_HAM(-0.30)[75.00%]
 X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=RzmjmKcs;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=I9Lv+MVs
-X-Rspamd-Queue-Id: E73BA3E721
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 8A89E3ED7A
 
-On Sat, 23 Mar 2024 09:04:13 +0100,
+On Sat, 23 Mar 2024 10:27:12 +0100,
 LuMingYin wrote:
 > 
-> In the file /linux/sound/core/control_compat.c, a pointer named 'data' is defined at line 82. This pointer allocates a block of dynamic memory using the 'kzalloc' function at line 85. When the if statement at line 86 returns false, it indicates successful allocation of the dynamic memory area pointed to by 'data'. However, when the if statement at line 90 returns true, the program returns at line 91. During this process, the dynamic memory area pointed to by 'data' is neither used as in the switch statement at line 108 nor deallocated, leading to a memory leak bug. The if statement at line 95 also has the same issue. This commit fixes this problem.
+> In the function snd_ctl_elem_add_compat defined in /linux/sound/core/control_compat.c, a pointer named data is declared. This pointer allocates a block of dynamic memory using the kzalloc function at line 354. When the if statement at line 355 returns false, it indicates successful allocation of the dynamic memory area pointed to by data. However, when the if statements at lines 359 or 362 are true, the program will not execute the snd_ctl_elem_add(file, data, replace); operation at line 389 and will return directly. During this process, the dynamic memory area pointed to by data is neither freed nor used, leading to a memory leak bug. This commit fixes the aforementioned memory leak issue.
 > 
 > Signed-off-by: LuMingYin <lumingyindetect@163.com>
 
-It's using the new automatic free mechanism.  See the commit
-1052d9882269 ("ALSA: control: Use automatic cleanup of kfree()")
+Ditto as another mail, it's automatically freed.
 
-
-thanks,
 
 Takashi
-
-
-> ---
->  sound/core/control_compat.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-> index 934bb945e702..32113eb06f68 100644
-> --- a/sound/core/control_compat.c
-> +++ b/sound/core/control_compat.c
-> @@ -87,13 +87,19 @@ static int snd_ctl_elem_info_compat(struct snd_ctl_file *ctl,
->  		return -ENOMEM;
->  
->  	/* copy id */
-> -	if (copy_from_user(&data->id, &data32->id, sizeof(data->id)))
-> +	if (copy_from_user(&data->id, &data32->id, sizeof(data->id))){
-> +		kfree(data);
-> +		data = NULL;
->  		return -EFAULT;
-> +	}
->  	/* we need to copy the item index.
->  	 * hope this doesn't break anything..
->  	 */
-> -	if (get_user(data->value.enumerated.item, &data32->value.enumerated.item))
-> +	if (get_user(data->value.enumerated.item, &data32->value.enumerated.item)){
-> +		kfree(data);
-> +		data = NULL;
->  		return -EFAULT;
-> +	}
->  
->  	err = snd_ctl_elem_info(ctl, data);
->  	if (err < 0)
-> -- 
-> 2.25.1
-> 
 
