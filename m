@@ -1,129 +1,175 @@
-Return-Path: <linux-kernel+bounces-112349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87B58878C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:02:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6F7A8878C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:23:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D57B31C22421
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:02:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3CB11C220F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:23:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB033A8F5;
-	Sat, 23 Mar 2024 13:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1343B299;
+	Sat, 23 Mar 2024 13:23:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="01f+S3IU"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eslu8vKt"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B53282F0
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 13:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 863C41A38F4
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 13:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711198961; cv=none; b=JgLz5d+FiSFnoUjtepJ4Vm/iUxiIfd8pYVgjCda21+UwsqzqpdqtfghYLesutklLV8ZVB02x4rudY1VkFrexNmQ6UP2e1AS+bH5OVKmFB4IZa/UrmLbLbUwg/msU9aRqbgQ7qCRk/RlI+ysv+YcOqDZeAlXt+VIUC6ThCoc8MnM=
+	t=1711200184; cv=none; b=Aov4opOf+Oy/kaI5+/QlI2hgI3XvS80M9ALgIbWmVYNjucct/2rkzCq1EMgxh+5eUcXArKAsZvbEXvNs1nUc0uBk6+vB94Jx8MtNx3jL8DBP7ha53Xb5fG0oW1grdm1F4L3ZHg+1kJ5lb+2VEJuArgW519zKwDEOtZPLcZODcDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711198961; c=relaxed/simple;
-	bh=T7Mgu+MLzqWjzpi1LxLlvfVpGSX814PLr418pafoqeA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E3xiuvqc/ttFwxEZnpiSIpggCc8PQHTmfTJjFdR6SwIaSXdzwstfh/Eln7wRx3ZS+mBKAs1czvxZVUsh6rXUUekiQ68ZWBcVJvnRM2/psSPejNDOCHjc6T0wcUFmqvduGpb32kIhRFPPwr1hGrhDnpA2lJh5UrvHERPS7hLvDG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=01f+S3IU; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso2294578a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 06:02:39 -0700 (PDT)
+	s=arc-20240116; t=1711200184; c=relaxed/simple;
+	bh=N/3E68ODjcpXCYPH4Zk+1d7kReAgKFQBwYI/5UN4rQE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VHeHBCmktXNFr12KmhotmnBkfSydg/cFco3no1I/K9O9nY3f1+Pi0YIU+di2FRaTckT9kIB4P8d6wJEKm+EcBgvXt3upxwRInBtCyLAKmyJ8lzkU/qLgLqsZWU0bFcnnCw7mWRmlN4rWTYKPQkCtG+3Rr/z26APJ1n50wBtCSAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eslu8vKt; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d29aad15a5so39227751fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 06:23:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1711198958; x=1711803758; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4AhIBO4PzLNRqcsQH2WrtOdVm/lP2EH+zIIytq3CL4s=;
-        b=01f+S3IUtYd/meYR3cu6U5xgGx7ePaekBjSrNvPs81V2H4P11JfeO4891SoJLCCWNF
-         BeaLwMkEdV0fGMbaI3ix8i/UZiLysAGlFbwwYibShb5zirE1IpcMFEEvIXfHfYbqIkjU
-         FVyKv04AC9H9wiEde7zhuJE78QsmCYqeEa/ygeOtgbIOYrvg6O89Y7VqIiDbenuYfvuL
-         rTxGEcKAB/7fRqB+ujPRSvVOER7+z8jb2+6HSPjUYS76vO6soAL5SsM40wk3BXc0zU/I
-         JLyM/6UwoGyNuGPU7idX3yGSoV/xFen84GEktx1Vql2AC4ilzxvreJMtxXsfZg4oqfYq
-         FOGQ==
+        d=gmail.com; s=20230601; t=1711200180; x=1711804980; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BSlYLLTmQQfNsjaD7iQbZNTZyxfD58j2PrdsW9gF/8k=;
+        b=Eslu8vKtL7R9GZPAppVR9XzduiuqwY/kA4aHluXQHtbNom7slCLbigNh2CfPxuFTtM
+         mDGNld/kYOtYIWhwsGTWgrcbO+uHk94oihhcDztEVbLPoJ8Njm5+Odw5bs1aJmJ9ORYM
+         zEOkviIaUQmFAekGG05dM3d2JmNutkMM8hWSJOunnaoOISpIj96MXdvQcHdtxGHyfeZy
+         WcqzN91ZUQCE4rlaxtMnkOslow730WpaeIf21VOg/NpiYqvJpqd1jjryCWYqLlvY03py
+         He40o0d70czUCnxjKebX10X55LLldTlmyfhGC1IBmBLbJN+osoWcPTu+9nFYDJIS1QC1
+         BIdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711198958; x=1711803758;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4AhIBO4PzLNRqcsQH2WrtOdVm/lP2EH+zIIytq3CL4s=;
-        b=PvDaFkDGFULOfU2LcbAUPuAFtBPggrbhDBZOldsQ8PXJkyrCYOXaYYmUFoeRzAfwIY
-         QMJAETLJGGiGijbfIYBNAGh00toFk+Pj61iYY6WUUNgkfj2HXiK6HbKKGykUYBcChVbE
-         NrHQy+5k8KCX4+4FxLtjOtdpUg5/gniUmCJjAxiQq9L5RIlMq+p6QbZNEyd3mJU/J3xD
-         DW4qbmiwKZoYqkrcnO2fXbcueU/HFjruEzBvBYZFNDqIbE7dVrjOExN5U7aCX/EoYDpm
-         f3eIFNz1c6aMQtkSc+9xOU66YItnGEIX9Tpf0Mjjp7YSLRNY42D1ugQ7eup9bQpHh19R
-         bPhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWMAI6V/EU0wV/Eo8DoEDm0N4LqqIqlO3jzjPeMFbDIcWPfBM/80MLJstkQSSo1UlJqLzInxPNdiUM7T8qOOtozHC/9VJWgLdSfWPp1
-X-Gm-Message-State: AOJu0YwaYQro+xU7vqdPg8QtE4MZnNKl14Uw0ttIREUP29PBRtChuICc
-	nyu+4KAVFD8Umqljx7xsuhx2t56dGtRNMa2WLJg4er0z5w/80vFLgePTZYmZi94=
-X-Google-Smtp-Source: AGHT+IEJcwa9KRylcPbZWBjipR/pVElG6lPBbsxJgzVNd0Q1WdTXThMSTUZVkDL1aExm6EkwUEZ2eQ==
-X-Received: by 2002:a50:8706:0:b0:566:1952:694c with SMTP id i6-20020a508706000000b005661952694cmr1382283edb.20.1711198958348;
-        Sat, 23 Mar 2024 06:02:38 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id v17-20020aa7d9d1000000b00569aed32c32sm865385eds.75.2024.03.23.06.02.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 06:02:37 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] scripts: sphinx-pre-install: Add pyyaml hint to other distros
-Date: Sat, 23 Mar 2024 13:58:38 +0100
-Message-ID: <20240323125837.2022-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1711200181; x=1711804981;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BSlYLLTmQQfNsjaD7iQbZNTZyxfD58j2PrdsW9gF/8k=;
+        b=WzNREpwSaUEewoAkoHfETFfdSzeUtfneT92kfC1IPr/eJyoZM+R20hWVyDzOMrdsnh
+         CEsesMCNxkCT6w/IUAWs4GPwlzyjEX4DUhormmiD6U50qMj7vp8MeokzgdTqKHvZzKoG
+         ZAzlNkbo5i26KJ72DcSBbuysZvCj7ZP1W+qGNaVVGhvQag/2aARW6TebeH5CCPqlJ4ZI
+         PXTR67rTNZsWwehDDfmDRerqPEQjN1iesYHnv55PnItxzOQNmM2F6WjPmlobOQznkpQh
+         ZEsQdmMz+bSOmRPHkcH1nWgNbrsxYKC5+jAHWX3StAesOp+LvXuRqBiEDoE1mOW7dSBG
+         RP4A==
+X-Gm-Message-State: AOJu0YzDegb4tm1YW2XToX1SO4mBg1vxHFo/EI8H5j9YTk8LAyRMivW+
+	b2nnS2w6ePrs+pklFq262e6sUFQFe/AL0aNQtqFNd7KnrZemYXpboXeL2v52pnZA7a2sIoCqJwf
+	QaDTcb7y/dzOUophF+d6UhcAjXA==
+X-Google-Smtp-Source: AGHT+IEfLmA8CnBKFEXQKtzaiWIDwtsPqB3Hh3HIQxJmqJbKbka+8mMvMsSPDoE04D/J/kLZbsaFE/w+k0OanwR7x9o=
+X-Received: by 2002:ac2:4649:0:b0:515:a3de:5d70 with SMTP id
+ s9-20020ac24649000000b00515a3de5d70mr798881lfo.2.1711200180325; Sat, 23 Mar
+ 2024 06:23:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240322165233.71698-1-brgerst@gmail.com> <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
+In-Reply-To: <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
+From: Brian Gerst <brgerst@gmail.com>
+Date: Sat, 23 Mar 2024 09:22:47 -0400
+Message-ID: <CAMzpN2gOZEddWUgncaLutVDihcEK-oEUdSVxsgaaX9xiMWfqPw@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
+	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
+	"H . Peter Anvin" <hpa@zytor.com>, David.Laight@aculab.com, 
+	Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Extend commit 84b4cc8189f2 ("docs: scripts: sphinx-pre-install: Fix
-building docs with pyyaml package") and add pyyaml as an optional
-package to Mageia, ArchLinux, and Gentoo.
+On Sat, Mar 23, 2024 at 7:39=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> wro=
+te:
+>
+> On Fri, Mar 22, 2024 at 5:52=E2=80=AFPM Brian Gerst <brgerst@gmail.com> w=
+rote:
+> >
+> > Currently, x86-64 uses an unusual percpu layout, where the percpu secti=
+on
+> > is linked at absolute address 0.  The reason behind this is that older =
+GCC
+> > versions placed the stack protector (if enabled) at a fixed offset from=
+ the
+> > GS segment base.  Since the GS segement is also used for percpu variabl=
+es,
+> > this forced the current layout.
+> >
+> > GCC since version 8.1 supports a configurable location for the stack
+> > protector value, which allows removal of the restriction on how the per=
+cpu
+> > section is linked.  This allows the percpu section to be linked normall=
+y,
+> > like other architectures.  In turn, this allows removal of code that wa=
+s
+> > needed to support the zero-based percpu section.
+>
+> The number of simplifications throughout the code, enabled by this
+> patch set, is really impressive, and it reflects the number of
+> workarounds to enable the feature that was originally not designed for
+> the kernel usage. As noted above, this issue was recognized in the GCC
+> compiler and the stack protector support was generalized by adding
+> configurable location for the stack protector value [1,2].
+>
+> The improved stack protector support was implemented in gcc-8.1,
+> released on May 2, 2018, when linux 4.17 was in development. In light
+> of this fact, and 5 (soon 6) GCC major releases later, I'd like to ask
+> if the objtool support to fixup earlier compilers is really necessary.
+> Please note that years ago x86_32 simply dropped stack protector
+> support with earlier compilers and IMO, we should follow this example
+> also with x86_64, because:
+>
+> a) There are currently 5 (soon 6) GCC major releases that support
+> configurable location for stack protector value. GCC 10 is already out
+> of active maintenance, and GCC 7 is considered an ancient release at
+> this time. For x86_32, it was advised to drop the support for stack
+> protector entirely with too old compilers to somehow force users to
+> upgrade the compiler.
 
-The Python module pyyaml is required to build the docs, but it is only
-listed in Documentation/sphinx/requirements.txt and is therefore missing
-when Sphinx is installed as a package and not via pip/pypi.
+At least one developer claimed to be using an older compiler.  I asked
+for more details on why, but got no response.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- scripts/sphinx-pre-install | 3 +++
- 1 file changed, 3 insertions(+)
+> b) Stack protector is not a core feature - the kernel will still boot
+> without stack protector. So, if someone really has the urge to use
+> ancient compilers with the bleeding edge kernel, it is still possible
+> to create a bootable image. I do not think using ancient compilers to
+> compile bleeding edge kernels makes any sense at all.
 
-diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-index 4c781617ffe6..d4f05216ca23 100755
---- a/scripts/sphinx-pre-install
-+++ b/scripts/sphinx-pre-install
-@@ -514,6 +514,7 @@ sub give_mageia_hints()
- {
- 	my %map = (
- 		"python-sphinx"		=> "python3-sphinx",
-+		"yaml"			=> "python3-yaml",
- 		"virtualenv"		=> "python3-virtualenv",
- 		"dot"			=> "graphviz",
- 		"convert"		=> "ImageMagick",
-@@ -557,6 +558,7 @@ sub give_mageia_hints()
- sub give_arch_linux_hints()
- {
- 	my %map = (
-+		"yaml"			=> "python-yaml",
- 		"virtualenv"		=> "python-virtualenv",
- 		"dot"			=> "graphviz",
- 		"convert"		=> "imagemagick",
-@@ -587,6 +589,7 @@ sub give_arch_linux_hints()
- sub give_gentoo_hints()
- {
- 	my %map = (
-+		"yaml"			=> "dev-python/pyyaml",
- 		"virtualenv"		=> "dev-python/virtualenv",
- 		"dot"			=> "media-gfx/graphviz",
- 		"convert"		=> "media-gfx/imagemagick",
--- 
-2.44.0
+One small issue is that Kconfig would silently disable istackprotector
+if the compiler doesn't support the new options.  That said, the
+number of people that this would affect is very small, as just about
+any modern distribution ships a compiler newer than 8.1.
 
+I'm all in favor of only supporting compilers that are supported upstream.
+
+> c) Maintenance burden - an objtool feature will have to be maintained
+> until gcc-8.1 is the minimum required compiler version. This feature
+> will IMO be seldom used and thus prone to bitrot.
+
+That's the reason I added a config option to allow testing objtool
+even if the compiler has support.
+
+> d) Discrepancy between x86_32 and x86_64 - either both targets should
+> use objtool fixups for stack protector, or none at all. As shown by
+> x86_32 approach in the past, removing stack protector support with
+> ancient compilers was not problematic at all.
+
+Objtool doesn't support x86-32, mostly because working with REL type
+relocations is a pain.
+
+> That said, the whole series is heartily Acked-by: Uros Bizjak
+> <ubizjak@gmail.com>
+>
+> [1] https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommitdiff;h=3De1769bdd4cef5=
+22ada32aec863feba41116b183a
+> [2] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D81708
+>
+> Thanks,
+> Uros.
+
+Brian Gerst
 
