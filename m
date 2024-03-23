@@ -1,218 +1,148 @@
-Return-Path: <linux-kernel+bounces-112265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7EC388779F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 09:55:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2118877A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 09:59:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53658B2111D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:55:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49BE21F21D9B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0631DD267;
-	Sat, 23 Mar 2024 08:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4BA3DF78;
+	Sat, 23 Mar 2024 08:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Cn8GFEYH"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Up0kFY8X"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1510A6D39
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 08:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F04B440C;
+	Sat, 23 Mar 2024 08:59:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711184108; cv=none; b=j8vCR7cjv6kKMgNbNOWpwhzpYXofR/DCLwjOZPhkHm20bgzPo0dqRT4IOGIJ5n38mU1H3PwCofTSZDcjMNA06a4I1XnaHFw8IhbouJMMr0WMCq4RkQgRJ4wYod6pHypDVR0L8qdgO7dr8g/Nxrq5UW8qvZJ3qPd/C4P9HPx4+u8=
+	t=1711184351; cv=none; b=t+rOrXJEkTFg3rcp2BDgPAvM20hTo20vLpvnTBffFW+WHVdViuy9W0LtrXT6eKoIBhwoJWkyz0l78cEhGt2XL0Dfw/obZwGOEARPJa3nJHeo8Xq+URbTt/64ZGlrrA5ctdtcor+S3v1xTtK2w0t4Cdcs3EZd3hUhPp25gMtqd0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711184108; c=relaxed/simple;
-	bh=kcPY+uAYhpR11SyqWUdaVLpYzTaSDlEU7e/g5QTEhqA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pWuVoFkGOk90jpvC0ls7NoSLndrO1wKY5VcauoZmiQF62UKTtRMjxbL8OldTzbDXgwtZnPzvn6xz1xwiA4z6foKbSxqwNP2enLgbW+eXoNO1H6WVGwrHsqO723IfG7hzX2gtX1EiLurDXah/gnSAHLodINHRut2wQ0l4LI+BSNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Cn8GFEYH; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 59DCA669;
-	Sat, 23 Mar 2024 09:54:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711184069;
-	bh=kcPY+uAYhpR11SyqWUdaVLpYzTaSDlEU7e/g5QTEhqA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Cn8GFEYHJEqI2jPkHtG9YZnYFWD9F5zv1+n/8hzXO3VbE2H3S1i6Mz9VX4pStrDl0
-	 jlANx7jWO6cSjKS7qQXyI/yaH2cGzVLOJOo2Y2moReY04YjLTlJNC4ZNwGzJE9+xbX
-	 TtVSEwoJyshSZgroEWQg4wHbPJrVnXY69IYfiFtc=
-Message-ID: <a5b9a5eb-2707-49ce-b5b0-f6e2839cdb82@ideasonboard.com>
-Date: Sat, 23 Mar 2024 10:54:55 +0200
+	s=arc-20240116; t=1711184351; c=relaxed/simple;
+	bh=ZF7BygSUYovg9SblZ0QPIcT6MWiSeuKLQERl2UIN+fI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TkOSRI9PNSIcD2IHgjGl1UnYxttE9y0yJ6GOkZITf6D8U2MeQHjtbOK5PG/ELBVmMH/6k2D0Q33z0Jf8nwMsn3NZXGzH3ujtcLPl7BB+ACIKOhYCmMBWe+1YddoxljK6fTn2jAYHsiyHRLRSRIGlg1yGMJnYjZcqOntcgs5xsFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Up0kFY8X; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d46dd5f222so36154061fa.1;
+        Sat, 23 Mar 2024 01:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711184347; x=1711789147; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xJ9+KdXwScarwq3eZMEvlp2qSxDqomLTVGyznQMchR8=;
+        b=Up0kFY8XHHnScoFm/eueXph5caWBEzkoHN2sdQEqHNz7Bjpchox9bSATSWQ2YpEHae
+         09P0SSBdleu7WBQbcQ4ZIdSG38VP6MisMO/rqkAJZCrk79feOM1cW3WaFudiEBlf4JWa
+         A+eJcYf1W8p7VqJOAroda+rxgDADlgn1Wsl4Iq8cQ5JLBfMeKJ6dmDEzteSgbWybaN56
+         kX0vMGFbnrVnm3AuYZX11l+3f+RS+UYM3iJpJxbQmbud3dkVbtceI4KeiXoXSqKWHP2u
+         ehfvFllMj4shec1mLYbs8UTUNJSPHPX78XEDncoV1UMIufaN8xrubxNJzYvM8yLIOl84
+         vVrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711184347; x=1711789147;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xJ9+KdXwScarwq3eZMEvlp2qSxDqomLTVGyznQMchR8=;
+        b=F7lZ5rtTwwlrWqgBZgvINBizAz5rM1DDJVlr7dvy1qqDQ8C7ad+DklJ0NylMQwpAlA
+         sxihCv2OY1k4NChdAOigOw7p4e0MR5XlgSD+TmVOnEFGLJLs/pSSyBCICiKbeYajE4Ll
+         +TEAAmNPwV9VTgpMRH1w9aOpHHIJuqI5nOZAo/F2vb4KFGzVzR+cLAnP3WLY7+7Tvsfh
+         ow1qNseU3LhWpA/0NsN2vhVaDGT5qtANVetGcV5OgCo4Vct830hTGdArw29o/QssvLaF
+         jeJLyz2+B5i8eksjUlihVwWXwqGBML9rZTG0fmw2XkosqYzITI3HNaKakpZRa3M89dRR
+         hmrA==
+X-Forwarded-Encrypted: i=1; AJvYcCVSmWDZfEWErkViTgrleRiWobT3rEgZgXTOQo9zwWP+CKa8NrJNk/OWygruCE7JtX5bUlGljuTrc3dhHJMhxWlXek/4xCkdJ/yt8+XLA3pWZpanjTx5uYh2uVbgP8aB5zp1+WutyLf/TYet2FTLbVgleafT3x9S7MUHQH1YFRehoVc6ajY=
+X-Gm-Message-State: AOJu0YywXQiwdITF8Q6ZjZdMbwlxakc7fPVkAq/5Z2x1WdHr8Lc4TWMg
+	TnSz4d3YcIaHQ6vrPBASR0kOzdd00J+nrTId1yNQ9bJ2/7MAhe0=
+X-Google-Smtp-Source: AGHT+IGg0Fs7Ikhhf8Mkdjx09JhICxh/CwvAQBZW6CoPdutXLKfdUq9oRvKyht996A+Ebz9GhYfLBA==
+X-Received: by 2002:a2e:934b:0:b0:2d4:d50:2358 with SMTP id m11-20020a2e934b000000b002d40d502358mr989680ljh.18.1711184347509;
+        Sat, 23 Mar 2024 01:59:07 -0700 (PDT)
+Received: from U4.lan ([2a02:810b:f40:4600:fbb8:7547:139d:a40f])
+        by smtp.gmail.com with ESMTPSA id x16-20020a5d6b50000000b0033e93e00f68sm3965031wrw.61.2024.03.23.01.59.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Mar 2024 01:59:07 -0700 (PDT)
+From: Alex Bee <knaerzche@gmail.com>
+To: Lee Jones <lee@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>
+Cc: Chris Zhong <zyw@rock-chips.com>,
+	Zhang Qing <zhangqing@rock-chips.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2 0/5] Add RK816 PMIC support
+Date: Sat, 23 Mar 2024 09:58:47 +0100
+Message-ID: <20240323085852.116756-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
-Content-Language: en-US
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-6-sean.anderson@linux.dev>
- <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
- <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
- <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
- <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
- <1f27ce69-9ea6-4df4-9147-332d74febdf0@ideasonboard.com>
- <b2bef7f9-fe46-45d0-a09b-50777f71f43c@linux.dev>
- <d6a8bc5c-aed9-4ef4-adb2-dc171106b44b@ideasonboard.com>
- <2dbf138f-5112-48e1-85a6-9e3ad84ec4a6@linux.dev>
- <305a8e43-4d65-490c-9f83-afce6490bc83@ideasonboard.com>
- <7a4c332b-a044-4c82-a5b2-cb4b318f5110@linux.dev>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <7a4c332b-a044-4c82-a5b2-cb4b318f5110@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 22/03/2024 23:22, Sean Anderson wrote:
-> On 3/22/24 14:09, Tomi Valkeinen wrote:
->> On 22/03/2024 18:18, Sean Anderson wrote:
->>> On 3/22/24 01:32, Tomi Valkeinen wrote:
->>>> On 21/03/2024 21:17, Sean Anderson wrote:
->>>>> On 3/21/24 15:08, Tomi Valkeinen wrote:
->>>>>> On 21/03/2024 20:01, Sean Anderson wrote:
->>>>>>> On 3/21/24 13:25, Tomi Valkeinen wrote:
->>>>>>>> On 21/03/2024 17:52, Sean Anderson wrote:
->>>>>>>>> On 3/20/24 02:53, Tomi Valkeinen wrote:
->>>>>>>>>> On 20/03/2024 00:51, Sean Anderson wrote:
->>>>>>>>>> Do we need to handle interrupts while either delayed work is being done?
->>>>>>>>>
->>>>>>>>> Probably not.
->>>>>>>>>
->>>>>>>>>> If we do need a delayed work, would just one work be enough which
->>>>>>>>>> handles both HPD_EVENT and HPD_IRQ, instead of two?
->>>>>>>>>
->>>>>>>>> Maybe, but then we need to determine which pending events we need to
->>>>>>>>> handle. I think since we have only two events it will be easier to just
->>>>>>>>> have separate workqueues.
->>>>>>>>
->>>>>>>> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
->>>>>>>
->>>>>>> Yeah, but we can use a mutex for this which means there is not too much
->>>>>>> interesting going on.
->>>>>>
->>>>>> Ok. Yep, if we get (hopefully) a single mutex with clearly defined fields that it protects, I'm ok with workqueues.
->>>>>>
->>>>>> I'd still prefer just one workqueue, though...
->>>>>
->>>>> Yeah, but then we need a spinlock or something to tell the workqueue what it should do.
->>>>
->>>> Yep. We could also always look at the HPD (if we drop the big sleeps) in the wq, and have a flag for the HPD IRQ, which would reduce the state to a single bit.
->>>
->>> How about something like
->>>
->>> zynqmp_dp_irq_handler(...)
->>> {
->>>      /* Read status and handle underflow/overflow/vblank */
->>>
->>>      status &= ZYNQMP_DP_INT_HPD_EVENT | ZYNQMP_DP_INT_HPD_IRQ;
->>>      if (status) {
->>>          atomic_or(status, &dp->status);
->>>          return IRQ_WAKE_THREAD;
->>>      }
->>>
->>>      return IRQ_HANDLED;
->>> }
->>>
->>> zynqmp_dp_thread_handler(...)
->>> {
->>>      status = atomic_xchg(&dp->status, 0);
->>>      /* process HPD stuff */
->>> }
->>>
->>> which gets rid of the workqueue too.
->>
->> I like it. We can't use IRQF_ONESHOT, as that would keep the irq masked while the threaded handler is being ran. I don't think that's a problem, but just something to keep in mind that both handlers can run concurrently.
-> 
-> Actually, I'm not sure we can do it like this. Imagine we have something
-> like
-> 
-> CPU 0                      CPU 1
-> zynqmp_dp_thread_handler()
->    atomic_xchg()
-> 			   __handle_irq_event_percpu
->                               zynqmp_dp_irq_handler()
->                                 atomic_or()
->                                 return IRQ_WAIT_THREAD
->                               __irq_wake_thread()
->                                 test_and_set_bit(IRQTF_RUNTHREAD, ...)
->                                 return
->    return IRQ_HANDLED
-> 
-> and whoops we now have bits set in dp->status but the thread isn't
-> running. I don't think there's a way to fix this without locking (or two
+This series aims to add support for Rockchip RK816 PMIC series. As per
+datasheet it's targeted for RK3126/RK3128 (RK816-1), RK1108 (RK816-2) and
+PX3-SE (RK816-3) but might be used for other SoCs as well. The MFD consists
+of an integrated RTC, a GPIO controller, two 32k clock outputs, a power
+key, 3 buck- and 6 ldo regulators, 3 regulator-switches, and charger with
+integrated fuel gauge. Charger and fuel gauge are not part of this series.
+Two of the switches (otg/boost) are part of the binding, but not of
+the driver. They must only ever be enabled if no battery charging is
+happening, but it will be enabled automatically if a battery is attached
+and an external power source is connected. Thus that needs some
+incorporation of a yet to be added charger driver.
+Integration in the existing rk8xx-infrastructure was pretty straightforward
+and only needed very little tweaking. In order to not further bloat the
+driver(s) too much with additional `#define`s I tried to re-use existing
+ones wherever possible.
 
-In your example above, the IRQTF_RUNTHREAD has been cleared by the 
-threaded-irq before calling zynqmp_dp_thread_handler. So the hard-irq 
-will set that flag before the zynqmp_dp_thread_handler() returns.
+The patches are loosely based on the vendor's implementation, verified
+against the datasheet and tested/measured on a RK3126 board. As they are
+touching several subsystems I'm sending them (very) early for the
+6.10.-cycle.
 
-When zynqmp_dp_thread_handler() returns, the execution will go to 
-irq_wait_for_interrupt(). That function will notice the IRQTF_RUNTHREAD 
-flag (and clear it), and run the zynqmp_dp_thread_handler() again.
+changes since v1:
+  - integrated Krzysztof's feedback for the bindings and the resulting
+    driver changes
+  - fixed a sparse warning 
 
-So if I'm not mistaken, when the hard-irq function returns 
-IRQ_WAKE_THREAD, it's always guaranteed that a "fresh" run of the 
-threaded handler will be ran.
+link to v1:
+https://lore.kernel.org/lkml/20240321143911.90210-2-knaerzche@gmail.com/
 
-I think that makes sense, as I'm not sure how threaded handlers without 
-IRQF_ONESHOT could be used if that were not the case. I hope I'm right 
-in my analysis =).
+Please see individual patches for details about the changes.
 
-  Tomi
+Alex Bee (5):
+  dt-bindings: mfd: Add rk816 binding
+  mfd: rk8xx: Add RK816 support
+  pinctrl: rk805: Add rk816 pinctrl support
+  regulator: rk808: Support apply_bit for
+    rk808_set_suspend_voltage_range
+  regulator: rk808: Add RK816 support
+
+ .../bindings/mfd/rockchip,rk816.yaml          | 269 ++++++++++++++++++
+ drivers/mfd/Kconfig                           |   4 +-
+ drivers/mfd/rk8xx-core.c                      | 103 +++++++
+ drivers/mfd/rk8xx-i2c.c                       |  45 ++-
+ drivers/pinctrl/pinctrl-rk805.c               |  69 +++++
+ drivers/regulator/rk808-regulator.c           | 218 +++++++++++++-
+ include/linux/mfd/rk808.h                     | 141 +++++++++
+ 7 files changed, 842 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rockchip,rk816.yaml
+
+-- 
+2.43.2
 
 
