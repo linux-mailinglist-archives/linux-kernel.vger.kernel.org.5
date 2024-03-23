@@ -1,134 +1,191 @@
-Return-Path: <linux-kernel+bounces-112173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6A8C88768B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:02:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FC1388768E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76AFD1F22819
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:02:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27EA7283E0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3173D9E;
-	Sat, 23 Mar 2024 02:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A003E1113;
+	Sat, 23 Mar 2024 02:03:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Th2/ZZP5"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="04mMOXfF"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AF1EC2
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09FAFA31
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711159337; cv=none; b=rEjLpYBYI799pHHewa6Qn//RcMm8h6vmAswouFh0t94d3Dy4eZzlVUTvIxBqQlWjbzMyGkH5fJYMTwfr6DNenShRwyJAPROuR8f6qhTC1BN2Rnp6oJ0I3VRs847QGPo7yhcjKlT4vNT1wElsvDuzwZGJ00qy5aFKs3kbg8hc5Ek=
+	t=1711159394; cv=none; b=Q6tzX3nEBNi7BM8uXDCKHT+2z6LLDPn9d2f3EV0OMEFuLRr/3/TMrm1hDXVcrDMRVIJ8d0mFJwApWFFDKGn0mUFHBwZa2opiECbpPoIHX4wLgsYWXxPqWRwLdmmsowfAnWx3Ei1HuEBnLZSIt5g05i7aOdrqx6jZejYxBg6LSIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711159337; c=relaxed/simple;
-	bh=kjQK/ZXJeuufuWKUqTmtrVb3RiT09PzKuAhVluGT+go=;
+	s=arc-20240116; t=1711159394; c=relaxed/simple;
+	bh=PettcqWlhbLkUH15Mgj0z7O32KlctYX/2zcO3X/L0+M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uIJDiLrLQVtIDrKN2W5DdQujjwDABYxv4RqaH3fGglE3ledR5Fg1eYWo09SYXQscQX4hR39uAoMm+b0tXAWYuPmc2QwI0FgV5HC/AWaq9SqTOc8GyzAo0PLNgevCq+KUQsQairMdG0j+0Pqk8e15Sn7Q6dvcjHNRbRnDiZ6LML8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Th2/ZZP5; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56890b533aaso3309890a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:02:15 -0700 (PDT)
+	 To:Cc:Content-Type; b=SxQy321DHqHAmmipJVFVjR7+lrSyBDehk2jQ9OM1tN+sX8jkNBiq4lksiuyy6IWy3Er6274FNovocGUY4UO/U72rlzsQ12fq0ODsipMucvww19me0G4AcHr6TUpa79kyeoDA99MgOJvumF0RzDXpfFnCySLKUR6LZ6xgBBiJZwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=04mMOXfF; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a47062136c0so339617666b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:03:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1711159334; x=1711764134; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711159391; x=1711764191; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UDrtS3kmmAHBfczwt+9v+j8bPsXytsIEzAPUfRDLktk=;
-        b=Th2/ZZP5sfW7yYwdEB9kKPKe2ZEgP8l3WruK+7IkwBzFdPxlX/g+SVdYemdVtDjFyC
-         2zZEePDIChlyKqGtSPF3yvm3NEEPdmvB48Z/IvmClr4xwUYaV/XZpPe/h0VebglO1oJj
-         ZycMb+zFvakcYLLGYpuKKRitAOBIUz72AqkDIow9zt1L6rkIT+VKxmo/9GaUoPB6brsR
-         CYdcZHZV8T8v5yOPHJjeKKSYZCtx0UuMh4rC5MZUAFcAHh8JWBs1aOyNPNX6fy6xDJbS
-         wWKBtzZVeClTa0PduraQBpY40SqZlMIPsygl48/86za6Gd7btjQC9xmtXoLv2nMivwUc
-         U4ag==
+        bh=yoB0K5WRFoGSmH+ex0ygkzLKqvVpzKWZj9b/agl7fXE=;
+        b=04mMOXfFsIiCMQsEgvj34xVpT0psXc9T9kwUGGLT+KdybhexA6Gqlc7HCPkmmSoh7R
+         OrUvaM9He0bmkJy0XcbdcSkE8XXhUfX8ViZaKXq4IUdooyOPBL4nbD1wtk4TusNlwEcj
+         +oaiyHPIyatN8wegtdixEK9QSvi5RSPOvF8DqlBbJ4aSTkvT9FgDCQZV1Qa23IqtI9j1
+         UiDmGIAZvLoYIzX0Up1zTqGZVasLT+ktAUckYPj+fCqbrFVq5Q7EBxT/VekOCj2/7vjb
+         QOGT/t5PyFI07e53ePxlN2UhMMqm9x55h7UAWxKOsagP2G9sh9Nqsz4HaMTKb8MsXWDm
+         QZLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711159334; x=1711764134;
+        d=1e100.net; s=20230601; t=1711159391; x=1711764191;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UDrtS3kmmAHBfczwt+9v+j8bPsXytsIEzAPUfRDLktk=;
-        b=h0qlCtAZN2qposIsdX7sA1CzONEpNkm0dy3xl4ipa/mV5DmRys4gDAB7J/Ibtcumlc
-         H1QPO01my3vF/qUv5aSy5XEGgiVSogd8qtigovbbOxasMuZ0wp9i8hrt3uHSvF+C1nnZ
-         /ZYsuzle+i6e3GEh/e+QfB6VCIi+0ayQPPa/YgPRPAAPJmbO+jwPVP3dSxzmBBz44sSn
-         YgJ+MV9iSoNH7Y0F2rC6HS0yGpWR+Sg/Kt42kTnIwUwLiR1aXiv6JmTKVsfyo6ANrCA5
-         8Tow+j/iRF/Mks3ORJhwBJeX76XmRW5sCuJFgrp7NU29LhnmB3BmYAp2FUbm6zsjYclY
-         aj2A==
-X-Forwarded-Encrypted: i=1; AJvYcCVcf3s/Lww/l7KaLj2PGt2102aWfarFLca2wlOvQyeD/oI7N3tKOLTgduG4JVLy+3E2wJboWL/Y6Q3BqaPLWz7v+hSe3zZtaHcUmKGz
-X-Gm-Message-State: AOJu0Yxd/3fmb2shwy8A0gYdLHnVyikZ0lHdRp8q9SRqtXMTSyvK2iqU
-	dkTuPz+5/YqVwk5o8MaxnlkxtDTu//6hCyJ+Ko16IVRxKZYD4iie4FK2L6/IOVCVvwJa9LqzcNy
-	qyh6ippWYv83MObnmNl7y2OqheaZGvGcqIUr03A==
-X-Google-Smtp-Source: AGHT+IFilYtLpWhQMZrvvCHnCL+cWrm27JI38D0QFqame+iNQqNKz8aOz9QXGy0lw2uDZ/Nj6Ill05uOw4ImUyjck/s=
-X-Received: by 2002:a17:906:81c8:b0:a46:a712:3972 with SMTP id
- e8-20020a17090681c800b00a46a7123972mr797745ejx.11.1711159334004; Fri, 22 Mar
- 2024 19:02:14 -0700 (PDT)
+        bh=yoB0K5WRFoGSmH+ex0ygkzLKqvVpzKWZj9b/agl7fXE=;
+        b=BaiLcviKrMTBQoDAvMHbNYpeuEScsJTiSLnb14orduY1YlDNskX9KwRUund78Fy529
+         rWLCpITUbZv7i3O7i5PwApR3Bz3qTWGQNbeM7Kbq7ZlNBlP5R5vKsXyGXqf2z+wzAFkj
+         bwcXzTjvTbspBCRSnfxEAizIEimWMRBGrQ2Am0FmfZKud41lSVygtxqtx4MwbWpn4Mar
+         5J7naFGmOgSwQvPvTrv4fzW3yXRTz05fnc9HcG0C1brWO59CXV+/Ty/GTtJh1kENgwAh
+         yEwW5HzzJNVXRBJAg7rZfJVlz5ojQp+lpp3GJr7ZhxmwpmTc5NURRr8knZ1//lvp50HG
+         A8Zw==
+X-Forwarded-Encrypted: i=1; AJvYcCWHR4/hQCZfFtzDI8KSstYwWbiKvdMWsjhIqmdo9NuEnoOwxDWHmCBFu6ccH826iia/ZeiIR9D3kUd74BMchNXH/dsfUWnWDtp+HD/h
+X-Gm-Message-State: AOJu0YywO9D0aCZD4F2epQYtLd37a6QI0/pncVzDCZlcNnBoGn7rKmAV
+	6hH14rdRvk9nt0zy+HvQZ0GCIyJhp845O17Rxt2ARGBSG52IYe05gichGV91n9THNScB2CTF1Rq
+	Zi+HpgaK9N53TRRS283kxkR33z3gQrnq4fd9r
+X-Google-Smtp-Source: AGHT+IHyypD8b8GJHGjP/pBrCz9FExVb/Ctv2KcYhB73bzJ/Uj6b8xtxInJB4aZ9YcjO4SyK4oq3NjSp7+9IJ/aoJwU=
+X-Received: by 2002:a17:906:2846:b0:a46:954a:aa14 with SMTP id
+ s6-20020a170906284600b00a46954aaa14mr946344ejc.67.1711159391127; Fri, 22 Mar
+ 2024 19:03:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1710877680.git.yan@cloudflare.com> <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
- <20240322112413.1UZFdBq5@linutronix.de> <123ca494-dc8c-47cc-a6d5-3c529bc7f549@paulmck-laptop>
-In-Reply-To: <123ca494-dc8c-47cc-a6d5-3c529bc7f549@paulmck-laptop>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Fri, 22 Mar 2024 21:02:02 -0500
-Message-ID: <CAO3-PbqRztEC1JFg3SrgUi9a404Xpou_Xx9_mxXoZVY-KVkyGg@mail.gmail.com>
-Subject: Re: [PATCH v5 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-To: paulmck@kernel.org
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, netdev@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
-	Alexander Duyck <alexanderduyck@fb.com>, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	bpf@vger.kernel.org, kernel-team@cloudflare.com, 
-	Joel Fernandes <joel@joelfernandes.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com, 
-	Jesper Dangaard Brouer <hawk@kernel.org>
+References: <20240322163939.17846-1-chengming.zhou@linux.dev>
+ <CAJD7tkYuYEsKFvjKKRxOx3fCekA03jPpOpmV7T20q=9K=Jb2bA@mail.gmail.com>
+ <CAGsJ_4yc-XB3+FkcZTy1aZ0n6ZKEkfWVYk_TjqqrdcROa5VYtA@mail.gmail.com>
+ <Zf4HKUpKpDWZygni@google.com> <20240322234826.GA448621@cmpxchg.org>
+ <CAJD7tkY2y_nGRq9ft80op6q0B3tfJvtyqYhS6t+x=TpyGy+AXg@mail.gmail.com>
+ <CAJD7tkZqrrXuYTMYOAP+arMLeNayafFeLocWu7bJtDFHCYjwDA@mail.gmail.com> <20240323015543.GB448621@cmpxchg.org>
+In-Reply-To: <20240323015543.GB448621@cmpxchg.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Fri, 22 Mar 2024 19:02:35 -0700
+Message-ID: <CAJD7tkYDh39_Pp-_TFFvduGbirx0MTRpC3p+Z6NuY14xtXiOYA@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: add folio in swapcache if swapin from zswap
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Barry Song <21cnbao@gmail.com>, chengming.zhou@linux.dev, nphamcs@gmail.com, 
+	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 4:31=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
+On Fri, Mar 22, 2024 at 6:55=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
 >
-> On Fri, Mar 22, 2024 at 12:24:13PM +0100, Sebastian Andrzej Siewior wrote=
-:
-> > On 2024-03-19 13:44:34 [-0700], Yan Zhai wrote:
-> > > + * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT ker=
-nels would
-> > > + * have more chance to invoke schedule() calls and provide necessary=
- quiescent
-> > > + * states. As a contrast, calling cond_resched() only won't achieve =
-the same
-> > > + * effect because cond_resched() does not provide RCU-Tasks quiescen=
-t states.
-> > > + */
+> On Fri, Mar 22, 2024 at 05:14:37PM -0700, Yosry Ahmed wrote:
+> > [..]
+> > > > > I don't think we want to stop doing exclusive loads in zswap due =
+to this
+> > > > > interaction with zram, which shouldn't be common.
+> > > > >
+> > > > > I think we can solve this by just writing the folio back to zswap=
+ upon
+> > > > > failure as I mentioned.
+> > > >
+> > > > Instead of storing again, can we avoid invalidating the entry in th=
+e
+> > > > first place if the load is not "exclusive"?
+> > > >
+> > > > The reason for exclusive loads is that the ownership is transferred=
+ to
+> > > > the swapcache, so there is no point in keeping our copy. With an
+> > > > optimistic read that doesn't transfer ownership, this doesn't
+> > > > apply. And we can easily tell inside zswap_load() if we're dealing
+> > > > with a swapcache read or not by testing the folio.
+> > > >
+> > > > The synchronous read already has to pin the swp_entry_t to be safe,
+> > > > using swapcache_prepare(). That blocks __read_swap_cache_async() wh=
+ich
+> > > > means no other (exclusive) loads and no invalidates can occur.
+> > > >
+> > > > The zswap entry is freed during the regular swap_free() path, which
+> > > > the sync fault calls on success. Otherwise we keep it.
+> > >
+> > > I thought about this, but I was particularly worried about the need t=
+o
+> > > bring back the refcount that was removed when we switched to only
+> > > supporting exclusive loads:
+> > > https://lore.kernel.org/lkml/20240201-b4-zswap-invalidate-entry-v2-6-=
+99d4084260a0@bytedance.com/
+> > >
+> > > It seems to be that we don't need it, because swap_free() will free
+> > > the entry as you mentioned before anyone else has the chance to load
+> > > it or invalidate it. Writeback used to grab a reference as well, but
+> > > it removes the entry from the tree anyway and takes full ownership of
+> > > it then frees it, so that should be okay.
+> > >
+> > > It makes me nervous though to be honest. For example, not long ago
+> > > swap_free() didn't call zswap_invalidate() directly (used to happen t=
+o
+> > > swap slots cache draining). Without it, a subsequent load could race
+> > > with writeback without refcount protection, right? We would need to
+> > > make sure to backport 0827a1fb143f ("mm/zswap: invalidate zswap entry
+> > > when swap entry free") with the fix to stable for instance.
+> > >
+> > > I can't find a problem with your diff, but it just makes me nervous t=
+o
+> > > have non-exclusive loads without a refcount.
+> > >
+> > > >
+> > > > diff --git a/mm/zswap.c b/mm/zswap.c
+> > > > index 535c907345e0..686364a6dd86 100644
+> > > > --- a/mm/zswap.c
+> > > > +++ b/mm/zswap.c
+> > > > @@ -1622,6 +1622,7 @@ bool zswap_load(struct folio *folio)
+> > > >         swp_entry_t swp =3D folio->swap;
+> > > >         pgoff_t offset =3D swp_offset(swp);
+> > > >         struct page *page =3D &folio->page;
+> > > > +       bool swapcache =3D folio_test_swapcache(folio);
+> > > >         struct zswap_tree *tree =3D swap_zswap_tree(swp);
+> > > >         struct zswap_entry *entry;
+> > > >         u8 *dst;
+> > > > @@ -1634,7 +1635,8 @@ bool zswap_load(struct folio *folio)
+> > > >                 spin_unlock(&tree->lock);
+> > > >                 return false;
+> > > >         }
+> > > > -       zswap_rb_erase(&tree->rbroot, entry);
+> > > > +       if (swapcache)
+> > > > +               zswap_rb_erase(&tree->rbroot, entry);
 > >
-> > Paul, so CONFIG_PREEMPTION is affected but CONFIG_PREEMPT_RT is not.
-> > Why does RT have more scheduling points?
+> > On second thought, if we don't remove the entry from the tree here,
+> > writeback could free the entry from under us after we drop the lock
+> > here, right?
 >
-> In RT, isn't BH-disabled code preemptible?  But yes, this would not help
-> RCU Tasks.
+> The sync-swapin does swapcache_prepare() and holds SWAP_HAS_CACHE, so
+> racing writeback would loop on the -EEXIST in __read_swap_cache_async().
+> (Or, if writeback wins the race, sync-swapin fails on swapcache_prepare()
+> instead and bails on the fault.)
 >
-By "more chance to invoke schedule()", my thought was that
-cond_resched becomes no op on RT or PREEMPT kernel. So it will not
-call __schedule(SM_PEREEMPT), which clears the NEED_RESCHED flag. On a
-normal irq exit like timer, when NEED_RESCHED is on,
-schedule()/__schedule(0) can be called time by time then.
-__schedule(0) is good for RCU tasks, __schedule(SM_PREEMPT) is not.
+> This isn't coincidental. The sync-swapin needs to, and does, serialize
+> against the swap entry moving into swapcache or being invalidated for
+> it to be safe. Which is the same requirement that zswap ops have.
 
-But I think this code comment does not take into account frequent
-preempt_schedule and irqentry_exit_cond_resched on a PREEMPT kernel.
-When returning to these busy kthreads, irqentry_exit_cond_resched is
-in fact called now, not schedule(). So likely __schedule(PREEMPT) is
-still called frequently, or even more frequently. So the code comment
-looks incorrect on the RT argument part. We probably should remove the
-"IS_ENABLED" condition really. Paul and Sebastian, does this sound
-reasonable to you?
+You are right. Even if swap_free() isn't called under SWAP_HAS_CACHE's
+protection, a subsequent load will also be protected by SWAP_HAS_CACHE
+(whether it's swapped in with sync swapin or throught the swapcache)
+-- so it would be protected against writeback as well. Now it seems
+like we may have been able to drop the refcount even without exclusive
+loads..?
 
-Yan
+Anyway, I think your fix is sound. Zhongkun, do you mind confirming
+that the diff Johannes sent fixes the problem for you?
 
