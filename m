@@ -1,113 +1,169 @@
-Return-Path: <linux-kernel+bounces-112156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DC81887659
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:22:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B631A88765B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:22:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D34B1C22A1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:22:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA54D1C21A7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 01:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADC9137E;
-	Sat, 23 Mar 2024 01:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fk3HzJj1"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3D61388;
+	Sat, 23 Mar 2024 01:22:51 +0000 (UTC)
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C7AA41;
-	Sat, 23 Mar 2024 01:22:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A6FA48;
+	Sat, 23 Mar 2024 01:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711156947; cv=none; b=aZ19vGmiEGGVMWjv904mNIQwwT65JZJ+0SYVIHe4uiGUIFAcSboT+2qawCtiUeBjV22hcJBCX7si/4I9tHoeFmQHAznStCJqBMMsaO1C+fyrPHCiMhdN7bmScuUPY+MKfdQZjlKLy8SsEwow4ahvXOwVwSMrO+ZXmiRCMpufZ2A=
+	t=1711156970; cv=none; b=uHF2iqIvQr/M4OWDN3UbL3KlJc53qrNbtqkb8gwpV5N9Kw5IaYOJWPmZiUNBc+XdKGNDwCHT32/gXrPBkQ/w/eD7ajGhVkyiWmHKgWQFH+XUODFjWp7DnqacLkgy02aGLom52BweGyf0+KfeqnQF6esfKfqj3JKiXME/T1WENZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711156947; c=relaxed/simple;
-	bh=xFHg9bMUkkDlShpLt1baft+c1rw1IBRTJLqE+kKG1CY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n66oexHWthhWY16wX07YNvS1u62+Qc+fwFShtn/32LUuxiwuMT5SMYgFrAkh2lthRz6bxP+Mxt+gL6eH/6bwvI9t2gfiJrHRPR0sNJU8f26C9lBiTd04IN/iQZpSnv4pZmQt3efj2rbw3ypVhlOLP9gctxQAi1m+BQ9EZKbDd24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fk3HzJj1; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711156945; x=1742692945;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xFHg9bMUkkDlShpLt1baft+c1rw1IBRTJLqE+kKG1CY=;
-  b=Fk3HzJj19djg4jeO0jf6h9NKN1YjXDO+TxrQkMaovurFKfUOmMEVzMh5
-   O/LyhHD9bB/zZGL4tGpSe14MNrJJ5irK65xBv186uKZsTwC1XP/k5TUXx
-   HspfJlPVKtChbbCahn39yjl8L5Ges7Zdo+wXIklWQL4arRo7lmCsZfYVO
-   nd5rvwgsklDS+/9UUhkESus9+qn6blXh2Ph9+jMG1Rnb+QXIKMz2lwywl
-   t2UXAKA2fDS6T4EM1NXfY2x2M6v3LE+Ud+lNjnj2HzIXE+K6QLY/m9et/
-   9FNHUT4CfXjtJ4ewqvxItzyXG986Edrl4MJEPm/lHjUSwjOZ0EeqNlFLp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="23714724"
-X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="23714724"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 18:22:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="19763481"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 18:22:24 -0700
-Date: Fri, 22 Mar 2024 18:22:24 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"Li, Xiaoyao" <xiaoyao.li@intel.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
- parameters
-Message-ID: <20240323012224.GD2357401@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <5eca97e6a3978cf4dcf1cff21be6ec8b639a66b9.1708933498.git.isaku.yamahata@intel.com>
- <5f0c798cf242bafe9810556f711b703e9efec304.camel@intel.com>
+	s=arc-20240116; t=1711156970; c=relaxed/simple;
+	bh=g+qmIKlNwWrQDYzprQZoIGrFsxp3GGvahsrx0ZcmM2c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XhG0voiHRJWA3YQ/oP4xky/q2x6J6OMUnj+XX4JCQcLFBl+6pxDyj5zhcb9t3dbdWD/AzGyzZZMbmYgpKQgS1VjulnVpQuWIXzu7cI34DddcmeD58sB3CSbjVja6W+MiJjUuE/EKvUzSf/iStHaxl7JAsCkA0w2IKClTldCc6R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so1892310a12.0;
+        Fri, 22 Mar 2024 18:22:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711156968; x=1711761768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N+0aYMbrnVXpxfNyD1kFQ/0ZCzbVxGiIosenue/Nirk=;
+        b=EDPLxeo3kmayxWMmehLbScRDb8PkotJoZjt6yr1iia7DuoVQB8lpDm7q1NknLqte3I
+         +PENvAZOSdYvWv/FJFsj29rcXsxmewT+ikJCLIzA7SlmIPiH0b+vkxI9LHxOY8gNqwKX
+         8aru82CtkAuwOUN4XnITmkq3hKVxkkbBVJT0CS70DLWakUHhrzsmOAfehYqbCvTTLuwd
+         w29xNNUlf1NPXMAKXM5Dnmy/avDTAlXEW5W5KK6oE8kEdH6aJPFWGoK9fHmg9jmROCzh
+         h91szPAYtxAojkpyj0eveN3ercn3GI9ZDhTQgur5rUxSW8mhu0lvJG5sSo2hxOahCkRy
+         KRkg==
+X-Forwarded-Encrypted: i=1; AJvYcCWnbsJvjNXXg5j2pdBuAvok21EOWHmdlfnvli/qlaLP4m20Wg0SE9owfg2iKiQoJrz3e5U1aCHAEfpStB6hS61NQ02pOqysuuBje2h0WrrvaCGDQFoaIS/31SoItSJust60+DB8xK+i2UcxrvmWVQ==
+X-Gm-Message-State: AOJu0YwUMWwvGeKnJNRRdxHQjtPUmoHUE61raeRlE9NyR4St7a4LS+0Y
+	Qj3BaMVYr+JRzjk6GDfU1smBogQ/zJU++jxtm6dqzzU833dRbWGQFqIv0ZmK6cJUjsNdsJZPa34
+	aG0EfxnQbfU5zG0us1NnR/2OxZzM=
+X-Google-Smtp-Source: AGHT+IG8AL/LCWLrgDYqEHDgy1TnH7Zrct2vQ47FKnUwlpTuTtVVj43GS4gR9sFC5t8aotRwe+0VGNGVZsDo1iMXwaw=
+X-Received: by 2002:a05:6a20:be11:b0:1a3:ab6f:ca83 with SMTP id
+ ge17-20020a056a20be1100b001a3ab6fca83mr1173045pzb.46.1711156968170; Fri, 22
+ Mar 2024 18:22:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5f0c798cf242bafe9810556f711b703e9efec304.camel@intel.com>
+References: <20240322164237.203358-1-ben.gainey@arm.com>
+In-Reply-To: <20240322164237.203358-1-ben.gainey@arm.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 22 Mar 2024 18:22:36 -0700
+Message-ID: <CAM9d7chfXH0ynfT_PSPyjhE8ATa=fV-kbx_csgeQrWiv+1EiiQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] perf: Support PERF_SAMPLE_READ with inherit_stat
+To: Ben Gainey <ben.gainey@arm.com>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
+	james.clark@arm.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 11:20:01AM +0000,
-"Huang, Kai" <kai.huang@intel.com> wrote:
+On Fri, Mar 22, 2024 at 9:42=E2=80=AFAM Ben Gainey <ben.gainey@arm.com> wro=
+te:
+>
+> This change allows events to use PERF_SAMPLE READ with inherit so long
+> as both inherit_stat and PERF_SAMPLE_TID are set.
+>
+> Currently it is not possible to use PERF_SAMPLE_READ with inherit. This
+> restriction assumes the user is interested in collecting aggregate
+> statistics as per `perf stat`. It prevents a user from collecting
+> per-thread samples using counter groups from a multi-threaded or
+> multi-process application, as with `perf record -e '{....}:S'`. Instead
+> users must use system-wide mode, or forgo the ability to sample counter
+> groups. System-wide mode is often problematic as it requires specific
+> permissions (no CAP_PERFMON / root access), or may lead to capture of
+> significant amounts of extra data from other processes running on the
+> system.
+>
+> Perf already supports the ability to collect per-thread counts with
+> `inherit` via the `inherit_stat` flag. This patch changes
 
-> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
-> > +struct kvm_tdx_init_vm {
-> > +	__u64 attributes;
-> > +	__u64 mrconfigid[6];	/* sha384 digest */
-> > +	__u64 mrowner[6];	/* sha384 digest */
-> > +	__u64 mrownerconfig[6];	/* sha384 digest */
-> > +	/*
-> > +	 * For future extensibility to make sizeof(struct kvm_tdx_init_vm) = 8KB.
-> > +	 * This should be enough given sizeof(TD_PARAMS) = 1024.
-> > +	 * 8KB was chosen given because
-> > +	 * sizeof(struct kvm_cpuid_entry2) * KVM_MAX_CPUID_ENTRIES(=256) = 8KB.
-> > +	 */
-> > +	__u64 reserved[1004];
-> 
-> This is insane.
-> 
-> You said you want to reserve 8K for CPUID entries, but how can these 1004 * 8
-> bytes be used for CPUID entries since ...
+I'm not sure about this part.  IIUC inherit and inherit_stat is not for
+per-thread counts, it only supports per-process (including children)
+events.
 
-I tried to overestimate it. It's too much, how about to make it
-1024, reserved[109]?
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+
+> `perf_event_alloc` relaxing the restriction to combine `inherit` with
+> `PERF_SAMPLE_READ` so that the combination will be allowed so long as
+> `inherit_stat` and `PERF_SAMPLE_TID` are enabled.
+
+Anyway, does it really need 'inherit_stat'?  I think it's only for
+counting use cases (e.g. 'perf stat') not for sampling.
+
+Also technically, it can have PERF_SAMPLE_STREAM_ID instead
+of PERF_SAMPLE_TID to distinguish the counter values.
+
+>
+> In this configuration stream ids (such as may appear in the read_format
+> field of a PERF_RECORD_SAMPLE) are no longer globally unique, rather
+> the pair of (stream id, tid) uniquely identify each event. Tools that
+> rely on this, for example to calculate a delta between samples, would
+> need updating to take this into account. Previously valid event
+> configurations (system-wide, no-inherit and so on) where each stream id
+> is the identifier are unaffected.
+
+I think you meant PERF_SAMPLE_ID not PERF_SAMPLE_STREAM_ID.
+IIUC the stream id is already unique.
+
+Thanks,
+Namhyung
+
+>
+>
+> Changes since v3:
+>  - Cleaned up perf test data changes incorrectly included into this
+>    series from elsewhere.
+>
+> Changes since v2:
+>  - Rebase on v6.8
+>  - Respond to James Clarke's feedback; fixup some typos and move some
+>    repeated checks into a helper macro.
+>  - Cleaned up checkpatch lints.
+>  - Updated perf test; fixed evsel handling so that existing tests pass
+>    and added new tests to cover the new behaviour.
+>
+> Changes since v1:
+>  - Rebase on v6.8-rc1
+>  - Fixed value written into sample after child exists.
+>  - Modified handling of switch-out so that context with these events
+>    take the slow path, so that the per-event/per-thread PMU state is
+>    correctly switched.
+>  - Modified perf tools to support this mode of operation.
+>
+> Ben Gainey (4):
+>   perf: Support PERF_SAMPLE_READ with inherit_stat
+>   tools/perf: Track where perf_sample_ids need per-thread periods
+>   tools/perf: Correctly calculate sample period for inherited
+>     SAMPLE_READ values
+>   tools/perf: Allow inherit + inherit_stat + PERF_SAMPLE_READ when
+>     opening events
+>
+>  include/linux/perf_event.h                    |  1 +
+>  kernel/events/core.c                          | 62 ++++++++++----
+>  tools/lib/perf/evlist.c                       |  1 +
+>  tools/lib/perf/evsel.c                        | 48 +++++++++++
+>  tools/lib/perf/include/internal/evsel.h       | 55 ++++++++++++-
+>  .../test-record-group-sampling-inherit-stat   | 62 ++++++++++++++
+>  tools/perf/util/evsel.c                       | 82 ++++++++++++++++++-
+>  tools/perf/util/evsel.h                       |  1 +
+>  tools/perf/util/session.c                     | 11 ++-
+>  9 files changed, 301 insertions(+), 22 deletions(-)
+>  create mode 100644 tools/perf/tests/attr/test-record-group-sampling-inhe=
+rit-stat
+>
+> --
+> 2.44.0
+>
 
