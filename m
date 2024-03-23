@@ -1,115 +1,118 @@
-Return-Path: <linux-kernel+bounces-112487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8AC8887A72
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 22:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A239887A77
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 22:26:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A1962820D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:22:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 862E1281F15
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBA758AA4;
-	Sat, 23 Mar 2024 21:22:54 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C4B5A104;
+	Sat, 23 Mar 2024 21:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EqkcFqFp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 450FB22625
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 21:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D677422625;
+	Sat, 23 Mar 2024 21:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711228973; cv=none; b=cbNi9RUwUb782QK2fVA8Elw2gAOtEzu/TpUKuj1PIdFYU+VICmkvgNkNXmpa3HYDm21aD2ppu7r8Bw2/Qb92ux4+GiM2xhXtZMHI71Z8o4Fqx01P0C/0+jaQHXxOdHjsK3Ku7u2l2U2ggc5TM3UoeMb+DT6Hj66CSplqSYSGBHg=
+	t=1711229152; cv=none; b=bqP4w9oz8mKOlR7caySfQB1a28TWuQEhMxHmfFnpSe1KjzHlS45oEmnVFa/ue9KyPYqLWdJ1ZnOgpwE6sY9lHPLLuH7CYUghZlNDCHzGfVM+hOjLW6wi/4XIYGx8z1Uky0MH19M7Edl1eNkW1cn3fN0AA0dVex2ICk3EsS2s50Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711228973; c=relaxed/simple;
-	bh=Was92oTx9Qdp+cCz+e7LV2mkVbHUkFYFsvLVJIDfAzk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=H5I0qzDcgUihtsJrsSxeod1vZ4GoHu2UVFFbMnYILsC9ZiVtQqHwPQk4kB9RZELV2ltGivInZ8aU/Zbdq3ZYdlWYkVK3isUru6IkX3cGNkO2rxw50xVJz/ERHHaWi1pVnF3hJt6he5daWnwiBxc/vbXOTy3d6NfDi82Ge0MPg2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c7e21711d0so235909239f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 14:22:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711228971; x=1711833771;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ukcmNO5QdCCXmLEZP1Y8y2188YS0sz6T0pRINK4qEio=;
-        b=LeELv6KC/8brZKVF3Ncuw/fJNZdkWaSgOK4o084U5ZFA5C8lrNID7VAZBA/hGF0Aal
-         EjsRyukiy7UdDLVj3XN4VgG028s6TzuzKsEpbFs5mGwIXdYt7yCYy4xqk2lnbdlc6VIW
-         MgH2I9QCneFmKEAYvEET+suVTTX286F4pE/l+H47930uyBrmqSBo0/ITkbcGZemXEhzo
-         nbqZmDk/SU1+OnbRzZPd18TH4FFy+84KBc5kdG8jJy6N0ovY//AYo0RL39WkPaeHX2ut
-         AjWGxDQ1uj2gBCPgtTxnKN9NnQcrS1EVWfjDN5QE3KpZNu8YhWqYyhROl3SykcNuFN8e
-         l7hw==
-X-Gm-Message-State: AOJu0YyIGRI80wFld2LkxysHcSZ+TJAqOpn58T8nevpmIhB7w/UZXWwt
-	G4m5Cg5qWtQLY5Vb4nzB7B/X2IC5OssZj6cBPAC5OL7nhfAmKgZueCc47Bth8M4Pyks98e2WdG5
-	i8NRrBK8wzb5jEkSjZLIuwgEv7VsRsBMaDo/1rJ/cKnokCP+Cc4xRsSVUVg==
-X-Google-Smtp-Source: AGHT+IFCH+MKcvUt48LwmBVq7KznRbgNFVpBpNBWfwIk7Dq/bOTWjZUQV+iVnnE6Pc6h7X35aWqH92KaTHdidzsTueu6RbKen7mT
+	s=arc-20240116; t=1711229152; c=relaxed/simple;
+	bh=ewbb3fGZ24mY6UOj2n/ZI82QsQGXdDkN3r2W4fSmfmE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tquH/isln7TBl99qthy/C6CID7Cb8Rz0a4ABUr+dq9POT5OlF0OWYa9TUarSXvX/+nXef45Qc/lw22hjCLiGWKkFwrFUhHoS+IvWzBV0AEyz+7qmeW/NbNNgCjH9tzowk6idZmuVNfHGUjWqAVYtfe0dVXstIEUVlohLu87g10g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EqkcFqFp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F0B2C433C7;
+	Sat, 23 Mar 2024 21:25:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711229151;
+	bh=ewbb3fGZ24mY6UOj2n/ZI82QsQGXdDkN3r2W4fSmfmE=;
+	h=Date:From:To:List-Id:Cc:Subject:In-Reply-To:References:From;
+	b=EqkcFqFpjaM+8tvpkykPmyU63xmAqu09XJoCsUBspu2o1DJkRmb+mcnzXQYMo/4Uo
+	 HJQbZZ+FHKExsRbaxOONgsRwx2VBBY0QRvJW/qQGUlTdWp+HS7rNR+xEpGE27ROtII
+	 9o+30gQOB4yvhejgGb+CBPkUzMyPFItiWZqumLu4SHe7FgYUsyppFN0C/G3YFROsn0
+	 LErzo/LwQ4p6t5cnX8Wdh7PmOofz2y2fiE90tXL+2BxvNxql6wQTCr8lSTDq7RIh9z
+	 C5u7ZFA9dJc38ohrd1EAA+3HUPT6NsBhHCB0yA/3sBzv5aGfEBroWu6UcbJX0SkpZt
+	 4kBo6WiR9ZA+w==
+Date: Sat, 23 Mar 2024 22:25:06 +0100
+From: Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Jonathan.Cameron@huawei.com, Laurent.pinchart@ideasonboard.com,
+ airlied@gmail.com, andrzej.hajda@intel.com, arm@kernel.org, arnd@arndb.de,
+ bamv2005@gmail.com, brgl@bgdev.pl, daniel@ffwll.ch, davem@davemloft.net,
+ dianders@chromium.org, dri-devel@lists.freedesktop.org,
+ eajames@linux.ibm.com, gaurav.jain@nxp.com, gregory.clement@bootlin.com,
+ hdegoede@redhat.com, herbert@gondor.apana.org.au, horia.geanta@nxp.com,
+ james.clark@arm.com, james@equiv.tech, jdelvare@suse.com,
+ jernej.skrabec@gmail.com, jonas@kwiboo.se, linus.walleij@linaro.org,
+ linux-crypto@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux@roeck-us.net, maarten.lankhorst@linux.intel.com,
+ mazziesaccount@gmail.com, mripard@kernel.org, naresh.solanki@9elements.com,
+ neil.armstrong@linaro.org, pankaj.gupta@nxp.com,
+ patrick.rudolph@9elements.com, rfoss@kernel.org, soc@kernel.org,
+ tzimmermann@suse.de
+Subject: Re: [PATCH v5 08/11] devm-helpers: Add resource managed version of
+ debugfs directory create function
+Message-ID: <20240323222506.4ffbdd71@thinkpad>
+In-Reply-To: <f7c64a5a-2abc-4b7e-95db-7ca57b5427c0@wanadoo.fr>
+References: <20240323164359.21642-1-kabel@kernel.org>
+	<20240323164359.21642-9-kabel__6885.49310886941$1711212291$gmane$org@kernel.org>
+	<f7c64a5a-2abc-4b7e-95db-7ca57b5427c0@wanadoo.fr>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.39; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2b0f:b0:47c:540:4eee with SMTP id
- fm15-20020a0566382b0f00b0047c05404eeemr199519jab.1.1711228971430; Sat, 23 Mar
- 2024 14:22:51 -0700 (PDT)
-Date: Sat, 23 Mar 2024 14:22:51 -0700
-In-Reply-To: <0000000000000f823606139faa5d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f8ca7706145a8a38@google.com>
-Subject: Re: [syzbot] [PATCH] fix array-index-out-of-bounds in bpf_prog_select_runtime
-From: syzbot <syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Sat, 23 Mar 2024 22:10:40 +0100
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-***
+> > -	return devm_add_action_or_reset(dev, gpio_mockup_debugfs_cleanup, chip);
+> > +	return devm_add_action_or_reset(dev, devm_debugfs_dir_recursive_drop,
+> > +					chip->dbg_dir);  
+> 
+> This look strange. Shouldn't the debugfs_create_dir() call in 
+> gpio_mockup_debugfs_setup() be changed, instead?
+> 
+> (I've not look in the previous version if something was said about it, 
+> so apologies if already discussed)
 
-Subject: [PATCH] fix array-index-out-of-bounds in bpf_prog_select_runtime
-Author: cam.alvarez.i@gmail.com
+Yeah, this specific user needs a more complicated refactoring.
 
-#syz test
+I was reluctant to do more complicated refactors in the patch that also
+introduces these helpers.
 
-BPF documentation specifies that the maximum stack depth for a BPF
-program is 512 bytes. This is not enforced when selecting a bpf
-interpreter, thus casuing an index out of bounds error when trying to
-obtain an interpreter with a bigger stack size.
+But Guenter asked me to split the patch anyway...
 
-This patch enforces the stack size to be not bigger than
-512.
+> >   static int pvt_ts_dbgfs_create(struct pvt_device *pvt, struct device *dev)
+> >   {
+> > -	pvt->dbgfs_dir = debugfs_create_dir(dev_name(dev), NULL);
+> > +	pvt->dbgfs_dir = devm_debugfs_create_dir(dev, dev_name(dev), NULL);
+> > +	if (IS_ERR(pvt->dbgfs_dir))
+> > +		return PTR_ERR(pvt->dbgfs_dir);  
+> 
+> Not sure if the test and error handling should be added here.
+> *If I'm correct*, functions related to debugfs already handle this case 
+> and just do nothing. And failure in debugfs related code is not 
+> considered as something that need to be reported and abort a probe function.
+> 
+> Maybe the same other (already existing) tests in this patch should be 
+> removed as well, in a separated patch.
 
-Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
----
- kernel/bpf/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Functions related to debugfs maybe do, but devm_ resource management
+functions may fail to allocate release structure, and those errors need
+to be handled, AFAIK.
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 696bc55de8e8..8167b3a721e9 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2196,7 +2196,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
- 		BUG_ON(1);
- 		return 0;
- }
--
-+#define BPF_MAX_STACK_SIZE 512
- #define PROG_NAME(stack_size) __bpf_prog_run##stack_size
- #define DEFINE_BPF_PROG_RUN(stack_size) \
- static unsigned int PROG_NAME(stack_size)(const void *ctx, const struct bpf_insn *insn) \
-@@ -2345,7 +2345,7 @@ static void bpf_prog_select_func(struct bpf_prog *fp)
- {
- #ifndef CONFIG_BPF_JIT_ALWAYS_ON
- 	u32 stack_depth = max_t(u32, fp->aux->stack_depth, 1);
--
-+	stack_depth = min_t(u32, stack_depth, BPF_MAX_STACK_SIZE);
- 	fp->bpf_func = interpreters[(round_up(stack_depth, 32) / 32) - 1];
- #else
- 	fp->bpf_func = __bpf_prog_ret0_warn;
--- 
-2.34.1
-
+Marek
 
