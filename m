@@ -1,47 +1,73 @@
-Return-Path: <linux-kernel+bounces-112311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1612E887833
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:06:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50F2D887837
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:16:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3A83282910
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:06:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EFE42827A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 11:16:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98FE168D0;
-	Sat, 23 Mar 2024 11:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25AE171BF;
+	Sat, 23 Mar 2024 11:15:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qj3JQEev"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pv0E5G3G"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA8C2C80;
-	Sat, 23 Mar 2024 11:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98AE210A09;
+	Sat, 23 Mar 2024 11:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711191967; cv=none; b=sFG4P7WUhDUSyb/H0mGV5TcY1+SSxHl/odOtqfYe3wvtezt6wMgnFy6nbUNAshJm6LDRrnUyPlCQrJfNncrs2FtNTATf5937k0Ai4EjEARkOzyLjVMZTIj3ThARTNKHzDKS/JXthPRgb1WjU+bFEItO+PxMDLwvkXc9+e2eECbY=
+	t=1711192552; cv=none; b=qUoKb4yf6BGgEpTEPeBPocdSi5Mm6is544fxJTIaay4/WPNDjG4SEvamcB3rez2bm6hy6yLCeF7IPh1FepzIIkcMzmQUdNwzrCYbW/jVHT+ceVcT7yVH9Ai2Y+0X0BjMO3qBUMhVT1IcT4ZIHdkcC2/SrRhyRZAZlAGO0gqeTv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711191967; c=relaxed/simple;
-	bh=GKfniStSmaKJBlwXjHGZn4ndTI8K8+feyQvaKzamjq8=;
+	s=arc-20240116; t=1711192552; c=relaxed/simple;
+	bh=SlfV5cjWVUljAWJeGNtrtZpskLDnOC9WVz4+emkRHbI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kd14rdWoQ3csYYlut4uuu1cPl0JQ4+sd/C51TPaoD14f2Run0R7xvli7lq07FQgFyvebtc2sugTPNvk7tUo0ZNzHwbNyu+O6eQxlWA3OiDjAm5Cm6KK7EDoPOe2kze4dcv822FHa4di/v0pC11GsMzA16K2jBpEeyLv46T4ZkB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qj3JQEev; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F4DFC433C7;
-	Sat, 23 Mar 2024 11:06:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711191966;
-	bh=GKfniStSmaKJBlwXjHGZn4ndTI8K8+feyQvaKzamjq8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qj3JQEevEWnr2rTBehVg/0C4JeqKTWP8uIMU5ZRwezo7KB09HU81dENjM9fKsQUgl
-	 30YrK3Qw4wkMcST6xDsx0Y1JfoYGxyXIeyy3wJG+cdruL+IKxlhM/2y+RzjOXgBlLZ
-	 sz2YQ9l1TkaAq27rrzCWl9pQk66z88n52LyTAae5ZztoBLVHe95XbPCPA3qtcXjLW+
-	 V2C0U97oO2CsQkNfsuOpGG+F3KyWhjhH+6/FPPcj/xmW1sUFcW7Xp+iJUFzD8DmqgO
-	 5zUpODxm1ZX3Sw25lv0OmMs1byVdR4CB8EGJJT6wMjAVDCm6dWeQuf24qkdQhe/O1L
-	 ZWcNuHwT+pT+g==
-Message-ID: <b8b33dab-809a-47d3-b4a3-cc487a02b5d3@kernel.org>
-Date: Sat, 23 Mar 2024 12:05:57 +0100
+	 In-Reply-To:Content-Type; b=Td0y8p8N/5V6msWrACkajZmCXaTjjFNAnejNNe5Nw1wYWMRBV5ZDLYl+aCmE9DTgKQb12DU5Bmh9j5IUKiivX8X+hViVHbLVe3EPrdX84Lq4yxMFoguLVCtkbfxGvML++h4ZO7WQ51N+xybkfBRi+4I60Ejcdidi5jaxUCaCCxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pv0E5G3G; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-513cf9bacf1so3991748e87.0;
+        Sat, 23 Mar 2024 04:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711192549; x=1711797349; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tGt+1+8Qbh/ugUeIyE1gvLzQWC5suhsgLzpxGXFTGCg=;
+        b=Pv0E5G3G+oepuUFh4zIIfVEBukImzB6jb0id25yKcTfwxT+QEO8qbZcO48gX4xRpgY
+         agF+Os+X7CAIdIZNBQ1henxt8KlsqcbAP8TtHpE6FQcCCgruTQCPZRAJeO9TSMVOW8gV
+         sC715mxvst2yNNQXjA2EYLXrnspXNUJhpOQgkvBDazT0Mom+7P2HogBebBLg332Rtbwz
+         yqKcSyQxnU4As2SBv2iXQJseOOIEMRxWPB3DPjXRlwAh613B8aBIdbX/PY4z1NTAY56N
+         qasUQbYOBaLzwRISKpa8xYnK5l4oB4xtfh0KDuFBYj6H3//ZVyjibOrjOcgys8NntK/Q
+         U/zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711192549; x=1711797349;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tGt+1+8Qbh/ugUeIyE1gvLzQWC5suhsgLzpxGXFTGCg=;
+        b=AEOi/y5Muftu6uXaytnhOgOIqbYBMpkL7uFY1XGkGRUP9lU192QiqJt+X6ukXyoP0O
+         ElTg0hoe6LM3PgjNFP7Fw3sPWAtNgfBrIg7+/NL5rzrdzQnfIqEG+zyWU5JmNy2WIVDK
+         d1IBkVXathOEOIZoINgUv1hY2mdOMvo+Hi2TxBWnL7ReWLmkM/u3y7ys+iJhUNMFApQy
+         x61Vv2pTOHtOflAJsHqbmAJ44zEVqhdu9dUerumDErAi25RqDaooJniLHXuq44vwmjZB
+         3YebOfN3gwZwoi3+6MxbKd4jYn7x3GLVFzUn4+E4hX/H+deudGT3fVuICuxxf+2gYRny
+         UbxA==
+X-Forwarded-Encrypted: i=1; AJvYcCXZemPVZJRA04stZu57NtbGyGa8h3RxyrjLXaZGJsFGyJtU6LIwKBEg2HMTa1To7pqsN7UK1aeKJqm6qbTZWKovrBTg6TLcSoBwvYCmBvhImt87Idum4kw+/kGgLNzwifcj5JEAmv9MRfKaVPnuaebi+rPTWijBKcUffuI51eVtUkMDo3M=
+X-Gm-Message-State: AOJu0YzhxoBSLSPthbRrcRvX2HX9U7stQdM2e1oGs2Ez97JyccmkFWVT
+	6Y4OEaHuvzZwlfYcN1pxsxU5jfv6AUrmjUfhiKqnFWftwlSleLs=
+X-Google-Smtp-Source: AGHT+IGjVr55U4jHXGz6ZpweB8ZoYcMpl2oUuYMLI43fUq46mUuU2xCwzJ3sMXFuDeF2mrP7xizlAQ==
+X-Received: by 2002:a19:8c19:0:b0:515:a25f:396f with SMTP id o25-20020a198c19000000b00515a25f396fmr883821lfd.36.1711192548444;
+        Sat, 23 Mar 2024 04:15:48 -0700 (PDT)
+Received: from ?IPV6:2a02:810b:f40:4600:fbb8:7547:139d:a40f? ([2a02:810b:f40:4600:fbb8:7547:139d:a40f])
+        by smtp.gmail.com with ESMTPSA id cw10-20020a056000090a00b0033e7a102cfesm4222385wrb.64.2024.03.23.04.15.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Mar 2024 04:15:48 -0700 (PDT)
+Message-ID: <63c6caac-536e-49e9-aad2-a0c1f8b783d8@gmail.com>
+Date: Sat, 23 Mar 2024 12:15:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,91 +75,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] ASoC: dt-bindings: Added schema for
- "nuvoton,nau8325"
-To: Seven Lee <wtli@nuvoton.com>, broonie@kernel.org
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
- KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
- scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-References: <20240322025405.3340064-1-wtli@nuvoton.com>
- <20240322025405.3340064-2-wtli@nuvoton.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240322025405.3340064-2-wtli@nuvoton.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v2 1/5] dt-bindings: mfd: Add rk816 binding
+Content-Language: en-US, de-DE
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Lee Jones <lee@kernel.org>, Chris Zhong <zyw@rock-chips.com>,
+ Zhang Qing <zhangqing@rock-chips.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Linus Walleij <linus.walleij@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+References: <20240323085852.116756-1-knaerzche@gmail.com>
+ <20240323085852.116756-2-knaerzche@gmail.com>
+ <bfe79f3d-1615-45a4-81f7-7e30740308d7@linaro.org>
+ <3c0d5aa2-55fb-4827-bcd4-256e6ae55ee9@gmail.com>
+ <f892767c-7e01-4099-b674-0eca6edf7bba@linaro.org>
+From: Alex Bee <knaerzche@gmail.com>
+In-Reply-To: <f892767c-7e01-4099-b674-0eca6edf7bba@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 22/03/2024 03:54, Seven Lee wrote:
-> Add a DT schema for describing nau8325 audio amplifiers. The key features
-> are as follows:
->   - Low SPK_VDD Quiescent Current
->   - Gain Setting with 2-wire interface
->   - Powerful Stereo Class-D Amplifier
->   - Low Output Noise
->   - Low Current Shutdown Mode
->   - Click-and Pop Suppression
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC (and consider --no-git-fallback argument). It might
-happen, that command when run on an older kernel, gives you outdated
-entries. Therefore please be sure you base your patches on recent Linux
-kernel.
+Am 23.03.24 um 12:02 schrieb Krzysztof Kozlowski:
+> On 23/03/2024 11:56, Alex Bee wrote:
+>> Hi Krzysztof,
+>>
+>> Am 23.03.24 um 11:32 schrieb Krzysztof Kozlowski:
+>>> On 23/03/2024 09:58, Alex Bee wrote:
+>>>> Add DT binding document for Rockchip's RK816 PMIC
+>>>>
+>>>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+>>>> ---
+>>>> changes since v1:
+>>>>     - lowercase/hyphens for regulator node names
+>>>>     - rename "-reg" to "-regulator" to make node names generic
+>>> I don't understand why did you do it. I did not ask for it. If you want
+>>> to rename, drop redundant regulator or reg suffix from node names.
+>> You didn't ask for that, thats true.
+>>
+>> I did it regardless, since node names should be generic and the "-reg"
+> device node names, here you do not have devices.
+OK. I wasn't aware there's a difference between device nodes and 
+devices. I'll drop the suffix from the regulators.
+> You did not respond to rest of my comments, so I assume you agree 100%
+> with them.
 
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline), work on fork of kernel
-(don't, instead use mainline) or you ignore some maintainers (really
-don't). Just use b4 and everything should be fine, although remember
-about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+I do.
 
-You keep skipping maintainers on almost all your patches. Why?
+Alex.
 
-Best regards,
-Krzysztof
-
+>
 
