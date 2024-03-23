@@ -1,144 +1,121 @@
-Return-Path: <linux-kernel+bounces-112457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB729887A17
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:08:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA133887A1B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD460B21336
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:08:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B05101C20B9B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0205859147;
-	Sat, 23 Mar 2024 19:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD18C59161;
+	Sat, 23 Mar 2024 19:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZYGj3MjQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gH2PGpXO"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC244E1C4;
-	Sat, 23 Mar 2024 19:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C34863D;
+	Sat, 23 Mar 2024 19:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711220891; cv=none; b=j1q723jb71rVwRiwTYsCrwYTpJk+/INFevNU/sND20624IpvDUss/BX6WvTkSage9q8fFJ01Huvpvz6cSlAkIs+zuc4XexMymxzkf4FXpd+1BjOVZFdOBPl5Y/CfhLTz7/VrSYdInCjMporfwq3I26dBCSxL8ewOBuigsbu11qM=
+	t=1711221024; cv=none; b=tficyJZVrPhkJQDz0xXn9VG4B55gZIN30oBgTxL7aeZcrLhNjKnlZ8Qa6zlbTACybbub7gs5lOPudk8rz18cSvv/7ra6TCUtKG9eveCFvVudM/KGErkGgxZW5gas8XgXZp2NEQExmbqwyb8pNawBfykZ/SyW+lWZ7TV4BnhXXHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711220891; c=relaxed/simple;
-	bh=9+sQO6Zyazf3riHAPr4vw0wfA2CTMxeeqFat8In/BUI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fALujtLUF0jwveFURXQ+LvXPGexJvhzv0XohL3mWua9sFBxxCAuJf7eQ/gCDCEXVqmQjGVXKKuRiuuUAqpOPN+jRxmw3AvWti/dpvvNDc8xzg/DQTV4MVxk6JsMFR9meij5M5JoQ9tVAwgf6JSCELdpqJCLYIS4t8mOSS/zoQwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZYGj3MjQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CE15C433C7;
-	Sat, 23 Mar 2024 19:08:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711220890;
-	bh=9+sQO6Zyazf3riHAPr4vw0wfA2CTMxeeqFat8In/BUI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZYGj3MjQ8L+ziQ43RKGtutkhb+qszI4YtjRXG5l2kQ6elGdn5A992hi3tuVRtt+3C
-	 DE86Amtg0TbggEFZfqUNSdEMQPiaTVRr8Hdlo7hSzuJ4TjyTHoychCuKOieoBQytKD
-	 sB4qd3fOrtb153vcs1V3slc19OLe7xXlDWFPx+suildW95BS+tWER1ao7B+/bnSfB1
-	 U8oZ7Vdnx+viv0HJyryrin35TqF+H0qALo4AkiOtOPuAhRS2oaw69rPKSJiJs6/l+f
-	 t15sYcoN3eEBIan1sxuWTqVSqG8c45Qy17nrHzuWS9Efl3LJyYInADtoeaS227xC5M
-	 2AvNHlTgPA3NA==
-Date: Sat, 23 Mar 2024 19:08:04 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Michal Simek <michal.simek@amd.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
-Message-ID: <20240323-kennel-mousiness-f8fc12777cf9@spud>
-References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
- <20240321-dp-live-fmt-v3-8-d5090d796b7e@amd.com>
- <a82d525c-737a-4ac4-9d71-e88f4ba69ea1@linaro.org>
- <20240322-absence-endurable-dee8a25643b7@spud>
- <4439d51f-072a-4b0f-a6e4-b95192eac83b@linaro.org>
+	s=arc-20240116; t=1711221024; c=relaxed/simple;
+	bh=ueCTxwBoM4hJHV9z5OKPHfj7Mct2XSkw55kGkcJ/dgY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YP6nRtunY4KFRs3NqiqSxtuenCKUwcwZAaLhqsmtXVKwWwDt6ndxAs4mIq/aSvo35uvZWMwRg9ewa4oIdxyK6GZlIESgb1vT4tzPJ0NmKUzXwb08OHk7GBqlbkX6BPShNkOvfySvjy92C8xv151uLz1hI/+BKKGAWts1jgJXwqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gH2PGpXO; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29b7164eef6so2378456a91.2;
+        Sat, 23 Mar 2024 12:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711221022; x=1711825822; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ueCTxwBoM4hJHV9z5OKPHfj7Mct2XSkw55kGkcJ/dgY=;
+        b=gH2PGpXOvYL/AV4fSRqSj4etmY+yAZCC+0xmFq8jzXgvyRHkRSnfKUpscXJ4ghA3EA
+         ef1xQtZ6qODMz1DvjD7ETJPjrJQvh2OxeXx0xGWZIBJsz9T5DhA75z7BVSZ2/6CO6fzX
+         zHjV1Xi8mEj5yQdIqEB5k87wD6dmVVT5gRftt0SOs+ZK3JSgFUtLptCeaGSFP37ycDQ5
+         u0MOFQSHqB1R3AgaRSf+TDOr+tIHNZ7xISwkwAYORXWhEjIpBGk0tXU1AUUxvtWkTMdT
+         Lq3p0ioCBFEYgi4UXL7ll1URBKqycBD/aTZbjN5NzjifSTgk/YUZZU7Xt8qLKKLaYZkx
+         b2EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711221022; x=1711825822;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ueCTxwBoM4hJHV9z5OKPHfj7Mct2XSkw55kGkcJ/dgY=;
+        b=qiNj0noY4XUgyZQiTGBC4UwO3YsLINIMOV3H2HeD3DyB81rPD6bBh9zQPqcAXelXbg
+         hIedEN/fNBUd03tFSNjzSJqh9iMxPrDXKp0jLl1hAKW9Tbrexy4bbHl8aB2OpPeaTCaP
+         OWwuwDO+Y2SqVdyaadlX+qJFT7q2FxG+mAXWt/FTobsZEb0JT8VbbaA36MlYeOnp/QUM
+         DWz2je90T+UftSodSWr4PGxxx50OXR1zfcPjMgFsdqG38iv7/IOS7ni2IN46E9/g0F0L
+         2l1/8xkVbjRooNDVcP4ZRZXIbap+EqreG4ohuz1jvzdCtEjtBsR5eL9vacA7sjgnKvsq
+         JDvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXbYAc+rW5JobqTAwWKY0S4Bec+I/kGIfhEHXckPdwKvSSjbr2XxuJnASH5EgSpug6KBOsekvsQY3HdRlY0VqXXuC4O2ZqqYSJSg2likVXpZXcsPHgCyhImGAYuBhV5pSMd0jpE+sTiwixnLNrjI0YhNpOFMN1gNjPamh8fFhKQjd2GJA/yOJtOq2BHSeCTdhApNmnA0wJRo5Ovt+ZVxYtXfdN/q7aAqg==
+X-Gm-Message-State: AOJu0YzPEIFMWKXDTf39W/vZIugo3RN+PF9DGl/mYLUKoUa/ZmhSrW90
+	PSeCsS6iw6otgKhKnvVLMpdJKjJi8h+l9Q+ZV6qg1mX1lrvjPyP1QXKHKr3ew4VzngisWtwjR1D
+	BMTq50XLBrLobaPikdGadGv7eqfU=
+X-Google-Smtp-Source: AGHT+IGwahkkdd9J1rTcWINtRLDJq4UgsSSVueZO7bQhn7sYYNOp7aQF0yI108KG9KgG8wRB0n2yrE30IMHnBoQhcjw=
+X-Received: by 2002:a17:90a:4947:b0:2a0:2f8e:76fc with SMTP id
+ c65-20020a17090a494700b002a02f8e76fcmr2513410pjh.28.1711221021961; Sat, 23
+ Mar 2024 12:10:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="APHpANq/M0OjDKgl"
-Content-Disposition: inline
-In-Reply-To: <4439d51f-072a-4b0f-a6e4-b95192eac83b@linaro.org>
-
-
---APHpANq/M0OjDKgl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240322233838.868874-1-boqun.feng@gmail.com> <20240322233838.868874-2-boqun.feng@gmail.com>
+ <068a5983-8216-48a5-9eb5-784a42026836@lunn.ch> <CAH5fLggdVDccDwBa3z+3YfjKFLegh7ZvcSzfhnEbAGSk=THKrw@mail.gmail.com>
+ <497668ec-c2d5-4cb4-9c2d-8e6f7129a42e@lunn.ch>
+In-Reply-To: <497668ec-c2d5-4cb4-9c2d-8e6f7129a42e@lunn.ch>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sat, 23 Mar 2024 20:09:57 +0100
+Message-ID: <CANiq72m4n2B0K5t1ZESMcL_k=Wgttuwd8=THBbOYYPq_D+4hsg@mail.gmail.com>
+Subject: Re: [WIP 1/3] rust: Introduce atomic module
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Alice Ryhl <aliceryhl@google.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <parri.andrea@gmail.com>, 
+	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, 
+	Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
+	Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, 
+	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>, torvalds@linux-foundation.org, 
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 23, 2024 at 11:22:22AM +0100, Krzysztof Kozlowski wrote:
-> On 22/03/2024 19:05, Conor Dooley wrote:
-> > On Fri, Mar 22, 2024 at 06:59:18AM +0100, Krzysztof Kozlowski wrote:
-> >> On 21/03/2024 21:43, Anatoliy Klymenko wrote:
-> >>> diff --git a/include/dt-bindings/media/media-bus-format.h b/include/d=
-t-bindings/media/media-bus-format.h
-> >>> new file mode 100644
-> >>> index 000000000000..60fc6e11dabc
-> >>> --- /dev/null
-> >>> +++ b/include/dt-bindings/media/media-bus-format.h
-> >>> @@ -0,0 +1,177 @@
-> >>> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
-> >>> +/*
-> >>> + * Media Bus API header
-> >>> + *
-> >>> + * Copyright (C) 2009, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-> >>> + *
-> >>> + * This program is free software; you can redistribute it and/or mod=
-ify
-> >>> + * it under the terms of the GNU General Public License version 2 as
-> >>> + * published by the Free Software Foundation.
-> >>
-> >> That's not true. Your SPDX tells something entirely different.
-> >>
-> >> Anyway, you did not explain why you need to copy anything anywhere.
-> >=20
-> > I assume by "copy anything anywhere" you mean "why did you copy a linux
-> > uapi header into the bindings?
->=20
-> Yes, I trimmed context too much.
->=20
-> The reasoning of copying some UAPI and claiming it is a binding was:
-> "Copy media-bus-formats.h into dt-bindings/media to suplement TPG DT node=
-=2E"
-> so as seen *there is no reason*.
->=20
+On Sat, Mar 23, 2024 at 3:10=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> Just looking down the road a bit, are there other features in the
+> standard library which are not applicable to Linux kernel space?
+> Ideally we want a solution not just for atomics but a generic solution
+> which can disable a collection of features? Maybe one by one?
 
-> Commit msg should explain why we are doing things.
+We requested a few of these in the past for both `core` [1] and
+`alloc` [2], and we got some which we use (see the `cfg(no_*)`s). It
+is what we called "modularization of `core`" too.
 
-Oh for sure. I was just wondering if you were complaining about the UAPI
-header or if that comment was about the copyright notice. If it had been
-the latter I was gonna point out the former :)
+[1] https://github.com/Rust-for-Linux/linux/issues/514
+[2] https://github.com/Rust-for-Linux/linux/issues/408
 
---APHpANq/M0OjDKgl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf8okwAKCRB4tDGHoIJi
-0uqqAP9b69AYr5D7FhDNnL/D8l5mnPP/f42epRSDhGpCwvmQwAD+P/S/aI8e14av
-MPfETCx+sejBWrcfF0p6HK7BDCtvTAg=
-=4lmD
------END PGP SIGNATURE-----
-
---APHpANq/M0OjDKgl--
+Cheers,
+Miguel
 
