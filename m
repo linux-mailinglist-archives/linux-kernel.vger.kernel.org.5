@@ -1,201 +1,123 @@
-Return-Path: <linux-kernel+bounces-112489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03305887A78
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 22:30:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0726887A7B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 22:35:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6972281FC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:30:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9381D1F2194A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BDC15A0FD;
-	Sat, 23 Mar 2024 21:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9931F5A119;
+	Sat, 23 Mar 2024 21:35:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S6baja4y"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M93ttoP4"
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B21F59150
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 21:30:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876E94DA14;
+	Sat, 23 Mar 2024 21:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711229421; cv=none; b=C3dBKbMbqV6y2nY7zIeRqTRJd0/ldUZ+Cxq5RBT9h5cuATWI+O5+I38Vx1+eksExjsht5jBTnHUm0XWoNoV7lbjU6Gw8e0HpC+wZmSTDvc/Z1IhakFBzZRKH0orQdmQ7oGZI0xqWgiT+u+GFsKcC/ib1iTT4SOriHk4eMOPf9EY=
+	t=1711229722; cv=none; b=bwz5MrxFLpoOgwTZmRkmkiQTOPW9RDsV63bhK14dJUl245gzDg99V4H+EfJTmcftPRxlPbpdhI5bxhdNkEi112e4y/DwZES1f0LOrHzhGFsaPIAK0xjOJLa3+gsc68yRvbEMHlXjzDNharBWQsRpM15mMjhngupNn5gCQtGBVnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711229421; c=relaxed/simple;
-	bh=qs37szhD33j51FDA574mpPbLAp/y5DVtH68K/we90lA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ullHCqRr5YNn3XUj92HACXAV/jXuL9ljgAHt2KGsOh/tU9tNhIi0udcIcS70roG+awKxsHqew2gIm5ME5/SxxI4OPedJAjR/YqjHTJ1AgkU1CdLYHMxEEa53JQ5im+FRtpDWEgZ3JdR3cOifeEzY8RPLklV7YODTbYl2VAjmJaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S6baja4y; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711229419; x=1742765419;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qs37szhD33j51FDA574mpPbLAp/y5DVtH68K/we90lA=;
-  b=S6baja4y3b5XZIJhruZW7iaoHojakfP9+Cl2tNQ5REEq4hcf3a5HRxdW
-   trxReuW+rUN4QUAFsSUeQWEi4GhS5Tw9/cY9UEPYEXyPRqnOvw+8HtN7I
-   9ctijnFgOJtF6YkEBgaGfM0WnCvGjPIm5wUoxD02KoCJASTTXU4lqm9/O
-   CHgddenewEwWcY3oOkrV+uKoRQebcq8WJnDuQ/aYyoyKtZlT2fW8SHECQ
-   P+QVgB7GH8ed6j9Z20t2YY3ZUuAUBRtcp5MGvdAjXho0OSet8c0JmWvsI
-   J0ij3vXvKYBs+spVbW8XXCNhXQY0nbnmCCXm3vOcCYuacX0++hcOzLUgs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11022"; a="31696889"
-X-IronPort-AV: E=Sophos;i="6.07,150,1708416000"; 
-   d="scan'208";a="31696889"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2024 14:30:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,150,1708416000"; 
-   d="scan'208";a="46228269"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 23 Mar 2024 14:30:16 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ro8wP-000LTr-2V;
-	Sat, 23 Mar 2024 21:30:13 +0000
-Date: Sun, 24 Mar 2024 05:30:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Luca Weiss <luca.weiss@fairphone.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: ERROR: modpost: "devm_drm_of_get_bridge"
- [drivers/usb/typec/mux/ptn36502.ko] undefined!
-Message-ID: <202403240530.I9vYXdrE-lkp@intel.com>
+	s=arc-20240116; t=1711229722; c=relaxed/simple;
+	bh=TFXIj5mvfTZYZ+/AQvqgbwvAx8bC445BW1C69Qbt5uU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d5tOn0e2jlv7gqOLpo2Rm+R76Di96Mq9RxdN+CWElE3xC5HM2mhLjVDe0mfnlwlhrhVkkyBJqE/dbbejcSagembFBrHqLHlPwNgOyd74V2eCZHYLTXErLfs6DY3VhvgQQB93/j+v47b+GpsU86Ch62cZCr40OPui2CYbNCpggsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M93ttoP4; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-221ffba5c8bso2031050fac.1;
+        Sat, 23 Mar 2024 14:35:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711229720; x=1711834520; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QroXftDALwHHBo/MBvbGld59w96AGtW6cgASiak20nw=;
+        b=M93ttoP46YVuvOAJFJWVOcKebrd/YJNnoBYY+7hpGSSkFxmiOu0z5qiuLHS9wtsBNm
+         9kNzwcgrzaRmgkHJKbymoNhlp1StDGPYHDVzsPfZIv4Ho5TwKHxK+gIy/glhEumbRhbA
+         9MtzXepoPIop6iNwK+xhuDt9oKUn8pkI1+aoH+Im1d5MVF/fyUQkDPpJfpoMUhj1xkyb
+         s5ifNv7aflzHcEdE8gfzqBt02wC/u7PVzkYu1EtHQrmCuEWVHcybuN28ej/d52aFmgbv
+         IzAlNJwxEL6OwmmuUpBWkmZ1T5SE6vvxPEhYFzt7UJHdqLz11fomlCbQKoGMydYa3hRE
+         lf+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711229720; x=1711834520;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QroXftDALwHHBo/MBvbGld59w96AGtW6cgASiak20nw=;
+        b=MsR8x0+h++IjuAzb3PB4j+kdY91W6cUa7uih8dUUFbCd0XC6oP5agbv0WjfvmhNCR6
+         EnmlwuKJLomC5DUeVs45/Jrx+I2gqaa2rzlM5HQj6WDYPQn6pVb84Lw4FlN0urfIYIuO
+         ZMK3jc5JXdwL3PYZXnpN7OpYKyOT1Ke+XOcAbMCjML2Pv3oj5p+bSmRVWThf9aVZ1tHz
+         WEmT4jN1JZku73xW0rTA42epfS5Ye4CZvipbjiUTGhJoWwh736NSU5nqKD9s1N51Cd35
+         fwaBln0TO0bxdlYJMSBoQD5FZ62dCj9JDwPFDwvcy88rAo9OpaYUt8wCDN0kx18n7iXG
+         HicQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXvoHQw4qJLa4YTJ3HOvDgbNnT/5CDv1UzHB4H2+Wl/FlUwpczrcqQaOoc0We+pydJpmEtj79mhzqiGjokhens9NKRmDeqcEZTKlzwSe6AZ2zbGwKHElVIrrV7dyshqjeXGmYfckdiifAy7QrTPR6WxrlCWG8fvVCFNkD6Q+RL11if75A==
+X-Gm-Message-State: AOJu0YxtIw7Al7Ca5VhhPYGZI2IYsQ6LA3YW7zwiWLeMRVFrbkyTdEcj
+	Cmjoqd4Q66rGsNJ9RoSKqUTu70GdL4sJR2SJtaz4pLT/0SSMEL2+
+X-Google-Smtp-Source: AGHT+IG65g5LySY7bsvCW6f4G3I6il3q9sPRPEMKhe/b+cpW2rb2p7s1fSaP7LFoDzyzJXR2YJLvKA==
+X-Received: by 2002:a05:6870:9714:b0:229:c291:bff8 with SMTP id n20-20020a056870971400b00229c291bff8mr3740190oaq.16.1711229720538;
+        Sat, 23 Mar 2024 14:35:20 -0700 (PDT)
+Received: from localhost ([2804:30c:1618:ed00:d152:440c:102b:144e])
+        by smtp.gmail.com with ESMTPSA id p1-20020aa78601000000b006e697bd5285sm1770874pfn.203.2024.03.23.14.35.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Mar 2024 14:35:19 -0700 (PDT)
+Date: Sat, 23 Mar 2024 18:35:48 -0300
+From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	Marcelo Schmitt <marcelo.schmitt@analog.com>, lars@metafoo.de,
+	Michael.Hennerich@analog.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add AD4000
+Message-ID: <Zf9LNPv16wsPsZA6@debian-BULLSEYE-live-builder-AMD64>
+References: <cover.1711131830.git.marcelo.schmitt@analog.com>
+ <81665b5f0d37d593e6d299528de8d68da8574077.1711131830.git.marcelo.schmitt@analog.com>
+ <20240323184454.201edbc3@jic23-huawei>
+ <CAMknhBFRa-AwM3o-AdDDmPnwLAer8x=9TJNasSbY2bu5h9mMdQ@mail.gmail.com>
+ <CAMknhBFZa4eQ1bbJQb+ESZdsbLh5xSBn+feMwmWbc58mT2UWPA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMknhBFZa4eQ1bbJQb+ESZdsbLh5xSBn+feMwmWbc58mT2UWPA@mail.gmail.com>
 
-Hi Luca,
+On 03/23, David Lechner wrote:
+> On Sat, Mar 23, 2024 at 3:18 PM David Lechner <dlechner@baylibre.com> wrote:
+> 
+> ...
+> 
+> > Here is what I would consider a reasonably complete binding for the
+> > AD40XX chips (excluding ADAQ for now as I suggested).
+> 
+> I missed one...
+> 
+> I also think it makes sense for the High-Z mode selection to be a DT
+> property since needing to enable it or disable it depends entirely on
+> what is connected to the analog input pins.
+> 
+> ---
+> 
+>   adi,high-z-input:
+>     type: boolean
+>     description:
+>       High-Z mode allows the amplifier and RC filter in front of the ADC to be
+>       chosen based on the signal bandwidth of interest, rather than the settling
+>       requirements of the switched capacitor SAR ADC inputs.
 
-FYI, the error/warning still remains.
+ok, will do the suggested changes, including provide AD and ADAQ in separate patches.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   484193fecd2b6349a6fd1554d306aec646ae1a6a
-commit: 8e99dc783648e5e663494434544bdc5160522de3 usb: typec: add support for PTN36502 redriver
-date:   5 months ago
-config: riscv-randconfig-001-20240323 (https://download.01.org/0day-ci/archive/20240324/202403240530.I9vYXdrE-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 23de3862dce582ce91c1aa914467d982cb1a73b4)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240324/202403240530.I9vYXdrE-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403240530.I9vYXdrE-lkp@intel.com/
-
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-total-media-in-hand-02.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-total-media-in-hand.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-trekstor.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-tt-1500.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-twinhan1027.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-twinhan-dtv-cab-ci.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-vega-s9x.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-videomate-m1f.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-videomate-s350.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-videomate-tv-pvr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-videostrong-kii-pro.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-wetek-hub.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-wetek-play2.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-winfast.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-winfast-usbii-deluxe.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-x96max.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-xbox-360.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-xbox-dvd.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-zx-irdec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/rc-core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/host/of_mmc_spi.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/leds/flash/leds-rt4505.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-a4tech.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-apple.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-aureal.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-belkin.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-bigbenff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cherry.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-chicony.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cypress.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-dr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-elecom.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-evision.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ezkey.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-vivaldi-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-google-stadiaff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-holtek-kbd.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-holtek-mouse.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ite.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kensington.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-keytouch.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kye.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lg-g15.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech-dj.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech-hidpp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-maltron.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-mf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-megaworld.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-monterey.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ortek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-prodikeys.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-petalynx.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-primax.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-redragon.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-saitek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-semitek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sjoy.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-speedlink.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-steam.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-steelseries.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sunplus.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-tmff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-tivo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-twinhan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-uclogic.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-zpff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-waltop.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rpmsg/rpmsg_char.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/perf/cxl_pmu.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwtracing/intel_th/intel_th_msu_sink.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/corsair-cpro.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/mr75203.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/buffer/kfifo_buf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-hub.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-scom.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/siox/siox-bus-gpio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/core/snd-pcm-dmaengine.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-sigmadsp.o
-WARNING: modpost: sound/soc/codecs/snd-soc-tlv320adc3xxx: section mismatch in reference: adc3xxx_i2c_driver+0x10 (section: .data) -> adc3xxx_i2c_remove (section: .exit.text)
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-wm-adsp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-i2s.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-formatter-pcm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netlink/netlink_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/nf_conntrack.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/nf_conntrack_netlink.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/nf_nat.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_defrag_ipv4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_reject_ipv4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_nat.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_defrag_ipv6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_reject_ipv6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/atm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/lec.o
->> ERROR: modpost: "devm_drm_of_get_bridge" [drivers/usb/typec/mux/ptn36502.ko] undefined!
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Marcelo
 
