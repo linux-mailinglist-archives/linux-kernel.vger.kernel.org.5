@@ -1,81 +1,123 @@
-Return-Path: <linux-kernel+bounces-112281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A867E8877DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:47:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9E9E8877DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 10:58:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3A251C20DD4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 09:47:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A41A1F21B5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 09:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2A2FC05;
-	Sat, 23 Mar 2024 09:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C23310A1E;
+	Sat, 23 Mar 2024 09:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EUU4sVy7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="x3z+EhBi"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DDA6D39;
-	Sat, 23 Mar 2024 09:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2D10DF6B
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 09:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711187237; cv=none; b=IO3P3DBomKSMFcvNln0wVZeA1WZHdoofWzhfc9vx+QW/OC7TTO0m455EAx2YDLGxf2YMplfaoNIzgPGLupp6FIcn9crI4EXrOUQRshlwNObc4W9mXFOgeodzx6pchJyfqXHuZPF5IR7gFy7mzEZcqBjAQWgBjBHVhTVBCFzzqvw=
+	t=1711187910; cv=none; b=mBi+Lsn+gOep3rPBiMpoydADIsW4w9twk5PJ5C9kuag8K0+fsSbQiCEldwKJCQ4XHXZLrRAprrLwPAuERMJlQMv7nYn4weyQ5pcc1DHex3fVry00UTP8ModT/7Osg99xKp8Z9Y68jzYlOi07fRprEnClwOxl/PrFEr0CI7wzOVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711187237; c=relaxed/simple;
-	bh=wxvzCkm4kET0OS7QfYEgwrchCejES0dLL0OfxVNRqzE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MeIPwve29q+ZnOBOqxP2kU87Za3qekbDc4NUZBvxlcAqZwgCGvtw9Jr9hTG845CcMYjqSagG3Trzvly9bbBMeqrvyTAluCCrxe+Ewdo6J0NAkCFP9d+IZ2NsNVIRLuO/oklzrXiAZytjQmC20b5o6xVJdCZ96q1BZdUYdziObQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EUU4sVy7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE057C433C7;
-	Sat, 23 Mar 2024 09:47:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711187237;
-	bh=wxvzCkm4kET0OS7QfYEgwrchCejES0dLL0OfxVNRqzE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EUU4sVy7j+vsEyQeXBmUI1KzR3dCw1jP7Ywa7eYXZZJg7pRl/LEoFfjpbX3v8ReTe
-	 FhNg4+M/sUurAeNV3XrBwLZrUW8ZVXx5l99kUpAF5MsshIrzirNv7v1cmmrpMM1Nzn
-	 leum/PTxADb0+pafJomCFECWl1steB17hkDitsQDPbAH8K0Ve5QT6LhIQ33l9+sXyE
-	 qgDFCiGctXfnjXo82gYgsCI11cdSnH1tyVhPTsIDVFc4bLILCF55ZmkYWsYkYYh4gF
-	 oWvJLfhDfHvc5q95yaTS79zlwc59yuT9sB4sWKkKP445OW/MszlwvFv8pAm3oYqHdF
-	 S5sM4aYEfaeag==
-Date: Sat, 23 Mar 2024 10:47:13 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/64] i2c: reword i2c_algorithm according to newest
- specification
-Message-ID: <54i4mvoxegs6vda7cwvlo6a6nn4qrdtibcpif2642bspid4mqu@5qjt5q2xyxoq>
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <20240322132619.6389-2-wsa+renesas@sang-engineering.com>
+	s=arc-20240116; t=1711187910; c=relaxed/simple;
+	bh=88XYaAUkw5+FIlN0k+w5zlI1HA5aU9i8sSo1I2tq1TI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HuBkk9s0Sv8IrUYxDYe1oRneitvT26jIv35xjg4kSWiaq548uZS7Sht6/WKm90iKPCQ6meLl1fKkYfpLjpcgFbNpDkFjUaIvjpQuhfXue8In5FREEEIVnkJcakJp36vEnLfiaRARK/CgG5U6QBrq95YKH6gyBuGDzircKa+FGgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=x3z+EhBi; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7dfacd39b9eso2045474241.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711187908; x=1711792708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ByMFrWADWxfCqmgsuCZcbqeVUMaKvKom3ZFjR5jUOA4=;
+        b=x3z+EhBiDuGM8qoo0YaBRIr2g2JtN6oF852DpOPxpgSDC3Io15Fx53EWLDscZ/hdy1
+         1S+YtWY3X6wyTGDQOTSWmsPFCJ5qjCG9Wtbe9nhFbc644Fh/HFPBgzeqg1WPKMlbpV22
+         kdTlJa+teMtVEwIj3Jk35NxgAE5fwkmaWL3LwnUlnTE80DF7sYXADPZup5w+1EnLpKR5
+         jm2Lc/4FjArKCTkRjBlvzYoWFYrK14ZqE52qALjh0ByHu/20pnYW29krb3Liy31+Bu0R
+         2yKSLnmQHrpT0xCixz6+59VXDGZK0L+uN8UpkWjLMmfCivsFDjCiHXdwLonYnDa1A6eC
+         MkdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711187908; x=1711792708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ByMFrWADWxfCqmgsuCZcbqeVUMaKvKom3ZFjR5jUOA4=;
+        b=mpaQ8FOaXQGTFfx4y/a8tnak4J2n6eiuRfyxI5mRRSxzIMN8zYZq73TzSL19vRQp7c
+         yjdLLLtL9dyRY3Pd2Yf3BLTQKgOllYwnYp51RMlzdu0l4Pbw/WMyodV8JhUBkdWAkii+
+         ePGKCfLBPemSjaTiMZ5da831lCQvRECZOnF1VcE9mogq0oyssyvhVx7EQl7ngptXj4Io
+         N7X2vMLjBcZXLj0tmrK2RqXFKOGEwwIcN5IYxZN7bSFWPWKp9c5HSNXilyS6Kfw6iJ9Z
+         crpsHHHRPDs1v8hCNJS/7RjxLoEAYBKSTBN1qmFr4TywwkwN8HdGRvGYAgXWOft3Z40x
+         BXsw==
+X-Forwarded-Encrypted: i=1; AJvYcCWj+oXAFX0SB1fGo+6Z7a6l3BUAWsJLBBx0ZRHa8pmJk0qgd3xSNYMpPpm34uGKD8LyIinlnEx/p5vLWifc6YI1RDTXFQ0CqfPGHd26
+X-Gm-Message-State: AOJu0Ywt3Wbyx0jqp3QUOYHX+2bAmLKgEprhBQEObLPYym3zGLSPka4z
+	WYdnHPI3RTrXVu/GiEjSfWcAFJP9rv/aYCTRuxyGLAL1BgFZq1+f0nXx2F0X6j1WJio7htr7Ydp
+	QpbSRsor1osUJVEWLYUbmZnZwaJ3DDAvFgt9E
+X-Google-Smtp-Source: AGHT+IHAgBE9Mt9tCncQbdq3kL3/YyCXJsjych9A8TVxZPi3s8EhiSf04grenMGGPKfBQGLsBYx9mC23O4pppsMnfhE=
+X-Received: by 2002:a05:6122:2524:b0:4d8:7296:f52b with SMTP id
+ cl36-20020a056122252400b004d87296f52bmr612108vkb.5.1711187907683; Sat, 23 Mar
+ 2024 02:58:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322132619.6389-2-wsa+renesas@sang-engineering.com>
+References: <20240322233838.868874-1-boqun.feng@gmail.com> <20240322233838.868874-2-boqun.feng@gmail.com>
+ <068a5983-8216-48a5-9eb5-784a42026836@lunn.ch>
+In-Reply-To: <068a5983-8216-48a5-9eb5-784a42026836@lunn.ch>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Sat, 23 Mar 2024 10:58:16 +0100
+Message-ID: <CAH5fLggdVDccDwBa3z+3YfjKFLegh7ZvcSzfhnEbAGSk=THKrw@mail.gmail.com>
+Subject: Re: [WIP 1/3] rust: Introduce atomic module
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <parri.andrea@gmail.com>, 
+	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, 
+	Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
+	Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, 
+	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>, torvalds@linux-foundation.org, 
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Wolfram,
+On Sat, Mar 23, 2024 at 12:52=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote=
+:
+>
+> > +//! These primitives should have the same semantics as their C counter=
+parts, for precise definitions
+> > +//! of the semantics, please refer to tools/memory-model. Note that Li=
+nux Kernel Memory
+> > +//! (Consistency) Model is the only model for Rust development in kern=
+el right now, please avoid to
+> > +//! use Rust's own atomics.
+>
+> Is it possible to somehow poison rusts own atomics?  I would not be
+> too surprised if somebody with good Rust knowledge but new to the
+> kernel tries using Rusts atomics. Either getting the compiler to fail
+> the build, or it throws an Opps on first invocation would be good.
 
-On Fri, Mar 22, 2024 at 02:24:54PM +0100, Wolfram Sang wrote:
-> Start changing the wording of the I2C main header wrt. the newest I2C
-> v7, SMBus 3.2, I3C specifications and replace "master/slave" with more
+We could try to get a flag added to the Rust standard library that
+removes the core::sync::atomic module entirely, then pass that flag.
 
-nit: "I3C 1.1.1" as you added the version to every specification.
-
-> appropriate terms. The first step renames the members of struct
-> i2c_algorithm. Once all in-tree users are converted, the anonymous union
-> will go away again. All this work will also pave the way for finally
-> seperating the monolithic header into more fine-grained headers like
-> "i2c/clients.h" etc.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-
-Andi
+Alice
 
