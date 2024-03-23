@@ -1,172 +1,126 @@
-Return-Path: <linux-kernel+bounces-112479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 418A4887A53
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:40:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6DB4887A56
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACD6BB214F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:40:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31FEB1F21E5F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8A13A29B;
-	Sat, 23 Mar 2024 20:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833883D0B9;
+	Sat, 23 Mar 2024 20:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="VY0sWCru";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="s81GrUQe"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aZaIhBrj"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C9305CB5;
-	Sat, 23 Mar 2024 20:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C775CB5;
+	Sat, 23 Mar 2024 20:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711226436; cv=none; b=MhYb7pOviimVJ7INgdj0fck5YeFhcM1KHsIG/0RquopL7xc/1KSqIss+W/3aBO4iks7d6trCh6E2Jk6SeJi4ZG95X+HNxkgC5dLah6Y9D9s+/131EETPk8GLO7z4s38TwcHt40OEUFURRySn/JpElvKznIEPkmTJl9DazRjG2+E=
+	t=1711226633; cv=none; b=hi7CjbQ4kXommqiqditQ1W4AnITH8yHuvMClUPA6OeftJNkWZHir7kXirjmjKI+JQf+FANEJcirzYPgiA6HejKl16dJV127KZ35h9nz3fSp25GystNltz2SVs1Ha/CViQV7s6eYGkMQD2aP8e4aBMNey8KnrJUYhYBKRB18NphQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711226436; c=relaxed/simple;
-	bh=dqT2p+eGF9cV0VVTE3dRZffrvfyZEaeOc2vlasLfqrw=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=H7wvXYb6JhwlNp7qYN7SpVssn4QZVsmaDrv9kax749h5+j2NGcbFgFyeetOHWtrtSd6KJG9tvpoUVmMrng27uSGL3aNjeZps8U4jBPZ3JxFCpTZSc55iNOdrfITFcwmikizQLkfhQRSMesIhpVZAelKqJiW+m2QcZH3qUc5Qmp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=VY0sWCru; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=s81GrUQe; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id C463360186;
-	Sat, 23 Mar 2024 21:40:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1711226429; bh=dqT2p+eGF9cV0VVTE3dRZffrvfyZEaeOc2vlasLfqrw=;
-	h=Date:To:Cc:From:Subject:From;
-	b=VY0sWCrupcanqcUIpH/W4OEHWcvCWEGbEK/kawZUO/7brqZ3HKWJU1OEUa4tCl63T
-	 1tUy8CUVh+mjbjuj462k1nXzj+hZwFnJVfs2bZk7A20cN0khOEa0p0N1SPHcH0pxiT
-	 fTyRIMf88HFogE6JvtFo1bOgRQMJYdDbCGIVAp8ec3XAn9ro5d8zES8Px912gG8EYh
-	 lre1jKr6qF4YxMs6E4BKdhLJPDnfQQv29aMY6vOLAN2IJFI8OXqflOemiHdzw5Unq2
-	 ZAx5ZpwlsdBJc3dyTzy7O4mQhbtAqFBDG/dcM3DA4ZDbuJYnR4v9nMxteY6LaS82W3
-	 HsH+Ixh5t2TfQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id kM9Zf_sNdsix; Sat, 23 Mar 2024 21:40:06 +0100 (CET)
-Received: from [192.168.178.20] (dh207-43-75.xnet.hr [88.207.43.75])
-	by domac.alu.hr (Postfix) with ESMTPSA id 909156017E;
-	Sat, 23 Mar 2024 21:40:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1711226405; bh=dqT2p+eGF9cV0VVTE3dRZffrvfyZEaeOc2vlasLfqrw=;
-	h=Date:To:Cc:From:Subject:From;
-	b=s81GrUQetl+qTXC02rwMKgR+8yujIDwCiaqyypahwjZKetceT4mH+C3elphDaKv/U
-	 VyTHEjsfh3TMPN7vYI82djCBkBcE+U7oqDGkZEPqPbwNUsMzOYVjYwjOLyRE5yEUJN
-	 Gw47IaWncVaX7YbJBxQwhdmuAHk/rFGVgi/NfJhiE8UsIqnbyuI3ZGl2OyHD1obLLR
-	 mQzCZuPouRX/lV5DzXda7JIBUrKSGfkeIAXLHmBXWetlDDUinPgVxSyMAcpGxrcMut
-	 Iu8XgrNvzyqR3hi6sd968Dwk06uPd/XkQuXbk8zqbder+G2LurCxighZDggIpq3T7B
-	 Qsw5RROpsS8rw==
-Message-ID: <391b3407-2093-4040-8bd4-61efa899e4cf@alu.unizg.hr>
-Date: Sat, 23 Mar 2024 21:40:03 +0100
+	s=arc-20240116; t=1711226633; c=relaxed/simple;
+	bh=7J83nDc0jpvLlG/MqtJFdTwHHLhkW4RHRwbfxlwcv8c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KoaCTgIn9B9MmpZ/AqqEjjIXXl/ERgtqLmZukuMShu0xZN/H2y8YTeoq7yAOfUT+jtKvu9xlWZi06OPkjqoe/cD28oCKUoRbIlK3UymNnOi0bLkHpgoaT7WkI8/VxTrm9g0hAkL2ylZlN4kKsx+S3sFNUGF+B/4KHbqJtAfn3NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aZaIhBrj; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=fCPVmTKTDT9EyIJ0uHfdJM731Jbw/NCBwbfsJq5CekM=; b=aZaIhBrjz22jMwp0SM08sH/hLU
+	1bFkboFc7sPTz8pg01jpLcH5dV8yN9VUI+ED0rTwa813vL3E/n5erXdu09eINZ7/sN8zweecNHRzX
+	mvSjZ2NFZWrUBHnJjqaNglpLOnWma6AITNJSydKL2hT9QVZBHwUmyw1/oJl8VhsEYF1cFpTw/cUK8
+	eWQ8GLG+ijPEnmz/l5eObr1eLnwYTivbg4BBp8gCRK8XGaEGgL6fWJzVdeeFM7iRndcWMQABZ76Ub
+	xmJblPfdQBu/K9WUwJ4iseww5L9rgeOemIlHaK8XLugINBZGqTAQq89K6AIj56PiTs0c+kryHhLym
+	useNT0sQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ro8DJ-0000000CWBj-2jRk;
+	Sat, 23 Mar 2024 20:43:37 +0000
+Date: Sat, 23 Mar 2024 20:43:37 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Amogh Cheluvaraj <amogh.linux.kernel.dev@gmail.com>
+Cc: airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org, tzimmermann@suse.de, corbet@lwn.net,
+	javier.carrasco.cruz@gmail.com, skhan@linuxfoundation.org,
+	dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Fix duplicate C declaration warnings
+Message-ID: <Zf8--QSkEMDe9zyp@casper.infradead.org>
+References: <20240323163148.23497-1-amogh.linux.kernel.dev@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Dmitry Safonov <0x7f454c46@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
- Colin Ian King <colin.i.king@gmail.com>
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: [BUG][KMEMLEAK] selftests/net/tcp_ao: unreferenced object (size 128)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240323163148.23497-1-amogh.linux.kernel.dev@gmail.com>
 
-Hi,
+On Sat, Mar 23, 2024 at 10:01:47PM +0530, Amogh Cheluvaraj wrote:
+> Fix duplicate C declaration warnings at
+> Documentation/gpu/drm-kms.rst that was found by
+> compiling htmldocs
 
-On the Ubuntu 22.04 LTS system, with recent iproute2-next toolsvand build 6.8-11743-ga4145ce1e7bc,
-kmemleak system reported the following memory leaks:
+I'm sure this removes the warning, but it removes all kernel-doc
+which exists in drivers/gpu/drm/drm_fourcc.c.  Isn't there a more
+granular fix than this?
 
-unreferenced object 0xffff9d998a7a9200 (size 128):
-comm "unsigned-md5_ip", pid 884102, jiffies 4297217176
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-backtrace (crc 2a283862):
-kmemleak_alloc (/home/marvin/linux/kernel/linux_torvalds/mm/kmemleak.c:1045)
-kmalloc_trace (/home/marvin/linux/kernel/linux_torvalds/./include/linux/kmemleak.h:42 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3802 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3845 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3992)
-tcp_ao_alloc_info (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:229)
-tcp_ao_info_cmd.constprop.0 (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:1959)
-tcp_v4_parse_ao (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:2038)
-do_tcp_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp.c:3655)
-tcp_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp.c:3738)
-sock_common_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/core/sock.c:3727)
-do_sock_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/socket.c:2311)
-__sys_setsockopt (/home/marvin/linux/kernel/linux_torvalds/./include/linux/file.h:34 /home/marvin/linux/kernel/linux_torvalds/net/socket.c:2336)
-__x64_sys_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/socket.c:2340)
-do_syscall_64 (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/common.c:52 /home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/common.c:83)
-entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/entry_64.S:129)
-unreferenced object 0xffff9d9a49065b00 (size 128):
-comm "unsigned-md5_ip", pid 884438, jiffies 4297233666
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-backtrace (crc 2a283862):
-kmemleak_alloc (/home/marvin/linux/kernel/linux_torvalds/mm/kmemleak.c:1045)
-kmalloc_trace (/home/marvin/linux/kernel/linux_torvalds/./include/linux/kmemleak.h:42 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3802 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3845 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3992)
-tcp_ao_alloc_info (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:229)
-tcp_ao_info_cmd.constprop.0 (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:1959)
-tcp_parse_ao (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:2033)
-tcp_v6_parse_ao (/home/marvin/linux/kernel/linux_torvalds/net/ipv6/tcp_ao.c:146)
-do_tcp_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp.c:3655)
-tcp_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp.c:3738)
-sock_common_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/core/sock.c:3727)
-do_sock_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/socket.c:2311)
-__sys_setsockopt (/home/marvin/linux/kernel/linux_torvalds/./include/linux/file.h:34 /home/marvin/linux/kernel/linux_torvalds/net/socket.c:2336)
-__x64_sys_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/socket.c:2340)
-do_syscall_64 (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/common.c:52 /home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/common.c:83)
-entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/entry_64.S:129)
-unreferenced object 0xffff9d9a8c98fb00 (size 128):
-comm "unsigned-md5_ip", pid 2063902, jiffies 4321736387
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-backtrace (crc 2a283862):
-kmemleak_alloc (/home/marvin/linux/kernel/linux_torvalds/mm/kmemleak.c:1045)
-kmalloc_trace (/home/marvin/linux/kernel/linux_torvalds/./include/linux/kmemleak.h:42 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3802 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3845 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3992)
-tcp_ao_alloc_info (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:229)
-tcp_ao_info_cmd.constprop.0 (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:1959)
-tcp_v4_parse_ao (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:2038)
-do_tcp_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp.c:3655)
-tcp_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp.c:3738)
-sock_common_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/core/sock.c:3727)
-do_sock_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/socket.c:2311)
-__sys_setsockopt (/home/marvin/linux/kernel/linux_torvalds/./include/linux/file.h:34 /home/marvin/linux/kernel/linux_torvalds/net/socket.c:2336)
-__x64_sys_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/socket.c:2340)
-do_syscall_64 (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/common.c:52 /home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/common.c:83)
-entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/entry_64.S:129)
-unreferenced object 0xffff9d9a49efdd00 (size 128):
-comm "unsigned-md5_ip", pid 2064231, jiffies 4321752509
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-backtrace (crc 2a283862):
-kmemleak_alloc (/home/marvin/linux/kernel/linux_torvalds/mm/kmemleak.c:1045)
-kmalloc_trace (/home/marvin/linux/kernel/linux_torvalds/./include/linux/kmemleak.h:42 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3802 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3845 /home/marvin/linux/kernel/linux_torvalds/mm/slub.c:3992)
-tcp_ao_alloc_info (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:229)
-tcp_ao_info_cmd.constprop.0 (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:1959)
-tcp_parse_ao (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp_ao.c:2033)
-tcp_v6_parse_ao (/home/marvin/linux/kernel/linux_torvalds/net/ipv6/tcp_ao.c:146)
-do_tcp_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp.c:3655)
-tcp_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/ipv4/tcp.c:3738)
-sock_common_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/core/sock.c:3727)
-do_sock_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/socket.c:2311)
-__sys_setsockopt (/home/marvin/linux/kernel/linux_torvalds/./include/linux/file.h:34 /home/marvin/linux/kernel/linux_torvalds/net/socket.c:2336)
-__x64_sys_setsockopt (/home/marvin/linux/kernel/linux_torvalds/net/socket.c:2340)
-do_syscall_64 (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/common.c:52 /home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/common.c:83)
-entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/linux_torvalds/arch/x86/entry/entry_64.S:129)
-
-Hope this helps,
-
-Best regards,
-Mirsad Todorovac
+> /home/amogh/Linux_Kernel_Workspace/linux-next/Documentation/gpu/drm-
+> kms:360: ./drivers/gpu/drm/drm_fourcc.c:344: WARNING: Duplicate C
+> declaration, also defined at gpu/drm-kms:39.
+> Declaration is '.. c:function:: const struct drm_format_info *
+> drm_format_info (u32 format)'.
+> /home/amogh/Linux_Kernel_Workspace/linux-next/Documentation/gpu/drm-
+> kms:461: ./drivers/gpu/drm/drm_modeset_lock.c:392: WARNING: Duplicate C
+> declaration, also defined at gpu/drm-kms:49.
+> Declaration is '.. c:function:: int drm_modeset_lock (struct
+> drm_modeset_lock *lock, struct drm_modeset_acquire_ctx *ctx)'.
+> 
+> Signed-off-by: Amogh Cheluvaraj <amogh.linux.kernel.dev@gmail.com>
+> ---
+> 
+> changes in v2
+> - add warnings found after compilation
+> - fix grammar in commit description
+> 
+> ---
+>  Documentation/gpu/drm-kms.rst | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/Documentation/gpu/drm-kms.rst b/Documentation/gpu/drm-kms.rst
+> index 13d3627d8bc0..a4145f391e43 100644
+> --- a/Documentation/gpu/drm-kms.rst
+> +++ b/Documentation/gpu/drm-kms.rst
+> @@ -357,9 +357,6 @@ Format Functions Reference
+>  .. kernel-doc:: include/drm/drm_fourcc.h
+>     :internal:
+>  
+> -.. kernel-doc:: drivers/gpu/drm/drm_fourcc.c
+> -   :export:
+> -
+>  .. _kms_dumb_buffer_objects:
+>  
+>  Dumb Buffer Objects
+> @@ -458,9 +455,6 @@ KMS Locking
+>  .. kernel-doc:: include/drm/drm_modeset_lock.h
+>     :internal:
+>  
+> -.. kernel-doc:: drivers/gpu/drm/drm_modeset_lock.c
+> -   :export:
+> -
+>  KMS Properties
+>  ==============
+>  
+> -- 
+> 2.44.0
+> 
+> 
 
