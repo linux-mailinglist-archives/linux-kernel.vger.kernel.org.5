@@ -1,104 +1,167 @@
-Return-Path: <linux-kernel+bounces-112447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A4138879F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:36:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F6268879F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A15491F21695
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:36:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D5B2B214C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 18:38:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 012B456440;
-	Sat, 23 Mar 2024 18:36:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B1C57315;
+	Sat, 23 Mar 2024 18:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q7euYnb+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fo/fN+to"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FBCB23BF;
-	Sat, 23 Mar 2024 18:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B36623BF;
+	Sat, 23 Mar 2024 18:37:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711219004; cv=none; b=iJSHc2dB3xyXKc+phRXMxTJloYFR+I4nnWCa8gJEr91vCAPM0epon2YKCexnbPL09wqnpNw4TVNAaz9uKTD76cIFMTer7YlWmZt4ESQP32FkwLSd/uaWa32ClJcYElPDP4snuKPFf0n0OaOhFh7KXncrUqpApLyGsntESlmUhNc=
+	t=1711219081; cv=none; b=tno0Pa6VhxEKjx50FDVKPCp0zP4PBnBXPDGE1b+6hvusSqxZ93yNS3uL887gOjl45JdfsH+ufW5oIIaQ0xLYnIOp3rURsZhxjcxOxg57eU0jE690YWMPRDoe/iZ1pXxD4mwbBHrPtu5mUYQr86K59/p7USzkuWOfQ0eaqMvFvMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711219004; c=relaxed/simple;
-	bh=HM5zQmEX8Cyws1CvVcKCjSQ2/yfz5SMsIZulXcYzZWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FZNFe0mJPXfCAIOpm9BzK4ZL+P5AzqG1lC3OzIK2HD3BYNRgS3aPz1ecC4J4Fi0Xix3mqQiVRQcf3RfMNpEynhYoIcxsG7wSwU0kR6o+EATeIyriMHXNReJMGGEsNvRDv4ldudGV9Wvu/JrktreWUKqmhAMOdheeaTTHfkPTRY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q7euYnb+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50ADEC433C7;
-	Sat, 23 Mar 2024 18:36:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711219003;
-	bh=HM5zQmEX8Cyws1CvVcKCjSQ2/yfz5SMsIZulXcYzZWE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Q7euYnb+DIfEHAFmpOeYb0oCz2v8PKBJLTtl612ohAey4kR2X7Fzu3LKjStT2TUhl
-	 r3o+3eQO6RoecBHp/9WRI6yvrItb7Ho+dS2SbE76UYwHc4UlJQo0IGGFJk0wRwwucu
-	 psYLDoj0lFDvRVBsKepuDWA8NCB4aQf6UxnLI0pO7Yd348/YfCRTidD4XHB+zEYDFr
-	 0HOQ0Z/NkHMFZx76SxZjd36GdGmIFD8Ndmg/uCdq3aOTSM1K+EwPPlOuL5yhu3TtUo
-	 OndU5o3FF3ZLjy6Hh85qC+IeSNyNSfM4LdNBrMb3cvIngNr887DMXadqTZDivWwTrs
-	 R6cT7axrtW1mA==
-Date: Sat, 23 Mar 2024 18:36:30 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Michael Hennerich <michael.hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?=
- <nuno.sa@analog.com>, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] docs: iio: new docs for ad7944 driver
-Message-ID: <20240323183630.6aafce66@jic23-huawei>
-In-Reply-To: <20240322-mainline-ad7944-doc-v2-0-0923d35d5596@baylibre.com>
-References: <20240322-mainline-ad7944-doc-v2-0-0923d35d5596@baylibre.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711219081; c=relaxed/simple;
+	bh=NS4fURU7kzpRSrqIPRb1K4MNYCHDTlf5iFlZrDqAgW0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KUca1IbkpTh8yTVDP0sp8wch2cU7b6BznQbmtrnTnRk6ojMx171Ftg5h3awnu5hosJ84QQ7+svCALrlvNC+VYqRs3xwfzaOcV3YQQZE08+0cPj7WVWyM1X4ESVeg2fvIHkMz0eaJg80Dw97Pfbp7+9GdPdMpVAiOt/qJy7hvBzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fo/fN+to; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33e570ef661so1495352f8f.1;
+        Sat, 23 Mar 2024 11:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711219078; x=1711823878; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hfH5WGMGx2/rhyl1QkGDZcJNlwpDJH+Q6GuhYoIntBE=;
+        b=fo/fN+to6jOvVMUajvrEH3+VLfLW5HX3akdgtp9Hevp587Stpej+gtV3Gv56Ndcwh0
+         PW3r/ZucIGlHJccWdX40eh4Ve2pnH7DDjCr7JDyNZfwppuNSVuaxUkFTX+yeoCa4UnqC
+         cxtdjcANJwVKuK76p2uyC86FLOoKdcw8YVa3wdyemRjcQTTWnR+He3DdHHGnumUy92FS
+         Hfal87Ydy26vmDsgQNJgmt4rQILmqdTpoe5V/ACOwWPSXf9lef/PGTY96OrfTwzQKVXE
+         DpMC7BghiRtl0859387X41XToiduqw7VEajUnJNfCNG5Soxxc2VIIhjaI9iUiqw93lD1
+         QtiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711219078; x=1711823878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hfH5WGMGx2/rhyl1QkGDZcJNlwpDJH+Q6GuhYoIntBE=;
+        b=Swf+0KeAwgA9lCLz+PdA3b+MrlIvoVGFbg/yxlEtkqpoHVRmTCrZH2olf+6s34LCvn
+         X6+XwNQzsxTiWhwmfqKfHI5zzlhp2mID7AWJrdrTfT8jHfDbDzOrPvjszl3uWkJIF87u
+         lq8F6+PiEEA3rGwcVOikRBQsLOGfSk0sOVqayT84aWAF/bZz+fQQL87S8Lxaofgq7YoE
+         +wWctArhPycwLPcv7PsnAYxi0x0dm/RV2NPF89j6gJkBMddReVJmTBohJiHlOybN/h7Y
+         Aid0A6Uzo0lJBdiL0t5fv92QfCTQSeCSE/t/onevSVwtPCpUsoKd2u9n4TlzMZxzFD+d
+         6HbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVkFizQURDKokRrDjZF6v82JAgW/f0dkSke4+B0JSvsYA3/PYtAVHhQn+asih/LD7Iw6mBfBYVZ05ustHp4r8yLVJTEIBmEGs5H19cF8qTG8rRnpJDQZgFMdFqLNmXQlO5/
+X-Gm-Message-State: AOJu0Ywofh737bp2JuYPWf1HN6g85Rw6kTgeGP7NB/pwmEE6APDFXkH+
+	MhETztLCHH3EkWFr87jbbWDGEsPra0WfEvXp1A/joPLX0rTck/Km6ainjxFLt2aPjWMdrjheel5
+	BRFFE/ApVZMoLBu7KZF9n7c9KV3Q=
+X-Google-Smtp-Source: AGHT+IEsIxO0glIvBi1dgQLe0aNKeZmhmgRSkvuB69Irs9ZeionhCzyCfv4nsPLzOYyQEumbSGQjon4EjFDDweSh8Ro=
+X-Received: by 2002:a5d:6b0d:0:b0:33e:1ea:2eeb with SMTP id
+ v13-20020a5d6b0d000000b0033e01ea2eebmr1950375wrw.67.1711219077568; Sat, 23
+ Mar 2024 11:37:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240323154652.54572-1-puranjay12@gmail.com> <20240323154652.54572-3-puranjay12@gmail.com>
+In-Reply-To: <20240323154652.54572-3-puranjay12@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 23 Mar 2024 11:37:46 -0700
+Message-ID: <CAADnVQKQiG_mmWFUa5Jzt1upCTOQTOGQP=h98z9Et8VSwm=L_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf,riscv: Implement bpf_addr_space_cast instruction
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Luke Nelson <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, bpf <bpf@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 22 Mar 2024 16:52:12 -0500
-David Lechner <dlechner@baylibre.com> wrote:
+On Sat, Mar 23, 2024 at 8:47=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
+m> wrote:
+>
+> LLVM generates bpf_addr_space_cast instruction while translating
+> pointers between native (zero) address space and
+> __attribute__((address_space(N))). The addr_space=3D0 is reserved as
+> bpf_arena address space.
+>
+> rY =3D addr_space_cast(rX, 0, 1) is processed by the verifier and
+> converted to normal 32-bit move: wX =3D wY
+>
+> rY =3D addr_space_cast(rX, 1, 0) has to be converted by JIT:
+>
+> Here I explain using symbolic language what the JIT is supposed to do:
+> We have:
+>         src =3D [src_upper32][src_lower32] // 64 bit src kernel pointer
+>         uvm =3D [uvm_upper32][uvm_lower32] // 64 bit user_vm_start
 
-> Adding documentation for the recently applied ad7944 driver.
-> 
-> Note: this also covers the features added in [1] that hasn't been
-> applied yet.
-> 
-> [1]: https://lore.kernel.org/linux-iio/20240311-mainline-ad7944-3-wire-mode-v1-1-8e8199efa1f7@baylibre.com/
-> 
-> Also updating the MAINTAINERS file to catch iio documentation since this
-> seems to have been overlooked.
-> 
-There goes deniability :)
+This is a bit misleading.
+src_lower32 are always equal to uvm_lower32
+and src_upper32 are either zero or uvm_upper32.
 
-Applied to the togreg-normal branch of iio.git.
+Hence most of the time llvm doesn't generate this insn,
+since it knows that upper 32 bit are uvm_upper32.
 
-Thanks,
-
-Jonathan
-
+> The JIT has to make the dst reg like following
+>         dst =3D [uvm_upper32][src_lower32] // if src_lower32 !=3D 0
+>         dst =3D [00000000000][00000000000] // if src_lower32 =3D=3D 0
+>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 > ---
-> Changes in v2:
-> - Removed some paragraphs that would be redundant for most drivers,
->   e.g. most of the buffer section.
-> - Link to v1: https://lore.kernel.org/r/20240313-mainline-ad7944-doc-v1-0-7860416726e4@baylibre.com
-> 
-> ---
-> David Lechner (2):
->       MAINTAINERS: add Documentation/iio/ to IIO subsystem
->       docs: iio: new docs for ad7944 driver
-> 
->  Documentation/iio/ad7944.rst | 130 +++++++++++++++++++++++++++++++++++++++++++
->  Documentation/iio/index.rst  |   1 +
->  MAINTAINERS                  |   2 +
->  3 files changed, 133 insertions(+)
-> ---
-> base-commit: bbafdb305d6b00934cc09a90ec1bb659d43e5171
-> change-id: 20240313-mainline-ad7944-doc-285b47ed6d35
+>  arch/riscv/net/bpf_jit.h        |  1 +
+>  arch/riscv/net/bpf_jit_comp64.c | 15 +++++++++++++++
+>  arch/riscv/net/bpf_jit_core.c   |  1 +
+>  3 files changed, 17 insertions(+)
+>
+> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> index 8a47da08dd9c..5fc374ed98ea 100644
+> --- a/arch/riscv/net/bpf_jit.h
+> +++ b/arch/riscv/net/bpf_jit.h
+> @@ -82,6 +82,7 @@ struct rv_jit_context {
+>         unsigned long flags;
+>         int stack_size;
+>         u64 arena_vm_start;
+> +       u64 user_vm_start;
+>  };
+>
+>  /* Convert from ninsns to bytes. */
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index f51b832eafb6..3c389e75cb96 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -1083,6 +1083,16 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>         /* dst =3D src */
+>         case BPF_ALU | BPF_MOV | BPF_X:
+>         case BPF_ALU64 | BPF_MOV | BPF_X:
+> +               if (BPF_CLASS(insn->code) =3D=3D BPF_ALU64 && insn->off =
+=3D=3D BPF_ADDR_SPACE_CAST &&
+> +                   insn->imm =3D=3D 1U << 16) {
 
+Let's add a generic helper like insn_is_zext(),
+call it insn_is_cast_user() ?
+and use it in all JIT-s ?
+I should have added it right away when I did x86 part. Sorry.
+
+And a comment next to the helper that addr space cast 0->1
+is for converting bpf arena pointers to user vma.
+Hence the name.
+
+Same comments for arm64 JIT arena support.
+
+pw-bot: cr
 
