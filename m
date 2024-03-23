@@ -1,184 +1,133 @@
-Return-Path: <linux-kernel+bounces-112380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 717BE887922
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:41:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B7C0887923
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:42:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C0401F21D62
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:41:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00D0D1F21A3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A6543AA4;
-	Sat, 23 Mar 2024 14:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51ADD405F9;
+	Sat, 23 Mar 2024 14:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hj6PPlgW"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eagpGKDt"
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A4739AFF;
-	Sat, 23 Mar 2024 14:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15299347C1
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 14:42:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711204895; cv=none; b=BIY3HEX/XD4mEkWXN5kl0sN91pYnpvqe5eWEXl01a/B+Ct15m+D7F7vhSadWujQZ7RnG/qJSW1D2dTDQAYa49NVfliPamYHp+CoRHl3s/cJVECKb9AIn3CSQ5qnNBrtA29Pnv1zvF0CYoAiwg0hnoMXZ9QlsL4Bn11fE7f91nUk=
+	t=1711204953; cv=none; b=LDgzvjRcECguTibZW8E8Atj4fb8egmEdpQEKZl9mH7YCLywRknmfRvVSmiWSeiGYC8vxIUIhz8ffTs7UR1sCs5WYnZfgcVrZc3hHg5QGznpxY4OsMtT1wjhRm4eMzsDT3XuOAfiqIcl/pRY5wjq6EhDBKETYapn0hUalDb+1mX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711204895; c=relaxed/simple;
-	bh=3VQPb1kSUvBE9uol6WHaPTW1ils3Q0RNDodZuAFBPrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EfE3mOcTF/PFksood+qZF2mxYcqyXD6coOURb4ANTnj8LW5bSEMG9izjv2DFwClypEheykfb9+omFFPQe6CWYDrBHsMf4f80HsD5Y6nKVUeUHPWyUQm5I/RiQ0e5MP3Jv6WSKnp+KUJrcfgl8vYdenC3BxPbDIwThHYIknmKk8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hj6PPlgW; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711204953; c=relaxed/simple;
+	bh=lpdWzs0G4QkbLHY3oSNIfGbDa/O741uDlcjYxbFyk1g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jjSiylojJzAuiykBHTiRRi/osFeq1wQqn82L9FBLkN1PCtRnsFgrwzDKmW9lCacXgGsFr3ByR3e8H4/fs6fVt+DOlcDdcGAi31MK4fml+gRlUmcrK8JL+qwbH8yHfyrO1djXHt9c5NEdZxVG/rFJCnp+EWGzHVKTppYo3MQaEDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eagpGKDt; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78a4b264305so18415685a.1;
-        Sat, 23 Mar 2024 07:41:34 -0700 (PDT)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5a4df75138eso1588681eaf.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 07:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711204893; x=1711809693; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JBoHlroea6/GTbzQ3nCArEwBGcVlF3t6u5u31TFOQ5c=;
-        b=hj6PPlgWxEc3chRnGmt2W62JPL7Vkyw92EXLbFwCU82nGwEMgByeV9L8sV99NtgcDu
-         FiAYrfeGOIUFBNR3S2CAZ80eOHPoKX4pr3UNjcGSD9wB9sw8BLaBujgdHGeSzaJDlB9R
-         N3TvwPz5OwFQofbJAz+sLvmrdeQnv0NcWF8JILrKGEIScrjEDXIQXP8/5shuqs+YXFOJ
-         RiQmZ5aY+jIQmc2mZiHPKKLndgLITl0HDhZBMKpQPbdGtFafMNiPdSJm/7u5wCZb+xTI
-         t4XlXpxxqwKj09vnnwZHm5+gJd411XIktX6twYs+uDn0v5E1SaAF0IY7uKxuQ4NOkYQ9
-         gsRQ==
+        d=gmail.com; s=20230601; t=1711204951; x=1711809751; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=7PBHdfeipzLq1tbOj5Iklwb0R2q7e/8MO1Jub1NAFcM=;
+        b=eagpGKDtwjotIzmNAUF3Ad+lJkMmEaI+RHbP0QRQEejTSpL8rCicjG9kYvi3wZ3jxK
+         OjCDScrXY/ueg+YWOEA8KBPgobKammwHp01oyyuV2klyUpBhcIVLSUCctVMKfclzjhdj
+         3DJ7FWJSH7Habrqa6jbZCo6wfH2cDigfAJFa5aQfWdvxWueyppd4rwYpoOuDbm5roscX
+         se+5UJXU5Zi7MjDBUH3iRRJ+Lwl2BfmCQeTvVJm/zI8jnF1Ubp8i3jNToVnF5RCZiTiP
+         EqXPEJjOUn1DGatz2I7nmlFqwfIheSBfCQOINQBUBuswFHyqOnLEqETKpMRt4QYYzhk4
+         E46Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711204893; x=1711809693;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JBoHlroea6/GTbzQ3nCArEwBGcVlF3t6u5u31TFOQ5c=;
-        b=AcLEum6HtWXHmFHiciQkRWi4w+pIivk8yiFwoItGWafe0x7N7EGSqKH/oW1rCAiU14
-         2WeURqvMz3/5470zqCAAXjXUpXkJYpsJ4RudTc7Qr+x6CX0T+lXUf/BsVmnUmNjuZfoB
-         bVWipmZp4lJjOimWy287SZgIdfHdwEUiw4FiKjFBzvSAwLM7w+24Z7frdAkbEYiBy7sp
-         oNpGugmaLTzLp81MR94dPaqy+4f4DOrKtk7fYVCacklJnnIWNMpCUCoPtN/y8QcP7CrA
-         OQ5Stt3fB/cpAOLvqo5/qqIsv/B3u05nmb29LVah4jnN2NhNk5cfCr9hllRJIQVR5/hI
-         B+mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXjJacXPaQCInYwjBsf0/NxUt3m4r+Q9PXhvQR4cMLbHzMdj6ukc0PQMdjsx8rwlI/ropoWvMitu7d0QIexs3Vzi0hxr0YskCzmgeP2pvXrCKi1cHhGmWkHjgtneSUVi9YIJjPaTK6FvW1PLYGzhCAccBr4a62lBiP/3rmrqBrVq3XkjN2bXsN0CgAT8GzupFm/nixLDAsEsXWnEjZMoSMEjeRt4SrDEA==
-X-Gm-Message-State: AOJu0YyHA6E+a8saLyXD9JwYBlr0sH6GaosjmCl8+jLQa6jnCKWTIamK
-	J9Gbn35QG8QgHhRuPdDGeijeTbkJASTm0Zm+hf2jdu3R3iDrz0ju
-X-Google-Smtp-Source: AGHT+IHlE4DNx4doL/DAGkVKI+43x0e7x4Fv3FAQsZNSiGDB9AFauE0kQDFVKk0ctSx+uT+Q0ETTzg==
-X-Received: by 2002:a05:620a:a53:b0:789:e5e3:f0f6 with SMTP id j19-20020a05620a0a5300b00789e5e3f0f6mr3057320qka.14.1711204893267;
-        Sat, 23 Mar 2024 07:41:33 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id k26-20020a05620a0b9a00b00789e2961225sm714626qkh.61.2024.03.23.07.41.32
+        d=1e100.net; s=20230601; t=1711204951; x=1711809751;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7PBHdfeipzLq1tbOj5Iklwb0R2q7e/8MO1Jub1NAFcM=;
+        b=JkyVkN5eeC+c1NQvf/kMooZfGenfMJJNT7YcdACc6Lv7SOyCdlkQVxFYm+CwXjnlfk
+         r+DL3NSw0EYZt9XpQHEjbVJ16QpJGi0IY2FVJQQT9q51OihDsa7dFth84rzuZIj0JELS
+         6Q4zwXes5mMLUHK4bWBnuzz8kGiHPe09XeAq9qlvZYkS/k1y0OIX+sm31bhf5dtLdM9H
+         5E6Mo//CCvSy9F5OPf6ewyXdCMr2qrX8pRgIlt6A1gWoh7KmTLYyDGmCl+aAKwj9nw36
+         kagw7JLmdNl1apzRrJElP1exFo3nvQx1af70JBov9PdBZb4rfba2ARaKw8jycyTj7Fr7
+         CMBQ==
+X-Gm-Message-State: AOJu0YzwBoQw5W8XZBIuMEAjbAYzJQb76kwE0BqYNIvdBmFAqPKnd2l6
+	KssnCSzpuW5cJZIKnOKyu0av88c2Ub28tWy8+AUHRRz9Z7mJAHMr
+X-Google-Smtp-Source: AGHT+IHbYaaRhRcqU9EE7SOy1QZ90rrmJQzV28faEYHpQP4Uv/OSB67Ybm4hn13H7nSTHL/QsZlIrg==
+X-Received: by 2002:a05:6358:7e54:b0:17f:5ed5:a684 with SMTP id p20-20020a0563587e5400b0017f5ed5a684mr2761197rwm.13.1711204950974;
+        Sat, 23 Mar 2024 07:42:30 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o26-20020a63921a000000b005dc89957e06sm3276031pgd.71.2024.03.23.07.42.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 07:41:32 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id B26BB1200066;
-	Sat, 23 Mar 2024 10:41:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sat, 23 Mar 2024 10:41:31 -0400
-X-ME-Sender: <xms:Gur-ZWGlrygVIdhmjfcRMO8f2KqnK_yM3c_pmOlAqe3R1VMeh5Oy4w>
-    <xme:Gur-ZXWswPwPnaBsdXbksb_ZWiQ5F8ffOydS-dTC6GeYK5ZgYB5yjFAJZWWO70APj
-    b_vxEE9KmOpR6kv1Q>
-X-ME-Received: <xmr:Gur-ZQLkNiJwpiV7m4s5J9fQjyKiZb-U3kTBdKwMR7p6ixKkOzrYCnGuIw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtgedgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:Gur-ZQFN9BSeI_hz14QaJdfZs4u78MwTSBsu6DtYCAAo8hlJmQVbRw>
-    <xmx:Gur-ZcVzY4Bzn8c1cxT7RJxxJXdSdbXxlN335lEOVLCQypmNXDW0zw>
-    <xmx:Gur-ZTPl3RSz78P2eoUZjtv3XT-G4sAshJnjp2v9wAD0ff_f3moYWA>
-    <xmx:Gur-ZT36BzZ4ta7f2FmNX3uZz8nJ7jEO2ameSfMkoHec6zn7xHHMJg>
-    <xmx:G-r-ZSzLmvm18a4Gr2ctMIWWUgK-28yXoEXnQMK7iuKOGyo04jGNiK5FdHsLPwvU>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 23 Mar 2024 10:41:29 -0400 (EDT)
-Date: Sat, 23 Mar 2024 07:41:28 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev,
-	Miguel Ojeda <ojeda@kernel.org>,	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,	torvalds@linux-foundation.org,
- linux-arm-kernel@lists.infradead.org,	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <Zf7qGONJY33KdLCH@Boquns-Mac-mini.home>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <Zf4fDJNBeRN5HOYo@boqun-archlinux>
- <03f629b6-1e4e-4689-9b69-db0b75577822@lunn.ch>
+        Sat, 23 Mar 2024 07:42:30 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	Nilesh Javali <njavali@marvell.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Chris Leech <cleech@redhat.com>
+Subject: [PATCH 1/3] uio_dmem_genirq: Fix build failure on 32 bit builds with 64 bit physaddr
+Date: Sat, 23 Mar 2024 07:42:26 -0700
+Message-Id: <20240323144228.3924542-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <03f629b6-1e4e-4689-9b69-db0b75577822@lunn.ch>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Mar 23, 2024 at 03:29:11PM +0100, Andrew Lunn wrote:
-> > There are also issues like where one Rust thread does a store(..,
-> > RELEASE), and a C thread does a rcu_deference(), in practice, it
-> > probably works but no one works out (and no one would work out) a model
-> > to describe such an interaction.
-> 
-> Isn't that what Paul E. McKenney litmus tests are all about?
-> 
+Builds on 32-bit systems with 64 bit physical address fail with
 
-Litmus tests (or herd, or any other memory model tools) works for either
-LKMM or C++ memory model. But there is no model I'm aware of works for
-the communication between two memory models. So for example:
+drivers/uio/uio_dmem_genirq.c: In function 'uio_dmem_genirq_open':
+drivers/uio/uio_dmem_genirq.c:63:39: error:
+	cast from pointer to integer of different size
 
-	Rust thread:
+drivers/uio/uio_dmem_genirq.c: In function 'uio_dmem_genirq_release':
+drivers/uio/uio_dmem_genirq.c:92:43: error:
+	cast to pointer from integer of different size
 
-	let mut foo: Box<Foo> = ...;
-	foo.a = 1;
-	let global_ptr: &AtomicPtr = ...;
-	global_ptr.store(foo.leak() as _, RELEASE);
+The conversion itself is safe since sizeof(phys_addr_t) it in general equal
+to or larger than sizeof(void *). Solve the problem by double-casting the
+conversion.
 
-	
-	C thread:
+Fixes: 019947805a8d ("uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion")
+Cc: Chris Leech <cleech@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/uio/uio_dmem_genirq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-	rcu_read_lock();
+diff --git a/drivers/uio/uio_dmem_genirq.c b/drivers/uio/uio_dmem_genirq.c
+index d5f9384df125..ac793e916f80 100644
+--- a/drivers/uio/uio_dmem_genirq.c
++++ b/drivers/uio/uio_dmem_genirq.c
+@@ -60,7 +60,7 @@ static int uio_dmem_genirq_open(struct uio_info *info, struct inode *inode)
+ 
+ 		addr = dma_alloc_coherent(&priv->pdev->dev, uiomem->size,
+ 					  &uiomem->dma_addr, GFP_KERNEL);
+-		uiomem->addr = addr ? (phys_addr_t) addr : DMEM_MAP_ERROR;
++		uiomem->addr = addr ? (phys_addr_t)(unsigned long)addr : DMEM_MAP_ERROR;
+ 		++uiomem;
+ 	}
+ 	priv->refcnt++;
+@@ -89,7 +89,7 @@ static int uio_dmem_genirq_release(struct uio_info *info, struct inode *inode)
+ 			break;
+ 		if (uiomem->addr) {
+ 			dma_free_coherent(uiomem->dma_device, uiomem->size,
+-					  (void *) uiomem->addr,
++					  (void *)(unsigned long)uiomem->addr,
+ 					  uiomem->dma_addr);
+ 		}
+ 		uiomem->addr = DMEM_MAP_ERROR;
+-- 
+2.39.2
 
-	foo = rcu_dereference(global_ptr);
-	if (foo) {
-		r1 = foo->a;
-	}
-	
-	rcu_read_unlock();
-
-no tool or model yet to guarantee "r1" is 1, but yeah, in practice for
-the case we care, it's probably guaranteed. But no tool or model means
-challenging for code reasoning.
-
-Regards,
-Boqun
-
-> tools/memory-model/litmus-test
-> 
-> 	Andrew
 
