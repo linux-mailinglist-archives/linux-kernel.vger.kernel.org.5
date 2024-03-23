@@ -1,161 +1,110 @@
-Return-Path: <linux-kernel+bounces-112346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ADA38878AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:40:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7838B8878AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:40:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F8A0B217A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:40:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18DC1B22C68
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEEE20B02;
-	Sat, 23 Mar 2024 12:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B3E3717D;
+	Sat, 23 Mar 2024 12:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="NLoMF8en"
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNOXMR9W"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0BACA6F
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 12:39:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69BBCA6F;
+	Sat, 23 Mar 2024 12:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711197594; cv=none; b=SS2Abh4ZHIiO7sUmaeeXSXlAhRriHu/NF+8E//N2ba4BoDaB6tTorDCtwNtgsteAPbHMcz91toDti7rm08RLdTite41WznteY7Ym5xcOBsxQt8c2hRqKEhtSL7A5rF1A7cHmb6r+XefGc01OEabr/GX/0OyGOkfQrlcCz/Ow17g=
+	t=1711197605; cv=none; b=Mkywwto2zkJ+jErmO6eS/ecxZO/i/AoxryuoSgjTT2YZ0YXR1QFh0ZiZGNmsiC6zsTctArCOmLimQHEoY2P7PltNrwP0aNTb+2PlwZtvWN7dbGsKkpEuN8TKPuEDPAWIZ5qwrzMceh9BlUj+D4IwybZtkewRXxnDTLsNxQ47qJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711197594; c=relaxed/simple;
-	bh=B/jAiF8VY/uocK1kJECN3SXXqitfg+zAL5Z6/SRJl6M=;
-	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
-	 Date:Cc:References:To; b=ey1Urwex0oHdvS4dUn/FC+G0JwN5IR2f83RlrJVVX/PCyq2X/FjyzxZ/BhTsH3Qu3jhTyf/SLMErayV2a4hV118kZW+r/lhQLR0F9NiEcY9TIWcmV0U5F+LeCpU4O3f0A9LA7Bhfc3h1B7Q8kiSrSmdjS1jCxcC0LqWk0XBkvmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=NLoMF8en; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1711197574; bh=4QAwHmLtmam4GpY5M1geCT/OMSnNUTDPePbkUBJaklk=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To;
-	b=NLoMF8enAFqjf01d9SzHNv95eYOAeFqS1KQdyQtg0GMBraKHXb+njaAlQpRiUbpfD
-	 vfmJIu7A3Qj+w79CGPfuA3keWQu0qVcmZtEhYgyQur1OKG72PT71kKwye35BDK87ok
-	 dUauFiYGI9BslO/mZsVK0rxOiw1VfMuzVl1tyPXw=
-Received: from smtpclient.apple ([240e:467:1bf4:3ea0:e479:c9a1:95aa:d444])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id 9DF97C22; Sat, 23 Mar 2024 20:39:31 +0800
-X-QQ-mid: xmsmtpt1711197571txj3ebjsu
-Message-ID: <tencent_BE1AABF8C6052FB4FD1DD9713962E0425609@qq.com>
-X-QQ-XMAILINFO: OKkKo7I1HxIeYsRDFAmm8SNn+E/R6zSHEkIhqlCo7BV7aYryBV9V/zL/PjuuAn
-	 bMxFX/trQWhKgEj09W+dtZ1fd18tQ+GxX3HIelQ0JcpLprrp+9Uc0Lzhl8IjRAd7XkqybMlZsNQ6
-	 dt9narQlT+bv/0SNmYPB7Z/fYdkhfFduFYNNFK4q2QfNUHsBqwOOudP/dv5q88CBB+pYNYRyE85L
-	 EKwVgBb7eVs7hKcINbKjBT+tuo1VwqVfqagn/TQPnfsftrFbDS26RvXTPHKSHQ7VucwBRxxOTVwE
-	 0en2jWtCJpC/mdqpB7GrDchr3+ciE+mePG4X0gnucNkdsg7sTYZjTt3W9QwASA6xbxWM+0Wnkvsm
-	 zDLnrEHOxzuE07UxhzgZHneNLkVBupp5UGIPJVwaSbE7UOtSvbd8qM5BnmtTsWEC0NwC2jsPbL5k
-	 NmOnLTyRRS/UzCKUGZh7z78Nps2Vx3mv2RJ4IOlahiR6kOHgWeExyJV8Y7mizHTfbi3LHVgaGDn2
-	 mPFWY6XNvEEsAyMO5wtG9NioCEBUGzqksDob78qlcGwALJt2dKZRniTfCCrI6M2Qpw5Re/oeUbu8
-	 0xMe1Nzva56/UDyZuO+Relk76LRrUd5j9xIalJfTN2VAh1NalaJHwV8G8s5cIjQ/v+LHYIWZOEHC
-	 fiVPsdzEBdqKd5NuW7+W7HFsKRL3sL3ys9AHph4eoFY7XNYqPssqrg0mRhsK91ZLkVNUz1cQOyqo
-	 EU6oEXNLpyAGIo77ZM5i4RT8Chzg8CAvAZYLTOY9J0ugSGiEYyd26gevbBSxBqOqw9kdNI8VKqRA
-	 CzBENb1ujJ+ek020HeycQ1x/5I3MCju+p7xTopK4l9xPE4gQQib2FK4hfFmBKgIISqvFI4fLx/n/
-	 Djko4NBNLy4KpGBGku7nvJLA6gtmVMTsuwRVXuvKkLrdSBiUmMUIzRukNiqx6jSCV3YNZasO9eIt
-	 oPUcvySbILJJ9xkZ1G3Jc6YN7ApAnr2+zd7FQ8+rE05Gy9fj035Mii+UOB+54YvenmFjIKfX2jNX
-	 ovOrm2Ug==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1711197605; c=relaxed/simple;
+	bh=cbSZolRDzHHEJXXy+xiONqpLt3MC8VuAdPFXF38KDkU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=alIdw9PrhmrlgeP+GKyaZohgvWmqWTqHjYKYpRCkDeM8sO2LgVgGGfoR9BLXjmfAAf5738PbMeS/nDz79ubOkT5UoaC1/6+uTzcHpUOFfmxXfT3QnwnIR3OLdsmbBqQnSRnvM9t6DjIQ62r4djCkP/nRr76Wyi4eYeqPrbos+Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNOXMR9W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C217C43399;
+	Sat, 23 Mar 2024 12:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711197605;
+	bh=cbSZolRDzHHEJXXy+xiONqpLt3MC8VuAdPFXF38KDkU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=lNOXMR9WCZz1sx4YPMuxBR4aCsOYTQoGLWRdvInLWitHiKWJmADDfu7UgNKcdmolB
+	 bRPBPEMov9gMUpgXZ2GqrdeAy6rfyuQgCvhhR5J6zKXm8i1tDlAWkajoShtiv9cePP
+	 znZLByFqd+JlcM3q45TkKJI7iNAN7hh2GS12uO/Atgg4xUjxR+QC9P+DinDeZFBeZK
+	 QUjIdZrh1RtEabIY+qxh5F7jC3WtUbySjZAJPWkXxnmdiV5OX3UMbsuC3u5i4CEADt
+	 zDFrh/VDcMd9tE74JNUMg345+gY4e6HuaIp9xVoNPOCo8gBofJq4aAbjZtMCAfIBVm
+	 d75l4ueuSW4Ig==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d68651e253so50570571fa.0;
+        Sat, 23 Mar 2024 05:40:05 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUePTZ+5DLhBi93kCTA8wM+lsXPY5YyZuS1vvVlm3FNLcJvN7iYJGNVk8Js972mH2BVSdPzoSw+kBxGa1x8qPIbnidcf3bwB08wR5pR05DXAsJr8uZH/vMSRm8C9CPJiNP/ooQI1VVb
+X-Gm-Message-State: AOJu0Yyv3O6zD+ykQ1vBYsl8dREnIht2PLMcpAHQCQsFlgHEXY+lAEmq
+	Tr8k7UR0+GgOdQZ1NeFZIrbIYKN0VicX3VzJ3Z4dWy1nOSixJLWYujaetkLBNy+G7at1q5N/R4N
+	9SGsaSg0Fa9ILGYJ6+8+hTHJG2AM=
+X-Google-Smtp-Source: AGHT+IEJvtbme/eS1L6D9RG94EKx6mhtYiagbSFm78FWvwIqq+NA3C7kvVkTUtUFsPi+e1xNkbGDEo6a9nBFejMQlu4=
+X-Received: by 2002:a2e:3615:0:b0:2d4:3b15:5561 with SMTP id
+ d21-20020a2e3615000000b002d43b155561mr1366070lja.40.1711197603491; Sat, 23
+ Mar 2024 05:40:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] RISC-V: only flush icache when it has VM_EXEC set
-From: Yangyu Chen <cyy@cyyself.name>
-In-Reply-To: <CAHVXubiosOMnUghsaG_zDyX4wPQ3QGY_UhsUO+PGWQ8v2tDbFw@mail.gmail.com>
-Date: Sat, 23 Mar 2024 20:39:21 +0800
-Cc: Palmer Dabbelt <palmer@dabbelt.com>,
- linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Conor Dooley <conor.dooley@microchip.com>,
- jszhang@kernel.org,
- Andrew Waterman <andrew@sifive.com>
-Content-Transfer-Encoding: quoted-printable
-X-OQ-MSGID: <29CFE66B-53EA-4AB7-94C5-840583BC9002@cyyself.name>
-References: <tencent_6D851035F6F2FD0B5A69FB391AE39AC6300A@qq.com>
- <mhng-3e79924e-d965-4156-836d-19cc8fb8cafe@palmer-ri-x1c9a>
- <CAHVXubiosOMnUghsaG_zDyX4wPQ3QGY_UhsUO+PGWQ8v2tDbFw@mail.gmail.com>
-To: Alexandre Ghiti <alexghiti@rivosinc.com>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+References: <20240321150510.GI8211@craftyguy.net> <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+ <20240321170641.GK8211@craftyguy.net> <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
+ <20240322091857.GM8211@craftyguy.net> <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
+ <fe09869c2d853bde8ce0feb537c4dab09014f5d9@craftyguy.net> <CAMj1kXEH4CTnQ3d+Z-TnqNUhFaFc1yH+Eaa6cHk9-vZ_geQ2nw@mail.gmail.com>
+ <8a64ba697d719bc9750e6fffc268e194dfde16e5@craftyguy.net>
+In-Reply-To: <8a64ba697d719bc9750e6fffc268e194dfde16e5@craftyguy.net>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Sat, 23 Mar 2024 14:39:51 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEk=7_BoaavZtZs7giBq4Kwk-QQoNjMZS=rWLJP=LdVLw@mail.gmail.com>
+Message-ID: <CAMj1kXEk=7_BoaavZtZs7giBq4Kwk-QQoNjMZS=rWLJP=LdVLw@mail.gmail.com>
+Subject: Re: x86_64 32-bit EFI mixed mode boot broken
+To: Clayton Craft <clayton@craftyguy.net>
+Cc: Hans de Goede <hdegoede@redhat.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-efi@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
+On Fri, 22 Mar 2024 at 21:34, Clayton Craft <clayton@craftyguy.net> wrote:
+>
+> March 22, 2024 at 11:30 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
+>
+>
+> >
+> > On Fri, 22 Mar 2024 at 19:57, Clayton Craft <clayton@craftyguy.net> wrote:
+> >
+> > I have pushed a branch below that reverts the patch you identified in
+> >
+> > 4 separate steps. Could you please check which step makes your system
+> >
+> > boot again?
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=efi-clayton
+> >
+>
+> Thanks a lot for doing this, I really appreciate the help!
+>
+> It looks like if I build from 868a7245, booting breaks again on my Bay Trail systems. If I put back 00e85ab5, they boot again.
+>
 
+OK.
 
-> On Mar 22, 2024, at 23:50, Alexandre Ghiti <alexghiti@rivosinc.com> =
-wrote:
->=20
-> On Wed, Mar 20, 2024 at 1:48=E2=80=AFAM Palmer Dabbelt =
-<palmer@dabbelt.com> wrote:
->>=20
->> On Tue, 09 Jan 2024 10:48:59 PST (-0800), cyy@cyyself.name wrote:
->>> As I-Cache flush on current RISC-V needs to send IPIs to every CPU =
-cores
->>> in the system is very costly, limiting flush_icache_mm to be called =
-only
->>> when vma->vm_flags has VM_EXEC can help minimize the frequency of =
-these
->>> operations. It improves performance and reduces disturbances when
->>> copy_from_user_page is needed such as profiling with perf.
->>>=20
->>> For I-D coherence concerns, it will not fail if such a page adds =
-VM_EXEC
->>> flags in the future since we have checked it in the __set_pte_at =
-function.
->>>=20
->>> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
->>> ---
->>> arch/riscv/include/asm/cacheflush.h | 7 +++++--
->>> 1 file changed, 5 insertions(+), 2 deletions(-)
->>>=20
->>> diff --git a/arch/riscv/include/asm/cacheflush.h =
-b/arch/riscv/include/asm/cacheflush.h
->>> index 3cb53c4df27c..915f532dc336 100644
->>> --- a/arch/riscv/include/asm/cacheflush.h
->>> +++ b/arch/riscv/include/asm/cacheflush.h
->>> @@ -33,8 +33,11 @@ static inline void flush_dcache_page(struct page =
-*page)
->>>  * so instead we just flush the whole thing.
->>>  */
->>> #define flush_icache_range(start, end) flush_icache_all()
->>> -#define flush_icache_user_page(vma, pg, addr, len) \
->>> -     flush_icache_mm(vma->vm_mm, 0)
->>> +#define flush_icache_user_page(vma, pg, addr, len)   \
->>> +do {                                                 \
->>> +     if (vma->vm_flags & VM_EXEC)                    \
->>> +             flush_icache_mm(vma->vm_mm, 0);         \
->>> +} while (0)
->>>=20
->>> #ifdef CONFIG_64BIT
->>> #define flush_cache_vmap(start, end) flush_tlb_kernel_range(start, =
-end)
->>=20
->> I'm not super worried about the benchmarks, I think we can just
->> open-loop assume this is faster by avoiding the flushes.  I do think =
-we
->> need a hook into at least tlb_update_vma_flags(), though, to insert =
-the
->> fence.i when upgrading a mapping to include VM_EXEC.
->=20
-> I'd say Yangyu is right when he mentions in the commit log: "For I-D
-> coherence concerns, it will not fail if such a page adds VM_EXEC flags
-> in the future since we have checked it in the __set_pte_at function.".
-> If a region indeed becomes executable, the page table will be modified
-> to reflect that and then will pass in __set_pte_at() which, as Yangyu
-> mentions, does the right thing. Or am I missing something?
->=20
+I have reshuffled the branch and put the patch you identified as the
+one fixing the boot first. Please double check whether this change
+still fixes the boot for you.
 
-I think so. Unless we have any other way to update PTE rather than
-using __set_pte_at, I think it=E2=80=99s safe. I=E2=80=99m too busy =
-these days to
-provide a micro enough benchmark.
+https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=efi-clayton-2
 
-Thanks,
-Yangyu Chen
+If so, we can try applying it to mainline, and merge it if it works there too.
 
+If not, we will need better debugging to figure out what the hell is going on.
 
