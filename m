@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-112339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9043A887899
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:21:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3946388789C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9E2CB2421A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:21:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 666751C226BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDC73EA91;
-	Sat, 23 Mar 2024 12:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D219141757;
+	Sat, 23 Mar 2024 12:20:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z47IzWox"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gNNLVOmm"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAF5F9EC;
-	Sat, 23 Mar 2024 12:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797CF3D0CD;
+	Sat, 23 Mar 2024 12:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711196444; cv=none; b=fHfEqMN21EX/vpfvTPdmVa7enJlnZ7mQ0i2HybTzZuvjLHQ9RopYROGjDDYhQuR65RTIOIzgS66/Vvvd+G6OrVsGaqkvPwAidvV0dPUwFNJR6RlbMyPNDzQzxMpDZRU4pTBYvwfauQRHygIESjlYpBtcORL82lxBRmnYRxXeyEk=
+	t=1711196445; cv=none; b=dkoqxIao6sIzKeJXw+C9Pg6nATNyKR5+L+xq/lNzUiFTklQ63Ptn7dPmIdLrblev9MhzCPyWckwxIMfgpOe6rPQkLLjekofvvC+h0fkuxcvP08VTSMextEKHP8xJAEMrwTrhmnnyIBZqX7mD7Yy5T7ZKaAsyw8GMvUEwUPh486w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711196444; c=relaxed/simple;
-	bh=6ticcK4tk3gbdNMWg4cy9Rctjbu6e1KTIJk2wbKW1QI=;
+	s=arc-20240116; t=1711196445; c=relaxed/simple;
+	bh=FAvMVuNp7mg5L7oKkcGsDQhCb9LCgqTOmyldi4lvU7Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uZdox6SlOIVLoFfcwuQpmIWq0zUPYHSvBuUUyLJten/idkPBL/x2XFfYpvApn9/D4yokpORwoJI5jnzJMX2GwPtHZfbDhxWkbNvWLrZH7O7e5MQXsq4GCwVcHpzBUQCEGPt/oHn/cUH2B5k1nPbv/zTv9V7YAlrsq2SlMjAtdEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z47IzWox; arc=none smtp.client-ip=209.85.218.53
+	 MIME-Version; b=bc3nIh/fZVAMaI1DK7F87bp11N2G8Ewo4D459HvgrF7d2/W30yZ7uDQ+w5ecq1k/20Fcp0tprdyH6u9cHy2Js2cprTSqkV3kixE0ZcVeJA/jSzyv7YZCLLEIc0aBZgziZYzCoWnNEAow4ErB0qfgveQA15hqwNUuxroHToXIuR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gNNLVOmm; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a44665605f3so337918666b.2;
-        Sat, 23 Mar 2024 05:20:42 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56be159c0b3so1838232a12.3;
+        Sat, 23 Mar 2024 05:20:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711196440; x=1711801240; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711196442; x=1711801242; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n1Jw5oqKQgZS0ALGTocIoCK3m4+0eTU5v4LaaAReICg=;
-        b=Z47IzWoxgQCAdR5C4iz2QuNZ5Wuono2j3Kur5mYBl+4gHtCEHOBSiLv69wLlR4RfVt
-         ZYXLtN01K0cfn89a8Nsa8cNfzG+yuSGrwkxH6gOAzz0rRCkcjz4CKThvmkq2Xk1TXvNI
-         LbkIW4a0FV7UPBBwAUt44JTsRWl+kscNsnzV8VKHVIkP13E9XpCI4J+d7cnFBKqQ3Jho
-         75JuVHrXOKdFiKfLDfV+03E6u73iorx+Jsg8/pcWHlKVnM3u0VUmooQwozN4C+nuVqQT
-         SpK8Hnee6N9oSHvRkwFomcu4Ql5nuNtY5exZtdEAqzk/51CYOim/h3Dm5cZHdEqh+EEm
-         Jjdg==
+        bh=sfD9ogcu0YmTy1/lsVwah5XVZmwlR7yt3/IMurcSlXI=;
+        b=gNNLVOmmkUzZ7RQccNruNzTYurYejQSpZZUJQQicr/aUSPP1OLdAa+KIJdjpXrGNI0
+         RXwuPFonjp1aMR6XQKyJZ330RSxjaBbqjnpZ3OZ4TGceICb9DNIomt4oZWDZiQISW+xv
+         J9JjsHUCwZGhyotcfmB1nMb0kXMh1kHWDO7vMUAm9i28ApK+UCvWk+emuLY3vom57Hgr
+         0zWP9zECoXAxyXugeqmW3ex1+ZyjnfdwnjijzA3GylJjux3Y9o78qCzdszYFaUJoBCvl
+         fBDQcXaNStAOA8Wq6WI3T4flT1XRq1Pi9U/5l+2P73hrS2fDWaB0ODBKSUOLw60v5xaa
+         CCew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711196440; x=1711801240;
+        d=1e100.net; s=20230601; t=1711196442; x=1711801242;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n1Jw5oqKQgZS0ALGTocIoCK3m4+0eTU5v4LaaAReICg=;
-        b=qMDmbDR300UU4HU1TxHCF1BwcbftsM7b1vazauk1D2dwm+e3z0aXWBBPLs4x0PBzmB
-         wEr1BTa0RKVwOv6hPUhDhzd57RZmgdJjcjzUbOale2k1QV5rV881E4m7VsKrm/Fnsj+c
-         ruB91KNX3g6CYSXLXmsKdmVeMGFf+0OqDjogr8/MLorBF8bnxDOgfaUC2hgQs42nGqon
-         FP0miLQvDgek1kMC7wGrRJvJJ9PaXRTpH983z3/PZqgavOIzciUCJkzNyP96yl0V4H8G
-         etcWUp82bO7edIOs3hgZ3kYF+BeeE2BxEdkiOed7HCm9l44W+tQ51WNr2Zgd/O+mNzWV
-         iubw==
-X-Forwarded-Encrypted: i=1; AJvYcCVBMvF9OLGuDvtEZEiqH27vHyG1kCA8CxgXQc3dZYxm8Twv+9wAJTnkLds5RKf9JpiWlFyxgj5v2GSHl5U5yUhW1xBtg9sGo1Gq+PCBP6/Gmk8QW6BPyu+83WKWEO14kqvHpSnESLzO+A==
-X-Gm-Message-State: AOJu0YyOsiyk5NoeFIkykbAGuAcisv7CaGJ0w2ZklBtP/POWe3y8cmhi
-	prztBj7De9Rv7G9fKI2w3o0n1/5H9+QSxKTWpLLDNjSB423vGih4WyNHNsoD/ho=
-X-Google-Smtp-Source: AGHT+IFMXXWvbnEu3yNR+TnQhMi1OEbFTUSFn6yDOSyDGtsO8WrBRrTrDw16uHPYuG5SVYKcpBfNBw==
-X-Received: by 2002:a17:906:3ca:b0:a46:d49d:eebb with SMTP id c10-20020a17090603ca00b00a46d49deebbmr1457512eja.16.1711196440632;
-        Sat, 23 Mar 2024 05:20:40 -0700 (PDT)
+        bh=sfD9ogcu0YmTy1/lsVwah5XVZmwlR7yt3/IMurcSlXI=;
+        b=OYjdLqlyaeL8QErkmh5+y2BLDeXiL8C0C5sQeHpcd323mGMPmcPQ12mZwOFg92bADg
+         cj2yjANz9F6/O56FXPrDVZ+UQYpyEA8a+aGnjXmr8EhUkS0RpINpfC2JOX1EqeRwfd3R
+         EaTepd8n2hZdl2liGkAATtrR56IBDyi11E9t30Rq0OkAtsP8bczh7HsJ4c2dCwGOoMVo
+         JDV41CjvQ46ObM6+0LygcjZ6rLwTtF7foOCUc52J9+dDWXd5Zee8MmAxGphU3MgzIMtd
+         oRK1uINtVKvMsXtV0lxGmxgo0QVcic8Oh4LLrHyOpEg4iTYI0PX25I/+fBa5ilRz5OuH
+         6nCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVS4EIqJgrtFoCsrPKZ+6a5ugHzRPfJgcoEnTBYsYMZNpfoZCAifaIDplvoUZTcT86269LKfwMI81Ybkwzp0UsU1YHPSJB7PfBMcLORX1ScgiShAAkVfCzY2murqCUEONQc6lxa1dBBxw==
+X-Gm-Message-State: AOJu0YxwfVTCHF9kF263f70r1M4O7yrjVid3v69CHcg0Ss3vWg/sx/lV
+	CUNOJULYC2LQNsMoMCHJgbamb+oFt2vA6NZhnNm1okJrxM12Fajb
+X-Google-Smtp-Source: AGHT+IFs0dFgeRNaPVOY9h1HgOX/80K85jL0TE6TFdzWwZzq+TZJOQe8wZ/rWzadVd0jlOz3G1xtCw==
+X-Received: by 2002:a17:906:24d9:b0:a45:2e21:c776 with SMTP id f25-20020a17090624d900b00a452e21c776mr1568865ejb.3.1711196441841;
+        Sat, 23 Mar 2024 05:20:41 -0700 (PDT)
 Received: from 764c7355c69b.v.cablecom.net (84-72-156-211.dclient.hispeed.ch. [84.72.156.211])
-        by smtp.gmail.com with ESMTPSA id gx24-20020a1709068a5800b00a46f0d133b9sm857265ejc.98.2024.03.23.05.20.39
+        by smtp.gmail.com with ESMTPSA id gx24-20020a1709068a5800b00a46f0d133b9sm857265ejc.98.2024.03.23.05.20.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 05:20:40 -0700 (PDT)
+        Sat, 23 Mar 2024 05:20:41 -0700 (PDT)
 From: Lothar Rubusch <l.rubusch@gmail.com>
 To: lars@metafoo.de,
 	Michael.Hennerich@analog.com,
@@ -78,9 +78,9 @@ Cc: linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	eraretuya@gmail.com,
 	l.rubusch@gmail.com
-Subject: [PATCH v3 1/6] iio: accel: adxl345: Pass function pointer to core
-Date: Sat, 23 Mar 2024 12:20:25 +0000
-Message-Id: <20240323122030.21800-2-l.rubusch@gmail.com>
+Subject: [PATCH v3 2/6] iio: accel: adxl345: Make data_range obsolete
+Date: Sat, 23 Mar 2024 12:20:26 +0000
+Message-Id: <20240323122030.21800-3-l.rubusch@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240323122030.21800-1-l.rubusch@gmail.com>
 References: <20240323122030.21800-1-l.rubusch@gmail.com>
@@ -92,87 +92,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a function pointer argument to the probe function in
-the core module to provide a way to pre-configure the bus.
+Replace write() data_format by regmap_update_bits(), because
+bus specific pre-configuration may have happened before on
+the same register. Changes then need to be masked.
 
-The passed setup function can be prepared in the bus
-specific spi or the i2c module, or NULL otherwise. It shall
-then be executed in the bus independent core module.
+Remove the data_range field from the struct adxl345_data,
+because it is not used anymore.
 
 Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
 ---
- drivers/iio/accel/adxl345.h      |  3 ++-
- drivers/iio/accel/adxl345_core.c | 10 +++++++++-
- drivers/iio/accel/adxl345_i2c.c  |  2 +-
- drivers/iio/accel/adxl345_spi.c  |  2 +-
- 4 files changed, 13 insertions(+), 4 deletions(-)
+ drivers/iio/accel/adxl345_core.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
-index 284bd387c..3c1ded0c2 100644
---- a/drivers/iio/accel/adxl345.h
-+++ b/drivers/iio/accel/adxl345.h
-@@ -28,6 +28,7 @@ struct adxl345_chip_info {
- 	int uscale;
- };
- 
--int adxl345_core_probe(struct device *dev, struct regmap *regmap);
-+int adxl345_core_probe(struct device *dev, struct regmap *regmap,
-+		       int (*setup)(struct device*, struct regmap*));
- 
- #endif /* _ADXL345_H_ */
 diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adxl345_core.c
-index 8bd30a23e..ae12836b5 100644
+index ae12836b5..33424edca 100644
 --- a/drivers/iio/accel/adxl345_core.c
 +++ b/drivers/iio/accel/adxl345_core.c
-@@ -197,13 +197,21 @@ static void adxl345_powerdown(void *regmap)
- 	regmap_write(regmap, ADXL345_REG_POWER_CTL, ADXL345_POWER_CTL_STANDBY);
- }
+@@ -42,13 +42,13 @@
+ #define ADXL345_DATA_FORMAT_4G		1
+ #define ADXL345_DATA_FORMAT_8G		2
+ #define ADXL345_DATA_FORMAT_16G		3
++#define ADXL345_DATA_FORMAT_MSK		~((u8) BIT(6)) /* ignore spi-3wire */
  
--int adxl345_core_probe(struct device *dev, struct regmap *regmap)
-+int adxl345_core_probe(struct device *dev, struct regmap *regmap,
-+	int (*setup)(struct device*, struct regmap*))
- {
- 	struct adxl345_data *data;
- 	struct iio_dev *indio_dev;
- 	u32 regval;
- 	int ret;
+ #define ADXL345_DEVID			0xE5
  
-+	/* Perform optional initial bus specific configuration */
-+	if (setup) {
-+		ret = setup(dev, regmap);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	ret = regmap_read(regmap, ADXL345_REG_DEVID, &regval);
- 	if (ret < 0)
- 		return dev_err_probe(dev, ret, "Error reading device ID\n");
-diff --git a/drivers/iio/accel/adxl345_i2c.c b/drivers/iio/accel/adxl345_i2c.c
-index a3084b0a8..4065b8f7c 100644
---- a/drivers/iio/accel/adxl345_i2c.c
-+++ b/drivers/iio/accel/adxl345_i2c.c
-@@ -27,7 +27,7 @@ static int adxl345_i2c_probe(struct i2c_client *client)
- 	if (IS_ERR(regmap))
- 		return dev_err_probe(&client->dev, PTR_ERR(regmap), "Error initializing regmap\n");
+ struct adxl345_data {
+ 	const struct adxl345_chip_info *info;
+ 	struct regmap *regmap;
+-	u8 data_range;
+ };
  
--	return adxl345_core_probe(&client->dev, regmap);
-+	return adxl345_core_probe(&client->dev, regmap, NULL);
- }
+ #define ADXL345_CHANNEL(index, axis) {					\
+@@ -227,14 +227,13 @@ int adxl345_core_probe(struct device *dev, struct regmap *regmap,
+ 	data = iio_priv(indio_dev);
+ 	data->regmap = regmap;
+ 	/* Enable full-resolution mode */
+-	data->data_range = ADXL345_DATA_FORMAT_FULL_RES;
+ 	data->info = device_get_match_data(dev);
+ 	if (!data->info)
+ 		return -ENODEV;
  
- static const struct adxl345_chip_info adxl345_i2c_info = {
-diff --git a/drivers/iio/accel/adxl345_spi.c b/drivers/iio/accel/adxl345_spi.c
-index 93ca349f1..1c0513bd3 100644
---- a/drivers/iio/accel/adxl345_spi.c
-+++ b/drivers/iio/accel/adxl345_spi.c
-@@ -33,7 +33,7 @@ static int adxl345_spi_probe(struct spi_device *spi)
- 	if (IS_ERR(regmap))
- 		return dev_err_probe(&spi->dev, PTR_ERR(regmap), "Error initializing regmap\n");
+-	ret = regmap_write(data->regmap, ADXL345_REG_DATA_FORMAT,
+-			   data->data_range);
+-	if (ret < 0)
++	ret = regmap_update_bits(regmap, ADXL345_REG_DATA_FORMAT,
++				 ADXL345_DATA_FORMAT_MSK, ADXL345_DATA_FORMAT_FULL_RES);
++	if (ret)
+ 		return dev_err_probe(dev, ret, "Failed to set data range\n");
  
--	return adxl345_core_probe(&spi->dev, regmap);
-+	return adxl345_core_probe(&spi->dev, regmap, NULL);
- }
- 
- static const struct adxl345_chip_info adxl345_spi_info = {
+ 	indio_dev->name = data->info->name;
 -- 
 2.25.1
 
