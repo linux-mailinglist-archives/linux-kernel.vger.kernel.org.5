@@ -1,130 +1,84 @@
-Return-Path: <linux-kernel+bounces-112482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 957A5887A5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:44:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB39A887A5F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:45:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37159B21977
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:44:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA27C1C21009
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4729241232;
-	Sat, 23 Mar 2024 20:44:48 +0000 (UTC)
-Received: from fgw21-7.mail.saunalahti.fi (fgw21-7.mail.saunalahti.fi [62.142.5.82])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28A84DA05;
+	Sat, 23 Mar 2024 20:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="j3jyiCkY"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC843201
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 20:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA243B193;
+	Sat, 23 Mar 2024 20:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711226687; cv=none; b=JVoZmLNUvyRH5F9C71z4Wf5dGgwKbS200brGK5kZ5CPQvF4moKrpFzs92JuBP+iye4Gg8sofiKhNkG8joz9k4O2bhn62lgAuZuiDDjX0/7jg5+iavMcXHqVWuEnD7sdUOmrL+TQHdk8kzVW1fJZZu9bPKCV3iSFNdn80PwU6LxQ=
+	t=1711226704; cv=none; b=ZdtjH6pTLex0wwViFEvNBBF6gzMYuZV3sv8j+OCv25kV6wUVQWsS6u63hNIRaTNrQFmyn90Ey0Mwtv9XNDuWO/aDepGX5PhKwomUdkLbahl3u+ooQJ3YUDbVz6yE4+SY6pRWukTsuBZkbQ1/rpvCylE780cvEcGMJVyesOdJjuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711226687; c=relaxed/simple;
-	bh=4cn7e1ZNgP9JRFS2MR28C3me8UKkrRDxTuHIiMG8WD0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q8ubAwY3AY5XBcorM6YEEIHFtc1Opyq9hVpePNWoB4lPL3BAwkXkU//JTwbjdD/CAjIKovYfMkY6KQU3w1omhPlfhtziSZlh+/iUNEiTBKUNejoP6bNUgRCLY3bAeeVvF9ho/KIny3JuJ1YnvXWAs7It9dL6EANDlEWoX0FhIhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
-	by fgw21.mail.saunalahti.fi (Halon) with ESMTP
-	id 29c2437a-e956-11ee-abf4-005056bdd08f;
-	Sat, 23 Mar 2024 22:44:37 +0200 (EET)
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Sat, 23 Mar 2024 22:44:37 +0200
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iio: adc: ad7944: simplify adi,spi-mode property
- parsing
-Message-ID: <Zf8_NZ5cNb9TVThx@surfacebook.localdomain>
-References: <20240319-ad7944-cleanups-v2-1-50e77269351b@baylibre.com>
- <CAHp75VeO_=r_pMBUTaQQYKDRAV-OVfTnPYPwV8f7KDzOhaBCvQ@mail.gmail.com>
- <CAMknhBETEP123=EHycGtFEJjQ+NPssLXmw9ZdDoY8CRsWiSxVQ@mail.gmail.com>
- <20240323182918.2cf624b6@jic23-huawei>
+	s=arc-20240116; t=1711226704; c=relaxed/simple;
+	bh=e0it6zWyRhUl6CsgJZa+SyAT+lNOfGgzSfE1aPkratA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IJ13mYhpNf//Uki1y0EyrkjnW+zU5CJDy4PvGlBrJAs1BmT5K3LMYn9itMlN24zFDaGSAezq0BEiiAMN2GzfbYFqIQVYh/b7bkrfCMdIVxMyu3vbJEfQS/+gNuqpy8IstvdNUBLNdO9ckjjRCKVfUcJaCKHyf7WykrgvoQaKQnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=j3jyiCkY; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=YFrRirU/iGoOz+WkYBm22sZJCyVBMxy3NWhi3BHjlxI=; b=j3jyiCkYeVm21Mh9hQY0bv7GqD
+	jEgGvIQHy2fWJLA6ZluG4W/weDDBi9B8V5N7CZxs2BYM8uzl4uyj8l2YijTzlnOPttgzGJRziKJOs
+	ipMr1xCEtMu0UZ1AquCdnWFHS7S+UceILDAcL/JxV9+z8u+z7dqsaZ8pOjwVElU0Liu96LtcCaIqk
+	SrNkzAIrNAO9tv9qIHfq2tR7VYSdpmBvkt8DPSRqzPE7XUsa6Wi9d8Kx8DbboD/9TUa/3vZr1EWAO
+	HAoNVWxM3O8Le3JUdYknjEjVjFDWVMPv4mcboIpUjX8tAitrEU5rmDj+13YJMz/VLNAMGpqT04UZu
+	+MSWst4Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ro8EY-0000000CWEi-0837;
+	Sat, 23 Mar 2024 20:44:54 +0000
+Date: Sat, 23 Mar 2024 20:44:53 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, torvalds@linux-foundation.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Lukas Wunner <lukas.wunner@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH] cleanup: Add usage and style documentation
+Message-ID: <Zf8_RYHW7QmCzl2-@casper.infradead.org>
+References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
+ <20240322090630.GA40102@noisy.programming.kicks-ass.net>
+ <65fdd7ae82934_4a98a29429@dwillia2-mobl3.amr.corp.intel.com.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240323182918.2cf624b6@jic23-huawei>
+In-Reply-To: <65fdd7ae82934_4a98a29429@dwillia2-mobl3.amr.corp.intel.com.notmuch>
 
-Sat, Mar 23, 2024 at 06:29:18PM +0000, Jonathan Cameron kirjoitti:
-> On Tue, 19 Mar 2024 10:28:31 -0500
-> David Lechner <dlechner@baylibre.com> wrote:
-> > On Tue, Mar 19, 2024 at 10:01 AM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > > On Tue, Mar 19, 2024 at 4:28 PM David Lechner <dlechner@baylibre.com> wrote:  
+On Fri, Mar 22, 2024 at 12:10:38PM -0700, Dan Williams wrote:
+> Peter Zijlstra wrote:
+> > So I despise all that RST stuff. It makes what should be trivially
+> > readable text into a trainwreck. We're coders, we use text editors to
+> > read comments.
+> 
+> Ok, I will rip out the RST stuff and just make this a standalone comment.
 
-..
-
-> > > > +       ret = device_property_match_property_string(dev, "adi,spi-mode",
-> > > > +                                                   ad7944_spi_modes,
-> > > > +                                                   ARRAY_SIZE(ad7944_spi_modes));
-> > > > +       if (ret < 0) {
-> > > > +               if (ret != -EINVAL)
-> > > > +                       return dev_err_probe(dev, ret,
-> > > > +                                            "getting adi,spi-mode property failed\n");  
-> > >  
-> > > > -               adc->spi_mode = ret;
-> > > > -       } else {  
-> > >
-> > > Actually we may even leave these unchanged
-> > >  
-> > > >                 /* absence of adi,spi-mode property means default mode */
-> > > >                 adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
-> > > > +       } else {
-> > > > +               adc->spi_mode = ret;
-> > > >         }  
-> > >
-> > >        ret = device_property_match_property_string(dev, "adi,spi-mode",
-> > >                                                    ad7944_spi_modes,
-> > >
-> > > ARRAY_SIZE(ad7944_spi_modes));
-> > >        if (ret >= 0) {
-> > >                adc->spi_mode = ret;
-> > >        } else if (ret != -EINVAL) {
-> > >                        return dev_err_probe(dev, ret,
-> > >                                             "getting adi,spi-mode
-> > > property failed\n");
-> > >        } else {
-> > >                /* absence of adi,spi-mode property means default mode */
-> > >                adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
-> > >        }
-> > >
-> > > But I can admit this is not an often used approach.
-> > >  
-> > 
-> > I think Jonathan prefers to have the error path first, so I would like
-> > to wait and see if he has an opinion here.
-> I do prefer error paths first.  Thanks.
-
-Still the above can be refactored to have one line less
-
-	ret = device_property_match_property_string(dev, "adi,spi-mode",
-                                                    ad7944_spi_modes,
-						    ARRAY_SIZE(ad7944_spi_modes));
-	if (ret == -EINVAL) {
-		/* absence of adi,spi-mode property means default mode */
-		adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
-	} else if (ret < 0) {
-		return dev_err_probe(dev, ret, "getting adi,spi-mode property failed\n");
-	} else {
-		adc->spi_mode = ret;
-        }
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+I would rather you ignored Peter's persistent whining about RST and
+kept the formatting.
 
