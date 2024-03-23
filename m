@@ -1,145 +1,113 @@
-Return-Path: <linux-kernel+bounces-112408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D947887969
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:32:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6DBE88796B
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:38:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 095882823D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:32:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7911F1F219E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 745BF2940B;
-	Sat, 23 Mar 2024 16:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1CD42ABE;
+	Sat, 23 Mar 2024 16:37:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A5ucRF8H"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="vh6YNanG"
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CAB3E470;
-	Sat, 23 Mar 2024 16:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15D722625
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 16:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711211518; cv=none; b=NdiIZoTRBsHH5BiTfmGw0NCoA37lBtZVYJ0AINPe4Ulw+VmVsz3gfaIJgio2PPEp1qKEI5Ocoirdj2Ctw5/o/EjikqOdyfOrWLCI1jUyYkad722AL4Pex+KCGSvYEhR6ZB4vSK1544w4ixn1XXh9gB1Df44sVinnpegrMQ1SMqM=
+	t=1711211873; cv=none; b=HlkugIZS1YJm6cmSH0pXFhp8aVghl57eMMgClqbkIO8Cbl9nQ5mJy10E4W0yOIKxVTzdSbbd5DegoTiVIZ/L/pd3lGIVPDXYXotCHW57x8pMSXLz0HwNV2DKAS/wRsJ0lzPDeaJiDgs1BCzITa4xZE07HCn/vq0lVWJ2hHIL/kM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711211518; c=relaxed/simple;
-	bh=hYR21Vffkaz1yzdbwEsh41c3XSN5q8lBLdIhHpY99Ss=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KakV96U6JB1pqKyoaGq6YyGl1Dt34Af0h1rFjTVJesbGLTDAa9f/LB9rdEj2AwE0lQo8NyfB/1NtNlC42XepVK9L65VKza5VcmJgUkPtvY1mAy22XBbbIr0bhCbeNU/XJxzJVviQyDq0NzAEPMSLMQiLx3wBtTs41DjbjskvRFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A5ucRF8H; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-368480eb81bso13734645ab.0;
-        Sat, 23 Mar 2024 09:31:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711211516; x=1711816316; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+gNAzOlZksAWrrk/Sn0MY4Ibq+h1gY4sUBMqWqGyMMg=;
-        b=A5ucRF8HbpjyIkTPwA2YN9ldHLORC4hoS+iSAFQ1pg2bsqejFOV1egxWYii87BOChF
-         DhEwWmuw9Dxs6rB+rBrdZ4slxxNdCQ91vPd3SNUlIUFvXdKNgpKQefFrNvjY4Z+5LD+G
-         yKu6u47T4Y79k0Ln3oreWqsWWxAOiNW8WxrKlZ1kLKUb1gutjt1vzmSkbPdCMrIcfiyN
-         /ws0/mRV/A/ZoWhm7FjqdymCCRDkN9I/La38BanswyRyxGSa7WI1rB0hJEijcAe6qvWJ
-         4JNiAtE3AjpeONmF+NPTv8NvkFri/gmvDWJx+TVCo+x2S/4JK96lbFu89nXSDjAnAaUR
-         3e/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711211516; x=1711816316;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+gNAzOlZksAWrrk/Sn0MY4Ibq+h1gY4sUBMqWqGyMMg=;
-        b=dwRheZDqhraCrEjJcZGyOTc9UDfsQ128DXLxINL6vZiS8fcb11gt25lay9UG03rnVM
-         OKH9H8BFEpJkYt69nZNoXBrDxOaBKJUVjYbGn6TU/MF5zwv2jBtSK5MpE5a2/levaGM7
-         qbZhhIwcnOpWYAzWreSJOn4bo/9y9m2p6wytdWTIg+6hYUNV2DtcwSHPUlcfc3q7aEcg
-         IyIZT1jnTGAKylHy0QQYvHwwkS6WazaL2WefkG8s5ENz4kqKl7U54SaR0reOzc219C1L
-         nygekpgd62yfADP4SdzoYTaNGN50JqptEAfVFAdU6TNz55cj9y3dsP0fIVDhZt19JV2+
-         /owg==
-X-Forwarded-Encrypted: i=1; AJvYcCXaslDdahoLDJIzD8c5/oWlh5TBM/ZzKG1ZUkSg+TrGdgww/GvkLGAIG0VR2izMCMhgmWEoRxWSjBFPpabX5qgmZAXsOCrKFHGmCOr7Fxdxv59meYZCo0QTyOLpRpm3bkFqlKJzgeez
-X-Gm-Message-State: AOJu0Yxmv5EbVfksG4L7gBasG6SS1hGp7oBrVWoCbFZUZP6+CNKrc5JP
-	YQ5eXxaNBzUOJzY3gX+BOws+T0F4xZFdEdjPZua9ipUywu1eNqZL
-X-Google-Smtp-Source: AGHT+IHkLe8WthnCTg9DUJIoNT1vufkGawGIt/PJEEGR7qpZOXaS/myb/s/E7Y1IUAeXIdmR9S0dOw==
-X-Received: by 2002:a92:ca8d:0:b0:368:85c6:6bd1 with SMTP id t13-20020a92ca8d000000b0036885c66bd1mr832046ilo.10.1711211516495;
-        Sat, 23 Mar 2024 09:31:56 -0700 (PDT)
-Received: from amogh-desk-mint.Dlink ([119.82.122.244])
-        by smtp.gmail.com with ESMTPSA id v62-20020a632f41000000b005cf450e91d2sm2970106pgv.52.2024.03.23.09.31.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 09:31:56 -0700 (PDT)
-From: Amogh Cheluvaraj <amogh.linux.kernel.dev@gmail.com>
-To: airlied@gmail.com,
-	daniel@ffwll.ch,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	corbet@lwn.net,
-	javier.carrasco.cruz@gmail.com,
-	skhan@linuxfoundation.org
-Cc: Amogh Cheluvaraj <amogh.linux.kernel.dev@gmail.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] Fix duplicate C declaration warnings
-Date: Sat, 23 Mar 2024 22:01:47 +0530
-Message-ID: <20240323163148.23497-1-amogh.linux.kernel.dev@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711211873; c=relaxed/simple;
+	bh=XEiB6i9LbUv2gvZ0g7Rzdz2DBRkWU14YeEGBU6bTRsc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pntMNLFoCV5SW17ZY+Ld+ojcTlD28XIvSNbXw1eM4blhuMK0cVB4UWmVcoRwRSpjFVxFcaRLzpMWy8xpKkbtWG2Uj/wYsZ2U+l0EXR3BTSVZt/7Y12xdgKQvCeD+IbMkDmeSjZLR8hS4Z7BAGZHBFUWL/HyrYf6a40Ku53Ni3Qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=vh6YNanG; arc=none smtp.client-ip=188.165.51.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1711211860; x=1711471060;
+	bh=XEiB6i9LbUv2gvZ0g7Rzdz2DBRkWU14YeEGBU6bTRsc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=vh6YNanGH1X20zGK1tfAaV4nESkLDgECUm44By3xP/rrepE0RC54y96FmF8vXXoAX
+	 C8OKoFzrhRaela23fr04aAr9c9G2k19VwHX2hon3KR5Ww1bdaSY3UiHRthffDJvkbO
+	 vGnHnfWrjy3AqBoDJlHzl0sN3UtpvfHC1wkQiFeZzIg2BjW8P4jyQJcs/uNsUOAo8b
+	 hRInHyvu2tAFYn2J7gbRiwVWNGTN3SKlnU3vwFFRAnSLfUFFaRPx7Zh8H1BW/APelU
+	 UOHoNnylCMXjdiHAPiN/8IXicIHHkO52kCjxeGvzWdlGLNNJYDuqcCv8wRFnta3igC
+	 6Wb2bQ5hnio2Q==
+Date: Sat, 23 Mar 2024 16:37:27 +0000
+To: Sam Ravnborg <sam@ravnborg.org>
+From: Koakuma <koachan@protonmail.com>
+Cc: "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, "ndesaulniers@google.com" <ndesaulniers@google.com>, "arnd@arndb.de" <arnd@arndb.de>
+Subject: Re: [sparc] Use of -fcall-used-* flags in Makefile?
+Message-ID: <FLtGz1AK53Qsar2xlt7KBdmT7JLz3H_NoxJQ0UaC0zqNmBtsQ2eSU6LA_lojbVQh8gArSmZoVikYxEuTC4j75PMP_BcnGPuAM2mv1YK7GHA=@protonmail.com>
+In-Reply-To: <20240319221615.GA379167@ravnborg.org>
+References: <JAYB7uS-EdLABTR4iWZdtFOVa5MvlKosIrD_cKTzgeozCOGRM7lhxeLigFB1g3exX445I_W5VKB-tAzl2_G1zCVJRQjp67ODfsSqiZWOZ9o=@protonmail.com> <20240319221615.GA379167@ravnborg.org>
+Feedback-ID: 6608610:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Fix duplicate C declaration warnings at
-Documentation/gpu/drm-kms.rst that was found by
-compiling htmldocs
+Hello Sam,
 
-/home/amogh/Linux_Kernel_Workspace/linux-next/Documentation/gpu/drm-
-kms:360: ./drivers/gpu/drm/drm_fourcc.c:344: WARNING: Duplicate C
-declaration, also defined at gpu/drm-kms:39.
-Declaration is '.. c:function:: const struct drm_format_info *
-drm_format_info (u32 format)'.
-/home/amogh/Linux_Kernel_Workspace/linux-next/Documentation/gpu/drm-
-kms:461: ./drivers/gpu/drm/drm_modeset_lock.c:392: WARNING: Duplicate C
-declaration, also defined at gpu/drm-kms:49.
-Declaration is '.. c:function:: int drm_modeset_lock (struct
-drm_modeset_lock *lock, struct drm_modeset_acquire_ctx *ctx)'.
+Sam Ravnborg <sam@ravnborg.org> wrote:
 
-Signed-off-by: Amogh Cheluvaraj <amogh.linux.kernel.dev@gmail.com>
----
+> Hi Koakuma,
+> Looking at https://github.com/gcc-mirror/gcc/blob/master/gcc/config/sparc=
+/sparc.h
+> I read that:
+>=20
+> On v9 systems:
+> g1,g5 are free to use as temporaries, and are free to use between calls
+> ...
+> g6-g7 are reserved for the operating system (or application in
+> embedded case).
+>=20
+> Based on the above I would assume gcc do not change behaviour with or
+> without -fcall-used-g7.
+> [...]
+> For sparc32 the above file says:
+>=20
+> g5 through g7 are reserved for the operating system.
+>=20
+> So again - it looks like -fcall-used-g5 -fcall-used-g7 should have no
+> effect here and verification on a real target would be nice.
+>=20
+> Sam
 
-changes in v2
-- add warnings found after compilation
-- fix grammar in commit description
+From my understanding (and looking at the codegen results) those flags
+forces GCC to treat the named register as volatile, despite what the ABI
+says. However, I also believe that removing them wouldn't be harmful?
 
----
- Documentation/gpu/drm-kms.rst | 6 ------
- 1 file changed, 6 deletions(-)
+To quote my reasoning in the LLVM tracker:
+> omitting the flags shouldn't be harmful either - compilers will now
+> simply refuse to touch them, and any assembly code that happens
+> to touch them would still work like usual (because Linux' conventions
+> already treats them as volatile anyway).
 
-diff --git a/Documentation/gpu/drm-kms.rst b/Documentation/gpu/drm-kms.rst
-index 13d3627d8bc0..a4145f391e43 100644
---- a/Documentation/gpu/drm-kms.rst
-+++ b/Documentation/gpu/drm-kms.rst
-@@ -357,9 +357,6 @@ Format Functions Reference
- .. kernel-doc:: include/drm/drm_fourcc.h
-    :internal:
- 
--.. kernel-doc:: drivers/gpu/drm/drm_fourcc.c
--   :export:
--
- .. _kms_dumb_buffer_objects:
- 
- Dumb Buffer Objects
-@@ -458,9 +455,6 @@ KMS Locking
- .. kernel-doc:: include/drm/drm_modeset_lock.h
-    :internal:
- 
--.. kernel-doc:: drivers/gpu/drm/drm_modeset_lock.c
--   :export:
--
- KMS Properties
- ==============
- 
--- 
-2.44.0
+But I am not entirely sure about it, that is why it'd be great if there's
+some explaination on why those flags were added in the first place.
+
+> I do not have a sparc64 system at my hands - and for this qemu may not
+> cut it. But it would be super if someone with a working sparc64 target
+> could verify if the kernel could be built and works without
+> -fcall-used-g7.
+
+I am currently running a build with those flags taken out on a T5120,
+and the kernel seems to be running okay for what I do (LLVM development),
+but I don't know if there are more comprehensive test suite for me
+to try on.
 
 
