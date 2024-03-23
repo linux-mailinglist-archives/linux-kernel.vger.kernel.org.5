@@ -1,128 +1,296 @@
-Return-Path: <linux-kernel+bounces-112410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28FDA88796E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:41:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 035DA88798D
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:51:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D93842825B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:41:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26C791C20CB4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A8747A74;
-	Sat, 23 Mar 2024 16:41:12 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEA84D9ED;
+	Sat, 23 Mar 2024 16:51:04 +0000 (UTC)
+Received: from sonata.ens-lyon.org (domu-toccata.ens-lyon.fr [140.77.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1187014AA3;
-	Sat, 23 Mar 2024 16:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FDB247A6F
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 16:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711212072; cv=none; b=t3l24/4WtxLKnLUtduJweuEYemEv1hoP57aweNO0tM5TKK6YyjycCtzgfpi+iqIUZJOuYBNaoenmlg8j3kNg0BxoaguEJPZWouH3bVnarnZNiM/TR4KxYCQV7cIdSWdMlXNV8OgkO5UYwC98MK6NM45Nagp9gC98mDAfbc4yfJY=
+	t=1711212664; cv=none; b=PuX7TXwhE/fIdCbhGPFdlbPPmjzZuX0aOylDCGzvWVH1/hWU9CBPys2fY4ORFIJMOFSCpPQTeasTjCIMXoQypbWiKi0FgO6kErQXaFT2oniPksF2h4CQeohiuuQnHBMJ5zl8f5VpgppMmrxlckxLKCp+qKEjh5gK0GhavwXst1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711212072; c=relaxed/simple;
-	bh=atvZrKiUAUvZM2NuYgS1vjg/ulbuXOUdayurW+vjXAY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:CC:From:
-	 In-Reply-To:Content-Type; b=U2N3fcye+CUPoudMd6BDvt5waqw6XlQ/gdMVW07PuqQELOnaulkzB7TYnkWRKT7a6itcWwOi/DN8vkV8nG235SdGbrz69lW3t3OitAh9Cnwe+EQdwnN4fzrFzdZtNrxIq11M4T4fBstgzEHI8xB1PqCPZeFtonkjtpRU0EbiATI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V24dB1K99z1h2m2;
-	Sun, 24 Mar 2024 00:38:22 +0800 (CST)
-Received: from kwepemd100009.china.huawei.com (unknown [7.221.188.135])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3C7521A0172;
-	Sun, 24 Mar 2024 00:40:58 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemd100009.china.huawei.com (7.221.188.135) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Sun, 24 Mar 2024 00:40:57 +0800
-Message-ID: <ea7ec9fe-a2e1-4e0f-b314-de7815bfd614@huawei.com>
-Date: Sun, 24 Mar 2024 00:40:56 +0800
+	s=arc-20240116; t=1711212664; c=relaxed/simple;
+	bh=w2CQJ2Jg/7zeoigbdpRY6k264Qu233ageVjq0p/H6T4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qnSpfqe3eMnn4bvFKBaoReBnIlBPm7rZlKHtbTTJqTZUHim4II4hHkiu6EPFeCNRH5dQp5BOty01PVskEO0zEbPkGuhaQQvIeHNtjB+rSI22F3JHtXE67STpmO3fT1o/SvY/ZMLtVJzG+mLD+u330UlMGoax2PCDuWa4J9GknEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
+Received: from localhost (localhost [127.0.0.1])
+	by sonata.ens-lyon.org (Postfix) with ESMTP id 1F74DA0265;
+	Sat, 23 Mar 2024 17:42:54 +0100 (CET)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id qoYpq7EczQUd; Sat, 23 Mar 2024 17:42:54 +0100 (CET)
+Received: from begin (aamiens-653-1-111-57.w83-192.abo.wanadoo.fr [83.192.234.57])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by sonata.ens-lyon.org (Postfix) with ESMTPSA id D2F8EA01A5;
+	Sat, 23 Mar 2024 17:42:53 +0100 (CET)
+Received: from samy by begin with local (Exim 4.97)
+	(envelope-from <samuel.thibault@ens-lyon.org>)
+	id 1ro4SL-00000005pMJ-20vz;
+	Sat, 23 Mar 2024 17:42:53 +0100
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+To: gregkh@linuxfoundation.org
+Cc: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	linux-kernel@vger.kernel.org,
+	speakup@linux-speakup.org
+Subject: [PATCH] speakup: Turn i18n files utf-8
+Date: Sat, 23 Mar 2024 17:42:47 +0100
+Message-ID: <20240323164247.1388441-1-samuel.thibault@ens-lyon.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 1/2] bpf,riscv: Implement PROBE_MEM32 pseudo
- instructions
-Content-Language: en-US
-To: Puranjay Mohan <puranjay12@gmail.com>
-References: <20240323154652.54572-1-puranjay12@gmail.com>
- <20240323154652.54572-2-puranjay12@gmail.com>
-CC: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Luke Nelson
-	<luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, <bpf@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20240323154652.54572-2-puranjay12@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100009.china.huawei.com (7.221.188.135)
+Content-Transfer-Encoding: 8bit
 
+i18n currently assume latin1 encoding, which is not enough for most
+languages.
 
-On 2024/3/23 23:46, Puranjay Mohan wrote:
-> Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW]
-[snip]
->   
->   #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
->   #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
-> +#define DONT_CLEAR		16	/* RV_REG_A6 unused in BPF */
+This separates out the utf-8 processing of /dev/synthu, and uses it for
+a new synth_writeu, which we make synth_printf now use. This has the
+effect of making all the i18 messages processed in utf-8.
 
-This is a bit misleading. RV_REG_A6 is actually used in riscv64. Maybe 
-"RV_REG_A6 unused in pt_regmap" or change to other register will be better.
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+---
+ drivers/accessibility/speakup/devsynth.c | 59 ++++-----------
+ drivers/accessibility/speakup/speakup.h  |  2 +
+ drivers/accessibility/speakup/synth.c    | 92 ++++++++++++++++++++++--
+ 3 files changed, 102 insertions(+), 51 deletions(-)
 
->   
->   bool ex_handler_bpf(const struct exception_table_entry *ex,
-[snip]
->   
->   	stack_adjust = round_up(stack_adjust, 16);
->   	stack_adjust += bpf_stack_adjust;
-> @@ -1794,6 +1974,10 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx, bool is_subprog)
->   		emit_sd(RV_REG_SP, store_offset, RV_REG_S6, ctx);
->   		store_offset -= 8;
->   	}
-> +	if (ctx->arena_vm_start) {
-> +		emit_sd(RV_REG_SP, store_offset, RV_REG_S11, ctx);
-> +		store_offset -= 8;
-> +	}
+diff --git a/drivers/accessibility/speakup/devsynth.c b/drivers/accessibility/speakup/devsynth.c
+index 674204ee5a85..e3d909bd0480 100644
+--- a/drivers/accessibility/speakup/devsynth.c
++++ b/drivers/accessibility/speakup/devsynth.c
+@@ -39,13 +39,13 @@ static ssize_t speakup_file_write(struct file *fp, const char __user *buffer,
+ static ssize_t speakup_file_writeu(struct file *fp, const char __user *buffer,
+ 				   size_t nbytes, loff_t *ppos)
+ {
+-	size_t count = nbytes, want;
++	size_t count = nbytes, consumed, want;
+ 	const char __user *ptr = buffer;
+ 	size_t bytes;
+ 	unsigned long flags;
+ 	unsigned char buf[256];
+ 	u16 ubuf[256];
+-	size_t in, in2, out;
++	size_t in, out;
+ 
+ 	if (!synth)
+ 		return -ENODEV;
+@@ -58,57 +58,24 @@ static ssize_t speakup_file_writeu(struct file *fp, const char __user *buffer,
+ 			return -EFAULT;
+ 
+ 		/* Convert to u16 */
+-		for (in = 0, out = 0; in < bytes; in++) {
+-			unsigned char c = buf[in];
+-			int nbytes = 8 - fls(c ^ 0xff);
+-			u32 value;
+-
+-			switch (nbytes) {
+-			case 8: /* 0xff */
+-			case 7: /* 0xfe */
+-			case 1: /* 0x80 */
+-				/* Invalid, drop */
+-				goto drop;
+-
+-			case 0:
+-				/* ASCII, copy */
+-				ubuf[out++] = c;
+-				continue;
++		for (in = 0, out = 0; in < bytes; in += consumed) {
++			s32 value;
+ 
+-			default:
+-				/* 2..6-byte UTF-8 */
++			value = synth_utf8_get(buf + in, bytes - in, &consumed, &want);
++			if (value == -1) {
++				/* Invalid or incomplete */
+ 
+-				if (bytes - in < nbytes) {
++				if (want > bytes - in)
+ 					/* We don't have it all yet, stop here
+ 					 * and wait for the rest
+ 					 */
+ 					bytes = in;
+-					want = nbytes;
+-					continue;
+-				}
+-
+-				/* First byte */
+-				value = c & ((1u << (7 - nbytes)) - 1);
+-
+-				/* Other bytes */
+-				for (in2 = 2; in2 <= nbytes; in2++) {
+-					c = buf[in + 1];
+-					if ((c & 0xc0) != 0x80)	{
+-						/* Invalid, drop the head */
+-						want = 1;
+-						goto drop;
+-					}
+-					value = (value << 6) | (c & 0x3f);
+-					in++;
+-				}
+-
+-				if (value < 0x10000)
+-					ubuf[out++] = value;
+-				want = 1;
+-				break;
++
++				continue;
+ 			}
+-drop:
+-			;
++
++			if (value < 0x10000)
++				ubuf[out++] = value;
+ 		}
+ 
+ 		count -= bytes;
+diff --git a/drivers/accessibility/speakup/speakup.h b/drivers/accessibility/speakup/speakup.h
+index 364fde99749e..54f1226ea061 100644
+--- a/drivers/accessibility/speakup/speakup.h
++++ b/drivers/accessibility/speakup/speakup.h
+@@ -76,7 +76,9 @@ int speakup_paste_selection(struct tty_struct *tty);
+ void speakup_cancel_paste(void);
+ void speakup_register_devsynth(void);
+ void speakup_unregister_devsynth(void);
++s32 synth_utf8_get(const char *buf, size_t count, size_t *consumed, size_t *want);
+ void synth_write(const char *buf, size_t count);
++void synth_writeu(const char *buf, size_t count);
+ int synth_supports_indexing(void);
+ 
+ extern struct vc_data *spk_sel_cons;
+diff --git a/drivers/accessibility/speakup/synth.c b/drivers/accessibility/speakup/synth.c
+index eea2a2fa4f01..c6339758fa67 100644
+--- a/drivers/accessibility/speakup/synth.c
++++ b/drivers/accessibility/speakup/synth.c
+@@ -215,10 +215,95 @@ void synth_write(const char *buf, size_t count)
+ 	synth_start();
+ }
+ 
++/* Consume one utf-8 character from buf (that contains up to count bytes),
++ * returns the unicode codepoint if valid, -1 otherwise.
++ * In all cases, returns the number of consumed bytes in *consumed,
++ * and the minimum number of bytes that would be needed for the next character
++ * in *want.
++ */
++s32 synth_utf8_get(const char *buf, size_t count, size_t *consumed, size_t *want)
++{
++	unsigned char c = buf[0];
++	int nbytes = 8 - fls(c ^ 0xff);
++	u32 value;
++	size_t i;
++
++	switch (nbytes) {
++	case 8: /* 0xff */
++	case 7: /* 0xfe */
++	case 1: /* 0x80 */
++		/* Invalid, drop */
++		*consumed = 1;
++		*want = 1;
++		return -1;
++
++	case 0:
++		/* ASCII, take as such */
++		*consumed = 1;
++		*want = 1;
++		return c;
++
++	default:
++		/* 2..6-byte UTF-8 */
++
++		if (count < nbytes) {
++			/* We don't have it all */
++			*consumed = 0;
++			*want = nbytes;
++			return -1;
++		}
++
++		/* First byte */
++		value = c & ((1u << (7 - nbytes)) - 1);
++
++		/* Other bytes */
++		for (i = 1; i < nbytes; i++) {
++			c = buf[i];
++			if ((c & 0xc0) != 0x80)	{
++				/* Invalid, drop the head */
++				*consumed = i;
++				*want = 1;
++				return -1;
++			}
++			value = (value << 6) | (c & 0x3f);
++		}
++
++		*consumed = nbytes;
++		*want = 1;
++		return value;
++	}
++}
++
++void synth_writeu(const char *buf, size_t count)
++{
++	size_t i, consumed, want;
++
++	/* Convert to u16 */
++	for (i = 0; i < count; i++) {
++		s32 value;
++
++		value = synth_utf8_get(buf + i, count - i, &consumed, &want);
++		if (value == -1) {
++			/* Invalid or incomplete */
++
++			if (want > count - i)
++				/* We don't have it all, stop */
++				count = i;
++
++			continue;
++		}
++
++		if (value < 0x10000)
++			synth_buffer_add(value);
++	}
++
++	synth_start();
++}
++
+ void synth_printf(const char *fmt, ...)
+ {
+ 	va_list args;
+-	unsigned char buf[160], *p;
++	unsigned char buf[160];
+ 	int r;
+ 
+ 	va_start(args, fmt);
+@@ -227,10 +312,7 @@ void synth_printf(const char *fmt, ...)
+ 	if (r > sizeof(buf) - 1)
+ 		r = sizeof(buf) - 1;
+ 
+-	p = buf;
+-	while (r--)
+-		synth_buffer_add(*p++);
+-	synth_start();
++	synth_writeu(buf, r);
+ }
+ EXPORT_SYMBOL_GPL(synth_printf);
+ 
+-- 
+2.39.2
 
-I think it's fine to use s7 and keep the original dynamic stack code style.
-
->   
->   	emit_addi(RV_REG_FP, RV_REG_SP, stack_adjust, ctx);
->   
-> @@ -1807,6 +1991,9 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx, bool is_subprog)
->   		emit_mv(RV_REG_TCC_SAVED, RV_REG_TCC, ctx);
->   
->   	ctx->stack_size = stack_adjust;
-> +
-> +	if (ctx->arena_vm_start)
-> +		emit_imm(RV_REG_S11, ctx->arena_vm_start, ctx);
->   }
->   
->   void bpf_jit_build_epilogue(struct rv_jit_context *ctx)
-> diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-> index 6b3acac30c06..9b6696b1290a 100644
-> --- a/arch/riscv/net/bpf_jit_core.c
-> +++ b/arch/riscv/net/bpf_jit_core.c
-> @@ -50,6 +50,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   	int pass = 0, prev_ninsns = 0, i;
->   	struct rv_jit_data *jit_data;
->   	struct rv_jit_context *ctx;
-> +	u64 arena_vm_start;
-
-unused variable
 
