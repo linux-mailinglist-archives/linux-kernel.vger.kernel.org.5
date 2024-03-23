@@ -1,142 +1,84 @@
-Return-Path: <linux-kernel+bounces-112244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 360B588775E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4399A88775F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 08:07:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8B5C282B5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:02:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFE32283364
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:07:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 682B2BE62;
-	Sat, 23 Mar 2024 07:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66ABC9454;
+	Sat, 23 Mar 2024 07:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ihJsGJVb"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97E7523A;
-	Sat, 23 Mar 2024 07:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="lPPfPCCf"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B123FE4
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 07:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711177316; cv=none; b=glbZ3XNvUtSTqllZo9o+/4F0yDlGJPQlK79VKwgJ5tkOwo+tOWGfuNFV7qQM+RDOJEA4tmGvAKqkjYDss3HTwOYozYMWKLR8IPIpRHabWZiB6Wlidp+OrubPXIgEwxcyHITYNWRhhOnTMLSAjaDdIA9QtEa8JyJWfxxncMINemQ=
+	t=1711177650; cv=none; b=p2X7q13X7ewjpgEeUPOBFSDTQOmOLo7fcm2qDBStONnPp1bIxf24thjwELzNgDSjLtk7dHSDqAlm9sUOGhHm5d7yrJGeBGNe0MHaq768QZoICzXykEb3HX2t6/OSFIpYS/qCCrBycIirIAGbgbRKxB+OKzASVV+fgdD5Shm8B2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711177316; c=relaxed/simple;
-	bh=yhbjA5niZQhSFgh07i14d0fXkDpexeMQw2/j5Wlv5v8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pp34ybzUhF/V0jVvfDC6l/VRsEwcfuxjQikZ3494Hb9vVniIMSNf+uhiJwDE8tKTJ0VCKCjhRfBTPQo60qAuOgHJgCVI34EHZeQDDHaW9CdClRkOwGumvk/8S1lAflzHj8ZmJwMron9RuAoxAN08hYXDChMk2xvJeHSYsSA2I/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ihJsGJVb; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711177315; x=1742713315;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yhbjA5niZQhSFgh07i14d0fXkDpexeMQw2/j5Wlv5v8=;
-  b=ihJsGJVb9TuAtV/twgKI5E5lM0mTJypxBbdkVFDmEwCf20p/SpPvqZba
-   IAObMGn6Zec8IGjjzcEmAprYUH86G01YFn97xV04fXKjcaxM0B0wCPYQY
-   vazMhhUYTclep1YtHt2dIGrKsrlFN0n91Q8a20HqMHLXxIGvxNdMlXd9X
-   m60sB5YwCF0iWFFPnEkjeGCYAAIFVLYsh5u1QPUI8m6zS6dREvXqZCQ2X
-   3Lvv6Xk6d9+GhFaOpVktWYzfogWbVmscHUbMFs37RIa7Yp5rpz2p4SOXs
-   FSCB4+RxH2wrP6y9hP6gcEiQHffa9RJo9CkZD3FmGlYAMdzkudzd69cIC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="10021885"
-X-IronPort-AV: E=Sophos;i="6.07,148,1708416000"; 
-   d="scan'208";a="10021885"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2024 00:01:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,148,1708416000"; 
-   d="scan'208";a="19815686"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 23 Mar 2024 00:01:50 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rnvO0-000KwJ-06;
-	Sat, 23 Mar 2024 07:01:48 +0000
-Date: Sat, 23 Mar 2024 15:01:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Alex Bee <knaerzche@gmail.com>, Lee Jones <lee@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, Chris Zhong <zyw@rock-chips.com>,
-	Zhang Qing <zhangqing@rock-chips.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, Alex Bee <knaerzche@gmail.com>
-Subject: Re: [PATCH 2/5] mfd: rk8xx: Add RK816 support
-Message-ID: <202403231417.oV6q6CGc-lkp@intel.com>
-References: <20240321143911.90210-5-knaerzche@gmail.com>
+	s=arc-20240116; t=1711177650; c=relaxed/simple;
+	bh=Vyzf/AZilWjnwBiifCxTTrnOxXQPtHnQmzXMKaVQ5SA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r1vj3bRLSfU9dfPnvLAdfzLTOTnGko74+2IDndw9Rknd26QStLvLLmPOEEDAIZt0dPtybfN+jDZFt1rs2rfJo4gPtqtcSff69O4oEdy/ROIG2Kw61P/N3OArh7beDOhk3qh6P2uYjVnrLmgCBR+JSKGVdSKSToLF7vGo+sh0vzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=lPPfPCCf; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=d0y5m
+	BBVvcsmNkmoRldur1L3xG4+xesheCa7IqGmu6s=; b=lPPfPCCfYor1mXps6Ef66
+	uc6xlG51SFFrQ0iAVpmjbv/zRKvI9QibwGiWBJsVFAf8QsqzZ8D/xoz0WyU61xI4
+	Dcy750FbGANa9nJ+ytmVTDxEWowCpjt/AB44gCLGuOju7zzCvzd3FyotI85Lq4s4
+	NIZ+Y64wG1MOGg5gHapqQY=
+Received: from localhost.localdomain (unknown [111.198.54.11])
+	by gzga-smtp-mta-g1-4 (Coremail) with SMTP id _____wDXv1GPf_5l03flAw--.59121S2;
+	Sat, 23 Mar 2024 15:06:56 +0800 (CST)
+From: LuMingYin <lumingyindetect@163.com>
+To: linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org,
+	jpoimboe@kernel.org,
+	LuMingYin <lumingyindetect@163.com>
+Subject: [PATCH] tools:Fix a memory leak related to new_alt_group
+Date: Sat, 23 Mar 2024 15:06:53 +0800
+Message-Id: <20240323070653.611102-1-lumingyindetect@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321143911.90210-5-knaerzche@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDXv1GPf_5l03flAw--.59121S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKryrZFW3Jr18uFWrGF4DArb_yoWkurX_AF
+	yIqrn7ArZYqF4ktFWjvrWrX3yfKa1rJF15tF1rXr1SvFyrJF13WF97Wr9xCa1rtrWSyF47
+	Crn7Ar129wnIkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUmFCUUUUUU==
+X-CM-SenderInfo: poxpx0hj1l0vphwhu3i6rwjhhfrp/1tbiTxSq92XAlCxApgAAs9
 
-Hi Alex,
+In the function 'handle_group_alt' defined in the file /linux/tools/objtool/check.c, a pointer variable named 'new_alt_group' is declared (line 1748 of the file). At line 1791 of the file, the 'malloc' function is used to allocate a block of dynamic memory for this pointer. When the if statement at line 1792 returns false, it indicates successful allocation of dynamic memory. However, when the if statement at line 1806 returns false, the program returns at line 1808. During this process, the dynamic memory area pointed to by 'new_alt_group' is neither used nor deallocated, leading to a memory leak bug. This commit fixes this issue.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: LuMingYin <lumingyindetect@163.com>
+---
+ tools/objtool/check.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-[auto build test WARNING on lee-mfd/for-mfd-next]
-[also build test WARNING on lee-mfd/for-mfd-fixes broonie-regulator/for-next robh/for-next linus/master v6.8 next-20240322]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Alex-Bee/dt-bindings-mfd-Add-rk816-binding/20240321-224318
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-next
-patch link:    https://lore.kernel.org/r/20240321143911.90210-5-knaerzche%40gmail.com
-patch subject: [PATCH 2/5] mfd: rk8xx: Add RK816 support
-config: arc-randconfig-001-20240322 (https://download.01.org/0day-ci/archive/20240323/202403231417.oV6q6CGc-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240323/202403231417.oV6q6CGc-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403231417.oV6q6CGc-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/mfd/rk8xx-core.c:395:8: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
-     395 | static const unsigned int rk816_get_irq_reg(struct regmap_irq_chip_data *data,
-         |        ^~~~~
-
-
-vim +395 drivers/mfd/rk8xx-core.c
-
-   394	
- > 395	static const unsigned int rk816_get_irq_reg(struct regmap_irq_chip_data *data,
-   396						    unsigned int base, int index)
-   397	{
-   398		unsigned int irq_reg = base;
-   399	
-   400		switch (base) {
-   401		case RK816_INT_STS_REG1:
-   402			irq_reg += rk816_irq_status_offsets[index];
-   403			break;
-   404		case RK816_INT_STS_MSK_REG1:
-   405			irq_reg += rk816_irq_mask_offsets[index];
-   406			break;
-   407		}
-   408	
-   409		return irq_reg;
-   410	};
-   411	
-
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index eb7e12ebc1d0..f5d8aa79e0cc 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1805,6 +1805,7 @@ static int handle_group_alt(struct objtool_file *file,
+ 		nop = malloc(sizeof(*nop));
+ 		if (!nop) {
+ 			WARN("malloc failed");
++			free(new_alt_group);
+ 			return -1;
+ 		}
+ 		memset(nop, 0, sizeof(*nop));
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
 
