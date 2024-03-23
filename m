@@ -1,124 +1,118 @@
-Return-Path: <linux-kernel+bounces-112383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 886D7887925
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:43:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 296B2887927
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:53:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA0AD1C20DE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:42:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2CEA1F218B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:53:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81BE47A70;
-	Sat, 23 Mar 2024 14:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B76C3D3B1;
+	Sat, 23 Mar 2024 14:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TBl8ASJN"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="lOMuTTG6"
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8499D4087A
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 14:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702F117583
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 14:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711204956; cv=none; b=b/e/SnGeh3bZ8/LMObdrgapQ1XJ1DkFFGfrtdF/v2BuTU+DlREJSgc4xDNhrNof+9AKoRL+suhjHgdIrReoCmAfOBf7GJk4XsO6rSlr7KRwATWRYTl2B7dKAu9ci7JlVuO+68paB+YbFgE3N2WDF72JqLDqfjj21TuGTss7pY6Y=
+	t=1711205581; cv=none; b=EZWcHdmzj+m0mzmOvDeapUSBcLnGgRuahcqIWQajcP5DXNym+/NTk4Lr96QrensxQNngmGPeG32PvZypruAJLR1tG3Jf63uVGr+vuE+su51/o7LFM48mKO1L4n/w+BxeUGYSR7jtFBocGGrq0LprNw/r0EIaiqZx0kweUwLq9gE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711204956; c=relaxed/simple;
-	bh=7ebCW7CbJwqVaMFygFZzBIye7OBbsT9h9qWSN+xPl6E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mmsXDw7/rN7495UcqjQ7OUDlOQjYmQimclthpjdKLbFT4QYPo03HfqA+umhcDyEnYaBGXmfunIOfWzJ5b/n+tiU4b9DpUHC/YWrZx/V5XA9fGGoJ1EQdUHxEqTnVXpjQ2Uj34pp2zlId9YqDdc+9MYhbU+G37rqViXQOcpqxCUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TBl8ASJN; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-29fb12a22afso2013077a91.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 07:42:34 -0700 (PDT)
+	s=arc-20240116; t=1711205581; c=relaxed/simple;
+	bh=lrtfH3zzzgl6lWeZpSHoMuGg8Ea02QXDs7/AlYdtTQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G/vgjSmVIpvb//VVUyudovd7QZfA0eUDTsq7QNEbBRcYX3HDsLXQ4ioOD8bpJEoLnJEkWzoXNDxCOaiZek2JcuyB7PkavnOwORDakLK8SwBDVYB4viJtx50SdqnJloZAcSiJ9jGUxcMqYfZRFOZQqFqBwS8XmFZP0qhLb+oEUKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=lOMuTTG6; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-690bd329df2so17011496d6.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 07:52:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711204954; x=1711809754; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6+94WYFP1QQfvIjnFljmvS0CS5jUyC1rwqJQLRlMyd0=;
-        b=TBl8ASJNC02945N0mOHI9KKKP6GCt2NKXrtlLUvtaX2ezhg/6eWwAyXewi1inSnD02
-         JKQge4HxSbrRl+FfjYthuAyYlhTBpeHtQuZ2/+HMToroP3AGlO2qLaBE2ZG5Uc85DdSO
-         YS5dyANct53rulFLsk7M+g/jnjv9nqY09mx0it9S6xyEag7G6aEeGAH8kwp8T7KGWbfj
-         wdDF2Y96o4siYVGdgqk22Iv2KxdAzERciOtjazBYvuTO+Md7RCOGyZSfLm27X89o1wOO
-         85vIuOR7usPwqB5b6VRrfDoAZ9SXZHQJhtXamoTmfVKOdOsh6C5dft2jag43Tq5PQQ7T
-         3o4w==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711205577; x=1711810377; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PQy0LgbNRS2IUlbgbrbirFDizWSucGasGxIZDrnu8QQ=;
+        b=lOMuTTG6K7f7ge/8wwyZGpCFSIdzCOivAV/HH/fMFoiXDKA6jAgpaI+qFTTQuuzXzb
+         /U37cSD4ok3+GwlCT2gKixqBOgML4AeQUmKz0xpuHJt4buCYB4kwwNw3d5YJEU8RVNrK
+         odluiA1ArOBRgV5485e3qjFOPk6NZKEGPYBxuY/k2LPtEQWHZmXC5LLn/ZVutsuNMCu3
+         DQu7f2s5RuefWmqy7j3jKwUAQaHrGIIwgLOs/kdMs6Acx7uPVLNcjbHCacxLk1abeuTO
+         +UxG6ub+yZ15Xe++FMa7Me2tIwxHCUApPwh626IoysVmqtvqwvWZ2Nuw1DB2pZB05xYZ
+         C+Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711204954; x=1711809754;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=6+94WYFP1QQfvIjnFljmvS0CS5jUyC1rwqJQLRlMyd0=;
-        b=CQ/ftLGvsVrQmado5PUOQJy/bz8sSYf4eglivUV7CUBBnI3EClc7JzzcJ/LB9uwRoS
-         oZtKD12r9RoYGCLoEWAcJ01eWBuxDDVIlP0qqBQiAsYTAyho5TzUYwad5PpA9MmoKaGY
-         3SQcLonF6sz3wSAjjC+FOKMsUVQOZP9tL23WqGuO4q/dJJVmtCd6clvccbzfI9XT0Zy9
-         Y3H8Z+aQ+WEljGiuFNYv5HfL+w81+CuA/SLJ9E77/41LkjryIh6aIk/46N04p8VkJe3b
-         KyOqvdCEuo0V+WU4KhCl4WqrEiA0XzEFlUh9hA70LQ6TSqpb94coDD5eFPMo2xItmbFH
-         f9ig==
-X-Gm-Message-State: AOJu0YzQ2Ay+o788ZmbgbB1J23D4XBypfsNPLTOIMgLzPozwTxKdv9Tr
-	UqS6ZIlFer0EtqqWQ7MimBk7msZA+5k1/8znLrAieYzWoOqMBJcd
-X-Google-Smtp-Source: AGHT+IFX02mlaGmJsMNvNeXHYwsn53DZYHmThGvTyHuaFMdlElExnvezssX2VkK58zCovfim1uCV6g==
-X-Received: by 2002:a17:90a:a604:b0:29f:8d52:d5da with SMTP id c4-20020a17090aa60400b0029f8d52d5damr1958973pjq.22.1711204953858;
-        Sat, 23 Mar 2024 07:42:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id so10-20020a17090b1f8a00b0029c5ed2c9b3sm3727427pjb.21.2024.03.23.07.42.33
+        d=1e100.net; s=20230601; t=1711205577; x=1711810377;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PQy0LgbNRS2IUlbgbrbirFDizWSucGasGxIZDrnu8QQ=;
+        b=dLf9MPXkBVPomgwOKThJSDHg8idlX6gf7fkOEIHudsJRGzCDFMAsHH2HIYxv4vFtSO
+         jvPihJWF4OKZy2ldMs4Svuo4sCNUkBr1PCpjm3LtLj4kndR5rzg2EGZ69NSnbbRi+beR
+         4aKQCojqLScfEJSUfxALVISliXJpbHmujaEP8EZET8vZl2G6mAiDkmyG20s5k8ify8PV
+         lkRF8X+bgts9y6zV/Dbulc1/P73YpHja38CAsYZNx+tdiFvJwQyrMpCSk3jJSEMiXFBH
+         Y2Inx9kn0vjyBhOpQfNuIGU9ez+Oh1prUkjyYv5jJla0Gb90xweJwV9IxCyH72g5XkWA
+         p/qQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU8n7Zg4UQFM5p3D213WApmaJgq+bYQH2Q4O4wm8F5pe430HRMAUXbnVgHgdTd9T8rZFD3LKnZxs5+i7eWIlVmDpmM1i8iKVjkS1zbk
+X-Gm-Message-State: AOJu0YwlWaVpFTHpynR6wAAk6nrCJVfRpE5sWRqnMSVPW7K8m6b8aCP1
+	qwWM93AsIuspbAg0MgvbaqRuD4H6c3zT9yalr4brNa8vl0UFT/CqY2LoM8l8+M8=
+X-Google-Smtp-Source: AGHT+IFLG11WgqsbhoxFVFpmyCIi7a1JxwIH7NvINLJUVPYcY+qqhDilTzhgQ5CdvjOQ3ISsPU74LQ==
+X-Received: by 2002:a05:6214:4017:b0:696:8505:1947 with SMTP id kd23-20020a056214401700b0069685051947mr20765qvb.30.1711205577232;
+        Sat, 23 Mar 2024 07:52:57 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:16be])
+        by smtp.gmail.com with ESMTPSA id q1-20020a05621419e100b006968077890csm298604qvc.118.2024.03.23.07.52.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 07:42:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	Nilesh Javali <njavali@marvell.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Chris Leech <cleech@redhat.com>
-Subject: [PATCH 3/3] uio_pruss: Fix build failure on 32 bit builds with 64 bit physaddr
-Date: Sat, 23 Mar 2024 07:42:28 -0700
-Message-Id: <20240323144228.3924542-3-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240323144228.3924542-1-linux@roeck-us.net>
-References: <20240323144228.3924542-1-linux@roeck-us.net>
+        Sat, 23 Mar 2024 07:52:56 -0700 (PDT)
+Date: Sat, 23 Mar 2024 10:52:47 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>,
+	"Sharma, Shashank" <Shashank.Sharma@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/amdgpu: fix deadlock while reading mqd from debugfs
+Message-ID: <20240323145247.GC448621@cmpxchg.org>
+References: <20240307221609.7651-1-hannes@cmpxchg.org>
+ <c411dce6-faaf-46c3-8bb6-8c4db871e598@gmail.com>
+ <20240314170948.GA581298@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240314170948.GA581298@cmpxchg.org>
 
-Builds on 32-bit systems with 64 bit physical address fail with
+On Thu, Mar 14, 2024 at 01:09:57PM -0400, Johannes Weiner wrote:
+> Hello,
+> 
+> On Fri, Mar 08, 2024 at 12:32:33PM +0100, Christian König wrote:
+> > Am 07.03.24 um 23:07 schrieb Johannes Weiner:
+> > > Lastly I went with an open loop instead of a memcpy() as I wasn't
+> > > sure if that memory is safe to address a byte at at time.
+> 
+> Shashank pointed out to me in private that byte access would indeed be
+> safe. However, after actually trying it it won't work because memcpy()
+> doesn't play nice with mqd being volatile:
+> 
+> /home/hannes/src/linux/linux/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c: In function 'amdgpu_debugfs_mqd_read':
+> /home/hannes/src/linux/linux/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:550:22: warning: passing argument 1 of '__builtin_dynamic_object_size' discards 'volatil' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>   550 |         memcpy(kbuf, mqd, ring->mqd_size);
+> 
+> So I would propose leaving the patch as-is. Shashank, does that sound
+> good to you?
 
-drivers/uio/uio_pruss.c: In function 'pruss_probe':
-drivers/uio/uio_pruss.c:194:34: error:
-	cast from pointer to integer of different size
+Friendly ping :)
 
-The conversion itself is safe since sizeof(phys_addr_t) it in general equal
-to or larger than sizeof(void *). Solve the problem by double-casting the
-conversion.
+Shashank, is your Reviewed-by still good for this patch, given the
+above?
 
-Fixes: 7722151e4651 ("uio_pruss: UIO_MEM_DMA_COHERENT conversion")
-Cc: Chris Leech <cleech@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/uio/uio_pruss.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/uio/uio_pruss.c b/drivers/uio/uio_pruss.c
-index 72b33f7d4c40..b8fedb6b4f29 100644
---- a/drivers/uio/uio_pruss.c
-+++ b/drivers/uio/uio_pruss.c
-@@ -191,7 +191,7 @@ static int pruss_probe(struct platform_device *pdev)
- 		p->mem[1].size = sram_pool_sz;
- 		p->mem[1].memtype = UIO_MEM_PHYS;
- 
--		p->mem[2].addr = (phys_addr_t) gdev->ddr_vaddr;
-+		p->mem[2].addr = (phys_addr_t)(unsigned long)gdev->ddr_vaddr;
- 		p->mem[2].dma_addr = gdev->ddr_paddr;
- 		p->mem[2].size = extram_pool_sz;
- 		p->mem[2].memtype = UIO_MEM_DMA_COHERENT;
--- 
-2.39.2
-
+Thanks
 
