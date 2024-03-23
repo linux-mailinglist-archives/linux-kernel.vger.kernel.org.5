@@ -1,198 +1,184 @@
-Return-Path: <linux-kernel+bounces-112379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6B2B88791F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:40:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 717BE887922
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 15:41:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF9341C20DB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:40:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C0401F21D62
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:41:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EACE405F9;
-	Sat, 23 Mar 2024 14:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A6543AA4;
+	Sat, 23 Mar 2024 14:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D3p6ufTK"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hj6PPlgW"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF813A1A3;
-	Sat, 23 Mar 2024 14:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A4739AFF;
+	Sat, 23 Mar 2024 14:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711204815; cv=none; b=sOYlk3Sz05umFTtPhGKz2IzepUHnKxLeBF7RYKgzwm+B20C9Y17iUXyiKCj3YMPHMF+nQsP2k1kZMgntmxdyYwBv9DZHq5j8D8UDvEgllu+D1Hy0qwB0tM+lseQUnh5CryEEVhAY3eXK7Zc8VdTax7LbXqeoTuvlU5bbKA4Qqgk=
+	t=1711204895; cv=none; b=BIY3HEX/XD4mEkWXN5kl0sN91pYnpvqe5eWEXl01a/B+Ct15m+D7F7vhSadWujQZ7RnG/qJSW1D2dTDQAYa49NVfliPamYHp+CoRHl3s/cJVECKb9AIn3CSQ5qnNBrtA29Pnv1zvF0CYoAiwg0hnoMXZ9QlsL4Bn11fE7f91nUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711204815; c=relaxed/simple;
-	bh=LIfguKYB9Djf8kpPD3j30oGbgEFgX97d18NhdYb5nko=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PN5lU0qARbnAEgTy1zqUwEY9GPSdVEYanrfnpEKXa5LC5Df6htx39YSTtss8C5RVVfVV30iTX17T000g8kSMswhHBJ9KXKlHPAfv255A+TDUchm3oI0XfkH3aGYSXo6Ydb+bKYp6zxK+TtpYDdhFOEGXwYZOdmWSN+MBgAkPrr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D3p6ufTK; arc=none smtp.client-ip=209.85.214.174
+	s=arc-20240116; t=1711204895; c=relaxed/simple;
+	bh=3VQPb1kSUvBE9uol6WHaPTW1ils3Q0RNDodZuAFBPrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EfE3mOcTF/PFksood+qZF2mxYcqyXD6coOURb4ANTnj8LW5bSEMG9izjv2DFwClypEheykfb9+omFFPQe6CWYDrBHsMf4f80HsD5Y6nKVUeUHPWyUQm5I/RiQ0e5MP3Jv6WSKnp+KUJrcfgl8vYdenC3BxPbDIwThHYIknmKk8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hj6PPlgW; arc=none smtp.client-ip=209.85.222.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e0878b76f3so12820105ad.0;
-        Sat, 23 Mar 2024 07:40:13 -0700 (PDT)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78a4b264305so18415685a.1;
+        Sat, 23 Mar 2024 07:41:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711204813; x=1711809613; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1711204893; x=1711809693; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rOjc2RPnmpiTXzEKcY++5BWeNTp0iE6fQolvtms4FQ8=;
-        b=D3p6ufTKYnYztabs4fVEtKohgqXCwBmAAlUdEAVydfxLz7inFwGVIFSj9PSr2dOTps
-         3i982m/rGPZQUOxqwxSAwBPA4jnrk4VEcrJfMr/X0JSvylRUWufoo7qTBS0AL9QUNuGp
-         1r8SyQupkaM7DQ7l+GRm1TF2PGixFYuAvIhjcAkNzwqi/Y19PqpbwMxpwQ6qcO/lO5aW
-         xv63yfIouKPKSrKowneMr6g+XVTR8PNAME8CEUMjUx8mhOfXhfxxXVPJJxlfIuSuVRR8
-         OIjki+lhzL5trO+DP9k7pHnMVcyU1y32Aj+p+53nxeISC2hd+2wszjbiJ2WDEnDHmmr1
-         WrbA==
+        bh=JBoHlroea6/GTbzQ3nCArEwBGcVlF3t6u5u31TFOQ5c=;
+        b=hj6PPlgWxEc3chRnGmt2W62JPL7Vkyw92EXLbFwCU82nGwEMgByeV9L8sV99NtgcDu
+         FiAYrfeGOIUFBNR3S2CAZ80eOHPoKX4pr3UNjcGSD9wB9sw8BLaBujgdHGeSzaJDlB9R
+         N3TvwPz5OwFQofbJAz+sLvmrdeQnv0NcWF8JILrKGEIScrjEDXIQXP8/5shuqs+YXFOJ
+         RiQmZ5aY+jIQmc2mZiHPKKLndgLITl0HDhZBMKpQPbdGtFafMNiPdSJm/7u5wCZb+xTI
+         t4XlXpxxqwKj09vnnwZHm5+gJd411XIktX6twYs+uDn0v5E1SaAF0IY7uKxuQ4NOkYQ9
+         gsRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711204813; x=1711809613;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rOjc2RPnmpiTXzEKcY++5BWeNTp0iE6fQolvtms4FQ8=;
-        b=qlBPCEt05wbEKdUs6ESeBxzhNqe0VaK/t8RkyS9oWb3hKA1iNCDEszs83PYYJuanDK
-         DWI73q3CQgLG7WGiQ298/0MG9VCR8iGWflLjuOZc+pVa+UEqC7+xHZlLxokvxtPP1cOt
-         FuQyAJBREDeeoTWoQMGSN454lOdPbQmv4RofGmt4+mEtOVgFKWYC0cbFfZPXWFeVepdt
-         6H7RTKxwnShj31Py/EH4mS91soWigVW/cZEh46nKG1omhfsKDlumdQNV8JeS7hCcSRz9
-         expE8LROpPLjrh+lyG5k4NC3AN57B7dkd4RglB8FERhRQ11Z3c7Lb2LwzP2x7rF7W1KO
-         GHVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV7Y04vosV12m/ZUupGvAAjbgGgyLjO0qmMyO/6T1w8bXpqA4SHnXYUC1fScxZuv9+Y1gXUcc8RfXiw6G7QGaY6HDVjjyVwJNDYy3u5d6FzZijf+ccbhOTcHj61anMtfXOV
-X-Gm-Message-State: AOJu0YyEBtywMj+3wxc9nXPfJZ5bgoghM+RA5QOrMxatz+uq8tBWZRCG
-	psHF4QDb77fQ/rZLWGoJC0H4Mndwu7t+viNVHA8iNMfwBxEt562U
-X-Google-Smtp-Source: AGHT+IH2QWiWWMKVd2VZ9/ojjVulzuuqr43nRxs9SFWCgDsm058vFxAPkDMrC+pBYKAnDZ3h6D/ZoQ==
-X-Received: by 2002:a17:903:234b:b0:1e0:2bce:d7e6 with SMTP id c11-20020a170903234b00b001e02bced7e6mr2624148plh.32.1711204812727;
-        Sat, 23 Mar 2024 07:40:12 -0700 (PDT)
-Received: from [192.168.2.64] ([60.163.62.105])
-        by smtp.gmail.com with ESMTPSA id s14-20020a170902b18e00b001def0c700e2sm1631450plr.119.2024.03.23.07.40.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Mar 2024 07:40:12 -0700 (PDT)
-Message-ID: <d3677b19-63fa-4787-8d5b-468ddbad173a@gmail.com>
-Date: Sat, 23 Mar 2024 22:40:04 +0800
+        d=1e100.net; s=20230601; t=1711204893; x=1711809693;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JBoHlroea6/GTbzQ3nCArEwBGcVlF3t6u5u31TFOQ5c=;
+        b=AcLEum6HtWXHmFHiciQkRWi4w+pIivk8yiFwoItGWafe0x7N7EGSqKH/oW1rCAiU14
+         2WeURqvMz3/5470zqCAAXjXUpXkJYpsJ4RudTc7Qr+x6CX0T+lXUf/BsVmnUmNjuZfoB
+         bVWipmZp4lJjOimWy287SZgIdfHdwEUiw4FiKjFBzvSAwLM7w+24Z7frdAkbEYiBy7sp
+         oNpGugmaLTzLp81MR94dPaqy+4f4DOrKtk7fYVCacklJnnIWNMpCUCoPtN/y8QcP7CrA
+         OQ5Stt3fB/cpAOLvqo5/qqIsv/B3u05nmb29LVah4jnN2NhNk5cfCr9hllRJIQVR5/hI
+         B+mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXjJacXPaQCInYwjBsf0/NxUt3m4r+Q9PXhvQR4cMLbHzMdj6ukc0PQMdjsx8rwlI/ropoWvMitu7d0QIexs3Vzi0hxr0YskCzmgeP2pvXrCKi1cHhGmWkHjgtneSUVi9YIJjPaTK6FvW1PLYGzhCAccBr4a62lBiP/3rmrqBrVq3XkjN2bXsN0CgAT8GzupFm/nixLDAsEsXWnEjZMoSMEjeRt4SrDEA==
+X-Gm-Message-State: AOJu0YyHA6E+a8saLyXD9JwYBlr0sH6GaosjmCl8+jLQa6jnCKWTIamK
+	J9Gbn35QG8QgHhRuPdDGeijeTbkJASTm0Zm+hf2jdu3R3iDrz0ju
+X-Google-Smtp-Source: AGHT+IHlE4DNx4doL/DAGkVKI+43x0e7x4Fv3FAQsZNSiGDB9AFauE0kQDFVKk0ctSx+uT+Q0ETTzg==
+X-Received: by 2002:a05:620a:a53:b0:789:e5e3:f0f6 with SMTP id j19-20020a05620a0a5300b00789e5e3f0f6mr3057320qka.14.1711204893267;
+        Sat, 23 Mar 2024 07:41:33 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id k26-20020a05620a0b9a00b00789e2961225sm714626qkh.61.2024.03.23.07.41.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Mar 2024 07:41:32 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id B26BB1200066;
+	Sat, 23 Mar 2024 10:41:31 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sat, 23 Mar 2024 10:41:31 -0400
+X-ME-Sender: <xms:Gur-ZWGlrygVIdhmjfcRMO8f2KqnK_yM3c_pmOlAqe3R1VMeh5Oy4w>
+    <xme:Gur-ZXWswPwPnaBsdXbksb_ZWiQ5F8ffOydS-dTC6GeYK5ZgYB5yjFAJZWWO70APj
+    b_vxEE9KmOpR6kv1Q>
+X-ME-Received: <xmr:Gur-ZQLkNiJwpiV7m4s5J9fQjyKiZb-U3kTBdKwMR7p6ixKkOzrYCnGuIw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtgedgieekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:Gur-ZQFN9BSeI_hz14QaJdfZs4u78MwTSBsu6DtYCAAo8hlJmQVbRw>
+    <xmx:Gur-ZcVzY4Bzn8c1cxT7RJxxJXdSdbXxlN335lEOVLCQypmNXDW0zw>
+    <xmx:Gur-ZTPl3RSz78P2eoUZjtv3XT-G4sAshJnjp2v9wAD0ff_f3moYWA>
+    <xmx:Gur-ZT36BzZ4ta7f2FmNX3uZz8nJ7jEO2ameSfMkoHec6zn7xHHMJg>
+    <xmx:G-r-ZSzLmvm18a4Gr2ctMIWWUgK-28yXoEXnQMK7iuKOGyo04jGNiK5FdHsLPwvU>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 23 Mar 2024 10:41:29 -0400 (EDT)
+Date: Sat, 23 Mar 2024 07:41:28 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+	Miguel Ojeda <ojeda@kernel.org>,	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
+	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,	torvalds@linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org,	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <Zf7qGONJY33KdLCH@Boquns-Mac-mini.home>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <Zf4fDJNBeRN5HOYo@boqun-archlinux>
+ <03f629b6-1e4e-4689-9b69-db0b75577822@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] libbpf: add specific btf name info when do core
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240321170444.388225-1-chen.dylane@gmail.com>
- <CAEf4BzYJeEViQaRJb6u06GJSLa6uBmykRZa4JnWJ9VXw+WoX2g@mail.gmail.com>
- <f5fe3709-bfc8-4906-a0cc-5fe9b388be6b@gmail.com>
- <CAEf4Bzb-Wf5sTnDLu29KQ-zWfCnffdUZYLSe_tQTNW_bTSfnPg@mail.gmail.com>
-From: Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <CAEf4Bzb-Wf5sTnDLu29KQ-zWfCnffdUZYLSe_tQTNW_bTSfnPg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <03f629b6-1e4e-4689-9b69-db0b75577822@lunn.ch>
 
-Got it, thanks for your detailed reply.
+On Sat, Mar 23, 2024 at 03:29:11PM +0100, Andrew Lunn wrote:
+> > There are also issues like where one Rust thread does a store(..,
+> > RELEASE), and a C thread does a rcu_deference(), in practice, it
+> > probably works but no one works out (and no one would work out) a model
+> > to describe such an interaction.
+> 
+> Isn't that what Paul E. McKenney litmus tests are all about?
+> 
 
-在 2024/3/23 上午1:57, Andrii Nakryiko 写道:
-> On Fri, Mar 22, 2024 at 6:37 AM Tao Chen <chen.dylane@gmail.com> wrote:
->>
->> Hi, Nakryiko, thank you for your reply. I try to familiarize with core
->> in libbpf， the debug info is really helpful for me. But i use the old
->> kernel btf, so origion debuginfo like:
->>    struct task_struct___x: found target candidate [130] struct
->> task_struct in [vmlinux]
+Litmus tests (or herd, or any other memory model tools) works for either
+LKMM or C++ memory model. But there is no model I'm aware of works for
+the communication between two memory models. So for example:
+
+	Rust thread:
+
+	let mut foo: Box<Foo> = ...;
+	foo.a = 1;
+	let global_ptr: &AtomicPtr = ...;
+	global_ptr.store(foo.leak() as _, RELEASE);
+
+	
+	C thread:
+
+	rcu_read_lock();
+
+	foo = rcu_dereference(global_ptr);
+	if (foo) {
+		r1 = foo->a;
+	}
+	
+	rcu_read_unlock();
+
+no tool or model yet to guarantee "r1" is 1, but yeah, in practice for
+the case we care, it's probably guaranteed. But no tool or model means
+challenging for code reasoning.
+
+Regards,
+Boqun
+
+> tools/memory-model/litmus-test
 > 
-> the idea here is to not emit path to BTF (otherwise we normally should
-> emit [/sys/kernel/btf/vmlinux], but rather distinguish whether it's a
-> kernel BTF ([vmlinux]) or some kernel module BTF ([<module-name>]).
-> 
-> In your case you are overriding vmlinux BTF by using btf_custom_path
-> option (so you should know where to find it, if you need to debug
-> something). It's still, conceptually, a [vmlinux], and I'd like to
-> keep it this way.
-> 
->> I think it may be more clear, if we print btf name when we use old
->> kernel btf like:
->>    struct task_struct___x: found target candidate [130] struct
->> task_struct in [/boot/***.btf]
->> The patch just solve debug info show for newbies above.
->>
->> 在 2024/3/22 上午2:52, Andrii Nakryiko 写道:
->>> On Thu, Mar 21, 2024 at 10:04 AM Tao Chen <chen.dylane@gmail.com> wrote:
->>>>
->>>> No logic changed, just add specific btf name when core info
->>>> print, maybe it seems more understandable.
->>>>
->>>> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
->>>> ---
->>>>    tools/lib/bpf/libbpf.c | 14 +++++++++-----
->>>>    1 file changed, 9 insertions(+), 5 deletions(-)
->>>>
->>>
->>> Can you elaborate on what problem you are trying to solve?
->>> Conceptually libbpf does look for types in vmlinux (meaning main
->>> kernel BTF), even if user overrides BTF location (presumably because
->>> of old kernel). So even when we emit "vmlinux" in logs, it seems
->>> correct.
->>>
->>> pw-bot: cr
->>>
->>>
->>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->>>> index afd09571c482..b32154288b4a 100644
->>>> --- a/tools/lib/bpf/libbpf.c
->>>> +++ b/tools/lib/bpf/libbpf.c
->>>> @@ -5653,7 +5653,8 @@ static int load_module_btfs(struct bpf_object *obj)
->>>>    }
->>>>
->>>>    static struct bpf_core_cand_list *
->>>> -bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 local_type_id)
->>>> +bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 local_type_id,
->>>> +                   const char *targ_btf_path)
->>>>    {
->>>>           struct bpf_core_cand local_cand = {};
->>>>           struct bpf_core_cand_list *cands;
->>>> @@ -5680,7 +5681,8 @@ bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 l
->>>>
->>>>           /* Attempt to find target candidates in vmlinux BTF first */
->>>>           main_btf = obj->btf_vmlinux_override ?: obj->btf_vmlinux;
->>>> -       err = bpf_core_add_cands(&local_cand, local_essent_len, main_btf, "vmlinux", 1, cands);
->>>> +       err = bpf_core_add_cands(&local_cand, local_essent_len, main_btf,
->>>> +                                targ_btf_path ?: "vmlinux", 1, cands);
->>>>           if (err)
->>>>                   goto err_out;
->>>>
->>>> @@ -5793,7 +5795,8 @@ static int bpf_core_resolve_relo(struct bpf_program *prog,
->>>>                                    int relo_idx,
->>>>                                    const struct btf *local_btf,
->>>>                                    struct hashmap *cand_cache,
->>>> -                                struct bpf_core_relo_res *targ_res)
->>>> +                                struct bpf_core_relo_res *targ_res,
->>>> +                                const char *targ_btf_path)
->>>>    {
->>>>           struct bpf_core_spec specs_scratch[3] = {};
->>>>           struct bpf_core_cand_list *cands = NULL;
->>>> @@ -5813,7 +5816,7 @@ static int bpf_core_resolve_relo(struct bpf_program *prog,
->>>>
->>>>           if (relo->kind != BPF_CORE_TYPE_ID_LOCAL &&
->>>>               !hashmap__find(cand_cache, local_id, &cands)) {
->>>> -               cands = bpf_core_find_cands(prog->obj, local_btf, local_id);
->>>> +               cands = bpf_core_find_cands(prog->obj, local_btf, local_id, targ_btf_path);
->>>>                   if (IS_ERR(cands)) {
->>>>                           pr_warn("prog '%s': relo #%d: target candidate search failed for [%d] %s %s: %ld\n",
->>>>                                   prog_name, relo_idx, local_id, btf_kind_str(local_type),
->>>> @@ -5920,7 +5923,8 @@ bpf_object__relocate_core(struct bpf_object *obj, const char *targ_btf_path)
->>>>                           if (prog->obj->gen_loader)
->>>>                                   continue;
->>>>
->>>> -                       err = bpf_core_resolve_relo(prog, rec, i, obj->btf, cand_cache, &targ_res);
->>>> +                       err = bpf_core_resolve_relo(prog, rec, i, obj->btf, cand_cache, &targ_res,
->>>> +                                                   targ_btf_path);
->>>>                           if (err) {
->>>>                                   pr_warn("prog '%s': relo #%d: failed to relocate: %d\n",
->>>>                                           prog->name, i, err);
->>>> --
->>>> 2.34.1
->>>>
+> 	Andrew
 
