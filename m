@@ -1,165 +1,124 @@
-Return-Path: <linux-kernel+bounces-112465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F9FB887A33
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:31:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A90BD887A35
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35C6E28205F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:31:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9D8D1C20B3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 19:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333A45A0EF;
-	Sat, 23 Mar 2024 19:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5A059165;
+	Sat, 23 Mar 2024 19:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NhZ07YBg"
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="N6BNGBcM";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SydqB8Ta"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0193E224ED;
-	Sat, 23 Mar 2024 19:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340994C3C3
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 19:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711222290; cv=none; b=Kh/Bnd9VUBBbNtYD0lxEsCpzDK6H41NPLfKgdO6SmgYEpAgLDZA9qs2aYF41Eqyfku2rbmLAh8XWJx75yTKWwVQNZhnXc9wWOTqH9jKH9nbc6Bm6KQc+gfyYbHQjh25J8Ve43UbaXFjbTpHtZvUcUPAO+eQsqP3IQpipIHOnyJc=
+	t=1711223524; cv=none; b=mCdxHYNSpzX72Q/ZGmY2/TFMSfsc5629RLyjVbkuPt00YoShodCXMQm+fVuwtpEDOJ9Xd3p6vxKkxyqgJ51GYr2bY4EfVPushMI9l5ZfawqvTKGQjPFmHMdUhg59Lkfn3Sf6Q98wbjGlOwsVBMtH8Y3A9IWUVChIM/QX/KZFTTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711222290; c=relaxed/simple;
-	bh=eKx1Rl5msAf9l6TkuqBNrvlWhUbPcQ4w9uh9Tv4DoR4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p31d4a6Mmf+T7NnsQg+Oq7DqtUzlD+zaied7d3cKaoD7yhvCil3HqSskjz2fCy8fwdTuQe40wlKO8weao5KtVAteJREFCJI0ZI1ddlWkCBDXhHCM+sQfTYtbRyViWQreppe7WkwBNRKgmLxB+jMYBOIocmyxb2iAoiFzc6P5fsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NhZ07YBg; arc=none smtp.client-ip=209.85.222.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7dec16fc4b2so881701241.3;
-        Sat, 23 Mar 2024 12:31:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711222288; x=1711827088; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=UzfTGrntJOeM+olDkQ47lkfVfDGWdlHTbh5Cg8H89NA=;
-        b=NhZ07YBgt5/D+awsDAW57bWuDVr8/nOmtuGqVGfTPljjU3KEICgj81yX2TuYxoKTCE
-         9I2ePN4eoGexGp+tCnsYSR2qOI5+WmvWYRPIEUQzUQSwifiaGYNXGgr46X3bSn5trymn
-         iGZXSGKVLYhYjCPibkBJUpK8eMY2RCY4+lOI97lAic8Nr05KZR4vC0ljXL2KloZcV3Ot
-         MiS3BkJ1/1c89U9TXmcbPiFY5EFqDP9rkj+mfWRxYTeb4rcoQSoLWgF7AXYdILuzD+Wx
-         MZG/sFIPQo5kYIgtUQ3rX9kD8skLzxg+uQE57IrU9wRTmH/UIXVK+30GsWX/T3fai7KM
-         UgyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711222288; x=1711827088;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UzfTGrntJOeM+olDkQ47lkfVfDGWdlHTbh5Cg8H89NA=;
-        b=fB24XeRLJcZ6FjCrrwXiV6CemuKBud+Tw3W7lyIdJNe7NHrcuYaYn6NEl0PZTt3Gux
-         A9h8yajh3qF2wC7FElJAabX+69wN/LpjHowQU0bGPJlHjxuZIe+3AxSuvzqpJSyxsPLj
-         x3K4JZPblYKbX/1ZuDiUro3taAst0Wih8/6dhk6fUv5VUJFuArZMWgoUjZ7OwPxUUj+K
-         +twkP1z07tVVlqPo/CVOK+ICxOP37YPC5Gn6AJ4XG2pL9wpOIj5qtkC8W3GU/kwsU8Gf
-         1ZTMTU2bvpIJ+mFzQzpJZo86vzD5vQVL5QHmatvoXbDlpVbpoGDJbpYtib08xzTdMaVf
-         A2TA==
-X-Forwarded-Encrypted: i=1; AJvYcCWeQt+mO9cmp1ZiYL/7ekr7Rhkm+mILF/6cASD0z1g0Aa7BbFO8aE7xFllBgP99D0t4PcEuvfkpsc+hKNMuMeWjPtUknwsGdT6dwdYDoC5cd7po3taTuCh1A72QnuW4SZzD9ums88XTEwffD1ilxOPkiBGj3g9ZJhKrCY1oqsmVI2fbX7m4jo+UGpudK+n5SxwDXFcfDuDbULYWh/J3pwRj3wA3VM63ig==
-X-Gm-Message-State: AOJu0Yywese50ATrMyiUtP0dqYRvbK31JJJLECBcAvrpKf+ZTyosLiSL
-	v287SDG2BdQaREvl29nd+mX9WN+jELbz9OHB0DJVu4BWC6hYF9Dn
-X-Google-Smtp-Source: AGHT+IG8wsSaLz16sL1d6UoPRjnHSfcppZ6vOiZiBJv/P5WYIQXiuSE++VVcLG4b7jpamkKWMAWaug==
-X-Received: by 2002:a05:6122:2783:b0:4d4:20fa:eb0c with SMTP id el3-20020a056122278300b004d420faeb0cmr2350169vkb.5.1711222287814;
-        Sat, 23 Mar 2024 12:31:27 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id e12-20020a0562141d0c00b0069155a36f67sm2352194qvd.9.2024.03.23.12.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 12:31:27 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 50B751200032;
-	Sat, 23 Mar 2024 15:31:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Sat, 23 Mar 2024 15:31:26 -0400
-X-ME-Sender: <xms:Cy7_ZXGiS8bo4DXpZ3QHo7NVFMuRoKXIyscOMAzzc9ETiXZ14wH2Lw>
-    <xme:Cy7_ZUXMR2iM8kq2MbFYDYhoOI2uBTXMxJPWvA0hs7kDnTPMbsRGEk8TTWi0Rmm6l
-    -_keHnjLXXgZ3HUNA>
-X-ME-Received: <xmr:Cy7_ZZJPFAUmGjIe14EkgY65Hn3hV-0IIuKyotokV42VDVO7DL4qiO6uK1s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtgedguddvjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
-    qhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtf
-    frrghtthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudek
-    hffggeelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeeh
-    tdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmse
-    hfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:DC7_ZVF5nqSpctcWvKVmB05oMUXw8v2v44H1Nu4JmLu1u88hI7GVLw>
-    <xmx:DC7_ZdUxaMkmEzlwRC68k2ED15rcqBdQ_kw6Iezzb6_zrX6bccbK5Q>
-    <xmx:DC7_ZQMyZYWgmlYMBsrFU-pYGNE3cWxLxKtQihuoBmeYDe9P9hHsBg>
-    <xmx:DC7_Zc2OZt7vo8ycQkR4jjOGFJ83IJHsD3d5gA_bb02kzRDOgMgB4g>
-    <xmx:Di7_ZfyT_5V_0DkimZ-wNLGOw1YL71P0bskE92opZcGHsCUxxWIyDAtTDvOPUj0x>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 23 Mar 2024 15:31:23 -0400 (EDT)
-Date: Sat, 23 Mar 2024 12:30:58 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,	torvalds@linux-foundation.org,
- linux-arm-kernel@lists.infradead.org,	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 1/3] rust: Introduce atomic module
-Message-ID: <Zf8t8g5gg5Ksp82f@boqun-archlinux>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <20240322233838.868874-2-boqun.feng@gmail.com>
- <068a5983-8216-48a5-9eb5-784a42026836@lunn.ch>
- <Zf4cP6lx7LHmt3dz@boqun-archlinux>
- <CANiq72=tB=uxaL9XGbnTBpXmj1pXEbxHQJDtAcA_yDiLjTVkRA@mail.gmail.com>
+	s=arc-20240116; t=1711223524; c=relaxed/simple;
+	bh=3Nxa5aBjaYeomuUjnSGnVU2uphSo7pNI38vouVxBOsM=;
+	h=From:To:Cc:Subject:Message-ID:Content-Type:MIME-Version:Date; b=h3BqTWmk045Jb2xgr5RY3yH60RGGKkJHIsPHlRJkBuBWUO/WERAFSdmRyOUzkU8WWpXvFucLg5v3n/y1ojB/t4glNysLAuEyIoCi4Ek+6CsuyZoBWclrMbh70r8Mz52UL13MQJn7L6AIOWiB8QTdM0WoF1StbeY/ago9XYkLMbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=N6BNGBcM; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SydqB8Ta; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711223520;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5mmZYSyibTQ86Vjh8SC+yDAWuhU0roQ3z0+SGbZ1rQU=;
+	b=N6BNGBcMeB2mAyyA5zX2k1F6JKdJujLs6lCDcqDOn8LPQoig6m1vbrS3drWgMVkgS4aiGL
+	1kxm7Em5Z3HMt8McbRkn/CNaccl37KPgd9NrDxkd0CrY8yvwpF0LkrIj/YoKA3hBmiJPQm
+	3QvgAK6F++ERkQnSXehxA9Zny3xmGkgJt/gm3x4VZ8lyQbgMROMSMNV+hdmOn8sThwjTpo
+	ARe3A++Qb9d2k6BDutCMNV6v7ettusxSj1CXrzeH8ev+Mk8tL5KqRtyzesa5l7hyGIVzqR
+	ctdEbv2CteTGPYDzUxaGi56KOOH+wLQqvlBFntGdOP1sNwkLsVzemL1aGsoTHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711223520;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=5mmZYSyibTQ86Vjh8SC+yDAWuhU0roQ3z0+SGbZ1rQU=;
+	b=SydqB8TaNWuikyhD3E2WiZYumIMtzgvH5+bmP90hHkfrGiZ+289PlJUXRgfOEo2n8YCvcV
+	GWIeMFyci58ZK9BA==
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] core/entry for v6.9-rc1
+Message-ID: <171122346785.2772088.10596056144848184713.tglx@xen13>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72=tB=uxaL9XGbnTBpXmj1pXEbxHQJDtAcA_yDiLjTVkRA@mail.gmail.com>
+Date: Sat, 23 Mar 2024 20:51:59 +0100 (CET)
 
-On Sat, Mar 23, 2024 at 08:13:56PM +0100, Miguel Ojeda wrote:
-> On Sat, Mar 23, 2024 at 1:03 AM Boqun Feng <boqun.feng@gmail.com> wrote:
-> >
-> > I can continue to look an elegant way, now since we compile our own
-> > `core` crate (where Rust atomic library locates), we can certain do a
-> > sed trick to exclude the atomic code from Rust. It's pretty hacky, but
-> > maybe others know how to teach linter to help.
-> 
-> Yeah, but it requires copying the source and so on, like we did for
-> `rusttest`. I would prefer to avoid another hack like that though (and
-> the plan is to get rid of the existing hack anyway).
+Linus,
 
-Agreed! The problem is better resolved via modularization of `core`.
+please pull the latest core/entry branch from:
 
-Regards,
-Boqun
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-entry-2024-=
+03-23
 
-> 
-> Cheers,
-> Miguel
+up to:  fb13b11d5387: entry: Respect changes to system call number by trace_s=
+ys_enter()
+
+A single fix for the generic entry code:
+
+  THe trace_sys_enter() tracepoint can modify the syscall number via
+  kprobes or BPF in pt_regs, but that requires that the syscall number is
+  re-evaluted from pt_regs after the tracepoint.
+
+  A seccomp fix in that area removed the re-evaluation so the change does
+  not take effect as the code just uses the locally cached number.
+
+  Restore the original behaviour by re-evaluating the syscall number after
+  the tracepoint.
+
+
+Thanks,
+
+	tglx
+
+------------------>
+Andr=C3=A9 R=C3=B6sti (1):
+      entry: Respect changes to system call number by trace_sys_enter()
+
+
+ kernel/entry/common.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 88cb3c88aaa5..90843cc38588 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -57,8 +57,14 @@ long syscall_trace_enter(struct pt_regs *regs, long syscal=
+l,
+ 	/* Either of the above might have changed the syscall number */
+ 	syscall =3D syscall_get_nr(current, regs);
+=20
+-	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
++	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT)) {
+ 		trace_sys_enter(regs, syscall);
++		/*
++		 * Probes or BPF hooks in the tracepoint may have changed the
++		 * system call number as well.
++		 */
++		syscall =3D syscall_get_nr(current, regs);
++	}
+=20
+ 	syscall_enter_audit(regs, syscall);
+=20
+
 
