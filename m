@@ -1,168 +1,129 @@
-Return-Path: <linux-kernel+bounces-112348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C438878AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A87B58878C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 14:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 710E61C221AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 12:48:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D57B31C22421
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 13:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0387E383AA;
-	Sat, 23 Mar 2024 12:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB033A8F5;
+	Sat, 23 Mar 2024 13:02:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="epygnKxe";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rWHPG+dj"
-Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="01f+S3IU"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498501DDC9;
-	Sat, 23 Mar 2024 12:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B53282F0
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 13:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711198075; cv=none; b=liZpDy2fHbUuua86gQKcF09V8g7K/qKITe6nXQIWMjrT5AjOfYC9yaNVFpQRUF0dZb1U2pSek52Ctx8lZU2oL09xcFYoD1cwyqsOX64Y/wE5uMk9JLA1vJy++ID3QExddUr0h1wUoBhlFGQOCd3pVyR6u598cUMJDODFblaviMI=
+	t=1711198961; cv=none; b=JgLz5d+FiSFnoUjtepJ4Vm/iUxiIfd8pYVgjCda21+UwsqzqpdqtfghYLesutklLV8ZVB02x4rudY1VkFrexNmQ6UP2e1AS+bH5OVKmFB4IZa/UrmLbLbUwg/msU9aRqbgQ7qCRk/RlI+ysv+YcOqDZeAlXt+VIUC6ThCoc8MnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711198075; c=relaxed/simple;
-	bh=DK8kn31nMc4vLLNkopTWFlKbbvyPKPiFHunCkcXMieQ=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=K8xSfujddaxRiySNtUpQDm1JzursNXXEHIlF4+/JzcUvvJZoaEZTK0nUmPMbqDC6aB8C9NhvflgHZ4/bLzO+hCXsG+S9IIFJuZSD4GRZdFe5kMwefYEzlbMKRMK2JLnRi9D+Cr570wyvBxvCRNO/xel3NIxWAhU+QIYceaYCwfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=epygnKxe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rWHPG+dj; arc=none smtp.client-ip=64.147.123.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id DF3811C000A7;
-	Sat, 23 Mar 2024 08:47:50 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Sat, 23 Mar 2024 08:47:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1711198070; x=1711284470; bh=no3SxpIrjY
-	uNJG9JdLGwJceQHSCubNomtZhDzLJ/D4o=; b=epygnKxeUHDKv/1k8Tp6dWRUzA
-	QjRORAIJdjyi+4voAuYw3zil0q9w2xtCJLqnqIIltzo9zW/INN5mfqU28X9ykelU
-	uXDHsrwuHNXk5/IRa1SprNynh+6h4ca7nzjox4+tgdxd1kX3O8KX2Nut7Qy0Q2SU
-	aXcerVaYPHRjijlcAJZEM2jc1e9kgg3ASmI6RgCGwjOPaN8x+8Z10AtrWfo43Bl8
-	JTvSirUgRSD+Y4mNngF61z69NorJvRLPtzgfPUIewhr9q8JS9BdlrdwOcWZiwCd5
-	HW3ONw2gveusbmHYoMUWtZekbt63Pnq74V7hV6cgzjCLdYaXo6xQveGXrg8w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711198070; x=1711284470; bh=no3SxpIrjYuNJG9JdLGwJceQHSCu
-	bNomtZhDzLJ/D4o=; b=rWHPG+djIQkMTy7dtpYCukU5eXVYdVF5nJEwLAmtIyyx
-	YM+oSx2HAHvNEEORhOTWM3rFSj6opLGuLMjidwamWbdwG53Luv690zsJciwnNARl
-	xinbwufK1SVOY48KBufE9ZxdfgwJ3WcE4vpyr6ksu0KQahLl+EvjoDInVQEoMwDi
-	x2wPgy9v86CCvmWFMeeq9yROkRmtupo/0G7o07xkQN9Jv3xxx2abC0KzgPzJU4Gh
-	oKEZ7+u4Q1OYiI7NlJv3yGLIkJ6B0zOsKqbR6SuclltnHI1uEbmOTSKmVFi/OACl
-	nYwUl3O1XBZNLIbjvKXdlJfKeun386Wt1muNfoTuIQ==
-X-ME-Sender: <xms:dc_-ZQ4gwCN1jJ0xu5uLIMaaWJhffwOGRKdeAOztL7kqV5RtwTUPfg>
-    <xme:dc_-ZR5WeM5wrJ2DRRIIAcv59iD2m5SxaFrJwkuIvqaX4vlZqKOB49jrMaG9DBxoO
-    XDXbwWVQpORj2_xLkw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtgedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:dc_-Zff2o2V8MTNE4RremOsZn7Dy_Ia-JJMGAIwzgyveD9CnI-MrVA>
-    <xmx:dc_-ZVJ9Sbm1Rn6BzzZO2rKZ7l99487NeNWBupmjtR9jwu4pQX89gQ>
-    <xmx:dc_-ZULMvcrmDFTm8YLv1sKqam6W6iXv5UblEwUu_iaEtr_oQpukzQ>
-    <xmx:dc_-ZWzgEeLX_I2iwKUfqOlpibMl0A5a2TNpy1fPFSzUkVhU8FVbIA>
-    <xmx:ds_-ZV5-uap66XGLQza-C4SRX_Nj60UZXJGFt8P0zYkQBOTvyWEOvMMsk-g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 8DE76B6008D; Sat, 23 Mar 2024 08:47:49 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
+	s=arc-20240116; t=1711198961; c=relaxed/simple;
+	bh=T7Mgu+MLzqWjzpi1LxLlvfVpGSX814PLr418pafoqeA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E3xiuvqc/ttFwxEZnpiSIpggCc8PQHTmfTJjFdR6SwIaSXdzwstfh/Eln7wRx3ZS+mBKAs1czvxZVUsh6rXUUekiQ68ZWBcVJvnRM2/psSPejNDOCHjc6T0wcUFmqvduGpb32kIhRFPPwr1hGrhDnpA2lJh5UrvHERPS7hLvDG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=01f+S3IU; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso2294578a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 06:02:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1711198958; x=1711803758; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4AhIBO4PzLNRqcsQH2WrtOdVm/lP2EH+zIIytq3CL4s=;
+        b=01f+S3IUtYd/meYR3cu6U5xgGx7ePaekBjSrNvPs81V2H4P11JfeO4891SoJLCCWNF
+         BeaLwMkEdV0fGMbaI3ix8i/UZiLysAGlFbwwYibShb5zirE1IpcMFEEvIXfHfYbqIkjU
+         FVyKv04AC9H9wiEde7zhuJE78QsmCYqeEa/ygeOtgbIOYrvg6O89Y7VqIiDbenuYfvuL
+         rTxGEcKAB/7fRqB+ujPRSvVOER7+z8jb2+6HSPjUYS76vO6soAL5SsM40wk3BXc0zU/I
+         JLyM/6UwoGyNuGPU7idX3yGSoV/xFen84GEktx1Vql2AC4ilzxvreJMtxXsfZg4oqfYq
+         FOGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711198958; x=1711803758;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4AhIBO4PzLNRqcsQH2WrtOdVm/lP2EH+zIIytq3CL4s=;
+        b=PvDaFkDGFULOfU2LcbAUPuAFtBPggrbhDBZOldsQ8PXJkyrCYOXaYYmUFoeRzAfwIY
+         QMJAETLJGGiGijbfIYBNAGh00toFk+Pj61iYY6WUUNgkfj2HXiK6HbKKGykUYBcChVbE
+         NrHQy+5k8KCX4+4FxLtjOtdpUg5/gniUmCJjAxiQq9L5RIlMq+p6QbZNEyd3mJU/J3xD
+         DW4qbmiwKZoYqkrcnO2fXbcueU/HFjruEzBvBYZFNDqIbE7dVrjOExN5U7aCX/EoYDpm
+         f3eIFNz1c6aMQtkSc+9xOU66YItnGEIX9Tpf0Mjjp7YSLRNY42D1ugQ7eup9bQpHh19R
+         bPhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWMAI6V/EU0wV/Eo8DoEDm0N4LqqIqlO3jzjPeMFbDIcWPfBM/80MLJstkQSSo1UlJqLzInxPNdiUM7T8qOOtozHC/9VJWgLdSfWPp1
+X-Gm-Message-State: AOJu0YwaYQro+xU7vqdPg8QtE4MZnNKl14Uw0ttIREUP29PBRtChuICc
+	nyu+4KAVFD8Umqljx7xsuhx2t56dGtRNMa2WLJg4er0z5w/80vFLgePTZYmZi94=
+X-Google-Smtp-Source: AGHT+IEJcwa9KRylcPbZWBjipR/pVElG6lPBbsxJgzVNd0Q1WdTXThMSTUZVkDL1aExm6EkwUEZ2eQ==
+X-Received: by 2002:a50:8706:0:b0:566:1952:694c with SMTP id i6-20020a508706000000b005661952694cmr1382283edb.20.1711198958348;
+        Sat, 23 Mar 2024 06:02:38 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id v17-20020aa7d9d1000000b00569aed32c32sm865385eds.75.2024.03.23.06.02.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Mar 2024 06:02:37 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] scripts: sphinx-pre-install: Add pyyaml hint to other distros
+Date: Sat, 23 Mar 2024 13:58:38 +0100
+Message-ID: <20240323125837.2022-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <a4a8e28d-ab9b-41cd-92e2-7ef111efd5a3@app.fastmail.com>
-In-Reply-To: <2ebe2ea5-b107-4020-8e60-ff8cf43a3aab@arm.com>
-References: <20240305221824.3300322-1-jeremy.linton@arm.com>
- <20240305221824.3300322-2-jeremy.linton@arm.com>
- <202403051526.0BE26F99E@keescook>
- <34351804-ad1d-498f-932a-c1844b78589f@app.fastmail.com>
- <38f9541b-dd88-4d49-af3b-bc7880a4e2f4@arm.com>
- <f1dd15ce-69af-4315-8d7c-b7a480e541aa@app.fastmail.com>
- <db7dfa2d-c7c6-4b10-981a-a7ecc87c8541@arm.com>
- <acfc522a-5162-4b33-9d6c-1e25d0c44a71@app.fastmail.com>
- <2ebe2ea5-b107-4020-8e60-ff8cf43a3aab@arm.com>
-Date: Sat, 23 Mar 2024 13:47:29 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Jeremy Linton" <jeremy.linton@arm.com>,
- "Kees Cook" <keescook@chromium.org>
-Cc: linux-arm-kernel@lists.infradead.org,
- "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
- "Jason A . Donenfeld" <Jason@zx2c4.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Steven Rostedt" <rostedt@goodmis.org>, "Mark Brown" <broonie@kernel.org>,
- "Guo Hui" <guohui@uniontech.com>, Manoj.Iyer@arm.com,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- "James Yang" <james.yang@arm.com>, "Shiyou Huang" <shiyou.huang@arm.com>
-Subject: Re: [PATCH 1/1] arm64: syscall: Direct PRNG kstack randomization
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Sat, Mar 23, 2024, at 00:40, Jeremy Linton wrote:
-> On 3/8/24 14:29, Arnd Bergmann wrote:
->> On Fri, Mar 8, 2024, at 17:49, Jeremy Linton wrote:
->>> On 3/7/24 05:10, Arnd Bergmann wrote:
->>>>
->>>> I'm not sure I understand the logic. Do you mean that accessing
->>>> CNTVCT itself is slow, or that reseeding based on CNTVCT is slow
->>>> because of the overhead of reseeding?
->>>
->>> Slow, as in, its running at a much lower frequency than a cycle counter.
->> 
->> Ok, I see. Would it be possible to use PMEVCNTR0 instead?
->
-> So, I presume you actually mean PMCCNTR_EL0 because I don't see the 
-> point of a dedicated event, although maybe...
+Extend commit 84b4cc8189f2 ("docs: scripts: sphinx-pre-install: Fix
+building docs with pyyaml package") and add pyyaml as an optional
+package to Mageia, ArchLinux, and Gentoo.
 
-Right, that would make more sense.
+The Python module pyyaml is required to build the docs, but it is only
+listed in Documentation/sphinx/requirements.txt and is therefore missing
+when Sphinx is installed as a package and not via pip/pypi.
 
-> So, the first and maybe largest problem is the PMxxx registers are all 
-> optional because the PMU is optional! Although, they are strongly 
-> recommended and most (AFAIK) machines do implement them. So, maybe if 
-> its just using a cycle counter to dump some entropy into rnd_state it 
-> becomes a statement that kstack randomization is slower or unsupported 
-> if there isn't a PMU?
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ scripts/sphinx-pre-install | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I think that sounds workable, especially as there is already
-the randomize_kstack_offset=on/off conditional at boot time, it
-could fall back to just not randomizing and print a warning
-if the feature is enabled but unavailable at boot time.
+diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
+index 4c781617ffe6..d4f05216ca23 100755
+--- a/scripts/sphinx-pre-install
++++ b/scripts/sphinx-pre-install
+@@ -514,6 +514,7 @@ sub give_mageia_hints()
+ {
+ 	my %map = (
+ 		"python-sphinx"		=> "python3-sphinx",
++		"yaml"			=> "python3-yaml",
+ 		"virtualenv"		=> "python3-virtualenv",
+ 		"dot"			=> "graphviz",
+ 		"convert"		=> "ImageMagick",
+@@ -557,6 +558,7 @@ sub give_mageia_hints()
+ sub give_arch_linux_hints()
+ {
+ 	my %map = (
++		"yaml"			=> "python-yaml",
+ 		"virtualenv"		=> "python-virtualenv",
+ 		"dot"			=> "graphviz",
+ 		"convert"		=> "imagemagick",
+@@ -587,6 +589,7 @@ sub give_arch_linux_hints()
+ sub give_gentoo_hints()
+ {
+ 	my %map = (
++		"yaml"			=> "dev-python/pyyaml",
+ 		"virtualenv"		=> "dev-python/virtualenv",
+ 		"dot"			=> "media-gfx/graphviz",
+ 		"convert"		=> "media-gfx/imagemagick",
+-- 
+2.44.0
 
-> But then we have to basically enable the PMU cycle counter globally, 
-> which requires reworking how it works, because the cycle counter is 
-> enabled/disabled and reset on the fly depending on whether the user is 
-> trying to profile something. So, I have hacked that up, and it appears 
-> to be working, although i'm not sure what kind of interaction will 
-> happen with KVM yet.
->
-> But I guess the larger question is whether its worth changing the PMU 
-> behavior for this?
-
-I don't know too much about how the PMU works in detail, but I'm
-also worried about two possible issues that end up preventing us
-from using it in practice:
-
-- if enabling PMCCNTR_EL0 takes away one of the limited number
-  of available counters, we probably don't want to go there
-
-- similarly, I would expect it to have a nonzero power
-  consumption if the default is to have the clock disabled
-  and non-counting. Probably not a big deal for server machines,
-  but could be an issue on battery powered embedded devices.
-
-     Arnd
 
