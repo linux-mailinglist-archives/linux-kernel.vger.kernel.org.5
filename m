@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-112240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E622A887750
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:58:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD62887753
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:58:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 241151C216E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 06:58:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED756280C56
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 06:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA58DF78;
-	Sat, 23 Mar 2024 06:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F1E125CD;
+	Sat, 23 Mar 2024 06:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="o96+n8a/"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="XHrfy2Kv"
 Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800EC4C6B;
-	Sat, 23 Mar 2024 06:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F01ECA6F;
+	Sat, 23 Mar 2024 06:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711177055; cv=none; b=REWIheXR0HSIPaHau+DzQcNYmPMVAQ6IK7+0ydOwUVTB9YA77Iu49ojWc0soY6QaYlwFIUEqOxB6FY0I5du5FkxaNfxzdugmK1bpop3KwiBd158QrA0VzvbN/Pe7zs51w6qhSJerpvunSNV7Y2jOKg/JgCfku6ZC+T7JE/HZhHI=
+	t=1711177057; cv=none; b=OdrAM9SPG6KHkLpqokOxLw3lNSNYzAkT7QYs5BtdfqUFTwS4fQzVv7lz3JzVjx6NQk9q5Kkwt4XXa/DcWFVJMfXKON99PSbqlT4vF30rOomnpTqb+Hq6lH/CD+39/mqa79rwk9EJKcrFgTg3APO1HR2PXWTkeDZLe70KpU0Ldd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711177055; c=relaxed/simple;
-	bh=Vepnq6HR03my19K7lEmsnKur7lcLWcR+/WSr2aInfXA=;
+	s=arc-20240116; t=1711177057; c=relaxed/simple;
+	bh=y2BUhWyG2HK6NoiwSsb///Wz9WQ5PTYaMBs7R+bsQKo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RFs7hNJouKmJ22GgDVC5VVOK4Yx0c9l3hvmrxi+SFIHnEGSzUaJIRvHtWWs7XJZCenahL5gh6yZ8bEcSvd4RoW+xSmQxTPUA1s8Ts4FsNpSkGShLp5G5JFEbRWHOyCEMLZ4NxujttdGeRCUQdO9SzjrZ37bb/KLH6F4vjKPZ+uA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=o96+n8a/; arc=none smtp.client-ip=80.12.242.28
+	 MIME-Version; b=a6aW6dtC8smoTq2g8O7Q9j9H2YhldHLJFtlnXAlKEJ7VRUbmeOgarhQTOPub5lEUN1bk/0MHaY0iLMcWgj4rg/GxNzFLsnwmc58HpAMAKt61E8vR9HDuEpR9KxSvTwodcur3ai9vxXAnf+sr1LqHouTqfYtASjI04D4rrH78CEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=XHrfy2Kv; arc=none smtp.client-ip=80.12.242.28
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Received: from fedora.home ([86.243.17.157])
 	by smtp.orange.fr with ESMTPA
-	id nvJZrKeyIixjunvJkrMrfv; Sat, 23 Mar 2024 07:57:25 +0100
+	id nvJZrKeyIixjunvJnrMrik; Sat, 23 Mar 2024 07:57:27 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1711177045;
-	bh=VPQNyHwgvojt0bPFXEppRTGCqNsSKPdraCVqPoBN/Ps=;
+	s=t20230301; t=1711177047;
+	bh=GqVTzgUhSwxWnPsMh7JKr/v6dWRM2rIpiyLhxqJvIk4=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=o96+n8a/XbwTAnqQHGJHBCurGcWzgxVSnMoFmYgfAYMqUmr45BOaVcAkScFXRNsHI
-	 RkmMVQIzUbDsmVDNb8PPXdSeuf7/1pVkRwwsBx0OjsNptTPsdu9QeB1bEY907MJw/x
-	 6jNck/9jaaeFn9Ehh7vXT/QfNc1zrGJgXX8d7Z7yw08mIeDSc2y9SuIXcAAuOaXREv
-	 y8Y8brk0/H2HlcCetHNMR6E6tetvDFqZ8LJE6+Sa1xhG7KXLJR1DUZFYVtw1y/ZKOq
-	 W5Uxa3b2hsV2zeN9qA/zkxaLbTbiBdz8FHW556KABQtlA+X/BNfDoV0LGWIIC752Db
-	 svaGJ7QGHL05w==
+	b=XHrfy2KvjpqI2gsrxiQRiC5mc3PqShjlMeYJXhoH60ZzN62+0BZ9tFIHYZVOPYB9A
+	 DzRU4dISD/6Hqn4JIf+QAX/5N8gxmfiO31dJepjEYciQI0TYbNFORTbRODUUAalg3z
+	 uEVDua/GKX+TsPNfp6Uz+0GqXHh2N1J3K8MsMP/STa6BbhIl4Dswnioj6HNK2m/BJ7
+	 NOczLzbj7niily6rh+bLGF6mL4IgdHwVudTXOWxB3mX/ORjPBY9hVaI/jim5D+WaEW
+	 aLM2Xt31V8Te8+0RRlISBfGjb4xBFKroEwiVC42n4z92JtQt85i414avwWeZveYdVy
+	 9jueAhMZbbJVQ==
 X-ME-Helo: fedora.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 23 Mar 2024 07:57:25 +0100
+X-ME-Date: Sat, 23 Mar 2024 07:57:27 +0100
 X-ME-IP: 86.243.17.157
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To: gregkh@linuxfoundation.org,
@@ -55,9 +55,9 @@ Cc: linux-usb@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel-janitors@vger.kernel.org,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/3] usb: gadget: u_audio: Use the 2-argument version of strscpy()
-Date: Sat, 23 Mar 2024 07:57:04 +0100
-Message-ID: <e7fd0ec5a8b37799271c6d74c325cfb980d44181.1711176701.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 3/3] usb: gadget: u_audio: Use snprintf() instead of sprintf()
+Date: Sat, 23 Mar 2024 07:57:05 +0100
+Message-ID: <5703e697687e4a39059bf90659969ffc86b2cfbd.1711176701.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1711176700.git.christophe.jaillet@wanadoo.fr>
 References: <cover.1711176700.git.christophe.jaillet@wanadoo.fr>
@@ -69,41 +69,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In order to be consistent with other strscpy() usage in this file and less
-verbose, use the new 2-argument version of strscpy() which computes
-auto-magically the size of the destination.
+In order to be consistent with other s[n]printf() usage in this file,
+switch to snprintf() here as well.
 
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
 Compile tested only
 ---
- drivers/usb/gadget/function/u_audio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/function/u_audio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/usb/gadget/function/u_audio.c b/drivers/usb/gadget/function/u_audio.c
-index 00ff623b4ebb..5dba7ed9b0a1 100644
+index 5dba7ed9b0a1..1a634646bd24 100644
 --- a/drivers/usb/gadget/function/u_audio.c
 +++ b/drivers/usb/gadget/function/u_audio.c
-@@ -1243,7 +1243,7 @@ int g_audio_setup(struct g_audio *g_audio, const char *pcm_name,
- 	if (err < 0)
- 		goto snd_fail;
+@@ -1388,7 +1388,8 @@ int g_audio_setup(struct g_audio *g_audio, const char *pcm_name,
  
--	strscpy(pcm->name, pcm_name, sizeof(pcm->name));
-+	strscpy(pcm->name, pcm_name);
- 	pcm->private_data = uac;
- 	uac->pcm = pcm;
- 
-@@ -1386,8 +1386,8 @@ int g_audio_setup(struct g_audio *g_audio, const char *pcm_name,
- 		prm->snd_kctl_rate = kctl;
- 	}
- 
--	strscpy(card->driver, card_name, sizeof(card->driver));
--	strscpy(card->shortname, card_name, sizeof(card->shortname));
-+	strscpy(card->driver, card_name);
-+	strscpy(card->shortname, card_name);
- 	sprintf(card->longname, "%s %i", card_name, card->dev->id);
+ 	strscpy(card->driver, card_name);
+ 	strscpy(card->shortname, card_name);
+-	sprintf(card->longname, "%s %i", card_name, card->dev->id);
++	snprintf(card->longname, sizeof(card->longname), "%s %i",
++		 card_name, card->dev->id);
  
  	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+ 				       NULL, 0, BUFF_SIZE_MAX);
 -- 
 2.44.0
 
