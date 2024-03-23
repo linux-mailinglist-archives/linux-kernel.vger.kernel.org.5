@@ -1,114 +1,105 @@
-Return-Path: <linux-kernel+bounces-112234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2E7188773A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:33:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B7D588773C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 07:39:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1E352839DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 06:33:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D04091F23146
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 06:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB9179CB;
-	Sat, 23 Mar 2024 06:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DF48F6C;
+	Sat, 23 Mar 2024 06:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OxJHeHs0"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b="XgigSNG0"
+Received: from mail.nppct.ru (mail.nppct.ru [195.133.245.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82FF433DD
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 06:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41C42107
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 06:39:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.133.245.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711175626; cv=none; b=KtK3AbQhxcqfq04IXs7wJgpMeHbh1ZEaNJdWz+s/Yub1NTzDoelYeoJ9hiJjYCKKYMziL52fzpyHhLohumfW1wJPR4f4aXZ/OTYuoU6Ay8btuskzR6k9TUfuAtITU/v8SL6sY9rb05638Vn5lC8k29kAdvfIVrW1FKRVHX7EtOs=
+	t=1711175955; cv=none; b=bToIbLFcU1cKS/JdGPJdnU1b9C7uuioRZCQMVTwdRdOi9iaecxZMSmW8SIJQ/QiazI5Di0Ajue9vCBgP2x6HrbCgvgrADaZu4ONnKggZCqekCrFSkeatmoGbxgPQ58PGpgeldV9taSmt/BAihrToPcuxun5ENKxRHRIDQlW0N3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711175626; c=relaxed/simple;
-	bh=9MoRzpMorl4jmgjybPXxJ3FOpwPB8iAT0iT1EWRFdR8=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=q02MYdkdNdJW8WCiMSdjPrg2KTik1qvAOOX0BxKWA2CvhVR6Chb4vKZK5sQPhGJLpHzRb89K0+vCL5O5G4Xhwiz5BoGdcCVFsdyFqLwiXzyG4Ysm5KvZe3hesH+zy1AGYy1GkjnQ1T7GGyMwdOaT7do71RY22jPWUqNcY81OrVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ovt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OxJHeHs0; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ovt.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609fe93b5cfso44525287b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 23:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711175623; x=1711780423; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=txx7wotKqYRR4TcLWSwMoKBZaEfj0wAl/bTcQ8vVQKg=;
-        b=OxJHeHs0Hv+yCqQjLHaB23SluVeUJE9GjE7FKuiyjZzMX4NHtasCaGDOOm/aeyoHGO
-         8sWQsYDMzX2Eaqbjp6i1s5DO1Tc4Cxy83IbzEiO/UT101GP7FI3l2XGSy8HgWfG+xXS7
-         /notuJVtG2c1W20RxLEV6SK9J7hT0geqWO60Do2BdG/+VAvyZLCUY57idZ9QW+EoX2Ql
-         YElaq5k9O/vs7wcmN3JV64hmIXmeNXDKEhMenrk4n8ruwV2wvSgNapVuNtbjHThpioqG
-         46n/yvxCnH7eXrRG9YpSLOEChnMr7kY+dC8HQ16Ot/q/VgP2wQQdiMjxF2v56esx1Bf7
-         wBuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711175623; x=1711780423;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=txx7wotKqYRR4TcLWSwMoKBZaEfj0wAl/bTcQ8vVQKg=;
-        b=S9eyrpIGzcwI7M1ctpTMCUrhJRRCLLBjc4Jc91ayCxme8stSoBMlh+/X2LxtiBmaVv
-         rADb3HbFjp/cWhV3Z0e+gt3BnpRceYX4/q/wDWUQQCdJYIIaNu4EsYugimxbISC3muqu
-         x6yw50gpJLKzJ6QRR3gZtH9e+siBAfi5dxUBHpDhxYxBmJPcAkTzIPqyJLwXUvBG/Otr
-         XoFqo3WlPwzdboP+1enbnJWTjGKRq6VZtfqRVkiKwObeyJFOfjtNTr9IAxA1WF06k5Bh
-         2OmBLe1QH186aSSLQ8dJbSej26jtQbgOsTKk+X/Ztr28leOL8NZfGkL6TR1VMlqkDD21
-         yXXg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKKstyAkgTxJEy6vvjtyqBfI1Wf2Nrzs5KiU/zdxEo/hty2gt3ZfqS66MrjbjdwMq8rTYV89oknhKjzikACHXUmT1Gh5YypCaywcas
-X-Gm-Message-State: AOJu0YzPYVq1MEt37IZaZ9LHF0XYLcx/FePpn15c1nrcYVix9UUoQCju
-	g06PWEKKqKhGAOBG4ayZ5w+F/JpkjvE7jusb8iZ2/87lmGd5maBeDSJosMRECnkN2w==
-X-Google-Smtp-Source: AGHT+IEk5aj2iQAOOQTVlpVPwtoj+Ahn1h2Lsg5jYpIXleZg2+JKC8U+krr/mfKR++Kv6+vz8+cIUOs=
-X-Received: from hmarynka.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:925])
- (user=ovt job=sendgmr) by 2002:a81:49cd:0:b0:60c:c986:7cdd with SMTP id
- w196-20020a8149cd000000b0060cc9867cddmr435562ywa.0.1711175623549; Fri, 22 Mar
- 2024 23:33:43 -0700 (PDT)
-Date: Sat, 23 Mar 2024 06:33:33 +0000
+	s=arc-20240116; t=1711175955; c=relaxed/simple;
+	bh=x6jysyZ5oZimszC/+KWYqfqt9dmO+sPqmSEiLu28WpI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r6azpCXl9qhIAU8RAjM70ztIZsq1O/hosfZztszXhEB8YQeTMuBz/NH/cPQOTXKAVBbIoVPYsXHDxDfqQMBBwOH2Xp0ci1Bxtfy42PNLgVCzcrUIGzae7K5VohJl8cAMLLxgAykBRApNccHjHP93Pa812Dn6QaC+e2sd141YQEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru; spf=pass smtp.mailfrom=nppct.ru; dkim=pass (1024-bit key) header.d=nppct.ru header.i=@nppct.ru header.b=XgigSNG0; arc=none smtp.client-ip=195.133.245.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nppct.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nppct.ru
+Received: from mail.nppct.ru (localhost [127.0.0.1])
+	by mail.nppct.ru (Postfix) with ESMTP id 737621C1444
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 09:39:05 +0300 (MSK)
+Authentication-Results: mail.nppct.ru (amavisd-new); dkim=pass (1024-bit key)
+	reason="pass (just generated, assumed good)" header.d=nppct.ru
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nppct.ru; h=
+	content-transfer-encoding:mime-version:x-mailer:message-id:date
+	:date:subject:subject:to:from:from; s=dkim; t=1711175944; x=
+	1712039945; bh=x6jysyZ5oZimszC/+KWYqfqt9dmO+sPqmSEiLu28WpI=; b=X
+	gigSNG0ZKBCrO4NHweiU5rvEX3Uiyfp568itIKXAprXgYWNXex3TL+shzZ3VwF85
+	+gKXa2adX2h+30jxhcbYLhqEhmUhAelnMHDChnRYsZqaKS3nNfxbqsCZXDX7K0MS
+	8pNhWuucOXhAjTxPSYwYLkNGnalDf1TzqyjAa3Kpwk=
+X-Virus-Scanned: Debian amavisd-new at mail.nppct.ru
+Received: from mail.nppct.ru ([127.0.0.1])
+	by mail.nppct.ru (mail.nppct.ru [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id jyTZGd427jSd for <linux-kernel@vger.kernel.org>;
+	Sat, 23 Mar 2024 09:39:04 +0300 (MSK)
+Received: from localhost.localdomain (mail.dev-ai-melanoma.ru [185.130.227.204])
+	by mail.nppct.ru (Postfix) with ESMTPSA id 18C7C1C1401;
+	Sat, 23 Mar 2024 09:39:03 +0300 (MSK)
+From: Andrey Shumilin <shum.sdl@nppct.ru>
+To: 3chas3@gmail.com
+Cc: Andrey Shumilin <shum.sdl@nppct.ru>,
+	linux-atm-general@lists.sourceforge.net,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	khoroshilov@ispras.ru,
+	ykarpov@ispras.ru,
+	vmerzlyakov@ispras.ru,
+	vefanov@ispras.ru
+Subject: [PATCH] iphase: Adding a null pointer check
+Date: Sat, 23 Mar 2024 09:38:52 +0300
+Message-Id: <20240323063852.665639-1-shum.sdl@nppct.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240323063334.735219-1-ovt@google.com>
-Subject: [PATCH v2] efi: fix panic in kdump kernel
-From: Oleksandr Tymoshenko <ovt@google.com>
-To: Ard Biesheuvel <ardb@kernel.org>, Johan Hovold <johan+linaro@kernel.org>
-Cc: ovt@google.com, stable@vger.kernel.org, linux-efi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Check if get_next_variable() is actually valid pointer before
-calling it. In kdump kernel this method is set to NULL that causes
-panic during the kexec-ed kernel boot.
+The pointer <dev->desc_tbl[i].iavcc> is dereferenced on line 195.
+Further in the code, it is checked for null on line 204.
+It is proposed to add a check before dereferencing the pointer.
 
-Tested with QEMU and OVMF firmware.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Fixes: bad267f9e18f ("efi: verify that variable services are supported")
-Cc: stable@vger.kernel.org
-Signed-off-by: Oleksandr Tymoshenko <ovt@google.com>
+Signed-off-by: Andrey Shumilin <shum.sdl@nppct.ru>
 ---
-Changes in v2:
-  - Style fix
-  - Added Cc: stable
-  - Added Fixes: trailer
----
- drivers/firmware/efi/efi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/atm/iphase.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 8859fb0b006d..fdf07dd6f459 100644
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -203,6 +203,8 @@ static bool generic_ops_supported(void)
- 
- 	name_size = sizeof(name);
- 
-+	if (!efi.get_next_variable)
-+		return false;
- 	status = efi.get_next_variable(&name_size, &name, &guid);
- 	if (status == EFI_UNSUPPORTED)
- 		return false;
+diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
+index 324148686953..596422fbfacc 100644
+--- a/drivers/atm/iphase.c
++++ b/drivers/atm/iphase.c
+@@ -192,6 +192,11 @@ static u16 get_desc (IADEV *dev, struct ia_vcc *iavcc) {
+            i++;
+            continue;
+         }
++       if (!(iavcc_r = dev->desc_tbl[i].iavcc)) {
++	   printk("Fatal err, desc table vcc or skb is NULL\n");
++	   i++;
++	   continue;
++	}
+         ltimeout = dev->desc_tbl[i].iavcc->ltimeout; 
+         delta = jiffies - dev->desc_tbl[i].timestamp;
+         if (delta >= ltimeout) {
 -- 
-2.44.0.396.g6e790dbe36-goog
+2.30.2
 
 
