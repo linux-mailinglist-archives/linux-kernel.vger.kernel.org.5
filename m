@@ -1,145 +1,149 @@
-Return-Path: <linux-kernel+bounces-112177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D285887695
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:09:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51209887699
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:11:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA3EAB223DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:09:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B103B22659
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061543D9E;
-	Sat, 23 Mar 2024 02:09:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6C11362;
+	Sat, 23 Mar 2024 02:11:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gaCDbCKk"
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWm5Cv5A"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885E6EC2
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FC6A55
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711159748; cv=none; b=BOB4vrvmwejpsoaP/gi4ozvs2RPSuw2OoEnzZ/MN49JpBeMfjGreIEe23Z0/uSFC06UXUM49ejXy8Y5/GERZhQCnoPyhGBvy9LHRYk40lt98Akd8VWVabmrIksuJwDTtFEl2E3pNIQ5QBeooznt5wq5R6pX3G3mDO/f8VdJL9Mo=
+	t=1711159885; cv=none; b=Gm9YHua0GfycMxNaUlJfmSL0mPjj2I4EGOBq4BxSrUOYwHezOs9Gh3yuuG/iE8mrq5KKX08dcNFz5Em16CoUtkPpubTAc1hXsi/uU5lWquiFLQDNIRDEeKvVEwK3K2MlA3tejyd+gMhpdSccDbPBgQDSKS0hVJsIpQ1nD3XD5xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711159748; c=relaxed/simple;
-	bh=RYp/JsSSfKdzCtxZ1QFJG90hGxBYwOT+js6mYmwvLoI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cgCLjzx6PCS7Sm9xDjJGpTEgHx91HSyERpYzk4Uc/JFXTGxEDbJSxe1UXiuaI3WwyUHxfg3NdQRknOcxtJo/XmvbsdqwzBb0iMETSzL465KnXihM1z3Ru3HhQplz54tAMruSdyb53qDdZy2EiXTpZzTxZK0Qd2mLP489Ef7Qwhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gaCDbCKk; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 22 Mar 2024 22:08:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711159744;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nLjpN8zrN866nOF+7FuN+/+Gp2UQ+rczaODH2hYXzhg=;
-	b=gaCDbCKkN+qK3InSbhyhJcc+wrz8L0wfUqMZiAEkaM4egtEUJCElSxG7mwOXsA29YHs/vq
-	lYUhrNWVqxOEUvoFtsu4sMTNaCIiYNxRddKWtt1dktqSYzMmwZmkBSBDjr4Ixdtn4GVpf3
-	ZfurCuI1A0kG1Q6KDtMuW5JMIOhbLY4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org, 
-	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
-	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, dm-devel@lists.linux.dev, linux-bcache@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 04/15] lib min_heap: Add type safe interface
-Message-ID: <ako4ddhjw4i7nt6mq54g4coeht4ksgwmoas3bdds2pzvfgqibc@ko3voxva75ge>
-References: <20240320145417.336208-1-visitorckw@gmail.com>
- <20240320145417.336208-5-visitorckw@gmail.com>
- <iz6wl3twuc72txd4ifxy73bbbfijo3ecy7izw3drsmcb2payeu@b2dusfoqobgu>
- <Zfwgu8+IeH/YqWYR@visitorckw-System-Product-Name>
- <mi3uq4gqvseubfiylslxfrnwupfzopz753md5f53v6brlgiamv@l5bxmctqnz6g>
- <Zf25pSI4p0d5pFXX@visitorckw-System-Product-Name>
- <gx3skkrp6pfp7ch3dmludzmqrsyncsptzhlvuwqt2abdhcli5m@xsny7x4nkxv3>
- <Zf42BA7EMCRI3hik@visitorckw-System-Product-Name>
+	s=arc-20240116; t=1711159885; c=relaxed/simple;
+	bh=Htqw8GSL4y8T14PX861x5cQ+UMbzyBgGFwv2eWHm6Cs=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=t8l4IsKonLbLiOh3FFYBarhudP07NHRj9TO49PybN/Xm0h0lSx/kzbuaowqlZGB3tmbXp0xorm+9ZLxKSul366OX2s2vKW4ay0MTBSXgj1ZW+oLsdWwxgdemFcR2vfiqNDTZFfpcmCoXFy/xTDBqykqsQaNP8I9WhydiW+F/sJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWm5Cv5A; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso1660485a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:11:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711159884; x=1711764684; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ytYwAkh4AZyvnFMvyg0Zf5hpxuIrcf2upm5pBUrao8c=;
+        b=JWm5Cv5AwGGGin2Y6icjQGXqurkAxfjv0g6oOLm2Wg/L9ig7sLWWH1Kqh/bl6/flJq
+         Opqjply0rOVfzl1TrXEerLdwTHETjQZZZUqkLHfx7QMIozOe4XO2Xir1PedxoBzvWT6n
+         W2bDbNZaoZMfdrbsLrwGrXKehnn6+Z8YhDuxj96mRp8nrR4NrltjEpxIdjAdP7zMp7pA
+         8Yb0k2xRXGRQDXAM2eABCvaRm3WHBVd6Tsw5SVnPqgYKxFq4YSMnSFOyswsxs7rEyeHx
+         hOqydVZ1v+w4zIcpjmpbSqQGlwKZ31NBAJh04GtvYUoX77UPwBJNfn1dvvHf6xGWyYD2
+         ALsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711159884; x=1711764684;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ytYwAkh4AZyvnFMvyg0Zf5hpxuIrcf2upm5pBUrao8c=;
+        b=YHo8xysdq2LXIpwQWf0gYNrdaYHUrOL/ubgBdgCgpp/hXUSVOlNcA6GZCrINUVgWrH
+         dTY57Etnx7bdEqTuvfM4nsY1JPLdSSJWIaDbEXVe32ehYz1mauH464naXXssNrk38nQO
+         0yx8OampDrv/WbF70Alo6TGJAJmPkkOq8dLuTfjFBAjoMUOxdBpHhz+gcXXvqN3wnx6E
+         58Ga+0yx6AQ1DX/frF6RT0R5LHHEyMei+srcG+M/A7nRWEnKrrqLcInwdRHTNTOIjr1/
+         ExCQ03CyNLAqn2X9trao5Tv3rw4xxIvonsPiUMo8SJyba6sluzn25lKIiehGsvMa8LB2
+         XyiA==
+X-Gm-Message-State: AOJu0YxFK7OuCcDRtZEV24hyO+dTP1ynBnyWNw5RpdOeNe1QvOEKIibM
+	/RGZCuQKvcxUCTxa/KF7wD65AXm38ZmA2bbP+JK4NBxX/18dTuiy
+X-Google-Smtp-Source: AGHT+IFk5+cCcipKpU/T74eH7Gg0+R66IsfBKo81modkv34Bn3w33lURjWrD3uBnnCA0OwiRFUpXaw==
+X-Received: by 2002:a05:6a20:3ca2:b0:1a3:a669:747e with SMTP id b34-20020a056a203ca200b001a3a669747emr1806032pzj.12.1711159883651;
+        Fri, 22 Mar 2024 19:11:23 -0700 (PDT)
+Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id rs12-20020a17090b2b8c00b00298e11b600dsm2594669pjb.27.2024.03.22.19.11.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 19:11:11 -0700 (PDT)
+Message-ID: <c56eae89-9559-4b1d-8249-d23281e466b4@gmail.com>
+Date: Sat, 23 Mar 2024 11:11:09 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zf42BA7EMCRI3hik@visitorckw-System-Product-Name>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+To: ying.huang@intel.com
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ "Paul E. McKenney" <paulmck@kernel.org>, ryan.roberts@arm.com,
+ chrisl@kernel.org
+References: <87r0g3q9cz.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
+Subject: Re: Can you help us on memory barrier usage? (was Re: [PATCH v4 4/6]
+ mm: swap: Allow storage of all mTHP orders)
+Content-Language: en-US
+From: Akira Yokosawa <akiyks@gmail.com>
+In-Reply-To: <87r0g3q9cz.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 23, 2024 at 09:53:08AM +0800, Kuan-Wei Chiu wrote:
-> On Fri, Mar 22, 2024 at 02:23:26PM -0400, Kent Overstreet wrote:
-> > On Sat, Mar 23, 2024 at 01:02:29AM +0800, Kuan-Wei Chiu wrote:
-> > > On Thu, Mar 21, 2024 at 05:22:14PM -0400, Kent Overstreet wrote:
-> > > > On Thu, Mar 21, 2024 at 07:57:47PM +0800, Kuan-Wei Chiu wrote:
-> > > > > On Wed, Mar 20, 2024 at 04:56:57PM -0400, Kent Overstreet wrote:
-> > > > > > On Wed, Mar 20, 2024 at 10:54:06PM +0800, Kuan-Wei Chiu wrote:
-> > > > > > > Introduce a type-safe interface for min_heap by adding small macro
-> > > > > > > wrappers around functions and using a 0-size array to store type
-> > > > > > > information. This enables the use of __minheap_cast and
-> > > > > > > __minheap_obj_size macros for type casting and obtaining element size.
-> > > > > > > The implementation draws inspiration from generic-radix-tree.h,
-> > > > > > > eliminating the need to pass element size in min_heap_callbacks.
-> > > > > > 
-> > > > > > let's avoid the heap->heap.nr - darray (fs/bcachefs/darray.h) has a
-> > > > > > trick for that. All heaps have the same memory layout, so we can just
-> > > > > > cast to a void pointer heap to get something the C code can use.
-> > > > > >
-> > > > > If I understand correctly, you're suggesting adding APIs similar to
-> > > > > darray_top(), darray_first(), and darray_last() within min_heap and
-> > > > > having them return a pointer. However, some users are using heap.nr in
-> > > > > conditional statements instead of utilizing heap.nr for memory
-> > > > > operations, so returning pointers may not be as convenient. What about
-> > > > > adding get and set functions for nr instead?
-> > > > 
-> > > > No, I mean not having separate inner and outer types. Want me to sketch
-> > > > something out?
-> > > 
-> > > Based on your suggestion, I've come up with the following code snippet:
-> > > 
-> > > #define MIN_HEAP_PREALLOCATED(_type, _name, _nr) \
-> > > struct _name {  \
-> > >     int nr; \
-> > >     int size;   \
-> > >     _type *data;    \
-> > >     _type preallocated[_nr];    \
-> > > };
-> > > 
-> > > #define MIN_HEAP(_type, _name) MIN_HEAP_PREALLOCATED(_type, _name, 0)
-> > > 
-> > > typdef MIN_HEAP(char, _) min_heap_char;
-> > > 
-> > > static __always_inline
-> > > void min_heap_init(min_heap_char *heap, void *data, int size)
-> > > {
-> > > 	heap->nr = 0;
-> > > 	heap->size = size;
-> > >     heap->data = size <= ARRAY_SIZE(heap->preallocated) ? heap->preallocated : data;
-> > > }
-> > > 
-> > > But I'm not sure how to implement other inline functions like
-> > > min_heap_push or min_heap_pop if I do that, unless they are rewritten
-> > > using macros. Also, I'm not sure how to make the less and swp functions
-> > > in the min_heap_callbacks not use void * type parameters. Or perhaps I
-> > > misunderstood your meaning again. If you could sketch out your idea or
-> > > have a better approach, it would be a great help to me. Any guidance
-> > > would be greatly appreciated.
-> > 
-> > No, you're on the right track. To call C functions on different types of
-> > heaps you have to cast them all to a common type, say HEAP(char), also
-> > pass the element size as a paremeter (which you had to do previously
-> > anyways).
+[Use Paul's reachable address in CC;
+ trimmed CC list, keeping only those who have responded so far.]
+
+Hello Huang,
+Let me chime in.
+
+On Fri, 22 Mar 2024 06:19:52 -0700, Huang, Ying wrote:
+> Hi, Paul,
 > 
-> The other question I want to ask is, I'm not sure how this relates to
-> avoiding the heap->heap.nr. In cases where we need to know the current
-> number of elements in the heap, don't we still need to use the same
-> method to determine the number of elements?
+> Can you help us on WRITE_ONCE()/READ_ONCE()/barrier() usage as follows?
+> For some example kernel code as follows,
+> 
+> "
+> unsigned char x[16];
+> 
+> void writer(void)
+> {
+>         memset(x, 1, sizeof(x));
+>         /* To make memset() take effect ASAP */
+>         barrier();
+> }
+> 
+> unsigned char reader(int n)
+> {
+>         return READ_ONCE(x[n]);
+> }
+> "
+> 
+> where, writer() and reader() may be called on 2 CPUs without any lock.
+> It's acceptable for reader() to read the written value a little later.
+> Our questions are,
+> 
+> 1. because it's impossible for accessing "unsigned char" to cause
+> tearing.  So, WRITE_ONCE()/READ_ONCE()/barrier() isn't necessary for
+> correctness, right?
+> 
+> 2. we use barrier() and READ_ONCE() in writer() and reader(), because we
+> want to make writing take effect ASAP.  Is it a good practice?  Or it's
+> a micro-optimization that should be avoided?
 
-Yes, but this eliminates the nested types; so it's just heap->nr.
+Why don't you consult Documentation/memory-barriers.txt, especially
+the section titled "COMPILER BARRIER"?
 
-It's a pretty minor detail, cosmetic really, but I managed it in darray
-so it'd be nice to have here as well :)
+TL;DR:
+
+barrier(), WRITE_ONCE(), and READ_ONCE() are compiler barriers, not
+memory barriers.  They just restrict compiler optimizations and don't
+have any effect with regard to "make writing take effect ASAP".
+
+If you have further questions, please don't hesitate to ask.
+
+Regards,
+Akira (a LKMM Reveiwer).
+
+> 
+> --
+> Best Regards,
+> Huang, Ying
+
 
