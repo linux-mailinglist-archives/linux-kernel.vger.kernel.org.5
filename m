@@ -1,98 +1,449 @@
-Return-Path: <linux-kernel+bounces-112411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 509F2887970
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:43:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA19887983
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 17:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C84CC1F21A15
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:43:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55FA31C20CDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 16:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F39D47F7A;
-	Sat, 23 Mar 2024 16:43:50 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CDC4D9F0;
+	Sat, 23 Mar 2024 16:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H6Z8QuN0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5557483;
-	Sat, 23 Mar 2024 16:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936A122625;
+	Sat, 23 Mar 2024 16:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711212229; cv=none; b=nD7WKWfeW8CoWzKu/EaOqW0V0TXjaPR7vgtN6Q9kEuPriuZF/eFALrk/RLgPU//9MhBjXWwN2U3lkvEZJ1CC7niiU6PcJKO/gFlz3/15oiuZuTGQM/mg3UDcAyIvbY5EmS9xh4Ho8Y72ZqMkkw4LHAZA//DDBem4fIES0atdeRQ=
+	t=1711212271; cv=none; b=Pes3N68ixPEsioNyd4PHwYafu8onxSSw27XxzjjEkCq49lPuPJFLmXWQdKfecfuG/Hx+E+i+3L+L06aoYS/sqtMSyZWHgVMHM4U35+fOhw0AxyvqN79EFJFn21QnhEdh3lG9hYEFyW4BxvZei/9kyRO6ahdvpkhEhEAn+GFRGDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711212229; c=relaxed/simple;
-	bh=ILndtPVVRX8gDHNgqvEeObtv64F5TztKoHFIV9p/3oA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:CC:From:
-	 In-Reply-To:Content-Type; b=tc1iXGOrOIKzqS+1/5kkoolt6fgUWUqIwJzDSui4BLo1888VQvZhlaotQN1KKtQFX78kKw5jl0KokRaokIEiHdjGMOLJlY3ZMYqWyHFWh0DeU2o5yvYMbt7sVd/5XLg/Q+xfi6sQsEJfmX+sZdPH+rlHeHX5vAij4ThYa1AxL2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V24hG5Fmtz2BhGd;
-	Sun, 24 Mar 2024 00:41:02 +0800 (CST)
-Received: from kwepemd100009.china.huawei.com (unknown [7.221.188.135])
-	by mail.maildlp.com (Postfix) with ESMTPS id F3E161A0172;
-	Sun, 24 Mar 2024 00:43:38 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemd100009.china.huawei.com (7.221.188.135) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Sun, 24 Mar 2024 00:43:38 +0800
-Message-ID: <3e07fb21-da08-4183-8bd4-064b519c7ddb@huawei.com>
-Date: Sun, 24 Mar 2024 00:43:37 +0800
+	s=arc-20240116; t=1711212271; c=relaxed/simple;
+	bh=qgss4wmPeBO4mgK11p8/bjoZvc4VOd4Jab5WKK2s68k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O608B9L9z2GDjkltEVhmEBpIYJCYFbGQ0/6GJc3rF3GtgmNxBZzp4IY6gD0IAsP04W6gfRb3Et0l2sUGHQhH18S3dy67MIW0WcxHawtavzWUaJVmV64lOsuMfOXq0XNvuwo7SIJq3QtmOYaUzp59/nwsrCV9n4iE/RDZchicZgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H6Z8QuN0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BB83C433B1;
+	Sat, 23 Mar 2024 16:44:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711212271;
+	bh=qgss4wmPeBO4mgK11p8/bjoZvc4VOd4Jab5WKK2s68k=;
+	h=From:List-Id:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=H6Z8QuN0qLSAkYgkJfTEpAtG3yJH11UkMPNfp54Efv/CnDWLZVtS89hRKJb+G11aY
+	 0IwESkNng1DTb00+bD35+Q5bnr3b2eGN3gPfErprUNbjVHVIBpa3ceztt6usrcboSG
+	 s9/O9l+vk/0Gzw0m6yFTVi+HhC5IjJbgY6ousuIxqQKp0VpgAg9Qvw+DAa+mPyjWvF
+	 fi/Cbb6t29WqbueVVPoUksRzWsPjO592I1rDDhimJzwJjfF69dLpBVo/alzHNxx2BK
+	 3KbNWm8tcTB5YirP7tPIcsJsxVIlfvvuFiVhPRl+BlS9hJKeO/lr6XovbTdOhHlirM
+	 j8RUy16CDYOsA==
+From: =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	soc@kernel.org,
+	arm@kernel.org,
+	=?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+	Pankaj Gupta <pankaj.gupta@nxp.com>,
+	Gaurav Jain <gaurav.jain@nxp.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Bamvor Jian Zhang <bamv2005@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Douglas Anderson <dianders@chromium.org>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	James Seo <james@equiv.tech>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Naresh Solanki <naresh.solanki@9elements.com>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	James Clark <james.clark@arm.com>,
+	Eddie James <eajames@linux.ibm.com>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-hwmon@vger.kernel.org
+Cc: =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
+Subject: [PATCH v5 08/11] devm-helpers: Add resource managed version of debugfs directory create function
+Date: Sat, 23 Mar 2024 17:43:56 +0100
+Message-ID: <20240323164359.21642-9-kabel@kernel.org>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240323164359.21642-1-kabel@kernel.org>
+References: <20240323164359.21642-1-kabel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/2] bpf,riscv: Implement bpf_addr_space_cast
- instruction
-Content-Language: en-US
-To: Puranjay Mohan <puranjay12@gmail.com>
-References: <20240323154652.54572-1-puranjay12@gmail.com>
- <20240323154652.54572-3-puranjay12@gmail.com>
-CC: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Luke Nelson
-	<luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, <bpf@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20240323154652.54572-3-puranjay12@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100009.china.huawei.com (7.221.188.135)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+A few drivers register a devm action to remove a debugfs directory,
+implementing a one-liner function that calls debufs_remove_recursive().
+Help drivers avoid this repeated implementations by adding managed
+version of debugfs directory create function.
 
-On 2024/3/23 23:46, Puranjay Mohan wrote:
-> LLVM generates bpf_addr_space_cast instruction while translating
-[snip]
->   
->   /* Convert from ninsns to bytes. */
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> index f51b832eafb6..3c389e75cb96 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -1083,6 +1083,16 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->   	/* dst = src */
->   	case BPF_ALU | BPF_MOV | BPF_X:
->   	case BPF_ALU64 | BPF_MOV | BPF_X:
-> +		if (BPF_CLASS(insn->code) == BPF_ALU64 && insn->off == BPF_ADDR_SPACE_CAST &&
-> +		    insn->imm == 1U << 16) {
-> +			emit_mv(RV_REG_T1, rs, ctx); > +			emit_zextw(RV_REG_T1, RV_REG_T1, ctx);
-combine mv and zextw will be better
-> +			emit_imm(rd, (ctx->user_vm_start >> 32) << 32, ctx);
-> +			emit(rv_beq(RV_REG_T1, RV_REG_ZERO, 4), ctx);
-> +			emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
-> +			emit_mv(rd, RV_REG_T1, ctx);
-ditto, but for or and mv
+Use the new function devm_debugfs_create_dir() in the following
+drivers:
+  drivers/crypto/caam/ctrl.c
+  drivers/gpu/drm/bridge/ti-sn65dsi86.c
+  drivers/hwmon/hp-wmi-sensors.c
+  drivers/hwmon/mr75203.c
+  drivers/hwmon/pmbus/pmbus_core.c
+
+Also use the action function devm_debugfs_dir_recursive_drop() in
+driver
+  drivers/gpio/gpio-mockup.c
+
+As per Dan Williams' request [1], do not touch the driver
+  drivers/cxl/mem.c
+
+[1] https://lore.kernel.org/linux-gpio/65d7918b358a5_1ee3129432@dwillia2-mobl3.amr.corp.intel.com.notmuch/
+
+Signed-off-by: Marek Behún <kabel@kernel.org>
+---
+ drivers/crypto/caam/ctrl.c            | 16 +++--------
+ drivers/gpio/gpio-mockup.c            | 11 ++------
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 13 ++-------
+ drivers/hwmon/hp-wmi-sensors.c        | 15 ++--------
+ drivers/hwmon/mr75203.c               | 15 ++++------
+ drivers/hwmon/pmbus/pmbus_core.c      | 16 ++++-------
+ include/linux/devm-helpers.h          | 40 +++++++++++++++++++++++++++
+ 7 files changed, 61 insertions(+), 65 deletions(-)
+
+diff --git a/drivers/crypto/caam/ctrl.c b/drivers/crypto/caam/ctrl.c
+index bdf367f3f679..ea3ed9a17f1a 100644
+--- a/drivers/crypto/caam/ctrl.c
++++ b/drivers/crypto/caam/ctrl.c
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/device.h>
++#include <linux/devm-helpers.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/platform_device.h>
+@@ -604,11 +605,6 @@ static int init_clocks(struct device *dev, const struct caam_imx_data *data)
+ 	return devm_add_action_or_reset(dev, disable_clocks, ctrlpriv);
+ }
+ 
+-static void caam_remove_debugfs(void *root)
+-{
+-	debugfs_remove_recursive(root);
+-}
+-
+ #ifdef CONFIG_FSL_MC_BUS
+ static bool check_version(struct fsl_mc_version *mc_version, u32 major,
+ 			  u32 minor, u32 revision)
+@@ -1058,13 +1054,9 @@ static int caam_probe(struct platform_device *pdev)
+ 	ctrlpriv->era = caam_get_era(perfmon);
+ 	ctrlpriv->domain = iommu_get_domain_for_dev(dev);
+ 
+-	dfs_root = debugfs_create_dir(dev_name(dev), NULL);
+-	if (IS_ENABLED(CONFIG_DEBUG_FS)) {
+-		ret = devm_add_action_or_reset(dev, caam_remove_debugfs,
+-					       dfs_root);
+-		if (ret)
+-			return ret;
+-	}
++	dfs_root = devm_debugfs_create_dir(dev, dev_name(dev), NULL);
++	if (IS_ERR(dfs_root))
++		return PTR_ERR(dfs_root);
+ 
+ 	caam_debugfs_init(ctrlpriv, perfmon, dfs_root);
+ 
+diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+index 455eecf6380e..adbe0fe09490 100644
+--- a/drivers/gpio/gpio-mockup.c
++++ b/drivers/gpio/gpio-mockup.c
+@@ -12,6 +12,7 @@
+ #include <linux/cleanup.h>
+ #include <linux/debugfs.h>
+ #include <linux/device.h>
++#include <linux/devm-helpers.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+@@ -390,13 +391,6 @@ static void gpio_mockup_debugfs_setup(struct device *dev,
+ 	}
+ }
+ 
+-static void gpio_mockup_debugfs_cleanup(void *data)
+-{
+-	struct gpio_mockup_chip *chip = data;
+-
+-	debugfs_remove_recursive(chip->dbg_dir);
+-}
+-
+ static void gpio_mockup_dispose_mappings(void *data)
+ {
+ 	struct gpio_mockup_chip *chip = data;
+@@ -480,7 +474,8 @@ static int gpio_mockup_probe(struct platform_device *pdev)
+ 
+ 	gpio_mockup_debugfs_setup(dev, chip);
+ 
+-	return devm_add_action_or_reset(dev, gpio_mockup_debugfs_cleanup, chip);
++	return devm_add_action_or_reset(dev, devm_debugfs_dir_recursive_drop,
++					chip->dbg_dir);
+ }
+ 
+ static const struct of_device_id gpio_mockup_of_match[] = {
+diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+index 84698a0b27a8..85987350f108 100644
+--- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
++++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+@@ -10,6 +10,7 @@
+ #include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
++#include <linux/devm-helpers.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/i2c.h>
+@@ -427,18 +428,12 @@ static int status_show(struct seq_file *s, void *data)
+ 
+ DEFINE_SHOW_ATTRIBUTE(status);
+ 
+-static void ti_sn65dsi86_debugfs_remove(void *data)
+-{
+-	debugfs_remove_recursive(data);
+-}
+-
+ static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
+ {
+ 	struct device *dev = pdata->dev;
+ 	struct dentry *debugfs;
+-	int ret;
+ 
+-	debugfs = debugfs_create_dir(dev_name(dev), NULL);
++	debugfs = devm_debugfs_create_dir(dev, dev_name(dev), NULL);
+ 
+ 	/*
+ 	 * We might get an error back if debugfs wasn't enabled in the kernel
+@@ -447,10 +442,6 @@ static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
+ 	if (IS_ERR_OR_NULL(debugfs))
+ 		return;
+ 
+-	ret = devm_add_action_or_reset(dev, ti_sn65dsi86_debugfs_remove, debugfs);
+-	if (ret)
+-		return;
+-
+ 	debugfs_create_file("status", 0600, debugfs, pdata, &status_fops);
+ }
+ 
+diff --git a/drivers/hwmon/hp-wmi-sensors.c b/drivers/hwmon/hp-wmi-sensors.c
+index b5325d0e72b9..2a7c33763ce8 100644
+--- a/drivers/hwmon/hp-wmi-sensors.c
++++ b/drivers/hwmon/hp-wmi-sensors.c
+@@ -23,6 +23,7 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/debugfs.h>
++#include <linux/devm-helpers.h>
+ #include <linux/hwmon.h>
+ #include <linux/jiffies.h>
+ #include <linux/mutex.h>
+@@ -1304,12 +1305,6 @@ static int current_reading_show(struct seq_file *seqf, void *ignored)
+ }
+ DEFINE_SHOW_ATTRIBUTE(current_reading);
+ 
+-/* hp_wmi_devm_debugfs_remove - devm callback for debugfs cleanup */
+-static void hp_wmi_devm_debugfs_remove(void *res)
+-{
+-	debugfs_remove_recursive(res);
+-}
+-
+ /* hp_wmi_debugfs_init - create and populate debugfs directory tree */
+ static void hp_wmi_debugfs_init(struct device *dev, struct hp_wmi_info *info,
+ 				struct hp_wmi_platform_events *pevents,
+@@ -1320,21 +1315,15 @@ static void hp_wmi_debugfs_init(struct device *dev, struct hp_wmi_info *info,
+ 	struct dentry *debugfs;
+ 	struct dentry *entries;
+ 	struct dentry *dir;
+-	int err;
+ 	u8 i;
+ 
+ 	/* dev_name() gives a not-very-friendly GUID for WMI devices. */
+ 	scnprintf(buf, sizeof(buf), "hp-wmi-sensors-%u", dev->id);
+ 
+-	debugfs = debugfs_create_dir(buf, NULL);
++	debugfs = devm_debugfs_create_dir(dev, buf, NULL);
+ 	if (IS_ERR(debugfs))
+ 		return;
+ 
+-	err = devm_add_action_or_reset(dev, hp_wmi_devm_debugfs_remove,
+-				       debugfs);
+-	if (err)
+-		return;
+-
+ 	entries = debugfs_create_dir("sensor", debugfs);
+ 
+ 	for (i = 0; i < icount; i++, info++) {
+diff --git a/drivers/hwmon/mr75203.c b/drivers/hwmon/mr75203.c
+index 50a8b9c3f94d..50f348fca108 100644
+--- a/drivers/hwmon/mr75203.c
++++ b/drivers/hwmon/mr75203.c
+@@ -10,6 +10,7 @@
+ #include <linux/bits.h>
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
++#include <linux/devm-helpers.h>
+ #include <linux/hwmon.h>
+ #include <linux/kstrtox.h>
+ #include <linux/module.h>
+@@ -216,17 +217,11 @@ static const struct file_operations pvt_ts_coeff_j_fops = {
+ 	.llseek = default_llseek,
+ };
+ 
+-static void devm_pvt_ts_dbgfs_remove(void *data)
+-{
+-	struct pvt_device *pvt = (struct pvt_device *)data;
+-
+-	debugfs_remove_recursive(pvt->dbgfs_dir);
+-	pvt->dbgfs_dir = NULL;
+-}
+-
+ static int pvt_ts_dbgfs_create(struct pvt_device *pvt, struct device *dev)
+ {
+-	pvt->dbgfs_dir = debugfs_create_dir(dev_name(dev), NULL);
++	pvt->dbgfs_dir = devm_debugfs_create_dir(dev, dev_name(dev), NULL);
++	if (IS_ERR(pvt->dbgfs_dir))
++		return PTR_ERR(pvt->dbgfs_dir);
+ 
+ 	debugfs_create_u32("ts_coeff_h", 0644, pvt->dbgfs_dir,
+ 			   &pvt->ts_coeff.h);
+@@ -237,7 +232,7 @@ static int pvt_ts_dbgfs_create(struct pvt_device *pvt, struct device *dev)
+ 	debugfs_create_file("ts_coeff_j", 0644, pvt->dbgfs_dir, pvt,
+ 			    &pvt_ts_coeff_j_fops);
+ 
+-	return devm_add_action_or_reset(dev, devm_pvt_ts_dbgfs_remove, pvt);
++	return 0;
+ }
+ 
+ static umode_t pvt_is_visible(const void *data, enum hwmon_sensor_types type,
+diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+index cb4c65a7f288..88d27bb3b69a 100644
+--- a/drivers/hwmon/pmbus/pmbus_core.c
++++ b/drivers/hwmon/pmbus/pmbus_core.c
+@@ -7,6 +7,7 @@
+  */
+ 
+ #include <linux/debugfs.h>
++#include <linux/devm-helpers.h>
+ #include <linux/kernel.h>
+ #include <linux/math64.h>
+ #include <linux/module.h>
+@@ -3336,13 +3337,6 @@ static const struct file_operations pmbus_debugfs_ops_mfr = {
+ 	.open = simple_open,
+ };
+ 
+-static void pmbus_remove_debugfs(void *data)
+-{
+-	struct dentry *entry = data;
+-
+-	debugfs_remove_recursive(entry);
+-}
+-
+ static int pmbus_init_debugfs(struct i2c_client *client,
+ 			      struct pmbus_data *data)
+ {
+@@ -3357,8 +3351,9 @@ static int pmbus_init_debugfs(struct i2c_client *client,
+ 	 * Create the debugfs directory for this device. Use the hwmon device
+ 	 * name to avoid conflicts (hwmon numbers are globally unique).
+ 	 */
+-	data->debugfs = debugfs_create_dir(dev_name(data->hwmon_dev),
+-					   pmbus_debugfs_dir);
++	data->debugfs = devm_debugfs_create_dir(data->dev,
++						dev_name(data->hwmon_dev),
++						pmbus_debugfs_dir);
+ 	if (IS_ERR_OR_NULL(data->debugfs)) {
+ 		data->debugfs = NULL;
+ 		return -ENODEV;
+@@ -3542,8 +3537,7 @@ static int pmbus_init_debugfs(struct i2c_client *client,
+ 		}
+ 	}
+ 
+-	return devm_add_action_or_reset(data->dev,
+-					pmbus_remove_debugfs, data->debugfs);
++	return 0;
+ }
+ #else
+ static int pmbus_init_debugfs(struct i2c_client *client,
+diff --git a/include/linux/devm-helpers.h b/include/linux/devm-helpers.h
+index 3805551fd433..feefe152c752 100644
+--- a/include/linux/devm-helpers.h
++++ b/include/linux/devm-helpers.h
+@@ -23,6 +23,7 @@
+  * already ran.
+  */
+ 
++#include <linux/debugfs.h>
+ #include <linux/device.h>
+ #include <linux/kconfig.h>
+ #include <linux/irqdomain.h>
+@@ -130,4 +131,43 @@ static inline int devm_irq_create_mapping(struct device *dev,
+ 	return virq;
+ }
+ 
++static inline void devm_debugfs_dir_recursive_drop(void *res)
++{
++	debugfs_remove_recursive(res);
++}
++
++/**
++ * devm_debugfs_create_dir - Resource managed debugfs directory creation
++ * @dev:	Device which lifetime the directory is bound to
++ * @name:	a pointer to a string containing the name of the directory to
++ *		create
++ * @parent:	a pointer to the parent dentry for this file.  This should be a
++ *		directory dentry if set.  If this parameter is NULL, then the
++ *		directory will be created in the root of the debugfs filesystem.
++ *
++ * Create a debugfs directory which is automatically recursively removed when
++ * the driver is detached. A few drivers create debugfs directories which they
++ * want removed before driver is detached.
++ * devm_debugfs_create_dir() can be used to omit the explicit
++ * debugfs_remove_recursive() call when driver is detached.
++ */
++static inline struct dentry *
++devm_debugfs_create_dir(struct device *dev, const char *name,
++			struct dentry *parent)
++{
++	struct dentry *dentry;
++	int err;
++
++	dentry = debugfs_create_dir(name, parent);
++	if (IS_ERR(dentry))
++		return dentry;
++
++	err = devm_add_action_or_reset(dev, devm_debugfs_dir_recursive_drop,
++				       dentry);
++	if (err < 0)
++		return ERR_PTR(err);
++
++	return dentry;
++}
++
+ #endif
+-- 
+2.43.2
+
 
