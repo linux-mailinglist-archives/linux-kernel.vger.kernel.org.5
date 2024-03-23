@@ -1,106 +1,190 @@
-Return-Path: <linux-kernel+bounces-112470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BABAB887A3D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:05:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5D65887A40
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 21:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60BC0281EBA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:05:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E33AF1C20CDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 20:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FFB59167;
-	Sat, 23 Mar 2024 20:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D2259B57;
+	Sat, 23 Mar 2024 20:13:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yddHpm+x";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xqvzGfGy"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="a9jaRPSF";
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="MsAm594K"
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6033318E20;
-	Sat, 23 Mar 2024 20:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD2554675;
+	Sat, 23 Mar 2024 20:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711224321; cv=none; b=BY9twsYMToBMsrer52V6ydywEVQzknDNIBcqwddwglTkbsIhP1oU+Voo8+u+f/v3qilfaJAoCDBhlz+To17Xs3cqOkdY7SnykdlvRZTcwWLwy4F8OqU6rZjvrBR5GQmfyDuhhFe9H4Y9OOk6wyxWetGaIHYDZFC5hUq7ZHAkYfw=
+	t=1711224815; cv=none; b=kYhuKvL/8Nc/hCPnFLzzL6NmZkKHH0ko7y3Kswqv0urbdL3bdbQbajdCqWt9Q3YGyyLn7Kq3gAZ+zklzHxGzXUdF/QAlGL6ZiXTRuxxUUO6os4OQsfWZwgzfuVVINd3fsn38sh/z8RWxFJDwyhO41QOL6UqcKASkquDWx0rtmns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711224321; c=relaxed/simple;
-	bh=upuZnzT8aOWZK734xhR2B21P63h5U9ql/DJ8dcXmRSQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IqP9Rq6ZlHcqU8r9bqhSvtcw+ZuCmSsv+qD32tyLpcibBzl6kwcRcyQKQCHY4zRGCfFNFmTB1uiiKd8hslbwC7b5qSUobguA8fr91ciDFVXHoetxb1obU8BdsQCUbeEpQIZuXOsKDdhEXKf+aBLiPbHMtjxEvE414iimpEbSlDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yddHpm+x; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xqvzGfGy; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711224318;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NdDet6KtuaahptjfgPKR+KD91ftph6T4F5W1EFsslQs=;
-	b=yddHpm+xaMoArpJAtlEjYhCNOjY7vHgDQWQjQnGPu2Aygfx/hYk9+2S7y6g0BZL4ZMaN4w
-	Ld11vbnxj5UDr2C5rmJw2noemwGxX2ryP1nKMy9gQjg4mIuJdIl2Kv1m/V7yaFUEyYRNtS
-	jIZkW643UnyFsvB4VDKL6/N69/Z31o/uWud6CIgBloc/NLDES23J6WTCv+0blXVnM4HWV+
-	W98/jrrnXIvlK9kDHjnnjb27WDNxERTlqhtth4D5Oq19uLiPI9mBdwqoaOWLbkr1qDmfo/
-	ESvHOckaUruYoguBKg7kul63VRE6V5u9LhUkLztC/Es42AR0uHu0ljqx2UPSbw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711224318;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NdDet6KtuaahptjfgPKR+KD91ftph6T4F5W1EFsslQs=;
-	b=xqvzGfGyd9lVzjpQcBopqx0CW5LwkyhUVtMg7uLOgQJig7Vfth87AI5Ew6gIin6vfe7Sxl
-	eMhC/u+0vIfGatAw==
-To: Tianyang Zhang <zhangtianyang@loongson.cn>, chenhuacai@kernel.org,
- jiaxun.yang@flygoat.com
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Baoqi Zhang
- <zhangbaoqi@loongson.cn>, Biao Dong <dongbiao@loongson.cn>
-Subject: Re: [PATCH V3] irqchip/loongson-pch-pic: Update interrupt
- registration policy
-In-Reply-To: <648e7f23-a2e0-ce8f-7c52-3bcda262de86@loongson.cn>
-References: <20240319124629.23925-1-zhangtianyang@loongson.cn>
- <878r2di3ak.ffs@tglx> <648e7f23-a2e0-ce8f-7c52-3bcda262de86@loongson.cn>
-Date: Sat, 23 Mar 2024 21:05:17 +0100
-Message-ID: <8734sghfya.ffs@tglx>
+	s=arc-20240116; t=1711224815; c=relaxed/simple;
+	bh=3TrluvR9WiFFQw6oKbQRl8T8aQH5rR4dLN+Z4alStFU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MAgmf9nsyLGwTM1M31GSF94erQ52Ga02blHHZPvzL0IKGPP8CDQwIDOK4GJnn4Wzyven8IAhHVXNYbzbdAGWdG4QkRhpAvG6oCqTtuOtrcQvgqrybSEPK909zDHPLL70m6iLfluWIRNve2NG7EaIyfPhYNCQIBmMc5VoXYZ43kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=a9jaRPSF; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=MsAm594K; arc=none smtp.client-ip=161.53.235.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 6C75560182;
+	Sat, 23 Mar 2024 21:13:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1711224801; bh=3TrluvR9WiFFQw6oKbQRl8T8aQH5rR4dLN+Z4alStFU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=a9jaRPSFqVz5sfU4jcDQypAKzyXbbXnHoyOGHpQ1fBKOqxJM20S+Ocgf1tRw82KmC
+	 HmXxvUI00gS0F19RHiACRKcblFYyzPHsZGhU0i6WGNGhPy3PIcyM9aLgd5xUOVr/KR
+	 dOM6jHEoqnQfe4ByQYr87+mId6TeIn/T3dlLATmd7rTnNntf+119fY79cIn28E5iHT
+	 1NwMhtUaI5i4jzlidjO8L8UUUX/BRvjZgRIaDEal5DUQIUX9pRDloSv7OmEhHRThGS
+	 GeXMZcKBY6SkNdxThqY0hq3lcpGb78Cg62n3gHF1ak5xesB9NDY2CeOdk5RRm3uo4g
+	 Qap/1TOQCc8Ag==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id eWpwh29l6Kq0; Sat, 23 Mar 2024 21:13:05 +0100 (CET)
+Received: from [192.168.178.20] (dh207-43-75.xnet.hr [88.207.43.75])
+	by domac.alu.hr (Postfix) with ESMTPSA id C34D86017E;
+	Sat, 23 Mar 2024 21:13:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1711224784; bh=3TrluvR9WiFFQw6oKbQRl8T8aQH5rR4dLN+Z4alStFU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=MsAm594KQwNjq7nVhWU/eWsCXUyVO2ks7IvKm4CTk8BAHTDpYc6EaS2y4M+PaaSSB
+	 ivnTs0ip77nxo9qGcY41nbJ4I2asKhrLXiIw78y9HZPEW0p6t+NuxGNJRFFzCaKshq
+	 ElbTf+WgjVMohcqmADe4oh2qo3h0oUMlOSqgjNVUPRHIzSiJwJjH9a4r9f2NZl6lSC
+	 5LH315EUQn5/RTWOpKJ6EnY75YJLWPlxUxW544NexXduNxQmYFoLTe/EDUH1jZY3cc
+	 6l1fL/fgR3mmVchIGVu+3PAt4JxpMqNvsWNte9hJZgEIMQ4j54QoImzbHod0iRNrlA
+	 4jO0xXWJfO/4g==
+Message-ID: <a692d5d7-11d5-4c1b-9abc-208d2194ccde@alu.unizg.hr>
+Date: Sat, 23 Mar 2024 21:13:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] seltests/iommu: runaway ./iommufd consuming 99% CPU after a
+ failed assert()
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: iommu@lists.linux.dev, Kevin Tian <kevin.tian@intel.com>,
+ Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <0d5c3b29-fc5b-41d9-9556-5ce94262dac8@alu.unizg.hr>
+ <20240319135852.GA393211@nvidia.com>
+Content-Language: en-US
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <20240319135852.GA393211@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Tianyang!
 
-On Fri, Mar 22 2024 at 18:14, Tianyang Zhang wrote:
 
-Please do not top-post. See the 'Top-posting' chapter in:
-https://people.kernel.org/tglx/notes-about-netiquette 
+On 3/19/24 14:58, Jason Gunthorpe wrote:
+> On Tue, Mar 12, 2024 at 07:35:40AM +0100, Mirsad Todorovac wrote:
+>> Hi,
+>>
+>> (This is verified on the second test box.)
+>>
+>> In the most recent 6.8.0 release of torvalds tree kernel with selftest configs on,
+>> process ./iommufd appears to consume 99% of a CPU core for quote a while in an
+>> endless loop:
+> 
+> There is a "bug" in the ksefltest framework where if you call a
+> kselftest assertion from the setup/teardown it infinite loops
+> 
+> The fix I know is to replace kselftest assertions with normal assert()
+> 
+> But I don't see an obvious thing here saying you are hitting that..
+> 
+> Jason
 
-> Regarding "WHY", my understanding is that a convincing reason is needed 
-> to explain the necessity of this patch.
+Hi,
 
-Yes.
+I'm not that deep into kselftest for that intervention.
 
-> If so, can the last paragraph "This will be more conducive to fully 
-> utilizing existing vectors to support more devices."
->
-> be considered a simple explanation?
+Yet, with the v6.8-11743-ga4145ce1e7bc build, the problem with ./iommufd did not stuck.
+Instead I got these 10 failed tests:
 
-Kinda, but ideally you describe it in a way that there is context for
-the reader. Like this:
+# #  RUN           iommufd_dirty_tracking.domain_dirty128M_huge.enforce_dirty ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # enforce_dirty: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty128M_huge.enforce_dirty
+# not ok 156 iommufd_dirty_tracking.domain_dirty128M_huge.enforce_dirty
+# #  RUN           iommufd_dirty_tracking.domain_dirty128M_huge.set_dirty_tracking ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # set_dirty_tracking: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty128M_huge.set_dirty_tracking
+# not ok 157 iommufd_dirty_tracking.domain_dirty128M_huge.set_dirty_tracking
+# #  RUN           iommufd_dirty_tracking.domain_dirty128M_huge.device_dirty_capability ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # device_dirty_capability: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty128M_huge.device_dirty_capability
+# not ok 158 iommufd_dirty_tracking.domain_dirty128M_huge.device_dirty_capability
+# #  RUN           iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # get_dirty_bitmap: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap
+# not ok 159 iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap
+# #  RUN           iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap_no_clear ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # get_dirty_bitmap_no_clear: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap_no_clear
+# not ok 160 iommufd_dirty_tracking.domain_dirty128M_huge.get_dirty_bitmap_no_clear
+.
+.
+.
+# #  RUN           iommufd_dirty_tracking.domain_dirty256M_huge.enforce_dirty ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # enforce_dirty: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty256M_huge.enforce_dirty
+# not ok 166 iommufd_dirty_tracking.domain_dirty256M_huge.enforce_dirty
+# #  RUN           iommufd_dirty_tracking.domain_dirty256M_huge.set_dirty_tracking ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # set_dirty_tracking: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty256M_huge.set_dirty_tracking
+# not ok 167 iommufd_dirty_tracking.domain_dirty256M_huge.set_dirty_tracking
+# #  RUN           iommufd_dirty_tracking.domain_dirty256M_huge.device_dirty_capability ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # device_dirty_capability: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty256M_huge.device_dirty_capability
+# not ok 168 iommufd_dirty_tracking.domain_dirty256M_huge.device_dirty_capability
+# #  RUN           iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # get_dirty_bitmap: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap
+# not ok 169 iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap
+# #  RUN           iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap_no_clear ...
+# iommufd: iommufd.c:1749: iommufd_dirty_tracking_setup: Assertion `vrc == self->buffer' failed.
+# # get_dirty_bitmap_no_clear: Test terminated by assertion
+# #          FAIL  iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap_no_clear
+# not ok 170 iommufd_dirty_tracking.domain_dirty256M_huge.get_dirty_bitmap_no_clear
+.
+.
+.
+# # FAILED: 170 / 180 tests passed.
+# # Totals: pass:170 fail:10 xfail:0 xpass:0 skip:0 error:0
+not ok 1 selftests: iommu: iommufd # exit=1
 
-  The fixed mapping between the LS7A interrupt source and the HT
-  interrupt vector prevents the utilization of the full interrupt vector
-  space which limits the number of devices in a system
+It seems like the same assertion failed in all 10 failed tests?
 
-  Replace the fixed mapping with a dynamic mapping which allocates a
-  vector when an interrupt source is set up. This avoids that unused
-  sources prevent vectors from being used for other devices.
+However, I am not smart enough to figure out why ...
 
-See?
+Apparently, from the source, mmap() fails to allocate pages on the desired address:
 
-Thanks,
+   1746         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
+   1747         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ | PROT_WRITE,
+   1748                    mmap_flags, -1, 0);
+→ 1749         assert(vrc == self->buffer);
+   1750
 
-        tglx
+But I am not that deep into the source to figure our what was intended and what went
+wrong :-/
+
+Best regards,
+Mirsad Todorovac
 
