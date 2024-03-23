@@ -1,191 +1,161 @@
-Return-Path: <linux-kernel+bounces-112174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FC1388768E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:03:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A3D7887691
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 03:07:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27EA7283E0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:03:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77CA31C2151C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 02:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A003E1113;
-	Sat, 23 Mar 2024 02:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD0C440C;
+	Sat, 23 Mar 2024 02:07:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="04mMOXfF"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V/reHql5"
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09FAFA31
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73003A55
+	for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 02:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711159394; cv=none; b=Q6tzX3nEBNi7BM8uXDCKHT+2z6LLDPn9d2f3EV0OMEFuLRr/3/TMrm1hDXVcrDMRVIJ8d0mFJwApWFFDKGn0mUFHBwZa2opiECbpPoIHX4wLgsYWXxPqWRwLdmmsowfAnWx3Ei1HuEBnLZSIt5g05i7aOdrqx6jZejYxBg6LSIA=
+	t=1711159663; cv=none; b=WuEDSyEZWvmQabbrilkA/qo872j149PSeiw/aTd/8U8/ofdqg9Eepz4c086J1JmJ6HoeJko6pqw6VqJarIZ6q67Y86efOiboX0SIVLWaj5bmle1GXdJPqAekMeecZEi9opdHqIG92hHLC9WL9vH016NqSuHVPs+lTk/Z+u9Ah64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711159394; c=relaxed/simple;
-	bh=PettcqWlhbLkUH15Mgj0z7O32KlctYX/2zcO3X/L0+M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SxQy321DHqHAmmipJVFVjR7+lrSyBDehk2jQ9OM1tN+sX8jkNBiq4lksiuyy6IWy3Er6274FNovocGUY4UO/U72rlzsQ12fq0ODsipMucvww19me0G4AcHr6TUpa79kyeoDA99MgOJvumF0RzDXpfFnCySLKUR6LZ6xgBBiJZwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=04mMOXfF; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a47062136c0so339617666b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711159391; x=1711764191; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yoB0K5WRFoGSmH+ex0ygkzLKqvVpzKWZj9b/agl7fXE=;
-        b=04mMOXfFsIiCMQsEgvj34xVpT0psXc9T9kwUGGLT+KdybhexA6Gqlc7HCPkmmSoh7R
-         OrUvaM9He0bmkJy0XcbdcSkE8XXhUfX8ViZaKXq4IUdooyOPBL4nbD1wtk4TusNlwEcj
-         +oaiyHPIyatN8wegtdixEK9QSvi5RSPOvF8DqlBbJ4aSTkvT9FgDCQZV1Qa23IqtI9j1
-         UiDmGIAZvLoYIzX0Up1zTqGZVasLT+ktAUckYPj+fCqbrFVq5Q7EBxT/VekOCj2/7vjb
-         QOGT/t5PyFI07e53ePxlN2UhMMqm9x55h7UAWxKOsagP2G9sh9Nqsz4HaMTKb8MsXWDm
-         QZLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711159391; x=1711764191;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yoB0K5WRFoGSmH+ex0ygkzLKqvVpzKWZj9b/agl7fXE=;
-        b=BaiLcviKrMTBQoDAvMHbNYpeuEScsJTiSLnb14orduY1YlDNskX9KwRUund78Fy529
-         rWLCpITUbZv7i3O7i5PwApR3Bz3qTWGQNbeM7Kbq7ZlNBlP5R5vKsXyGXqf2z+wzAFkj
-         bwcXzTjvTbspBCRSnfxEAizIEimWMRBGrQ2Am0FmfZKud41lSVygtxqtx4MwbWpn4Mar
-         5J7naFGmOgSwQvPvTrv4fzW3yXRTz05fnc9HcG0C1brWO59CXV+/Ty/GTtJh1kENgwAh
-         yEwW5HzzJNVXRBJAg7rZfJVlz5ojQp+lpp3GJr7ZhxmwpmTc5NURRr8knZ1//lvp50HG
-         A8Zw==
-X-Forwarded-Encrypted: i=1; AJvYcCWHR4/hQCZfFtzDI8KSstYwWbiKvdMWsjhIqmdo9NuEnoOwxDWHmCBFu6ccH826iia/ZeiIR9D3kUd74BMchNXH/dsfUWnWDtp+HD/h
-X-Gm-Message-State: AOJu0YywO9D0aCZD4F2epQYtLd37a6QI0/pncVzDCZlcNnBoGn7rKmAV
-	6hH14rdRvk9nt0zy+HvQZ0GCIyJhp845O17Rxt2ARGBSG52IYe05gichGV91n9THNScB2CTF1Rq
-	Zi+HpgaK9N53TRRS283kxkR33z3gQrnq4fd9r
-X-Google-Smtp-Source: AGHT+IHyypD8b8GJHGjP/pBrCz9FExVb/Ctv2KcYhB73bzJ/Uj6b8xtxInJB4aZ9YcjO4SyK4oq3NjSp7+9IJ/aoJwU=
-X-Received: by 2002:a17:906:2846:b0:a46:954a:aa14 with SMTP id
- s6-20020a170906284600b00a46954aaa14mr946344ejc.67.1711159391127; Fri, 22 Mar
- 2024 19:03:11 -0700 (PDT)
+	s=arc-20240116; t=1711159663; c=relaxed/simple;
+	bh=8GsXswQNH/fqxcYIQ/3ggaBwPgXRrvOcvLwU+gyR6g4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oBxmT8TUftTYUAdb8JBbGrMRN6oKEZIZ3A43hT5LYZ9wVQ0V/V7XiP0IcQpZ4dypo1VbQCq6p7BeIo2OsPBhl80lmvfPBjgSBGjxf672KdKyly/ZhZnvaztarzKQdU/AbzTtrN7w7+g4jN69hvN2DEk0n5cnMWaTrouJebue8Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V/reHql5; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 22 Mar 2024 22:07:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711159659;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ki2SqS4TDwK1+oUGgKMCMnFI/a9KHGHslLmG6vAgHw8=;
+	b=V/reHql5hOMS9gGdH79dzncDq6IdjoyZaApKWlC7cZ6OzX8l7LjRUbkts5M8RXXkuqXjV3
+	WyBun2puVO2pPSWekIesncvzcBvPaB2xEP+uyoKDGs2Khwkpocb7aoPvftDTHFQ9dBpOYJ
+	wktB04MA4OATeTiHsnGdycZwKQqlRdg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, llvm@lists.linux.dev, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <parri.andrea@gmail.com>, 
+	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, 
+	Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
+	Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	kent.overstreet@gmail.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <3modld2dafaqjxa2b7jln47ws4ylzhbsvhvnphoklwvzange5p@wlir7276aitp>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+ <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
+ <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322163939.17846-1-chengming.zhou@linux.dev>
- <CAJD7tkYuYEsKFvjKKRxOx3fCekA03jPpOpmV7T20q=9K=Jb2bA@mail.gmail.com>
- <CAGsJ_4yc-XB3+FkcZTy1aZ0n6ZKEkfWVYk_TjqqrdcROa5VYtA@mail.gmail.com>
- <Zf4HKUpKpDWZygni@google.com> <20240322234826.GA448621@cmpxchg.org>
- <CAJD7tkY2y_nGRq9ft80op6q0B3tfJvtyqYhS6t+x=TpyGy+AXg@mail.gmail.com>
- <CAJD7tkZqrrXuYTMYOAP+arMLeNayafFeLocWu7bJtDFHCYjwDA@mail.gmail.com> <20240323015543.GB448621@cmpxchg.org>
-In-Reply-To: <20240323015543.GB448621@cmpxchg.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 22 Mar 2024 19:02:35 -0700
-Message-ID: <CAJD7tkYDh39_Pp-_TFFvduGbirx0MTRpC3p+Z6NuY14xtXiOYA@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: add folio in swapcache if swapin from zswap
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Barry Song <21cnbao@gmail.com>, chengming.zhou@linux.dev, nphamcs@gmail.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 22, 2024 at 6:55=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Fri, Mar 22, 2024 at 05:14:37PM -0700, Yosry Ahmed wrote:
-> > [..]
-> > > > > I don't think we want to stop doing exclusive loads in zswap due =
-to this
-> > > > > interaction with zram, which shouldn't be common.
-> > > > >
-> > > > > I think we can solve this by just writing the folio back to zswap=
- upon
-> > > > > failure as I mentioned.
-> > > >
-> > > > Instead of storing again, can we avoid invalidating the entry in th=
-e
-> > > > first place if the load is not "exclusive"?
-> > > >
-> > > > The reason for exclusive loads is that the ownership is transferred=
- to
-> > > > the swapcache, so there is no point in keeping our copy. With an
-> > > > optimistic read that doesn't transfer ownership, this doesn't
-> > > > apply. And we can easily tell inside zswap_load() if we're dealing
-> > > > with a swapcache read or not by testing the folio.
-> > > >
-> > > > The synchronous read already has to pin the swp_entry_t to be safe,
-> > > > using swapcache_prepare(). That blocks __read_swap_cache_async() wh=
-ich
-> > > > means no other (exclusive) loads and no invalidates can occur.
-> > > >
-> > > > The zswap entry is freed during the regular swap_free() path, which
-> > > > the sync fault calls on success. Otherwise we keep it.
-> > >
-> > > I thought about this, but I was particularly worried about the need t=
-o
-> > > bring back the refcount that was removed when we switched to only
-> > > supporting exclusive loads:
-> > > https://lore.kernel.org/lkml/20240201-b4-zswap-invalidate-entry-v2-6-=
-99d4084260a0@bytedance.com/
-> > >
-> > > It seems to be that we don't need it, because swap_free() will free
-> > > the entry as you mentioned before anyone else has the chance to load
-> > > it or invalidate it. Writeback used to grab a reference as well, but
-> > > it removes the entry from the tree anyway and takes full ownership of
-> > > it then frees it, so that should be okay.
-> > >
-> > > It makes me nervous though to be honest. For example, not long ago
-> > > swap_free() didn't call zswap_invalidate() directly (used to happen t=
-o
-> > > swap slots cache draining). Without it, a subsequent load could race
-> > > with writeback without refcount protection, right? We would need to
-> > > make sure to backport 0827a1fb143f ("mm/zswap: invalidate zswap entry
-> > > when swap entry free") with the fix to stable for instance.
-> > >
-> > > I can't find a problem with your diff, but it just makes me nervous t=
-o
-> > > have non-exclusive loads without a refcount.
-> > >
-> > > >
-> > > > diff --git a/mm/zswap.c b/mm/zswap.c
-> > > > index 535c907345e0..686364a6dd86 100644
-> > > > --- a/mm/zswap.c
-> > > > +++ b/mm/zswap.c
-> > > > @@ -1622,6 +1622,7 @@ bool zswap_load(struct folio *folio)
-> > > >         swp_entry_t swp =3D folio->swap;
-> > > >         pgoff_t offset =3D swp_offset(swp);
-> > > >         struct page *page =3D &folio->page;
-> > > > +       bool swapcache =3D folio_test_swapcache(folio);
-> > > >         struct zswap_tree *tree =3D swap_zswap_tree(swp);
-> > > >         struct zswap_entry *entry;
-> > > >         u8 *dst;
-> > > > @@ -1634,7 +1635,8 @@ bool zswap_load(struct folio *folio)
-> > > >                 spin_unlock(&tree->lock);
-> > > >                 return false;
-> > > >         }
-> > > > -       zswap_rb_erase(&tree->rbroot, entry);
-> > > > +       if (swapcache)
-> > > > +               zswap_rb_erase(&tree->rbroot, entry);
+On Fri, Mar 22, 2024 at 05:36:00PM -0700, Linus Torvalds wrote:
+> On Fri, 22 Mar 2024 at 17:21, Kent Overstreet <kent.overstreet@linux.dev> wrote:
 > >
-> > On second thought, if we don't remove the entry from the tree here,
-> > writeback could free the entry from under us after we drop the lock
-> > here, right?
->
-> The sync-swapin does swapcache_prepare() and holds SWAP_HAS_CACHE, so
-> racing writeback would loop on the -EEXIST in __read_swap_cache_async().
-> (Or, if writeback wins the race, sync-swapin fails on swapcache_prepare()
-> instead and bails on the fault.)
->
-> This isn't coincidental. The sync-swapin needs to, and does, serialize
-> against the swap entry moving into swapcache or being invalidated for
-> it to be safe. Which is the same requirement that zswap ops have.
+> > Besides that there's cross arch support to think about - it's hard to
+> > imagine us ever ditching our own atomics.
+> 
+> Well, that's one of the advantages of using compiler builtins -
+> projects that do want cross-architecture support, but that aren't
+> actually maintaining their _own_ architecture support.
+> 
+> So I very much see the lure of compiler support for that kind of
+> situation - to write portable code without having to know or care
+> about architecture details.
+> 
+> This is one reason I think the kernel is kind of odd and special -
+> because in the kernel, we obviously very fundamentally have to care
+> about the architecture details _anyway_, so then having the
+> architecture also define things like atomics is just a pretty small
+> (and relatively straightforward) detail.
+> 
+> The same argument goes for compiler builtins vs inline asm. In the
+> kernel, we have to have people who are intimately familiar with the
+> architecture _anyway_, so inline asms and architecture-specific header
+> files aren't some big pain-point: they'd be needed _anyway_.
+> 
+> But in some random user level program, where all you want is an
+> efficient way to do "find first bit"? Then using a compiler intrinsic
+> makes a lot more sense.
 
-You are right. Even if swap_free() isn't called under SWAP_HAS_CACHE's
-protection, a subsequent load will also be protected by SWAP_HAS_CACHE
-(whether it's swapped in with sync swapin or throught the swapcache)
--- so it would be protected against writeback as well. Now it seems
-like we may have been able to drop the refcount even without exclusive
-loads..?
+We've got a whole spectrum of kernel code though, and a lot of it is
+code that - honestly, we'd be better off if it wasn't specific to the
+kernel.
 
-Anyway, I think your fix is sound. Zhongkun, do you mind confirming
-that the diff Johannes sent fixes the problem for you?
+rhashtable comes to mind; it's a fully generic, excellent at what it
+does, but it's had a number of annoyingly subtle bugs and sharp edges
+over the years that are really just a result of it not having enough
+users.
+
+So I see some real value in regularizing things.
+
+> > I was thinking about something more incremental - just an optional mode
+> > where our atomics were C atomics underneath. It'd probably give the
+> > compiler people a much more effective way to test their stuff than
+> > anything they have now.
+> 
+> I suspect it might be painful, and some compiler people would throw
+> their hands up in horror, because the C++ atomics model is based
+> fairly solidly on atomic types, and the kernel memory model is much
+> more fluid.
+> 
+> Boqun already mentioned the "mixing access sizes", which is actually
+> quite fundamental in the kernel, where we play lots of games with that
+> (typically around locking, where you find patterns line unlock writing
+> a zero to a single byte, even though the whole lock data structure is
+> a word). And sometimes the access size games are very explicit (eg
+> lib/lockref.c).
+
+I don't think mixing access sizes should be a real barrier. On the read
+side we can obviously do that with a helper; the write side needs
+compiler help, but "writing just a byte out of a word" is no different
+from a compiler POV that "write a single bit", and we can already mix
+atomic_or() with atomic_add(), with both C atomics and LKMM atomics.
+
+> But it actually goes deeper than that. While we do have "atomic_t" etc
+> for arithmetic atomics, and that probably would map fairly well to C++
+> atomics, in other cases we simply base our atomics not on _types_, but
+> on code.
+> 
+> IOW, we do things like "cmpxchg()", and the target of that atomic
+> access is just a regular data structure field.
+
+Well, some of that's historical cruft; cmpxchg() and atomic_cmpxchg()
+have different orderings, and we can specify that more directly now.
+
+But we definitely need the ability to cmpxchg() any struct of a size the
+machine supports atomic access to. Rust should be able to manage that
+more easily than C/C++ though - they've got a type system that can
+sanely represent that.
 
