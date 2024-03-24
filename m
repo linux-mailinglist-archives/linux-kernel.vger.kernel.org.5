@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81E36888EB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:26:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AC368894E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:11:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0EEA1C261E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:26:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FFFEB35430
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19862081C2;
-	Sun, 24 Mar 2024 23:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD71129A9C;
+	Mon, 25 Mar 2024 02:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNBgvXje"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EPQpMLkz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260F01E9F8E;
-	Sun, 24 Mar 2024 22:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214C21E9F8D;
+	Sun, 24 Mar 2024 22:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320906; cv=none; b=M6cP3tTsNEfpLcgrMd6awEhiugCqy89wXaJLZfgMdKtGqrHXERb36vqzi3qBv0kD01JeFwFfdVYMkI2ph0R/z9X2wm2JDDMNk/kTMM6b6s265P4/8bFpT7X8mzX19I5+LXz9grQeMsmMpcaXWUmHZAO2gmoV0DToOlePdV29RmI=
+	t=1711320906; cv=none; b=n/V0DHc7ydY6mnSVoFXSuLCrn7Jvs/fCQ+b2soWfDnylipxwNYL6hqCL7bJnuTRVYc8rwMB2PoqFqvNPo27YjNs1yKU3eK/VneSb+JVFfqgDcp/c1Qzord/C+ImaovVefuWdrmEw40n/t+juN7ii/pWPCJUqhDBtVN4OWqoRipg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320906; c=relaxed/simple;
-	bh=bbwcNU7KSNEeMQZqW0jlD/Hx/LZZO+TK6h51Kbym4Bs=;
+	bh=Gd32IM3+MPoIdKqaSx0pqzYfX7z6P6j7xfsNndqjB/8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ApyKNGxufmXD4nuWHKKo8SO7mmILA6jYoqT0BNUosQR916Ujqkh1IhJjC3o3TJHvRaS3VLdgpnNMT+vOzNpi1ocHZVgtF45LVyZUjSBvyFKmXLCCMYF7/MM5+05EwF7XQEzlyIWJtGjvZ8j9gcoWCkZARvk4QHMakFpWhK70oz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eNBgvXje; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63AF9C43394;
-	Sun, 24 Mar 2024 22:55:04 +0000 (UTC)
+	 MIME-Version; b=iM0a/WCtvp1pEJBMuCzrvVA8Chbi2h+JEcfp/9BTDF/mOmmU3fP64Qxm0z6Z7uYGbK4viJHuCtLjcdw7n/ZTuk92YBzjQTE+/uA077Lmhcfm/hLL4r/ifGT8oqjDBfsPK5bwS4BuUzpPiRoYCPgAouK1incV1YO3Ap3X6pnBiHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EPQpMLkz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A29BC433C7;
+	Sun, 24 Mar 2024 22:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320905;
-	bh=bbwcNU7KSNEeMQZqW0jlD/Hx/LZZO+TK6h51Kbym4Bs=;
+	s=k20201202; t=1711320906;
+	bh=Gd32IM3+MPoIdKqaSx0pqzYfX7z6P6j7xfsNndqjB/8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eNBgvXjeNvUyN9yAhwpBS2kh5M1arASMpcBXJslxmxyZdUsEPUN4K8YWrGN62vQzh
-	 k9xA+dKSDR0wX75w4kjUemEawHdAHV96K7/NTXw4eI/eo6pTWZDHbRKxpPmlm2jS+Z
-	 JvjTJv3XqU6fsE2gl2XSumkfZmvB0pTti0K6oZqRuz1f2t53XQBEvR7QggdyrNJoRL
-	 1GrA0Wp9z6Wz28ABTb/I8vJnfQIg5PwwONPFs8HZA0bjCjH314TVD7i1JKUuB6paFJ
-	 M3Dk0xXAw85kO9fiTDntfzdj+BPSAYveSUkb9GlHRRnRouhErzzDAFKmAb/GLLLHUa
-	 PPi6uXDmNywew==
+	b=EPQpMLkzCTuutXGG29xsupB0WDgjoaScYvQB/Fd7SMdPAKSwQjscs/Ch5nQWGJzb0
+	 ZIk75clLm74i/K9ncZVDh/aF5RdhkSSrUcEOYkzcDYCZqxAAebzsOiECEvk3/4Kjiq
+	 xV24vlNFnze9Vs0dciKXzKgO1FstwW+M97mx98HsVoPOdlbE+MASw3xVk3j3rE/odU
+	 w+i7F6i9kMjkHMQAYBzUa289/DLwR4sePQfi/cha+rdBNEwAAAec9jyftsiEWyzaVc
+	 FD38rBDxh9/BIh2eLDboVBHX/fy4izxLPEAlHN8M7NzKvQGxWIIy8DrjXOKRUqMz30
+	 XZ8N9hPolZO+Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jernej Skrabec <jernej.skrabec@gmail.com>,
+Cc: Lucas Stach <l.stach@pengutronix.de>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 468/713] media: sun8i-di: Fix chroma difference threshold
-Date: Sun, 24 Mar 2024 18:43:14 -0400
-Message-ID: <20240324224720.1345309-469-sashal@kernel.org>
+Subject: [PATCH 6.7 469/713] media: imx: csc/scaler: fix v4l2_ctrl_handler memory leak
+Date: Sun, 24 Mar 2024 18:43:15 -0400
+Message-ID: <20240324224720.1345309-470-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,34 +63,33 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jernej Skrabec <jernej.skrabec@gmail.com>
+From: Lucas Stach <l.stach@pengutronix.de>
 
-[ Upstream commit 856525e8db272b0ce6d9c6e6c2eeb97892b485a6 ]
+[ Upstream commit 4797a3dd46f220e6d83daf54d70c5b33db6deb01 ]
 
-While there is no good explanation what this value does, vendor driver
-uses value 31 for it. Align driver with it.
+Free the memory allocated in v4l2_ctrl_handler_init on release.
 
-Fixes: a4260ea49547 ("media: sun4i: Add H3 deinterlace driver")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Fixes: a8ef0488cc59 ("media: imx: add csc/scaler mem2mem device")
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/sunxi/sun8i-di/sun8i-di.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/imx/imx-media-csc-scaler.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-index f253a40cc04f8..f7ff0937828cf 100644
---- a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-+++ b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-@@ -304,7 +304,7 @@ static void deinterlace_init(struct deinterlace_dev *dev)
+diff --git a/drivers/staging/media/imx/imx-media-csc-scaler.c b/drivers/staging/media/imx/imx-media-csc-scaler.c
+index 1fd39a2fca98a..95cca281e8a37 100644
+--- a/drivers/staging/media/imx/imx-media-csc-scaler.c
++++ b/drivers/staging/media/imx/imx-media-csc-scaler.c
+@@ -803,6 +803,7 @@ static int ipu_csc_scaler_release(struct file *file)
  
- 	deinterlace_clr_set_bits(dev, DEINTERLACE_CHROMA_DIFF,
- 				 DEINTERLACE_CHROMA_DIFF_TH_MSK,
--				 DEINTERLACE_CHROMA_DIFF_TH(5));
-+				 DEINTERLACE_CHROMA_DIFF_TH(31));
- }
+ 	dev_dbg(priv->dev, "Releasing instance %p\n", ctx);
  
- static inline struct deinterlace_ctx *deinterlace_file2ctx(struct file *file)
++	v4l2_ctrl_handler_free(&ctx->ctrl_hdlr);
+ 	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
+ 	v4l2_fh_del(&ctx->fh);
+ 	v4l2_fh_exit(&ctx->fh);
 -- 
 2.43.0
 
