@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 929B3889BF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:07:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552DD889BFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:07:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41DB41F3159E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:07:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 105A328A849
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E642365A2;
-	Mon, 25 Mar 2024 02:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A08236584;
+	Mon, 25 Mar 2024 02:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WMbuhpnf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jtHJftLQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4976F1EC62E;
-	Sun, 24 Mar 2024 22:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222711EC631;
+	Sun, 24 Mar 2024 22:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320944; cv=none; b=rYTK6cKtQUS742cIYpsOZfSd7hWJ8ndIZvLXBoA/kZE2e8DEIoaswrpRRLLElBW1mlany9poBBNYbtF1WmIeyJDCH/g8oXbvm5GZaGXBH4CbuDU9ZUkqidU2XclOGcMH20iIv1j+Y52vTkRMw+/6AV5/9ORqigWFypcxIFW4aQU=
+	t=1711320945; cv=none; b=JCS/UXgi82HbK1Chtg+KuDK7dvd1U7Ovr8siS79wSXWE4JTskNRyC1FA7OSF3SvkeNOVPX7wVVRBlimxAZALW/uRE+Df5hx5cb3gQIIK+6JnRCvwmR7gl42woJ9idWQj4WoTsiVdPR78cFa17WnG1K0HZT/25a+GeS7EUraorCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320944; c=relaxed/simple;
-	bh=R0o9mtiY+b9wcMRZccfj/l4j7rw/QnFthxmzKd6U52Y=;
+	s=arc-20240116; t=1711320945; c=relaxed/simple;
+	bh=7zR0BrWM9FieUe0Q38iXkPk2VIsJeZQPb9NcsHR1SBU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Jcq8NG4kRFxDTkdO1IElCPLhWbm7bLq4qgLPYReuhcyy6H22q+iWxrm8O1D2ECwPf2KwdxtFCbZG0gxxS3HuRiBsfu1Zmyzq0naAHzDEKFR5eZ9tO1YHuDS2n66XQ1M1l5oDRYq4hw2XI3jCZFSFQvIZPEwyMeoZzoEyfo4Dod4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WMbuhpnf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B5B8C43394;
-	Sun, 24 Mar 2024 22:55:42 +0000 (UTC)
+	 MIME-Version; b=jDCh3ouXCiVfuoZp1xn8C9gO7spwcNcVGkfwjIpDVxW9T7XDInW4Dv9bEy628nEOhNa0au7deetEQc+1ln9eiXcg/pBxc2aSwwOkBzh9oJHQESCqiSj0ltSBw3hckhJOSwjxr0ejvzLR5RGJIEdCq4FgNzB8yXR5iLdXHntf6/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jtHJftLQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61863C433C7;
+	Sun, 24 Mar 2024 22:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320943;
-	bh=R0o9mtiY+b9wcMRZccfj/l4j7rw/QnFthxmzKd6U52Y=;
+	s=k20201202; t=1711320944;
+	bh=7zR0BrWM9FieUe0Q38iXkPk2VIsJeZQPb9NcsHR1SBU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WMbuhpnf/CDWGWhcdXwaN2ppQ/eujmnzhi8IzMMJMe+71rFRpCA35zCQsyjqk6zZt
-	 JxTbUlAkOo7XwFDymcJhwneEgEkcksUrxJRYI4myn2rhBVTTNTC140Wi50pvRkFByV
-	 nXvQExkHIIM3ZkCHzQ+pReUdUDvVl/iU1VCzzo45260458tZm9ShxZipWkkVBE2COT
-	 aZt4EvuIBK2zhop3BQsdYxo0JeEV1BccXoDKR5byMchgT1a8LiI48bFBw/LiV0N9Vz
-	 a9oNd4pZSDPfiXuGKS++C8CYv0HNl2xN0WpZkLOUc+fiwp+Ex4iCXto67ZRK3AChRe
-	 9tT6cYvaWR4zA==
+	b=jtHJftLQK1IIyGC5by6zLP5+3F3EyWSXdP8tEw3fDNnmQZmogOBm7xDirotFkGpby
+	 Se9799TUAHPf937SJHpvSrlNSetGIkpZhNr2DWZCWCO2FRpsrN9eRahj1siBdQQx76
+	 6AacfiTc75ecmW6O+APOPLVPi1E5KKnFtuhxw5zuAMC092kjuJJizMmwhreQKQmqK7
+	 yFxzRkeJkjIsop3X29nenvaX15wuxS+zRJeXDR2Dq05xnsSF5dm8SiQxvGEbogOR/r
+	 228FWdmUAhIvHWPWapCFFeJtX5hNRI7XoMrBJCq6sZ4GMpA5aPAE3Hlj0h/5Q/mqLl
+	 8tdhy79JeWJ5Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Aradhya Bhatia <a-bhatia1@ti.com>,
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
+	Abel Vesa <abel.vesa@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 506/713] drm/tidss: Fix sync-lost issue with two displays
-Date: Sun, 24 Mar 2024 18:43:52 -0400
-Message-ID: <20240324224720.1345309-507-sashal@kernel.org>
+Subject: [PATCH 6.7 507/713] clk: imx: imx8mp: Fix SAI_MCLK_SEL definition
+Date: Sun, 24 Mar 2024 18:43:53 -0400
+Message-ID: <20240324224720.1345309-508-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,62 +62,60 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit c079e2e113f2ec2803ba859bbb442a6ab82c96bd ]
+[ Upstream commit 13269dc6c70444528f0093585e3559cd2f38850a ]
 
-A sync lost issue can be observed with two displays, when moving a plane
-from one disabled display to an another disabled display, and then
-enabling the display to which the plane was moved to. The exact
-requirements for this to trigger are not clear.
+There is SAI1, SAI2, SAI3, SAI5, SAI6, SAI7 existing in this block
+control, the order is discontinuous. The definition of SAI_MCLK_SEL(n)
+is not match with the usage of CLK_SAIn(n).
 
-It looks like the issue is that the layers are left enabled in the first
-display's OVR registers. Even if the corresponding VP is disabled, it
-still causes an issue, as if the disabled VP and its OVR would still be
-in use, leading to the same VID being used by two OVRs. However, this is
-just speculation based on testing the DSS behavior.
+So define SAI##n##_MCLK_SEL separately to fix the issue.
 
-Experimentation shows that as a workaround, we can disable all the
-layers in the OVR when disabling a VP. There should be no downside to
-this, as the OVR is anyway effectively disabled if its VP is disabled,
-and it seems to solve the sync lost issue.
-
-However, there may be a bigger issue in play here, related to J721e
-erratum i2097 ("DSS: Disabling a Layer Connected to Overlay May Result
-in Synclost During the Next Frame"). Experimentation also shows that the
-OVR's CHANNELIN field has similar issue. So we may need to revisit this
-when we find out more about the core issue.
-
-Fixes: 32a1795f57ee ("drm/tidss: New driver for TI Keystone platform Display SubSystem")
-Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240213-tidss-fixes-v1-2-d709e8dfa505@ideasonboard.com
+Fixes: 6cd95f7b151c ("clk: imx: imx8mp: Add audiomix block control")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
+Link: https://lore.kernel.org/r/1708683351-8504-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tidss/tidss_crtc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/clk/imx/clk-imx8mp-audiomix.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/tidss/tidss_crtc.c b/drivers/gpu/drm/tidss/tidss_crtc.c
-index 7c78c074e3a2e..1baa4ace12e15 100644
---- a/drivers/gpu/drm/tidss/tidss_crtc.c
-+++ b/drivers/gpu/drm/tidss/tidss_crtc.c
-@@ -269,6 +269,16 @@ static void tidss_crtc_atomic_disable(struct drm_crtc *crtc,
+diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
+index e4300df88f1ac..55ed211a5e0b1 100644
+--- a/drivers/clk/imx/clk-imx8mp-audiomix.c
++++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
+@@ -18,7 +18,12 @@
  
- 	reinit_completion(&tcrtc->framedone_completion);
+ #define CLKEN0			0x000
+ #define CLKEN1			0x004
+-#define SAI_MCLK_SEL(n)		(0x300 + 4 * (n))	/* n in 0..5 */
++#define SAI1_MCLK_SEL		0x300
++#define SAI2_MCLK_SEL		0x304
++#define SAI3_MCLK_SEL		0x308
++#define SAI5_MCLK_SEL		0x30C
++#define SAI6_MCLK_SEL		0x310
++#define SAI7_MCLK_SEL		0x314
+ #define PDM_SEL			0x318
+ #define SAI_PLL_GNRL_CTL	0x400
  
-+	/*
-+	 * If a layer is left enabled when the videoport is disabled, and the
-+	 * vid pipeline that was used for the layer is taken into use on
-+	 * another videoport, the DSS will report sync lost issues. Disable all
-+	 * the layers here as a work-around.
-+	 */
-+	for (u32 layer = 0; layer < tidss->feat->num_planes; layer++)
-+		dispc_ovr_enable_layer(tidss->dispc, tcrtc->hw_videoport, layer,
-+				       false);
-+
- 	dispc_vp_disable(tidss->dispc, tcrtc->hw_videoport);
- 
- 	if (!wait_for_completion_timeout(&tcrtc->framedone_completion,
+@@ -95,13 +100,13 @@ static const struct clk_parent_data clk_imx8mp_audiomix_pll_bypass_sels[] = {
+ 		IMX8MP_CLK_AUDIOMIX_SAI##n##_MCLK1_SEL, {},		\
+ 		clk_imx8mp_audiomix_sai##n##_mclk1_parents,		\
+ 		ARRAY_SIZE(clk_imx8mp_audiomix_sai##n##_mclk1_parents), \
+-		SAI_MCLK_SEL(n), 1, 0					\
++		SAI##n##_MCLK_SEL, 1, 0					\
+ 	}, {								\
+ 		"sai"__stringify(n)"_mclk2_sel",			\
+ 		IMX8MP_CLK_AUDIOMIX_SAI##n##_MCLK2_SEL, {},		\
+ 		clk_imx8mp_audiomix_sai_mclk2_parents,			\
+ 		ARRAY_SIZE(clk_imx8mp_audiomix_sai_mclk2_parents),	\
+-		SAI_MCLK_SEL(n), 4, 1					\
++		SAI##n##_MCLK_SEL, 4, 1					\
+ 	}, {								\
+ 		"sai"__stringify(n)"_ipg_cg",				\
+ 		IMX8MP_CLK_AUDIOMIX_SAI##n##_IPG,			\
 -- 
 2.43.0
 
