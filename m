@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 614F3888FEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:06:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F41AF889018
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933ED1C2C177
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:06:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B94FFB3765A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:06:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA98A27B10A;
-	Sun, 24 Mar 2024 23:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1285214037D;
+	Sun, 24 Mar 2024 23:38:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EUISDbIx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+BS5Fpi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E5021C195;
-	Sun, 24 Mar 2024 23:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F87621C19C;
+	Sun, 24 Mar 2024 23:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321839; cv=none; b=AAyga0f6EeW9snQAwi8oa4lgMAnMWebYSzCo5dOYQpQcZak/0XIaPMl/IeHFxUwM01cNzSXw3XrlFkovOe/SuJoXUaGn1aADTPzmjspcJdSu1/vVlZoo6w8SHr8Iy+z/rxSVz9KvzU6Lf/Vpr6+DGdWg+JOI/+/26ZOCZH5px1w=
+	t=1711321840; cv=none; b=SuuiTjtOOWV1Kz0eg/FhLOyUkzEKzjBj8nT5+tMJ11U0OgpFdUDJhZ4b21yC5o6ZJyfST5+0B4WkZi8Zsb0zow7gpsP4o1b2Dn9+AqljAke2FXGdg6pPiBLGhgZlMeWKwHPl8gjn+rhG3pms6ZVAPkTTd/smJhJqbGSEXV+Quc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321839; c=relaxed/simple;
-	bh=6p00qWPD8q3Jl6wgFEBHQbhgscMIjhKq5hnO5ZFYyh4=;
+	s=arc-20240116; t=1711321840; c=relaxed/simple;
+	bh=9UOR8yfN7Io1/nGO1CWtAhcJh70F2yuivoI9uxE5Q4c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ajBX+ZBW0/NamnOF3Am0NcabPLsQ06LQX3NwBw+rwHCffq8bCQD2ubAVK/9t5Foct3WxxPn7ipLzOL4EnWo1dgrV/2qoVo6FsqenNXIBf9oYFMrehZdW/Umgw2zwdKVvqEefyAJtV7+TUeuEfCKIfe8V83luQcYsuaQOPE08zKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EUISDbIx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BFD6C433C7;
-	Sun, 24 Mar 2024 23:10:37 +0000 (UTC)
+	 MIME-Version; b=fDZnfaxbF4LeDq8CI3+uXKS7iSo6e43gZWjoF2PuiTP4PENeGGXSCLeiqzu5BWw+MhVwMXIhD5rgEhwdCkiH8gw125AkbKSbjURqcSbW9bNxdrNUp9mz+qyjh+iQC4XC3WFiI/5eKtj0LmJDJUSXCbC8yWKS4y+CUbP+QBU7DE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z+BS5Fpi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64939C43394;
+	Sun, 24 Mar 2024 23:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321838;
-	bh=6p00qWPD8q3Jl6wgFEBHQbhgscMIjhKq5hnO5ZFYyh4=;
+	s=k20201202; t=1711321839;
+	bh=9UOR8yfN7Io1/nGO1CWtAhcJh70F2yuivoI9uxE5Q4c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EUISDbIxfZ2iBHvfpGeuhk0pHfOBqBlhoLEKtKUtctyWQTlMQkknN3uLc9m1s1v0+
-	 wFE4KxC1tLLVd7qBwI74n3DZ/+kblDCg3Quj5mx1UQ9qo7KmqTyT/0RndbErn4xQz3
-	 8vQhAbSXsIkls1i8gSNgT3xRVjX8eJYMN5JDF68dQxkOg9ytMn+jwQL2UZXMaWTNiE
-	 qa+wyan279kcW5Mp2QSq2IRh5Nmra02il/W3WQdmGRGDDRLhZwf989s3IyRhHLVbGl
-	 WsBgWTg2e34F3MNglfbh28L7Xl+95me+Xr5+3tk1b9ZPY7QpGuWoMKB67rQRjrL0mA
-	 PY8WXLKYsiG2g==
+	b=Z+BS5FpiG3jsgJH1fRz4ABWCJ3KYXmw8NE7rnYCeHkl8We1ZDzryC/vDVLb14Q76M
+	 M4xudgAn1OsjFau3fi2w6p06APvHcPuIjFsBuABIOgfqXM1Y00nSEwiGMIDXCm0I/e
+	 sfKd9Kt14XVbhclMDoQjyL9hksF5oLKlqRaZGnr5OAt5nmaG3wSefKf8WjBq6WyNSq
+	 L6uBIaQ/tqjWF1b8U0vreMH1uK+l5WW5wvgt1XLZrv2teFm4d7WZJLNFZ/7uWqJbmH
+	 MlhrnH6JYfEKe7o5UHYlD2xt6p/rxZrmmeIXPOnszae3SsY3puymzFJ0GU7W1Kw7s9
+	 yoXs8CMLtkl9Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+Cc: Yang Jihong <yangjihong1@huawei.com>,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 567/638] bus: mhi: ep: check the correct variable in mhi_ep_register_controller()
-Date: Sun, 24 Mar 2024 19:00:04 -0400
-Message-ID: <20240324230116.1348576-568-sashal@kernel.org>
+Subject: [PATCH 6.6 568/638] hwtracing: hisi_ptt: Move type check to the beginning of hisi_ptt_pmu_event_init()
+Date: Sun, 24 Mar 2024 19:00:05 -0400
+Message-ID: <20240324230116.1348576-569-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,36 +63,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+From: Yang Jihong <yangjihong1@huawei.com>
 
-[ Upstream commit 27711860c54ccb5e80719df684f49f0bf3f8fb51 ]
+[ Upstream commit 06226d120a28f146abd3637799958a4dc4dbb7a1 ]
 
-There is a copy and paste bug here so it checks "ev_ring_el_cache" instead
-of "ring_item_cache".
+When perf_init_event() calls perf_try_init_event() to init pmu driver,
+searches for the next pmu driver only when the return value is -ENOENT.
+Therefore, hisi_ptt_pmu_event_init() needs to check the type at the
+beginning of the function.
+Otherwise, in the case of perf-task mode, perf_try_init_event() returns
+-EOPNOTSUPP and skips subsequent pmu drivers, causes perf_init_event() to
+fail.
 
-Fixes: 62210a26cd4f ("bus: mhi: ep: Use slab allocator where applicable")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/bebcd822-d465-45da-adae-5435ec93e6d4@moroto.mountain
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Fixes: ff0de066b463 ("hwtracing: hisi_ptt: Add trace function support for HiSilicon PCIe Tune and Trace device")
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/20240108121906.3514820-1-yangjihong1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/mhi/ep/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hwtracing/ptt/hisi_ptt.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
-index 582d5c166a75e..934cdbca08e44 100644
---- a/drivers/bus/mhi/ep/main.c
-+++ b/drivers/bus/mhi/ep/main.c
-@@ -1427,7 +1427,7 @@ int mhi_ep_register_controller(struct mhi_ep_cntrl *mhi_cntrl,
- 	mhi_cntrl->ring_item_cache = kmem_cache_create("mhi_ep_ring_item",
- 							sizeof(struct mhi_ep_ring_item), 0,
- 							0, NULL);
--	if (!mhi_cntrl->ev_ring_el_cache) {
-+	if (!mhi_cntrl->ring_item_cache) {
- 		ret = -ENOMEM;
- 		goto err_destroy_tre_buf_cache;
- 	}
+diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
+index a991ecb7515a3..24a1f7797aeb6 100644
+--- a/drivers/hwtracing/ptt/hisi_ptt.c
++++ b/drivers/hwtracing/ptt/hisi_ptt.c
+@@ -995,6 +995,9 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
+ 	int ret;
+ 	u32 val;
+ 
++	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
++		return -ENOENT;
++
+ 	if (event->cpu < 0) {
+ 		dev_dbg(event->pmu->dev, "Per-task mode not supported\n");
+ 		return -EOPNOTSUPP;
+@@ -1003,9 +1006,6 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
+ 	if (event->attach_state & PERF_ATTACH_TASK)
+ 		return -EOPNOTSUPP;
+ 
+-	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
+-		return -ENOENT;
+-
+ 	ret = hisi_ptt_trace_valid_filter(hisi_ptt, event->attr.config);
+ 	if (ret < 0)
+ 		return ret;
 -- 
 2.43.0
 
