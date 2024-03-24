@@ -1,114 +1,160 @@
-Return-Path: <linux-kernel+bounces-112618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA97887C0E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:09:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73BD4887C11
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:13:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09A661C214B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 09:09:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EED761F216C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 09:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48B13168B1;
-	Sun, 24 Mar 2024 09:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="adm0li5a"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECF415E96;
+	Sun, 24 Mar 2024 09:13:20 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF32C7F9;
-	Sun, 24 Mar 2024 09:09:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E3328E7
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 09:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711271349; cv=none; b=dJNPf6XnVKOZiIyGgnLGE0QnPGj7V9+fc+cg+DZgyvGoYbt/b/5XOfui3htLapFn7Z7wvP3A36hV+DJ41Wi8/U15Ktrho6hWWPHt+weu7go1W6iFtJKh82gCMUIIhxc+Ko1Ho7k4gFPz76B/r6h+n0tALE9wBJ8+sCQ8FKNGUNA=
+	t=1711271600; cv=none; b=FtWIyPR7BVTOieBk5NVWqH9/AChZAMQgl52eNkghdMvB6nuWspjKRNyVCYlpYuTFx+eBB2iWs6P//g6A4S2ni5CdtVf3prG5PD3h91WYeAnJuS9Kf2X0YwDAxj5tNpwHe5fgY+huOyZiTs5VOPKwgQRJWDz4JKZ7MIsoy7mvzXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711271349; c=relaxed/simple;
-	bh=+Rf2sP5k+yxgykPJQTji8BK3SG1Mw51mUBOFY6xa+nY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=GIfjxYXVuYdPbyjwaMiw+UAO9cCBEt7rN9YxtoTHbIyaSUDACxGGNV6riA6GizQ3UwHe+2lrAlM2UHaZTOts1t5YLo4x+oX3Q8G3Vs05b41v/cj02vT1pRnQhPJeUQcZy3Sp6OFZg7fH4x9tmbYtuMD63f6l2syCqzxz8ylpZU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=adm0li5a; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E312045E37
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1711271338; bh=Rhs1loPtFsL5EIYRvgUlHECbLqphkffPY0MFBefhNnc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=adm0li5aTWzfRI45SrW1qaWvHcYmJES1k9KLkhfBn+k6H1bKCODAOPjQeWqjo2sbn
-	 vn1Kyx1r0cb3ltOQOYjyRCbuV7T/XOj/pSOf1/NHMvPz/JwL4cVNjxvHTi0vUrIsqx
-	 YGfGTw/J3vEH6VO2QVX95J7k/8doGX+/83MwcxkkJzvkTPScr0CpwgpmbHdI2U9tRY
-	 7i0rNY436KnSCKp5D1xe9O5g0I/F4cjiQx4WYHSfFSsLMDX/eX52eBiJV+RTqV314R
-	 +7KiRI77xecl64M37DOcsgh+HmPCauxpSvG6ZVsyJqY0cNQ+6y9ShK6wrFSslfusjd
-	 2uWTC0kJI/H+w==
-Received: from localhost (mdns.lwn.net [45.79.72.68])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id E312045E37;
-	Sun, 24 Mar 2024 09:08:57 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox
- <willy@infradead.org>, Dan Williams <dan.j.williams@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, torvalds@linux-foundation.org,
- Bjorn Helgaas <bhelgaas@google.com>, Ira Weiny <ira.weiny@intel.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Ilpo =?utf-8?Q?J=C3=A4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Lukas Wunner <lukas.wunner@intel.com>,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] cleanup: Add usage and style documentation
-In-Reply-To: <65ff7a88e93fb_2690d29429@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
- <20240322090630.GA40102@noisy.programming.kicks-ass.net>
- <65fdd7ae82934_4a98a29429@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <Zf8_RYHW7QmCzl2-@casper.infradead.org>
- <65ff7a88e93fb_2690d29429@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Date: Sun, 24 Mar 2024 03:08:54 -0600
-Message-ID: <871q802dzt.fsf@meer.lwn.net>
+	s=arc-20240116; t=1711271600; c=relaxed/simple;
+	bh=LASdfWo+PAdGiOWJsIajv8GovHi3jxThnj11KlTG52Y=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=SA8329KWXyIQy2VJ3BCxKAVvn698LYGnlX+G0ID0lGnSIqLuH7f4mOy3zgJrJ973RlJ0qTv2zf3rbAWVPB4WrKIDlPyQHM5ikum2Qh4mcwpG8JdKtHXLpbskSWqEe1PwbDSYT5HjbxazqY2zFSKtSBYFRfxjVWtNOe9Iu6aVeQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc7a6a04d9so431813839f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 02:13:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711271598; x=1711876398;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2v3BJFcKstkwg7hoqZAn50p0nglp/lBvTndnPiDHQMw=;
+        b=ImBfusb/Xsqgu/L/JVGOYbnB572AnHmrv0u5UTGw/8xCNFNjpUedRcfiYSDIApR+zJ
+         g+gbn4C5xG0eIWtgvprXme5VLWRVETPE2scOFG/gPRMnK94zKGqQG0hsqKOJLEB8yO2M
+         KiWMeDgsZwcmdCcGVv7EJYtTrGgcZPKEF0cLzxswLVk/7Lmjs3jdGjei55bQBNJOHhlh
+         6yiVJ5lQL97IWL7eiA14PXAOKTyZPRDoGIAMr+LxrbxiIy3fYC8fiJKeRNI46krbY1Jx
+         gmQ+R2VKU4Uug4lOfrASexPkVAl5J5DG7e7jAd8YOUQDI8T+vARM8vRjQS7LfKgB41G8
+         GK2w==
+X-Forwarded-Encrypted: i=1; AJvYcCVQ48qu2HLk+JfjUw8rQ6hxCOVxEPQ3aqCZYgIfaXqKgIekiwJRfYDxExRbdYZkK6l/6af3LVuJ/gbOWKZCkagJ7IqyawYJe6nAg2HH
+X-Gm-Message-State: AOJu0YxE+O1OAo/1MCUPbJ0qK3XM3/F0NWkwTzz6Ozs9Eh4KsnLdzZxM
+	sneZU3zzJf7geffErCZH5Ry5JTQJNMFW3TWuFSAxLheONWol55xtH/aKGbRpArBj5l5CyACXqUy
+	X9Z8GUtQUW2tl3ffGpHxrtXoSSGR3RI9HSVyQElg+3NqYGssQ39sZpQM=
+X-Google-Smtp-Source: AGHT+IE2Erp9hG/EtxcXYrxZy7aKdtVfdgxRgjHaWaofsnaACkVw9yX/ugLprT+4qe2yjy7yb9PLgGOBUXl3eRenEgd05piajHxU
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6638:3586:b0:476:c0ae:98a with SMTP id
+ v6-20020a056638358600b00476c0ae098amr261041jal.4.1711271596021; Sun, 24 Mar
+ 2024 02:13:16 -0700 (PDT)
+Date: Sun, 24 Mar 2024 02:13:16 -0700
+In-Reply-To: <0000000000008fcf9806083e7405@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009871740614647751@google.com>
+Subject: Re: [syzbot] [kernel?] KMSAN: kernel-infoleak-after-free in
+ copy_siginfo_to_user (2)
+From: syzbot <syzbot+cfc08744435c4cf94a40@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, luto@kernel.org, 
+	peterz@infradead.org, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, 
+	xrivendell7@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-Dan Williams <dan.j.williams@intel.com> writes:
+syzbot has found a reproducer for the following issue on:
 
-> Matthew Wilcox wrote:
->> On Fri, Mar 22, 2024 at 12:10:38PM -0700, Dan Williams wrote:
->> > Peter Zijlstra wrote:
->> > > So I despise all that RST stuff. It makes what should be trivially
->> > > readable text into a trainwreck. We're coders, we use text editors to
->> > > read comments.
->> > 
->> > Ok, I will rip out the RST stuff and just make this a standalone comment.
->> 
->> I would rather you ignored Peter's persistent whining about RST and
->> kept the formatting.
+HEAD commit:    70293240c5ce Merge tag 'timers-urgent-2024-03-23' of git:/..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=139071be180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e6bd769cb793b98a
+dashboard link: https://syzkaller.appspot.com/bug?extid=cfc08744435c4cf94a40
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14694231180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15846fc1180000
 
-Dealing with that is definitely the least pleasant part of trying to
-maintain docs...
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0de52742d0b8/disk-70293240.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f304697881bf/vmlinux-70293240.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2b9d8a9376f0/bzImage-70293240.xz
 
-> Hmm, how about split the difference and teach scripts/kernel-doc to treat
-> Peter's preferred markup for a C code example as a synonym, i.e.
-> effectively a search and replace of a line with only:
->
-> 	Ex.
->
-> ...with:
->
-> 	.. code-block:: c
->
-> ...within a kernel-doc DOC: section?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cfc08744435c4cf94a40@syzkaller.appspotmail.com
 
-I'm not convinced that "Ex." is a clearer or more readable syntax, and
-I'd prefer to avoid adding to the regex hell that kernel-doc already is
-or adding more special syntax of our own.  How about, as Lukas
-suggested, just using the "::" notation?  You get a nice literal block,
-albeit without the syntax highlighting -- a worthwhile tradeoff, IMO.
+=====================================================
+BUG: KMSAN: kernel-infoleak-after-free in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak-after-free in _copy_to_user+0xbc/0x110 lib/usercopy.c:40
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ _copy_to_user+0xbc/0x110 lib/usercopy.c:40
+ copy_to_user include/linux/uaccess.h:191 [inline]
+ copy_siginfo_to_user+0x40/0x130 kernel/signal.c:3380
+ ptrace_request+0xfa7/0x36e0 kernel/ptrace.c:1046
+ arch_ptrace+0x43b/0x680 arch/x86/kernel/ptrace.c:848
+ __do_sys_ptrace kernel/ptrace.c:1285 [inline]
+ __se_sys_ptrace+0x2d8/0x760 kernel/ptrace.c:1258
+ __x64_sys_ptrace+0xbd/0x110 kernel/ptrace.c:1258
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
 
-Thanks,
+Uninit was stored to memory at:
+ copy_siginfo include/linux/signal.h:18 [inline]
+ ptrace_getsiginfo kernel/ptrace.c:685 [inline]
+ ptrace_request+0xf33/0x36e0 kernel/ptrace.c:1044
+ arch_ptrace+0x43b/0x680 arch/x86/kernel/ptrace.c:848
+ __do_sys_ptrace kernel/ptrace.c:1285 [inline]
+ __se_sys_ptrace+0x2d8/0x760 kernel/ptrace.c:1258
+ __x64_sys_ptrace+0xbd/0x110 kernel/ptrace.c:1258
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
 
-jon
+Uninit was stored to memory at:
+ copy_siginfo include/linux/signal.h:18 [inline]
+ collect_signal kernel/signal.c:587 [inline]
+ __dequeue_signal+0x501/0xad0 kernel/signal.c:616
+ dequeue_signal+0x14b/0xb20 kernel/signal.c:639
+ get_signal+0xb46/0x2d00 kernel/signal.c:2790
+ arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x5d/0x160 kernel/entry/common.c:218
+ do_syscall_64+0xe4/0x1f0 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+Uninit was created at:
+ slab_free_hook mm/slub.c:2073 [inline]
+ slab_free mm/slub.c:4280 [inline]
+ kmem_cache_free+0x257/0xa80 mm/slub.c:4344
+ __sigqueue_free kernel/signal.c:451 [inline]
+ collect_signal kernel/signal.c:594 [inline]
+ __dequeue_signal+0xa58/0xad0 kernel/signal.c:616
+ dequeue_signal+0x14b/0xb20 kernel/signal.c:639
+ get_signal+0xb46/0x2d00 kernel/signal.c:2790
+ arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x5d/0x160 kernel/entry/common.c:218
+ do_syscall_64+0xe4/0x1f0 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+Bytes 12-15 of 48 are uninitialized
+Memory access of size 48 starts at ffff8881240cfc60
+Data copied to user address 0000000014dcf540
+
+CPU: 1 PID: 5012 Comm: strace-static-x Not tainted 6.8.0-syzkaller-13213-g70293240c5ce #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+=====================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
