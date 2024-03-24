@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-116039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8987889520
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:19:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A67188916E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:41:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6728F1F305A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:19:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 263D4292B29
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0886B2716DC;
-	Mon, 25 Mar 2024 03:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CC5272EE2;
+	Mon, 25 Mar 2024 00:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TghkjD04"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gvAOv1o1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D9C130A62;
-	Sun, 24 Mar 2024 23:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C076175CBE;
+	Sun, 24 Mar 2024 23:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323426; cv=none; b=XpM/MAU1Tvv6NxaKtVIl5ZIlLidsJB1R/X2+fHsSFZ7AW8LKoudlW56jmUuCjElbMSYSBTl2b4KsyzEH2kd5eVM8Cd4B44iTJKtn2RJ7WbHNB0NUW4POCCjAO2vBbgZMAQUA6C9oJ4iM9hKdWNQnB8J4tNfaTct10mkzIix6vuQ=
+	t=1711323427; cv=none; b=fnIr1ps6umrmTD3nqRKAqIRFfMjq/yAdPMhmABRyCPXYKNgBQ1mZwo8MS8d8HH+dYnDVxN8I+aZ9mRXB83KR3zjj/WDz1JmloAlEU4AO8lvmpZc/V2cB1LxPqWqkIqm6CTR+lX99uhLsT5EK9TawLSz4sCGnWFoZZsuQaxMj+Qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323426; c=relaxed/simple;
-	bh=xkio9LXk8a0yfT3MbDjP1BmFDPz+zLGtJQWcPfiV0CI=;
+	s=arc-20240116; t=1711323427; c=relaxed/simple;
+	bh=T3mMur1V4rYkoOdESozqVTv0V5FfDJwKwHBIEEDsft8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RheqyF95/w2/U4UKEMx0byyOAtfYP3KWM9XX82V6E3napSAQ7/l+m1iFNOo3E/WMCSUtnxrbDy9zjje6iR3FM3RgOVkuut1cdSgLlo60YrwXKhBVIBYiwFLKhHlk+OgQQiQjUo5lKzyGEzPdHCojMBDl0t+TewMcQj0pKGhybuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TghkjD04; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DA55C43390;
-	Sun, 24 Mar 2024 23:37:04 +0000 (UTC)
+	 MIME-Version:Content-Type; b=AlXY4NQ/DCgEDOS/3PskC2XiyzaPiSy/qL6K2Yh2mMgd/RfaP7oXZn5mUTWdNKO3Skt+T1pDL+6fmh02vcJ2xCkdEJdIU8ucZAMFyt2UE7PtRc/uNUUWb3CBKiB8ulNVdUTYyV0YBX8IA1jdsdJ3ZiAoMfcEkhHf0d9Xyli+qCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gvAOv1o1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CB18C433F1;
+	Sun, 24 Mar 2024 23:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323425;
-	bh=xkio9LXk8a0yfT3MbDjP1BmFDPz+zLGtJQWcPfiV0CI=;
+	s=k20201202; t=1711323426;
+	bh=T3mMur1V4rYkoOdESozqVTv0V5FfDJwKwHBIEEDsft8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TghkjD04cLSSD4KJzUi1tHE3Vfs91rqI3yoVyFGc+aQ7lICj6Vx9PgyTE8Rr6xebS
-	 sJnPXxMXlvdDu6DWDzpxBmAy6chv0ISeo4xsPtrIo/UCcwbOkl51UaDBkkpkGDI22a
-	 fz/Zz0fKJyyBYevwo3ZqQSwI+Py4MFHLxoVHN2THMi+QW2jWk8SKGZTLpGQ1A0ZiIf
-	 14wgy6+Kdy57Yl8ebGQbI7bqUgrrnQpcubXD/2K3xorytycedhwf2cwCSIpHSryCvy
-	 OOdhwUmvApg7bEL70gmGXQLXs1M8y8pl+rUD7zg7MxYuAhduYu4J/+fGs1pHyeBmcD
-	 5Oxt8rY9gnqKA==
+	b=gvAOv1o1e6TSedEk3/RzyMyReFlTOe6Ys8aZtXa/Qe+JbL5oKwBfiNl/MO+Y/1p2u
+	 a/EVrKggK2lgKpOggXc5RJU+Ite6mm0J1ml1jECFWWNN1mG2HCrU6xpZs3XEmFgrqr
+	 suHSYrxZIibY8aisUVjFcql4AEjrov2vUe9XYbKGixQgpCLvcCENrpcTwxUUXl59PB
+	 PzE+oeunSxgrdgq9+bnzvpDqb2Qn5cuHRsQljot6DwxVZ0grlSOEGJdt05uMKSuMki
+	 tiTD1egpt3B5phHTLKkPrBUkHSd81aYCR7j+6heAGfZ+7Xq4Cj9Ze2vDJmDn9tch1X
+	 YUtwk320XfN9A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
+Cc: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 127/317] igb: Fix missing time sync events
-Date: Sun, 24 Mar 2024 19:31:47 -0400
-Message-ID: <20240324233458.1352854-128-sashal@kernel.org>
+Subject: [PATCH 5.15 128/317] Bluetooth: Remove superfluous call to hci_conn_check_pending()
+Date: Sun, 24 Mar 2024 19:31:48 -0400
+Message-ID: <20240324233458.1352854-129-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -60,96 +58,62 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+From: Jonas Dreßler <verdre@v0yd.nl>
 
-[ Upstream commit ee14cc9ea19ba9678177e2224a9c58cce5937c73 ]
+[ Upstream commit 78e3639fc8031275010c3287ac548c0bc8de83b1 ]
 
-Fix "double" clearing of interrupts, which can cause external events
-or timestamps to be missed.
+The "pending connections" feature was originally introduced with commit
+4c67bc74f016 ("[Bluetooth] Support concurrent connect requests") and
+6bd57416127e ("[Bluetooth] Handling pending connect attempts after
+inquiry") to handle controllers supporting only a single connection request
+at a time. Later things were extended to also cancel ongoing inquiries on
+connect() with commit 89e65975fea5 ("Bluetooth: Cancel Inquiry before
+Create Connection").
 
-The E1000_TSIRC Time Sync Interrupt Cause register can be cleared in two
-ways, by either reading it or by writing '1' into the specific cause
-bit. This is documented in section 8.16.1.
+With commit a9de9248064b ("[Bluetooth] Switch from OGF+OCF to using only
+opcodes"), hci_conn_check_pending() was introduced as a helper to
+consolidate a few places where we check for pending connections (indicated
+by the BT_CONNECT2 flag) and then try to connect.
 
-The following flow was used:
-    1. read E1000_TSIRC into 'tsicr';
-    2. handle the interrupts present into 'tsirc' and mark them in 'ack';
-    3. write 'ack' into E1000_TSICR;
+This refactoring commit also snuck in two more calls to
+hci_conn_check_pending():
 
-As both (1) and (3) will clear the interrupt cause, if the same
-interrupt happens again between (1) and (3) it will be ignored,
-causing events to be missed.
+- One is in the failure callback of hci_cs_inquiry(), this one probably
+makes sense: If we send an "HCI Inquiry" command and then immediately
+after a "Create Connection" command, the "Create Connection" command might
+fail before the "HCI Inquiry" command, and then we want to retry the
+"Create Connection" on failure of the "HCI Inquiry".
 
-Remove the extra clear in (3).
+- The other added call to hci_conn_check_pending() is in the event handler
+for the "Remote Name" event, this seems unrelated and is possibly a
+copy-paste error, so remove that one.
 
-Fixes: 00c65578b47b ("igb: enable internal PPS for the i210")
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com> (A Contingent worker at Intel)
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: a9de9248064b ("[Bluetooth] Switch from OGF+OCF to using only opcodes")
+Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 23 +++++------------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
+ net/bluetooth/hci_event.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index eec0ad98c445f..03a4da6a14478 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -6800,44 +6800,31 @@ static void igb_extts(struct igb_adapter *adapter, int tsintr_tt)
- static void igb_tsync_interrupt(struct igb_adapter *adapter)
- {
- 	struct e1000_hw *hw = &adapter->hw;
--	u32 ack = 0, tsicr = rd32(E1000_TSICR);
-+	u32 tsicr = rd32(E1000_TSICR);
- 	struct ptp_clock_event event;
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index ba7242729a8fb..0be37a5c1c0c2 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -3072,8 +3072,6 @@ static void hci_remote_name_evt(struct hci_dev *hdev, struct sk_buff *skb)
  
- 	if (tsicr & TSINTR_SYS_WRAP) {
- 		event.type = PTP_CLOCK_PPS;
- 		if (adapter->ptp_caps.pps)
- 			ptp_clock_event(adapter->ptp_clock, &event);
--		ack |= TSINTR_SYS_WRAP;
- 	}
+ 	BT_DBG("%s", hdev->name);
  
- 	if (tsicr & E1000_TSICR_TXTS) {
- 		/* retrieve hardware timestamp */
- 		schedule_work(&adapter->ptp_tx_work);
--		ack |= E1000_TSICR_TXTS;
- 	}
- 
--	if (tsicr & TSINTR_TT0) {
-+	if (tsicr & TSINTR_TT0)
- 		igb_perout(adapter, 0);
--		ack |= TSINTR_TT0;
--	}
- 
--	if (tsicr & TSINTR_TT1) {
-+	if (tsicr & TSINTR_TT1)
- 		igb_perout(adapter, 1);
--		ack |= TSINTR_TT1;
--	}
- 
--	if (tsicr & TSINTR_AUTT0) {
-+	if (tsicr & TSINTR_AUTT0)
- 		igb_extts(adapter, 0);
--		ack |= TSINTR_AUTT0;
--	}
- 
--	if (tsicr & TSINTR_AUTT1) {
-+	if (tsicr & TSINTR_AUTT1)
- 		igb_extts(adapter, 1);
--		ack |= TSINTR_AUTT1;
--	}
+-	hci_conn_check_pending(hdev);
 -
--	/* acknowledge the interrupts */
--	wr32(E1000_TSICR, ack);
- }
+ 	hci_dev_lock(hdev);
  
- static irqreturn_t igb_msix_other(int irq, void *data)
+ 	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &ev->bdaddr);
 -- 
 2.43.0
 
