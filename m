@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-113239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44BAA88828F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:52:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A063D888292
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:52:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEC621F21D75
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:52:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 406731F21D1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC92184EEB;
-	Sun, 24 Mar 2024 22:40:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A350184F16;
+	Sun, 24 Mar 2024 22:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ttKLGsTT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVvEUP4H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB01132816;
-	Sun, 24 Mar 2024 22:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E025D8E8;
+	Sun, 24 Mar 2024 22:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320040; cv=none; b=hpn5siXjnvp1pC+4wdYPQ6TGgciB9QH6E0/fQt3cj3ZGY5PuHkiGrXB0mcsVQwFq4Qckwandip8QcCsyEDI7hp7OGtGXH6g1fN7sFdu6AKH7s5LNZiRkGi1tjBUL+qoAfwPY+oIAGGouakOZYNQ8+WfgySGvGq9PICiKW/qhFlQ=
+	t=1711320041; cv=none; b=ttZt65F8QHZBS1XHq89WECHTmMHIzsj3xm6ArxyBRYrT0Ymr4TRVQta5EoFgkoDa7AV9Q1UG1jOqo5vW54vpV3s2vJLprShpY3d63ZJ3pGHRrctSDbs2SeSyPDtmCuUKY7T1MVQI8E1UvrCdMawhJHf6m/vqxq3/Rf6hT1Q/RLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320040; c=relaxed/simple;
-	bh=vN3j9v6c8tpDTvMyTzIX1vPcPw4IN6LGhMc4RM+tovY=;
+	s=arc-20240116; t=1711320041; c=relaxed/simple;
+	bh=CmHz6jWUtmUH5j71hEdoZCyHHv5OIGWwqJJyu0uZFJA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KBJmk/syOPJBy3ASbUDD5CaGn6Pr/wax1Hvbc8TXQItr1DD06N7HSHoXdstECHsHPb8V25Cxp4K2fvPGxv3pDY1HciTiKnQ2e392jerYOUExdFW3E4hPnlqpwfHi0BnHobWDh+/wezwDuGu7YT5N2iaEfsnceP45ypoDP3Ittlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ttKLGsTT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D198C433C7;
-	Sun, 24 Mar 2024 22:40:39 +0000 (UTC)
+	 MIME-Version; b=LR5B5V+YQSvuaTJuf6ycaTc++OHmZeRY/CsO3kXcr/0FaC0w1xEfJKuj6LvPIKtM8mjHTsZ1mlJv5IyYe/zSZNtFvp1jVIz01jB3zN5Bre18YKYOC8UHICPAP+zCBrkXBZr0B59PY2qTbGvfMuriw7hMQIQqDe8lpKQMqL1H8gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qVvEUP4H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20E9AC43330;
+	Sun, 24 Mar 2024 22:40:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320039;
-	bh=vN3j9v6c8tpDTvMyTzIX1vPcPw4IN6LGhMc4RM+tovY=;
+	s=k20201202; t=1711320041;
+	bh=CmHz6jWUtmUH5j71hEdoZCyHHv5OIGWwqJJyu0uZFJA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ttKLGsTT6ukoiXkmZKLgDqbYAEnQHQOa7MYXDOfBhnC2W2Ysr17czTnh795+R7GFx
-	 7y65wEau5f5FNx4csL3NWAnxI8x/ucTCD9LSTtagH3y/9VcAPJgFkNJ6fu4iESIxDi
-	 xvgOk2uCY3jkf8nnia4jAU343RTHhCamlGrWqqxbT2mYNxnotB/4Yv6l4CNj9yr3pH
-	 lOLOkuPKZWpTaIdStbZmWjCftP+BGw+0SusYuIAyocYzf/OSv67vbPmX5CvngRKWDf
-	 A40RJf91FE2241lwO36gvZm6DwgvigwxbiXFSSnd3prlR2PjKp9Px81PlI3zxiSJHl
-	 YNlhjQBowb0ZQ==
+	b=qVvEUP4HdZnrVewsmg3JKk8IzmhD0pjd7kCCsdq/SPUm7NG2RN3wk5CF9qzOWBxlV
+	 rNqrJngKWXzsHCTQ1wYZMuij24lLbXP+T4H2VNekvZEozfmFPdSI6JKC+KrIn3jvZx
+	 6AI3yqNFJqgmJlnm43pWCalC5faRTfiVPJ67Et+p7Q0qWMEm6wT5pQLfS5Cq9Ajvl/
+	 /lRXVOLyzSW+c6ROd5UrmclxPXyq7oIFJlX8IvDLKcYEDEbeafFKkK9bo70JnIJEYi
+	 EqCOiM2e8O/NMktkg0A+Hq8eMwXLfUq63lc8a8Lo6E9hMdVbNfanZ2ov9PB8unu+0I
+	 xSPE60NRT0DNQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
+Cc: Brian Masney <bmasney@redhat.com>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Thierry Reding <treding@nvidia.com>,
+	Hans de Goede <hdegoede@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 348/715] dm: call the resume method on internal suspend
-Date: Sun, 24 Mar 2024 18:28:47 -0400
-Message-ID: <20240324223455.1342824-349-sashal@kernel.org>
+Subject: [PATCH 6.8 349/715] fbdev/simplefb: change loglevel when the power domains cannot be parsed
+Date: Sun, 24 Mar 2024 18:28:48 -0400
+Message-ID: <20240324223455.1342824-350-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,121 +65,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Brian Masney <bmasney@redhat.com>
 
-[ Upstream commit 65e8fbde64520001abf1c8d0e573561b4746ef38 ]
+[ Upstream commit 4350aa21cca48a5d951ba108290bad703fbc0630 ]
 
-There is this reported crash when experimenting with the lvm2 testsuite.
-The list corruption is caused by the fact that the postsuspend and resume
-methods were not paired correctly; there were two consecutive calls to the
-origin_postsuspend function. The second call attempts to remove the
-"hash_list" entry from a list, while it was already removed by the first
-call.
+When the power domains cannot be parsed, the message is incorrectly
+logged as an info message. Let's change this to an error since an error
+is returned.
 
-Fix __dm_internal_resume so that it calls the preresume and resume
-methods of the table's targets.
-
-If a preresume method of some target fails, we are in a tricky situation.
-We can't return an error because dm_internal_resume isn't supposed to
-return errors. We can't return success, because then the "resume" and
-"postsuspend" methods would not be paired correctly. So, we set the
-DMF_SUSPENDED flag and we fake normal suspend - it may confuse userspace
-tools, but it won't cause a kernel crash.
-
-------------[ cut here ]------------
-kernel BUG at lib/list_debug.c:56!
-invalid opcode: 0000 [#1] PREEMPT SMP
-CPU: 1 PID: 8343 Comm: dmsetup Not tainted 6.8.0-rc6 #4
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-RIP: 0010:__list_del_entry_valid_or_report+0x77/0xc0
-<snip>
-RSP: 0018:ffff8881b831bcc0 EFLAGS: 00010282
-RAX: 000000000000004e RBX: ffff888143b6eb80 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff819053d0 RDI: 00000000ffffffff
-RBP: ffff8881b83a3400 R08: 00000000fffeffff R09: 0000000000000058
-R10: 0000000000000000 R11: ffffffff81a24080 R12: 0000000000000001
-R13: ffff88814538e000 R14: ffff888143bc6dc0 R15: ffffffffa02e4bb0
-FS:  00000000f7c0f780(0000) GS:ffff8893f0a40000(0000) knlGS:0000000000000000
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 0000000057fb5000 CR3: 0000000143474000 CR4: 00000000000006b0
-Call Trace:
- <TASK>
- ? die+0x2d/0x80
- ? do_trap+0xeb/0xf0
- ? __list_del_entry_valid_or_report+0x77/0xc0
- ? do_error_trap+0x60/0x80
- ? __list_del_entry_valid_or_report+0x77/0xc0
- ? exc_invalid_op+0x49/0x60
- ? __list_del_entry_valid_or_report+0x77/0xc0
- ? asm_exc_invalid_op+0x16/0x20
- ? table_deps+0x1b0/0x1b0 [dm_mod]
- ? __list_del_entry_valid_or_report+0x77/0xc0
- origin_postsuspend+0x1a/0x50 [dm_snapshot]
- dm_table_postsuspend_targets+0x34/0x50 [dm_mod]
- dm_suspend+0xd8/0xf0 [dm_mod]
- dev_suspend+0x1f2/0x2f0 [dm_mod]
- ? table_deps+0x1b0/0x1b0 [dm_mod]
- ctl_ioctl+0x300/0x5f0 [dm_mod]
- dm_compat_ctl_ioctl+0x7/0x10 [dm_mod]
- __x64_compat_sys_ioctl+0x104/0x170
- do_syscall_64+0x184/0x1b0
- entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0xf7e6aead
-<snip>
----[ end trace 0000000000000000 ]---
-
-Fixes: ffcc39364160 ("dm: enhance internal suspend and resume interface")
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@kernel.org>
+Fixes: 92a511a568e4 ("fbdev/simplefb: Add support for generic power-domains")
+Signed-off-by: Brian Masney <bmasney@redhat.com>
+Acked-by: Andrew Halaney <ahalaney@redhat.com>
+Acked-by: Javier Martinez Canillas <javierm@redhat.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231212195754.232303-1-bmasney@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ drivers/video/fbdev/simplefb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 8dcabf84d866e..0dc3650c7f4ca 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -2945,6 +2945,9 @@ static void __dm_internal_suspend(struct mapped_device *md, unsigned int suspend
+diff --git a/drivers/video/fbdev/simplefb.c b/drivers/video/fbdev/simplefb.c
+index 6f58ee276ad1b..028a565250476 100644
+--- a/drivers/video/fbdev/simplefb.c
++++ b/drivers/video/fbdev/simplefb.c
+@@ -470,7 +470,7 @@ static int simplefb_attach_genpds(struct simplefb_par *par,
+ 		if (err == -ENOENT)
+ 			return 0;
  
- static void __dm_internal_resume(struct mapped_device *md)
- {
-+	int r;
-+	struct dm_table *map;
-+
- 	BUG_ON(!md->internal_suspend_count);
+-		dev_info(dev, "failed to parse power-domains: %d\n", err);
++		dev_err(dev, "failed to parse power-domains: %d\n", err);
+ 		return err;
+ 	}
  
- 	if (--md->internal_suspend_count)
-@@ -2953,12 +2956,23 @@ static void __dm_internal_resume(struct mapped_device *md)
- 	if (dm_suspended_md(md))
- 		goto done; /* resume from nested suspend */
- 
--	/*
--	 * NOTE: existing callers don't need to call dm_table_resume_targets
--	 * (which may fail -- so best to avoid it for now by passing NULL map)
--	 */
--	(void) __dm_resume(md, NULL);
--
-+	map = rcu_dereference_protected(md->map, lockdep_is_held(&md->suspend_lock));
-+	r = __dm_resume(md, map);
-+	if (r) {
-+		/*
-+		 * If a preresume method of some target failed, we are in a
-+		 * tricky situation. We can't return an error to the caller. We
-+		 * can't fake success because then the "resume" and
-+		 * "postsuspend" methods would not be paired correctly, and it
-+		 * would break various targets, for example it would cause list
-+		 * corruption in the "origin" target.
-+		 *
-+		 * So, we fake normal suspend here, to make sure that the
-+		 * "resume" and "postsuspend" methods will be paired correctly.
-+		 */
-+		DMERR("Preresume method failed: %d", r);
-+		set_bit(DMF_SUSPENDED, &md->flags);
-+	}
- done:
- 	clear_bit(DMF_SUSPENDED_INTERNALLY, &md->flags);
- 	smp_mb__after_atomic();
 -- 
 2.43.0
 
