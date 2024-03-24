@@ -1,56 +1,53 @@
-Return-Path: <linux-kernel+bounces-115404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C64B8893E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:41:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565E58893CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94207B29923
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FDFE295220
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE6613443B;
-	Mon, 25 Mar 2024 02:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2B4200A42;
+	Mon, 25 Mar 2024 02:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u1yt5nKK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RBvSimax"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09FB71D793D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87971D7939;
 	Sun, 24 Mar 2024 22:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320611; cv=none; b=INxRn4GqxKLsvqtvyg41Pn8n+u/8k7mYlOk19QOLvtbljn+4IU2MuCJq8friBut/kxiUuyrCHspEaI5pKXMI3NuQfKmJU/jMTIc/kgAHKTW39+k51qGdUME2xSZmsHmJr/3nvE7H2J0TE3rhmkPHIlttgifQazpmx8DCR0+8osU=
+	t=1711320610; cv=none; b=YKEs/2CDkH/CYZspPB1Yc1FWKlvi9je+CfgWqbAUx+V5ghQtvrQs3MyDSp6CEv5KHuWkXUmZ9qY8J4AKThQq9jC7Vri6wlm/6Pn58D38bgbHcHVOSHOwpRqxLZICHWB79OjR5+xjRL7Xx7aFa+BNDzDuxMy4uAaeCyzYUr4SJp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320611; c=relaxed/simple;
-	bh=UcRpu7p1jKQyG+pfEXtk4kRecvA2V6BI+5dODNtRxC4=;
+	s=arc-20240116; t=1711320610; c=relaxed/simple;
+	bh=+4AiABqnksxNdiMVZMOXIxNcwiZbJbOVBDo6C4zJjWs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eUCFAWbce6rk4CkmyYPjB9gd4amxRpnxhIUcMtYo0XheAI9ZzWiIF/kvMPR5WTfqNVRTVCZvitLH6xFz8KVic0CKaXOuIR+hJPgR29Qpdpklszt0AUq4MBqgl19pIptq7uUsQhl0TFrD9jk4CG6Jl9BjMN8O6+huMnEVNKGndH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u1yt5nKK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14440C43390;
-	Sun, 24 Mar 2024 22:50:08 +0000 (UTC)
+	 MIME-Version; b=afflv5InKsV7SPCRZN4vJjKYydtmmRMGzuTXt5tzkzELpoboOny2aUX+2y6BPPqcFAYeBm9jTW0ZImFjLpaWmL0g81tP4sJlMn0HSE2+Rr1syR4YbquFgG0nNqHRhxy8AdGz6Lj0M11+xKScWj0c330KhxYxKt9hRCTy3MCxywg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RBvSimax; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29E42C433C7;
+	Sun, 24 Mar 2024 22:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320609;
-	bh=UcRpu7p1jKQyG+pfEXtk4kRecvA2V6BI+5dODNtRxC4=;
+	s=k20201202; t=1711320610;
+	bh=+4AiABqnksxNdiMVZMOXIxNcwiZbJbOVBDo6C4zJjWs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u1yt5nKKcltx8qKOxuLCkkUPwU+5UKUlk+SS2jQwNK0LG2+jw5I6TOv47BkR0htMf
-	 m9ryvDV20sJDWLq46Q/cCefmBbGo9J/JCnDaQmQ5pau+NwHqXzq39ynJTPWomTvGu3
-	 tfmx3b/RCLUA7AQRQdiPdjIOKAJbhkRgb8VuE/1ZCGjgjcDC9BSBa9QrgqXU2PZCzt
-	 NSDsKesf0Sgd7RvMaBcMYc4oxThzOzbZ8+zuRV2oeeYu7bR2IisAl+JwX2i7olJecc
-	 HlSP48P6toa8Kxu87w0uHGq0fv6QtwTngDiE5GLHwUDIhuxCoXCDPTh8ZO7h9HWRRO
-	 aru/0a2fhKmaw==
+	b=RBvSimaxjM2oSpN317BUiLBVQcyA6d4/Ll6bKB2YbJCCVAglD+gRN5LSiVJyL383S
+	 dpgrzMbLnYXwsfYiV2MiPyA1717UcajMRcp2lM/HqqwXOj+PW0b+t90jbEiD1YlHR1
+	 d/KizqbXqzJ2ie+0vcwZYUfhDhqu8VGEZgq3u/+UmqeWkyKbiko0vfIyh+22Swy6pY
+	 Vn4xmDICYDRG8koFwL8083+0s2ao5DLVJb4KBxegqgloVo48M43JNypOQ2LAHCM8hL
+	 xYIt9c5GkdzqzSKATkDCA+c46ez8aNcBvWQ2QAZ8tMa7nCQoQoKYGau+sA+fmBLr3U
+	 cyKuSiupGUtEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 170/713] arm64: dts: qcom: sa8540p: Drop gfx.lvl as power-domain for gpucc
-Date: Sun, 24 Mar 2024 18:38:16 -0400
-Message-ID: <20240324224720.1345309-171-sashal@kernel.org>
+Subject: [PATCH 6.7 171/713] arm64: dts: renesas: r8a779g0: Restore sort order
+Date: Sun, 24 Mar 2024 18:38:17 -0400
+Message-ID: <20240324224720.1345309-172-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,39 +61,124 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit fd5821a1a83c969ed2dcc72fef885f3a82c1d978 ]
+[ Upstream commit 8b93657c976a61726d7ffbe8d019b84b4abfb673 ]
 
-The SA8295P and SA8540P uses an external regulator (max20411), and
-gfx.lvl is not provided by rpmh. Drop the power-domains property of the
-gpucc node to reflect this.
+Numerical by unit address, alphabetical by node name.
 
-Fixes: eec51ab2fd6f ("arm64: dts: qcom: sc8280xp: Add GPU related nodes")
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-Link: https://lore.kernel.org/r/20240125-sa8295p-gpu-v4-5-7011c2a63037@quicinc.com
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/f00ef274a73c8fd60f940a1649423a8927b9ae8a.1705324708.git.geert+renesas@glider.be
+Stable-dep-of: 08e799f6bce8 ("arm64: dts: renesas: r8a779g0: Add missing SCIF_CLK2")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sa8540p.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm64/boot/dts/renesas/r8a779g0.dtsi | 72 +++++++++++------------
+ 1 file changed, 36 insertions(+), 36 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8540p.dtsi b/arch/arm64/boot/dts/qcom/sa8540p.dtsi
-index 96b2c59ad02b4..23888029cc117 100644
---- a/arch/arm64/boot/dts/qcom/sa8540p.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8540p.dtsi
-@@ -168,6 +168,9 @@ opp-2592000000 {
- };
+diff --git a/arch/arm64/boot/dts/renesas/r8a779g0.dtsi b/arch/arm64/boot/dts/renesas/r8a779g0.dtsi
+index d3d25e077c5d5..3be1159982b20 100644
+--- a/arch/arm64/boot/dts/renesas/r8a779g0.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a779g0.dtsi
+@@ -161,11 +161,6 @@ L3_CA76_1: cache-controller-1 {
+ 		};
+ 	};
  
- &gpucc {
-+	/* SA8295P and SA8540P doesn't provide gfx.lvl */
-+	/delete-property/ power-domains;
+-	psci {
+-		compatible = "arm,psci-1.0", "arm,psci-0.2";
+-		method = "smc";
+-	};
+-
+ 	extal_clk: extal {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+@@ -185,6 +180,11 @@ pmu_a76 {
+ 		interrupts-extended = <&gic GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+ 	};
+ 
++	psci {
++		compatible = "arm,psci-1.0", "arm,psci-0.2";
++		method = "smc";
++	};
 +
- 	status = "disabled";
- };
+ 	/* External SCIF clock - to be overridden by boards that provide it */
+ 	scif_clk: scif {
+ 		compatible = "fixed-clock";
+@@ -1777,6 +1777,37 @@ ssi0: ssi-0 {
+ 			};
+ 		};
  
++		mmc0: mmc@ee140000 {
++			compatible = "renesas,sdhi-r8a779g0",
++				     "renesas,rcar-gen4-sdhi";
++			reg = <0 0xee140000 0 0x2000>;
++			interrupts = <GIC_SPI 440 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cpg CPG_MOD 706>,
++				 <&cpg CPG_CORE R8A779G0_CLK_SD0H>;
++			clock-names = "core", "clkh";
++			power-domains = <&sysc R8A779G0_PD_ALWAYS_ON>;
++			resets = <&cpg 706>;
++			max-frequency = <200000000>;
++			iommus = <&ipmmu_ds0 32>;
++			status = "disabled";
++		};
++
++		rpc: spi@ee200000 {
++			compatible = "renesas,r8a779g0-rpc-if",
++				     "renesas,rcar-gen4-rpc-if";
++			reg = <0 0xee200000 0 0x200>,
++			      <0 0x08000000 0 0x04000000>,
++			      <0 0xee208000 0 0x100>;
++			reg-names = "regs", "dirmap", "wbuf";
++			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&cpg CPG_MOD 629>;
++			power-domains = <&sysc R8A779G0_PD_ALWAYS_ON>;
++			resets = <&cpg 629>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++		};
++
+ 		ipmmu_rt0: iommu@ee480000 {
+ 			compatible = "renesas,ipmmu-r8a779g0",
+ 				     "renesas,rcar-gen4-ipmmu-vmsa";
+@@ -1886,37 +1917,6 @@ ipmmu_mm: iommu@eefc0000 {
+ 			#iommu-cells = <1>;
+ 		};
+ 
+-		mmc0: mmc@ee140000 {
+-			compatible = "renesas,sdhi-r8a779g0",
+-				     "renesas,rcar-gen4-sdhi";
+-			reg = <0 0xee140000 0 0x2000>;
+-			interrupts = <GIC_SPI 440 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&cpg CPG_MOD 706>,
+-				 <&cpg CPG_CORE R8A779G0_CLK_SD0H>;
+-			clock-names = "core", "clkh";
+-			power-domains = <&sysc R8A779G0_PD_ALWAYS_ON>;
+-			resets = <&cpg 706>;
+-			max-frequency = <200000000>;
+-			iommus = <&ipmmu_ds0 32>;
+-			status = "disabled";
+-		};
+-
+-		rpc: spi@ee200000 {
+-			compatible = "renesas,r8a779g0-rpc-if",
+-				     "renesas,rcar-gen4-rpc-if";
+-			reg = <0 0xee200000 0 0x200>,
+-			      <0 0x08000000 0 0x04000000>,
+-			      <0 0xee208000 0 0x100>;
+-			reg-names = "regs", "dirmap", "wbuf";
+-			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&cpg CPG_MOD 629>;
+-			power-domains = <&sysc R8A779G0_PD_ALWAYS_ON>;
+-			resets = <&cpg 629>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			status = "disabled";
+-		};
+-
+ 		gic: interrupt-controller@f1000000 {
+ 			compatible = "arm,gic-v3";
+ 			#interrupt-cells = <3>;
 -- 
 2.43.0
 
