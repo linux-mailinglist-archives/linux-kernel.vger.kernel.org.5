@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-112971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0E77888029
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:55:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F64088802C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B83E28152C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:55:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C233FB21E79
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB8F12A178;
-	Sun, 24 Mar 2024 22:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45C412AAD5;
+	Sun, 24 Mar 2024 22:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kltgbURj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lInKEKmH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE24F12A163;
-	Sun, 24 Mar 2024 22:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C4312AAC1;
+	Sun, 24 Mar 2024 22:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319783; cv=none; b=jdMVUXQar8iXlOTRKFZVbrxmOOicW/kmkf/+o4JEFfVf4G8KYKBwmHq/SZsF7YGFx9UVPd1/Id37NZWqBCkkJj8VPV7GUr9gQKhQAcx/cj4Qa2bwS0ZciNwIuXeH+xJcadibzpUbFW1SWFiZn66lPiZl+0Ch56Jvv5wdTyqQLAM=
+	t=1711319785; cv=none; b=O86Jn7EA5L3PQlxxTxEZDnzekNGD+/It3PXn/P19lZYIjgqrkCLEwulru048MNVUqzXbnOi3aGKu3Kdy5CXeNeUUl5zxM0MTCg8cavlo8tj0xk5mjXGxwXzaAcntnrUpFK+J8tJoiT8Nfxjtk6AZGSLxQNbfmOpLuwCOmaj4jh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319783; c=relaxed/simple;
-	bh=S5lSRSEl+8Ri8IPAHVMzY1VhWNuSPB/Hjn9uxUE1cn0=;
+	s=arc-20240116; t=1711319785; c=relaxed/simple;
+	bh=pX8VyodF2yR/udKJM+Zj5vWSK6HknsYK0yLQhEYqcg4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VxPLAnwK0+iSSsuvL2F5nyLkPnCzxBOfDeByinP53L75n4QRHKpBguPnX5cS+xFkGl7cCNNSsaodfwEwcVDvc/2GMv5Ype5rFOoq5XsyOOarxGnxdPNm3Vpjhyuj9QLiGSs6qwgP8EgVJ4OCfFoN3kgiqMPZPc0ogPPjQvERQNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kltgbURj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64B33C43390;
-	Sun, 24 Mar 2024 22:36:22 +0000 (UTC)
+	 MIME-Version; b=lh+sAbm8y1TzI3DHyqmtKA5ln2wkpRD+2nH8BEPbI4WtHf2R8Uu3eT9HSAeDHVwwOnDUObMJCKK0CFVEiTkEzGvCRrFDwLRe2N4udQDSJoHpfX1Cu5OxugOoj/y1WLkIy3f4MSyrNydq2K8dfJwd8Bt1RCHzsL8SPBgRn9yF+BY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lInKEKmH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9022BC433C7;
+	Sun, 24 Mar 2024 22:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319783;
-	bh=S5lSRSEl+8Ri8IPAHVMzY1VhWNuSPB/Hjn9uxUE1cn0=;
+	s=k20201202; t=1711319784;
+	bh=pX8VyodF2yR/udKJM+Zj5vWSK6HknsYK0yLQhEYqcg4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kltgbURjUKeboxIP1kBM8O1ZHWmCE/sqLWloRTlDeFhffeJ97j/43s2nTKPyaX1Pf
-	 p2McEbfHzcjcwkgIIVeP8ZbCN0KLUphB4LNvchyzgz6nqmVFJJLDiV+BCxvBh2Yd5k
-	 FNYE0SlvLlQyefmnVZ0KpSM+vJtLOTv6+0Otm29Wr7yBO5sUAj2SruFjLUXKWr4VKJ
-	 B9nbU94c78168yLbr+4Qq1251c1xpGC4pcYzI7MCvDFkE9pD3qVSoVTvCt4jHYcOQz
-	 mldvqBV5uYolCM6v7JczMHEblqht45cjJCmu+FAygghJRNPRjMv8RKRUTenGGTVkdW
-	 O4PtQLbJxQ05w==
+	b=lInKEKmHwKX2XYr9JZ5DgYJYojgRSN9VwWEFN+RzsvGKeMNW+nWn3TKQqoZSzRt4Y
+	 KKHpRRvwQTQyqzsM3rL9MV9HbVLIoUmWmOdvCGans7QkGNw9dbep/HoDIkVXO6HVQX
+	 3ITKdgD6PR2LPlUl6BL2eT7MCVf49bTueVVPQBGrKG8wznLB4+DxwIuyGlnmMqrhWI
+	 t8+72MBDWpsCI9lKfmBDQY52Rj93p0yaVsjDSXpVoKE9ucoWgxyNGVG6Mvyri+A29B
+	 7QX+iP4P85JT3uglFOocvMJBeeHKPn1Y4ydqIiVBdMy14JDZBober+1Ctd9E3r91KM
+	 rMkJhCDPQkKVA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Artem Savkov <asavkov@redhat.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+Cc: Andrey Grafin <conquistador@yandex-team.ru>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>,
+	Hou Tao <houtao1@huawei.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 084/715] selftests/bpf: Fix potential premature unload in bpf_testmod
-Date: Sun, 24 Mar 2024 18:24:23 -0400
-Message-ID: <20240324223455.1342824-85-sashal@kernel.org>
+Subject: [PATCH 6.8 085/715] libbpf: Apply map_set_def_max_entries() for inner_maps on creation
+Date: Sun, 24 Mar 2024 18:24:24 -0400
+Message-ID: <20240324223455.1342824-86-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,60 +65,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Artem Savkov <asavkov@redhat.com>
+From: Andrey Grafin <conquistador@yandex-team.ru>
 
-[ Upstream commit d177c1be06ce28aa8c8710ac55be1b5ad3f314c6 ]
+[ Upstream commit f04deb90e516e8e48bf8693397529bc942a9e80b ]
 
-It is possible for bpf_kfunc_call_test_release() to be called from
-bpf_map_free_deferred() when bpf_testmod is already unloaded and
-perf_test_stuct.cnt which it tries to decrease is no longer in memory.
-This patch tries to fix the issue by waiting for all references to be
-dropped in bpf_testmod_exit().
+This patch allows to auto create BPF_MAP_TYPE_ARRAY_OF_MAPS and
+BPF_MAP_TYPE_HASH_OF_MAPS with values of BPF_MAP_TYPE_PERF_EVENT_ARRAY
+by bpf_object__load().
 
-The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
-but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
-synchronous grace periods urgently").
+Previous behaviour created a zero filled btf_map_def for inner maps and
+tried to use it for a map creation but the linux kernel forbids to create
+a BPF_MAP_TYPE_PERF_EVENT_ARRAY map with max_entries=0.
 
-Fixes: 65eb006d85a2 ("bpf: Move kernel test kfuncs to bpf_testmod")
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Fixes: 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map support")
+Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/bpf/82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev
-Link: https://lore.kernel.org/bpf/20240110085737.8895-1-asavkov@redhat.com
+Acked-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/bpf/20240117130619.9403-1-conquistador@yandex-team.ru
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ tools/lib/bpf/libbpf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 91907b321f913..e7c9e1c7fde04 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2020 Facebook */
- #include <linux/btf.h>
- #include <linux/btf_ids.h>
-+#include <linux/delay.h>
- #include <linux/error-injection.h>
- #include <linux/init.h>
- #include <linux/module.h>
-@@ -544,6 +545,14 @@ static int bpf_testmod_init(void)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index afd09571c482b..b8b00da629071 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -70,6 +70,7 @@
  
- static void bpf_testmod_exit(void)
- {
-+        /* Need to wait for all references to be dropped because
-+         * bpf_kfunc_call_test_release() which currently resides in kernel can
-+         * be called after bpf_testmod is unloaded. Once release function is
-+         * moved into the module this wait can be removed.
-+         */
-+	while (refcount_read(&prog_test_struct.cnt) > 1)
-+		msleep(20);
-+
- 	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
- }
+ static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
+ static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
++static int map_set_def_max_entries(struct bpf_map *map);
  
+ static const char * const attach_type_name[] = {
+ 	[BPF_CGROUP_INET_INGRESS]	= "cgroup_inet_ingress",
+@@ -5172,6 +5173,9 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+ 
+ 	if (bpf_map_type__is_map_in_map(def->type)) {
+ 		if (map->inner_map) {
++			err = map_set_def_max_entries(map->inner_map);
++			if (err)
++				return err;
+ 			err = bpf_object__create_map(obj, map->inner_map, true);
+ 			if (err) {
+ 				pr_warn("map '%s': failed to create inner map: %d\n",
 -- 
 2.43.0
 
