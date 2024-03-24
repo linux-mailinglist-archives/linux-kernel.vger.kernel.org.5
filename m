@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-112929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13FF7887FD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:45:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35509887FD6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:45:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1C55281299
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:45:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3A09280602
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2251373534;
-	Sun, 24 Mar 2024 22:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6228574430;
+	Sun, 24 Mar 2024 22:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MFO9Kd0x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/z6kTz5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5876D73509;
-	Sun, 24 Mar 2024 22:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7C574404;
+	Sun, 24 Mar 2024 22:35:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319741; cv=none; b=tqMV6Q5tSkuHjpDhx8BqiCCqSh2e7zXLWSYCpLhykOpopUBUJhnapoN6msfi8EFqZ0SRVSw+n/fGjB8DyEUCNjBtT7FgXN3hc/5I7Or+B8ANTw+UWXrcbiDn7hLsfYXseJ42iozXFq4gNM9SG199+faokCOuHm3k8hnoE9M+r80=
+	t=1711319742; cv=none; b=oH3JdvshWA2p3ro8JYmJtHwVBmt0qNcslAclOaWMCNIOoISPtLZM94Knd4SqyKt4sr4X2Vq4x3/RULQ2gNfi4Fv7w3iAT6zubzhQWQuue61Y50nv66XrBfGncWA4Pni0+HDaS+9/CMeeOFmqtkd4Ebhsz2lsD05qknWeNOHxYaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319741; c=relaxed/simple;
-	bh=sISgqsba65O84SziZyljgb9eLMnknulilo+A5OuNOLc=;
+	s=arc-20240116; t=1711319742; c=relaxed/simple;
+	bh=oR6kvkBMYS2cpiqZLlshxpoI6c+KY4+ToxoVOXN4ufk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U+qlGtWdOemoIV58EBbvLeUjPp+dkSZcIs5jEK3aQpzHGXifRfqpmlmmDtqxd6gz/Kv/QuQ7+/k5seHOKPfP9fjrEMby1CcNKoZKRstVVP7QNDa2eBIbwCc6GIUcNAdSRuQE9Bxo7AwYaC65gUXIpLl2aujUapn2Ve6kbiCa+YU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MFO9Kd0x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE74C433F1;
-	Sun, 24 Mar 2024 22:35:40 +0000 (UTC)
+	 MIME-Version; b=q3kzZNDLrnXbZEW4+LbgalCapGpDO2CvqueQak33FzPlkNBUcWFCmWXJXWh7w1TCce1UXI2qgQ18HALm1Pb05tN5AifC7toXeBWJcR30ogpz+RlRPFVM+h4/Nap4il0oebbCZZxZOrdGZONyXfS6V/qJ4qfIoN7mByBkAM1/StE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j/z6kTz5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7348AC433C7;
+	Sun, 24 Mar 2024 22:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319741;
-	bh=sISgqsba65O84SziZyljgb9eLMnknulilo+A5OuNOLc=;
+	s=k20201202; t=1711319742;
+	bh=oR6kvkBMYS2cpiqZLlshxpoI6c+KY4+ToxoVOXN4ufk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MFO9Kd0xUclEX0iXZ4cRbxxxwWhMY5NHE9WlP4b90Sp4DqMfmDWHVxt+0FFlxvFJm
-	 e81QY93aTfJtwzPz3nK9nP4GGt/uGf/RE/Qoyp0fe+7dZpoeQQhgUioQD/IrcQ163r
-	 hUErhCy7P4jdV/wlYltRobFmY+gkBYuyKUDqgvo4iq8U6gZI4+Fm122K748+aYH/37
-	 KX0lVIwePeDi8Ui7UZq3JW7Pr8omKt5GtBuKZjDOxVo8CHOMhH9c6mIKeHU3fwFrBC
-	 iHRA56fbBJfAhwNoyI94rCGWSWulR50GjaGn+mGt4vfCaL8qhSugv7YRZYQrqZI2JA
-	 5Y5dmM18z6xww==
+	b=j/z6kTz5ghy3C+diuJQ6bcKQhjnrp8VrTpk8MRu0sHUGWC3IiOMnj5EvA+Tk8Hss3
+	 FeCjXMm6kIXIiINbpal3mD0z7NeI1vTDjZPhiNGHoOlfodVr51meSS3HTm28TcOaa2
+	 KKH8kMopbUu28tPrO5f4hDr6/1zn3Ov6P7kMpM6KsPN9dn0IRFPYI63osoL/twVaTd
+	 P/jwkTVehkXujeHUfiH7JqoNrU9NAsmjI54qI19e+b/HFHQEXOhuweQhCd0P5yrCZg
+	 Q7ua51O1bptmMmyK6DJrFwwN4YxIrv+CZIN9iU3ILbtC9dOfJ93KFOTBJz5pBlhqBG
+	 9FuOp3WprJ05Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Daniel Wagner <dwagner@suse.de>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Keith Busch <kbusch@kernel.org>,
+Cc: Chun-Yi Lee <jlee@suse.com>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 042/715] nvme: host: fix double-free of struct nvme_id_ns in ns_update_nuse()
-Date: Sun, 24 Mar 2024 18:23:41 -0400
-Message-ID: <20240324223455.1342824-43-sashal@kernel.org>
+Subject: [PATCH 6.8 043/715] aoe: fix the potential use-after-free problem in aoecmd_cfg_pkts
+Date: Sun, 24 Mar 2024 18:23:42 -0400
+Message-ID: <20240324223455.1342824-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,50 +62,86 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+From: Chun-Yi Lee <jlee@suse.com>
 
-[ Upstream commit 8d0d2447394b13fb22a069f0330f9c49b7fff9d3 ]
+[ Upstream commit f98364e926626c678fb4b9004b75cacf92ff0662 ]
 
-When nvme_identify_ns() fails, it frees the pointer to the struct
-nvme_id_ns before it returns. However, ns_update_nuse() calls kfree()
-for the pointer even when nvme_identify_ns() fails. This results in
-KASAN double-free, which was observed with blktests nvme/045 with
-proposed patches [1] on the kernel v6.8-rc7. Fix the double-free by
-skipping kfree() when nvme_identify_ns() fails.
+This patch is against CVE-2023-6270. The description of cve is:
 
-Link: https://lore.kernel.org/linux-block/20240304161303.19681-1-dwagner@suse.de/ [1]
-Fixes: a1a825ab6a60 ("nvme: add csi, ms and nuse to sysfs")
-Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+  A flaw was found in the ATA over Ethernet (AoE) driver in the Linux
+  kernel. The aoecmd_cfg_pkts() function improperly updates the refcnt on
+  `struct net_device`, and a use-after-free can be triggered by racing
+  between the free on the struct and the access through the `skbtxq`
+  global queue. This could lead to a denial of service condition or
+  potential code execution.
+
+In aoecmd_cfg_pkts(), it always calls dev_put(ifp) when skb initial
+code is finished. But the net_device ifp will still be used in
+later tx()->dev_queue_xmit() in kthread. Which means that the
+dev_put(ifp) should NOT be called in the success path of skb
+initial code in aoecmd_cfg_pkts(). Otherwise tx() may run into
+use-after-free because the net_device is freed.
+
+This patch removed the dev_put(ifp) in the success path in
+aoecmd_cfg_pkts(), and added dev_put() after skb xmit in tx().
+
+Link: https://nvd.nist.gov/vuln/detail/CVE-2023-6270
+Fixes: 7562f876cd93 ("[NET]: Rework dev_base via list_head (v3)")
+Signed-off-by: Chun-Yi Lee <jlee@suse.com>
+Link: https://lore.kernel.org/r/20240305082048.25526-1-jlee@suse.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/sysfs.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/block/aoe/aoecmd.c | 12 ++++++------
+ drivers/block/aoe/aoenet.c |  1 +
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/nvme/host/sysfs.c b/drivers/nvme/host/sysfs.c
-index f2832f70e7e0a..09fcaa519e5bc 100644
---- a/drivers/nvme/host/sysfs.c
-+++ b/drivers/nvme/host/sysfs.c
-@@ -221,14 +221,11 @@ static int ns_update_nuse(struct nvme_ns *ns)
+diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
+index d7317425be510..cc9077b588d7e 100644
+--- a/drivers/block/aoe/aoecmd.c
++++ b/drivers/block/aoe/aoecmd.c
+@@ -419,13 +419,16 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
+ 	rcu_read_lock();
+ 	for_each_netdev_rcu(&init_net, ifp) {
+ 		dev_hold(ifp);
+-		if (!is_aoe_netif(ifp))
+-			goto cont;
++		if (!is_aoe_netif(ifp)) {
++			dev_put(ifp);
++			continue;
++		}
  
- 	ret = nvme_identify_ns(ns->ctrl, ns->head->ns_id, &id);
- 	if (ret)
--		goto out_free_id;
-+		return ret;
- 
- 	ns->head->nuse = le64_to_cpu(id->nuse);
+ 		skb = new_skb(sizeof *h + sizeof *ch);
+ 		if (skb == NULL) {
+ 			printk(KERN_INFO "aoe: skb alloc failure\n");
+-			goto cont;
++			dev_put(ifp);
++			continue;
+ 		}
+ 		skb_put(skb, sizeof *h + sizeof *ch);
+ 		skb->dev = ifp;
+@@ -440,9 +443,6 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
+ 		h->major = cpu_to_be16(aoemajor);
+ 		h->minor = aoeminor;
+ 		h->cmd = AOECMD_CFG;
 -
--out_free_id:
- 	kfree(id);
--
--	return ret;
-+	return 0;
+-cont:
+-		dev_put(ifp);
+ 	}
+ 	rcu_read_unlock();
  }
- 
- static ssize_t nuse_show(struct device *dev, struct device_attribute *attr,
+diff --git a/drivers/block/aoe/aoenet.c b/drivers/block/aoe/aoenet.c
+index c51ea95bc2ce4..923a134fd7665 100644
+--- a/drivers/block/aoe/aoenet.c
++++ b/drivers/block/aoe/aoenet.c
+@@ -63,6 +63,7 @@ tx(int id) __must_hold(&txlock)
+ 			pr_warn("aoe: packet could not be sent on %s.  %s\n",
+ 				ifp ? ifp->name : "netif",
+ 				"consider increasing tx_queue_len");
++		dev_put(ifp);
+ 		spin_lock_irq(&txlock);
+ 	}
+ 	return 0;
 -- 
 2.43.0
 
