@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87773889BDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:04:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 284DB889BE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:05:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B942E1C2D19D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:04:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB6A61F358C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3385022EAC7;
-	Mon, 25 Mar 2024 02:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0822308A0;
+	Mon, 25 Mar 2024 02:41:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s2oUMfzl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AxUnvCpx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B521DD2AB;
-	Sun, 24 Mar 2024 22:52:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B174B1DD2C9;
+	Sun, 24 Mar 2024 22:52:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320726; cv=none; b=aon/NMBMKxHNlkb61kHS8TPcyjXO3LBGzchIQQMA+W20d9T7coxwM7dD1DiYSw+FMWjuDJHJl0hQHWdqfdhQ6gnEYGP6542gVKvz5USib5QoblomYRveAMYym8NtUPtg0jhtxsWUfzNgOJkg1RYSt01pa3v60ewGohp51Hyx9JY=
+	t=1711320728; cv=none; b=MpJ2GuoD7iFCPMlsTZyqKgRxYshXiLr//vwSsACtAuCC1PjSCnsLt+ISxQMpbY+DPxv3gYnuaL2IiC6nHpp9bN4Pnke6jOUXqKxzvDONf02tmaHX1O7Ly6tgI330l5dtqRr70o3YwNSJNTPogOHwWRMjP751dxrsLFuiBQxCO0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320726; c=relaxed/simple;
-	bh=ZqHYJmWbjAaWX7RMHrG6rxMCX1+c2Hs/9yWUkPKYsSc=;
+	s=arc-20240116; t=1711320728; c=relaxed/simple;
+	bh=CP1TSSKoiKiCEQKLsdxI576zDse1KHJj9eW0u99lzW4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lVgrdxzWPSIbfwxDdTy8pAV+pDgp9wGVD6ov9JHAEILVYizmfdMJRCcHEPpywbFhPfjZDiLMwS8Bxgi8bEwsufP7wMd33eSd0PsXQtzBvjN8pCeTZr5bEHt+h7KXbPKPW/xm0p5TiR1Y1q0S+1HcpaBZRQEhglCAOlBQPpKgc+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s2oUMfzl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96FE3C43399;
-	Sun, 24 Mar 2024 22:52:05 +0000 (UTC)
+	 MIME-Version; b=Q3pOhi3czuXZz7WgKsSDQ8yyv0BpYUG6jljWREsx6V2RU5P0jh20CoYnDlNP8b/4onWyvgflV5Y0kb6NXx0eC0iCsA2xUwiSFxqBOeTHET5kBp3ZJZCDpclEigxxfY5zdHfYDYQsQazxXS26THGBYak/9nHyx3d/7wYyfb5zM3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AxUnvCpx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FCC2C433F1;
+	Sun, 24 Mar 2024 22:52:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320726;
-	bh=ZqHYJmWbjAaWX7RMHrG6rxMCX1+c2Hs/9yWUkPKYsSc=;
+	s=k20201202; t=1711320727;
+	bh=CP1TSSKoiKiCEQKLsdxI576zDse1KHJj9eW0u99lzW4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=s2oUMfzlsaUDxApqjwD2waZRo+nGDcSX68VH9WJz7gq53bQTie5J83uBB5DysXKuU
-	 F+Ik6uKURqUWWNGQQcJcxkzk24yLez67AmzAUYTQOtqe8WyhRr3s0YvcoRYDE3AcWv
-	 +JuFbidjOyQNqGc2yX5TNweFXsTc2PghtAhSqRanY1dpqXiKfc0pIOZ5AA5VdVvlBv
-	 4UqgytJai5e6KmluKlI2NUJRq1ZK69gwRdw0y2CyADqw+6vbEa0EPiqKfz5Wb8QL3B
-	 Vjl79PbnJ6+gClbZWobK/wyL/5UAyYhSgZKrZmnc1Zbz9wwBzjLTzVn9GGmAY7x/2Q
-	 aknmVCwTWxDRA==
+	b=AxUnvCpxXv7OvKgEXVRCmHRSAf9dMjFYOj1/8QYArmP8QR/04EP7kfswH4II/IpxU
+	 +O/CofX3JUF5mQPTf21l2N9im9fmHP9Yh/xFBeVIYwaaza7IUgmRdvouBgz1/LqqQH
+	 8UU2uqDTIuNzLV9Ke4x3356+ZUJ3YCLIRC2eVUbFD/+zBZ5gOG9+R6RHy5V9Tk1M5x
+	 so5xKJ+gGyY8qh2uLK5ajoVZziRnrHjxBV6r6eLvQxUS8V0y48qf1+wJJMBAnTI/3R
+	 28f7T+YY0PoFTFJdiXgFBUhKwHSEwAOj1GRfdfTNXSRAyAMC1wJTPTOWliSokhe/eO
+	 +DBOi+L2W3bIA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>,
+Cc: Quan Zhou <quan.zhou@mediatek.com>,
+	Ming Yen Hsieh <mingyen.hsieh@mediatek.com>,
 	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 289/713] wifi: mt76: mt7925: fix the wrong header translation config
-Date: Sun, 24 Mar 2024 18:40:15 -0400
-Message-ID: <20240324224720.1345309-290-sashal@kernel.org>
+Subject: [PATCH 6.7 290/713] wifi: mt76: mt7925: add flow to avoid chip bt function fail
+Date: Sun, 24 Mar 2024 18:40:16 -0400
+Message-ID: <20240324224720.1345309-291-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,90 +63,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>
+From: Quan Zhou <quan.zhou@mediatek.com>
 
-[ Upstream commit d8cf7e1344727b80b4ec3dc17ca520238d55a88d ]
+[ Upstream commit 9300ae0cd9e8f2407b20e0e67ee3ea03dc8b06af ]
 
-The header translation config should set to broadcast and unicast
-cases correctly, not only unicast case. And also remove the cmds
-of wtbl (wlan table) series, because these MCU commands have
-already been replaced by other commands in mt7925.
+A sub-process of Wifi L0.5 reset will make chip common partition
+enter low power, and have chance lead to Bluetooth host-to-chip
+command timeout, modify the software flow according to the chip's
+design to solve the problem.
 
 Fixes: c948b5da6bbe ("wifi: mt76: mt7925: add Mediatek Wi-Fi7 driver for mt7925 chips")
+Signed-off-by: Quan Zhou <quan.zhou@mediatek.com>
 Signed-off-by: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt7925/mcu.c   | 32 +++++--------------
- 1 file changed, 8 insertions(+), 24 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7925/pci.c  | 2 ++
+ drivers/net/wireless/mediatek/mt76/mt792x_regs.h | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7925/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7925/mcu.c
-index bafd6ec72ef24..28b871e552f0c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7925/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7925/mcu.c
-@@ -814,6 +814,7 @@ mt7925_mcu_sta_hdr_trans_tlv(struct sk_buff *skb,
- 			     struct ieee80211_vif *vif,
- 			     struct ieee80211_sta *sta)
- {
-+	struct mt792x_vif *mvif = (struct mt792x_vif *)vif->drv_priv;
- 	struct sta_rec_hdr_trans *hdr_trans;
- 	struct mt76_wcid *wcid;
- 	struct tlv *tlv;
-@@ -827,7 +828,11 @@ mt7925_mcu_sta_hdr_trans_tlv(struct sk_buff *skb,
- 	else
- 		hdr_trans->from_ds = true;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7925/pci.c b/drivers/net/wireless/mediatek/mt76/mt7925/pci.c
+index 08ef75e24e1cf..c16d683e4891e 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7925/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7925/pci.c
+@@ -386,6 +386,8 @@ static int mt7925_pci_probe(struct pci_dev *pdev,
  
--	wcid = (struct mt76_wcid *)sta->drv_priv;
-+	if (sta)
-+		wcid = (struct mt76_wcid *)sta->drv_priv;
-+	else
-+		wcid = &mvif->sta.wcid;
+ 	dev_info(mdev->dev, "ASIC revision: %04x\n", mdev->rev);
+ 
++	mt76_rmw_field(dev, MT_HW_EMI_CTL, MT_HW_EMI_CTL_SLPPROT_EN, 1);
 +
- 	if (!wcid)
- 		return;
+ 	ret = mt792x_wfsys_reset(dev);
+ 	if (ret)
+ 		goto err_free_dev;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt792x_regs.h b/drivers/net/wireless/mediatek/mt76/mt792x_regs.h
+index a99af23e4b564..d7f9b24cd665f 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt792x_regs.h
++++ b/drivers/net/wireless/mediatek/mt76/mt792x_regs.h
+@@ -389,6 +389,9 @@
+ #define MT_HW_CHIPID			0x70010200
+ #define MT_HW_REV			0x70010204
  
-@@ -1577,8 +1582,6 @@ mt7925_mcu_sta_cmd(struct mt76_phy *phy,
- {
- 	struct mt76_vif *mvif = (struct mt76_vif *)info->vif->drv_priv;
- 	struct mt76_dev *dev = phy->dev;
--	struct wtbl_req_hdr *wtbl_hdr;
--	struct tlv *sta_wtbl;
- 	struct sk_buff *skb;
- 
- 	skb = __mt76_connac_mcu_alloc_sta_req(dev, mvif, info->wcid,
-@@ -1602,30 +1605,11 @@ mt7925_mcu_sta_cmd(struct mt76_phy *phy,
- 		mt7925_mcu_sta_state_v2_tlv(phy, skb, info->sta,
- 					    info->vif, info->rcpi,
- 					    info->state);
--		mt7925_mcu_sta_hdr_trans_tlv(skb, info->vif, info->sta);
- 		mt7925_mcu_sta_mld_tlv(skb, info->vif, info->sta);
- 	}
- 
--	sta_wtbl = mt76_connac_mcu_add_tlv(skb, STA_REC_WTBL,
--					   sizeof(struct tlv));
--
--	wtbl_hdr = mt76_connac_mcu_alloc_wtbl_req(dev, info->wcid,
--						  WTBL_RESET_AND_SET,
--						  sta_wtbl, &skb);
--	if (IS_ERR(wtbl_hdr))
--		return PTR_ERR(wtbl_hdr);
--
--	if (info->enable) {
--		mt76_connac_mcu_wtbl_generic_tlv(dev, skb, info->vif,
--						 info->sta, sta_wtbl,
--						 wtbl_hdr);
--		mt76_connac_mcu_wtbl_hdr_trans_tlv(skb, info->vif, info->wcid,
--						   sta_wtbl, wtbl_hdr);
--		if (info->sta)
--			mt76_connac_mcu_wtbl_ht_tlv(dev, skb, info->sta,
--						    sta_wtbl, wtbl_hdr,
--						    true, true);
--	}
-+	if (info->enable)
-+		mt7925_mcu_sta_hdr_trans_tlv(skb, info->vif, info->sta);
- 
- 	return mt76_mcu_skb_send_msg(dev, skb, info->cmd, true);
- }
++#define MT_HW_EMI_CTL			0x18011100
++#define MT_HW_EMI_CTL_SLPPROT_EN	BIT(1)
++
+ #define MT_PCIE_MAC_BASE		0x10000
+ #define MT_PCIE_MAC(ofs)		(MT_PCIE_MAC_BASE + (ofs))
+ #define MT_PCIE_MAC_INT_ENABLE		MT_PCIE_MAC(0x188)
 -- 
 2.43.0
 
