@@ -1,151 +1,137 @@
-Return-Path: <linux-kernel+bounces-116001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E28B28894F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:14:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91EE88914B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F0C5296A6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:14:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25E8B1C2C886
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F682173D96;
-	Mon, 25 Mar 2024 03:10:37 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1D26E61D;
+	Mon, 25 Mar 2024 00:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y1tRwGI6"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC35924A899;
-	Sun, 24 Mar 2024 23:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0964252847
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 23:23:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322547; cv=none; b=Agsj4QlORW1UWFl/bSqBJXKOcGM49TeKqTsbvn5zg3jzx6j6YE0+fz+vUyi+WziMBkdoGFKts+mNUCbxInhkW4rF2MNs8aRxVgkfmuOGAKiBKEakH2pP7qRKXlOyaKWbcbNpSvtPTObZclvXeyIG7pcjP/8V1AoyPKwbRXeUgms=
+	t=1711322640; cv=none; b=bQA7fiPgTA50ORTf7Sgz9tKP9jXjxV7Qay0vW5vVU719waMvpcqYQk/6IGFAXJCY4VAqr87ID6+Ctcdi7eu7tTgFW38+ibuoppLMKB2AMkh+oqzM2SKSJk46m0uDcvzb90XYqUBw9UBkHEMk4Vh91co4hznTXA88bYAuulf6TMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322547; c=relaxed/simple;
-	bh=QD2J7s+PbQMl/4TLX0Q9/+FJg4j9efgCpQRUHwRCQyI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ysn1E/vkAvIpQQdhL/buj0v+IHKqkpgM6yHYp1jGB5CPiljkxWOEFqZT8cv6LIXCuc1R8xyUwEq7TxJo9Xgq9Yx882MCZLashOUeInZZHj/4F8SdUmK33jqUKxbkyjE2SbbE6SbQ9qXDIHPRSJbf655mYinhN+SfSHsvwKo6fa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 08B4F68D0F; Mon, 25 Mar 2024 00:22:16 +0100 (CET)
-Date: Mon, 25 Mar 2024 00:22:15 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
- steps
-Message-ID: <20240324232215.GC20765@lst.de>
-References: <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca> <20240307150505.GA28978@lst.de> <20240307210116.GQ9225@ziepe.ca> <20240308164920.GA17991@lst.de> <20240308202342.GZ9225@ziepe.ca> <20240309161418.GA27113@lst.de> <20240319153620.GB66976@ziepe.ca> <20240321223910.GA22663@lst.de> <20240322184330.GL66976@ziepe.ca>
+	s=arc-20240116; t=1711322640; c=relaxed/simple;
+	bh=vUOw5Ktu5x24n3aLaI34f3N7oIcNo2h6oYoKJI3Pp2c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mtPlutmhCoO/26GV+1KnIsrFT4EjvOf0wGqN4m0FpG3l1XySEUQbSyZNWXDLUNriVO80ZfoO83s6RkulvMxXXFae5iAHTY4oaxWLHqN1Ptu65NKfRGAZyR6F/7fDsvT4pskHSINX2urAqUm4oPy/r9Vz/fXpjVBKTOk7lhlMcfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y1tRwGI6; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso2546990a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 16:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711322637; x=1711927437; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Yr2Cf82o25fp9daEntXPX2qWzpAZqJg/jLy0faLOqfo=;
+        b=Y1tRwGI6PEvzc8aIsgmBhTR3dcsgN+2V+lTOy5cojLJURQ6gTbE3zNOxAlO6AzO13I
+         J+PgNYewceSGeFmT+D2/7+mPCAw4B4tnx8CzzbBBDYQBorsOzaTkUavCWiOCGtpnFerR
+         O8H7TWVfwe6eWmvO82FPGP0o0PD8odCvU39OYNQ8RkKlaNm60zI91AmP6CfDhv6c9PS7
+         eT/skHkUDUHLvhNrKYgMR55yveb/y+EZZY3wkRs7KobqP+ts3/6/nOT9TFfbdZIqnYLK
+         tW0UZ4xd9yeXNCzjdaFIknTfbzpu4JNQh2rKpB3xoyIMrHEPmSPYAIJ5Bz9X+c85C8HV
+         WKXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711322637; x=1711927437;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Yr2Cf82o25fp9daEntXPX2qWzpAZqJg/jLy0faLOqfo=;
+        b=KI4M8eyIJzo8HhCwfiQjvOjWej3OFoIdEhWGNvdsh00S6JR0ksoGtI3mkNQ6WuxJv5
+         4QFtwf0ITU5zZeDpKRDvG3E0SCwuz6YXt3akLlkNIe7DufKiY6vFG40f0G96GwfrjA07
+         VMh7a02Wfj+5AhdkW3/nd1ZR5O8dZuL2MqripCiRn7KSY8PYSEGtUw58sb+rzPlwVRrH
+         h0vtsV5jtFd8ibUJNabmD4+Jc2WxnIGy2wTH/6gtMVnTKyTlA0+aMRBMbxN8xJoC3rSQ
+         /RoJvlps1swygkMo7wvzKJ1d9WoEnwZGRtuEtjfwVs27dNH5lWJTvm8eKPxWd2QdE05l
+         N28Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVTgI4UQufJw14HY5wIO7F8lpa95wv1o0QyWwm+Vdlbe6EWs+x0CjlHsgdtSqbnGq0CkcPajPe8giR6ZQb3IPohDL2uRJbBHK3jBJsM
+X-Gm-Message-State: AOJu0YwbKQrpDKTXDxbUWFE5ufRdFFp4mf1H82s3yCFOHw1ih/4juyYp
+	pSSg0k+XRrjJsaSKIInEkfCDNxp0NPhtcbpcLwe5lfPg1wwpaA6FREeEsGkhfip4rP5qnZ87WXC
+	/Q0JfZ55xAtldVujqvSpydtRdI2Q=
+X-Google-Smtp-Source: AGHT+IFMOMfeUxQyKzPFnUMoVWDwkbdGKmRMYPWEC+HKw+YXJ9EhRRfrd0ilgf+Tk07qVbRcktkVNSKiwlufFCxvaZ0=
+X-Received: by 2002:a05:6a20:8ca7:b0:1a3:40e3:318a with SMTP id
+ k39-20020a056a208ca700b001a340e3318amr5663622pzh.60.1711322637106; Sun, 24
+ Mar 2024 16:23:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322184330.GL66976@ziepe.ca>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20240307221609.7651-1-hannes@cmpxchg.org> <c411dce6-faaf-46c3-8bb6-8c4db871e598@gmail.com>
+ <20240314170948.GA581298@cmpxchg.org> <20240323145247.GC448621@cmpxchg.org> <c8efae98-3cf8-c21c-bfa4-d5998ab92a0e@amd.com>
+In-Reply-To: <c8efae98-3cf8-c21c-bfa4-d5998ab92a0e@amd.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Sun, 24 Mar 2024 19:23:44 -0400
+Message-ID: <CADnq5_OGSLpLLEJqh86_SAZcqv-Cv6AmZJRZyaFtSmTHJ8ybxg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: fix deadlock while reading mqd from debugfs
+To: "Sharma, Shashank" <shashank.sharma@amd.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>, 
+	Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 03:43:30PM -0300, Jason Gunthorpe wrote:
-> If we are going to make caller provided uniformity a requirement, lets
-> imagine a formal memory type idea to help keep this a little
-> abstracted?
-> 
->  DMA_MEMORY_TYPE_NORMAL
->  DMA_MEMORY_TYPE_P2P_NOT_ACS
->  DMA_MEMORY_TYPE_ENCRYPTED
->  DMA_MEMORY_TYPE_BOUNCE_BUFFER  // ??
-> 
-> Then maybe the driver flow looks like:
-> 
-> 	if (transaction.memory_type == DMA_MEMORY_TYPE_NORMAL && dma_api_has_iommu(dev)) {
-
-Add a nice helper to make this somewhat readable, but yes.
-
-> 	} else if (transaction.memory_type == DMA_MEMORY_TYPE_P2P_NOT_ACS) {
-> 		num_hwsgls = transcation.num_sgls;
-> 		for_each_range(transaction, range) {
-> 			hwsgl[i].addr = dma_api_p2p_not_acs_map(range.start_physical, range.length, p2p_memory_provider);
-> 			hwsgl[i].len = range.size;
-> 		}
-> 	} else {
-> 		/* Must be DMA_MEMORY_TYPE_NORMAL, DMA_MEMORY_TYPE_ENCRYPTED, DMA_MEMORY_TYPE_BOUNCE_BUFFER? */
-> 		num_hwsgls = transcation.num_sgls;
-> 		for_each_range(transaction, range) {
-> 			hwsgl[i].addr = dma_api_map_cpu_page(range.start_page, range.length);
-> 			hwsgl[i].len = range.size;
-> 		}
+On Sat, Mar 23, 2024 at 4:47=E2=80=AFPM Sharma, Shashank
+<shashank.sharma@amd.com> wrote:
 >
+>
+> On 23/03/2024 15:52, Johannes Weiner wrote:
+> > On Thu, Mar 14, 2024 at 01:09:57PM -0400, Johannes Weiner wrote:
+> >> Hello,
+> >>
+> >> On Fri, Mar 08, 2024 at 12:32:33PM +0100, Christian K=C3=B6nig wrote:
+> >>> Am 07.03.24 um 23:07 schrieb Johannes Weiner:
+> >>>> Lastly I went with an open loop instead of a memcpy() as I wasn't
+> >>>> sure if that memory is safe to address a byte at at time.
+> >> Shashank pointed out to me in private that byte access would indeed be
+> >> safe. However, after actually trying it it won't work because memcpy()
+> >> doesn't play nice with mqd being volatile:
+> >>
+> >> /home/hannes/src/linux/linux/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:=
+ In function 'amdgpu_debugfs_mqd_read':
+> >> /home/hannes/src/linux/linux/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c:=
+550:22: warning: passing argument 1 of '__builtin_dynamic_object_size' disc=
+ards 'volatil' qualifier from pointer target type [-Wdiscarded-qualifiers]
+> >>    550 |         memcpy(kbuf, mqd, ring->mqd_size);
+> >>
+> >> So I would propose leaving the patch as-is. Shashank, does that sound
+> >> good to you?
+> > Friendly ping :)
+> >
+> > Shashank, is your Reviewed-by still good for this patch, given the
+> > above?
+>
+> Ah, sorry I missed this due to some parallel work, and just realized the
+> memcpy/volatile limitation.
+>
+> I also feel the need of protecting MQD read under a lock to avoid
+> parallel change in MQD while we do byte-by-byte copy, but I will add
+> that in my to-do list.
+>
+> Please feel free to use my R-b.
 
-And these two are really the same except that we call a different map
-helper underneath.  So I think as far as the driver is concerned
-they should be the same, the DMA API just needs to key off the
-memory tap.
+Shashank, if the patch looks good, can you pick it up and apply it?
 
-> And the hmm_range_fault case is sort of like:
-> 
-> 		struct dma_api_iommu_state state;
-> 		dma_api_iommu_start(&state, mr.num_pages);
-> 
-> 		[..]
-> 		hmm_range_fault(...)
-> 		if (present)
-> 			dma_link_page(&state, faulting_address_offset, page);
-> 		else
-> 			dma_unlink_page(&state, faulting_address_offset, page);
-> 
-> Is this looking closer?
+Alex
 
-Yes.
 
-> > > So I take it as a requirement that RDMA MUST make single MR's out of a
-> > > hodgepodge of page types. RDMA MRs cannot be split. Multiple MR's are
-> > > not a functional replacement for a single MR.
-> > 
-> > But MRs consolidate multiple dma addresses anyway.
-> 
-> I'm not sure I understand this?
-
-The RDMA MRs take a a list of PFNish address, (or SGLs with the
-enhanced MRs from Mellanox) and give you back a single rkey/lkey.
-
-> To go back to my main thesis - I would like a high performance low
-> level DMA API that is capable enough that it could implement
-> scatterlist dma_map_sg() and thus also implement any future
-> scatterlist_v2, bio, hmm_range_fault or any other thing we come up
-> with on top of it. This is broadly what I thought we agreed to at LSF
-> last year.
-
-I think the biggest underlying problem of the scatterlist based
-DMA implementation for IOMMUs is that it's trying to handle to much,
-that is magic coalescing even if the segments boundaries don't align
-with the IOMMU page size.  If we can get rid of that misfeature I
-think we'd greatly simply the API and implementation.
+>
+> - Shashank
+>
+> > Thanks
 
