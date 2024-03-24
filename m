@@ -1,54 +1,59 @@
-Return-Path: <linux-kernel+bounces-115698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BACE889884
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6CDA8889EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:06:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B1F2B33D9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:08:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99CABB288DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B40258FAE;
-	Mon, 25 Mar 2024 02:54:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C79184D00;
+	Sun, 24 Mar 2024 23:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRQ2ozjt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a/cDvQjv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF6420F23B;
-	Sun, 24 Mar 2024 23:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5184413A889;
+	Sun, 24 Mar 2024 23:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321678; cv=none; b=Xmebx4c96PrvlxRbXMnijmxuR0KvUVQYr9xz9vKxBqCe7MV06sAFDgWbxLJTtXasABvu5p4oaNsNKsJSCPcZGwrBXtAj5Yn6XVJe0uJUVklV6IZLFFYl9YkBAaTcEXRu6qZmwCyyuotSM4FE/pNR3MmLDmTaTngYoU2OaYE6pmo=
+	t=1711321680; cv=none; b=cqVjsZjonNPC/K7mqs+MUIlmK2VS5n+H+rlx8WdAYi+HBs6w0fdzhMbQN/CGBRl24COAilXj+kp8X+RARG2D2h8EbaxS3XlC+oJBYvS0vfObCVFKG2sWSFSYvvKjQvPTSRvZ+awsgkc9kwWkKSbCUvztae+/rw0LwGM1fqdSmgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321678; c=relaxed/simple;
-	bh=h8BdH7BljQ0FdEXcZo6/KF7jYRa7kna71QzsImwJywI=;
+	s=arc-20240116; t=1711321680; c=relaxed/simple;
+	bh=M1QItdYAF71ObWMVTznHt14H9vDAKX8BuqolOPqVItE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Eko83aOLUJb+2Ka/Z+HET9LXRipjkNG8zoXA3kKxYitnKLx9C15FY39/qUWuW23iJDxFKhbW5EuCjIrcVFjXTXw6h8wQbnrzSrEdsLCKTXkJbtS0f5FOQJC52cE1Hl/XWBdD1AuazWNUaCRZFpqUkjZq/zzPJLXyHipoGMXNlHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRQ2ozjt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39ACEC43394;
-	Sun, 24 Mar 2024 23:07:57 +0000 (UTC)
+	 MIME-Version; b=lumpuD+UqypozqA6u7OqHZHgAeYyIxGsdWxis6ba+kLlcslZo/NWKz1tH9CbnRK5f8VrL74pGJZ951xrRCbHAPaHcG586sFx8qGdXeQOPhteDGgTyx9n4pGX0fIfWOAtckGT5Ll3HM68gp4a7CeQyZZZoviygjWH0DEykj1tPCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a/cDvQjv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 208ADC433C7;
+	Sun, 24 Mar 2024 23:07:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321677;
-	bh=h8BdH7BljQ0FdEXcZo6/KF7jYRa7kna71QzsImwJywI=;
+	s=k20201202; t=1711321679;
+	bh=M1QItdYAF71ObWMVTznHt14H9vDAKX8BuqolOPqVItE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nRQ2ozjtqB90JWZklGYpCbRG0JVs0PiSVevyhCXKR19vlsCW6YfiyvlXlt5Z2jmuX
-	 I95Y31aij7IAA6XhpTfgRzfF5B+dOo7xbXY+NSxTOzK1P4GobQSQ+zR9AAT5ZElH9K
-	 gGY5YPuEdzUQNqK+O/sBNmBaNLydUSnFR47ONNSWpISS5quZZXKr22PbbDGQ4/HHnx
-	 nl1QPsAKhjTnlaZHm9iw9zoUqIxKVOPr8MXUnxgXAq/6sQdtWGra9dkVlqed1yTZ97
-	 fFsRvRIyIvyrKDhoKuZSeT54QJ3FGlkszwfw2fTGTxfTyHelFXNODS5h2BPKwMKZ/D
-	 WDDNWgZKVhyUQ==
+	b=a/cDvQjvx+8jJxfLmkRwip0S3UjhZkQJ4LaWZ7AbuSAKluJ6jV+7aoYEfF/pwCrym
+	 GT6Zg2Ubi4p6zsZRV+oxJIhZmLwlrNBKwZogufv0NMaCwvtHHl4ukPr+L35CmIgxyL
+	 bJtKEw73BWr2TQHQirfUH5xaEsD71/bNYn3XW04UAzDAZR0JSa1cAZUqbFjKENGFqC
+	 5LsXlikFP3f8h8nXzuEjtUMYqUpUEPdCIlGcjvZmotmmamhP9Bqes78ryJB3lolHpq
+	 sM5dNQeQjs5/20wRncNkRZ9I2DpdVYhgP/yt0TOgf/jI7xRE+Yz2jtvE1SjiPbsguz
+	 U84YmSr7rgJug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Arnd Bergmann <arnd@arndb.de>,
+Cc: Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	James Clark <james.clark@arm.com>,
+	Kaige Ye <ye@kaige.org>,
+	John Garry <john.g.garry@oracle.com>,
+	Namhyung Kim <namhyung@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 407/638] ALSA: seq: fix function cast warnings
-Date: Sun, 24 Mar 2024 18:57:24 -0400
-Message-ID: <20240324230116.1348576-408-sashal@kernel.org>
+Subject: [PATCH 6.6 408/638] perf expr: Fix "has_event" function for metric style events
+Date: Sun, 24 Mar 2024 18:57:25 -0400
+Message-ID: <20240324230116.1348576-409-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,93 +67,60 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Ian Rogers <irogers@google.com>
 
-[ Upstream commit d7bf73809849463f76de42aad62c850305dd6c5d ]
+[ Upstream commit 6dd76680b925228312756c13b9b983661b552a64 ]
 
-clang-16 points out a control flow integrity (kcfi) issue when event
-callbacks get converted to incompatible types:
+Events in metrics cannot use '/' as a separator, it would be
+recognized as a divide, so they use '@'. The '@' is recognized in the
+metricgroups code and changed to '/', do the same in the has_event
+function so that the parsing is only tried without the @s.
 
-sound/core/seq/seq_midi.c:135:30: error: cast from 'int (*)(struct snd_rawmidi_substream *, const char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-  135 |                 snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
-      |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/core/seq/seq_virmidi.c:83:31: error: cast from 'int (*)(struct snd_rawmidi_substream *, const unsigned char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   83 |                         snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
-      |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-For addressing those errors, introduce wrapper functions that are used
-for callbacks and bridge to the actual function call with pointer
-cast.
-
-The code was originally added with the initial ALSA merge in linux-2.5.4.
-
-[ the patch description shamelessly copied from Arnd's original patch
-  -- tiwai ]
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20240213101020.459183-1-arnd@kernel.org
-Link: https://lore.kernel.org/r/20240213135343.16411-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 4a4a9bf9075f ("perf expr: Add has_event function")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: James Clark <james.clark@arm.com>
+Cc: Kaige Ye <ye@kaige.org>
+Cc: John Garry <john.g.garry@oracle.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/r/20240209204947.3873294-3-irogers@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/seq/seq_midi.c    | 8 +++++++-
- sound/core/seq/seq_virmidi.c | 9 ++++++++-
- 2 files changed, 15 insertions(+), 2 deletions(-)
+ tools/perf/util/expr.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/sound/core/seq/seq_midi.c b/sound/core/seq/seq_midi.c
-index 18320a248aa7d..78dcb0ea15582 100644
---- a/sound/core/seq/seq_midi.c
-+++ b/sound/core/seq/seq_midi.c
-@@ -113,6 +113,12 @@ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, i
- 	return 0;
+diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+index 4488f306de785..80cf2478f98fc 100644
+--- a/tools/perf/util/expr.c
++++ b/tools/perf/util/expr.c
+@@ -500,7 +500,25 @@ double expr__has_event(const struct expr_parse_ctx *ctx, bool compute_ids, const
+ 	tmp = evlist__new();
+ 	if (!tmp)
+ 		return NAN;
+-	ret = parse_event(tmp, id) ? 0 : 1;
++
++	if (strchr(id, '@')) {
++		char *tmp_id, *p;
++
++		tmp_id = strdup(id);
++		if (!tmp_id) {
++			ret = NAN;
++			goto out;
++		}
++		p = strchr(tmp_id, '@');
++		*p = '/';
++		p = strrchr(tmp_id, '@');
++		*p = '/';
++		ret = parse_event(tmp, tmp_id) ? 0 : 1;
++		free(tmp_id);
++	} else {
++		ret = parse_event(tmp, id) ? 0 : 1;
++	}
++out:
+ 	evlist__delete(tmp);
+ 	return ret;
  }
- 
-+/* callback for snd_seq_dump_var_event(), bridging to dump_midi() */
-+static int __dump_midi(void *ptr, void *buf, int count)
-+{
-+	return dump_midi(ptr, buf, count);
-+}
-+
- static int event_process_midi(struct snd_seq_event *ev, int direct,
- 			      void *private_data, int atomic, int hop)
- {
-@@ -132,7 +138,7 @@ static int event_process_midi(struct snd_seq_event *ev, int direct,
- 			pr_debug("ALSA: seq_midi: invalid sysex event flags = 0x%x\n", ev->flags);
- 			return 0;
- 		}
--		snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
-+		snd_seq_dump_var_event(ev, __dump_midi, substream);
- 		snd_midi_event_reset_decode(msynth->parser);
- 	} else {
- 		if (msynth->parser == NULL)
-diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index 1b9260108e482..1678737f11be7 100644
---- a/sound/core/seq/seq_virmidi.c
-+++ b/sound/core/seq/seq_virmidi.c
-@@ -62,6 +62,13 @@ static void snd_virmidi_init_event(struct snd_virmidi *vmidi,
- /*
-  * decode input event and put to read buffer of each opened file
-  */
-+
-+/* callback for snd_seq_dump_var_event(), bridging to snd_rawmidi_receive() */
-+static int dump_to_rawmidi(void *ptr, void *buf, int count)
-+{
-+	return snd_rawmidi_receive(ptr, buf, count);
-+}
-+
- static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 					 struct snd_seq_event *ev,
- 					 bool atomic)
-@@ -80,7 +87,7 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 		if (ev->type == SNDRV_SEQ_EVENT_SYSEX) {
- 			if ((ev->flags & SNDRV_SEQ_EVENT_LENGTH_MASK) != SNDRV_SEQ_EVENT_LENGTH_VARIABLE)
- 				continue;
--			snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
-+			snd_seq_dump_var_event(ev, dump_to_rawmidi, vmidi->substream);
- 			snd_midi_event_reset_decode(vmidi->parser);
- 		} else {
- 			len = snd_midi_event_decode(vmidi->parser, msg, sizeof(msg), ev);
 -- 
 2.43.0
 
