@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-115032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAE9F888CFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:37:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E7E889D7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:45:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FA71B2AE3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:26:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A26691C352AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3381C09BB;
-	Mon, 25 Mar 2024 00:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6645F290BA3;
+	Mon, 25 Mar 2024 03:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IAxfDj0L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BWspW62/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F246817CF65;
-	Sun, 24 Mar 2024 23:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172AB17CF66;
+	Sun, 24 Mar 2024 23:43:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323810; cv=none; b=C4ZyWrbMQ/q72dcCeOlGpR3Nf/AK8L4VJz+Ow8MciNEu6B63IMfnb/vjHNAW+W4q/nYfn3GHlL+pgBy7DLMIBpJQP63LdBou9VfINC/CsktFl1KedRl4Q7WKIPKr7HWPTEiBqK1Jv7bIwTqZq73TLW/ECf1wdmezwEPGY2re9+A=
+	t=1711323812; cv=none; b=USgOp7aIzIoziSObBooXnS/F7a4Tb9EpXu3rck+hWaY1cdpBj9xWRAql9NbxafPnn/trYyqU3ItzyGDm1rZJr7kvdqTnoO2T1uQTwbt5LMpHVbHuh/5YW2NIdyMD+W6gcbZJI8hnzvpdM6OgdwrD9MDOVhD0bLdxsNLF2JIgq5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323810; c=relaxed/simple;
-	bh=jmfwr9b4WGqYyhKL2RJ0GcThkXvWGfJ4utHVDz5KbWM=;
+	s=arc-20240116; t=1711323812; c=relaxed/simple;
+	bh=qUsKLSR4/2S+QJrOFojeB/hmcUgRxhpYTpV7hOoNmWw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sqz6xAblajpYU0CZagMmnmMyd7nQ9bECKlPoZ0Z8kXdWuNdTWOBYirIhPRZRMMoqm9LJegaaISDLXbEOPUOU3wz8b3jKKn5hgmgbuglVzaRKSI4XGURcKw+YC6y+UCF/JizK0nFYM9NFNtBgjkf9H+hwv9HpOnUMUfiksc2C1zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IAxfDj0L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 258B4C43390;
-	Sun, 24 Mar 2024 23:43:29 +0000 (UTC)
+	 MIME-Version; b=SkJMFTR7cZZpnDDeA8SowVvZBHHTX2JsZ5RnVZL4vCTSOYSI3IO0mqmxIf3r/Thn0uWBrbKeZTw1u28rB8dHlpgH/lhoaa7sBtWb5DAPcAU4ixiD1IfoUP3P3B1njn9p+1ovaMDzsqlMRoXXMnhyW43IVfv1Ef+Ll4YXoNcVMWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BWspW62/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20E20C433F1;
+	Sun, 24 Mar 2024 23:43:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323809;
-	bh=jmfwr9b4WGqYyhKL2RJ0GcThkXvWGfJ4utHVDz5KbWM=;
+	s=k20201202; t=1711323810;
+	bh=qUsKLSR4/2S+QJrOFojeB/hmcUgRxhpYTpV7hOoNmWw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IAxfDj0Lw9zUYXselNFbt/IAo6PnzDmfUZjlah7yCpt6eC/c4OIF/Z17SVWnUyI6V
-	 AJ5MnvVkYPPlMBXDAJJb755nM/9bQ6WZ/gSr4oyglgtLjDQsuEFaJBTl03d9Qb1U+E
-	 KZB40zYrIcmexaGJTa8HQG3pAnHtAZ19pa+26NHU21BoAd/ThhacLlQau+rARb59id
-	 Jy1cmCcevfcDUC4UoHdvWeu6ebAjU8fnGJXwkOjC0YcKxboD+z4JvMti5dMiV23YD2
-	 4/ZnobaoRD5cZOsjIM5akDFTcn/EN1psHsXCHXoCsGIohenBOk0oBV3XNM1p0r0ED7
-	 2bI68kQiWtlmw==
+	b=BWspW62/9jPKmLFR/Fj6OUBNLQnDyiJv6UAQZmwK126v1B05LF/lPAYSmoh3RfF3F
+	 GvZhUV4ZhpT1LFHh1m7OQlwcFCCrILIhmmWdfUu4GxQeNc6A1e7PS7iePowmqN3ExA
+	 Swvaesx3K2AMutIcW7HpzA1QoGD8Ot4l7OX1JYXLJTkrdaWGKnNWdRJw7deNnQgwrr
+	 HWaF4oNBbCY7xH9uAceJHW3TWO4xw+v44iJXCKt+t9mPZLN6vds4tgstySEKYrw1Zn
+	 BziYX2ORZ0hDs1dtGkZ0NXcLIjjdUvEl9BmALUpky/PfKp6UMIb/AVLNGJXjmu/lkq
+	 ykQBJ/zChg6rQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Thomas Zimmermann <tzimmermann@suse.de>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
+Cc: Sam Ravnborg <sam@ravnborg.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 188/238] arch/powerpc: Remove <linux/fb.h> from backlight code
-Date: Sun, 24 Mar 2024 19:39:36 -0400
-Message-ID: <20240324234027.1354210-189-sashal@kernel.org>
+Subject: [PATCH 5.10 189/238] sparc32: Fix section mismatch in leon_pci_grpci
+Date: Sun, 24 Mar 2024 19:39:37 -0400
+Message-ID: <20240324234027.1354210-190-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -63,96 +64,60 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
+From: Sam Ravnborg <sam@ravnborg.org>
 
-[ Upstream commit 838f865802b9f26135ea7df4e30f89ac2f50c23e ]
+[ Upstream commit 24338a6ae13cb743ced77da1b3a12c83f08a0c96 ]
 
-Replace <linux/fb.h> with a forward declaration in <asm/backlight.h> to
-resolve an unnecessary dependency. Remove pmac_backlight_curve_lookup()
-and struct fb_info from source and header files. The function and the
-framebuffer struct are unused. No functional changes.
+Passing a datastructre marked _initconst to platform_driver_register()
+is wrong. Drop the __initconst notation.
 
-v3:
-	* Add Fixes tag (Christophe)
-	* fix typos in commit message (Jani)
+This fixes the following warnings:
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Fixes: d565dd3b0824 ("[PATCH] powerpc: More via-pmu backlight fixes")
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> # (powerpc)
-Link: https://patchwork.freedesktop.org/patch/msgid/20240306122935.10626-4-tzimmermann@suse.de
+WARNING: modpost: vmlinux: section mismatch in reference: grpci1_of_driver+0x30 (section: .data) -> grpci1_of_match (section: .init.rodata)
+WARNING: modpost: vmlinux: section mismatch in reference: grpci2_of_driver+0x30 (section: .data) -> grpci2_of_match (section: .init.rodata)
+
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Andreas Larsson <andreas@gaisler.com>
+Fixes: 4154bb821f0b ("sparc: leon: grpci1: constify of_device_id")
+Fixes: 03949b1cb9f1 ("sparc: leon: grpci2: constify of_device_id")
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Reviewed-by: Andreas Larsson <andreas@gaisler.com>
+Tested-by: Andreas Larsson <andreas@gaisler.com>
+Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+Link: https://lore.kernel.org/r/20240224-sam-fix-sparc32-all-builds-v2-7-1f186603c5c4@ravnborg.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/backlight.h        |  5 ++--
- arch/powerpc/platforms/powermac/backlight.c | 26 ---------------------
- 2 files changed, 2 insertions(+), 29 deletions(-)
+ arch/sparc/kernel/leon_pci_grpci1.c | 2 +-
+ arch/sparc/kernel/leon_pci_grpci2.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/backlight.h b/arch/powerpc/include/asm/backlight.h
-index 1b5eab62ed047..061a910d74929 100644
---- a/arch/powerpc/include/asm/backlight.h
-+++ b/arch/powerpc/include/asm/backlight.h
-@@ -10,15 +10,14 @@
- #define __ASM_POWERPC_BACKLIGHT_H
- #ifdef __KERNEL__
- 
--#include <linux/fb.h>
- #include <linux/mutex.h>
- 
-+struct backlight_device;
-+
- /* For locking instructions, see the implementation file */
- extern struct backlight_device *pmac_backlight;
- extern struct mutex pmac_backlight_mutex;
- 
--extern int pmac_backlight_curve_lookup(struct fb_info *info, int value);
--
- extern int pmac_has_backlight_type(const char *type);
- 
- extern void pmac_backlight_key(int direction);
-diff --git a/arch/powerpc/platforms/powermac/backlight.c b/arch/powerpc/platforms/powermac/backlight.c
-index 32224cb489d75..eab339d2059d5 100644
---- a/arch/powerpc/platforms/powermac/backlight.c
-+++ b/arch/powerpc/platforms/powermac/backlight.c
-@@ -9,7 +9,6 @@
-  */
- 
- #include <linux/kernel.h>
--#include <linux/fb.h>
- #include <linux/backlight.h>
- #include <linux/adb.h>
- #include <linux/pmu.h>
-@@ -73,31 +72,6 @@ int pmac_has_backlight_type(const char *type)
- 	return 0;
+diff --git a/arch/sparc/kernel/leon_pci_grpci1.c b/arch/sparc/kernel/leon_pci_grpci1.c
+index e6935d0ac1ec9..c32590bdd3120 100644
+--- a/arch/sparc/kernel/leon_pci_grpci1.c
++++ b/arch/sparc/kernel/leon_pci_grpci1.c
+@@ -696,7 +696,7 @@ static int grpci1_of_probe(struct platform_device *ofdev)
+ 	return err;
  }
  
--int pmac_backlight_curve_lookup(struct fb_info *info, int value)
--{
--	int level = (FB_BACKLIGHT_LEVELS - 1);
--
--	if (info && info->bl_dev) {
--		int i, max = 0;
--
--		/* Look for biggest value */
--		for (i = 0; i < FB_BACKLIGHT_LEVELS; i++)
--			max = max((int)info->bl_curve[i], max);
--
--		/* Look for nearest value */
--		for (i = 0; i < FB_BACKLIGHT_LEVELS; i++) {
--			int diff = abs(info->bl_curve[i] - value);
--			if (diff < max) {
--				max = diff;
--				level = i;
--			}
--		}
--
--	}
--
--	return level;
--}
--
- static void pmac_backlight_key_worker(struct work_struct *work)
- {
- 	if (atomic_read(&kernel_backlight_disabled))
+-static const struct of_device_id grpci1_of_match[] __initconst = {
++static const struct of_device_id grpci1_of_match[] = {
+ 	{
+ 	 .name = "GAISLER_PCIFBRG",
+ 	 },
+diff --git a/arch/sparc/kernel/leon_pci_grpci2.c b/arch/sparc/kernel/leon_pci_grpci2.c
+index ca22f93d90454..dd06abc61657f 100644
+--- a/arch/sparc/kernel/leon_pci_grpci2.c
++++ b/arch/sparc/kernel/leon_pci_grpci2.c
+@@ -887,7 +887,7 @@ static int grpci2_of_probe(struct platform_device *ofdev)
+ 	return err;
+ }
+ 
+-static const struct of_device_id grpci2_of_match[] __initconst = {
++static const struct of_device_id grpci2_of_match[] = {
+ 	{
+ 	 .name = "GAISLER_GRPCI2",
+ 	 },
 -- 
 2.43.0
 
