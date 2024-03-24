@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B653F88811F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:13:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2A3888121
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:13:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E26161C21452
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:13:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B841D280E1C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C35F145B36;
-	Sun, 24 Mar 2024 22:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893AE535AB;
+	Sun, 24 Mar 2024 22:37:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="os4uNrF2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K/TPv3Zs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFBC145B1B;
-	Sun, 24 Mar 2024 22:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B617F145B3C;
+	Sun, 24 Mar 2024 22:37:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319865; cv=none; b=D6Mdh0Zt8HJkY/Cpim6x0W+h6QVrQBU2wlob4KvKpQzQ39djAH3lS7GR5rItOQoRHz7F2/VFfuk6sx7sC9dSlu5VodRDJKjnsqhBgw4ZnoUdUcmKuAeLTwcxysqTm+ywlfkfK+UuSqCo1XqsSLZQeTTy34dQiXwlRyaVIlacqdU=
+	t=1711319866; cv=none; b=EzfBD1QU+mcaW/bxgltDOtaoCQMDfD/o5El0bEE4pbt331t/Z8qdxoGMxomZ89WrHSJRmSMDws2ZLsWFgOQXCaAuyECtu4zs4OtR+Q/gudUQWWetFx7a/NRWJXJxRCWdRRFmHzwqUESqlUaCK3vkavyunnmIVNDSNlO1yqaoxjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319865; c=relaxed/simple;
-	bh=2q6oHfjoHzX8gP5qDR5Um+xcUNC7XmVJXbcW1TFzcOM=;
+	s=arc-20240116; t=1711319866; c=relaxed/simple;
+	bh=lzVnQlyO7tR3vPso14hf/vGA5Oj0nELSAcGLnpQb/UU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d0DADdATAv5G6tYgiVtK2NFKzGTM4QGUPV0CT6wBOn2vr4JgqhjglI4FRSbHn3PY5h8o3aulm2Nh6mPm9CMcGNwTEbfWQfF/YpO3uFnc50fWOYKBcomv0hI0MPAc9uCQj6Gf6mnhM89V2YVE1l0WkYyhORyTGhN70/RJ1ACSARw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=os4uNrF2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DB32C433C7;
+	 MIME-Version; b=MeqyC+JT2Yo6tCroDGOBxKFljR1YtErfk35tfLCLPniEQjOgVPeMwXnUIlepyy0/1FVP4Vpo/SHKoW/v3bwGuSULw/rPzRRgRBNjb7f3q7cw7kFM7NNTyRIP5tnsneRnfaWMeFHXpi33+xrRirWgu6dp1K+yzOaiY2ROX5EFSts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K/TPv3Zs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0176FC43390;
 	Sun, 24 Mar 2024 22:37:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319865;
-	bh=2q6oHfjoHzX8gP5qDR5Um+xcUNC7XmVJXbcW1TFzcOM=;
+	s=k20201202; t=1711319866;
+	bh=lzVnQlyO7tR3vPso14hf/vGA5Oj0nELSAcGLnpQb/UU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=os4uNrF27X8vpdiUuNmGr7rHbMcQ7RgkCxYVv7uXmpoUwiHAjsPX/Bw+iLni4Z++v
-	 RKFYnrlyRH6DprlgLPqi9TZTB5v7cj0+wHuAjPCd44vaMHENf66xaxywoEfqdJlg+Y
-	 dvGqIcYTc1COLfmxdpVxkNQ4SOrZpe5G8SlYRG8wIQVWSFDAlaZwYM+lJ1b2vFkAbN
-	 krrOGTMPIVX9Z06Hif6e3agEF0d+6NrCovGuoBNmhZ6+MyBI33oPanm59eO4An3whT
-	 SBXph8xfEa92ui+t4Lkd4oB9BcywIPYhkZ11gknWDyuMWAnlk1I7twsAgdGRZi4ofM
-	 VaBL70/d3qG7A==
+	b=K/TPv3ZsqfDyW0nK39bFykE34nZqzoiyRyvYXhG8y8tZ9j8m/EXT53NXqEpN2DDhG
+	 1pb3z9XVcYbUeW2UPdn39jA41vUIYq1cIYywvB3lrS5852Xnc557LgsQI57j5gpf6V
+	 988Y5rLVHOitL6YB5ytrrJGGmhVr6X6e72UZ8zyokrpaK9JVI5xipVi8PRH56QECJ7
+	 Q6pOosdPqRUTZV3UC6Rva6fAGrWF9YMWgui9iHVPcO+3SkxGoE5K0FFchyB+X1gmZd
+	 flP4PRxkp2mOd4nyJOq3euaKqh77cRFrlDx605Sf253II21Az5Spymwn3/vwVAvNfo
+	 btVu+LCLuQYIQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 170/715] wifi: iwlwifi: properly check if link is active
-Date: Sun, 24 Mar 2024 18:25:49 -0400
-Message-ID: <20240324223455.1342824-171-sashal@kernel.org>
+Subject: [PATCH 6.8 171/715] wifi: iwlwifi: mvm: fix erroneous queue index mask
+Date: Sun, 24 Mar 2024 18:25:50 -0400
+Message-ID: <20240324223455.1342824-172-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,41 +62,66 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 556c7cd721b5262579ba1710c3b4e7ffdb5573ac ]
+[ Upstream commit 2e0e766bd8a7f14f10c3e70b8203c4c1e6d9ec76 ]
 
-Before sending SESSION PROTECTION cmd the driver verifies that the
-link for which the cmd is going to be sent is active.
-The existing code is checking it only for MLD vifs,
-but also the deflink (in non-MLD vifs) needs to be active in order
-the have a session protection for it.
-Fix this by checking if the link is active also for non-MLD vifs
+When retrieving the queue index ("SCD SSN") from the TX response,
+it's currently masked with 0xFFF. However, now that we have queues
+longer than 4k, that became wrong, so make the mask depend on the
+hardware family.
 
-Fixes: 135065837310 ("wifi: iwlwifi: support link_id in SESSION_PROTECTION cmd")
+This fixes an issue where if we get a single frame reclaim while
+in the top half of an 8k long queue, we'd reclaim-wrap the queue
+twice (once on this and then again on the next non-single reclaim)
+which at least triggers the WARN_ON_ONCE() in iwl_txq_reclaim(),
+but could have other negative side effects (such as unmapping a
+frame that wasn't transmitted yet, and then taking an IOMMU fault)
+as well.
+
+Fixes: 7b3e42ea2ead ("iwlwifi: support multiple tfd queue max sizes for different devices")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Reviewed-by: Johannes Berg <johannes.berg@intel.com>
-Link: https://msgid.link/20240205211151.c61820f14ca6.Ibbe0f848f3e71f64313d21642650b6e4bfbe4b39@changeid
+Link: https://msgid.link/20240205211151.4148a6ef54e0.I733a70f679c25f9f99097a8dcb3a1f8165da6997@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/time-event.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/tx.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c b/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
-index 98c64ae315e68..da00ef6e4fbcf 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/time-event.c
-@@ -706,8 +706,7 @@ static int iwl_mvm_get_session_prot_id(struct iwl_mvm *mvm,
- 		 "Invalid link ID for session protection: %u\n", link_id))
- 		return -EINVAL;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
+index 461f26d9214e4..930742e75c02a 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/tx.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+- * Copyright (C) 2012-2014, 2018-2023 Intel Corporation
++ * Copyright (C) 2012-2014, 2018-2024 Intel Corporation
+  * Copyright (C) 2013-2015 Intel Mobile Communications GmbH
+  * Copyright (C) 2016-2017 Intel Deutschland GmbH
+  */
+@@ -1636,12 +1636,18 @@ static void iwl_mvm_tx_status_check_trigger(struct iwl_mvm *mvm,
+  * of the batch. This is why the SSN of the SCD is written at the end of the
+  * whole struct at a variable offset. This function knows how to cope with the
+  * variable offset and returns the SSN of the SCD.
++ *
++ * For 22000-series and lower, this is just 12 bits. For later, 16 bits.
+  */
+ static inline u32 iwl_mvm_get_scd_ssn(struct iwl_mvm *mvm,
+ 				      struct iwl_mvm_tx_resp *tx_resp)
+ {
+-	return le32_to_cpup((__le32 *)iwl_mvm_get_agg_status(mvm, tx_resp) +
+-			    tx_resp->frame_count) & 0xfff;
++	u32 val = le32_to_cpup((__le32 *)iwl_mvm_get_agg_status(mvm, tx_resp) +
++			       tx_resp->frame_count);
++
++	if (mvm->trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_AX210)
++		return val & 0xFFFF;
++	return val & 0xFFF;
+ }
  
--	if (WARN(ieee80211_vif_is_mld(vif) &&
--		 !(vif->active_links & BIT(link_id)),
-+	if (WARN(!mvmvif->link[link_id]->active,
- 		 "Session Protection on an inactive link: %u\n", link_id))
- 		return -EINVAL;
- 
+ static void iwl_mvm_rx_tx_cmd_single(struct iwl_mvm *mvm,
 -- 
 2.43.0
 
