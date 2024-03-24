@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC4C889BDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:04:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B800B889405
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:44:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA83D2E3C33
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:04:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C6671F2A944
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A383922C663;
-	Mon, 25 Mar 2024 02:40:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5EE157E68;
+	Mon, 25 Mar 2024 02:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u9UsNRgT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R7oGAhKq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3C81DE10D;
-	Sun, 24 Mar 2024 22:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D971DE11A;
+	Sun, 24 Mar 2024 22:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320732; cv=none; b=lTJDfB78JqPfHRsd/42U8GM90m44P9D+XTFV2/8aIQqJlHdo6yPoIZwwNMsjB3WiV0PvQFnboLGPQKsOzAIB1hgrXlm41SzbGyPnubvw9EAX+lDgSfsNWOsk5EUSuVMUDqLJ+LDUBa2mOaJEHez5A68sxR8NOZArX0/4hjFgMYo=
+	t=1711320733; cv=none; b=gs3s9Ynw6wMAP/WhYxDKwm9tIJOABj3WUiNUSh1MUSDXM5WXrIE6LauWjyWDI3YX5DBjOIvVNbpg+HyAdjnItvsnEEyf1jUgnYLynE52H27d5YqZctUj3tFPZUT/duW8QIbhrQAn5Oy3D69+TVIg8X05jDGM4MiMvjtK+zpTbg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320732; c=relaxed/simple;
-	bh=0pEelp3HkQmrG5hoCPA0BrUxeXlKzW8azuUFfb0Ide0=;
+	s=arc-20240116; t=1711320733; c=relaxed/simple;
+	bh=p6qPeNnWXYgNp4uWdNFBa3tfwNbMNl1eH1kqn5EOHto=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ujYI9cdlF4m5KaDr9nI566xAUk/s4pWg/jkqxF+Msv1NwN5E0jZzwYx2dNMoA/76Bv2D9BJg/iQQfVuGW+MNXhO2SJe+TdQUkwDwPud7/darTphzCTD5NUlxGjVvCJSquRxmDwAInWPMsndkQJ9202c+Q2fMsNCewgGMZQn8fqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u9UsNRgT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84595C433C7;
-	Sun, 24 Mar 2024 22:52:10 +0000 (UTC)
+	 MIME-Version; b=JU5XJUObhSgcjXzjNV8dCTywE06fZw9oE+m1oTNcYRJTNjD4f8/EinXeML3Ut3E/Y+q04vVyRFG+2bTCkpBlBQXZWCEWDbqE1gxUJKVZX/mPAbUtb3ObFpvB/84y1dAUPSMEMt1bVQcLwmkovukuYzmZrwBnYm84j9A7fuZtLnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R7oGAhKq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82F02C433A6;
+	Sun, 24 Mar 2024 22:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320731;
-	bh=0pEelp3HkQmrG5hoCPA0BrUxeXlKzW8azuUFfb0Ide0=;
+	s=k20201202; t=1711320732;
+	bh=p6qPeNnWXYgNp4uWdNFBa3tfwNbMNl1eH1kqn5EOHto=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u9UsNRgTg0wL78HOYTY0vbunnRhNlcBn0mJKN7mC+enwyQaI/qJul5mDfu4Ul5pnr
-	 EeLvQ/r/9g1WlJes5PQXOOp8XWURV6eoCeG/R5eug56sXUUQnYPgsBdK4JGyhXeUbC
-	 Jv66U2ae6Cd40r7z0FewKuveB23gQjD6z596bg143vZ+quv2DzsHxuL+NmP8OO1wv7
-	 V4p2C0f+hHbIFHdZSOF/Sa3AIjFSSV8qB/ebjXwL0DblrbFmA+MYDIqBNbHh5difTz
-	 dCjE3Jc1z8LdST/8iTVWAJGHQFloKwON/fGy/nMzer4mWBPEic8y3I76c0SpZKo2VQ
-	 Z11AcmAja+p+g==
+	b=R7oGAhKq71UQFwbWuKijCj26X1WA1u1Z2QXILigBr1l1laC8Dp+QYifu5duuclXKP
+	 4CfP9PfdZpZXvlAaiHcBHxw8706ZkGBYOUr1Yy2lzT8gtGTjSFtaSpq2lfSIycn3KY
+	 7mRSAQ+f4elDjVsvHOA/TsUYtqnASeTpvpfh7naIBBcmT/ym7sRTcKeA+e5pMHaNjm
+	 NvEyOsprimh/JqbrTlDoc/Hif1zq7EDd5OOFYqAQ+7W+5hjjCcTBz9+jbg584WYfQx
+	 yZt7gvxD1ORzkNO6zDwDzWeueBD22oliWew4DFHOXYAqO0h1+qHiaDelsPyGLpTPwp
+	 e+fHNZJWc+enA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peter Chiu <chui-hao.chiu@mediatek.com>,
+Cc: Benjamin Lin <benjamin-jw.lin@mediatek.com>,
 	Shayne Chen <shayne.chen@mediatek.com>,
 	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 294/713] wifi: mt76: mt7996: fix TWT issues
-Date: Sun, 24 Mar 2024 18:40:20 -0400
-Message-ID: <20240324224720.1345309-295-sashal@kernel.org>
+Subject: [PATCH 6.7 295/713] wifi: mt76: mt7996: fix incorrect interpretation of EHT MCS caps
+Date: Sun, 24 Mar 2024 18:40:21 -0400
+Message-ID: <20240324224720.1345309-296-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,135 +63,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Peter Chiu <chui-hao.chiu@mediatek.com>
+From: Benjamin Lin <benjamin-jw.lin@mediatek.com>
 
-[ Upstream commit 5c832c228f6a7ba7e900c5296ce0fb3844bafec5 ]
+[ Upstream commit d52c97592f06552a4289008602b5d5b724084ba7 ]
 
-This patch fixes the following TWT issues:
-- Change table_mask to u16 to support up to 16 TWT stations
-- Reject TWT flows for duplicated establishment
-- Fix possible unaligned pointer
-- Remove unsupported TWT_CONTROL_WAKE_DUR_UNIT flag
-- The minimum TWT duration supported by mt7996 chipsets is 64. Reply
-  with TWT_SETUP_CMD_DICTATE if the min_twt_dur is smaller than 64
+The EHT MCS map subfield of 20 MHz-Only is not present in the EHT
+capability of AP, so STA does not need to parse the subfield.
+Moreover, AP should parse the subfield only if STA is 20 MHz-Only, which
+can be confirmed by checking supported channel width in HE capability.
 
-Fixes: 98686cd21624 ("wifi: mt76: mt7996: add driver for MediaTek Wi-Fi 7 (802.11be) devices")
-Signed-off-by: Peter Chiu <chui-hao.chiu@mediatek.com>
+Fixes: 92aa2da9fa49 ("wifi: mt76: mt7996: enable EHT support in firmware")
+Co-developed-by: Shayne Chen <shayne.chen@mediatek.com>
 Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
+Signed-off-by: Benjamin Lin <benjamin-jw.lin@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt7996/mac.c   | 53 ++++++++++++++++---
- .../wireless/mediatek/mt76/mt7996/mt7996.h    |  3 +-
- 2 files changed, 47 insertions(+), 9 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7996/mcu.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/mac.c b/drivers/net/wireless/mediatek/mt76/mt7996/mac.c
-index cee2ede268a2d..7d33b0c8955ba 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7996/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7996/mac.c
-@@ -2461,6 +2461,34 @@ static int mt7996_mac_check_twt_req(struct ieee80211_twt_setup *twt)
- 	return 0;
- }
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
+index 707db74f234ed..e7a7d943b168c 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
+@@ -1079,6 +1079,9 @@ mt7996_mcu_sta_he_6g_tlv(struct sk_buff *skb, struct ieee80211_sta *sta)
+ static void
+ mt7996_mcu_sta_eht_tlv(struct sk_buff *skb, struct ieee80211_sta *sta)
+ {
++	struct mt7996_sta *msta = (struct mt7996_sta *)sta->drv_priv;
++	struct ieee80211_vif *vif = container_of((void *)msta->vif,
++						 struct ieee80211_vif, drv_priv);
+ 	struct ieee80211_eht_mcs_nss_supp *mcs_map;
+ 	struct ieee80211_eht_cap_elem_fixed *elem;
+ 	struct sta_rec_eht *eht;
+@@ -1098,8 +1101,17 @@ mt7996_mcu_sta_eht_tlv(struct sk_buff *skb, struct ieee80211_sta *sta)
+ 	eht->phy_cap = cpu_to_le64(*(u64 *)elem->phy_cap_info);
+ 	eht->phy_cap_ext = cpu_to_le64(elem->phy_cap_info[8]);
  
-+static bool
-+mt7996_mac_twt_param_equal(struct mt7996_sta *msta,
-+			   struct ieee80211_twt_params *twt_agrt)
-+{
-+	u16 type = le16_to_cpu(twt_agrt->req_type);
-+	u8 exp;
-+	int i;
-+
-+	exp = FIELD_GET(IEEE80211_TWT_REQTYPE_WAKE_INT_EXP, type);
-+	for (i = 0; i < MT7996_MAX_STA_TWT_AGRT; i++) {
-+		struct mt7996_twt_flow *f;
-+
-+		if (!(msta->twt.flowid_mask & BIT(i)))
-+			continue;
-+
-+		f = &msta->twt.flow[i];
-+		if (f->duration == twt_agrt->min_twt_dur &&
-+		    f->mantissa == twt_agrt->mantissa &&
-+		    f->exp == exp &&
-+		    f->protection == !!(type & IEEE80211_TWT_REQTYPE_PROTECTION) &&
-+		    f->flowtype == !!(type & IEEE80211_TWT_REQTYPE_FLOWTYPE) &&
-+		    f->trigger == !!(type & IEEE80211_TWT_REQTYPE_TRIGGER))
-+			return true;
+-	if (sta->deflink.bandwidth == IEEE80211_STA_RX_BW_20)
+-		memcpy(eht->mcs_map_bw20, &mcs_map->only_20mhz, sizeof(eht->mcs_map_bw20));
++	if (vif->type != NL80211_IFTYPE_STATION &&
++	    (sta->deflink.he_cap.he_cap_elem.phy_cap_info[0] &
++	     (IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_IN_2G |
++	      IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
++	      IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
++	      IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G)) == 0) {
++		memcpy(eht->mcs_map_bw20, &mcs_map->only_20mhz,
++		       sizeof(eht->mcs_map_bw20));
++		return;
 +	}
 +
-+	return false;
-+}
-+
- void mt7996_mac_add_twt_setup(struct ieee80211_hw *hw,
- 			      struct ieee80211_sta *sta,
- 			      struct ieee80211_twt_setup *twt)
-@@ -2472,8 +2500,7 @@ void mt7996_mac_add_twt_setup(struct ieee80211_hw *hw,
- 	enum ieee80211_twt_setup_cmd sta_setup_cmd;
- 	struct mt7996_dev *dev = mt7996_hw_dev(hw);
- 	struct mt7996_twt_flow *flow;
--	int flowid, table_id;
--	u8 exp;
-+	u8 flowid, table_id, exp;
- 
- 	if (mt7996_mac_check_twt_req(twt))
- 		goto out;
-@@ -2486,9 +2513,19 @@ void mt7996_mac_add_twt_setup(struct ieee80211_hw *hw,
- 	if (hweight8(msta->twt.flowid_mask) == ARRAY_SIZE(msta->twt.flow))
- 		goto unlock;
- 
-+	if (twt_agrt->min_twt_dur < MT7996_MIN_TWT_DUR) {
-+		setup_cmd = TWT_SETUP_CMD_DICTATE;
-+		twt_agrt->min_twt_dur = MT7996_MIN_TWT_DUR;
-+		goto unlock;
-+	}
-+
-+	if (mt7996_mac_twt_param_equal(msta, twt_agrt))
-+		goto unlock;
-+
- 	flowid = ffs(~msta->twt.flowid_mask) - 1;
--	le16p_replace_bits(&twt_agrt->req_type, flowid,
--			   IEEE80211_TWT_REQTYPE_FLOWID);
-+	twt_agrt->req_type &= ~cpu_to_le16(IEEE80211_TWT_REQTYPE_FLOWID);
-+	twt_agrt->req_type |= le16_encode_bits(flowid,
-+					       IEEE80211_TWT_REQTYPE_FLOWID);
- 
- 	table_id = ffs(~dev->twt.table_mask) - 1;
- 	exp = FIELD_GET(IEEE80211_TWT_REQTYPE_WAKE_INT_EXP, req_type);
-@@ -2535,10 +2572,10 @@ void mt7996_mac_add_twt_setup(struct ieee80211_hw *hw,
- unlock:
- 	mutex_unlock(&dev->mt76.mutex);
- out:
--	le16p_replace_bits(&twt_agrt->req_type, setup_cmd,
--			   IEEE80211_TWT_REQTYPE_SETUP_CMD);
--	twt->control = (twt->control & IEEE80211_TWT_CONTROL_WAKE_DUR_UNIT) |
--		       (twt->control & IEEE80211_TWT_CONTROL_RX_DISABLED);
-+	twt_agrt->req_type &= ~cpu_to_le16(IEEE80211_TWT_REQTYPE_SETUP_CMD);
-+	twt_agrt->req_type |=
-+		le16_encode_bits(setup_cmd, IEEE80211_TWT_REQTYPE_SETUP_CMD);
-+	twt->control = twt->control & IEEE80211_TWT_CONTROL_RX_DISABLED;
- }
- 
- void mt7996_mac_twt_teardown_flow(struct mt7996_dev *dev,
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/mt7996.h b/drivers/net/wireless/mediatek/mt76/mt7996/mt7996.h
-index 3434ca50d3181..6733ee9744d9b 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7996/mt7996.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7996/mt7996.h
-@@ -43,6 +43,7 @@
- 
- #define MT7996_MAX_TWT_AGRT		16
- #define MT7996_MAX_STA_TWT_AGRT		8
-+#define MT7996_MIN_TWT_DUR		64
- #define MT7996_MAX_QUEUE		(__MT_RXQ_MAX +	__MT_MCUQ_MAX + 3)
- 
- /* NOTE: used to map mt76_rates. idx may change if firmware expands table */
-@@ -236,7 +237,7 @@ struct mt7996_dev {
- 	struct rchan *relay_fwlog;
- 
- 	struct {
--		u8 table_mask;
-+		u16 table_mask;
- 		u8 n_agrt;
- 	} twt;
- 
+ 	memcpy(eht->mcs_map_bw80, &mcs_map->bw._80, sizeof(eht->mcs_map_bw80));
+ 	memcpy(eht->mcs_map_bw160, &mcs_map->bw._160, sizeof(eht->mcs_map_bw160));
+ 	memcpy(eht->mcs_map_bw320, &mcs_map->bw._320, sizeof(eht->mcs_map_bw320));
 -- 
 2.43.0
 
