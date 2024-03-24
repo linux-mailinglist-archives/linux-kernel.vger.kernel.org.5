@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-116049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA127889523
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:19:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2B6A889522
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:19:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9000C1F304A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:19:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BE6F29644D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B222745EA;
-	Mon, 25 Mar 2024 03:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343A92745E9;
+	Mon, 25 Mar 2024 03:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XGy9oImh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjh4ds18"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F324E130A6C;
-	Sun, 24 Mar 2024 23:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7FA130A77;
+	Sun, 24 Mar 2024 23:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323442; cv=none; b=jlcorT47JeTZL6eoAT11nVURCAduAc3XhOkzcY+dn9vuBHlXx06a6Gy/7XdEHfLjwWfFKvLXnQD48N5BL7qD5SEokUinKH1dm1mvzpw5rAYU/fBX4h6kl5t2ot8arL2tNmgbP5PRRljqlHMt1qkJBknUmxKkNPFuESlgoWyPX3s=
+	t=1711323443; cv=none; b=pkw/V+APX1csaaQ5AV19/XJm5SAxUA5A/ZuCsVfBrUUAyYxXNhtdISVqUeUEjYIhyO4KxNNtitX3QYoU4XcEAuEtH6gFjMgiiT11D842JFWw0rRI0ftL4uhXp5WLqnVzTXALuWcTXFsQmYwKbTb0fnKdMdP2AWlbVnaMBTg0pvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323442; c=relaxed/simple;
-	bh=5om0Sv4UN6dza7Yz0fGHITEjIdk01Rz7bsp3BU26js8=;
+	s=arc-20240116; t=1711323443; c=relaxed/simple;
+	bh=ZQKYH0zfiHgPG7eaYpqeQo2xkINccJ6hyEvMKz+eHcw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VoAdiZRCdvbrL/aVWSsqOTn6AmhF1VgXzb42DLEkNonRSnqXvjwIjRm+b7cxB8pIWT4AmnLK7RnlAUP2QXdA71Gh9UKMnBi2gYk4kgdSDMMwT1Ef+Uhwbs/42LAfVEJs/le/q+d0sEXD4ZXeUlhdJG+g/MBHFwooLZ5XceevBrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XGy9oImh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28F56C433C7;
-	Sun, 24 Mar 2024 23:37:20 +0000 (UTC)
+	 MIME-Version; b=npma3Jx8yVS694ANTnv8VGJs+sGws66VAVi2o5GgPQAVghV0I37l5knpd2ENBwPFzOOQerdFfpJP/Oapcm10N3MMEpLLBptCcepwN+ja5Nf6YcmtyeQEV7EiNUqpRm29nOcJybc8u4HTbPUDxw8RmzUzS/qChSXsp2NX4Zn4zbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjh4ds18; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 255D5C433A6;
+	Sun, 24 Mar 2024 23:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323440;
-	bh=5om0Sv4UN6dza7Yz0fGHITEjIdk01Rz7bsp3BU26js8=;
+	s=k20201202; t=1711323441;
+	bh=ZQKYH0zfiHgPG7eaYpqeQo2xkINccJ6hyEvMKz+eHcw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XGy9oImhBK9ERg4kjcqcZNqE3qRH8zLwLis2JPrRgNJr+84CgtUij1N+VDgHEwul1
-	 edbnZZ9ZCFwz3krX8Z4vxdfMjxz84WFEtKxgsNule9j42CCaJ39KcLB65czxvPuwBs
-	 RyyV8bRx6ouWV1zwhGifxRLcIPz5jAXuo7cRsD6uu7M34Ki0v2hTNr7+of4qFpjVWD
-	 Ul3EpuLXhL1MkyM7B7mTVZzkZZhwIRkPyoMaa6BxIjrtI1WNVXTUMuAkbrfsRbHA2L
-	 2ToMQG7HEm1LJbGlRp0gXn7wHwdHLK4EOuVkbYTEBHKO7sdbuv1Moe3k/PrGldX6ss
-	 wtstI7EzMi+BQ==
+	b=cjh4ds18t4XhbL6NLMy81nJvFcHcwQ9RosU4gp+ygE7sQTI6IJXj8kWU98YaO+Kmg
+	 9uqwR432JJQq9nt8cWGf/aPVh6boPeblykQl7kwnSe4s+tFNWRKNGJvaKhGdlna2dM
+	 hOLyY+jLLCbDGbeeI29HMyB5Yyu6/Vh4bAIT51H9i+y3kux0+4Gy89I2lAoLkDCQ9M
+	 rFd89aEte30fGA45jkQhvpkJdx0aoJUZ5yROfnwhcIhWEk4zJrGs3BmT2kCPbmJXI1
+	 60Kf4iL7rNRt7LEfCw/T++o4dYzpQh85dviFhgPOmlC51G5cjEOIwyo+ZAiZLcDUPT
+	 6RhDt5TLqcXKA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Viresh Kumar <viresh.kumar@linaro.org>,
-	kernel test robot <lkp@intel.com>,
-	Dhruva Gole <d-gole@ti.com>,
+Cc: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>,
+	Jason Xing <kerneljasonxing@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 143/317] OPP: debugfs: Fix warning around icc_get_name()
-Date: Sun, 24 Mar 2024 19:32:03 -0400
-Message-ID: <20240324233458.1352854-144-sashal@kernel.org>
+Subject: [PATCH 5.15 144/317] tcp: fix incorrect parameter validation in the do_tcp_getsockopt() function
+Date: Sun, 24 Mar 2024 19:32:04 -0400
+Message-ID: <20240324233458.1352854-145-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,48 +63,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Viresh Kumar <viresh.kumar@linaro.org>
+From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 
-[ Upstream commit 28330ceb953e39880ea77da4895bb902a1244860 ]
+[ Upstream commit 716edc9706deb3bb2ff56e2eeb83559cea8f22db ]
 
-If the kernel isn't built with interconnect support, icc_get_name()
-returns NULL and we get following warning:
+The 'len' variable can't be negative when assigned the result of
+'min_t' because all 'min_t' parameters are cast to unsigned int,
+and then the minimum one is chosen.
 
-drivers/opp/debugfs.c: In function 'bw_name_read':
-drivers/opp/debugfs.c:43:42: error: '%.62s' directive argument is null [-Werror=format-overflow=]
-         i = scnprintf(buf, sizeof(buf), "%.62s\n", icc_get_name(path));
+To fix the logic, check 'len' as read from 'optlen',
+where the types of relevant variables are (signed) int.
 
-Fix it.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402141313.81ltVF5g-lkp@intel.com/
-Fixes: 0430b1d5704b0 ("opp: Expose bandwidth information via debugfs")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/opp/debugfs.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/ipv4/tcp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/opp/debugfs.c b/drivers/opp/debugfs.c
-index 9eb71f47487b2..1c9d039edb26b 100644
---- a/drivers/opp/debugfs.c
-+++ b/drivers/opp/debugfs.c
-@@ -37,10 +37,12 @@ static ssize_t bw_name_read(struct file *fp, char __user *userbuf,
- 			    size_t count, loff_t *ppos)
- {
- 	struct icc_path *path = fp->private_data;
-+	const char *name = icc_get_name(path);
- 	char buf[64];
--	int i;
-+	int i = 0;
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 626cef75afe7a..521c15962c719 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -3965,11 +3965,11 @@ static int do_tcp_getsockopt(struct sock *sk, int level,
+ 	if (get_user(len, optlen))
+ 		return -EFAULT;
  
--	i = scnprintf(buf, sizeof(buf), "%.62s\n", icc_get_name(path));
-+	if (name)
-+		i = scnprintf(buf, sizeof(buf), "%.62s\n", name);
+-	len = min_t(unsigned int, len, sizeof(int));
+-
+ 	if (len < 0)
+ 		return -EINVAL;
  
- 	return simple_read_from_buffer(userbuf, count, ppos, buf, i);
- }
++	len = min_t(unsigned int, len, sizeof(int));
++
+ 	switch (optname) {
+ 	case TCP_MAXSEG:
+ 		val = tp->mss_cache;
 -- 
 2.43.0
 
