@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F9D7888393
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:14:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9833888395
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3D9DB23EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:14:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B790281331
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E0919922F;
-	Sun, 24 Mar 2024 22:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A60199255;
+	Sun, 24 Mar 2024 22:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X8KqPev+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qJD9uXbz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22AD6198B96;
-	Sun, 24 Mar 2024 22:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7EB199236;
+	Sun, 24 Mar 2024 22:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320145; cv=none; b=ZBABuTqib2u3B/6Y7lRJy2h9jFRMmEvN6WQ7avQyMhsZyp9mZsBTiuy66oHZ7z0/laAb5SD+lxj2yH5FHEXJgFdbSydwdOSYZ2xS/K2qYwv/A3/tsR7y76jVtJjKR/p4EhB0Ocvu5/rOJzdYXx8Tqewg6hRVD+V+Em/xsH/iHKY=
+	t=1711320146; cv=none; b=VfkN9tgPMFc51+H8i7SBwrOgT+ktGGq4GEP/hX5HyXxw8+7cVLS8L4f3+dEW+kkYUqgV2/8HJYBqJrLUiCQOQnjYijzqs3IptDEcNDJ/P5wtwzO+ANWLvDbG+nmrB0rBTimLl7v9KObC+9h/3HDsjzOuI86qHUmwTyiY3VvtZCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320145; c=relaxed/simple;
-	bh=W1qnD+PQflFLeBQuy72HrEwLuX68/y0GgttfO4r6uQ4=;
+	s=arc-20240116; t=1711320146; c=relaxed/simple;
+	bh=I0ftkpg1auOYnQ2mH1Az1FoRNSu97/FiJb83KHbPwCQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PZVZpgzTRDO+4H6Fq66lnUX9GWyPBj0S6ioMAS0J0BweHT4Ezg3sxsmU5qCnTtdPLcoCZQsmv+OLXRfcfKoUMQbVt/9Qm/oja+7EamtnrhN2QrsbsITkLjMpeQA5H5YNUCTRJNawI/+Zvnpu8DAmVBUj5Dpt/SoDuZGVn2bf1J4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8KqPev+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60BCDC433A6;
-	Sun, 24 Mar 2024 22:42:24 +0000 (UTC)
+	 MIME-Version; b=O+Sg+rWCHKn5R816ka2Aebv4BBECeiatKyuge0xt+P63JhyhGbgMUZI5tcZouW8aj5D+Gc+H6o6fFeXiLk4MsJnGU5vTu1cw0SIUiKuGtNPJZDJiRnRpSqaMntKpH0og3WZfiMIafo6ebJ0c0ij5Qh4HZBfNEg7igmDtzOucupE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qJD9uXbz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4726EC43390;
+	Sun, 24 Mar 2024 22:42:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320145;
-	bh=W1qnD+PQflFLeBQuy72HrEwLuX68/y0GgttfO4r6uQ4=;
+	s=k20201202; t=1711320146;
+	bh=I0ftkpg1auOYnQ2mH1Az1FoRNSu97/FiJb83KHbPwCQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=X8KqPev+y/2duZNX1kf4xtAhwiKti6z58DzY5VzSJXqGUS6hgcrTChrTk9fpm+iTv
-	 8dE/Hr+4mQT1W37CpHSAy56cVxFPppluDNrX2xLlMebWpReTl9pJ8UbRNbC8D/eplq
-	 zVX06bdlYZIdH/Bxf+dxnQnTT3oes6M2++sP1bN2qdQHEp8t2yGAFuIdSdJvCYmIZu
-	 mbbas6HnPJnYiEeWVVRdxSvb2/rCuaOzoGzGsGTKFl0wFf7LXmDvzKeyOxscgUm+9t
-	 1LcBAy1vgF8t2onGg/Lv/qe7fPMEq1IS4IbMiFl5GVmw/yffhbzk0LIpZ0a+XlDhpR
-	 rKJPR3rKGTiJg==
+	b=qJD9uXbzSgqdjO1V0ci6da98g+y8hgssqRoEqDk3yheIkPrFvzBO2GxjTAiuCpPip
+	 Hy+iITQL3yTMysU2pzuDrX2AUOPUog/ArNZcjcGVqKt01dBAFs2bMU/6zQUUVgb0sm
+	 tFQ/OnTvRA4xwoX02rKP0NvZU3zqETcgVajbpPLqI2bxI8sDGV6yp2ZE2VHpn3jAZB
+	 JQ3PMauPsvXbfCgB1MRra6QRjPRw6Vi1MjVbHP+Zt/UzMjZrSx8nOTNuE35AxW5nwX
+	 OWZg54Wdrpfv4fJzpIUG75OVUlR3lYsJC/gisjLzYFus2RMt8bPCUDSUqKzN+LZd2p
+	 +gw5HNEV3tYAg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Stephen Boyd <sboyd@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 453/715] clk: hisilicon: hi3559a: Fix an erroneous devm_kfree()
-Date: Sun, 24 Mar 2024 18:30:32 -0400
-Message-ID: <20240324223455.1342824-454-sashal@kernel.org>
+Subject: [PATCH 6.8 454/715] clk: mediatek: mt8135: Fix an error handling path in clk_mt8135_apmixed_probe()
+Date: Sun, 24 Mar 2024 18:30:33 -0400
+Message-ID: <20240324223455.1342824-455-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,38 +65,43 @@ Content-Transfer-Encoding: 8bit
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 64c6a38136b74a2f18c42199830975edd9fbc379 ]
+[ Upstream commit 03c1c51eba6be49b42816af9db114553131af6c8 ]
 
-'p_clk' is an array allocated just before the for loop for all clk that
-need to be registered.
-It is incremented at each loop iteration.
+If an error occurs after mtk_alloc_clk_data(), mtk_free_clk_data() should
+be called, as already done in the remove function.
 
-If a clk_register() call fails, 'p_clk' may point to something different
-from what should be freed.
-
-The best we can do, is to avoid this wrong release of memory.
-
-Fixes: 6c81966107dc ("clk: hisilicon: Add clock driver for hi3559A SoC")
+Fixes: 54b7026f011e ("clk: mediatek: mt8135-apmixedsys: Convert to platform_driver and module")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/773fc8425c3b8f5b0ca7c1d89f15b65831a85ca9.1705850155.git.christophe.jaillet@wanadoo.fr
+Link: https://lore.kernel.org/r/6cd6af61e5a91598068227f1f68cfcfde1507453.1704615011.git.christophe.jaillet@wanadoo.fr
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/hisilicon/clk-hi3559a.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/clk/mediatek/clk-mt8135-apmixedsys.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/clk-hi3559a.c
-index ff4ca0edce06a..4623befafaec4 100644
---- a/drivers/clk/hisilicon/clk-hi3559a.c
-+++ b/drivers/clk/hisilicon/clk-hi3559a.c
-@@ -491,7 +491,6 @@ static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clks,
+diff --git a/drivers/clk/mediatek/clk-mt8135-apmixedsys.c b/drivers/clk/mediatek/clk-mt8135-apmixedsys.c
+index d1239b4b3db74..41bb2d2e2ea74 100644
+--- a/drivers/clk/mediatek/clk-mt8135-apmixedsys.c
++++ b/drivers/clk/mediatek/clk-mt8135-apmixedsys.c
+@@ -59,7 +59,7 @@ static int clk_mt8135_apmixed_probe(struct platform_device *pdev)
  
- 		clk = clk_register(NULL, &p_clk->hw);
- 		if (IS_ERR(clk)) {
--			devm_kfree(dev, p_clk);
- 			dev_err(dev, "%s: failed to register clock %s\n",
- 			       __func__, clks[i].name);
- 			continue;
+ 	ret = mtk_clk_register_plls(node, plls, ARRAY_SIZE(plls), clk_data);
+ 	if (ret)
+-		return ret;
++		goto free_clk_data;
+ 
+ 	ret = of_clk_add_hw_provider(node, of_clk_hw_onecell_get, clk_data);
+ 	if (ret)
+@@ -69,6 +69,8 @@ static int clk_mt8135_apmixed_probe(struct platform_device *pdev)
+ 
+ unregister_plls:
+ 	mtk_clk_unregister_plls(plls, ARRAY_SIZE(plls), clk_data);
++free_clk_data:
++	mtk_free_clk_data(clk_data);
+ 
+ 	return ret;
+ }
 -- 
 2.43.0
 
