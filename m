@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9C8888442
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:34:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF54B888444
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:34:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF85D28355E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:34:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ECC81F2A5DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6379F1A9F7C;
-	Sun, 24 Mar 2024 22:43:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3701A995C;
+	Sun, 24 Mar 2024 22:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FKdvgGKR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CbkSr/lk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841D11A9F6B;
-	Sun, 24 Mar 2024 22:43:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA0D1A9F7A;
+	Sun, 24 Mar 2024 22:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320232; cv=none; b=MJQUalkJ/krd/O+nez6PhBdbPCfG4rHR4bd0q9s0BmJnQCXBSdVKmDw8x/BsDDF//kUfRXgQ1Nuj4ICkMIpfPMckkkAv9jSJY8piFbyHbHW8PHMoqQgQeRamJpv4ufFYK+fqiQ4uFBY6PgrUbEpGgZWvH5+z0tkGJ3Cs91MujsM=
+	t=1711320233; cv=none; b=W5Fl35plo2R+wsb1eWyR+JtB1QUT4Pd4g0FIa1LdodAjvUoOHxyqrxJ7MExAMSm1o3kWIp1a9fcK4Z4iUJm0gq/cHhbsPncI+mfeGbB0wTDbweE00ABdSYSXfdneWup2rV7nWW3GdN8YZJnzXnguXYp6hiDXEGn4FNxR6+5BPwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320232; c=relaxed/simple;
-	bh=ia4a/I3h8uwAwz/i1lK2oRimsANu4bYTnEspCeVKQ+8=;
+	s=arc-20240116; t=1711320233; c=relaxed/simple;
+	bh=S7BtX5WQhGbEetRp34J8AH8eiiHgB3tYhQu62wPDUz4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ThjiUnG16x13wHeJBRmdR6Hhq0ixSxFRSS/QhlvrIvCVicwP7B0oLNe+MX48EQuju+TnpqEcmZ8sjjoDaB1J361puziiqUUozowokDTZwuiEdhJPW/Z0QfSJi/J9GzIDkIuFg9TK4EYLpKt2gHzra+114jCTkw41HfCeAGEqiwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FKdvgGKR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AE28C43390;
-	Sun, 24 Mar 2024 22:43:51 +0000 (UTC)
+	 MIME-Version; b=mV7Dg3vQM3nnm49iGzPFfODvuhPYbFef36+XcXVDXulIQ2jlRx0ICEZ8sfiP3M2TK1u3w3boEcOrtOInDHlVZEJ+2OAlG13bgIWE1oVuEW4mY3/6p8wn19Rq/brW45OFkgyYdm+VlxyGJYBAwg3RLQYWkDsiBykiRmfFs4BvyBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CbkSr/lk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F81BC433B1;
+	Sun, 24 Mar 2024 22:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320232;
-	bh=ia4a/I3h8uwAwz/i1lK2oRimsANu4bYTnEspCeVKQ+8=;
+	bh=S7BtX5WQhGbEetRp34J8AH8eiiHgB3tYhQu62wPDUz4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FKdvgGKRoz/K8ihvNNFl3w8oFBKR9OBPPBnHdTr6Ru0DB5OypZ7X6gD3tBEzuzjqE
-	 Srrdz+W9ms/lZgHriU0nFOc66iiF3Dzsi7eIGqFeZ2PSRVWIYs/5M9ibor9SVABEWZ
-	 qODRbewWzchIkIXmfhcyAN7O6HShnR3w/U+PRfTFUM0AoWho89Tn//m5AGYTZQIpbL
-	 3nWuqeC4NL6QtiN1vbPMr1G5LNPXOJr7j7oLoGk43LWrD5wDYXCROXidQRjuMfbshR
-	 0F+rkHXOrfd2qLB0nw/oCKuM/cHYwRnOcO7C0CXUxWXPZlz0pF1QWcW7RC0NLsvRsS
-	 psjzAm/Nm1Ixg==
+	b=CbkSr/lkItcIYfJkjE1cpatyqOrQYnnbG/s+k9qAWH+D6u8wLdDlwK7ELozFHCqEf
+	 Q+XtrszG3GdM5dzmN2/SzCEgMrT5DHrANmsf5aU+enWo76DqI/QlOcJ7E6laeJB8dD
+	 yCNBStYaQY0PV6UMwMYRpGRgeXolc+dKw2go4TN6SlSLp1BMnaQeQpbfUnhEo0yZyF
+	 pQgc1HwHXZlTeYeR9unzUOu7GxXBiTP/IAkazybgAOBIpOfdPwWgaxHs8AIu514RKw
+	 CJDB5Q4bEVJ+82u8dPQvgBe1Pi7mAEv25yJvEG+ntNnszbp9RWsC/A6pxHBKEYBEOk
+	 eHcvcMQrTHsWw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Athaariq Ardhiansyah <foss@athaariq.my.id>,
+Cc: Gergo Koteles <soyer@irl.hu>,
 	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 538/715] ALSA: hda/realtek: fix ALC285 issues on HP Envy x360 laptops
-Date: Sun, 24 Mar 2024 18:31:57 -0400
-Message-ID: <20240324223455.1342824-539-sashal@kernel.org>
+Subject: [PATCH 6.8 539/715] ALSA: hda/tas2781: use dev_dbg in system_resume
+Date: Sun, 24 Mar 2024 18:31:58 -0400
+Message-ID: <20240324223455.1342824-540-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,145 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Athaariq Ardhiansyah <foss@athaariq.my.id>
+From: Gergo Koteles <soyer@irl.hu>
 
-[ Upstream commit c062166995c9e57d5cd508b332898f79da319802 ]
+[ Upstream commit c850c9121cc8de867ce3ac36b9ae9d05f62bef14 ]
 
-Realtek codec on HP Envy laptop series are heavily modified by vendor.
-Therefore, need intervention to make it work properly. The patch fixes:
+The system_resume function uses dev_info for tracing, but the other pm
+functions use dev_dbg.
 
-- B&O soundbar speakers (between lid and keyboard) activation
-- Enable LED on mute button
-- Add missing process coefficient which affects the output amplifier
-- Volume control synchronization between B&O soundbar and side speakers
-- Unmute headset output on several HP Envy models
-- Auto-enable headset mic when plugged
+Use dev_dbg as the other pm functions.
 
-This patch was tested on HP Envy x360 13-AR0107AU with Realtek ALC285
-
-The only unsolved problem is output amplifier of all built-in speakers
-is too weak, which causes volume of built-in speakers cannot be loud
-as vendor's proprietary driver due to missing _DSD parameter in the
-firmware. The solution is currently on research. Expected to has another
-patch in the future.
-
-Potential fix to related issues, need test before close those issues:
-
-- https://bugzilla.kernel.org/show_bug.cgi?id=189331
-- https://bugzilla.kernel.org/show_bug.cgi?id=216632
-- https://bugzilla.kernel.org/show_bug.cgi?id=216311
-- https://bugzilla.kernel.org/show_bug.cgi?id=213507
-
-Signed-off-by: Athaariq Ardhiansyah <foss@athaariq.my.id>
-Message-ID: <20240310140249.3695-1-foss@athaariq.my.id>
+Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Message-ID: <140f3c689c9eb5874e6eb48a570fcd8207f06a41.1709918447.git.soyer@irl.hu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 63 +++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ sound/pci/hda/tas2781_hda_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a1facdb98d9a0..1dc5eb92ddcad 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6696,6 +6696,60 @@ static void alc285_fixup_hp_spectre_x360(struct hda_codec *codec,
- 	}
- }
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index 1bfb00102a77a..ee3e0afc9b313 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -900,7 +900,7 @@ static int tas2781_system_resume(struct device *dev)
+ 	struct tas2781_hda *tas_hda = dev_get_drvdata(dev);
+ 	int i, ret;
  
-+static void alc285_fixup_hp_envy_x360(struct hda_codec *codec,
-+				      const struct hda_fixup *fix,
-+				      int action)
-+{
-+	static const struct coef_fw coefs[] = {
-+		WRITE_COEF(0x08, 0x6a0c), WRITE_COEF(0x0d, 0xa023),
-+		WRITE_COEF(0x10, 0x0320), WRITE_COEF(0x1a, 0x8c03),
-+		WRITE_COEF(0x25, 0x1800), WRITE_COEF(0x26, 0x003a),
-+		WRITE_COEF(0x28, 0x1dfe), WRITE_COEF(0x29, 0xb014),
-+		WRITE_COEF(0x2b, 0x1dfe), WRITE_COEF(0x37, 0xfe15),
-+		WRITE_COEF(0x38, 0x7909), WRITE_COEF(0x45, 0xd489),
-+		WRITE_COEF(0x46, 0x00f4), WRITE_COEF(0x4a, 0x21e0),
-+		WRITE_COEF(0x66, 0x03f0), WRITE_COEF(0x67, 0x1000),
-+		WRITE_COEF(0x6e, 0x1005), { }
-+	};
-+
-+	static const struct hda_pintbl pincfgs[] = {
-+		{ 0x12, 0xb7a60130 },  /* Internal microphone*/
-+		{ 0x14, 0x90170150 },  /* B&O soundbar speakers */
-+		{ 0x17, 0x90170153 },  /* Side speakers */
-+		{ 0x19, 0x03a11040 },  /* Headset microphone */
-+		{ }
-+	};
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		snd_hda_apply_pincfgs(codec, pincfgs);
-+
-+		/* Fixes volume control problem for side speakers */
-+		alc295_fixup_disable_dac3(codec, fix, action);
-+
-+		/* Fixes no sound from headset speaker */
-+		snd_hda_codec_amp_stereo(codec, 0x21, HDA_OUTPUT, 0, -1, 0);
-+
-+		/* Auto-enable headset mic when plugged */
-+		snd_hda_jack_set_gating_jack(codec, 0x19, 0x21);
-+
-+		/* Headset mic volume enhancement */
-+		snd_hda_codec_set_pin_target(codec, 0x19, PIN_VREF50);
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+		alc_process_coef_fw(codec, coefs);
-+		break;
-+	case HDA_FIXUP_ACT_BUILD:
-+		rename_ctl(codec, "Bass Speaker Playback Volume",
-+			   "B&O-Tuned Playback Volume");
-+		rename_ctl(codec, "Front Playback Switch",
-+			   "B&O Soundbar Playback Switch");
-+		rename_ctl(codec, "Bass Speaker Playback Switch",
-+			   "Side Speaker Playback Switch");
-+		break;
-+	}
-+}
-+
- /* for hda_fixup_thinkpad_acpi() */
- #include "thinkpad_helper.c"
+-	dev_info(tas_hda->priv->dev, "System Resume\n");
++	dev_dbg(tas_hda->priv->dev, "System Resume\n");
  
-@@ -7297,6 +7351,7 @@ enum {
- 	ALC280_FIXUP_HP_9480M,
- 	ALC245_FIXUP_HP_X360_AMP,
- 	ALC285_FIXUP_HP_SPECTRE_X360_EB1,
-+	ALC285_FIXUP_HP_ENVY_X360,
- 	ALC288_FIXUP_DELL_HEADSET_MODE,
- 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC288_FIXUP_DELL_XPS_13,
-@@ -9273,6 +9328,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc285_fixup_hp_spectre_x360_eb1
- 	},
-+	[ALC285_FIXUP_HP_ENVY_X360] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc285_fixup_hp_envy_x360,
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_HP_GPIO_AMP_INIT,
-+	},
- 	[ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc285_fixup_ideapad_s740_coef,
-@@ -9861,6 +9922,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
- 	SND_PCI_QUIRK(0x103c, 0x8537, "HP ProBook 440 G6", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
-+	SND_PCI_QUIRK(0x103c, 0x85de, "HP Envy x360 13-ar0xxx", ALC285_FIXUP_HP_ENVY_X360),
- 	SND_PCI_QUIRK(0x103c, 0x860f, "HP ZBook 15 G6", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x861f, "HP Elite Dragonfly G1", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
-@@ -10559,6 +10621,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
- 	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
- 	{.id = ALC285_FIXUP_HP_SPECTRE_X360_EB1, .name = "alc285-hp-spectre-x360-eb1"},
-+	{.id = ALC285_FIXUP_HP_ENVY_X360, .name = "alc285-hp-envy-x360"},
- 	{.id = ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP, .name = "alc287-ideapad-bass-spk-amp"},
- 	{.id = ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN, .name = "alc287-yoga9-bass-spk-pin"},
- 	{.id = ALC623_FIXUP_LENOVO_THINKSTATION_P340, .name = "alc623-lenovo-thinkstation-p340"},
+ 	ret = pm_runtime_force_resume(dev);
+ 	if (ret)
 -- 
 2.43.0
 
