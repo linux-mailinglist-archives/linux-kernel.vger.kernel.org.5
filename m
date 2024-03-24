@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-114919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C370888BF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:05:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9D2B88928E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:09:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1636528F2FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:05:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 071481C2DD3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64CE627EE4D;
-	Mon, 25 Mar 2024 00:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488012D5D47;
+	Mon, 25 Mar 2024 00:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p0r+tg9y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A+ZpfALu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E057317921E;
-	Sun, 24 Mar 2024 23:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E20BF179215;
+	Sun, 24 Mar 2024 23:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323591; cv=none; b=NB8xQ5lufvoWqz+c+Eh8d5uBm2O4ezXCuuT09tpwv/bUTAlpcvAH4LrxopbVf76mGALxz4rDD8qHsVxf5G+8gqB56CHlIJ/9c/1ljyPf92peTgreNkizRfQ92+YFGxOgImLL/tsvxjCU8ZZ8EKTThP5NbaHG9ud1ZraTxSh20ik=
+	t=1711323592; cv=none; b=njYmXjgmziW9Iv0qQj74al4qcXhzJPdjQhSt+ujAlN/MOOCSCqNEoGF8/ybPLw5r/xC2xkUaDesldPMVRO/VrxDPssvl4hqQcku8wi3dzT5ty3tZYcsNwHGWumOEAkb+jjqX+a2Tp+gf/w7fPULmo9kaVs61xTDPFt8IKWbSa+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323591; c=relaxed/simple;
-	bh=uRsESuOkmiRS5aWeUuYDscC8x1Oml4HqYVEaWZB5vbs=;
+	s=arc-20240116; t=1711323592; c=relaxed/simple;
+	bh=1iSWyDGqMjAOjyD45RQQNwJCnJjHhCq9814UWAMzE/0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H6DKyBLSs0lTe2G1Sn1ZuYovK04i7S8A9gprqMTzVwfRPbgefNewEvlhwhivg/MBOtajCzCixwncDRSlUfNiV1p1vMGrHJZJfDyeqb+g9Y/kDKfOuz8kwAbuFOsJCwgN8MonmTNZGbf5vu1rsnhb5xQ81KJucxxY3+trMKlAXeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p0r+tg9y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2BCDC43390;
-	Sun, 24 Mar 2024 23:39:48 +0000 (UTC)
+	 MIME-Version:Content-Type; b=VKO+9RMBtyGdZRlE025r+ryO6Xh92F1zVx8dCc/5H3fc/CvdLMcF2cy2xHD/FU0YqoLFzfZ3HbAnSyWBhXr5h9pTH+6S/56Bzk/66H033ViC1hwoeJojZ1v/M86PY3k+a94Gj8sEPuLpZ75s+mJ8IzKk9jRqzPzYE3iPGZcr4TQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A+ZpfALu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DB25C43394;
+	Sun, 24 Mar 2024 23:39:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323589;
-	bh=uRsESuOkmiRS5aWeUuYDscC8x1Oml4HqYVEaWZB5vbs=;
+	s=k20201202; t=1711323590;
+	bh=1iSWyDGqMjAOjyD45RQQNwJCnJjHhCq9814UWAMzE/0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=p0r+tg9yyqXoZyMKjcB3wpC6FZnGLETu/tzlvjG55SSHL17AqxTI+bzUIzs5qh6aD
-	 2pN9/UU/YwZMSD8vyJ0vyM1RLG8cBpY2xXf4iQiwXeRE2ubYdiLRHo+lJKcDKTwEkQ
-	 4+cpmPe2tNmLc0qHNXCfWEdBrKFWpCDbjArqxBzn6I89+1pdBGpItWwd66yACkSjZK
-	 Mgo7KBlPiYJmmNlS/G5Wri3deXgI1FNLchjo+KYHK0q+M4gMTFZ5VF0ZavRSwGtYz1
-	 QhXLVVAE1pBRgveeHFSAjCsuUc5H/gjNe1dq07avKAH63kLqQ6PlEp2mAmxSQWhIRU
-	 c3OYsxQWml7FA==
+	b=A+ZpfALuYGP5jydpPFFQQ2GN7NuID8NkUpulGCqwTB7wHSe/nnu4+euzrDrgflc5v
+	 TugVBBMimIvZSD5i4KaBFDst2H7VHLOO6RunilJ1iFvz7aGWOJkFYw1AUjKNsodZLL
+	 R8mY+JCKoNpNVmLWfJP0FZipkolpBdj45ucAJSyM+6GvSJ7oS+Vr1CwDcs2nUK1Lk/
+	 wn/MVQqFyqwATvz1WXAU6eUzIakoMaT/GnAhZbcJ2kyQy3dUa6NhbB4gejdikNBlSe
+	 80a9MvIewQmDL7YyOEIdwmWVGjVx0o+ohSb4Zt38feG+ZzYt+Rjku4rgH8+K6bywB6
+	 2HHfpXSMUCSQQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eric Dumazet <edumazet@google.com>,
-	syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Jason Xing <kerneljasonxing@gmail.com>,
+Cc: Ignat Korchagin <ignat@cloudflare.com>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 296/317] packet: annotate data-races around ignore_outgoing
-Date: Sun, 24 Mar 2024 19:34:36 -0400
-Message-ID: <20240324233458.1352854-297-sashal@kernel.org>
+Subject: [PATCH 5.15 297/317] net: veth: do not manipulate GRO when using XDP
+Date: Sun, 24 Mar 2024 19:34:37 -0400
+Message-ID: <20240324233458.1352854-298-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -62,107 +59,85 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Eric Dumazet <edumazet@google.com>
+From: Ignat Korchagin <ignat@cloudflare.com>
 
-[ Upstream commit 6ebfad33161afacb3e1e59ed1c2feefef70f9f97 ]
+[ Upstream commit d7db7775ea2e31502d46427f5efd385afc4ff1eb ]
 
-ignore_outgoing is read locklessly from dev_queue_xmit_nit()
-and packet_getsockopt()
+Commit d3256efd8e8b ("veth: allow enabling NAPI even without XDP") tried to fix
+the fact that GRO was not possible without XDP, because veth did not use NAPI
+without XDP. However, it also introduced the behaviour that GRO is always
+enabled, when XDP is enabled.
 
-Add appropriate READ_ONCE()/WRITE_ONCE() annotations.
+While it might be desired for most cases, it is confusing for the user at best
+as the GRO flag suddenly changes, when an XDP program is attached. It also
+introduces some complexities in state management as was partially addressed in
+commit fe9f801355f0 ("net: veth: clear GRO when clearing XDP even when down").
 
-syzbot reported:
+But the biggest problem is that it is not possible to disable GRO at all, when
+an XDP program is attached, which might be needed for some use cases.
 
-BUG: KCSAN: data-race in dev_queue_xmit_nit / packet_setsockopt
+Fix this by not touching the GRO flag on XDP enable/disable as the code already
+supports switching to NAPI if either GRO or XDP is requested.
 
-write to 0xffff888107804542 of 1 bytes by task 22618 on cpu 0:
- packet_setsockopt+0xd83/0xfd0 net/packet/af_packet.c:4003
- do_sock_setsockopt net/socket.c:2311 [inline]
- __sys_setsockopt+0x1d8/0x250 net/socket.c:2334
- __do_sys_setsockopt net/socket.c:2343 [inline]
- __se_sys_setsockopt net/socket.c:2340 [inline]
- __x64_sys_setsockopt+0x66/0x80 net/socket.c:2340
- do_syscall_64+0xd3/0x1d0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-read to 0xffff888107804542 of 1 bytes by task 27 on cpu 1:
- dev_queue_xmit_nit+0x82/0x620 net/core/dev.c:2248
- xmit_one net/core/dev.c:3527 [inline]
- dev_hard_start_xmit+0xcc/0x3f0 net/core/dev.c:3547
- __dev_queue_xmit+0xf24/0x1dd0 net/core/dev.c:4335
- dev_queue_xmit include/linux/netdevice.h:3091 [inline]
- batadv_send_skb_packet+0x264/0x300 net/batman-adv/send.c:108
- batadv_send_broadcast_skb+0x24/0x30 net/batman-adv/send.c:127
- batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:392 [inline]
- batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
- batadv_iv_send_outstanding_bat_ogm_packet+0x3f0/0x4b0 net/batman-adv/bat_iv_ogm.c:1700
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0x465/0x990 kernel/workqueue.c:3335
- worker_thread+0x526/0x730 kernel/workqueue.c:3416
- kthread+0x1d1/0x210 kernel/kthread.c:388
- ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
-value changed: 0x00 -> 0x01
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 27 Comm: kworker/u8:1 Tainted: G        W          6.8.0-syzkaller-08073-g480e035fc4c7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
-
-Fixes: fa788d986a3a ("packet: add sockopt to ignore outgoing packets")
-Reported-by: syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/netdev/CANn89i+Z7MfbkBLOv=p7KZ7=K1rKHO4P1OL5LYDCtBiyqsa9oQ@mail.gmail.com/T/#t
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
+Link: https://lore.kernel.org/lkml/20240311124015.38106-1-ignat@cloudflare.com/
+Fixes: d3256efd8e8b ("veth: allow enabling NAPI even without XDP")
+Fixes: fe9f801355f0 ("net: veth: clear GRO when clearing XDP even when down")
+Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c         | 2 +-
- net/packet/af_packet.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/veth.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index af77dc77eb9c8..1e41971c06177 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -2291,7 +2291,7 @@ void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
- 	rcu_read_lock();
- again:
- 	list_for_each_entry_rcu(ptype, ptype_list, list) {
--		if (ptype->ignore_outgoing)
-+		if (READ_ONCE(ptype->ignore_outgoing))
- 			continue;
- 
- 		/* Never send packets back to the socket
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 75fb80717e489..cffa217fb3063 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -3951,7 +3951,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, sockptr_t optval,
- 		if (val < 0 || val > 1)
- 			return -EINVAL;
- 
--		po->prot_hook.ignore_outgoing = !!val;
-+		WRITE_ONCE(po->prot_hook.ignore_outgoing, !!val);
- 		return 0;
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 0102f86d48676..cfacf8965bc59 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1388,8 +1388,6 @@ static netdev_features_t veth_fix_features(struct net_device *dev,
+ 		if (peer_priv->_xdp_prog)
+ 			features &= ~NETIF_F_GSO_SOFTWARE;
  	}
- 	case PACKET_TX_HAS_OFF:
-@@ -4080,7 +4080,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
- 		       0);
- 		break;
- 	case PACKET_IGNORE_OUTGOING:
--		val = po->prot_hook.ignore_outgoing;
-+		val = READ_ONCE(po->prot_hook.ignore_outgoing);
- 		break;
- 	case PACKET_ROLLOVER_STATS:
- 		if (!po->rollover)
+-	if (priv->_xdp_prog)
+-		features |= NETIF_F_GRO;
+ 
+ 	return features;
+ }
+@@ -1481,14 +1479,6 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 		}
+ 
+ 		if (!old_prog) {
+-			if (!veth_gro_requested(dev)) {
+-				/* user-space did not require GRO, but adding
+-				 * XDP is supposed to get GRO working
+-				 */
+-				dev->features |= NETIF_F_GRO;
+-				netdev_features_change(dev);
+-			}
+-
+ 			peer->hw_features &= ~NETIF_F_GSO_SOFTWARE;
+ 			peer->max_mtu = max_mtu;
+ 		}
+@@ -1499,14 +1489,6 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 			if (dev->flags & IFF_UP)
+ 				veth_disable_xdp(dev);
+ 
+-			/* if user-space did not require GRO, since adding XDP
+-			 * enabled it, clear it now
+-			 */
+-			if (!veth_gro_requested(dev)) {
+-				dev->features &= ~NETIF_F_GRO;
+-				netdev_features_change(dev);
+-			}
+-
+ 			if (peer) {
+ 				peer->hw_features |= NETIF_F_GSO_SOFTWARE;
+ 				peer->max_mtu = ETH_MAX_MTU;
 -- 
 2.43.0
 
