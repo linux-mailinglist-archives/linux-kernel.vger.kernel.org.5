@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-116265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FEF5889DDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:56:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 168A58894F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:13:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DE18296D25
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:56:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8C42B3008C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:18:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D37294E2B;
-	Mon, 25 Mar 2024 03:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE46C2F6DA8;
+	Mon, 25 Mar 2024 01:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iRe29KFx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MJyHUPlH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAF928A5B1;
-	Sun, 24 Mar 2024 23:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03F3180B83;
+	Sun, 24 Mar 2024 23:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324066; cv=none; b=E9UARtYUfrQAwx5cCXA2l6kOIPwltMzebOQxpkuxWKLEWWV4OMueY8WSOwFNq3Z/6CxIV6vEvRSYkK2hYoUY5QHOxUjZrxFMkXIsmcDr/SPA1bjAlA0Ou4htepB6ySmW5B2bIETuaPwH6k4+zNd5XKF2eaDeonabaBAmJ8gsIqo=
+	t=1711324067; cv=none; b=LMIrxinWH55NUcxcGzcSqKZdLGFr/ptQdNXGURtDJ3DuZtdWUg2mYgCSAy0vgVXl3ca3lBPWad8ZvX6An9h1JjYIK3akYe3FZUz2tiu5jZbL//97y8MZkgRzC8l+7VUOsQIfDdGutr6z7J9Xp2QePaPiSAaFRJUlOPl2z2vqC6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324066; c=relaxed/simple;
-	bh=q4FQbdmsrgd2cVAnEuk372EhOMMJ2c0RE9ooJVL7GqQ=;
+	s=arc-20240116; t=1711324067; c=relaxed/simple;
+	bh=gLV7BXMgy4BHjaqXwUFmVmV1A/4dI7lvd8u+X/1gMmA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X4dcEmfipiAubc5Cu6UmGzH2yhvyg7L5P0q68vBlCqtBOwTcM3rGDJrBvf9+hn3kAIhzGAno+GcSU/jQ6gNMQbrX8ymq6FumI/y4Y1x1tE6q9wWcScPjEdc8X3A05cN9VbBhG5RzUyr1d4k5SZjJEQmKAymY9hMw7hCYb7xq0Hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iRe29KFx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9887EC433C7;
-	Sun, 24 Mar 2024 23:47:44 +0000 (UTC)
+	 MIME-Version; b=kRhB4MdfG+jtbdbWBCVK8+NxrKa8Q/0dOw3sWEQIq6Icqvxr9ncZDXPgvmWfzUPT/rsHQwgiJlHF4JZwVL9iP68NDYA5h0Lb8oZFgNSNfElaA8VgCuU+NsDFmOAV3ZjDgDm5CGBQlJhUQ9LuyGfXuN8WzFesdc+j30Kit33rYj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MJyHUPlH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F250C43390;
+	Sun, 24 Mar 2024 23:47:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324065;
-	bh=q4FQbdmsrgd2cVAnEuk372EhOMMJ2c0RE9ooJVL7GqQ=;
+	s=k20201202; t=1711324066;
+	bh=gLV7BXMgy4BHjaqXwUFmVmV1A/4dI7lvd8u+X/1gMmA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iRe29KFxOM8jxyK9DjB6QFl49+369nkQy68+Wq03TPtSQ0AfkAeVi6AesZLA97sGo
-	 1kK+dFLnkFIb9IlSPH0CgqxbAxgYtK5kQn9VjM8tjBeVFJUc9qKg2o5G6dva5kyZm5
-	 SqZ40FyvoHnuXzFpRh1W03cqGOFWmeokCOz49eyitqIYNRzKz0fZlDfZENDr/rMGR/
-	 uDMh5GnabwBMrgr6a0IO2S4Z7korwQIzaLBQJNO4EbnJrexroZivwP9eOkHij0XgKs
-	 +Sdzg9HiBnb7DFY34fbZEG2r19C8tLeto2TQIzn/Qogm8N9iU6cQKq+7nlQIA4yeDZ
-	 aGGVAjZ027mIA==
+	b=MJyHUPlHIo+KkksDYilhwXyeB5dYPhsoPLk1cGIakMc+iQdAF9clrw21LxSyugj3t
+	 uIrRp7kQQzLefu/Za/9fQmK9HeuwKitWDxkslIyp/tYUz2RmQkNSZ2fsWIEa9DWDBw
+	 hI8awsouEXElOKu64gGoJ/wRX3JspZ8Pk15lznxo3uyBs5S7N1PNXT2ymbIhoi9Jo8
+	 k67d98W7MC2SUISeqcpPe9nU03+TbNlaAPrhCPS+SVI8ilUdEKM+rWT7lRg58HszcT
+	 XxTMzJCNcm7vdRNOrzvK8+Y5CbXHZcC3/dx8mo1FhyOv0Zzk1YjY+lazjxq4zgdZ6S
+	 I72U9N8Co3FGg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
+Cc: Ruud Bos <kernel.hbk@gmail.com>,
+	Gurucharan G <gurucharanx.g@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 066/183] mmc: wmt-sdmmc: remove an incorrect release_mem_region() call in the .remove function
-Date: Sun, 24 Mar 2024 19:44:39 -0400
-Message-ID: <20240324234638.1355609-67-sashal@kernel.org>
+Subject: [PATCH 5.4 067/183] igb: move PEROUT and EXTTS isr logic to separate functions
+Date: Sun, 24 Mar 2024 19:44:40 -0400
+Message-ID: <20240324234638.1355609-68-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,47 +63,139 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Ruud Bos <kernel.hbk@gmail.com>
 
-[ Upstream commit ae5004a40a262d329039b99b62bd3fe7645b66ad ]
+[ Upstream commit cf99c1dd7b7729091043374b90807c7a5f9fd9b1 ]
 
-This looks strange to call release_mem_region() in a remove function
-without any request_mem_region() in the probe or "struct resource"
-somewhere.
+Remove code duplication in the tsync interrupt handler function by moving
+this logic to separate functions. This keeps the interrupt handler readable
+and allows the new functions to be extended for adapter types other than
+i210.
 
-So remove the corresponding code.
-
-Fixes: 3a96dff0f828 ("mmc: SD/MMC Host Controller for Wondermedia WM8505/WM8650")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/bb0bb1ed1e18de55e8c0547625bde271e64b8c31.1708983064.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Ruud Bos <kernel.hbk@gmail.com>
+Tested-by: Gurucharan G <gurucharanx.g@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Stable-dep-of: ee14cc9ea19b ("igb: Fix missing time sync events")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/wmt-sdmmc.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/net/ethernet/intel/igb/igb_main.c | 81 +++++++++++++----------
+ 1 file changed, 46 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/mmc/host/wmt-sdmmc.c b/drivers/mmc/host/wmt-sdmmc.c
-index b1e4199f82920..345b3c50f27dd 100644
---- a/drivers/mmc/host/wmt-sdmmc.c
-+++ b/drivers/mmc/host/wmt-sdmmc.c
-@@ -889,7 +889,6 @@ static int wmt_mci_remove(struct platform_device *pdev)
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 6638d314c811c..fd1efac092472 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -6479,12 +6479,52 @@ void igb_update_stats(struct igb_adapter *adapter)
+ 	}
+ }
+ 
++static void igb_perout(struct igb_adapter *adapter, int tsintr_tt)
++{
++	int pin = ptp_find_pin(adapter->ptp_clock, PTP_PF_PEROUT, tsintr_tt);
++	struct e1000_hw *hw = &adapter->hw;
++	struct timespec64 ts;
++	u32 tsauxc;
++
++	if (pin < 0 || pin >= IGB_N_PEROUT)
++		return;
++
++	spin_lock(&adapter->tmreg_lock);
++	ts = timespec64_add(adapter->perout[pin].start,
++			    adapter->perout[pin].period);
++	/* u32 conversion of tv_sec is safe until y2106 */
++	wr32((tsintr_tt == 1) ? E1000_TRGTTIML1 : E1000_TRGTTIML0, ts.tv_nsec);
++	wr32((tsintr_tt == 1) ? E1000_TRGTTIMH1 : E1000_TRGTTIMH0, (u32)ts.tv_sec);
++	tsauxc = rd32(E1000_TSAUXC);
++	tsauxc |= TSAUXC_EN_TT0;
++	wr32(E1000_TSAUXC, tsauxc);
++	adapter->perout[pin].start = ts;
++	spin_unlock(&adapter->tmreg_lock);
++}
++
++static void igb_extts(struct igb_adapter *adapter, int tsintr_tt)
++{
++	int pin = ptp_find_pin(adapter->ptp_clock, PTP_PF_EXTTS, tsintr_tt);
++	struct e1000_hw *hw = &adapter->hw;
++	struct ptp_clock_event event;
++	u32 sec, nsec;
++
++	if (pin < 0 || pin >= IGB_N_EXTTS)
++		return;
++
++	nsec = rd32((tsintr_tt == 1) ? E1000_AUXSTMPL1 : E1000_AUXSTMPL0);
++	sec  = rd32((tsintr_tt == 1) ? E1000_AUXSTMPH1 : E1000_AUXSTMPH0);
++	event.type = PTP_CLOCK_EXTTS;
++	event.index = tsintr_tt;
++	event.timestamp = sec * 1000000000ULL + nsec;
++	ptp_clock_event(adapter->ptp_clock, &event);
++}
++
+ static void igb_tsync_interrupt(struct igb_adapter *adapter)
  {
- 	struct mmc_host *mmc;
- 	struct wmt_mci_priv *priv;
--	struct resource *res;
- 	u32 reg_tmp;
+ 	struct e1000_hw *hw = &adapter->hw;
++	u32 ack = 0, tsicr = rd32(E1000_TSICR);
+ 	struct ptp_clock_event event;
+-	struct timespec64 ts;
+-	u32 ack = 0, tsauxc, sec, nsec, tsicr = rd32(E1000_TSICR);
  
- 	mmc = platform_get_drvdata(pdev);
-@@ -917,9 +916,6 @@ static int wmt_mci_remove(struct platform_device *pdev)
- 	clk_disable_unprepare(priv->clk_sdmmc);
- 	clk_put(priv->clk_sdmmc);
+ 	if (tsicr & TSINTR_SYS_WRAP) {
+ 		event.type = PTP_CLOCK_PPS;
+@@ -6500,51 +6540,22 @@ static void igb_tsync_interrupt(struct igb_adapter *adapter)
+ 	}
  
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(res->start, resource_size(res));
--
- 	mmc_free_host(mmc);
+ 	if (tsicr & TSINTR_TT0) {
+-		spin_lock(&adapter->tmreg_lock);
+-		ts = timespec64_add(adapter->perout[0].start,
+-				    adapter->perout[0].period);
+-		/* u32 conversion of tv_sec is safe until y2106 */
+-		wr32(E1000_TRGTTIML0, ts.tv_nsec);
+-		wr32(E1000_TRGTTIMH0, (u32)ts.tv_sec);
+-		tsauxc = rd32(E1000_TSAUXC);
+-		tsauxc |= TSAUXC_EN_TT0;
+-		wr32(E1000_TSAUXC, tsauxc);
+-		adapter->perout[0].start = ts;
+-		spin_unlock(&adapter->tmreg_lock);
++		igb_perout(adapter, 0);
+ 		ack |= TSINTR_TT0;
+ 	}
  
- 	dev_info(&pdev->dev, "WMT MCI device removed\n");
+ 	if (tsicr & TSINTR_TT1) {
+-		spin_lock(&adapter->tmreg_lock);
+-		ts = timespec64_add(adapter->perout[1].start,
+-				    adapter->perout[1].period);
+-		wr32(E1000_TRGTTIML1, ts.tv_nsec);
+-		wr32(E1000_TRGTTIMH1, (u32)ts.tv_sec);
+-		tsauxc = rd32(E1000_TSAUXC);
+-		tsauxc |= TSAUXC_EN_TT1;
+-		wr32(E1000_TSAUXC, tsauxc);
+-		adapter->perout[1].start = ts;
+-		spin_unlock(&adapter->tmreg_lock);
++		igb_perout(adapter, 1);
+ 		ack |= TSINTR_TT1;
+ 	}
+ 
+ 	if (tsicr & TSINTR_AUTT0) {
+-		nsec = rd32(E1000_AUXSTMPL0);
+-		sec  = rd32(E1000_AUXSTMPH0);
+-		event.type = PTP_CLOCK_EXTTS;
+-		event.index = 0;
+-		event.timestamp = sec * 1000000000ULL + nsec;
+-		ptp_clock_event(adapter->ptp_clock, &event);
++		igb_extts(adapter, 0);
+ 		ack |= TSINTR_AUTT0;
+ 	}
+ 
+ 	if (tsicr & TSINTR_AUTT1) {
+-		nsec = rd32(E1000_AUXSTMPL1);
+-		sec  = rd32(E1000_AUXSTMPH1);
+-		event.type = PTP_CLOCK_EXTTS;
+-		event.index = 1;
+-		event.timestamp = sec * 1000000000ULL + nsec;
+-		ptp_clock_event(adapter->ptp_clock, &event);
++		igb_extts(adapter, 1);
+ 		ack |= TSINTR_AUTT1;
+ 	}
+ 
 -- 
 2.43.0
 
