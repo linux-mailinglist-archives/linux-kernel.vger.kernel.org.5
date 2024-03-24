@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34511888A5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:16:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74499888A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:17:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 655C91C267FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:16:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F79B28B695
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6029B279896;
-	Sun, 24 Mar 2024 23:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F791774C2;
+	Sun, 24 Mar 2024 23:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="up0uXI/T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZ4SWYRV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A834D155758;
-	Sun, 24 Mar 2024 23:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D62D140373;
+	Sun, 24 Mar 2024 23:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321834; cv=none; b=u6rKUDgSSyBwEOWweJhgbF2dbzYHJYJO15zAl+G2w80TkEuC1qrijav+9mchc5gHWSmhS5o32VYq+1+BSRY06bqhGn+L5Xi2cpLLFIcrKz2Zzqir3jIxV8lbnsnBwwbd3jwfcqYZQLFch5oNAlREUYmPqWJWhvk5AK1HS23Wzb8=
+	t=1711321835; cv=none; b=fV8ky1sFXz4hXLiCuy3plMoCQ0aLDpLrcVSN/M1RuOCq9Hg4dQ3VUvVJoG6KZECbJPXStL/t2jwowNIEwvuPbA8i6X5432/7yk+CFedh2uo+Mv0Pja0Tz/iXxo3aHqsNAL5T8aj+lK7PB1SdLKE0C9s/NwiHcx09yO1yLCE6D70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321834; c=relaxed/simple;
-	bh=GmA85pVNgXfICJsOgFzqtfBOM3XZ/b6jZoewaOK83m0=;
+	s=arc-20240116; t=1711321835; c=relaxed/simple;
+	bh=EI070SEdZAysYm5J4a8toMZ9Zme6VUT+jP6dFrcVgDU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UvbrCyK/jvJ7hKW1yosFJKDdQcnD3qFEmFZ4g/38iUiKLaHm8U1/XY0rqwXlnCVLacNfj7IpyX9CL1rdEAiH0JHrFiNlygLD1HYye7BPht24+svJSJhwOAHbDr37GhfmvbTpV6BozeLncqXTMKiWFNo/3khaXlMxY628sJKJCFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=up0uXI/T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E88D9C43390;
-	Sun, 24 Mar 2024 23:10:33 +0000 (UTC)
+	 MIME-Version; b=Pz7hLuSTP/tPPQI3l+HtvGhrXuDN+5TYe8ZrsxUeLbJ7uAmUlbyuIns5xoEd3myUSHUbhU+FRBJ1LAVzhMm2S9bG1R/U2LrtO1MWMlsX2hEykHy71shfhNmWSxPiN8umwByxpfDpUESusvgCs0k/h9C3cySU3gkvYcDP7GuM//k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZ4SWYRV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBA83C43609;
+	Sun, 24 Mar 2024 23:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321834;
-	bh=GmA85pVNgXfICJsOgFzqtfBOM3XZ/b6jZoewaOK83m0=;
+	s=k20201202; t=1711321835;
+	bh=EI070SEdZAysYm5J4a8toMZ9Zme6VUT+jP6dFrcVgDU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=up0uXI/Twp8vpv792jltzwm3ghgcGBPHDtxKCWrcS9EAq9ecQRZpEQDpcJcjtuFVC
-	 My70vYFxRX16ibE7WozQDUEePh5tD3KgissVY8jVLRaZUNkf2QXZ4QahKF0yEckLnu
-	 x7vHqapB2P4W/QOWuIqU1pnNWBL9hWEPT1Fr4lCnazE5jLuWp4XDKle+OekyuAQu+7
-	 IXzITaLHB3wgaUm8GYZXsmGEkgUtyCv5C5B6REbcMm6hk70akLz1AMixsFLFfv1JtA
-	 F8SatHDLAT1F24nLCUotTAO//soyhXNq8gg8TaJ9agCyJrQFm5fObeGfoURiVZns2i
-	 9kQBIwluwZSWg==
+	b=MZ4SWYRVkduZCA//iabHVy2J1aA/ogwS6kq773KsFiFQxRFm/+lerZwgtoJMddxqc
+	 acIrp1E+cK1BuNShaN0NYoIXnsbHsZ6C2BnWN8xsoINRHxnx3BXGlHg0NnMDJGNd9p
+	 pQodnMdhmSTQr+M19ywId3085x+SHVJs9lR6ego6DBjnlQSL7C+C2irJVLfFOb/UJM
+	 WyNCHOLcfztd4IjpXWRIM2c+bYA4JDVbQjkpduTTsiZt/V/X4HRosduKgAi6mZDPBC
+	 sm96s8pEBI5o0eU/zle+9IylPrcaUAvhTL0gOfIiA/kZ0+nImQlyT4Hdj/PdPbDGnM
+	 1zbUriw8Ii/UQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: James Clark <james.clark@arm.com>,
+Cc: Mao Jinlong <quic_jinlmao@quicinc.com>,
 	Suzuki K Poulose <suzuki.poulose@arm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 563/638] coresight: Fix issue where a source device's helpers aren't disabled
-Date: Sun, 24 Mar 2024 19:00:00 -0400
-Message-ID: <20240324230116.1348576-564-sashal@kernel.org>
+Subject: [PATCH 6.6 564/638] coresight: etm4x: Set skip_power_up in etm4_init_arch_data function
+Date: Sun, 24 Mar 2024 19:00:01 -0400
+Message-ID: <20240324230116.1348576-565-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,118 +62,57 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: James Clark <james.clark@arm.com>
+From: Mao Jinlong <quic_jinlmao@quicinc.com>
 
-[ Upstream commit f68bbe4dcfa303164922bc331d2e8d38ed2d4f23 ]
+[ Upstream commit 1bbe0a247e5d72f723daeecf41596bfa99e199f1 ]
 
-The linked commit reverts the change that accidentally used some sysfs
-enable/disable functions from Perf which broke the refcounting, but it
-also removes the fact that the sysfs disable function disabled the
-helpers.
+skip_power_up is used in etm4_init_arch_data when set lpoverride. So
+need to set the value of it before calling using it.
 
-Add a new wrapper function that does both which is used by both Perf and
-sysfs, and label the sysfs disable function appropriately. The naming of
-all of the functions will be tidied up later to avoid this happening
-again.
-
-Fixes: 287e82cf69aa ("coresight: Fix crash when Perf and sysfs modes are used concurrently")
-Signed-off-by: James Clark <james.clark@arm.com>
-Link: https://lore.kernel.org/r/20240129154050.569566-2-james.clark@arm.com
+Fixes: 5214b563588e ("coresight: etm4x: Add support for sysreg only devices")
+Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/20240131105423.9519-1-quic_jinlmao@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/coresight/coresight-core.c  | 30 ++++++++++++++-----
- .../hwtracing/coresight/coresight-etm-perf.c  |  2 +-
- drivers/hwtracing/coresight/coresight-priv.h  |  2 +-
- 3 files changed, 25 insertions(+), 9 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-index 9fabe00a40d6a..4b80026db1ab6 100644
---- a/drivers/hwtracing/coresight/coresight-core.c
-+++ b/drivers/hwtracing/coresight/coresight-core.c
-@@ -441,8 +441,26 @@ static void coresight_disable_helpers(struct coresight_device *csdev)
- 	}
- }
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 34aee59dd1473..18c4544f60454 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -1160,6 +1160,7 @@ static void etm4_init_arch_data(void *info)
+ 	struct etm4_init_arg *init_arg = info;
+ 	struct etmv4_drvdata *drvdata;
+ 	struct csdev_access *csa;
++	struct device *dev = init_arg->dev;
+ 	int i;
  
-+/*
-+ * Helper function to call source_ops(csdev)->disable and also disable the
-+ * helpers.
-+ *
-+ * There is an imbalance between coresight_enable_path() and
-+ * coresight_disable_path(). Enabling also enables the source's helpers as part
-+ * of the path, but disabling always skips the first item in the path (which is
-+ * the source), so sources and their helpers don't get disabled as part of that
-+ * function and we need the extra step here.
-+ */
-+void coresight_disable_source(struct coresight_device *csdev, void *data)
-+{
-+	if (source_ops(csdev)->disable)
-+		source_ops(csdev)->disable(csdev, data);
-+	coresight_disable_helpers(csdev);
-+}
-+EXPORT_SYMBOL_GPL(coresight_disable_source);
-+
- /**
-- *  coresight_disable_source - Drop the reference count by 1 and disable
-+ *  coresight_disable_source_sysfs - Drop the reference count by 1 and disable
-  *  the device if there are no users left.
-  *
-  *  @csdev: The coresight device to disable
-@@ -451,17 +469,15 @@ static void coresight_disable_helpers(struct coresight_device *csdev)
-  *
-  *  Returns true if the device has been disabled.
-  */
--bool coresight_disable_source(struct coresight_device *csdev, void *data)
-+static bool coresight_disable_source_sysfs(struct coresight_device *csdev,
-+					   void *data)
- {
- 	if (atomic_dec_return(&csdev->refcnt) == 0) {
--		if (source_ops(csdev)->disable)
--			source_ops(csdev)->disable(csdev, data);
--		coresight_disable_helpers(csdev);
-+		coresight_disable_source(csdev, data);
- 		csdev->enable = false;
- 	}
- 	return !csdev->enable;
- }
--EXPORT_SYMBOL_GPL(coresight_disable_source);
- 
- /*
-  * coresight_disable_path_from : Disable components in the given path beyond
-@@ -1202,7 +1218,7 @@ void coresight_disable(struct coresight_device *csdev)
- 	if (ret)
- 		goto out;
- 
--	if (!csdev->enable || !coresight_disable_source(csdev, NULL))
-+	if (!csdev->enable || !coresight_disable_source_sysfs(csdev, NULL))
- 		goto out;
- 
- 	switch (csdev->subtype.source_subtype) {
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 89e8ed214ea49..58b32b399fac2 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -587,7 +587,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
+ 	drvdata = dev_get_drvdata(init_arg->dev);
+@@ -1173,6 +1174,10 @@ static void etm4_init_arch_data(void *info)
+ 	if (!etm4_init_csdev_access(drvdata, csa))
  		return;
  
- 	/* stop tracer */
--	source_ops(csdev)->disable(csdev, event);
-+	coresight_disable_source(csdev, event);
++	if (!csa->io_mem ||
++	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
++		drvdata->skip_power_up = true;
++
+ 	/* Detect the support for OS Lock before we actually use it */
+ 	etm_detect_os_lock(drvdata, csa);
  
- 	/* tell the core */
- 	event->hw.state = PERF_HES_STOPPED;
-diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-index 767076e079701..30c051055e54b 100644
---- a/drivers/hwtracing/coresight/coresight-priv.h
-+++ b/drivers/hwtracing/coresight/coresight-priv.h
-@@ -233,6 +233,6 @@ void coresight_set_percpu_sink(int cpu, struct coresight_device *csdev);
- struct coresight_device *coresight_get_percpu_sink(int cpu);
- int coresight_enable_source(struct coresight_device *csdev, enum cs_mode mode,
- 			    void *data);
--bool coresight_disable_source(struct coresight_device *csdev, void *data);
-+void coresight_disable_source(struct coresight_device *csdev, void *data);
+@@ -1998,11 +2003,6 @@ static int etm4_add_coresight_dev(struct etm4_init_arg *init_arg)
+ 	if (!drvdata->arch)
+ 		return -EINVAL;
  
- #endif
+-	/* TRCPDCR is not accessible with system instructions. */
+-	if (!desc.access.io_mem ||
+-	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
+-		drvdata->skip_power_up = true;
+-
+ 	major = ETM_ARCH_MAJOR_VERSION(drvdata->arch);
+ 	minor = ETM_ARCH_MINOR_VERSION(drvdata->arch);
+ 
 -- 
 2.43.0
 
