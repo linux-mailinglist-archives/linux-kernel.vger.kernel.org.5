@@ -1,146 +1,227 @@
-Return-Path: <linux-kernel+bounces-112569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ADC8887B91
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:51:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1F07887B94
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:53:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6A55B210B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:51:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CDCD1C20D70
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE352CA4;
-	Sun, 24 Mar 2024 03:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B4B3523C;
+	Sun, 24 Mar 2024 03:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N19B3/Z7"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DF+Q4iQX"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9189717C8
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 03:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B1917F5;
+	Sun, 24 Mar 2024 03:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711252284; cv=none; b=Jsq0wulZ/qr5M+K9UtXu5T4ezeG5M52RbJgL7Mh4gmITC07Opjh++6dP+b/OC1z3dJ70XardnrszBojtVskVR/vs2cVpuZuHC30Dpr1K1PsiNDR9yLdV/LkU4n3qtVLYbd9NFx0FJzu9iCxiOFIYQhcHKyydOMIQ4HbDK0+Jx1k=
+	t=1711252413; cv=none; b=MBt+nUsAYs7hbvCxpmqxtdBm0nW0RvjIpY/pTtH+8GxtI5ktTkRhaXm09ddvijB/rkCBkPCn1jV8d6qpjb1UXJjTQvKAEm/mxZhwSK2htyxskTCn4ReNvxzvLH7Hs5F+iBeThsF6WCERZYlZAFyV3JWjf/tMfAVPTSMMRH0mp/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711252284; c=relaxed/simple;
-	bh=FRA3SbYULkEbHhi+02VVaUR5YzRep5NBG3Vur7cOxx0=;
+	s=arc-20240116; t=1711252413; c=relaxed/simple;
+	bh=AlRmmQeVDpR7lhkl0NgJoUadOzHLH0O8B+vplE8G7EQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YD61FW65lYbM4B0TLSkDsjBN0JaYWF4F10Dx/801Q9rQFFsIVqose3Slur0xPTrm/TgROFWCe+vOJ1/Ey0TtXuTQSASEuaJWzCrXPT81SE3o6Qey+J+4CPtTKGzjLRTfjEqDo3YOC2PrnYMA6S48jwPhECIZ6ohMLI+eLO95qhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N19B3/Z7; arc=none smtp.client-ip=209.85.167.51
+	 To:Cc:Content-Type; b=pDDwsyI1QdDjATn4eskyB2vAoq4JplcLVgEuNvqI0uzfSIe3b/HvCIZbPzbx62M34inXdicnT9Wji7b2va67hYRzcWvo/Us6Y9AkRhdTqutKXVFDrIC/wnEbi6Vj/oYq1VIKRU+j4FvBTriM+A615ksdo66YM3/i/I3/BGygx4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DF+Q4iQX; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513d599dbabso4366610e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 20:51:22 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33fd12a06fdso2231374f8f.1;
+        Sat, 23 Mar 2024 20:53:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711252281; x=1711857081; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711252409; x=1711857209; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i8v+941MPTOIpQ00N6b6vNCUVj4Hbos1al937P/1VQI=;
-        b=N19B3/Z72Pdvr1voSWl5mLg5x5yX3BrkxxkbjOFQmqYEAOlXoM8U2yuXVbHCJJyPsA
-         C85ZAXvkytku2VT7Yq348UMHGKinPMs6EsibU0CJCEw7xcGYYZI4So4x9ywfXki7PrWd
-         viLj8/hSw4bbIcRyInKR7wo0i1zuEcWPMVvvFm5r9C4j90NhFLuo6r+qmGHq5XkhUTFN
-         4WSRqsU8gRi7MI2H27sfVoqwM3Wb1De4HWxCbxkPBRapxaDr4a6s6ej7bDNbXD/YU4zN
-         nXGEfQpL2aqHvCsDMykOGHJoQZoFTmBV2xamkCtBZzV+0HszudasqQnhIZxado+SCBF2
-         wZsg==
+        bh=i1vERHDjQTdDqBz7KqXEq1TPmE/mhc/qMX+GQMq+CEo=;
+        b=DF+Q4iQXnipj+sShZCSRUq3s1osYEP3h4W3Ef3IgEFaIBKo+WyUmwQiCX/ssEsII5F
+         OpKpEAzuj7MF+0LON9nSaHVcq6QMjt1vDzgWuhDFM3sV4kUYhMh7gpkI94snU6HOz4Gz
+         ePeRC7wA5Xdt7bfwksjdrQYXI8dTYQkeqZ1OLlsb5AHhrvEOx2oQPeoh4KNzedvkgcs5
+         7znKoDIGgOgktFNEHj5f2QuvSagOxx3c4COBjQKur74bYpuShWguCmeJ4ZFSbk6DJsvj
+         NupkvcBz+H5wZxWQPKyUlaylY0Y+S+pIxDll+ECMW7RlDlKyW8TlcUsuzriqycs6zegX
+         uyfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711252281; x=1711857081;
+        d=1e100.net; s=20230601; t=1711252409; x=1711857209;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i8v+941MPTOIpQ00N6b6vNCUVj4Hbos1al937P/1VQI=;
-        b=vaieBNX250AKU4op5YITA3+9SmGcotSJqbGDZXwEhbt/V/sUulbDXyGfHiNhHEHATH
-         CIkFTCWLg9MLO0aFTkAuIqTYBtlMCkjNT8jkm2JYM5opBMc+MEcaryZxCohe346VmcX3
-         TGHsCQzOR1daYNDiurB8qTIxefZZ3r0p4j6r2Cakvk1pxzVy5cLUzxYnju6mULtgJ2MC
-         tu+HI6APwbgsj0GI4W8k6bNvve1aXXspeoWpmRaTwZMHT/9JLa6zPu9MjQJWBZI6l9GA
-         uxR5gteAO5TdZ75WyHQtMc12vT2VK9Rx86jp53cpC4OIYdi9/+A/14aPYNlSHjkARAtB
-         M7pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCPGn1OEitNfVcNoEWmwPwfG9okd2AygsU7jedWfPgvIkRNQaWO6UJrEV2CG9CDsTbTl0cikoFEQ2Mc7wbM1SwMqUxoKY2qxE7nAvL
-X-Gm-Message-State: AOJu0Yx2yWYVTiI3kDE0NWsRDu5vNwdEbqNiMD3nDEGdfcHvpmmfDjh4
-	Hj9S0suuU/PQAEKvRKmMTouX9AEvvBRD1NDYIik8r1J7+hEVClv6W2T9FTIOjThcfM8fPGFavzI
-	66n7Cxqf1TTMcAGi0/SixP6/6oQ==
-X-Google-Smtp-Source: AGHT+IGNUKw94ZXVTiWTxe3R6HZZI3MOzB6A7jqBoCWbhDflHqcOvZavih79sODHNI2cjc1SaTimDQm9Y0Yn0fU6Ijc=
-X-Received: by 2002:a05:6512:3d06:b0:515:a755:9e93 with SMTP id
- d6-20020a0565123d0600b00515a7559e93mr1022987lfv.35.1711252280350; Sat, 23 Mar
- 2024 20:51:20 -0700 (PDT)
+        bh=i1vERHDjQTdDqBz7KqXEq1TPmE/mhc/qMX+GQMq+CEo=;
+        b=CoPheld6My8PvS6NSIJjUCcFI2wZixkSk2J68YYegs0hoOuzrmtwDx2Osja1hlJGQ/
+         Vxaggj7TUXcVRtnwIl4un0ZR7ovLG7rDaaIgbv9QbuGOXo/p/sZ85fgl4WBIfCLQjzXK
+         zIBq6bXO/FKXxCkCXMi7iwxsQ/Lp5IG7l/RHj4+0t1G3yh+zx32GjDZTDzJUJhEGmHO4
+         JoNrGHNGhGRJ6IN06+HAZQHFzDB/JvU/AyDFOBo0GWTePPvRSx3UjPtdQf805hHM8TTm
+         14Og7Scda8SYYfennCAyAS21+fLpkY5/Eo4CnwZ1aMgaixX1aXRYhBYGsVrFcytXFfu6
+         gAmg==
+X-Forwarded-Encrypted: i=1; AJvYcCXA0vkGriadeIaH2sBo8kVPn8ET0gSKMoYKl1naxSD+U9jq2Lzrs2/i5qRhuc0LSlRV/fdLU6kX4mgL8P4WaROCqpd3l+1hJKHtydtX2uzxY12iENVb0m+Lam4tNcf5eGb9K52twGK451j2bkOMDXOwWZjLD7Z8YkCbI0uRrP8AAV6A
+X-Gm-Message-State: AOJu0Yz4b/T79WRtQ6lWGaiFOc13011uL0eIMJqFxnPZtgQJEhfVlFis
+	353rL4TssNtr6TDyQR2ChijtaGntFgUO/FqToSnS0WH+Cf7hXkWIB7DLpVfRuoXmoAzBjKi1iRr
+	3vyNZsP+C8tSsHeaOmfdKqSTOJEU=
+X-Google-Smtp-Source: AGHT+IH40dCOTL7gZfoPcdy3oSQyvlO6tK/QyFZjDGnxFFgLHK2UTj3rIkCT6DMabVQThNF/ubagCse5hrwan3A/VEY=
+X-Received: by 2002:a05:6000:4cf:b0:341:984d:e389 with SMTP id
+ h15-20020a05600004cf00b00341984de389mr2023885wri.21.1711252409175; Sat, 23
+ Mar 2024 20:53:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322165233.71698-1-brgerst@gmail.com> <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
- <Zf+PIYP4TyF6ZRVy@gmail.com>
-In-Reply-To: <Zf+PIYP4TyF6ZRVy@gmail.com>
-From: Brian Gerst <brgerst@gmail.com>
-Date: Sat, 23 Mar 2024 23:51:09 -0400
-Message-ID: <CAMzpN2htOit94c-M+zHqEcLcGPOU2zTS6wM-r7xWwd9Ku8h3-Q@mail.gmail.com>
-Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>, 
-	David.Laight@aculab.com, Linus Torvalds <torvalds@linux-foundation.org>
+References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
+ <20240322-hid-bpf-sleepable-v5-2-179c7b59eaaa@kernel.org> <CAP01T76oYpkNdgxXo+6v53afjObvYU4LWRLfkg2S7pNivzaEvg@mail.gmail.com>
+In-Reply-To: <CAP01T76oYpkNdgxXo+6v53afjObvYU4LWRLfkg2S7pNivzaEvg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 23 Mar 2024 20:53:17 -0700
+Message-ID: <CAADnVQL_mQgN8uKsNFR0FBtWoaweCkzXw03EvbnQ-iFVWvXxuw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/6] bpf/verifier: add bpf_timer as a kfunc
+ capable type
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 23, 2024 at 10:25=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wro=
+On Fri, Mar 22, 2024 at 9:31=E2=80=AFAM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Fri, 22 Mar 2024 at 15:57, Benjamin Tissoires <bentiss@kernel.org> wro=
 te:
->
->
-> * Uros Bizjak <ubizjak@gmail.com> wrote:
->
-> > On Fri, Mar 22, 2024 at 5:52=E2=80=AFPM Brian Gerst <brgerst@gmail.com>=
- wrote:
-> > >
-> > > Currently, x86-64 uses an unusual percpu layout, where the percpu sec=
-tion
-> > > is linked at absolute address 0.  The reason behind this is that olde=
-r GCC
-> > > versions placed the stack protector (if enabled) at a fixed offset fr=
-om the
-> > > GS segment base.  Since the GS segement is also used for percpu varia=
-bles,
-> > > this forced the current layout.
-> > >
-> > > GCC since version 8.1 supports a configurable location for the stack
-> > > protector value, which allows removal of the restriction on how the p=
-ercpu
-> > > section is linked.  This allows the percpu section to be linked norma=
-lly,
-> > > like other architectures.  In turn, this allows removal of code that =
-was
-> > > needed to support the zero-based percpu section.
 > >
-> > The number of simplifications throughout the code, enabled by this
-> > patch set, is really impressive, and it reflects the number of
-> > workarounds to enable the feature that was originally not designed for
-> > the kernel usage. As noted above, this issue was recognized in the GCC
-> > compiler and the stack protector support was generalized by adding
-> > configurable location for the stack protector value [1,2].
+> > We need to extend the bpf_timer API, but the way forward relies on kfun=
+cs.
+> > So make bpf_timer known for kfuncs from the verifier PoV
 > >
-> > The improved stack protector support was implemented in gcc-8.1,
-> > released on May 2, 2018, when linux 4.17 was in development. In light
-> > of this fact, and 5 (soon 6) GCC major releases later, I'd like to ask
-> > if the objtool support to fixup earlier compilers is really necessary.
-> > Please note that years ago x86_32 simply dropped stack protector
-> > support with earlier compilers and IMO, we should follow this example
-> > also with x86_64, because:
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> >
+> > ---
+> >
+> > changes in v5:
+> > - also check for the reg offset
+> >
+> > changes in v4:
+> > - enforce KF_ARG_PTR_TO_TIMER to be of type PTR_TO_MAP_VALUE
+> >
+> > new in v3 (split from v2 02/10)
+> > ---
+> >  kernel/bpf/verifier.c | 23 +++++++++++++++++++++++
+> >  1 file changed, 23 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 63749ad5ac6b..24a604e26ec7 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -10826,6 +10826,7 @@ enum {
+> >         KF_ARG_LIST_NODE_ID,
+> >         KF_ARG_RB_ROOT_ID,
+> >         KF_ARG_RB_NODE_ID,
+> > +       KF_ARG_TIMER_ID,
+> >  };
+> >
+> >  BTF_ID_LIST(kf_arg_btf_ids)
+> > @@ -10834,6 +10835,7 @@ BTF_ID(struct, bpf_list_head)
+> >  BTF_ID(struct, bpf_list_node)
+> >  BTF_ID(struct, bpf_rb_root)
+> >  BTF_ID(struct, bpf_rb_node)
+> > +BTF_ID(struct, bpf_timer_kern)
+> >
+> >  static bool __is_kfunc_ptr_arg_type(const struct btf *btf,
+> >                                     const struct btf_param *arg, int ty=
+pe)
+> > @@ -10877,6 +10879,12 @@ static bool is_kfunc_arg_rbtree_node(const str=
+uct btf *btf, const struct btf_par
+> >         return __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_RB_NODE_ID);
+> >  }
+> >
+> > +static bool is_kfunc_arg_timer(const struct btf *btf, const struct btf=
+_param *arg)
+> > +{
+> > +       bool ret =3D __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_TIMER_ID)=
+;
+> > +       return ret;
+> > +}
+> > +
+> >  static bool is_kfunc_arg_callback(struct bpf_verifier_env *env, const =
+struct btf *btf,
+> >                                   const struct btf_param *arg)
+> >  {
+> > @@ -10946,6 +10954,7 @@ enum kfunc_ptr_arg_type {
+> >         KF_ARG_PTR_TO_NULL,
+> >         KF_ARG_PTR_TO_CONST_STR,
+> >         KF_ARG_PTR_TO_MAP,
+> > +       KF_ARG_PTR_TO_TIMER,
+> >  };
+> >
+> >  enum special_kfunc_type {
+> > @@ -11102,6 +11111,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env =
+*env,
+> >         if (is_kfunc_arg_map(meta->btf, &args[argno]))
+> >                 return KF_ARG_PTR_TO_MAP;
+> >
+> > +       if (is_kfunc_arg_timer(meta->btf, &args[argno]))
+> > +               return KF_ARG_PTR_TO_TIMER;
+> > +
+> >         if ((base_type(reg->type) =3D=3D PTR_TO_BTF_ID || reg2btf_ids[b=
+ase_type(reg->type)])) {
+> >                 if (!btf_type_is_struct(ref_t)) {
+> >                         verbose(env, "kernel function %s args#%d pointe=
+r type %s %s is not supported\n",
+> > @@ -11735,6 +11747,7 @@ static int check_kfunc_args(struct bpf_verifier=
+_env *env, struct bpf_kfunc_call_
+> >                 case KF_ARG_PTR_TO_CALLBACK:
+> >                 case KF_ARG_PTR_TO_REFCOUNTED_KPTR:
+> >                 case KF_ARG_PTR_TO_CONST_STR:
+> > +               case KF_ARG_PTR_TO_TIMER:
+> >                         /* Trusted by default */
+> >                         break;
+> >                 default:
+> > @@ -12021,6 +12034,16 @@ static int check_kfunc_args(struct bpf_verifie=
+r_env *env, struct bpf_kfunc_call_
+> >                         if (ret)
+> >                                 return ret;
+> >                         break;
+> > +               case KF_ARG_PTR_TO_TIMER:
+> > +                       if (reg->type !=3D PTR_TO_MAP_VALUE) {
+> > +                               verbose(env, "arg#%d doesn't point to a=
+ map value\n", i);
+> > +                               return -EINVAL;
+> > +                       }
+> > +                       if (reg->off) {
+> > +                               verbose(env, "arg#%d offset can not be =
+greater than 0\n", i);
+> > +                               return -EINVAL;
+> > +                       }
 >
-> Ack on raising the minimum version requirement for x86-64
-> stackprotector to 8.1 or so - this causes no real pain on the distro
-> side: when *this* new kernel of ours is picked by a distro, it almost
-> always goes hand in hand with a compiler version upgrade.
->
-> We should be careful with fixes marked for -stable backport, but other
-> than that, new improvements like Brian's series are a fair game to
-> tweak compiler version requirements.
->
-> But please emit a (single) prominent build-time warning if a feature is
-> disabled though, even if there are no functional side-effects, such as
-> for hardening features.
+> This won't be correct. You don't really check whether the timer exists
+> at reg->off (and if you did, this would still restrict it to 0 offset,
+> and not check the variable offset which would be non-zero). What I
+> would suggest is calling process_timer_func (see how dynptr calls the
+> same underlying process_dynptr_func to enforce type invariants). This
+> would allow sharing the same checks and avoid bugs from creeping in.
+> It does all checks wrt constant/variable offset and looking up the
+> timer field offset and matching it against the one in the pointer.
 
-Disabled for any reason or only if the compiler lacks support?
+Observation is correct. The patch is buggy,
+but the suggestion to follow process_dynptr_func() will lead
+to unnecessary complexity.
+dynptr-s are on stack with plenty of extra checks.
+In this case bpf_timer is in map_value.
+Much simpler is to follow KF_ARG_PTR_TO_MAP approach.
+Set ref_id, ref_t, ref_tname to bpf_timer and
+process_kf_arg_ptr_to_btf_id() should work as-is.
 
-Brian Gerst
+You still need
++BTF_ID(struct, bpf_timer_kern)
+to recognize that argument in a kfunc,
+but the selftests will be using 'struct bpf_timer t',
+so KF_ARG_PTR_TO_TIMER would need to match against 'struct bpf_timer'
+and not against 'struct bpf_timer_kern'.
 
