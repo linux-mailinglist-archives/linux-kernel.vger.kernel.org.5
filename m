@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54C18893EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:41:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7BDE888D3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:43:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E8BEB31449
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:20:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72CAA286F07
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431D22FD86F;
-	Mon, 25 Mar 2024 01:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3522FD891;
+	Mon, 25 Mar 2024 01:04:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yl1Nnebd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RO6UHQW8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1FBE181B90;
-	Sun, 24 Mar 2024 23:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3454181B8E;
+	Sun, 24 Mar 2024 23:48:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324114; cv=none; b=KYQTxg0kFLNxGAH0moM06Lyb4I6Xy5D0YsUt2/U14t5ThmqcXhvMSTtQ09aEn9FM/5wXWZoRE85B/aT3NF/zvjCAUPRLPg2mGsdJq/Cb8TKIxNDQJq0cEoB96ahcywx6f3pSPCmHgRYaEtnNbC9zINCFUGGg8+bges1mUao8/Pg=
+	t=1711324116; cv=none; b=GsUGrEQsozKDkhJcWZsU93KAkF14NZ7nrnRKkN/S421HrcRrY7nG7wrC/RIN/2i8ubfdNA4w4LQHftDes3tRvvxAnPHxosSbyLgUlN0IerIpXR9PKvedCO17wQxZUm/VEe7H+bTWh9exexocKpNQk3BEFktDEjW4Qo0occQI1dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324114; c=relaxed/simple;
-	bh=tVb2DaertyoHviz3jSJZK0KQO3vS7370E6vkFxCRL60=;
+	s=arc-20240116; t=1711324116; c=relaxed/simple;
+	bh=ch4msB6QbAfyxOHVuIwLakn8UTa3SdoazWxzYOmU5xY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L1/cfXU8/7CIcY5HyyI/UgRuEZ8BPMYGzmvLCyM5tvrHAoyz/W0YppyfQzfCQy1ToAYqvTiaO+bRzPvwF52L4bUngjL0C20KTH10+xWmfHmcxwyozuKNdkF6PGvG0rpb6b+MvmfVl0BabDw62S/RecWdaI6HqFjHO2Op1oLcGjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yl1Nnebd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CE7BC43394;
+	 MIME-Version; b=pjiw05bMWz67gNe+3Jkwvh+2bk0XYAYkvgtbBgueWasyMMD7V7hCOqDgSJ7IezuW3zk7h/GbWlzHHppOk6zGdpvGKkk71LtM/UBX76oJ91E0uzaWDogrYqpx9JX2iSBqwMnMbvnW+DPPgvllEAYL79/RVIHgsasNx5ZacZcKXJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RO6UHQW8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13589C43390;
 	Sun, 24 Mar 2024 23:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324113;
-	bh=tVb2DaertyoHviz3jSJZK0KQO3vS7370E6vkFxCRL60=;
+	s=k20201202; t=1711324114;
+	bh=ch4msB6QbAfyxOHVuIwLakn8UTa3SdoazWxzYOmU5xY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Yl1NnebdjBYddswj39RhGuLk9OG93o+FXPmzmuycq4g+9Y39VVHOP000lCOXecEFS
-	 zosihZl2WmrKzM7UA6eaaah0BPDtitubA0/fkfO+DRB5Mgn+nrWZUKklWInVGtPSCo
-	 6bPaJ20Dh6DidKhcWdjeraEFz+rEe0FMTZdNmHJiMGxYuznFY55/SwIf90denlF7Ul
-	 8G3HKzMiQn8+M+btk6LRxQp0FjiIRNpmSqyOCX4mNYPC0Sz34Vv9EsQLoMuuCDenoJ
-	 EI9M1YEmdI5zZ9lRf1yJRFvWGPOnge+Ai/3fj9HA+m67iAFFmNSqJ5Q/LEiW5d/5PZ
-	 FSXe2cyKB5WeA==
+	b=RO6UHQW8+83koF5R/hPr26UZj4BbpxSxzL57T0niPnjzuzEWe/PSwhnK/cu57q6BJ
+	 qZ26yxB5wYhecDaH2eNOz7Qw9Lp4rKyr97E0zenhpHzMdKEDA/vQbfCtTRk8yXR56R
+	 LEyoB3w879CIDJ7kE96Pj6RSU/tM4rX7Xa17mBKBS8a3SdFlqobdgnuZNpGV7kHedr
+	 QjKfko7UMERUzTUmRl5m9RmE930Fie8TLhinoEAVL4+OKvm2nzLuA9ipmwDWUNL41r
+	 5FLdIUxBgu8KFOkPvbYw420pqqzGNbENEtQHS2R3UyMeLlL64OfHHYnB7nalGDMUNf
+	 hkIh3iAftaE4w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Bjorn Helgaas <bhelgaas@google.com>,
+Cc: Yang Jihong <yangjihong1@huawei.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 112/183] PCI: switchtec: Fix an error handling path in switchtec_pci_probe()
-Date: Sun, 24 Mar 2024 19:45:25 -0400
-Message-ID: <20240324234638.1355609-113-sashal@kernel.org>
+Subject: [PATCH 5.4 113/183] perf thread_map: Free strlist on normal path in thread_map__new_by_tid_str()
+Date: Sun, 24 Mar 2024 19:45:26 -0400
+Message-ID: <20240324234638.1355609-114-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,49 +63,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Yang Jihong <yangjihong1@huawei.com>
 
-[ Upstream commit dec529b0b0572b32f9eb91c882dd1f08ca657efb ]
+[ Upstream commit 1eb3d924e3c0b8c27388b0583a989d757866efb6 ]
 
-The commit in Fixes changed the logic on how resources are released and
-introduced a new switchtec_exit_pci() that need to be called explicitly in
-order to undo a corresponding switchtec_init_pci().
+slist needs to be freed in both error path and normal path in
+thread_map__new_by_tid_str().
 
-This was done in the remove function, but not in the probe.
-
-Fix the probe now.
-
-Fixes: df25461119d9 ("PCI: switchtec: Fix stdev_release() crash after surprise hot remove")
-Link: https://lore.kernel.org/r/01446d2ccb91a578239915812f2b7dfbeb2882af.1703428183.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: b52956c961be3a04 ("perf tools: Allow multiple threads or processes in record, stat, top")
+Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/r/20240206083228.172607-6-yangjihong1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/switch/switchtec.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/perf/util/thread_map.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index 0037f368f62b9..0b83252358527 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -1433,7 +1433,7 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
- 	rc = switchtec_init_isr(stdev);
- 	if (rc) {
- 		dev_err(&stdev->dev, "failed to init isr.\n");
--		goto err_put;
-+		goto err_exit_pci;
+diff --git a/tools/perf/util/thread_map.c b/tools/perf/util/thread_map.c
+index c9bfe4696943b..cee7fc3b5bb0c 100644
+--- a/tools/perf/util/thread_map.c
++++ b/tools/perf/util/thread_map.c
+@@ -279,13 +279,13 @@ struct perf_thread_map *thread_map__new_by_tid_str(const char *tid_str)
+ 		threads->nr = ntasks;
  	}
+ out:
++	strlist__delete(slist);
+ 	if (threads)
+ 		refcount_set(&threads->refcnt, 1);
+ 	return threads;
  
- 	iowrite32(SWITCHTEC_EVENT_CLEAR |
-@@ -1454,6 +1454,8 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
+ out_free_threads:
+ 	zfree(&threads);
+-	strlist__delete(slist);
+ 	goto out;
+ }
  
- err_devadd:
- 	stdev_kill(stdev);
-+err_exit_pci:
-+	switchtec_exit_pci(stdev);
- err_put:
- 	ida_simple_remove(&switchtec_minor_ida, MINOR(stdev->dev.devt));
- 	put_device(&stdev->dev);
 -- 
 2.43.0
 
