@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-114765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65684889112
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:33:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEEAE889570
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 972C31C2CFD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:33:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8D22298240
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533A41B149B;
-	Mon, 25 Mar 2024 00:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD702176F3;
+	Mon, 25 Mar 2024 03:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUnooDrj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EVrqHy0R"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8CB27551E;
-	Sun, 24 Mar 2024 23:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8246627551F;
+	Sun, 24 Mar 2024 23:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323364; cv=none; b=A1KGhCDSXtGSqa8HRChgxjHJgktiPPzFX+oVgCZtqrRZqEaUJ3EvZQKM2FktJiGgWzZeUENT7ho+3rjbfoNDExSLjTT9Qp5lAHHXqonNmKsnLapECmpByPqz0oi7vYj4mgyQ/9qqDDUtKZs+EVXj9f/ieOCzjX+rPXQNJ83C4+c=
+	t=1711323364; cv=none; b=MW2LbJ5345mhzJHjYH2iitPS6GJIywj1TcWx3BIh6bTyrdlESxkrmvXHYsEAdypTtCn9H84tZSiZOepZp7c/rHn/QOoF90OWAB6uLW6HfLBo1FDJWULkFp8BP6dU96b+V8iWUvz5eijQ5LPAh22+4GbeXgk/tXgth/S+PpKiLiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323364; c=relaxed/simple;
-	bh=tSvBj+9fAZrbZVQNSGQIlc8MnLUWAHjaR1WzNmMgebM=;
+	bh=75RTwF1RiKRiyBcXXdqr/7omHTpdRTEVzn66ZABF4OM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CtplJrlCJW+nbygsSKoqe+UwWzhXTvqbC4FhmtYA2MvTmFTwQnfNf/9fdK2UokY8LI8buFyW9Lycm1MaIr34R21DMIfnlAeHtdhNmgtDGaB2swjJyOuRwwqx4+elp0I/8at0OaqMfDvMc8A8MG+G61F6eW9EiTVHBevuia8mFhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IUnooDrj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A4C4C43394;
-	Sun, 24 Mar 2024 23:36:02 +0000 (UTC)
+	 MIME-Version; b=kId1d7G+HBqYuVIVLiEXUNgmIKnDe1ltPACFPfmXd7e75oEkmYJyg4FH/coLt4vZN3dEScTd+anO2sgCgvYIirGqaMSh4r+6FylgSb+yts6lLLe0+w40N112czEcs9lSTMQvF7wUshrRHbrV8r244bS7XyVuOfn4P5hm5LjoKyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EVrqHy0R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C7FEC433C7;
+	Sun, 24 Mar 2024 23:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323363;
-	bh=tSvBj+9fAZrbZVQNSGQIlc8MnLUWAHjaR1WzNmMgebM=;
+	s=k20201202; t=1711323364;
+	bh=75RTwF1RiKRiyBcXXdqr/7omHTpdRTEVzn66ZABF4OM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IUnooDrjBp3qpM0cZHfdlzKnyBHBxHTQ226CEmv4RL0QZcE0JosafliPs18BC/5h9
-	 eVN0XcLQrIYtdN7IPqpzESjdIoj6HJsbSb2UhBvubzaOoaSty75+mEdH8vVm15iEj5
-	 DS0j6hxxONBXkfmH/2b3Eb5Lzkxn/NSXRMavcztsmmL52q6kjNysnz1w12R9Ey7oIr
-	 2HCEaLDM4X1WGIiGmcAtAvLdR0CBj763SrOJ/SutsGRWSZKCIjHtQ83cpCetdYWwYW
-	 8bIoc6llgCOvpYHI8ZMQnwU98vsaisCwjpLGADXQ0OLX92q6I0lMQqSoDiN/GOsy/a
-	 iW3YEl5YGaL4A==
+	b=EVrqHy0R+6tplrob/zlwb5yG3T+Gx9ZGC+Jjr6jzY2nHHT9sJpDiwhcBpLyLA/jNf
+	 SsR1lNRNNBDoYZrYgKxS7NtKcGEkol1WsUHAzP8y/tsT6IPpcAIqnuNBFcW9BWqrFw
+	 w1a/xMzn5CaVKwlwjYtgvZC6cp1uw96bHZVx703d3vZsemx4sQ3BuReiNJmSJFWVxi
+	 Doz1i7tWxFJc3tkDCLd71dGTnm1SQ1DSq1oRedwRF8kPHp0z+qbIs0vUSckYM9b5Bo
+	 zbLEuYhxx3vBfJRza8niw1mnsY1oFiXV/LltEosXz+BPK19zIxsmUcAZpnQ/xjpOAo
+	 +UJ4lqBE+Y5YA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	Guillaume Nault <gnault@redhat.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 063/317] cpufreq: mediatek-hw: Wait for CPU supplies before probing
-Date: Sun, 24 Mar 2024 19:30:43 -0400
-Message-ID: <20240324233458.1352854-64-sashal@kernel.org>
+Subject: [PATCH 5.15 064/317] sock_diag: annotate data-races around sock_diag_handlers[family]
+Date: Sun, 24 Mar 2024 19:30:44 -0400
+Message-ID: <20240324233458.1352854-65-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -60,72 +61,76 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 788715b5f21c6455264fe00a1779e61bec407fe2 ]
+[ Upstream commit efd402537673f9951992aea4ef0f5ff51d858f4b ]
 
-Before proceeding with the probe and enabling frequency scaling for the
-CPUs, make sure that all supplies feeding the CPUs have probed.
+__sock_diag_cmd() and sock_diag_bind() read sock_diag_handlers[family]
+without a lock held.
 
-This fixes an issue observed on MT8195-Tomato where if the
-mediatek-cpufreq-hw driver enabled the hardware (by writing to
-REG_FREQ_ENABLE) before the SPMI controller driver (spmi-mtk-pmif),
-behind which lies the big CPU supply, probed the platform would hang
-shortly after with "rcu: INFO: rcu_preempt detected stalls on
-CPUs/tasks" being printed in the log.
+Use READ_ONCE()/WRITE_ONCE() annotations to avoid potential issues.
 
-Fixes: 4855e26bcf4d ("cpufreq: mediatek-hw: Add support for CPUFREQ HW")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fixes: 8ef874bfc729 ("sock_diag: Move the sock_ code to net/core/")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Guillaume Nault <gnault@redhat.com>
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/mediatek-cpufreq-hw.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ net/core/sock_diag.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/cpufreq/mediatek-cpufreq-hw.c b/drivers/cpufreq/mediatek-cpufreq-hw.c
-index 8a4e52b22eed7..4a7478a91fb61 100644
---- a/drivers/cpufreq/mediatek-cpufreq-hw.c
-+++ b/drivers/cpufreq/mediatek-cpufreq-hw.c
-@@ -13,6 +13,7 @@
- #include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
+diff --git a/net/core/sock_diag.c b/net/core/sock_diag.c
+index c9c45b935f990..bce65b519ee80 100644
+--- a/net/core/sock_diag.c
++++ b/net/core/sock_diag.c
+@@ -189,7 +189,7 @@ int sock_diag_register(const struct sock_diag_handler *hndl)
+ 	if (sock_diag_handlers[hndl->family])
+ 		err = -EBUSY;
+ 	else
+-		sock_diag_handlers[hndl->family] = hndl;
++		WRITE_ONCE(sock_diag_handlers[hndl->family], hndl);
+ 	mutex_unlock(&sock_diag_table_mutex);
  
- #define LUT_MAX_ENTRIES			32U
-@@ -268,7 +269,23 @@ static struct cpufreq_driver cpufreq_mtk_hw_driver = {
- static int mtk_cpufreq_hw_driver_probe(struct platform_device *pdev)
- {
- 	const void *data;
--	int ret;
-+	int ret, cpu;
-+	struct device *cpu_dev;
-+	struct regulator *cpu_reg;
-+
-+	/* Make sure that all CPU supplies are available before proceeding. */
-+	for_each_possible_cpu(cpu) {
-+		cpu_dev = get_cpu_device(cpu);
-+		if (!cpu_dev)
-+			return dev_err_probe(&pdev->dev, -EPROBE_DEFER,
-+					     "Failed to get cpu%d device\n", cpu);
-+
-+		cpu_reg = devm_regulator_get_optional(cpu_dev, "cpu");
-+		if (IS_ERR(cpu_reg))
-+			return dev_err_probe(&pdev->dev, PTR_ERR(cpu_reg),
-+					     "CPU%d regulator get failed\n", cpu);
-+	}
-+
+ 	return err;
+@@ -205,7 +205,7 @@ void sock_diag_unregister(const struct sock_diag_handler *hnld)
  
- 	data = of_device_get_match_data(&pdev->dev);
- 	if (!data)
+ 	mutex_lock(&sock_diag_table_mutex);
+ 	BUG_ON(sock_diag_handlers[family] != hnld);
+-	sock_diag_handlers[family] = NULL;
++	WRITE_ONCE(sock_diag_handlers[family], NULL);
+ 	mutex_unlock(&sock_diag_table_mutex);
+ }
+ EXPORT_SYMBOL_GPL(sock_diag_unregister);
+@@ -223,7 +223,7 @@ static int __sock_diag_cmd(struct sk_buff *skb, struct nlmsghdr *nlh)
+ 		return -EINVAL;
+ 	req->sdiag_family = array_index_nospec(req->sdiag_family, AF_MAX);
+ 
+-	if (sock_diag_handlers[req->sdiag_family] == NULL)
++	if (READ_ONCE(sock_diag_handlers[req->sdiag_family]) == NULL)
+ 		sock_load_diag_module(req->sdiag_family, 0);
+ 
+ 	mutex_lock(&sock_diag_table_mutex);
+@@ -282,12 +282,12 @@ static int sock_diag_bind(struct net *net, int group)
+ 	switch (group) {
+ 	case SKNLGRP_INET_TCP_DESTROY:
+ 	case SKNLGRP_INET_UDP_DESTROY:
+-		if (!sock_diag_handlers[AF_INET])
++		if (!READ_ONCE(sock_diag_handlers[AF_INET]))
+ 			sock_load_diag_module(AF_INET, 0);
+ 		break;
+ 	case SKNLGRP_INET6_TCP_DESTROY:
+ 	case SKNLGRP_INET6_UDP_DESTROY:
+-		if (!sock_diag_handlers[AF_INET6])
++		if (!READ_ONCE(sock_diag_handlers[AF_INET6]))
+ 			sock_load_diag_module(AF_INET6, 0);
+ 		break;
+ 	}
 -- 
 2.43.0
 
