@@ -1,54 +1,53 @@
-Return-Path: <linux-kernel+bounces-113740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 478D2888E69
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:18:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A42E889B8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:55:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB5D41F31896
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:18:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F4BC1F31896
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC8312B17A;
-	Sun, 24 Mar 2024 22:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FC620FABF;
+	Mon, 25 Mar 2024 02:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hvLpDPdV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UhyWMkM4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2931DF0E5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D989F1DF0E2;
 	Sun, 24 Mar 2024 22:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320743; cv=none; b=oBh2BSr8X+cfJPJ8wdSco/9fPSpcDkaWi7SWiSxAYX206rZMA/pTEhnn9hWTb7NoBwO5nM7boI2IWrulb3c0GtIUHBm5yZuk/9VA1Jz2AvxwNH3qXyOSqZjU9Vqr4DFV+E5oC36e/a7LKtjaDpQmpwTcF2W9D7YTBJogIh0wPms=
+	t=1711320742; cv=none; b=ApP3K+HKH3L4ArKt1oTxrt2Q6Tmk5oPiJ9NamwsQzygW4gseJUrIC4nstGyj0Srl6x/dXztAOKCdJwMTFuisN5QMPODqA0xmSPH4iix9IJZ+ohMcHGzz16FnYmRR/HujujdExk24yuJl6lSZPDwq+cfJxryh9xEA0RythdtkFbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320743; c=relaxed/simple;
-	bh=iBV/5/Z+cGNqIANUq+vBJr418QFN4hXW/Rfok5Qg3Zw=;
+	s=arc-20240116; t=1711320742; c=relaxed/simple;
+	bh=58B98bGY5tMD2svD0Au4W1Qr/ZKoc4cnw7wxauTqbjE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ep8GFK3D1sZEOMQuWX6xUpGI9CPE9ZAP7hYAowgFs/lf14fJKer6eZ25RYqw156BNyAUhfdVzrzitIsoLbGUqKdi9rCMmuownJPqL7UIwQ7dZ3qQtyy35xkpYm01C9a9weO+kqQ8xwr/ykrURoPdYRbdBYWexGPaQfhyfDY81Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hvLpDPdV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 504DEC43399;
-	Sun, 24 Mar 2024 22:52:21 +0000 (UTC)
+	 MIME-Version; b=Z6eH+EKv7IQBHlcaMiT+futA8cpKFG+Xszg+H3EjAEA7rN1x/ddHkgmgDOX722jTjliZBl2fCSNPN0/mn+RXigbEIIlAGmY0REszP315UfBWhlOe6TyCgk47MRVN9lC19Y+nb0HYseUd+Xp2YHw2gE2AKe7BMqChxRYmUYujbdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UhyWMkM4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B876C433C7;
+	Sun, 24 Mar 2024 22:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320742;
-	bh=iBV/5/Z+cGNqIANUq+vBJr418QFN4hXW/Rfok5Qg3Zw=;
+	bh=58B98bGY5tMD2svD0Au4W1Qr/ZKoc4cnw7wxauTqbjE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hvLpDPdVzmiEwTprydTM200Ay7VX3X/t5NTDDdrerQKdeU/wlUTfbj069rWIdB0r2
-	 VeGesQsai3JbpRVcymjM2ounSOptEjTblrK5ZwleGA/wR0mIRtZm1vNy8a6BiZ+RFr
-	 mHc995Twzu0M/WA5HOsNvfKNenF6LeBSrFPsFCh+vpezN1/CYFFYizoBbAD5z7t7EQ
-	 PtGT7hlHAH2f5SolpUz1xUDbP7KOFEL1nRi39gqXshmll2BB9TKvLVoLS7W3F4wEFJ
-	 NbfDUURLGXG7dz4LX+tKSX5/sWK9ixzW55Lo/81BkAk5WUd/J9qunxpAfN5O2zcAds
-	 QKj2q74lC6biQ==
+	b=UhyWMkM4uddfmJfbVHLSwZlpfAV95ZhJkDk2jFm4rLa26opZH+riBMsOtwIRE0Ggw
+	 vvRYqVWPGsZmudf4ngAooXBipuLDS9vnoSD7Tr2ZTQYANGQ3dVKnGl3MB7Ca4rqEoT
+	 BDRha6K20ppxpcyzKrTjUswQd9xKk4AVII3HEcANFQ0Xn6pm/UYOvQf/fhguhHjHeJ
+	 g/lzKr8llcySPWjNVJxF/7VWe+2gY/EmMlaL4/moaKhLaJAbjlEyEuCAyLfTtr+2XB
+	 PWxKKcMamnOUYtCy44tUHLQwmh2RrOHLcBV28IZXNebmKpAQo2nTTIoRik/G3pIDkV
+	 kBQnxnORuJ9FA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 305/713] arm64: dts: renesas: rzg2l: Add missing interrupts to IRQC nodes
-Date: Sun, 24 Mar 2024 18:40:31 -0400
-Message-ID: <20240324224720.1345309-306-sashal@kernel.org>
+Subject: [PATCH 6.7 306/713] arm64: dts: renesas: r8a779a0: Correct avb[01] reg sizes
+Date: Sun, 24 Mar 2024 18:40:32 -0400
+Message-ID: <20240324224720.1345309-307-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,129 +61,46 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 14fe225dd5fcd5928583b0bcc34398a581f51602 ]
+[ Upstream commit 0c51912331f8ba5ce5fb52f46e340945160672a3 ]
 
-The IRQC IP block supports Bus error and ECCRAM interrupts on RZ/G2L and
-alike SoC's (listed below).  Update the IRQC nodes with the missing
-interrupts, and additionally, include the 'interrupt-names' properties
-in the IRQC nodes so that the driver can parse interrupts by name.
+All Ethernet AVB instances on R-Car V3U have registers related to UDP/IP
+support, but the declared register blocks for the first two instances
+are too small to cover them.
 
-  - R9A07G043U              - RZ/G2UL
-  - R9A07G044L/R9A07G044LC  - RZ/{G2L,G2LC}
-  - R9A07G054               - RZ/V2L
+Fix this by extending the register block sizes.
 
-Fixes: 5edc51af5b30 ("arm64: dts: renesas: r9a07g044: Add IRQC node")
-Fixes: 48ab6eddd8bb ("arm64: dts: renesas: r9a07g043u: Add IRQC node")
-Fixes: 379478ab09e0 ("arm64: dts: renesas: r9a07g054: Add IRQC node")
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20240205144421.51195-3-prabhakar.mahadev-lad.rj@bp.renesas.com
+Fixes: 5a633320f08b8c9b ("arm64: dts: renesas: r8a779a0: Add Ethernet-AVB support")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/ce6ce3c4b1495e02e7c1803fca810a7178a84500.1707660323.git.geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/r9a07g043u.dtsi | 12 +++++++++--
- arch/arm64/boot/dts/renesas/r9a07g044.dtsi  | 22 ++++++++++++++++++++-
- arch/arm64/boot/dts/renesas/r9a07g054.dtsi  | 22 ++++++++++++++++++++-
- 3 files changed, 52 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi b/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
-index 2ab231572d95f..b3f83d0ebcbb5 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
-@@ -109,7 +109,13 @@ irqc: interrupt-controller@110a0000 {
- 			     <SOC_PERIPHERAL_IRQ(473) IRQ_TYPE_LEVEL_HIGH>,
- 			     <SOC_PERIPHERAL_IRQ(474) IRQ_TYPE_LEVEL_HIGH>,
- 			     <SOC_PERIPHERAL_IRQ(475) IRQ_TYPE_LEVEL_HIGH>,
--			     <SOC_PERIPHERAL_IRQ(25) IRQ_TYPE_EDGE_RISING>;
-+			     <SOC_PERIPHERAL_IRQ(25) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(34) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(35) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(36) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(37) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(38) IRQ_TYPE_EDGE_RISING>,
-+			     <SOC_PERIPHERAL_IRQ(39) IRQ_TYPE_EDGE_RISING>;
- 		interrupt-names = "nmi",
- 				  "irq0", "irq1", "irq2", "irq3",
- 				  "irq4", "irq5", "irq6", "irq7",
-@@ -121,7 +127,9 @@ irqc: interrupt-controller@110a0000 {
- 				  "tint20", "tint21", "tint22", "tint23",
- 				  "tint24", "tint25", "tint26", "tint27",
- 				  "tint28", "tint29", "tint30", "tint31",
--				  "bus-err";
-+				  "bus-err", "ec7tie1-0", "ec7tie2-0",
-+				  "ec7tiovf-0", "ec7tie1-1", "ec7tie2-1",
-+				  "ec7tiovf-1";
- 		clocks = <&cpg CPG_MOD R9A07G043_IA55_CLK>,
- 			<&cpg CPG_MOD R9A07G043_IA55_PCLK>;
- 		clock-names = "clk", "pclk";
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-index 66f68fc2b2411..081d8f49db879 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-@@ -905,7 +905,27 @@ irqc: interrupt-controller@110a0000 {
- 				     <GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
-+				     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 25 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 36 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 37 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 38 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 39 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "nmi", "irq0", "irq1", "irq2", "irq3",
-+					  "irq4", "irq5", "irq6", "irq7",
-+					  "tint0", "tint1", "tint2", "tint3",
-+					  "tint4", "tint5", "tint6", "tint7",
-+					  "tint8", "tint9", "tint10", "tint11",
-+					  "tint12", "tint13", "tint14", "tint15",
-+					  "tint16", "tint17", "tint18", "tint19",
-+					  "tint20", "tint21", "tint22", "tint23",
-+					  "tint24", "tint25", "tint26", "tint27",
-+					  "tint28", "tint29", "tint30", "tint31",
-+					  "bus-err", "ec7tie1-0", "ec7tie2-0",
-+					  "ec7tiovf-0", "ec7tie1-1", "ec7tie2-1",
-+					  "ec7tiovf-1";
- 			clocks = <&cpg CPG_MOD R9A07G044_IA55_CLK>,
- 				 <&cpg CPG_MOD R9A07G044_IA55_PCLK>;
- 			clock-names = "clk", "pclk";
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g054.dtsi b/arch/arm64/boot/dts/renesas/r9a07g054.dtsi
-index 1f1d481dc7830..0d327464d2baf 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g054.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g054.dtsi
-@@ -912,7 +912,27 @@ irqc: interrupt-controller@110a0000 {
- 				     <GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
-+				     <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 25 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 36 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 37 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 38 IRQ_TYPE_EDGE_RISING>,
-+				     <GIC_SPI 39 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "nmi", "irq0", "irq1", "irq2", "irq3",
-+					  "irq4", "irq5", "irq6", "irq7",
-+					  "tint0", "tint1", "tint2", "tint3",
-+					  "tint4", "tint5", "tint6", "tint7",
-+					  "tint8", "tint9", "tint10", "tint11",
-+					  "tint12", "tint13", "tint14", "tint15",
-+					  "tint16", "tint17", "tint18", "tint19",
-+					  "tint20", "tint21", "tint22", "tint23",
-+					  "tint24", "tint25", "tint26", "tint27",
-+					  "tint28", "tint29", "tint30", "tint31",
-+					  "bus-err", "ec7tie1-0", "ec7tie2-0",
-+					  "ec7tiovf-0", "ec7tie1-1", "ec7tie2-1",
-+					  "ec7tiovf-1";
- 			clocks = <&cpg CPG_MOD R9A07G054_IA55_CLK>,
- 				 <&cpg CPG_MOD R9A07G054_IA55_PCLK>;
- 			clock-names = "clk", "pclk";
+diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+index 4e67a03564971..504ac8c93faf5 100644
+--- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+@@ -658,7 +658,7 @@ channel7 {
+ 		avb0: ethernet@e6800000 {
+ 			compatible = "renesas,etheravb-r8a779a0",
+ 				     "renesas,etheravb-rcar-gen4";
+-			reg = <0 0xe6800000 0 0x800>;
++			reg = <0 0xe6800000 0 0x1000>;
+ 			interrupts = <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 257 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 258 IRQ_TYPE_LEVEL_HIGH>,
+@@ -706,7 +706,7 @@ avb0: ethernet@e6800000 {
+ 		avb1: ethernet@e6810000 {
+ 			compatible = "renesas,etheravb-r8a779a0",
+ 				     "renesas,etheravb-rcar-gen4";
+-			reg = <0 0xe6810000 0 0x800>;
++			reg = <0 0xe6810000 0 0x1000>;
+ 			interrupts = <GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
 -- 
 2.43.0
 
