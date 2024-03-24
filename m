@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-113376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CCAF8883D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:21:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A56618883D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:21:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F14A1B23499
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:21:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59A221F2665A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C861119F525;
-	Sun, 24 Mar 2024 22:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB3919F537;
+	Sun, 24 Mar 2024 22:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GrNrPf+N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QjCNH6SI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E644E19F501;
-	Sun, 24 Mar 2024 22:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902C919F51B;
+	Sun, 24 Mar 2024 22:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320178; cv=none; b=qwo4I0+ftczx8lsjuE4G5og9MdkIMSYJDKtku9Dg1mbhuAi9dGZgeCAveyX4XpHkjtSmzGzp0kGlvHPBvDtsA0yE8jjBlu0VtRbEMOViNn9L1RBhcX5vcM+6fDAKK/+4/Rz665dbIXX0w38B7gNrsx1CXRPuNpEo/NuQjWgF8iQ=
+	t=1711320178; cv=none; b=IPl1PO1tXMlg2j624TWRVS9jUVKJTPH6JYlbo1/LudEBdovswDhsSHUy1G/DoK4zL66l3m7m7PJQ0Te7MfEknBLxl1tTdYtwW+9Gwl+bNriBhcjlh5nu6EUjzwg5sGC+ycD0su3lgmtJB4K6tCHZ/8FMTKHDaFJoKnmwknbdjPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320178; c=relaxed/simple;
-	bh=4R1K5XCsgWuPw6D5zIv86PhgnTtk3Z9jomPfPWJlF9k=;
+	bh=kHv9No8I6LDPw0P6eGHj7N9MFtUF53asyk1Zu9Yl0Hk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S70vOJ1hQBk8iXze55/EoU7LLOVpyGpszywEy1WQxsMVhctpRx7NGX/6xfpMJm8MOITdv3NOiCsIaAO3Um4MRxOTlDGhxLPkdryC9d8O0fdDHPFKfA+c5g+Y6RX6KAntCoi0+qtycIQbv0MQcLI07Y8M3Uj2JRnJPKVm5sOgiRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GrNrPf+N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A038AC43394;
-	Sun, 24 Mar 2024 22:42:56 +0000 (UTC)
+	 MIME-Version; b=Hr+EqlUKZGlPlxIV0+vHsm6etvTPHWsbL+z4E7evnbb4/hZH92iYEwgXX0529MdWrcCXthz/jfEeCwNX8Tw0yVmBhv+dcZkBATKcmnOoNt4fuVdlXiNKgI5H6ys9lZe1m4JJ1hZF+HjEcCGzDx2QLwxcIlN8r667v0N6VE0/cX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QjCNH6SI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B768EC43399;
+	Sun, 24 Mar 2024 22:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320177;
-	bh=4R1K5XCsgWuPw6D5zIv86PhgnTtk3Z9jomPfPWJlF9k=;
+	s=k20201202; t=1711320178;
+	bh=kHv9No8I6LDPw0P6eGHj7N9MFtUF53asyk1Zu9Yl0Hk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GrNrPf+Nvh54K+Eu6Z/Rz5tP4Br3AfUZwNGUhHD/f9UIZHCh0l29TaIvE9/2zPhcy
-	 PTG5VbQeTnlrHY24g1J1b8siFyf5DCZBMnStcyygIF2GvgoN4kZJrSOFyEmG0Z2eFD
-	 O6H4HxiikJL+7RZdBEKQpRTaPsxrwn26Uw7MG/OrgW60sG/18IrL1VAzGAPhucbGoe
-	 wHBfNvD9WiBZ/b1kSa35G90LTCiqrdHez0ZgjmOLCiazVl+2r01Vqt1JSxWjkk+rqh
-	 XD6EkQrE9lk9G/8J+PzJISCorukqutU8pEzcZ2KaIkJqytyJDKPqfBWNn4ssWRixGU
-	 f9GB9/MlSJcwQ==
+	b=QjCNH6SISW9b5md3TQdH+LutSio1QKEny/bv+DHOB02a5qbrgV1gl3RU7AdpJ3Qoa
+	 J/M0TdLEkPnc8AaX2SHvA0+qtinlZlkJLketNy9OQASrCjt5sorwDfNcpxz/OH3gQY
+	 3909aYt7FmZ1xSFh8YUj6O5ptr9w4okqBnIH52qEQ00uAjKny99uNBbB+Pr1V0fnNC
+	 yF4Yldu7zJkQ6pCpkFIWpzE4hjMAWlGe4iMszWhCVGrlY3+9A/tLpDWkYVC3LQ/7U3
+	 hqP+5s30BFBkGn2BQmOHnx/pOgZi3DKJOaREWe1Qwi0Jg3fgZ2s4MdbxVAHhx0H54V
+	 hWpXnpcnAGu0Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Ian Rogers <irogers@google.com>,
-	kernel-janitors@vger.kernel.org,
-	Namhyung Kim <namhyung@kernel.org>,
+Cc: Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+	Akshata MukundShetty <akshata.mukundshetty@amd.com>,
+	Jiri Kosina <jkosina@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 485/715] perf pmu: Fix a potential memory leak in perf_pmu__lookup()
-Date: Sun, 24 Mar 2024 18:31:04 -0400
-Message-ID: <20240324223455.1342824-486-sashal@kernel.org>
+Subject: [PATCH 6.8 486/715] HID: amd_sfh: Update HPD sensor structure elements
+Date: Sun, 24 Mar 2024 18:31:05 -0400
+Message-ID: <20240324223455.1342824-487-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,44 +63,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
 
-[ Upstream commit ef5de1613d7d92bdc975e6beb34bb0fa94f34078 ]
+[ Upstream commit bbf0dec30696638b8bdc28cb2f5bf23f8d760b52 ]
 
-The commit in Fixes has reordered some code, but missed an error handling
-path.
+HPD sensor data is not populating properly because of wrong order of HPD
+sensor structure elements. So update the order of structure elements to
+match the HPD sensor data received from the firmware.
 
-'goto err' now, in order to avoid a memory leak in case of error.
-
-Fixes: f63a536f03a2 ("perf pmu: Merge JSON events with sysfs at load time")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Cc: kernel-janitors@vger.kernel.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/r/9538b2b634894c33168dfe9d848d4df31fd4d801.1693085544.git.christophe.jaillet@wanadoo.fr
+Fixes: 24a31ea94922 ("HID: amd_sfh: Add initial support for HPD sensor")
+Co-developed-by: Akshata MukundShetty <akshata.mukundshetty@amd.com>
+Signed-off-by: Akshata MukundShetty <akshata.mukundshetty@amd.com>
+Signed-off-by: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/pmu.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 88b9aa7d3a27a..6b82f4759ce69 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1019,10 +1019,9 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
- 	 * type value and format definitions. Load both right
- 	 * now.
- 	 */
--	if (pmu_format(pmu, dirfd, name)) {
--		free(pmu);
--		return NULL;
--	}
-+	if (pmu_format(pmu, dirfd, name))
-+		goto err;
-+
- 	pmu->is_core = is_pmu_core(name);
- 	pmu->cpus = pmu_cpumask(dirfd, name, pmu->is_core);
- 
+diff --git a/drivers/hid/amd-sfh-hid/amd_sfh_pcie.h b/drivers/hid/amd-sfh-hid/amd_sfh_pcie.h
+index 70add75fc5066..05e400a4a83e4 100644
+--- a/drivers/hid/amd-sfh-hid/amd_sfh_pcie.h
++++ b/drivers/hid/amd-sfh-hid/amd_sfh_pcie.h
+@@ -90,10 +90,10 @@ enum mem_use_type {
+ struct hpd_status {
+ 	union {
+ 		struct {
+-			u32 human_presence_report : 4;
+-			u32 human_presence_actual : 4;
+-			u32 probablity		  : 8;
+ 			u32 object_distance       : 16;
++			u32 probablity		  : 8;
++			u32 human_presence_actual : 4;
++			u32 human_presence_report : 4;
+ 		} shpd;
+ 		u32 val;
+ 	};
 -- 
 2.43.0
 
