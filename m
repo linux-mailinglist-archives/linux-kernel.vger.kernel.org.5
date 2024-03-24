@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C261488819C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:25:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5456C88819F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D03A281DAD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:25:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D837CB21B54
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B428515B10E;
-	Sun, 24 Mar 2024 22:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E458F15B978;
+	Sun, 24 Mar 2024 22:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oHBeiNQb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oviC+T9+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E641115B0F7;
-	Sun, 24 Mar 2024 22:38:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A05715B119;
+	Sun, 24 Mar 2024 22:38:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319927; cv=none; b=h0xHgVq904on9CMS9gcX5VpgpW9hMWXnTHYWxL3+oaA0sL5jo8rXXA6zAZPY8wzhMxLmMR7awoNuGCW1o63kzhMNx7h5pWHjyizdv8D+qvJkoYHB1E22nWPgz70GY7I3B3HotxhFvII0qvaINsxccXN762OAjEol+wU1qTpuD7w=
+	t=1711319928; cv=none; b=j+g/30etb1kdZm8VOYe9+z/23J2Rc4y3NnoDTjpw6UIuCLKA1vs6tAScYaaOOGg2enZoIII94gwGn88F9Pe0XuSSW2JZ1FLkpxkw/LmwJ4SIniUGBMAXYv67qJA543K2yl62COda9OQAFkj+SwPS5/8DEROPA7dN4gtKl72zRbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319927; c=relaxed/simple;
-	bh=FqGypTOb490W/ywG+V8ao7/xpZ8vZxNiO43DA4jiXGk=;
+	s=arc-20240116; t=1711319928; c=relaxed/simple;
+	bh=4HXVmvJJAi7+alimoqiVvNXc6ec3CXY1JNDIKUw8Mp8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VbXJMA4Hw9fFo0CM18eRSnow2C0RwuVmEzVozHND4zEUdBkCQIscKBwLJZ/V/Ak1V44NiHS2Uw10LcLYpVIC2xKrzZMfuqR2QaVnCTZPFvnQViUCcPudMuFpSKlHwyWXqGQmUVkv1udWnGYSrfxRYuLiaRc/TfFLMN71wFiINbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oHBeiNQb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33CD6C43399;
-	Sun, 24 Mar 2024 22:38:46 +0000 (UTC)
+	 MIME-Version; b=gJkwIWP+tHLtfiEE/fRB9KuwKxAVJLYyyk8k5a88XI1s6rLmLuIj/BtuUkiwX/bBoUK+op0bqw4tzs5H7DFaznN4fwPoiqq3O7dKMhT187ukkPdMz8+Or0RNdTr+OMFVz2XhTLPXhSIsLYOXf/ybUAQJj9/sEICZmLvRWGumGp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oviC+T9+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17069C43390;
+	Sun, 24 Mar 2024 22:38:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319926;
-	bh=FqGypTOb490W/ywG+V8ao7/xpZ8vZxNiO43DA4jiXGk=;
+	s=k20201202; t=1711319927;
+	bh=4HXVmvJJAi7+alimoqiVvNXc6ec3CXY1JNDIKUw8Mp8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oHBeiNQb+Bhi4uL5yQT9gNH6JgwLO2RDImgQ4cIAvP/LmYxR1XkSHau9ZiHs1EOn5
-	 EB2tmayZcroWnN0VwGcuzgmVizE//aO20UIgH04ber2GC15Kdh/zUjDbQSSgAABD6q
-	 G8BE6+qkD2dPAKqcebRgCgCk0q0S1DzQdQV+1DI/cCRx8A7Ri06lCHZnvoT3Kc+/Uy
-	 2rhG9FC1d6oJtVHbrf45o+02Fd0qcQIcLTvnIzqesmP6o7UtIqYLZb1GFE9URu2Ug7
-	 ZlduYO1YuI92dm08Sdgf3kSjq57WlTqVvA2lJo9vI7D30X1/KDPWCBbaUd1B1SdwHd
-	 Rlmedjw+xohPQ==
+	b=oviC+T9+V44Hr3NMX2CF6YR3B+kK/vNRvI7dIeX2idfzUIPKEk4q3ZNHwDKxPZ2dQ
+	 pJujiLnoPisTYssWzVmNLKEtTwsWdK68AFAdO1zE7GgoTqTPjI/TlR7IBwskXkQBgl
+	 4f+gxJJBWMt7cWGbFu49EAl737nTGPIyOK5NfRcDZXr52kWxEoDF594CHYLb+U/WYN
+	 7uYP2tim1fI188dPT5ZzsSRCNPsXv3dMtsMApEabPPFNkcpSmb0j74/b7OTL1DHMpV
+	 VqX1yrI26SLke0nnQ/Q8XYms9jo/ZgAuYasvxWYmpEbxZ11yzteUTQu2SRIZiiUx+s
+	 r6+oBOIk1ld9w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jon Hunter <jonathanh@nvidia.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>,
+	"Sujuan Chen" <sujuan.chen@mediatek.com>,
+	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 232/715] memory: tegra: Correct DLA client names
-Date: Sun, 24 Mar 2024 18:26:51 -0400
-Message-ID: <20240324223455.1342824-233-sashal@kernel.org>
+Subject: [PATCH 6.8 233/715] wifi: mt76: mt7996: fix fw loading timeout
+Date: Sun, 24 Mar 2024 18:26:52 -0400
+Message-ID: <20240324223455.1342824-234-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,105 +63,46 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jon Hunter <jonathanh@nvidia.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 51d915cbeef4c7a154f5d810b1e10d8125f2b0cc ]
+[ Upstream commit 030d2e287a902b44ef45e660cf1d73af23fe7d2e ]
 
-Some of the names for the Tegra234 DLA clients are not unique and do not
-align with the name of the client ID definitions. Therefore, it is not
-possible to determine the exact DLA client from messages that print the
-client name. Fix this by correcting the DLA memory client names for
-Tegra234 to align with the name of the corresponding memory client ID.
+Fix the following firmware loading error due to a wrong dma register
+configuration if wed is disabled.
 
-Note that although the client names are also used by the interconnect
-framework, interconnect support for the DLA clients has not been added
-and so this issue does not impact the interconnect support.
+[    8.245881] mt7996e_hif 0001:01:00.0: assign IRQ: got 128
+[    8.251308] mt7996e_hif 0001:01:00.0: enabling device (0000 -> 0002)
+[    8.257674] mt7996e_hif 0001:01:00.0: enabling bus mastering
+[    8.263488] mt7996e 0000:01:00.0: assign IRQ: got 126
+[    8.268537] mt7996e 0000:01:00.0: enabling device (0000 -> 0002)
+[    8.274551] mt7996e 0000:01:00.0: enabling bus mastering
+[   28.648773] mt7996e 0000:01:00.0: Message 00000010 (seq 1) timeout
+[   28.654959] mt7996e 0000:01:00.0: Failed to get patch semaphore
+[   29.661033] mt7996e: probe of 0000:01:00.0 failed with error -11
 
-Fixes: 5cd24ca0985f ("memory: tegra: Add DLA clients for Tegra234")
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20240220124430.19072-1-jonathanh@nvidia.com
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Suggested-by: "Sujuan Chen" <sujuan.chen@mediatek.com>
+Fixes: 4920a3a1285f ("wifi: mt76: mt7996: set DMA mask to 36 bits for boards with more than 4GB of RAM")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/tegra/tegra234.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7996/dma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/memory/tegra/tegra234.c b/drivers/memory/tegra/tegra234.c
-index abff87f917cb4..b8a7af2d36c11 100644
---- a/drivers/memory/tegra/tegra234.c
-+++ b/drivers/memory/tegra/tegra234.c
-@@ -121,7 +121,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
- 		},
- 	}, {
- 		.id = TEGRA234_MEMORY_CLIENT_DLA1RDB,
--		.name = "dla0rdb",
-+		.name = "dla1rdb",
- 		.sid = TEGRA234_SID_NVDLA1,
- 		.regs = {
- 			.sid = {
-@@ -407,7 +407,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
- 		},
- 	}, {
- 		.id = TEGRA234_MEMORY_CLIENT_DLA1RDB1,
--		.name = "dla0rdb1",
-+		.name = "dla1rdb1",
- 		.sid = TEGRA234_SID_NVDLA1,
- 		.regs = {
- 			.sid = {
-@@ -417,7 +417,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
- 		},
- 	}, {
- 		.id = TEGRA234_MEMORY_CLIENT_DLA1WRB,
--		.name = "dla0wrb",
-+		.name = "dla1wrb",
- 		.sid = TEGRA234_SID_NVDLA1,
- 		.regs = {
- 			.sid = {
-@@ -699,7 +699,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
- 		},
- 	}, {
- 		.id = TEGRA234_MEMORY_CLIENT_DLA1RDA,
--		.name = "dla0rda",
-+		.name = "dla1rda",
- 		.sid = TEGRA234_SID_NVDLA1,
- 		.regs = {
- 			.sid = {
-@@ -709,7 +709,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
- 		},
- 	}, {
- 		.id = TEGRA234_MEMORY_CLIENT_DLA1FALRDB,
--		.name = "dla0falrdb",
-+		.name = "dla1falrdb",
- 		.sid = TEGRA234_SID_NVDLA1,
- 		.regs = {
- 			.sid = {
-@@ -719,7 +719,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
- 		},
- 	}, {
- 		.id = TEGRA234_MEMORY_CLIENT_DLA1WRA,
--		.name = "dla0wra",
-+		.name = "dla1wra",
- 		.sid = TEGRA234_SID_NVDLA1,
- 		.regs = {
- 			.sid = {
-@@ -729,7 +729,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
- 		},
- 	}, {
- 		.id = TEGRA234_MEMORY_CLIENT_DLA1FALWRB,
--		.name = "dla0falwrb",
-+		.name = "dla1falwrb",
- 		.sid = TEGRA234_SID_NVDLA1,
- 		.regs = {
- 			.sid = {
-@@ -917,7 +917,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
- 		},
- 	}, {
- 		.id = TEGRA234_MEMORY_CLIENT_DLA1RDA1,
--		.name = "dla0rda1",
-+		.name = "dla1rda1",
- 		.sid = TEGRA234_SID_NVDLA1,
- 		.regs = {
- 			.sid = {
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/dma.c b/drivers/net/wireless/mediatek/mt76/mt7996/dma.c
+index 483ad81b6eec6..fe37110e66875 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7996/dma.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7996/dma.c
+@@ -237,7 +237,8 @@ void mt7996_dma_start(struct mt7996_dev *dev, bool reset, bool wed_reset)
+ 				 MT_WFDMA0_GLO_CFG_TX_DMA_EN |
+ 				 MT_WFDMA0_GLO_CFG_RX_DMA_EN |
+ 				 MT_WFDMA0_GLO_CFG_OMIT_TX_INFO |
+-				 MT_WFDMA0_GLO_CFG_OMIT_RX_INFO_PFET2);
++				 MT_WFDMA0_GLO_CFG_OMIT_RX_INFO_PFET2 |
++				 MT_WFDMA0_GLO_CFG_EXT_EN);
+ 
+ 		if (dev->hif2)
+ 			mt76_set(dev, MT_WFDMA0_GLO_CFG + hif1_ofs,
 -- 
 2.43.0
 
