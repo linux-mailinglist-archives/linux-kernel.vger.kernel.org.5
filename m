@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372EC8880D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:06:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 822F78880D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6967B1C212C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:06:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E7DB1F2606E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038A3138483;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62171384A3;
 	Sun, 24 Mar 2024 22:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AxxEU3J9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pPWYT/T5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC5B137C44;
-	Sun, 24 Mar 2024 22:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03481138482;
+	Sun, 24 Mar 2024 22:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319832; cv=none; b=bKsacYD05vZcTFmd5M0i2z+eCj3ob/ioqTZl/7v0apaboRUhZVL76RJaxnoe4EeqCW/YENMMUGzHa5tTr/iBOcqGrHxYB8da79Nc6JnrAIfVoXQKHEpDamdzaSliKvPy8jEcFaN/Fol32fEsBFZZxrSY0VNggd41dBnQ+CEwCOo=
+	t=1711319833; cv=none; b=VkZS6SlIot79yaYoQoz30UORg4+aDMYMugq3bMgxXBn7BsregqXAeg/QwQ5NQKpWwiLayOqT8XKaQ5S+nSnzPNI+OwQbz1m3bG66AagO7FpN1ZvBIDCS6QS0IuH9+hgct/4wwXZOaaK+rw3VEs+EglpoKSzfPA9ZcW/pc7YTRnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319832; c=relaxed/simple;
-	bh=UU3RW3VG76C1ppMjisYC2nlueT7fVuWvWnBOyvqAUqs=;
+	s=arc-20240116; t=1711319833; c=relaxed/simple;
+	bh=Rk1Q+Aok+VkjPFU/uEYsGNr2WdeCIZyK5WHjnMJWslQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hvvP4QxXorLSQ+wy7F9F1a5gwSTauDc13ySVYpkABiI5QogLC9ISYVxwwi9fmMNYvlCeifHZN7MMm5UC157QdvOauOJgPB3WcMfUqej9K+v5Nn1gkV69isx/qXSZnp9Dgy3h0vHTLcn22YtdQYYUCgssuqizcmcQHn4PpAyil6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AxxEU3J9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34F89C433F1;
-	Sun, 24 Mar 2024 22:37:11 +0000 (UTC)
+	 MIME-Version; b=m//lNk8upquAZgu4y4k1/sbUdd+bW+xejNS7c4V48j/t1GegBIOnLrbBToglwfGDfPgX6XEY7LPQGSPhaH/oOBWXUcE0FKM5cxId0syPMP4BoLblwiS3Hcbm5fTA1EoY6yJFQJ/xpwI8c7R/2uMPHFpNSyhVuh1kfg2XrKDTh0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pPWYT/T5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A344C433C7;
+	Sun, 24 Mar 2024 22:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319831;
-	bh=UU3RW3VG76C1ppMjisYC2nlueT7fVuWvWnBOyvqAUqs=;
+	s=k20201202; t=1711319832;
+	bh=Rk1Q+Aok+VkjPFU/uEYsGNr2WdeCIZyK5WHjnMJWslQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AxxEU3J9gBAmd6C75zq/WrVU/1ghR+LX/64A1rPcgNiAYI9xHIflarm7QW5K1EyoP
-	 8oNzSX0N86+g791JS0xdAL4ca1eqslu4CbsQ4a1glUP2BuGQvOVDH5egg9cWfcnkV8
-	 hMWzWcH/KSY818d5RA4Q1/L5R/I1a5/sdxsCnrlYl4Z+AJMUxZc7kd3THjz05Zvc0s
-	 EYQLpWOSYx2e9INwt/ty31mnZlyrTYIAhMXhypryWoPk+YxoAKqmyiG8s4P10KfKAN
-	 iAVn85nZamEgBgN+Skqu8nTD0YfbK4IgkbdUD9NaMmkNScQB8frd3OzCrW86MMbqHz
-	 NRb4yMWHTDYHg==
+	b=pPWYT/T5zZv3eD6ar8Hho2C8lAglnvT6MH0l046bwFTwmG2ik5WMt7EGfBbQlIR21
+	 Goas7mRVUPtCHXDJ3hrYRisUL3bipYLUJpvO/GCc+Mt4+PfX0XNfF52+lSechhGr1p
+	 hvIscDhJ35pYAUSFU3AF/FK4IfNnfIGhyHE+6A3pD5L8XDjjX73FMMd5H2ik0KIR1+
+	 rDdSGDNLl8uBNf9E1sbm9Pi7apvIv7TUsroimFks+C951U5RR69xWc/8KU8hAFMnFh
+	 z7sXG5EpAVobvUl/FAH8ZalBAnFUW3E5pvEcn7YnVeugwGVTluDaUBfHSGaue2iKD7
+	 CIuvQd8OBb7Nw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Martin Kaiser <martin@kaiser.cx>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 134/715] gpio: vf610: allow disabling the vf610 driver
-Date: Sun, 24 Mar 2024 18:25:13 -0400
-Message-ID: <20240324223455.1342824-135-sashal@kernel.org>
+Subject: [PATCH 6.8 135/715] selftests/bpf: trace_helpers.c: do not use poisoned type
+Date: Sun, 24 Mar 2024 18:25:14 -0400
+Message-ID: <20240324223455.1342824-136-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,41 +63,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Martin Kaiser <martin@kaiser.cx>
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 
-[ Upstream commit f57595788244a838deec2d3be375291327cbc035 ]
+[ Upstream commit a68b50f47bec8bd6a33b07b7e1562db2553981a7 ]
 
-The vf610 gpio driver is enabled by default for all i.MX machines,
-without any option to disable it in a board-specific config file.
+After commit c698eaebdf47 ("selftests/bpf: trace_helpers.c: Optimize
+kallsyms cache") trace_helpers.c now includes libbpf_internal.h, and
+thus can no longer use the u32 type (among others) since they are poison
+in libbpf_internal.h. Replace u32 with __u32 to fix the following error
+when building trace_helpers.c on powerpc:
 
-Most i.MX chipsets have no hardware for this driver. Change the default
-to enable GPIO_VF610 for SOC_VF610 and disable it otherwise.
+  error: attempt to use poisoned "u32"
 
-Add a text description after the bool type, this makes the driver
-selectable by make config etc.
-
-Fixes: 30a35c07d9e9 ("gpio: vf610: drop the SOC_VF610 dependency for GPIO_VF610")
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Fixes: c698eaebdf47 ("selftests/bpf: trace_helpers.c: Optimize kallsyms cache")
+Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Link: https://lore.kernel.org/r/20240202095559.12900-1-shung-hsi.yu@suse.com
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/trace_helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 1301cec94f128..353af1a4d0ace 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -711,7 +711,8 @@ config GPIO_UNIPHIER
- 	  Say yes here to support UniPhier GPIOs.
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index 4faa898ff7fc4..27fd7ed3e4b0c 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -271,7 +271,7 @@ ssize_t get_uprobe_offset(const void *addr)
+ 	 * addi  r2,r2,XXXX
+ 	 */
+ 	{
+-		const u32 *insn = (const u32 *)(uintptr_t)addr;
++		const __u32 *insn = (const __u32 *)(uintptr_t)addr;
  
- config GPIO_VF610
--	def_bool y
-+	bool "VF610 GPIO support"
-+	default y if SOC_VF610
- 	depends on ARCH_MXC
- 	select GPIOLIB_IRQCHIP
- 	help
+ 		if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
+ 		     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
 -- 
 2.43.0
 
