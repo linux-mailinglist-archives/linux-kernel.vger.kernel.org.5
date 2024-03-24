@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-112851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9567887F03
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:08:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F42887F04
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:08:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A779B209AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:08:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54D3D1F214FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0641CD10;
-	Sun, 24 Mar 2024 21:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D70224C2;
+	Sun, 24 Mar 2024 21:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="T/NM5Y/x";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lX/aY3JH"
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
+	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="tFtKub94";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="psCJmSte"
+Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E108D53F;
-	Sun, 24 Mar 2024 21:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7804A18638;
+	Sun, 24 Mar 2024 21:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711314519; cv=none; b=eKWLwop6CfklKfptP53m3hBibjTVfck7vgyXoGLhsq7mZ98sXSHTrqpMauOKLbyLC7wPcZUzE7WqTIlEWWoKmih7rFxmkBLRSu5fcjQoZbAmkwSTPACfbNgMU5A+P/rSPJWEg5QsrRhvK4dcTs+9LYoEb1HF4HX17awHg75CxVc=
+	t=1711314519; cv=none; b=AGPYuoN6MQlZvRZ+1aoWUGXMtxWXza+mKZjbv6vkEyYWRc6EHZDqTv7bOhE/QzlKFEDzUXI1qCGYHraTCNW0+hPyEEIqTs3pkIasOjRu0a7no0sygILRHCd2VO/+oV2ZOjeI6CocpQjHqtCDqd8O92vToDsQEFp0N0jS1ANpjdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711314519; c=relaxed/simple;
-	bh=hpk6Wi6xibmLu2eA9kJTYleFHcU39R9mM9+aJN+WP8g=;
+	bh=+9lyVLF+V8/ecFH+GFD1m49SSS72F78oQ4G9EqPglkU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iLdqW5iXYpqtZtIk45yZVlYHcDyswyiERNWX556qNiyWPmoV1R2W7UvfMwz/sh8XhVszEpTBp0nz17YtehwxAWBh2qBg0baiHa03ZIL56IQMJAoZE6SDIaohu4bhlQ6wXrZMmhQ69Gnzbz9RFpUtS+bw3HqyHNxVDPVxsjF9oJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=T/NM5Y/x; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lX/aY3JH; arc=none smtp.client-ip=103.168.172.156
+	 MIME-Version; b=cLE/jcCBG1fu0pz5/WhxadtVxXMpcjh2XoC1kWUyQqX6w5LIKVjlgAVTDRZX+YShpZV3STxvOPxZn7GKKBHNaLnZ9HIRef15NF2F5zlFEECyKjrPRoOUOyD+ToOSRmqyG263MJLO5Dk7hUfXRCFD1kUb/kcwmIgm2NwX2Rd2BYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=tFtKub94; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=psCJmSte; arc=none smtp.client-ip=103.168.172.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 01C4611400BD;
-	Sun, 24 Mar 2024 17:08:35 -0400 (EDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 0FB9413800E1;
+	Sun, 24 Mar 2024 17:08:36 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sun, 24 Mar 2024 17:08:35 -0400
+  by compute4.internal (MEProxy); Sun, 24 Mar 2024 17:08:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1711314514; x=
-	1711400914; bh=h31yFYMuvD8W4+jwFqiAM6h7FP1FGnBAkqLSOrHU3Lw=; b=T
-	/NM5Y/xMwutq0VrqeHwqRc2r8ppPk9dY1B2IZL8uT9NpuLsalDAujHe0vKOxWN7D
-	kDcR/gLhDd3GPsmlLdfo4AIe/6IdiX6V48z3zZtYtJBE4koHbE5Ykh6M9bnyaTU0
-	xdNCFs9USPfsZL8AFFr1M09w5hBvCUlHaPV/LP/w37Ok86m+3iDg+DLdt8PtOmgu
-	49EBR2KuMVi2c9d1MdofmkjFmvVDoDz/WWY/J8DzIyJFdQ427puh7bmIvNn6by3q
-	J0/Std9DHJaKlaE28IgSAB6RlwaP/aTAUp6HdJeKfkWMYNsd01KbJxKh9sXWrXzN
-	QZbxJaiZbdPsXsStBMFbA==
+	:reply-to:subject:subject:to:to; s=fm3; t=1711314516; x=
+	1711400916; bh=IfP08NkGSU5kw3djwr6jz0i5FQEQ+nuYjW7asb0rxPA=; b=t
+	FtKub94hR63Ps2KzHc0L757lTsZnpUWLbTmBqEYnH79JM5g8qjvO/yHF8T0pH/1k
+	lOfpOrGSoQBBvpWrAuO9w7B5q9LNSlOcDhWwZLOizGuLHpgt0Q4zwoPqrTar44fR
+	gfkCYcvayjPflC43CWrskcriZdkKJt4t+FSYPOR775O4yzSW9uVga4/neivwq7dH
+	10H+N9zH6Lsp7BOKvcHj5IzVcwzyEmX5pAvXqGAd/Zjx3ixLL7vfrBO8/TRti4DR
+	/BRvUhiu9p5B1oJ/2t/JTmW+N4aNfWWbaFg5sUwTEuQTFXIGqbmbgK7TT+nGFtBF
+	JO3TdYbTNO4n4ueB1csgQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711314514; x=
-	1711400914; bh=h31yFYMuvD8W4+jwFqiAM6h7FP1FGnBAkqLSOrHU3Lw=; b=l
-	X/aY3JHbBgmpQojhGhfXeLCwqqnVCMFCSqjoavW14X6VPeYjSpLSLditBG3khcVo
-	Wh4h+IgGHvptPU2/iCZj1S3I+344KNuPSLvOB6xAHUQfSDaua9F9kCJG7486xNPE
-	Xuhv7WSucI+mCrPYwPa8Sq12Vq4S7yBvOvub0cF/Vz2chdvtiNi9LsSYdmlefgm/
-	RYny9wAKEU+2Aw3NXsOcBFR2MitoimbyIyCf/UER+GjA6zYET0zlwzV0Ipd964HX
-	fSUJ+TcAgWdso35kKxAEo+f8d69EBSL4oCDdb9adLIpJKeE0agR52MDErxcM2JNR
-	JzAbE7kKPpt/cLkfkMjyw==
-X-ME-Sender: <xms:UpYAZmi0k0huX4N1N70jkM2iLw3_yK4A05HIypRnLfoK83ZoqnIRhg>
-    <xme:UpYAZnBcz2K8DLpkbYU-TO6rwx-zYoFSrA7rN4TpPezzEC8TgYyLZJzyayi9TOHY1
-    p3asiCyIZ4HI6mGd-c>
-X-ME-Received: <xmr:UpYAZuFT963srjrqy1__Ujkdiitn9JbOru9My5xUw_h1Gjo1US945jCWkb17>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711314516; x=
+	1711400916; bh=IfP08NkGSU5kw3djwr6jz0i5FQEQ+nuYjW7asb0rxPA=; b=p
+	sCJmSteQgyVdA2nkXKyySBt4gnMv3ILVFN3aKsj9eB8Y4cLhiAZBCiltZyw2fMe4
+	qtCknPhMErUOpc765FxpUBL0/uLtNlrNUoWuMp9xtYj9QalQHfUgO1SrgYCn5OtQ
+	MDDqxkpe3zrQJkA7u1OjljuB4w1JeY5FKoo018DQlnDhyr+j4UlO4bHT3+IHywjb
+	ZAAgB/P+CpAD2pixvMJo3nj9IU/N34DGvVT1wRTayc76o2N0LRhCm2Yt19fAUOE2
+	asOiOAOVKJJFnsmkWvyf/UipTVUEGdzmhL5gGnIt4BS5vSRQk3VqnRM1jae2bC3c
+	Eh2vGZlHFNu2DAbWKnXcw==
+X-ME-Sender: <xms:U5YAZm6vXRl1SMu21oDTGD-i3IXqiLkGuJrLpDWfOZDQi6H5Biz74A>
+    <xme:U5YAZv6h3l12vpRcI7KWu7AFgND1xSUgb9M2sknZeTVvKvugAfSxe-Fsm6UK4pdun
+    B6sUyZVliwabGcFjhk>
+X-ME-Received: <xmr:U5YAZleF3Y7q86RFJxxYv-qcKX0_D9ZQdPSIjFLoy3Tl74gHovTdAUUPG2-7>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtjedgudeglecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecuogetfedtuddqtdduucdludehmdenucfjughrpe
@@ -72,14 +72,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtjedgudeglecutefuodetgg
     frrghtthgvrhhnpeeftddvjeefleffvefhgfejjeehudetteeigeeugfekhffhgeejudeu
     teehgfdvffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
     hmpehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggr
-X-ME-Proxy: <xmx:UpYAZvRI-v2pPnEQrqdStZ75-P448KxQavA-owbAUmMKEWUAwo2XoA>
-    <xmx:UpYAZjwMUBZYv_m5Tz0zlrnbGOMReOToiZYPOIKm9Sa1B-Wz088CiA>
-    <xmx:UpYAZt65STtAo-7V_NOXk7myip5IwXwktp3sxTXhhJzIvV8enaHn_A>
-    <xmx:UpYAZgwpp8p0UAXfuqDD43W4wxsRlvE4_J5rpyBxTNcUHp5NV4TC1w>
-    <xmx:UpYAZrgYPPLgGFH8f9mXXrHSzlAvXWNHfy1kPOMmqWohzzAVp8Qj9w>
+X-ME-Proxy: <xmx:U5YAZjJcNX2f-FlyjkuEcm1QdzqUo738g7MZLdRAWVncbCmb6YOMOA>
+    <xmx:U5YAZqLx6NZZorJdstS0RzfNzmQtmIH_sETBSydMLN7yeP2bNDqBpw>
+    <xmx:U5YAZkwKhYjUbt7QkBEnsTZs70_YxMrhXwkHkaAKFqZWp8LKaoEI9g>
+    <xmx:U5YAZuI7k4B3JmQ9DGLneph04VduaJCRg4lVVCuaYu36Mv0SmBBZpQ>
+    <xmx:VJYAZlblMDL0eBqxiVNmS3XqBPd6ozMAO3sjusIrgK29HoNEo7u0VA>
 Feedback-ID: ibe194615:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 24 Mar 2024 17:08:33 -0400 (EDT)
+ 24 Mar 2024 17:08:35 -0400 (EDT)
 From: Mark Pearson <mpearson-lenovo@squebb.ca>
 To: mpearson-lenovo@squebb.ca
 Cc: hdegoede@redhat.com,
@@ -93,12 +93,13 @@ Cc: hdegoede@redhat.com,
 	njoshi1@lenovo.com,
 	vsankar@lenovo.com,
 	peter.hutterer@redhat.com
-Subject: [PATCH 0/4] platform/x86,input: Support for new events on
-Date: Sun, 24 Mar 2024 17:07:57 -0400
-Message-ID: <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
+Subject: [PATCH 1/4] Input: Add trackpoint doubletap and system debug info keycodes
+Date: Sun, 24 Mar 2024 17:07:58 -0400
+Message-ID: <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <mpearson-lenovo@squebb.ca>
+In-Reply-To: <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
 References: <mpearson-lenovo@squebb.ca>
+ <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -107,36 +108,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Add support for new input events on Lenovo laptops that need exporting to
+user space.
 
-This series adds support trackpoint doubletap and some new hotkey
-functionality which is being added on Lenovo laptops.
- - FN+N - display system debug info. Used by customer support with
-   Windows users.
- - FN+G - disable/enable trackpoint doubletap.
+Lenovo trackpoints are adding the ability to generate a doubletap event.
+Add a new keycode to allow this to be used by userspace.
 
-We combined these into a series because there was commonality between
-what the different features were doing.
-Please let us know if you would prefer to have them as separate commits.
+Lenovo support is using FN+N with Windows to collect needed details for
+support cases. Add a keycode so that we'll be able to provide similar
+support on Linux.
 
-Many thanks to Peter Hutterer and Benjamin Tissoires for the guidance on
-what would be best for exporting the events from trackpoint doubletap to
-userspace. Any mistakes are ours :)
+Suggested-by: Peter Hutterer <peter.hutterer@redhat.com>
 
-Features have been tested on Z13 G2 (doubletap & FN+G) and X1 Carbon 
-G12 (FN+N)
+Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
+Signed-off-by: Nitin Joshi <njoshi1@lenovo.com>
+Signed-off-by: Vishnu Sankar <vsankar@lenovo.com>
+---
+ include/uapi/linux/input-event-codes.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Mark Pearson (4):
-  Input: Add trackpoint doubletap and system debug info keycodes
-  platform/x86: thinkpad_acpi: Support for trackpoint doubletap
-  platform/x86: thinkpad_acpi: Support for system debug info hotkey
-  platform/x86: thinkpad_acpi: Support hotkey to disable trackpoint
-    doubletap
-
- drivers/platform/x86/thinkpad_acpi.c   | 31 ++++++++++++++++++++++++++
- include/uapi/linux/input-event-codes.h |  2 ++
- 2 files changed, 33 insertions(+)
-
+diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
+index 03edf2ccdf6c..bd3baca95749 100644
+--- a/include/uapi/linux/input-event-codes.h
++++ b/include/uapi/linux/input-event-codes.h
+@@ -686,6 +686,8 @@
+ #define KEY_SIDEVU_SONAR               0x287
+ #define KEY_NAV_INFO                   0x288
+ #define KEY_BRIGHTNESS_MENU            0x289
++#define KEY_DOUBLECLICK                0x28a
++#define KEY_SYS_DEBUG_INFO             0x28b
+ 
+ /*
+  * Some keyboards have keys which do not have a defined meaning, these keys
 -- 
 2.44.0
 
