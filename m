@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-115044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FB07888CBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B22B888CBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:29:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0B741C2A431
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:29:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F2411C2A441
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:29:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3812EE7C9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917AE2EE7CF;
 	Mon, 25 Mar 2024 00:59:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Njn3pCEL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JZbqh28v"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D252853E1;
-	Sun, 24 Mar 2024 23:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15082853EF;
+	Sun, 24 Mar 2024 23:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323827; cv=none; b=kdPX2Mwd/+D8BV/Xsq5QqtIuW81abLvb05kFwrH98iYCx8JR+NGsfdSiMuWqKpje+4Mr/SdawxkqV02ApO3b4oH+4MM7jAaxRmi4lcALOmwXztwRviXYWmvHptEwaf6KyNL27d1AgIFskE3UOVXR/32haGrd0f29z6wuOBDvltI=
+	t=1711323829; cv=none; b=UYNv8i1bV7z92Eumg4nvlvZCy+X5Tt/kdqyqZWPMfTgydq7USjWF15uKGVpMHwyBr6XwTToKTwUZ1791WGHk6QMJqiQfa6zDy3Ea0IeROWSfgMrvbUQnFbgCX39cZuRsKrQ6FVa9jvfVWkgnRf3Qydp5v5pFDsVVrTRM/wlVlMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323827; c=relaxed/simple;
-	bh=yD4s/Cc2n0W607Y/9dSf8d3YTH3Ld1KqT/zEpJQqr0E=;
+	s=arc-20240116; t=1711323829; c=relaxed/simple;
+	bh=CX/s0lG8wv92EBpeE2scDwH0eIWJbUMNS7rOrrAQdI4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Sum1rnwcAfbREzxfZSRsm8Cwq5EPcxaBEykCb5Gikq9qVghw+qFxu29ptD29SXrJcSOu0jrOvLD494vBDWP+yDwNiYOSvnkAmHsph8jCyBxYviqER5UXZL4xB/xVZmhmLGX8FAbtD9omuxeF9t+o4ZAOWnSdt5MWfBsf0ceMmgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Njn3pCEL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 188B6C433C7;
+	 MIME-Version; b=m+e82Zi4G5RxDXu4LgUVVXQLItrNzUS3RnERxZZNcFzdS4VVGNmEJ1VVNWd0IfddD+A2k5Znk6GrRg4561cfZBPo5gg+BlqoS7Q6O0bhRS4PNUrU6M9XbqHqCpHzwxPxkpV1yWmBTivBQdxr3ekPV8Ky/R9P6+MEUPlai8n/Bnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JZbqh28v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15E5FC43390;
 	Sun, 24 Mar 2024 23:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323826;
-	bh=yD4s/Cc2n0W607Y/9dSf8d3YTH3Ld1KqT/zEpJQqr0E=;
+	s=k20201202; t=1711323827;
+	bh=CX/s0lG8wv92EBpeE2scDwH0eIWJbUMNS7rOrrAQdI4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Njn3pCELI8bpEQ3NYaRack6MI3rmVdhz5cjiqQdzpEZh4iaGbhwwp5UWX9D8X5Gob
-	 mHfjl8FR6hLdOU0+3w8UrD0f48ZyLRPPVkW9O4x0hjSVQ4j67NSODjNoHHYOO1r+bZ
-	 saxdku33LrhvAD7jPTBx34HlaU1j/8mIkllqXOqYlKEo5ZS+hA2ja3cOsGby6A5ZE5
-	 tNrO7rm626GhBchEe3mZF5rCU5KcK/txnCNEKSa2wUBGk3WV+YTVZi7uyncRwXsVsu
-	 0dXhmILacKG+h9ogm5xsHnjgrtKpaGTpKKwB+FOWZLysSmaqtl9myjbwaeaFYoheqd
-	 aLNI3JN0zawVA==
+	b=JZbqh28v6rv4YCrJB4frPZrTgNNowswju7dF1jzp88GMnUFJG0MjhujvZ43kTiuFe
+	 nd1KE1EQWRh/6ILf9F8VooS+ZQ4j0vkIk7E6GhXaihHZdK3MhFwRfKCXqR4BNlpG4+
+	 /EaEqGSpPXKGB7msqy/q37AdAtOSdbzh30WujcOuyh7M7XdXDZcGi4pCS+4cz+2rEP
+	 h4jQok0iu0LiLtv9Qxf1Ovi1sFkRyw/xAaAuMfsWmlZ1gG6yYVSKGUObI7Db39wmvn
+	 QGxbiX8hxhQJm/Q+dbQ2nX4tAD0A89At+bq0ALujuXruziT6cwVR599OPJQYyUdZs2
+	 Suk2a9y83ATtA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: Mathieu Poirier <mathieu.poirier@linaro.org>,
 	Arnaud Pouliquen <arnaud.pouliquen@st.com>,
 	Bjorn Andersson <bjorn.andersson@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 205/238] remoteproc: Add new get_loaded_rsc_table() to rproc_ops
-Date: Sun, 24 Mar 2024 19:39:53 -0400
-Message-ID: <20240324234027.1354210-206-sashal@kernel.org>
+Subject: [PATCH 5.10 206/238] remoteproc: stm32: Move resource table setup to rproc_ops
+Date: Sun, 24 Mar 2024 19:39:54 -0400
+Message-ID: <20240324234027.1354210-207-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -65,121 +65,198 @@ Content-Transfer-Encoding: 8bit
 
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-[ Upstream commit 1a631382be1d22ddab0582dae3498b3d28e2e44a ]
+[ Upstream commit 8a471396d21ca499d89d4071b2b670258f009ffa ]
 
-Add a new get_loaded_rsc_table() operation in order to support
-scenarios where the remoteproc core has booted a remote processor
-and detaches from it.  When re-attaching to the remote processor,
-the core needs to know where the resource table has been placed
-in memory.
+Move the setting of the resource table installed by an external
+entity to rproc_ops::get_loaded_rsc_table().  This is to support
+scenarios where a remote processor has been attached to but is
+detached at a later stage.  To re-attach the remote processor,
+the address of the resource table needs to be available
+at a later time than the platform driver's probe() function.
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Link: https://lore.kernel.org/r/20210312162453.1234145-6-mathieu.poirier@linaro.org
+Link: https://lore.kernel.org/r/20210312162453.1234145-7-mathieu.poirier@linaro.org
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Stable-dep-of: 32381bbccba4 ("remoteproc: stm32: Fix incorrect type in assignment for va")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/remoteproc_core.c     | 32 ++++++++++++++++++++++++
- drivers/remoteproc/remoteproc_internal.h | 10 ++++++++
- include/linux/remoteproc.h               |  6 ++++-
- 3 files changed, 47 insertions(+), 1 deletion(-)
+ drivers/remoteproc/stm32_rproc.c | 141 +++++++++++++++----------------
+ 1 file changed, 68 insertions(+), 73 deletions(-)
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index cc55ff0128cf2..a933e345683c4 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1539,6 +1539,32 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
- 	return ret;
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index 5f12553f0b6d7..b410684c3aa90 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -553,6 +553,73 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
+ 	}
  }
  
-+static int rproc_set_rsc_table(struct rproc *rproc)
++static int stm32_rproc_da_to_pa(struct rproc *rproc,
++				u64 da, phys_addr_t *pa)
 +{
-+	struct resource_table *table_ptr;
-+	struct device *dev = &rproc->dev;
-+	size_t table_sz;
-+	int ret;
++	struct stm32_rproc *ddata = rproc->priv;
++	struct device *dev = rproc->dev.parent;
++	struct stm32_rproc_mem *p_mem;
++	unsigned int i;
 +
-+	table_ptr = rproc_get_loaded_rsc_table(rproc, &table_sz);
-+	if (!table_ptr) {
-+		/* Not having a resource table is acceptable */
++	for (i = 0; i < ddata->nb_rmems; i++) {
++		p_mem = &ddata->rmems[i];
++
++		if (da < p_mem->dev_addr ||
++		    da >= p_mem->dev_addr + p_mem->size)
++			continue;
++
++		*pa = da - p_mem->dev_addr + p_mem->bus_addr;
++		dev_dbg(dev, "da %llx to pa %#x\n", da, *pa);
++
 +		return 0;
 +	}
 +
-+	if (IS_ERR(table_ptr)) {
-+		ret = PTR_ERR(table_ptr);
-+		dev_err(dev, "can't load resource table: %d\n", ret);
-+		return ret;
-+	}
++	dev_err(dev, "can't translate da %llx\n", da);
 +
-+	rproc->cached_table = NULL;
-+	rproc->table_ptr = table_ptr;
-+	rproc->table_sz = table_sz;
-+
-+	return 0;
++	return -EINVAL;
 +}
 +
- /*
-  * Attach to remote processor - similar to rproc_fw_boot() but without
-  * the steps that deal with the firmware image.
-@@ -1558,6 +1584,12 @@ static int rproc_actuate(struct rproc *rproc)
- 		return ret;
- 	}
- 
-+	ret = rproc_set_rsc_table(rproc);
-+	if (ret) {
-+		dev_err(dev, "can't load resource table: %d\n", ret);
-+		goto disable_iommu;
++static struct resource_table *
++stm32_rproc_get_loaded_rsc_table(struct rproc *rproc, size_t *table_sz)
++{
++	struct stm32_rproc *ddata = rproc->priv;
++	struct device *dev = rproc->dev.parent;
++	phys_addr_t rsc_pa;
++	u32 rsc_da;
++	int err;
++
++	/* The resource table has already been mapped, nothing to do */
++	if (ddata->rsc_va)
++		goto done;
++
++	err = regmap_read(ddata->rsctbl.map, ddata->rsctbl.reg, &rsc_da);
++	if (err) {
++		dev_err(dev, "failed to read rsc tbl addr\n");
++		return ERR_PTR(-EINVAL);
 +	}
 +
- 	/* reset max_notifyid */
- 	rproc->max_notifyid = -1;
- 
-diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
-index c34002888d2c3..4f73aac7e60d1 100644
---- a/drivers/remoteproc/remoteproc_internal.h
-+++ b/drivers/remoteproc/remoteproc_internal.h
-@@ -177,6 +177,16 @@ struct resource_table *rproc_find_loaded_rsc_table(struct rproc *rproc,
- 	return NULL;
++	if (!rsc_da)
++		/* no rsc table */
++		return ERR_PTR(-ENOENT);
++
++	err = stm32_rproc_da_to_pa(rproc, rsc_da, &rsc_pa);
++	if (err)
++		return ERR_PTR(err);
++
++	ddata->rsc_va = devm_ioremap_wc(dev, rsc_pa, RSC_TBL_SIZE);
++	if (IS_ERR_OR_NULL(ddata->rsc_va)) {
++		dev_err(dev, "Unable to map memory region: %pa+%zx\n",
++			&rsc_pa, RSC_TBL_SIZE);
++		ddata->rsc_va = NULL;
++		return ERR_PTR(-ENOMEM);
++	}
++
++done:
++	/* Assuming the resource table fits in 1kB is fair */
++	*table_sz = RSC_TBL_SIZE;
++	return (struct resource_table *)ddata->rsc_va;
++}
++
+ static const struct rproc_ops st_rproc_ops = {
+ 	.start		= stm32_rproc_start,
+ 	.stop		= stm32_rproc_stop,
+@@ -561,6 +628,7 @@ static const struct rproc_ops st_rproc_ops = {
+ 	.load		= rproc_elf_load_segments,
+ 	.parse_fw	= stm32_rproc_parse_fw,
+ 	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
++	.get_loaded_rsc_table = stm32_rproc_get_loaded_rsc_table,
+ 	.sanity_check	= rproc_elf_sanity_check,
+ 	.get_boot_addr	= rproc_elf_get_boot_addr,
+ };
+@@ -704,75 +772,6 @@ static int stm32_rproc_get_m4_status(struct stm32_rproc *ddata,
+ 	return regmap_read(ddata->m4_state.map, ddata->m4_state.reg, state);
  }
  
-+static inline
-+struct resource_table *rproc_get_loaded_rsc_table(struct rproc *rproc,
-+						  size_t *size)
-+{
-+	if (rproc->ops->get_loaded_rsc_table)
-+		return rproc->ops->get_loaded_rsc_table(rproc, size);
-+
-+	return NULL;
-+}
-+
- static inline
- bool rproc_u64_fit_in_size_t(u64 val)
+-static int stm32_rproc_da_to_pa(struct platform_device *pdev,
+-				struct stm32_rproc *ddata,
+-				u64 da, phys_addr_t *pa)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct stm32_rproc_mem *p_mem;
+-	unsigned int i;
+-
+-	for (i = 0; i < ddata->nb_rmems; i++) {
+-		p_mem = &ddata->rmems[i];
+-
+-		if (da < p_mem->dev_addr ||
+-		    da >= p_mem->dev_addr + p_mem->size)
+-			continue;
+-
+-		*pa = da - p_mem->dev_addr + p_mem->bus_addr;
+-		dev_dbg(dev, "da %llx to pa %#x\n", da, *pa);
+-
+-		return 0;
+-	}
+-
+-	dev_err(dev, "can't translate da %llx\n", da);
+-
+-	return -EINVAL;
+-}
+-
+-static int stm32_rproc_get_loaded_rsc_table(struct platform_device *pdev,
+-					    struct rproc *rproc,
+-					    struct stm32_rproc *ddata)
+-{
+-	struct device *dev = &pdev->dev;
+-	phys_addr_t rsc_pa;
+-	u32 rsc_da;
+-	int err;
+-
+-	err = regmap_read(ddata->rsctbl.map, ddata->rsctbl.reg, &rsc_da);
+-	if (err) {
+-		dev_err(dev, "failed to read rsc tbl addr\n");
+-		return err;
+-	}
+-
+-	if (!rsc_da)
+-		/* no rsc table */
+-		return 0;
+-
+-	err = stm32_rproc_da_to_pa(pdev, ddata, rsc_da, &rsc_pa);
+-	if (err)
+-		return err;
+-
+-	ddata->rsc_va = devm_ioremap_wc(dev, rsc_pa, RSC_TBL_SIZE);
+-	if (IS_ERR_OR_NULL(ddata->rsc_va)) {
+-		dev_err(dev, "Unable to map memory region: %pa+%zx\n",
+-			&rsc_pa, RSC_TBL_SIZE);
+-		ddata->rsc_va = NULL;
+-		return -ENOMEM;
+-	}
+-
+-	/*
+-	 * The resource table is already loaded in device memory, no need
+-	 * to work with a cached table.
+-	 */
+-	rproc->cached_table = NULL;
+-	/* Assuming the resource table fits in 1kB is fair */
+-	rproc->table_sz = RSC_TBL_SIZE;
+-	rproc->table_ptr = (struct resource_table *)ddata->rsc_va;
+-
+-	return 0;
+-}
+-
+ static int stm32_rproc_probe(struct platform_device *pdev)
  {
-diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-index 3fa3ba6498e87..2546758f13eb0 100644
---- a/include/linux/remoteproc.h
-+++ b/include/linux/remoteproc.h
-@@ -368,7 +368,9 @@ enum rsc_handling_status {
-  * RSC_HANDLED if resource was handled, RSC_IGNORED if not handled and a
-  * negative value on error
-  * @load_rsc_table:	load resource table from firmware image
-- * @find_loaded_rsc_table: find the loaded resouce table
-+ * @find_loaded_rsc_table: find the loaded resource table from firmware image
-+ * @get_loaded_rsc_table: get resource table installed in memory
-+ *			  by external entity
-  * @load:		load firmware to memory, where the remote processor
-  *			expects to find it
-  * @sanity_check:	sanity check the fw image
-@@ -389,6 +391,8 @@ struct rproc_ops {
- 			  int offset, int avail);
- 	struct resource_table *(*find_loaded_rsc_table)(
- 				struct rproc *rproc, const struct firmware *fw);
-+	struct resource_table *(*get_loaded_rsc_table)(
-+				struct rproc *rproc, size_t *size);
- 	int (*load)(struct rproc *rproc, const struct firmware *fw);
- 	int (*sanity_check)(struct rproc *rproc, const struct firmware *fw);
- 	u64 (*get_boot_addr)(struct rproc *rproc, const struct firmware *fw);
+ 	struct device *dev = &pdev->dev;
+@@ -812,10 +811,6 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 		ret = stm32_rproc_parse_memory_regions(rproc);
+ 		if (ret)
+ 			goto free_resources;
+-
+-		ret = stm32_rproc_get_loaded_rsc_table(pdev, rproc, ddata);
+-		if (ret)
+-			goto free_resources;
+ 	}
+ 
+ 	rproc->has_iommu = false;
 -- 
 2.43.0
 
