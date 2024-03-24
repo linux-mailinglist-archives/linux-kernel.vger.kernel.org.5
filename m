@@ -1,106 +1,99 @@
-Return-Path: <linux-kernel+bounces-112647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C20887C82
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:22:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F66887C84
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:30:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB6C2B20CB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:22:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED651C20B7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:30:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B6917735;
-	Sun, 24 Mar 2024 11:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163751773A;
+	Sun, 24 Mar 2024 11:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b="eg84ZX3U"
-Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E8128E7;
-	Sun, 24 Mar 2024 11:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.23
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="N71CAqrt"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2299D7F9;
+	Sun, 24 Mar 2024 11:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711279321; cv=none; b=apXo1OS2fDEEh3A8xdFACNbdeqIe4vDhupWlpMavz9qsdwkp6imv7eIhQhoiNpSRfVvK1DZz55l8gE4Ir0dPPFaLizljqmS2wpKzL69nzi/S1kwz+ANxmztSydw6Y6731b3OTCRZUEOl9mJ38GFAQ4LZpFxeqGaWkt5zTBluzV4=
+	t=1711279841; cv=none; b=lvQVd+wsRefAtEsl2yvJFVMJE01x+qCWoQO5xE4zujmGIHl95l20R/TvP1fUniaL8eDfQMRGSr+nAdu7ABhjofFrc6VfZjUSuoBad4YLLwnoZkKvQGdgX8Nysh16Nlt6rBvVZsC9YMYmT38yFPuhmb/n3EvurXXoStGTeVpW5Wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711279321; c=relaxed/simple;
-	bh=CHiCwMJx97a7aFumYdhFFpr0BdNcgHlVnJDNYCZsuPM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kDsWHMOrsNXr1/NANQNa3dMLmVjPWaiMqi0xE+uzZxbjOix5R6QxfHO7GGo4m+4aeppUilkL5Z5RhACkHe/uJ/mulTsD7pPZObGfc9BvWEsuPhPmfMzxwW1TZEdaFsDK9kMEVdNhdTyDowFLEwoZDPrIoKmjUpz4QTqymUMoyJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com; spf=pass smtp.mailfrom=thefossguy.com; dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b=eg84ZX3U; arc=none smtp.client-ip=185.70.43.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thefossguy.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thefossguy.com;
-	s=protonmail; t=1711279308; x=1711538508;
-	bh=CHiCwMJx97a7aFumYdhFFpr0BdNcgHlVnJDNYCZsuPM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=eg84ZX3UbyCWGStzmB+0bD9GjZ4fgn606vz6QIfuD/mQdedzWjM1fPiCFs9FZGStY
-	 XjL4X7RfBy10J554SUUVuqDECeCmSDw1lIVcGGnobLQw/38l+yS9ArM9a5Jfx0fSWo
-	 f3V6zmmgDXQ2PRcz8GivkibgkC/Dr/ZSl+QBeh7zgRGfBFSRH5+jthYV6cw8LJtbIG
-	 jpr1ZB8XX8yQRvxTna40ASXtf8+JD3DorFCB3EK1ogRJNOQM/J5KftxDxDHYO6tNau
-	 UZMb0XZhw28aBJjTjILCDze3lF//FGIz1IjXaOoRRjh8CS5hBNRsgHV9pI+qTsMUnc
-	 SRECmoe9eVr8Q==
-Date: Sun, 24 Mar 2024 11:21:38 +0000
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-From: Pratham Patel <prathampatel@thefossguy.com>
-Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, heiko@sntech.de, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] arm64: dts: rockchip: disable analog audio for rock-5b
-Message-ID: <TbQeSy-AWAKVHo2Alb8hXUvplVNvohDJ2ztRM1x3Fo5PMmGLMsJxtHR-OIms9FlUshfUD9x45EghBCB9gVtcUPlxeMRUJQ_C95DVhu3AJrk=@thefossguy.com>
-In-Reply-To: <0005257d-8022-4a66-a802-0c920d259ccd@linaro.org>
-References: <20240324062816.145858-1-prathampatel@thefossguy.com> <0005257d-8022-4a66-a802-0c920d259ccd@linaro.org>
-Feedback-ID: 104309535:user:proton
+	s=arc-20240116; t=1711279841; c=relaxed/simple;
+	bh=GoV7N9H3Rf1wTkZrAricLZg1WI/IKToKGh5Ep0OHxng=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H6TkIBU+JiwoBSh1vgNEReWviuWGvhciGrnE0EBTUbg3jLfxB2UGJdc28Rt0caK7BRwWyA2uxzFS2sSvXial5fYl6BYHBDLWB7yNqymh/awidbScE4DeucMhocn2rEgzMoTOf9F7oBur/dOb/ZhhFUO1yUSgZkkUvrocGtm3FS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=N71CAqrt; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=JT3mh
+	3pBXUE1j0Z7V6vKd0YcvAz/Tmr/5mTxbrnRMLI=; b=N71CAqrtACJ/fESGQSwmd
+	0scqgszXr2/ABusiso1N2CE3W8RFaIuxRWQ0fz9r44rDC+jU6x99sCe9UVEY3mdD
+	Psite649DIgfNm90mR4Ei52bDRgEGjOb/ulKDYTlSe3iqMS9ipBXo4QQp80jAwP/
+	R700ke9v8fRpbnxcBWPRcs=
+Received: from ProDesk.. (unknown [103.29.142.67])
+	by gzga-smtp-mta-g2-0 (Coremail) with SMTP id _____wD3f6xjDgBmCswnBw--.40872S2;
+	Sun, 24 Mar 2024 19:28:42 +0800 (CST)
+From: Andy Yan <andyshrk@163.com>
+To: heiko@sntech.de
+Cc: krzysztof.kozlowski+dt@linaro.org,
+	devicetree@vger.kernel.org,
+	dsimic@manjaro.org,
+	conor+dt@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	Andy Yan <andyshrk@163.com>
+Subject: [PATCH] arm64: dts: rockchip: Fix the i2c address of es8316 on Cool Pi CM5
+Date: Sun, 24 Mar 2024 19:28:33 +0800
+Message-Id: <20240324112833.2181961-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3f6xjDgBmCswnBw--.40872S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Ar4kCF48Zr43ZrWDurWfKrg_yoW8GFW8pa
+	13ua9xGr18ur4FqayqqanxWFsrCrnIqFs5Cr17GFyxtr45XryktrnrWryfCryjgF13Za18
+	uF45Zr1DKa1qvaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pi89NxUUUUU=
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBEAarXmVOC9d6HgABsx
 
-On Sunday, March 24th, 2024 at 16:15, Krzysztof Kozlowski <krzysztof.kozlow=
-ski@linaro.org> wrote:
+According to the hardware design, the i2c address of audio codec es8316
+on Cool Pi CM5 is 0x10.
 
->=20
->=20
-> On 24/03/2024 07:28, Pratham Patel wrote:
->=20
-> > The addition of `of: property: fw_devlink: Fix stupid bug in remote-end=
-point parsing`
->=20
->=20
-> Please refer to commits using commit sha () syntax, as mentioned in
-> submitting patches.
+This fix the read/write error like bellow:
+es8316 7-0011: ASoC: error at soc_component_write_no_lock on es8316.7-0011 for register: [0x0000000c] -6
+es8316 7-0011: ASoC: error at soc_component_write_no_lock on es8316.7-0011 for register: [0x00000003] -6
+es8316 7-0011: ASoC: error at soc_component_read_no_lock on es8316.7-0011 for register: [0x00000016] -6
+es8316 7-0011: ASoC: error at soc_component_read_no_lock on es8316.7-0011 for register: [0x00000016] -6
 
-Noticed that in the wiki but didn't do that since the commit hash for the c=
-ommit
-was different in each branch (of the stable tree). Maybe I should have copi=
-ed the SHA
-from Linus' tree. I will do that.
+Fixes: 791c154c3982 ("arm64: dts: rockchip: Add support for rk3588 based board Cool Pi CM5 EVB")
+Signed-off-by: Andy Yan <andyshrk@163.com>
+---
 
-> > + /*
-> > + *analog-sound {
-> > + * compatible =3D "audio-graph-card";
-> > + * label =3D "rk3588-es8316";
->=20
->=20
-> Do not comment out code. Instead disable the nodes and provide
-> appropriate comment describing reason.
+ arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I tried changing the status from okay to disabled. That didn't work. The SB=
-C
-still locked up during boot.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5.dtsi
+index cce1c8e83587..ea8de76b9214 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5.dtsi
+@@ -218,7 +218,7 @@ &i2c7 {
+ 
+ 	es8316: audio-codec@11 {
+ 		compatible = "everest,es8316";
+-		reg = <0x11>;
++		reg = <0x10>;
+ 		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
+ 		assigned-clock-rates = <12288000>;
+ 		clocks = <&cru I2S0_8CH_MCLKOUT>;
+-- 
+2.34.1
 
-> Anyway, this does not look like correct solution. DTS is independent of
-> OS, so bug in fwlink does not matter for DTS. Either DTS is a correct
-> hardware representation or not.
-
-I agree, it's not the correct solution. It is a temporary workaround for th=
-e regression
-caused. I will send more patches once I receive a few more RK3588-based SBC=
-s and investigate.
-
- -- Pratham Patel
 
