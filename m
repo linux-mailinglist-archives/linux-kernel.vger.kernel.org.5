@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-114475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEDC8888B2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E04E988905C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B429EB2B00D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:25:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1045B2CCB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:10:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F73217D239;
-	Sun, 24 Mar 2024 23:43:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEE32853CB;
+	Sun, 24 Mar 2024 23:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lp6Kxfl6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HfLZ9LYx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900AC1428E3;
-	Sun, 24 Mar 2024 23:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7B8156C49;
+	Sun, 24 Mar 2024 23:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321896; cv=none; b=LwlpwKG6crt90GjxnKQpwmdJ9asBK1XFFGgIJ4AUBiKq3g9Z6CZyRPxWZt8jCY2yiX7zV6JQPdRua++MEg0L1yUJUIcVgwYsInJgiW9CAZZtAiLLUrBnBcEbjyYgabODSG1tUGw+Nrp39PZR7g+1LGs5RkfpeBY/QmnHrKS1j/U=
+	t=1711321897; cv=none; b=Sqz1Ik5h4ZD09W3sRY/Mp6iaHPLwrUYQcSBYjU3ZxnWRQ8/JI/iuEO4LiTfibQ0ooEGWfG0TC1w2/+GaaQJajEe1q45CiyLG7fSLH7UiMXf0laGUGpfNino8HmQPNDNS1JbMgxo2mmdAdTqkNzMXXqiyBOCEBjBFTTO0hcPBIoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321896; c=relaxed/simple;
-	bh=MsB8TBSpDG7QfiXn9KQIA9KjjIcJdCytaPbpxU8XlMg=;
+	s=arc-20240116; t=1711321897; c=relaxed/simple;
+	bh=QtPeuKSCloDhnaL1gJF50s6+yRvjF257YTBkRXOS2A0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s5F3hkqMKlIWoD6Rpb0EbJxra38cm7+MSogPhXIAHxtdBsR7nCXw96AhhiJ+C4Wm501INFiurmW/+lLegpyh97DLOyVLqu9oubWRYuMqdUSpR5SHqp5PX1zkcgCDiqAJppG6vepa5Cx3qrfkc4VCGBXJUhYvHmhPSNAx5uo+EHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lp6Kxfl6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8A1EC433F1;
-	Sun, 24 Mar 2024 23:11:34 +0000 (UTC)
+	 MIME-Version; b=aj1q3umvq3QcT/HfZpZ0UUlbe89mfmwk6f7EtWwwZHeA+lgpMgp5RAMxRs3EmBIMc411azO8Yr7HPq9ErhtJW1rSBXxTKqvMA9XxpFHl1pGkwEfTllm/gA6irGuTBRRSCkIyvS66SSNqeeYzmffJEocIl469m9vHCkmB9BnlS88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HfLZ9LYx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B42D9C43390;
+	Sun, 24 Mar 2024 23:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321895;
-	bh=MsB8TBSpDG7QfiXn9KQIA9KjjIcJdCytaPbpxU8XlMg=;
+	s=k20201202; t=1711321896;
+	bh=QtPeuKSCloDhnaL1gJF50s6+yRvjF257YTBkRXOS2A0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Lp6Kxfl6BrlFNOaXdLO2yE/1B8iFbR+IAfEZ8jS7e4RE8W7EGzoUE4nHc1rVYbUT2
-	 EkPjsw/Ct5jSPWVsd6iR42op26Mc1odaTQgefQTNiMC5wWSI6WGfSC0jXfsr7sFDud
-	 ZNX1VonEBB8HeniXjaugrug6WAp4f4lWIbnNbuc2w2lBQsPB299q1Q249ZzwhRNy6c
-	 eqOhsyLJeIwMJJO4i28N82HIPPKcxPKEy3MWMjalIfGIOY0lvpbUYt8KCYEnLK9sgf
-	 Kk3McuWyK9DWLy8LS++Gf5273ACiEL8I3Y/vyPKkpuIVILvZ2JWYknOqpWMx0LYEwN
-	 Dfz5mFUaYrXXQ==
+	b=HfLZ9LYxWIwcEq2B7wQC5VOuQkX3d8/gWEkIDukmp5J9iy1SU7Q8sgAy/Ur5FKvno
+	 nWTKKUoqTTvViQzcGd56CLdwuZCCvdTEPsAFbLH9Kp4W8z6q4rvkHB08zdzDsdIw2a
+	 AQk/j1ForM0hybkm6XLSdgaK6EYYolFEhoJSsjMzazhB/rZRgBPZ27zxm1FuHy/R3M
+	 LPm2hPMiIwe5x20MZfa9sKdDJOYePbL6r/uh7biEsL/d1osueTMpuf8EJ/ho5L65AQ
+	 XVivAh4yT2gpDx+pChUOVKFoYjzG22XM9Vny2c83aObrw6P+pZmQe+RSEuq9mrmvQ0
+	 Dax51umM6KYog==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 624/638] netfilter: nft_set_pipapo: release elements in clone only from destroy path
-Date: Sun, 24 Mar 2024 19:01:01 -0400
-Message-ID: <20240324230116.1348576-625-sashal@kernel.org>
+Subject: [PATCH 6.6 625/638] netfilter: nf_tables: do not compare internal table flags on updates
+Date: Sun, 24 Mar 2024 19:01:02 -0400
+Message-ID: <20240324230116.1348576-626-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,49 +63,30 @@ Content-Transfer-Encoding: 8bit
 
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit b0e256f3dd2ba6532f37c5c22e07cb07a36031ee ]
+[ Upstream commit 4a0e7f2decbf9bd72461226f1f5f7dcc4b08f139 ]
 
-Clone already always provides a current view of the lookup table, use it
-to destroy the set, otherwise it is possible to destroy elements twice.
+Restore skipping transaction if table update does not modify flags.
 
-This fix requires:
-
- 212ed75dc5fb ("netfilter: nf_tables: integrate pipapo into commit protocol")
-
-which came after:
-
- 9827a0e6e23b ("netfilter: nft_set_pipapo: release elements in clone from abort path").
-
-Fixes: 9827a0e6e23b ("netfilter: nft_set_pipapo: release elements in clone from abort path")
+Fixes: 179d9ba5559a ("netfilter: nf_tables: fix table flag updates")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nft_set_pipapo.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index 8e9b200779666..a890aa0abad58 100644
---- a/net/netfilter/nft_set_pipapo.c
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -2238,8 +2238,6 @@ static void nft_pipapo_destroy(const struct nft_ctx *ctx,
- 	if (m) {
- 		rcu_barrier();
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 8808d78d65235..a7f10941a935a 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -1213,7 +1213,7 @@ static int nf_tables_updtable(struct nft_ctx *ctx)
+ 	if (flags & ~NFT_TABLE_F_MASK)
+ 		return -EOPNOTSUPP;
  
--		nft_set_pipapo_match_destroy(ctx, set, m);
--
- 		for_each_possible_cpu(cpu)
- 			pipapo_free_scratch(m, cpu);
- 		free_percpu(m->scratch);
-@@ -2251,8 +2249,7 @@ static void nft_pipapo_destroy(const struct nft_ctx *ctx,
- 	if (priv->clone) {
- 		m = priv->clone;
+-	if (flags == ctx->table->flags)
++	if (flags == (ctx->table->flags & NFT_TABLE_F_MASK))
+ 		return 0;
  
--		if (priv->dirty)
--			nft_set_pipapo_match_destroy(ctx, set, m);
-+		nft_set_pipapo_match_destroy(ctx, set, m);
- 
- 		for_each_possible_cpu(cpu)
- 			pipapo_free_scratch(priv->clone, cpu);
+ 	if ((nft_table_has_owner(ctx->table) &&
 -- 
 2.43.0
 
