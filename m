@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-112763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE818887DE2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:12:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1B56887DE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:12:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 835FD1F20F34
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:12:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68E0428100F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B934CE0E;
-	Sun, 24 Mar 2024 17:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05EDA4E1CC;
+	Sun, 24 Mar 2024 17:07:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOKegucs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jQoIErTO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 853364C634;
-	Sun, 24 Mar 2024 17:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F434DA19;
+	Sun, 24 Mar 2024 17:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711300017; cv=none; b=aXoMk81jbUxQtGo8278D7BdZ4IsmxZrOXdo4JlE92lOtzHZ5FHbfe+OmoH5JVnjhsDzsekVoeHNxPXH7w1YGY8oPe5GvlgKoMyJFnS0g9odqPngoUZvdtuoCMflFX7N297Yiij/r0Qnd85Ic6EPpe/FkuzUtfK1+kVH0izXWUTQ=
+	t=1711300019; cv=none; b=ZqiccywbaYvMxjMjyLQYUB9ld8UmW2QqbEUWZ3Y2prlzpGOwo4rXfDSxQIA38N1v3rBootBUyyLYFysidLiQcXI1CmJFLmvXaF7aJx77vsIOODD3hIE8xMUH0crYgg6M0O0RFlUrIl96BxYghOKColHiZYi3syOdv1r/gEO03yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711300017; c=relaxed/simple;
-	bh=VgyaeUwL81K3JwGawdXWxkuvS3TadJYrMxPFDBxaChY=;
+	s=arc-20240116; t=1711300019; c=relaxed/simple;
+	bh=lR3Xi/J6vCZs/2lccyz/kS1YEygOjpwlUw+FppMtHvA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LekHEbRNfZ2UOr8qTJIoVJePASWz+B6JvVufKpH/fLqqIRRrm+ckOFyt6F5Rmt941+6d9pRxgM52+OfbOCBn8l3XZ7M5x5RygaLgJH/SxNiJcEKkwn5PmQbPGwIMuAcQI/ZYqlaF8iPRRP8qHGs0YDeplJFqgt1jIjly4Td6CzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FOKegucs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2728C43399;
-	Sun, 24 Mar 2024 17:06:55 +0000 (UTC)
+	 MIME-Version; b=ZCv0tDM9oOx1FkysjLm3uE708C72KXjNJaWNl/KMJyN64rvOVpHkS0XQGWlV034x0LXIpYu1aNygutirUGZb7uaCCuMvco+wdhdqO9akIslYAOBlJ40/xP1JEelA3UdMLMxPtg3jKA4reOFT5ztUW8/2Dq12XSOWpzDvA9sO85k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jQoIErTO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88E37C433F1;
+	Sun, 24 Mar 2024 17:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711300017;
-	bh=VgyaeUwL81K3JwGawdXWxkuvS3TadJYrMxPFDBxaChY=;
+	s=k20201202; t=1711300018;
+	bh=lR3Xi/J6vCZs/2lccyz/kS1YEygOjpwlUw+FppMtHvA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FOKegucs+WlLorY8nOAqY4pfhOsTtW7PrPDvyQIDzShFMSNCemEdpV5LwjBB1LNbD
-	 EdZ2gP82yWLnmlj0v2faMS0AUResD+9XPUgaOSJb/8y5DME9n+MPX90HU2lUptD/Lq
-	 MxwAmJabhYOa7dMymBBdqPb2lgGsOEfQIVSovcZ/AqqHpPCcAa1eH/O93oMV1GFYD8
-	 OyLNC3y47ZHK01AXov9GWrl3O1cHoodDE/gTuBgeCBTK/aRI+FCYlQlyYexKaQwGZK
-	 l8zDw5evdphozlAQpPewVycVzvYjveDHk8M1AMbjF4/SMM5aV0EklSxtbuiWBwxsp9
-	 Uv9RIwxf5GbTg==
+	b=jQoIErTOLXzCzuoiUtH3z6AhMwybXFD4V21BFaWEDU300ONntgxcoZ485wb7dCWL0
+	 8GM7epEspNvg1aCF8k7GwIzSBpGiaJ1HeaCcurSnou57lvPxTAS6nx+sx4WwQlBfp5
+	 dd3Mo+5Hx/jUZluupDi23V7jUWtUFkcq2D51R/sc62z5slUe2masl2wrNXSbgpNw96
+	 GGUoxAyCBgByN3l5fRP5D+tEy0t5MhN9q9syTAYsfV8HvxIdKt7ws18FGBfD6jQiIE
+	 lxSVzwdOamb4IkGFjCzlVCgrqNzKmRXowUNudEkPsZZh9BLEzsvkeZaWb4Zz1wb5Qu
+	 6MOv09IieHjpA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -53,9 +53,9 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	joel@joelfernandes.org,
 	josh@joshtriplett.org,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 05/11] rcu-tasks: Maintain lists to eliminate RCU-tasks/do_exit() deadlocks
-Date: Sun, 24 Mar 2024 13:06:35 -0400
-Message-ID: <20240324170645.546220-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 06/11] rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+Date: Sun, 24 Mar 2024 13:06:36 -0400
+Message-ID: <20240324170645.546220-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324170645.546220-1-sashal@kernel.org>
 References: <20240324170645.546220-1-sashal@kernel.org>
@@ -72,16 +72,35 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit 6b70399f9ef3809f6e308fd99dd78b072c1bd05c ]
+[ Upstream commit 1612160b91272f5b1596f499584d6064bf5be794 ]
 
-This commit continues the elimination of deadlocks involving do_exit()
-and RCU tasks by causing exit_tasks_rcu_start() to add the current
-task to a per-CPU list and causing exit_tasks_rcu_stop() to remove the
-current task from whatever list it is on.  These lists will be used to
-track tasks that are exiting, while still accounting for any RCU-tasks
-quiescent states that these tasks pass though.
+Holding a mutex across synchronize_rcu_tasks() and acquiring
+that same mutex in code called from do_exit() after its call to
+exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
+results in deadlock.  This is by design, because tasks that are far
+enough into do_exit() are no longer present on the tasks list, making
+it a bit difficult for RCU Tasks to find them, let alone wait on them
+to do a voluntary context switch.  However, such deadlocks are becoming
+more frequent.  In addition, lockdep currently does not detect such
+deadlocks and they can be difficult to reproduce.
 
-[ paulmck: Apply Frederic Weisbecker feedback. ]
+In addition, if a task voluntarily context switches during that time
+(for example, if it blocks acquiring a mutex), then this task is in an
+RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
+just as well take advantage of that fact.
+
+This commit therefore eliminates these deadlock by replacing the
+SRCU-based wait for do_exit() completion with per-CPU lists of tasks
+currently exiting.  A given task will be on one of these per-CPU lists for
+the same period of time that this task would previously have been in the
+previous SRCU read-side critical section.  These lists enable RCU Tasks
+to find the tasks that have already been removed from the tasks list,
+but that must nevertheless be waited upon.
+
+The RCU Tasks grace period gathers any of these do_exit() tasks that it
+must wait on, and adds them to the list of holdouts.  Per-CPU locking
+and get_task_struct() are used to synchronize addition to and removal
+from these lists.
 
 Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
 
@@ -94,72 +113,116 @@ Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tasks.h | 43 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 33 insertions(+), 10 deletions(-)
+ kernel/rcu/tasks.h | 44 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 28 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 91ed14b83333b..bfbb5090b7b79 100644
+index bfbb5090b7b79..e8b72954ee106 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1148,25 +1148,48 @@ struct task_struct *get_rcu_tasks_gp_kthread(void)
- EXPORT_SYMBOL_GPL(get_rcu_tasks_gp_kthread);
+@@ -146,8 +146,6 @@ static struct rcu_tasks rt_name =							\
+ }
  
- /*
-- * Contribute to protect against tasklist scan blind spot while the
-- * task is exiting and may be removed from the tasklist. See
-- * corresponding synchronize_srcu() for further details.
-+ * Protect against tasklist scan blind spot while the task is exiting and
-+ * may be removed from the tasklist.  Do this by adding the task to yet
-+ * another list.
-+ *
-+ * Note that the task will remove itself from this list, so there is no
-+ * need for get_task_struct(), except in the case where rcu_tasks_pertask()
-+ * adds it to the holdout list, in which case rcu_tasks_pertask() supplies
-+ * the needed get_task_struct().
-  */
--void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
-+void exit_tasks_rcu_start(void)
- {
--	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
-+	unsigned long flags;
-+	struct rcu_tasks_percpu *rtpcp;
-+	struct task_struct *t = current;
+ #ifdef CONFIG_TASKS_RCU
+-/* Track exiting tasks in order to allow them to be waited for. */
+-DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
+ 
+ /* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
+ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
+@@ -852,10 +850,12 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ //	number of voluntary context switches, and add that task to the
+ //	holdout list.
+ // rcu_tasks_postscan():
+-//	Invoke synchronize_srcu() to ensure that all tasks that were
+-//	in the process of exiting (and which thus might not know to
+-//	synchronize with this RCU Tasks grace period) have completed
+-//	exiting.
++//	Gather per-CPU lists of tasks in do_exit() to ensure that all
++//	tasks that were in the process of exiting (and which thus might
++//	not know to synchronize with this RCU Tasks grace period) have
++//	completed exiting.  The synchronize_rcu() in rcu_tasks_postgp()
++//	will take care of any tasks stuck in the non-preemptible region
++//	of do_exit() following its call to exit_tasks_rcu_stop().
+ // check_all_holdout_tasks(), repeatedly until holdout list is empty:
+ //	Scans the holdout list, attempting to identify a quiescent state
+ //	for each task on the list.  If there is a quiescent state, the
+@@ -868,8 +868,10 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ //	with interrupts disabled.
+ //
+ // For each exiting task, the exit_tasks_rcu_start() and
+-// exit_tasks_rcu_finish() functions begin and end, respectively, the SRCU
+-// read-side critical sections waited for by rcu_tasks_postscan().
++// exit_tasks_rcu_finish() functions add and remove, respectively, the
++// current task to a per-CPU list of tasks that rcu_tasks_postscan() must
++// wait on.  This is necessary because rcu_tasks_postscan() must wait on
++// tasks that have already been removed from the global list of tasks.
+ //
+ // Pre-grace-period update-side code is ordered before the grace
+ // via the raw_spin_lock.*rcu_node().  Pre-grace-period read-side code
+@@ -933,9 +935,13 @@ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
+ 	}
+ }
+ 
++void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
++DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
 +
-+	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
-+	preempt_disable();
-+	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
-+	t->rcu_tasks_exit_cpu = smp_processor_id();
-+	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-+	if (!rtpcp->rtp_exit_list.next)
-+		INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
-+	list_add(&t->rcu_tasks_exit_list, &rtpcp->rtp_exit_list);
-+	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-+	preempt_enable();
- }
- 
- /*
-- * Contribute to protect against tasklist scan blind spot while the
-- * task is exiting and may be removed from the tasklist. See
-- * corresponding synchronize_srcu() for further details.
-+ * Remove the task from the "yet another list" because do_exit() is now
-+ * non-preemptible, allowing synchronize_rcu() to wait beyond this point.
-  */
--void exit_tasks_rcu_stop(void) __releases(&tasks_rcu_exit_srcu)
-+void exit_tasks_rcu_stop(void)
+ /* Processing between scanning taskslist and draining the holdout list. */
+ static void rcu_tasks_postscan(struct list_head *hop)
  {
-+	unsigned long flags;
-+	struct rcu_tasks_percpu *rtpcp;
- 	struct task_struct *t = current;
++	int cpu;
+ 	int rtsi = READ_ONCE(rcu_task_stall_info);
  
--	__srcu_read_unlock(&tasks_rcu_exit_srcu, t->rcu_tasks_idx);
-+	WARN_ON_ONCE(list_empty(&t->rcu_tasks_exit_list));
-+	rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, t->rcu_tasks_exit_cpu);
-+	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-+	list_del_init(&t->rcu_tasks_exit_list);
-+	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ 	if (!IS_ENABLED(CONFIG_TINY_RCU)) {
+@@ -949,9 +955,9 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 	 * this, divide the fragile exit path part in two intersecting
+ 	 * read side critical sections:
+ 	 *
+-	 * 1) An _SRCU_ read side starting before calling exit_notify(),
+-	 *    which may remove the task from the tasklist, and ending after
+-	 *    the final preempt_disable() call in do_exit().
++	 * 1) A task_struct list addition before calling exit_notify(),
++	 *    which may remove the task from the tasklist, with the
++	 *    removal after the final preempt_disable() call in do_exit().
+ 	 *
+ 	 * 2) An _RCU_ read side starting with the final preempt_disable()
+ 	 *    call in do_exit() and ending with the final call to schedule()
+@@ -960,7 +966,17 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 	 * This handles the part 1). And postgp will handle part 2) with a
+ 	 * call to synchronize_rcu().
+ 	 */
+-	synchronize_srcu(&tasks_rcu_exit_srcu);
++
++	for_each_possible_cpu(cpu) {
++		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
++		struct task_struct *t;
++
++		raw_spin_lock_irq_rcu_node(rtpcp);
++		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
++			if (list_empty(&t->rcu_tasks_holdout_list))
++				rcu_tasks_pertask(t, hop);
++		raw_spin_unlock_irq_rcu_node(rtpcp);
++	}
+ 
+ 	if (!IS_ENABLED(CONFIG_TINY_RCU))
+ 		del_timer_sync(&tasks_rcu_exit_srcu_stall_timer);
+@@ -1028,7 +1044,6 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
+ 	 *
+ 	 * In addition, this synchronize_rcu() waits for exiting tasks
+ 	 * to complete their final preempt_disable() region of execution,
+-	 * cleaning up after synchronize_srcu(&tasks_rcu_exit_srcu),
+ 	 * enforcing the whole region before tasklist removal until
+ 	 * the final schedule() with TASK_DEAD state to be an RCU TASKS
+ 	 * read side critical section.
+@@ -1036,9 +1051,6 @@ static void rcu_tasks_postgp(struct rcu_tasks *rtp)
+ 	synchronize_rcu();
  }
  
- /*
+-void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
+-DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
+-
+ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
+ {
+ #ifndef CONFIG_TINY_RCU
 -- 
 2.43.0
 
