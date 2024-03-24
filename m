@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-113716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D35EA888637
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:26:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF81B8893CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:38:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87B6B1F24CA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:26:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22CE8291BD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509E4147C8B;
-	Sun, 24 Mar 2024 22:54:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5D21D6861;
+	Mon, 25 Mar 2024 02:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rB9LzNIu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e0hgrQBi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5EAC86AE9;
-	Sun, 24 Mar 2024 22:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDB41DC80A;
+	Sun, 24 Mar 2024 22:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320712; cv=none; b=XHJmDkjyVuJIg92rUcYqwzxz9ycOeQAtlNM52ywgL3FaZ9SeVLqt3H8b66M+nIVrHizAdxSWVAWEm7g3WMubgrkDgyAHaSDs7WFDNbkfLj8UGLZT20bg6VuecPiCT+u8nfT+oS5wGph31deOq+Msg80Z7jyHdIIGWlPm+asC6zM=
+	t=1711320713; cv=none; b=JEecrSD45ta59mS7Vb0zT3QmXYON2C+vFpP0JBMRGtGjztTllEjfuR+oxBgP/XsbOZSp082alGySnLKzzNhpsPdwy7ubMnqXXJMBsHG9ro+hbUzq74io9nMadqOYuhwia6Ntbx9rOwhSr6lsvGq/IBtuCqtkCwMixbuLgyk4cY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320712; c=relaxed/simple;
-	bh=NWPrkaaaSy9kKYxmurUP9GafqEG7VJh8Z50d+eN03o8=;
+	s=arc-20240116; t=1711320713; c=relaxed/simple;
+	bh=xZCKW/24TgRh7+E7gd9pRTBVZMgGEG5kgKUeClJxXso=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZrULZkaBP/hI2HLgt7hWy2TezJGTArBQWSo743SJWbzv0o7Lks0DysUoSrygIXkkvL8V1DwauL5iQ8Ie+tG1j3LmU3IGUEm0opF/13SsmB60+GqD7oY0WP2HXWXwtHG1gBbUxDqCYYqNNTn2gWgkha82SC4Qlt2Cda5Bwu92fw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rB9LzNIu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4168C433C7;
-	Sun, 24 Mar 2024 22:51:51 +0000 (UTC)
+	 MIME-Version; b=lDGCZDh3k2b+2gXNHPTp9RoJLaXncFzUy6h7WRPZc02twMmPJ6C6obpIJt2dkXfyh69banrP3Tvnr14PEaOx/GQmlbRN4P3Fl9pijWmWBnAExmVvOAnqyF4Dxbv8k+3RkIYKXSq7SHFIBlrLiDhDCwuFXw1/Cf/DcrzzyvwYSZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e0hgrQBi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C048BC43390;
+	Sun, 24 Mar 2024 22:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320712;
-	bh=NWPrkaaaSy9kKYxmurUP9GafqEG7VJh8Z50d+eN03o8=;
+	s=k20201202; t=1711320713;
+	bh=xZCKW/24TgRh7+E7gd9pRTBVZMgGEG5kgKUeClJxXso=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rB9LzNIuGdl4fYSbkx7xXO1Y+kXqaWfx1FwIQPe6dLxL/OUl5T3Gl4hoY3h2fXeAE
-	 D1TP5PnePu9DJLbYpeLlF1MAjAOnnaUi4j1KefqNq4yshh5IOwa13JV3VTyEbyOQ0D
-	 xOiIr9mIIwBLyDpJjgZWCsMdlIDzcz6JCx33Q5zTJHWrrQCNUSRxYiQ+kwV3saWeO1
-	 EzBtpj8ZqtQDwu4K+Pko103t3SGvEYtu9RRvgeFssQb7GKESVHewIX5mwxhA/dslXR
-	 vuta00/eRj6L6KWHzLbt3XpmynBcv8xy7XyA2a7zS/n5L2W6kwlTYLU2cvap1nDT9C
-	 xeSCYhWTO/ZCg==
+	b=e0hgrQBid+jtvjw5b2DWQwPxOoIm9lzptNIv29HyG/vvJC7gKtg2496X0GUeabKe4
+	 IvVnPDeSb1rUx+BI3yDdbWOP05CYY/8akcyzbrE/ALBIpDIUuNxv4HuLyYP8tiukTE
+	 q0lBa0Zm8AcOdIL2iYF2EsKswii7ShgOYZ9uJYa4N5buVY2LY84acRrgexeiJJmj4H
+	 VVOfmTlszyK5IugKGTLRbG9ihpTNE0izEs9h2v0dYspRa7l1iQT2Pk8Uo3foZwkZs1
+	 P+6gt+mN7sLr8Vm3CfgEYz5bwMfAW51yEr4QNHy28Z1OoHreM+kVSjBwujtoLJOEP1
+	 cxTGzmrduW5Ew==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hsin-Te Yuan <yuanhsinte@google.com>,
-	Hsin-Te Yuan <yuanhsinte@chromium.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+Cc: Devarsh Thakkar <devarsht@ti.com>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Aradhya Bhatia <a-bhatia1@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 275/713] arm64: dts: mt8195-cherry-tomato: change watchdog reset boot flow
-Date: Sun, 24 Mar 2024 18:40:01 -0400
-Message-ID: <20240324224720.1345309-276-sashal@kernel.org>
+Subject: [PATCH 6.7 276/713] arm64: dts: ti: Add common1 register space for AM65x SoC
+Date: Sun, 24 Mar 2024 18:40:02 -0400
+Message-ID: <20240324224720.1345309-277-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,64 +64,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hsin-Te Yuan <yuanhsinte@google.com>
+From: Devarsh Thakkar <devarsht@ti.com>
 
-[ Upstream commit ef569d5db50e7edd709e482157769a5b3c367e22 ]
+[ Upstream commit 1a5010eade10b409d353b770d97b548b0fbdf5d7 ]
 
-The external output reset signal was originally disabled and sent from
-firmware. However, an unfixed bug in the firmware on tomato prevents
-the signal from being sent, causing the device to fail to boot. To fix
-this, enable external output reset signal to allow the device to reboot
-normally.
+This adds common1 register space for AM65x SoC which is using TI's Keystone
+display hardware and supporting it as described in
+Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
 
-Fixes: 5eb2e303ec6b ("arm64: dts: mediatek: Introduce MT8195 Cherry platform's Tomato")
-Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20240124-send-upstream-v3-1-5097c9862a73@chromium.org
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Fixes: fc539b90eda2 ("arm64: dts: ti: am654: Add DSS node")
+Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+Link: https://lore.kernel.org/r/20240216062426.4170528-3-devarsht@ti.com
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts | 4 ++++
- 3 files changed, 12 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-index 2d5e8f371b6de..a82d716f10d44 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-@@ -23,3 +23,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-index 2586c32ce6e6f..2fe20e0dad836 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-@@ -43,3 +43,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-index f54f9477b99da..dd294ca98194c 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-@@ -44,3 +44,7 @@ &sound {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index 29048d6577cf6..fa2304a7cb1ec 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -1013,9 +1013,10 @@ dss: dss@4a00000 {
+ 		      <0x0 0x04a07000 0x0 0x1000>, /* ovr1 */
+ 		      <0x0 0x04a08000 0x0 0x1000>, /* ovr2 */
+ 		      <0x0 0x04a0a000 0x0 0x1000>, /* vp1 */
+-		      <0x0 0x04a0b000 0x0 0x1000>; /* vp2 */
++		      <0x0 0x04a0b000 0x0 0x1000>, /* vp2 */
++		      <0x0 0x04a01000 0x0 0x1000>; /* common1 */
+ 		reg-names = "common", "vidl1", "vid",
+-			"ovr1", "ovr2", "vp1", "vp2";
++			"ovr1", "ovr2", "vp1", "vp2", "common1";
+ 
+ 		ti,am65x-oldi-io-ctrl = <&dss_oldi_io_ctrl>;
+ 
 -- 
 2.43.0
 
