@@ -1,137 +1,148 @@
-Return-Path: <linux-kernel+bounces-112725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62269887D72
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:22:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268F7887D76
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:26:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D0CF1F212B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:22:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BB231C20ADF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A53218EAF;
-	Sun, 24 Mar 2024 15:22:45 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id BF9D71862F
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 15:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6317C18659;
+	Sun, 24 Mar 2024 15:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="eJiQuMTb"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1852107;
+	Sun, 24 Mar 2024 15:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711293764; cv=none; b=EhmoeCxNugq/GAGzzZw/4fwkGTrdjNonELM+hv36/zBkpvbNjuIeKR0ui36eNXSARGUSqxiDf6xmoKvp3wGEygMi2EaZvKLSsmqR31RWk09yeXN9LfmEH3q01Nf7sgInMN8YFZbKH+xbKM6TmH7VoBit05woKySQwfkiW5EKBmc=
+	t=1711293960; cv=none; b=WBqSjuS9nf+1jI/4WkOeL9i9BkBpvCGKw7WDaLXXMitpm5ABn0vlrRQTGJlyQCmgcko6JVzcbqw9sj7Disa55k2CfznwepBS2uxkCTZjqX6ZHi1YoOepBqdHb/z6FKuiXX5oP+YCk6INg5S1JqWJx4JWIu719ISE5X/L8xUIAm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711293764; c=relaxed/simple;
-	bh=SuH1hMVA2o74FCs6AvGI7dXDMoRLsBXOu5zkwoZfD8Q=;
+	s=arc-20240116; t=1711293960; c=relaxed/simple;
+	bh=4uehC6kd6vVBhjMWaG54gnvU5tDXuRlGD+paJ+A4wNM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=paZMTEiA6+s/fwFzF4qP2nOmUsZTs7NyAreV2doy+2D64sZRYgSZhoZWJRkrp1D3lUgSUkJ5rrRL7vxwSqk2mDCZGptJsJkZgsOXfi1C0nBlMJww8vioO2prYY9kkgTEV7eFR3pl8vOckKWAi17a1gs+T7G44mJDYirci6o2Jm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 820911 invoked by uid 1000); 24 Mar 2024 11:22:41 -0400
-Date: Sun, 24 Mar 2024 11:22:41 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: comex <comexk@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-  Kent Overstreet <kent.overstreet@linux.dev>,
-  Boqun Feng <boqun.feng@gmail.com>,
-  rust-for-linux <rust-for-linux@vger.kernel.org>,
-  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-  llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
-  Alex Gaynor <alex.gaynor@gmail.com>,
-  Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>,
-  =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-  Benno Lossin <benno.lossin@proton.me>,
-  Andreas Hindborg <a.hindborg@samsung.com>,
-  Alice Ryhl <aliceryhl@google.com>, Andrea Parri <parri.andrea@gmail.com>,
-  Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-  Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>,
-  Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>,
-  "Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>,
-  Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>,
-  Nathan Chancellor <nathan@kernel.org>,
-  Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com,
-  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
-  Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
-  Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-  Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-  "H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>,
-  linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <174272a1-e21f-4d85-94ab-f0457bd1c93b@rowland.harvard.edu>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <C85BE4F4-5847-45B4-A973-76B184B35EDE@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AJjyN1JqRM77nh0sGcO9NV7NEGCy8kFi04e3T1x8Mj8mhlOxFvCivlitGSqIQ8W8z1hRHLox+ami86qXHKsQLuNE3C0/KoAV+rXMIb4QsBkaAO8ON1Zw7F0CzuY4K8mPC5VGuX+tX0nsZxIEtXZCY4+ZHhDtvfSwRhbpW9tXkXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=eJiQuMTb; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=Tp7gUCtuROuSbcpwnhbXJLwSPqSbYkCqzDSlfDFnpWI=; b=eJ
+	iQuMTbTSPacdDPPXFm8ZF4DcIkLkDalxUt5Be8FAhI9Cxe9N9sTkqhJxo1YoVsJ+qlSixIYJnp9Ei
+	Kx1NrE41BOIg66jSUd+W+fbyjGar30/kc8pbKGLrFn3ufJgAMoE9qY8hbDBB6wvLCT2OWkYgRp0RI
+	wBgP3Xaa8kGp8cM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1roPiy-00B6N8-ED; Sun, 24 Mar 2024 16:25:28 +0100
+Date: Sun, 24 Mar 2024 16:25:28 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Elad Nachman <enachman@marvell.com>
+Cc: Taras Chornyi <taras.chornyi@plvision.eu>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
+	"thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+	"przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
+	"dkirjanov@suse.de" <dkirjanov@suse.de>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to probe
+ twice
+Message-ID: <6dae31dc-8c4f-4b8d-80e4-120619119326@lunn.ch>
+References: <20240320172008.2989693-1-enachman@marvell.com>
+ <4104387a-d7b5-4029-b822-060ef478c6e3@lunn.ch>
+ <BN9PR18MB42517F8E84C8C18078E45C37DB322@BN9PR18MB4251.namprd18.prod.outlook.com>
+ <89a01616-57c2-4338-b469-695bdc731dee@lunn.ch>
+ <BL1PR18MB42488523A5E05291EA57D0AEDB372@BL1PR18MB4248.namprd18.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <C85BE4F4-5847-45B4-A973-76B184B35EDE@gmail.com>
+In-Reply-To: <BL1PR18MB42488523A5E05291EA57D0AEDB372@BL1PR18MB4248.namprd18.prod.outlook.com>
 
-On Sat, Mar 23, 2024 at 05:40:23PM -0400, comex wrote:
-> That may be true, but the LLVM issue you cited isn’t a good example.  
-> In that issue, the function being miscompiled doesn’t actually use any 
-> barriers or atomics itself; only the scaffolding around it does.  The 
-> same issue would happen even if the scaffolding used LKMM atomics.
+> > > Originally, the pain point for Kory was the rmmod + insmod re-probing
+> > > failure, Which is only fixed by the first two commits, so I see little
+> > > point in submitting 3-5 alone, Without fixing Kory's problem.
+> > 
+> > I thought Kory's problem was actually EPROBE_DEFER? The resources needed
+> > for the PoE are not available, so probing the switch needs to happen again
+> > later, when PoE can get the resources it needs.
 > 
-> For anyone curious: The problematic optimization involves an 
-> allocation (‘p’) that is initially private to the function, but is 
-> returned at the end of the function.  LLVM moves a non-atomic store to 
-> that allocation across an external function call (to ‘foo’).  This 
-> reordering would be blatantly invalid if any other code could observe 
-> the contents of the allocation, but is valid if the allocation is 
-> private to the function.  LLVM assumes the latter: after all, the 
-> pointer to it hasn’t escaped.  Yet.  Except that in a weak memory 
-> model, the escape can ‘time travel’...
+> No, the PoE is the general high level application where he noted the problem.
+> There is no PoE code nor special PoE resources in the Prestera driver.
 
-It's hard to understand exactly what you mean, but consider the 
-following example:
+So here is K�ry email:
 
-int *globalptr;
-int x;
+https://lore.kernel.org/netdev/20240208101005.29e8c7f3@kmaincent-XPS-13-7390/T/#mb898bb2a4bf07776d79f1a19b6a8420716ecb4a3
 
-int *f() {
-	int *p = kzalloc(sizeof(int));
+I don't see why the prestera needs to be involved in PoE itself. It is
+just a MAC. PoE happens much lower down in the network stack. Same as
+Prestera uses phylink, it does not need to know about the PHYs or the
+SFP modules, phylink manages them, not prestera.
 
-	L1: *p = 1;
-	L2: foo();
-	return p;
-}
+> The problem was caused because the module exit was lacking the so called
+> "switch HW reset" API call which would cause the firmware to exit to the firmware
+> loader on the firmware CPU, and move to the state in the state machine when
+> it can receive new firmware from the host CPU (running the Prestera switchDev
+> driver).
+> 
+> > 
+> > But if that is going to take 30 seconds, i'm not sure we can call EPROBE_DEFER
+> > solved.
+> > 
+> > The later patches are pretty simple, don't need discussion, so could be
+> > merged. However, i think we need to explore different possible solutions for
+> > firmware {re}loading.
+> > 
+> > > The problem is not with the hardware, but with the existing firmware
+> > > code on the Firmware cpu, most probably secure-boot protected, which
+> > > lacks the ABIs to report to The kernel what is loaded, what version, what
+> > state, etc.
+> > 
+> > Can you at least tell if it is running firmware?
+> 
+> There is no existing API/ABI for that.
 
-void foo() {
-	smp_store_release(&x, 2);
-}
+Do you at least have the ability to determine if an API call exists or
+not? It sounds like your firmware needs extending to support returning
+the version. If the API is missing, you know it is 4.1 or older. If it
+does exist, it will return 4.2 or higher.
 
-void thread0() {
-	WRITE_ONCE(globalptr, f());
-}
+> > Can you explain the boot in a bit more detail. Are you saying it could be
+> > running an old firmware when the driver first loads? So you need to hit it with
+> 
+> Exactly.
+> 
+> > a reset in order to load the firmware for /lib/firmware, which might be newer
+> > than what it is already running?
+> 
+> Right. And there is also the configuration. There is no telling what kind of
+> Configuration the existing firmware is running. Just using the existing firmware
+> Will lead to the situation where Linux kernel side will report certain configuration
+> (via ip link / ip addr / tc , etc.) but the firmware configuration is completely different.
 
-void thread1() {
-	int m, n;
-	int *q;
+Well, during probe and -EPRODE_DEFER, linux has no configuration,
+since the driver failed to probe. However, for a rmmod/modprobe, the
+firmware could have stale configuration. However pretty much every
+device i've come across has the concept of a software reset which
+clears out the configuration. Seems to be something else your firmware
+is missing.
 
-	m = smp_load_acquire(&x);
-	q = READ_ONCE(globalptr);
-	if (m && q)
-		n = *q;
-}
-
-(If you like, pretend each of these function definitions lives in a 
-different source file -- it doesn't matter.)
-
-With no optimization, whenever thread1() reads *q it will always obtain 
-1, thanks to the store-release in foo() and the load-acquire() in 
-thread1().  But if the compiler swaps L1 and L2 in f() then this is not 
-guaranteed.  On a weakly ordered architecture, thread1() could then get 
-0 from *q.
-
-I don't know if this is what you meant by "in a weak memory model, the 
-escape can ‘time travel'".  Regardless, it seems very clear that any 
-compiler which swaps L1 and L2 in f() has a genuine bug.
-
-Alan Stern
+	Andrew
 
