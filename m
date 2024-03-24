@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-113762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46B8E888676
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:34:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E841889B92
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D4301C25872
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:34:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E242A2A4BDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B64F12D1E4;
-	Sun, 24 Mar 2024 22:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71C921254E;
+	Mon, 25 Mar 2024 02:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZeE0Esa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RlEF2hYx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D761E0E4C;
-	Sun, 24 Mar 2024 22:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07CA1E0E5A;
+	Sun, 24 Mar 2024 22:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320769; cv=none; b=WXOGMuY0aDUxzin82MmXGCgv6a5OdIgOS/jE78dnsYSzcB1SCW7hYbmmDaGt2Pd0XbSzTtk8kMOkW57WP5bW6tZfu/4nGEFTiq8yrpQ8n2j3YToCQ/FAlz2TI39Q25uXYUNoFZUF92DhHCDI15yTHvLUiKzLYPBr3QwJNMoCk+4=
+	t=1711320770; cv=none; b=shkPd7YjOI8P/lriutMRz4Av4NYvfyJZAnl8b1SFls5NqaKalqJ3hAmiS/HAEW1q/yOKtxpAypjG3amptdm5RBpV28+oFz9WefW0p9zS0ia3MsFl63I8pqGGIBNvq6oGXfvSe2wTIs8h0Fmy5qIRYxojuMOFRqYWQKemJBJ5O+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320769; c=relaxed/simple;
-	bh=bu/cLGl0Ou6FdE2ZToeEYLdGrXcfFHwS3SKibvwNMpo=;
+	s=arc-20240116; t=1711320770; c=relaxed/simple;
+	bh=yoUldDTV2NJujGlAxoNcWJ40t+aa06GDaoJ4gRjf/do=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T9KcsYdeIwM2mEnX0wtkxVhaSfr911TMF/gvS9SsQRWltPhFWtpvQ9dLEJ4HT7CS1+ndIG29gQckuKV36Za+GEYK/bwxq54iBZSp+Heb8m+Rtaqo07VPyo04XZfkhW0OLNjxrDB4aYMtXh4jIHikk1dUjvLClfbhiGVCXTYD4/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZeE0Esa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80C8EC433C7;
-	Sun, 24 Mar 2024 22:52:47 +0000 (UTC)
+	 MIME-Version; b=cUakI9hIiRQCtL4QFjBH7Wt7GmTHxysq1M/TscNmw5fpx8sq9EP+DcshtLnfE9ICx427AD7il2zT17zLoQ+P9rYcrw0teX6FMk8+1YzFFcNTTElr6p/7c7VyMUstr//uAuCBRVZAvotAs/EI32fkGwX1mU+JmLdjDZVbcYfK+/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RlEF2hYx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68CD7C43394;
+	Sun, 24 Mar 2024 22:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320768;
-	bh=bu/cLGl0Ou6FdE2ZToeEYLdGrXcfFHwS3SKibvwNMpo=;
+	s=k20201202; t=1711320769;
+	bh=yoUldDTV2NJujGlAxoNcWJ40t+aa06GDaoJ4gRjf/do=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WZeE0Esam30q83VhVPet4u2JrRWJEdrBDQ44jQfpzX9luzq0pDGWtR+QxI1nVSYK4
-	 56WtL/VkoXspyKvB2AxJN86JVg8Ai2DdWclDv4ktDDpJGeqwA+5tVs7VHFBT68hSRn
-	 irV2op3JeyXnQvgOnbzNcNmuwedYV8PVIhj1BRMMjNmFSjeev42CPF+CkVq67bWWjq
-	 07Syogbt0J9ql/Thwgo8lUuy04zwMAwB9XyonvWJzKOgiuf9VAfmHjKKrnyvhR4m6S
-	 /bUgvXHIWQ05CTx6iwBkVr2tfqvNNmH4DhGETbbIL8N8kU//j/82IQ4YTAst8fW2Yq
-	 v5Jz4AlBd/szw==
+	b=RlEF2hYxcq46dXVVG2Nw5TA9+RV6FC2RCh69ffbPRkBwePA401OrBa9Ig54iE2axk
+	 MyK141eyClIgP0a2QaqySBVPOcN4UrUt8LCkDsNlxPlpex+2rGjJqSYA5a/JfA2q0+
+	 9mtpwJlJSR+CDGLWs97TjBaWMxGTBuoiWY//xdjyVamgpmeOmd7jyBNNdPPlzpqGB+
+	 8uFns0VT+7Iq7b35ICXR8JNGwEhD5Cw/2oDO6Rhn7Iy2kpCtq3JLwcJJwrGA5MpyjY
+	 2jrGDdGz2k035nR+po2pat0uQnV9hsp9RpvIDCupCXWIfYPKlVfSiUsgovstj1L7vZ
+	 0lNvuCjWDIwrw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
+Cc: Perry Yuan <perry.yuan@amd.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Gino Badouri <badouri.g@gmail.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 332/713] mmc: wmt-sdmmc: remove an incorrect release_mem_region() call in the .remove function
-Date: Sun, 24 Mar 2024 18:40:58 -0400
-Message-ID: <20240324224720.1345309-333-sashal@kernel.org>
+Subject: [PATCH 6.7 333/713] ACPI: CPPC: enable AMD CPPC V2 support for family 17h processors
+Date: Sun, 24 Mar 2024 18:40:59 -0400
+Message-ID: <20240324224720.1345309-334-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,47 +65,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Perry Yuan <perry.yuan@amd.com>
 
-[ Upstream commit ae5004a40a262d329039b99b62bd3fe7645b66ad ]
+[ Upstream commit a51ab63b297ce9e26e3ffb9be896018a42d5f32f ]
 
-This looks strange to call release_mem_region() in a remove function
-without any request_mem_region() in the probe or "struct resource"
-somewhere.
+As there are some AMD processors which only support CPPC V2 firmware and
+BIOS implementation, the amd_pstate driver will be failed to load when
+system booting with below kernel warning message:
 
-So remove the corresponding code.
+[    0.477523] amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
 
-Fixes: 3a96dff0f828 ("mmc: SD/MMC Host Controller for Wondermedia WM8505/WM8650")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/bb0bb1ed1e18de55e8c0547625bde271e64b8c31.1708983064.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+To make the amd_pstate driver can be loaded on those TR40 processors, it
+needs to match x86_model from 0x30 to 0x7F for family 17H.
+With the change, the system can load amd_pstate driver as expected.
+
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Reported-by: Gino Badouri <badouri.g@gmail.com>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218171
+Fixes: fbd74d1689 ("ACPI: CPPC: Fix enabling CPPC on AMD systems with shared memory")
+Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/wmt-sdmmc.c | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/x86/kernel/acpi/cppc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/wmt-sdmmc.c b/drivers/mmc/host/wmt-sdmmc.c
-index 77d5f1d244899..860380931b6cd 100644
---- a/drivers/mmc/host/wmt-sdmmc.c
-+++ b/drivers/mmc/host/wmt-sdmmc.c
-@@ -883,7 +883,6 @@ static void wmt_mci_remove(struct platform_device *pdev)
- {
- 	struct mmc_host *mmc;
- 	struct wmt_mci_priv *priv;
--	struct resource *res;
- 	u32 reg_tmp;
- 
- 	mmc = platform_get_drvdata(pdev);
-@@ -911,9 +910,6 @@ static void wmt_mci_remove(struct platform_device *pdev)
- 	clk_disable_unprepare(priv->clk_sdmmc);
- 	clk_put(priv->clk_sdmmc);
- 
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(res->start, resource_size(res));
--
- 	mmc_free_host(mmc);
- 
- 	dev_info(&pdev->dev, "WMT MCI device removed\n");
+diff --git a/arch/x86/kernel/acpi/cppc.c b/arch/x86/kernel/acpi/cppc.c
+index 8d8752b44f113..ff8f25faca3dd 100644
+--- a/arch/x86/kernel/acpi/cppc.c
++++ b/arch/x86/kernel/acpi/cppc.c
+@@ -20,7 +20,7 @@ bool cpc_supported_by_cpu(void)
+ 		    (boot_cpu_data.x86_model >= 0x20 && boot_cpu_data.x86_model <= 0x2f)))
+ 			return true;
+ 		else if (boot_cpu_data.x86 == 0x17 &&
+-			 boot_cpu_data.x86_model >= 0x70 && boot_cpu_data.x86_model <= 0x7f)
++			 boot_cpu_data.x86_model >= 0x30 && boot_cpu_data.x86_model <= 0x7f)
+ 			return true;
+ 		return boot_cpu_has(X86_FEATURE_CPPC);
+ 	}
 -- 
 2.43.0
 
