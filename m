@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-113272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 689908882FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:58:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E92F888301
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:58:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09272B221EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:58:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F6F31C230BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5533A18AFE9;
-	Sun, 24 Mar 2024 22:41:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82F618B5F5;
+	Sun, 24 Mar 2024 22:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ft8AyGUj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxmp3J1A"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F7D18AFD7;
-	Sun, 24 Mar 2024 22:41:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A4167A0D;
+	Sun, 24 Mar 2024 22:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320072; cv=none; b=OVI4866mr9FuXer52iqjOr9EONIIP80A0fAhK0RhyhFwtNTzn2kC/+RAM3nMyA3hBdJOXKXGGhjUXXiMKgTER7N29Q7168iLjguuqTLzFY2H827sePR8JWMJRl/OWUEBhKqVmhDC492GEBL3X4SuibyfApunDDcMesZqUeWt/ow=
+	t=1711320074; cv=none; b=TCMclipQChhY60EoqjNEuq9JztZ4Lt+KcRDygAomUdHMTgNH79V+NShU/b48TCo2eSTbKtxbchqA/zO2ukvbtQz41yqYJ2mO3CFwjs33Zv0jE1+br7Stwhm5AYwM/r28OABmhG02OEctzm4/UWikiqyK3iqWhcsb3YiOS4CXe1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320072; c=relaxed/simple;
-	bh=xifQRL+fORxpmntrffE/NQn4dgpIQhHCBsc94lA7hxE=;
+	s=arc-20240116; t=1711320074; c=relaxed/simple;
+	bh=gtdV+/+x84K14c1XoNJ7EP3kgl/E7Qw1TacTh0JRCsA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PPRP7FABPHi/ketZxz5B+EiBjslcPp2+/XGlSHjLXTtkKEebyAJTsdZeIl4Hh7QFWNVioe8a/2LPpbqVAjdbHmJsmY9cIF2lh8zHYiWd6ok5OzrcnrTqGvPaVBzAneqPTJxYFQX0sgXuGS9yCfjqEBFS0z9eOeAFKv9RvXuI7JI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ft8AyGUj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF1BAC43394;
-	Sun, 24 Mar 2024 22:41:11 +0000 (UTC)
+	 MIME-Version; b=pGc74D9AO/SQdbmdz8hy1qq2cc3w9sNzzDblEcq9gT6lxglG7h31WFLXCraiJw4C+I/8DoVBvzsTMedH6cVwBO5Bk/lSc8FlEh4CAr5AzsY655C7cJSK1V/NFSmZJaLz5agAa7bqR9Xzal4gcaSU4bXuN7j7QeRq6S6EgTWDlUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxmp3J1A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 992B0C43390;
+	Sun, 24 Mar 2024 22:41:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320072;
-	bh=xifQRL+fORxpmntrffE/NQn4dgpIQhHCBsc94lA7hxE=;
+	s=k20201202; t=1711320073;
+	bh=gtdV+/+x84K14c1XoNJ7EP3kgl/E7Qw1TacTh0JRCsA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ft8AyGUjPpXmsOzgIheUhqJtLsr3P3e+sZedTXvMj7PKE6LsTROP3v1EnI4iH3X6F
-	 C7Wr14o69aztAZskXcKANpsaUKlVP4mkOD+8TXOP6Nvh1fizzo4dRHtpbHyjW3zdJo
-	 GZlDe32/vYEqYTEvj0D0fXOoHL3sUE+rmShNeOJaoFxayqqxAV2rP5w1zOhIjvPWdU
-	 xSBXqB636DF+Dwud0jjwAdgFdaNeIY9ZfujwrKlkUdPQCtnP0bF86GHh0Nr0yFqIct
-	 BllmGyw8kRfQ1G1vbxpJb7Zv7uS9mNSyA5RUv8eJRCE31zrPZIrlR1ciuNjMkCZE22
-	 4rs3HuoM1nkGQ==
+	b=sxmp3J1AJvEzHSfiWimXFH0a9Em4D506vVVQcxrhtLzcU5Rja18KW8ZKFQ2KH3Rjr
+	 jnuaR2tnrUa3sNK1ARDTLJaCTQ5szJ2C4n9hNOCgBle1Kwv2ZMeLP++0CU8TnmICWh
+	 rQjJj9K8CDBo3tNPVbRIDMxJcSUV05/zOMkpDp6or+ypK4cCrJvioBqAkOjPBhuBxv
+	 PS/TQ1QEBdco3AI1Y5eG7nMHzHbMz2kBXKZJ50d+sgxUZtI+sGfSBaEj1ZRLxHpS5Y
+	 unMFKmDQ1JuU9rip6QNRosSniCfAX/OVMYA15r+oFrI/C3TgI3SrdJE/3iN2I3BugD
+	 z3uqgBzj+AL2A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+	Wyatt Wood <wyatt.wood@amd.com>,
+	Anthony Koo <Anthony.Koo@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 381/715] ALSA: hda: cs35l41: Set Channel Index correctly when system is missing _DSD
-Date: Sun, 24 Mar 2024 18:29:20 -0400
-Message-ID: <20240324223455.1342824-382-sashal@kernel.org>
+Subject: [PATCH 6.8 382/715] drm/amd/display: Fix potential NULL pointer dereferences in 'dcn10_set_output_transfer_func()'
+Date: Sun, 24 Mar 2024 18:29:21 -0400
+Message-ID: <20240324223455.1342824-383-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,66 +66,54 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit 135096ebfab656823d0037102a00776f3914fee3 ]
+[ Upstream commit 9ccfe80d022df7c595f1925afb31de2232900656 ]
 
-Current method to set Channel Index when the system is missing _DSD
-assumes that the channels alternate, which is not guaranteed.
-Instead use the same methodology as the main driver does when _DSD
-exists.
+The 'stream' pointer is used in dcn10_set_output_transfer_func() before
+the check if 'stream' is NULL.
 
-Fixes: 8c4c216db8fb ("ALSA: hda: cs35l41: Add config table to support many laptops without _DSD")
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/../display/dc/hwss/dcn10/dcn10_hwseq.c:1892 dcn10_set_output_transfer_func() warn: variable dereferenced before check 'stream' (see line 1875)
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20240126164005.367021-2-sbinding@opensource.cirrus.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: ddef02de0d71 ("drm/amd/display: add null checks before logging")
+Cc: Wyatt Wood <wyatt.wood@amd.com>
+Cc: Anthony Koo <Anthony.Koo@amd.com>
+Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Anthony Koo <Anthony.Koo@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/cs35l41_hda_property.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index e436d4dab317f..86ddaff915de1 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -210,6 +210,7 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
- 	struct spi_device *spi;
- 	bool dsd_found;
- 	int ret;
-+	int i;
+diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c
+index 6dd479e8a3485..f614bc2806d86 100644
+--- a/drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c
+@@ -1840,6 +1840,9 @@ bool dcn10_set_output_transfer_func(struct dc *dc, struct pipe_ctx *pipe_ctx,
+ {
+ 	struct dpp *dpp = pipe_ctx->plane_res.dpp;
  
- 	for (cfg = cs35l41_config_table; cfg->ssid; cfg++) {
- 		if (!strcasecmp(cfg->ssid, cs35l41->acpi_subsystem_id))
-@@ -295,16 +296,6 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
- 			cs35l41->index = id == 0x40 ? 0 : 1;
- 	}
- 
--	if (cfg->num_amps == 3)
--		/* 3 amps means a center channel, so no duplicate channels */
--		cs35l41->channel_index = 0;
--	else
--		/*
--		 * if 4 amps, there are duplicate channels, so they need different indexes
--		 * if 2 amps, no duplicate channels, channel_index would be 0
--		 */
--		cs35l41->channel_index = cs35l41->index / 2;
--
- 	cs35l41->reset_gpio = fwnode_gpiod_get_index(acpi_fwnode_handle(cs35l41->dacpi), "reset",
- 						     cs35l41->index, GPIOD_OUT_LOW,
- 						     "cs35l41-reset");
-@@ -312,6 +303,11 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
- 
- 	hw_cfg->spk_pos = cfg->channel[cs35l41->index];
- 
-+	cs35l41->channel_index = 0;
-+	for (i = 0; i < cs35l41->index; i++)
-+		if (cfg->channel[i] == hw_cfg->spk_pos)
-+			cs35l41->channel_index++;
++	if (!stream)
++		return false;
 +
- 	if (cfg->boost_type == INTERNAL) {
- 		hw_cfg->bst_type = CS35L41_INT_BOOST;
- 		hw_cfg->bst_ind = cfg->boost_ind_nanohenry;
+ 	if (dpp == NULL)
+ 		return false;
+ 
+@@ -1862,8 +1865,8 @@ bool dcn10_set_output_transfer_func(struct dc *dc, struct pipe_ctx *pipe_ctx,
+ 	} else
+ 		dpp->funcs->dpp_program_regamma_pwl(dpp, NULL, OPP_REGAMMA_BYPASS);
+ 
+-	if (stream != NULL && stream->ctx != NULL &&
+-			stream->out_transfer_func != NULL) {
++	if (stream->ctx &&
++	    stream->out_transfer_func) {
+ 		log_tf(stream->ctx,
+ 				stream->out_transfer_func,
+ 				dpp->regamma_params.hw_points_num);
 -- 
 2.43.0
 
