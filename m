@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547D3888912
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CDC8288890F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85E3C1C27B67
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:44:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A67B1C27B54
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3DF524E3DE;
-	Sun, 24 Mar 2024 23:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90C424E3B4;
+	Sun, 24 Mar 2024 23:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kHNczzss"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SA6/KYzm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9CA20897B;
-	Sun, 24 Mar 2024 23:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C308208979;
+	Sun, 24 Mar 2024 23:05:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321546; cv=none; b=HhLy0V0rgJkRkDg5HvvIBvdV0tPCT0BCri2/QZpkqNwKFOFsS42KTVcLcpkkLbQKRXbBO3lOfauVjejMvBeB/fzUZH2zYJGgLEzHJxQ2S/0cAfnJMNQNNt1crr+CeGyhtPRl75Ze7ewLWTF5pvasCjr8b2G4FbB3bF+16TuehrQ=
+	t=1711321546; cv=none; b=Gf1wSXo3CAxNCJkIx/mt24ZNwrrt9V6UK7GT4Pch5c0NXMU+3nkzNEQt1WbHHlJwbCLhaBUBbylplid4VC51xnD7vdDH62QYYUArkCGvd//P9QzjKhmtzA4L7ZcHhahWiwCwmgDB2eFqhC109TsIW3HQIf3A5kpyoCxdbZ0+8Yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321546; c=relaxed/simple;
-	bh=SshzBxQWI3HSxD262UrFfxJZBE5bBzCQvEdLf58jmno=;
+	bh=gnliY6VElyIEbYJAxbLMX+CdhNylV1UaV2epdCmgx4k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=stUMSUhUnQCGQS4lugSGoKLMtQZGQdf0bpwNbBayNV7x51W3Z/e53qeAbMJgPBPpv9hRwoLZJ7pMqSX+7GOizg/Qo+sMtAKSW5tOE1Ouwcl1C7DQLr4ulYIS2QgiK9pfDELkC3QjNZpOAsqUrxlmNhPo7QWqqnht4FGANeU3+Yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kHNczzss; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B124C43390;
-	Sun, 24 Mar 2024 23:05:44 +0000 (UTC)
+	 MIME-Version; b=F28bi7S5BRA6e4b191H43XN2K5fn82qBaDXcwT2hRK6xj2gvz+zKFz6Jbdxu2pR1PCPzeeAMyrmbnxV6RWggctLYAoP4seyxJZunVrNAH8lGa/Fu+O6IjKtcfhgs+Zwek4NTESssY9plqLuA3aeY8nyvC8SRnTu4oM6+WSRTTug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SA6/KYzm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7313DC43399;
+	Sun, 24 Mar 2024 23:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321545;
-	bh=SshzBxQWI3HSxD262UrFfxJZBE5bBzCQvEdLf58jmno=;
+	s=k20201202; t=1711321546;
+	bh=gnliY6VElyIEbYJAxbLMX+CdhNylV1UaV2epdCmgx4k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kHNczzss6K4FyRx+WY+lPAf05CwnBi69ONgilUAW5L9+XY/1HLwYp6eXpd9ICvxax
-	 V7Evnb3qb0K2VAfqRBMDxzNXqEkPVAVRTFgHY0YFVIi18OXU/e+Nd8uYJxU+ZlGCIF
-	 O4LHaEsTD6+WlOljckZBSMB72D/ZcHr0ecW/fs77Fb6IzDPh4kNEAiOCtHAv1tpIn0
-	 slFWqPwSjDHfZ9JJxWlw/rXGPNEDE6sq1EbHz2fOYA9L4vVw6TkGna3unT7KiAexC6
-	 sjynlpP4/HkiOptKeA2VmsRuXPTYA18cas2/Up3of3k+DOKcwTYkDHar1+QGEmUMLN
-	 Umc3E6dF4YzKA==
+	b=SA6/KYzm9Po6Tg6BDrlzDjtWi+5c5SLJCi28DHBvcReG8GYDSkCAF4in2fLSoW+Vn
+	 Xp+7HgSZ6gUel6rdpqW5ESBcHssqgWuIp47Y/3SCd1ySkdBpMxIRt9nGbz6er1TRKd
+	 Dkf06E6vSb7NG3qQ02WHPCCNNkrpDdJS2Vb8QGszuFbsFJYKrH0xLrusH0DPgQNxH6
+	 tLtSxAL9XaFEykYH9IiRuxRSwC4lv1N3cF7EPbvV/D6wAb6/ncj6AxChaxjSgXeCuo
+	 ZCyQp5I+Xhb5Bc/70GiI4uaREFc04H/4/AkUppzo9I6ugyI31KqN2N5GVmm6TLzG+Q
+	 I02RshSGfGgRg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
+Cc: David McFarland <corngood@gmail.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 273/638] arm64: dts: marvell: reorder crypto interrupts on Armada SoCs
-Date: Sun, 24 Mar 2024 18:55:10 -0400
-Message-ID: <20240324230116.1348576-274-sashal@kernel.org>
+Subject: [PATCH 6.6 274/638] ACPI: resource: Add Infinity laptops to irq1_edge_low_force_override
+Date: Sun, 24 Mar 2024 18:55:11 -0400
+Message-ID: <20240324230116.1348576-275-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -58,88 +58,53 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: David McFarland <corngood@gmail.com>
 
-[ Upstream commit ec55a22149d64f9ac41845d923b884d4a666bf4d ]
+[ Upstream commit e2605d4039a42a03000856b3229932455717b48b ]
 
-Match order specified in binding documentation. It says "mem" should be
-the last interrupt.
+A user reported a keyboard problem similar to ones reported with other
+Zen laptops, on an Infinity E15-5A165-BM.
 
-This fixes:
-arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:0: 'ring0' was expected
-        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
-arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:1: 'ring1' was expected
-        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
-arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:2: 'ring2' was expected
-        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
-arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:3: 'ring3' was expected
-        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
-arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:4: 'eip' was expected
-        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
-arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:5: 'mem' was expected
-        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
+Add board name matches for this model and one (untested) close relative
+to irq1_edge_low_force_override.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Link: https://lemmy.ml/post/9864736
+Link: https://www.infinitygaming.com.au/bios/
+Link: https://lore.kernel.org/linux-acpi/20231006123304.32686-1-hdegoede@redhat.com
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Stable-dep-of: 021a67d09615 ("ACPI: resource: Add MAIBENBEN X577 to irq1_edge_low_force_override")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi  | 10 +++++-----
- arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 10 +++++-----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/acpi/resource.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index e300145ad1a6f..1cc3fa1c354de 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -431,14 +431,14 @@ xor11 {
- 			crypto: crypto@90000 {
- 				compatible = "inside-secure,safexcel-eip97ies";
- 				reg = <0x90000 0x20000>;
--				interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
--					     <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
-+				interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
- 					     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
- 					     <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
- 					     <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>,
--					     <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
--				interrupt-names = "mem", "ring0", "ring1",
--						  "ring2", "ring3", "eip";
-+					     <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-names = "ring0", "ring1", "ring2",
-+						  "ring3", "eip", "mem";
- 				clocks = <&nb_periph_clk 15>;
- 			};
+diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
+index 85ae394e793e6..b8378033117d4 100644
+--- a/drivers/acpi/resource.c
++++ b/drivers/acpi/resource.c
+@@ -550,6 +550,18 @@ static const struct dmi_system_id pcspecialist_laptop[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "GM6BG0Q"),
+ 		},
+ 	},
++	{
++		/* Infinity E15-5A165-BM */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "GM5RG1E0009COM"),
++		},
++	},
++	{
++		/* Infinity E15-5A305-1M */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_NAME, "GM5RGEE0016COM"),
++		},
++	},
+ 	{ }
+ };
  
-diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-index 4ec1aae0a3a9c..7e595ac80043a 100644
---- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-@@ -511,14 +511,14 @@ CP11X_LABEL(sdhci0): mmc@780000 {
- 		CP11X_LABEL(crypto): crypto@800000 {
- 			compatible = "inside-secure,safexcel-eip197b";
- 			reg = <0x800000 0x200000>;
--			interrupts = <87 IRQ_TYPE_LEVEL_HIGH>,
--				<88 IRQ_TYPE_LEVEL_HIGH>,
-+			interrupts = <88 IRQ_TYPE_LEVEL_HIGH>,
- 				<89 IRQ_TYPE_LEVEL_HIGH>,
- 				<90 IRQ_TYPE_LEVEL_HIGH>,
- 				<91 IRQ_TYPE_LEVEL_HIGH>,
--				<92 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "mem", "ring0", "ring1",
--				"ring2", "ring3", "eip";
-+				<92 IRQ_TYPE_LEVEL_HIGH>,
-+				<87 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "ring0", "ring1", "ring2", "ring3",
-+					  "eip", "mem";
- 			clock-names = "core", "reg";
- 			clocks = <&CP11X_LABEL(clk) 1 26>,
- 				 <&CP11X_LABEL(clk) 1 17>;
 -- 
 2.43.0
 
