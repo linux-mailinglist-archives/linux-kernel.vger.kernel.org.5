@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-115560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23F73889C60
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:18:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE67C889C6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D151F28A976
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:18:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BBCC1C2F0B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589BD2A4938;
-	Mon, 25 Mar 2024 02:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B03E2ACB2E;
+	Mon, 25 Mar 2024 02:43:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="exXZorgK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ft/71UfM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968DA1F1AE5;
-	Sun, 24 Mar 2024 22:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF6B1F1ADF;
+	Sun, 24 Mar 2024 22:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321085; cv=none; b=LXo4uJdLQ2ApkmAy3Jc6nP4km9MALo42m8sTLmTirgqKl4zIfOo9ohuQK7SEKcGQOdp13yiHydhro8cJpmmTgw2ot4ui6il8bX9DLrcaqmkisebiYIOElLXrqCPhccX1F27Vkn4wBAHUF+Bvctj1M1beDk/jWBLYGP6iOWa15Gw=
+	t=1711321086; cv=none; b=LBBwRuNTEZaIvaYhQKjGFib4Su9GPXwWCZTAfB/JsVtZPNBQ55dI9DkG0AA47JT0hy3QOxvtbcEay+wChsRoiwY0CfiAsrEuq0+qlFrjuvdFQjAo4FoHGGCkUJQTLRCp/xBbARU0O9EJXiBu9yy+RvSGjW6WiSwjiY9Khvj0cpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321085; c=relaxed/simple;
-	bh=pIMAx/5guFWCXZz7a5DmmTIE8rbWEEKno25pg9I15Mo=;
+	s=arc-20240116; t=1711321086; c=relaxed/simple;
+	bh=NLXg1mMIeDthRs3gevp71oajPJK8l3xOG32jfOjQjjM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Uai0CrcIz+ZlNe7sBx3ZvOdvdhf99556s3llfk7oULPp3pb0wELKbYE7uVPhtqdsPMzdtOIzNBDadPfPyOdTcwSMWJxmdEzZi/cP1VW+qNNcZycSJYLLbTYcVo7X1OThqHYh5OJfAJIViRCXuJmw0JbKPM29ITvpyJBvEjFE1Y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=exXZorgK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA629C43394;
-	Sun, 24 Mar 2024 22:58:04 +0000 (UTC)
+	 MIME-Version; b=EBowotfJGJBv7JQk+hVXtqdnZWkHUolANuCIuQSLcoBu5erQU5Wywbce4D5CKV1OK3Znhft3kyGnlChu0/tvEaXWUz9IfYfYE8xeCg4+61QLvdpUzyP0vJ/kv8NXpCNpWV1RAqN0fwYtrCak505+bP4q8zdAUvN9TEVdQ6fkrzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ft/71UfM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8AA5C433A6;
+	Sun, 24 Mar 2024 22:58:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321085;
-	bh=pIMAx/5guFWCXZz7a5DmmTIE8rbWEEKno25pg9I15Mo=;
+	s=k20201202; t=1711321086;
+	bh=NLXg1mMIeDthRs3gevp71oajPJK8l3xOG32jfOjQjjM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=exXZorgKhtOFdh5rlX1Ds6wM+LZVCBnvfll7SdhBldW/wEbdFhrpZnMk+xtsy3IVY
-	 AsEOfBOIQcqiSRgJDb7pCdJRCiHdGCZGFJye7G0InaQibEyY4+AQXQSh6zhhGWkq00
-	 VEsI0dLbBFiXtVd6DtQxs7NeddoSGW+w7eo0Y+RW4wT25ny4ZI2G9Chii3PFWsUScB
-	 n41vDC4GwZBRQicVrb2QKxmf1QSdK5Guh/3zJ9oWpE/bQMq/mYlFzCPdB8z6troCAz
-	 WKHEX1aOkPI5h4LB8/Bxo30IEnskjAbm0iuVbrXLGM4UOUML1+Jv8Hwq/Z8hD1fpCK
-	 3gx5fbruVeUkw==
+	b=ft/71UfMzMTBvs/EJtBRdqZcmDiywp6Z02ci3uSTpPhRy7ju0BmU28Wc3K6q9lATk
+	 4yXH13jI4knZnOdwfFTggcrY7sycbk6hK+tGtuPu7Da9RjO5Po9bYXk1PIOhcvUBBh
+	 +r1ZBGS3MhzD9uQ+QTpoix08mpkmtS++db0AkUv7rD8Hb8kxEHh7vzGgcc91DOhC89
+	 qyw/937CBlJUFXIp4Qd1zGKSWWUgLIX9YeWlQqWIO8gjFPEvR8NLag+sAD9hpdVN+t
+	 YXuMtULo9S6nzLKGTKo+Mg4Io5rCHoW6xp5X/sA922t8ftufYeT1d9lw9NK7hCYKCz
+	 rbsUamNX443Cw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mete Durlu <meted@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	syzbot+a340daa06412d6028918@syzkaller.appspotmail.com,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Michal Kubiak <michal.kubiak@intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 649/713] s390/vtime: fix average steal time calculation
-Date: Sun, 24 Mar 2024 18:46:15 -0400
-Message-ID: <20240324224720.1345309-650-sashal@kernel.org>
+Subject: [PATCH 6.7 650/713] net/sched: taprio: proper TCA_TAPRIO_TC_ENTRY_INDEX check
+Date: Sun, 24 Mar 2024 18:46:16 -0400
+Message-ID: <20240324224720.1345309-651-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,62 +65,85 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mete Durlu <meted@linux.ibm.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 367c50f78451d3bd7ad70bc5c89f9ba6dec46ca9 ]
+[ Upstream commit 343041b59b7810f9cdca371f445dd43b35c740b1 ]
 
-Current average steal timer calculation produces volatile and inflated
-values. The only user of this value is KVM so far and it uses that to
-decide whether or not to yield the vCPU which is seeing steal time.
-KVM compares average steal timer to a threshold and if the threshold
-is past then it does not allow CPU polling and yields it to host, else
-it keeps the CPU by polling.
-Since KVM's steal time threshold is very low by default (%10) it most
-likely is not effected much by the bloated average steal timer values
-because the operating region is pretty small. However there might be
-new users in the future who might rely on this number. Fix average
-steal timer calculation by changing the formula from:
+taprio_parse_tc_entry() is not correctly checking
+TCA_TAPRIO_TC_ENTRY_INDEX attribute:
 
-	avg_steal_timer = avg_steal_timer / 2 + steal_timer;
+	int tc; // Signed value
 
-to the following:
+	tc = nla_get_u32(tb[TCA_TAPRIO_TC_ENTRY_INDEX]);
+	if (tc >= TC_QOPT_MAX_QUEUE) {
+		NL_SET_ERR_MSG_MOD(extack, "TC entry index out of range");
+		return -ERANGE;
+	}
 
-	avg_steal_timer = (avg_steal_timer + steal_timer) / 2;
+syzbot reported that it could fed arbitary negative values:
 
-This ensures that avg_steal_timer is actually a naive average of steal
-timer values. It now closely follows steal timer values but of course
-in a smoother manner.
+UBSAN: shift-out-of-bounds in net/sched/sch_taprio.c:1722:18
+shift exponent -2147418108 is negative
+CPU: 0 PID: 5066 Comm: syz-executor367 Not tainted 6.8.0-rc7-syzkaller-00136-gc8a5c731fd12 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Call Trace:
+ <TASK>
+  __dump_stack lib/dump_stack.c:88 [inline]
+  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+  ubsan_epilogue lib/ubsan.c:217 [inline]
+  __ubsan_handle_shift_out_of_bounds+0x3c7/0x420 lib/ubsan.c:386
+  taprio_parse_tc_entry net/sched/sch_taprio.c:1722 [inline]
+  taprio_parse_tc_entries net/sched/sch_taprio.c:1768 [inline]
+  taprio_change+0xb87/0x57d0 net/sched/sch_taprio.c:1877
+  taprio_init+0x9da/0xc80 net/sched/sch_taprio.c:2134
+  qdisc_create+0x9d4/0x1190 net/sched/sch_api.c:1355
+  tc_modify_qdisc+0xa26/0x1e40 net/sched/sch_api.c:1776
+  rtnetlink_rcv_msg+0x885/0x1040 net/core/rtnetlink.c:6617
+  netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
+  netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+  netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
+  netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
+  sock_sendmsg_nosec net/socket.c:730 [inline]
+  __sock_sendmsg+0x221/0x270 net/socket.c:745
+  ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
+  ___sys_sendmsg net/socket.c:2638 [inline]
+  __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f1b2dea3759
+Code: 48 83 c4 28 c3 e8 d7 19 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd4de452f8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f1b2def0390 RCX: 00007f1b2dea3759
+RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000004
+RBP: 0000000000000003 R08: 0000555500000000 R09: 0000555500000000
+R10: 0000555500000000 R11: 0000000000000246 R12: 00007ffd4de45340
+R13: 00007ffd4de45310 R14: 0000000000000001 R15: 00007ffd4de45340
 
-Fixes: 152e9b8676c6 ("s390/vtime: steal time exponential moving average")
-Signed-off-by: Mete Durlu <meted@linux.ibm.com>
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: a54fc09e4cba ("net/sched: taprio: allow user input of per-tc max SDU")
+Reported-and-tested-by: syzbot+a340daa06412d6028918@syzkaller.appspotmail.com
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/vtime.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/sched/sch_taprio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/kernel/vtime.c b/arch/s390/kernel/vtime.c
-index e0a88dcaf5cb7..24a18e5ef6e8e 100644
---- a/arch/s390/kernel/vtime.c
-+++ b/arch/s390/kernel/vtime.c
-@@ -210,13 +210,13 @@ void vtime_flush(struct task_struct *tsk)
- 		virt_timer_expire();
+diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+index 31a8252bd09c9..ad99409c6325e 100644
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -1008,7 +1008,8 @@ static const struct nla_policy entry_policy[TCA_TAPRIO_SCHED_ENTRY_MAX + 1] = {
+ };
  
- 	steal = S390_lowcore.steal_timer;
--	avg_steal = S390_lowcore.avg_steal_timer / 2;
-+	avg_steal = S390_lowcore.avg_steal_timer;
- 	if ((s64) steal > 0) {
- 		S390_lowcore.steal_timer = 0;
- 		account_steal_time(cputime_to_nsecs(steal));
- 		avg_steal += steal;
- 	}
--	S390_lowcore.avg_steal_timer = avg_steal;
-+	S390_lowcore.avg_steal_timer = avg_steal / 2;
- }
- 
- static u64 vtime_delta(void)
+ static const struct nla_policy taprio_tc_policy[TCA_TAPRIO_TC_ENTRY_MAX + 1] = {
+-	[TCA_TAPRIO_TC_ENTRY_INDEX]	   = { .type = NLA_U32 },
++	[TCA_TAPRIO_TC_ENTRY_INDEX]	   = NLA_POLICY_MAX(NLA_U32,
++							    TC_QOPT_MAX_QUEUE),
+ 	[TCA_TAPRIO_TC_ENTRY_MAX_SDU]	   = { .type = NLA_U32 },
+ 	[TCA_TAPRIO_TC_ENTRY_FP]	   = NLA_POLICY_RANGE(NLA_U32,
+ 							      TC_FP_EXPRESS,
 -- 
 2.43.0
 
