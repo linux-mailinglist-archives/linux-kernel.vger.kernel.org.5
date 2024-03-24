@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-113705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A12888E51
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:14:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE362888624
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5F261C2B037
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:14:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BAA31C25769
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752AB1292C7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4561292CC;
 	Sun, 24 Mar 2024 22:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VqqfrSvl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S81hY8g5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0172E144D1F;
-	Sun, 24 Mar 2024 22:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F84144D27;
+	Sun, 24 Mar 2024 22:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320684; cv=none; b=AfdVGiXHxLKZB3I2B3rcQPISKBqprold2pV41MDnIx4uhCN2yOEtHD5R6nsG4AnLfjHJdKpzF17PKzFbmtTh8t34mPnj7gKNrKWhtpotNT4IKgf9CkebCZo9cHQ89Z8WwTyUaGrPPGKTLIyIAlGH0s48e3rN13DMPnLiiALr2oA=
+	t=1711320685; cv=none; b=W2tdxrZgCvSvWsRMheuow7Jh0SBpCvz09ewwIjVKpKq02xK/4/JMr8ac0yDDHk/zaTvYC1Ew1YC0agkPMeq12lgzOm7K1vBoeg6ZUyyJXvkBapInkKY5KGKA6wg1LzzdBmKQ5xERDzTAY29auhSdwV2i3P/dcy4qrznsIAiK4vQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320684; c=relaxed/simple;
-	bh=xxrcHK3u9+N9bxYZFwHB6zkQtYX/lIuKUvyAgZsqUQs=;
+	s=arc-20240116; t=1711320685; c=relaxed/simple;
+	bh=z9jUFiSp3MUg0mH6coUgrT0+E54jL2MUqfmnswH9CjU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FtSPs0z8MDdPbXwIhCu3tezXJospLMQWByPUJ1FddyYZQexhjPhH7uK0mcqIehCA3ZqSJ1bA48D4d4SVqmqbdmvXs3NjioFEnGWTbAbduGMq65QQdrSRT1ev38H/WLZJs5aex26cWXlrb7+n9V5nOvVA7HFW2DDR5hRVVi4nQng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VqqfrSvl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22540C43390;
-	Sun, 24 Mar 2024 22:51:23 +0000 (UTC)
+	 MIME-Version; b=aUPH+VDhFYoyrWoUdR+NY4y0esLmH1lb0zbD1oNz3wFI/fDazzsH12u760MYeR39oe8ShWQIPn76wej0u8yPCe9pvJMgCS3+vIjcvBC9ySNBFJEQ6FVF68+wr0NhzHO5lCIujIjv9wnkajfl13n0cnK6IXw97FcieQx0+OP3Tic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S81hY8g5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D991C43141;
+	Sun, 24 Mar 2024 22:51:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320683;
-	bh=xxrcHK3u9+N9bxYZFwHB6zkQtYX/lIuKUvyAgZsqUQs=;
+	s=k20201202; t=1711320684;
+	bh=z9jUFiSp3MUg0mH6coUgrT0+E54jL2MUqfmnswH9CjU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VqqfrSvl48C5+kLT4lYUqmBwoKrG+6LY/VOULt/NLuENB8SHQsaUrlzLqrtUHjFGd
-	 wR5RyCd/xfZaOLTfdMYAugB2r81v/1Dp3ndkvuZ7o0AcaXgIGR14+GuBZp4tHTvk29
-	 ufTt4ZUymlarS7B4G3X+9I6+0rPbyEAHT9AAwdtIHjn7OZdoTJOvpj2FK5Zrf+vrmU
-	 tzkA3wkShx+bfyO7mMXtcsy3E0A+JwKy8mb+il+ZIhBhvLzDiVr3+Kh8ICrQoNUDwH
-	 bg5IxlRIJQOzPopPnu7g4m1uBKZt0DScHsDW6WczzEwWyRTjoKyQDZgDSloVa5z8N/
-	 PmzVd1mAYIpZQ==
+	b=S81hY8g5OQ1Nw/ZK8Dcit3jLd9Zo5OaYiqVrbVZWvi8gOJl21Ko8DXoIOVGhVWBas
+	 qP108h/MtK0ZVjbCyC41PWWIGszdTc2g225PeD55LYKzPO5x3D0qM6ZbACoEVn0Gam
+	 tW9aSCvXq64cb9W13FHWVJ6S8sFkBGIVE/KeVTPM6Z2BaVR32wDA8rErSaH+VVgeVB
+	 fH0Vyi2pB7qi4BfYO8CuDtcNyaX3q0LN17AoI6rjKUEXxHJnPPtAu6j1oxdbHYwB9V
+	 HwEKHPMzmxevj7PoAtViudvmjaLuGzUn9eNsqShzbEc7Iy50BnsfPcJKFRehxsS8zC
+	 vn5ov24NisslQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+Cc: Markus Schneider-Pargmann <msp@baylibre.com>,
+	Judith Mendez <jm@ti.com>,
+	Simon Horman <horms@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 246/713] arm64: dts: mediatek: mt7622: add missing "device_type" to memory nodes
-Date: Sun, 24 Mar 2024 18:39:32 -0400
-Message-ID: <20240324224720.1345309-247-sashal@kernel.org>
+Subject: [PATCH 6.7 247/713] can: m_can: Start/Cancel polling timer together with interrupts
+Date: Sun, 24 Mar 2024 18:39:33 -0400
+Message-ID: <20240324224720.1345309-248-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -59,56 +60,84 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Markus Schneider-Pargmann <msp@baylibre.com>
 
-[ Upstream commit 99d100e00144bc01b49a697f4bc4398f2f7e7ce4 ]
+[ Upstream commit a163c5761019b94258ca655b27b46e82657fd6f5 ]
 
-This fixes:
-arch/arm64/boot/dts/mediatek/mt7622-rfb1.dtb: /: memory@40000000: 'device_type' is a required property
-        from schema $id: http://devicetree.org/schemas/memory.yaml#
-arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dtb: /: memory@40000000: 'device_type' is a required property
-        from schema $id: http://devicetree.org/schemas/memory.yaml#
+Interrupts are enabled/disabled in more places than just m_can_start()
+and m_can_stop(). Couple the polling timer with enabling/disabling of
+all interrupts to achieve equivalent behavior.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20240122132357.31264-1-zajec5@gmail.com
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Judith Mendez <jm@ti.com>
+Fixes: b382380c0d2d ("can: m_can: Add hrtimer to generate software interrupt")
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Link: https://lore.kernel.org/all/20240207093220.2681425-2-msp@baylibre.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts | 1 +
- arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts             | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/net/can/m_can/m_can.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-index c46682150e502..26cb3268ccbaa 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-@@ -75,6 +75,7 @@ led-1 {
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 16ecc11c7f62a..2395b1225cc8a 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -418,6 +418,13 @@ static void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
  
- 	memory@40000000 {
- 		reg = <0 0x40000000 0 0x40000000>;
-+		device_type = "memory";
- 	};
+ static inline void m_can_enable_all_interrupts(struct m_can_classdev *cdev)
+ {
++	if (!cdev->net->irq) {
++		dev_dbg(cdev->dev, "Start hrtimer\n");
++		hrtimer_start(&cdev->hrtimer,
++			      ms_to_ktime(HRTIMER_POLL_INTERVAL_MS),
++			      HRTIMER_MODE_REL_PINNED);
++	}
++
+ 	/* Only interrupt line 0 is used in this driver */
+ 	m_can_write(cdev, M_CAN_ILE, ILE_EINT0);
+ }
+@@ -425,6 +432,11 @@ static inline void m_can_enable_all_interrupts(struct m_can_classdev *cdev)
+ static inline void m_can_disable_all_interrupts(struct m_can_classdev *cdev)
+ {
+ 	m_can_write(cdev, M_CAN_ILE, 0x0);
++
++	if (!cdev->net->irq) {
++		dev_dbg(cdev->dev, "Stop hrtimer\n");
++		hrtimer_cancel(&cdev->hrtimer);
++	}
+ }
  
- 	reg_1p8v: regulator-1p8v {
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts b/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-index 2dc1bdc74e212..5c26021fc4cf1 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-@@ -57,6 +57,7 @@ key-wps {
+ /* Retrieve internal timestamp counter from TSCV.TSC, and shift it to 32-bit
+@@ -1417,12 +1429,6 @@ static int m_can_start(struct net_device *dev)
  
- 	memory@40000000 {
- 		reg = <0 0x40000000 0 0x20000000>;
-+		device_type = "memory";
- 	};
+ 	m_can_enable_all_interrupts(cdev);
  
- 	reg_1p8v: regulator-1p8v {
+-	if (!dev->irq) {
+-		dev_dbg(cdev->dev, "Start hrtimer\n");
+-		hrtimer_start(&cdev->hrtimer, ms_to_ktime(HRTIMER_POLL_INTERVAL_MS),
+-			      HRTIMER_MODE_REL_PINNED);
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -1577,11 +1583,6 @@ static void m_can_stop(struct net_device *dev)
+ {
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
+ 
+-	if (!dev->irq) {
+-		dev_dbg(cdev->dev, "Stop hrtimer\n");
+-		hrtimer_cancel(&cdev->hrtimer);
+-	}
+-
+ 	/* disable all interrupts */
+ 	m_can_disable_all_interrupts(cdev);
+ 
 -- 
 2.43.0
 
