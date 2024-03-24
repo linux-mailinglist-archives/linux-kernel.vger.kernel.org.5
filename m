@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFC06889556
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:25:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E18468891CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:48:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D1131C2F8D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E3131C2D432
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:48:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391F528BD2A;
-	Mon, 25 Mar 2024 03:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFF81BBCF5;
+	Mon, 25 Mar 2024 00:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ErgS/hqJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E93yB//g"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5C71769FD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B6A27B104;
 	Sun, 24 Mar 2024 23:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323503; cv=none; b=ny5+01ggd81YnVpVo95Ns2r1vLDNX00fs4A1zFsfwjiWZ/jRfD46hKCsMewJ8W+MXe3+la5BsTGb69CesNpeMqMutxxqg07x/P98EORY2CdeojNvZGNsjjJQgN0ilYZIK4CK4w5O64ysqASbo9bZ0QrjlYNGoyCqkT78j0Ruyuw=
+	t=1711323504; cv=none; b=mpZeCrLOMlcF02QFyOCpr7/2dfcnxXbnv7Qd69RRDBnSM1j/iKvPA05JoQxaNdoVc3VIFWm4NixiXxcwUHOUlLNxC+d6ZpiG5Z74NOZ4mac2KFmjz41wR0mlYFi/w1Gd95MnpUzTPkxoe8pxQsBf5JBbRzLn++sqddxVeH3NAoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323503; c=relaxed/simple;
-	bh=vzvGbXL+49eDjUdw6sUa8nAJ5qfNhT2THOeIEtzub5M=;
+	s=arc-20240116; t=1711323504; c=relaxed/simple;
+	bh=0Eg9GoRURLgZukSzhlo77FcQHJEdGPmW8mmGZ5+MOeM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mypi+hEq0DAwhEcfGGXfT7dOyGdIqYaDWR+F1bC1yPCzrlzBNEHmGDHgaDu+8tTY5QjAowu9yQOdudeAIexLmsHajvAnZnVnb3O/8yeqGtLafTEidxWoopL6dgnl0YwUB3rdHmrQyhr1wH6n+OsjVEEm+i58GPGZrcj8t/9sjkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ErgS/hqJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CB17C433C7;
-	Sun, 24 Mar 2024 23:38:21 +0000 (UTC)
+	 MIME-Version; b=V9MiZRByj0MTght9g+eLroB3pTAogGtsT9f/G6DHAMypQTzhzc5cpolK4HnGcBQbnf6SztWYKaQT+VVf0xjGcgimYCSkOq77+VuhsogU3A4dR2faBbjvX1KBZkcQJ2263KySQ7KbUvcPGzBoUoR7Nxpo+R9VTVvki6gxrznKBHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E93yB//g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 330C0C43399;
+	Sun, 24 Mar 2024 23:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323501;
-	bh=vzvGbXL+49eDjUdw6sUa8nAJ5qfNhT2THOeIEtzub5M=;
+	s=k20201202; t=1711323502;
+	bh=0Eg9GoRURLgZukSzhlo77FcQHJEdGPmW8mmGZ5+MOeM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ErgS/hqJ3OAEIucrhdGZg2TSe9eTDKv6ojOqW9YDSMnBaAPGqIYnuqAU8VBbSeQOq
-	 Z/N8a6pj0R0C2DvSY619pw3PKtxOjWBRJmVfkY9lnqm3eWcwJN0+86x5YHuX+MAKoU
-	 QzUZHOAAtqZJa6F5HtxnrFH0SQnU8Ve4aKAIlovH9Hd9eFGRAP3C/uvpKi/4c1jjng
-	 hef5c064lmWcQdu8ZogwknBi/cIHaKT5H4YlIGbkt2IE6j6oydFePYsL9YWPwH83C7
-	 0FeqHg36Ln91mLIjwjnFiI3aVCUmF9+M3Oax7l6m9uL+n6mEpWW7XQX1uuKJzgb2u2
-	 GXT7ggi4DC7rA==
+	b=E93yB//ge0VM5CKhf1NIDuf4DH2FP/wzKzAxRd2rjxDQjqv37D+k+ZpFl0mPmCrGO
+	 5lamaniHpqt0fsUM+Ii5Y8sJYxxNrW9OFXBDnWJsSUhJWFaFEZD8kCuLAwnBItsIr0
+	 t18UaPvS3/0g3PUi7nJFgM21QeD417ozgnpXC7pOyoj+DGo3aOqqW+aOdHiSCg7gmV
+	 +aRxo03im2JTfyDHZ77IZkzprRen6NGtHtEXPuQhCx/EPgaj6UqPUFmtyrUm/mOjhG
+	 tUrFMlT5kjo+mOmQJVnMtMUrHI1z1vEMOq4XTsVMSzLlV2GgKw+vtidb7ACQxwAsom
+	 CBIAQCRhoGFrA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jernej Skrabec <jernej.skrabec@gmail.com>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 207/317] media: sun8i-di: Fix coefficient writes
-Date: Sun, 24 Mar 2024 19:33:07 -0400
-Message-ID: <20240324233458.1352854-208-sashal@kernel.org>
+Subject: [PATCH 5.15 208/317] media: sun8i-di: Fix power on/off sequences
+Date: Sun, 24 Mar 2024 19:33:08 -0400
+Message-ID: <20240324233458.1352854-209-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -64,98 +64,84 @@ Content-Transfer-Encoding: 8bit
 
 From: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-[ Upstream commit 794b581f8c6eb7b60fe468ccb96dd3cd38ff779f ]
+[ Upstream commit cff104e33bad38f4b2c8d58816a7accfaa2879f9 ]
 
-Currently coefficients are applied only once, since they don't change.
-However, this is done before enable bit is set and thus it doesn't get
-applied properly.
-
-Fix that by applying coefficients after enable bit is set. While this
-means that it will be done evey time, it doesn't bring much time
-penalty.
+According to user manual, reset line should be deasserted before clocks
+are enabled. Also fix power down sequence to be reverse of that.
 
 Fixes: a4260ea49547 ("media: sun4i: Add H3 deinterlace driver")
 Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../media/platform/sunxi/sun8i-di/sun8i-di.c  | 42 +++++++++----------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ .../media/platform/sunxi/sun8i-di/sun8i-di.c  | 25 ++++++++++---------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-index 671e4a928993d..073a61c094183 100644
+index 073a61c094183..8faf93c418ed5 100644
 --- a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
 +++ b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-@@ -66,6 +66,7 @@ static void deinterlace_device_run(void *priv)
- 	struct vb2_v4l2_buffer *src, *dst;
- 	unsigned int hstep, vstep;
- 	dma_addr_t addr;
-+	int i;
+@@ -933,11 +933,18 @@ static int deinterlace_runtime_resume(struct device *device)
+ 		return ret;
+ 	}
  
- 	src = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
- 	dst = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
-@@ -160,6 +161,26 @@ static void deinterlace_device_run(void *priv)
- 	deinterlace_write(dev, DEINTERLACE_CH1_HORZ_FACT, hstep);
- 	deinterlace_write(dev, DEINTERLACE_CH1_VERT_FACT, vstep);
- 
-+	/* neutral filter coefficients */
-+	deinterlace_set_bits(dev, DEINTERLACE_FRM_CTRL,
-+			     DEINTERLACE_FRM_CTRL_COEF_ACCESS);
-+	readl_poll_timeout(dev->base + DEINTERLACE_STATUS, val,
-+			   val & DEINTERLACE_STATUS_COEF_STATUS, 2, 40);
++	ret = reset_control_deassert(dev->rstc);
++	if (ret) {
++		dev_err(dev->dev, "Failed to apply reset\n");
 +
-+	for (i = 0; i < 32; i++) {
-+		deinterlace_write(dev, DEINTERLACE_CH0_HORZ_COEF0 + i * 4,
-+				  DEINTERLACE_IDENTITY_COEF);
-+		deinterlace_write(dev, DEINTERLACE_CH0_VERT_COEF + i * 4,
-+				  DEINTERLACE_IDENTITY_COEF);
-+		deinterlace_write(dev, DEINTERLACE_CH1_HORZ_COEF0 + i * 4,
-+				  DEINTERLACE_IDENTITY_COEF);
-+		deinterlace_write(dev, DEINTERLACE_CH1_VERT_COEF + i * 4,
-+				  DEINTERLACE_IDENTITY_COEF);
++		goto err_exclusive_rate;
 +	}
 +
-+	deinterlace_clr_set_bits(dev, DEINTERLACE_FRM_CTRL,
-+				 DEINTERLACE_FRM_CTRL_COEF_ACCESS, 0);
-+
- 	deinterlace_clr_set_bits(dev, DEINTERLACE_FIELD_CTRL,
- 				 DEINTERLACE_FIELD_CTRL_FIELD_CNT_MSK,
- 				 DEINTERLACE_FIELD_CTRL_FIELD_CNT(ctx->field));
-@@ -248,7 +269,6 @@ static irqreturn_t deinterlace_irq(int irq, void *data)
- static void deinterlace_init(struct deinterlace_dev *dev)
- {
- 	u32 val;
--	int i;
+ 	ret = clk_prepare_enable(dev->bus_clk);
+ 	if (ret) {
+ 		dev_err(dev->dev, "Failed to enable bus clock\n");
  
- 	deinterlace_write(dev, DEINTERLACE_BYPASS,
- 			  DEINTERLACE_BYPASS_CSC);
-@@ -285,26 +305,6 @@ static void deinterlace_init(struct deinterlace_dev *dev)
- 	deinterlace_clr_set_bits(dev, DEINTERLACE_CHROMA_DIFF,
- 				 DEINTERLACE_CHROMA_DIFF_TH_MSK,
- 				 DEINTERLACE_CHROMA_DIFF_TH(5));
+-		goto err_exclusive_rate;
++		goto err_rst;
+ 	}
+ 
+ 	ret = clk_prepare_enable(dev->mod_clk);
+@@ -954,23 +961,16 @@ static int deinterlace_runtime_resume(struct device *device)
+ 		goto err_mod_clk;
+ 	}
+ 
+-	ret = reset_control_deassert(dev->rstc);
+-	if (ret) {
+-		dev_err(dev->dev, "Failed to apply reset\n");
 -
--	/* neutral filter coefficients */
--	deinterlace_set_bits(dev, DEINTERLACE_FRM_CTRL,
--			     DEINTERLACE_FRM_CTRL_COEF_ACCESS);
--	readl_poll_timeout(dev->base + DEINTERLACE_STATUS, val,
--			   val & DEINTERLACE_STATUS_COEF_STATUS, 2, 40);
--
--	for (i = 0; i < 32; i++) {
--		deinterlace_write(dev, DEINTERLACE_CH0_HORZ_COEF0 + i * 4,
--				  DEINTERLACE_IDENTITY_COEF);
--		deinterlace_write(dev, DEINTERLACE_CH0_VERT_COEF + i * 4,
--				  DEINTERLACE_IDENTITY_COEF);
--		deinterlace_write(dev, DEINTERLACE_CH1_HORZ_COEF0 + i * 4,
--				  DEINTERLACE_IDENTITY_COEF);
--		deinterlace_write(dev, DEINTERLACE_CH1_VERT_COEF + i * 4,
--				  DEINTERLACE_IDENTITY_COEF);
+-		goto err_ram_clk;
 -	}
 -
--	deinterlace_clr_set_bits(dev, DEINTERLACE_FRM_CTRL,
--				 DEINTERLACE_FRM_CTRL_COEF_ACCESS, 0);
- }
+ 	deinterlace_init(dev);
  
- static inline struct deinterlace_ctx *deinterlace_file2ctx(struct file *file)
+ 	return 0;
+ 
+-err_ram_clk:
+-	clk_disable_unprepare(dev->ram_clk);
+ err_mod_clk:
+ 	clk_disable_unprepare(dev->mod_clk);
+ err_bus_clk:
+ 	clk_disable_unprepare(dev->bus_clk);
++err_rst:
++	reset_control_assert(dev->rstc);
+ err_exclusive_rate:
+ 	clk_rate_exclusive_put(dev->mod_clk);
+ 
+@@ -981,11 +981,12 @@ static int deinterlace_runtime_suspend(struct device *device)
+ {
+ 	struct deinterlace_dev *dev = dev_get_drvdata(device);
+ 
+-	reset_control_assert(dev->rstc);
+-
+ 	clk_disable_unprepare(dev->ram_clk);
+ 	clk_disable_unprepare(dev->mod_clk);
+ 	clk_disable_unprepare(dev->bus_clk);
++
++	reset_control_assert(dev->rstc);
++
+ 	clk_rate_exclusive_put(dev->mod_clk);
+ 
+ 	return 0;
 -- 
 2.43.0
 
