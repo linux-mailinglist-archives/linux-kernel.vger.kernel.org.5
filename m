@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE500889B52
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:49:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE012888AF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:35:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5021BB2D7C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:51:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CB921F2716E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E22339003B;
-	Mon, 25 Mar 2024 03:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A408F292291;
+	Sun, 24 Mar 2024 23:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aGjqGG+p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rqwh4oRO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C6522BBE3;
-	Sun, 24 Mar 2024 23:16:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BA422BBFD;
+	Sun, 24 Mar 2024 23:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322170; cv=none; b=OdMY8mcMJXCYL82I+THkWvZxRcfX0+/khtv63HC6sdMm7wx2QSqO5A4wRoCQoDkcoh+7w1qj8vbC48+Ie5B2AoJxtpVos9dJZg1otbL55lbZHmIcyxjklEeqmHhMl/V8UQZhwikUZLoQlw5pwPIxAXLW62q8mKQ/YgbfdLj8aJM=
+	t=1711322171; cv=none; b=d7cdYFcH7sx47Z+Blrd+t1G1GyrJMQivg0ZoCf/HLbvOee/c6ZpkY4R5fk8UalUE6UU2QWYe5/gq66tCsS/PI1cKKuQI4LK58i+bAZHuLRd8oXoi7dnbfpdrbR7X/FsluSh9TfSfcWN3gX2rLXG6/VKgY8E+GKv9MDQnTRf4byE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322170; c=relaxed/simple;
-	bh=HMi0+x9nx54yQycau/GhhoDRdzUG5BNhX56pSJ+Iofc=;
+	s=arc-20240116; t=1711322171; c=relaxed/simple;
+	bh=913GoMK36PT+jGJN6eA4lIn3nEjpZjuN7+RaXAOia38=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IMsbnOLKBUNiBRqyyaGafZfNuiEdzZb2rbCmEHx5FDT1RzTMACeNVE+dM70SskWaoxkebZUQkVSo6cpkw/AozBF7pA124rmqu122Idb/3rr3xkS9jGd8duSMYJXuodWI+WRosIlZHMLT4QiBnGWpsM+IbGB8D3SO6zUCAoGh7WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aGjqGG+p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF35C433C7;
+	 MIME-Version; b=Um5Qowg2w4SXuHKpcZbb45ug8dPSWobnv+R9Ng3GdRI8k7DJ/atR8c2GUGAUgYkXEFcigu738BxpLKN48U7NZIlZ1O5Y2zYWBqKph/92zt6EVRMbMv+TznTCPU2UssqDd7Vmw2Q0/nghBVpHxjfXn3I6lleJP76Fjkz3bXaAiFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rqwh4oRO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13BA5C43394;
 	Sun, 24 Mar 2024 23:16:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322169;
-	bh=HMi0+x9nx54yQycau/GhhoDRdzUG5BNhX56pSJ+Iofc=;
+	s=k20201202; t=1711322170;
+	bh=913GoMK36PT+jGJN6eA4lIn3nEjpZjuN7+RaXAOia38=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aGjqGG+pQMkGoQXONQ3TDW7JWzjHHdSwndG23SP6v24mDUR1kLlKd5a17ardUkPyX
-	 GMaJP8c/gAWseJMiKFb93YVvpTmtW46JyDp2A15rN85zRW5FPqHj/khcGdRSBaNl74
-	 D+xzI1eefPwXAt5PAi/MZvOTH7PieV1ChhGZD/ksgLev5yoxZWG2TTcKIU3FbtFtON
-	 JOf8kcBDbZYmY1R0lvy2sbYEL52Up+Xo/jM5FnNbMIYSsTDufrYbRQoh5UqNLjdJ3F
-	 rT0ORADPPX9HRl+Uc4vxU3prZyzKWnr2Ag86Nkl5Es5t62Qhs2FAE5xcYImPfTfFum
-	 /UjrkaJc1zJpg==
+	b=rqwh4oROV+OI1CfRseyJ0NVlEngV6Rp8umyMC6WlEA7HwmGimP3UEBFXiF8e7EzgJ
+	 lDZGV+10HtNAsZDirSUu9ErVD4x/MFonRT+SAYV0JNGCBLLSTo5Rcqz+3clx5ruti+
+	 aVG6NUxTJd1vJMpQNdFrpuxUFtJd3mP5cKLvgLPDydGGdNmlDjuE4jpsEGZRyr5mzR
+	 e+ztgSSCqq22Y82Jx+dQm3IIHJ1qZNZwTf+3p5/wcTcVfNn2mFP5pFZhaDZl4rML7L
+	 oiRbsAO5f3DkXfjkAbMZdnop8cPZVWLRh31WiCDPkrwFmMffh3AgtCJebkV+upV15K
+	 6vKUY1YyrBrtA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-	Quentin Schulz <foss+kernel@0leil.net>,
-	Heiko Stuebner <heiko@sntech.de>,
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>,
+	Douglas Anderson <dianders@chromium.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 248/451] drm/rockchip: lvds: do not print scary message when probing defer
-Date: Sun, 24 Mar 2024 19:08:44 -0400
-Message-ID: <20240324231207.1351418-249-sashal@kernel.org>
+Subject: [PATCH 6.1 249/451] drm/panel-edp: use put_sync in unprepare
+Date: Sun, 24 Mar 2024 19:08:45 -0400
+Message-ID: <20240324231207.1351418-250-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -63,39 +62,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit 52d11c863ac92e36a0365249f7f6d27ac48c78bc ]
+[ Upstream commit 49ddab089611ae5ddd0201ddbbf633da75bfcc25 ]
 
-This scary message can misled the user into thinking something bad has
-happened and needs to be fixed, however it could simply be part of a
-normal boot process where EPROBE_DEFER is taken into account. Therefore,
-let's use dev_err_probe so that this message doesn't get shown (by
-default) when the return code is EPROBE_DEFER.
+Some edp panel requires T10 (Delay from end of valid video data transmitted
+by the Source device to power-off) less than 500ms. Using autosuspend with
+delay set as 1000 violates this requirement.
 
-Fixes: 34cc0aa25456 ("drm/rockchip: Add support for Rockchip Soc LVDS")
-Cc: Quentin Schulz <foss+kernel@0leil.net>
-Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231120-rk-lvds-defer-msg-v2-2-9c59a5779cf9@theobroma-systems.com
+Use put_sync_suspend in unprepare to meet the spec. For other cases (such
+as getting EDID), it still uses autosuspend.
+
+Suggested-by: Douglas Anderson <dianders@chromium.org>
+Fixes: 3235b0f20a0a ("drm/panel: panel-simple: Use runtime pm to avoid excessive unprepare / prepare")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231220221418.2610185-1-hsinyi@chromium.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rockchip/rockchip_lvds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/panel/panel-edp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-index 1fde888cdd827..eb4a108c5bd2a 100644
---- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-@@ -577,7 +577,7 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
- 		ret = -EINVAL;
- 		goto err_put_port;
- 	} else if (ret) {
--		DRM_DEV_ERROR(dev, "failed to find panel and bridge node\n");
-+		dev_err_probe(dev, ret, "failed to find panel and bridge node\n");
- 		goto err_put_port;
- 	}
- 	if (lvds->panel)
+diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
+index 42584d8a9aeb6..bfcddd4aa9322 100644
+--- a/drivers/gpu/drm/panel/panel-edp.c
++++ b/drivers/gpu/drm/panel/panel-edp.c
+@@ -413,8 +413,7 @@ static int panel_edp_unprepare(struct drm_panel *panel)
+ 	if (!p->prepared)
+ 		return 0;
+ 
+-	pm_runtime_mark_last_busy(panel->dev);
+-	ret = pm_runtime_put_autosuspend(panel->dev);
++	ret = pm_runtime_put_sync_suspend(panel->dev);
+ 	if (ret < 0)
+ 		return ret;
+ 	p->prepared = false;
 -- 
 2.43.0
 
