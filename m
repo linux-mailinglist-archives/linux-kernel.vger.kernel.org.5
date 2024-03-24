@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A56E8888612
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:23:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D16A3888613
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:23:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 590C11F2489A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:23:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706C21F2490D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1401E3866;
-	Sun, 24 Mar 2024 22:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D905C128381;
+	Sun, 24 Mar 2024 22:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/n3ljvA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tiFGIXcE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B1E1DA141;
-	Sun, 24 Mar 2024 22:51:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7622C1DA14B;
+	Sun, 24 Mar 2024 22:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320671; cv=none; b=imH2iRcAOoscZbwWeE4OzQ8qoIGUGcbUrZ11lcMbEOmW6lDNPlBOQ/5tlUCs9Cphx4V/RwVbSJZzdldPb4KJ4pu1mreCEbTZcWSd+g1KS1CUz2g/rhSy6PND+LidiUgc0Tr1L0Ii3rLMHMJJdY7rFuODxBDH3G39jj1JI6qfVUo=
+	t=1711320672; cv=none; b=i5H8AtXAIKi5L5qlHqH9psOFv4wbHs8h2gfNkL/o4qsPebHIp6m2CxrUQKKC/ryeZOnzESmJfJKDOwud0ak4gG1XcvpuU95mMO4e4FSyunaJ3zutjcJFGrPe8D0q+U0e523iOPr+lDRwY9Y7ByBNWHanAceQEU239UrSZKQq5ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320671; c=relaxed/simple;
-	bh=of02US8bUUeHmltBhwO0q0jgCHO9nnXXigQFqbU83BU=;
+	s=arc-20240116; t=1711320672; c=relaxed/simple;
+	bh=PixZTdAIXb+apt1+3VrFpubrgiRaiLYdNla0aHXf+/Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y/tcxlBDh2Y+raXvTUeUeaNgMFXW4u+0oTjYWxEdO84Y6fLF+RdQC/fFwKEU3HNd6TXaICD7ke4EF4ObAbJpl5VdVm8sx5KNy8kj3UjwXMszPXVZe0eYHady/hu/dQHe+14izF2SWu/xrKyVVG+siGfgNh/ZRZZoq355WroeqNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R/n3ljvA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFF36C433F1;
-	Sun, 24 Mar 2024 22:51:09 +0000 (UTC)
+	 MIME-Version; b=EURAH6kIKEarO07pYi+BT+63t0UHi9H4h2Gxz4cVhNz9eOKdSr9c2bzJDaYpnf98muGbVnXoWmqgpFVeSrKd4fztGd5UNVLROxXMcUcYGuEtiT0Eshj+shzja1p8E9SwNtCGC4eZnn1NbI+BhdeJYgna7M+zzqVun1dzuWj/vPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tiFGIXcE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99AEEC433C7;
+	Sun, 24 Mar 2024 22:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320670;
-	bh=of02US8bUUeHmltBhwO0q0jgCHO9nnXXigQFqbU83BU=;
+	s=k20201202; t=1711320671;
+	bh=PixZTdAIXb+apt1+3VrFpubrgiRaiLYdNla0aHXf+/Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R/n3ljvABtYRz0ze8zFqIHVQm9T/Do+MoG2uJhBbSxgyH5hWoAD0GgRWE+HSrOeKg
-	 oIvOoe79UzVWBMqXxxfTweD5tzMT40IBd3LEHgT5L45HvVQ0HJcA3D8Ncxj2FZlNS3
-	 /GHQMQF7VvPzxEE7n7gD+3bqi5P3L8c1fQaVd3lnwWsOiZeTfDKu8JJxWrHanxRdTe
-	 DSNmehPYwczhdD492ZD87NX1KYam2R6qChgHxrh4EuaOnOyINOO+ri88C/RhV48sjA
-	 GBWGlVbs61XEdsuVgfApXTgHByJWRsBJcQwsE3dspsqvdkKnSM6y49XieqQ+L9Kpvi
-	 OAi7drf71BhUQ==
+	b=tiFGIXcEE76B2RYEH4rM3usAbm/fbBJoL3Xcn7Uj9+gHIgCHPxBisJPOhP1qQpNcw
+	 mS9hAfcllMq+BpLDgOhOnzXOMtrHi3dYq3yesg5KKVyds/3Zv61nD75aoBRJmLJTvE
+	 mQDuiYp4MtdNuxUS1oFaZXOSJ7Mf1XHuMj6UTe2PTGZW4hL6STXPf+sCwNe2aD4ZFJ
+	 yvMkxQ07Ldz+K6xB3fp94iFgKTH7ELm9ylUV0JIeCtOJtFLFsIKWu+b/6lKxnht/kl
+	 HWgawzvssseAA+qPtLM61jaajUEhG2TJMMa6hu5On6VuN06PdJ6XybMRv+XrTIhfmf
+	 MXrK6L77TpjAQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Petr Machata <petrm@nvidia.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Ido Schimmel <idosch@nvidia.com>,
+	Simon Horman <horms@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 233/713] selftests: forwarding: Add missing config entries
-Date: Sun, 24 Mar 2024 18:39:19 -0400
-Message-ID: <20240324224720.1345309-234-sashal@kernel.org>
+Subject: [PATCH 6.7 234/713] selftests: forwarding: Add missing multicast routing config entries
+Date: Sun, 24 Mar 2024 18:39:20 -0400
+Message-ID: <20240324224720.1345309-235-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,81 +63,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Petr Machata <petrm@nvidia.com>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit 4acf4e62cd572b0c806035046b3698f5585ab821 ]
+[ Upstream commit f0ddf15f0a74c27eb4b2271a90e69948acc3fa2c ]
 
-The config file contains a partial kernel configuration to be used by
-`virtme-configkernel --custom'. The presumption is that the config file
-contains all Kconfig options needed by the selftests from the directory.
+The two tests that make use of multicast routig (router.sh and
+router_multicast.sh) are currently failing in the netdev CI because the
+kernel is missing multicast routing support.
 
-In net/forwarding/config, many are missing, which manifests as spurious
-failures when running the selftests, with messages about unknown device
-types, qdisc kinds or classifier actions. Add the missing configurations.
+Fix by adding the required config entries.
 
-Tested the resulting configuration using virtme-ng as follows:
-
- # vng -b -f tools/testing/selftests/net/forwarding/config
- # vng --user root
- (within the VM:)
- # make -C tools/testing/selftests TARGETS=net/forwarding run_tests
-
-Signed-off-by: Petr Machata <petrm@nvidia.com>
-Link: https://lore.kernel.org/r/025abded7ff9cea5874a7fe35dcd3fd41bf5e6ac.1706286755.git.petrm@nvidia.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Stable-dep-of: f0ddf15f0a74 ("selftests: forwarding: Add missing multicast routing config entries")
+Fixes: 6d4efada3b82 ("selftests: forwarding: Add multicast routing test")
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Link: https://lore.kernel.org/r/20240208165538.1303021-1-idosch@nvidia.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/forwarding/config | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ tools/testing/selftests/net/forwarding/config | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/tools/testing/selftests/net/forwarding/config b/tools/testing/selftests/net/forwarding/config
-index 697994a9278bb..ba23435145827 100644
+index ba23435145827..8d7a1a004b7c3 100644
 --- a/tools/testing/selftests/net/forwarding/config
 +++ b/tools/testing/selftests/net/forwarding/config
-@@ -6,14 +6,42 @@ CONFIG_IPV6_MULTIPLE_TABLES=y
- CONFIG_NET_VRF=m
- CONFIG_BPF_SYSCALL=y
- CONFIG_CGROUP_BPF=y
-+CONFIG_DUMMY=m
-+CONFIG_IPV6=y
-+CONFIG_IPV6_GRE=m
-+CONFIG_MACVLAN=m
+@@ -9,6 +9,13 @@ CONFIG_CGROUP_BPF=y
+ CONFIG_DUMMY=m
+ CONFIG_IPV6=y
+ CONFIG_IPV6_GRE=m
++CONFIG_IPV6_MROUTE=y
++CONFIG_IPV6_MROUTE_MULTIPLE_TABLES=y
++CONFIG_IPV6_PIMSM_V2=y
++CONFIG_IP_MROUTE=y
++CONFIG_IP_MROUTE_MULTIPLE_TABLES=y
++CONFIG_IP_PIMSM_V1=y
++CONFIG_IP_PIMSM_V2=y
+ CONFIG_MACVLAN=m
  CONFIG_NET_ACT_CT=m
  CONFIG_NET_ACT_MIRRED=m
- CONFIG_NET_ACT_MPLS=m
-+CONFIG_NET_ACT_PEDIT=m
-+CONFIG_NET_ACT_POLICE=m
-+CONFIG_NET_ACT_SAMPLE=m
-+CONFIG_NET_ACT_SKBEDIT=m
-+CONFIG_NET_ACT_TUNNEL_KEY=m
- CONFIG_NET_ACT_VLAN=m
- CONFIG_NET_CLS_FLOWER=m
- CONFIG_NET_CLS_MATCHALL=m
-+CONFIG_NET_CLS_BASIC=m
-+CONFIG_NET_EMATCH=y
-+CONFIG_NET_EMATCH_META=m
-+CONFIG_NET_IPGRE=m
-+CONFIG_NET_IPGRE_DEMUX=m
-+CONFIG_NET_IPIP=m
-+CONFIG_NET_SCH_ETS=m
- CONFIG_NET_SCH_INGRESS=m
- CONFIG_NET_ACT_GACT=m
-+CONFIG_NET_SCH_PRIO=m
-+CONFIG_NET_SCH_RED=m
-+CONFIG_NET_SCH_TBF=m
-+CONFIG_NET_TC_SKB_EXT=y
-+CONFIG_NET_TEAM=y
-+CONFIG_NET_TEAM_MODE_LOADBALANCE=y
-+CONFIG_NETFILTER=y
-+CONFIG_NF_CONNTRACK=m
-+CONFIG_NF_FLOW_TABLE=m
-+CONFIG_NF_TABLES=m
- CONFIG_VETH=m
- CONFIG_NAMESPACES=y
- CONFIG_NET_NS=y
-+CONFIG_VXLAN=m
-+CONFIG_XFRM_USER=m
 -- 
 2.43.0
 
