@@ -1,57 +1,53 @@
-Return-Path: <linux-kernel+bounces-114881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9325A8892E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:15:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E683889279
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:07:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D38AB23BA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:07:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01D2D1F2EE73
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2702CCB8C;
-	Mon, 25 Mar 2024 00:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6262CCB95;
+	Mon, 25 Mar 2024 00:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RWx3QVK4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OesXNjn1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0613D17821B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28F6178225;
 	Sun, 24 Mar 2024 23:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323533; cv=none; b=uYhwcYRWNMvZbbIzdEVe/jyVENE2m5nGxn4srlz6UU8weEb7RuhajZqBJoviRaH+mSLDnxL3nPDs9E1MjPsSA7gwASxIU4LJpK6qc23BGOFxIGsQ+d6HmX6sO6se8SABizvMfa5+Rdz+G/2g0aUvTp0cVeJiN6d1CGBQcIp6oV4=
+	t=1711323533; cv=none; b=cXCIyzl23TPU9RJSdKbttReS97xx2RiPBIODPGjns7ZjtiH5DXdWivy6Nxm9sXUTFBLD2X5pg7NOm82i0YtMVUx7EThY8Z5+C4kSf9WzEJesQOdytAyHUxqVDvui43rMcNvQB7VT1MgwDkPht85hxN+17li/EDksX7okzIdQop8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323533; c=relaxed/simple;
-	bh=V0UUyMHE5TQCG/GBCG5dV1hF/oCbsYo2IWVzo3KDYjY=;
+	bh=pMdHfEJPF4luFhRiGcb1AzhESd99fBwnet8Jpx1Fw9U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JACT54SWigSFUEAOIVh8n0UFTc1Wa65thW8XRnFPpxAb5IpZQVUdeVH2mwz+UT2/7u1UFjvsm8dpkIc6GiC/UO1kWd5xqcJ9NcOkjJAZxWWH4tfnP4kXCNqXSzHNrFDlXTQ5qSQymJGbwXTeEe53t6VJq3oxHM3oQKa/BhKX6L8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RWx3QVK4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01133C43394;
-	Sun, 24 Mar 2024 23:38:50 +0000 (UTC)
+	 MIME-Version; b=S8kUAg2a9yoC8cXMcYRV2hWOOWTeHX0hTDAfJ9qznJyX11vEt380FhHaQBXx/srg5Lva1W7rYple29Zu6UnXWP5er6EzzdUfmIITVlEs0hlEitSe4Jss/Z7pt/XFIprJ4D8kTMtOzS7xu+k2fArpbTch2QImCzQi+BA3k+fl3vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OesXNjn1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 265B4C43390;
+	Sun, 24 Mar 2024 23:38:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323531;
-	bh=V0UUyMHE5TQCG/GBCG5dV1hF/oCbsYo2IWVzo3KDYjY=;
+	s=k20201202; t=1711323532;
+	bh=pMdHfEJPF4luFhRiGcb1AzhESd99fBwnet8Jpx1Fw9U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RWx3QVK4wuc87GslXlMlrOu2rJQvm/7u7nhmvGFUbFXkoMZwrm5jvggmj+RNzRXTs
-	 43Psl5cQ0UkjenajDzsr7tk/XMLRQEV8QEq8jM6fBFeALt8Mup4ipI1muN5epyVHci
-	 gHe21xznqME0Xpc5xfMFXLg6OBNa0mMhzMcagk49Mor+sePqsvFxtp6zPSrABTA1UA
-	 B3UCA+60uUYVd6ntoqB77Akve44BX4LiQuBgdCrAPBUO3UeBan9iVeL6cyPlwptHVE
-	 HBcSvKmLwFZZPJ0ti1cMv+fZrVvQzcPE/53YejTD0UEOBJgrc+ZbpK9qYD5tIMU9Er
-	 zEa7KtP8ExL8w==
+	b=OesXNjn19nHAyVxWZZNi9juK5Q+5/k+8w7P8d+xOH8upjR7kzENqeOupyLv2ObL3N
+	 9ZJfYoCz+iCbG7lqyHmSPABEAfM344SiPiSMiCY/3dJHm0DQJYjBo4RHX4fPa5VHYU
+	 z54wSos05d41iu3H38hQnAGW5L03MmWPPTiUTI15QL88wy+KJ8ejbNsniMifdREwt3
+	 RM0c+siVSHA1P9ea4/y5TsMYCfstLfXMutDgrQ1TGpkeQtb8MjLykLDyCW5DOZoI/x
+	 NT3x4rAcLaJwKsQA61iC9RK51eWNdIpgHdriNj+xmxhFA4p1Jl7BOyOCkBYyyzcO/W
+	 YYXoC/1qvrxVA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Changbin Du <changbin.du@huawei.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Xiaoyi Su <suxiaoyi@huawei.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 239/317] modules: wait do_free_init correctly
-Date: Sun, 24 Mar 2024 19:33:39 -0400
-Message-ID: <20240324233458.1352854-240-sashal@kernel.org>
+Subject: [PATCH 5.15 240/317] powerpc/embedded6xx: Fix no previous prototype for avr_uart_send() etc.
+Date: Sun, 24 Mar 2024 19:33:40 -0400
+Message-ID: <20240324233458.1352854-241-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -65,123 +61,50 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Changbin Du <changbin.du@huawei.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 8f8cd6c0a43ed637e620bbe45a8d0e0c2f4d5130 ]
+[ Upstream commit 20933531be0577cdd782216858c26150dbc7936f ]
 
-The synchronization here is to ensure the ordering of freeing of a module
-init so that it happens before W+X checking.  It is worth noting it is not
-that the freeing was not happening, it is just that our sanity checkers
-raced against the permission checkers which assume init memory is already
-gone.
+Move the prototypes into mpc10x.h which is included by all the relevant
+C files, fixes:
 
-Commit 1a7b7d922081 ("modules: Use vmalloc special flag") moved calling
-do_free_init() into a global workqueue instead of relying on it being
-called through call_rcu(..., do_free_init), which used to allowed us call
-do_free_init() asynchronously after the end of a subsequent grace period.
-The move to a global workqueue broke the gaurantees for code which needed
-to be sure the do_free_init() would complete with rcu_barrier().  To fix
-this callers which used to rely on rcu_barrier() must now instead use
-flush_work(&init_free_wq).
+  arch/powerpc/platforms/embedded6xx/ls_uart.c:59:6: error: no previous prototype for 'avr_uart_configure'
+  arch/powerpc/platforms/embedded6xx/ls_uart.c:82:6: error: no previous prototype for 'avr_uart_send'
 
-Without this fix, we still could encounter false positive reports in W+X
-checking since the rcu_barrier() here can not ensure the ordering now.
-
-Even worse, the rcu_barrier() can introduce significant delay.  Eric
-Chanudet reported that the rcu_barrier introduces ~0.1s delay on a
-PREEMPT_RT kernel.
-
-  [    0.291444] Freeing unused kernel memory: 5568K
-  [    0.402442] Run /sbin/init as init process
-
-With this fix, the above delay can be eliminated.
-
-Link: https://lkml.kernel.org/r/20240227023546.2490667-1-changbin.du@huawei.com
-Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
-Tested-by: Eric Chanudet <echanude@redhat.com>
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Xiaoyi Su <suxiaoyi@huawei.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20240305123410.3306253-1-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/moduleloader.h | 8 ++++++++
- init/main.c                  | 5 +++--
- kernel/module.c              | 9 +++++++--
- 3 files changed, 18 insertions(+), 4 deletions(-)
+ arch/powerpc/platforms/embedded6xx/linkstation.c | 3 ---
+ arch/powerpc/platforms/embedded6xx/mpc10x.h      | 3 +++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
-index 1322652a9d0d9..7dc186ec52a29 100644
---- a/include/linux/moduleloader.h
-+++ b/include/linux/moduleloader.h
-@@ -95,6 +95,14 @@ int module_finalize(const Elf_Ehdr *hdr,
- 		    const Elf_Shdr *sechdrs,
- 		    struct module *mod);
- 
-+#ifdef CONFIG_MODULES
-+void flush_module_init_free_work(void);
-+#else
-+static inline void flush_module_init_free_work(void)
-+{
-+}
-+#endif
-+
- /* Any cleanup needed when module leaves. */
- void module_arch_cleanup(struct module *mod);
- 
-diff --git a/init/main.c b/init/main.c
-index 5c81d7fb2fe9c..f27e8510b1554 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -89,6 +89,7 @@
- #include <linux/sched/task_stack.h>
- #include <linux/context_tracking.h>
- #include <linux/random.h>
-+#include <linux/moduleloader.h>
- #include <linux/list.h>
- #include <linux/integrity.h>
- #include <linux/proc_ns.h>
-@@ -1464,11 +1465,11 @@ static void mark_readonly(void)
- 	if (rodata_enabled) {
- 		/*
- 		 * load_module() results in W+X mappings, which are cleaned
--		 * up with call_rcu().  Let's make sure that queued work is
-+		 * up with init_free_wq. Let's make sure that queued work is
- 		 * flushed so that we don't hit false positives looking for
- 		 * insecure pages which are W+X.
- 		 */
--		rcu_barrier();
-+		flush_module_init_free_work();
- 		mark_rodata_ro();
- 		rodata_test();
- 	} else
-diff --git a/kernel/module.c b/kernel/module.c
-index d8d677f01adb5..4d49c32af570c 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3713,6 +3713,11 @@ static void do_free_init(struct work_struct *w)
- 	}
+diff --git a/arch/powerpc/platforms/embedded6xx/linkstation.c b/arch/powerpc/platforms/embedded6xx/linkstation.c
+index eb8342e7f84e9..ac3bd4a3216ce 100644
+--- a/arch/powerpc/platforms/embedded6xx/linkstation.c
++++ b/arch/powerpc/platforms/embedded6xx/linkstation.c
+@@ -100,9 +100,6 @@ static void __init linkstation_init_IRQ(void)
+ 	mpic_init(mpic);
  }
  
-+void flush_module_init_free_work(void)
-+{
-+	flush_work(&init_free_wq);
-+}
+-extern void avr_uart_configure(void);
+-extern void avr_uart_send(const char);
+-
+ static void __noreturn linkstation_restart(char *cmd)
+ {
+ 	local_irq_disable();
+diff --git a/arch/powerpc/platforms/embedded6xx/mpc10x.h b/arch/powerpc/platforms/embedded6xx/mpc10x.h
+index 5ad12023e5628..ebc258fa4858d 100644
+--- a/arch/powerpc/platforms/embedded6xx/mpc10x.h
++++ b/arch/powerpc/platforms/embedded6xx/mpc10x.h
+@@ -156,4 +156,7 @@ int mpc10x_disable_store_gathering(struct pci_controller *hose);
+ /* For MPC107 boards that use the built-in openpic */
+ void mpc10x_set_openpic(void);
+ 
++void avr_uart_configure(void);
++void avr_uart_send(const char c);
 +
- #undef MODULE_PARAM_PREFIX
- #define MODULE_PARAM_PREFIX "module."
- /* Default value for module->async_probe_requested */
-@@ -3803,8 +3808,8 @@ static noinline int do_init_module(struct module *mod)
- 	 * Note that module_alloc() on most architectures creates W+X page
- 	 * mappings which won't be cleaned up until do_free_init() runs.  Any
- 	 * code such as mark_rodata_ro() which depends on those mappings to
--	 * be cleaned up needs to sync with the queued work - ie
--	 * rcu_barrier()
-+	 * be cleaned up needs to sync with the queued work by invoking
-+	 * flush_module_init_free_work().
- 	 */
- 	if (llist_add(&freeinit->node, &init_free_list))
- 		schedule_work(&init_free_wq);
+ #endif	/* __PPC_KERNEL_MPC10X_H */
 -- 
 2.43.0
 
