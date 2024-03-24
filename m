@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-115454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6FB2889BB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:59:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02478886A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:39:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E94DD1C32CAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:59:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B1E62908FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE5E2197B6;
-	Mon, 25 Mar 2024 02:39:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9C11FA80C;
+	Sun, 24 Mar 2024 23:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="orqM0RQ0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tjPWlIAC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C68A1E587C;
-	Sun, 24 Mar 2024 22:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A53C128836;
+	Sun, 24 Mar 2024 22:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320834; cv=none; b=oq1qP7kHNvNrmxuyc2aoHF2GrBvdEXwQ4YK6dlME3Ep05blqMkx2KYmhHlFHlfCTUN1EUHdJ5fH3ZvVyNe7jun0bC6wxY0+KkCMKQitomLdrziSBShnE9VwDBxV84UV9UbsWkANCf0WR4B6GjsO3aWmcEvMeuw1+H91bgSbbdaw=
+	t=1711320835; cv=none; b=mFfwn5+Ugrgzpl3rxBkt/TavuCU4Ua4GT26stikJpLzSYTRmklLxYG0rFFXsfA/9kTlXEMgQ31W2kjPsNXFpI1wRsC8L1Q38XsG2GMCGpSSSXH4GXkSTj4z5nxu+0YLz0uLI+kMnHukYMlXKXj4wDVS6wLIK14e1XICSlJvZ0MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320834; c=relaxed/simple;
-	bh=qgWoNH854Qu3UszLlD0IS5mUljLWw9/aZEUoPzuQfUA=;
+	s=arc-20240116; t=1711320835; c=relaxed/simple;
+	bh=r94iDyI3IDylZBFHddqhoES6VAbPF+0tOiw1jowT+zQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jpYP/qxKw4ZSPxKcnXNUc0zOA6H1GPVxj+3GBYluqplEuU315Fq4QUiCsrFOdfYdRnZ3nU2PBoEOiLHZRN5lV5VH0XZA5vCAVInw9ifPAZeRkmoGqf+wzKsoCIdey3LacIdzAlFx7pyBaklxMjPUCeYPyOcHxVr+jQKKmfoOrm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=orqM0RQ0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 386C4C433A6;
-	Sun, 24 Mar 2024 22:53:52 +0000 (UTC)
+	 MIME-Version; b=DUT9dEJ87PriqkOyHxxVuIVR7T2RUYrXe6gt8w7aau9PZR0iB8Ho20513SM3Uju08GaMlEOn89obrGMLdY8DQ2mJfcZAmCrjqOjU+nslY9VtIPOdX76inWdXqcRFKx24MxlVl8bL6LocaYu9eeD8LtnLBvgUPEVsoMzLJbtuHYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tjPWlIAC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 502E7C43390;
+	Sun, 24 Mar 2024 22:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320833;
-	bh=qgWoNH854Qu3UszLlD0IS5mUljLWw9/aZEUoPzuQfUA=;
+	s=k20201202; t=1711320834;
+	bh=r94iDyI3IDylZBFHddqhoES6VAbPF+0tOiw1jowT+zQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=orqM0RQ0MIbu+9hWp/PTOIlq2C0aWr0tecQ+I/I6st74AszDtA4Nipz96d/C4NdEq
-	 pqaCTbzttctLrzy6orEoPFqhiWTmxK+QGgrQjAhv5s2pws23H2dWKYuMaPYJkLesuN
-	 ueUOo9A43aR6QUwaXAgMXhCNtHUJjuXaOEMiGVRZ4Gi79z++4kiVGuqcHwn6E2rezE
-	 WQQCt/670yNmTuo6z9lPY0GcxjThdKB8L9fDHJWjl2ymfu7brCMq83tjy5GNuApPLo
-	 YnIrapHeCVZ9pI4OlWRkhg0G4sx0PqhTYUDPKO/5jhB3OR+VGzs5ptTPdjPtMtZA8X
-	 LvA4d5UpzBUZg==
+	b=tjPWlIACfpPbJ0TeUIxNVaedXSk7j89HAip1cNbJ1PsvOw/sWWOAPGr2VSDV3xydY
+	 uaSo5zYe+oKLfVIQM9T6HrCBo6Mh3mjiof7/dSnKMFBNfW+/wZDeSj9gqv1uRJ3l/N
+	 CwXAudkGcdH0NXkGG+7DcykCEodWctW15GVwDBYc273H2/ftTt01vW+26rcKH49Gyx
+	 XnLEn/zbSDauFsbpMPW5n2XxaO1fqMHcu9WohgJlxkAmLPxYiBMLlTq8Cja8WEEzlq
+	 po6RKGUgGc9YsWOLyOVWkazsMSbD7Zz+p35JcrDRFca9SG9/ny5GcnkqhXxEWyFX8P
+	 GXOsoVVc8dRrQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Harry Wentland <harry.wentland@amd.com>,
-	Simon Ser <contact@emersion.fr>,
+	Arthur Grillo <arthurgrillo@riseup.net>,
 	Melissa Wen <mwen@igalia.com>,
 	Melissa Wen <melissa.srw@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 398/713] drm: Don't treat 0 as -1 in drm_fixp2int_ceil
-Date: Sun, 24 Mar 2024 18:42:04 -0400
-Message-ID: <20240324224720.1345309-399-sashal@kernel.org>
+Subject: [PATCH 6.7 399/713] drm/vkms: Avoid reading beyond LUT array
+Date: Sun, 24 Mar 2024 18:42:05 -0400
+Message-ID: <20240324224720.1345309-400-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -66,37 +66,62 @@ Content-Transfer-Encoding: 8bit
 
 From: Harry Wentland <harry.wentland@amd.com>
 
-[ Upstream commit cf8837d7204481026335461629b84ac7f4538fa5 ]
+[ Upstream commit 2fee84030d12d9fddfa874e4562d71761a129277 ]
 
-Unit testing this in VKMS shows that passing 0 into
-this function returns -1, which is highly counter-
-intuitive. Fix it by checking whether the input is
->= 0 instead of > 0.
+When the floor LUT index (drm_fixp2int(lut_index) is the last
+index of the array the ceil LUT index will point to an entry
+beyond the array. Make sure we guard against it and use the
+value of the floor LUT index.
 
-Fixes: 64566b5e767f ("drm: Add drm_fixp_from_fraction and drm_fixp2int_ceil")
+v3:
+ - Drop bits from commit description that didn't contribute
+   anything of value
+
+Fixes: db1f254f2cfa ("drm/vkms: Add support to 1D gamma LUT")
 Signed-off-by: Harry Wentland <harry.wentland@amd.com>
-Reviewed-by: Simon Ser <contact@emersion.fr>
+Cc: Arthur Grillo <arthurgrillo@riseup.net>
+Reviewed-by: Arthur Grillo <arthurgrillo@riseup.net>
 Reviewed-by: Melissa Wen <mwen@igalia.com>
 Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231108163647.106853-2-harry.wentland@amd.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20231108163647.106853-6-harry.wentland@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/drm/drm_fixed.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vkms/vkms_composer.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
-index 6ea339d5de088..0c9f917a4d4be 100644
---- a/include/drm/drm_fixed.h
-+++ b/include/drm/drm_fixed.h
-@@ -95,7 +95,7 @@ static inline int drm_fixp2int_round(s64 a)
- 
- static inline int drm_fixp2int_ceil(s64 a)
+diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+index 3c99fb8b54e2d..e7441b227b3ce 100644
+--- a/drivers/gpu/drm/vkms/vkms_composer.c
++++ b/drivers/gpu/drm/vkms/vkms_composer.c
+@@ -123,6 +123,8 @@ static u16 apply_lut_to_channel_value(const struct vkms_color_lut *lut, u16 chan
+ 				      enum lut_channel channel)
  {
--	if (a > 0)
-+	if (a >= 0)
- 		return drm_fixp2int(a + DRM_FIXED_ALMOST_ONE);
- 	else
- 		return drm_fixp2int(a - DRM_FIXED_ALMOST_ONE);
+ 	s64 lut_index = get_lut_index(lut, channel_value);
++	u16 *floor_lut_value, *ceil_lut_value;
++	u16 floor_channel_value, ceil_channel_value;
+ 
+ 	/*
+ 	 * This checks if `struct drm_color_lut` has any gap added by the compiler
+@@ -130,11 +132,15 @@ static u16 apply_lut_to_channel_value(const struct vkms_color_lut *lut, u16 chan
+ 	 */
+ 	static_assert(sizeof(struct drm_color_lut) == sizeof(__u16) * 4);
+ 
+-	u16 *floor_lut_value = (__u16 *)&lut->base[drm_fixp2int(lut_index)];
+-	u16 *ceil_lut_value = (__u16 *)&lut->base[drm_fixp2int_ceil(lut_index)];
++	floor_lut_value = (__u16 *)&lut->base[drm_fixp2int(lut_index)];
++	if (drm_fixp2int(lut_index) == (lut->lut_length - 1))
++		/* We're at the end of the LUT array, use same value for ceil and floor */
++		ceil_lut_value = floor_lut_value;
++	else
++		ceil_lut_value = (__u16 *)&lut->base[drm_fixp2int_ceil(lut_index)];
+ 
+-	u16 floor_channel_value = floor_lut_value[channel];
+-	u16 ceil_channel_value = ceil_lut_value[channel];
++	floor_channel_value = floor_lut_value[channel];
++	ceil_channel_value = ceil_lut_value[channel];
+ 
+ 	return lerp_u16(floor_channel_value, ceil_channel_value,
+ 			lut_index & DRM_FIXED_DECIMAL_MASK);
 -- 
 2.43.0
 
