@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC484889557
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:25:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1CBD8898E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:55:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C7651F34A19
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:25:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B760B2B360
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:25:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979A42892A1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6FAA2892AA;
 	Mon, 25 Mar 2024 03:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ipXR1IFv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZWgNInGS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBBFD27A834;
-	Sun, 24 Mar 2024 23:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7D627A83B;
+	Sun, 24 Mar 2024 23:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323491; cv=none; b=T3O0TZRsEXt2vHeTFke3Jmqj5FZWBDZqjs/rXg05g+Nxcp/cB5steza+UyZ8cnzV9btb2qaGrKv1L+iqHZDRIV9kYRvStZy4W+nnaNurUyppmb1Ijf1yIRNErayorpCPDpBs9rdrjqnXVD7lsRs2r0C6qGehn89e2x4Sjo4hTgc=
+	t=1711323492; cv=none; b=Zm2EKBHrWLy1oj48z4Xoqga8Ei4TjFVqmiV2LeIHayoLPJ78s2vXhFH94JoImdizvJJ/9CUOhfUGfsyxWQWsrgeBGvr57i8niyFvAD/PuQ6y3zSM+51qHpARFSFDkHdF6ahSBAq36ip75QHeAMJWhHGrjqLI1HXPnFP8/LhTI0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323491; c=relaxed/simple;
-	bh=tKj454ypPCbhkDrsMDWUObexL7a78f2S5jbHcsMACmk=;
+	s=arc-20240116; t=1711323492; c=relaxed/simple;
+	bh=555+qw8hj6CxmJ34SvS5ji6v7XhwIImlAMXxNMOMDRc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=on9mwN1e9TT1STjH0QRnOGwMI087AdbnZF7EinB6AcKmOxSecAqTzBXfML/9EF7EfIdl9WNK8W55VwVYC7ewwaIR9Q8F926yxhjsIoM7kwKzT/ba3spd1Y8YCVHp+lG0AF3bA8Sh5q6s3H0n9XBObo9E30G9tVnDeqW4UgeNMOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ipXR1IFv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26FBDC433F1;
+	 MIME-Version; b=uOKy11LXmfLowxHAfLFvfeToyLVm5Kx2vafhOXFYYhIQ/lzcItmjDzgJYt+7XL0lhLZrmb2rxn+ktYKYeENLOi2n99NXsKm0a3CySp7/HP2tqL2piNNZWIM8zR+AtXnH5EU3Odxj67wuT34PndH6Iu8FnvdX3VzNb8DYKfjGEQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZWgNInGS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07FA1C43390;
 	Sun, 24 Mar 2024 23:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323491;
-	bh=tKj454ypPCbhkDrsMDWUObexL7a78f2S5jbHcsMACmk=;
+	s=k20201202; t=1711323492;
+	bh=555+qw8hj6CxmJ34SvS5ji6v7XhwIImlAMXxNMOMDRc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ipXR1IFv+xoaHZRpijhWdjvg6+i3gYtaiUdfkczgY6Id6HYlCduyZE9Ng7MQwofOP
-	 NkM0/b8rZvFNstmrcS4PLe4n822QO7cM+5bYtTlO7r+Ji4ddkYNxQOM8tT4SDdZEIb
-	 g+jX/rUUTQ7VHRMLE8zb5fmsOmjeNq6Aaro7I/lLc2PXw9wq37EmqkmidvrtdX9JnF
-	 6sb84L7MXJgQQU929dUjCYp5z1YgOhOsAuM7YZVczl3MQq0CPlQ37XxXsn+zMBJN1H
-	 jE9ojTSMAAHfmPK5Gf/uPsmt3v87RA3kWVcVfyHca9FZ77uplNmRn/0W7ZEkqnLHjE
-	 mNVvl6DufqPjA==
+	b=ZWgNInGSsAfrX417ANfuCT/ZyKrwsKsOGJUtl9CwWC4+/4BNyEmChjyHxvvm6iZHk
+	 V3YElWNZD37CAgnSj8FqCMnZNrWziugP5WNGsA5/DU95wDf3DmK6o/Xe+VhVbSHYng
+	 dJsdkYBxcPzLy5YIjH7slbmP5gaoGrb512zqoItXcSt1kfd4DnxcZ0JyWdpYYqC8rz
+	 LrHAMLOpMVrl/b3MSByvmjFVOOVVYAw7zWJmEPUCXi1Vcg3MSF3yLstVAkZ6o7puH1
+	 8GD1h2kS+2UKqxDz9xj4BDdZJdlu1lcaW8KC/oWYPxCP5EffpwEpmCCV2z7oxuGFf9
+	 LNhsTReruHZ6A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Arnd Bergmann <arnd@arndb.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 197/317] drm/radeon/ni: Fix wrong firmware size logging in ni_init_microcode()
-Date: Sun, 24 Mar 2024 19:32:57 -0400
-Message-ID: <20240324233458.1352854-198-sashal@kernel.org>
+Subject: [PATCH 5.15 198/317] ALSA: seq: fix function cast warnings
+Date: Sun, 24 Mar 2024 19:32:58 -0400
+Message-ID: <20240324233458.1352854-199-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -62,37 +62,93 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit c4891d979c7668b195a0a75787967ec95a24ecef ]
+[ Upstream commit d7bf73809849463f76de42aad62c850305dd6c5d ]
 
-Clean up a typo in pr_err() erroneously printing NI MC 'rdev->mc_fw->size'
-during SMC firmware load. Log 'rdev->smc_fw->size' instead.
+clang-16 points out a control flow integrity (kcfi) issue when event
+callbacks get converted to incompatible types:
 
-Found by Linux Verification Center (linuxtesting.org) with static
-analysis tool SVACE.
+sound/core/seq/seq_midi.c:135:30: error: cast from 'int (*)(struct snd_rawmidi_substream *, const char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  135 |                 snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
+      |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/core/seq/seq_virmidi.c:83:31: error: cast from 'int (*)(struct snd_rawmidi_substream *, const unsigned char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+   83 |                         snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
+      |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 6596afd48af4 ("drm/radeon/kms: add dpm support for btc (v3)")
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+For addressing those errors, introduce wrapper functions that are used
+for callbacks and bridge to the actual function call with pointer
+cast.
+
+The code was originally added with the initial ALSA merge in linux-2.5.4.
+
+[ the patch description shamelessly copied from Arnd's original patch
+  -- tiwai ]
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20240213101020.459183-1-arnd@kernel.org
+Link: https://lore.kernel.org/r/20240213135343.16411-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/radeon/ni.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/core/seq/seq_midi.c    | 8 +++++++-
+ sound/core/seq/seq_virmidi.c | 9 ++++++++-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
-index 4a364ca7a1be7..b041b6bfaeca6 100644
---- a/drivers/gpu/drm/radeon/ni.c
-+++ b/drivers/gpu/drm/radeon/ni.c
-@@ -813,7 +813,7 @@ int ni_init_microcode(struct radeon_device *rdev)
- 			err = 0;
- 		} else if (rdev->smc_fw->size != smc_req_size) {
- 			pr_err("ni_mc: Bogus length %zu in firmware \"%s\"\n",
--			       rdev->mc_fw->size, fw_name);
-+			       rdev->smc_fw->size, fw_name);
- 			err = -EINVAL;
+diff --git a/sound/core/seq/seq_midi.c b/sound/core/seq/seq_midi.c
+index 4589aac091542..b00bbf18a6f5d 100644
+--- a/sound/core/seq/seq_midi.c
++++ b/sound/core/seq/seq_midi.c
+@@ -112,6 +112,12 @@ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, i
+ 	return 0;
+ }
+ 
++/* callback for snd_seq_dump_var_event(), bridging to dump_midi() */
++static int __dump_midi(void *ptr, void *buf, int count)
++{
++	return dump_midi(ptr, buf, count);
++}
++
+ static int event_process_midi(struct snd_seq_event *ev, int direct,
+ 			      void *private_data, int atomic, int hop)
+ {
+@@ -131,7 +137,7 @@ static int event_process_midi(struct snd_seq_event *ev, int direct,
+ 			pr_debug("ALSA: seq_midi: invalid sysex event flags = 0x%x\n", ev->flags);
+ 			return 0;
  		}
- 	}
+-		snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
++		snd_seq_dump_var_event(ev, __dump_midi, substream);
+ 		snd_midi_event_reset_decode(msynth->parser);
+ 	} else {
+ 		if (msynth->parser == NULL)
+diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
+index 4abc38c70cae2..339799bfaad9d 100644
+--- a/sound/core/seq/seq_virmidi.c
++++ b/sound/core/seq/seq_virmidi.c
+@@ -62,6 +62,13 @@ static void snd_virmidi_init_event(struct snd_virmidi *vmidi,
+ /*
+  * decode input event and put to read buffer of each opened file
+  */
++
++/* callback for snd_seq_dump_var_event(), bridging to snd_rawmidi_receive() */
++static int dump_to_rawmidi(void *ptr, void *buf, int count)
++{
++	return snd_rawmidi_receive(ptr, buf, count);
++}
++
+ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
+ 					 struct snd_seq_event *ev,
+ 					 bool atomic)
+@@ -80,7 +87,7 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
+ 		if (ev->type == SNDRV_SEQ_EVENT_SYSEX) {
+ 			if ((ev->flags & SNDRV_SEQ_EVENT_LENGTH_MASK) != SNDRV_SEQ_EVENT_LENGTH_VARIABLE)
+ 				continue;
+-			snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
++			snd_seq_dump_var_event(ev, dump_to_rawmidi, vmidi->substream);
+ 			snd_midi_event_reset_decode(vmidi->parser);
+ 		} else {
+ 			len = snd_midi_event_decode(vmidi->parser, msg, sizeof(msg), ev);
 -- 
 2.43.0
 
