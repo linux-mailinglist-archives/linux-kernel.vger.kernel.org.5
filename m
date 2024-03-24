@@ -1,153 +1,141 @@
-Return-Path: <linux-kernel+bounces-112789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC0D887E28
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C690887E2C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D9EA1C20999
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:37:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E8D11C20BE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630021AACF;
-	Sun, 24 Mar 2024 17:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516941A27E;
+	Sun, 24 Mar 2024 17:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U9tjCJ1Z"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GngHH2Em"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C24B1841;
-	Sun, 24 Mar 2024 17:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D7317555;
+	Sun, 24 Mar 2024 17:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711301839; cv=none; b=dENBIx9hcwORn9tiutJQqCsPmpeV57/PxU4H9fle0Kg3huzXlNsCPMuzXX8CTc70+UUJbkAzU+3A5rGr8fntWjvU2g7g6eKj6T/2er1UoUZnsfs+50quskZUovjivylUMqhu0qL1iBjzNcHGA9hrPzGkoxNVLmRIid0tCY6HT/w=
+	t=1711302217; cv=none; b=ODRqAXLa9YNZ3C9AKx8szvYNAsCBce13mC7ABwY5vljTN9ANMgBUEI+KbOP571lV5BL/yF0ifByKtUfBkPXSHjr4+h2KGkB4zndNlMzEKLlWB06l1JRJKnhdk4qQGoENvjpphLMlQbrqBPsFmTVP8a6ukhjdlsexw6pN76uhg8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711301839; c=relaxed/simple;
-	bh=e8Wzt++tI0Y6lTciHZrwviD9JAPYs1UHfQ1N/92js8k=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=t/DcCGNQjP4Jbxzh0x99CMd+zMX35FCDQbog2yfHxov9zoOnkHBW0KrsPFtA4xMbDrcSdgYfvnSxCPiGu270meX9FnerEN8RSCgLKFnyqFmMXML88EFYOEF2ZLk2GU8bCWvSrRGasrIYo9dZXqZztpprmjP7OGPYVfA7PiDZDQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U9tjCJ1Z; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-789fb1f80f5so259885485a.3;
-        Sun, 24 Mar 2024 10:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711301837; x=1711906637; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7A5SUwxxd4XjDHjkrEb2n2ZXL0/7LMjpgw75QRXKPIo=;
-        b=U9tjCJ1ZmAn4W1sQlddU2YtDArW9vMQs4On2X1DVYRqlxSzVHWtNuml0ac2AzbBJZJ
-         qGbPef81QRvLsk7ZxmPupjpvCrDKhWTxDr3V7kcwR53CxMZxO7ajLHjGoX+APMSPwe5m
-         snL9AhnJAK6toz7Csn2K7uak6UXps9Mp+xYWC0QnyMI2MMrHWxDIuXZh9a0xH9/r/nSW
-         XfRHiali/kF2ooatjFzX1gbNWhuIOg1vLqmnJo3COMSDKtsAlLLW3Krsp8zsg+y0+0ew
-         8BThdRBcTYgzKJlo5SRnxLklTzDZhwHAUlZ16BWdw8q9iT9K+6zkjYwXJTmOwM0yn7z1
-         Lw+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711301837; x=1711906637;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7A5SUwxxd4XjDHjkrEb2n2ZXL0/7LMjpgw75QRXKPIo=;
-        b=fIMAoKF/NNWQj4HeYdooFen9gkvvOAYHK+dPqJ0LNDOrdAXH1/pBO13yJYSgicGGxZ
-         AX0iwDFK5zmEJ/Lmh3vCYnBe6fNR79TCja+QSAHbCHcILwDgRa0wv9UFO7OFRUEyfA+L
-         w+8hAaCH0PCUgenpVUjLo38awSJYz4yCPMPoYiLiYhA8iMCQOEYAVsaqz9YV503Zh16u
-         DEhrmHBk3pQYApIlB/DmW291Dlu6QFLnN4JtUofE7hCMQmvpxlK8kuTDrR0NTpkyFG+Q
-         KX7DTes+VoxngKPvfUxOwRqznHZ+s0DtUHVhY5STc+SRwh//P+Pcjy2m987ZoUHVt43E
-         lI0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWBF7U0hxnl3+h0XkG0AhD3RutxhxBurW+97yc4ix9BGwRqxVm4ODHyN1s3wAJlx0fR+RUd2+doeKkveKrg3GeGnCdk0zoRiwb8tudkLFrtm2yrSaMKaVpUNUqaahkmKdrUzME7VFlh3mb5aHSx+eCns7lZWXkC4+8u12gYKwnZQ7Y+YnT8FaeyYQ/Lilb1xWIlMs+goZm4bua9iXWjmJkgAVk7mOlvBA==
-X-Gm-Message-State: AOJu0Yzrz6YcKKPNHOIoH8ZJvcXkb3KBCE9FRMtUmsUfTgDL12IooJzp
-	9FIwLUAYFgraXkqLFmf/lf7sl3PyjpHp6ck3C8cK9l6omTTrMYy2
-X-Google-Smtp-Source: AGHT+IFjpSfbEmAjCyadZ4oh3c1hlZvr8OuU2bvWGAJwDmJef8K4HA0yJIlXQ6FGAqvDYB9qnUMuMw==
-X-Received: by 2002:a05:620a:5d8a:b0:78a:1e39:2674 with SMTP id xx10-20020a05620a5d8a00b0078a1e392674mr5391270qkn.39.1711301837071;
-        Sun, 24 Mar 2024 10:37:17 -0700 (PDT)
-Received: from smtpclient.apple ([63.115.34.165])
-        by smtp.gmail.com with ESMTPSA id vq12-20020a05620a558c00b00789ea123bd5sm1491096qkn.59.2024.03.24.10.37.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 24 Mar 2024 10:37:16 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1711302217; c=relaxed/simple;
+	bh=iV5eaQhCMjboTPn8RIB6+34ItDagxR0EDqsSNn6cFkI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j8zmVUb8Io1mU3shCDwKwP3+pRcbP89b3FhRcAsx4IEJREiYMHPtsViaMECtcdQfZ649+Hxu/kJ9AFTAwG3uPnQXh75bNAihJThyOkGnKJ8ANQuUiGBQ0xqRziKEbUHyHwpvXZHolYUqah8jR4KqH9xnfnuJdhJf3BXOFt19mOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GngHH2Em; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BA13C433F1;
+	Sun, 24 Mar 2024 17:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711302217;
+	bh=iV5eaQhCMjboTPn8RIB6+34ItDagxR0EDqsSNn6cFkI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GngHH2Emt0UgAODe8rNAAbokRjd/3dZz7d9ws6sN5rYoXRd+5kjoAE5LR7fcihClr
+	 6n/ddHPnr+a2z3iOenF528yUnqOsuLQvmmX/Vt92ZwYNbPVlbHRyjfxIexeMM/xEYL
+	 h8bfdJM9eHnP29h77+iEgrVuKVB8S+Dges8W2LkKJmVAoGjQD/cJGQAfwuKVUQPz/q
+	 Pu/aHQ55eLaw6zFrZlkca1N0URitlog0p/zxiVM7a3LbDJtgxrOfTr/3Q5JbZEoeta
+	 plEAJdzjILd3eT1fOhfi0eV+glR0i3WGGwF6xzH8fEfzim5iiVLAJbK/0VGlSqfvAC
+	 NEGYrLaIl5ZkA==
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d228a132acso51171391fa.0;
+        Sun, 24 Mar 2024 10:43:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUhYCYpxkOi3siIdsvQs7uBRoK+i0tmg2pi7VQgLQWrBR/w/K/hLAA5hrnn9SGsfnc1Y8ygGKmfg/RUFXmh0Kcbsftw3O2YqnDToqXDH+QCT0g3J2hT4+M+7pD004NzO1BTogjp1g++
+X-Gm-Message-State: AOJu0Ywndv+2ZzkdqQdd0qszRPpBocd225J4mBy7PU2+YDEkQYJI1qxD
+	UgIqciIsI59vWcxJ2Vpxc6hv09FKyPhX9tQNZLJ1YTFl37rdtyhwO8E1S2EU0XlsJsCRJAhP2Q4
+	lKL5+9TOKk+8wsFMsKJYsZoex3hY=
+X-Google-Smtp-Source: AGHT+IE7AWt7cuttWyQSkz/6C8k8f2wmWamg+V4k0ou5nWU+WNaV/FU3iygPmrusTd7cZR+rbmAd6ob/9A1zn1IdK/8=
+X-Received: by 2002:a2e:8eda:0:b0:2d2:df0d:9e92 with SMTP id
+ e26-20020a2e8eda000000b002d2df0d9e92mr3139059ljl.49.1711302215418; Sun, 24
+ Mar 2024 10:43:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-From: comex <comexk@gmail.com>
-In-Reply-To: <174272a1-e21f-4d85-94ab-f0457bd1c93b@rowland.harvard.edu>
-Date: Sun, 24 Mar 2024 13:37:03 -0400
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- Boqun Feng <boqun.feng@gmail.com>,
- rust-for-linux <rust-for-linux@vger.kernel.org>,
- linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org,
- llvm@lists.linux.dev,
- Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>,
- Gary Guo <gary@garyguo.net>,
- =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Benno Lossin <benno.lossin@proton.me>,
- Andreas Hindborg <a.hindborg@samsung.com>,
- Alice Ryhl <aliceryhl@google.com>,
- Andrea Parri <parri.andrea@gmail.com>,
- Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Nicholas Piggin <npiggin@gmail.com>,
- David Howells <dhowells@redhat.com>,
- Jade Alglave <j.alglave@ucl.ac.uk>,
- Luc Maranget <luc.maranget@inria.fr>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Akira Yokosawa <akiyks@gmail.com>,
- Daniel Lustig <dlustig@nvidia.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>,
- kent.overstreet@gmail.com,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Marco Elver <elver@google.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- linux-arm-kernel@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3088DF9A-6507-423B-8F0A-100B78DE1A26@gmail.com>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <C85BE4F4-5847-45B4-A973-76B184B35EDE@gmail.com>
- <174272a1-e21f-4d85-94ab-f0457bd1c93b@rowland.harvard.edu>
-To: Alan Stern <stern@rowland.harvard.edu>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+References: <20240321150510.GI8211@craftyguy.net> <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+ <a3aae375-5582-46e4-866b-6a81641998af@redhat.com>
+In-Reply-To: <a3aae375-5582-46e4-866b-6a81641998af@redhat.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Sun, 24 Mar 2024 19:43:24 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGrWGGv-aXabsn1oRwwMy-Ck1nz85QkEMqQ8LdQxyeBKQ@mail.gmail.com>
+Message-ID: <CAMj1kXGrWGGv-aXabsn1oRwwMy-Ck1nz85QkEMqQ8LdQxyeBKQ@mail.gmail.com>
+Subject: Re: x86_64 32-bit EFI mixed mode boot broken
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Clayton Craft <clayton@craftyguy.net>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-efi@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
+On Sun, 24 Mar 2024 at 16:49, Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 3/21/24 11:48 PM, Ard Biesheuvel wrote:
+> > (cc Hans)
+> >
+> > On Thu, 21 Mar 2024 at 23:05, Clayton Craft <clayton@craftyguy.net> wrote:
+> >>
+> >> I've been chasing a problem with 32-bit EFI mixed mode booting on two different
+> >> (x86_64) Intel Bay Trail platforms, where the system reboots or hangs seemingly
+> >> very early somewhere before or after loading the kernel. I've not been able to
+> >> get any output from the kernel or stub over efifb when the issue happens[0], and
+> >> do not have serial console access on these systems.
+> >>
+> >> v6.8 fails for me, and presumably so does everything back to v6.2. v6.1 is able
+> >> to boot OK on these platforms with mixed mode, and it looks like there are a lot
+> >> of changes from 6.1..6.2 for EFI/mixed mode booting.
+> >
+> > v6.1 just received some EFI related backports, so please check the
+> > latest v6.1.y as well.
+> >
+> >> I did managed to bisect the
+> >> issue to:
+> >>
+> >>         commit e2ab9eab324cdf240de89741e4a1aa79919f0196
+> >>         Author: Ard Biesheuvel <ardb@kernel.org>
+> >>         Date:   Tue Nov 22 17:10:02 2022 +0100
+> >>
+> >>             x86/boot/compressed: Move 32-bit entrypoint code into .text section
+> >>
+> >> However I'm not sure how to proceed from here, or if my bisect is all that
+> >> useful since the commit seems to be in the middle of a bunch of changes I do not
+> >> understand. I've been using systemd-boot to test this (both the full bootloader
+> >> and UKI w/ the sd-boot stub). Is 32-bit mixed mode on x86_64 working for others?
+> >>
+> >
+> > I usually test on 32-bit OVMF built with LOAD_X64_ON_IA32_ENABLE,
+> > which allows the use of the compat entry point. This is different from
+> > the EFI handover protocol, and I am not sure which one you are using.
+> >
+> > I have never had any reports, or noticed any issues myself. Last time
+> > I tried (some weeks ago) it was working for me.
+> > CC'ing Hans who may have more data points.
+>
+> I've been offline for most of the week and I see that in the mean time
+> you seem to have found a fix, great.
+>
+> FWIW I have been booting everything up to 6.8.0 on my own mixed-mode
+> Bay Trail tablets without issues, so the problem seems to be specific to
+> certain BIOS-es.
+>
+> Please Cc me on the final fix, then I can test that early and double check
+> that things don't regress on other mixed-mode Bay Trail devices.
+>
 
+Thanks.
 
-> On Mar 24, 2024, at 11:22=E2=80=AFAM, Alan Stern =
-<stern@rowland.harvard.edu> wrote:
->=20
-> I don't know if this is what you meant by "in a weak memory model, the=20=
+I pushed another branch
 
-> escape can =E2=80=98time travel'".  Regardless, it seems very clear =
-that any=20
-> compiler which swaps L1 and L2 in f() has a genuine bug.
+https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=efi-clayton-3
 
-Yes, that=E2=80=99s what I meant.  Clang thinks it=E2=80=99s valid to =
-swap L1 and L2.  Though, for it to actually happen, they would have to =
-be in a loop, since the problematic optimization is =E2=80=9Cloop-invarian=
-t code motion".  Here=E2=80=99s a modified version of your f() that =
-shows the optimization in action:
+which has a proper fix for the issue that you found.
 
-https://godbolt.org/z/bdaTjjvMs
-
-Anyway, my point is just that using LKMM doesn=E2=80=99t save you from =
-the bug.=
+As it turns out, the compat mixed mode (with handover protocol) was
+broken from the beginning, and the change you identified just happened
+to trigger it on your hardware.
 
