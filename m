@@ -1,58 +1,54 @@
-Return-Path: <linux-kernel+bounces-112922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7F64887FC6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:43:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E11C0887FC8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:44:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ABC828138F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:43:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E7921C211EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A25670CBF;
-	Sun, 24 Mar 2024 22:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C995C6FB80;
+	Sun, 24 Mar 2024 22:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DCCWDA2C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KXXBF3x8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C186FE2B;
-	Sun, 24 Mar 2024 22:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030C070CCC;
+	Sun, 24 Mar 2024 22:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319734; cv=none; b=imf7UUiXdLv5hV8JimdHXKoY8WqRVCXe+9DGHszXUWGH8mHowIeKKJqXdwSVCkdSrDhs4Z+xefOhaPshKSRuZ83wxGpR++R+uO+WgduGP/UyJyu3oAa3Aq27wnzT52yQO2Gm22j6nSkPIbZAF7OzlRCd/f6cjOCcMppdvwA/kA8=
+	t=1711319736; cv=none; b=HqrL6UFwK1gGNfGWi071k5QqtBm1P2EcHwApx/gh8AfwBjWHY6vBucCpjpG45VCcm+NOLo7N2q1Id0+70ADxhXv5Cy9k7PjCk44AUO3REcSGVNI3ebZvOTh32N+fB9G1L4ezI3snvA36o0E+UjF36kYvM32Dz4H4Ygxa38NBcuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319734; c=relaxed/simple;
-	bh=QaMkZjrTKAwC5rT+/146rHqBP0Wkx1m7aIt1TJjwpCI=;
+	s=arc-20240116; t=1711319736; c=relaxed/simple;
+	bh=PNAdyC6rPjgFUpItYxARC4mcur4TAXXTn2fULoUfsmI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lQUJ70NGGciBnowxwBjhOBtDznIQ7WA2m98xuqmQw6okwp0lr6m0dUp2fwewknBURZPqJxMUMKi374Iia4wtbKaPCCSok2682SxHPiz1NbWAoepR5yV2TVsePNPu9PoeYnZzuYTbUTv0opsN4myJZUSNChhfArUs4COSEzMUQmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DCCWDA2C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 998DAC433F1;
-	Sun, 24 Mar 2024 22:35:33 +0000 (UTC)
+	 MIME-Version; b=D884303GDDhi4wO5xBxcPfcBHVJC8DzzBlNT4LlvkIv49aXPDdEF0XqAOPx5UsbhaiKVopdN0H6ASNWcY3p3rP4OvS/bimFC7JwMVcgyiDPrhKeLrLUn1zwPKRsRpLQoysDGnS9dw/E1fz/N8Gby2ckqV9qxgzB7MjOwgsnhFEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KXXBF3x8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAB3FC433A6;
+	Sun, 24 Mar 2024 22:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319734;
-	bh=QaMkZjrTKAwC5rT+/146rHqBP0Wkx1m7aIt1TJjwpCI=;
+	s=k20201202; t=1711319735;
+	bh=PNAdyC6rPjgFUpItYxARC4mcur4TAXXTn2fULoUfsmI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DCCWDA2CD1Wh1gcRNE5oNVrXjmURHqdjMGzIAFWbBMm8b8uj1mk4KdDCz/EUhQHpq
-	 CdasrL6gVE8AU0F86pyXEIgT2Bp2GLOwFKE/PPsfKgVfZuyw6SXjMWdCAA9EQ9TEId
-	 e+ZkqGMZF9vLqDIXxJ04/rYuP8gSk8HlubqVEExhUpEk0Gz3Hn/rYL5qpLKV2LdIwp
-	 ydWTGjb6TWwPfh09Nf/eYJP7o5Q+W49uPc2rZ+0QfZpmseUGErnI5kMVenodp2OaVJ
-	 yGQOJo1NulSah4PtYl7N7sXxkiAX6lVnnOrfWohm+xnvOfMvHOABrcVC/V01f+1qKO
-	 hQmooKF3BtA2g==
+	b=KXXBF3x8+lX0gcVct+ULqfaN3Q27Ey7Jq8fTfwYZbAJKk7PnAxLHkWT3/suh2xPpj
+	 LICfB7jfmpMudNw0yOpGPKtW/BDga99Bw2WTR1jIYgEMqPzh3+IS8PHDJLbBySiIqo
+	 qZxdjyP4yWn+i9SWeWKw56LBV7JrP6UFiSQcDmD2zFCNRPkqtHNsFiCifV3nilmV8c
+	 95H0QddqBMwvdQB/YRBRiMwAKbIw3WKIBF89IowCazuOqSBh40g/x0i25LgarlXxRe
+	 sxugY6oC+TU7U5VBGU4tqaMlLDUEhPnTzCVjzFdSdgiiVTmnwVpl7zASUG2pYX+Fl0
+	 ZZ2R8tpxK7PBA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: David Gow <davidgow@google.com>,
-	Matthew Auld <matthew.auld@intel.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Justin Stitt <justinstitt@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
+Cc: Yu Kuai <yukuai3@huawei.com>,
+	Song Liu <song@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 035/715] drm: tests: Fix invalid printf format specifiers in KUnit tests
-Date: Sun, 24 Mar 2024 18:23:34 -0400
-Message-ID: <20240324223455.1342824-36-sashal@kernel.org>
+Subject: [PATCH 6.8 036/715] md/raid1: factor out helpers to add rdev to conf
+Date: Sun, 24 Mar 2024 18:23:35 -0400
+Message-ID: <20240324223455.1342824-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,130 +58,173 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: David Gow <davidgow@google.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit fc9a615200d48e076af58f4309f507e500ed900d ]
+[ Upstream commit 969d6589abcb369d53d84ec7c9c37f4b23ec1ad9 ]
 
-The drm_buddy_test's alloc_contiguous test used a u64 for the page size,
-which was then updated to be an 'unsigned long' to avoid 64-bit
-multiplication division helpers.
+There are no functional changes, just make code cleaner and prepare to
+record disk non-rotational information while adding and removing rdev to
+conf
 
-However, the variable is logged by some KUNIT_ASSERT_EQ_MSG() using the
-'%d' or '%llu' format specifiers, the former of which is always wrong,
-and the latter is no longer correct now that ps is no longer a u64. Fix
-these to all use '%lu'.
-
-Also, drm_mm_test calls KUNIT_FAIL() with an empty string as the
-message. gcc and clang warns if a printf format string is empty, so
-give these some more detailed error messages, which should be more
-useful anyway.
-
-Fixes: a64056bb5a32 ("drm/tests/drm_buddy: add alloc_contiguous test")
-Fixes: fca7526b7d89 ("drm/tests/drm_buddy: fix build failure on 32-bit targets")
-Fixes: fc8d29e298cf ("drm: selftest: convert drm_mm selftest to KUnit")
-Reviewed-by: Matthew Auld <matthew.auld@intel.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Signed-off-by: David Gow <davidgow@google.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Song Liu <song@kernel.org>
+Link: https://lore.kernel.org/r/20240229095714.926789-3-yukuai1@huaweicloud.com
+Stable-dep-of: 257ac239ffcf ("md/raid1: fix choose next idle in read_balance()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tests/drm_buddy_test.c | 14 +++++++-------
- drivers/gpu/drm/tests/drm_mm_test.c    |  6 +++---
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/md/raid1.c | 85 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 53 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests/drm_buddy_test.c
-index 484360c7e1f65..e48863a445564 100644
---- a/drivers/gpu/drm/tests/drm_buddy_test.c
-+++ b/drivers/gpu/drm/tests/drm_buddy_test.c
-@@ -260,30 +260,30 @@ static void drm_test_buddy_alloc_contiguous(struct kunit *test)
- 		KUNIT_ASSERT_FALSE_MSG(test,
- 				       drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							      ps, ps, list, 0),
--				       "buddy_alloc hit an error size=%u\n",
-+				       "buddy_alloc hit an error size=%lu\n",
- 				       ps);
- 	} while (++i < n_pages);
+diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+index 286f8b16c7bde..a560824e038b4 100644
+--- a/drivers/md/raid1.c
++++ b/drivers/md/raid1.c
+@@ -1760,6 +1760,44 @@ static int raid1_spare_active(struct mddev *mddev)
+ 	return count;
+ }
  
- 	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							   3 * ps, ps, &allocated,
- 							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc didn't error size=%u\n", 3 * ps);
-+			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
++static bool raid1_add_conf(struct r1conf *conf, struct md_rdev *rdev, int disk,
++			   bool replacement)
++{
++	struct raid1_info *info = conf->mirrors + disk;
++
++	if (replacement)
++		info += conf->raid_disks;
++
++	if (info->rdev)
++		return false;
++
++	rdev->raid_disk = disk;
++	info->head_position = 0;
++	info->seq_start = MaxSector;
++	WRITE_ONCE(info->rdev, rdev);
++
++	return true;
++}
++
++static bool raid1_remove_conf(struct r1conf *conf, int disk)
++{
++	struct raid1_info *info = conf->mirrors + disk;
++	struct md_rdev *rdev = info->rdev;
++
++	if (!rdev || test_bit(In_sync, &rdev->flags) ||
++	    atomic_read(&rdev->nr_pending))
++		return false;
++
++	/* Only remove non-faulty devices if recovery is not possible. */
++	if (!test_bit(Faulty, &rdev->flags) &&
++	    rdev->mddev->recovery_disabled != conf->recovery_disabled &&
++	    rdev->mddev->degraded < conf->raid_disks)
++		return false;
++
++	WRITE_ONCE(info->rdev, NULL);
++	return true;
++}
++
+ static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
+ {
+ 	struct r1conf *conf = mddev->private;
+@@ -1795,15 +1833,13 @@ static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
+ 				disk_stack_limits(mddev->gendisk, rdev->bdev,
+ 						  rdev->data_offset << 9);
  
- 	drm_buddy_free_list(&mm, &middle);
- 	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							   3 * ps, ps, &allocated,
- 							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc didn't error size=%u\n", 3 * ps);
-+			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
- 	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							   2 * ps, ps, &allocated,
- 							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc didn't error size=%u\n", 2 * ps);
-+			       "buddy_alloc didn't error size=%lu\n", 2 * ps);
+-			p->head_position = 0;
+-			rdev->raid_disk = mirror;
++			raid1_add_conf(conf, rdev, mirror, false);
+ 			err = 0;
+ 			/* As all devices are equivalent, we don't need a full recovery
+ 			 * if this was recently any drive of the array
+ 			 */
+ 			if (rdev->saved_raid_disk < 0)
+ 				conf->fullsync = 1;
+-			WRITE_ONCE(p->rdev, rdev);
+ 			break;
+ 		}
+ 		if (test_bit(WantReplacement, &p->rdev->flags) &&
+@@ -1813,13 +1849,11 @@ static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
  
- 	drm_buddy_free_list(&mm, &right);
- 	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							   3 * ps, ps, &allocated,
- 							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc didn't error size=%u\n", 3 * ps);
-+			       "buddy_alloc didn't error size=%lu\n", 3 * ps);
- 	/*
- 	 * At this point we should have enough contiguous space for 2 blocks,
- 	 * however they are never buddies (since we freed middle and right) so
-@@ -292,13 +292,13 @@ static void drm_test_buddy_alloc_contiguous(struct kunit *test)
- 	KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							    2 * ps, ps, &allocated,
- 							    DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc hit an error size=%u\n", 2 * ps);
-+			       "buddy_alloc hit an error size=%lu\n", 2 * ps);
- 
- 	drm_buddy_free_list(&mm, &left);
- 	KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							    3 * ps, ps, &allocated,
- 							    DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc hit an error size=%u\n", 3 * ps);
-+			       "buddy_alloc hit an error size=%lu\n", 3 * ps);
- 
- 	total = 0;
- 	list_for_each_entry(block, &allocated, link)
-diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/drm_mm_test.c
-index 1eb0c304f9607..f37c0d7658656 100644
---- a/drivers/gpu/drm/tests/drm_mm_test.c
-+++ b/drivers/gpu/drm/tests/drm_mm_test.c
-@@ -157,7 +157,7 @@ static void drm_test_mm_init(struct kunit *test)
- 
- 	/* After creation, it should all be one massive hole */
- 	if (!assert_one_hole(test, &mm, 0, size)) {
--		KUNIT_FAIL(test, "");
-+		KUNIT_FAIL(test, "mm not one hole on creation");
- 		goto out;
+ 	if (err && repl_slot >= 0) {
+ 		/* Add this device as a replacement */
+-		p = conf->mirrors + repl_slot;
+ 		clear_bit(In_sync, &rdev->flags);
+ 		set_bit(Replacement, &rdev->flags);
+-		rdev->raid_disk = repl_slot;
++		raid1_add_conf(conf, rdev, repl_slot, true);
+ 		err = 0;
+ 		conf->fullsync = 1;
+-		WRITE_ONCE(p[conf->raid_disks].rdev, rdev);
  	}
  
-@@ -171,14 +171,14 @@ static void drm_test_mm_init(struct kunit *test)
+ 	print_conf(conf);
+@@ -1836,27 +1870,20 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
+ 	if (unlikely(number >= conf->raid_disks))
+ 		goto abort;
  
- 	/* After filling the range entirely, there should be no holes */
- 	if (!assert_no_holes(test, &mm)) {
--		KUNIT_FAIL(test, "");
-+		KUNIT_FAIL(test, "mm has holes when filled");
- 		goto out;
+-	if (rdev != p->rdev)
+-		p = conf->mirrors + conf->raid_disks + number;
++	if (rdev != p->rdev) {
++		number += conf->raid_disks;
++		p = conf->mirrors + number;
++	}
+ 
+ 	print_conf(conf);
+ 	if (rdev == p->rdev) {
+-		if (test_bit(In_sync, &rdev->flags) ||
+-		    atomic_read(&rdev->nr_pending)) {
+-			err = -EBUSY;
+-			goto abort;
+-		}
+-		/* Only remove non-faulty devices if recovery
+-		 * is not possible.
+-		 */
+-		if (!test_bit(Faulty, &rdev->flags) &&
+-		    mddev->recovery_disabled != conf->recovery_disabled &&
+-		    mddev->degraded < conf->raid_disks) {
++		if (!raid1_remove_conf(conf, number)) {
+ 			err = -EBUSY;
+ 			goto abort;
+ 		}
+-		WRITE_ONCE(p->rdev, NULL);
+-		if (conf->mirrors[conf->raid_disks + number].rdev) {
++
++		if (number < conf->raid_disks &&
++		    conf->mirrors[conf->raid_disks + number].rdev) {
+ 			/* We just removed a device that is being replaced.
+ 			 * Move down the replacement.  We drain all IO before
+ 			 * doing this to avoid confusion.
+@@ -3006,23 +3033,17 @@ static struct r1conf *setup_conf(struct mddev *mddev)
+ 
+ 	err = -EINVAL;
+ 	spin_lock_init(&conf->device_lock);
++	conf->raid_disks = mddev->raid_disks;
+ 	rdev_for_each(rdev, mddev) {
+ 		int disk_idx = rdev->raid_disk;
+-		if (disk_idx >= mddev->raid_disks
+-		    || disk_idx < 0)
++
++		if (disk_idx >= conf->raid_disks || disk_idx < 0)
+ 			continue;
+-		if (test_bit(Replacement, &rdev->flags))
+-			disk = conf->mirrors + mddev->raid_disks + disk_idx;
+-		else
+-			disk = conf->mirrors + disk_idx;
+ 
+-		if (disk->rdev)
++		if (!raid1_add_conf(conf, rdev, disk_idx,
++				    test_bit(Replacement, &rdev->flags)))
+ 			goto abort;
+-		disk->rdev = rdev;
+-		disk->head_position = 0;
+-		disk->seq_start = MaxSector;
  	}
- 
- 	/* And then after emptying it again, the massive hole should be back */
- 	drm_mm_remove_node(&tmp);
- 	if (!assert_one_hole(test, &mm, 0, size)) {
--		KUNIT_FAIL(test, "");
-+		KUNIT_FAIL(test, "mm does not have single hole after emptying");
- 		goto out;
- 	}
- 
+-	conf->raid_disks = mddev->raid_disks;
+ 	conf->mddev = mddev;
+ 	INIT_LIST_HEAD(&conf->retry_list);
+ 	INIT_LIST_HEAD(&conf->bio_end_io_list);
 -- 
 2.43.0
 
