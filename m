@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 843BA889AEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:39:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AC8E889AF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FD4F2A611F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:39:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DA841F34D59
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45CE01E6F55;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7865B1E6F62;
 	Mon, 25 Mar 2024 02:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xh/3C/G3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="thuGPc/L"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF29F1CE6B3;
-	Sun, 24 Mar 2024 22:48:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59CF1411C1;
+	Sun, 24 Mar 2024 22:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320515; cv=none; b=iCCajK13Y9LI1/QjtFPsYqzCs48nQ0uCEaVeyw3LarUFXMnCxYkHwe6pt0z3mWmu0ujuZYOHKGLiZz2AB3qwcaGBA6BfeAMrOOTeJMdeZPsiG5V9WyPJ3dEWeSx2P+MMexgOvQhMmrOZX3w84wCsCkFvvHd3/4VPIBcMtkf8mn0=
+	t=1711320516; cv=none; b=kXeeCE8gpISWB9hxXHrreHtmGuS6o6RxzCIz+Qi2NvGBa75rDlwVWp8ZjQ5B1iNvEi6+CsF87eF9WQ24/CqTsp/uiHu2rMAwSTggwxpk+JEEtXGtTzS0nzmX5FSpRwilmkdUuZZZTBbsZ6AhEC7aPzMpP0AwLDlUu+pFtMHpLpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320515; c=relaxed/simple;
-	bh=KLNv6IZ5yEeP9+TzZ7XNfvS9hm4MRpt6kWqrQ9+/B+s=;
+	s=arc-20240116; t=1711320516; c=relaxed/simple;
+	bh=a90TlNcd55CuvJI7AGBcJt7/5SipQJTr/jE8uvYuenY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jwJPVqLz3Ka6Kda95TFr/YijBM8ziWI72dYF/umU6KLdTaZvvBKsgB9jJmwD5MZrUo/6X2WWqF111kyw/IIcJ1PQ4CezPA8F3QPOYiMcTcFoECn7CNM7sL3XX1L+KyIa5dQwRViyBc5Soj4LPG8cKO5WVpcdxIT+VY+0kT/HxYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xh/3C/G3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 059C4C433C7;
-	Sun, 24 Mar 2024 22:48:34 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ODrPzWMFq2YBBrbX2P4kkrFI7spPkJe3cFJPTB+pKZOCjkwNCBfoto2tbMU0DZEYG/fza4APDZY2cQ4+OnoyJGdnOU0gwEJk2HCE9p1YcpFK/GZPayZVGVrwLr+XuSN8iMqBD4j5wkogK1q1i6oYuJ4S179KWg/wLhqhyoZfncc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=thuGPc/L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3304C433F1;
+	Sun, 24 Mar 2024 22:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320515;
-	bh=KLNv6IZ5yEeP9+TzZ7XNfvS9hm4MRpt6kWqrQ9+/B+s=;
+	s=k20201202; t=1711320516;
+	bh=a90TlNcd55CuvJI7AGBcJt7/5SipQJTr/jE8uvYuenY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Xh/3C/G3z/ETJBFT9HR6ng6c6K4GVcO1yuOXTPpM+hg5EZd7VblgXu8ft0Q1wuYM1
-	 z4NHCD22WwXx0cosrxd1DNDcsqOjdWW6eSWu+7dG9St53CXfLzojpCgqy+4EGKpVOA
-	 iLFOWHykkTrJHRBbpidOJOTFPaCKuy2OIAsOlfaGccLgDaSEiPpYzQPIZ58VcFoqQF
-	 mb9CYJyTQ30u1N9w4P5npBe3t8kLcpwwUXAOFb4Gfttm4GlnAzN1u47B9HuIT5Mcik
-	 jk0wxUCJc+tIW8c26Bz0oQNc1DKd95MtUtmZAKSfEcvYdMbu9h94Zcut9TFNACZudH
-	 xAl1oLiIfBYnA==
+	b=thuGPc/LgPv2ux2Hifr2J7PYK6X7/HN1nZtRTMjVbq5yphl7Lq8FCCNA7JSaywFaM
+	 R6RTj35WNAlEIDXCH6SnGKPrj6PbXRcIwRzI4uJMJQezk89PFVeFYM6tvxppPBRIj2
+	 SFY4ce9ndftPtUAiuKWOqUXD/ajFutGNy/XLKjdmKRPaP2wqTqAK7GNneAmONoGcJd
+	 bG61Q1oBlVOaXXyuQRpzOKH8ry0X85Lrs0Cyo/R1424f9lYh+S8DX7cKM1J8F8EnEI
+	 jh6rYQ/mYf3NMBTzUal3ezCThRd69709Dgpp3Uuu4pMoHdEA/lpxzrzmF5lfmje8HJ
+	 r5EMl+Q5Lxm0A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mike Yu <yumike@google.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
+Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 076/713] xfrm: set skb control buffer based on packet offload as well
-Date: Sun, 24 Mar 2024 18:36:42 -0400
-Message-ID: <20240324224720.1345309-77-sashal@kernel.org>
+Subject: [PATCH 6.7 077/713] Input: gpio_keys_polled - suppress deferred probe error for gpio
+Date: Sun, 24 Mar 2024 18:36:43 -0400
+Message-ID: <20240324224720.1345309-78-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -58,47 +59,55 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mike Yu <yumike@google.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 8688ab2170a5be0bc922195f7091c38b506bab2e ]
+[ Upstream commit 963465a33141d0d52338e77f80fe543d2c9dc053 ]
 
-In packet offload, packets are not encrypted in XFRM stack, so
-the next network layer which the packets will be forwarded to
-should depend on where the packet came from (either xfrm4_output
-or xfrm6_output) rather than the matched SA's family type.
+On a PC Engines APU our admins are faced with:
 
-Test: verified IPv6-in-IPv4 packets on Android device with
-      IPsec packet offload enabled
-Signed-off-by: Mike Yu <yumike@google.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+	$ dmesg | grep -c "gpio-keys-polled gpio-keys-polled: unable to claim gpio 0, err=-517"
+	261
+
+Such a message always appears when e.g. a new USB device is plugged in.
+
+Suppress this message which considerably clutters the kernel log for
+EPROBE_DEFER (i.e. -517).
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20240305101042.10953-2-u.kleine-koenig@pengutronix.de
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_output.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/input/keyboard/gpio_keys_polled.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
-index 662c83beb345e..e5722c95b8bb3 100644
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -704,9 +704,13 @@ int xfrm_output(struct sock *sk, struct sk_buff *skb)
- {
- 	struct net *net = dev_net(skb_dst(skb)->dev);
- 	struct xfrm_state *x = skb_dst(skb)->xfrm;
-+	int family;
- 	int err;
+diff --git a/drivers/input/keyboard/gpio_keys_polled.c b/drivers/input/keyboard/gpio_keys_polled.c
+index ba00ecfbd343b..b41fd1240f431 100644
+--- a/drivers/input/keyboard/gpio_keys_polled.c
++++ b/drivers/input/keyboard/gpio_keys_polled.c
+@@ -315,12 +315,10 @@ static int gpio_keys_polled_probe(struct platform_device *pdev)
  
--	switch (x->outer_mode.family) {
-+	family = (x->xso.type != XFRM_DEV_OFFLOAD_PACKET) ? x->outer_mode.family
-+		: skb_dst(skb)->ops->family;
-+
-+	switch (family) {
- 	case AF_INET:
- 		memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
- 		IPCB(skb)->flags |= IPSKB_XFRM_TRANSFORMED;
+ 			error = devm_gpio_request_one(dev, button->gpio,
+ 					flags, button->desc ? : DRV_NAME);
+-			if (error) {
+-				dev_err(dev,
+-					"unable to claim gpio %u, err=%d\n",
+-					button->gpio, error);
+-				return error;
+-			}
++			if (error)
++				return dev_err_probe(dev, error,
++						     "unable to claim gpio %u\n",
++						     button->gpio);
+ 
+ 			bdata->gpiod = gpio_to_desc(button->gpio);
+ 			if (!bdata->gpiod) {
 -- 
 2.43.0
 
