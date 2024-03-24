@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D081888CC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:30:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7480B888CB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:27:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D6D11F29671
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:30:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29A311F28DEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D37D2EFB62;
-	Mon, 25 Mar 2024 01:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5EF1C1BEA;
+	Mon, 25 Mar 2024 00:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kZvd0NKQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="miv0UUYP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4222817DC1E;
-	Sun, 24 Mar 2024 23:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AE9217DC1D;
+	Sun, 24 Mar 2024 23:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323844; cv=none; b=TPCTcnZVUeTadOERO9Fmm20xVX9bRKCbnVC94OzyY/RHHviQedPofF6KqTBYuSYUM3cC37MU382OBpsdgTu/pyApal25Wuo2dhpsi1NIjeN/tovSjA0pKdUR9ZyCYoCWL+F0mm09NoPaiWj5tMQZcB2tJplBpXku9etUr0HTZ2A=
+	t=1711323844; cv=none; b=nrMjeWM7aGMcPBkofU636cleL4Mk+ZwplnYoRd20ln4b2HaisxuA+jfsOLMESRU3KtchBJIT/fRF3J7T5aRI8RgZelLt6fBpUNX6F8gYGPKKs0LLF5peORUOtfeZcdsy4gj8sAmV5QVlJAQDX58ORBNQLvpPX3F/cD+tRC+3GUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323844; c=relaxed/simple;
-	bh=CBebaG+0xbdd5y6jn27EFF7OtljaxvopzEok4XjCYh4=;
+	bh=5X8S5ybhvWZig025ctYVfTowCUD3Su5evdmdXKPRrx8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MQemNIU0t7FqcnSAWv3WnYvSHmlLQHHaxgycM8egW/vKVBLL8Y8pAjwJ0IAWc8ypYcZUX+rJuhxBPGfZMlGaXJTGIKLtk1v2Jj6kUUrJ3vaIaIba2A83l9QgSgBeH6QylIv3NcUoLh3CSZ2WpiehDVk7OQCpE+R9rx+JL7+XD+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kZvd0NKQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB28C43399;
-	Sun, 24 Mar 2024 23:44:02 +0000 (UTC)
+	 MIME-Version; b=rGpjUSdvV28n0buwONiuWQ0SJ4Nf+Q/FScyZxI9NrOcNqPSQs6QS6Q3xgTWMEEr2STMSor3/Q0ZVfm/5qqUZkeNZZUfYXHMxYczZKfJ8HnxnLg974NhC1tNlMUwH/UxKn5Zv1ImVsCp2cCIQ+g+ZrJa0SgpVJ8bzTV7jX2dkmxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=miv0UUYP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 660F9C433F1;
+	Sun, 24 Mar 2024 23:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323843;
-	bh=CBebaG+0xbdd5y6jn27EFF7OtljaxvopzEok4XjCYh4=;
+	s=k20201202; t=1711323844;
+	bh=5X8S5ybhvWZig025ctYVfTowCUD3Su5evdmdXKPRrx8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kZvd0NKQ+gUCZPSaqH9LHE5L02tnyvuOlYudjUYk6xjbW8KXrOS7YWft+mR+g4L4x
-	 zORy6RW68KqBli0W3MCeKa3JaTul+Bum1CYpMettWSJDThzcMUK9d9v2hFaUPU/KgH
-	 bVT7ypB/ZgKrz2Yyy/vGEvTiVRC3j/61toLsaEy4EfmzzlxzWzZr80FrmKSUFiGMIg
-	 MoB4/esZ6aM8biG78FXHuDdNUeIPH2m5a9V5yyqMV3LbG3Sf1A4D7gZxEsxDEMeB2I
-	 3d9KA2QRbPVSx8hwYQzVYvC+gmGCdjR1oPN5w0fgGuy0cg/OowWgpd+f15jCoaqhtD
-	 oiceCQduEpJjA==
+	b=miv0UUYPyoP1ZPda54z6P2CHLB3Ob/CLnSZLytxaSsrTRTIhrZhlgEP7aQl/HcpU6
+	 Rjc6xlV58NbQb16mEIpwPjvj0u92Fn94lSddmwJ5HD+KoLKjoKLF11jBAgkXBOsza8
+	 WlUWmASowDMFzKcH3k4bV0I94dI0IXGqLOfaxxqHpZCiri7mKjcZotDioNgFiV/1hS
+	 hF3jaThj0nuFL3+xWo65xuG8fq1/iNWbuuBtA3EsYczwELYJfKNvrY6ACc8AYhhQ5V
+	 9VJiT7HlUnpwZkRLZm24LFIY1mGpNH2A6UCwtnnm7LFGsSa6bheemqm7bkKPYdQmDp
+	 qcJkeBVb/zjkw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Dmitry Antipov <dmantipov@yandex.ru>,
+Cc: Shigeru Yoshida <syoshida@redhat.com>,
+	syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 221/238] soc: fsl: dpio: fix kcalloc() argument order
-Date: Sun, 24 Mar 2024 19:40:09 -0400
-Message-ID: <20240324234027.1354210-222-sashal@kernel.org>
+Subject: [PATCH 5.10 222/238] hsr: Fix uninit-value access in hsr_get_node()
+Date: Sun, 24 Mar 2024 19:40:10 -0400
+Message-ID: <20240324234027.1354210-223-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,45 +63,96 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Shigeru Yoshida <syoshida@redhat.com>
 
-[ Upstream commit 72ebb41b88f9d7c10c5e159e0507074af0a22fe2 ]
+[ Upstream commit ddbec99f58571301679addbc022256970ca3eac6 ]
 
-A previous bugfix added a call to kcalloc(), which starting in gcc-14
-causes a harmless warning about the argument order:
+KMSAN reported the following uninit-value access issue [1]:
 
-drivers/soc/fsl/dpio/dpio-service.c: In function 'dpaa2_io_service_enqueue_multiple_desc_fq':
-drivers/soc/fsl/dpio/dpio-service.c:526:29: error: 'kcalloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Werror=calloc-transposed-args]
-  526 |         ed = kcalloc(sizeof(struct qbman_eq_desc), 32, GFP_KERNEL);
-      |                             ^~~~~~
-drivers/soc/fsl/dpio/dpio-service.c:526:29: note: earlier argument should specify number of elements, later size of each element
+=====================================================
+BUG: KMSAN: uninit-value in hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
+ hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
+ fill_frame_info net/hsr/hsr_forward.c:577 [inline]
+ hsr_forward_skb+0xe12/0x30e0 net/hsr/hsr_forward.c:615
+ hsr_dev_xmit+0x1a1/0x270 net/hsr/hsr_device.c:223
+ __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4954 [inline]
+ xmit_one net/core/dev.c:3548 [inline]
+ dev_hard_start_xmit+0x247/0xa10 net/core/dev.c:3564
+ __dev_queue_xmit+0x33b8/0x5130 net/core/dev.c:4349
+ dev_queue_xmit include/linux/netdevice.h:3134 [inline]
+ packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
+ packet_snd net/packet/af_packet.c:3087 [inline]
+ packet_sendmsg+0x8b1d/0x9f30 net/packet/af_packet.c:3119
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ __sys_sendto+0x735/0xa10 net/socket.c:2191
+ __do_sys_sendto net/socket.c:2203 [inline]
+ __se_sys_sendto net/socket.c:2199 [inline]
+ __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Since the two are only multiplied, the order does not change the
-behavior, so just fix it now to shut up the compiler warning.
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ kmem_cache_alloc_node+0x5e9/0xb10 mm/slub.c:3523
+ kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
+ __alloc_skb+0x318/0x740 net/core/skbuff.c:651
+ alloc_skb include/linux/skbuff.h:1286 [inline]
+ alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6334
+ sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2787
+ packet_alloc_skb net/packet/af_packet.c:2936 [inline]
+ packet_snd net/packet/af_packet.c:3030 [inline]
+ packet_sendmsg+0x70e8/0x9f30 net/packet/af_packet.c:3119
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ __sys_sendto+0x735/0xa10 net/socket.c:2191
+ __do_sys_sendto net/socket.c:2203 [inline]
+ __se_sys_sendto net/socket.c:2199 [inline]
+ __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Dmity independently came up with the same fix.
+CPU: 1 PID: 5033 Comm: syz-executor334 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
 
-Fixes: 5c4a5999b245 ("soc: fsl: dpio: avoid stack usage warning")
-Reported-by: Dmitry Antipov <dmantipov@yandex.ru>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+If the packet type ID field in the Ethernet header is either ETH_P_PRP or
+ETH_P_HSR, but it is not followed by an HSR tag, hsr_get_skb_sequence_nr()
+reads an invalid value as a sequence number. This causes the above issue.
+
+This patch fixes the issue by returning NULL if the Ethernet header is not
+followed by an HSR tag.
+
+Fixes: f266a683a480 ("net/hsr: Better frame dispatch")
+Reported-and-tested-by: syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=2ef3a8ce8e91b5a50098 [1]
+Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+Link: https://lore.kernel.org/r/20240312152719.724530-1-syoshida@redhat.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/fsl/dpio/dpio-service.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/hsr/hsr_framereg.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/soc/fsl/dpio/dpio-service.c b/drivers/soc/fsl/dpio/dpio-service.c
-index 779c319a4b820..6cdd2c517ba68 100644
---- a/drivers/soc/fsl/dpio/dpio-service.c
-+++ b/drivers/soc/fsl/dpio/dpio-service.c
-@@ -485,7 +485,7 @@ int dpaa2_io_service_enqueue_multiple_desc_fq(struct dpaa2_io *d,
- 	struct qbman_eq_desc *ed;
- 	int i, ret;
- 
--	ed = kcalloc(sizeof(struct qbman_eq_desc), 32, GFP_KERNEL);
-+	ed = kcalloc(32, sizeof(struct qbman_eq_desc), GFP_KERNEL);
- 	if (!ed)
- 		return -ENOMEM;
- 
+diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
+index 87fc86aade5c9..fc9fb3e5ae3e2 100644
+--- a/net/hsr/hsr_framereg.c
++++ b/net/hsr/hsr_framereg.c
+@@ -237,6 +237,10 @@ struct hsr_node *hsr_get_node(struct hsr_port *port, struct list_head *node_db,
+ 	 */
+ 	if (ethhdr->h_proto == htons(ETH_P_PRP) ||
+ 	    ethhdr->h_proto == htons(ETH_P_HSR)) {
++		/* Check if skb contains hsr_ethhdr */
++		if (skb->mac_len < sizeof(struct hsr_ethhdr))
++			return NULL;
++
+ 		/* Use the existing sequence_nr from the tag as starting point
+ 		 * for filtering duplicate frames.
+ 		 */
 -- 
 2.43.0
 
