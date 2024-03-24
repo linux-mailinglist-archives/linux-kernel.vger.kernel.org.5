@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-115462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F066889BBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:00:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A173A8886D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0CA21F2655B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:00:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 423A5B23C64
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84CE21D138;
-	Mon, 25 Mar 2024 02:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5802130E45;
+	Sun, 24 Mar 2024 23:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FtWwjNsG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8dVn4gI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B9A1292F1;
-	Sun, 24 Mar 2024 22:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625E71E6F50;
+	Sun, 24 Mar 2024 22:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320854; cv=none; b=cejAPf6rr5dgfWHGugbCbWBLkTx8ALQsg8RcjnxdHJuzv2UjPZCW5PUpWK3I5Gcj4lW8h38UMbofyQOYxG3yx5zqi4H+DyzsL2R4O1dOsklQ5c9N5AE8jt0MdJXlmtJvbeSpYGj+Iu/ZIYGaD+PY4Qd3e2QTtUCkWmBqGsG/Fvs=
+	t=1711320856; cv=none; b=Y8oaCwRk5dCBp0NC3cckkpv0kbAPKV2+3DotEyhiQ6v9K6a6UeM54vWEpqq/+MY+9cIG/8d6sh5ANDRtaFbnhoYIlioZ5DaT/3577qbWSZ+FW2xqix9gcx+w0Dxnm9xPHYlFHqFWatOnYAUkcXjEGDK+UjAY2rzQr4bMianhVts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320854; c=relaxed/simple;
-	bh=NqwGCkPP9pHP+VhbOXH+r1P5DCYuQEDtzt/Bgudxgh4=;
+	s=arc-20240116; t=1711320856; c=relaxed/simple;
+	bh=15la2HOP4BZJOz/HljR3aeBvlmkYLsdL1e3Rm1CDSGo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rJlH2701gmph1YfQhPvnrYlRAkjIer8GtxJXo/v5IdfUAW3WEh8L6pELcisQZ+72eOFTQKgPXdGDLQnC7ix+QgAeUM3y1of7wXUo9KPUbvsEqVmLJAZlt3bHYMgIwDblnQafFst2R41yedOpYMXmCchjSQSsg2Z03qcmF+0XuKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FtWwjNsG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 516DBC433F1;
-	Sun, 24 Mar 2024 22:54:13 +0000 (UTC)
+	 MIME-Version; b=LqM2CHcPmDv799Gr1CtcFTaqE66IlIhwxjVNGjtcPAgm699H0NA5j9/P1z3cUIfbFOAf/KNERw7Rm8Hyg08KTC9e6uiOQFNOigsvQ2/YzJhDDqZyXzYpm+7hH+KdKGgYPdxG+c//R0CbgDSkDWdbAOtiIAZsyOzT8tG7BJVoH1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I8dVn4gI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D08CC433C7;
+	Sun, 24 Mar 2024 22:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320854;
-	bh=NqwGCkPP9pHP+VhbOXH+r1P5DCYuQEDtzt/Bgudxgh4=;
+	s=k20201202; t=1711320855;
+	bh=15la2HOP4BZJOz/HljR3aeBvlmkYLsdL1e3Rm1CDSGo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FtWwjNsGV7Z48i2VaD0LtqkbcNgSg9ax0iwzGpQ4e99wrW/0dIS2JABs4zsEQVJ5p
-	 6mrtlVVff7KgY7FTvums3lOHRUDsSY8Az7E1Ilw+oSVnWnWpXi3yryuxP8S8Wkftsg
-	 Ccdi0VCE6cRI90QjX0jEzAwSBhhEJLL1iZ4jzy2o8Lliz/glhEEuYaepFWfQuVeKtR
-	 GjEm/mHbLpppAbZIQG21FIU9yVntzDgp+Mdit2PXYN0HX12ct55HsEE4lPxOvZiftV
-	 Th0rAb6cEFGeB3Vdu8PxIkVG8lVnelih5qR6QUhK0fLiY4tCD1/EJMzhZ7m7a063K8
-	 Gs1PdIrKwk6/Q==
+	b=I8dVn4gISlcmW9uGs4vdG/eBtwz1/LuGk4PLlwcWp5xkW60GM3FcwrzsuHbALxpCz
+	 IFZ3BL/ml5J1tB1gdDPVTZNG4c4RQsE4BaVsOnIjMyUdW49UkaODTfc3A207GGKOHs
+	 z5vWHXgM/yqy0mKbKDLFoLuSUiXxyUM5+NBqn9dOBf/gBFemPg6k9oeAMOeLbVr+lp
+	 5ErgZNfdGFoNpuUASr3cuVo8kTRQbNNkam1qnXTblOwifj6vqNBmB7O5Xoj8sUN+ve
+	 fRG4JkSn55TOV+mYH7wl1rZ+FZI9AFgac4V4dF/oAz2WCSSoBUhY+BcgYY7JMHm3Wl
+	 NAbZ1oJxN4l6w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Wyatt Wood <wyatt.wood@amd.com>,
-	Anthony Koo <Anthony.Koo@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 418/713] drm/amd/display: Fix potential NULL pointer dereferences in 'dcn10_set_output_transfer_func()'
-Date: Sun, 24 Mar 2024 18:42:24 -0400
-Message-ID: <20240324224720.1345309-419-sashal@kernel.org>
+Subject: [PATCH 6.7 419/713] ASoC: sh: rz-ssi: Fix error message print
+Date: Sun, 24 Mar 2024 18:42:25 -0400
+Message-ID: <20240324224720.1345309-420-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -66,54 +63,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-[ Upstream commit 9ccfe80d022df7c595f1925afb31de2232900656 ]
+[ Upstream commit 9a6d7c4fb2801b675a9c31a7ceb78c84b8c439bc ]
 
-The 'stream' pointer is used in dcn10_set_output_transfer_func() before
-the check if 'stream' is NULL.
+The devm_request_irq() call is done for "dma_rt" interrupt but the error
+message printed "dma_tx" interrupt on failure, fix this by updating
+dma_tx -> dma_rt in dev_err_probe() message. While at it aligned the code.
 
-Fixes the below:
-drivers/gpu/drm/amd/amdgpu/../display/dc/hwss/dcn10/dcn10_hwseq.c:1892 dcn10_set_output_transfer_func() warn: variable dereferenced before check 'stream' (see line 1875)
-
-Fixes: ddef02de0d71 ("drm/amd/display: add null checks before logging")
-Cc: Wyatt Wood <wyatt.wood@amd.com>
-Cc: Anthony Koo <Anthony.Koo@amd.com>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Anthony Koo <Anthony.Koo@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Fixes: 38c042b59af0248a ("ASoC: sh: rz-ssi: Update interrupt handling for half duplex channels")
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://msgid.link/r/20240130150822.327434-1-prabhakar.mahadev-lad.rj@bp.renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/sh/rz-ssi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c
-index 1fc8436c8130e..2b3ef5cdbd458 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn10/dcn10_hwseq.c
-@@ -1834,6 +1834,9 @@ bool dcn10_set_output_transfer_func(struct dc *dc, struct pipe_ctx *pipe_ctx,
- {
- 	struct dpp *dpp = pipe_ctx->plane_res.dpp;
- 
-+	if (!stream)
-+		return false;
-+
- 	if (dpp == NULL)
- 		return false;
- 
-@@ -1856,8 +1859,8 @@ bool dcn10_set_output_transfer_func(struct dc *dc, struct pipe_ctx *pipe_ctx,
- 	} else
- 		dpp->funcs->dpp_program_regamma_pwl(dpp, NULL, OPP_REGAMMA_BYPASS);
- 
--	if (stream != NULL && stream->ctx != NULL &&
--			stream->out_transfer_func != NULL) {
-+	if (stream->ctx &&
-+	    stream->out_transfer_func) {
- 		log_tf(stream->ctx,
- 				stream->out_transfer_func,
- 				dpp->regamma_params.hw_points_num);
+diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
+index 14cf1a41fb0d1..9d103646973ad 100644
+--- a/sound/soc/sh/rz-ssi.c
++++ b/sound/soc/sh/rz-ssi.c
+@@ -1015,7 +1015,7 @@ static int rz_ssi_probe(struct platform_device *pdev)
+ 					       dev_name(&pdev->dev), ssi);
+ 			if (ret < 0)
+ 				return dev_err_probe(&pdev->dev, ret,
+-						"irq request error (dma_tx)\n");
++						     "irq request error (dma_rt)\n");
+ 		} else {
+ 			if (ssi->irq_tx < 0)
+ 				return ssi->irq_tx;
 -- 
 2.43.0
 
