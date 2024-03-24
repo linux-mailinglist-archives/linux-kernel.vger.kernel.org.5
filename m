@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF9DE888D8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F36E2888D8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:51:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B5EE292934
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:52:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADAB3291C4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E191B1C8FDF;
-	Mon, 25 Mar 2024 01:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5E4307071;
+	Mon, 25 Mar 2024 01:07:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LsjtxOvK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rTh+vaNK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F228D22BF75;
-	Sun, 24 Mar 2024 23:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F3722BF80;
+	Sun, 24 Mar 2024 23:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324231; cv=none; b=tMt31ZVrLESsbIM+oWt2xSzf4KbsR7xcObXF1MvovqYuG4rWEKGjNIhBkALmkr4Rw7ksIkQcZB/ihM4+mOGE/w/z/X03pDUFPJk2tNYX9aI9k65B1c4WNLYEn1/91at03VVKjJvaRSL/207lrJ4Q3ktB7dPWzyDMS/NvO+DdD7A=
+	t=1711324232; cv=none; b=ILYT36S6gh5bOOYLGmAMyO9UKuldurFIItY53CXPiweB6GqpJiDDVNWcK1DOKtMUjKgsDKja+dmK3wevyoIs6LUtNUt6pRoKyLOr9MBAgGL5/sGaL+mVEKblpmEbDyy44bzpO2ihnTOWy8QjjLHJe8+J7dcfrzkZ4VMR8xutwI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324231; c=relaxed/simple;
-	bh=y6SI1aGswLNseRZzTvYEXZFknUO2uW6XeSH+ZI2z+LQ=;
+	s=arc-20240116; t=1711324232; c=relaxed/simple;
+	bh=NbFoFKDFJZ/lAIRyGGvrwioKM5cI7LsQ0SBfnOwu3Sg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PVCvD/b8WBY+p3nq9mtBm4jRdE1BH/BAl5XUmnLWT6C8iR05HoJ2DG05W64BkDV57BQCGGTqo8J7nZtdkWwQ3ItHOfYamKD3zclBpBAT5Wrf6pd43X+p3gJHCiJ//6FtWxw0IpWb8PpmH4OWwlzU3I6//Tp9UcglPsJcowS9low=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LsjtxOvK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7507C433C7;
-	Sun, 24 Mar 2024 23:50:28 +0000 (UTC)
+	 MIME-Version; b=IateY19U9hWd9JVZzio8XuBhMmgk3QOcHLFPNLlI9WN++g0hGjZ7OuO1BNmcsR23zTyC0ovA+0nwfVgFZ7EhrbfFcydTZxrFrYBjwkaB+ypgLc304J4jfp8XC0+jq5uE9yuENGBCCqu2zn0whz+ZN9TFM15qB6mgO7WXoOoPXSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rTh+vaNK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C8BC433F1;
+	Sun, 24 Mar 2024 23:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324229;
-	bh=y6SI1aGswLNseRZzTvYEXZFknUO2uW6XeSH+ZI2z+LQ=;
+	s=k20201202; t=1711324231;
+	bh=NbFoFKDFJZ/lAIRyGGvrwioKM5cI7LsQ0SBfnOwu3Sg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LsjtxOvKpRfaPX/tjpNAeDKdj7Km+l8ivZdS76TsU3TZtKV+0K+mUyU2h3RYrRVaq
-	 +9Bd7B+MJCVm8AZeMQS2NYODtq1i0xS8/4CHguEhXc+YORnbR7DjpuYw7mBArs/F7R
-	 ilW+YO/eJr3uhhuNSgwwsk4H82TL9ZfaAlgSgcYznS1yuPSDnsNW9xC70WWg7zj1yV
-	 meZHniUX8b4cpXq40FduL9X/KELHf023J9kNopcysH4P3m81VH43irsWULfcDpwUG/
-	 oefkjxPckfkuGq24zWTDRYiTw3b9GboMYE7hHaE41R2lDBCRQNizLdgLZfhZatTeCb
-	 Pn+vi11KqvxaA==
+	b=rTh+vaNKGaFgMwhYBeiZevwKhM9gXstPnOxx95OxkAQGdxAO/cUa87nRN6TwKhRhB
+	 NaVJKItUv7NLnAuHuvpgjo7Csno21BcMiyN52xoLULfbpadue4Ug8Z9VLKUOXxEDCL
+	 Eoc66KOPsrWN3oDUME7m16uS1i57rRyT7xLgNwPKNcAImc7eh05oleBONSfHWJHL3T
+	 qEmyXZ3o81xQqEK774F420mEpg8aZKwsgdIY3tKT/Zqg54I5T+lVLFnOcaz1SgQ/FD
+	 ez/ipHRU6MS/XIA24PscPt9fazPAOCxqn1UHAlogOtYiVrr812q5QYboI0UZiZlNUM
+	 yoT/Wjrr1etdA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Stuart Henderson <stuarth@opensource.cirrus.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 013/148] ASoC: wm8962: Enable both SPKOUTR_ENA and SPKOUTL_ENA in mono mode
-Date: Sun, 24 Mar 2024 19:47:57 -0400
-Message-ID: <20240324235012.1356413-14-sashal@kernel.org>
+Subject: [PATCH 4.19 014/148] ASoC: wm8962: Fix up incorrect error message in wm8962_set_fll
+Date: Sun, 24 Mar 2024 19:47:58 -0400
+Message-ID: <20240324235012.1356413-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -64,72 +64,32 @@ Content-Transfer-Encoding: 8bit
 
 From: Stuart Henderson <stuarth@opensource.cirrus.com>
 
-[ Upstream commit 6fa849e4d78b880e878138bf238e4fd2bac3c4fa ]
+[ Upstream commit 96e202f8c52ac49452f83317cf3b34cd1ad81e18 ]
+
+Use source instead of ret, which seems to be unrelated and will always
+be zero.
 
 Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Link: https://msgid.link/r/20240306161439.1385643-2-stuarth@opensource.cirrus.com
+Link: https://msgid.link/r/20240306161439.1385643-5-stuarth@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ sound/soc/codecs/wm8962.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 674bc6f65ed0e..55e041031d398 100644
+index 55e041031d398..74321c16e41f4 100644
 --- a/sound/soc/codecs/wm8962.c
 +++ b/sound/soc/codecs/wm8962.c
-@@ -2177,6 +2177,9 @@ SND_SOC_DAPM_PGA_E("HPOUT", SND_SOC_NOPM, 0, 0, NULL, 0, hp_event,
+@@ -2867,7 +2867,7 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 				    WM8962_FLL_FRC_NCO, WM8962_FLL_FRC_NCO);
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Unknown FLL source %d\n", ret);
++		dev_err(component->dev, "Unknown FLL source %d\n", source);
+ 		return -EINVAL;
+ 	}
  
- SND_SOC_DAPM_OUTPUT("HPOUTL"),
- SND_SOC_DAPM_OUTPUT("HPOUTR"),
-+
-+SND_SOC_DAPM_PGA("SPKOUTL Output", WM8962_CLASS_D_CONTROL_1, 6, 0, NULL, 0),
-+SND_SOC_DAPM_PGA("SPKOUTR Output", WM8962_CLASS_D_CONTROL_1, 7, 0, NULL, 0),
- };
- 
- static const struct snd_soc_dapm_widget wm8962_dapm_spk_mono_widgets[] = {
-@@ -2184,7 +2187,6 @@ SND_SOC_DAPM_MIXER("Speaker Mixer", WM8962_MIXER_ENABLES, 1, 0,
- 		   spkmixl, ARRAY_SIZE(spkmixl)),
- SND_SOC_DAPM_MUX_E("Speaker PGA", WM8962_PWR_MGMT_2, 4, 0, &spkoutl_mux,
- 		   out_pga_event, SND_SOC_DAPM_POST_PMU),
--SND_SOC_DAPM_PGA("Speaker Output", WM8962_CLASS_D_CONTROL_1, 7, 0, NULL, 0),
- SND_SOC_DAPM_OUTPUT("SPKOUT"),
- };
- 
-@@ -2199,9 +2201,6 @@ SND_SOC_DAPM_MUX_E("SPKOUTL PGA", WM8962_PWR_MGMT_2, 4, 0, &spkoutl_mux,
- SND_SOC_DAPM_MUX_E("SPKOUTR PGA", WM8962_PWR_MGMT_2, 3, 0, &spkoutr_mux,
- 		   out_pga_event, SND_SOC_DAPM_POST_PMU),
- 
--SND_SOC_DAPM_PGA("SPKOUTR Output", WM8962_CLASS_D_CONTROL_1, 7, 0, NULL, 0),
--SND_SOC_DAPM_PGA("SPKOUTL Output", WM8962_CLASS_D_CONTROL_1, 6, 0, NULL, 0),
--
- SND_SOC_DAPM_OUTPUT("SPKOUTL"),
- SND_SOC_DAPM_OUTPUT("SPKOUTR"),
- };
-@@ -2311,12 +2310,18 @@ static const struct snd_soc_dapm_route wm8962_spk_mono_intercon[] = {
- 	{ "Speaker PGA", "Mixer", "Speaker Mixer" },
- 	{ "Speaker PGA", "DAC", "DACL" },
- 
--	{ "Speaker Output", NULL, "Speaker PGA" },
--	{ "Speaker Output", NULL, "SYSCLK" },
--	{ "Speaker Output", NULL, "TOCLK" },
--	{ "Speaker Output", NULL, "TEMP_SPK" },
-+	{ "SPKOUTL Output", NULL, "Speaker PGA" },
-+	{ "SPKOUTL Output", NULL, "SYSCLK" },
-+	{ "SPKOUTL Output", NULL, "TOCLK" },
-+	{ "SPKOUTL Output", NULL, "TEMP_SPK" },
-+
-+	{ "SPKOUTR Output", NULL, "Speaker PGA" },
-+	{ "SPKOUTR Output", NULL, "SYSCLK" },
-+	{ "SPKOUTR Output", NULL, "TOCLK" },
-+	{ "SPKOUTR Output", NULL, "TEMP_SPK" },
- 
--	{ "SPKOUT", NULL, "Speaker Output" },
-+	{ "SPKOUT", NULL, "SPKOUTL Output" },
-+	{ "SPKOUT", NULL, "SPKOUTR Output" },
- };
- 
- static const struct snd_soc_dapm_route wm8962_spk_stereo_intercon[] = {
 -- 
 2.43.0
 
