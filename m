@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCD3A8884C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:51:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0E78893C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:38:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4F031C240D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:51:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B798E1F30B4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F246413D502;
-	Sun, 24 Mar 2024 22:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3540313D527;
+	Sun, 24 Mar 2024 22:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LvE4Drw/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k+CbfoXI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4141B8FD4;
-	Sun, 24 Mar 2024 22:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F42013D50C;
+	Sun, 24 Mar 2024 22:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320298; cv=none; b=OE6x9QeUifsooBlc0Fv2At7tlhRircNWBhsjheS6vdrKO7m4Sc42Ys//GWRjIldvcJ7FobJlLTatHN82xAqq1GFdt9rh/vnWyJhHi3ZaoZbpYL7ekTLE8BZiDDkkrDdGcwiOwDttUNSbucNoHQBn9CrZQWbzgDPSYo30OoKYspI=
+	t=1711320299; cv=none; b=borPn10bTzXhaGEcRStmuv/X4xtNs0TD/tDzlMgRPb3EUGgUdpdeM/c0xUV72nZ4dwecqNyxHkXLPqX9qTQQHFkox66bnM8d3Oie3TRfIsdq9g3vGzD0hcwuTbJkC/Y/Owy9stMtcvWl8jszOPp9XK1XZHgXv2SuUNLgFgNQaGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320298; c=relaxed/simple;
-	bh=Ob+u0v7iJbF2fdhov1SjWGCt8FchSjZcmIy7w6TcGok=;
+	s=arc-20240116; t=1711320299; c=relaxed/simple;
+	bh=BFLrM6VzIQ/SvkmNCVyRKM9OQn5i2ec6bYhmnanVnZM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Nod6H/7ezwarJBx60O8JwxoVgU0a8P2O1fkNPzYUWavqYe7XS4WM1DqhilWxSg6/E1SUn+8iTrR+cXvzCf5IpbsrB5QFRdATo/gKOjqCtO1KxxBLUtdUF6kp4E50hPNkrQC2pTY31z1hJ3SKBWIF5Io+JAfCEKL0MzhfT8GXvUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LvE4Drw/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 557B3C43394;
-	Sun, 24 Mar 2024 22:44:57 +0000 (UTC)
+	 MIME-Version; b=sgEBZ55rMvHBV/Fc04wWnh5fPD628YYqolOkWCBFPLeBzJ3sUVKWVGVhb3HWKoxXrwY7YhNvw5nUxsS2e6kOHre6DjpaQjI9ZW3MIrWQofnBqIMm+KbCAvs9Mp2nYlgjSe5WNzkJOOJwj+4JJQVFiPaBiNtkjacOGzPQ9LzC3LU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k+CbfoXI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ED94C433F1;
+	Sun, 24 Mar 2024 22:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320298;
-	bh=Ob+u0v7iJbF2fdhov1SjWGCt8FchSjZcmIy7w6TcGok=;
+	bh=BFLrM6VzIQ/SvkmNCVyRKM9OQn5i2ec6bYhmnanVnZM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LvE4Drw/E4cDThPVXG+9oQLKhvoAt8w2L/qGlG3lZKVyutevwBPbWRxZshHwNZaBs
-	 Qi/qYp2P9ji0dQOq72PutCgeLWS7m65tgjn3ek0jiAjliJhUsUaijSIKr7YunYh9fC
-	 psM4kC3Cy04kacwacjs0U11Oymq0GeYMZsazRsy4UTf7uXLd0lzmJ3qLvJoSTEDx2A
-	 m+40XyMhEyfTRyTAtZeykOohpTrIF6yhtCBVf27lsDkixWubGjgW5CQEqZSFoD2OAl
-	 GMi9F5ZXUn2wrBdKpFXBZ1kHV1T8raqHIr4q9jpkVjsZF4BxZvWgY6efuF9tyu8fQY
-	 SBRsV+3vSSVUA==
+	b=k+CbfoXIGFwySHmAsdjdoWHukm7+7lUlanrRB5HQz9FzJsrEnNuISokt+w8aj2o2U
+	 WoKbEMsseRxHCH3pTlgSVI55DMQqWR1SlwiZEZrJCpR64Mu06SQiXsd+q0bAN2lKK/
+	 wnrgJpADI4XZOf9hOKzFU+WDS9uZypZPrPINkWtNs0F3cUuCEIr9d5qmkT/1VXDkS0
+	 +gBBz1tmnzaDntrIbw0CRDWSiGW+1dglsgbOgCzPdbZuMnSJ41d1HE6fEawshgRomO
+	 PDFu6joZR3hOsuXyLimVWcgdIfKsUILFMP7gMs0vTIW+aQMZEUzPiggUob+QOFcogJ
+	 HQiydz/k+EBwg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Josef Bacik <josef@toxicpanda.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
+Cc: Amir Goldstein <amir73il@gmail.com>,
+	syzbot+3abd99031b42acf367ef@syzkaller.appspotmail.com,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 605/715] nfs: fix panic when nfs4_ff_layout_prepare_ds() fails
-Date: Sun, 24 Mar 2024 18:33:04 -0400
-Message-ID: <20240324223455.1342824-606-sashal@kernel.org>
+Subject: [PATCH 6.8 606/715] ovl: relax WARN_ON in ovl_verify_area()
+Date: Sun, 24 Mar 2024 18:33:05 -0400
+Message-ID: <20240324223455.1342824-607-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,94 +62,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Amir Goldstein <amir73il@gmail.com>
 
-[ Upstream commit 719fcafe07c12646691bd62d7f8d94d657fa0766 ]
+[ Upstream commit 77a28aa476873048024ad56daf8f4f17d58ee48e ]
 
-We've been seeing the following panic in production
+syzbot hit an assertion in copy up data loop which looks like it is
+the result of a lower file whose size is being changed underneath
+overlayfs.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000065
-PGD 2f485f067 P4D 2f485f067 PUD 2cc5d8067 PMD 0
-RIP: 0010:ff_layout_cancel_io+0x3a/0x90 [nfs_layout_flexfiles]
-Call Trace:
- <TASK>
- ? __die+0x78/0xc0
- ? page_fault_oops+0x286/0x380
- ? __rpc_execute+0x2c3/0x470 [sunrpc]
- ? rpc_new_task+0x42/0x1c0 [sunrpc]
- ? exc_page_fault+0x5d/0x110
- ? asm_exc_page_fault+0x22/0x30
- ? ff_layout_free_layoutreturn+0x110/0x110 [nfs_layout_flexfiles]
- ? ff_layout_cancel_io+0x3a/0x90 [nfs_layout_flexfiles]
- ? ff_layout_cancel_io+0x6f/0x90 [nfs_layout_flexfiles]
- pnfs_mark_matching_lsegs_return+0x1b0/0x360 [nfsv4]
- pnfs_error_mark_layout_for_return+0x9e/0x110 [nfsv4]
- ? ff_layout_send_layouterror+0x50/0x160 [nfs_layout_flexfiles]
- nfs4_ff_layout_prepare_ds+0x11f/0x290 [nfs_layout_flexfiles]
- ff_layout_pg_init_write+0xf0/0x1f0 [nfs_layout_flexfiles]
- __nfs_pageio_add_request+0x154/0x6c0 [nfs]
- nfs_pageio_add_request+0x26b/0x380 [nfs]
- nfs_do_writepage+0x111/0x1e0 [nfs]
- nfs_writepages_callback+0xf/0x30 [nfs]
- write_cache_pages+0x17f/0x380
- ? nfs_pageio_init_write+0x50/0x50 [nfs]
- ? nfs_writepages+0x6d/0x210 [nfs]
- ? nfs_writepages+0x6d/0x210 [nfs]
- nfs_writepages+0x125/0x210 [nfs]
- do_writepages+0x67/0x220
- ? generic_perform_write+0x14b/0x210
- filemap_fdatawrite_wbc+0x5b/0x80
- file_write_and_wait_range+0x6d/0xc0
- nfs_file_fsync+0x81/0x170 [nfs]
- ? nfs_file_mmap+0x60/0x60 [nfs]
- __x64_sys_fsync+0x53/0x90
- do_syscall_64+0x3d/0x90
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
+This type of use case is documented to cause undefined behavior, so
+returning EIO error for the copy up makes sense, but it should not be
+causing a WARN_ON assertion.
 
-Inspecting the core with drgn I was able to pull this
-
-  >>> prog.crashed_thread().stack_trace()[0]
-  #0 at 0xffffffffa079657a (ff_layout_cancel_io+0x3a/0x84) in ff_layout_cancel_io at fs/nfs/flexfilelayout/flexfilelayout.c:2021:27
-  >>> prog.crashed_thread().stack_trace()[0]['idx']
-  (u32)1
-  >>> prog.crashed_thread().stack_trace()[0]['flseg'].mirror_array[1].mirror_ds
-  (struct nfs4_ff_layout_ds *)0xffffffffffffffed
-
-This is clear from the stack trace, we call nfs4_ff_layout_prepare_ds()
-which could error out initializing the mirror_ds, and then we go to
-clean it all up and our check is only for if (!mirror->mirror_ds).  This
-is inconsistent with the rest of the users of mirror_ds, which have
-
-  if (IS_ERR_OR_NULL(mirror_ds))
-
-to keep from tripping over this exact scenario.  Fix this up in
-ff_layout_cancel_io() to make sure we don't panic when we get an error.
-I also spot checked all the other instances of checking mirror_ds and we
-appear to be doing the correct checks everywhere, only unconditionally
-dereferencing mirror_ds when we know it would be valid.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Fixes: b739a5bd9d9f ("NFSv4/flexfiles: Cancel I/O if the layout is recalled or revoked")
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Reported-and-tested-by: syzbot+3abd99031b42acf367ef@syzkaller.appspotmail.com
+Fixes: ca7ab482401c ("ovl: add permission hooks outside of do_splice_direct()")
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/flexfilelayout/flexfilelayout.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/overlayfs/copy_up.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/nfs/flexfilelayout/flexfilelayout.c b/fs/nfs/flexfilelayout/flexfilelayout.c
-index ef817a0475ffa..3e724cb7ef01d 100644
---- a/fs/nfs/flexfilelayout/flexfilelayout.c
-+++ b/fs/nfs/flexfilelayout/flexfilelayout.c
-@@ -2016,7 +2016,7 @@ static void ff_layout_cancel_io(struct pnfs_layout_segment *lseg)
- 	for (idx = 0; idx < flseg->mirror_array_cnt; idx++) {
- 		mirror = flseg->mirror_array[idx];
- 		mirror_ds = mirror->mirror_ds;
--		if (!mirror_ds)
-+		if (IS_ERR_OR_NULL(mirror_ds))
- 			continue;
- 		ds = mirror->mirror_ds->ds;
- 		if (!ds)
+diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+index 8586e2f5d2439..0762575a1e708 100644
+--- a/fs/overlayfs/copy_up.c
++++ b/fs/overlayfs/copy_up.c
+@@ -234,11 +234,11 @@ static int ovl_verify_area(loff_t pos, loff_t pos2, loff_t len, loff_t totlen)
+ {
+ 	loff_t tmp;
+ 
+-	if (WARN_ON_ONCE(pos != pos2))
++	if (pos != pos2)
+ 		return -EIO;
+-	if (WARN_ON_ONCE(pos < 0 || len < 0 || totlen < 0))
++	if (pos < 0 || len < 0 || totlen < 0)
+ 		return -EIO;
+-	if (WARN_ON_ONCE(check_add_overflow(pos, len, &tmp)))
++	if (check_add_overflow(pos, len, &tmp))
+ 		return -EIO;
+ 	return 0;
+ }
 -- 
 2.43.0
 
