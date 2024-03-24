@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B692889431
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:49:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93CFF888F11
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:36:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D8E91C2F04E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:49:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 221401F32778
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120C420919C;
-	Mon, 25 Mar 2024 02:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6279149001;
+	Sun, 24 Mar 2024 23:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="loCGWy7H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJTyjstz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F0D1FA817;
-	Sun, 24 Mar 2024 23:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44351FA81F;
+	Sun, 24 Mar 2024 23:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321286; cv=none; b=sUyLOOFT9GfipJ/ejOHTQ6GRL+Sranctk971St+kEHEEjdsVcbz7oekfDTJ9YWnogJdACDVE7pNAF9ynAnA0eJ6XnoRv15mIMoofuiGE8dfyDfHmDv7kZBcqj7bhbbj6FooELfOGz87o0vyIQ3MQDFwk2q/ADd9ZJey+VUmmNhk=
+	t=1711321288; cv=none; b=VoWGzRUdldOtqiMRRnpX2XFOoYfDw646dXnPIPgwtCnXhA3kkTIgINtQQt/olEL2YIv2Upy5ltYMdWqtYsyqcxmhQb2OVcCmw5516f7inlzP+bKXLAwh7PUMhdxM8yyvFYIV7rx4rHRB5LtQMVhNIQ/1FkVXufC1vxzjl62TIY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321286; c=relaxed/simple;
-	bh=/UDMCO+p3pTN0o3VKH882mj3piAL34bvPIkXm2pXWnI=;
+	s=arc-20240116; t=1711321288; c=relaxed/simple;
+	bh=fAometgkYT+8afRTn5I8qtc/WQf0RndWwBfG1rn1ejA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KqncQHCrtA2XG23WIztOeCit9v0OFlOEqY81LpmARj1pI1ltQy36x6CZf4K7zT5dhjVa7fzbMZzl7q2n8kmXAO799XbEKY3rMehVlcIMQIaOwOQqyTYNrb5woNWPGKEevXARzK8AuPJW0LexxqXC7OUiAGQB2QCKEWXLKhKdIEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=loCGWy7H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CAEDC43394;
-	Sun, 24 Mar 2024 23:01:25 +0000 (UTC)
+	 MIME-Version; b=jmmCfPxWvP31v9BiwkV8OZoetBbVijtN6KW5AObc5CVEUponQ4IWwpstdNzzE4yNJBzhd1iBo7x56OUwK3Wppcd/jnkoYZu8muWHJxVgZJywOOEyD2tB5BnRpMsVfW1iETiSEEHdYNEEJ5G8p7vyJI6K+P3LX3EphWaX0I3ySy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJTyjstz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9847BC433B1;
+	Sun, 24 Mar 2024 23:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321286;
-	bh=/UDMCO+p3pTN0o3VKH882mj3piAL34bvPIkXm2pXWnI=;
+	s=k20201202; t=1711321287;
+	bh=fAometgkYT+8afRTn5I8qtc/WQf0RndWwBfG1rn1ejA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=loCGWy7HzCr9mqumtQY3rIO5FfxoIfuZaJyS/U7+id+IKFruIir01lfAOBbSjlkDJ
-	 HpvD2nG8HEfUV0rmdT2/JMptYtOHdfeG/kHbdIQSgwEC/77snhy7h3O2VhfKuFw2mT
-	 eD0a30i9tmsTRuZxo/T1r30p4fNtDJ78qzEwqT4dKKikc6Iyx3skmiz1/PU6y+O2mA
-	 eqfzhC9hwp/lW3fw4zGRanQB3EnN+ffBbYv0j9j9ND6ngj7Lc/FByDaRW4hwjHIp7N
-	 Cei/Gzpy5eJIXCKGpH6Lz6KhbXFdyQ0h0F33nLrc7kXj/z2zhJXQWLDvoFVLdts8EX
-	 gnC85ovM2F5eA==
+	b=JJTyjstzEUT3MhYDeCHmwTPClrVRGmYgb8sZTcyo+dd8qwxG168hlmLuVf/rYj9/s
+	 zwazPjBXuTqP11nWjI5inpq0MbNvkg6MiDtGH6RTVGQWHteYjU+E5tLj/Xo56bOGIN
+	 lxJ62v96uAR0cyUx7mp7BBW0SU6RHuGoc+CeRkZnASZKgKBLtV0/hvw9Gi6TvoJf2T
+	 ik69x/9hfA925a8yyXSR4UXx7ytFohVJ/tBSSY8YkrRmQFgrIgHBT9ldLXDHdi+yiK
+	 qDYeTljxXYpK0L6xEMlmoNlXoSTRWHmAXjXOK3z4PJiISiOpP9wvNneOWcW6z4veuk
+	 a+h1VcE6R7AIA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Will Deacon <will@kernel.org>,
+Cc: Aaron Conole <aconole@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 008/638] perf/arm-cmn: Workaround AmpereOneX errata AC04_MESH_1 (incorrect child count)
-Date: Sun, 24 Mar 2024 18:50:45 -0400
-Message-ID: <20240324230116.1348576-9-sashal@kernel.org>
+Subject: [PATCH 6.6 009/638] selftests: openvswitch: Add validation for the recursion test
+Date: Sun, 24 Mar 2024 18:50:46 -0400
+Message-ID: <20240324230116.1348576-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,51 +63,199 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+From: Aaron Conole <aconole@redhat.com>
 
-[ Upstream commit 50572064ec7109b00eef8880e905f55861c8b3de ]
+[ Upstream commit bd128f62c365504e1268dc09fcccdfb1f091e93a ]
 
-AmpereOneX mesh implementation has a bug in HN-P nodes that makes them
-report incorrect child count. The failing crosspoints report 8 children
-while they only have two.
+Add a test case into the netlink checks that will show the number of
+nested action recursions won't exceed 16.  Going to 17 on a small
+clone call isn't enough to exhaust the stack on (most) systems, so
+it should be safe to run even on systems that don't have the fix
+applied.
 
-When the driver tries to access the inexistent child nodes, it believes it
-has reached an invalid node type and probing fails. The workaround is to
-ignore those incorrect child nodes and continue normally.
-
-Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-[ rm: rewrote simpler generalised version ]
-Tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/ce4b1442135fe03d0de41859b04b268c88c854a3.1707498577.git.robin.murphy@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Aaron Conole <aconole@redhat.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Link: https://lore.kernel.org/r/20240207132416.1488485-3-aconole@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/arm-cmn.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ .../selftests/net/openvswitch/openvswitch.sh  | 13 ++++
+ .../selftests/net/openvswitch/ovs-dpctl.py    | 71 +++++++++++++++----
+ 2 files changed, 69 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-index 6404b17d3aeb0..2c684e49a6fc7 100644
---- a/drivers/perf/arm-cmn.c
-+++ b/drivers/perf/arm-cmn.c
-@@ -2301,6 +2301,17 @@ static int arm_cmn_discover(struct arm_cmn *cmn, unsigned int rgn_offset)
- 				dev_dbg(cmn->dev, "ignoring external node %llx\n", reg);
- 				continue;
- 			}
-+			/*
-+			 * AmpereOneX erratum AC04_MESH_1 makes some XPs report a bogus
-+			 * child count larger than the number of valid child pointers.
-+			 * A child offset of 0 can only occur on CMN-600; otherwise it
-+			 * would imply the root node being its own grandchild, which
-+			 * we can safely dismiss in general.
-+			 */
-+			if (reg == 0 && cmn->part != PART_CMN600) {
-+				dev_dbg(cmn->dev, "bogus child pointer?\n");
-+				continue;
-+			}
+diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+index f8499d4c87f3f..36e40256ab92a 100755
+--- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
++++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+@@ -502,7 +502,20 @@ test_netlink_checks () {
+ 	    wc -l) == 2 ] || \
+ 	      return 1
  
- 			arm_cmn_init_node_info(cmn, reg & CMN_CHILD_NODE_ADDR, dn);
++	info "Checking clone depth"
+ 	ERR_MSG="Flow actions may not be safe on all matching packets"
++	PRE_TEST=$(dmesg | grep -c "${ERR_MSG}")
++	ovs_add_flow "test_netlink_checks" nv0 \
++		'in_port(1),eth(),eth_type(0x800),ipv4()' \
++		'clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(clone(drop)))))))))))))))))' \
++		>/dev/null 2>&1 && return 1
++	POST_TEST=$(dmesg | grep -c "${ERR_MSG}")
++
++	if [ "$PRE_TEST" == "$POST_TEST" ]; then
++		info "failed - clone depth too large"
++		return 1
++	fi
++
+ 	PRE_TEST=$(dmesg | grep -c "${ERR_MSG}")
+ 	ovs_add_flow "test_netlink_checks" nv0 \
+ 		'in_port(1),eth(),eth_type(0x0806),arp()' 'drop(0),2' \
+diff --git a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+index b97e621face95..5e0e539a323d5 100644
+--- a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
++++ b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+@@ -299,7 +299,7 @@ class ovsactions(nla):
+         ("OVS_ACTION_ATTR_PUSH_NSH", "none"),
+         ("OVS_ACTION_ATTR_POP_NSH", "flag"),
+         ("OVS_ACTION_ATTR_METER", "none"),
+-        ("OVS_ACTION_ATTR_CLONE", "none"),
++        ("OVS_ACTION_ATTR_CLONE", "recursive"),
+         ("OVS_ACTION_ATTR_CHECK_PKT_LEN", "none"),
+         ("OVS_ACTION_ATTR_ADD_MPLS", "none"),
+         ("OVS_ACTION_ATTR_DEC_TTL", "none"),
+@@ -465,29 +465,42 @@ class ovsactions(nla):
+                     print_str += "pop_mpls"
+             else:
+                 datum = self.get_attr(field[0])
+-                print_str += datum.dpstr(more)
++                if field[0] == "OVS_ACTION_ATTR_CLONE":
++                    print_str += "clone("
++                    print_str += datum.dpstr(more)
++                    print_str += ")"
++                else:
++                    print_str += datum.dpstr(more)
  
+         return print_str
+ 
+     def parse(self, actstr):
++        totallen = len(actstr)
+         while len(actstr) != 0:
+             parsed = False
++            parencount = 0
+             if actstr.startswith("drop"):
+                 # If no reason is provided, the implicit drop is used (i.e no
+                 # action). If some reason is given, an explicit action is used.
+-                actstr, reason = parse_extract_field(
+-                    actstr,
+-                    "drop(",
+-                    "([0-9]+)",
+-                    lambda x: int(x, 0),
+-                    False,
+-                    None,
+-                )
++                reason = None
++                if actstr.startswith("drop("):
++                    parencount += 1
++
++                    actstr, reason = parse_extract_field(
++                        actstr,
++                        "drop(",
++                        "([0-9]+)",
++                        lambda x: int(x, 0),
++                        False,
++                        None,
++                    )
++
+                 if reason is not None:
+                     self["attrs"].append(["OVS_ACTION_ATTR_DROP", reason])
+                     parsed = True
+                 else:
+-                    return
++                    actstr = actstr[len("drop"): ]
++                    return (totallen - len(actstr))
+ 
+             elif parse_starts_block(actstr, "^(\d+)", False, True):
+                 actstr, output = parse_extract_field(
+@@ -504,6 +517,7 @@ class ovsactions(nla):
+                     False,
+                     0,
+                 )
++                parencount += 1
+                 self["attrs"].append(["OVS_ACTION_ATTR_RECIRC", recircid])
+                 parsed = True
+ 
+@@ -516,12 +530,22 @@ class ovsactions(nla):
+ 
+             for flat_act in parse_flat_map:
+                 if parse_starts_block(actstr, flat_act[0], False):
+-                    actstr += len(flat_act[0])
++                    actstr = actstr[len(flat_act[0]):]
+                     self["attrs"].append([flat_act[1]])
+                     actstr = actstr[strspn(actstr, ", ") :]
+                     parsed = True
+ 
+-            if parse_starts_block(actstr, "ct(", False):
++            if parse_starts_block(actstr, "clone(", False):
++                parencount += 1
++                subacts = ovsactions()
++                actstr = actstr[len("clone("):]
++                parsedLen = subacts.parse(actstr)
++                lst = []
++                self["attrs"].append(("OVS_ACTION_ATTR_CLONE", subacts))
++                actstr = actstr[parsedLen:]
++                parsed = True
++            elif parse_starts_block(actstr, "ct(", False):
++                parencount += 1
+                 actstr = actstr[len("ct(") :]
+                 ctact = ovsactions.ctact()
+ 
+@@ -553,6 +577,7 @@ class ovsactions(nla):
+                         natact = ovsactions.ctact.natattr()
+ 
+                         if actstr.startswith("("):
++                            parencount += 1
+                             t = None
+                             actstr = actstr[1:]
+                             if actstr.startswith("src"):
+@@ -607,15 +632,29 @@ class ovsactions(nla):
+                                     actstr = actstr[strspn(actstr, ", ") :]
+ 
+                         ctact["attrs"].append(["OVS_CT_ATTR_NAT", natact])
+-                        actstr = actstr[strspn(actstr, ",) ") :]
++                        actstr = actstr[strspn(actstr, ", ") :]
+ 
+                 self["attrs"].append(["OVS_ACTION_ATTR_CT", ctact])
+                 parsed = True
+ 
+-            actstr = actstr[strspn(actstr, "), ") :]
++            actstr = actstr[strspn(actstr, ", ") :]
++            while parencount > 0:
++                parencount -= 1
++                actstr = actstr[strspn(actstr, " "):]
++                if len(actstr) and actstr[0] != ")":
++                    raise ValueError("Action str: '%s' unbalanced" % actstr)
++                actstr = actstr[1:]
++
++            if len(actstr) and actstr[0] == ")":
++                return (totallen - len(actstr))
++
++            actstr = actstr[strspn(actstr, ", ") :]
++
+             if not parsed:
+                 raise ValueError("Action str: '%s' not supported" % actstr)
+ 
++        return (totallen - len(actstr))
++
+ 
+ class ovskey(nla):
+     nla_flags = NLA_F_NESTED
+@@ -2111,6 +2150,8 @@ def main(argv):
+     ovsflow = OvsFlow()
+     ndb = NDB()
+ 
++    sys.setrecursionlimit(100000)
++
+     if hasattr(args, "showdp"):
+         found = False
+         for iface in ndb.interfaces:
 -- 
 2.43.0
 
