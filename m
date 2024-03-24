@@ -1,53 +1,55 @@
-Return-Path: <linux-kernel+bounces-113409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD8F0888418
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:29:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01B2E88841A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE67D1C23AED
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:29:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61A42B224D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4645B1A62F7;
-	Sun, 24 Mar 2024 22:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D0C1A6990;
+	Sun, 24 Mar 2024 22:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k73EOYYg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NcLhzsZD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800671A62DE;
-	Sun, 24 Mar 2024 22:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5241A62FA;
+	Sun, 24 Mar 2024 22:43:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320211; cv=none; b=uhsS2CDVB6Lr+facpNZrTRBBd2P42C7ib9+c4QnNVjsUedcAb523Lu1XO2cRP1wEc8YwvXHwJWB9IEFK5LJQOdeOJ2L+kyq5gUuLlWYOtg8SMOsCeBfiJ/xAmmrq+Rk+qckZD4pSBrB8Aibe/eaJ0sO9iT9YlIdS41+NM4RCWJA=
+	t=1711320212; cv=none; b=PoeHHw0nuucYVoq2oYHsBB0evwbdsXkFRAJiopUG0c6TSc0boPttZNoQm1e605kJ61JAYxXq7WGm/Ajl4XzlnqbEAb+fT8a9TbGCwLY72DYbNsFNjNoiLKwtrUtxoldujw24Syzmx/R+B7kzHn5MLbY4v8d5casU4lXCTpjtAxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320211; c=relaxed/simple;
-	bh=Wml8Fpma/jCRajX7n0E7UooUQHgAIcEy1zlBA0LnHYo=;
+	s=arc-20240116; t=1711320212; c=relaxed/simple;
+	bh=4FUPlWa79cawkkNKxG7WUAwRAA85F1SBpHi+Rf23veo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EwL0oYLmc29HwAQsq5BSCp46C1jrZhWJmPaBSNxyeCKp0u4K5Ib/vkUnsDchWDpxXR2vXYMvUH1SYKY0BlBQzhtNP5HwqN99bmEEUaMUjXLXuUb0tGpE3FB7wMinhdAbVsAHweSgVVyP7qUsGSMHGJMWUot/GX/dGINCKu7XxSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k73EOYYg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B03C43390;
-	Sun, 24 Mar 2024 22:43:30 +0000 (UTC)
+	 MIME-Version; b=U2jlxa7YtzY/39kqvr4jlNmRX9kUCYeDaZ8wV0r1LMpcFDROlIkbSmb8SHSPzfixjFAwhowpJDeozrZBnPhbksLsehbfuNJju1vgBDbea9k2Dbgf6XfeohpmpYy4UFRbh1qYURXkqATb/3vCnro50aJqI0oXQmJ5d1QAvRDdUvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NcLhzsZD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72154C43601;
+	Sun, 24 Mar 2024 22:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320211;
-	bh=Wml8Fpma/jCRajX7n0E7UooUQHgAIcEy1zlBA0LnHYo=;
+	s=k20201202; t=1711320212;
+	bh=4FUPlWa79cawkkNKxG7WUAwRAA85F1SBpHi+Rf23veo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=k73EOYYgaqIBesTWw2fwd8esjgBykpXlg9iP5pE43L3s9XmAztl/0c5gjw8usLAnN
-	 KSQaagTobwcz7P7tZ6rHmzaU7/7MUzfNlrXTfdwaOLRm+D6G68/Tj4WuypCCtUXJ1K
-	 1wFTkOrqA0aVnhbbw/Pd0PwaTlnjvugdmBZRnstS9k4H2XbUHE8+qjCQ4x/AM2s42Z
-	 2yj9YFHRMS2WsuFt4HI99mZk0CeoGixflk+CL2GBFmNtZ231QDNtRuQWlAGvnIYQcw
-	 wUivjfDNL3W3vfDd20NUH3Ap8xGMJ0X6QlfmQevoaZJkloExEmRCuNbqsPROqbYgHE
-	 R+cenGleEQe8g==
+	b=NcLhzsZDOeK9Rp2MAlxJKWKOa4bfRReWrHl5sggmMZk7GHM3stmsAHb49TbddyqBC
+	 bwG1biw5wbVH3EriPBH9zCtgJ2gQSNP6nKiFMWF4tox0Bj4IQwd8/wuP/41QRpBA7a
+	 xuX9v5+SVTPERlpwBZky7sZSmM/NwHZx9iEGuqsaewO6hXEZ/W0/L9GlEgrBFisCVq
+	 Z1oVjN+tSz3mcWbtijAmX73ioG6cdH9fLtSh9wu8CkwHS2G+iPnRZ+Euc56Cnxs/My
+	 58GgaqZyxeCwh5BB08FANDVujr+7h3DjGpCV6rltV5uobIPj9ZxWFGjuDwNRiHjQqu
+	 Bpo4Xap9c89qw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Michael Ellerman <mpe@ellerman.id.au>,
+Cc: Anup Patel <apatel@ventanamicro.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Anup Patel <anup@brainfault.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 518/715] powerpc/4xx: Fix warp_gpio_leds build failure
-Date: Sun, 24 Mar 2024 18:31:37 -0400
-Message-ID: <20240324223455.1342824-519-sashal@kernel.org>
+Subject: [PATCH 6.8 519/715] RISC-V: KVM: Forward SEED CSR access to user space
+Date: Sun, 24 Mar 2024 18:31:38 -0400
+Message-ID: <20240324223455.1342824-520-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -57,43 +59,63 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Anup Patel <apatel@ventanamicro.com>
 
-[ Upstream commit 5b9e00a6004cf837c43fdb8d5290df619de78024 ]
+[ Upstream commit d808f0b1be4888a87524164bc7dad2242734de38 ]
 
-The 44x/warp_defconfig build fails with:
+The SEED CSR access from VS/VU mode (guest) will always trap to
+HS-mode (KVM) when Zkr extension is available to the Guest/VM.
 
-  arch/powerpc/platforms/44x/warp.c:109:15: error: variable ‘warp_gpio_leds’ has initializer but incomplete type
-    109 | static struct platform_device warp_gpio_leds = {
-        |               ^~~~~~~~~~~~~~~
+Forward this CSR access to KVM user space so that it can be
+emulated based on the method chosen by VMM.
 
-Fix it by including platform_device.h.
-
-Fixes: ef175b29a242 ("of: Stop circularly including of_device.h and of_platform.h")
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20240305123410.3306253-3-mpe@ellerman.id.au
+Fixes: f370b4e668f0 ("RISC-V: KVM: Allow scalar crypto extensions for Guest/VM")
+Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Signed-off-by: Anup Patel <anup@brainfault.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/44x/warp.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/kvm/vcpu_insn.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/powerpc/platforms/44x/warp.c b/arch/powerpc/platforms/44x/warp.c
-index bf0188dcb9184..a5001d32f978d 100644
---- a/arch/powerpc/platforms/44x/warp.c
-+++ b/arch/powerpc/platforms/44x/warp.c
-@@ -8,6 +8,7 @@
- #include <linux/err.h>
- #include <linux/init.h>
- #include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/kthread.h>
- #include <linux/leds.h>
- #include <linux/i2c.h>
+diff --git a/arch/riscv/kvm/vcpu_insn.c b/arch/riscv/kvm/vcpu_insn.c
+index 7a6abed41bc17..ee7215f4071f5 100644
+--- a/arch/riscv/kvm/vcpu_insn.c
++++ b/arch/riscv/kvm/vcpu_insn.c
+@@ -7,6 +7,8 @@
+ #include <linux/bitops.h>
+ #include <linux/kvm_host.h>
+ 
++#include <asm/cpufeature.h>
++
+ #define INSN_OPCODE_MASK	0x007c
+ #define INSN_OPCODE_SHIFT	2
+ #define INSN_OPCODE_SYSTEM	28
+@@ -213,9 +215,20 @@ struct csr_func {
+ 		    unsigned long wr_mask);
+ };
+ 
++static int seed_csr_rmw(struct kvm_vcpu *vcpu, unsigned int csr_num,
++			unsigned long *val, unsigned long new_val,
++			unsigned long wr_mask)
++{
++	if (!riscv_isa_extension_available(vcpu->arch.isa, ZKR))
++		return KVM_INSN_ILLEGAL_TRAP;
++
++	return KVM_INSN_EXIT_TO_USER_SPACE;
++}
++
+ static const struct csr_func csr_funcs[] = {
+ 	KVM_RISCV_VCPU_AIA_CSR_FUNCS
+ 	KVM_RISCV_VCPU_HPMCOUNTER_CSR_FUNCS
++	{ .base = CSR_SEED, .count = 1, .func = seed_csr_rmw },
+ };
+ 
+ /**
 -- 
 2.43.0
 
