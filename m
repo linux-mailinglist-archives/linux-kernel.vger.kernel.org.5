@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-115282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC9B3889395
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:32:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45F00889387
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:30:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 976C8292508
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:32:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5D9D1F34697
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F9FB15E80A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E440B15ECC6;
 	Mon, 25 Mar 2024 02:31:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gj9q6CX5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y/Dzm68N"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D0B482D0;
-	Sun, 24 Mar 2024 22:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC19768EC;
+	Sun, 24 Mar 2024 22:47:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320478; cv=none; b=trNdzeUL195I7i0mKIUA9csAlzLuijAlaPD7PP9F6Fs3/rmXY2CZHUOaYuO2IipOMKBlc8BLDfDTQ/oFwp3PSj8gdp/DNvXRoUaMPGmzQgn8+HR2NSXc4RGza6INIzepsF3LiP8h/ERTscqcLX9HdIqs18mNChEISOJqp9uH6L4=
+	t=1711320479; cv=none; b=imTlHoMx4NkGACXZ9wNwIfIW31MvTzFFoe6RI696WP0pnbb9pN/ELABYH5w6b3M8KkufZCUu+woWYHJq1Xi3cj1oaHGnwziUF/gCwouhRq+vJeIkeHgVaXgQxjOuCkap9GP4XnYpBgY5IlZiipQGedvuWEVpJLEIh5LvAZQ1+N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320478; c=relaxed/simple;
-	bh=PkKaGziWURDv/ulaxnHD5Dgsz+znc2l24h5KSkIa8qs=;
+	s=arc-20240116; t=1711320479; c=relaxed/simple;
+	bh=231kPemi6KhrEE+kXp4dfXwlWja7tvS8rmabG6VryFY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BmsHbmhSC8hD30Ywj9g1ZcSE99RLbLREpLy9szfNomE+AgOOYO5bTnbw0ivXffCVbKV0n5cUiPApqWe4oImeC6QwZFl82B2fLYKajifqYT9iJx+BWIOixUh5OXgNRUXljXMeqv+Z9sDPp+5WVoLPGRtXF4Ec9xw90AfWvay9ft0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gj9q6CX5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57FF5C43394;
-	Sun, 24 Mar 2024 22:47:57 +0000 (UTC)
+	 MIME-Version; b=cZIVdqhY0BNg45XxzhaiBUHaFR9+Kjy9dNSA4tGHn0XwIwXkc+q70ydm8MtwcRBObvoik0yBeVnTePin2ZWAzr3TOlqnoGdQ0+CLhDwiZbxPptx57q95PkJb8GV8AbBEcUDZiRvta/2z4tcyplu8UoUz6VWrEFoBNdUpHIpqAn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y/Dzm68N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55E02C433C7;
+	Sun, 24 Mar 2024 22:47:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320478;
-	bh=PkKaGziWURDv/ulaxnHD5Dgsz+znc2l24h5KSkIa8qs=;
+	s=k20201202; t=1711320479;
+	bh=231kPemi6KhrEE+kXp4dfXwlWja7tvS8rmabG6VryFY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gj9q6CX5e4hS0zw2+Iz8Vha903eraQ21UrFLM4t3P0iQTYycZnq2wAAacDmDXNKlB
-	 seaZca4SQvikY1MwmxNfPmHM1j7PeTTJt/xap0FZ7bNAxNNDy2DfB6xjM30d9x8Cuk
-	 HczitB7OW1XkeKrSz6VIFHuKC+ALYo7CHg7Tjd39qy7H4PRzb9xGTwiUQPBTcq/gJO
-	 dRkBBvnTGH/MJYAT9GMgyXKPPyhZCiJGHgEqslyhcuEhabqXtBsLbNw8R7UQ/j1tUD
-	 LE5T8fnbT9I6HlLBdXZW7MjcnxtlR9cL+zRpDewqIEsXU3Kvz1fs3e+/YjiP5ZNKjl
-	 hpRSndH7shDFg==
+	b=Y/Dzm68N1uwFDyacQ1ikH/Kz4omlX+3rX0iSqEJVfRhn6RltSVb+fD2Yj1mHgrgsO
+	 FUdRjmwg2ciFD+rT3T/1v49fJhCOFf6RmGEVlCmQ1Od3+sMYLayGx6BENU0eY8qTiG
+	 0BHZWgekNjTGlDoHiWeW7cjdjMMJpaJ3fA5AqaxV4KlOfHyzDCpYX5KPjPQdNYqWPJ
+	 gwabcaJrUXftbcoDhhOniorB4mjPsLiJxofsH+NSgVaPtQPY+3irGu6AeCFxCLJ4aM
+	 7RhPKhyKlyXmWeJSs8qmUDankBaS7kvi+hvDCw1WxzXJzWOz3wf81/DkJDliH1Zse5
+	 jHhDgiJiL6iow==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: Alison Schofield <alison.schofield@intel.com>,
 	Wonjae Lee <wj28.lee@samsung.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 037/713] cxl/region: Handle endpoint decoders in cxl_region_find_decoder()
-Date: Sun, 24 Mar 2024 18:36:03 -0400
-Message-ID: <20240324224720.1345309-38-sashal@kernel.org>
+Subject: [PATCH 6.7 038/713] cxl/region: Allow out of order assembly of autodiscovered regions
+Date: Sun, 24 Mar 2024 18:36:04 -0400
+Message-ID: <20240324224720.1345309-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -65,61 +65,111 @@ Content-Transfer-Encoding: 8bit
 
 From: Alison Schofield <alison.schofield@intel.com>
 
-[ Upstream commit 453a7fde8031a5192ed2f9646ad048c1a5e930dc ]
+[ Upstream commit cb66b1d60c283bb340a2fc19deff7de8acea74b1 ]
 
-In preparation for adding a new caller of cxl_region_find_decoders()
-teach it to find a decoder from a cxl_endpoint_decoder structure.
+Autodiscovered regions can fail to assemble if they are not discovered
+in HPA decode order. The user will see failure messages like:
 
-Combining switch and endpoint decoder lookup in one function prevents
-code duplication in call sites.
+[] cxl region0: endpoint5: HPA order violation region1
+[] cxl region0: endpoint5: failed to allocate region reference
 
-Update the existing caller.
+The check that is causing the failure helps the CXL driver enforce
+a CXL spec mandate that decoders be committed in HPA order. The
+check is needless for autodiscovered regions since their decoders
+are already programmed. Trying to enforce order in the assembly of
+these regions is useless because they are assembled once all their
+member endpoints arrive, and there is no guarantee on the order in
+which endpoints are discovered during probe.
+
+Keep the existing check, but for autodiscovered regions, allow the
+out of order assembly after a sanity check that the lesser numbered
+decoder has the lesser HPA starting address.
 
 Signed-off-by: Alison Schofield <alison.schofield@intel.com>
 Tested-by: Wonjae Lee <wj28.lee@samsung.com>
-Link: https://lore.kernel.org/r/79ae6d72978ef9f3ceec9722e1cb793820553c8e.1706736863.git.alison.schofield@intel.com
+Link: https://lore.kernel.org/r/3dec69ee97524ab229a20c6739272c3000b18408.1706736863.git.alison.schofield@intel.com
 Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cxl/core/region.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/cxl/core/region.c | 48 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 38 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-index 7bb656237fa0c..764998fe03edc 100644
+index 764998fe03edc..8f0a2507ddecf 100644
 --- a/drivers/cxl/core/region.c
 +++ b/drivers/cxl/core/region.c
-@@ -729,12 +729,17 @@ static int match_auto_decoder(struct device *dev, void *data)
- 	return 0;
+@@ -757,8 +757,31 @@ cxl_region_find_decoder(struct cxl_port *port,
+ 	return to_cxl_decoder(dev);
  }
  
--static struct cxl_decoder *cxl_region_find_decoder(struct cxl_port *port,
--						   struct cxl_region *cxlr)
-+static struct cxl_decoder *
-+cxl_region_find_decoder(struct cxl_port *port,
-+			struct cxl_endpoint_decoder *cxled,
-+			struct cxl_region *cxlr)
- {
- 	struct device *dev;
- 	int id = 0;
- 
-+	if (port == cxled_to_port(cxled))
-+		return &cxled->cxld;
+-static struct cxl_region_ref *alloc_region_ref(struct cxl_port *port,
+-					       struct cxl_region *cxlr)
++static bool auto_order_ok(struct cxl_port *port, struct cxl_region *cxlr_iter,
++			  struct cxl_decoder *cxld)
++{
++	struct cxl_region_ref *rr = cxl_rr_load(port, cxlr_iter);
++	struct cxl_decoder *cxld_iter = rr->decoder;
 +
- 	if (test_bit(CXL_REGION_F_AUTO, &cxlr->flags))
- 		dev = device_find_child(&port->dev, &cxlr->params,
- 					match_auto_decoder);
-@@ -852,10 +857,7 @@ static int cxl_rr_alloc_decoder(struct cxl_port *port, struct cxl_region *cxlr,
++	/*
++	 * Allow the out of order assembly of auto-discovered regions.
++	 * Per CXL Spec 3.1 8.2.4.20.12 software must commit decoders
++	 * in HPA order. Confirm that the decoder with the lesser HPA
++	 * starting address has the lesser id.
++	 */
++	dev_dbg(&cxld->dev, "check for HPA violation %s:%d < %s:%d\n",
++		dev_name(&cxld->dev), cxld->id,
++		dev_name(&cxld_iter->dev), cxld_iter->id);
++
++	if (cxld_iter->id > cxld->id)
++		return true;
++
++	return false;
++}
++
++static struct cxl_region_ref *
++alloc_region_ref(struct cxl_port *port, struct cxl_region *cxlr,
++		 struct cxl_endpoint_decoder *cxled)
  {
- 	struct cxl_decoder *cxld;
+ 	struct cxl_region_params *p = &cxlr->params;
+ 	struct cxl_region_ref *cxl_rr, *iter;
+@@ -768,16 +791,21 @@ static struct cxl_region_ref *alloc_region_ref(struct cxl_port *port,
+ 	xa_for_each(&port->regions, index, iter) {
+ 		struct cxl_region_params *ip = &iter->region->params;
  
--	if (port == cxled_to_port(cxled))
--		cxld = &cxled->cxld;
--	else
--		cxld = cxl_region_find_decoder(port, cxlr);
-+	cxld = cxl_region_find_decoder(port, cxled, cxlr);
- 	if (!cxld) {
- 		dev_dbg(&cxlr->dev, "%s: no decoder available\n",
- 			dev_name(&port->dev));
+-		if (!ip->res)
++		if (!ip->res || ip->res->start < p->res->start)
+ 			continue;
+ 
+-		if (ip->res->start > p->res->start) {
+-			dev_dbg(&cxlr->dev,
+-				"%s: HPA order violation %s:%pr vs %pr\n",
+-				dev_name(&port->dev),
+-				dev_name(&iter->region->dev), ip->res, p->res);
+-			return ERR_PTR(-EBUSY);
++		if (test_bit(CXL_REGION_F_AUTO, &cxlr->flags)) {
++			struct cxl_decoder *cxld;
++
++			cxld = cxl_region_find_decoder(port, cxled, cxlr);
++			if (auto_order_ok(port, iter->region, cxld))
++				continue;
+ 		}
++		dev_dbg(&cxlr->dev, "%s: HPA order violation %s:%pr vs %pr\n",
++			dev_name(&port->dev),
++			dev_name(&iter->region->dev), ip->res, p->res);
++
++		return ERR_PTR(-EBUSY);
+ 	}
+ 
+ 	cxl_rr = kzalloc(sizeof(*cxl_rr), GFP_KERNEL);
+@@ -954,7 +982,7 @@ static int cxl_port_attach_region(struct cxl_port *port,
+ 			nr_targets_inc = true;
+ 		}
+ 	} else {
+-		cxl_rr = alloc_region_ref(port, cxlr);
++		cxl_rr = alloc_region_ref(port, cxlr, cxled);
+ 		if (IS_ERR(cxl_rr)) {
+ 			dev_dbg(&cxlr->dev,
+ 				"%s: failed to allocate region reference\n",
 -- 
 2.43.0
 
