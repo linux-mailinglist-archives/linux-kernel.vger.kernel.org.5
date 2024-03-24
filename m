@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-113370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3346D8883C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:20:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0F708883CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 648461C2378A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:20:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3922CB2335B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC77619DF7A;
-	Sun, 24 Mar 2024 22:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D1219E66E;
+	Sun, 24 Mar 2024 22:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YEHN+lkY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cx8SrXbC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE1419DF64;
-	Sun, 24 Mar 2024 22:42:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB0D19DF7B;
+	Sun, 24 Mar 2024 22:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320172; cv=none; b=XDnz9BEboup+GH7mHxVpeBcp/ooIuwcWLaD/OSEpyGbS2SI+Gp8jn0W2nShYGvR7rkSMyIig7UIqau0MxRRj1/geei8BDakW5g3T7Gsj5OL+Ka1rxFy2zWyKw2RLQBJA354srr0asUV+LyKwLv3+u8eUtL5D1B2aBR0/YHV9HPU=
+	t=1711320173; cv=none; b=P8KEqJdwhGsP+xQVc3asHEr8BA+LmZSclOomqszoihG24qlqAVkI1krgvrbCIKOyh1jqI2OzqvwGwvybhMG5OfF5dmcnKCtCnszduVnq9cihfXVw6DefmZrEIJuXAnA2+Ccs5AM8XVm+6Pwm5p1bY0f9ggc5qfl0YbU+yOBEPUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320172; c=relaxed/simple;
-	bh=ezCUrIvDRIMjnNi19J2vJvkJAVoFfPKZW7OmIymu7FI=;
+	s=arc-20240116; t=1711320173; c=relaxed/simple;
+	bh=M1XBoXiOTq0p7mgERHXcig2Q0cM/9V/unK6ZP5x0oO0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DHl+JBEldJdHaPscWnohNlJz6CNfo2+NTPQCOmGIU+jkE6a+36cN79QwUmx9b3clLO6IuB99SLVA6VNhnS2Hl0Xk9+E8rpwfTV5gxHG/IU+NPcs6tdGlJSewNsM8Vb87MjWpk4eR8FDeOf1n3BZb3szv+dv0psoWRMCFeKNE7vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YEHN+lkY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 964BCC43394;
-	Sun, 24 Mar 2024 22:42:50 +0000 (UTC)
+	 MIME-Version; b=sfbyni29r2Ct2cTzCHgUdJM/UBXPHWRhkuaTw8lX/XEvR7u27fgNoiM3cpqwWmQJZNyRag/EzxfVPW6lE1aYkp4Vvfnddk8NOv7YyEviS5KJyqOryfLq/Eq36Fqru5H59sKkKCtxkbEau8ePuEq3+Ej1J5OvGaAc/RpDVR7SoKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cx8SrXbC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C36F5C43390;
+	Sun, 24 Mar 2024 22:42:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320171;
-	bh=ezCUrIvDRIMjnNi19J2vJvkJAVoFfPKZW7OmIymu7FI=;
+	s=k20201202; t=1711320172;
+	bh=M1XBoXiOTq0p7mgERHXcig2Q0cM/9V/unK6ZP5x0oO0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YEHN+lkYPO+oQ28x1o8feH41I2joLMDQ0qy8VDXxaGlgr2P3dZ03Q9749v3YdU0ga
-	 1qVc21HTw61wPfBb9BHINl6Ey7bCwDa1ngsWceNQlqU/zcoRtz2aoSmcfP6vo8VmdR
-	 76Q3Ra+JaMoihaE9Cdb/pw32KAgDRn9nhUObmEI5SniQPdAH5N8mYjOuokqWm1SxKs
-	 dKmrKhEAyJL5SWLuYKY0m32n49zmx+XUMIYIkZjkOAaBjhbpjWsKHzDQZfq+bqwt8i
-	 lbvT/O4yoqtjPHjh7A1SkL9L9ZdW5Fsi2hyJjOkMobmFLSNtP1YLDBlEn/3MIf1AV+
-	 r6qQPxY919Y4Q==
+	b=cx8SrXbCAsJIeNdXwKec+ZS0Piqz+vKvfWtMbQDcyWxuMc19VUCc1mG8DhDaMbazR
+	 A9qtXn0e9c176Zess25q4syv6fuV7XlcOy74TqiYEmEdPcipmX71JmnABskQWsdOTQ
+	 LSD2gMXW2B+akjmoaCXnPJjyvzcEIGWdFSSzFpnn9r5GWVDHc9kC2an73XNt+qtlAX
+	 k4i2E+q+uuxcH7PjhEM/IHOaxT6QrYnCZnQIDsSzI/PnwbHiDmQbDgmPgvmt3DGniV
+	 h2IoKajLmDxFlMoxlX0Eto+IG6JUA4s7ZryYHiyB2p5q83bsa5149bUEeRCB+KiNQO
+	 f4r04wOYxxGfg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: David Regan <dregan@broadcom.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	William Zhang <william.zhang@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+Cc: Jerome Brunet <jbrunet@baylibre.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 479/715] mtd: rawnand: brcmnand: exec_op helper functions return type fixes
-Date: Sun, 24 Mar 2024 18:30:58 -0400
-Message-ID: <20240324223455.1342824-480-sashal@kernel.org>
+Subject: [PATCH 6.8 480/715] ASoC: meson: axg-tdm-interface: fix mclk setup without mclk-fs
+Date: Sun, 24 Mar 2024 18:30:59 -0400
+Message-ID: <20240324223455.1342824-481-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,70 +62,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: David Regan <dregan@broadcom.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit d4bba1501f72e8af09f2cde3d327147de1b69f5d ]
+[ Upstream commit e3741a8d28a1137f8b19ae6f3d6e3be69a454a0a ]
 
-Fix return types for exec_op reset and status helper functions.
+By default, when mclk-fs is not provided, the tdm-interface driver
+requests an MCLK that is 4x the bit clock, SCLK.
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/102423.html
-Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
-Signed-off-by: David Regan <dregan@broadcom.com>
-Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20240223034758.13753-2-william.zhang@broadcom.com
+However there is no justification for this:
+
+* If the codec needs MCLK for its operation, mclk-fs is expected to be set
+  according to the codec requirements.
+* If the codec does not need MCLK the minimum is 2 * SCLK, because this is
+  minimum the divider between SCLK and MCLK can do.
+
+Multiplying by 4 may cause problems because the PLL limit may be reached
+sooner than it should, so use 2x instead.
+
+Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://msgid.link/r/20240223175116.2005407-2-jbrunet@baylibre.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/meson/axg-tdm-interface.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 8faca43ae1ff9..b8e70fc64348e 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -625,7 +625,7 @@ enum {
- /* Only for v7.2 */
- #define	ACC_CONTROL_ECC_EXT_SHIFT		13
+diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
+index 1c3d433cefd23..cd5168e826df4 100644
+--- a/sound/soc/meson/axg-tdm-interface.c
++++ b/sound/soc/meson/axg-tdm-interface.c
+@@ -264,8 +264,8 @@ static int axg_tdm_iface_set_sclk(struct snd_soc_dai *dai,
+ 	srate = iface->slots * iface->slot_width * params_rate(params);
  
--static u8 brcmnand_status(struct brcmnand_host *host);
-+static int brcmnand_status(struct brcmnand_host *host);
- 
- static inline bool brcmnand_non_mmio_ops(struct brcmnand_controller *ctrl)
- {
-@@ -1690,7 +1690,7 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
- 				 INTFC_FLASH_STATUS;
- }
- 
--static u8 brcmnand_status(struct brcmnand_host *host)
-+static int brcmnand_status(struct brcmnand_host *host)
- {
- 	struct nand_chip *chip = &host->chip;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-@@ -1701,7 +1701,7 @@ static u8 brcmnand_status(struct brcmnand_host *host)
- 	return brcmnand_waitfunc(chip);
- }
- 
--static u8 brcmnand_reset(struct brcmnand_host *host)
-+static int brcmnand_reset(struct brcmnand_host *host)
- {
- 	struct nand_chip *chip = &host->chip;
- 
-@@ -2433,7 +2433,11 @@ static int brcmnand_exec_op(struct nand_chip *chip,
- 
- 	if (brcmnand_op_is_status(op)) {
- 		status = op->instrs[1].ctx.data.buf.in;
--		*status = brcmnand_status(host);
-+		ret = brcmnand_status(host);
-+		if (ret < 0)
-+			return ret;
-+
-+		*status = ret & 0xFF;
- 
- 		return 0;
- 	}
+ 	if (!iface->mclk_rate) {
+-		/* If no specific mclk is requested, default to bit clock * 4 */
+-		clk_set_rate(iface->mclk, 4 * srate);
++		/* If no specific mclk is requested, default to bit clock * 2 */
++		clk_set_rate(iface->mclk, 2 * srate);
+ 	} else {
+ 		/* Check if we can actually get the bit clock from mclk */
+ 		if (iface->mclk_rate % srate) {
 -- 
 2.43.0
 
