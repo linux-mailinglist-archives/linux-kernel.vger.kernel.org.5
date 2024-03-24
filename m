@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-112939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21B43887FE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:47:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32C5A887FEA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0F511F22E65
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:47:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E26E228105C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8D77580A;
-	Sun, 24 Mar 2024 22:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD057FBD5;
+	Sun, 24 Mar 2024 22:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s7sj1L9Z"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ob6ibY5B"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2167EF05;
-	Sun, 24 Mar 2024 22:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62DC7F7DF;
+	Sun, 24 Mar 2024 22:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319751; cv=none; b=HbyfKEEsLql/X4iD1MfI2J3pHsV7uLMReufGyg78r5NoNCxxH68R68SADj5N1pEDMQ9BfvlY41grqv2QneUoRLTPPkEt73AHMpxg+DMKTm1w/l/0jJ6YoLA4JSOmtIfKCNePWL2NWlWlL5qNcQaaC34yE+DWr2bgiIfo8JDO790=
+	t=1711319753; cv=none; b=bwmXhBX+BsvOEtatgqb9UW7B4P1dYbAwuCGZdqV8cHoxolDHuXbsA706xJ7SpF4XVFfx1U4TpDR5RCfrPei0iqvQ/ZTyQ2AK7/+wkWbgjnMNkx/1xRJJMDK+KR9IZah5w9rYk7saZkWpsN7vPhj5YxUh+9/StIRUaSHoA0LZU0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319751; c=relaxed/simple;
-	bh=OYBxtdsfzusqnwQiK4p5xxJ3U+GQNmbFOaggNSEenBs=;
+	s=arc-20240116; t=1711319753; c=relaxed/simple;
+	bh=1gglt1oQJ1MNnZhWrJGf0VB0kc9/2EXTX9V9hXcUnE8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R7Pi7LJDFuMq+bXlq7KNa/zxhgYuxCLRtjlYbPBn/KLdLe5sN71V9FmN8YZisrp4L1rpZnyYYCbzzlSGQgrv8gP7KZO9ems39uHYm03bbpI5AvJY7vs1PDtoW6RyXxaa79DazOzAlDts/u21w3vw3XlT5mSWrc7aJdK5dQNr7Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s7sj1L9Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1EF1C43399;
-	Sun, 24 Mar 2024 22:35:50 +0000 (UTC)
+	 MIME-Version; b=C9/3NK2jd+d7jtVs+JXeozgnOpRosrcOYdrK3c2MS75Rm6O+NxrHkV1K93bJW/lDVrqcIwcMQ3UN9oH0FiaVZmjPmV5z3WJxeeERPAtL+jrZx3mIAIG6pEwJ8/mSUaWppZfDPPQHzQjf60jpaKSV5++XgoLvAkUX72bpUR2bDL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ob6ibY5B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0060DC433F1;
+	Sun, 24 Mar 2024 22:35:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319751;
-	bh=OYBxtdsfzusqnwQiK4p5xxJ3U+GQNmbFOaggNSEenBs=;
+	s=k20201202; t=1711319752;
+	bh=1gglt1oQJ1MNnZhWrJGf0VB0kc9/2EXTX9V9hXcUnE8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=s7sj1L9ZK3TuNT4/ao7fJTQOfVC6kOTCspr6hmC3uaMJDo4eca2yHhtArd4jZWHsc
-	 71LE7nXKADKYLhLvPnsHVwYG5Z/CRhPclcCJHZRIwg98r9K7LX5rnaR48XmYNmUl6t
-	 AVKPDP9sPPGqHccW2X5N1X+4kDHsehFdMosksd6KciTjg+J6oSXQEleDZ6ASsKrHi4
-	 2ySm8XzfQT1JWZJW8k4tGa47rr1KYeB60SHS3ol9L1s/OGyJOBQufObgK656L0NxfC
-	 Lz0V85HT3kUBC8B4iC0sK26hdhu4AotjpapFM9H+XBob/Dd2A5R5H1LgtiAvW5OUGQ
-	 RukUIS2sGTAkQ==
+	b=ob6ibY5BqtgWhA5XH5PhPGx4WFr3XYY5TmWsmiqirCaBV0Z1DM61ikEi2w7WvrtHt
+	 V3SYoSRziLjgevUyMIKn1gI+e/hWlGRLIaaoBwgpZqlwV15QgTZeGAtmAeMRuivMer
+	 7kkvbEKh3DJG8oVGjtIx691AL3bJ6nD/u2Tp3XCz5GKtR5w1vC2S0Br+35FZ4bY8RP
+	 Pbur+nO6I4eItA2PG2iy3BnN+WcihO7uZ8RXL3426Xz4m2o0nVj9R0g2mTPGLIdW80
+	 OdBmD3u8VIhGm75E6hwDxSVXTwKTWa7k6aJivplth5mpTUnzLApV+LUp0VB2QDlZEn
+	 4I1C4o0YORNow==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kai Huang <kai.huang@intel.com>,
-	kernel test robot <lkp@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Yuan Yao <yuan.yao@intel.com>,
+Cc: Keisuke Nishimura <keisuke.nishimura@inria.fr>,
+	Julia Lawall <julia.lawall@inria.fr>,
+	Ingo Molnar <mingo@kernel.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 052/715] x86/asm: Remove the __iomem annotation of movdir64b()'s dst argument
-Date: Sun, 24 Mar 2024 18:23:51 -0400
-Message-ID: <20240324223455.1342824-53-sashal@kernel.org>
+Subject: [PATCH 6.8 053/715] sched/fair: Take the scheduling domain into account in select_idle_smt()
+Date: Sun, 24 Mar 2024 18:23:52 -0400
+Message-ID: <20240324223455.1342824-54-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -66,115 +64,84 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kai Huang <kai.huang@intel.com>
+From: Keisuke Nishimura <keisuke.nishimura@inria.fr>
 
-[ Upstream commit 5bdd181821b2c65b074cfad07d7c7d5d3cfe20bf ]
+[ Upstream commit 8aeaffef8c6eceab0e1498486fdd4f3dc3b7066c ]
 
-Commit e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all
-packages") causes a sparse warning:
+When picking a CPU on task wakeup, select_idle_smt() has to take
+into account the scheduling domain of @target. This is because the
+"isolcpus" kernel command line option can remove CPUs from the domain to
+isolate them from other SMT siblings.
 
-  arch/x86/virt/vmx/tdx/tdx.c:683:27: warning: incorrect type in argument 1 (different address spaces)
-  arch/x86/virt/vmx/tdx/tdx.c:683:27:    expected void [noderef] __iomem *dst
-  arch/x86/virt/vmx/tdx/tdx.c:683:27:    got void *
+This fix checks if the candidate CPU is in the target scheduling domain.
 
-The reason is TDX must use the MOVDIR64B instruction to convert TDX
-private memory (which is normal RAM but not MMIO) back to normal.  The
-TDX code uses existing movdir64b() helper to do that, but the first
-argument @dst of movdir64b() is annotated with __iomem.
+Commit:
 
-When movdir64b() was firstly introduced in commit 0888e1030d3e
-("x86/asm: Carve out a generic movdir64b() helper for general usage"),
-it didn't have the __iomem annotation.  But this commit also introduced
-the same "incorrect type" sparse warning because the iosubmit_cmds512(),
-which was the solo caller of movdir64b(), has the __iomem annotation.
+  df3cb4ea1fb6 ("sched/fair: Fix wrong cpu selecting from isolated domain")
 
-This was later fixed by commit 6ae58d871319 ("x86/asm: Annotate
-movdir64b()'s dst argument with __iomem").  That fix was reasonable
-because until TDX code the movdir64b() was only used to move data to
-MMIO location, as described by the commit message:
+.. originally introduced this fix by adding the check of the scheduling
+domain in the loop.
 
-  ... The current usages send a 64-bytes command descriptor to an MMIO
-  location (portal) on a device for consumption. When future usages for
-  the MOVDIR64B instruction warrant a separate variant of a memory to
-  memory operation, the argument annotation can be revisited.
+However, commit:
 
-Now TDX code uses MOVDIR64B to move data to normal memory so it's time
-to revisit.
+  3e6efe87cd5cc ("sched/fair: Remove redundant check in select_idle_smt()")
 
-The SDM says the destination of MOVDIR64B is "memory location specified
-in a general register", thus it's more reasonable that movdir64b() does
-not have the __iomem annotation on the @dst.
+.. accidentally removed the check. Bring it back.
 
-Remove the __iomem annotation from the @dst argument of movdir64b() to
-fix the sparse warning in TDX code.  Similar to memset_io(), introduce a
-new movdir64b_io() to cover the case where the destination is an MMIO
-location, and change the solo caller iosubmit_cmds512() to use the new
-movdir64b_io().
-
-In movdir64b_io() explicitly use __force in the type casting otherwise
-there will be below sparse warning:
-
-  warning: cast removes address space '__iomem' of expression
-
-[ dhansen: normal changelog tweaks ]
-
-Closes: https://lore.kernel.org/oe-kbuild-all/202312311924.tGjsBIQD-lkp@intel.com/
-Fixes: e56d28df2f66 ("x86/virt/tdx: Configure global KeyID on all packages")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Yuan Yao <yuan.yao@intel.com>
-Link: https://lore.kernel.org/all/20240126023852.11065-1-kai.huang%40intel.com
+Fixes: 3e6efe87cd5c ("sched/fair: Remove redundant check in select_idle_smt()")
+Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lore.kernel.org/r/20240110131707.437301-1-keisuke.nishimura@inria.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/io.h            | 2 +-
- arch/x86/include/asm/special_insns.h | 9 +++++++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ kernel/sched/fair.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-index 3814a9263d64e..294cd2a408181 100644
---- a/arch/x86/include/asm/io.h
-+++ b/arch/x86/include/asm/io.h
-@@ -379,7 +379,7 @@ static inline void iosubmit_cmds512(void __iomem *dst, const void *src,
- 	const u8 *end = from + count * 64;
- 
- 	while (from < end) {
--		movdir64b(dst, from);
-+		movdir64b_io(dst, from);
- 		from += 64;
- 	}
- }
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 48f8dd47cf688..09a5461d72439 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -224,10 +224,10 @@ static inline void serialize(void)
- }
- 
- /* The dst parameter must be 64-bytes aligned */
--static inline void movdir64b(void __iomem *dst, const void *src)
-+static inline void movdir64b(void *dst, const void *src)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 533547e3c90a7..66457d4b8965c 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7311,13 +7311,19 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+ /*
+  * Scan the local SMT mask for idle CPUs.
+  */
+-static int select_idle_smt(struct task_struct *p, int target)
++static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
  {
- 	const struct { char _[64]; } *__src = src;
--	struct { char _[64]; } __iomem *__dst = dst;
-+	struct { char _[64]; } *__dst = dst;
+ 	int cpu;
  
- 	/*
- 	 * MOVDIR64B %(rdx), rax.
-@@ -245,6 +245,11 @@ static inline void movdir64b(void __iomem *dst, const void *src)
- 		     :  "m" (*__src), "a" (__dst), "d" (__src));
+ 	for_each_cpu_and(cpu, cpu_smt_mask(target), p->cpus_ptr) {
+ 		if (cpu == target)
+ 			continue;
++		/*
++		 * Check if the CPU is in the LLC scheduling domain of @target.
++		 * Due to isolcpus, there is no guarantee that all the siblings are in the domain.
++		 */
++		if (!cpumask_test_cpu(cpu, sched_domain_span(sd)))
++			continue;
+ 		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+ 			return cpu;
+ 	}
+@@ -7341,7 +7347,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+ 	return __select_idle_cpu(core, p);
  }
  
-+static inline void movdir64b_io(void __iomem *dst, const void *src)
-+{
-+	movdir64b((void __force *)dst, src);
-+}
-+
- /**
-  * enqcmds - Enqueue a command in supervisor (CPL0) mode
-  * @dst: destination, in MMIO space (must be 512-bit aligned)
+-static inline int select_idle_smt(struct task_struct *p, int target)
++static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+ {
+ 	return -1;
+ }
+@@ -7591,7 +7597,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 		has_idle_core = test_idle_cores(target);
+ 
+ 		if (!has_idle_core && cpus_share_cache(prev, target)) {
+-			i = select_idle_smt(p, prev);
++			i = select_idle_smt(p, sd, prev);
+ 			if ((unsigned int)i < nr_cpumask_bits)
+ 				return i;
+ 		}
 -- 
 2.43.0
 
