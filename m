@@ -1,158 +1,218 @@
-Return-Path: <linux-kernel+bounces-112797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44CB1887E42
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E148887E48
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:17:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9376FB20C73
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:14:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3BBDB20D2C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CA51B941;
-	Sun, 24 Mar 2024 18:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81897210E8;
+	Sun, 24 Mar 2024 18:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WJLbo3WI"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J2oynpNT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641101B7E1
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 18:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E411E51A;
+	Sun, 24 Mar 2024 18:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711304085; cv=none; b=QqRtLQYjti3TKFE+TJ74Sop9DpvhKrb2IMO18TeZchrW4Jm2F91CNYc0yFbAOprjbf/YWVeIHtgLCFH6SW4yYnoXt9SoTSXzobmU4NPbGSNGSrLQgTdYJxD1NEeKLn7Zssz/x6RpmI3b3JVpv/DcB9dMvW2IDW+5XZAY5+iy4+U=
+	t=1711304213; cv=none; b=ew/ZQ3yB7qG0O27E13J5hU6QwBKV8DF5gMSf+sabtH1z75p06NTf2JuI3DjHgElFEG3A4xym6ztylLCrtK/CeI9wbvzSskVfRDWu3H+dNhdrIPqOpslcU6izwWnw9ng81AxdEBkISWGmJ7gHypJIKycvlqVUZAG4JkrBdKMbeqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711304085; c=relaxed/simple;
-	bh=evkO277w186ii8bfJYyUnIoPuE/Koo/3dScjBu47PiE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BoBCshZbZ/JFntYYIwBzbqlxiISPiAJYdVC1Esjx+pix/yx9jMgorUPbpQcialqVEaX5rIjdSTBv+n4q0X46UTeGNlXB8lflDHl59/Cdrh6Ay1xZ4PDBn5I55KJ2mYcFSkQKKmtNWX5ATI3DikqMv01w8eUsZgRasBzljbQLlyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WJLbo3WI; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56c01c2e124so964152a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 11:14:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711304081; x=1711908881; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wtxbUcaQcEBq0klFGzfroz61cBFn0r/9x2LrvOXiFaI=;
-        b=WJLbo3WIYdG1uYJgzdbhA2YEwcBosZ5/QGHD2j+/GlHAJvg49RIt5pBvg6lxtZ3BO7
-         zxpA2gQwQSap/Ud18aA+NFvWVLVCTh16teYMPXBZREmOW+XYah6dfdnoywesaFni942z
-         qYMfYjNj71OkSm3JXLxLGn5tl7H72ltvTlZGYh3NSA3R/3otpScf6OW/hWFl095SFeh2
-         q06gsK/qpZp8wf/8nbS5mOi6/YqsueNPsdpUtmVkYeUOEbDf/gfkpDW7SqLVOUWUC8WJ
-         2GvRSpDf911//VZ1abggFLvs4byLlQBHIIsLelQmhcwjwtexJtL8mMrfx1BQTQ3+e7uG
-         JbaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711304081; x=1711908881;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wtxbUcaQcEBq0klFGzfroz61cBFn0r/9x2LrvOXiFaI=;
-        b=J7WzJdj3/msThHvrIXe2OoiYCDFQGRRe0Pn2cDhxzlpKj/7JC7XHdWv/quQiEQbVlh
-         Ev80U2rfqz9lpeyN0jIiUse/9eEVezgJxn17yG1qc6YdlOjqc8SXtbnnYObowqce4w+V
-         9FXW4xmrmIRCaUvKkTKuKxTlWeVMB71zsXT+N1XKppbWrTfjwWtoZlsnzpkEycCN9fun
-         vhgJT/JZeu1SfmwJY9gImsngg7UesQXkYVwdg4oBp1cKGJBiJPw91inwrhr3/8OFq0fG
-         G3paYgSEn/7S2Oifx/7AFemNQZoEs78fel65gUcfy3gHkEA+MKMGBYFiZ2TYrdWkciOe
-         m/Zw==
-X-Forwarded-Encrypted: i=1; AJvYcCU0KKBLZgQRTK8BzGd6hZThS2LRe64cFHXA6ZvMz0gkToU1Clh8j6RDo+JsI6DuP5Xj57duhYG0oVuiKyKmST+Qaipy7TDeDnjc4c1x
-X-Gm-Message-State: AOJu0YyYqogsf0xpB+HvZpKr+Sk7ryJDa//Oub2FshiQnz3HrQ2xu8Af
-	em0mf2+79drZnuyTLo8rDOal4IsCp5Q1fatOLv0gkc+XB90l29wW
-X-Google-Smtp-Source: AGHT+IGcvsZlhAY7NbB2kQs2ucDxRyZ6VgoZ54YFAMmUofPXUBRrAyY3X0z16xg7EJvotGvDZ5aRYQ==
-X-Received: by 2002:a50:cd08:0:b0:565:bb25:bb7a with SMTP id z8-20020a50cd08000000b00565bb25bb7amr3689351edi.24.1711304081296;
-        Sun, 24 Mar 2024 11:14:41 -0700 (PDT)
-Received: from gmail.com (1F2EF63C.nat.pool.telekom.hu. [31.46.246.60])
-        by smtp.gmail.com with ESMTPSA id b8-20020aa7dc08000000b0056c06d5dce1sm1096305edu.81.2024.03.24.11.14.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 11:14:40 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Sun, 24 Mar 2024 19:14:38 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Brian Gerst <brgerst@gmail.com>
-Cc: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-	x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
-	David.Laight@aculab.com,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
-Message-ID: <ZgBtjpv+epdpSVw9@gmail.com>
-References: <20240322165233.71698-1-brgerst@gmail.com>
- <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
- <Zf+PIYP4TyF6ZRVy@gmail.com>
- <CAMzpN2htOit94c-M+zHqEcLcGPOU2zTS6wM-r7xWwd9Ku8h3-Q@mail.gmail.com>
- <Zf+mjy49dG5ly9ka@gmail.com>
- <CAMzpN2go9mmyWRb9vsg7O1aAtSKrW=HqcZYmddkq7eZQQHuM1Q@mail.gmail.com>
- <ZgAGEcmrWZyDrO50@gmail.com>
- <CAMzpN2j1B99FSXVQ=S5a3G+XQf2Cq5rtx=fR77VHW8RDn7WKAQ@mail.gmail.com>
+	s=arc-20240116; t=1711304213; c=relaxed/simple;
+	bh=9XDBBGPbDfqQIxYQlbQ+33bNBI0Fs7TlS1pRmwYLwqk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=STHae/gG9mGuKNmsXPbQr5hoUsgHFaVxSFV5YBaSbClQZDC2gYq9qO2LDgBD68icUoilnRUIrJ98/zGyyxRhtvdMQP3mIgh5GuiHwKKkzwHk3dU2/IlMNLRSN/mROWslXCrbJpD+0ikXVSu2JeuK1mBqsQvj5+K9g5W86b/A3do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J2oynpNT; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711304212; x=1742840212;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9XDBBGPbDfqQIxYQlbQ+33bNBI0Fs7TlS1pRmwYLwqk=;
+  b=J2oynpNTXyodga5Ex5tOn2Oy22Nwp5qe8nYi+NDGUtTWgt3S+UJhQdbg
+   a9dw0eMIlxAyLQC4V4DmXGOI842PXviHPxVqNoLTrri679I14TKV6V+MI
+   NzRFm5MD5vuEjpkmGnmxvA4t72PJwzSJfhrRktGElfv5TIK8V+r6J9xmA
+   7j1irhjBcNB0rodw/aUC/VB1YucJ5PSy7qsb5FHBnq/jWwKl+tOsW6aSX
+   PKY1QmAV/CGOZ11WewWL9iQjgXhit70lUGr9yjrqZ+FDYfCrR0Tmq7AHV
+   bg6YKVHK3bN94ePssSAblaMEmosBSrWT6vPIPT21fJcOCtby1zI3PziOC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6154209"
+X-IronPort-AV: E=Sophos;i="6.07,151,1708416000"; 
+   d="scan'208";a="6154209"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 11:16:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,151,1708416000"; 
+   d="scan'208";a="20070636"
+Received: from bmarken-mobl2.amr.corp.intel.com (HELO [10.212.140.250]) ([10.212.140.250])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 11:16:49 -0700
+Message-ID: <8142c0de-e3a4-4e78-aa1b-f5e6503752e4@intel.com>
+Date: Sun, 24 Mar 2024 11:16:49 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMzpN2j1B99FSXVQ=S5a3G+XQf2Cq5rtx=fR77VHW8RDn7WKAQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/mm/ident_map: Use full gbpages in identity maps
+ except on UV platform.
+Content-Language: en-US
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Steve Wahl <steve.wahl@hpe.com>, Dave Hansen
+ <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
+ Eric Hagberg <ehagberg@gmail.com>, Simon Horman <horms@verge.net.au>,
+ Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
+ Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>
+References: <20240322162135.3984233-1-steve.wahl@hpe.com>
+ <8cc9e238-fa70-402f-9990-f7e391b367a9@intel.com>
+ <87r0g09r0m.fsf@email.froward.int.ebiederm.org>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <87r0g09r0m.fsf@email.froward.int.ebiederm.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-* Brian Gerst <brgerst@gmail.com> wrote:
-
-> > > But, "make oldconfig" will still silently disable stack protector if 
-> > > the compiler doesn't support the new options.  It does put the 
-> > > comment into the .config file though, so that may be enough.
-> >
-> > So I was thinking more along the lines of emitting an actual warning to 
-> > the build log, every time the compiler check is executed and fails to 
-> > detect [certain] essential or good-to-have compiler features.
-> >
-> > A bit like the red '[ OFF ]' build lines during the perf build:
-> >
-> > Auto-detecting system features:
-> >
-> > ...                                   dwarf: [ on  ]
-> > ...                      dwarf_getlocations: [ on  ]
-> > ...                                   glibc: [ on  ]
-> > ...                                  libbfd: [ on  ]
-> > ...                          libbfd-buildid: [ on  ]
-> > ...                                  libcap: [ on  ]
-> > ...                                  libelf: [ on  ]
-> > ...                                 libnuma: [ on  ]
-> > ...                  numa_num_possible_cpus: [ on  ]
-> > ...                                 libperl: [ on  ]
-> > ...                               libpython: [ on  ]
-> > ...                               libcrypto: [ on  ]
-> > ...                               libunwind: [ on  ]
-> > ...                      libdw-dwarf-unwind: [ on  ]
-> > ...                             libcapstone: [ OFF ]  <========
-> > ...                                    zlib: [ on  ]
-> > ...                                    lzma: [ on  ]
-> > ...                               get_cpuid: [ on  ]
-> > ...                                     bpf: [ on  ]
-> > ...                                  libaio: [ on  ]
-> > ...                                 libzstd: [ on  ]
-> >
-> > ... or something like that.
-> >
-> > Thanks,
-> >
-> >         Ingo
+On 3/23/24 21:45, Eric W. Biederman wrote:
+> Dave Hansen <dave.hansen@intel.com> writes:
+>> On 3/22/24 09:21, Steve Wahl wrote:
+>>> Some systems have ACPI tables that don't include everything that needs
+>>> to be mapped for a successful kexec.  These systems rely on identity
+>>> maps that include the full gigabyte surrounding any smaller region
+>>> requested for kexec success.  Without this, they fail to kexec and end
+>>> up doing a full firmware reboot.
+>>
+>> I'm still missing something here.  Which ACPI tables are we talking
+>> about?  What don't they map?  I normally don't think of ACPI _tables_ as
+>> "mapping" things.
 > 
-> That list comes from the perf tool itself
-> (tools/perf/builtin-version.c), not the kernel config or build system.
+> Either E820 or ACPI lists which areas of memory are present in a
+> machine.  Those tables are used to build the identity memory mappings.
+> 
+> Those identity mapped page tables not built with GB pages cause kexec to
+> fail for at least 3 people.  Presumably because something using those
+> page tables accesses memory that is not mapped.
 
-Yeah, I know, I wrote the initial version. ;-)
+But why is it not mapped?  Are the firmware-provided memory maps
+inaccurate?  Or did the kernel read those maps and then forget to map
+something.
 
-( See upstream commits b6aa9979416e~1..4cc9117a35b2 )
+Using GB pages could paper over either class of bug.
 
-> Something like that could be added to the main kernel build.  But it 
-> should be a separate patch series as it will likely need a lot of design 
-> iteration.
+>> It seems like there's a theory that some ACPI table isn't mapped, but
+>> looking through the discussion so far I don't see a smoking gun.  Let's
+>> say the kernel has a bug and the kernel was actively not mapping
+>> something that it should have mapped.  The oversized 1GB mappings made
+>> the bug harder to hit.  If that's the case, we'll just be adding a hack
+>> which papers over the bug instead of fixing it properly.
+>>
+>> I'm kind of leaning to say that we should just revert d794734c9bbf and
+>> have the UV folks go back to the nogbpages until we get this properly
+>> sorted.
+> 
+> That is exactly what this patch does.  It reverts the change except
+> on UV systems.
 
-Doesn't have to be complicated really, but obviously not a requirement for 
-this series.
+Maybe it's splitting hairs, but I see a difference between reverting the
+_commit_ and adding new code that tries to revert the commit's behavior.
 
-Thanks,
+I think reverting the commit is more conservative and that's what I was
+referring to.
 
-	Ingo
+>>> @@ -10,6 +10,7 @@ struct x86_mapping_info {
+>>>  	unsigned long page_flag;	 /* page flag for PMD or PUD entry */
+>>>  	unsigned long offset;		 /* ident mapping offset */
+>>>  	bool direct_gbpages;		 /* PUD level 1GB page support */
+>>> +	bool direct_gbpages_always;	 /* use 1GB pages exclusively */
+>>>  	unsigned long kernpg_flag;	 /* kernel pagetable flag override */
+>>>  };
+>>
+>> But let's at least talk about this patch in case we decide to go forward
+>> with it.  We've really got two things:
+>>
+>> 1. Can the system use gbpages in the first place?
+>> 2. Do the gbpages need to be exact (UV) or sloppy (everything else)?
+>>
+>> I wouldn't refer to this at all as "always" use gbpages.  It's really a
+>> be-sloppy-and-paper-over-bugs mode.  They might be kernel bugs or
+>> firmware bugs, but they're bugs _somewhere_ right?
+> 
+> Is it?
+> 
+> As far as I can tell the UV mode is be exact and avoid cpu bugs mode.
+
+The fact is that there are parts of the physical address space that have
+read side effects.  If you want to have them mapped, you need to use a
+mapping type where speculative accesses won't occur (like UC).
+
+I don't really think these are CPU bugs.  They're just a fact of life.
+
+> My sense is that using GB pages for everything (when we want an identity
+> mapping) should be much cheaper TLB wise, so we probably want to use GB
+> pages for everything if we can.
+
+Sure.  But the "if we can" situation is where the physical address space
+is uniform underneath that GB page.
+
+It's not at all uncommon to have those goofy, undesirable read
+side-effects.  We've had several issues around them over the years.  You
+really can't just map random physical memory and hope for the best.
+
+That means that you are limited to mapping memory that you *know* is
+uniform, like "all RAM" or "all PMEM".
 
