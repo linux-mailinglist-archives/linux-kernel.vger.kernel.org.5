@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-113033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A07F38880F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 073BE8880F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:09:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55DD21F234FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:08:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B19301F2364B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6D813B784;
-	Sun, 24 Mar 2024 22:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C7713B7AC;
+	Sun, 24 Mar 2024 22:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5CR40BO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oa9nLK38"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E73813B29F;
-	Sun, 24 Mar 2024 22:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E3E13B789;
+	Sun, 24 Mar 2024 22:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319843; cv=none; b=ByjM58N2PfcUm+rtfLP5tBB7uA2JEWcQzN3aelfWY97XbSDueGHs6pSG3GUJPoURNPI7RZaFgS4d62u6m4Iz28UJwpHgfKCCxxF1E2V8Lf/hf4d/50UfGAF3x9+iJK6smIjm8kJC0/cCV/bazatx1SwWrTjQZr1VyVHMFf9whkE=
+	t=1711319844; cv=none; b=GFLgRTzPg3NORZXmpWW8xlz6BE4SLwZzYgAx7Ku13XwW17YdBjJDvTTlgYE/+fe4ChK2vLNQTWngFN7uW03iBIgYf7Y7u9xr2RnOLbZE5OBCR64KxHw6ZAcGpZoKlYLLCSdUthHvsIjkotNATCwLdBGvdn1VdkEmMEDO242noo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319843; c=relaxed/simple;
-	bh=7yg7GgPd0ZDeUdmhMXbVBOY/7e+30tl6Ej6hje7XTFQ=;
+	s=arc-20240116; t=1711319844; c=relaxed/simple;
+	bh=RQrolhc/4neGjp94YqluMsQFQZd5V1OjoECo2SmYWsM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YmTejbDVVF8Sfd77bcqQ99HRiZapTiYcM3VMoY3bM9WsB0foOaMDVd6mXJFgUhYw66ODRR/13qEogKRM2z6Apkz2mnwK/utoVJXFwJo+rORXo68qHTrDtMPlzeumaJq25QmMXlu7dcz1nwkHA9FMGVZmgF4mKy8XjYSLk+g1tHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D5CR40BO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 674C8C433C7;
-	Sun, 24 Mar 2024 22:37:22 +0000 (UTC)
+	 MIME-Version; b=RhZRJhFclxVlr+IcdsP1qAEYmfN44y6YPuYYYKyt78HNr/QvgGQvGkqbOSp46O1w1cFlSHc00ryXe0070vF7sV8XhEsvzZDzCXejEMhiw2nS5zK6bNK98XKn92/vMIe7lfUNtJM2BjBdigqp0ntq34TtuM4I1oGCt05TOJ7XQR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oa9nLK38; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73A0AC43399;
+	Sun, 24 Mar 2024 22:37:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319843;
-	bh=7yg7GgPd0ZDeUdmhMXbVBOY/7e+30tl6Ej6hje7XTFQ=;
+	s=k20201202; t=1711319844;
+	bh=RQrolhc/4neGjp94YqluMsQFQZd5V1OjoECo2SmYWsM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=D5CR40BOMmiF1QxmiD9Q0xp/p+QIHGmqNeCig2vQqPQlPmRhTDtDm5DWuS7jgNewo
-	 rEr6IeplnYTGWseTDtGcR3GgKmvL9UIbmmX/+JfQa9MEd5eCrKw8Ctxa5l206hgbEX
-	 2mq7QaFC2giz11B6cLZd08LFqEUwMy6LZBDkGDp+owcsLHh6A4DyXWlGbLUTg24L8e
-	 0k+VaHNJQIo81LZzDE2OCXHv8yFFX2CN0TcUpDAPvH32Idw2/R4X2NwODN9rDAwt5W
-	 opUNgoTK7DslDujV1fc9uKJr1EUKpcsqnLobsS6DBe31TUwcBD6+U6hMlXso20xFcB
-	 rh0qc3ls01WHQ==
+	b=oa9nLK38Zy6K6uNyruhiS1s6AozBrf2ryei3juou4B+vNfJ1Ut9DQJX+14rAjHi4/
+	 p1QUTKrrT+udefM6G3IYgBAqTeGuTUkt7uv1Brb5t+fjaZlbBU8fss5m/mvXN3sP6K
+	 dC8X71TcW9YO8cgJBF3nmr3/HQRDXkDVRrGiv+bDU2OuhuZPKDFKy3/liQrkNZ/cYJ
+	 yraEwaAYJKJ9pADpIGYL6wU9jz+Kpi/86cOVyfMAfRmQNdOOJjwHudcjHOxrLAst5x
+	 Oe9OJXbR1uJHWk5+8BuAlfdbLJ+DsS57VSOrWhdSbKxPgmIZrOUgX74Zj+gvu7UeUC
+	 lnh9FXdQQr7/A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baochen Qiang <quic_bqiang@quicinc.com>,
-	kernel test robot <lkp@intel.com>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
+Cc: Zhipeng Lu <alexious@zju.edu.cn>,
+	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 146/715] wifi: ath11k: initialize rx_mcs_80 and rx_mcs_160 before use
-Date: Sun, 24 Mar 2024 18:25:25 -0400
-Message-ID: <20240324223455.1342824-147-sashal@kernel.org>
+Subject: [PATCH 6.8 147/715] wifi: libertas: fix some memleaks in lbs_allocate_cmd_buffer()
+Date: Sun, 24 Mar 2024 18:25:26 -0400
+Message-ID: <20240324223455.1342824-148-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,69 +62,55 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Baochen Qiang <quic_bqiang@quicinc.com>
+From: Zhipeng Lu <alexious@zju.edu.cn>
 
-[ Upstream commit b802e7b7e771dee3377d071418281f8b64d2d832 ]
+[ Upstream commit 5f0e4aede01cb01fa633171f0533affd25328c3a ]
 
-Currently in ath11k_peer_assoc_h_he() rx_mcs_80 and rx_mcs_160
-are used to calculate max_nss, see
-	if (support_160)
-		max_nss = min(rx_mcs_80, rx_mcs_160);
-	else
-		max_nss = rx_mcs_80;
+In the for statement of lbs_allocate_cmd_buffer(), if the allocation of
+cmdarray[i].cmdbuf fails, both cmdarray and cmdarray[i].cmdbuf needs to
+be freed. Otherwise, there will be memleaks in lbs_allocate_cmd_buffer().
 
-Kernel test robot complains on uninitialized symbols:
-drivers/net/wireless/ath/ath11k/mac.c:2321 ath11k_peer_assoc_h_he() error: uninitialized symbol 'rx_mcs_80'.
-drivers/net/wireless/ath/ath11k/mac.c:2321 ath11k_peer_assoc_h_he() error: uninitialized symbol 'rx_mcs_160'.
-drivers/net/wireless/ath/ath11k/mac.c:2323 ath11k_peer_assoc_h_he() error: uninitialized symbol 'rx_mcs_80'.
-
-This is because there are some code paths that never set them, so
-the assignment of max_nss can come from uninitialized variables.
-This could result in some unknown issues since a wrong peer_nss
-might be passed to firmware.
-
-Change to initialize them to an invalid value at the beginning. This
-makes sense because even max_nss gets an invalid value, due to either
-or both of them being invalid, we can get an valid peer_nss with
-following guard:
-	arg->peer_nss = min(sta->deflink.rx_nss, max_nss)
-
-Tested-on: WCN6855 hw2.1 PCI WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
-
-Fixes: 3db26ecf7114 ("ath11k: calculate the correct NSS of peer for HE capabilities")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401311243.NyXwWZxP-lkp@intel.com/
-Signed-off-by: Baochen Qiang <quic_bqiang@quicinc.com>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://msgid.link/20240202023547.11141-1-quic_bqiang@quicinc.com
+Fixes: 876c9d3aeb98 ("[PATCH] Marvell Libertas 8388 802.11b/g USB driver")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/20240126075336.2825608-1-alexious@zju.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/mac.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/marvell/libertas/cmd.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-index b6b474a7f1c9c..cc80310088ce1 100644
---- a/drivers/net/wireless/ath/ath11k/mac.c
-+++ b/drivers/net/wireless/ath/ath11k/mac.c
-@@ -2297,6 +2297,8 @@ static void ath11k_peer_assoc_h_he(struct ath11k *ar,
- 	mcs_160_map = le16_to_cpu(he_cap->he_mcs_nss_supp.rx_mcs_160);
- 	mcs_80_map = le16_to_cpu(he_cap->he_mcs_nss_supp.rx_mcs_80);
- 
-+	/* Initialize rx_mcs_160 to 9 which is an invalid value */
-+	rx_mcs_160 = 9;
- 	if (support_160) {
- 		for (i = 7; i >= 0; i--) {
- 			u8 mcs_160 = (mcs_160_map >> (2 * i)) & 3;
-@@ -2308,6 +2310,8 @@ static void ath11k_peer_assoc_h_he(struct ath11k *ar,
+diff --git a/drivers/net/wireless/marvell/libertas/cmd.c b/drivers/net/wireless/marvell/libertas/cmd.c
+index 104d2b6dc9af6..5a525da434c28 100644
+--- a/drivers/net/wireless/marvell/libertas/cmd.c
++++ b/drivers/net/wireless/marvell/libertas/cmd.c
+@@ -1132,7 +1132,7 @@ int lbs_allocate_cmd_buffer(struct lbs_private *priv)
+ 		if (!cmdarray[i].cmdbuf) {
+ 			lbs_deb_host("ALLOC_CMD_BUF: ptempvirtualaddr is NULL\n");
+ 			ret = -1;
+-			goto done;
++			goto free_cmd_array;
  		}
  	}
  
-+	/* Initialize rx_mcs_80 to 9 which is an invalid value */
-+	rx_mcs_80 = 9;
- 	for (i = 7; i >= 0; i--) {
- 		u8 mcs_80 = (mcs_80_map >> (2 * i)) & 3;
+@@ -1140,8 +1140,17 @@ int lbs_allocate_cmd_buffer(struct lbs_private *priv)
+ 		init_waitqueue_head(&cmdarray[i].cmdwait_q);
+ 		lbs_cleanup_and_insert_cmd(priv, &cmdarray[i]);
+ 	}
+-	ret = 0;
++	return 0;
  
++free_cmd_array:
++	for (i = 0; i < LBS_NUM_CMD_BUFFERS; i++) {
++		if (cmdarray[i].cmdbuf) {
++			kfree(cmdarray[i].cmdbuf);
++			cmdarray[i].cmdbuf = NULL;
++		}
++	}
++	kfree(priv->cmd_array);
++	priv->cmd_array = NULL;
+ done:
+ 	return ret;
+ }
 -- 
 2.43.0
 
