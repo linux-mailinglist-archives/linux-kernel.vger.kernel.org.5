@@ -1,157 +1,218 @@
-Return-Path: <linux-kernel+bounces-112656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B874887C9E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:04:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F30887C98
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:56:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A263C281B15
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:04:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B64A281B21
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8188917BB6;
-	Sun, 24 Mar 2024 12:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B343179AF;
+	Sun, 24 Mar 2024 11:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bigler.one header.i=@bigler.one header.b="Bbvs2KiV"
-Received: from relay.yourmailgateway.de (relay.yourmailgateway.de [188.68.61.103])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EHPS1b+h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B11C175A9;
-	Sun, 24 Mar 2024 12:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.68.61.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDAD1759E;
+	Sun, 24 Mar 2024 11:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711281853; cv=none; b=KfLYKXnPmDA0xlAnOSbaDd9rDmn8N3oEPzXcjXvjl1qkfZQ8cKoxfmtIeg5XEwjxd9U8i3EBUdWuVM4D3iiG9HnRXF+RvGvpXiy5IZE9dOeBVdiD8VCgbrXQFFGhnKoJg4pg3uQrQMfRW2Y+5KfiBf1nckFsJ5SJVk7mdZbLViU=
+	t=1711281363; cv=none; b=Rv+irXh5rcH9xnaPXKO9xSywYx2h5JN1VzxUaiPyyUT8NxbLtnCpXIPZYfUvWTQPGG+XKtxordUTXN6DV6jWHbW000PXKPu9QraLUEV2xa7SB5JG6Pb2QKJouZLHKlX1DmyBBVmhFSpBXa5/FG6eSdpkmh8CLp/IPiBUoJc5UXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711281853; c=relaxed/simple;
-	bh=a7LNXZGyhTHnJdRFDQFiEyndGv76THAe6Z6KbddtEB4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hUV1VTKcTJM8FmrknEIFXQMK+5nbWsifMl5rtgxhAzv/hm8o899d0ZH0BpB1pMJ3UmU+ixnbYFpeZPSxwTxX8WsMxuGmX2LklAV5NswuyAFEQcIMMtcv5xUdzjh5mlPocVerkxRZSgCDSTk1uTmCAAVRS+aEmR6TsV09pez6qRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bigler.one; spf=pass smtp.mailfrom=bigler.one; dkim=pass (2048-bit key) header.d=bigler.one header.i=@bigler.one header.b=Bbvs2KiV; arc=none smtp.client-ip=188.68.61.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bigler.one
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bigler.one
-Received: from mors-relay-8403.netcup.net (localhost [127.0.0.1])
-	by mors-relay-8403.netcup.net (Postfix) with ESMTPS id 4V2ZJZ0JBpz810r;
-	Sun, 24 Mar 2024 12:55:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bigler.one; s=key2;
-	t=1711281342; bh=a7LNXZGyhTHnJdRFDQFiEyndGv76THAe6Z6KbddtEB4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=Bbvs2KiVc2rRfF8yA37KDFw+fEJ3kIEcife3kStcavleVNza/wVp/sjF6LfNkHRCa
-	 7fCe8KE6MyFhZb8N+hvmKpCemytQZBLq/rCSeK/mYI0lHNOMYqK2DtvPNYXc4Knp3N
-	 TpvlNy8mPlWq2Fk2Z/a8IPzNJUYbm42rhOdEVLziH5+K6lp0lEk5l9zgdSQFT0NN3Q
-	 12/vpyqxzR5Qp0V9T1DThtnY0erF3ysnThWAvcnmtFEw2sglSMNfqck71MvmZRnWSQ
-	 j8sPdxmLlJNFQW/3puTq48Udt8oZ+1jhQIh7IQ+HrEeDamoOaI3HJrlwQ5opFjE1UF
-	 +QDVIsxdRoIgw==
-Received: from policy02-mors.netcup.net (unknown [46.38.225.35])
-	by mors-relay-8403.netcup.net (Postfix) with ESMTPS id 4V2ZJY700fz810G;
-	Sun, 24 Mar 2024 12:55:41 +0100 (CET)
-Received: from mx2fc6.netcup.net (unknown [10.243.12.53])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by policy02-mors.netcup.net (Postfix) with ESMTPS id 4V2ZJW4Rp1z8sb7;
-	Sun, 24 Mar 2024 12:55:39 +0100 (CET)
-Received: from [192.168.1.24] (xdsl-188-155-38-242.adslplus.ch [188.155.38.242])
-	by mx2fc6.netcup.net (Postfix) with ESMTPSA id 5B868405C9;
-	Sun, 24 Mar 2024 12:55:34 +0100 (CET)
-Authentication-Results: mx2fc6;
-        spf=pass (sender IP is 188.155.38.242) smtp.mailfrom=benjamin@bigler.one smtp.helo=[192.168.1.24]
-Received-SPF: pass (mx2fc6: connection is authenticated)
-Message-ID: <ea86159bb555336ae21311770e3a1a6374092e64.camel@bigler.one>
-Subject: Re: [PATCH net-next v2 0/9] Add support for OPEN Alliance
- 10BASE-T1x MACPHY Serial Interface
-From: Benjamin Bigler <benjamin@bigler.one>
-To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- horatiu.vultur@microchip.com, Woojung.Huh@microchip.com,
- Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
- Thorsten.Kummermehr@microchip.com, davem@davemloft.net,
- edumazet@google.com,  kuba@kernel.org, pabeni@redhat.com,
- robh+dt@kernel.org,  krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, corbet@lwn.net,  steen.hegelund@microchip.com,
- rdunlap@infradead.org, horms@kernel.org,  casper.casan@gmail.com,
- andrew@lunn.ch
-Date: Sun, 24 Mar 2024 12:55:34 +0100
-In-Reply-To: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
-References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0
+	s=arc-20240116; t=1711281363; c=relaxed/simple;
+	bh=uFc5xOYMorRP4iyAhVgBe+McyNhmHUYOH62YqMisnBQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Y04x3mo4xL37Vk9bWjys16pPaDwQvRIZzIMbQITYt7QsJLQdQ8I8Us+/hmrWkC9ZZcVCLOBYNUzml9s7f5uBBSWtpwTJLqxqYikafu+TYX2FA/VpABCtSP0Tn0hFCUn6R4+x3CqwTkwaBmFXmzxbjWXq5eFSOJXts1xmBnLDxDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EHPS1b+h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A5E7C433C7;
+	Sun, 24 Mar 2024 11:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711281363;
+	bh=uFc5xOYMorRP4iyAhVgBe+McyNhmHUYOH62YqMisnBQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EHPS1b+htFbdIdhUpG07yQ+GSFFX2ipaeESGWCCw77WlyieKqBpo7yFph22STMKV7
+	 U2BpzZra0RMtZbbrzU28LCGiXIDNE0YHe4mpKPaJKNmEXdXuJwcgCHn8t+rxKS33aL
+	 SNfkb1WnI5yf1l9Kaz+YVUvMVbMiE/Swhp+FBDpMHgygMpUYaPQzMVDgDs9hz3WtCK
+	 lvaSlbmdbPDk7t9K+CWrZjszamWpDwTT8kP8RjVj+DT5YxhPPqeVqgVMN+GftdsFUN
+	 JfGVCVbSvMS+Ipsh7bUpiqkhtloCaHQvCLdhAqNSUCHudb+cIeS9D9lOSqA72AN1Xo
+	 IHk4dRJ4XavFg==
+Date: Sun, 24 Mar 2024 11:55:46 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, lars@metafoo.de,
+ ang.iglesiasg@gmail.com, mazziesaccount@gmail.com, ak@it-klinger.de,
+ petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
+ linus.walleij@linaro.org, semen.protsenko@linaro.org,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 6/6] iio: pressure: Add triggered buffer support for
+ BMP280 driver
+Message-ID: <20240324115546.695d3e33@jic23-huawei>
+In-Reply-To: <20240320174602.GA36450@vamoiridPC>
+References: <20240319002925.2121016-1-vassilisamir@gmail.com>
+	<20240319002925.2121016-7-vassilisamir@gmail.com>
+	<ZfrFc9GF0_Jix5YT@smile.fi.intel.com>
+	<20240320174602.GA36450@vamoiridPC>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-PPP-Message-ID: <171128133508.28970.8297446260616691683@mx2fc6.netcup.net>
-X-Rspamd-Queue-Id: 5B868405C9
-X-Rspamd-Server: rspamd-worker-8404
-X-NC-CID: v2WY1NJuJOavqDS6N+mo2HKZCu2cke6cX3NwrAx0Pn64kxU=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Parthiban
+On Wed, 20 Mar 2024 18:46:02 +0100
+Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
 
-I hope I send this in the right context as it is not related to just one pa=
-tch or
-some specific code.
+> On Wed, Mar 20, 2024 at 01:16:03PM +0200, Andy Shevchenko wrote:
+> > On Tue, Mar 19, 2024 at 01:29:25AM +0100, Vasileios Amoiridis wrote:  
+> > > BMP2xx, BMP3xx, and BMP5xx use consecutive buffers for their
+> > > temperature, pressure and humidity readings. This facilitates
+> > > the use of burst reads in order to acquire data much faster
+> > > and in a different way from the one used in oneshot captures.
+> > > 
+> > > BMP085 and BMP180 use a completely different measurement
+> > > process that is well defined and is used in their buffer_handler().  
+> > 
+> > ...
+> >   
+> > >  	ret = regmap_bulk_read(data->regmap, BMP280_REG_TEMP_MSB,
+> > > -			       data->buf, sizeof(data->buf));
+> > > +			       data->buf, BMP280_NUM_TEMP_BYTES);  
+> >   
+> > >  	ret = regmap_bulk_read(data->regmap, BMP280_REG_PRESS_MSB,
+> > > -			       data->buf, sizeof(data->buf));
+> > > +			       data->buf, BMP280_NUM_PRESS_BYTES);  
+> >   
+> > >  	ret = regmap_bulk_read(data->regmap, BMP280_REG_HUMIDITY_MSB,
+> > > -			       &data->be16, sizeof(data->be16));
+> > > +			       &data->be16, BME280_NUM_HUMIDITY_BYTES);  
+> >   
+> > > -	adc_humidity = be16_to_cpu(data->be16);
+> > > +	adc_humidity = get_unaligned_be16(&data->be16);  
+> >   
+> > >  	ret = regmap_bulk_read(data->regmap, BMP380_REG_TEMP_XLSB,
+> > > -			       data->buf, sizeof(data->buf));
+> > > +			       data->buf, BMP280_NUM_TEMP_BYTES);  
+> >   
+> > >  	ret = regmap_bulk_read(data->regmap, BMP380_REG_PRESS_XLSB,
+> > > -			       data->buf, sizeof(data->buf));
+> > > +			       data->buf, BMP280_NUM_PRESS_BYTES);  
+> >   
+> > >  	ret = regmap_bulk_read(data->regmap, BMP580_REG_TEMP_XLSB, data->buf,
+> > > -			       sizeof(data->buf));
+> > > +			       BMP280_NUM_TEMP_BYTES);  
+> >   
+> > >  	ret = regmap_bulk_read(data->regmap, BMP580_REG_PRESS_XLSB, data->buf,
+> > > -			       sizeof(data->buf));
+> > > +			       BMP280_NUM_PRESS_BYTES);  
+> > 
+> > These smell to me as candidates to a separate patch with more explanation why.
+> > (Yes, with the definitions you introduced.) But I leave it to Jonathan to
+> > decide if we need to split.
 
-I conducted UDP load testing using three i.MX8MM boards in conjunction with=
- the
-LAN8651. The setup involved one board functioning as a server, which is jus=
-t
-echoing back received data, while the remaining two boards acted as clients=
-,
-sending UDP packets of different sizes in various bursts to the server.
-Due to hardware constraints, the SPI bus speed was limited to 15 MHz, which=
- might
-have influenced the results.
+The are somewhat confusing, though only when you start doing bulk reads
+to do these makes sense - so I'm not sure how to do it as 2 patches.
 
-During the tests I experienced some issues:
+Pity we don't have sizeof(be24) available.
 
-- The boards just start receiving after first sending something (ping anoth=
-er board).
-  Some measurements showed that the irq stays asserted after init. This mak=
-es sense
-  as far as I understand the chapter 7.7 of the specification, the irq is d=
-easserted
-  on reception of the first data header following CSn being asserted. As a =
-workaround
-  I trigger the thread at the end of oa_tc6_init.
+> > 
+> > ...
+> > 
+> > The below are applicable to the bmp280_buffer_handler(),
+> > bmp380_buffer_handler() implementations as well.
+> > 
+> > ...
+> >   
+> > > +	/* Burst read data registers */
+> > > +	ret = regmap_bulk_read(data->regmap, BMP580_REG_TEMP_XLSB,
+> > > +			       data->buf, 6);  
+> > 
+> > Magic size.
+> >   
+> 
+> Hi Andy,
+> 
+> Thank you again for your feedback. When I was writing it, it was 
+> looking as a magic number to me as well but then I though that 
+> since I put the comment above it could be obvious. Now that I see 
+> it again, I think it was not a good idea and maybe some type of 
+> definition like
+> 
+> 	#define BMP280_BURST_READ_NUM_BYTES 6
+> 	#define BME280_BURST_READ_NUM_BYTES 8
+I think these are sums of the other quantities.  Better to
+express them as such if possible.
 
-- If there is a lot of traffic, the receive buffer overflow error spams the=
- log.
+> 
+> could look better and be more intuitive.
+> 
+> > ...
+> >   
+> > > +	/* Temperature calculations */
+> > > +	memcpy(&chan_value, &data->buf[3], 3);  
+> > 
+> > _le24() + sign_extend32()?
+> >   
+> 
+> In the next line from your comment the _le24 or _be24 takes place.
+I think you can get that data directly rather than bouncing it via
+a memcpy.
+e.g.
+adc_temp = FIELD_GET(BMP280_MEAS_TRIM_MASK, get_unaligned_be24(&data->buf[3]);
 
-- If there is a lot of traffic, I got various kernel panics in oa_tc6_updat=
-e_rx_skb.
-  Mostly because more data to rx_skb is added than allocated and sometimes =
-because
-  rx_skb is null in oa_tc6_update_rx_skb or oa_tc6_prcs_rx_frame_end. Some =
-debugging
-  with a logic analyzer showed that the chip is not behave correctly. There=
- is more
-  bytes between start_valid and end_valid than there should be. Also there
-  seems to be 2 end_valid without a start_valid between. What is common is =
-that the incorrect
-  frame starts in a chunk where end_valid and start_valid is set.
-  In my opinion its a problem in the chip (maybe related to the errata in t=
-he next point)
-  but the driver should be resilent and just drop the packet and not cause =
-a kernel panic.
+> If the sign_extend32() is needed here, shouldn't it also be used
+> in all the oneshot captures as well?
 
-- Sometimes the chip stops working. It always asserts the irq but there is =
-no data (rca=3D0)
-  and also exst is not active. I found out that there is an errata (DS80001=
-075) point s3
-  that explains this. I set the ZARFE bit in CONFIG0. This also fixes the p=
-oint above.
-  The driver now works since about 2.5 weeks with various load with just on=
-e loss of frame
-  error where I had to reboot the system after about 4 days.
+Is this actually signed?  Compensated values are, but at this point
+it's just a raw adc count.  So I'm not seeing why we'd sign extend it
+(unless the device is returning a signed be24 - I haven't checked.)
 
-Is there a reason why you removed the netdev watchdog which was active in v=
-2?
 
-Thanks,
-Benjamin Bigler
+> 
+> > ...
+> >   
+> > > +	/* Pressure calculations */
+> > > +	memcpy(&chan_value, &data->buf[0], 3);  
+> > 
+> > _le24() + sign_extend32()?
+> > 
+> > ...
+> >   
+> > >  	/*
+> > > -	 * Maximum number of consecutive bytes read for a temperature or
+> > > -	 * pressure measurement is 3.
+> > > +	 * Maximum number of a burst read for temperature, pressure, humidity
+> > > +	 * is 8 bytes.
+> > >  	 */
+> > > -	if (val_size > 3)
+> > > +	if (val_size > 8)  
+> > 
+> > sizeof() / new definition for the buf[] size?
+> >   
+> 
+> In a previous commit that I was fixing this SPI driver, Jonathan had mentioned
+> that there is no need for a specific definition since it will only be used
+> here so that's why I kept it as is.
+
+Never trust me ;)  Size of the buf is sensible here.
+
+Jonathan
+
+> 
+> Cheers,
+> Vasilis
+> > >  		return -EINVAL;  
+> > 
+> > -- 
+> > With Best Regards,
+> > Andy Shevchenko
+> > 
+> >   
 
 
