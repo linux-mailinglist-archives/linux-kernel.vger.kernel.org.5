@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3AD688864E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37E8B889400
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 317971C252EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:29:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 684551C2ECAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A06A7148835;
-	Sun, 24 Mar 2024 22:55:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A09422AB91;
+	Mon, 25 Mar 2024 02:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EPz6L2tF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L7r5RXKd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629B21DE12D;
-	Sun, 24 Mar 2024 22:52:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66FFE1DE13A;
+	Sun, 24 Mar 2024 22:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320735; cv=none; b=eESqqD6xA4P1s5EO+2QJ5UjrNj+gJfXYxvgNPwxJUWbvI+WCmTE44w6n6ilLTUU4F+vWprwwhFEmRIiNUSiTB9OGOVI0sSrdGK2RkVqtV2s78JtqaTcL9OT6qjLTSLfjNr5eRjDEXmPG/+eYy5lrRu6H5+Kmk00rs5aHHAitNoQ=
+	t=1711320736; cv=none; b=GmwH8/6SwhEjao36+34OYeT+yN0gJFeIOHcQeiZkLxBd0o7+A52Qd9DeDFROM5Xq8xmmUfAqnUXV7cfMwoE5J2SCR1OKUVBmmaoNKuIJI9ZGtxUyQir1XxWuDum9hEkEzAFXqDcEMoePkSXj7u2iygG862ms+iGS4SEnCc3GS8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320735; c=relaxed/simple;
-	bh=iZsxdmPJt5i3niPi+PdZmVKu1y2Ej9SipBlgIi6hUDM=;
+	s=arc-20240116; t=1711320736; c=relaxed/simple;
+	bh=neKTN06HKftInWaXkvQA3oNgLOGcIpYH0s7hLEhEuzc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GPqadzMBTHAuNw4Yuwcrhe3rzuy+JTWVl/UGOO1pAJIezbG3KaMae8wGBW1EJdkVLikTIi3hT2DhgR5BBbgX/bvKUWooVlu+eUtMvWuv0pLrNg8jH/cHjGaTJTQGLnk+tqY3zdu5tSWD3V9UUD72HupR4E/4wvYGnBOESif3QLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EPz6L2tF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B80AC433F1;
-	Sun, 24 Mar 2024 22:52:13 +0000 (UTC)
+	 MIME-Version; b=B5t2IahKbk91pKXwAOgndRfQLqOCFeiUJE6nKGpLIFtXLJGezlpLGTk9WR1c92kI4geMWUzzDhUeF9aDtD5Y8naTz5/bDgDyhB+rfRML4YuYU8D3yBG5M9YtP2Af3hYDELDc/HZTrs5i6mmaICB/pvOgH5WEcfFKju+dKqBK5AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L7r5RXKd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C949C433C7;
+	Sun, 24 Mar 2024 22:52:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320734;
-	bh=iZsxdmPJt5i3niPi+PdZmVKu1y2Ej9SipBlgIi6hUDM=;
+	s=k20201202; t=1711320735;
+	bh=neKTN06HKftInWaXkvQA3oNgLOGcIpYH0s7hLEhEuzc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EPz6L2tFUGpRcAWci7H4f0kkc3yxgB2yR2cPAR5vfSC/Zj4tyHeqZnn8plXxYiLcS
-	 NXdKmf9ymCAyGGrbtsx1Nsk7sFMvpDeX4VvUbEB815LcnPWt60wF8VYt27bXm+EnaK
-	 940IkBqFwhw4mXPVSF2AVzAoYf33NcBb7PDsgGweuKXnG6CTZW+iBbwjLB9R1uE6jr
-	 /JAdvejTfNOHRpmDy13aVUFdvaRzL0oB1GBCxqtIT7hTupa7HEODjDBMdltOy1Lkcd
-	 W20gEkIt6T+PjDvdQaViXBVuvJS2h1Fq21JEmwX1WK9znDloMzVpQhfaJFENvi7+aY
-	 Jp4hBiIcnW/Pg==
+	b=L7r5RXKduF7BNQloErQs8ZqNaA1BE9VVc0iLZ80B+AjSCMMAP3FJmBAHKJd+j4Zgs
+	 ZOEqCWx61adxYuIgX/N8WWaPxSpq62weJMZ44tpvxpczY2lmkOqOnTFoY5CWol7p7B
+	 foOE2AX2t+veHp54VpKJvW8nLrT6q3B8Cw5TJrLSmOqyE9xMI3zkoe8cIitJ28X1rD
+	 BPUtnN/HgWt87ktZOG5/72+xV1PLNOF1HQX10K4359hK1IlH867d5Z9CIdIXcUuSl4
+	 TCI6nUO7fI99Cy5Gb2Cobzx/WdyoPrw9szY0PmCBJHQmcOc2lXuSbMGaX0oHoISbbc
+	 A3Ar9Qe349iVQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: StanleyYP Wang <StanleyYP.Wang@mediatek.com>,
+Cc: Benjamin Lin <benjamin-jw.lin@mediatek.com>,
 	Shayne Chen <shayne.chen@mediatek.com>,
 	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 297/713] wifi: mt76: mt7996: fix efuse reading issue
-Date: Sun, 24 Mar 2024 18:40:23 -0400
-Message-ID: <20240324224720.1345309-298-sashal@kernel.org>
+Subject: [PATCH 6.7 298/713] wifi: mt76: mt7996: fix HIF_TXD_V2_1 value
+Date: Sun, 24 Mar 2024 18:40:24 -0400
+Message-ID: <20240324224720.1345309-299-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,35 +63,35 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: StanleyYP Wang <StanleyYP.Wang@mediatek.com>
+From: Benjamin Lin <benjamin-jw.lin@mediatek.com>
 
-[ Upstream commit d3ad99be7cc2d174126d908addd6bea2b157aa75 ]
+[ Upstream commit de8882775156682ba358afc82cb575c92cf3d092 ]
 
-The efuse data starts from the 48th bytes instead of 64th bytes in the
-returned event skb.
+Sync the value of HIF_TXD_V2_1 with firmware to let it correctly fill
+TXD values for HW path.
 
 Fixes: 98686cd21624 ("wifi: mt76: mt7996: add driver for MediaTek Wi-Fi 7 (802.11be) devices")
-Signed-off-by: StanleyYP Wang <StanleyYP.Wang@mediatek.com>
+Signed-off-by: Benjamin Lin <benjamin-jw.lin@mediatek.com>
 Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7996/mcu.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7996/init.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
-index e7a7d943b168c..0586f5bd4164f 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
-@@ -3426,7 +3426,7 @@ int mt7996_mcu_get_eeprom(struct mt7996_dev *dev, u32 offset)
- 		u32 addr = le32_to_cpu(*(__le32 *)(skb->data + 12));
- 		u8 *buf = (u8 *)dev->mt76.eeprom.data + addr;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/init.c b/drivers/net/wireless/mediatek/mt76/mt7996/init.c
+index 1d75bf23a02d4..f8b61df15fcb1 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7996/init.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7996/init.c
+@@ -297,7 +297,7 @@ static void mt7996_mac_init_basic_rates(struct mt7996_dev *dev)
  
--		skb_pull(skb, 64);
-+		skb_pull(skb, 48);
- 		memcpy(buf, skb->data, MT7996_EEPROM_BLOCK_SIZE);
- 	}
+ void mt7996_mac_init(struct mt7996_dev *dev)
+ {
+-#define HIF_TXD_V2_1	4
++#define HIF_TXD_V2_1	0x21
+ 	int i;
  
+ 	mt76_clear(dev, MT_MDP_DCR2, MT_MDP_DCR2_RX_TRANS_SHORT);
 -- 
 2.43.0
 
