@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B963B8899EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:19:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 097B38891D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:49:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C070B48217
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:02:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AC3B1C2D73C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E218E28CE41;
-	Mon, 25 Mar 2024 03:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03F32C8B1B;
+	Mon, 25 Mar 2024 00:53:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOfKFE4C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8w0waXD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8D327B100;
-	Sun, 24 Mar 2024 23:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729EF27B11E;
+	Sun, 24 Mar 2024 23:38:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323507; cv=none; b=G/ZCVQATzrb5L8OTaZkV9M+Bn5E51MOIXyd53X9p0YnFdqW/I65cYmLThc5FfJLuC78dcq+iGyneVzBmzYX3VYEEwueRzePFwRuCmkluU1kidXVp8LhC4FYy8uXL2BRjvcsYyzIVosskDCDxHFqWFESZVAk1xSuzp5Im6r5aSbU=
+	t=1711323508; cv=none; b=SH8UUGXcPud2GTmq2nZK7BzK21LwuMnQdyNOmX11Nxcw5JIc1/9c7y4UIrLOTuGBUtFp0kpMNMgY3PYh789Lei6kidUokU3ErjlRU2DF0NtvBGKA6SDjq77J0VfEbexLYLVMgpvAlzYWjU6FFwe428ImjHNXnqQMITvxAUYxMbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323507; c=relaxed/simple;
-	bh=fkQUcbORkODKGwcIjJeKyjjU5hkBPC4MQG1SSmB4Lms=;
+	s=arc-20240116; t=1711323508; c=relaxed/simple;
+	bh=5F+W2XVBb8jBoA1hXh/onNUbYNMRYXAAcVlmlGC3wtQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dc9sv2jr1NNwMBnO5lVa0Q0W/ioFWD+M38sqYZw2r53pqnQmnz7g6f0dsJd0Ir04DKDVb0R1det4bx+2ir07GRwi3C1KJIvvNlEBXYIvSW46gsfVI/xFR11yf0/flkw0/JFTHC/fRVZUvN5naS8ncytTX+kCTJLTjJdHPSZ58r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOfKFE4C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0644C433A6;
-	Sun, 24 Mar 2024 23:38:25 +0000 (UTC)
+	 MIME-Version; b=AF8hWihUx+2gING4PxlhM6wrbbCTipd3QOgh0vZdCAYol7774Fnzms5QgXd4erzWrB20rKy2801wqz4yeEEXvuCM0K01eact5hkOuGFvhYIsm8g/PfMnUxp+HNCPdYRZYu2HHRQ/EcVOY1WiPZF00ATONxDoLwmK1QsGRw6Z5V4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o8w0waXD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5AF8C433C7;
+	Sun, 24 Mar 2024 23:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323506;
-	bh=fkQUcbORkODKGwcIjJeKyjjU5hkBPC4MQG1SSmB4Lms=;
+	s=k20201202; t=1711323507;
+	bh=5F+W2XVBb8jBoA1hXh/onNUbYNMRYXAAcVlmlGC3wtQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MOfKFE4CwvttOpVEGIrqdz6zm8HJFnWnp1DNCPvyvZVeODto4QR883jon1F9NW4KJ
-	 SHxAjRRSOmZSZ5AuGsRx0wy/PSYUxq2yOj4OUBN+Z2qj2dne2E+wjSuLGBOirfNG2/
-	 kBUTWDSPuAiQEt3Bm12kE7jGqW+HWAN49tcHX8bDtIYS19HBBPvVn7iyJCX+QSAQ2T
-	 OnGU1TGlcqmuTxKGEpP9PltqLHgeKrYFipvxqcn/GE4OZKjFSDDUbvxNLxQ3xRKA94
-	 4tI4lP4Ls7ZvNBNQnWoTMH9L5QIs1bHU0OqVwz+AA8PurFrw0UJzmvBzclUm80twJN
-	 9Al2u0k5KS0fA==
+	b=o8w0waXDB1f/Ojsj3BHAFSvlpHsxlz6JnQ1IUVPxGK3p+K8g1NyFqtAJR8KGCl3P7
+	 BokJHLtuQ/9p3lDmlgS8ZAdNUF09Y87SbXJi3bRjHd1T3+9Fs2sVihIDE4Z9OJPz8Y
+	 1fegMxW2FxjMgA7LwwsSD9hGPbFSK0IRIqf7AJBTf0uLVnX046nun7/MRI0SEYVG4v
+	 Pp145inkLI5SyDb6XDOiiT+BzUz1UD5YzPIkQIqFaTaSSsD297+TWLY3smbGyMcprq
+	 GamO1M22uFi2827ydAWajvZFZ4Wv/BCbJeuq4gl0C7QSL6QjpPlv2aguRrHYpe2uU9
+	 94DhtNr2epLCw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Daniil Dulov <d.dulov@aladdin.ru>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 212/317] media: pvrusb2: remove redundant NULL check
-Date: Sun, 24 Mar 2024 19:33:12 -0400
-Message-ID: <20240324233458.1352854-213-sashal@kernel.org>
+Subject: [PATCH 5.15 213/317] media: pvrusb2: fix pvr2_stream_callback casts
+Date: Sun, 24 Mar 2024 19:33:13 -0400
+Message-ID: <20240324233458.1352854-214-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -62,39 +62,113 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Daniil Dulov <d.dulov@aladdin.ru>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 95ac1210fb2753f968ebce0730d4fbc553c2a3dc ]
+[ Upstream commit 30baa4a96b23add91a87305baaeba82c4e109e1f ]
 
-Pointer dip->stream cannot be NULL due to a shift, thus remove redundant
-NULL check.
+clang-16 complains about a control flow integrity (KCFI) issue in pvrusb2,
+which casts three different prototypes into pvr2_stream_callback:
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+drivers/media/usb/pvrusb2/pvrusb2-v4l2.c:1070:30: error: cast from 'void (*)(struct pvr2_v4l2_fh *)' to 'pvr2_stream_callback' (aka 'void (*)(void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1070 |         pvr2_stream_set_callback(sp,(pvr2_stream_callback)pvr2_v4l2_notify,fh);
+      |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/media/usb/pvrusb2/pvrusb2-context.c:110:6: error: cast from 'void (*)(struct pvr2_context *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  110 |                                         (void (*)(void *))pvr2_context_notify,
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/media/usb/pvrusb2/pvrusb2-dvb.c:152:6: error: cast from 'void (*)(struct pvr2_dvb_adapter *)' to 'pvr2_stream_callback' (aka 'void (*)(void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  152 |                                  (pvr2_stream_callback) pvr2_dvb_notify, adap);
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: c74e0062684b ("V4L/DVB (5059): Pvrusb2: Be smarter about mode restoration")
-Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
+Change the functions to actually take a void* argument so the cast is no longer
+needed.
+
+Fixes: bb8ce9d9143c ("V4L/DVB (7682): pvrusb2-dvb: finish up stream & buffer handling")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/pvrusb2/pvrusb2-v4l2.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/media/usb/pvrusb2/pvrusb2-context.c | 8 ++++----
+ drivers/media/usb/pvrusb2/pvrusb2-dvb.c     | 6 ++++--
+ drivers/media/usb/pvrusb2/pvrusb2-v4l2.c    | 6 ++++--
+ 3 files changed, 12 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+index 1764674de98bc..58f2f3ff10ee2 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+@@ -90,8 +90,10 @@ static void pvr2_context_destroy(struct pvr2_context *mp)
+ }
+ 
+ 
+-static void pvr2_context_notify(struct pvr2_context *mp)
++static void pvr2_context_notify(void *ptr)
+ {
++	struct pvr2_context *mp = ptr;
++
+ 	pvr2_context_set_notify(mp,!0);
+ }
+ 
+@@ -106,9 +108,7 @@ static void pvr2_context_check(struct pvr2_context *mp)
+ 		pvr2_trace(PVR2_TRACE_CTXT,
+ 			   "pvr2_context %p (initialize)", mp);
+ 		/* Finish hardware initialization */
+-		if (pvr2_hdw_initialize(mp->hdw,
+-					(void (*)(void *))pvr2_context_notify,
+-					mp)) {
++		if (pvr2_hdw_initialize(mp->hdw, pvr2_context_notify, mp)) {
+ 			mp->video_stream.stream =
+ 				pvr2_hdw_get_video_stream(mp->hdw);
+ 			/* Trigger interface initialization.  By doing this
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-dvb.c b/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
+index 6954584526a32..1b768e7466721 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
+@@ -88,8 +88,10 @@ static int pvr2_dvb_feed_thread(void *data)
+ 	return stat;
+ }
+ 
+-static void pvr2_dvb_notify(struct pvr2_dvb_adapter *adap)
++static void pvr2_dvb_notify(void *ptr)
+ {
++	struct pvr2_dvb_adapter *adap = ptr;
++
+ 	wake_up(&adap->buffer_wait_data);
+ }
+ 
+@@ -149,7 +151,7 @@ static int pvr2_dvb_stream_do_start(struct pvr2_dvb_adapter *adap)
+ 	}
+ 
+ 	pvr2_stream_set_callback(pvr->video_stream.stream,
+-				 (pvr2_stream_callback) pvr2_dvb_notify, adap);
++				 pvr2_dvb_notify, adap);
+ 
+ 	ret = pvr2_stream_set_buffer_count(stream, PVR2_DVB_BUFFER_COUNT);
+ 	if (ret < 0) return ret;
 diff --git a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
-index 9657c18833116..c872868becbdc 100644
+index c872868becbdc..29f2e767f236f 100644
 --- a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
 +++ b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
-@@ -1202,11 +1202,6 @@ static void pvr2_v4l2_dev_init(struct pvr2_v4l2_dev *dip,
- 		dip->minor_type = pvr2_v4l_type_video;
- 		nr_ptr = video_nr;
- 		caps |= V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_AUDIO;
--		if (!dip->stream) {
--			pr_err(KBUILD_MODNAME
--				": Failed to set up pvrusb2 v4l video dev due to missing stream instance\n");
--			return;
--		}
- 		break;
- 	case VFL_TYPE_VBI:
- 		dip->config = pvr2_config_vbi;
+@@ -1037,8 +1037,10 @@ static int pvr2_v4l2_open(struct file *file)
+ }
+ 
+ 
+-static void pvr2_v4l2_notify(struct pvr2_v4l2_fh *fhp)
++static void pvr2_v4l2_notify(void *ptr)
+ {
++	struct pvr2_v4l2_fh *fhp = ptr;
++
+ 	wake_up(&fhp->wait_data);
+ }
+ 
+@@ -1071,7 +1073,7 @@ static int pvr2_v4l2_iosetup(struct pvr2_v4l2_fh *fh)
+ 
+ 	hdw = fh->channel.mc_head->hdw;
+ 	sp = fh->pdi->stream->stream;
+-	pvr2_stream_set_callback(sp,(pvr2_stream_callback)pvr2_v4l2_notify,fh);
++	pvr2_stream_set_callback(sp, pvr2_v4l2_notify, fh);
+ 	pvr2_hdw_set_stream_type(hdw,fh->pdi->config);
+ 	if ((ret = pvr2_hdw_set_streaming(hdw,!0)) < 0) return ret;
+ 	return pvr2_ioread_set_enabled(fh->rhp,!0);
 -- 
 2.43.0
 
