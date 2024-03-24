@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0BCF888707
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:49:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 929B3889BF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C0A228F121
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:49:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41DB41F3159E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C41F138497;
-	Sun, 24 Mar 2024 23:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E642365A2;
+	Mon, 25 Mar 2024 02:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S85FT92m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WMbuhpnf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566A412AAF5;
-	Sun, 24 Mar 2024 22:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4976F1EC62E;
+	Sun, 24 Mar 2024 22:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320942; cv=none; b=IUBN45jF9wD8VZmlRIKSWhM7pTEMiK2sphxj8g/SQ7AJzjMSlvy4nqMgVTPznksOmv6Le9DjrCgGQPJWrr0qy7bSUGGRLn6wwBF/ayPDSgGDQnaf5+A/RpUh5NarvI+eHHk/I1BLHkUGvso3uXdCmHncJCYOqb1dmc9RJlnb7vY=
+	t=1711320944; cv=none; b=rYTK6cKtQUS742cIYpsOZfSd7hWJ8ndIZvLXBoA/kZE2e8DEIoaswrpRRLLElBW1mlany9poBBNYbtF1WmIeyJDCH/g8oXbvm5GZaGXBH4CbuDU9ZUkqidU2XclOGcMH20iIv1j+Y52vTkRMw+/6AV5/9ORqigWFypcxIFW4aQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320942; c=relaxed/simple;
-	bh=3Wzt/MY03JIIh8DBekuR6xPd27GDZod/Rv/dJ5fef9Q=;
+	s=arc-20240116; t=1711320944; c=relaxed/simple;
+	bh=R0o9mtiY+b9wcMRZccfj/l4j7rw/QnFthxmzKd6U52Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HZuSVw5sdEbyPpwRPpK87ZLdwTufy1yIiyadQv1KcmclUHsPftMSxzbvg3RY5fOYkgdlwW+97zl48IE28ed5fYZGDtNWVKTJnKOKpGOU759uMrg6Enp5vEe3/dwhnp53iat5LuoR7nPyhlaLjEFqw8YXac8PuMIESevrqjYcULU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S85FT92m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927C1C433A6;
-	Sun, 24 Mar 2024 22:55:41 +0000 (UTC)
+	 MIME-Version; b=Jcq8NG4kRFxDTkdO1IElCPLhWbm7bLq4qgLPYReuhcyy6H22q+iWxrm8O1D2ECwPf2KwdxtFCbZG0gxxS3HuRiBsfu1Zmyzq0naAHzDEKFR5eZ9tO1YHuDS2n66XQ1M1l5oDRYq4hw2XI3jCZFSFQvIZPEwyMeoZzoEyfo4Dod4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WMbuhpnf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B5B8C43394;
+	Sun, 24 Mar 2024 22:55:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320942;
-	bh=3Wzt/MY03JIIh8DBekuR6xPd27GDZod/Rv/dJ5fef9Q=;
+	s=k20201202; t=1711320943;
+	bh=R0o9mtiY+b9wcMRZccfj/l4j7rw/QnFthxmzKd6U52Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=S85FT92m3DUl6KLzZ6oVrvsrcLAGzVSsWshbfzslbjxd2w2Fk4cFtRh/3mQaoB69h
-	 n+FJREHSpndVgJVN5/+rcK80ZvzRzbB7XIR8M7jBapIFRVtkE14ED4KEPzunQFTlKF
-	 My6U8we0TIDm99kOiWaLR/KW+eDdgC6JRuPDTMbdZmsiOZNeuGDycT+0eSAvd7YUG7
-	 o5viK44oGTlLN00IZt/+F3HKr/4jsm9Ph5bJ+eaDMtD9vNj+nM04T2qARVr8JCpImz
-	 qPWFkNnuwrD3QmoXEOL7uX4CdhXXSc+0xrvITpZvNuvBGNMU6T17+vT1294ZdjXZei
-	 kuQh8ixfcwbVw==
+	b=WMbuhpnf/CDWGWhcdXwaN2ppQ/eujmnzhi8IzMMJMe+71rFRpCA35zCQsyjqk6zZt
+	 JxTbUlAkOo7XwFDymcJhwneEgEkcksUrxJRYI4myn2rhBVTTNTC140Wi50pvRkFByV
+	 nXvQExkHIIM3ZkCHzQ+pReUdUDvVl/iU1VCzzo45260458tZm9ShxZipWkkVBE2COT
+	 aZt4EvuIBK2zhop3BQsdYxo0JeEV1BccXoDKR5byMchgT1a8LiI48bFBw/LiV0N9Vz
+	 a9oNd4pZSDPfiXuGKS++C8CYv0HNl2xN0WpZkLOUc+fiwp+Ex4iCXto67ZRK3AChRe
+	 9tT6cYvaWR4zA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
 	Aradhya Bhatia <a-bhatia1@ti.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 505/713] drm/tidss: Fix initial plane zpos values
-Date: Sun, 24 Mar 2024 18:43:51 -0400
-Message-ID: <20240324224720.1345309-506-sashal@kernel.org>
+Subject: [PATCH 6.7 506/713] drm/tidss: Fix sync-lost issue with two displays
+Date: Sun, 24 Mar 2024 18:43:52 -0400
+Message-ID: <20240324224720.1345309-507-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,52 +64,60 @@ Content-Transfer-Encoding: 8bit
 
 From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-[ Upstream commit 3ec948ccb2c4b99e8fbfdd950adbe92ea577b395 ]
+[ Upstream commit c079e2e113f2ec2803ba859bbb442a6ab82c96bd ]
 
-When the driver sets up the zpos property it sets the default zpos value
-to the HW id of the plane. That is fine as such, but as on many DSS
-versions the driver arranges the DRM planes in a different order than
-the HW planes (to keep the non-scalable planes first), this leads to odd
-initial zpos values. An example is J721e, where the initial zpos values
-for DRM planes are 1, 3, 0, 2.
+A sync lost issue can be observed with two displays, when moving a plane
+from one disabled display to an another disabled display, and then
+enabling the display to which the plane was moved to. The exact
+requirements for this to trigger are not clear.
 
-In theory the userspace should configure the zpos values properly when
-using multiple planes, and in that sense the initial zpos values
-shouldn't matter, but there's really no reason not to fix this and help
-the userspace apps which don't handle zpos perfectly. In particular,
-some versions of Weston seem to have issues dealing with the planes
-with the current default zpos values.
+It looks like the issue is that the layers are left enabled in the first
+display's OVR registers. Even if the corresponding VP is disabled, it
+still causes an issue, as if the disabled VP and its OVR would still be
+in use, leading to the same VID being used by two OVRs. However, this is
+just speculation based on testing the DSS behavior.
 
-So let's change the zpos values for the DRM planes to 0, 1, 2, 3.
+Experimentation shows that as a workaround, we can disable all the
+layers in the OVR when disabling a VP. There should be no downside to
+this, as the OVR is anyway effectively disabled if its VP is disabled,
+and it seems to solve the sync lost issue.
 
-Another option would be to configure the planes marked as primary planes
-to zpos 0. On a two display system this would give us plane zpos values
-of 0, 0, 1, 2. The end result and behavior would be very similar in this
-option, and I'm not aware that this would actually help us in any way.
-So, to keep the code simple, I opted for the 0, 1, 2, 3 values.
+However, there may be a bigger issue in play here, related to J721e
+erratum i2097 ("DSS: Disabling a Layer Connected to Overlay May Result
+in Synclost During the Next Frame"). Experimentation also shows that the
+OVR's CHANNELIN field has similar issue. So we may need to revisit this
+when we find out more about the core issue.
 
 Fixes: 32a1795f57ee ("drm/tidss: New driver for TI Keystone platform Display SubSystem")
 Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240213-tidss-fixes-v1-1-d709e8dfa505@ideasonboard.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20240213-tidss-fixes-v1-2-d709e8dfa505@ideasonboard.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tidss/tidss_plane.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/tidss/tidss_crtc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/gpu/drm/tidss/tidss_plane.c b/drivers/gpu/drm/tidss/tidss_plane.c
-index e1c0ef0c3894c..68fed531f6a7f 100644
---- a/drivers/gpu/drm/tidss/tidss_plane.c
-+++ b/drivers/gpu/drm/tidss/tidss_plane.c
-@@ -213,7 +213,7 @@ struct tidss_plane *tidss_plane_create(struct tidss_device *tidss,
+diff --git a/drivers/gpu/drm/tidss/tidss_crtc.c b/drivers/gpu/drm/tidss/tidss_crtc.c
+index 7c78c074e3a2e..1baa4ace12e15 100644
+--- a/drivers/gpu/drm/tidss/tidss_crtc.c
++++ b/drivers/gpu/drm/tidss/tidss_crtc.c
+@@ -269,6 +269,16 @@ static void tidss_crtc_atomic_disable(struct drm_crtc *crtc,
  
- 	drm_plane_helper_add(&tplane->plane, &tidss_plane_helper_funcs);
+ 	reinit_completion(&tcrtc->framedone_completion);
  
--	drm_plane_create_zpos_property(&tplane->plane, hw_plane_id, 0,
-+	drm_plane_create_zpos_property(&tplane->plane, tidss->num_planes, 0,
- 				       num_planes - 1);
++	/*
++	 * If a layer is left enabled when the videoport is disabled, and the
++	 * vid pipeline that was used for the layer is taken into use on
++	 * another videoport, the DSS will report sync lost issues. Disable all
++	 * the layers here as a work-around.
++	 */
++	for (u32 layer = 0; layer < tidss->feat->num_planes; layer++)
++		dispc_ovr_enable_layer(tidss->dispc, tcrtc->hw_videoport, layer,
++				       false);
++
+ 	dispc_vp_disable(tidss->dispc, tcrtc->hw_videoport);
  
- 	ret = drm_plane_create_color_properties(&tplane->plane,
+ 	if (!wait_for_completion_timeout(&tcrtc->framedone_completion,
 -- 
 2.43.0
 
