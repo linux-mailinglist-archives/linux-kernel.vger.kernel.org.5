@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-113575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B17788856B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:07:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F49E88856D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BD8E1C245EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:07:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D4881F23BB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8C91C8FBE;
-	Sun, 24 Mar 2024 22:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A19974C1B;
+	Sun, 24 Mar 2024 22:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f//aVYNU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NaShrrsD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850F41C8FA1;
-	Sun, 24 Mar 2024 22:46:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C012D1C8FC8;
+	Sun, 24 Mar 2024 22:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320378; cv=none; b=DjLN3X8eHhbFr/5dGAiyLjpCgf5a47V4+XLtdZZKg6SJ/loYisP8ewdwfEz6N74gbTxmuQuRa5uyk9+1VfM6XtaXJq6qvdJazCzI4U89397nUduO7cxjFgXr2VZG2BOBqrpH8I8DboxRgSDinWH2s/bBjdYaBBmzUymtdDwho+4=
+	t=1711320379; cv=none; b=hOvjuOw44hAgwb9BeCIHSq+RakY7kwftEOKEPIR9AdiuNr8jEicPMWIBWi3Tf2lhTBcVoNp3BNV/skTaKjTyc5cEpi9a1DGAV3amqYNW3ezSt+AmgvVFATtWnomXTem0Ci5mhm/4JkHrB4Fs6CvsvUEn9lLLYyJu0a7VMC5enTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320378; c=relaxed/simple;
-	bh=pa35vW4onQCB+cbzrRN+5K9fSbHykdAF5OtD8khnado=;
+	s=arc-20240116; t=1711320379; c=relaxed/simple;
+	bh=nuvNN4ZvtBd/GUiziz/K8W0DyuJfnso9yH/WmpRvifE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d262HZPJRhTO+qQSNzuPI8mYJUAbxVdQsjw5aJJFsfgH0X34yksAV8NdQlA9s4ssaAR7lYjKvhV3l/Lt0d27U7K4GlfJP5RGPBzw2SpqWTIs2sWn1x9oXJouEJaqS9dB3RXnwE/E1t7FUfG4ttUSLma0QFw6MSCcF5dySY8q5Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f//aVYNU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A5F5C43399;
-	Sun, 24 Mar 2024 22:46:17 +0000 (UTC)
+	 MIME-Version; b=bDyfXCcebSzVcjqbLBjwjGeRY8V72chbLgiSzTCSuTb0E9BXwDCdlUCj+tzNkOLM1LpYbq1ItK1SAeZoKmsJSW95BkZwbQU8TiqPCNVk0QSYZvxmlIa7zVnZ1gjIK4usLn6mfnH+GIgEO0ybE2GJd+xRXQuhgfXOYcb0FMBrABQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NaShrrsD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A226DC433C7;
+	Sun, 24 Mar 2024 22:46:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320378;
-	bh=pa35vW4onQCB+cbzrRN+5K9fSbHykdAF5OtD8khnado=;
+	s=k20201202; t=1711320379;
+	bh=nuvNN4ZvtBd/GUiziz/K8W0DyuJfnso9yH/WmpRvifE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f//aVYNUSdu8CICWlFmZM+2RwapbXHgkgh9O43y5XUkryKH8ay3/SOCZ6Pkc+f+GW
-	 golKAYsZdPQ3o95MywSe0hUCPu6yMo8aj6a0b2RstW6lxaS8gFD023TD5lJUVGqERb
-	 0g4ublUfsEPhndYNaeh+BbOYdrqsCVzgTbEhzkaCuDkJnU7AtPNpA3wXcklLFy80cd
-	 OMM/CEShsusq3DS9pCIV0xbZxI8yRZnE3GFixMGE9kTzLWSMefiNsf2AozoL6A0O0h
-	 ZK+MdRoZQv69fdqoEpD/1GzYyUoKD0luAzX0rWJRGzre+HNu2K5HFxkQcJ4EhroxJW
-	 d2XvLa/FnYtsw==
+	b=NaShrrsDlzh6FdAFyyxFRMGgn8PsHQW281zoxwUSjAtCzzyd2JL14u95MLu0AkBqq
+	 UmpIfqalY8zTE4qbKWTVb1nTj3MS2P3znEO5kijAWhhIA/aTtnzeL5zcOE2BioOP+P
+	 H8Rrc7DQakDsvwQMs3VBHAGCrUPlLbeP4w+3w/kjlv/Dwkc6C4sIsxCKBsE4woz2sM
+	 LxNxwDSRD2E5Iy+RQjyp4nJrTi/vPL+jsE2QW7NC1pOFWPz6Z5l1M4QDQImqxwfWOu
+	 cCXvLwxaLBiMyctWq+4YOBTzS4SCBUC6MVa1i3xMm8NJk9sdArDA3EXcQbXZbaUkGr
+	 +ACr7KSzeWBwA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Felix Maurer <fmaurer@redhat.com>,
-	Shigeru Yoshida <syoshida@redhat.com>,
-	Breno Leitao <leitao@debian.org>,
+Cc: Tobias Brunner <tobias@strongswan.org>,
+	David Ahern <dsahern@kernel.org>,
+	Nicolas Dichtel <nicolas.dichtel@6wind.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 684/715] hsr: Handle failures in module init
-Date: Sun, 24 Mar 2024 18:34:23 -0400
-Message-ID: <20240324223455.1342824-685-sashal@kernel.org>
+Subject: [PATCH 6.8 685/715] ipv4: raw: Fix sending packets from raw sockets via IPsec tunnels
+Date: Sun, 24 Mar 2024 18:34:24 -0400
+Message-ID: <20240324223455.1342824-686-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,59 +64,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Felix Maurer <fmaurer@redhat.com>
+From: Tobias Brunner <tobias@strongswan.org>
 
-[ Upstream commit 3cf28cd492308e5f63ed00b29ea03ca016264376 ]
+[ Upstream commit c9b3b81716c5b92132a6c1d4ac3c48a7b44082ab ]
 
-A failure during registration of the netdev notifier was not handled at
-all. A failure during netlink initialization did not unregister the netdev
-notifier.
+Since the referenced commit, the xfrm_inner_extract_output() function
+uses the protocol field to determine the address family.  So not setting
+it for IPv4 raw sockets meant that such packets couldn't be tunneled via
+IPsec anymore.
 
-Handle failures of netdev notifier registration and netlink initialization.
-Both functions should only return negative values on failure and thereby
-lead to the hsr module not being loaded.
+IPv6 raw sockets are not affected as they already set the protocol since
+9c9c9ad5fae7 ("ipv6: set skb->protocol on tcp, raw and ip6_append_data
+genereated skbs").
 
-Fixes: f421436a591d ("net/hsr: Add support for the High-availability Seamless Redundancy protocol (HSRv0)")
-Signed-off-by: Felix Maurer <fmaurer@redhat.com>
-Reviewed-by: Shigeru Yoshida <syoshida@redhat.com>
-Reviewed-by: Breno Leitao <leitao@debian.org>
-Link: https://lore.kernel.org/r/3ce097c15e3f7ace98fc7fd9bcbf299f092e63d1.1710504184.git.fmaurer@redhat.com
+Fixes: f4796398f21b ("xfrm: Remove inner/outer modes from output path")
+Signed-off-by: Tobias Brunner <tobias@strongswan.org>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Reviewed-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Link: https://lore.kernel.org/r/c5d9a947-eb19-4164-ac99-468ea814ce20@strongswan.org
 Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/hsr/hsr_main.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ net/ipv4/raw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/hsr/hsr_main.c b/net/hsr/hsr_main.c
-index cb83c8feb7465..9756e657bab97 100644
---- a/net/hsr/hsr_main.c
-+++ b/net/hsr/hsr_main.c
-@@ -148,14 +148,21 @@ static struct notifier_block hsr_nb = {
+diff --git a/net/ipv4/raw.c b/net/ipv4/raw.c
+index aea89326c6979..288f1846b3518 100644
+--- a/net/ipv4/raw.c
++++ b/net/ipv4/raw.c
+@@ -350,6 +350,7 @@ static int raw_send_hdrinc(struct sock *sk, struct flowi4 *fl4,
+ 		goto error;
+ 	skb_reserve(skb, hlen);
  
- static int __init hsr_init(void)
- {
--	int res;
-+	int err;
- 
- 	BUILD_BUG_ON(sizeof(struct hsr_tag) != HSR_HLEN);
- 
--	register_netdevice_notifier(&hsr_nb);
--	res = hsr_netlink_init();
-+	err = register_netdevice_notifier(&hsr_nb);
-+	if (err)
-+		return err;
-+
-+	err = hsr_netlink_init();
-+	if (err) {
-+		unregister_netdevice_notifier(&hsr_nb);
-+		return err;
-+	}
- 
--	return res;
-+	return 0;
- }
- 
- static void __exit hsr_exit(void)
++	skb->protocol = htons(ETH_P_IP);
+ 	skb->priority = READ_ONCE(sk->sk_priority);
+ 	skb->mark = sockc->mark;
+ 	skb->tstamp = sockc->transmit_time;
 -- 
 2.43.0
 
