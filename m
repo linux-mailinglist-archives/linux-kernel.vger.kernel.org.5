@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-113703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDC9B888617
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91348889B58
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AA2D29089C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:24:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CF5C2C319F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2BD12882F;
-	Sun, 24 Mar 2024 22:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD921FDB4D;
+	Mon, 25 Mar 2024 02:35:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HGfmGUl4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j3iNP/wk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFD21D5F92;
-	Sun, 24 Mar 2024 22:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26FC183A0F;
+	Sun, 24 Mar 2024 22:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320681; cv=none; b=U8iwsjES+fM4EH2K3sspP6mNDJnvdmx/x/AWTK9E4qIA7CbR057OeYF4hr+XkaJl+rlK9nU4WSGbiQkrUMnzsnzCrftz9zdJdWKlQkSIkhClUbDoKyTo12qOjg7fbaYTH4m16fE4DFF8Mw+UVx0xppd1T564mpWLrkCRyWXbUtQ=
+	t=1711320681; cv=none; b=Ke4re570QFovH7GHqckwwBY2IzvnItRPbn6RtNlAyuaUeyFGlQ7AcduYSIVCxwg8vk8qA8dFkMDz2gUDTd4y01FLXEnM6uiC9+37TUwysgMDbo7oUEE2Ng/Wcxaeq+adSf64mfVhKyeDaNiRc3kujN/BQkFZKvHieOVHWI1cNkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320681; c=relaxed/simple;
-	bh=/qCNevVVEggzTf1GpDuuZorY4cKNTJEWoKSpqvi5tJ4=;
+	bh=IjHC0V4+anwKE2BZI9ry5DDuywEgK6RvlKzFG4fZZOE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RqUpoyjoLqt60F2ejt8BoKcLmktQMiwHA7oT//dz4VdEZNJ7/hfxt1au+yyWubDOQpNc3BQYAe5JA2of4s4tWb1PIIR7h6HLEj5cyQz3ZxHbJYd0OG5WlJ++jdBvkIsqq53dty6Nly5y+HGoW3/IOZhP4p/E6d1AHeKJX8uu+Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HGfmGUl4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 506C5C433C7;
-	Sun, 24 Mar 2024 22:51:19 +0000 (UTC)
+	 MIME-Version:Content-Type; b=AYZF1HnHLW2u+BpoZETqjxvciO8uM2WdSC6bODaQPtzvRctfZ8nKAqghRKTJ7OipySwtTC+yFgifnEmpO08wZAPv3vjsietJjHkLmFwwZL4We6716uSk8LAvxQTbzcXiOPGki/qLOYZ9wVIQYHM4uSU1TfBe35d1qpQkeQjNYhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j3iNP/wk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63214C433F1;
+	Sun, 24 Mar 2024 22:51:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320680;
-	bh=/qCNevVVEggzTf1GpDuuZorY4cKNTJEWoKSpqvi5tJ4=;
+	s=k20201202; t=1711320681;
+	bh=IjHC0V4+anwKE2BZI9ry5DDuywEgK6RvlKzFG4fZZOE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HGfmGUl4UVzCnbw4jo/XAeGfJddGx8+VFVH8D0Tziak2HP6u3B2CHifx/h60u9wJb
-	 Wqd1uCFTCTary1D41sy4qCWcvEU8LvjYDLXPOyfDuNkQcdNbfywMcmK9mmQqwSGd8U
-	 1YHd0ltIrai2uooR7eC7VjwNWRvgGrgbMlBURhv/hudJ3LQGgWlTJzsnCGw/4mbhG+
-	 +5De5JFxYS3JcQdkUX3pjUnwMj8iNKyeNiYPle0Q98GZiz8i/idM/WxRHGYN5EIIKB
-	 Ze7/rczj3ZPOZUDJl0sZdRg4MuEAvEjWiOgIQ7WbBe91ajsyvBQ4DmdoZ7MGg7unvL
-	 kuKOlk8eUWSHg==
+	b=j3iNP/wkCoYgA4vkg++jxe/WmFLNGNhX/Uf4ihqLIxqC1OLrf+9HGieITrrAJe1Rk
+	 M78UPeBw0TF0hCcX38pnCTEAui3u/Yj/aAs041WvlQfkfnQc0gsTnf8XupIFaFT6e4
+	 2jq/ixB/k9unaU8+s+ziGfEHRz5jb0TEZ415n83VfPue6zrkjoUVGAkJbRYtzqph3z
+	 xU6d/+lBghqAh+qcmNDpHmYImsUWKNvfbermqGH/i5lfqbDQP9oWAYFV+TTfWUTV9F
+	 eHRiZUpAyEahjoieLXRtz7QWG+o/nwzAgMUhoDuCLJjBqjtegnMLkBwBOcb5oPHzj/
+	 GZiYff8FQTqbw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Sam Shih <sam.shih@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
+Cc: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 242/713] arm64: dts: mediatek: mt7986: add "#reset-cells" to infracfg
-Date: Sun, 24 Mar 2024 18:39:28 -0400
-Message-ID: <20240324224720.1345309-243-sashal@kernel.org>
+Subject: [PATCH 6.7 243/713] arm64: dts: mediatek: mt8192-asurada: Remove CrosEC base detection node
+Date: Sun, 24 Mar 2024 18:39:29 -0400
+Message-ID: <20240324224720.1345309-244-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -65,42 +63,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-[ Upstream commit d993daff5962b2dd08f32a83bb1c0e5fa75732ea ]
+[ Upstream commit 9b49cabe631b0a25aaf8fc2ba81b5b9ea6ff01b7 ]
 
-MT7986's Infrastructure System Configuration Controller includes reset
-controller. It can reset blocks as specified in the
-include/dt-bindings/reset/mt7986-resets.h . Add #reset-cells so it can
-be referenced properly.
+The commit adding the ChromeOS EC to the Asurada Devicetree mistakenly
+added a base detection node. While tablet mode detection is supported by
+CrosEC and used by Hayato, it is done through the cros-ec-keyb driver.
+The base detection node, which is handled by the hid-google-hammer
+driver, also provides tablet mode detection but by checking base
+attachment status on the CrosEC, which is not supported for Asurada.
 
-This fixes:
-arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dtb: infracfg@10001000: '#reset-cells' is a required property
-        from schema $id: http://devicetree.org/schemas/arm/mediatek/mediatek,infracfg.yaml#
+Hence, remove the unused CrosEC base detection node for Asurada.
 
-Fixes: 1f9986b258c2 ("arm64: dts: mediatek: add clock support for mt7986a")
-Cc: Sam Shih <sam.shih@mediatek.com>
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Link: https://lore.kernel.org/r/20240101182040.28538-2-zajec5@gmail.com
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Fixes: eb188a2aaa82 ("arm64: dts: mediatek: asurada: Add ChromeOS EC")
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+Link: https://lore.kernel.org/r/20240207-mt8192-asurada-cbas-remove-v1-1-04cb65951975@collabora.com
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-index 7b6591509c54d..d974739eae1c9 100644
---- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-@@ -153,6 +153,7 @@ infracfg: infracfg@10001000 {
- 			compatible = "mediatek,mt7986-infracfg", "syscon";
- 			reg = <0 0x10001000 0 0x1000>;
- 			#clock-cells = <1>;
-+			#reset-cells = <1>;
- 		};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+index f2281250ac35d..02ce05bc151ae 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192-asurada.dtsi
+@@ -1336,10 +1336,6 @@ cros_ec: ec@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
  
- 		wed_pcie: wed-pcie@10003000 {
+-		base_detection: cbas {
+-			compatible = "google,cros-cbas";
+-		};
+-
+ 		cros_ec_pwm: pwm {
+ 			compatible = "google,cros-ec-pwm";
+ 			#pwm-cells = <1>;
 -- 
 2.43.0
 
