@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-116137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7841D88959E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:34:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2FC188998E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:12:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32EAE298CE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:34:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0000D1C32918
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:12:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B963AFAA4;
-	Mon, 25 Mar 2024 03:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5CA3AF2F5;
+	Mon, 25 Mar 2024 03:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KGID7eUH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DNVkhzZH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E697131187;
-	Sun, 24 Mar 2024 23:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E88B131192;
+	Sun, 24 Mar 2024 23:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323683; cv=none; b=WMRSqJgmqmQedxoKeEma6Y6JqT03ihXxKJ5N6aVqVufENmpkSAqHuUqO3LWfjrFKi0lzjsvJBbtWKAX/if6RiFuPRH1JvQnnMKgRuH1yvTYwPKKZ50sETHwvhdAf1pd8n/FprNdf9lmy5f8E7oDfZG5gIVJ6/IZK/ez+fxWbNl8=
+	t=1711323684; cv=none; b=ayix6cW4LIpUm9WAXjo81CIYpMXBSxwdHUdyXMeUvo+92yy4v9q5ndUskeV4YjUldGExXf4duNFpKzMzIi2Do/lRnHy/ttW4tIGJ10VooRx4t+kNpcTrofM4AdlVuwaOBqCOJ4/z1M7M3nRNoIk505nOy+RXIoyB/fPYeqe8l7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323683; c=relaxed/simple;
-	bh=QyAnXMWYQENBOHd4XUvZKCz+yB+VOQoDw0E4z1GetK0=;
+	s=arc-20240116; t=1711323684; c=relaxed/simple;
+	bh=koVwPrZQUSvcHiiHHSXm4PoGQaBqY7IyOELR1RuD3Vo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k/ZGeu9boezr1TEmy1nA/C88Ek/lcUh/kkePw6YprRInpwgNL3gMqTWRcLM/p0k3c2WTqnPozB17qh5qelGJCQ+IFFDmor3MDi9dakzkVOVGVeyllTFGyLcnzX/dYkBYPR3nLVlV+3IrCxGXK+1HcBl2mzIbvP/XLERYcEp1XsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KGID7eUH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 678EEC433C7;
-	Sun, 24 Mar 2024 23:41:22 +0000 (UTC)
+	 MIME-Version; b=auFFCrxOCh3NdCkyPlpLihq9hwGlxtCG/yN1H0YTLzJ25c7YN29WO73tY1px1y4B4GHeFfNzOsE2TlhHqJkSQH0mYgR9wqu74N3ZgKLPTz2yv2o2YkdzU7hSUzIer5f07bu2GiuJAR4nRQgWdMT6FznvmP7Fxq8LH+4x8nJfqqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DNVkhzZH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62FBCC43394;
+	Sun, 24 Mar 2024 23:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323683;
-	bh=QyAnXMWYQENBOHd4XUvZKCz+yB+VOQoDw0E4z1GetK0=;
+	s=k20201202; t=1711323684;
+	bh=koVwPrZQUSvcHiiHHSXm4PoGQaBqY7IyOELR1RuD3Vo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KGID7eUHnco+UOMoSmXPPnhGRkFdu1YpN0kNGON5Ixa4y+9Fvk9fgUEpCX5/IK0AZ
-	 7/7H1eu94RdzFLD+eCJHtYjCAUSlhtLg2xwGo4CBqOWi7/GDm4PqSh/jTznx813mmg
-	 mk74kIJf3QlXD1aOgwYWnHm8quTfKYs7cX/8jdV/fctfVkXP0+rD/8LajwqiDNJafA
-	 t8P/h+DIZlnOsZ/PfcNLBbpGx/YlwN6Nd4Dqr6/dGlCOGU16kpU3BJTJJsXq8YdV0t
-	 5mVYcJZD9df19EPX5WdUTkv4qrLugjBYVKfuOZYBhZwMjDuiDlBxPvQ+v5I8aHxMcR
-	 i7vqjPsKkDY0Q==
+	b=DNVkhzZHJ+rAlFQxV9qXDbTKF/jWQydx3U7Bcs2AdVplET0ASRhVZ7WbbNOZjmNYc
+	 yWc2F11pro1FwPpe6lNXZigmMvzd3KCyKQovbjYSoRJenQhTKWDWBnBzudCDpXr4pM
+	 L+R2cgi3DS41K4jd4i5XVt67AHN23+tBwkOiiihaySdYUG1asHqSFPD/QeWsZNArK+
+	 Q0vFEOgL6Gw9rfUoqtKz4BMVnA4Tl9nuVZcreF02yl6+lmN6p6pLppG339wEi0zX2I
+	 ErYI2pEBOD5eCMmh5qYsx4wQ4AY2fZ6ZZgKKz8axqFIwGZBaHWr07UAeF5LGyaA1r1
+	 lJQO0pO2GgzLQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Ubisectech Sirius <bugreport@ubisectech.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 055/238] wifi: ath9k: delay all of ath9k_wmi_event_tasklet() until init is complete
-Date: Sun, 24 Mar 2024 19:37:23 -0400
-Message-ID: <20240324234027.1354210-56-sashal@kernel.org>
+Subject: [PATCH 5.10 056/238] wifi: iwlwifi: dbg-tlv: ensure NUL termination
+Date: Sun, 24 Mar 2024 19:37:24 -0400
+Message-ID: <20240324234027.1354210-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -59,123 +59,45 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 24355fcb0d4cbcb6ddda262596558e8cfba70f11 ]
+[ Upstream commit ea1d166fae14e05d49ffb0ea9fcd4658f8d3dcea ]
 
-The ath9k_wmi_event_tasklet() used in ath9k_htc assumes that all the data
-structures have been fully initialised by the time it runs. However, because of
-the order in which things are initialised, this is not guaranteed to be the
-case, because the device is exposed to the USB subsystem before the ath9k driver
-initialisation is completed.
+The iwl_fw_ini_debug_info_tlv is used as a string, so we must
+ensure the string is terminated correctly before using it.
 
-We already committed a partial fix for this in commit:
-8b3046abc99e ("ath9k_htc: fix NULL pointer dereference at ath9k_htc_tx_get_packet()")
-
-However, that commit only aborted the WMI_TXSTATUS_EVENTID command in the event
-tasklet, pairing it with an "initialisation complete" bit in the TX struct. It
-seems syzbot managed to trigger the race for one of the other commands as well,
-so let's just move the existing synchronisation bit to cover the whole
-tasklet (setting it at the end of ath9k_htc_probe_device() instead of inside
-ath9k_tx_init()).
-
-Link: https://lore.kernel.org/r/ed1d2c66-1193-4c81-9542-d514c29ba8b8.bugreport@ubisectech.com
-Fixes: 8b3046abc99e ("ath9k_htc: fix NULL pointer dereference at ath9k_htc_tx_get_packet()")
-Reported-by: Ubisectech Sirius <bugreport@ubisectech.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://msgid.link/20240126140218.1033443-1-toke@toke.dk
+Fixes: a9248de42464 ("iwlwifi: dbg_ini: add TLV allocation new API support")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reviewed-by: Gregory Greenman <gregory.greenman@intel.com>
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Link: https://msgid.link/20240128084842.be15e858ee89.Ibff93429cf999eafc7b26f3eef4c055dc84984a0@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/htc.h          |  2 +-
- drivers/net/wireless/ath/ath9k/htc_drv_init.c |  4 ++++
- drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |  4 ----
- drivers/net/wireless/ath/ath9k/wmi.c          | 10 ++++++----
- 4 files changed, 11 insertions(+), 9 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath9k/htc.h b/drivers/net/wireless/ath/ath9k/htc.h
-index 237f4ec2cffd7..6c33e898b3000 100644
---- a/drivers/net/wireless/ath/ath9k/htc.h
-+++ b/drivers/net/wireless/ath/ath9k/htc.h
-@@ -306,7 +306,6 @@ struct ath9k_htc_tx {
- 	DECLARE_BITMAP(tx_slot, MAX_TX_BUF_NUM);
- 	struct timer_list cleanup_timer;
- 	spinlock_t tx_lock;
--	bool initialized;
- };
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c b/drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c
+index bcaec8a184cd6..299819d2d1904 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c
+@@ -155,6 +155,12 @@ static int iwl_dbg_tlv_alloc_debug_info(struct iwl_trans *trans,
+ 	if (le32_to_cpu(tlv->length) != sizeof(*debug_info))
+ 		return -EINVAL;
  
- struct ath9k_htc_tx_ctl {
-@@ -515,6 +514,7 @@ struct ath9k_htc_priv {
- 	unsigned long ps_usecount;
- 	bool ps_enabled;
- 	bool ps_idle;
-+	bool initialized;
- 
- #ifdef CONFIG_MAC80211_LEDS
- 	enum led_brightness brightness;
-diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_init.c b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-index 96a3185a96d75..b014185373f34 100644
---- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-@@ -966,6 +966,10 @@ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
- 
- 	htc_handle->drv_priv = priv;
- 
-+	/* Allow ath9k_wmi_event_tasklet() to operate. */
-+	smp_wmb();
-+	priv->initialized = true;
++	/* we use this as a string, ensure input was NUL terminated */
++	if (strnlen(debug_info->debug_cfg_name,
++		    sizeof(debug_info->debug_cfg_name)) ==
++			sizeof(debug_info->debug_cfg_name))
++		return -EINVAL;
 +
- 	return 0;
+ 	IWL_DEBUG_FW(trans, "WRT: Loading debug cfg: %s\n",
+ 		     debug_info->debug_cfg_name);
  
- err_init:
-diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-index 5037142c5a822..95146ec754d5c 100644
---- a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-@@ -810,10 +810,6 @@ int ath9k_tx_init(struct ath9k_htc_priv *priv)
- 	skb_queue_head_init(&priv->tx.data_vo_queue);
- 	skb_queue_head_init(&priv->tx.tx_failed);
- 
--	/* Allow ath9k_wmi_event_tasklet(WMI_TXSTATUS_EVENTID) to operate. */
--	smp_wmb();
--	priv->tx.initialized = true;
--
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath9k/wmi.c b/drivers/net/wireless/ath/ath9k/wmi.c
-index 1476b42b52a91..805ad31edba2b 100644
---- a/drivers/net/wireless/ath/ath9k/wmi.c
-+++ b/drivers/net/wireless/ath/ath9k/wmi.c
-@@ -155,6 +155,12 @@ void ath9k_wmi_event_tasklet(struct tasklet_struct *t)
- 		}
- 		spin_unlock_irqrestore(&wmi->wmi_lock, flags);
- 
-+		/* Check if ath9k_htc_probe_device() completed. */
-+		if (!data_race(priv->initialized)) {
-+			kfree_skb(skb);
-+			continue;
-+		}
-+
- 		hdr = (struct wmi_cmd_hdr *) skb->data;
- 		cmd_id = be16_to_cpu(hdr->command_id);
- 		wmi_event = skb_pull(skb, sizeof(struct wmi_cmd_hdr));
-@@ -169,10 +175,6 @@ void ath9k_wmi_event_tasklet(struct tasklet_struct *t)
- 					     &wmi->drv_priv->fatal_work);
- 			break;
- 		case WMI_TXSTATUS_EVENTID:
--			/* Check if ath9k_tx_init() completed. */
--			if (!data_race(priv->tx.initialized))
--				break;
--
- 			spin_lock_bh(&priv->tx.tx_lock);
- 			if (priv->tx.flags & ATH9K_HTC_OP_TX_DRAIN) {
- 				spin_unlock_bh(&priv->tx.tx_lock);
 -- 
 2.43.0
 
