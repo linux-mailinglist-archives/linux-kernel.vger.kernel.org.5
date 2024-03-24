@@ -1,54 +1,61 @@
-Return-Path: <linux-kernel+bounces-114279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B4F888F84
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:53:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5580888990
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A82D21F2972B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:53:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E76711C28070
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A43320DB96;
-	Sun, 24 Mar 2024 23:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C303116D30F;
+	Sun, 24 Mar 2024 23:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bvDnIR5Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UHP6LDqb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7DA20D5E0;
-	Sun, 24 Mar 2024 23:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8297820D5EA;
+	Sun, 24 Mar 2024 23:07:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321650; cv=none; b=e6he+oWCf/SbwmDt3GVJvGej0wWXL+rBBhP2X0VMCFV8udT5MCHnCRe3pfUZHdVnem4oKFXq9q6d4qbfOVliq5ui5Y+dAshstDFMD79n9X19gVGHcxp73NoejjyQdUKyJaggn+KZ/zkjrtQDEcUigiOqqwslpe5hy7soHaaQ9MI=
+	t=1711321651; cv=none; b=RwUAk3XFKsLFMHL8/EZ/se04+T0tX0qPAIal84hKFN4OzSzlBAN/7/VhLaHLZugZ1pfF9jfdIR/8b5a+YqoJ2R5KXT6XYMeyKPBqLEoAsQh2bIBSFOOZNCLJtZ1id70Xed3nkYDY05nHOpPPU3BaUTQJW7Q+tRzdj7DlumeO2rY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321650; c=relaxed/simple;
-	bh=AblLMCLKhGeVcNTlP4GxhDoq/j9RcxhSil5RYWBtqm4=;
+	s=arc-20240116; t=1711321651; c=relaxed/simple;
+	bh=zAJBru5Y6lcMbpsk5V/l75jABud2pBNnY08/Lc4M4HA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EKlJxDrGGrvQjye7oBNeKhZBQTayiVStFJUeLdETBemVu1RmWtyQQQB63ZjWUokuL4XuKdLzHVu8xoA9CumCICTJSzcdrE3rvTzErDSdO4UxoZuEJE3I/QJmi3vZQo2gxJmkDwLCiGm26sggMebPc20cRi68QvQhOfcWgzj3J4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bvDnIR5Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37E6AC433C7;
-	Sun, 24 Mar 2024 23:07:28 +0000 (UTC)
+	 MIME-Version; b=ZlQP89U+ClzEuWGzfTKG5EOuD2OdF87bf8P7i41X0Ije6DpUNOAZoacPnmHjCJUAWHGJ6TzhH09Zs0xUCX3lCSL3Y922ktAFP+gTPeJ7Sv3oEhfM+PlkqzFtx6lcd1zzDjY3lElFppCxD2tX3wHMh/SXeZF13KiBpfLs3nXEkUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UHP6LDqb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2024EC43394;
+	Sun, 24 Mar 2024 23:07:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321648;
-	bh=AblLMCLKhGeVcNTlP4GxhDoq/j9RcxhSil5RYWBtqm4=;
+	s=k20201202; t=1711321650;
+	bh=zAJBru5Y6lcMbpsk5V/l75jABud2pBNnY08/Lc4M4HA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bvDnIR5ZLoiyow2VjZJBKDdcHxdmlvX8TO0aBetKFeoi4pogOtDX08Zhqxl78d8ww
-	 q7XamJJiqrSt0ANPW8izGdZaHY6uoHiCsqqQSjbAvGgQtZTqbngATnMkV3B3oqpBBQ
-	 Zq5inUVs34+eLn59Tfz3mEJZu+o9N5zwOmzEfOl5iXHVNeNM3FwPbp4uPXBWN4J8p+
-	 Fm/hZp8CDsy83xcKUWY1XDlquhs9F+wOvvEB2lSnjXoPGnMkajhdbyZNmX6g3pC48/
-	 NLzJoD+k9zDc6iSpGr1fNyMiGljA6Ez7jF2slKPWllKj2FuTRgmfxCckWAIhWar8Fl
-	 hbejo/hNyEVlw==
+	b=UHP6LDqbWO/UtACAC5GJ9oidG6OEV5pJF8us+3Eu8Yk75aWRereIwJ+rm7H6a9zGa
+	 5J+PcqJu9C69efzJbrFPKDMxqVTIzKGdOHHXq3+fZiRaNSXDZNCkoGnWsMs7lpJQXl
+	 IpokgXg9ovFoUUreloiUptKPbgZImzjMrcqV7VqaeUZaytTCHaaABlUTqnb64dsZuP
+	 dznUI8WUHuxlMMiYwEgvfEmncNf7xHtTjLrsMl9+cZS7Qp3Vb3NWZNAi2H6xU/WX6q
+	 NFoRtJPOi0dNZpf4yOrHJdZ3NpuQ5TggvTTdb+skosDZR3K1xxtrqUfVFDuP09IRME
+	 ePqkrzQ7p9ivw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	James Clark <james.clark@arm.com>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	bpf@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 378/638] PCI/AER: Fix rootport attribute paths in ABI docs
-Date: Sun, 24 Mar 2024 18:56:55 -0400
-Message-ID: <20240324230116.1348576-379-sashal@kernel.org>
+Subject: [PATCH 6.6 379/638] perf bpf: Clean up the generated/copied vmlinux.h
+Date: Sun, 24 Mar 2024 18:56:56 -0400
+Message-ID: <20240324230116.1348576-380-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,50 +69,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johan Hovold <johan+linaro@kernel.org>
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
 
-[ Upstream commit 0e7d29a39a546161ea3a49e8e282a43212d7ff68 ]
+[ Upstream commit ffd856537b95dd65facb4e0c78ca1cb92c2048ff ]
 
-The 'aer_stats' directory never made it into the sixth and final revision
-of the series adding the sysfs AER attributes.
+When building perf with BPF skels we either copy the minimalistic
+tools/perf/util/bpf_skel/vmlinux/vmlinux.h or use bpftool to generate a
+vmlinux from BTF, storing the result in $(SKEL_OUT)/vmlinux.h.
 
-Link: https://lore.kernel.org/r/20240202131635.11405-2-johan+linaro@kernel.org
-Link: https://lore.kernel.org/lkml/20180621184822.GB14136@bhelgaas-glaptop.roam.corp.google.com/
-Fixes: 12833017e581 ("PCI/AER: Add sysfs attributes for rootport cumulative stats")
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+We need to remove that when doing a 'make -C tools/perf clean', fix it.
+
+Fixes: b7a2d774c9c5a9a3 ("perf build: Add ability to build with a generated vmlinux.h")
+Reviewed-by: Ian Rogers <irogers@google.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Yang Jihong <yangjihong1@huawei.com>
+Cc: bpf@vger.kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/r/Zbz89KK5wHfZ82jv@x1
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/perf/Makefile.perf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats b/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
-index 860db53037a58..24087d5fd417a 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
-+++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
-@@ -100,19 +100,19 @@ collectors) that are AER capable. These indicate the number of error messages as
- device, so these counters include them and are thus cumulative of all the error
- messages on the PCI hierarchy originating at that root port.
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 86569f230e60d..b97224a8a65b9 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -1127,7 +1127,7 @@ bpf-skel:
+ endif # BUILD_BPF_SKEL
  
--What:		/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_cor
-+What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_cor
- Date:		July 2018
- KernelVersion: 4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
- Description:	Total number of ERR_COR messages reported to rootport.
+ bpf-skel-clean:
+-	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS)
++	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS) $(SKEL_OUT)/vmlinux.h
  
--What:	    /sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_fatal
-+What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_fatal
- Date:		July 2018
- KernelVersion: 4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
- Description:	Total number of ERR_FATAL messages reported to rootport.
- 
--What:	    /sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_nonfatal
-+What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_nonfatal
- Date:		July 2018
- KernelVersion: 4.19.0
- Contact:	linux-pci@vger.kernel.org, rajatja@google.com
+ clean:: $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBSYMBOL)-clean $(LIBPERF)-clean fixdep-clean python-clean bpf-skel-clean tests-coresight-targets-clean
+ 	$(call QUIET_CLEAN, core-objs)  $(RM) $(LIBPERF_A) $(OUTPUT)perf-archive $(OUTPUT)perf-iostat $(LANG_BINDINGS)
 -- 
 2.43.0
 
