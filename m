@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3382889407
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:44:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 006D4888EBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:27:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C56A294BE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:44:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31CA91C297E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448121EAD48;
-	Mon, 25 Mar 2024 02:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764F5137C47;
+	Sun, 24 Mar 2024 23:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZF2IC2yU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m3scmx6h"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDEF81EAD2C;
-	Sun, 24 Mar 2024 22:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21AC61EAD4E;
+	Sun, 24 Mar 2024 22:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320917; cv=none; b=WG9Iqa8DaHGNHo/LD+EKGZ8ebn9aztQdTtMxWpP7Xh4bwKqmgTkka83w8LnfoOIadUaTiGWnSoIZWeMrSJDUkLej2ydNiApYmfxjjw8UjactO71WRvRLkrjVzozhMASurgAKOB16eFw8KhGjDWztjxe31ojH6z6XnHipPI/g/Ak=
+	t=1711320920; cv=none; b=Nl09935TqS5dr6/QQoTn7SrokVHz+y4W8IDDz9/mK+HvlXXmRdER6A3tW8kIsBHa64Umt8x1cKfbPO6MQoYUdcjRjnyJZKxl3AEdV7+Oi7VRgVEGEWSN+mK+hsuco6qpqWEljEVG+3FZ/Y73ZkfEaRC1P24RfC3T4lSMvsP54/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320917; c=relaxed/simple;
-	bh=jyV1TX5A+7iSqnqRUOa2/4OWZvNsUm6BFOPjlQ3iHEY=;
+	s=arc-20240116; t=1711320920; c=relaxed/simple;
+	bh=olyr5yeonu8HwmXycVe5CPG9wjhCKW83dLTgGlAk8GQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l3BM0RkeRWNRjt3ZpszQa5LRSK2J9yqYjI3tvlND00uL/y65BQeqN1MT84P/ujLsDG4z6nNeYJPDUgq9/D1RQHDYNgyaw1JuSfnJfDCxlQ10h4VNcD58Tzb5wBb6+FbjuToUI8KYi3wHNHBONhMpnQox31avUQZ7hZ0Y63oRR30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZF2IC2yU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1EB4C433F1;
-	Sun, 24 Mar 2024 22:55:16 +0000 (UTC)
+	 MIME-Version:Content-Type; b=e/9wchCXOY9SMvwd8/mGp9XlDCHu1DYROBhYqACgD7+tvMWCksaTWSfNDgbai6QxizjFqURjtm4SKc8qNM3KlPCyfD9NcK8Gu0o6QIB/5gcCdKBN2GXgtvPVkG/pabuREJAayiZvGZTNNx20FYcg93VrjSYo/e2CQ/OAgZG47Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m3scmx6h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2EB7C433C7;
+	Sun, 24 Mar 2024 22:55:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320917;
-	bh=jyV1TX5A+7iSqnqRUOa2/4OWZvNsUm6BFOPjlQ3iHEY=;
+	s=k20201202; t=1711320918;
+	bh=olyr5yeonu8HwmXycVe5CPG9wjhCKW83dLTgGlAk8GQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZF2IC2yUYt6nFY3NcZD9qSD2+4PSz8Wrexxr060DZes4thml7u05lReM1Z5d/GD3Z
-	 o3gLPDwisGl3YSFe4j0PRHkRnKxkv6TQUg9rt4J8JykPr1fMJlTuf1T39gXqRQk5SW
-	 t+22/ntB0lxDIR9pJ4md0jlh8+XKX6cloj939ppiPvV/CgA0vM6h8xS8HFZJqcp6mM
-	 HQL5Zeu6+N+KaI+YhrU2fsnjBitzt2erjvATLNKoEFzKc0V6LtuxkciBBa+rZnjf+Z
-	 jGr74uBn5mX4GxcFL+l4I1dDcAx2RNDl/gw2YpbRHDH1aDQQ0zOgz/U8QUEAgBSdLH
-	 oDWkDB2L0wMpQ==
+	b=m3scmx6hlLnpKqH1c3cPrXFc622GYnl24wn41hxObhFR83TQRbawoongglDrqTvLC
+	 k5byREhC1cFHRN8YG7VLIhyqM45zYJDPm1RMj/TMbZW8e503fuYn5KfQcP9gcqPZXf
+	 OmJPBShaNNwJh4Us1AwoH7mBfbwHYfyWkc9k2+aKQic53NxwOlYyoehXMeyj30ljqK
+	 ykqbbelXIjylTBEC5wkSXLxRPO57S56TPmtCaLoPJiQlwV9rwRbR5f+dJ4t9mG2Rsy
+	 zciO1U32442ufcjGQA5h1L5b5t5EUkjHv7K2rBmoyTdkzX4WJ8H8RPnm2acaxqyixt
+	 tsuT9a95QDUUg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nicholas Piggin <npiggin@gmail.com>,
-	Geoff Levand <geoff@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
+Cc: Mads Bligaard Nielsen <bli@bang-olufsen.dk>,
+	=?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+	Robert Foss <rfoss@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 481/713] powerpc/ps3: Fix lv1 hcall assembly for ELFv2 calling convention
-Date: Sun, 24 Mar 2024 18:43:27 -0400
-Message-ID: <20240324224720.1345309-482-sashal@kernel.org>
+Subject: [PATCH 6.7 482/713] drm/bridge: adv7511: fix crash on irq during probe
+Date: Sun, 24 Mar 2024 18:43:28 -0400
+Message-ID: <20240324224720.1345309-483-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -59,101 +59,83 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Mads Bligaard Nielsen <bli@bang-olufsen.dk>
 
-[ Upstream commit 6735fef14c1f089ae43fd6d43add818b7ff682a8 ]
+[ Upstream commit aeedaee5ef5468caf59e2bb1265c2116e0c9a924 ]
 
-Stack-passed parameters begin at a different offset in the caller's
-stack in the ELFv2 ABI.
+Moved IRQ registration down to end of adv7511_probe().
 
-Reported-by: Geoff Levand <geoff@infradead.org>
-Fixes: 8c5fa3b5c4df ("powerpc/64: Make ELFv2 the default for big-endian builds")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Tested-by: Geoff Levand <geoff@infradead.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20231227072405.63751-2-npiggin@gmail.com
+If an IRQ already is pending during adv7511_probe
+(before adv7511_cec_init) then cec_received_msg_ts
+could crash using uninitialized data:
+
+    Unable to handle kernel read from unreadable memory at virtual address 00000000000003d5
+    Internal error: Oops: 96000004 [#1] PREEMPT_RT SMP
+    Call trace:
+     cec_received_msg_ts+0x48/0x990 [cec]
+     adv7511_cec_irq_process+0x1cc/0x308 [adv7511]
+     adv7511_irq_process+0xd8/0x120 [adv7511]
+     adv7511_irq_handler+0x1c/0x30 [adv7511]
+     irq_thread_fn+0x30/0xa0
+     irq_thread+0x14c/0x238
+     kthread+0x190/0x1a8
+
+Fixes: 3b1b975003e4 ("drm: adv7511/33: add HDMI CEC support")
+Signed-off-by: Mads Bligaard Nielsen <bli@bang-olufsen.dk>
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+Reviewed-by: Robert Foss <rfoss@kernel.org>
+Signed-off-by: Robert Foss <rfoss@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240219-adv7511-cec-irq-crash-fix-v2-1-245e53c4b96f@bang-olufsen.dk
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/ppc_asm.h  |  6 ++++--
- arch/powerpc/platforms/ps3/hvcall.S | 18 +++++++++---------
- 2 files changed, 13 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 22 ++++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/ppc_asm.h b/arch/powerpc/include/asm/ppc_asm.h
-index e7792aa135105..041ee25955205 100644
---- a/arch/powerpc/include/asm/ppc_asm.h
-+++ b/arch/powerpc/include/asm/ppc_asm.h
-@@ -201,11 +201,13 @@
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+index 8be235144f6d9..6fc292393c674 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+@@ -1277,17 +1277,6 @@ static int adv7511_probe(struct i2c_client *i2c)
  
- #ifdef CONFIG_PPC64_ELF_ABI_V2
- #define STK_GOT		24
--#define __STK_PARAM(i)	(32 + ((i)-3)*8)
-+#define STK_PARAM_AREA	32
- #else
- #define STK_GOT		40
--#define __STK_PARAM(i)	(48 + ((i)-3)*8)
-+#define STK_PARAM_AREA	48
- #endif
+ 	INIT_WORK(&adv7511->hpd_work, adv7511_hpd_work);
+ 
+-	if (i2c->irq) {
+-		init_waitqueue_head(&adv7511->wq);
+-
+-		ret = devm_request_threaded_irq(dev, i2c->irq, NULL,
+-						adv7511_irq_handler,
+-						IRQF_ONESHOT, dev_name(dev),
+-						adv7511);
+-		if (ret)
+-			goto err_unregister_cec;
+-	}
+-
+ 	adv7511_power_off(adv7511);
+ 
+ 	i2c_set_clientdata(i2c, adv7511);
+@@ -1311,6 +1300,17 @@ static int adv7511_probe(struct i2c_client *i2c)
+ 
+ 	adv7511_audio_init(dev, adv7511);
+ 
++	if (i2c->irq) {
++		init_waitqueue_head(&adv7511->wq);
 +
-+#define __STK_PARAM(i)	(STK_PARAM_AREA + ((i)-3)*8)
- #define STK_PARAM(i)	__STK_PARAM(__REG_##i)
- 
- #ifdef CONFIG_PPC64_ELF_ABI_V2
-diff --git a/arch/powerpc/platforms/ps3/hvcall.S b/arch/powerpc/platforms/ps3/hvcall.S
-index 509e30ad01bb4..59ea569debf47 100644
---- a/arch/powerpc/platforms/ps3/hvcall.S
-+++ b/arch/powerpc/platforms/ps3/hvcall.S
-@@ -714,7 +714,7 @@ _GLOBAL(_##API_NAME)				\
- 	std	r4, 0(r11);			\
- 	ld	r11, -16(r1);			\
- 	std	r5, 0(r11);			\
--	ld	r11, 48+8*8(r1);		\
-+	ld	r11, STK_PARAM_AREA+8*8(r1);	\
- 	std	r6, 0(r11);			\
- 						\
- 	ld	r0, 16(r1);			\
-@@ -746,22 +746,22 @@ _GLOBAL(_##API_NAME)				\
- 	mflr	r0;				\
- 	std	r0, 16(r1);			\
- 						\
--	std	r10, 48+8*7(r1);		\
-+	std	r10, STK_PARAM_AREA+8*7(r1);	\
- 						\
- 	li	r11, API_NUMBER;		\
- 	lv1call;				\
- 						\
--	ld	r11, 48+8*7(r1);		\
-+	ld	r11, STK_PARAM_AREA+8*7(r1);	\
- 	std	r4, 0(r11);			\
--	ld	r11, 48+8*8(r1);		\
-+	ld	r11, STK_PARAM_AREA+8*8(r1);	\
- 	std	r5, 0(r11);			\
--	ld	r11, 48+8*9(r1);		\
-+	ld	r11, STK_PARAM_AREA+8*9(r1);	\
- 	std	r6, 0(r11);			\
--	ld	r11, 48+8*10(r1);		\
-+	ld	r11, STK_PARAM_AREA+8*10(r1);	\
- 	std	r7, 0(r11);			\
--	ld	r11, 48+8*11(r1);		\
-+	ld	r11, STK_PARAM_AREA+8*11(r1);	\
- 	std	r8, 0(r11);			\
--	ld	r11, 48+8*12(r1);		\
-+	ld	r11, STK_PARAM_AREA+8*12(r1);	\
- 	std	r9, 0(r11);			\
- 						\
- 	ld	r0, 16(r1);			\
-@@ -777,7 +777,7 @@ _GLOBAL(_##API_NAME)				\
- 	li      r11, API_NUMBER;		\
- 	lv1call;				\
- 						\
--	ld	r11, 48+8*8(r1);		\
-+	ld	r11, STK_PARAM_AREA+8*8(r1);	\
- 	std	r4, 0(r11);			\
- 						\
- 	ld	r0, 16(r1);			\
++		ret = devm_request_threaded_irq(dev, i2c->irq, NULL,
++						adv7511_irq_handler,
++						IRQF_ONESHOT, dev_name(dev),
++						adv7511);
++		if (ret)
++			goto err_unregister_audio;
++	}
++
+ 	if (adv7511->info->has_dsi) {
+ 		ret = adv7533_attach_dsi(adv7511);
+ 		if (ret)
 -- 
 2.43.0
 
