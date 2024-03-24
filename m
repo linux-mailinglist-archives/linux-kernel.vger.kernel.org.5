@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C00B68887E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:13:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82488887EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A0A328FFCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:13:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24E3B1C26E81
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838DD1FB081;
-	Sun, 24 Mar 2024 23:15:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182801FA813;
+	Sun, 24 Mar 2024 23:15:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a7c1aSj6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZpLgeBV7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6AA1FA83B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017281E586C;
 	Sun, 24 Mar 2024 23:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321291; cv=none; b=GO2ZUH7iY9I78S/jP3xA7Ur6IxgPLPwCC13ZWpzniS0JBPSxhx0XeFbsQYDA90bCbAo5t3cZhRZqSlxM2j0ZmVLgOL6qkp7Hzoy6FgXIhbbN94e3/ZPt/4kn/j11DDuWrEjdwndIG0FYPXGTYccVGOviljsQSn7l6XlkeZzcmdw=
+	t=1711321293; cv=none; b=Azxrilzk9dDyF2VpM8uDd+Jx1sEyHsCIKr7d7AwDz0o0daCMGTGAUDIs3kPg+EfbLV3U2VoTNg7Li8yvlxZBYc6N1HOvFVvX1GDltP6PHtWv55dYnuJfnQIaI+NuEXEdhVUe0IrB91TMoMEtU6/+4NmbOkzsIom98ux3zwjamqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321291; c=relaxed/simple;
-	bh=nFdvnctb3HwjwC3YYHCe4RQV74wIoxZXlt0S3wnnHOQ=;
+	s=arc-20240116; t=1711321293; c=relaxed/simple;
+	bh=TVn0K55l25BpswqOak4H/Qan8tlImkF4R9suQP0gmms=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hpPgc5ccCxoeD7Myz9p152XM1z9HpjR9/svV7JW52RWtzq5Less74KpRiDo3Qw/G4QVMBr8HaQPn5p1WJwJmy9EVK25UCMUp5eYPr25IyvkxRzT77yVSi9JFz5d3Ld6+I46yDEIaBJ6ln1i6yvKppZXce5k4Ugd+WOu+DUGlPzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a7c1aSj6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E18BC433F1;
-	Sun, 24 Mar 2024 23:01:30 +0000 (UTC)
+	 MIME-Version:Content-Type; b=f4jh55vJaKlZXIDQtncL3rI7MQ0G1oLXnFZ26D24mV0FWfWKBHs2KM3GERQ91EgjNMPgKQjyh5SzDoyQLSbjF/Ev9ubQFxXZXKs0GJm+GD3F4mgNgXuAHAxMYHdjK/5XGpZS73b3f2FsnaUom54qeZcmDbAtfnigrj7OFP7UIWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZpLgeBV7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40858C43394;
+	Sun, 24 Mar 2024 23:01:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711321291;
-	bh=nFdvnctb3HwjwC3YYHCe4RQV74wIoxZXlt0S3wnnHOQ=;
+	bh=TVn0K55l25BpswqOak4H/Qan8tlImkF4R9suQP0gmms=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=a7c1aSj6gHqD3EX0j5SyAAAgt8YiYb4QPLdtOyp1zif9KdXqsEvte/VvO5uEEop9d
-	 Dzyzp4efMQ47YPthjFwwLGSlLtlLrv7AnUQfA3iSDCJmFv8xANqBMxowB4YcBFKuOg
-	 Qo8WsCFQfa/WZWIbzvvtHLALvNXzB96DICpIdFTgtKY+6jdcSV9JkraLmCmmJgbS88
-	 vgQBrxyoJ+9bMssKFTwox80Za4Or1oFtE7mVTrWGOxbAOIBvvndkLGMToPvqHrFMjc
-	 61ujfc8G8fGc1TgntKYPX590aaoodyYEQIv4zkU7LP/gJi4DlzhEbsGJYXNR3lKIxr
-	 FNw4w5xZjMp5Q==
+	b=ZpLgeBV7lVZ1KQtjAhehndqzOYKHt0Ws6WuQsS7SJGICHD7z9lLVnjwi4w2KesKbR
+	 PzLlbp1iVBqDmDHleIusnMQuLI8Hw3QHHfrQ+p0mt9b0VC0HKbzfjWsXMHgXWbJ7ZU
+	 mNrONmbkIJdnQ1J3frNCL98M9vSnOxdbSo7wFq0nMG+Jt48hgfBe/Ath1XVXqem9Uz
+	 LqetNvJXTRIsEnWrNAzbH6T84mEiJl2Szc+3ycsTvk/OGeodLXtukJDO0vErpw6YA6
+	 U6S6V4V4HUnOnXw3ImcH7YOlLiEtvZ9nXk5xT2t+dhdp9yVqr7SvrlTzhWglB0n24h
+	 AbV36ng+Ko7gg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
+Cc: =?UTF-8?q?Attila=20T=C5=91k=C3=A9s?= <attitokes@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 013/638] regmap: kunit: Ensure that changed bytes are actually different
-Date: Sun, 24 Mar 2024 18:50:50 -0400
-Message-ID: <20240324230116.1348576-14-sashal@kernel.org>
+Subject: [PATCH 6.6 014/638] ASoC: amd: yc: Fix non-functional mic on Lenovo 82UU
+Date: Sun, 24 Mar 2024 18:50:51 -0400
+Message-ID: <20240324230116.1348576-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -58,148 +58,44 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mark Brown <broonie@kernel.org>
+From: Attila Tőkés <attitokes@gmail.com>
 
-[ Upstream commit 2f0dbb24f78a333433a2b875c0b76bf55c119cd4 ]
+[ Upstream commit f7fe85b229bc30cb5dc95b4e9015a601c9e3a8cd ]
 
-During the cache sync test we verify that values we expect to have been
-written only to the cache do not appear in the hardware. This works most
-of the time but since we randomly generate both the original and new values
-there is a low probability that these values may actually be the same.
-Wrap get_random_bytes() to ensure that the values are different, there
-are other tests which should have similar verification that we actually
-changed something.
+Like many other models, the Lenovo 82UU (Yoga Slim 7 Pro 14ARH7)
+needs a quirk entry for the internal microphone to function.
 
-While we're at it refactor the test to use three changed values rather
-than attempting to use one of them twice, that just complicates checking
-that our new values are actually new.
-
-We use random generation to try to avoid data dependencies in the tests.
-
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Link: https://msgid.link/r/20240211-regmap-kunit-random-change-v3-1-e387a9ea4468@kernel.org
+Signed-off-by: Attila Tőkés <attitokes@gmail.com>
+Link: https://msgid.link/r/20240210193638.144028-1-attitokes@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/regmap/regmap-kunit.c | 54 +++++++++++++++++++++---------
- 1 file changed, 38 insertions(+), 16 deletions(-)
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
-index 264d29b3fced0..5f1e914646cd9 100644
---- a/drivers/base/regmap/regmap-kunit.c
-+++ b/drivers/base/regmap/regmap-kunit.c
-@@ -9,6 +9,23 @@
- 
- #define BLOCK_TEST_SIZE 12
- 
-+static void get_changed_bytes(void *orig, void *new, size_t size)
-+{
-+	char *o = orig;
-+	char *n = new;
-+	int i;
-+
-+	get_random_bytes(new, size);
-+
-+	/*
-+	 * This could be nicer and more efficient but we shouldn't
-+	 * super care.
-+	 */
-+	for (i = 0; i < size; i++)
-+		while (n[i] == o[i])
-+			get_random_bytes(&n[i], 1);
-+}
-+
- static const struct regmap_config test_regmap_config = {
- 	.max_register = BLOCK_TEST_SIZE,
- 	.reg_stride = 1,
-@@ -1131,7 +1148,7 @@ static void raw_sync(struct kunit *test)
- 	struct regmap *map;
- 	struct regmap_config config;
- 	struct regmap_ram_data *data;
--	u16 val[2];
-+	u16 val[3];
- 	u16 *hw_buf;
- 	unsigned int rval;
- 	int i;
-@@ -1145,17 +1162,13 @@ static void raw_sync(struct kunit *test)
- 
- 	hw_buf = (u16 *)data->vals;
- 
--	get_random_bytes(&val, sizeof(val));
-+	get_changed_bytes(&hw_buf[2], &val[0], sizeof(val));
- 
- 	/* Do a regular write and a raw write in cache only mode */
- 	regcache_cache_only(map, true);
--	KUNIT_EXPECT_EQ(test, 0, regmap_raw_write(map, 2, val, sizeof(val)));
--	if (config.val_format_endian == REGMAP_ENDIAN_BIG)
--		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 6,
--						      be16_to_cpu(val[0])));
--	else
--		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 6,
--						      le16_to_cpu(val[0])));
-+	KUNIT_EXPECT_EQ(test, 0, regmap_raw_write(map, 2, val,
-+						  sizeof(u16) * 2));
-+	KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 4, val[2]));
- 
- 	/* We should read back the new values, and defaults for the rest */
- 	for (i = 0; i < config.max_register + 1; i++) {
-@@ -1164,24 +1177,34 @@ static void raw_sync(struct kunit *test)
- 		switch (i) {
- 		case 2:
- 		case 3:
--		case 6:
- 			if (config.val_format_endian == REGMAP_ENDIAN_BIG) {
- 				KUNIT_EXPECT_EQ(test, rval,
--						be16_to_cpu(val[i % 2]));
-+						be16_to_cpu(val[i - 2]));
- 			} else {
- 				KUNIT_EXPECT_EQ(test, rval,
--						le16_to_cpu(val[i % 2]));
-+						le16_to_cpu(val[i - 2]));
- 			}
- 			break;
-+		case 4:
-+			KUNIT_EXPECT_EQ(test, rval, val[i - 2]);
-+			break;
- 		default:
- 			KUNIT_EXPECT_EQ(test, config.reg_defaults[i].def, rval);
- 			break;
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 80ad60d485ea0..cc231185d72c3 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -234,6 +234,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "82UG"),
  		}
- 	}
-+
-+	/*
-+	 * The value written via _write() was translated by the core,
-+	 * translate the original copy for comparison purposes.
-+	 */
-+	if (config.val_format_endian == REGMAP_ENDIAN_BIG)
-+		val[2] = cpu_to_be16(val[2]);
-+	else
-+		val[2] = cpu_to_le16(val[2]);
- 	
- 	/* The values should not appear in the "hardware" */
--	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[2], val, sizeof(val));
--	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[6], val, sizeof(u16));
-+	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[2], &val[0], sizeof(val));
- 
- 	for (i = 0; i < config.max_register + 1; i++)
- 		data->written[i] = false;
-@@ -1192,8 +1215,7 @@ static void raw_sync(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
- 
- 	/* The values should now appear in the "hardware" */
--	KUNIT_EXPECT_MEMEQ(test, &hw_buf[2], val, sizeof(val));
--	KUNIT_EXPECT_MEMEQ(test, &hw_buf[6], val, sizeof(u16));
-+	KUNIT_EXPECT_MEMEQ(test, &hw_buf[2], &val[0], sizeof(val));
- 
- 	regmap_exit(map);
- }
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "82UU"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
 2.43.0
 
