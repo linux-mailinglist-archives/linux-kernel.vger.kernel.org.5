@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D2BA88836E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:10:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64183888370
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E9CE1C23826
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:10:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187A61F22906
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1DB195989;
-	Sun, 24 Mar 2024 22:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62091959AA;
+	Sun, 24 Mar 2024 22:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScBMFXWs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ix5E9tan"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E767313CEF4;
-	Sun, 24 Mar 2024 22:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE79A19598E;
+	Sun, 24 Mar 2024 22:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320128; cv=none; b=WvgS2SQHDJPMChHrpOQYYv7ZZx60v7Yb+e9hgsc2wLnoFs9/6lDiYBQwtCZ5JrgwB2aQ/9BfwOM7EKYBm0HmGdr9JvHdSwfkYpqNF9Lw0Ptxx1EbY85kBUNbEOfHu6htTFfvlNBIEjHpe4pSGrFRo56/hosV81U6z9Ky6KdK7Wo=
+	t=1711320128; cv=none; b=YPXboBy1w9Nk4hqvZLTYUI/FXJjRDc3eSfK0WKFnREAi2hDhFkdnbxY7hQwIDQDVQkBeZzAH/e6auOzjkH3ysK4BHQzthmxGnNKB9rs0b1gpzApukZ/890pcNmvJRLC/yssEAb+Wbzcsv5zCAWgDYY8+Ul8KCHyajq3u5s2ZN8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320128; c=relaxed/simple;
-	bh=ak/b9uoeh3ms/KH68WZNnqgKysDllLzWDpMRf02gXZ4=;
+	bh=zDxp0X0bOAEC9vzerTtKQqP0T4Kf9x+qIRrMhp7/2mE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=utG0cBJGR1MVo5mvhLTTMgpHjbpqEKfiGl/H7sr7AJMlWUf18gchmZ2dmdNYyvb5ULmYjsi9IFFuuS5zWxwquY8Gwh0Ju5zmm9mPE0riibOabH2nAKQcE1X3wnEXAD1dZBIFZhvfPDGnBmUCTwqjFbOFScR2ZBSA5WbKUqYTUMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScBMFXWs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30AFCC433F1;
+	 MIME-Version; b=iB56AzCl2JxzWj4mwWjjcZzuPxMD49wh1/JtQwncVdzMC1CIaqi4oKrlkKksG13J9uBrE0IkaHWJ4aHDSqbLDw6vopJrrCQWKmoVWdImC3pt0UAN+XiTcz75zgWHlE6JmNMiR1WE5mEICpkklNE6kuW+USuFFOIpyD+8jzj6UYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ix5E9tan; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16161C433A6;
 	Sun, 24 Mar 2024 22:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320127;
-	bh=ak/b9uoeh3ms/KH68WZNnqgKysDllLzWDpMRf02gXZ4=;
+	s=k20201202; t=1711320128;
+	bh=zDxp0X0bOAEC9vzerTtKQqP0T4Kf9x+qIRrMhp7/2mE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ScBMFXWs/iHS37IB27h7UkXZbwOjB78WAB8svmU7IAWqfF34FtCAVu0xEL96rnc11
-	 RJYPj5wSPAJAfE5HXE+QY0Whd90bECz6+vvJx2SFX2AyKlOmxLONzKKYTxTaJTN8gv
-	 wfL1TzEDluaJrtKS1r7l3OnKPkYcZBLSCrKVj74TH8yvER9WZmU5rGt5+VYQdLlk1V
-	 YkLqI9njUTPiX/J8B/2z5wj3wCEmqxHKvQzre6SBeR/WGBoePN8xMukR5uDbVnHyQ/
-	 HVRLypnBVO5oKXXdYBzLK3FYivkMRHyRWKMXENVYPXH9weEG4W3TN9ATiMbUPH+K7N
-	 jmyLxrKXerZ1A==
+	b=Ix5E9tanjI+Iy6IQp8JsA1aLPgiXfZ8kittpALUKoYLFStAhIodOo0RaJzVUP4HpV
+	 Q4g7fRG+vYaFyAlOqJemPJX3SYjRT2aCuXriLdSrNIXKnd3OVLZuKkaHlCAeKN7IU8
+	 EGJpujQkmmp0HNG0G5WDJ+ZO/0mXHfLyKC0MazogIWLbOtnY9ihOfH3NHThs/lABMW
+	 kOvuY06UuUPYxsug0dsicNwuJuYAfbrZIbQUwOllyLVfjlP+4/4aub7nMG34huc5VW
+	 1f/WO/WJHl+wjXWOhj3syeD8JpFRHbYBk8S3cFZo10Ui8gA/rSouTfz4yxu/Qz6hrL
+	 tRBHnfk6mEvEA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jernej Skrabec <jernej.skrabec@gmail.com>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 435/715] media: sun8i-di: Fix power on/off sequences
-Date: Sun, 24 Mar 2024 18:30:14 -0400
-Message-ID: <20240324223455.1342824-436-sashal@kernel.org>
+Subject: [PATCH 6.8 436/715] media: sun8i-di: Fix chroma difference threshold
+Date: Sun, 24 Mar 2024 18:30:15 -0400
+Message-ID: <20240324223455.1342824-437-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,84 +64,32 @@ Content-Transfer-Encoding: 8bit
 
 From: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-[ Upstream commit cff104e33bad38f4b2c8d58816a7accfaa2879f9 ]
+[ Upstream commit 856525e8db272b0ce6d9c6e6c2eeb97892b485a6 ]
 
-According to user manual, reset line should be deasserted before clocks
-are enabled. Also fix power down sequence to be reverse of that.
+While there is no good explanation what this value does, vendor driver
+uses value 31 for it. Align driver with it.
 
 Fixes: a4260ea49547 ("media: sun4i: Add H3 deinterlace driver")
 Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../media/platform/sunxi/sun8i-di/sun8i-di.c  | 25 ++++++++++---------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ drivers/media/platform/sunxi/sun8i-di/sun8i-di.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-index 26f6964996f2c..5d58a5e781371 100644
+index 5d58a5e781371..a1c35a2b68ed9 100644
 --- a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
 +++ b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-@@ -929,11 +929,18 @@ static int deinterlace_runtime_resume(struct device *device)
- 		return ret;
- 	}
+@@ -304,7 +304,7 @@ static void deinterlace_init(struct deinterlace_dev *dev)
  
-+	ret = reset_control_deassert(dev->rstc);
-+	if (ret) {
-+		dev_err(dev->dev, "Failed to apply reset\n");
-+
-+		goto err_exclusive_rate;
-+	}
-+
- 	ret = clk_prepare_enable(dev->bus_clk);
- 	if (ret) {
- 		dev_err(dev->dev, "Failed to enable bus clock\n");
+ 	deinterlace_clr_set_bits(dev, DEINTERLACE_CHROMA_DIFF,
+ 				 DEINTERLACE_CHROMA_DIFF_TH_MSK,
+-				 DEINTERLACE_CHROMA_DIFF_TH(5));
++				 DEINTERLACE_CHROMA_DIFF_TH(31));
+ }
  
--		goto err_exclusive_rate;
-+		goto err_rst;
- 	}
- 
- 	ret = clk_prepare_enable(dev->mod_clk);
-@@ -950,23 +957,16 @@ static int deinterlace_runtime_resume(struct device *device)
- 		goto err_mod_clk;
- 	}
- 
--	ret = reset_control_deassert(dev->rstc);
--	if (ret) {
--		dev_err(dev->dev, "Failed to apply reset\n");
--
--		goto err_ram_clk;
--	}
--
- 	deinterlace_init(dev);
- 
- 	return 0;
- 
--err_ram_clk:
--	clk_disable_unprepare(dev->ram_clk);
- err_mod_clk:
- 	clk_disable_unprepare(dev->mod_clk);
- err_bus_clk:
- 	clk_disable_unprepare(dev->bus_clk);
-+err_rst:
-+	reset_control_assert(dev->rstc);
- err_exclusive_rate:
- 	clk_rate_exclusive_put(dev->mod_clk);
- 
-@@ -977,11 +977,12 @@ static int deinterlace_runtime_suspend(struct device *device)
- {
- 	struct deinterlace_dev *dev = dev_get_drvdata(device);
- 
--	reset_control_assert(dev->rstc);
--
- 	clk_disable_unprepare(dev->ram_clk);
- 	clk_disable_unprepare(dev->mod_clk);
- 	clk_disable_unprepare(dev->bus_clk);
-+
-+	reset_control_assert(dev->rstc);
-+
- 	clk_rate_exclusive_put(dev->mod_clk);
- 
- 	return 0;
+ static inline struct deinterlace_ctx *deinterlace_file2ctx(struct file *file)
 -- 
 2.43.0
 
