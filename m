@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-112923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E11C0887FC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:44:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39E46887FCA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:44:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E7921C211EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:44:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E885F281338
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C995C6FB80;
-	Sun, 24 Mar 2024 22:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7E571741;
+	Sun, 24 Mar 2024 22:35:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KXXBF3x8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WOObiQcm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030C070CCC;
-	Sun, 24 Mar 2024 22:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8C87172B;
+	Sun, 24 Mar 2024 22:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319736; cv=none; b=HqrL6UFwK1gGNfGWi071k5QqtBm1P2EcHwApx/gh8AfwBjWHY6vBucCpjpG45VCcm+NOLo7N2q1Id0+70ADxhXv5Cy9k7PjCk44AUO3REcSGVNI3ebZvOTh32N+fB9G1L4ezI3snvA36o0E+UjF36kYvM32Dz4H4Ygxa38NBcuE=
+	t=1711319736; cv=none; b=mq/QQbTSNi3l3qx9gfCLY1Jvo5b6BBX67NkriKIOVDXpbHEnNEbqh42vUwUf+/wFftnyAmtk5dUCr8W68vR9V2sgfj71piswRHaY2vjH6wsBtmp9lElBxMi12fVchdm7JBYrSayygG7g3aPZTjSlvFcknFSyYEcY/pyy3UuM8+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711319736; c=relaxed/simple;
-	bh=PNAdyC6rPjgFUpItYxARC4mcur4TAXXTn2fULoUfsmI=;
+	bh=/nkVN1yDcY9oxD5onlKvnyC7QCORQPVPAOK6wS4gzPo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D884303GDDhi4wO5xBxcPfcBHVJC8DzzBlNT4LlvkIv49aXPDdEF0XqAOPx5UsbhaiKVopdN0H6ASNWcY3p3rP4OvS/bimFC7JwMVcgyiDPrhKeLrLUn1zwPKRsRpLQoysDGnS9dw/E1fz/N8Gby2ckqV9qxgzB7MjOwgsnhFEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KXXBF3x8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAB3FC433A6;
-	Sun, 24 Mar 2024 22:35:34 +0000 (UTC)
+	 MIME-Version; b=SUA5WK31LiWq+LUQ0Ab1EMaB1xVWqJzLRnLdmHn/cjvwdbQJqiya4uL9fxPFJTaWZ28YafIy8iSeaABS8KSjZOdqe39nm32mZ8iEDgJ9raEIJk8sH41KzJKqFnPgzHZnE5Bht37qRg+/ihfPZ4/y9B4042jR8aLG0wnG6M8Qre4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WOObiQcm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDFCBC433B1;
+	Sun, 24 Mar 2024 22:35:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319735;
-	bh=PNAdyC6rPjgFUpItYxARC4mcur4TAXXTn2fULoUfsmI=;
+	s=k20201202; t=1711319736;
+	bh=/nkVN1yDcY9oxD5onlKvnyC7QCORQPVPAOK6wS4gzPo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KXXBF3x8+lX0gcVct+ULqfaN3Q27Ey7Jq8fTfwYZbAJKk7PnAxLHkWT3/suh2xPpj
-	 LICfB7jfmpMudNw0yOpGPKtW/BDga99Bw2WTR1jIYgEMqPzh3+IS8PHDJLbBySiIqo
-	 qZxdjyP4yWn+i9SWeWKw56LBV7JrP6UFiSQcDmD2zFCNRPkqtHNsFiCifV3nilmV8c
-	 95H0QddqBMwvdQB/YRBRiMwAKbIw3WKIBF89IowCazuOqSBh40g/x0i25LgarlXxRe
-	 sxugY6oC+TU7U5VBGU4tqaMlLDUEhPnTzCVjzFdSdgiiVTmnwVpl7zASUG2pYX+Fl0
-	 ZZ2R8tpxK7PBA==
+	b=WOObiQcmyDGUjSGy2t2kUUS7ijOvFPqJBANL6jDyOrd+g7ZGqt4EWU2zzw4pwrVaz
+	 jcpjXdtJ9N/s6R5ts4fd/rW1EzD4xrL+CTktTF54nCZjjjl25zRJFjAiA7eoX4thn+
+	 O3/3Fk6QxEuOEBtYM1HG6BJH0je1HXfy7whFWBkkqfjtplb8OmwtfCxtSoERXSwvhE
+	 c2KmW3F6aERn0Wk2YNxD0+PSU5rq4zd59AmNr8gcAQy6rIN/AYhpl7V1OwN1o7HN3q
+	 L7BNIxMaWBvA3wY9nAK2qc7z0Br+8x3pjddqwqXh+l6gSJ24a2CRZyYQF5C6b7rS6w
+	 TNCgpoCVsaOFA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Yu Kuai <yukuai3@huawei.com>,
+	Paul Luse <paul.e.luse@linux.intel.com>,
 	Song Liu <song@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 036/715] md/raid1: factor out helpers to add rdev to conf
-Date: Sun, 24 Mar 2024 18:23:35 -0400
-Message-ID: <20240324223455.1342824-37-sashal@kernel.org>
+Subject: [PATCH 6.8 037/715] md/raid1: record nonrot rdevs while adding/removing rdevs to conf
+Date: Sun, 24 Mar 2024 18:23:36 -0400
+Message-ID: <20240324223455.1342824-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,167 +65,135 @@ Content-Transfer-Encoding: 8bit
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 969d6589abcb369d53d84ec7c9c37f4b23ec1ad9 ]
+[ Upstream commit 2c27d09d3a76b33629d2e681bf8b774f776ade7f ]
 
-There are no functional changes, just make code cleaner and prepare to
-record disk non-rotational information while adding and removing rdev to
-conf
+For raid1, each read will iterate all the rdevs from conf and check if
+any rdev is non-rotational, then choose rdev with minimal IO inflight
+if so, or rdev with closest distance otherwise.
 
+Disk nonrot info can be changed through sysfs entry:
+
+/sys/block/[disk_name]/queue/rotational
+
+However, consider that this should only be used for testing, and user
+really shouldn't do this in real life. Record the number of non-rotational
+disks in conf, to avoid checking each rdev in IO fast path and simplify
+read_balance() a little bit.
+
+Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
+Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240229095714.926789-3-yukuai1@huaweicloud.com
+Link: https://lore.kernel.org/r/20240229095714.926789-4-yukuai1@huaweicloud.com
 Stable-dep-of: 257ac239ffcf ("md/raid1: fix choose next idle in read_balance()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/raid1.c | 85 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 53 insertions(+), 32 deletions(-)
+ drivers/md/md.h    |  1 +
+ drivers/md/raid1.c | 17 ++++++++++-------
+ drivers/md/raid1.h |  1 +
+ 3 files changed, 12 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/md/md.h b/drivers/md/md.h
+index 8d881cc597992..27d187ca6258a 100644
+--- a/drivers/md/md.h
++++ b/drivers/md/md.h
+@@ -207,6 +207,7 @@ enum flag_bits {
+ 				 * check if there is collision between raid1
+ 				 * serial bios.
+ 				 */
++	Nonrot,			/* non-rotational device (SSD) */
+ };
+ 
+ static inline int is_badblock(struct md_rdev *rdev, sector_t s, int sectors,
 diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 286f8b16c7bde..a560824e038b4 100644
+index a560824e038b4..456d745eb93b3 100644
 --- a/drivers/md/raid1.c
 +++ b/drivers/md/raid1.c
-@@ -1760,6 +1760,44 @@ static int raid1_spare_active(struct mddev *mddev)
- 	return count;
- }
+@@ -602,7 +602,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	int sectors;
+ 	int best_good_sectors;
+ 	int best_disk, best_dist_disk, best_pending_disk;
+-	int has_nonrot_disk;
+ 	int disk;
+ 	sector_t best_dist;
+ 	unsigned int min_pending;
+@@ -623,7 +622,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	best_pending_disk = -1;
+ 	min_pending = UINT_MAX;
+ 	best_good_sectors = 0;
+-	has_nonrot_disk = 0;
+ 	choose_next_idle = 0;
+ 	clear_bit(R1BIO_FailFast, &r1_bio->state);
  
-+static bool raid1_add_conf(struct r1conf *conf, struct md_rdev *rdev, int disk,
-+			   bool replacement)
-+{
-+	struct raid1_info *info = conf->mirrors + disk;
-+
-+	if (replacement)
-+		info += conf->raid_disks;
-+
-+	if (info->rdev)
-+		return false;
-+
-+	rdev->raid_disk = disk;
-+	info->head_position = 0;
-+	info->seq_start = MaxSector;
-+	WRITE_ONCE(info->rdev, rdev);
-+
-+	return true;
-+}
-+
-+static bool raid1_remove_conf(struct r1conf *conf, int disk)
-+{
-+	struct raid1_info *info = conf->mirrors + disk;
-+	struct md_rdev *rdev = info->rdev;
-+
-+	if (!rdev || test_bit(In_sync, &rdev->flags) ||
-+	    atomic_read(&rdev->nr_pending))
-+		return false;
-+
-+	/* Only remove non-faulty devices if recovery is not possible. */
-+	if (!test_bit(Faulty, &rdev->flags) &&
-+	    rdev->mddev->recovery_disabled != conf->recovery_disabled &&
-+	    rdev->mddev->degraded < conf->raid_disks)
-+		return false;
-+
-+	WRITE_ONCE(info->rdev, NULL);
-+	return true;
-+}
-+
- static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
- {
- 	struct r1conf *conf = mddev->private;
-@@ -1795,15 +1833,13 @@ static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
- 				disk_stack_limits(mddev->gendisk, rdev->bdev,
- 						  rdev->data_offset << 9);
+@@ -640,7 +638,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 		sector_t first_bad;
+ 		int bad_sectors;
+ 		unsigned int pending;
+-		bool nonrot;
  
--			p->head_position = 0;
--			rdev->raid_disk = mirror;
-+			raid1_add_conf(conf, rdev, mirror, false);
- 			err = 0;
- 			/* As all devices are equivalent, we don't need a full recovery
- 			 * if this was recently any drive of the array
+ 		rdev = conf->mirrors[disk].rdev;
+ 		if (r1_bio->bios[disk] == IO_BLOCKED
+@@ -706,8 +703,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 			/* At least two disks to choose from so failfast is OK */
+ 			set_bit(R1BIO_FailFast, &r1_bio->state);
+ 
+-		nonrot = bdev_nonrot(rdev->bdev);
+-		has_nonrot_disk |= nonrot;
+ 		pending = atomic_read(&rdev->nr_pending);
+ 		dist = abs(this_sector - conf->mirrors[disk].head_position);
+ 		if (choose_first) {
+@@ -734,7 +729,7 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 			 * small, but not a big deal since when the second disk
+ 			 * starts IO, the first disk is likely still busy.
  			 */
- 			if (rdev->saved_raid_disk < 0)
- 				conf->fullsync = 1;
--			WRITE_ONCE(p->rdev, rdev);
- 			break;
- 		}
- 		if (test_bit(WantReplacement, &p->rdev->flags) &&
-@@ -1813,13 +1849,11 @@ static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
+-			if (nonrot && opt_iosize > 0 &&
++			if (test_bit(Nonrot, &rdev->flags) && opt_iosize > 0 &&
+ 			    mirror->seq_start != MaxSector &&
+ 			    mirror->next_seq_sect > opt_iosize &&
+ 			    mirror->next_seq_sect - opt_iosize >=
+@@ -766,7 +761,7 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	 * mixed ratation/non-rotational disks depending on workload.
+ 	 */
+ 	if (best_disk == -1) {
+-		if (has_nonrot_disk || min_pending == 0)
++		if (READ_ONCE(conf->nonrot_disks) || min_pending == 0)
+ 			best_disk = best_pending_disk;
+ 		else
+ 			best_disk = best_dist_disk;
+@@ -1771,6 +1766,11 @@ static bool raid1_add_conf(struct r1conf *conf, struct md_rdev *rdev, int disk,
+ 	if (info->rdev)
+ 		return false;
  
- 	if (err && repl_slot >= 0) {
- 		/* Add this device as a replacement */
--		p = conf->mirrors + repl_slot;
- 		clear_bit(In_sync, &rdev->flags);
- 		set_bit(Replacement, &rdev->flags);
--		rdev->raid_disk = repl_slot;
-+		raid1_add_conf(conf, rdev, repl_slot, true);
- 		err = 0;
- 		conf->fullsync = 1;
--		WRITE_ONCE(p[conf->raid_disks].rdev, rdev);
- 	}
- 
- 	print_conf(conf);
-@@ -1836,27 +1870,20 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
- 	if (unlikely(number >= conf->raid_disks))
- 		goto abort;
- 
--	if (rdev != p->rdev)
--		p = conf->mirrors + conf->raid_disks + number;
-+	if (rdev != p->rdev) {
-+		number += conf->raid_disks;
-+		p = conf->mirrors + number;
++	if (bdev_nonrot(rdev->bdev)) {
++		set_bit(Nonrot, &rdev->flags);
++		WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks + 1);
 +	}
- 
- 	print_conf(conf);
- 	if (rdev == p->rdev) {
--		if (test_bit(In_sync, &rdev->flags) ||
--		    atomic_read(&rdev->nr_pending)) {
--			err = -EBUSY;
--			goto abort;
--		}
--		/* Only remove non-faulty devices if recovery
--		 * is not possible.
--		 */
--		if (!test_bit(Faulty, &rdev->flags) &&
--		    mddev->recovery_disabled != conf->recovery_disabled &&
--		    mddev->degraded < conf->raid_disks) {
-+		if (!raid1_remove_conf(conf, number)) {
- 			err = -EBUSY;
- 			goto abort;
- 		}
--		WRITE_ONCE(p->rdev, NULL);
--		if (conf->mirrors[conf->raid_disks + number].rdev) {
 +
-+		if (number < conf->raid_disks &&
-+		    conf->mirrors[conf->raid_disks + number].rdev) {
- 			/* We just removed a device that is being replaced.
- 			 * Move down the replacement.  We drain all IO before
- 			 * doing this to avoid confusion.
-@@ -3006,23 +3033,17 @@ static struct r1conf *setup_conf(struct mddev *mddev)
+ 	rdev->raid_disk = disk;
+ 	info->head_position = 0;
+ 	info->seq_start = MaxSector;
+@@ -1794,6 +1794,9 @@ static bool raid1_remove_conf(struct r1conf *conf, int disk)
+ 	    rdev->mddev->degraded < conf->raid_disks)
+ 		return false;
  
- 	err = -EINVAL;
- 	spin_lock_init(&conf->device_lock);
-+	conf->raid_disks = mddev->raid_disks;
- 	rdev_for_each(rdev, mddev) {
- 		int disk_idx = rdev->raid_disk;
--		if (disk_idx >= mddev->raid_disks
--		    || disk_idx < 0)
++	if (test_and_clear_bit(Nonrot, &rdev->flags))
++		WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks - 1);
 +
-+		if (disk_idx >= conf->raid_disks || disk_idx < 0)
- 			continue;
--		if (test_bit(Replacement, &rdev->flags))
--			disk = conf->mirrors + mddev->raid_disks + disk_idx;
--		else
--			disk = conf->mirrors + disk_idx;
+ 	WRITE_ONCE(info->rdev, NULL);
+ 	return true;
+ }
+diff --git a/drivers/md/raid1.h b/drivers/md/raid1.h
+index 14d4211a123a8..5300cbaa58a41 100644
+--- a/drivers/md/raid1.h
++++ b/drivers/md/raid1.h
+@@ -71,6 +71,7 @@ struct r1conf {
+ 						 * allow for replacements.
+ 						 */
+ 	int			raid_disks;
++	int			nonrot_disks;
  
--		if (disk->rdev)
-+		if (!raid1_add_conf(conf, rdev, disk_idx,
-+				    test_bit(Replacement, &rdev->flags)))
- 			goto abort;
--		disk->rdev = rdev;
--		disk->head_position = 0;
--		disk->seq_start = MaxSector;
- 	}
--	conf->raid_disks = mddev->raid_disks;
- 	conf->mddev = mddev;
- 	INIT_LIST_HEAD(&conf->retry_list);
- 	INIT_LIST_HEAD(&conf->bio_end_io_list);
+ 	spinlock_t		device_lock;
+ 
 -- 
 2.43.0
 
