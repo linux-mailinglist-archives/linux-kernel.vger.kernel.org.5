@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-113042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 126E1888102
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:10:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD24888104
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44D20280F3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:10:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFEF91C21203
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51EB3140394;
-	Sun, 24 Mar 2024 22:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124A2140E47;
+	Sun, 24 Mar 2024 22:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e0ISpO2X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AsXU1zkO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F4C482EE;
-	Sun, 24 Mar 2024 22:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B90D14038E;
+	Sun, 24 Mar 2024 22:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319852; cv=none; b=bNfx8G3GuOLNPjxLSUaMC7JT1n5Cb3It5qn0RPMiQa1Y6HvIGhGMiCqL/l46dOhCC9rNmt+uXe1UjNwudiZzrmX08B1DmFYCS4OFBXZ4cNMzIN5i6zxNbPfl2ay0/nknsB1I+cdw2SvcCn6Vi+drRQkLu6PCDwjM5rMs/Iz9njc=
+	t=1711319853; cv=none; b=oQYG0ufl1VI1td758zJ0CQSbJmVzoRS2WQZOvP2HaYPXB162DTutl7Jl5DQU0HEHqST/H7Iv3gLkQtRCGfVetcwFOfW5AB03FNPxEC6QCCATNceTJbFWC0fSEu7uozLAu3335VWSC/rJ+10acryGU97lZZuwvueCdXlPYVZTbzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319852; c=relaxed/simple;
-	bh=E2EDG6e7E1HOrhGCm5ge/wOxqVvEJkTrwXvXG19O9sE=;
+	s=arc-20240116; t=1711319853; c=relaxed/simple;
+	bh=NRCKEtw5FEZEB1cAvNhMBod8zjMtinZJoPRlHF708sg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gUh+SXpMdkTYXWZhGyXg/k4kYtuPdFFBz5SQBR/6JOSimiOg5+9fLic048EhdLm1/zSFuUBx97V7r5dW9W6E/b/2LuXk495/gLPbh1r5BU9bC44Z138H4H43Sc4htbrfOC+c8cXH1i/IiirT57QWOaDKn1RFx4Iddm7EcD9Hiyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e0ISpO2X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69225C433C7;
-	Sun, 24 Mar 2024 22:37:31 +0000 (UTC)
+	 MIME-Version; b=NamHCsZKGWEsTD1rBBZHAHtoxIakdC+HIo7qqjSOeHws98mGP+wrzdjM7KNtPWip6TH29KOkIrAwFRlL5NRymGlSl2ovRv/AEJcd4RXNl0u4701EwwYAgMV6Yh7hI6LerOu6PQxGT6W5PqIM/okHC2UhZVno0mRfObr6a2nPnl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AsXU1zkO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66A9CC43390;
+	Sun, 24 Mar 2024 22:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319852;
-	bh=E2EDG6e7E1HOrhGCm5ge/wOxqVvEJkTrwXvXG19O9sE=;
+	s=k20201202; t=1711319853;
+	bh=NRCKEtw5FEZEB1cAvNhMBod8zjMtinZJoPRlHF708sg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e0ISpO2Xq03ZxKKGyR2wyFi4NVu6/a4WAGBdRMs9OB37HSoaR86qVV+9ovVXrn2WO
-	 x4W1nwDftULrjYnPD09OVixJqO/0n3k2tH2/zhhL+JJ876Crza+hKJ6TgHdBgo7u7F
-	 K60G8Rf9JoTlPYG6URPod/lekcJ1c7IsVWCOmhSpZpBRRCSWTjJ61AOA3YigPCBqwH
-	 39R7sagSE3qQaSBTFxQewITgTirTiDGb4ftJCaYBBWvHfg+UNotCFSEE0igY4QPa0Q
-	 +iRwXbSfJ5TIUHpcLVJ3wMUzy6NwmutanrMgRuSfa2K/G/R+3wRr1wvspzlAPH2prg
-	 XLC3QluVUtLSg==
+	b=AsXU1zkOiZqtdwEoQFc+aLCyjljuWSE9+pMWBKc++GpYWlHLY/wTSe8tQCkZdtGhZ
+	 yZEql1H2ie2uvLDaMo0DM00m7iVdb2J//FUbDQKh6UvzzgV7E9WCqJsJ6e7agI0mGm
+	 eDSre5zuPPU/6mQXKLLlfJtZkrMvd8/AOpPbVyBQY07Hg217oLZ7evEK53n12avxUh
+	 pE0v/Ph4M7WDo9FXJ6VxF/JaOphaag5nPeN3mi+owlNsrrkjU9IRYIEwIS2AHQj3VP
+	 8obHNG94oZHKnTigR4H72NTJUUvjfLOyvb0AzI7CApra2Fx8krGmWb/GLOuOFM6B9n
+	 tKGIQ0cFXlCQA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 155/715] arm64: dts: qcom: qcm2290: declare VLS CLAMP register for USB3 PHY
-Date: Sun, 24 Mar 2024 18:25:34 -0400
-Message-ID: <20240324223455.1342824-156-sashal@kernel.org>
+Subject: [PATCH 6.8 156/715] arm64: dts: qcom: sm6115: declare VLS CLAMP register for USB3 PHY
+Date: Sun, 24 Mar 2024 18:25:35 -0400
+Message-ID: <20240324223455.1342824-157-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,39 +65,39 @@ Content-Transfer-Encoding: 8bit
 
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit acb94d67f5a23dbb2e0021b6c30609ed05d7d6a5 ]
+[ Upstream commit 95d739ed962c9aaa17d77b739606dbdf31879f6e ]
 
-The USB3 PHY on the QCM2290 platform doesn't have built-in
+The USB3 PHY on the SM6115 platform doesn't have built-in
 PCS_MISC_CLAMP_ENABLE register. Instead clamping is handled separately
 via the register in the TCSR space. Declare corresponding register.
 
-Fixes: 0c55f6229bc3 ("arm64: dts: qcom: qcm2290: Add USB3 PHY")
+Fixes: 9dd5f6dba729 ("arm64: dts: qcom: sm6115: Add USB SS qmp phy node")
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20240117-usbc-phy-vls-clamp-v2-5-a950c223f10f@linaro.org
+Link: https://lore.kernel.org/r/20240117-usbc-phy-vls-clamp-v2-6-a950c223f10f@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/qcm2290.dtsi | 7 +++++++
+ arch/arm64/boot/dts/qcom/sm6115.dtsi | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm2290.dtsi b/arch/arm64/boot/dts/qcom/qcm2290.dtsi
-index 0911fb08ed632..89beac833d435 100644
---- a/arch/arm64/boot/dts/qcom/qcm2290.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcm2290.dtsi
-@@ -442,6 +442,11 @@ tcsr_mutex: hwlock@340000 {
+diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+index f9849b8befbf2..b627c473ffa54 100644
+--- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
+@@ -614,6 +614,11 @@ tcsr_mutex: hwlock@340000 {
  			#hwlock-cells = <1>;
  		};
  
 +		tcsr_regs: syscon@3c0000 {
-+			compatible = "qcom,qcm2290-tcsr", "syscon";
++			compatible = "qcom,sm6115-tcsr", "syscon";
 +			reg = <0x0 0x003c0000 0x0 0x40000>;
 +		};
 +
  		tlmm: pinctrl@500000 {
- 			compatible = "qcom,qcm2290-tlmm";
- 			reg = <0x0 0x00500000 0x0 0x300000>;
-@@ -690,6 +695,8 @@ usb_qmpphy: phy@1615000 {
+ 			compatible = "qcom,sm6115-tlmm";
+ 			reg = <0x0 0x00500000 0x0 0x400000>,
+@@ -879,6 +884,8 @@ usb_qmpphy: phy@1615000 {
  
  			#phy-cells = <0>;
  
