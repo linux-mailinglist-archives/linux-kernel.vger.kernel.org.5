@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D9068882AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:55:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E69A48882B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 373982876A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:55:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 863421F223E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E20E187E75;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45A1187E8B;
 	Sun, 24 Mar 2024 22:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B6r9Cwkx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I37O5HjN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555791869EA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED5E187E6D;
 	Sun, 24 Mar 2024 22:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320055; cv=none; b=CvJjZbZu19BcZRONtDiVeep0tjlbM7vUeXPPMmI1e9PkmP+NH5uCXkHRS+Y4bePh8S3xHeCvzNy8J2Km5oLgmWCiRDPmz55QiuPqZcGnyDyhnK8ryAzjCAhUvyZ2Ng50hFln3QnFKKIe7Uv0J5XsEUu8ybF7+0rjy7OHWnOk0ps=
+	t=1711320056; cv=none; b=cs7NK6rbOEJ8RBq6hQjGIQMIMWd3jfl1HTZH0bdt2BRido9PZCiuyHdkEjyYuigLwurmE7cAqcMW/THZcObFJN8dyAYuUp0CI5Rjb5GnmalrM/6QKw7X/mUIzxXn/iC9gn72RalsN5gnc/dtfk1LYDo5JFx23tEoPAMRpW12ZDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320055; c=relaxed/simple;
-	bh=XU6/lcTte6ODVuLBpwKzor3DKbsMmnjicRqB6FkGGXY=;
+	s=arc-20240116; t=1711320056; c=relaxed/simple;
+	bh=0nT6+dnLat5eW46YYuat1egqogoXhgAReEx7/an+0Fs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZWUTCyJKnH5dp+S4kGK59adUqNY+0JoPnfG8yL5JoDBM8c+wvjc+Gn5Bsg2psiYAZW3df3DYLD9uKiklaEEvwcBw7OhvwMDyihfXnetXcf4Uy2Kb+X2lOiCgahns958gRPzQk+BUl6sr/W3q04lcQIjGDcuGkOA3P2AbKaZbk4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B6r9Cwkx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49854C43394;
-	Sun, 24 Mar 2024 22:40:54 +0000 (UTC)
+	 MIME-Version; b=GsELGmXW5My+29kC0igKiG4LoieDZfb5AmeE1+rT6KVJ4ZFo/35ze5gtT0ykydZO8imcR6C8ELuXp1cOSqegbgusl7Zq5fzaNjUe5VScRc/FZhcPY+O3BhnbXiBSgQaHonHLfH0Aoc34pP1/3vVsIp2CpNVOFmW2iTA92Lc4S/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I37O5HjN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C437C433F1;
+	Sun, 24 Mar 2024 22:40:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320054;
-	bh=XU6/lcTte6ODVuLBpwKzor3DKbsMmnjicRqB6FkGGXY=;
+	s=k20201202; t=1711320055;
+	bh=0nT6+dnLat5eW46YYuat1egqogoXhgAReEx7/an+0Fs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B6r9CwkxvmnjqNMK2IKdoAF0itjo8EfOMEDKHJHqgeAQKSfHTLzaj25pTYXJlF1II
-	 sN00Gy/dTNJyCs0UkXe7xHYPtfkWwwxAZ6znwfPC6pPPWBeeXbmSzBS2IriDeRXcY0
-	 wxNtiQ/eCXTx6y4NEy+bmLQvWbp72Vvtwa7VNZjWfIYCfZ9+YUOcwjXBYaEynccznb
-	 30G1NsOwbvFJL1NTVeoHBqtIbMbC6p7/ErAVKdHh6mijj49vhHLoXkeJdr63c7rx94
-	 lykm3HHjdItQov5SQE57p/RJ+Ofyk5UhC9AJo4GSbHIQgywolnkexNXhs6stt2oMrr
-	 idTKElqlVyUiQ==
+	b=I37O5HjNSeBQCM6xRflx/AMKd3ey5UzG5frdF1nhAVmOqzl6BxyrKMTEMnuJ4dfPG
+	 fSk2C6su7Z5FLEwIN/g/vbB6cPLTi97EAqb2JbvaVHX2H90fK3caqxGFXTqoImJ/+U
+	 iNieJKMCiGUql7TXxAOL15lNoVyWsKVT4cXQKilL9pdI4DOexqVwEam9w8+Vp88X+l
+	 I7WGR+8lVnSH25/r4r10ZZPYY6+psuJb5s+b7ZGYYqTHDd9iNKrhTX49m5IH7x8dV+
+	 nH4YdhrpGlxhrdH+TJiTB92EFeKDvYt9rUbM1rE6viDlonhzEeVwr0vEwR3tGRzkEO
+	 YJ5G0ZFmYsCLQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hsin-Yi Wang <hsinyi@chromium.org>,
-	Douglas Anderson <dianders@chromium.org>,
+Cc: Zhipeng Lu <alexious@zju.edu.cn>,
+	Qiang Yu <yuq825@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 364/715] drm/panel-edp: use put_sync in unprepare
-Date: Sun, 24 Mar 2024 18:29:03 -0400
-Message-ID: <20240324223455.1342824-365-sashal@kernel.org>
+Subject: [PATCH 6.8 365/715] drm/lima: fix a memleak in lima_heap_alloc
+Date: Sun, 24 Mar 2024 18:29:04 -0400
+Message-ID: <20240324223455.1342824-366-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,42 +62,70 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hsin-Yi Wang <hsinyi@chromium.org>
+From: Zhipeng Lu <alexious@zju.edu.cn>
 
-[ Upstream commit 49ddab089611ae5ddd0201ddbbf633da75bfcc25 ]
+[ Upstream commit 04ae3eb470e52a3c41babe85ff8cee195e4dcbea ]
 
-Some edp panel requires T10 (Delay from end of valid video data transmitted
-by the Source device to power-off) less than 500ms. Using autosuspend with
-delay set as 1000 violates this requirement.
+When lima_vm_map_bo fails, the resources need to be deallocated, or
+there will be memleaks.
 
-Use put_sync_suspend in unprepare to meet the spec. For other cases (such
-as getting EDID), it still uses autosuspend.
-
-Suggested-by: Douglas Anderson <dianders@chromium.org>
-Fixes: 3235b0f20a0a ("drm/panel: panel-simple: Use runtime pm to avoid excessive unprepare / prepare")
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231220221418.2610185-1-hsinyi@chromium.org
+Fixes: 6aebc51d7aef ("drm/lima: support heap buffer creation")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Signed-off-by: Qiang Yu <yuq825@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240117071328.3811480-1-alexious@zju.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-edp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/lima/lima_gem.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index a0b6f69b916f9..e5e3f0b9ca61d 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -413,8 +413,7 @@ static int panel_edp_unprepare(struct drm_panel *panel)
- 	if (!p->prepared)
- 		return 0;
+diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+index 4f9736e5f929b..7ea244d876ca6 100644
+--- a/drivers/gpu/drm/lima/lima_gem.c
++++ b/drivers/gpu/drm/lima/lima_gem.c
+@@ -75,29 +75,34 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+ 	} else {
+ 		bo->base.sgt = kmalloc(sizeof(*bo->base.sgt), GFP_KERNEL);
+ 		if (!bo->base.sgt) {
+-			sg_free_table(&sgt);
+-			return -ENOMEM;
++			ret = -ENOMEM;
++			goto err_out0;
+ 		}
+ 	}
  
--	pm_runtime_mark_last_busy(panel->dev);
--	ret = pm_runtime_put_autosuspend(panel->dev);
-+	ret = pm_runtime_put_sync_suspend(panel->dev);
- 	if (ret < 0)
- 		return ret;
- 	p->prepared = false;
+ 	ret = dma_map_sgtable(dev, &sgt, DMA_BIDIRECTIONAL, 0);
+-	if (ret) {
+-		sg_free_table(&sgt);
+-		kfree(bo->base.sgt);
+-		bo->base.sgt = NULL;
+-		return ret;
+-	}
++	if (ret)
++		goto err_out1;
+ 
+ 	*bo->base.sgt = sgt;
+ 
+ 	if (vm) {
+ 		ret = lima_vm_map_bo(vm, bo, old_size >> PAGE_SHIFT);
+ 		if (ret)
+-			return ret;
++			goto err_out2;
+ 	}
+ 
+ 	bo->heap_size = new_size;
+ 	return 0;
++
++err_out2:
++	dma_unmap_sgtable(dev, &sgt, DMA_BIDIRECTIONAL, 0);
++err_out1:
++	kfree(bo->base.sgt);
++	bo->base.sgt = NULL;
++err_out0:
++	sg_free_table(&sgt);
++	return ret;
+ }
+ 
+ int lima_gem_create_handle(struct drm_device *dev, struct drm_file *file,
 -- 
 2.43.0
 
