@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48AA8888DE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:01:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CD12888DF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:02:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F10151F2CCAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:01:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7919A1C29FD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27489313E84;
-	Mon, 25 Mar 2024 01:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46071CD9C4;
+	Mon, 25 Mar 2024 01:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hrp3nPLh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T7YFjK9+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C78B297D75;
-	Sun, 24 Mar 2024 23:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F26297D69;
+	Sun, 24 Mar 2024 23:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324348; cv=none; b=SOCJROqUeY5tjGWqHxmeQT8xzslAEs1ceI5Nl3rnS/hVEL0b1z//fQT88B7A3x57+0wWUNCOcr7/0ZS8+0EsVLne4cFlZB4Gi64FA+MAGulx7BC97LnCz4wtIOCu+WZUbqCpe4ltJyS64l15zSsD2qlPbWCKwPJTzuTUDxW7EhA=
+	t=1711324349; cv=none; b=IccQt1DEp49CGgeAKSq8GenwqZYjFs/moW6Pw0cNyvh8E6UJfSmcnv3+vibmmcgmAqXjrItTVlY7L2t8n26wHlJWoS15FZQhE2j+dEhGTWxe4Z+UE1763NzTMyXME9LuIbRa8RfzsnuUtyMGBe6m46QHRg1/agKPR+PHpnugpNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324348; c=relaxed/simple;
-	bh=9hDq8AwRgk19coc1GvtDBGMHiiNIlyP+muhMLhLjsIc=;
+	s=arc-20240116; t=1711324349; c=relaxed/simple;
+	bh=yQrRVRg9O4wS1MvntWCu1dUYsbk/+L2CI1WsSOqBqYg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uXfqpYKDn43Dua673WNA7A3P/6ZvwILL4MI8wAvZXHIQHLeSh9uWahJKAkNB7VoVmc4CMOt2uWRoq+Xjas3gTOiMtox/G/sU7zFwZehX040KBAGs0logiy+LcG3FpyUvfG1e2UCJg2rR53hclcBKhZR6uXJ+XY8rylSTOuMZ97o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hrp3nPLh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CBAAC433F1;
-	Sun, 24 Mar 2024 23:52:26 +0000 (UTC)
+	 MIME-Version; b=qqYB5ETyzp7YQ30fPON3mTZtnVfxfawGAdYCbAe0CQmG91bgg6olcD+y19cNplJOCTbVBSp5lcfjRBA5LYzY14AWR0QjKrE2AJCkR4nru1RCdcxd0r/CubVFIe0v3INhHw5U5tcUu1hzgwmHLXY1n2Rvu3FrTU4qv+oU09KOCO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T7YFjK9+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0A1FC43390;
+	Sun, 24 Mar 2024 23:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324347;
-	bh=9hDq8AwRgk19coc1GvtDBGMHiiNIlyP+muhMLhLjsIc=;
+	s=k20201202; t=1711324348;
+	bh=yQrRVRg9O4wS1MvntWCu1dUYsbk/+L2CI1WsSOqBqYg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Hrp3nPLhqhnQ0olVmyjJjz0Yiwb6hiJX5Pl2CyP/4NM/0eiCl0KEi79BAt0Tsx+gC
-	 d9DzDMUfKNG3bmcA0gXxDlmW9vuPcBwHlb4t/9gLa8K6V9s5xH2PF1sO2XlFlRYHg8
-	 /TIXpH14Yv4BfCYP9uhO16G1oqUFtMb2JQF/ND5u/ho8uPBRkte/qWbB0kd+ysbhc+
-	 RXQGexBBZ0I/CNyt99EiE7HR4gwpIU4tuowVEKedqu0vzr6Uk9jO+hI20sN3xB3p5J
-	 teBFKJIw3UfcIAZZfXLtVApugzaaLASqkoG/ytPzO4wlOfjhENQDXLaXGMUXRasabp
-	 PhfD+FdL7+PrA==
+	b=T7YFjK9+aMLu2WcDK6j1P0OicW2/MJ6kGnuUdtvJiN52nDciVSczrTOj96eHYw6Z/
+	 MKHzie6vjMBZ0mxfpKbPxr4HwxBYm22jfEDsfxxAgIYPNfjs9a9OuDmCtevH0ezwBI
+	 eD56GLhl10EBCrWyUf1Tr3r8+f0S05Vr4+qaKudFCS2bMhgYqdt67WMmh+JEKpEvDD
+	 91DuAKF3G7mMqDJ2jpQD2Ej5hqaYs3lPrH9ksDFaPcpRjQrDbSLFzFy6D3/W/ew3Or
+	 F6aYuT1K1X+kqnmhVqiFi2UVMcpXO6jub50urGnKjygvbObSBIwT1oFmO0s1D/FCUJ
+	 AAuqQ+eul5N0g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Justin Stitt <justinstitt@google.com>,
+Cc: Zhipeng Lu <alexious@zju.edu.cn>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 116/148] media: dvb-frontends: avoid stack overflow warnings with clang
-Date: Sun, 24 Mar 2024 19:49:40 -0400
-Message-ID: <20240324235012.1356413-117-sashal@kernel.org>
+Subject: [PATCH 4.19 117/148] media: go7007: fix a memleak in go7007_load_encoder
+Date: Sun, 24 Mar 2024 19:49:41 -0400
+Message-ID: <20240324235012.1356413-118-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,93 +62,55 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Zhipeng Lu <alexious@zju.edu.cn>
 
-[ Upstream commit 7a4cf27d1f0538f779bf31b8c99eda394e277119 ]
+[ Upstream commit b9b683844b01d171a72b9c0419a2d760d946ee12 ]
 
-A previous patch worked around a KASAN issue in stv0367, now a similar
-problem showed up with clang:
+In go7007_load_encoder, bounce(i.e. go->boot_fw), is allocated without
+a deallocation thereafter. After the following call chain:
 
-drivers/media/dvb-frontends/stv0367.c:1222:12: error: stack frame size (3624) exceeds limit (2048) in 'stv0367ter_set_frontend' [-Werror,-Wframe-larger-than]
- 1214 | static int stv0367ter_set_frontend(struct dvb_frontend *fe)
+saa7134_go7007_init
+  |-> go7007_boot_encoder
+        |-> go7007_load_encoder
+  |-> kfree(go)
 
-Rework the stv0367_writereg() function to be simpler and mark both
-register access functions as noinline_for_stack so the temporary
-i2c_msg structures do not get duplicated on the stack when KASAN_STACK
-is enabled.
+go is freed and thus bounce is leaked.
 
-Fixes: 3cd890dbe2a4 ("media: dvb-frontends: fix i2c access helpers for KASAN")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+Fixes: 95ef39403f89 ("[media] go7007: remember boot firmware")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-frontends/stv0367.c | 34 +++++++--------------------
- 1 file changed, 8 insertions(+), 26 deletions(-)
+ drivers/media/usb/go7007/go7007-driver.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/stv0367.c b/drivers/media/dvb-frontends/stv0367.c
-index 49f4472f09fa8..7a5b27de725e0 100644
---- a/drivers/media/dvb-frontends/stv0367.c
-+++ b/drivers/media/dvb-frontends/stv0367.c
-@@ -128,50 +128,32 @@ static const s32 stv0367cab_RF_LookUp2[RF_LOOKUP_TABLE2_SIZE][RF_LOOKUP_TABLE2_S
+diff --git a/drivers/media/usb/go7007/go7007-driver.c b/drivers/media/usb/go7007/go7007-driver.c
+index c7b5a3321cd74..15f78d3ce3bac 100644
+--- a/drivers/media/usb/go7007/go7007-driver.c
++++ b/drivers/media/usb/go7007/go7007-driver.c
+@@ -88,7 +88,7 @@ static int go7007_load_encoder(struct go7007 *go)
+ 	const struct firmware *fw_entry;
+ 	char fw_name[] = "go7007/go7007fw.bin";
+ 	void *bounce;
+-	int fw_len, rv = 0;
++	int fw_len;
+ 	u16 intr_val, intr_data;
+ 
+ 	if (go->boot_fw == NULL) {
+@@ -117,9 +117,11 @@ static int go7007_load_encoder(struct go7007 *go)
+ 	    go7007_read_interrupt(go, &intr_val, &intr_data) < 0 ||
+ 			(intr_val & ~0x1) != 0x5a5a) {
+ 		v4l2_err(go, "error transferring firmware\n");
+-		rv = -1;
++		kfree(go->boot_fw);
++		go->boot_fw = NULL;
++		return -1;
  	}
- };
- 
--static
--int stv0367_writeregs(struct stv0367_state *state, u16 reg, u8 *data, int len)
-+static noinline_for_stack
-+int stv0367_writereg(struct stv0367_state *state, u16 reg, u8 data)
- {
--	u8 buf[MAX_XFER_SIZE];
-+	u8 buf[3] = { MSB(reg), LSB(reg), data };
- 	struct i2c_msg msg = {
- 		.addr = state->config->demod_address,
- 		.flags = 0,
- 		.buf = buf,
--		.len = len + 2
-+		.len = 3,
- 	};
- 	int ret;
- 
--	if (2 + len > sizeof(buf)) {
--		printk(KERN_WARNING
--		       "%s: i2c wr reg=%04x: len=%d is too big!\n",
--		       KBUILD_MODNAME, reg, len);
--		return -EINVAL;
--	}
--
--
--	buf[0] = MSB(reg);
--	buf[1] = LSB(reg);
--	memcpy(buf + 2, data, len);
--
- 	if (i2cdebug)
- 		printk(KERN_DEBUG "%s: [%02x] %02x: %02x\n", __func__,
--			state->config->demod_address, reg, buf[2]);
-+			state->config->demod_address, reg, data);
- 
- 	ret = i2c_transfer(state->i2c, &msg, 1);
- 	if (ret != 1)
- 		printk(KERN_ERR "%s: i2c write error! ([%02x] %02x: %02x)\n",
--			__func__, state->config->demod_address, reg, buf[2]);
-+			__func__, state->config->demod_address, reg, data);
- 
- 	return (ret != 1) ? -EREMOTEIO : 0;
+-	return rv;
++	return 0;
  }
  
--static int stv0367_writereg(struct stv0367_state *state, u16 reg, u8 data)
--{
--	u8 tmp = data; /* see gcc.gnu.org/bugzilla/show_bug.cgi?id=81715 */
--
--	return stv0367_writeregs(state, reg, &tmp, 1);
--}
--
--static u8 stv0367_readreg(struct stv0367_state *state, u16 reg)
-+static noinline_for_stack
-+u8 stv0367_readreg(struct stv0367_state *state, u16 reg)
- {
- 	u8 b0[] = { 0, 0 };
- 	u8 b1[] = { 0 };
+ MODULE_FIRMWARE("go7007/go7007fw.bin");
 -- 
 2.43.0
 
