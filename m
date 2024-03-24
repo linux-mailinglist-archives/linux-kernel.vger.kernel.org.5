@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8EF0888D9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:53:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6E8889E31
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:04:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72FDF294A8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:53:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE7B1F3745F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998A030A54F;
-	Mon, 25 Mar 2024 01:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120A53D3220;
+	Mon, 25 Mar 2024 03:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BmWmZIZz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zk47uWqI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B2C292B86;
-	Sun, 24 Mar 2024 23:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DCE292B87;
+	Sun, 24 Mar 2024 23:50:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324254; cv=none; b=O3XcE13lXPQf7z9DEjaGc67VK72T7r3PCTf0wl7KPcc4QQut85AGeJE4unJXhQvbwXkPUPIYmeENrQftTdO1gqPwQlCBNpqmhs3ufqvB56jMwX++0p/dtRTdxUioNeGsjbaIIaOoiwBFumMZPCBZPoyC827vBTB5HyYFjmRpkRQ=
+	t=1711324254; cv=none; b=Y8KTpw2HWUaPRSG1s0zXV2VYz9Ffnx/Xr1KagHvN/+nnDojN2Z9qop8qMt1XgZu99RjJRD0WCLsZfo7m06JOhYceamFsyksV/1wmxZEsuyHpI7SSifDWxHjQdt4e0LEjD3aj+kKy4y5u3Mw78ycxBmknjoWw1iyKeJSIEpeCxJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324254; c=relaxed/simple;
-	bh=Cl2+9RAXpiG4edPW2c0wWsSig5huvF3UphIRctKOF5E=;
+	bh=7XJBJ3ssNqsZXuFbQT4PN2MmLcu/dCRwK9QCwYai6S0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qUh+WusRhrImDuY/nhXwXSY9UslSdmTa+YjGM1Yc7Q6eTY+n21AGDYyaj2bbM09DZCfrc31LS3IOvQY07k5f/NJ481SKxIEk2dtdZ+2Bgvs2Q0jOBXqNrKz72vTZvonCP7eXtVKUY8olqkskb2xkaX59htbtgJEj2ylhj7Ix/Sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BmWmZIZz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42A98C43390;
-	Sun, 24 Mar 2024 23:50:52 +0000 (UTC)
+	 MIME-Version; b=Fwm+sW+i20aRsYqZH4JM5NBSk9HMoxh2FH+SH7GpK8irP/B/L4FOOjBeV7yciczPDawccKCAelQUPzXPnnUI+cE348dK5ZjjWiD7LJjCJqfLQ8f6M29BG++INXBC+AtlLG75FwSxV/TdWUTz5Jp6HDXVxnE9I6kX03vu5yKcXQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zk47uWqI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE274C433C7;
+	Sun, 24 Mar 2024 23:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324253;
-	bh=Cl2+9RAXpiG4edPW2c0wWsSig5huvF3UphIRctKOF5E=;
+	s=k20201202; t=1711324254;
+	bh=7XJBJ3ssNqsZXuFbQT4PN2MmLcu/dCRwK9QCwYai6S0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BmWmZIZz35nu3yz0Mq27OXutBbpNdeIYyZedgFCCIlTTjjC8am/f7R5Gqv8yVdBm/
-	 3GguweXp0xSmQm33br4MvDajtpBx7Mt084dB9QY9eAb2v0Z30FJlVeLSzuXLoKIJX2
-	 tjC4woc6xxEsvzlWIkWKM3HFGTeyn1dyKsSxEAQxGXvE4sM+OcJ7gPQgVvKybosVpN
-	 lpGnPY4iaYVPz3+KSwDWmnJxk+XG6Sz05fWtqHXo7+qipojwHcMbH79QkDE5TprkXy
-	 tgbA8pTPkYH3CRbewi5J69ZzqVYU+rw2gi8TWvbrtMQ47X4htHXmk2W367wPHkSecj
-	 xklsPuitRvjeA==
+	b=Zk47uWqIy/e0+h7AGoXGOgQFosoM8Pbq2UlvCtLsNaTp1lt6BTSJf8M20CY9do7tU
+	 Gf61Ww/Ep4oPF6Bd8Hm3cVtKTdK+Lq6OOSNOMcykuxG6yM76WTSuDl7SMoBTjR4G/p
+	 jtGs4UfafjWja73+hv75L2fEWoYT8f87P/6bTMLoJwMX8hfVf6aXl5KM6y5YSw34NQ
+	 7FipvyiUTiSZjtMTS4X7oGpfdSRF1OmetCow4czCsRbEQxr9Xh4zg8c9Bvg/xTIGQs
+	 HmjJFPO4ykd8FxAKk5prjQ+4FgIx8DbjnQZnWzoi1eKJf3zqNXI+EcG7ljbWdK9uxi
+	 uJcMJubQf+/6g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Rahul Rameshbabu <sergeantsagara@protonmail.com>,
-	Julian Calaby <julian.calaby@gmail.com>,
+Cc: Jinjie Ruan <ruanjinjie@huawei.com>,
+	Russell King <linux@armlinux.org.uk>,
 	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 034/148] wifi: b43: Disable QoS for bcm4331
-Date: Sun, 24 Mar 2024 19:48:18 -0400
-Message-ID: <20240324235012.1356413-35-sashal@kernel.org>
+Subject: [PATCH 4.19 035/148] wifi: mwifiex: debugfs: Drop unnecessary error check for debugfs_create_dir()
+Date: Sun, 24 Mar 2024 19:48:19 -0400
+Message-ID: <20240324235012.1356413-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,66 +63,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Rahul Rameshbabu <sergeantsagara@protonmail.com>
+From: Jinjie Ruan <ruanjinjie@huawei.com>
 
-[ Upstream commit 09795bded2e725443fe4a4803cae2079cdaf7b26 ]
+[ Upstream commit 50180c7f8e3de7c2d87f619131776598fcb1478d ]
 
-bcm4331 seems to not function correctly with QoS support. This may be due
-to issues with currently available firmware or potentially a device
-specific issue.
+debugfs_create_dir() returns ERR_PTR and never return NULL.
 
-When queues that are not of the default "best effort" priority are
-selected, traffic appears to not transmit out of the hardware while no
-errors are returned. This behavior is present among all the other priority
-queues: video, voice, and background. While this can be worked around by
-setting a kernel parameter, the default behavior is problematic for most
-users and may be difficult to debug. This patch offers a working out-of-box
-experience for bcm4331 users.
+As Russell suggested, this patch removes the error checking for
+debugfs_create_dir(). This is because the DebugFS kernel API is developed
+in a way that the caller can safely ignore the errors that occur during
+the creation of DebugFS nodes. The debugfs APIs have a IS_ERR() judge in
+start_creating() which can handle it gracefully. So these checks are
+unnecessary.
 
-Log of the issue (using ssh low-priority traffic as an example):
-    ssh -T -vvvv git@github.com
-    OpenSSH_9.6p1, OpenSSL 3.0.12 24 Oct 2023
-    debug1: Reading configuration data /etc/ssh/ssh_config
-    debug2: checking match for 'host * exec "/nix/store/q1c2flcykgr4wwg5a6h450hxbk4ch589-bash-5.2-p15/bin/bash -c '/nix/store/c015armnkhr6v18za0rypm7sh1i8js8w-gnupg-2.4.1/bin/gpg-connect-agent --quiet updatestartuptty /bye >/dev/null 2>&1'"' host github.com originally github.com
-    debug3: /etc/ssh/ssh_config line 5: matched 'host "github.com"'
-    debug1: Executing command: '/nix/store/q1c2flcykgr4wwg5a6h450hxbk4ch589-bash-5.2-p15/bin/bash -c '/nix/store/c015armnkhr6v18za0rypm7sh1i8js8w-gnupg-2.4.1/bin/gpg-connect-agent --quiet updatestartuptty /bye >/dev/null 2>&1''
-    debug3: command returned status 0
-    debug3: /etc/ssh/ssh_config line 5: matched 'exec "/nix/store/q1c2flcykgr4wwg5a6h450hxbk4ch589-bash-5.2-p15/bin/bash -c '/nix/store/c015armnkhr6v18za0r"'
-    debug2: match found
-    debug1: /etc/ssh/ssh_config line 9: Applying options for *
-    debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/home/binary-eater/.ssh/known_hosts'
-    debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/home/binary-eater/.ssh/known_hosts2'
-    debug2: resolving "github.com" port 22
-    debug3: resolve_host: lookup github.com:22
-    debug3: channel_clear_timeouts: clearing
-    debug3: ssh_connect_direct: entering
-    debug1: Connecting to github.com [192.30.255.113] port 22.
-    debug3: set_sock_tos: set socket 3 IP_TOS 0x48
-
-Fixes: e6f5b934fba8 ("b43: Add QOS support")
-Signed-off-by: Rahul Rameshbabu <sergeantsagara@protonmail.com>
-Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
+Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+Suggested-by: Russell King (Oracle) <linux@armlinux.org.uk>
 Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20231231050300.122806-5-sergeantsagara@protonmail.com
+Link: https://msgid.link/20230903030216.1509013-3-ruanjinjie@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/b43/main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/marvell/mwifiex/debugfs.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/b43/main.c b/drivers/net/wireless/broadcom/b43/main.c
-index 8d50ebdbeb1e5..6d18c01b18dd7 100644
---- a/drivers/net/wireless/broadcom/b43/main.c
-+++ b/drivers/net/wireless/broadcom/b43/main.c
-@@ -2605,7 +2605,8 @@ static void b43_request_firmware(struct work_struct *work)
+diff --git a/drivers/net/wireless/marvell/mwifiex/debugfs.c b/drivers/net/wireless/marvell/mwifiex/debugfs.c
+index 0f62da50e11a2..63af04202d75f 100644
+--- a/drivers/net/wireless/marvell/mwifiex/debugfs.c
++++ b/drivers/net/wireless/marvell/mwifiex/debugfs.c
+@@ -977,9 +977,6 @@ mwifiex_dev_debugfs_init(struct mwifiex_private *priv)
+ 	priv->dfs_dev_dir = debugfs_create_dir(priv->netdev->name,
+ 					       mwifiex_dfs_dir);
  
- start_ieee80211:
- 	wl->hw->queues = B43_QOS_QUEUE_NUM;
--	if (!modparam_qos || dev->fw.opensource)
-+	if (!modparam_qos || dev->fw.opensource ||
-+	    dev->dev->chip_id == BCMA_CHIP_ID_BCM4331)
- 		wl->hw->queues = 1;
- 
- 	err = ieee80211_register_hw(wl->hw);
+-	if (!priv->dfs_dev_dir)
+-		return;
+-
+ 	MWIFIEX_DFS_ADD_FILE(info);
+ 	MWIFIEX_DFS_ADD_FILE(debug);
+ 	MWIFIEX_DFS_ADD_FILE(getlog);
 -- 
 2.43.0
 
