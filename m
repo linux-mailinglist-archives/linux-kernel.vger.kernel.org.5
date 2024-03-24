@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A98889D05
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:34:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF1688885A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6D8EB65841
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:29:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47E4F284929
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:25:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3997A348F7B;
-	Mon, 25 Mar 2024 02:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F15014F9F5;
+	Sun, 24 Mar 2024 23:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dDXC/tIG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XMvgGnGW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDA920012B;
-	Sun, 24 Mar 2024 23:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994A520013D;
+	Sun, 24 Mar 2024 23:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321383; cv=none; b=EVfq/+wxn0pzBR+uGHZxH3XR3ximQLOdtaS/KEfBXVfPb3PCgW7tZLjer7kmgy2WjoCTLMC5qopl/OSQLAKALvbPQucyOGOK+/uevoCluX/dEx+bCO/My6CE9USVmeyVfMMz7O4OgPRDLz9RWv5lB3XfoPlIbcrrCdbAkoCX4QM=
+	t=1711321385; cv=none; b=mEPwjplk0nsfGVepSyfjmFRPm3O9sZuzoRlIht/TPmkteCu5UeTKBJsMGCMoTZH124alzgn0SuS2/50KmZqsol4kU+/Cpj9ilXK/lMYQ2MdKvME18pSWNuGoKnZoyEaVPlGbvTt4NTr5y46hiOSVH2/WD07alPKOBnyBVxHoXKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321383; c=relaxed/simple;
-	bh=jdfu/KH7YL1zTK/NxSGJU5Hr4wSQlNuG4dX03k2hbfQ=;
+	s=arc-20240116; t=1711321385; c=relaxed/simple;
+	bh=23eHHuh/DV2k7PZWl6XBVkeG9jJGgENpTKhIC6FWxGs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BwORdkvJFKPJ/P7gNEYy6iRfX1LoKVxEkINtJTuM6XOxfLmWeLnXbmLmkR2LbJN7jY74P3ZlFGFcUG7ReBquPWtPU2s7wt/0DGeL/YDCbAabD5MV+bjHqhRz2BXhSkG82X9+y9fIAAh3uP0L3cfpDWyxipKoIql6mrxO4bQAOgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dDXC/tIG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA8CDC43390;
-	Sun, 24 Mar 2024 23:03:02 +0000 (UTC)
+	 MIME-Version; b=j6YcpRMEpWdjAWoJfDSDVj6J1Tn55OPOCeMcrd6z4xLyAcnFVrLbT4vOS0veKBGIDAWhf4lGcTBUnZlIV4AZ7uY6KoNVUmAYuSw4NtdfFzsuIyyLmAUPILiBEnfQxNRzi7KuDF/LqfofIymUmr6VmdOt/UovdX//SGSpFTQF8/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XMvgGnGW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2CFEC43330;
+	Sun, 24 Mar 2024 23:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321383;
-	bh=jdfu/KH7YL1zTK/NxSGJU5Hr4wSQlNuG4dX03k2hbfQ=;
+	s=k20201202; t=1711321384;
+	bh=23eHHuh/DV2k7PZWl6XBVkeG9jJGgENpTKhIC6FWxGs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dDXC/tIGky079L/UosVv4QFeDFDvQJk5hyHNQJ5wz0sQH0u+ZKMrqx7YeQldMk/zA
-	 ojKr7vQpK6XvYoCEPcPk+aNPmbj1eg8eUmuDg2U+Z1koKrkfqcdKSdk+iHGbExSrDm
-	 m2ORNiNpFTchPhYTe9SACEd9jyQ5Djfh2rHb5QgbRwuRMQyfarmmvqgAnoKqTseiLg
-	 nsQXwbkvF55efwV55Rnmq8aWqPa73mPyeem24N8hzBNQHLxtsMBLw2vce2ymUc/zVf
-	 8ZT9hykABIPdc/1HAuG1SqRjnMFbx3ftMvR0ymhlfTu333V5Ssi8qSfz3LTIkr4QNG
-	 fa+cLzguE4WBw==
+	b=XMvgGnGWPmN2jdvPTeoI+N7gyhHGLwk63QYPTAmwI7pukCATSty96IWfKaNWufcs+
+	 3b+YIClyLJdthIsK7qZZzHnqHzJUWgxRfjcLnipzndrx2N8VkAHY+6Tw+SeMsjmWuM
+	 3uVIfRH0pHHTPebcb2mb6QMYP6wLT4NZJQ+r3XL2+ximHFPHeTGIuK33OyIWgyaF9u
+	 XMYQ6rlV0T4IAfCv5jAhNr1FAsro+PQgbdBOzDbLtrcfgmBcP+G2TfZ5YxK5nPNpQb
+	 wh5y1fRd/FvZba+d80FSvit932U0Nnh4lkFUptWABBXgrsnEEqWlSwXYOY61M69lkR
+	 gmT/jkEPFSH7g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
+Cc: Peter Hilber <peter.hilber@opensynergy.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	John Stultz <jstultz@google.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 107/638] x86/sme: Fix memory encryption setting if enabled by default and not overridden
-Date: Sun, 24 Mar 2024 18:52:24 -0400
-Message-ID: <20240324230116.1348576-108-sashal@kernel.org>
+Subject: [PATCH 6.6 108/638] timekeeping: Fix cross-timestamp interpolation on counter wrap
+Date: Sun, 24 Mar 2024 18:52:25 -0400
+Message-ID: <20240324230116.1348576-109-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,79 +63,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Peter Hilber <peter.hilber@opensynergy.com>
 
-[ Upstream commit e814b59e6c2b11f5a3d007b2e61f7d550c354c3a ]
+[ Upstream commit 84dccadd3e2a3f1a373826ad71e5ced5e76b0c00 ]
 
-Commit
+cycle_between() decides whether get_device_system_crosststamp() will
+interpolate for older counter readings.
 
-  cbebd68f59f0 ("x86/mm: Fix use of uninitialized buffer in sme_enable()")
+cycle_between() yields wrong results for a counter wrap-around where after
+< before < test, and for the case after < test < before.
 
-'fixed' an issue in sme_enable() detected by static analysis, and broke
-the common case in the process.
+Fix the comparison logic.
 
-cmdline_find_option() will return < 0 on an error, or when the command
-line argument does not appear at all. In this particular case, the
-latter is not an error condition, and so the early exit is wrong.
-
-Instead, without mem_encrypt= on the command line, the compile time
-default should be honoured, which could be to enable memory encryption,
-and this is currently broken.
-
-Fix it by setting sme_me_mask to a preliminary value based on the
-compile time default, and only omitting the command line argument test
-when cmdline_find_option() returns an error.
-
-  [ bp: Drop active_by_default while at it. ]
-
-Fixes: cbebd68f59f0 ("x86/mm: Fix use of uninitialized buffer in sme_enable()")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-Link: https://lore.kernel.org/r/20240126163918.2908990-2-ardb+git@google.com
+Fixes: 2c756feb18d9 ("time: Add history to cross timestamp interface supporting slower devices")
+Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: John Stultz <jstultz@google.com>
+Link: https://lore.kernel.org/r/20231218073849.35294-2-peter.hilber@opensynergy.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/mem_encrypt_identity.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ kernel/time/timekeeping.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index d73aeb16417fc..7f72472a34d6d 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -507,7 +507,6 @@ void __init sme_enable(struct boot_params *bp)
- 	const char *cmdline_ptr, *cmdline_arg, *cmdline_on, *cmdline_off;
- 	unsigned int eax, ebx, ecx, edx;
- 	unsigned long feature_mask;
--	bool active_by_default;
- 	unsigned long me_mask;
- 	char buffer[16];
- 	bool snp;
-@@ -593,22 +592,19 @@ void __init sme_enable(struct boot_params *bp)
- 	     : "p" (sme_cmdline_off));
- 
- 	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT))
--		active_by_default = true;
--	else
--		active_by_default = false;
-+		sme_me_mask = me_mask;
- 
- 	cmdline_ptr = (const char *)((u64)bp->hdr.cmd_line_ptr |
- 				     ((u64)bp->ext_cmd_line_ptr << 32));
- 
- 	if (cmdline_find_option(cmdline_ptr, cmdline_arg, buffer, sizeof(buffer)) < 0)
--		return;
-+		goto out;
- 
- 	if (!strncmp(buffer, cmdline_on, sizeof(buffer)))
- 		sme_me_mask = me_mask;
- 	else if (!strncmp(buffer, cmdline_off, sizeof(buffer)))
- 		sme_me_mask = 0;
--	else
--		sme_me_mask = active_by_default ? me_mask : 0;
-+
- out:
- 	if (sme_me_mask) {
- 		physical_mask &= ~sme_me_mask;
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 266d02809dbb1..8f35455b62509 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -1186,7 +1186,7 @@ static bool cycle_between(u64 before, u64 test, u64 after)
+ {
+ 	if (test > before && test < after)
+ 		return true;
+-	if (test < before && before > after)
++	if (before > after && (test > before || test < after))
+ 		return true;
+ 	return false;
+ }
 -- 
 2.43.0
 
