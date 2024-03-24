@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F9D889A90
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:31:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD468889A9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98ACF1C333DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:31:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 592622A3D21
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687831D5677;
-	Mon, 25 Mar 2024 02:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B25F1DB403;
+	Mon, 25 Mar 2024 02:32:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A42dBByA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nXNdmKN8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E327FBD2;
-	Sun, 24 Mar 2024 22:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDFD7FBDB;
+	Sun, 24 Mar 2024 22:48:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320498; cv=none; b=QLyFLWTe+lnZE2vDY9BwhiFzArPLxUblXQSsWJYJv3El0XhOljrcnFloa30Xe9CsY+Kf293FEspJHPA+kgxYjdiPURiIRUsWNPzohonukMgUl6YtB4MXdn6cbhOtMFI0Vi4vAZS0mtVWIvaxADiafgSlQdBsfpjfp082JvpAeVY=
+	t=1711320498; cv=none; b=fX6WJVfW9vkwKhV+EFlttOWKiY5T1PugN26geQwP1APVZ0cKcvLHyo7k7eyirfJlUfG12L/HUW02NuZWZK7CErygEyMJKItsXKG7VGBEr/vcy0jwziWSMfnnoKsZmkLW+LP0akOayrDou669i1se5/gvRSG0YEXPuL63ntvzSrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320498; c=relaxed/simple;
-	bh=S9i6rVDTLrc92ZdyKfg4Ixk7H6eGpB3PH6E05e+MPh0=;
+	bh=C3JXHkC8QSlxMQacEgZP+jIDKkUrjVb3FnkXfTRxrtw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N++JXEKSteaggI7ej9qVLQvBFBjIAoI9/+Ad8OLlNM91BNs9kKOp35h+3AbP3mBPn4MmNvXk/jWrVGI+/ZM+3xrnRhPx9f6eettgNyYUO8cSzHcsqci5h3k9YdfFzZ/vrzwOFZhZsuaum1WI5f1CVsIEj1nQ/mBk6I1Uc38kArA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A42dBByA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DB92C433F1;
+	 MIME-Version:Content-Type; b=l40/+8vHYXbss6pknwiP1m3VSjN1U97bPSSrdIEh2XmBGW/LAknGVfJbeZbDFzJtvxI+YQqyL4LLhI/7kSKjsqkUgeN0n+Y6MkH0l+Kl8cmyBdNi7RLKtjSNInFV43odMluEc+6ymDJAVKIdK8yT1luOhQp/rNcTBRmespUQEYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nXNdmKN8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161A4C43399;
 	Sun, 24 Mar 2024 22:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320497;
-	bh=S9i6rVDTLrc92ZdyKfg4Ixk7H6eGpB3PH6E05e+MPh0=;
+	s=k20201202; t=1711320498;
+	bh=C3JXHkC8QSlxMQacEgZP+jIDKkUrjVb3FnkXfTRxrtw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A42dBByAGWn8aDqIx1S5EbWtO1GukNi3nlv+TQOOUKkpWjiO2uBMa5VYKqv7ZyVlz
-	 0YIbZHUXlfM+C7EcNta2DcuUejeJQgWT3MkTiAWe4Y9lNA6X84AyZC+aCkwBSiYi56
-	 fUtLWPIOgxpgzr/WYqhkkwoUpCQHlgoLzId71ztEQVrQ3oVCshuEE6ALUgLMThywhE
-	 xF0viWq+xMb04B7WETuiz1mE2z3CMcqJUb4Jiq5osrJFozz8oQQtm6iypt8pLnjKY8
-	 vVHeVHIsFsz7LnoU2ggqu3kMcqxePLn/jw3wpX9YtJUHymhGU04xyFS1kEf5PUB2Pg
-	 KbWFjGmHyjJEg==
+	b=nXNdmKN84Cr2nohznlDZqZbcwNDHiauo/iG36bkcCQmz7/KnyXOH3DjOaIx115fDY
+	 InaX8X6wZVFqFJ0YpqDBl9D8MnL91HTKpwGjq4OJqg58GyFtfz6FEOs4M18ClyGFtK
+	 YW8YTz4YFB0jwnCgBeDsCQPFpMdYG/OAR49V9QSyMF8EXvBb3N5QCa7TeahCeJvImT
+	 qYu+Mf7KRMPQ7+Zep4/O0NpET811RA79EPztWmxLQ/wODw8lSQSayccK6NI5w4YObO
+	 D4g60YAiA4GFxzfyG1h9f5SYQd65a8PzXy8FyMaNqZ9eS0j13G3kB8SgeauF9EaVkn
+	 ilqS09sSIB9zw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Felix Fietkau <nbd@nbd.name>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 057/713] wifi: mac80211: only call drv_sta_rc_update for uploaded stations
-Date: Sun, 24 Mar 2024 18:36:23 -0400
-Message-ID: <20240324224720.1345309-58-sashal@kernel.org>
+Subject: [PATCH 6.7 058/713] drm/ttm/tests: depend on UML || COMPILE_TEST
+Date: Sun, 24 Mar 2024 18:36:24 -0400
+Message-ID: <20240324224720.1345309-59-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -58,41 +58,50 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Christian König <christian.koenig@amd.com>
 
-[ Upstream commit 413dafc8170fcb925fb17af8842f06af305f8e0b ]
+[ Upstream commit 9d3f8a723c7950e56e0b95ab84b572caee29e065 ]
 
-When a station has not been uploaded yet, receiving SMPS or channel width
-notification action frames can lead to rate_control_rate_update calling
-drv_sta_rc_update with uninitialized driver private data.
-Fix this by adding a missing check for sta->uploaded.
+At least the device test requires that no other driver using TTM is
+loaded. So make those unit tests depend on UML || COMPILE_TEST to
+prevent people from trying them on bare metal.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://msgid.link/20240221140535.16102-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/all/20240219230116.77b8ad68@yea/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rate.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/rate.c b/net/mac80211/rate.c
-index d5ea5f5bcf3a0..9d33fd2377c88 100644
---- a/net/mac80211/rate.c
-+++ b/net/mac80211/rate.c
-@@ -119,7 +119,8 @@ void rate_control_rate_update(struct ieee80211_local *local,
- 		rcu_read_unlock();
- 	}
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index 3eee8636f847a..9b079f3a1b811 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -198,7 +198,7 @@ config DRM_TTM
+ config DRM_TTM_KUNIT_TEST
+         tristate "KUnit tests for TTM" if !KUNIT_ALL_TESTS
+         default n
+-        depends on DRM && KUNIT && MMU
++        depends on DRM && KUNIT && MMU && (UML || COMPILE_TEST)
+         select DRM_TTM
+         select DRM_EXPORT_FOR_TESTS if m
+         select DRM_KUNIT_TEST_HELPERS
+@@ -206,7 +206,8 @@ config DRM_TTM_KUNIT_TEST
+         help
+           Enables unit tests for TTM, a GPU memory manager subsystem used
+           to manage memory buffers. This option is mostly useful for kernel
+-          developers.
++          developers. It depends on (UML || COMPILE_TEST) since no other driver
++          which uses TTM can be loaded while running the tests.
  
--	drv_sta_rc_update(local, sta->sdata, &sta->sta, changed);
-+	if (sta->uploaded)
-+		drv_sta_rc_update(local, sta->sdata, &sta->sta, changed);
- }
+           If in doubt, say "N".
  
- int ieee80211_rate_control_register(const struct rate_control_ops *ops)
 -- 
 2.43.0
 
