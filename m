@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-114456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3149888A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:22:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DBF988958B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:30:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99B761F22A29
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:22:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A378B31A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F362417A918;
-	Sun, 24 Mar 2024 23:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6889215E5BE;
+	Mon, 25 Mar 2024 02:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bf2qnqtF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YoGiMvW6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314A421F9F4;
-	Sun, 24 Mar 2024 23:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F26A15686A;
+	Sun, 24 Mar 2024 23:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321879; cv=none; b=Anjk0xUr8mNFT7zpQUgBCjmGpVsaHYM/pyqCla4TaQHsT/96Gth5aXwHyAk8+TkN9D9ip/HXTLtVSpezrVqDjHmX3twfJVPAKQZ87Od3Fi75zqMbUC0gid4yQr+8ZaEuvrDmBbabdEVRw3WXOP1VVGedtzfVg3EiMsNG4wanbEM=
+	t=1711321880; cv=none; b=YmDaISWztc9UhVxIzlgMuhU2vNaBZEoa9DisuFAd3E3fsNATdG5vGChyhxRFEnpYbjfUl5qQuD8cr94EFEB/osoWjtkdrehR4JxP3hkEWtoKZPf8ps7VqczllPD1zXH6Ay1IVan5BBzhpajxUKFATNwV+lJT/+YMcYxB64mWSks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321879; c=relaxed/simple;
-	bh=ncP4VVJXjWIqhc/CiV3uRRV6k6wbXfDl8IbLaEANtMs=;
+	s=arc-20240116; t=1711321880; c=relaxed/simple;
+	bh=o1Y2zRgX0DFu7YOCp+422qUaOZvAXTGpdtDvPYu8O00=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JZVfm0FBzXM3WvCuSsMZ1pev0EyqWrxO3P42xIISLw1Reeg2fupEz386TicvOjeq0kP95sQBAVrjgIIqDQHN+DGS1ureRl7eXt/gseM/yHQuB5zLmUJfLoyHB2Du0OddMe48PekQxJ6kuJPpDI7AcSHP8bAz303myHi9fDIZMkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bf2qnqtF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 463CBC433F1;
-	Sun, 24 Mar 2024 23:11:17 +0000 (UTC)
+	 MIME-Version:Content-Type; b=JS5UtBt4pkKw7JFbo7CfMTT1xtGiJD/3+Cc6geM8434iKf+2D5WBuETedDDljpJXWO5gCW19wKUkqm7j0FJNwPBOxJSuS8ipyQ7PVFC1v/fL+wXTTi1jYjHeND7+a8yXqmjJJs1jU4UIknrsSl/QSBSriaCCufUc6Pg4Tajj6b0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YoGiMvW6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5526DC43394;
+	Sun, 24 Mar 2024 23:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321878;
-	bh=ncP4VVJXjWIqhc/CiV3uRRV6k6wbXfDl8IbLaEANtMs=;
+	s=k20201202; t=1711321879;
+	bh=o1Y2zRgX0DFu7YOCp+422qUaOZvAXTGpdtDvPYu8O00=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Bf2qnqtFMCuhs+R4kYKE1z0SR8hBZ9IYULR5MMfB1dui6MFKTnh7y0Zhyq6Kxl7Fe
-	 Z9c2RlTYcPdXkOBV6Q6i/zTmpt8m68Z9pErEU8j12A0Hxgl5XRhL6FslWuGjKPScwt
-	 rxseRT456fOfSJtpGyUDXwWW56tCDp1oh8Xrv7y4PI/0MA4SMpfdEl8A1/XF8TjXeC
-	 7ZMuA0/IEIOVO78kp4dXQM2vhWgl3f2D23KR5nkToqk3HbsOlIN2oOkXEqwau4qB/H
-	 KmVf4UAqVPRswGHfLK3lAs0t7nO+qDdJBfLVdwvufJYfP4A7NF8Ej/9ZubYEvNBwLw
-	 wsFRyGCZuKQHg==
+	b=YoGiMvW61GRAKxFJK1GRFLSf/uuRpNSNYdlCdYBlyqr6o+Q5Y+3mQ74Zlp67hFF67
+	 XxFl5csH1oKlQUgkMU/yvJv4s2tZ8sxoM04P5UudUP1YqQCjJMTnHeq8u/AXBVq/zj
+	 0ievN6qlWAafWebQ+QF4ExIKp9kal0uR3pk/fEx/YPeDY869KKBUPhbJvGDiIX9rs6
+	 4SLqheeWE7QqvSTI4ALC/K4EDdVT1HTZiVnAZ0Tbif/ZcBWd4OsUw5qv3rcET9Zgvc
+	 uQ4AzIUsjLmH8Hgap6nR+CKnIb4cV6locj7HyXcqC/1w2DcWwJqtigznxbLLNyRDJJ
+	 DVonnsNCytAlQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Steve Sistare <steven.sistare@oracle.com>,
+Cc: Jonah Palmer <jonah.palmer@oracle.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>,
 	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
 	"Michael S . Tsirkin" <mst@redhat.com>,
+	Lei Yang <leiyang@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 606/638] vdpa_sim: reset must not run
-Date: Sun, 24 Mar 2024 19:00:43 -0400
-Message-ID: <20240324230116.1348576-607-sashal@kernel.org>
+Subject: [PATCH 6.6 607/638] vdpa/mlx5: Allow CVQ size changes
+Date: Sun, 24 Mar 2024 19:00:44 -0400
+Message-ID: <20240324230116.1348576-608-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -65,47 +66,78 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Steve Sistare <steven.sistare@oracle.com>
+From: Jonah Palmer <jonah.palmer@oracle.com>
 
-[ Upstream commit 9588e7fc511f9c55b9835f14916e90ab940061b7 ]
+[ Upstream commit 749a4016839270163efc36ecddddd01de491a16b ]
 
-vdpasim_do_reset sets running to true, which is wrong, as it allows
-vdpasim_kick_vq to post work requests before the device has been
-configured.  To fix, do not set running until VIRTIO_CONFIG_S_DRIVER_OK
-is set.
+The MLX driver was not updating its control virtqueue size at set_vq_num
+and instead always initialized to MLX5_CVQ_MAX_ENT (16) at
+setup_cvq_vring.
 
-Fixes: 0c89e2a3a9d0 ("vdpa_sim: Implement suspend vdpa op")
-Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-Reviewed-by: Eugenio Pérez <eperezma@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Message-Id: <1707517807-137331-1-git-send-email-steven.sistare@oracle.com>
+Qemu would try to set the size to 64 by default, however, because the
+CVQ size always was initialized to 16, an error would be thrown when
+sending >16 control messages (as used-ring entry 17 is initialized to 0).
+For example, starting a guest with x-svq=on and then executing the
+following command would produce the error below:
+
+ # for i in {1..20}; do ifconfig eth0 hw ether XX:xx:XX:xx:XX:XX; done
+
+ qemu-system-x86_64: Insufficient written data (0)
+ [  435.331223] virtio_net virtio0: Failed to set mac address by vq command.
+ SIOCSIFHWADDR: Invalid argument
+
+Acked-by: Dragos Tatulea <dtatulea@nvidia.com>
+Acked-by: Eugenio Pérez <eperezma@redhat.com>
+Signed-off-by: Jonah Palmer <jonah.palmer@oracle.com>
+Message-Id: <20240216142502.78095-1-jonah.palmer@oracle.com>
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Tested-by: Lei Yang <leiyang@redhat.com>
+Fixes: 5262912ef3cf ("vdpa/mlx5: Add support for control VQ and MAC setting")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 76d41058add9a..421ab01ef06ba 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -158,7 +158,7 @@ static void vdpasim_do_reset(struct vdpasim *vdpasim)
- 		vdpasim->iommu_pt[i] = true;
- 	}
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index ca972af3c89a2..b56aae3f7be37 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -144,8 +144,6 @@ static void teardown_driver(struct mlx5_vdpa_net *ndev);
  
--	vdpasim->running = true;
-+	vdpasim->running = false;
- 	spin_unlock(&vdpasim->iommu_lock);
+ static bool mlx5_vdpa_debug;
  
- 	vdpasim->features = 0;
-@@ -477,6 +477,7 @@ static void vdpasim_set_status(struct vdpa_device *vdpa, u8 status)
+-#define MLX5_CVQ_MAX_ENT 16
+-
+ #define MLX5_LOG_VIO_FLAG(_feature)                                                                \
+ 	do {                                                                                       \
+ 		if (features & BIT_ULL(_feature))                                                  \
+@@ -2136,9 +2134,16 @@ static void mlx5_vdpa_set_vq_num(struct vdpa_device *vdev, u16 idx, u32 num)
+ 	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+ 	struct mlx5_vdpa_virtqueue *mvq;
  
- 	mutex_lock(&vdpasim->mutex);
- 	vdpasim->status = status;
-+	vdpasim->running = (status & VIRTIO_CONFIG_S_DRIVER_OK) != 0;
- 	mutex_unlock(&vdpasim->mutex);
+-	if (!is_index_valid(mvdev, idx) || is_ctrl_vq_idx(mvdev, idx))
++	if (!is_index_valid(mvdev, idx))
+ 		return;
+ 
++        if (is_ctrl_vq_idx(mvdev, idx)) {
++                struct mlx5_control_vq *cvq = &mvdev->cvq;
++
++                cvq->vring.vring.num = num;
++                return;
++        }
++
+ 	mvq = &ndev->vqs[idx];
+ 	mvq->num_ent = num;
  }
+@@ -2799,7 +2804,7 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *mvdev)
+ 		u16 idx = cvq->vring.last_avail_idx;
  
+ 		err = vringh_init_iotlb(&cvq->vring, mvdev->actual_features,
+-					MLX5_CVQ_MAX_ENT, false,
++					cvq->vring.vring.num, false,
+ 					(struct vring_desc *)(uintptr_t)cvq->desc_addr,
+ 					(struct vring_avail *)(uintptr_t)cvq->driver_addr,
+ 					(struct vring_used *)(uintptr_t)cvq->device_addr);
 -- 
 2.43.0
 
