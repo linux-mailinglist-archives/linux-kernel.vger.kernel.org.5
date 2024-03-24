@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B8B88943A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:50:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F7388943E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:50:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 306841C2F0D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:50:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 531A81F2F6E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5992519AE;
-	Mon, 25 Mar 2024 02:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A6D2519B5;
+	Mon, 25 Mar 2024 02:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uqkEW0ct"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rmYJNAYD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4CD128836;
-	Sun, 24 Mar 2024 23:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E75C1FB71B;
+	Sun, 24 Mar 2024 23:01:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321308; cv=none; b=mk+x/d/iiqcgz3zeF5WFMcxG3Q4ElXz2nGWFO+QkMK6No5YAx+3r9sBOATCMZ6CUrdaLnBNpx6bYVIguI4tKKdcDYSCSx4IsaKR8FUJfmPMl3lXRr+YDmacRHC81yC0yZAEwIxE11//C6Cwjqg0yjWE25ripOA7FQpVVRtGPTbU=
+	t=1711321308; cv=none; b=RtBW6lU4J5SB/C9AsG8naKX/1e0cLtKUA/Snp2OeAdiGt0pfmCU7h4NNepMeFhHu2ig0CcB2sxLWzq8QB7p9L+utKsdWf5NFm9a1YDysxJzwh8GosyGvfFdpy9lZluH2jBQAGuMI+Eh1A+2C6jWH/8ZNUiag/fs5PJJ3VJcK8/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321308; c=relaxed/simple;
-	bh=DM56fWUpnYs8NKGcPFxbzDsx0rC5E5rIw5nd28XokT8=;
+	bh=mxRUa5CthTVInxGr8kKOevfXkarA6jUudOI+9gLETuc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lsRZZCWN4JhMfGg/khjC2F7+NdKB3nYwrL2AQSfzihgaul3QevSbNoxQM3LjOGdz+BjE8AuWjtegXDkOgHgFnnTEAK+AtMd9/Asc9RWjB6lXb0ipx7EULihpBXCxq8R/jCiXAdk5+z6wGTawrmaP/EPWWEPh5kPetSkomraBfs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uqkEW0ct; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D02CAC43394;
-	Sun, 24 Mar 2024 23:01:46 +0000 (UTC)
+	 MIME-Version; b=OW9/zSm9MTKhXTSdGPCYKa0w6DNaR3q5Aih5GPIqAiA7hxjr/V8V0djzaibvvLxWHabQ77quVnHZf9IzRNEvQ5b74zzboB+9TEj2Jl+u7OOlBifQvtPeNlYSMe+01UFvO1/U/b8h30gxkagHq1XdQpEQNUoZS8ovdoN4DtmNDIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rmYJNAYD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B814AC433F1;
+	Sun, 24 Mar 2024 23:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321307;
-	bh=DM56fWUpnYs8NKGcPFxbzDsx0rC5E5rIw5nd28XokT8=;
+	s=k20201202; t=1711321308;
+	bh=mxRUa5CthTVInxGr8kKOevfXkarA6jUudOI+9gLETuc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uqkEW0ctt209EmAQXzqz/3yCq8NVWcP2dLmCRsFdve/iHKadF97FQ13fRfp2ntnws
-	 oDks5yNLIfjQdlPeMMfhF0K2qIGT4qYI+Ly9IYHm12o0ZSDqvThpioBDiKPYv/m8ht
-	 emgo+7vrihi0deoBK1NUcGAiXq8pWgc15F8EPaKohzDKBCejNTnWz7AD16OnhT83Qv
-	 unb2Ss4myZVAL1cVbkQy7w/s6VMEeGo46o0Ac27EK3g4/hCXSloP4Yi6aLaA91BL11
-	 5Vjc/jh7gVUC+wOQMflFdbpva41lx/67VqbDYtlT01pmvBpCQmnKOr41WbNSAEYy0n
-	 DI91mPsy8k+1g==
+	b=rmYJNAYDnDlu5kxyRiXiYX2k9RmGHwhcWL+GnPAPD9KTKBEnHj5XBfChQ9ycV2Pzv
+	 3Bh0Id5BWgThcs+gTxu5xsdr9Un60Pw7Zsxa9tBs3dTOPVCnfyIo3kzvDxrkLFAzZA
+	 agk3s9SfHrZjRRT+j7fwql0np9imI/Mc7wWX/wOBDVyq4Kkrzfp0iRlwkyw+EGhPq4
+	 pSy+a2GKIBYO52iwVq05fBtOlsRHSVvd6EHJfCijikVKBWuuejDAgtaiVRobJY7Ujw
+	 vEfPDZu9uW1iF4xOGhv9XHQbv2xm8RsLEBd5BK8PUu6F57X983EvIgFzwvg7rTcMKN
+	 9t9QdtK0GrBJw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>,
-	Helge Deller <deller@gmx.de>,
+Cc: Greg Joyce <gjoyce@linux.ibm.com>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 030/638] parisc/ftrace: add missing CONFIG_DYNAMIC_FTRACE check
-Date: Sun, 24 Mar 2024 18:51:07 -0400
-Message-ID: <20240324230116.1348576-31-sashal@kernel.org>
+Subject: [PATCH 6.6 031/638] block: sed-opal: handle empty atoms when parsing response
+Date: Sun, 24 Mar 2024 18:51:08 -0400
+Message-ID: <20240324230116.1348576-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,40 +62,63 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Max Kellermann <max.kellermann@ionos.com>
+From: Greg Joyce <gjoyce@linux.ibm.com>
 
-[ Upstream commit 250f5402e636a5cec9e0e95df252c3d54307210f ]
+[ Upstream commit 5429c8de56f6b2bd8f537df3a1e04e67b9c04282 ]
 
-Fixes a bug revealed by -Wmissing-prototypes when
-CONFIG_FUNCTION_GRAPH_TRACER is enabled but not CONFIG_DYNAMIC_FTRACE:
+The SED Opal response parsing function response_parse() does not
+handle the case of an empty atom in the response. This causes
+the entry count to be too high and the response fails to be
+parsed. Recognizing, but ignoring, empty atoms allows response
+handling to succeed.
 
- arch/parisc/kernel/ftrace.c:82:5: error: no previous prototype for 'ftrace_enable_ftrace_graph_caller' [-Werror=missing-prototypes]
-    82 | int ftrace_enable_ftrace_graph_caller(void)
-       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- arch/parisc/kernel/ftrace.c:88:5: error: no previous prototype for 'ftrace_disable_ftrace_graph_caller' [-Werror=missing-prototypes]
-    88 | int ftrace_disable_ftrace_graph_caller(void)
-       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Greg Joyce <gjoyce@linux.ibm.com>
+Link: https://lore.kernel.org/r/20240216210417.3526064-2-gjoyce@linux.ibm.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/kernel/ftrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/opal_proto.h | 1 +
+ block/sed-opal.c   | 6 +++++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index d1defb9ede70c..621a4b386ae4f 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -78,7 +78,7 @@ asmlinkage void notrace __hot ftrace_function_trampoline(unsigned long parent,
- #endif
- }
+diff --git a/block/opal_proto.h b/block/opal_proto.h
+index dec7ce3a3edb7..d247a457bf6e3 100644
+--- a/block/opal_proto.h
++++ b/block/opal_proto.h
+@@ -71,6 +71,7 @@ enum opal_response_token {
+ #define SHORT_ATOM_BYTE  0xBF
+ #define MEDIUM_ATOM_BYTE 0xDF
+ #define LONG_ATOM_BYTE   0xE3
++#define EMPTY_ATOM_BYTE  0xFF
  
--#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-+#if defined(CONFIG_DYNAMIC_FTRACE) && defined(CONFIG_FUNCTION_GRAPH_TRACER)
- int ftrace_enable_ftrace_graph_caller(void)
- {
- 	static_key_enable(&ftrace_graph_enable.key);
+ #define OPAL_INVAL_PARAM 12
+ #define OPAL_MANUFACTURED_INACTIVE 0x08
+diff --git a/block/sed-opal.c b/block/sed-opal.c
+index 04f38a3f5d959..e27109be77690 100644
+--- a/block/sed-opal.c
++++ b/block/sed-opal.c
+@@ -1055,16 +1055,20 @@ static int response_parse(const u8 *buf, size_t length,
+ 			token_length = response_parse_medium(iter, pos);
+ 		else if (pos[0] <= LONG_ATOM_BYTE) /* long atom */
+ 			token_length = response_parse_long(iter, pos);
++		else if (pos[0] == EMPTY_ATOM_BYTE) /* empty atom */
++			token_length = 1;
+ 		else /* TOKEN */
+ 			token_length = response_parse_token(iter, pos);
+ 
+ 		if (token_length < 0)
+ 			return token_length;
+ 
++		if (pos[0] != EMPTY_ATOM_BYTE)
++			num_entries++;
++
+ 		pos += token_length;
+ 		total -= token_length;
+ 		iter++;
+-		num_entries++;
+ 	}
+ 
+ 	resp->num = num_entries;
 -- 
 2.43.0
 
