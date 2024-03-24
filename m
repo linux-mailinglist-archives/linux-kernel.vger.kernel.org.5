@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-113166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C3788881FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:34:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D08258881FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:35:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFDC81F219C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:34:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D159B21B50
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D27A17494E;
-	Sun, 24 Mar 2024 22:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 341F717496F;
+	Sun, 24 Mar 2024 22:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iCzZ4AcD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fhayWkFM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3552D1741FC;
-	Sun, 24 Mar 2024 22:39:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC245A0F1;
+	Sun, 24 Mar 2024 22:39:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319968; cv=none; b=sFac1hg1wc2P3N7MGrk5CGvPOZV7vnVn0Yxb9rGzyum4CHZDTq68PA/n0QctFLbI9aHNQozvkmIbo7bIvGU5KcHkUSxUnRgUDuI5RCXZ83a95lOu0jbo7Uv+WLUvQjAMlJzREPM8q0ckD06kZP8Qubx/037JqfKADE0V0dTOByc=
+	t=1711319969; cv=none; b=TxiPyzbSVI7ghyFqGMFGZC9AqnoORkih4+C3iAHo4sn58Y6L5JfTbqfuHMLgSUHko7ZFSe84Dd9t51VSq8cfaiWLzu+60YhXZFrzgprd7sokXQMluJ1z8dybyAcr9eokWhQpF8LXamIsqRyynDBsWhYdtLaFdEXy3Jp8ePWRGPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319968; c=relaxed/simple;
-	bh=3amgfx0AshjHIMz2Es+2BaOqMWFTibDYt+16ztnBPHw=;
+	s=arc-20240116; t=1711319969; c=relaxed/simple;
+	bh=Kh7U/mKHQ+anKiD0Nygr9rYXgz72DaOZ679gP3rRRg4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SJ5YvB8lE0CqPJJsGI+NVEr3FUNGJqLFvdSpDDVbmdWnz6jl2aq5vVw5Rv+tBry7Wb4m3AtE/+YUpWAbX9xoi2TN0WqJxvfDB687kJkoh9WGI8sim43h25mWUEmfZRFkendboLZhcJDZ+Cskb3sLhuG15pcw6fKMezxIJLu0mPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iCzZ4AcD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73185C433F1;
-	Sun, 24 Mar 2024 22:39:27 +0000 (UTC)
+	 MIME-Version; b=CiDZKnXL5dNMIT1+AOcL1ZNLNDS3V+kIFflalGsok0Awx1ZMu2Wr48KLIFAQnvxyfCnaqu1daorZ4rbazuM2ngrkdyUdsOPArbKJlF3T7m7OPMN/JEmknV59G0agFNVD2lQNlt1rPOGHw3LAZl6Y6XjmSeihWMeiz0dk012pqaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fhayWkFM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B8B7C43399;
+	Sun, 24 Mar 2024 22:39:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319968;
-	bh=3amgfx0AshjHIMz2Es+2BaOqMWFTibDYt+16ztnBPHw=;
+	s=k20201202; t=1711319969;
+	bh=Kh7U/mKHQ+anKiD0Nygr9rYXgz72DaOZ679gP3rRRg4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iCzZ4AcDJg6Ov1KW/aLJ5J6mIpFX52mEO1CiKIivLCFqidOEdxZwWEeutkPM2VEbO
-	 bwlfD8r2ExGOjxSrOPrRcA41td92RjXg+ihoQLh08wQpp2+WOIw7gDHTm4+vceZLt6
-	 3sxAk5/CN50ruvyfUcrItqZAWoCAzNOTfh/XlCppLegdGRA/uz2DSIM0zzWiB1+nOl
-	 ZVhdQtfim9ZALhw5+B47yDiqpRajJFiMX1oHxxyPLUp3cAiwP/QTlXY+4EQz8LxPv9
-	 AYiMBcv7PQ546p6wJ5kVzXVIMQpc7PrIKwcpJBaVRoz4qfUHPeHV+qQPdNGgLUNohs
-	 V8yeKCiEdLcRQ==
+	b=fhayWkFMj+KE2xlal/WhTMyfU2EMIt83LWBhSCDsm+eI0BgYSY8gvoc0UvVEigII7
+	 /PgDyv4wcpO0VBZyCn7ysGn+M/7UHeLhRMRRi8/g8KYwN+NCNlZsHVAeb4dURgEQx1
+	 6S6+qJUhfTck7+Zv17ElxdUvjx4UtltIzV5BCklAjaEwljEoGG2aXy6AjIEUvgpHRP
+	 TCAWr9IgTmcion2ffyAyRG3DRYWptuBw5gUiaAdnRUMszyNdQqHX9clMopNbBXcgjU
+	 C8jILnbyGXrcSqpL/8FNlWvxM2tJOhSQLWEmDRpc/L67pxyJIfUzDAfuTstqnBFcLR
+	 ScGkDvgYNd+pw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <ukleinek@debian.org>,
+Cc: Heiko Stuebner <heiko.stuebner@cherry.de>,
+	Sugar Zhang <sugar.zhang@rock-chips.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 275/715] arm64: dts: rockchip: fix reset-names for rk356x i2s2 controller
-Date: Sun, 24 Mar 2024 18:27:34 -0400
-Message-ID: <20240324223455.1342824-276-sashal@kernel.org>
+Subject: [PATCH 6.8 276/715] arm64: dts: rockchip: drop rockchip,trcm-sync-tx-only from rk3588 i2s
+Date: Sun, 24 Mar 2024 18:27:35 -0400
+Message-ID: <20240324223455.1342824-277-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -58,48 +61,57 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Heiko Stuebner <heiko@sntech.de>
+From: Heiko Stuebner <heiko.stuebner@cherry.de>
 
-[ Upstream commit 0fc19ab75acde78558bd0f6fe3e5f63cf8ee88b0 ]
+[ Upstream commit a8037ceb89649659831e86a87a9329d1bb43c735 ]
 
-The dtbscheck reports a warning for a wrong reset-names property for
-the i2s2 controller on rk356x socs.
+The rockchip,trcm-sync-tx-only property is at this time only documented
+for the tdm variant of Rockchip i2s controllers.
 
-The other controllers on the soc provide tx and rx directions and hence
-two resets and separate clocks for each direction, while i2s2 only
-provides one reset. This was so far named just "m" which isn't part of
-the binding.
+While there was a series [0] adding code and binding for the property,
+it doesn't seem to have gone forward back in 2021.
 
-The clock-names the controller uses all end in "tx", so use the matching
-"tx-m" reset-name for the i2s controller.
+So for now fix the devicetree check by removing the property from rk3588
+i2s controllers until support for it gets merged.
 
-Fixes: 755f37010f3e ("arm64: dts: rockchip: RK356x: Add I2S2 device node")
-Acked-by: Uwe Kleine-König <ukleinek@debian.org>
+[0] https://patchwork.kernel.org/project/linux-rockchip/patch/1629796734-4243-5-git-send-email-sugar.zhang@rock-chips.com/
+
+Fixes: 8ae112a5554f ("arm64: dts: rockchip: Add rk3588s I2S nodes")
+Cc: Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+Reviewed-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Link: https://lore.kernel.org/r/20240227164659.705271-2-heiko@sntech.de
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://lore.kernel.org/r/20240227173526.710056-2-heiko@sntech.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk356x.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-index 6a9bfb0550c04..92f96ec01385d 100644
---- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-@@ -1124,7 +1124,7 @@ i2s2_2ch: i2s@fe420000 {
- 		dmas = <&dmac1 4>, <&dmac1 5>;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+index 36b1b7acfe6a1..82350ddb262f2 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+@@ -1704,7 +1704,6 @@ i2s2_2ch: i2s@fe490000 {
+ 		dmas = <&dmac1 0>, <&dmac1 1>;
  		dma-names = "tx", "rx";
- 		resets = <&cru SRST_M_I2S2_2CH>;
--		reset-names = "m";
-+		reset-names = "tx-m";
- 		rockchip,grf = <&grf>;
+ 		power-domains = <&power RK3588_PD_AUDIO>;
+-		rockchip,trcm-sync-tx-only;
  		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s2m0_sclktx
+ 		pinctrl-0 = <&i2s2m1_lrck
+ 			     &i2s2m1_sclk
+@@ -1725,7 +1724,6 @@ i2s3_2ch: i2s@fe4a0000 {
+ 		dmas = <&dmac1 2>, <&dmac1 3>;
+ 		dma-names = "tx", "rx";
+ 		power-domains = <&power RK3588_PD_AUDIO>;
+-		rockchip,trcm-sync-tx-only;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&i2s3_lrck
+ 			     &i2s3_sclk
 -- 
 2.43.0
 
