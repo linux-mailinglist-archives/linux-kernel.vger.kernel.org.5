@@ -1,59 +1,55 @@
-Return-Path: <linux-kernel+bounces-113864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70817888708
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:49:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7D358893FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B40E28F0EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:49:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517C01F24FD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E384120931A;
-	Sun, 24 Mar 2024 23:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F68D157E6D;
+	Mon, 25 Mar 2024 02:40:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A5j/aqUS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l5ww0uxS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC031DCCAD;
-	Sun, 24 Mar 2024 22:55:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79CC31DCCAE;
+	Sun, 24 Mar 2024 22:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320912; cv=none; b=r3NLsc2oCjx9lr9bS7XrkJEbZd8YMpHtdBGyZroBdJK4vNyUpjqsGg2HVHxceFhEgz5/me6iJhZaC/KafVg2e509V1DYqrYadEWlke8L+Uk17LOBY23kjkCHIl/2mrMW40i4ej//Y6LF0jRJQQA4+e4Haty04hQi+9OZAaHZHRA=
+	t=1711320913; cv=none; b=aBAv1Rjj6AF6nL9V9KHnwwabiGnj6f6YyTdBvyrdeDkPH3Y1n7miMXR4iL0YRLK58T2jsnsIJtoegQSTuhdV/euiIEw5vYuY996mDaEqTxc4WrTvMc5f3Ve5De5X3GgJfzC47vIiedfcQuOQJZKCWqpKW6GjOI+9xHnnq6E2S3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320912; c=relaxed/simple;
-	bh=RG5DNBFWOVV6swYzwisXML9v67pmLM2qNfQPiK8Naw0=;
+	s=arc-20240116; t=1711320913; c=relaxed/simple;
+	bh=kB9jl1qMMQaC+HGZkILpshVUAWry7MsqV7jwPaM+sUY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FvGXFN7f5Nbh0v7k/vBEKd0xy75L7aWOaP1OGK3gJD6lbpl9W/N5vn2hQaYF4iXAteS/0/Rejq4lHKJUsZLgUnPWGdfmD25xChYHy7z2PtYgxlidUtkWkjSefb4hRGdini+4SBQUdWSRPHfYpNerKavYqcEOs93r1/GIAkok0gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A5j/aqUS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9E0EC433F1;
-	Sun, 24 Mar 2024 22:55:09 +0000 (UTC)
+	 MIME-Version; b=f+N/BnFBp+/MGrGe1bEbCUWcdEZZI7ESM+oc0u605fTfNaVlYMCdXCIXzijJPb3upQcvm9zEFsm3Iq2BlrCv6u/eDh9qEdFuvzKcdR2eP4PEDa9nDPrPQQJ0KNRYgIY73LbSaPedbtABeoTbdoaIn33OXfOH5iE46sjC8E7p1r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l5ww0uxS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BDDDC43394;
+	Sun, 24 Mar 2024 22:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320911;
-	bh=RG5DNBFWOVV6swYzwisXML9v67pmLM2qNfQPiK8Naw0=;
+	s=k20201202; t=1711320912;
+	bh=kB9jl1qMMQaC+HGZkILpshVUAWry7MsqV7jwPaM+sUY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A5j/aqUSCXNAa7WeaykddcYjQGwW/y6jQ1oruo1AoBSfIHHVH0z8Svr3wTT7H/zMq
-	 H6W1AC48M0ZJb28TVTtZ8W4bOxzNkIuW7eC80W0MV6/g8MZDBjllZrWjLqMiQgXOvW
-	 3+lHkRJsr5Drg0MLJDp36Jx+EbXjK9LBVyhbohrxLSYsiA+IFL/Wjv/1LIaIMLkQwM
-	 636/nWXFtM0PHMcnXdMLquzI+BbqYVsa/aYEvwbBs7Nk+sToGwHNwJ1rwxqOI4/lPv
-	 J7WE/AqoL/WUJrnJE30aw/RwOjXAclFkrsxl+zzdAI48361UiHIdQrnZzXMoRrFSrK
-	 TvsnnuN8RIrRQ==
+	b=l5ww0uxS1zdE8ZjSMHUtUMYb82E+kgtILpGyPl6m7NQRwL07PQ2/pM9TOjzyeQpyn
+	 6eYvOZVcL7ogHytWB/YpwK6yFmlR6p2dY12CwJ2B4iVTME83wHQApJq11+Bm7dHHdt
+	 BEMhZ0RjsSxDxMK0lZesh7jI9EFQjJliIWs6hzKvKAqGBIMgeGa7ZkjDJRugAJ+A0w
+	 Yb+sOJuK4NTFNiN2TpYquFRiXtyLgcPH1BSRP8AtKvjX/+8JBWjA0/3YlJ5bVr83my
+	 G2dPWqYZBj2B6gwFzA2AWkyvzbR658o01tsjf/Z/hPcr4q6ux2YTAnICfpEVUChbkL
+	 vHESn8q1VVQZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-	Roman Li <roman.li@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Tom Chung <chiahsuan.chung@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Douglas Anderson <dianders@chromium.org>,
+	Jessica Zhang <quic_jesszhan@quicinc.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 474/713] drm/amd/display: Add 'replay' NULL check in 'edp_set_replay_allow_active()'
-Date: Sun, 24 Mar 2024 18:43:20 -0400
-Message-ID: <20240324224720.1345309-475-sashal@kernel.org>
+Subject: [PATCH 6.7 475/713] drm/panel: boe-tv101wum-nl6: make use of prepare_prev_first
+Date: Sun, 24 Mar 2024 18:43:21 -0400
+Message-ID: <20240324224720.1345309-476-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -67,59 +63,40 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit f6aed043ee5d75b3d1bfc452b1a9584b63c8f76b ]
+[ Upstream commit 42a7a16bedc991190310a02dd202e29cfac52525 ]
 
-In the first if statement, we're checking if 'replay' is NULL. But in
-the second if statement, we're not checking if 'replay' is NULL again
-before calling replay->funcs->replay_set_power_opt().
+The panel on sc7180-trogdor-wormdingler and
+sc7180-trogdor-quackingstick hasn't been coming up since commit
+9e15123eca79 ("drm/msm/dsi: Stop unconditionally powering up DSI hosts
+at modeset"). Let's add "prepare_prev_first" as has been done for many
+other DSI panels.
 
-if (replay == NULL && force_static)
-    return false;
-
-..
-
-if (link->replay_settings.replay_feature_enabled &&
-    replay->funcs->replay_set_power_opt) {
-	replay->funcs->replay_set_power_opt(replay, *power_opts, panel_inst);
-	link->replay_settings.replay_power_opt_active = *power_opts;
-}
-
-If 'replay' is NULL, this will cause a null pointer dereference.
-
-Fixes the below found by smatch:
-drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_edp_panel_control.c:895 edp_set_replay_allow_active() error: we previously assumed 'replay' could be null (see line 887)
-
-Fixes: c7ddc0a800bc ("drm/amd/display: Add Functions to enable Freesync Panel Replay")
-Cc: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
-Cc: Roman Li <roman.li@amd.com>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc: Tom Chung <chiahsuan.chung@amd.com>
-Suggested-by: Tom Chung <chiahsuan.chung@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Tom Chung <chiahsuan.chung@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 9e15123eca79 ("drm/msm/dsi: Stop unconditionally powering up DSI hosts at modeset")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+Link: https://lore.kernel.org/r/20240216123111.1.I71c103720909790e1ec5a3f5bd96b18ab7b596fa@changeid
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240216123111.1.I71c103720909790e1ec5a3f5bd96b18ab7b596fa@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/link/protocols/link_edp_panel_control.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
-index bdae54c4648bc..7c4a93d3cda5d 100644
---- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
-+++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
-@@ -889,7 +889,8 @@ bool edp_set_replay_allow_active(struct dc_link *link, const bool *allow_active,
+diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
+index c4c0f08e92026..bc08814954f9b 100644
+--- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
++++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
+@@ -1871,6 +1871,8 @@ static int boe_panel_add(struct boe_panel *boe)
  
- 	/* Set power optimization flag */
- 	if (power_opts && link->replay_settings.replay_power_opt_active != *power_opts) {
--		if (link->replay_settings.replay_feature_enabled && replay->funcs->replay_set_power_opt) {
-+		if (replay != NULL && link->replay_settings.replay_feature_enabled &&
-+		    replay->funcs->replay_set_power_opt) {
- 			replay->funcs->replay_set_power_opt(replay, *power_opts, panel_inst);
- 			link->replay_settings.replay_power_opt_active = *power_opts;
- 		}
+ 	gpiod_set_value(boe->enable_gpio, 0);
+ 
++	boe->base.prepare_prev_first = true;
++
+ 	drm_panel_init(&boe->base, dev, &boe_panel_funcs,
+ 		       DRM_MODE_CONNECTOR_DSI);
+ 	err = of_drm_get_panel_orientation(dev->of_node, &boe->orientation);
 -- 
 2.43.0
 
