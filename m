@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-116268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23B3E8895D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:40:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39D78888CFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:37:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54DFE1C28849
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:40:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7FEC281320
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF29D18433F;
-	Mon, 25 Mar 2024 03:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1C32F8429;
+	Mon, 25 Mar 2024 01:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qmEXhu1h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lmiQzhgV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C38417F38F;
-	Sun, 24 Mar 2024 23:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2D228BD28;
+	Sun, 24 Mar 2024 23:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324081; cv=none; b=WoqQ3mTxjBIFvIvtPPCtbRYPP/luldJVSRqtuVHYT3cuvLePLQGJ02qFNCGm/AipuByr0Bi9JnFxIM/P4FsfRY8zBwyEUiS02WdXLKOlZdxLm7RGwLy3kZPyCJkuJDN/bkd6XhGX2IDSqSsowS4afkE9QDxBhdJhzMUeudIWEZ8=
+	t=1711324083; cv=none; b=T1RILeDX2UzjqHEBBagPzv4PAolPtP/Nh2D84xQwDoDpfsArAYNMKW4gqEydSigi6BwG2DqWcSZYzNf4GCgFu3dEgUrjdtmOnEJdb+z5c6v3HcgHzOMRgeK3Ar6o9dSThWmAoonF1w3zi0Vuk9HT+H4TT7085tR5/LLrml3YPiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324081; c=relaxed/simple;
-	bh=78i/RA49PesZ7YOjbsrbPRisIy940gQvj2kC6obZGY4=;
+	s=arc-20240116; t=1711324083; c=relaxed/simple;
+	bh=ir/H48WBd9iJTs/xTH8Oz5/Qn+uxWcc9t3DZeEZ5L6g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iPw8APwkT+MojnxHJrSzynkEYCbHhky3dRKfJW382A1uHwyjBCRMfe2oFl4fiwmvjD/+PHrRv5z3ke77F7LFmselMCq2sBz3poal7sWrtnKtcrcrmLYxdF2JDGupaTjzZ5F5yKEzk3/ZqtUPyNnCbhwavuJXyFEgq6CXvzz9gPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qmEXhu1h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6A90C43390;
-	Sun, 24 Mar 2024 23:48:00 +0000 (UTC)
+	 MIME-Version; b=MXBFmEYl9IM9beRawOnUXbtKWviq4ZQlGd5BbmwNB/M3wHrUrMwyXtR/7fBVwbzWqfmvLaeC11J+C7RwUi1mdlAB8u17bfGbM76A+7IL7tv1zaEEZnWlnqCkswvKP1Ati+HBG5kV97nubkv3PPQiwdmw0d/ME0kcLCqHI+PTELE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lmiQzhgV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90280C43394;
+	Sun, 24 Mar 2024 23:48:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324081;
-	bh=78i/RA49PesZ7YOjbsrbPRisIy940gQvj2kC6obZGY4=;
+	s=k20201202; t=1711324082;
+	bh=ir/H48WBd9iJTs/xTH8Oz5/Qn+uxWcc9t3DZeEZ5L6g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qmEXhu1hT6rvlvk33iF+nIaeu426WyxkfN2kM5+eCFtFxf3fUlICiSnAsno66YbWR
-	 erj8+p/mJz7aDZDOurTR4Im8i0W8+pvj9yFg5NFtojZPXq+RMTq7h3Q0pQr/3PSSZt
-	 jHQfz2p4/KSJrjJlW1ZNHU2Gg+3jqLIX+6IHg2PxpfLLhTrabKNCC/17ClX1IGYU8W
-	 tPBU6luB1xvOkDzMIwfz1YMPC44yQQw18Kc3FPwZJw+Wcv32BN3H3b7gkr+H9jwTkG
-	 NdRcDa4OIApaU461GCv95R4wEeGUPKvdgpLl0TV6/F/OtJi02MHFAYY8UTP1LDJdMS
-	 GGQAn1G7wwFnA==
+	b=lmiQzhgV8Pl9X32Wp5oBt3Njthn6tB+Z2KEaOIsaIyprQ/934nhu/2kWrdzIvBBlK
+	 dBqOsg4Vh4/2JDI9VoFHoWlljfmWvIVe5MIte0IbKq4KYF/qXvfwwQ4DJ9Xj5g1fiZ
+	 5bxC2iVG+VW1Ho9cbR4dod5bgWKIm4xbh8wBYHAnwfP7AUsZO8EpulEGpmSFV/5tvB
+	 X6p4cWU631p1Cjh0V7Tz/MeMZ84MZP78qnVpZE3jfHCQqrPBrSdrjYMhq3qjGXwo1b
+	 FD5UsDLDNvwD+RHi7o48hRsFC149ZIDFzS+suiauHZpcCnsKq5HA5O4220QQSBYL9b
+	 livId0xoFXr1A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Duoming Zhou <duoming@zju.edu.cn>,
+	Louis Peens <louis.peens@corigine.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 081/183] net/x25: fix incorrect parameter validation in the x25_getsockopt() function
-Date: Sun, 24 Mar 2024 19:44:54 -0400
-Message-ID: <20240324234638.1355609-82-sashal@kernel.org>
+Subject: [PATCH 5.4 082/183] nfp: flower: handle acti_netdevs allocation failure
+Date: Sun, 24 Mar 2024 19:44:55 -0400
+Message-ID: <20240324234638.1355609-83-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,44 +63,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+From: Duoming Zhou <duoming@zju.edu.cn>
 
-[ Upstream commit d6eb8de2015f0c24822e47356f839167ebde2945 ]
+[ Upstream commit 84e95149bd341705f0eca6a7fcb955c548805002 ]
 
-The 'len' variable can't be negative when assigned the result of
-'min_t' because all 'min_t' parameters are cast to unsigned int,
-and then the minimum one is chosen.
+The kmalloc_array() in nfp_fl_lag_do_work() will return null, if
+the physical memory has run out. As a result, if we dereference
+the acti_netdevs, the null pointer dereference bugs will happen.
 
-To fix the logic, check 'len' as read from 'optlen',
-where the types of relevant variables are (signed) int.
+This patch adds a check to judge whether allocation failure occurs.
+If it happens, the delayed work will be rescheduled and try again.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: bb9a8d031140 ("nfp: flower: monitor and offload LAG groups")
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+Reviewed-by: Louis Peens <louis.peens@corigine.com>
+Link: https://lore.kernel.org/r/20240308142540.9674-1-duoming@zju.edu.cn
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/x25/af_x25.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/netronome/nfp/flower/lag_conf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index 43dd489ad6db9..851096110b4d4 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -470,12 +470,12 @@ static int x25_getsockopt(struct socket *sock, int level, int optname,
- 	if (get_user(len, optlen))
- 		goto out;
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/lag_conf.c b/drivers/net/ethernet/netronome/nfp/flower/lag_conf.c
+index 63907aeb3884e..3167f9675ae0f 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/lag_conf.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/lag_conf.c
+@@ -308,6 +308,11 @@ static void nfp_fl_lag_do_work(struct work_struct *work)
  
--	len = min_t(unsigned int, len, sizeof(int));
--
- 	rc = -EINVAL;
- 	if (len < 0)
- 		goto out;
+ 		acti_netdevs = kmalloc_array(entry->slave_cnt,
+ 					     sizeof(*acti_netdevs), GFP_KERNEL);
++		if (!acti_netdevs) {
++			schedule_delayed_work(&lag->work,
++					      NFP_FL_LAG_DELAY);
++			continue;
++		}
  
-+	len = min_t(unsigned int, len, sizeof(int));
-+
- 	rc = -EFAULT;
- 	if (put_user(len, optlen))
- 		goto out;
+ 		/* Include sanity check in the loop. It may be that a bond has
+ 		 * changed between processing the last notification and the
 -- 
 2.43.0
 
