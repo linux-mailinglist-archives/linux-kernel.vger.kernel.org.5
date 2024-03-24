@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-113670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3702E8885E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:19:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6570D889B28
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:45:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95C461F2436C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:19:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9666E1C34338
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D5F143889;
-	Sun, 24 Mar 2024 22:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31CCC1F23CB;
+	Mon, 25 Mar 2024 02:34:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e27uNjqe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i53VxMAr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 288AD143886;
-	Sun, 24 Mar 2024 22:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD02143894;
+	Sun, 24 Mar 2024 22:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320626; cv=none; b=XKLPsiAbz8UWWI+TStTZT/jS9ZQ+navJ0XahwLeJ/pqYEXcTimAOVev9SbTXbpPLbQc4LNgRXwkxvyR87ij38ubEraHK7eKcj4/crBftWs1o9FpJBfneuv0x/nXs6zDMwYkB347NaNlD29lyhEVunczRnKZgb88AB12UB8LRCe0=
+	t=1711320628; cv=none; b=aGBVXhrjH0hbzObvu7xqT1pEq+pf5yJh45TB14tzKQZVDkVvIIWA7wv2kV67gkeGHp7M22khlU4SqbUk5dfItN9nzuphRYMuH7txMSob1CmewJhSCDSA1pvWt0xoUQbIrgPlZNTSzXgxAaoOt/BUWrjoqSEB4WIlKS4LVVBUOFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320626; c=relaxed/simple;
-	bh=CCMTvASji0/stHiT5ImMEo2vqL9mPQDDspFCl9RXgnw=;
+	s=arc-20240116; t=1711320628; c=relaxed/simple;
+	bh=bTEChCyEJj/3Nl554eWTVKSB0lt5bi1igmaG3wMuy3k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M1FOLGB1P/iqEzYj2XlZ3kHqI32MHQjodDDyf0G4ZVBA6WD963rZYKYRNH9+B5UDtPtUhcEgBeHY7MabwP6WO4FKqLWVaZz2hQEpFjLK+Ietf6wl4/aDdbC/OiFSBACLuu804wM0QBsrT4dsFkoQtG0TA7jEo/oquic5caWmrlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e27uNjqe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05AF7C433F1;
-	Sun, 24 Mar 2024 22:50:24 +0000 (UTC)
+	 MIME-Version; b=Fdx05Ws8J3Zlpl/Ehmx2HIIN7ax2D1iZKBal5YqYLS9HQE8SSc0f2x5fEvnp5WpMGuVoUSBPbddlnNmFK2Z3xPsWXcpox3hPpZlRP3Ek1p06zuY1HiDGOLCDblR3kezLL01Mcm5TpZr6a0nVen6/GVUfPoz98NXTCN/xahHGImQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i53VxMAr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0329FC433C7;
+	Sun, 24 Mar 2024 22:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320625;
-	bh=CCMTvASji0/stHiT5ImMEo2vqL9mPQDDspFCl9RXgnw=;
+	s=k20201202; t=1711320626;
+	bh=bTEChCyEJj/3Nl554eWTVKSB0lt5bi1igmaG3wMuy3k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e27uNjqe4ue7Q7+ITKOAtj0soAoWV+CsvKAaPxbWl4PKeq5pm1edU400yxE4tEFrP
-	 Q9uSa9ICXMcMZbps6WC2f55kmfMchTE2aiByA4oFhW0E5u7h3P6AhriX4/Cwh1sg6l
-	 0qijpGHMA9m4lKsknRTM3O4skNUJ//f1wWQVjy4ObaHHg9i5jhOvF6pYX0K+nUGZwP
-	 qYqxH3leZ5913OlJqcAh7ErQhWW/1Izq9IYHwpWU3BVsXw4zwRopqiQucwPucTIwo+
-	 vznAJKude0NOqCWOcYQSh1eOPeEm5HTk5zrfhH9C0m7Bgl3ClQHgNTqzDV8u42Hsn4
-	 YwUVTwi0U5aTg==
+	b=i53VxMArkW//pPlDZqCDYMPuWFqKiIe0PmB0l9cTEsVQaJJeSSNyM9AfI8sdTtQVp
+	 oHSesWCtFPwgYyt9pW8QseeitxBZMukdeNLGHtQ76InBhqU1GLgE29/RYrSjiCuDHw
+	 bsPEouDreFntBU0gYzRjh3QPw9irt9oWUBZc6CQDHjHzAyZgribt+NVJxjljuflLFX
+	 6Vbq/7AZNXioHJlrnpyEqrIYVCV4MCkUAbgT1EfwuP2shu+KGU2rVmt4UzjXpSHYsO
+	 yWXTTRkS70f7b36HeTsSLrcf9mpgJAdwV00ULKzQ+iDGg0dKuu6S7nclvYSsu6yvHH
+	 s5jS68HP8tPxQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	Andrei Otcheretianski <andrei.otcheretianski@intel.com>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 187/713] wifi: ath12k: fix fetching MCBC flag for QCN9274
-Date: Sun, 24 Mar 2024 18:38:33 -0400
-Message-ID: <20240324224720.1345309-188-sashal@kernel.org>
+Subject: [PATCH 6.7 188/713] wifi: iwlwifi: mvm: report beacon protection failures
+Date: Sun, 24 Mar 2024 18:38:34 -0400
+Message-ID: <20240324224720.1345309-189-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,60 +64,103 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 902700d55d4a4522bb3eb4ef94f752a19c42230a ]
+[ Upstream commit 91380f768d7f6e3d003755defa792e9a00a1444a ]
 
-In QCN9274, RX packet's multicast and broadcast(MCBC) flag is fetched
-from RX descriptor's msdu_end info5 member but it is not correct
-for QCN9274. Due to this with encryption, ARP request packet is wrongly
-marked as MCBC packet and it is sent to mac80211 without setting
-RX_FLAG_PN_VALIDATED & RX_FLAG_DECRYPTED flag. This results in packet
-getting dropped in mac80211. Hence ping initiated from station to AP
-fails.
+Andrei reports that we just silently drop beacons after we
+report the key counters, but never report to userspace, so
+wpa_supplicant cannot send the WNM action frame. Fix that.
 
-Fix this by fetching correct MCBC flag in case of QCN9274.
-For QC9274 MCBC flag should be fetched from RX descriptor's mpdu_start
-info6 member.
-
-Tested-on: QCN9274 hw2.0 PCI WLAN.WBE.1.1.1-00188-QCAHKSWPL_SILICONZ-1
-Tested-on: QCN9274 hw2.0 PCI WLAN.WBE.1.0.1-00029-QCAHKSWPL_SILICONZ-1
-Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0.c5-00481-QCAHMTSWPL_V1.0_V2.0_SILICONZ-3
-
-Fixes: 8f04852e90cb ("wifi: ath12k: Use msdu_end to check MCBC")
-Signed-off-by: Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://msgid.link/20240129065724.2310207-5-quic_rajkbhag@quicinc.com
+Fixes: b1fdc2505abc ("iwlwifi: mvm: advertise BIGTK client support if available")
+Reported-by: Andrei Otcheretianski <andrei.otcheretianski@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reviewed-by: Gregory Greenman <gregory.greenman@intel.com>
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Link: https://msgid.link/20240128084842.7d855442cdce.Iba90b26f893dc8c49bfb8be65373cd0a138af12c@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath12k/hal.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c | 26 +++++++++++--------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath12k/hal.c b/drivers/net/wireless/ath/ath12k/hal.c
-index a489369d80687..1bdab8604db94 100644
---- a/drivers/net/wireless/ath/ath12k/hal.c
-+++ b/drivers/net/wireless/ath/ath12k/hal.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: BSD-3-Clause-Clear
- /*
-  * Copyright (c) 2018-2021 The Linux Foundation. All rights reserved.
-- * Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-  */
- #include <linux/dma-mapping.h>
- #include "hal_tx.h"
-@@ -449,8 +449,8 @@ static u8 *ath12k_hw_qcn9274_rx_desc_mpdu_start_addr2(struct hal_rx_desc *desc)
- 
- static bool ath12k_hw_qcn9274_rx_desc_is_da_mcbc(struct hal_rx_desc *desc)
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c b/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
+index af15d470c69bd..7bf2a5947e5e9 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
+@@ -282,6 +282,7 @@ static int iwl_mvm_rx_mgmt_prot(struct ieee80211_sta *sta,
+ 				u32 status,
+ 				struct ieee80211_rx_status *stats)
  {
--	return __le16_to_cpu(desc->u.qcn9274.msdu_end.info5) &
--	       RX_MSDU_END_INFO5_DA_IS_MCBC;
-+	return __le32_to_cpu(desc->u.qcn9274.mpdu_start.info6) &
-+	       RX_MPDU_START_INFO6_MCAST_BCAST;
- }
++	struct wireless_dev *wdev;
+ 	struct iwl_mvm_sta *mvmsta;
+ 	struct iwl_mvm_vif *mvmvif;
+ 	u8 keyid;
+@@ -303,9 +304,15 @@ static int iwl_mvm_rx_mgmt_prot(struct ieee80211_sta *sta,
+ 	if (!ieee80211_is_beacon(hdr->frame_control))
+ 		return 0;
  
- static void ath12k_hw_qcn9274_rx_desc_get_dot11_hdr(struct hal_rx_desc *desc,
++	if (!sta)
++		return -1;
++
++	mvmsta = iwl_mvm_sta_from_mac80211(sta);
++	mvmvif = iwl_mvm_vif_from_mac80211(mvmsta->vif);
++
+ 	/* key mismatch - will also report !MIC_OK but we shouldn't count it */
+ 	if (!(status & IWL_RX_MPDU_STATUS_KEY_VALID))
+-		return -1;
++		goto report;
+ 
+ 	/* good cases */
+ 	if (likely(status & IWL_RX_MPDU_STATUS_MIC_OK &&
+@@ -314,13 +321,6 @@ static int iwl_mvm_rx_mgmt_prot(struct ieee80211_sta *sta,
+ 		return 0;
+ 	}
+ 
+-	if (!sta)
+-		return -1;
+-
+-	mvmsta = iwl_mvm_sta_from_mac80211(sta);
+-
+-	mvmvif = iwl_mvm_vif_from_mac80211(mvmsta->vif);
+-
+ 	/*
+ 	 * both keys will have the same cipher and MIC length, use
+ 	 * whichever one is available
+@@ -329,11 +329,11 @@ static int iwl_mvm_rx_mgmt_prot(struct ieee80211_sta *sta,
+ 	if (!key) {
+ 		key = rcu_dereference(mvmvif->bcn_prot.keys[1]);
+ 		if (!key)
+-			return -1;
++			goto report;
+ 	}
+ 
+ 	if (len < key->icv_len + IEEE80211_GMAC_PN_LEN + 2)
+-		return -1;
++		goto report;
+ 
+ 	/* get the real key ID */
+ 	keyid = frame[len - key->icv_len - IEEE80211_GMAC_PN_LEN - 2];
+@@ -347,7 +347,7 @@ static int iwl_mvm_rx_mgmt_prot(struct ieee80211_sta *sta,
+ 			return -1;
+ 		key = rcu_dereference(mvmvif->bcn_prot.keys[keyid - 6]);
+ 		if (!key)
+-			return -1;
++			goto report;
+ 	}
+ 
+ 	/* Report status to mac80211 */
+@@ -355,6 +355,10 @@ static int iwl_mvm_rx_mgmt_prot(struct ieee80211_sta *sta,
+ 		ieee80211_key_mic_failure(key);
+ 	else if (status & IWL_RX_MPDU_STATUS_REPLAY_ERROR)
+ 		ieee80211_key_replay(key);
++report:
++	wdev = ieee80211_vif_to_wdev(mvmsta->vif);
++	if (wdev->netdev)
++		cfg80211_rx_unprot_mlme_mgmt(wdev->netdev, (void *)hdr, len);
+ 
+ 	return -1;
+ }
 -- 
 2.43.0
 
