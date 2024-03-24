@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 630828881EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:33:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6919F8881EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3437B23B95
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:33:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BBEB1C21B62
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F13A2172BC1;
-	Sun, 24 Mar 2024 22:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CA3172BD2;
+	Sun, 24 Mar 2024 22:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rgLLEx3x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bNJ8fgo9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1572C172BA0;
-	Sun, 24 Mar 2024 22:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6511172BB3;
+	Sun, 24 Mar 2024 22:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319960; cv=none; b=mI075z/Jq2dJOnMAD+6A5Y7XycshMQ8h1Lecr8bVSLwwbn/NSADrrtpowkiEPUiKKGc7D4hdc0k6BqRzF5LUEbCcBfzFsOqxZyCKnvrYMYaBA78hH+nvLeE/5BSv4ge4pkqobOqwgcNM73o5UO+hZ4IzGBN/8mcs9bUNLJNNlLI=
+	t=1711319960; cv=none; b=E0LumgYKIt1KgPXlvH7xd1Vlu+1fJpHxkIh+IL3PBQ8LHzSV19KM7Vqdzxc8OAYBWpy/9c3oaLHiP4mYWTr99KU0zEtesLefwZuKuLPCMVMwbrvNlSki96VUaSoboSH2bu1nZIWQMbMEoufftuBbxcIy2Nq+j/FnI8ggJuUQhoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711319960; c=relaxed/simple;
-	bh=+I604YvrVbmBP/fR3nTzqZgyNQVHXkAtJ9TyLm1Qv1I=;
+	bh=im1qitA3y3Fjmo4eLlVmZm8/7y/SC+50O7yYIeNO5Wk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JaSG1GM9j/GRNBb5xjGkL+JpxfnewdDxuQeSun60J2GVBuuxQdwVva6U3Wxun6lOgsoXNQwBGeFDFWxnPjVLG2ef8qQkDX3l29SIw74uxPejXv/Hm/pTYPTz5CbMyAes/l4NMPisZBtR1OteLl2XYK2ep7KGxxK4PKJbq3dd6fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rgLLEx3x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEC79C433F1;
-	Sun, 24 Mar 2024 22:39:18 +0000 (UTC)
+	 MIME-Version; b=Bs7N82Q32Eu5hISPOxwitbmPAAf6vt9CW+PqUeBVXzX/4Mr/XagdIN5hsXUEgWUB422Ovx+eHl/EOHCKhVEDJG+n7dCCewvdwVmbiD7aMbGyeFApKPYP9EkFi9a62i0IOV6KOaaj8ahMbPIONQftNa93B4tDZPa83DpCd+khp1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bNJ8fgo9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB42FC43390;
+	Sun, 24 Mar 2024 22:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319959;
-	bh=+I604YvrVbmBP/fR3nTzqZgyNQVHXkAtJ9TyLm1Qv1I=;
+	s=k20201202; t=1711319960;
+	bh=im1qitA3y3Fjmo4eLlVmZm8/7y/SC+50O7yYIeNO5Wk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rgLLEx3x+fIsFzjvQHaxeVNVAsVIbli3vRIQ06zyled5OH10upNjeUCKB6bc1z2Z8
-	 7FjmCA2ExFzgIu6LP1YYIVjfxtvJfjfuJufCI3GYV91HK69qQ+oJqYsVBHWmnvU4pz
-	 O4z5ODMBhfqBZ8RkJj6Q/JyRLDOs9dbwkM+R5BFQDUvoOmVbAFIvD7b+WZ6j6W65Wk
-	 Ppzo69wFjAoBL+mgugPTAX1kqIuhppHx4n3f4c3yu/dEqsvW23XQoHRgLorJIg5BeE
-	 /j7sOw6dlIIuGW3p2stbgfsnvpzGJvBLHMb6crNyLVTczFjTYnxu+gsfrMztiJpvCn
-	 rSQScU5pL/SZA==
+	b=bNJ8fgo9jq2gR6Yfhe/D1d92VvEi8fXIr5G3YnzWqQGnAdTxdJc98fbgAJWcDxZGJ
+	 veo0BTU0nI+PtEMZZ4MeQZo37PCyK+hccdVunerN7LtTjWopX/1kINPCXITGCylN7i
+	 ucw/NNU72H59PQXwdZq6hHk4rznPqWZUNpKklpBUDWrf5hF84K2bea30oieZIAEAJV
+	 1hd4+Rz3rvcKqIfdltjufyXEt+GOVJeFBwP4K6mALccFPBn7LC++8PIgBMCQlCdRQX
+	 CBwq9nULDJ4K+MvxCzStnBsHIbVLBZEOoKXjE8q99PNhTxnx4IhgTRriSABxxZqdJr
+	 FVRHylA83KysQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Marek Vasut <marex@denx.de>,
+Cc: Liu Ying <victor.liu@nxp.com>,
 	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 266/715] arm64: dts: imx8mp: Set SPI NOR to max 40 MHz on Data Modul i.MX8M Plus eDM SBC
-Date: Sun, 24 Mar 2024 18:27:25 -0400
-Message-ID: <20240324223455.1342824-267-sashal@kernel.org>
+Subject: [PATCH 6.8 267/715] arm64: dts: imx8mp-evk: Fix hdmi@3d node
+Date: Sun, 24 Mar 2024 18:27:26 -0400
+Message-ID: <20240324223455.1342824-268-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,35 +62,117 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Marek Vasut <marex@denx.de>
+From: Liu Ying <victor.liu@nxp.com>
 
-[ Upstream commit 13ab6f174a6b577bd7d09124b47ec8ace2682e42 ]
+[ Upstream commit 0ff08803eca417dfa9372194bebf3d1b1f501f98 ]
 
-The SPI NOR bus routing on this board cannot go above 50 MHz,
-set the clock frequency to maximum of 40 MHz to be within a
-safe margin. Remove the comment as well.
+The hdmi@3d node's compatible string is "adi,adv7535" instead of
+"adi,adv7533" or "adi,adv751*".
 
-Fixes: 562d222f23f0 ("arm64: dts: imx8mp: Add support for Data Modul i.MX8M Plus eDM SBC")
-Signed-off-by: Marek Vasut <marex@denx.de>
+Fix the hdmi@3d node by means of:
+* Use default register addresses for "cec", "edid" and "packet", because
+  there is no need to use a non-default address map.
+* Add missing interrupt related properties.
+* Drop "adi,input-*" properties which are only valid for adv751*.
+* Add VEXT_3V3 fixed regulator.
+* Add "*-supply" properties, since most are required.
+* Fix label names - s/adv7533/adv7535/.
+
+Fixes: 65344b9bed3a ("arm64: dts: imx8mp-evk: Add HDMI support")
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 33 +++++++++++++-------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts b/arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts
-index 5828c9d7821de..b5ce7b14b5434 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts
-@@ -121,7 +121,7 @@ &ecspi1 {
- 	flash@0 {	/* W25Q128JVEI */
- 		compatible = "jedec,spi-nor";
- 		reg = <0>;
--		spi-max-frequency = <100000000>;	/* Up to 133 MHz */
-+		spi-max-frequency = <40000000>;
- 		spi-tx-bus-width = <1>;
- 		spi-rx-bus-width = <1>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+index f87fa5a948ccc..9beba8d6a0dfe 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+@@ -23,7 +23,7 @@ hdmi-connector {
+ 
+ 		port {
+ 			hdmi_connector_in: endpoint {
+-				remote-endpoint = <&adv7533_out>;
++				remote-endpoint = <&adv7535_out>;
+ 			};
+ 		};
  	};
+@@ -107,6 +107,13 @@ reg_usdhc2_vmmc: regulator-usdhc2 {
+ 		enable-active-high;
+ 	};
+ 
++	reg_vext_3v3: regulator-vext-3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "VEXT_3V3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
+ 	sound {
+ 		compatible = "simple-audio-card";
+ 		simple-audio-card,name = "wm8960-audio";
+@@ -364,7 +371,7 @@ BUCK4 {
+ 				regulator-always-on;
+ 			};
+ 
+-			BUCK5 {
++			reg_buck5: BUCK5 {
+ 				regulator-name = "BUCK5";
+ 				regulator-min-microvolt = <1650000>;
+ 				regulator-max-microvolt = <1950000>;
+@@ -415,14 +422,16 @@ &i2c2 {
+ 
+ 	hdmi@3d {
+ 		compatible = "adi,adv7535";
+-		reg = <0x3d>, <0x3c>, <0x3e>, <0x3f>;
+-		reg-names = "main", "cec", "edid", "packet";
++		reg = <0x3d>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
+ 		adi,dsi-lanes = <4>;
+-		adi,input-depth = <8>;
+-		adi,input-colorspace = "rgb";
+-		adi,input-clock = "1x";
+-		adi,input-style = <1>;
+-		adi,input-justification = "evenly";
++		avdd-supply = <&reg_buck5>;
++		dvdd-supply = <&reg_buck5>;
++		pvdd-supply = <&reg_buck5>;
++		a2vdd-supply = <&reg_buck5>;
++		v3p3-supply = <&reg_vext_3v3>;
++		v1p2-supply = <&reg_buck5>;
+ 
+ 		ports {
+ 			#address-cells = <1>;
+@@ -431,7 +440,7 @@ ports {
+ 			port@0 {
+ 				reg = <0>;
+ 
+-				adv7533_in: endpoint {
++				adv7535_in: endpoint {
+ 					remote-endpoint = <&dsi_out>;
+ 				};
+ 			};
+@@ -439,7 +448,7 @@ adv7533_in: endpoint {
+ 			port@1 {
+ 				reg = <1>;
+ 
+-				adv7533_out: endpoint {
++				adv7535_out: endpoint {
+ 					remote-endpoint = <&hdmi_connector_in>;
+ 				};
+ 			};
+@@ -524,7 +533,7 @@ port@1 {
+ 			reg = <1>;
+ 
+ 			dsi_out: endpoint {
+-				remote-endpoint = <&adv7533_in>;
++				remote-endpoint = <&adv7535_in>;
+ 				data-lanes = <1 2 3 4>;
+ 			};
+ 		};
 -- 
 2.43.0
 
