@@ -1,62 +1,55 @@
-Return-Path: <linux-kernel+bounces-114298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286B1888F94
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:55:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6420E889672
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE2931F2A2D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:55:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19279B22290
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9302613E6;
-	Sun, 24 Mar 2024 23:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DB225927B;
+	Mon, 25 Mar 2024 02:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a6Zp0ynQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PrEU9NZf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF60013A86C;
-	Sun, 24 Mar 2024 23:07:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D889B20F227;
+	Sun, 24 Mar 2024 23:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321672; cv=none; b=Q14xzFjrm6CMMQBKr8ch0mpmnF0RetNZkTdgZWkrBslLz8SJYgtQw90WqQNxdBd2lzf4LoYLSjYhX4elzZbc9ue2pS99ddJbcJi8qFG0pVbzAZhjtvlnhfgsmk73iKnZIYa9kY9CUAionnL07KI0e1u4SHhIFmYysbm/JcTarqE=
+	t=1711321672; cv=none; b=rdZPteAtE/lc2zFrjIOz2B7zb6DzwoBwXC3VNesCNQxfOr2Od05xOgciID4QKgP5STVim4w1SMwCeQqhYfkvkAlqNHKJAvaMcw+5AtIkP+/n+sf/JMD10N05Ahb6aM7pMDRb2wVBXbXGq+PzKpT53yAnfYnhhYtSzdaBeGrdsCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321672; c=relaxed/simple;
-	bh=Ks6Rh39f4C3jBfEt62E8rPS/XnqfajC+vnztZG15Mmg=;
+	bh=dNSXUR4F0PInX+6if0T8q039HcQHl4ObxNFwJQJpwJI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OIECAkq7XTU0WYV0oYZAd07TQRqyG/7u9uFQfj8EnAYcTmKkv34rLCgRdE0f0PlcBxgNtsYUZv4s/qgUIILVevgGqhKJt1zFuk29j1bJQdRiCihlX5khlaBmlk64sv5eci04dol9GH6AevNVGND2Yu6O4brBoTO6F4U1/3ofYmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a6Zp0ynQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C95BC433C7;
-	Sun, 24 Mar 2024 23:07:49 +0000 (UTC)
+	 MIME-Version; b=tgjkonuYg73LN/7qU9GOCs/KaUSoybecYvnjfuQuleWR+AX95WR/s1z6DCo4e4g1UqRKBxt/Y+gBmQcItil/SkzxUssoy8jeRVpN1DUStKsqztcbBZP1lrlWv2aYmbmH81SiVFXBU2mhogbnTpJjl9EW0CWW51GhLWBcEyCk/7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PrEU9NZf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D091C433F1;
+	Sun, 24 Mar 2024 23:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321670;
-	bh=Ks6Rh39f4C3jBfEt62E8rPS/XnqfajC+vnztZG15Mmg=;
+	s=k20201202; t=1711321671;
+	bh=dNSXUR4F0PInX+6if0T8q039HcQHl4ObxNFwJQJpwJI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=a6Zp0ynQAH3r3vHi8QhgdbXM+BNOZLXdI/I/lILS1CPTww9SmYnpbbfhGH+lLJY4x
-	 2yDyiCldyAesm3/mGUSMO9sE25xi16clzLd8Bl4A9GziQBN/gqA25HDtQo72vtHJ6l
-	 oG036qf/lym5YrdwM7paSwRDemmXDcYOjB81VOQzoDhmZMMWlx1PCFGMOax/bsEer/
-	 dYU72KWpzZMDtI/wHzShrc7nwlyKCoucHE+1WWlYujdDhbhDnB8KTT0yE8k5OFrrYm
-	 hgnvM7VX8SD+xEBQdI4TVRvQRWaomIoCP4msbY8J6kWII2tHWSu5v6AQhf11Svv+PL
-	 cWcWOzrLi1+5Q==
+	b=PrEU9NZf+Kj/QOpeSfAj+uP7Bpf9Q/EnMIdJGp+ncoeV3Q8JLyTHpftck+CaASUrN
+	 8sAEBoOJLpHJvobj+D5OFPpZCgPVu1WxWvnUejSjAP6uU7jW1c/ck3HGTeG6xRU7bJ
+	 vK791ExkW69UXTvKt/lLa8KT7i0MHxukhjXablNGmTdsHu90Pzyxa6cHCmGR5+fmOo
+	 oevZYeKt7GclD+8Tj5h3AEPRrUzhQPC71H134jmfNXDXWj84DLeJXj27PVMaWy0Jos
+	 vs/wduOSvaWBMCYEZ1qFZJwiexuH/oFx0EmZs87A8zqcOA28fGwLKextuMH82uvhdR
+	 J4kD+VE4zCTRw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	James Clark <james.clark@arm.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Tom Rix <trix@redhat.com>,
-	llvm@lists.linux.dev,
-	Namhyung Kim <namhyung@kernel.org>,
+Cc: Adam Skladowski <a39.skl@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 399/638] perf srcline: Add missed addr2line closes
-Date: Sun, 24 Mar 2024 18:57:16 -0400
-Message-ID: <20240324230116.1348576-400-sashal@kernel.org>
+Subject: [PATCH 6.6 400/638] dt-bindings: msm: qcom, mdss: Include ommited fam-b compatible
+Date: Sun, 24 Mar 2024 18:57:17 -0400
+Message-ID: <20240324230116.1348576-401-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -70,44 +63,35 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ian Rogers <irogers@google.com>
+From: Adam Skladowski <a39.skl@gmail.com>
 
-[ Upstream commit c7ba9d18ae47924a6ea6a47ca139779f58eb83c0 ]
+[ Upstream commit 3b63880de42bd3cb79c2a99949135a8f2441c088 ]
 
-The child_process for addr2line sets in and out to -1 so that pipes
-get created. It is the caller's responsibility to close the pipes,
-finish_command doesn't do it. Add the missed closes.
+During conversion 28nm-hpm-fam-b compat got lost, add it.
 
-Fixes: b3801e791231 ("perf srcline: Simplify addr2line subprocess")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: John Garry <john.g.garry@oracle.com>
-Cc: Tom Rix <trix@redhat.com>
-Cc: llvm@lists.linux.dev
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/r/20240201001504.1348511-8-irogers@google.com
+Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
+Fixes: f7d46c5efee2 ("dt-bindings: display/msm: split qcom, mdss bindings")
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Patchwork: https://patchwork.freedesktop.org/patch/575290/
+Link: https://lore.kernel.org/r/20240121194221.13513-4-a39.skl@gmail.com
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/srcline.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/display/msm/qcom,mdss.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/srcline.c b/tools/perf/util/srcline.c
-index 034b496df2978..7addc34afcf5d 100644
---- a/tools/perf/util/srcline.c
-+++ b/tools/perf/util/srcline.c
-@@ -399,6 +399,8 @@ static void addr2line_subprocess_cleanup(struct child_process *a2l)
- 		kill(a2l->pid, SIGKILL);
- 		finish_command(a2l); /* ignore result, we don't care */
- 		a2l->pid = -1;
-+		close(a2l->in);
-+		close(a2l->out);
- 	}
- 
- 	free(a2l);
+diff --git a/Documentation/devicetree/bindings/display/msm/qcom,mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,mdss.yaml
+index 0999ea07f47bb..e4576546bf0db 100644
+--- a/Documentation/devicetree/bindings/display/msm/qcom,mdss.yaml
++++ b/Documentation/devicetree/bindings/display/msm/qcom,mdss.yaml
+@@ -127,6 +127,7 @@ patternProperties:
+           - qcom,dsi-phy-20nm
+           - qcom,dsi-phy-28nm-8226
+           - qcom,dsi-phy-28nm-hpm
++          - qcom,dsi-phy-28nm-hpm-fam-b
+           - qcom,dsi-phy-28nm-lp
+           - qcom,hdmi-phy-8084
+           - qcom,hdmi-phy-8660
 -- 
 2.43.0
 
