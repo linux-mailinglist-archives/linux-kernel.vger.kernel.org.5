@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-115836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F67A889837
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:31:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3CB78894C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:07:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09AB929D6CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:31:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77CD71F30C2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D01D3709D4;
-	Mon, 25 Mar 2024 03:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D8537BFBB;
+	Mon, 25 Mar 2024 03:01:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EL+qEFt8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UDVwD2R7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64C9145FFA;
-	Sun, 24 Mar 2024 23:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0E1145FFD;
+	Sun, 24 Mar 2024 23:14:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322057; cv=none; b=jqHPGT2NgRDyQAmXQnqMIWjkD8cBRPmJ+MkR1Tpxi96MNG8h+a94M86kb3uQXA/l1ccZZb55Pcbc0C6sMYIEdfmnULRnkQSczej88BKpN0mvr9qyeqdtgt354Irnar0q6HehGHvwjk/vR7GK5DgVevFAwkOaRCzym8HMZ5NUHnA=
+	t=1711322058; cv=none; b=TYxYdjPTFe+Lrz+wUbY/afZGqwf2vCS2FaJOPGwHm+X2rDlCmJ3VGJ5KVstdD4BqrKRtl4wDV7bekcVw4nnG9k4pK80CP3alo5e4ZCXcadfiIkCmLlpUaGzQ0mtgmzlkGRmPAxWYVCqS87U1DKlm23tHVYDYSOwK7fen6qXAywI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322057; c=relaxed/simple;
-	bh=NPq6MquJ5yUC5CMPcnfevOigtOVMb24x6buBjtq8ZJI=;
+	s=arc-20240116; t=1711322058; c=relaxed/simple;
+	bh=kHvAj5Exwy/HdBqTXaGhsB0NkokkTU+SfCPdSR18a9c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bukf2UQFgLf0H3Sa38IlgiejBirehnmm+g8WEc54jUoPARAGuJJmdRTK1hABEeCEtSG9X5rEp8wTrW9dMRRL7zaWn7/sM5NEvC3DFimtbiREa0wkgxxySGX5596yy9w76c3YclSc7VQkZnzz3RJlh2K17jJzIg1LVn8lOnR8/p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EL+qEFt8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA88CC433C7;
-	Sun, 24 Mar 2024 23:14:16 +0000 (UTC)
+	 MIME-Version; b=izT6A7LvBsmjJD+sWpQ9iAaBe0bNP3P+aoohbUBysjAFPurA83zYgFw6vQNHcZ0HMU9nDbJOsDvliFyPNsRZECvcWmzhKTEFEagGmln3Xg+Q+hcE3I1I9CQsuLBUhetgboVQ6ZdED3IsIo4YZ+tOdugbPRrwo0HHZ/S/7j3MK9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UDVwD2R7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02B5BC433A6;
+	Sun, 24 Mar 2024 23:14:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322057;
-	bh=NPq6MquJ5yUC5CMPcnfevOigtOVMb24x6buBjtq8ZJI=;
+	s=k20201202; t=1711322058;
+	bh=kHvAj5Exwy/HdBqTXaGhsB0NkokkTU+SfCPdSR18a9c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EL+qEFt8YnF1D8EXtjAXS17jpNIU9lV0XeYhqh2Qkaz8zJ7aB/SeSxLgW5nMEp0lk
-	 oj9dGN9Yk1afg3H65Glj0SPKoKSKndOqoCABLdQFDHqr26fPe2w9078C1z5lPKJFyF
-	 Lmj+RD2ZiK6H4CbEuLW5OkQ693b67dzLzQTuEpxVu+RCTilg+5Za4FK4WgV8DQihjS
-	 c2Qpe/IaHGATXYiqOc5syP9za/Kx/pEN7tWwiL9SjHAlCnUs4Zya/ywQ0kQNZkpj39
-	 SVuXkLcMUD27WmXBe+R9BsIo+npEqb4CEbjnURXKVgTaT/71te0wLLjFOljFWLuLqH
-	 ppnIcR4Lh5ZOA==
+	b=UDVwD2R78kn2u8X0gEdBQqUgeFLT0sZ9JYTJ+GFUiGxFnVJ54kiqsROxCsWzKTdIR
+	 zfG79pJaSsEOQrG7rIhKGx8oUD1Yr/y9D1qrIYBj7yVTHdesGGAmZwO2oT+ImMyvEG
+	 0LE/DVpvQrUPOH4HUqbTacwzb2Kp3GH317gUO/YFYoTicbzpDqYhXLMzasIY7iOJC5
+	 pNBoXWR1NG+LIM9My3kwD5zXoMBkg0kvFjvgWNlZW9R5DoZLgJoBd/u2gdjmWo2XTL
+	 pbcIQiDiejyYSWDbLMUJK0E0hd3PvrBzgJmdLLpcA3I2Z909w8QnKtvMrvGUwb0nPS
+	 5R6/oxpw8owhw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Konrad Dybcio <konrad.dybcio@somainline.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Petr Mladek <pmladek@suse.com>,
+	John Ogness <john.ogness@linutronix.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 130/451] arm64: dts: qcom: sc8280xp: update UFS PHY nodes
-Date: Sun, 24 Mar 2024 19:06:46 -0400
-Message-ID: <20240324231207.1351418-131-sashal@kernel.org>
+Subject: [PATCH 6.1 131/451] printk: Disable passing console lock owner completely during panic()
+Date: Sun, 24 Mar 2024 19:06:47 -0400
+Message-ID: <20240324231207.1351418-132-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,117 +62,114 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johan Hovold <johan+linaro@kernel.org>
+From: Petr Mladek <pmladek@suse.com>
 
-[ Upstream commit 33c4e6588e4f018abc43381ee21fe2bed37e34a5 ]
+[ Upstream commit d04d5882cd678b898a9d7c5aee6afbe9e6e77fcd ]
 
-Update the UFS PHY nodes to match the new binding.
+The commit d51507098ff91 ("printk: disable optimistic spin
+during panic") added checks to avoid becoming a console waiter
+if a panic is in progress.
 
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-Reviewed-by: Brian Masney <bmasney@redhat.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
-Link: https://lore.kernel.org/r/20221104092045.17410-3-johan+linaro@kernel.org
-Stable-dep-of: 1d4ef9644e21 ("arm64: dts: qcom: sc8280xp: Fix UFS PHY clocks")
+However, the transition to panic can occur while there is
+already a waiter. The current owner should not pass the lock to
+the waiter because it might get stopped or blocked anytime.
+
+Also the panic context might pass the console lock owner to an
+already stopped waiter by mistake. It might happen when
+console_flush_on_panic() ignores the current lock owner, for
+example:
+
+CPU0                                CPU1
+----                                ----
+console_lock_spinning_enable()
+                                    console_trylock_spinning()
+                                      [CPU1 now console waiter]
+NMI: panic()
+  panic_other_cpus_shutdown()
+                                    [stopped as console waiter]
+  console_flush_on_panic()
+    console_lock_spinning_enable()
+    [print 1 record]
+    console_lock_spinning_disable_and_check()
+      [handover to stopped CPU1]
+
+This results in panic() not flushing the panic messages.
+
+Fix these problems by disabling all spinning operations
+completely during panic().
+
+Another advantage is that it prevents possible deadlocks caused
+by "console_owner_lock". The panic() context does not need to
+take it any longer. The lockless checks are safe because the
+functions become NOPs when they see the panic in progress. All
+operations manipulating the state are still synchronized by the
+lock even when non-panic CPUs would notice the panic
+synchronously.
+
+The current owner might stay spinning. But non-panic() CPUs
+would get stopped anyway and the panic context will never start
+spinning.
+
+Fixes: dbdda842fe96 ("printk: Add console owner and waiter logic to load balance console writes")
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Link: https://lore.kernel.org/r/20240207134103.1357162-12-john.ogness@linutronix.de
+Signed-off-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 49 +++++++++-----------------
- 1 file changed, 17 insertions(+), 32 deletions(-)
+ kernel/printk/printk.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-index 7e3aaf5de3f5c..88140ce104a44 100644
---- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-@@ -845,7 +845,7 @@ ufs_mem_hc: ufs@1d84000 {
- 				     "jedec,ufs-2.0";
- 			reg = <0 0x01d84000 0 0x3000>;
- 			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
--			phys = <&ufs_mem_phy_lanes>;
-+			phys = <&ufs_mem_phy>;
- 			phy-names = "ufsphy";
- 			lanes-per-direction = <2>;
- 			#reset-cells = <1>;
-@@ -887,27 +887,20 @@ ufs_mem_hc: ufs@1d84000 {
- 
- 		ufs_mem_phy: phy@1d87000 {
- 			compatible = "qcom,sc8280xp-qmp-ufs-phy";
--			reg = <0 0x01d87000 0 0x1c8>;
--			#address-cells = <2>;
--			#size-cells = <2>;
--			ranges;
--			clock-names = "ref",
--				      "ref_aux";
-+			reg = <0 0x01d87000 0 0x1000>;
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index cc53fb77f77cc..981cdb00b8722 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1797,10 +1797,23 @@ static bool console_waiter;
+  */
+ static void console_lock_spinning_enable(void)
+ {
++	/*
++	 * Do not use spinning in panic(). The panic CPU wants to keep the lock.
++	 * Non-panic CPUs abandon the flush anyway.
++	 *
++	 * Just keep the lockdep annotation. The panic-CPU should avoid
++	 * taking console_owner_lock because it might cause a deadlock.
++	 * This looks like the easiest way how to prevent false lockdep
++	 * reports without handling races a lockless way.
++	 */
++	if (panic_in_progress())
++		goto lockdep;
 +
- 			clocks = <&gcc GCC_UFS_CARD_CLKREF_CLK>,
- 				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
-+			clock-names = "ref", "ref_aux";
+ 	raw_spin_lock(&console_owner_lock);
+ 	console_owner = current;
+ 	raw_spin_unlock(&console_owner_lock);
+ 
++lockdep:
+ 	/* The waiter may spin on us after setting console_owner */
+ 	spin_acquire(&console_owner_dep_map, 0, 0, _THIS_IP_);
+ }
+@@ -1824,6 +1837,22 @@ static int console_lock_spinning_disable_and_check(void)
+ {
+ 	int waiter;
+ 
++	/*
++	 * Ignore spinning waiters during panic() because they might get stopped
++	 * or blocked at any time,
++	 *
++	 * It is safe because nobody is allowed to start spinning during panic
++	 * in the first place. If there has been a waiter then non panic CPUs
++	 * might stay spinning. They would get stopped anyway. The panic context
++	 * will never start spinning and an interrupted spin on panic CPU will
++	 * never continue.
++	 */
++	if (panic_in_progress()) {
++		/* Keep lockdep happy. */
++		spin_release(&console_owner_dep_map, _THIS_IP_);
++		return 0;
++	}
 +
-+			power-domains = <&gcc UFS_PHY_GDSC>;
- 
- 			resets = <&ufs_mem_hc 0>;
- 			reset-names = "ufsphy";
--			status = "disabled";
- 
--			ufs_mem_phy_lanes: phy@1d87400 {
--				reg = <0 0x01d87400 0 0x108>,
--				      <0 0x01d87600 0 0x1e0>,
--				      <0 0x01d87c00 0 0x1dc>,
--				      <0 0x01d87800 0 0x108>,
--				      <0 0x01d87a00 0 0x1e0>;
--				#phy-cells = <0>;
--			};
-+			#phy-cells = <0>;
-+
-+			status = "disabled";
- 		};
- 
- 		ufs_card_hc: ufs@1da4000 {
-@@ -915,7 +908,7 @@ ufs_card_hc: ufs@1da4000 {
- 				     "jedec,ufs-2.0";
- 			reg = <0 0x01da4000 0 0x3000>;
- 			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
--			phys = <&ufs_card_phy_lanes>;
-+			phys = <&ufs_card_phy>;
- 			phy-names = "ufsphy";
- 			lanes-per-direction = <2>;
- 			#reset-cells = <1>;
-@@ -956,28 +949,20 @@ ufs_card_hc: ufs@1da4000 {
- 
- 		ufs_card_phy: phy@1da7000 {
- 			compatible = "qcom,sc8280xp-qmp-ufs-phy";
--			reg = <0 0x01da7000 0 0x1c8>;
--			#address-cells = <2>;
--			#size-cells = <2>;
--			ranges;
--			clock-names = "ref",
--				      "ref_aux";
-+			reg = <0 0x01da7000 0 0x1000>;
-+
- 			clocks = <&gcc GCC_UFS_1_CARD_CLKREF_CLK>,
- 				 <&gcc GCC_UFS_CARD_PHY_AUX_CLK>;
-+			clock-names = "ref", "ref_aux";
-+
-+			power-domains = <&gcc UFS_CARD_GDSC>;
- 
- 			resets = <&ufs_card_hc 0>;
- 			reset-names = "ufsphy";
- 
--			status = "disabled";
-+			#phy-cells = <0>;
- 
--			ufs_card_phy_lanes: phy@1da7400 {
--				reg = <0 0x01da7400 0 0x108>,
--				      <0 0x01da7600 0 0x1e0>,
--				      <0 0x01da7c00 0 0x1dc>,
--				      <0 0x01da7800 0 0x108>,
--				      <0 0x01da7a00 0 0x1e0>;
--				#phy-cells = <0>;
--			};
-+			status = "disabled";
- 		};
- 
- 		tcsr_mutex: hwlock@1f40000 {
+ 	raw_spin_lock(&console_owner_lock);
+ 	waiter = READ_ONCE(console_waiter);
+ 	console_owner = NULL;
 -- 
 2.43.0
 
