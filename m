@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4098688A142
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:14:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C882C889E46
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:05:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0D68B61DDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:09:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F44AB61F35
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A508E23A757;
-	Mon, 25 Mar 2024 02:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2361F23C3E6;
+	Mon, 25 Mar 2024 02:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N9pPtA/v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMxp99Dn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED7512B14F;
-	Sun, 24 Mar 2024 22:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815E612B157;
+	Sun, 24 Mar 2024 22:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320963; cv=none; b=M98OX2XUcRePB2f+tbhk7UL2cdDqTfdrEVqsYmDxaOsK3w/PQr4Gc7gC8mVcALMS1hq23KoLjSuLvwCUq/OJWwajqB1Sm/JpS9QNFRI5pYVVFPhswnB+Avz1IdnAMeysxDEcrgExcLvswkYjEw3o0WZMC6RnklMV/ubG/jCXev4=
+	t=1711320965; cv=none; b=Bq+lglHnsu13q9BNVtek8Nkr7qDyNXIVBMsYfdFsNHBDvoHs2/68iOLXaHMK8Kv5LqvTACOfRxYxbkpL3EtCzcq6zdPkfbipw9T46j/UXSKxF52CdajzygI+wPkknGBjQ9P20vwjPKyMXT4iOFdddTInWrBgWSGfVltfgrjC0eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320963; c=relaxed/simple;
-	bh=rgiZlLUltNQDY4/R2SiXzwENx3XKfYBgoDJHJnEjr6s=;
+	s=arc-20240116; t=1711320965; c=relaxed/simple;
+	bh=/OkvdvR70NnVfY2Fr/0spMghmmbQzum0lIGGLUM9FCI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IDsFA12qmrOfxGavu8+qJReHthQ8QEz9/2cxXhPjVJeCuwPlJ0WY/pv40sqErdMgHY54XiQ3BE1PmyD6LQaNiKl/y4B+zI1D+Q8GIZc3NowUTzxB6EoSERxexyEt1hFc6uedWFzvv9mHvitRplVKw74P1+5wn9mwfU5GokUz1Fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N9pPtA/v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B34CCC43330;
-	Sun, 24 Mar 2024 22:56:02 +0000 (UTC)
+	 MIME-Version; b=IWxQTaiVPb1adhOA7nZfoTIChBB00HLuEwvCjW57QraMBx5EH+RNnyzzkThmzlPDz6mB/BDBDapIwisah6a0gdFe2JVmaqzS+YG4Myx7rn596o1A4eGQqoy3jLRM3+dp0a6p75t9o4skKvvbjVsxpRDwhKWRwbEVrl+tsHh4ljo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMxp99Dn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0DA8C43390;
+	Sun, 24 Mar 2024 22:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320963;
-	bh=rgiZlLUltNQDY4/R2SiXzwENx3XKfYBgoDJHJnEjr6s=;
+	s=k20201202; t=1711320964;
+	bh=/OkvdvR70NnVfY2Fr/0spMghmmbQzum0lIGGLUM9FCI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N9pPtA/vxPAXg0sxhpRQ4qqYXl1P/qpd6c9dN30Mra9umTvRE9q5YpBJTXGZuF7BE
-	 JBKYpmd87B4KhhAatWjO4CkQNGbV8gz8jJFL87hMbCngmlAt7oGeSMjKnex+gwHcZK
-	 KV6YeW6ZSnF+mQZD4KEdNEKpEvi3lGyZJ5PCYQN+P5GyjmbqmFDrLdPm5ap+shp/Pv
-	 MAD8uF4FDrY3MsmlL+nDK1QHsz1Gk+LFHAA9LLgLzLW3lULtc1BuRq0Y86/JFXy4Eb
-	 bT0dnkKHb9a27/ZEf4o1fdGthNk1B/BdMbeAE+TDGv2Q2WzKlTfNlDo9Yb9XZRgosY
-	 bALcfJsUNWwYQ==
+	b=kMxp99Dn1rwawIbamka2W+sJShOIwkTHm6eysWPOxj8YAymv38+WyMva5CEzkmXIk
+	 EGmovYkRJ4rltYdaXhpE4ZXOpOP9dlzS9vYLIE89Hrsavm7Tgf73mL8Pt6YvVApT8g
+	 hXrUtdqXeJb/b5qUMxR4PEeOxAOBJGO4yPHNpnTqt+u0BprAf1+jHhc6e571s7FYXX
+	 vhctJe/KeKGpKBv6CTDrfTwxfYpt1RWTsepLWGFo+S5DcvJpREH+OIr9ZGbBsDAaFJ
+	 9BjNxjDHsiY5Jgfj5agBqacTMHbncKyTdghxi8r+iVbNK4rWPUtx0ZMqB0PilfKHBM
+	 7lena1BKKav8g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hsin-Yi Wang <hsinyi@chromium.org>,
-	CK Hu <ck.hu@mediatek.com>,
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
+	Lee Jones <lee@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 526/713] drm/mediatek: Fix a null pointer crash in mtk_drm_crtc_finish_page_flip
-Date: Sun, 24 Mar 2024 18:44:12 -0400
-Message-ID: <20240324224720.1345309-527-sashal@kernel.org>
+Subject: [PATCH 6.7 527/713] mfd: cs42l43: Fix wrong register defaults
+Date: Sun, 24 Mar 2024 18:44:13 -0400
+Message-ID: <20240324224720.1345309-528-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,78 +62,109 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hsin-Yi Wang <hsinyi@chromium.org>
+From: Maciej Strozek <mstrozek@opensource.cirrus.com>
 
-[ Upstream commit c958e86e9cc1b48cac004a6e245154dfba8e163b ]
+[ Upstream commit c9e1e505cde1a8ddd0968b4d54ec2ea1937dfe00 ]
 
-It's possible that mtk_crtc->event is NULL in
-mtk_drm_crtc_finish_page_flip().
+A few regs have unnecessary values in defaults, change them to match the
+datasheet
 
-pending_needs_vblank value is set by mtk_crtc->event, but in
-mtk_drm_crtc_atomic_flush(), it's is not guarded by the same
-lock in mtk_drm_finish_page_flip(), thus a race condition happens.
+Fixes: ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
 
-Consider the following case:
-
-CPU1                              CPU2
-step 1:
-mtk_drm_crtc_atomic_begin()
-mtk_crtc->event is not null,
-                                  step 1:
-                                  mtk_drm_crtc_atomic_flush:
-                                  mtk_drm_crtc_update_config(
-                                      !!mtk_crtc->event)
-step 2:
-mtk_crtc_ddp_irq ->
-mtk_drm_finish_page_flip:
-lock
-mtk_crtc->event set to null,
-pending_needs_vblank set to false
-unlock
-                                  pending_needs_vblank set to true,
-
-                                  step 2:
-                                  mtk_crtc_ddp_irq ->
-                                  mtk_drm_finish_page_flip called again,
-                                  pending_needs_vblank is still true
-                                  //null pointer
-
-Instead of guarding the entire mtk_drm_crtc_atomic_flush(), it's more
-efficient to just check if mtk_crtc->event is null before use.
-
-Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Link: https://patchwork.kernel.org/project/dri-devel/patch/20240223212404.3709690-1-hsinyi@chromium.org/
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20240229155616.118457-1-mstrozek@opensource.cirrus.com
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/mfd/cs42l43.c | 68 +++++++++++++++++++++----------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index db43f9dff912e..d645b85f97215 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -95,11 +95,13 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
- 	struct drm_crtc *crtc = &mtk_crtc->base;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&crtc->dev->event_lock, flags);
--	drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
--	drm_crtc_vblank_put(crtc);
--	mtk_crtc->event = NULL;
--	spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
-+	if (mtk_crtc->event) {
-+		spin_lock_irqsave(&crtc->dev->event_lock, flags);
-+		drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
-+		drm_crtc_vblank_put(crtc);
-+		mtk_crtc->event = NULL;
-+		spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
-+	}
- }
- 
- static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
+index 7b6d07cbe6fc6..73c88ee6a866c 100644
+--- a/drivers/mfd/cs42l43.c
++++ b/drivers/mfd/cs42l43.c
+@@ -131,38 +131,38 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
+ 	{ CS42L43_ASP_TX_CH4_CTRL,			0x00170091 },
+ 	{ CS42L43_ASP_TX_CH5_CTRL,			0x001700C1 },
+ 	{ CS42L43_ASP_TX_CH6_CTRL,			0x001700F1 },
+-	{ CS42L43_ASPTX1_INPUT,				0x00800000 },
+-	{ CS42L43_ASPTX2_INPUT,				0x00800000 },
+-	{ CS42L43_ASPTX3_INPUT,				0x00800000 },
+-	{ CS42L43_ASPTX4_INPUT,				0x00800000 },
+-	{ CS42L43_ASPTX5_INPUT,				0x00800000 },
+-	{ CS42L43_ASPTX6_INPUT,				0x00800000 },
+-	{ CS42L43_SWIRE_DP1_CH1_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP1_CH2_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP1_CH3_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP1_CH4_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP2_CH1_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP2_CH2_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP3_CH1_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP3_CH2_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP4_CH1_INPUT,			0x00800000 },
+-	{ CS42L43_SWIRE_DP4_CH2_INPUT,			0x00800000 },
+-	{ CS42L43_ASRC_INT1_INPUT1,			0x00800000 },
+-	{ CS42L43_ASRC_INT2_INPUT1,			0x00800000 },
+-	{ CS42L43_ASRC_INT3_INPUT1,			0x00800000 },
+-	{ CS42L43_ASRC_INT4_INPUT1,			0x00800000 },
+-	{ CS42L43_ASRC_DEC1_INPUT1,			0x00800000 },
+-	{ CS42L43_ASRC_DEC2_INPUT1,			0x00800000 },
+-	{ CS42L43_ASRC_DEC3_INPUT1,			0x00800000 },
+-	{ CS42L43_ASRC_DEC4_INPUT1,			0x00800000 },
+-	{ CS42L43_ISRC1INT1_INPUT1,			0x00800000 },
+-	{ CS42L43_ISRC1INT2_INPUT1,			0x00800000 },
+-	{ CS42L43_ISRC1DEC1_INPUT1,			0x00800000 },
+-	{ CS42L43_ISRC1DEC2_INPUT1,			0x00800000 },
+-	{ CS42L43_ISRC2INT1_INPUT1,			0x00800000 },
+-	{ CS42L43_ISRC2INT2_INPUT1,			0x00800000 },
+-	{ CS42L43_ISRC2DEC1_INPUT1,			0x00800000 },
+-	{ CS42L43_ISRC2DEC2_INPUT1,			0x00800000 },
++	{ CS42L43_ASPTX1_INPUT,				0x00000000 },
++	{ CS42L43_ASPTX2_INPUT,				0x00000000 },
++	{ CS42L43_ASPTX3_INPUT,				0x00000000 },
++	{ CS42L43_ASPTX4_INPUT,				0x00000000 },
++	{ CS42L43_ASPTX5_INPUT,				0x00000000 },
++	{ CS42L43_ASPTX6_INPUT,				0x00000000 },
++	{ CS42L43_SWIRE_DP1_CH1_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP1_CH2_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP1_CH3_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP1_CH4_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP2_CH1_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP2_CH2_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP3_CH1_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP3_CH2_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP4_CH1_INPUT,			0x00000000 },
++	{ CS42L43_SWIRE_DP4_CH2_INPUT,			0x00000000 },
++	{ CS42L43_ASRC_INT1_INPUT1,			0x00000000 },
++	{ CS42L43_ASRC_INT2_INPUT1,			0x00000000 },
++	{ CS42L43_ASRC_INT3_INPUT1,			0x00000000 },
++	{ CS42L43_ASRC_INT4_INPUT1,			0x00000000 },
++	{ CS42L43_ASRC_DEC1_INPUT1,			0x00000000 },
++	{ CS42L43_ASRC_DEC2_INPUT1,			0x00000000 },
++	{ CS42L43_ASRC_DEC3_INPUT1,			0x00000000 },
++	{ CS42L43_ASRC_DEC4_INPUT1,			0x00000000 },
++	{ CS42L43_ISRC1INT1_INPUT1,			0x00000000 },
++	{ CS42L43_ISRC1INT2_INPUT1,			0x00000000 },
++	{ CS42L43_ISRC1DEC1_INPUT1,			0x00000000 },
++	{ CS42L43_ISRC1DEC2_INPUT1,			0x00000000 },
++	{ CS42L43_ISRC2INT1_INPUT1,			0x00000000 },
++	{ CS42L43_ISRC2INT2_INPUT1,			0x00000000 },
++	{ CS42L43_ISRC2DEC1_INPUT1,			0x00000000 },
++	{ CS42L43_ISRC2DEC2_INPUT1,			0x00000000 },
+ 	{ CS42L43_EQ1MIX_INPUT1,			0x00800000 },
+ 	{ CS42L43_EQ1MIX_INPUT2,			0x00800000 },
+ 	{ CS42L43_EQ1MIX_INPUT3,			0x00800000 },
+@@ -171,8 +171,8 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
+ 	{ CS42L43_EQ2MIX_INPUT2,			0x00800000 },
+ 	{ CS42L43_EQ2MIX_INPUT3,			0x00800000 },
+ 	{ CS42L43_EQ2MIX_INPUT4,			0x00800000 },
+-	{ CS42L43_SPDIF1_INPUT1,			0x00800000 },
+-	{ CS42L43_SPDIF2_INPUT1,			0x00800000 },
++	{ CS42L43_SPDIF1_INPUT1,			0x00000000 },
++	{ CS42L43_SPDIF2_INPUT1,			0x00000000 },
+ 	{ CS42L43_AMP1MIX_INPUT1,			0x00800000 },
+ 	{ CS42L43_AMP1MIX_INPUT2,			0x00800000 },
+ 	{ CS42L43_AMP1MIX_INPUT3,			0x00800000 },
 -- 
 2.43.0
 
