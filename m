@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-115559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F24F889C63
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:18:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F68888EF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C979B29DAC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:18:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF9781F27914
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431FE2A8770;
-	Mon, 25 Mar 2024 02:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1590021AFF6;
+	Sun, 24 Mar 2024 23:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PEttoOhy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OduZTzPI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845F212CDBB;
-	Sun, 24 Mar 2024 22:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EAA41F1ADA;
+	Sun, 24 Mar 2024 22:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321083; cv=none; b=W8Myq7LkV0ApESBWLvvISpDYL6MwdsKhGLWK9uOZMZnXeMFu25mkjBvPp9BiFDgns+yH+yF7bY8BgWq/rxQK5psa98WGps0SxoSgDT0Dk15nZicqIlDQvKnA1aNSutE1LrtkXqOX8/5c+A9cMHpdoClkikZEWTTRmiwKxFSW4CE=
+	t=1711321085; cv=none; b=RokX0JOhxu4Jptjo98tHaOrKyx591sVsHCUp+wRED1znLcmOJJLy2UO1KXtJe4MnqnsZHEBUSMnPlDIRu1Y2FZEMBeufisYFLSrNj/KOXVjO5ZVuR1TMLhR8ZAsJvJRGhv408clYQ13I/deNMt4CHKIZRyZgb6jvZ/YXbx7OadM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321083; c=relaxed/simple;
-	bh=/xAFj90ZDfHZPfW2KNKnXlfs/ETDEw2eAYIWvVZUf4Y=;
+	s=arc-20240116; t=1711321085; c=relaxed/simple;
+	bh=PYENx02CKZGs2pTnzPJ7cRTd7xeRIal9wjJ8Gx4KiIY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K/zkJuv2FqdRN5S+53aTZmgvowqDP1JXf3TgWSy+q7MnNJb5f3+n9cZKAD5r207jJhUjmqPo2uySLqiNFlev4AyVrlNpPufkwEvYQTBbtfxlG0za5TTN+ofwe3/dpmLQFS6XRGdsCEe++QqPm+3UjMfv291+bB7vwnocpUMEDf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PEttoOhy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 989EAC43390;
-	Sun, 24 Mar 2024 22:58:02 +0000 (UTC)
+	 MIME-Version; b=Kh5MeMWl20bkdOxgCsKtz00lWnli+bIZPm3B+CFnAPc+J/yBf4G0zg8b79GJ2deOd57I2XFXgNmtn4GDvk6oQXH9ta8QEz10F9b5b2Jgzc6q8hHLQ9ZCQIq9u7j7dUDtX4j4O/UKowbvMn0EKlDgA/bt+CmR3DmZ2TwYArr6fG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OduZTzPI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB3BDC433F1;
+	Sun, 24 Mar 2024 22:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321083;
-	bh=/xAFj90ZDfHZPfW2KNKnXlfs/ETDEw2eAYIWvVZUf4Y=;
+	s=k20201202; t=1711321084;
+	bh=PYENx02CKZGs2pTnzPJ7cRTd7xeRIal9wjJ8Gx4KiIY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PEttoOhyEEtepR3p/s+OI1xnszMbCXIVNvdu/bO+PG7eniJYvWy5VP18uG9ciSRwE
-	 oZxBQvPLIwzXmJdSu/SvQwJFwZjkoDoTDAeMdYZLkDdD6HUyX+ov/Md7RwQvsI1vw4
-	 G8wdkjaj5x1gK2wJfIaw0LgidSfreyYY9dkfqLstPVr/HUnRH+5ZHHKQeB7rd1+chl
-	 bpS8i8vIzJmfC6bMvgqxh7zezFIHp1Y6WNIsVoqmOY5UhDRxCzcn2p1i7TQR9pHlCR
-	 OMbTUI72QYclUaBV8OYEKkgDnHxrXmlOelh2tTnY/VxEYvnrKVm7yPVUur4kEPYjgs
-	 PYHguOcVuufvA==
+	b=OduZTzPIljbhxU1LLhwNTFwAm3j7apx+5BfdsxsMHnvhq3+lgG42avD/i92nMUUPx
+	 lumt7GMgcb2+KrmUe+ptxeNCJAxwARw857tDMc0CkSXEzH2Oz4p9ov7acAkW2WXoH7
+	 JDBPP0FcuK7fl9iDZC0gdtwXzKQgRAkL9Z2y5TeBePPRDHO7spJ/GsSyLld4MCNvTe
+	 NNj9VoXAxZ7AxiY0PAa4nc2qJms3rOcqzLVT0Gi/BBX8VAwLVzfjvD2Va08xSDVA3/
+	 9zfhuPDGxC2w942i3u0AkxSkk3/fKNenc3bvO/iwyMXzh/aBhGKI+7v3lbGOZVMKnn
+	 +gVMWduRpTIyQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kuniyuki Iwashima <kuniyu@amazon.com>,
-	syzkaller <syzkaller@googlegroups.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Linu Cherian <lcherian@marvell.com>,
+	Sunil Goutham <sgoutham@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 647/713] rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
-Date: Sun, 24 Mar 2024 18:46:13 -0400
-Message-ID: <20240324224720.1345309-648-sashal@kernel.org>
+Subject: [PATCH 6.7 648/713] octeontx2-af: Use matching wake_up API variant in CGX command interface
+Date: Sun, 24 Mar 2024 18:46:14 -0400
+Message-ID: <20240324224720.1345309-649-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,153 +64,36 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
+From: Linu Cherian <lcherian@marvell.com>
 
-[ Upstream commit 2a750d6a5b365265dbda33330a6188547ddb5c24 ]
+[ Upstream commit e642921dfeed1e15e73f78f2c3b6746f72b6deb2 ]
 
-syzkaller reported a warning of netns tracker [0] followed by KASAN
-splat [1] and another ref tracker warning [1].
+Use wake_up API instead of wake_up_interruptible, since
+wait_event_timeout API is used for waiting on command completion.
 
-syzkaller could not find a repro, but in the log, the only suspicious
-sequence was as follows:
-
-  18:26:22 executing program 1:
-  r0 = socket$inet6_mptcp(0xa, 0x1, 0x106)
-  ...
-  connect$inet6(r0, &(0x7f0000000080)={0xa, 0x4001, 0x0, @loopback}, 0x1c) (async)
-
-The notable thing here is 0x4001 in connect(), which is RDS_TCP_PORT.
-
-So, the scenario would be:
-
-  1. unshare(CLONE_NEWNET) creates a per netns tcp listener in
-      rds_tcp_listen_init().
-  2. syz-executor connect()s to it and creates a reqsk.
-  3. syz-executor exit()s immediately.
-  4. netns is dismantled.  [0]
-  5. reqsk timer is fired, and UAF happens while freeing reqsk.  [1]
-  6. listener is freed after RCU grace period.  [2]
-
-Basically, reqsk assumes that the listener guarantees netns safety
-until all reqsk timers are expired by holding the listener's refcount.
-However, this was not the case for kernel sockets.
-
-Commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
-inet_twsk_purge()") fixed this issue only for per-netns ehash.
-
-Let's apply the same fix for the global ehash.
-
-[0]:
-ref_tracker: net notrefcnt@0000000065449cc3 has 1/1 users at
-     sk_alloc (./include/net/net_namespace.h:337 net/core/sock.c:2146)
-     inet6_create (net/ipv6/af_inet6.c:192 net/ipv6/af_inet6.c:119)
-     __sock_create (net/socket.c:1572)
-     rds_tcp_listen_init (net/rds/tcp_listen.c:279)
-     rds_tcp_init_net (net/rds/tcp.c:577)
-     ops_init (net/core/net_namespace.c:137)
-     setup_net (net/core/net_namespace.c:340)
-     copy_net_ns (net/core/net_namespace.c:497)
-     create_new_namespaces (kernel/nsproxy.c:110)
-     unshare_nsproxy_namespaces (kernel/nsproxy.c:228 (discriminator 4))
-     ksys_unshare (kernel/fork.c:3429)
-     __x64_sys_unshare (kernel/fork.c:3496)
-     do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83)
-     entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129)
-..
-WARNING: CPU: 0 PID: 27 at lib/ref_tracker.c:179 ref_tracker_dir_exit (lib/ref_tracker.c:179)
-
-[1]:
-BUG: KASAN: slab-use-after-free in inet_csk_reqsk_queue_drop (./include/net/inet_hashtables.h:180 net/ipv4/inet_connection_sock.c:952 net/ipv4/inet_connection_sock.c:966)
-Read of size 8 at addr ffff88801b370400 by task swapper/0/0
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <IRQ>
- dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
- print_report (mm/kasan/report.c:378 mm/kasan/report.c:488)
- kasan_report (mm/kasan/report.c:603)
- inet_csk_reqsk_queue_drop (./include/net/inet_hashtables.h:180 net/ipv4/inet_connection_sock.c:952 net/ipv4/inet_connection_sock.c:966)
- reqsk_timer_handler (net/ipv4/inet_connection_sock.c:979 net/ipv4/inet_connection_sock.c:1092)
- call_timer_fn (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/timer.h:127 kernel/time/timer.c:1701)
- __run_timers.part.0 (kernel/time/timer.c:1752 kernel/time/timer.c:2038)
- run_timer_softirq (kernel/time/timer.c:2053)
- __do_softirq (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/irq.h:142 kernel/softirq.c:554)
- irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632 kernel/softirq.c:644)
- sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1076 (discriminator 14))
- </IRQ>
-
-Allocated by task 258 on cpu 0 at 83.612050s:
- kasan_save_stack (mm/kasan/common.c:48)
- kasan_save_track (mm/kasan/common.c:68)
- __kasan_slab_alloc (mm/kasan/common.c:343)
- kmem_cache_alloc (mm/slub.c:3813 mm/slub.c:3860 mm/slub.c:3867)
- copy_net_ns (./include/linux/slab.h:701 net/core/net_namespace.c:421 net/core/net_namespace.c:480)
- create_new_namespaces (kernel/nsproxy.c:110)
- unshare_nsproxy_namespaces (kernel/nsproxy.c:228 (discriminator 4))
- ksys_unshare (kernel/fork.c:3429)
- __x64_sys_unshare (kernel/fork.c:3496)
- do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83)
- entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129)
-
-Freed by task 27 on cpu 0 at 329.158864s:
- kasan_save_stack (mm/kasan/common.c:48)
- kasan_save_track (mm/kasan/common.c:68)
- kasan_save_free_info (mm/kasan/generic.c:643)
- __kasan_slab_free (mm/kasan/common.c:265)
- kmem_cache_free (mm/slub.c:4299 mm/slub.c:4363)
- cleanup_net (net/core/net_namespace.c:456 net/core/net_namespace.c:446 net/core/net_namespace.c:639)
- process_one_work (kernel/workqueue.c:2638)
- worker_thread (kernel/workqueue.c:2700 kernel/workqueue.c:2787)
- kthread (kernel/kthread.c:388)
- ret_from_fork (arch/x86/kernel/process.c:153)
- ret_from_fork_asm (arch/x86/entry/entry_64.S:250)
-
-The buggy address belongs to the object at ffff88801b370000
- which belongs to the cache net_namespace of size 4352
-The buggy address is located 1024 bytes inside of
- freed 4352-byte region [ffff88801b370000, ffff88801b371100)
-
-[2]:
-WARNING: CPU: 0 PID: 95 at lib/ref_tracker.c:228 ref_tracker_free (lib/ref_tracker.c:228 (discriminator 1))
-Modules linked in:
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-RIP: 0010:ref_tracker_free (lib/ref_tracker.c:228 (discriminator 1))
-..
-Call Trace:
-<IRQ>
- __sk_destruct (./include/net/net_namespace.h:353 net/core/sock.c:2204)
- rcu_core (./arch/x86/include/asm/preempt.h:26 kernel/rcu/tree.c:2165 kernel/rcu/tree.c:2433)
- __do_softirq (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/irq.h:142 kernel/softirq.c:554)
- irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632 kernel/softirq.c:644)
- sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1076 (discriminator 14))
-</IRQ>
-
-Reported-by: syzkaller <syzkaller@googlegroups.com>
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Fixes: 467fa15356ac ("RDS-TCP: Support multiple RDS-TCP listen endpoints, one per netns.")
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20240308200122.64357-3-kuniyu@amazon.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 1463f382f58d ("octeontx2-af: Add support for CGX link management")
+Signed-off-by: Linu Cherian <lcherian@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_minisocks.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/cgx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
-index 9e85f2a0bddd4..0ecc7311dc6ce 100644
---- a/net/ipv4/tcp_minisocks.c
-+++ b/net/ipv4/tcp_minisocks.c
-@@ -398,10 +398,6 @@ void tcp_twsk_purge(struct list_head *net_exit_list, int family)
- 			/* Even if tw_refcount == 1, we must clean up kernel reqsk */
- 			inet_twsk_purge(net->ipv4.tcp_death_row.hashinfo, family);
- 		} else if (!purged_once) {
--			/* The last refcount is decremented in tcp_sk_exit_batch() */
--			if (refcount_read(&net->ipv4.tcp_death_row.tw_refcount) == 1)
--				continue;
--
- 			inet_twsk_purge(&tcp_hashinfo, family);
- 			purged_once = true;
- 		}
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+index 6c70c84986904..3c0f55b3e48ea 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
+@@ -1338,7 +1338,7 @@ static irqreturn_t cgx_fwi_event_handler(int irq, void *data)
+ 
+ 		/* Release thread waiting for completion  */
+ 		lmac->cmd_pend = false;
+-		wake_up_interruptible(&lmac->wq_cmd_cmplt);
++		wake_up(&lmac->wq_cmd_cmplt);
+ 		break;
+ 	case CGX_EVT_ASYNC:
+ 		if (cgx_event_is_linkevent(event))
 -- 
 2.43.0
 
