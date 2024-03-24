@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-116226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DFD388A56C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:56:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F5EE888CC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 162CFB36695
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:49:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90D441C2A4F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38C93C0D69;
-	Mon, 25 Mar 2024 03:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 572C11C256D;
+	Mon, 25 Mar 2024 01:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZfIW+jeC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aZtbsq3X"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CDD7131BB3;
-	Sun, 24 Mar 2024 23:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67FAC131BB9;
+	Sun, 24 Mar 2024 23:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323858; cv=none; b=GaRBGr3XW5nLCjbwzeAmHu0Kf8WFJQg2o5PKGnENZ2U+sW48NDXjYerZTnTWyG5BNQakM66scnwbZQBu4lO4gUUdOHTGL2WHPTB+F9Jjsa+Dz2qJxQejUABm2IzRjto6dyaMu5T+yAnVjVFtG3vZJ5WPzjkrZZjfqA18kTpzvdQ=
+	t=1711323859; cv=none; b=k30I33XS4QOv7EHIhsG1HMHkWd80atCZzamwVyrjilNKPnNi0ZderY9doKgx+2+3mXjVyARnX9PfIOz7k5LZQryRdDZJX8ohzgQDvWkZE7eitCwXS3S6+kjvNjv6PV5B7sV0bAldoLCicitVNWbIDFxaZ0I+yPKuDDOL1xQjtZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323858; c=relaxed/simple;
-	bh=QMGPU9v5zCezGY7dbzADYR4mYAy++b+NW7nLcEaX8zA=;
+	s=arc-20240116; t=1711323859; c=relaxed/simple;
+	bh=h8WYk4IY25Zdo9U9OK/FvAwySZFHCNhp72itS0ZUoF8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KMrG1MYWvqipyO8cfrGyeeShBXIr0evFNFMnfgHpEKgrPegIxW2TN2CJf62+XKeBO5u7i6iG5GqVbj7vyg4bBkl3yDx+Ei2VoxIDrJxvO5SJLHEadGOARND4OwqN2/RQDKj9Zv3u64uB/6nwMyNVgv+G2iENdxsCUjlewPb0BpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZfIW+jeC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B69BC43390;
-	Sun, 24 Mar 2024 23:44:16 +0000 (UTC)
+	 MIME-Version; b=Unl89JBW8wH6XylTbRBvTqIZtY0YnslVq7oo7JSf2mgATV2CGHJR5zuqnZBHvGKzcaZXDBXrEtoY158LpeN0YWw6XrSICcRSbQpqK8a88L8zB7cJkqRHywAgAvZmS9zhh7yIr6/MtTmLA2PN3P3yYGp9Oeng4URKopuwvVaeCag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aZtbsq3X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E478C433B1;
+	Sun, 24 Mar 2024 23:44:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323857;
-	bh=QMGPU9v5zCezGY7dbzADYR4mYAy++b+NW7nLcEaX8zA=;
+	s=k20201202; t=1711323858;
+	bh=h8WYk4IY25Zdo9U9OK/FvAwySZFHCNhp72itS0ZUoF8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZfIW+jeCP6Ic8m1ilPF9oe0K2Qw7QsrD1f0Lh4HucExe2pEENJLV3L8WwPdWh5l2M
-	 +51usPwbKBk+Abtg4k6yp3U+welj7cbNw06EjaXH/oNYSCsg7CNztC1c56bMn4T7Tu
-	 zfYY+Vc22LY6itA5pYs3tatsdtfQCL0WAyPbMRnW5Xxeqk6N9W7uQoINql/9bEQvDn
-	 dmWJtxFMMUsF7JYEvRlaqT6tYIkQiNKqQF/qdZ2aBMojNB/I9g4lvFL9A1yFRe5fAW
-	 Bobb8QBxXQDCRDO99nYqv0hR0IyTMnCGyj8a9f1t8RXO+oMq4BjKq7F0H6JzxSgOv0
-	 60LaCSIrFl7FQ==
+	b=aZtbsq3XyejFkHywZYZcuPqK4yu9W/ueFn/9Gjs0DeYDsd8JKPtBwzlchaAL24d6a
+	 o+XnbrBgAQr/PnTRYMy5VXRy0a4q/oWXknsLLmYMtCALn2SD3FOOZNF4Rkuz4Z0sZH
+	 anitlznLa2WjlpBx4XfndU2NsBeHqbWXc7p+k+HIQRWtlA+8bZU/OER9LJivCjONaL
+	 T2FnoW0APeoNdXvevXZlZLiqArrxO5Rdt51DfcXvchfw69kAvKqBkHxDgQO8Mo/3ZD
+	 nhQpUCqOMlzIVRoafqPMYnpftesnCosCl06MuxE7nSNTlDk0jQBWHkY3ECiLDeJHNP
+	 MTEeKrmjctKIg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yan Zhai <yan@cloudflare.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Fei Shao <fshao@chromium.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 235/238] bpf: report RCU QS in cpumap kthread
-Date: Sun, 24 Mar 2024 19:40:23 -0400
-Message-ID: <20240324234027.1354210-236-sashal@kernel.org>
+Subject: [PATCH 5.10 236/238] spi: spi-mt65xx: Fix NULL pointer access in interrupt handler
+Date: Sun, 24 Mar 2024 19:40:24 -0400
+Message-ID: <20240324234027.1354210-237-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -64,53 +63,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yan Zhai <yan@cloudflare.com>
+From: Fei Shao <fshao@chromium.org>
 
-[ Upstream commit 00bf63122459e87193ee7f1bc6161c83a525569f ]
+[ Upstream commit a20ad45008a7c82f1184dc6dee280096009ece55 ]
 
-When there are heavy load, cpumap kernel threads can be busy polling
-packets from redirect queues and block out RCU tasks from reaching
-quiescent states. It is insufficient to just call cond_resched() in such
-context. Periodically raise a consolidated RCU QS before cond_resched
-fixes the problem.
+The TX buffer in spi_transfer can be a NULL pointer, so the interrupt
+handler may end up writing to the invalid memory and cause crashes.
 
-Fixes: 6710e1126934 ("bpf: introduce new bpf cpu map type BPF_MAP_TYPE_CPUMAP")
-Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Signed-off-by: Yan Zhai <yan@cloudflare.com>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Link: https://lore.kernel.org/r/c17b9f1517e19d813da3ede5ed33ee18496bb5d8.1710877680.git.yan@cloudflare.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Add a check to trans->tx_buf before using it.
+
+Fixes: 1ce24864bff4 ("spi: mediatek: Only do dma for 4-byte aligned buffers")
+Signed-off-by: Fei Shao <fshao@chromium.org>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://msgid.link/r/20240321070942.1587146-2-fshao@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/cpumap.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/spi/spi-mt65xx.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 2dcc04b2f330e..9a4378df45998 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -299,6 +299,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
- static int cpu_map_kthread_run(void *data)
- {
- 	struct bpf_cpu_map_entry *rcpu = data;
-+	unsigned long last_qs = jiffies;
+diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
+index 92a09dfb99a8e..0bcf4a28132ad 100644
+--- a/drivers/spi/spi-mt65xx.c
++++ b/drivers/spi/spi-mt65xx.c
+@@ -566,17 +566,19 @@ static irqreturn_t mtk_spi_interrupt(int irq, void *dev_id)
+ 		mdata->xfer_len = min(MTK_SPI_MAX_FIFO_SIZE, len);
+ 		mtk_spi_setup_packet(master);
  
- 	set_current_state(TASK_INTERRUPTIBLE);
+-		cnt = mdata->xfer_len / 4;
+-		iowrite32_rep(mdata->base + SPI_TX_DATA_REG,
+-				trans->tx_buf + mdata->num_xfered, cnt);
++		if (trans->tx_buf) {
++			cnt = mdata->xfer_len / 4;
++			iowrite32_rep(mdata->base + SPI_TX_DATA_REG,
++					trans->tx_buf + mdata->num_xfered, cnt);
  
-@@ -322,10 +323,12 @@ static int cpu_map_kthread_run(void *data)
- 			if (__ptr_ring_empty(rcpu->queue)) {
- 				schedule();
- 				sched = 1;
-+				last_qs = jiffies;
- 			} else {
- 				__set_current_state(TASK_RUNNING);
- 			}
- 		} else {
-+			rcu_softirq_qs_periodic(last_qs);
- 			sched = cond_resched();
+-		remainder = mdata->xfer_len % 4;
+-		if (remainder > 0) {
+-			reg_val = 0;
+-			memcpy(&reg_val,
+-				trans->tx_buf + (cnt * 4) + mdata->num_xfered,
+-				remainder);
+-			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
++			remainder = mdata->xfer_len % 4;
++			if (remainder > 0) {
++				reg_val = 0;
++				memcpy(&reg_val,
++					trans->tx_buf + (cnt * 4) + mdata->num_xfered,
++					remainder);
++				writel(reg_val, mdata->base + SPI_TX_DATA_REG);
++			}
  		}
  
+ 		mtk_spi_enable_transfer(master);
 -- 
 2.43.0
 
