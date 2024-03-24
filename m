@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-113991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C93A98887CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:10:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D96B8887D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84E51288271
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:10:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EFBA1C26C7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6399322288C;
-	Sun, 24 Mar 2024 23:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE039156F21;
+	Sun, 24 Mar 2024 23:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tbKNqUXn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iOwlbwwc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7102E1F30BF;
-	Sun, 24 Mar 2024 22:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ACA91F30C7;
+	Sun, 24 Mar 2024 22:58:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321123; cv=none; b=oLcwBa7c6Its9CJ5qUWuzgj0K5E+5spNwDN/LneeT9zHBn3kfnNa1R0e7u6PMXRfy+TJKUvU/U7uHiObLBklCVm85lR/q5WwfBTPxr4Z47W8taGos8gfkUYzf6wneabf4Q6a/xgG3buBSUJElN3ka7UXYoigIOEAH3EOtCbvohk=
+	t=1711321124; cv=none; b=ngZD7mpEdHkCAYkRCQcsYlwTzUDI9O1LkU4Z9yKAJ+J31KbRd4QsgxHvtgWYuf/KpZd4Jas41BgLGa8HcNB0PiiK8ArcaGDC9nVSRZab17dG4AdI+u2f3armhVXuqlhNqNZIHW3r+sRyN3JRpp04BJVHGXvdqVFqcP8BccvZTKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321123; c=relaxed/simple;
-	bh=nuvNN4ZvtBd/GUiziz/K8W0DyuJfnso9yH/WmpRvifE=;
+	s=arc-20240116; t=1711321124; c=relaxed/simple;
+	bh=X/3XYKAUHv8Ahibku5Y9s1Ozf8W++cB+0fCChROp5Z0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xn2rGVYFNH6weVF+oGEM1/6GWZsoKxrl5JuAJMUswclqV5GAHrkmN6RIuJpbBW232OsIuLmtkdvpvzdKzV4EexkA7d0DaecebRE9L39cqdVk2ZIMJEbqzZe+h76FfdjBczH+qrJwh5A/coi0UMshYioJkfonXNcmh6e82YELOZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tbKNqUXn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 825FAC433C7;
-	Sun, 24 Mar 2024 22:58:41 +0000 (UTC)
+	 MIME-Version; b=Sl4KSQJTCPy+z12nXYhIwajHBBPkuopREaFlX5DGxeYsMkBpAfb39Iti5Noy1OGZLdGDb4diVPu6GWDtxRnw0QbhBDzhUoTOOijYNyHxRY+FZIsTshzELGiVbBiGsiqJyiZZTxxQZONoX4vT/URq3/eWuaplQeLMmu746ZyU06U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iOwlbwwc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98951C433F1;
+	Sun, 24 Mar 2024 22:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321122;
-	bh=nuvNN4ZvtBd/GUiziz/K8W0DyuJfnso9yH/WmpRvifE=;
+	s=k20201202; t=1711321123;
+	bh=X/3XYKAUHv8Ahibku5Y9s1Ozf8W++cB+0fCChROp5Z0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tbKNqUXnKKVhhuCQfNXQ0kWKdixP6oEEggC5l5M4aRUdD+zMSEj3dITpDHnrVP4xp
-	 fGj6dICQmXLiyxtXhEJOz9PrJ6GR3nTIkeAkTRwZGsjlGSAI4u5hoEiUcPD3HP2vA9
-	 DbUhIcmsGKV7b1OBf5mt/2cU64Pza/xyUqaeXKBRFEzrhwlCwMOKhbiUq2mFL0Cdu9
-	 sHx0YKzpL5/MPqyHApmOn0kCboqSJGRikAZohGzq/3fQ8ffcUBG1UuovPe0OaNTIex
-	 BzuyVW21vE9m6vL2cPb5+F3mSnuZb+TlVzpimcgFTGkqDSpzNP4EvLCQbnu5dhy4nH
-	 kFAWq+0/Pet9w==
+	b=iOwlbwwc+vd/UeQEo+zZsyKECFSIpELaSR+lxfYWnDR9FNr8oUtkbJP/5LlbnqQ7b
+	 OFSxPO3gD/oSACfxWPheQTSWHHR/1u5UkD/K4rIEGQ4WSGiJDUCpIkQYNDNCC63T5N
+	 Lo/dDcCeaEU4+1NXsbIUOsH4HhnBBtUtnog0+8feegMRLtjll8E/wjHVkiH4JxgJlO
+	 Dio6uhFag+Ff8AcLr/mYYrwqGcMB4j1dOHlTSbU7CJk3Gr85FDjx3ho7KsFJMDMUe9
+	 nOQ6ez8IT62guHDeBVl7IyNq7fEufoapynfADcdfBPVkl2jMCHoI7naZ4PwgXtoYVW
+	 j/Jk4RzduX9AQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tobias Brunner <tobias@strongswan.org>,
-	David Ahern <dsahern@kernel.org>,
-	Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Dave Airlie <airlied@redhat.com>,
+	Danilo Krummrich <dakr@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 683/713] ipv4: raw: Fix sending packets from raw sockets via IPsec tunnels
-Date: Sun, 24 Mar 2024 18:46:49 -0400
-Message-ID: <20240324224720.1345309-684-sashal@kernel.org>
+Subject: [PATCH 6.7 684/713] nouveau/gsp: don't check devinit disable on GSP.
+Date: Sun, 24 Mar 2024 18:46:50 -0400
+Message-ID: <20240324224720.1345309-685-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,42 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tobias Brunner <tobias@strongswan.org>
+From: Dave Airlie <airlied@redhat.com>
 
-[ Upstream commit c9b3b81716c5b92132a6c1d4ac3c48a7b44082ab ]
+[ Upstream commit 5d4e8ae6e57b025802aadf55a4775c55cceb75f1 ]
 
-Since the referenced commit, the xfrm_inner_extract_output() function
-uses the protocol field to determine the address family.  So not setting
-it for IPv4 raw sockets meant that such packets couldn't be tunneled via
-IPsec anymore.
+GSP should be handling this and I can see no evidence in opengpu
+driver that this register should be touched.
 
-IPv6 raw sockets are not affected as they already set the protocol since
-9c9c9ad5fae7 ("ipv6: set skb->protocol on tcp, raw and ip6_append_data
-genereated skbs").
+Fixed acceleration on 2080 Ti GPUs.
 
-Fixes: f4796398f21b ("xfrm: Remove inner/outer modes from output path")
-Signed-off-by: Tobias Brunner <tobias@strongswan.org>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Reviewed-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Link: https://lore.kernel.org/r/c5d9a947-eb19-4164-ac99-468ea814ce20@strongswan.org
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Fixes: 15740541e8f0 ("drm/nouveau/devinit/tu102-: prepare for GSP-RM")
+
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240314014521.2695233-1-airlied@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/raw.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/ipv4/raw.c b/net/ipv4/raw.c
-index aea89326c6979..288f1846b3518 100644
---- a/net/ipv4/raw.c
-+++ b/net/ipv4/raw.c
-@@ -350,6 +350,7 @@ static int raw_send_hdrinc(struct sock *sk, struct flowi4 *fl4,
- 		goto error;
- 	skb_reserve(skb, hlen);
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c
+index 666eb93b1742c..11b4c9c274a1a 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c
+@@ -41,7 +41,6 @@ r535_devinit_new(const struct nvkm_devinit_func *hw,
  
-+	skb->protocol = htons(ETH_P_IP);
- 	skb->priority = READ_ONCE(sk->sk_priority);
- 	skb->mark = sockc->mark;
- 	skb->tstamp = sockc->transmit_time;
+ 	rm->dtor = r535_devinit_dtor;
+ 	rm->post = hw->post;
+-	rm->disable = hw->disable;
+ 
+ 	ret = nv50_devinit_new_(rm, device, type, inst, pdevinit);
+ 	if (ret)
 -- 
 2.43.0
 
