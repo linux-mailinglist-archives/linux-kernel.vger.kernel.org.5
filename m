@@ -1,61 +1,58 @@
-Return-Path: <linux-kernel+bounces-114262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 111AC888F7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:51:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D7FA88897D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:56:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF7EC28FB75
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:51:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE1051C2809C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1301615B97E;
-	Sun, 24 Mar 2024 23:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241C625B32C;
+	Sun, 24 Mar 2024 23:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eWUr7bFY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VxVylRBE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21642139596;
-	Sun, 24 Mar 2024 23:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8F920CDF4;
+	Sun, 24 Mar 2024 23:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321641; cv=none; b=MhmLVs9TKYtje3sUN6Mi++4JojJvFzPP1mGjEpv4eTgv01aKNK7Tm2sJ6jc0vwIooi9ohQwEENPFMQHrvRQcqHpAyFf1opB3eiDWDGnVnNdvmq7xv9h0FAv5DRjb/ja80jplnjqiFjjTzrjTKXJRLw6cBa8PHENMVMovSs/J6XY=
+	t=1711321643; cv=none; b=NJ+YPTjRCqbv7UWe9dn1OYNmlin4A3hpJG+GdqXPN7MRdKsgBminwnGtCsmUmmksntGuMEJ83PGDfqL9JUNCn/j7uDhmODCY2bccPWJnZ5QFCi2+bWOP67nXA1xXOhVqrHKyAB4R7B9pNdxlk4zKa6RgJEvlWFso3GGAzeoeGbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321641; c=relaxed/simple;
-	bh=TAPok/GZ8CPs3caYyO3HjWxXbNJrfJ4WKJUr7fIIVrg=;
+	s=arc-20240116; t=1711321643; c=relaxed/simple;
+	bh=wUIaf37jsc83rrxxeJBxZppS9V3AFNl4MTW2tB/QxbQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G0pdEvTnEYae8FmMaR8v/xRyNCS+jmBhHnmSrG/mWv1dwoy6hj299K0S9rHpxXciy6PYblcPhuvP+y5Tptnf1/Gv5z9B2kZaKk6IimeVlFP95Yg7T6R3oHsqArNGKzGLrd3mIOtyt+3MRjU2JfH5sRATWZQlMIniAVm9FPCNydE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eWUr7bFY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68B61C433C7;
-	Sun, 24 Mar 2024 23:07:19 +0000 (UTC)
+	 MIME-Version; b=stpsJeNo+nNSVs/Q8xCCKZVhdsY4sK4WsptizCnIDhK6tSh2nTrSP9+w+ZCTi3+U6IhtUu/gd9jU6brlu7N0raGEPtKvvyAdO25EFDwTQwQ/g/12JVvT/t0tCYzu9CAV3s6Xcn4VIAoXqx72DDj2O+fwUmEsKt2o2Tcg51BmFTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VxVylRBE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F27BCC43399;
+	Sun, 24 Mar 2024 23:07:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321640;
-	bh=TAPok/GZ8CPs3caYyO3HjWxXbNJrfJ4WKJUr7fIIVrg=;
+	s=k20201202; t=1711321642;
+	bh=wUIaf37jsc83rrxxeJBxZppS9V3AFNl4MTW2tB/QxbQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eWUr7bFYGMIy5trNO3PxBPhDMMlB63LMCUR5lTKX3XV/ATqKiGhXdGtC/u85dPauD
-	 4OQtSItjMNVDNId1ySIJmGd42eaC+cS145BFrus482jvcqhcmoEAVjUTgsMuidEa+b
-	 ke3aQuXq7nCBYXEE0U08vB9PWnNHv6Q/cCTyVjYmN9PA82T0jtpkyQb6gpTXRzPpDS
-	 kkZlIpN+BaZKpX/opPysCS5F/9T7pFHeDo4JKec6Ngdw0B8a6TAS4UL95rMrWkfxaR
-	 zgJLGP1xI50G9EadyC67CNt9UqvkqsBDOPQxQgBXSy9JssHW/fg15joSGQPwhaear0
-	 lMVv3Z2cKJDVQ==
+	b=VxVylRBECrpnpbpu0oTpVeNoLnralaZrPDXJQ+wpATEUfP2rVKsWvndX1b8Csduku
+	 QYnoUOs0w66W2hqQPd8BFRcMcmNZrAeZKrFvz5leegmHSGQCJRsUYSJPV228YcroKS
+	 YFmHDIM95Xa4qGS76MvdU5xcuNndOsbiUUqBc4MohHDPA83vu1aS5pv8nLBLGvNEGb
+	 B7LSsaYeHVOvpeL0n0rdxo8R4gAyzC/Eoy12asgBq3R7oQNv8e8mkiXdhRA5W3G1Bk
+	 sn0zdBOYZ6H/aQH1E6IiK5qwwgX8uYq+FFzn2fzSpDN6AR8tQxkotjUXosUJ1DLs6c
+	 N3+nQsW5uvRug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	James Clark <james.clark@arm.com>,
-	Caleb Biggers <caleb.biggers@intel.com>,
-	Edward Baker <edward.baker@intel.com>,
-	Perry Taylor <perry.taylor@intel.com>,
-	Samantha Alt <samantha.alt@intel.com>,
-	Weilin Wang <weilin.wang@intel.com>,
-	Namhyung Kim <namhyung@kernel.org>,
+Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+	Wyatt Wood <wyatt.wood@amd.com>,
+	Anthony Koo <Anthony.Koo@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 370/638] perf pmu: Treat the msr pmu as software
-Date: Sun, 24 Mar 2024 18:56:47 -0400
-Message-ID: <20240324230116.1348576-371-sashal@kernel.org>
+Subject: [PATCH 6.6 371/638] drm/amd/display: Fix potential NULL pointer dereferences in 'dcn10_set_output_transfer_func()'
+Date: Sun, 24 Mar 2024 18:56:48 -0400
+Message-ID: <20240324230116.1348576-372-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -69,88 +66,54 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ian Rogers <irogers@google.com>
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit 24852ef2e2d5c555c2da05baff112ea414b6e0f5 ]
+[ Upstream commit 9ccfe80d022df7c595f1925afb31de2232900656 ]
 
-The msr PMU is a software one, meaning msr events may be grouped
-with events in a hardware context. As the msr PMU isn't marked as a
-software PMU by perf_pmu__is_software, groups with the msr PMU in
-are broken and the msr events placed in a different group. This
-may lead to multiplexing errors where a hardware event isn't
-counted while the msr event, such as tsc, is. Fix all of this by
-marking the msr PMU as software, which agrees with the driver.
+The 'stream' pointer is used in dcn10_set_output_transfer_func() before
+the check if 'stream' is NULL.
 
-Before:
-```
-$ perf stat -e '{slots,tsc}' -a true
-WARNING: events were regrouped to match PMUs
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/../display/dc/hwss/dcn10/dcn10_hwseq.c:1892 dcn10_set_output_transfer_func() warn: variable dereferenced before check 'stream' (see line 1875)
 
- Performance counter stats for 'system wide':
-
-         1,750,335      slots
-         4,243,557      tsc
-
-       0.001456717 seconds time elapsed
-```
-
-After:
-```
-$ perf stat -e '{slots,tsc}' -a true
- Performance counter stats for 'system wide':
-
-        12,526,380      slots
-         3,415,163      tsc
-
-       0.001488360 seconds time elapsed
-```
-
-Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: Caleb Biggers <caleb.biggers@intel.com>
-Cc: Edward Baker <edward.baker@intel.com>
-Cc: Perry Taylor <perry.taylor@intel.com>
-Cc: Samantha Alt <samantha.alt@intel.com>
-Cc: Weilin Wang <weilin.wang@intel.com>
-Link: https://lore.kernel.org/r/20240124234200.1510417-1-irogers@google.com
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Fixes: ddef02de0d71 ("drm/amd/display: add null checks before logging")
+Cc: Wyatt Wood <wyatt.wood@amd.com>
+Cc: Anthony Koo <Anthony.Koo@amd.com>
+Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Anthony Koo <Anthony.Koo@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/pmu.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index d515ba8a0e160..a3c7814116c7c 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1735,6 +1735,12 @@ bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name)
- 
- bool perf_pmu__is_software(const struct perf_pmu *pmu)
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+index db1d7be7fda38..e3f4d497d32d5 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
+@@ -1832,6 +1832,9 @@ bool dcn10_set_output_transfer_func(struct dc *dc, struct pipe_ctx *pipe_ctx,
  {
-+	const char *known_sw_pmus[] = {
-+		"kprobe",
-+		"msr",
-+		"uprobe",
-+	};
-+
- 	if (pmu->is_core || pmu->is_uncore || pmu->auxtrace)
- 		return false;
- 	switch (pmu->type) {
-@@ -1746,7 +1752,11 @@ bool perf_pmu__is_software(const struct perf_pmu *pmu)
- 	case PERF_TYPE_BREAKPOINT:	return true;
- 	default: break;
- 	}
--	return !strcmp(pmu->name, "kprobe") || !strcmp(pmu->name, "uprobe");
-+	for (size_t i = 0; i < ARRAY_SIZE(known_sw_pmus); i++) {
-+		if (!strcmp(pmu->name, known_sw_pmus[i]))
-+			return true;
-+	}
-+	return false;
- }
+ 	struct dpp *dpp = pipe_ctx->plane_res.dpp;
  
- FILE *perf_pmu__open_file(struct perf_pmu *pmu, const char *name)
++	if (!stream)
++		return false;
++
+ 	if (dpp == NULL)
+ 		return false;
+ 
+@@ -1854,8 +1857,8 @@ bool dcn10_set_output_transfer_func(struct dc *dc, struct pipe_ctx *pipe_ctx,
+ 	} else
+ 		dpp->funcs->dpp_program_regamma_pwl(dpp, NULL, OPP_REGAMMA_BYPASS);
+ 
+-	if (stream != NULL && stream->ctx != NULL &&
+-			stream->out_transfer_func != NULL) {
++	if (stream->ctx &&
++	    stream->out_transfer_func) {
+ 		log_tf(stream->ctx,
+ 				stream->out_transfer_func,
+ 				dpp->regamma_params.hw_points_num);
 -- 
 2.43.0
 
