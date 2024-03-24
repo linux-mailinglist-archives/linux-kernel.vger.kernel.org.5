@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837AF8890B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:26:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92DA48890BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:26:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6E051C2C83A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:26:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BF4A1F2AC28
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A29352B9304;
-	Mon, 25 Mar 2024 00:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C19412B9E79;
+	Mon, 25 Mar 2024 00:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CLgRH1N6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SpLvBJ5+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337D414F9C9;
-	Sun, 24 Mar 2024 23:19:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B14F15F3E9;
+	Sun, 24 Mar 2024 23:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322350; cv=none; b=rrZbtf6soZnngnCSuv57hoBOhY5oHzsK57g3kyghNiMCNNYwEWmCkm/jgmIJsqsh5JFzn36YRBpSW7cOgIEkbaGSy4XbadiB/ueXgFqIwd1pCyCc+EFcnKWnAxRWVkTsGYK6R8aKSX05zzw5v0MupAY2vMVGd1pNz5e2gqPUhnQ=
+	t=1711322351; cv=none; b=MCyVR49Yme+I83i1LKoetV3sr/bWXtJlaSliRwGsk9XeDplrArJgXVsRbskAQq4bzK2G5egc2ONMbaHDnTDWljD+uT9tVxabdPxZrQu62BMhSPAKR9NNl+425OHZ20n+Bx8yEQJ5hDJOBrQWHl6WqHqjFUxw64lsnpe5kaOT5fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322350; c=relaxed/simple;
-	bh=G3rk+WATCGrZVuhwcQVIlEgNMvvzQraXVmEAhedWwI4=;
+	s=arc-20240116; t=1711322351; c=relaxed/simple;
+	bh=IDTM89QptYIgl5GvE+k8sraRG0NlD31BkVRXqXgKvsg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IF6+x403Bv+pavaaDfunArZu2G1KFa3ehCJUeE6Qs/hRLxxagGHndmv8yQolYKNk4N9GwbiWB3iduLaMq3odLPMQq8D1FwxEHc9iWhBsrSKZioei0ERjMek7gaEBvpxwbnSvVu7sfKRvlYo/I+74wE1mVvxQ8GwgY7UzZjnmees=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CLgRH1N6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FA3AC433F1;
-	Sun, 24 Mar 2024 23:19:08 +0000 (UTC)
+	 MIME-Version; b=cole0NmwhYxXHhRCWkKunIE8GST+c2Qtqkl5MUFya2SmvhwZOV1S51FxCfXlYFJ7khipO87Ecc+Eh3YxrU/cVuM3RKAV7YBppTlAOkhUbI7siuDxcQI19OvLxjuEuobgo0KOlHwKZySpdQfTlZpfpNUM9241d1qAAXcUBIp725Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SpLvBJ5+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58D76C43390;
+	Sun, 24 Mar 2024 23:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322349;
-	bh=G3rk+WATCGrZVuhwcQVIlEgNMvvzQraXVmEAhedWwI4=;
+	s=k20201202; t=1711322350;
+	bh=IDTM89QptYIgl5GvE+k8sraRG0NlD31BkVRXqXgKvsg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CLgRH1N6nKK0VdwNTM4dRtwvALV1czQ2xDBwDSfjKJLN03w3KA+Q9/ySPcMot3tbS
-	 VV+nBg4zNaoke8e951fmv2l0E1FKMQEnDL0OkSgHnnuqnEN0VZWf4R2YUi29vREE00
-	 yEbDJDwE1kpRyVbuXG2qSVACHpA70UgN+un4yXxxhHfpohF6fKfrE1+jKmE6qnTSVv
-	 pxZFTIRfYHIn3sA+IyfLmKzgRGH9qXnxU0p0rpXpAYOofwDu34dBnxTa9DQYVris23
-	 y7c1ZVWyvwt9mBRqGA2smr2jmMafNqa3BysDrvcW1G/QxkZXzm27GtAT5UOB89h3jY
-	 35vXRtvJIkUmA==
+	b=SpLvBJ5+Jk61XbM99zFlp7+hw2GBx/sMbbxJN1KhezCHiR5/OxV9GK5d0wB/U4zkk
+	 q9DBYB/Rg9h5a1E8wOL5xiO50i2MxMV7phTvt8yu1D9Pzhw5qeCm8CxOad9+XRSGCE
+	 640ipTual0mUMiK1MsjQpwWdAR5YwUURbw2qyuZkb/YV1oeoqK+ssDOrrbp9y8ZOQR
+	 OcefkECcVepq3uY/DfnsR0JVg7eYSJccJ8qkNlWRhSskQgQrkV6X4kwMAwfbfmBF9B
+	 82Hwa6MMmHoXOip5/uapbKjCmqJoDMyxYzCuVZ/sAjmeBifS46eR6KfsaEBL3HvKWO
+	 caqPAPVkfSTMw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srujana Challa <schalla@marvell.com>,
+Cc: Subbaraya Sundeep <sbhatta@marvell.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 431/451] octeontx2-af: add mbox to return CPT_AF_FLT_INT info
-Date: Sun, 24 Mar 2024 19:11:47 -0400
-Message-ID: <20240324231207.1351418-432-sashal@kernel.org>
+Subject: [PATCH 6.1 432/451] octeontx2: Detect the mbox up or down message via register
+Date: Sun, 24 Mar 2024 19:11:48 -0400
+Message-ID: <20240324231207.1351418-433-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,142 +62,682 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Srujana Challa <schalla@marvell.com>
+From: Subbaraya Sundeep <sbhatta@marvell.com>
 
-[ Upstream commit 8299ffe3dc3dc9ac2bd60e3a8332008f03156aca ]
+[ Upstream commit a88e0f936ba9a301c78f6eacfd38737d003c130b ]
 
-CPT HW would trigger the CPT AF FLT interrupt when CPT engines
-hits some uncorrectable errors and AF is the one which receives
-the interrupt and recovers the engines.
-This patch adds a mailbox for CPT VFs to request for CPT faulted
-and recovered engines info.
+A single line of interrupt is used to receive up notifications
+and down reply messages from AF to PF (similarly from PF to its VF).
+PF acts as bridge and forwards VF messages to AF and sends respsones
+back from AF to VF. When an async event like link event is received
+by up message when PF is in middle of forwarding VF message then
+mailbox errors occur because PF state machine is corrupted.
+Since VF is a separate driver or VF driver can be in a VM it is
+not possible to serialize from the start of communication at VF.
+Hence to differentiate between type of messages at PF this patch makes
+sender to set mbox data register with distinct values for up and down
+messages. Sender also checks whether previous interrupt is received
+before triggering current interrupt by waiting for mailbox data register
+to become zero.
 
-Signed-off-by: Srujana Challa <schalla@marvell.com>
+Fixes: 5a6d7c9daef3 ("octeontx2-pf: Mailbox communication with AF")
+Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Stable-dep-of: a88e0f936ba9 ("octeontx2: Detect the mbox up or down message via register")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/marvell/octeontx2/af/mbox.h  | 17 +++++++++
- .../net/ethernet/marvell/octeontx2/af/rvu.h   |  4 +++
- .../ethernet/marvell/octeontx2/af/rvu_cpt.c   | 35 +++++++++++++++++++
- 3 files changed, 56 insertions(+)
+ .../net/ethernet/marvell/octeontx2/af/mbox.c  |  43 ++++++-
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |   6 +
+ .../marvell/octeontx2/af/mcs_rvu_if.c         |  17 ++-
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   |  14 ++-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |   2 +
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   |  20 ++--
+ .../marvell/octeontx2/nic/otx2_common.h       |   2 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 113 ++++++++++++------
+ .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |  71 ++++++-----
+ 9 files changed, 205 insertions(+), 83 deletions(-)
 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
+index 9690ac01f02c8..7d741e3ba8c51 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
+@@ -214,11 +214,12 @@ int otx2_mbox_busy_poll_for_rsp(struct otx2_mbox *mbox, int devid)
+ }
+ EXPORT_SYMBOL(otx2_mbox_busy_poll_for_rsp);
+ 
+-void otx2_mbox_msg_send(struct otx2_mbox *mbox, int devid)
++static void otx2_mbox_msg_send_data(struct otx2_mbox *mbox, int devid, u64 data)
+ {
+ 	struct otx2_mbox_dev *mdev = &mbox->dev[devid];
+ 	struct mbox_hdr *tx_hdr, *rx_hdr;
+ 	void *hw_mbase = mdev->hwbase;
++	u64 intr_val;
+ 
+ 	tx_hdr = hw_mbase + mbox->tx_start;
+ 	rx_hdr = hw_mbase + mbox->rx_start;
+@@ -254,14 +255,52 @@ void otx2_mbox_msg_send(struct otx2_mbox *mbox, int devid)
+ 
+ 	spin_unlock(&mdev->mbox_lock);
+ 
++	/* Check if interrupt pending */
++	intr_val = readq((void __iomem *)mbox->reg_base +
++		     (mbox->trigger | (devid << mbox->tr_shift)));
++
++	intr_val |= data;
+ 	/* The interrupt should be fired after num_msgs is written
+ 	 * to the shared memory
+ 	 */
+-	writeq(1, (void __iomem *)mbox->reg_base +
++	writeq(intr_val, (void __iomem *)mbox->reg_base +
+ 	       (mbox->trigger | (devid << mbox->tr_shift)));
+ }
++
++void otx2_mbox_msg_send(struct otx2_mbox *mbox, int devid)
++{
++	otx2_mbox_msg_send_data(mbox, devid, MBOX_DOWN_MSG);
++}
+ EXPORT_SYMBOL(otx2_mbox_msg_send);
+ 
++void otx2_mbox_msg_send_up(struct otx2_mbox *mbox, int devid)
++{
++	otx2_mbox_msg_send_data(mbox, devid, MBOX_UP_MSG);
++}
++EXPORT_SYMBOL(otx2_mbox_msg_send_up);
++
++bool otx2_mbox_wait_for_zero(struct otx2_mbox *mbox, int devid)
++{
++	u64 data;
++
++	data = readq((void __iomem *)mbox->reg_base +
++		     (mbox->trigger | (devid << mbox->tr_shift)));
++
++	/* If data is non-zero wait for ~1ms and return to caller
++	 * whether data has changed to zero or not after the wait.
++	 */
++	if (!data)
++		return true;
++
++	usleep_range(950, 1000);
++
++	data = readq((void __iomem *)mbox->reg_base +
++		     (mbox->trigger | (devid << mbox->tr_shift)));
++
++	return data == 0;
++}
++EXPORT_SYMBOL(otx2_mbox_wait_for_zero);
++
+ struct mbox_msghdr *otx2_mbox_alloc_msg_rsp(struct otx2_mbox *mbox, int devid,
+ 					    int size, int size_rsp)
+ {
 diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index 5decd1919de03..bbb6658420f1d 100644
+index bbb6658420f1d..be70269e91684 100644
 --- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
 +++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -197,6 +197,8 @@ M(CPT_RXC_TIME_CFG,     0xA06, cpt_rxc_time_cfg, cpt_rxc_time_cfg_req,  \
- 			       msg_rsp)                                 \
- M(CPT_CTX_CACHE_SYNC,   0xA07, cpt_ctx_cache_sync, msg_req, msg_rsp)    \
- M(CPT_LF_RESET,         0xA08, cpt_lf_reset, cpt_lf_rst_req, msg_rsp)	\
-+M(CPT_FLT_ENG_INFO,     0xA09, cpt_flt_eng_info, cpt_flt_eng_info_req,	\
-+			       cpt_flt_eng_info_rsp)			\
- /* SDP mbox IDs (range 0x1000 - 0x11FF) */				\
- M(SET_SDP_CHAN_INFO, 0x1000, set_sdp_chan_info, sdp_chan_info_msg, msg_rsp) \
- M(GET_SDP_CHAN_INFO, 0x1001, get_sdp_chan_info, msg_req, sdp_get_chan_info_msg) \
-@@ -1710,6 +1712,21 @@ struct cpt_lf_rst_req {
- 	u32 rsvd;
- };
+@@ -16,6 +16,9 @@
  
-+/* Mailbox message format to request for CPT faulted engines */
-+struct cpt_flt_eng_info_req {
-+	struct mbox_msghdr hdr;
-+	int blkaddr;
-+	bool reset;
-+	u32 rsvd;
-+};
+ #define MBOX_SIZE		SZ_64K
+ 
++#define MBOX_DOWN_MSG		1
++#define MBOX_UP_MSG		2
 +
-+struct cpt_flt_eng_info_rsp {
-+	struct mbox_msghdr hdr;
-+	u64 flt_eng_map[CPT_10K_AF_INT_VEC_RVU];
-+	u64 rcvrd_eng_map[CPT_10K_AF_INT_VEC_RVU];
-+	u64 rsvd;
-+};
+ /* AF/PF: PF initiated, PF/VF VF initiated */
+ #define MBOX_DOWN_RX_START	0
+ #define MBOX_DOWN_RX_SIZE	(46 * SZ_1K)
+@@ -101,6 +104,7 @@ int otx2_mbox_regions_init(struct otx2_mbox *mbox, void __force **hwbase,
+ 			   struct pci_dev *pdev, void __force *reg_base,
+ 			   int direction, int ndevs, unsigned long *bmap);
+ void otx2_mbox_msg_send(struct otx2_mbox *mbox, int devid);
++void otx2_mbox_msg_send_up(struct otx2_mbox *mbox, int devid);
+ int otx2_mbox_wait_for_rsp(struct otx2_mbox *mbox, int devid);
+ int otx2_mbox_busy_poll_for_rsp(struct otx2_mbox *mbox, int devid);
+ struct mbox_msghdr *otx2_mbox_alloc_msg_rsp(struct otx2_mbox *mbox, int devid,
+@@ -118,6 +122,8 @@ static inline struct mbox_msghdr *otx2_mbox_alloc_msg(struct otx2_mbox *mbox,
+ 	return otx2_mbox_alloc_msg_rsp(mbox, devid, size, 0);
+ }
+ 
++bool otx2_mbox_wait_for_zero(struct otx2_mbox *mbox, int devid);
 +
- struct sdp_node_info {
- 	/* Node to which this PF belons to */
- 	u8 node_id;
+ /* Mailbox message types */
+ #define MBOX_MSG_MASK				0xFFFF
+ #define MBOX_MSG_INVALID			0xFFFE
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c b/drivers/net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c
+index dfd23580e3b8e..d39d86e694ccf 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c
+@@ -121,13 +121,17 @@ int mcs_add_intr_wq_entry(struct mcs *mcs, struct mcs_intr_event *event)
+ static int mcs_notify_pfvf(struct mcs_intr_event *event, struct rvu *rvu)
+ {
+ 	struct mcs_intr_info *req;
+-	int err, pf;
++	int pf;
+ 
+ 	pf = rvu_get_pf(event->pcifunc);
+ 
++	mutex_lock(&rvu->mbox_lock);
++
+ 	req = otx2_mbox_alloc_msg_mcs_intr_notify(rvu, pf);
+-	if (!req)
++	if (!req) {
++		mutex_unlock(&rvu->mbox_lock);
+ 		return -ENOMEM;
++	}
+ 
+ 	req->mcs_id = event->mcs_id;
+ 	req->intr_mask = event->intr_mask;
+@@ -135,10 +139,11 @@ static int mcs_notify_pfvf(struct mcs_intr_event *event, struct rvu *rvu)
+ 	req->hdr.pcifunc = event->pcifunc;
+ 	req->lmac_id = event->lmac_id;
+ 
+-	otx2_mbox_msg_send(&rvu->afpf_wq_info.mbox_up, pf);
+-	err = otx2_mbox_wait_for_rsp(&rvu->afpf_wq_info.mbox_up, pf);
+-	if (err)
+-		dev_warn(rvu->dev, "MCS notification to pf %d failed\n", pf);
++	otx2_mbox_wait_for_zero(&rvu->afpf_wq_info.mbox_up, pf);
++
++	otx2_mbox_msg_send_up(&rvu->afpf_wq_info.mbox_up, pf);
++
++	mutex_unlock(&rvu->mbox_lock);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+index 8f5b7d14e3f7c..59e6442ddf4a4 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+@@ -2114,7 +2114,7 @@ MBOX_MESSAGES
+ 	}
+ }
+ 
+-static void __rvu_mbox_handler(struct rvu_work *mwork, int type)
++static void __rvu_mbox_handler(struct rvu_work *mwork, int type, bool poll)
+ {
+ 	struct rvu *rvu = mwork->rvu;
+ 	int offset, err, id, devid;
+@@ -2181,6 +2181,9 @@ static void __rvu_mbox_handler(struct rvu_work *mwork, int type)
+ 	}
+ 	mw->mbox_wrk[devid].num_msgs = 0;
+ 
++	if (poll)
++		otx2_mbox_wait_for_zero(mbox, devid);
++
+ 	/* Send mbox responses to VF/PF */
+ 	otx2_mbox_msg_send(mbox, devid);
+ }
+@@ -2188,15 +2191,18 @@ static void __rvu_mbox_handler(struct rvu_work *mwork, int type)
+ static inline void rvu_afpf_mbox_handler(struct work_struct *work)
+ {
+ 	struct rvu_work *mwork = container_of(work, struct rvu_work, work);
++	struct rvu *rvu = mwork->rvu;
+ 
+-	__rvu_mbox_handler(mwork, TYPE_AFPF);
++	mutex_lock(&rvu->mbox_lock);
++	__rvu_mbox_handler(mwork, TYPE_AFPF, true);
++	mutex_unlock(&rvu->mbox_lock);
+ }
+ 
+ static inline void rvu_afvf_mbox_handler(struct work_struct *work)
+ {
+ 	struct rvu_work *mwork = container_of(work, struct rvu_work, work);
+ 
+-	__rvu_mbox_handler(mwork, TYPE_AFVF);
++	__rvu_mbox_handler(mwork, TYPE_AFVF, false);
+ }
+ 
+ static void __rvu_mbox_up_handler(struct rvu_work *mwork, int type)
+@@ -2371,6 +2377,8 @@ static int rvu_mbox_init(struct rvu *rvu, struct mbox_wq_info *mw,
+ 		}
+ 	}
+ 
++	mutex_init(&rvu->mbox_lock);
++
+ 	mbox_regions = kcalloc(num, sizeof(void *), GFP_KERNEL);
+ 	if (!mbox_regions) {
+ 		err = -ENOMEM;
 diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-index e1760f9298b17..6a39006c334d7 100644
+index 6a39006c334d7..a3ae21398ca74 100644
 --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
 +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
-@@ -109,6 +109,8 @@ struct rvu_block {
- 	u64  lfreset_reg;
- 	unsigned char name[NAME_SIZE];
- 	struct rvu *rvu;
-+	u64 cpt_flt_eng_map[3];
-+	u64 cpt_rcvrd_eng_map[3];
- };
- 
- struct nix_mcast {
-@@ -521,6 +523,8 @@ struct rvu {
- 	struct list_head	mcs_intrq_head;
- 	/* mcs interrupt queue lock */
+@@ -525,6 +525,8 @@ struct rvu {
  	spinlock_t		mcs_intrq_lock;
-+	/* CPT interrupt lock */
-+	spinlock_t		cpt_intr_lock;
+ 	/* CPT interrupt lock */
+ 	spinlock_t		cpt_intr_lock;
++
++	struct mutex		mbox_lock; /* Serialize mbox up and down msgs */
  };
  
  static inline void rvu_write64(struct rvu *rvu, u64 block, u64 offset, u64 val)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
-index 923af460db296..6fb02b93c1718 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
-@@ -70,6 +70,14 @@ static irqreturn_t cpt_af_flt_intr_handler(int vec, void *ptr)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+index bcb4385d0621c..d1e6b12ecfa70 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+@@ -232,7 +232,7 @@ static void cgx_notify_pfs(struct cgx_link_event *event, struct rvu *rvu)
+ 	struct cgx_link_user_info *linfo;
+ 	struct cgx_link_info_msg *msg;
+ 	unsigned long pfmap;
+-	int err, pfid;
++	int pfid;
  
- 		rvu_write64(rvu, blkaddr, CPT_AF_EXEX_CTL2(eng), grp);
- 		rvu_write64(rvu, blkaddr, CPT_AF_EXEX_CTL(eng), val | 1ULL);
-+
-+		spin_lock(&rvu->cpt_intr_lock);
-+		block->cpt_flt_eng_map[vec] |= BIT_ULL(i);
-+		val = rvu_read64(rvu, blkaddr, CPT_AF_EXEX_STS(eng));
-+		val = val & 0x3;
-+		if (val == 0x1 || val == 0x2)
-+			block->cpt_rcvrd_eng_map[vec] |= BIT_ULL(i);
-+		spin_unlock(&rvu->cpt_intr_lock);
- 	}
- 	rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT(vec), reg);
+ 	linfo = &event->link_uinfo;
+ 	pfmap = cgxlmac_to_pfmap(rvu, event->cgx_id, event->lmac_id);
+@@ -250,16 +250,22 @@ static void cgx_notify_pfs(struct cgx_link_event *event, struct rvu *rvu)
+ 			continue;
+ 		}
  
-@@ -884,6 +892,31 @@ int rvu_mbox_handler_cpt_lf_reset(struct rvu *rvu, struct cpt_lf_rst_req *req,
- 	return 0;
- }
- 
-+int rvu_mbox_handler_cpt_flt_eng_info(struct rvu *rvu, struct cpt_flt_eng_info_req *req,
-+				      struct cpt_flt_eng_info_rsp *rsp)
-+{
-+	struct rvu_block *block;
-+	unsigned long flags;
-+	int blkaddr, vec;
++		mutex_lock(&rvu->mbox_lock);
 +
-+	blkaddr = validate_and_get_cpt_blkaddr(req->blkaddr);
-+	if (blkaddr < 0)
-+		return blkaddr;
-+
-+	block = &rvu->hw->block[blkaddr];
-+	for (vec = 0; vec < CPT_10K_AF_INT_VEC_RVU; vec++) {
-+		spin_lock_irqsave(&rvu->cpt_intr_lock, flags);
-+		rsp->flt_eng_map[vec] = block->cpt_flt_eng_map[vec];
-+		rsp->rcvrd_eng_map[vec] = block->cpt_rcvrd_eng_map[vec];
-+		if (req->reset) {
-+			block->cpt_flt_eng_map[vec] = 0x0;
-+			block->cpt_rcvrd_eng_map[vec] = 0x0;
+ 		/* Send mbox message to PF */
+ 		msg = otx2_mbox_alloc_msg_cgx_link_event(rvu, pfid);
+-		if (!msg)
++		if (!msg) {
++			mutex_unlock(&rvu->mbox_lock);
+ 			continue;
 +		}
-+		spin_unlock_irqrestore(&rvu->cpt_intr_lock, flags);
-+	}
-+	return 0;
-+}
 +
- static void cpt_rxc_teardown(struct rvu *rvu, int blkaddr)
- {
- 	struct cpt_rxc_time_cfg_req req;
-@@ -1172,5 +1205,7 @@ int rvu_cpt_init(struct rvu *rvu)
- {
- 	/* Retrieve CPT PF number */
- 	rvu->cpt_pf_num = get_cpt_pf_num(rvu);
-+	spin_lock_init(&rvu->cpt_intr_lock);
+ 		msg->link_info = *linfo;
+-		otx2_mbox_msg_send(&rvu->afpf_wq_info.mbox_up, pfid);
+-		err = otx2_mbox_wait_for_rsp(&rvu->afpf_wq_info.mbox_up, pfid);
+-		if (err)
+-			dev_warn(rvu->dev, "notification to pf %d failed\n",
+-				 pfid);
 +
++		otx2_mbox_wait_for_zero(&rvu->afpf_wq_info.mbox_up, pfid);
++
++		otx2_mbox_msg_send_up(&rvu->afpf_wq_info.mbox_up, pfid);
++
++		mutex_unlock(&rvu->mbox_lock);
+ 	} while (pfmap);
+ }
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index 44950c2542bb7..c15d1864a6371 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -785,7 +785,7 @@ static inline int otx2_sync_mbox_up_msg(struct mbox *mbox, int devid)
+ 
+ 	if (!otx2_mbox_nonempty(&mbox->mbox_up, devid))
+ 		return 0;
+-	otx2_mbox_msg_send(&mbox->mbox_up, devid);
++	otx2_mbox_msg_send_up(&mbox->mbox_up, devid);
+ 	err = otx2_mbox_wait_for_rsp(&mbox->mbox_up, devid);
+ 	if (err)
+ 		return err;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index a2d8ac6204054..05ee55022b92c 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -292,8 +292,8 @@ static int otx2_pf_flr_init(struct otx2_nic *pf, int num_vfs)
  	return 0;
  }
+ 
+-static void otx2_queue_work(struct mbox *mw, struct workqueue_struct *mbox_wq,
+-			    int first, int mdevs, u64 intr, int type)
++static void otx2_queue_vf_work(struct mbox *mw, struct workqueue_struct *mbox_wq,
++			       int first, int mdevs, u64 intr)
+ {
+ 	struct otx2_mbox_dev *mdev;
+ 	struct otx2_mbox *mbox;
+@@ -307,40 +307,26 @@ static void otx2_queue_work(struct mbox *mw, struct workqueue_struct *mbox_wq,
+ 
+ 		mbox = &mw->mbox;
+ 		mdev = &mbox->dev[i];
+-		if (type == TYPE_PFAF)
+-			otx2_sync_mbox_bbuf(mbox, i);
+ 		hdr = mdev->mbase + mbox->rx_start;
+ 		/* The hdr->num_msgs is set to zero immediately in the interrupt
+-		 * handler to  ensure that it holds a correct value next time
+-		 * when the interrupt handler is called.
+-		 * pf->mbox.num_msgs holds the data for use in pfaf_mbox_handler
+-		 * pf>mbox.up_num_msgs holds the data for use in
+-		 * pfaf_mbox_up_handler.
++		 * handler to ensure that it holds a correct value next time
++		 * when the interrupt handler is called. pf->mw[i].num_msgs
++		 * holds the data for use in otx2_pfvf_mbox_handler and
++		 * pf->mw[i].up_num_msgs holds the data for use in
++		 * otx2_pfvf_mbox_up_handler.
+ 		 */
+ 		if (hdr->num_msgs) {
+ 			mw[i].num_msgs = hdr->num_msgs;
+ 			hdr->num_msgs = 0;
+-			if (type == TYPE_PFAF)
+-				memset(mbox->hwbase + mbox->rx_start, 0,
+-				       ALIGN(sizeof(struct mbox_hdr),
+-					     sizeof(u64)));
+-
+ 			queue_work(mbox_wq, &mw[i].mbox_wrk);
+ 		}
+ 
+ 		mbox = &mw->mbox_up;
+ 		mdev = &mbox->dev[i];
+-		if (type == TYPE_PFAF)
+-			otx2_sync_mbox_bbuf(mbox, i);
+ 		hdr = mdev->mbase + mbox->rx_start;
+ 		if (hdr->num_msgs) {
+ 			mw[i].up_num_msgs = hdr->num_msgs;
+ 			hdr->num_msgs = 0;
+-			if (type == TYPE_PFAF)
+-				memset(mbox->hwbase + mbox->rx_start, 0,
+-				       ALIGN(sizeof(struct mbox_hdr),
+-					     sizeof(u64)));
+-
+ 			queue_work(mbox_wq, &mw[i].mbox_up_wrk);
+ 		}
+ 	}
+@@ -356,8 +342,10 @@ static void otx2_forward_msg_pfvf(struct otx2_mbox_dev *mdev,
+ 	/* Msgs are already copied, trigger VF's mbox irq */
+ 	smp_wmb();
+ 
++	otx2_mbox_wait_for_zero(pfvf_mbox, devid);
++
+ 	offset = pfvf_mbox->trigger | (devid << pfvf_mbox->tr_shift);
+-	writeq(1, (void __iomem *)pfvf_mbox->reg_base + offset);
++	writeq(MBOX_DOWN_MSG, (void __iomem *)pfvf_mbox->reg_base + offset);
+ 
+ 	/* Restore VF's mbox bounce buffer region address */
+ 	src_mdev->mbase = bbuf_base;
+@@ -547,7 +535,7 @@ static void otx2_pfvf_mbox_up_handler(struct work_struct *work)
+ end:
+ 		offset = mbox->rx_start + msg->next_msgoff;
+ 		if (mdev->msgs_acked == (vf_mbox->up_num_msgs - 1))
+-			__otx2_mbox_reset(mbox, 0);
++			__otx2_mbox_reset(mbox, vf_idx);
+ 		mdev->msgs_acked++;
+ 	}
+ }
+@@ -564,8 +552,7 @@ static irqreturn_t otx2_pfvf_mbox_intr_handler(int irq, void *pf_irq)
+ 	if (vfs > 64) {
+ 		intr = otx2_read64(pf, RVU_PF_VFPF_MBOX_INTX(1));
+ 		otx2_write64(pf, RVU_PF_VFPF_MBOX_INTX(1), intr);
+-		otx2_queue_work(mbox, pf->mbox_pfvf_wq, 64, vfs, intr,
+-				TYPE_PFVF);
++		otx2_queue_vf_work(mbox, pf->mbox_pfvf_wq, 64, vfs, intr);
+ 		if (intr)
+ 			trace_otx2_msg_interrupt(mbox->mbox.pdev, "VF(s) to PF", intr);
+ 		vfs = 64;
+@@ -574,7 +561,7 @@ static irqreturn_t otx2_pfvf_mbox_intr_handler(int irq, void *pf_irq)
+ 	intr = otx2_read64(pf, RVU_PF_VFPF_MBOX_INTX(0));
+ 	otx2_write64(pf, RVU_PF_VFPF_MBOX_INTX(0), intr);
+ 
+-	otx2_queue_work(mbox, pf->mbox_pfvf_wq, 0, vfs, intr, TYPE_PFVF);
++	otx2_queue_vf_work(mbox, pf->mbox_pfvf_wq, 0, vfs, intr);
+ 
+ 	if (intr)
+ 		trace_otx2_msg_interrupt(mbox->mbox.pdev, "VF(s) to PF", intr);
+@@ -822,20 +809,22 @@ static void otx2_pfaf_mbox_handler(struct work_struct *work)
+ 	struct mbox *af_mbox;
+ 	struct otx2_nic *pf;
+ 	int offset, id;
++	u16 num_msgs;
+ 
+ 	af_mbox = container_of(work, struct mbox, mbox_wrk);
+ 	mbox = &af_mbox->mbox;
+ 	mdev = &mbox->dev[0];
+ 	rsp_hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
++	num_msgs = rsp_hdr->num_msgs;
+ 
+ 	offset = mbox->rx_start + ALIGN(sizeof(*rsp_hdr), MBOX_MSG_ALIGN);
+ 	pf = af_mbox->pfvf;
+ 
+-	for (id = 0; id < af_mbox->num_msgs; id++) {
++	for (id = 0; id < num_msgs; id++) {
+ 		msg = (struct mbox_msghdr *)(mdev->mbase + offset);
+ 		otx2_process_pfaf_mbox_msg(pf, msg);
+ 		offset = mbox->rx_start + msg->next_msgoff;
+-		if (mdev->msgs_acked == (af_mbox->num_msgs - 1))
++		if (mdev->msgs_acked == (num_msgs - 1))
+ 			__otx2_mbox_reset(mbox, 0);
+ 		mdev->msgs_acked++;
+ 	}
+@@ -946,12 +935,14 @@ static void otx2_pfaf_mbox_up_handler(struct work_struct *work)
+ 	int offset, id, devid = 0;
+ 	struct mbox_hdr *rsp_hdr;
+ 	struct mbox_msghdr *msg;
++	u16 num_msgs;
+ 
+ 	rsp_hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
++	num_msgs = rsp_hdr->num_msgs;
+ 
+ 	offset = mbox->rx_start + ALIGN(sizeof(*rsp_hdr), MBOX_MSG_ALIGN);
+ 
+-	for (id = 0; id < af_mbox->up_num_msgs; id++) {
++	for (id = 0; id < num_msgs; id++) {
+ 		msg = (struct mbox_msghdr *)(mdev->mbase + offset);
+ 
+ 		devid = msg->pcifunc & RVU_PFVF_FUNC_MASK;
+@@ -960,10 +951,11 @@ static void otx2_pfaf_mbox_up_handler(struct work_struct *work)
+ 			otx2_process_mbox_msg_up(pf, msg);
+ 		offset = mbox->rx_start + msg->next_msgoff;
+ 	}
+-	if (devid) {
++	/* Forward to VF iff VFs are really present */
++	if (devid && pci_num_vf(pf->pdev)) {
+ 		otx2_forward_vf_mbox_msgs(pf, &pf->mbox.mbox_up,
+ 					  MBOX_DIR_PFVF_UP, devid - 1,
+-					  af_mbox->up_num_msgs);
++					  num_msgs);
+ 		return;
+ 	}
+ 
+@@ -973,16 +965,49 @@ static void otx2_pfaf_mbox_up_handler(struct work_struct *work)
+ static irqreturn_t otx2_pfaf_mbox_intr_handler(int irq, void *pf_irq)
+ {
+ 	struct otx2_nic *pf = (struct otx2_nic *)pf_irq;
+-	struct mbox *mbox;
++	struct mbox *mw = &pf->mbox;
++	struct otx2_mbox_dev *mdev;
++	struct otx2_mbox *mbox;
++	struct mbox_hdr *hdr;
++	u64 mbox_data;
+ 
+ 	/* Clear the IRQ */
+ 	otx2_write64(pf, RVU_PF_INT, BIT_ULL(0));
+ 
+-	mbox = &pf->mbox;
+ 
+-	trace_otx2_msg_interrupt(mbox->mbox.pdev, "AF to PF", BIT_ULL(0));
++	mbox_data = otx2_read64(pf, RVU_PF_PFAF_MBOX0);
++
++	if (mbox_data & MBOX_UP_MSG) {
++		mbox_data &= ~MBOX_UP_MSG;
++		otx2_write64(pf, RVU_PF_PFAF_MBOX0, mbox_data);
++
++		mbox = &mw->mbox_up;
++		mdev = &mbox->dev[0];
++		otx2_sync_mbox_bbuf(mbox, 0);
++
++		hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
++		if (hdr->num_msgs)
++			queue_work(pf->mbox_wq, &mw->mbox_up_wrk);
++
++		trace_otx2_msg_interrupt(pf->pdev, "UP message from AF to PF",
++					 BIT_ULL(0));
++	}
++
++	if (mbox_data & MBOX_DOWN_MSG) {
++		mbox_data &= ~MBOX_DOWN_MSG;
++		otx2_write64(pf, RVU_PF_PFAF_MBOX0, mbox_data);
++
++		mbox = &mw->mbox;
++		mdev = &mbox->dev[0];
++		otx2_sync_mbox_bbuf(mbox, 0);
++
++		hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
++		if (hdr->num_msgs)
++			queue_work(pf->mbox_wq, &mw->mbox_wrk);
+ 
+-	otx2_queue_work(mbox, pf->mbox_wq, 0, 1, 1, TYPE_PFAF);
++		trace_otx2_msg_interrupt(pf->pdev, "DOWN reply from AF to PF",
++					 BIT_ULL(0));
++	}
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -3030,6 +3055,7 @@ static void otx2_vf_link_event_task(struct work_struct *work)
+ 	struct otx2_vf_config *config;
+ 	struct cgx_link_info_msg *req;
+ 	struct mbox_msghdr *msghdr;
++	struct delayed_work *dwork;
+ 	struct otx2_nic *pf;
+ 	int vf_idx;
+ 
+@@ -3038,10 +3064,21 @@ static void otx2_vf_link_event_task(struct work_struct *work)
+ 	vf_idx = config - config->pf->vf_configs;
+ 	pf = config->pf;
+ 
++	mutex_lock(&pf->mbox.lock);
++
++	dwork = &config->link_event_work;
++
++	if (!otx2_mbox_wait_for_zero(&pf->mbox_pfvf[0].mbox_up, vf_idx)) {
++		schedule_delayed_work(dwork, msecs_to_jiffies(100));
++		mutex_unlock(&pf->mbox.lock);
++		return;
++	}
++
+ 	msghdr = otx2_mbox_alloc_msg_rsp(&pf->mbox_pfvf[0].mbox_up, vf_idx,
+ 					 sizeof(*req), sizeof(struct msg_rsp));
+ 	if (!msghdr) {
+ 		dev_err(pf->dev, "Failed to create VF%d link event\n", vf_idx);
++		mutex_unlock(&pf->mbox.lock);
+ 		return;
+ 	}
+ 
+@@ -3050,7 +3087,11 @@ static void otx2_vf_link_event_task(struct work_struct *work)
+ 	req->hdr.sig = OTX2_MBOX_REQ_SIG;
+ 	memcpy(&req->link_info, &pf->linfo, sizeof(req->link_info));
+ 
+-	otx2_sync_mbox_up_msg(&pf->mbox_pfvf[0], vf_idx);
++	otx2_mbox_wait_for_zero(&pf->mbox_pfvf[0].mbox_up, vf_idx);
++
++	otx2_mbox_msg_send_up(&pf->mbox_pfvf[0].mbox_up, vf_idx);
++
++	mutex_unlock(&pf->mbox.lock);
+ }
+ 
+ static int otx2_sriov_enable(struct pci_dev *pdev, int numvfs)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+index 404855bccb4b6..68fef947ccced 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+@@ -89,16 +89,20 @@ static void otx2vf_vfaf_mbox_handler(struct work_struct *work)
+ 	struct otx2_mbox *mbox;
+ 	struct mbox *af_mbox;
+ 	int offset, id;
++	u16 num_msgs;
+ 
+ 	af_mbox = container_of(work, struct mbox, mbox_wrk);
+ 	mbox = &af_mbox->mbox;
+ 	mdev = &mbox->dev[0];
+ 	rsp_hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
+-	if (af_mbox->num_msgs == 0)
++	num_msgs = rsp_hdr->num_msgs;
++
++	if (num_msgs == 0)
+ 		return;
++
+ 	offset = mbox->rx_start + ALIGN(sizeof(*rsp_hdr), MBOX_MSG_ALIGN);
+ 
+-	for (id = 0; id < af_mbox->num_msgs; id++) {
++	for (id = 0; id < num_msgs; id++) {
+ 		msg = (struct mbox_msghdr *)(mdev->mbase + offset);
+ 		otx2vf_process_vfaf_mbox_msg(af_mbox->pfvf, msg);
+ 		offset = mbox->rx_start + msg->next_msgoff;
+@@ -151,6 +155,7 @@ static void otx2vf_vfaf_mbox_up_handler(struct work_struct *work)
+ 	struct mbox *vf_mbox;
+ 	struct otx2_nic *vf;
+ 	int offset, id;
++	u16 num_msgs;
+ 
+ 	vf_mbox = container_of(work, struct mbox, mbox_up_wrk);
+ 	vf = vf_mbox->pfvf;
+@@ -158,12 +163,14 @@ static void otx2vf_vfaf_mbox_up_handler(struct work_struct *work)
+ 	mdev = &mbox->dev[0];
+ 
+ 	rsp_hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
+-	if (vf_mbox->up_num_msgs == 0)
++	num_msgs = rsp_hdr->num_msgs;
++
++	if (num_msgs == 0)
+ 		return;
+ 
+ 	offset = mbox->rx_start + ALIGN(sizeof(*rsp_hdr), MBOX_MSG_ALIGN);
+ 
+-	for (id = 0; id < vf_mbox->up_num_msgs; id++) {
++	for (id = 0; id < num_msgs; id++) {
+ 		msg = (struct mbox_msghdr *)(mdev->mbase + offset);
+ 		otx2vf_process_mbox_msg_up(vf, msg);
+ 		offset = mbox->rx_start + msg->next_msgoff;
+@@ -178,40 +185,48 @@ static irqreturn_t otx2vf_vfaf_mbox_intr_handler(int irq, void *vf_irq)
+ 	struct otx2_mbox_dev *mdev;
+ 	struct otx2_mbox *mbox;
+ 	struct mbox_hdr *hdr;
++	u64 mbox_data;
+ 
+ 	/* Clear the IRQ */
+ 	otx2_write64(vf, RVU_VF_INT, BIT_ULL(0));
+ 
++	mbox_data = otx2_read64(vf, RVU_VF_VFPF_MBOX0);
++
+ 	/* Read latest mbox data */
+ 	smp_rmb();
+ 
+-	/* Check for PF => VF response messages */
+-	mbox = &vf->mbox.mbox;
+-	mdev = &mbox->dev[0];
+-	otx2_sync_mbox_bbuf(mbox, 0);
++	if (mbox_data & MBOX_DOWN_MSG) {
++		mbox_data &= ~MBOX_DOWN_MSG;
++		otx2_write64(vf, RVU_VF_VFPF_MBOX0, mbox_data);
++
++		/* Check for PF => VF response messages */
++		mbox = &vf->mbox.mbox;
++		mdev = &mbox->dev[0];
++		otx2_sync_mbox_bbuf(mbox, 0);
+ 
+-	trace_otx2_msg_interrupt(mbox->pdev, "PF to VF", BIT_ULL(0));
++		hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
++		if (hdr->num_msgs)
++			queue_work(vf->mbox_wq, &vf->mbox.mbox_wrk);
+ 
+-	hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
+-	if (hdr->num_msgs) {
+-		vf->mbox.num_msgs = hdr->num_msgs;
+-		hdr->num_msgs = 0;
+-		memset(mbox->hwbase + mbox->rx_start, 0,
+-		       ALIGN(sizeof(struct mbox_hdr), sizeof(u64)));
+-		queue_work(vf->mbox_wq, &vf->mbox.mbox_wrk);
++		trace_otx2_msg_interrupt(mbox->pdev, "DOWN reply from PF to VF",
++					 BIT_ULL(0));
+ 	}
+-	/* Check for PF => VF notification messages */
+-	mbox = &vf->mbox.mbox_up;
+-	mdev = &mbox->dev[0];
+-	otx2_sync_mbox_bbuf(mbox, 0);
+-
+-	hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
+-	if (hdr->num_msgs) {
+-		vf->mbox.up_num_msgs = hdr->num_msgs;
+-		hdr->num_msgs = 0;
+-		memset(mbox->hwbase + mbox->rx_start, 0,
+-		       ALIGN(sizeof(struct mbox_hdr), sizeof(u64)));
+-		queue_work(vf->mbox_wq, &vf->mbox.mbox_up_wrk);
++
++	if (mbox_data & MBOX_UP_MSG) {
++		mbox_data &= ~MBOX_UP_MSG;
++		otx2_write64(vf, RVU_VF_VFPF_MBOX0, mbox_data);
++
++		/* Check for PF => VF notification messages */
++		mbox = &vf->mbox.mbox_up;
++		mdev = &mbox->dev[0];
++		otx2_sync_mbox_bbuf(mbox, 0);
++
++		hdr = (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
++		if (hdr->num_msgs)
++			queue_work(vf->mbox_wq, &vf->mbox.mbox_up_wrk);
++
++		trace_otx2_msg_interrupt(mbox->pdev, "UP message from PF to VF",
++					 BIT_ULL(0));
+ 	}
+ 
+ 	return IRQ_HANDLED;
 -- 
 2.43.0
 
