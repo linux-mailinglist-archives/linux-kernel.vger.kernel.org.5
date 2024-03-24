@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98C47889CB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:26:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87019888F20
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:37:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 263641F363CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:26:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26EA61F33B4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE133344B3E;
-	Mon, 25 Mar 2024 02:47:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B53622C65E;
+	Sun, 24 Mar 2024 23:16:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KcsUsNiU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wmv+j9mc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B5514EC55;
-	Sun, 24 Mar 2024 23:02:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F4AF14EC61;
+	Sun, 24 Mar 2024 23:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321322; cv=none; b=VimhvElY90I+lJYIX6OIghhghvzTJpk+fgLrSEEB7cEZAHsYsjBM+KWFCioDLGQox7Pmzgnw4jz5goev95frJfQLNG8U38CU0XcEnHTTU9Mn5T2WLTUASsgR8NsFgwSWJ6Ipu3VzBfdAF/F9ht8wbU97Pnz8o9UOezkvIdJe+uw=
+	t=1711321322; cv=none; b=EGsj+mls+2/eDhjwOmKzsh/0QSJU7Tlws0BRKoJD+pGDvTQH+OJf9wqKMwdQl6WQhWfsBuFqdV3fdpwJs5JctuHHFOYPIXsKKTQMFUf+ThpTYBljrX3mQ19ERw46JK6zRwg72GHiFpL1Y36H0+A2Cw62/BAFfoaIuMzaVcZ77Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321322; c=relaxed/simple;
-	bh=Ci9riVZbxJ14AJQUWZVd75cjZHMBm4hSSB/4WuT7fmw=;
+	bh=qOGeOiK4ClElyfszjmQKYlD69NhrO+v312Y/ZK8a4Iw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QD2YvMcGNW6u35P9P0WoHHjz5dAskHNDageHUX8fQ6BU4WFksD1II6xWITC27JiFh3OLwLNVLhmjZiXs0pF9c+pnGXaj/+7Sl0/72xLKChVni5KqxoHPssnB+2Up80B4dbeXaFMqfS7kpP+y+iJZOHVFNJVPVWNzjKqxBQuYLw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KcsUsNiU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E57A7C433F1;
-	Sun, 24 Mar 2024 23:01:59 +0000 (UTC)
+	 MIME-Version; b=I68SFyICkKeQmbAim8UA9VXFineSq/fmFVN20AKvGyiZx1twbgHj4z/prqhvmeDIKtTwzh6TZcccpLlrfYhre/PG+iVyXVlTAPAaSi5tOtPTLWc7f8knVF9VtAO19lkAiGuUtwGFxVCa2086t//vVR50FcpkMcnDfYMF87ZK3Cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wmv+j9mc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7FAC43390;
+	Sun, 24 Mar 2024 23:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321320;
-	bh=Ci9riVZbxJ14AJQUWZVd75cjZHMBm4hSSB/4WuT7fmw=;
+	s=k20201202; t=1711321321;
+	bh=qOGeOiK4ClElyfszjmQKYlD69NhrO+v312Y/ZK8a4Iw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KcsUsNiUg3XmMlwMtNvMAQp4hbhWQ23Ei1BTSN+j5KX0nyRhZTo87yD7xf9XSLzob
-	 ovtMOV5RKgvIEfYOFc2/FLso0rE4xxShjBoCGonbnuOgUiFZeD71UfvG/t/kJ7Umvk
-	 +UBBawPBIXR5eICh1yESgrv5GjNXOWnhRAlsT9kW+4yc6WSzNnTEk7idcmdtosMAlK
-	 OZbR7/AN8CwoJnaUuYyda1kQdLE/lUd8Fk+B/0SIDNN6O3uWtKV/0fMrvSS5PTIulO
-	 iZF4ggRXxkik974mq+0wZO6BSK5k3+h5UyzH5XPq9nOyMLscEVa+qtLa63aAScyQfm
-	 CRcYkMvWniMvQ==
+	b=Wmv+j9mcfncsXhnXz+bByTQ+O3E/Ap0ImwzLs+iMLumOZdvpefvBtTLv/MaHkQGIQ
+	 38x+/S9N36xs1Mh77c6CXKSPlCliaG56fEs/OSVMMfDei5GfUY+kluSWadVpmjP45w
+	 N6X7Hnkoibuy2n7IS6y8PtBVhVkpJsaO7kTLrYNNysxlFMTcwvTxvHOCGqZVlN9zLV
+	 O6xMB2FMEBmHqnTpug4OvlPeKLiAZehZ5wappXmoW2uailwa49F1V2B4ZVPlZRoi58
+	 rohCi6XF6Y4nlp91Ad9OVJ3PYUwOosBT6rqbHZBOKaH91WMd2x4uq+uJP25ZfhiEaI
+	 GPJjKZd2U/TCQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Filipe Manana <fdmanana@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 043/638] btrfs: fix data races when accessing the reserved amount of block reserves
-Date: Sun, 24 Mar 2024 18:51:20 -0400
-Message-ID: <20240324230116.1348576-44-sashal@kernel.org>
+Subject: [PATCH 6.6 044/638] btrfs: fix data race at btrfs_use_block_rsv() when accessing block reserve
+Date: Sun, 24 Mar 2024 18:51:21 -0400
+Message-ID: <20240324230116.1348576-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,159 +64,99 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit e06cc89475eddc1f3a7a4d471524256152c68166 ]
+[ Upstream commit c7bb26b847e5b97814f522686068c5628e2b3646 ]
 
-At space_info.c we have several places where we access the ->reserved
-field of a block reserve without taking the block reserve's spinlock
-first, which makes KCSAN warn about a data race since that field is
-always updated while holding the spinlock.
+At btrfs_use_block_rsv() we read the size of a block reserve without
+locking its spinlock, which makes KCSAN complain because the size of a
+block reserve is always updated while holding its spinlock. The report
+from KCSAN is the following:
 
-The reports from KCSAN are like the following:
+  [653.313148] BUG: KCSAN: data-race in btrfs_update_delayed_refs_rsv [btrfs] / btrfs_use_block_rsv [btrfs]
 
-  [117.193526] BUG: KCSAN: data-race in btrfs_block_rsv_release [btrfs] / need_preemptive_reclaim [btrfs]
+  [653.314755] read to 0x000000017f5871b8 of 8 bytes by task 7519 on cpu 0:
+  [653.314779]  btrfs_use_block_rsv+0xe4/0x2f8 [btrfs]
+  [653.315606]  btrfs_alloc_tree_block+0xdc/0x998 [btrfs]
+  [653.316421]  btrfs_force_cow_block+0x220/0xe38 [btrfs]
+  [653.317242]  btrfs_cow_block+0x1ac/0x568 [btrfs]
+  [653.318060]  btrfs_search_slot+0xda2/0x19b8 [btrfs]
+  [653.318879]  btrfs_del_csums+0x1dc/0x798 [btrfs]
+  [653.319702]  __btrfs_free_extent.isra.0+0xc24/0x2028 [btrfs]
+  [653.320538]  __btrfs_run_delayed_refs+0xd3c/0x2390 [btrfs]
+  [653.321340]  btrfs_run_delayed_refs+0xae/0x290 [btrfs]
+  [653.322140]  flush_space+0x5e4/0x718 [btrfs]
+  [653.322958]  btrfs_preempt_reclaim_metadata_space+0x102/0x2f8 [btrfs]
+  [653.323781]  process_one_work+0x3b6/0x838
+  [653.323800]  worker_thread+0x75e/0xb10
+  [653.323817]  kthread+0x21a/0x230
+  [653.323836]  __ret_from_fork+0x6c/0xb8
+  [653.323855]  ret_from_fork+0xa/0x30
 
-  [117.195148] read to 0x000000017f587190 of 8 bytes by task 6303 on cpu 3:
-  [117.195172]  need_preemptive_reclaim+0x222/0x2f0 [btrfs]
-  [117.195992]  __reserve_bytes+0xbb0/0xdc8 [btrfs]
-  [117.196807]  btrfs_reserve_metadata_bytes+0x4c/0x120 [btrfs]
-  [117.197620]  btrfs_block_rsv_add+0x78/0xa8 [btrfs]
-  [117.198434]  btrfs_delayed_update_inode+0x154/0x368 [btrfs]
-  [117.199300]  btrfs_update_inode+0x108/0x1c8 [btrfs]
-  [117.200122]  btrfs_dirty_inode+0xb4/0x140 [btrfs]
-  [117.200937]  btrfs_update_time+0x8c/0xb0 [btrfs]
-  [117.201754]  touch_atime+0x16c/0x1e0
-  [117.201789]  filemap_read+0x674/0x728
-  [117.201823]  btrfs_file_read_iter+0xf8/0x410 [btrfs]
-  [117.202653]  vfs_read+0x2b6/0x498
-  [117.203454]  ksys_read+0xa2/0x150
-  [117.203473]  __s390x_sys_read+0x68/0x88
-  [117.203495]  do_syscall+0x1c6/0x210
-  [117.203517]  __do_syscall+0xc8/0xf0
-  [117.203539]  system_call+0x70/0x98
+  [653.323887] write to 0x000000017f5871b8 of 8 bytes by task 576 on cpu 3:
+  [653.323906]  btrfs_update_delayed_refs_rsv+0x1a4/0x250 [btrfs]
+  [653.324699]  btrfs_add_delayed_data_ref+0x468/0x6d8 [btrfs]
+  [653.325494]  btrfs_free_extent+0x76/0x120 [btrfs]
+  [653.326280]  __btrfs_mod_ref+0x6a8/0x6b8 [btrfs]
+  [653.327064]  btrfs_dec_ref+0x50/0x70 [btrfs]
+  [653.327849]  walk_up_proc+0x236/0xa50 [btrfs]
+  [653.328633]  walk_up_tree+0x21c/0x448 [btrfs]
+  [653.329418]  btrfs_drop_snapshot+0x802/0x1328 [btrfs]
+  [653.330205]  btrfs_clean_one_deleted_snapshot+0x184/0x238 [btrfs]
+  [653.330995]  cleaner_kthread+0x2b0/0x2f0 [btrfs]
+  [653.331781]  kthread+0x21a/0x230
+  [653.331800]  __ret_from_fork+0x6c/0xb8
+  [653.331818]  ret_from_fork+0xa/0x30
 
-  [117.203579] write to 0x000000017f587190 of 8 bytes by task 11 on cpu 0:
-  [117.203604]  btrfs_block_rsv_release+0x2e8/0x578 [btrfs]
-  [117.204432]  btrfs_delayed_inode_release_metadata+0x7c/0x1d0 [btrfs]
-  [117.205259]  __btrfs_update_delayed_inode+0x37c/0x5e0 [btrfs]
-  [117.206093]  btrfs_async_run_delayed_root+0x356/0x498 [btrfs]
-  [117.206917]  btrfs_work_helper+0x160/0x7a0 [btrfs]
-  [117.207738]  process_one_work+0x3b6/0x838
-  [117.207768]  worker_thread+0x75e/0xb10
-  [117.207797]  kthread+0x21a/0x230
-  [117.207830]  __ret_from_fork+0x6c/0xb8
-  [117.207861]  ret_from_fork+0xa/0x30
-
-So add a helper to get the reserved amount of a block reserve while
-holding the lock. The value may be not be up to date anymore when used by
-need_preemptive_reclaim() and btrfs_preempt_reclaim_metadata_space(), but
-that's ok since the worst it can do is cause more reclaim work do be done
-sooner rather than later. Reading the field while holding the lock instead
-of using the data_race() annotation is used in order to prevent load
-tearing.
+So add a helper to get the size of a block reserve while holding the lock.
+Reading the field while holding the lock instead of using the data_race()
+annotation is used in order to prevent load tearing.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/block-rsv.h  | 16 ++++++++++++++++
- fs/btrfs/space-info.c | 26 +++++++++++++-------------
- 2 files changed, 29 insertions(+), 13 deletions(-)
+ fs/btrfs/block-rsv.c |  2 +-
+ fs/btrfs/block-rsv.h | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
+diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+index 77684c5e0c8ba..db8da4e7b2289 100644
+--- a/fs/btrfs/block-rsv.c
++++ b/fs/btrfs/block-rsv.c
+@@ -486,7 +486,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+ 
+ 	block_rsv = get_block_rsv(trans, root);
+ 
+-	if (unlikely(block_rsv->size == 0))
++	if (unlikely(btrfs_block_rsv_size(block_rsv) == 0))
+ 		goto try_reserve;
+ again:
+ 	ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
 diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
-index b0bd12b8652f4..fb440a074700a 100644
+index fb440a074700a..43a9a6b5a79f4 100644
 --- a/fs/btrfs/block-rsv.h
 +++ b/fs/btrfs/block-rsv.h
-@@ -101,4 +101,20 @@ static inline bool btrfs_block_rsv_full(const struct btrfs_block_rsv *rsv)
- 	return data_race(rsv->full);
+@@ -117,4 +117,20 @@ static inline u64 btrfs_block_rsv_reserved(struct btrfs_block_rsv *rsv)
+ 	return ret;
  }
  
 +/*
-+ * Get the reserved mount of a block reserve in a context where getting a stale
-+ * value is acceptable, instead of accessing it directly and trigger data race
-+ * warning from KCSAN.
++ * Get the size of a block reserve in a context where getting a stale value is
++ * acceptable, instead of accessing it directly and trigger data race warning
++ * from KCSAN.
 + */
-+static inline u64 btrfs_block_rsv_reserved(struct btrfs_block_rsv *rsv)
++static inline u64 btrfs_block_rsv_size(struct btrfs_block_rsv *rsv)
 +{
 +	u64 ret;
 +
 +	spin_lock(&rsv->lock);
-+	ret = rsv->reserved;
++	ret = rsv->size;
 +	spin_unlock(&rsv->lock);
 +
 +	return ret;
 +}
 +
  #endif /* BTRFS_BLOCK_RSV_H */
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index d7e8cd4f140cf..3f7a9605e2d3a 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -837,7 +837,7 @@ btrfs_calc_reclaim_metadata_size(struct btrfs_fs_info *fs_info,
- static bool need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
- 				    struct btrfs_space_info *space_info)
- {
--	u64 global_rsv_size = fs_info->global_block_rsv.reserved;
-+	const u64 global_rsv_size = btrfs_block_rsv_reserved(&fs_info->global_block_rsv);
- 	u64 ordered, delalloc;
- 	u64 thresh;
- 	u64 used;
-@@ -937,8 +937,8 @@ static bool need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
- 	ordered = percpu_counter_read_positive(&fs_info->ordered_bytes) >> 1;
- 	delalloc = percpu_counter_read_positive(&fs_info->delalloc_bytes);
- 	if (ordered >= delalloc)
--		used += fs_info->delayed_refs_rsv.reserved +
--			fs_info->delayed_block_rsv.reserved;
-+		used += btrfs_block_rsv_reserved(&fs_info->delayed_refs_rsv) +
-+			btrfs_block_rsv_reserved(&fs_info->delayed_block_rsv);
- 	else
- 		used += space_info->bytes_may_use - global_rsv_size;
- 
-@@ -1153,7 +1153,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 		enum btrfs_flush_state flush;
- 		u64 delalloc_size = 0;
- 		u64 to_reclaim, block_rsv_size;
--		u64 global_rsv_size = global_rsv->reserved;
-+		const u64 global_rsv_size = btrfs_block_rsv_reserved(global_rsv);
- 
- 		loops++;
- 
-@@ -1165,9 +1165,9 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 		 * assume it's tied up in delalloc reservations.
- 		 */
- 		block_rsv_size = global_rsv_size +
--			delayed_block_rsv->reserved +
--			delayed_refs_rsv->reserved +
--			trans_rsv->reserved;
-+			btrfs_block_rsv_reserved(delayed_block_rsv) +
-+			btrfs_block_rsv_reserved(delayed_refs_rsv) +
-+			btrfs_block_rsv_reserved(trans_rsv);
- 		if (block_rsv_size < space_info->bytes_may_use)
- 			delalloc_size = space_info->bytes_may_use - block_rsv_size;
- 
-@@ -1187,16 +1187,16 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 			to_reclaim = delalloc_size;
- 			flush = FLUSH_DELALLOC;
- 		} else if (space_info->bytes_pinned >
--			   (delayed_block_rsv->reserved +
--			    delayed_refs_rsv->reserved)) {
-+			   (btrfs_block_rsv_reserved(delayed_block_rsv) +
-+			    btrfs_block_rsv_reserved(delayed_refs_rsv))) {
- 			to_reclaim = space_info->bytes_pinned;
- 			flush = COMMIT_TRANS;
--		} else if (delayed_block_rsv->reserved >
--			   delayed_refs_rsv->reserved) {
--			to_reclaim = delayed_block_rsv->reserved;
-+		} else if (btrfs_block_rsv_reserved(delayed_block_rsv) >
-+			   btrfs_block_rsv_reserved(delayed_refs_rsv)) {
-+			to_reclaim = btrfs_block_rsv_reserved(delayed_block_rsv);
- 			flush = FLUSH_DELAYED_ITEMS_NR;
- 		} else {
--			to_reclaim = delayed_refs_rsv->reserved;
-+			to_reclaim = btrfs_block_rsv_reserved(delayed_refs_rsv);
- 			flush = FLUSH_DELAYED_REFS_NR;
- 		}
- 
 -- 
 2.43.0
 
