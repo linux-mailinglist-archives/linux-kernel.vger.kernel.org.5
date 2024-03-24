@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD2C888D70
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:48:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4700F889322
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E70A928DE61
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:48:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECAE71C275F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BADC3021E3;
-	Mon, 25 Mar 2024 01:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9301C7372;
+	Mon, 25 Mar 2024 01:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cb8GrQeT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X/QODIm8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3EA18270C;
-	Sun, 24 Mar 2024 23:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BC4182714;
+	Sun, 24 Mar 2024 23:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324157; cv=none; b=Rq7pWiO/3YUGN7EDSPlJvyBo0gId7XHs2Ib5oFh7/SevGOWjipNnJIMlg6jGQHh9tUZHc25XRxRsPn5Coxt7HdAYwO1ZYU1HfR0OiAteOXAtGwesp0d7ulFkCbKvdO1Sik46jCSxzwWLpF93rVRnVbM/2xWBjv/YmUWh9/g/5/g=
+	t=1711324158; cv=none; b=OLSLpxMUOEF1nKEOIXKjTYtpXqs/5vueKmt2sNlcN4Oni3CoUZ4//szQe78kKoW+Ezx+IjPkYYSCjc7UOTybfa2Du8ktW+uADlAKkEqmcm1qxDjRl8sMo8OF9xXvu3Hrc/so03ViiJ2wAA32WeamXuHMBXvgnsfGZgmix5oo/hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324157; c=relaxed/simple;
-	bh=LfjZMeh8B0UJYHITRDVD2721PgS92r/hA3GJ6dfo/5c=;
+	s=arc-20240116; t=1711324158; c=relaxed/simple;
+	bh=EqSQ/IdTyQG233ql2ySExqWSvoh+zGSJMyO2IFT0C40=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IllIHJbV/PO10Pru8diLsM3uA0CNtVW29cxK9DrRe3eDE9k00ed6gwgjjywGOHQByYE8sQcXKhjITlsZ+wdZDNHDSwc73wbBR9x0UhcxiGfR02/YJLHgbp58o50M3Q0RHU1as5S8VyJ0jl3aWfFWFnajIvyoDrdBF+ItF5AwPB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cb8GrQeT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D16FC433F1;
-	Sun, 24 Mar 2024 23:49:15 +0000 (UTC)
+	 MIME-Version; b=LIgPU0QE3wltBYWBF6AmJKhc0BEzH1vWZH6I2QbmaJypMJdR2mnqYvzrDuF9IUKlddDcAvWOevO0wSzcx3v43KZ3ESyTRuUX69kf+DOAf3kim5X6mfqxKGsUGATG2gPSiyFSB1OcSWhhjEiBkolaglnbLcMUQYcO27gGdQmhkl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X/QODIm8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4383EC43390;
+	Sun, 24 Mar 2024 23:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711324156;
-	bh=LfjZMeh8B0UJYHITRDVD2721PgS92r/hA3GJ6dfo/5c=;
+	bh=EqSQ/IdTyQG233ql2ySExqWSvoh+zGSJMyO2IFT0C40=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Cb8GrQeTNkyQNsVJjlk8uFWvSTWq+fP1YFYCu9XCmHhE2x21FjvIEgaQgF9ltRI6b
-	 kWpK6ilBUC/FZQEKFfXK/VqyyV3LLrVxeg3+lzmnMP5sgPUSXe8WhhKMBhyEirI9LK
-	 ANQejRUHhuESO/XybMcwXudc3gWRDmIzy29uQumXZdCfGMRNGzjk7XCRKSPf1ZSf5H
-	 UQDUMnmAWEiyzDFG/UBYjE/HkrWo+MTK3wUhGkOxxEcC6AvLKxWPVfl0pYRxkzI7Fq
-	 NSvj/dHSYlk5mRLyF8f5T5XdxKc0uUQeTubkw2FFuQNKwMjil6qtH9rsGSzCE19TWl
-	 Luqj/oeXg0twA==
+	b=X/QODIm8CA6jbRIY5ds995nHqj2HFNv1XZ6vPtVTgyFYimZ6vJbOPnCP7Z4xFltAx
+	 crS+7abBbe2NeikcfTZYdOclawH8liTGGtI2xFo5vUQuLgOAgfxOHE9R8lP7aQlYOq
+	 BMGE6vLo/UecG/5O2kT7OpyD3TZI9A7+lI2SxH1WR90lbePO257HcUFspqj2lx4pHx
+	 a1O/ikPky8F0yDDLQijKxB9cNQQzb+0YWEJ3hVA20zcTas9ptpIh9BSkus2FnPLANV
+	 ATh01M87g+2rNZtUDeTnozvMaZ6uTPlI2gPXy7ULAKgvcmWHGInGAaQi/T3A6kcj0w
+	 uO5sZh3OgR/pw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johan Carlsson <johan.carlsson@teenage.engineering>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 152/183] ALSA: usb-audio: Stop parsing channels bits when all channels are found.
-Date: Sun, 24 Mar 2024 19:46:05 -0400
-Message-ID: <20240324234638.1355609-153-sashal@kernel.org>
+Subject: [PATCH 5.4 153/183] scsi: csiostor: Avoid function pointer casts
+Date: Sun, 24 Mar 2024 19:46:06 -0400
+Message-ID: <20240324234638.1355609-154-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,40 +62,133 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johan Carlsson <johan.carlsson@teenage.engineering>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit a39d51ff1f52cd0b6fe7d379ac93bd8b4237d1b7 ]
+[ Upstream commit 9f3dbcb5632d6876226031d552ef6163bb3ad215 ]
 
-If a usb audio device sets more bits than the amount of channels
-it could write outside of the map array.
+csiostor uses function pointer casts to keep the csio_ln_ev state machine
+hidden, but this causes warnings about control flow integrity (KCFI)
+violations in clang-16 and higher:
 
-Signed-off-by: Johan Carlsson <johan.carlsson@teenage.engineering>
-Fixes: 04324ccc75f9 ("ALSA: usb-audio: add channel map support")
-Message-ID: <20240313081509.9801-1-johan.carlsson@teenage.engineering>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+drivers/scsi/csiostor/csio_lnode.c:1098:33: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1098 |         return (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready));
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/csiostor/csio_lnode.c:1369:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1369 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_uninit)) {
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/csiostor/csio_lnode.c:1373:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1373 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready)) {
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/csiostor/csio_lnode.c:1377:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1377 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_offline)) {
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Move the enum into a shared header so the correct types can be used without
+the need for casts.
+
+Fixes: a3667aaed569 ("[SCSI] csiostor: Chelsio FCoE offload driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20240213100518.457623-1-arnd@kernel.org
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/stream.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/scsi/csiostor/csio_defs.h  | 18 ++++++++++++++++--
+ drivers/scsi/csiostor/csio_lnode.c |  8 ++++----
+ drivers/scsi/csiostor/csio_lnode.h | 13 -------------
+ 3 files changed, 20 insertions(+), 19 deletions(-)
 
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index d35684e5f07f0..967f05d7e205f 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -301,9 +301,12 @@ static struct snd_pcm_chmap_elem *convert_chmap(int channels, unsigned int bits,
- 	c = 0;
+diff --git a/drivers/scsi/csiostor/csio_defs.h b/drivers/scsi/csiostor/csio_defs.h
+index c38017b4af982..e50e93e7fe5a1 100644
+--- a/drivers/scsi/csiostor/csio_defs.h
++++ b/drivers/scsi/csiostor/csio_defs.h
+@@ -73,7 +73,21 @@ csio_list_deleted(struct list_head *list)
+ #define csio_list_prev(elem)	(((struct list_head *)(elem))->prev)
  
- 	if (bits) {
--		for (; bits && *maps; maps++, bits >>= 1)
-+		for (; bits && *maps; maps++, bits >>= 1) {
- 			if (bits & 1)
- 				chmap->map[c++] = *maps;
-+			if (c == chmap->channels)
-+				break;
-+		}
- 	} else {
- 		/* If we're missing wChannelConfig, then guess something
- 		    to make sure the channel map is not skipped entirely */
+ /* State machine */
+-typedef void (*csio_sm_state_t)(void *, uint32_t);
++struct csio_lnode;
++
++/* State machine evets */
++enum csio_ln_ev {
++	CSIO_LNE_NONE = (uint32_t)0,
++	CSIO_LNE_LINKUP,
++	CSIO_LNE_FAB_INIT_DONE,
++	CSIO_LNE_LINK_DOWN,
++	CSIO_LNE_DOWN_LINK,
++	CSIO_LNE_LOGO,
++	CSIO_LNE_CLOSE,
++	CSIO_LNE_MAX_EVENT,
++};
++
++typedef void (*csio_sm_state_t)(struct csio_lnode *ln, enum csio_ln_ev evt);
+ 
+ struct csio_sm {
+ 	struct list_head	sm_list;
+@@ -83,7 +97,7 @@ struct csio_sm {
+ static inline void
+ csio_set_state(void *smp, void *state)
+ {
+-	((struct csio_sm *)smp)->sm_state = (csio_sm_state_t)state;
++	((struct csio_sm *)smp)->sm_state = state;
+ }
+ 
+ static inline void
+diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
+index c3bf590f5d685..47803268b138f 100644
+--- a/drivers/scsi/csiostor/csio_lnode.c
++++ b/drivers/scsi/csiostor/csio_lnode.c
+@@ -1095,7 +1095,7 @@ csio_handle_link_down(struct csio_hw *hw, uint8_t portid, uint32_t fcfi,
+ int
+ csio_is_lnode_ready(struct csio_lnode *ln)
+ {
+-	return (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready));
++	return (csio_get_state(ln) == csio_lns_ready);
+ }
+ 
+ /*****************************************************************************/
+@@ -1367,15 +1367,15 @@ csio_free_fcfinfo(struct kref *kref)
+ void
+ csio_lnode_state_to_str(struct csio_lnode *ln, int8_t *str)
+ {
+-	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_uninit)) {
++	if (csio_get_state(ln) == csio_lns_uninit) {
+ 		strcpy(str, "UNINIT");
+ 		return;
+ 	}
+-	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready)) {
++	if (csio_get_state(ln) == csio_lns_ready) {
+ 		strcpy(str, "READY");
+ 		return;
+ 	}
+-	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_offline)) {
++	if (csio_get_state(ln) == csio_lns_offline) {
+ 		strcpy(str, "OFFLINE");
+ 		return;
+ 	}
+diff --git a/drivers/scsi/csiostor/csio_lnode.h b/drivers/scsi/csiostor/csio_lnode.h
+index 372a67d122d38..607698a0f0631 100644
+--- a/drivers/scsi/csiostor/csio_lnode.h
++++ b/drivers/scsi/csiostor/csio_lnode.h
+@@ -53,19 +53,6 @@
+ extern int csio_fcoe_rnodes;
+ extern int csio_fdmi_enable;
+ 
+-/* State machine evets */
+-enum csio_ln_ev {
+-	CSIO_LNE_NONE = (uint32_t)0,
+-	CSIO_LNE_LINKUP,
+-	CSIO_LNE_FAB_INIT_DONE,
+-	CSIO_LNE_LINK_DOWN,
+-	CSIO_LNE_DOWN_LINK,
+-	CSIO_LNE_LOGO,
+-	CSIO_LNE_CLOSE,
+-	CSIO_LNE_MAX_EVENT,
+-};
+-
+-
+ struct csio_fcf_info {
+ 	struct list_head	list;
+ 	uint8_t			priority;
 -- 
 2.43.0
 
