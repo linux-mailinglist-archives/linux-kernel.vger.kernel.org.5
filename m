@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E03C18892EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:15:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B963B8899EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D879FB29918
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:07:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C070B48217
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B233E1BAC50;
-	Mon, 25 Mar 2024 00:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E218E28CE41;
+	Mon, 25 Mar 2024 03:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PYgThkYH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOfKFE4C"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA24327B114;
-	Sun, 24 Mar 2024 23:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8D327B100;
+	Sun, 24 Mar 2024 23:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323506; cv=none; b=tOZ2p6KUCgju6AWdlmdV9/FMb4h/APUSiOnjM2xavPUk9DLUVuzPiTg45e8P8jKWkj+Bfg57vbjrIBeWun3tTUhvdjqjQgRctZPlPHC/rA23AX+sjAt1hgzqSkevv7loqbFZnhb6Pq317Z9s++sAJ9yyycLNs9s5xFdoPESfwEo=
+	t=1711323507; cv=none; b=G/ZCVQATzrb5L8OTaZkV9M+Bn5E51MOIXyd53X9p0YnFdqW/I65cYmLThc5FfJLuC78dcq+iGyneVzBmzYX3VYEEwueRzePFwRuCmkluU1kidXVp8LhC4FYy8uXL2BRjvcsYyzIVosskDCDxHFqWFESZVAk1xSuzp5Im6r5aSbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323506; c=relaxed/simple;
-	bh=BApVoZr1HWgG77uIAlP5say5xUHr6e9CzMP/GXvg8hE=;
+	s=arc-20240116; t=1711323507; c=relaxed/simple;
+	bh=fkQUcbORkODKGwcIjJeKyjjU5hkBPC4MQG1SSmB4Lms=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WgvZVGkbaejrEf5PuQ1V76tfMhpkyBQtw5flkP3gVhGog9FKfOX/8L/MJ9F9eM7hZxmvUA3KqJgQh+92sAV3OnimUx1kCDZ3chXXU5FlFb2yvm2MrEdx5/vEf5K72qc7LpvXkEA/yU+FUJdC5SznpLFzn9cB0kpAMHgmPCPr1N0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PYgThkYH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9209C433F1;
-	Sun, 24 Mar 2024 23:38:24 +0000 (UTC)
+	 MIME-Version; b=dc9sv2jr1NNwMBnO5lVa0Q0W/ioFWD+M38sqYZw2r53pqnQmnz7g6f0dsJd0Ir04DKDVb0R1det4bx+2ir07GRwi3C1KJIvvNlEBXYIvSW46gsfVI/xFR11yf0/flkw0/JFTHC/fRVZUvN5naS8ncytTX+kCTJLTjJdHPSZ58r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOfKFE4C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0644C433A6;
+	Sun, 24 Mar 2024 23:38:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323505;
-	bh=BApVoZr1HWgG77uIAlP5say5xUHr6e9CzMP/GXvg8hE=;
+	s=k20201202; t=1711323506;
+	bh=fkQUcbORkODKGwcIjJeKyjjU5hkBPC4MQG1SSmB4Lms=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PYgThkYHElOhh+fkG5KIzcWRXE/NOumdlOHbnXS3M2MsOblMyDuA1RATkpCvlfIn8
-	 DTjotGdwOBANMQISQQGXv+4GLVVrWlvUvzs8BLL5Eo36ddtXC3wgn58M9MIu+hdOtc
-	 FX/JsD7VplWO2rs0PmgjLY9PBGawEPqxcy77aIePFz3Dm6iCoFT5tEq80ErncBsCTy
-	 /QR+STDRP20THZqM9HubzbqNEiY9TMPEDS2/F6qMjLFdWpTitNJj29peFMDyVocb+Z
-	 pQy973Q7K+7gn/7uCy3AeUUsCCqph2i9H9pkLD3TGHSGOiFsPUAeS5fmOi0to/keN5
-	 zs9JeyzpXNdEg==
+	b=MOfKFE4CwvttOpVEGIrqdz6zm8HJFnWnp1DNCPvyvZVeODto4QR883jon1F9NW4KJ
+	 SHxAjRRSOmZSZ5AuGsRx0wy/PSYUxq2yOj4OUBN+Z2qj2dne2E+wjSuLGBOirfNG2/
+	 kBUTWDSPuAiQEt3Bm12kE7jGqW+HWAN49tcHX8bDtIYS19HBBPvVn7iyJCX+QSAQ2T
+	 OnGU1TGlcqmuTxKGEpP9PltqLHgeKrYFipvxqcn/GE4OZKjFSDDUbvxNLxQ3xRKA94
+	 4tI4lP4Ls7ZvNBNQnWoTMH9L5QIs1bHU0OqVwz+AA8PurFrw0UJzmvBzclUm80twJN
+	 9Al2u0k5KS0fA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Daniil Dulov <d.dulov@aladdin.ru>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 211/317] media: go7007: add check of return value of go7007_read_addr()
-Date: Sun, 24 Mar 2024 19:33:11 -0400
-Message-ID: <20240324233458.1352854-212-sashal@kernel.org>
+Subject: [PATCH 5.15 212/317] media: pvrusb2: remove redundant NULL check
+Date: Sun, 24 Mar 2024 19:33:12 -0400
+Message-ID: <20240324233458.1352854-213-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -64,36 +64,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniil Dulov <d.dulov@aladdin.ru>
 
-[ Upstream commit 0b70530ee740861f4776ff724fcc25023df1799a ]
+[ Upstream commit 95ac1210fb2753f968ebce0730d4fbc553c2a3dc ]
 
-If go7007_read_addr() returns error channel is not assigned a value.
-In this case go to allocfail.
+Pointer dip->stream cannot be NULL due to a shift, thus remove redundant
+NULL check.
 
 Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Fixes: 866b8695d67e ("Staging: add the go7007 video driver")
+Fixes: c74e0062684b ("V4L/DVB (5059): Pvrusb2: Be smarter about mode restoration")
 Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/go7007/go7007-usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/usb/pvrusb2/pvrusb2-v4l2.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
-index eeb85981e02b6..762c13e49bfa5 100644
---- a/drivers/media/usb/go7007/go7007-usb.c
-+++ b/drivers/media/usb/go7007/go7007-usb.c
-@@ -1201,7 +1201,9 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 				u16 channel;
- 
- 				/* read channel number from GPIO[1:0] */
--				go7007_read_addr(go, 0x3c81, &channel);
-+				if (go7007_read_addr(go, 0x3c81, &channel))
-+					goto allocfail;
-+
- 				channel &= 0x3;
- 				go->board_id = GO7007_BOARDID_ADLINK_MPG24;
- 				usb->board = board = &board_adlink_mpg24;
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+index 9657c18833116..c872868becbdc 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+@@ -1202,11 +1202,6 @@ static void pvr2_v4l2_dev_init(struct pvr2_v4l2_dev *dip,
+ 		dip->minor_type = pvr2_v4l_type_video;
+ 		nr_ptr = video_nr;
+ 		caps |= V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_AUDIO;
+-		if (!dip->stream) {
+-			pr_err(KBUILD_MODNAME
+-				": Failed to set up pvrusb2 v4l video dev due to missing stream instance\n");
+-			return;
+-		}
+ 		break;
+ 	case VFL_TYPE_VBI:
+ 		dip->config = pvr2_config_vbi;
 -- 
 2.43.0
 
