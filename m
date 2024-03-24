@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93FE7888B44
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:45:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2ABF8898F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:57:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B798D1C292C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:45:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57C0629F009
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A3B233AA1;
-	Sun, 24 Mar 2024 23:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9100A22EAD9;
+	Mon, 25 Mar 2024 03:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ni8AXNT5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GlgV7q06"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C87B523317F;
-	Sun, 24 Mar 2024 23:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35579233184;
+	Sun, 24 Mar 2024 23:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322270; cv=none; b=KaBQFxLc6lDrZZG7xncmtxTWWTZGWncLAh1de8+isdC+V/XJA/8hlKLTqQ5aiHmEUUzqDwVTTiVq1a2quNpm7NDFHMQA+Ux7qmi9+usFiPtig1yLLfWpjov4N8W6wV9jYnJolcAs6V14q2X+NP6NlfNImNVT08k7VMen7H01dR0=
+	t=1711322271; cv=none; b=S8cN7TweSXjoxxVK/AzKhdhDXzrIWp4u+PLegWku3rqfUxrJfZLh+hXU62szJJzfVyOdoMXhnX8pTdlj3QQZwgVodZ0G/7AyjljQ7IoZ9UiJcstPDNbNyF+Cln183fVqmdGvPrqEi94UyUWOCmQbA7IwTLMZg60TBnQMyH9om+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322270; c=relaxed/simple;
-	bh=b6kF3yVhL7+0sV5B/ea/nN+/xvkW+gs1M9b048poR1s=;
+	s=arc-20240116; t=1711322271; c=relaxed/simple;
+	bh=DwCMz2uXk6M8mM5ruK1Qds5vlGqW1SETmxn0BZcIYDQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fjO7s5kcFmJDvsbom5f6DBT9WADSNqDGduqrvwWrmZjylxi3OCHDR3XP/kjH/RfGuHZUyVSe0VhoLiljrqj4n5fhkUysj+wCq56lGZc1JMI3xiBE7/RudFWO6TWh2SgO0e60R2WEpFkTZbbIVyxFEVrJPf+SdTdzDllBMsH/nys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ni8AXNT5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8BB2C43390;
-	Sun, 24 Mar 2024 23:17:48 +0000 (UTC)
+	 MIME-Version; b=Lb9DIHclIkXHjL4DOJnFaaPqorx4tddTV7cUjvWJBcEMXyang2FHnYqAciW1cmaheEa6GgaMhKlKM/L8w7jqyrC+iU9dYtvjdO7LUtksAKW+lpZpRvC5802KtNJtItc07hBxiQnEp7+H3WSonzGIQMD7VS0CBr8kKdhDiY3AQ6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GlgV7q06; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECA5FC433F1;
+	Sun, 24 Mar 2024 23:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322269;
-	bh=b6kF3yVhL7+0sV5B/ea/nN+/xvkW+gs1M9b048poR1s=;
+	s=k20201202; t=1711322270;
+	bh=DwCMz2uXk6M8mM5ruK1Qds5vlGqW1SETmxn0BZcIYDQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ni8AXNT5hBVUzbPttvqXakeJEi+h8lBRPYdiF1awLs+dibcwwSGmItPcka4RGorGX
-	 TbSVg6h0tKE9OawDAF0+vjD1J6k67iXHO3EtMppRm/tbpBdtFj9l1EJHUTxYcHzMLp
-	 VQj9sGlp7xhc36vz+2OryxZafoOgFAzuyNUG9Z6fYyKUcWaQx1U3+EKSulCSXmcaoi
-	 WICXsiAf+yqWyQBn1s653fMOC/VTb3mrt1SCliAP4ezjLPFr26qXZkh613yqCI7/bt
-	 5l4qTFdUX4PryLwojLzS+MUkaURfJTYBmqliFSyRxL/s/Q4+r1enMwYmC8/4ERhPIi
-	 iVugDatDWOewg==
+	b=GlgV7q06oXXBDic8KNukCWjYxmk9rEB3Lwjfn4/B94ljUX9ZwmHyImStgIRZeSRKo
+	 AB+Yj4+BdFuCifaVcXsPGNyfsbJmUZyziym8ckvWetOxxFvc1zK2xMJwF+cq+ZHowN
+	 SprZOFWODSbYLzyKn2aKvJVR2p/SAGOOpMtSgdkY0N7h/vZnvOYu/1cD5bYcK4SdVk
+	 AblBZquEZ5yXXJj7ef/kN3mKeq/o3GLbAqe81eoWyXhk85MSd4pr/8PqH/Ng0cPVmy
+	 FY7/G+ARoBtYLVQE4/8zVe+XLQg2BMFBrR1z+EPgXT7gYDwCqibaI6ZNQrnePnjRJx
+	 y6LJC0dQYj9pg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Chao Yu <chao@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
+	Daeho Jeong <daehojeong@google.com>,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 352/451] f2fs: reduce stack memory cost by using bitfield in struct f2fs_io_info
-Date: Sun, 24 Mar 2024 19:10:28 -0400
-Message-ID: <20240324231207.1351418-353-sashal@kernel.org>
+Subject: [PATCH 6.1 353/451] f2fs: compress: fix to guarantee persisting compressed blocks by CP
+Date: Sun, 24 Mar 2024 19:10:29 -0400
+Message-ID: <20240324231207.1351418-354-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -65,226 +65,144 @@ Content-Transfer-Encoding: 8bit
 
 From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 2eae077e6e46f9046d383631145750e043820dce ]
+[ Upstream commit 8a430dd49e9cb021372b0ad91e60aeef9c6ced00 ]
 
-This patch tries to use bitfield in struct f2fs_io_info to improve
-memory usage.
+If data block in compressed cluster is not persisted with metadata
+during checkpoint, after SPOR, the data may be corrupted, let's
+guarantee to write compressed page by checkpoint.
 
-struct f2fs_io_info {
-..
-	unsigned int need_lock:8;	/* indicate we need to lock cp_rwsem */
-	unsigned int version:8;		/* version of the node */
-	unsigned int submitted:1;	/* indicate IO submission */
-	unsigned int in_list:1;		/* indicate fio is in io_list */
-	unsigned int is_por:1;		/* indicate IO is from recovery or not */
-	unsigned int retry:1;		/* need to reallocate block address */
-	unsigned int encrypted:1;	/* indicate file is encrypted */
-	unsigned int post_read:1;	/* require post read */
-..
-};
-
-After this patch, size of struct f2fs_io_info reduces from 136 to 120.
-
-[Nathan: fix a compile warning (single-bit-bitfield-constant-conversion)]
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Reviewed-by: Daeho Jeong <daehojeong@google.com>
 Signed-off-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-Stable-dep-of: 8a430dd49e9c ("f2fs: compress: fix to guarantee persisting compressed blocks by CP")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/checkpoint.c |  6 +++---
- fs/f2fs/compress.c   |  5 +++--
- fs/f2fs/data.c       | 10 +++++-----
- fs/f2fs/f2fs.h       | 18 +++++++++---------
- fs/f2fs/gc.c         |  8 ++++----
- fs/f2fs/node.c       |  2 +-
- fs/f2fs/segment.c    |  6 +++---
- 7 files changed, 28 insertions(+), 27 deletions(-)
+ fs/f2fs/compress.c |  4 +++-
+ fs/f2fs/data.c     | 17 +++++++++--------
+ fs/f2fs/f2fs.h     |  4 +++-
+ 3 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index eb4d69f53337f..3ec203bbd5593 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -70,7 +70,7 @@ static struct page *__get_meta_page(struct f2fs_sb_info *sbi, pgoff_t index,
- 		.old_blkaddr = index,
- 		.new_blkaddr = index,
- 		.encrypted_page = NULL,
--		.is_por = !is_meta,
-+		.is_por = !is_meta ? 1 : 0,
- 	};
- 	int err;
- 
-@@ -234,8 +234,8 @@ int f2fs_ra_meta_pages(struct f2fs_sb_info *sbi, block_t start, int nrpages,
- 		.op = REQ_OP_READ,
- 		.op_flags = sync ? (REQ_META | REQ_PRIO) : REQ_RAHEAD,
- 		.encrypted_page = NULL,
--		.in_list = false,
--		.is_por = (type == META_POR),
-+		.in_list = 0,
-+		.is_por = (type == META_POR) ? 1 : 0,
- 	};
- 	struct blk_plug plug;
- 	int err;
 diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 967262c37da52..7d85db7208e14 100644
+index 7d85db7208e14..459bf10f297a2 100644
 --- a/fs/f2fs/compress.c
 +++ b/fs/f2fs/compress.c
-@@ -1249,10 +1249,11 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 		.page = NULL,
- 		.encrypted_page = NULL,
- 		.compressed_page = NULL,
--		.submitted = false,
-+		.submitted = 0,
- 		.io_type = io_type,
- 		.io_wbc = wbc,
--		.encrypted = fscrypt_inode_uses_fs_layer_crypto(cc->inode),
-+		.encrypted = fscrypt_inode_uses_fs_layer_crypto(cc->inode) ?
-+									1 : 0,
- 	};
- 	struct dnode_of_data dn;
- 	struct node_info ni;
+@@ -1437,6 +1437,8 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+ 	struct f2fs_sb_info *sbi = bio->bi_private;
+ 	struct compress_io_ctx *cic =
+ 			(struct compress_io_ctx *)page_private(page);
++	enum count_type type = WB_DATA_TYPE(page,
++				f2fs_is_compressed_page(page));
+ 	int i;
+ 
+ 	if (unlikely(bio->bi_status))
+@@ -1444,7 +1446,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+ 
+ 	f2fs_compress_free_page(page);
+ 
+-	dec_page_count(sbi, F2FS_WB_DATA);
++	dec_page_count(sbi, type);
+ 
+ 	if (atomic_dec_return(&cic->pending_pages))
+ 		return;
 diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 8b561af379743..7b3eb192f9c03 100644
+index 7b3eb192f9c03..6f649a60859fc 100644
 --- a/fs/f2fs/data.c
 +++ b/fs/f2fs/data.c
-@@ -982,7 +982,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 		bio_page = fio->page;
+@@ -50,7 +50,7 @@ void f2fs_destroy_bioset(void)
+ 	bioset_exit(&f2fs_bioset);
+ }
  
+-static bool __is_cp_guaranteed(struct page *page)
++bool f2fs_is_cp_guaranteed(struct page *page)
+ {
+ 	struct address_space *mapping = page->mapping;
+ 	struct inode *inode;
+@@ -67,8 +67,6 @@ static bool __is_cp_guaranteed(struct page *page)
+ 			S_ISDIR(inode->i_mode))
+ 		return true;
+ 
+-	if (f2fs_is_compressed_page(page))
+-		return false;
+ 	if ((S_ISREG(inode->i_mode) && IS_NOQUOTA(inode)) ||
+ 			page_private_gcing(page))
+ 		return true;
+@@ -327,7 +325,7 @@ static void f2fs_write_end_io(struct bio *bio)
+ 
+ 	bio_for_each_segment_all(bvec, bio, iter_all) {
+ 		struct page *page = bvec->bv_page;
+-		enum count_type type = WB_DATA_TYPE(page);
++		enum count_type type = WB_DATA_TYPE(page, false);
+ 
+ 		if (page_private_dummy(page)) {
+ 			clear_page_private_dummy(page);
+@@ -733,7 +731,7 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
+ 		wbc_account_cgroup_owner(fio->io_wbc, fio->page, PAGE_SIZE);
+ 
+ 	inc_page_count(fio->sbi, is_read_io(fio->op) ?
+-			__read_io_type(page) : WB_DATA_TYPE(fio->page));
++			__read_io_type(page) : WB_DATA_TYPE(fio->page, false));
+ 
+ 	__submit_bio(fio->sbi, bio, fio->type);
+ 	return 0;
+@@ -941,7 +939,7 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
+ 	if (fio->io_wbc)
+ 		wbc_account_cgroup_owner(fio->io_wbc, fio->page, PAGE_SIZE);
+ 
+-	inc_page_count(fio->sbi, WB_DATA_TYPE(page));
++	inc_page_count(fio->sbi, WB_DATA_TYPE(page, false));
+ 
+ 	*fio->last_block = fio->new_blkaddr;
+ 	*fio->bio = bio;
+@@ -955,6 +953,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	enum page_type btype = PAGE_TYPE_OF_BIO(fio->type);
+ 	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
+ 	struct page *bio_page;
++	enum count_type type;
+ 
+ 	f2fs_bug_on(sbi, is_read_io(fio->op));
+ 
+@@ -984,7 +983,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
  	/* set submitted = true as a return value */
--	fio->submitted = true;
-+	fio->submitted = 1;
+ 	fio->submitted = 1;
  
- 	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
+-	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
++	type = WB_DATA_TYPE(bio_page, fio->compressed_page);
++	inc_page_count(sbi, type);
  
-@@ -998,7 +998,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	if (io->bio &&
+ 	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
+@@ -997,7 +997,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 		if (F2FS_IO_ALIGNED(sbi) &&
  				(fio->type == DATA || fio->type == NODE) &&
  				fio->new_blkaddr & F2FS_IO_SIZE_MASK(sbi)) {
- 			dec_page_count(sbi, WB_DATA_TYPE(bio_page));
--			fio->retry = true;
-+			fio->retry = 1;
+-			dec_page_count(sbi, WB_DATA_TYPE(bio_page));
++			dec_page_count(sbi, WB_DATA_TYPE(bio_page,
++						fio->compressed_page));
+ 			fio->retry = 1;
  			goto skip;
  		}
- 		io->bio = __bio_alloc(fio, BIO_MAX_VECS);
-@@ -2776,10 +2776,10 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 		.old_blkaddr = NULL_ADDR,
- 		.page = page,
- 		.encrypted_page = NULL,
--		.submitted = false,
-+		.submitted = 0,
- 		.compr_blocks = compr_blocks,
- 		.need_lock = LOCK_RETRY,
--		.post_read = f2fs_post_read_required(inode),
-+		.post_read = f2fs_post_read_required(inode) ? 1 : 0,
- 		.io_type = io_type,
- 		.io_wbc = wbc,
- 		.bio = bio,
-@@ -2902,7 +2902,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 	}
- 
- 	if (submitted)
--		*submitted = fio.submitted ? 1 : 0;
-+		*submitted = fio.submitted;
- 
- 	return 0;
- 
 diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index e5a9498b89c06..1d78bca5037f4 100644
+index 1d78bca5037f4..16dacf811481c 100644
 --- a/fs/f2fs/f2fs.h
 +++ b/fs/f2fs/f2fs.h
-@@ -1183,19 +1183,19 @@ struct f2fs_io_info {
- 	struct page *encrypted_page;	/* encrypted page */
- 	struct page *compressed_page;	/* compressed page */
- 	struct list_head list;		/* serialize IOs */
--	bool submitted;		/* indicate IO submission */
--	int need_lock;		/* indicate we need to lock cp_rwsem */
--	bool in_list;		/* indicate fio is in io_list */
--	bool is_por;		/* indicate IO is from recovery or not */
--	bool retry;		/* need to reallocate block address */
--	int compr_blocks;	/* # of compressed block addresses */
--	bool encrypted;		/* indicate file is encrypted */
--	bool post_read;		/* require post read */
-+	unsigned int compr_blocks;	/* # of compressed block addresses */
-+	unsigned int need_lock:8;	/* indicate we need to lock cp_rwsem */
-+	unsigned int version:8;		/* version of the node */
-+	unsigned int submitted:1;	/* indicate IO submission */
-+	unsigned int in_list:1;		/* indicate fio is in io_list */
-+	unsigned int is_por:1;		/* indicate IO is from recovery or not */
-+	unsigned int retry:1;		/* need to reallocate block address */
-+	unsigned int encrypted:1;	/* indicate file is encrypted */
-+	unsigned int post_read:1;	/* require post read */
- 	enum iostat_type io_type;	/* io type */
- 	struct writeback_control *io_wbc; /* writeback control */
- 	struct bio **bio;		/* bio for ipu */
- 	sector_t *last_block;		/* last block number in bio */
--	unsigned char version;		/* version of the node */
- };
- 
- struct bio_entry {
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index ec7212f7a9b73..8161355658562 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -1187,8 +1187,8 @@ static int ra_data_block(struct inode *inode, pgoff_t index)
- 		.op = REQ_OP_READ,
- 		.op_flags = 0,
- 		.encrypted_page = NULL,
--		.in_list = false,
--		.retry = false,
-+		.in_list = 0,
-+		.retry = 0,
- 	};
- 	int err;
- 
-@@ -1276,8 +1276,8 @@ static int move_data_block(struct inode *inode, block_t bidx,
- 		.op = REQ_OP_READ,
- 		.op_flags = 0,
- 		.encrypted_page = NULL,
--		.in_list = false,
--		.retry = false,
-+		.in_list = 0,
-+		.retry = 0,
- 	};
- 	struct dnode_of_data dn;
- 	struct f2fs_summary sum;
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index c6d0e07096326..5db6740d31364 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -1587,7 +1587,7 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
- 		.op_flags = wbc_to_write_flags(wbc),
- 		.page = page,
- 		.encrypted_page = NULL,
--		.submitted = false,
-+		.submitted = 0,
- 		.io_type = io_type,
- 		.io_wbc = wbc,
- 	};
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 16bf9d5c8d4f9..a3dabec1f216a 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3312,10 +3312,10 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 		struct f2fs_bio_info *io;
- 
- 		if (F2FS_IO_ALIGNED(sbi))
--			fio->retry = false;
-+			fio->retry = 0;
- 
- 		INIT_LIST_HEAD(&fio->list);
--		fio->in_list = true;
-+		fio->in_list = 1;
- 		io = sbi->write_io[fio->type] + fio->temp;
- 		spin_lock(&io->io_lock);
- 		list_add_tail(&fio->list, &io->io_list);
-@@ -3396,7 +3396,7 @@ void f2fs_do_write_meta_page(struct f2fs_sb_info *sbi, struct page *page,
- 		.new_blkaddr = page->index,
- 		.page = page,
- 		.encrypted_page = NULL,
--		.in_list = false,
-+		.in_list = 0,
- 	};
- 
- 	if (unlikely(page->index >= MAIN_BLKADDR(sbi)))
+@@ -1067,7 +1067,8 @@ struct f2fs_sm_info {
+  * f2fs monitors the number of several block types such as on-writeback,
+  * dirty dentry blocks, dirty node blocks, and dirty meta blocks.
+  */
+-#define WB_DATA_TYPE(p)	(__is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
++#define WB_DATA_TYPE(p, f)			\
++	(f || f2fs_is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
+ enum count_type {
+ 	F2FS_DIRTY_DENTS,
+ 	F2FS_DIRTY_DATA,
+@@ -3761,6 +3762,7 @@ void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi);
+  */
+ int __init f2fs_init_bioset(void);
+ void f2fs_destroy_bioset(void);
++bool f2fs_is_cp_guaranteed(struct page *page);
+ int f2fs_init_bio_entry_cache(void);
+ void f2fs_destroy_bio_entry_cache(void);
+ void f2fs_submit_bio(struct f2fs_sb_info *sbi,
 -- 
 2.43.0
 
