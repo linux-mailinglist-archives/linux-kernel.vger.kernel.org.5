@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-115179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 054B2888D91
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D7B88932E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:23:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEF5A1F2AAE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:52:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB65F1F30194
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:23:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EF630906D;
-	Mon, 25 Mar 2024 01:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192121C881C;
+	Mon, 25 Mar 2024 01:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GSb5uQwx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RIUpUvU4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4F8291B71;
-	Sun, 24 Mar 2024 23:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A503A291B7C;
+	Sun, 24 Mar 2024 23:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324237; cv=none; b=Cd9avDY926LeMs2EemoSJKH9tDehFT+15SK7/aXgLiPjM8/ovJhMwTSd/IiOrzntArtFHiDdy85A6D8TcL6z6n626lHASNioLG6UfsYGpUqx3xTBrTR0os1ecg+58Qei3b0aelnanwQ9L4OgHGMsywetkArO0yLfGN07/OwvrRA=
+	t=1711324238; cv=none; b=tpBemvVAliVXyie77DUi4ZxOW4HqoUCc2QAZ0Q4oOm6kaUQOQ0T68VMGRACNNQhGF0JDriIKA9xT8V3sL7aH6BQM3RjC15RnjjxxbnpT/wxXnNPhSznjss9gVAWLV9353IPojFqyunOuRvH7Oxd0lU4Wo6IIOk2KS0hjDKr5XRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324237; c=relaxed/simple;
-	bh=YwkUYtGUobi3t4tiHcyMA4AKW9oJPCy4a1YK7+7rYIU=;
+	s=arc-20240116; t=1711324238; c=relaxed/simple;
+	bh=2K95XuFUUlB5s66cKWmbhLkdOpfBkjlpzMybXLaXRhE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pNagUEm8/vTKag3dl4J3c6j5Il3aUIojMgHHuYDpaY5fHfcMV10z58LdCIQO7Izqt9lfanVD00Ob0YPyRUot197VzTjZ7iVY/YI2nC5Ma6UDOstEsI4Ny2AVM5aObe89dLDiTUOztR6lmyCxFTKbAlBXYcMCyJx+2XzGWooX7Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GSb5uQwx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1572C43394;
-	Sun, 24 Mar 2024 23:50:35 +0000 (UTC)
+	 MIME-Version; b=K5kenHCtgl94YQHz/VDtR3J8itykHzxKE1C9VPYYh5/4lXhsqG64+ERXh1fPo3a7CB+nR9+ynn4rhb8pGz1pHLcXvbTZEEsG9ePZHj0r+O7FLLT5njrb4qZsXwm7OzZYF7h4rJP6Ia/e7Hz7r0OSE+EBJnz47za4uKo6IMH1Uws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RIUpUvU4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D31D1C43399;
+	Sun, 24 Mar 2024 23:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324236;
-	bh=YwkUYtGUobi3t4tiHcyMA4AKW9oJPCy4a1YK7+7rYIU=;
+	s=k20201202; t=1711324237;
+	bh=2K95XuFUUlB5s66cKWmbhLkdOpfBkjlpzMybXLaXRhE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GSb5uQwxFoNiJJMnngo1COEc57IK1Q3ttVCNlOXkk0wnmueTX5Scq79U6D1P/+M4s
-	 F6I9rf3w15r6+4HkCiAu4gL5JQ+5rQPOyHG+d38rCtqe/K97bOZ9bn6VwtL0lu6nPe
-	 wlsmaCdlYvLrrz9sWjEFcv81Mfv2bQqoSMT3f/FMHQopEsjq0+ikFcyCRkAu8lk883
-	 F9pY8aGyHrFuZLOXYddI+8H9jz2CALcYWh9eUVKexp39x1Cyde7UgO6zAYRK36WOki
-	 HX/ij6i1V8aA0L7C7t/i114p+jUNMaO/N8WLGvR0a9TR6L8P4eNSClLCIAO133V0ZR
-	 V9GFcflr905wQ==
+	b=RIUpUvU4GlLWp/tdZl17isLU250oHTLZ/tCpToygpS45eK4veiWUvDlG6DgS41S6Q
+	 1WtwOpF2vxNhndIs2cCWYgNJarQueUUZOXVlgyBHkAbDm7rGSiPSYgTynoiMVxrU08
+	 6v7yMli51f9AQ2thAq0U079oqoVOc3Yn3YscS50v/dzhFsHYKsqQtklDcS3E1QhwT1
+	 3B1hkOzCJnhx9nbZa+8SYaPqzvr4DTtZ54wl3axsbmRVspMk0VG2NqkmtZba8cnq2W
+	 lzrYCw9EfMJd62i6da9SBSNjLYUmD7rfQGPj6xpwJsdcIJOHeYHjpAL8M1KIzjxxpv
+	 +vTSJM1Uo9+7w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Kees Cook <keescook@chromium.org>,
-	Andi Kleen <ak@linux.intel.com>,
-	Jan Kara <jack@suse.cz>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Christoph Hellwig <hch@lst.de>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 019/148] fs/select: rework stack allocation hack for clang
-Date: Sun, 24 Mar 2024 19:48:03 -0400
-Message-ID: <20240324235012.1356413-20-sashal@kernel.org>
+Subject: [PATCH 4.19 020/148] md: switch to ->check_events for media change notifications
+Date: Sun, 24 Mar 2024 19:48:04 -0400
+Message-ID: <20240324235012.1356413-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -65,65 +62,139 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit ddb9fd7a544088ed70eccbb9f85e9cc9952131c1 ]
+[ Upstream commit a564e23f0f99759f453dbefcb9160dec6d99df96 ]
 
-A while ago, we changed the way that select() and poll() preallocate
-a temporary buffer just under the size of the static warning limit of
-1024 bytes, as clang was frequently going slightly above that limit.
+md is the last driver using the legacy media_changed method.  Switch
+it over to (not so) new ->clear_events approach, which also removes the
+need for the ->revalidate_disk method.
 
-The warnings have recently returned and I took another look. As it turns
-out, clang is not actually inherently worse at reserving stack space,
-it just happens to inline do_select() into core_sys_select(), while gcc
-never inlines it.
-
-Annotate do_select() to never be inlined and in turn remove the special
-case for the allocation size. This should give the same behavior for
-both clang and gcc all the time and once more avoids those warnings.
-
-Fixes: ad312f95d41c ("fs/select: avoid clang stack usage warning")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20240216202352.2492798-1-arnd@kernel.org
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+[axboe: remove unused 'bdops' variable in disk_clear_events()]
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Stable-dep-of: 9674f54e41ff ("md: Don't clear MD_CLOSING when the raid is about to stop")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/select.c          | 2 +-
- include/linux/poll.h | 4 ----
- 2 files changed, 1 insertion(+), 5 deletions(-)
+ Documentation/filesystems/Locking |  4 +---
+ block/genhd.c                     |  8 +-------
+ drivers/md/md.c                   | 19 ++++++++-----------
+ include/linux/blkdev.h            |  2 --
+ 4 files changed, 10 insertions(+), 23 deletions(-)
 
-diff --git a/fs/select.c b/fs/select.c
-index 1c3985d0bcc3e..e09c43cd75bbb 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -448,7 +448,7 @@ static inline void wait_key_set(poll_table *wait, unsigned long in,
- 		wait->_key |= POLLOUT_SET;
+diff --git a/Documentation/filesystems/Locking b/Documentation/filesystems/Locking
+index efea228ccd8af..da300708404d1 100644
+--- a/Documentation/filesystems/Locking
++++ b/Documentation/filesystems/Locking
+@@ -404,7 +404,6 @@ prototypes:
+ 	int (*compat_ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
+ 	int (*direct_access) (struct block_device *, sector_t, void **,
+ 				unsigned long *);
+-	int (*media_changed) (struct gendisk *);
+ 	void (*unlock_native_capacity) (struct gendisk *);
+ 	int (*revalidate_disk) (struct gendisk *);
+ 	int (*getgeo)(struct block_device *, struct hd_geometry *);
+@@ -417,13 +416,12 @@ release:		yes
+ ioctl:			no
+ compat_ioctl:		no
+ direct_access:		no
+-media_changed:		no
+ unlock_native_capacity:	no
+ revalidate_disk:	no
+ getgeo:			no
+ swap_slot_free_notify:	no	(see below)
+ 
+-media_changed, unlock_native_capacity and revalidate_disk are called only from
++unlock_native_capacity and revalidate_disk are called only from
+ check_disk_change().
+ 
+ swap_slot_free_notify is called with swap_lock and sometimes the page lock
+diff --git a/block/genhd.c b/block/genhd.c
+index 27a410d310870..d2502e175aca0 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1771,18 +1771,12 @@ void disk_flush_events(struct gendisk *disk, unsigned int mask)
+  */
+ unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
+ {
+-	const struct block_device_operations *bdops = disk->fops;
+ 	struct disk_events *ev = disk->ev;
+ 	unsigned int pending;
+ 	unsigned int clearing = mask;
+ 
+-	if (!ev) {
+-		/* for drivers still using the old ->media_changed method */
+-		if ((mask & DISK_EVENT_MEDIA_CHANGE) &&
+-		    bdops->media_changed && bdops->media_changed(disk))
+-			return DISK_EVENT_MEDIA_CHANGE;
++	if (!ev)
+ 		return 0;
+-	}
+ 
+ 	disk_block_events(disk);
+ 
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 3cc28b2836078..a137f8b4a0541 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -5455,6 +5455,7 @@ static int md_alloc(dev_t dev, char *name)
+ 	 * remove it now.
+ 	 */
+ 	disk->flags |= GENHD_FL_EXT_DEVT;
++	disk->events |= DISK_EVENT_MEDIA_CHANGE;
+ 	mddev->gendisk = disk;
+ 	add_disk(disk);
+ 
+@@ -7565,20 +7566,17 @@ static void md_release(struct gendisk *disk, fmode_t mode)
+ 	mddev_put(mddev);
  }
  
--static int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
-+static noinline_for_stack int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
+-static int md_media_changed(struct gendisk *disk)
+-{
+-	struct mddev *mddev = disk->private_data;
+-
+-	return mddev->changed;
+-}
+-
+-static int md_revalidate(struct gendisk *disk)
++static unsigned int md_check_events(struct gendisk *disk, unsigned int clearing)
  {
- 	ktime_t expire, *to = NULL;
- 	struct poll_wqueues table;
-diff --git a/include/linux/poll.h b/include/linux/poll.h
-index 1cdc32b1f1b08..7e0fdcf905d2e 100644
---- a/include/linux/poll.h
-+++ b/include/linux/poll.h
-@@ -16,11 +16,7 @@
- extern struct ctl_table epoll_table[]; /* for sysctl */
- /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
-    additional memory. */
--#ifdef __clang__
--#define MAX_STACK_ALLOC 768
--#else
- #define MAX_STACK_ALLOC 832
--#endif
- #define FRONTEND_STACK_ALLOC	256
- #define SELECT_STACK_ALLOC	FRONTEND_STACK_ALLOC
- #define POLL_STACK_ALLOC	FRONTEND_STACK_ALLOC
+ 	struct mddev *mddev = disk->private_data;
++	unsigned int ret = 0;
+ 
++	if (mddev->changed)
++		ret = DISK_EVENT_MEDIA_CHANGE;
+ 	mddev->changed = 0;
+-	return 0;
++	return ret;
+ }
++
+ static const struct block_device_operations md_fops =
+ {
+ 	.owner		= THIS_MODULE,
+@@ -7589,8 +7587,7 @@ static const struct block_device_operations md_fops =
+ 	.compat_ioctl	= md_compat_ioctl,
+ #endif
+ 	.getgeo		= md_getgeo,
+-	.media_changed  = md_media_changed,
+-	.revalidate_disk= md_revalidate,
++	.check_events	= md_check_events,
+ };
+ 
+ static int md_thread(void *arg)
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 56fe682d9beb4..ac407c1d4d40f 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1994,8 +1994,6 @@ struct block_device_operations {
+ 	int (*compat_ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
+ 	unsigned int (*check_events) (struct gendisk *disk,
+ 				      unsigned int clearing);
+-	/* ->media_changed() is DEPRECATED, use ->check_events() instead */
+-	int (*media_changed) (struct gendisk *);
+ 	void (*unlock_native_capacity) (struct gendisk *);
+ 	int (*revalidate_disk) (struct gendisk *);
+ 	int (*getgeo)(struct block_device *, struct hd_geometry *);
 -- 
 2.43.0
 
