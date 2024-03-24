@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-114920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D516A888BFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:05:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C370888BF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:05:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F8EF28D853
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:05:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1636528F2FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD8727EE76;
-	Mon, 25 Mar 2024 00:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64CE627EE4D;
+	Mon, 25 Mar 2024 00:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E2DK6M58"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p0r+tg9y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D727179211;
-	Sun, 24 Mar 2024 23:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E057317921E;
+	Sun, 24 Mar 2024 23:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323589; cv=none; b=o/H1inyjIEc8D9yFeuBRpGKLdZZ2xfwh2HkGd1ageOhn6omcnKeTZEz/swFWEnY2KwDFkryxuHPpba90sqNsNeCypQUECxmb9G/Io9I/vlLfIo5xqfspPgTxFjzDqhtEdsCCcxJAVY+OoVsuMGnejVAHHxbVJ8lRWwtbHep7fvM=
+	t=1711323591; cv=none; b=NB8xQ5lufvoWqz+c+Eh8d5uBm2O4ezXCuuT09tpwv/bUTAlpcvAH4LrxopbVf76mGALxz4rDD8qHsVxf5G+8gqB56CHlIJ/9c/1ljyPf92peTgreNkizRfQ92+YFGxOgImLL/tsvxjCU8ZZ8EKTThP5NbaHG9ud1ZraTxSh20ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323589; c=relaxed/simple;
-	bh=DP7eS2BLiLJag7ca28yuThlRVBYGxPMMTfFtKxToGc8=;
+	s=arc-20240116; t=1711323591; c=relaxed/simple;
+	bh=uRsESuOkmiRS5aWeUuYDscC8x1Oml4HqYVEaWZB5vbs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YYB5dW9s5irYQ2r2sZ5gmdN1DFWsqOI79rbZMl/wau9z6Ta+2bLtEe+qs8XoXLqSYEP5lp6jSZ0P+LEQVptPO5H2+7EX7TA3/onKEKIHR8OAAEcvKu6wa/MCHdkBtO9RNM2uy1yB/1X5PO7PY7e6f5Fr2E2a0wbS41r5pBZrG0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E2DK6M58; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7613C433C7;
-	Sun, 24 Mar 2024 23:39:47 +0000 (UTC)
+	 MIME-Version; b=H6DKyBLSs0lTe2G1Sn1ZuYovK04i7S8A9gprqMTzVwfRPbgefNewEvlhwhivg/MBOtajCzCixwncDRSlUfNiV1p1vMGrHJZJfDyeqb+g9Y/kDKfOuz8kwAbuFOsJCwgN8MonmTNZGbf5vu1rsnhb5xQ81KJucxxY3+trMKlAXeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p0r+tg9y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2BCDC43390;
+	Sun, 24 Mar 2024 23:39:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323588;
-	bh=DP7eS2BLiLJag7ca28yuThlRVBYGxPMMTfFtKxToGc8=;
+	s=k20201202; t=1711323589;
+	bh=uRsESuOkmiRS5aWeUuYDscC8x1Oml4HqYVEaWZB5vbs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E2DK6M589cXo7OBeITRgpNJ7iQ0wG8lSfgIHC8J15ELpf1puuenVuBkrxsPoMBq7z
-	 91gG47c4wpI8DNKr3SykRdMQFbCVEBT1xIlW+ZEbHTOrnglxo20HxfG+U5GBkYs4S4
-	 dj5RaxqLLQy8FTx/BeXzBB9z4emlCmd8lnM6bXkThsnWNqd4GeKB6Zovn41FXgUz3O
-	 lvhsW5m4GfC80eY2gLuvLGcami0ViRVNw67yGVTnVG4oa5k0+n+1WVij8ypwvoqO0p
-	 gwodVs+X66e+0TYSH23qAS/U6Glu+gWKimrhR9xBknkTQMB18/cKObwvcMWZqwh6Ma
-	 RvHYTB+VUc9rA==
+	b=p0r+tg9yyqXoZyMKjcB3wpC6FZnGLETu/tzlvjG55SSHL17AqxTI+bzUIzs5qh6aD
+	 2pN9/UU/YwZMSD8vyJ0vyM1RLG8cBpY2xXf4iQiwXeRE2ubYdiLRHo+lJKcDKTwEkQ
+	 4+cpmPe2tNmLc0qHNXCfWEdBrKFWpCDbjArqxBzn6I89+1pdBGpItWwd66yACkSjZK
+	 Mgo7KBlPiYJmmNlS/G5Wri3deXgI1FNLchjo+KYHK0q+M4gMTFZ5VF0ZavRSwGtYz1
+	 QhXLVVAE1pBRgveeHFSAjCsuUc5H/gjNe1dq07avKAH63kLqQ6PlEp2mAmxSQWhIRU
+	 c3OYsxQWml7FA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Daniel Golle <daniel@makrotopia.org>,
-	Bc-bocun Chen <bc-bocun.chen@mediatek.com>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Jason Xing <kerneljasonxing@gmail.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 295/317] net: ethernet: mtk_eth_soc: fix PPE hanging issue
-Date: Sun, 24 Mar 2024 19:34:35 -0400
-Message-ID: <20240324233458.1352854-296-sashal@kernel.org>
+Subject: [PATCH 5.15 296/317] packet: annotate data-races around ignore_outgoing
+Date: Sun, 24 Mar 2024 19:34:36 -0400
+Message-ID: <20240324233458.1352854-297-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,68 +66,103 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Daniel Golle <daniel@makrotopia.org>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit ea80e3ed09ab2c2b75724faf5484721753e92c31 ]
+[ Upstream commit 6ebfad33161afacb3e1e59ed1c2feefef70f9f97 ]
 
-A patch to resolve an issue was found in MediaTek's GPL-licensed SDK:
-In the mtk_ppe_stop() function, the PPE scan mode is not disabled before
-disabling the PPE. This can potentially lead to a hang during the process
-of disabling the PPE.
+ignore_outgoing is read locklessly from dev_queue_xmit_nit()
+and packet_getsockopt()
 
-Without this patch, the PPE may experience a hang during the reboot test.
+Add appropriate READ_ONCE()/WRITE_ONCE() annotations.
 
-Link: https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/b40da332dfe763932a82f9f62a4709457a15dd6c
-Fixes: ba37b7caf1ed ("net: ethernet: mtk_eth_soc: add support for initializing the PPE")
-Suggested-by: Bc-bocun Chen <bc-bocun.chen@mediatek.com>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+syzbot reported:
+
+BUG: KCSAN: data-race in dev_queue_xmit_nit / packet_setsockopt
+
+write to 0xffff888107804542 of 1 bytes by task 22618 on cpu 0:
+ packet_setsockopt+0xd83/0xfd0 net/packet/af_packet.c:4003
+ do_sock_setsockopt net/socket.c:2311 [inline]
+ __sys_setsockopt+0x1d8/0x250 net/socket.c:2334
+ __do_sys_setsockopt net/socket.c:2343 [inline]
+ __se_sys_setsockopt net/socket.c:2340 [inline]
+ __x64_sys_setsockopt+0x66/0x80 net/socket.c:2340
+ do_syscall_64+0xd3/0x1d0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+read to 0xffff888107804542 of 1 bytes by task 27 on cpu 1:
+ dev_queue_xmit_nit+0x82/0x620 net/core/dev.c:2248
+ xmit_one net/core/dev.c:3527 [inline]
+ dev_hard_start_xmit+0xcc/0x3f0 net/core/dev.c:3547
+ __dev_queue_xmit+0xf24/0x1dd0 net/core/dev.c:4335
+ dev_queue_xmit include/linux/netdevice.h:3091 [inline]
+ batadv_send_skb_packet+0x264/0x300 net/batman-adv/send.c:108
+ batadv_send_broadcast_skb+0x24/0x30 net/batman-adv/send.c:127
+ batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:392 [inline]
+ batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
+ batadv_iv_send_outstanding_bat_ogm_packet+0x3f0/0x4b0 net/batman-adv/bat_iv_ogm.c:1700
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0x465/0x990 kernel/workqueue.c:3335
+ worker_thread+0x526/0x730 kernel/workqueue.c:3416
+ kthread+0x1d1/0x210 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+value changed: 0x00 -> 0x01
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 27 Comm: kworker/u8:1 Tainted: G        W          6.8.0-syzkaller-08073-g480e035fc4c7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
+
+Fixes: fa788d986a3a ("packet: add sockopt to ignore outgoing packets")
+Reported-by: syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/netdev/CANn89i+Z7MfbkBLOv=p7KZ7=K1rKHO4P1OL5LYDCtBiyqsa9oQ@mail.gmail.com/T/#t
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mediatek/mtk_ppe.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ net/core/dev.c         | 2 +-
+ net/packet/af_packet.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_ppe.c b/drivers/net/ethernet/mediatek/mtk_ppe.c
-index 66298e2235c91..5e7b66846791d 100644
---- a/drivers/net/ethernet/mediatek/mtk_ppe.c
-+++ b/drivers/net/ethernet/mediatek/mtk_ppe.c
-@@ -425,7 +425,7 @@ int mtk_ppe_start(struct mtk_ppe *ppe)
- 			 MTK_PPE_KEEPALIVE_DISABLE) |
- 	      FIELD_PREP(MTK_PPE_TB_CFG_HASH_MODE, 1) |
- 	      FIELD_PREP(MTK_PPE_TB_CFG_SCAN_MODE,
--			 MTK_PPE_SCAN_MODE_KEEPALIVE_AGE) |
-+			 MTK_PPE_SCAN_MODE_CHECK_AGE) |
- 	      FIELD_PREP(MTK_PPE_TB_CFG_ENTRY_NUM,
- 			 MTK_PPE_ENTRIES_SHIFT);
- 	ppe_w32(ppe, MTK_PPE_TB_CFG, val);
-@@ -493,17 +493,21 @@ int mtk_ppe_stop(struct mtk_ppe *ppe)
+diff --git a/net/core/dev.c b/net/core/dev.c
+index af77dc77eb9c8..1e41971c06177 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -2291,7 +2291,7 @@ void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
+ 	rcu_read_lock();
+ again:
+ 	list_for_each_entry_rcu(ptype, ptype_list, list) {
+-		if (ptype->ignore_outgoing)
++		if (READ_ONCE(ptype->ignore_outgoing))
+ 			continue;
  
- 	mtk_ppe_cache_enable(ppe, false);
+ 		/* Never send packets back to the socket
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 75fb80717e489..cffa217fb3063 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -3951,7 +3951,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, sockptr_t optval,
+ 		if (val < 0 || val > 1)
+ 			return -EINVAL;
  
--	/* disable offload engine */
--	ppe_clear(ppe, MTK_PPE_GLO_CFG, MTK_PPE_GLO_CFG_EN);
--	ppe_w32(ppe, MTK_PPE_FLOW_CFG, 0);
--
- 	/* disable aging */
- 	val = MTK_PPE_TB_CFG_AGE_NON_L4 |
- 	      MTK_PPE_TB_CFG_AGE_UNBIND |
- 	      MTK_PPE_TB_CFG_AGE_TCP |
- 	      MTK_PPE_TB_CFG_AGE_UDP |
--	      MTK_PPE_TB_CFG_AGE_TCP_FIN;
-+	      MTK_PPE_TB_CFG_AGE_TCP_FIN |
-+		  MTK_PPE_TB_CFG_SCAN_MODE;
- 	ppe_clear(ppe, MTK_PPE_TB_CFG, val);
- 
--	return mtk_ppe_wait_busy(ppe);
-+	if (mtk_ppe_wait_busy(ppe))
-+		return -ETIMEDOUT;
-+
-+	/* disable offload engine */
-+	ppe_clear(ppe, MTK_PPE_GLO_CFG, MTK_PPE_GLO_CFG_EN);
-+	ppe_w32(ppe, MTK_PPE_FLOW_CFG, 0);
-+
-+	return 0;
- }
+-		po->prot_hook.ignore_outgoing = !!val;
++		WRITE_ONCE(po->prot_hook.ignore_outgoing, !!val);
+ 		return 0;
+ 	}
+ 	case PACKET_TX_HAS_OFF:
+@@ -4080,7 +4080,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
+ 		       0);
+ 		break;
+ 	case PACKET_IGNORE_OUTGOING:
+-		val = po->prot_hook.ignore_outgoing;
++		val = READ_ONCE(po->prot_hook.ignore_outgoing);
+ 		break;
+ 	case PACKET_ROLLOVER_STATS:
+ 		if (!po->rollover)
 -- 
 2.43.0
 
