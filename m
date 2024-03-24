@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-114114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A24488887F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:29:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 445D2888883
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:29:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD23F286FE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:29:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8D8AB2244D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301402021B8;
-	Sun, 24 Mar 2024 23:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECD42023AF;
+	Sun, 24 Mar 2024 23:19:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ssppzhsP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gFy7tXH6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC108131E20;
-	Sun, 24 Mar 2024 23:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22F9131E28;
+	Sun, 24 Mar 2024 23:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321420; cv=none; b=e8Xd5I2F2JQSjDeD1iB6rcGFGELuzIgdesq3TPL/SMFJfGO2EfCeMtY1Z8YJfkM4JrYDfUvN4TDfoqnArzTU/yI5Ah1bYJlkDyZRbdKVbJcAKgPK5LbuyTv+xnZQwIKBVx3qauHPCjCO1PfNgXGkhiNTf0VwMha4BW96F2VoHRU=
+	t=1711321420; cv=none; b=sbHQnYwVcbllIGyAnXgC4bBG9gBS15VaqCfRCCTzehx160lbPcV+PgIbOw6E5K80D0dJ7Dq1ICdsvGDIgO/nSk13yk9FluEK4+bnMD9brFxBSTNjzsiDbimQr0Nyhf1DYH2zPWeCkPkNAOARg0f6ri0Juz1Wlv3xuEB1RHW0W1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321420; c=relaxed/simple;
-	bh=0VAmgdQ1t/uj+NHVK29vS+oFQU05fhWw7epz4GYuTD8=;
+	bh=qFpUQqMP2OvlrWkLC22tIXBrzZPa6exUEWIiFlsA8jY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uZ7Mw5s0mKkW4GwaOLNOCxLn1BqiYX/99WorhD7vHB7WA4+24Ej/bR3C6+sbuZjXU1K4occklGYUgFKQJz6jN27BNC3I42ttujcYs7fyv1j59iBrX+LOVjvtqG3rtTxw/JWohsx+V6EmoRJuPwvdbV0B6WIe7BgwfxTEhUAqvLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ssppzhsP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05F44C433F1;
-	Sun, 24 Mar 2024 23:03:37 +0000 (UTC)
+	 MIME-Version; b=V7iHynjEKqPR9Jg700SFtitRG+RGSQE+TKOt0dwmb8Hg22qp4LaGRg25X44yLXNSKBQgkhZCm4RKZ90uV78vORfm17VGmnIGj2F2v9iGenfzXECNXZ6YBfJ+xdWSALvHO3yuny5tv3zjbJNLRDwKCdnC1LzhI+kM32MaIxPkHis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gFy7tXH6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B24BC43390;
+	Sun, 24 Mar 2024 23:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321418;
-	bh=0VAmgdQ1t/uj+NHVK29vS+oFQU05fhWw7epz4GYuTD8=;
+	s=k20201202; t=1711321419;
+	bh=qFpUQqMP2OvlrWkLC22tIXBrzZPa6exUEWIiFlsA8jY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ssppzhsPLEVctpmNVwbNP6qpoHSoCV/mWh7TFOY2JBMdxDEcQpJc658d4R3DrWjtz
-	 yszeLEn4c7kfEBofuviskJJvCBuWLeLEcTJ1ydIpF/xKBGa0OqLSA1iXSCR+ElqK4C
-	 BPFpAHPVEWj6iF3jz/x1KXBu0v0m59BGDMtpnegkGh7nN8Np7MT/vvFCdfgfvWtHSx
-	 YR+2oRoiV4Uxsnh9G2v/SvAuMj4KwAYW64RFIl36LYonz1ZSKJ2QQukLRc85Eg4Mec
-	 yVi06jIItzWQCXtTK39BZQN7IeWw1qMdXwWpwd1xCEr+98lZDK1DW7aplN6KLR4G6q
-	 tyt9R5uYYO/CQ==
+	b=gFy7tXH6rY3YG6i4/qHr24d+oQbHAc0/5k/+5v9BnJ5TcoN6QWQ1nYaQQP+dDsDl5
+	 4JNabEwJ7CYl6mtORAlXjqlVAnTvtBp/osLidw62ji8m2YBhubBr06tsAmWQraGCkq
+	 aPuOVuqVtOLcOFKAVpOnMxDz8mZpFedz0DK9u5g8TdoeIoDQYe6nFK5MnFtj+NNBqG
+	 mJa4f7nFuPLwXlYBtj8gzT3HuRBaI4tV9UZ+xx9bWbJPDcnxHswLL/7R7Ih01aPgwS
+	 Y7LYdphRIz6T3j8u6+JpX5CGAmUjfgj6bUbX8JAZqfDzOb+2LNft6mfMYnha1uajb7
+	 VMOOJwTGbF8CQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	Stanislav Fomichev <sdf@google.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
+Cc: Martin KaFai Lau <martin.lau@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 142/638] selftests/bpf: Add netkit to tc_redirect selftest
-Date: Sun, 24 Mar 2024 18:52:59 -0400
-Message-ID: <20240324230116.1348576-143-sashal@kernel.org>
+Subject: [PATCH 6.6 143/638] selftests/bpf: Fix the flaky tc_redirect_dtime test
+Date: Sun, 24 Mar 2024 18:53:00 -0400
+Message-ID: <20240324230116.1348576-144-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,121 +62,94 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-[ Upstream commit adfeae2d243d9e5b83d094af481d189156b11779 ]
+[ Upstream commit 177f1d083a19af58f4b1206d299ed73689249fd8 ]
 
-Extend the existing tc_redirect selftest to also cover netkit devices
-for exercising the bpf_redirect_peer() code paths, so that we have both
-veth as well as netkit covered, all tests still pass after this change.
+BPF CI has been reporting the tc_redirect_dtime test failing
+from time to time:
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
-Link: https://lore.kernel.org/r/20231114004220.6495-9-daniel@iogearbox.net
+test_inet_dtime:PASS:setns src 0 nsec
+(network_helpers.c:253: errno: No route to host) Failed to connect to server
+close_netns:PASS:setns 0 nsec
+test_inet_dtime:FAIL:connect_to_fd unexpected connect_to_fd: actual -1 < expected 0
+test_tcp_clear_dtime:PASS:tcp ip6 clear dtime ingress_fwdns_p100 0 nsec
+
+The connect_to_fd failure (EHOSTUNREACH) is from the
+test_tcp_clear_dtime() test and it is the very first IPv6 traffic
+after setting up all the links, addresses, and routes.
+
+The symptom is this first connect() is always slow. In my setup, it
+could take ~3s.
+
+After some tracing and tcpdump, the slowness is mostly spent in
+the neighbor solicitation in the "ns_fwd" namespace while
+the "ns_src" and "ns_dst" are fine.
+
+I forced the kernel to drop the neighbor solicitation messages.
+I can then reproduce EHOSTUNREACH. What actually happen could be:
+- the neighbor advertisement came back a little slow.
+- the "ns_fwd" namespace concluded a neighbor discovery failure
+  and triggered the ndisc_error_report() => ip6_link_failure() =>
+  icmpv6_send(skb, ICMPV6_DEST_UNREACH, ICMPV6_ADDR_UNREACH, 0)
+- the client's connect() reports EHOSTUNREACH after receiving
+  the ICMPV6_DEST_UNREACH message.
+
+The neigh table of both "ns_src" and "ns_dst" namespace has already
+been manually populated but not the "ns_fwd" namespace. This patch
+fixes it by manually populating the neigh table also in the "ns_fwd"
+namespace.
+
+Although the namespace configuration part had been existed before
+the tc_redirect_dtime test, still Fixes-tagging the patch when
+the tc_redirect_dtime test was added since it is the only test
+hitting it so far.
+
+Fixes: c803475fd8dd ("bpf: selftests: test skb->tstamp in redirect_neigh")
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Stable-dep-of: 177f1d083a19 ("selftests/bpf: Fix the flaky tc_redirect_dtime test")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20240120060518.3604920-1-martin.lau@linux.dev
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/prog_tests/tc_redirect.c    | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-index 407ff4e9bc788..518f143c5b0fe 100644
+index 518f143c5b0fe..610887157fd85 100644
 --- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
 +++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-@@ -24,6 +24,7 @@
- 
- #include "test_progs.h"
- #include "network_helpers.h"
-+#include "netlink_helpers.h"
- #include "test_tc_neigh_fib.skel.h"
- #include "test_tc_neigh.skel.h"
- #include "test_tc_peer.skel.h"
-@@ -112,6 +113,7 @@ static void netns_setup_namespaces_nofail(const char *verb)
- 
- enum dev_mode {
- 	MODE_VETH,
-+	MODE_NETKIT,
- };
- 
- struct netns_setup_result {
-@@ -142,10 +144,51 @@ static int get_ifaddr(const char *name, char *ifaddr)
- 	return 0;
- }
- 
-+static int create_netkit(int mode, char *prim, char *peer)
-+{
-+	struct rtattr *linkinfo, *data, *peer_info;
-+	struct rtnl_handle rth = { .fd = -1 };
-+	const char *type = "netkit";
-+	struct {
-+		struct nlmsghdr n;
-+		struct ifinfomsg i;
-+		char buf[1024];
-+	} req = {};
-+	int err;
-+
-+	err = rtnl_open(&rth, 0);
-+	if (!ASSERT_OK(err, "open_rtnetlink"))
-+		return err;
-+
-+	memset(&req, 0, sizeof(req));
-+	req.n.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifinfomsg));
-+	req.n.nlmsg_flags = NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL;
-+	req.n.nlmsg_type = RTM_NEWLINK;
-+	req.i.ifi_family = AF_UNSPEC;
-+
-+	addattr_l(&req.n, sizeof(req), IFLA_IFNAME, prim, strlen(prim));
-+	linkinfo = addattr_nest(&req.n, sizeof(req), IFLA_LINKINFO);
-+	addattr_l(&req.n, sizeof(req), IFLA_INFO_KIND, type, strlen(type));
-+	data = addattr_nest(&req.n, sizeof(req), IFLA_INFO_DATA);
-+	addattr32(&req.n, sizeof(req), IFLA_NETKIT_MODE, mode);
-+	peer_info = addattr_nest(&req.n, sizeof(req), IFLA_NETKIT_PEER_INFO);
-+	req.n.nlmsg_len += sizeof(struct ifinfomsg);
-+	addattr_l(&req.n, sizeof(req), IFLA_IFNAME, peer, strlen(peer));
-+	addattr_nest_end(&req.n, peer_info);
-+	addattr_nest_end(&req.n, data);
-+	addattr_nest_end(&req.n, linkinfo);
-+
-+	err = rtnl_talk(&rth, &req.n, NULL);
-+	ASSERT_OK(err, "talk_rtnetlink");
-+	rtnl_close(&rth);
-+	return err;
-+}
-+
- static int netns_setup_links_and_routes(struct netns_setup_result *result)
+@@ -188,6 +188,7 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
  {
  	struct nstoken *nstoken = NULL;
  	char src_fwd_addr[IFADDR_STR_LEN+1] = {};
-+	int err;
++	char src_addr[IFADDR_STR_LEN + 1] = {};
+ 	int err;
  
  	if (result->dev_mode == MODE_VETH) {
- 		SYS(fail, "ip link add src type veth peer name src_fwd");
-@@ -153,6 +196,13 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
- 
- 		SYS(fail, "ip link set dst_fwd address " MAC_DST_FWD);
- 		SYS(fail, "ip link set dst address " MAC_DST);
-+	} else if (result->dev_mode == MODE_NETKIT) {
-+		err = create_netkit(NETKIT_L3, "src", "src_fwd");
-+		if (!ASSERT_OK(err, "create_ifindex_src"))
-+			goto fail;
-+		err = create_netkit(NETKIT_L3, "dst", "dst_fwd");
-+		if (!ASSERT_OK(err, "create_ifindex_dst"))
-+			goto fail;
- 	}
- 
+@@ -208,6 +209,9 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
  	if (get_ifaddr("src_fwd", src_fwd_addr))
-@@ -1134,7 +1184,9 @@ static void *test_tc_redirect_run_tests(void *arg)
- 	netns_setup_namespaces_nofail("delete");
+ 		goto fail;
  
- 	RUN_TEST(tc_redirect_peer, MODE_VETH);
-+	RUN_TEST(tc_redirect_peer, MODE_NETKIT);
- 	RUN_TEST(tc_redirect_peer_l3, MODE_VETH);
-+	RUN_TEST(tc_redirect_peer_l3, MODE_NETKIT);
- 	RUN_TEST(tc_redirect_neigh, MODE_VETH);
- 	RUN_TEST(tc_redirect_neigh_fib, MODE_VETH);
- 	RUN_TEST(tc_redirect_dtime, MODE_VETH);
++	if (get_ifaddr("src", src_addr))
++		goto fail;
++
+ 	result->ifindex_src = if_nametoindex("src");
+ 	if (!ASSERT_GT(result->ifindex_src, 0, "ifindex_src"))
+ 		goto fail;
+@@ -270,6 +274,13 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ 	SYS(fail, "ip route add " IP4_DST "/32 dev dst_fwd scope global");
+ 	SYS(fail, "ip route add " IP6_DST "/128 dev dst_fwd scope global");
+ 
++	if (result->dev_mode == MODE_VETH) {
++		SYS(fail, "ip neigh add " IP4_SRC " dev src_fwd lladdr %s", src_addr);
++		SYS(fail, "ip neigh add " IP6_SRC " dev src_fwd lladdr %s", src_addr);
++		SYS(fail, "ip neigh add " IP4_DST " dev dst_fwd lladdr %s", MAC_DST);
++		SYS(fail, "ip neigh add " IP6_DST " dev dst_fwd lladdr %s", MAC_DST);
++	}
++
+ 	close_netns(nstoken);
+ 
+ 	/** setup in 'dst' namespace */
 -- 
 2.43.0
 
