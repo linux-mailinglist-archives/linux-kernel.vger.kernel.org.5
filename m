@@ -1,127 +1,146 @@
-Return-Path: <linux-kernel+bounces-112814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A22BB887E83
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:00:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF422887E87
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DB64281089
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:00:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE4171C208C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4A9DDAB;
-	Sun, 24 Mar 2024 19:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9035FFBE8;
+	Sun, 24 Mar 2024 19:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WCk43MTH"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="AKP17Gxe"
+Received: from xry111.site (xry111.site [89.208.246.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF24DD51D;
-	Sun, 24 Mar 2024 19:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513F1F9EC
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 19:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711306823; cv=none; b=iiHTOCTGVqY0W4yUpi/7kN+urePCvfq3Hr9X9VwYFbQzLLvXi13z1X/HoZBdz0ZYTNewttLU0mkbETz8WP4IgUhjc49AIIgy3ZuQ3MNKaSbS7Pxv6SvZ0r+OoN5XgKtJu0i1SXDi6ZeUEDpmMGFfyRKBktw1soLP+XfvQXx65EM=
+	t=1711307154; cv=none; b=rPsCHi8iuH/CWqZ9mA5MUP8exEFvzixW6UPKvNwVlmwsLiYqrCxbd8jpuIs26fBfZfZWFVYZQ93uCBSpT7LLt0H5V9DnFPwVri/vmIDEs+7pJYl5Rr9M33cJieUXJ8rCZRNNzG1pP9MpWxI6Mgdpv+S+onrbq+xCE64lLwzjBto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711306823; c=relaxed/simple;
-	bh=0uDTXPO9DAZL/Vz6XeOcY9b3jjyTrfYWOY4uqX6iy14=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hwG4yPfm+ZEubMdr0GvPcLP/nScjzeRtxxBKu07XNXVRAJSUbVeSZwLh2PlNkFD1FXLoOSP5U4PISJEZwnrfxOMfqx7W4jLgBTWrfit7pg9vPGCo80eRIxlKCJJ7OKg+5ft4U+gW2yPc9LoOJHPFcSaP22iQDl6i3ya5RL45TLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WCk43MTH; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so3284554276.2;
-        Sun, 24 Mar 2024 12:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711306816; x=1711911616; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zs3jwcD+bSMxZx0cQlLSPlfHe7+Vx3v1SzeuR8ex/8w=;
-        b=WCk43MTHvwdKZ2rMA5K/H3f02ncp1nEOt73mwCmiJEdameR3bfCV97Xd/3cLBjXK54
-         yuGGFS1ai5mXdBdQy9WPyWWYGaWcVaTYspfdrSHupGKjZZXTun9f3sA0qsqhpIh6G7Yw
-         5uNFKM/mLpu+f7e3Ti2XwYg4QIC3ikp0sTTHdCdXGSAPiRhnqginpDVQImez9zH3jSFp
-         92K9ZIfbccVINq0+4fYMH3O0RgLjEW3+qYC2mJSee2a4/nYFdh3AX60kLFHg3HGx28PF
-         9Pn2OoYU9h4EeLgOcON4UNwFYRj/MPUfmSwMwG0T/eKGoIesbVwOUFJ9WolPjAt2ftur
-         NU4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711306816; x=1711911616;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zs3jwcD+bSMxZx0cQlLSPlfHe7+Vx3v1SzeuR8ex/8w=;
-        b=eZGtVO/m8x9V9E5Jq9yeuLRnYV34jaBlpeadkpfDjXN5o3BONaAR9gE60qeu09f6Nw
-         O8L6RIJEkD8XLrDVXlh/Fba9NhZpsKaGFn74zI/+b2vY/tIkA1wm94WlAVOStLyKLss+
-         IvC1wv+TfYzgwRDRe3Ig7oC7IkaZc6jJOS0fgc8Ehmm3EU6/MEL3CTHi9uw7Mvvx7zf4
-         mLHXoxy1VsQmwaUnxHzIyTaEoo/xvzs8ZXATun2I0sk3FxrwIsFx93n6188nfzVtY0Yw
-         HbRVjvh43DMC4nlr6PFqFqNNErB/NQqquvAnHTEcslXGYxH7sDgnbdEEzHriIIu5g6qf
-         rYdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWi77NA9RSORxt7SCVV6bshVHuXVb5IHqa3lyZTyMOZ6r+/7j1CCSTi24C25EWBnUGx3SvHKs0WScss0zda0G0u4FHap//Bh1IUyhZCjqeAr8H9Umin6sTplPicA79V6Ii1DU3MSuDv62tiyTEyzYGTP/bvg0oEExtBYLSOzQse2yLOGg==
-X-Gm-Message-State: AOJu0YwYsbW5WPLiYFvhU4geoPdywWENWaB8scJPFAjxqirylmvj137A
-	IIsU2C5yCWp8VlqCKcvLJj+KSi8whOzElA1RxYY3NaLcs0mck+Yasd2HwLMZVO9Euqd1zBcbOrp
-	ta0U+c69crlmZ3hFRStvwVgWIx84=
-X-Google-Smtp-Source: AGHT+IHrUHSUlApoRrfkRpt7zMExqBxrDGo9f0m60Rh2RG+K+WM9Y21zRhb+EO3yu0XN+fiKxztqhEdYDuiOXHvXrpg=
-X-Received: by 2002:a25:8609:0:b0:dcc:f6e2:44d0 with SMTP id
- y9-20020a258609000000b00dccf6e244d0mr3338435ybk.37.1711306815913; Sun, 24 Mar
- 2024 12:00:15 -0700 (PDT)
+	s=arc-20240116; t=1711307154; c=relaxed/simple;
+	bh=tgO22Q9yqEl4xTkxs57KMZtwHtF8TrCvj8tYkyXVw8c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NxSVjNdowb7xH605XpUtUD1raGvhFspas9Gv0jnWLk9elbXlyw9FVFAwifMozTDe3rSqWMPZtvQ+90Cv5x9V8XTdlaq4HbssrR0slAoZvAKxv7GyLqk35z8d2Bp7TACXUAVfMSqwOcu7enLE1kuKXk0srVwrmXK/2SAxvgeuPuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=AKP17Gxe; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1711307149;
+	bh=tgO22Q9yqEl4xTkxs57KMZtwHtF8TrCvj8tYkyXVw8c=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AKP17Gxev8kIv2QPAtTKDDY/7PdBAJFi4w0M5rnuVnJ35USratbY+r+APk8uhAN+Q
+	 K/cVpo597rKAy3f15H7loTEy1UaUHTqi5vHar7FDv1JEBBeL09OXxwyy7I+bv990q8
+	 lEpJqgneeesqNuTp2FoZinE4FQq7FSU0YAIwqBTg=
+Received: from stargazer.. (unknown [IPv6:240e:358:11fe:a000:dc73:854d:832e:8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id EA8A0668E6;
+	Sun, 24 Mar 2024 15:05:44 -0400 (EDT)
+From: Xi Ruoyao <xry111@xry111.site>
+To: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Xi Ruoyao <xry111@xry111.site>
+Subject: [PATCH v2] x86/mm: Don't disable INVLPG if "incomplete Global INVLPG flushes" is fixed by microcode
+Date: Mon, 25 Mar 2024 03:05:03 +0800
+Message-ID: <20240324190503.116160-1-xry111@xry111.site>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240323122030.21800-1-l.rubusch@gmail.com> <20240323122030.21800-4-l.rubusch@gmail.com>
- <20240324133238.61d5f989@jic23-huawei>
-In-Reply-To: <20240324133238.61d5f989@jic23-huawei>
-From: Lothar Rubusch <l.rubusch@gmail.com>
-Date: Sun, 24 Mar 2024 19:59:39 +0100
-Message-ID: <CAFXKEHaeWbLV6g9eEdp9de5sZO0TJPRrJvsVxnGCf9jzdxwgHA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] iio: accel: adxl345: Add spi-3wire option
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: lars@metafoo.de, Michael.Hennerich@analog.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Mar 24, 2024 at 2:32=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
- wrote:
->
-> On Sat, 23 Mar 2024 12:20:27 +0000
-> Lothar Rubusch <l.rubusch@gmail.com> wrote:
->
-> > Add a setup function implementation to the spi module to enable
-> > spi-3wire as option when specified in the device-tree.
-> >
-> > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-> > ---
-> >  drivers/iio/accel/adxl345.h     |  3 +++
-> >  drivers/iio/accel/adxl345_spi.c | 12 +++++++++++-
-> >  2 files changed, 14 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
-> > index 3c1ded0c2..6b84a2cee 100644
-> > --- a/drivers/iio/accel/adxl345.h
-> > +++ b/drivers/iio/accel/adxl345.h
-> > @@ -8,6 +8,9 @@
-> >  #ifndef _ADXL345_H_
-> >  #define _ADXL345_H_
-> >
-> > +#define ADXL345_REG_DATA_FORMAT              0x31
-> > +#define ADXL345_DATA_FORMAT_SPI         BIT(6) /* spi-3wire */
-> Name it that, rather than using a comment.   No need to precisely
-> match datasheet naming - you are naming the value not the field here.
->
-> ADXL345_DATA_FORMAT_SPI_3_WRITE perhaps?
->
+Per the "Processor Specification Update" documentations referred by the
+intel-microcode-20240312 release note, this microcode release has fixed
+the issue for all affected models.
 
-Would you accept the following instead?
-ADXL345_DATA_FORMAT_SPI_3WIRE
+So don't disable INVLPG if the microcode is new enough.
 
-In the OF binding it is SPI_3WIRE. So, from this perspective I think it wou=
-ld
-be consistent naming.
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lore.kernel.org/all/168436059559.404.13934972543631851306.tip-bot2@tip-bot2/
+Link: https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/releases/tag/microcode-20240312
+Link: https://cdrdv2.intel.com/v1/dl/getContent/740518 # RPL042, rev. 13
+Link: https://cdrdv2.intel.com/v1/dl/getContent/682436 # ADL063, rev. 24
+Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+---
+ arch/x86/mm/init.c | 32 ++++++++++++++++++++------------
+ 1 file changed, 20 insertions(+), 12 deletions(-)
 
-(...)
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index 679893ea5e68..c52be4e66e44 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -261,33 +261,41 @@ static void __init probe_page_size_mask(void)
+ 	}
+ }
+ 
+-#define INTEL_MATCH(_model) { .vendor  = X86_VENDOR_INTEL,	\
+-			      .family  = 6,			\
+-			      .model = _model,			\
+-			    }
++#define INTEL_MATCH(_model, _fixed_microcode)	\
++    { .vendor		= X86_VENDOR_INTEL,	\
++      .family		= 6,			\
++      .model		= _model,		\
++      .driver_data	= _fixed_microcode,	\
++    }
++
+ /*
+  * INVLPG may not properly flush Global entries
+- * on these CPUs when PCIDs are enabled.
++ * on these CPUs when PCIDs are enabled and the
++ * microcode is not updated to fix the issue.
+  */
+ static const struct x86_cpu_id invlpg_miss_ids[] = {
+-	INTEL_MATCH(INTEL_FAM6_ALDERLAKE   ),
+-	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L ),
+-	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT ),
+-	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE  ),
+-	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P),
+-	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S),
++	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x34),
++	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x432),
++	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x15),
++	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE,	0x122),
++	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P,	0x4121),
++	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S,	0x34),
+ 	{}
+ };
+ 
+ static void setup_pcid(void)
+ {
++	const struct x86_cpu_id *invlpg_miss_match;
++
+ 	if (!IS_ENABLED(CONFIG_X86_64))
+ 		return;
+ 
+ 	if (!boot_cpu_has(X86_FEATURE_PCID))
+ 		return;
+ 
+-	if (x86_match_cpu(invlpg_miss_ids)) {
++	invlpg_miss_match = x86_match_cpu(invlpg_miss_ids);
++	if (invlpg_miss_match &&
++	    invlpg_miss_match->driver_data > boot_cpu_data.microcode) {
+ 		pr_info("Incomplete global flushes, disabling PCID");
+ 		setup_clear_cpu_cap(X86_FEATURE_PCID);
+ 		return;
+-- 
+2.44.0
+
 
