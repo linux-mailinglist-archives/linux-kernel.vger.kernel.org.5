@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-115107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0563F888D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:40:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1908889DE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A6DE1F29CE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:40:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 230D72C3E06
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747021C5DE4;
-	Mon, 25 Mar 2024 01:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC901327EE;
+	Mon, 25 Mar 2024 03:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BFzzlmyl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gHVU64IN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D617E18180F;
-	Sun, 24 Mar 2024 23:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40767181811;
+	Sun, 24 Mar 2024 23:48:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324091; cv=none; b=MDGvjX/MzfJ4bT0GxcraZ55wUQ5kmpmhWlbYGDH5+uGfQCX2ueyvp62aIWklmFmmiwE+PCF9pGq8MiKWyux1iuG8voglzHys+UVyRngl4EklcXgao8W27CRi+Rk4L9scZjNDHZOWaZY9cTC4XL1XOD980UmyFN5mFKkKZi0RVwo=
+	t=1711324092; cv=none; b=tlB2CEtOhKbTzDbwJEbgozt1VZW4fiumPRKl6dmT+lAAscAf/TPSeE4qioZvzUwhGZfueArPlneBBkh8SVLTF8gtoKCc8YiPkLNXpcP8PJCqHroBPdJvDlvz1hzQG7LsKjhIJe9jRVoqVG8SrDBGabsFYsGAUK6eCT4cov28pSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324091; c=relaxed/simple;
-	bh=GMvWa03Qa7FSPRuDtAM5CuxjChNnwKQlEtknCNEXyko=;
+	s=arc-20240116; t=1711324092; c=relaxed/simple;
+	bh=gbU2EowSPlHE2x6WXeXSsOfbfUQE1IU/R3YYLu6N2co=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tk2GFWFk3fIvfHKK4cArQArp+dbrTbIsvgjAoyo96qZdXBiZTEYzQf2+nx54eQtm9OyrW3QbwLwy0GW2FgSVI7PJ0KsuxAgpm82QnjUR0PBRPfZkjEdzDmMStHRHSl9PZdJGnFezjqXOxSUYdlPWA6JPFE6FKJSLvoC7EdIXpo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BFzzlmyl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D06FC433C7;
-	Sun, 24 Mar 2024 23:48:09 +0000 (UTC)
+	 MIME-Version; b=Kt4e7WDyak0Le/LgmDS3dnG/3Vp/Z+tksAwqM+6loK9tWj75/r5RkqCx4sXSA5SsLvgb7SVfr/XXtNamQlwdttCvYRbtgLbIwZce1NSna+GU57goEmuP8gV+/cYWnvWPpGhCwPNz4P9pHcThkaofyiN0JiiZ1FoIAVoNBgeNgq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gHVU64IN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05BFEC43394;
+	Sun, 24 Mar 2024 23:48:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324090;
-	bh=GMvWa03Qa7FSPRuDtAM5CuxjChNnwKQlEtknCNEXyko=;
+	s=k20201202; t=1711324092;
+	bh=gbU2EowSPlHE2x6WXeXSsOfbfUQE1IU/R3YYLu6N2co=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BFzzlmylG7B8NxXmXHt5haHAc5w/h4TRI7Lbekarl431HUTdDqta+DCP6CcLZNDkW
-	 p3fwEqC8luPddf7XrsAJWHP0LSXJTXHtVRkbfUjzoUfrn7Qo6DZ6CzLzpr0C3LDBZX
-	 BApJO2Zz5YCk1t1oJZf4RVd/t4KNYirDondxcCBOhUA8j4sPrbU2vTaKEZqNjqDkK1
-	 iDT3cme8gPck9wzVo2TyMJX01d6cOz94emke7hm48A9Mw+wr0Ln2rUQ+WzllHXBl5l
-	 JODUw9kwq/PtRWtdUjyuFUPR5JNr8rYbE8sw4stn9L4AT3734oAnwESAQHy779TWEs
-	 fnK8kI7kZ+I2Q==
+	b=gHVU64INu98LyPY9KAzFasqUatZEqQ70e4kY6XnDLDbIGkp85V6ziraUbTbfLLOdE
+	 VZIFFZMskGpPMQJsdn5v/ifYNE6hA8TmIgFRjINezP3X83L6UO2WhWbjFQUHhQlxry
+	 C4Ydm7dDAfhv2eSioM2rKOV0ifJxsL1u7nKZXha+gQHoQFsbx9ntcq47THXLBHwnuK
+	 U1myQGRJfmiPhPL2dAHtAn2nboqNrWPsTmTuhcjpz/dBFTvZ9Z7HtNifbkWnNh2Dzo
+	 0CJOGX02V5fUh/xq9a5gpVdGSiWe+A2kx4lW1jsGUlWSOqiHFBSlaoTnI+Hn70mBmv
+	 gEJQBS28zd2sg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alex Bee <knaerzche@gmail.com>,
-	Zheng Yang <zhengyang@rock-chips.com>,
-	Heiko Stuebner <heiko@sntech.de>,
+Cc: Harry Wentland <harry.wentland@amd.com>,
+	Simon Ser <contact@emersion.fr>,
+	Melissa Wen <mwen@igalia.com>,
+	Melissa Wen <melissa.srw@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 091/183] drm/rockchip: inno_hdmi: Fix video timing
-Date: Sun, 24 Mar 2024 19:45:04 -0400
-Message-ID: <20240324234638.1355609-92-sashal@kernel.org>
+Subject: [PATCH 5.4 092/183] drm: Don't treat 0 as -1 in drm_fixp2int_ceil
+Date: Sun, 24 Mar 2024 19:45:05 -0400
+Message-ID: <20240324234638.1355609-93-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -63,49 +64,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alex Bee <knaerzche@gmail.com>
+From: Harry Wentland <harry.wentland@amd.com>
 
-[ Upstream commit 47a145c03484d33e65d773169d5ca1b9fe2a492e ]
+[ Upstream commit cf8837d7204481026335461629b84ac7f4538fa5 ]
 
-The controller wants the difference between *total and *sync_start in the
-HDMI_VIDEO_EXT_*DELAY registers. Otherwise the signal is very unstable for
-certain non-VIC modes. See downstream commit [0].
+Unit testing this in VKMS shows that passing 0 into
+this function returns -1, which is highly counter-
+intuitive. Fix it by checking whether the input is
+>= 0 instead of > 0.
 
-[0] https://github.com/rockchip-linux/kernel/commit/8eb559f2502c
-
-Fixes: 412d4ae6b7a5 ("drm/rockchip: hdmi: add Innosilicon HDMI support")
-Co-developed-by: Zheng Yang <zhengyang@rock-chips.com>
-Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231222174220.55249-4-knaerzche@gmail.com
+Fixes: 64566b5e767f ("drm: Add drm_fixp_from_fraction and drm_fixp2int_ceil")
+Signed-off-by: Harry Wentland <harry.wentland@amd.com>
+Reviewed-by: Simon Ser <contact@emersion.fr>
+Reviewed-by: Melissa Wen <mwen@igalia.com>
+Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231108163647.106853-2-harry.wentland@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rockchip/inno_hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/drm/drm_fixed.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index f2e2cc66f4897..95888e64bd8bc 100644
---- a/drivers/gpu/drm/rockchip/inno_hdmi.c
-+++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -401,7 +401,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HBLANK_L, value & 0xFF);
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HBLANK_H, (value >> 8) & 0xFF);
+diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
+index 553210c02ee0f..627efa56e59fb 100644
+--- a/include/drm/drm_fixed.h
++++ b/include/drm/drm_fixed.h
+@@ -88,7 +88,7 @@ static inline int drm_fixp2int(s64 a)
  
--	value = mode->hsync_start - mode->hdisplay;
-+	value = mode->htotal - mode->hsync_start;
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HDELAY_L, value & 0xFF);
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HDELAY_H, (value >> 8) & 0xFF);
- 
-@@ -416,7 +416,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
- 	value = mode->vtotal - mode->vdisplay;
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_VBLANK, value & 0xFF);
- 
--	value = mode->vsync_start - mode->vdisplay;
-+	value = mode->vtotal - mode->vsync_start;
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_VDELAY, value & 0xFF);
- 
- 	value = mode->vsync_end - mode->vsync_start;
+ static inline int drm_fixp2int_ceil(s64 a)
+ {
+-	if (a > 0)
++	if (a >= 0)
+ 		return drm_fixp2int(a + DRM_FIXED_ALMOST_ONE);
+ 	else
+ 		return drm_fixp2int(a - DRM_FIXED_ALMOST_ONE);
 -- 
 2.43.0
 
