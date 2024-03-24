@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9AB888975
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:55:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A24DF888F7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56C73288ACE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:55:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41C0D1F24BA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C24E20AF9D;
-	Sun, 24 Mar 2024 23:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280B015B980;
+	Sun, 24 Mar 2024 23:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qicy6O2u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hI64oaEr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E960920C03E;
-	Sun, 24 Mar 2024 23:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4BE020C03A;
+	Sun, 24 Mar 2024 23:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321625; cv=none; b=GVbCH8j2SSzmjb5vM8VR+zeaSUw8jq2soyQIz2Iz13gaI4/YirxMOghCBhe3dKRVIVfvU69QDdweVX5tfb9ArVAe4ujoA2fv8F4C2E9htmDHzn55C/04Eu2zhkb706gMN9bNG3C97fM6rDLBdhs7pg6pSI98lxh2fULOm91If7k=
+	t=1711321625; cv=none; b=mf53+aJj+ESm7qQuVws+BL6K3qDVa6RtnVgljeV3mCo1LeVmC+BD6bI34cFo9j7OfhOXf4n8cO9Yg/8kUu5cNUUbKNCH5HfctooLcsn7iYcTlCqfG+sEA/bnGtyejOoRNDc9eIRKViXswvS/hvOohYQ/Peu+hU2C1S54KumocM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321625; c=relaxed/simple;
-	bh=Ke97hrXldFBxj8KzdI5VmMC+f8kuAT2CHHarl1iwKgY=;
+	bh=N321SsALO94SeiSHRq0mWFeBWWQddhzmHDlaHmCj6kc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EojwjPtl2jtzKyQKi0v6jlskGgvjmv/cEdfhMcbypGrM1/ahpP58BrS1x1iXwMV9tP3xLkNdOE0yV11U/FJWDKw+4y2Nerno/7ElFq8xV12YvJKfFEI71WiqR45gAaw0IeG+WlcfpmnmDnLu0qlOnwOApIT5FwpnR8lN1I1ucz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qicy6O2u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CDEDC43399;
-	Sun, 24 Mar 2024 23:07:03 +0000 (UTC)
+	 MIME-Version; b=Yorpm+DPxEUZxibhIJllSQc0EJ9MqKi4E6hum5oqYRmCft16QohiBFgy+byKGplJwI5WoB4hoL9Y/+7/Dekqw3qlSbf2tX1T98VneGBIXMg2mJE1uXunX9XK+UZwtjyOegqVPBssdhah0gbt5PE0KlVPmc3nvqu0R17mdOFmDEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hI64oaEr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18F43C433F1;
+	Sun, 24 Mar 2024 23:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321623;
-	bh=Ke97hrXldFBxj8KzdI5VmMC+f8kuAT2CHHarl1iwKgY=;
+	s=k20201202; t=1711321624;
+	bh=N321SsALO94SeiSHRq0mWFeBWWQddhzmHDlaHmCj6kc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qicy6O2udrG9QIL005xRkTkPC0KOyho1v5NXj9Vh5iMagk25H/ChxZERdhLC2QoPr
-	 ce2259LCiDMzTPsY+MLSkPlPCp1i9Yp1olZMRBEe8sOwsZ+WvhRs3COFlXcqQ2SLVd
-	 eTO9axbLu70JZbn3ZPAjVLuu+Uxx2JuPKsQIrS1zsS6sy5OhEA2Rg9JW0qPmTU2iP7
-	 LrvkFyEV7u2yqbMuKLXeF0/1bZiBM85oMl80AGTG3oN/7UzzMtUGOla7yCLTwyMF8g
-	 gtRIBMVOQd6rMrXLIpg4kQQmnQqoHIG+Rw6GlLuF9fhF/4nnLlpcTvQoL8FOByG6/H
-	 ndjvdAbtTBzJg==
+	b=hI64oaErC0N5oGNGujE9Cg/X+29Mm3kmGK669zhsXhgWJJ18i4diO2wFIKNHnIhUJ
+	 Qr+G8b+q51KHJ2mfXKP68ICo5KnizniPtTWrWu9jWIKogDOm2up4PJtkLH77ZnHpvU
+	 Lnb2Vc/BQ+6jhfeOn5SbwnLdR092N+QEp5xGVwzQdQaI+B+UuxASllDkCsFcL9uI15
+	 Um67VvBZ0BryD7OzBLPYxerK8EGNUVh+Crx+kBSkLs4fSMl3qW+aIYREOaCd5D7Ehq
+	 1VgvVtP5m/poPnK5h7BdSVZj/a0MrxhxSSiHSYVOxxUP+Mc1Ek0HxYG5FPhutyo0Oz
+	 YGRJJSiUmNY8w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhipeng Lu <alexious@zju.edu.cn>,
-	Zack Rusin <zack.rusin@broadcom.com>,
+Cc: Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+	Quentin Schulz <foss+kernel@0leil.net>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 354/638] drm/vmwgfx: fix a memleak in vmw_gmrid_man_get_node
-Date: Sun, 24 Mar 2024 18:56:31 -0400
-Message-ID: <20240324230116.1348576-355-sashal@kernel.org>
+Subject: [PATCH 6.6 355/638] drm/rockchip: lvds: do not overwrite error code
+Date: Sun, 24 Mar 2024 18:56:32 -0400
+Message-ID: <20240324230116.1348576-356-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,39 +63,36 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Zhipeng Lu <alexious@zju.edu.cn>
+From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
 
-[ Upstream commit 89709105a6091948ffb6ec2427954cbfe45358ce ]
+[ Upstream commit 79b09453c4e369ca81cfb670d0136d089e3b92f0 ]
 
-When ida_alloc_max fails, resources allocated before should be freed,
-including *res allocated by kmalloc and ttm_resource_init.
+ret variable stores the return value of drm_of_find_panel_or_bridge
+which can return error codes different from EPROBE_DEFER. Therefore,
+let's just return that error code instead of forcing it to EPROBE_DEFER.
 
-Fixes: d3bcb4b02fe9 ("drm/vmwgfx: switch the TTM backends to self alloc")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Signed-off-by: Zack Rusin <zack.rusin@broadcom.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231204091416.3308430-1-alexious@zju.edu.cn
+Fixes: 34cc0aa25456 ("drm/rockchip: Add support for Rockchip Soc LVDS")
+Cc: Quentin Schulz <foss+kernel@0leil.net>
+Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231120-rk-lvds-defer-msg-v2-1-9c59a5779cf9@theobroma-systems.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/rockchip/rockchip_lvds.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c b/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c
-index ceb4d3d3b965a..a0b47c9b33f55 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c
-@@ -64,8 +64,11 @@ static int vmw_gmrid_man_get_node(struct ttm_resource_manager *man,
- 	ttm_resource_init(bo, place, *res);
- 
- 	id = ida_alloc_max(&gman->gmr_ida, gman->max_gmr_ids - 1, GFP_KERNEL);
--	if (id < 0)
-+	if (id < 0) {
-+		ttm_resource_fini(man, *res);
-+		kfree(*res);
- 		return id;
-+	}
- 
- 	spin_lock(&gman->lock);
- 
+diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+index 5828593877923..27ef812ebc600 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
++++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+@@ -578,7 +578,6 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
+ 		goto err_put_port;
+ 	} else if (ret) {
+ 		DRM_DEV_ERROR(dev, "failed to find panel and bridge node\n");
+-		ret = -EPROBE_DEFER;
+ 		goto err_put_port;
+ 	}
+ 	if (lvds->panel)
 -- 
 2.43.0
 
