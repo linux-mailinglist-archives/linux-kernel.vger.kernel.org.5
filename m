@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE7AE888B9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:54:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D53888B7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:51:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79A0828C6E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:54:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABCC328C30D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:51:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C7E18AC6C;
-	Sun, 24 Mar 2024 23:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D231F136E0C;
+	Sun, 24 Mar 2024 23:57:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hryspmRc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LdzJMhJ9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC02236CF3;
-	Sun, 24 Mar 2024 23:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40109236CF1;
+	Sun, 24 Mar 2024 23:18:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322306; cv=none; b=hsGS57ptjOJyH2lSCTrJyXCSP819+p098sab454sFsQhF6pXYR7rYkRYMBnycAiCzbBQQ2QkVa1ULkWhYvXgxAfnY1eSaTLxNAbhOZieiA8tsR6dGT2ip5tWI7FcJO9Mn4IJJloLVXcfId77zvsJ2fTC9xjsd/SRtLEuYM4oAjY=
+	t=1711322306; cv=none; b=BSOrWVQfQBNJXfdzcPUOzxg87XwrBDVMAYhpMc0ytxqoOyZQKp+IefWX0livu7ZgQaWvKyugiVBR/UkGjh8S8f2M3ybS9o4pqplDfIdwB0o9WSP0AgGLGn4yQBm7+ICKR34U6WRIu10yxIQTVlbQ96C875exYqn4ykE+xorpe7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322306; c=relaxed/simple;
-	bh=6jpmGh5BB99e4BcOprnXPR+Ho2oL/Z+bV4uopNb79hU=;
+	bh=8OV+VAZZ7dNDf3Whe2RC4s0eAI8cTeKw9wnvWG2aWTg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jb/GEaOGtMQsAs+KhYhCqAkh2OpSriO/1ynmKxVp2y25rmsixMsjPFI5aB/G02M+JaV9yZW9YrE5SwN7c4jj0qy/LpA5/CLeSYMiodjMasOY2k4mQINfFtxS+UmOFRd4C/FhMNPREvainqWYI1GnZA4rB617FDoFk/mzXnl299E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hryspmRc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991F4C433C7;
-	Sun, 24 Mar 2024 23:18:24 +0000 (UTC)
+	 MIME-Version; b=tKV7wDqcLPN9Dp/y5av3xK2lAvRVLVkkbWysfL30CEfPUaypae9E7TKbB7+TF0eM4fJlRcHQo77KpSbSzI+6xdhqbyxMj54MNcstb2eSYOOeg5OmXceNmK+MjbXHT7FzTc7ySQPC7itfJudfldrryi2++IlrJ3wVQl4PtlIlr+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LdzJMhJ9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8157FC43390;
+	Sun, 24 Mar 2024 23:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322305;
-	bh=6jpmGh5BB99e4BcOprnXPR+Ho2oL/Z+bV4uopNb79hU=;
+	s=k20201202; t=1711322306;
+	bh=8OV+VAZZ7dNDf3Whe2RC4s0eAI8cTeKw9wnvWG2aWTg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hryspmRcB9SsI3qdgo77ZQPUExPwYV0JTB95fXzR3xDY7h2LamYtlHN9BCf0RUP+o
-	 wr/quUSFSF+YFRrAA45gnyFV/lbdKGEzzNpAO46tmmeBjVCRKOIGd3JjtOL1c98b+p
-	 SL9gBFDSSh8qzbvwgUbdRTsL+svblDlvXSAZipGrmYkOqC7XaeAU1pYjC9GpYIg1z7
-	 waYm5vLFwNAKeDfxER7ka/KI7U/nSfgyQ0j+4xKuf7L3vDzIEvo4wZ4CID12+84ckN
-	 PMruaeQLn4gB5Jl1LIJy1Z5iNV8yF3doLr/L1cSoFuw8sX9kpaSOaktG1JBwkmWgeg
-	 75rSWlJEcf02A==
+	b=LdzJMhJ9jwl67j/D7H+uoVAgu/bb7YyDKdY0ROy+xqDWnAU7/uUSx1qdUbbRGuVve
+	 6IgxBKteKqlnoMci3TWQgR/mJD8tATRC+kR2f9pESxD25TjM5w50SXMrTdx1UJ7qKu
+	 ri2Slpt1QvOCQDIN/q8HresfTZ+5o3y6F3ebnpTRf++xeBEpIf+dOKHPp4IGLZKSXW
+	 rLt03zawUYFD3x7fH5xrtyxveMx6+2Jzz82SmD9DFKRgL0gvzhpvHqg/KcDsMgbWnt
+	 cjYTEd3YnBiKceZJ6otwMGJ4mvD594V49zIv6i5XKcf8S7RgW1EcgUMuIxKuhCeTG/
+	 S0Qb0GGTEQpVw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
+Cc: Sean Anderson <sean.anderson@seco.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 388/451] remoteproc: stm32: Fix incorrect type assignment returned by stm32_rproc_get_loaded_rsc_tablef
-Date: Sun, 24 Mar 2024 19:11:04 -0400
-Message-ID: <20240324231207.1351418-389-sashal@kernel.org>
+Subject: [PATCH 6.1 389/451] usb: phy: generic: Get the vbus supply
+Date: Sun, 24 Mar 2024 19:11:05 -0400
+Message-ID: <20240324231207.1351418-390-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,41 +62,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+From: Sean Anderson <sean.anderson@seco.com>
 
-[ Upstream commit c77b35ce66af25bdd6fde60b62e35b9b316ea5c2 ]
+[ Upstream commit 75fd6485cccef269ac9eb3b71cf56753341195ef ]
 
-The sparse tool complains about the remove of the _iomem attribute.
+While support for working with a vbus was added, the regulator was never
+actually gotten (despite what was documented). Fix this by actually
+getting the supply from the device tree.
 
-stm32_rproc.c:660:17: warning: cast removes address space '__iomem' of expression
-
-Add '__force' to explicitly specify that the cast is intentional.
-This conversion is necessary to cast to addresses pointer,
-which are then managed by the remoteproc core as a pointer to a
-resource_table structure.
-
-Fixes: 8a471396d21c ("remoteproc: stm32: Move resource table setup to rproc_ops")
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Link: https://lore.kernel.org/r/20240117135312.3381936-3-arnaud.pouliquen@foss.st.com
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Fixes: 7acc9973e3c4 ("usb: phy: generic: add vbus support")
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+Link: https://lore.kernel.org/r/20240123225111.1629405-3-sean.anderson@seco.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/stm32_rproc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/phy/phy-generic.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 722cf1cdc2cb0..385e931603ad3 100644
---- a/drivers/remoteproc/stm32_rproc.c
-+++ b/drivers/remoteproc/stm32_rproc.c
-@@ -641,7 +641,7 @@ stm32_rproc_get_loaded_rsc_table(struct rproc *rproc, size_t *table_sz)
- 	 * entire area by overwriting it with the initial values stored in rproc->clean_table.
- 	 */
- 	*table_sz = RSC_TBL_SIZE;
--	return (struct resource_table *)ddata->rsc_va;
-+	return (__force struct resource_table *)ddata->rsc_va;
- }
+diff --git a/drivers/usb/phy/phy-generic.c b/drivers/usb/phy/phy-generic.c
+index 3dc5c04e7cbf9..953df04b40d40 100644
+--- a/drivers/usb/phy/phy-generic.c
++++ b/drivers/usb/phy/phy-generic.c
+@@ -265,6 +265,13 @@ int usb_phy_gen_create_phy(struct device *dev, struct usb_phy_generic *nop)
+ 			return -EPROBE_DEFER;
+ 	}
  
- static const struct rproc_ops st_rproc_ops = {
++	nop->vbus_draw = devm_regulator_get_exclusive(dev, "vbus");
++	if (PTR_ERR(nop->vbus_draw) == -ENODEV)
++		nop->vbus_draw = NULL;
++	if (IS_ERR(nop->vbus_draw))
++		return dev_err_probe(dev, PTR_ERR(nop->vbus_draw),
++				     "could not get vbus regulator\n");
++
+ 	nop->vbus_draw = devm_regulator_get_exclusive(dev, "vbus");
+ 	if (PTR_ERR(nop->vbus_draw) == -ENODEV)
+ 		nop->vbus_draw = NULL;
 -- 
 2.43.0
 
