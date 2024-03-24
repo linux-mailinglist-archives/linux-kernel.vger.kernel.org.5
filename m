@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7E2F888161
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:19:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE959888162
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:19:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40872B242CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:19:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7D771C21813
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77708152E18;
-	Sun, 24 Mar 2024 22:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FCE31534EC;
+	Sun, 24 Mar 2024 22:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUcat1nT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tKgvWbIJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF6A152DFC;
-	Sun, 24 Mar 2024 22:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60577152E14;
+	Sun, 24 Mar 2024 22:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319897; cv=none; b=g7G3FyUExhAbFGWLd77YvEJ5DtXZogezo3J0KShUutR1s5xxxFCUl9qbbLUaBut3l5MVNa4a2xLUTUYZFNRB4xiPg5MljltHhu6bB+9kk2obR/q70hNWc+IZXcdc0lK2Ydow8RKwpMJCreNtROryjPFY8t8+Tv8AJWuLpTE15Hc=
+	t=1711319898; cv=none; b=KF70yuTTP2hCI6RMLYnuT3DZAMV2FWX2vXgFMSCtVyH6959O/n3g/guz4sPDAK7umdsZIHTI/Ei/Jl/ccUxfi0e4pz4wZRlQpMxNUcCyGP07thrzA14oyxJSwX5aF74OwD+59KZf8LaoAGkKYs0eA4jXMT/zv2SxrCrtBIwsdwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319897; c=relaxed/simple;
-	bh=a6Ou2TGAoOsIm6LFpewaaxQoBqH4uC1WhR41znB/YTE=;
+	s=arc-20240116; t=1711319898; c=relaxed/simple;
+	bh=qkyyFxehdzwxsIPB2u6hGwdn4DIIGZjJoaAfpK7eZzw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FJg9hDUskSaP0OQRCqYP9DU5Kzb2mNIHIfNPdeVIpBGCH/hbjyOCY2n7S6AfSnAYysnF5M0XxtN5oazDk8F6u6ah4YQdbV4NLWlqWVUAAcqB9KXX9ayRvlg6N6+YP/slN9IJ2Ow/QQ1IGL8RJs6MtL3xOACsKMpNQHobnHO+ZR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IUcat1nT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98293C43601;
-	Sun, 24 Mar 2024 22:38:16 +0000 (UTC)
+	 MIME-Version; b=f4/HQ+JG3uZ2UD/O2Q50gXkvBk2h3anSjebb46m2gugls1V215WUCwzpo6ZSw+Q5pe23QIdKWM3ZAKKPVTMtgALuYcVrz6M1dS4t8TbGEyWJ+tfD1Ma3ameOLvV7IyTMxrrY2LmOSGTVKLHh993mJm/DiUx8KLBDcbKIagI25ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tKgvWbIJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94856C43399;
+	Sun, 24 Mar 2024 22:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319897;
-	bh=a6Ou2TGAoOsIm6LFpewaaxQoBqH4uC1WhR41znB/YTE=;
+	s=k20201202; t=1711319898;
+	bh=qkyyFxehdzwxsIPB2u6hGwdn4DIIGZjJoaAfpK7eZzw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IUcat1nTEmcyLDilsI1Xl+P9ksoIcvwKig99eEmpzLy8DCqRTVmfS4AFaotowAp76
-	 Ukvk5o8Cx4eEP7dXf7uUZ3MNF4eTdHoqDFg23z38SFUlf/x7K4TERp6WKJwj2s/Et9
-	 DlbNGiTEFfRG9yucVaalusefHDzb/eA5PFG6EHW+gJp+JeLQyXzcfFaxtx6PbwuoGg
-	 ndy421iYCMZ/Bfnky4c4FjfMn/mRlLLL+fh5BND7D+H8xXF8HcV4rgO1K8LXSAa8Ip
-	 n0aTKh+/ATu/i5YQdyCPLR9m6fctUNewWJ//Jfc1P68K0YPNbJhPylL+CAsSp7GPrB
-	 Bl0ML899tCQ7g==
+	b=tKgvWbIJFpLxfklYqX5XfJi1WtQzt6EAAdzTXCYofEn5rJLnKp+F5x7BB4+rsnkbZ
+	 cbEVq2WXwtGkW4Pe37Oq7LNf1j4wwMUX3a8+HobhWTGd9u1ge99SrKb6OlyCBNPnVi
+	 dnE/d7wNwYhgfY0fTeYz/gS04DrrsPH9w9eAqsjTdokadL6+ODpnlABqz5PTYa0Rus
+	 MSSrvVho0GgOL1q4QYyItkze3Hkjs4mjhpNrOvssalW7kZQue4MKNZyhApFf7pGQAA
+	 tA7+zTXiNOY8qFbbAKmOM2k171UklgFyDhhj6OckS4H0V/5hu/fcHfqgFf4hRE7tcs
+	 4EOdxtUMrxv4A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Roger Quadros <rogerq@kernel.org>,
-	Aradhya Bhatia <a-bhatia1@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 202/715] arm64: dts: ti: am65x: Fix dtbs_install for Rocktech OLDI overlay
-Date: Sun, 24 Mar 2024 18:26:21 -0400
-Message-ID: <20240324223455.1342824-203-sashal@kernel.org>
+Subject: [PATCH 6.8 203/715] cpufreq: qcom-hw: add CONFIG_COMMON_CLK dependency
+Date: Sun, 24 Mar 2024 18:26:22 -0400
+Message-ID: <20240324223455.1342824-204-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,35 +62,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Roger Quadros <rogerq@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 8ada14cafc5e185c668198617cd1ab4f1d8d325a ]
+[ Upstream commit 3093fa33539b54db77171d2919352ad4f044a1c5 ]
 
-Add the overlay dtbo file to a Makefile target so it can be
-picked by the dtbs_install command.
+It is still possible to compile-test a kernel without CONFIG_COMMON_CLK
+for some ancient ARM boards or other architectures, but this causes a
+link failure in the qcom-cpufreq-hw driver:
 
-Fixes: b8690ed3d1d1 ("arm64: dts: ti: am65x: Add Rocktech OLDI panel DT overlay")
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
-Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
-Link: https://lore.kernel.org/r/20240208-for-v6-9-am65-overlays-2-0-v2-1-70bae3e91597@kernel.org
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+ERROR: modpost: "devm_clk_hw_register" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
+ERROR: modpost: "devm_of_clk_add_hw_provider" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
+ERROR: modpost: "of_clk_hw_onecell_get" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
+
+Add a Kconfig dependency here to make sure this always work. Apparently
+this bug has been in the kernel for a while without me running into it
+on randconfig builds as COMMON_CLK is almost always enabled.
+
+I have cross-checked by building an allmodconfig kernel with COMMON_CLK
+disabled, which showed no other driver having this problem.
+
+Fixes: 4370232c727b ("cpufreq: qcom-hw: Add CPU clock provider support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/Makefile | 1 +
+ drivers/cpufreq/Kconfig.arm | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 52c1dc9103087..08ce34d21d5d0 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -57,6 +57,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-gp-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am654-idk.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board-rocktech-rk101-panel.dtbo
- 
- # Boards with J7200 SoC
- k3-j7200-evm-dtbs := k3-j7200-common-proc-board.dtb k3-j7200-evm-quad-port-eth-exp.dtbo
+diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+index f911606897b8d..a0ebad77666e3 100644
+--- a/drivers/cpufreq/Kconfig.arm
++++ b/drivers/cpufreq/Kconfig.arm
+@@ -173,6 +173,7 @@ config ARM_QCOM_CPUFREQ_NVMEM
+ config ARM_QCOM_CPUFREQ_HW
+ 	tristate "QCOM CPUFreq HW driver"
+ 	depends on ARCH_QCOM || COMPILE_TEST
++	depends on COMMON_CLK
+ 	help
+ 	  Support for the CPUFreq HW driver.
+ 	  Some QCOM chipsets have a HW engine to offload the steps
 -- 
 2.43.0
 
