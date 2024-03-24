@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-116111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEBD8889962
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:09:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99D4488929D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:10:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A8472C1F97
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:09:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDB701C2E331
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6B728E408;
-	Mon, 25 Mar 2024 03:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7476E13DDC8;
+	Mon, 25 Mar 2024 00:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p+ZdNEtI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aQhydWND"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3296D2801E3;
-	Sun, 24 Mar 2024 23:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 080C02801F6;
+	Sun, 24 Mar 2024 23:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323631; cv=none; b=J5m438C7atW6SjYbwishhF2LVibHU7i6na3DhFLKdsI2OCpclV+LM79qU8AhwFBLqMqaWDM0s/9WDDJ0l4LXuRlfWX3QxbE9pDoyKJmmhZWowBQJeMrrp7cvg0vttMD3xGrM0yJ0njbsfPQ26Td6twOV9RqoNwxi/bq1Q1ZGsyU=
+	t=1711323632; cv=none; b=UYXrP9YGSeL8cXIplv0WUmz2FqO0S+ysZIiibU3U71XD00GUiClT2NpqImdlS/mW1b4qhPhDBvk4ut2LpVxQ/uXv/1kBwKN7XFtBMihLxt9pvBJxnPhbwYeOQvmrmpQQyIdl8zJZZRzzDaJaQ+zbN47e5VamcfNeIKpTA0+1gbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323631; c=relaxed/simple;
-	bh=YmYGiJNWvwm8qvLTcguVJPE0uIR5n311XccO/74AuCM=;
+	s=arc-20240116; t=1711323632; c=relaxed/simple;
+	bh=J+kza5llwUr7p0ALHqCiykreV4U0IS3mZ8uq84k+KVc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Knev5wKkC+0CNSnds03LpZuo5zWbga4IABqRVGg4VlPUb4yY1csl/pgD9Ey11+S0N4gPN41VejxEJqLOsC4rRC/KN9aWO5gFzYNMK9D0sN9TuF9wuadLb3AOHGFeov0dGfUf4EbYVNQUjeIuqx5YPpD4wiGkfnZYypnLfaZHiko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p+ZdNEtI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 859D7C433A6;
-	Sun, 24 Mar 2024 23:40:29 +0000 (UTC)
+	 MIME-Version; b=iYRH/MW6lEoNrYtnkpp9yc91x0Ee1H9k94ms+TxWblws0W/yzEU3gALpPndDDWA+RCkViZVgYAttSryyRohOSYTLbSTOT82MfAKMsduXlVI62fY5htrW2GWZdBLcN5e38UN0WRDOGuL8Ph8Mthr1gGssaRTXp9VE+LLj1JJn7mI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aQhydWND; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 593BCC43390;
+	Sun, 24 Mar 2024 23:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711323630;
-	bh=YmYGiJNWvwm8qvLTcguVJPE0uIR5n311XccO/74AuCM=;
+	bh=J+kza5llwUr7p0ALHqCiykreV4U0IS3mZ8uq84k+KVc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=p+ZdNEtIhUyx6zY557ezLNHqSFRjxgyysiW03vEjkrxaJRgLCPD8XHhtOe23uU8ck
-	 XfH5g6NjaXghe3XP6WwBkUnNWZqqZeyAJ6SBG8U3yEs+PJ2KqV6+x5Z1TDnM1jgt49
-	 D1rrlclEHKosSmo+lrC91MiArdonlyxsAu4+e3VXnxotQkBUHWw/SyqeM3wqXvJwjz
-	 y8ZJ9c9inWBAZhb2qFEi0Q2gBZSeGblOvvYZYmGfIWiUocWHBkE2HoQO5W5N95jFDD
-	 FsHOGDdgxtFQmP4EHo0W2oePJLaFys3dnYWLjQgRCEYuQCRwoXWOuUu/sc0dyy1HZe
-	 LBed12OL3U5sg==
+	b=aQhydWNDKs/dGOn8VrUJl5b/KRokv5+CqzWDfrvryfUq64s9sT0pi79WH5k91YCA9
+	 Q0bTfnc9bHdgwWvN5PyEdC//hyxdl7szV8s+GABLM5QeipVLQDWjJMQhknq3daeV5n
+	 nMOVMlsu2hTk2oeX6bBIwe0XgIeqEZa9TVUwGoFbZsz8K7qjOUhnSal9gXbpGcZk/w
+	 SDPaO9oYmysm3rM5i6cLp6XB7sRnSUFu3peqpaq2H88vhgu2gBkIzo6BPeD7lSqjYz
+	 tfz3Kpfn2W45VVpwxJVMEQw9LH/pGHrNUYRYwNWLBwoBLq5DuQ1ewQVyQNxvwtsBdq
+	 GkEm/4zYU1L0A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 001/238] io_uring/unix: drop usage of io_uring socket
-Date: Sun, 24 Mar 2024 19:36:29 -0400
-Message-ID: <20240324234027.1354210-2-sashal@kernel.org>
+Subject: [PATCH 5.10 002/238] io_uring: drop any code related to SCM_RIGHTS
+Date: Sun, 24 Mar 2024 19:36:30 -0400
+Message-ID: <20240324234027.1354210-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -63,127 +63,296 @@ Content-Transfer-Encoding: 8bit
 
 From: Jens Axboe <axboe@kernel.dk>
 
-Commit a4104821ad651d8a0b374f0b2474c345bbb42f82 upstream.
+Commit 6e5e6d274956305f1fc0340522b38f5f5be74bdb upstream.
 
-Since we no longer allow sending io_uring fds over SCM_RIGHTS, move to
-using io_is_uring_fops() to detect whether this is a io_uring fd or not.
-With that done, kill off io_uring_get_socket() as nobody calls it
-anymore.
-
-This is in preparation to yanking out the rest of the core related to
-unix gc with io_uring.
+This is dead code after we dropped support for passing io_uring fds
+over SCM_RIGHTS, get rid of it.
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/io_uring.h | 10 +++++-----
- io_uring/io_uring.c      | 18 +++++-------------
- net/core/scm.c           |  2 +-
- net/unix/scm.c           |  4 +---
- 4 files changed, 12 insertions(+), 22 deletions(-)
+ io_uring/io_uring.c | 211 +-------------------------------------------
+ 1 file changed, 3 insertions(+), 208 deletions(-)
 
-diff --git a/include/linux/io_uring.h b/include/linux/io_uring.h
-index 649a4d7c241bc..55d09f594cd14 100644
---- a/include/linux/io_uring.h
-+++ b/include/linux/io_uring.h
-@@ -6,9 +6,9 @@
- #include <linux/xarray.h>
- 
- #if defined(CONFIG_IO_URING)
--struct sock *io_uring_get_socket(struct file *file);
- void __io_uring_cancel(bool cancel_all);
- void __io_uring_free(struct task_struct *tsk);
-+bool io_is_uring_fops(struct file *file);
- 
- static inline void io_uring_files_cancel(void)
- {
-@@ -26,10 +26,6 @@ static inline void io_uring_free(struct task_struct *tsk)
- 		__io_uring_free(tsk);
- }
- #else
--static inline struct sock *io_uring_get_socket(struct file *file)
--{
--	return NULL;
--}
- static inline void io_uring_task_cancel(void)
- {
- }
-@@ -39,6 +35,10 @@ static inline void io_uring_files_cancel(void)
- static inline void io_uring_free(struct task_struct *tsk)
- {
- }
-+static inline bool io_is_uring_fops(struct file *file)
-+{
-+	return false;
-+}
- #endif
- 
- #endif
 diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index 936abc6ee450c..a80c808d3a0ef 100644
+index a80c808d3a0ef..67a355f27ad80 100644
 --- a/io_uring/io_uring.c
 +++ b/io_uring/io_uring.c
-@@ -1113,19 +1113,6 @@ static struct kmem_cache *req_cachep;
+@@ -62,7 +62,6 @@
+ #include <linux/net.h>
+ #include <net/sock.h>
+ #include <net/af_unix.h>
+-#include <net/scm.h>
+ #include <linux/anon_inodes.h>
+ #include <linux/sched/mm.h>
+ #include <linux/uaccess.h>
+@@ -440,9 +439,6 @@ struct io_ring_ctx {
  
- static const struct file_operations io_uring_fops;
+ 	/* Keep this last, we don't need it for the fast path */
+ 	struct {
+-		#if defined(CONFIG_UNIX)
+-			struct socket		*ring_sock;
+-		#endif
+ 		/* hashed buffered write serialization */
+ 		struct io_wq_hash		*hash_map;
  
--struct sock *io_uring_get_socket(struct file *file)
--{
+@@ -7976,15 +7972,6 @@ static void io_free_file_tables(struct io_file_table *table)
+ 
+ static void __io_sqe_files_unregister(struct io_ring_ctx *ctx)
+ {
 -#if defined(CONFIG_UNIX)
--	if (file->f_op == &io_uring_fops) {
--		struct io_ring_ctx *ctx = file->private_data;
+-	if (ctx->ring_sock) {
+-		struct sock *sock = ctx->ring_sock->sk;
+-		struct sk_buff *skb;
 -
--		return ctx->ring_sock->sk;
+-		while ((skb = skb_dequeue(&sock->sk_receive_queue)) != NULL)
+-			kfree_skb(skb);
+-	}
+-#else
+ 	int i;
+ 
+ 	for (i = 0; i < ctx->nr_user_files; i++) {
+@@ -7994,7 +7981,6 @@ static void __io_sqe_files_unregister(struct io_ring_ctx *ctx)
+ 		if (file)
+ 			fput(file);
+ 	}
+-#endif
+ 	io_free_file_tables(&ctx->file_table);
+ 	io_rsrc_data_free(ctx->file_data);
+ 	ctx->file_data = NULL;
+@@ -8146,170 +8132,11 @@ static struct io_sq_data *io_get_sq_data(struct io_uring_params *p,
+ 	return sqd;
+ }
+ 
+-#if defined(CONFIG_UNIX)
+-/*
+- * Ensure the UNIX gc is aware of our file set, so we are certain that
+- * the io_uring can be safely unregistered on process exit, even if we have
+- * loops in the file referencing.
+- */
+-static int __io_sqe_files_scm(struct io_ring_ctx *ctx, int nr, int offset)
+-{
+-	struct sock *sk = ctx->ring_sock->sk;
+-	struct scm_fp_list *fpl;
+-	struct sk_buff *skb;
+-	int i, nr_files;
+-
+-	fpl = kzalloc(sizeof(*fpl), GFP_KERNEL);
+-	if (!fpl)
+-		return -ENOMEM;
+-
+-	skb = alloc_skb(0, GFP_KERNEL);
+-	if (!skb) {
+-		kfree(fpl);
+-		return -ENOMEM;
+-	}
+-
+-	skb->sk = sk;
+-	skb->scm_io_uring = 1;
+-
+-	nr_files = 0;
+-	fpl->user = get_uid(current_user());
+-	for (i = 0; i < nr; i++) {
+-		struct file *file = io_file_from_index(ctx, i + offset);
+-
+-		if (!file)
+-			continue;
+-		fpl->fp[nr_files] = get_file(file);
+-		unix_inflight(fpl->user, fpl->fp[nr_files]);
+-		nr_files++;
+-	}
+-
+-	if (nr_files) {
+-		fpl->max = SCM_MAX_FD;
+-		fpl->count = nr_files;
+-		UNIXCB(skb).fp = fpl;
+-		skb->destructor = unix_destruct_scm;
+-		refcount_add(skb->truesize, &sk->sk_wmem_alloc);
+-		skb_queue_head(&sk->sk_receive_queue, skb);
+-
+-		for (i = 0; i < nr; i++) {
+-			struct file *file = io_file_from_index(ctx, i + offset);
+-
+-			if (file)
+-				fput(file);
+-		}
+-	} else {
+-		kfree_skb(skb);
+-		free_uid(fpl->user);
+-		kfree(fpl);
+-	}
+-
+-	return 0;
+-}
+-
+-/*
+- * If UNIX sockets are enabled, fd passing can cause a reference cycle which
+- * causes regular reference counting to break down. We rely on the UNIX
+- * garbage collection to take care of this problem for us.
+- */
+-static int io_sqe_files_scm(struct io_ring_ctx *ctx)
+-{
+-	unsigned left, total;
+-	int ret = 0;
+-
+-	total = 0;
+-	left = ctx->nr_user_files;
+-	while (left) {
+-		unsigned this_files = min_t(unsigned, left, SCM_MAX_FD);
+-
+-		ret = __io_sqe_files_scm(ctx, this_files, total);
+-		if (ret)
+-			break;
+-		left -= this_files;
+-		total += this_files;
+-	}
+-
+-	if (!ret)
+-		return 0;
+-
+-	while (total < ctx->nr_user_files) {
+-		struct file *file = io_file_from_index(ctx, total);
+-
+-		if (file)
+-			fput(file);
+-		total++;
+-	}
+-
+-	return ret;
+-}
+-#else
+-static int io_sqe_files_scm(struct io_ring_ctx *ctx)
+-{
+-	return 0;
+-}
+-#endif
+-
+ static void io_rsrc_file_put(struct io_ring_ctx *ctx, struct io_rsrc_put *prsrc)
+ {
+ 	struct file *file = prsrc->file;
+-#if defined(CONFIG_UNIX)
+-	struct sock *sock = ctx->ring_sock->sk;
+-	struct sk_buff_head list, *head = &sock->sk_receive_queue;
+-	struct sk_buff *skb;
+-	int i;
+ 
+-	__skb_queue_head_init(&list);
+-
+-	/*
+-	 * Find the skb that holds this file in its SCM_RIGHTS. When found,
+-	 * remove this entry and rearrange the file array.
+-	 */
+-	skb = skb_dequeue(head);
+-	while (skb) {
+-		struct scm_fp_list *fp;
+-
+-		fp = UNIXCB(skb).fp;
+-		for (i = 0; i < fp->count; i++) {
+-			int left;
+-
+-			if (fp->fp[i] != file)
+-				continue;
+-
+-			unix_notinflight(fp->user, fp->fp[i]);
+-			left = fp->count - 1 - i;
+-			if (left) {
+-				memmove(&fp->fp[i], &fp->fp[i + 1],
+-						left * sizeof(struct file *));
+-			}
+-			fp->count--;
+-			if (!fp->count) {
+-				kfree_skb(skb);
+-				skb = NULL;
+-			} else {
+-				__skb_queue_tail(&list, skb);
+-			}
+-			fput(file);
+-			file = NULL;
+-			break;
+-		}
+-
+-		if (!file)
+-			break;
+-
+-		__skb_queue_tail(&list, skb);
+-
+-		skb = skb_dequeue(head);
+-	}
+-
+-	if (skb_peek(&list)) {
+-		spin_lock_irq(&head->lock);
+-		while ((skb = __skb_dequeue(&list)) != NULL)
+-			__skb_queue_tail(head, skb);
+-		spin_unlock_irq(&head->lock);
+-	}
+-#else
+ 	fput(file);
+-#endif
+ }
+ 
+ static void __io_rsrc_put_work(struct io_rsrc_node *ref_node)
+@@ -8420,12 +8247,6 @@ static int io_sqe_files_register(struct io_ring_ctx *ctx, void __user *arg,
+ 		io_fixed_file_set(io_fixed_file_slot(&ctx->file_table, i), file);
+ 	}
+ 
+-	ret = io_sqe_files_scm(ctx);
+-	if (ret) {
+-		__io_sqe_files_unregister(ctx);
+-		return ret;
+-	}
+-
+ 	io_rsrc_node_switch(ctx, NULL);
+ 	return ret;
+ out_fput:
+@@ -9382,12 +9203,6 @@ static void io_ring_ctx_free(struct io_ring_ctx *ctx)
+ 	WARN_ON_ONCE(!list_empty(&ctx->rsrc_ref_list));
+ 	WARN_ON_ONCE(!llist_empty(&ctx->rsrc_put_llist));
+ 
+-#if defined(CONFIG_UNIX)
+-	if (ctx->ring_sock) {
+-		ctx->ring_sock->file = NULL; /* so that iput() is called */
+-		sock_release(ctx->ring_sock);
 -	}
 -#endif
--	return NULL;
--}
--EXPORT_SYMBOL(io_uring_get_socket);
--
- static inline void io_tw_lock(struct io_ring_ctx *ctx, bool *locked)
- {
- 	if (!*locked) {
-@@ -10275,6 +10262,11 @@ static const struct file_operations io_uring_fops = {
- #endif
- };
+ 	WARN_ON_ONCE(!list_empty(&ctx->ltimeout_list));
  
-+bool io_is_uring_fops(struct file *file)
-+{
-+	return file->f_op == &io_uring_fops;
-+}
-+
- static int io_allocate_scq_urings(struct io_ring_ctx *ctx,
- 				  struct io_uring_params *p)
+ 	if (ctx->mm_account) {
+@@ -10329,32 +10144,12 @@ static int io_uring_install_fd(struct io_ring_ctx *ctx, struct file *file)
+ /*
+  * Allocate an anonymous fd, this is what constitutes the application
+  * visible backing of an io_uring instance. The application mmaps this
+- * fd to gain access to the SQ/CQ ring details. If UNIX sockets are enabled,
+- * we have to tie this fd to a socket for file garbage collection purposes.
++ * fd to gain access to the SQ/CQ ring details.
+  */
+ static struct file *io_uring_get_file(struct io_ring_ctx *ctx)
  {
-diff --git a/net/core/scm.c b/net/core/scm.c
-index 3c7f160720d34..d09849cb60f08 100644
---- a/net/core/scm.c
-+++ b/net/core/scm.c
-@@ -105,7 +105,7 @@ static int scm_fp_copy(struct cmsghdr *cmsg, struct scm_fp_list **fplp)
- 		if (fd < 0 || !(file = fget_raw(fd)))
- 			return -EBADF;
- 		/* don't allow io_uring files */
--		if (io_uring_get_socket(file)) {
-+		if (io_is_uring_fops(file)) {
- 			fput(file);
- 			return -EINVAL;
- 		}
-diff --git a/net/unix/scm.c b/net/unix/scm.c
-index e8e2a00bb0f58..d1048b4c2baaf 100644
---- a/net/unix/scm.c
-+++ b/net/unix/scm.c
-@@ -34,10 +34,8 @@ struct sock *unix_get_socket(struct file *filp)
- 		/* PF_UNIX ? */
- 		if (s && sock->ops && sock->ops->family == PF_UNIX)
- 			u_sock = s;
+-	struct file *file;
+-#if defined(CONFIG_UNIX)
+-	int ret;
+-
+-	ret = sock_create_kern(&init_net, PF_UNIX, SOCK_RAW, IPPROTO_IP,
+-				&ctx->ring_sock);
+-	if (ret)
+-		return ERR_PTR(ret);
+-#endif
+-
+-	file = anon_inode_getfile("[io_uring]", &io_uring_fops, ctx,
+-					O_RDWR | O_CLOEXEC);
+-#if defined(CONFIG_UNIX)
+-	if (IS_ERR(file)) {
+-		sock_release(ctx->ring_sock);
+-		ctx->ring_sock = NULL;
 -	} else {
--		/* Could be an io_uring instance */
--		u_sock = io_uring_get_socket(filp);
- 	}
-+
- 	return u_sock;
+-		ctx->ring_sock->file = file;
+-	}
+-#endif
+-	return file;
++	return anon_inode_getfile("[io_uring]", &io_uring_fops, ctx,
++				  O_RDWR | O_CLOEXEC);
  }
- EXPORT_SYMBOL(unix_get_socket);
+ 
+ static int io_uring_create(unsigned entries, struct io_uring_params *p,
 -- 
 2.43.0
 
