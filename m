@@ -1,54 +1,53 @@
-Return-Path: <linux-kernel+bounces-115471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 183608893FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:43:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8A24888EAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:26:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48E871C2EC3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:43:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AF6B28DD3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0F0221921;
-	Mon, 25 Mar 2024 02:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FE22057D9;
+	Sun, 24 Mar 2024 23:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fVW6IX1q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qw+O1zPf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF231E8E2B;
-	Sun, 24 Mar 2024 22:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362C81E85DA;
+	Sun, 24 Mar 2024 22:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320887; cv=none; b=PWK0Nw+9mQLyGOX+WIT2CfPM4Ks9HdwrMBvl98d1q0x1FNvy50SWm5oKpOT1I1FjZRzAj0ylGeXoSIUTOe5baHgZL8S+teuZmC8TOwCYO+36VKyfdEVynhte8zVB/LgB26Xqufzs8wFbEt2Zy065LPbNmdiHRIgNyma+fr8Y7iM=
+	t=1711320889; cv=none; b=rA12k4FTZZKtxmE+lHn3Xl++3zhySacmfmJcBrb+9vSVXQEbqUgItxjrUrrh0A1b6ANYveuBjJ8LUSKiDrsYhR9RF3LVAOKAcmwY84bJjosCZuHN1vplMsbFjMAYy4Z4itOzkN3FUwi4tVhvzNkQn4LNgb0W+teX0kfJUsa2/ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320887; c=relaxed/simple;
-	bh=KjTWMrY3+yGfYp9jn+KYpHGG16il/MOGYQ7VOTN0fXI=;
+	s=arc-20240116; t=1711320889; c=relaxed/simple;
+	bh=EwpQiZTZb60HWNqw7nmbTZpT6J3V+5xuYnr9mw2QicA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n0DKuFSb29U956VDBFdzc79uS4CBdseltSxUVlMBeoQcWAAU2hWrbskoGyVXzMgQHNUjDalH2ofr9jbAvz1j8aKMafqjjxaRXfpNaGUH/RLfugUENEnQH9VXNlZx/i6T2obpFrrfXQP7vf+HeC/TnTtOG/7k82gGKTNjVUNlpzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fVW6IX1q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6E5DC43141;
-	Sun, 24 Mar 2024 22:54:46 +0000 (UTC)
+	 MIME-Version:Content-Type; b=LDyntp91Q3tQZQUeBmTCAQLnUmu0x1O0/nfYQRl5NTyMW5SMZgNGK6GBOz6rtVmTd+pNZ2syoylhmHtQRmpOsh+xLEpW+LqAp/aHVldHS4xPg0jhp/xIHMhTJB6v8ul45zWFmb6cAEQ4LulYWzSyIgzPBR0UMPDI6iFut6zReu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qw+O1zPf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DF01C43390;
+	Sun, 24 Mar 2024 22:54:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320887;
-	bh=KjTWMrY3+yGfYp9jn+KYpHGG16il/MOGYQ7VOTN0fXI=;
+	s=k20201202; t=1711320888;
+	bh=EwpQiZTZb60HWNqw7nmbTZpT6J3V+5xuYnr9mw2QicA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fVW6IX1qIAfsldBQjyD3nMoPKB+3R8Cr2rsmtmJSdEOfDtvH9CGIXxwneAfEMUKaC
-	 hoR0s2rHH8Y9k5LLEQ94j7M2pDZJv1UMu0P5sOJwJpw+tC8WUPQGf08Aj6uAzpfPQO
-	 INUw+ufOIUH4FCRBn67IyqRCRZ5aaLBKVMn2IOVr7T0+gV2FLtO2f9tYXWBW1EzCaT
-	 zuWpiN5XH89U+F0wApSZBYPefwhRnok88vCSMBSgebRETyAP1kBUl3Kaj0gXav7k/Z
-	 38fyz6H7XXud1uZeEOKccpZ0BYLE0tw3TNDhxeoZ6Z0jHMWQiPxuLsile/VDVj0Yw6
-	 1OatJR57X0OXw==
+	b=Qw+O1zPfixfWs69KtAgDG5MS0WeGGiSm2M/YcW3OK70bvo44GrlWn5gRo4it2f8i3
+	 zrq58cyqlPXb5dzzhUuVWvDIbvtXp6b+R7VAUkRDY5eqB8gLaX8LC9fO44PvkipAMX
+	 pJLOeyQNYsWV6kmCFEkip0gDsKhAbD1DfFDzQx1RzocHA8s/OxPMqvkl/Ux6sFF8eV
+	 hDIxLCUSIfCSE4/SdczcihaB1g1Uv3LPNsF6j8DggjEMPsEohRoOVC1fr1ZqjXIOQa
+	 V2b9J4q4jFflLxFdYgjnyP3qN2J164Tw6i8yzWCWkavGDPdjFZMHqEgQK1vViw3xrU
+	 0WLPD3FGIqc/w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 451/713] drm/amd/display: fix NULL checks for adev->dm.dc in amdgpu_dm_fini()
-Date: Sun, 24 Mar 2024 18:42:57 -0400
-Message-ID: <20240324224720.1345309-452-sashal@kernel.org>
+Subject: [PATCH 6.7 452/713] clk: renesas: r8a779g0: Correct PFC/GPIO parent clocks
+Date: Sun, 24 Mar 2024 18:42:58 -0400
+Message-ID: <20240324224720.1345309-453-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -58,64 +57,78 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 2a3cfb9a24a28da9cc13d2c525a76548865e182c ]
+[ Upstream commit abb3fa662b8f8eaed1590b0e7a4e19eda467cdd3 ]
 
-Since 'adev->dm.dc' in amdgpu_dm_fini() might turn out to be NULL
-before the call to dc_enable_dmub_notifications(), check
-beforehand to ensure there will not be a possible NULL-ptr-deref
-there.
+According to the R-Car V4H Series Hardware User’s Manual Rev.1.00, the
+parent clock of the Pin Function (PFC/GPIO) module clocks is the CP
+clock.
 
-Also, since commit 1e88eb1b2c25 ("drm/amd/display: Drop
-CONFIG_DRM_AMD_DC_HDCP") there are two separate checks for NULL in
-'adev->dm.dc' before dc_deinit_callbacks() and dc_dmub_srv_destroy().
-Clean up by combining them all under one 'if'.
+Fix this by adding the missing CP clock, and correcting the PFC parents.
 
-Found by Linux Verification Center (linuxtesting.org) with static
-analysis tool SVACE.
-
-Fixes: 81927e2808be ("drm/amd/display: Support for DMUB AUX")
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: f2afa78d5a0c0b0b ("dt-bindings: clock: Add r8a779g0 CPG Core Clock Definitions")
+Fixes: 36ff366033f0dde1 ("clk: renesas: r8a779g0: Add PFC/GPIO clocks")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/5401fccd204dc90b44f0013e7f53b9eff8df8214.1706197297.git.geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c    | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ drivers/clk/renesas/r8a779g0-cpg-mssr.c       | 11 ++++++-----
+ include/dt-bindings/clock/r8a779g0-cpg-mssr.h |  1 +
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 272c27495ede6..49f0c9454a6e6 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -1896,17 +1896,15 @@ static void amdgpu_dm_fini(struct amdgpu_device *adev)
- 		adev->dm.hdcp_workqueue = NULL;
- 	}
+diff --git a/drivers/clk/renesas/r8a779g0-cpg-mssr.c b/drivers/clk/renesas/r8a779g0-cpg-mssr.c
+index 7cc580d673626..7999faa9a921b 100644
+--- a/drivers/clk/renesas/r8a779g0-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a779g0-cpg-mssr.c
+@@ -22,7 +22,7 @@
  
--	if (adev->dm.dc)
-+	if (adev->dm.dc) {
- 		dc_deinit_callbacks(adev->dm.dc);
--
--	if (adev->dm.dc)
- 		dc_dmub_srv_destroy(&adev->dm.dc->ctx->dmub_srv);
--
--	if (dc_enable_dmub_notifications(adev->dm.dc)) {
--		kfree(adev->dm.dmub_notify);
--		adev->dm.dmub_notify = NULL;
--		destroy_workqueue(adev->dm.delayed_hpd_wq);
--		adev->dm.delayed_hpd_wq = NULL;
-+		if (dc_enable_dmub_notifications(adev->dm.dc)) {
-+			kfree(adev->dm.dmub_notify);
-+			adev->dm.dmub_notify = NULL;
-+			destroy_workqueue(adev->dm.delayed_hpd_wq);
-+			adev->dm.delayed_hpd_wq = NULL;
-+		}
- 	}
+ enum clk_ids {
+ 	/* Core Clock Outputs exported to DT */
+-	LAST_DT_CORE_CLK = R8A779G0_CLK_R,
++	LAST_DT_CORE_CLK = R8A779G0_CLK_CP,
  
- 	if (adev->dm.dmub_bo)
+ 	/* External Input Clocks */
+ 	CLK_EXTAL,
+@@ -141,6 +141,7 @@ static const struct cpg_core_clk r8a779g0_core_clks[] __initconst = {
+ 	DEF_FIXED("svd2_vip",	R8A779G0_CLK_SVD2_VIP,	CLK_SV_VIP,	2, 1),
+ 	DEF_FIXED("cbfusa",	R8A779G0_CLK_CBFUSA,	CLK_EXTAL,	2, 1),
+ 	DEF_FIXED("cpex",	R8A779G0_CLK_CPEX,	CLK_EXTAL,	2, 1),
++	DEF_FIXED("cp",		R8A779G0_CLK_CP,	CLK_EXTAL,	2, 1),
+ 	DEF_FIXED("viobus",	R8A779G0_CLK_VIOBUS,	CLK_VIO,	1, 1),
+ 	DEF_FIXED("viobusd2",	R8A779G0_CLK_VIOBUSD2,	CLK_VIO,	2, 1),
+ 	DEF_FIXED("vcbus",	R8A779G0_CLK_VCBUS,	CLK_VC,		1, 1),
+@@ -230,10 +231,10 @@ static const struct mssr_mod_clk r8a779g0_mod_clks[] __initconst = {
+ 	DEF_MOD("cmt1",		911,	R8A779G0_CLK_R),
+ 	DEF_MOD("cmt2",		912,	R8A779G0_CLK_R),
+ 	DEF_MOD("cmt3",		913,	R8A779G0_CLK_R),
+-	DEF_MOD("pfc0",		915,	R8A779G0_CLK_CL16M),
+-	DEF_MOD("pfc1",		916,	R8A779G0_CLK_CL16M),
+-	DEF_MOD("pfc2",		917,	R8A779G0_CLK_CL16M),
+-	DEF_MOD("pfc3",		918,	R8A779G0_CLK_CL16M),
++	DEF_MOD("pfc0",		915,	R8A779G0_CLK_CP),
++	DEF_MOD("pfc1",		916,	R8A779G0_CLK_CP),
++	DEF_MOD("pfc2",		917,	R8A779G0_CLK_CP),
++	DEF_MOD("pfc3",		918,	R8A779G0_CLK_CP),
+ 	DEF_MOD("tsc",		919,	R8A779G0_CLK_CL16M),
+ 	DEF_MOD("ssiu",		2926,	R8A779G0_CLK_S0D6_PER),
+ 	DEF_MOD("ssi",		2927,	R8A779G0_CLK_S0D6_PER),
+diff --git a/include/dt-bindings/clock/r8a779g0-cpg-mssr.h b/include/dt-bindings/clock/r8a779g0-cpg-mssr.h
+index 754c54a6eb06a..7850cdc62e285 100644
+--- a/include/dt-bindings/clock/r8a779g0-cpg-mssr.h
++++ b/include/dt-bindings/clock/r8a779g0-cpg-mssr.h
+@@ -86,5 +86,6 @@
+ #define R8A779G0_CLK_CPEX		74
+ #define R8A779G0_CLK_CBFUSA		75
+ #define R8A779G0_CLK_R			76
++#define R8A779G0_CLK_CP			77
+ 
+ #endif /* __DT_BINDINGS_CLOCK_R8A779G0_CPG_MSSR_H__ */
 -- 
 2.43.0
 
