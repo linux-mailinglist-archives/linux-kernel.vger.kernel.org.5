@@ -1,58 +1,54 @@
-Return-Path: <linux-kernel+bounces-116061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A33889540
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:23:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1DF08891A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A5C91C2F792
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:23:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E4951C2D575
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBAC927DDF9;
-	Mon, 25 Mar 2024 03:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795271BAC20;
+	Mon, 25 Mar 2024 00:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uE5YiP8v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dps6SYB7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F855A4D3;
-	Sun, 24 Mar 2024 23:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCEFE17653B;
+	Sun, 24 Mar 2024 23:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323469; cv=none; b=lL1kwwwFYcYSDlZHaSe8O4R5cviP2OLCFUPHF6ul4ykTo/IKhO/6UbBKmFIRWEbH+sB50xjti4znoxNKGeoggars1JXbKEEQzQt/QMegDYB/AgkFiayQRJkrbSFVm6ABsqE+dikT1c9mFYzp6YEV6YcrTYMOUXu6hqriVsmjPDE=
+	t=1711323470; cv=none; b=ffy+8JmqnvHQw73/5nyhSoXsAYf+oj3mKX8gqvLeF5tbFg8qRQ8afIFLAeDY0/mW8lbTU/6sYmgq/vGJd1GJeYEmugNJV5g3ofmJuCaADMKKXN9uBF6I69GBctzVOwXCWhQpT/0Hy0HuTWvEK2dzcV3FUNHXEvQycils67PNfXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323469; c=relaxed/simple;
-	bh=goEe/dMrrTfl1yemeoIUdBMMh4E8OH1Z3vR5aSMaV9o=;
+	s=arc-20240116; t=1711323470; c=relaxed/simple;
+	bh=YQYjx84VF8Ytr/8x1QtpeDDlDyUAUDgeseEHLG2KJkc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o3oXYQh3Z0aizuEnCEqc95LKsRCw0APK+TeqMA1mkBzBXu1jjf5HV0ICIN6nfFsi+nmVhbqgLs2TxfadN/rWUw8wCdXixuES1ncKWqLUoc9PFrNIZ2k8/MvMrZ4CMLPYjdO6SEfg38KZ1Fyp9e0nJo9Aq8UpI8/tM37Cql0ZUsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uE5YiP8v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D64B4C433C7;
-	Sun, 24 Mar 2024 23:37:47 +0000 (UTC)
+	 MIME-Version; b=eDIcc1Rc/vpy+rp5sszDTFMV0YQUmgzn2hYKfef+qu0RFInk4PoKgVlPun++o18GIewgcQEOSqwmMzA6VG0vEkuwUkpRCk5PuDyKYa/luwcDAb9U0oi28tmrJHplvUs5VFeKDqqvotLwSTiZ8xa5LkRfEhukc8/3Vgj6U4KV5Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dps6SYB7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27A44C43390;
+	Sun, 24 Mar 2024 23:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323468;
-	bh=goEe/dMrrTfl1yemeoIUdBMMh4E8OH1Z3vR5aSMaV9o=;
+	s=k20201202; t=1711323469;
+	bh=YQYjx84VF8Ytr/8x1QtpeDDlDyUAUDgeseEHLG2KJkc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uE5YiP8vgP8iltto3kLnb3Wp2BzOskvX+Z4p08g1KliNINI0kYj3Gr1AejcpdT+FB
-	 FA5INLUv38Y9HmUXE8lr+kImfPh/crWs4lowyltDpx3GGYqpHNuJFY8MC+xdaWDkQX
-	 B+iOfSUTE+662mgF3Nq3lwPX90N8uL5QuBYNN3GZCTbCbMz1ErQtENzU8UBGNfa+Jd
-	 c/UFB0jpwjUMogYvJsJJKEp8Znb8JpYvvkMCSmWdeui7G6VASZogx1eNUVDP0pijQI
-	 QIcqn1ku6TggCzCgTYN7/o/WduAttF5fEeFS/9nH375KwBu0qENUoQ+DvIYPdOHx+z
-	 uGbCX8p5fkvIw==
+	b=Dps6SYB7MzXBll5ZfPH2Os65ikZ7sMAWUUCOgE9oai8uL663QDj8dUykz+T1ThUeP
+	 1GkMFlyxNwOKJ4A2VyEWiVOROmtGTS2UuSSlYQjopoXz5ldGMf4s7F4TMHzuSy4IRK
+	 BMJxnr4m6MCjjwx8ZV5WJXrwW3mtykOcDy4wMEcJ62fklSoivQLzvx81SvewJZywfY
+	 2H6kFTIx/tqpznkyNMxmEBHwwJoGXfIF3m6Y2SwakItEFcVojVjtD6vENpI5smdzZx
+	 CBYjYaFNLXCaPyMSjEeLYHv8kVOOGLYoMEKdrvbRbn8A0zKCW9qB8cYZJTpN5tupOF
+	 UrBf9nJ0Gcmrw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peter Robinson <pbrobinson@gmail.com>,
-	Jon Hunter <jonathanh@nvidia.com>,
-	Thierry Reding <treding@nvidia.com>,
-	Sameer Pujar <spujar@nvidia.com>,
-	Laxman Dewangan <ldewangan@nvidia.com>,
-	Vinod Koul <vkoul@kernel.org>,
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	Robert Foss <rfoss@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 173/317] dmaengine: tegra210-adma: Update dependency to ARCH_TEGRA
-Date: Sun, 24 Mar 2024 19:32:33 -0400
-Message-ID: <20240324233458.1352854-174-sashal@kernel.org>
+Subject: [PATCH 5.15 174/317] media: tc358743: register v4l2 async device only after successful setup
+Date: Sun, 24 Mar 2024 19:32:34 -0400
+Message-ID: <20240324233458.1352854-175-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -66,58 +62,48 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Peter Robinson <pbrobinson@gmail.com>
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit 33b7db45533af240fe44e809f9dc4d604cf82d07 ]
+[ Upstream commit 87399f1ff92203d65f1febf5919429f4bb613a02 ]
 
-Update the architecture dependency to be the generic Tegra
-because the driver works on the four latest Tegra generations
-not just T210, if you build a kernel with a specific
-ARCH_TEGRA_xxx_SOC option that excludes 210 you don't get
-this driver.
+Ensure the device has been setup correctly before registering the v4l2
+async device, thus allowing userspace to access.
 
-Fixes: 433de642a76c9 ("dmaengine: tegra210-adma: add support for Tegra186/Tegra194")
-Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
-Cc: Jon Hunter <jonathanh@nvidia.com>
-Cc: Thierry Reding <treding@nvidia.com>
-Cc: Sameer Pujar <spujar@nvidia.com>
-Cc: Laxman Dewangan <ldewangan@nvidia.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20240112093310.329642-2-pbrobinson@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Reviewed-by: Robert Foss <rfoss@kernel.org>
+Fixes: 4c5211a10039 ("[media] tc358743: register v4l2 asynchronous subdevice")
+Signed-off-by: Robert Foss <rfoss@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240110090111.458115-1-alexander.stein@ew.tq-group.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/Kconfig | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/media/i2c/tc358743.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index e1beddcc8c84a..143fb0f8c07fa 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -645,16 +645,16 @@ config TEGRA20_APB_DMA
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index 3205cd8298dd8..4c6852dc40a90 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -2108,9 +2108,6 @@ static int tc358743_probe(struct i2c_client *client)
+ 	state->mbus_fmt_code = MEDIA_BUS_FMT_RGB888_1X24;
  
- config TEGRA210_ADMA
- 	tristate "NVIDIA Tegra210 ADMA support"
--	depends on (ARCH_TEGRA_210_SOC || COMPILE_TEST)
-+	depends on (ARCH_TEGRA || COMPILE_TEST)
- 	select DMA_ENGINE
- 	select DMA_VIRTUAL_CHANNELS
- 	help
--	  Support for the NVIDIA Tegra210 ADMA controller driver. The
--	  DMA controller has multiple DMA channels and is used to service
--	  various audio clients in the Tegra210 audio processing engine
--	  (APE). This DMA controller transfers data from memory to
--	  peripheral and vice versa. It does not support memory to
--	  memory data transfer.
-+	  Support for the NVIDIA Tegra210/Tegra186/Tegra194/Tegra234 ADMA
-+	  controller driver. The DMA controller has multiple DMA channels
-+	  and is used to service various audio clients in the Tegra210
-+	  audio processing engine (APE). This DMA controller transfers
-+	  data from memory to peripheral and vice versa. It does not
-+	  support memory to memory data transfer.
+ 	sd->dev = &client->dev;
+-	err = v4l2_async_register_subdev(sd);
+-	if (err < 0)
+-		goto err_hdl;
  
- config TIMB_DMA
- 	tristate "Timberdale FPGA DMA support"
+ 	mutex_init(&state->confctl_mutex);
+ 
+@@ -2168,6 +2165,10 @@ static int tc358743_probe(struct i2c_client *client)
+ 	if (err)
+ 		goto err_work_queues;
+ 
++	err = v4l2_async_register_subdev(sd);
++	if (err < 0)
++		goto err_work_queues;
++
+ 	v4l2_info(sd, "%s found @ 0x%x (%s)\n", client->name,
+ 		  client->addr << 1, client->adapter->name);
+ 
 -- 
 2.43.0
 
