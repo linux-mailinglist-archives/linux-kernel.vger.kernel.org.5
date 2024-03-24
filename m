@@ -1,59 +1,54 @@
-Return-Path: <linux-kernel+bounces-113192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC0F3888231
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:40:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A357B888233
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:41:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86D1B1F21D19
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:40:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33943B24169
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FB4179FC4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0F257308;
 	Sun, 24 Mar 2024 22:39:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f/Ict50e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IZTvSIb0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314CE179FA9;
-	Sun, 24 Mar 2024 22:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E28179FC5;
+	Sun, 24 Mar 2024 22:39:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319996; cv=none; b=uU+5TBuqU/Ya0n0KiqAytUq+mIpW2nlbZN7Pg84BubWqH8IM2mF9FzJdbQICcWZzwwPC32M2h38m7h6WfNWyvHcPWGlux+ZM+3UWzzjszIYFu4ZV6qz+wA5K8CT3MvkpcNgxGesG8+kOCPI/HQ9rDxwkxPwPz4qgYIRVUe18u7U=
+	t=1711319997; cv=none; b=OYXnCPnYarlm7riv20HC7SeUJpwWP0ycTY2PzVHCsE01u7GYq6rh5/V46lfC/bjBUf1VRgY9KPPsi10/MfGLyDRuUUWO0WRX5n7OWHqFjLZSGin0G4uYG1jdVz4GZgl2Ga079jCfXjYaVsPy2+XmmXGmTjrX9FyHM6ISeuCdnX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319996; c=relaxed/simple;
-	bh=Dt4ST1YsLTZdXovoH8qxzKx5QKkoan5vCwg9Px+ARL4=;
+	s=arc-20240116; t=1711319997; c=relaxed/simple;
+	bh=n0ZZGalvuA0PD6jzMmVDBM2mpyQqpmLP63G0KklBvQ4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lULTCoiHiD/J4b1WmAoWbnpaOrsXmpf30rxRtovKaJcEnazt3m9npmVIsUkmvC7GuOsn88fpYOk+2OgRtuT7+JDtJhnKRCx4Ke2XKLO7detEcC48jY43XqzQP167aIwJGWXLa8mxGW/RAKXSqfFcmEAlcm3XdtEy5dbHkwU3tjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f/Ict50e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF8D9C43390;
-	Sun, 24 Mar 2024 22:39:54 +0000 (UTC)
+	 MIME-Version:Content-Type; b=df6VaHJ/5vGD09ROJqc74ZlCYIvaDeKu6M5rRzHct0khoblh0lmLT53f8rV+X/3Bcmc2/zHNLnhZ+DSil7KzqgFvF6jHRYAnRXUYzAzgrSeCX1jF8MdZ+35BFBBbHeyyjOTPeqLMZ9DRuxjaCYCpFFNi3y2SL3XBXofFG/RT4Gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IZTvSIb0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58CEBC433B2;
+	Sun, 24 Mar 2024 22:39:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319996;
-	bh=Dt4ST1YsLTZdXovoH8qxzKx5QKkoan5vCwg9Px+ARL4=;
+	s=k20201202; t=1711319997;
+	bh=n0ZZGalvuA0PD6jzMmVDBM2mpyQqpmLP63G0KklBvQ4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f/Ict50eh4tg+B1We8GrAJtFLUMTrWN1hp+6t2rNSFpLXzRvtdE1mi1w1AYF1pApB
-	 7dkRp9zpzjugl8zC2wPJnIb/VB0rslczl83L4oXjOItPXfL7wfspg3RJ9mgpRYB4H9
-	 ffZoGwqsX/tiQEUvhnMtGih0PtCQtrGF7zqb8CeVOdqiVCGUg6gAWZi1FPsczlVvPW
-	 M6ON8Q6X46cLIRbvbJ98hNnktlHqwVixQonGhxnQgFlCoXsT43X3ialZjUANWeScsV
-	 H1BUoDqzAfDCbuP5QlQRzYQppITNdo8kLdvgQiguUQjUUNTgQNtZ9hoF8VsAwJlpsw
-	 pKTJEKiFTZAfA==
+	b=IZTvSIb0qsdVsHz2aitxCc/ru/iBh4HqVvfsA33qHVOduBtJozK32deH3Hm0T3nSx
+	 tA4dNzBXHpBcAbH+VBfTli+hXdSRBXjEK0p3DwWxUFngu6fyB+YaAoF6OUmIN3Giq6
+	 ktdqdUphVgUBl+GaNZeALDvKKAlFvJM73sHQyabZ5rArJm8P1gOSJeeFcBHqSMoFIz
+	 ukDHoxMxeHpzKMBMMERytedX7npYO5uRhFK0Umw5HwoP6+gAL0Eom530u2kNeJ1eJa
+	 eCW9mJp+2tINaCI1gYqYSQQQKjarISOxsrwMnGElC5X3ETU7pquiy4JnDd0HsP7g+u
+	 e3DZG9soO6BuQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Nebojsa Stevanovic <nebojsa.stevanovic@gcore.com>,
-	Christian Rohmann <christian.rohmann@inovex.de>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	Simon Horman <horms@kernel.org>,
-	Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
+Cc: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 301/715] ice: fix stats being updated by way too large values
-Date: Sun, 24 Mar 2024 18:28:00 -0400
-Message-ID: <20240324223455.1342824-302-sashal@kernel.org>
+Subject: [PATCH 6.8 302/715] Bluetooth: Remove HCI_POWER_OFF_TIMEOUT
+Date: Sun, 24 Mar 2024 18:28:01 -0400
+Message-ID: <20240324223455.1342824-303-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,92 +58,39 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+From: Jonas Dreßler <verdre@v0yd.nl>
 
-[ Upstream commit 257310e998700e60382fbd3f4fd275fdbd9b2aaf ]
+[ Upstream commit 968667f2e0345a67a6eea5a502f4659085666564 ]
 
-Simplify stats accumulation logic to fix the case where we don't take
-previous stat value into account, we should always respect it.
+With commit cf75ad8b41d2 ("Bluetooth: hci_sync: Convert MGMT_SET_POWERED"),
+the power off sequence got refactored so that this timeout was no longer
+necessary, let's remove the leftover define from the header too.
 
-Main netdev stats of our PF (Tx/Rx packets/bytes) were reported orders of
-magnitude too big during OpenStack reconfiguration events, possibly other
-reconfiguration cases too.
-
-The regression was reported to be between 6.1 and 6.2, so I was almost
-certain that on of the two "preserve stats over reset" commits were the
-culprit. While reading the code, it was found that in some cases we will
-increase the stats by arbitrarily large number (thanks to ignoring "-prev"
-part of condition, after zeroing it).
-
-Note that this fixes also the case where we were around limits of u64, but
-that was not the regression reported.
-
-Full disclosure: I remember suggesting this particular piece of code to
-Ben a few years ago, so blame on me.
-
-Fixes: 2fd5e433cd26 ("ice: Accumulate HW and Netdev statistics over reset")
-Reported-by: Nebojsa Stevanovic <nebojsa.stevanovic@gcore.com>
-Link: https://lore.kernel.org/intel-wired-lan/VI1PR02MB439744DEDAA7B59B9A2833FE912EA@VI1PR02MB4397.eurprd02.prod.outlook.com
-Reported-by: Christian Rohmann <christian.rohmann@inovex.de>
-Link: https://lore.kernel.org/intel-wired-lan/f38a6ca4-af05-48b1-a3e6-17ef2054e525@inovex.de
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com> (A Contingent worker at Intel)
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: cf75ad8b41d2 ("Bluetooth: hci_sync: Convert MGMT_SET_POWERED")
+Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_main.c | 24 +++++++++++------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+ include/net/bluetooth/hci.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index df6a68ab747ee..6d256dbcb77d0 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -6737,6 +6737,7 @@ static void ice_update_vsi_ring_stats(struct ice_vsi *vsi)
- {
- 	struct rtnl_link_stats64 *net_stats, *stats_prev;
- 	struct rtnl_link_stats64 *vsi_stats;
-+	struct ice_pf *pf = vsi->back;
- 	u64 pkts, bytes;
- 	int i;
+diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+index bdee5d649cc61..f7918c7551834 100644
+--- a/include/net/bluetooth/hci.h
++++ b/include/net/bluetooth/hci.h
+@@ -437,7 +437,6 @@ enum {
+ #define HCI_NCMD_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
+ #define HCI_ACL_TX_TIMEOUT	msecs_to_jiffies(45000)	/* 45 seconds */
+ #define HCI_AUTO_OFF_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
+-#define HCI_POWER_OFF_TIMEOUT	msecs_to_jiffies(5000)	/* 5 seconds */
+ #define HCI_LE_CONN_TIMEOUT	msecs_to_jiffies(20000)	/* 20 seconds */
+ #define HCI_LE_AUTOCONN_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
  
-@@ -6782,21 +6783,18 @@ static void ice_update_vsi_ring_stats(struct ice_vsi *vsi)
- 	net_stats = &vsi->net_stats;
- 	stats_prev = &vsi->net_stats_prev;
- 
--	/* clear prev counters after reset */
--	if (vsi_stats->tx_packets < stats_prev->tx_packets ||
--	    vsi_stats->rx_packets < stats_prev->rx_packets) {
--		stats_prev->tx_packets = 0;
--		stats_prev->tx_bytes = 0;
--		stats_prev->rx_packets = 0;
--		stats_prev->rx_bytes = 0;
-+	/* Update netdev counters, but keep in mind that values could start at
-+	 * random value after PF reset. And as we increase the reported stat by
-+	 * diff of Prev-Cur, we need to be sure that Prev is valid. If it's not,
-+	 * let's skip this round.
-+	 */
-+	if (likely(pf->stat_prev_loaded)) {
-+		net_stats->tx_packets += vsi_stats->tx_packets - stats_prev->tx_packets;
-+		net_stats->tx_bytes += vsi_stats->tx_bytes - stats_prev->tx_bytes;
-+		net_stats->rx_packets += vsi_stats->rx_packets - stats_prev->rx_packets;
-+		net_stats->rx_bytes += vsi_stats->rx_bytes - stats_prev->rx_bytes;
- 	}
- 
--	/* update netdev counters */
--	net_stats->tx_packets += vsi_stats->tx_packets - stats_prev->tx_packets;
--	net_stats->tx_bytes += vsi_stats->tx_bytes - stats_prev->tx_bytes;
--	net_stats->rx_packets += vsi_stats->rx_packets - stats_prev->rx_packets;
--	net_stats->rx_bytes += vsi_stats->rx_bytes - stats_prev->rx_bytes;
--
- 	stats_prev->tx_packets = vsi_stats->tx_packets;
- 	stats_prev->tx_bytes = vsi_stats->tx_bytes;
- 	stats_prev->rx_packets = vsi_stats->rx_packets;
 -- 
 2.43.0
 
