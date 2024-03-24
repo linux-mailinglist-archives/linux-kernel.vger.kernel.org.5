@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-115261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A83D889379
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:29:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68E1A888E05
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:05:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 041AF29A4DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:29:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4C461F2E272
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E728C1CEDD4;
-	Mon, 25 Mar 2024 01:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6751CE972;
+	Mon, 25 Mar 2024 01:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FSDVvC80"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9noazb3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296ED13C9B4;
-	Sun, 24 Mar 2024 23:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333F3185F08;
+	Sun, 24 Mar 2024 23:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324380; cv=none; b=ixYw1K4Gq9gYct4YmV8DoxpoV76Xhdv3Y1YB9a/r+4PqWd9WriabquOYe/3w6+ggtEC6X8vToc+Z2qJkZMP8EGe7kaLFtt+OEdX+bdiXsP/i3FT7xOj3oTb13HOYJ7YbD1Txv+2v5eQ1H8DaL+HF0qBM+85OO/icB3Uq9cg+m8A=
+	t=1711324382; cv=none; b=FVKtIyos9r3WK59oGb56rhaSVW0Dl45bxmmarQo35SfA1k0PUF6oZp0ROgxTM9t9ah5MjWSNF80U8FqQ8uw8f/FoG4TPFwjr2lZHKcGWcwwAt8tKaxgXwq4n+drONPDlNY9cz1NeKUvxksdaI/v0Z3VXwAk570QJgUuIEJpZq1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324380; c=relaxed/simple;
-	bh=Q87wpKdOQl0hrcVlZqfLflnVZ+hc8gAvqiG16jNGA8g=;
+	s=arc-20240116; t=1711324382; c=relaxed/simple;
+	bh=i4JmSMxH5OlnL+XOfQJWj9C2cgHjqyhvb5Orgg/tQzE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gNeuGAKAhJ9DkhiVpacqS+D31eC261Cvxe/dsPZ+KiHOpDAyqRU8pyYiOmScl9getjrxFbi6R5+CAbX43UxlPpIgekzW+QE7c/YH8Sq/17pe98jtoSAdu3Roex3quLtMq8oIN8XcrZTjVo6urL5yyDPiC2Qc/LOTjemJkyx7Fo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FSDVvC80; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0747C43399;
-	Sun, 24 Mar 2024 23:52:58 +0000 (UTC)
+	 MIME-Version; b=qCyOtXj7oT5UM7VG3qatKB3cAJyRzRyQO4xvwvH/cZ7l/4kSLyZXduETma87ZLut8nYsfq57Lq3fP6KEwIOi3wwVP8Q82OI1we5unSVN8jmndzYTBtwfYQvze7FuPVAvWUODKqyURzco5iaulLsvH5Y3vzfOX73dtzxha0wIrac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9noazb3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52DACC43390;
+	Sun, 24 Mar 2024 23:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324380;
-	bh=Q87wpKdOQl0hrcVlZqfLflnVZ+hc8gAvqiG16jNGA8g=;
+	s=k20201202; t=1711324381;
+	bh=i4JmSMxH5OlnL+XOfQJWj9C2cgHjqyhvb5Orgg/tQzE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FSDVvC80wX6z8CGSaLF4wYyLreJEK4J7bpvZvht1qsJtDrF2VFVVaaWMChIrOUDX+
-	 OaCWiuFY9SMo8TeR0sQGUftK/Qy2vVNWRI8r0ro1IdX35gYUgrvWScJnRQBnc/Xpfq
-	 IvzqFs7T6ogdp6hBDV6iyorcT5GUVZYCprvTsSu5l29PMR7uXhsptYMrV/6KRiv5Wa
-	 SDRsfX6ZqNYgUJLLrvAko5UZYj8NM201aNKIINd99HAZ4WESnnjsZjYbypkK3XdVEu
-	 EIC7L7LXGxzIJ64aL5omj3BSGKLRGMEH/Vi/XWLyrS4356v9Ad8j3FZykGQIsYUJLL
-	 j7N06lCSm8qDQ==
+	b=W9noazb3JZ/Qqaqni3htUUUX7lyPCz/T4wq6a24DxuTVkgI+qhl31gxMroJmzAcuP
+	 jlSZHKyVX75QgeoiqXpVswVUgjdJ02FVZvYQlj5T+FTeRKUXCIJ5caivCycgZu7ixD
+	 bj7jCUmOMWJFq3KWuvpqSfLPA8GyUKdCy4e1NrR1H05mdxQLuZGkaNPpiWH2InBfhz
+	 /wQ5B3TKbCPzPNeTZM3PBFNeXt/1hoiT3sR53EEYS5YW6YfK/HRspP0wu/kRIpoeew
+	 hQI8t++qqntb2ML3h2REoAvZ6P2PhGlR5omOFVrjNmh4syIrAcXBsRH7XYp43tjvWm
+	 r5Hh78EsT6qPw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Felix Maurer <fmaurer@redhat.com>,
-	Shigeru Yoshida <syoshida@redhat.com>,
-	Breno Leitao <leitao@debian.org>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Thinh Tran <thinhtr@linux.ibm.com>,
+	Jiri Pirko <jiri@nvidia.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 145/148] hsr: Handle failures in module init
-Date: Sun, 24 Mar 2024 19:50:09 -0400
-Message-ID: <20240324235012.1356413-146-sashal@kernel.org>
+Subject: [PATCH 4.19 146/148] net/bnx2x: Prevent access to a freed page in page_pool
+Date: Sun, 24 Mar 2024 19:50:10 -0400
+Message-ID: <20240324235012.1356413-147-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -64,59 +63,87 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Felix Maurer <fmaurer@redhat.com>
+From: Thinh Tran <thinhtr@linux.ibm.com>
 
-[ Upstream commit 3cf28cd492308e5f63ed00b29ea03ca016264376 ]
+[ Upstream commit d27e2da94a42655861ca4baea30c8cd65546f25d ]
 
-A failure during registration of the netdev notifier was not handled at
-all. A failure during netlink initialization did not unregister the netdev
-notifier.
+Fix race condition leading to system crash during EEH error handling
 
-Handle failures of netdev notifier registration and netlink initialization.
-Both functions should only return negative values on failure and thereby
-lead to the hsr module not being loaded.
+During EEH error recovery, the bnx2x driver's transmit timeout logic
+could cause a race condition when handling reset tasks. The
+bnx2x_tx_timeout() schedules reset tasks via bnx2x_sp_rtnl_task(),
+which ultimately leads to bnx2x_nic_unload(). In bnx2x_nic_unload()
+SGEs are freed using bnx2x_free_rx_sge_range(). However, this could
+overlap with the EEH driver's attempt to reset the device using
+bnx2x_io_slot_reset(), which also tries to free SGEs. This race
+condition can result in system crashes due to accessing freed memory
+locations in bnx2x_free_rx_sge()
 
-Fixes: f421436a591d ("net/hsr: Add support for the High-availability Seamless Redundancy protocol (HSRv0)")
-Signed-off-by: Felix Maurer <fmaurer@redhat.com>
-Reviewed-by: Shigeru Yoshida <syoshida@redhat.com>
-Reviewed-by: Breno Leitao <leitao@debian.org>
-Link: https://lore.kernel.org/r/3ce097c15e3f7ace98fc7fd9bcbf299f092e63d1.1710504184.git.fmaurer@redhat.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+799  static inline void bnx2x_free_rx_sge(struct bnx2x *bp,
+800				struct bnx2x_fastpath *fp, u16 index)
+801  {
+802	struct sw_rx_page *sw_buf = &fp->rx_page_ring[index];
+803     struct page *page = sw_buf->page;
+...
+where sw_buf was set to NULL after the call to dma_unmap_page()
+by the preceding thread.
+
+    EEH: Beginning: 'slot_reset'
+    PCI 0011:01:00.0#10000: EEH: Invoking bnx2x->slot_reset()
+    bnx2x: [bnx2x_io_slot_reset:14228(eth1)]IO slot reset initializing...
+    bnx2x 0011:01:00.0: enabling device (0140 -> 0142)
+    bnx2x: [bnx2x_io_slot_reset:14244(eth1)]IO slot reset --> driver unload
+    Kernel attempted to read user page (0) - exploit attempt? (uid: 0)
+    BUG: Kernel NULL pointer dereference on read at 0x00000000
+    Faulting instruction address: 0xc0080000025065fc
+    Oops: Kernel access of bad area, sig: 11 [#1]
+    .....
+    Call Trace:
+    [c000000003c67a20] [c00800000250658c] bnx2x_io_slot_reset+0x204/0x610 [bnx2x] (unreliable)
+    [c000000003c67af0] [c0000000000518a8] eeh_report_reset+0xb8/0xf0
+    [c000000003c67b60] [c000000000052130] eeh_pe_report+0x180/0x550
+    [c000000003c67c70] [c00000000005318c] eeh_handle_normal_event+0x84c/0xa60
+    [c000000003c67d50] [c000000000053a84] eeh_event_handler+0xf4/0x170
+    [c000000003c67da0] [c000000000194c58] kthread+0x1c8/0x1d0
+    [c000000003c67e10] [c00000000000cf64] ret_from_kernel_thread+0x5c/0x64
+
+To solve this issue, we need to verify page pool allocations before
+freeing.
+
+Fixes: 4cace675d687 ("bnx2x: Alloc 4k fragment for each rx ring buffer element")
+Signed-off-by: Thinh Tran <thinhtr@linux.ibm.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Link: https://lore.kernel.org/r/20240315205535.1321-1-thinhtr@linux.ibm.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/hsr/hsr_main.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/hsr/hsr_main.c b/net/hsr/hsr_main.c
-index cd37d0011b424..c22013ff44795 100644
---- a/net/hsr/hsr_main.c
-+++ b/net/hsr/hsr_main.c
-@@ -115,14 +115,21 @@ static struct notifier_block hsr_nb = {
- 
- static int __init hsr_init(void)
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
+index df5e8c2e8eafe..844195849ae76 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
+@@ -1008,9 +1008,6 @@ static inline void bnx2x_set_fw_mac_addr(__le16 *fw_hi, __le16 *fw_mid,
+ static inline void bnx2x_free_rx_mem_pool(struct bnx2x *bp,
+ 					  struct bnx2x_alloc_pool *pool)
  {
--	int res;
-+	int err;
+-	if (!pool->page)
+-		return;
+-
+ 	put_page(pool->page);
  
- 	BUILD_BUG_ON(sizeof(struct hsr_tag) != HSR_HLEN);
+ 	pool->page = NULL;
+@@ -1021,6 +1018,9 @@ static inline void bnx2x_free_rx_sge_range(struct bnx2x *bp,
+ {
+ 	int i;
  
--	register_netdevice_notifier(&hsr_nb);
--	res = hsr_netlink_init();
-+	err = register_netdevice_notifier(&hsr_nb);
-+	if (err)
-+		return err;
++	if (!fp->page_pool.page)
++		return;
 +
-+	err = hsr_netlink_init();
-+	if (err) {
-+		unregister_netdevice_notifier(&hsr_nb);
-+		return err;
-+	}
+ 	if (fp->mode == TPA_MODE_DISABLED)
+ 		return;
  
--	return res;
-+	return 0;
- }
- 
- static void __exit hsr_exit(void)
 -- 
 2.43.0
 
