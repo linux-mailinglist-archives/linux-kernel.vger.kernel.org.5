@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D33888C74
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:21:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43F21889A15
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF78E1F291F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:21:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 752391C32538
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4F82E5EBA;
-	Mon, 25 Mar 2024 00:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD9283B695F;
+	Mon, 25 Mar 2024 03:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LXiIbMVr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1ljm1ou"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86BCF17C1AD;
-	Sun, 24 Mar 2024 23:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EFA217C1AC;
+	Sun, 24 Mar 2024 23:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323762; cv=none; b=cAP2Gt37set3+897amFK2TXKRwgpVyFDrIc/HBsTsjQapTcPaf6xUnYMalgsNz8/zZbsGOq+DIsTyGF8acRBT5tTn+AtLdm2cyyhha+AVe/+6T5EW16e0QWpn7fWUIacSRkflweqXnx80snwMPcj/VXQgNVxRbn30h9yQsdPdcA=
+	t=1711323762; cv=none; b=P5K/vTXI3qNNxcLYH4bOB5W9sh2SvCOKL0Zb5lqqflMiEwiOQXEOdq1Yxc9lxY/hflL+5e9lpJf4P1+8paNzLKt9NaFJlhb2/ot0nCQ0uoRVIyWSDzrgIua8WM2FzW+ErRHrRcJ8OLLcXRMwOSVxIq2M3q6ng521OIMHl3LXt8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323762; c=relaxed/simple;
-	bh=J5+ydmUTB6GHW5Flj4avryRijwC5zl0W+aYGABAuqX8=;
+	bh=uIDSKaGEKevri4m+701P4fwqcj5BZkuhrTLKSp6QbB8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xin9ItnW6cFwM3uMHGie9A5p3Q0iL0zdvoaTUiBHVPmtkH0ySbGdO0If7lg8zwYUptEJ0i5krdYneWYp0HWAV/Z3yBA9/5OFDqz+tPZ1A8YUfbSiHq7jVTTijFXEZaBIVqv8TlX5W071W2kayzZRstwH9f+gWc3mXjsFUjBYlW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LXiIbMVr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B50C6C43399;
-	Sun, 24 Mar 2024 23:42:40 +0000 (UTC)
+	 MIME-Version; b=fY9d7MuLAmVuH4l9EWzt//wFWl8yQtLmc7/KaR3m7aW7DSTwUWZKQ6P3QS6TginTgoTQbw4TIzS9/X46hdfLsHEmxSQvwNzalcH3Qcmeq2xdyyOg3nozLjoTkKS4on1DPFfA6v4SqW9BPt+DPnk9EvMXKC7BJ4Giu24Wxqtxqxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1ljm1ou; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA850C433C7;
+	Sun, 24 Mar 2024 23:42:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323761;
-	bh=J5+ydmUTB6GHW5Flj4avryRijwC5zl0W+aYGABAuqX8=;
+	s=k20201202; t=1711323762;
+	bh=uIDSKaGEKevri4m+701P4fwqcj5BZkuhrTLKSp6QbB8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LXiIbMVrn9aFZI9gyfoB+RoKKRWvmbhZFXtLq8hfoRsO8ait6bjEvkDtVpbXHaQaF
-	 ivIv8f9R+dx+Z6IcolwwhYm/x5s7+rG4jTmxQz+JaZnfy9NCUdzMzz1Vi0BEXD14ND
-	 bCHSqGC8nKbEidpT4iVC5SMpdKbGGyviNyDTVsgX2fZLplw0D47MsXuh4ERSlKY/nm
-	 jAyu6JdheRknh05Cso+xNs2w55pSlBm3jaREE3GwYkhc89KLeNkxgiWqXv+MISG/Hu
-	 SCI3fW0/A/dKMTyKA+m+ATZIlI8KUJyG9apiqwiMqcEoZpCWN7iykAeBgPfgwj1Vcd
-	 8nN9P3OBdBkAw==
+	b=l1ljm1ouMtN0l3hyUpyA635vgThspR333XAgRIBT7mBl1GEeR2CUnFv/hGHlZGIjS
+	 LgNfEn7dA3u+rifoG7PAwYFlI4HEXCA0q6bpusRccqxOM7O02Fa1y0V4PprIiEelyT
+	 70+IYgg+ES8FUrGyvTjKXHBaBkVeLJH6oWPhqAQtboujAFd1EpRcl9Z/BuoRUu5/7s
+	 lr5wf62/HEQYmxumKlhOgSaKV+Q+hDIy2UiQHDqS8zzIxxfc6ef6MH0TGr4gQq8jls
+	 X6nI3FPYbyRXD2DW2IgZKs7wGcNziTEcZoZxuvXDLoNZiJXnHdrpfFM4mzHxu4J1rf
+	 p/IVvoAcuGD3Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chen-Yu Tsai <wenst@chromium.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 136/238] pinctrl: mediatek: Drop bogus slew rate register range for MT8192
-Date: Sun, 24 Mar 2024 19:38:44 -0400
-Message-ID: <20240324234027.1354210-137-sashal@kernel.org>
+Subject: [PATCH 5.10 137/238] clk: qcom: reset: Commonize the de/assert functions
+Date: Sun, 24 Mar 2024 19:38:45 -0400
+Message-ID: <20240324234027.1354210-138-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -63,38 +63,67 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chen-Yu Tsai <wenst@chromium.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-[ Upstream commit e15ab05a6b3ed42f2f43f8bd1a1abdbde64afecd ]
+[ Upstream commit eda40d9c583e95e0b6ac69d2950eec10f802e0e8 ]
 
-The MT8192 does not support configuring pin slew rate. This is evident
-from both the datasheet, and the fact that the driver points the slew
-rate register range at the GPIO direction register range.
+They do the same thing, except the last argument of the last function
+call differs. Commonize them.
 
-Drop the bogus setting.
-
-Fixes: d32f38f2a8fc ("pinctrl: mediatek: Add pinctrl driver for mt8192")
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20240131071910.3950450-2-wenst@chromium.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20240105-topic-venus_reset-v2-2-c37eba13b5ce@linaro.org
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Stable-dep-of: 2f8cf2c3f3e3 ("clk: qcom: reset: Ensure write completion on reset de/assertion")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/mediatek/pinctrl-mt8192.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/clk/qcom/reset.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8192.c b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-index 0c16b2c756bf3..f3020e3c8533b 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-@@ -1346,7 +1346,6 @@ static const struct mtk_pin_reg_calc mt8192_reg_cals[PINCTRL_PIN_REG_MAX] = {
- 	[PINCTRL_PIN_REG_DIR] = MTK_RANGE(mt8192_pin_dir_range),
- 	[PINCTRL_PIN_REG_DI] = MTK_RANGE(mt8192_pin_di_range),
- 	[PINCTRL_PIN_REG_DO] = MTK_RANGE(mt8192_pin_do_range),
--	[PINCTRL_PIN_REG_SR] = MTK_RANGE(mt8192_pin_dir_range),
- 	[PINCTRL_PIN_REG_SMT] = MTK_RANGE(mt8192_pin_smt_range),
- 	[PINCTRL_PIN_REG_IES] = MTK_RANGE(mt8192_pin_ies_range),
- 	[PINCTRL_PIN_REG_PU] = MTK_RANGE(mt8192_pin_pu_range),
+diff --git a/drivers/clk/qcom/reset.c b/drivers/clk/qcom/reset.c
+index e45e32804d2c7..20d1d35aaf229 100644
+--- a/drivers/clk/qcom/reset.c
++++ b/drivers/clk/qcom/reset.c
+@@ -22,8 +22,8 @@ static int qcom_reset(struct reset_controller_dev *rcdev, unsigned long id)
+ 	return 0;
+ }
+ 
+-static int
+-qcom_reset_assert(struct reset_controller_dev *rcdev, unsigned long id)
++static int qcom_reset_set_assert(struct reset_controller_dev *rcdev,
++				 unsigned long id, bool assert)
+ {
+ 	struct qcom_reset_controller *rst;
+ 	const struct qcom_reset_map *map;
+@@ -33,21 +33,17 @@ qcom_reset_assert(struct reset_controller_dev *rcdev, unsigned long id)
+ 	map = &rst->reset_map[id];
+ 	mask = map->bitmask ? map->bitmask : BIT(map->bit);
+ 
+-	return regmap_update_bits(rst->regmap, map->reg, mask, mask);
++	return regmap_update_bits(rst->regmap, map->reg, mask, assert ? mask : 0);
+ }
+ 
+-static int
+-qcom_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
++static int qcom_reset_assert(struct reset_controller_dev *rcdev, unsigned long id)
+ {
+-	struct qcom_reset_controller *rst;
+-	const struct qcom_reset_map *map;
+-	u32 mask;
+-
+-	rst = to_qcom_reset_controller(rcdev);
+-	map = &rst->reset_map[id];
+-	mask = map->bitmask ? map->bitmask : BIT(map->bit);
++	return qcom_reset_set_assert(rcdev, id, true);
++}
+ 
+-	return regmap_update_bits(rst->regmap, map->reg, mask, 0);
++static int qcom_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
++{
++	return qcom_reset_set_assert(rcdev, id, false);
+ }
+ 
+ const struct reset_control_ops qcom_reset_ops = {
 -- 
 2.43.0
 
