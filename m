@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-116124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 037A6889971
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:10:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CF4F888C1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:10:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34FF31C326E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:10:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB2432943C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2983A98C3;
-	Mon, 25 Mar 2024 03:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBCA2DBDE1;
+	Mon, 25 Mar 2024 00:57:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="goxU7WUm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KPNCAmRZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2A617A387;
-	Sun, 24 Mar 2024 23:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D15317A38E;
+	Sun, 24 Mar 2024 23:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323657; cv=none; b=Ar9TDigdg/Gp40/A4/RlDX1XMl/wuEaKXHJgCfMrqz+bCA05b1xUR/+Uk1kWx7S58oGs8Epx5bLY0jYVH6ahn/ADfkho9G8Y1Wpn9XzyKkWO0G2WLz2LxZ0i221KvLzZ7GWdBDedq8BOr0s6Or6mMhuZkl4KhYaL7YFODoK2KxM=
+	t=1711323658; cv=none; b=sEhtEpQegPyv9vIWUixaq6b1xeCVg0wIFSWxTkfELcpl16Wz4w3gRGTuDm9KJerCau0W/KaAzx0n560LWo8uimJ4jjHBFkUrJUDJKhTQM6Ghyms71IVF6+0e1Lfk6OgWYbAARc7BEZku4gBgg4engGUxVGO+I97zZkl/47PaUro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323657; c=relaxed/simple;
-	bh=h4lItqMeOzYnNgZPMXZ1qCGx/yc3jP4yGmrQlDOCSYw=;
+	s=arc-20240116; t=1711323658; c=relaxed/simple;
+	bh=LTi1uiWusNYqglrFjirvmacGHwvj6xPN7iV4nR1ZLyI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rn6cGF/EkGtwQMi8qYvtSNF4CMkqFs3M+3hAwSnPsCD7Rzgc7fhN4bm6eKyMbgep4Z1zNeJZ9ncLuxGoU0mS387Kfj6Pu1sH3mu9mYBDHSVCdqxb5RDgqjKKK6xHXG+ifcD8NQ4O1RhxlGIA7zj13JB+rZ2TVmVW3G3UNPLORxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=goxU7WUm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FAC1C433F1;
-	Sun, 24 Mar 2024 23:40:55 +0000 (UTC)
+	 MIME-Version; b=Q1pnA/lfcsM2NsUytPsW1vtq7UJErRYlC9XPr6tCHlraWtuC1vGB0vbtCvbhnzM37DC3kRDzekvTFEL3R7My4Pyx6X7luqxqF5bcKBeiQ8LGCY+zih1JqUz8wRJreA2PLWokc92YqZcoT+nDZfrJDnCTC+LIALGD3kHP6UR1Yr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KPNCAmRZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83350C43390;
+	Sun, 24 Mar 2024 23:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323656;
-	bh=h4lItqMeOzYnNgZPMXZ1qCGx/yc3jP4yGmrQlDOCSYw=;
+	s=k20201202; t=1711323657;
+	bh=LTi1uiWusNYqglrFjirvmacGHwvj6xPN7iV4nR1ZLyI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=goxU7WUmE17Xr0I9m+si5NqF0ckHae5ATLZocolopuZz7YzcHlkB+rUZXY6ICTlKu
-	 0I5octrrZQIK5h9xe65x/41R/GTG49CekkGVf3NggzOsWR3vQg1uaiLaE3ONA1O/Hl
-	 v73Jit3D2KHgFCteslR54FY8e8y6ceVLQjLB6HZUyezild/uDEu7lcpSy2eSleAlg+
-	 p9o+VPuoQmolSEGGNeMFI5VcBe/pxhSPytQI5Tl4mhj2dIiDD4AVFzBSyoRZuXpIUs
-	 TRAB6FpBjXzjN5rgHGUjN4kqIG7Kj6Am1F8tRivx1Y1nbedkts6k0y/3/keH7NSZJa
-	 r7xZghNk40K8w==
+	b=KPNCAmRZACoxz3LHgyBW1O7dbLuZB/UbX48Cl9bLMTUjIloUjWJtAXONtViAgfq+z
+	 p066M8+tZx+5zR05hv+Nq5G/YYIClAgPve8Kp1urya8+ehPclFuBshKYHp5Wc9at64
+	 aP/hnmbhKppcBmQB/5TM4Hjjrv4w+b0LZ35TmdEYscMDaje8J7B2cDil13/DRaHP9Z
+	 tReMDAMI650l69ImQaUepDlRkRQxB+44cDvBVfMc4nPH5LKNFD4qY7oKa2JQvjKEn4
+	 RZIPfnbqZE9KW88lw5RmoT+CdL2OXQIrgrfcle8SUPOu0EmlbHU4iAUSwpPunkr+3b
+	 mH4O3G9F9opig==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
-	Omar Sandoval <osandov@osandov.com>,
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Chuck Lever III <chuck.lever@oracle.com>,
+	syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com,
+	Jan Kara <jack@suse.cz>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 028/238] x86/paravirt: Fix build due to __text_gen_insn() backport
-Date: Sun, 24 Mar 2024 19:36:56 -0400
-Message-ID: <20240324234027.1354210-29-sashal@kernel.org>
+Subject: [PATCH 5.10 029/238] do_sys_name_to_handle(): use kzalloc() to fix kernel-infoleak
+Date: Sun, 24 Mar 2024 19:36:57 -0400
+Message-ID: <20240324234027.1354210-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,40 +65,70 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-The Link tag has all the details but basically due to missing upstream
-commits, the header which contains __text_gen_insn() is not in the
-includes in paravirt.c, leading to:
+[ Upstream commit 3948abaa4e2be938ccdfc289385a27342fb13d43 ]
 
-  arch/x86/kernel/paravirt.c: In function 'paravirt_patch_call':
-  arch/x86/kernel/paravirt.c:65:9: error: implicit declaration of function '__text_gen_insn' \
-  [-Werror=implicit-function-declaration]
-   65 |         __text_gen_insn(insn_buff, CALL_INSN_OPCODE,
-      |         ^~~~~~~~~~~~~~~
+syzbot identified a kernel information leak vulnerability in
+do_sys_name_to_handle() and issued the following report [1].
 
-Add the missing include.
+[1]
+"BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ copy_to_user include/linux/uaccess.h:191 [inline]
+ do_sys_name_to_handle fs/fhandle.c:73 [inline]
+ __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
+ __se_sys_name_to_handle_at+0x949/0xb10 fs/fhandle.c:94
+ __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
+ ...
 
-Reported-by: Omar Sandoval <osandov@osandov.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/ZeYXvd1-rVkPGvvW@telecaster
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ do_sys_name_to_handle fs/fhandle.c:39 [inline]
+ __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
+ __se_sys_name_to_handle_at+0x441/0xb10 fs/fhandle.c:94
+ __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
+ ...
+
+Bytes 18-19 of 20 are uninitialized
+Memory access of size 20 starts at ffff888128a46380
+Data copied to user address 0000000020000240"
+
+Per Chuck Lever's suggestion, use kzalloc() instead of kmalloc() to
+solve the problem.
+
+Fixes: 990d6c2d7aee ("vfs: Add name to file handle conversion support")
+Suggested-by: Chuck Lever III <chuck.lever@oracle.com>
+Reported-and-tested-by: <syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com>
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Link: https://lore.kernel.org/r/20240119153906.4367-1-n.zhandarovich@fintech.ru
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/paravirt.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/fhandle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 5bea8d93883a2..f0e4ad8595ca7 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -31,6 +31,7 @@
- #include <asm/special_insns.h>
- #include <asm/tlb.h>
- #include <asm/io_bitmap.h>
-+#include <asm/text-patching.h>
+diff --git a/fs/fhandle.c b/fs/fhandle.c
+index 01263ffbc4c08..9a5f153c8919e 100644
+--- a/fs/fhandle.c
++++ b/fs/fhandle.c
+@@ -37,7 +37,7 @@ static long do_sys_name_to_handle(struct path *path,
+ 	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
+ 		return -EINVAL;
  
- /*
-  * nop stub, which must not clobber anything *including the stack* to
+-	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
++	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
+ 			 GFP_KERNEL);
+ 	if (!handle)
+ 		return -ENOMEM;
 -- 
 2.43.0
 
