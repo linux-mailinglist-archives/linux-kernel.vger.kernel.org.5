@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-113561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E3488854F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88D8D888551
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:04:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B0F8283347
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:04:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41144284373
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342C913E6A9;
-	Sun, 24 Mar 2024 22:46:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1D81C4B04;
+	Sun, 24 Mar 2024 22:46:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q6n7Eugt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="so04lcQK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685F51C5ADC;
-	Sun, 24 Mar 2024 22:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C4F9745F4;
+	Sun, 24 Mar 2024 22:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320363; cv=none; b=C/x0ZR3yCaHk+vjSWGRf61gkr0EhmpccRqgckTM0Xsl3HEokQm7y/c35dWPLrLuVeYVPvR+gF3kj5okQ2fv9+Cps2Q+IqbFbHY/1Owai32XWIMSumwzJClyRZ3EfdTx3bqDUJP53R9MD5f6irQ2alNR5SzQjcLtLVGwf+rSnJro=
+	t=1711320365; cv=none; b=YReRc07Qoliuq5y6wxTVY3OpqFdvgq3q91i2d8OQJ/gMIY1I+bsXA9Y/gToj8eeCSDVQe7FhcaEZjPHb5giExigp0bfHhKnChjSvBIc/Fv9qbPpOsJAg2XxKWMkZVQSoFjBhK6WHCN4xoiQKkSGrDrf8eQBYq0z/qM/abLM3UNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320363; c=relaxed/simple;
-	bh=9yc9RzzNYFFCXj9TA2BrTsYbnJHVTSRf/XwLJhzcGW8=;
+	s=arc-20240116; t=1711320365; c=relaxed/simple;
+	bh=xCNH6G4YpmWOsFnG8Q+Y7uchheJOww5GVoQSLLdhQZk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EaQU6WMAF9HAz+IL1foXaKK+dZk9maOnMS3lacRNIvcclGpiNefc3v1bHRvR7X7HhF5wuxWrNxHlN//uYO2vaGwRLmF8WdX+uobEI1eB/Up/JVMUVR8gtbjk/DBDxEb0KhdHSQlJje5GsUhgKMk70e3v5wK2l0nR1jF2ahneNkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q6n7Eugt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0535C433C7;
-	Sun, 24 Mar 2024 22:46:02 +0000 (UTC)
+	 MIME-Version; b=evg+Z5xCPeh7zC96Wb0n9kTxJu1dUlUjGSTViYj+B0Vl7/ECTKx2u4jypaPpv4XoR7/uTTYqK4Il/6CyqSsoJsr1pHTiP9qw8ItprQRZ3DaSJYdbquSm8E0ppbga2/zr97n12rbxDsHcVlJAOS63XeD39/gWoJyQwXNKqF4pQ20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=so04lcQK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 868FDC433F1;
+	Sun, 24 Mar 2024 22:46:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320363;
-	bh=9yc9RzzNYFFCXj9TA2BrTsYbnJHVTSRf/XwLJhzcGW8=;
+	s=k20201202; t=1711320364;
+	bh=xCNH6G4YpmWOsFnG8Q+Y7uchheJOww5GVoQSLLdhQZk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q6n7Eugt5MKAM/2+nDOgvMkEx3yNj+3Rtihn49xFySzgbxHwkCCOzipHclYW14RW9
-	 dbjkcB1ca3l1lGWC7LmLR+iWP95JeAyXIwhphesMeDFPuON7h/Vj8NAMC50Ufy5aiK
-	 dElX1K4ltiG0wljo4ynLgFpPB8LX+Xn+bdQwIKAjts4RQyzmxIW+Q/Lu10ETCwFXwB
-	 c7QHB5C1cy0yOqczyPxdbaPIYhbzvRfuitalOOvAhXES6fF6kRFQdcqTB91PhiPbcJ
-	 01eKsgPa5XhIAvPRLBVmanAW2d62xbwciY2NZ2EpDv8rT3IMAks7G2ygmbP5D3OsUh
-	 fMi31Hkg07u7w==
+	b=so04lcQK+QEsWSSTmNjCUxygrrrj/KSWAqAf0xVlpu0saoJAKwl7dHCcyezpnwyQn
+	 eRDX112VpcGiX157x4TdGMSekl6vIJ0UevjNt3rzxIH/wlNYN3Q8MKaNt+B2+nMn0k
+	 Y89m6E6D2r+s9ylphNdFbeqxFVh36eYUUnCf9sOACAHkW7JJuvDLgok4CZ2TJce9kI
+	 qlL5yD19hifxNxNmGJ4TVJC8tDEKvQxAa4xIE3dvQwhONAm6PbGA5TICKvnyQdkbVU
+	 bb6/BYfj36f7fK+S4GsqxIMCeF3r1YMI4bdycS709+gWZToKD5sPyPV4IYIStriZ7I
+	 aoDSjTDZEN9ow==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Juergen Gross <jgross@suse.com>,
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Jason Xing <kerneljasonxing@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 670/715] xen/events: increment refcnt only if event channel is refcounted
-Date: Sun, 24 Mar 2024 18:34:09 -0400
-Message-ID: <20240324223455.1342824-671-sashal@kernel.org>
+Subject: [PATCH 6.8 671/715] packet: annotate data-races around ignore_outgoing
+Date: Sun, 24 Mar 2024 18:34:10 -0400
+Message-ID: <20240324223455.1342824-672-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,113 +66,103 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Juergen Gross <jgross@suse.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit d277f9d82802223f242cd9b60c988cfdda1d6be0 ]
+[ Upstream commit 6ebfad33161afacb3e1e59ed1c2feefef70f9f97 ]
 
-In bind_evtchn_to_irq_chip() don't increment the refcnt of the event
-channel blindly. In case the event channel is NOT refcounted, issue a
-warning instead.
+ignore_outgoing is read locklessly from dev_queue_xmit_nit()
+and packet_getsockopt()
 
-Add an additional safety net by doing the refcnt increment only if the
-caller has specified IRQF_SHARED in the irqflags parameter.
+Add appropriate READ_ONCE()/WRITE_ONCE() annotations.
 
-Fixes: 9e90e58c11b7 ("xen: evtchn: Allow shared registration of IRQ handers")
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Link: https://lore.kernel.org/r/20240313071409.25913-3-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+syzbot reported:
+
+BUG: KCSAN: data-race in dev_queue_xmit_nit / packet_setsockopt
+
+write to 0xffff888107804542 of 1 bytes by task 22618 on cpu 0:
+ packet_setsockopt+0xd83/0xfd0 net/packet/af_packet.c:4003
+ do_sock_setsockopt net/socket.c:2311 [inline]
+ __sys_setsockopt+0x1d8/0x250 net/socket.c:2334
+ __do_sys_setsockopt net/socket.c:2343 [inline]
+ __se_sys_setsockopt net/socket.c:2340 [inline]
+ __x64_sys_setsockopt+0x66/0x80 net/socket.c:2340
+ do_syscall_64+0xd3/0x1d0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+read to 0xffff888107804542 of 1 bytes by task 27 on cpu 1:
+ dev_queue_xmit_nit+0x82/0x620 net/core/dev.c:2248
+ xmit_one net/core/dev.c:3527 [inline]
+ dev_hard_start_xmit+0xcc/0x3f0 net/core/dev.c:3547
+ __dev_queue_xmit+0xf24/0x1dd0 net/core/dev.c:4335
+ dev_queue_xmit include/linux/netdevice.h:3091 [inline]
+ batadv_send_skb_packet+0x264/0x300 net/batman-adv/send.c:108
+ batadv_send_broadcast_skb+0x24/0x30 net/batman-adv/send.c:127
+ batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:392 [inline]
+ batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
+ batadv_iv_send_outstanding_bat_ogm_packet+0x3f0/0x4b0 net/batman-adv/bat_iv_ogm.c:1700
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0x465/0x990 kernel/workqueue.c:3335
+ worker_thread+0x526/0x730 kernel/workqueue.c:3416
+ kthread+0x1d1/0x210 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+value changed: 0x00 -> 0x01
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 27 Comm: kworker/u8:1 Tainted: G        W          6.8.0-syzkaller-08073-g480e035fc4c7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
+
+Fixes: fa788d986a3a ("packet: add sockopt to ignore outgoing packets")
+Reported-by: syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/netdev/CANn89i+Z7MfbkBLOv=p7KZ7=K1rKHO4P1OL5LYDCtBiyqsa9oQ@mail.gmail.com/T/#t
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/events/events_base.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ net/core/dev.c         | 2 +-
+ net/packet/af_packet.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
-index 3b9f080109d7e..27553673e46bc 100644
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -1190,7 +1190,7 @@ int xen_pirq_from_irq(unsigned irq)
- EXPORT_SYMBOL_GPL(xen_pirq_from_irq);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 76e6438f4858e..f56f81e587236 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -2261,7 +2261,7 @@ void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
+ 	rcu_read_lock();
+ again:
+ 	list_for_each_entry_rcu(ptype, ptype_list, list) {
+-		if (ptype->ignore_outgoing)
++		if (READ_ONCE(ptype->ignore_outgoing))
+ 			continue;
  
- static int bind_evtchn_to_irq_chip(evtchn_port_t evtchn, struct irq_chip *chip,
--				   struct xenbus_device *dev)
-+				   struct xenbus_device *dev, bool shared)
- {
- 	int ret = -ENOMEM;
- 	struct irq_info *info;
-@@ -1224,7 +1224,8 @@ static int bind_evtchn_to_irq_chip(evtchn_port_t evtchn, struct irq_chip *chip,
- 		 */
- 		bind_evtchn_to_cpu(info, 0, false);
- 	} else if (!WARN_ON(info->type != IRQT_EVTCHN)) {
--		info->refcnt++;
-+		if (shared && !WARN_ON(info->refcnt < 0))
-+			info->refcnt++;
+ 		/* Never send packets back to the socket
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index c9bbc26866907..e6a8701a38dbe 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -3998,7 +3998,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, sockptr_t optval,
+ 		if (val < 0 || val > 1)
+ 			return -EINVAL;
+ 
+-		po->prot_hook.ignore_outgoing = !!val;
++		WRITE_ONCE(po->prot_hook.ignore_outgoing, !!val);
+ 		return 0;
  	}
- 
- 	ret = info->irq;
-@@ -1237,13 +1238,13 @@ static int bind_evtchn_to_irq_chip(evtchn_port_t evtchn, struct irq_chip *chip,
- 
- int bind_evtchn_to_irq(evtchn_port_t evtchn)
- {
--	return bind_evtchn_to_irq_chip(evtchn, &xen_dynamic_chip, NULL);
-+	return bind_evtchn_to_irq_chip(evtchn, &xen_dynamic_chip, NULL, false);
- }
- EXPORT_SYMBOL_GPL(bind_evtchn_to_irq);
- 
- int bind_evtchn_to_irq_lateeoi(evtchn_port_t evtchn)
- {
--	return bind_evtchn_to_irq_chip(evtchn, &xen_lateeoi_chip, NULL);
-+	return bind_evtchn_to_irq_chip(evtchn, &xen_lateeoi_chip, NULL, false);
- }
- EXPORT_SYMBOL_GPL(bind_evtchn_to_irq_lateeoi);
- 
-@@ -1295,7 +1296,8 @@ static int bind_ipi_to_irq(unsigned int ipi, unsigned int cpu)
- 
- static int bind_interdomain_evtchn_to_irq_chip(struct xenbus_device *dev,
- 					       evtchn_port_t remote_port,
--					       struct irq_chip *chip)
-+					       struct irq_chip *chip,
-+					       bool shared)
- {
- 	struct evtchn_bind_interdomain bind_interdomain;
- 	int err;
-@@ -1307,14 +1309,14 @@ static int bind_interdomain_evtchn_to_irq_chip(struct xenbus_device *dev,
- 					  &bind_interdomain);
- 
- 	return err ? : bind_evtchn_to_irq_chip(bind_interdomain.local_port,
--					       chip, dev);
-+					       chip, dev, shared);
- }
- 
- int bind_interdomain_evtchn_to_irq_lateeoi(struct xenbus_device *dev,
- 					   evtchn_port_t remote_port)
- {
- 	return bind_interdomain_evtchn_to_irq_chip(dev, remote_port,
--						   &xen_lateeoi_chip);
-+						   &xen_lateeoi_chip, false);
- }
- EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irq_lateeoi);
- 
-@@ -1430,7 +1432,8 @@ static int bind_evtchn_to_irqhandler_chip(evtchn_port_t evtchn,
- {
- 	int irq, retval;
- 
--	irq = bind_evtchn_to_irq_chip(evtchn, chip, NULL);
-+	irq = bind_evtchn_to_irq_chip(evtchn, chip, NULL,
-+				      irqflags & IRQF_SHARED);
- 	if (irq < 0)
- 		return irq;
- 	retval = request_irq(irq, handler, irqflags, devname, dev_id);
-@@ -1471,7 +1474,8 @@ static int bind_interdomain_evtchn_to_irqhandler_chip(
- {
- 	int irq, retval;
- 
--	irq = bind_interdomain_evtchn_to_irq_chip(dev, remote_port, chip);
-+	irq = bind_interdomain_evtchn_to_irq_chip(dev, remote_port, chip,
-+						  irqflags & IRQF_SHARED);
- 	if (irq < 0)
- 		return irq;
- 
+ 	case PACKET_TX_HAS_OFF:
+@@ -4129,7 +4129,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
+ 		       0);
+ 		break;
+ 	case PACKET_IGNORE_OUTGOING:
+-		val = po->prot_hook.ignore_outgoing;
++		val = READ_ONCE(po->prot_hook.ignore_outgoing);
+ 		break;
+ 	case PACKET_ROLLOVER_STATS:
+ 		if (!po->rollover)
 -- 
 2.43.0
 
