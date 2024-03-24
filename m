@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D195A8894BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:06:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1072D8897FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:24:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B99B29618A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:06:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 429F51C311B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14FF0375F22;
-	Mon, 25 Mar 2024 03:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67BCE373FD5;
+	Mon, 25 Mar 2024 03:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O4xxVllg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZDJslPA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C194D145FEF;
-	Sun, 24 Mar 2024 23:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFFFA145FEE;
+	Sun, 24 Mar 2024 23:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322051; cv=none; b=iQOjBux9rBMYVW1+e/CQ/nFypihDAlvk2qyETb3SFXKLEKeTTqOvw9d9vo/Nj8WoPUnNwmyyyNl/vaTBCzRJc+8ssnshuR3t49F/dY4YfsGRQXNQnUy+zITabTGI16s6nGkXHJXQkKlVNObg/SO9fHBHum+ucHurmc0qkpKyEPY=
+	t=1711322051; cv=none; b=o1xfu42ouK0D/SEFsU0/gsy9+htINN16UR3ks9kbUt4UtZHZtu4VdFRc6ThM7ISI30jNn+ad4b2Ku/G8lvK8suFIP4RuAF281x4ga8cGYpjsFciWbhhdjnj066JaoGVBLIiAPIc0JEYcelJKhi6LDtfokFosGR3ecYUnW+J/UV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322051; c=relaxed/simple;
-	bh=1ITZQsOA5uH5mLhtqE6Q6ShPQIh0iAuove/4OFBVZ0Q=;
+	bh=LvtZg5e0VQtOBT+DmVlIpjevxUc7VebV46SOEb3fPHw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CWHGiQYBqYiL3DnDrUE1uBXWsLiwfzyUZDpxSk803HKLRwIRHSF4OYrd19gTmJbqxcuggAW9SF+u98ifSshv2AJWSZEBJU9+v7SFQI/Tc5LPSZrvd9E1nzx/NyPhOg+9QtvwF/tIbYMkK8vIaPaQRDCevNvhwqWqMtgeP3ylAss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O4xxVllg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BA40C433F1;
-	Sun, 24 Mar 2024 23:14:09 +0000 (UTC)
+	 MIME-Version; b=UOKSo7AXZq+zzBzb7U3watXq0Zcbc4FMbUeQ9aTsfDOFcGXCgyLxn76k3JcyD7DuYB8bMnFQ5AzX0hGdbTjqLlI/JZxxvx8zt29sQs4kHqHyDgeXHSMF5huORY2yG7dGQMrkgeYPMZVUeSTbbutekFVYpFlqcauwDPIjK9ERAyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZDJslPA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E34D6C433C7;
+	Sun, 24 Mar 2024 23:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322050;
-	bh=1ITZQsOA5uH5mLhtqE6Q6ShPQIh0iAuove/4OFBVZ0Q=;
+	s=k20201202; t=1711322051;
+	bh=LvtZg5e0VQtOBT+DmVlIpjevxUc7VebV46SOEb3fPHw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O4xxVllgJI/Dg5iewAS6lHrG8U8duildQtvDMRUnvPLVTWJ4IcXZyjdi9JzIWlNNA
-	 PSbyJwHbS903YzApB+GKjZIE87uWP/XjZl9F48DaUi03TDbf5h48vU/RCx8jw8ig6R
-	 YKWQpJYUBRtElTtvyt/jjtN8p2fAgplyNCwaKp2oKrkW+9e71BwV5B9kPB2Uam4Cse
-	 XCfApfAj1ZhkG8/uo0iSjFljx9CARSeWB8RgmVKx2ivxYhkm6DxGh2wpUNrxMul4L1
-	 PVXpuhe9EqeLhD3ahPMnAdeF12PxjMnaHeNtyR6xbza0FjwX992B02/g8+JNx7Z83i
-	 hRRhNfM8SmbWw==
+	b=MZDJslPAkCrZagIK7XdfnOV7jltirdp4cCCrHLXkONgUcvun/eQ/0KPeRp5KmAtOQ
+	 QnEYhChe4Y7PrYVHGCu3UOsnXcdwnnBGq7wFv97QH1WkOmEiz8+JkFK62//aa+9VRL
+	 /7xYCberxRIQKQQJkd3fiyma7pUqrFZH8DzVq8Lbu8KM/BQf5jUFBmfnWTncXSl5Pr
+	 HGZNNfexQWzr5JH+7f+cRL3I5lzfpLvPEgLx0fVyQ6Al7QBmQKRRveGN9thfbxqHav
+	 9UyGtY9/IT2ObCvrjH2MAP0osGWKkHvm4672ZyzyWAzRsqWMDP2tGZ9liX2RXCEpez
+	 7BMq4xm3G/kqQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+Cc: Breno Leitao <leitao@debian.org>,
+	Jiri Pirko <jiri@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 123/451] pwm: atmel-hlcdc: Fix clock imbalance related to suspend support
-Date: Sun, 24 Mar 2024 19:06:39 -0400
-Message-ID: <20240324231207.1351418-124-sashal@kernel.org>
+Subject: [PATCH 6.1 124/451] net: blackhole_dev: fix build warning for ethh set but not used
+Date: Sun, 24 Mar 2024 19:06:40 -0400
+Message-ID: <20240324231207.1351418-125-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -58,41 +59,51 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Breno Leitao <leitao@debian.org>
 
-[ Upstream commit e25ac87d3f831fed002c34aadddaf4ebb4ea45ec ]
+[ Upstream commit 843a8851e89e2e85db04caaf88d8554818319047 ]
 
-The suspend callback disables the periph clock when the PWM is enabled
-and resume reenables this clock if the PWM was disabled before. Judging
-from the code comment it's suspend that is wrong here. Fix accordingly.
+lib/test_blackhole_dev.c sets a variable that is never read, causing
+this following building warning:
 
-Fixes: f9bb9da7c09d ("pwm: atmel-hlcdc: Implement the suspend/resume hooks")
-Reviewed-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Link: https://lore.kernel.org/r/b51ea92b0a45eff3dc83b08adefd43d930df996c.1706269232.git.u.kleine-koenig@pengutronix.de
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+	lib/test_blackhole_dev.c:32:17: warning: variable 'ethh' set but not used [-Wunused-but-set-variable]
+
+Remove the variable struct ethhdr *ethh, which is unused.
+
+Fixes: 509e56b37cc3 ("blackhole_dev: add a selftest")
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-atmel-hlcdc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/test_blackhole_dev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/pwm/pwm-atmel-hlcdc.c b/drivers/pwm/pwm-atmel-hlcdc.c
-index 4d0b859d0ac13..3e9c94a8d7f72 100644
---- a/drivers/pwm/pwm-atmel-hlcdc.c
-+++ b/drivers/pwm/pwm-atmel-hlcdc.c
-@@ -186,7 +186,7 @@ static int atmel_hlcdc_pwm_suspend(struct device *dev)
- 	struct atmel_hlcdc_pwm *atmel = dev_get_drvdata(dev);
+diff --git a/lib/test_blackhole_dev.c b/lib/test_blackhole_dev.c
+index 4c40580a99a36..f247089d63c08 100644
+--- a/lib/test_blackhole_dev.c
++++ b/lib/test_blackhole_dev.c
+@@ -29,7 +29,6 @@ static int __init test_blackholedev_init(void)
+ {
+ 	struct ipv6hdr *ip6h;
+ 	struct sk_buff *skb;
+-	struct ethhdr *ethh;
+ 	struct udphdr *uh;
+ 	int data_len;
+ 	int ret;
+@@ -61,7 +60,7 @@ static int __init test_blackholedev_init(void)
+ 	ip6h->saddr = in6addr_loopback;
+ 	ip6h->daddr = in6addr_loopback;
+ 	/* Ether */
+-	ethh = (struct ethhdr *)skb_push(skb, sizeof(struct ethhdr));
++	skb_push(skb, sizeof(struct ethhdr));
+ 	skb_set_mac_header(skb, 0);
  
- 	/* Keep the periph clock enabled if the PWM is still running. */
--	if (pwm_is_enabled(&atmel->chip.pwms[0]))
-+	if (!pwm_is_enabled(&atmel->chip.pwms[0]))
- 		clk_disable_unprepare(atmel->hlcdc->periph_clk);
- 
- 	return 0;
+ 	skb->protocol = htons(ETH_P_IPV6);
 -- 
 2.43.0
 
