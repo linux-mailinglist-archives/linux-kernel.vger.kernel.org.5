@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52A0A8888DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:38:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BB76889CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00E7F1F27BDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D17C1C34CF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF1D20606D;
-	Sun, 24 Mar 2024 23:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5CD16ABEA;
+	Mon, 25 Mar 2024 02:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="osfYU/sj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pOk0ydXJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839122057EB;
-	Sun, 24 Mar 2024 23:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E342A2057ED;
+	Sun, 24 Mar 2024 23:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321489; cv=none; b=iXWQivddIPCfcfZT5eF6bkteo1DsjZKgI9p9w/wvoJxS5GOO9lg0MMtuZgFA6sl4PONZQF79+J88IIUlT+08IWqNrbQArRhEQHuzDe6qpr/3bmuyBY24W6s3i0jcPBfmCuFQfmWEJ8C8ZR1wOSh3xIXH90S4MPXhfI8BURLHXMA=
+	t=1711321490; cv=none; b=PLbgeurjsWp/A6xAtjlhMqW5BRS+HGRUxmwKoBuY9tWn3SPLCvd15jiib8r5CiBgrx4T35n1CNGlnzOVod+l9fVmgWJMcG3imqvDuqaumy+dYmos6A3wNrUQMNQGcDVSjXcvV/jRA3pvcZfOWqaB3fUFhvi38SQaX2IV1LFsmwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321489; c=relaxed/simple;
-	bh=O9eze3/Xwc/ji+cKXEagCMTc8AL45Jdq9HEYPVII6WA=;
+	s=arc-20240116; t=1711321490; c=relaxed/simple;
+	bh=qaV5Q5P5651uAwU8aG+4K2P5K2fm4DxWxlKQ+iu1GuE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nou1Vnwcy5OWVOXVQh/Si0O8vEEpeyO3Zk+6Xb2cy7KRMX2zwsDI/Pn8wOs2uuNGo5bOs5HyJyOHsxzFPBioSg6EDMBkdqQhBN73a6FOofzLREQZV32zG+ebLWlL1zNq/NdJCQFJfd1T/DhGVMU+Z/H1IScxauY5OVjHDM4Uh08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=osfYU/sj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0BB2C433A6;
-	Sun, 24 Mar 2024 23:04:47 +0000 (UTC)
+	 MIME-Version:Content-Type; b=tXYBlnkO2lNwqWyFwhk5gFY0zIkdbdIbQ2+xEvCuiyiUWCP9NMAbuRgpDF+jE1ZUoVZBiwZR6QMMavwsf1JQbNjHu8L3Vj+4I8WyIgxlETb2WfRKsqxipa9Vav0GJqg6GnF4SZfE30hcMkGpuFyW9D/R7anzypRf6oCLXg1m4V0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pOk0ydXJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4546C43394;
+	Sun, 24 Mar 2024 23:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321488;
-	bh=O9eze3/Xwc/ji+cKXEagCMTc8AL45Jdq9HEYPVII6WA=;
+	s=k20201202; t=1711321489;
+	bh=qaV5Q5P5651uAwU8aG+4K2P5K2fm4DxWxlKQ+iu1GuE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=osfYU/sjL2pUl24Fc/ujvKVXiobfBsaA5+l9zrTILQ2YXAEK3t9rnfLbEw3KoLWnf
-	 sX8/u8nAAQP8SgiVWqppRVhMgCIkA/6RrJKhNDFsJg2lRlxpfILCuTp1WNpfiqdg/O
-	 93fU3Mq7H3upbS7emA4BIGmqYfVNtppj6yShg4gdzZynYpDgRTTsNxSlRH50PwddEr
-	 kBAXXlVwmyM8vasP1fysTg4nG24X1CbR3Pl6EUPamiaZvj8CNqJKKq1g9LGgsYEb7r
-	 Mfkc0hucJYLii1E6aktOn6jNImmo7MASj+8+UdtmvGKcywEI3nMkskFC4D3ruR52o2
-	 hAfrs9MUesNhg==
+	b=pOk0ydXJ4BbJ/EAu/PbAjfNOYM2LeQWBiQC51YrowpoZocAZBg9eO+dNd+vmDjNfg
+	 uvmEiIyfBnw5wCKeWlI66N+CLLQh15a2OGsqb4BK/Pn7wxgzqA4UQYswg7Y5T/fTR4
+	 gcyuIC1K6lqJExBXrUBdKViWSMlpfidyQ2dYAHCahWOfgmwKJSPjHnLf86+Pj0Nkll
+	 mjGgRmy/Kt9YXP/uX1jUruVzMqhe5CjfJMAhvuu4SuWfuxctVJHgmsxzwNHo/ik2ab
+	 GKK2tJwAmo4ZcttQNXWiuWQqStLEjnhuEWvmOzi14YUqaPo+aLZXAP5p849qFbMdjN
+	 i90dSQLXhDrlg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eugen Hristev <eugen.hristev@collabora.com>,
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 213/638] arm64: dts: mediatek: mt8186: fix VENC power domain clocks
-Date: Sun, 24 Mar 2024 18:54:10 -0400
-Message-ID: <20240324230116.1348576-214-sashal@kernel.org>
+Subject: [PATCH 6.6 214/638] arm64: dts: mediatek: mt7622: add missing "device_type" to memory nodes
+Date: Sun, 24 Mar 2024 18:54:11 -0400
+Message-ID: <20240324230116.1348576-215-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -58,40 +59,56 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Eugen Hristev <eugen.hristev@collabora.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 09860910c589a3bb3b5268ff6f704cf6b18ada73 ]
+[ Upstream commit 99d100e00144bc01b49a697f4bc4398f2f7e7ce4 ]
 
-The larb clock is in fact a subsys clock, so it must be prefixed by
-'subsys-' to be correctly identified in the driver.
+This fixes:
+arch/arm64/boot/dts/mediatek/mt7622-rfb1.dtb: /: memory@40000000: 'device_type' is a required property
+        from schema $id: http://devicetree.org/schemas/memory.yaml#
+arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dtb: /: memory@40000000: 'device_type' is a required property
+        from schema $id: http://devicetree.org/schemas/memory.yaml#
 
-Fixes: d9e43c1e7a38 ("arm64: dts: mt8186: Add power domains controller")
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20231228113245.174706-6-eugen.hristev@collabora.com
+Link: https://lore.kernel.org/r/20240122132357.31264-1-zajec5@gmail.com
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8186.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts | 1 +
+ arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts             | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-index 2fec6fd1c1a71..ee0feadbf9619 100644
---- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-@@ -1061,7 +1061,7 @@ power-domain@MT8186_POWER_DOMAIN_VENC {
- 						reg = <MT8186_POWER_DOMAIN_VENC>;
- 						clocks = <&topckgen CLK_TOP_VENC>,
- 							 <&vencsys CLK_VENC_CKE1_VENC>;
--						clock-names = "venc0", "larb";
-+						clock-names = "venc0", "subsys-larb";
- 						mediatek,infracfg = <&infracfg_ao>;
- 						#power-domain-cells = <0>;
- 					};
+diff --git a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+index 94e1cc9fbea33..7ef517e9e3746 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
++++ b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+@@ -75,6 +75,7 @@ led-1 {
+ 
+ 	memory@40000000 {
+ 		reg = <0 0x40000000 0 0x40000000>;
++		device_type = "memory";
+ 	};
+ 
+ 	reg_1p8v: regulator-1p8v {
+diff --git a/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts b/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
+index c435984ca7674..a75dc63a1362a 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
++++ b/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
+@@ -57,6 +57,7 @@ key-wps {
+ 
+ 	memory@40000000 {
+ 		reg = <0 0x40000000 0 0x20000000>;
++		device_type = "memory";
+ 	};
+ 
+ 	reg_1p8v: regulator-1p8v {
 -- 
 2.43.0
 
