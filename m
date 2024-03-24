@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-113396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A4238883FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:26:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B60A1888400
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:26:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF0751F293DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:26:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E292528546B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E2E1A3790;
-	Sun, 24 Mar 2024 22:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1021A3787;
+	Sun, 24 Mar 2024 22:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PZpDOvek"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BpP4OYIq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3331A2F7D;
-	Sun, 24 Mar 2024 22:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF2A1A379B;
+	Sun, 24 Mar 2024 22:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320197; cv=none; b=aEXJQbbnDl+K7fA8qtPMgc+zWZ5DYO5LfXIFMD/nDY6viP7J4w/z2yVvjzix/3c02ixRirDns5HaAuKFuH+en7FUrPIDtLp0xlxhtBDF4LYhg8IHNxolFI7Dss6CoEJ2knjNGhufICyrVcspscdY9JWS24IK4/FzAq9Rt64o1Q8=
+	t=1711320199; cv=none; b=iKjbJEfcWPaLnY1CWg2EtT2D3w35A88zR7V3G8bxW40JRW2gf4A0nzkTS5z8WiwYTbxtml9/tXI4LEskB00SoCeVIXyUZLrnWR/P5MNhvaUsdKQzj2RObiLVwgbF7Zx+LdYWmxKnVfpuAeCkv3lD9Llic8MuhBMJAsyU33Dgxng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320197; c=relaxed/simple;
-	bh=hG24ceIatTC20ZxBsqp5TxfOgfB2eDG8J9pF5Gn0hMg=;
+	s=arc-20240116; t=1711320199; c=relaxed/simple;
+	bh=dgPcNLZuZaYRNBaj2vBUMExAJm+g8A7+HV9u2F7EcWQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KhfPAtWWWBTWZDtytGDfBVKnpgkQ5trn3/y+QXPYNDA5xG3RPxLcJPqerrb5w0GAioab+dKxTxeKn/8Z4EqJtP8KikWVlNTd4c9OfcETFNrTjKVrtxkMiQXv4DmeBMZT0w0ebAbDbWTUMBtqjhNj78ZXKC0R4QKkUBujbcrEe0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PZpDOvek; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDC70C433A6;
-	Sun, 24 Mar 2024 22:43:16 +0000 (UTC)
+	 MIME-Version; b=kELG/l41UjYjHqcuvUMykeKV52+eid5NhFyivnQ1WTmHrXW0IiEW9fSvPAOhLxuHSfAYWER4tjkmeB7mAMBmS2Atprfji4wyaJNC4pNWlI9iPwYDYTQ9d7K1nk2bv5NB8zT2uG9rdnBOtIYssDnoHYZ4xiz8sfacHRySNt1ScHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BpP4OYIq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 091A9C43399;
+	Sun, 24 Mar 2024 22:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320197;
-	bh=hG24ceIatTC20ZxBsqp5TxfOgfB2eDG8J9pF5Gn0hMg=;
+	s=k20201202; t=1711320199;
+	bh=dgPcNLZuZaYRNBaj2vBUMExAJm+g8A7+HV9u2F7EcWQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PZpDOvekPr00C64OfPDyW1PVnfchoxl6/UQfM5//jQ10x4wgIS0eqHxHQGNDdfmwL
-	 jmB+z8obXXF8zARmygVOdTfun9zCin2Gm9R//sJs47ZQCT0Zc+9kqTOi/87V1nLs8R
-	 Ao/sgGtJBVBZExUFb+CXgqkXOXPE8Y7E97MkYGvgkFBXyUqIc0e1kM5EXIo/tFSqte
-	 libNMD900ld5Cw+Vp/4H8VgGEDoXq33Gg/8I/muBb2Fm4wVWw9nnv/doW4Aa439nkv
-	 WZ8sVkdHgOGr8rrswILBNlj3Y5amyR6D1jAnDWyDZV/3JzVSSGlKcPnrTzcOWzDMek
-	 tHllpbTDkcfKA==
+	b=BpP4OYIqmXpuzOzgpZ/UdhrLtpRzDB4mF89pmnBwrLGxgPeyjd5NrgOiTwUNG5KfR
+	 lYrx5GAjtwaTopjeL2pnnfx06SnPmN47V7q/5e7r4kHsUcmAkX73TPEGKwQOJAYaJ+
+	 F3UzehG8lhUDGy1rLi9Nr4cAdwmlcB2jpS1etkbtYQRJZ3xuN5zCckfO403cbdPqeW
+	 qYxNIlMTODvpaMLHKW8uVlrFZYopslqWkbxSwxfxWnmwATDGrx4bVrHzYhZuR0kylh
+	 au72vAXFwwGxxiodlGikogps5M8DQX46wpNEXem902bSk0tLJt12U2pWAv2KzS8Wrh
+	 IQ6lsrRt2Z0bg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Gabor Juhos <j4g8y7@gmail.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Sandipan Das <sandipan.das@amd.com>,
+	Ian Rogers <irogers@google.com>,
+	ananth.narayan@amd.com,
+	ravi.bangoria@amd.com,
+	eranian@google.com,
+	Namhyung Kim <namhyung@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 505/715] clk: qcom: gcc-ipq5018: fix register offset for GCC_UBI0_AXI_ARES reset
-Date: Sun, 24 Mar 2024 18:31:24 -0400
-Message-ID: <20240324223455.1342824-506-sashal@kernel.org>
+Subject: [PATCH 6.8 506/715] perf vendor events amd: Fix Zen 4 cache latency events
+Date: Sun, 24 Mar 2024 18:31:25 -0400
+Message-ID: <20240324223455.1342824-507-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,44 +66,229 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Gabor Juhos <j4g8y7@gmail.com>
+From: Sandipan Das <sandipan.das@amd.com>
 
-[ Upstream commit 7d474b43087aa356d714d39870c90d77fc6f1186 ]
+[ Upstream commit 498d3486376befe4e82b5334d44bbc86b1982ee4 ]
 
-The current register offset used for the GCC_UBI0_AXI_ARES reset
-seems wrong. Or at least, the downstream driver uses [1] the same
-offset which is used for other the GCC_UBI0_*_ARES resets.
+L3PMCx0AC and L3PMCx0AD, used in l3_xi_sampled_latency* events, have a
+quirk that requires them to be programmed with SliceId set to 0x3.
+Without this, the events do not count at all and affects dependent
+metrics such as l3_read_miss_latency.
 
-Change the code to use the same offset used in the downstream
-driver and also specify the reset bit explicitly to use the
-same format as the followup entries.
+If ThreadMask is not specified, the amd-uncore driver internally sets
+ThreadMask to 0x3, EnAllCores to 0x1 and EnAllSlices to 0x1 but does
+not set SliceId. Since SliceId must also be set to 0x3 in this case,
+specify all the other fields explicitly.
 
-1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4.r4/drivers/clk/qcom/gcc-ipq5018.c?ref_type=heads#L3773
+E.g.
 
-Fixes: e3fdbef1bab8 ("clk: qcom: Add Global Clock controller (GCC) driver for IPQ5018")
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Link: https://lore.kernel.org/r/20240225-gcc-ipq5018-register-fixes-v1-3-3c191404d9f0@gmail.com
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+  $ sudo perf stat -e l3_xi_sampled_latency.all,l3_xi_sampled_latency_requests.all -a sleep 1
+
+Before:
+
+   Performance counter stats for 'system wide':
+
+                   0      l3_xi_sampled_latency.all
+                   0      l3_xi_sampled_latency_requests.all
+
+         1.005155399 seconds time elapsed
+
+After:
+
+   Performance counter stats for 'system wide':
+
+             921,446      l3_xi_sampled_latency.all
+              54,210      l3_xi_sampled_latency_requests.all
+
+         1.005664472 seconds time elapsed
+
+Fixes: 5b2ca349c313 ("perf vendor events amd: Add Zen 4 uncore events")
+Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+Reviewed-by: Ian Rogers <irogers@google.com>
+Cc: ananth.narayan@amd.com
+Cc: ravi.bangoria@amd.com
+Cc: eranian@google.com
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/r/20240301084431.646221-1-sandipan.das@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/gcc-ipq5018.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../pmu-events/arch/x86/amdzen4/cache.json    | 56 +++++++++++++++++++
+ tools/perf/pmu-events/jevents.py              |  4 ++
+ 2 files changed, 60 insertions(+)
 
-diff --git a/drivers/clk/qcom/gcc-ipq5018.c b/drivers/clk/qcom/gcc-ipq5018.c
-index 5e81cfa77293a..e2bd54826a4ce 100644
---- a/drivers/clk/qcom/gcc-ipq5018.c
-+++ b/drivers/clk/qcom/gcc-ipq5018.c
-@@ -3632,7 +3632,7 @@ static const struct qcom_reset_map gcc_ipq5018_resets[] = {
- 	[GCC_SYSTEM_NOC_BCR] = { 0x26000, 0 },
- 	[GCC_TCSR_BCR] = { 0x28000, 0 },
- 	[GCC_TLMM_BCR] = { 0x34000, 0 },
--	[GCC_UBI0_AXI_ARES] = { 0x680},
-+	[GCC_UBI0_AXI_ARES] = { 0x68010, 0 },
- 	[GCC_UBI0_AHB_ARES] = { 0x68010, 1 },
- 	[GCC_UBI0_NC_AXI_ARES] = { 0x68010, 2 },
- 	[GCC_UBI0_DBG_ARES] = { 0x68010, 3 },
+diff --git a/tools/perf/pmu-events/arch/x86/amdzen4/cache.json b/tools/perf/pmu-events/arch/x86/amdzen4/cache.json
+index ecbe9660b2b31..e6d710cf3ce29 100644
+--- a/tools/perf/pmu-events/arch/x86/amdzen4/cache.json
++++ b/tools/perf/pmu-events/arch/x86/amdzen4/cache.json
+@@ -676,6 +676,10 @@
+     "EventCode": "0xac",
+     "BriefDescription": "Average sampled latency when data is sourced from DRAM in the same NUMA node.",
+     "UMask": "0x01",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -683,6 +687,10 @@
+     "EventCode": "0xac",
+     "BriefDescription": "Average sampled latency when data is sourced from DRAM in a different NUMA node.",
+     "UMask": "0x02",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -690,6 +698,10 @@
+     "EventCode": "0xac",
+     "BriefDescription": "Average sampled latency when data is sourced from another CCX's cache when the address was in the same NUMA node.",
+     "UMask": "0x04",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -697,6 +709,10 @@
+     "EventCode": "0xac",
+     "BriefDescription": "Average sampled latency when data is sourced from another CCX's cache when the address was in a different NUMA node.",
+     "UMask": "0x08",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -704,6 +720,10 @@
+     "EventCode": "0xac",
+     "BriefDescription": "Average sampled latency when data is sourced from extension memory (CXL) in the same NUMA node.",
+     "UMask": "0x10",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -711,6 +731,10 @@
+     "EventCode": "0xac",
+     "BriefDescription": "Average sampled latency when data is sourced from extension memory (CXL) in a different NUMA node.",
+     "UMask": "0x20",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -718,6 +742,10 @@
+     "EventCode": "0xac",
+     "BriefDescription": "Average sampled latency from all data sources.",
+     "UMask": "0x3f",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -725,6 +753,10 @@
+     "EventCode": "0xad",
+     "BriefDescription": "L3 cache fill requests sourced from DRAM in the same NUMA node.",
+     "UMask": "0x01",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -732,6 +764,10 @@
+     "EventCode": "0xad",
+     "BriefDescription": "L3 cache fill requests sourced from DRAM in a different NUMA node.",
+     "UMask": "0x02",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -739,6 +775,10 @@
+     "EventCode": "0xad",
+     "BriefDescription": "L3 cache fill requests sourced from another CCX's cache when the address was in the same NUMA node.",
+     "UMask": "0x04",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -746,6 +786,10 @@
+     "EventCode": "0xad",
+     "BriefDescription": "L3 cache fill requests sourced from another CCX's cache when the address was in a different NUMA node.",
+     "UMask": "0x08",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -753,6 +797,10 @@
+     "EventCode": "0xad",
+     "BriefDescription": "L3 cache fill requests sourced from extension memory (CXL) in the same NUMA node.",
+     "UMask": "0x10",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -760,6 +808,10 @@
+     "EventCode": "0xad",
+     "BriefDescription": "L3 cache fill requests sourced from extension memory (CXL) in a different NUMA node.",
+     "UMask": "0x20",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   },
+   {
+@@ -767,6 +819,10 @@
+     "EventCode": "0xad",
+     "BriefDescription": "L3 cache fill requests sourced from all data sources.",
+     "UMask": "0x3f",
++    "EnAllCores": "0x1",
++    "EnAllSlices": "0x1",
++    "SliceId": "0x3",
++    "ThreadMask": "0x3",
+     "Unit": "L3PMC"
+   }
+ ]
+diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+index 53ab050c8fa43..ce846f29c08d6 100755
+--- a/tools/perf/pmu-events/jevents.py
++++ b/tools/perf/pmu-events/jevents.py
+@@ -356,6 +356,10 @@ class JsonEvent:
+         ('UMask', 'umask='),
+         ('NodeType', 'type='),
+         ('RdWrMask', 'rdwrmask='),
++        ('EnAllCores', 'enallcores='),
++        ('EnAllSlices', 'enallslices='),
++        ('SliceId', 'sliceid='),
++        ('ThreadMask', 'threadmask='),
+     ]
+     for key, value in event_fields:
+       if key in jd and jd[key] != '0':
 -- 
 2.43.0
 
