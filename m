@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-113263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE95F8882EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:56:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DA538882F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:56:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BF671C2267F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:56:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D6AA1F22A9B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C771892B4;
-	Sun, 24 Mar 2024 22:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B97F2189A2D;
+	Sun, 24 Mar 2024 22:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WjJpLL18"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lhBtUHlZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00287189299;
-	Sun, 24 Mar 2024 22:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAED1189282;
+	Sun, 24 Mar 2024 22:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320063; cv=none; b=bqA5IYFeIAsiksmF+6HRwWSB+TUpaLzuJ+aRTTHBG6JCc8sXAdJuPWBgZnXBCeRE6Mz/L/VAKB5ZWtNuj28B9vLcILOhelRjV9yPOQ9DLlBCiJsBscYEgY4uZo4jLFKhtJ2j3280w3H8LUBimYxPSdtVxP5nnlbcQRS3Fi9mgNg=
+	t=1711320064; cv=none; b=ooMWPLC43mscegf/6NE+RKLqE7xn8bDsgZGcNHNnxInJASH+/mJgfY9JzQ1o+XxSLYVddB+ygUkuzI6gEFVs3XiuDbkHDcu0vbbG08NfA42c60xGi8ChzM9TtigejASi/YLskPbv2iKuB5utnCPt0DAjIeF5N2XhQeOJBMHWb/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320063; c=relaxed/simple;
-	bh=vwK9mT2SDzhQT/VK/uvqjMKc6ljiGp44qtXkgvlh3Js=;
+	s=arc-20240116; t=1711320064; c=relaxed/simple;
+	bh=VNH8aazt+hgmi98g0sVxWScnSlD7pb3NGFc4YISxvsA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CjbYkcgW0TYhskTZmLd+vQMZ2u6QoAH3ifWyOA2zjn+0tpDoMG48aul+PGH+5L3I78GkZPjlkIQthrC+1quOkTwEq926/Q32hk821etnpu1d7QFqB1o/pxC/ucl8O+BHWPSXCRJ7QVXOnFYqOAKCoFmUPRILGM6IPK9B+AUsqDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WjJpLL18; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26EFBC43390;
+	 MIME-Version; b=YBS7TEaqIzBFHtqrhS2ygtiLPb60pVaPXGsXI2i8Ry3q7kij8EAFoJ05E2Ku2t56kQSH6ZiXuop5Y5XkDBGDIqvQmCL68rSeUq/YaxKoMVI106ZT/0Y5B33vHM67UQoqpUaKQu46LPl/5SKDTjCzjq19qSZarOSW3WdMLaLwsB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lhBtUHlZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C609C433C7;
 	Sun, 24 Mar 2024 22:41:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320062;
-	bh=vwK9mT2SDzhQT/VK/uvqjMKc6ljiGp44qtXkgvlh3Js=;
+	s=k20201202; t=1711320063;
+	bh=VNH8aazt+hgmi98g0sVxWScnSlD7pb3NGFc4YISxvsA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WjJpLL18EQGnOpp86meQ1tarYk2LavsUV/j+FCiDGaREGeaoPcjQyJphCKNvGiGpJ
-	 vkonVi7rcgHp4WewDslNtUfEJtHtGl5kY5VXEkdwjCfF957Vdme32Xuzy+KtAuV/Yu
-	 t+obh3od9ZZsQ4ZI2f5Pis2b/OeXKzyG/J5pnrEwSyOHjazR72JaEwSHoVP+lteN0D
-	 l0H9gOoWzAf5Ofrs4ooHBr8VnTHQZWWoc17WiyfFynHDbSGglmc3oooQdGkBaKMVwH
-	 /OvpIc1uE+nPJDaHVbTeYtuqwdE96qcdiabORYjEzbzRE8Rl0rTyqDKlen3ImiW4ov
-	 FJ0Rc2+AZsdCg==
+	b=lhBtUHlZhal4e8XuhF2nFS4EoxLGLWyM29ZKEQPmw9bLLvd7hK19vkQP2vK270jnG
+	 DJSD7ian7wIVeFUAr5/EIvb4oS2vs5VyK7jGmx/MygyGDqizLTG5lmGwzwaMvNGr8w
+	 Y3ijdMpKeiVq09Aq7yjI+HYYqASpaJ7tePh0oaTdgkKBzJCfPcV+BfXkcyKTCCdeDU
+	 J1fbqn1Mc6ePpeLU/Sydap4QcuxFXK6o4NfIxW6f2ER7w4lhvJNaRAm50yPRvcLjrN
+	 5UWJt44pci4SoI6QJ/pN4vqf+KnzDY+zX6BYffMfDnIgYVbNxJPqgVKkLwcLbFr2ib
+	 8dIbZqewDmQnQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Robert Foss <rfoss@kernel.org>,
+Cc: Julien Massot <julien.massot@collabora.com>,
+	Jai Luthra <j-luthra@ti.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 372/715] media: tc358743: register v4l2 async device only after successful setup
-Date: Sun, 24 Mar 2024 18:29:11 -0400
-Message-ID: <20240324223455.1342824-373-sashal@kernel.org>
+Subject: [PATCH 6.8 373/715] media: cadence: csi2rx: use match fwnode for media link
+Date: Sun, 24 Mar 2024 18:29:12 -0400
+Message-ID: <20240324223455.1342824-374-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,48 +64,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
+From: Julien Massot <julien.massot@collabora.com>
 
-[ Upstream commit 87399f1ff92203d65f1febf5919429f4bb613a02 ]
+[ Upstream commit 448699c522af9e3266f168c3f51f4c3713c7bee1 ]
 
-Ensure the device has been setup correctly before registering the v4l2
-async device, thus allowing userspace to access.
+Since commit 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching"),
+async connections are matched using the async sub-device fwnode, not that
+of the endpoint. Fix this by using the fwnode of the connection match to
+find the pad.
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Robert Foss <rfoss@kernel.org>
-Fixes: 4c5211a10039 ("[media] tc358743: register v4l2 asynchronous subdevice")
-Signed-off-by: Robert Foss <rfoss@kernel.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240110090111.458115-1-alexander.stein@ew.tq-group.com
+Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
+Signed-off-by: Julien Massot <julien.massot@collabora.com>
+Reviewed-by: Jai Luthra <j-luthra@ti.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tc358743.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/media/platform/cadence/cdns-csi2rx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
-index 2785935da497b..558152575d102 100644
---- a/drivers/media/i2c/tc358743.c
-+++ b/drivers/media/i2c/tc358743.c
-@@ -2091,9 +2091,6 @@ static int tc358743_probe(struct i2c_client *client)
- 	state->mbus_fmt_code = MEDIA_BUS_FMT_RGB888_1X24;
+diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
+index fead5426830e8..0ea5fa956fe9a 100644
+--- a/drivers/media/platform/cadence/cdns-csi2rx.c
++++ b/drivers/media/platform/cadence/cdns-csi2rx.c
+@@ -468,7 +468,7 @@ static int csi2rx_async_bound(struct v4l2_async_notifier *notifier,
+ 	struct csi2rx_priv *csi2rx = v4l2_subdev_to_csi2rx(subdev);
  
- 	sd->dev = &client->dev;
--	err = v4l2_async_register_subdev(sd);
--	if (err < 0)
--		goto err_hdl;
- 
- 	mutex_init(&state->confctl_mutex);
- 
-@@ -2151,6 +2148,10 @@ static int tc358743_probe(struct i2c_client *client)
- 	if (err)
- 		goto err_work_queues;
- 
-+	err = v4l2_async_register_subdev(sd);
-+	if (err < 0)
-+		goto err_work_queues;
-+
- 	v4l2_info(sd, "%s found @ 0x%x (%s)\n", client->name,
- 		  client->addr << 1, client->adapter->name);
- 
+ 	csi2rx->source_pad = media_entity_get_fwnode_pad(&s_subdev->entity,
+-							 s_subdev->fwnode,
++							 asd->match.fwnode,
+ 							 MEDIA_PAD_FL_SOURCE);
+ 	if (csi2rx->source_pad < 0) {
+ 		dev_err(csi2rx->dev, "Couldn't find output pad for subdev %s\n",
 -- 
 2.43.0
 
