@@ -1,228 +1,241 @@
-Return-Path: <linux-kernel+bounces-112580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F6B887BA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:20:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D88EF887BA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A278828238B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:20:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A1371F216CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A9CC13D;
-	Sun, 24 Mar 2024 04:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC4413AEE;
+	Sun, 24 Mar 2024 04:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EeTEmael"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Djw6QFtO"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71897C147
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 04:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C2E12E63;
+	Sun, 24 Mar 2024 04:37:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711254011; cv=none; b=AWXQpHy9vmSBiISN64ufp2VlWBWO71sJRzY5HibXZ6kBxgdt/TL51ry/fSJr4ZCjMcgIEABBdQtVlTWIoVhWWOZ8GXnhssvAmAINuUsbMfTyA0beKr1WfzyUAQ4HQpu9oiY1mxO2OydaJh27q6H1cUurjLbPmncC79x0romSOvQ=
+	t=1711255081; cv=none; b=uTSgpf41G0871VitisSgMoYQoZgJA0/O7B1eXYQoBmpnGS/GmpMhXmPVhmkKDZ5wdHJB+Rbb7T/o55ksojW6q0aSVKHLm1daSEIY/AES999mdqEBTW12Jsok71sJfab4wqM25ImpfmJ1dSTwjC6RpUEmN/QNAy1x7+aytNX2kW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711254011; c=relaxed/simple;
-	bh=95ms0aFUD9O9975yQNDa5gcNkITjTEOulTrT0kmC1ZM=;
+	s=arc-20240116; t=1711255081; c=relaxed/simple;
+	bh=906kS615/8DRiV00fgC7GfhzJnASWdGCBuP8l04Xl+4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O0df6gInFP3W0DaYXc3U3sy4LW+2P26yikobKqljTMXCANattwBHZiBKzQgn6B+ozGUg7QJ43rjQueWJrkeI0j4AoIrxjpKX+5lRu/tUudbppW/Sck8AuIAet4WyraCs4WM9Tz+KeRyQQmLrqEsDFhVSbshCl+n1oLowNIUJM4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EeTEmael; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-428405a0205so197231cf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 21:20:09 -0700 (PDT)
+	 To:Cc:Content-Type; b=boZAg1KACL9w6T1CNzoe04nTE+sd/kgARMlikFLUbN5WhH+i4h/45aI8UjkcjLylUbtWDO7tgr35xlic4yudBEgjIPbSx0aWAWgHwsNANbV6r89iO6O3+3sLFhQqeBXXZPFusC+Yz/X7oHRIFLNwlij0j+1esqTcjK4OX+KqinE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Djw6QFtO; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33e570ef661so1691379f8f.1;
+        Sat, 23 Mar 2024 21:37:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711254008; x=1711858808; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711255078; x=1711859878; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=11ZNxGSEABtgKanbMQX/CUTIfZEWkcBe4fYAq+k7twQ=;
-        b=EeTEmaelXVK6ZNM9cb7bp+7VdBNFBGhEPTo/a/0o8NujOR79zSzfgpXou5+tUEHd0L
-         Dk5GcMAnC0Tt9saMuinzJRSzuvcFCIrZPxBlgiKzg7mz5Cobo489dbtWI5VZ8M+GsGCk
-         nNByGQ9CYqe5cqarHZGndkuwtefUo5rxkDZZf5bA3nB/UiosxzJ7S9N+cs80IOTtjieO
-         KYQ7rWcb2g4pMCBBfT1w6xnQ/ItsdMBkJvWpguniWna0M6O0r1WETvFxNHt1+NVUUrT+
-         hwJolA4r5c5sSmUNeP5PShs811ujWjwdehrxspWlW8lHyUSBaNdAN/rziPxMPtEvUQh2
-         oEOg==
+        bh=3FjIyFLwcnojMnYc/PlKFyC/NgbZnhVcwzfLrMPPreM=;
+        b=Djw6QFtOeHoALtans64M98QZZnckUtooYCSbFvjOZ+vxgP1OD/X0CfhiTqDs2k+Cdm
+         aHpKZ8EktwpCDjavzmd7Mc5TAGx4S/OAZutufrLjwH/sTGnbj753vJl9mz/fHMcaNp3J
+         m/qcbHqNxJ8R9BVZ1uidLrjWL29l3Z/jJwDXFjmDxezhcC3Uq2P0b1RPzuWaITTcb0Aq
+         Alr4VocJuXmBxqwTDzovcBKhFpipUBY3X/Uw3YDPKysk9z5RWHBug10/A7focoVxWM7c
+         1TYv8ZDRJDoozPz0G70XEBSsgb1WqFFdCAFjaGyUsZzfVR/GpRjO+Q/hISuMr/wJzAsm
+         wupA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711254008; x=1711858808;
+        d=1e100.net; s=20230601; t=1711255078; x=1711859878;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=11ZNxGSEABtgKanbMQX/CUTIfZEWkcBe4fYAq+k7twQ=;
-        b=omalatdObRzJc/2dazHZW76O6y6YmXNRkqvITEqEyDsxkSXV7/6fV46of6d3cgfwZN
-         5Efn2PW699+4f53bTbI2A3hAdlCbNj1zXTaALbt//sRMDUr1WMr7Q8FxzW0vYziVWBks
-         rC6BwhNMoef5BdU3Ejz/wTHB9aLw8PL74HEFYrrh3JnUySGEor1QLq1tqX2lE98U99nK
-         BNi3FzZzsxV/xxbJyYMIsaDjRBESzQEI41OI/D1EXvZm9Ff1hUAUUvZ9x1h5x3HWm0R4
-         7GatBENR/M3uBDQh5BiE7aUMIVgbD24gSGnXUeXnCqYNKpmK+Nbfix0wFDokrx08/kRP
-         R5Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCWacz1KhEo1fegM/+u73uetUEGdnUpKYAka0Cr9UyUnZwZb59ABkjJ5ZvjKzBumlyge8SqG8YKg5ANArx7/XmZrBwmGlMSMOXzM0f+x
-X-Gm-Message-State: AOJu0YzLesq7KO74KiHYbnS5/SepMKQ6VBmfgV0w37ze7L/KHTWiQmT7
-	HcBM5eqrQloI3NCwL4O/11kDe7XjfS3J0eL4J1f336nDENEV3jZgU4p0szLxrGLRsjLr1Wr9dAD
-	whI+oU0DFkgXyciqAeF4PC79hgY5YtHLHyLDU
-X-Google-Smtp-Source: AGHT+IH0LnzQsJ51QAgtlV6rhO7iPkQPlSuXshI9DyzE+30UBUayfKD/oAf2LKrmlDVM4f2QpeJOkJN5d1YcVgBp2fI=
-X-Received: by 2002:a05:622a:606:b0:431:2648:ac30 with SMTP id
- z6-20020a05622a060600b004312648ac30mr834239qta.28.1711254008147; Sat, 23 Mar
- 2024 21:20:08 -0700 (PDT)
+        bh=3FjIyFLwcnojMnYc/PlKFyC/NgbZnhVcwzfLrMPPreM=;
+        b=kI/wehihM2d2TxGsK9LseHz07IAqtnd0NnVbFp7pcc+Msyx+JndnfIZR5El0QMK9T9
+         pKPxFeVFo1tXjwBQNYo+7BGFvaU3S+BDZChYFAeiXEchy2EjAS20nPmMYWWPXG6Xoago
+         bbS7Sfg+HZmnj57Vqos34J/1Q1jt/6QSqQh8knOf6iwQgGq5OHYzb6rlzn0iBPP8jB4D
+         ltGMGZRLsJRHFjqA7HHxVENkh4InjIvqsiYpKlCIayzynMudx4oqgzGi0ys1RleL9ug0
+         FhRnRizbt6zxZQxlfhlgdRaXrrblaYQFLADymYsVxQ7NVE4IcDj7MK8hzwZ/3pqUOXxa
+         yK1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXIVBwaKq8brkUMXjBcaYmQmNd3AV8OOFl8VquLhxRr5eFxKm7yANueztchyvM7ByLzUtFOoDGJHdvoJ8+o2Oy5FKHP3fWWNofESANyWw9lB09IXFbms5MKMSr50w0MJ2zdVYgBqxQFLnfujWlfN939+sIe0Wq3Yf1lm2bCkcE0JqmK
+X-Gm-Message-State: AOJu0YyakFAIiiD2XSPRLsC8n6EfilgFWD4/txNPQrdRKHTYFliAdeIH
+	WBuPjhAvylnCiyOZ1Dygqd3h91db+9zfmbIAbnEc7HC1vZWD42e3kt9QXbRVMtIxVfjWfZFtRKo
+	zF/GvJvY8FTXsLDmJcjumlJQBs68=
+X-Google-Smtp-Source: AGHT+IFs5tXWv1XRnWaBCMTOcpc7RHHBXxQsZW3bM6Nw+leujRpHrWIXGmHjvLLyU4B9wZn26yTCSxqllOEkGAEK6H8=
+X-Received: by 2002:a05:600c:5246:b0:414:630:26be with SMTP id
+ fc6-20020a05600c524600b00414063026bemr2374402wmb.31.1711255077851; Sat, 23
+ Mar 2024 21:37:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209031441.943012-1-weilin.wang@intel.com> <20240209031441.943012-5-weilin.wang@intel.com>
-In-Reply-To: <20240209031441.943012-5-weilin.wang@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Sat, 23 Mar 2024 21:19:57 -0700
-Message-ID: <CAP-5=fVUJayXeKwtCnSjoUrw0HMJJa00RYrMhm-stjUwxDyefQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 04/15] find_bit: add _find_last_and_bit() to
- support finding the most significant set bit
-To: weilin.wang@intel.com
-Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
-	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
-	Mark Rutland <mark.rutland@arm.com>
+References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
+ <20240322-hid-bpf-sleepable-v5-2-179c7b59eaaa@kernel.org> <CAP01T76oYpkNdgxXo+6v53afjObvYU4LWRLfkg2S7pNivzaEvg@mail.gmail.com>
+ <CAADnVQL_mQgN8uKsNFR0FBtWoaweCkzXw03EvbnQ-iFVWvXxuw@mail.gmail.com> <CAP01T753_FjFdj1CbCX5Bh1itYUWf8DUh41F7R_7Fdb=2SEL8g@mail.gmail.com>
+In-Reply-To: <CAP01T753_FjFdj1CbCX5Bh1itYUWf8DUh41F7R_7Fdb=2SEL8g@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 23 Mar 2024 21:37:46 -0700
+Message-ID: <CAADnVQ+5mSEW-LJwS30hED1cJeHOhqfCTKdBzYCcRd8EiVNvtA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/6] bpf/verifier: add bpf_timer as a kfunc
+ capable type
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
+On Sat, Mar 23, 2024 at 9:01=E2=80=AFPM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> From: Weilin Wang <weilin.wang@intel.com>
+> On Sun, 24 Mar 2024 at 04:53, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Mar 22, 2024 at 9:31=E2=80=AFAM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Fri, 22 Mar 2024 at 15:57, Benjamin Tissoires <bentiss@kernel.org>=
+ wrote:
+> > > >
+> > > > We need to extend the bpf_timer API, but the way forward relies on =
+kfuncs.
+> > > > So make bpf_timer known for kfuncs from the verifier PoV
+> > > >
+> > > > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > > >
+> > > > ---
+> > > >
+> > > > changes in v5:
+> > > > - also check for the reg offset
+> > > >
+> > > > changes in v4:
+> > > > - enforce KF_ARG_PTR_TO_TIMER to be of type PTR_TO_MAP_VALUE
+> > > >
+> > > > new in v3 (split from v2 02/10)
+> > > > ---
+> > > >  kernel/bpf/verifier.c | 23 +++++++++++++++++++++++
+> > > >  1 file changed, 23 insertions(+)
+> > > >
+> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > > index 63749ad5ac6b..24a604e26ec7 100644
+> > > > --- a/kernel/bpf/verifier.c
+> > > > +++ b/kernel/bpf/verifier.c
+> > > > @@ -10826,6 +10826,7 @@ enum {
+> > > >         KF_ARG_LIST_NODE_ID,
+> > > >         KF_ARG_RB_ROOT_ID,
+> > > >         KF_ARG_RB_NODE_ID,
+> > > > +       KF_ARG_TIMER_ID,
+> > > >  };
+> > > >
+> > > >  BTF_ID_LIST(kf_arg_btf_ids)
+> > > > @@ -10834,6 +10835,7 @@ BTF_ID(struct, bpf_list_head)
+> > > >  BTF_ID(struct, bpf_list_node)
+> > > >  BTF_ID(struct, bpf_rb_root)
+> > > >  BTF_ID(struct, bpf_rb_node)
+> > > > +BTF_ID(struct, bpf_timer_kern)
+> > > >
+> > > >  static bool __is_kfunc_ptr_arg_type(const struct btf *btf,
+> > > >                                     const struct btf_param *arg, in=
+t type)
+> > > > @@ -10877,6 +10879,12 @@ static bool is_kfunc_arg_rbtree_node(const=
+ struct btf *btf, const struct btf_par
+> > > >         return __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_RB_NODE_ID)=
+;
+> > > >  }
+> > > >
+> > > > +static bool is_kfunc_arg_timer(const struct btf *btf, const struct=
+ btf_param *arg)
+> > > > +{
+> > > > +       bool ret =3D __is_kfunc_ptr_arg_type(btf, arg, KF_ARG_TIMER=
+_ID);
+> > > > +       return ret;
+> > > > +}
+> > > > +
+> > > >  static bool is_kfunc_arg_callback(struct bpf_verifier_env *env, co=
+nst struct btf *btf,
+> > > >                                   const struct btf_param *arg)
+> > > >  {
+> > > > @@ -10946,6 +10954,7 @@ enum kfunc_ptr_arg_type {
+> > > >         KF_ARG_PTR_TO_NULL,
+> > > >         KF_ARG_PTR_TO_CONST_STR,
+> > > >         KF_ARG_PTR_TO_MAP,
+> > > > +       KF_ARG_PTR_TO_TIMER,
+> > > >  };
+> > > >
+> > > >  enum special_kfunc_type {
+> > > > @@ -11102,6 +11111,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_=
+env *env,
+> > > >         if (is_kfunc_arg_map(meta->btf, &args[argno]))
+> > > >                 return KF_ARG_PTR_TO_MAP;
+> > > >
+> > > > +       if (is_kfunc_arg_timer(meta->btf, &args[argno]))
+> > > > +               return KF_ARG_PTR_TO_TIMER;
+> > > > +
+> > > >         if ((base_type(reg->type) =3D=3D PTR_TO_BTF_ID || reg2btf_i=
+ds[base_type(reg->type)])) {
+> > > >                 if (!btf_type_is_struct(ref_t)) {
+> > > >                         verbose(env, "kernel function %s args#%d po=
+inter type %s %s is not supported\n",
+> > > > @@ -11735,6 +11747,7 @@ static int check_kfunc_args(struct bpf_veri=
+fier_env *env, struct bpf_kfunc_call_
+> > > >                 case KF_ARG_PTR_TO_CALLBACK:
+> > > >                 case KF_ARG_PTR_TO_REFCOUNTED_KPTR:
+> > > >                 case KF_ARG_PTR_TO_CONST_STR:
+> > > > +               case KF_ARG_PTR_TO_TIMER:
+> > > >                         /* Trusted by default */
+> > > >                         break;
+> > > >                 default:
+> > > > @@ -12021,6 +12034,16 @@ static int check_kfunc_args(struct bpf_ver=
+ifier_env *env, struct bpf_kfunc_call_
+> > > >                         if (ret)
+> > > >                                 return ret;
+> > > >                         break;
+> > > > +               case KF_ARG_PTR_TO_TIMER:
+> > > > +                       if (reg->type !=3D PTR_TO_MAP_VALUE) {
+> > > > +                               verbose(env, "arg#%d doesn't point =
+to a map value\n", i);
+> > > > +                               return -EINVAL;
+> > > > +                       }
+> > > > +                       if (reg->off) {
+> > > > +                               verbose(env, "arg#%d offset can not=
+ be greater than 0\n", i);
+> > > > +                               return -EINVAL;
+> > > > +                       }
+> > >
+> > > This won't be correct. You don't really check whether the timer exist=
+s
+> > > at reg->off (and if you did, this would still restrict it to 0 offset=
+,
+> > > and not check the variable offset which would be non-zero). What I
+> > > would suggest is calling process_timer_func (see how dynptr calls the
+> > > same underlying process_dynptr_func to enforce type invariants). This
+> > > would allow sharing the same checks and avoid bugs from creeping in.
+> > > It does all checks wrt constant/variable offset and looking up the
+> > > timer field offset and matching it against the one in the pointer.
+> >
+> > Observation is correct. The patch is buggy,
+> > but the suggestion to follow process_dynptr_func() will lead
+> > to unnecessary complexity.
+> > dynptr-s are on stack with plenty of extra checks.
 >
-> This function is required for more efficient PMU counter assignment.
+> The suggestion was to call process_timer_func, not process_dynptr_func.
 >
-> When we use bitmap to log available PMU counters and counters that suppor=
-t a
-> given event, we want to find a most significant set bit so that we could
-> starting assigning counters with larger index first. This is helpful
-> because counters with smaller indexes usually are more generic and
-> support more events.
+> > In this case bpf_timer is in map_value.
+> > Much simpler is to follow KF_ARG_PTR_TO_MAP approach.
 >
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/include/linux/find.h | 18 ++++++++++++++++++
->  tools/lib/find_bit.c       | 33 +++++++++++++++++++++++++++++++++
->  2 files changed, 51 insertions(+)
->
-> diff --git a/tools/include/linux/find.h b/tools/include/linux/find.h
-> index 38c0a542b0e2..fce336ec2b96 100644
-> --- a/tools/include/linux/find.h
-> +++ b/tools/include/linux/find.h
-> @@ -18,6 +18,8 @@ extern unsigned long _find_first_bit(const unsigned lon=
-g *addr, unsigned long si
->  extern unsigned long _find_first_and_bit(const unsigned long *addr1,
->                                          const unsigned long *addr2, unsi=
-gned long size);
->  extern unsigned long _find_first_zero_bit(const unsigned long *addr, uns=
-igned long size);
-> +extern unsigned long _find_last_and_bit(const unsigned long *addr1,
-> +                                        const unsigned long *addr2, unsi=
-gned long size);
->
->  #ifndef find_next_bit
->  /**
-> @@ -174,4 +176,20 @@ unsigned long find_first_zero_bit(const unsigned lon=
-g *addr, unsigned long size)
->  }
->  #endif
->
-> +#ifndef find_last_and_bit
-> +static inline
-> +unsigned long find_last_and_bit(const unsigned long *addr1,
-> +                               const unsigned long *addr2,
-> +                               unsigned long size)
-> +{
-> +       if (small_const_nbits(size)) {
-> +               unsigned long val =3D *addr1 & *addr2 & GENMASK(size - 1,=
- 0);
-> +
-> +               return val ? __fls(val) : size;
-> +       }
-> +
-> +       return _find_last_and_bit(addr1, addr2, size);
-> +}
-> +#endif
-> +
->  #endif /*__LINUX_FIND_H_ */
-> diff --git a/tools/lib/find_bit.c b/tools/lib/find_bit.c
-> index 6a3dc167d30e..e475a7368e36 100644
-> --- a/tools/lib/find_bit.c
-> +++ b/tools/lib/find_bit.c
-> @@ -67,6 +67,27 @@ out:                                                  =
-                       \
->         sz;                                                              =
-       \
->  })
->
-> +/*
-> + * Common helper for find_bit() function family
-> + * @FETCH: The expression that fetches and pre-processes each word of bi=
-tmap(s)
-> + * @MUNGE: The expression that post-processes a word containing found bi=
-t (may be empty)
-> + * @size: The bitmap size in bits
-> + */
-> +#define FIND_LAST_BIT(FETCH, MUNGE, size)                               =
-       \
-> +({                                                                      =
-       \
-> +       unsigned long idx, val, sz =3D (size);                           =
-         \
-> +                                                                        =
-       \
-> +       for (idx =3D ((size - 1) / BITS_PER_LONG); idx >=3D 0; idx--) {  =
-                   \
-> +               val =3D (FETCH);                                         =
-         \
-> +               if (val) {                                               =
-       \
-> +                       sz =3D min(idx * BITS_PER_LONG + __fls(MUNGE(val)=
-), sz);  \
-> +                       break;                                           =
-       \
-> +               }                                                        =
-       \
-> +       }                                                                =
-       \
-> +                                                                        =
-       \
-> +       sz;                                                              =
-       \
-> +})
-> +
->  #ifndef find_first_bit
->  /*
->   * Find the first set bit in a memory region.
-> @@ -121,3 +142,15 @@ unsigned long _find_next_zero_bit(const unsigned lon=
-g *addr, unsigned long nbits
->         return FIND_NEXT_BIT(~addr[idx], /* nop */, nbits, start);
->  }
->  #endif
-> +
-> +#ifndef find_last_and_bit
-> +/*
-> + * Find the last set bit in two memory regions.
-> + */
-> +unsigned long _find_last_and_bit(const unsigned long *addr1,
-> +                                 const unsigned long *addr2,
-> +                                 unsigned long size)
-> +{
-> +       return FIND_LAST_BIT(addr1[idx] & addr2[idx], /* nop */, size);
+> What I meant by the example was that dynptr handling does the same
+> thing for kfuncs and helpers (using the same function), so timer
+> arguments should do the same (i.e. use process_timer_func), which will
+> do all checks for constant offset (ensuring var_off is tnum_is_const)
+> and match it against btf_record->timer_off.
 
-The "/* nop */" argument is weird but existing style.
-
-Reviewed-by: Ian Rogers <irogers@google.com>
-
-Thanks,
-Ian
-
-> +}
-> +#endif
-> \ No newline at end of file
-> --
-> 2.42.0
->
+I don't follow. Please elaborate with a patch.
+The var_off and off is a part of the bug, but it's not the biggest part of =
+it.
 
