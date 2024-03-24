@@ -1,194 +1,108 @@
-Return-Path: <linux-kernel+bounces-112855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FD5B887F0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:09:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293BF887F0C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:10:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1CB31C210A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:09:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDCAFB2102C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A40C3FE37;
-	Sun, 24 Mar 2024 21:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A61B11CF87;
+	Sun, 24 Mar 2024 21:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="ec8Kipxb";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VAL8N/sF"
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OnF8jzaw"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E481C291;
-	Sun, 24 Mar 2024 21:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9B41C294
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 21:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711314521; cv=none; b=PxHBZ2Xw9fG2kjYV28z1ntiELn2k8E9IOqBC5iYtyP2LzgpWaAG9ECMrwemWvUKhIhi0Bo8df8V7JStY935GaPj67tiEFoIrZ6vWVz3VaeYdYH3qNj1FAioHj547QahIcDgFDWnzZrb0VLf+QHdjdQkIqxByLongjsw6oR/eBl8=
+	t=1711314558; cv=none; b=gCfxN1QdvlClJFKIG0qhlQzaahbv/GSwAIfrgXFGMt3FiwGvIADxWlPC7PxP+Nj3VIGD71CFq/FU85U+QbuHqBGmAS3AKpplc+75+rv8VW95GBp6NW1zPjdkFviBomU9syByYxeXXqu7k2go5u1hgQYRLk7O7plxBDMTs7mHsYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711314521; c=relaxed/simple;
-	bh=LPqpb/BTLXp5dEMIZD2PSr8NXmFsTBoT9dhSycYnLhM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QzmPP4+1thkoqNHkUibESLrpxWLjVIdzUwV5+qWLemQCTvKE1fmhAFwaTj5RuyCepnJmOFIIfuNQ14NT9PbTPwhEw0s4fXzUhDvpGavbylFwvWrQ0E6424uX5W8KKQuzrVrp3lk6W1cpVxpIv1rVvedYXe5DUeZJqUotwQip/9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=ec8Kipxb; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VAL8N/sF; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 6361811400F5;
-	Sun, 24 Mar 2024 17:08:38 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 24 Mar 2024 17:08:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1711314518; x=
-	1711400918; bh=lkjwIduruMi5XWo7srkLWDeR2ShYX9J54RxCXveF3IE=; b=e
-	c8KipxblEsfe2xO3yWVPYh2e/SrbALb6c6wFJ6UvJWHKDIKlHubdCJ7lYlGuXj+C
-	LYf//CwZeOddSWvcLNJLjfHYYoHEbxU5ok5OvSoa61hKZkoEo6Z3RBnVr6T9udgv
-	t7VJFqiukfb5HVg4F1ozj3VtXK+kMg1z6XWxBl6JEVGes22Nz3e6WhWPf3uhyiIw
-	Rnc55/RFqlYd0Vaw+BzjnglCQ0oMFDSLMVjdsl5lcE5C6cxmqnT15akSWeHzaGaV
-	Dd07t4gprkLSw6+rcTxbUttSV2xC3y4ETn1iG1kdI32zGYRY+vPh0bdTiRklWf3g
-	dOqep8Ydl2eO/rCjsZspA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711314518; x=
-	1711400918; bh=lkjwIduruMi5XWo7srkLWDeR2ShYX9J54RxCXveF3IE=; b=V
-	AL8N/sFCz2LnqQ1RQHk6JF0XeznA7zEM+UQCmNR5lDKcQ79VhQy6q8rfkuSLWWBV
-	EyuDctxNaihBquyh6IC7vNDB8miIf/u0Lp1Wo2xp1EyYd909Ky793CPNHcEdz5B8
-	2XgfgNYLy0j4b3I8fk5Y/qc1OIeooBzhdbk0cgHfB3P7zvcXJ6JfSnqyHvyUCten
-	HFNx5YeLrQHqSgMV3pT+c8qSI/U5kwsq4gsZBmcU1zHSMtrbkSN1uxch8q0ni22z
-	fT/DlqKWHvWjTPIBBpncEpxCu/kszlWaPXQHsxsVN+d0yJFm4rs9NHAzZq7g2p4c
-	Hnh56OuxDdXKCHiJH88Ag==
-X-ME-Sender: <xms:VpYAZlYgopMuK7oXIW6BMmkrB1if_Pbsc21mwnrql0ooJS5jqKegeA>
-    <xme:VpYAZsYkUzAXWi3qtaylMJoW1xpGVFR-QjquLxa20PRLXCqKp9ItUpe5C-Dw-62tT
-    p3H9qAc0fIcfLSCNKQ>
-X-ME-Received: <xmr:VpYAZn_kWNhU38XgsMoKvVOzHi_eAhfBYIYeMFB4KJNiZEGOSMwyiLdFxY7u>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtjedgudeglecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecuogetfedtuddqtdduucdludehmdenucfjughrpe
-    fhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforghrkhcurfgvrghr
-    shhonhcuoehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggrqeenucggtf
-    frrghtthgvrhhnpeeftddvjeefleffvefhgfejjeehudetteeigeeugfekhffhgeejudeu
-    teehgfdvffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggr
-X-ME-Proxy: <xmx:VpYAZjrQGgf5C5sCJ2wFNQUeOmGHjOHyViu9Te0oPZmT4PVUKAtXqw>
-    <xmx:VpYAZgqJOpvh6C2bTlh5dsQAaUBJ2T-caRFsxKo8FlhNCXqNRv1oEA>
-    <xmx:VpYAZpTxKTEoib53ruJt2LAbMplbAdROY3vZG7ktwZe1B3_pN8P09A>
-    <xmx:VpYAZopl9BymDMN-gfMwVGK9fBvcoE40s5GA5CIyBWYHDqMA1EjZRQ>
-    <xmx:VpYAZt7DwJk1CvYdvdR6W6MglubzjwpDZj2GufwH1wKvOYwJY7eFPw>
-Feedback-ID: ibe194615:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 24 Mar 2024 17:08:37 -0400 (EDT)
-From: Mark Pearson <mpearson-lenovo@squebb.ca>
-To: mpearson-lenovo@squebb.ca
-Cc: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	hmh@hmh.eng.br,
-	dmitry.torokhov@gmail.com,
-	ibm-acpi-devel@lists.sourceforge.net,
-	platform-driver-x86@vger.kernel.org,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	njoshi1@lenovo.com,
-	vsankar@lenovo.com,
-	peter.hutterer@redhat.com
-Subject: [PATCH 4/4] platform/x86: thinkpad_acpi: Support hotkey to disable trackpoint doubletap
-Date: Sun, 24 Mar 2024 17:08:01 -0400
-Message-ID: <20240324210817.192033-5-mpearson-lenovo@squebb.ca>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
-References: <mpearson-lenovo@squebb.ca>
- <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
+	s=arc-20240116; t=1711314558; c=relaxed/simple;
+	bh=1UPPzA7qGfS9iEju5WF86tQ8AT5tLBO31f1je34qPZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=YG9YaIlT96TR/v/KE3Flw0wbrz9dg+VGxtNdO3xR/v3prn91apANIPIyriPEriUbDnGJhGPt3YNTC0hRA+yUKPBXEZnRm8ODliWVfneIN3IBDVfUr/HvS7LNzL+VF58Rvc4z0V1dR+C6P2J0d6dl32nvcI7WQu3UwbssjIFHnuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OnF8jzaw; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e445b4f80bso1676489a34.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 14:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711314556; x=1711919356; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=64D+JvyK+W4r1ZaU3GbM1lOh3S/v0YMhaiXiSCQigtk=;
+        b=OnF8jzawJ9eqrYAggSaW4K249DfwuJH+ejstmZ1+6JfNqc6UAHz9YMuCSRMwhMT8kM
+         tPYUbGuok+7v487ZQbxBgR6Rlr/DFzhPzCvtlMeINEruxuP2FB0J+O60wP5h7AQmmZTA
+         YoS7fkBJ7kI07/pvD8pY2nvZrWMfH0x+LD7hcvIRG5tAZfBRq+rhpVISU25/cB30yhR1
+         AnEyeRF5o90jfLzzTZY6A/pFPLRbGiTzOtZxeyfWriaXDxXQv8tAMVc0W+lSTT/s+bSy
+         OWCaCtTnmMf2J9Lyx7QlIQyY8Lf0bej5RDTeDKq32L6dUpVEL8HPOPA8vGNIKc8ekY7M
+         z0uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711314556; x=1711919356;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=64D+JvyK+W4r1ZaU3GbM1lOh3S/v0YMhaiXiSCQigtk=;
+        b=f2HulQKtvdBeq4epMn/9xsMRGQTQnmp/rIqKnalFSiu9nSd3Xt3BfqN/TgP4i7JXRs
+         mjbnIGqu4ylfk/Kpws6OSZmXl+jsh9R++H993E2f0noyNTji430su9HfUovQKGpZ3H4F
+         2N7eaXzsu1P59UrYXIaLKDcf3Izlz1UL60Zd17uXYC/pJDZU1ErlyFbViI4VexqMXNB8
+         kaD2cLEkjbIJs04MhEkhXJmHM/zT3mwAhtTr/eDgAN7S+m50pkKHt0oAgZG11LDX95at
+         zXwXb+bECrk/jzdM5y1kjVKdJhm1Jw1AvKGQjk+FMf3HZMb7+fu/hb2xljeQY6Xijj+a
+         5c8w==
+X-Forwarded-Encrypted: i=1; AJvYcCXI5JTubsDaxXjYErQCu9OX6Vq+cdkW2QnDsIXcLuJitJPMx40PrtdE6MzInk4GRPS2wqw2FyRWvB6SmtrloGSZZULkPkiIQiByQDKp
+X-Gm-Message-State: AOJu0Yzdzk+1WtbygJzbhGZo5ScOmFXIVV+br/aJX7H02fyLYX1P7eOT
+	BS0r2EZrKPrrmlHbhe6nwz/a5SbjNskA8wxQRVx4Z8Sx10bw8QvFQda4VEHG2zw=
+X-Google-Smtp-Source: AGHT+IHGThjrcLejKq999F3WY5CGo0Bi4DUx9T31LjW6OBIze8tvnJbF+C93iH6kJ6mCQzXj7PuYCg==
+X-Received: by 2002:a05:6870:b490:b0:222:63e2:aba3 with SMTP id y16-20020a056870b49000b0022263e2aba3mr6599405oap.8.1711314556446;
+        Sun, 24 Mar 2024 14:09:16 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.65])
+        by smtp.gmail.com with ESMTPSA id u8-20020a056a00124800b006ea8b233550sm3103462pfi.146.2024.03.24.14.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Mar 2024 14:09:16 -0700 (PDT)
+Date: Mon, 25 Mar 2024 02:39:09 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH] staging: rtl8712: Remove additional space
+Message-ID: <ZgCWdfJit4Ly14NB@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The hotkey combination FN+G can be used to disable the trackpoint
-doubletap feature on Windows.
-Add matching functionality for Linux.
+Remove additional whitespaces in SwLedOn() between u8 and LedCfg to
+conform to common kernel coding style.
 
-Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
-Signed-off-by: Vishnu Sankar <vsankar@lenovo.com>
+Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 ---
- drivers/platform/x86/thinkpad_acpi.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ drivers/staging/rtl8712/rtl8712_led.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 854ce971bde2..21756aa3d28d 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -167,6 +167,7 @@ enum tpacpi_hkey_event_t {
- 	TP_HKEY_EV_VOL_MUTE		= 0x1017, /* Mixer output mute */
- 	TP_HKEY_EV_PRIVACYGUARD_TOGGLE	= 0x130f, /* Toggle priv.guard on/off */
- 	TP_HKEY_EV_AMT_TOGGLE		= 0x131a, /* Toggle AMT on/off */
-+	TP_HKEY_EV_DOUBLETAP_TOGGLE	= 0x131c, /* Toggle trackpoint doubletap on/off */
- 	TP_HKEY_EV_PROFILE_TOGGLE	= 0x131f, /* Toggle platform profile */
+diff --git a/drivers/staging/rtl8712/rtl8712_led.c b/drivers/staging/rtl8712/rtl8712_led.c
+index d5fc9026b036..6d9be5dec4e7 100644
+--- a/drivers/staging/rtl8712/rtl8712_led.c
++++ b/drivers/staging/rtl8712/rtl8712_led.c
+@@ -107,7 +107,7 @@ static void DeInitLed871x(struct LED_871x *pLed)
+  */
+ static void SwLedOn(struct _adapter *padapter, struct LED_871x *pLed)
+ {
+-	u8	LedCfg;
++	u8 LedCfg;
  
- 	/* Reasons for waking up from S3/S4 */
-@@ -354,6 +355,7 @@ static struct {
- 	u32 hotkey_poll_active:1;
- 	u32 has_adaptive_kbd:1;
- 	u32 kbd_lang:1;
-+	u32 trackpoint_doubletap:1;
- 	struct quirk_entry *quirks;
- } tp_features;
- 
-@@ -3598,6 +3600,9 @@ static int __init hotkey_init(struct ibm_init_struct *iibm)
- 
- 	hotkey_poll_setup_safe(true);
- 
-+	/* Enable doubletap by default */
-+	tp_features.trackpoint_doubletap = 1;
-+
- 	return 0;
- }
- 
-@@ -3739,6 +3744,7 @@ static bool hotkey_notify_extended_hotkey(const u32 hkey)
- 	case TP_HKEY_EV_PRIVACYGUARD_TOGGLE:
- 	case TP_HKEY_EV_AMT_TOGGLE:
- 	case TP_HKEY_EV_PROFILE_TOGGLE:
-+	case TP_HKEY_EV_DOUBLETAP_TOGGLE:
- 		tpacpi_driver_event(hkey);
- 		return true;
- 	}
-@@ -4092,13 +4098,15 @@ static void hotkey_notify(struct ibm_struct *ibm, u32 event)
- 				send_acpi_ev = true;
- 				ignore_acpi_ev = false;
- 				known_ev = true;
--				/* Send to user space */
--				mutex_lock(&tpacpi_inputdev_send_mutex);
--				input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 1);
--				input_sync(tpacpi_inputdev);
--				input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 0);
--				input_sync(tpacpi_inputdev);
--				mutex_unlock(&tpacpi_inputdev_send_mutex);
-+				if (tp_features.trackpoint_doubletap) {
-+					/* Send to user space */
-+					mutex_lock(&tpacpi_inputdev_send_mutex);
-+					input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 1);
-+					input_sync(tpacpi_inputdev);
-+					input_report_key(tpacpi_inputdev, KEY_DOUBLECLICK, 0);
-+					input_sync(tpacpi_inputdev);
-+					mutex_unlock(&tpacpi_inputdev_send_mutex);
-+				}
- 				break;
- 			}
- 			fallthrough;	/* to default */
-@@ -11228,6 +11236,8 @@ static void tpacpi_driver_event(const unsigned int hkey_event)
- 		/* Notify user space the profile changed */
- 		platform_profile_notify();
- 	}
-+	if (hkey_event == TP_HKEY_EV_DOUBLETAP_TOGGLE)
-+		tp_features.trackpoint_doubletap = !tp_features.trackpoint_doubletap;
- }
- 
- static void hotkey_driver_event(const unsigned int scancode)
+ 	if (padapter->surprise_removed || padapter->driver_stopped)
+ 		return;
 -- 
-2.44.0
+2.40.1
 
 
