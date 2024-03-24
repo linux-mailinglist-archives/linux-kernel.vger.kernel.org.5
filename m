@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-113537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 432E388851F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 07577888521
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:59:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3C4E2852D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:59:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5F50285530
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:59:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00CE1C09D8;
-	Sun, 24 Mar 2024 22:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941E91C1311;
+	Sun, 24 Mar 2024 22:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jobbP03T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EDYz5rOg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA6E1C09BC;
-	Sun, 24 Mar 2024 22:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E5E1C09DA;
+	Sun, 24 Mar 2024 22:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320338; cv=none; b=tCqtvaFu0X4UOAmMZ0ocKwJ8W7BDXwKCQcjc230evdgKxouieLRXOWv75XWME35FwXZmkuj8baQKOXFT1aS6Dx83ogItAzOF4U6VYO+SmNASyA2ELWdAqXczTOfUQKCF2zKsY/sEULaKhhIuiOp4UAGmMKMvEy7MtgJ5QS8J+9g=
+	t=1711320339; cv=none; b=mJ0okVEBEIHjyeK0IAv3MpBO8p8JAUE92blPCeejU3/VozIU9nYJVMnroKz+lAt5ne94RFWrqgWKjNk2YmNMZg4iumAqJRHHL97R9wIPR4lC2uBWI+fCNJCo2rRrTAT5I/Rd9Ru7xXLwKNxJOSv6HridxB4mXIzH/L1e/5YxOtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320338; c=relaxed/simple;
-	bh=PYENx02CKZGs2pTnzPJ7cRTd7xeRIal9wjJ8Gx4KiIY=;
+	s=arc-20240116; t=1711320339; c=relaxed/simple;
+	bh=pIMAx/5guFWCXZz7a5DmmTIE8rbWEEKno25pg9I15Mo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZG6n2iw1bVeM0MWctKSgrKRyrXmXP+GBjbP015ZwP46o9gJ+rhz9EP5jL7ylJSWWbMY12gp7DpNkJ8nmHCcjM5uGz5FVIpZPH+MUbBJapxLWBSY/dXTnewyL55AWK4dzyTXSx9uMBH9LMtJATWnKaorooNvze6ZmqbJNK9pv5xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jobbP03T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF20EC43399;
-	Sun, 24 Mar 2024 22:45:37 +0000 (UTC)
+	 MIME-Version; b=FSytQ3G4MAO+Cr8ptaFRbXkbpAqzJo2HucU4g5ZUEcKt/zC2BFA4WDXmj4zi6yuYEeQIPoAQqP8yYuwhELOGKVWHbV/soMdsuD5vPoXzmwZniVdQBHOUUbRl2xky5dazTMKwtlxjdwVlne0p6f4L/lkAvsaf7NAEEVuYWwbICBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EDYz5rOg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E770BC433C7;
+	Sun, 24 Mar 2024 22:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320338;
-	bh=PYENx02CKZGs2pTnzPJ7cRTd7xeRIal9wjJ8Gx4KiIY=;
+	s=k20201202; t=1711320339;
+	bh=pIMAx/5guFWCXZz7a5DmmTIE8rbWEEKno25pg9I15Mo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jobbP03Tlb+4i+2EjqZzPisaOS4ougWrY5i+wh6wU1mujTmXlKX0rzt2wd8QCJiA3
-	 00iQYz7jHkIBesHPXTT2tVtnU3iELNarhV7jHTqYrrGhZnvsbRiWjO8eKnbPA4kHSm
-	 m3d0faqLb7NujzeALUEvVtFmXpvqfYhecqw3eHn2rDnTplv9PfwfzD0n3w/LerjlVH
-	 2ME0arb70c7Bl83pYlEGGLHhwZnSd4itnT+udNcBAcRMsiiZt+1+bXxG7VIfKG6fAg
-	 QOtOkJyrSqR4He61Y7X6D1HwdRx6/BXZ3/9hJZKo5jIdV9ZWWdS5C62mT3M61lN3ZO
-	 THZBCNwrWJxEA==
+	b=EDYz5rOgpHanP2McQkJP9Z4irqkvzMSwQreX12c+B3TL8fmyKnsEHUFLhcPoV5QfC
+	 XpA/gLI9eyaPKz/2F+P/oooZCLGOg1/7Jg/RFqi5c41POOdpqJnEGRCAVyM/fkJNq+
+	 baLa1EnezaokxVUAzoUw+z3NwaI7nHR6P6yTSdJawUyaNqqTPvnhrhGrHWuuzlLRvf
+	 dfb664NgRHEgWq/3Wm7yA9AOUy4aaYU4qtmOANKSXjR0n+fF4+qYTh1kar+3nsY0Hl
+	 mwCMwyN8d+M4mp7S/Eq0itrcTdm2gqeGmekWrlIB1cMHAM55azjF6UcFpzbjp67rPG
+	 iJdy8tlc7KpQg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Linu Cherian <lcherian@marvell.com>,
-	Sunil Goutham <sgoutham@marvell.com>,
-	Subbaraya Sundeep <sbhatta@marvell.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Mete Durlu <meted@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 646/715] octeontx2-af: Use matching wake_up API variant in CGX command interface
-Date: Sun, 24 Mar 2024 18:33:45 -0400
-Message-ID: <20240324223455.1342824-647-sashal@kernel.org>
+Subject: [PATCH 6.8 647/715] s390/vtime: fix average steal time calculation
+Date: Sun, 24 Mar 2024 18:33:46 -0400
+Message-ID: <20240324223455.1342824-648-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,36 +63,62 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Linu Cherian <lcherian@marvell.com>
+From: Mete Durlu <meted@linux.ibm.com>
 
-[ Upstream commit e642921dfeed1e15e73f78f2c3b6746f72b6deb2 ]
+[ Upstream commit 367c50f78451d3bd7ad70bc5c89f9ba6dec46ca9 ]
 
-Use wake_up API instead of wake_up_interruptible, since
-wait_event_timeout API is used for waiting on command completion.
+Current average steal timer calculation produces volatile and inflated
+values. The only user of this value is KVM so far and it uses that to
+decide whether or not to yield the vCPU which is seeing steal time.
+KVM compares average steal timer to a threshold and if the threshold
+is past then it does not allow CPU polling and yields it to host, else
+it keeps the CPU by polling.
+Since KVM's steal time threshold is very low by default (%10) it most
+likely is not effected much by the bloated average steal timer values
+because the operating region is pretty small. However there might be
+new users in the future who might rely on this number. Fix average
+steal timer calculation by changing the formula from:
 
-Fixes: 1463f382f58d ("octeontx2-af: Add support for CGX link management")
-Signed-off-by: Linu Cherian <lcherian@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+	avg_steal_timer = avg_steal_timer / 2 + steal_timer;
+
+to the following:
+
+	avg_steal_timer = (avg_steal_timer + steal_timer) / 2;
+
+This ensures that avg_steal_timer is actually a naive average of steal
+timer values. It now closely follows steal timer values but of course
+in a smoother manner.
+
+Fixes: 152e9b8676c6 ("s390/vtime: steal time exponential moving average")
+Signed-off-by: Mete Durlu <meted@linux.ibm.com>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/cgx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/kernel/vtime.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index 6c70c84986904..3c0f55b3e48ea 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -1338,7 +1338,7 @@ static irqreturn_t cgx_fwi_event_handler(int irq, void *data)
+diff --git a/arch/s390/kernel/vtime.c b/arch/s390/kernel/vtime.c
+index e0a88dcaf5cb7..24a18e5ef6e8e 100644
+--- a/arch/s390/kernel/vtime.c
++++ b/arch/s390/kernel/vtime.c
+@@ -210,13 +210,13 @@ void vtime_flush(struct task_struct *tsk)
+ 		virt_timer_expire();
  
- 		/* Release thread waiting for completion  */
- 		lmac->cmd_pend = false;
--		wake_up_interruptible(&lmac->wq_cmd_cmplt);
-+		wake_up(&lmac->wq_cmd_cmplt);
- 		break;
- 	case CGX_EVT_ASYNC:
- 		if (cgx_event_is_linkevent(event))
+ 	steal = S390_lowcore.steal_timer;
+-	avg_steal = S390_lowcore.avg_steal_timer / 2;
++	avg_steal = S390_lowcore.avg_steal_timer;
+ 	if ((s64) steal > 0) {
+ 		S390_lowcore.steal_timer = 0;
+ 		account_steal_time(cputime_to_nsecs(steal));
+ 		avg_steal += steal;
+ 	}
+-	S390_lowcore.avg_steal_timer = avg_steal;
++	S390_lowcore.avg_steal_timer = avg_steal / 2;
+ }
+ 
+ static u64 vtime_delta(void)
 -- 
 2.43.0
 
