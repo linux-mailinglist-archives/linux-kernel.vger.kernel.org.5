@@ -1,97 +1,105 @@
-Return-Path: <linux-kernel+bounces-112838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A21887EE5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:46:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49085887EE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE81F1C208BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:46:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6BA4B20B07
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE49101C3;
-	Sun, 24 Mar 2024 20:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1660414A8B;
+	Sun, 24 Mar 2024 20:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="XNq14Ihd"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jwGriz5g"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7DF10798
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 20:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F06ED1426B
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 20:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711313169; cv=none; b=Kc/e/g/qLxEw1S/JL4TXGbPi/cxFZVmXF0CXi73xKeLm3uYL+dJYNK0E0HOT+QJ9vIZePBzsfRTuUbWOiKMwrDYpv6LgYMkQv8xCSkxmB1JaJWdHaRXQlH/Fk7lqJ4pfucBz5RhmdO3ZTpirqZ6tCxyexaZE96lzziB/rIzaEuY=
+	t=1711313288; cv=none; b=AFSDK99aPDE/qfEYlB39H94PQqPi+CzTFI7vT/vDzQ/O+PjlCK4YXdhhk81NK4qXv9iBXA2wQLthijKtSIt4xuL11WabwZbsi53dVwyvnTzc9zLwZ9FWaxF51DVFfOWlKFqWSBlRzmb+EhJR4OVVIeBNc0Lrmzf1DsgPASPX8kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711313169; c=relaxed/simple;
-	bh=MCjCSIh0iLTHQHvN3SjD4xTY4dgF7DwugQkcHwECOBw=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=MZBo9bbWSuywfZe6pIErrhSZjXQYhMfGL2sTy1cP05KN2hAHFJLe9cEi6I84d/qx1aQoVykdBOjbBq6YqImUzwb+0edOx67ZYwyx35Dh7VdlVmLyNo36vtXgdqMU+NiJUE9AKyhqxmUXCAw3iiLYVQQoCXNH7eegUduvKGLRPu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=XNq14Ihd; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
+	s=arc-20240116; t=1711313288; c=relaxed/simple;
+	bh=o0ThGP2jpKKCnWSeV748HKSHrZ/Hu6nvzbdySrCVn/k=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Zk3BqbgXwhbBXPTeDRQBlKroiuCxX30Fv7mQWVPCJ/wz/bfj2clRNkoh0oTfNh2NHqpZ4x/UBzJQJr6Z4F3LhDiSetY1SNiU2Ws7KQ8pLpfdBopMFpVnqjR0REy0npYAzLrivGmz6BZl7sV8QGJA+07PHiHLl8h3hq6WpF+AJ8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jwGriz5g; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6f4ad4c57so2773600b3a.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 13:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711313286; x=1711918086; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gOr4nW9GygCT5+f5JrX7f9aw7Oxhps1fXXCviiZ2/1I=;
+        b=jwGriz5gnO79RGzCwLUZT+caZutsRNmLRYhs3kqaNHRZXBX2Eu3zng/k74f5aT6xB9
+         9/Ji253HcTmsL/w2UqpKFaBnIfylbS+0EupBs03umWfkPYyZnMOq2A1dyIInI7WTtqH7
+         zbqJ7vcquD2PgBDVm+3TD+sIzSdQ//j5TLff5OhH1UIE2+cJKeqRRqJTQzIokHrnoXW6
+         ZHFSkUCtNEIJCuOnOL8oRUTu6a5rlKZrokPkVDa7cY5mF+Hv6ZbUp72FUqi+sieenpii
+         FlNrMoHESBbZbHa7YCt02abu/W5BXDv/ygJ/ocR5fQGeNwzXxK7JvvTN5t3f2PA57U2I
+         fnWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711313286; x=1711918086;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gOr4nW9GygCT5+f5JrX7f9aw7Oxhps1fXXCviiZ2/1I=;
+        b=C2nekM3DwiqyDVEc/pTZw+o3dqOfkRZsFvR2teve2YP3OSvcw6y6phTcDhXqBZs0y6
+         qmilaKWgddl/swcegJii7zOvVXkRRyNYQZxs8wTKZrg/Tq021LI5s+fhSNUsPdeYd84A
+         Ru4fX92W0xbla7b+ZomtjRsGOJuBHmR/WhofE+g9bmi6/3ZYbVjn5/7YwcQBOcRlKMC/
+         rpMcvY5obeGTss0NN3uKYpoXeLt1XAk0fqDuMN0SjQ9jQj1BwtE5zN5oMqkvZQluephM
+         JPLgPseHDYsnDwMRR3CLSTYjvp6yTUAk69X6dr92ePfG8q558Dt57OLywqTtRK9zSG6m
+         0UPw==
+X-Forwarded-Encrypted: i=1; AJvYcCXqmfOhatFa2NZ357/bR2xeJLejqFIegscIhRY7qKQD0KaGhZ0ELWdIOPmkqlGC9shGCDBuOenFeoNq1HquqfAUCer3tIQhAC21pLZp
+X-Gm-Message-State: AOJu0YwVsK//2H7M7p8mPJwj0LRssBD3OhyfV0dSdSCwED7C9Xe7SLZP
+	R4DC2n4sThQbeR0xlbmv6SoXGjYft1mZP+o/j6lJu39/DcBCKgQFf0aV+aoqMCw=
+X-Google-Smtp-Source: AGHT+IH8zVKwvFo2k5FG+Ns3x6y2zB3+ejGnDFLscJrM991V+62Zie9TTaYq6h0PgwlxBeCuO9Lyeg==
+X-Received: by 2002:a05:6a21:3986:b0:1a3:a637:9753 with SMTP id ad6-20020a056a21398600b001a3a6379753mr7952698pzc.12.1711313286020;
+        Sun, 24 Mar 2024 13:48:06 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.65])
+        by smtp.gmail.com with ESMTPSA id o18-20020a639a12000000b005cfc1015befsm4726936pge.89.2024.03.24.13.48.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Mar 2024 13:48:05 -0700 (PDT)
+Date: Mon, 25 Mar 2024 02:17:58 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH v4 0/3] Trivial code cleanup patches
+Message-ID: <cover.1710965653.git.ayushtiw0110@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
-	s=key1; t=1711313163;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MCjCSIh0iLTHQHvN3SjD4xTY4dgF7DwugQkcHwECOBw=;
-	b=XNq14IhdFh+pMAu22hBXdHvFh/f5vXmY46TWf9h6rIcaKC37poFot6k0lmM0E/oixiBI45
-	Y1hbgCgIt4+eya2SGW6iKxFcQi7bsJEN6S2OrUOcOo8gQgkGT9VPLqOvQb9ZF7T4IBzORn
-	8TnFAecbrlBIjGLON++wu5USWWyMzUASamDcVcymn3xm3fFiCldchFfLfnyJTNdDdeWcpS
-	MTNHi++bmZTsVKWgPw/90EaOX4edYs9mQAKfiWAQOuGAZg+Q7v6Ikp/v5jBGYEFsKml/zF
-	AeKxKTZrAzd0CRzRS79FPbrjUXSihJBmvmOTuzmSqDNz8Sge8b/8+ziIGvtsTA==
-Date: Sun, 24 Mar 2024 20:45:59 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Clayton Craft" <clayton@craftyguy.net>
-Message-ID: <749b1cea4fd9e8d8debadc51cf3c0374d9878ae9@craftyguy.net>
-TLS-Required: No
-Subject: Re: x86_64 32-bit EFI mixed mode boot broken
-To: "Ard Biesheuvel" <ardb@kernel.org>, "Hans de Goede" <hdegoede@redhat.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
- "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>, "Dave Hansen"
- <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
-In-Reply-To: <CAMj1kXGrWGGv-aXabsn1oRwwMy-Ck1nz85QkEMqQ8LdQxyeBKQ@mail.gmail.com>
-References: <20240321150510.GI8211@craftyguy.net>
- <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
- <a3aae375-5582-46e4-866b-6a81641998af@redhat.com>
- <CAMj1kXGrWGGv-aXabsn1oRwwMy-Ck1nz85QkEMqQ8LdQxyeBKQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-
-March 24, 2024 at 10:43 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
-> Thanks.
->=20
->=20I pushed another branch
->=20
->=20https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=
-=3Defi-clayton-3
->=20
->=20which has a proper fix for the issue that you found.
->=20
->=20As it turns out, the compat mixed mode (with handover protocol) was
->=20
->=20broken from the beginning, and the change you identified just happene=
-d
->=20
->=20to trigger it on your hardware.
+Address different kinds of checkpatch complains for the rtl8712 module
+to ensure adherence to coding style guidelines.
 
 
-Tested and fixes booting on my Bay Trail tablet and NUC. Thanks for fixin=
-g this!
+v4: Update the changelog to match revision history
+v3: Update memcpy() param to match new name backup_PMKID_list
+v2: No changes. Just a patch sending error.
 
-Tested-by: Clayton Craft <clayton@craftyguy.net>
+Ayush Tiwari (3):
+  staging: rtl8712: rename backupPMKIDList to backup_PMKID_list
+  staging: rtl8712: rename backupPMKIDIndex to backup_PMKID_index
+  staging: rtl8712: rename backupTKIPCountermeasure to
+    backup_TKIP_countermeasure
 
--Clayton
+ drivers/staging/rtl8712/mlme_linux.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+-- 
+2.40.1
+
 
