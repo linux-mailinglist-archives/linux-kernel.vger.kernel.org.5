@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-116338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE891889A1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:24:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD177889E5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6229B3DCE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:44:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8859A292C59
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BFE186392;
-	Mon, 25 Mar 2024 03:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A832B3D82D4;
+	Mon, 25 Mar 2024 03:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RcGpiiJ1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oarQq/B0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC5D297D43;
-	Sun, 24 Mar 2024 23:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BE3297D4E;
+	Sun, 24 Mar 2024 23:52:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324343; cv=none; b=SxhDXdmmw/Xp5u7g9xBaHM2iSkrhDmt6iE9plGH7jQjGTiTcQ4SCdZpykW97hqIZlLPzavnG6o4PPboAy0X6WlRTq1hhLL/6YPyqQj1qdoNYCn7w3Z54NohVTGwzkEpHfg6Oo+dB4kuoth02R5Vbf3IW8w36yRv5X35t67PmIEA=
+	t=1711324344; cv=none; b=X8F1WYTFOOnoprz4mEbbWcamuK7e4DNEf2OWV+glthgnCOUsQ4DlCz67LUXo5MUriQJyR6XbeipO2enyv49uJD/eKlzpwEI8oayjW++p0bXaJZion6WOBiEa7s9sOzefz5NAJbbHjJAWgE7bmYFwXxvS7y1TblGXXVlZtUikPSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324343; c=relaxed/simple;
-	bh=1+tHARB2vxR+ibEk527kzygBTsc1DKby60Sbcozc8hc=;
+	s=arc-20240116; t=1711324344; c=relaxed/simple;
+	bh=ZAT3ncz812PIt8v3RzdCC/9OCXWgUcc+8Gwq9u9p1Bo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NxWGLc+Qi26j7VhAgReccQSqUs3MNDuH3iM5YoAUCkVfuvqJ1tOgoUNuS4YYPdGZY4Hc1jcJsy3FSgjFbbHInY4VKM2ToirZCRg+84J+L5XkRxzqf6pCsw3e0YfBSpC4fAvPJs3Wmsjq0eYMf9N8Q3bxaMJ08ntXAlG5gRmqxLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RcGpiiJ1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B14BAC43390;
-	Sun, 24 Mar 2024 23:52:22 +0000 (UTC)
+	 MIME-Version:Content-Type; b=K26bO6bceTTqK+G+PppssoPQ31KyQ720hpGUDvTnFsAsyRFqicBl4K9g0t9/lxXhrwqtjb4L86H6UxaXkFOT75ZxM7bj67L+lojIGjiA25Rq9HB4BgMecBSx/2+tot64RVjXHgEuYWgf6BSoaec7hwqgQ7EsDRh6YGgvgnmigZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oarQq/B0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4267C433F1;
+	Sun, 24 Mar 2024 23:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324343;
-	bh=1+tHARB2vxR+ibEk527kzygBTsc1DKby60Sbcozc8hc=;
+	s=k20201202; t=1711324344;
+	bh=ZAT3ncz812PIt8v3RzdCC/9OCXWgUcc+8Gwq9u9p1Bo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RcGpiiJ13SP+W6SKY+Bv+gq1h37IMBM7b44zWW2/tA9JO6VwyldLg7XgdSMFKTd1Q
-	 F7NfU5qb26SLe/kt9LjO+kQEdQ06Ilohaf5YXUzdQU1y0iFI3IgErNp7fF03fXrr7w
-	 oS0zusTALhj5I4UJ65Nmt6dbViHNQl7xOwM4XttyHz/MNv+ls3/86y/3fs36jFZnLM
-	 lgQ1pEvt+7a1eR7ePAjyMJGURZ3AaG5Cr+43lKZkoM8tI34fxVs5nESSzj6RfUTZAi
-	 mCyrkgbTLGU3Tvo+40f9HA3/yT/2TiTB3QNgcEQqH4qV1hz1hte6A6f42F3a3RvtVw
-	 34hP2sTtF59jg==
+	b=oarQq/B0brE161VG/TPRIiPhXgwb6fPiRzeWbp2c6HLA6D+7Ypa4+7A93wK0rA7OW
+	 mKGq48um7U8sILyfDEM6/laqTlbnwF9HTfjHBiDd5JPNaoZjdcWFk58CzoJt+b8fye
+	 Ol8+o75tYKrcuBbFKqimiX2Hz41EaJbRxG5m9xrxQvzKU85EJ9J14SxbIw3HG2OR9T
+	 1A2/f2CxrmLOr/PyVvYMKYYVNw708Ki4ZDN7KsvgTOv/YK7Z9puLHqNpzC1J7RA+qG
+	 Q7EuVTH6f49xn2+T+INgjWVq77ATZxMjItRoqmG6sKYq90I8lieHTQnHyBdd87hbQG
+	 z233azaJN1MiA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jerome Brunet <jbrunet@baylibre.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+	Jammy Zhou <Jammy.Zhou@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 113/148] ASoC: meson: axg-tdm-interface: fix mclk setup without mclk-fs
-Date: Sun, 24 Mar 2024 19:49:37 -0400
-Message-ID: <20240324235012.1356413-114-sashal@kernel.org>
+Subject: [PATCH 4.19 114/148] drm/amdgpu: Fix missing break in ATOM_ARG_IMM Case of atom_get_src_int()
+Date: Sun, 24 Mar 2024 19:49:38 -0400
+Message-ID: <20240324235012.1356413-115-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -58,51 +60,47 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit e3741a8d28a1137f8b19ae6f3d6e3be69a454a0a ]
+[ Upstream commit 7cf1ad2fe10634238b38442a851d89514cb14ea2 ]
 
-By default, when mclk-fs is not provided, the tdm-interface driver
-requests an MCLK that is 4x the bit clock, SCLK.
+Missing break statement in the ATOM_ARG_IMM case of a switch statement,
+adds the missing break statement, ensuring that the program's control
+flow is as intended.
 
-However there is no justification for this:
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/atom.c:323 atom_get_src_int() warn: ignoring unreachable code.
 
-* If the codec needs MCLK for its operation, mclk-fs is expected to be set
-  according to the codec requirements.
-* If the codec does not need MCLK the minimum is 2 * SCLK, because this is
-  minimum the divider between SCLK and MCLK can do.
-
-Multiplying by 4 may cause problems because the PLL limit may be reached
-sooner than it should, so use 2x instead.
-
-Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://msgid.link/r/20240223175116.2005407-2-jbrunet@baylibre.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: d38ceaf99ed0 ("drm/amdgpu: add core driver (v4)")
+Cc: Jammy Zhou <Jammy.Zhou@amd.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/axg-tdm-interface.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/atom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index 01cc551a8e3fa..2a7ea41fc49e5 100644
---- a/sound/soc/meson/axg-tdm-interface.c
-+++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -258,8 +258,8 @@ static int axg_tdm_iface_set_sclk(struct snd_soc_dai *dai,
- 	srate = iface->slots * iface->slot_width * params_rate(params);
- 
- 	if (!iface->mclk_rate) {
--		/* If no specific mclk is requested, default to bit clock * 4 */
--		clk_set_rate(iface->mclk, 4 * srate);
-+		/* If no specific mclk is requested, default to bit clock * 2 */
-+		clk_set_rate(iface->mclk, 2 * srate);
- 	} else {
- 		/* Check if we can actually get the bit clock from mclk */
- 		if (iface->mclk_rate % srate) {
+diff --git a/drivers/gpu/drm/amd/amdgpu/atom.c b/drivers/gpu/drm/amd/amdgpu/atom.c
+index 0222bb7ea49b4..805ac556635d1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/atom.c
++++ b/drivers/gpu/drm/amd/amdgpu/atom.c
+@@ -306,7 +306,7 @@ static uint32_t atom_get_src_int(atom_exec_context *ctx, uint8_t attr,
+ 				DEBUG("IMM 0x%02X\n", val);
+ 			return val;
+ 		}
+-		return 0;
++		break;
+ 	case ATOM_ARG_PLL:
+ 		idx = U8(*ptr);
+ 		(*ptr)++;
 -- 
 2.43.0
 
