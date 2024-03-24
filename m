@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A09AB888AD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 891988894E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55CE51F26B55
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:31:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 131421F2F22C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A0E18270D;
-	Sun, 24 Mar 2024 23:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059E138E70E;
+	Mon, 25 Mar 2024 03:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0oFoybi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qUSX+/mq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62959149DEB;
-	Sun, 24 Mar 2024 23:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5231487F8;
+	Sun, 24 Mar 2024 23:15:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322145; cv=none; b=IzlYACZVE/xPYKPhlu9G1XOghSB7ciryeJAYo9fFyZb7KrCEQ3ujOYtxV1YR4WrGEm1ZS1zZMlzqe1+JdLr9CkeWD2YT2d32qRbJ6Y08OQ1R2YNiaL2UMu2o8djVpLUFTPh8dXQNO266LhA3vb6M2VvOSflgZEVc4xTAkjzg2Co=
+	t=1711322145; cv=none; b=Q8gs8hbHgvTpPAHNGNSJbqlzS9ecD35oxgFuZLNUT7GhVhBVEQX89W857OhCd0jPsBWpmRHO0WVcO+VfusOeHLcNYyuovN/7xqcWuQrceTkUmDAoCXxzpBEdcVG3Nyr02L1ZaWZl1IXUW0mA7n1Llf5f7WiegeJ4nPV29kOay7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322145; c=relaxed/simple;
-	bh=cpHQl2U6XX5lZOCEkpT458uk/SmfHyyclBjqSxRJwOI=;
+	bh=2DvJvaZyFK9vHNgI+suBjYVyGIRaLvxgXFom/JoexWE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PAN+cDWXpyMcvU1WvM+ejTwJpNtA422nwDvNfOKim0nKgHp6SW43YmpNhpd/AyPVadTO7MiKQzmHtKLupanJud14g71XX8q3fTXhZEw1V2940mURapO9CZe4O4VYbXJN9m1avV1EEun+OuHdgFbKRF0okwbN6nOl9YQfzj+pusc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0oFoybi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2D30C433C7;
-	Sun, 24 Mar 2024 23:15:43 +0000 (UTC)
+	 MIME-Version; b=oailKz4w+3cycjRxSh7yLrf7o2YRgmKsdMNfExFM9upmmBRYCpWxOJ9Cp4oK4UBcgkCIaqV59a1OVdKwaaIOk5C4XhHd8400QoewDxVxzC1Xq1oth+wO/iXGSlRJBghNQkwnaWw/Ti+8d5IfiKi0KX9D3qgbKhKtsm2Ps76H3to=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qUSX+/mq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88021C433F1;
+	Sun, 24 Mar 2024 23:15:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322144;
-	bh=cpHQl2U6XX5lZOCEkpT458uk/SmfHyyclBjqSxRJwOI=;
+	s=k20201202; t=1711322145;
+	bh=2DvJvaZyFK9vHNgI+suBjYVyGIRaLvxgXFom/JoexWE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=G0oFoybiazUJ4Te1iK3IMfrC1F5KNFInxbdXMfchX929eKAnGvRSn14mgtDhhtDlh
-	 LVigsWaSXZDwLrfdeBeqvcTlfKuV9SAh5Lv20la3aoCnyq/Ef9D/x6HuEar++/j2+c
-	 qXIqSqoOxi8LayR+LvTriSptsU6CcAzHpShU6zmauIly9/2KpZ4UJ3OJdcy9XEFoIv
-	 8LdwJ+qEeJz39BJm8HN+8HlPOGqSwxhWa9P6SBNpfnBp55zZQrXH9AZsBodT427NGd
-	 LvaayL5LLfxUxbbjPFgCyjbqHMgbH4hVK4W963jdkvrr4KPDKVzjcOFl78wjhosGGZ
-	 ea8BArde1TOEw==
+	b=qUSX+/mqpQJWjKOBmr71gAq83CcFFFocgCw/i+PCkuo1cd7LrDv2F68aJ99fN+Czi
+	 BfcJXB1BGrklIhKWGKVmI9ajCqblEURgU8dwgvAVD1r8/fI89uL506uEIf+cwvhFIX
+	 xcjqMB/9k5ChoRHZf6gI83rGm2qMIaxurhHBY33eaAiyJ1wZxWY0S66cEjFoP/BZgT
+	 0mLYR9s0ERlnIIcP3IYlKfCMvQkf+nWsuOugi1qkzpB0R6V2XN5FuLa8PYnTdfOX52
+	 hK+UpyolZCMKKMcoZUmvee4LOnZSkn+t6f4DROkcoUsTPp6bDD9H3Vs+uTnryJ1iKu
+	 4/C6QbciGfv4Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Danis?= <frederic.danis@collabora.com>,
-	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+Cc: Tim Pambor <tp@osasysteme.de>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 221/451] Bluetooth: Fix eir name length
-Date: Sun, 24 Mar 2024 19:08:17 -0400
-Message-ID: <20240324231207.1351418-222-sashal@kernel.org>
+Subject: [PATCH 6.1 222/451] net: phy: dp83822: Fix RGMII TX delay configuration
+Date: Sun, 24 Mar 2024 19:08:18 -0400
+Message-ID: <20240324231207.1351418-223-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -58,106 +58,93 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Frédéric Danis <frederic.danis@collabora.com>
+From: Tim Pambor <tp@osasysteme.de>
 
-[ Upstream commit 2ab3e8d67fc1d4a7638b769cf83023ec209fc0a9 ]
+[ Upstream commit c8a5c731fd1223090af57da33838c671a7fc6a78 ]
 
-According to Section 1.2 of Core Specification Supplement Part A the
-complete or short name strings are defined as utf8s, which should not
-include the trailing NULL for variable length array as defined in Core
-Specification Vol1 Part E Section 2.9.3.
+The logic for enabling the TX clock shift is inverse of enabling the RX
+clock shift. The TX clock shift is disabled when DP83822_TX_CLK_SHIFT is
+set. Correct the current behavior and always write the delay configuration
+to ensure consistent delay settings regardless of bootloader configuration.
 
-Removing the trailing NULL allows PTS to retrieve the random address based
-on device name, e.g. for SM/PER/KDU/BV-02-C, SM/PER/KDU/BV-08-C or
-GAP/BROB/BCST/BV-03-C.
+Reference: https://www.ti.com/lit/ds/symlink/dp83822i.pdf p. 69
 
-Fixes: f61851f64b17 ("Bluetooth: Fix append max 11 bytes of name to scan rsp data")
-Signed-off-by: Frédéric Danis <frederic.danis@collabora.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Fixes: 8095295292b5 ("net: phy: DP83822: Add setting the fixed internal delay")
+Signed-off-by: Tim Pambor <tp@osasysteme.de>
+Link: https://lore.kernel.org/r/20240305110608.104072-1-tp@osasysteme.de
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/eir.c  | 29 +++++++----------------------
- net/bluetooth/mgmt.c |  2 +-
- 2 files changed, 8 insertions(+), 23 deletions(-)
+ drivers/net/phy/dp83822.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
-diff --git a/net/bluetooth/eir.c b/net/bluetooth/eir.c
-index 9214189279e80..1bc51e2b05a34 100644
---- a/net/bluetooth/eir.c
-+++ b/net/bluetooth/eir.c
-@@ -13,48 +13,33 @@
- 
- #define PNP_INFO_SVCLASS_ID		0x1200
- 
--static u8 eir_append_name(u8 *eir, u16 eir_len, u8 type, u8 *data, u8 data_len)
--{
--	u8 name[HCI_MAX_SHORT_NAME_LENGTH + 1];
--
--	/* If data is already NULL terminated just pass it directly */
--	if (data[data_len - 1] == '\0')
--		return eir_append_data(eir, eir_len, type, data, data_len);
--
--	memcpy(name, data, HCI_MAX_SHORT_NAME_LENGTH);
--	name[HCI_MAX_SHORT_NAME_LENGTH] = '\0';
--
--	return eir_append_data(eir, eir_len, type, name, sizeof(name));
--}
--
- u8 eir_append_local_name(struct hci_dev *hdev, u8 *ptr, u8 ad_len)
+diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+index 267e6fd3d4448..57411ee1d8374 100644
+--- a/drivers/net/phy/dp83822.c
++++ b/drivers/net/phy/dp83822.c
+@@ -380,7 +380,7 @@ static int dp83822_config_init(struct phy_device *phydev)
  {
- 	size_t short_len;
- 	size_t complete_len;
+ 	struct dp83822_private *dp83822 = phydev->priv;
+ 	struct device *dev = &phydev->mdio.dev;
+-	int rgmii_delay;
++	int rgmii_delay = 0;
+ 	s32 rx_int_delay;
+ 	s32 tx_int_delay;
+ 	int err = 0;
+@@ -390,30 +390,33 @@ static int dp83822_config_init(struct phy_device *phydev)
+ 		rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
+ 						      true);
  
--	/* no space left for name (+ NULL + type + len) */
--	if ((max_adv_len(hdev) - ad_len) < HCI_MAX_SHORT_NAME_LENGTH + 3)
-+	/* no space left for name (+ type + len) */
-+	if ((max_adv_len(hdev) - ad_len) < HCI_MAX_SHORT_NAME_LENGTH + 2)
- 		return ad_len;
+-		if (rx_int_delay <= 0)
+-			rgmii_delay = 0;
+-		else
+-			rgmii_delay = DP83822_RX_CLK_SHIFT;
++		/* Set DP83822_RX_CLK_SHIFT to enable rx clk internal delay */
++		if (rx_int_delay > 0)
++			rgmii_delay |= DP83822_RX_CLK_SHIFT;
  
- 	/* use complete name if present and fits */
- 	complete_len = strnlen(hdev->dev_name, sizeof(hdev->dev_name));
- 	if (complete_len && complete_len <= HCI_MAX_SHORT_NAME_LENGTH)
--		return eir_append_name(ptr, ad_len, EIR_NAME_COMPLETE,
--				       hdev->dev_name, complete_len + 1);
-+		return eir_append_data(ptr, ad_len, EIR_NAME_COMPLETE,
-+				       hdev->dev_name, complete_len);
+ 		tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
+ 						      false);
++
++		/* Set DP83822_TX_CLK_SHIFT to disable tx clk internal delay */
+ 		if (tx_int_delay <= 0)
+-			rgmii_delay &= ~DP83822_TX_CLK_SHIFT;
+-		else
+ 			rgmii_delay |= DP83822_TX_CLK_SHIFT;
  
- 	/* use short name if present */
- 	short_len = strnlen(hdev->short_name, sizeof(hdev->short_name));
- 	if (short_len)
--		return eir_append_name(ptr, ad_len, EIR_NAME_SHORT,
-+		return eir_append_data(ptr, ad_len, EIR_NAME_SHORT,
- 				       hdev->short_name,
--				       short_len == HCI_MAX_SHORT_NAME_LENGTH ?
--				       short_len : short_len + 1);
-+				       short_len);
+-		if (rgmii_delay) {
+-			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
+-					       MII_DP83822_RCSR, rgmii_delay);
+-			if (err)
+-				return err;
+-		}
++		err = phy_modify_mmd(phydev, DP83822_DEVADDR, MII_DP83822_RCSR,
++				     DP83822_RX_CLK_SHIFT | DP83822_TX_CLK_SHIFT, rgmii_delay);
++		if (err)
++			return err;
++
++		err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
++				       MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
  
- 	/* use shortened full name if present, we already know that name
- 	 * is longer then HCI_MAX_SHORT_NAME_LENGTH
- 	 */
- 	if (complete_len)
--		return eir_append_name(ptr, ad_len, EIR_NAME_SHORT,
-+		return eir_append_data(ptr, ad_len, EIR_NAME_SHORT,
- 				       hdev->dev_name,
- 				       HCI_MAX_SHORT_NAME_LENGTH);
+-		phy_set_bits_mmd(phydev, DP83822_DEVADDR,
+-					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
++		if (err)
++			return err;
+ 	} else {
+-		phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
+-					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
++		err = phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
++					 MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
++
++		if (err)
++			return err;
+ 	}
  
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 21c0924787e22..716f6dc4934b7 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -8465,7 +8465,7 @@ static int read_adv_features(struct sock *sk, struct hci_dev *hdev,
- 
- static u8 calculate_name_len(struct hci_dev *hdev)
- {
--	u8 buf[HCI_MAX_SHORT_NAME_LENGTH + 3];
-+	u8 buf[HCI_MAX_SHORT_NAME_LENGTH + 2]; /* len + type + name */
- 
- 	return eir_append_local_name(hdev, buf, 0);
- }
+ 	if (dp83822->fx_enabled) {
 -- 
 2.43.0
 
