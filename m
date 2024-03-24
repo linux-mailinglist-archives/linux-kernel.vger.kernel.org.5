@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-115872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 565DA88985F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:37:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F8D889953
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:07:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 104D22A3381
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:37:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8473B28032
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:38:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE893814A6;
-	Mon, 25 Mar 2024 03:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3AC7382CA9;
+	Mon, 25 Mar 2024 03:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="livUQaFR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CA20uJpV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB4914600F;
-	Sun, 24 Mar 2024 23:14:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94656146012;
+	Sun, 24 Mar 2024 23:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322069; cv=none; b=o12DNz7GEoKl9YQaJ+4IlCZmijFce3YhHH6bYSdWusWh/3XJioKuBwVvEcNJZgaQPoIm5wqmL3aM4e6uSCoLeTJi8QTxun+aFX5fPmQkg8pWBMP6PR8nn7R+zPACrXyzkN35ncITwdx3hQ75y5qTGHIi3GcObdsnRu0VFQ6o4Uw=
+	t=1711322070; cv=none; b=Edjh2b9U+GwouW7gUKdWVrNO3y+EHAovLRD/+SftMc1bdd4WXTnyeLJIgE36LyX9rujV1UGJM5zt7EBeGlD75xMPRJDOd7BNtaSEG79lwlQ4HDWuVGv0p6TrEBqLnLhrX6T7XXjWL+/eKEYGBNXLH5KB7v9FPG5wRZEStnJ032g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322069; c=relaxed/simple;
-	bh=LJoL7FVENAJIiFqx9+N2Qkpe7UbQUGUTth5EZ2C6PEE=;
+	s=arc-20240116; t=1711322070; c=relaxed/simple;
+	bh=ngHgQOKVmVf0SQhFU+gN0jqHkAr9BsZEUrD2Y21ZIjU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dqd4VeZdBauffwdy8MrISdWqv8XLF4PTvhf206yosW7zbkYKUSlM+eIRbwje2MLz0Wj7TFOksNOsV87JlrZWQsSn+e2F8DlQYO3ce+sWUSC1elDCFSlfq8ljI3ycx/IV0k29tvMord89mLBypbmiJpmleHR31d7sCIwop7Ff8Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=livUQaFR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A23DFC43390;
-	Sun, 24 Mar 2024 23:14:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=T781g2s1RQsQTG5KYJA7Z+ZYi1s2dUmFiAb+Jm30vVHKU/H3WBv57ecm85LjvbBtSI1HZHfZ62NLc8Z3o5RREngVh/vuLERFWQGP+B+6EL/2JQTn4FVZaGXwx3FOsCxbfjbtfHVoaqfTiv1q7+iy/7if7WkZeTqeSupfcie7iR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CA20uJpV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2441C43394;
+	Sun, 24 Mar 2024 23:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322069;
-	bh=LJoL7FVENAJIiFqx9+N2Qkpe7UbQUGUTth5EZ2C6PEE=;
+	s=k20201202; t=1711322070;
+	bh=ngHgQOKVmVf0SQhFU+gN0jqHkAr9BsZEUrD2Y21ZIjU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=livUQaFR3Ks+0WR3jUvt62hYxEp3vCfBiDiJgYwlbQFgWA03dtz7v7ocFmEiltdWj
-	 2KqYR2Gx+E6as01SxPF0alyVIk8l9BLP81f0J5oSqJZ4coJ/jm5arNypU7m52pF/Za
-	 J7dgOnsnyRrQzL+pVGEN5CMPvHqLwYNex6aVRM/KTC4rzD0WEBmPIbyGxANLptCr/T
-	 eO35Bfbxqjzbsgz16r9VDDOT9iRQ6qN8h+RbBY5sA0fTkk0m09ORaz3xeOlJzfUofg
-	 +Fp8esk7lohtiILF1aPY5aDRC7hhnqkdvB2yrBcBilZ0xxAb1QRLcXqBzGYrSnSHoN
-	 UeyCg3LBd4jgQ==
+	b=CA20uJpVkB5exbLqDKZfpWwfZYKuRzo76fHBNGU/0wGq+tjfj7LIpohBWeLpwN3Nx
+	 tCXID3oI/rGukhaVQukEZeC7KP7E7aVwXZq9Cf0T6uMsrct3Wd3sbBg/lj0I+jIAS4
+	 WPNHWBSqeS/CE8Hre3ewQ6mAhcg4UIsUaJOVKnFt4F2WvMXXhpJ9eg04Bg3mAjVo7t
+	 xdv45EsDHNjlHN/XKUm9W7/canhW3zOejsrTDzZRkTaVcvSuqi3RkAc33NDirfMYNN
+	 cBJl6+M+c/tlIug1snCQK4/A38Jyg7JFvN3hY6s8rEgP01M2XEV0dlYxsRsrfNAicr
+	 IYwGaWkMWR5Kg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Sam Shih <sam.shih@mediatek.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 142/451] arm64: dts: mt8183: Move CrosEC base detection node to kukui-based DTs
-Date: Sun, 24 Mar 2024 19:06:58 -0400
-Message-ID: <20240324231207.1351418-143-sashal@kernel.org>
+Subject: [PATCH 6.1 143/451] arm64: dts: mediatek: mt7986: add "#reset-cells" to infracfg
+Date: Sun, 24 Mar 2024 19:06:59 -0400
+Message-ID: <20240324231207.1351418-144-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,100 +65,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 04bd6411f506357fd1faedc2b2156e7ef206aa9a ]
+[ Upstream commit d993daff5962b2dd08f32a83bb1c0e5fa75732ea ]
 
-The cbas node is used to describe base detection functionality in the
-ChromeOS EC, which is used for units that have a detachable keyboard and
-thus rely on this functionality to switch between tablet and laptop
-mode.
+MT7986's Infrastructure System Configuration Controller includes reset
+controller. It can reset blocks as specified in the
+include/dt-bindings/reset/mt7986-resets.h . Add #reset-cells so it can
+be referenced properly.
 
-Despite the original commit having added the cbas node to the
-mt8183-kukui.dtsi, not all machines that include it are detachables. In
-fact all machines that include from mt8183-kukui-jacuzzi.dtsi are either
-clamshells (ie normal laptops) or convertibles, meaning the keyboard can
-be flipped but not detached. The detection for the keyboard getting
-flipped is handled by the driver bound to the keyboard-controller node
-in the EC.
+This fixes:
+arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dtb: infracfg@10001000: '#reset-cells' is a required property
+        from schema $id: http://devicetree.org/schemas/arm/mediatek/mediatek,infracfg.yaml#
 
-Move the base detection node from the base kukui dtsi to the dtsis where
-all machines are detachables, and thus actually make use of the node.
-
-Fixes: 4fa8492d1e5b ("arm64: dts: mt8183: add cbas node under cros_ec")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20240116-mt8183-kukui-cbas-remove-v3-1-055e21406e86@collabora.com
+Fixes: 1f9986b258c2 ("arm64: dts: mediatek: add clock support for mt7986a")
+Cc: Sam Shih <sam.shih@mediatek.com>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Link: https://lore.kernel.org/r/20240101182040.28538-2-zajec5@gmail.com
 Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi  | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi        | 4 ----
- 4 files changed, 12 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-index a11adeb29b1f2..0d3c7b8162ff0 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-@@ -373,6 +373,10 @@ pen_eject {
- };
- 
- &cros_ec {
-+	cbas {
-+		compatible = "google,cros-cbas";
-+	};
-+
- 	keyboard-controller {
- 		compatible = "google,cros-ec-keyb-switches";
- 	};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-index 4864c39e53a4f..e73113cb51f53 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-@@ -340,6 +340,10 @@ touch_pin_reset: pin_reset {
- };
- 
- &cros_ec {
-+	cbas {
-+		compatible = "google,cros-cbas";
-+	};
-+
- 	keyboard-controller {
- 		compatible = "google,cros-ec-keyb-switches";
- 	};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-index d5f41c6c98814..181da69d18f46 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-@@ -344,6 +344,10 @@ rst_pin {
- };
- 
- &cros_ec {
-+	cbas {
-+		compatible = "google,cros-cbas";
-+	};
-+
- 	keyboard-controller {
- 		compatible = "google,cros-ec-keyb-switches";
- 	};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-index de610874a9125..1db97d94658b9 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-@@ -896,10 +896,6 @@ usbc_extcon: extcon0 {
- 			google,usb-port-id = <0>;
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+index fc338bd497f51..108931e796465 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+@@ -110,6 +110,7 @@ infracfg: infracfg@10001000 {
+ 			compatible = "mediatek,mt7986-infracfg", "syscon";
+ 			reg = <0 0x10001000 0 0x1000>;
+ 			#clock-cells = <1>;
++			#reset-cells = <1>;
  		};
  
--		cbas {
--			compatible = "google,cros-cbas";
--		};
--
- 		typec {
- 			compatible = "google,cros-ec-typec";
- 			#address-cells = <1>;
+ 		wed_pcie: wed-pcie@10003000 {
 -- 
 2.43.0
 
