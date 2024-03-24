@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-114752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 998738890F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8F3889569
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F10F299AD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:31:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 572D529818C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2BA13D2BA;
-	Mon, 25 Mar 2024 00:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C71317AFB8;
+	Mon, 25 Mar 2024 03:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bmoNW9w0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i2Eo4NcG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A4D2745D8;
-	Sun, 24 Mar 2024 23:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157572745CC;
+	Sun, 24 Mar 2024 23:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323338; cv=none; b=Z6ozjCr8n4Zy+5VXD8EjP3rYEh73+UwMzvxMEdZd/HyRnIlXY3T8ydzopn4QOyzj4rPn2vDGiOkl7IjhzN3+B3+YH0sNMDzifaJGw2AXeYqLxyU1vJj2ppQ4uqNNPVwmdRYqPFF9e2rf7oJzBPXNE+QZpiJZxAPjsENHJs/4M8A=
+	t=1711323339; cv=none; b=MNweMFpuAmZUXRmdj8ZvNM+ZxaT5Asp2iQRE+d6eT41aN8bXiq9Em/U6NlsAQhP9Vo79il67Y6Ca/kO4OWT1yJ/gt+T8MV/SV0n9rWlfG+6RtKM/SLh7rAlVO1o8w4DNBKnTvZTgdNB2kNQDiznxAlIWq5M0cSeW2T4SwOf67xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323338; c=relaxed/simple;
-	bh=r6eqhgNkcb6EWkbMq2RF9hCEaxcmYhz8AHP6dwZcsOU=;
+	s=arc-20240116; t=1711323339; c=relaxed/simple;
+	bh=hwIpP3qFl5s5BGxFTDGp89V5e0EC0KgQIiH23cBoz3s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jm/qmC3oOTQdeuUO1CV+9IRrY3PvAdTnwyWj7XHNRz0HVtZUKJV4tloVeNfBr7OGg23HW6fGNVKlnVKrIisCcvCObWPW1Qfrv2wHMoGWM/4rutYDbT/WNoTjc3ICjbSdPH2wGyTiU6ZrYgghA1UbG9S93JyF+RileMLdZeZe3E0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bmoNW9w0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B34BC433C7;
-	Sun, 24 Mar 2024 23:35:36 +0000 (UTC)
+	 MIME-Version:Content-Type; b=rTxnz1QHyI/aeYrKO4DZW3TFQWlW9OIf9WFsuOYSPYHX/7cwb67YjeZBjDla//qYtxuJCBI7UnhXbaIRmleTiqGGEwAPawaIEwEUL0fG+zmGZ0JOgfklviLceUQ5BR/C9PoDGyz60yN08F4hA4N9f/xzqvp2PWSjKvOK/LUXIw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i2Eo4NcG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27C0AC433F1;
+	Sun, 24 Mar 2024 23:35:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323336;
-	bh=r6eqhgNkcb6EWkbMq2RF9hCEaxcmYhz8AHP6dwZcsOU=;
+	s=k20201202; t=1711323338;
+	bh=hwIpP3qFl5s5BGxFTDGp89V5e0EC0KgQIiH23cBoz3s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bmoNW9w0JIS07CvdoDSrDxDla1HlezC4KuHUTMRQNwjLZX8bgrrl3n9o+jY4BJwe3
-	 Pg+Mm7xO+ZcOQ6a9PiOWncBxyrcc3stTgNt5WNH2zCvdvyFUWvOr8EhuufhiQ2z33E
-	 YiJPxhttFAVbl/hv6EDJt/2rH9hcEW2z4hyrVm8xeJX9XaVp/TBUIXxz/vcd8heXz5
-	 7hf66JKCydaaz6gxY+7+P3zBoM85x0i8RfrRi2ae3nmlnqOV8y4E8hDG0U8gD3Q3jf
-	 pBjQrxkBUBzbdWOIC05ND2gsj069B907RhTHtMxPOOEMhIkgw7FtCk89vQfHrfjMBB
-	 oQE1KT5ne5Fkw==
+	b=i2Eo4NcGzA/T3wcROh2KYKsjDLcjRf3eGUG2MlSowtBSkMHe1T/OhS72om/3GsNvE
+	 CotWsUFNjioOPP7BHowrJ33qbQHuoNxYsm7Gycfxq5+H85q/lkv56quaTm3XTfZIST
+	 Fy2e4jRDBTOj+mj/tT5BmNPWNY0CEzfvnKdvX5NvTbX+501zfI7nN1XpZuW7ZsFFAH
+	 kANRkewje0gBQW1bXggtQ4/gCc0S7g3W5j21eP0tNFI5Oi4fu/43wpxowdsaRYxvkX
+	 b/+3dhuRPWhVHxSIpTJ0lK7u12tY98TPKPDNy0VGZ1aoQ+pCVBBjwx5hUa4C3ymrna
+	 Q/qrd3LwfgN0Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Jan=20H=C3=B6ppner?= <hoeppner@linux.ibm.com>,
+Cc: Miroslav Franc <mfranc@suse.cz>,
+	=?UTF-8?q?Jan=20H=C3=B6ppner?= <hoeppner@linux.ibm.com>,
 	Stefan Haberland <sth@linux.ibm.com>,
 	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 037/317] s390/dasd: Use dev_*() for device log messages
-Date: Sun, 24 Mar 2024 19:30:17 -0400
-Message-ID: <20240324233458.1352854-38-sashal@kernel.org>
+Subject: [PATCH 5.15 038/317] s390/dasd: fix double module refcount decrement
+Date: Sun, 24 Mar 2024 19:30:18 -0400
+Message-ID: <20240324233458.1352854-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -64,167 +65,53 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jan Höppner <hoeppner@linux.ibm.com>
+From: Miroslav Franc <mfranc@suse.cz>
 
-[ Upstream commit 79ae56fc475869d636071f66d9e4ef2a3819eee6 ]
+[ Upstream commit c3116e62ddeff79cae342147753ce596f01fcf06 ]
 
-All log messages in dasd.c use the printk variants of pr_*(). They all
-add the name of the affected device manually to the log message.
-This can be simplified by using the dev_*() variants of printk, which
-include the device information and make a separate call to dev_name()
-unnecessary.
+Once the discipline is associated with the device, deleting the device
+takes care of decrementing the module's refcount.  Doing it manually on
+this error path causes refcount to artificially decrease on each error
+while it should just stay the same.
 
-The KMSG_COMPONENT and the pr_fmt() definition can be dropped. Note that
-this removes the "dasd: " prefix from the one pr_info() call in
-dasd_init(). However, the log message already provides all relevant
-information.
-
+Fixes: c020d722b110 ("s390/dasd: fix panic during offline processing")
+Signed-off-by: Miroslav Franc <mfranc@suse.cz>
 Signed-off-by: Jan Höppner <hoeppner@linux.ibm.com>
-Reviewed-by: Stefan Haberland <sth@linux.ibm.com>
 Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Link: https://lore.kernel.org/r/20240208164248.540985-10-sth@linux.ibm.com
+Link: https://lore.kernel.org/r/20240209124522.3697827-3-sth@linux.ibm.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Stable-dep-of: c3116e62ddef ("s390/dasd: fix double module refcount decrement")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/block/dasd.c | 50 +++++++++++++++++++--------------------
- 1 file changed, 24 insertions(+), 26 deletions(-)
+ drivers/s390/block/dasd.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/drivers/s390/block/dasd.c b/drivers/s390/block/dasd.c
-index c45b6f3780ebd..f13f76fe3f2e2 100644
+index f13f76fe3f2e2..fc33474271115 100644
 --- a/drivers/s390/block/dasd.c
 +++ b/drivers/s390/block/dasd.c
-@@ -8,9 +8,6 @@
-  * Copyright IBM Corp. 1999, 2009
-  */
+@@ -3573,12 +3573,11 @@ int dasd_generic_set_online(struct ccw_device *cdev,
+ 		dasd_delete_device(device);
+ 		return -EINVAL;
+ 	}
++	device->base_discipline = base_discipline;
+ 	if (!try_module_get(discipline->owner)) {
+-		module_put(base_discipline->owner);
+ 		dasd_delete_device(device);
+ 		return -EINVAL;
+ 	}
+-	device->base_discipline = base_discipline;
+ 	device->discipline = discipline;
  
--#define KMSG_COMPONENT "dasd"
--#define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
--
- #include <linux/kmod.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-@@ -3451,8 +3448,7 @@ static void dasd_generic_auto_online(void *data, async_cookie_t cookie)
- 
- 	ret = ccw_device_set_online(cdev);
- 	if (ret)
--		pr_warn("%s: Setting the DASD online failed with rc=%d\n",
--			dev_name(&cdev->dev), ret);
-+		dev_warn(&cdev->dev, "Setting the DASD online failed with rc=%d\n", ret);
- }
- 
- /*
-@@ -3539,8 +3535,11 @@ int dasd_generic_set_online(struct ccw_device *cdev,
- {
- 	struct dasd_discipline *discipline;
- 	struct dasd_device *device;
-+	struct device *dev;
- 	int rc;
- 
-+	dev = &cdev->dev;
-+
- 	/* first online clears initial online feature flag */
- 	dasd_set_feature(cdev, DASD_FEATURE_INITIAL_ONLINE, 0);
- 	device = dasd_create_device(cdev);
-@@ -3553,11 +3552,10 @@ int dasd_generic_set_online(struct ccw_device *cdev,
- 			/* Try to load the required module. */
- 			rc = request_module(DASD_DIAG_MOD);
- 			if (rc) {
--				pr_warn("%s Setting the DASD online failed "
--					"because the required module %s "
--					"could not be loaded (rc=%d)\n",
--					dev_name(&cdev->dev), DASD_DIAG_MOD,
--					rc);
-+				dev_warn(dev, "Setting the DASD online failed "
-+					 "because the required module %s "
-+					 "could not be loaded (rc=%d)\n",
-+					 DASD_DIAG_MOD, rc);
- 				dasd_delete_device(device);
- 				return -ENODEV;
- 			}
-@@ -3565,8 +3563,7 @@ int dasd_generic_set_online(struct ccw_device *cdev,
- 		/* Module init could have failed, so check again here after
- 		 * request_module(). */
- 		if (!dasd_diag_discipline_pointer) {
--			pr_warn("%s Setting the DASD online failed because of missing DIAG discipline\n",
--				dev_name(&cdev->dev));
-+			dev_warn(dev, "Setting the DASD online failed because of missing DIAG discipline\n");
- 			dasd_delete_device(device);
- 			return -ENODEV;
- 		}
-@@ -3587,8 +3584,8 @@ int dasd_generic_set_online(struct ccw_device *cdev,
  	/* check_device will allocate block device if necessary */
- 	rc = discipline->check_device(device);
+@@ -3586,8 +3585,6 @@ int dasd_generic_set_online(struct ccw_device *cdev,
  	if (rc) {
--		pr_warn("%s Setting the DASD online with discipline %s failed with rc=%i\n",
--			dev_name(&cdev->dev), discipline->name, rc);
-+		dev_warn(dev, "Setting the DASD online with discipline %s failed with rc=%i\n",
-+			 discipline->name, rc);
- 		module_put(discipline->owner);
- 		module_put(base_discipline->owner);
+ 		dev_warn(dev, "Setting the DASD online with discipline %s failed with rc=%i\n",
+ 			 discipline->name, rc);
+-		module_put(discipline->owner);
+-		module_put(base_discipline->owner);
  		dasd_delete_device(device);
-@@ -3597,16 +3594,15 @@ int dasd_generic_set_online(struct ccw_device *cdev,
- 
- 	dasd_set_target_state(device, DASD_STATE_ONLINE);
- 	if (device->state <= DASD_STATE_KNOWN) {
--		pr_warn("%s Setting the DASD online failed because of a missing discipline\n",
--			dev_name(&cdev->dev));
-+		dev_warn(dev, "Setting the DASD online failed because of a missing discipline\n");
- 		rc = -ENODEV;
- 		dasd_set_target_state(device, DASD_STATE_NEW);
- 		if (device->block)
- 			dasd_free_block(device->block);
- 		dasd_delete_device(device);
--	} else
--		pr_debug("dasd_generic device %s found\n",
--				dev_name(&cdev->dev));
-+	} else {
-+		dev_dbg(dev, "dasd_generic device found\n");
-+	}
- 
- 	wait_event(dasd_init_waitq, _wait_for_device(device));
- 
-@@ -3617,10 +3613,13 @@ EXPORT_SYMBOL_GPL(dasd_generic_set_online);
- 
- int dasd_generic_set_offline(struct ccw_device *cdev)
- {
-+	int max_count, open_count, rc;
- 	struct dasd_device *device;
- 	struct dasd_block *block;
--	int max_count, open_count, rc;
- 	unsigned long flags;
-+	struct device *dev;
-+
-+	dev = &cdev->dev;
- 
- 	rc = 0;
- 	spin_lock_irqsave(get_ccwdev_lock(cdev), flags);
-@@ -3641,11 +3640,10 @@ int dasd_generic_set_offline(struct ccw_device *cdev)
- 		open_count = atomic_read(&device->block->open_count);
- 		if (open_count > max_count) {
- 			if (open_count > 0)
--				pr_warn("%s: The DASD cannot be set offline with open count %i\n",
--					dev_name(&cdev->dev), open_count);
-+				dev_warn(dev, "The DASD cannot be set offline with open count %i\n",
-+					 open_count);
- 			else
--				pr_warn("%s: The DASD cannot be set offline while it is in use\n",
--					dev_name(&cdev->dev));
-+				dev_warn(dev, "The DASD cannot be set offline while it is in use\n");
- 			rc = -EBUSY;
- 			goto out_err;
- 		}
-@@ -4008,8 +4006,8 @@ static int dasd_handle_autoquiesce(struct dasd_device *device,
- 	if (dasd_eer_enabled(device))
- 		dasd_eer_write(device, NULL, DASD_EER_AUTOQUIESCE);
- 
--	pr_info("%s: The DASD has been put in the quiesce state\n",
--		dev_name(&device->cdev->dev));
-+	dev_info(&device->cdev->dev,
-+		 "The DASD has been put in the quiesce state\n");
- 	dasd_device_set_stop_bits(device, DASD_STOPPED_QUIESCE);
- 
- 	if (device->features & DASD_FEATURE_REQUEUEQUIESCE)
+ 		return rc;
+ 	}
 -- 
 2.43.0
 
