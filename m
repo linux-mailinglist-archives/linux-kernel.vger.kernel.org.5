@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-115277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 884F0889C97
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:23:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4607D889CA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CDB41F361EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:23:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77BA51C349DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0886115B542;
-	Mon, 25 Mar 2024 02:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF9715B57D;
+	Mon, 25 Mar 2024 02:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YzXw+NfY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PM6AhYnN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC127EF0F;
-	Sun, 24 Mar 2024 22:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393697580A;
+	Sun, 24 Mar 2024 22:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320471; cv=none; b=VFRG/V5RZP0q7M05+0yGdaxBI8/4pN4t9eYautJR9eI7tk2pTsYcCm3j6ry+RQVeJcJZmFx0uozdD7Wf1wF1LvKr2D9SveYd+ytj5kXaKvoOez+R0gxUFfAPKHUmrrkE5zieou1atsIYL5WvN6XrviotVURxPSkOGOLGk3eDGLM=
+	t=1711320472; cv=none; b=eqvifkWG0TgR38/lx9VHEcuJJduGWuJUe17RbgbLm6q8N0gCOrI88szonLAUxVeZlUvsy6Co0f69ca4v9cQmQFVC6xijyAHnbHEpcvRIfOw+uRrBgushgfBTuwwmNUc/CS0RKCZM4YNh38qesvM56AOmAYil0ADHNYsNgr8KRbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320471; c=relaxed/simple;
-	bh=H02y0RGDOkwRPBjwHsYqNibSOi4L7LTOH0o83ixsYvo=;
+	s=arc-20240116; t=1711320472; c=relaxed/simple;
+	bh=T/akRPi5ao0d12BmCz3WEgH+FPHY9KHNebOOEFBHkBM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D/WIH8bmwkKhd/yDF1pphkb/xTS7ea6ecIgHbRSGbQ9sBjMhnBqKV2s9qwj56fyzvqdFHHgbMQkcoqm9V//spxjtfiuaVjb9E0jeJ9JkoCgPzUFE55pm84FmPQ1mMdiyjjaNDctmkRWyYEaue9ynk1IJZr2sJ/RlqZQoTJD/Q9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YzXw+NfY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48F98C433F1;
-	Sun, 24 Mar 2024 22:47:50 +0000 (UTC)
+	 MIME-Version; b=bcop4bOaQpjkP/KUWDwC86PT63BzeV8rnLYm8jnJisx+ZV8N1r3HvFozb/xHKyrngDaHbhzd3sXfAPpV0Ks6yk2wlYeFxS46OHZUm4rPOyJDlTDDzCCZPArtS3HGVnzbbZ1G9ywjZ7P/KEEx1l5L2W7tTCNJViWPjnmt5p/4hQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PM6AhYnN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 740B4C43390;
+	Sun, 24 Mar 2024 22:47:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320471;
-	bh=H02y0RGDOkwRPBjwHsYqNibSOi4L7LTOH0o83ixsYvo=;
+	s=k20201202; t=1711320472;
+	bh=T/akRPi5ao0d12BmCz3WEgH+FPHY9KHNebOOEFBHkBM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YzXw+NfYXtEAMTtVt+zD+5bJmC41KC3IbV2R7xdY3xOof0IXuqrXmJWHNNuy7VMYT
-	 KsieYObx8s1cWTXFq4+5MXWOEmF5wbuGOqdCh7fHk44iZDTQlCRN+Zuy1fuhFpNTfH
-	 0f04VDSdU5Yq8IKTlKjvJ0OW7AbacANkidS4lQ2blzebnMcszBUNxRX0mUbZ98Mj3t
-	 DrThSXY467M+NDK1QD8dGO5/olHTUBKNBOJlE8fzqAE17hyqmf1l7NGWONm1/Ux7RC
-	 B05gEl37wVZMRj/9zQ2JTly7DnKrWNQQAMZciQiULKAt+risgJiXSf27XBMHPTPRbK
-	 lsqIKKtVqdbRQ==
+	b=PM6AhYnN8f8aoIUet0YZ6Mr5sKiBRkR7CRrRfLga4ALGAZvshaAiebNszXDolRwQb
+	 dQ5ji3UlqmqbyGQTAwuo9Y46IE6OwmU6gi5HWRjOWud/2ZBR1lJjdTvZcgFDq42eRS
+	 elj1WDwur2hY6gS8DSxIdWB4Ge9iJKq5vWdEdjymQHlV1LocrNLBXjCqGDu/yB6+9i
+	 9W8nbE8nuGWCnOfYACxz/4i7hcM3zoqoWqm5xOR54D3pNP+O5HcXaym9YNpaPDA+WM
+	 zoQtbrsW797Danx6Q1dVls729Xh9Ia3PYyDDcfvN5coLb/FgTLYowbzekEgxtnUqpO
+	 48xmiOFMMdc1g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hari Bathini <hbathini@linux.ibm.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	David Vernet <void@manifault.com>,
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 030/713] bpf: Fix warning for bpf_cpumask in verifier
-Date: Sun, 24 Mar 2024 18:35:56 -0400
-Message-ID: <20240324224720.1345309-31-sashal@kernel.org>
+Subject: [PATCH 6.7 031/713] riscv: dts: sifive: add missing #interrupt-cells to pmic
+Date: Sun, 24 Mar 2024 18:35:57 -0400
+Message-ID: <20240324224720.1345309-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -65,42 +62,34 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hari Bathini <hbathini@linux.ibm.com>
+From: Conor Dooley <conor.dooley@microchip.com>
 
-[ Upstream commit 11f522256e9043b0fcd2f994278645d3e201d20c ]
+[ Upstream commit ce6b6d1513965f500a05f3facf223fa01fd74920 ]
 
-Compiling with CONFIG_BPF_SYSCALL & !CONFIG_BPF_JIT throws the below
-warning:
+At W=2 dtc complains:
+hifive-unmatched-a00.dts:120.10-238.4: Warning (interrupt_provider): /soc/i2c@10030000/pmic@58: Missing '#interrupt-cells' in interrupt provider
 
-  "WARN: resolve_btfids: unresolved symbol bpf_cpumask"
+Add the missing property.
 
-Fix it by adding the appropriate #ifdef.
-
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Acked-by: David Vernet <void@manifault.com>
-Link: https://lore.kernel.org/bpf/20240208100115.602172-1-hbathini@linux.ibm.com
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9698e93d48c6e..890d4c4bf9972 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5445,7 +5445,9 @@ BTF_ID(struct, prog_test_ref_kfunc)
- #ifdef CONFIG_CGROUPS
- BTF_ID(struct, cgroup)
- #endif
-+#ifdef CONFIG_BPF_JIT
- BTF_ID(struct, bpf_cpumask)
-+#endif
- BTF_ID(struct, task_struct)
- BTF_SET_END(rcu_protected_types)
+diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+index 07387f9c135ca..72b87b08ab444 100644
+--- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
++++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+@@ -123,6 +123,7 @@ pmic@58 {
+ 		interrupt-parent = <&gpio>;
+ 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
  
+ 		onkey {
+ 			compatible = "dlg,da9063-onkey";
 -- 
 2.43.0
 
