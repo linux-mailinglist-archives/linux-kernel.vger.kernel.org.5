@@ -1,112 +1,164 @@
-Return-Path: <linux-kernel+bounces-117332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47AE188AA19
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:51:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0792C887E64
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB15F1F69E61
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:50:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 847422815BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4143146D76;
-	Mon, 25 Mar 2024 15:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E77D534;
+	Sun, 24 Mar 2024 18:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="UzfQA2qL"
-Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LfI71te/"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95981146D56;
-	Mon, 25 Mar 2024 15:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90DBEC2FD
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 18:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711379327; cv=none; b=Hfj2RZeYHnnZuCwIeeN5l3T6RieoGwudUIzbdrJjwoRfl/x/P0YRFnoDC6ZSu6IhpM5qdviBjggSrXTFToOARCMVYPqgtoFIGLWDnzDNVzTct2GjYQPy5UiZlFHLFLQOK+IWLDys7bzXpUV8Rjw6jw9FTuuzPFF3VodC6BBVQpg=
+	t=1711306240; cv=none; b=bmYRnszwaEWOmXUjxINva2Rx66lMyG+qfBY8MIcx1iUg6M7nyRDf8pfpDjnlIRfQYRBsNJLeG4MbiXLQ+Jlk93IvDg/5VG33G0C0fCwyJHrEUeK8M6MXkGj/U+L+Njql5pOqGaIi3Kd6aJDYyV3h2JKNDSsNoY+dxowAB9tmAUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711379327; c=relaxed/simple;
-	bh=cOB5ofcragOsxUPDcRYrRuGwwiFEh7d8O8+uK+5YN54=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QhwnJld7OLugBcTCgqFo7XlEbozusP+TOOQmDWVPj1B1Fb6U0Rvq2xU4LCjLLxAXYsS00RVUMrilC4/hb9LfHKwF0nPgLj3dsxhDaAEy4qZ05SUtp/tNIKJJWpDGZa138RbGIGfS+9ZgrjdZf7UklN9sQmkLz8GGLeFR/zuq0AY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=UzfQA2qL; arc=none smtp.client-ip=161.97.139.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
-Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
-	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1rolwE-003KEg-1E;
-	Mon, 25 Mar 2024 16:08:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=TkWL+DHrht+nOfgyUNGNUf3KP01IjzuevLkBJPg3TiI=; b=UzfQA2qL+bndZw6lsmdoDeELjW
-	uuMpHqJV3OOnQ9XErtmLJOy8b775fseCT6uPNyDf4d1N1tAXwO+MJ0ULPrEKXyjQyi8YLURYw2v5y
-	KfkjM3J2swbh6A8ItMFOFROS6dpDMSnWtBsEbxtuHw8ncnSZthPG/ot12FcTz1NBqd/lR6vhn1QtI
-	M2/IcyOWSSQ2b5riYCQjyVq8M2NaPXS0zWswkIjSKqdSXXeo1/xCxfcuDTZ1VpmbtSZrJGKrENIO1
-	zXhQX6yY8FkiiRJiDSwb6y9jgAXyrL93P/2TXu8W57oql31y/aTZOE4wvAiskqSLBF/N2EHpH0Eea
-	vw72pM9Q==;
-Received: from p2003010777026a001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7702:6a00:1a3d:a2ff:febf:d33a] helo=aktux)
-	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <andreas@kemnade.info>)
-	id 1roSqO-000Y2F-Df; Sun, 24 Mar 2024 19:45:19 +0100
-Received: from andi by aktux with local (Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1roSqN-000rkQ-0s;
-	Sun, 24 Mar 2024 19:45:19 +0100
-From: Andreas Kemnade <andreas@kemnade.info>
-To: dmitry.torokhov@gmail.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	andreas@kemnade.info,
-	o.rempel@pengutronix.de,
-	dario.binacchi@amarulasolutions.com,
-	u.kleine-koenig@pengutronix.de,
-	hdegoede@redhat.com,
-	p.puschmann@pironex.com,
-	linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	caleb.connolly@linaro.org
-Subject: [PATCH 2/2] Input: edt-ft5x06 - add ft5426
-Date: Sun, 24 Mar 2024 19:44:15 +0100
-Message-Id: <20240324184415.206587-3-andreas@kemnade.info>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240324184415.206587-1-andreas@kemnade.info>
-References: <20240324184415.206587-1-andreas@kemnade.info>
+	s=arc-20240116; t=1711306240; c=relaxed/simple;
+	bh=O0xVY+gl/fPHcB6WhFKWsogdWZR6lFHePZT39lrEaZQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=A2rKLbeHgYFlB3cfxe3yP3vdYfYBdF6rDJQFIlsT2m+nj7CqxI8eNWSSOxs/Wtqe34u5jAfW669/m9Nxuqqy+lQ2UTuaTIjpuPd4qDZed5M94++dld94QWPbEselRsiHnHvqm30lHlnVtUvaE588bS11pV8aO8C1lF674Y5YWeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LfI71te/; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a4715991c32so423244066b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 11:50:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711306237; x=1711911037; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jh7WIPngChgpb6/wT2qnSquscN8CZ3uMdGD+jaJxYv8=;
+        b=LfI71te/lri8tXBfg3FoFdN2qhR2tcloWhWukiXBsS6Odqk2kdmaluKFNsbr/CKBez
+         LqeNqxdAB/2TJLKJvcLZUKOr5Uu0HTz6bl2IWb/IDjeHa71HR7Evd1TPGdC4G0Au3VOR
+         gQd22VXXlrRA24oQx2nneysc7RgWtHZe/XJzXaWA268j9bMbHyWeuV+e2Rn+GcAOh20W
+         QhHIkCj8vsB43eGofApyaDcLngK+ug8z2H2hxBnTvoqySBSyEBvmnK1hkKCmOOCoJk48
+         NJGHcje7if2LddZm1D6ex8tk6YAayyWG7+qKAhCEvUrIIL8XY2g8iq7XBE8aFhU6gVWJ
+         mV8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711306237; x=1711911037;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Jh7WIPngChgpb6/wT2qnSquscN8CZ3uMdGD+jaJxYv8=;
+        b=ogb2dT0O4xfgCu1B6t1/c41zgp6ftR9VQ77KLXIk145/K20asmnQfAeuKiXtSARGXG
+         Dl9lk0eUDhakrMca3yz1gAYoO4ur8/x6l+hN8EDorMiXHa4y/921VJsVTiQskceiQAvE
+         zgi/X6fSHEsDFDPUmNinCJ2wqYp4Z59cJBUMlWuDs1+mFNEqjF1f8rSG/J8au9H291rT
+         dqnBPKlkK3LFXZBaCiZC60S5roa7OxxKTavGfumE07lmRy+josvLVWd+pT2/Jq445XPj
+         ltJnH9pdmOrvfLa0ShNTgOyWC7+SiV6YkeliqemS/oLM/qWN3CyL4RK0lYujUagWTGHy
+         aC6g==
+X-Forwarded-Encrypted: i=1; AJvYcCWLX+8TnU48t+MdmXFxvFA4pbpB5TeWRqbeb/dTq5EeKD2KU54vR812vvtztnTioQwwsIGSzrndlgI+YpKVWgPM1kPmtAblsw1/QbYP
+X-Gm-Message-State: AOJu0YwTrf7S01KkebMfI130zX4b+8jF/cABPAtTEa9ryuzfNpk7pHWs
+	JyPyOEwNtGmoMa/gRcIQF2iDNSDLgdeLkbAj6p5gLyJ0MK3I6k9YWPTMXcKNVJE=
+X-Google-Smtp-Source: AGHT+IE7YzZVq4H0/yCqXg4Z63bK4KbtfqOS7Jf4EbizVXqQY6dIiXsth6aZPv2MfP3+lLsWDN16ZQ==
+X-Received: by 2002:a17:906:1796:b0:a47:3b6a:a29b with SMTP id t22-20020a170906179600b00a473b6aa29bmr3095023eje.13.1711306236616;
+        Sun, 24 Mar 2024 11:50:36 -0700 (PDT)
+Received: from [127.0.1.1] ([79.114.172.194])
+        by smtp.gmail.com with ESMTPSA id kn5-20020a170906aa4500b00a46524d06afsm2188136ejb.8.2024.03.24.11.50.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Mar 2024 11:50:36 -0700 (PDT)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH RESEND v5 0/2] phy: qcom: edp: Allow eDP/DP configuring via
+ set_mode op
+Date: Sun, 24 Mar 2024 20:50:16 +0200
+Message-Id: <20240324-x1e80100-phy-edp-compatible-refactor-v5-0-a0db5f3150bc@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Johan Hovold <johan@kernel.org>
+Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2478; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=O0xVY+gl/fPHcB6WhFKWsogdWZR6lFHePZT39lrEaZQ=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBmAHXupd+aX9jJ71rkl3EKxdf9VYRDpb/da92OQ
+ qn8lHUFCE2JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZgB17gAKCRAbX0TJAJUV
+ VrvREACwrHiaD6PwIQtmnkqeVgB4JTXBJY1d3DFw4JlKGgOPs1vt4XIrCdM6vXnftUL4GSfCLwc
+ muGOAhE7nPqs2eI7WGJvCUT0tu/4zmPTMm4BFJumTjPIRPLd83wRv38r/YdInH0RLvdwQpHezMB
+ 7xPkkn0yoj5BBa05aGQH96uSDpvfpk1dcI4kQ0TkUSKzm/SvqdNN/uVEq4utV9aOWTxQCZX3dE7
+ j3T0GrGAI0CvsW6NC6nWYHfXa/6jgmo5Ex7EWNnqLM3umPS0mYweBQCz69lcWFzUhw/wFIWN3eL
+ c+NBUX5hb0Tstet0/pXnRm2Rad9qAhJwE0sNRgnxf+AfrGDoiIJys0t2DKFiLmW/miG2imbv6nb
+ pBRTZk2i4fYlmhj8TghwGDM1D9XYi3OwkmWtwqsRu8e1fbn1zAOgBYPZb9ah5sAve3njTpFOPTs
+ skefZtRU5xXqPelVXOi05FjngLy8PsdG1Ef33nVAAjhSWiSiBNGTeL1olN2AD60iAlmektibpwo
+ UZu1w09t6jF6t4BE6zyiwpz/fRA2aBeqQ6tLHTPIbNq9LWEoXw5PrCOEa2Jcnxjdvs4AvvrqkI1
+ +yqljOqtyH6L60/WHeqCyTSgy9HwvHkRuNafIAdlC4y3yw3J0b8VQz9GHDZQltUxF82J6+bYUk0
+ QxfmgqD8Yw/exMg==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-As ft5426 seems to be compatible with this driver, add it.
-Debug output during identification: Model "generic ft5x06 (79)", Rev. "
+Until now, all platform that supported both eDP and DP had different
+compatibles for each mode. Using different compatibles for basically
+the same IP block but for a different configuration is bad way all
+around. There is a new compute platform from Qualcomm that supports
+both eDP and DP with the same PHY. So instead of following the old
+method, we should allow the submode to be configured via set_mode from
+the controller driver.
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+The controller part will follow after we conclude the PHY part first.
+
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
- drivers/input/touchscreen/edt-ft5x06.c | 1 +
- 1 file changed, 1 insertion(+)
+Changes in v5:
+- Dropped the unnecessary ternary operator.
+- Link to v4: https://lore.kernel.org/r/20240216-x1e80100-phy-edp-compatible-refactor-v4-0-c07fd1a52186@linaro.org
 
-diff --git a/drivers/input/touchscreen/edt-ft5x06.c b/drivers/input/touchscreen/edt-ft5x06.c
-index 2a1db11344766..4e7621a801756 100644
---- a/drivers/input/touchscreen/edt-ft5x06.c
-+++ b/drivers/input/touchscreen/edt-ft5x06.c
-@@ -1484,6 +1484,7 @@ static const struct of_device_id edt_ft5x06_of_match[] = {
- 	{ .compatible = "edt,edt-ft5206", .data = &edt_ft5x06_data },
- 	{ .compatible = "edt,edt-ft5306", .data = &edt_ft5x06_data },
- 	{ .compatible = "edt,edt-ft5406", .data = &edt_ft5x06_data },
-+	{ .compatible = "focaltech,ft5426", .data = &edt_ft5506_data },
- 	{ .compatible = "edt,edt-ft5506", .data = &edt_ft5506_data },
- 	{ .compatible = "evervision,ev-ft5726", .data = &edt_ft5506_data },
- 	/* Note focaltech vendor prefix for compatibility with ft6236.c */
+Changes in v4:
+- Added todo comment about setting the value of cfg8 based on swing
+  pre-emph availability, like Konrad suggested
+- Fixed the condition in qcom_edp_phy_power_on, reported by Dmitry
+- Link to v3: https://lore.kernel.org/r/20240129-x1e80100-phy-edp-compatible-refactor-v3-0-e71f3359c535@linaro.org
+
+Changes in v3:
+- Dropped needs_swing_pre_emph_cfg as we store the table instead
+- Picking the table based on is_edp instead of overriding.
+- Link to v2: https://lore.kernel.org/r/20231222-x1e80100-phy-edp-compatible-refactor-v2-0-ab5786c2359f@linaro.org
+
+Changes in v2:
+- Dropped the dedicated xlate function and added set_mode op instead
+- Dropped the eDP PHY type and mode addition
+- Added the DP PHY submodes (eDP and DP)
+- Removed the device match data storing from the container struct
+- Link to v1: https://lore.kernel.org/r/20231219-x1e80100-phy-edp-compatible-refactor-v1-0-f9e77752953d@linaro.org
+
+Initial attepmpt was here:
+https://lore.kernel.org/all/20231122-phy-qualcomm-edp-x1e80100-v3-3-576fc4e9559d@linaro.org/
+Compared to that version, this one uses the phy-cells method and drops
+the X1E80100 support. The X1E80100 support will be a separate patchset.
+
+---
+Abel Vesa (2):
+      phy: Add Embedded DisplayPort and DisplayPort submodes
+      phy: qcom: edp: Add set_mode op for configuring eDP/DP submode
+
+ drivers/phy/qualcomm/phy-qcom-edp.c | 76 +++++++++++++++++++++++++++----------
+ include/linux/phy/phy-dp.h          |  3 ++
+ 2 files changed, 59 insertions(+), 20 deletions(-)
+---
+base-commit: 2d5c7b7eb345249cb34d42cbc2b97b4c57ea944e
+change-id: 20231219-x1e80100-phy-edp-compatible-refactor-8733eca7ccda
+
+Best regards,
 -- 
-2.39.2
+Abel Vesa <abel.vesa@linaro.org>
 
 
