@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 324D3888A2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:12:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 260DA88973F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:11:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 638A91C284EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:12:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A26441F37244
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C98217E0C;
-	Sun, 24 Mar 2024 23:35:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBDB362964;
+	Mon, 25 Mar 2024 02:56:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Eyj5MB3S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WpJXiQ8E"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887221EFFD5;
-	Sun, 24 Mar 2024 23:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856E81EFFD4;
+	Sun, 24 Mar 2024 23:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321799; cv=none; b=a4nZl8nwSvK9bm2iInfOGa+m/btdhqHG77AF/W+FpOq/7dY77tQ6YT4hS1Z59SvXSuwEV/3kejv4VhsxlCCqi7M5VthV86D+fHxM1J+60463Ex7qjcZ3WPckrKXXpkwVFhDQLYTtWgqOhCCLBeReZ4i7OG/UjWzDibKMA3T1hOE=
+	t=1711321799; cv=none; b=WhrfJFK4VnjGza/9Sum9byEjIQQ/qk7RzszhqGdu0cOViZEaEizH55YTwj9UERcBFKluI9RGO35Dclk2X0qXozWGaxRLndw38tY6IXdDQmHtMSoVDvejAmET3akdFd0+S5EMOhAlatOndcTXfHrxz8w05klMEUIQahvooExt5VU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321799; c=relaxed/simple;
-	bh=DnIEbnQD9ob1MO8/v30ZkD/ZbTdidfNE4UviQRjCoEE=;
+	bh=scIDcklIrfROK4gOZUhY8/qPGwXweUlY6K4UoaZMNgs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fn/1UTHA4sM1ysu4+S6SbCRhoHaaiwH4Jermp8ya2NQXgajqLgGmydkAFu8Po1hi1oRRi3Fo1uHyjMFVYy9iZos2rvvxVQrmuHtGSUIbHivxM7QX9UVmMh6oaAk2WuZSP4qWEIzG+in2IyCLhzHqKSbcJ2GkhDVCiXAcwc6rFfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Eyj5MB3S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFF5AC433A6;
-	Sun, 24 Mar 2024 23:09:57 +0000 (UTC)
+	 MIME-Version; b=ImJnRMREXq+4KZQX+vwCdri0sl+mrJDP+Cvd4la9qGZgIyzdXfGe8BYQeo6w8DwYS36ac0pelkgfs5l6MTSiQ3gzwFJQLc8MFSfb+rxCMggY13FRrcGkwvsIv1W4rccUCp456PZlNNAPOFM7msLQs2/PUnEYyhYNKxt46gUp4VI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WpJXiQ8E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE455C43394;
+	Sun, 24 Mar 2024 23:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321798;
-	bh=DnIEbnQD9ob1MO8/v30ZkD/ZbTdidfNE4UviQRjCoEE=;
+	s=k20201202; t=1711321799;
+	bh=scIDcklIrfROK4gOZUhY8/qPGwXweUlY6K4UoaZMNgs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Eyj5MB3SeS4LJ+dj13A7AglyoDKpN9vcVyx46hFN6M4IHk522UGwicMXOX7EmLcAw
-	 5b6kqDPBCpFMw06Qox2jgu7C7uFgnMO2hFSmwakH6WwsIRyrXRIlyw8e8pr5ISR0Oy
-	 AaWCohX34W9Ci3si7SB7RI8x+8KdqpUa67MW+gURHrL3dDVSZdZzpzS0Zr0HtK82ra
-	 bTaV7SDjMAuQcUJ5bW+I6jYUG8cUTtI7FPnenLyr3oofvqQtgeiaBMfkJKy6khIOpF
-	 V1Fd7x4HUwVeHtLBnbkIG/2O3+AYbOLqBXu2sKEvBlHgx18nGUSEYyUT2GiWDofEDC
-	 bsLXq5EY6Tryg==
+	b=WpJXiQ8EKbP1Si5lRZXKikNP1OpU7UzY0KG1f/W4cbfCRTv8OGL1eHojXVSBIkbfG
+	 ZizIrc4IxG0SE2w/7pTMvjSP1pUIrqllVkdfnA0Ag4tU5xhn6+aCFTpgBY6xDMh8Q1
+	 tuK+V3kHmvKtvzx99yPE8dNkhzZ1rE6swtkSKMkca57hWyz7rOgF88eA4y9BqRiE4E
+	 uZBrOJ1IIlGUgcYqp1x5JI6vOIyNIyk6vCmEIPU7SQ3DyH5q50NLaJ3N6NQiOXfDaT
+	 28ICDAt+4CCVUEB6sBPDm46RjEBeC1gzcri7zUJQVCZPHBPdCzY2ewjsLoUT+C72tc
+	 I+zC9lP5YhShA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexey Kodanev <aleksei.kodanev@bell-sw.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Kees Cook <keescook@chromium.org>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 526/638] RDMA/rtrs-clt: Check strnlen return len in sysfs mpath_policy_store()
-Date: Sun, 24 Mar 2024 18:59:23 -0400
-Message-ID: <20240324230116.1348576-527-sashal@kernel.org>
+Subject: [PATCH 6.6 527/638] scsi: bfa: Fix function pointer type mismatch for hcb_qe->cbfn
+Date: Sun, 24 Mar 2024 18:59:24 -0400
+Message-ID: <20240324230116.1348576-528-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,39 +63,150 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 7a7b7f575a25aa68ee934ee8107294487efcb3fe ]
+[ Upstream commit b69600231f751304db914c63b937f7098ed2895c ]
 
-strnlen() may return 0 (e.g. for "\0\n" string), it's better to
-check the result of strnlen() before using 'len - 1' expression
-for the 'buf' array index.
+Some callback functions used here take a boolean argument, others take a
+status argument. This breaks KCFI type checking, so clang now warns about
+the function pointer cast:
 
-Detected using the static analysis tool - Svace.
+drivers/scsi/bfa/bfad_bsg.c:2138:29: error: cast from 'void (*)(void *, enum bfa_status)' to 'bfa_cb_cbfn_t' (aka 'void (*)(void *, enum bfa_boolean)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
 
-Fixes: dc3b66a0ce70 ("RDMA/rtrs-clt: Add a minimum latency multipath policy")
-Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
-Link: https://lore.kernel.org/r/20240221113204.147478-1-aleksei.kodanev@bell-sw.com
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Assuming the code is actually correct here and the callers always match the
+argument types of the callee, rework this to replace the explicit cast with
+a union of the two pointer types. This does not change the behavior of the
+code, so if something is actually broken here, a larger rework may be
+necessary.
+
+Fixes: 37ea0558b87a ("[SCSI] bfa: Added support to collect and reset fcport stats")
+Fixes: 3ec4f2c8bff2 ("[SCSI] bfa: Added support to configure QOS and collect stats.")
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20240222124433.2046570-1-arnd@kernel.org
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/bfa/bfa.h      |  9 ++++++++-
+ drivers/scsi/bfa/bfa_core.c |  4 +---
+ drivers/scsi/bfa/bfa_ioc.h  |  8 ++++++--
+ drivers/scsi/bfa/bfad_bsg.c | 11 ++++-------
+ 4 files changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-index d3c436ead6946..4aa80c9388f05 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-@@ -133,7 +133,7 @@ static ssize_t mpath_policy_store(struct device *dev,
+diff --git a/drivers/scsi/bfa/bfa.h b/drivers/scsi/bfa/bfa.h
+index 7bd2ba1ad4d11..f30fe324e6ecc 100644
+--- a/drivers/scsi/bfa/bfa.h
++++ b/drivers/scsi/bfa/bfa.h
+@@ -20,7 +20,6 @@
+ struct bfa_s;
  
- 	/* distinguish "mi" and "min-latency" with length */
- 	len = strnlen(buf, NAME_MAX);
--	if (buf[len - 1] == '\n')
-+	if (len && buf[len - 1] == '\n')
- 		len--;
+ typedef void (*bfa_isr_func_t) (struct bfa_s *bfa, struct bfi_msg_s *m);
+-typedef void (*bfa_cb_cbfn_status_t) (void *cbarg, bfa_status_t status);
  
- 	if (!strncasecmp(buf, "round-robin", 11) ||
+ /*
+  * Interrupt message handlers
+@@ -437,4 +436,12 @@ struct bfa_cb_pending_q_s {
+ 	(__qe)->data = (__data);				\
+ } while (0)
+ 
++#define bfa_pending_q_init_status(__qe, __cbfn, __cbarg, __data) do {	\
++	bfa_q_qe_init(&((__qe)->hcb_qe.qe));			\
++	(__qe)->hcb_qe.cbfn_status = (__cbfn);			\
++	(__qe)->hcb_qe.cbarg = (__cbarg);			\
++	(__qe)->hcb_qe.pre_rmv = BFA_TRUE;			\
++	(__qe)->data = (__data);				\
++} while (0)
++
+ #endif /* __BFA_H__ */
+diff --git a/drivers/scsi/bfa/bfa_core.c b/drivers/scsi/bfa/bfa_core.c
+index 6846ca8f7313c..3438d0b8ba062 100644
+--- a/drivers/scsi/bfa/bfa_core.c
++++ b/drivers/scsi/bfa/bfa_core.c
+@@ -1907,15 +1907,13 @@ bfa_comp_process(struct bfa_s *bfa, struct list_head *comp_q)
+ 	struct list_head		*qe;
+ 	struct list_head		*qen;
+ 	struct bfa_cb_qe_s	*hcb_qe;
+-	bfa_cb_cbfn_status_t	cbfn;
+ 
+ 	list_for_each_safe(qe, qen, comp_q) {
+ 		hcb_qe = (struct bfa_cb_qe_s *) qe;
+ 		if (hcb_qe->pre_rmv) {
+ 			/* qe is invalid after return, dequeue before cbfn() */
+ 			list_del(qe);
+-			cbfn = (bfa_cb_cbfn_status_t)(hcb_qe->cbfn);
+-			cbfn(hcb_qe->cbarg, hcb_qe->fw_status);
++			hcb_qe->cbfn_status(hcb_qe->cbarg, hcb_qe->fw_status);
+ 		} else
+ 			hcb_qe->cbfn(hcb_qe->cbarg, BFA_TRUE);
+ 	}
+diff --git a/drivers/scsi/bfa/bfa_ioc.h b/drivers/scsi/bfa/bfa_ioc.h
+index 933a1c3890ff5..5e568d6d7b261 100644
+--- a/drivers/scsi/bfa/bfa_ioc.h
++++ b/drivers/scsi/bfa/bfa_ioc.h
+@@ -361,14 +361,18 @@ struct bfa_reqq_wait_s {
+ 	void	*cbarg;
+ };
+ 
+-typedef void	(*bfa_cb_cbfn_t) (void *cbarg, bfa_boolean_t complete);
++typedef void (*bfa_cb_cbfn_t) (void *cbarg, bfa_boolean_t complete);
++typedef void (*bfa_cb_cbfn_status_t) (void *cbarg, bfa_status_t status);
+ 
+ /*
+  * Generic BFA callback element.
+  */
+ struct bfa_cb_qe_s {
+ 	struct list_head	qe;
+-	bfa_cb_cbfn_t	cbfn;
++	union {
++		bfa_cb_cbfn_status_t	cbfn_status;
++		bfa_cb_cbfn_t		cbfn;
++	};
+ 	bfa_boolean_t	once;
+ 	bfa_boolean_t	pre_rmv;	/* set for stack based qe(s) */
+ 	bfa_status_t	fw_status;	/* to access fw status in comp proc */
+diff --git a/drivers/scsi/bfa/bfad_bsg.c b/drivers/scsi/bfa/bfad_bsg.c
+index d4ceca2d435ee..54bd11e6d5933 100644
+--- a/drivers/scsi/bfa/bfad_bsg.c
++++ b/drivers/scsi/bfa/bfad_bsg.c
+@@ -2135,8 +2135,7 @@ bfad_iocmd_fcport_get_stats(struct bfad_s *bfad, void *cmd)
+ 	struct bfa_cb_pending_q_s cb_qe;
+ 
+ 	init_completion(&fcomp.comp);
+-	bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp,
+-			   &fcomp, &iocmd->stats);
++	bfa_pending_q_init_status(&cb_qe, bfad_hcb_comp, &fcomp, &iocmd->stats);
+ 	spin_lock_irqsave(&bfad->bfad_lock, flags);
+ 	iocmd->status = bfa_fcport_get_stats(&bfad->bfa, &cb_qe);
+ 	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+@@ -2159,7 +2158,7 @@ bfad_iocmd_fcport_reset_stats(struct bfad_s *bfad, void *cmd)
+ 	struct bfa_cb_pending_q_s cb_qe;
+ 
+ 	init_completion(&fcomp.comp);
+-	bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp, &fcomp, NULL);
++	bfa_pending_q_init_status(&cb_qe, bfad_hcb_comp, &fcomp, NULL);
+ 
+ 	spin_lock_irqsave(&bfad->bfad_lock, flags);
+ 	iocmd->status = bfa_fcport_clear_stats(&bfad->bfa, &cb_qe);
+@@ -2443,8 +2442,7 @@ bfad_iocmd_qos_get_stats(struct bfad_s *bfad, void *cmd)
+ 	struct bfa_fcport_s *fcport = BFA_FCPORT_MOD(&bfad->bfa);
+ 
+ 	init_completion(&fcomp.comp);
+-	bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp,
+-			   &fcomp, &iocmd->stats);
++	bfa_pending_q_init_status(&cb_qe, bfad_hcb_comp, &fcomp, &iocmd->stats);
+ 
+ 	spin_lock_irqsave(&bfad->bfad_lock, flags);
+ 	WARN_ON(!bfa_ioc_get_fcmode(&bfad->bfa.ioc));
+@@ -2474,8 +2472,7 @@ bfad_iocmd_qos_reset_stats(struct bfad_s *bfad, void *cmd)
+ 	struct bfa_fcport_s *fcport = BFA_FCPORT_MOD(&bfad->bfa);
+ 
+ 	init_completion(&fcomp.comp);
+-	bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp,
+-			   &fcomp, NULL);
++	bfa_pending_q_init_status(&cb_qe, bfad_hcb_comp, &fcomp, NULL);
+ 
+ 	spin_lock_irqsave(&bfad->bfad_lock, flags);
+ 	WARN_ON(!bfa_ioc_get_fcmode(&bfad->bfa.ioc));
 -- 
 2.43.0
 
