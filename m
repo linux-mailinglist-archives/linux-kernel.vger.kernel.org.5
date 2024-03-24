@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-116270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB1F8895D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:40:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0563F888D22
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:40:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 807901C2E2DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:40:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A6DE1F29CE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4A41327E7;
-	Mon, 25 Mar 2024 03:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747021C5DE4;
+	Mon, 25 Mar 2024 01:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oc34BKFn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BFzzlmyl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4820B181806;
-	Sun, 24 Mar 2024 23:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D617E18180F;
+	Sun, 24 Mar 2024 23:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324091; cv=none; b=c5J7Q1z5hoWkyz+hwq6SmRBaLziBXVC5v3fxbP8Zmn5cA6JgV0gcjx+9EbPJxY2Ky0w5DefvkJ3KHuRiMa7EEbHy0D2JbJydKoHKOL/bPrDsLFtVa0SHyO5sMqFZN/UvJ8RlOe1xu9hrYkTRiYZKV9cPBlKCB/qlOvOxAuxFa6c=
+	t=1711324091; cv=none; b=MDGvjX/MzfJ4bT0GxcraZ55wUQ5kmpmhWlbYGDH5+uGfQCX2ueyvp62aIWklmFmmiwE+PCF9pGq8MiKWyux1iuG8voglzHys+UVyRngl4EklcXgao8W27CRi+Rk4L9scZjNDHZOWaZY9cTC4XL1XOD980UmyFN5mFKkKZi0RVwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324091; c=relaxed/simple;
-	bh=fQ4pDnoEGS24uK7PN4tSU8hDTyazw65f8yIfQ9B9TyQ=;
+	bh=GMvWa03Qa7FSPRuDtAM5CuxjChNnwKQlEtknCNEXyko=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fMXPNAWj5U/ydpFBzlk+M16ZpFZKFyIvsQXxisMcuzrbcMZJGHrh+d6DsPXah5JmoeToIxhd3vHJ9r3zAJgnc8gFKDhvDIgfYV934mI8gnatRzaSuQZ4CX2m5txwp3Jlj8Qm8dhsjmSj4Nq6lb2wyiso+X/sd58DWv3bO4aoSRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oc34BKFn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29729C433F1;
+	 MIME-Version; b=tk2GFWFk3fIvfHKK4cArQArp+dbrTbIsvgjAoyo96qZdXBiZTEYzQf2+nx54eQtm9OyrW3QbwLwy0GW2FgSVI7PJ0KsuxAgpm82QnjUR0PBRPfZkjEdzDmMStHRHSl9PZdJGnFezjqXOxSUYdlPWA6JPFE6FKJSLvoC7EdIXpo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BFzzlmyl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D06FC433C7;
 	Sun, 24 Mar 2024 23:48:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324089;
-	bh=fQ4pDnoEGS24uK7PN4tSU8hDTyazw65f8yIfQ9B9TyQ=;
+	s=k20201202; t=1711324090;
+	bh=GMvWa03Qa7FSPRuDtAM5CuxjChNnwKQlEtknCNEXyko=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Oc34BKFnSNHz0Rmm0Bte+KA3S6ZXU9VzpXtpupiJFCgyLX6hwe72Mk0MYyU4r2Pdv
-	 O78z0zvfvFZeFqltF70VEtf6i5F9wUtjezTsqHtxx2+5QyygjGt5I4gTjEUxLySSdf
-	 mTYPTV4S60CB4No8Flq1vxZ+Vo7VfGJIAJDh2o/gGXaDc/s7kx+IXwbbkoC6jtXVJ0
-	 8McHQKLSB3914naaVwFKrNLpfd9+1QPmdGBuXDUBQloEfLDgm4QucRnQoWHhLdBMA8
-	 xlK2Yr3c1Ysd1IMZ452Nm4ZO5Y38AUnigEuVcwVzUQ99v7SlVcIDoVToEVZkI8bIja
-	 gGj5ndD9gU63w==
+	b=BFzzlmylG7B8NxXmXHt5haHAc5w/h4TRI7Lbekarl431HUTdDqta+DCP6CcLZNDkW
+	 p3fwEqC8luPddf7XrsAJWHP0LSXJTXHtVRkbfUjzoUfrn7Qo6DZ6CzLzpr0C3LDBZX
+	 BApJO2Zz5YCk1t1oJZf4RVd/t4KNYirDondxcCBOhUA8j4sPrbU2vTaKEZqNjqDkK1
+	 iDT3cme8gPck9wzVo2TyMJX01d6cOz94emke7hm48A9Mw+wr0Ln2rUQ+WzllHXBl5l
+	 JODUw9kwq/PtRWtdUjyuFUPR5JNr8rYbE8sw4stn9L4AT3734oAnwESAQHy779TWEs
+	 fnK8kI7kZ+I2Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Thierry Reding <treding@nvidia.com>,
+Cc: Alex Bee <knaerzche@gmail.com>,
+	Zheng Yang <zhengyang@rock-chips.com>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/183] drm/tegra: output: Fix missing i2c_put_adapter() in the error handling paths of tegra_output_probe()
-Date: Sun, 24 Mar 2024 19:45:03 -0400
-Message-ID: <20240324234638.1355609-91-sashal@kernel.org>
+Subject: [PATCH 5.4 091/183] drm/rockchip: inno_hdmi: Fix video timing
+Date: Sun, 24 Mar 2024 19:45:04 -0400
+Message-ID: <20240324234638.1355609-92-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,72 +63,49 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Alex Bee <knaerzche@gmail.com>
 
-[ Upstream commit 2db4578ef6ffb2b52115ca0ebf897b60ec559556 ]
+[ Upstream commit 47a145c03484d33e65d773169d5ca1b9fe2a492e ]
 
-If an error occurs after a successful of_get_i2c_adapter_by_node() call, it
-should be undone by a corresponding i2c_put_adapter().
+The controller wants the difference between *total and *sync_start in the
+HDMI_VIDEO_EXT_*DELAY registers. Otherwise the signal is very unstable for
+certain non-VIC modes. See downstream commit [0].
 
-Add the missing i2c_put_adapter() call.
+[0] https://github.com/rockchip-linux/kernel/commit/8eb559f2502c
 
-Fixes: 9be7d864cf07 ("drm/tegra: Implement panel support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/b38604178991e1f08b2cda219103be266be2d680.1693667005.git.christophe.jaillet@wanadoo.fr
+Fixes: 412d4ae6b7a5 ("drm/rockchip: hdmi: add Innosilicon HDMI support")
+Co-developed-by: Zheng Yang <zhengyang@rock-chips.com>
+Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231222174220.55249-4-knaerzche@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/output.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/tegra/output.c b/drivers/gpu/drm/tegra/output.c
-index bdcaa4c7168cf..806249c0b7e85 100644
---- a/drivers/gpu/drm/tegra/output.c
-+++ b/drivers/gpu/drm/tegra/output.c
-@@ -127,8 +127,10 @@ int tegra_output_probe(struct tegra_output *output)
- 						       GPIOD_IN,
- 						       "HDMI hotplug detect");
- 	if (IS_ERR(output->hpd_gpio)) {
--		if (PTR_ERR(output->hpd_gpio) != -ENOENT)
--			return PTR_ERR(output->hpd_gpio);
-+		if (PTR_ERR(output->hpd_gpio) != -ENOENT) {
-+			err = PTR_ERR(output->hpd_gpio);
-+			goto put_i2c;
-+		}
+diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
+index f2e2cc66f4897..95888e64bd8bc 100644
+--- a/drivers/gpu/drm/rockchip/inno_hdmi.c
++++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
+@@ -401,7 +401,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HBLANK_L, value & 0xFF);
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HBLANK_H, (value >> 8) & 0xFF);
  
- 		output->hpd_gpio = NULL;
- 	}
-@@ -137,7 +139,7 @@ int tegra_output_probe(struct tegra_output *output)
- 		err = gpiod_to_irq(output->hpd_gpio);
- 		if (err < 0) {
- 			dev_err(output->dev, "gpiod_to_irq(): %d\n", err);
--			return err;
-+			goto put_i2c;
- 		}
+-	value = mode->hsync_start - mode->hdisplay;
++	value = mode->htotal - mode->hsync_start;
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HDELAY_L, value & 0xFF);
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HDELAY_H, (value >> 8) & 0xFF);
  
- 		output->hpd_irq = err;
-@@ -150,7 +152,7 @@ int tegra_output_probe(struct tegra_output *output)
- 		if (err < 0) {
- 			dev_err(output->dev, "failed to request IRQ#%u: %d\n",
- 				output->hpd_irq, err);
--			return err;
-+			goto put_i2c;
- 		}
+@@ -416,7 +416,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
+ 	value = mode->vtotal - mode->vdisplay;
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_VBLANK, value & 0xFF);
  
- 		output->connector.polled = DRM_CONNECTOR_POLL_HPD;
-@@ -168,6 +170,12 @@ int tegra_output_probe(struct tegra_output *output)
- 		return -ENOMEM;
+-	value = mode->vsync_start - mode->vdisplay;
++	value = mode->vtotal - mode->vsync_start;
+ 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_VDELAY, value & 0xFF);
  
- 	return 0;
-+
-+put_i2c:
-+	if (output->ddc)
-+		i2c_put_adapter(output->ddc);
-+
-+	return err;
- }
- 
- void tegra_output_remove(struct tegra_output *output)
+ 	value = mode->vsync_end - mode->vsync_start;
 -- 
 2.43.0
 
