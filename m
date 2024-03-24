@@ -1,151 +1,160 @@
-Return-Path: <linux-kernel+bounces-112735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF7E6887D9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:50:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B62EA887DA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:06:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F2E8281333
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:50:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E59531C20A53
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334E3199B8;
-	Sun, 24 Mar 2024 16:50:38 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500BA19470;
+	Sun, 24 Mar 2024 17:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hr06EP/B"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03756171D1;
-	Sun, 24 Mar 2024 16:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9D3CA64;
+	Sun, 24 Mar 2024 17:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711299037; cv=none; b=s3ATE9PF+1J875MCaAxsL/K4heWSn06ZYsztn3M+ouSnA7JYZKLFXbaKbEgY9zTH9qts4dzTZJVv1ASeLQLjbkXJ8Jx6bT/q0Nr+CmPCQDrrorMwfwcIVHa555x55GsHz6Y85rfE457MkALwno3BcMlMWct1mf3c8ocHYvC2Yro=
+	t=1711299955; cv=none; b=lsIPXVu8WYJgVAJyNYEbNvuQrwZZQE+lzy9n3DJEHhiidKbMsok1gOteuBbOC3sVeSOuR4J/4gdf8sBwzGR5k50PXWvGdrru4Ms6FrmAlTLCRSgC0X7CPDtWLdZgcrKE1G/AXgMfK3PMbxqAmtECteMkYsdPH/V6DV5DByLU5Fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711299037; c=relaxed/simple;
-	bh=XTqqWBJYofix9/upqo66g0+ko3ZgqhuOv6+PQmT0aqg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=RXwBpy6A2kStUAxAEXCUpGiakRjrMWzWoB/2rh3S0e39NEfuRNwLhM+tYz73qZR1FNLId5LPVTP2N5mdpoWwcvRoXeaqdi2Q19ZDO9Teu4z5BF0MiCHO6bEszltnfb3cwd0VjaGsGwpc0M7bbIqPEwKijgMf+lXRYER8dkfuy4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V2hlZ1fj7z6K7JS;
-	Mon, 25 Mar 2024 00:46:02 +0800 (CST)
-Received: from frapeml100008.china.huawei.com (unknown [7.182.85.131])
-	by mail.maildlp.com (Postfix) with ESMTPS id 401151400DB;
-	Mon, 25 Mar 2024 00:50:25 +0800 (CST)
-Received: from frapeml500005.china.huawei.com (7.182.85.13) by
- frapeml100008.china.huawei.com (7.182.85.131) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 24 Mar 2024 17:50:24 +0100
-Received: from frapeml500005.china.huawei.com ([7.182.85.13]) by
- frapeml500005.china.huawei.com ([7.182.85.13]) with mapi id 15.01.2507.035;
- Sun, 24 Mar 2024 17:50:24 +0100
-From: Roberto Sassu <roberto.sassu@huawei.com>
-To: Al Viro <viro@zeniv.linux.org.uk>, Steve French <smfrench@gmail.com>
-CC: LKML <linux-kernel@vger.kernel.org>, linux-fsdevel
-	<linux-fsdevel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>, "Paulo
- Alcantara" <pc@manguebit.com>, Christian Brauner <christian@brauner.io>,
-	"Mimi Zohar" <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
-	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-	"linux-security-module@vger.kernel.org"
-	<linux-security-module@vger.kernel.org>
-Subject: RE: kernel crash in mknod
-Thread-Topic: kernel crash in mknod
-Thread-Index: AQHafag2XY/u/k17xEe65QyoT7TnEbFGUTAAgADHHcA=
-Date: Sun, 24 Mar 2024 16:50:24 +0000
-Message-ID: <3441a4a1140944f5b418b70f557bca72@huawei.com>
-References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
- <20240324054636.GT538574@ZenIV>
-In-Reply-To: <20240324054636.GT538574@ZenIV>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1711299955; c=relaxed/simple;
+	bh=unewMvCYxmOenMyhEJ0M480mxzurkE5usvV/94GPtlY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VMMvd82pRUtx0RRsy2eah77CROyMgtMMoCXjFMLIr8DwS8+GzjD3tb88e1drHWe6ucKFoUTIE1A4CjC/6hek7wf6PKPyUR2ykqEHxLJ77RGaw+eA+Ew3674nBLV58Hv8tY03d8CSDUaVmDDEzm4mnZ7WRiPaOraLa3L3EVuRcyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hr06EP/B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95794C433F1;
+	Sun, 24 Mar 2024 17:05:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711299955;
+	bh=unewMvCYxmOenMyhEJ0M480mxzurkE5usvV/94GPtlY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Hr06EP/B+z0nCXY6hDQ2utZiJoaMqaVV8kigw1iM9kOewPnlDbspglA6mub/YAcMf
+	 jDu5guh9tdhLZlIdw6N5dcRmzzCUGFpS6opWMVu7Hy4XyvHiazEb+Jf7gamVQKXOBc
+	 7ws8DVRlgXYNqVRrmq3nvLxe7dXdMxYbHy35LJqEA1n1im9uYaUyDArSB60vHMt8uC
+	 9BKRioU/CkpyiJLv15loguBbRAyGyQMfcnXIK2IDLykbQU3FiROYnebZncrDczLcyl
+	 17Uuqcph/fSB0l5uDToRtqT50sr2r0RAiaCX0Wg78x5rj6YY3609rlGDfvFxGuN5Zi
+	 H2d2Wrs3sh8Pw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+	syzbot <syzbot+69b40dc5fd40f32c199f@syzkaller.appspotmail.com>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	jlayton@kernel.org,
+	jack@suse.cz,
+	xiubli@redhat.com,
+	pc@manguebit.com,
+	princekumarmaurya06@gmail.com,
+	willy@infradead.org
+Subject: [PATCH AUTOSEL 6.8 01/11] sysv: don't call sb_bread() with pointers_lock held
+Date: Sun, 24 Mar 2024 13:05:36 -0400
+Message-ID: <20240324170552.545730-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.1
+Content-Transfer-Encoding: 8bit
 
-> From: Al Viro [mailto:viro@ftp.linux.org.uk] On Behalf Of Al Viro
-> Sent: Sunday, March 24, 2024 6:47 AM
-> On Sun, Mar 24, 2024 at 12:00:15AM -0500, Steve French wrote:
-> > Anyone else seeing this kernel crash in do_mknodat (I see it with a
-> > simple "mkfifo" on smb3 mount).  I started seeing this in 6.9-rc (did
-> > not see it in 6.8).   I did not see it with the 3/12/23 mainline
-> > (early in the 6.9-rc merge Window) but I do see it in the 3/22 build
-> > so it looks like the regression was introduced by:
->=20
-> 	FWIW, successful ->mknod() is allowed to return 0 and unhash
-> dentry, rather than bothering with lookups.  So commit in question
-> is bogus - lack of error does *NOT* mean that you have struct inode
-> existing, let alone attached to dentry.  That kind of behaviour
-> used to be common for network filesystems more than just for ->mknod(),
-> the theory being "if somebody wants to look at it, they can bloody
-> well pay the cost of lookup after dcache miss".
->=20
-> Said that, the language in D/f/vfs.rst is vague as hell and is very easy
-> to misread in direction of "you must instantiate".
->=20
-> Thankfully, there's no counterpart with mkdir - *there* it's not just
-> possible, it's inevitable in some cases for e.g. nfs.
->=20
-> What the hell is that hook doing in non-S_IFREG cases, anyway?  Move it
-> up and be done with it...
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-Hi Al
+[ Upstream commit f123dc86388cb669c3d6322702dc441abc35c31e ]
 
-thanks for the patch. Indeed, it was like that before, when instead of
-an LSM hook there was an IMA call.
+syzbot is reporting sleep in atomic context in SysV filesystem [1], for
+sb_bread() is called with rw_spinlock held.
 
-However, I thought, since we were promoting it as an LSM hook,
-we should be as generic possible, and support more usages than
-what was needed for IMA.
+A "write_lock(&pointers_lock) => read_lock(&pointers_lock) deadlock" bug
+and a "sb_bread() with write_lock(&pointers_lock)" bug were introduced by
+"Replace BKL for chain locking with sysvfs-private rwlock" in Linux 2.5.12.
 
-> diff --git a/fs/namei.c b/fs/namei.c
-> index ceb9ddf8dfdd..821fe0e3f171 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -4050,6 +4050,8 @@ static int do_mknodat(int dfd, struct filename *nam=
-e, umode_t mode,
->  		case 0: case S_IFREG:
->  			error =3D vfs_create(idmap, path.dentry->d_inode,
->  					   dentry, mode, true);
-> +			if (!error)
-> +				error =3D security_path_post_mknod(idmap, dentry);
+Then, "[PATCH] err1-40: sysvfs locking fix" in Linux 2.6.8 fixed the
+former bug by moving pointers_lock lock to the callers, but instead
+introduced a "sb_bread() with read_lock(&pointers_lock)" bug (which made
+this problem easier to hit).
 
-Minor issue, security_path_post_mknod() does not return an error.
+Al Viro suggested that why not to do like get_branch()/get_block()/
+find_shared() in Minix filesystem does. And doing like that is almost a
+revert of "[PATCH] err1-40: sysvfs locking fix" except that get_branch()
+ from with find_shared() is called without write_lock(&pointers_lock).
 
-Also, please update the description of security_path_post_mknod() to say
-that it is not going to be called for non-regular files.
+Reported-by: syzbot <syzbot+69b40dc5fd40f32c199f@syzkaller.appspotmail.com>
+Link: https://syzkaller.appspot.com/bug?extid=69b40dc5fd40f32c199f
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Link: https://lore.kernel.org/r/0d195f93-a22a-49a2-0020-103534d6f7f6@I-love.SAKURA.ne.jp
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/sysv/itree.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Hopefully, Paul also agrees with this change.
+diff --git a/fs/sysv/itree.c b/fs/sysv/itree.c
+index 410ab2a44d2f6..19bcb51a22036 100644
+--- a/fs/sysv/itree.c
++++ b/fs/sysv/itree.c
+@@ -83,9 +83,6 @@ static inline sysv_zone_t *block_end(struct buffer_head *bh)
+ 	return (sysv_zone_t*)((char*)bh->b_data + bh->b_size);
+ }
+ 
+-/*
+- * Requires read_lock(&pointers_lock) or write_lock(&pointers_lock)
+- */
+ static Indirect *get_branch(struct inode *inode,
+ 			    int depth,
+ 			    int offsets[],
+@@ -105,15 +102,18 @@ static Indirect *get_branch(struct inode *inode,
+ 		bh = sb_bread(sb, block);
+ 		if (!bh)
+ 			goto failure;
++		read_lock(&pointers_lock);
+ 		if (!verify_chain(chain, p))
+ 			goto changed;
+ 		add_chain(++p, bh, (sysv_zone_t*)bh->b_data + *++offsets);
++		read_unlock(&pointers_lock);
+ 		if (!p->key)
+ 			goto no_block;
+ 	}
+ 	return NULL;
+ 
+ changed:
++	read_unlock(&pointers_lock);
+ 	brelse(bh);
+ 	*err = -EAGAIN;
+ 	goto no_block;
+@@ -219,9 +219,7 @@ static int get_block(struct inode *inode, sector_t iblock, struct buffer_head *b
+ 		goto out;
+ 
+ reread:
+-	read_lock(&pointers_lock);
+ 	partial = get_branch(inode, depth, offsets, chain, &err);
+-	read_unlock(&pointers_lock);
+ 
+ 	/* Simplest case - block found, no allocation needed */
+ 	if (!partial) {
+@@ -291,9 +289,9 @@ static Indirect *find_shared(struct inode *inode,
+ 	*top = 0;
+ 	for (k = depth; k > 1 && !offsets[k-1]; k--)
+ 		;
++	partial = get_branch(inode, k, offsets, chain, &err);
+ 
+ 	write_lock(&pointers_lock);
+-	partial = get_branch(inode, k, offsets, chain, &err);
+ 	if (!partial)
+ 		partial = chain + k-1;
+ 	/*
+-- 
+2.43.0
 
-Other than that, please add my:
-
-Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
-
-Thanks
-
-Roberto
-
->  			break;
->  		case S_IFCHR: case S_IFBLK:
->  			error =3D vfs_mknod(idmap, path.dentry->d_inode,
-> @@ -4061,10 +4063,6 @@ static int do_mknodat(int dfd, struct filename *na=
-me, umode_t mode,
->  			break;
->  	}
->=20
-> -	if (error)
-> -		goto out2;
-> -
-> -	security_path_post_mknod(idmap, dentry);
->  out2:
->  	done_path_create(&path, dentry);
->  	if (retry_estale(error, lookup_flags)) {
 
