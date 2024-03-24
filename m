@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-113471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D437888496
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:45:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CE7C888498
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:45:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D70AD1F23ABF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:45:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFBE01F24671
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E9413BC00;
-	Sun, 24 Mar 2024 22:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D2C13BC30;
+	Sun, 24 Mar 2024 22:44:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jDIHlRp7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E7+d03Qb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C721B3A4E;
-	Sun, 24 Mar 2024 22:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE8B13BC15;
+	Sun, 24 Mar 2024 22:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320272; cv=none; b=U5S4eDp+Is0OURYWeVz2JtGwTdQBzLv9R3s1dU3xBVcm/t3KWcQlUiKDOubA9T//5BeDk6PXMtqiWaT2ZpVpWGHdf3lJPj3c7CRHsqvQr0Mw4qgc065XiVwQ1nJCtPbLBIwyC4F7r7wB7e+IDt+W9p18AWzYAhJgUJOGy+jgK6U=
+	t=1711320273; cv=none; b=AoSjxLoB5cJY9cH+cGCc4TohBnNPMmBipS91o6OHTOmyYhXm8yi3mMAhRFtIWkx08KBJGyJsj2fC9iq+hvaVfFINCGWURVMot9VHC0d2LxfHxRNDuw5OjdJ3H4XXGp/v8KXc1QQXjV8CDP1ryN7vlHZQ+DtXAS2rBjZqJ2jvXb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320272; c=relaxed/simple;
-	bh=Cj8amsikF3auzo51ubBDZNkX034jMQDuD+e/2IkAstQ=;
+	s=arc-20240116; t=1711320273; c=relaxed/simple;
+	bh=sxl+ayC5rApzaa/Of515A4BlBq7f+RoQ7f0vJHU1v70=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dIoinQUtqSFZAZl3OY+hj2mXJgIVPaKBZ7xOO63a0XURS1GoFY8+3YIFbKVMBlVtQksWbDSis8X/EXA7yXleMBS3FXsHfqAYQrvM7UjIY7LPjUmukjR7GyOInRBi3+LMPNSPFLD1Dd3HMjYS3ZDBw87freBkIslOaji5mwwNIqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jDIHlRp7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A66FC43394;
-	Sun, 24 Mar 2024 22:44:31 +0000 (UTC)
+	 MIME-Version; b=PNu6D0bDvtx2edeOhn++XM/ICEbV4ZWsxJu8EJBamq4EVb3AJgzK9VVTjb/0xRosGAhFoDNehYkgdL6cbUvydEEYcYL2GfWQFXGlpkXmnynIQLsexF11q1SKTv8vDg/nv336+zzrztHfZdseK6lP/+IxVuYrqIQayhabK+ywLh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E7+d03Qb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 517D1C43394;
+	Sun, 24 Mar 2024 22:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320272;
-	bh=Cj8amsikF3auzo51ubBDZNkX034jMQDuD+e/2IkAstQ=;
+	s=k20201202; t=1711320273;
+	bh=sxl+ayC5rApzaa/Of515A4BlBq7f+RoQ7f0vJHU1v70=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jDIHlRp7Nnw5X3wjxR9CYbJL6b6qKAvg+tWdGnb5cCGiJiMBy0Hh7HKPdkZevoDxg
-	 LHvh6Od5rVjCA3tqz9PWwvisvAsW12AlL/DxAgqTq+mQhQEmen6s7rF1tfEgRA4yX1
-	 mkspjHYxWedV8ryyEQCipBELbDPMSimVJdRkIK6zmEOlRIy+YH2wgjipxd5gXBOcvH
-	 6m8RMdUrPpZc/NfbJ+ggJvhcr3XLqnPaSKDgwSd1l8fUYalO4ie8zrd91gRLzJ4T5a
-	 48mlrIvwsJC0eSvsCwbYf9gBZuE+n73rAf12vHrSgw9QXwsZGm3xDm/eVPb0iyY4Hj
-	 AvYxN/I+aKBSg==
+	b=E7+d03Qb7NyggebL4eEXogvvv0VUNbs2XIpaB4gbJtUWndKiBrBsJ+Vuzxm0Rm9Bc
+	 +xPP0VxGkx/ufXjNCos3HTB+JRyUZeki27Bb4OeUzba7nlAAd7TBSIKgFPGxVIJamV
+	 U3FcZaUQfw02PvrqDLVPimaQg5GigoFsnSzm+2ENDnUw54bYEO/dSFzRy/OlVKUYUe
+	 6i43KnTdHfp+LaVOvrMvyk2dfntGATLOARGSooOhpU66KlT+FIILf1u0sWLODyosQ2
+	 V8g9dN4+Q4q65AbPlOM5ksQqjilm7uVBeN+F0ZmenSQOctUw43WigofUPBBxZtuJXA
+	 strKBXN+5GJvQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>,
+Cc: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+	Xingyu Wu <xingyu.wu@starfivetech.com>,
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 580/715] f2fs: check number of blocks in a current section
-Date: Sun, 24 Mar 2024 18:32:39 -0400
-Message-ID: <20240324223455.1342824-581-sashal@kernel.org>
+Subject: [PATCH 6.8 581/715] watchdog: starfive: Check pm_runtime_enabled() before decrementing usage counter
+Date: Sun, 24 Mar 2024 18:32:40 -0400
+Message-ID: <20240324223455.1342824-582-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,65 +65,48 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jaegeuk Kim <jaegeuk@kernel.org>
+From: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
 
-[ Upstream commit 7af2df0f67a1469762e59be3726a803882d83f6f ]
+[ Upstream commit 8bc22a2f1bf0f402029087fcb53130233a544fed ]
 
-In cfd66bb715fd ("f2fs: fix deadloop in foreground GC"), we needed to check
-the number of blocks in a section instead of the segment.
+In the probe function, pm_runtime_put_sync() will fail on platform with
+runtime PM disabled.
+Check if runtime PM is enabled before calling pm_runtime_put_sync() to
+fix it.
 
-Fixes: cfd66bb715fd ("f2fs: fix deadloop in foreground GC")
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: db728ea9c7be ("drivers: watchdog: Add StarFive Watchdog driver")
+Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20240119082722.1133024-1-jisheng.teoh@starfivetech.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/segment.h | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/watchdog/starfive-wdt.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 8129be788bd56..c77a562831493 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -573,23 +573,22 @@ static inline bool has_curseg_enough_space(struct f2fs_sb_info *sbi,
- 			unsigned int node_blocks, unsigned int dent_blocks)
- {
+diff --git a/drivers/watchdog/starfive-wdt.c b/drivers/watchdog/starfive-wdt.c
+index e28ead24c520e..df68ae4acbd7e 100644
+--- a/drivers/watchdog/starfive-wdt.c
++++ b/drivers/watchdog/starfive-wdt.c
+@@ -494,8 +494,13 @@ static int starfive_wdt_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_exit;
  
--	unsigned int segno, left_blocks;
-+	unsigned segno, left_blocks;
- 	int i;
+-	if (!early_enable)
+-		pm_runtime_put_sync(&pdev->dev);
++	if (!early_enable) {
++		if (pm_runtime_enabled(&pdev->dev)) {
++			ret = pm_runtime_put_sync(&pdev->dev);
++			if (ret)
++				goto err_exit;
++		}
++	}
  
--	/* check current node segment */
-+	/* check current node sections in the worst case. */
- 	for (i = CURSEG_HOT_NODE; i <= CURSEG_COLD_NODE; i++) {
- 		segno = CURSEG_I(sbi, i)->segno;
--		left_blocks = f2fs_usable_blks_in_seg(sbi, segno) -
--				get_seg_entry(sbi, segno)->ckpt_valid_blocks;
--
-+		left_blocks = CAP_BLKS_PER_SEC(sbi) -
-+				get_ckpt_valid_blocks(sbi, segno, true);
- 		if (node_blocks > left_blocks)
- 			return false;
- 	}
+ 	return 0;
  
--	/* check current data segment */
-+	/* check current data section for dentry blocks. */
- 	segno = CURSEG_I(sbi, CURSEG_HOT_DATA)->segno;
--	left_blocks = f2fs_usable_blks_in_seg(sbi, segno) -
--			get_seg_entry(sbi, segno)->ckpt_valid_blocks;
-+	left_blocks = CAP_BLKS_PER_SEC(sbi) -
-+			get_ckpt_valid_blocks(sbi, segno, true);
- 	if (dent_blocks > left_blocks)
- 		return false;
- 	return true;
-@@ -638,7 +637,7 @@ static inline bool has_not_enough_free_secs(struct f2fs_sb_info *sbi,
- 
- 	if (free_secs > upper_secs)
- 		return false;
--	else if (free_secs <= lower_secs)
-+	if (free_secs <= lower_secs)
- 		return true;
- 	return !curseg_space;
- }
 -- 
 2.43.0
 
