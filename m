@@ -1,57 +1,60 @@
-Return-Path: <linux-kernel+bounces-112744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B744E887DBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:07:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF052887DBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:08:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E86AF1C20A75
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:07:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5081E1F21305
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB1828E31;
-	Sun, 24 Mar 2024 17:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1D32E64E;
+	Sun, 24 Mar 2024 17:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gz0G5DDC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SItpqB2w"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA9E25623;
-	Sun, 24 Mar 2024 17:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BB32C1B1;
+	Sun, 24 Mar 2024 17:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711299971; cv=none; b=J21nyxIfUJv9gKwAUhMZPYS05T8XFjnewscNKrZnTIvmRB4KUkN9e/N3RkqmiAnyg9r47lRkFLjdjgzQUqHqFmilTOdk8rcfpxbdLZzarXEvz/AhEncHgSPbvPHPGO6w9DtLCrsWtBfAwOjptAYqeUgVrwsGOTZarLTGCEESCqE=
+	t=1711299973; cv=none; b=Kraa7W0WhCF8saAgtjvDWAUrIHUeRmoxDmUVtnjwFRnNtB2PZ50RsYlKkz9MrPGMVktEPYa+ACgNMbfQd7tsimli9O0WcKkBMc9x8AlJFaTYmV2RtXD8Z+Yx3ZPvyibjPFMDTnYYfmt6zWhMy3fImXWbAqbcFAjF7DJNa8CJuC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711299971; c=relaxed/simple;
-	bh=7GtXCPqmqjHiSEPOGh8S8ON88h/4OxU4q8QzWboLN8Y=;
+	s=arc-20240116; t=1711299973; c=relaxed/simple;
+	bh=M5KWR1kOnUHwDGq3v++7oLxZFhzioC3ac36tmPcpu1M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JW3yoahazxfWNFLfAUIijMIsHYn4d5MXmp9JRSGBv8941tvDYEbWwV1W2Yn7VPwc8/c/cRKQGWnESfjaU5cKs733woTzKbDncr4zJ72cEq6kyGNBR1hzChngSh6mXnl/ROestrrh+sRTjGM3qnImpnlkgXBZMYAEVRrJLE51b34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gz0G5DDC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F07A3C43399;
-	Sun, 24 Mar 2024 17:06:09 +0000 (UTC)
+	 MIME-Version; b=Zu5KcaQaI4Y9DgaEYgtwJ8Mwf+2wMNhg+KvZTy6e+KuaPkCcohD5s6jzn0PTOkcA0hxUKdiCCa6N9/QVxaG75+hohlFmxDyT7IO0e2eeHC3qCm/UBsDnMwCxXTgF1LEoXuX5BZgsqxzifhaXxek667IzOya8yg+dKNEWVfu9Iso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SItpqB2w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50FB9C433F1;
+	Sun, 24 Mar 2024 17:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711299970;
-	bh=7GtXCPqmqjHiSEPOGh8S8ON88h/4OxU4q8QzWboLN8Y=;
+	s=k20201202; t=1711299972;
+	bh=M5KWR1kOnUHwDGq3v++7oLxZFhzioC3ac36tmPcpu1M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Gz0G5DDC6ZpGzEb3AuZy3kQFN1XOlAnttAbYYMGUZLfdII1Hldb3tYszjD6U6dKm9
-	 11ujBPSMBs2q/9t6tqfUaUsIGd/S+qRNWxCYCN7ilVIKKNqIEYzdtk/0dzMg4K9WWH
-	 TyfSFKtUagZ4+S44eDWlM3Ssq30Gv3F/edPhjZXH16gxxlQMvSp8W3lx6GPkrSFdFs
-	 NMlX2ATQRj52SesCvX1raZybDHHXOl0/z+lddylHmqRHvA6z6y6S6BgJeR/TzDwZ8j
-	 +kNq3u/vsGh5rBKSb9mGilopsGrfJ11iO6EBYfOb6G6xFitcXqRrUNqavZh2FkYtaC
-	 4F+0/NkMFyFkg==
+	b=SItpqB2wJcPo3jzrTHWdKTi3loFtZ9trGBGEemN+BD9hVs/h29i+02Rc689Fmnq4j
+	 gWh5bgz8x0yaCc4K8ozluCBlw+f/8u3N3w99a2uFRLsnYOdNzkym+5BNhyMyWWQ+7A
+	 GR0HfbjCgap7rThdaBoHGULjK7FOZoZZf0Mr5uke5klwUpz/khgdYW1LetEOrnxT+s
+	 hifaNmMsRaV67KkMqAdeVgeAyjdVP+ZRN3PnRvjU8dQ8pyrWfjtcpP2UCYNzZAH5aq
+	 HrmzSipxuDBvFtcmJ37J0Mt5h/6J0KSdyyJtrxowUSTEiIpIZVXIblbYspyRkL5Cko
+	 oGGAPbmertNRg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Zqiang <qiang.zhang1211@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	viro@zeniv.linux.org.uk,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 09/11] fs: improve dump_mapping() robustness
-Date: Sun, 24 Mar 2024 13:05:44 -0400
-Message-ID: <20240324170552.545730-9-sashal@kernel.org>
+	quic_neeraju@quicinc.com,
+	josh@joshtriplett.org,
+	rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 10/11] rcu/nocb: Fix WARN_ON_ONCE() in the rcu_nocb_bypass_lock()
+Date: Sun, 24 Mar 2024 13:05:45 -0400
+Message-ID: <20240324170552.545730-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324170552.545730-1-sashal@kernel.org>
 References: <20240324170552.545730-1-sashal@kernel.org>
@@ -66,93 +69,62 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.1
 Content-Transfer-Encoding: 8bit
 
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
+From: Zqiang <qiang.zhang1211@gmail.com>
 
-[ Upstream commit 8b3d838139bcd1e552f1899191f734264ce2a1a5 ]
+[ Upstream commit dda98810b552fc6bf650f4270edeebdc2f28bd3f ]
 
-We met a kernel crash issue when running stress-ng testing, and the
-system crashes when printing the dentry name in dump_mapping().
+For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
+CONFIG_RCU_LAZY=y, the following scenarios will trigger WARN_ON_ONCE()
+in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended() functions:
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-pc : dentry_name+0xd8/0x224
-lr : pointer+0x22c/0x370
-sp : ffff800025f134c0
-.....
-Call trace:
-  dentry_name+0xd8/0x224
-  pointer+0x22c/0x370
-  vsnprintf+0x1ec/0x730
-  vscnprintf+0x2c/0x60
-  vprintk_store+0x70/0x234
-  vprintk_emit+0xe0/0x24c
-  vprintk_default+0x3c/0x44
-  vprintk_func+0x84/0x2d0
-  printk+0x64/0x88
-  __dump_page+0x52c/0x530
-  dump_page+0x14/0x20
-  set_migratetype_isolate+0x110/0x224
-  start_isolate_page_range+0xc4/0x20c
-  offline_pages+0x124/0x474
-  memory_block_offline+0x44/0xf4
-  memory_subsys_offline+0x3c/0x70
-  device_offline+0xf0/0x120
-  ......
+        CPU2                                               CPU11
+kthread
+rcu_nocb_cb_kthread                                       ksys_write
+rcu_do_batch                                              vfs_write
+rcu_torture_timer_cb                                      proc_sys_write
+__kmem_cache_free                                         proc_sys_call_handler
+kmemleak_free                                             drop_caches_sysctl_handler
+delete_object_full                                        drop_slab
+__delete_object                                           shrink_slab
+put_object                                                lazy_rcu_shrink_scan
+call_rcu                                                  rcu_nocb_flush_bypass
+__call_rcu_commn                                            rcu_nocb_bypass_lock
+                                                            raw_spin_trylock(&rdp->nocb_bypass_lock) fail
+                                                            atomic_inc(&rdp->nocb_lock_contended);
+rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
+ WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
+                            |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
 
-The root cause is that, one thread is doing page migration, and we will
-use the target page's ->mapping field to save 'anon_vma' pointer between
-page unmap and page move, and now the target page is locked and refcount
-is 1.
+Reproduce this bug with "echo 3 > /proc/sys/vm/drop_caches".
 
-Currently, there is another stress-ng thread performing memory hotplug,
-attempting to offline the target page that is being migrated. It discovers
-that the refcount of this target page is 1, preventing the offline operation,
-thus proceeding to dump the page. However, page_mapping() of the target
-page may return an incorrect file mapping to crash the system in dump_mapping(),
-since the target page->mapping only saves 'anon_vma' pointer without setting
-PAGE_MAPPING_ANON flag.
+This commit therefore uses rcu_nocb_try_flush_bypass() instead of
+rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan().  If the nocb_bypass
+queue is being flushed, then rcu_nocb_try_flush_bypass will return
+directly.
 
-The page migration issue has been fixed by commit d1adb25df711 ("mm: migrate:
-fix getting incorrect page mapping during page migration"). In addition,
-Matthew suggested we should also improve dump_mapping()'s robustness to
-resilient against the kernel crash [1].
-
-With checking the 'dentry.parent' and 'dentry.d_name.name' used by
-dentry_name(), I can see dump_mapping() will output the invalid dentry
-instead of crashing the system when this issue is reproduced again.
-
-[12211.189128] page:fffff7de047741c0 refcount:1 mapcount:0 mapping:ffff989117f55ea0 index:0x1 pfn:0x211dd07
-[12211.189144] aops:0x0 ino:1 invalid dentry:74786574206e6870
-[12211.189148] flags: 0x57ffffc0000001(locked|node=1|zone=2|lastcpupid=0x1fffff)
-[12211.189150] page_type: 0xffffffff()
-[12211.189153] raw: 0057ffffc0000001 0000000000000000 dead000000000122 ffff989117f55ea0
-[12211.189154] raw: 0000000000000001 0000000000000001 00000001ffffffff 0000000000000000
-[12211.189155] page dumped because: unmovable page
-
-[1] https://lore.kernel.org/all/ZXxn%2F0oixJxxAnpF@casper.infradead.org/
-
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Link: https://lore.kernel.org/r/937ab1f87328516821d39be672b6bc18861d9d3e.1705391420.git.baolin.wang@linux.alibaba.com
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_nocb.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 91048c4c9c9e7..6d0d542303638 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -588,7 +588,8 @@ void dump_mapping(const struct address_space *mapping)
- 	}
- 
- 	dentry_ptr = container_of(dentry_first, struct dentry, d_u.d_alias);
--	if (get_kernel_nofault(dentry, dentry_ptr)) {
-+	if (get_kernel_nofault(dentry, dentry_ptr) ||
-+	    !dentry.d_parent || !dentry.d_name.name) {
- 		pr_warn("aops:%ps ino:%lx invalid dentry:%px\n",
- 				a_ops, ino, dentry_ptr);
- 		return;
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 4efbf7333d4e1..d430b4656f59e 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1383,7 +1383,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 			rcu_nocb_unlock_irqrestore(rdp, flags);
+ 			continue;
+ 		}
+-		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
++		rcu_nocb_try_flush_bypass(rdp, jiffies);
+ 		rcu_nocb_unlock_irqrestore(rdp, flags);
+ 		wake_nocb_gp(rdp, false);
+ 		sc->nr_to_scan -= _count;
 -- 
 2.43.0
 
