@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FF218894FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:14:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 124F38894FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8F291F2F81C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:14:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42DE91C2F681
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E50C17CF7E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EEB17CF77;
 	Mon, 25 Mar 2024 03:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EQ3Rwf9N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vRr2W97e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CF421955A;
-	Sun, 24 Mar 2024 23:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB1C219555;
+	Sun, 24 Mar 2024 23:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323356; cv=none; b=Ev5TAV+pc/BEiEvuAp0zCsDfYGheUMUc3pALEytyJc1tZjUkE3els7oifmfNRAcW5Afd3XSn6q+LNXQJgYp+9vF8ZT1aUOOmgA4jaN/grm/TvF1RAenRTlT2AcWqwNhpUBb79QbkauFmaV/qFd4RNncH+JP8fyKOZVGT+B5crTg=
+	t=1711323356; cv=none; b=iTLSCID0nlNSv8dNfcFMsY6n5tWIh9OX9WaPPrLCRQujSAyA0xnaEoXio+9wYFYadz7U3K+u8mHgar5IzRZ1rqVShxLwLuMRXMpM9CaHW5IfBUI93uwsGQR/D6nh+PZhCvLEZDAWiwx2SMehDANfqN02r1/D/S8Yc78pYzeRpew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323356; c=relaxed/simple;
-	bh=eeE4eirE6rYXh0hPl5NvtThXQHpMfWfr+Z/2hnUr1nA=;
+	bh=AWr/EBV6VlandXtM4GSd7K0+kcZktDfJEz7DRks+Sys=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qY0LNMfz6hksFyTwUEVIUjP8tIuM+9UyDKiYm+hdjbhgxKyeAJBg+flAaNwThjd2oNbYw9+16nlqndqPFAjgp+qR4P5f5926L+z+YAjrzaKaAiweHeHri+i9V+vOAxf6Me1AjodtJ/ZB1mhSDx4usahT7/6iXzQgXdu5NhkDsTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EQ3Rwf9N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEDC2C433C7;
-	Sun, 24 Mar 2024 23:35:54 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ET7LvStpOevwdq8zGEGo3KZFRfY5JioJJI6CG2pMdXX0W7R54DktSf1jSIK59Sh0QZ/eAuLKhWIOlflwCDVD4/W7QGUOCjpOdP6dgXKI2LxGZROd+boni9W2RgtuRmHaqkNrwnannXlsu05NGQ2iJDz68Ug7ZhKj2lRGTY4gWHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vRr2W97e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9591C43390;
+	Sun, 24 Mar 2024 23:35:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323355;
-	bh=eeE4eirE6rYXh0hPl5NvtThXQHpMfWfr+Z/2hnUr1nA=;
+	s=k20201202; t=1711323356;
+	bh=AWr/EBV6VlandXtM4GSd7K0+kcZktDfJEz7DRks+Sys=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EQ3Rwf9NsaRt5j7Q/MhdDeSDed2m9m6oFhY/8ON2BPj6wFX6iOr2oV4Aa159Dh7UL
-	 jzZgKeMQptzGKKoJVa7DpxtlhrbQbfnOPuRlg0FqmWg3Y6DMyi7op3MgFvNOU6Ft4E
-	 cpAzkGrImTYAMcHQVbU3wqG/8j+6VcCTC3m8vhGig6rZaMcVA+xGjviCiXdAeJjxRh
-	 D6N0YVI2COEzH6mWnQQ8PaldVNk8a7uIwJN5rDPJpideh6y5LqBRnhP33Ed1ckd50c
-	 /VGXBOX2WxwNIF7EnOXTFf6obfku+WcrOO/QzuGlKlDp40EbbyA5W4/Mxl3fCvoq81
-	 RVxayimi4nlBw==
+	b=vRr2W97eto7EBGTS2q0IFFjwK82ZwlIO+v9MwR5+y3cWcqPs1oK2mjw2jhQ9wUUxW
+	 JIX6DIrZrVgEBmdMxCBCWkaVEM5nylR3ED8G1mhabPP3Z0dpLbUxuuiS25TJKcXQ1t
+	 FfzRfUTzxWfxjdPvOIGMDognOojmA1PYANy6st454tdztiSKJRa8ZSjry5Zc6udKaU
+	 gPBLW2yJUqOxAbzmN8CKuLdfoDofRB/zY2Cbm6WjD4LRl/x/bPIA+19YD1G0rkHr3q
+	 UvVoTBmCr812q3aFSB3DKoS/T3pT0EcmLolGMbtcr2VLCECKxYP/J1DAwzzDHskLTS
+	 iiSeE9ngotIag==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: =?UTF-8?q?Alexis=20Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
 	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 055/317] wifi: wilc1000: fix declarations ordering
-Date: Sun, 24 Mar 2024 19:30:35 -0400
-Message-ID: <20240324233458.1352854-56-sashal@kernel.org>
+Subject: [PATCH 5.15 056/317] wifi: wilc1000: fix RCU usage in connect path
+Date: Sun, 24 Mar 2024 19:30:36 -0400
+Message-ID: <20240324233458.1352854-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -65,42 +65,169 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexis Lothoré <alexis.lothore@bootlin.com>
 
-[ Upstream commit 535733e90e5d8912ebeccebb05b354a2d06ff459 ]
+[ Upstream commit 205c50306acf58a335eb19fa84e40140f4fe814f ]
 
-Reorder parameters declaration in wilc_parse_join_bss_param to enforce
-reverse christmas tree
+With lockdep enabled, calls to the connect function from cfg802.11 layer
+lead to the following warning:
 
+=============================
+WARNING: suspicious RCU usage
+6.7.0-rc1-wt+ #333 Not tainted
+-----------------------------
+drivers/net/wireless/microchip/wilc1000/hif.c:386
+suspicious rcu_dereference_check() usage!
+[...]
+stack backtrace:
+CPU: 0 PID: 100 Comm: wpa_supplicant Not tainted 6.7.0-rc1-wt+ #333
+Hardware name: Atmel SAMA5
+ unwind_backtrace from show_stack+0x18/0x1c
+ show_stack from dump_stack_lvl+0x34/0x48
+ dump_stack_lvl from wilc_parse_join_bss_param+0x7dc/0x7f4
+ wilc_parse_join_bss_param from connect+0x2c4/0x648
+ connect from cfg80211_connect+0x30c/0xb74
+ cfg80211_connect from nl80211_connect+0x860/0xa94
+ nl80211_connect from genl_rcv_msg+0x3fc/0x59c
+ genl_rcv_msg from netlink_rcv_skb+0xd0/0x1f8
+ netlink_rcv_skb from genl_rcv+0x2c/0x3c
+ genl_rcv from netlink_unicast+0x3b0/0x550
+ netlink_unicast from netlink_sendmsg+0x368/0x688
+ netlink_sendmsg from ____sys_sendmsg+0x190/0x430
+ ____sys_sendmsg from ___sys_sendmsg+0x110/0x158
+ ___sys_sendmsg from sys_sendmsg+0xe8/0x150
+ sys_sendmsg from ret_fast_syscall+0x0/0x1c
+
+This warning is emitted because in the connect path, when trying to parse
+target BSS parameters, we dereference a RCU pointer whithout being in RCU
+critical section.
+Fix RCU dereference usage by moving it to a RCU read critical section. To
+avoid wrapping the whole wilc_parse_join_bss_param under the critical
+section, just use the critical section to copy ies data
+
+Fixes: c460495ee072 ("staging: wilc1000: fix incorrent type in initializer")
 Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
 Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240105075733.36331-2-alexis.lothore@bootlin.com
-Stable-dep-of: 205c50306acf ("wifi: wilc1000: fix RCU usage in connect path")
+Link: https://msgid.link/20240105075733.36331-3-alexis.lothore@bootlin.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/microchip/wilc1000/hif.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/microchip/wilc1000/hif.c | 36 ++++++++++++-------
+ 1 file changed, 24 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/net/wireless/microchip/wilc1000/hif.c b/drivers/net/wireless/microchip/wilc1000/hif.c
-index a7bca0475e1ee..edd51592a82da 100644
+index edd51592a82da..fe95a6201a679 100644
 --- a/drivers/net/wireless/microchip/wilc1000/hif.c
 +++ b/drivers/net/wireless/microchip/wilc1000/hif.c
-@@ -359,13 +359,13 @@ static void handle_connect_timeout(struct work_struct *work)
+@@ -359,38 +359,49 @@ static void handle_connect_timeout(struct work_struct *work)
  void *wilc_parse_join_bss_param(struct cfg80211_bss *bss,
  				struct cfg80211_crypto_settings *crypto)
  {
--	struct wilc_join_bss_param *param;
--	struct ieee80211_p2p_noa_attr noa_attr;
--	u8 rates_len = 0;
-+	const struct cfg80211_bss_ies *ies = rcu_dereference(bss->ies);
- 	const u8 *tim_elm, *ssid_elm, *rates_ie, *supp_rates_ie;
- 	const u8 *ht_ie, *wpa_ie, *wmm_ie, *rsn_ie;
-+	struct ieee80211_p2p_noa_attr noa_attr;
-+	struct wilc_join_bss_param *param;
-+	u8 rates_len = 0;
- 	int ret;
 -	const struct cfg80211_bss_ies *ies = rcu_dereference(bss->ies);
+-	const u8 *tim_elm, *ssid_elm, *rates_ie, *supp_rates_ie;
++	const u8 *ies_data, *tim_elm, *ssid_elm, *rates_ie, *supp_rates_ie;
+ 	const u8 *ht_ie, *wpa_ie, *wmm_ie, *rsn_ie;
+ 	struct ieee80211_p2p_noa_attr noa_attr;
++	const struct cfg80211_bss_ies *ies;
+ 	struct wilc_join_bss_param *param;
+-	u8 rates_len = 0;
++	u8 rates_len = 0, ies_len;
+ 	int ret;
  
  	param = kzalloc(sizeof(*param), GFP_KERNEL);
  	if (!param)
+ 		return NULL;
+ 
++	rcu_read_lock();
++	ies = rcu_dereference(bss->ies);
++	ies_data = kmemdup(ies->data, ies->len, GFP_ATOMIC);
++	if (!ies_data) {
++		rcu_read_unlock();
++		kfree(param);
++		return NULL;
++	}
++	ies_len = ies->len;
++	rcu_read_unlock();
++
+ 	param->beacon_period = cpu_to_le16(bss->beacon_interval);
+ 	param->cap_info = cpu_to_le16(bss->capability);
+ 	param->bss_type = WILC_FW_BSS_TYPE_INFRA;
+ 	param->ch = ieee80211_frequency_to_channel(bss->channel->center_freq);
+ 	ether_addr_copy(param->bssid, bss->bssid);
+ 
+-	ssid_elm = cfg80211_find_ie(WLAN_EID_SSID, ies->data, ies->len);
++	ssid_elm = cfg80211_find_ie(WLAN_EID_SSID, ies_data, ies_len);
+ 	if (ssid_elm) {
+ 		if (ssid_elm[1] <= IEEE80211_MAX_SSID_LEN)
+ 			memcpy(param->ssid, ssid_elm + 2, ssid_elm[1]);
+ 	}
+ 
+-	tim_elm = cfg80211_find_ie(WLAN_EID_TIM, ies->data, ies->len);
++	tim_elm = cfg80211_find_ie(WLAN_EID_TIM, ies_data, ies_len);
+ 	if (tim_elm && tim_elm[1] >= 2)
+ 		param->dtim_period = tim_elm[3];
+ 
+ 	memset(param->p_suites, 0xFF, 3);
+ 	memset(param->akm_suites, 0xFF, 3);
+ 
+-	rates_ie = cfg80211_find_ie(WLAN_EID_SUPP_RATES, ies->data, ies->len);
++	rates_ie = cfg80211_find_ie(WLAN_EID_SUPP_RATES, ies_data, ies_len);
+ 	if (rates_ie) {
+ 		rates_len = rates_ie[1];
+ 		if (rates_len > WILC_MAX_RATES_SUPPORTED)
+@@ -401,7 +412,7 @@ void *wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+ 
+ 	if (rates_len < WILC_MAX_RATES_SUPPORTED) {
+ 		supp_rates_ie = cfg80211_find_ie(WLAN_EID_EXT_SUPP_RATES,
+-						 ies->data, ies->len);
++						 ies_data, ies_len);
+ 		if (supp_rates_ie) {
+ 			u8 ext_rates = supp_rates_ie[1];
+ 
+@@ -416,11 +427,11 @@ void *wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+ 		}
+ 	}
+ 
+-	ht_ie = cfg80211_find_ie(WLAN_EID_HT_CAPABILITY, ies->data, ies->len);
++	ht_ie = cfg80211_find_ie(WLAN_EID_HT_CAPABILITY, ies_data, ies_len);
+ 	if (ht_ie)
+ 		param->ht_capable = true;
+ 
+-	ret = cfg80211_get_p2p_attr(ies->data, ies->len,
++	ret = cfg80211_get_p2p_attr(ies_data, ies_len,
+ 				    IEEE80211_P2P_ATTR_ABSENCE_NOTICE,
+ 				    (u8 *)&noa_attr, sizeof(noa_attr));
+ 	if (ret > 0) {
+@@ -444,7 +455,7 @@ void *wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+ 	}
+ 	wmm_ie = cfg80211_find_vendor_ie(WLAN_OUI_MICROSOFT,
+ 					 WLAN_OUI_TYPE_MICROSOFT_WMM,
+-					 ies->data, ies->len);
++					 ies_data, ies_len);
+ 	if (wmm_ie) {
+ 		struct ieee80211_wmm_param_ie *ie;
+ 
+@@ -459,13 +470,13 @@ void *wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+ 
+ 	wpa_ie = cfg80211_find_vendor_ie(WLAN_OUI_MICROSOFT,
+ 					 WLAN_OUI_TYPE_MICROSOFT_WPA,
+-					 ies->data, ies->len);
++					 ies_data, ies_len);
+ 	if (wpa_ie) {
+ 		param->mode_802_11i = 1;
+ 		param->rsn_found = true;
+ 	}
+ 
+-	rsn_ie = cfg80211_find_ie(WLAN_EID_RSN, ies->data, ies->len);
++	rsn_ie = cfg80211_find_ie(WLAN_EID_RSN, ies_data, ies_len);
+ 	if (rsn_ie) {
+ 		int rsn_ie_len = sizeof(struct element) + rsn_ie[1];
+ 		int offset = 8;
+@@ -499,6 +510,7 @@ void *wilc_parse_join_bss_param(struct cfg80211_bss *bss,
+ 			param->akm_suites[i] = crypto->akm_suites[i] & 0xFF;
+ 	}
+ 
++	kfree(ies_data);
+ 	return (void *)param;
+ }
+ 
 -- 
 2.43.0
 
