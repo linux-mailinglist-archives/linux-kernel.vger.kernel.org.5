@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B33A889117
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:33:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C15D8889509
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:16:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8CDE2884B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:33:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C3C0296F94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6281B7F6F;
-	Mon, 25 Mar 2024 00:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B853C24E3BA;
+	Mon, 25 Mar 2024 03:27:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HXQsLs3p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aFSKgKOV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC87F5A10A;
-	Sun, 24 Mar 2024 23:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A053817497A;
+	Sun, 24 Mar 2024 23:36:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323379; cv=none; b=sA0loK3xIsvx84uUaxriQov3932dz985sFgWBj4upAYGPFTiPDswe2vaFl+6hiTOcenjaooybbG9y6Jt4sXzB8gPGcyqeyoOIcu0CtAEeIlMYD8Ac8GdpqtclxNkL3XCdD/4fxYWAIcEbaTSHeK0WO1rjzLJGe/N2wIA7UhKFBI=
+	t=1711323380; cv=none; b=NenRB2kfkPHJe1B7B2tnjz8jcAs+t44HYO9MyCRGDh6oIiCyK2OHSiBybnmcZhz1DAMRGEYbqhAgnpMJ5+K7NclZTtqBcGDFD1JN0KMlO1LbocPTlxMcvlyHsQsx3tBrScUhBU84xgCULHR8I9srYmWdoS+8I1GpBp639e5nAl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323379; c=relaxed/simple;
-	bh=CPWd2wkM0tXZLpS+U7hIaux1VywiMZsUyNyuil1yD5A=;
+	s=arc-20240116; t=1711323380; c=relaxed/simple;
+	bh=p3oAQAnj1GeDzvAmW03RGagMjnmZp0YNL59rgkbV4Sw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H7/a1ui1vZteIeEt0KAaVx/nGc7KACfvHYxNcwqb6IjmyaHcZSgLGilPHjnryfKEO3gvCVW8t877iHJ3a+caN9+u8Yw745/rBIhH8EbtLdems8jvsPzJDKz3AgsBlD53MjnLEUrvvyvglYC2r4f2tc7PDboPZYw+266fT2ZEmS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HXQsLs3p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E551FC433B1;
-	Sun, 24 Mar 2024 23:36:18 +0000 (UTC)
+	 MIME-Version; b=ptsMFwkQghPQRgnZO+SFAbhWsR5OJu25GqbULojFC9YyJwruVfhEVE/50ufeX81+QuHU/xEIRvyzcAOhPosGvgaDd9cRNw9kdjrXFlHacaiKrsGKDjkC/qmqzjgCm5a1JJzapCch04OBzGXVDzqNCnPmVjQLjp7B6ekgkd4X+jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aFSKgKOV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF6FAC433C7;
+	Sun, 24 Mar 2024 23:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323379;
-	bh=CPWd2wkM0tXZLpS+U7hIaux1VywiMZsUyNyuil1yD5A=;
+	s=k20201202; t=1711323380;
+	bh=p3oAQAnj1GeDzvAmW03RGagMjnmZp0YNL59rgkbV4Sw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HXQsLs3ptCbkwMDIX3ItP3qAyvnFCNtZrsFT2ltSA2sTp9OXjjcDTJAao4CGSmOYE
-	 hmqaRctPyFF9UHuyPRAH+ft4t6jB73KV37qr+DBKTYphDCMA+bU2AdhGTmsdWEfhtq
-	 N/t5eCRSltTg03PTHEMuhfHwSHpE6z+Svq7uA7a2/XBHyQrNnlMc6fr21J/XpH2VoU
-	 hHuv7D2dPIJ/qwxOt2jjIO5+ZY5QC0l2C5mJffxugiPUSmFnaY9Cm7OZTI2eFcv/XH
-	 SEDAFlRGnpsUbaQsrmxN4eRaEdLI5/uIP8pDMzSdIHW4E6c/Zpqq7RwRjJkxQVtlPw
-	 fovgapojEKk2Q==
+	b=aFSKgKOVPb0wkPyJBc2qnfuHCBWRbCjYwNgwJP99eyE+slEQqoC0K2T4Lk5Mn8fJm
+	 baIMqjEwcHeRnnJAwQ4TtL0PsikGJm6EJzmFItPb++Q4GK51uoI9KmCwhGSd+2liGh
+	 knaxYblz322uNoQlmasDzk9PtEhkvqjRoGfHe7eNjN3nQWeXloXtiuzFQ5EMAw5XCG
+	 wWbs1zqsGFdDY1dFIJ1t9/8GVhz2nKAAWh4s7QQNRq2I3J6eoxGmO9rQURbDIUxxJh
+	 OgKJpaGCZtgeBZOWlcPui9BdQ7loVI47nVd6A7m164JfEaxCk/0cish88TYNVp76Mm
+	 Z3KBgz+CDKKuA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: Tim Harvey <tharvey@gateworks.com>,
+	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 079/317] wifi: iwlwifi: fix EWRD table validity check
-Date: Sun, 24 Mar 2024 19:30:59 -0400
-Message-ID: <20240324233458.1352854-80-sashal@kernel.org>
+Subject: [PATCH 5.15 080/317] arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS
+Date: Sun, 24 Mar 2024 19:31:00 -0400
+Message-ID: <20240324233458.1352854-81-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,42 +62,83 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+From: Tim Harvey <tharvey@gateworks.com>
 
-[ Upstream commit c8d8f3911135921ace8e939ea0956b55f74bf8a0 ]
+[ Upstream commit ec2cb52fcfef5d58574f2cfbc9a99ffc20ae5a9d ]
 
-EWRD ACPI table contains up to 3 additional sar profiles.
-According to the BIOS spec, the table contains a n_profile
-variable indicating how many additional profiles exist in the
-table.
-Currently we check that n_profiles is not <= 0.
-But according to the BIOS spec, 0 is a valid value,
-and it can't be < 0 anyway because we receive that from ACPI as
-an unsigned integer.
+The GW71xx does not have a gpio controlled vbus regulator but it does
+require some pinctrl. Remove the regulator and move the valid pinctrl
+into the usbotg1 node.
 
-Fixes: 39c1a9728f93 ("iwlwifi: refactor the SAR tables from mvm to acpi")
-Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Reviewed-by: Gregory Greenman <gregory.greenman@intel.com>
-Link: https://msgid.link/20240129211905.448ea2f40814.Iffd2aadf8e8693e6cb599bee0406a800a0c1e081@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: bd306fdb4e60 ("arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS")
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/fw/acpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../dts/freescale/imx8mm-venice-gw71xx.dtsi   | 29 ++++++-------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
-index f0e0d4ccbc091..0b1c6bf729c3e 100644
---- a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
-@@ -674,7 +674,7 @@ int iwl_sar_get_ewrd_table(struct iwl_fw_runtime *fwrt)
- 	 * from index 1, so the maximum value allowed here is
- 	 * ACPI_SAR_PROFILES_NUM - 1.
- 	 */
--	if (n_profiles <= 0 || n_profiles >= ACPI_SAR_PROFILE_NUM) {
-+	if (n_profiles >= ACPI_SAR_PROFILE_NUM) {
- 		ret = -EINVAL;
- 		goto out_free;
- 	}
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+index 7ea909a4c1d5e..6de00c9dcd349 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+@@ -40,17 +40,6 @@ pps {
+ 		gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+ 		status = "okay";
+ 	};
+-
+-	reg_usb_otg1_vbus: regulator-usb-otg1 {
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_reg_usb1_en>;
+-		compatible = "regulator-fixed";
+-		regulator-name = "usb_otg1_vbus";
+-		gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+-		enable-active-high;
+-		regulator-min-microvolt = <5000000>;
+-		regulator-max-microvolt = <5000000>;
+-	};
+ };
+ 
+ /* off-board header */
+@@ -102,9 +91,10 @@ &uart3 {
+ };
+ 
+ &usbotg1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg1>;
+ 	dr_mode = "otg";
+ 	over-current-active-low;
+-	vbus-supply = <&reg_usb_otg1_vbus>;
+ 	status = "okay";
+ };
+ 
+@@ -156,14 +146,6 @@ MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x41
+ 		>;
+ 	};
+ 
+-	pinctrl_reg_usb1_en: regusb1grp {
+-		fsl,pins = <
+-			MX8MM_IOMUXC_GPIO1_IO10_GPIO1_IO10	0x41
+-			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
+-			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
+-		>;
+-	};
+-
+ 	pinctrl_spi2: spi2grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0xd6
+@@ -186,4 +168,11 @@ MX8MM_IOMUXC_UART3_RXD_UART3_DCE_RX	0x140
+ 			MX8MM_IOMUXC_UART3_TXD_UART3_DCE_TX	0x140
+ 		>;
+ 	};
++
++	pinctrl_usbotg1: usbotg1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
++			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
++		>;
++	};
+ };
 -- 
 2.43.0
 
