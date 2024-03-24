@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-116128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3C4D88997D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:11:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19C178892BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:11:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD7B62C2798
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:11:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3DE51F2F1BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA323AD94A;
-	Mon, 25 Mar 2024 03:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BAE51BEDD5;
+	Mon, 25 Mar 2024 00:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mxc/sWAV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uLrUItxU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 990A3179FC9;
-	Sun, 24 Mar 2024 23:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9564A179FCF;
+	Sun, 24 Mar 2024 23:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323663; cv=none; b=c/5g6CqAwdFtohL8RriNfLBBF8rbNZzL4A+4ljZuQGB6prspdGe404WxNIJPZR/aCHfnY3bFeqxap4hF4HtxQES8YOors4hLIJnLfMxRDddLZtca7whKEnhBgexNOw5eLfcCghUhpcYuaoTdt3Ib6OI/Ws4i2GnGtZwWyTfWbx4=
+	t=1711323665; cv=none; b=tVYOna4ldydOQBhTgHaoaf9z4lQvXZliUt67X0JxZtNbaYhVW3eAMTXa8Rc8pkDTh8eGa/54JHF6cE1GOzCr3VLkv22bQ9crYwqO5Th0A2uIS/t7rxl5SmC3kFleQd1T/z/agoYnJSDVerRJ2j6Ayj8bD4oFOdf53BcJjSqPF1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323663; c=relaxed/simple;
-	bh=NIoDcRpVejFLNVUkjop1RAxTn/B6sQZnq+VQSlo84Rc=;
+	s=arc-20240116; t=1711323665; c=relaxed/simple;
+	bh=r5p49GZRFmtuKgVaabBtNqYpK5s4aOtan8S6DcAYzIw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uY2Fx+nROLPxxF2B9GMAGwelCTtBb9kzERNCrfIqG2o8q8Q9mA/f/DQRZ4l62SuIZheFA+UVi3GNwycQEmG169jr4rrzEK2aCl21p6tyRavgIoPiSfgu5C4yN7NZaBISfwVaN1ipJf7qPA6S+Psfva90vgo8f95Ge9M2BBpFEyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mxc/sWAV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8117C43399;
-	Sun, 24 Mar 2024 23:41:02 +0000 (UTC)
+	 MIME-Version; b=m1QbYXgR05cNzEDZBSwFrE4MvJydu/zyfz6ZBlUH1X+oFDT0qj3tmg+2b2+jycYVhwb+qqAUcUSQ/kOSYLQacr55BnxVw56dhjpdC2eDrUpJQez4FKS5hMIxQfmqKjmL+hOSC5OOTMzIOR56xjTw/95Jw2yRa6oqussZjTGm7Js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uLrUItxU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE92C433F1;
+	Sun, 24 Mar 2024 23:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323663;
-	bh=NIoDcRpVejFLNVUkjop1RAxTn/B6sQZnq+VQSlo84Rc=;
+	s=k20201202; t=1711323664;
+	bh=r5p49GZRFmtuKgVaabBtNqYpK5s4aOtan8S6DcAYzIw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Mxc/sWAVUnF8ICSFAzeu4KxUprDCmKZ2w5qfCpacLT8th3soy/nGfID063tqqia9k
-	 BPFqEKEBL7kmCRC87qJOrhAQL3BDX5Q4c8qggHg4mfV/2KMHyQjL81xR1b02NDV5gV
-	 fHWraPspch7AteuVW6EyMd3H5jHrNdLPr57c9dlagfoOn/k8L1ghSvpEvgZK+O6HhB
-	 fGLhCCMRcoyCdzki/jJ2IEbY0EjZ6FU0Q74Qt/7i0FUbmRk1LElAw4dRD2UJi8PJyM
-	 bhzpw16yg8gseEOsmop5+sdfoEzVfeKChMap3deVb/xKGGJAZzXD/Q9JU35nkoTMVX
-	 8+yX3Rktw1kgg==
+	b=uLrUItxUMo2C8kbAaL1jlnYCyupJ6CMqnHgjG1Zrxg07gRtCLRHTgVaoxGgGyZsZl
+	 dVDZAWuyhLXgpPkNpre8FsY58mE4KMTt8lRLyeoOlkHT/YEux1wP+B+aCxC5O+AHNp
+	 NLHwxI7+cpsJrZgJS6ZpY/rLzrxrgBvEOtBhuavQvBvyGDn+hv/rF88ejXxYotMydE
+	 5iSSXOLJaXwdhRrMEGKfhqP1yK/5JVn5qG0NDZXnaKEzHd11JDGbvDmpNPS4kVJPB4
+	 aXYBfg4p6iFpY+MUp2FdAQPhkg7tOrprl2GXfZwKEmQNfBTjYGFWtpJgQ0f9w2gCSp
+	 GyBmhl6w/IqjQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chun-Yi Lee <jlee@suse.com>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Peter Hilber <peter.hilber@opensynergy.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	John Stultz <jstultz@google.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 035/238] aoe: fix the potential use-after-free problem in aoecmd_cfg_pkts
-Date: Sun, 24 Mar 2024 19:37:03 -0400
-Message-ID: <20240324234027.1354210-36-sashal@kernel.org>
+Subject: [PATCH 5.10 036/238] timekeeping: Fix cross-timestamp interpolation on counter wrap
+Date: Sun, 24 Mar 2024 19:37:04 -0400
+Message-ID: <20240324234027.1354210-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,86 +63,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chun-Yi Lee <jlee@suse.com>
+From: Peter Hilber <peter.hilber@opensynergy.com>
 
-[ Upstream commit f98364e926626c678fb4b9004b75cacf92ff0662 ]
+[ Upstream commit 84dccadd3e2a3f1a373826ad71e5ced5e76b0c00 ]
 
-This patch is against CVE-2023-6270. The description of cve is:
+cycle_between() decides whether get_device_system_crosststamp() will
+interpolate for older counter readings.
 
-  A flaw was found in the ATA over Ethernet (AoE) driver in the Linux
-  kernel. The aoecmd_cfg_pkts() function improperly updates the refcnt on
-  `struct net_device`, and a use-after-free can be triggered by racing
-  between the free on the struct and the access through the `skbtxq`
-  global queue. This could lead to a denial of service condition or
-  potential code execution.
+cycle_between() yields wrong results for a counter wrap-around where after
+< before < test, and for the case after < test < before.
 
-In aoecmd_cfg_pkts(), it always calls dev_put(ifp) when skb initial
-code is finished. But the net_device ifp will still be used in
-later tx()->dev_queue_xmit() in kthread. Which means that the
-dev_put(ifp) should NOT be called in the success path of skb
-initial code in aoecmd_cfg_pkts(). Otherwise tx() may run into
-use-after-free because the net_device is freed.
+Fix the comparison logic.
 
-This patch removed the dev_put(ifp) in the success path in
-aoecmd_cfg_pkts(), and added dev_put() after skb xmit in tx().
-
-Link: https://nvd.nist.gov/vuln/detail/CVE-2023-6270
-Fixes: 7562f876cd93 ("[NET]: Rework dev_base via list_head (v3)")
-Signed-off-by: Chun-Yi Lee <jlee@suse.com>
-Link: https://lore.kernel.org/r/20240305082048.25526-1-jlee@suse.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 2c756feb18d9 ("time: Add history to cross timestamp interface supporting slower devices")
+Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: John Stultz <jstultz@google.com>
+Link: https://lore.kernel.org/r/20231218073849.35294-2-peter.hilber@opensynergy.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/aoe/aoecmd.c | 12 ++++++------
- drivers/block/aoe/aoenet.c |  1 +
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ kernel/time/timekeeping.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
-index 313f0b946fe2b..c805909c8e775 100644
---- a/drivers/block/aoe/aoecmd.c
-+++ b/drivers/block/aoe/aoecmd.c
-@@ -420,13 +420,16 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
- 	rcu_read_lock();
- 	for_each_netdev_rcu(&init_net, ifp) {
- 		dev_hold(ifp);
--		if (!is_aoe_netif(ifp))
--			goto cont;
-+		if (!is_aoe_netif(ifp)) {
-+			dev_put(ifp);
-+			continue;
-+		}
- 
- 		skb = new_skb(sizeof *h + sizeof *ch);
- 		if (skb == NULL) {
- 			printk(KERN_INFO "aoe: skb alloc failure\n");
--			goto cont;
-+			dev_put(ifp);
-+			continue;
- 		}
- 		skb_put(skb, sizeof *h + sizeof *ch);
- 		skb->dev = ifp;
-@@ -441,9 +444,6 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
- 		h->major = cpu_to_be16(aoemajor);
- 		h->minor = aoeminor;
- 		h->cmd = AOECMD_CFG;
--
--cont:
--		dev_put(ifp);
- 	}
- 	rcu_read_unlock();
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index d9b48f7a35e0d..6a8a610b19717 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -1173,7 +1173,7 @@ static bool cycle_between(u64 before, u64 test, u64 after)
+ {
+ 	if (test > before && test < after)
+ 		return true;
+-	if (test < before && before > after)
++	if (before > after && (test > before || test < after))
+ 		return true;
+ 	return false;
  }
-diff --git a/drivers/block/aoe/aoenet.c b/drivers/block/aoe/aoenet.c
-index 63773a90581dd..1e66c7a188a12 100644
---- a/drivers/block/aoe/aoenet.c
-+++ b/drivers/block/aoe/aoenet.c
-@@ -64,6 +64,7 @@ tx(int id) __must_hold(&txlock)
- 			pr_warn("aoe: packet could not be sent on %s.  %s\n",
- 				ifp ? ifp->name : "netif",
- 				"consider increasing tx_queue_len");
-+		dev_put(ifp);
- 		spin_lock_irq(&txlock);
- 	}
- 	return 0;
 -- 
 2.43.0
 
