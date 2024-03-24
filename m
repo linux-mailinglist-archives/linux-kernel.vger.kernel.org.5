@@ -1,107 +1,96 @@
-Return-Path: <linux-kernel+bounces-112597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC514887BCE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 404B3887BCF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:56:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 604DA1F21AEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:54:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBC5A1F21ACE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713021426E;
-	Sun, 24 Mar 2024 05:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9048D1401B;
+	Sun, 24 Mar 2024 05:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="FRt+yN14"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6136814008
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:53:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="emp6ULex"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0B3D528
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711259639; cv=none; b=gjChvJOW4ehZniMZjpJXd97JMnDcwhrrjckmh/7/XYs6D0yRsog1s8OWPkaWkboFEeR4cN6d+4q49GicVM2PRILm5Y824kzQe2vlc3YeSnWJc8983wkd5MYRoSZUSC2rhFyyjMh10afROKPIgISVfcmddQEnTxwtOOHIJgOrjns=
+	t=1711259790; cv=none; b=nxfj4/6iwHbS1H+LbTn4/UDJk9f/UzJhA0dYWCnXlzYyKrtsdhHCL+9L+/GsfmaMRUjqyNq4GIlQ5lwJX32vCdJaPb+Eo7BBBcqg2siGoA/HJpHzPCyG89oCw+30lx8YRa+pNxS54FWUcS2EQfvsxPQZZ3hIQC7/eznNV46uXG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711259639; c=relaxed/simple;
-	bh=k6K1qJsbWkoTQwo17/BGCwBZeOrK8asEP4jPl+ndMqc=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=E+Ebt4hG+KiKyS8m9u7KgVND7ojSpl8HXrwlImKTa/w8HQG2HRn3CAQ/8nQez1u6MaHwEmyxfOUDhD9482za8HSMshmb+Nx9ODffUMoq5ZO4KtvlqZC+fviUv/zRucuuYXoD55xG7zsha5S3YmF9MTlxCjtewFi9MhPK/IrnCwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=FRt+yN14; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
+	s=arc-20240116; t=1711259790; c=relaxed/simple;
+	bh=cvLm+qbeJbEg6K85hZtSOwYq0zdft7CTVVdr9rBv89o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=kCS0lMwhjODESRmo/qVCApgxHb18SKI21wQquZfIMwsYdbFhxNIupD1loCh28/JKPNlrGXY6Q8EaP7vlOs7IHBhvR3pAc4HiUc/eczrVw4PxhAUY3U3sluJNanuWPnPzwDHDh8gspV1sw/wgWTo6p+sk0gtsVWzC8pAFcJV1juc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=emp6ULex reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=knpKBpX7Qw4Pm0XJApS/WG5pQKfGjw2SAdHKcghDbrY=; b=e
+	mp6ULexluDTU3V706vxfyqxMYg7eLmqzF25x7gEA01/GzUl3345E+ACQnMPklKfr
+	Kkr7FHmXHnMprvtZMNvFfmoq7IyJnbgcdosvsGd+2Whu1sZircRHrrk8TYSIgGQt
+	jf9zXHlO6oAbS+UxlfwwtavDhkihReJ4sGYqh+Bpq4=
+Received: from lumingyindetect$163.com ( [106.39.130.76] ) by
+ ajax-webmail-wmsvr-40-105 (Coremail) ; Sun, 24 Mar 2024 13:56:06 +0800
+ (CST)
+Date: Sun, 24 Mar 2024 13:56:06 +0800 (CST)
+From: lumingyindetect@163.com
+To: linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org
+Subject: Re:[PATCH] tools:Fix a memory leak bug related to the cmd
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+In-Reply-To: <20240323065550.603005-1-lumingyindetect@163.com>
+References: <20240323065550.603005-1-lumingyindetect@163.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
-	s=key1; t=1711259634;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9noNjRG5J01WXAhzTC1re8jGZ/L4ci7PArNMcz5zSdQ=;
-	b=FRt+yN14LDuW1S6eg8vkC3y3RQTlw8VeiBduPXcNaOVh2vzfl3Zr4moDi2HpyjFMUdKOG7
-	iJpbQ2XpTeuM7oTLaEpRiPsG511uyJ0jk2Wv6FictZ5XD6ZyQeFKhhkxMA5EEqqk+2hvgg
-	xURZ9BsoXz99aUh/+kz7tnMFILdhGP2a6DrluqaWS/MIX/hP0g8f6OhQK0YGNYScJmDd9j
-	RTLTehHG3wy9zfyT83xUbnTJA26G5wviE+rTe4eQsvJM069gvwCJQFBS0JdHI+SQsQgQzb
-	84VwvrMMSuLUGL6hyCjqGVmpioNzTJXPOWF2Jqi8B3uxNV/it1K5/uBGpUSndw==
-Date: Sun, 24 Mar 2024 05:53:52 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Clayton Craft" <clayton@craftyguy.net>
-Message-ID: <2a15095b2b6343f63e228443d9fd3f35872b6d09@craftyguy.net>
-TLS-Required: No
-Subject: Re: x86_64 32-bit EFI mixed mode boot broken
-To: "Ard Biesheuvel" <ardb@kernel.org>
-Cc: "Hans de Goede" <hdegoede@redhat.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, "Thomas
- Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>, "Dave Hansen"
- <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
-In-Reply-To: <CAMj1kXHEJuZH4GsPKpu2vn6NQtKq1FBUtb-Rkfatwa63brgXpw@mail.gmail.com>
-References: <20240321150510.GI8211@craftyguy.net>
- <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
- <20240321170641.GK8211@craftyguy.net>
- <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
- <20240322091857.GM8211@craftyguy.net>
- <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
- <fe09869c2d853bde8ce0feb537c4dab09014f5d9@craftyguy.net>
- <CAMj1kXEH4CTnQ3d+Z-TnqNUhFaFc1yH+Eaa6cHk9-vZ_geQ2nw@mail.gmail.com>
- <8a64ba697d719bc9750e6fffc268e194dfde16e5@craftyguy.net>
- <CAMj1kXEk=7_BoaavZtZs7giBq4Kwk-QQoNjMZS=rWLJP=LdVLw@mail.gmail.com>
- <CAMj1kXHEJuZH4GsPKpu2vn6NQtKq1FBUtb-Rkfatwa63brgXpw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Message-ID: <17ddf389.9f7.18e6f07cfff.Coremail.lumingyindetect@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:_____wD3fwF2wP9lVgwQAA--.10734W
+X-CM-SenderInfo: poxpx0hj1l0vphwhu3i6rwjhhfrp/1tbiKRar92VOCH1F9QABsM
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-March 23, 2024 at 10:18 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
-> On Sat, 23 Mar 2024 at 14:39, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >=20
->=20>  OK.
-> >=20
->=20>  I have reshuffled the branch and put the patch you identified as t=
-he
-> >=20
->=20>  one fixing the boot first. Please double check whether this change
-> >=20
->=20>  still fixes the boot for you.
-> >=20
->=20>  https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log=
-/?h=3Defi-clayton-2
-> >=20
->=20>  If so, we can try applying it to mainline, and merge it if it work=
-s there too.
-
-This branch boots on my Bay Trail systems.
-
-
-> I have a mainline branch with the same change applied, please try that =
-one too.
-
-I assume this is the `efi-mixed-mode-boot-hack` branch, if so then this b=
-ranch also boots on these systems.
-
--Clayton
+VGhhbmsmbmJzcDt5b3UmbmJzcDtmb3ImbmJzcDt5b3VyJm5ic3A7cHJvbXB0Jm5ic3A7cmVzcG9u
+c2UhJm5ic3A7SXQmbmJzcDtpcyZuYnNwO2luZGVlZCZuYnNwO2EmbmJzcDt3aXNlJm5ic3A7ZGVj
+aXNpb24mbmJzcDtub3QmbmJzcDt0byZuYnNwO3JlbGVhc2UmbmJzcDtkeW5hbWljJm5ic3A7bWVt
+b3J5Jm5ic3A7d2hlbiZuYnNwO3RoZSZuYnNwO3Rvb2wmbmJzcDtydW5zJm5ic3A7YnJpZWZseSZu
+YnNwO2FuZCZuYnNwO2VuY291bnRlcnMmbmJzcDtlcnJvcnMuJm5ic3A7SG93ZXZlciwmbmJzcDtJ
+Jm5ic3A7YWxzbyZuYnNwO25vdGljZWQmbmJzcDtpbiZuYnNwO3RoZSZuYnNwO2Rpc2FzX2Z1bmNz
+Jm5ic3A7ZnVuY3Rpb24mbmJzcDtpbiZuYnNwO3RoZSZuYnNwOy9saW51eC90b29scy9vYmp0b29s
+L2NoZWNrLmMmbmJzcDtmaWxlJm5ic3A7KGxpbmUmbmJzcDs0NjE3KSZuYnNwO3RoYXQmbmJzcDth
+Jm5ic3A7dmFyaWFibGUmbmJzcDtuYW1lZCZuYnNwO2NtZCZuYnNwO3BvaW50aW5nJm5ic3A7dG8m
+bmJzcDthJm5ic3A7ZHluYW1pYyZuYnNwO21lbW9yeSZuYnNwO2FyZWEmbmJzcDtpcyZuYnNwO25v
+dCZuYnNwO2JlaW5nJm5ic3A7ZnJlZWQmbmJzcDsocmVnYXJkbGVzcyZuYnNwO29mJm5ic3A7d2hl
+dGhlciZuYnNwO2FuJm5ic3A7ZXJyb3ImbmJzcDtvY2N1cnMpLiZuYnNwO0luJm5ic3A7dGhpcyZu
+YnNwO2Nhc2UsJm5ic3A7d291bGQmbmJzcDtpdCZuYnNwO2JlJm5ic3A7bmVjZXNzYXJ5Jm5ic3A7
+dG8mbmJzcDthZGQmbmJzcDthJm5ic3A7ZnJlZShjbWQpPwrU2iAyMDI0LTAzLTIzIDE0OjU1OjUw
+o6xMdU1pbmdZaW4gPGx1bWluZ3lpbmRldGVjdEAxNjMuY29tPiDQtLXAo7oKSW4gdGhlIGZ1bmN0
+aW9uICdkaXNhc19mdW5jcycgZGVmaW5lZCBpbiB0aGUgZmlsZSAvbGludXgvdG9vbHMvb2JqdG9v
+bC9jaGVjay5jLCBhIHBvaW50ZXIgdmFyaWFibGUgbmFtZWQgJ2NtZCcgaXMgZGVjbGFyZWQgKGxp
+bmUgNDU4MyBvZiB0aGUgZmlsZSkuIFRoaXMgcG9pbnRlciB2YXJpYWJsZSBhbGxvY2F0ZXMgYSBi
+bG9jayBvZiBkeW5hbWljIG1lbW9yeSB1c2luZyB0aGUgJ21hbGxvYycgZnVuY3Rpb24gYXQgbGlu
+ZSA0NjE1LiBIb3dldmVyLCBhZnRlciB1c2luZyB0aGUgbWVtb3J5IGFyZWEgcG9pbnRlZCB0byBi
+eSAnY21kJyAobGluZSA0NjE5KSwgaXQgaXMgbm90IGRlYWxsb2NhdGVkLCByZXN1bHRpbmcgaW4g
+YSBtZW1vcnkgbGVhayBidWcuIFRoaXMgY29tbWl0IGZpeGVzIHRoZSBidWcuDQoNClNpZ25lZC1v
+ZmYtYnk6IEx1TWluZ1lpbiA8bHVtaW5neWluZGV0ZWN0QDE2My5jb20+DQotLS0NCiB0b29scy9v
+Ymp0b29sL2NoZWNrLmMgfCAxICsNCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCg0K
+ZGlmZiAtLWdpdCBhL3Rvb2xzL29ianRvb2wvY2hlY2suYyBiL3Rvb2xzL29ianRvb2wvY2hlY2su
+Yw0KaW5kZXggZWI3ZTEyZWJjMWQwLi40ODZhMmE2Mzc0ZjUgMTAwNjQ0DQotLS0gYS90b29scy9v
+Ymp0b29sL2NoZWNrLmMNCisrKyBiL3Rvb2xzL29ianRvb2wvY2hlY2suYw0KQEAgLTQ2MTcsNiAr
+NDYxNyw3IEBAIHN0YXRpYyBpbnQgZGlzYXNfZnVuY3MoY29uc3QgY2hhciAqZnVuY3MpDQogCS8q
+IHJlYWwgc25wcmludGYoKSAqLw0KIAlzbnByaW50ZihjbWQsIHNpemUsIG9iamR1bXBfc3RyLCBj
+cm9zc19jb21waWxlLCBvYmpuYW1lLCBmdW5jcyk7DQogCXJldCA9IHN5c3RlbShjbWQpOw0KKwlm
+cmVlKGNtZCk7DQogCWlmIChyZXQpIHsNCiAJCVdBUk4oImRpc2Fzc2VtYmx5IGZhaWxlZDogJWQi
+LCByZXQpOw0KIAkJcmV0dXJuIC0xOw0KLS0gDQoyLjI1LjENCg==
 
