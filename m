@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EED889076
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:18:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 140A4888B2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:42:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 009561C2C3A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:18:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C166B291BE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48BE029CBEB;
-	Sun, 24 Mar 2024 23:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D06929CBCF;
+	Sun, 24 Mar 2024 23:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M8Hdhj0j"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bYU/dOK+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAE92308BA;
-	Sun, 24 Mar 2024 23:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645732308B7;
+	Sun, 24 Mar 2024 23:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322230; cv=none; b=YYt19QF+XJ9T3iibt0yorc1eYa6IHtyA0NtaOoJn66RG2zk5NEXnSIH7SElaLdeu7Ko8zb22KRefAGFHA9lq3+OMAMgMV/FAtLfFtRn2JsmNhR6GIXdgqkliLhMkA+Rvsr3MDcJNAMgkYT4kVMr8oaCgpro7vvQOUb9xfbpWT6E=
+	t=1711322230; cv=none; b=HAUFpja1fK2vZkvtNsyJbZuKlYi26CtyFoVD3CwQhrI37GEgzpROiwFLOwMe3EOOkSfdrcTm+Yq/PDGBMz2bzlIDGldCqYoXCl+1vjxtxD1/InfspFWVqgoAYj0siRJdNbKGK3lmdFM8XvVhncodJo+Uui+BGIilQ7gO4c7pg/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322230; c=relaxed/simple;
-	bh=MSxCy/4TxfYruyCaWrEQgACwt3pBEGbUGmPsGDUWZeg=;
+	bh=dAQrxaCSZeCHMiNKS+UjJmKdlyaqXI9/Lqt8o/r3/Rw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dD5k5tBLY9sKPZl79UQ6suSAXgGgaxn1xaGLsxPj2m0nKmASUmrunesaL7Hmi2cuF9JZM7AWOkRfpN4Jt2kSYuXlZCpmrRLpbLtDaOsH/RfJh7NSw7dWOqRdUASc0efCSjoAd3xyWmyh8KqQq3hsRTrh9BVRqrpaEThBDSBruE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M8Hdhj0j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEF37C43394;
-	Sun, 24 Mar 2024 23:17:08 +0000 (UTC)
+	 MIME-Version; b=HrKXL/GNNDxVRcykkkVQLTXrTzxumgrxOZ26U35hYmmKOTvZ2B+MBF5+gf9kIvaRenk8LpB/7hW75Txvhy3TfV4rmIEV8RXv3R4qyWaGemH1JDo9f49QtqR8Zg0bjYD6MidLuoB/zZ2RZUL95kK110nxBb1vFFaE8xye4xAlUYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bYU/dOK+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2BA2C43390;
+	Sun, 24 Mar 2024 23:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322229;
-	bh=MSxCy/4TxfYruyCaWrEQgACwt3pBEGbUGmPsGDUWZeg=;
+	s=k20201202; t=1711322230;
+	bh=dAQrxaCSZeCHMiNKS+UjJmKdlyaqXI9/Lqt8o/r3/Rw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=M8Hdhj0jmLkprMQQ8ksOkmjMWwzJggfok3yIceNp8T/5dZJTIGNPrNPqtdDqgCzYe
-	 b0b/ERQlB7MH/l+q3RWeQusEFd47G6z5rE6LDAg6YR0ttHU2rAfVT8e7+DIn5bpbru
-	 vhe5MTHhHZHMgl6xddHEidDSLEzYTYTLbQONoySXHSKx8kSq6lc7VcmQ3qwlDq23P5
-	 F/ia0BTHM7Ygik21WGjkye+WkyCm15sCqG0hDhLh4gXCgaXqa32lNkN2TwqYMFBvH6
-	 +7tMZxJycGsoup8Gkqr9pDbrHgLeLnzHrXTqWlSR495dlMcrXMEbJ2y/GLbaDXe6jO
-	 4r1+p2GngVPow==
+	b=bYU/dOK+XAwkARby5GrYiiLj64gYtIM5MtHlkHWQPUvA1BgrWAQLZBCUbD9iStj0a
+	 Ip9DqTL71y/BQKSZgPQ2al8cOotFgBASmm1NekjcGyKsKKwbFHuTXMDZHvMufdgbrz
+	 7pSPI7qtxBaWBBVip8WHGNMwNhvsNXeTXrQrGHBLugdX7gWn6k4wHxFjIK7DpoqTHV
+	 BKxwG+I/qIYY3/U5pVSeHlP0rSqRl16XKnBu8yBDiNpnNDtSDzGdgB5zGPKwreA1Ky
+	 ziA7/MeDDF8K0VoN3i17FXpx/YisPfSc3XJPH3qz3tOKCwQvXx+5LxWd4xM51LSFHN
+	 mLRvvq/SjZSPQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Thierry Reding <treding@nvidia.com>,
+Cc: Peter Griffin <peter.griffin@linaro.org>,
+	Lee Jones <lee@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 310/451] drm/tegra: put drm_gem_object ref on error in tegra_fb_create
-Date: Sun, 24 Mar 2024 19:09:46 -0400
-Message-ID: <20240324231207.1351418-311-sashal@kernel.org>
+Subject: [PATCH 6.1 311/451] mfd: syscon: Call of_node_put() only when of_parse_phandle() takes a ref
+Date: Sun, 24 Mar 2024 19:09:47 -0400
+Message-ID: <20240324231207.1351418-312-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,38 +62,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Fedor Pchelkin <pchelkin@ispras.ru>
+From: Peter Griffin <peter.griffin@linaro.org>
 
-[ Upstream commit 32e5a120a5105bce01561978ee55aee8e40ac0dc ]
+[ Upstream commit d2b0680cf3b05490b579e71b0df6e07451977745 ]
 
-Inside tegra_fb_create(), drm_gem_object_lookup() increments ref count of
-the found object. But if the following size check fails then the last
-found object's ref count should be put there as the unreferencing loop
-can't detect this situation.
+of_parse_phandle() returns a device_node with refcount incremented, which
+the callee needs to call of_node_put() on when done. We should only call
+of_node_put() when the property argument is provided though as otherwise
+nothing has taken a reference on the node.
 
-Found by Linux Verification Center (linuxtesting.org).
-
-Fixes: de2ba664c30f ("gpu: host1x: drm: Add memory manager and fb")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231215093356.12067-1-pchelkin@ispras.ru
+Fixes: 45330bb43421 ("mfd: syscon: Allow property as NULL in syscon_regmap_lookup_by_phandle")
+Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+Link: https://lore.kernel.org/r/20240220115012.471689-2-peter.griffin@linaro.org
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/fb.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/syscon.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tegra/fb.c b/drivers/gpu/drm/tegra/fb.c
-index 9291209154a7a..a688ecf08451e 100644
---- a/drivers/gpu/drm/tegra/fb.c
-+++ b/drivers/gpu/drm/tegra/fb.c
-@@ -166,6 +166,7 @@ struct drm_framebuffer *tegra_fb_create(struct drm_device *drm,
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index 6196724ef39bb..ecfe151220919 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -223,7 +223,9 @@ struct regmap *syscon_regmap_lookup_by_phandle(struct device_node *np,
+ 		return ERR_PTR(-ENODEV);
  
- 		if (gem->size < size) {
- 			err = -EINVAL;
-+			drm_gem_object_put(gem);
- 			goto unreference;
- 		}
+ 	regmap = syscon_node_to_regmap(syscon_np);
+-	of_node_put(syscon_np);
++
++	if (property)
++		of_node_put(syscon_np);
  
+ 	return regmap;
+ }
 -- 
 2.43.0
 
