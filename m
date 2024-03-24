@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 858F38888DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:38:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642568888E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:38:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6C971C27432
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A18B1F28254
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7375A248EFE;
-	Sun, 24 Mar 2024 23:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A39156963;
+	Sun, 24 Mar 2024 23:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="De5GnfW+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q3IoukpM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DFA42057FF;
-	Sun, 24 Mar 2024 23:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF7A136678;
+	Sun, 24 Mar 2024 23:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321494; cv=none; b=Mwe66bQKoE4/oLFpu7JCyfFQ5SGCMZkWVP4DDyRMhyGp2hAL1isdNgmDY1teS+SJn1C1iX/IDdhW7SiNcc4d9hIjF8UmlGd2sOElTJ6getX5x/beQyJ+czVePEoyw9NyjHnF+XpgwUPi1OX7m5zESc9dBW/EGV9vP/eLIfIr+do=
+	t=1711321495; cv=none; b=ajxazDZSXpZRY1vWg1ptvXTdeHVYLGbbSj0OZwB+Kgi24ZsNj7+utZFsL110hxHqDaeCSdc4oIn3grY6BabFzBVL4c5EyU2cmx1PJzaLnokjUh9cw4atJF22ViKMrqHhzFJNWaYk2JVYKfKOvAksQbKLmuaBNn0Xo1a1KglE0Bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321494; c=relaxed/simple;
-	bh=iv2KtoqLQRrFvvCar39HXyb0L8ckaFeZ8n9U20L7Jb0=;
+	s=arc-20240116; t=1711321495; c=relaxed/simple;
+	bh=zDwrV9qQ/N4C7MwDZaNZ+GJUXT8auFLqKHkwnMxLKcQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gvj/UVivaQ/b9mGQGPF2KZoOsJdr9rxP+dH6ef1aG4n1oT6+udJHFQNODT0U2U/nNdZ6nAsxQrXqAn8ixStim9/2dhW23N+QGo519guBWZTln+uzIl2WYIM16bme2COOVyi9gXuRjX4un+CXiED6bKsUmO4qD9mNMEABkbCmu+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=De5GnfW+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D442C433F1;
-	Sun, 24 Mar 2024 23:04:52 +0000 (UTC)
+	 MIME-Version; b=XjatkSraATFsXw5fvMnJM549wMMsSHIYvLpg1GSWOCFIf3xuC0/BM22bnTV/AQZoSg9cT0PnHEelhhW+FMC9LJ/BDvjfCLoKK5Xgh1E17ZLkVW6+OvUY4AkOgcYJ1B8IP8O6oz5SU2u/MShJZxBkr5xsvgbwuYXkcU3rHOiI3NE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q3IoukpM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8122DC43394;
+	Sun, 24 Mar 2024 23:04:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321493;
-	bh=iv2KtoqLQRrFvvCar39HXyb0L8ckaFeZ8n9U20L7Jb0=;
+	s=k20201202; t=1711321494;
+	bh=zDwrV9qQ/N4C7MwDZaNZ+GJUXT8auFLqKHkwnMxLKcQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=De5GnfW+Vz9dhI6k+pPyK5T7q/lJOdijjuSxEyJhhN5mLD+66PnelN7kyNpqVdSpR
-	 EwlNm+wvW8f7oFvfvWVQKj97t1uYpguUYa8AGm+b3iMhmXXXTuVAO5+WuYJss2PeSu
-	 43zIMd506mhWacgY5dPVP2gu6r4ANPvtf6kdIDxc/j6sqqPqY7DO0qmqqLdfv0bMix
-	 wRHEOugxd+hV/nZN3OchXVa/TxDxc+/+xcnTgnjCQoEF4pTRnLXzAGCCx4Jt5q+Ng0
-	 FUqSYv9aKVMPCy+t9Fs57BLfluX+LoBNT2RVYrbqgFZzIpWYpMXyRzwyA1/+zF5uVE
-	 UhqqoaMDBb8AQ==
+	b=q3IoukpMGZxZWYSMYu9ObdvH66sKOOngj8Fdk5+mBtOFvHC5gb7n9qCG5qVccy1WN
+	 0onc+uU0iAdHuoUqugZ+tVg7YyvwUGNC+0ISi6fSzLYwKgWOXirdyP4Rhn7ejz0Q0p
+	 vvpzhu+mPt3OocmGWuIYn1MusWLidKWGiByiSdldZFyfCD0D+WmnupuMOqFGjSAaAV
+	 CIETuyQfeye/D+14IzZKEYJGQhLAw6l6hIfiKVkNA0pRcKKydXwkHzmZwXWJFbFZ4T
+	 IV62iowguPQ1pdu1Okeml3YhMpGdvIXl614aWX7Ek+WjCFr2kv6aWBCqNGLghyxI2A
+	 hKrKwEUkHLVtQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 218/638] bpf: don't infer PTR_TO_CTX for programs with unnamed context type
-Date: Sun, 24 Mar 2024 18:54:15 -0400
-Message-ID: <20240324230116.1348576-219-sashal@kernel.org>
+Subject: [PATCH 6.6 219/638] arm64: dts: qcom: sdm845: Use the Low Power Island CX/MX for SLPI
+Date: Sun, 24 Mar 2024 18:54:16 -0400
+Message-ID: <20240324230116.1348576-220-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,95 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-[ Upstream commit 879bbe7aa4afa80acf72a1cad7f52416ea78c52d ]
+[ Upstream commit 5dd227ccfb9568935bdaf82bc1893b36457dd4d3 ]
 
-For program types that don't have named context type name (e.g., BPF
-iterator programs or tracepoint programs), ctx_tname will be a non-NULL
-empty string. For such programs it shouldn't be possible to have
-PTR_TO_CTX argument for global subprogs based on type name alone.
-arg:ctx tag is the only way to have PTR_TO_CTX passed into global
-subprog for such program types.
+The SLPI is powered by the Low Power Island power rails. Fix the incorrect
+assignment.
 
-Fix this loophole, which currently would assume PTR_TO_CTX whenever
-user uses a pointer to anonymous struct as an argument to their global
-subprogs. This happens in practice with the following (quite common, in
-practice) approach:
-
-typedef struct { /* anonymous */
-    int x;
-} my_type_t;
-
-int my_subprog(my_type_t *arg) { ... }
-
-User's intent is to have PTR_TO_MEM argument for `arg`, but verifier
-will complain about expecting PTR_TO_CTX.
-
-This fix also closes unintended s390x-specific KPROBE handling of
-PTR_TO_CTX case. Selftest change is necessary to accommodate this.
-
-Fixes: 91cc1a99740e ("bpf: Annotate context types")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/r/20240212233221.2575350-4-andrii@kernel.org
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: 74588aada59a ("arm64: dts: qcom: sdm845: add SLPI remoteproc")
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20231220-topic-sdm845_slpi_lcxmx-v1-1-db7c72ef99ae@linaro.org
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/btf.c                              |  3 +++
- .../bpf/progs/test_global_func_ctx_args.c     | 19 +++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index a31704a6bb614..9445ae6a280e6 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5655,6 +5655,9 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
- 		bpf_log(log, "Please fix kernel include/linux/bpf_types.h\n");
- 		return NULL;
- 	}
-+	/* program types without named context types work only with arg:ctx tag */
-+	if (ctx_tname[0] == '\0')
-+		return false;
- 	/* only compare that prog's ctx type name is the same as
- 	 * kernel expects. No need to compare field by field.
- 	 * It's ok for bpf prog to do:
-diff --git a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-index 7faa8eef0598b..144d30e654ad2 100644
---- a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-@@ -26,6 +26,23 @@ int kprobe_typedef_ctx(void *ctx)
- 	return kprobe_typedef_ctx_subprog(ctx);
- }
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 234d7875cd8e1..5bf0d5af452af 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -3363,8 +3363,8 @@ slpi_pas: remoteproc@5c00000 {
  
-+/* s390x defines:
-+ *
-+ * typedef user_pt_regs bpf_user_pt_regs_t;
-+ * typedef struct { ... } user_pt_regs;
-+ *
-+ * And so "canonical" underlying struct type is anonymous.
-+ * So on s390x only valid ways to have PTR_TO_CTX argument in global subprogs
-+ * are:
-+ *   - bpf_user_pt_regs_t *ctx (typedef);
-+ *   - struct bpf_user_pt_regs_t *ctx (backwards compatible struct hack);
-+ *   - void *ctx __arg_ctx (arg:ctx tag)
-+ *
-+ * Other architectures also allow using underlying struct types (e.g.,
-+ * `struct pt_regs *ctx` for x86-64)
-+ */
-+#ifndef bpf_target_s390
-+
- #define pt_regs_struct_t typeof(*(__PT_REGS_CAST((struct pt_regs *)NULL)))
+ 			qcom,qmp = <&aoss_qmp>;
  
- __weak int kprobe_struct_ctx_subprog(pt_regs_struct_t *ctx)
-@@ -40,6 +57,8 @@ int kprobe_resolved_ctx(void *ctx)
- 	return kprobe_struct_ctx_subprog(ctx);
- }
+-			power-domains = <&rpmhpd SDM845_CX>,
+-					<&rpmhpd SDM845_MX>;
++			power-domains = <&rpmhpd SDM845_LCX>,
++					<&rpmhpd SDM845_LMX>;
+ 			power-domain-names = "lcx", "lmx";
  
-+#endif
-+
- /* this is current hack to make this work on old kernels */
- struct bpf_user_pt_regs_t {};
- 
+ 			memory-region = <&slpi_mem>;
 -- 
 2.43.0
 
