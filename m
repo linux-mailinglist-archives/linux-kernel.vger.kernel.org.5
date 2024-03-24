@@ -1,132 +1,187 @@
-Return-Path: <linux-kernel+bounces-112593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51979887BC6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:27:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BDAC887BC7
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63927281FDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:27:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F7F51C20AFD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B410F1401B;
-	Sun, 24 Mar 2024 05:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A32E14012;
+	Sun, 24 Mar 2024 05:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="omb7Xomm"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S2PEyyg1"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F10134BE
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB3AE1A38FF
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711258017; cv=none; b=HNAbPLt89KZc5AuYy4vqFpINvPYsxprq+Kg1XZmu4TRRQNRMtOsZa3gjPGxyxquT2kyQ5YmODcM6U+AE8NJTrM3FfI6CXXSAvqp8QRy+SFEXTZ0NqNzbiGOP7Xgim38GTGo/9vFX9o+rJkx6yztNsIMxZWkE3HpbQ7ygfpEr5FA=
+	t=1711259050; cv=none; b=O2bVD49o7UXDnMdhwDMVuA8nuHKgL0D7EsEERG7/Ux16htHR/rvTa/d037sojWDUXgZB0ZsBL7EEenT5siwGlg68mWPQXN4xEQJHYTq7njSir9ReW6Jfgl+oArMNJRby4NWJzCxFo2ky8MDa9rRjaXSUfPeeSIDQx2ErOj0kHhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711258017; c=relaxed/simple;
-	bh=j079EurHa/3stFGZ/lRDTfWJwJKaoNSnmge157CW+jE=;
+	s=arc-20240116; t=1711259050; c=relaxed/simple;
+	bh=LdjO/QYrhKr81Llv0MVW7fpPVq4jZelsRbEppyAP1tk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b8EJ1AyVQn0cRdEZq3yW4AyMEGigcY/QUhqjViSc48yCOVUan64BVa7C4HwEgl5cPfbU7CvlSrQ5qpIr6Z9xxPh21TjlONbs3aLZ+KAWO7JMrFkxJNk9wxw86iyNlxYqNj/ug1jCyAM3UqtZVhBOzWdj+oMaj4MKmqh83ohr1/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=omb7Xomm; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-430d3fcc511so176711cf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 22:26:55 -0700 (PDT)
+	 To:Cc:Content-Type; b=goiPrhoBNoFKFc7EEFbYZTa4n6rkc/cHN+QomiW9QID3m0VdR8QnGJcxGmSrivPPWz0pS5OoeeVzJTuBhWyCSqN7Phc8KX10jSO+EaVXFRhqQWuv/kK2aGmmgjkDLOVBNnZsNoym25UKioGcqWkqRFSm6UKwYfsw95Qv2xPNYBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S2PEyyg1; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d4360ab3daso56730991fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 22:44:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711258014; x=1711862814; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711259047; x=1711863847; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IN8g/xZoptYVJ5FsfZed15QS7HE6W3eYDa46wXkoQOw=;
-        b=omb7XommhwB66mnlrULq4jZ4dtml9VgUz92meYpHGBzDZk6nM0d+8qRAijvqJR3gef
-         1+y6n13u2mttmp1Hv90CMGyY0mA0Ua+YU898q5uSP/ksD2q04qRV4V/yzOK8vUWNrmiq
-         drA7WXizibgg5uutLX4ZgShfCFDKSrlWTO+czzGezqrav0RLhJh19dz3ZB0v+BiDsYyo
-         J1b6xpMfT/4BpmIiGIPZzviJleoi5zDjTamYe4imrVHM8DNHZkPEIm4Igjpkr+n0sjtY
-         4i/LdEpuZpq9JT3iaqv1llOadF3nUiNg9sacVrFJy1+7hEUWDmUZcyqi5gOUGfI3D6pC
-         f7Ug==
+        bh=C2dDY0p618pqyS1EUCvDFefCsVtBhB9nXq24B4ycSUs=;
+        b=S2PEyyg17VAEoXBUQaYpKsUYClypReBVzhXejNuoVj7WaZA/lb0hcwIZ5pPXhA+TP7
+         3wktSJguNVKQbbc9pFxJRGtWEw93v8u4E3m8JRbkppgysVfbu0Py+Nq9nI+qTiIqUs3U
+         0+SOP4B+cg9usJCXlWxQ/7AhZBF3/qkNDLc4IzvTDI5i9dCPUN+PlXkeBn9Aoz3C6n78
+         P2oflhb0uZEtnpngZdMb7u2PnVcbrkUDDzYnk+f1iLcNJxLhHPYs0W7Y46OGNjtmt3XL
+         tHwEsTBt4NfTf9b1CcEiXzR8A+5zxrWokpeU7ncdAz5/ix1UZC7p5fXSwGmKGtnOKcgb
+         OqrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711258014; x=1711862814;
+        d=1e100.net; s=20230601; t=1711259047; x=1711863847;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IN8g/xZoptYVJ5FsfZed15QS7HE6W3eYDa46wXkoQOw=;
-        b=PxSM2DI1Eq4/BKgzVwXxRAuVF+tpuUxbbSgLb/es012cLlTNRSpif/wgd4ys7XKzch
-         hrWGRicir0SpT+coh7rNFcdyKcqsVEwwVA0AbTVBI8/GYmYwIGcC7LYfuYvWD1t9FonL
-         YYkIjBeUh1CL8HAQ/ZwvCVKSolPvT9YwATLzHehXPFjcO3Rs4ybUzFRzcSLk/J/jSN9u
-         5WUijfQlk3eMs81tUh+tf9qHH4mxK0ZUI97DUjvY7ZsLOZJ9BUG9nAfPrBNEiHpG79YN
-         2SwvZgb1lzDClJzrTSsN0jQtrB1ryV/cE9FSIQlyiP0rfbumTLwvmS3IJP6d1oIWvi7b
-         F9pg==
-X-Forwarded-Encrypted: i=1; AJvYcCVA/A+r/DtCEUGVEDzU1OhueW02H5Hq323kERoYjsDQLgyrF4Kgk6A2d2GsKKcnV6SELS5/32dX8kxFxPgDyi+kMB6GJxYHYond5fgh
-X-Gm-Message-State: AOJu0Yzh5R/H7VRksng+SWqJiftcavXdgM3efYXZnSjaehnQ2FieEyCd
-	/S2BwuW/xGkTvsb1JjrnIDypTbMghh6AruL1ba1YXvMKD5eHvDTlP9ikc1ueBN+fgsC4+A0Hxxm
-	2E55CrqCwfirErhQXTIHK2bkzeb9Wcoic/FSm
-X-Google-Smtp-Source: AGHT+IHY9kyWE3pD9lQTodwqBCg4s4JbXqjdoB+7slTo1auRAaUk6lay/L+V8Pmbxl6l+zP3Tch5JnLoQLSsgD1azzw=
-X-Received: by 2002:a05:622a:8c7:b0:431:3d4d:92ed with SMTP id
- i7-20020a05622a08c700b004313d4d92edmr223747qte.9.1711258014088; Sat, 23 Mar
- 2024 22:26:54 -0700 (PDT)
+        bh=C2dDY0p618pqyS1EUCvDFefCsVtBhB9nXq24B4ycSUs=;
+        b=BNQ1zBpZCm0K3u7PHFVZuP7bIGQj8MXF1FqG73ZdZbME9MMd59wRwghsyfYwCKuRLF
+         zIUZnFDd5D0KMqHvr/3M15SBQrvZNbaYV4a0UeGQ6hF1gtuBhPlJaeJVFFPiap9PkXUk
+         P9LyN7gJP6WOJ0OqYDqqPsadNuzayIgIr7PQ6NISM7RtEBqYlNkh2Kf+UXk8jWExEIHv
+         kr0yiM590mL++RPrlJpn4m3cCkPgpbq60PyGNTu4k2ia9QbMGB4gf0vxDA6cUXtr38cK
+         t/BZzD/Je8eBjGCLtM5YbiUBri8XabGBRQL2jwF+tTvDQAnudZ/qTwK9kTWrxO46KGO9
+         gNiw==
+X-Forwarded-Encrypted: i=1; AJvYcCXrax7TI3yPv1ljCHwUoqvZIzVsskoslbCNIfE4iG4Jz7dR788g0tpKshKpyCaV5vV7d24w/iAbwiAseGYkhlABjxptuT7CEMQ8RmJt
+X-Gm-Message-State: AOJu0Yz3HQmmWamzzFoKjpgItibvNEZFykwbfFNyzn+v5zcvh0UEOz8p
+	uXRwH90qgcF6KQ8MFfVsI/LjTHYYgpynQVlMxxXz1ZSdUJSVMy/6axNRc3WHWYpd0P8BtINTcE8
+	h/bu88EiJ+oKt/TS03bRrjLpSkg==
+X-Google-Smtp-Source: AGHT+IGzC/9x0mJCIBN7WFQPxP2BJMGSDq9vBZ+aqI9LB1nghL9hQCsxDlrP2xgVqep1X3f6PcSgKqiPzPuoo73kGIo=
+X-Received: by 2002:a05:6512:e93:b0:515:a257:cbd with SMTP id
+ bi19-20020a0565120e9300b00515a2570cbdmr2497707lfb.24.1711259046395; Sat, 23
+ Mar 2024 22:44:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209031441.943012-1-weilin.wang@intel.com> <20240209031441.943012-13-weilin.wang@intel.com>
-In-Reply-To: <20240209031441.943012-13-weilin.wang@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Sat, 23 Mar 2024 22:26:43 -0700
-Message-ID: <CAP-5=fW2VFA9fdHiiufrDD011gFHGP6dzdRTV7HT-cBQ0HL5sw@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 12/15] perf stat: Handle NMI in hardware-grouping
-To: weilin.wang@intel.com
-Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
-	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
-	Mark Rutland <mark.rutland@arm.com>
+References: <20240322165233.71698-1-brgerst@gmail.com> <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
+ <Zf+PIYP4TyF6ZRVy@gmail.com> <CAMzpN2htOit94c-M+zHqEcLcGPOU2zTS6wM-r7xWwd9Ku8h3-Q@mail.gmail.com>
+ <Zf+mjy49dG5ly9ka@gmail.com>
+In-Reply-To: <Zf+mjy49dG5ly9ka@gmail.com>
+From: Brian Gerst <brgerst@gmail.com>
+Date: Sun, 24 Mar 2024 01:43:55 -0400
+Message-ID: <CAMzpN2go9mmyWRb9vsg7O1aAtSKrW=HqcZYmddkq7eZQQHuM1Q@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>, 
+	David.Laight@aculab.com, Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
+On Sun, Mar 24, 2024 at 12:05=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wro=
+te:
 >
-> From: Weilin Wang <weilin.wang@intel.com>
 >
-> Add an easy nmi watchdog support in grouping. When nmi watchdog is enable=
-d,
-> we reduce the total num of events could be assigned to one group by 1. A
-> more efficient solution will be added in later.
+> * Brian Gerst <brgerst@gmail.com> wrote:
 >
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> > On Sat, Mar 23, 2024 at 10:25=E2=80=AFPM Ingo Molnar <mingo@kernel.org>=
+ wrote:
+> > >
+> > >
+> > > * Uros Bizjak <ubizjak@gmail.com> wrote:
+> > >
+> > > > On Fri, Mar 22, 2024 at 5:52=E2=80=AFPM Brian Gerst <brgerst@gmail.=
+com> wrote:
+> > > > >
+> > > > > Currently, x86-64 uses an unusual percpu layout, where the percpu=
+ section
+> > > > > is linked at absolute address 0.  The reason behind this is that =
+older GCC
+> > > > > versions placed the stack protector (if enabled) at a fixed offse=
+t from the
+> > > > > GS segment base.  Since the GS segement is also used for percpu v=
+ariables,
+> > > > > this forced the current layout.
+> > > > >
+> > > > > GCC since version 8.1 supports a configurable location for the st=
+ack
+> > > > > protector value, which allows removal of the restriction on how t=
+he percpu
+> > > > > section is linked.  This allows the percpu section to be linked n=
+ormally,
+> > > > > like other architectures.  In turn, this allows removal of code t=
+hat was
+> > > > > needed to support the zero-based percpu section.
+> > > >
+> > > > The number of simplifications throughout the code, enabled by this
+> > > > patch set, is really impressive, and it reflects the number of
+> > > > workarounds to enable the feature that was originally not designed =
+for
+> > > > the kernel usage. As noted above, this issue was recognized in the =
+GCC
+> > > > compiler and the stack protector support was generalized by adding
+> > > > configurable location for the stack protector value [1,2].
+> > > >
+> > > > The improved stack protector support was implemented in gcc-8.1,
+> > > > released on May 2, 2018, when linux 4.17 was in development. In lig=
+ht
+> > > > of this fact, and 5 (soon 6) GCC major releases later, I'd like to =
+ask
+> > > > if the objtool support to fixup earlier compilers is really necessa=
+ry.
+> > > > Please note that years ago x86_32 simply dropped stack protector
+> > > > support with earlier compilers and IMO, we should follow this examp=
+le
+> > > > also with x86_64, because:
+> > >
+> > > Ack on raising the minimum version requirement for x86-64
+> > > stackprotector to 8.1 or so - this causes no real pain on the distro
+> > > side: when *this* new kernel of ours is picked by a distro, it almost
+> > > always goes hand in hand with a compiler version upgrade.
+> > >
+> > > We should be careful with fixes marked for -stable backport, but othe=
+r
+> > > than that, new improvements like Brian's series are a fair game to
+> > > tweak compiler version requirements.
+> > >
+> > > But please emit a (single) prominent build-time warning if a feature =
+is
+> > > disabled though, even if there are no functional side-effects, such a=
+s
+> > > for hardening features.
+> >
+> > Disabled for any reason or only if the compiler lacks support?
+>
+> Only if the user desires to have it enabled, but it's not possible due
+> to compiler (or other build environment) reasons. Ie. if something
+> unexpected happens from the user's perspective.
+>
+> The .config option is preserved even if the compiler doesn't support
+> it, right?
+>
+> I suspect this should also cover features that get select-ed by a
+> feature that the user enables. (Not sure about architecture level
+> select-ed options.)
+>
+> Thanks,
+>
+>         Ingo
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+I could add something like:
 
-Thanks,
-Ian
+comment "Stack protector is not supported by the architecture or compiler"
+       depends on !HAVE_STACKPROTECTOR
 
-> ---
->  tools/perf/util/metricgroup.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
-c
-> index 95d3868819e3..f1eb73957765 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -1947,6 +1947,10 @@ static int insert_new_group(struct list_head *head=
-,
->                            size_t num_fixed_counters)
->  {
->         INIT_LIST_HEAD(&new_group->event_head);
-> +       if (sysctl__nmi_watchdog_enabled()) {
-> +               pr_debug("NMI watchdog is enabled. Reduce num of counters=
- by 1\n");
-> +               num_counters -=3D 1;
-> +       }
->         fill_counter_bitmap(new_group->gp_counters, 0, num_counters);
->         fill_counter_bitmap(new_group->fixed_counters, 0, num_fixed_count=
-ers);
->         new_group->taken_alone =3D false;
-> --
-> 2.42.0
->
+But, "make oldconfig" will still silently disable stack protector if
+the compiler doesn't support the new options.  It does put the comment
+into the .config file though, so that may be enough.
+
+Brian Gerst
 
