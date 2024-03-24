@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE345888F68
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:48:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D39B888925
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61D5E1F2AE87
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:48:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CD291F2D4FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A4E158D81;
-	Sun, 24 Mar 2024 23:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA72208979;
+	Sun, 24 Mar 2024 23:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EkavrFOP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNZqu2n8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115022081FD;
-	Sun, 24 Mar 2024 23:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D34A137909;
+	Sun, 24 Mar 2024 23:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321542; cv=none; b=RsVMFW8g340lsRJ1PMKIXIv2OYUThvCnb7CEop9cxTU+a6E4KY8wfL7ugEbTLj81wNx2R2rw9M6P7q+pbYFBO04Kv86rZ2FozUopSUNFeeRg5dxFgfjiBA+r7eu8UW/L7OXUYR6OAOnNav2icl6FUlfFp2EYzqsnhMl8Doz1xKA=
+	t=1711321542; cv=none; b=cqhv0P/6gPEEmn7L6a8x6oNLr2Ujd9+xCZT9XTjault47suoMaG6SodPd2r1ZkUuec4IwYey16Hehqs3JQ9necKDxbPCu4i3+rDNLpAP5rP5IDs5uqVdGJTSnxAzRQjUpA0L7xRRl15jIkQIQZQcLBi/CoDi0xvQ7CqHdPdqaHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321542; c=relaxed/simple;
-	bh=qDdkBp52whbIdsEQJeQ73Fo2VF9QAYIUfc9LlJxEzNg=;
+	bh=tN614vzaUT52efr1bB/r45OV/PkKSNPmC9OVEROEBJ8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a8QKTuHv84MVU+x+Y0wPJN/+w34+h3TRE5Gd7LH7RdVh3P5y1+v9fz5VdLMeKMkN8LwvsywM4Vvg2jdKDYyh7x3y9n1fYLLqJQ/SFbQQcoayhjJIhF+qNTcVkuBTbfrCRX2Rrid2FhFhIJbejPZgzWuSYQ+Ipi1keOU8G5aaUbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EkavrFOP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02B8CC43399;
-	Sun, 24 Mar 2024 23:05:39 +0000 (UTC)
+	 MIME-Version; b=UQOiQotdivSN/Na3ov+A7ygrFT8J2MyFH345dudxU0oxCBr2PxnDNF2oKDrUQxTeKdIE9CA1BptZgZKrrYQfqJUlx5my7tboGPh9F4GivlRcqXh/CNUg8IAv0Z9UgBX7Hioya5jBVwImCa61tQ+k4TSAUCox/coCXl7CyFPkCEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eNZqu2n8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCA77C43394;
+	Sun, 24 Mar 2024 23:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321540;
-	bh=qDdkBp52whbIdsEQJeQ73Fo2VF9QAYIUfc9LlJxEzNg=;
+	s=k20201202; t=1711321541;
+	bh=tN614vzaUT52efr1bB/r45OV/PkKSNPmC9OVEROEBJ8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EkavrFOPD3c+kGhuHZ05GESqdLg+sToYSKhUjoWO0YXSycXpcOgN/AAfbwSWlnT6B
-	 C/yVfhynkGDc6Wpajei9cYrAMPvESgDYeAwlOmAqqS0khYFP5xgb2m3+f1drWI88+Z
-	 tU1Bb6ysrGdrq07pUYSKS4G9TfBAY6lgf+PjVD1mI/CMpSDZKa+0VIAqx+2YLuIqn2
-	 HTzZ86GscvPSdWO3AOOcoW3XQep1tcE8C0H16PMZmlDzCOF434TPtgVItkgJjPDDiY
-	 Xc8CJE58jgv0y99bhyYIsyb266P4U4bpO6BwfSzT/hn2ml/Uq9OXy7ePaFc7lxa+W3
-	 8Y5X7Whxw5JYQ==
+	b=eNZqu2n8+Hlb2Ntub5RNl1rbD7/Kj3P+TyawgE3wjm7OEq5J89VXqHjloQa4Ts1BT
+	 c8V6e4hDXStEBmpe99etXQ+L0ImDB8nqcQCjEUDbi2j+HBXcmkaN/TpBE4t1fnKEBV
+	 uhtUKM0M+LZoVfcgimGMshHitV+pdJs6KBIAg/hHgV5maL1p3/Lmdq5ixtdmkBUNKX
+	 jVdp8oHvG6omGsXa0CIoi+8RoRWi/wtukuX+4JU04mgd/4SorN0hSMkkUPSLbZhqUL
+	 xjC0Lme+VgbfoFirFfPi6fpJuNs3pmLJOtPi9tAmT0qrbZKV55XZY9g+Dd+jH16869
+	 7OxXetFlR6qWA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
+Cc: Marek Vasut <marex@denx.de>,
 	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 268/638] ARM: dts: imx6dl-yapp4: Move the internal switch PHYs under the switch node
-Date: Sun, 24 Mar 2024 18:55:05 -0400
-Message-ID: <20240324230116.1348576-269-sashal@kernel.org>
+Subject: [PATCH 6.6 269/638] arm64: dts: imx8mp: Set SPI NOR to max 40 MHz on Data Modul i.MX8M Plus eDM SBC
+Date: Sun, 24 Mar 2024 18:55:06 -0400
+Message-ID: <20240324230116.1348576-270-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -58,97 +58,39 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Michal Vokáč <michal.vokac@ysoft.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 79978bff2e4b8e05ebdf5fc3ee6b794002393484 ]
+[ Upstream commit 13ab6f174a6b577bd7d09124b47ec8ace2682e42 ]
 
-We identified that the PHYs actually do not work since commit 7da7b84fee58
-("ARM: dts: imx6dl-yapp4: Move phy reset into switch node") as
-a coincidence of several circumstances.
+The SPI NOR bus routing on this board cannot go above 50 MHz,
+set the clock frequency to maximum of 40 MHz to be within a
+safe margin. Remove the comment as well.
 
-The reset signal is kept asserted by a pull-down resistor on the board
-unless it is deasserted by GPIO from the SoC. This is to keep the switch
-dead until it is configured properly by the kernel and user space.
-
-Prior to the referenced commit the switch was reset by the FEC driver
-and the reset GPIO was actively deasserted. The mdio-bus was scanned
-and the attached switch and its PHYs were found and configured.
-
-With the referenced commit the switch is reset by the qca8k driver.
-Because of another bug in the qca8k driver, functionality of the reset
-pin depends on its pre-kernel configuration. See commit c44fc98f0a8f
-("net: dsa: qca8k: fix illegal usage of GPIO")
-
-The problem did not appear until we removed support for the switch
-and configuration of its reset pin from the bootloader.
-
-To fix that, properly describe the internal mdio-bus configuration of
-the qca8334 switch. The PHYs are internal to the switch and sit on its
-internal mdio-bus.
-
-Fixes: 7da7b84fee58 ("ARM: dts: imx6dl-yapp4: Move phy reset into switch node")
-Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+Fixes: 562d222f23f0 ("arm64: dts: imx8mp: Add support for Data Modul i.MX8M Plus eDM SBC")
+Signed-off-by: Marek Vasut <marex@denx.de>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi | 23 ++++++++++++-------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
-index d2b3e09eb7df8..c32ea040fecdd 100644
---- a/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
-+++ b/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
-@@ -117,14 +117,6 @@ mdio {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		phy_port2: phy@1 {
--			reg = <1>;
--		};
--
--		phy_port3: phy@2 {
--			reg = <2>;
--		};
--
- 		switch@10 {
- 			compatible = "qca,qca8334";
- 			reg = <0x10>;
-@@ -149,15 +141,30 @@ fixed-link {
- 				eth2: port@2 {
- 					reg = <2>;
- 					label = "eth2";
-+					phy-mode = "internal";
- 					phy-handle = <&phy_port2>;
- 				};
- 
- 				eth1: port@3 {
- 					reg = <3>;
- 					label = "eth1";
-+					phy-mode = "internal";
- 					phy-handle = <&phy_port3>;
- 				};
- 			};
-+
-+			mdio {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				phy_port2: ethernet-phy@1 {
-+					reg = <1>;
-+				};
-+
-+				phy_port3: ethernet-phy@2 {
-+					reg = <2>;
-+				};
-+			};
- 		};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts b/arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts
+index 116bf9738a8a4..cd44bf83745ca 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts
+@@ -121,7 +121,7 @@ &ecspi1 {
+ 	flash@0 {	/* W25Q128JVEI */
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0>;
+-		spi-max-frequency = <100000000>;	/* Up to 133 MHz */
++		spi-max-frequency = <40000000>;
+ 		spi-tx-bus-width = <1>;
+ 		spi-rx-bus-width = <1>;
  	};
- };
 -- 
 2.43.0
 
