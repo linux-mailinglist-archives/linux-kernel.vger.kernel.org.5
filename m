@@ -1,58 +1,54 @@
-Return-Path: <linux-kernel+bounces-113543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F62788852B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:00:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC4988852D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4903D1C2474F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:00:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C5571C24737
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03BE31C2326;
-	Sun, 24 Mar 2024 22:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6E31C1C17;
+	Sun, 24 Mar 2024 22:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X+0FmSk/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b65asg9J"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3293E1C230D;
-	Sun, 24 Mar 2024 22:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A801C2333;
+	Sun, 24 Mar 2024 22:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320345; cv=none; b=S7DsZZ7LFX5K0kr96cOfRx+L5g5yj4nOsg+EkeHjhmPZaz6lFrN9A+FgfgywvgBpFeJDGDiseLPYbu/qwokRfqSF5U+3D/1MIKs1YcbMYLTOjTYK6pGvOvEQ0rS27a5KE5NhnWb1xNKNCX5MkgrkrtFPhPwwJf538Zj8tU+JWiA=
+	t=1711320346; cv=none; b=WE7pzej9tATNnr2xqOWDwceRsPEP2bPJiAkSURhhgnDNRoim/wPO6UvcwB1i5pDulaPHed/12qqiRdqXYVt35cr8BhCDHzJVcZBlcQjB67T7pXNAVoeHw6gLYMdRG+wqOWh4dikOTQuBQfbGUeQhduo0Bq/dhj8BEnoRKn/dtas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320345; c=relaxed/simple;
-	bh=5owybSETCYpp/UVbihl69EMPTb3L1SV374MwjH88fko=;
+	s=arc-20240116; t=1711320346; c=relaxed/simple;
+	bh=Q6mDEFDDJM5MnBK2grfADOVLskK9JJehYLpuYlRwFyQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pdokLhIPiuYpBGLMcBeV3d1BlSyDmIpUq+YR6WRiqJE81XtmcwuxxeV80lf0eryEbrGq3/yzcW8RXPWI0dzUROAvQ1IifPQ2D4Q8Ed21686b9BAyFMLtEIQ/Ye1RNvBhzuRvuVBsrVgLluyZAQ3Tif0MF4sifBW5UlPSiZ/jRU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X+0FmSk/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13E56C433F1;
-	Sun, 24 Mar 2024 22:45:43 +0000 (UTC)
+	 MIME-Version; b=qsppIqO3l+kc85RtG1FtPBbRt2ejVXcPwZTqSkMBIMjA/zvt0G0nQsTYB0Rf8QO5sUI+Agg8KA7n7nMQRkOsNBy/XoNfvdw+UKN9SJLj+Wp8IqZyJcMqP+egp+nqqfgOUCmEG1bi+/dBdBYHRePgQxECJsmvGonp5qpCvyz1lmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b65asg9J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54538C43394;
+	Sun, 24 Mar 2024 22:45:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320345;
-	bh=5owybSETCYpp/UVbihl69EMPTb3L1SV374MwjH88fko=;
+	s=k20201202; t=1711320346;
+	bh=Q6mDEFDDJM5MnBK2grfADOVLskK9JJehYLpuYlRwFyQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=X+0FmSk/WxMrNY89fwtJ94E1v8m/mqROOLlttugudbRMzkXRAWpAtLYNPDL+9eQji
-	 WxKjH7Q2MrjCblJYym3wAtp4vp/5iOU0yXuGgCXfDCGu/y3UMM+66D7eWD+MVH0qL4
-	 3yVTY4uVdtGueR2v+V/UO7/vJWFklfYUYphBg3CRReawyy0U83Q2g7Ebrxn8Xz6McS
-	 rkR3O1ob2kDfYNM0tJ28cgHwp+Bn5iS0frpLK5GWlq6ikVn3yF5EqKZzob5a7ehXLS
-	 Vnzmssuw6o3+S8FDUVo4fhA6EtWV6ElQ7bfMSw+2/geUDnAn3XiIENsKdp8eHL3VQC
-	 A35H7MxsOc9cQ==
+	b=b65asg9JkOmHBjt8YcAlQJRhDKSOiEF4aUu84vX4o7k3nLaTi7yOqdVyRydLvVAuF
+	 j9LplR8CHP3OJgTE6+aoYzgdhGazA/7hzjlnsZHwEsyLBWfTmIfCMbHEeG+/vSmU3/
+	 vwpJKzbs/wN6w9S9QQLdvcWqPGe2pKP406WD7ZklmwqGk37nXJWmZHabndGLHTyRaa
+	 SQP6F06hdAdzN3kgMIj1aALE/yzXwNwW/sGi84ENDoFzxlXSC3h2cgiD/6g3HyCaJH
+	 702evJtgJKckz8IfFbz/LhP6CJsX23kMSf/EcnJxNfARUEcyuCKIN4sZ8vD6iYxjQ3
+	 vV48Ch3c9uznA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sibi Sankar <quic_sibis@quicinc.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Dhruva Gole <d-gole@ti.com>,
-	Yipeng Zou <zouyipeng@huawei.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 652/715] cpufreq: Fix per-policy boost behavior on SoCs using cpufreq_boost_set_sw()
-Date: Sun, 24 Mar 2024 18:33:51 -0400
-Message-ID: <20240324223455.1342824-653-sashal@kernel.org>
+Subject: [PATCH 6.8 653/715] io_uring: Fix release of pinned pages when __io_uaddr_map fails
+Date: Sun, 24 Mar 2024 18:33:52 -0400
+Message-ID: <20240324223455.1342824-654-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -66,96 +62,86 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Sibi Sankar <quic_sibis@quicinc.com>
+From: Gabriel Krisman Bertazi <krisman@suse.de>
 
-[ Upstream commit f37a4d6b4a2c77414e8b9d25dd5ee31537ce9b00 ]
+[ Upstream commit 67d1189d1095d471ed7fa426c7e384a7140a5dd7 ]
 
-In the existing code, per-policy flags don't have any impact i.e.
-if cpufreq_driver boost is enabled and boost is disabled for one or
-more of the policies, the cpufreq driver will behave as if boost is
-enabled.
+Looking at the error path of __io_uaddr_map, if we fail after pinning
+the pages for any reasons, ret will be set to -EINVAL and the error
+handler won't properly release the pinned pages.
 
-Fix this by incorporating per-policy boost flag in the policy->max
-computation used in cpufreq_frequency_table_cpuinfo and setting the
-default per-policy boost to mirror the cpufreq_driver boost flag.
+I didn't manage to trigger it without forcing a failure, but it can
+happen in real life when memory is heavily fragmented.
 
-Fixes: 218a06a79d9a ("cpufreq: Support per-policy performance boost")
-Reported-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-Tested-by:Yipeng Zou <zouyipeng@huawei.com> <mailto:zouyipeng@huawei.com>
-Reviewed-by: Yipeng Zou <zouyipeng@huawei.com> <mailto:zouyipeng@huawei.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
+Fixes: 223ef4743164 ("io_uring: don't allow IORING_SETUP_NO_MMAP rings on highmem pages")
+Link: https://lore.kernel.org/r/20240313213912.1920-1-krisman@suse.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/cpufreq.c    | 18 ++++++++++++------
- drivers/cpufreq/freq_table.c |  2 +-
- 2 files changed, 13 insertions(+), 7 deletions(-)
+ io_uring/io_uring.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 44db4f59c4cc6..7d570b44777ac 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -644,14 +644,16 @@ static ssize_t store_local_boost(struct cpufreq_policy *policy,
- 	if (policy->boost_enabled == enable)
- 		return count;
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index 030cc930d1c6a..9f938874c5e13 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -2702,7 +2702,7 @@ static void *__io_uaddr_map(struct page ***pages, unsigned short *npages,
+ 	struct page **page_array;
+ 	unsigned int nr_pages;
+ 	void *page_addr;
+-	int ret, i;
++	int ret, i, pinned;
  
-+	policy->boost_enabled = enable;
+ 	*npages = 0;
+ 
+@@ -2716,12 +2716,12 @@ static void *__io_uaddr_map(struct page ***pages, unsigned short *npages,
+ 	if (!page_array)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ret = pin_user_pages_fast(uaddr, nr_pages, FOLL_WRITE | FOLL_LONGTERM,
+-					page_array);
+-	if (ret != nr_pages) {
+-err:
+-		io_pages_free(&page_array, ret > 0 ? ret : 0);
+-		return ret < 0 ? ERR_PTR(ret) : ERR_PTR(-EFAULT);
 +
- 	cpus_read_lock();
- 	ret = cpufreq_driver->set_boost(policy, enable);
- 	cpus_read_unlock();
- 
--	if (ret)
-+	if (ret) {
-+		policy->boost_enabled = !policy->boost_enabled;
- 		return ret;
--
--	policy->boost_enabled = enable;
-+	}
- 
- 	return count;
- }
-@@ -1419,6 +1421,9 @@ static int cpufreq_online(unsigned int cpu)
- 			goto out_free_policy;
- 		}
- 
-+		/* Let the per-policy boost flag mirror the cpufreq_driver boost during init */
-+		policy->boost_enabled = cpufreq_boost_enabled() && policy_has_boost_freq(policy);
-+
- 		/*
- 		 * The initialization has succeeded and the policy is online.
- 		 * If there is a problem with its frequency table, take it
-@@ -2755,11 +2760,12 @@ int cpufreq_boost_trigger_state(int state)
- 
- 	cpus_read_lock();
- 	for_each_active_policy(policy) {
-+		policy->boost_enabled = state;
- 		ret = cpufreq_driver->set_boost(policy, state);
--		if (ret)
-+		if (ret) {
-+			policy->boost_enabled = !policy->boost_enabled;
- 			goto err_reset_state;
--
--		policy->boost_enabled = state;
-+		}
++	pinned = pin_user_pages_fast(uaddr, nr_pages, FOLL_WRITE | FOLL_LONGTERM,
++				     page_array);
++	if (pinned != nr_pages) {
++		ret = (pinned < 0) ? pinned : -EFAULT;
++		goto free_pages;
  	}
- 	cpus_read_unlock();
  
-diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
-index c4d4643b6ca65..c17dc51a5a022 100644
---- a/drivers/cpufreq/freq_table.c
-+++ b/drivers/cpufreq/freq_table.c
-@@ -40,7 +40,7 @@ int cpufreq_frequency_table_cpuinfo(struct cpufreq_policy *policy,
- 	cpufreq_for_each_valid_entry(pos, table) {
- 		freq = pos->frequency;
+ 	page_addr = page_address(page_array[0]);
+@@ -2735,7 +2735,7 @@ static void *__io_uaddr_map(struct page ***pages, unsigned short *npages,
+ 		 * didn't support this feature.
+ 		 */
+ 		if (PageHighMem(page_array[i]))
+-			goto err;
++			goto free_pages;
  
--		if (!cpufreq_boost_enabled()
-+		if ((!cpufreq_boost_enabled() || !policy->boost_enabled)
- 		    && (pos->flags & CPUFREQ_BOOST_FREQ))
- 			continue;
+ 		/*
+ 		 * No support for discontig pages for now, should either be a
+@@ -2744,13 +2744,17 @@ static void *__io_uaddr_map(struct page ***pages, unsigned short *npages,
+ 		 * just fail them with EINVAL.
+ 		 */
+ 		if (page_address(page_array[i]) != page_addr)
+-			goto err;
++			goto free_pages;
+ 		page_addr += PAGE_SIZE;
+ 	}
  
+ 	*pages = page_array;
+ 	*npages = nr_pages;
+ 	return page_to_virt(page_array[0]);
++
++free_pages:
++	io_pages_free(&page_array, pinned > 0 ? pinned : 0);
++	return ERR_PTR(ret);
+ }
+ 
+ static void *io_rings_map(struct io_ring_ctx *ctx, unsigned long uaddr,
 -- 
 2.43.0
 
