@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-113997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43D4D889198
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:44:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AA9B8887DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:12:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE569B2C399
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:33:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BB0F1C26D36
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:12:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF81E223BB9;
-	Sun, 24 Mar 2024 23:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533A4157487;
+	Sun, 24 Mar 2024 23:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fAwO6z8S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N2tgX2vN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CFCE14BFAD;
-	Sun, 24 Mar 2024 22:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0037F14BFBD;
+	Sun, 24 Mar 2024 22:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321139; cv=none; b=ImxrsBczbryJ6BLSuZUhiHYevwj3QfGQa4r+KiQsBFxhllIT2FqW+pvhjO0S+fUMOE/AbiTLEevGdT/oAjBMX0hRg4gPh5ao0kar3rR2OBmykpGKQMiHZYxcvzpqZyLdtLBy2cQtP+WrWxNafO4F9Uyep9wPEUw0looPuZH/EWU=
+	t=1711321142; cv=none; b=Jh397LHJ6lOmNo0m+U6kTp6oljYhfU3sLkD1dElrK0vvtY13BNjEJx1FXQ1caRe+1LDaFgeAY1B9CUEGKfZip195wFuE8YLtVgdRjPkKW9RgUOVYtOXljBAy1Km5Pm8DYpxk9U70UW6DczhVMsI0LM5ej0248eLDF9/ECrKNI3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321139; c=relaxed/simple;
-	bh=HYvPSrJYkMOLDJbWOZWqQRcdACTOqAYwH1ch5BNzM4c=;
+	s=arc-20240116; t=1711321142; c=relaxed/simple;
+	bh=0swHJxYrBHmtAizG4AL6sWoZHWf/Br+7m4Md/cLVXVI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RKeYWuYukDvOIbfJndEpPF1Nt9i2QCNmd/vARmfls4UOT8cHRSDl64mK00o7gVSwv1mtwnQ8ajg42hScbWc7O581v518g4yPCTlnK2o6Tszes5aRIbBLd/kR+vlx3wIlugHM5fEwYtfAxquGPGTMdnrh+So/qwEi01UVEiXFIGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fAwO6z8S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE3BC433C7;
-	Sun, 24 Mar 2024 22:58:58 +0000 (UTC)
+	 MIME-Version; b=KMNseobjQwRDfSgI2I1nBT689tVXVWKglqHHBbqnzTCyCnRsIL/Mgw3rxmgJXr0Vj+8BVVXcpYp7d13otst7EeWk3PaJlLSWSO5RskpHaHDn0TIQV1PvJSIcNPglUQg1aZIX0xLloS+E8zD1d9uzacIfHUlr4fN0zs6xC7iQx/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N2tgX2vN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0A30C43399;
+	Sun, 24 Mar 2024 22:58:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321139;
-	bh=HYvPSrJYkMOLDJbWOZWqQRcdACTOqAYwH1ch5BNzM4c=;
+	s=k20201202; t=1711321140;
+	bh=0swHJxYrBHmtAizG4AL6sWoZHWf/Br+7m4Md/cLVXVI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fAwO6z8SeUcEw4/j/txUDv9ZxQaWtrH+GW1wSBGZ4Y8UI/2AAt4avXY9yRFLN0GYA
-	 vjVMunpbjY//bKFTTRrpyEypW00ngmRcWX1cEHxVhVPuUyKI0M8KP8N0+GCFrwD1IX
-	 fGlME+XG1krRs6ykRGxM+YTEF6War/r8NvrDUlarUUzI6xcHEopmnz7gUcM3g3URh1
-	 FQUB/WxAHyHruaPvbdQEUwPCqPtd/mM+qyBzfsKcOfA/hqOpOHpoNFyIBc5ftjLzff
-	 dPnw2CYOuzZYNQ87nLhxjb5EMlmJqMgEnPWTVTN1QbbTI7N63M38exRIPnNpb6ZJF+
-	 lBmpBSF+Bw3tw==
+	b=N2tgX2vNxqEEUpK1owXpQzx/H1eMSkN4cWSQuJDVWvo1hfaXK/vfn3cFcIhTIi/I0
+	 zJJVfaTeCiHU8+khIxteYPRlsyWHpn8fpZeC/5X0+92iAtWBe3cJSQVeyqblwsfDrv
+	 WCM8ITLWlQIdwDF4EYdI4lzIFgUdmSPQfaZRih8hKbzYIZma+bQ2O13XyP4fZNlz+0
+	 uT5YF3tJ8+ERQtZAsng7lbHkCxlcyb6NAXQCC7Nd5naSOoM9eraP5FIGoivi1bhUfg
+	 9XWIoH7/YpDUkEXXhsVkYXWL5zzWh0TLxy30XTJRGOFOIQzZVB33CzJj1DhliV0smW
+	 YFKmAcXrCqN6w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Yan Zhai <yan@cloudflare.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 701/713] rcu: add a helper to report consolidated flavor QS
-Date: Sun, 24 Mar 2024 18:47:07 -0400
-Message-ID: <20240324224720.1345309-702-sashal@kernel.org>
+Subject: [PATCH 6.7 702/713] net: report RCU QS on threaded NAPI repolling
+Date: Sun, 24 Mar 2024 18:47:08 -0400
+Message-ID: <20240324224720.1345309-703-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -66,72 +66,83 @@ Content-Transfer-Encoding: 8bit
 
 From: Yan Zhai <yan@cloudflare.com>
 
-[ Upstream commit 1a77557d48cff187a169c2aec01c0dd78a5e7e50 ]
+[ Upstream commit d6dbbb11247c71203785a2c9da474c36f4b19eae ]
 
-When under heavy load, network processing can run CPU-bound for many
-tens of seconds. Even in preemptible kernels (non-RT kernel), this can
-block RCU Tasks grace periods, which can cause trace-event removal to
-take more than a minute, which is unacceptably long.
+NAPI threads can keep polling packets under load. Currently it is only
+calling cond_resched() before repolling, but it is not sufficient to
+clear out the holdout of RCU tasks, which prevent BPF tracing programs
+from detaching for long period. This can be reproduced easily with
+following set up:
 
-This commit therefore creates a new helper function that passes through
-both RCU and RCU-Tasks quiescent states every 100 milliseconds. This
-hard-coded value suffices for current workloads.
+ip netns add test1
+ip netns add test2
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+ip -n test1 link add veth1 type veth peer name veth2 netns test2
+
+ip -n test1 link set veth1 up
+ip -n test1 link set lo up
+ip -n test2 link set veth2 up
+ip -n test2 link set lo up
+
+ip -n test1 addr add 192.168.1.2/31 dev veth1
+ip -n test1 addr add 1.1.1.1/32 dev lo
+ip -n test2 addr add 192.168.1.3/31 dev veth2
+ip -n test2 addr add 2.2.2.2/31 dev lo
+
+ip -n test1 route add default via 192.168.1.3
+ip -n test2 route add default via 192.168.1.2
+
+for i in `seq 10 210`; do
+ for j in `seq 10 210`; do
+    ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dport 5201
+ done
+done
+
+ip netns exec test2 ethtool -K veth2 gro on
+ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threaded'
+ip netns exec test1 ethtool -K veth1 tso off
+
+Then run an iperf3 client/server and a bpftrace script can trigger it:
+
+ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
+ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g -t 100 >/dev/null&
+bpftrace -e 'kfunc:__napi_poll{@=count();} interval:s:1{exit();}'
+
+Report RCU quiescent states periodically will resolve the issue.
+
+Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop support")
 Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
 Signed-off-by: Yan Zhai <yan@cloudflare.com>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Link: https://lore.kernel.org/r/90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com
+Link: https://lore.kernel.org/r/4c3b0d3f32d3b18949d75b18e5e1d9f13a24f025.1710877680.git.yan@cloudflare.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Stable-dep-of: d6dbbb11247c ("net: report RCU QS on threaded NAPI repolling")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/rcupdate.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ net/core/dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 31d523c4e0893..e1bb04e578d8a 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -250,6 +250,37 @@ do { \
- 	cond_resched(); \
- } while (0)
+diff --git a/net/core/dev.c b/net/core/dev.c
+index ae898594690f7..e3c06ccf21d03 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6668,6 +6668,8 @@ static int napi_threaded_poll(void *data)
+ 	void *have;
  
-+/**
-+ * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
-+ * @old_ts: jiffies at start of processing.
-+ *
-+ * This helper is for long-running softirq handlers, such as NAPI threads in
-+ * networking. The caller should initialize the variable passed in as @old_ts
-+ * at the beginning of the softirq handler. When invoked frequently, this macro
-+ * will invoke rcu_softirq_qs() every 100 milliseconds thereafter, which will
-+ * provide both RCU and RCU-Tasks quiescent states. Note that this macro
-+ * modifies its old_ts argument.
-+ *
-+ * Because regions of code that have disabled softirq act as RCU read-side
-+ * critical sections, this macro should be invoked with softirq (and
-+ * preemption) enabled.
-+ *
-+ * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT kernels would
-+ * have more chance to invoke schedule() calls and provide necessary quiescent
-+ * states. As a contrast, calling cond_resched() only won't achieve the same
-+ * effect because cond_resched() does not provide RCU-Tasks quiescent states.
-+ */
-+#define rcu_softirq_qs_periodic(old_ts) \
-+do { \
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
-+	    time_after(jiffies, (old_ts) + HZ / 10)) { \
-+		preempt_disable(); \
-+		rcu_softirq_qs(); \
-+		preempt_enable(); \
-+		(old_ts) = jiffies; \
-+	} \
-+} while (0)
+ 	while (!napi_thread_wait(napi)) {
++		unsigned long last_qs = jiffies;
 +
- /*
-  * Infrastructure to implement the synchronize_() primitives in
-  * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
+ 		for (;;) {
+ 			bool repoll = false;
+ 
+@@ -6692,6 +6694,7 @@ static int napi_threaded_poll(void *data)
+ 			if (!repoll)
+ 				break;
+ 
++			rcu_softirq_qs_periodic(last_qs);
+ 			cond_resched();
+ 		}
+ 	}
 -- 
 2.43.0
 
