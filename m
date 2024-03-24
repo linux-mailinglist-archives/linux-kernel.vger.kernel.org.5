@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-112527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58EF4887B33
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 01:30:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4617B887B35
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 01:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9E69B20CC4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 00:30:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30E6F282321
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 00:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1907A50;
-	Sun, 24 Mar 2024 00:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDB181E;
+	Sun, 24 Mar 2024 00:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="glYVI1+v"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VeOUJf54"
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAB663B;
-	Sun, 24 Mar 2024 00:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF87399;
+	Sun, 24 Mar 2024 00:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711240196; cv=none; b=NwXJ0iHrzWiUgHQULzUx/ze3ZX0FK2JziIP+uWOX7TZOvUEpwDB/s0xDnmk0cq6Y3PPOnD7/2h0tJ1PZJk3XA4oHwLy+jKasQfa7Qmrg+rbaVOLV6uL4EnLR3ptksMOYVhubT4wuybZJ51Xhh4FtpbMd/56SB/amxKkgs/aOFFc=
+	t=1711240647; cv=none; b=Ix8UYpmeMSNS+LM1657M4cN6N9sNfD/PAahOG96WYyiic6aS4S1Kqa+knpwH+kqaOJp+yxGeOB8rEwKeHbo+K0TuxOwkorqULDxDaTmpe3KfxfSHZhGRZFOe86Znr0+PcV+ITTtRmPSk2DUXcvKhDnFADNQWybVEd5pJNwWtUEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711240196; c=relaxed/simple;
-	bh=hGA0pjESfcbSCju3TJsdHOFR1tokO3qHUenTDCHAAC4=;
+	s=arc-20240116; t=1711240647; c=relaxed/simple;
+	bh=cIzNabmO/wIIEk6PzjySaf+efj9NqcfRU1AKQDQVcy0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PsOyzeZOJlZY7e3YbU6hVrcdSwyUXLMHXoWHxWlDC2U7zKaqhO6wD1ScZ+BljbRRgKxGVG621uxswSucGQu/X7xa/r+LiTLFAujbEa6Nd2JUBubf9iERobNRIDd2NxKpuYnw3FLHcbVO901aJUwaDgsZ+ml7LGn/SLGl7wLJuXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=glYVI1+v; arc=none smtp.client-ip=198.137.202.133
+	 In-Reply-To:Content-Type; b=skdDvowSefeYXv/9FgDFTe9wpdnzQis/bk/b/gYBFn98EZfpGkXFwutm2tfREcRN4yTU5npm9TC0FS8XYtDKLurkxhjF4m+sJskU26sPeFF/h3nOR/hdjrQzVWWhHbG0BJNpYOwLWOdEWkKuob5Jm+ff01KiOhe79myW5gjgHt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VeOUJf54; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=utodYAxgZ6ASqBLu4FhUWyXcojcCXmq+kx0E9Y88w7s=; b=glYVI1+vBRKw99jYBcJe2Nckm5
-	wF28eI7xrGwdTSXBvmUjc2YEs1BcOTuUClUrYQUZL0bpF7VfZ+tJplhnWVEdboi9eRhTGQhFroNkn
-	r9NjTcghnBAq7mOdszxAB7tdEwYajqlAf35NegF1xaoFHoLX00AsinSVpvMGDc2+tEXhgXlyzm5O5
-	ARyHbdNEwD1evurglCPZQAfCzaGWKH/DcbGgdxSJz/ley6IAx3xn4u8me9YUgXIDWLfwCcMsuAylc
-	RhN6FU2LgnLxOsNvJfhSixYIUTGnot+TrKcHDL2XxHx7YlWTbLKvaZ0RhlhQ26Gbur7DB0i66Ax/Z
-	c56TZtZw==;
+	bh=epiAq/uhOjFytLKsUkArgR/82Gp4Db9hW2gITSregD0=; b=VeOUJf540a8tuf9Bll54X21YBu
+	/LJxaqcMokzI3nuUQ6MwR4o3c7FF9Vyrp++qtlTxSbYPxVZ/QbIvrn+Hq5SEeGBpivbNju5lJrvkN
+	DIUIPUuZE7xjeq/YeLadaAkEOebhf8ZZj7gdX2sR7dqx45vFY8DomYUxUCf8sYUdiN28qKLxVZiow
+	xDapCMQa2Jvr3UjJWODDgDXaJHezMVOwJCdNlonBQeX+FMMagvEc4c4n9PuT9R5qqYhWU0NatRrW1
+	tPJqraJCrpvB1DjAJQ6ZVOTaRhuT9u2BYBwGQwbYyi0sklHkxsKa7NBSzkNZONfgTsqfQnh1L+Fhq
+	eMuLGT5Q==;
 Received: from [50.53.2.121] (helo=[192.168.254.15])
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1roBkD-0000000BTCn-3Emz;
-	Sun, 24 Mar 2024 00:29:49 +0000
-Message-ID: <4a81b4cc-90fd-415d-83c1-fe0f0ca7cac9@infradead.org>
-Date: Sat, 23 Mar 2024 17:29:42 -0700
+	id 1roBrY-0000000BTiB-1PUq;
+	Sun, 24 Mar 2024 00:37:24 +0000
+Message-ID: <40c96057-4bd8-4743-bea1-5d848f0e0c84@infradead.org>
+Date: Sat, 23 Mar 2024 17:37:21 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,50 +53,31 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing: Fix documentation on tp_printk cmdline option
+Subject: Re: [PATCH v2] arch/riscv: Enable kprobes when CONFIG_MODULES=n
 Content-Language: en-US
-To: Vitaly Chikunov <vt@altlinux.org>, Thomas Gleixner <tglx@linutronix.de>,
- "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>
-References: <20240323231704.1217926-1-vt@altlinux.org>
+To: Jarkko Sakkinen <jarkko@kernel.org>, linux-riscv@lists.infradead.org
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux-kernel@vger.kernel.org, "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+ Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>, linux-trace-kernel@vger.kernel.org
+References: <20240323232908.13261-1-jarkko@kernel.org>
 From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240323231704.1217926-1-vt@altlinux.org>
+In-Reply-To: <20240323232908.13261-1-jarkko@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
-On 3/23/24 16:17, Vitaly Chikunov wrote:
-> kernel-parameters.txt incorrectly states that workings of
-> kernel.tracepoint_printk sysctl depends on "tracepoint_printk kernel
-> cmdline option", this is a bit misleading for new users since the actual
-> cmdline option name is tp_printk.
-> 
-> Fixes: 0daa2302968c ("tracing: Add tp_printk cmdline to have tracepoints go to printk()")
-> Signed-off-by: Vitaly Chikunov <vt@altlinux.org>
+On 3/23/24 16:29, Jarkko Sakkinen wrote:
+> +config HAVE_KPROBES_ALLOC
+> +	bool
+> +	help
+> +	  Architectures that select this option are capable of allocating memory
+> +	  for kprobes withou the kernel module allocator.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index bb884c14b2f6..623fce7d5fcd 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -6599,7 +6599,7 @@
->  			To turn off having tracepoints sent to printk,
->  			 echo 0 > /proc/sys/kernel/tracepoint_printk
->  			Note, echoing 1 into this file without the
-> -			tracepoint_printk kernel cmdline option has no effect.
-> +			tp_printk kernel cmdline option has no effect.
->  
->  			The tp_printk_stop_on_boot (see below) can also be used
->  			to stop the printing of events to console at
+	              without
 
 -- 
 #Randy
