@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42C9D888653
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65988888659
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0D1C28C6A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:29:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 204372852C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFB912AAFE;
-	Sun, 24 Mar 2024 22:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6490D1494B3;
+	Sun, 24 Mar 2024 22:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mvd1mos8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bWJo7nTJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B311DEA0C;
-	Sun, 24 Mar 2024 22:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8F08627C;
+	Sun, 24 Mar 2024 22:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320740; cv=none; b=R1Wt2KsNZyyItuXvJWxxEW8P15WaK8zjXyEWn+hW4UVeFcBU2HY5zhdXFTAqzczLcsLwM0Xt1t/nXNgU9s+L8MQjfgSkVmcAdx8TIJKYwQRzQhaAwTz2vd5k8tXHLlyLuk9+4zNRPpgc11gbmz5C6MUVB1LNAbjCqiZLMVCTCXg=
+	t=1711320741; cv=none; b=DcxNTAqlBG+dibdF+PClFa16ODEsZ7wLTXkJ/UShGDyMZXXThsWjxwB1eoLBDoG7yxxtNXHkDhb45vGUNasReaxiuiyXDdNAawXfPOR5HKE3MxCXqDuN7BPC49FL5oPUZ+eNl8RNyFCScYNkM87CeivTve75d/Hn7e3ogPhud20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320740; c=relaxed/simple;
-	bh=TQXYspbfT+moCuXb5jEZWh2Vb5Vn0eF+7P6IyRXaoAE=;
+	s=arc-20240116; t=1711320741; c=relaxed/simple;
+	bh=UJVecGRcsJMrble1axSJMuG0b3FUpXz2QsuhpnXy+d0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PIkiV0Bphvb8GWW5EpbwSggiahXqXyyQHmy5xYW1kdunwq55qHZ93CpGfmYvYkVQmxFZwhMqN5RCPHgmj9qp/CAy9lgMKjXV4EF1MzV0+xwEUeiuKn/XzaXuoIUhWRhaVGqCkvxZCaIShZkpnLXgDOfwWNxYukfLhjh9Z4xHw7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mvd1mos8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61903C433C7;
-	Sun, 24 Mar 2024 22:52:18 +0000 (UTC)
+	 MIME-Version; b=teHR3vLSbKvkDFanOyD/PsgDBWiKj9Q4AXnaR+qPG0T8j8Ao5iZ2By5/SPjOmkjSccxW7i9h+W4PnjNK/etJJJlPlzWB5mDuviWqBmm+T11zThSFsaOy/ozEG9DGZLKgeggWrVCfgIvx7bArmUAe5xTIVmhOn052vndjX3a++A8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bWJo7nTJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62A2FC43390;
+	Sun, 24 Mar 2024 22:52:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320739;
-	bh=TQXYspbfT+moCuXb5jEZWh2Vb5Vn0eF+7P6IyRXaoAE=;
+	s=k20201202; t=1711320740;
+	bh=UJVecGRcsJMrble1axSJMuG0b3FUpXz2QsuhpnXy+d0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mvd1mos88x1TDU8EPJpxeN19C5Cgy7S9h6MFGJlSIFidM9Y+WrK26NF9GfA/ByDqO
-	 8kmPxTP/7RE0duMHerrKycCKRvLw64mB6FaJp5ZZGWeN+7Q2Zfs57jwSz+U8GVtAUa
-	 9wkrAFOUtiAcbsjF9iYvwj8SQ25A1T5XMfMwRpBxR+aJI9wqcNpOsbLkSdjRsViV9E
-	 JybMMlX2mIle3F6Y3Yg7xjOL/anFnRnGH+ZijHig2dc2uVMKEjnhhsLJoqv+dQz31V
-	 lvEAyKx7FHE4v2b4cb5kMJ1Mat9sm8FcU8CiD7uKLOyPjkH96ZDKoGQlOJgBkwV/9T
-	 2+0hiMdz2qQOA==
+	b=bWJo7nTJypJaKmqafKPgXiP2ao6aIomtNbEVuYlWvVZZQns0pkuC9AZ6w0c7r/1FQ
+	 JXJrYNXL5WTeKZgtK0th3Eh3pyIbiXBIjv92XlFiIS0+0AnZzo1iMbzZqGyj87+JFV
+	 WkzXJrX+ZzX4xgrWX9WpihTGmYSlTqM1syJKcU9IFJNft8tXVVxrUZWtX85vg7zwod
+	 nVqLBjCHYd2e5dg6c7XBW7EC7KnGTLlT/O/mHE9H/Vm4s2DDudMxEd+j2x2Im6Jc3/
+	 4EJjyb8/fRJmNmqZr8Q7vNMTcMG+RyMFEj4YFiFswlXqi7O0gsRk3OxIfH57RpMRdk
+	 L5S6cPTJWEtDA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>,
-	kernel test robot <lkp@intel.com>,
+	Leon Yen <leon.yen@mediatek.com>,
 	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 302/713] wifi: mt76: mt7921: fix incorrect type conversion for CLC command
-Date: Sun, 24 Mar 2024 18:40:28 -0400
-Message-ID: <20240324224720.1345309-303-sashal@kernel.org>
+Subject: [PATCH 6.7 303/713] wifi: mt76: mt792x: fix a potential loading failure of the 6Ghz channel config from ACPI
+Date: Sun, 24 Mar 2024 18:40:29 -0400
+Message-ID: <20240324224720.1345309-304-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -65,43 +65,78 @@ Content-Transfer-Encoding: 8bit
 
 From: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>
 
-[ Upstream commit b6351ef9994ccb93b2447d396a0c517964dff2bc ]
+[ Upstream commit 07ce1d46372489d90f9cccebb3277d1af801c4b9 ]
 
-clc->len is defined as 32 bits in length, so it must also be
-operated on with 32 bits, not 16 bits.
+In some case, the MTCL table will exist, but MTDS table will not.
+So the SAR will init fail. This patch make MTCL and MTDS can exist
+with no dependence.
 
-Fixes: fa6ad88e023d ("wifi: mt76: mt7921: fix country count limitation for CLC")
+Fixes: f965333e491e ("mt76: mt7921: introduce ACPI SAR support")
 Signed-off-by: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202312112104.Zkc3QUHr-lkp@intel.com/
+Signed-off-by: Leon Yen <leon.yen@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/mcu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../wireless/mediatek/mt76/mt792x_acpi_sar.c  | 26 ++++++++++---------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-index 399d7ca6bebcb..18056045d9759 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mcu.c
-@@ -1270,7 +1270,7 @@ int __mt7921_mcu_set_clc(struct mt792x_dev *dev, u8 *alpha2,
- 		.acpi_conf = mt792x_acpi_get_flags(&dev->phy),
- 	};
- 	int ret, valid_cnt = 0;
--	u16 buf_len = 0;
-+	u32 buf_len = 0;
- 	u8 *pos;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt792x_acpi_sar.c b/drivers/net/wireless/mediatek/mt76/mt792x_acpi_sar.c
+index 303c0f5c9c662..c4e3bfcc519e2 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt792x_acpi_sar.c
++++ b/drivers/net/wireless/mediatek/mt76/mt792x_acpi_sar.c
+@@ -66,13 +66,15 @@ mt792x_acpi_read(struct mt792x_dev *dev, u8 *method, u8 **tbl, u32 *len)
+ }
  
- 	if (!clc)
-@@ -1281,7 +1281,7 @@ int __mt7921_mcu_set_clc(struct mt792x_dev *dev, u8 *alpha2,
- 	if (mt76_find_power_limits_node(&dev->mt76))
- 		req.cap |= CLC_CAP_DTS_EN;
+ /* MTCL : Country List Table for 6G band */
+-static void
++static int
+ mt792x_asar_acpi_read_mtcl(struct mt792x_dev *dev, u8 **table, u8 *version)
+ {
+-	if (mt792x_acpi_read(dev, MT792x_ACPI_MTCL, table, NULL) < 0)
+-		*version = 1;
+-	else
+-		*version = 2;
++	int ret;
++
++	*version = ((ret = mt792x_acpi_read(dev, MT792x_ACPI_MTCL, table, NULL)) < 0)
++		   ? 1 : 2;
++
++	return ret;
+ }
  
--	buf_len = le16_to_cpu(clc->len) - sizeof(*clc);
-+	buf_len = le32_to_cpu(clc->len) - sizeof(*clc);
- 	pos = clc->data;
- 	while (buf_len > 16) {
- 		struct mt7921_clc_rule *rule = (struct mt7921_clc_rule *)pos;
+ /* MTDS : Dynamic SAR Power Table */
+@@ -166,16 +168,16 @@ int mt792x_init_acpi_sar(struct mt792x_dev *dev)
+ 	if (!asar)
+ 		return -ENOMEM;
+ 
+-	mt792x_asar_acpi_read_mtcl(dev, (u8 **)&asar->countrylist, &asar->ver);
++	ret = mt792x_asar_acpi_read_mtcl(dev, (u8 **)&asar->countrylist, &asar->ver);
++	if (ret) {
++		devm_kfree(dev->mt76.dev, asar->countrylist);
++		asar->countrylist = NULL;
++	}
+ 
+-	/* MTDS is mandatory. Return error if table is invalid */
+ 	ret = mt792x_asar_acpi_read_mtds(dev, (u8 **)&asar->dyn, asar->ver);
+ 	if (ret) {
+ 		devm_kfree(dev->mt76.dev, asar->dyn);
+-		devm_kfree(dev->mt76.dev, asar->countrylist);
+-		devm_kfree(dev->mt76.dev, asar);
+-
+-		return ret;
++		asar->dyn = NULL;
+ 	}
+ 
+ 	/* MTGS is optional */
+@@ -290,7 +292,7 @@ int mt792x_init_acpi_sar_power(struct mt792x_phy *phy, bool set_default)
+ 	const struct cfg80211_sar_capa *capa = phy->mt76->hw->wiphy->sar_capa;
+ 	int i;
+ 
+-	if (!phy->acpisar)
++	if (!phy->acpisar || !((struct mt792x_acpi_sar *)phy->acpisar)->dyn)
+ 		return 0;
+ 
+ 	/* When ACPI SAR enabled in HW, we should apply rules for .frp
 -- 
 2.43.0
 
