@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5FD889B11
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:43:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BACC7889DEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:57:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0B81C34135
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:43:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCAA1B29E82
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A06281EC4CC;
-	Mon, 25 Mar 2024 02:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6EE1EC4D7;
+	Mon, 25 Mar 2024 02:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Alkpp2LL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RIqyzooz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6970E1422B6;
-	Sun, 24 Mar 2024 22:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D23E1422BE;
+	Sun, 24 Mar 2024 22:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320544; cv=none; b=c5C1356/MS7OUSnjsH3itjFFN93ogLMpeQaA/bJrsuxYK8FFpOxwzy8QRuD+ODaFVtxifwYHcPovDsnEgrXWnqZ1TKGXmU9RT4CfhgV+TFLNW9XmtjjbvZ9ZDG6HIZGUFAPjNlrhwDkI1uO88ldiNU6Wg7QqXpTRwiuwkuQDP2Y=
+	t=1711320545; cv=none; b=WeiAxAz/lfF35PEBgxWbN6jeT1fsmbmJcBnYlzCGF6v9e2a7zVwLLofWp9TGP+3w2UNcXtCHIEUgj7VjQO9KSfzHUJchwmkrb/cGOp8B02E4Xur2DluwvrIYKziMV2sqtLhST1aqSBIo8uo139dYWcwJd4lK9ylf0m/mASPWGM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320544; c=relaxed/simple;
-	bh=CP0GBc2tzjL7Eq3mKNB5Vuisggt/8ApKO4BnLcAc2Gk=;
+	s=arc-20240116; t=1711320545; c=relaxed/simple;
+	bh=TqbdMatSwzqhA9SLehDS7UjFj034MU3eHyuNpAN4Ps8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MEFEwShYsw2PGoQZcu9bIaURrZLcnzM7SctdHteZDKRjNZygqLPuJ+deGBFexcISI82C/mX6GcoXgtSKU5e0GCW0uuSk3+bV3a3v4vhpXT76/RTApgFGyrGcWvBSjPdxuKKu/eX+LWW6V0Bi3GO2I6ejC0VFVOc2iI545csGiys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Alkpp2LL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5740EC43390;
-	Sun, 24 Mar 2024 22:49:02 +0000 (UTC)
+	 MIME-Version; b=eZjY8PYFsLmm+Kd/TwrwXe8CYBcSqUEwhbrr1z1aGRq0VRer7bI96zYI88jbbryMHsjpYg24xbkL0ZoUpD+9k14LA3Zr75yS4O0rC8pabXElZ8QVRKqYJGqc+s/FE6LTRLeEORO+JwSn0tNNihQquvOVRZG3ScCBFrZ0WILZJOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RIqyzooz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 531E9C433F1;
+	Sun, 24 Mar 2024 22:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320543;
-	bh=CP0GBc2tzjL7Eq3mKNB5Vuisggt/8ApKO4BnLcAc2Gk=;
+	s=k20201202; t=1711320544;
+	bh=TqbdMatSwzqhA9SLehDS7UjFj034MU3eHyuNpAN4Ps8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Alkpp2LL6ePAoHUhl/rjiHwj5Vw1qaiQOt1gaKVVMZEoKPZ8MP4r+Myw2+e+hUcNl
-	 9IJMETN3XIE8RlTPV1Soi788IwDRQ60w04lFz8CIXTx64MNSSHt8QV3w4ejNnaJyZ+
-	 sfXmHKJHCRIsW2BvWx49o90APKG8fGtlWv0vPS2A77VH3Fm0xQHGZUwrb0PcJUonTS
-	 gqyzReCqoNJu+g4nx0q5T5qTNtVktwBWQ7oWeSDZKkWRm9w6C160yYlVNcgJOhzM0k
-	 KfqSchbPZsyJnQ9Y6EMrlgwehi0VkDTisnUdMLA11fjeqd6Ys4c5EcBzNAE2xQpAYD
-	 1pPt34rQ/Kisw==
+	b=RIqyzoozJ25rN2HeXZWkW9kxregwj9EFm2XxP2BrpmXA4/jG5P0LD370+mxgrtkqi
+	 VWbCgXZNZMFGSHa9urvHXGa/MWYjkp4SRCDo6zvxkOfll/1jGTWu6kP0QqgC/1gG3o
+	 BKzL7OPyzg1kXJEPNdHLofmKJJqlf4rgh+f+d05u2ebNeENUSFibwS42NKbmuh3jJ8
+	 E/tWhhTEVocuh+n04X2t8WwZBJHRVLam7TGg6p5zIfmRRb511gykSk5Tj794RenFtC
+	 6+eEtMCJZHNEb3/wDuoi+Ayht9elqakrgSiQT8NpccZXPKs2EWHUq18JXIaKpGHMi9
+	 WI8AuRWmf6ZDg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Li Nan <linan122@huawei.com>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Song Liu <song@kernel.org>,
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Eric Biggers <ebiggers@google.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 104/713] md: Don't clear MD_CLOSING when the raid is about to stop
-Date: Sun, 24 Mar 2024 18:37:10 -0400
-Message-ID: <20240324224720.1345309-105-sashal@kernel.org>
+Subject: [PATCH 6.7 105/713] ovl: Always reject mounting over case-insensitive directories
+Date: Sun, 24 Mar 2024 18:37:11 -0400
+Message-ID: <20240324224720.1345309-106-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,71 +63,96 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Li Nan <linan122@huawei.com>
+From: Gabriel Krisman Bertazi <krisman@suse.de>
 
-[ Upstream commit 9674f54e41fffaf06f6a60202e1fa4cc13de3cf5 ]
+[ Upstream commit 2824083db76cb9d4b7910607b367e93b02912865 ]
 
-The raid should not be opened anymore when it is about to be stopped.
-However, other processes can open it again if the flag MD_CLOSING is
-cleared before exiting. From now on, this flag will not be cleared when
-the raid will be stopped.
+overlayfs relies on the filesystem setting DCACHE_OP_HASH or
+DCACHE_OP_COMPARE to reject mounting over case-insensitive directories.
 
-Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
-Signed-off-by: Li Nan <linan122@huawei.com>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240226031444.3606764-6-linan666@huaweicloud.com
+Since commit bb9cd9106b22 ("fscrypt: Have filesystems handle their
+d_ops"), we set ->d_op through a hook in ->d_lookup, which
+means the root dentry won't have them, causing the mount to accidentally
+succeed.
+
+In v6.7-rc7, the following sequence will succeed to mount, but any
+dentry other than the root dentry will be a "weird" dentry to ovl and
+fail with EREMOTE.
+
+  mkfs.ext4 -O casefold lower.img
+  mount -O loop lower.img lower
+  mount -t overlay -o lowerdir=lower,upperdir=upper,workdir=work ovl /mnt
+
+Mounting on a subdirectory fails, as expected, because DCACHE_OP_HASH
+and DCACHE_OP_COMPARE are properly set by ->lookup.
+
+Fix by explicitly rejecting superblocks that allow case-insensitive
+dentries. Yes, this will be solved when we move d_op configuration back
+to ->s_d_op. Yet, we better have an explicit fix to avoid messing up
+again.
+
+While there, re-sort the entries to have more descriptive error messages
+first.
+
+Fixes: bb9cd9106b22 ("fscrypt: Have filesystems handle their d_ops")
+Acked-by: Amir Goldstein <amir73il@gmail.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Link: https://lore.kernel.org/r/20240221171412.10710-2-krisman@suse.de
+Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ fs/overlayfs/params.c | 14 +++++++++++---
+ include/linux/fs.h    |  9 +++++++++
+ 2 files changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 0b49033afa6bc..b2f27ac51bfb6 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -6304,7 +6304,15 @@ static void md_clean(struct mddev *mddev)
- 	mddev->persistent = 0;
- 	mddev->level = LEVEL_NONE;
- 	mddev->clevel[0] = 0;
--	mddev->flags = 0;
+diff --git a/fs/overlayfs/params.c b/fs/overlayfs/params.c
+index 3fe2dde1598f9..488f920f79d28 100644
+--- a/fs/overlayfs/params.c
++++ b/fs/overlayfs/params.c
+@@ -280,12 +280,20 @@ static int ovl_mount_dir_check(struct fs_context *fc, const struct path *path,
+ {
+ 	struct ovl_fs_context *ctx = fc->fs_private;
+ 
+-	if (ovl_dentry_weird(path->dentry))
+-		return invalfc(fc, "filesystem on %s not supported", name);
+-
+ 	if (!d_is_dir(path->dentry))
+ 		return invalfc(fc, "%s is not a directory", name);
+ 
 +	/*
-+	 * Don't clear MD_CLOSING, or mddev can be opened again.
-+	 * 'hold_active != 0' means mddev is still in the creation
-+	 * process and will be used later.
++	 * Root dentries of case-insensitive capable filesystems might
++	 * not have the dentry operations set, but still be incompatible
++	 * with overlayfs.  Check explicitly to prevent post-mount
++	 * failures.
 +	 */
-+	if (mddev->hold_active)
-+		mddev->flags = 0;
-+	else
-+		mddev->flags &= BIT_ULL_MASK(MD_CLOSING);
- 	mddev->sb_flags = 0;
- 	mddev->ro = MD_RDWR;
- 	mddev->metadata_type[0] = 0;
-@@ -7650,7 +7658,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 	int err = 0;
- 	void __user *argp = (void __user *)arg;
- 	struct mddev *mddev = NULL;
--	bool did_set_md_closing = false;
++	if (sb_has_encoding(path->mnt->mnt_sb))
++		return invalfc(fc, "case-insensitive capable filesystem on %s not supported", name);
++
++	if (ovl_dentry_weird(path->dentry))
++		return invalfc(fc, "filesystem on %s not supported", name);
  
- 	if (!md_ioctl_valid(cmd))
- 		return -ENOTTY;
-@@ -7734,7 +7741,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 			err = -EBUSY;
- 			goto out;
- 		}
--		did_set_md_closing = true;
- 		mutex_unlock(&mddev->open_mutex);
- 		sync_blockdev(bdev);
- 	}
-@@ -7876,7 +7882,7 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 				     mddev_unlock(mddev);
+ 	/*
+ 	 * Check whether upper path is read-only here to report failures
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 7f659c26794b5..98c718b0fe532 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3205,6 +3205,15 @@ extern int generic_check_addressable(unsigned, u64);
  
- out:
--	if(did_set_md_closing)
-+	if (cmd == STOP_ARRAY_RO || (err && cmd == STOP_ARRAY))
- 		clear_bit(MD_CLOSING, &mddev->flags);
- 	return err;
- }
+ extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
+ 
++static inline bool sb_has_encoding(const struct super_block *sb)
++{
++#if IS_ENABLED(CONFIG_UNICODE)
++	return !!sb->s_encoding;
++#else
++	return false;
++#endif
++}
++
+ int may_setattr(struct mnt_idmap *idmap, struct inode *inode,
+ 		unsigned int ia_valid);
+ int setattr_prepare(struct mnt_idmap *, struct dentry *, struct iattr *);
 -- 
 2.43.0
 
