@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39162889A8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:30:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90F10889A97
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E36A51F23089
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:30:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 308D51F334CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923801D564A;
-	Mon, 25 Mar 2024 02:32:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743051D8DCF;
+	Mon, 25 Mar 2024 02:32:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gjkdiMeU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pKDfpw/h"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E0B80610;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001AC80632;
 	Sun, 24 Mar 2024 22:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320513; cv=none; b=Q5AYd/ogRhIp9hpgDs86IJRzWgO4DPrfFnzcvPOQp81AV3/NzIkYdlliADQj3556Y195DIK9PRtSV9ULIjwWjEdC6Kg0Eljc0U9t3yGnYr5skYBlytoslM3fWRf8hLQWOLW5nwOcCwYho2KlOuOXrQj94Q8AjPAnvE2wkUT2cBk=
+	t=1711320514; cv=none; b=OclBjzXTQ9Y8yxWn7BK/7VmRx/twPpI+AozsFBmmeNS2jBqL69K9cMITX6aPyYb1TeKQ4Im/jBtH5s8pVOyNK97FzUh/Ri5sL019RqKzac1Ol7z8H7e2hMQjfkiRQBFs8tljY8XZu6sVmhiCnX802kP7CISR2ZbISeDmtWMzONM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320513; c=relaxed/simple;
-	bh=lNQsheyNDdU4fFjsczF/E8ef3yJSjcxsBtth7BKLDKg=;
+	s=arc-20240116; t=1711320514; c=relaxed/simple;
+	bh=aDa8LlvKm/2ZXeeUmHNzrvWDnXaqmsLoBFx0k0dXmCk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bpOORBlRYhh9Dxl8LpGIg9gDsRdiXF7X95Pl1uzSA5MtghJaat64WggY7YhWG9g2cgZH3BsAxGEFC95O0NFQyWIg+kKUEnEHWm4P7RUFyH5zPYmT96mpRb/QpMy9mkDv0mf6v1JkByYFfulZIapIzBAO4x75ieBM1JTGRKsh+fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gjkdiMeU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44313C433C7;
-	Sun, 24 Mar 2024 22:48:32 +0000 (UTC)
+	 MIME-Version; b=ndbSVuoia0Iy5fTX1//lCCtZXT7seiM0KqfmDHwBGP8t1KWGxQHS/Q7edL4etEwA7joGdh6HNiSq1fnBBiXkDmMOZyVlE63FF+MZg5aau+/CKqBvBt0r1U8JTTINLuWbvX70ZovNlXiYYwZY4467mg85pq8aiMuwpH0tLDyO3Hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pKDfpw/h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27FABC433F1;
+	Sun, 24 Mar 2024 22:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320512;
-	bh=lNQsheyNDdU4fFjsczF/E8ef3yJSjcxsBtth7BKLDKg=;
+	s=k20201202; t=1711320513;
+	bh=aDa8LlvKm/2ZXeeUmHNzrvWDnXaqmsLoBFx0k0dXmCk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gjkdiMeUkD3TxiNsCG1lU5rX7MwMgrtIaxG3wdwpYXGWOyUuVgLNmpGiXJMHvcErM
-	 5RhnbW5iWG8L3J8c/YQ7vs/IYf2l9f3uEvN4WE1/MhM3CqGKOadfYkKmRHO4Q8zsQz
-	 /Hzq3orBg/esZmGrk1P/C4DuC+0jIRvAcNthV/fvwpQt7qCuvQCMzXOM0oscs2esxs
-	 YyxoXXOBihBzLJI83HqEcrkrw4W/nJZDqaWxCLLMmOVpmhs0jkufNtwzWT4NYASZne
-	 mOAiWh7nkShwpwAVQjEF3nj7ashSbyNjozVVaaKasTBFpy/hexy9ig3eYtr4uKH3fO
-	 CTL/4G7k0EvpA==
+	b=pKDfpw/hZgVc2nayIouybOhHSQibMyL5SvELwINtJNpESipW69yIaXQ0IMH1qHqLe
+	 zqXank+WMm+KVIKvhqqxJDqINyzTAHRFIeayqtNj3Z5h79vVIx/0TuGMYhCmS1Kn3E
+	 qebSIqJmnlro/akJvx2TcKudexNuaLVRPZM00HIjBGTU4lADrvuSYFvTFL3+x6TzTK
+	 EjYGYsDuk8MAqcu0wECE3/oiAV/ZiwTLEf8XCgVIoA4KZILqSqBIFaCwhRiD9VzxdK
+	 zwOuOYAN+vPRvPatliPaOEKfHy0a8XFTOvgxaeOMqNGWM9oPVH/K0N419A1PoG8rNs
+	 sqfQhoFg5VePQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Al Raj Hassain <alrajhassain@gmail.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 073/713] ALSA: hda: cs35l41: Overwrite CS35L41 configuration for ASUS UM5302LA
-Date: Sun, 24 Mar 2024 18:36:39 -0400
-Message-ID: <20240324224720.1345309-74-sashal@kernel.org>
+Subject: [PATCH 6.7 074/713] ASoC: amd: yc: Add HP Pavilion Aero Laptop 13-be2xxx(8BD6) into DMI quirk table
+Date: Sun, 24 Mar 2024 18:36:40 -0400
+Message-ID: <20240324224720.1345309-75-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,42 +63,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+From: Al Raj Hassain <alrajhassain@gmail.com>
 
-[ Upstream commit b603d95692e47dc6f5f733e93c3841dc0c01e624 ]
+[ Upstream commit b3a51137607cee7c814cd3a75d96f78b9ee1dc1f ]
 
-Whilst this laptop contains _DSD inside the BIOS, there is an error in
-this configuration. Override the _DSD in the BIOS with the correct
-configuration for this laptop.
+The HP Pavilion Aero Laptop 13-be2xxx(8BD6) requires a quirk entry for its internal microphone to function.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20240301160154.158398-4-sbinding@opensource.cirrus.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Al Raj Hassain <alrajhassain@gmail.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Link: https://msgid.link/r/20240304103924.13673-1-alrajhassain@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 6cf4c02f9effd..5a5f4b499fd94 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -83,6 +83,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431863", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "104318D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-+	{ "10431A83", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431C9F", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "10431CAF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "10431CCF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-@@ -420,6 +421,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "104317F3", generic_dsd_config },
- 	{ "CSC3551", "10431863", generic_dsd_config },
- 	{ "CSC3551", "104318D3", generic_dsd_config },
-+	{ "CSC3551", "10431A83", generic_dsd_config },
- 	{ "CSC3551", "10431C9F", generic_dsd_config },
- 	{ "CSC3551", "10431CAF", generic_dsd_config },
- 	{ "CSC3551", "10431CCF", generic_dsd_config },
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index abb9589b8477c..90360f8b3e81b 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -416,6 +416,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "8B2F"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
++			DMI_MATCH(DMI_BOARD_NAME, "8BD6"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
 2.43.0
 
