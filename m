@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-115236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDCE7888DE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6602A888DDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 764F328E3BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:00:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 894421C2AA8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A802978E6;
-	Mon, 25 Mar 2024 01:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A6B2978F9;
+	Mon, 25 Mar 2024 01:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QZOQM20e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rZSw/NFw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B467B185218;
-	Sun, 24 Mar 2024 23:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C9718521E;
+	Sun, 24 Mar 2024 23:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324333; cv=none; b=HsOLDxTCuv7XH3glb2spfR++6oKcHTAVT9vB9lFRScXJnapHQmWnahXKNIOuy+TM+INEsOPyMr3XmRqR0YGPYI1FfS33Lt+TvLNWDFvm6lJenYz1rXLm+Nm2s5sUICoynlZOhc0laxUUbPH+3HmB3NAQicuWqp/fhV/fg1GRB70=
+	t=1711324335; cv=none; b=MMILoFDjbQtph99vCT/zqyE6MyTKld5we0B6IBovwPJhshi0yyZKBj8g+d3uGSAedL9Qc8VrbN4LKxO/YJ6KRYkcUICFvum4JNFKrc8Uo3W1QcEHk7KJB3WyQxp9Ub9kSc3bCkz7Jq7BN8ycWhaKf3L5TYnPIiCOtpa5buhNK/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324333; c=relaxed/simple;
-	bh=YCkvSQzEv+R4kiRtPg/vr7zwuz9GHECujORNUOw4sgA=;
+	s=arc-20240116; t=1711324335; c=relaxed/simple;
+	bh=ZfOUDs7jrsD7iao803en/1YeW13GBtchnkANuEkhMvg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R92IL3/L4I5cpsikleFc2/7xdfYF+66M1LX4xZLqIfPQqLR4gsPb1iZG6nYAXYUhdiV63mje4i8yD49I9MNkhgmxs9lKREyX08guhrI8dI944ARb0eLpZfKoqjPben0st9p+mlNZTmgd6ovFCTqzn3Ii5AkvhkhJxnyJai5WxzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QZOQM20e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF659C43390;
-	Sun, 24 Mar 2024 23:52:11 +0000 (UTC)
+	 MIME-Version; b=UVeCy4LN9988Du0wGXmnLpXPJlvDN5H59WSfj+iGFqTGOlBlpbWpqSpQ+RsT6u4jsY7vIGTgHwDZ7qp3Ht4YUaI2EkPU3+dovIWdy2h5p5POuXd8G1kV9Ca3tz0tuNyLq0KWrV1cxNXzr14ye33D/KdFXMld821EVTcKcjTkZqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rZSw/NFw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAE9EC433C7;
+	Sun, 24 Mar 2024 23:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324332;
-	bh=YCkvSQzEv+R4kiRtPg/vr7zwuz9GHECujORNUOw4sgA=;
+	s=k20201202; t=1711324333;
+	bh=ZfOUDs7jrsD7iao803en/1YeW13GBtchnkANuEkhMvg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QZOQM20eEqJBKzyb8zA97RTNGtp9wRElpJhebDelx5A5f4GzPsf9JvoOgqTm/4mCs
-	 bngnZmlRkhNn8oohw7n/UZ840H6Z+7SCll8A4Cb6eFaIZpUgnMCD1D0/KuJXmXtq5o
-	 UrBgYp2gyeOip8Jm27JyEDVO67UacHbc3u/XHk6b8eJtad/H/mfK+vlc0k8GVmvbEI
-	 WEy28xl4CiiMQi57c/BAYURj0RFJTF+tnm0lz5c+Ga24xgbGwDYmv2M5Vd3X9Oz7JA
-	 ohXDf5j18Gp/TECRp9ed+vfyYwen1HARt/E6Ue3GX854jO0CENv2bDZf7NJaNr39ZM
-	 brWdMmxWh/lKg==
+	b=rZSw/NFwRq1yPkycdMnKRYkxGhJeZIBmw09ZjyUIAOBHEO19QjRXWUPvpVHTdQwhK
+	 X3gxNmcQsg3IBt4ofnQ3NvGWbRL2mP5P2jOF+vfKtKcZZ6x3ZTXdOgcjh9Pb+OolCU
+	 H+UoF8yAaUrZ3tYta3E4RbfUulOfpr0HLdyfk08m3DqoB+ADNqEyyuxDxWmzZcAXf4
+	 YCz0NQPbpFLL/Lr9GqIFJTUK9Rkmu9skXsGYwKXQiEc2SYuV9Yuq03W9X7GKT5Yljc
+	 i6rEn+192fmrxKX1vmt3QzALVo433AL5fqSx+xocWKkpuUy/aUJF0nPl9EaxR5cdIH
+	 EkGd2o+UfWTfA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Govind Singh <govinds@codeaurora.org>,
-	Bjorn Andersson <bjorn.andersson@linaro.org>,
-	Niklas Cassel <niklas.cassel@linaro.org>,
-	Brian Norris <briannorris@chromium.org>,
-	Kalle Valo <kvalo@codeaurora.org>,
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Caleb Connolly <caleb.connolly@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 103/148] firmware: qcom: scm: Add WLAN VMID for Qualcomm SCM interface
-Date: Sun, 24 Mar 2024 19:49:27 -0400
-Message-ID: <20240324235012.1356413-104-sashal@kernel.org>
+Subject: [PATCH 4.19 104/148] clk: qcom: dispcc-sdm845: Adjust internal GDSC wait times
+Date: Sun, 24 Mar 2024 19:49:28 -0400
+Message-ID: <20240324235012.1356413-105-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -65,43 +63,36 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Govind Singh <govinds@codeaurora.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-[ Upstream commit cc53aabcc283c36274d3f3ce9adc4b40c21d4838 ]
+[ Upstream commit 117e7dc697c2739d754db8fe0c1e2d4f1f5d5f82 ]
 
-Add WLAN related VMID's to support wlan driver to set up
-the remote's permissions call via TrustZone.
+SDM845 downstream uses non-default values for GDSC internal waits.
+Program them accordingly to avoid surprises.
 
-Signed-off-by: Govind Singh <govinds@codeaurora.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Stable-dep-of: 117e7dc697c2 ("clk: qcom: dispcc-sdm845: Adjust internal GDSC wait times")
+Fixes: 81351776c9fb ("clk: qcom: Add display clock controller driver for SDM845")
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Tested-by: Caleb Connolly <caleb.connolly@linaro.org> # OnePlus 6
+Link: https://lore.kernel.org/r/20240103-topic-845gdsc-v1-1-368efbe1a61d@linaro.org
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/qcom_scm.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/qcom/dispcc-sdm845.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
-index 116b81ac442ad..1637385bcc171 100644
---- a/include/linux/qcom_scm.h
-+++ b/include/linux/qcom_scm.h
-@@ -1,4 +1,4 @@
--/* Copyright (c) 2010-2015, The Linux Foundation. All rights reserved.
-+/* Copyright (c) 2010-2015, 2018, The Linux Foundation. All rights reserved.
-  * Copyright (C) 2015 Linaro Ltd.
-  *
-  * This program is free software; you can redistribute it and/or modify
-@@ -33,6 +33,8 @@ struct qcom_scm_vmperm {
+diff --git a/drivers/clk/qcom/dispcc-sdm845.c b/drivers/clk/qcom/dispcc-sdm845.c
+index 0cc4909b5dbef..cb7a2d9247b04 100644
+--- a/drivers/clk/qcom/dispcc-sdm845.c
++++ b/drivers/clk/qcom/dispcc-sdm845.c
+@@ -569,6 +569,8 @@ static struct clk_branch disp_cc_mdss_vsync_clk = {
  
- #define QCOM_SCM_VMID_HLOS       0x3
- #define QCOM_SCM_VMID_MSS_MSA    0xF
-+#define QCOM_SCM_VMID_WLAN       0x18
-+#define QCOM_SCM_VMID_WLAN_CE    0x19
- #define QCOM_SCM_PERM_READ       0x4
- #define QCOM_SCM_PERM_WRITE      0x2
- #define QCOM_SCM_PERM_EXEC       0x1
+ static struct gdsc mdss_gdsc = {
+ 	.gdscr = 0x3000,
++	.en_few_wait_val = 0x6,
++	.en_rest_wait_val = 0x5,
+ 	.pd = {
+ 		.name = "mdss_gdsc",
+ 	},
 -- 
 2.43.0
 
