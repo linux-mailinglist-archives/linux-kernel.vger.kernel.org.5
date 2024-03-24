@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC901889022
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:11:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F15A488901B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:11:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDEEE1C2709B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:11:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54E4A291265
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4830013C82F;
-	Sun, 24 Mar 2024 23:46:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9372017EB8C;
+	Sun, 24 Mar 2024 23:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L09UI7Ss"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qCyMtPYs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33488224A28;
-	Sun, 24 Mar 2024 23:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A971224A3A;
+	Sun, 24 Mar 2024 23:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321932; cv=none; b=vEf6qyqLouxntZEFrojjCfAPnDK5ynnro9hQepbUAERuCkXws2VQfW3zO61vMss5g9HLhJfAQplVvRj4QMLPbOZFi1w8qCzWTKB7zfN2bOkXvl4SWNoaZV1ntgAYWQ4AE2G9z1FSAALrKK4fULUOLzSEkc3xVcyR1ud/9wJW2yM=
+	t=1711321933; cv=none; b=dMj2vd8ulXvXjoEnXSOV/qN+R7iYP+pXE3/kMbsojaJ+i0L4FYhYoAZkLhZKf2nyyGteXI026FtEPS7XyB7HCpUvuUl3HO7mn5oCkpBghLcGduJcWTIKd+USWLSZ67MK9x2JnDeefQBt+1R+C/VrLkZPCCPGAkOy+YbK2hY1mTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321932; c=relaxed/simple;
-	bh=kWQta+JWW20WsDBpivL+3NRiXgc7IA9O36H5ZYgfLfA=;
+	s=arc-20240116; t=1711321933; c=relaxed/simple;
+	bh=YDc8E3KzalxDjkSCtlxxcLyzt/KQurU33A4ccpgqgYA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TRZ4Q2W/wvVzVmrrSnaQSgddtbQjlHZsuFro7+2Itj/h5o7BVdtP90j/wWF/rKWl+hejaxyXOS4xS/YdrKLAFojOpbC306NBOFeYwm+UPHBRBEdy6izdt8H7NNcRGzhQFMN8E+0CEY+zWI3H3/EdYSR8Aiep9MTT+DIEguWVIks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L09UI7Ss; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E860C43399;
-	Sun, 24 Mar 2024 23:12:10 +0000 (UTC)
+	 MIME-Version; b=t7Thv+aOyWnCRtklrNtndkZI8f54F4GT0s56KuU6DuuBcXuiVlQeE5GGMoRLbEXO2vn0vHb/X7V14E6IgC2sxPIXSwD4DiCULuh8+dHzNbb4Mu1hLu6Evx+fEIcLOZDZ1pD91E4XK65Vxue34LqrtvwhCQqP2LjN4TVY6QYAPWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qCyMtPYs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56A7FC433C7;
+	Sun, 24 Mar 2024 23:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321931;
-	bh=kWQta+JWW20WsDBpivL+3NRiXgc7IA9O36H5ZYgfLfA=;
+	s=k20201202; t=1711321932;
+	bh=YDc8E3KzalxDjkSCtlxxcLyzt/KQurU33A4ccpgqgYA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L09UI7SsGw+WhUGGz0sOOJMlo1sbJXLudPVAVIoFUSR5Bq964XPff9sdg6D8aLDY3
-	 +Jr1xpcDyjV64sumFocolX4cdt8MYy4jiIUVNR0D+Fiy6oL5W7TM99S9IVfxVqneZ/
-	 490bbhQjRSxjqAQ0vFms83d0Y5jbYUGoir6XCAfLYu/0p24KE1ERZLFYBniJf60kSn
-	 zLRle0I/yPnVRRkNMrj9RPjqT+Tf3CA/CHUKb0BOogxNsZQqRTD+MFgZwhWtgn273j
-	 tjXiJJJWfcWJoMZfpI2hhUBUXjnW5mJrxNhcT4hqp1oKOIPV4ghv/YiPPVZBKBgtgy
-	 3xtite3p2uJKA==
+	b=qCyMtPYs962fV+cmIrPnLbxbXqbR2tIXrcqax9mlIA5KOAnuX0VMdfDRPqEZ+RDTo
+	 OtC3qIv7tZ0tX2dy8in2ozYc/jX5lGTtfc2RxM4bodAik4+qkOjduJHm6THLm7x6AJ
+	 9EYatV2utxkicbHQnzUz1g1CiB+HzbYxDveOHlekB9Uaa6BttRA3iOHpzVDpYp2O/c
+	 N96txkEnplxV59LQMqZLlIqlcVtQ5MluibDZVkojvZRgmhyg2voG85YoAz7NoC3JuI
+	 AMbbsZyWnT5Y2gX+ffGBPBzbiCnNBW5SEkNOPS5OIF7N/f5L592mRxxsbfmoILN1ml
+	 MqhrSYizZKkrA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Yu Kuai <yukuai3@huawei.com>,
-	Peter Neuwirth <reddunur@online.de>,
 	Song Liu <song@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 001/451] md: fix data corruption for raid456 when reshape restart while grow up
-Date: Sun, 24 Mar 2024 19:04:37 -0400
-Message-ID: <20240324231207.1351418-2-sashal@kernel.org>
+Subject: [PATCH 6.1 002/451] md/raid10: prevent soft lockup while flush writes
+Date: Sun, 24 Mar 2024 19:04:38 -0400
+Message-ID: <20240324231207.1351418-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -65,55 +64,75 @@ Content-Transfer-Encoding: 8bit
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 873f50ece41aad5c4f788a340960c53774b5526e ]
+[ Upstream commit 010444623e7f4da6b4a4dd603a7da7469981e293 ]
 
-Currently, if reshape is interrupted, echo "reshape" to sync_action will
-restart reshape from scratch, for example:
+Currently, there is no limit for raid1/raid10 plugged bio. While flushing
+writes, raid1 has cond_resched() while raid10 doesn't, and too many
+writes can cause soft lockup.
 
-echo frozen > sync_action
-echo reshape > sync_action
+Follow up soft lockup can be triggered easily with writeback test for
+raid10 with ramdisks:
 
-This will corrupt data before reshape_position if the array is growing,
-fix the problem by continue reshape from reshape_position.
+watchdog: BUG: soft lockup - CPU#10 stuck for 27s! [md0_raid10:1293]
+Call Trace:
+ <TASK>
+ call_rcu+0x16/0x20
+ put_object+0x41/0x80
+ __delete_object+0x50/0x90
+ delete_object_full+0x2b/0x40
+ kmemleak_free+0x46/0xa0
+ slab_free_freelist_hook.constprop.0+0xed/0x1a0
+ kmem_cache_free+0xfd/0x300
+ mempool_free_slab+0x1f/0x30
+ mempool_free+0x3a/0x100
+ bio_free+0x59/0x80
+ bio_put+0xcf/0x2c0
+ free_r10bio+0xbf/0xf0
+ raid_end_bio_io+0x78/0xb0
+ one_write_done+0x8a/0xa0
+ raid10_end_write_request+0x1b4/0x430
+ bio_endio+0x175/0x320
+ brd_submit_bio+0x3b9/0x9b7 [brd]
+ __submit_bio+0x69/0xe0
+ submit_bio_noacct_nocheck+0x1e6/0x5a0
+ submit_bio_noacct+0x38c/0x7e0
+ flush_pending_writes+0xf0/0x240
+ raid10d+0xac/0x1ed0
 
-Reported-by: Peter Neuwirth <reddunur@online.de>
-Link: https://lore.kernel.org/linux-raid/e2f96772-bfbc-f43b-6da1-f520e5164536@online.de/
+Fix the problem by adding cond_resched() to raid10 like what raid1 did.
+
+Note that unlimited plugged bio still need to be optimized, for example,
+in the case of lots of dirty pages writeback, this will take lots of
+memory and io will spend a long time in plug, hence io latency is bad.
+
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20230512015610.821290-3-yukuai1@huaweicloud.com
+Link: https://lore.kernel.org/r/20230529131106.2123367-2-yukuai1@huaweicloud.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/md/raid10.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 846bdee4daa0e..1c87f3e708094 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -4903,11 +4903,21 @@ action_store(struct mddev *mddev, const char *page, size_t len)
- 			return -EINVAL;
- 		err = mddev_lock(mddev);
- 		if (!err) {
--			if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
-+			if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
- 				err =  -EBUSY;
--			else {
-+			} else if (mddev->reshape_position == MaxSector ||
-+				   mddev->pers->check_reshape == NULL ||
-+				   mddev->pers->check_reshape(mddev)) {
- 				clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 				err = mddev->pers->start_reshape(mddev);
-+			} else {
-+				/*
-+				 * If reshape is still in progress, and
-+				 * md_check_recovery() can continue to reshape,
-+				 * don't restart reshape because data can be
-+				 * corrupted for raid456.
-+				 */
-+				clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 			}
- 			mddev_unlock(mddev);
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index 7b318e7e8d459..009f7ffe4e10c 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -920,6 +920,7 @@ static void flush_pending_writes(struct r10conf *conf)
+ 
+ 			raid1_submit_write(bio);
+ 			bio = next;
++			cond_resched();
  		}
+ 		blk_finish_plug(&plug);
+ 	} else
+@@ -1130,6 +1131,7 @@ static void raid10_unplug(struct blk_plug_cb *cb, bool from_schedule)
+ 
+ 		raid1_submit_write(bio);
+ 		bio = next;
++		cond_resched();
+ 	}
+ 	kfree(plug);
+ }
 -- 
 2.43.0
 
