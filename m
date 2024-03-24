@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7563A889254
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:03:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFFF188914E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2F7D1C2DFF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:03:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D6311F2C4E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2844E245908;
-	Mon, 25 Mar 2024 00:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7ED255C86;
+	Mon, 25 Mar 2024 00:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ORwZ98Ca"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q7SaWn+7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C89276C7F;
-	Sun, 24 Mar 2024 23:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D77A175C9E;
+	Sun, 24 Mar 2024 23:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323402; cv=none; b=V42S4jO07gJ0VLQTtCd9f3G61kN/FieAmBCfOqYTLPgCA/bWSuc2jPO9CJJsMq9vLyDqpkelaC+6w1X9ruZbrF4hU+wIS/rUkkttVcRuxgxD/pN0VB3L3LvohYTbQaAmqRGn0xSHRyp48gx30reCbdQ3yQay8bsnPgI8NHS3UtM=
+	t=1711323403; cv=none; b=bgl15a/GfvwJPteJBAPnH5XKD9CYFSTJh5UUy1OoqQgoPM3xgigi3bfP4VvIVMew2EgR/AYky8LQ/xm6OtiYNyr+8j7Ug1SoGNBCd1WywUGOolcac/CaJK2JB9uaPQvfWZZnj6ircgl4Yp3x9Zx9528cIZsH74zGLo5Mo4gjnaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323402; c=relaxed/simple;
-	bh=Fj4RZVYN42SS7tkI0d9ziQCF24UjPm7Cxt1hwEcWJlE=;
+	s=arc-20240116; t=1711323403; c=relaxed/simple;
+	bh=ywF7kYPrkCdFZ+QMKv18F5u11BtEIpfftiuZyKqS0Lw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GtYekrsXJgVi7OD4Fg1Fq1Dj8HGs4CAhPYJgmawXIi8PeiJbsqj81+PPa5BHa0/TB0dkWfBnGGpwlMQ2/2o2vkrpAA1p33mYPFPn2pl/SJzxdi/rTlRzfB/kGtKATve/QYN2hrm8lNmFsWtXPEx8ifUq9FM3a61QHy04h/BKPfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ORwZ98Ca; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D737FC433C7;
-	Sun, 24 Mar 2024 23:36:40 +0000 (UTC)
+	 MIME-Version:Content-Type; b=pWx/wcrBJLH+cHGI0E6L2B6yobKQTklvgxu9Redr86DarAtCmHzkG7IzT6ngouAJ1HXK8hp7P+pH1pVnKZNnXTZUuCrQ+MO/JGw1raQdhc6+jD3ZnTfqtP54xdEufX4TsR46AC6QvbeWsrKR1CTAZTqYdulpTM32Jsxoy00A/1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q7SaWn+7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD04DC43399;
+	Sun, 24 Mar 2024 23:36:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323401;
-	bh=Fj4RZVYN42SS7tkI0d9ziQCF24UjPm7Cxt1hwEcWJlE=;
+	s=k20201202; t=1711323402;
+	bh=ywF7kYPrkCdFZ+QMKv18F5u11BtEIpfftiuZyKqS0Lw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ORwZ98Ca3VrjT7MCFyMe1X7RVI2YSQzIQGiyfDa2nt1oQvrG8U+lI53G1fmgIORuG
-	 R6r6PC9I01vPXR4PvgITnH1Krqn/DRkAy/68xHXWx7HjpAyPBolV7WsXtEXorMfD1h
-	 cpggdyvlVD08C+pgduoaCZek8Gf23Mxp+0Np+f5LnadBc5gF0eOXRTJ7543duwhR2M
-	 EsJ6azz5J1V3PiIV3iLgXhTF0vkSFdwRJkYn62kJQOr/lU8BAOLJew+PKlCuxAgjDs
-	 y2OSYk6KI9LDxH7tIEwxZUZi1FXGspPbOcLAMloV+NSJt6Jnh6tG4NPXaj5xD9VG9n
-	 UfcWbw/YvXiSQ==
+	b=q7SaWn+7aCpvWzX3oTH0fAOA/fn3QDMlPGGSOkqokhTtM/p/xeB5kjqKD9ObOLuCR
+	 CYSQ/0BZFnXntYyjIrfxXJnsx7B+B4CqItfCP+tn5nk/SbHPTiO5/Fkc1SddD6SEC3
+	 r1XM0Gt00EFDM6L7sF4NgyeD/8AeWFFVu+xg/3x62aXkWi+8MOvc+RQ+G75TcL8R2s
+	 bgZZazB5/X+hkruW0P4Gc7rMmkbFzLca4FY9RwAvnk2w9H610RIsqd+LCaiYjOFt7f
+	 qJ5QjZxNOpO69F5N0l9NQwgl5TRvoNytu/LxI9QcnRtuJG9k5DHhhqRSblMcUxUESn
+	 Vcqb5pN3oeeMg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Kalle Valo <kvalo@codeaurora.org>,
+Cc: =?UTF-8?q?Alexis=20Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 102/317] wireless: Remove redundant 'flush_workqueue()' calls
-Date: Sun, 24 Mar 2024 19:31:22 -0400
-Message-ID: <20240324233458.1352854-103-sashal@kernel.org>
+Subject: [PATCH 5.15 103/317] wifi: wilc1000: prevent use-after-free on vif when cleaning up all interfaces
+Date: Sun, 24 Mar 2024 19:31:23 -0400
+Message-ID: <20240324233458.1352854-104-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -58,245 +58,171 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Alexis Lothoré <alexis.lothore@bootlin.com>
 
-[ Upstream commit ff1cc2fa3055ee4c83839f38b74b4ee370a2291c ]
+[ Upstream commit cb5942b77c05d54310a0420cac12935e9b6aa21c ]
 
-'destroy_workqueue()' already drains the queue before destroying it, so
-there is no need to flush it explicitly.
+wilc_netdev_cleanup currently triggers a KASAN warning, which can be
+observed on interface registration error path, or simply by
+removing the module/unbinding device from driver:
 
-Remove the redundant 'flush_workqueue()' calls.
+echo spi0.1 > /sys/bus/spi/drivers/wilc1000_spi/unbind
 
-This was generated with coccinelle:
+==================================================================
+BUG: KASAN: slab-use-after-free in wilc_netdev_cleanup+0x508/0x5cc
+Read of size 4 at addr c54d1ce8 by task sh/86
 
-@@
-expression E;
-@@
-- 	flush_workqueue(E);
-	destroy_workqueue(E);
+CPU: 0 PID: 86 Comm: sh Not tainted 6.8.0-rc1+ #117
+Hardware name: Atmel SAMA5
+ unwind_backtrace from show_stack+0x18/0x1c
+ show_stack from dump_stack_lvl+0x34/0x58
+ dump_stack_lvl from print_report+0x154/0x500
+ print_report from kasan_report+0xac/0xd8
+ kasan_report from wilc_netdev_cleanup+0x508/0x5cc
+ wilc_netdev_cleanup from wilc_bus_remove+0xc8/0xec
+ wilc_bus_remove from spi_remove+0x8c/0xac
+ spi_remove from device_release_driver_internal+0x434/0x5f8
+ device_release_driver_internal from unbind_store+0xbc/0x108
+ unbind_store from kernfs_fop_write_iter+0x398/0x584
+ kernfs_fop_write_iter from vfs_write+0x728/0xf88
+ vfs_write from ksys_write+0x110/0x1e4
+ ksys_write from ret_fast_syscall+0x0/0x1c
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/0855d51423578ad019c0264dad3fe47a2e8af9c7.1633849511.git.christophe.jaillet@wanadoo.fr
-Stable-dep-of: cb5942b77c05 ("wifi: wilc1000: prevent use-after-free on vif when cleaning up all interfaces")
+[...]
+
+Allocated by task 1:
+ kasan_save_track+0x30/0x5c
+ __kasan_kmalloc+0x8c/0x94
+ __kmalloc_node+0x1cc/0x3e4
+ kvmalloc_node+0x48/0x180
+ alloc_netdev_mqs+0x68/0x11dc
+ alloc_etherdev_mqs+0x28/0x34
+ wilc_netdev_ifc_init+0x34/0x8ec
+ wilc_cfg80211_init+0x690/0x910
+ wilc_bus_probe+0xe0/0x4a0
+ spi_probe+0x158/0x1b0
+ really_probe+0x270/0xdf4
+ __driver_probe_device+0x1dc/0x580
+ driver_probe_device+0x60/0x140
+ __driver_attach+0x228/0x5d4
+ bus_for_each_dev+0x13c/0x1a8
+ bus_add_driver+0x2a0/0x608
+ driver_register+0x24c/0x578
+ do_one_initcall+0x180/0x310
+ kernel_init_freeable+0x424/0x484
+ kernel_init+0x20/0x148
+ ret_from_fork+0x14/0x28
+
+Freed by task 86:
+ kasan_save_track+0x30/0x5c
+ kasan_save_free_info+0x38/0x58
+ __kasan_slab_free+0xe4/0x140
+ kfree+0xb0/0x238
+ device_release+0xc0/0x2a8
+ kobject_put+0x1d4/0x46c
+ netdev_run_todo+0x8fc/0x11d0
+ wilc_netdev_cleanup+0x1e4/0x5cc
+ wilc_bus_remove+0xc8/0xec
+ spi_remove+0x8c/0xac
+ device_release_driver_internal+0x434/0x5f8
+ unbind_store+0xbc/0x108
+ kernfs_fop_write_iter+0x398/0x584
+ vfs_write+0x728/0xf88
+ ksys_write+0x110/0x1e4
+ ret_fast_syscall+0x0/0x1c
+ [...]
+
+David Mosberger-Tan initial investigation [1] showed that this
+use-after-free is due to netdevice unregistration during vif list
+traversal. When unregistering a net device, since the needs_free_netdev has
+been set to true during registration, the netdevice object is also freed,
+and as a consequence, the corresponding vif object too, since it is
+attached to it as private netdevice data. The next occurrence of the loop
+then tries to access freed vif pointer to the list to move forward in the
+list.
+
+Fix this use-after-free thanks to two mechanisms:
+- navigate in the list with list_for_each_entry_safe, which allows to
+  safely modify the list as we go through each element. For each element,
+  remove it from the list with list_del_rcu
+- make sure to wait for RCU grace period end after each vif removal to make
+  sure it is safe to free the corresponding vif too (through
+  unregister_netdev)
+
+Since we are in a RCU "modifier" path (not a "reader" path), and because
+such path is expected not to be concurrent to any other modifier (we are
+using the vif_mutex lock), we do not need to use RCU list API, that's why
+we can benefit from list_for_each_entry_safe.
+
+[1] https://lore.kernel.org/linux-wireless/ab077dbe58b1ea5de0a3b2ca21f275a07af967d2.camel@egauge.net/
+
+Fixes: 8399918f3056 ("staging: wilc1000: use RCU list to maintain vif interfaces list")
+Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/20240212-wilc_rework_deinit-v1-1-9203ae56c27f@bootlin.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/core.c             | 3 ---
- drivers/net/wireless/ath/ath10k/sdio.c             | 1 -
- drivers/net/wireless/intel/iwlegacy/3945-mac.c     | 1 -
- drivers/net/wireless/intel/iwlegacy/4965-mac.c     | 1 -
- drivers/net/wireless/intel/iwlwifi/dvm/main.c      | 1 -
- drivers/net/wireless/marvell/mwifiex/cfg80211.c    | 2 --
- drivers/net/wireless/marvell/mwifiex/main.c        | 2 --
- drivers/net/wireless/microchip/wilc1000/netdev.c   | 1 -
- drivers/net/wireless/quantenna/qtnfmac/core.c      | 2 --
- drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c | 2 --
- drivers/net/wireless/realtek/rtlwifi/pci.c         | 1 -
- drivers/net/wireless/rndis_wlan.c                  | 2 --
- drivers/net/wireless/st/cw1200/bh.c                | 2 --
- 13 files changed, 21 deletions(-)
+ .../net/wireless/microchip/wilc1000/netdev.c  | 28 +++++--------------
+ 1 file changed, 7 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 58e86e662ab83..eca24a61165ee 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -3544,13 +3544,10 @@ EXPORT_SYMBOL(ath10k_core_create);
- 
- void ath10k_core_destroy(struct ath10k *ar)
- {
--	flush_workqueue(ar->workqueue);
- 	destroy_workqueue(ar->workqueue);
- 
--	flush_workqueue(ar->workqueue_aux);
- 	destroy_workqueue(ar->workqueue_aux);
- 
--	flush_workqueue(ar->workqueue_tx_complete);
- 	destroy_workqueue(ar->workqueue_tx_complete);
- 
- 	ath10k_debug_destroy(ar);
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index eb705214f3f0a..63e1c2d783c5f 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2650,7 +2650,6 @@ static void ath10k_sdio_remove(struct sdio_func *func)
- 
- 	ath10k_core_destroy(ar);
- 
--	flush_workqueue(ar_sdio->workqueue);
- 	destroy_workqueue(ar_sdio->workqueue);
- }
- 
-diff --git a/drivers/net/wireless/intel/iwlegacy/3945-mac.c b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-index 04c149ff745e9..dea0012fcdc79 100644
---- a/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-+++ b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
-@@ -3827,7 +3827,6 @@ il3945_pci_remove(struct pci_dev *pdev)
- 	il3945_unset_hw_params(il);
- 
- 	/*netif_stop_queue(dev); */
--	flush_workqueue(il->workqueue);
- 
- 	/* ieee80211_unregister_hw calls il3945_mac_stop, which flushes
- 	 * il->workqueue... so we can't take down the workqueue
-diff --git a/drivers/net/wireless/intel/iwlegacy/4965-mac.c b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-index ff04282e3db03..ceab7704897de 100644
---- a/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-+++ b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-@@ -6739,7 +6739,6 @@ il4965_pci_remove(struct pci_dev *pdev)
- 	il_eeprom_free(il);
- 
- 	/*netif_stop_queue(dev); */
--	flush_workqueue(il->workqueue);
- 
- 	/* ieee80211_unregister_hw calls il_mac_stop, which flushes
- 	 * il->workqueue... so we can't take down the workqueue
-diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/main.c b/drivers/net/wireless/intel/iwlwifi/dvm/main.c
-index cc7b69fd14d37..69d1aae96bbb4 100644
---- a/drivers/net/wireless/intel/iwlwifi/dvm/main.c
-+++ b/drivers/net/wireless/intel/iwlwifi/dvm/main.c
-@@ -1525,7 +1525,6 @@ static void iwl_op_mode_dvm_stop(struct iwl_op_mode *op_mode)
- 	kfree(priv->nvm_data);
- 
- 	/*netif_stop_queue(dev); */
--	flush_workqueue(priv->workqueue);
- 
- 	/* ieee80211_unregister_hw calls iwlagn_mac_stop, which flushes
- 	 * priv->workqueue... so we can't take down the workqueue
-diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index 109b1bef4c707..017d9e03d652d 100644
---- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-+++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -3169,13 +3169,11 @@ int mwifiex_del_virtual_intf(struct wiphy *wiphy, struct wireless_dev *wdev)
- 		cfg80211_unregister_netdevice(wdev->netdev);
- 
- 	if (priv->dfs_cac_workqueue) {
--		flush_workqueue(priv->dfs_cac_workqueue);
- 		destroy_workqueue(priv->dfs_cac_workqueue);
- 		priv->dfs_cac_workqueue = NULL;
- 	}
- 
- 	if (priv->dfs_chan_sw_workqueue) {
--		flush_workqueue(priv->dfs_chan_sw_workqueue);
- 		destroy_workqueue(priv->dfs_chan_sw_workqueue);
- 		priv->dfs_chan_sw_workqueue = NULL;
- 	}
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-index 17399d4aa1290..7943fd3b3058d 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.c
-+++ b/drivers/net/wireless/marvell/mwifiex/main.c
-@@ -498,13 +498,11 @@ static void mwifiex_free_adapter(struct mwifiex_adapter *adapter)
- static void mwifiex_terminate_workqueue(struct mwifiex_adapter *adapter)
- {
- 	if (adapter->workqueue) {
--		flush_workqueue(adapter->workqueue);
- 		destroy_workqueue(adapter->workqueue);
- 		adapter->workqueue = NULL;
- 	}
- 
- 	if (adapter->rx_workqueue) {
--		flush_workqueue(adapter->rx_workqueue);
- 		destroy_workqueue(adapter->rx_workqueue);
- 		adapter->rx_workqueue = NULL;
- 	}
 diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
-index 5e3ec20e24dad..dc91739eff8c6 100644
+index dc91739eff8c6..0cf9e123d8c7d 100644
 --- a/drivers/net/wireless/microchip/wilc1000/netdev.c
 +++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
-@@ -881,7 +881,6 @@ void wilc_netdev_cleanup(struct wilc *wilc)
- 	srcu_read_unlock(&wilc->srcu, srcu_idx);
+@@ -862,8 +862,7 @@ static const struct net_device_ops wilc_netdev_ops = {
+ 
+ void wilc_netdev_cleanup(struct wilc *wilc)
+ {
+-	struct wilc_vif *vif;
+-	int srcu_idx, ifc_cnt = 0;
++	struct wilc_vif *vif, *vif_tmp;
+ 
+ 	if (!wilc)
+ 		return;
+@@ -873,32 +872,19 @@ void wilc_netdev_cleanup(struct wilc *wilc)
+ 		wilc->firmware = NULL;
+ 	}
+ 
+-	srcu_idx = srcu_read_lock(&wilc->srcu);
+-	list_for_each_entry_rcu(vif, &wilc->vif_list, list) {
++	list_for_each_entry_safe(vif, vif_tmp, &wilc->vif_list, list) {
++		mutex_lock(&wilc->vif_mutex);
++		list_del_rcu(&vif->list);
++		wilc->vif_num--;
++		mutex_unlock(&wilc->vif_mutex);
++		synchronize_srcu(&wilc->srcu);
+ 		if (vif->ndev)
+ 			unregister_netdev(vif->ndev);
+ 	}
+-	srcu_read_unlock(&wilc->srcu, srcu_idx);
  
  	wilc_wfi_deinit_mon_interface(wilc, false);
--	flush_workqueue(wilc->hif_workqueue);
  	destroy_workqueue(wilc->hif_workqueue);
  
- 	while (ifc_cnt < WILC_NUM_CONCURRENT_IFC) {
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/core.c b/drivers/net/wireless/quantenna/qtnfmac/core.c
-index b4dd60b2ebc90..01725237836e8 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/core.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/core.c
-@@ -811,13 +811,11 @@ void qtnf_core_detach(struct qtnf_bus *bus)
- 	bus->fw_state = QTNF_FW_STATE_DETACHED;
- 
- 	if (bus->workqueue) {
--		flush_workqueue(bus->workqueue);
- 		destroy_workqueue(bus->workqueue);
- 		bus->workqueue = NULL;
- 	}
- 
- 	if (bus->hprio_workqueue) {
--		flush_workqueue(bus->hprio_workqueue);
- 		destroy_workqueue(bus->hprio_workqueue);
- 		bus->hprio_workqueue = NULL;
- 	}
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-index 5d93c874d6669..9ad4c120fa287 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-@@ -387,7 +387,6 @@ static int qtnf_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return 0;
- 
- error:
--	flush_workqueue(pcie_priv->workqueue);
- 	destroy_workqueue(pcie_priv->workqueue);
- 	pci_set_drvdata(pdev, NULL);
- 	return ret;
-@@ -416,7 +415,6 @@ static void qtnf_pcie_remove(struct pci_dev *dev)
- 		qtnf_core_detach(bus);
- 
- 	netif_napi_del(&bus->mux_napi);
--	flush_workqueue(priv->workqueue);
- 	destroy_workqueue(priv->workqueue);
- 	tasklet_kill(&priv->reclaim_tq);
- 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/pci.c b/drivers/net/wireless/realtek/rtlwifi/pci.c
-index 679ae786cf450..6d9f2a6233a21 100644
---- a/drivers/net/wireless/realtek/rtlwifi/pci.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/pci.c
-@@ -1704,7 +1704,6 @@ static void rtl_pci_deinit(struct ieee80211_hw *hw)
- 	tasklet_kill(&rtlpriv->works.irq_tasklet);
- 	cancel_work_sync(&rtlpriv->works.lps_change_work);
- 
--	flush_workqueue(rtlpriv->works.rtl_wq);
- 	destroy_workqueue(rtlpriv->works.rtl_wq);
- }
- 
-diff --git a/drivers/net/wireless/rndis_wlan.c b/drivers/net/wireless/rndis_wlan.c
-index 70841d131d724..c35e9f5c2897e 100644
---- a/drivers/net/wireless/rndis_wlan.c
-+++ b/drivers/net/wireless/rndis_wlan.c
-@@ -3494,7 +3494,6 @@ static int rndis_wlan_bind(struct usbnet *usbdev, struct usb_interface *intf)
- 	cancel_delayed_work_sync(&priv->dev_poller_work);
- 	cancel_delayed_work_sync(&priv->scan_work);
- 	cancel_work_sync(&priv->work);
--	flush_workqueue(priv->workqueue);
- 	destroy_workqueue(priv->workqueue);
- 
- 	wiphy_free(wiphy);
-@@ -3511,7 +3510,6 @@ static void rndis_wlan_unbind(struct usbnet *usbdev, struct usb_interface *intf)
- 	cancel_delayed_work_sync(&priv->dev_poller_work);
- 	cancel_delayed_work_sync(&priv->scan_work);
- 	cancel_work_sync(&priv->work);
--	flush_workqueue(priv->workqueue);
- 	destroy_workqueue(priv->workqueue);
- 
- 	rndis_unbind(usbdev, intf);
-diff --git a/drivers/net/wireless/st/cw1200/bh.c b/drivers/net/wireless/st/cw1200/bh.c
-index 8bade5d89f12f..10e019cddcc65 100644
---- a/drivers/net/wireless/st/cw1200/bh.c
-+++ b/drivers/net/wireless/st/cw1200/bh.c
-@@ -85,8 +85,6 @@ void cw1200_unregister_bh(struct cw1200_common *priv)
- 	atomic_inc(&priv->bh_term);
- 	wake_up(&priv->bh_wq);
- 
--	flush_workqueue(priv->bh_workqueue);
+-	while (ifc_cnt < WILC_NUM_CONCURRENT_IFC) {
+-		mutex_lock(&wilc->vif_mutex);
+-		if (wilc->vif_num <= 0) {
+-			mutex_unlock(&wilc->vif_mutex);
+-			break;
+-		}
+-		vif = wilc_get_wl_to_vif(wilc);
+-		if (!IS_ERR(vif))
+-			list_del_rcu(&vif->list);
 -
- 	destroy_workqueue(priv->bh_workqueue);
- 	priv->bh_workqueue = NULL;
- 
+-		wilc->vif_num--;
+-		mutex_unlock(&wilc->vif_mutex);
+-		synchronize_srcu(&wilc->srcu);
+-		ifc_cnt++;
+-	}
+-
+ 	wilc_wlan_cfg_deinit(wilc);
+ 	wlan_deinit_locks(wilc);
+ 	wiphy_unregister(wilc->wiphy);
 -- 
 2.43.0
 
