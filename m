@@ -1,60 +1,55 @@
-Return-Path: <linux-kernel+bounces-115349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA1C889C35
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:13:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 530408885D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:17:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A720FB3CAF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:42:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F14911F22EE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41F31E9F94;
-	Mon, 25 Mar 2024 02:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35AFF14431F;
+	Sun, 24 Mar 2024 22:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PxxV5vmq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hc8zobks"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3251D4C65;
-	Sun, 24 Mar 2024 22:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03D6823DF;
+	Sun, 24 Mar 2024 22:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320560; cv=none; b=ZMbQl6Am//HAqjgBI/HgLvBf5kA26FAwEcrz9KYgzanEayiN5lOqfH91xrnwm6INZRfeBKYoYvId+n9b1DmPNh0/zb8lqX7SjoscuR+PMZ8MIBssZL55deIb5ZiM/B8ZLGodRAFnaDMZ3oRkTr6EMaPfpl+6uyAmMqAsqP/JD+0=
+	t=1711320562; cv=none; b=dxkGzc0d8kzx8uze/nLhVAuhCKM9mcLikS0ggLurebv294CZn2eN7u34RCSjLCI1YawbyWb4UISbvy9VKhkNbCtVp1jlrZvniIARacdP6aHxaGNhTg0PDHW9ZxUoTqk8CE526ZhK+T5rlyFigGCHPi03ze6TFN6E0KZuiVjG49k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320560; c=relaxed/simple;
-	bh=vYYFwKto6yg6woV1Hr3fxCR11bex2S34Ri9YamTHIhE=;
+	s=arc-20240116; t=1711320562; c=relaxed/simple;
+	bh=Bo9STP/2YMxC8WX0+B/N7gU8gl/AULgfdFnHDucbbc8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hujw/wOfurpkS7Vy0ZgC7AcOfudnnPka6pDT2h+CLBv4Zq2TJo8Z6Vk9GANZtkRfEU8bb0QhXkZGC/sqRhCnILWg/cXkUS/555c1NFMm0XsfiiCqrqbgd0256+dULODrkLlWVKFqJpuJpgyVql+Ln2VNNl2UXhk8bEEbfwYjsA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PxxV5vmq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33937C433C7;
-	Sun, 24 Mar 2024 22:49:19 +0000 (UTC)
+	 MIME-Version; b=QqfEgB3s03FyYoyppFAQnM7OLrAunPZ7bIa5J1Eb5xa3nEcCz5IT6Xg/eKIve1XoeGaixCQk0GRglfyPqI78VhhwzJYujolR+yTlyvPDN8nS8dy7tZjfD+nqf9IKmjq7aUSuxhEdcaFf30iNO1YZ1airijaAmKimf4TXHrFP5eI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hc8zobks; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1211C43390;
+	Sun, 24 Mar 2024 22:49:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320560;
-	bh=vYYFwKto6yg6woV1Hr3fxCR11bex2S34Ri9YamTHIhE=;
+	s=k20201202; t=1711320561;
+	bh=Bo9STP/2YMxC8WX0+B/N7gU8gl/AULgfdFnHDucbbc8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PxxV5vmq+V3sQ+vubbe08K9s/fSge8IgY+om1uM7rxwtOGBj06775ZTU0NVwCC4Z/
-	 PQ3fevCjVEvXkHbysvfMoeCUKmx+T71SnrTB7WQGr9TXlxrX+cC6ti7WbBir//Emgr
-	 snlfcq3o6Yj6EcJC+AuMqFUdeBN942bCe+TxX5CRYcLxujRthkiY1OLhHAikOhWnM2
-	 VBltzxT17fNe4iwec0WF3eKXJzC/aBGB1iEwxlClgl9qWFMgiAkTrtj0ga3915CCS3
-	 RLXiZ/H9oYPcT8rxXbdK7Ky6lsmyx7CUjujRXMlcY/GKMZNGMkqLgYCEqIfaZVovHw
-	 BYXaeXAzpj2BA==
+	b=Hc8zobksOf+h+K84dWFBHNGRElKD9yVBdoASKgWraywwToeDoQAytIqVx0vyh5fpA
+	 tempXsq9yeIoNeesvYo4IdtsHAnN02x2cs9D8AMm/6HwTIz6PX/Vjk9cRE7LdURGHi
+	 F5ytxvCGhlyHWkhsZfp7qIjAk8IAQz96YPCgX9MXR+Lq4GSHN8lDMeD/0/gXQaFTJS
+	 H3NG6Qav1GtPXQb/X+Ov8/RKgrvEmuu0wOXKunxJNpV0H9pWDPsLwp7VwWn0Bo7HFW
+	 Guz9LIILyLwPlLcE4TqC5Zje41VisiKTQuW+Itv5mR2DOPMZGW9pmo6sRcCrLCMxAg
+	 R6miGU2xvTPJg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Michael Roth <michael.roth@amd.com>,
-	Dave Hansen <dave.hansen@intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
+Cc: Babu Moger <babu.moger@amd.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Reinette Chatre <reinette.chatre@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 121/713] x86/mm: Ensure input to pfn_to_kaddr() is treated as a 64-bit type
-Date: Sun, 24 Mar 2024 18:37:27 -0400
-Message-ID: <20240324224720.1345309-122-sashal@kernel.org>
+Subject: [PATCH 6.7 122/713] x86/resctrl: Remove hard-coded memory bandwidth limit
+Date: Sun, 24 Mar 2024 18:37:28 -0400
+Message-ID: <20240324224720.1345309-123-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -68,71 +63,77 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Michael Roth <michael.roth@amd.com>
+From: Babu Moger <babu.moger@amd.com>
 
-[ Upstream commit 8e5647a723c49d73b9f108a8bb38e8c29d3948ea ]
+[ Upstream commit 0976783bb123f30981bc1e7a14d9626a6f63aeac ]
 
-On 64-bit platforms, the pfn_to_kaddr() macro requires that the input
-value is 64 bits in order to ensure that valid address bits don't get
-lost when shifting that input by PAGE_SHIFT to calculate the physical
-address to provide a virtual address for.
+The QOS Memory Bandwidth Enforcement Limit is reported by
+CPUID_Fn80000020_EAX_x01 and CPUID_Fn80000020_EAX_x02:
 
-One such example is in pvalidate_pages() (used by SEV-SNP guests), where
-the GFN in the struct used for page-state change requests is a 40-bit
-bit-field, so attempts to pass this GFN field directly into
-pfn_to_kaddr() ends up causing guest crashes when dealing with addresses
-above the 1TB range due to the above.
+  Bits	 Description
+  31:0	 BW_LEN: Size of the QOS Memory Bandwidth Enforcement Limit.
 
-Fix this issue with SEV-SNP guests, as well as any similar cases that
-might cause issues in current/future code, by using an inline function,
-instead of a macro, so that the input is implicitly cast to the
-expected 64-bit input type prior to performing the shift operation.
+Newer processors can support higher bandwidth limit than the current
+hard-coded value. Remove latter and detect using CPUID instead. Also,
+update the register variables eax and edx to match the AMD CPUID
+definition.
 
-While it might be argued that the issue is on the caller side, other
-archs/macros have taken similar approaches to deal with instances like
-this, such as ARM explicitly casting the input to phys_addr_t:
+The CPUID details are documented in the Processor Programming Reference
+(PPR) Vol 1.1 for AMD Family 19h Model 11h B1 - 55901 Rev 0.25 in the
+Link tag below.
 
-  e48866647b48 ("ARM: 8396/1: use phys_addr_t in pfn_to_kaddr()")
-
-A C inline function is even better though.
-
-[ mingo: Refined the changelog some more & added __always_inline. ]
-
-Fixes: 6c3211796326 ("x86/sev: Add SNP-specific unaccepted memory support")
-Suggested-by: Dave Hansen <dave.hansen@intel.com>
-Suggested-by: H. Peter Anvin <hpa@zytor.com>
-Signed-off-by: Michael Roth <michael.roth@amd.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20231122163700.400507-1-michael.roth@amd.com
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+Link: https://lore.kernel.org/r/c26a8ca79d399ed076cf8bf2e9fbc58048808289.1705359148.git.babu.moger@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/page.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/resctrl/core.c     | 10 ++++------
+ arch/x86/kernel/cpu/resctrl/internal.h |  1 -
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/include/asm/page.h b/arch/x86/include/asm/page.h
-index d18e5c332cb9f..1b93ff80b43bc 100644
---- a/arch/x86/include/asm/page.h
-+++ b/arch/x86/include/asm/page.h
-@@ -66,10 +66,14 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
-  * virt_addr_valid(kaddr) returns true.
-  */
- #define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
--#define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
- extern bool __virt_addr_valid(unsigned long kaddr);
- #define virt_addr_valid(kaddr)	__virt_addr_valid((unsigned long) (kaddr))
- 
-+static __always_inline void *pfn_to_kaddr(unsigned long pfn)
-+{
-+	return __va(pfn << PAGE_SHIFT);
-+}
-+
- static __always_inline u64 __canonical_address(u64 vaddr, u8 vaddr_bits)
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 19e0681f04356..d04371e851b4c 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -231,9 +231,7 @@ static bool __get_mem_config_intel(struct rdt_resource *r)
+ static bool __rdt_get_mem_config_amd(struct rdt_resource *r)
  {
- 	return ((s64)vaddr << (64 - vaddr_bits)) >> (64 - vaddr_bits);
+ 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+-	union cpuid_0x10_3_eax eax;
+-	union cpuid_0x10_x_edx edx;
+-	u32 ebx, ecx, subleaf;
++	u32 eax, ebx, ecx, edx, subleaf;
+ 
+ 	/*
+ 	 * Query CPUID_Fn80000020_EDX_x01 for MBA and
+@@ -241,9 +239,9 @@ static bool __rdt_get_mem_config_amd(struct rdt_resource *r)
+ 	 */
+ 	subleaf = (r->rid == RDT_RESOURCE_SMBA) ? 2 :  1;
+ 
+-	cpuid_count(0x80000020, subleaf, &eax.full, &ebx, &ecx, &edx.full);
+-	hw_res->num_closid = edx.split.cos_max + 1;
+-	r->default_ctrl = MAX_MBA_BW_AMD;
++	cpuid_count(0x80000020, subleaf, &eax, &ebx, &ecx, &edx);
++	hw_res->num_closid = edx + 1;
++	r->default_ctrl = 1 << eax;
+ 
+ 	/* AMD does not use delay */
+ 	r->membw.delay_linear = false;
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index a4f1aa15f0a2a..d2979748fae47 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -18,7 +18,6 @@
+ #define MBM_OVERFLOW_INTERVAL		1000
+ #define MAX_MBA_BW			100u
+ #define MBA_IS_LINEAR			0x4
+-#define MAX_MBA_BW_AMD			0x800
+ #define MBM_CNTR_WIDTH_OFFSET_AMD	20
+ 
+ #define RMID_VAL_ERROR			BIT_ULL(63)
 -- 
 2.43.0
 
