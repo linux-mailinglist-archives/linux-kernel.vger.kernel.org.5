@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-116100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 818F9889947
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:06:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C1A888BF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:04:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E2651C2FD80
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:06:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEA991F286BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527EB28D9B7;
-	Mon, 25 Mar 2024 03:30:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C481B2D486A;
+	Mon, 25 Mar 2024 00:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aHE4AfPk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UHaydREE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1882D178CD2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB373178CE4;
 	Sun, 24 Mar 2024 23:39:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323580; cv=none; b=roxVfdWgetL2kE1ZvymC96wbJOQwV3XEnUwVdZ6O3Tstv/rIHyUrpFE6vTg1GfEVPBs8GALqBb9ahvi7r2Jq1OprrmrCg63cuwPb1FriR/Vtjger/TYFvYIqwSpqtyLCHk8YYOfKWjSKMc8g7Qcs0feynUHWyGrqWoOM7tuHSfQ=
+	t=1711323581; cv=none; b=go9SMRN9Qgt8fjEDonSfzxvBA/fXT29kKw0qq2xfmY5Abch9/9sE/ynR833hyXHH2raGnBaUEXkwp1utwc/jg38TZddcKVH156Oes+m0STkjHhjjKJiTx+QkSMUZGj+CxWMdnJ0A4RZZOwpm5Ho50JlWldFAu9pbOq7i3ALXBd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323580; c=relaxed/simple;
-	bh=vc/T6hVYtGIVMsW+oB8SV7sRd7M5NJFHgkE11Tm4XSA=;
+	s=arc-20240116; t=1711323581; c=relaxed/simple;
+	bh=8sKYSQluEn4/6PGtEguJVZQDs38YzlkO6eJZQg/af0c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=T8h87YGkG23QX1FK9ptesnlsjSzRciqOTHeqFwoTscw00wGWaKn2EzLEOxHAafGRTwyisBarB6fqOstVaSMEoB5YNLlQefaUAyjtJoR2Al/1DSrGNj0ZH1/hPxcZEXdJ6su8mK4yN5/yFdxWbtkV9Sji048iSYE1lBdDD3xc68E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aHE4AfPk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EBCFC43394;
-	Sun, 24 Mar 2024 23:39:39 +0000 (UTC)
+	 MIME-Version; b=BHWVuZWxm6+we4gQaW+fv12fnlgD2rkIanH8DSidfnXX/3/bFeWfO/TVJeogRHkkQYmh1PTt5sGJhfEXfqOi0NHOaZmY3G8aIodIY+qjoDfEsCJE9nA46ClByvO9M8paLTdA9X1A1fzlNs3C7KEssokXlXU2U3MpWDmoE/g1/4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UHaydREE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C2FDC433F1;
+	Sun, 24 Mar 2024 23:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711323580;
-	bh=vc/T6hVYtGIVMsW+oB8SV7sRd7M5NJFHgkE11Tm4XSA=;
+	bh=8sKYSQluEn4/6PGtEguJVZQDs38YzlkO6eJZQg/af0c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aHE4AfPke2tkA1itZZZh6YfIiXzMQSSvI+PkD0Wa9yo2sfmpHonh1xtRtGfmqmhjn
-	 tbwPZq2H3YxJ3O2o9koZII5couLCQELygFnYhiyoNhAKxw51Px9B6vjJP8XcU1PJMk
-	 eU3lSiAPj79dvqXRg3A1jMnrxZIoQXQvIVc2EoE0/hYeFrQwbnM7FVjowhg0o0ru+v
-	 OQ3JNTwI9oKVSDZn3A1LASDiL0Ct5a+VY8agfg3p6UIhW2Md8B3liGEbhAa8+5IJhr
-	 Buu1PuLWpzK9txeNbC/yYbyTJz9eUfSfm3KZ8gpH5foFW3dCczWv7P7drjCfaGA5w1
-	 H2dnfoXDGDXug==
+	b=UHaydREEwD2atOaSHpCTaHZfodCdsj0dNkV62a6m1nBHNfcRbL3/VmJ2/Ki+AYoFF
+	 CrUQCMmU9THywIl33G4KoR61mALzZ0gHw3uc/1K0IpQSn6LG55IjNU08t7S/GIxzLA
+	 84KelNdKovLabCV2gCE92LENSgqgpE2B29tUckpE0GDQ3FEcinp3hbeVahSWBSlurX
+	 0LDU8wuXcuJFyV+3GUHScMzT5a3G0IO/PSq7zCVaI6SE0OSt99lfNE/2EUFMsEl+tK
+	 9O5F8mP0ETceOwjbIlbuH71fYajwYebvskeRpNoRj1J7wEl44tUIHYfHa6+T5SDW2c
+	 YkMs0sxzgOynw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Colin Ian King <colin.i.king@gmail.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc: Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 286/317] usb: gadget: net2272: Use irqflags in the call to net2272_probe_fin
-Date: Sun, 24 Mar 2024 19:34:26 -0400
-Message-ID: <20240324233458.1352854-287-sashal@kernel.org>
+Subject: [PATCH 5.15 287/317] io_uring: don't save/restore iowait state
+Date: Sun, 24 Mar 2024 19:34:27 -0400
+Message-ID: <20240324233458.1352854-288-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -59,46 +57,53 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Colin Ian King <colin.i.king@gmail.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 600556809f04eb3bbccd05218215dcd7b285a9a9 ]
+[ Upstream commit 6f0974eccbf78baead1735722c4f1ee3eb9422cd ]
 
-Currently the variable irqflags is being set but is not being used,
-it appears it should be used in the call to net2272_probe_fin
-rather than IRQF_TRIGGER_LOW being used. Kudos to Uwe Kleine-König
-for suggesting the fix.
+This kind of state is per-syscall, and since we're doing the waiting off
+entering the io_uring_enter(2) syscall, there's no way that iowait can
+already be set for this case. Simplify it by setting it if we need to,
+and always clearing it to 0 when done.
 
-Cleans up clang scan build warning:
-drivers/usb/gadget/udc/net2272.c:2610:15: warning: variable 'irqflags'
-set but not used [-Wunused-but-set-variable]
-
-Fixes: ceb80363b2ec ("USB: net2272: driver for PLX NET2272 USB device controller")
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20240307181734.2034407-1-colin.i.king@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7b72d661f1f2 ("io_uring: gate iowait schedule on having pending requests")
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/net2272.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ io_uring/io_uring.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/net2272.c b/drivers/usb/gadget/udc/net2272.c
-index 7c38057dcb4ab..e5402e05e7393 100644
---- a/drivers/usb/gadget/udc/net2272.c
-+++ b/drivers/usb/gadget/udc/net2272.c
-@@ -2650,7 +2650,7 @@ net2272_plat_probe(struct platform_device *pdev)
- 		goto err_req;
- 	}
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index 386b32e6fd9a8..a51429c0342e0 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -7815,7 +7815,7 @@ static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
+ 					  struct io_wait_queue *iowq,
+ 					  ktime_t *timeout)
+ {
+-	int io_wait, ret;
++	int ret;
  
--	ret = net2272_probe_fin(dev, IRQF_TRIGGER_LOW);
-+	ret = net2272_probe_fin(dev, irqflags);
- 	if (ret)
- 		goto err_io;
+ 	/* make sure we run task_work before checking for signals */
+ 	ret = io_run_task_work_sig();
+@@ -7830,13 +7830,12 @@ static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
+ 	 * can take into account that the task is waiting for IO - turns out
+ 	 * to be important for low QD IO.
+ 	 */
+-	io_wait = current->in_iowait;
+ 	if (current_pending_io())
+ 		current->in_iowait = 1;
+ 	ret = 1;
+ 	if (!schedule_hrtimeout(timeout, HRTIMER_MODE_ABS))
+ 		ret = -ETIME;
+-	current->in_iowait = io_wait;
++	current->in_iowait = 0;
+ 	return ret;
+ }
  
 -- 
 2.43.0
