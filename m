@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-114893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A586E88920F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:57:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A73C88993B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:05:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D78001C2D2B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:57:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 687CD1C324DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264E82CFA06;
-	Mon, 25 Mar 2024 00:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCEC3A7635;
+	Mon, 25 Mar 2024 03:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WNANmy3T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t3CHCu3u"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8FC5B209;
-	Sun, 24 Mar 2024 23:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664341788AE;
+	Sun, 24 Mar 2024 23:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323563; cv=none; b=mudgdZqnPnHSrf8QpQ6iDyuYJzkSsIGsfzZU7XID325/fatdbPZo/MFVNK0T8LYd6pzba/FUaof0FJ4J5onIVQHUfaCC98FJeWCXcMiW3RLzOJ/6EEq+71Ko9wXzbaWEZBqmPEUNF7Pq4TdwkbG9FmVDWh2x6CI8mOm3KMa0ysc=
+	t=1711323563; cv=none; b=QADJh5HBHgXtJaVQEZK5N2RR13x0k8ZMJIxAeo/bLrLnRvDqxHIw2mOmow2dVN5Fv5NKSn7DUuMu/CQKC+VGm5rVWKD3ywaAh2sYSjV5GwRZ6pe3it3K1O1zR+yAwy2wKvKlqQ6fRrGlejLLKGTtJxDah1/izQcp6LXJUL2WTgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323563; c=relaxed/simple;
-	bh=LYazFtegKbUQmWF4+002xX2Q9D4Jt0jQN6fweMdHyiQ=;
+	bh=NYj3SGxIiNIhzVR6Texho7izXCcQlT5P7lrIMwwNkMo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g60ce+g9CAqiIc9Z03QvdIg4Oc4IBazI9H/01Q5FxvcQiUcU1I5C3NOSRUI9Aog+ZLmmSFwt5NduGKS+uF8Z0NMv8VcNfedfR/ixCxIug5zaWixgocvgG6E+byT8sJpXcd0LOAzfoYMv7RJVLoLHKDkSqJCu9B/By1EBEjRafNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WNANmy3T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8219EC43390;
-	Sun, 24 Mar 2024 23:39:21 +0000 (UTC)
+	 MIME-Version; b=BG30o2JhUM8hQX7pkgMum15T66MQjokDpLV1L2ncZHXA1g3yUEJkLy3Crtel0rFIePkw8ik2j+W6ywp9ZtXpkHpcuiVH0Z4L2mt5ub+4QDeQmtSXatq2IZRcLaBMBsLQJCbb6TvDACDWRM6QcnG8M+wN5qZ27+rG+I/BUU1cZwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t3CHCu3u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 918EAC43394;
+	Sun, 24 Mar 2024 23:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323562;
-	bh=LYazFtegKbUQmWF4+002xX2Q9D4Jt0jQN6fweMdHyiQ=;
+	s=k20201202; t=1711323563;
+	bh=NYj3SGxIiNIhzVR6Texho7izXCcQlT5P7lrIMwwNkMo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WNANmy3TUkpRh4XtGUDffHoiZC+7PHLK9AUvT4gUXkYmUUsyLlGzbVJj7P5Yk96M7
-	 UymxQ0n2TtM6oKGR8eUaiW3mpuY3T0jmSFrVpeu+g/EopBbZo+LWvtIypC9CwASILb
-	 czWF1jnJND8RW8QFz/tuNrHAU7nkF0vWtgd4kNWTv5nFT7frfJx8wQWhRfAGfZccCA
-	 2Z5xMVWF/UCQVSq0gykn2cllnNxw5tDFD1oEH5pN2YITSTunocmd9Q4LCNY7uuuEuT
-	 yfdTeEgDJyniDPjgEOZHKaU9BYQjbp2NepwY1rRpjqVBJC0lNOJYPbeeY7apG6cthi
-	 xQb7pzHqHBXUA==
+	b=t3CHCu3uB9/cRlPyjjJwjQJD4xP3CwujlnmWlHF/MxoQnWmEQhXEvXjLfQjxjx+am
+	 Rve8n2I8twUUxB77uyxEK/OOHWMvgFO3EoCwrwUxnePe+jI3fjgtD1eUDjyqapJQIB
+	 79shPW1+ocKzff6PJLxQuIs4kYqbtxMr2lubMDaKcf16lOAtpT7pY0muUukuKCjyuk
+	 PkoFeqTIa/6/rrJ7M3hYyl3pXtmUPRwxFt109MmTqFkra9Bf/0Jb7DDzKhUS0K7Rve
+	 RniPDiOAPRF6OY3Kd5MUOfBvYedkfWo5XDXQPOow0JHpobgsZXChFxj+Cf2ZNSnea+
+	 UDWnw5V7V+DwA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jorge Mora <jmora1300@gmail.com>,
-	Jorge Mora <mora@netapp.com>,
-	Benjamin Coddington <bcodding@redhat.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
+Cc: Ben Wolsieffer <ben.wolsieffer@hefring.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 269/317] NFSv4.2: fix listxattr maximum XDR buffer size
-Date: Sun, 24 Mar 2024 19:34:09 -0400
-Message-ID: <20240324233458.1352854-270-sashal@kernel.org>
+Subject: [PATCH 5.15 270/317] watchdog: stm32_iwdg: initialize default timeout
+Date: Sun, 24 Mar 2024 19:34:10 -0400
+Message-ID: <20240324233458.1352854-271-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -64,58 +63,57 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jorge Mora <jmora1300@gmail.com>
+From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
 
-[ Upstream commit bcac8bff90a6ee1629f90669cdb9d28fb86049b0 ]
+[ Upstream commit dbd7c0088b7f44aa0b9276ed3449df075a7b5b54 ]
 
-Switch order of operations to avoid creating a short XDR buffer:
-e.g., buflen = 12, old xdrlen = 12, new xdrlen = 20.
+The driver never sets a default timeout value, therefore it is
+initialized to zero. When CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is
+enabled, the watchdog is started during probe. The kernel is supposed to
+automatically ping the watchdog from this point until userspace takes
+over, but this does not happen if the configured timeout is zero. A zero
+timeout causes watchdog_need_worker() to return false, so the heartbeat
+worker does not run and the system therefore resets soon after the
+driver is probed.
 
-Having a short XDR buffer leads to lxa_maxcount be a few bytes
-less than what is needed to retrieve the whole list when using
-a buflen as returned by a call with size = 0:
-    buflen = listxattr(path, NULL, 0);
-    buf = malloc(buflen);
-    buflen = listxattr(path, buf, buflen);
+This patch fixes this by setting an arbitrary non-zero default timeout.
+The default could be read from the hardware instead, but I didn't see
+any reason to add this complexity.
 
-For a file with one attribute (name = '123456'), the first call
-with size = 0 will return buflen = 12 ('user.123456\x00').
-The second call with size = 12, sends LISTXATTRS with
-lxa_maxcount = 12 + 8 (cookie) + 4 (array count) = 24. The
-XDR buffer needs 8 (cookie) + 4 (array count) + 4 (name count)
-+ 6 (name len) + 2 (padding) + 4 (eof) = 28 which is 4 bytes
-shorter than the lxa_maxcount provided in the call.
+This has been tested on an STM32F746.
 
-Fixes: 04a5da690e8f ("NFSv4.2: define limits and sizes for user xattr handling")
-Signed-off-by: Jorge Mora <mora@netapp.com>
-Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 85fdc63fe256 ("drivers: watchdog: stm32_iwdg: set WDOG_HW_RUNNING at probe")
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20240228182723.12855-1-ben.wolsieffer@hefring.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs42.h | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/watchdog/stm32_iwdg.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/nfs/nfs42.h b/fs/nfs/nfs42.h
-index 0fe5aacbcfdf1..e7192d0eea3de 100644
---- a/fs/nfs/nfs42.h
-+++ b/fs/nfs/nfs42.h
-@@ -54,11 +54,14 @@ int nfs42_proc_removexattr(struct inode *inode, const char *name);
-  * They would be 7 bytes long in the eventual buffer ("user.x\0"), and
-  * 8 bytes long XDR-encoded.
-  *
-- * Include the trailing eof word as well.
-+ * Include the trailing eof word as well and make the result a multiple
-+ * of 4 bytes.
-  */
- static inline u32 nfs42_listxattr_xdrsize(u32 buflen)
- {
--	return ((buflen / (XATTR_USER_PREFIX_LEN + 2)) * 8) + 4;
-+	u32 size = 8 * buflen / (XATTR_USER_PREFIX_LEN + 2) + 4;
+diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
+index a3436c296c97b..8a7b1279a3130 100644
+--- a/drivers/watchdog/stm32_iwdg.c
++++ b/drivers/watchdog/stm32_iwdg.c
+@@ -21,6 +21,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/watchdog.h>
+ 
++#define DEFAULT_TIMEOUT 10
 +
-+	return (size + 3) & ~3;
- }
- #endif /* CONFIG_NFS_V4_2 */
- #endif /* __LINUX_FS_NFS_NFS4_2_H */
+ /* IWDG registers */
+ #define IWDG_KR		0x00 /* Key register */
+ #define IWDG_PR		0x04 /* Prescaler Register */
+@@ -251,6 +253,7 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+ 	wdd->parent = dev;
+ 	wdd->info = &stm32_iwdg_info;
+ 	wdd->ops = &stm32_iwdg_ops;
++	wdd->timeout = DEFAULT_TIMEOUT;
+ 	wdd->min_timeout = DIV_ROUND_UP((RLR_MIN + 1) * PR_MIN, wdt->rate);
+ 	wdd->max_hw_heartbeat_ms = ((RLR_MAX + 1) * wdt->data->max_prescaler *
+ 				    1000) / wdt->rate;
 -- 
 2.43.0
 
