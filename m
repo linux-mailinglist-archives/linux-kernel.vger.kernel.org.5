@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3380888635
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:26:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB5C68893C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A998C292EDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:26:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69EA91F30A91
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951BC147C7B;
-	Sun, 24 Mar 2024 22:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5CF2002F8;
+	Mon, 25 Mar 2024 02:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vFQWRf7Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uy5fPtQJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14CC1DC7ED;
-	Sun, 24 Mar 2024 22:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09EC86AE7;
+	Sun, 24 Mar 2024 22:51:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320710; cv=none; b=lEqLJnrg3SY8brhQ1sKMlgDNSv7CabSTEopDTspWAc1XTTS+qs17W31AbnfX1brFZ0+aAl16WR/TOmTEoduYpFaSta4e8m7J6y04j+2r9V4PqugYnCH4O3q1OUCa+ezC22HJ2CwC57o6dTj2tP9lZ3c7X2h657U+q45+XbcTupQ=
+	t=1711320712; cv=none; b=fKSqebyry34AM5KdgldlUCzySHJKtO3oM848PzQAqzcopwQ0w/y9+s1RecZvsZ3QS9VrmE1D4xUWLLv7ChJy6Khk+D0oaB5TbgMzlkDGaVV8lyRzVAPdG374r7YVHzBfJOwUm5pJPDj35P/PWR4dmvQZfwYKAo1Ay1uyUJiOLtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320710; c=relaxed/simple;
-	bh=TFfAVrGD8nWkaGmaO0qqtQoMlM7QoySNF8X+9tFaBkY=;
+	s=arc-20240116; t=1711320712; c=relaxed/simple;
+	bh=PbpkDc8dLHMQIvOluxNUHwM9KODFcmsFc6mIGPXsU6s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rVHTNqyyfMzlPcMqruG+m/VI+TJfv6UO9qBCdogM+ephaQS2jmOowE96dwAPNJARMulIG1a9m0R18xcqpNQnD/x7/6GS0Vx4wVlqlYBgSKlw/ORoW0iYyiONpSP/7NO6kt8Hf86SJi8jthgVjoPYmUDpRJQEt0C5+1LErNYtNXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vFQWRf7Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFD14C43390;
-	Sun, 24 Mar 2024 22:51:49 +0000 (UTC)
+	 MIME-Version; b=MqI2yGYtHrUbFIpGCxwRdtCBCmrg5dbGDddjO24ovyETuWEYwuf+FU5YqNJFB0zPNwUwOq6VKEGnTk27gh8g8hu4bQr+Vns7aoVEGDf4+Z+61TfATFBx9jN7lXjauxmdVJEi9bTXNkx4QFb0daIs7+69KK+pIeuIhhTKbrY7b0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uy5fPtQJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7EFBC43394;
+	Sun, 24 Mar 2024 22:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320710;
-	bh=TFfAVrGD8nWkaGmaO0qqtQoMlM7QoySNF8X+9tFaBkY=;
+	s=k20201202; t=1711320711;
+	bh=PbpkDc8dLHMQIvOluxNUHwM9KODFcmsFc6mIGPXsU6s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vFQWRf7Zt3Slm/gNhYjT5rtGvEne3+8eveDwPNmYROb9D5lp6EAJw5CNNlFumpU1k
-	 mUZ2wbVRkie8EqykCw7s6YtkeL2ZiUvgkcarONgiilWtgx/wLCq8wIKqRuSv0fVDZD
-	 bXF49Chp9gIfQvVpjGDhUdrprSPqlNRTXjr+iPC5bJnPZc43TNR+LqUOGM69iRczII
-	 UGN94deKByT29hgoOYW4rKmekUdqDUnXcdU4epPBYcnq/awHRMJAsQUbWJzWKtZmBF
-	 /Gxn3BT2GSBpvdsB87q5sOXhsSe26OmbhYLX/cv2W8bvSPRsuG21nBPELWVqhJET5e
-	 HpiU8Qy3UUbBQ==
+	b=uy5fPtQJZ9mYW4QXhIm0NyCv8uTepDew5ZaGGfWDMcUzhCMsuJBp+V0hWlMCCr6BZ
+	 FPStoh05asbw5JY4XuqgFGybR84QufMMLQ3TelJsl17rQkMDakV7XnxE+UyHtLNpP3
+	 TJU9taLuBBCvWq5NSRQ/twIpPlXyzidxuHuTc9ONJKbCjs4n7Y39SMYbQABtbSZi81
+	 64TahnByG9JoriqGYwb1898I1SuIm0zSSeJqYx5En9lto6nykfknJGGSgEuyZT35aN
+	 K4FsOJYBLmbkJ+f9tuYmlzWvjWoA2WnzBXl5AAi8DGm2HrGV/g8wj9vSO01H2F46JI
+	 tDr7qMaIAzLjQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrew Davis <afd@ti.com>,
-	Nishanth Menon <nm@ti.com>,
+Cc: Judith Mendez <jm@ti.com>,
+	Wadim Egorov <w.egorov@phytec.de>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 273/713] arm64: dts: ti: k3-am64: Enable SDHCI nodes at the board level
-Date: Sun, 24 Mar 2024 18:39:59 -0400
-Message-ID: <20240324224720.1345309-274-sashal@kernel.org>
+Subject: [PATCH 6.7 274/713] arm64: dts: ti: k3-am64-main: Fix ITAP/OTAP values for MMC
+Date: Sun, 24 Mar 2024 18:40:00 -0400
+Message-ID: <20240324224720.1345309-275-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,152 +63,57 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andrew Davis <afd@ti.com>
+From: Judith Mendez <jm@ti.com>
 
-[ Upstream commit 3b6345e3fcf4c93a79f396121cd0e6f98f04da13 ]
+[ Upstream commit 379c7752bbd0e81654544a896dd19c19ebb6faba ]
 
-SDHCI nodes defined in the top-level AM64 SoC dtsi files are incomplete
-and will not be functional unless they are extended.
+Update MMC0/MMC1 OTAP/ITAP values according to the datasheet
+[0], refer to Table 7-68 for MMC0 and Table 7-77 for MMC1.
 
-As the attached SD/eMMC is only known about at the board integration level,
-these nodes should only be enabled when provided with this information.
+[0] https://www.ti.com/lit/ds/symlink/am6442.pdf
 
-Disable the SDHCI nodes in the dtsi files and only enable the ones that
-are actually pinned out on a given board.
-
-Signed-off-by: Andrew Davis <afd@ti.com>
-Link: https://lore.kernel.org/r/20231117163339.89952-2-afd@ti.com
-Signed-off-by: Nishanth Menon <nm@ti.com>
-Stable-dep-of: 379c7752bbd0 ("arm64: dts: ti: k3-am64-main: Fix ITAP/OTAP values for MMC")
+Fixes: 8abae9389bdb ("arm64: dts: ti: Add support for AM642 SoC")
+Signed-off-by: Judith Mendez <jm@ti.com>
+Tested-by: Wadim Egorov <w.egorov@phytec.de>
+Link: https://lore.kernel.org/r/20240213235701.2438513-5-jm@ti.com
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi                 | 2 ++
- arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi          | 1 +
- arch/arm64/boot/dts/ti/k3-am642-evm.dts                  | 6 ++++--
- arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts | 1 +
- arch/arm64/boot/dts/ti/k3-am642-sk.dts                   | 4 +++-
- arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts   | 1 -
- arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi           | 1 +
- 7 files changed, 12 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 0be642bc1b86d..c3300c36fdbcb 100644
+index c3300c36fdbcb..45042216e5b89 100644
 --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
 +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -623,6 +623,7 @@ sdhci0: mmc@fa10000 {
+@@ -623,6 +623,9 @@ sdhci0: mmc@fa10000 {
  		ti,otap-del-sel-mmc-hs = <0x0>;
  		ti,otap-del-sel-ddr52 = <0x6>;
  		ti,otap-del-sel-hs200 = <0x7>;
-+		status = "disabled";
++		ti,itap-del-sel-legacy = <0x10>;
++		ti,itap-del-sel-mmc-hs = <0xa>;
++		ti,itap-del-sel-ddr52 = <0x3>;
+ 		status = "disabled";
  	};
  
- 	sdhci1: mmc@fa00000 {
-@@ -641,6 +642,7 @@ sdhci1: mmc@fa00000 {
+@@ -635,12 +638,16 @@ sdhci1: mmc@fa00000 {
+ 		clock-names = "clk_ahb", "clk_xin";
+ 		ti,trm-icp = <0x2>;
+ 		ti,otap-del-sel-legacy = <0x0>;
+-		ti,otap-del-sel-sd-hs = <0xf>;
++		ti,otap-del-sel-sd-hs = <0x0>;
+ 		ti,otap-del-sel-sdr12 = <0xf>;
+ 		ti,otap-del-sel-sdr25 = <0xf>;
+ 		ti,otap-del-sel-sdr50 = <0xc>;
  		ti,otap-del-sel-sdr104 = <0x6>;
  		ti,otap-del-sel-ddr50 = <0x9>;
++		ti,itap-del-sel-legacy = <0x0>;
++		ti,itap-del-sel-sd-hs = <0x0>;
++		ti,itap-del-sel-sdr12 = <0x0>;
++		ti,itap-del-sel-sdr25 = <0x0>;
  		ti,clkbuf-sel = <0x7>;
-+		status = "disabled";
+ 		status = "disabled";
  	};
- 
- 	cpsw3g: ethernet@8000000 {
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-index f87f09d83c956..b8f844f667afc 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-@@ -211,6 +211,7 @@ flash@0 {
- };
- 
- &sdhci0 {
-+	status = "okay";
- 	bus-width = <8>;
- 	non-removable;
- 	ti,driver-strength-ohm = <50>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 4dba18941015d..256606be56fef 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -487,17 +487,19 @@ eeprom@0 {
- 	};
- };
- 
-+/* eMMC */
- &sdhci0 {
--	/* emmc */
-+	status = "okay";
- 	bus-width = <8>;
- 	non-removable;
- 	ti,driver-strength-ohm = <50>;
- 	disable-wp;
- };
- 
-+/* SD/MMC */
- &sdhci1 {
--	/* SD/MMC */
- 	bootph-all;
-+	status = "okay";
- 	vmmc-supply = <&vdd_mmc1>;
- 	pinctrl-names = "default";
- 	bus-width = <4>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-index 9175e96842d82..53b64e55413f9 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-@@ -264,6 +264,7 @@ &main_uart1 {
- };
- 
- &sdhci1 {
-+	status = "okay";
- 	vmmc-supply = <&vcc_3v3_mmc>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_mmc1_pins_default>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-index f29c8a9b59ba7..bffbd234f715a 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-@@ -439,6 +439,7 @@ &mcu_gpio0 {
- };
- 
- &sdhci0 {
-+	status = "okay";
- 	vmmc-supply = <&wlan_en>;
- 	bus-width = <4>;
- 	non-removable;
-@@ -458,9 +459,10 @@ wlcore: wlcore@2 {
- 	};
- };
- 
-+/* SD/MMC */
- &sdhci1 {
--	/* SD/MMC */
- 	bootph-all;
-+	status = "okay";
- 	vmmc-supply = <&vdd_mmc1>;
- 	pinctrl-names = "default";
- 	bus-width = <4>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts b/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts
-index d95d80076a427..55102d35cecc1 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts
-@@ -425,7 +425,6 @@ &sdhci1 {
- 	ti,driver-strength-ohm = <50>;
- 	ti,fails-without-test-cd;
- 	/* Enabled by overlay */
--	status = "disabled";
- };
- 
- &tscadc0 {
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi b/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi
-index d82d4a98306a7..6c785eff7d2ff 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi
-@@ -219,6 +219,7 @@ partitions {
- };
- 
- &sdhci0 {
-+	status = "okay";
- 	non-removable;
- 	disable-wp;
- 	no-sdio;
 -- 
 2.43.0
 
