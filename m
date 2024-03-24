@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-115100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61336888D1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:40:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D453888D1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:40:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92FEA1C2A989
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:40:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EA461C2A930
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752821C5838;
-	Mon, 25 Mar 2024 01:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDB61C5836;
+	Mon, 25 Mar 2024 01:03:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CaP3Ixi3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u02dUute"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B32228CE58;
-	Sun, 24 Mar 2024 23:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF0328CE50;
+	Sun, 24 Mar 2024 23:48:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324102; cv=none; b=h/Gp8tNxiZgljKWfedcaIPlhJsJA4kpfxFIxe7qXXyAcgDm5VprDbdUFteXy+hYCuJ+e9cmjPZ5ylorZ4C3M29cFodtDI6UAHE8U1hzpPt+shn3KFMVb52Qknpa7M5ITIxM+UBUCebMZaSMdje5Axq+fvzE+8tUz4HIWgLE6Ecc=
+	t=1711324102; cv=none; b=HcniyyCCNk1RXPfrk3/OxH9cmnXy/FgpJOvnUIbLSqWrmhi5XabF2dSkP5aFIPkGpa55wZ3mycSY94RW1Dgvud45a3QOfhXqMLQmZtsO++VA7V18+ht2ZV1gJKSuR9Yy231lrg9JSe+0dM7VJt1MIgMC+AKVtqpOKUa7z4dW99M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324102; c=relaxed/simple;
-	bh=DM3144Oh7P+rTj9j/aPXAQpmxvre+5VOHDnvu7WjSos=;
+	bh=YcHd1bswbqsnEctIwDQgIBMvzzOmYcfo7MBYD+mF5Mw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tic8dGaTmDdcR+i33Yyr10KI54IAvPYDqC+T92kl/6Sr4Ov9cES+pTayAsW/xd/8yrYR4bRNLPQRt6b65Ty97qvYpMLDyjMAJ3dnWGD92Obbj85ixVHtpR43e2geCl/qZYU3Q3slM8NcL8/eeZVgz8cOjC2Me9bUDqf3tYHo93Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CaP3Ixi3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD232C433C7;
-	Sun, 24 Mar 2024 23:48:19 +0000 (UTC)
+	 MIME-Version; b=MgUobtF2D2rsGcT70f+pNiqs1SkzuAybUBMwSRfCW0MhMDjffor44WZWPSj+crgRbgNDoLTdUY28c4z92ZOdOxLvyR2/QtJzY1/nRyEn09dRBYB7oI26+TVnqtO52l9tl9CV8ZPfWItlvTN//iIb/+aGekMucQItjogO69kL4wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u02dUute; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 023F8C43390;
+	Sun, 24 Mar 2024 23:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324100;
-	bh=DM3144Oh7P+rTj9j/aPXAQpmxvre+5VOHDnvu7WjSos=;
+	s=k20201202; t=1711324101;
+	bh=YcHd1bswbqsnEctIwDQgIBMvzzOmYcfo7MBYD+mF5Mw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CaP3Ixi3H98OZ1RcpRgEPrUlXb1r/bpt8X7W1fhbzQ+exTFsHMnHBnoBpTdJ92zGs
-	 uE0YAcLvCOQwcCZrhgIfJyCofAUIp0U1J/tIdbZzBM3GMFVw8c6IFBydagYHyjt674
-	 bGABQWgMnKZ27jdgJNKUMCy6+JM1hhOXszjkS7FLZUxQ7IYYovRWuGZVLEuSWK/CQ+
-	 6XrL6NxvVQyWLok/hZTbIpMlUFQBt2ut6dxVFuzDLew3P6UyHO2lldVkJUSByEV6s4
-	 gs9wo711Uur/ecR2+wmImVVbzUGJQ/6OghYviJaDc1Fyr+W9wGkM2IniMqmsX3TzAr
-	 CWRZWajZjoT3Q==
+	b=u02dUuteFUfk/PPyTR7Ff2aZQpLuAqXi1DDPgJDGoGfEEVCZDYujgz4h8dvWNtOlI
+	 E+oiNqcOGER/CTfX5l92tqhyXiFLWPGb/7F4RMPzYMY7fNUGLQk4V7e3nTpURFEBJm
+	 r02hoJcUyDVxpXVJcFjvNstcju26l9/Xmn/IsRL2Pg7YfHjH21T7qmWE5Wd3mirARt
+	 Q5EGjCo2x6Wvx2G9O5S7DGclxS9LCCq6weoksnisSjEAD/TD0HREPoXbEzxkzQmAcd
+	 BASm+gWnj+ru5jZLDOQMCyAQemgTGYiMNtXzDBWUgVMOKJvluUYIlNsBWyScVXjaFk
+	 PaQBPMZ9jxYeg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yang Jihong <yangjihong1@huawei.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Ian Rogers <irogers@google.com>,
-	Namhyung Kim <namhyung@kernel.org>,
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 099/183] perf evsel: Fix duplicate initialization of data->id in evsel__parse_sample()
-Date: Sun, 24 Mar 2024 19:45:12 -0400
-Message-ID: <20240324234638.1355609-100-sashal@kernel.org>
+Subject: [PATCH 5.4 100/183] PCI/AER: Fix rootport attribute paths in ABI docs
+Date: Sun, 24 Mar 2024 19:45:13 -0400
+Message-ID: <20240324234638.1355609-101-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -64,35 +62,50 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yang Jihong <yangjihong1@huawei.com>
+From: Johan Hovold <johan+linaro@kernel.org>
 
-[ Upstream commit 4962aec0d684c8edb14574ccd0da53e4926ff834 ]
+[ Upstream commit 0e7d29a39a546161ea3a49e8e282a43212d7ff68 ]
 
-data->id has been initialized at line 2362, remove duplicate initialization.
+The 'aer_stats' directory never made it into the sixth and final revision
+of the series adding the sysfs AER attributes.
 
-Fixes: 3ad31d8a0df2 ("perf evsel: Centralize perf_sample initialization")
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/r/20240127025756.4041808-1-yangjihong1@huawei.com
+Link: https://lore.kernel.org/r/20240202131635.11405-2-johan+linaro@kernel.org
+Link: https://lore.kernel.org/lkml/20180621184822.GB14136@bhelgaas-glaptop.roam.corp.google.com/
+Fixes: 12833017e581 ("PCI/AER: Add sysfs attributes for rootport cumulative stats")
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/evsel.c | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 9dd9e3f4ef591..cd1eddf0ab371 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1955,7 +1955,6 @@ int perf_evsel__parse_sample(struct evsel *evsel, union perf_event *event,
- 	data->period = evsel->core.attr.sample_period;
- 	data->cpumode = event->header.misc & PERF_RECORD_MISC_CPUMODE_MASK;
- 	data->misc    = event->header.misc;
--	data->id = -1ULL;
- 	data->data_src = PERF_MEM_DATA_SRC_NONE;
+diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats b/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
+index 3c9a8c4a25eb8..988724cc85182 100644
+--- a/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
++++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-aer_stats
+@@ -103,19 +103,19 @@ collectors) that are AER capable. These indicate the number of error messages as
+ device, so these counters include them and are thus cumulative of all the error
+ messages on the PCI hierarchy originating at that root port.
  
- 	if (event->header.type != PERF_RECORD_SAMPLE) {
+-What:		/sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_cor
++What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_cor
+ Date:		July 2018
+ KernelVersion: 4.19.0
+ Contact:	linux-pci@vger.kernel.org, rajatja@google.com
+ Description:	Total number of ERR_COR messages reported to rootport.
+ 
+-What:	    /sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_fatal
++What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_fatal
+ Date:		July 2018
+ KernelVersion: 4.19.0
+ Contact:	linux-pci@vger.kernel.org, rajatja@google.com
+ Description:	Total number of ERR_FATAL messages reported to rootport.
+ 
+-What:	    /sys/bus/pci/devices/<dev>/aer_stats/aer_rootport_total_err_nonfatal
++What:		/sys/bus/pci/devices/<dev>/aer_rootport_total_err_nonfatal
+ Date:		July 2018
+ KernelVersion: 4.19.0
+ Contact:	linux-pci@vger.kernel.org, rajatja@google.com
 -- 
 2.43.0
 
