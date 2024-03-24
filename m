@@ -1,114 +1,63 @@
-Return-Path: <linux-kernel+bounces-112625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 097D4887C1D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:32:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60EBA887C3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:28:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B12C1C210C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 09:32:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00E761F21527
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7579417BCB;
-	Sun, 24 Mar 2024 09:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VufvP2RW"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39934175AB
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 09:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DBD51756A;
+	Sun, 24 Mar 2024 10:28:21 +0000 (UTC)
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EEF7168B9;
+	Sun, 24 Mar 2024 10:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711272736; cv=none; b=cOCHUaGa26WHfAnzlNqWGUakhXX8uQ0OEXEQ0jW7EGs85zUupQROvvD9zI8h3CQEsPeFFE+mDdAH386WEdy9w403097YHG7qnLw3fm075qyouxL6V6H6N2HuPDq4m2abTkwEgRi3fD0laz6NZ9HQ8SdFgAnt9hV3CbmnIdJ+/Nk=
+	t=1711276100; cv=none; b=FOpH4tK3H5K3ECdiKqjTRqdsGapUsxlbd5vNQe9jSTwcadxF3xWGb3V7U/8VLQUe+WwY38asIDuQnx8W80xxRlzlLYi6+dLSrOKC46WdpjelTb+4a+YjIv6Vd+u6ucSPWrfll3+9uYD4YfgZWxMG+VKvRb1QYKXOqBOQuyJls1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711272736; c=relaxed/simple;
-	bh=u5pB1sDbN4TWFvIqouYPN1Z7rf5l2iCYMwm/u0Zd89Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HizZMB8eP9VNBnxNL+TEqBYU5VU0yDS5s9lge50JKQ1AdFQDSEhJ9Vev10vfWJe0EcNnpuXXty0cjvkusW4+mAiYAppy3rQMR+kKTXN6fs8VmNvPPkFaNZyxG04VNZ0SDNg3vlBbaBzGAD0DfPu1stl2bYDUiA1sijGh3wqPOvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VufvP2RW; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33fd12a06fdso2347835f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 02:32:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711272733; x=1711877533; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LopSDTAPBYKt0PL+7kumsFXpTtF7FOQgTtXMVa1BlOc=;
-        b=VufvP2RWxOcxPgN47DruWnxHaFz4QD/cGJ1WADEfu1YWG9i/rQjECkhR3pzFek/UkA
-         k9KzEGZ8P5q1OSTxeFaohkA8Qo5wY7QxSrferkQnqJEMf6dlLwsWyFS+nYaLOhYJGloY
-         rvMOK0+Sg03xTg6QiNpLDFQSPBwDivWyPJyv89cXY/1RAYog+LZ9dFsYJ/lSafPHdlld
-         zpMpwYpyb81AiT/T7lpSw7goqtWN9xJm3bzec/+s6HmLfOnQKWsfZbaOCL1wryPl0SHp
-         /AP5Aj2+awka7B58qnGjCOGRq2sG0YkKDUoqn7fQEFbRx7WAdMg+fa8f2IVaKw5fU3rM
-         4YmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711272733; x=1711877533;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LopSDTAPBYKt0PL+7kumsFXpTtF7FOQgTtXMVa1BlOc=;
-        b=mEYV7k4fl+GolkQfBAVyIqkLlXB7DVnxUUdNpuBEzFZTw8VVqggVZ4+tTdpy8MBKzE
-         gKSCClYMmYvKgFBFDVEbdohADCLrsYmwT19wQWhPhJmKbqnQBx7iEYEPCxfsfi42lLxZ
-         w0/VNoZN774Rw+CralHUdzK729PuHaJTl0od/n07/Vlspp4mDo353cXwyrk9EavqZkOU
-         tWeryxAOXDCgnjpY8mbn5FI0wovIiW9hCLaJR6luHqL21Ax5VBNLBPtCoZUsEauCFexV
-         rD3GYsYGn+vy76BLRyPmej9CqjzJ5VkzyEfjvz3Hb3ML1LEUIXUfGGaEhgWAKU8QP+yG
-         YKGA==
-X-Forwarded-Encrypted: i=1; AJvYcCVBU65EYAJ2/FQEZcP7nKaB0PLE+oLNkh/Xrq81QFtEMvxjAGSg24mWNwM0+EebSkBga78EHJ6RVE5iMRnyD/rAAypYTmsQX65ekcEt
-X-Gm-Message-State: AOJu0Yz2fPqBGYhckgs4hW0n/34u9o99wEPa469DEcYLcAbiU4ofHhIR
-	TNIvZMUKwkxjMXIHXzwg7NJ/BpeEAiw9BwIlM7ivNVZ0gzHizhSh
-X-Google-Smtp-Source: AGHT+IF91Uh6i88LrUzD+gi+FwyOQaAtfAZXHw4cg56yiqD7KbRaau00hOa/ZC4pWwll5Q63J9ScPg==
-X-Received: by 2002:adf:e885:0:b0:33e:781e:da57 with SMTP id d5-20020adfe885000000b0033e781eda57mr2494177wrm.53.1711272733665;
-        Sun, 24 Mar 2024 02:32:13 -0700 (PDT)
-Received: from YOGA.local ([2a06:c701:736b:f200:42b5:8c78:fc9d:7600])
-        by smtp.gmail.com with ESMTPSA id ay9-20020a5d6f09000000b0033b87c2725csm6490711wrb.104.2024.03.24.02.32.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 02:32:13 -0700 (PDT)
-From: Shahar Avidar <ikobh7@gmail.com>
-To: gregkh@linuxfoundation.org,
-	elder@linaro.org,
-	andriy.shevchenko@linux.intel.com,
-	robh@kernel.org,
-	parthiban.veerasooran@microchip.com
-Cc: linux-staging@lists.linux.dev,
+	s=arc-20240116; t=1711276100; c=relaxed/simple;
+	bh=R92CvuI0wRWplyImURWd+63ngxUZuydpFkQzB8D+C8Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WwE1DPV/FU6RIdYyrA2k7Qf2xsBcOybC0co9wj1oQ2vR5oNVIR6y6YYrUTFdaJ+uBK+f746Z5LKsOSMJbjkOWKAE20H7mG3DdbJxCuvyPyhKub3A4WgNEaXmVbQKS9Yfd+Jc92BGuXC+Zd+k/x1ui9i2yYC7EnlcfG+Cj+ubEKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1roKme-0008DD-00; Sun, 24 Mar 2024 11:08:56 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 8DA64C0267; Sun, 24 Mar 2024 10:37:54 +0100 (CET)
+Date: Sun, 24 Mar 2024 10:37:54 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: mengfanhui <mengfanhui@kylinos.cn>
+Cc: geert+renesas@glider.be, linux-mips@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] staging: pi433: Make use of spi mode macro instead of magic number.
-Date: Sun, 24 Mar 2024 11:32:01 +0200
-Message-Id: <20240324093201.793485-4-ikobh7@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240324093201.793485-1-ikobh7@gmail.com>
-References: <20240324093201.793485-1-ikobh7@gmail.com>
+Subject: Re: [PATCH] config/mips: support zswap function
+Message-ID: <Zf/0clNxqiEUb0VS@alpha.franken.de>
+References: <20240126075547.1521556-1-mengfanhui@kylinos.cn>
+ <a38359d5-0fde-439c-bc04-3452a34482da@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a38359d5-0fde-439c-bc04-3452a34482da@kylinos.cn>
 
-Use SPI_MODE_0 to setup spi mode.
+On Wed, Mar 20, 2024 at 10:00:49AM +0800, mengfanhui wrote:
+> Who will be responsible for reviewing this? This is a necessary feature of the kernel that many testing agencies need to test
 
-Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
----
- drivers/staging/pi433/pi433_if.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+so they should add it to their kernel config. I don't see why a default config
+should collect every bell and whistle somebody out in the world needs.
 
-diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
-index 9fc93fa454b1..2a22342eda69 100644
---- a/drivers/staging/pi433/pi433_if.c
-+++ b/drivers/staging/pi433/pi433_if.c
-@@ -1164,7 +1164,7 @@ static int pi433_probe(struct spi_device *spi)
- 	struct dentry		*entry;
- 
- 	/* setup spi parameters */
--	spi->mode = 0x00;
-+	spi->mode = SPI_MODE_0;
- 	spi->bits_per_word = 8;
- 	/*
- 	 * spi->max_speed_hz = 10000000;
+Thomas.
+
 -- 
-2.34.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
 
