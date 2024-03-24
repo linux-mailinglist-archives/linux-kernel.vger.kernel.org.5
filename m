@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FF4F888C2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:12:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25834888C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:12:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C462297BB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:12:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6AC71F2852A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7302DD227;
-	Mon, 25 Mar 2024 00:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E4D2DD9F5;
+	Mon, 25 Mar 2024 00:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g5gD0Di2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNBjB5fD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0C617A914;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AE05A7A8;
 	Sun, 24 Mar 2024 23:41:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323693; cv=none; b=nazEGXL94KNauQpHexEWfMiiIksiintbvkYxs5Nf8GB3R97NFhonfItNsQ/pDHT7Pzfr7dIMrZjuc8FMp7Yp39eUCD00wC1roVCFgGjSJlZe+/Omws64LUZrVTVuLLNAsNMWTzYYPUwXR1lf57L6fQPgPQLgmpcSL2KcNS3+ISo=
+	t=1711323694; cv=none; b=BfHHS95IonJZFbOFF0cYP2QrS0YbnbDZ9lU1s8eW1bc+W8MbF3pIumHg18a55QLpA0hU9OtSiqhQTdQ60rFsnMeVQlpnWoV0Nhd3m0EeDq/oVKxsWKcJITz1+UcfsV9a9Ttnp8w7gyqU04ftFt7xXTi3NpQPjuOkBDHF6/XhpeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323693; c=relaxed/simple;
-	bh=Xpl75Jz5d6f1KP3VBELqyCnH+uGhJIL7rB7lnTmnKi4=;
+	s=arc-20240116; t=1711323694; c=relaxed/simple;
+	bh=L7J2W61y/kZ4llxw1sQsqpzpY5VckUHNs+De/7aHmLU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rpJV225LWjATyyK36ISs0DQw6BynOEIiwnkYptycD+yY1k4axUWgRI/2bMq884QyyDpQPv2tLw3MvCW3LrRHHcFlW+Vn+WJoWjz6TTQS+uML74Me/UtFJ/qeS5yGiUs+jIdnMujpF6T5xukAfJ9MH4IGz9YMTuborOOeuGLl/RU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g5gD0Di2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 488F3C43394;
-	Sun, 24 Mar 2024 23:41:31 +0000 (UTC)
+	 MIME-Version; b=hnTl+MyP6FD4kwcPpFG2egPrxJllxa6tHgP7u2q/HM9m0yKiGCGyi85HijvzKRPVWgOFcyAP5JllvCYNChEenIIZUfoXzKM+e+VnIDWlTx5ptnNnPKwA9v/cRXjNocX1kpDESexry8qLoHYxoqn0NnSI8Crljfk/iFuAefWuPlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNBjB5fD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4260CC433C7;
+	Sun, 24 Mar 2024 23:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711323692;
-	bh=Xpl75Jz5d6f1KP3VBELqyCnH+uGhJIL7rB7lnTmnKi4=;
+	bh=L7J2W61y/kZ4llxw1sQsqpzpY5VckUHNs+De/7aHmLU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=g5gD0Di2AuFKp42f4kp9S8DeP+Nb82x+B8gnGHYipbcRu5wiXRMcBVLDJjrwj/E72
-	 XtUXZpcglXLomijceF0+cA8dOKs4tKG8eis9iLwqqtLhJFzCwMvGIFufXIlohwxfwS
-	 uPa7jv5SEnrqfmdXPOmJrAz1XBcVkbadCQVp9R5p+K+ole86xaoeOwPRt90ycbEj5L
-	 Tb02KxP3eQmkWtbt3J697cYQsDG0De+pKRdsFiWa5nFF2ZSm2yD3xLpg8zjdYt6aLa
-	 yUjyBgZ7ab6JbxCTBk6gqn5z1K9uAEg7lU/O5wS4qqALezlBzx2wvfJ9RDkinNe+m1
-	 YdEY4MGkeDmNQ==
+	b=jNBjB5fDmSJQAFR/M3ClUTW4WaXCTCpiMyZMEwhNm7QQZy3GK94v9UOb3XQcTtaRc
+	 s5myuOMYt7fxrHbb/AFuGZqoWyEmBoIeJZ1p4kJSToQlpAU0Rme8ol/csx4mo5sTHA
+	 HR7O0emRXU0BeSizTGUGtcq1oN4Sizbun2f5LJGe7ROVLHgESOFXYM6i/aCPhW4Pki
+	 bRcQejxqv87LFVlWMRxwEUpGwiC5HQ4QxzFup3OIpjDhlB1w2SC012XTouq3Z9aoM0
+	 GdWuywunBZjT6sAS+23UHVW67rq69xtnpSYe/SF+gQRHfe1FXnUa9Zz2JvRQ4NckjJ
+	 Wzm1RwtdCyL5Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Kalle Valo <kvalo@codeaurora.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 064/238] bpf: Mark bpf_spin_{lock,unlock}() helpers with notrace correctly
-Date: Sun, 24 Mar 2024 19:37:32 -0400
-Message-ID: <20240324234027.1354210-65-sashal@kernel.org>
+Subject: [PATCH 5.10 065/238] wireless: Remove redundant 'flush_workqueue()' calls
+Date: Sun, 24 Mar 2024 19:37:33 -0400
+Message-ID: <20240324234027.1354210-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -63,131 +62,241 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yonghong Song <yonghong.song@linux.dev>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 178c54666f9c4d2f49f2ea661d0c11b52f0ed190 ]
+[ Upstream commit ff1cc2fa3055ee4c83839f38b74b4ee370a2291c ]
 
-Currently tracing is supposed not to allow for bpf_spin_{lock,unlock}()
-helper calls. This is to prevent deadlock for the following cases:
-  - there is a prog (prog-A) calling bpf_spin_{lock,unlock}().
-  - there is a tracing program (prog-B), e.g., fentry, attached
-    to bpf_spin_lock() and/or bpf_spin_unlock().
-  - prog-B calls bpf_spin_{lock,unlock}().
-For such a case, when prog-A calls bpf_spin_{lock,unlock}(),
-a deadlock will happen.
+'destroy_workqueue()' already drains the queue before destroying it, so
+there is no need to flush it explicitly.
 
-The related source codes are below in kernel/bpf/helpers.c:
-  notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
-  notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
-notrace is supposed to prevent fentry prog from attaching to
-bpf_spin_{lock,unlock}().
+Remove the redundant 'flush_workqueue()' calls.
 
-But actually this is not the case and fentry prog can successfully
-attached to bpf_spin_lock(). Siddharth Chintamaneni reported
-the issue in [1]. The following is the macro definition for
-above BPF_CALL_1:
-  #define BPF_CALL_x(x, name, ...)                                               \
-        static __always_inline                                                 \
-        u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));   \
-        typedef u64 (*btf_##name)(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__)); \
-        u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));         \
-        u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))          \
-        {                                                                      \
-                return ((btf_##name)____##name)(__BPF_MAP(x,__BPF_CAST,__BPF_N,__VA_ARGS__));\
-        }                                                                      \
-        static __always_inline                                                 \
-        u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
+This was generated with coccinelle:
 
-  #define BPF_CALL_1(name, ...)   BPF_CALL_x(1, name, __VA_ARGS__)
+@@
+expression E;
+@@
+- 	flush_workqueue(E);
+	destroy_workqueue(E);
 
-The notrace attribute is actually applied to the static always_inline function
-____bpf_spin_{lock,unlock}(). The actual callback function
-bpf_spin_{lock,unlock}() is not marked with notrace, hence
-allowing fentry prog to attach to two helpers, and this
-may cause the above mentioned deadlock. Siddharth Chintamaneni
-actually has a reproducer in [2].
-
-To fix the issue, a new macro NOTRACE_BPF_CALL_1 is introduced which
-will add notrace attribute to the original function instead of
-the hidden always_inline function and this fixed the problem.
-
-  [1] https://lore.kernel.org/bpf/CAE5sdEigPnoGrzN8WU7Tx-h-iFuMZgW06qp0KHWtpvoXxf1OAQ@mail.gmail.com/
-  [2] https://lore.kernel.org/bpf/CAE5sdEg6yUc_Jz50AnUXEEUh6O73yQ1Z6NV2srJnef0ZrQkZew@mail.gmail.com/
-
-Fixes: d83525ca62cf ("bpf: introduce bpf_spin_lock")
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/bpf/20240207070102.335167-1-yonghong.song@linux.dev
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/0855d51423578ad019c0264dad3fe47a2e8af9c7.1633849511.git.christophe.jaillet@wanadoo.fr
+Stable-dep-of: cb5942b77c05 ("wifi: wilc1000: prevent use-after-free on vif when cleaning up all interfaces")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/filter.h | 21 ++++++++++++---------
- kernel/bpf/helpers.c   |  4 ++--
- 2 files changed, 14 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c             | 3 ---
+ drivers/net/wireless/ath/ath10k/sdio.c             | 1 -
+ drivers/net/wireless/intel/iwlegacy/3945-mac.c     | 1 -
+ drivers/net/wireless/intel/iwlegacy/4965-mac.c     | 1 -
+ drivers/net/wireless/intel/iwlwifi/dvm/main.c      | 1 -
+ drivers/net/wireless/marvell/mwifiex/cfg80211.c    | 2 --
+ drivers/net/wireless/marvell/mwifiex/main.c        | 2 --
+ drivers/net/wireless/microchip/wilc1000/netdev.c   | 1 -
+ drivers/net/wireless/quantenna/qtnfmac/core.c      | 2 --
+ drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c | 2 --
+ drivers/net/wireless/realtek/rtlwifi/pci.c         | 1 -
+ drivers/net/wireless/rndis_wlan.c                  | 2 --
+ drivers/net/wireless/st/cw1200/bh.c                | 2 --
+ 13 files changed, 21 deletions(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index cd56e53bd42e2..840b2a05c1b9f 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -480,24 +480,27 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
- 	__BPF_MAP(n, __BPF_DECL_ARGS, __BPF_N, u64, __ur_1, u64, __ur_2,       \
- 		  u64, __ur_3, u64, __ur_4, u64, __ur_5)
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index d0967bb1f3871..57ac80997319b 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -3381,13 +3381,10 @@ EXPORT_SYMBOL(ath10k_core_create);
  
--#define BPF_CALL_x(x, name, ...)					       \
-+#define BPF_CALL_x(x, attr, name, ...)					       \
- 	static __always_inline						       \
- 	u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));   \
- 	typedef u64 (*btf_##name)(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__)); \
--	u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));	       \
--	u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))	       \
-+	attr u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));    \
-+	attr u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))     \
- 	{								       \
- 		return ((btf_##name)____##name)(__BPF_MAP(x,__BPF_CAST,__BPF_N,__VA_ARGS__));\
- 	}								       \
- 	static __always_inline						       \
- 	u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
+ void ath10k_core_destroy(struct ath10k *ar)
+ {
+-	flush_workqueue(ar->workqueue);
+ 	destroy_workqueue(ar->workqueue);
  
--#define BPF_CALL_0(name, ...)	BPF_CALL_x(0, name, __VA_ARGS__)
--#define BPF_CALL_1(name, ...)	BPF_CALL_x(1, name, __VA_ARGS__)
--#define BPF_CALL_2(name, ...)	BPF_CALL_x(2, name, __VA_ARGS__)
--#define BPF_CALL_3(name, ...)	BPF_CALL_x(3, name, __VA_ARGS__)
--#define BPF_CALL_4(name, ...)	BPF_CALL_x(4, name, __VA_ARGS__)
--#define BPF_CALL_5(name, ...)	BPF_CALL_x(5, name, __VA_ARGS__)
-+#define __NOATTR
-+#define BPF_CALL_0(name, ...)	BPF_CALL_x(0, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_1(name, ...)	BPF_CALL_x(1, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_2(name, ...)	BPF_CALL_x(2, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_3(name, ...)	BPF_CALL_x(3, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_4(name, ...)	BPF_CALL_x(4, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_5(name, ...)	BPF_CALL_x(5, __NOATTR, name, __VA_ARGS__)
-+
-+#define NOTRACE_BPF_CALL_1(name, ...)	BPF_CALL_x(1, notrace, name, __VA_ARGS__)
+-	flush_workqueue(ar->workqueue_aux);
+ 	destroy_workqueue(ar->workqueue_aux);
  
- #define bpf_ctx_range(TYPE, MEMBER)						\
- 	offsetof(TYPE, MEMBER) ... offsetofend(TYPE, MEMBER) - 1
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index d758641973d6d..084ac7e429199 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -287,7 +287,7 @@ static inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
- 	__this_cpu_write(irqsave_flags, flags);
+-	flush_workqueue(ar->workqueue_tx_complete);
+ 	destroy_workqueue(ar->workqueue_tx_complete);
+ 
+ 	ath10k_debug_destroy(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
+index 0fe639710a8bb..9d1b0890f3105 100644
+--- a/drivers/net/wireless/ath/ath10k/sdio.c
++++ b/drivers/net/wireless/ath/ath10k/sdio.c
+@@ -2651,7 +2651,6 @@ static void ath10k_sdio_remove(struct sdio_func *func)
+ 
+ 	ath10k_core_destroy(ar);
+ 
+-	flush_workqueue(ar_sdio->workqueue);
+ 	destroy_workqueue(ar_sdio->workqueue);
  }
  
--notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
-+NOTRACE_BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
+diff --git a/drivers/net/wireless/intel/iwlegacy/3945-mac.c b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
+index ef0ac42a55a2a..55c00a07bc4d3 100644
+--- a/drivers/net/wireless/intel/iwlegacy/3945-mac.c
++++ b/drivers/net/wireless/intel/iwlegacy/3945-mac.c
+@@ -3831,7 +3831,6 @@ il3945_pci_remove(struct pci_dev *pdev)
+ 	il3945_unset_hw_params(il);
+ 
+ 	/*netif_stop_queue(dev); */
+-	flush_workqueue(il->workqueue);
+ 
+ 	/* ieee80211_unregister_hw calls il3945_mac_stop, which flushes
+ 	 * il->workqueue... so we can't take down the workqueue
+diff --git a/drivers/net/wireless/intel/iwlegacy/4965-mac.c b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
+index 12cf22d0e9949..2549902552e1d 100644
+--- a/drivers/net/wireless/intel/iwlegacy/4965-mac.c
++++ b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
+@@ -6745,7 +6745,6 @@ il4965_pci_remove(struct pci_dev *pdev)
+ 	il_eeprom_free(il);
+ 
+ 	/*netif_stop_queue(dev); */
+-	flush_workqueue(il->workqueue);
+ 
+ 	/* ieee80211_unregister_hw calls il_mac_stop, which flushes
+ 	 * il->workqueue... so we can't take down the workqueue
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/main.c b/drivers/net/wireless/intel/iwlwifi/dvm/main.c
+index 461af58311561..6a19fc4c68604 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/main.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/main.c
+@@ -1526,7 +1526,6 @@ static void iwl_op_mode_dvm_stop(struct iwl_op_mode *op_mode)
+ 	kfree(priv->nvm_data);
+ 
+ 	/*netif_stop_queue(dev); */
+-	flush_workqueue(priv->workqueue);
+ 
+ 	/* ieee80211_unregister_hw calls iwlagn_mac_stop, which flushes
+ 	 * priv->workqueue... so we can't take down the workqueue
+diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+index 2f5f1ff22a601..e1196c565a62f 100644
+--- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
++++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+@@ -3155,13 +3155,11 @@ int mwifiex_del_virtual_intf(struct wiphy *wiphy, struct wireless_dev *wdev)
+ 		unregister_netdevice(wdev->netdev);
+ 
+ 	if (priv->dfs_cac_workqueue) {
+-		flush_workqueue(priv->dfs_cac_workqueue);
+ 		destroy_workqueue(priv->dfs_cac_workqueue);
+ 		priv->dfs_cac_workqueue = NULL;
+ 	}
+ 
+ 	if (priv->dfs_chan_sw_workqueue) {
+-		flush_workqueue(priv->dfs_chan_sw_workqueue);
+ 		destroy_workqueue(priv->dfs_chan_sw_workqueue);
+ 		priv->dfs_chan_sw_workqueue = NULL;
+ 	}
+diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
+index 6283df5aaaf8b..b8b79fe50dbc2 100644
+--- a/drivers/net/wireless/marvell/mwifiex/main.c
++++ b/drivers/net/wireless/marvell/mwifiex/main.c
+@@ -498,13 +498,11 @@ static void mwifiex_free_adapter(struct mwifiex_adapter *adapter)
+ static void mwifiex_terminate_workqueue(struct mwifiex_adapter *adapter)
  {
- 	__bpf_spin_lock_irqsave(lock);
+ 	if (adapter->workqueue) {
+-		flush_workqueue(adapter->workqueue);
+ 		destroy_workqueue(adapter->workqueue);
+ 		adapter->workqueue = NULL;
+ 	}
+ 
+ 	if (adapter->rx_workqueue) {
+-		flush_workqueue(adapter->rx_workqueue);
+ 		destroy_workqueue(adapter->rx_workqueue);
+ 		adapter->rx_workqueue = NULL;
+ 	}
+diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
+index c508f429984ab..463f3bfc3064d 100644
+--- a/drivers/net/wireless/microchip/wilc1000/netdev.c
++++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
+@@ -840,7 +840,6 @@ void wilc_netdev_cleanup(struct wilc *wilc)
+ 	srcu_read_unlock(&wilc->srcu, srcu_idx);
+ 
+ 	wilc_wfi_deinit_mon_interface(wilc, false);
+-	flush_workqueue(wilc->hif_workqueue);
+ 	destroy_workqueue(wilc->hif_workqueue);
+ 
+ 	while (ifc_cnt < WILC_NUM_CONCURRENT_IFC) {
+diff --git a/drivers/net/wireless/quantenna/qtnfmac/core.c b/drivers/net/wireless/quantenna/qtnfmac/core.c
+index bf6dbeb618423..d39c210da68e2 100644
+--- a/drivers/net/wireless/quantenna/qtnfmac/core.c
++++ b/drivers/net/wireless/quantenna/qtnfmac/core.c
+@@ -816,13 +816,11 @@ void qtnf_core_detach(struct qtnf_bus *bus)
+ 	bus->fw_state = QTNF_FW_STATE_DETACHED;
+ 
+ 	if (bus->workqueue) {
+-		flush_workqueue(bus->workqueue);
+ 		destroy_workqueue(bus->workqueue);
+ 		bus->workqueue = NULL;
+ 	}
+ 
+ 	if (bus->hprio_workqueue) {
+-		flush_workqueue(bus->hprio_workqueue);
+ 		destroy_workqueue(bus->hprio_workqueue);
+ 		bus->hprio_workqueue = NULL;
+ 	}
+diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
+index 0f328ce47fee3..f65eb6e5b8d59 100644
+--- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
++++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
+@@ -387,7 +387,6 @@ static int qtnf_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
  	return 0;
-@@ -309,7 +309,7 @@ static inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock)
- 	local_irq_restore(flags);
+ 
+ error:
+-	flush_workqueue(pcie_priv->workqueue);
+ 	destroy_workqueue(pcie_priv->workqueue);
+ 	pci_set_drvdata(pdev, NULL);
+ 	return ret;
+@@ -416,7 +415,6 @@ static void qtnf_pcie_remove(struct pci_dev *dev)
+ 		qtnf_core_detach(bus);
+ 
+ 	netif_napi_del(&bus->mux_napi);
+-	flush_workqueue(priv->workqueue);
+ 	destroy_workqueue(priv->workqueue);
+ 	tasklet_kill(&priv->reclaim_tq);
+ 
+diff --git a/drivers/net/wireless/realtek/rtlwifi/pci.c b/drivers/net/wireless/realtek/rtlwifi/pci.c
+index 679ae786cf450..6d9f2a6233a21 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/pci.c
++++ b/drivers/net/wireless/realtek/rtlwifi/pci.c
+@@ -1704,7 +1704,6 @@ static void rtl_pci_deinit(struct ieee80211_hw *hw)
+ 	tasklet_kill(&rtlpriv->works.irq_tasklet);
+ 	cancel_work_sync(&rtlpriv->works.lps_change_work);
+ 
+-	flush_workqueue(rtlpriv->works.rtl_wq);
+ 	destroy_workqueue(rtlpriv->works.rtl_wq);
  }
  
--notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
-+NOTRACE_BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
- {
- 	__bpf_spin_unlock_irqrestore(lock);
- 	return 0;
+diff --git a/drivers/net/wireless/rndis_wlan.c b/drivers/net/wireless/rndis_wlan.c
+index dc076d8448680..75c78e1c924b0 100644
+--- a/drivers/net/wireless/rndis_wlan.c
++++ b/drivers/net/wireless/rndis_wlan.c
+@@ -3497,7 +3497,6 @@ static int rndis_wlan_bind(struct usbnet *usbdev, struct usb_interface *intf)
+ 	cancel_delayed_work_sync(&priv->dev_poller_work);
+ 	cancel_delayed_work_sync(&priv->scan_work);
+ 	cancel_work_sync(&priv->work);
+-	flush_workqueue(priv->workqueue);
+ 	destroy_workqueue(priv->workqueue);
+ 
+ 	wiphy_free(wiphy);
+@@ -3514,7 +3513,6 @@ static void rndis_wlan_unbind(struct usbnet *usbdev, struct usb_interface *intf)
+ 	cancel_delayed_work_sync(&priv->dev_poller_work);
+ 	cancel_delayed_work_sync(&priv->scan_work);
+ 	cancel_work_sync(&priv->work);
+-	flush_workqueue(priv->workqueue);
+ 	destroy_workqueue(priv->workqueue);
+ 
+ 	rndis_unbind(usbdev, intf);
+diff --git a/drivers/net/wireless/st/cw1200/bh.c b/drivers/net/wireless/st/cw1200/bh.c
+index 02efe8483cba6..361fef6e1eeaa 100644
+--- a/drivers/net/wireless/st/cw1200/bh.c
++++ b/drivers/net/wireless/st/cw1200/bh.c
+@@ -88,8 +88,6 @@ void cw1200_unregister_bh(struct cw1200_common *priv)
+ 	atomic_add(1, &priv->bh_term);
+ 	wake_up(&priv->bh_wq);
+ 
+-	flush_workqueue(priv->bh_workqueue);
+-
+ 	destroy_workqueue(priv->bh_workqueue);
+ 	priv->bh_workqueue = NULL;
+ 
 -- 
 2.43.0
 
