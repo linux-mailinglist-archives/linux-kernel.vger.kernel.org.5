@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-115570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71EAC889C7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:21:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83817889C6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2BE11F35C0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:21:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC2C41C23AA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E9E62F9F56;
-	Mon, 25 Mar 2024 02:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBBAE2ECFD7;
+	Mon, 25 Mar 2024 02:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K5+z5IZE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwreHUGw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3438884A2A;
-	Sun, 24 Mar 2024 22:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D9783CA7;
+	Sun, 24 Mar 2024 22:58:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321110; cv=none; b=V8+/lMQ+WDEuDLUqKiIq6n2AVNBZiC2Zjc6AdHqg/82B54z9GqXczwYx3joSFdUTAc+NWhU+i8Bk8NmuPoepLosWsF8v+313XJS5lQJH2ypMlUFr0MGOvl4VGeIoj+3q9XTqEtt0Ec1CyKCdec7aqaATaEAuT+9g0eK0tD3/3cU=
+	t=1711321110; cv=none; b=YEk3S0AlmhnOUGw2nE+k7mwslz0tBM7H4j3M5dSxhU+pxC8NgnMRIzvPP1fbcTj4s31gY8FfCdvdIVgAIGVfluqj6g7VfJisLilt4At1jvtyK6VUQnATPNV4a2wGsiUk/Er9U+K5fTwOdu82y8u7/4pT1DMQB1INPmAQzidSWUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321110; c=relaxed/simple;
-	bh=Dp88QjJycL9O///jxsVX1zMexcjm0ffDPULwA+9/ycw=;
+	bh=IPQUPry+ITtcAdi3zYmL9JlqymXhYmP6surBfz44xq4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=omiMHr3kz2EbmAcfKDSPkOawVDopwIhUX4Jk15/N0BFHxl2BNZcBzWcjwUuOGdK8+SUp8CqxY3Y/dnSa+htY98hakw9rBLKc8nnwJoCcP9rpR+vX4zp+TsFMNl6/+ODA4kc+Qqu6XIzFHsdBCmgeuQNDcWYxAPr+bJvPhvcUZ/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K5+z5IZE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12747C433C7;
-	Sun, 24 Mar 2024 22:58:27 +0000 (UTC)
+	 MIME-Version; b=RHrOsKrDJ+RQDvdiJnR9qjt0OiT2XJ252NkNJN6OahALQhliq25LnP9HjomgIgOXKYtDt0ecsS2pQnAemGg5hYyoFMUaSxdcAPTCxvPju7IU2HdVWq9ARU0vvnNDPdNlWEccbqQ9QQfH0P2JwwWAAZsZ5I9gvI7c4eYs2uF87pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwreHUGw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57E2DC43390;
+	Sun, 24 Mar 2024 22:58:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321109;
-	bh=Dp88QjJycL9O///jxsVX1zMexcjm0ffDPULwA+9/ycw=;
+	s=k20201202; t=1711321110;
+	bh=IPQUPry+ITtcAdi3zYmL9JlqymXhYmP6surBfz44xq4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K5+z5IZEJ0DDm1BxjjJXU+IrvEF6OhqhcIYtWTU7HK0VqEPBQZaB+BSsHMj0tqbfT
-	 I97mlQ5x2Dup6QpSLQtsNDO/3mLYKAJJhn96X7KLElJLtS+3kn9PUQD1oTHl/dPMVt
-	 pRS54mSF8WUq7JBoOq0aXUqbyvE+aSJNVdpWfiYY/blPNrO/mTsUbEPitxQDm/oZkQ
-	 DoVEIQ5ElzKfx9OtH04OiN3nV4pUsL9MUg+EMoHP7bftRSIEeZGWdTMz50a5SjSHR0
-	 CLHsOtJlt4HJruXZ0lxchYxTP8EwCROHoj81w9dClnVQ1UYGsRoEflJX/POiSbOr6t
-	 qBMRURJXWMudw==
+	b=dwreHUGwzQffQbBvgp6oPebceT42PxFLF1bpHTpj2sBRA9xH5YaLhzn7Bi0kAOswM
+	 7aFegeJkoBaJvu5GXUtGstSleDOXnvEKfAt0IoSpqStyPRVe4TgR4tQMx7hcmGJc3R
+	 GzYkOTOuQFqUre1nxPyDg8a73E7biXbYCTFcIFNRN2eD1Upfjwtbetf84Z3PBjS0ev
+	 4WZLHDHyEiH2c+RboUlKhS2U3wPD0l3o4fKBQK2fI05/kStIZNm+tZMiL+tyRjgHmC
+	 PbZDv885qFDmGmjGpmExhiTNHOB7fJ1pZxh6TThSCPO06SnB9Wvw6ETAKFTutv9Oza
+	 4toIQ8NE64Zfw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eric Dumazet <edumazet@google.com>,
-	syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Jason Xing <kerneljasonxing@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Leon Romanovsky <leonro@nvidia.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 671/713] packet: annotate data-races around ignore_outgoing
-Date: Sun, 24 Mar 2024 18:46:37 -0400
-Message-ID: <20240324224720.1345309-672-sashal@kernel.org>
+Subject: [PATCH 6.7 672/713] xfrm: Allow UDP encapsulation only in offload modes
+Date: Sun, 24 Mar 2024 18:46:38 -0400
+Message-ID: <20240324224720.1345309-673-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -66,103 +63,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Eric Dumazet <edumazet@google.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 6ebfad33161afacb3e1e59ed1c2feefef70f9f97 ]
+[ Upstream commit 773bb766ca4a05bf363203030b72b10088869224 ]
 
-ignore_outgoing is read locklessly from dev_queue_xmit_nit()
-and packet_getsockopt()
+The missing check of x->encap caused to the situation where GSO packets
+were created with UDP encapsulation.
 
-Add appropriate READ_ONCE()/WRITE_ONCE() annotations.
+As a solution return the encap check for non-offloaded SA.
 
-syzbot reported:
-
-BUG: KCSAN: data-race in dev_queue_xmit_nit / packet_setsockopt
-
-write to 0xffff888107804542 of 1 bytes by task 22618 on cpu 0:
- packet_setsockopt+0xd83/0xfd0 net/packet/af_packet.c:4003
- do_sock_setsockopt net/socket.c:2311 [inline]
- __sys_setsockopt+0x1d8/0x250 net/socket.c:2334
- __do_sys_setsockopt net/socket.c:2343 [inline]
- __se_sys_setsockopt net/socket.c:2340 [inline]
- __x64_sys_setsockopt+0x66/0x80 net/socket.c:2340
- do_syscall_64+0xd3/0x1d0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-read to 0xffff888107804542 of 1 bytes by task 27 on cpu 1:
- dev_queue_xmit_nit+0x82/0x620 net/core/dev.c:2248
- xmit_one net/core/dev.c:3527 [inline]
- dev_hard_start_xmit+0xcc/0x3f0 net/core/dev.c:3547
- __dev_queue_xmit+0xf24/0x1dd0 net/core/dev.c:4335
- dev_queue_xmit include/linux/netdevice.h:3091 [inline]
- batadv_send_skb_packet+0x264/0x300 net/batman-adv/send.c:108
- batadv_send_broadcast_skb+0x24/0x30 net/batman-adv/send.c:127
- batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:392 [inline]
- batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
- batadv_iv_send_outstanding_bat_ogm_packet+0x3f0/0x4b0 net/batman-adv/bat_iv_ogm.c:1700
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0x465/0x990 kernel/workqueue.c:3335
- worker_thread+0x526/0x730 kernel/workqueue.c:3416
- kthread+0x1d1/0x210 kernel/kthread.c:388
- ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
-value changed: 0x00 -> 0x01
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 27 Comm: kworker/u8:1 Tainted: G        W          6.8.0-syzkaller-08073-g480e035fc4c7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
-
-Fixes: fa788d986a3a ("packet: add sockopt to ignore outgoing packets")
-Reported-by: syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/netdev/CANn89i+Z7MfbkBLOv=p7KZ7=K1rKHO4P1OL5LYDCtBiyqsa9oQ@mail.gmail.com/T/#t
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 983a73da1f99 ("xfrm: Pass UDP encapsulation in TX packet offload")
+Closes: https://lore.kernel.org/all/a650221ae500f0c7cf496c61c96c1b103dcb6f67.camel@redhat.com
+Reported-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c         | 2 +-
- net/packet/af_packet.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ net/xfrm/xfrm_device.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index add22ca0dff95..ae898594690f7 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -2262,7 +2262,7 @@ void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
- 	rcu_read_lock();
- again:
- 	list_for_each_entry_rcu(ptype, ptype_list, list) {
--		if (ptype->ignore_outgoing)
-+		if (READ_ONCE(ptype->ignore_outgoing))
- 			continue;
+diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
+index 653e51ae39648..6346690d5c699 100644
+--- a/net/xfrm/xfrm_device.c
++++ b/net/xfrm/xfrm_device.c
+@@ -407,7 +407,8 @@ bool xfrm_dev_offload_ok(struct sk_buff *skb, struct xfrm_state *x)
+ 	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
+ 	struct net_device *dev = x->xso.dev;
  
- 		/* Never send packets back to the socket
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 7adf48549a3b7..f017d7d33da39 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -4004,7 +4004,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, sockptr_t optval,
- 		if (val < 0 || val > 1)
- 			return -EINVAL;
+-	if (!x->type_offload)
++	if (!x->type_offload ||
++	    (x->xso.type == XFRM_DEV_OFFLOAD_UNSPECIFIED && x->encap))
+ 		return false;
  
--		po->prot_hook.ignore_outgoing = !!val;
-+		WRITE_ONCE(po->prot_hook.ignore_outgoing, !!val);
- 		return 0;
- 	}
- 	case PACKET_TX_HAS_OFF:
-@@ -4135,7 +4135,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
- 		       0);
- 		break;
- 	case PACKET_IGNORE_OUTGOING:
--		val = po->prot_hook.ignore_outgoing;
-+		val = READ_ONCE(po->prot_hook.ignore_outgoing);
- 		break;
- 	case PACKET_ROLLOVER_STATS:
- 		if (!po->rollover)
+ 	if (x->xso.type == XFRM_DEV_OFFLOAD_PACKET ||
 -- 
 2.43.0
 
