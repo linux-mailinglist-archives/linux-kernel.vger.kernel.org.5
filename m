@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-115712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 883F1889483
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:00:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 703988889F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:07:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA7D31C2F2D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:00:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2641828FA56
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FC435F569;
-	Mon, 25 Mar 2024 02:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC58172780;
+	Sun, 24 Mar 2024 23:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iKt708X/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hsfR1RPi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4C7721592C;
-	Sun, 24 Mar 2024 23:09:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDAD215951;
+	Sun, 24 Mar 2024 23:09:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321750; cv=none; b=ht3IoAM5rUSTEcRgl7IPdDw130WEZe/T/zW/85o4AJp1fzDXXfrcB6vK33a2rud8Yw0JYm17v5MAyYUlqQRSdxPI8JEUnAwjvi6ZQXrNxuTyhHUuOrgyJSV8WE/BY6NzKWe5z7SIDOlNsxmqdOocStTcQowp2s0NzZerrlRBSq4=
+	t=1711321753; cv=none; b=mUgDrD152HRh8FLEgm8kPNoWn3ITge8QTJ7TL85hRG23V4dvCetKcgG8f8GOzCJHii2bvTpbjnpIFdt8u/OXlPH4H4BDtFrKwq7t/7f5rcoNDIIi0LL9DD+VpcHq0UcpiTSn4yH9GYnF8uf86ElF7tuEAbDSdMm0RPYdo4iXTo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321750; c=relaxed/simple;
-	bh=XBZH04MyonTga9mdAf67jwkN7tm6Zud8jwE7ugfw8/M=;
+	s=arc-20240116; t=1711321753; c=relaxed/simple;
+	bh=VRyHqkwnrWOxKYONL7l3ggEL9OY/Mc3b+ogGjCd+mZA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sRQ4br77cmugxmKO/J3kFXRyLy7Kl1+BBlSdLb0yL5AMkpmG7Y3MTkvdz8hybpjX6sGgZv809OLHCL2Yr/+CQ9XWGmq8CxJzf3dlITLTTnx6eX7d5G6vlq3/NN817EKfM6H0iGluE3km9EHa2ZdByRMO3w6KO9cwAVHAAvfXdQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iKt708X/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00141C43394;
-	Sun, 24 Mar 2024 23:09:09 +0000 (UTC)
+	 MIME-Version; b=b1oPEGwwLaocp0rbMvEpjd+sPypMWEmPhABZpQn3JHltP9tudFWCiRV/DSZWPbkpkAx7wz8uqzS9hhWlTs3cNRYNIaBU0X9/oc3KLTvqq5kFyjATWdx9GUQQNDZh6N7kRBgIOgK734ZuMK3QsWzFlj/tG/gKjAJOiW3mat/PCBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hsfR1RPi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB3B5C43390;
+	Sun, 24 Mar 2024 23:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321750;
-	bh=XBZH04MyonTga9mdAf67jwkN7tm6Zud8jwE7ugfw8/M=;
+	s=k20201202; t=1711321751;
+	bh=VRyHqkwnrWOxKYONL7l3ggEL9OY/Mc3b+ogGjCd+mZA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iKt708X/A7BbZtOmqQy37KAggg8msPvrCNr43O/NrwGWn/QoSbtArpb4g/cHxUSyQ
-	 MaCWBx0Wu1m4KKnbckRTETeHEReM0a8V9e6yGhUZkKF9w9Obf+xem6D1ki0zAU/mtB
-	 RC52PpxQ8sd13B9u/aV4YzGWlQKOxr1/7wYDp+f6YAhxHHhmlK68MVtSRFl39XKpb1
-	 XFkbZNqChkolBJv0GqFoBk+VZKGNNmH1K9nsxU0oqwhExpVwpby2tZyT8CPkRI8if4
-	 3Vj9kD7/F+lLEpTsNcrd7RZYtJLgtSjWXhLV4JKSmVH+EeYV3MyzfJZV+qkVRCEyu7
-	 OOEHSAV4/guFw==
+	b=hsfR1RPiHZR6Lws37b/kSpgaZ2cXCRWWS85WADj1gs9eYSZcRvtg+AZpwNfVx7LFB
+	 P8yRzErdLIanlbpt4btrkoNB3pWqb+XTprZqWYJsQm/r9Q451rzxH2UVpYnYWEc56j
+	 /V0Aqi770PE8F8rGGKQs5Yn+6aAk2snVfcesRVQHMKFF7Zcx0AbjnY+pfvZwWDmzMK
+	 O3NW2RIALloZtbrlCG6DhYIUSKbhAvKc3QJ8N6ByEZ55wb+7AJmT0jAttHrUY8U5vv
+	 d+dOuhQawRhWnqbXzGloYrmoL7h/HUxPIE7eyLWTqMr5UuFSiutNdrKTH3/h6EKfLc
+	 d/OTRsNVyONQg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Paloma Arellano <quic_parellan@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+Cc: Changbin Du <changbin.du@huawei.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Xiaoyi Su <suxiaoyi@huawei.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 478/638] drm/msm/dpu: add division of drm_display_mode's hskew parameter
-Date: Sun, 24 Mar 2024 18:58:35 -0400
-Message-ID: <20240324230116.1348576-479-sashal@kernel.org>
+Subject: [PATCH 6.6 479/638] modules: wait do_free_init correctly
+Date: Sun, 24 Mar 2024 18:58:36 -0400
+Message-ID: <20240324230116.1348576-480-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,47 +65,123 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Paloma Arellano <quic_parellan@quicinc.com>
+From: Changbin Du <changbin.du@huawei.com>
 
-[ Upstream commit 551ee0f210991d25f336bc27262353bfe99d3eed ]
+[ Upstream commit 8f8cd6c0a43ed637e620bbe45a8d0e0c2f4d5130 ]
 
-Setting up the timing engine when the physical encoder has a split role
-neglects dividing the drm_display_mode's hskew parameter. Let's fix this
-since this must also be done in preparation for implementing YUV420 over
-DP.
+The synchronization here is to ensure the ordering of freeing of a module
+init so that it happens before W+X checking.  It is worth noting it is not
+that the freeing was not happening, it is just that our sanity checkers
+raced against the permission checkers which assume init memory is already
+gone.
 
-Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-Signed-off-by: Paloma Arellano <quic_parellan@quicinc.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Patchwork: https://patchwork.freedesktop.org/patch/579605/
-Link: https://lore.kernel.org/r/20240222194025.25329-3-quic_parellan@quicinc.com
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Commit 1a7b7d922081 ("modules: Use vmalloc special flag") moved calling
+do_free_init() into a global workqueue instead of relying on it being
+called through call_rcu(..., do_free_init), which used to allowed us call
+do_free_init() asynchronously after the end of a subsequent grace period.
+The move to a global workqueue broke the gaurantees for code which needed
+to be sure the do_free_init() would complete with rcu_barrier().  To fix
+this callers which used to rely on rcu_barrier() must now instead use
+flush_work(&init_free_wq).
+
+Without this fix, we still could encounter false positive reports in W+X
+checking since the rcu_barrier() here can not ensure the ordering now.
+
+Even worse, the rcu_barrier() can introduce significant delay.  Eric
+Chanudet reported that the rcu_barrier introduces ~0.1s delay on a
+PREEMPT_RT kernel.
+
+  [    0.291444] Freeing unused kernel memory: 5568K
+  [    0.402442] Run /sbin/init as init process
+
+With this fix, the above delay can be eliminated.
+
+Link: https://lkml.kernel.org/r/20240227023546.2490667-1-changbin.du@huawei.com
+Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
+Signed-off-by: Changbin Du <changbin.du@huawei.com>
+Tested-by: Eric Chanudet <echanude@redhat.com>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Xiaoyi Su <suxiaoyi@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ include/linux/moduleloader.h | 8 ++++++++
+ init/main.c                  | 5 +++--
+ kernel/module/main.c         | 9 +++++++--
+ 3 files changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-index 97c31d03d5520..2141b81397824 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
-@@ -258,12 +258,14 @@ static void dpu_encoder_phys_vid_setup_timing_engine(
- 		mode.htotal >>= 1;
- 		mode.hsync_start >>= 1;
- 		mode.hsync_end >>= 1;
-+		mode.hskew >>= 1;
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index 001b2ce83832e..89b1e0ed98114 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -115,6 +115,14 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 		    const Elf_Shdr *sechdrs,
+ 		    struct module *mod);
  
- 		DPU_DEBUG_VIDENC(phys_enc,
--			"split_role %d, halve horizontal %d %d %d %d\n",
-+			"split_role %d, halve horizontal %d %d %d %d %d\n",
- 			phys_enc->split_role,
- 			mode.hdisplay, mode.htotal,
--			mode.hsync_start, mode.hsync_end);
-+			mode.hsync_start, mode.hsync_end,
-+			mode.hskew);
++#ifdef CONFIG_MODULES
++void flush_module_init_free_work(void);
++#else
++static inline void flush_module_init_free_work(void)
++{
++}
++#endif
++
+ /* Any cleanup needed when module leaves. */
+ void module_arch_cleanup(struct module *mod);
+ 
+diff --git a/init/main.c b/init/main.c
+index e24b0780fdff7..9e6ab6d593bd8 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -88,6 +88,7 @@
+ #include <linux/sched/task_stack.h>
+ #include <linux/context_tracking.h>
+ #include <linux/random.h>
++#include <linux/moduleloader.h>
+ #include <linux/list.h>
+ #include <linux/integrity.h>
+ #include <linux/proc_ns.h>
+@@ -1402,11 +1403,11 @@ static void mark_readonly(void)
+ 	if (rodata_enabled) {
+ 		/*
+ 		 * load_module() results in W+X mappings, which are cleaned
+-		 * up with call_rcu().  Let's make sure that queued work is
++		 * up with init_free_wq. Let's make sure that queued work is
+ 		 * flushed so that we don't hit false positives looking for
+ 		 * insecure pages which are W+X.
+ 		 */
+-		rcu_barrier();
++		flush_module_init_free_work();
+ 		mark_rodata_ro();
+ 		rodata_test();
+ 	} else
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 98fedfdb8db52..34d9e718c2c7d 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -2486,6 +2486,11 @@ static void do_free_init(struct work_struct *w)
  	}
+ }
  
- 	drm_mode_to_intf_timing_params(phys_enc, &mode, &timing_params);
++void flush_module_init_free_work(void)
++{
++	flush_work(&init_free_wq);
++}
++
+ #undef MODULE_PARAM_PREFIX
+ #define MODULE_PARAM_PREFIX "module."
+ /* Default value for module->async_probe_requested */
+@@ -2590,8 +2595,8 @@ static noinline int do_init_module(struct module *mod)
+ 	 * Note that module_alloc() on most architectures creates W+X page
+ 	 * mappings which won't be cleaned up until do_free_init() runs.  Any
+ 	 * code such as mark_rodata_ro() which depends on those mappings to
+-	 * be cleaned up needs to sync with the queued work - ie
+-	 * rcu_barrier()
++	 * be cleaned up needs to sync with the queued work by invoking
++	 * flush_module_init_free_work().
+ 	 */
+ 	if (llist_add(&freeinit->node, &init_free_list))
+ 		schedule_work(&init_free_wq);
 -- 
 2.43.0
 
