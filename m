@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE17888AD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:31:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 242EE888AD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:31:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FF841C291BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:31:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D391C28B506
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3E05D47E;
-	Sun, 24 Mar 2024 23:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B0628ECA1;
+	Sun, 24 Mar 2024 23:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/OhtsVN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZI9jf4d9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB153149E1E;
-	Sun, 24 Mar 2024 23:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E6F15B153;
+	Sun, 24 Mar 2024 23:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322159; cv=none; b=mqHSJGY7IrEPHMcjot3Qt1HDYSLHS57jBX5RjveA+WIZa+3JCZfDhAbCTTIevHRPOdYT/UqWi5QGZhGuMg5Zqqq+E+2yJHrhqYm3IV0ZxKgGxhIFMLfB44JOIfpTMrFS/engefOOvRdKHP9Sm2DD5YuAaQ/R8OTDa75+bpnE5tQ=
+	t=1711322159; cv=none; b=ooMUaBTI9AafKVE4SfLhu54Aynu+Z70G76Zj3qFU6XYZwbGmaaSYY9mq3qXwT5+IYmL24cYD68LChPvj2r95Q4B8hODM89OgkcA4D3etqpXbFXPQolFBHrt7fD8lIDUuZb85NLxU78eScb0GR2BFNhXbRmnNf/JviikpkcMmp3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322159; c=relaxed/simple;
-	bh=gLvrobefHih3m36oqL0RUatkLn6qrzrvGHRqDvv4vu0=;
+	bh=I5IZLXRovJJX137SJGnoEbJCPVfKKUehgGid1mWVd0k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ObRljyIevOLF6BRHXZu4LBGj6eOneBS/LSzkR1Sd1xJ2EKYBAs88m241QKbJi+gmYxEHvpSREwynAVoeMJYbtGeubOEsxf8Utq59DHXJ6RpVFF6V84xnP/dsHB1jFQQ/LcDsQhszWxMUTGC6gR8rg1EK8zUlvH38TVjtsz8YCUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/OhtsVN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3517CC433F1;
-	Sun, 24 Mar 2024 23:15:57 +0000 (UTC)
+	 MIME-Version; b=mFHStgCk88XNzlQiyRM9pkGACn2Le/IHXc4p9HxRUzqPEtlWh60LkJiSJsffunG6yfuP7zMX1E0hINS+zwX9PVvpJ5LnEijJ8u2rWwVus7KNMXgihShkVyVqfAh8yTf8Bmp9uqKu4cAoU7dtRpHk5iKadM031xrgJnL10jWhbgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZI9jf4d9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC63C433C7;
+	Sun, 24 Mar 2024 23:15:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322157;
-	bh=gLvrobefHih3m36oqL0RUatkLn6qrzrvGHRqDvv4vu0=;
+	s=k20201202; t=1711322158;
+	bh=I5IZLXRovJJX137SJGnoEbJCPVfKKUehgGid1mWVd0k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L/OhtsVNlKA6vLNxcVMotAyRMO2CqgHGUc8gmKMltMCl5FyvypfzlbwSzgMmFKZj2
-	 UnXIzDcqYgFSRtkc4jxiDpqWVc9YSVsfr/br6hC12KBy2yFTloCuyibtZKvelocjLs
-	 uhtT6LjoJhBvr5t+jq7yfx/y2qfg61c7KaljOw7HTdTz7+I1Tb+78rtwqG+nA3oFBZ
-	 0WFUTI5bB2KXNUNgZla3DfmJfhr8bSi0h/XY5FY8baBZ8zl1d6XKafCX0Bo6LQNLtL
-	 dDWnycBEH0sB+4zOr/c+DPaVAwICp8Q6K5W/n83tXNgVIClA4782oIp+oss//Azv81
-	 AXLCyHctYhkVw==
+	b=ZI9jf4d9k+9oqlbU72c+O5IqXpXuxaq49WNB5N2I1LOuZB1jlfubP7GTYhKEMrLxH
+	 mEK82p7rgtdWQazZQcDZikjElaHLUnmrbxypJmyHZQHuUxSH/H3DzIxsVLs0CZPA4N
+	 T92xGICnyALVjRpFG194BrCRYmqCCLeswp/SiIGmEkpFC5Qqt6/jPjvwI0QvUBmUEq
+	 ACdXw6OhBXUCpZQxUAKwjocL0T26Wc3bTE13oLnnF/fLEJhl2BFfYWvvBwlgsxqiSL
+	 fhWBRAoCP+RVUsEni7YW6SOx6bevVu8/Mp7F1ssgylG1iWDmTU7wT6XAIeYA5tNiwX
+	 99INiwvpcuCVw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhang Shurong <zhang_shurong@foxmail.com>,
+Cc: Cai Huoqing <caihuoqing@baidu.com>,
 	Thierry Reding <treding@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 235/451] drm/tegra: dpaux: Fix PM disable depth imbalance in tegra_dpaux_probe
-Date: Sun, 24 Mar 2024 19:08:31 -0400
-Message-ID: <20240324231207.1351418-236-sashal@kernel.org>
+Subject: [PATCH 6.1 236/451] drm/tegra: dsi: Make use of the helper function dev_err_probe()
+Date: Sun, 24 Mar 2024 19:08:32 -0400
+Message-ID: <20240324231207.1351418-237-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,75 +62,69 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Zhang Shurong <zhang_shurong@foxmail.com>
+From: Cai Huoqing <caihuoqing@baidu.com>
 
-[ Upstream commit 0800880f4eb789b7d299db40f2e86e056bd33a4e ]
+[ Upstream commit fc75e4fcbd1e4252a0481ebb23cd4516c127a8e2 ]
 
-The pm_runtime_enable function increases the power disable depth,
-which means that we must perform a matching decrement on the error
-handling path to maintain balance within the given context.
-Additionally, we need to address the same issue for pm_runtime_get_sync.
-We fix this by invoking pm_runtime_disable and pm_runtime_put_sync
-when error returns.
+When possible use dev_err_probe help to properly deal with the
+PROBE_DEFER error, the benefit is that DEFER issue will be logged
+in the devices_deferred debugfs file.
+And using dev_err_probe() can reduce code size, the error value
+gets printed.
 
-Fixes: 82b81b3ec1a7 ("drm/tegra: dpaux: Implement runtime PM")
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 Signed-off-by: Thierry Reding <treding@nvidia.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/tencent_B13DB7F6C0023C46157250A524966F326A09@qq.com
+Stable-dep-of: 830c1ded3563 ("drm/tegra: dsi: Fix some error handling paths in tegra_dsi_probe()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/dpaux.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/tegra/dsi.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/gpu/drm/tegra/dpaux.c b/drivers/gpu/drm/tegra/dpaux.c
-index d773ef4854188..b563988fb6848 100644
---- a/drivers/gpu/drm/tegra/dpaux.c
-+++ b/drivers/gpu/drm/tegra/dpaux.c
-@@ -524,7 +524,7 @@ static int tegra_dpaux_probe(struct platform_device *pdev)
+diff --git a/drivers/gpu/drm/tegra/dsi.c b/drivers/gpu/drm/tegra/dsi.c
+index 0adce882f157b..6cbba2adb6e5a 100644
+--- a/drivers/gpu/drm/tegra/dsi.c
++++ b/drivers/gpu/drm/tegra/dsi.c
+@@ -1591,28 +1591,24 @@ static int tegra_dsi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	dsi->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(dsi->clk)) {
+-		dev_err(&pdev->dev, "cannot get DSI clock\n");
+-		return PTR_ERR(dsi->clk);
+-	}
++	if (IS_ERR(dsi->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(dsi->clk),
++				     "cannot get DSI clock\n");
+ 
+ 	dsi->clk_lp = devm_clk_get(&pdev->dev, "lp");
+-	if (IS_ERR(dsi->clk_lp)) {
+-		dev_err(&pdev->dev, "cannot get low-power clock\n");
+-		return PTR_ERR(dsi->clk_lp);
+-	}
++	if (IS_ERR(dsi->clk_lp))
++		return dev_err_probe(&pdev->dev, PTR_ERR(dsi->clk_lp),
++				     "cannot get low-power clock\n");
+ 
+ 	dsi->clk_parent = devm_clk_get(&pdev->dev, "parent");
+-	if (IS_ERR(dsi->clk_parent)) {
+-		dev_err(&pdev->dev, "cannot get parent clock\n");
+-		return PTR_ERR(dsi->clk_parent);
+-	}
++	if (IS_ERR(dsi->clk_parent))
++		return dev_err_probe(&pdev->dev, PTR_ERR(dsi->clk_parent),
++				     "cannot get parent clock\n");
+ 
+ 	dsi->vdd = devm_regulator_get(&pdev->dev, "avdd-dsi-csi");
+-	if (IS_ERR(dsi->vdd)) {
+-		dev_err(&pdev->dev, "cannot get VDD supply\n");
+-		return PTR_ERR(dsi->vdd);
+-	}
++	if (IS_ERR(dsi->vdd))
++		return dev_err_probe(&pdev->dev, PTR_ERR(dsi->vdd),
++				     "cannot get VDD supply\n");
+ 
+ 	err = tegra_dsi_setup_clocks(dsi);
  	if (err < 0) {
- 		dev_err(dpaux->dev, "failed to request IRQ#%u: %d\n",
- 			dpaux->irq, err);
--		return err;
-+		goto err_pm_disable;
- 	}
- 
- 	disable_irq(dpaux->irq);
-@@ -544,7 +544,7 @@ static int tegra_dpaux_probe(struct platform_device *pdev)
- 	 */
- 	err = tegra_dpaux_pad_config(dpaux, DPAUX_PADCTL_FUNC_I2C);
- 	if (err < 0)
--		return err;
-+		goto err_pm_disable;
- 
- #ifdef CONFIG_GENERIC_PINCONF
- 	dpaux->desc.name = dev_name(&pdev->dev);
-@@ -557,7 +557,8 @@ static int tegra_dpaux_probe(struct platform_device *pdev)
- 	dpaux->pinctrl = devm_pinctrl_register(&pdev->dev, &dpaux->desc, dpaux);
- 	if (IS_ERR(dpaux->pinctrl)) {
- 		dev_err(&pdev->dev, "failed to register pincontrol\n");
--		return PTR_ERR(dpaux->pinctrl);
-+		err = PTR_ERR(dpaux->pinctrl);
-+		goto err_pm_disable;
- 	}
- #endif
- 	/* enable and clear all interrupts */
-@@ -573,10 +574,15 @@ static int tegra_dpaux_probe(struct platform_device *pdev)
- 	err = devm_of_dp_aux_populate_ep_devices(&dpaux->aux);
- 	if (err < 0) {
- 		dev_err(dpaux->dev, "failed to populate AUX bus: %d\n", err);
--		return err;
-+		goto err_pm_disable;
- 	}
- 
- 	return 0;
-+
-+err_pm_disable:
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
-+	return err;
- }
- 
- static int tegra_dpaux_remove(struct platform_device *pdev)
 -- 
 2.43.0
 
