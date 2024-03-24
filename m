@@ -1,632 +1,348 @@
-Return-Path: <linux-kernel+bounces-112731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0FE0887D8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:15:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CD47887D92
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:24:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3B741C20D4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:15:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F95A1C20B0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25BC1A5AC;
-	Sun, 24 Mar 2024 16:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6519718EB3;
+	Sun, 24 Mar 2024 16:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="z/9vfQ4D";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UyhvoVj3"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b="dko9B2vf"
+Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D8E18EAF
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 16:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711296938; cv=none; b=FlLEt/s3wM2rcUGTvp67xVK7tEJfo27btzKrg/HEX54wjB2YstHUF1LbBQnHSV1KucFk2cQf+zM7P5os6Exwmhh4nQmKVEJtOw2jBGV1tFPoUDtNvuUML6khyGetd1LyjCC3IoVkoS6WI6IjKS99gbwLH7NZXDuy/NOf/KhH1IM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711296938; c=relaxed/simple;
-	bh=30uLfVISp80elDo5otS9LQH7OTSuIGjXZF+pTTCQ0Is=;
-	h=From:To:Cc:Subject:References:Message-ID:Content-Type:
-	 MIME-Version:Date; b=eGVAl0xqBJ6yfB8+dBFStY549lPrHhzDmzCO6NK1jX/Itt8EJdJWA5JnTaYgXgEIifPGUK4kGPPD/r1O0T5GA2pEZMo6kQAGVODIUc3qEgiOz8mEVkaEu7PSznvuHnhOXZk6i5l5SiiUlQbMjrWp8L12E75KQFQf9Hqmr4pACtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=z/9vfQ4D; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UyhvoVj3; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711296934;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:  references:references;
-	bh=UhmVOlEIUWNnWrgD1dNd0ViiDE0Z7G09fEEWxFJqUBQ=;
-	b=z/9vfQ4DqWQNaE0skGfHEmZSQSfuHntDTOAdQ4Xs2C+0L37U6aPXWGBG5A9MTX1Boe+dj1
-	d7Lkb0hozf6EblC4ASjiGA5M8oWqA8MUta11KyKyAQUEy7Ips+3PhSCKg9WkBBp70efswo
-	3a5NZLuDb2S3XvT5OYNRaZxkP+jnAdfwy+PWmSD+orNPL+KD7iZqsuZkcl57ga11/Ugt8F
-	8JljOOLXzvwlzkHnOPF22nyPTBgiXaDoIoNUfHwGDlCgis0dfysmzOpKvrPc4/e4suQIzo
-	B3HzYAl+j0M7KbLOczJ1Qd1MbtWxOQCtxcC3wLN3OABZaUpSmTY3eBdw+L8zqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711296934;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:  references:references;
-	bh=UhmVOlEIUWNnWrgD1dNd0ViiDE0Z7G09fEEWxFJqUBQ=;
-	b=UyhvoVj3/o3tFW/zbuggGca9ORRaHL9o8gG24k6WE2TPXkmDwohXmFK7yA5wePvYwENKjS
-	C4/CmQKWk6otYMBQ==
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/urgent for v6.9-rc1
-References: <171129691660.2804823.9714349244324963954.tglx@xen13>
-Message-ID: <171129691819.2804823.13323681878641552052.tglx@xen13>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B1611C85;
+	Sun, 24 Mar 2024 16:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711297475; cv=pass; b=OT4KvTOmR7Pbo7Po2dmseLLWHzKbAcQQwyD2eCb8S1fyI47DVkAbKOljdsrOstfhqRRPE33meafaWcmHPzq14DgkwkXP/3KEkeX8OK9BxNvFS4Qo5Yk5Si7th3onmh13ybFfJWjKvSBL+J2sRX+ueehOQYX8AENfxgJdGk8TztI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711297475; c=relaxed/simple;
+	bh=2RWB5OD5T9mEXK5Omb37KLrpbw9xME+nIOCm99OQLIA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FwvH9G7sNjlJvQM15l+pCbkpdymzWvjxJZ3kqBUmrGvC8wltbk2q3OPWgscu9mYTcTTeCIITq6Hq7FID2wic5Ox9/2fEr1Cc5Os4CTXUtpGTkCR7bTdzJDTOmH+64g19LsXbXc1F7ZIR+KKDsQ6akwceS+ogtTRqvOGvCbELrxE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me; spf=pass smtp.mailfrom=icenowy.me; dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b=dko9B2vf; arc=pass smtp.client-ip=136.143.188.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icenowy.me
+ARC-Seal: i=1; a=rsa-sha256; t=1711297446; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=kIrFhhniM70eunaEsjpDFkBrjStsYtXa7fcwjWreACpxwk7aUnvctztk7eKz5OGYCa3n41eRr3CeoeRNLlYT9TxbmJyq4CkxFExWlzcznnLQApX0ikoXS++mN+rRaqrfmCw8oyEr1IbxE2wJ/E9aY5AL6GO7FtdRHUl1NKFw9po=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1711297446; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=2RWB5OD5T9mEXK5Omb37KLrpbw9xME+nIOCm99OQLIA=; 
+	b=T0h2KtW2WIEU7K/DVqOzMyAeiUDZ7sMxbh9TTb72QoK4qTiwaWNduuXzr41FXZuhpK7nkOAgyjB1UW2yBvPQlqk2yZFRv6JuGvsywC+NFetI0WNB/4odpXd9Nq2Oqulli89zHGpCNRfqCzP19MpuNMq7TaaW/0QcLzXCsQKfPlQ=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=icenowy.me;
+	spf=pass  smtp.mailfrom=uwu@icenowy.me;
+	dmarc=pass header.from=<uwu@icenowy.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1711297446;
+	s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
+	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
+	bh=2RWB5OD5T9mEXK5Omb37KLrpbw9xME+nIOCm99OQLIA=;
+	b=dko9B2vfoU/UX6Xml5HvRI/xRwlq9A58yxLc+AAJltAJJERDkrycwHvLIfOD+Wvr
+	y59Q+YSa8WlFWeM8YR6awT1YCfBk2nKg/PLYtJLpEr382Ajv9HC/rnI6G7YAZh3pm64
+	jEVIF3v7Bl39gMuf4/6r92LJyaZZFRUf19aDWW65Ga5nPnJJypvP/WTpqjhPpUULEtL
+	x698buw7EycbAXrVWhc/v58P8F7EhM57KVy94g+KQJ0i/QRu5Q5UVmeavMJ1KWRWJFE
+	s880xxBcQimONNkHmhbhwvb7bG+sus/AoRs0xcIafg3HfHsXEChZF91z+jfJz2JS8pn
+	RS2Gg/WaTg==
+Received: from edelgard.fodlan.icenowy.me (112.94.101.6 [112.94.101.6]) by mx.zohomail.com
+	with SMTPS id 1711297445031310.50814050016413; Sun, 24 Mar 2024 09:24:05 -0700 (PDT)
+Message-ID: <c052918c13069cfcf768d03518560c65c990b220.camel@icenowy.me>
+Subject: Re: [PATCH v6 10/11] riscv: dts: add initial canmv-k230 and
+ k230-evb dts
+From: Icenowy Zheng <uwu@icenowy.me>
+To: Yangyu Chen <cyy@cyyself.name>, linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor@kernel.org>, Damien Le Moal <dlemoal@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Michael Turquette
+ <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Linus Walleij
+ <linus.walleij@linaro.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+ linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Mon, 25 Mar 2024 00:23:59 +0800
+In-Reply-To: <tencent_DF5D7CD182AFDA188E0FB80E314A21038D08@qq.com>
+References: <tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com>
+	 <tencent_DF5D7CD182AFDA188E0FB80E314A21038D08@qq.com>
+Organization: Anthon Open-Source Community
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.44.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sun, 24 Mar 2024 17:15:33 +0100 (CET)
+X-ZohoMailClient: External
 
-Linus,
-
-please pull the latest x86/urgent branch from:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2024-=
-03-24
-
-up to:  9843231c9726: x86/boot/64: Move 5-level paging global variable assign=
-ments back
-
-A set of x86 fixes:
-
-  - Ensure that the encryption mask at boot is properly propagated on
-    5-level page tables, otherwise the PGD entry is incorrectly set to
-    non-encrypted, which causes system crashes during boot.
-
-  - Undo the deferred 5-level page table setup as it cannot work with
-    memory encryption enabled.
-
-  - Prevent inconsistent XFD state on CPU hotplug, where the MSR is reset
-    to the default value but the cached variable is not, so subsequent
-    comparisons might yield the wrong result and as a consequence the
-    result prevents updating the MSR.
-
-  - Register the local APIC address only once in the MPPARSE enumeration to
-    prevent triggering the related WARN_ONs() in the APIC and topology code.
-
-  - Handle the case where no APIC is found gracefully by registering a fake
-    APIC in the topology code. That makes all related topology functions
-    work correctly and does not affect the actual APIC driver code at all.
-
-  - Don't evaluate logical IDs during early boot as the local APIC IDs are
-    not yet enumerated and the invoked function returns an error
-    code. Nothing requires the logical IDs before the final CPUID
-    enumeration takes place, which happens after the enumeration.
-
-  - Cure the fallout of the per CPU rework on UP which misplaced the
-    copying of boot_cpu_data to per CPU data so that the final update to
-    boot_cpu_data got lost which caused inconsistent state and boot
-    crashes.
-
-  - Use copy_from_kernel_nofault() in the kprobes setup as there is no
-    guarantee that the address can be safely accessed.
-
-  - Reorder struct members in struct saved_context to work around another
-    kmemleak false positive
-
-  - Remove the buggy code which tries to update the E820 kexec table for
-    setup_data as that is never passed to the kexec kernel.
-
-  - Update the resource control documentation to use the proper units.
-
-  - Fix a Kconfig warning observed with tinyconfig
-
-Thanks,
-
-	tglx
-
------------------->
-Adamos Ttofari (1):
-      x86/fpu: Keep xfd_state in sync with MSR_IA32_XFD
-
-Anton Altaparmakov (1):
-      x86/pm: Work around false positive kmemleak report in msr_build_context=
-()
-
-Dave Young (1):
-      x86/kexec: Do not update E820 kexec table for setup_data
-
-Masahiro Yamada (1):
-      x86/config: Fix warning for 'make ARCH=3Dx86_64 tinyconfig'
-
-Masami Hiramatsu (Google) (1):
-      kprobes/x86: Use copy_from_kernel_nofault() to read from unsafe address
-
-Thomas Gleixner (4):
-      x86/cpu: Ensure that CPU info updates are propagated on UP
-      x86/topology: Don't evaluate logical IDs during early boot
-      x86/topology: Handle the !APIC case gracefully
-      x86/mpparse: Register APIC address only once
-
-Tom Lendacky (2):
-      x86/boot/64: Apply encryption mask to 5-level pagetable update
-      x86/boot/64: Move 5-level paging global variable assignments back
-
-Tony Luck (2):
-      Documentation/x86: Document that resctrl bandwidth control units are MiB
-      x86/cpu: Add model number for another Intel Arrow Lake mobile processor
-
-
- Documentation/arch/x86/resctrl.rst    |  8 ++++----
- arch/x86/configs/tiny.config          |  1 +
- arch/x86/include/asm/intel-family.h   |  1 +
- arch/x86/include/asm/suspend_32.h     | 10 +++++-----
- arch/x86/kernel/cpu/common.c          |  9 +++++++++
- arch/x86/kernel/cpu/topology.c        | 11 +++++++++++
- arch/x86/kernel/cpu/topology_common.c | 12 +++++++-----
- arch/x86/kernel/e820.c                | 17 +----------------
- arch/x86/kernel/fpu/xstate.c          |  5 +++--
- arch/x86/kernel/fpu/xstate.h          | 14 ++++++++++----
- arch/x86/kernel/head64.c              | 18 ++++++++----------
- arch/x86/kernel/kprobes/core.c        | 11 ++++++++++-
- arch/x86/kernel/mpparse.c             | 10 +++++-----
- arch/x86/kernel/setup.c               | 10 ----------
- arch/x86/kernel/smpboot.c             | 32 +++++---------------------------
- 15 files changed, 80 insertions(+), 89 deletions(-)
-
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resc=
-trl.rst
-index a6279df64a9d..3712d81cb50c 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -45,7 +45,7 @@ mount options are:
- 	Enable code/data prioritization in L2 cache allocations.
- "mba_MBps":
- 	Enable the MBA Software Controller(mba_sc) to specify MBA
--	bandwidth in MBps
-+	bandwidth in MiBps
- "debug":
- 	Make debug files accessible. Available debug files are annotated with
- 	"Available only with debug option".
-@@ -526,7 +526,7 @@ threads start using more cores in an rdtgroup, the actual=
- bandwidth may
- increase or vary although user specified bandwidth percentage is same.
-=20
- In order to mitigate this and make the interface more user friendly,
--resctrl added support for specifying the bandwidth in MBps as well.  The
-+resctrl added support for specifying the bandwidth in MiBps as well.  The
- kernel underneath would use a software feedback mechanism or a "Software
- Controller(mba_sc)" which reads the actual bandwidth using MBM counters
- and adjust the memory bandwidth percentages to ensure::
-@@ -573,13 +573,13 @@ Memory b/w domain is L3 cache.
-=20
- 	MB:<cache_id0>=3Dbandwidth0;<cache_id1>=3Dbandwidth1;...
-=20
--Memory bandwidth Allocation specified in MBps
-+Memory bandwidth Allocation specified in MiBps
- ---------------------------------------------
-=20
- Memory bandwidth domain is L3 cache.
- ::
-=20
--	MB:<cache_id0>=3Dbw_MBps0;<cache_id1>=3Dbw_MBps1;...
-+	MB:<cache_id0>=3Dbw_MiBps0;<cache_id1>=3Dbw_MiBps1;...
-=20
- Slow Memory Bandwidth Allocation (SMBA)
- ---------------------------------------
-diff --git a/arch/x86/configs/tiny.config b/arch/x86/configs/tiny.config
-index 66c9e2aab16c..be3ee4294903 100644
---- a/arch/x86/configs/tiny.config
-+++ b/arch/x86/configs/tiny.config
-@@ -1,5 +1,6 @@
- CONFIG_NOHIGHMEM=3Dy
- # CONFIG_HIGHMEM4G is not set
- # CONFIG_HIGHMEM64G is not set
-+# CONFIG_UNWINDER_ORC is not set
- CONFIG_UNWINDER_GUESS=3Dy
- # CONFIG_UNWINDER_FRAME_POINTER is not set
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel=
--family.h
-index b65e9c46b922..d0941f4c2724 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -127,6 +127,7 @@
-=20
- #define INTEL_FAM6_ARROWLAKE_H		0xC5
- #define INTEL_FAM6_ARROWLAKE		0xC6
-+#define INTEL_FAM6_ARROWLAKE_U		0xB5
-=20
- #define INTEL_FAM6_LUNARLAKE_M		0xBD
-=20
-diff --git a/arch/x86/include/asm/suspend_32.h b/arch/x86/include/asm/suspend=
-_32.h
-index a800abb1a992..d8416b3bf832 100644
---- a/arch/x86/include/asm/suspend_32.h
-+++ b/arch/x86/include/asm/suspend_32.h
-@@ -12,11 +12,6 @@
-=20
- /* image of the saved processor state */
- struct saved_context {
--	/*
--	 * On x86_32, all segment registers except gs are saved at kernel
--	 * entry in pt_regs.
--	 */
--	u16 gs;
- 	unsigned long cr0, cr2, cr3, cr4;
- 	u64 misc_enable;
- 	struct saved_msrs saved_msrs;
-@@ -27,6 +22,11 @@ struct saved_context {
- 	unsigned long tr;
- 	unsigned long safety;
- 	unsigned long return_address;
-+	/*
-+	 * On x86_32, all segment registers except gs are saved at kernel
-+	 * entry in pt_regs.
-+	 */
-+	u16 gs;
- 	bool misc_enable_saved;
- } __attribute__((packed));
-=20
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index ba8cf5e9ce56..5c1e6d6be267 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -2307,6 +2307,8 @@ void arch_smt_update(void)
-=20
- void __init arch_cpu_finalize_init(void)
- {
-+	struct cpuinfo_x86 *c =3D this_cpu_ptr(&cpu_info);
-+
- 	identify_boot_cpu();
-=20
- 	select_idle_routine();
-@@ -2345,6 +2347,13 @@ void __init arch_cpu_finalize_init(void)
- 	fpu__init_system();
- 	fpu__init_cpu();
-=20
-+	/*
-+	 * Ensure that access to the per CPU representation has the initial
-+	 * boot CPU configuration.
-+	 */
-+	*c =3D boot_cpu_data;
-+	c->initialized =3D true;
-+
- 	alternative_instructions();
-=20
- 	if (IS_ENABLED(CONFIG_X86_64)) {
-diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-index 3259b1d4fefe..aaca8d235dc2 100644
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -415,6 +415,17 @@ void __init topology_init_possible_cpus(void)
- 	unsigned int total =3D assigned + disabled;
- 	u32 apicid, firstid;
-=20
-+	/*
-+	 * If there was no APIC registered, then fake one so that the
-+	 * topology bitmap is populated. That ensures that the code below
-+	 * is valid and the various query interfaces can be used
-+	 * unconditionally. This does not affect the actual APIC code in
-+	 * any way because either the local APIC address has not been
-+	 * registered or the local APIC was disabled on the command line.
-+	 */
-+	if (topo_info.boot_cpu_apic_id =3D=3D BAD_APICID)
-+		topology_register_boot_apic(0);
-+
- 	if (!restrict_to_up()) {
- 		if (WARN_ON_ONCE(assigned > nr_cpu_ids)) {
- 			disabled +=3D assigned - nr_cpu_ids;
-diff --git a/arch/x86/kernel/cpu/topology_common.c b/arch/x86/kernel/cpu/topo=
-logy_common.c
-index a50ae8d63d1c..9a6069e7133c 100644
---- a/arch/x86/kernel/cpu/topology_common.c
-+++ b/arch/x86/kernel/cpu/topology_common.c
-@@ -140,7 +140,7 @@ static void parse_topology(struct topo_scan *tscan, bool =
-early)
- 	}
- }
-=20
--static void topo_set_ids(struct topo_scan *tscan)
-+static void topo_set_ids(struct topo_scan *tscan, bool early)
- {
- 	struct cpuinfo_x86 *c =3D tscan->c;
- 	u32 apicid =3D c->topo.apicid;
-@@ -148,8 +148,10 @@ static void topo_set_ids(struct topo_scan *tscan)
- 	c->topo.pkg_id =3D topo_shift_apicid(apicid, TOPO_PKG_DOMAIN);
- 	c->topo.die_id =3D topo_shift_apicid(apicid, TOPO_DIE_DOMAIN);
-=20
--	c->topo.logical_pkg_id =3D topology_get_logical_id(apicid, TOPO_PKG_DOMAIN);
--	c->topo.logical_die_id =3D topology_get_logical_id(apicid, TOPO_DIE_DOMAIN);
-+	if (!early) {
-+		c->topo.logical_pkg_id =3D topology_get_logical_id(apicid, TOPO_PKG_DOMAIN=
-);
-+		c->topo.logical_die_id =3D topology_get_logical_id(apicid, TOPO_DIE_DOMAIN=
-);
-+	}
-=20
- 	/* Package relative core ID */
- 	c->topo.core_id =3D (apicid & topo_domain_mask(TOPO_PKG_DOMAIN)) >>
-@@ -187,7 +189,7 @@ void cpu_parse_topology(struct cpuinfo_x86 *c)
- 		       tscan.dom_shifts[dom], x86_topo_system.dom_shifts[dom]);
- 	}
-=20
--	topo_set_ids(&tscan);
-+	topo_set_ids(&tscan, false);
- }
-=20
- void __init cpu_init_topology(struct cpuinfo_x86 *c)
-@@ -208,7 +210,7 @@ void __init cpu_init_topology(struct cpuinfo_x86 *c)
- 		x86_topo_system.dom_size[dom] =3D 1U << sft;
- 	}
-=20
--	topo_set_ids(&tscan);
-+	topo_set_ids(&tscan, true);
-=20
- 	/*
- 	 * AMD systems have Nodes per package which cannot be mapped to
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index b66f540de054..6f1b379e3b38 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -1016,17 +1016,6 @@ void __init e820__reserve_setup_data(void)
-=20
- 		e820__range_update(pa_data, sizeof(*data)+data->len, E820_TYPE_RAM, E820_T=
-YPE_RESERVED_KERN);
-=20
--		/*
--		 * SETUP_EFI, SETUP_IMA and SETUP_RNG_SEED are supplied by
--		 * kexec and do not need to be reserved.
--		 */
--		if (data->type !=3D SETUP_EFI &&
--		    data->type !=3D SETUP_IMA &&
--		    data->type !=3D SETUP_RNG_SEED)
--			e820__range_update_kexec(pa_data,
--						 sizeof(*data) + data->len,
--						 E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
--
- 		if (data->type =3D=3D SETUP_INDIRECT) {
- 			len +=3D data->len;
- 			early_memunmap(data, sizeof(*data));
-@@ -1038,12 +1027,9 @@ void __init e820__reserve_setup_data(void)
-=20
- 			indirect =3D (struct setup_indirect *)data->data;
-=20
--			if (indirect->type !=3D SETUP_INDIRECT) {
-+			if (indirect->type !=3D SETUP_INDIRECT)
- 				e820__range_update(indirect->addr, indirect->len,
- 						   E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
--				e820__range_update_kexec(indirect->addr, indirect->len,
--							 E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
--			}
- 		}
-=20
- 		pa_data =3D pa_next;
-@@ -1051,7 +1037,6 @@ void __init e820__reserve_setup_data(void)
- 	}
-=20
- 	e820__update_table(e820_table);
--	e820__update_table(e820_table_kexec);
-=20
- 	pr_info("extended physical RAM map:\n");
- 	e820__print_table("reserve setup_data");
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 117e74c44e75..33a214b1a4ce 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -178,10 +178,11 @@ void fpu__init_cpu_xstate(void)
- 	 * Must happen after CR4 setup and before xsetbv() to allow KVM
- 	 * lazy passthrough.  Write independent of the dynamic state static
- 	 * key as that does not work on the boot CPU. This also ensures
--	 * that any stale state is wiped out from XFD.
-+	 * that any stale state is wiped out from XFD. Reset the per CPU
-+	 * xfd cache too.
- 	 */
- 	if (cpu_feature_enabled(X86_FEATURE_XFD))
--		wrmsrl(MSR_IA32_XFD, init_fpstate.xfd);
-+		xfd_set_state(init_fpstate.xfd);
-=20
- 	/*
- 	 * XCR_XFEATURE_ENABLED_MASK (aka. XCR0) sets user features
-diff --git a/arch/x86/kernel/fpu/xstate.h b/arch/x86/kernel/fpu/xstate.h
-index 3518fb26d06b..19ca623ffa2a 100644
---- a/arch/x86/kernel/fpu/xstate.h
-+++ b/arch/x86/kernel/fpu/xstate.h
-@@ -148,20 +148,26 @@ static inline void xfd_validate_state(struct fpstate *f=
-pstate, u64 mask, bool rs
- #endif
-=20
- #ifdef CONFIG_X86_64
-+static inline void xfd_set_state(u64 xfd)
-+{
-+	wrmsrl(MSR_IA32_XFD, xfd);
-+	__this_cpu_write(xfd_state, xfd);
-+}
-+
- static inline void xfd_update_state(struct fpstate *fpstate)
- {
- 	if (fpu_state_size_dynamic()) {
- 		u64 xfd =3D fpstate->xfd;
-=20
--		if (__this_cpu_read(xfd_state) !=3D xfd) {
--			wrmsrl(MSR_IA32_XFD, xfd);
--			__this_cpu_write(xfd_state, xfd);
--		}
-+		if (__this_cpu_read(xfd_state) !=3D xfd)
-+			xfd_set_state(xfd);
- 	}
- }
-=20
- extern int __xfd_enable_feature(u64 which, struct fpu_guest *guest_fpu);
- #else
-+static inline void xfd_set_state(u64 xfd) { }
-+
- static inline void xfd_update_state(struct fpstate *fpstate) { }
-=20
- static inline int __xfd_enable_feature(u64 which, struct fpu_guest *guest_fp=
-u) {
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 212e8e06aeba..a817ed0724d1 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -81,6 +81,13 @@ static inline bool check_la57_support(void)
- 	if (!(native_read_cr4() & X86_CR4_LA57))
- 		return false;
-=20
-+	RIP_REL_REF(__pgtable_l5_enabled)	=3D 1;
-+	RIP_REL_REF(pgdir_shift)		=3D 48;
-+	RIP_REL_REF(ptrs_per_p4d)		=3D 512;
-+	RIP_REL_REF(page_offset_base)		=3D __PAGE_OFFSET_BASE_L5;
-+	RIP_REL_REF(vmalloc_base)		=3D __VMALLOC_BASE_L5;
-+	RIP_REL_REF(vmemmap_base)		=3D __VMEMMAP_BASE_L5;
-+
- 	return true;
- }
-=20
-@@ -175,7 +182,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
- 		p4d =3D (p4dval_t *)&RIP_REL_REF(level4_kernel_pgt);
- 		p4d[MAX_PTRS_PER_P4D - 1] +=3D load_delta;
-=20
--		pgd[pgd_index(__START_KERNEL_map)] =3D (pgdval_t)p4d | _PAGE_TABLE_NOENC;
-+		pgd[pgd_index(__START_KERNEL_map)] =3D (pgdval_t)p4d | _PAGE_TABLE;
- 	}
-=20
- 	RIP_REL_REF(level3_kernel_pgt)[PTRS_PER_PUD - 2].pud +=3D load_delta;
-@@ -431,15 +438,6 @@ asmlinkage __visible void __init __noreturn x86_64_start=
-_kernel(char * real_mode
- 				(__START_KERNEL & PGDIR_MASK)));
- 	BUILD_BUG_ON(__fix_to_virt(__end_of_fixed_addresses) <=3D MODULES_END);
-=20
--	if (check_la57_support()) {
--		__pgtable_l5_enabled	=3D 1;
--		pgdir_shift		=3D 48;
--		ptrs_per_p4d		=3D 512;
--		page_offset_base	=3D __PAGE_OFFSET_BASE_L5;
--		vmalloc_base		=3D __VMALLOC_BASE_L5;
--		vmemmap_base		=3D __VMEMMAP_BASE_L5;
--	}
--
- 	cr4_init_shadow();
-=20
- 	/* Kill off the identity-map trampoline */
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 091b3ab76a18..d0e49bd7c6f3 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -373,7 +373,16 @@ static bool can_probe(unsigned long paddr)
- kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long o=
-ffset,
- 					 bool *on_func_entry)
- {
--	if (is_endbr(*(u32 *)addr)) {
-+	u32 insn;
-+
-+	/*
-+	 * Since 'addr' is not guaranteed to be safe to access, use
-+	 * copy_from_kernel_nofault() to read the instruction:
-+	 */
-+	if (copy_from_kernel_nofault(&insn, (void *)addr, sizeof(u32)))
-+		return NULL;
-+
-+	if (is_endbr(insn)) {
- 		*on_func_entry =3D !offset || offset =3D=3D 4;
- 		if (*on_func_entry)
- 			offset =3D 4;
-diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
-index 1ccd30c8246f..e89171b0347a 100644
---- a/arch/x86/kernel/mpparse.c
-+++ b/arch/x86/kernel/mpparse.c
-@@ -197,12 +197,12 @@ static int __init smp_read_mpc(struct mpc_table *mpc, u=
-nsigned early)
- 	if (!smp_check_mpc(mpc, oem, str))
- 		return 0;
-=20
--	/* Initialize the lapic mapping */
--	if (!acpi_lapic)
--		register_lapic_address(mpc->lapic);
--
--	if (early)
-+	if (early) {
-+		/* Initialize the lapic mapping */
-+		if (!acpi_lapic)
-+			register_lapic_address(mpc->lapic);
- 		return 1;
-+	}
-=20
- 	/* Now process the configuration blocks. */
- 	while (count < mpc->length) {
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 3e1e96efadfe..ef206500ed6f 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1206,16 +1206,6 @@ void __init i386_reserve_resources(void)
-=20
- #endif /* CONFIG_X86_32 */
-=20
--#ifndef CONFIG_SMP
--void __init smp_prepare_boot_cpu(void)
--{
--	struct cpuinfo_x86 *c =3D &cpu_data(0);
--
--	*c =3D boot_cpu_data;
--	c->initialized =3D true;
--}
--#endif
--
- static struct notifier_block kernel_offset_notifier =3D {
- 	.notifier_call =3D dump_kernel_offset
- };
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index fe355c89f6c1..76bb65045c64 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -313,14 +313,6 @@ static void notrace start_secondary(void *unused)
- 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
- }
-=20
--static void __init smp_store_boot_cpu_info(void)
--{
--	struct cpuinfo_x86 *c =3D &cpu_data(0);
--
--	*c =3D boot_cpu_data;
--	c->initialized =3D true;
--}
--
- /*
-  * The bootstrap kernel entry code has set these up. Save them for
-  * a given CPU
-@@ -1039,29 +1031,15 @@ static __init void disable_smp(void)
- 	cpumask_set_cpu(0, topology_die_cpumask(0));
- }
-=20
--static void __init smp_cpu_index_default(void)
--{
--	int i;
--	struct cpuinfo_x86 *c;
--
--	for_each_possible_cpu(i) {
--		c =3D &cpu_data(i);
--		/* mark all to hotplug */
--		c->cpu_index =3D nr_cpu_ids;
--	}
--}
--
- void __init smp_prepare_cpus_common(void)
- {
- 	unsigned int i;
-=20
--	smp_cpu_index_default();
--
--	/*
--	 * Setup boot CPU information
--	 */
--	smp_store_boot_cpu_info(); /* Final full version of the data */
--	mb();
-+	/* Mark all except the boot CPU as hotpluggable */
-+	for_each_possible_cpu(i) {
-+		if (i)
-+			per_cpu(cpu_info.cpu_index, i) =3D nr_cpu_ids;
-+	}
-=20
- 	for_each_possible_cpu(i) {
- 		zalloc_cpumask_var(&per_cpu(cpu_sibling_map, i), GFP_KERNEL);
+5ZyoIDIwMjQtMDMtMjPmmJ/mnJ/lha3nmoQgMjA6MTIgKzA4MDDvvIxZYW5neXUgQ2hlbuWGmemB
+k++8mgo+IEFkZCBpbml0aWFsIGR0cyBmb3IgQ2FuTVYtSzIzMCBhbmQgSzIzMC1FVkIgcG93ZXJl
+ZCBieSBDYW5hYW4KPiBLZW5kcnl0ZQo+IEsyMzAgU29DIFsxXS4KPiAKPiBTb21lIGtleSBjb25z
+aWRlcmF0aW9uOgo+IAo+IC0gT25seSBwbGFjZSBCaWdDb3JlIHdoaWNoIGlzIDEuNkdIeiBSVjY0
+R0NCVgo+IAo+IFRoZSBleGlzdGVuY2Ugb2YgY2FjaGUgY29oZXJlbmNlIGJldHdlZW4gdGhlIHR3
+byBjb3JlcyByZW1haW5zCj4gdW5rbm93bgo+IHNpbmNlIHRoZXkgaGF2ZSBkZWRpY2F0ZWQgTDIg
+Y2FjaGVzLiBBbmQgdGhlIGZhY3RvcnkgU0RLIHVzZXMgaXQgZm9yCj4gb3RoZXIgT1MgYnkgZGVm
+YXVsdC4gSSBkb24ndCBrbm93IHdoZXRoZXIgdGhlIHR3byBDUFVzIG9uIEsyMzAgU29DCj4gY2Fu
+IGJlIHVzZWQgaW4gb25lIHN5c3RlbS4gU28gb25seSBwbGFjZSBCaWdDb3JlIGhlcmUuCj4gCj4g
+TWVhbndoaWxlLCBhbHRob3VnaCBkb2NzIGZyb20gQ2FuYWFuIHNhaWQgMS42R0h6IENvcmUgd2l0
+aCBWZWN0b3IgaXMKPiBDUFUxLCB0aGUgQ1NSLk1IQVJUSUQgb2YgdGhpcyBjb3JlIGlzIDAuCgpJ
+IGFzc3VtZSBhcyB0aGVzZSB0d28gY29yZXMgZG8gbm90IGhhdmUgYW55IGNvaGVyZW5jeSwgdGhl
+eSBhcmUganVzdCBpbgpkaWZmZXJlbnQgaGFydGlkIG5hbWVzcGFjZS4KCj4gCj4gLSBTdXBwb3J0
+IGZvciAiemJhIiAiemJiIiAiemJjIiAiemJzIiBhcmUgdGVzdGVkIGJ5IGhhbmQKPiAKPiBUaGUg
+dXNlciBtYW51YWwgb2YgQzkwOCBmcm9tIFQtSGVhZCBkb2VzIG5vdCBkb2N1bWVudCBpdAo+IHNw
+ZWNpZmljYWxseS4KPiBJdCBqdXN0IHNhaWQgaXQgc3VwcG9ydHMgQiBleHRlbnNpb24gVjEuMC4g
+WzJdCj4gCj4gSSBoYXZlIHRlc3RlZCBpdCBieSB1c2luZyB0aGlzIFszXSB3aGljaCBhdHRlbXB0
+cyB0byBleGVjdXRlCj4gImFkZC51dyIsCj4gImFuZG4iLCAiY2xtdWxyIiwgImJjbHIiIGFuZCB0
+aGV5IGRvZXNuJ3QgdHJhcHMgb24gSzIzMC4gQnV0IG9uCj4gSkg3MTEwLAo+ICJjbG11bHIiIGFu
+ZCAiYmNsciIgd2lsbCB0cmFwLgo+IAo+IC0gU3VwcG9ydCBmb3IgInppY2JvbSIgaXMgdGVzdGVk
+IGJ5IGhhbmQKPiAKPiBIYXZlIHRlc3RlZCB3aXRoIHNvbWUgb3V0LW9mLXRyZWUgZHJpdmVycyBm
+cm9tIFs0XSB0aGF0IG5lZWQgRE1BIGFuZAo+IHRoZXkKPiBkbyBub3QgY29tZSB0byB0aGUgZHRz
+IGN1cnJlbnRseS4KPiAKPiAtIENhY2hlIHBhcmFtZXRlcnMgYXJlIGluZmVycmVkIGZyb20gVC1I
+ZWFkIGRvY3MgWzJdIGFuZCBDYW5hYW4gZG9jcwo+IFsxXQo+IAo+IEwxaTogMzJLQiwgVklQVCA0
+LVdheSBzZXQtYXNzb2NpYXRpdmUsIDY0QiBDYWNoZWxpbmUKPiBMMWQ6IDMyS0IsIFZJUFQgNC1X
+YXkgc2V0LWFzc29jaWF0aXZlLCA2NEIgQ2FjaGVsaW5lCj4gTDI6IDI1NktCLCBQSVBUIDE2LXdh
+eSBzZXQtYXNzb2NpYXRpdmUsIDY0QiBDYWNoZWxpbmUKPiAKPiBUaGUgbnVtYmVycyBvZiBjYWNo
+ZSBzZXRzIGFyZSBjYWxjdWxhdGVkIGZyb20gdGhlc2UgcGFyYW1ldGVycy4KPiAKPiAtIE1NVSBv
+bmx5IHN1cHBvcnRzIFN2MzkKPiAKPiBUaGUgVC1IZWFkIGRvY3MgWzJdIHNheSB0aGUgQzkwOCBj
+b3JlIGNhbiBiZSBjb25maWd1cmVkIHRvIHN1cHBvcnQKPiBTdjQ4IGFuZAo+IFN2Mzkgb3Igb25s
+eSBTdjM5LiBPbiBLMjMwLCBJIHRyaWVkIHRvIHdyaXRlICJyaXNjdixzdjQ4IiBvbiBtbXUtdHlw
+ZQo+IGluCj4gZHRzIGFuZCBib290IHRoZSBtYWlubGluZSBrZXJuZWwuIEhvd2V2ZXIsIGl0IGZh
+aWxlZCBkdXJpbmcgdGhlCj4ga2VybmVsCj4gcHJvYmUgYW5kIGZlbGwgYmFjayB0byBTdjM5LiBJ
+IGFsc28gdGVzdGVkIGl0IG9uIE0tTW9kZSBzb2Z0d2FyZSwKPiB3cml0aW5nCj4gU3Y0OCB0byBz
+YXRwLm1vZGUgd2lsbCBub3QgdHJhcCBidXQgd2lsbCBsZWF2ZSB0aGUgQ1NSIHVuY2hhbmdlZC4K
+Ckl0J3Mgc3BlY2lmaWVkIGJ5IHRoZSBzcGVjIHRoYXQgd3JpdGluZyBhIHVuc3VwcG9ydGVkIG1v
+ZGUgdG8gU0FUUCB3aWxsCmxlYXZlIFNBVFAgdW5jaGFuZ2VkLCBhbmQgaXQncyBhbHNvIGhvdyB0
+aGUga2VybmVsIGRldGVjdHMgZm9yIFN2NDgvNTcuCgpJZiBhIGhhcmR3YXJlIGZhaWwgdG8gaW1w
+bGVtZW50IHRoaXMgYmVoYXZpb3IgKG1ha2UgU0FUUCBjaGFuZ2VzIHdoZW4Kd3JpdGluZyBhbiB1
+bnN1cHBvcnRlZCBtb2RlKSwgdGhlIGtlcm5lbCB3aWxsIGZhaWwgdG8gYm9vdCBhbmQgbWFudWFs
+bHkKc3BlY2lmeSBNTVUgbW9kZSBieSBwdXR0aW5nIG5vWGx2bCB0byBjb21tYW5kIGxpbmUgaXMg
+cmVxdWlyZWQuIFRoaXMKYmVoYXZpb3IgbWF5IGJlIG9ic2VydmVkIG9uIEZTTDEwMzBNIFNvQyBv
+ZiBNaWxrLVYgVmVnYSAoaWYgaXQgZXZlcgpydW5zIG1haW5saW5lIGtlcm5lbCkuCgo+IFdoaWxl
+Cj4gd3JpdGluZyBTdjM5LCBpdCB3aWxsIHRha2UgZWZmZWN0LiBJdCBzaG93cyB0aGF0IHRoaXMg
+Q1BVIGRvZXMgbm90Cj4gc3VwcG9ydAo+IFN2NDguCj4gCj4gLSBTdnBibXQgYW5kIFQtSGVhZCBN
+QUVFIGJvdGggc3VwcG9ydGVkCj4gCj4gVC1IZWFkIEM5MDggZG9lcyBzdXBwb3J0IGJvdGggU3Zw
+Ym10IGFuZCBULUhlYWQgTUFFRSBmb3IgcGFnZS1iYXNlZAo+IG1lbW9yeQo+IGF0dHJpYnV0ZXMg
+YW5kIGlzIGNvbnRyb2xsZWQgYnkgQklUKDIxKSBvbiBDU1IuTVhTVEFUVVMuIFRoZSBTdnBibXQK
+PiBpcyB1c2VkCj4gaGVyZSBmb3IgbWFpbmxpbmUga2VybmVsIHN1cHBvcnQgZm9yIEsyMzAuIElm
+IHRoZSBrZXJuZWwgd2FudHMgdG8gdXNlCj4gU3ZwYm10LCB0aGUgTS1Nb2RlIHNvZnR3YXJlIHNo
+b3VsZCB1bnNldCBCSVQoMjEpIG9mIENTUi5NWFNUQVRVUwo+IGJlZm9yZQo+IGVudGVyaW5nIHRo
+ZSBTLU1vZGUga2VybmVsLiBPdGhlcndpc2UsIHRoZSBrZXJuZWwgd2lsbCBub3QgYm9vdCwgYXMg
+MAo+IG9uCj4gVC1IZWFkIE1BRUUgaXMgTm9uQ2FjaGFibGUgTWVtb3J5LiBPbmNlIHRoZSBrZXJu
+ZWwgc3dpdGNoZXMgZnJvbSBiYXJlCj4gbWV0YWwKPiB0byBTdjM5LCBJdCB3aWxsIGxvc2UgZGly
+dHkgY2FjaGUgbGluZSBtb2RpZmljYXRpb25zIHRoYXQgaGF2ZW4ndAo+IGJlZW4KPiB3cml0dGVu
+IGJhY2sgdG8gdGhlIG1lbW9yeS4KCkFzIE1YU1RBVFVTIGhhcyBhIFMtbW9kZSByZWFkLW9ubHkg
+bWlycm9yIGtub3duIGFzIFNYU1RBVFVTLCBtYXliZSB0aGUKa2VybmVsIHNob3VsZCBkZXRlY3Qg
+U1hTVEFUVVMgdG8gZGVjaWRlIHdoZXRoZXIgdG8gdXNlIFN2cGJtdCBvcgpYdGhlYWRwYm10IChC
+VFcgU3ZuYXBvdCBjb25mbGljdHMgd2l0aCBYdGhlYWRwYm10IHRvbykuCgo+IAo+IFsxXQo+IGh0
+dHBzOi8vZGV2ZWxvcGVyLmNhbmFhbi1jcmVhdGl2ZS5jb20vazIzMC9kZXYvemgvMDBfaGFyZHdh
+cmUvSzIzMF9kYXRhc2hlZXQuaHRtbCNjaGFwdGVyLTEtaW50cm9kdWN0aW9uCj4gWzJdCj4gaHR0
+cHM6Ly9vY2MtaW50bC1wcm9kLm9zcy1hcC1zb3V0aGVhc3QtMS5hbGl5dW5jcy5jb20vcmVzb3Vy
+Y2UvLzE2OTkyNjgzNjkzNDcvWHVhblRpZS1DOTA4LVVzZXJNYW51YWwucGRmCj4gWzNdIGh0dHBz
+Oi8vZ2l0aHViLmNvbS9jeXlzZWxmL3J2Yl90ZXN0Cj4gWzRdIGh0dHBzOi8vZ2l0aHViLmNvbS9j
+eXlzZWxmL2xpbnV4L3RyZWUvazIzMC1tYWlubGluZQo+IAo+IFNpZ25lZC1vZmYtYnk6IFlhbmd5
+dSBDaGVuIDxjeXlAY3l5c2VsZi5uYW1lPgo+IC0tLQo+IMKgYXJjaC9yaXNjdi9ib290L2R0cy9j
+YW5hYW4vTWFrZWZpbGXCoMKgwqDCoMKgwqAgfMKgwqAgMiArCj4gwqBhcmNoL3Jpc2N2L2Jvb3Qv
+ZHRzL2NhbmFhbi9rMjMwLWNhbm12LmR0cyB8wqAgMjQgKysrKwo+IMKgYXJjaC9yaXNjdi9ib290
+L2R0cy9jYW5hYW4vazIzMC1ldmIuZHRzwqDCoCB8wqAgMjQgKysrKwo+IMKgYXJjaC9yaXNjdi9i
+b290L2R0cy9jYW5hYW4vazIzMC5kdHNpwqDCoMKgwqDCoCB8IDE0MAo+ICsrKysrKysrKysrKysr
+KysrKysrKysKPiDCoDQgZmlsZXMgY2hhbmdlZCwgMTkwIGluc2VydGlvbnMoKykKPiDCoGNyZWF0
+ZSBtb2RlIDEwMDY0NCBhcmNoL3Jpc2N2L2Jvb3QvZHRzL2NhbmFhbi9rMjMwLWNhbm12LmR0cwo+
+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvcmlzY3YvYm9vdC9kdHMvY2FuYWFuL2syMzAtZXZi
+LmR0cwo+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvcmlzY3YvYm9vdC9kdHMvY2FuYWFuL2sy
+MzAuZHRzaQo+IAo+IGRpZmYgLS1naXQgYS9hcmNoL3Jpc2N2L2Jvb3QvZHRzL2NhbmFhbi9NYWtl
+ZmlsZQo+IGIvYXJjaC9yaXNjdi9ib290L2R0cy9jYW5hYW4vTWFrZWZpbGUKPiBpbmRleCA5ODdk
+MWYwYzQxZjAuLjdkNTRlYTVjNmYzZCAxMDA2NDQKPiAtLS0gYS9hcmNoL3Jpc2N2L2Jvb3QvZHRz
+L2NhbmFhbi9NYWtlZmlsZQo+ICsrKyBiL2FyY2gvcmlzY3YvYm9vdC9kdHMvY2FuYWFuL01ha2Vm
+aWxlCj4gQEAgLTEsNiArMSw4IEBACj4gwqAjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwt
+Mi4wCj4gwqBkdGItJChDT05GSUdfQVJDSF9DQU5BQU4pICs9IGNhbmFhbl9rZDIzMy5kdGIKPiDC
+oGR0Yi0kKENPTkZJR19BUkNIX0NBTkFBTikgKz0gazIxMF9nZW5lcmljLmR0Ygo+ICtkdGItJChD
+T05GSUdfQVJDSF9DQU5BQU4pICs9IGsyMzAtY2FubXYuZHRiCj4gK2R0Yi0kKENPTkZJR19BUkNI
+X0NBTkFBTikgKz0gazIzMC1ldmIuZHRiCj4gwqBkdGItJChDT05GSUdfQVJDSF9DQU5BQU4pICs9
+IHNpcGVlZF9tYWl4X2JpdC5kdGIKPiDCoGR0Yi0kKENPTkZJR19BUkNIX0NBTkFBTikgKz0gc2lw
+ZWVkX21haXhfZG9jay5kdGIKPiDCoGR0Yi0kKENPTkZJR19BUkNIX0NBTkFBTikgKz0gc2lwZWVk
+X21haXhfZ28uZHRiCj4gZGlmZiAtLWdpdCBhL2FyY2gvcmlzY3YvYm9vdC9kdHMvY2FuYWFuL2sy
+MzAtY2FubXYuZHRzCj4gYi9hcmNoL3Jpc2N2L2Jvb3QvZHRzL2NhbmFhbi9rMjMwLWNhbm12LmR0
+cwo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAwMDAwLi45NTY1OTE1Y2Vh
+ZDYKPiAtLS0gL2Rldi9udWxsCj4gKysrIGIvYXJjaC9yaXNjdi9ib290L2R0cy9jYW5hYW4vazIz
+MC1jYW5tdi5kdHMKPiBAQCAtMCwwICsxLDI0IEBACj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlm
+aWVyOiBHUEwtMi4wIE9SIE1JVAo+ICsvKgo+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMjQgWWFuZ3l1
+IENoZW4gPGN5eUBjeXlzZWxmLm5hbWU+Cj4gKyAqLwo+ICsKPiArI2luY2x1ZGUgImsyMzAuZHRz
+aSIKPiArCj4gKy8gewo+ICvCoMKgwqDCoMKgwqDCoG1vZGVsID0gIkNhbmFhbiBDYW5NVi1LMjMw
+IjsKPiArwqDCoMKgwqDCoMKgwqBjb21wYXRpYmxlID0gImNhbmFhbixjYW5tdi1rMjMwIiwgImNh
+bmFhbixrZW5kcnl0ZS1rMjMwIjsKPiArCj4gK8KgwqDCoMKgwqDCoMKgY2hvc2VuIHsKPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3Rkb3V0LXBhdGggPSAic2VyaWFsMDoxMTUyMDBu
+OCI7Cj4gK8KgwqDCoMKgwqDCoMKgfTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgZGRyOiBtZW1vcnlA
+MCB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRldmljZV90eXBlID0gIm1lbW9y
+eSI7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlZyA9IDwweDAgMHgwIDB4MCAw
+eDIwMDAwMDAwPjsKPiArwqDCoMKgwqDCoMKgwqB9Owo+ICt9Owo+ICsKPiArJnVhcnQwIHsKPiAr
+wqDCoMKgwqDCoMKgwqBzdGF0dXMgPSAib2theSI7Cj4gK307Cj4gZGlmZiAtLWdpdCBhL2FyY2gv
+cmlzY3YvYm9vdC9kdHMvY2FuYWFuL2syMzAtZXZiLmR0cwo+IGIvYXJjaC9yaXNjdi9ib290L2R0
+cy9jYW5hYW4vazIzMC1ldmIuZHRzCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAw
+MDAwMDAwMDAuLmY4OThiOGU2MjM2OAo+IC0tLSAvZGV2L251bGwKPiArKysgYi9hcmNoL3Jpc2N2
+L2Jvb3QvZHRzL2NhbmFhbi9rMjMwLWV2Yi5kdHMKPiBAQCAtMCwwICsxLDI0IEBACj4gKy8vIFNQ
+RFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wIE9SIE1JVAo+ICsvKgo+ICsgKiBDb3B5cmln
+aHQgKEMpIDIwMjQgWWFuZ3l1IENoZW4gPGN5eUBjeXlzZWxmLm5hbWU+Cj4gKyAqLwo+ICsKPiAr
+I2luY2x1ZGUgImsyMzAuZHRzaSIKPiArCj4gKy8gewo+ICvCoMKgwqDCoMKgwqDCoG1vZGVsID0g
+IktlbmRyeXRlIEsyMzAgRVZCIjsKPiArwqDCoMKgwqDCoMKgwqBjb21wYXRpYmxlID0gImNhbmFh
+bixrMjMwLXVzaXAtbHAzLWV2YiIsICJjYW5hYW4sa2VuZHJ5dGUtCj4gazIzMCI7Cj4gKwo+ICvC
+oMKgwqDCoMKgwqDCoGNob3NlbiB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN0
+ZG91dC1wYXRoID0gInNlcmlhbDA6MTE1MjAwbjgiOwo+ICvCoMKgwqDCoMKgwqDCoH07Cj4gKwo+
+ICvCoMKgwqDCoMKgwqDCoGRkcjogbWVtb3J5QDAgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqBkZXZpY2VfdHlwZSA9ICJtZW1vcnkiOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqByZWcgPSA8MHgwIDB4MCAweDAgMHgyMDAwMDAwMD47Cj4gK8KgwqDCoMKgwqDCoMKg
+fTsKPiArfTsKPiArCj4gKyZ1YXJ0MCB7Cj4gK8KgwqDCoMKgwqDCoMKgc3RhdHVzID0gIm9rYXki
+Owo+ICt9Owo+IGRpZmYgLS1naXQgYS9hcmNoL3Jpc2N2L2Jvb3QvZHRzL2NhbmFhbi9rMjMwLmR0
+c2kKPiBiL2FyY2gvcmlzY3YvYm9vdC9kdHMvY2FuYWFuL2syMzAuZHRzaQo+IG5ldyBmaWxlIG1v
+ZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAwMDAwLi43ZGE0OTQ5ODk0NWUKPiAtLS0gL2Rldi9u
+dWxsCj4gKysrIGIvYXJjaC9yaXNjdi9ib290L2R0cy9jYW5hYW4vazIzMC5kdHNpCj4gQEAgLTAs
+MCArMSwxNDAgQEAKPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgT1IgTUlU
+Cj4gKy8qCj4gKyAqIENvcHlyaWdodCAoQykgMjAyNCBZYW5neXUgQ2hlbiA8Y3l5QGN5eXNlbGYu
+bmFtZT4KPiArICovCj4gKwo+ICsjaW5jbHVkZSA8ZHQtYmluZGluZ3MvaW50ZXJydXB0LWNvbnRy
+b2xsZXIvaXJxLmg+Cj4gKwo+ICsvZHRzLXYxLzsKPiArLyB7Cj4gK8KgwqDCoMKgwqDCoMKgI2Fk
+ZHJlc3MtY2VsbHMgPSA8Mj47Cj4gK8KgwqDCoMKgwqDCoMKgI3NpemUtY2VsbHMgPSA8Mj47Cj4g
+K8KgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJjYW5hYW4sa2VuZHJ5dGUtazIzMCI7Cj4gKwo+
+ICvCoMKgwqDCoMKgwqDCoGFsaWFzZXMgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBzZXJpYWwwID0gJnVhcnQwOwo+ICvCoMKgwqDCoMKgwqDCoH07Cj4gKwo+ICvCoMKgwqDCoMKg
+wqDCoGNwdXMgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAjYWRkcmVzcy1jZWxs
+cyA9IDwxPjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgI3NpemUtY2VsbHMgPSA8
+MD47Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHRpbWViYXNlLWZyZXF1ZW5jeSA9
+IDwyNzAwMDAwMD47Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjcHVAMCB7
+Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjb21wYXRp
+YmxlID0gInRoZWFkLGM5MDgiLCAicmlzY3YiOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2aWNlX3R5cGUgPSAiY3B1IjsKPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlZyA9IDwwPjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJpc2N2LGlzYSA9Cj4gInJ2NjRp
+bWFmZGN2X3piYV96YmJfemJjX3pic196aWNib21fc3ZwYm10IjsKPiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJpc2N2LGlzYS1iYXNlID0gInJ2NjRpIjsK
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJpc2N2LGlz
+YS1leHRlbnNpb25zID0gImkiLCAibSIsICJhIiwgImYiLAo+ICJkIiwgImMiLCAidiIsICJ6YmEi
+LCAiemJiIiwKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJ6YmMiLCAiemJz
+IiwKPiAiemljYm9tIiwgInppY250ciIsICJ6aWNzciIsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCAiemlmZW5jZWkiLCAiemlocG0iLAo+ICJzdnBibXQiOwo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmlzY3YsY2JvbS1ibG9jay1z
+aXplID0gPDY0PjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoGQtY2FjaGUtYmxvY2stc2l6ZSA9IDw2ND47Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkLWNhY2hlLXNldHMgPSA8MTI4PjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGQtY2FjaGUtc2l6ZSA9IDwzMjc2
+OD47Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpLWNh
+Y2hlLWJsb2NrLXNpemUgPSA8NjQ+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgaS1jYWNoZS1zZXRzID0gPDEyOD47Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpLWNhY2hlLXNpemUgPSA8MzI3Njg+Owo+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbmV4dC1sZXZlbC1j
+YWNoZSA9IDwmbDJfY2FjaGU+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgbW11LXR5cGUgPSAicmlzY3Ysc3YzOSI7Cj4gKwo+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY3B1MF9pbnRjOiBpbnRlcnJ1cHQtY29u
+dHJvbGxlciB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJyaXNjdixjcHUtaW50YyI7Cj4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+aW50ZXJydXB0LWNvbnRyb2xsZXI7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgI2ludGVycnVwdC1jZWxscyA9IDwxPjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH07Cj4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH07Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqBsMl9jYWNoZTogbDItY2FjaGUgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJjYWNoZSI7Cj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjYWNoZS1ibG9jay1zaXplID0gPDY0
+PjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNhY2hl
+LWxldmVsID0gPDI+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgY2FjaGUtc2l6ZSA9IDwyNjIxNDQ+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgY2FjaGUtc2V0cyA9IDwyNTY+Owo+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY2FjaGUtdW5pZmllZDsKPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArwqDCoMKgwqDCoMKgwqB9Owo+ICsKPiArwqDC
+oMKgwqDCoMKgwqBhcGJfY2xrOiBhcGItY2xrLWNsb2NrIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7Cj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGNsb2NrLWZyZXF1ZW5jeSA9IDw1MDAwMDAwMD47Cj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNsb2NrLW91dHB1dC1uYW1lcyA9ICJhcGJfY2xrIjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgI2Nsb2NrLWNlbGxzID0gPDA+Owo+ICvCoMKg
+wqDCoMKgwqDCoH07Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoHNvYyB7Cj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGNvbXBhdGlibGUgPSAic2ltcGxlLWJ1cyI7Cj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoGludGVycnVwdC1wYXJlbnQgPSA8JnBsaWM+Owo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAjYWRkcmVzcy1jZWxscyA9IDwyPjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgI3NpemUtY2VsbHMgPSA8Mj47Cj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGRtYS1ub25jb2hlcmVudDsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgcmFuZ2VzOwo+ICsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcGxp
+YzogaW50ZXJydXB0LWNvbnRyb2xsZXJAZjAwMDAwMDAwIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbXBhdGlibGUgPSAiY2FuYWFuLGsyMzAtcGxp
+YyIgLCJ0aGVhZCxjOTAwLQo+IHBsaWMiOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgcmVnID0gPDB4ZiAweDAwMDAwMDAwIDB4MCAweDA0MDAwMDAwPjsK
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGludGVycnVw
+dHMtZXh0ZW5kZWQgPSA8JmNwdTBfaW50YyAxMT4sCj4gPCZjcHUwX2ludGMgOT47Cj4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnRlcnJ1cHQtY29udHJv
+bGxlcjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCNh
+ZGRyZXNzLWNlbGxzID0gPDA+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgI2ludGVycnVwdC1jZWxscyA9IDwyPjsKPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJpc2N2LG5kZXYgPSA8MjA4PjsKPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoGNsaW50OiB0aW1lckBmMDQwMDAwMDAgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJjYW5hYW4sazIzMC1jbGludCIs
+Cj4gInRoZWFkLGM5MDAtY2xpbnQiOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmVnID0gPDB4ZiAweDA0MDAwMDAwIDB4MCAweDAwMDEwMDAwPjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGludGVycnVwdHMt
+ZXh0ZW5kZWQgPSA8JmNwdTBfaW50YyAzPiwKPiA8JmNwdTBfaW50YyA3PjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHVhcnQwOiBzZXJpYWxAOTE0MDAwMDAgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJzbnBzLGR3LWFwYi11YXJ0IjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlZyA9IDwweDAg
+MHg5MTQwMDAwMCAweDAgMHgxMDAwPjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGNsb2NrcyA9IDwmYXBiX2Nsaz47Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnRlcnJ1cHRzID0gPDE2IElSUV9UWVBFX0xF
+VkVMX0hJR0g+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgcmVnLWlvLXdpZHRoID0gPDQ+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmVnLXNoaWZ0ID0gPDI+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RhdHVzID0gImRpc2FibGVkIjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHVhcnQxOiBzZXJpYWxAOTE0MDEwMDAgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJzbnBzLGR3LWFwYi11YXJ0IjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlZyA9IDwweDAg
+MHg5MTQwMTAwMCAweDAgMHgxMDAwPjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGNsb2NrcyA9IDwmYXBiX2Nsaz47Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnRlcnJ1cHRzID0gPDE3IElSUV9UWVBFX0xF
+VkVMX0hJR0g+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgcmVnLWlvLXdpZHRoID0gPDQ+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmVnLXNoaWZ0ID0gPDI+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RhdHVzID0gImRpc2FibGVkIjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHVhcnQyOiBzZXJpYWxAOTE0MDIwMDAgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJzbnBzLGR3LWFwYi11YXJ0IjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlZyA9IDwweDAg
+MHg5MTQwMjAwMCAweDAgMHgxMDAwPjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGNsb2NrcyA9IDwmYXBiX2Nsaz47Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnRlcnJ1cHRzID0gPDE4IElSUV9UWVBFX0xF
+VkVMX0hJR0g+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgcmVnLWlvLXdpZHRoID0gPDQ+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmVnLXNoaWZ0ID0gPDI+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RhdHVzID0gImRpc2FibGVkIjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHVhcnQzOiBzZXJpYWxAOTE0MDMwMDAgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJzbnBzLGR3LWFwYi11YXJ0IjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlZyA9IDwweDAg
+MHg5MTQwMzAwMCAweDAgMHgxMDAwPjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGNsb2NrcyA9IDwmYXBiX2Nsaz47Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnRlcnJ1cHRzID0gPDE5IElSUV9UWVBFX0xF
+VkVMX0hJR0g+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgcmVnLWlvLXdpZHRoID0gPDQ+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmVnLXNoaWZ0ID0gPDI+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RhdHVzID0gImRpc2FibGVkIjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHVhcnQ0OiBzZXJpYWxAOTE0MDQwMDAgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgY29tcGF0aWJsZSA9ICJzbnBzLGR3LWFwYi11YXJ0IjsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJlZyA9IDwweDAg
+MHg5MTQwNDAwMCAweDAgMHgxMDAwPjsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGNsb2NrcyA9IDwmYXBiX2Nsaz47Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnRlcnJ1cHRzID0gPDIwIElSUV9UWVBFX0xF
+VkVMX0hJR0g+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgcmVnLWlvLXdpZHRoID0gPDQ+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmVnLXNoaWZ0ID0gPDI+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RhdHVzID0gImRpc2FibGVkIjsKPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgfTsKPiArwqDCoMKgwqDCoMKgwqB9Owo+ICt9OwoK
 
 
