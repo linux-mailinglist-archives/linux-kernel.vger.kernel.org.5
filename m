@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FA28889856
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:36:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 688BF8897C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:20:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86CECB3A9C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:19:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA5E529E262
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5BB36E61B;
-	Mon, 25 Mar 2024 03:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6E736F358;
+	Mon, 25 Mar 2024 03:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dRIbn3pv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMQBbWs7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533D4145330;
-	Sun, 24 Mar 2024 23:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8835D14532A;
+	Sun, 24 Mar 2024 23:12:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321974; cv=none; b=R49+OBlXu1DkelOzy8XBzXiiviMO1GZGzeyJa4EFi363BX/J8oEx5i+VPJC++HTNhZfSpg+KhkgWPgSgrLCqnSHUe8qo1mGipVgZS6XlWe4xomWpk0wzZnvLmNWzse7ZcV6L3J+KNozlKYaBPeUO/4TGciiZvzFU3tjEbLbWjFU=
+	t=1711321975; cv=none; b=QSbzYWs+sk5va0aqDzaFOO2WVyDhp30uQPxtpNVw5A66aVqIsnExNXwe7hofKMix6IcaGaFMfgAUdSXRcB3vhsUkjaADO1z5qs+2bjQFjc6Z6UU76ahLoa6LiEDCbz8yWxeQpl16y4QLC/5MT0Uh5F4kkAdFScuSADBW/PkVU/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321974; c=relaxed/simple;
-	bh=vko/+J46uPjjVxQ7eGm2PmvehHWRDiGajfhump5oooI=;
+	s=arc-20240116; t=1711321975; c=relaxed/simple;
+	bh=RGrOirHE3j084FyDubnAZGEumOuMaqgWe3b9VZ19Iww=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=apk+dRUfSdzTNfSbd7ZRRV9UapbIvgA2qOoBnylyXLrtOU0Ivnej6bRD3eXC3mAkYmtwmtjPCiolHE3X8+wRKv876KqLmpzEmntmIJS7qTTZldE/FwwV9buERx9EqNTf3LT0/M1PtGillDp5bZiLK3/i/Nieknglgg8GN+/O6Tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dRIbn3pv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93CD9C433F1;
-	Sun, 24 Mar 2024 23:12:52 +0000 (UTC)
+	 MIME-Version; b=dgIkJmjouQs1RJ5PL3eYB/SXjLSAqzfzQv0AC7/C/3UKvO5Sk6uP4JVipVlqkHLYrFGV937QqbHDuSWgLpb6lRlp3ornfGcyf6pqqF91ZOMKe9Q8bUUXMT4fs1G8n4gnK0GwZntpMLKyQLLLUSNhIkGoVGNfLMLndP885y+ZUb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMQBbWs7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AA8CC43390;
+	Sun, 24 Mar 2024 23:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321973;
-	bh=vko/+J46uPjjVxQ7eGm2PmvehHWRDiGajfhump5oooI=;
+	s=k20201202; t=1711321974;
+	bh=RGrOirHE3j084FyDubnAZGEumOuMaqgWe3b9VZ19Iww=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dRIbn3pvzprtefFl93j9Nxeoofnyb+muYHmLMo1v2LmkUoqSZxPQTjyU1B5qDastA
-	 oPVtNJ8Ts2aw60o76o+9K3xxLzuW+bocpCCPmGL2rxHANU4BWVSsisRTjIRFCmqleD
-	 JBgr1LTVDKEVIvDToeBFGfwDN0CBrHehp8hIsbuo4bC3CTCvRukd/VXdBqOq5rIlea
-	 lnZpd7bDKNxLx2b7mVOBHw+YbgK/2t//kYdg7arZxqpBthONyQbA5kdGYynU1vz8OD
-	 LEi1XklTFA26Ah+SSGYxar85gyFgWrLgOMOEkBtVPyNYJ/vP9ahTBf08Czlob3R1XS
-	 O2MU9u0MrFlWg==
+	b=kMQBbWs7d+/Ix+Tnf7TpRNcKAP43FE7J+yCpWQHhuO9NI3ZzPnYE40VnYRBp6/0+3
+	 Y5HS5MSyMpAfE5Dz9hHPwRDxwnDmYBvEAjY+o0kb/j4OS1q0OZNc45GBWK2eoyf7NE
+	 Fu83u/v4udAq+YfRJQjRdH7KqXMT9b6vUbSq1GVEPkMEnzwrFZcZA3f/VHGQPv9ocD
+	 uV1DCEDs+vAt8YwWBq96pQH/5P4IzU8a5TbkM3Y9yZdMGA1ImbbauiKyQwDe8wkCOT
+	 rcWAW01681DyaaPLI9U/AZOj8DONwSwGWHbuyju+wDocVJxA7qnD//tQjwtAZCR3of
+	 LqFA3su1dgJHA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ranjan Kumar <ranjan.kumar@broadcom.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Kailang Yang <kailang@realtek.com>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 045/451] scsi: mpt3sas: Prevent sending diag_reset when the controller is ready
-Date: Sun, 24 Mar 2024 19:05:21 -0400
-Message-ID: <20240324231207.1351418-46-sashal@kernel.org>
+Subject: [PATCH 6.1 046/451] ALSA: hda/realtek - ALC285 reduce pop noise from Headphone port
+Date: Sun, 24 Mar 2024 19:05:22 -0400
+Message-ID: <20240324231207.1351418-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,41 +62,33 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ranjan Kumar <ranjan.kumar@broadcom.com>
+From: Kailang Yang <kailang@realtek.com>
 
-[ Upstream commit ee0017c3ed8a8abfa4d40e42f908fb38c31e7515 ]
+[ Upstream commit b34bf65838f7c6e785f62681605a538b73c2808c ]
 
-If the driver detects that the controller is not ready before sending the
-first IOC facts command, it will wait for a maximum of 10 seconds for it to
-become ready. However, even if the controller becomes ready within 10
-seconds, the driver will still issue a diagnostic reset.
+It had pop noise from Headphone port when system reboot state.
+If NID 58h Index 0x0 to fill default value, it will reduce pop noise.
 
-Modify the driver to avoid sending a diag reset if the controller becomes
-ready within the 10-second wait time.
-
-Signed-off-by: Ranjan Kumar <ranjan.kumar@broadcom.com>
-Link: https://lore.kernel.org/r/20240221071724.14986-1-ranjan.kumar@broadcom.com
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Link: https://lore.kernel.org/r/7493e207919a4fb3a0599324fd010e3e@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 809be43f440dc..8e6ac08e553bb 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -7398,7 +7398,9 @@ _base_wait_for_iocstate(struct MPT3SAS_ADAPTER *ioc, int timeout)
- 		return -EFAULT;
- 	}
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 75bd7b2fa4ee6..ede3f8b273d79 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3681,6 +3681,7 @@ static void alc285_hp_init(struct hda_codec *codec)
+ 	int i, val;
+ 	int coef38, coef0d, coef36;
  
-- issue_diag_reset:
-+	return 0;
-+
-+issue_diag_reset:
- 	rc = _base_diag_reset(ioc);
- 	return rc;
- }
++	alc_write_coefex_idx(codec, 0x58, 0x00, 0x1888); /* write default value */
+ 	alc_update_coef_idx(codec, 0x4a, 1<<15, 1<<15); /* Reset HP JD */
+ 	coef38 = alc_read_coef_idx(codec, 0x38); /* Amp control */
+ 	coef0d = alc_read_coef_idx(codec, 0x0d); /* Digital Misc control */
 -- 
 2.43.0
 
