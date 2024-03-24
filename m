@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71D8B8893AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 26607888DEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FA80B23953
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:17:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 494D9B31DB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42AC01C3A30;
-	Mon, 25 Mar 2024 01:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7091C3A38;
+	Mon, 25 Mar 2024 01:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uVQfOj3b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="raH6Tslo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE13180A9B;
-	Sun, 24 Mar 2024 23:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4455180B74;
+	Sun, 24 Mar 2024 23:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324057; cv=none; b=loy0gdvGH6Nu+4BlcyEqgBvSU4B5PODVqQWf5zDj5CYURDWJe+gdvMVXfMo0KruLz7YLQl29SglhYiIyvsfSnemGmmK9nrmSXEW/Ya6+FuYj+Onn3uJuVewuQJ9TNeOUp7sc70uPYMOpIaJQybWM7OIdP6lsOifYGqx6kYkhQ0o=
+	t=1711324059; cv=none; b=XJnTaQEsEDyK66VOQ87MRbl1qdp1LQFcToNrXfYgviAg1pJeTqm/MWyzhsjC/QobG/MoUIKFLSGgKj44T+qponFRwhspW+DK0xzG61S/qoC2qZyHa8+LIIUTd8Ii4FGdEEtO+5tvgJRIVmMe8FPs9MqPIZXQWN/+72u0c9pwg98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324057; c=relaxed/simple;
-	bh=TTPp54xaP7hPOWsq1BkuCXtQRgtzjCMxElupHnk0CuQ=;
+	s=arc-20240116; t=1711324059; c=relaxed/simple;
+	bh=acSYC8qx6Eqvje3K7lC9u19vwV0fg/4u9bafU49h0t0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=at0hZ1PZybRLCg2RQqlRtp/70eJ9tv2tY3Y8cF7NFpt9giSpkxevGx2ef+GEvgxBQoZ/eohuKE7RK2cXxdWrE3yg8m44+YvvtreEBWZy+krS2Z0cglC0QqCYyLsiaWOzuMpNje4ORL5FpaWnWhPEr57egKC5dNXM9U6tEp9dNW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uVQfOj3b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10F4AC433C7;
-	Sun, 24 Mar 2024 23:47:36 +0000 (UTC)
+	 MIME-Version; b=ieoCOVq/qi8+3plGbbNCJZO7OIAzW5JasCZCMlEYRkVNse0KZ0RRMuNr/0KcZSwq+l2eE5SBQBPGp8PtbEdkEp3wlGOP/8YNuUBh9qPTjfxdJBh0+FHhkcZapPo2+/aKWzGofpkaAEkx79bfqp4InGzZ0erHl3T8q6g7PAL+lFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=raH6Tslo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D41DC43390;
+	Sun, 24 Mar 2024 23:47:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324057;
-	bh=TTPp54xaP7hPOWsq1BkuCXtQRgtzjCMxElupHnk0CuQ=;
+	s=k20201202; t=1711324058;
+	bh=acSYC8qx6Eqvje3K7lC9u19vwV0fg/4u9bafU49h0t0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uVQfOj3bEkzEEHxwDI74mIOlkQTQRWKbkb+xeC3HwRzLodGle/8C/gO3MmgjPkUlN
-	 8hcBKbXlHusUjBjEAe9qs5iBW51ZxpOIhHgBN7WoyimmWK6OhQdKtIWFcV7JH89Fga
-	 7E5pbqmwf8SE6N06rP15IabJGGhAx7HDp6e+SQhridlgUeYemXn/GsUG6ad2m9b+Ud
-	 45Nb8y2BWwBCw0cbz2oVDy/IXEhT+8QyNtcRT9cHjT2+FTOecEhEkd1VPyULxcvO3X
-	 11AR1mkqT6dXwEPI7hyJCZ+I9IqwZnBW6MprYrQCQFg/jo50yjVERc925EeLuEXxYy
-	 eX1ahLBgF497w==
+	b=raH6TslomEhjOWWYXqvt5URMGDvfb/2J/73Uk7dYtkTlSkcJVnmxD0ANDwPO7gI20
+	 aMDNm1vJQfjx12uB8BEDQi86tOukXureO96AVBhjfG5Ve9RB08Th2w3aWQnD8JIJAN
+	 5fmJ5DIM1vkU2nLvbaeXEdav0Ej4F43nJQA+hOyOxc++NE4fgvPJrh3nLJMVivnkOX
+	 Dw3kgiIt6JgTIYRzvSWr8OV8DAINLTU8nRKnx/R4zqRIlS6dKkXF3khN7tJUEvO3Up
+	 pVutA/CKpZ9NQIuGTEsmTH1ttMkajVE8d858AYp11pMQpy8BkW3VNaCR7USQLYhuY7
+	 aIAuVIwgEc38A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kamal Heib <kheib@redhat.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Linus Walleij <linus.walleij@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 058/183] net: ena: Remove ena_select_queue
-Date: Sun, 24 Mar 2024 19:44:31 -0400
-Message-ID: <20240324234638.1355609-59-sashal@kernel.org>
+Subject: [PATCH 5.4 059/183] ARM: dts: arm: realview: Fix development chip ROM compatible value
+Date: Sun, 24 Mar 2024 19:44:32 -0400
+Message-ID: <20240324234638.1355609-60-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -63,64 +62,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kamal Heib <kheib@redhat.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 78e886ba2b549945ecada055ee0765f0ded5707a ]
+[ Upstream commit 3baa4c5143d65ebab2de0d99a395e5f4f1f46608 ]
 
-Avoid the following warnings by removing the ena_select_queue() function
-and rely on the net core to do the queue selection, The issue happen
-when an skb received from an interface with more queues than ena is
-forwarded to the ena interface.
+When the development chip ROM was added, the "direct-mapped" compatible
+value was already obsolete.  In addition, the device node lacked the
+accompanying "probe-type" property, causing the old physmap_of_core
+driver to fall back to trying all available probe types.
+Unfortunately this fallback was lost when the DT and pdata cases were
+merged.
 
-[ 1176.159959] eth0 selects TX queue 11, but real number of TX queues is 8
-[ 1176.863976] eth0 selects TX queue 14, but real number of TX queues is 8
-[ 1180.767877] eth0 selects TX queue 14, but real number of TX queues is 8
-[ 1188.703742] eth0 selects TX queue 14, but real number of TX queues is 8
+Fix this by using the modern "mtd-rom" compatible value instead.
 
-Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
-Signed-off-by: Kamal Heib <kheib@redhat.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 5c3f5edbe0a1dff3 ("ARM: realview: add flash devices to the PB1176 DTS")
+Fixes: 642b1e8dbed7bbbf ("mtd: maps: Merge physmap_of.c into physmap-core.c")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ arch/arm/boot/dts/arm-realview-pb1176.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 734da4e9ead2f..8e2e0c3bee0b9 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -2385,22 +2385,6 @@ static netdev_tx_t ena_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
+diff --git a/arch/arm/boot/dts/arm-realview-pb1176.dts b/arch/arm/boot/dts/arm-realview-pb1176.dts
+index 2625ce66f8e7e..673c6e5b2f565 100644
+--- a/arch/arm/boot/dts/arm-realview-pb1176.dts
++++ b/arch/arm/boot/dts/arm-realview-pb1176.dts
+@@ -435,7 +435,7 @@ pb1176_serial3: serial@1010f000 {
  
--static u16 ena_select_queue(struct net_device *dev, struct sk_buff *skb,
--			    struct net_device *sb_dev)
--{
--	u16 qid;
--	/* we suspect that this is good for in--kernel network services that
--	 * want to loop incoming skb rx to tx in normal user generated traffic,
--	 * most probably we will not get to this
--	 */
--	if (skb_rx_queue_recorded(skb))
--		qid = skb_get_rx_queue(skb);
--	else
--		qid = netdev_pick_tx(dev, skb, NULL);
--
--	return qid;
--}
--
- static void ena_config_host_info(struct ena_com_dev *ena_dev, struct pci_dev *pdev)
- {
- 	struct ena_admin_host_info *host_info;
-@@ -2549,7 +2533,6 @@ static const struct net_device_ops ena_netdev_ops = {
- 	.ndo_open		= ena_open,
- 	.ndo_stop		= ena_close,
- 	.ndo_start_xmit		= ena_start_xmit,
--	.ndo_select_queue	= ena_select_queue,
- 	.ndo_get_stats64	= ena_get_stats64,
- 	.ndo_tx_timeout		= ena_tx_timeout,
- 	.ndo_change_mtu		= ena_change_mtu,
+ 		/* Direct-mapped development chip ROM */
+ 		pb1176_rom@10200000 {
+-			compatible = "direct-mapped";
++			compatible = "mtd-rom";
+ 			reg = <0x10200000 0x4000>;
+ 			bank-width = <1>;
+ 		};
 -- 
 2.43.0
 
