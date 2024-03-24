@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-113812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 006198886BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:41:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35741888E97
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF37329126D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:41:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2B4628AA65
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01081FD109;
-	Sun, 24 Mar 2024 23:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746DF14EC7A;
+	Sun, 24 Mar 2024 23:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EX3hjf6j"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxM6jxoh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A441E6F5A;
-	Sun, 24 Mar 2024 22:54:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278631E6F5E;
+	Sun, 24 Mar 2024 22:54:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320857; cv=none; b=nb7ynsoVXB6BiYbJuv0HJGcbCbxIK09t5SdSg2tEJf9sfWhmhkipeB8vC1ppVKqJhbyAkYFEjn4PXs0+wzFqwpYL05cGxylslHgDL5s1EMyGGuaz7ZczIELyZlazdGeNA50hAl+h0dSToyFXi72RECjIx6XMVN+Lbya22qNWV/Y=
+	t=1711320858; cv=none; b=QPrdfizGRLxQfN5lgrYvHrIzZEneph7z6UcEff9KrZIBW3+KI5hLIRa9wYAil4Gq/xjfj+jwQfUiXq8e6G6iPKNEAwrW1snuBjB+LTblMTsOvKKXAP3wtX5NXddZEhxUb88EGpfc0rWdsPpvFMuPWuz6MzV+B+Ud2M5gO9++9Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320857; c=relaxed/simple;
-	bh=NxVz+WguTMB6Coo2YUZwzcntSivhyOF+Rdca8TF9s9s=;
+	s=arc-20240116; t=1711320858; c=relaxed/simple;
+	bh=C2Ua5kReEzwTd2V431PjK4bLeRHqCCInHnmeMP3BwsE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VfMNck0h5zP4YYeQaezEInvf4Iv7bgHVH+RsP6sgPm/QxaReP7O6gjum5ezBWaBmmsNzrfWH8bLV0SB6xpt/h40E2xBI4MGLWYNLsXtXPalsu+BjEPHHdPBBli0r6j3T/OfR1itaewqEaVveYGwLGCB2gyyveUA68+1wmpm++Ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EX3hjf6j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C92C433F1;
-	Sun, 24 Mar 2024 22:54:15 +0000 (UTC)
+	 MIME-Version; b=hY7cMH/oaU4uodvAW7Htv8Nw0W3Jk68kNsOZu+0AgpU8sG8fqFlJyQqKoJLmWi+DPC00dPg/6LFbneMkG/St0i/n1U0zUfSRaVIhsDmuFRlcO2ttFqhP/4zj77xF2sCCmizCj22cJk4E7w4S5yErhhplUbD0cSsHbdY64Wrktpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxM6jxoh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E524C43390;
+	Sun, 24 Mar 2024 22:54:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320856;
-	bh=NxVz+WguTMB6Coo2YUZwzcntSivhyOF+Rdca8TF9s9s=;
+	s=k20201202; t=1711320857;
+	bh=C2Ua5kReEzwTd2V431PjK4bLeRHqCCInHnmeMP3BwsE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EX3hjf6jIMvbSHt383OCMIWBMGn/qWZZik2gV1LV/Pq9EmRvHlsAjM1FYnF9DYlz7
-	 dq8hRkaL7/PZe6uXRKxCB58GMYokE3RAMYSeCauo75QzimDQMyCCkEIczO9YRYXd2P
-	 PfkQVaNqD8jIvzdegxfsgnmxRA6p7AuVhzbxQWKSTaUMIIK/h5n8VUEwuFNp5F6e/C
-	 o/tmJJaZZKYuqG1Oyx5CwvEE2Ytb6HI89qBMxHwkh8h2wQcvW2gJy7ZP8ADIZkdyCc
-	 GyDsRYr/Oc6vcJVP8uGOeJ8eV0fLvsQ0hGXiL/zU8VEuFhvhB69jHAQ9ecfacwTGEq
-	 Hl66bqQIwWswg==
+	b=sxM6jxohRztoFxg+LK2x7oYaJ/EReQ28NsQewXit1aAY/13NU8cB2QRRcDxfRH+34
+	 uOJiT28FWDV+aVRlaR1380OejI6nw0ek6xyvNk/6budx1fcAnf5PGkrYarB1oKFREf
+	 1geXqvXkk1IYbYHWR3a4fWqIRJ5qFPNcC1G63VPfDW0fawlIK+4WSDWPt8tK3rOAEt
+	 ZJIJB9G4IInFLbdBVVwAUGd1CCIknx3f/SLxTvelwfXl+B1UX2g8ebs2hFiS0tYAfD
+	 qm5IJyWFg+FiK9QD13juMMykMwJS66GWOLX1GY6kliHOZGGvUUTQ7MvcJDvsn8G2Wu
+	 Yqo2ooHue+22w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Martin Krastev <martin.krastev@broadcom.com>,
-	Maaz Mombasawala <maaz.mombasawala@broadcom.com>,
-	Zack Rusin <zack.rusin@broadcom.com>,
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 420/713] drm/vmwgfx: Fix vmw_du_get_cursor_mob fencing of newly-created MOBs
-Date: Sun, 24 Mar 2024 18:42:26 -0400
-Message-ID: <20240324224720.1345309-421-sashal@kernel.org>
+Subject: [PATCH 6.7 421/713] pinctrl: renesas: r8a779g0: Add missing SCIF_CLK2 pin group/function
+Date: Sun, 24 Mar 2024 18:42:27 -0400
+Message-ID: <20240324224720.1345309-422-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,54 +61,66 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Martin Krastev <martin.krastev@broadcom.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit ed96cf7ad590989b009d6da5cd26387d995dac13 ]
+[ Upstream commit 68540257cdf1d07ff8a649aa94c21c5804bbb9b0 ]
 
-The fencing of MOB creation used in vmw_du_get_cursor_mob was incompatible
-with register-based device communication employed by this routine. As a
-result cursor MOB creation was racy, leading to potentially broken/missing
-mouse cursor on desktops using CursorMob device feature.
+R-Car V4H actually has two SCIF_CLK pins.
+The second pin provides the SCIF_CLK signal for HSCIF2 and SCIF4.
 
-Fixes: 53bc3f6fb6b3 ("drm/vmwgfx: Clean up cursor mobs")
-Signed-off-by: Martin Krastev <martin.krastev@broadcom.com>
-Reviewed-by: Maaz Mombasawala <maaz.mombasawala@broadcom.com>
-Reviewed-by: Zack Rusin <zack.rusin@broadcom.com>
-Signed-off-by: Zack Rusin <zack.rusin@broadcom.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240126200804.732454-5-zack.rusin@broadcom.com
+Fixes: 050442ae4c74f830 ("pinctrl: renesas: r8a779g0: Add pins, groups and functions")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/6352ec9b63fdd38c2c70d8d203e46f21fbfeccdc.1705589612.git.geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/pinctrl/renesas/pfc-r8a779g0.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-index 818b7f109f538..b51578918cf8d 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-@@ -272,6 +272,7 @@ static int vmw_du_get_cursor_mob(struct vmw_cursor_plane *vcp,
- 	u32 size = vmw_du_cursor_mob_size(vps->base.crtc_w, vps->base.crtc_h);
- 	u32 i;
- 	u32 cursor_max_dim, mob_max_size;
-+	struct vmw_fence_obj *fence = NULL;
- 	int ret;
+diff --git a/drivers/pinctrl/renesas/pfc-r8a779g0.c b/drivers/pinctrl/renesas/pfc-r8a779g0.c
+index acdea6ac15253..d2de526a3b588 100644
+--- a/drivers/pinctrl/renesas/pfc-r8a779g0.c
++++ b/drivers/pinctrl/renesas/pfc-r8a779g0.c
+@@ -2384,6 +2384,14 @@ static const unsigned int scif_clk_mux[] = {
+ 	SCIF_CLK_MARK,
+ };
  
- 	if (!dev_priv->has_mob ||
-@@ -313,7 +314,15 @@ static int vmw_du_get_cursor_mob(struct vmw_cursor_plane *vcp,
- 	if (ret != 0)
- 		goto teardown;
++static const unsigned int scif_clk2_pins[] = {
++	/* SCIF_CLK2 */
++	RCAR_GP_PIN(8, 11),
++};
++static const unsigned int scif_clk2_mux[] = {
++	SCIF_CLK2_MARK,
++};
++
+ /* - SSI ------------------------------------------------- */
+ static const unsigned int ssi_data_pins[] = {
+ 	/* SSI_SD */
+@@ -2694,6 +2702,7 @@ static const struct sh_pfc_pin_group pinmux_groups[] = {
+ 	SH_PFC_PIN_GROUP(scif4_clk),
+ 	SH_PFC_PIN_GROUP(scif4_ctrl),
+ 	SH_PFC_PIN_GROUP(scif_clk),
++	SH_PFC_PIN_GROUP(scif_clk2),
  
--	vmw_bo_fence_single(&vps->cursor.bo->tbo, NULL);
-+	ret = vmw_execbuf_fence_commands(NULL, dev_priv, &fence, NULL);
-+	if (ret != 0) {
-+		ttm_bo_unreserve(&vps->cursor.bo->tbo);
-+		goto teardown;
-+	}
+ 	SH_PFC_PIN_GROUP(ssi_data),
+ 	SH_PFC_PIN_GROUP(ssi_ctrl),
+@@ -3015,6 +3024,10 @@ static const char * const scif_clk_groups[] = {
+ 	"scif_clk",
+ };
+ 
++static const char * const scif_clk2_groups[] = {
++	"scif_clk2",
++};
 +
-+	dma_fence_wait(&fence->base, false);
-+	dma_fence_put(&fence->base);
-+
- 	ttm_bo_unreserve(&vps->cursor.bo->tbo);
- 	return 0;
+ static const char * const ssi_groups[] = {
+ 	"ssi_data",
+ 	"ssi_ctrl",
+@@ -3102,6 +3115,7 @@ static const struct sh_pfc_function pinmux_functions[] = {
+ 	SH_PFC_FUNCTION(scif3),
+ 	SH_PFC_FUNCTION(scif4),
+ 	SH_PFC_FUNCTION(scif_clk),
++	SH_PFC_FUNCTION(scif_clk2),
+ 
+ 	SH_PFC_FUNCTION(ssi),
  
 -- 
 2.43.0
