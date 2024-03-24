@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-113071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEB1688813C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:16:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A594D88813E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:16:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78BE12827F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:16:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D35CD1C21559
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF63814A0AA;
-	Sun, 24 Mar 2024 22:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 952A714A4C4;
+	Sun, 24 Mar 2024 22:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DV3TyEzE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I7+4GHY/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161A414A091;
-	Sun, 24 Mar 2024 22:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9DCE14A0A9;
+	Sun, 24 Mar 2024 22:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319880; cv=none; b=C65oHnTmf3j0Y8iyEoMWFeojl6+BBdvw4O3DDLn4YS/GE4xXeHNqDyZUTaZJePOj/3h+ds77+ZoPQGuTD+uWEYiHZDw3Bg2q7biXJB4yTyOSCgtrNcF3IAlxWGetR+YCCsbHEx0RshFdps2Y83+aBZUMszr3MVC3Unke4/3xQEI=
+	t=1711319880; cv=none; b=m4Chb8BzaS5rZsRSJ0K5rBPSidXclG0ipWQ3YOMCUruIitR1gnNfHQ/zk29AVNrTCnzcAy3fkJQzyzkReHEFFfXq5WJafpL2W3nQNSpBwz8PtGA5C8X29oRQyb7X/RfuFO4fITtOh5Gp2peAC75XwFAo+cUnS9pqmDJTynpj8/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711319880; c=relaxed/simple;
-	bh=/Cgj1l+Rb/KLXPOO1028JhYLxPr473Y7ZEhHjRqRylU=;
+	bh=dX+p9aq8ZTnlef2Gmg+V8hnuIMD3+xTYM25f1+TPgKM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=V1LzNjFlkLhKgfiG7wZ4BQoEmrRZ4D9v5tasAwjz1ehhbkPI2Lvrlkf/5pdJYT0O4+UsBUlvMXLshIegmea8SvAymEbwMskYK3O3BpFbhoic7Sosd1stTrKoVsY4G1DVZDqhyAeiMICi5mWMsjx3e0Vit3BF9leCKuq727aWenw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DV3TyEzE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0711C433C7;
-	Sun, 24 Mar 2024 22:37:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=KyLVvPLFFAUNfDKh2xk6qdtfunvOprQzttA80ktgS10gQj40F+mb9ggH3EJokhvrYgOL3AR3TVSyJyAGjs61FRtmtfoyNAof9E7vWLFCLYaM+ibV/ZDFUTdGqfOfc5uXB3Xl7TRi859eopX92/86fMmypPiyLWwTWtad9GYIVFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I7+4GHY/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2E82C43394;
+	Sun, 24 Mar 2024 22:37:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319879;
-	bh=/Cgj1l+Rb/KLXPOO1028JhYLxPr473Y7ZEhHjRqRylU=;
+	s=k20201202; t=1711319880;
+	bh=dX+p9aq8ZTnlef2Gmg+V8hnuIMD3+xTYM25f1+TPgKM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DV3TyEzE0ERD0V4hXLLMGdkNBH6qw/xLbOeSfAA78AEgdsSSVTqUcxRTter3Kxgnh
-	 MqFyGG88MSLyPcOnPvjeVhaV4tencVpOWejrisq2DefAeW+Gz5hNynbL+F2uhN6fmD
-	 3jm9p1MhLmChDsO+7J0gaa/V2yP1c5qqZSXWSYwOgTlQXW21kSWAe4PblU3xRiLEFg
-	 28ggvYKlDZo+5KSUVIX5YeG64MAo9Nr/z6+RSsz9M8qGJyNthgYR9NQYUFvtvG6D8Q
-	 m0xG+bLwLIO7cnmbE0r/ZGK3jnzyMNqIRZ7dT8Glas2nPc8dcW+RfwER+ijVCFzwHv
-	 FdW6sYEQZfFFA==
+	b=I7+4GHY/v7YveokmqshX03WITxFufE/YO8QWxul3f+6yc1v1txM/M0k1w9CFANfaf
+	 tG8bERJku4j/8S08wQMKTCRwYD6pKTSBvIiLEDwNu+Jkv76nZ2ZrjsWxfzapmz4GyL
+	 BtIiRY7Dm43e0QE4rhFoUZyRdA7T7or8VxtYNWtD4FM6sGKuB+hpwKm5fcs46i6dE3
+	 tBMSEg0Nlv+vGaiNlYPlUMcfrpY3oeFORjHqSYFW2C5NMZPnZOnOAp/855lPWdaR8x
+	 HPwHW93vMm8zs3CYZid5kbTCEHBfleiboegQPUcdZToFacxC/NdDe+SkTuSQGkmWJ0
+	 hQzx2qqOxwCIw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Sam Shih <sam.shih@mediatek.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 184/715] arm64: dts: mediatek: mt7986: drop crypto's unneeded/invalid clock name
-Date: Sun, 24 Mar 2024 18:26:03 -0400
-Message-ID: <20240324223455.1342824-185-sashal@kernel.org>
+Subject: [PATCH 6.8 185/715] arm64: dts: mediatek: mt7986: fix SPI bus width properties
+Date: Sun, 24 Mar 2024 18:26:04 -0400
+Message-ID: <20240324223455.1342824-186-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -67,38 +66,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit bb69d19c649669f700149df309245cd925612f7c ]
+[ Upstream commit 4e7dc18a753cec130b06f1ddbae10ea9dcfb1723 ]
 
-According to the "inside-secure,safexcel-eip97" binding "clock-names" is
-required only if there are two clocks specified. If present the first
-name must by "core".
+This fixes SPI setup and resolves following validation errors:
+arch/arm64/boot/dts/mediatek/mt7986a-rfb.dtb: spi_nand@0: Unevaluated properties are not allowed ('spi-rx-buswidth', 'spi-tx-buswidth' were unexpected)
+        from schema $id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
+arch/arm64/boot/dts/mediatek/mt7986b-rfb.dtb: spi_nand@0: Unevaluated properties are not allowed ('spi-rx-buswidth', 'spi-tx-buswidth' were unexpected)
+        from schema $id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
 
-Name "infra_eip97_ck" is invalid and was probably just a typo. Drop it.
-
-Fixes: ecc5287cfe53 ("arm64: dts: mt7986: add crypto related device nodes")
-Cc: Sam Shih <sam.shih@mediatek.com>
+Fixes: 885e153ed7c1 ("arm64: dts: mt7986: add spi related device nodes")
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20231116132411.7665-1-zajec5@gmail.com
+Link: https://lore.kernel.org/r/20231116130952.5099-1-zajec5@gmail.com
 Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts | 4 ++--
+ arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-index fc751e049953c..a7d9c3246a875 100644
---- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-@@ -234,7 +234,6 @@ crypto: crypto@10320000 {
- 				     <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "ring0", "ring1", "ring2", "ring3";
- 			clocks = <&infracfg CLK_INFRA_EIP97_CK>;
--			clock-names = "infra_eip97_ck";
- 			assigned-clocks = <&topckgen CLK_TOP_EIP_B_SEL>;
- 			assigned-clock-parents = <&apmixedsys CLK_APMIXED_NET2PLL>;
- 			status = "disabled";
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts b/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+index 3ef371ca254e8..bcb3ebb85d708 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
++++ b/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+@@ -241,8 +241,8 @@ spi_nand: spi_nand@0 {
+ 		compatible = "spi-nand";
+ 		reg = <0>;
+ 		spi-max-frequency = <10000000>;
+-		spi-tx-buswidth = <4>;
+-		spi-rx-buswidth = <4>;
++		spi-tx-bus-width = <4>;
++		spi-rx-bus-width = <4>;
+ 	};
+ };
+ 
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
+index dde190442e386..48fe50e671779 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
++++ b/arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts
+@@ -156,8 +156,8 @@ spi_nand: spi_nand@0 {
+ 		compatible = "spi-nand";
+ 		reg = <0>;
+ 		spi-max-frequency = <10000000>;
+-		spi-tx-buswidth = <4>;
+-		spi-rx-buswidth = <4>;
++		spi-tx-bus-width = <4>;
++		spi-rx-bus-width = <4>;
+ 	};
+ };
+ 
 -- 
 2.43.0
 
