@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-113369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08E908883C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:19:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3346D8883C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E831B24921
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:19:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 648461C2378A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D1719DF4C;
-	Sun, 24 Mar 2024 22:42:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC77619DF7A;
+	Sun, 24 Mar 2024 22:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ox3PRS0g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YEHN+lkY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79D8A19D8D1;
-	Sun, 24 Mar 2024 22:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE1419DF64;
+	Sun, 24 Mar 2024 22:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320170; cv=none; b=hea736+YSpGxMAru/zbKnTB6lQ3TqYtbVETVtzWUevDkYZvv4IFoRQvgOYSFtKPQydrwLrOjbfOa4MDO0KBwPwlGr8hP3K4ijXDFeiVvUBmvCNX0/ld3m/hKA7W9XqJIOuIXXDlUpr8rRgmt0+L2vJ+fFY71VMFH8XpDjuYn/7Y=
+	t=1711320172; cv=none; b=XDnz9BEboup+GH7mHxVpeBcp/ooIuwcWLaD/OSEpyGbS2SI+Gp8jn0W2nShYGvR7rkSMyIig7UIqau0MxRRj1/geei8BDakW5g3T7Gsj5OL+Ka1rxFy2zWyKw2RLQBJA354srr0asUV+LyKwLv3+u8eUtL5D1B2aBR0/YHV9HPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320170; c=relaxed/simple;
-	bh=88D2h7ESbBu8z6z2H1BIcpBwdPI4hxWEwZy8Q42aC84=;
+	s=arc-20240116; t=1711320172; c=relaxed/simple;
+	bh=ezCUrIvDRIMjnNi19J2vJvkJAVoFfPKZW7OmIymu7FI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ODhz3M7rudrOaH/DVNStMwtJdqBU6ZB3f3YMYR3ZnZQKLjtkQJCLbASVzQO4QOc4ecXF5cWumSDNUVUCmvh1aQNb7w342UF5l9vadQyEClCzrWv/TJOrRiI/ANitIZqx/fHN/5TKPdZ/+MtmF3nr7BX+LHswmUbjvR6u6JTcdAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ox3PRS0g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABD3EC433C7;
-	Sun, 24 Mar 2024 22:42:49 +0000 (UTC)
+	 MIME-Version; b=DHl+JBEldJdHaPscWnohNlJz6CNfo2+NTPQCOmGIU+jkE6a+36cN79QwUmx9b3clLO6IuB99SLVA6VNhnS2Hl0Xk9+E8rpwfTV5gxHG/IU+NPcs6tdGlJSewNsM8Vb87MjWpk4eR8FDeOf1n3BZb3szv+dv0psoWRMCFeKNE7vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YEHN+lkY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 964BCC43394;
+	Sun, 24 Mar 2024 22:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320170;
-	bh=88D2h7ESbBu8z6z2H1BIcpBwdPI4hxWEwZy8Q42aC84=;
+	s=k20201202; t=1711320171;
+	bh=ezCUrIvDRIMjnNi19J2vJvkJAVoFfPKZW7OmIymu7FI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ox3PRS0g1PNlFGBOMynOKaveZfiHinz1Kr6HNGtkpc7nKJHPvjKaNzqZzX0lm4LoD
-	 OIsYYsz7bRbnAaKOxt7tNB3T+6HUuWJJa/eyEmMEXbxTl2c1IV97ers+kq6rMsXtfH
-	 42Ti7432qB/4ahqTSw1bzRxV/H1ZCMCmWSUgpK2GfYlfWZtPTQMC0aWITYw8ZzjwHC
-	 fAb3VhlXuunKbYUBO22zjBNs6mt35C9i53OUjny4QCScHPxE+r3ruUoZenlcwJpOXc
-	 lakjY7iNuZmHs/O1kM+nfyL1laAUTXZCzFuTK4+aWspPzJzYbEZk1dGA4QMj78dcZM
-	 eNCftgA0Npl6w==
+	b=YEHN+lkYPO+oQ28x1o8feH41I2joLMDQ0qy8VDXxaGlgr2P3dZ03Q9749v3YdU0ga
+	 1qVc21HTw61wPfBb9BHINl6Ey7bCwDa1ngsWceNQlqU/zcoRtz2aoSmcfP6vo8VmdR
+	 76Q3Ra+JaMoihaE9Cdb/pw32KAgDRn9nhUObmEI5SniQPdAH5N8mYjOuokqWm1SxKs
+	 dKmrKhEAyJL5SWLuYKY0m32n49zmx+XUMIYIkZjkOAaBjhbpjWsKHzDQZfq+bqwt8i
+	 lbvT/O4yoqtjPHjh7A1SkL9L9ZdW5Fsi2hyJjOkMobmFLSNtP1YLDBlEn/3MIf1AV+
+	 r6qQPxY919Y4Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
+Cc: David Regan <dregan@broadcom.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	William Zhang <william.zhang@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 478/715] mtd: rawnand: lpc32xx_mlc: fix irq handler prototype
-Date: Sun, 24 Mar 2024 18:30:57 -0400
-Message-ID: <20240324223455.1342824-479-sashal@kernel.org>
+Subject: [PATCH 6.8 479/715] mtd: rawnand: brcmnand: exec_op helper functions return type fixes
+Date: Sun, 24 Mar 2024 18:30:58 -0400
+Message-ID: <20240324223455.1342824-480-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,50 +65,70 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: David Regan <dregan@broadcom.com>
 
-[ Upstream commit 347b828882e6334690e7003ce5e2fe5f233dc508 ]
+[ Upstream commit d4bba1501f72e8af09f2cde3d327147de1b69f5d ]
 
-clang-16 warns about mismatched function prototypes:
+Fix return types for exec_op reset and status helper functions.
 
-drivers/mtd/nand/raw/lpc32xx_mlc.c:783:29: error: cast from 'irqreturn_t (*)(int, struct lpc32xx_nand_host *)' (aka 'enum irqreturn (*)(int, struct lpc32xx_nand_host *)') to 'irq_handler_t' (aka 'enum irqreturn (*)(int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-
-Change the interrupt handler to the normal way of just passing
-a void* pointer and converting it inside the function..
-
-Fixes: 70f7cb78ec53 ("mtd: add LPC32xx MLC NAND driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: http://lists.infradead.org/pipermail/linux-mtd/2023-December/102423.html
+Fixes: 3c8260ce7663 ("mtd: rawnand: brcmnand: exec_op implementation")
+Signed-off-by: David Regan <dregan@broadcom.com>
+Signed-off-by: William Zhang <william.zhang@broadcom.com>
+Reviewed-by: William Zhang <william.zhang@broadcom.com>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20240213100146.455811-1-arnd@kernel.org
+Link: https://lore.kernel.org/linux-mtd/20240223034758.13753-2-william.zhang@broadcom.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/lpc32xx_mlc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-index 488fd452611a6..677fcb03f9bef 100644
---- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-@@ -303,8 +303,9 @@ static int lpc32xx_nand_device_ready(struct nand_chip *nand_chip)
- 	return 0;
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 8faca43ae1ff9..b8e70fc64348e 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -625,7 +625,7 @@ enum {
+ /* Only for v7.2 */
+ #define	ACC_CONTROL_ECC_EXT_SHIFT		13
+ 
+-static u8 brcmnand_status(struct brcmnand_host *host);
++static int brcmnand_status(struct brcmnand_host *host);
+ 
+ static inline bool brcmnand_non_mmio_ops(struct brcmnand_controller *ctrl)
+ {
+@@ -1690,7 +1690,7 @@ static int brcmnand_waitfunc(struct nand_chip *chip)
+ 				 INTFC_FLASH_STATUS;
  }
  
--static irqreturn_t lpc3xxx_nand_irq(int irq, struct lpc32xx_nand_host *host)
-+static irqreturn_t lpc3xxx_nand_irq(int irq, void *data)
+-static u8 brcmnand_status(struct brcmnand_host *host)
++static int brcmnand_status(struct brcmnand_host *host)
  {
-+	struct lpc32xx_nand_host *host = data;
- 	uint8_t sr;
+ 	struct nand_chip *chip = &host->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -1701,7 +1701,7 @@ static u8 brcmnand_status(struct brcmnand_host *host)
+ 	return brcmnand_waitfunc(chip);
+ }
  
- 	/* Clear interrupt flag by reading status */
-@@ -780,7 +781,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 		goto release_dma_chan;
+-static u8 brcmnand_reset(struct brcmnand_host *host)
++static int brcmnand_reset(struct brcmnand_host *host)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 
+@@ -2433,7 +2433,11 @@ static int brcmnand_exec_op(struct nand_chip *chip,
+ 
+ 	if (brcmnand_op_is_status(op)) {
+ 		status = op->instrs[1].ctx.data.buf.in;
+-		*status = brcmnand_status(host);
++		ret = brcmnand_status(host);
++		if (ret < 0)
++			return ret;
++
++		*status = ret & 0xFF;
+ 
+ 		return 0;
  	}
- 
--	if (request_irq(host->irq, (irq_handler_t)&lpc3xxx_nand_irq,
-+	if (request_irq(host->irq, &lpc3xxx_nand_irq,
- 			IRQF_TRIGGER_HIGH, DRV_NAME, host)) {
- 		dev_err(&pdev->dev, "Error requesting NAND IRQ\n");
- 		res = -ENXIO;
 -- 
 2.43.0
 
