@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48579889581
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:29:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DBF48895F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2408DB28AE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:27:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED45B29A2E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9441CC46D;
-	Mon, 25 Mar 2024 01:10:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1CD29BAE0;
+	Mon, 25 Mar 2024 03:41:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDW1mlv4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nMqX1Vz+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56695132808;
-	Sun, 24 Mar 2024 23:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFE313280B;
+	Sun, 24 Mar 2024 23:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324310; cv=none; b=YxoinMpwo5XDh32DjkpmsgiNcshWQ8KrZxpxm29SuIR2tYd20mVaNiu5AwqN12aEllcv/K5cU7P+pq7h7bKtbAsClHyzIoCJPTGIJx7u6uf+DD0C2xe2GZfokBNhvVvYXAl8iC34nKcAJHR1iIY1fOjwjEM8khrBbpXmTy4pBYw=
+	t=1711324310; cv=none; b=hi/D5U+gEKwg1Qspr24idqLuBXE2sUNsX+T84Jix01sahGYqAUWBORzM9a+O1IduJxyiEc6McXT+1oK+qsqH883Md9OIODy/W26u7xB7PeT8ngvDntHToJyMcS/5Yuvb0++2VuHslzmlZZ0g+3Kax0v86nkxtCwXsqw7qaRqG5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324310; c=relaxed/simple;
-	bh=8z5IHMv3GWG41+xjtTI2imOucUx5FAko19b1cKHsbNI=;
+	bh=E3ev4s0/MWK6GrCYFP2vej+WNCRhvaN5iAa8vNsJbHU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pKyu+f2UIu5/zhni1Ihga1QqigoKL9+GhErE9RIV4ElVLq6vREWdCujmMz9bgvnfcWZgXCoL4607Tdak66N8yYzTYuJm8IKwzWHWOZQkDw6QfJ7Zlou5fmccczxU6cmJ4mm3y47dRZB7oKTNIwOSQcexAwtI/OyEaXqLD7hQkcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDW1mlv4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A8C5C43390;
-	Sun, 24 Mar 2024 23:51:48 +0000 (UTC)
+	 MIME-Version; b=V6khlqh9iWJbzLZS1/I3XLqpeqiQzE208WCo4dA5UjwMf/QSDZnCUhcmO1RVpdKBUe5EeAF/xKduFZPAvzzybVhahRkkm0eD8LiXbxJCvhj8QFJ5UzVAhL/2sKnk5DVKszTVnol8b52sIaMP/sNOCAd5Kx4BKLpppf3NjeEBaIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nMqX1Vz+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C39EC43399;
+	Sun, 24 Mar 2024 23:51:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324309;
-	bh=8z5IHMv3GWG41+xjtTI2imOucUx5FAko19b1cKHsbNI=;
+	s=k20201202; t=1711324310;
+	bh=E3ev4s0/MWK6GrCYFP2vej+WNCRhvaN5iAa8vNsJbHU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sDW1mlv4dDWUW69Sgid9mVGHxwwz1PziL3IHAvQrDEZcFTKx/YiE9FDLnW6OlIh9d
-	 IgW9UAbkkd/A20YGItd8xMn0STghEky9WwBJNa03ytxREWDqi2XQhX/lK05fdsmcOB
-	 lZk5JTdV+3H3Xa+fgcUF+PfeliBRU6cWVcYduvv5tHR7158EPJw41Qag7a10AHap/9
-	 QcLZtcLWdj62Nj6wjrcizXvBdyHR3ki/hDm0OfuDcfJxVVgmYaPmOS6wtm0iqAFsuQ
-	 0q0eMAnZPKj16vkEvirUnoZj5hOT3pJWos71mJW3XEjvqleyJbWMn8KQcquDP1yEXY
-	 rRaMdSnAuKedA==
+	b=nMqX1Vz+xQtUaYwh4PadyzErvDFF60iTgL18lEd28FWyR+04ABCeb6Qv/pu8QW2N2
+	 6QIWisSyyrJBgVfDkvPlOkeY6cxO+nkRggbS8Tu+sGfVWnWdXLh8m8jC8HMpAhbQUf
+	 IMqsqwwNpxoho8KHo1xGD6/JRnvM/ltnxcRnHCiUK6JeoN4jNinDgT+QzrMWhKBwOd
+	 UY8mDNykoAjmRn0FaiQRE0zu74kFM0EmIfnPOuvjYgVEsWJPKLs0FPGbb2fqezadKY
+	 SrOxn8cCj/ECcA2HLuOi8CF+DFSZy/3j29lFjDjgyTZ91g2/hE9XU5WnyfpQEr/jk6
+	 2g5dbMBw0uIoA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhipeng Lu <alexious@zju.edu.cn>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 081/148] media: v4l2-mem2mem: fix a memleak in v4l2_m2m_register_entity
-Date: Sun, 24 Mar 2024 19:49:05 -0400
-Message-ID: <20240324235012.1356413-82-sashal@kernel.org>
+Subject: [PATCH 4.19 082/148] media: dvbdev: remove double-unlock
+Date: Sun, 24 Mar 2024 19:49:06 -0400
+Message-ID: <20240324235012.1356413-83-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -62,46 +62,33 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Zhipeng Lu <alexious@zju.edu.cn>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
-[ Upstream commit 8f94b49a5b5d386c038e355bef6347298aabd211 ]
+[ Upstream commit 122d0e8dd050cc5dc3fb9e9b5f2dee3c5276ce35 ]
 
-The entity->name (i.e. name) is allocated in v4l2_m2m_register_entity
-but isn't freed in its following error-handling paths. This patch
-adds such deallocation to prevent memleak of entity->name.
+As warned by smatch:
+	drivers/media/dvb-core/dvbdev.c: drivers/media/dvb-core/dvbdev.c:529 dvb_register_device() error: double unlock 'sem:&minor_rwsem'
 
-Fixes: be2fff656322 ("media: add helpers for memory-to-memory media controller")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Stable-dep-of: 8c64f4cdf4e6 ("media: edia: dvbdev: fix a use-after-free")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-mem2mem.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/media/dvb-core/dvbdev.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-index 75c51007768e3..5c4e4d101ca46 100644
---- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-+++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-@@ -775,11 +775,17 @@ static int v4l2_m2m_register_entity(struct media_device *mdev,
- 	entity->function = function;
- 
- 	ret = media_entity_pads_init(entity, num_pads, pads);
--	if (ret)
-+	if (ret) {
-+		kfree(entity->name);
-+		entity->name = NULL;
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index b8335ede66264..1f80c4fa31c9b 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -536,7 +536,6 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		dvb_media_device_free(dvbdev);
+ 		kfree(dvbdevfops);
+ 		kfree(dvbdev);
+-		up_write(&minor_rwsem);
+ 		mutex_unlock(&dvbdev_register_lock);
  		return ret;
-+	}
- 	ret = media_device_register_entity(mdev, entity);
--	if (ret)
-+	if (ret) {
-+		kfree(entity->name);
-+		entity->name = NULL;
- 		return ret;
-+	}
- 
- 	return 0;
- }
+ 	}
 -- 
 2.43.0
 
