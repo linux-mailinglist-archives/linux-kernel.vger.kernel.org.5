@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D756889C20
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:11:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83D08888731
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F0B51C33BBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:11:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2509EB24CE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8B323CB93;
-	Mon, 25 Mar 2024 02:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EECE20F24F;
+	Sun, 24 Mar 2024 23:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dWwG1vxP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ig1DL+DI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963BB1494B2;
-	Sun, 24 Mar 2024 22:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D2D1494CD;
+	Sun, 24 Mar 2024 22:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320973; cv=none; b=TUnKYf4235hiUC0tJi1JQB87bSN7czFlPklvyE/+HtW2M9bvQg/7/yfS7Lf8zre8cLlEy+7MhS0HzzPvGYS42VdLLew713pDFVOBINPeqPsZCTmNkqAg0IgO3lYUOF7meoBVOS+pQJHQZpDlqTlPKNF9frknLpns9QLv45NEDzA=
+	t=1711320975; cv=none; b=fonVaOrJxB6+u0m2yYrNUndi45NwksLa0V0noZTIPP7qnHv6H41sLnbq1xs/MZfm1uccGp5XdCzlgjFTXE6dQjHtMfBDA1xyw5nNvwiVeNk91oi6sWpAnuAgM4g16L/2cPYMvr32Oisr4whUG92IqG+5AzzkeY9PTRY2FEQ2ZeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320973; c=relaxed/simple;
-	bh=FfAkLR82zNo8vXgN3x469UcnQzAZ56OYmk6OGgnHwmA=;
+	s=arc-20240116; t=1711320975; c=relaxed/simple;
+	bh=eG1J2GmODm9lK0Ww4aBd5mp6oXQImbe3u0gUs1eIvrk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OVwOW/bf1wQ4YMcGwywesqtOyuGALi5+N0cqwOW4EfxUlIYoMvEx9fq+ZZwnOnP1Lcsl6FfBw+qx5TS0kWCNG+mRg1coR9ZfNreJSeWz33Vc6qeK4Ahqnuz3+VDjCggY5pWfQ4Th4XZHkRXdrqi1+mJFzHBkwAcj/NxD5qaW2xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dWwG1vxP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADF70C43609;
-	Sun, 24 Mar 2024 22:56:12 +0000 (UTC)
+	 MIME-Version:Content-Type; b=b8jx7GQPS3XEFhB9Q/IR9e4Hi1ZezDy+muV8EryEmuBFYJDNEBrm6af7hcKQJlhGcxXeDvp2O5c5bMsuDBkB8/Ksz6D3jusudDg9mXnoVtiYw1BGbHJm7hhwOXKBgAZFBrhKE5HgNAfXlGcjukpt2wcWjkTTE3vnQbGLp5TkTmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ig1DL+DI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC499C433F1;
+	Sun, 24 Mar 2024 22:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320973;
-	bh=FfAkLR82zNo8vXgN3x469UcnQzAZ56OYmk6OGgnHwmA=;
+	s=k20201202; t=1711320974;
+	bh=eG1J2GmODm9lK0Ww4aBd5mp6oXQImbe3u0gUs1eIvrk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dWwG1vxPwChTraVyU1vlUpFvYpntmxHywL3ZRGuL/ZRw1HDHmn1dWBRsH0OcLNK0h
-	 hKs1/isrDRcSf7rJ7d15qMUW/ZwsrliaGTMYh6VJ6PlRFR9KZCxyBXOnRPdsKuAmA5
-	 TDHieLWOjHjvK8NW+SHZUWwRNZNK/kpAeCjIUliDcNlzq3kH0E7Jv/WmhtBX/0rpa1
-	 NvXI1XBqL/+hlINP3iUWuej2MK3a+jyYmi25TPsma3hChcax1X3KumGq2rvuJA0Sbk
-	 H0fjwYfjuqQE2uSP/4T/N/xKZcnIPgQv5RrgPCrfYwOUWQf689rtiUxaG/8TAq260N
-	 FAE6br1l1wnEA==
+	b=Ig1DL+DIJ/WNChNr4WucATddPDx4sWlvULlgmtPzzHCq4DD/cNbPnAMOc/JNF9RUM
+	 mMbLvFTin5qbZx3F2XON0af2jfiOfEjpIMBDu26dmlUf9WML8i1WRiScwNvMPdg9G5
+	 bjV2BJDOriU80pD9birUvgbj4P9p29x2XEB+8hBuTre22NN0Tok7P2iGe9GWFMQbv9
+	 RBmHR4pR++paLlavaIXSyG2rftmhFYsim/4G3Hvt5w2MhTZxNRdCQIh0eG8E/Ujip7
+	 er8ZJDqet0SSEU+0Bys8G7WuY5hDSqCBCtPP6F5GbRHmq4lFIzb2kdxNz/IhgPFFh9
+	 HtJ4ObYf9A7wA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Lee Jones <lee@kernel.org>,
+Cc: =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 536/713] mfd: cs42l43: Fix wrong GPIO_FN_SEL and SPI_CLK_CONFIG1 defaults
-Date: Sun, 24 Mar 2024 18:44:22 -0400
-Message-ID: <20240324224720.1345309-537-sashal@kernel.org>
+Subject: [PATCH 6.7 537/713] power: supply: mm8013: fix "not charging" detection
+Date: Sun, 24 Mar 2024 18:44:23 -0400
+Message-ID: <20240324224720.1345309-538-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -59,50 +58,78 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+From: Thomas Weißschuh <linux@weissschuh.net>
 
-[ Upstream commit 78334c343bef528b911da83a6b041d15a1a72efb ]
+[ Upstream commit cd38a0acca734a1117663d6f0da579d3965b6c93 ]
 
-Two regs have wrong values in existing fields, change them to match
-the datasheet.
+The charge_behaviours property is meant as a control-knob that can be
+changed by the user.
 
-Fixes: ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+Page 23 of [0] which documents the flag CHG_INH as follows:
 
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20240301101547.2136948-1-mstrozek@opensource.cirrus.com
-Signed-off-by: Lee Jones <lee@kernel.org>
+  CHG_INH : Charge Inhibit      When the current is more than or equal to charge
+                                threshold current,
+                                charge inhibit temperature (upper/lower limit) ：1
+                                charge permission temperature or the current is
+                                less than charge threshold current ：0
+
+So this is pure read-only information which is better represented as
+POWER_SUPPLY_STATUS_NOT_CHARGING.
+
+[0] https://product.minebeamitsumi.com/en/product/category/ics/battery/fuel_gauge/parts/download/__icsFiles/afieldfile/2023/07/12/1_download_01_12.pdf
+
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Link: https://lore.kernel.org/r/20240303-power_supply-charge_behaviour_prop-v2-1-8ebb0a7c2409@weissschuh.net
+Fixes: e39257cde7e8 ("power: supply: mm8013: Add more properties")
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/cs42l43.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/power/supply/mm8013.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-index 73c88ee6a866c..1cea3f8f467d4 100644
---- a/drivers/mfd/cs42l43.c
-+++ b/drivers/mfd/cs42l43.c
-@@ -84,7 +84,7 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
- 	{ CS42L43_DRV_CTRL_5,				0x136C00C0 },
- 	{ CS42L43_GPIO_CTRL1,				0x00000707 },
- 	{ CS42L43_GPIO_CTRL2,				0x00000000 },
--	{ CS42L43_GPIO_FN_SEL,				0x00000000 },
-+	{ CS42L43_GPIO_FN_SEL,				0x00000004 },
- 	{ CS42L43_MCLK_SRC_SEL,				0x00000000 },
- 	{ CS42L43_SAMPLE_RATE1,				0x00000003 },
- 	{ CS42L43_SAMPLE_RATE2,				0x00000003 },
-@@ -217,7 +217,7 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
- 	{ CS42L43_CTRL_REG,				0x00000006 },
- 	{ CS42L43_FDIV_FRAC,				0x40000000 },
- 	{ CS42L43_CAL_RATIO,				0x00000080 },
--	{ CS42L43_SPI_CLK_CONFIG1,			0x00000000 },
-+	{ CS42L43_SPI_CLK_CONFIG1,			0x00000001 },
- 	{ CS42L43_SPI_CONFIG1,				0x00000000 },
- 	{ CS42L43_SPI_CONFIG2,				0x00000000 },
- 	{ CS42L43_SPI_CONFIG3,				0x00000001 },
+diff --git a/drivers/power/supply/mm8013.c b/drivers/power/supply/mm8013.c
+index caa272b035649..20c1651ca38e0 100644
+--- a/drivers/power/supply/mm8013.c
++++ b/drivers/power/supply/mm8013.c
+@@ -71,7 +71,6 @@ static int mm8013_checkdevice(struct mm8013_chip *chip)
+ 
+ static enum power_supply_property mm8013_battery_props[] = {
+ 	POWER_SUPPLY_PROP_CAPACITY,
+-	POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR,
+ 	POWER_SUPPLY_PROP_CHARGE_FULL,
+ 	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
+ 	POWER_SUPPLY_PROP_CHARGE_NOW,
+@@ -103,16 +102,6 @@ static int mm8013_get_property(struct power_supply *psy,
+ 
+ 		val->intval = regval;
+ 		break;
+-	case POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR:
+-		ret = regmap_read(chip->regmap, REG_FLAGS, &regval);
+-		if (ret < 0)
+-			return ret;
+-
+-		if (regval & MM8013_FLAG_CHG_INH)
+-			val->intval = POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE;
+-		else
+-			val->intval = POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO;
+-		break;
+ 	case POWER_SUPPLY_PROP_CHARGE_FULL:
+ 		ret = regmap_read(chip->regmap, REG_FULL_CHARGE_CAPACITY, &regval);
+ 		if (ret < 0)
+@@ -187,6 +176,8 @@ static int mm8013_get_property(struct power_supply *psy,
+ 
+ 		if (regval & MM8013_FLAG_DSG)
+ 			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
++		else if (regval & MM8013_FLAG_CHG_INH)
++			val->intval = POWER_SUPPLY_STATUS_NOT_CHARGING;
+ 		else if (regval & MM8013_FLAG_CHG)
+ 			val->intval = POWER_SUPPLY_STATUS_CHARGING;
+ 		else if (regval & MM8013_FLAG_FC)
 -- 
 2.43.0
 
