@@ -1,217 +1,260 @@
-Return-Path: <linux-kernel+bounces-114629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08372889091
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:21:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6AF5889090
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF6481F2C24D
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6082D1F2BEC6
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5C9189285;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25927634E2;
 	Sun, 24 Mar 2024 23:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kr8tq9fQ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FcXtrGSb"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95BA14E2E3;
-	Sun, 24 Mar 2024 23:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821C714E2E1;
+	Sun, 24 Mar 2024 23:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322294; cv=none; b=Pyjok5KIcPPrDX9QcShEVVI3BM8w0eQYdfFjylbTFx8l2oRSTOTiVzxcR5bJxXLybtfWFq1646RbiqZy35G3FFTWutLnNM/SlxSJ7TRtkIXo2QSD5FsdEcKRXw7laHE7FHtxtZQd0w1z+l5frHlLPlioriilbl8ZtnrXgexFms4=
+	t=1711322293; cv=none; b=AURyyjb70BPlaNddwH+y8Vm7b666awBGAci3NLewL8tYDcpkGf+7mfXj2xDKbsB8urCBEQdCsgBNDhsSFbuQ76VZB7W7SEKFKml40kwdfxpP8H9NDQBXeFjzxWxT6Giz0ozVXPBiPn86LjypTSiih0357Kd6FexVKWBTVFnjV08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322294; c=relaxed/simple;
-	bh=ExbqMkEoopRff3LKVChNomfBbb1n44Pk8l4uAHbwlE0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=PiWZX7aRD9iwWKyC3wiw0wBxp/zdDMJgU5sKedcba37IFd77kOvSSVI+OG0rEbnivflCLMJEXcufGftZdG+l2hCH2S3A8/wO1XZbfSD0zf6MnNQm0we0jIbxLAtGO4bcbk64+5BiIK/HRzvNcbyZ/IAWEVbAg0wduJ/o/6e3+X8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kr8tq9fQ; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711322291; x=1742858291;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=ExbqMkEoopRff3LKVChNomfBbb1n44Pk8l4uAHbwlE0=;
-  b=Kr8tq9fQ8iW6/0KUyTT8fNJZz91A1xLZVvEaKVdX1KmVW1SJ9s2TgCon
-   bQdPpkxhRd/Uucxe+7fawdWFA8ZALkJCWCrzUevAc3UBN2GQwPp+nR0qU
-   ZXSQOVmOlwzDqvoIFDzRtQ+ol7nGBKUcgt9Gfwpc7sDY9Cx3uAXbRiXaU
-   9L/DHTekKxGn7tTv5atjldF6jkCr0i5QuUeDqsAxu4fGQQnLfwYkI+QGu
-   p4broHBpdpLOCUr5xcw0QvDZD8BNTtEIbhIuPn3DkbFSs0C6+LHVCbFqk
-   ZPSgNjei70gUMLOpvrjLIhlBBBgsHyMXYm8oXBhhL399RjjHdvpcO2CQz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="9260885"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="9260885"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 16:18:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="15842194"
-Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.213.186.165])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 16:18:07 -0700
-From: ira.weiny@intel.com
+	s=arc-20240116; t=1711322293; c=relaxed/simple;
+	bh=qlqGs1KBg1SApJuhcEoN2eLBvYnOi0RiyvgtUQtvjUE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hPL1ASq7aguMoPBCzNYepV67HG8xwaSN2xX9BfHITo6r8m8wN4n4yYdvNS1YVuJhbbVHLkjYPzjj0nXnUZve2pTJ1xVCvaJUyMECDwnPgSTWVLIKf/O7qgYP2dEGd5BY1LY7xFMj/ZXyQ3SYe0YTPTysSz0O63E+3kp2qPKZrIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FcXtrGSb; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e0511a4383so25819455ad.2;
+        Sun, 24 Mar 2024 16:18:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711322289; x=1711927089; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=wUHGCa8f3fjObt552t0V01N5ZUBRCYjs2IcWQiSkU3A=;
+        b=FcXtrGSbf6osnlG0UIkwPpVHwqtkpvGUs2d/QRk6F/XOjthigOmaWaT24kAXiag98Z
+         43BEWbF9ysVJSivwWVL3U0JM5Us1aoXPm29Lri/E8wHJiLUBDqNhzIA7hrHY5173cbln
+         CTmDzq2vV/H4t/dYjSwXlFoyvwD6Y/a+OAzBaLiNwrXj85xryn7J+x7r3tfLA5Oyi6X+
+         kx7HQntUJz77+hc2vQCtTXfqEjCd9LgxPIeIFQphe91f4riGi6Tx9XO2WsYJT2oQSA6E
+         nGqPXzFK2TznevFjHx9tSKU2bM4hJn1Wxm08//2PIukixJT2tVTX1DEXwpdLOzZ6lsOE
+         nnTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711322289; x=1711927089;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wUHGCa8f3fjObt552t0V01N5ZUBRCYjs2IcWQiSkU3A=;
+        b=QOrg0OF0zrBARHZaQqFyFD43t4jKNEjt+BmppPN8UQ0YJiDHzl4QKqob2+jnHyf4YW
+         LOPUInNaWPFlB5ORNQJKphpCm2yL2Db5dJtXcoOnyDhf0HCLn0ke9zyzPGlt2fcQFvs1
+         ZsYRNZxYHrwtNytkUZUrg4TZ71xSd/BqTCwGw1Z0XAFMV90XiJ/36VGLVe4DoEipXVui
+         cJd1VW1PbykuEkqqa/hUv6dkchLlFalB/BWQobygVubMbQrJzXXQ5v2c4r95h/k4EiOC
+         clGKHUpsVPLlNJVSfZrRgA70w9azRxoSbB3pdqagocgfDoTUWOLT4sCAl9h7uQUlz+wE
+         7VtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWf4ruTRXjbs1RL+lX2Vi4k91XVaLs13vj+OI1UaCr8tdvFX78V/u7jL308WujMFVEl7JVa948HRxNd7Gs9vIYUz/zUGSB/t9M0bczRieb57WjJn1wZZaIN7tr0rWZzvDNEd9IbyYU=
+X-Gm-Message-State: AOJu0YzG5PjIOvIIdkaLwZCZtxBZ9ct1Vi9kRkzfq2NMWcJ3/JjtbmGH
+	NXTbHPtfjuf3qZx2eipTbFFPAkRpOOdoebYBTiWcl5gk+FxgZ/l/EMcd0gGJ
+X-Google-Smtp-Source: AGHT+IEZClRknRww4wVYAyV0CjCkAxoD+LJz0wxucbyg1TOFMn0qM1tD62kuXF1Fdb2/vUJPyMmQWw==
+X-Received: by 2002:a17:902:f708:b0:1e0:648e:8336 with SMTP id h8-20020a170902f70800b001e0648e8336mr6135391plo.4.1711322288573;
+        Sun, 24 Mar 2024 16:18:08 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q8-20020a170902b10800b001e00d9680cesm3529370plr.130.2024.03.24.16.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Mar 2024 16:18:07 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	linux-sh@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] Revert "sh: Handle calling csum_partial with misaligned data"
 Date: Sun, 24 Mar 2024 16:18:04 -0700
-Subject: [PATCH 01/26] cxl/mbox: Flag support for Dynamic Capacity Devices
- (DCD)
+Message-Id: <20240324231804.841099-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-To: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
- Navneet Singh <navneet.singh@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, 
- Davidlohr Bueso <dave@stgolabs.net>, 
- Alison Schofield <alison.schofield@intel.com>, 
- Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
- linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711322284; l=4137;
- i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=L0YFDCEsjv8HWC653cNW+kOC3bCUS327QGxxY4JOQM8=;
- b=biXfqR5QP6sUOlha0l3wJRnbYHnl4W23vQSOFjYBoz+1E/TIkRQR07lHRJdcwgPCgOikrU1Xg
- MksnR9HVghHAqUmllg5MShxurUIlSvsHrQ+V8apS4uEt7M+M+ujjY1w
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+Content-Transfer-Encoding: 8bit
 
-From: Navneet Singh <navneet.singh@intel.com>
+This reverts commit cadc4e1a2b4d20d0cc0e81f2c6ba0588775e54e5.
 
-Per the CXL 3.1 specification software must check the Command Effects
-Log (CEL) to know if a device supports dynamic capacity (DC).  If the
-device does support DC the specifics of the DC Regions (0-7) are read
-through the mailbox.
+Commit cadc4e1a2b4d ("sh: Handle calling csum_partial with misaligned
+data") causes bad checksum calculations on unaligned data. Reverting
+it fixes the problem.
 
-Flag DC Device (DCD) commands in a device if they are supported.
-Subsequent patches will key off these bits to configure DCD.
+    # Subtest: checksum
+    # module: checksum_kunit
+    1..5
+    # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:500
+    Expected ( u64)result == ( u64)expec, but
+        ( u64)result == 53378 (0xd082)
+        ( u64)expec == 33488 (0x82d0)
+    # test_csum_fixed_random_inputs: pass:0 fail:1 skip:0 total:1
+    not ok 1 test_csum_fixed_random_inputs
+    # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:525
+    Expected ( u64)result == ( u64)expec, but
+        ( u64)result == 65281 (0xff01)
+        ( u64)expec == 65280 (0xff00)
+    # test_csum_all_carry_inputs: pass:0 fail:1 skip:0 total:1
+    not ok 2 test_csum_all_carry_inputs
+    # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:573
+    Expected ( u64)result == ( u64)expec, but
+        ( u64)result == 65535 (0xffff)
+        ( u64)expec == 65534 (0xfffe)
+    # test_csum_no_carry_inputs: pass:0 fail:1 skip:0 total:1
+    not ok 3 test_csum_no_carry_inputs
+    # test_ip_fast_csum: pass:1 fail:0 skip:0 total:1
+    ok 4 test_ip_fast_csum
+    # test_csum_ipv6_magic: pass:1 fail:0 skip:0 total:1
+    ok 5 test_csum_ipv6_magic
+ # checksum: pass:2 fail:3 skip:0 total:5
+ # Totals: pass:2 fail:3 skip:0 total:5
+not ok 22 checksum
 
-Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Fixes: cadc4e1a2b4d ("sh: Handle calling csum_partial with misaligned data")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
-Changes for v1
-[iweiny: update to latest master]
-[iweiny: update commit message]
-[iweiny: Based on the fix:
-	https://lore.kernel.org/all/20230903-cxl-cel-fix-v1-1-e260c9467be3@intel.com/
-[jonathan: remove unneeded format change]
-[jonathan: don't split security code in mbox.c]
----
- drivers/cxl/core/mbox.c | 33 +++++++++++++++++++++++++++++++++
- drivers/cxl/cxlmem.h    | 15 +++++++++++++++
- 2 files changed, 48 insertions(+)
+ arch/sh/lib/checksum.S | 67 ++++++++++++------------------------------
+ 1 file changed, 18 insertions(+), 49 deletions(-)
 
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index 9adda4795eb7..ed4131c6f50b 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -161,6 +161,34 @@ static void cxl_set_security_cmd_enabled(struct cxl_security_state *security,
- 	}
- }
+diff --git a/arch/sh/lib/checksum.S b/arch/sh/lib/checksum.S
+index 3e07074e0098..06fed5a21e8b 100644
+--- a/arch/sh/lib/checksum.S
++++ b/arch/sh/lib/checksum.S
+@@ -33,7 +33,8 @@
+  */
  
-+static bool cxl_is_dcd_command(u16 opcode)
-+{
-+#define CXL_MBOX_OP_DCD_CMDS 0x48
-+
-+	return (opcode >> 8) == CXL_MBOX_OP_DCD_CMDS;
-+}
-+
-+static void cxl_set_dcd_cmd_enabled(struct cxl_memdev_state *mds,
-+					u16 opcode)
-+{
-+	switch (opcode) {
-+	case CXL_MBOX_OP_GET_DC_CONFIG:
-+		set_bit(CXL_DCD_ENABLED_GET_CONFIG, mds->dcd_cmds);
-+		break;
-+	case CXL_MBOX_OP_GET_DC_EXTENT_LIST:
-+		set_bit(CXL_DCD_ENABLED_GET_EXTENT_LIST, mds->dcd_cmds);
-+		break;
-+	case CXL_MBOX_OP_ADD_DC_RESPONSE:
-+		set_bit(CXL_DCD_ENABLED_ADD_RESPONSE, mds->dcd_cmds);
-+		break;
-+	case CXL_MBOX_OP_RELEASE_DC:
-+		set_bit(CXL_DCD_ENABLED_RELEASE, mds->dcd_cmds);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
- static bool cxl_is_poison_command(u16 opcode)
- {
- #define CXL_MBOX_OP_POISON_CMDS 0x43
-@@ -733,6 +761,11 @@ static void cxl_walk_cel(struct cxl_memdev_state *mds, size_t size, u8 *cel)
- 			enabled++;
- 		}
+ /*	
+- * asmlinkage __wsum csum_partial(const void *buf, int len, __wsum sum);
++ * unsigned int csum_partial(const unsigned char *buf, int len,
++ *                           unsigned int sum);
+  */
  
-+		if (cxl_is_dcd_command(opcode)) {
-+			cxl_set_dcd_cmd_enabled(mds, opcode);
-+			enabled++;
-+		}
-+
- 		dev_dbg(dev, "Opcode 0x%04x %s\n", opcode,
- 			enabled ? "enabled" : "unsupported by driver");
- 	}
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index 20fb3b35e89e..79a67cff9143 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -238,6 +238,15 @@ struct cxl_event_state {
- 	struct mutex log_lock;
- };
+ .text
+@@ -45,31 +46,11 @@ ENTRY(csum_partial)
+ 	   * Fortunately, it is easy to convert 2-byte alignment to 4-byte
+ 	   * alignment for the unrolled loop.
+ 	   */
++	mov	r5, r1
+ 	mov	r4, r0
+-	tst	#3, r0		! Check alignment.
+-	bt/s	2f		! Jump if alignment is ok.
+-	 mov	r4, r7		! Keep a copy to check for alignment
++	tst	#2, r0		! Check alignment.
++	bt	2f		! Jump if alignment is ok.
+ 	!
+-	tst	#1, r0		! Check alignment.
+-	bt	21f		! Jump if alignment is boundary of 2bytes.
+-
+-	! buf is odd
+-	tst	r5, r5
+-	add	#-1, r5
+-	bt	9f
+-	mov.b	@r4+, r0
+-	extu.b	r0, r0
+-	addc	r0, r6		! t=0 from previous tst
+-	mov	r6, r0
+-	shll8	r6
+-	shlr16	r0
+-	shlr8	r0
+-	or	r0, r6
+-	mov	r4, r0
+-	tst	#2, r0
+-	bt	2f
+-21:
+-	! buf is 2 byte aligned (len could be 0)
+ 	add	#-2, r5		! Alignment uses up two bytes.
+ 	cmp/pz	r5		!
+ 	bt/s	1f		! Jump if we had at least two bytes.
+@@ -77,17 +58,16 @@ ENTRY(csum_partial)
+ 	bra	6f
+ 	 add	#2, r5		! r5 was < 2.  Deal with it.
+ 1:
++	mov	r5, r1		! Save new len for later use.
+ 	mov.w	@r4+, r0
+ 	extu.w	r0, r0
+ 	addc	r0, r6
+ 	bf	2f
+ 	add	#1, r6
+ 2:
+-	! buf is 4 byte aligned (len could be 0)
+-	mov	r5, r1
+ 	mov	#-5, r0
+-	shld	r0, r1
+-	tst	r1, r1
++	shld	r0, r5
++	tst	r5, r5
+ 	bt/s	4f		! if it's =0, go to 4f
+ 	 clrt
+ 	.align	2
+@@ -109,31 +89,30 @@ ENTRY(csum_partial)
+ 	addc	r0, r6
+ 	addc	r2, r6
+ 	movt	r0
+-	dt	r1
++	dt	r5
+ 	bf/s	3b
+ 	 cmp/eq	#1, r0
+-	! here, we know r1==0
+-	addc	r1, r6			! add carry to r6
++	! here, we know r5==0
++	addc	r5, r6			! add carry to r6
+ 4:
+-	mov	r5, r0
++	mov	r1, r0
+ 	and	#0x1c, r0
+ 	tst	r0, r0
+-	bt	6f
+-	! 4 bytes or more remaining
+-	mov	r0, r1
+-	shlr2	r1
++	bt/s	6f
++	 mov	r0, r5
++	shlr2	r5
+ 	mov	#0, r2
+ 5:
+ 	addc	r2, r6
+ 	mov.l	@r4+, r2
+ 	movt	r0
+-	dt	r1
++	dt	r5
+ 	bf/s	5b
+ 	 cmp/eq	#1, r0
+ 	addc	r2, r6
+-	addc	r1, r6		! r1==0 here, so it means add carry-bit
++	addc	r5, r6		! r5==0 here, so it means add carry-bit
+ 6:
+-	! 3 bytes or less remaining
++	mov	r1, r5
+ 	mov	#3, r0
+ 	and	r0, r5
+ 	tst	r5, r5
+@@ -159,16 +138,6 @@ ENTRY(csum_partial)
+ 	mov	#0, r0
+ 	addc	r0, r6
+ 9:
+-	! Check if the buffer was misaligned, if so realign sum
+-	mov	r7, r0
+-	tst	#1, r0
+-	bt	10f
+-	mov	r6, r0
+-	shll8	r6
+-	shlr16	r0
+-	shlr8	r0
+-	or	r0, r6
+-10:
+ 	rts
+ 	 mov	r6, r0
  
-+/* Device enabled DCD commands */
-+enum dcd_cmd_enabled_bits {
-+	CXL_DCD_ENABLED_GET_CONFIG,
-+	CXL_DCD_ENABLED_GET_EXTENT_LIST,
-+	CXL_DCD_ENABLED_ADD_RESPONSE,
-+	CXL_DCD_ENABLED_RELEASE,
-+	CXL_DCD_ENABLED_MAX
-+};
-+
- /* Device enabled poison commands */
- enum poison_cmd_enabled_bits {
- 	CXL_POISON_ENABLED_LIST,
-@@ -454,6 +463,7 @@ struct cxl_dev_state {
-  *                (CXL 2.0 8.2.9.5.1.1 Identify Memory Device)
-  * @mbox_mutex: Mutex to synchronize mailbox access.
-  * @firmware_version: Firmware version for the memory device.
-+ * @dcd_cmds: List of DCD commands implemented by memory device
-  * @enabled_cmds: Hardware commands found enabled in CEL.
-  * @exclusive_cmds: Commands that are kernel-internal only
-  * @total_bytes: sum of all possible capacities
-@@ -481,6 +491,7 @@ struct cxl_memdev_state {
- 	size_t lsa_size;
- 	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
- 	char firmware_version[0x10];
-+	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
- 	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
- 	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
- 	u64 total_bytes;
-@@ -551,6 +562,10 @@ enum cxl_opcode {
- 	CXL_MBOX_OP_UNLOCK		= 0x4503,
- 	CXL_MBOX_OP_FREEZE_SECURITY	= 0x4504,
- 	CXL_MBOX_OP_PASSPHRASE_SECURE_ERASE	= 0x4505,
-+	CXL_MBOX_OP_GET_DC_CONFIG	= 0x4800,
-+	CXL_MBOX_OP_GET_DC_EXTENT_LIST	= 0x4801,
-+	CXL_MBOX_OP_ADD_DC_RESPONSE	= 0x4802,
-+	CXL_MBOX_OP_RELEASE_DC		= 0x4803,
- 	CXL_MBOX_OP_MAX			= 0x10000
- };
- 
-
 -- 
-2.44.0
+2.39.2
 
 
