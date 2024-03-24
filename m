@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-113185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A4D888222
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:39:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12FB9888224
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:39:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F149828AFB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:39:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDDF71F21B5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4C3178305;
-	Sun, 24 Mar 2024 22:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886D65B20F;
+	Sun, 24 Mar 2024 22:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P6fZe28W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o/r3pZ23"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FFC1782EE;
-	Sun, 24 Mar 2024 22:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD66B17830D;
+	Sun, 24 Mar 2024 22:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319988; cv=none; b=PmUSsJFUX6paGYLpkAB00dPDIrzgmBrT7reCozorGd/ApaZi/UGupNUsTfBywuvU2CHHdmZnIhAC5NqKEYB3Wxg6B0IsHvqqrpIzLwBrDJueJpKR+tsK2ZAm0t2ygNJf7hZSM83qoBZV/ZKOEpCK17HdZG/Kjsq5TQ25ZsV3DSw=
+	t=1711319989; cv=none; b=hCKvLBKAR8MQCXBtHoMZ6/5yzXEK/RvSiYQwwHUd6cY/uTs1T34S/iVYAC6aVuSOra1HlHLCfl87gi6JiqPOPIcfaf7FJdq84f5Yid6ti/LgPCD8xXq96q4cPMXmKiw9J056yI8xpUZHkVb3gTWdcO+8DOLpzWhk3jjQtTk5aAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319988; c=relaxed/simple;
-	bh=vnNixpthKYaUbRxBV7EcjomeXWvZ98h49aXkBAsosKo=;
+	s=arc-20240116; t=1711319989; c=relaxed/simple;
+	bh=+5Vq+qVxbbUVom2yStWiKQ6O7ZceOnXGwq1aKdAD+0I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b1ZOvIbTBnirlSYooXRC6t1fLy8wXoSUN15r3pnhii165grijph3cIrF3acGOECNkMeoFIu9+LGYP+gqlMUqtt1eCIq6Ua+LLrqgMjBjiagg5h4KXmHi8vmApoUdi8qSF/f34++dujJa0wlf5pwJOlrdoWY/cCePH254VEnXoWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P6fZe28W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AF2DC433A6;
-	Sun, 24 Mar 2024 22:39:47 +0000 (UTC)
+	 MIME-Version; b=TYLpCZpVBU/yR+8QcFt98n4jl8huVgohJd8Ck8yfAor6U1fNj2D1sKH+3ze+Jb9mNuDkOSo2luCCatuR8QE/0f+gjzCiwdUnsOq/PNjRVPGmn3HMrnn4gAHh8iANd621w6EXiKghfsFxbtvdFnezZLIp3i4ouDATVh1aabA4VAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o/r3pZ23; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7095FC433F1;
+	Sun, 24 Mar 2024 22:39:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319988;
-	bh=vnNixpthKYaUbRxBV7EcjomeXWvZ98h49aXkBAsosKo=;
+	s=k20201202; t=1711319989;
+	bh=+5Vq+qVxbbUVom2yStWiKQ6O7ZceOnXGwq1aKdAD+0I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P6fZe28WUplYOGI4ocSg3aVbpGGGPiQZNoLcvwlJcmVDtODr3tG33hNzgV8SaO9H5
-	 nNyBz8fg+ZN589WtdJQ977yctW/46+zjGZ8q+YUR60l52QN/YoBxh3izZfUeatg6u1
-	 oXv2wlr6PjHUILiSQ7vD/oKtyFm8BrAonn7ZTBYyTL76QNUkbIAwc5hxpcXIL+VUHG
-	 BkR+d0lAvVbEWeQnTFU3dmpZYvqJjSFpHhIE5XnOLBY4WrZZ26TwK+whnXqskFnu1y
-	 rTDqTheQ3DFcJbBVFJdgef0jysxN6CEB0staiFLF2viF/O62/J5/lrYMi6j4SRC5h4
-	 vXTQkEdg0mipA==
+	b=o/r3pZ23edKjgv9D8lqVXQ7KDCwM/gsaTlv89H4cJ4NrqOaxrzu/A362KpAJLQDCl
+	 dXZL4HoUT72fvDZFPylQdVSfNwjfJgANgw5+l8qUNjrtg1zEQEGjj5aHhntFjOQ2rB
+	 XQNwrrm/dc5xUZCxDuz34K/ib/mjSIyc631qOojFZj17NYljjEmh/hrptPXjD1kZ6L
+	 NmJ9nn4A3YUTMwYe2+XPSGBFLgmTjOAs0qzJ6sVrp9+uAppKI97NCgf2lnTPXtO3KO
+	 BnzK1o/FpRMYW+05GO9jgu98RvCsSi+SNeIv2bmIUWQ259c7/wRBOvL0qDvIrdOmql
+	 4PbUwMTu+8OxA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lu Baolu <baolu.lu@linux.intel.com>,
-	Huang Jiaqing <jiaqing.huang@intel.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
+Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Lu Baolu <baolu.lu@linux.intel.com>,
 	Joerg Roedel <jroedel@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 294/715] iommu/vt-d: Use rbtree to track iommu probed devices
-Date: Sun, 24 Mar 2024 18:27:53 -0400
-Message-ID: <20240324223455.1342824-295-sashal@kernel.org>
+Subject: [PATCH 6.8 295/715] iommu/vt-d: Improve ITE fault handling if target device isn't present
+Date: Sun, 24 Mar 2024 18:27:54 -0400
+Message-ID: <20240324223455.1342824-296-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,211 +64,80 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
 
-[ Upstream commit 1a75cc710b956010137b4fe1d1fa3282bfd8f86c ]
+[ Upstream commit 80a9b50c0b9e297669a8a400eb35468cd87a9aed ]
 
-Use a red-black tree(rbtree) to track devices probed by the driver's
-probe_device callback. These devices need to be looked up quickly by
-a source ID when the hardware reports a fault, either recoverable or
-unrecoverable.
+Because surprise removal could happen anytime, e.g. user could request safe
+removal to EP(endpoint device) via sysfs and brings its link down to do
+surprise removal cocurrently. such aggressive cases would cause ATS
+invalidation request issued to non-existence target device, then deadly
+loop to retry that request after ITE fault triggered in interrupt context.
+this patch aims to optimize the ITE handling by checking the target device
+presence state to avoid retrying the timeout request blindly, thus avoid
+hard lockup or system hang.
 
-Fault reporting paths are critical. Searching a list in this scenario
-is inefficient, with an algorithm complexity of O(n). An rbtree is a
-self-balancing binary search tree, offering an average search time
-complexity of O(log(n)). This significant performance improvement
-makes rbtrees a better choice.
+Devices TLB should only be invalidated when devices are in the
+iommu->device_rbtree (probed, not released) and present.
 
-Furthermore, rbtrees are implemented on a per-iommu basis, eliminating
-the need for global searches and further enhancing efficiency in
-critical fault paths. The rbtree is protected by a spin lock with
-interrupts disabled to ensure thread-safe access even within interrupt
-contexts.
-
-Co-developed-by: Huang Jiaqing <jiaqing.huang@intel.com>
-Signed-off-by: Huang Jiaqing <jiaqing.huang@intel.com>
+Fixes: 6ba6c3a4cacf ("VT-d: add device IOTLB invalidation support")
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Link: https://lore.kernel.org/r/20240301080727.3529832-4-haifeng.zhao@linux.intel.com
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Link: https://lore.kernel.org/r/20240220065939.121116-2-baolu.lu@linux.intel.com
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Stable-dep-of: 80a9b50c0b9e ("iommu/vt-d: Improve ITE fault handling if target device isn't present")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/dmar.c  |  3 +-
- drivers/iommu/intel/iommu.c | 88 ++++++++++++++++++++++++++++++++++++-
- drivers/iommu/intel/iommu.h |  8 ++++
- 3 files changed, 96 insertions(+), 3 deletions(-)
+ drivers/iommu/intel/dmar.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index 23cb80d62a9ab..f9b63c2875f71 100644
+index f9b63c2875f71..ad8a340fc7f1d 100644
 --- a/drivers/iommu/intel/dmar.c
 +++ b/drivers/iommu/intel/dmar.c
-@@ -1095,7 +1095,8 @@ static int alloc_iommu(struct dmar_drhd_unit *drhd)
- 	iommu->agaw = agaw;
- 	iommu->msagaw = msagaw;
- 	iommu->segment = drhd->segment;
--
-+	iommu->device_rbtree = RB_ROOT;
-+	spin_lock_init(&iommu->device_rbtree_lock);
- 	iommu->node = NUMA_NO_NODE;
- 
- 	ver = readl(iommu->reg + DMAR_VER_REG);
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 11652e0bcab3a..9e07e4425ff65 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -97,6 +97,81 @@ static phys_addr_t root_entry_uctp(struct root_entry *re)
- 	return re->hi & VTD_PAGE_MASK;
- }
- 
-+static int device_rid_cmp_key(const void *key, const struct rb_node *node)
-+{
-+	struct device_domain_info *info =
-+		rb_entry(node, struct device_domain_info, node);
-+	const u16 *rid_lhs = key;
-+
-+	if (*rid_lhs < PCI_DEVID(info->bus, info->devfn))
-+		return -1;
-+
-+	if (*rid_lhs > PCI_DEVID(info->bus, info->devfn))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int device_rid_cmp(struct rb_node *lhs, const struct rb_node *rhs)
-+{
-+	struct device_domain_info *info =
-+		rb_entry(lhs, struct device_domain_info, node);
-+	u16 key = PCI_DEVID(info->bus, info->devfn);
-+
-+	return device_rid_cmp_key(&key, rhs);
-+}
-+
-+/*
-+ * Looks up an IOMMU-probed device using its source ID.
-+ *
-+ * Returns the pointer to the device if there is a match. Otherwise,
-+ * returns NULL.
-+ *
-+ * Note that this helper doesn't guarantee that the device won't be
-+ * released by the iommu subsystem after being returned. The caller
-+ * should use its own synchronization mechanism to avoid the device
-+ * being released during its use if its possibly the case.
-+ */
-+struct device *device_rbtree_find(struct intel_iommu *iommu, u16 rid)
-+{
-+	struct device_domain_info *info = NULL;
-+	struct rb_node *node;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
-+	node = rb_find(&rid, &iommu->device_rbtree, device_rid_cmp_key);
-+	if (node)
-+		info = rb_entry(node, struct device_domain_info, node);
-+	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
-+
-+	return info ? info->dev : NULL;
-+}
-+
-+static int device_rbtree_insert(struct intel_iommu *iommu,
-+				struct device_domain_info *info)
-+{
-+	struct rb_node *curr;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
-+	curr = rb_find_add(&info->node, &iommu->device_rbtree, device_rid_cmp);
-+	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
-+	if (WARN_ON(curr))
-+		return -EEXIST;
-+
-+	return 0;
-+}
-+
-+static void device_rbtree_remove(struct device_domain_info *info)
-+{
-+	struct intel_iommu *iommu = info->iommu;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
-+	rb_erase(&info->node, &iommu->device_rbtree);
-+	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
-+}
-+
- /*
-  * This domain is a statically identity mapping domain.
-  *	1. This domain creats a static 1:1 mapping to all usable memory.
-@@ -4330,25 +4405,34 @@ static struct iommu_device *intel_iommu_probe_device(struct device *dev)
- 	}
- 
- 	dev_iommu_priv_set(dev, info);
-+	ret = device_rbtree_insert(iommu, info);
-+	if (ret)
-+		goto free;
- 
- 	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev)) {
- 		ret = intel_pasid_alloc_table(dev);
- 		if (ret) {
- 			dev_err(dev, "PASID table allocation failed\n");
--			kfree(info);
--			return ERR_PTR(ret);
-+			goto clear_rbtree;
- 		}
- 	}
- 
- 	intel_iommu_debugfs_create_dev(info);
- 
- 	return &iommu->iommu;
-+clear_rbtree:
-+	device_rbtree_remove(info);
-+free:
-+	kfree(info);
-+
-+	return ERR_PTR(ret);
- }
- 
- static void intel_iommu_release_device(struct device *dev)
+@@ -1272,6 +1272,8 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
  {
- 	struct device_domain_info *info = dev_iommu_priv_get(dev);
+ 	u32 fault;
+ 	int head, tail;
++	struct device *dev;
++	u64 iqe_err, ite_sid;
+ 	struct q_inval *qi = iommu->qi;
+ 	int shift = qi_shift(iommu);
  
-+	device_rbtree_remove(info);
- 	dmar_remove_one_dev_info(dev);
- 	intel_pasid_free_table(dev);
- 	intel_iommu_debugfs_remove_dev(info);
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index 4145c04cb1c68..df00240ebe90b 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -722,6 +722,11 @@ struct intel_iommu {
- 	struct q_inval  *qi;            /* Queued invalidation info */
- 	u32 iommu_state[MAX_SR_DMAR_REGS]; /* Store iommu states between suspend and resume.*/
+@@ -1316,6 +1318,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+ 		tail = readl(iommu->reg + DMAR_IQT_REG);
+ 		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
  
-+	/* rb tree for all probed devices */
-+	struct rb_root device_rbtree;
-+	/* protect the device_rbtree */
-+	spinlock_t device_rbtree_lock;
++		/*
++		 * SID field is valid only when the ITE field is Set in FSTS_REG
++		 * see Intel VT-d spec r4.1, section 11.4.9.9
++		 */
++		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
++		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
 +
- #ifdef CONFIG_IRQ_REMAP
- 	struct ir_table *ir_table;	/* Interrupt remapping info */
- 	struct irq_domain *ir_domain;
-@@ -755,6 +760,8 @@ struct device_domain_info {
- 	struct intel_iommu *iommu; /* IOMMU used by this device */
- 	struct dmar_domain *domain; /* pointer to domain */
- 	struct pasid_table *pasid_table; /* pasid table */
-+	/* device tracking node(lookup by PCI RID) */
-+	struct rb_node node;
- #ifdef CONFIG_INTEL_IOMMU_DEBUGFS
- 	struct dentry *debugfs_dentry; /* pointer to device directory dentry */
- #endif
-@@ -1081,6 +1088,7 @@ void free_pgtable_page(void *vaddr);
- void iommu_flush_write_buffer(struct intel_iommu *iommu);
- struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
- 					       const struct iommu_user_data *user_data);
-+struct device *device_rbtree_find(struct intel_iommu *iommu, u16 rid);
+ 		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+ 		pr_info("Invalidation Time-out Error (ITE) cleared\n");
  
- #ifdef CONFIG_INTEL_IOMMU_SVM
- void intel_svm_check(struct intel_iommu *iommu);
+@@ -1325,6 +1334,19 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+ 			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+ 		} while (head != tail);
+ 
++		/*
++		 * If device was released or isn't present, no need to retry
++		 * the ATS invalidate request anymore.
++		 *
++		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
++		 * see Intel VT-d spec r4.1, section 11.4.9.9
++		 */
++		if (ite_sid) {
++			dev = device_rbtree_find(iommu, ite_sid);
++			if (!dev || !dev_is_pci(dev) ||
++			    !pci_device_is_present(to_pci_dev(dev)))
++				return -ETIMEDOUT;
++		}
+ 		if (qi->desc_status[wait_index] == QI_ABORT)
+ 			return -EAGAIN;
+ 	}
 -- 
 2.43.0
 
