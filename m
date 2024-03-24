@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-113877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14438888712
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:51:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23256889BF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:06:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E111C2636D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:51:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCBEF1F35A8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:06:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6541A1386DC;
-	Sun, 24 Mar 2024 23:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30534233198;
+	Mon, 25 Mar 2024 02:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mSJBdrAR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ir0JGfTe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3C912AAD7;
-	Sun, 24 Mar 2024 22:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439A112AADB;
+	Sun, 24 Mar 2024 22:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320929; cv=none; b=AEtFvvCQSTQQaoUBTurz0aZ05rR9U48q3643XjBVlY9LNi8r7ZcAQK89TL4dENp5eBG/nlKE6fMjNyCwurPwyDdcA3CCqIATwts4Ro7wIDVmdaj3swz71vJutfLVn/hHGjgilkQbAl+E8dbZR56NirpeeeHCcQgA62R4thNl0ug=
+	t=1711320930; cv=none; b=rEIt/72157QRhESCcfyOWOEU42JAQEQKqE/KmuawYW31zHqMNbAm1d0a0GyZXQYdhRvu45fn5oy5yyZzU/q+x0hFmDwnQLaAdkxSZ/IpzmwlSvyRWSMVSlEzylyiSQq4OKEvQaiYvMsVWhW3Bc9JkUUHi/1p67NCDR0Ir3sokcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320929; c=relaxed/simple;
-	bh=OOhIOyqFS4mQvDxA/ImwVYkd2JK0f+nUbxqOUBhllr0=;
+	s=arc-20240116; t=1711320930; c=relaxed/simple;
+	bh=6QT672QOnXtfVyI1jQ2OIfo7bcqP0hm5arRscEAGI0M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mD2+TGWGg1WUidKDerWb3IYh9qkUApeNFGBZ/uIMRLnhZkfWbYAfAnIinicTP+mj9ENoMdj5T/VuZ+8Iq94OyC1rn28nWczJnoie8A+GrXhIpJR1R/boYZ7YZithokI17k3h2HngnTCVBs7ITzzSQquXOr0YPMDmum16M4K3kjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mSJBdrAR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C6A7C43390;
-	Sun, 24 Mar 2024 22:55:27 +0000 (UTC)
+	 MIME-Version; b=gP2Bo53+45v4BPl9wuW8Yep7LfTixqHZX7mkI4IG1/ZDF0BMXW/gyOBBZfF71ZtjF+xxFjGsTXf2DSYsD5hae6/Ks4UZQuXR2sRNjAxJ0W82Wxf0ML+5T6kwbekIu+4E1tf9ZekN7O2DvZ7HgnvxUm0p2LgCEieCH0YMkPqzcNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ir0JGfTe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83225C433C7;
+	Sun, 24 Mar 2024 22:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320928;
-	bh=OOhIOyqFS4mQvDxA/ImwVYkd2JK0f+nUbxqOUBhllr0=;
+	s=k20201202; t=1711320929;
+	bh=6QT672QOnXtfVyI1jQ2OIfo7bcqP0hm5arRscEAGI0M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mSJBdrARY/dPbxr7KlNq7kpdOWZF+xSNVCwfy0ECeWvsf2+hQdMjo2q7Qe+f4ZlOI
-	 o0gTKvGPzbvenmCX8LL3uVLgi6q1xMJwHvNcMh4RAJhjlAGR8LMmXS60Udrk4RUopr
-	 RF+PlIaZT/D2FkzkE5SbN5kpVVruJ1uszJILD1tUIIBmFbD1aOJ03JFez6OvYocyGc
-	 QPt7MbbOkK6EfvxYCUJvdH/pzGWrG/pNC2ARDfhKxYSjrzqNyNPVf54sQ4lQoVR42c
-	 Rxb65+MdiIaS0nRWdT9ViDOBQT5kloUwLwgzQtSLrMXh6H6zmmnsFtLJHdEZnrdPdz
-	 WRnEVAG7PrrAw==
+	b=ir0JGfTeSy+9L90kA+xs9gqbanfOlhtDk2JuHJLIU2L8b2e4u5IhnCmyHW81uY7M/
+	 E2dPOkQPyX1eorFl5GnOt94SuOeP7IaiW4kWhujEeKNPWGuHCXcSouXNSYzdl4qkKO
+	 JgjoR97tD+qOh62ZRgyN/k2zAGIhSHFhi67sjNb9OCADV/PWu88U+wkzJOm54AOa9H
+	 rpKiukhZhwbxkdMEGEKYCPs1b8VHYU10yh4MpL/cmry7BhVAyRm76n/PjnX8F7rkcg
+	 jm96Kmiob8bLiFc03K87LszZrXk0pk/OetzJ97i4f8z9OqaWFRwbToUUjNEYmFoRr9
+	 57C0GroPnDAhQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Peter Griffin <peter.griffin@linaro.org>,
+	Lee Jones <lee@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 492/713] media: i2c: imx290: Fix IMX920 typo
-Date: Sun, 24 Mar 2024 18:43:38 -0400
-Message-ID: <20240324224720.1345309-493-sashal@kernel.org>
+Subject: [PATCH 6.7 493/713] mfd: syscon: Call of_node_put() only when of_parse_phandle() takes a ref
+Date: Sun, 24 Mar 2024 18:43:39 -0400
+Message-ID: <20240324224720.1345309-494-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -65,66 +62,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
+From: Peter Griffin <peter.griffin@linaro.org>
 
-[ Upstream commit 6fc62efa266b0918c7b226f45c2eccfcf99a6d8e ]
+[ Upstream commit d2b0680cf3b05490b579e71b0df6e07451977745 ]
 
-Replace IMX920 by IMX290.
+of_parse_phandle() returns a device_node with refcount incremented, which
+the callee needs to call of_node_put() on when done. We should only call
+of_node_put() when the property argument is provided though as otherwise
+nothing has taken a reference on the node.
 
-Fixes: b4ab57b07c5b9 ("media: i2c: imx290: Add crop selection targets support")
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 45330bb43421 ("mfd: syscon: Allow property as NULL in syscon_regmap_lookup_by_phandle")
+Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+Link: https://lore.kernel.org/r/20240220115012.471689-2-peter.griffin@linaro.org
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/imx290.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/mfd/syscon.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/imx290.c b/drivers/media/i2c/imx290.c
-index c6fea5837a19f..6dacd38ae947a 100644
---- a/drivers/media/i2c/imx290.c
-+++ b/drivers/media/i2c/imx290.c
-@@ -150,10 +150,10 @@
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index c9550368d9ea5..7d0e91164cbaa 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -238,7 +238,9 @@ struct regmap *syscon_regmap_lookup_by_phandle(struct device_node *np,
+ 		return ERR_PTR(-ENODEV);
  
- #define IMX290_PIXEL_ARRAY_WIDTH			1945
- #define IMX290_PIXEL_ARRAY_HEIGHT			1097
--#define IMX920_PIXEL_ARRAY_MARGIN_LEFT			12
--#define IMX920_PIXEL_ARRAY_MARGIN_RIGHT			13
--#define IMX920_PIXEL_ARRAY_MARGIN_TOP			8
--#define IMX920_PIXEL_ARRAY_MARGIN_BOTTOM		9
-+#define IMX290_PIXEL_ARRAY_MARGIN_LEFT			12
-+#define IMX290_PIXEL_ARRAY_MARGIN_RIGHT			13
-+#define IMX290_PIXEL_ARRAY_MARGIN_TOP			8
-+#define IMX290_PIXEL_ARRAY_MARGIN_BOTTOM		9
- #define IMX290_PIXEL_ARRAY_RECORDING_WIDTH		1920
- #define IMX290_PIXEL_ARRAY_RECORDING_HEIGHT		1080
+ 	regmap = syscon_node_to_regmap(syscon_np);
+-	of_node_put(syscon_np);
++
++	if (property)
++		of_node_put(syscon_np);
  
-@@ -1161,10 +1161,10 @@ static int imx290_get_selection(struct v4l2_subdev *sd,
- 		 * The sensor moves the readout by 1 pixel based on flips to
- 		 * keep the Bayer order the same.
- 		 */
--		sel->r.top = IMX920_PIXEL_ARRAY_MARGIN_TOP
-+		sel->r.top = IMX290_PIXEL_ARRAY_MARGIN_TOP
- 			   + (IMX290_PIXEL_ARRAY_RECORDING_HEIGHT - format->height) / 2
- 			   + imx290->vflip->val;
--		sel->r.left = IMX920_PIXEL_ARRAY_MARGIN_LEFT
-+		sel->r.left = IMX290_PIXEL_ARRAY_MARGIN_LEFT
- 			    + (IMX290_PIXEL_ARRAY_RECORDING_WIDTH - format->width) / 2
- 			    + imx290->hflip->val;
- 		sel->r.width = format->width;
-@@ -1183,8 +1183,8 @@ static int imx290_get_selection(struct v4l2_subdev *sd,
- 		return 0;
- 
- 	case V4L2_SEL_TGT_CROP_DEFAULT:
--		sel->r.top = IMX920_PIXEL_ARRAY_MARGIN_TOP;
--		sel->r.left = IMX920_PIXEL_ARRAY_MARGIN_LEFT;
-+		sel->r.top = IMX290_PIXEL_ARRAY_MARGIN_TOP;
-+		sel->r.left = IMX290_PIXEL_ARRAY_MARGIN_LEFT;
- 		sel->r.width = IMX290_PIXEL_ARRAY_RECORDING_WIDTH;
- 		sel->r.height = IMX290_PIXEL_ARRAY_RECORDING_HEIGHT;
- 
+ 	return regmap;
+ }
 -- 
 2.43.0
 
