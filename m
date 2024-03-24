@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-115776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8077D8897A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:18:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38CE48897CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:21:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B14BF1C30E47
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:18:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C1F129D2E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1959261CA6;
-	Mon, 25 Mar 2024 03:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2513826205B;
+	Mon, 25 Mar 2024 03:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mNl/NnCD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kp+72O3e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88B114533D;
-	Sun, 24 Mar 2024 23:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5A414533C;
+	Sun, 24 Mar 2024 23:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321981; cv=none; b=SrFDoMbnHNdCNm4/yXb5tvr8Q/pszRR2ZEyZNue1LmGnZFQVIGvw7y9DTIAsWNNnzmkHJxnSPygnzMZRRxpQj53TCTmUsVrCq3IBwCzqQYA5Osvkt92Dcwtad1V/qXe6Bs3H6HM+49r8I1HHfWM8HtrUgZ5Ock5c9u0KKxE7scE=
+	t=1711321982; cv=none; b=Mgw51c8fRhLryon0GdFz2/DpoIhEGKm1CUoz0DjOh9dWnUrveJkYlJUGRX/BLYh9ujj3I76YdUV5oa5k8f3ToDZQWV/At9ZsoTnGXLE2KH0Zd9XN59HIfsknPphBXJl87NeyD0H+U1qtefje+lF9ocOfFt6mTFqIdFV7QtxlWys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321981; c=relaxed/simple;
-	bh=h13E3I/67aiIVBnOSCOdgSWe9t1VwoTldhgwrMtJGUA=;
+	s=arc-20240116; t=1711321982; c=relaxed/simple;
+	bh=YEz4yne20Y+PXJLPWPogO6ruSXDx1kKR8hKUaO0QDu8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KzI8szPx6BbDmjG6c1NhFfS0glnLzWoYiiEHp/jmmkqoFsrVzMYkniJSzpjzck6gLPXjfBbCwhWyycGPzu6DSaKwPPJf36vQL8iOprR5PBxf7Rnef55Wo+UZUBr4CYVbLq+d+pdxis+8twSY2tdyODicN4MjYOgSaBoN4AuvQ/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mNl/NnCD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C84E7C433F1;
-	Sun, 24 Mar 2024 23:12:59 +0000 (UTC)
+	 MIME-Version:Content-Type; b=NNLDX0iVWvTVLd91kii76WUbXg2X4wRCSW6KPX1XWKYemO5KF+x3pVtwd9YwRbFZ/p4JUErB8nUlNzBFbpPnPRhsgI0+QBLYrMZDjTNK+kUpcbJTf/XL5XpqmQelg3a0JcRjX+Y4gA2AWBDnM7aJpT2W3uTcHz/Ef4LwTm0oaRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kp+72O3e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD9FBC433C7;
+	Sun, 24 Mar 2024 23:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321980;
-	bh=h13E3I/67aiIVBnOSCOdgSWe9t1VwoTldhgwrMtJGUA=;
+	s=k20201202; t=1711321981;
+	bh=YEz4yne20Y+PXJLPWPogO6ruSXDx1kKR8hKUaO0QDu8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mNl/NnCDnbHPL/J8ujT5/D/yqZ4ggD5/7pBmF87kEhIquN9tFaio4Va5qLCQZVoWT
-	 ebOKsyTOaeBkMfa8AXMGBvhp2SSahpnEuFy8psEMEied8ItAB4dD986FPhzitAPk8v
-	 GJQmEqsRDtc02jmCkWvFkmgPCvG1P3ltcNfF8lpyh0JO2s6bYTZbhUGgW8lz66ak21
-	 Hn2CG+EdLBuq6X0pp6ESDSd6pfp8M80TqzWyNKGWCEdR2ft1hz5OYEhmTmmrRnF3Uh
-	 /1DjQ1VhiGirSs/3N58NPi5P11PB/cbTsKwT/dbOYbgBJnop+ktzy6iOHRF7yP5xNm
-	 3nRMiR22JwQeQ==
+	b=Kp+72O3ehbx2ec2ZvUYcY3reRlh7EdfLdgRBtpIksUEGPRAJe4rt96Cswv402E97E
+	 10GBSx1N8SM7SEV17MouYcmKbGV1MQyfMsJQz04fOzuk9fQSmyecehHUQ6WR/9i/uV
+	 W/J+1t0FCcv7iAUmQRwOejWv+r7B64He9Bc+IOS9kTeXww051aC7XgdXscGstUwG6Y
+	 +Y8NakBIwHyj/u95RsMSngNXVGaSAWVKWz1PMhMvAK/UZFL1GtunHIijNHfJ6hOhxN
+	 /4p4IzPLpsbIYSXCNtBD0ML2IJEIoLqqbodVGJcyLgoGx/IsWeQEnDJiIWZgWAccyu
+	 Po7XlQi4rddzA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Alban=20Boy=C3=A9?= <alban.boye@protonmail.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 053/451] ASoC: Intel: bytcr_rt5640: Add an extra entry for the Chuwi Vi8 tablet
-Date: Sun, 24 Mar 2024 19:05:29 -0400
-Message-ID: <20240324231207.1351418-54-sashal@kernel.org>
+Subject: [PATCH 6.1 054/451] Input: gpio_keys_polled - suppress deferred probe error for gpio
+Date: Sun, 24 Mar 2024 19:05:30 -0400
+Message-ID: <20240324231207.1351418-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -65,46 +64,50 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alban Boyé <alban.boye@protonmail.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit f8b0127aca8c60826e7354e504a12d4a46b1c3bb ]
+[ Upstream commit 963465a33141d0d52338e77f80fe543d2c9dc053 ]
 
-The bios version can differ depending if it is a dual-boot variant of the tablet.
-Therefore another DMI match is required.
+On a PC Engines APU our admins are faced with:
 
-Signed-off-by: Alban Boyé <alban.boye@protonmail.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://msgid.link/r/20240228192807.15130-1-alban.boye@protonmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+	$ dmesg | grep -c "gpio-keys-polled gpio-keys-polled: unable to claim gpio 0, err=-517"
+	261
+
+Such a message always appears when e.g. a new USB device is plugged in.
+
+Suppress this message which considerably clutters the kernel log for
+EPROBE_DEFER (i.e. -517).
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20240305101042.10953-2-u.kleine-koenig@pengutronix.de
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/input/keyboard/gpio_keys_polled.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 797d0a48d6066..094445036c20f 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -685,6 +685,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{	/* Chuwi Vi8 dual-boot (CWI506) */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Insyde"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "i86"),
-+			/* The above are too generic, also match BIOS info */
-+			DMI_MATCH(DMI_BIOS_VERSION, "CHUWI2.D86JHBNR02"),
-+		},
-+		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_MONO_SPEAKER |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		/* Chuwi Vi10 (CWI505) */
- 		.matches = {
+diff --git a/drivers/input/keyboard/gpio_keys_polled.c b/drivers/input/keyboard/gpio_keys_polled.c
+index c3937d2fc7446..a0f9978c68f55 100644
+--- a/drivers/input/keyboard/gpio_keys_polled.c
++++ b/drivers/input/keyboard/gpio_keys_polled.c
+@@ -319,12 +319,10 @@ static int gpio_keys_polled_probe(struct platform_device *pdev)
+ 
+ 			error = devm_gpio_request_one(dev, button->gpio,
+ 					flags, button->desc ? : DRV_NAME);
+-			if (error) {
+-				dev_err(dev,
+-					"unable to claim gpio %u, err=%d\n",
+-					button->gpio, error);
+-				return error;
+-			}
++			if (error)
++				return dev_err_probe(dev, error,
++						     "unable to claim gpio %u\n",
++						     button->gpio);
+ 
+ 			bdata->gpiod = gpio_to_desc(button->gpio);
+ 			if (!bdata->gpiod) {
 -- 
 2.43.0
 
