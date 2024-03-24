@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-112674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD49E887CD0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 14:08:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3CD887CD3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 14:11:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEC431C20A87
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:08:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4A19281274
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6E417BCE;
-	Sun, 24 Mar 2024 13:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898EB17BD6;
+	Sun, 24 Mar 2024 13:11:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rd+9Qsgi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XjLKRn1x"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B831A38EA;
-	Sun, 24 Mar 2024 13:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0E91772D;
+	Sun, 24 Mar 2024 13:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711285693; cv=none; b=lCzUkIx/wiWEkL7E4pinbMxZg9vszK3+AaNgTaYIvPoUfyQh4oTb/Ne1CwWlx+RJ1MNLWhCwqjpnMChwsIhDN9gKrgD/Pu7wGzgntugXT59u+3Zq+6HzctRwCXp0Xzty1pXOH6CcOeTVcutZt5BlOoJLgQtnXkHhricQbMhkh9E=
+	t=1711285876; cv=none; b=qE7/D0fYCNNzGwIeAFzPTPIT44R9TYd12sPFqHy0auS97En+2Hv3nOAL6BC/Ws9duuWmXvhzVhGTpVTvGnAv1HRBdgU16dNRpu1CG9jCr/WGfeKQi7glifAjSu4RuhywcV6EBN0weq0GJzUjUaOibbsx0OZe8K1Fusca2hXHXfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711285693; c=relaxed/simple;
-	bh=nfUcghzizgYYm6MDQuZDNwGKaMDBsPTJ7jiCL02Z46c=;
+	s=arc-20240116; t=1711285876; c=relaxed/simple;
+	bh=Mrhs9/64lK3MIk0Y2r222aZ7KcyPKnhX4bA5v7W7xec=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H4OAKdCVzUhKnhQNi3NbxcPAQesUdBky7GZKpxB3sHuMrCw+B9g+YFW5alikIIOY4lWzsW/zEUvrzwEOcLwAjpml4zOUGHVp8qvAuaA2mVY/sOpHxm+aqxOlVnkjx6XgfIfQwJjbbrQr29BEobr7a8tXde0mnUgx0MMwPozQKDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rd+9Qsgi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C19EC433F1;
-	Sun, 24 Mar 2024 13:08:07 +0000 (UTC)
+	 MIME-Version:Content-Type; b=tOLs2KPMjtiRr+dBIeM5yHT8UdBZf4PKIz/NXu7fXFO64ADISzEYcPFr2P3G7yreh05kZbMxKWCYUuFIGdmqEV2Nyw/tBMruqg9ydA0374L2FGFe+YKgldCMOrCjfN/i4Avr++ZCb13EgwSWLFWYoRCUguxtZ0R6Bd4qsXonnhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XjLKRn1x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0B4AC433F1;
+	Sun, 24 Mar 2024 13:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711285692;
-	bh=nfUcghzizgYYm6MDQuZDNwGKaMDBsPTJ7jiCL02Z46c=;
+	s=k20201202; t=1711285876;
+	bh=Mrhs9/64lK3MIk0Y2r222aZ7KcyPKnhX4bA5v7W7xec=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rd+9QsgiBv0WXLpZ/y8rOCqMF9QKq6oaUP/fcSzeBZjl1hY10NH9dgntlx9jnLJ6g
-	 VDK+zzgOPj2PMd/r8UsS3zIqWNLIuykEU45kPkvQ5suVVKBzAlTnTqzCTc/zTPeOUj
-	 qtVivZZhJpm+t2YldwO9+jSE8dqI6Py2NqueRiUAEDb/B9cPiSLvXoaRdZbqwQu/J3
-	 8/kclF/NaQRKAqzEdQ7OTxA4A/ZECyEGQyH5o58pW9C+e/3iu1h+3chYF6SUJjo/sv
-	 6ZLG2ab2KPxVlVCqwhF1EQ1mXNO6CPkT1ANu2JItxtqR5cPBB1DCNX0e/wRPDo2pne
-	 aFcU5M3iRYPpw==
-Date: Sun, 24 Mar 2024 13:07:56 +0000
+	b=XjLKRn1xrTDLsZ7nqB7UHhmIy25hy9QM3bZUTY8hJnt0+Jn/obTvwV80qwr38sHsk
+	 UIrkAmBql5fCmJmt4UQ3UP2hqEB9o2GPp/NvxA/Th7GYBuztNr+zGd2jhp8G5VVqQ+
+	 C0QR/VQ8L5GBdQ5lDiAYtHro1RGHHNpTG0n/Q6dQBXrKBbsmo7YnQ6Mp5ix7goHD3r
+	 aWsVfMyzr84Dz60q+/SHxdzuTzL54PbteCQ962OVn9gogRARmxcEa+r9gMb9XBasOx
+	 iwSLrfJf5Y7X8GyioyvGbP/3XqnFRSSd7EHN968L7k0dHY5dpKuhAM4bR5am5hH39w
+	 zXomcL3C3bPWw==
+Date: Sun, 24 Mar 2024 13:10:59 +0000
 From: Jonathan Cameron <jic23@kernel.org>
 To: Julien Stephan <jstephan@baylibre.com>
 Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
@@ -51,12 +51,12 @@ Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
  <broonie@kernel.org>, linux-iio@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel test robot
  <lkp@intel.com>
-Subject: Re: [PATCH v5 5/7] iio: adc: ad7380: prepare for parts with more
- channels
-Message-ID: <20240324130756.598a4b36@jic23-huawei>
-In-Reply-To: <20240319-adding-new-ad738x-driver-v5-5-ce7df004ceb3@baylibre.com>
+Subject: Re: [PATCH v5 7/7] iio: adc: ad7380: add support for ad738x-4 4
+ channels variants
+Message-ID: <20240324131059.77fa8e68@jic23-huawei>
+In-Reply-To: <20240319-adding-new-ad738x-driver-v5-7-ce7df004ceb3@baylibre.com>
 References: <20240319-adding-new-ad738x-driver-v5-0-ce7df004ceb3@baylibre.com>
-	<20240319-adding-new-ad738x-driver-v5-5-ce7df004ceb3@baylibre.com>
+	<20240319-adding-new-ad738x-driver-v5-7-ce7df004ceb3@baylibre.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -67,57 +67,167 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 19 Mar 2024 11:11:26 +0100
+On Tue, 19 Mar 2024 11:11:28 +0100
 Julien Stephan <jstephan@baylibre.com> wrote:
 
-> The current driver supports only parts with 2 channels.
-> In order to prepare the support of new compatible ADCs with more
-> channels, this commit:
->   - defines MAX_NUM_CHANNEL to specify the maximum number of
->     channels currently supported by the driver
->   - adds available_scan_mask member in ad7380_chip_info structure
->   - fixes spi xfer struct len depending on number of channels
->   - fixes scan_data.raw buffer size to handle more channels
->   - adds a timing specifications structure in ad7380_chip_info structure
+> Add support for ad7380/1/2/3-4 parts which are 4 channels
+> variants from ad7380/1/2/3
 > 
 > Signed-off-by: Julien Stephan <jstephan@baylibre.com>
+This and other patches I didn't comment on all look good to me.
+So just those minor few bits and bobs for v6 and I'll pick this up
+if nothing else comes in.
 
->  struct ad7380_state {
-> @@ -148,15 +168,15 @@ struct ad7380_state {
->  	struct spi_device *spi;
->  	struct regmap *regmap;
->  	unsigned int vref_mv;
-> -	unsigned int vcm_mv[2];
-> +	unsigned int vcm_mv[MAX_NUM_CHANNELS];
->  	/*
->  	 * DMA (thus cache coherency maintenance) requires the
->  	 * transfer buffers to live in their own cache lines.
-> -	 * Make the buffer large enough for 2 16-bit samples and one 64-bit
-> +	 * Make the buffer large enough for MAX_NUM_CHANNELS 16-bit samples and one 64-bit
->  	 * aligned 64 bit timestamp.
->  	 */
->  	struct {
-> -		u16 raw[2];
-> +		u16 raw[MAX_NUM_CHANNELS];
+Thanks,
 
-This can get problematic for drivers supporting devices with varying numbers of channels.
-You are fine up to 4 channels as the structure layout isn't changing.  The reason is that
-it implies the timestamp location, which if you were for instance to support 8 channels
-would be incorrect if only 4 of them were enabled.
-Now the timestamp location is only used implicitly in the driver (as the IIO core
-handles the actual insertion of the data) so it's not a bug as such to do this, but it
-can give people the wrong impression during testing etc.
+Jonathan
 
-As such, I'd like to see the comment mention that "as MAX_NUM_CHANNELS is 4
-the layout of the structure is the same for all parts".
-
-Note I've reviewed one driver today that did have different layouts depending on
-which device was in use and ended up falsely indicating the timestamp was later
-than it actually was in the buffer.  Hence my request for a defensive comment!
-
+> ---
+>  drivers/iio/adc/ad7380.c | 75 +++++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 74 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/adc/ad7380.c b/drivers/iio/adc/ad7380.c
+> index 3aca41ce9a14..cf9d2ace5f20 100644
+> --- a/drivers/iio/adc/ad7380.c
+> +++ b/drivers/iio/adc/ad7380.c
+> @@ -8,6 +8,9 @@
+>   * Datasheets of supported parts:
+>   * ad7380/1 : https://www.analog.com/media/en/technical-documentation/data-sheets/AD7380-7381.pdf
+>   * ad7383/4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7383-7384.pdf
+> + * ad7380-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7380-4.pdf
+> + * ad7381-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7381-4.pdf
+> + * ad7383/4-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7383-4-ad7384-4.pdf
+>   */
 >  
->  		s64 ts __aligned(8);
->  	} scan_data __aligned(IIO_DMA_MINALIGN);
-
+>  #include <linux/bitfield.h>
+> @@ -29,7 +32,7 @@
+>  #include <linux/iio/trigger_consumer.h>
+>  #include <linux/iio/triggered_buffer.h>
+>  
+> -#define MAX_NUM_CHANNELS		2
+> +#define MAX_NUM_CHANNELS		4
+>  /* 2.5V internal reference voltage */
+>  #define AD7380_INTERNAL_REF_MV		2500
+>  
+> @@ -106,27 +109,53 @@ static const struct iio_chan_spec name[] = {		\
+>  	IIO_CHAN_SOFT_TIMESTAMP(2),			\
+>  }
+>  
+> +#define DEFINE_AD7380_4_CHANNEL(name, bits, diff)	\
+> +static const struct iio_chan_spec name[] = {		\
+> +	AD7380_CHANNEL(0, bits, diff),			\
+> +	AD7380_CHANNEL(1, bits, diff),			\
+> +	AD7380_CHANNEL(2, bits, diff),			\
+> +	AD7380_CHANNEL(3, bits, diff),			\
+> +	IIO_CHAN_SOFT_TIMESTAMP(4),			\
+> +}
+> +
+>  /* fully differential */
+>  DEFINE_AD7380_2_CHANNEL(ad7380_channels, 16, 1);
+>  DEFINE_AD7380_2_CHANNEL(ad7381_channels, 14, 1);
+> +DEFINE_AD7380_4_CHANNEL(ad7380_4_channels, 16, 1);
+> +DEFINE_AD7380_4_CHANNEL(ad7381_4_channels, 14, 1);
+>  /* pseudo differential */
+>  DEFINE_AD7380_2_CHANNEL(ad7383_channels, 16, 0);
+>  DEFINE_AD7380_2_CHANNEL(ad7384_channels, 14, 0);
+> +DEFINE_AD7380_4_CHANNEL(ad7383_4_channels, 16, 0);
+> +DEFINE_AD7380_4_CHANNEL(ad7384_4_channels, 14, 0);
+>  
+>  static const char * const ad7380_2_channel_vcm_supplies[] = {
+>  	"aina", "ainb",
+>  };
+>  
+> +static const char * const ad7380_4_channel_vcm_supplies[] = {
+> +	"aina", "ainb", "ainc", "aind",
+> +};
+> +
+>  /* Since this is simultaneous sampling, we don't allow individual channels. */
+>  static const unsigned long ad7380_2_channel_scan_masks[] = {
+>  	GENMASK(1, 0),
+>  	0
+>  };
+>  
+> +static const unsigned long ad7380_4_channel_scan_masks[] = {
+> +	GENMASK(3, 0),
+> +	0
+> +};
+> +
+>  static const struct ad7380_timing_specs ad7380_timing = {
+>  	.t_csh_ns = 10,
+>  };
+>  
+> +static const struct ad7380_timing_specs ad7380_4_timing = {
+> +	.t_csh_ns = 20,
+> +};
+> +
+>  static const struct ad7380_chip_info ad7380_chip_info = {
+>  	.name = "ad7380",
+>  	.channels = ad7380_channels,
+> @@ -163,6 +192,42 @@ static const struct ad7380_chip_info ad7384_chip_info = {
+>  	.timing_specs = &ad7380_timing,
+>  };
+>  
+> +static const struct ad7380_chip_info ad7380_4_chip_info = {
+> +	.name = "ad7380-4",
+> +	.channels = ad7380_4_channels,
+> +	.num_channels = ARRAY_SIZE(ad7380_4_channels),
+> +	.available_scan_masks = ad7380_4_channel_scan_masks,
+> +	.timing_specs = &ad7380_4_timing,
+> +};
+> +
+> +static const struct ad7380_chip_info ad7381_4_chip_info = {
+> +	.name = "ad7381-4",
+> +	.channels = ad7381_4_channels,
+> +	.num_channels = ARRAY_SIZE(ad7381_4_channels),
+> +	.available_scan_masks = ad7380_4_channel_scan_masks,
+> +	.timing_specs = &ad7380_4_timing,
+> +};
+> +
+> +static const struct ad7380_chip_info ad7383_4_chip_info = {
+> +	.name = "ad7383-4",
+> +	.channels = ad7383_4_channels,
+> +	.num_channels = ARRAY_SIZE(ad7383_4_channels),
+> +	.vcm_supplies = ad7380_4_channel_vcm_supplies,
+> +	.num_vcm_supplies = ARRAY_SIZE(ad7380_4_channel_vcm_supplies),
+> +	.available_scan_masks = ad7380_4_channel_scan_masks,
+> +	.timing_specs = &ad7380_4_timing,
+> +};
+> +
+> +static const struct ad7380_chip_info ad7384_4_chip_info = {
+> +	.name = "ad7384-4",
+> +	.channels = ad7384_4_channels,
+> +	.num_channels = ARRAY_SIZE(ad7384_4_channels),
+> +	.vcm_supplies = ad7380_4_channel_vcm_supplies,
+> +	.num_vcm_supplies = ARRAY_SIZE(ad7380_4_channel_vcm_supplies),
+> +	.available_scan_masks = ad7380_4_channel_scan_masks,
+> +	.timing_specs = &ad7380_4_timing,
+> +};
+> +
+>  struct ad7380_state {
+>  	const struct ad7380_chip_info *chip_info;
+>  	struct spi_device *spi;
+> @@ -514,6 +579,10 @@ static const struct of_device_id ad7380_of_match_table[] = {
+>  	{ .compatible = "adi,ad7381", .data = &ad7381_chip_info },
+>  	{ .compatible = "adi,ad7383", .data = &ad7383_chip_info },
+>  	{ .compatible = "adi,ad7384", .data = &ad7384_chip_info },
+> +	{ .compatible = "adi,ad7380-4", .data = &ad7380_4_chip_info },
+> +	{ .compatible = "adi,ad7381-4", .data = &ad7381_4_chip_info },
+> +	{ .compatible = "adi,ad7383-4", .data = &ad7383_4_chip_info },
+> +	{ .compatible = "adi,ad7384-4", .data = &ad7384_4_chip_info },
+>  	{ }
+>  };
+>  
+> @@ -522,6 +591,10 @@ static const struct spi_device_id ad7380_id_table[] = {
+>  	{ "ad7381", (kernel_ulong_t)&ad7381_chip_info },
+>  	{ "ad7383", (kernel_ulong_t)&ad7383_chip_info },
+>  	{ "ad7384", (kernel_ulong_t)&ad7384_chip_info },
+> +	{ "ad7380-4", (kernel_ulong_t)&ad7380_4_chip_info },
+> +	{ "ad7381-4", (kernel_ulong_t)&ad7381_4_chip_info },
+> +	{ "ad7383-4", (kernel_ulong_t)&ad7383_4_chip_info },
+> +	{ "ad7384-4", (kernel_ulong_t)&ad7384_4_chip_info },
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(spi, ad7380_id_table);
+> 
 
 
