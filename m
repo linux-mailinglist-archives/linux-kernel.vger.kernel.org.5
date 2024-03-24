@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86CEB8888F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:41:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D27BE889D10
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:35:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41A61288045
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:41:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 106361C34E3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CCE324C340;
-	Sun, 24 Mar 2024 23:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0366351173;
+	Mon, 25 Mar 2024 02:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eDuHfAOr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CiGFJYGN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC611E8E58;
-	Sun, 24 Mar 2024 23:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC6A1350E3;
+	Sun, 24 Mar 2024 23:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321525; cv=none; b=JkGqaGvLxK/L42VGV0R/vnbJ8MU2HZzsMXsWhTtU4VRUFCsW38crsGZAAUhB8L6j/WWkVzN4jG9yZLuq29cx/H47oiiUfl0zpOkyT4Vq4HBkjD/QiHRH6v0TbIce4zf0Ir0vSOur1wQh8BP5Ad0MCdCdOoOoivh/IgC8hQiOPGE=
+	t=1711321525; cv=none; b=OInW74bscTYPDbcX1aU8Nv9EtYckjb1tLsZYMsljMStqapIsHsEAeW3k2mxjqQjCUSIMne5075WM11qYh+Yz6GqSNjWrLmoBPu8NdyCRqX+rQe2IlhoxF/36p4w42u+0qpIawml+mY0d5a65SPhM7sERLc1LjX2UPZlbTm77PEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321525; c=relaxed/simple;
-	bh=YKVcdpL5+OrlaJ4q8k+EUbtblJGBjMh/yaBxJ7pH7dk=;
+	bh=/a1WHaJ3M+aXmVmWxz7JExxl6J9UcQdq0czcxVxW7vw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S55Du/kX6YLgMvKS3dSwz6+XIJdxF6V/aVezEaW1bkGtbKI+3JkyktJqpD6CbvkMH6xBFURK16totd7ljnP/o4komvSPOJsQzvJ/lZe/LAwIcfxxiMgepmMUc8bnNeylREE5D1TGSa+yqdXZkvKqyEfZEQVNDFSU9IY11AyixPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eDuHfAOr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38485C433F1;
-	Sun, 24 Mar 2024 23:05:23 +0000 (UTC)
+	 MIME-Version; b=U2jKerM8NJEmkFv3QcrEhr46GpM1wuqdYiJJr4MXh8teKjOUzaHetzx3KdduFQEA+nzIAkYTgf6/HiS+LEAlCeGBOx7k8Al8xguHZ5oqwt5rHRc8H52lzS9JdIM1zf9znWbwUzC5PFPZMlUtR7/oI1JPb3eEqzjIKRNzHcUzP98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CiGFJYGN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D13DC43399;
+	Sun, 24 Mar 2024 23:05:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321523;
-	bh=YKVcdpL5+OrlaJ4q8k+EUbtblJGBjMh/yaBxJ7pH7dk=;
+	s=k20201202; t=1711321524;
+	bh=/a1WHaJ3M+aXmVmWxz7JExxl6J9UcQdq0czcxVxW7vw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eDuHfAOrPS30Gd+qlxqu2n85Hlki9OsZokjbzWUwA482Ysc0mIJcu0qMCn/bVa53f
-	 7HVszLob8bNizWcteq+kCnTOLxGQo7pBetJcaR3sJ9LTJd1ZygfH+x8fAcyikpd+TG
-	 GNiFPhUfJ2lE0aqJb9t3ijFpKP4hfySDxnCkMMANylzznMZR42Cs6abDlz311W9YjQ
-	 S45/cBTGzW168rXceo48xdXbQ4P/qzpT1ITthrMcbqsV22pfgckPgwoMF2WtaRdxah
-	 SgTdffB+Rf+jxxtop39PabiYi81T2/aqtKKNJNZsFsGHATTHTH/8sWkoAKx/CRO+cs
-	 qpgL3v3Aa/fFA==
+	b=CiGFJYGNBZFfXCKcIQtg4QA7lixdN9YbI2/+Vn7cxyk8TnoX/2bY0YpZal75FDRRB
+	 KEDKHWAufQnahHMQLzvdABwZaZ4uSZZx6l7jMXmVIGGButM4Tqzp2/i6ElxNHXSH8B
+	 sPlfW5sWMakVNAm3oU0YhG9pgiIYnPQbNf+V0TSqcJsybTFRLbnjtROoMmS79l+Fmj
+	 L02YuIO5RYxZgBMX8qW9rpnUUFIVuJWWXbm3TsUsrNjh3PlBJ2y9SaXLN4H1ENoNiE
+	 L3Qk4VsE56kXa1tXj2OBSGHq3sSEv5Yk0W1HHQmBuhSQ0w+7qommOoNiTnD1/+LcWy
+	 atAYDbHolDXTA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Linus Walleij <linus.walleij@linaro.org>,
+Cc: Jon Hunter <jonathanh@nvidia.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 250/638] ARM: dts: arm: realview: Fix development chip ROM compatible value
-Date: Sun, 24 Mar 2024 18:54:47 -0400
-Message-ID: <20240324230116.1348576-251-sashal@kernel.org>
+Subject: [PATCH 6.6 251/638] memory: tegra: Correct DLA client names
+Date: Sun, 24 Mar 2024 18:54:48 -0400
+Message-ID: <20240324230116.1348576-252-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,41 +62,105 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Jon Hunter <jonathanh@nvidia.com>
 
-[ Upstream commit 3baa4c5143d65ebab2de0d99a395e5f4f1f46608 ]
+[ Upstream commit 51d915cbeef4c7a154f5d810b1e10d8125f2b0cc ]
 
-When the development chip ROM was added, the "direct-mapped" compatible
-value was already obsolete.  In addition, the device node lacked the
-accompanying "probe-type" property, causing the old physmap_of_core
-driver to fall back to trying all available probe types.
-Unfortunately this fallback was lost when the DT and pdata cases were
-merged.
+Some of the names for the Tegra234 DLA clients are not unique and do not
+align with the name of the client ID definitions. Therefore, it is not
+possible to determine the exact DLA client from messages that print the
+client name. Fix this by correcting the DLA memory client names for
+Tegra234 to align with the name of the corresponding memory client ID.
 
-Fix this by using the modern "mtd-rom" compatible value instead.
+Note that although the client names are also used by the interconnect
+framework, interconnect support for the DLA clients has not been added
+and so this issue does not impact the interconnect support.
 
-Fixes: 5c3f5edbe0a1dff3 ("ARM: realview: add flash devices to the PB1176 DTS")
-Fixes: 642b1e8dbed7bbbf ("mtd: maps: Merge physmap_of.c into physmap-core.c")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 5cd24ca0985f ("memory: tegra: Add DLA clients for Tegra234")
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Link: https://lore.kernel.org/r/20240220124430.19072-1-jonathanh@nvidia.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/arm/arm-realview-pb1176.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memory/tegra/tegra234.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/arm/arm-realview-pb1176.dts b/arch/arm/boot/dts/arm/arm-realview-pb1176.dts
-index efed325af88d2..d99bac02232b3 100644
---- a/arch/arm/boot/dts/arm/arm-realview-pb1176.dts
-+++ b/arch/arm/boot/dts/arm/arm-realview-pb1176.dts
-@@ -451,7 +451,7 @@ pb1176_serial3: serial@1010f000 {
- 
- 		/* Direct-mapped development chip ROM */
- 		pb1176_rom@10200000 {
--			compatible = "direct-mapped";
-+			compatible = "mtd-rom";
- 			reg = <0x10200000 0x4000>;
- 			bank-width = <1>;
- 		};
+diff --git a/drivers/memory/tegra/tegra234.c b/drivers/memory/tegra/tegra234.c
+index 2845041f32d69..fa40c49b070d0 100644
+--- a/drivers/memory/tegra/tegra234.c
++++ b/drivers/memory/tegra/tegra234.c
+@@ -121,7 +121,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA1RDB,
+-		.name = "dla0rdb",
++		.name = "dla1rdb",
+ 		.sid = TEGRA234_SID_NVDLA1,
+ 		.regs = {
+ 			.sid = {
+@@ -407,7 +407,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA1RDB1,
+-		.name = "dla0rdb1",
++		.name = "dla1rdb1",
+ 		.sid = TEGRA234_SID_NVDLA1,
+ 		.regs = {
+ 			.sid = {
+@@ -417,7 +417,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA1WRB,
+-		.name = "dla0wrb",
++		.name = "dla1wrb",
+ 		.sid = TEGRA234_SID_NVDLA1,
+ 		.regs = {
+ 			.sid = {
+@@ -663,7 +663,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA1RDA,
+-		.name = "dla0rda",
++		.name = "dla1rda",
+ 		.sid = TEGRA234_SID_NVDLA1,
+ 		.regs = {
+ 			.sid = {
+@@ -673,7 +673,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA1FALRDB,
+-		.name = "dla0falrdb",
++		.name = "dla1falrdb",
+ 		.sid = TEGRA234_SID_NVDLA1,
+ 		.regs = {
+ 			.sid = {
+@@ -683,7 +683,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA1WRA,
+-		.name = "dla0wra",
++		.name = "dla1wra",
+ 		.sid = TEGRA234_SID_NVDLA1,
+ 		.regs = {
+ 			.sid = {
+@@ -693,7 +693,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA1FALWRB,
+-		.name = "dla0falwrb",
++		.name = "dla1falwrb",
+ 		.sid = TEGRA234_SID_NVDLA1,
+ 		.regs = {
+ 			.sid = {
+@@ -857,7 +857,7 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		},
+ 	}, {
+ 		.id = TEGRA234_MEMORY_CLIENT_DLA1RDA1,
+-		.name = "dla0rda1",
++		.name = "dla1rda1",
+ 		.sid = TEGRA234_SID_NVDLA1,
+ 		.regs = {
+ 			.sid = {
 -- 
 2.43.0
 
