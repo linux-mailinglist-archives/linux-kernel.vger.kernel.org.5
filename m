@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC74A888609
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:22:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DEC889D12
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:35:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 761D51C25027
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:22:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F25C1B358AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6E51E2564;
-	Sun, 24 Mar 2024 22:53:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6752B1FC97D;
+	Mon, 25 Mar 2024 02:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ibulD/4o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SUWF+Tor"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC50082867;
-	Sun, 24 Mar 2024 22:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2043E48E;
+	Sun, 24 Mar 2024 22:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320664; cv=none; b=SxVEZjdADQjGigfU83Ltp8zSpOyfsU7j81csa3/J/KV+777+THF8zQseL2gP+KXSZTKHw56pXy/6xcrql0zy3mRKOlX08yfxeJSdaSLx3A6ccW7EZ6O4GvQlIKg9AsQ8A2QwxYXnE/CYRceUVA61MzHBmdz6LBJxQKxjvLYccbo=
+	t=1711320664; cv=none; b=i9rJqh5kzvLsTWnoXH48CDUrZkEpCF66H2OskgQY5wzSv54Ep+vVd11tzTDLfpD6v6oFWOM/zsPBL+pbwJNVLHJfsZ0QFHQCfIX+kcGsnxLvCTTWd7d5wIi0/lm0qCBRElpyKX9aQMMzkJW7CLXFuxCiZDsdySMr8P1QgUS9uuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320664; c=relaxed/simple;
-	bh=uZTzWKQcsPV7yMNUkAApk1NzfA6xdSEQZjBPmeeK1cY=;
+	bh=1PGCOGFGQekBR5Mt3AhH2f54nkQPkDJdQWf0hZtQN5M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mN9+TIXbly7ZsRO6TtqcOTYa8FRjv1Oi4elqLW2K5ce6gaTH7c94p1gWkUKkoWcwC8gEOpz/akZYw6JS7PWTsbpSU0Cyh+khqlsbbOrcpxX+QCJaMX/XuXRBw+Ny47bZFm6P/EFAVu1aHFeTCG35LtpFF55mm2d3h1FFus0Q6tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ibulD/4o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3067CC433C7;
-	Sun, 24 Mar 2024 22:51:02 +0000 (UTC)
+	 MIME-Version; b=kuyKQasMkMQw9rdNxyJxgGmCN62CAmaz/dExjt73ha069aGK6z1n3GYsPiXlZq39ibD4F5h3ZAiEmGDKcRbo7kwqykBCPiwUk5f+ov26t5tYvf6HmWcK1ZEsEyf72SJE0QBI/vBr60OgEjs0bNbWu9/xvmVLizUQWqCbUBixOUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SUWF+Tor; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19627C4166A;
+	Sun, 24 Mar 2024 22:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320662;
-	bh=uZTzWKQcsPV7yMNUkAApk1NzfA6xdSEQZjBPmeeK1cY=;
+	s=k20201202; t=1711320663;
+	bh=1PGCOGFGQekBR5Mt3AhH2f54nkQPkDJdQWf0hZtQN5M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ibulD/4oGediT0PXeXJ3QzmbKiaSVSQSBXlr2EgUkYZUwtDYCZvvibrslrBXqLgD5
-	 uc+T2yQY5/JgpKsMveN6kTuY3kSPG562gHzuHGz/jchNnu5BA+FcyIA8f0Ha89OW0X
-	 dcOY9rf6ujp3AH0EAhCtWHx5MpG8r5A3O9At1H4ySVQzjM7kqWh07nrUIgFgWPTmVF
-	 DlkMzAJSRbbduuOFJY6tGcp7mnm6GGakarMng/EfPHkl3CFhlQS5/fgqFNGq+X4b3K
-	 0ifePd7PAeqSTIympk2Dtzqz/Oqw8wuyMGIDX1Lz9Gnk5fL5mdymkBTAcqU6CWDZsF
-	 vojQlKOpodBiw==
+	b=SUWF+TorbshlAeGV/s7d/Wx1jPp6yHr9kd3aoabxqSdzKIzfN1vupRj2EPgm6h2r6
+	 0w08ZuZczopFRaOQ0Xrq2xTNW7rJdShlToAg/RIQXTBkD1syZzRH6lqQc/A1YLKOTM
+	 gVg3UzAkY/tEg6eovN/c9foevjOzsbemb5M6TymPh1h3XmhfE3nFFLfkI0f+vVAkU8
+	 UGuKruHOk7rohcJcyaZznWOKCWsZ4meIWkZbZdxXPwxPB4TGkOBiAv1lDadMXnWEDR
+	 RcOtj9XmeiCG20qwG3SFqnAU60QsIXx8iG/5SOp167DtV38vFfCw6kDcOUZ4EZoBqh
+	 RwIo5OeZM13iw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Viktor Malik <vmalik@redhat.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
+Cc: Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+	Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 225/713] tools/resolve_btfids: Fix cross-compilation to non-host endianness
-Date: Sun, 24 Mar 2024 18:39:11 -0400
-Message-ID: <20240324224720.1345309-226-sashal@kernel.org>
+Subject: [PATCH 6.7 226/713] wifi: iwlwifi: support EHT for WH
+Date: Sun, 24 Mar 2024 18:39:12 -0400
+Message-ID: <20240324224720.1345309-227-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,119 +63,35 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Viktor Malik <vmalik@redhat.com>
+From: Miri Korenblit <miriam.rachel.korenblit@intel.com>
 
-[ Upstream commit 903fad4394666bc23975c93fb58f137ce64b5192 ]
+[ Upstream commit f51d6431824f0afb9f73d68971d154c47c26b86a ]
 
-The .BTF_ids section is pre-filled with zeroed BTF ID entries during the
-build and afterwards patched by resolve_btfids with correct values.
-Since resolve_btfids always writes in host-native endianness, it relies
-on libelf to do the translation when the target ELF is cross-compiled to
-a different endianness (this was introduced in commit 61e8aeda9398
-("bpf: Fix libelf endian handling in resolv_btfids")).
+sku_cap_11be_enable should be set to true also for WH.
 
-Unfortunately, the translation will corrupt the flags fields of SET8
-entries because these were written during vmlinux compilation and are in
-the correct endianness already. This will lead to numerous selftests
-failures such as:
-
-    $ sudo ./test_verifier 502 502
-    #502/p sleepable fentry accept FAIL
-    Failed to load prog 'Invalid argument'!
-    bpf_fentry_test1 is not sleepable
-    verification time 34 usec
-    stack depth 0
-    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
-    Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
-
-Since it's not possible to instruct libelf to translate just certain
-values, let's manually bswap the flags (both global and entry flags) in
-resolve_btfids when needed, so that libelf then translates everything
-correctly.
-
-Fixes: ef2c6f370a63 ("tools/resolve_btfids: Add support for 8-byte BTF sets")
-Signed-off-by: Viktor Malik <vmalik@redhat.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/7b6bff690919555574ce0f13d2a5996cacf7bf69.1707223196.git.vmalik@redhat.com
+Fixes: e1374ed25324 ("wifi: iwlwifi: Add support for new CNVi (SC)")
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Reviewed-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Link: https://msgid.link/20240204235836.a6d4097cbaca.I8b00fa7b6226b4116cd91f70fb0b15e79b4dee5a@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/resolve_btfids/main.c | 35 +++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index 32634f00abba4..d9520cb826b31 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -90,6 +90,14 @@
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c b/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
+index 678c4a071869f..d85cadd8e16cb 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
+@@ -2090,7 +2090,7 @@ struct iwl_nvm_data *iwl_get_nvm(struct iwl_trans *trans,
+ 		!!(mac_flags & NVM_MAC_SKU_FLAGS_BAND_5_2_ENABLED);
+ 	nvm->sku_cap_mimo_disabled =
+ 		!!(mac_flags & NVM_MAC_SKU_FLAGS_MIMO_DISABLED);
+-	if (CSR_HW_RFID_TYPE(trans->hw_rf_id) == IWL_CFG_RF_TYPE_FM)
++	if (CSR_HW_RFID_TYPE(trans->hw_rf_id) >= IWL_CFG_RF_TYPE_FM)
+ 		nvm->sku_cap_11be_enable = true;
  
- #define ADDR_CNT	100
- 
-+#if __BYTE_ORDER == __LITTLE_ENDIAN
-+# define ELFDATANATIVE	ELFDATA2LSB
-+#elif __BYTE_ORDER == __BIG_ENDIAN
-+# define ELFDATANATIVE	ELFDATA2MSB
-+#else
-+# error "Unknown machine endianness!"
-+#endif
-+
- struct btf_id {
- 	struct rb_node	 rb_node;
- 	char		*name;
-@@ -117,6 +125,7 @@ struct object {
- 		int		 idlist_shndx;
- 		size_t		 strtabidx;
- 		unsigned long	 idlist_addr;
-+		int		 encoding;
- 	} efile;
- 
- 	struct rb_root	sets;
-@@ -320,6 +329,7 @@ static int elf_collect(struct object *obj)
- {
- 	Elf_Scn *scn = NULL;
- 	size_t shdrstrndx;
-+	GElf_Ehdr ehdr;
- 	int idx = 0;
- 	Elf *elf;
- 	int fd;
-@@ -351,6 +361,13 @@ static int elf_collect(struct object *obj)
- 		return -1;
- 	}
- 
-+	if (gelf_getehdr(obj->efile.elf, &ehdr) == NULL) {
-+		pr_err("FAILED cannot get ELF header: %s\n",
-+			elf_errmsg(-1));
-+		return -1;
-+	}
-+	obj->efile.encoding = ehdr.e_ident[EI_DATA];
-+
- 	/*
- 	 * Scan all the elf sections and look for save data
- 	 * from .BTF_ids section and symbols.
-@@ -681,6 +698,24 @@ static int sets_patch(struct object *obj)
- 			 */
- 			BUILD_BUG_ON(set8->pairs != &set8->pairs[0].id);
- 			qsort(set8->pairs, set8->cnt, sizeof(set8->pairs[0]), cmp_id);
-+
-+			/*
-+			 * When ELF endianness does not match endianness of the
-+			 * host, libelf will do the translation when updating
-+			 * the ELF. This, however, corrupts SET8 flags which are
-+			 * already in the target endianness. So, let's bswap
-+			 * them to the host endianness and libelf will then
-+			 * correctly translate everything.
-+			 */
-+			if (obj->efile.encoding != ELFDATANATIVE) {
-+				int i;
-+
-+				set8->flags = bswap_32(set8->flags);
-+				for (i = 0; i < set8->cnt; i++) {
-+					set8->pairs[i].flags =
-+						bswap_32(set8->pairs[i].flags);
-+				}
-+			}
- 		}
- 
- 		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
+ 	/* Initialize PHY sku data */
 -- 
 2.43.0
 
