@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13B8D888458
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:37:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D67C188845A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:37:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C210E281934
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:37:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8951F1F23CAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3BE1AC76E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EA21AC787;
 	Sun, 24 Mar 2024 22:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qZDX3asv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CYiEhByS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCE41ABFD8;
-	Sun, 24 Mar 2024 22:44:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209E71AC76B;
+	Sun, 24 Mar 2024 22:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320241; cv=none; b=jmmtt6WkyOzJchWr4NNHXwl7/97bAtRtVK0yQq6P6TckXaqehunmgRvIdRAMLvoFA6oLc2duE18HlOlmpwin3dbzFrHrm77uGGQ8EmR3f+q0QAFgj7fh6NKx21cBznKbcCePJEg1jw90l9Ss7BT2XsWMeJjztogWDMFAAr3CbKk=
+	t=1711320242; cv=none; b=fO25aP/UNKCyWDNTh/vXSek2M+HG+xebpxYtzqlTBKtBZyeygi6esVx3BSEp7HpX/vP4tKgtbDx8iOoaH2yHDeT3Ed9gDy/KvxoThh9RZkBVNiqXtys/GU4bJqX3XIFSCMaIRzWyG/8FyDXpd4dOejlADLpwZoojZKQ8V0zaKtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320241; c=relaxed/simple;
-	bh=vJO9V5YbNjm6VSQYv/Akl+4bvLFiaD4hxKDxh9ah8+I=;
+	s=arc-20240116; t=1711320242; c=relaxed/simple;
+	bh=LcEVKaWomblcy47ceepZ7ALs9Ii+KiTYzE4AAMNMs6w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BrhehGWhlXjaG4JFbT4cnHxMQJQ+kPrl9REnT4LQgzcggESFT+x9dGPPDc3s82mOjUGra1taz5slxOqi8aVPY1vTVtPOgmqCAMI7N8pKNMb2C5prjZqrNYL1kDB9PEMPrLcMVMdftNWeHsE8orwOhEXmkey09ZCxwhXdET4e/f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qZDX3asv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DBB1C43394;
-	Sun, 24 Mar 2024 22:44:00 +0000 (UTC)
+	 MIME-Version:Content-Type; b=sBYiycbHrKm2wMrfqwvBOXAer5NY6yccI7wTxdn8voksfiMlqFwHD2OWlY3aDqbRTlXvufDICrxxMPBYUDWCVxu7/kiRX9TQYER+uOMvqxndrT4dGcMpjiYNKezpEJNzUnXr6LvL80HN8ZFMPywS1b1VZLEsdLlmCiXrnm9QyCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CYiEhByS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43561C433F1;
+	Sun, 24 Mar 2024 22:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320241;
-	bh=vJO9V5YbNjm6VSQYv/Akl+4bvLFiaD4hxKDxh9ah8+I=;
+	s=k20201202; t=1711320242;
+	bh=LcEVKaWomblcy47ceepZ7ALs9Ii+KiTYzE4AAMNMs6w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qZDX3asvFMhxtnuAiDnDFnECmUk4F4Dersvmkr6AunhIWI6MR0xRvw7WJ859FfVbH
-	 f29M0jjy7EHb8kd7U8t01bK3YJl8FA4FD1OtJz6RdCOF6DU1+jKCyQdBYRoGAAm6B/
-	 9ZfHOiy6HrXI3VZOaHgPZ9njHkzkoioREU1DBkzLZzu7B0KkrtgVpFjlc3LVHX6krV
-	 ZoOV1uBG0Vyv2VBdy9RjEcHhrEwY8etY6WmUglpau0mPRMDnmwvNnRJHQerpJsP+Mp
-	 BGZSkyJMf1XKcGkHQyX83sKF4x9XPHCRi0aODIHj3PZu22w3Kfyg4bqyURml/02h0n
-	 g46EJG96ImieA==
+	b=CYiEhByS/7fV0cW+btwRjLHqt2s1Ne2M6XiJwi2vjFauq0CaTPHTDHK5tIsg0+2Uh
+	 Wknt5gJFCBBnMnew0FKj1mQPVLD4syAvvi41p87T+41CoANzlzr6TB5JhRauf8XTTB
+	 QHKlXnFgGXHffn6lEphIMGDeKJuQJt71ktk1vyXqxAiOefz+P9vOjPjdYqFsUFh6wD
+	 GkK/gz+Yt4YL5iiNx2v0I4/gfui0U+9ydb/+bjXdPqblUd0QsbgdWZP4Vm22wwHz5Q
+	 NQ7oWNDPTduD1CHravg1ukhIN5tbbAIF/4d9Y7aG9GD6UkfKUZT5Qq+d+TUPBUvCOQ
+	 skiN96WuJxYwA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Serge Semin <fancer.lancer@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+Cc: "David E. Box" <david.e.box@linux.intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 548/715] mips: cm: Convert __mips_cm_l2sync_phys_base() to weak function
-Date: Sun, 24 Mar 2024 18:32:07 -0400
-Message-ID: <20240324223455.1342824-549-sashal@kernel.org>
+Subject: [PATCH 6.8 549/715] platform/x86/intel/pmc/lnl: Remove SSRAM support
+Date: Sun, 24 Mar 2024 18:32:08 -0400
+Message-ID: <20240324223455.1342824-550-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -58,92 +59,105 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Serge Semin <fancer.lancer@gmail.com>
+From: "David E. Box" <david.e.box@linux.intel.com>
 
-[ Upstream commit 8bc8db2ab2832daabdd06feeabdd511dc9575bb6 ]
+[ Upstream commit e6ba4acde44957dc9bdc3222b5739217a102752d ]
 
-The __mips_cm_l2sync_phys_base() and mips_cm_l2sync_phys_base() couple was
-introduced in commit 9f98f3dd0c51 ("MIPS: Add generic CM probe & access
-code") where the former method was a weak implementation of the later
-function. Such design pattern permitted to re-define the original method
-and to use the weak implementation in the new function. A similar approach
-was introduced in the framework of another arch-specific programmable
-interface: mips_cm_phys_base() and __mips_cm_phys_base(). The only
-difference is that the underscored method of the later couple was declared
-in the "asm/mips-cm.h" header file, but it wasn't done for the CM L2-sync
-methods in the subject. Due to the missing global function declaration
-the "missing prototype" warning was spotted in the framework of the commit
-9a2036724cd6 ("mips: mark local function static if possible") and fixed
-just be re-qualifying the weak method as static. Doing that broke what was
-originally implied by having the weak implementation globally defined.
+A recent PMC firmware change in Lunar Lake caused the pmc_core driver to
+fail to probe. This is due to a change in the GUID for PMC telemetry coming
+from the SSRAM device. Until a final release is ready this value may
+change again. In the meantime, disable the SSRAM support for Lunar Lake so
+the driver can load and provide some basic functionality.
 
-Let's fix the broken CM2 L2-sync arch-interface by dropping the static
-qualifier and, seeing the implemented pattern hasn't been used for over 10
-years but will be required soon (see the link for the discussion around
-it), converting it to a single weakly defined method:
-mips_cm_l2sync_phys_base().
-
-Fixes: 9a2036724cd6 ("mips: mark local function static if possible")
-Link: https://lore.kernel.org/linux-mips/20240215171740.14550-3-fancer.lancer@gmail.com
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: 3748dfdae2a6 ("platform/x86/intel/pmc: Add Lunar Lake M support to intel_pmc_core driver")
+Signed-off-by: "David E. Box" <david.e.box@linux.intel.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Link: https://lore.kernel.org/r/20240227190134.1592072-2-david.e.box@linux.intel.com
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/mips-cm.h | 13 +++++++++++++
- arch/mips/kernel/mips-cm.c      |  5 +----
- 2 files changed, 14 insertions(+), 4 deletions(-)
+ drivers/platform/x86/intel/pmc/lnl.c | 40 ++++------------------------
+ 1 file changed, 5 insertions(+), 35 deletions(-)
 
-diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
-index 23c67c0871b17..6cc79296c8ef2 100644
---- a/arch/mips/include/asm/mips-cm.h
-+++ b/arch/mips/include/asm/mips-cm.h
-@@ -33,6 +33,19 @@ extern void __iomem *mips_cm_l2sync_base;
-  */
- extern phys_addr_t __mips_cm_phys_base(void);
+diff --git a/drivers/platform/x86/intel/pmc/lnl.c b/drivers/platform/x86/intel/pmc/lnl.c
+index abad17cdd3d78..068d72504683f 100644
+--- a/drivers/platform/x86/intel/pmc/lnl.c
++++ b/drivers/platform/x86/intel/pmc/lnl.c
+@@ -13,21 +13,6 @@
  
-+/**
-+ * mips_cm_l2sync_phys_base - retrieve the physical base address of the CM
-+ *                            L2-sync region
-+ *
-+ * This function returns the physical base address of the Coherence Manager
-+ * L2-cache only region. It provides a default implementation which reads the
-+ * CMGCRL2OnlySyncBase register where available or returns a 4K region just
-+ * behind the CM GCR base address. It may be overridden by platforms which
-+ * determine this address in a different way by defining a function with the
-+ * same prototype.
-+ */
-+extern phys_addr_t mips_cm_l2sync_phys_base(void);
-+
- /*
-  * mips_cm_is64 - determine CM register width
-  *
-diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
-index 84b3affb9de88..268ac0b811e35 100644
---- a/arch/mips/kernel/mips-cm.c
-+++ b/arch/mips/kernel/mips-cm.c
-@@ -201,7 +201,7 @@ phys_addr_t __mips_cm_phys_base(void)
- phys_addr_t mips_cm_phys_base(void)
- 	__attribute__((weak, alias("__mips_cm_phys_base")));
+ #include "core.h"
  
--static phys_addr_t __mips_cm_l2sync_phys_base(void)
-+phys_addr_t __weak mips_cm_l2sync_phys_base(void)
- {
- 	u32 base_reg;
- 
-@@ -217,9 +217,6 @@ static phys_addr_t __mips_cm_l2sync_phys_base(void)
- 	return mips_cm_phys_base() + MIPS_CM_GCR_SIZE;
- }
- 
--phys_addr_t mips_cm_l2sync_phys_base(void)
--	__attribute__((weak, alias("__mips_cm_l2sync_phys_base")));
+-#define SOCM_LPM_REQ_GUID	0x11594920
 -
- static void mips_cm_probe_l2sync(void)
+-#define PMC_DEVID_SOCM	0xa87f
+-
+-static const u8 LNL_LPM_REG_INDEX[] = {0, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20};
+-
+-static struct pmc_info lnl_pmc_info_list[] = {
+-	{
+-		.guid	= SOCM_LPM_REQ_GUID,
+-		.devid	= PMC_DEVID_SOCM,
+-		.map	= &lnl_socm_reg_map,
+-	},
+-	{}
+-};
+-
+ const struct pmc_bit_map lnl_ltr_show_map[] = {
+ 	{"SOUTHPORT_A",		CNP_PMC_LTR_SPA},
+ 	{"SOUTHPORT_B",		CNP_PMC_LTR_SPB},
+@@ -490,7 +475,6 @@ const struct pmc_reg_map lnl_socm_reg_map = {
+ 	.lpm_sts = lnl_lpm_maps,
+ 	.lpm_status_offset = MTL_LPM_STATUS_OFFSET,
+ 	.lpm_live_status_offset = MTL_LPM_LIVE_STATUS_OFFSET,
+-	.lpm_reg_index = LNL_LPM_REG_INDEX,
+ };
+ 
+ #define LNL_NPU_PCI_DEV		0x643e
+@@ -517,33 +501,19 @@ static int lnl_resume(struct pmc_dev *pmcdev)
+ int lnl_core_init(struct pmc_dev *pmcdev)
  {
- 	unsigned major_rev;
+ 	int ret;
+-	int func = 2;
+-	bool ssram_init = true;
+ 	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_SOC];
+ 
+ 	lnl_d3_fixup();
+ 
+ 	pmcdev->suspend = cnl_suspend;
+ 	pmcdev->resume = lnl_resume;
+-	pmcdev->regmap_list = lnl_pmc_info_list;
+-	ret = pmc_core_ssram_init(pmcdev, func);
+-
+-	/* If regbase not assigned, set map and discover using legacy method */
+-	if (ret) {
+-		ssram_init = false;
+-		pmc->map = &lnl_socm_reg_map;
+-		ret = get_primary_reg_base(pmc);
+-		if (ret)
+-			return ret;
+-	}
+ 
+-	pmc_core_get_low_power_modes(pmcdev);
++	pmc->map = &lnl_socm_reg_map;
++	ret = get_primary_reg_base(pmc);
++	if (ret)
++		return ret;
+ 
+-	if (ssram_init) {
+-		ret = pmc_core_ssram_get_lpm_reqs(pmcdev);
+-		if (ret)
+-			return ret;
+-	}
++	pmc_core_get_low_power_modes(pmcdev);
+ 
+ 	return 0;
+ }
 -- 
 2.43.0
 
