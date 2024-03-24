@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D2288812D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:14:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC64088812F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:14:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 565CEB227F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:14:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86C6D2816AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9371487CF;
-	Sun, 24 Mar 2024 22:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2261A537F6;
+	Sun, 24 Mar 2024 22:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BNkCe2Jy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f9JqIpQu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FAEF148316;
-	Sun, 24 Mar 2024 22:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CF91487D1;
+	Sun, 24 Mar 2024 22:37:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319872; cv=none; b=nw186C+hu4MPF5X/cwShW6pHyQ3YNqN2DgqUF/m8VakIC8mv35LAMQ5mHaY1T9486ixjboPlsrV8VuuKKEJBscgZh4twJiBHTaVBiNzJASfm0oU1tiae7UaQ4NQu9cIXEqF2yYdvC0BcpAVjvF0Zpe4uxZ9gPW8ixsBuS456eis=
+	t=1711319873; cv=none; b=R+4MPjeHaR5BOQnOqHkHktgtiPNNgECPcMJl7QqE8oI1oDA5QmQyPLrbv+Rm05CJvW7bqkagV/vYU22DvLGdKOF9wh89j7zBDVA768J649q3szG4RTf/b1A0ktOoQaeovH5iDin+fBSfBkeeU1NaStweezhufk0LhiBag65t3aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319872; c=relaxed/simple;
-	bh=/oBBgZrQ+FEexfLW/rIq/NTI4BG3br/QSuJ8X/PmO1I=;
+	s=arc-20240116; t=1711319873; c=relaxed/simple;
+	bh=of02US8bUUeHmltBhwO0q0jgCHO9nnXXigQFqbU83BU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CFM3+kQ5FKJqdB+w/wHRH5nGldW5hd+TLdIC30oM+ZZQ8UtoFMFNDGGHZ/PVjkPi9EnUcIfGtYGrTEbhBYNl2F39aooMZ7/qwCK/VP24wg5pW8owVVqcnXiya9kNGNbyI3RPHPFxXdr2XRdS1yiebBVvRtekpf9U/lonnxqsWnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BNkCe2Jy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A228DC43399;
-	Sun, 24 Mar 2024 22:37:51 +0000 (UTC)
+	 MIME-Version; b=ULa7ioaxFcD3qDF0uJSMPC7uMgRmbjc/UxkwxYRfIBvm99eZYhb+JS40Acg8UYWvQ/2wqWPFTA2Xs0pf/lgovcAXhNpwy2uxYY8vQWolX4GMOm+D8a6nSxn4cgpf6ww7/Qh3ZQ0BFPDE++KHzLPmPaKyZNxC3p0RAKJ6GmaqCrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f9JqIpQu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D450C433C7;
+	Sun, 24 Mar 2024 22:37:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319872;
-	bh=/oBBgZrQ+FEexfLW/rIq/NTI4BG3br/QSuJ8X/PmO1I=;
+	s=k20201202; t=1711319873;
+	bh=of02US8bUUeHmltBhwO0q0jgCHO9nnXXigQFqbU83BU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BNkCe2Jyobb7x+lkHh1TfWPz4uDllJ4Svwbz2R3NrYXK7y+0JiPB2uQi/8BnK7Jqy
-	 IKMiPkBMUsIcOWlEIMcDAgT8GUxf+Z0KCjRS2lk++VfbJf/rVjpqo/w3rsAaqxcpbi
-	 K0Mg2UNwORskaCuRVkaiWSL1BGV/CvRjQgF5oHlNmKyiTbRahcZgIo2LL8k6hvudvr
-	 Ul9x8B4op6MutBFYvHkd1lh+XCGWySxbLpyWyyvq6Eechs7boknflQcw8W/yvIP4a8
-	 FRrO/MwFFtbAa1EDmOFn9/mZlWCK/zWCCjvOcAtR3lT+Hw+6CSRjfB3QBgmX7yYEoU
-	 95ezz+jgvIAEg==
+	b=f9JqIpQup9qw13yc7zZmx/gAkceQXh3ygNHBeVtn9hIlHw7lZMWzEkQyOnqvCBgBX
+	 ZVVMZAr40IwuO+FLtddxPMbtVmBr3bNqfJOJSf+9bcUxjWfTM4TqVfBjjVlNSh7iyp
+	 K+hgaS36vGmugmoxc+8P8iYucjnbQ9NhA49/4thBFZto7OzR6KsseEbzXZd1VnKI0A
+	 +vBvjX+VXjoH27E0O8G0My4Cg10MSHIyESZenU2TwXVbNKE7McyweGsEs2dA5dS9sr
+	 DLzxYnOO7tcc573OxewXNHYEJ2H4+X9xD/oq1+pHmJaX+3stDCkOWhZnv1eyEaHcYV
+	 8hZqjHHzjBxbg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Komal Bajaj <quic_kbajaj@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Petr Machata <petrm@nvidia.com>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 177/715] arm64: dts: qcom: qcs6490-rb3gen2: Correct the voltage setting for vph_pwr
-Date: Sun, 24 Mar 2024 18:25:56 -0400
-Message-ID: <20240324223455.1342824-178-sashal@kernel.org>
+Subject: [PATCH 6.8 178/715] selftests: forwarding: Add missing config entries
+Date: Sun, 24 Mar 2024 18:25:57 -0400
+Message-ID: <20240324223455.1342824-179-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,38 +62,81 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Komal Bajaj <quic_kbajaj@quicinc.com>
+From: Petr Machata <petrm@nvidia.com>
 
-[ Upstream commit 05f439c0e64b877c1f9cc7f0bed894b6df45d43d ]
+[ Upstream commit 4acf4e62cd572b0c806035046b3698f5585ab821 ]
 
-Min and max voltages for vph_pwr should be same, otherwise rpmh
-will not probe, so correcting the min and max voltages for vph_pwr.
+The config file contains a partial kernel configuration to be used by
+`virtme-configkernel --custom'. The presumption is that the config file
+contains all Kconfig options needed by the selftests from the directory.
 
-Fixes: 04cf333afc75 ("arm64: dts: qcom: Add base qcs6490-rb3gen2 board dts")
-Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20231220110015.25378-3-quic_kbajaj@quicinc.com
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+In net/forwarding/config, many are missing, which manifests as spurious
+failures when running the selftests, with messages about unknown device
+types, qdisc kinds or classifier actions. Add the missing configurations.
+
+Tested the resulting configuration using virtme-ng as follows:
+
+ # vng -b -f tools/testing/selftests/net/forwarding/config
+ # vng --user root
+ (within the VM:)
+ # make -C tools/testing/selftests TARGETS=net/forwarding run_tests
+
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Link: https://lore.kernel.org/r/025abded7ff9cea5874a7fe35dcd3fd41bf5e6ac.1706286755.git.petrm@nvidia.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Stable-dep-of: f0ddf15f0a74 ("selftests: forwarding: Add missing multicast routing config entries")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/forwarding/config | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-index 8bb7d13d85f66..ae1632182d7c1 100644
---- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-+++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-@@ -124,8 +124,8 @@ debug_vm_mem: debug-vm@d0600000 {
- 	vph_pwr: vph-pwr-regulator {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vph_pwr";
--		regulator-min-microvolt = <2500000>;
--		regulator-max-microvolt = <4350000>;
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
- 	};
- };
- 
+diff --git a/tools/testing/selftests/net/forwarding/config b/tools/testing/selftests/net/forwarding/config
+index 697994a9278bb..ba23435145827 100644
+--- a/tools/testing/selftests/net/forwarding/config
++++ b/tools/testing/selftests/net/forwarding/config
+@@ -6,14 +6,42 @@ CONFIG_IPV6_MULTIPLE_TABLES=y
+ CONFIG_NET_VRF=m
+ CONFIG_BPF_SYSCALL=y
+ CONFIG_CGROUP_BPF=y
++CONFIG_DUMMY=m
++CONFIG_IPV6=y
++CONFIG_IPV6_GRE=m
++CONFIG_MACVLAN=m
+ CONFIG_NET_ACT_CT=m
+ CONFIG_NET_ACT_MIRRED=m
+ CONFIG_NET_ACT_MPLS=m
++CONFIG_NET_ACT_PEDIT=m
++CONFIG_NET_ACT_POLICE=m
++CONFIG_NET_ACT_SAMPLE=m
++CONFIG_NET_ACT_SKBEDIT=m
++CONFIG_NET_ACT_TUNNEL_KEY=m
+ CONFIG_NET_ACT_VLAN=m
+ CONFIG_NET_CLS_FLOWER=m
+ CONFIG_NET_CLS_MATCHALL=m
++CONFIG_NET_CLS_BASIC=m
++CONFIG_NET_EMATCH=y
++CONFIG_NET_EMATCH_META=m
++CONFIG_NET_IPGRE=m
++CONFIG_NET_IPGRE_DEMUX=m
++CONFIG_NET_IPIP=m
++CONFIG_NET_SCH_ETS=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_ACT_GACT=m
++CONFIG_NET_SCH_PRIO=m
++CONFIG_NET_SCH_RED=m
++CONFIG_NET_SCH_TBF=m
++CONFIG_NET_TC_SKB_EXT=y
++CONFIG_NET_TEAM=y
++CONFIG_NET_TEAM_MODE_LOADBALANCE=y
++CONFIG_NETFILTER=y
++CONFIG_NF_CONNTRACK=m
++CONFIG_NF_FLOW_TABLE=m
++CONFIG_NF_TABLES=m
+ CONFIG_VETH=m
+ CONFIG_NAMESPACES=y
+ CONFIG_NET_NS=y
++CONFIG_VXLAN=m
++CONFIG_XFRM_USER=m
 -- 
 2.43.0
 
