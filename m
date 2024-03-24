@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E602A889C43
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A487B888762
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:59:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A85D1F362AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:15:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56A091F25CFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1095C246E15;
-	Mon, 25 Mar 2024 02:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913CD214860;
+	Sun, 24 Mar 2024 23:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r1vR6gs8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D9fI+Rmc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8760814A611;
-	Sun, 24 Mar 2024 22:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717F814A61C;
+	Sun, 24 Mar 2024 22:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321024; cv=none; b=lbRj6wui8XEK6yszkTf0w7hOe/HbCVUVaEvXiZwVa62pesWFrJc2VkxR81nu+zjpBSxwL71FaJ0jLDGXTQMPfUsoc0Lk8t6oNVSfczU+O/43GNKi0cb4/n0EX2Lq0iLAomWRYI2+ps+vuzUCDdN4FQCURnhfxegiLFsvOMdpUJE=
+	t=1711321025; cv=none; b=piNWvI2hEWip72lKTlXoSYL3zGzVuaTiIKwAJY9YK90IShu5FVOqVYv6+uBATtFzvodmjth34BCpG1wwdjlESY7P9IWFYNEOghtZONaOSbg3OPy/8bRoYLMh+u7FZ18abLFD/55ysKyx2C9za9gExzicVhfVx6B92gZ/Y0jKBZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321024; c=relaxed/simple;
-	bh=dVQDY0+MQj8P3UOvJkNC+ZHiMUxAk+kHIchL/X2PMSY=;
+	s=arc-20240116; t=1711321025; c=relaxed/simple;
+	bh=perYTdueoSfw7UTcDcRUsae0k1dNzWNsx1L/dSUmIQk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UoP23juF5xAwYU62GO6cwCA7QL+rBXExLgB2DhTQGeTr9Rif+vkB0vnMb2TTitKqXkp7s5JG/jaNsdGIlul5rLYIu4ghgXMhaRR85oykS+MfzbQuSR8ynWJV1DhfDdEmlGVGCq9QiEIeYhCLkSwOhj3rjxB+bwIXcFnrgkP6g0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r1vR6gs8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5630C43394;
-	Sun, 24 Mar 2024 22:57:02 +0000 (UTC)
+	 MIME-Version; b=mbnwtBFvljSeIIAmUZa9ZYx62oguUT3JTX9Ume44dYqL7nbgWqjZ4WJHpId1MqQ4DXQb1uIFf2aC8i04c7DHdIwIYb5vEZaE0uTZVl9F5yWSYegl6sfU3p8c4CugB6vAdGvz9phohR8EPNpgJXy1vCLAFDzSmS4ytQmO7l6FX/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D9fI+Rmc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AADB3C43390;
+	Sun, 24 Mar 2024 22:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321023;
-	bh=dVQDY0+MQj8P3UOvJkNC+ZHiMUxAk+kHIchL/X2PMSY=;
+	s=k20201202; t=1711321024;
+	bh=perYTdueoSfw7UTcDcRUsae0k1dNzWNsx1L/dSUmIQk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r1vR6gs8qDhnXn9yA+Avk+TcXoac1e7rSzBXlhnfF7oD7kd+GVpupXMGYmDrfjY/r
-	 k8gvZAhEAqw81ebWY0kH5oraGcs16dDZL5dBSG1XQ1/epwLFnEK4IDrIz8+ZDeuNsm
-	 MSLMioocLF8d+SgAXJbzfZQFB+Fd/CnWbJRvq+MGzi5wPR5kWl7HUe/3TAgz+uzQmz
-	 sHs13B/igsCWPd6tVebSb+HmhPuZXK3w68VBz+mDoXcyfgHxpP6vnHIoXBbvElZkHV
-	 I+9lNDHp2XvMJ0hbETdTWaJyxT79ItjXIa33L7wSBggS1GRAVdqVdpq4p9e+Wt9FG5
-	 e6FCOuD7PyTnQ==
+	b=D9fI+RmcLPu3IfyZfELcpo4nXwHUH7+Y2ekBxlpJYYGg3ecVyTxfG+P1huy2SJH6g
+	 atHC0f/UQ0O2qi3fgR0zeshtXV47L4sHiLNyO8Mv1sqsdxMmOish8WpYemVNu5AUfK
+	 sE3alzkG7zkH4glvr0+Abzm+X/98wZmrhN3tls+hWbG/YgLPD7mZlJ0uV3S6GIl/2u
+	 fZkepSL9jxhubo/Z30J2Shn63sl9HFLFS7FvxBqjpAf3dcuDoYzokB/LPb5RZQwBJm
+	 Y/p6ESQti1hRYWIUz3QthwJ9Zoq/DklEbdVakm/2RCn0uqr7HJBNfcBbHoW/yYXY5c
+	 ftzv7uZSqOQag==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Chao Yu <chao@kernel.org>,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 586/713] f2fs: fix to create selinux label during whiteout initialization
-Date: Sun, 24 Mar 2024 18:45:12 -0400
-Message-ID: <20240324224720.1345309-587-sashal@kernel.org>
+Subject: [PATCH 6.7 587/713] f2fs: compress: fix to check zstd compress level correctly in mount option
+Date: Sun, 24 Mar 2024 18:45:13 -0400
+Message-ID: <20240324224720.1345309-588-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,138 +64,55 @@ Content-Transfer-Encoding: 8bit
 
 From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 40b2d55e045222dd6de2a54a299f682e0f954b03 ]
+[ Upstream commit e39602da752cd1d0462e3fa04074146f6f2803f6 ]
 
-#generic/700       - output mismatch (see /media/fstests/results//generic/700.out.bad)
-#    --- tests/generic/700.out	2023-03-28 10:40:42.735529223 +0000
-#    +++ /media/fstests/results//generic/700.out.bad	2024-02-06 04:37:56.000000000 +0000
-#    @@ -1,2 +1,4 @@
-#     QA output created by 700
-#    +/mnt/scratch_f2fs/f1: security.selinux: No such attribute
-#    +/mnt/scratch_f2fs/f2: security.selinux: No such attribute
-#     Silence is golden
-#    ...
-#    (Run 'diff -u /media/fstests/tests/generic/700.out /media/fstests/results//generic/700.out.bad'  to see the entire diff)
+f2fs only support to config zstd compress level w/ a positive number due
+to layout design, but since commit e0c1b49f5b67 ("lib: zstd: Upgrade to
+latest upstream zstd version 1.4.10"), zstd supports negative compress
+level, so that zstd_min_clevel() may return a negative number, then w/
+below mount option, .compress_level can be configed w/ a negative number,
+which is not allowed to f2fs, let's add check condition to avoid it.
 
-HINT: You _MAY_ be missing kernel fix:
-      70b589a37e1a xfs: add selinux labels to whiteout inodes
+mount -o compress_algorithm=zstd:4294967295 /dev/sdx /mnt/f2fs
 
-Previously, it missed to create selinux labels during whiteout inode
-initialization, fix this issue.
-
-Fixes: 7e01e7ad746b ("f2fs: support RENAME_WHITEOUT")
+Fixes: 00e120b5e4b5 ("f2fs: assign default compression level")
 Signed-off-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/dir.c   |  5 +++--
- fs/f2fs/f2fs.h  |  3 ++-
- fs/f2fs/namei.c | 25 +++++++++++++++++--------
- 3 files changed, 22 insertions(+), 11 deletions(-)
+ fs/f2fs/super.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 042593aed1ec0..1b937f7d0414f 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -830,13 +830,14 @@ int f2fs_do_add_link(struct inode *dir, const struct qstr *name,
- 	return err;
- }
- 
--int f2fs_do_tmpfile(struct inode *inode, struct inode *dir)
-+int f2fs_do_tmpfile(struct inode *inode, struct inode *dir,
-+					struct f2fs_filename *fname)
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index b0d6a643c9ef1..655cfadc92457 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -663,7 +663,7 @@ static int f2fs_set_lz4hc_level(struct f2fs_sb_info *sbi, const char *str)
+ #ifdef CONFIG_F2FS_FS_ZSTD
+ static int f2fs_set_zstd_level(struct f2fs_sb_info *sbi, const char *str)
  {
- 	struct page *page;
- 	int err = 0;
+-	unsigned int level;
++	int level;
+ 	int len = 4;
  
- 	f2fs_down_write(&F2FS_I(inode)->i_sem);
--	page = f2fs_init_inode_metadata(inode, dir, NULL, NULL);
-+	page = f2fs_init_inode_metadata(inode, dir, fname, NULL);
- 	if (IS_ERR(page)) {
- 		err = PTR_ERR(page);
- 		goto fail;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 007f39ff99b20..655e27e7bef9c 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3572,7 +3572,8 @@ int f2fs_do_add_link(struct inode *dir, const struct qstr *name,
- 			struct inode *inode, nid_t ino, umode_t mode);
- void f2fs_delete_entry(struct f2fs_dir_entry *dentry, struct page *page,
- 			struct inode *dir, struct inode *inode);
--int f2fs_do_tmpfile(struct inode *inode, struct inode *dir);
-+int f2fs_do_tmpfile(struct inode *inode, struct inode *dir,
-+					struct f2fs_filename *fname);
- bool f2fs_empty_dir(struct inode *dir);
- 
- static inline int f2fs_add_link(struct dentry *dentry, struct inode *inode)
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index 7f71bae2c83b5..9cdf3f36d1b90 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -853,7 +853,7 @@ static int f2fs_mknod(struct mnt_idmap *idmap, struct inode *dir,
- 
- static int __f2fs_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
- 			  struct file *file, umode_t mode, bool is_whiteout,
--			  struct inode **new_inode)
-+			  struct inode **new_inode, struct f2fs_filename *fname)
- {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(dir);
- 	struct inode *inode;
-@@ -881,7 +881,7 @@ static int __f2fs_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
- 	if (err)
- 		goto out;
- 
--	err = f2fs_do_tmpfile(inode, dir);
-+	err = f2fs_do_tmpfile(inode, dir, fname);
- 	if (err)
- 		goto release_out;
- 
-@@ -932,22 +932,24 @@ static int f2fs_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
- 	if (!f2fs_is_checkpoint_ready(sbi))
- 		return -ENOSPC;
- 
--	err = __f2fs_tmpfile(idmap, dir, file, mode, false, NULL);
-+	err = __f2fs_tmpfile(idmap, dir, file, mode, false, NULL, NULL);
- 
- 	return finish_open_simple(file, err);
- }
- 
- static int f2fs_create_whiteout(struct mnt_idmap *idmap,
--				struct inode *dir, struct inode **whiteout)
-+				struct inode *dir, struct inode **whiteout,
-+				struct f2fs_filename *fname)
- {
--	return __f2fs_tmpfile(idmap, dir, NULL,
--				S_IFCHR | WHITEOUT_MODE, true, whiteout);
-+	return __f2fs_tmpfile(idmap, dir, NULL, S_IFCHR | WHITEOUT_MODE,
-+						true, whiteout, fname);
- }
- 
- int f2fs_get_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
- 		     struct inode **new_inode)
- {
--	return __f2fs_tmpfile(idmap, dir, NULL, S_IFREG, false, new_inode);
-+	return __f2fs_tmpfile(idmap, dir, NULL, S_IFREG,
-+				false, new_inode, NULL);
- }
- 
- static int f2fs_rename(struct mnt_idmap *idmap, struct inode *old_dir,
-@@ -990,7 +992,14 @@ static int f2fs_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+ 	if (strlen(str) == len) {
+@@ -677,9 +677,15 @@ static int f2fs_set_zstd_level(struct f2fs_sb_info *sbi, const char *str)
+ 		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
+ 		return -EINVAL;
  	}
+-	if (kstrtouint(str + 1, 10, &level))
++	if (kstrtoint(str + 1, 10, &level))
+ 		return -EINVAL;
  
- 	if (flags & RENAME_WHITEOUT) {
--		err = f2fs_create_whiteout(idmap, old_dir, &whiteout);
-+		struct f2fs_filename fname;
++	/* f2fs does not support negative compress level now */
++	if (level < 0) {
++		f2fs_info(sbi, "do not support negative compress level: %d", level);
++		return -ERANGE;
++	}
 +
-+		err = f2fs_setup_filename(old_dir, &old_dentry->d_name,
-+							0, &fname);
-+		if (err)
-+			return err;
-+
-+		err = f2fs_create_whiteout(idmap, old_dir, &whiteout, &fname);
- 		if (err)
- 			return err;
- 	}
+ 	if (!f2fs_is_compress_level_valid(COMPRESS_ZSTD, level)) {
+ 		f2fs_info(sbi, "invalid zstd compress level: %d", level);
+ 		return -EINVAL;
 -- 
 2.43.0
 
