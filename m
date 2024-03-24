@@ -1,102 +1,154 @@
-Return-Path: <linux-kernel+bounces-112669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDA57887CC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:36:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85DAF887CC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:42:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78847281805
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:36:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9108AB20EA0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E2C17BB7;
-	Sun, 24 Mar 2024 12:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1196A17BB7;
+	Sun, 24 Mar 2024 12:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="myamaYhu"
-Received: from msa.smtpout.orange.fr (smtp-82.smtpout.orange.fr [80.12.242.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rO2q+6bV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317B61A38EA;
-	Sun, 24 Mar 2024 12:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D5D1168DA;
+	Sun, 24 Mar 2024 12:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711283793; cv=none; b=ffa3Xz3l8IAGpO63zvE8c3MqbMsncmlLcfrH8e+QdfkzfhosLwqOb6dOPA7vGMC18EBzTcP/I0DZqfpiHA45ICSyDICBpnEMMMk2qopnJEM2xOiLT1qwdxzddWP/H1WJIL9M3ePyBlPkzZ08VnRhWss+vwf022k7O0rmOpED1FY=
+	t=1711284139; cv=none; b=eFRlyQZ82ZzZZ4KgwNQQ+XRrp+lV8FvWrfS9Oq2Y8KzCm7tGXuiowrzWQpVaS9UUUpGYY41o0R3Qu7WvVs/GNbgrMKbof0P2Q+mYlCM05BDCypLxsKJyxdJ8DuZOx3amGE5JCnB3HMg9QJ5D2vJcqOFKn14wpYv1tBdxLphrv+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711283793; c=relaxed/simple;
-	bh=lWwQT6POGscHInaUBXSVs3Bvzl6JJjKrLFC4q7X2oXc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fe2DVSBBiu18uYpdLijxhOjgKETL7b8UAadu+esrL6Ey+WP45toXAhzlDGSb7D6hTeRm8ybSNCxb1w+g95tp1t/AFxQOpPh0eAgYBIX1vRtnFWL8Ib1Dn9wrHjXwMydW+e8HmcsQK8T83e7eTIFRt15ivJ23uuetN8KVGld6xmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=myamaYhu; arc=none smtp.client-ip=80.12.242.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id oN5IrIYha6CS1oN5JrDlnb; Sun, 24 Mar 2024 13:36:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1711283782;
-	bh=AAKPnCD08n1Ivbegax1tBgxYyf6ck38NkApHtw35RgI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=myamaYhuvINo6+J4tEXYZmXa/jZmdPUzjt8agUOV9bfclSuBufCperDAgb/I8v6hj
-	 AL4OtzwgO0Q0e5OMWvbWWiUfHEuZacREINBto9K+29h7xWRsCwv+SHxLU6yIX7lsmC
-	 prg3rXml3JE57XWT8AwaNIiAqNfDbwyffONYdWaKsL3yJJE+i1RA4VD9FZuV7gxJEe
-	 vPDgHSSGUuBacl5iJGkYpmfVbIX6pcQ1t+kVpHjgq18z956sBDzuXwtDdMdN0Ytr96
-	 oWn/UVvJOiJ1TGgpgv5NyCDE/3RlzgFtvI0eYUMXCGcYGthx30VvqYnJZVw9VwjwDX
-	 ylXwaHWTw6ewA==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 24 Mar 2024 13:36:22 +0100
-X-ME-IP: 86.243.17.157
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Petre Rodan <petre.rodan@subdimension.ro>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-iio@vger.kernel.org
-Subject: [PATCH] iio: pressure: hsc030pa: Use spi_read()
-Date: Sun, 24 Mar 2024 13:36:16 +0100
-Message-ID: <8327ac591d244ac85aa83c01e559076159c7ba12.1711283728.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711284139; c=relaxed/simple;
+	bh=VWSPwjYIKUe7F1DNHFNM9x5mfJP4QIY7I+2zOjTFSdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gI1RhlDq0dgbkLofMPYworUI/IAyXrEnDVyAFeGT72gq7KGdRP2tZhmeRWN2m549CxGB2thcyH+YTpJqAKOqhmhZ4ck1AURTHFr48HBAbsQT52FIpd2As/WqL8sLEjVKajrXEvwptkiob8IbIpoutxAieF+xiBU0azrZce9e6a8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rO2q+6bV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C21CC433C7;
+	Sun, 24 Mar 2024 12:42:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711284138;
+	bh=VWSPwjYIKUe7F1DNHFNM9x5mfJP4QIY7I+2zOjTFSdQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rO2q+6bVgabwedQm+ppnIa3VhE8SESdp2K8eYY8BUdAORj4vLAzZK4Spi1DCGqvnE
+	 A9rieMZ0huIyO2lePMBL32BMpYJ7GVsQClCYDnvN4fzbFI33FpiQa7PfroI+sH1+/d
+	 di5fTnQUE+akw98oa/8UytlGOpeUsx5vfzZn1isItNtq1eju+6FPLK8J6Q/gZaCjF+
+	 w1MHeytJs4MULvCOXPBVVA+9V6CeY9w9k6WRYaTFn49DX57PUXO+lIFU7N/iaQCAz/
+	 S0PUnO6zi84y8D4J3Nf29NV3uzjXZo1pDp0wNBKh93ovXAIFbTQ0QhJkV0OJ9B21by
+	 5t2bM/MvIykFw==
+Date: Sun, 24 Mar 2024 12:42:01 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Julien Stephan <jstephan@baylibre.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+ David Lechner <dlechner@baylibre.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel test robot
+ <lkp@intel.com>, Stefan Popa <stefan.popa@analog.com>
+Subject: Re: [PATCH v5 2/7] iio: adc: ad7380: new driver for AD7380 ADCs
+Message-ID: <20240324124201.3ce3e650@jic23-huawei>
+In-Reply-To: <20240319-adding-new-ad738x-driver-v5-2-ce7df004ceb3@baylibre.com>
+References: <20240319-adding-new-ad738x-driver-v5-0-ce7df004ceb3@baylibre.com>
+	<20240319-adding-new-ad738x-driver-v5-2-ce7df004ceb3@baylibre.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Use spi_read() instead of hand-writing it.
-It is less verbose.
+On Tue, 19 Mar 2024 11:11:23 +0100
+Julien Stephan <jstephan@baylibre.com> wrote:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Compile test only
----
- drivers/iio/pressure/hsc030pa_spi.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+> From: David Lechner <dlechner@baylibre.com>
+> 
+> This adds a new driver for the AD7380 family ADCs.
+> 
+> The driver currently implements basic support for the AD7380, AD7381,
+> 2-channel differential ADCs. Support for additional single-ended,
+> pseudo-differential and 4-channel chips that use the same register map
+> as well as additional features of the chip will be added in future patches.
+> 
+> Co-developed-by: Stefan Popa <stefan.popa@analog.com>
+> Signed-off-by: Stefan Popa <stefan.popa@analog.com>
+> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> [Julien Stephan: add datasheet links of supported parts]
+> [Julien Stephan: fix rx/tx buffer for regmap access]
+> Signed-off-by: Julien Stephan <jstephan@baylibre.com>
+Looks good to me.  One unrelated comment inline.
 
-diff --git a/drivers/iio/pressure/hsc030pa_spi.c b/drivers/iio/pressure/hsc030pa_spi.c
-index 818fa6303454..337eecc577d2 100644
---- a/drivers/iio/pressure/hsc030pa_spi.c
-+++ b/drivers/iio/pressure/hsc030pa_spi.c
-@@ -23,14 +23,9 @@
- static int hsc_spi_recv(struct hsc_data *data)
- {
- 	struct spi_device *spi = to_spi_device(data->dev);
--	struct spi_transfer xfer = {
--		.tx_buf = NULL,
--		.rx_buf = data->buffer,
--		.len = HSC_REG_MEASUREMENT_RD_SIZE,
--	};
+Jonathan
+
+> ---
+>  MAINTAINERS              |   1 +
+>  drivers/iio/adc/Kconfig  |  16 ++
+>  drivers/iio/adc/Makefile |   1 +
+>  drivers/iio/adc/ad7380.c | 447 +++++++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 465 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f7c512f3bbda..2277870853c7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -435,6 +435,7 @@ S:	Supported
+>  W:	https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/ad738x
+>  W:	https://ez.analog.com/linux-software-drivers
+>  F:	Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
+> +F:	drivers/iio/adc/ad7380.c
+>  
+>  AD7877 TOUCHSCREEN DRIVER
+>  M:	Michael Hennerich <michael.hennerich@analog.com>
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index 8db68b80b391..631386b037ae 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -155,6 +155,22 @@ config AD7298
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called ad7298.
+>  
+> +config AD7380
+> +	tristate "Analog Devices AD7380 ADC driver"
+> +	depends on SPI_MASTER
+> +	select IIO_BUFFER
+> +	select IIO_TRIGGER
+> +	select IIO_TRIGGERED_BUFFER
+> +	help
+> +	  AD7380 is a family of simultaneous sampling ADCs that share the same
+> +	  SPI register map and have similar pinouts.
+> +
+> +	  Say yes here to build support for Analog Devices AD7380 ADC and
+> +	  similar chips.
+> +
+> +	  To compile this driver as a module, choose M here: the module will be
+> +	  called ad7380.
+> +
+>  config AD7476
+>  	tristate "Analog Devices AD7476 1-channel ADCs driver and other similar devices from AD and TI"
+>  	depends on SPI
+> diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+> index edb32ce2af02..bd3cbbb178fa 100644
+> --- a/drivers/iio/adc/Makefile
+> +++ b/drivers/iio/adc/Makefile
+> @@ -19,6 +19,7 @@ obj-$(CONFIG_AD7291) += ad7291.o
+>  obj-$(CONFIG_AD7292) += ad7292.o
+>  obj-$(CONFIG_AD7298) += ad7298.o
+>  obj-$(CONFIG_AD7923) += ad7923.o
+
+Oops these clearly got out of order a long time ago.
+We should fix that up but nothing to do with this series.
  
- 	msleep_interruptible(HSC_RESP_TIME_MS);
--	return spi_sync_transfer(spi, &xfer, 1);
-+	return spi_read(spi, data->buffer, HSC_REG_MEASUREMENT_RD_SIZE);
- }
- 
- static int hsc_spi_probe(struct spi_device *spi)
--- 
-2.44.0
-
+> +obj-$(CONFIG_AD7380) += ad7380.o
+>  obj-$(CONFIG_AD7476) += ad7476.o
+>  obj-$(CONFIG_AD7606_IFACE_PARALLEL) += ad7606_par.o
+>  obj-$(CONFIG_AD7606_IFACE_SPI) += ad7606_spi.o
 
