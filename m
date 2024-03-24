@@ -1,123 +1,115 @@
-Return-Path: <linux-kernel+bounces-112708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A780E887D34
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:26:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AFB887D36
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:30:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A91A31C209BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 14:26:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52E862816F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 14:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4847182A7;
-	Sun, 24 Mar 2024 14:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="RqxEvJiU"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A616418050;
+	Sun, 24 Mar 2024 14:30:20 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84AB2107
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 14:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D28DE17BA5
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 14:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711290360; cv=none; b=u1tkYM3Ic6U0CN1R567kM0EyJfvQKe5QUD8baXp8pFY5yAM7yc1igYYb4AXiTNbDXMjGH5ZD58myoU2LOGCXpFMexZn0mzYMoC/ZLMrz/INN8TimhOWme9SfYkFtfcZQcAvqxeDcplKBOxvNFvILIMRkf8Cd7OSaziNY3Nw4F9o=
+	t=1711290620; cv=none; b=X/rCgCwFVZ2delA/uqygi0oIsHXHciDIKhCSoDFmFF9TzwaO8015TImcDTRjwfE52Ae/KShvezc1uH9xUj87+TVq2nXYhv3qI+15g9g9Cjd2bC0nzL3vX7pDpRSeXz8A1Bs01Uibo4vGtegLg25jK/vUsbEJnkWoL+6uiKcZ+t0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711290360; c=relaxed/simple;
-	bh=RVxhX4dPMQfHP1LNRdaUBYq/s5ukbtceGMo426FF1kU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E1ETD36YErnth9TI5SnA0XgACr8nR1u73LhtOAT4folUqPam9nYWGij1ex8W4YrJjj6SaTyw3xOy4pkk3vkhlOscoZXKbvkzDWi7lttSkImHSlWtA85OYevu+c7ZFBpiM8tcyd5GcJwMqGoxXMUkbnFA2X9R3hmQ73ajWvvIejY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=RqxEvJiU; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8801640E0174;
-	Sun, 24 Mar 2024 14:25:49 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id ocvCumqjFCq2; Sun, 24 Mar 2024 14:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711290345; bh=2jtNjuXb+Ja0hqZhNXzpzn1PoFdB0o0s9Yn1ykRbKCY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RqxEvJiUwRJnCm9K4VOcls2mvjcF18lW6QuWtySpb0K0ZAdsoQizkrPMeLOxTLCIW
-	 MQ59JDENj8tOVa9YQ5e8hCP4Gsc9OY5yWNdBihEU5RylDdaCPz13U+obClTgfI6Ljo
-	 xAcgxhG88wd56Uig4IQDRQuDHRF/4oW0ICp9cPLpitg+0Fa+caHXV4Zogv0dr4+POb
-	 hHOagl5jPmKNo1d3FtbAJ9MwZN5r21ED8zOKf+Gd8gqkzjBlvTOEZxY9tML40urLa5
-	 8jcRse4S8Zq/keV2lgxd9iGVV40LfRaj8BHg2LpE0pZgncbDo4tWFVwglrjft5Vfhy
-	 7aYYMAQb4Oe0bZnU8vDLmS9fF08WfKux3F7fIduOw7pFOa4p+pLjgYuhZ1xRz8XvTg
-	 h6UP3gMcwCxftcrjbXUnf8ACYcq07QXwYuvrReSs7Ef0xRmNEiErM7L4ZgIoJJhqC3
-	 7xmCG9NVzmcezXu9Q1OcU9Q8koPiCZs4XCzlD2P9Ov955+bXT31osaeLu07UBaT0il
-	 phhhgUq+plsj9JrbALcOXU+uc7KLsXTqCv0LP8cuZS0m+RkgfZLQbh/lyPt+va/PKZ
-	 l9cfj9wrgBSGAq5AzWA80HXjFU8IEVLDj2W7iOqrUaL8nsciSYYIn3dxKgYqqRV5db
-	 N6FI/WxMeR6WD33MN2dKAS/0=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6F9B040E0140;
-	Sun, 24 Mar 2024 14:25:39 +0000 (UTC)
-Date: Sun, 24 Mar 2024 15:25:32 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>, oe-lkp@lists.linux.dev, lkp@intel.com,
-	linux-kernel@vger.kernel.org,
-	Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [linus:master] [x86/sme]  48204aba80:
- BUG:kernel_failed_in_early-boot_stage,last_printk:Booting_the_kernel(entry_offset:#)
-Message-ID: <20240324142532.GAZgA33M_u1lW_E_1n@fat_crate.local>
-References: <202403221630.2692c998-oliver.sang@intel.com>
+	s=arc-20240116; t=1711290620; c=relaxed/simple;
+	bh=hOoOy2R15CLs9Wr+m+ubF/n6OS5oyuOShoBNjrq0iEA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=IUU0bs/r3VToXd2M33QcNb6p+cECvLMLcq2ZaiUHou0PmPqQ4SU0MN77nIVo+LSFE+aCNMXtZyEYpTpDpMrtwZBOkOb6eWZ93xGQ3qaJNUZEhBg/NjsTz8djNHVklrhjGbR+3/MUCqsA/dA7kv4zDwdJW4Z27hj46UC5wGHq0LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3684e7a4770so36622665ab.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 07:30:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711290618; x=1711895418;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zPPSDlx7hKqH2sZcGMIDJSdB0ZptCI68pWaW9sID1zc=;
+        b=CIDowLKDtYW4nLZ/+3BJ0vwPK/Iu5KlsOIxrvJtZXHphTjpEeHPwWKCVXAhzHYYOXR
+         +l9dzfjgmyJbfGwqtSfGtUu83KEvx7kKU8+KJpHN0P7VZ4XIxOkT561IZ0yrM8E7YaiF
+         u48q36d8Gw51opwDA4tRQBMcjknPk4RkV6DJSmqtQnqouYjyvNicuEhWd+U3UQOknXpE
+         3NoOo/5a9Yc2jCH/XHET4mEUlDSoPegeLXeX10FXqgViWMQRcv2i4E9XqwL55hJ8b76g
+         Sl4QCFPQkwWn+wuK87/bqlSV7+Ftu4P5WULPTy9RYvMYM39FGMt9dJ8K2SG4ggv6Lgta
+         XCqQ==
+X-Gm-Message-State: AOJu0Yw6VfPvcT2kOxCdGZNRE2o8WWTOUtow6ZtBWlLFjKcO95akc0/D
+	QBmJ819czUiDUqB3mn8T2OsHLKsnhlAke0WS+3vq6q1qUEHuVXvIpfs0taYovVBywbha576EneT
+	xLmY5oslPucZkDj6lkru8/5oTpMPL3256/v3xAuzkFyXCwGXmSU560BACvg==
+X-Google-Smtp-Source: AGHT+IGuDD0K8XsE7rJCDmAcBzaKmGPYfUTZHwLSbVweEHbMkcT7g8oAf6YVfXQGG+TqGn6anFPeIlVApCvgxh6m1YHkP3f++GxT
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202403221630.2692c998-oliver.sang@intel.com>
+X-Received: by 2002:a05:6e02:20ce:b0:368:8cf9:9ab5 with SMTP id
+ 14-20020a056e0220ce00b003688cf99ab5mr32271ilq.2.1711290617932; Sun, 24 Mar
+ 2024 07:30:17 -0700 (PDT)
+Date: Sun, 24 Mar 2024 07:30:17 -0700
+In-Reply-To: <0000000000000f823606139faa5d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000063c12f061468e5ab@google.com>
+Subject: Re: [syzbot] [PATCH] fix array-index-out-of-bounds in bpf_prog_select_runtime
+From: syzbot <syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Mar 22, 2024 at 05:03:18PM +0800, kernel test robot wrote:
-> 
-> 
-> Hello,
-> 
-> kernel test robot noticed "BUG:kernel_failed_in_early-boot_stage,last_printk:Booting_the_kernel(entry_offset:#)" on:
-> 
-> commit: 48204aba801f1b512b3abed10b8e1a63e03f3dd1 ("x86/sme: Move early SME kernel encryption handling into .head.text")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> [test failed on linus/master 741e9d668aa50c91e4f681511ce0e408d55dd7ce]
-> [test failed on linux-next/master a1e7655b77e3391b58ac28256789ea45b1685abb]
-> 
-> in testcase: boot
-> 
-> compiler: gcc-12
-> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-My guest boots with your .config and SNB as CPU model:
+***
 
-..
-[    0.373770][    T1] smpboot: CPU0: Intel Xeon E312xx (Sandy Bridge) (family: 0x6, model: 0x2a, stepping: 0x1)
+Subject: [PATCH] fix array-index-out-of-bounds in bpf_prog_select_runtime
+Author: cam.alvarez.i@gmail.com
 
-Artefacts like:
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
--initrd initrd-vm-meta-180.cgz
+BPF documentation specifies that the maximum stack depth for a BPF
+program is 512 bytes. This is not enforced when selecting a bpf
+interpreter, thus casuing an index out of bounds error when trying to
+obtain an interpreter with a bigger stack size.
 
-or
+This patch enforces the stack size to be not bigger than
+512.
 
-RESULT_ROOT=/result/boot/1/vm-snb/quantal-x86_64-core-20190426.cgz/x86_64-rhel-8.3-bpf/gcc-12/48204aba801f1b512b3abed10b8e1a63e03f3dd1/3
+Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
+---
+ kernel/bpf/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I don't have and don't know how to generate here so I can't run your
-exact reproducer.
-
-Thx.
-
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 696bc55de8e8..8167b3a721e9 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2196,7 +2196,7 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ 		BUG_ON(1);
+ 		return 0;
+ }
+-
++#define BPF_MAX_STACK_SIZE 512
+ #define PROG_NAME(stack_size) __bpf_prog_run##stack_size
+ #define DEFINE_BPF_PROG_RUN(stack_size) \
+ static unsigned int PROG_NAME(stack_size)(const void *ctx, const struct bpf_insn *insn) \
+@@ -2345,7 +2345,7 @@ static void bpf_prog_select_func(struct bpf_prog *fp)
+ {
+ #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+ 	u32 stack_depth = max_t(u32, fp->aux->stack_depth, 1);
+-
++	stack_depth = min_t(u32, stack_depth, BPF_MAX_STACK_SIZE);
+ 	fp->bpf_func = interpreters[(round_up(stack_depth, 32) / 32) - 1];
+ #else
+ 	fp->bpf_func = __bpf_prog_ret0_warn;
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
