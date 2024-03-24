@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA3068896DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C9B5889BB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:59:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC3C81C30772
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:00:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E38E1C33059
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B42121EB85;
-	Mon, 25 Mar 2024 02:39:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22CD21FA16;
+	Mon, 25 Mar 2024 02:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ihexRjqO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qRmAIQkX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3AE1E7726;
-	Sun, 24 Mar 2024 22:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AF41E770A;
+	Sun, 24 Mar 2024 22:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320868; cv=none; b=PhIjVmjOMDyDVylHjSnkTPknp87cEGw2ORB+nQhjpyAWIvCmD+n59DEatYvbYyC6fMfyzYpLNxhRsO/575BWbTjf+DZzb2ALJTMj6ADbx/lDGnVag5ghQC3DbGWqcoeB/aPntvUwgYySG8DcKCLPj6c2nnBquTYJAyKW2T1xBd4=
+	t=1711320868; cv=none; b=Jh+/67LogiSjFIlJMyixofGXPANAkj6cMaUUucxx975HJN5UtiB+MRR/XsapKLE2CMn1O8V/Dy+Dx1KoWK5MDdr3vZqlSmL+p1qQ9g8Mpm9tEqz4umyYlLV8dQBqrNinsASEgBC4g/pnnMQVQBz6uRwTYOeO+OgzqcVysbdoCpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320868; c=relaxed/simple;
-	bh=YZPj3TCyeuHzFbALh1S/QKMJWCXWAsaZ839msyp0NqU=;
+	bh=ScxSW6UgPUsVoztvMsj+KZEAdBvd7VPwubsif2s549w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cspFzXP/xNoV2FJ91TnNLhRCcsfQJatChAga8AgEnC96Z5GQ3k+r02CFgqfXpvqbul5cG4iS8F60N3cWR+c72c6v7NQz+Q9j9jtkQdV8uYC+ePkBOF+UOIYbEckuHj25oehAwoqa5QSVdQLDsiL5uU3+k9bJtHLwbGmZorFTavY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ihexRjqO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87496C43399;
-	Sun, 24 Mar 2024 22:54:26 +0000 (UTC)
+	 MIME-Version; b=ZCIQnSvmccRwxHAxs7nEkkCAlJFHHcMy0dcVRq1DmIYAhlWhIwQxFcTxvv36Rd2pNggd4onhnpK3j5N3TjxgLKn4F+g1eeqh9JcwI4wIdD77MKFR8pN4W4Q60Aip4MPW0meD9KBGqKIYnpqfh9mJV7TiukKNFPAH1SvbUA1wols=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qRmAIQkX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80CD5C433F1;
+	Sun, 24 Mar 2024 22:54:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320867;
-	bh=YZPj3TCyeuHzFbALh1S/QKMJWCXWAsaZ839msyp0NqU=;
+	s=k20201202; t=1711320868;
+	bh=ScxSW6UgPUsVoztvMsj+KZEAdBvd7VPwubsif2s549w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ihexRjqOk0cUYbiEKCOfPEHM6k2OC7qmc8+0E7mFZ4XQe9jTUtelMZIcAH1C+Ea6I
-	 X+K1fvZCsD4XBYUPnJY1AKx/iRk9wCPXhih5TI/27Rg1FvKepdsBkcrQHi9rvcQ3F8
-	 Ib8DGcSvfvA6U7NfZLeXEB9OZNY3ATPT51V/EcTmdfkV3NlorBwmMP9fXmtuGNL4iZ
-	 j2NujFPiBKC/YRuXOIEvJ+HoV+c5pw9+dZnxSZRgZfJiXySc2AQXhqwvKPwUKLBVqI
-	 M0nl7YX2qvGTPIQrVAj9KcBcEXJjw3TVhACPRcUSJb0GKlywkGJKf66E5KPReq0Enr
-	 GARlhmWXdkvLQ==
+	b=qRmAIQkX1kmF199ZJLTYueRqF4ZE7LQ0W+VAnQTzq3otYNHt3nnGzVEK6Q1X3AIGW
+	 QApx3rOgdxY1tu+RNvZieR3HnHTaCvcvB+JP3ZYUcHDyPVanGPLyGeTAfQMpFr1TYi
+	 0WZ/Ow95PoehSjCYd5/6dNm0WfZAvVQBS6AuVyD9MLPojYMx6pBgU3WtrQnEd/JeLZ
+	 eWWwMiNolInKn2jlAe6M7outOgqWiou2yRS8S8J8GdWbBG152ff6w05oR7C8I4Rfxf
+	 KOy7auM9KzmrLiFrdNbnhw5tIxBMOdH49QxGWnepbVvWv9Nhp71iSacGwHDwqzgRsk
+	 V0vNBv3PSc09w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ezra Buehler <ezra.buehler@husqvarnagroup.com>,
-	Martin Kurbanov <mmkurbanov@salutedevices.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+Cc: Zhipeng Lu <alexious@zju.edu.cn>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 431/713] mtd: spinand: esmt: Extend IDs to 5 bytes
-Date: Sun, 24 Mar 2024 18:42:37 -0400
-Message-ID: <20240324224720.1345309-432-sashal@kernel.org>
+Subject: [PATCH 6.7 432/713] media: edia: dvbdev: fix a use-after-free
+Date: Sun, 24 Mar 2024 18:42:38 -0400
+Message-ID: <20240324224720.1345309-433-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,66 +62,82 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+From: Zhipeng Lu <alexious@zju.edu.cn>
 
-[ Upstream commit 4bd14b2fd8a83a2f5220ba4ef323f741e11bfdfd ]
+[ Upstream commit 8c64f4cdf4e6cc5682c52523713af8c39c94e6d5 ]
 
-According to the datasheets, the ESMT chips in question will return a 5
-byte long identification code where the last 3 bytes are the JEDEC
-continuation codes (7Fh). Although, I would have expected 4 continuation
-codes as Powerchip Semiconductor (C8h, corresponding to the parameter
-page data) is located in bank 5 of the JEDEC database.
+In dvb_register_device, *pdvbdev is set equal to dvbdev, which is freed
+in several error-handling paths. However, *pdvbdev is not set to NULL
+after dvbdev's deallocation, causing use-after-frees in many places,
+for example, in the following call chain:
 
-By matching the full 5 bytes we can avoid clashes with GigaDevice NAND
-flashes.
+budget_register
+  |-> dvb_dmxdev_init
+        |-> dvb_register_device
+  |-> dvb_dmxdev_release
+        |-> dvb_unregister_device
+              |-> dvb_remove_device
+                    |-> dvb_device_put
+                          |-> kref_put
 
-This fix allows the MT7688-based GARDENA smart Gateway to boot again.
+When calling dvb_unregister_device, dmxdev->dvbdev (i.e. *pdvbdev in
+dvb_register_device) could point to memory that had been freed in
+dvb_register_device. Thereafter, this pointer is transferred to
+kref_put and triggering a use-after-free.
 
-Fixes: aa08bf187f32 ("mtd: spinand: esmt: add support for F50D2G41KA")
-Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20240125200108.24374-3-ezra@easyb.ch
+Link: https://lore.kernel.org/linux-media/20240203134046.3120099-1-alexious@zju.edu.cn
+Fixes: b61901024776 ("V4L/DVB (5244): Dvbdev: fix illegal re-usage of fileoperations struct")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/spi/esmt.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/media/dvb-core/dvbdev.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
-index 31c439a557b18..4597a82de23a4 100644
---- a/drivers/mtd/nand/spi/esmt.c
-+++ b/drivers/mtd/nand/spi/esmt.c
-@@ -104,7 +104,8 @@ static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
- 
- static const struct spinand_info esmt_c8_spinand_table[] = {
- 	SPINAND_INFO("F50L1G41LB",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01),
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
-+				0x7f, 0x7f),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(1, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -113,7 +114,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
- 	SPINAND_INFO("F50D1G41LB",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11),
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
-+				0x7f, 0x7f),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(1, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -122,7 +124,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
- 		     0,
- 		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
- 	SPINAND_INFO("F50D2G41KA",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51),
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51, 0x7f,
-+				0x7f, 0x7f),
- 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
- 		     NAND_ECCREQ(8, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index 49f0eb7d0b9d3..733d0bc4b4cc3 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -490,6 +490,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		dvbdevfops = kmemdup(template->fops, sizeof(*dvbdevfops), GFP_KERNEL);
+ 		if (!dvbdevfops) {
+ 			kfree(dvbdev);
++			*pdvbdev = NULL;
+ 			mutex_unlock(&dvbdev_register_lock);
+ 			return -ENOMEM;
+ 		}
+@@ -498,6 +499,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		if (!new_node) {
+ 			kfree(dvbdevfops);
+ 			kfree(dvbdev);
++			*pdvbdev = NULL;
+ 			mutex_unlock(&dvbdev_register_lock);
+ 			return -ENOMEM;
+ 		}
+@@ -531,6 +533,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		}
+ 		list_del(&dvbdev->list_head);
+ 		kfree(dvbdev);
++		*pdvbdev = NULL;
+ 		up_write(&minor_rwsem);
+ 		mutex_unlock(&dvbdev_register_lock);
+ 		return -EINVAL;
+@@ -553,6 +556,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		dvb_media_device_free(dvbdev);
+ 		list_del(&dvbdev->list_head);
+ 		kfree(dvbdev);
++		*pdvbdev = NULL;
+ 		mutex_unlock(&dvbdev_register_lock);
+ 		return ret;
+ 	}
+@@ -571,6 +575,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		dvb_media_device_free(dvbdev);
+ 		list_del(&dvbdev->list_head);
+ 		kfree(dvbdev);
++		*pdvbdev = NULL;
+ 		mutex_unlock(&dvbdev_register_lock);
+ 		return PTR_ERR(clsdev);
+ 	}
 -- 
 2.43.0
 
