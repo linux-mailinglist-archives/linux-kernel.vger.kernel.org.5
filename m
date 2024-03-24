@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-113894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BA1888732
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:54:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E35A888ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3CAA2940AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:54:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4288A1F2B751
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F391ED0C9;
-	Sun, 24 Mar 2024 23:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3D671ED0F3;
+	Sun, 24 Mar 2024 23:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EdzbubYJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fK5QWpFk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F531494A1;
-	Sun, 24 Mar 2024 22:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A16F1494B4;
+	Sun, 24 Mar 2024 22:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320969; cv=none; b=tQgrS2/OKrUH5tHdQsgY2q2OHacE5zwAUhA/INbjxikFLHykEb8NofNXpYDswFp/3LgEB3wRPOXYK32W9JDd3il+17SzRA6AseCSz+kReL66oDGGSzebVUMafMMCuoUNDju9MZTO2VbfpllGXhPDb1itrDJyolpknDnQa3IQt+k=
+	t=1711320971; cv=none; b=WArPeFe8JZpZoxmIiE6GOBxfJn3xvae0JlOTYlOv0fqLpjBHq1iloEbGLzgpnHlfA0VhUMh0ptThLcTnPZaTmxq4FY/3t6rKUUrBiExcPS5ju5w/ThxfyahpnJiEfLVGsCaLP2pyqS/0moygx7a48pbCozqIKEQAotqXLN/UcaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320969; c=relaxed/simple;
-	bh=uudrhNqYTKl+5oPWr560nyF2+A8KIYZ0yK+KN9k+7a4=;
+	s=arc-20240116; t=1711320971; c=relaxed/simple;
+	bh=hG24ceIatTC20ZxBsqp5TxfOgfB2eDG8J9pF5Gn0hMg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LscNZvpc24VLFC5g9pVZx8CsjLovaxgEN3wiR67kqParOmuN33Dx4tem18xCCpCYRj22a+EfuWkibq3Lj4ZGxNV7kztkK9K18vlDHlPZz4TFIiOHL6o73YXC1Y3GhwReft1TwNQMPIl6kWdIVXbxXzxrYewzelqRR2ylsw5sRQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EdzbubYJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77806C43390;
-	Sun, 24 Mar 2024 22:56:08 +0000 (UTC)
+	 MIME-Version; b=I7WEFrGkzD1nHO11es0IbRqlO7Ik8VJnW2WS/E2fznq3xFHphunJ2lxF7/FUzYvC5L+GctpanPvWqcDnC8zcgyNfDiF0BXDp0jjhBjF3RVxvw3pOphCXawe64Ad1c0CFhHi1ZiKAX9D1qYQ9J9Y3DKngSYsIhRzIoNiZG1nAZ98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fK5QWpFk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AAE4C433F1;
+	Sun, 24 Mar 2024 22:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320969;
-	bh=uudrhNqYTKl+5oPWr560nyF2+A8KIYZ0yK+KN9k+7a4=;
+	s=k20201202; t=1711320970;
+	bh=hG24ceIatTC20ZxBsqp5TxfOgfB2eDG8J9pF5Gn0hMg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EdzbubYJk3T6kZr398JSBb7FuGdK7Gy58w/+7++M57W9QYWgjiaYjUKETze7qpj62
-	 4vWbwJnICV+ZKcIXaxxO1+NP/Q1qVT1u4FauHzk0CMqVg3/cum74XsJAR924A8eP4d
-	 rSQxzPortBh4H1ItGpTxfl4Dm++TwNSg4hoOsEtGZBIFnuZ/9dAvuxTr+AKbxCHTuE
-	 h3AcTwkIMW9wxYp1Sk6yLmLRE9FFrDQHtlDkd1+BEuPz98Bg3JOGOYouXidnTWSJ0g
-	 jxdGvv7596SkzcX4Z0HGk37I8pKXxXEfaxDozPj4y9wAYJrIl7anQSudUvOvFstKVa
-	 MrOp3aggtI8kA==
+	b=fK5QWpFkN8VAqgUk5WaW6M2MZXQtyDRBu7uFhksNwLIMOxNV+BWfvDz8HQQqJa8ol
+	 rvHfxMHvdBJsB32EXyPHvn35tdDtvacPm671lPsjq0cU3z7m8YpXXiL7XSTrLNHzNT
+	 lH9eONzyCKoaBbFOf5pHzsvKPqxDZGOxSl7aPXiLsgRhIjicSLXI5pHaIfKTaePgAA
+	 yb129eXFdVoXXBU+VyV2Me/YW79lBCX9G+7Lf7sEwAWT3jKIQPuQqkAJuPfjAtFJXb
+	 2xs2L4z3mbV59gbiTUUkAV5639rqOVyfS8pehqWqNzAANKq8ADe71+lnsgpP9zNzUL
+	 FNFdVj28ujzsw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: Gabor Juhos <j4g8y7@gmail.com>,
 	Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 532/713] clk: qcom: gcc-ipq5018: fix 'halt_reg' offset of 'gcc_pcie1_pipe_clk'
-Date: Sun, 24 Mar 2024 18:44:18 -0400
-Message-ID: <20240324224720.1345309-533-sashal@kernel.org>
+Subject: [PATCH 6.7 533/713] clk: qcom: gcc-ipq5018: fix register offset for GCC_UBI0_AXI_ARES reset
+Date: Sun, 24 Mar 2024 18:44:19 -0400
+Message-ID: <20240324224720.1345309-534-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -66,47 +66,23 @@ Content-Transfer-Encoding: 8bit
 
 From: Gabor Juhos <j4g8y7@gmail.com>
 
-[ Upstream commit 11b752ac5a07cbfd95592fac5237a02f45662926 ]
+[ Upstream commit 7d474b43087aa356d714d39870c90d77fc6f1186 ]
 
-The following table shows the values of the 'halt_reg' and the
-'enable_reg' fields from the pcie clocks defined in the current
-driver:
+The current register offset used for the GCC_UBI0_AXI_ARES reset
+seems wrong. Or at least, the downstream driver uses [1] the same
+offset which is used for other the GCC_UBI0_*_ARES resets.
 
-  clock                        halt_reg    enable_reg
+Change the code to use the same offset used in the downstream
+driver and also specify the reset bit explicitly to use the
+same format as the followup entries.
 
-  gcc_pcie0_ahb_clk            0x75010     0x75010
-  gcc_pcie0_aux_clk            0x75014     0x75014
-  gcc_pcie0_axi_m_clk          0x75008     0x75008
-  gcc_pcie0_axi_s_bridge_clk   0x75048     0x75048
-  gcc_pcie0_axi_s_clk          0x7500c     0x7500c
-  gcc_pcie0_pipe_clk           0x75018     0x75018
-
-  gcc_pcie1_ahb_clk            0x76010     0x76010
-  gcc_pcie1_aux_clk            0x76014     0x76014
-  gcc_pcie1_axi_m_clk          0x76008     0x76008
-  gcc_pcie1_axi_s_bridge_clk   0x76048     0x76048
-  gcc_pcie1_axi_s_clk          0x7600c     0x7600c
-  gcc_pcie1_pipe_clk                 8*    0x76018
-
-Based on the table, it is quite likely that the pcie0 and the pci1
-clocks are using the same register layout, however it seems that
-the value of the 'halt_reg' field in the 'gcc_pcie1_pipe_clk' clock
-is wrong.
-
-In the downstream driver [1], the same '0x76018' value is used for
-both the 'halt_reg' and for the 'enable_reg' fields of the
-'gcc_pcie1_pipe_clk' clock.
-
-Update the current driver to use the same value used downstream as
-probably that is the correct value.
-
-1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4.r4/drivers/clk/qcom/gcc-ipq5018.c?ref_type=heads#L2316
+1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4.r4/drivers/clk/qcom/gcc-ipq5018.c?ref_type=heads#L3773
 
 Fixes: e3fdbef1bab8 ("clk: qcom: Add Global Clock controller (GCC) driver for IPQ5018")
 Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Link: https://lore.kernel.org/r/20240225-gcc-ipq5018-register-fixes-v1-2-3c191404d9f0@gmail.com
+Link: https://lore.kernel.org/r/20240225-gcc-ipq5018-register-fixes-v1-3-3c191404d9f0@gmail.com
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -114,18 +90,18 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/clk/qcom/gcc-ipq5018.c b/drivers/clk/qcom/gcc-ipq5018.c
-index cef9a1e7c9fdb..5e81cfa77293a 100644
+index 5e81cfa77293a..e2bd54826a4ce 100644
 --- a/drivers/clk/qcom/gcc-ipq5018.c
 +++ b/drivers/clk/qcom/gcc-ipq5018.c
-@@ -2180,7 +2180,7 @@ static struct clk_branch gcc_pcie1_axi_s_clk = {
- };
- 
- static struct clk_branch gcc_pcie1_pipe_clk = {
--	.halt_reg = 8,
-+	.halt_reg = 0x76018,
- 	.halt_check = BRANCH_HALT_DELAY,
- 	.halt_bit = 31,
- 	.clkr = {
+@@ -3632,7 +3632,7 @@ static const struct qcom_reset_map gcc_ipq5018_resets[] = {
+ 	[GCC_SYSTEM_NOC_BCR] = { 0x26000, 0 },
+ 	[GCC_TCSR_BCR] = { 0x28000, 0 },
+ 	[GCC_TLMM_BCR] = { 0x34000, 0 },
+-	[GCC_UBI0_AXI_ARES] = { 0x680},
++	[GCC_UBI0_AXI_ARES] = { 0x68010, 0 },
+ 	[GCC_UBI0_AHB_ARES] = { 0x68010, 1 },
+ 	[GCC_UBI0_NC_AXI_ARES] = { 0x68010, 2 },
+ 	[GCC_UBI0_DBG_ARES] = { 0x68010, 3 },
 -- 
 2.43.0
 
