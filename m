@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-114323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E6148889CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:03:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD938889C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F7711C284ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:03:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 490612872E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F6616F26F;
-	Sun, 24 Mar 2024 23:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8509316EBE0;
+	Sun, 24 Mar 2024 23:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="atp26hFW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ap8FaGYI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D7F21148A;
-	Sun, 24 Mar 2024 23:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B2E21149A;
+	Sun, 24 Mar 2024 23:08:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321706; cv=none; b=Azy5zUzPK7f7R36WmDI3N38CvijoVoC5gQ6pNTgrdw4Rdh3Vb4y28KXm3ZYo05foz7YIdzUEJuIeutAdndf0rD9go67NejHcvMAPyUqPGGA0aym0YG35fr4zEZ6yoiQlEuT+oGOmuX569vzF58Hmd4vsFuc88D3dufeXx46rQ6o=
+	t=1711321707; cv=none; b=K/P17w5+6TbVAuEhGoA5mabiQ9HA2gJ0OapzZZP4I31Xt/z7FyQ8zOivkbyVwBgl6S0PoZ/5E25HjVgB7J1rEvAERmDeJ39yqcH8l6cXb27mBZlpTFgbQQVXv1lwCnH6a6iWyLeLkSmPp7DJzB25oD9RWkL2JORFI5ZJtBS49ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321706; c=relaxed/simple;
-	bh=I0ftkpg1auOYnQ2mH1Az1FoRNSu97/FiJb83KHbPwCQ=;
+	s=arc-20240116; t=1711321707; c=relaxed/simple;
+	bh=aoaVGp9uRd7q1yvISqaBgafhKrn8LdUJODoUaqJwLec=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DGgAqIhNLq8cdhgKYJRhdu9TPyqC/H16VY9uzD5J9OD6Z1R8Hf3P0poemhmFoHV1PH5gSqz/18Eu+WJybFgDyMge1yvBUaN6g4gXmpyF/WdV1ojunNhvw4oWqn2k58ikxeGx2nybUqKyVjrZ6EwEM1D+dt9JkVYaVrRORilDPRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=atp26hFW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CACFAC433C7;
-	Sun, 24 Mar 2024 23:08:24 +0000 (UTC)
+	 MIME-Version; b=XsAUy/OOztqNOjjBn1BEluDJt8xfmIqFw2QkIsd61+IyF4KQgwW8mHxmGibQKl8+4bdPCHDDEYcuuxFcmTOJPPKYVhdQz6G3ScsMIMAboSmP8bwyz/Nu0h8sqJhsxFYi4TRVLEwfNRtfKMcYvA4JhdZbcfIl0b8XrdtJV+q5lZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ap8FaGYI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3CD6C433F1;
+	Sun, 24 Mar 2024 23:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321705;
-	bh=I0ftkpg1auOYnQ2mH1Az1FoRNSu97/FiJb83KHbPwCQ=;
+	s=k20201202; t=1711321706;
+	bh=aoaVGp9uRd7q1yvISqaBgafhKrn8LdUJODoUaqJwLec=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=atp26hFWh6Vl6Xmnhh++JFjfMZbiWgde0lFeHfwwJNdIzHMTwUwGrxuKqrU5cUmWk
-	 C7KsbkWtsYGZB2i8bojSuwWdmUrk+is+qc1oJye1CyfbuPc82TvRut5HpRexk6AaMf
-	 Op+m39g9N1i34X9Hr4XLNIxSBwASwXHhmOK7XoEEOD4ObXaJHLkMwEjLTq6S4dw+P7
-	 xbOZjoNoSuZSchEm6pXRxUAViandf3afNiPQII9UtAf+X3F/+zhlRe6RQ3s5mLFg9g
-	 qm3K1K7Ck7x4XyieIIUoCvBFoPenbpZLAtU+ZzFmULsvBnRGFA4Mnj3yj6hTEB7DCK
-	 wPlJruGH5y5tw==
+	b=Ap8FaGYIpceEQwIZnG/0FIzkjN4zE72WQFNqUQlco5M2VOfgRf/1rqidcanUs3WFV
+	 h2mLc9ro5VQrZvx6xYdLyKEshMT8tl2MmwC880NZJFqdw2D/1wYK/vXHTtoWxJaE+5
+	 TId765TimwUECaWZxZvKPATXSDxcoT/nGaJ2bvDAAmjsJtP4UEx5QDZ5hEvRjxqIL+
+	 z1kxIBB3F/1TOo9Vq0WrM8tsnQM7NXVhFdDxkNz9J2BXXqDEtIW1PMnIrymMFQi99K
+	 iXYu5psa7Q+FWDFhrhuy6V6mR4wjpYW9+/sBvCxlJ+iRsZwIV1g0OkqmLNebhDBl0L
+	 D1ea2gAM2Rq6g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Stephen Boyd <sboyd@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 434/638] clk: mediatek: mt8135: Fix an error handling path in clk_mt8135_apmixed_probe()
-Date: Sun, 24 Mar 2024 18:57:51 -0400
-Message-ID: <20240324230116.1348576-435-sashal@kernel.org>
+Subject: [PATCH 6.6 435/638] clk: mediatek: mt7622-apmixedsys: Fix an error handling path in clk_mt8135_apmixed_probe()
+Date: Sun, 24 Mar 2024 18:57:52 -0400
+Message-ID: <20240324230116.1348576-436-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -65,43 +65,36 @@ Content-Transfer-Encoding: 8bit
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 03c1c51eba6be49b42816af9db114553131af6c8 ]
+[ Upstream commit a32e88f2b20259f5fe4f8eed598bbc85dc4879ed ]
 
-If an error occurs after mtk_alloc_clk_data(), mtk_free_clk_data() should
-be called, as already done in the remove function.
+'clk_data' is allocated with mtk_devm_alloc_clk_data(). So calling
+mtk_free_clk_data() explicitly in the remove function would lead to a
+double-free.
 
-Fixes: 54b7026f011e ("clk: mediatek: mt8135-apmixedsys: Convert to platform_driver and module")
+Remove the redundant call.
+
+Fixes: c50e2ea6507b ("clk: mediatek: mt7622-apmixedsys: Add .remove() callback for module build")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/6cd6af61e5a91598068227f1f68cfcfde1507453.1704615011.git.christophe.jaillet@wanadoo.fr
+Link: https://lore.kernel.org/r/2c553c2a5077757e4f7af0bb895acc43881cf62c.1704616152.git.christophe.jaillet@wanadoo.fr
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/mediatek/clk-mt8135-apmixedsys.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/mediatek/clk-mt7622-apmixedsys.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/clk/mediatek/clk-mt8135-apmixedsys.c b/drivers/clk/mediatek/clk-mt8135-apmixedsys.c
-index d1239b4b3db74..41bb2d2e2ea74 100644
---- a/drivers/clk/mediatek/clk-mt8135-apmixedsys.c
-+++ b/drivers/clk/mediatek/clk-mt8135-apmixedsys.c
-@@ -59,7 +59,7 @@ static int clk_mt8135_apmixed_probe(struct platform_device *pdev)
- 
- 	ret = mtk_clk_register_plls(node, plls, ARRAY_SIZE(plls), clk_data);
- 	if (ret)
--		return ret;
-+		goto free_clk_data;
- 
- 	ret = of_clk_add_hw_provider(node, of_clk_hw_onecell_get, clk_data);
- 	if (ret)
-@@ -69,6 +69,8 @@ static int clk_mt8135_apmixed_probe(struct platform_device *pdev)
- 
- unregister_plls:
+diff --git a/drivers/clk/mediatek/clk-mt7622-apmixedsys.c b/drivers/clk/mediatek/clk-mt7622-apmixedsys.c
+index 9cffd278e9a43..1b8f859b6b6cc 100644
+--- a/drivers/clk/mediatek/clk-mt7622-apmixedsys.c
++++ b/drivers/clk/mediatek/clk-mt7622-apmixedsys.c
+@@ -127,7 +127,6 @@ static void clk_mt7622_apmixed_remove(struct platform_device *pdev)
+ 	of_clk_del_provider(node);
+ 	mtk_clk_unregister_gates(apmixed_clks, ARRAY_SIZE(apmixed_clks), clk_data);
  	mtk_clk_unregister_plls(plls, ARRAY_SIZE(plls), clk_data);
-+free_clk_data:
-+	mtk_free_clk_data(clk_data);
- 
- 	return ret;
+-	mtk_free_clk_data(clk_data);
  }
+ 
+ static const struct of_device_id of_match_clk_mt7622_apmixed[] = {
 -- 
 2.43.0
 
