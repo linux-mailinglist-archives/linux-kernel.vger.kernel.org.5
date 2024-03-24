@@ -1,203 +1,137 @@
-Return-Path: <linux-kernel+bounces-112724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8D8A887D6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:16:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62269887D72
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:22:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A68B1C20A74
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:16:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D0CF1F212B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E358018639;
-	Sun, 24 Mar 2024 15:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="UeKm70/b"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E9E1426F;
-	Sun, 24 Mar 2024 15:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A53218EAF;
+	Sun, 24 Mar 2024 15:22:45 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id BF9D71862F
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 15:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711293375; cv=none; b=BgQEVpnDAI5jB83n8awvnspYXv+19p+74TbRjxdAu0V2S9bOvo+9J/0X7osrPHEcgi9AJ6WohsKSroq0jwvW/Af2YrcRcuusL+81lbr280qpCMPszKKa45nFR2NawyrnXQgELFoS6k2/KMmN91NJLQX71oASTOz31xB/BUPJcis=
+	t=1711293764; cv=none; b=EhmoeCxNugq/GAGzzZw/4fwkGTrdjNonELM+hv36/zBkpvbNjuIeKR0ui36eNXSARGUSqxiDf6xmoKvp3wGEygMi2EaZvKLSsmqR31RWk09yeXN9LfmEH3q01Nf7sgInMN8YFZbKH+xbKM6TmH7VoBit05woKySQwfkiW5EKBmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711293375; c=relaxed/simple;
-	bh=/vVhyZaEb80l55hrvuHY1aJaeQ00mWkK1psLju4BvtQ=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=EGf4MpFhtOIZ0aNPoEtxhDVBk+3HDPGd1KegCOUC73u++qY/5Fy2YD4ocX1UTsXZlCB4K0Td8ZWEYRR1RRrpxPOV+5G1WS6MtnH6g+4Bt4FndFRzOzSItLRdstK5f2Xd7Wr6XuadZoTAssrFIYpY4HGAT0f5QRtJOWG5VABB+TU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=UeKm70/b; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Message-ID:Date:Subject:To:From:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=zGy+MTIuQKj08FjWhGd/m2pfMqypqBovoRY5p/5r4AM=; t=1711293372; x=1711725372;
-	 b=UeKm70/bZJ7F7+A5UcWH1v+rixCBqX7ZNbZVUkrm+E/Uv9R7cHZSF2HYfMU3OKirREt9NFBCzL
-	oNjTma9Tp1UMfzFMVlk2B2pq4e0fmN3PvKf75i8+vSSyZF6hcEKj0HQeFAZ/M5m4vGVYATN28+FDj
-	OwRECOfUYIQq+8II+G7/h1M4pRDom5VzR2rk9Ywd9cjm/r1B2cJfU/+rwHcgSHNAhCr2cHSxwRpP/
-	kKkU7ML/2ZDXjKYameRAFeKE2xKBBEFyCebGBHYxqVDqW3U436psfE45CTnBcubz7DiX5AlLJrqyQ
-	8GDvDMi0Dx/RZEXnYsRA5uRKHGb+yQ9IPaygQ==;
-Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	id 1roPZy-0005NA-4s; Sun, 24 Mar 2024 16:16:10 +0100
-From: "Regzbot (on behalf of Thorsten Leemhuis)" <regressions@leemhuis.info>
-To: LKML <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Linux regressions report  for mainline [2024-03-24]
-Date: Sun, 24 Mar 2024 15:16:08 +0000
-Message-ID: <171129332789.1915280.10544327663661648631@leemhuis.info>
-X-Mailer: git-send-email 2.44.0
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711293764; c=relaxed/simple;
+	bh=SuH1hMVA2o74FCs6AvGI7dXDMoRLsBXOu5zkwoZfD8Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=paZMTEiA6+s/fwFzF4qP2nOmUsZTs7NyAreV2doy+2D64sZRYgSZhoZWJRkrp1D3lUgSUkJ5rrRL7vxwSqk2mDCZGptJsJkZgsOXfi1C0nBlMJww8vioO2prYY9kkgTEV7eFR3pl8vOckKWAi17a1gs+T7G44mJDYirci6o2Jm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 820911 invoked by uid 1000); 24 Mar 2024 11:22:41 -0400
+Date: Sun, 24 Mar 2024 11:22:41 -0400
+From: Alan Stern <stern@rowland.harvard.edu>
+To: comex <comexk@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+  Kent Overstreet <kent.overstreet@linux.dev>,
+  Boqun Feng <boqun.feng@gmail.com>,
+  rust-for-linux <rust-for-linux@vger.kernel.org>,
+  linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+  llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
+  Alex Gaynor <alex.gaynor@gmail.com>,
+  Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>,
+  =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+  Benno Lossin <benno.lossin@proton.me>,
+  Andreas Hindborg <a.hindborg@samsung.com>,
+  Alice Ryhl <aliceryhl@google.com>, Andrea Parri <parri.andrea@gmail.com>,
+  Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+  Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>,
+  Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>,
+  "Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>,
+  Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>,
+  Nathan Chancellor <nathan@kernel.org>,
+  Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com,
+  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
+  Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+  Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+  Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+  "H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>,
+  linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <174272a1-e21f-4d85-94ab-f0457bd1c93b@rowland.harvard.edu>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
+ <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
+ <C85BE4F4-5847-45B4-A973-76B184B35EDE@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711293372;deb53a8e;
-X-HE-SMSGID: 1roPZy-0005NA-4s
+In-Reply-To: <C85BE4F4-5847-45B4-A973-76B184B35EDE@gmail.com>
 
-Hi Linus, here is a quick regressions report. I already added a handful
-of regression from this cycle to the tracking (see below), but none of
-those are really worrying I'd say.
+On Sat, Mar 23, 2024 at 05:40:23PM -0400, comex wrote:
+> That may be true, but the LLVM issue you cited isn’t a good example.  
+> In that issue, the function being miscompiled doesn’t actually use any 
+> barriers or atomics itself; only the scaffolding around it does.  The 
+> same issue would happen even if the scaffolding used LKMM atomics.
+> 
+> For anyone curious: The problematic optimization involves an 
+> allocation (‘p’) that is initially private to the function, but is 
+> returned at the end of the function.  LLVM moves a non-atomic store to 
+> that allocation across an external function call (to ‘foo’).  This 
+> reordering would be blatantly invalid if any other code could observe 
+> the contents of the allocation, but is valid if the allocation is 
+> private to the function.  LLVM assumes the latter: after all, the 
+> pointer to it hasn’t escaped.  Yet.  Except that in a weak memory 
+> model, the escape can ‘time travel’...
 
-There is one more: a fix for a KASAN splat is already in next since
-Friday as 9ddd90c947da4e ("fs/9p: fix uaf in in
-v9fs_stat2inode_dotl")[1]. I had hoped Eric would have sent it to you by
-now because it apparently is somewhat annoying for the net
-maintainers[2] and maybe other kernel developers that use virtme -- but
-seems that it's not on the way to you yet. :-/ Sigh. This "regression
-fixes are ready at have been in next, but maintainers don't send them to
-Linus before the next -rc" is sometimes slightly annoying from my point
-of view...
+It's hard to understand exactly what you mean, but consider the 
+following example:
 
-[1] https://lore.kernel.org/all/20240202121531.2550018-1-lizhi.xu@windriver.com/
-[2] https://lore.kernel.org/all/20240321182824.6f303e38@kernel.org/
+int *globalptr;
+int x;
 
-A few words on regressions from the 6.8 cycle that have an easy fix
-available and are kinda stalled, in case you are interested:
+int *f() {
+	int *p = kzalloc(sizeof(int));
 
-* A change that came late in the previous cycle made Johan Hovold report
-yet another 6.8 regression with the Lenovo ThinkPad X13s, this time
-about a Bluetooth problem. He provided a revert to fix it - the BT
-people replied, but then nothing happened for 10 days now afaics; will
-prod tomorrow:
-https://lore.kernel.org/lkml/20240314100103.GC6100@craftyguy.net/
+	L1: *p = 1;
+	L2: foo();
+	return p;
+}
 
-* Two people reported CPU stalls on some Rockchip SOCs that a revert can
-fix, but so far I could not convince the developer to set things in motion: 
-https://lore.kernel.org/lkml/ZYhQ2-OnjDgoqjvt@wens.tw/
-https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
+void foo() {
+	smp_store_release(&x, 2);
+}
 
-* A fix for bogus lockdep warnings in network driver stmmac also is
-making no progress, despite a Reviewed-by: from Eric and some prodding
-from my side:
-https://lore.kernel.org/lkml/20240306111157.29327-1-petr@tesarici.cz/
+void thread0() {
+	WRITE_ONCE(globalptr, f());
+}
 
-Ciao, Thorsten
+void thread1() {
+	int m, n;
+	int *q;
 
----
+	m = smp_load_acquire(&x);
+	q = READ_ONCE(globalptr);
+	if (m && q)
+		n = *q;
+}
 
-Hi, this is regzbot, the Linux kernel regression tracking bot.
+(If you like, pretend each of these function definitions lives in a 
+different source file -- it doesn't matter.)
 
-Currently I'm aware of 4 regressions in linux-mainline. Find the
-current status below and the latest on the web:
+With no optimization, whenever thread1() reads *q it will always obtain 
+1, thanks to the store-release in foo() and the load-acquire() in 
+thread1().  But if the compiler swaps L1 and L2 in f() then this is not 
+guaranteed.  On a weakly ordered architecture, thread1() could then get 
+0 from *q.
 
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
+I don't know if this is what you meant by "in a weak memory model, the 
+escape can ‘time travel'".  Regardless, it seems very clear that any 
+compiler which swaps L1 and L2 in f() has a genuine bug.
 
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
-
-
-========================================================
-current cycle (v6.8.. aka v6.8-post), culprit identified
-========================================================
-
-
-[ *NEW* ] x86/percpu: crashes in qemu with nosmp builds and Intel CPUs
-----------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/e20d88d0-5fb9-4307-be67-88b04ae9a188@roeck-us.net/
-https://lore.kernel.org/lkml/e20d88d0-5fb9-4307-be67-88b04ae9a188@roeck-us.net/
-
-By Guenter Roeck; 8 days ago; 34 activities, latest 1 days ago.
-Introduced in 71eb4893cfaf
-
-Fix incoming:
-* x86/cpu: Ensure that CPU info updates are propagated on UP
-  https://lore.kernel.org/regressions/07ba20d1-3c95-42b6-b566-f5c1980ffe16@leemhuis.info/
-
-
-[ *NEW* ] mm: vmalloc: persistent "spinlock bad magic" message when booting s390 images with spinlock debugging enabled
------------------------------------------------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/bbc242d5-3ab0-410f-a3b1-54a68e3e375f@roeck-us.net/
-https://lore.kernel.org/lkml/bbc242d5-3ab0-410f-a3b1-54a68e3e375f@roeck-us.net/
-
-By Guenter Roeck; 1 days ago; 3 activities, latest 1 days ago.
-Introduced in 72210662c5a2
-
-Recent activities from: Guenter Roeck (2), Uladzislau Rezki (1)
-
-One patch associated with this regression:
-* Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
-  https://lore.kernel.org/lkml/Zf3V6B9f5o0H1LnE@pc636/
-  1 days ago, by Uladzislau Rezki
-
-
-[ *NEW* ] Re: [PATCH] fs: Remove NTFS classic
----------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/Zf2zPf5TO5oYt3I3@hovoldconsulting.com/
-https://lore.kernel.org/linux-fsdevel/Zf2zPf5TO5oYt3I3@hovoldconsulting.com/
-
-By Johan Hovold; 1 days ago; 1 activities, latest 1 days ago.
-Introduced in 7ffa8f3d3023
-
-Recent activities from: Johan Hovold (1)
-
-
-[ *NEW* ] SUNRPC: RFC 8009 encryption test fails
-------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZfxJZFwXqqurfet0@aion/
-https://lore.kernel.org/linux-nfs/ZfxJZFwXqqurfet0@aion/
-
-By Scott Mayhew; 3 days ago; 2 activities, latest 2 days ago.
-Introduced in 561141dd4943
-
-Recent activities from: Chuck Lever III (1), Scott Mayhew (1)
-
-
-=============
-End of report
-=============
-
-All regressions marked '[ *NEW* ]' were added since the previous report,
-which can be found here:
-https://lore.kernel.org/r/170947112079.436664.2969102323110743234@leemhuis.info
-
-Thanks for your attention, have a nice day!
-
-  Regzbot, your hard working Linux kernel regression tracking robot
-
-
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
+Alan Stern
 
