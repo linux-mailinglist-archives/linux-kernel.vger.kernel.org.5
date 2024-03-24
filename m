@@ -1,58 +1,55 @@
-Return-Path: <linux-kernel+bounces-115158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E93888D84
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:50:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B10AC888F86
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:53:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB27C28FC7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:50:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEBA3B33FDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D678304B37;
-	Mon, 25 Mar 2024 01:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981501C7B9E;
+	Mon, 25 Mar 2024 01:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ORXU6Lzt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bwSVE3Xr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F52182EF0;
-	Sun, 24 Mar 2024 23:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D714182EFF;
+	Sun, 24 Mar 2024 23:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324182; cv=none; b=SyL1zDlnl9NSj4JMWkkWT4eu2RgsXAy9l4TRGMwZHnnWwXZTjifsrsDn1Xt6IepKKBipv7KhzF341ohhGL9uC5S9iaMLJREaI312akP5fAgcA30KusRvpSVbHV5iC7WD/Ii53Bixp0Pf3TZy9NPK+OG0an9pdEM9K9QMiponRjw=
+	t=1711324184; cv=none; b=Yfb4wS0aX3A2tocqCCp2h/ijZdG1O4AZuyhOLYFXa2moA8DPMB4/HaYwbhQgrOOBSGcOlhhMZ6ToEMAD2aW6lq7exaxCvZ0NVgo0GAq9MQZm1yKVXJo7zre4CVcw9uFZmcIXQMbsPtIXJynb5na0NM53xe3uI/0KungO2KMx0mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324182; c=relaxed/simple;
-	bh=qmj2KgxguVqrS/xpYluBOAnYcsDcleF5kcZvmiK2JG0=;
+	s=arc-20240116; t=1711324184; c=relaxed/simple;
+	bh=Zx4FbCVNw5xSF8GjY5g+ReLvwcTy3T4vitIDT4pNMlI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lYXeSQH8uNz6T4dHYvS9g6GNFqAWs9b5Fa2Ap6cF8yaBFtinLkaMkFpZXDJdI2IDuAHHvu7C9N46fE1mGY9fb27rc7lBpR9F/KJEycvdfTLo/twLh9wbuRVqIfYx53COBGCoxzJAmCWdz3P+ws1bOPDyNNIsCxgdQ2/YyusjoT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ORXU6Lzt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11345C433F1;
-	Sun, 24 Mar 2024 23:49:40 +0000 (UTC)
+	 MIME-Version; b=n3gTukPpGakY4ngEt38+rt/8/dRAAp318qfQoh66i5pIZpVkQY4Jbjc01EfM867doqG1KqwesnKgu1PomtxZKvsDbxMkP+Efm/ioGzl1oQ897LridtfyCmYxND8+A94tzPYATft6wWVlJXisdOWA2tzGT0HmJmC8lkVQIo+Mi5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bwSVE3Xr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F02FC433C7;
+	Sun, 24 Mar 2024 23:49:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324182;
-	bh=qmj2KgxguVqrS/xpYluBOAnYcsDcleF5kcZvmiK2JG0=;
+	s=k20201202; t=1711324183;
+	bh=Zx4FbCVNw5xSF8GjY5g+ReLvwcTy3T4vitIDT4pNMlI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ORXU6Lzt4+fwhX4UngL7272vhCFo2fFXbK5BrSxJUKmZ9GQLg4RwiSSHSS9P9AnyM
-	 UYvSWU1YoVFENXMjv1yDb72BrbXY8Rkz3b1c0vcXjhByCBvQni3zyv0+o9xcJ5+zjC
-	 /ifpiIABq6MFGSCUUqOQsIKf14s9xqd3uiiiosd3MbuCVG4SxYsxqpo8zk0oInpTTv
-	 1SgoiiVwosgTYO14vz8Zykbf+uAFssyQzgp2NOMGYZK5g4/a78feWd/UN5AeTXJpJ1
-	 WZuE6ghMltSWmjsnT6jNdlhDj+0HNgjRqahys0Ee8F1LVeazMg202lYa4oWypRaKXr
-	 JrS+AxC8jqghQ==
+	b=bwSVE3XrRFpG4d6I1yrlrBS9WTOB8eG7wfSVOpJGwQu9qtrVT9jH5OJzkyDyCxawK
+	 cB0o2aGjWW/FdnUCDm4aKegX2SKu915dnarIPuOxophpvvvG99BCMYnKMD3Vi6gGgS
+	 qFnuGkdRLXFnWQTehBdZL6JMIp7eTMrKAp0a6oCjRuiXehrpUJ1JbTd3zXQ8gcVgXr
+	 hAcvKOY/JU8egphOthe4vHsmnwC6vhcyndnGnVAW9A9GwkALQFDtK4dyfe+JrKxtZ/
+	 nw3aWfbR92cdMn2hz8dhM1PUCUjjNc2nWlXIQebImn/6ug/66xX2zTazKDjR4v+Ju5
+	 ppkmubFm12NdQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eric Dumazet <edumazet@google.com>,
-	syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Jason Xing <kerneljasonxing@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Yewon Choi <woni9911@gmail.com>,
+	Michal Kubiak <michal.kubiak@intel.com>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 172/183] packet: annotate data-races around ignore_outgoing
-Date: Sun, 24 Mar 2024 19:46:25 -0400
-Message-ID: <20240324234638.1355609-173-sashal@kernel.org>
+Subject: [PATCH 5.4 173/183] rds: introduce acquire/release ordering in acquire/release_in_xmit()
+Date: Sun, 24 Mar 2024 19:46:26 -0400
+Message-ID: <20240324234638.1355609-174-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -66,103 +63,49 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Eric Dumazet <edumazet@google.com>
+From: Yewon Choi <woni9911@gmail.com>
 
-[ Upstream commit 6ebfad33161afacb3e1e59ed1c2feefef70f9f97 ]
+[ Upstream commit 1422f28826d2a0c11e5240b3e951c9e214d8656e ]
 
-ignore_outgoing is read locklessly from dev_queue_xmit_nit()
-and packet_getsockopt()
+acquire/release_in_xmit() work as bit lock in rds_send_xmit(), so they
+are expected to ensure acquire/release memory ordering semantics.
+However, test_and_set_bit/clear_bit() don't imply such semantics, on
+top of this, following smp_mb__after_atomic() does not guarantee release
+ordering (memory barrier actually should be placed before clear_bit()).
 
-Add appropriate READ_ONCE()/WRITE_ONCE() annotations.
+Instead, we use clear_bit_unlock/test_and_set_bit_lock() here.
 
-syzbot reported:
-
-BUG: KCSAN: data-race in dev_queue_xmit_nit / packet_setsockopt
-
-write to 0xffff888107804542 of 1 bytes by task 22618 on cpu 0:
- packet_setsockopt+0xd83/0xfd0 net/packet/af_packet.c:4003
- do_sock_setsockopt net/socket.c:2311 [inline]
- __sys_setsockopt+0x1d8/0x250 net/socket.c:2334
- __do_sys_setsockopt net/socket.c:2343 [inline]
- __se_sys_setsockopt net/socket.c:2340 [inline]
- __x64_sys_setsockopt+0x66/0x80 net/socket.c:2340
- do_syscall_64+0xd3/0x1d0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-read to 0xffff888107804542 of 1 bytes by task 27 on cpu 1:
- dev_queue_xmit_nit+0x82/0x620 net/core/dev.c:2248
- xmit_one net/core/dev.c:3527 [inline]
- dev_hard_start_xmit+0xcc/0x3f0 net/core/dev.c:3547
- __dev_queue_xmit+0xf24/0x1dd0 net/core/dev.c:4335
- dev_queue_xmit include/linux/netdevice.h:3091 [inline]
- batadv_send_skb_packet+0x264/0x300 net/batman-adv/send.c:108
- batadv_send_broadcast_skb+0x24/0x30 net/batman-adv/send.c:127
- batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:392 [inline]
- batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
- batadv_iv_send_outstanding_bat_ogm_packet+0x3f0/0x4b0 net/batman-adv/bat_iv_ogm.c:1700
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0x465/0x990 kernel/workqueue.c:3335
- worker_thread+0x526/0x730 kernel/workqueue.c:3416
- kthread+0x1d1/0x210 kernel/kthread.c:388
- ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
-value changed: 0x00 -> 0x01
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 27 Comm: kworker/u8:1 Tainted: G        W          6.8.0-syzkaller-08073-g480e035fc4c7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
-
-Fixes: fa788d986a3a ("packet: add sockopt to ignore outgoing packets")
-Reported-by: syzbot+c669c1136495a2e7c31f@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/netdev/CANn89i+Z7MfbkBLOv=p7KZ7=K1rKHO4P1OL5LYDCtBiyqsa9oQ@mail.gmail.com/T/#t
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 0f4b1c7e89e6 ("rds: fix rds_send_xmit() serialization")
+Fixes: 1f9ecd7eacfd ("RDS: Pass rds_conn_path to rds_send_xmit()")
+Signed-off-by: Yewon Choi <woni9911@gmail.com>
+Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+Link: https://lore.kernel.org/r/ZfQUxnNTO9AJmzwc@libra05
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c         | 2 +-
- net/packet/af_packet.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ net/rds/send.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 5e043e6f09476..4f39d97209811 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -1940,7 +1940,7 @@ void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
- 	rcu_read_lock();
- again:
- 	list_for_each_entry_rcu(ptype, ptype_list, list) {
--		if (ptype->ignore_outgoing)
-+		if (READ_ONCE(ptype->ignore_outgoing))
- 			continue;
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 6c2c5667e3a39..c0cebf4b4fe56 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -103,13 +103,12 @@ EXPORT_SYMBOL_GPL(rds_send_path_reset);
  
- 		/* Never send packets back to the socket
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 451f9c43b34b8..9fc020fd7ecc1 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -3921,7 +3921,7 @@ packet_setsockopt(struct socket *sock, int level, int optname, char __user *optv
- 		if (val < 0 || val > 1)
- 			return -EINVAL;
+ static int acquire_in_xmit(struct rds_conn_path *cp)
+ {
+-	return test_and_set_bit(RDS_IN_XMIT, &cp->cp_flags) == 0;
++	return test_and_set_bit_lock(RDS_IN_XMIT, &cp->cp_flags) == 0;
+ }
  
--		po->prot_hook.ignore_outgoing = !!val;
-+		WRITE_ONCE(po->prot_hook.ignore_outgoing, !!val);
- 		return 0;
- 	}
- 	case PACKET_TX_HAS_OFF:
-@@ -4053,7 +4053,7 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
- 		       0);
- 		break;
- 	case PACKET_IGNORE_OUTGOING:
--		val = po->prot_hook.ignore_outgoing;
-+		val = READ_ONCE(po->prot_hook.ignore_outgoing);
- 		break;
- 	case PACKET_ROLLOVER_STATS:
- 		if (!po->rollover)
+ static void release_in_xmit(struct rds_conn_path *cp)
+ {
+-	clear_bit(RDS_IN_XMIT, &cp->cp_flags);
+-	smp_mb__after_atomic();
++	clear_bit_unlock(RDS_IN_XMIT, &cp->cp_flags);
+ 	/*
+ 	 * We don't use wait_on_bit()/wake_up_bit() because our waking is in a
+ 	 * hot path and finding waiters is very rare.  We don't want to walk
 -- 
 2.43.0
 
