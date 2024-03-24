@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-113631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF61A888E18
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:08:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D276889AD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:37:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39DFD29550E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:08:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D8781F3403A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE681D564C;
-	Sun, 24 Mar 2024 22:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75161E3078;
+	Mon, 25 Mar 2024 02:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CEdqcoRc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B0iAlah1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90BF61D2A89;
-	Sun, 24 Mar 2024 22:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A292C1D2A9A;
+	Sun, 24 Mar 2024 22:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320537; cv=none; b=oWsYlFc210Vlig+g/0Jhgurkm+JOVj8fe9hyngwgJMD/UejF5t2ughsCkqlcjp1ETkkzuJ9TjjNGftyZ1sQSv4SoAkHsEcdC+xxPIwOQWdQjdvIMWZ/Ag/y1tZlrX48vm+sxVAETy5IrP9JJJ8jV5MSr02sPLI73Au9D9JoluYw=
+	t=1711320538; cv=none; b=sNscjdui/GB4EcaNewcRZkw5mz4Eovu9yWiZJM+K+XJ4AoUUfLENUPNTCeAGxshgY4gS0m6r8mJCiwj3jCk+CpxcMFL03JBzL+LDrtlW1fewk9qynDCSof9CndXqblI+u7uCbQ2th0hgbgAlKZmWCIJaohQHN5kKZcyIvCgvMR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320537; c=relaxed/simple;
-	bh=XuA+8nGkGj4xp7oyuXzOhHBuT5R9Q9Rrl3+R1s6tAsw=;
+	s=arc-20240116; t=1711320538; c=relaxed/simple;
+	bh=OMAk9UOGghL2sUqX40h2Jrbj1lwl32TZ1AeXnBhK4Nk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QoiqGIqLdnjeQ9kUB0l3a0go+DsFiMltqRwe+0cHg3hikn86ILJwVXDXQ3Pnc0Ka4w+6Lq16IjHBnRizWOuOw3qtZsiempOI9Spert/i8sELQlIfQZevanNgv3vnsw4MzNMD5deQjcFXDKREgUjv/WqBVaC062ueC9mnYdfajuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CEdqcoRc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D50D6C43394;
-	Sun, 24 Mar 2024 22:48:55 +0000 (UTC)
+	 MIME-Version; b=S+u9JyDb3zyx/1VpW4d2lwt+AtUocVbNx33q0HwoF5qVkYoJjVQYR145bCdSfJTf2A0KCKE41WTe1iRZR/2Z/3IMdaIfpzNQ23KjpXEdDIky15Rr7h24daufrfHqS1ik4Tb3qO9wTSzH93rvyexa8TAXtEJ0mk1nFg9vq1qdIKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B0iAlah1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B82EDC43399;
+	Sun, 24 Mar 2024 22:48:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320536;
-	bh=XuA+8nGkGj4xp7oyuXzOhHBuT5R9Q9Rrl3+R1s6tAsw=;
+	s=k20201202; t=1711320537;
+	bh=OMAk9UOGghL2sUqX40h2Jrbj1lwl32TZ1AeXnBhK4Nk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CEdqcoRcuGNUa7tUtfHeUY6YJkW6bYvND0zCz2TxybrJbhnluXpHv+0XOMKt5YuE0
-	 9rx+fcPlNHg6q0C0OImznsXOkRPGcq4cv75XRe7S8XeLiEv9bN/55DCTSGvhg7bWi/
-	 s6g47hfMHrGZ5RdEP6sdap4+IEURjO411xK53b8/VXkHrP+tiYv4c7fHFLs+4dnFa4
-	 hNCWtm/9Cvc9XpStK+Jfvc47IWsvuFCbMHTc/JpHR3B5NZk2WZcjjOV6YESTZN0pF0
-	 GFyIg0O91J2UEa6QPjUQYxJmuRedqJ9DYnHn1PdFsmHBnJsP4ujCX9m/vRTUQbeMun
-	 eilbW8ZydnCGw==
+	b=B0iAlah1CQ2WQ6y4F6XWKUMiNr8nKJthtAfVz4UeEC/a3unvRZm8jfMZutLahJYKC
+	 YoLMVWUQ1lfp1DiDxg1s02pBb7uTveYBTSgPVP3QPftLNh/dMjGtszUqh+EpiNt4VF
+	 0iXw0fkIJ6N8yz3SeURMVH6q4SZvkHJTX4LBBCYe96SKx5XKQDyZE+WHPv6Ghelydu
+	 tpslXlHkNUqUb/mFtJjEsU0Ux45nOZdz6AgDsrDo7nps1f3ih0ApPcFvY+u48DzF+F
+	 DTO+SzABeaYkwfNxLWgEecyNxPHOY8SRPIC/9idrjc/Jw2ltnOXLm9AA0dY/DUkJHd
+	 JcYTHMPNaXerg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Li Nan <linan122@huawei.com>,
-	Song Liu <song@kernel.org>,
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Kalesh Singh <kaleshsingh@google.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 098/713] md: fix kmemleak of rdev->serial
-Date: Sun, 24 Mar 2024 18:37:04 -0400
-Message-ID: <20240324224720.1345309-99-sashal@kernel.org>
+Subject: [PATCH 6.7 099/713] rcu/exp: Fix RCU expedited parallel grace period kworker allocation failure recovery
+Date: Sun, 24 Mar 2024 18:37:05 -0400
+Message-ID: <20240324224720.1345309-100-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,55 +64,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Li Nan <linan122@huawei.com>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-[ Upstream commit 6cf350658736681b9d6b0b6e58c5c76b235bb4c4 ]
+[ Upstream commit a636c5e6f8fc34be520277e69c7c6ee1d4fc1d17 ]
 
-If kobject_add() is fail in bind_rdev_to_array(), 'rdev->serial' will be
-alloc not be freed, and kmemleak occurs.
+Under CONFIG_RCU_EXP_KTHREAD=y, the nodes initialization for expedited
+grace periods is queued to a kworker. However if the allocation of that
+kworker failed, the nodes initialization is performed synchronously by
+the caller instead.
 
-unreferenced object 0xffff88815a350000 (size 49152):
-  comm "mdadm", pid 789, jiffies 4294716910
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace (crc f773277a):
-    [<0000000058b0a453>] kmemleak_alloc+0x61/0xe0
-    [<00000000366adf14>] __kmalloc_large_node+0x15e/0x270
-    [<000000002e82961b>] __kmalloc_node.cold+0x11/0x7f
-    [<00000000f206d60a>] kvmalloc_node+0x74/0x150
-    [<0000000034bf3363>] rdev_init_serial+0x67/0x170
-    [<0000000010e08fe9>] mddev_create_serial_pool+0x62/0x220
-    [<00000000c3837bf0>] bind_rdev_to_array+0x2af/0x630
-    [<0000000073c28560>] md_add_new_disk+0x400/0x9f0
-    [<00000000770e30ff>] md_ioctl+0x15bf/0x1c10
-    [<000000006cfab718>] blkdev_ioctl+0x191/0x3f0
-    [<0000000085086a11>] vfs_ioctl+0x22/0x60
-    [<0000000018b656fe>] __x64_sys_ioctl+0xba/0xe0
-    [<00000000e54e675e>] do_syscall_64+0x71/0x150
-    [<000000008b0ad622>] entry_SYSCALL_64_after_hwframe+0x6c/0x74
+Now the check for kworker initialization failure relies on the kworker
+pointer to be NULL while its value might actually encapsulate an
+allocation failure error.
 
-Fixes: 963c555e75b0 ("md: introduce mddev_create/destroy_wb_pool for the change of member device")
-Signed-off-by: Li Nan <linan122@huawei.com>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240208085556.2412922-1-linan666@huaweicloud.com
+Make sure to handle this case.
+
+Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+Fixes: 9621fbee44df ("rcu: Move expedited grace period (GP) work to RT kthread_worker")
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c | 1 +
+ kernel/rcu/tree.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 58889bc72659a..0b49033afa6bc 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -2582,6 +2582,7 @@ static int bind_rdev_to_array(struct md_rdev *rdev, struct mddev *mddev)
-  fail:
- 	pr_warn("md: failed to register dev-%s for %s\n",
- 		b, mdname(mddev));
-+	mddev_destroy_serial_pool(mddev, rdev);
- 	return err;
- }
- 
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 157f3ca2a9b56..fc318477877ba 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4747,6 +4747,7 @@ static void __init rcu_start_exp_gp_kworkers(void)
+ 	rcu_exp_par_gp_kworker = kthread_create_worker(0, par_gp_kworker_name);
+ 	if (IS_ERR_OR_NULL(rcu_exp_par_gp_kworker)) {
+ 		pr_err("Failed to create %s!\n", par_gp_kworker_name);
++		rcu_exp_par_gp_kworker = NULL;
+ 		kthread_destroy_worker(rcu_exp_gp_kworker);
+ 		return;
+ 	}
 -- 
 2.43.0
 
