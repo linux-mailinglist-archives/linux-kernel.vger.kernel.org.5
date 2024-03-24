@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0598A8898A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:45:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5A71889BFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:08:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FE98B3F1F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:01:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B7DC1F333A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD0F234D76;
-	Mon, 25 Mar 2024 02:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E0B236CE0;
+	Mon, 25 Mar 2024 02:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qeBicQWO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YqNU94hC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36BF12A163;
-	Sun, 24 Mar 2024 22:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB96C1EC626;
+	Sun, 24 Mar 2024 22:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320946; cv=none; b=pdKkkeTZu86dH/rGyx2bwhDt5kH1ljaZzlhfhtPYJqCyzpOBAFW5eeEJNh2YposVeZE4Gq6xBqgsJwZRn/No1pKV6IdrMiyA8/3E53EC9eR9pT47OktvJqtut1ccajG8rNPwRMrEqZv6j3vlyIe3kJn0tGF5V4AZHbaYcUZ75Ak=
+	t=1711320946; cv=none; b=B4d4EYVhvKKehi9McLx1dgcLPJb3QIFHZN8lCIlNgctzBARjjCCEHJZDXRT9Gzm/OR5fbGuIE40grReEgmUDVSAFC5jjsjQ5lD53GW5rRlnV4GLDRZhPwckoEWJ237v8msDLXLscnf2wWNmXDozrPDW7InaD2oNgbtXddG6tCdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320946; c=relaxed/simple;
-	bh=88D2h7ESbBu8z6z2H1BIcpBwdPI4hxWEwZy8Q42aC84=;
+	bh=M1XBoXiOTq0p7mgERHXcig2Q0cM/9V/unK6ZP5x0oO0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kguz0EnvBp0AQDU9AuhiSrZcHV7qA7KHN/d+T5m4Z0qb5TGTPDZGGTinhUO4kzT4Lx5dmH/MnANlUyfbpMJ5rc6dPtZgngbuq29Uq3gQYCsGVl4XbONKlfGUaR7vyc5MyasC8IvgS9dc+j1FLCF6B3tT6u+eP0PqaWcVBZtCnVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qeBicQWO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DE67C43399;
+	 MIME-Version; b=auxx6kGgLWPSfcZ0VCJXW/9RlyciLKU6QTOVmNDQeelEPxyiAt4nV5tladSlalLpK4rvsrwxLZnq7zRIvuRcMSu+PP16YNHmI2GUrj4IdQQGZsb/J57jdDJWouv48XvQ1Z6I0qyeI/35FlWtaK0QJc+fg8YPu/CztJQaoQWKQew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YqNU94hC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11C4EC43394;
 	Sun, 24 Mar 2024 22:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320945;
-	bh=88D2h7ESbBu8z6z2H1BIcpBwdPI4hxWEwZy8Q42aC84=;
+	s=k20201202; t=1711320946;
+	bh=M1XBoXiOTq0p7mgERHXcig2Q0cM/9V/unK6ZP5x0oO0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qeBicQWOoIzJlzD5YiHgv+l0CiaIjVDKLGKYMCIQnh+VvXcWDp01Ep4vJH1/zTRzz
-	 IT0l1+69WDx2CqQLtS3FJGUqUAfnEqcO/N5bsqFy/+bCDdQwz2snpc2XL2J+/w/fxk
-	 QsrO8dJ90SccvQHxJbO3GHSDokqU0ISeDpP9ctmqkLb7+w4h0S+C3iJNw5K81FHXpi
-	 fvNQM581//M7IWYHF8cn+0NL2dfRgcyWuOZzSmQ74DqHTYbRlEf777GCiJK4Ysn3Px
-	 y7sQI4itVUxj3oGbCZ8lhaX4DayG3yqOp7H95Q+1f7gNLisktJxUs9+dP77zwP7agS
-	 /2pkhirth7cMA==
+	b=YqNU94hCe32JH6bwyyI3mUcHmkuzgJFjRCOaC/QmVb49SO6OhY8HKwQNdEWT+YLo/
+	 WDI0mXFQJcZx140T/BlACMECWS2ZoHyk8qIXoDvnUEwLuGM+i5iRL3/VDZHeV+3Rq2
+	 s98j/vyjjUMDvWHzbgP1Zhl/KFvjHeZZiZi9xEoVFwuBglJxLT8jEahMTCjqmMg83t
+	 kRa+SboMn6+/fy6cntjPQLjLtGU87Ahxir5BjnmQbtT0EXQdWt0DmHEQNmsoXgTfe7
+	 LXspQuF6lYwFrOy538okoy7MgtFSmg08Dv17bNObV1Jso8j1kN5t3OIrqbkcIup5Oz
+	 gRYYB853T+XcQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+Cc: Jerome Brunet <jbrunet@baylibre.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 509/713] mtd: rawnand: lpc32xx_mlc: fix irq handler prototype
-Date: Sun, 24 Mar 2024 18:43:55 -0400
-Message-ID: <20240324224720.1345309-510-sashal@kernel.org>
+Subject: [PATCH 6.7 510/713] ASoC: meson: axg-tdm-interface: fix mclk setup without mclk-fs
+Date: Sun, 24 Mar 2024 18:43:56 -0400
+Message-ID: <20240324224720.1345309-511-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,50 +62,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit 347b828882e6334690e7003ce5e2fe5f233dc508 ]
+[ Upstream commit e3741a8d28a1137f8b19ae6f3d6e3be69a454a0a ]
 
-clang-16 warns about mismatched function prototypes:
+By default, when mclk-fs is not provided, the tdm-interface driver
+requests an MCLK that is 4x the bit clock, SCLK.
 
-drivers/mtd/nand/raw/lpc32xx_mlc.c:783:29: error: cast from 'irqreturn_t (*)(int, struct lpc32xx_nand_host *)' (aka 'enum irqreturn (*)(int, struct lpc32xx_nand_host *)') to 'irq_handler_t' (aka 'enum irqreturn (*)(int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+However there is no justification for this:
 
-Change the interrupt handler to the normal way of just passing
-a void* pointer and converting it inside the function..
+* If the codec needs MCLK for its operation, mclk-fs is expected to be set
+  according to the codec requirements.
+* If the codec does not need MCLK the minimum is 2 * SCLK, because this is
+  minimum the divider between SCLK and MCLK can do.
 
-Fixes: 70f7cb78ec53 ("mtd: add LPC32xx MLC NAND driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20240213100146.455811-1-arnd@kernel.org
+Multiplying by 4 may cause problems because the PLL limit may be reached
+sooner than it should, so use 2x instead.
+
+Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://msgid.link/r/20240223175116.2005407-2-jbrunet@baylibre.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/lpc32xx_mlc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/meson/axg-tdm-interface.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-index 488fd452611a6..677fcb03f9bef 100644
---- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-@@ -303,8 +303,9 @@ static int lpc32xx_nand_device_ready(struct nand_chip *nand_chip)
- 	return 0;
- }
+diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
+index 1c3d433cefd23..cd5168e826df4 100644
+--- a/sound/soc/meson/axg-tdm-interface.c
++++ b/sound/soc/meson/axg-tdm-interface.c
+@@ -264,8 +264,8 @@ static int axg_tdm_iface_set_sclk(struct snd_soc_dai *dai,
+ 	srate = iface->slots * iface->slot_width * params_rate(params);
  
--static irqreturn_t lpc3xxx_nand_irq(int irq, struct lpc32xx_nand_host *host)
-+static irqreturn_t lpc3xxx_nand_irq(int irq, void *data)
- {
-+	struct lpc32xx_nand_host *host = data;
- 	uint8_t sr;
- 
- 	/* Clear interrupt flag by reading status */
-@@ -780,7 +781,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 		goto release_dma_chan;
- 	}
- 
--	if (request_irq(host->irq, (irq_handler_t)&lpc3xxx_nand_irq,
-+	if (request_irq(host->irq, &lpc3xxx_nand_irq,
- 			IRQF_TRIGGER_HIGH, DRV_NAME, host)) {
- 		dev_err(&pdev->dev, "Error requesting NAND IRQ\n");
- 		res = -ENXIO;
+ 	if (!iface->mclk_rate) {
+-		/* If no specific mclk is requested, default to bit clock * 4 */
+-		clk_set_rate(iface->mclk, 4 * srate);
++		/* If no specific mclk is requested, default to bit clock * 2 */
++		clk_set_rate(iface->mclk, 2 * srate);
+ 	} else {
+ 		/* Check if we can actually get the bit clock from mclk */
+ 		if (iface->mclk_rate % srate) {
 -- 
 2.43.0
 
