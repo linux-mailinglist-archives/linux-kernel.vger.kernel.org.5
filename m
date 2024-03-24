@@ -1,54 +1,53 @@
-Return-Path: <linux-kernel+bounces-116221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F4D889D9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:48:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 548948895B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:36:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E84D1F35472
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:48:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85D651C2128D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADFA3BFFAC;
-	Mon, 25 Mar 2024 03:34:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B343BFFC1;
+	Mon, 25 Mar 2024 03:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MEQaDNv8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i7SvjVa9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0A217DC3E;
-	Sun, 24 Mar 2024 23:44:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BB417DC3F;
+	Sun, 24 Mar 2024 23:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323852; cv=none; b=UoByqRADpevT+oXekIjh+dxPGKVigMEdCr/NVu29Q1h9MpqjNmEI/vIEN9dviK6tSjYnuGb13/waeE518XTcriLtw5anxsbiwzTkNecfIdKYPBi7/CLtDwz+88n5Gxj+g/BOvWoQhWPlcxsh7YKRi7dzSZ21pMg2TmDPyOJHYzs=
+	t=1711323852; cv=none; b=rR+e3id2kFgbvgTtu6pwwV+ImHpSBS+9QIJ37CNgIszfF6UE920KYUnzKvv+tadeX0T8nH82CeLbJGjVbGa5WSED56KwFp2wZOZKZQKCjkFVvylXsWLmJA0kPHp17sWuJ+l2FkYQb6rSBz6lt6oEKxh1q4CoYMfgTarS6NnTLjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323852; c=relaxed/simple;
-	bh=w1K52Csdl2eq1OaHzMItpQSYmWMb0G/2QmKQbj0IUKI=;
+	bh=5+hdcCy5NUJAL46bniLz2w4EeDTmKteFOedaHnQJd5c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VyHHgwOHfXb62dcVnA9ZGqu6olnuWnD3So28dy3WIBvnh4too2FRwuCDEyG94PAMbL6NDRgpHdLPFOHulL6f1RMhJf+83HgZNp1Yin3njWcGbwTknYPFv0vw9TpgJRy7OngVpTzrve/R4CLjjzcxiF+CHUM09H/UTPIe1h9/1Lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MEQaDNv8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA990C433C7;
-	Sun, 24 Mar 2024 23:44:10 +0000 (UTC)
+	 MIME-Version; b=CV0NpGQfQ0fXgQsXyAkc7o4DJ7OT9xiOOK3826TfYCrO2lhtoxUnP2470oRWEVoTcB8jIPY38pv4oauNK8gSsSLNRBHOKEKACazKPq6Qs5LcQBKiVsUmV/XXwV63e3z9+xykF5jLlNQALAxobRw2g5EkJmI9G2KFy1Tt7x8VFwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i7SvjVa9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD3A9C433F1;
+	Sun, 24 Mar 2024 23:44:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323851;
-	bh=w1K52Csdl2eq1OaHzMItpQSYmWMb0G/2QmKQbj0IUKI=;
+	s=k20201202; t=1711323852;
+	bh=5+hdcCy5NUJAL46bniLz2w4EeDTmKteFOedaHnQJd5c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MEQaDNv8bYD2oIQiWAM1DcuzCcrn0r5I5ugr3K01oFTIWn5x7ST0IRb6ZIO1RgtXg
-	 8MvdsnA9vExSSNyo4OBNK3cyNs3HJtMI3zFe1Mhju9e927ecKa3AXUceHRQ6MkrKJF
-	 yamkNa3Y7/xY7GJ59uaxAuL4JbKOiigf1itkUt7jI8V+daO/ad/GkDPogwrkZf36bk
-	 hV1AH+iBLbwcxFWi6BqSkXVk9DcG3yOH5bPPHC790QWFzdtBM9NOnNmBuNAKIUHq79
-	 Uk6LQ+UaTf0ubxttlId9eDgjtcZMuA+cILNJ2CDLo/LpFZYHiNCaTnVIWkrc6LrLMV
-	 ajZg3oOgxsxqw==
+	b=i7SvjVa9rzRBUbMcI0j2Rc5jFqfeEyUDIEbPlj4597G3zN07DWAWsdkT5L5CV9Zl+
+	 DDiF9b2sOowTuS1WBtfGVUbYXimHp5DBmrXWaMlN3hYwvyWnG283e75fOG1yy8AMm5
+	 mA7QC9sU5U2FMsbapY6K4ua7l2B116f5A2+GF7KeomUK3IuNHdc6O11NBp9Z/03bGO
+	 /G3s3uowFTcbbJpgGi2dfTZ9kbYoVyT1YmgEbt6P4mcRGwO28V1uCmfJcA53jLwY+U
+	 HbTuYX42teXGTuI0myDTjmHtF/1ZbW5NPPBHYNrC3jsZ2PrMQ2QLXODPHlPuSpXLVD
+	 zAc8LeJz33Vog==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Subbaraya Sundeep <sbhatta@marvell.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 229/238] octeontx2-af: Use separate handlers for interrupts
-Date: Sun, 24 Mar 2024 19:40:17 -0400
-Message-ID: <20240324234027.1354210-230-sashal@kernel.org>
+Subject: [PATCH 5.10 230/238] netfilter: nft_set_pipapo: release elements in clone only from destroy path
+Date: Sun, 24 Mar 2024 19:40:18 -0400
+Message-ID: <20240324234027.1354210-231-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,67 +61,51 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Subbaraya Sundeep <sbhatta@marvell.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit 50e60de381c342008c0956fd762e1c26408f372c ]
+[ Upstream commit b0e256f3dd2ba6532f37c5c22e07cb07a36031ee ]
 
-For PF to AF interrupt vector and VF to AF vector same
-interrupt handler is registered which is causing race condition.
-When two interrupts are raised to two CPUs at same time
-then two cores serve same event corrupting the data.
+Clone already always provides a current view of the lookup table, use it
+to destroy the set, otherwise it is possible to destroy elements twice.
 
-Fixes: 7304ac4567bc ("octeontx2-af: Add mailbox IRQ and msg handlers")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This fix requires:
+
+ 212ed75dc5fb ("netfilter: nf_tables: integrate pipapo into commit protocol")
+
+which came after:
+
+ 9827a0e6e23b ("netfilter: nft_set_pipapo: release elements in clone from abort path").
+
+Fixes: 9827a0e6e23b ("netfilter: nft_set_pipapo: release elements in clone from abort path")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ net/netfilter/nft_set_pipapo.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-index acbc67074f59c..23b829f974de1 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-@@ -1969,10 +1969,9 @@ static void rvu_queue_work(struct mbox_wq_info *mw, int first,
- 	}
- }
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+index 70a59a35d1761..b9682e085fcef 100644
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -2226,8 +2226,6 @@ static void nft_pipapo_destroy(const struct nft_ctx *ctx,
+ 	if (m) {
+ 		rcu_barrier();
  
--static irqreturn_t rvu_mbox_intr_handler(int irq, void *rvu_irq)
-+static irqreturn_t rvu_mbox_pf_intr_handler(int irq, void *rvu_irq)
- {
- 	struct rvu *rvu = (struct rvu *)rvu_irq;
--	int vfs = rvu->vfs;
- 	u64 intr;
+-		nft_set_pipapo_match_destroy(ctx, set, m);
+-
+ 		for_each_possible_cpu(cpu)
+ 			pipapo_free_scratch(m, cpu);
+ 		free_percpu(m->scratch);
+@@ -2239,8 +2237,7 @@ static void nft_pipapo_destroy(const struct nft_ctx *ctx,
+ 	if (priv->clone) {
+ 		m = priv->clone;
  
- 	intr = rvu_read64(rvu, BLKADDR_RVUM, RVU_AF_PFAF_MBOX_INT);
-@@ -1986,6 +1985,18 @@ static irqreturn_t rvu_mbox_intr_handler(int irq, void *rvu_irq)
+-		if (priv->dirty)
+-			nft_set_pipapo_match_destroy(ctx, set, m);
++		nft_set_pipapo_match_destroy(ctx, set, m);
  
- 	rvu_queue_work(&rvu->afpf_wq_info, 0, rvu->hw->total_pfs, intr);
- 
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t rvu_mbox_intr_handler(int irq, void *rvu_irq)
-+{
-+	struct rvu *rvu = (struct rvu *)rvu_irq;
-+	int vfs = rvu->vfs;
-+	u64 intr;
-+
-+	/* Sync with mbox memory region */
-+	rmb();
-+
- 	/* Handle VF interrupts */
- 	if (vfs > 64) {
- 		intr = rvupf_read64(rvu, RVU_PF_VFPF_MBOX_INTX(1));
-@@ -2300,7 +2311,7 @@ static int rvu_register_interrupts(struct rvu *rvu)
- 	/* Register mailbox interrupt handler */
- 	sprintf(&rvu->irq_name[RVU_AF_INT_VEC_MBOX * NAME_SIZE], "RVUAF Mbox");
- 	ret = request_irq(pci_irq_vector(rvu->pdev, RVU_AF_INT_VEC_MBOX),
--			  rvu_mbox_intr_handler, 0,
-+			  rvu_mbox_pf_intr_handler, 0,
- 			  &rvu->irq_name[RVU_AF_INT_VEC_MBOX * NAME_SIZE], rvu);
- 	if (ret) {
- 		dev_err(rvu->dev,
+ 		for_each_possible_cpu(cpu)
+ 			pipapo_free_scratch(priv->clone, cpu);
 -- 
 2.43.0
 
