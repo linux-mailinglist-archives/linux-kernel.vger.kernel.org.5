@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ACED88834C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:06:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B6988834E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A1EC1C23640
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:06:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E81A1F2279B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FBEC192715;
-	Sun, 24 Mar 2024 22:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD9013CDEE;
+	Sun, 24 Mar 2024 22:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tdgNSGa2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aw7By5aA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CDC11926F8;
-	Sun, 24 Mar 2024 22:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F5A192716;
+	Sun, 24 Mar 2024 22:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320110; cv=none; b=RlaxpLEvYU/PSxSyVE64XhSHP2MBi6vHXwMePLEWy9UXq5LaO20D+YvT3JqWifGu1gZpanXqfk7hCRzXYIhYbVOassSUeJNP+twbRrcFfFzTxmuTviuzjYYqhRgI2pmB4kNC075QF6mWzP/U0ciFI+/4fkVjDfRjc37bf4Rx6A0=
+	t=1711320111; cv=none; b=EVLPJmJUN4s1NIj8qlpfGPj6/3XsQT6eXUYO0zK6Wfs832tmZ0hCTpvvIHPYc3rPUq9JRrlP9jxzM3KInqgfVHtJhOYF+Mk/B1+shB1fgt5HC/hjTloOuebd66djCA1OUUau556GdGQ3QXxFSY9Sv6wcM0ZRqNulYp0kQQqAfZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320110; c=relaxed/simple;
-	bh=CrBC/CpoMhZxoAj0Biazm+a1TGHdkEOePqPGa6jE8wc=;
+	s=arc-20240116; t=1711320111; c=relaxed/simple;
+	bh=RwvNd7l2AEUCXjEWxoRmWTdoNHcz76iSxEq2t5vJVXI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=abSxZCAi+e0hwzfgXAB+6iASr8+pHrcn6veyscUzbj7gjLWmuVBgEwqzCwtGQcTkq5/8rJUzXjj9Toj6LNNYWAID4CLWUE29SrqNezGC/qOTyTl4XcxrhC6gn7pCvuer6AOhrvsRBjT2hiBzJkIo2e7ghGwsVbtyWbUsTfJ8MEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tdgNSGa2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A791BC433C7;
-	Sun, 24 Mar 2024 22:41:49 +0000 (UTC)
+	 MIME-Version; b=R9cmiIW/95oMwnIdj/eyIwQn4OgGaWGqGiF9IjaEwGxo9cc/ucvLEATAWzcLO2bQw77kDRXFdtclNkQqwQhqMb3bGqT1o/zHjpu7wpQHLOs6aZ//ZwOr7RpsFlPWSKsF+pUfR5tyXp8hLvswVDlKFbuKVx+556Axkv3YoIszAy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aw7By5aA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91539C433F1;
+	Sun, 24 Mar 2024 22:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320110;
-	bh=CrBC/CpoMhZxoAj0Biazm+a1TGHdkEOePqPGa6jE8wc=;
+	s=k20201202; t=1711320111;
+	bh=RwvNd7l2AEUCXjEWxoRmWTdoNHcz76iSxEq2t5vJVXI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tdgNSGa2oPus+Ni5kgY/ZzUClCw3EsulzoAN+JxHUCy12HLmU8yl5kUlvsvN+wSyt
-	 GsR5hZY5AY6x8fyD1y1+EaIQonKvsTTsebTnoFYAc8/QPxvWXitJu/LzbmkVGa77kz
-	 4z+/ZATX6cudFDvvaYRuxntuIhBfxDI5LCwK4DjIrFBDIGHx+i/pfx/XuaR64ZFrWp
-	 6VEy3oTWJalApqRDxSObAvgGZL4g79dNNjARXERZG64aoM9ahs30LwT3krWVYPv40j
-	 Q7QHIU0ivT+BGXDRc7mzKaGUG1TfZxe0vGvXV7osmpgr0UXBxaEDGvLPV7k8ShXdc3
-	 BV5tFx92Nm00Q==
+	b=aw7By5aAKGU/JBpFdKP2AzfGXN/RTZDzHp9+WNRSdqQew1fNIvD51gH32x+43QQcp
+	 8DYBZKyFSJTEuxTFSX7VRu6crW53VOrtMmXOH09uXIHvIvT0ouDkLtx+ikRHnxXZ0r
+	 MMi5bz9TVu1xI8ozNHzg8U40w8L9PcWV6jyEB+hu/hxvEd/1b0fqtODZxReAOxiyQ7
+	 RomgiLkNx80LcJ62/MzZhv6FpgiLZl2Loy9jo5UWWhIbp+mhBoY2RY//NNzfDxQFRf
+	 os401OlSp1LQfqNrGWTB0gGtFhlELRc2axzvNf8KA4YXpLipnAdvGyRfPHuo0lOb99
+	 /jqUWkHTynyPg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
 	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 418/715] drm/radeon/ni: Fix wrong firmware size logging in ni_init_microcode()
-Date: Sun, 24 Mar 2024 18:29:57 -0400
-Message-ID: <20240324223455.1342824-419-sashal@kernel.org>
+Subject: [PATCH 6.8 419/715] drm/amd/display: fix NULL checks for adev->dm.dc in amdgpu_dm_fini()
+Date: Sun, 24 Mar 2024 18:29:58 -0400
+Message-ID: <20240324223455.1342824-420-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,35 +64,58 @@ Content-Transfer-Encoding: 8bit
 
 From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-[ Upstream commit c4891d979c7668b195a0a75787967ec95a24ecef ]
+[ Upstream commit 2a3cfb9a24a28da9cc13d2c525a76548865e182c ]
 
-Clean up a typo in pr_err() erroneously printing NI MC 'rdev->mc_fw->size'
-during SMC firmware load. Log 'rdev->smc_fw->size' instead.
+Since 'adev->dm.dc' in amdgpu_dm_fini() might turn out to be NULL
+before the call to dc_enable_dmub_notifications(), check
+beforehand to ensure there will not be a possible NULL-ptr-deref
+there.
+
+Also, since commit 1e88eb1b2c25 ("drm/amd/display: Drop
+CONFIG_DRM_AMD_DC_HDCP") there are two separate checks for NULL in
+'adev->dm.dc' before dc_deinit_callbacks() and dc_dmub_srv_destroy().
+Clean up by combining them all under one 'if'.
 
 Found by Linux Verification Center (linuxtesting.org) with static
 analysis tool SVACE.
 
-Fixes: 6596afd48af4 ("drm/radeon/kms: add dpm support for btc (v3)")
+Fixes: 81927e2808be ("drm/amd/display: Support for DMUB AUX")
 Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/radeon/ni.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c    | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
-index 927e5f42e97d0..3e48cbb522a1c 100644
---- a/drivers/gpu/drm/radeon/ni.c
-+++ b/drivers/gpu/drm/radeon/ni.c
-@@ -813,7 +813,7 @@ int ni_init_microcode(struct radeon_device *rdev)
- 			err = 0;
- 		} else if (rdev->smc_fw->size != smc_req_size) {
- 			pr_err("ni_mc: Bogus length %zu in firmware \"%s\"\n",
--			       rdev->mc_fw->size, fw_name);
-+			       rdev->smc_fw->size, fw_name);
- 			err = -EINVAL;
- 		}
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 1a9bbb04bd5e2..8083e7156afcf 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -1929,17 +1929,15 @@ static void amdgpu_dm_fini(struct amdgpu_device *adev)
+ 		adev->dm.hdcp_workqueue = NULL;
  	}
+ 
+-	if (adev->dm.dc)
++	if (adev->dm.dc) {
+ 		dc_deinit_callbacks(adev->dm.dc);
+-
+-	if (adev->dm.dc)
+ 		dc_dmub_srv_destroy(&adev->dm.dc->ctx->dmub_srv);
+-
+-	if (dc_enable_dmub_notifications(adev->dm.dc)) {
+-		kfree(adev->dm.dmub_notify);
+-		adev->dm.dmub_notify = NULL;
+-		destroy_workqueue(adev->dm.delayed_hpd_wq);
+-		adev->dm.delayed_hpd_wq = NULL;
++		if (dc_enable_dmub_notifications(adev->dm.dc)) {
++			kfree(adev->dm.dmub_notify);
++			adev->dm.dmub_notify = NULL;
++			destroy_workqueue(adev->dm.delayed_hpd_wq);
++			adev->dm.delayed_hpd_wq = NULL;
++		}
+ 	}
+ 
+ 	if (adev->dm.dmub_bo)
 -- 
 2.43.0
 
