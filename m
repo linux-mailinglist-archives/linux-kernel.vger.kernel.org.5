@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5DF6888867
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:26:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BA2188944E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02DF81C24F8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:26:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EFA21F2F836
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E865415FA70;
-	Sun, 24 Mar 2024 23:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A3934A308;
+	Mon, 25 Mar 2024 02:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ElrWJWrr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CYDXMWod"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E9F201263;
-	Sun, 24 Mar 2024 23:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A5C131738;
+	Sun, 24 Mar 2024 23:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321403; cv=none; b=igYOVNAcb9w9hjMz6QwAQ8YTk67p2QECZmIDu4NuDcWBWZl9qhTfg+Av7nnH3f/YLy4/a7UmwBJWtR+yyX9Yq1pwlHnhgKy0sGSA8mvCg/sMGLGScFWCnzTBQhxFst29K5KeZe7D0larcRa1USQZXyiWnpbSLcvfmSldMvoN0Ys=
+	t=1711321404; cv=none; b=BkAAe01gjCwxhEkjtdGdkPqNvPsO0CXdnRARA8PGfdt4WH7Rvs3+MKzFQikCxxBEeztfZqBA0QqUvW5GtXCE5n8C9N/uXH7HWPauHx6MCljpN1o8v9P8FZ3oPl7r5+o3bLE/gZXdTRGRMWOAm1vBxPR/miSxDaFPlFe2jx1mQ8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321403; c=relaxed/simple;
-	bh=6/JF0p4TGpuVIu9EuMBPKr0jbFJ9JTrCi2bvP6CETf4=;
+	s=arc-20240116; t=1711321404; c=relaxed/simple;
+	bh=+PQn2Xt32PVXtxetymmoxToLCcedOoj6FzicUSmW7zE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VHo6VoZJu0rek9YAxhH8fjrcKtcf6G3olctLh7rYgU3U6gqLyU1sFtVXbAt8+9OiHttKCCUk9Jv+3wN7pzRq4Ez9xXGYcIzbWiXmsyAnmQMsAL8UytkzSaNFiKEriwDY5+DLygGW+rv9ya9GIIx322Ubc1/MTnU4AVucQqeg+7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ElrWJWrr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EF09C43394;
-	Sun, 24 Mar 2024 23:03:22 +0000 (UTC)
+	 MIME-Version; b=fnjtDmqlc69U3jrZsF77bpjFajO5B4FkH3bvl/fTuIYoEuiAhwCPZ0gK2CLtGKkyWLZaKWqNn2g0KVrqUdpKLTICFqxDpkgcsnyLLceosAChNhYnxrAJGVPr6nSxFi6s6azauc0d5PbRpFw63ujdlf+l82abfRYjfrpWfgcYAoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CYDXMWod; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 540BCC433C7;
+	Sun, 24 Mar 2024 23:03:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711321403;
-	bh=6/JF0p4TGpuVIu9EuMBPKr0jbFJ9JTrCi2bvP6CETf4=;
+	bh=+PQn2Xt32PVXtxetymmoxToLCcedOoj6FzicUSmW7zE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ElrWJWrrYe4WDII77INpNlbwnIGsmEnhbv+cf48JOLJaEbMFZnKF8dkLr2o1H6NcN
-	 Jxf5W+V9UB/jvYJ46QFdD5urMmR5wcqIqdyob5ek9pjfoTNdgueOeuVcSdLgJfD7/z
-	 KZomv100use54IWT3lHbs/PCx52ekn5KUxhV2u8nYR0AGydHoTuhlWrOy2cG8FuCL2
-	 K+HHoIe0Q7RJ3CSf5OxPhlmLc3NsSJF9D1bW0+k24aNFAFzAq3KdnKEfNih6MX5tjR
-	 LqoQ1Ddd6bjFH0ruL4z0qDZWu3OwTdzysX3M6ZvrWiG4M7ZKrS1scR+R1aoJMYdxJY
-	 o0lZ4j4Z51DZQ==
+	b=CYDXMWodb/CoFGUU67/fY3fERpc18Lv2EqHbK0+5rOqQvPjepvqFnJ1BzpoqK4VRu
+	 XptdgrfHOk0yJ9y7fkFtjtRDsbeyjLwCyhlJBYCJhK7nismPhga4o4T/DbOH5ebvOf
+	 VWdJB6GksxFTXP4VhT7hQtN93MZw8h3VcTIc8SF/OqqYU6n3s4CgjteHNZrcPWJyuU
+	 6CH/hPBclVMbwlQ7kXqF7E6+AJ/Tivu+mzJkdtiGSAcU7Rhg8MuMu4qfZim4GdgbFk
+	 xLdGF8Nd8G+ieAoqm1YSmyfyF460BhOrviwNCBV+hoAwO7qpV8UABQu3plXYDizwlf
+	 34z1fcES0MY1Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 127/638] arm64: dts: qcom: sc8180x: Add missing CPU off state
-Date: Sun, 24 Mar 2024 18:52:44 -0400
-Message-ID: <20240324230116.1348576-128-sashal@kernel.org>
+Subject: [PATCH 6.6 128/638] arm64: dts: qcom: sc8180x: Fix eDP PHY power-domains
+Date: Sun, 24 Mar 2024 18:52:45 -0400
+Message-ID: <20240324230116.1348576-129-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,50 +64,33 @@ Content-Transfer-Encoding: 8bit
 
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-[ Upstream commit 07b600dfdfea65d58dd80ea25becd8cff69bfafc ]
+[ Upstream commit 24e98cb3d5e2c86565680e00008a794b4eac0040 ]
 
-The CPUs can be powered off without pulling the plug from the rest of
-the system. Describe the idle state responsible for this.
+The (e)DP PHYs are powered by the MX line, not through the MDSS GDSC.
+Fix that up.
 
-Fixes: 8575f197b077 ("arm64: dts: qcom: Introduce the SC8180x platform")
+Fixes: 494dec9b6f54 ("arm64: dts: qcom: sc8180x: Add display and gpu nodes")
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20231230-topic-8180_more_fixes-v1-4-93b5c107ed43@linaro.org
+Link: https://lore.kernel.org/r/20231230-topic-8180_more_fixes-v1-5-93b5c107ed43@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc8180x.dtsi | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sc8180x.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/qcom/sc8180x.dtsi b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
-index c8001ccc2b7b1..e15f4facc0021 100644
+index e15f4facc0021..548dbeaf823e4 100644
 --- a/arch/arm64/boot/dts/qcom/sc8180x.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
-@@ -297,7 +297,15 @@ BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
- 		};
+@@ -3194,7 +3194,7 @@ edp_phy: phy@aec2a00 {
+ 				 <&dispcc DISP_CC_MDSS_AHB_CLK>;
+ 			clock-names = "aux", "cfg_ahb";
  
- 		domain-idle-states {
--			CLUSTER_SLEEP_0: cluster-sleep-0 {
-+			CLUSTER_SLEEP_APSS_OFF: cluster-sleep-0 {
-+				compatible = "domain-idle-state";
-+				arm,psci-suspend-param = <0x41000044>;
-+				entry-latency-us = <3300>;
-+				exit-latency-us = <3300>;
-+				min-residency-us = <6000>;
-+			};
-+
-+			CLUSTER_SLEEP_AOSS_SLEEP: cluster-sleep-1 {
- 				compatible = "domain-idle-state";
- 				arm,psci-suspend-param = <0x4100a344>;
- 				entry-latency-us = <3263>;
-@@ -581,7 +589,7 @@ CPU_PD7: power-domain-cpu7 {
+-			power-domains = <&dispcc MDSS_GDSC>;
++			power-domains = <&rpmhpd SC8180X_MX>;
  
- 		CLUSTER_PD: power-domain-cpu-cluster0 {
- 			#power-domain-cells = <0>;
--			domain-idle-states = <&CLUSTER_SLEEP_0>;
-+			domain-idle-states = <&CLUSTER_SLEEP_APSS_OFF &CLUSTER_SLEEP_AOSS_SLEEP>;
- 		};
- 	};
- 
+ 			#clock-cells = <1>;
+ 			#phy-cells = <0>;
 -- 
 2.43.0
 
