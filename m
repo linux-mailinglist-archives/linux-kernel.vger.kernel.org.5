@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BE2488A107
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:10:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C178889C59
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:17:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84ED5B270E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:18:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A06471F3646B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:17:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E4F24CB7E;
-	Mon, 25 Mar 2024 02:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533CF24CB5B;
+	Mon, 25 Mar 2024 02:43:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lr32Hr7T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Eq4GcX9I"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B86212C80D;
-	Sun, 24 Mar 2024 22:57:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F7112C7FA;
+	Sun, 24 Mar 2024 22:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321057; cv=none; b=P34ttgSBqTucGQkJPpDEIeFu/AgrSxW4xEaJaz+lPNUJ3Fh38/+DXoYkhZn/LHyrCqH2UObSz1duCbpXKbbfn3wkApVk7UM0FjU+ZebUTkP6U8ASZ351mFSFUcJSIzkwFKJRiBfscX6xPrrYiYNErtPo9CMQiNx36+RQoxK+AEk=
+	t=1711321059; cv=none; b=pZlT9+eXzd/J8ZnUIGVuwfr8Ihyb4vpSlKjPW+HUbiO8Gv+7Kgnvjbay1fQXiMvizPNRlvdtkvM4LdFZVVAvXf4ytQrTZ0oiqsi+rx7OtU15sIfzwlJuEwrifJtwTuRPRLOsxMmDpV/VaxbSfKmRqMAcqVPyVJqbHNUX1GSsZiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321057; c=relaxed/simple;
-	bh=YKSk4417jnkaegNrpdi4LwpmOOlK3FepNJNTBW4pIRU=;
+	s=arc-20240116; t=1711321059; c=relaxed/simple;
+	bh=zwUzAYaODXUuLSoh8bMxnP8uZUATi/z+9DEgZAogWqg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L7C1IVFEBiJHlJikcfmgQ/sTAotzCtNvGmekoEAxTmKbFLtV5ggekV51RlS5mlx8vbHx7m4YF1QEMIqYtUmXauseoP1DmPaA18e239uzr1YdszvgYqVFM7Cjvx+eX+3Zz4p9Val9TNFlxXDJ3M4Igl57+JaHj5541DcwCZamCX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lr32Hr7T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93348C43399;
-	Sun, 24 Mar 2024 22:57:36 +0000 (UTC)
+	 MIME-Version; b=G2D+sItm0d8ZYD1crh0HfVKDJ2SlCcb5CKvMOwC5PzaDqTn8UCx/tU7FiSZ2TlbtZw8DoDnCu2tPeT5AlshwA2lUKOYE0azumRO7h3pXKtU8bkCtQXtauFrDMwWPuWOtPZWHv2oreaXG+jjYxtPBd8S8tSUOy1u9dR9G02vyT4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Eq4GcX9I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91EB6C433F1;
+	Sun, 24 Mar 2024 22:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321057;
-	bh=YKSk4417jnkaegNrpdi4LwpmOOlK3FepNJNTBW4pIRU=;
+	s=k20201202; t=1711321058;
+	bh=zwUzAYaODXUuLSoh8bMxnP8uZUATi/z+9DEgZAogWqg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lr32Hr7TW3AgQ+wNMPKRodTT3sLBnebF0OU8adrU8vbajaJa48D3BRnGpiXosgjX5
-	 srHuOMGyiHk9uKkSCqBrkB/CnYhzRVoPt+KqfkhL1vhNQtsK9TU/w+aw2D8316LpCJ
-	 2jmTg6S0Y1Y17nBPsetph10xhmoeKudCZHVv/jXs++eGWDd0tFFOIWhDYFBo4CMmSH
-	 fvuU8lZFAJ4hD3JDePMMMumJFu5ZjwWKg3RLhn8exu+5lQBzkb99Yd7P0xxirgCanc
-	 wKHDn5N65UCcN2xHhoiNN8EJM3D+DrzpzYBgjUaCvxQwFXDGnxE8CDQu/FFXFjwfDo
-	 0WUDcRZLSjjjA==
+	b=Eq4GcX9IzRIEbPArSzuGyHf3q9PPmm/OvoMVxx/UKB9Yx9VfPUC6yGd+XyrxDtuNo
+	 zv44VMtrv9kDI96l4vSRvZ3vYT6BbwaVMNqFSlySM90EwXn/RlWHtUZyqaLg83AgC0
+	 vCvbepowgYd/JkXP0BbCTCTHBADM8M28aKiu9XywDOtJJbdKZ/e62/KENigxAdHgha
+	 JEJVqn+Wifi+jwqZU5JZZphUapdBtsjSOVbT+3atGFYXUNHbEgo0BZUOOZzf5kUPXb
+	 3oy1CmN2YXnClQUwm+0tfINIwrBY0z8VBqQ5TGIQW51O4BN1hUDHNVbfk9abngq/8x
+	 BqhazniTKSIWg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Petre Rodan <petre.rodan@subdimension.ro>,
-	Andreas Klinger <ak@it-klinger.de>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+Cc: Sean Anderson <sean.anderson@seco.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 621/713] iio: pressure: mprls0025pa fix off-by-one enum
-Date: Sun, 24 Mar 2024 18:45:47 -0400
-Message-ID: <20240324224720.1345309-622-sashal@kernel.org>
+Subject: [PATCH 6.7 622/713] usb: phy: generic: Get the vbus supply
+Date: Sun, 24 Mar 2024 18:45:48 -0400
+Message-ID: <20240324224720.1345309-623-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,50 +62,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Petre Rodan <petre.rodan@subdimension.ro>
+From: Sean Anderson <sean.anderson@seco.com>
 
-[ Upstream commit 9e65506ca9c7ff716c8441a33417820ad61d3a16 ]
+[ Upstream commit 75fd6485cccef269ac9eb3b71cf56753341195ef ]
 
-Fix off-by-one error in transfer-function property.
-The honeywell,transfer-function property takes values between 1-3 so
-make sure the proper enum gets used.
+While support for working with a vbus was added, the regulator was never
+actually gotten (despite what was documented). Fix this by actually
+getting the supply from the device tree.
 
-Fixes: 713337d9143ed ("iio: pressure: Honeywell mprls0025pa pressure sensor")
-Co-developed-by: Andreas Klinger <ak@it-klinger.de>
-Signed-off-by: Andreas Klinger <ak@it-klinger.de>
-Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-Link: https://lore.kernel.org/r/20231229092445.30180-5-petre.rodan@subdimension.ro
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 7acc9973e3c4 ("usb: phy: generic: add vbus support")
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+Link: https://lore.kernel.org/r/20240123225111.1629405-3-sean.anderson@seco.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/pressure/mprls0025pa.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/phy/phy-generic.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/iio/pressure/mprls0025pa.c b/drivers/iio/pressure/mprls0025pa.c
-index 30fb2de368210..e3f0de020a40c 100644
---- a/drivers/iio/pressure/mprls0025pa.c
-+++ b/drivers/iio/pressure/mprls0025pa.c
-@@ -323,6 +323,7 @@ static int mpr_probe(struct i2c_client *client)
- 	struct iio_dev *indio_dev;
- 	struct device *dev = &client->dev;
- 	s64 scale, offset;
-+	u32 func;
+diff --git a/drivers/usb/phy/phy-generic.c b/drivers/usb/phy/phy-generic.c
+index 770081b828a42..b855d291dfe6b 100644
+--- a/drivers/usb/phy/phy-generic.c
++++ b/drivers/usb/phy/phy-generic.c
+@@ -268,6 +268,13 @@ int usb_phy_gen_create_phy(struct device *dev, struct usb_phy_generic *nop)
+ 		return dev_err_probe(dev, PTR_ERR(nop->vbus_draw),
+ 				     "could not get vbus regulator\n");
  
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_READ_BYTE))
- 		return dev_err_probe(dev, -EOPNOTSUPP,
-@@ -362,10 +363,11 @@ static int mpr_probe(struct i2c_client *client)
- 			return dev_err_probe(dev, ret,
- 				"honeywell,pmax-pascal could not be read\n");
- 		ret = device_property_read_u32(dev,
--				"honeywell,transfer-function", &data->function);
-+				"honeywell,transfer-function", &func);
- 		if (ret)
- 			return dev_err_probe(dev, ret,
- 				"honeywell,transfer-function could not be read\n");
-+		data->function = func - 1;
- 		if (data->function > MPR_FUNCTION_C)
- 			return dev_err_probe(dev, -EINVAL,
- 				"honeywell,transfer-function %d invalid\n",
++	nop->vbus_draw = devm_regulator_get_exclusive(dev, "vbus");
++	if (PTR_ERR(nop->vbus_draw) == -ENODEV)
++		nop->vbus_draw = NULL;
++	if (IS_ERR(nop->vbus_draw))
++		return dev_err_probe(dev, PTR_ERR(nop->vbus_draw),
++				     "could not get vbus regulator\n");
++
+ 	nop->dev		= dev;
+ 	nop->phy.dev		= nop->dev;
+ 	nop->phy.label		= "nop-xceiv";
 -- 
 2.43.0
 
