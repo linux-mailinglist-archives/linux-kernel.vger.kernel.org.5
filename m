@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D888888F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:41:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4872A889D01
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:34:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A87E21F2C533
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:41:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE4D4298145
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C52E157E7F;
-	Sun, 24 Mar 2024 23:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76B034F4F2;
+	Mon, 25 Mar 2024 02:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R0Co4GfC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kWW3hdMa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20B8206C8A;
-	Sun, 24 Mar 2024 23:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB3F206C8F;
+	Sun, 24 Mar 2024 23:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321509; cv=none; b=C+WQGtURJFU3JT5ReVsldFBolSx8gYQjALGjnxVgk6eK0x/8cOD5fm3cfIbOU+iSP/x+iORUFLXOfOdjw2C0x34gtCCof9jL5JOx1hoy0L87+oe00w2G/+tiHzAekvISuQsRUBqJ+v/FlADuwjELDU2gSpuUDxyOwJ9plKGpaV4=
+	t=1711321510; cv=none; b=uk8u3ps3l1sR+7VFMv3yV55o54TZws6pn6P0R3w4mKCQ3ZqgIy03OTlH69UpfhB/vMfWt1BqOlQVsjQj9iZUDcb9nmru5G018AIUp1uUGRwvB70OjmRVRPfQsV8AjXif2wF9xlQh1J5b5ay98r0Cs4Y6IFjW2/0ne0CeO0AFbiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321509; c=relaxed/simple;
-	bh=PLMeTWfzCTYAVAuh1bq/F318sAMTXN+WWdgNpObteoQ=;
+	s=arc-20240116; t=1711321510; c=relaxed/simple;
+	bh=b3EGla1ceGQDu3kI0qNL7DjBL1cafs8iz7Jsl5WCx38=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tkCZgh8T6ymDiTeCQ8tmT8N8GhUb0SIfi6LM1UhEcKywZ+PsK+wZb09RFxHEcDzCgwBayh35KX1l5Xr26UclHrRBKEMzzvb0IrholxM6BckrpufIw3j0WCf4duTp03r2HP+5zLPbBuOTuDuuzpSP0My2noSSkNOk1NXFd1WTMGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R0Co4GfC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA852C43394;
-	Sun, 24 Mar 2024 23:05:08 +0000 (UTC)
+	 MIME-Version; b=k9DsUfxS0x6Fc/Hi/KhaQftBsZSk6V4NaTiBg4E0+kQDt/gXxS2IDA4rmElzCWmVClV9Fl6NKwOMCi5N3dqKjkPEoTkiLy5m05HFCy66eU+ZgtsGirrKgqjP5KMD/fq5gUcusQg1Iu4bYnPCU6tI+ydC1HTMTEcyTaMD2jwptaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kWW3hdMa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4964C43399;
+	Sun, 24 Mar 2024 23:05:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321509;
-	bh=PLMeTWfzCTYAVAuh1bq/F318sAMTXN+WWdgNpObteoQ=;
+	s=k20201202; t=1711321510;
+	bh=b3EGla1ceGQDu3kI0qNL7DjBL1cafs8iz7Jsl5WCx38=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R0Co4GfCKR6eCnE8fzV6YOsp7OvYjJZRg5lp+dN5VF2dI/oWhuNd/iMMCh7b5JmWT
-	 s1FIGT9SbewmKWCPQKBaV36V/jKBAguN8u5/mMLyeZFhrNurMJ9MwoyUF7vktku40t
-	 ZGuKII1G+JSUYtv/h/zyHPdTndG6gYmT9mpQN38lJVIkPfnRN7wv8BbWOzSB6Ai8ns
-	 GaEdIXCkWrYWFmZPlzn7DIgnowajz/H3AFa5geanHocLb+Y+fH7GnpK9BYYwQYsfYV
-	 BwqOm5uhm32R3xCtuyMiN4aVicFFo+Oy1QVJTk5/p2MJFvRLzxCXeot2PZN1vJr152
-	 A6lxk6w3tom5A==
+	b=kWW3hdMa9xVdAQiQQ09De/v58NFD5+KvWUqMqpFZK7MR2B5vsj3rZlIgS3FEVmXzl
+	 xpCSI8yTaTOB7m1yxIbYZef4271apnKmdTBvq+bK27+ikJgH+70feyNwYQPVY/JMeo
+	 fLHqmb+4ZfiJDhcD9HvaBt5oLNUElqTERD86OJ4/J25xXGnTw7SuDNFZKu//qpLAJi
+	 2WK5JLmpyuo1OWgUYP3axczB7CbmoctjK2BgJGFJvWWBsAzEImx6BDYj8Wh+uO0Ddr
+	 dVZmEePOEW7rK1ERErSXVi3Tq7Stnosea/rXziitBYzHKe4l5K/i28QojI6Z9MQp4i
+	 F3nNYpTjPBUsw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kamal Heib <kheib@redhat.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Bhavya Kapoor <b-kapoor@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 235/638] net: ena: Remove ena_select_queue
-Date: Sun, 24 Mar 2024 18:54:32 -0400
-Message-ID: <20240324230116.1348576-236-sashal@kernel.org>
+Subject: [PATCH 6.6 236/638] arm64: dts: ti: k3-j7200-common-proc-board: Modify Pinmux for wkup_uart0 and mcu_uart0
+Date: Sun, 24 Mar 2024 18:54:33 -0400
+Message-ID: <20240324230116.1348576-237-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,64 +62,61 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kamal Heib <kheib@redhat.com>
+From: Bhavya Kapoor <b-kapoor@ti.com>
 
-[ Upstream commit 78e886ba2b549945ecada055ee0765f0ded5707a ]
+[ Upstream commit 566feddd2ba5e29d9ccab36d6508592ae563f275 ]
 
-Avoid the following warnings by removing the ena_select_queue() function
-and rely on the net core to do the queue selection, The issue happen
-when an skb received from an interface with more queues than ena is
-forwarded to the ena interface.
+WKUP_PADCONFIG registers for wkup_uart0 and mcu_uart0 lies
+under wkup_pmx2 for J7200. Thus, modify pinmux for both
+of them.
 
-[ 1176.159959] eth0 selects TX queue 11, but real number of TX queues is 8
-[ 1176.863976] eth0 selects TX queue 14, but real number of TX queues is 8
-[ 1180.767877] eth0 selects TX queue 14, but real number of TX queues is 8
-[ 1188.703742] eth0 selects TX queue 14, but real number of TX queues is 8
-
-Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
-Signed-off-by: Kamal Heib <kheib@redhat.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 3709ea7f960e ("arm64: dts: ti: k3-j7200-common-proc-board: Add uart pinmux")
+Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+Link: https://lore.kernel.org/r/20240214105846.1096733-2-b-kapoor@ti.com
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ .../boot/dts/ti/k3-j7200-common-proc-board.dts  | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 14e41eb57731b..cc39707a80598 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -3238,22 +3238,6 @@ static netdev_tx_t ena_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+index cee2b4b0eb87d..53594c5fb8e8f 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+@@ -91,24 +91,25 @@ vdd_sd_dv: gpio-regulator-TLV71033 {
+ };
  
--static u16 ena_select_queue(struct net_device *dev, struct sk_buff *skb,
--			    struct net_device *sb_dev)
--{
--	u16 qid;
--	/* we suspect that this is good for in--kernel network services that
--	 * want to loop incoming skb rx to tx in normal user generated traffic,
--	 * most probably we will not get to this
--	 */
--	if (skb_rx_queue_recorded(skb))
--		qid = skb_get_rx_queue(skb);
--	else
--		qid = netdev_pick_tx(dev, skb, NULL);
--
--	return qid;
--}
--
- static void ena_config_host_info(struct ena_com_dev *ena_dev, struct pci_dev *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -3424,7 +3408,6 @@ static const struct net_device_ops ena_netdev_ops = {
- 	.ndo_open		= ena_open,
- 	.ndo_stop		= ena_close,
- 	.ndo_start_xmit		= ena_start_xmit,
--	.ndo_select_queue	= ena_select_queue,
- 	.ndo_get_stats64	= ena_get_stats64,
- 	.ndo_tx_timeout		= ena_tx_timeout,
- 	.ndo_change_mtu		= ena_change_mtu,
+ &wkup_pmx0 {
++};
++
++&wkup_pmx2 {
+ 	mcu_uart0_pins_default: mcu-uart0-default-pins {
+ 		pinctrl-single,pins = <
+-			J721E_WKUP_IOPAD(0xf4, PIN_INPUT, 0) /* (D20) MCU_UART0_RXD */
+-			J721E_WKUP_IOPAD(0xf0, PIN_OUTPUT, 0) /* (D19) MCU_UART0_TXD */
+-			J721E_WKUP_IOPAD(0xf8, PIN_INPUT, 0) /* (E20) MCU_UART0_CTSn */
+-			J721E_WKUP_IOPAD(0xfc, PIN_OUTPUT, 0) /* (E21) MCU_UART0_RTSn */
++			J721E_WKUP_IOPAD(0x90, PIN_INPUT, 0) /* (E20) MCU_UART0_CTSn */
++			J721E_WKUP_IOPAD(0x94, PIN_OUTPUT, 0) /* (E21) MCU_UART0_RTSn */
++			J721E_WKUP_IOPAD(0x8c, PIN_INPUT, 0) /* (D20) MCU_UART0_RXD */
++			J721E_WKUP_IOPAD(0x88, PIN_OUTPUT, 0) /* (D19) MCU_UART0_TXD */
+ 		>;
+ 	};
+ 
+ 	wkup_uart0_pins_default: wkup-uart0-default-pins {
+ 		pinctrl-single,pins = <
+-			J721E_WKUP_IOPAD(0xb0, PIN_INPUT, 0) /* (B14) WKUP_UART0_RXD */
+-			J721E_WKUP_IOPAD(0xb4, PIN_OUTPUT, 0) /* (A14) WKUP_UART0_TXD */
++			J721E_WKUP_IOPAD(0x48, PIN_INPUT, 0) /* (B14) WKUP_UART0_RXD */
++			J721E_WKUP_IOPAD(0x4c, PIN_OUTPUT, 0) /* (A14) WKUP_UART0_TXD */
+ 		>;
+ 	};
+-};
+ 
+-&wkup_pmx2 {
+ 	mcu_cpsw_pins_default: mcu-cpsw-default-pins {
+ 		pinctrl-single,pins = <
+ 			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_RGMII1_TX_CTL */
 -- 
 2.43.0
 
