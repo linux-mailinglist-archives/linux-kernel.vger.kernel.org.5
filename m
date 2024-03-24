@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-115561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE67C889C6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D20BB889424
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:48:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BBCC1C2F0B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:19:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E60B1C2EA7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B03E2ACB2E;
-	Mon, 25 Mar 2024 02:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B2A14B09B;
+	Mon, 25 Mar 2024 02:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ft/71UfM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YGheUJE7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF6B1F1ADF;
-	Sun, 24 Mar 2024 22:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E859E1F1ADC;
+	Sun, 24 Mar 2024 22:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321086; cv=none; b=LBBwRuNTEZaIvaYhQKjGFib4Su9GPXwWCZTAfB/JsVtZPNBQ55dI9DkG0AA47JT0hy3QOxvtbcEay+wChsRoiwY0CfiAsrEuq0+qlFrjuvdFQjAo4FoHGGCkUJQTLRCp/xBbARU0O9EJXiBu9yy+RvSGjW6WiSwjiY9Khvj0cpg=
+	t=1711321088; cv=none; b=HyC7CXV6+IZ91PjgSi+RaSfpPxSXRXg5rr6/zvxtHA/9KaTxFZ4LqbK/ykAP/oYIjSzcIA9DuOVkMyMPBCeXsUkyLHK+ifO35tHGxoZaYO0yhKJAuJW41oYQhG4x0OhBg0y2D4f7pd3dZ3LzogsPttsq/vkSYCtKKVpgTDx7u+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321086; c=relaxed/simple;
-	bh=NLXg1mMIeDthRs3gevp71oajPJK8l3xOG32jfOjQjjM=;
+	s=arc-20240116; t=1711321088; c=relaxed/simple;
+	bh=mT8CPKPTFzdNbzFNWoRo7kKXrSvp1WjcoYFwixPGY5Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EBowotfJGJBv7JQk+hVXtqdnZWkHUolANuCIuQSLcoBu5erQU5Wywbce4D5CKV1OK3Znhft3kyGnlChu0/tvEaXWUz9IfYfYE8xeCg4+61QLvdpUzyP0vJ/kv8NXpCNpWV1RAqN0fwYtrCak505+bP4q8zdAUvN9TEVdQ6fkrzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ft/71UfM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8AA5C433A6;
-	Sun, 24 Mar 2024 22:58:05 +0000 (UTC)
+	 MIME-Version; b=tuT/b5Pl/H/vz8MKIxrEQIkw2R5SvjtRxZp3QKPERmv3BhOeqet30RzsJcH2J9NOidd5Z284TJC68jlMfr/H09rirgiR7GVVCHdxtoTbjrBJs2OWc5LO9+9jrINj+PA4j7dHQwyYWavpw9WsbQtWMAeQi41IB7rB0bMdkl69qqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YGheUJE7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1394C433F1;
+	Sun, 24 Mar 2024 22:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321086;
-	bh=NLXg1mMIeDthRs3gevp71oajPJK8l3xOG32jfOjQjjM=;
+	s=k20201202; t=1711321087;
+	bh=mT8CPKPTFzdNbzFNWoRo7kKXrSvp1WjcoYFwixPGY5Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ft/71UfMzMTBvs/EJtBRdqZcmDiywp6Z02ci3uSTpPhRy7ju0BmU28Wc3K6q9lATk
-	 4yXH13jI4knZnOdwfFTggcrY7sycbk6hK+tGtuPu7Da9RjO5Po9bYXk1PIOhcvUBBh
-	 +r1ZBGS3MhzD9uQ+QTpoix08mpkmtS++db0AkUv7rD8Hb8kxEHh7vzGgcc91DOhC89
-	 qyw/937CBlJUFXIp4Qd1zGKSWWUgLIX9YeWlQqWIO8gjFPEvR8NLag+sAD9hpdVN+t
-	 YXuMtULo9S6nzLKGTKo+Mg4Io5rCHoW6xp5X/sA922t8ftufYeT1d9lw9NK7hCYKCz
-	 rbsUamNX443Cw==
+	b=YGheUJE7Df+wgTgi+A48mNvb0wjqi0qjK3ozJ12A+EwoswXTBedvAxiAbBBNpNCBD
+	 1P0myp1HbPdW8wq22EXrwsh719cxBV3cXHv+uzLbtqppMfoApeF7xLx5aNGIEMISJC
+	 DOyRbTdMd98fDDGOxodiEC2LVPUS+l8Mm1xSeFOflm/dMGWOhCMWV84iys25TLcBcL
+	 PP4h6SrEIfmmQ6xfIbWltF9O8oiyDjWvRXKuS+Ysreruui9xQCxyrBBXK89vvrHSMG
+	 6xgB9JnyvRl3Nfp7mjq1ahtWGC8FfaYW5JsIKDOZngFs1nNQkEmMV9BRxLJgMshUjK
+	 fR7qAGL15HfOQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eric Dumazet <edumazet@google.com>,
-	syzbot+a340daa06412d6028918@syzkaller.appspotmail.com,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Michal Kubiak <michal.kubiak@intel.com>,
+Cc: Ido Schimmel <idosch@nvidia.com>,
+	Jiri Pirko <jiri@nvidia.com>,
+	Petr Machata <petrm@nvidia.com>,
+	Simon Horman <horms@kernel.org>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 650/713] net/sched: taprio: proper TCA_TAPRIO_TC_ENTRY_INDEX check
-Date: Sun, 24 Mar 2024 18:46:16 -0400
-Message-ID: <20240324224720.1345309-651-sashal@kernel.org>
+Subject: [PATCH 6.7 651/713] devlink: Move private netlink flags to C file
+Date: Sun, 24 Mar 2024 18:46:17 -0400
+Message-ID: <20240324224720.1345309-652-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -65,85 +65,53 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Eric Dumazet <edumazet@google.com>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit 343041b59b7810f9cdca371f445dd43b35c740b1 ]
+[ Upstream commit 526dd6d7877b80b1f56d87156b65b8227c69d59f ]
 
-taprio_parse_tc_entry() is not correctly checking
-TCA_TAPRIO_TC_ENTRY_INDEX attribute:
+The flags are not used outside of the C file so move them there.
 
-	int tc; // Signed value
-
-	tc = nla_get_u32(tb[TCA_TAPRIO_TC_ENTRY_INDEX]);
-	if (tc >= TC_QOPT_MAX_QUEUE) {
-		NL_SET_ERR_MSG_MOD(extack, "TC entry index out of range");
-		return -ERANGE;
-	}
-
-syzbot reported that it could fed arbitary negative values:
-
-UBSAN: shift-out-of-bounds in net/sched/sch_taprio.c:1722:18
-shift exponent -2147418108 is negative
-CPU: 0 PID: 5066 Comm: syz-executor367 Not tainted 6.8.0-rc7-syzkaller-00136-gc8a5c731fd12 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Call Trace:
- <TASK>
-  __dump_stack lib/dump_stack.c:88 [inline]
-  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
-  ubsan_epilogue lib/ubsan.c:217 [inline]
-  __ubsan_handle_shift_out_of_bounds+0x3c7/0x420 lib/ubsan.c:386
-  taprio_parse_tc_entry net/sched/sch_taprio.c:1722 [inline]
-  taprio_parse_tc_entries net/sched/sch_taprio.c:1768 [inline]
-  taprio_change+0xb87/0x57d0 net/sched/sch_taprio.c:1877
-  taprio_init+0x9da/0xc80 net/sched/sch_taprio.c:2134
-  qdisc_create+0x9d4/0x1190 net/sched/sch_api.c:1355
-  tc_modify_qdisc+0xa26/0x1e40 net/sched/sch_api.c:1776
-  rtnetlink_rcv_msg+0x885/0x1040 net/core/rtnetlink.c:6617
-  netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
-  netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
-  netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
-  netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
-  sock_sendmsg_nosec net/socket.c:730 [inline]
-  __sock_sendmsg+0x221/0x270 net/socket.c:745
-  ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
-  ___sys_sendmsg net/socket.c:2638 [inline]
-  __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f1b2dea3759
-Code: 48 83 c4 28 c3 e8 d7 19 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd4de452f8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f1b2def0390 RCX: 00007f1b2dea3759
-RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000004
-RBP: 0000000000000003 R08: 0000555500000000 R09: 0000555500000000
-R10: 0000555500000000 R11: 0000000000000246 R12: 00007ffd4de45340
-R13: 00007ffd4de45310 R14: 0000000000000001 R15: 00007ffd4de45340
-
-Fixes: a54fc09e4cba ("net/sched: taprio: allow user input of per-tc max SDU")
-Reported-and-tested-by: syzbot+a340daa06412d6028918@syzkaller.appspotmail.com
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+Suggested-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
+Stable-dep-of: d7d75124965a ("devlink: Fix devlink parallel commands processing")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_taprio.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/devlink/devl_internal.h | 3 ---
+ net/devlink/netlink.c       | 3 +++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index 31a8252bd09c9..ad99409c6325e 100644
---- a/net/sched/sch_taprio.c
-+++ b/net/sched/sch_taprio.c
-@@ -1008,7 +1008,8 @@ static const struct nla_policy entry_policy[TCA_TAPRIO_SCHED_ENTRY_MAX + 1] = {
- };
+diff --git a/net/devlink/devl_internal.h b/net/devlink/devl_internal.h
+index 183dbe3807ab3..2a9b263300a4b 100644
+--- a/net/devlink/devl_internal.h
++++ b/net/devlink/devl_internal.h
+@@ -111,9 +111,6 @@ int devlink_rel_devlink_handle_put(struct sk_buff *msg, struct devlink *devlink,
+ 				   bool *msg_updated);
  
- static const struct nla_policy taprio_tc_policy[TCA_TAPRIO_TC_ENTRY_MAX + 1] = {
--	[TCA_TAPRIO_TC_ENTRY_INDEX]	   = { .type = NLA_U32 },
-+	[TCA_TAPRIO_TC_ENTRY_INDEX]	   = NLA_POLICY_MAX(NLA_U32,
-+							    TC_QOPT_MAX_QUEUE),
- 	[TCA_TAPRIO_TC_ENTRY_MAX_SDU]	   = { .type = NLA_U32 },
- 	[TCA_TAPRIO_TC_ENTRY_FP]	   = NLA_POLICY_RANGE(NLA_U32,
- 							      TC_FP_EXPRESS,
+ /* Netlink */
+-#define DEVLINK_NL_FLAG_NEED_PORT		BIT(0)
+-#define DEVLINK_NL_FLAG_NEED_DEVLINK_OR_PORT	BIT(1)
+-
+ enum devlink_multicast_groups {
+ 	DEVLINK_MCGRP_CONFIG,
+ };
+diff --git a/net/devlink/netlink.c b/net/devlink/netlink.c
+index d0b90ebc8b152..7350138c8bb44 100644
+--- a/net/devlink/netlink.c
++++ b/net/devlink/netlink.c
+@@ -9,6 +9,9 @@
+ 
+ #include "devl_internal.h"
+ 
++#define DEVLINK_NL_FLAG_NEED_PORT		BIT(0)
++#define DEVLINK_NL_FLAG_NEED_DEVLINK_OR_PORT	BIT(1)
++
+ static const struct genl_multicast_group devlink_nl_mcgrps[] = {
+ 	[DEVLINK_MCGRP_CONFIG] = { .name = DEVLINK_GENL_MCGRP_CONFIG_NAME },
+ };
 -- 
 2.43.0
 
