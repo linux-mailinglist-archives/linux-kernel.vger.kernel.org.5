@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-116266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AC24889DDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:56:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A46C888D04
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:37:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABE9F1C35796
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:56:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD6A21F297B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EEC3C81FD;
-	Mon, 25 Mar 2024 03:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3AB81C3A26;
+	Mon, 25 Mar 2024 01:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mBVW1uTQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uzZz+EZW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1D52261AA;
-	Sun, 24 Mar 2024 23:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B8D2261B2;
+	Sun, 24 Mar 2024 23:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324072; cv=none; b=YRF0S4+q2sRafDrsVcBZXXe35NYJ1CDUYbsvthRO+ttj2j83WlJUQUVT2pxTYrud5I5Dyw/gJzoygUMgur59smhz1/ZTWBEJvyqI48z8/emA8NjsrNRDY6cAmwnywT4pxp2jC69h2d+A7sEuRQuBMkhy94I62t2m+gLlM7VyrXE=
+	t=1711324073; cv=none; b=sNOU11gJlv3MU5DNVbFiDzNfrhBmAuT6KBdp5qVo3QjO3w6wRYpvT9CIZ1V1TU3cK7D/IiJjieTUwWJaMsGejscwEfMQarTijiRetgDTuTmEtHOcWqHkqJhcSPFrDLWa+kdQzwn+hK4EL5G7iBVM29roROtMVvEe67nBBAodo2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324072; c=relaxed/simple;
-	bh=ExZL3/MFyzI92yOqyU4pBDdIcGauhn5Ds3d+UzfIZ/A=;
+	s=arc-20240116; t=1711324073; c=relaxed/simple;
+	bh=3qxOdARrpY2hq8g/cSdqLb0ed/bDJFFK2NQnVfzf07Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IRUZwZdNMjmihGkOKM9sV/EdtQZlOY3JpTPim0ueVIOiLQjkFxjLDipjkVa79pTUOp1pYKwZr5uR6c2kUF1PeeeH8c89V6WZ6B4iK0SZGbXzV668SFnLqpUL6+1YeR7BverteWEZSNqVCtnuG9pOyUUWNwY2X7WxaxSA5U8Gex4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mBVW1uTQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06C44C433C7;
-	Sun, 24 Mar 2024 23:47:49 +0000 (UTC)
+	 MIME-Version:Content-Type; b=DfP9QrwtQJeEj2R2yEkIYwaVOY6KvFTIhKLXeg+Giw+QA8gvh7LFLfWJlH3z3iXpBHZg+Erbs8u6yChrKAjNTgJcUps2i0AIO/YS/yFsPfKXe+TjdPzFWCIcOKAXfYFyzgDf3tTWIkey22t7eg5v33LpBjFkuvSxOh0AmgnQlJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uzZz+EZW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05241C433B1;
+	Sun, 24 Mar 2024 23:47:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324070;
-	bh=ExZL3/MFyzI92yOqyU4pBDdIcGauhn5Ds3d+UzfIZ/A=;
+	s=k20201202; t=1711324071;
+	bh=3qxOdARrpY2hq8g/cSdqLb0ed/bDJFFK2NQnVfzf07Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mBVW1uTQN8WF3C98/puxssAKvpr2l51JMqZI3OQ7IcValmuaeKUtPP0Pn26qpLOvJ
-	 v9KedXRK+2h2j14EkDhKgGoTYbl7JKr9JUls+0+ORKGDIMoQh3ja7NksbOKmP9XRNt
-	 2H6ZpzBWxGRybUYxjaAfb6AH36xEcXBqYDBT8z3jYdDPxND8ZCAyvmS487dz7V/eyt
-	 RaR6t8TwjhRwiELcgq3S7rRaRncsw6Z1t7K7ml5F4P+1GWqbVnBoUY/lJNlmOUTeBF
-	 D3J6/bymJzPuYhudPiHRMQpRT+S0EYRvTnJwBDl/9jTo0wpUrdceiaQHDG39mF1eDJ
-	 K7LaVT1GAtS7w==
+	b=uzZz+EZWFkkxIKc7f6Xw/2dX7v4M2/j/MC0JruoUVAd9vConte3uybBJWAC4C09PU
+	 Dw6lafi0NOZKSOIe2/2H2iRx2gmVsn/ybOPIPTxFki/gGeiuslsiHwJfZ9gRj4qA9z
+	 C4Ql0NaULUn4zG4EOAcuJ/190vA/00NxJsqfIxfBIIEHzi/cICjIkqDNyz8lBPMv6k
+	 VjUrepgGzv99B2r12yOFHNGiSufARvJ5fDud7fLE3dmAQeqzX3R1rjtDPEiGa9itqH
+	 g6+NQlzB1qnXr2P0PKqY481rqokDyr6wwjXd6wueF7RN4a1zrUgRLk9eacHW3UED+P
+	 QtSRlp/McCdBQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chen Ni <nichen@iscas.ac.cn>,
-	Simon Horman <horms@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 071/183] sr9800: Add check for usbnet_get_endpoints
-Date: Sun, 24 Mar 2024 19:44:44 -0400
-Message-ID: <20240324234638.1355609-72-sashal@kernel.org>
+Subject: [PATCH 5.4 072/183] bpf: Fix hashtab overflow check on 32-bit arches
+Date: Sun, 24 Mar 2024 19:44:45 -0400
+Message-ID: <20240324234638.1355609-73-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -59,42 +58,65 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chen Ni <nichen@iscas.ac.cn>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit 07161b2416f740a2cb87faa5566873f401440a61 ]
+[ Upstream commit 6787d916c2cf9850c97a0a3f73e08c43e7d973b1 ]
 
-Add check for usbnet_get_endpoints() and return the error if it fails
-in order to transfer the error.
+The hashtab code relies on roundup_pow_of_two() to compute the number of
+hash buckets, and contains an overflow check by checking if the
+resulting value is 0. However, on 32-bit arches, the roundup code itself
+can overflow by doing a 32-bit left-shift of an unsigned long value,
+which is undefined behaviour, so it is not guaranteed to truncate
+neatly. This was triggered by syzbot on the DEVMAP_HASH type, which
+contains the same check, copied from the hashtab code. So apply the same
+fix to hashtab, by moving the overflow check to before the roundup.
 
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Fixes: 19a38d8e0aa3 ("USB2NET : SR9800 : One chip USB2.0 USB2NET SR9800 Device Driver Support")
-Link: https://lore.kernel.org/r/20240305075927.261284-1-nichen@iscas.ac.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: daaf427c6ab3 ("bpf: fix arraymap NULL deref and missing overflow and zero size checks")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Message-ID: <20240307120340.99577-3-toke@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/sr9800.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/bpf/hashtab.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/usb/sr9800.c b/drivers/net/usb/sr9800.c
-index 681e0def6356b..a5332e99102a5 100644
---- a/drivers/net/usb/sr9800.c
-+++ b/drivers/net/usb/sr9800.c
-@@ -736,7 +736,9 @@ static int sr9800_bind(struct usbnet *dev, struct usb_interface *intf)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index f1dec90f3a522..34c4f709b1ede 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -327,7 +327,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 							  num_possible_cpus());
+ 	}
  
- 	data->eeprom_len = SR9800_EEPROM_LEN;
+-	/* hash table size must be power of 2 */
++	/* hash table size must be power of 2; roundup_pow_of_two() can overflow
++	 * into UB on 32-bit arches, so check that first
++	 */
++	err = -E2BIG;
++	if (htab->map.max_entries > 1UL << 31)
++		goto free_htab;
++
+ 	htab->n_buckets = roundup_pow_of_two(htab->map.max_entries);
  
--	usbnet_get_endpoints(dev, intf);
-+	ret = usbnet_get_endpoints(dev, intf);
-+	if (ret)
-+		goto out;
+ 	htab->elem_size = sizeof(struct htab_elem) +
+@@ -337,10 +343,8 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 	else
+ 		htab->elem_size += round_up(htab->map.value_size, 8);
  
- 	/* LED Setting Rule :
- 	 * AABB:CCDD
+-	err = -E2BIG;
+-	/* prevent zero size kmalloc and check for u32 overflow */
+-	if (htab->n_buckets == 0 ||
+-	    htab->n_buckets > U32_MAX / sizeof(struct bucket))
++	/* check for u32 overflow */
++	if (htab->n_buckets > U32_MAX / sizeof(struct bucket))
+ 		goto free_htab;
+ 
+ 	cost = (u64) htab->n_buckets * sizeof(struct bucket) +
 -- 
 2.43.0
 
