@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19E59888DE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD73A889367
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B50D1C2AB9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:00:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ABF21C2C9A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A853120D0;
-	Mon, 25 Mar 2024 01:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8D81CCE32;
+	Mon, 25 Mar 2024 01:11:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ogRCzPAO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tVb8LdNd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15CE22D892;
-	Sun, 24 Mar 2024 23:52:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BDDD18520B;
+	Sun, 24 Mar 2024 23:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324331; cv=none; b=ZX/A8Agusp6FpsmBEA1cU5nUhup4Korbng8BZ8pjjRm911w+EahdTYDAU5ZhiClCiZeZi5P6XVEZo5kRRmnQfd8zwtWBtgMEb3AJhSnbdRyuIIcQWw9BlmUjFHTC8jJGhJv7EB50cJPKUjQkVghE+9qCyuFEtqaN2RwchC2tLSI=
+	t=1711324332; cv=none; b=kWAE+6fpH/fdQhK9r1blQSj+ZoNQcNXgHeU1bAXZFN/VTBpJt192l8pjRqTGdnrNUGT0YRh3D7KeIwVNulJHQif2hxF4BQqErKj+xHKL3E39g2WrMFoGpoeDHGzTo06+T2yuCDYGUvkitT1uUAi0cMgw9y6xkXFVrGqFUeUhrD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324331; c=relaxed/simple;
-	bh=OKnaw5oQbcHWIiwkqxdEnLd9NQl2MIeN415S5Zds2L8=;
+	s=arc-20240116; t=1711324332; c=relaxed/simple;
+	bh=5s0pWDmBEPFIOy02KFQp8liTlWUa2O7endpq9tizYYc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lKuTxZ5/1lMKcHwZh9vcVhqGIe775F5oVzk95yzMa6X86ozkn1D7Azx37GF0gSi1L1W3VoECZLSasbWmBkhP7OU4T9Q08DChzT7cM2pwgZfEiWCxq2x2XuxwI2MXNkg3uYInh9kMpqVj5RU2oXrpeNYT/8M/JC0jAWIHUQVrWXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ogRCzPAO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBA61C433C7;
-	Sun, 24 Mar 2024 23:52:09 +0000 (UTC)
+	 MIME-Version; b=nHyC2iGJW/p6JrBPAoMqG4msNYRU3+sAG2ZULbVL9J+I1oprsfbxleowX/AOKEbP8bpzBvTZfS9v13swz3/+DsSLJ944nLiHoyD2S7TDWAZjG3THVeqk8+RY88DxE7apWCn3GP73jVRg00CyY5ugpLzQeY2Lf8raQpANqw5/rHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tVb8LdNd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7D2DC43399;
+	Sun, 24 Mar 2024 23:52:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324330;
-	bh=OKnaw5oQbcHWIiwkqxdEnLd9NQl2MIeN415S5Zds2L8=;
+	s=k20201202; t=1711324331;
+	bh=5s0pWDmBEPFIOy02KFQp8liTlWUa2O7endpq9tizYYc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ogRCzPAOn9FmxbxwJZWMRw+yu2GveHbvxhgOQqfzmDbzsOwXQZbq6UqVQrcQ9iNif
-	 HVp9jqdu78jy7jqVEMEK0JH7limPBYSvRHzgVrnFtHgSzIJsQ6CXvQ2mGgtE28FGes
-	 fqP2rEX7mCgyqQ04DPps+KwigwBhFuxQSU2qkZeNKPj3Ue6XH/pfEfwY5ljwDm2+fn
-	 RyM8AvkCrb/jxQYjHxBWSEM3d0WC+PXZMbPVQNdGOYvqZ2CnUCpCuUUn3gpPA/J3Ym
-	 oAFOgi9a1lUSjwYWAprzijyVfFirTi6tIxQxtvqUwRhq/hVD99Fbcho6ivnANA0Ugv
-	 biqYDq/aED60w==
+	b=tVb8LdNdBn0AWBKsCziX53A81poQKGHBDIrX3OzcWcwMnvCYl9ntqCWNfyrNtWjQb
+	 3lcv5qnUcdVdmCKEEQ7c+rRTNsHS8pxOCMm97PNZpidab/KX/kHZZdy1UCj4KhMWf+
+	 CX0yfjR96nFrr4Rne1bMxyWsbPHX/NCZmwKfTGaz1Xp2rRXSAbOG9sdpMtivd/oZki
+	 vNOr7mc2g41PPsou1x60zW7NmiR1YmvKqrOvZ8oOlclvH3bqobRTUdvVgpqUaCVeh/
+	 /GMKpAxcakH5umo+dsFWy+A+DU1mXNkzNVuS8d63XEDDPDDlKpvNj0/X0ZGJZbpYuI
+	 RuQitMXGGJwyA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Daniil Dulov <d.dulov@aladdin.ru>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 101/148] media: go7007: add check of return value of go7007_read_addr()
-Date: Sun, 24 Mar 2024 19:49:25 -0400
-Message-ID: <20240324235012.1356413-102-sashal@kernel.org>
+Subject: [PATCH 4.19 102/148] media: pvrusb2: fix pvr2_stream_callback casts
+Date: Sun, 24 Mar 2024 19:49:26 -0400
+Message-ID: <20240324235012.1356413-103-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -62,38 +62,113 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Daniil Dulov <d.dulov@aladdin.ru>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 0b70530ee740861f4776ff724fcc25023df1799a ]
+[ Upstream commit 30baa4a96b23add91a87305baaeba82c4e109e1f ]
 
-If go7007_read_addr() returns error channel is not assigned a value.
-In this case go to allocfail.
+clang-16 complains about a control flow integrity (KCFI) issue in pvrusb2,
+which casts three different prototypes into pvr2_stream_callback:
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+drivers/media/usb/pvrusb2/pvrusb2-v4l2.c:1070:30: error: cast from 'void (*)(struct pvr2_v4l2_fh *)' to 'pvr2_stream_callback' (aka 'void (*)(void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1070 |         pvr2_stream_set_callback(sp,(pvr2_stream_callback)pvr2_v4l2_notify,fh);
+      |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/media/usb/pvrusb2/pvrusb2-context.c:110:6: error: cast from 'void (*)(struct pvr2_context *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  110 |                                         (void (*)(void *))pvr2_context_notify,
+      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/media/usb/pvrusb2/pvrusb2-dvb.c:152:6: error: cast from 'void (*)(struct pvr2_dvb_adapter *)' to 'pvr2_stream_callback' (aka 'void (*)(void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  152 |                                  (pvr2_stream_callback) pvr2_dvb_notify, adap);
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 866b8695d67e ("Staging: add the go7007 video driver")
-Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
+Change the functions to actually take a void* argument so the cast is no longer
+needed.
+
+Fixes: bb8ce9d9143c ("V4L/DVB (7682): pvrusb2-dvb: finish up stream & buffer handling")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/go7007/go7007-usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/usb/pvrusb2/pvrusb2-context.c | 8 ++++----
+ drivers/media/usb/pvrusb2/pvrusb2-dvb.c     | 6 ++++--
+ drivers/media/usb/pvrusb2/pvrusb2-v4l2.c    | 6 ++++--
+ 3 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
-index b84a6f6548610..957c07479713f 100644
---- a/drivers/media/usb/go7007/go7007-usb.c
-+++ b/drivers/media/usb/go7007/go7007-usb.c
-@@ -1206,7 +1206,9 @@ static int go7007_usb_probe(struct usb_interface *intf,
- 				u16 channel;
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+index 9236463ba269f..28a9cfef8f9f2 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+@@ -99,8 +99,10 @@ static void pvr2_context_destroy(struct pvr2_context *mp)
+ }
  
- 				/* read channel number from GPIO[1:0] */
--				go7007_read_addr(go, 0x3c81, &channel);
-+				if (go7007_read_addr(go, 0x3c81, &channel))
-+					goto allocfail;
+ 
+-static void pvr2_context_notify(struct pvr2_context *mp)
++static void pvr2_context_notify(void *ptr)
+ {
++	struct pvr2_context *mp = ptr;
 +
- 				channel &= 0x3;
- 				go->board_id = GO7007_BOARDID_ADLINK_MPG24;
- 				usb->board = board = &board_adlink_mpg24;
+ 	pvr2_context_set_notify(mp,!0);
+ }
+ 
+@@ -115,9 +117,7 @@ static void pvr2_context_check(struct pvr2_context *mp)
+ 		pvr2_trace(PVR2_TRACE_CTXT,
+ 			   "pvr2_context %p (initialize)", mp);
+ 		/* Finish hardware initialization */
+-		if (pvr2_hdw_initialize(mp->hdw,
+-					(void (*)(void *))pvr2_context_notify,
+-					mp)) {
++		if (pvr2_hdw_initialize(mp->hdw, pvr2_context_notify, mp)) {
+ 			mp->video_stream.stream =
+ 				pvr2_hdw_get_video_stream(mp->hdw);
+ 			/* Trigger interface initialization.  By doing this
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-dvb.c b/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
+index 4b32b21411695..f326ab9a272e6 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
+@@ -97,8 +97,10 @@ static int pvr2_dvb_feed_thread(void *data)
+ 	return stat;
+ }
+ 
+-static void pvr2_dvb_notify(struct pvr2_dvb_adapter *adap)
++static void pvr2_dvb_notify(void *ptr)
+ {
++	struct pvr2_dvb_adapter *adap = ptr;
++
+ 	wake_up(&adap->buffer_wait_data);
+ }
+ 
+@@ -158,7 +160,7 @@ static int pvr2_dvb_stream_do_start(struct pvr2_dvb_adapter *adap)
+ 	}
+ 
+ 	pvr2_stream_set_callback(pvr->video_stream.stream,
+-				 (pvr2_stream_callback) pvr2_dvb_notify, adap);
++				 pvr2_dvb_notify, adap);
+ 
+ 	ret = pvr2_stream_set_buffer_count(stream, PVR2_DVB_BUFFER_COUNT);
+ 	if (ret < 0) return ret;
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+index 04d334152eae2..5e2c9aa649648 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+@@ -1055,8 +1055,10 @@ static int pvr2_v4l2_open(struct file *file)
+ }
+ 
+ 
+-static void pvr2_v4l2_notify(struct pvr2_v4l2_fh *fhp)
++static void pvr2_v4l2_notify(void *ptr)
+ {
++	struct pvr2_v4l2_fh *fhp = ptr;
++
+ 	wake_up(&fhp->wait_data);
+ }
+ 
+@@ -1089,7 +1091,7 @@ static int pvr2_v4l2_iosetup(struct pvr2_v4l2_fh *fh)
+ 
+ 	hdw = fh->channel.mc_head->hdw;
+ 	sp = fh->pdi->stream->stream;
+-	pvr2_stream_set_callback(sp,(pvr2_stream_callback)pvr2_v4l2_notify,fh);
++	pvr2_stream_set_callback(sp, pvr2_v4l2_notify, fh);
+ 	pvr2_hdw_set_stream_type(hdw,fh->pdi->config);
+ 	if ((ret = pvr2_hdw_set_streaming(hdw,!0)) < 0) return ret;
+ 	return pvr2_ioread_set_enabled(fh->rhp,!0);
 -- 
 2.43.0
 
