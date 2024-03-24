@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-114529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43BE0888AE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:33:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A73D1889048
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:15:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED4361F27071
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:33:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 453DB1F2B5C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A2F22B6A7;
-	Sun, 24 Mar 2024 23:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC42C22B6A0;
+	Sun, 24 Mar 2024 23:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZyO+ZK2S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VmYQJlS3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8B822ABA8;
-	Sun, 24 Mar 2024 23:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD7922ABA9;
+	Sun, 24 Mar 2024 23:15:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322155; cv=none; b=Q3CD/dJ8IMcdSzsQYpntFpvFTGpNhd7dVsZN67Zsdxn+X/KC4J77kvXQszADioJA59pCglQ3cKEgd4pI+ZMxmHL1+vr4GB+JHwH20mQfq4w+9CxR8Li8MUMTS8OSZxJf2r+qDcAq/oLaJVCyRhlh9MLN/6afjpGus2WkyTQJEsQ=
+	t=1711322155; cv=none; b=nlWDE85XecBdq1mJeT5eAbb4hoLCt7oyju4rl+vNCxSZECOAMayhCDukc4IjWqIyiZVbhczpNMHWN/B6iBcwRqGTILb8GX1cK6rzB6fnCXjCMiO37ur2noL2Tl84pA63RkvD297koJs2tz9TFcA5FZMfyOB8OnTUpZqp2JVblR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322155; c=relaxed/simple;
-	bh=vHSIdueeSDo7C/bjgb9QuLxCxrm26+NVsjz4z8tTlkM=;
+	bh=jWb1taSDWnnlYNcsDY4Fytf5GGYRBq3hGAnoWhXCiNo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TnQbd3cpWbq91aUZ15owXwrb6llOELzGhYxD3J79uWnjtavefsvmQRtuFVEpzXqxj5ZhdogBKCdUcWCAdrNkhadQ6aWcUCL5LTBEnjnzh3flUiDnTz11cWViD9qaXBU9BCiHYr2saN+87EQsPWg5W6VJeiEap1wIfbCLVE258y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZyO+ZK2S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32B85C433C7;
-	Sun, 24 Mar 2024 23:15:53 +0000 (UTC)
+	 MIME-Version; b=JdgCgxxMoA9k714xvjW1o5e8HLtsb2SgZzwZFkUtPWyMTCohA+mbkmhdIbh98q/hf074Kglc1FYwakd3B7j/AkbkbFvAtmE6rqhibVPMgcgbQL1fum/24+MZpAbb7H6o5kFmPtBWZTHb+ZU7OnB+1e2KuxAfBKWsIyYibDLxf3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VmYQJlS3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 600E9C43390;
+	Sun, 24 Mar 2024 23:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322154;
-	bh=vHSIdueeSDo7C/bjgb9QuLxCxrm26+NVsjz4z8tTlkM=;
+	s=k20201202; t=1711322155;
+	bh=jWb1taSDWnnlYNcsDY4Fytf5GGYRBq3hGAnoWhXCiNo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZyO+ZK2S4YmXG/Bx/Rr/NWJnEjYu6INQGCk5Qza6SgbujpdGjUk1XRY55Oq5a68lc
-	 gxBlA2k96o7x88EE7pQEbVL8iXmeV8XzJy9qmISj0vyuGZ6yoWEBgcCEAn3YKiLMGb
-	 HrGp/pn9utDbxBBvSA9wJpnT+0wFgCRpxxRTChLAV5EXrCPBe+9gzXfILkE7jljLYB
-	 tzwplbtDMWpBBNnH934BrNqnuwMTBFrJjNg+u9qDR0e6oQduDazpykMZBze+oSRDO4
-	 7nX+FmZ1bb8U9fQV9P2KP3JtetJN/Roeam0zWpJDpCRlRu77hAE1d3WJPXArHJ8yOJ
-	 ojxlMymDHgMsw==
+	b=VmYQJlS3kAaS4F7h6KFpC4RLa1WBlLAegL7mSZ7dq+mZXVZMj/2AzncsvjAUMuXkX
+	 g/MXbKPRK300lI4dHHqs8kkqdlr/FQaSPJf67wgCWfmdWg1hplG4HcfiTMHEDkX+WG
+	 5+OlZ6E5aOtYyAfgyZGqjulmc73mM0McwxzcgieKLA82Ht03lUtNqxpdR/vL2cQWeS
+	 tIxXOya//bdtqSkXKkyw4RwlHibxJK+kLICDiTnCNF+hz/DTAJLEv+3Z436w9QTZew
+	 rjYcH8kBHnQfHjKtAMcbo+Zeko9p0atwc8ZzhX9p8xfSNK7tVQFKRP8vX+NDLMzCrl
+	 kDqcFNxkTIfWg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Puranjay Mohan <puranjay12@gmail.com>,
-	"kernelci.org bot" <bot@kernelci.org>,
-	kernel test robot <lkp@intel.com>,
-	Song Liu <song@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Ming Lei <ming.lei@redhat.com>,
+	Patrick Plenefisch <simonpatp@gmail.com>,
+	Mike Snitzer <snitzer@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 231/451] bpf: hardcode BPF_PROG_PACK_SIZE to 2MB * num_possible_nodes()
-Date: Sun, 24 Mar 2024 19:08:27 -0400
-Message-ID: <20240324231207.1351418-232-sashal@kernel.org>
+Subject: [PATCH 6.1 232/451] dm raid: fix false positive for requeue needed during reshape
+Date: Sun, 24 Mar 2024 19:08:28 -0400
+Message-ID: <20240324231207.1351418-233-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -65,51 +63,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Puranjay Mohan <puranjay12@gmail.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit d6170e4aaf86424c24ce06e355b4573daa891b17 ]
+[ Upstream commit b25b8f4b8ecef0f48c05f0c3572daeabefe16526 ]
 
-On some architectures like ARM64, PMD_SIZE can be really large in some
-configurations. Like with CONFIG_ARM64_64K_PAGES=y the PMD_SIZE is
-512MB.
+An empty flush doesn't have a payload, so it should never be looked at
+when considering to possibly requeue a bio for the case when a reshape
+is in progress.
 
-Use 2MB * num_possible_nodes() as the size for allocations done through
-the prog pack allocator. On most architectures, PMD_SIZE will be equal
-to 2MB in case of 4KB pages and will be greater than 2MB for bigger page
-sizes.
-
-Fixes: ea2babac63d4 ("bpf: Simplify bpf_prog_pack_[size|mask]")
-Reported-by: "kernelci.org bot" <bot@kernelci.org>
-Closes: https://lore.kernel.org/all/7e216c88-77ee-47b8-becc-a0f780868d3c@sirena.org.uk/
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202403092219.dhgcuz2G-lkp@intel.com/
-Suggested-by: Song Liu <song@kernel.org>
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-Message-ID: <20240311122722.86232-1-puranjay12@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: 9dbd1aa3a81c ("dm raid: add reshaping support to the target")
+Reported-by: Patrick Plenefisch <simonpatp@gmail.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/core.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/md/dm-raid.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 76bf1de261152..44abf88e1bb0d 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -857,7 +857,12 @@ static LIST_HEAD(pack_list);
-  * CONFIG_MMU=n. Use PAGE_SIZE in these cases.
-  */
- #ifdef PMD_SIZE
--#define BPF_PROG_PACK_SIZE (PMD_SIZE * num_possible_nodes())
-+/* PMD_SIZE is really big for some archs. It doesn't make sense to
-+ * reserve too much memory in one allocation. Hardcode BPF_PROG_PACK_SIZE to
-+ * 2MiB * num_possible_nodes(). On most architectures PMD_SIZE will be
-+ * greater than or equal to 2MB.
-+ */
-+#define BPF_PROG_PACK_SIZE (SZ_2M * num_possible_nodes())
- #else
- #define BPF_PROG_PACK_SIZE PAGE_SIZE
- #endif
+diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+index 4b7528dc2fd08..7fbce214e00f5 100644
+--- a/drivers/md/dm-raid.c
++++ b/drivers/md/dm-raid.c
+@@ -3325,14 +3325,14 @@ static int raid_map(struct dm_target *ti, struct bio *bio)
+ 	struct mddev *mddev = &rs->md;
+ 
+ 	/*
+-	 * If we're reshaping to add disk(s)), ti->len and
++	 * If we're reshaping to add disk(s), ti->len and
+ 	 * mddev->array_sectors will differ during the process
+ 	 * (ti->len > mddev->array_sectors), so we have to requeue
+ 	 * bios with addresses > mddev->array_sectors here or
+ 	 * there will occur accesses past EOD of the component
+ 	 * data images thus erroring the raid set.
+ 	 */
+-	if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
++	if (unlikely(bio_has_data(bio) && bio_end_sector(bio) > mddev->array_sectors))
+ 		return DM_MAPIO_REQUEUE;
+ 
+ 	md_handle_request(mddev, bio);
 -- 
 2.43.0
 
