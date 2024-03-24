@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 264EA889C4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:15:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 228AD88877B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:02:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB3F81F36344
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:15:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81050B223C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C711EF7F6;
-	Mon, 25 Mar 2024 02:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D80221853B;
+	Sun, 24 Mar 2024 23:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WVnkPiDU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nd+8VHDm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5788C1EF7DF;
-	Sun, 24 Mar 2024 22:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AB812C7E3;
+	Sun, 24 Mar 2024 22:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321037; cv=none; b=aUNF32fbzinBt0VfMxAA8lsAvPduKlKbPTklNeHBZw6jHPLQKp+fLE5gmhUhyxfHpTWtaB2KTs978jceT3Ts1LVx28KFmFm1xkJguYiTgajdxxVF5ZCEHS2DITsA5YnPQ4zDMwitvtDJQG8SlR9Zsl3xxLOGvx55fn5Fk5EoNeU=
+	t=1711321039; cv=none; b=CktIgRbmeWbDM9YS/LC3x7na9mvMDUdHPcMNgjnj0LSDdWcorbKia34s1/JkkM8uqOUuyF1vKcgpmEACQH6NIlsWy358luXKafPNl9f2b0st+hDLIWOmIaGfP7Qi4pjjcsWsRVJJMXnL8Fn51Q+DCK/nDhVIiQXiPEuJ2AnCeHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321037; c=relaxed/simple;
-	bh=Zkv4uBQK8eMbRPj/TMoLQKTy5qtiJb0tBI+C77mgZrw=;
+	s=arc-20240116; t=1711321039; c=relaxed/simple;
+	bh=DfOoZsIT4CceyDNQSJzOMOwj8RU1jaP12MR59o7D7JM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RdLGHGFEqcF6+3Tg7Yv5t+NHAkc8x3thKgwwgbg7WvypbTIIh7QgamEUeaQUe/HMtMsNPXh0/ksieUYInGQuhM/IRdu1MwAESuGQ2+BGA/PC7ZTxM4CiWMht7tocoCq1Ig1/b+uZvXD4HUTcoAvHcdmpv8CY8aKjGxKOsDBGOKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WVnkPiDU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DD77C43390;
-	Sun, 24 Mar 2024 22:57:16 +0000 (UTC)
+	 MIME-Version; b=u2TM3cSKji5MsG69KHgxiiy9vxdnRGIAoZNm8NAZ20yrBRjZGqaWzXx5+30x2PByG4J96JfJh8MreFqoZpr2HlVh9I3xN2ipVwytwyW2053VM6MHABpLq45qj7G90S2iEswbyYaH47s3/tcIjIw8jie/R+8NC2F7PDKdbNfyi54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nd+8VHDm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9DBC433C7;
+	Sun, 24 Mar 2024 22:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321037;
-	bh=Zkv4uBQK8eMbRPj/TMoLQKTy5qtiJb0tBI+C77mgZrw=;
+	s=k20201202; t=1711321038;
+	bh=DfOoZsIT4CceyDNQSJzOMOwj8RU1jaP12MR59o7D7JM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WVnkPiDUvL+OLpIEypT4j6QoBEYSD6fGJZBZViqLyzvZkNg3+rUMLxBEoUlZgrbXw
-	 DFFk71DFfePz4VvOVkeJr/Etg73VZqQ+Xm13HzQ8oyu3WFxnHnLoklf31JeywWP9K7
-	 m3jdhdO32A+kfwYJ6dfZAsHYpkuE2c2E5x/CmuOMe7qooerATtwEdDRtDZw8QYPTaX
-	 Jou7yRn2aRqWvvDtelcaFfHtjojxzwRcDccP+tGkCISMVVvKNi/pWhZEFwB7LvaZ9E
-	 glsSsmwxK4qySXjCn96jz34wAfoeRYiVed6Y71r/bD9F7CacKZ2qqxBJ04lSllKkSH
-	 hQPb1PUZLouDA==
+	b=Nd+8VHDmAduSifzTY6kAheldOChZ/bOT+n4TEuJwSeDC5EUKn78/We7L4EHsPi6TH
+	 X/dL/hRvQjrBOg+2t2iaYEL8tci9YudEv0KXbCHVQgvLab4Ir40TI/ZG92F9CfoATF
+	 35fTh4kY9YNvUBny9AEOfbi8lB9QGdKj9HG7hauqOOYXrEngM415/ojwPAd1GQj16M
+	 Vocp2gfU7wE2kl+YKTUyYqWodNPM+AnMkOnWdnT6zTfayGdSU96x4Cd11W3xjme6de
+	 YX8pN/gSgP5zRL9tH75DiiS5KyZEPi00GwIs/xgNJD3KdQu7uWSVczlW6DNSzI/ubf
+	 x8NX2vNg0e+eA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Benjamin Coddington <bcodding@redhat.com>,
+Cc: Olga Kornievskaia <kolga@netapp.com>,
 	Trond Myklebust <trond.myklebust@hammerspace.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 600/713] NFS: Fix an off by one in root_nfs_cat()
-Date: Sun, 24 Mar 2024 18:45:26 -0400
-Message-ID: <20240324224720.1345309-601-sashal@kernel.org>
+Subject: [PATCH 6.7 601/713] NFSv4.1/pnfs: fix NFS with TLS in pnfs
+Date: Sun, 24 Mar 2024 18:45:27 -0400
+Message-ID: <20240324224720.1345309-602-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,40 +62,110 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Olga Kornievskaia <kolga@netapp.com>
 
-[ Upstream commit 698ad1a538da0b6bf969cfee630b4e3a026afb87 ]
+[ Upstream commit a35518cae4b325632840bc8c3aa9ad9bac430038 ]
 
-The intent is to check if 'dest' is truncated or not. So, >= should be
-used instead of >, because strlcat() returns the length of 'dest' and 'src'
-excluding the trailing NULL.
+Currently, even though xprtsec=tls is specified and used for operations
+to MDS, any operations that go to DS travel over unencrypted connection.
+Or additionally, if more than 1 DS can serve the data, then trunked
+connections are also done unencrypted.
 
-Fixes: 56463e50d1fc ("NFS: Use super.c for NFSROOT mount option parsing")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
+IN GETDEVINCEINFO, we get an entry for the DS which carries a protocol
+type (which is TCP), then nfs4_set_ds_client() gets called with TCP
+instead of TCP with TLS.
+
+Currently, each trunked connection is created and uses clp->cl_hostname
+value which if TLS is used would get passed up in the handshake upcall,
+but instead we need to pass in the appropriate trunked address value.
+
+Fixes: c8407f2e560c ("NFS: Add an "xprtsec=" NFS mount option")
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfsroot.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nfs/pnfs_nfs.c | 44 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 43 insertions(+), 1 deletion(-)
 
-diff --git a/fs/nfs/nfsroot.c b/fs/nfs/nfsroot.c
-index 7600100ba26f0..432612d224374 100644
---- a/fs/nfs/nfsroot.c
-+++ b/fs/nfs/nfsroot.c
-@@ -175,10 +175,10 @@ static int __init root_nfs_cat(char *dest, const char *src,
- 	size_t len = strlen(dest);
+diff --git a/fs/nfs/pnfs_nfs.c b/fs/nfs/pnfs_nfs.c
+index afd23910f3bff..88e061bd711b7 100644
+--- a/fs/nfs/pnfs_nfs.c
++++ b/fs/nfs/pnfs_nfs.c
+@@ -919,6 +919,8 @@ static int _nfs4_pnfs_v4_ds_connect(struct nfs_server *mds_srv,
+ 	dprintk("--> %s DS %s\n", __func__, ds->ds_remotestr);
  
- 	if (len && dest[len - 1] != ',')
--		if (strlcat(dest, ",", destlen) > destlen)
-+		if (strlcat(dest, ",", destlen) >= destlen)
- 			return -1;
+ 	list_for_each_entry(da, &ds->ds_addrs, da_node) {
++		char servername[48];
++
+ 		dprintk("%s: DS %s: trying address %s\n",
+ 			__func__, ds->ds_remotestr, da->da_remotestr);
  
--	if (strlcat(dest, src, destlen) > destlen)
-+	if (strlcat(dest, src, destlen) >= destlen)
- 		return -1;
- 	return 0;
- }
+@@ -929,6 +931,7 @@ static int _nfs4_pnfs_v4_ds_connect(struct nfs_server *mds_srv,
+ 				.dstaddr = (struct sockaddr *)&da->da_addr,
+ 				.addrlen = da->da_addrlen,
+ 				.servername = clp->cl_hostname,
++				.xprtsec = clp->cl_xprtsec,
+ 			};
+ 			struct nfs4_add_xprt_data xprtdata = {
+ 				.clp = clp,
+@@ -938,10 +941,45 @@ static int _nfs4_pnfs_v4_ds_connect(struct nfs_server *mds_srv,
+ 				.data = &xprtdata,
+ 			};
+ 
+-			if (da->da_transport != clp->cl_proto)
++			if (da->da_transport != clp->cl_proto &&
++					clp->cl_proto != XPRT_TRANSPORT_TCP_TLS)
+ 				continue;
++			if (da->da_transport == XPRT_TRANSPORT_TCP &&
++				mds_srv->nfs_client->cl_proto ==
++					XPRT_TRANSPORT_TCP_TLS) {
++				struct sockaddr *addr =
++					(struct sockaddr *)&da->da_addr;
++				struct sockaddr_in *sin =
++					(struct sockaddr_in *)&da->da_addr;
++				struct sockaddr_in6 *sin6 =
++					(struct sockaddr_in6 *)&da->da_addr;
++
++				/* for NFS with TLS we need to supply a correct
++				 * servername of the trunked transport, not the
++				 * servername of the main transport stored in
++				 * clp->cl_hostname. And set the protocol to
++				 * indicate to use TLS
++				 */
++				servername[0] = '\0';
++				switch(addr->sa_family) {
++				case AF_INET:
++					snprintf(servername, sizeof(servername),
++						"%pI4", &sin->sin_addr.s_addr);
++					break;
++				case AF_INET6:
++					snprintf(servername, sizeof(servername),
++						"%pI6", &sin6->sin6_addr);
++					break;
++				default:
++					/* do not consider this address */
++					continue;
++				}
++				xprt_args.ident = XPRT_TRANSPORT_TCP_TLS;
++				xprt_args.servername = servername;
++			}
+ 			if (da->da_addr.ss_family != clp->cl_addr.ss_family)
+ 				continue;
++
+ 			/**
+ 			* Test this address for session trunking and
+ 			* add as an alias
+@@ -953,6 +991,10 @@ static int _nfs4_pnfs_v4_ds_connect(struct nfs_server *mds_srv,
+ 			if (xprtdata.cred)
+ 				put_cred(xprtdata.cred);
+ 		} else {
++			if (da->da_transport == XPRT_TRANSPORT_TCP &&
++				mds_srv->nfs_client->cl_proto ==
++					XPRT_TRANSPORT_TCP_TLS)
++				da->da_transport = XPRT_TRANSPORT_TCP_TLS;
+ 			clp = nfs4_set_ds_client(mds_srv,
+ 						&da->da_addr,
+ 						da->da_addrlen,
 -- 
 2.43.0
 
