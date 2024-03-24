@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E426C88934B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49AE8889E35
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 215331C2E455
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:25:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BE751C358C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5252B293496;
-	Mon, 25 Mar 2024 01:08:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C3B3D323B;
+	Mon, 25 Mar 2024 03:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Akq55MEu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BVDbu7rZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C5A292B99;
-	Sun, 24 Mar 2024 23:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120FB183B8D;
+	Sun, 24 Mar 2024 23:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324257; cv=none; b=sYPBybo4+CDQKeri2xOAU2twfNIN8+hOX7qjnN8KlWy8zEjMubECkJGfI1V/VSsyKBrx9/EmKpa8mKhKPWAu31gQd+q+nFKP3eYDAWbkStGWLs6MZhUbC83lTYjN3Z38PGR6YuVrMFSBbwlqJ9qiO63FF4Eh48wIhosrFiCWeFg=
+	t=1711324258; cv=none; b=fVD7lVfCWuTiboUGhYdaoWkx9Vi2ua++PLRLubkh+zDagHtSJbZyLC+ezx/OzXxe3Plm4lZLndG+L1rCTLwcX4yWnznVkpjvKS5hXztHsaPCzWYM7JW3eExu7aS5rnQBaFzBX2VUyi5PNOnTSiSo3uj4wCgiG+MaqnOcz9ixbTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324257; c=relaxed/simple;
-	bh=nF8gTecMHJ28MLnw2KqbYOA6uuPsOhH922znxV+wWrY=;
+	s=arc-20240116; t=1711324258; c=relaxed/simple;
+	bh=/7/1b9rks8twEubNpUt8qsAQs2IeCT+nNQFQ6FdH8sI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b5u7luy0lCcg+f8o6GnPHmOs16JJTL5IdfIz8Y/BCZ2DEjSWlWULsCFMwBqFxjZDs+tLZMQu/fABB6YG+T00e5jrNcoXE/xB3iHAZfQ8Ae9xQQPLIpe2Gru1EdFS0L5vIeHVk2m5ZrXtKvnCt2KQkOIhy5j7P2ci+ZjEmBOmQtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Akq55MEu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15407C433F1;
-	Sun, 24 Mar 2024 23:50:54 +0000 (UTC)
+	 MIME-Version; b=SqFSndJu1U1xFEklDdE3SHDYbUVj4W/+UrMjlFKNy+OJqapAQKBRRZUGv/xSWki7oxcckbyLV9IsX0xphGclR+3aUlCNSXojGxv1+6pjkextB7cHoH6noiXvA7QpdG5qDtG5x51lW7z+aUy9XPMoT51rm0Jnzwzf30ugbGKCnBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BVDbu7rZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B548C43394;
+	Sun, 24 Mar 2024 23:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711324256;
-	bh=nF8gTecMHJ28MLnw2KqbYOA6uuPsOhH922znxV+wWrY=;
+	bh=/7/1b9rks8twEubNpUt8qsAQs2IeCT+nNQFQ6FdH8sI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Akq55MEuFkoWK/MWpaH/985nXOmA1k3XYtFG/5NOMAF2UCt0lMjhnfmVUdj+R7CXz
-	 EOJVv21KGII3jys0of+D0bvMvRew97K+2pcst4J+9nQdWEQz/3x02TTDOuHR0WrbDF
-	 t0MBKZLOGsGUvr2ehvxoaixH7Ly5oOqs55aEseb8270hBEoCKeiHh3L6rpsyHHvtlN
-	 QxZolg6g2lTVDTAo4wNDiJU60lZoYIpY4ed8+77bgyofwPlBr5BkiDzxHmZhURNn1O
-	 T61or+lf6PRoRuVwmsyEzSHW3e2znRdmplcNtoGOmQqw1t6My4Oie1MyOwkW97Vecx
-	 CtftkcROU3ZEQ==
+	b=BVDbu7rZML13csxl7Y+8xuHjEClBj/izOWzwipHX40Xsa0z/cG/UY1FAIK2B2pEqG
+	 Oj6Ju6QZXhjyHRiTKHN0qk3BnLZ8c9/a9iSFbFx5QdIKcstH1ieT9RB6bDSJhcAU/1
+	 WZr/MT9SsK9Ae6ddTLJ6I4mUudAB5fRpB59/AAfI1mda4hv5iMpm7ty4ykwIijT8RD
+	 /QGRhnbEvBxVCemQ8i6dcl/W0NcJxQUDY7Ylf635OWyKbNaikFoyGxes1jf/MFcITy
+	 L8yXCwjdaryU2exfZdxovTflQI2Nyf69ES7+k+AvgUR8SZY/cHMRHS3Hq1G+e2Iaxg
+	 7X47nj1JMXJTQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
-	=?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+Cc: Anastasia Belova <abelova@astralinux.ru>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 036/148] ARM: dts: renesas: r8a73a4: Fix external clocks and clock rate
-Date: Sun, 24 Mar 2024 19:48:20 -0400
-Message-ID: <20240324235012.1356413-37-sashal@kernel.org>
+Subject: [PATCH 4.19 037/148] cpufreq: brcmstb-avs-cpufreq: add check for cpufreq_cpu_get's return value
+Date: Sun, 24 Mar 2024 19:48:21 -0400
+Message-ID: <20240324235012.1356413-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -58,82 +58,40 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Anastasia Belova <abelova@astralinux.ru>
 
-[ Upstream commit 090c4094574705b0afc7d37825cdc5d06f0e7e02 ]
+[ Upstream commit f661017e6d326ee187db24194cabb013d81bc2a6 ]
 
-External clocks should be defined as zero-Hz clocks in the SoC .dtsi,
-and overridden in the board .dts when present.
+cpufreq_cpu_get may return NULL. To avoid NULL-dereference check it
+and return 0 in case of error.
 
-Correct the clock rate of extal1 from 25 to 26 MHz, to match the crystal
-oscillator present on the APE6-EVM board.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Fixes: a76809a329d6ebae ("ARM: shmobile: r8a73a4: Common clock framework DT description")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Link: https://lore.kernel.org/r/1692bc8cd465d62168cbf110522ad62a7af3f606.1705315614.git.geert+renesas@glider.be
+Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
+Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/r8a73a4-ape6evm.dts | 12 ++++++++++++
- arch/arm/boot/dts/r8a73a4.dtsi        |  9 ++++++---
- 2 files changed, 18 insertions(+), 3 deletions(-)
+ drivers/cpufreq/brcmstb-avs-cpufreq.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/boot/dts/r8a73a4-ape6evm.dts b/arch/arm/boot/dts/r8a73a4-ape6evm.dts
-index d530f451467e2..c077a7c1874a6 100644
---- a/arch/arm/boot/dts/r8a73a4-ape6evm.dts
-+++ b/arch/arm/boot/dts/r8a73a4-ape6evm.dts
-@@ -184,6 +184,18 @@ &cmt1 {
- 	status = "okay";
- };
+diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+index 541486217984b..1302e1900dcb1 100644
+--- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
++++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+@@ -457,6 +457,8 @@ static bool brcm_avs_is_firmware_loaded(struct private_data *priv)
+ static unsigned int brcm_avs_cpufreq_get(unsigned int cpu)
+ {
+ 	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
++	if (!policy)
++		return 0;
+ 	struct private_data *priv = policy->driver_data;
  
-+&extal1_clk {
-+	clock-frequency = <26000000>;
-+};
-+
-+&extal2_clk {
-+	clock-frequency = <48000000>;
-+};
-+
-+&extalr_clk {
-+	clock-frequency = <32768>;
-+};
-+
- &pfc {
- 	scifa0_pins: scifa0 {
- 		groups = "scifa0_data";
-diff --git a/arch/arm/boot/dts/r8a73a4.dtsi b/arch/arm/boot/dts/r8a73a4.dtsi
-index 4447f45f0cba9..48121ef690c9d 100644
---- a/arch/arm/boot/dts/r8a73a4.dtsi
-+++ b/arch/arm/boot/dts/r8a73a4.dtsi
-@@ -494,17 +494,20 @@ clocks {
- 		extalr_clk: extalr {
- 			compatible = "fixed-clock";
- 			#clock-cells = <0>;
--			clock-frequency = <32768>;
-+			/* This value must be overridden by the board. */
-+			clock-frequency = <0>;
- 		};
- 		extal1_clk: extal1 {
- 			compatible = "fixed-clock";
- 			#clock-cells = <0>;
--			clock-frequency = <25000000>;
-+			/* This value must be overridden by the board. */
-+			clock-frequency = <0>;
- 		};
- 		extal2_clk: extal2 {
- 			compatible = "fixed-clock";
- 			#clock-cells = <0>;
--			clock-frequency = <48000000>;
-+			/* This value must be overridden by the board. */
-+			clock-frequency = <0>;
- 		};
- 		fsiack_clk: fsiack {
- 			compatible = "fixed-clock";
+ 	return brcm_avs_get_frequency(priv->base);
 -- 
 2.43.0
 
