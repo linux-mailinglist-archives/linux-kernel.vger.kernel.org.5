@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 170F8889892
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:43:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43F56889D5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:42:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 484681C317D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:43:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE6B22A7400
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B57387900;
-	Mon, 25 Mar 2024 03:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4C1146015;
+	Mon, 25 Mar 2024 03:03:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGM05f1t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t1Hemmww"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D841474BC;
-	Sun, 24 Mar 2024 23:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858841474B9;
+	Sun, 24 Mar 2024 23:14:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322093; cv=none; b=iJBLWq/0JsTnglSpiapOtbFg6QNtdezu7aZ6c0Z37gcTViJLDYHUjIYQCZACIkI/edCfZhh0F+LMuVl6/+EKi/n+/0l6w0Y3dnPVde7SjFe8booAgOSCsRIsp2EuNE8siBl7qlq4lFBNSvfT4rQSXxpC+9AhEonM2xdJtWFHb4o=
+	t=1711322094; cv=none; b=pL+aBZS9+ZTITdvzMTgWUtjk+gwgTVeIrgqY2S52r+w8sOZh4cyjrhLwVMwv0ueHAQrJHETkxQJsrhS2k9IkOgyubAzm2ZEstq6kBAYz8AtT2KQwuJB1VpNMjtPG5SZjgC0Kop2L/4JC31Dm8JVhpo2QhC7sQ23PnIxs7fUvzLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322093; c=relaxed/simple;
-	bh=FX5rddj2jLbKEjw8+QS8+C25+/szd9CZojMeF1VNv5o=;
+	s=arc-20240116; t=1711322094; c=relaxed/simple;
+	bh=D47bL5+zHFOA8tQxzCu0DBFc1MJ0x4OeNsh96LEUSKg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DDhIKoZvMH4tgrDpP4CS8OMFdWZIYoO0J78r+3hYbtRDvWLP0wc05xotouFVgNeta9UwzjBPPQV7Uq2tp3U40POs89RlxIHkUXqR8pNyBtbw8VCkDrvTnKp2qCxrZ2hcOwuIR2c4VvHkJ58U28UTuzEtFPaCVS4PTUvRiVj8/jM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gGM05f1t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2A9C43394;
-	Sun, 24 Mar 2024 23:14:51 +0000 (UTC)
+	 MIME-Version; b=ZLpjtfcqrTaUAmIKB3SL9eIrVlOC85jzCjryaiuEl4iPq0YzPhdnB2dLY/EaPLkRjPBrnOY+Si9WAjXgrdrJ90yLaWY1egCB5PBUKls4TffEhAmMTYgin3k/YNg7GBz40u3eUPsD7PfOAzXgkVLGwigd44XN04fV8QvmOHgzCSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t1Hemmww; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AB8C43390;
+	Sun, 24 Mar 2024 23:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322092;
-	bh=FX5rddj2jLbKEjw8+QS8+C25+/szd9CZojMeF1VNv5o=;
+	s=k20201202; t=1711322093;
+	bh=D47bL5+zHFOA8tQxzCu0DBFc1MJ0x4OeNsh96LEUSKg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gGM05f1tAUI75Ra8kBlZdp+HUZWA5hAL15WmzhOdqHQGSd1N5oMpGk5OsjKo0gk2c
-	 GVnP9jAcuQIasHJ8ff8Zf4r+jFThSO8mAsWH97DqyiL80MrEUH4GCQBBE+M1OCMJ7E
-	 ZCqV485bCzRsYn3aBl7vnQBpO0Uq7DVjTtpiuDoqVSaYDwjMY6LGWSLlj2hX1pa6Vj
-	 6Hx/mXOA9CCWt0zh27oSdHg2D4JLrKjpzPlI0jTx5WQZDsXoCdaB/fYP/EVTQALvwL
-	 mVL96Xq1W8oXs4npftB+vVo4q1axadtlr6KJ7STLh6kqfVMGFp2v9RjdnLN98Smxz3
-	 e2QOGi4rGWo4A==
+	b=t1HemmwwjJ2SHUJFygV3Bexnlnu+fm4/ntpFdFXLN9VaQ3XjAbRAk7pgob/Ref+HX
+	 ZIBX4Y2SU9DEMz5fzXO7hLNawBc2CLrOK20uzh0FArpZMrChu2eIJzaYAyKw0EbjBX
+	 YVa3ZTF1RsOQ/0hTwi4MLM9EZjpdmhjpan3TqWv0fuDDMIjYw8quvK+B4MdmiPG92r
+	 1wEMmO7Xwslz5pLcePKst2R/l1jgISN/A9qqidhXrCuOAffI1rC7gVo6kI8RSgjGTp
+	 KTWzxlVWuWTJBV2OKO5MMV1OlTH+3hQPAgYS+YUgRfF9dbXhZaivwi7ZEdA9bnIUVx
+	 vlCmzFMdGzs0w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
 	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 166/451] arm64: dts: renesas: r9a07g043: Split out RZ/G2UL SoC specific parts
-Date: Sun, 24 Mar 2024 19:07:22 -0400
-Message-ID: <20240324231207.1351418-167-sashal@kernel.org>
+Subject: [PATCH 6.1 167/451] arm64: dts: renesas: r9a07g043u: Add IRQC node
+Date: Sun, 24 Mar 2024 19:07:23 -0400
+Message-ID: <20240324231207.1351418-168-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,190 +64,99 @@ Content-Transfer-Encoding: 8bit
 
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-[ Upstream commit b9a0be2054964026aa58966ce9724b672f210835 ]
+[ Upstream commit 48ab6eddd8bbcf7e9c8ae27bf42d0b52a777aaba ]
 
-Move RZ/G2UL SoC specific parts to r9a07g043u.dtsi so that
-r9a07g043.dtsi can be shared with RZ/Five (RISC-V SoC).
-
-Below are the changes due to which SoC specific parts are moved to
-r9a07g043u.dtsi:
-  - RZ/G2UL has Cortex-A55 (ARM64) whereas RZ/Five has AX45MP (RISC-V),
-  - RZ/G2UL has GICv3 as interrupt controller whereas RZ/Five has PLIC,
-  - RZ/G2UL has interrupts for SYSC block whereas interrupts are missing
-    for SYSC block on RZ/Five,
-  - RZ/G2UL has armv8-timer whereas RZ/Five has riscv-timer,
-  - RZ/G2UL has PSCI whereas RZ/Five have OpenSBI.
+Add IRQC node to R9A07G043 (RZ/G2UL) SoC DTSI.
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Link: https://lore.kernel.org/r/20221025220629.79321-3-prabhakar.mahadev-lad.rj@bp.renesas.com
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20230102221815.273719-5-prabhakar.mahadev-lad.rj@bp.renesas.com
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Stable-dep-of: 14fe225dd5fc ("arm64: dts: renesas: rzg2l: Add missing interrupts to IRQC nodes")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/r9a07g043.dtsi  | 54 +------------------
- arch/arm64/boot/dts/renesas/r9a07g043u.dtsi | 60 +++++++++++++++++++++
- 2 files changed, 61 insertions(+), 53 deletions(-)
+ arch/arm64/boot/dts/renesas/r9a07g043u.dtsi | 68 +++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g043.dtsi b/arch/arm64/boot/dts/renesas/r9a07g043.dtsi
-index a4738842f0646..7f88395ff7997 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g043.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g043.dtsi
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- /*
-- * Device Tree Source for the RZ/G2UL SoC
-+ * Device Tree Source for the RZ/Five and RZ/G2UL SoCs
-  *
-  * Copyright (C) 2022 Renesas Electronics Corp.
-  */
-@@ -68,36 +68,8 @@ opp-1000000000 {
- 		};
- 	};
- 
--	cpus {
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		cpu0: cpu@0 {
--			compatible = "arm,cortex-a55";
--			reg = <0>;
--			device_type = "cpu";
--			#cooling-cells = <2>;
--			next-level-cache = <&L3_CA55>;
--			enable-method = "psci";
--			clocks = <&cpg CPG_CORE R9A07G043_CLK_I>;
--			operating-points-v2 = <&cluster0_opp>;
--		};
--
--		L3_CA55: cache-controller-0 {
--			compatible = "cache";
--			cache-unified;
--			cache-size = <0x40000>;
--		};
--	};
--
--	psci {
--		compatible = "arm,psci-1.0", "arm,psci-0.2";
--		method = "smc";
--	};
--
- 	soc: soc {
- 		compatible = "simple-bus";
--		interrupt-parent = <&gic>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
- 		ranges;
-@@ -545,12 +517,6 @@ cpg: clock-controller@11010000 {
- 		sysc: system-controller@11020000 {
- 			compatible = "renesas,r9a07g043-sysc";
- 			reg = <0 0x11020000 0 0x10000>;
--			interrupts = <SOC_PERIPHERAL_IRQ(42) IRQ_TYPE_LEVEL_HIGH>,
--				     <SOC_PERIPHERAL_IRQ(43) IRQ_TYPE_LEVEL_HIGH>,
--				     <SOC_PERIPHERAL_IRQ(44) IRQ_TYPE_LEVEL_HIGH>,
--				     <SOC_PERIPHERAL_IRQ(45) IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "lpm_int", "ca55stbydone_int",
--					  "cm33stbyr_int", "ca55_deny";
- 			status = "disabled";
- 		};
- 
-@@ -603,16 +569,6 @@ dmac: dma-controller@11820000 {
- 			dma-channels = <16>;
- 		};
- 
--		gic: interrupt-controller@11900000 {
--			compatible = "arm,gic-v3";
--			#interrupt-cells = <3>;
--			#address-cells = <0>;
--			interrupt-controller;
--			reg = <0x0 0x11900000 0 0x40000>,
--			      <0x0 0x11940000 0 0x60000>;
--			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_LOW>;
--		};
--
- 		sdhi0: mmc@11c00000 {
- 			compatible = "renesas,sdhi-r9a07g043",
- 				     "renesas,rcar-gen3-sdhi";
-@@ -893,12 +849,4 @@ target: trip-point {
- 			};
- 		};
- 	};
--
--	timer {
--		compatible = "arm,armv8-timer";
--		interrupts-extended = <&gic GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
--				      <&gic GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
--				      <&gic GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
--				      <&gic GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>;
--	};
- };
 diff --git a/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi b/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
-index 96f935bc2d4d1..b8bf06b512351 100644
+index b8bf06b512351..a6e777aee02ee 100644
 --- a/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
 +++ b/arch/arm64/boot/dts/renesas/r9a07g043u.dtsi
-@@ -10,3 +10,63 @@
- #define SOC_PERIPHERAL_IRQ(nr)		GIC_SPI nr
+@@ -51,6 +51,74 @@ timer {
+ &soc {
+ 	interrupt-parent = <&gic>;
  
- #include "r9a07g043.dtsi"
-+
-+/ {
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			compatible = "arm,cortex-a55";
-+			reg = <0>;
-+			device_type = "cpu";
-+			#cooling-cells = <2>;
-+			next-level-cache = <&L3_CA55>;
-+			enable-method = "psci";
-+			clocks = <&cpg CPG_CORE R9A07G043_CLK_I>;
-+			operating-points-v2 = <&cluster0_opp>;
-+		};
-+
-+		L3_CA55: cache-controller-0 {
-+			compatible = "cache";
-+			cache-unified;
-+			cache-size = <0x40000>;
-+		};
-+	};
-+
-+	psci {
-+		compatible = "arm,psci-1.0", "arm,psci-0.2";
-+		method = "smc";
-+	};
-+
-+	timer {
-+		compatible = "arm,armv8-timer";
-+		interrupts-extended = <&gic GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
-+				      <&gic GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
-+				      <&gic GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>,
-+				      <&gic GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(1) | IRQ_TYPE_LEVEL_LOW)>;
-+	};
-+};
-+
-+&soc {
-+	interrupt-parent = <&gic>;
-+
-+	gic: interrupt-controller@11900000 {
-+		compatible = "arm,gic-v3";
-+		#interrupt-cells = <3>;
++	irqc: interrupt-controller@110a0000 {
++		compatible = "renesas,r9a07g043u-irqc",
++			     "renesas,rzg2l-irqc";
++		reg = <0 0x110a0000 0 0x10000>;
++		#interrupt-cells = <2>;
 +		#address-cells = <0>;
 +		interrupt-controller;
-+		reg = <0x0 0x11900000 0 0x40000>,
-+		      <0x0 0x11940000 0 0x60000>;
-+		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_LOW>;
++		interrupts = <SOC_PERIPHERAL_IRQ(0) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(1) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(2) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(3) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(4) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(5) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(6) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(7) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(8) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(444) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(445) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(446) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(447) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(448) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(449) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(450) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(451) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(452) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(453) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(454) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(455) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(456) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(457) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(458) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(459) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(460) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(461) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(462) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(463) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(464) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(465) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(466) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(467) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(468) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(469) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(470) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(471) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(472) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(473) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(474) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(475) IRQ_TYPE_LEVEL_HIGH>,
++			     <SOC_PERIPHERAL_IRQ(25) IRQ_TYPE_EDGE_RISING>;
++		interrupt-names = "nmi",
++				  "irq0", "irq1", "irq2", "irq3",
++				  "irq4", "irq5", "irq6", "irq7",
++				  "tint0", "tint1", "tint2", "tint3",
++				  "tint4", "tint5", "tint6", "tint7",
++				  "tint8", "tint9", "tint10", "tint11",
++				  "tint12", "tint13", "tint14", "tint15",
++				  "tint16", "tint17", "tint18", "tint19",
++				  "tint20", "tint21", "tint22", "tint23",
++				  "tint24", "tint25", "tint26", "tint27",
++				  "tint28", "tint29", "tint30", "tint31",
++				  "bus-err";
++		clocks = <&cpg CPG_MOD R9A07G043_IA55_CLK>,
++			<&cpg CPG_MOD R9A07G043_IA55_PCLK>;
++		clock-names = "clk", "pclk";
++		power-domains = <&cpg>;
++		resets = <&cpg R9A07G043_IA55_RESETN>;
 +	};
-+};
 +
-+&sysc {
-+	interrupts = <SOC_PERIPHERAL_IRQ(42) IRQ_TYPE_LEVEL_HIGH>,
-+		     <SOC_PERIPHERAL_IRQ(43) IRQ_TYPE_LEVEL_HIGH>,
-+		     <SOC_PERIPHERAL_IRQ(44) IRQ_TYPE_LEVEL_HIGH>,
-+		     <SOC_PERIPHERAL_IRQ(45) IRQ_TYPE_LEVEL_HIGH>;
-+	interrupt-names = "lpm_int", "ca55stbydone_int",
-+			  "cm33stbyr_int", "ca55_deny";
-+};
+ 	gic: interrupt-controller@11900000 {
+ 		compatible = "arm,gic-v3";
+ 		#interrupt-cells = <3>;
 -- 
 2.43.0
 
