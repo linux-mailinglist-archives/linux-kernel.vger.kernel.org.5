@@ -1,141 +1,143 @@
-Return-Path: <linux-kernel+bounces-112790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C690887E2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:43:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FA7887E2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E8D11C20BE4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:43:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1738C1F21280
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516941A27E;
-	Sun, 24 Mar 2024 17:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D511AACF;
+	Sun, 24 Mar 2024 17:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GngHH2Em"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cuz/wuUi"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D7317555;
-	Sun, 24 Mar 2024 17:43:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164BC17555
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 17:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711302217; cv=none; b=ODRqAXLa9YNZ3C9AKx8szvYNAsCBce13mC7ABwY5vljTN9ANMgBUEI+KbOP571lV5BL/yF0ifByKtUfBkPXSHjr4+h2KGkB4zndNlMzEKLlWB06l1JRJKnhdk4qQGoENvjpphLMlQbrqBPsFmTVP8a6ukhjdlsexw6pN76uhg8o=
+	t=1711302321; cv=none; b=jIx2hvvJca3mF0MbAb/gQbYNU9MqBeyvPzawk1ox/UnzOqzOgIwUkcUzToEPVD4d+e3OmZt7fpDoxh7A8tE50zi21FT+/h/23r27ItFg3QUORU+lSRSDiayJ5jTMkeWHeVig91/VXEFHFw+dXvwS98eC1Hr4gQTiqwXGILeEUvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711302217; c=relaxed/simple;
-	bh=iV5eaQhCMjboTPn8RIB6+34ItDagxR0EDqsSNn6cFkI=;
+	s=arc-20240116; t=1711302321; c=relaxed/simple;
+	bh=xdIW6mBPIRVyFNi0g6EGkmhDMUnRw/D1b7czg+0i/ck=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j8zmVUb8Io1mU3shCDwKwP3+pRcbP89b3FhRcAsx4IEJREiYMHPtsViaMECtcdQfZ649+Hxu/kJ9AFTAwG3uPnQXh75bNAihJThyOkGnKJ8ANQuUiGBQ0xqRziKEbUHyHwpvXZHolYUqah8jR4KqH9xnfnuJdhJf3BXOFt19mOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GngHH2Em; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BA13C433F1;
-	Sun, 24 Mar 2024 17:43:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711302217;
-	bh=iV5eaQhCMjboTPn8RIB6+34ItDagxR0EDqsSNn6cFkI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GngHH2Emt0UgAODe8rNAAbokRjd/3dZz7d9ws6sN5rYoXRd+5kjoAE5LR7fcihClr
-	 6n/ddHPnr+a2z3iOenF528yUnqOsuLQvmmX/Vt92ZwYNbPVlbHRyjfxIexeMM/xEYL
-	 h8bfdJM9eHnP29h77+iEgrVuKVB8S+Dges8W2LkKJmVAoGjQD/cJGQAfwuKVUQPz/q
-	 Pu/aHQ55eLaw6zFrZlkca1N0URitlog0p/zxiVM7a3LbDJtgxrOfTr/3Q5JbZEoeta
-	 plEAJdzjILd3eT1fOhfi0eV+glR0i3WGGwF6xzH8fEfzim5iiVLAJbK/0VGlSqfvAC
-	 NEGYrLaIl5ZkA==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d228a132acso51171391fa.0;
-        Sun, 24 Mar 2024 10:43:37 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUhYCYpxkOi3siIdsvQs7uBRoK+i0tmg2pi7VQgLQWrBR/w/K/hLAA5hrnn9SGsfnc1Y8ygGKmfg/RUFXmh0Kcbsftw3O2YqnDToqXDH+QCT0g3J2hT4+M+7pD004NzO1BTogjp1g++
-X-Gm-Message-State: AOJu0Ywndv+2ZzkdqQdd0qszRPpBocd225J4mBy7PU2+YDEkQYJI1qxD
-	UgIqciIsI59vWcxJ2Vpxc6hv09FKyPhX9tQNZLJ1YTFl37rdtyhwO8E1S2EU0XlsJsCRJAhP2Q4
-	lKL5+9TOKk+8wsFMsKJYsZoex3hY=
-X-Google-Smtp-Source: AGHT+IE7AWt7cuttWyQSkz/6C8k8f2wmWamg+V4k0ou5nWU+WNaV/FU3iygPmrusTd7cZR+rbmAd6ob/9A1zn1IdK/8=
-X-Received: by 2002:a2e:8eda:0:b0:2d2:df0d:9e92 with SMTP id
- e26-20020a2e8eda000000b002d2df0d9e92mr3139059ljl.49.1711302215418; Sun, 24
- Mar 2024 10:43:35 -0700 (PDT)
+	 To:Cc:Content-Type; b=N/AYlfRZ6xF7Ck1fY1KenXxew+So8PBVBpmtticYqreY3I9NjA2WQFpl6BQpsP4dOH4zizxPSbrpAYX0BDV71mm3ZSpdxqdZsKm8BoFFEU6OqKRJzwd1dF5Z9+OFLOwxtVkH+b2NiSNjyQkavw3seZAdMLoLaNDCF/EzG9TMB/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cuz/wuUi; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51381021af1so5588187e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 10:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1711302317; x=1711907117; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oe6GIQzO/C567doEXwsmBSySXlt6oy2RX728KJkYzKg=;
+        b=cuz/wuUik3HMnipgbKl49knUONIng5nCb6owYldFOa8oqyekrKdz8CXhHZDcF0c36r
+         yJ+3e1lI1BSlsZoioQ1RfsMcVut2iEYDDUOmggpVxkKILQQMu3+DH/N635ZR5F/6ys+h
+         spbWrOaD7TFDHtX9/U3C/jO8S2YN4bEP7C1is=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711302317; x=1711907117;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oe6GIQzO/C567doEXwsmBSySXlt6oy2RX728KJkYzKg=;
+        b=AGi2XcxLusoD9gysmtKEEdimdAQLHCwcuH/nO5S4B1ywY1nS54zlFps9sgNFTZgNBC
+         b7lp7q3KuHvxnEiQ2jswQRSp8ySKkLV/GptNk0juXkvAwHZsxtUCkswLI3Um15FBbBXM
+         4e/Iw2EmC4izxaBBiuIY2Hu3I3HBZ5SO0F4hXoE7jeF7mmn25xo0B6n/DS17+HB5n58M
+         CbWKKjcf1o/woHXmSoTdENkUw4GRuug7Anf4+goEwEQacrv502XgttKnG352AzSciw9c
+         HMTVaXhwvPL+JEm0IHhMI+E0XLEkmc4UH2GTYQh1G5PUOtsIiVqlohGq+3XQOMRLx+Up
+         lQkw==
+X-Forwarded-Encrypted: i=1; AJvYcCVpcZezP+6ipgK8+ui1Eq/n736UE7QLrqpBeGf8wlRFLHNlQDw43xSPaZaqmDKSX/5M/xAyLB7yfDE+F52aeLeGPhC0SUaK2qXzv9ZY
+X-Gm-Message-State: AOJu0YxT4FFnbRqRz08jDX8DtsBhhtpNHFztxVSzVpOdHVe9GYvMWVCX
+	uyLr6M0QxvXAiqdFwHcEuxPgtWwrDxj4B1qkRXQg6LGhhy/z+2Zl2bCz/Hly32xd3FOfZYIuSgn
+	1DzHT8Q==
+X-Google-Smtp-Source: AGHT+IHyXCi92r/SsM99N1uBJykepDc9bb3pcnU5LDSDZPiYCwKEU2QQptL2KdRyBZiBYloqyGTkfw==
+X-Received: by 2002:ac2:504c:0:b0:513:c223:f0e4 with SMTP id a12-20020ac2504c000000b00513c223f0e4mr4007907lfm.10.1711302317209;
+        Sun, 24 Mar 2024 10:45:17 -0700 (PDT)
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
+        by smtp.gmail.com with ESMTPSA id m19-20020a1709060d9300b00a45c9945251sm2142167eji.192.2024.03.24.10.45.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Mar 2024 10:45:16 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4147c4862caso19513365e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 10:45:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXR4OVs7njxhKFGPcHARvkjxSriJTFkdhK4uLV3tW4PddcA1mUF0hb3AY3TTladFOQWo5/KAMYB7coTRu3OhNSTxdZXM8OmOR/lVjiE
+X-Received: by 2002:a19:ca19:0:b0:515:9ce3:daa3 with SMTP id
+ a25-20020a19ca19000000b005159ce3daa3mr3631407lfg.37.1711302295763; Sun, 24
+ Mar 2024 10:44:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321150510.GI8211@craftyguy.net> <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
- <a3aae375-5582-46e4-866b-6a81641998af@redhat.com>
-In-Reply-To: <a3aae375-5582-46e4-866b-6a81641998af@redhat.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sun, 24 Mar 2024 19:43:24 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGrWGGv-aXabsn1oRwwMy-Ck1nz85QkEMqQ8LdQxyeBKQ@mail.gmail.com>
-Message-ID: <CAMj1kXGrWGGv-aXabsn1oRwwMy-Ck1nz85QkEMqQ8LdQxyeBKQ@mail.gmail.com>
-Subject: Re: x86_64 32-bit EFI mixed mode boot broken
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Clayton Craft <clayton@craftyguy.net>, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
+References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
+ <20240301-slab-memcg-v1-4-359328a46596@suse.cz> <CAHk-=whgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0=m1A@mail.gmail.com>
+ <20240324022731.GR538574@ZenIV>
+In-Reply-To: <20240324022731.GR538574@ZenIV>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 24 Mar 2024 10:44:39 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgBQPxKh1cGhGoo=SmJq72H4VObrkVxQepooaq18H4=oA@mail.gmail.com>
+Message-ID: <CAHk-=wgBQPxKh1cGhGoo=SmJq72H4VObrkVxQepooaq18H4=oA@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/4] UNFINISHED mm, fs: use kmem_cache_charge() in path_openat()
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Vlastimil Babka <vbabka@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>, 
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 24 Mar 2024 at 16:49, Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 3/21/24 11:48 PM, Ard Biesheuvel wrote:
-> > (cc Hans)
-> >
-> > On Thu, 21 Mar 2024 at 23:05, Clayton Craft <clayton@craftyguy.net> wrote:
-> >>
-> >> I've been chasing a problem with 32-bit EFI mixed mode booting on two different
-> >> (x86_64) Intel Bay Trail platforms, where the system reboots or hangs seemingly
-> >> very early somewhere before or after loading the kernel. I've not been able to
-> >> get any output from the kernel or stub over efifb when the issue happens[0], and
-> >> do not have serial console access on these systems.
-> >>
-> >> v6.8 fails for me, and presumably so does everything back to v6.2. v6.1 is able
-> >> to boot OK on these platforms with mixed mode, and it looks like there are a lot
-> >> of changes from 6.1..6.2 for EFI/mixed mode booting.
-> >
-> > v6.1 just received some EFI related backports, so please check the
-> > latest v6.1.y as well.
-> >
-> >> I did managed to bisect the
-> >> issue to:
-> >>
-> >>         commit e2ab9eab324cdf240de89741e4a1aa79919f0196
-> >>         Author: Ard Biesheuvel <ardb@kernel.org>
-> >>         Date:   Tue Nov 22 17:10:02 2022 +0100
-> >>
-> >>             x86/boot/compressed: Move 32-bit entrypoint code into .text section
-> >>
-> >> However I'm not sure how to proceed from here, or if my bisect is all that
-> >> useful since the commit seems to be in the middle of a bunch of changes I do not
-> >> understand. I've been using systemd-boot to test this (both the full bootloader
-> >> and UKI w/ the sd-boot stub). Is 32-bit mixed mode on x86_64 working for others?
-> >>
-> >
-> > I usually test on 32-bit OVMF built with LOAD_X64_ON_IA32_ENABLE,
-> > which allows the use of the compat entry point. This is different from
-> > the EFI handover protocol, and I am not sure which one you are using.
-> >
-> > I have never had any reports, or noticed any issues myself. Last time
-> > I tried (some weeks ago) it was working for me.
-> > CC'ing Hans who may have more data points.
->
-> I've been offline for most of the week and I see that in the mean time
-> you seem to have found a fix, great.
->
-> FWIW I have been booting everything up to 6.8.0 on my own mixed-mode
-> Bay Trail tablets without issues, so the problem seems to be specific to
-> certain BIOS-es.
->
-> Please Cc me on the final fix, then I can test that early and double check
-> that things don't regress on other mixed-mode Bay Trail devices.
->
+[ Al, I hope your email works now ]
 
-Thanks.
+On Sat, 23 Mar 2024 at 19:27, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> We can have the same file occuring in many slots of many descriptor tables,
+> obviously.  So it would have to be a flag (in ->f_mode?) set by it, for
+> "someone's already charged for it", or you'll end up with really insane
+> crap on each fork(), dup(), etc.
 
-I pushed another branch
+Nope.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=efi-clayton-3
+That flag already exists in the slab code itself with this patch. The
+kmem_cache_charge() thing itself just sets the "I'm charged" bit in
+the slab header, and you're done. Any subsequent fd_install (with dup,
+or fork or whatever) simply is irrelevant.
 
-which has a proper fix for the issue that you found.
+In fact, dup and fork and friends won't need to worry about this,
+because they only work on files that have already been installed, so
+they know the file is already accounted.
 
-As it turns out, the compat mixed mode (with handover protocol) was
-broken from the beginning, and the change you identified just happened
-to trigger it on your hardware.
+So it's only the initial open() case that needs to do the
+kmem_cache_charge() as it does the fd_install.
+
+> But there's also MAP_ANON with its setup_shmem_file(), with the resulting
+> file not going into descriptor tables at all, and that's not a rare thing.
+
+Just making alloc_file_pseudo() do a SLAB_ACOUNT should take care of
+all the normal case.
+
+For once, the core allocator is not exposed very much, so we can
+literally just look at "who does alloc_file*()" and it turns out it's
+all pretty well abstracted out.
+
+So I think it's mainly the three cases of 'alloc_empty_file()' that
+would be affected and need to check that they actually do the
+fd_install() (or release it).
+
+Everything else should either not account at all (if they know they
+are doing temporary kernel things), or always account (eg
+alloc_file_pseudo()).
+
+               Linus
 
