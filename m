@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F09988978F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:17:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA5738894A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E80521F2F29C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:17:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 679081F33B21
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A508B2618DB;
-	Mon, 25 Mar 2024 03:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6782436D0F6;
+	Mon, 25 Mar 2024 03:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VbVS5Y98"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="smo4iNQB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB3B145323;
-	Sun, 24 Mar 2024 23:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E17A1448C8;
+	Sun, 24 Mar 2024 23:12:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321971; cv=none; b=emlWo5wl9mtlMKOkTTLXQhMRf/ttntMxIa+XDZCu58XnRbk/SspAXNxl+f3MMTgdVbQ3aIT2vPjjEsmmbE4Xy61SEpYLCEOLvxbJJ5xrXq4KRNAlSeBSxzjoCJhgPPU2gfIx2Z52bPi2mr8MOqaQubffT4aeRcRl6mSLBe4UBwM=
+	t=1711321973; cv=none; b=p6SEwMdrlP/+IAe+tY2aRExI5T5mpb0nqLiE+Mwe9xVGjpiOx0rHOkfFm8BHVXJHeSl3Vrkq3RlNxB8VDw90NRlXHyT2UYIfLL5/vv2Y9YoKyhVuOs8CCKdxkIcRDxAp959gOA7kMTgROEqXXtEvGsaHkO3pAh6VlGTEYYsy5ZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321971; c=relaxed/simple;
-	bh=S9i6rVDTLrc92ZdyKfg4Ixk7H6eGpB3PH6E05e+MPh0=;
+	s=arc-20240116; t=1711321973; c=relaxed/simple;
+	bh=9kUUdf+AjWFvFSiEOTqGVjiPX8FFD9m8l8eaQutwhnk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tXY3jWZT02nggqLbQtAPMnbNXkelSaMYQBtYxFIjzTGTpekjLKuSZNINpADx5wDCopeqCf/BrV6DCXG728FB2FtjDfYPUV6mSyX9g+bzOPI7XF0HZ1T5T32uuI2C4kC3W0G/01bf26/kDwaaon0Is/JjCQwsAO51QlvJ/Ropv64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VbVS5Y98; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA4CFC43390;
-	Sun, 24 Mar 2024 23:12:50 +0000 (UTC)
+	 MIME-Version; b=WbkoYnAG/Pl8Fq8OOwBNBZvgq0R8Y4ewHbkLW7mPoMtj3n5Le/6jMZRfKzUNiH+3tB+m07a+Pxkki5NbLkdv0gxv5BO1imMblVdsOMPviGo4BaMamadL6wBXxxYiovo/bnWk9Ge53jrekv/Sw5o4WUWBVwy2HLC95izxHFZcACI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=smo4iNQB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96AFAC43394;
+	Sun, 24 Mar 2024 23:12:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321971;
-	bh=S9i6rVDTLrc92ZdyKfg4Ixk7H6eGpB3PH6E05e+MPh0=;
+	s=k20201202; t=1711321972;
+	bh=9kUUdf+AjWFvFSiEOTqGVjiPX8FFD9m8l8eaQutwhnk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VbVS5Y98jZPtumrEtneMHJXzI8B+VXCF2glZTaDkTLvoBgEFrd/r2lDWIRk8iDiIN
-	 p3DDzv71HwInwf5OVmcU7/hMcaap7DGNhlpMrIUKSezRdQBfGwO6vA2RVtQo01Id5j
-	 q3pOlrQ2xxT7ju6E19+aHsEQYlpZqSkAdkceoUaFnDHtMlWJIFxfiDf/dnyKXTWAqp
-	 CRDcC71XMIXodoy9vaFih8p8SkciI8AUeyu7XLmH8fUZOrE0w6K/Fv3Te2Ls3KQP0C
-	 ZncwH/hfBHfXO+OLrrlSf4ChuUwDp0vAu8A5geMXZPvp6TU8oMAXRZ4IY/C7b9be7P
-	 D68EdQnk4UQqA==
+	b=smo4iNQBsjd9IqKOAy0dP/tm4Ft8dE0iVa6S7W25gue9BLI5lIjwWCnJuZbh/FCZD
+	 FLtJlUVrhNTVx6dDOk+mGQtUAN3qhbtXgU/XkXuSlAzESfYdGzVwWCg1Bw7juHZ7RC
+	 LfhoYsIV98a/lE6lHzIZEVHWsUhLr6VkGaVJ1tGnP9N17yF7wt+taAzhB8v8cgI9du
+	 rlOvTjKtpEUu+0Xg5B/WBp5+GkjN483DyxLb0BPdy+gmdJ560FWsq3DKKH3qTgpq1h
+	 9ZksmCUOwywTIXwj8OEOpnAAX8+vUHMGZ1SII3iyTv2m9xAk6mCjzpT7LdPpeTmClU
+	 g/d+nSDn84GoQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Felix Fietkau <nbd@nbd.name>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: Johnny Hsieh <mnixry@outlook.com>,
+	linux-sound@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 043/451] wifi: mac80211: only call drv_sta_rc_update for uploaded stations
-Date: Sun, 24 Mar 2024 19:05:19 -0400
-Message-ID: <20240324231207.1351418-44-sashal@kernel.org>
+Subject: [PATCH 6.1 044/451] ASoC: amd: yc: Add Lenovo ThinkBook 21J0 into DMI quirk table
+Date: Sun, 24 Mar 2024 19:05:20 -0400
+Message-ID: <20240324231207.1351418-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,37 +63,40 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Johnny Hsieh <mnixry@outlook.com>
 
-[ Upstream commit 413dafc8170fcb925fb17af8842f06af305f8e0b ]
+[ Upstream commit 50ee641643dd0f46702e9a99354398196e1734c2 ]
 
-When a station has not been uploaded yet, receiving SMPS or channel width
-notification action frames can lead to rate_control_rate_update calling
-drv_sta_rc_update with uninitialized driver private data.
-Fix this by adding a missing check for sta->uploaded.
+This patch adds Lenovo 21J0 (ThinkBook 16 G5+ ARP) to the DMI quirks table
+to enable internal microphone array.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://msgid.link/20240221140535.16102-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Cc: linux-sound@vger.kernel.org
+Signed-off-by: Johnny Hsieh <mnixry@outlook.com>
+Link: https://msgid.link/r/TYSPR04MB8429D62DFDB6727866ECF1DEC55A2@TYSPR04MB8429.apcprd04.prod.outlook.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rate.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/net/mac80211/rate.c b/net/mac80211/rate.c
-index d5ea5f5bcf3a0..9d33fd2377c88 100644
---- a/net/mac80211/rate.c
-+++ b/net/mac80211/rate.c
-@@ -119,7 +119,8 @@ void rate_control_rate_update(struct ieee80211_local *local,
- 		rcu_read_unlock();
- 	}
- 
--	drv_sta_rc_update(local, sta->sdata, &sta->sta, changed);
-+	if (sta->uploaded)
-+		drv_sta_rc_update(local, sta->sdata, &sta->sta, changed);
- }
- 
- int ieee80211_rate_control_register(const struct rate_control_ops *ops)
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 5921af7fd92c5..0568e64d10150 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -199,6 +199,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21HY"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21J0"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
 2.43.0
 
