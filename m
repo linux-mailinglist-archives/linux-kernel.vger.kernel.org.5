@@ -1,101 +1,86 @@
-Return-Path: <linux-kernel+bounces-112846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1DB4887EF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:54:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DD36887EF9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:02:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B4AEB20B2F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:54:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0302B20D15
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D3018EAF;
-	Sun, 24 Mar 2024 20:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93DC41C692;
+	Sun, 24 Mar 2024 21:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ovOhXdxf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="l/ezsWwo"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F208A8BFB;
-	Sun, 24 Mar 2024 20:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4A418638;
+	Sun, 24 Mar 2024 21:02:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711313642; cv=none; b=J+TBYwrRSeUE/V6UMJJHG+TksK/js20opFleAWlIYluAup/SujD9jtcpL2PPbbLCI/kNLjk6J4zMIcAsuhP+NayxaZ0UgYkNwwsM0oPrCnt6uijW8dX8XvbgjunuuLQbDFhSft0z/JD4Z8E91GB+r2eB8mNZBr5/qBtcdax0lUs=
+	t=1711314142; cv=none; b=GJ7wvqxLL9NMGQ/M7B3V34lovPtRlf9nRmM7xvZ7MjJaxMG2rSxgHWrXh70oWeY/UyXGffDXW7A9w02ywKChXjHf6z5h1nPg58SoTx36OuvJvcE82uvdhqnuxbNm4NBmgv2j8/Z3olecbGd9UQRIVz0uc+ZL9rZcNJTkRRV7T6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711313642; c=relaxed/simple;
-	bh=2sxR9gem4rOkDv3LJEJDqf4tBKN+JI2mEjl3swXxyuY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dcdzVZuqvVFblJfsD2lqNZ4EVQjQzX7hHRV8cqqGuVztpCYK+9srJQGkHcvjCFbeGdS1uFJi+qZaz8kq+oHSnIAU0V8ZXv45vMNBz6IHxNCAy8qg7uTva4iDMuTk2pJs/kLO+tCljbzpWVAFX/dILdhk5IqK+VGDhVp7Q657XMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ovOhXdxf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71EB8C433F1;
-	Sun, 24 Mar 2024 20:54:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711313641;
-	bh=2sxR9gem4rOkDv3LJEJDqf4tBKN+JI2mEjl3swXxyuY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ovOhXdxfjk5Ht36sjn3SLnoY5KoxbidxLBEHhlLqiSQTIx53YUJ2q36E6CJyy5wTB
-	 XfEU+tHrwf9W3S9foGvqJ7Gy2EIFJ5F6gdYYrGVVAaA2xjz2PyWnLL+ZWl4DBplByH
-	 NKViYuwg3oE0w97ImY/VI75mxnz11pwouUtFX7orW6VBVVZ5qw1unHHzoXkPPxWHxX
-	 1cnd2Zl7VdDm1JlrR35ZpYgryxvw+q2k9HRg2yo7c+hT70wJF21ykMbtBdBYKES7zq
-	 AEIure9RatI4bI/p0HAasYirS8Xk7AIQLfsU9324Mn5Q5WTexy7TaQEUfHfsT13ObO
-	 RAsmAmrIMghFQ==
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so55812901fa.0;
-        Sun, 24 Mar 2024 13:54:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXYrEr1CW2Vf1/6JSuXLM6rTjgiFwkrTgHrC/rfL1YQNdHNyPb7eDGIum9mQv5rHELi8OoWwopQekLiumLWmF/2mpZesj2KFvLM94SqTaznBbUEGnZ/0izje2Icfz9o8Bk5Fb5CSPjL
-X-Gm-Message-State: AOJu0YxI54BCcikCeNyMDCmX1rM6ZPPGZ46wBUfv1vgXrTQrKpIonCN3
-	zmm1ru4W5Z9sHcckHH+qfG3z1WfuBw22jnYMRzhnbOlE2cHc15Dni1ml8G7sveEfjuhHR3BNskZ
-	WvvNGSS9jhtvLeDyK3nL19651KrM=
-X-Google-Smtp-Source: AGHT+IEI9gi+Y9xgxil9ULR4YqHb6Y06MvrPiPhmb1TymyhNk4w1g0FnkQvVCa7vNQCMMAJCGMPJ6dAChX6G+gAID5s=
-X-Received: by 2002:a2e:98d9:0:b0:2d4:6c1c:7734 with SMTP id
- s25-20020a2e98d9000000b002d46c1c7734mr3124077ljj.26.1711313639873; Sun, 24
- Mar 2024 13:53:59 -0700 (PDT)
+	s=arc-20240116; t=1711314142; c=relaxed/simple;
+	bh=l9rxcWo8n7TOtxZSo3k1Q8wf0u6AKZ4L/iOYuCud2dg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H9CE25EHolmkrhGBAwOn+UJ1LCYMDQtJqLFW9Y3VXilf8zO54NO/IEUqhcSUWB9pyRyhpEDYZn82jp7Tq2zI0MN3+uJ+7r/xC0NbX8VoVrOg+vMtNo8bHbakG7Xnw5finbrIdWNF5UwZnXSPO0b2zdONjCbGzlRMxKs43KXPVKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=l/ezsWwo; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Rklqzi2NdFnhKdqckzxSh7Jo7lIkng9/OlDypgBPKVE=; b=l/ezsWwohAeL9ilP1kNIXmcFtD
+	8ltIjPTDoszoZwRCbSasucKExma1aRzfrFDVjMLZ98C5r5+AuFMx7u30ko1nE5mxdWkgClu09pCaX
+	/+0be2xkFy609vUxRjbfGX0+F3VaXjsTefeXpgUes2Vmr8FW0hwME+VZlyJa3PivGR08aYlRrVwOV
+	JRFeCpeMjKqWAKK8pnJrafg7lcHQ5PcUDewYy9l/rFuCH+BJCO47xaTuYwqU7l9yY2kNi+XhyriGz
+	sesdWau1zj51qkYlNwqjqBsisqT+rUk2zznp2tssEh6DTOmJqky8sS77V37kf+9Y2nmCEOg51xbYC
+	W6Q50xOQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1roUyp-00G2KE-21;
+	Sun, 24 Mar 2024 21:02:11 +0000
+Date: Sun, 24 Mar 2024 21:02:11 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Roberto Sassu <roberto.sassu@huawei.com>
+Cc: Steve French <smfrench@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	CIFS <linux-cifs@vger.kernel.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Christian Brauner <christian@brauner.io>,
+	Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>
+Subject: Re: kernel crash in mknod
+Message-ID: <20240324210211.GV538574@ZenIV>
+References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+ <20240324054636.GT538574@ZenIV>
+ <3441a4a1140944f5b418b70f557bca72@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321150510.GI8211@craftyguy.net> <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
- <a3aae375-5582-46e4-866b-6a81641998af@redhat.com> <CAMj1kXGrWGGv-aXabsn1oRwwMy-Ck1nz85QkEMqQ8LdQxyeBKQ@mail.gmail.com>
- <749b1cea4fd9e8d8debadc51cf3c0374d9878ae9@craftyguy.net>
-In-Reply-To: <749b1cea4fd9e8d8debadc51cf3c0374d9878ae9@craftyguy.net>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sun, 24 Mar 2024 22:53:47 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGyKdoLZ9t9_X4diiy9GsqxJ_NkHsm_t+cAJBxhHW7mAA@mail.gmail.com>
-Message-ID: <CAMj1kXGyKdoLZ9t9_X4diiy9GsqxJ_NkHsm_t+cAJBxhHW7mAA@mail.gmail.com>
-Subject: Re: x86_64 32-bit EFI mixed mode boot broken
-To: Clayton Craft <clayton@craftyguy.net>
-Cc: Hans de Goede <hdegoede@redhat.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3441a4a1140944f5b418b70f557bca72@huawei.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Sun, 24 Mar 2024 at 22:46, Clayton Craft <clayton@craftyguy.net> wrote:
->
-> March 24, 2024 at 10:43 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
->
->
-> > Thanks.
-> >
-> > I pushed another branch
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=efi-clayton-3
-> >
-> > which has a proper fix for the issue that you found.
-> >
-> > As it turns out, the compat mixed mode (with handover protocol) was
-> >
-> > broken from the beginning, and the change you identified just happened
-> >
-> > to trigger it on your hardware.
->
->
-> Tested and fixes booting on my Bay Trail tablet and NUC. Thanks for fixing this!
->
-> Tested-by: Clayton Craft <clayton@craftyguy.net>
->
+On Sun, Mar 24, 2024 at 04:50:24PM +0000, Roberto Sassu wrote:
 
-Thanks!
+> Also, please update the description of security_path_post_mknod() to say
+> that it is not going to be called for non-regular files.
+
+If anything, it's rather security_past_create_without_open(), and
+I really wonder where does the equivalent of those actions happen
+if you do close(open("foo", O_CREAT|O_RDWR, 0777)) instead of
+mknod("foo", 0777, 0).  I mean, you can substitute the former
+for the latter, so anything that must be done by the hook in
+mknod(2) would better be covered at some point in hooks within
+open(2)...  Some explanation of the relationship between those
+would be nice.
 
