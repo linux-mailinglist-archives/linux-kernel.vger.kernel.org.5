@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4607D889CA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:24:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2281E88937F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77BA51C349DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:24:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC3831F34187
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF9715B57D;
-	Mon, 25 Mar 2024 02:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A7215E1FC;
+	Mon, 25 Mar 2024 02:31:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PM6AhYnN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FpVtOU+g"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393697580A;
-	Sun, 24 Mar 2024 22:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345A97F498;
+	Sun, 24 Mar 2024 22:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320472; cv=none; b=eqvifkWG0TgR38/lx9VHEcuJJduGWuJUe17RbgbLm6q8N0gCOrI88szonLAUxVeZlUvsy6Co0f69ca4v9cQmQFVC6xijyAHnbHEpcvRIfOw+uRrBgushgfBTuwwmNUc/CS0RKCZM4YNh38qesvM56AOmAYil0ADHNYsNgr8KRbY=
+	t=1711320473; cv=none; b=lwW2QVVsz/p7vJ3kS3yD4uN+FgMfQjnFpJFRUO3oNMxSspJSXl9cd5WHxLGBlHqqnJp4WY1hOHQLMHvfVk7lrElnaLil/VcUPss+hasOaYrylMKLkOoPswMUDXsIxzfCxhzYnzVrMQE07x/KBcA31NJNAURerpxOvSaLSY3jDj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320472; c=relaxed/simple;
-	bh=T/akRPi5ao0d12BmCz3WEgH+FPHY9KHNebOOEFBHkBM=;
+	s=arc-20240116; t=1711320473; c=relaxed/simple;
+	bh=w5BdxNjIE7bfEOwDCFFB2lHGJCSTEMlYfCM9CWgPQaA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bcop4bOaQpjkP/KUWDwC86PT63BzeV8rnLYm8jnJisx+ZV8N1r3HvFozb/xHKyrngDaHbhzd3sXfAPpV0Ks6yk2wlYeFxS46OHZUm4rPOyJDlTDDzCCZPArtS3HGVnzbbZ1G9ywjZ7P/KEEx1l5L2W7tTCNJViWPjnmt5p/4hQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PM6AhYnN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 740B4C43390;
-	Sun, 24 Mar 2024 22:47:51 +0000 (UTC)
+	 MIME-Version; b=QW2UL45a0gLb/TgoaV4fMi7TZAqZDbc649uYDcQm//PHhEWs8T2JVQ2D+grxu5JpbyoYHh9bUY+Qr0cUBHTATyCf6fctWWejwsh2NzmWG45goerapGWt2f4zefHN5foT4GoTChQVz82EhgkHiPozMyviy+iCaWTkAQ4tfdQgoxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FpVtOU+g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B3F8C433F1;
+	Sun, 24 Mar 2024 22:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320472;
-	bh=T/akRPi5ao0d12BmCz3WEgH+FPHY9KHNebOOEFBHkBM=;
+	s=k20201202; t=1711320473;
+	bh=w5BdxNjIE7bfEOwDCFFB2lHGJCSTEMlYfCM9CWgPQaA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PM6AhYnN8f8aoIUet0YZ6Mr5sKiBRkR7CRrRfLga4ALGAZvshaAiebNszXDolRwQb
-	 dQ5ji3UlqmqbyGQTAwuo9Y46IE6OwmU6gi5HWRjOWud/2ZBR1lJjdTvZcgFDq42eRS
-	 elj1WDwur2hY6gS8DSxIdWB4Ge9iJKq5vWdEdjymQHlV1LocrNLBXjCqGDu/yB6+9i
-	 9W8nbE8nuGWCnOfYACxz/4i7hcM3zoqoWqm5xOR54D3pNP+O5HcXaym9YNpaPDA+WM
-	 zoQtbrsW797Danx6Q1dVls729Xh9Ia3PYyDDcfvN5coLb/FgTLYowbzekEgxtnUqpO
-	 48xmiOFMMdc1g==
+	b=FpVtOU+g4mLtAPayMG2qyFLvsM6Bk2VtvjrjrblAWTvuI0BcfcY8CVc3AhUDsZbPb
+	 PEi+9Q3HwdFj25ssH5xFHuoh+W7P2gBAZA34MIgOOmVXhSgLnp9pj5pe/vQnNjEATf
+	 78nXTMsgdjkoIpIHkDgiU1Achmj3jX55TJSsXA17ls1bLT4CC0ntBgJsYZaRDm0pbh
+	 dxLC6TnEHpx4oU7tWvpcD/uavC1d/xXWqngNIlv44dQybT/4lkrrP57p1QsEUQJ01A
+	 ajVYdCTn1Vcf57vyywXrAFdLi9OvnHvcXz/0sAFJQnMLW1XU0LZ0fZ3njFamCYKdh1
+	 zWhqsYDkYZL2A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
+Cc: Hou Tao <houtao1@huawei.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 031/713] riscv: dts: sifive: add missing #interrupt-cells to pmic
-Date: Sun, 24 Mar 2024 18:35:57 -0400
-Message-ID: <20240324224720.1345309-32-sashal@kernel.org>
+Subject: [PATCH 6.7 032/713] x86/mm: Move is_vsyscall_vaddr() into asm/vsyscall.h
+Date: Sun, 24 Mar 2024 18:35:58 -0400
+Message-ID: <20240324224720.1345309-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,34 +63,69 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Conor Dooley <conor.dooley@microchip.com>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit ce6b6d1513965f500a05f3facf223fa01fd74920 ]
+[ Upstream commit ee0e39a63b78849f8abbef268b13e4838569f646 ]
 
-At W=2 dtc complains:
-hifive-unmatched-a00.dts:120.10-238.4: Warning (interrupt_provider): /soc/i2c@10030000/pmic@58: Missing '#interrupt-cells' in interrupt provider
+Move is_vsyscall_vaddr() into asm/vsyscall.h to make it available for
+copy_from_kernel_nofault_allowed() in arch/x86/mm/maccess.c.
 
-Add the missing property.
-
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/r/20240202103935.3154011-2-houtao@huaweicloud.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/include/asm/vsyscall.h | 10 ++++++++++
+ arch/x86/mm/fault.c             |  9 ---------
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-index 07387f9c135ca..72b87b08ab444 100644
---- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-+++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
-@@ -123,6 +123,7 @@ pmic@58 {
- 		interrupt-parent = <&gpio>;
- 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
-+		#interrupt-cells = <2>;
+diff --git a/arch/x86/include/asm/vsyscall.h b/arch/x86/include/asm/vsyscall.h
+index ab60a71a8dcb9..472f0263dbc61 100644
+--- a/arch/x86/include/asm/vsyscall.h
++++ b/arch/x86/include/asm/vsyscall.h
+@@ -4,6 +4,7 @@
  
- 		onkey {
- 			compatible = "dlg,da9063-onkey";
+ #include <linux/seqlock.h>
+ #include <uapi/asm/vsyscall.h>
++#include <asm/page_types.h>
+ 
+ #ifdef CONFIG_X86_VSYSCALL_EMULATION
+ extern void map_vsyscall(void);
+@@ -24,4 +25,13 @@ static inline bool emulate_vsyscall(unsigned long error_code,
+ }
+ #endif
+ 
++/*
++ * The (legacy) vsyscall page is the long page in the kernel portion
++ * of the address space that has user-accessible permissions.
++ */
++static inline bool is_vsyscall_vaddr(unsigned long vaddr)
++{
++	return unlikely((vaddr & PAGE_MASK) == VSYSCALL_ADDR);
++}
++
+ #endif /* _ASM_X86_VSYSCALL_H */
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 679b09cfe241c..d6375b3c633bc 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -798,15 +798,6 @@ show_signal_msg(struct pt_regs *regs, unsigned long error_code,
+ 	show_opcodes(regs, loglvl);
+ }
+ 
+-/*
+- * The (legacy) vsyscall page is the long page in the kernel portion
+- * of the address space that has user-accessible permissions.
+- */
+-static bool is_vsyscall_vaddr(unsigned long vaddr)
+-{
+-	return unlikely((vaddr & PAGE_MASK) == VSYSCALL_ADDR);
+-}
+-
+ static void
+ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+ 		       unsigned long address, u32 pkey, int si_code)
 -- 
 2.43.0
 
