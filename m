@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-113712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2164B888E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:15:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B372888631
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:26:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5E681F303F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:15:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 060C3292C8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464D8129A6F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAD31E7733;
 	Sun, 24 Mar 2024 22:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GEkGP4LW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q5oB42x5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0653686655;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72D81DBF22;
 	Sun, 24 Mar 2024 22:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320698; cv=none; b=rrzMyjGSR70wujVuEDuP6iqTSUJoSEUmvhhZgVdjeV2NDa98fUt9VHC8MIqKp2pNezbifTP7UF0SXCK+Jm2D9PeyvLiZErU+mUKCGAJwPUvWK5HIuFJLLX2O2eSJtfPJtYlfJPBv1MuVXfWKi/hmn2pK20+Cv5x4s7FsIEZQUOk=
+	t=1711320699; cv=none; b=mL5Z9lPXPOkrZQiUoJEPlSYBxxpQvYLBTdawZjdVIxRAmSmLQmk4cYvl7oBdrOWSX0o932Y3vckck/Bvk9SYQ0fDVJlGw3nIMxUgwARh5roLnXUQ17dzr83lvlnV7ZabYBdYt0d/qZDFvT80HgWCXym70O6eswXaaDs8On1bgBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320698; c=relaxed/simple;
-	bh=eZSo9kCBaG2IU8ylLywZO1b09ydCwcFYWeesUj1vWRM=;
+	s=arc-20240116; t=1711320699; c=relaxed/simple;
+	bh=nfu/1bifCRzhzUwuYeSYF4B5jVHi/FobrLmXrxCk7CI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gijc6htwH+VyBw6xDGinHpa/xUd/0Nd3c6IxUNDDLP7ofiPCpi7fkfSzbLmwxenxisLqQ/I4tLGe3VnajC3865FVZA/9uDDytIYh9PUn17VRDhS5wwAwNhnGbCDMRyIQ3tahhvmeSzEVhSTEl6awQF8BTtgARkgV9165Zhrkr8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GEkGP4LW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14FF8C433F1;
-	Sun, 24 Mar 2024 22:51:35 +0000 (UTC)
+	 MIME-Version; b=L3LY/C7Z3kJ2GZ/X3jIKHBOVFmiY8936saMXnzFQZBA3zSy3IjZ7ZKSZ70+wfUuaT+crhgTECXlB0OVlYqsCZcEMr7y/NyEE6+Bl40bgUdG3BwvANFRyLRbkawkttt6oMfZq5ul1l85NZOqgys/6evH9x4wdfANVCVzU0i1a+4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q5oB42x5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D2C0C43394;
+	Sun, 24 Mar 2024 22:51:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320696;
-	bh=eZSo9kCBaG2IU8ylLywZO1b09ydCwcFYWeesUj1vWRM=;
+	s=k20201202; t=1711320697;
+	bh=nfu/1bifCRzhzUwuYeSYF4B5jVHi/FobrLmXrxCk7CI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GEkGP4LW6kj1wYlB7R8TWH6P9xP/NJwdaXLwaItNUW8Hs0ht6aY+h4Do48kI7V0R3
-	 OSzHUp2okU5+IJivDVSsjCRMe9YBpRwH9JLfqywpXDUJTfXEcDdnt2WrrrD0NHOsmn
-	 Yj2SFWXEkgYDDu/Isz1vvBXznNd4igqkY/qcyyPXDPYIpUKJF9aBdX4E5rDZk68e14
-	 0QXN3yTG4wi7gNRo+Su1iovRhp7NRqOxZWlUMmp6V2PBu3vTClrAA35ekK/6MkvK6/
-	 XOfmUGo9rY4Q3LedSG7pOG1CDGQk/UwNnSn7P1bhSCVD10iZCA/YPUJBPCCua0/zSW
-	 d/Ezh4t1YsTjg==
+	b=Q5oB42x5tlrFsL0sBMVcF9A3TNoKJzBPTeR4d/3J5ZpFwF6WEx6UoCsqT1UXZHJNo
+	 ZvEjnqtTJ/Gsv2SNftfOYxGy12yHrq1wwz+UkHtJgEWH+ZdYZTGUjPEhMcKXTXKhSA
+	 I5syQ4KqsBii3VpVoVyPtMKpf6sZOY/zL/ZY1W87VlwTOPaIGiXpCukpVGUI8fiPRM
+	 KhgfPT0ZKLR2NDVhXwN/gwjO9r3TW+VEmlsjmNzis689FeXn44yAsfCB+0+pDzQp6N
+	 F8Y9NxzzREPKT6zSrGrAiPfklgeba4Bf96b4fTQJW9s6f8LsldrTwNzY3S61fZGH/Y
+	 chHMYpfgD9pPA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Roger Quadros <rogerq@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Armin Wolf <W_Armin@gmx.de>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 259/713] arm64: dts: ti: k3-am62-main: disable usb lpm
-Date: Sun, 24 Mar 2024 18:39:45 -0400
-Message-ID: <20240324224720.1345309-260-sashal@kernel.org>
+Subject: [PATCH 6.7 260/713] ACPI: processor_idle: Fix memory leak in acpi_processor_power_exit()
+Date: Sun, 24 Mar 2024 18:39:46 -0400
+Message-ID: <20240324224720.1345309-261-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,63 +62,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
+From: Armin Wolf <W_Armin@gmx.de>
 
-[ Upstream commit 9c99b337a8755a09df7735d4324ae26a6eca6261 ]
+[ Upstream commit e18afcb7b2a12b635ac10081f943fcf84ddacc51 ]
 
-AM62 USB works with some devices, while failing to operate with others.
+After unregistering the CPU idle device, the memory associated with
+it is not freed, leading to a memory leak:
 
-[  560.189822] xhci-hcd xhci-hcd.4.auto: xHCI Host Controller
-[  560.195631] xhci-hcd xhci-hcd.4.auto: new USB bus registered, assigned bus number 2
-[  574.388509] xhci-hcd xhci-hcd.4.auto: can't setup: -110
-[  574.393814] xhci-hcd xhci-hcd.4.auto: USB bus 2 deregistered
-[  574.399544] xhci-hcd: probe of xhci-hcd.4.auto failed with error -110
+unreferenced object 0xffff896282f6c000 (size 1024):
+  comm "swapper/0", pid 1, jiffies 4294893170
+  hex dump (first 32 bytes):
+    00 00 00 00 0b 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace (crc 8836a742):
+    [<ffffffff993495ed>] kmalloc_trace+0x29d/0x340
+    [<ffffffff9972f3b3>] acpi_processor_power_init+0xf3/0x1c0
+    [<ffffffff9972d263>] __acpi_processor_start+0xd3/0xf0
+    [<ffffffff9972d2bc>] acpi_processor_start+0x2c/0x50
+    [<ffffffff99805872>] really_probe+0xe2/0x480
+    [<ffffffff99805c98>] __driver_probe_device+0x78/0x160
+    [<ffffffff99805daf>] driver_probe_device+0x1f/0x90
+    [<ffffffff9980601e>] __driver_attach+0xce/0x1c0
+    [<ffffffff99803170>] bus_for_each_dev+0x70/0xc0
+    [<ffffffff99804822>] bus_add_driver+0x112/0x210
+    [<ffffffff99807245>] driver_register+0x55/0x100
+    [<ffffffff9aee4acb>] acpi_processor_driver_init+0x3b/0xc0
+    [<ffffffff990012d1>] do_one_initcall+0x41/0x300
+    [<ffffffff9ae7c4b0>] kernel_init_freeable+0x320/0x470
+    [<ffffffff99b231f6>] kernel_init+0x16/0x1b0
+    [<ffffffff99042e6d>] ret_from_fork+0x2d/0x50
 
-This seems to be related to LPM (Link Power Management), and disabling it
-turns USB into reliable working state.
+Fix this by freeing the CPU idle device after unregistering it.
 
-As per AM62 reference manual:
-
-> 4.8.2.1 USB2SS Unsupported Features
->
-> The following features are not supported on this family of devices:
-> ...
-> - USB 2.0 ECN: Link Power Management (LPM)
-> ...
-
-Fixes: 2240f96cf3cd ("arm64: dts: ti: k3-am62-main: Add support for USB")
-Signed-off-by: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
-Reviewed-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-Reviewed-by: Roger Quadros <rogerq@ti.com>
-Link: https://lore.kernel.org/r/20240209130213.38908-1-andrejs.cainikovs@gmail.com
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Fixes: 3d339dcbb56d ("cpuidle / ACPI : move cpuidle_device field out of the acpi_processor_power structure")
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/acpi/processor_idle.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-index e5c64c86d1d5a..c1ace4a376d17 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-@@ -623,6 +623,8 @@ usb0: usb@31000000 {
- 			interrupt-names = "host", "peripheral";
- 			maximum-speed = "high-speed";
- 			dr_mode = "otg";
-+			snps,usb2-gadget-lpm-disable;
-+			snps,usb2-lpm-disable;
- 		};
- 	};
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index 55437f5e0c3ae..bd6a7857ce058 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -1430,6 +1430,8 @@ int acpi_processor_power_exit(struct acpi_processor *pr)
+ 		acpi_processor_registered--;
+ 		if (acpi_processor_registered == 0)
+ 			cpuidle_unregister_driver(&acpi_idle_driver);
++
++		kfree(dev);
+ 	}
  
-@@ -646,6 +648,8 @@ usb1: usb@31100000 {
- 			interrupt-names = "host", "peripheral";
- 			maximum-speed = "high-speed";
- 			dr_mode = "otg";
-+			snps,usb2-gadget-lpm-disable;
-+			snps,usb2-lpm-disable;
- 		};
- 	};
- 
+ 	pr->flags.power_setup_done = 0;
 -- 
 2.43.0
 
