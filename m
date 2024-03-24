@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 794C4888406
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:27:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AED3A888408
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34DD5285CBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:27:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F4EDB2031D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22701A437A;
-	Sun, 24 Mar 2024 22:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9D2139CF9;
+	Sun, 24 Mar 2024 22:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lD/nE7s2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K9iS4LRa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F171A435E;
-	Sun, 24 Mar 2024 22:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B906F506;
+	Sun, 24 Mar 2024 22:43:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320202; cv=none; b=IExBSY+7Gf8IOk273MiTS0j7Pw1/BiWN+sYU1JU+kS7aAEvigKxN7XTOjUkAr011VXo3OKXPUhtED1Mstqm8JMEdgY6TnW0DgKzh38GEPGXTN0RTqQC7WDnPtdZiNxGiwklx5JDNzrt7OBxA++DHNBtNrEwPFID8EfbQfKiwfh0=
+	t=1711320203; cv=none; b=hdh7vBe1QaB5cir8iqM0xFhIng6KM8VchDStU5LwRJpRmo2QDCcfF+9KX7KBTUIs/jQO/7e7/u8cZxhVP2/aDnd5/CQzB8FqGwOI+z+jjZjigLKBTs0nTR9fUcJ34vdGwOSuxEft+5J4qUtq4IBFl0zketOwjK1WYrUmP/CB4cY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320202; c=relaxed/simple;
-	bh=7OARqTesKM/jiOLpZPeVkEL/uYEhr73hABYHiTOiYjI=;
+	s=arc-20240116; t=1711320203; c=relaxed/simple;
+	bh=Wjn6ahfpV7yn/8rD5L4qV2HHdeT2hQ8Tt+KFgMreko0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ifBgOBmtDyTVVbzkfyPb3g4ZbbJG5Q3jra68y57bY7w8CxCTZ0GVsq6itsJTpmy4IFkTAjAMTv0e4i8bNJWC/8bdFynowqXrErVJ3ymuBOcBCJVLcar/vC1lUejjM7C44aq84U/xBfolBvpiGrr2G7VrhOF/CzVC/gJ1XwpHFMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lD/nE7s2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19F8DC433C7;
-	Sun, 24 Mar 2024 22:43:21 +0000 (UTC)
+	 MIME-Version; b=dtGxnoCkR5bo0YdRCavb2WYndpJdn5Y06zpUxDm1EkJllSGTGLglh3Ssl6ctMKH38heO/AQXCGormUFToFUzFMMLhjaWoVyoctFFhu+af+R5UTL4zoX4E/+H6nhN3LTLxb2GFT9i+Q7iHQXn95xyB9WO9SpsejQBJWNLWr6KeCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K9iS4LRa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ADB0C433F1;
+	Sun, 24 Mar 2024 22:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320201;
-	bh=7OARqTesKM/jiOLpZPeVkEL/uYEhr73hABYHiTOiYjI=;
+	s=k20201202; t=1711320202;
+	bh=Wjn6ahfpV7yn/8rD5L4qV2HHdeT2hQ8Tt+KFgMreko0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lD/nE7s2XVKmOWcb+ulcNeFf9hRMCnFP+g1vAomI/2byBZDPZXBUgL68fxKDofmiz
-	 uivDiZuaZVCX14fZ+o2nDyQCZx/L7axv9hUC/IjV6UlWq5EJFbNIhYUduKdnesQV8Z
-	 k3UH6C5a236gE/8eQ7csUmQjlx0XTf3e+UPCpnznn1f4tITO2X3lX5uZlzY5uPjNy5
-	 JqVE4rpExwStKBeiOikXLXkBbPv0jijCEAdQBN1OVnu6KzSo5xNwPd5pzfE7cZKQrd
-	 semg7yg6qfq60N9XtFSg0/LZS1qsVjoSISDS2gHPRjcZkEpW0oMORiwTacxvVLTteC
-	 MY3LCebU+1ICA==
+	b=K9iS4LRabGNK0US0cmkL2cUoB5a81RpY68X6yzZHhbGdmrz/Dm4FQbdnDfXzOn5m+
+	 M4b14USdIXTzBv7IVvSpy+NQEE+bZhxcQ5+vsaDvU2dEH73TY5CyC42xeDh1Yc03y7
+	 dyRmn09QgEWInhdJXsjniynYuwJZagzskQEqYnS2c5rJ18BSTliIZTnWoFaxRe1pf7
+	 RfFLH3EQP1LARAHjDK5AnoEbmg4KFvP5pZa8EgBlGuX6orfDB87zpz0gMLUo7Dg27i
+	 LNXYVUb5UfG25IxlExD5rxtak0fNHUB6EEUlWuleiHpGAfyl36T0YbZDfwNcHezR6/
+	 LqNUVLhScjcvw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-	Tomasz Figa <tfiga@chromium.org>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Matthew Brost <matthew.brost@intel.com>,
+	Mika Kuoppala <mika.kuoppala@linux.intel.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 509/715] media: usbtv: Remove useless locks in usbtv_video_free()
-Date: Sun, 24 Mar 2024 18:31:28 -0400
-Message-ID: <20240324223455.1342824-510-sashal@kernel.org>
+Subject: [PATCH 6.8 510/715] drm/xe: Fix ref counting leak on page fault
+Date: Sun, 24 Mar 2024 18:31:29 -0400
+Message-ID: <20240324223455.1342824-511-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,53 +63,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+From: Matthew Brost <matthew.brost@intel.com>
 
-[ Upstream commit 65e6a2773d655172143cc0b927cdc89549842895 ]
+[ Upstream commit f7da398935f7ddabf1a098714593e032c875cd74 ]
 
-Remove locks calls in usbtv_video_free() because
-are useless and may led to a deadlock as reported here:
-https://syzkaller.appspot.com/x/bisect.txt?x=166dc872180000
-Also remove usbtv_stop() call since it will be called when
-unregistering the device.
+If a page fault occurs on VM not in fault a ref can be leaked. Fix this.
 
-Before 'c838530d230b' this issue would only be noticed if you
-disconnect while streaming and now it is noticeable even when
-disconnecting while not streaming.
-
-Fixes: c838530d230b ("media: media videobuf2: Be more flexible on the number of queue stored buffers")
-Fixes: f3d27f34fdd7 ("[media] usbtv: Add driver for Fushicai USBTV007 video frame grabber")
-
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-[hverkuil: fix minor spelling mistake in log message]
+Fixes: dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
+Signed-off-by: Matthew Brost <matthew.brost@intel.com>
+Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240301041036.238471-1-matthew.brost@intel.com
+(cherry picked from commit 27b5a3f237fe66dbf2288c2b50973aee8a427e41)
+Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/usbtv/usbtv-video.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/gpu/drm/xe/xe_gt_pagefault.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/usbtv/usbtv-video.c b/drivers/media/usb/usbtv/usbtv-video.c
-index 62a583040cd48..702f1c8bd2ab3 100644
---- a/drivers/media/usb/usbtv/usbtv-video.c
-+++ b/drivers/media/usb/usbtv/usbtv-video.c
-@@ -963,15 +963,8 @@ int usbtv_video_init(struct usbtv *usbtv)
+diff --git a/drivers/gpu/drm/xe/xe_gt_pagefault.c b/drivers/gpu/drm/xe/xe_gt_pagefault.c
+index 73f08f1924df2..e2cf1759527c6 100644
+--- a/drivers/gpu/drm/xe/xe_gt_pagefault.c
++++ b/drivers/gpu/drm/xe/xe_gt_pagefault.c
+@@ -146,10 +146,12 @@ static int handle_pagefault(struct xe_gt *gt, struct pagefault *pf)
+ 	/* ASID to VM */
+ 	mutex_lock(&xe->usm.lock);
+ 	vm = xa_load(&xe->usm.asid_to_vm, pf->asid);
+-	if (vm)
++	if (vm && xe_vm_in_fault_mode(vm))
+ 		xe_vm_get(vm);
++	else
++		vm = NULL;
+ 	mutex_unlock(&xe->usm.lock);
+-	if (!vm || !xe_vm_in_fault_mode(vm))
++	if (!vm)
+ 		return -EINVAL;
  
- void usbtv_video_free(struct usbtv *usbtv)
- {
--	mutex_lock(&usbtv->vb2q_lock);
--	mutex_lock(&usbtv->v4l2_lock);
--
--	usbtv_stop(usbtv);
- 	vb2_video_unregister_device(&usbtv->vdev);
- 	v4l2_device_disconnect(&usbtv->v4l2_dev);
- 
--	mutex_unlock(&usbtv->v4l2_lock);
--	mutex_unlock(&usbtv->vb2q_lock);
--
- 	v4l2_device_put(&usbtv->v4l2_dev);
- }
+ retry_userptr:
 -- 
 2.43.0
 
