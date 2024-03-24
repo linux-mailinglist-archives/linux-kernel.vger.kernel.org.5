@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-116108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8267588994D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:07:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C45D58895A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:35:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3F261C308F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:07:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BC64B34C05
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE78E229BF6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE34181D04;
 	Mon, 25 Mar 2024 03:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EYbFzwWg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nIejtj2H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB36179654;
-	Sun, 24 Mar 2024 23:40:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFB6179943;
+	Sun, 24 Mar 2024 23:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323610; cv=none; b=XNa/pwLYG0obvW+gBAEUXshKbHJvHLJTht+zSX9lspxhwbcvjj+GRkBf7QgD2Ya7aXRQhPIVuh4nsXpvjifQPyp48lTp6WmjhiuKC3Ul5Dc7Vp5+vyDkcDPdRAxxeYn8H4l4TTXUO2++1HfKu2h+YkJYynjKPP7d6tojK8zUP2s=
+	t=1711323611; cv=none; b=XGVVjgRRjcrNKzO0Czf3aRQ0C9OkLhFhIYd+u2umcPG59oSYp7u8hmy5X502RdTe2WxJukrgtOWQv/M8XgXZGSZKa7xRZehcBWN9Suz7ZnEkl1Ve/e+pPjXtDmNCyEmzWYEKxsb84ofO44XMSzXGEGfAji/5el+uHTNKeRH30iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323610; c=relaxed/simple;
-	bh=o6El1tKnt4Ehg7Yqmasp327IhVWwumJhRElCNUA259s=;
+	s=arc-20240116; t=1711323611; c=relaxed/simple;
+	bh=N9J+Q87Gpl6PopGY52TYfWuXItc8bHDolFg3pSYC4uA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gipFdpuh4vTSx1gtqgYjDKLHoBX2dXsF9Ex0IUGCLvm4U84TPFPzIJSqhz4rvFO0+CsTNpoa4Z+x3WQ9FCHrW35uY3c+8r1uaKizqTHNS5LaAQCrmUTvN3NCTUOYvvSwOtj87nPx4CLOFQ4ZB53oCgnj/7s4go4SZ+XWylAHikA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EYbFzwWg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BCA6C43390;
-	Sun, 24 Mar 2024 23:40:07 +0000 (UTC)
+	 MIME-Version; b=inT4Yw9coeBbtDxnN1LwoodY2zzF6vUB6SNYeShbsdeQA7+O6zXq+sfcKUGa41kT7jt8tedP8TmsvrV0r7hIGsvhwKUatV7R8Ka5Xc/0kHQFdlpQS8C2fz1Rae84x53xfZn1IvKeCQhkmGEWZ0kaDcG2yGoBuJQYvs64dc3IiZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nIejtj2H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C9A9C43394;
+	Sun, 24 Mar 2024 23:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323608;
-	bh=o6El1tKnt4Ehg7Yqmasp327IhVWwumJhRElCNUA259s=;
+	s=k20201202; t=1711323609;
+	bh=N9J+Q87Gpl6PopGY52TYfWuXItc8bHDolFg3pSYC4uA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EYbFzwWgNlq0sUGgqTHR013/SZDWDlXXAuEpOvSshppJ/QUT3x6Vf9QJoq4BB47r2
-	 kA4Dp3Pts0/VF16XM2xvWUHKUJmqOaZQ+K6XTiQoQpGhOXuYsIf+py8X4uFdfLEjfs
-	 Y+IuLUxeOxLIQ6zPn17zU+rvwRjC6+2OJEiWfuZuvB73V+/VFLLCNksAgRLlZkXdsh
-	 fAkFEUtWEH8wfPDb+BLS+Iuf2YCTaF/uUqUTzUn+/lcn4GkkhVLnu67IHducFipOl8
-	 sWQMlI30fmTljPdDTzh2sthl6iTmawkPpncGHK+vHjS7bqsEuw1gU06vFWCm2XHh7S
-	 SVI3FjBdOFbmA==
+	b=nIejtj2HxIOzRyS2XObCvb4sku/uec0wHOtXq4fGuXjeFqMdS2E2EbMq6GeDyTt4V
+	 4qy7XgTfWFv7NCTGdgfZYL5sQwy+EtfqAmL1hsz00JbL7lvX8+AG6WVaHwb9TKOEu2
+	 /MvVBfcvkZ81EJydFxS3ea+ar+dPVfO7bMnSj4m562WrXGcbnLn9dNebinmQdXkSTh
+	 jfYVxl31hLxLsXfQAnP8QIu41iIm2QnwKcRVMwAsyIwPwWSWq+0YKh2hoXXmp1w6ab
+	 viYVUMt9REXhP8EP1/dZpmpMTES3yYvHKaJp+EBu/TivophXyYI71GWYpmCxT6JzJR
+	 VyaOYMIdK1/RQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Fei Shao <fshao@chromium.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+Cc: Marek Vasut <marex@denx.de>,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <dan.carpenter@oracle.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 315/317] spi: spi-mt65xx: Fix NULL pointer access in interrupt handler
-Date: Sun, 24 Mar 2024 19:34:55 -0400
-Message-ID: <20240324233458.1352854-316-sashal@kernel.org>
+Subject: [PATCH 5.15 316/317] regmap: Add missing map->bus check
+Date: Sun, 24 Mar 2024 19:34:56 -0400
+Message-ID: <20240324233458.1352854-317-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,59 +64,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Fei Shao <fshao@chromium.org>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit a20ad45008a7c82f1184dc6dee280096009ece55 ]
+[ Upstream commit 5c422f0b970d287efa864b8390a02face404db5d ]
 
-The TX buffer in spi_transfer can be a NULL pointer, so the interrupt
-handler may end up writing to the invalid memory and cause crashes.
+The map->bus can be NULL here, add the missing NULL pointer check.
 
-Add a check to trans->tx_buf before using it.
-
-Fixes: 1ce24864bff4 ("spi: mediatek: Only do dma for 4-byte aligned buffers")
-Signed-off-by: Fei Shao <fshao@chromium.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://msgid.link/r/20240321070942.1587146-2-fshao@chromium.org
+Fixes: d77e745613680 ("regmap: Add bulk read/write callbacks into regmap_config")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Mark Brown <broonie@kernel.org>
+To: linux-kernel@vger.kernel.org
+Link: https://lore.kernel.org/r/20220509003035.225272-1-marex@denx.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-mt65xx.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/base/regmap/regmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index 49acba1dea1e7..30aac6f093b21 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -659,17 +659,19 @@ static irqreturn_t mtk_spi_interrupt(int irq, void *dev_id)
- 		mdata->xfer_len = min(MTK_SPI_MAX_FIFO_SIZE, len);
- 		mtk_spi_setup_packet(master);
- 
--		cnt = mdata->xfer_len / 4;
--		iowrite32_rep(mdata->base + SPI_TX_DATA_REG,
--				trans->tx_buf + mdata->num_xfered, cnt);
-+		if (trans->tx_buf) {
-+			cnt = mdata->xfer_len / 4;
-+			iowrite32_rep(mdata->base + SPI_TX_DATA_REG,
-+					trans->tx_buf + mdata->num_xfered, cnt);
- 
--		remainder = mdata->xfer_len % 4;
--		if (remainder > 0) {
--			reg_val = 0;
--			memcpy(&reg_val,
--				trans->tx_buf + (cnt * 4) + mdata->num_xfered,
--				remainder);
--			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
-+			remainder = mdata->xfer_len % 4;
-+			if (remainder > 0) {
-+				reg_val = 0;
-+				memcpy(&reg_val,
-+					trans->tx_buf + (cnt * 4) + mdata->num_xfered,
-+					remainder);
-+				writel(reg_val, mdata->base + SPI_TX_DATA_REG);
-+			}
- 		}
- 
- 		mtk_spi_enable_transfer(master);
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index 6adb345866610..893b0615935e9 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -1836,7 +1836,7 @@ static int _regmap_raw_write_impl(struct regmap *map, unsigned int reg,
+ 				 map->format.reg_bytes +
+ 				 map->format.pad_bytes +
+ 				 val_len);
+-	else if (map->bus->gather_write)
++	else if (map->bus && map->bus->gather_write)
+ 		ret = map->bus->gather_write(map->bus_context, map->work_buf,
+ 					     map->format.reg_bytes +
+ 					     map->format.pad_bytes,
 -- 
 2.43.0
 
