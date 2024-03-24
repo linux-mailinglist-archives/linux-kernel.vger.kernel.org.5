@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18202888250
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:44:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA0E888252
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:44:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E4D71C2275D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:44:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B009428D213
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7877131BCD;
-	Sun, 24 Mar 2024 22:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B6417E3B5;
+	Sun, 24 Mar 2024 22:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OSpdP+0F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="feaTqofB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0567B131BA5;
-	Sun, 24 Mar 2024 22:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D865C8FE;
+	Sun, 24 Mar 2024 22:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320009; cv=none; b=qxqr6ZnHJL9NbdiUiP88AozMcSpwvCuxdnMfy7YwyJaF/heKQ08t8ooyXT87ZZFOoQ4AlIWhzX6Ykb0Kv6gPYmPDnPPRMccABGmv283ThgaL8KZ/JNe4OXv6jOJhn+PDBmycdaA/PxXijSNFSC6w6cl1oJKw+Ih/k+f8kwyIutQ=
+	t=1711320010; cv=none; b=OQN1RFRN9j2IgLNUHiHMSetXrMdS0BnU+QaTRb060HSHmH1MNJ6SPFTRdlOQ9L72zIZ5jCd+EaPo077BRRZJheDsx6Xe7hJhigkCdqwCt4pqUB0tR5ZBEW9iYO2U40up/cT/zLeYmvLtqbr2PyhnNFxpwEeiY0sbY3/SSsRrgUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320009; c=relaxed/simple;
-	bh=CgppWVbYSdfdH7pUfBvvux86ej8YyJiAHOmFHrzmnXI=;
+	s=arc-20240116; t=1711320010; c=relaxed/simple;
+	bh=36c3PdCk3dmv9ATi1Ur1ycwjHJ3q6K33jYl8d79ERfA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GHIheQECA/OzV1hxTqFJ81QT51zXXXuDhVPEYbWXJC7jnWz7jrEOkKkV01nXSVw3A+0anMaIc6J5NMiBiTjxNJMurHWC3+WSwR3xOD9gaijpI/GCncXVZD8/qRfZlxFzROmY0ME+k9JUmgcwa7GLH7orClWhy7Us6wSq7IlC08o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OSpdP+0F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E611C43399;
-	Sun, 24 Mar 2024 22:40:08 +0000 (UTC)
+	 MIME-Version; b=alYNFwntKb16zWvF4QltrjuR4Df1sdL7I0uYj0xzUs+vlbFwHrdzILK/Vie2qO/DtJ9uJk6wJDHx9IP2JeJ9oHeNfZ/ISVMfLb7eVBN8kquCNEdPBWo5qfDWpo+eiP0QqYfkCZS/tqPWzMBkc3e7ALGF4WIGIym6d8z+1FYTLA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=feaTqofB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2773AC433F1;
+	Sun, 24 Mar 2024 22:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320008;
-	bh=CgppWVbYSdfdH7pUfBvvux86ej8YyJiAHOmFHrzmnXI=;
+	s=k20201202; t=1711320009;
+	bh=36c3PdCk3dmv9ATi1Ur1ycwjHJ3q6K33jYl8d79ERfA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OSpdP+0FgNnBsb84NNj+RV+ZAv5gway4REsNXF+EcXn7JVFEBNRavNMcZBIFsx4kE
-	 DQhuVPutO+3KdpwKKg5DohE48UlPWNn56uO3RksBbUcmqkcCbUUUr2WITz1ln/wrR0
-	 frg+nI5PkYRpNxyfL2LeX7lyJdSpF6PEAaVek2P58gKkuuGBUteir99o7zOw9JPwzh
-	 GTsBGul+8qJ5T8DUuYduBhmDHzQ7F0yD9/ViQQmNJ+DQclRsP9lQNDHhGrseLnHFB+
-	 wwan61Cwdf6gCSTOpQpNGqfcEzWx9wIlF1jVWo28ASqkPlZfQWG0iYLta5U/i0eZZT
-	 yEGGH7qk+Gcyw==
+	b=feaTqofBFW+tTsRuBBb777SJH5+qCGCW6jfiAl257mXzabB7FeIckj50jBI2KQEZE
+	 gPw+UUhCj5/kEIUaXU64A6sdFWwUPmqf1Cwv7VH0Z7idsktZp0wSo4lgdZ2PSs1j3o
+	 wiPCKsBpMNhZ3lwhEuvArt4qd7EJYs05GKVPWUFCMdGOOzbJewPkcc7KBa+KidNWmN
+	 MihF4nH20FEpGgHmEXeVay7ZzO0dBToYOQAYv5IDKmaSvz7oBrEq5QjgGWFYc6Wcfx
+	 6LrmiPkF3RYps9CejMBCUUaJkw/i/sjVs3YAkLLKhXCKjvDYIkh9/o+1/eSQ5tMVkr
+	 XGJUW80RCmWdQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Pauli Virtanen <pav@iki.fi>,
-	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+Cc: Chen Ni <nichen@iscas.ac.cn>,
+	Simon Horman <horms@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 316/715] Bluetooth: fix use-after-free in accessing skb after sending it
-Date: Sun, 24 Mar 2024 18:28:15 -0400
-Message-ID: <20240324223455.1342824-317-sashal@kernel.org>
+Subject: [PATCH 6.8 317/715] sr9800: Add check for usbnet_get_endpoints
+Date: Sun, 24 Mar 2024 18:28:16 -0400
+Message-ID: <20240324223455.1342824-318-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,59 +63,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Pauli Virtanen <pav@iki.fi>
+From: Chen Ni <nichen@iscas.ac.cn>
 
-[ Upstream commit 947ec0d002dce8577b655793dcc6fc78d67b7cb6 ]
+[ Upstream commit 07161b2416f740a2cb87faa5566873f401440a61 ]
 
-hci_send_cmd_sync first sends skb and then tries to clone it.  However,
-the driver may have already freed the skb at that point.
+Add check for usbnet_get_endpoints() and return the error if it fails
+in order to transfer the error.
 
-Fix by cloning the sent_cmd cloned just above, instead of the original.
-
-Log:
-================================================================
-BUG: KASAN: slab-use-after-free in __copy_skb_header+0x1a/0x240
-..
-Call Trace: ..
- __skb_clone+0x59/0x2c0
- hci_cmd_work+0x3b3/0x3d0 [bluetooth]
- process_one_work+0x459/0x900
-..
-Allocated by task 129: ...
- __alloc_skb+0x1ae/0x220
- __hci_cmd_sync_sk+0x44c/0x7a0 [bluetooth]
- __hci_cmd_sync_status+0x24/0xb0 [bluetooth]
- set_cig_params_sync+0x778/0x7d0 [bluetooth]
-..
-Freed by task 0: ...
- kmem_cache_free+0x157/0x3c0
- __usb_hcd_giveback_urb+0x11e/0x1e0
- usb_giveback_urb_bh+0x1ad/0x2a0
- tasklet_action_common.isra.0+0x259/0x4a0
- __do_softirq+0x15b/0x5a7
-================================================================
-
-Fixes: 2615fd9a7c25 ("Bluetooth: hci_sync: Fix overwriting request callback")
-Signed-off-by: Pauli Virtanen <pav@iki.fi>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Fixes: 19a38d8e0aa3 ("USB2NET : SR9800 : One chip USB2.0 USB2NET SR9800 Device Driver Support")
+Link: https://lore.kernel.org/r/20240305075927.261284-1-nichen@iscas.ac.cn
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/sr9800.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 85a91c438d721..7d5334b529834 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -4185,7 +4185,7 @@ static void hci_send_cmd_sync(struct hci_dev *hdev, struct sk_buff *skb)
- 	if (hci_req_status_pend(hdev) &&
- 	    !hci_dev_test_and_set_flag(hdev, HCI_CMD_PENDING)) {
- 		kfree_skb(hdev->req_skb);
--		hdev->req_skb = skb_clone(skb, GFP_KERNEL);
-+		hdev->req_skb = skb_clone(hdev->sent_cmd, GFP_KERNEL);
- 	}
+diff --git a/drivers/net/usb/sr9800.c b/drivers/net/usb/sr9800.c
+index 143bd4ab160df..57947a5590cca 100644
+--- a/drivers/net/usb/sr9800.c
++++ b/drivers/net/usb/sr9800.c
+@@ -737,7 +737,9 @@ static int sr9800_bind(struct usbnet *dev, struct usb_interface *intf)
  
- 	atomic_dec(&hdev->cmd_cnt);
+ 	data->eeprom_len = SR9800_EEPROM_LEN;
+ 
+-	usbnet_get_endpoints(dev, intf);
++	ret = usbnet_get_endpoints(dev, intf);
++	if (ret)
++		goto out;
+ 
+ 	/* LED Setting Rule :
+ 	 * AABB:CCDD
 -- 
 2.43.0
 
