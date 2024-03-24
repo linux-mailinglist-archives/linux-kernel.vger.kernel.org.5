@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56E9D888321
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:01:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41281888323
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1227F2854C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:01:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2AB01F2209C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABBD18E0F0;
-	Sun, 24 Mar 2024 22:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66CC18E7E5;
+	Sun, 24 Mar 2024 22:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PkG1QYwp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l7/UeI8j"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEB818E0D2;
-	Sun, 24 Mar 2024 22:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C254F18E0EE;
+	Sun, 24 Mar 2024 22:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320089; cv=none; b=gN6NeN1SDJ1rhCiRi7ZgAZFUtFwGtbucwjhYHRQ6RkS4Pb7gy6W5wRGn3fJjzprRM2s0iTN82glItwl2j11avgi9Fo9B0ADDpU61vvZwxZKXqG94lzHTY+FK6woKQuBByaJqrDSjuRwaNbi9m74zO5zm9uPHsVOud4KGBfMIcBo=
+	t=1711320089; cv=none; b=XAGCEG3SCptoaF9bSql4g25rj0hpDvVOEaR8vQOkSjHpcJp6g+txCQiFUFlrP+EEiqtG/btT9pV/D2U2swsk4a7EhiuGDVyBJE7YwbtUSwR3/Ob+wtQA0XldyPr0RZo090NNmtW9wenTD2ZJUJAjbS6ISirQymYbGZXrk9Hx4N8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320089; c=relaxed/simple;
-	bh=tfC0CJv+EuNve4rNiL1lZoeJA6p65O56r/r2E6wkOnE=;
+	bh=YZPj3TCyeuHzFbALh1S/QKMJWCXWAsaZ839msyp0NqU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SJRB8BkCzV9blhgM9C9abwidt3PFxbeGaxZkvOC86Xi0kpIc7sGenuoLCwL3oNdhlP7U2iXWGrUopD6eEket2OCk8FIz0LTnmoQNV8zQheW3LBcgkBkXyR/qP0Fka+hVnihnx3V+qRYjq6gCnPpI+2LJaTuRoH7m4B4TL/rq1nE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PkG1QYwp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02AFFC433F1;
-	Sun, 24 Mar 2024 22:41:27 +0000 (UTC)
+	 MIME-Version; b=tUFCCGHVQscGesuUw7+E42BvJaj7CMWmiXzB+5RCuVh2Xn5oRNdat6cptqYFX+jMY6rirgyw8MWnKFlE/z3uS6EiYX+jk5b8LPayw0uOw/PNCal1TKKK1whRYbAHFteVIrRLSGVsgsCm2h68hvuOwRxdN06TI24/4tP8u55B4pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l7/UeI8j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6F08C43390;
+	Sun, 24 Mar 2024 22:41:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320088;
-	bh=tfC0CJv+EuNve4rNiL1lZoeJA6p65O56r/r2E6wkOnE=;
+	s=k20201202; t=1711320089;
+	bh=YZPj3TCyeuHzFbALh1S/QKMJWCXWAsaZ839msyp0NqU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PkG1QYwpYi+joAJ+FwvM9rRqrUpNzLrUCENP7svZMnpFbujCpjIGAwoSamTCwetR8
-	 u3NfZVwLqmlb1bv+G/n+TLwpCnZrd2u1oC668na40tLghQliisr6YDi6US4ujMTVUG
-	 XfadJOmjR1Em3uUHxyAY0FQxUL8X3MlGMufGajiF6wz2V36UVNrsCZ4tqME96dp1K4
-	 L/wrcmHhR7fuaHdw0RnPIfNCvcyYDACiXttpTTrvDi5lyt2lV9hcWmKgbUvzi498at
-	 BcyKHzB3CMcZ0KjdUC7n+pN/cpeTb3+l2rZYZVYvATT844lNq+Q8bDCPctvMg89p4O
-	 u9dfYADAWojuw==
+	b=l7/UeI8j2hXphPLcJWI05Z2hpgLkxElBihgWH+cz3beRTvK/UWQCM0h/I9vQJSc0e
+	 DaCYlCqIO0xHR7hqeq+tHi00TicrIHiQBaMzISKjs92/yO9lF89Nzvrh2+aXRLXxrL
+	 S429iYJXLCFhFHPt86NpaFtTGr3fC3bnAw6AyGK+Tr1zd91Qxr+TMH0pgawGEzDDo9
+	 WA04SuwAe02XnPWmrrE+cfIMTar1diws1y5gE7Sq2/EHZRmzLXiJV2zG6bY+FI5NNC
+	 LK4BPzpINeRnOdl47hJf2PcQldQss5+lNgSnY9oOF/F9fgk76aD1/fzyTX6P2N+Qcj
+	 amyW1DbTh254g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Rob Herring <robh@kernel.org>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Ezra Buehler <ezra.buehler@husqvarnagroup.com>,
+	Martin Kurbanov <mmkurbanov@salutedevices.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 397/715] media: dt-bindings: techwell,tw9900: Fix port schema ref
-Date: Sun, 24 Mar 2024 18:29:36 -0400
-Message-ID: <20240324223455.1342824-398-sashal@kernel.org>
+Subject: [PATCH 6.8 398/715] mtd: spinand: esmt: Extend IDs to 5 bytes
+Date: Sun, 24 Mar 2024 18:29:37 -0400
+Message-ID: <20240324223455.1342824-399-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,35 +63,66 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Rob Herring <robh@kernel.org>
+From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 
-[ Upstream commit c9cd7308d64b13741ee03be81836a324fc4d657d ]
+[ Upstream commit 4bd14b2fd8a83a2f5220ba4ef323f741e11bfdfd ]
 
-The port@0 node doesn't define any extra properties in the port or endpoint
-nodes, so the $ref should be to "/properties/port" instead as it restricts
-extra properties.
+According to the datasheets, the ESMT chips in question will return a 5
+byte long identification code where the last 3 bytes are the JEDEC
+continuation codes (7Fh). Although, I would have expected 4 continuation
+codes as Powerchip Semiconductor (C8h, corresponding to the parameter
+page data) is located in bank 5 of the JEDEC database.
 
-Fixes: 0f82ffa9a295 ("media: dt-bindings: media: i2c: Add bindings for TW9900")
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+By matching the full 5 bytes we can avoid clashes with GigaDevice NAND
+flashes.
+
+This fix allows the MT7688-based GARDENA smart Gateway to boot again.
+
+Fixes: aa08bf187f32 ("mtd: spinand: esmt: add support for F50D2G41KA")
+Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20240125200108.24374-3-ezra@easyb.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../devicetree/bindings/media/i2c/techwell,tw9900.yaml          | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/spi/esmt.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/techwell,tw9900.yaml b/Documentation/devicetree/bindings/media/i2c/techwell,tw9900.yaml
-index e37317f810722..c9673391afdbd 100644
---- a/Documentation/devicetree/bindings/media/i2c/techwell,tw9900.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/techwell,tw9900.yaml
-@@ -36,7 +36,7 @@ properties:
+diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
+index 31c439a557b18..4597a82de23a4 100644
+--- a/drivers/mtd/nand/spi/esmt.c
++++ b/drivers/mtd/nand/spi/esmt.c
+@@ -104,7 +104,8 @@ static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
  
-     properties:
-       port@0:
--        $ref: /schemas/graph.yaml#/$defs/port-base
-+        $ref: /schemas/graph.yaml#/properties/port
-         description: Analog input port
- 
-         properties:
+ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 	SPINAND_INFO("F50L1G41LB",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(1, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+@@ -113,7 +114,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 		     0,
+ 		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
+ 	SPINAND_INFO("F50D1G41LB",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+ 		     NAND_ECCREQ(1, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+@@ -122,7 +124,8 @@ static const struct spinand_info esmt_c8_spinand_table[] = {
+ 		     0,
+ 		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
+ 	SPINAND_INFO("F50D2G41KA",
+-		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51),
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x51, 0x7f,
++				0x7f, 0x7f),
+ 		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+ 		     NAND_ECCREQ(8, 512),
+ 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
 -- 
 2.43.0
 
