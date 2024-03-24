@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-113910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA587888751
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:56:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8DA9888750
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:56:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B8FEB24240
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:56:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83A37294391
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08079211D0A;
-	Sun, 24 Mar 2024 23:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92750211D04;
+	Sun, 24 Mar 2024 23:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KEU5E9eb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+hTCMTK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0A4149C57;
-	Sun, 24 Mar 2024 22:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2296149C5C;
+	Sun, 24 Mar 2024 22:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321004; cv=none; b=JtWXt1/WvwMoLVOTcxvMNb5yQt2XLK6mjGK3LcfKcfUBc4osckoPe8yiM+fpDxvymWeXdrMOY2iutudg6Y6no3UEG0EMEY/0bra8oHhKk/y4GiRF9PKdImDgNvILGNkyd2MsmXjxCjNfgrxsNlwKppSzSyFFxO78ilSmdE4itks=
+	t=1711321005; cv=none; b=Ry7llv1TW16bv4IiO+zHY/TNetTN572o7ZbUEqm8T/g1Y6avFA1rphMJaS9bXwCjiFRVqaDre/tdvo6TyCjsVcdkPPJjU3192cKMO3m4xkj0lp0rhBNZPnUgWprp8186xABNinMc/oRsB6YXfLgkSV2V8PK2viSPAQCQheqsKrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321004; c=relaxed/simple;
-	bh=H2hNMM2t2VNMgNBMv77uz2X9DJy8Qm3/iWWXUBFqYuc=;
+	s=arc-20240116; t=1711321005; c=relaxed/simple;
+	bh=j/uLWJi1N1qWK4ODXJnBPySHzNDtY9Iwe9qrdAKQqxo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iVVdzAFKbb/bWo+3njcUqldqkJXTbQ5TIGvrtmhj1/rBsqGPqrchVF9DgtirNLpPkmAxvTlj3tNPIyKteGmT+ToAEUlwT9QUfeGRivweeqFxp//bB1gWd0FzfUmk74mSZ5Vcc56NtfOXT62/SwpSiBM7sA3bBuxUoCvK09Q4E7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KEU5E9eb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E74DC433C7;
-	Sun, 24 Mar 2024 22:56:41 +0000 (UTC)
+	 MIME-Version; b=IageKZeHE3FxaKvaR17PLMsxd7YSwfLGQZZeQ8ldFHyADfeeNpHi+m3etbCfV+rXVZXQUCLZSmfZOjBuP6I78RZBLlDZhoz+k3bHn3EEZxKuTysmGRcniDnhw/YqRig4plzRbPSkZ0mTV0tKAqH7RiII1+Q0ztU1rNaS3sh31IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+hTCMTK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 254BDC43399;
+	Sun, 24 Mar 2024 22:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321002;
-	bh=H2hNMM2t2VNMgNBMv77uz2X9DJy8Qm3/iWWXUBFqYuc=;
+	s=k20201202; t=1711321003;
+	bh=j/uLWJi1N1qWK4ODXJnBPySHzNDtY9Iwe9qrdAKQqxo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KEU5E9eb1crG8P4iuxwSIeUuP7rrx83kLSSO/F107wb9Phyont72U+Nkdin9+YcYr
-	 8xO8SxIAug8XMJIRP8xIeecwPhyLV516sq7QbENSD/2BHeHlPrvc4xwPExJQlaSnxN
-	 RSr9dWXnTOcAIpJIsxtbhozB2kT662tJcBZqM7R14uyO2mRAsziOdLjewdf9nEt6Un
-	 TMpSsd/8J33VIFcJJ0Vwup7NaJerXcXJU7/8ZFWFif+ZpzfKVLODmu5X35lxdhNRX3
-	 AEaj5Vz9xa9PTOq6uQwsSZn6Xi94epeFCn54ne06I+63P2w/AIIe/L/WrCkUkQFdxy
-	 O08WtsqmqBBlQ==
+	b=g+hTCMTK38irp4yjo7aRexYKmahxneDJR0+SKeD7iiVoO8Hqk0msij/dZk6N5x2sp
+	 /BfvKKGydbBVYOS+PvVr4r9y6caZ6pOmczmPyaKQMwgdsrn+KkEuxxTp/shospS6UN
+	 ePPoZXoIRD3HBQM8Z1lE0OljJYBADpF7Qr6UqH8BHK0jmKNZO6tMloigMcMmL8A0yL
+	 fecJXi0w3sH5+Zs4dVDOZe+EkZ0s88FSLWzS+1RbdEWsmcah582cCZ4ahZiS/HOEKY
+	 iN7ICIMSdGZtAcJGwvjklBDQRJjrF+tPYATJRlRBs0iau7/JbsTP9xn15ziP1VkSA0
+	 5Vwm3/RtFZz9A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mustafa Ismail <mustafa.ismail@intel.com>,
-	Shiraz Saleem <shiraz.saleem@intel.com>,
-	Sindhu Devale <sindhu.devale@intel.com>,
+Cc: William Kucharski <william.kucharski@oracle.com>,
+	Bart Van Assche <bvanassche@acm.org>,
 	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 565/713] RDMA/irdma: Remove duplicate assignment
-Date: Sun, 24 Mar 2024 18:44:51 -0400
-Message-ID: <20240324224720.1345309-566-sashal@kernel.org>
+Subject: [PATCH 6.7 566/713] RDMA/srpt: Do not register event handler until srpt device is fully setup
+Date: Sun, 24 Mar 2024 18:44:52 -0400
+Message-ID: <20240324224720.1345309-567-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,45 +63,58 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mustafa Ismail <mustafa.ismail@intel.com>
+From: William Kucharski <william.kucharski@oracle.com>
 
-[ Upstream commit 926e8ea4b8dac84f6d14a4b60d0653f1f2ba9431 ]
+[ Upstream commit c21a8870c98611e8f892511825c9607f1e2cd456 ]
 
-Remove the unneeded assignment of the qp_num which is already
-set in irdma_create_qp().
+Upon rare occasions, KASAN reports a use-after-free Write
+in srpt_refresh_port().
 
-Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
-Link: https://lore.kernel.org/r/20240131233953.400483-1-sindhu.devale@intel.com
+This seems to be because an event handler is registered before the
+srpt device is fully setup and a race condition upon error may leave a
+partially setup event handler in place.
+
+Instead, only register the event handler after srpt device initialization
+is complete.
+
+Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
+Signed-off-by: William Kucharski <william.kucharski@oracle.com>
+Link: https://lore.kernel.org/r/20240202091549.991784-2-william.kucharski@oracle.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/irdma/verbs.c | 3 +--
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 0b046c061742b..12704efb7b19a 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -719,7 +719,6 @@ static int irdma_setup_kmode_qp(struct irdma_device *iwdev,
- 		info->rq_pa + (ukinfo->rq_depth * IRDMA_QP_WQE_MIN_SIZE);
- 	ukinfo->sq_size = ukinfo->sq_depth >> ukinfo->sq_shift;
- 	ukinfo->rq_size = ukinfo->rq_depth >> ukinfo->rq_shift;
--	ukinfo->qp_id = iwqp->ibqp.qp_num;
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 040234c01be4d..9632afbd727b6 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -3209,7 +3209,6 @@ static int srpt_add_one(struct ib_device *device)
  
- 	iwqp->max_send_wr = (ukinfo->sq_depth - IRDMA_SQ_RSVD) >> ukinfo->sq_shift;
- 	iwqp->max_recv_wr = (ukinfo->rq_depth - IRDMA_RQ_RSVD) >> ukinfo->rq_shift;
-@@ -944,7 +943,7 @@ static int irdma_create_qp(struct ib_qp *ibqp,
- 	iwqp->host_ctx.size = IRDMA_QP_CTX_SIZE;
+ 	INIT_IB_EVENT_HANDLER(&sdev->event_handler, sdev->device,
+ 			      srpt_event_handler);
+-	ib_register_event_handler(&sdev->event_handler);
  
- 	init_info.pd = &iwpd->sc_pd;
--	init_info.qp_uk_init_info.qp_id = iwqp->ibqp.qp_num;
-+	init_info.qp_uk_init_info.qp_id = qp_num;
- 	if (!rdma_protocol_roce(&iwdev->ibdev, 1))
- 		init_info.qp_uk_init_info.first_sq_wq = 1;
- 	iwqp->ctx_info.qp_compl_ctx = (uintptr_t)qp;
+ 	for (i = 1; i <= sdev->device->phys_port_cnt; i++) {
+ 		sport = &sdev->port[i - 1];
+@@ -3232,6 +3231,7 @@ static int srpt_add_one(struct ib_device *device)
+ 		}
+ 	}
+ 
++	ib_register_event_handler(&sdev->event_handler);
+ 	spin_lock(&srpt_dev_lock);
+ 	list_add_tail(&sdev->list, &srpt_dev_list);
+ 	spin_unlock(&srpt_dev_lock);
+@@ -3242,7 +3242,6 @@ static int srpt_add_one(struct ib_device *device)
+ 
+ err_port:
+ 	srpt_unregister_mad_agent(sdev, i);
+-	ib_unregister_event_handler(&sdev->event_handler);
+ err_cm:
+ 	if (sdev->cm_id)
+ 		ib_destroy_cm_id(sdev->cm_id);
 -- 
 2.43.0
 
