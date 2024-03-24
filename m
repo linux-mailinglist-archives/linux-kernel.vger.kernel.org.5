@@ -1,53 +1,55 @@
-Return-Path: <linux-kernel+bounces-113053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D195A888117
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:12:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D08E48893DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EDE11C2148F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:12:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CF6D1F29BA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6741448F7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0900145337;
 	Sun, 24 Mar 2024 22:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MHY00jqq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="diAeKqxg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572801448D9;
-	Sun, 24 Mar 2024 22:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D531448F6;
+	Sun, 24 Mar 2024 22:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319862; cv=none; b=XQ3MWu0nm7fXtt/wY8PzfNWPovkjvoU9/eMDIqBSgzQjjixYRe4nWWpsB1q+Oq+Ku5EWSaLHXXQdqe2OH4pbq2hbia+/YtH/j2rXFbXVrQgdY/waKmB/mi42swwCL6IePmk2lZUzT2MBZD1uXkpBjhnH2dIlFv3PGMTUjgkldo4=
+	t=1711319863; cv=none; b=jD7mP/afRRIfFene1F9AA8zR7ekt0Bpq4xdOhgI8WbxmZbjDZsxp+2HZVkfiSygCrcqx0TgIBvd/QAvgj29xplXxDYMVHYkTINOqEuoIE7W3clQqL9/nMQW1e4Vb43XScBtHHe3naWsRXYXyry7mKA8gBoPzymMbs8pRqCNof18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319862; c=relaxed/simple;
-	bh=U7UUfpnSunlKz2k+7C0ZDRf/QE5Hl7pDxKb9sSrtVZw=;
+	s=arc-20240116; t=1711319863; c=relaxed/simple;
+	bh=lrV3hF7pREKUALqHJGjU2QWD2BAkZOc4EaJoGgQ0cV0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rXxexc/75e7BE5R1kxhNaM0NM3nrZlr++l/l9bl6ghu1bs96r+yIwJBuwhGSG0aXi/8YR5+eBypuC+kzVh+IcrMsDsA0R23s8pY1YCWB2HZ1dPg8iVUSp9Ns0QktMSl3H8JYFmUrTUk9BLKQ5tMOAuLyV4DNNCFl81oapQ7gayY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MHY00jqq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7397BC43390;
-	Sun, 24 Mar 2024 22:37:41 +0000 (UTC)
+	 MIME-Version; b=p+JrkKjZBzcMtuLaGPIlhTv0LM5aymDFpqksq2OyGGIxa3hbP5tDmui4/YUUkf7HTRa2l0Bjb2jk3VqZNs6+8H5Hn/QcNyT9YRZa1gu0a8pww3KnpHsIE7xrGEcnaYcbBa73WqP7Zled6jDo2/SWlgwGJhwwnQ6hUiVivaXMR38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=diAeKqxg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41F01C43399;
+	Sun, 24 Mar 2024 22:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319862;
-	bh=U7UUfpnSunlKz2k+7C0ZDRf/QE5Hl7pDxKb9sSrtVZw=;
+	s=k20201202; t=1711319863;
+	bh=lrV3hF7pREKUALqHJGjU2QWD2BAkZOc4EaJoGgQ0cV0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MHY00jqqh2+xD9zV5lhTnLrd62JqMOLBc10EdCADxHLV9oplNPyf7J0Y7+TP6tdK2
-	 YR8R2AC1f3tCL/Xhzn+BSzHQ1WWl9EmQ+olGP8wpiSXirjt2WumIhdh/bGizQ6PR/X
-	 zoltIKYA1rK7XiPGWT6z0dRZ5itHHg3yWJL7JC/+0zcJEsv3P9lmOFWav05Mrs/1kp
-	 GfLcvQEr7oUGUCLDEy7iv9N1rwJwgGVOhPHXZ2uLMwBreuV1cULwN+M6ZqDn8vmEA8
-	 asbBuMtKLD46t10N4OHqsGA+w4djQH/lLMfN8Eexi2sRjI0F7GK1dTWwbuk0DPgyDx
-	 /JymRIKvUI6yg==
+	b=diAeKqxgKlP+a1M356wVloiBHSU3KDBnEunpG7SBJKR2LOgwFla2gKC9FEDmRxrxk
+	 T+eb2XpnnBDCLLfIYTHxjNg13SUFDGix7VVt96WtHSZbDb7CGrYTRICyAaIiuarbNv
+	 7rVscmvufO+1cGATP3TDwGKeaXNeSoPAXZnsJ3Q0Q+H0/i408l/xDDnotjfBfRlNVb
+	 G7rW40hAmJ1gshT+3RygPGaEGqEqnmNPDW791bDUW+xN8vIVvUjWpwACD/nkKuVU9w
+	 mRd1KqZ/WMmKvVK1d5ln+oVfwN4tswSlABn6vH1nRxg6c0+HmVztdyXMptxycK9k4P
+	 Ez5V6WZApIs3g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+Cc: Viktor Malik <vmalik@redhat.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Xu <dxu@dxuuu.xyz>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 166/715] pwm: sti: Fix capture for st,pwm-num-chan < st,capture-num-chan
-Date: Sun, 24 Mar 2024 18:25:45 -0400
-Message-ID: <20240324223455.1342824-167-sashal@kernel.org>
+Subject: [PATCH 6.8 167/715] tools/resolve_btfids: Refactor set sorting with types from btf_ids.h
+Date: Sun, 24 Mar 2024 18:25:46 -0400
+Message-ID: <20240324223455.1342824-168-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -57,62 +59,147 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Viktor Malik <vmalik@redhat.com>
 
-[ Upstream commit 5f623835584f1c8d1030666796f40c47a448ce0b ]
+[ Upstream commit 9707ac4fe2f5bac6406d2403f8b8a64d7b3d8e43 ]
 
-The driver only used the number of pwm channels to set the pwm_chip's
-npwm member. The result is that if there are more capture channels than
-PWM channels specified in the device tree, only a part of the capture
-channel is usable. Fix that by passing the bigger channel count to the
-pwm framework. This makes it possible that the .apply() callback is
-called with .hwpwm >= pwm_num_devs, catch that case and return an error
-code.
+Instead of using magic offsets to access BTF ID set data, leverage types
+from btf_ids.h (btf_id_set and btf_id_set8) which define the actual
+layout of the data. Thanks to this change, set sorting should also
+continue working if the layout changes.
 
-Fixes: c97267ae831d ("pwm: sti: Add PWM capture callback")
-Link: https://lore.kernel.org/r/20240204212043.2951852-2-u.kleine-koenig@pengutronix.de
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+This requires to sync the definition of 'struct btf_id_set8' from
+include/linux/btf_ids.h to tools/include/linux/btf_ids.h. We don't sync
+the rest of the file at the moment, b/c that would require to also sync
+multiple dependent headers and we don't need any other defs from
+btf_ids.h.
+
+Signed-off-by: Viktor Malik <vmalik@redhat.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Daniel Xu <dxu@dxuuu.xyz>
+Link: https://lore.kernel.org/bpf/ff7f062ddf6a00815fda3087957c4ce667f50532.1707223196.git.vmalik@redhat.com
+Stable-dep-of: 903fad439466 ("tools/resolve_btfids: Fix cross-compilation to non-host endianness")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-sti.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ tools/bpf/resolve_btfids/main.c | 35 ++++++++++++++++++++-------------
+ tools/include/linux/btf_ids.h   |  9 +++++++++
+ 2 files changed, 30 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/pwm/pwm-sti.c b/drivers/pwm/pwm-sti.c
-index 6cf55cf34d39f..69b1113c6b821 100644
---- a/drivers/pwm/pwm-sti.c
-+++ b/drivers/pwm/pwm-sti.c
-@@ -395,8 +395,17 @@ static int sti_pwm_capture(struct pwm_chip *chip, struct pwm_device *pwm,
- static int sti_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 			 const struct pwm_state *state)
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 27a23196d58e1..32634f00abba4 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -70,6 +70,7 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <errno.h>
++#include <linux/btf_ids.h>
+ #include <linux/rbtree.h>
+ #include <linux/zalloc.h>
+ #include <linux/err.h>
+@@ -78,7 +79,7 @@
+ #include <subcmd/parse-options.h>
+ 
+ #define BTF_IDS_SECTION	".BTF_ids"
+-#define BTF_ID		"__BTF_ID__"
++#define BTF_ID_PREFIX	"__BTF_ID__"
+ 
+ #define BTF_STRUCT	"struct"
+ #define BTF_UNION	"union"
+@@ -161,7 +162,7 @@ static int eprintf(int level, int var, const char *fmt, ...)
+ 
+ static bool is_btf_id(const char *name)
  {
-+	struct sti_pwm_chip *pc = to_sti_pwmchip(chip);
-+	struct sti_pwm_compat_data *cdata = pc->cdata;
-+	struct device *dev = pc->dev;
- 	int err;
+-	return name && !strncmp(name, BTF_ID, sizeof(BTF_ID) - 1);
++	return name && !strncmp(name, BTF_ID_PREFIX, sizeof(BTF_ID_PREFIX) - 1);
+ }
  
-+	if (pwm->hwpwm >= cdata->pwm_num_devs) {
-+		dev_err(dev, "device %u is not valid for pwm mode\n",
-+			pwm->hwpwm);
-+		return -EINVAL;
-+	}
+ static struct btf_id *btf_id__find(struct rb_root *root, const char *name)
+@@ -441,7 +442,7 @@ static int symbols_collect(struct object *obj)
+ 		 * __BTF_ID__TYPE__vfs_truncate__0
+ 		 * prefix =  ^
+ 		 */
+-		prefix = name + sizeof(BTF_ID) - 1;
++		prefix = name + sizeof(BTF_ID_PREFIX) - 1;
+ 
+ 		/* struct */
+ 		if (!strncmp(prefix, BTF_STRUCT, sizeof(BTF_STRUCT) - 1)) {
+@@ -649,19 +650,18 @@ static int cmp_id(const void *pa, const void *pb)
+ static int sets_patch(struct object *obj)
+ {
+ 	Elf_Data *data = obj->efile.idlist;
+-	int *ptr = data->d_buf;
+ 	struct rb_node *next;
+ 
+ 	next = rb_first(&obj->sets);
+ 	while (next) {
+-		unsigned long addr, idx;
++		struct btf_id_set8 *set8;
++		struct btf_id_set *set;
++		unsigned long addr, off;
+ 		struct btf_id *id;
+-		int *base;
+-		int cnt;
+ 
+ 		id   = rb_entry(next, struct btf_id, rb_node);
+ 		addr = id->addr[0];
+-		idx  = addr - obj->efile.idlist_addr;
++		off = addr - obj->efile.idlist_addr;
+ 
+ 		/* sets are unique */
+ 		if (id->addr_cnt != 1) {
+@@ -670,14 +670,21 @@ static int sets_patch(struct object *obj)
+ 			return -1;
+ 		}
+ 
+-		idx = idx / sizeof(int);
+-		base = &ptr[idx] + (id->is_set8 ? 2 : 1);
+-		cnt = ptr[idx];
++		if (id->is_set) {
++			set = data->d_buf + off;
++			qsort(set->ids, set->cnt, sizeof(set->ids[0]), cmp_id);
++		} else {
++			set8 = data->d_buf + off;
++			/*
++			 * Make sure id is at the beginning of the pairs
++			 * struct, otherwise the below qsort would not work.
++			 */
++			BUILD_BUG_ON(set8->pairs != &set8->pairs[0].id);
++			qsort(set8->pairs, set8->cnt, sizeof(set8->pairs[0]), cmp_id);
++		}
+ 
+ 		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
+-			 (idx + 1) * sizeof(int), cnt, id->name);
+-
+-		qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(int), cmp_id);
++			 off, id->is_set ? set->cnt : set8->cnt, id->name);
+ 
+ 		next = rb_next(next);
+ 	}
+diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
+index 2f882d5cb30f5..72535f00572f6 100644
+--- a/tools/include/linux/btf_ids.h
++++ b/tools/include/linux/btf_ids.h
+@@ -8,6 +8,15 @@ struct btf_id_set {
+ 	u32 ids[];
+ };
+ 
++struct btf_id_set8 {
++	u32 cnt;
++	u32 flags;
++	struct {
++		u32 id;
++		u32 flags;
++	} pairs[];
++};
 +
- 	if (state->polarity != PWM_POLARITY_NORMAL)
- 		return -EINVAL;
+ #ifdef CONFIG_DEBUG_INFO_BTF
  
-@@ -646,7 +655,7 @@ static int sti_pwm_probe(struct platform_device *pdev)
- 
- 	pc->chip.dev = dev;
- 	pc->chip.ops = &sti_pwm_ops;
--	pc->chip.npwm = pc->cdata->pwm_num_devs;
-+	pc->chip.npwm = max(cdata->pwm_num_devs, cdata->cpt_num_devs);
- 
- 	for (i = 0; i < cdata->cpt_num_devs; i++) {
- 		struct sti_cpt_ddata *ddata = &cdata->ddata[i];
+ #include <linux/compiler.h> /* for __PASTE */
 -- 
 2.43.0
 
