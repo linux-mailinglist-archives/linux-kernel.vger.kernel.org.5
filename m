@@ -1,53 +1,55 @@
-Return-Path: <linux-kernel+bounces-113737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC457888654
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:29:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990D688A0FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:08:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19E891C2557B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:29:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FCB6B2C4CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F4612B14C;
-	Sun, 24 Mar 2024 22:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DD821087A;
+	Mon, 25 Mar 2024 02:37:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xw/L3Nds"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rk3QGSJ5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E701DF116;
-	Sun, 24 Mar 2024 22:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B981DF78A;
+	Sun, 24 Mar 2024 22:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320746; cv=none; b=SohsFxRurIiN1LkNse/ODVNhitX9gcs228Yx2o01iz5aRl4APDGl3/2hcJGVtReLJUFqLPPWv1jMihFVnfBL+iuByD3snC93qZIcJ91vT0GDmVqGbhLO+FRyNYXvg9Ao5f07RFV3PPJC0q891OuqBKQ2a1WnwOGC+4OIz1EGslY=
+	t=1711320748; cv=none; b=Gg9E+UtyubiVw5RFceWNi9tdfM96hURIU2LIT/xuYZCTsDsL8ifDKI/uGhDGPWGft/g5ZFBqBuaL08Gm1NFJ0P7UW82nMXWylnLDv6GXl/VBXH66Wh6rjSKsC/6Ex7f6H25ykywGijuWOoygOVqtXSeu9YkI7rByoHNJ1Hxoepo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320746; c=relaxed/simple;
-	bh=7eHIBbjxTnJNAvBe7y538hijttessdfvGCLOEmFqKzo=;
+	s=arc-20240116; t=1711320748; c=relaxed/simple;
+	bh=PSfaJaGHfeh9RYxvNOEV3FNhCqWgQCV/Di0zLdoOfeM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RhH6wPB0ZRzOzIt0eIpL3ipgbm+OjFLjjUfgfkScGEEcuSH0/14i3FWkWaKoo8B9/hmzuq5mFrqp+ozePcDlLTlmvoroz1Xt6WtvjIWCIy/pa/g4qUUmlTHx80+G3/e8608tkFFLQuUoX/SH7JDj99/yOQUzzTKgDv+Df+M7Q50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xw/L3Nds; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC128C433F1;
-	Sun, 24 Mar 2024 22:52:25 +0000 (UTC)
+	 MIME-Version; b=UREnKvR3lW8IYG7BJTObhLvgufBdKR2Tg9ePfWUWJle+9LCdfPD8bIhY38EoI8SiaO2S7pbbGf+iKmlHd02Y4cu2oXQ907m1LG9gsnDXSvJohi8PqXmNBxoxDmZT3ka1xjrDxC6lOWVPeKvObpKBIKijVI/cl68g2s96PrUzK/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rk3QGSJ5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBE6EC433C7;
+	Sun, 24 Mar 2024 22:52:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320746;
-	bh=7eHIBbjxTnJNAvBe7y538hijttessdfvGCLOEmFqKzo=;
+	s=k20201202; t=1711320747;
+	bh=PSfaJaGHfeh9RYxvNOEV3FNhCqWgQCV/Di0zLdoOfeM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Xw/L3NdsvnXbYLORT1fC4q2VRTKnCzw4UIAv/xTXVgw7hudzCuv5QGsGrkx3kRA9V
-	 zOZkZoGbAwsuUtevdELl2IdQYCVqbETBiAqv7lb84u3OEvAHvvgQ4eFSaXKOl1b/n/
-	 kkINSv/zyhtSg1KjA1M78BJiCTWXPiJOyvu8YnwdQCqesu/sLAxZfS6JBISn6fNbEi
-	 2xMgVdRTg0h2wRnnbszKj4adAAW1Ml4UXEZbPYzRiohaCq2lZHXjDAD3+JrLThb9Nm
-	 xlHZaCfzPCNEiJ8lhWBEM4nC3w48QFxNX9UFjGEvwlF1SG1kGxYbfuRxQ526P8NYtp
-	 hu9dKZCmq+QHw==
+	b=rk3QGSJ5wGHaSdINwE/zsQMLG3OEH+ZgqZ2KJ0wf3wOSqxbs7LUxO7cwd7TBBsUzQ
+	 qDPJu6zyR3A46A5j13v+8RlOUGtJeBrB/VLRzVeUjtFqQWXqPEJ4x1mvJPW5Rz87Wv
+	 ZmZzbLFKEvZuE6uj1FvVrVUdZdjPfs74aC4xZY3EqvJ0QPYuVrnQkcBMlIS8h8N/AO
+	 6qGFv9dDxfQQ38yMI7vXKRYu09IwBztLziEAbodca0re/2vQp6kcMChmDPn/LrsFOW
+	 w3CysMyRW0war4WnLCQTUrm/rCPdQ3aN/CchC3E1dpSzj2m/3bksf6uO62gx/EYz8T
+	 jmartopfm1bwA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 6.7 310/713] pstore: inode: Only d_invalidate() is needed
-Date: Sun, 24 Mar 2024 18:40:36 -0400
-Message-ID: <20240324224720.1345309-311-sashal@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.7 311/713] arm64: dts: allwinner: h6: Add RX DMA channel for SPDIF
+Date: Sun, 24 Mar 2024 18:40:37 -0400
+Message-ID: <20240324224720.1345309-312-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -61,63 +63,81 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit a43e0fc5e9134a46515de2f2f8d4100b74e50de3 ]
+[ Upstream commit 7b59348c11f3355e284d77bbe3d33632ddadcfc2 ]
 
-Unloading a modular pstore backend with records in pstorefs would
-trigger the dput() double-drop warning:
+The SPDIF hardware found on the H6 supports both transmit and receive
+functions. However it is missing the RX DMA channel.
 
-  WARNING: CPU: 0 PID: 2569 at fs/dcache.c:762 dput.part.0+0x3f3/0x410
+Add the SPDIF hardware block's RX DMA channel. Also remove the
+by-default pinmux, since the end device can choose to implement
+either or both functionalities.
 
-Using the combo of d_drop()/dput() (as mentioned in
-Documentation/filesystems/vfs.rst) isn't the right approach here, and
-leads to the reference counting problem seen above. Use d_invalidate()
-and update the code to not bother checking for error codes that can
-never happen.
-
-Suggested-by: Alexander Viro <viro@zeniv.linux.org.uk>
-Fixes: 609e28bb139e ("pstore: Remove filesystem records when backend is unregistered")
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: f95b598df419 ("arm64: dts: allwinner: Add SPDIF node for Allwinner H6")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Link: https://lore.kernel.org/r/20240127163247.384439-6-wens@kernel.org
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/pstore/inode.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 2 ++
+ arch/arm64/boot/dts/allwinner/sun50i-h6-tanix.dtsi      | 2 ++
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi            | 7 +++----
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
-index 4b4686c593996..4ca72b08d919a 100644
---- a/fs/pstore/inode.c
-+++ b/fs/pstore/inode.c
-@@ -306,7 +306,6 @@ int pstore_put_backend_records(struct pstore_info *psi)
- {
- 	struct pstore_private *pos, *tmp;
- 	struct dentry *root;
--	int rc = 0;
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+index 9ec49ac2f6fd5..381d58cea092d 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+@@ -291,6 +291,8 @@ sw {
+ };
  
- 	root = psinfo_lock_root();
- 	if (!root)
-@@ -316,11 +315,8 @@ int pstore_put_backend_records(struct pstore_info *psi)
- 		list_for_each_entry_safe(pos, tmp, &records_list, list) {
- 			if (pos->record->psi == psi) {
- 				list_del_init(&pos->list);
--				rc = simple_unlink(d_inode(root), pos->dentry);
--				if (WARN_ON(rc))
--					break;
--				d_drop(pos->dentry);
--				dput(pos->dentry);
-+				d_invalidate(pos->dentry);
-+				simple_unlink(d_inode(root), pos->dentry);
- 				pos->dentry = NULL;
- 			}
- 		}
-@@ -328,7 +324,7 @@ int pstore_put_backend_records(struct pstore_info *psi)
+ &spdif {
++	pinctrl-names = "default";
++	pinctrl-0 = <&spdif_tx_pin>;
+ 	status = "okay";
+ };
  
- 	inode_unlock(d_inode(root));
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix.dtsi
+index 4903d6358112d..855b7d43bc503 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix.dtsi
+@@ -166,6 +166,8 @@ &r_ir {
+ };
  
--	return rc;
-+	return 0;
- }
+ &spdif {
++	pinctrl-names = "default";
++	pinctrl-0 = <&spdif_tx_pin>;
+ 	status = "okay";
+ };
  
- /*
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index ca1d287a0a01d..d11e5041bae9a 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -406,6 +406,7 @@ spi1_cs_pin: spi1-cs-pin {
+ 				function = "spi1";
+ 			};
+ 
++			/omit-if-no-ref/
+ 			spdif_tx_pin: spdif-tx-pin {
+ 				pins = "PH7";
+ 				function = "spdif";
+@@ -655,10 +656,8 @@ spdif: spdif@5093000 {
+ 			clocks = <&ccu CLK_BUS_SPDIF>, <&ccu CLK_SPDIF>;
+ 			clock-names = "apb", "spdif";
+ 			resets = <&ccu RST_BUS_SPDIF>;
+-			dmas = <&dma 2>;
+-			dma-names = "tx";
+-			pinctrl-names = "default";
+-			pinctrl-0 = <&spdif_tx_pin>;
++			dmas = <&dma 2>, <&dma 2>;
++			dma-names = "rx", "tx";
+ 			status = "disabled";
+ 		};
+ 
 -- 
 2.43.0
 
