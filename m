@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B309A8898C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:49:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8175788987A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:40:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9854B3E70D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:39:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2A751C31D08
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76612384844;
-	Mon, 25 Mar 2024 03:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199A1264D89;
+	Mon, 25 Mar 2024 03:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PsP/89b9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hiCaoj0s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F86F1474A4;
-	Sun, 24 Mar 2024 23:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AA47146015;
+	Sun, 24 Mar 2024 23:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322080; cv=none; b=hETL+11fSSPBuN12jQ1Bv+QN/2zQcfUVonSBCL5NXHbWcJ7I4W+Semn8QdapZRdCZsOya+UcZiwQlkrqSJMoUu6nxv+zyOuIBbXEi0LXn7xBvwHCRBKgpkdk/dtkXz20E4wzlfb0/8LQ6nSYI5bA3/OhGZ/ty9BxWok74QGZ1LM=
+	t=1711322081; cv=none; b=FJW2dfrKBVBQ/Q1C6SndvnPWVP2Xq5vcKCTGeAgrgaRMSRCWlznCWw5SLO2HLWUPYDvON0BSDTxNp2ChRMHUR92mC2btMQJBJTnElJ1j3kNYAcsd0XwM6wfoSbc6w/glVh7nLr0yxaLxr5ITfiNfxhGmTJxYmOjnUx5T6cQo6P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322080; c=relaxed/simple;
-	bh=qzn366CElNlg9m2P1/pV3tCS4YAo8KKGyN8lBwYTbPI=;
+	s=arc-20240116; t=1711322081; c=relaxed/simple;
+	bh=CI5aKXSZgFc/eeP7euBsbtDOIK02Hte68IcEDoH60/U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qvgB3vj4MHtyGspkPzpoIQkGvVMGePN/vnyl2/ns7Og/qbUwcUGplltoDMyyo3ci4vMl6IM+8Ha82GeXg6Ff2BbrCBsmwO3Aw8ywDjtrNyxET5UbFeibQomXPMN4yVD9p2JUqUX4yHDjYMm40W0qH/5qsmBmADbEUSa+PeEuyzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PsP/89b9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BFC1C433F1;
-	Sun, 24 Mar 2024 23:14:39 +0000 (UTC)
+	 MIME-Version; b=qvwBapy4Fh2Gqe40TkMhxaPWSWk6aovSm+FSTdG1E043q/7cF6oP52rEk5ZoaZ+tl4P3HNjePdSUI+jknUeiDA8St8e7E2Xn0jKlWA+Rak0tMN0GF78CW3oRFz/ahxXySsJqvxydCarMQB0yM2TO+TPOtoaQ2mEhkppkUImdsoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hiCaoj0s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3427EC43394;
+	Sun, 24 Mar 2024 23:14:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322079;
-	bh=qzn366CElNlg9m2P1/pV3tCS4YAo8KKGyN8lBwYTbPI=;
+	s=k20201202; t=1711322080;
+	bh=CI5aKXSZgFc/eeP7euBsbtDOIK02Hte68IcEDoH60/U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PsP/89b9Ask0qPd3Yo4bt6jzyx6jaMy20ydZXfOog446Cl5UPLZ6ZM3oIflqcwZb6
-	 vqrW8xGKFTWY4Vh0aVt+wIjQNpZuNNpSEIql0JF92/1cDaAHYXqxr0REqrpM7ElgnW
-	 MJ+qorjEJwQfVbm4e92n7EMxTd7k4yU53/SYU5zB1bdT6uVg0TBU/dnM87Kx4bPGJH
-	 URDs6A9sw9z4Wig945W6PUoBpWy5XDdBj4jVl5oISa4zoETLRwxYLeky5bxJaTwqIy
-	 fuZyctxGNyalHLBAaQLlDFvPKJrgLPhBvm4NOSy6cksffnZDjYyggHTrJUBlisyE5a
-	 90FIejmpAeMbQ==
+	b=hiCaoj0sTF1JbGCHx8I7jEQXb5alS2TOa523biBwqF2UsFTG7Q+F8GHirUeS1MXLk
+	 PFH9jUpmFX35jfSJ+y/8SZfrdhvuKJcE9+kdkOaUIGtAEsK83aX0ZHJFDoYOtM28wS
+	 q6p12XARHAEZ/ydOJAlyLd7CC4uvPHpOglLULAT6iAfJ1XlGAXzKowCBbMzmYzsZ6W
+	 oPz304Fx+ylIaYDMqs09N8+NGLykZIjfIkfhkowY7ZSWArGxRCdCcB6V4bzGMAEdwv
+	 q7y/t+7MkwBwOj9p/qKwVCrTU1sM5I79wMKx5XMc0jRpyEFhm6HZRLsgeSqSeRi1DB
+	 5Kd/i1rCHDUOA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Armin Wolf <W_Armin@gmx.de>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Peter Robinson <pbrobinson@gmail.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Thierry Reding <treding@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 153/451] ACPI: processor_idle: Fix memory leak in acpi_processor_power_exit()
-Date: Sun, 24 Mar 2024 19:07:09 -0400
-Message-ID: <20240324231207.1351418-154-sashal@kernel.org>
+Subject: [PATCH 6.1 154/451] bus: tegra-aconnect: Update dependency to ARCH_TEGRA
+Date: Sun, 24 Mar 2024 19:07:10 -0400
+Message-ID: <20240324231207.1351418-155-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,59 +63,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Armin Wolf <W_Armin@gmx.de>
+From: Peter Robinson <pbrobinson@gmail.com>
 
-[ Upstream commit e18afcb7b2a12b635ac10081f943fcf84ddacc51 ]
+[ Upstream commit 4acd21a45c1446277e2abaece97d7fa7c2e692a9 ]
 
-After unregistering the CPU idle device, the memory associated with
-it is not freed, leading to a memory leak:
+Update the architecture dependency to be the generic Tegra
+because the driver works on the four latest Tegra generations
+not just Tegra210, if you build a kernel with a specific
+ARCH_TEGRA_xxx_SOC option that excludes Tegra210 you don't get
+this driver.
 
-unreferenced object 0xffff896282f6c000 (size 1024):
-  comm "swapper/0", pid 1, jiffies 4294893170
-  hex dump (first 32 bytes):
-    00 00 00 00 0b 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace (crc 8836a742):
-    [<ffffffff993495ed>] kmalloc_trace+0x29d/0x340
-    [<ffffffff9972f3b3>] acpi_processor_power_init+0xf3/0x1c0
-    [<ffffffff9972d263>] __acpi_processor_start+0xd3/0xf0
-    [<ffffffff9972d2bc>] acpi_processor_start+0x2c/0x50
-    [<ffffffff99805872>] really_probe+0xe2/0x480
-    [<ffffffff99805c98>] __driver_probe_device+0x78/0x160
-    [<ffffffff99805daf>] driver_probe_device+0x1f/0x90
-    [<ffffffff9980601e>] __driver_attach+0xce/0x1c0
-    [<ffffffff99803170>] bus_for_each_dev+0x70/0xc0
-    [<ffffffff99804822>] bus_add_driver+0x112/0x210
-    [<ffffffff99807245>] driver_register+0x55/0x100
-    [<ffffffff9aee4acb>] acpi_processor_driver_init+0x3b/0xc0
-    [<ffffffff990012d1>] do_one_initcall+0x41/0x300
-    [<ffffffff9ae7c4b0>] kernel_init_freeable+0x320/0x470
-    [<ffffffff99b231f6>] kernel_init+0x16/0x1b0
-    [<ffffffff99042e6d>] ret_from_fork+0x2d/0x50
-
-Fix this by freeing the CPU idle device after unregistering it.
-
-Fixes: 3d339dcbb56d ("cpuidle / ACPI : move cpuidle_device field out of the acpi_processor_power structure")
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 46a88534afb59 ("bus: Add support for Tegra ACONNECT")
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+Cc: Jon Hunter <jonathanh@nvidia.com>
+Cc: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/processor_idle.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/bus/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index fc5b5b2c9e819..6f613eef28879 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -1431,6 +1431,8 @@ int acpi_processor_power_exit(struct acpi_processor *pr)
- 		acpi_processor_registered--;
- 		if (acpi_processor_registered == 0)
- 			cpuidle_unregister_driver(&acpi_idle_driver);
-+
-+		kfree(dev);
- 	}
+diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
+index 7bfe998f3514a..bdc7633905504 100644
+--- a/drivers/bus/Kconfig
++++ b/drivers/bus/Kconfig
+@@ -186,11 +186,12 @@ config SUNXI_RSB
  
- 	pr->flags.power_setup_done = 0;
+ config TEGRA_ACONNECT
+ 	tristate "Tegra ACONNECT Bus Driver"
+-	depends on ARCH_TEGRA_210_SOC
++	depends on ARCH_TEGRA
+ 	depends on OF && PM
+ 	help
+ 	  Driver for the Tegra ACONNECT bus which is used to interface with
+-	  the devices inside the Audio Processing Engine (APE) for Tegra210.
++	  the devices inside the Audio Processing Engine (APE) for
++	  Tegra210 and later.
+ 
+ config TEGRA_GMI
+ 	tristate "Tegra Generic Memory Interface bus driver"
 -- 
 2.43.0
 
