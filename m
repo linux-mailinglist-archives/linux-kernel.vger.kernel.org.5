@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39BE8888FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:41:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D888888F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:41:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD6BE1C22B48
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:41:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A87E21F2C533
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB17324BBFE;
-	Sun, 24 Mar 2024 23:22:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C52E157E7F;
+	Sun, 24 Mar 2024 23:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nxOnJ491"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R0Co4GfC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7730206C8C;
-	Sun, 24 Mar 2024 23:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20B8206C8A;
+	Sun, 24 Mar 2024 23:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321509; cv=none; b=EqMB/WMJN7o0lxYC7W+nCGx1DHPe680hEjB0ervvwlUHmvx74WaiiIh2DM5AICa9p8+n8tVjH/37s2qdkkk1Drs4P5EWqM3sVTl1B+9txjvhMAY0cfkdKd9dQcZ3LuLhC8HTBKuFRRSfkZe1fYiNlFoalbpRBTFNlYXHC9x71RA=
+	t=1711321509; cv=none; b=C+WQGtURJFU3JT5ReVsldFBolSx8gYQjALGjnxVgk6eK0x/8cOD5fm3cfIbOU+iSP/x+iORUFLXOfOdjw2C0x34gtCCof9jL5JOx1hoy0L87+oe00w2G/+tiHzAekvISuQsRUBqJ+v/FlADuwjELDU2gSpuUDxyOwJ9plKGpaV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321509; c=relaxed/simple;
-	bh=OC6s1nGnzvG27cdhEV9v+152Ge649GD6EUnGf7Ba9Jc=;
+	bh=PLMeTWfzCTYAVAuh1bq/F318sAMTXN+WWdgNpObteoQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Mb9IZCEdctYrqngGf+pJmeFEZkjlCvlgmTP7Bw/UZHt86uaPRqpE+7KzBCHWXh0tve/AiToUhQNEXb5hpMcDU/WLgEzuyJlflbNPa+0d8Y9XJxPGK49X5R1FB3bZEN/ZPgfVcoufPBq8Ua+roRdfKsRaGMNbBsYyUOT1240OAig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nxOnJ491; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6172C433F1;
-	Sun, 24 Mar 2024 23:05:07 +0000 (UTC)
+	 MIME-Version; b=tkCZgh8T6ymDiTeCQ8tmT8N8GhUb0SIfi6LM1UhEcKywZ+PsK+wZb09RFxHEcDzCgwBayh35KX1l5Xr26UclHrRBKEMzzvb0IrholxM6BckrpufIw3j0WCf4duTp03r2HP+5zLPbBuOTuDuuzpSP0My2noSSkNOk1NXFd1WTMGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R0Co4GfC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA852C43394;
+	Sun, 24 Mar 2024 23:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321508;
-	bh=OC6s1nGnzvG27cdhEV9v+152Ge649GD6EUnGf7Ba9Jc=;
+	s=k20201202; t=1711321509;
+	bh=PLMeTWfzCTYAVAuh1bq/F318sAMTXN+WWdgNpObteoQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nxOnJ491VcerR1igwDtxVrHetg7tPB6uofzlfJRAPvs4XZjgqpjFKZlfUxcWf3hMM
-	 0hyfzGRy/kzAyWk3Sa2RGTj+8Q6RGuvBcUjY3dpcoH6Oby8pD/PQ6mE3XVC2h5k6pR
-	 PL5tpbQhM0iK0T52v+PpIK+q5O9ruWz2d6H4cGvhjS41NjFW/rEVN8/L4s1x4copE2
-	 h9c5qzPrsI8T86m9VpKCRR+Y5h+eJbRgV6lQR2aD2kk/2ymfbYkXZAMA4aq97/umXj
-	 vW8MUBH/lwtP9o4iPafEP8UNaQ1wk4/oDdb0J95mBRpqQ2YFof8dcpL2GasUbNi0iE
-	 yJyu9D3BUoPQg==
+	b=R0Co4GfCKR6eCnE8fzV6YOsp7OvYjJZRg5lp+dN5VF2dI/oWhuNd/iMMCh7b5JmWT
+	 s1FIGT9SbewmKWCPQKBaV36V/jKBAguN8u5/mMLyeZFhrNurMJ9MwoyUF7vktku40t
+	 ZGuKII1G+JSUYtv/h/zyHPdTndG6gYmT9mpQN38lJVIkPfnRN7wv8BbWOzSB6Ai8ns
+	 GaEdIXCkWrYWFmZPlzn7DIgnowajz/H3AFa5geanHocLb+Y+fH7GnpK9BYYwQYsfYV
+	 BwqOm5uhm32R3xCtuyMiN4aVicFFo+Oy1QVJTk5/p2MJFvRLzxCXeot2PZN1vJr152
+	 A6lxk6w3tom5A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Kamal Heib <kheib@redhat.com>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 234/638] powercap: dtpm_cpu: Fix error check against freq_qos_add_request()
-Date: Sun, 24 Mar 2024 18:54:31 -0400
-Message-ID: <20240324230116.1348576-235-sashal@kernel.org>
+Subject: [PATCH 6.6 235/638] net: ena: Remove ena_select_queue
+Date: Sun, 24 Mar 2024 18:54:32 -0400
+Message-ID: <20240324230116.1348576-236-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,39 +63,64 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
+From: Kamal Heib <kheib@redhat.com>
 
-[ Upstream commit b50155cb0d609437236c88201206267835c6f965 ]
+[ Upstream commit 78e886ba2b549945ecada055ee0765f0ded5707a ]
 
-The caller of the function freq_qos_add_request() checks again a non
-zero value but freq_qos_add_request() can return '1' if the request
-already exists. Therefore, the setup function fails while the QoS
-request actually did not failed.
+Avoid the following warnings by removing the ena_select_queue() function
+and rely on the net core to do the queue selection, The issue happen
+when an skb received from an interface with more queues than ena is
+forwarded to the ena interface.
 
-Fix that by changing the check against a negative value like all the
-other callers of the function.
+[ 1176.159959] eth0 selects TX queue 11, but real number of TX queues is 8
+[ 1176.863976] eth0 selects TX queue 14, but real number of TX queues is 8
+[ 1180.767877] eth0 selects TX queue 14, but real number of TX queues is 8
+[ 1188.703742] eth0 selects TX queue 14, but real number of TX queues is 8
 
-Fixes: 0e8f68d7f0485 ("Add CPU energy model based support")
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
+Signed-off-by: Kamal Heib <kheib@redhat.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/powercap/dtpm_cpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-index 9193c3b8edebe..ae7ee611978ba 100644
---- a/drivers/powercap/dtpm_cpu.c
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -219,7 +219,7 @@ static int __dtpm_cpu_setup(int cpu, struct dtpm *parent)
- 	ret = freq_qos_add_request(&policy->constraints,
- 				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
- 				   pd->table[pd->nr_perf_states - 1].frequency);
--	if (ret)
-+	if (ret < 0)
- 		goto out_dtpm_unregister;
+diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+index 14e41eb57731b..cc39707a80598 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
++++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+@@ -3238,22 +3238,6 @@ static netdev_tx_t ena_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
+ }
  
- 	cpufreq_cpu_put(policy);
+-static u16 ena_select_queue(struct net_device *dev, struct sk_buff *skb,
+-			    struct net_device *sb_dev)
+-{
+-	u16 qid;
+-	/* we suspect that this is good for in--kernel network services that
+-	 * want to loop incoming skb rx to tx in normal user generated traffic,
+-	 * most probably we will not get to this
+-	 */
+-	if (skb_rx_queue_recorded(skb))
+-		qid = skb_get_rx_queue(skb);
+-	else
+-		qid = netdev_pick_tx(dev, skb, NULL);
+-
+-	return qid;
+-}
+-
+ static void ena_config_host_info(struct ena_com_dev *ena_dev, struct pci_dev *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -3424,7 +3408,6 @@ static const struct net_device_ops ena_netdev_ops = {
+ 	.ndo_open		= ena_open,
+ 	.ndo_stop		= ena_close,
+ 	.ndo_start_xmit		= ena_start_xmit,
+-	.ndo_select_queue	= ena_select_queue,
+ 	.ndo_get_stats64	= ena_get_stats64,
+ 	.ndo_tx_timeout		= ena_tx_timeout,
+ 	.ndo_change_mtu		= ena_change_mtu,
 -- 
 2.43.0
 
