@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-115639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CABB988A087
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:57:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F6B58888E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:39:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12017B3DDDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:33:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08FE2287E18
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F8534E9D1;
-	Mon, 25 Mar 2024 02:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8743156976;
+	Sun, 24 Mar 2024 23:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jEGOv6lT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rr9CGd7I"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D1D136996;
-	Sun, 24 Mar 2024 23:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF05C2062E4;
+	Sun, 24 Mar 2024 23:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321496; cv=none; b=tj9eo0jX07JhKwYJhkld85IvdwO9Glqki1esG4ia0b1851YB1RnkGPA2iBQg9QVx5z0sWu5C10Jc7v2lEw2mEqYFgVrzTsAN0K3aJhE921Wc51V6Spnm1oF2enTxr5odZhDSux3eAVWB5ntpjwiK4tnPg3R8N2zXLw4cMF3BaSg=
+	t=1711321497; cv=none; b=Zef7mh+NQORqin8nlYV5xTMM9Ef0QQ1JFCOFr38XEdCcRT7Ttiou70YGaq1eJhA4HInaG7+8fogiH6hpCC/K/TfkHG5BMHGpOxjKpXhZDaNIiuAe/ExlYDA1QbBichTudkPxGC/e6K7FS6z3csATkXDwmzLt72Arnu3Z1J7+CEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321496; c=relaxed/simple;
-	bh=9u5NrhJcsS9DElx+ocr086SXQ18+mS2wYgg/2/lpBXU=;
+	s=arc-20240116; t=1711321497; c=relaxed/simple;
+	bh=ejgvvjlYrP0ggQ6p2mT2a42/l5zIDdfBEPIknr/GpMc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KF6Y5bL0OuStM3FUfUZcJLF6MDH33fXi6FuuY9eN1GaENVcZUJPO2MnpoXSDRYenFtFErQAslRl0JGHMwvDphk1sC/ODq3AuZrOx+6V0vu5EKdDhvdKlLQG+gS90kXvtalcbVVIo5HwRzDERyFeXzaKnwwGhKPTKoZC/YKvIfyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jEGOv6lT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62808C43399;
-	Sun, 24 Mar 2024 23:04:54 +0000 (UTC)
+	 MIME-Version; b=JfppluXirH0JIVlRSQelcdgCr9iWlSjGMkSiiqDaRE9NtIHIi5z3ASp8FC0A7ddRH/nr7rnujJDP9hzRHuduozm27qLkBocIZ6nWEFIwCqEP8Oy4KviWCCGoihZ1jWd6OqSd06NR0s8ccnMheavX/HeuQuehKJ9oxsr4juixfok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rr9CGd7I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 742C2C43394;
+	Sun, 24 Mar 2024 23:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321495;
-	bh=9u5NrhJcsS9DElx+ocr086SXQ18+mS2wYgg/2/lpBXU=;
+	s=k20201202; t=1711321496;
+	bh=ejgvvjlYrP0ggQ6p2mT2a42/l5zIDdfBEPIknr/GpMc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jEGOv6lTW1W2T0Lb8pk0/1SRxNBaninMYefnrN9q5r0tXp4p8OA/IFfnX3bz6Mr0c
-	 BVQhYmB7nIc81pZQdSwL+pZp/T7hLtkYDJ9ERT8cxiQDx4A/RR149VN5uiJwAfQu6S
-	 d0bvct3tFcrKM/DfWDO9R2YDLb6G1CUiv+nrizIeYKixLQR2W96e6ovpSm80zNV1GR
-	 uy04GV75UCLmQhtTXvcDH/qeJ3fH+Y9Mef7AJYHTdqwtuzPRF6Rda7cELdvOBYzFfw
-	 6gW6ZcTRBGHmgjXFlM0VAWzo24d3C4cPQw4l4BnK5VZ1Vfl/GTehYGAbZM1T/8o0AS
-	 9xi7m1XIdXSCA==
+	b=Rr9CGd7IF9ZoIqk83gMNh0XVNl8k2svhMgvs8vKcdbuQv1PM2O5mBfCuQ/I3vCrXE
+	 VcwEeOcD8BUki7VWHm7WNepXbWSBd0413beNyGTWp5T565G9pzF4FHPYk21BLj0cqi
+	 8Z+QRcmHgAyqtGZPEKhQBx4vuBQMZ02WwXX64o6jJ7pwnZnt+z31tiIK+tpvrqmM/c
+	 ATOP5kdUWjfRaQTN+b3mjBUVVqUDNyfm6TLeDhXnEJsjOxZtWhYAbZcF0gDwAA2sCO
+	 KZi8Gz/5HQb5RLxcl26JZYlRAjCcYhEjKMqS/B7R9r3tuSrzrQ/xNR6WtNSAyAmgJb
+	 bv3BOMl8HkvKg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
-	Elliot Berman <quic_eberman@quicinc.com>,
-	Mukesh Ojha <quic_mojha@quicinc.com>,
+Cc: Craig Tatlor <ctatlor97@gmail.com>,
+	Luca Weiss <luca@z3ntu.xyz>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 220/638] soc: qcom: llcc: Check return value on Broadcast_OR reg read
-Date: Sun, 24 Mar 2024 18:54:17 -0400
-Message-ID: <20240324230116.1348576-221-sashal@kernel.org>
+Subject: [PATCH 6.6 221/638] ARM: dts: qcom: msm8974: correct qfprom node size
+Date: Sun, 24 Mar 2024 18:54:18 -0400
+Message-ID: <20240324230116.1348576-222-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,39 +64,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+From: Craig Tatlor <ctatlor97@gmail.com>
 
-[ Upstream commit ceeaddc19a90039861564d8e1078b778a8f95101 ]
+[ Upstream commit 724c4bf0e4bf81dba77736afb93964c986c3c123 ]
 
-Commit c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support")
-introduced a new 4.1 if statement in llcc_update_act_ctrl() without
-considering that ret might be overwritten. So, add return value check
-after Broadcast_OR register read in llcc_update_act_ctrl().
+The qfprom actually is bigger than 0x1000, so adjust the reg.
 
-Fixes: c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support")
-Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
-Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
-Link: https://lore.kernel.org/r/20240212183515.433873-1-quic_uchalich@quicinc.com
+Note that the non-ECC-corrected qfprom can be found at 0xfc4b8000
+(-0x4000). The current reg points to the ECC-corrected qfprom block
+which should have equivalent values at all offsets compared to the
+non-corrected version.
+
+[luca@z3ntu.xyz: extract to standalone patch and adjust for review
+comments]
+
+Fixes: c59ffb519357 ("arm: dts: msm8974: Add thermal zones, tsens and qfprom nodes")
+Signed-off-by: Craig Tatlor <ctatlor97@gmail.com>
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20240210-msm8974-qfprom-v3-1-26c424160334@z3ntu.xyz
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/llcc-qcom.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/boot/dts/qcom/qcom-msm8974.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-index e877aace11555..03d5de759b256 100644
---- a/drivers/soc/qcom/llcc-qcom.c
-+++ b/drivers/soc/qcom/llcc-qcom.c
-@@ -610,6 +610,8 @@ static int llcc_update_act_ctrl(u32 sid,
- 	ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
- 				      slice_status, !(slice_status & status),
- 				      0, LLCC_STATUS_READ_DELAY);
-+	if (ret)
-+		return ret;
+diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
+index 706fef53767e1..4a8eb8b423290 100644
+--- a/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
+@@ -1194,7 +1194,7 @@ restart@fc4ab000 {
  
- 	if (drv_data->version >= LLCC_VERSION_4_1_0_0)
- 		ret = regmap_write(drv_data->bcast_regmap, act_clear_reg,
+ 		qfprom: qfprom@fc4bc000 {
+ 			compatible = "qcom,msm8974-qfprom", "qcom,qfprom";
+-			reg = <0xfc4bc000 0x1000>;
++			reg = <0xfc4bc000 0x2100>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+ 
 -- 
 2.43.0
 
