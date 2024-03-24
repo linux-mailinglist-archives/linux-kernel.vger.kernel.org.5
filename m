@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AE05888256
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:45:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59035888259
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:45:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B207B21172
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:45:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDFD71F21D84
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E49D17EB6C;
-	Sun, 24 Mar 2024 22:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E8E5C8FE;
+	Sun, 24 Mar 2024 22:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZBIUPN88"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GKq+934i"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F6A17E3D8;
-	Sun, 24 Mar 2024 22:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169B317EB75;
+	Sun, 24 Mar 2024 22:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320011; cv=none; b=cJux1mgNn82nFZpVLw+tJRPU9pKQUW7WNUrN4DRAgKbjdTh1NsXoqBiJgkdQTlfxwWaVWoTIOGZm1SAJ0pHjBB1qFAjPje86oInREoifD62hFX4mtlgmMVaGjR3OMCFJ3goaa3TseduLJdLcR5A+NJEe8dfchJbMchgYuLCD3QM=
+	t=1711320013; cv=none; b=ePWh+c4ggvHDW7h1/OYgHC8hA/rzqBQ1DwRQowyErwt6Mq5kq+7cLebbTeBFQoGiWcYrpqKRtvU85keHxsbogIVG7z4SUpvqjIw19BZ+FTFr5j6VJMU5RvA/GtIBTT551GWuX71liFMxz1VoGvgHmSr2FU8bwnIqAuOIk9wHkIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320011; c=relaxed/simple;
-	bh=r+eUaeSBbJITi10eWBdwYxrKWd/L8nsqR8864q3AH38=;
+	s=arc-20240116; t=1711320013; c=relaxed/simple;
+	bh=VIbvBBzSO6jB4GlKBMOGSPLMt75A1XyStIcCo4tKvWg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nmG55iG2PERfhGgYfS3fbmZNSg8VtBI6N6UH+mVKrqS+CsjlWWEqz2eot/xnBaA6n4jtozyXaWY4Idkn5SFO9yLHeJUuCDsOP9AgDPF+14E6tafXlGRVPizLht55NoEqohlOfW6gO3pMnIqGiV3a/Wc6vtlMI4dRtsFxURwS9eE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZBIUPN88; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E65B8C433F1;
-	Sun, 24 Mar 2024 22:40:10 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UweUgPQebyXGQoBHAWWEPpgfHP2WgbUJKQdLJv+3YORT9BLd0iVdPYf1El0o66ZxzURxmbGtV3ar8ru3ICM9iQk+QUjHIEqboqOETq0G6IjFzPbIsiJq5i506GYJgbtWM1oiC6/UUzqORaR7oCKYnFa7I2h54zoffD5KY+Z6juA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GKq+934i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E656BC433C7;
+	Sun, 24 Mar 2024 22:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320011;
-	bh=r+eUaeSBbJITi10eWBdwYxrKWd/L8nsqR8864q3AH38=;
+	s=k20201202; t=1711320012;
+	bh=VIbvBBzSO6jB4GlKBMOGSPLMt75A1XyStIcCo4tKvWg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZBIUPN88vbzGf+jzen+vqUaRdWRqDwfVCuIfJ9YAYzUjmcO5jEUHgojcIGKq2Rg9x
-	 BQOi8SbJBcvDlD4kRdjg2oUGoZnpJ9xgwZYdvPvMw9MUN4RLRB+UNU96ixX0AW6VdS
-	 SuV6Kks/vBlm14aB9Kz5eC4/Sp0Noib/3SxMvH4AEqMWxOok/9XTdGfqUS6wrmRr1P
-	 Nv9or+K/0vdSrZt7vzg5STwx4mfPSWecy7osUYlksa6y0mPIgvRmPcfSE6Y/uKrNC+
-	 a5yuew0h5HW59bgD1XrE9C7o/D1gUDRF5a3a9HbIV3IEhHkSxGSCBZ4EdVPLNcRtQx
-	 kj2pd4NJyrLHQ==
+	b=GKq+934i3IiQ0A8J9tY9mOkG5pnV0jxgxj7gMetSaaLUm+x5Be7BalSbO5w1szUwy
+	 GOSlr9vPC5OA6doJItwcjG0omRN5ZjehgQyOYOw2SRsXL8HONhs+HTckw09nW4uoZ4
+	 Aq5hFL+yQjqbAxN/O5btp+BlS1GpML0haj8Pq7UugJoybbtqNS9OvpK1ctydQOcYPW
+	 XcJGphuoaSsKIzyGshkxRFiGDUTCMA21Ibo5ET2DquJ9pXa3VVhOrCYho+uoLkXC+S
+	 7MvnRU6W0UaQxrkb210WHMaKypNd0S9WPsfo7Ilwng6LJMvpdjDIFNJsnQCXSZQHIh
+	 WRcBuRfRvcCQg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 319/715] bpf: Fix DEVMAP_HASH overflow check on 32-bit arches
-Date: Sun, 24 Mar 2024 18:28:18 -0400
-Message-ID: <20240324223455.1342824-320-sashal@kernel.org>
+Subject: [PATCH 6.8 320/715] bpf: Fix hashtab overflow check on 32-bit arches
+Date: Sun, 24 Mar 2024 18:28:19 -0400
+Message-ID: <20240324223455.1342824-321-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -66,59 +65,58 @@ Content-Transfer-Encoding: 8bit
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit 281d464a34f540de166cee74b723e97ac2515ec3 ]
+[ Upstream commit 6787d916c2cf9850c97a0a3f73e08c43e7d973b1 ]
 
-The devmap code allocates a number hash buckets equal to the next power
-of two of the max_entries value provided when creating the map. When
-rounding up to the next power of two, the 32-bit variable storing the
-number of buckets can overflow, and the code checks for overflow by
-checking if the truncated 32-bit value is equal to 0. However, on 32-bit
-arches the rounding up itself can overflow mid-way through, because it
-ends up doing a left-shift of 32 bits on an unsigned long value. If the
-size of an unsigned long is four bytes, this is undefined behaviour, so
-there is no guarantee that we'll end up with a nice and tidy 0-value at
-the end.
+The hashtab code relies on roundup_pow_of_two() to compute the number of
+hash buckets, and contains an overflow check by checking if the
+resulting value is 0. However, on 32-bit arches, the roundup code itself
+can overflow by doing a 32-bit left-shift of an unsigned long value,
+which is undefined behaviour, so it is not guaranteed to truncate
+neatly. This was triggered by syzbot on the DEVMAP_HASH type, which
+contains the same check, copied from the hashtab code. So apply the same
+fix to hashtab, by moving the overflow check to before the roundup.
 
-Syzbot managed to turn this into a crash on arm32 by creating a
-DEVMAP_HASH with max_entries > 0x80000000 and then trying to update it.
-Fix this by moving the overflow check to before the rounding up
-operation.
-
-Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devices by hashed index")
-Link: https://lore.kernel.org/r/000000000000ed666a0611af6818@google.com
-Reported-and-tested-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
+Fixes: daaf427c6ab3 ("bpf: fix arraymap NULL deref and missing overflow and zero size checks")
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Message-ID: <20240307120340.99577-2-toke@redhat.com>
+Message-ID: <20240307120340.99577-3-toke@redhat.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/devmap.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ kernel/bpf/hashtab.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index a936c704d4e77..4e2cdbb5629f2 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -130,13 +130,14 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 	bpf_map_init_from_attr(&dtab->map, attr);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 03a6a2500b6ab..3a088a5349bc0 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -499,7 +499,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 							  num_possible_cpus());
+ 	}
  
- 	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
--		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
--
--		if (!dtab->n_buckets) /* Overflow check */
-+		/* hash table size must be power of 2; roundup_pow_of_two() can
-+		 * overflow into UB on 32-bit arches, so check that first
-+		 */
-+		if (dtab->map.max_entries > 1UL << 31)
- 			return -EINVAL;
--	}
- 
--	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
-+		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
+-	/* hash table size must be power of 2 */
++	/* hash table size must be power of 2; roundup_pow_of_two() can overflow
++	 * into UB on 32-bit arches, so check that first
++	 */
++	err = -E2BIG;
++	if (htab->map.max_entries > 1UL << 31)
++		goto free_htab;
 +
- 		dtab->dev_index_head = dev_map_create_hash(dtab->n_buckets,
- 							   dtab->map.numa_node);
- 		if (!dtab->dev_index_head)
+ 	htab->n_buckets = roundup_pow_of_two(htab->map.max_entries);
+ 
+ 	htab->elem_size = sizeof(struct htab_elem) +
+@@ -509,10 +515,8 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 	else
+ 		htab->elem_size += round_up(htab->map.value_size, 8);
+ 
+-	err = -E2BIG;
+-	/* prevent zero size kmalloc and check for u32 overflow */
+-	if (htab->n_buckets == 0 ||
+-	    htab->n_buckets > U32_MAX / sizeof(struct bucket))
++	/* check for u32 overflow */
++	if (htab->n_buckets > U32_MAX / sizeof(struct bucket))
+ 		goto free_htab;
+ 
+ 	err = bpf_map_init_elem_count(&htab->map);
 -- 
 2.43.0
 
