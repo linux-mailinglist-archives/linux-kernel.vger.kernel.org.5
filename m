@@ -1,189 +1,116 @@
-Return-Path: <linux-kernel+bounces-112538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8256B887B4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:16:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E94BD887B50
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4C36B214B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 01:16:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B6F7B213E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 01:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3AEB10F7;
-	Sun, 24 Mar 2024 01:16:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5A617C8;
+	Sun, 24 Mar 2024 01:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="kaxNwg+M"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rRDXvXuP"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BA064A
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 01:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9359981E;
+	Sun, 24 Mar 2024 01:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711242986; cv=none; b=tIgKQzRY+1Ih4VBqVgVxho2a3/IdyLZ8eNB7v6uMq6m6uHy+58bNnAyYn1hRzFQPfjzlmh8oJwV/KS88Bb5cElOXrIk5P/cR9LCWnt/BZ/tahWqzwhV1kc+eKRKbXKvkvsLnI6nnBROC8sRq2o6wDlyw63W++V2XbjXi4C4yT00=
+	t=1711243167; cv=none; b=hZFdNnRQJhC3l/uiYi7RlaDIAW5cSGEBrtWRThlp1ZeSKx3ri3BQngT84rp6PBvdgLIo102TEz2FWFYW8W+3wg6MuWOkMxcTRWNUSErgCc7T88Ggr1Yi35Lxgr9rL7j3HSNeh8AI9s6+YiTZ+be0bM7i5jbqRr/uJoP99G2PMCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711242986; c=relaxed/simple;
-	bh=b1LIcs3eiQw7N+NGlUYBvHfjzd3LDeBvz5zCkXmit3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dx51Y8zUqa3U5tlN5ZZuTazJRAtjY1pGWcBA3vhooMSxRCWKnP/jMBcSZZYUR16K5+iFIOOSnFbSTidAhknokGJPRo8nrk2BrRBBgwe+VmlpkUgMJAX8EDIZPHZYumk+1bHgdy55QFX9chdR9/kHx6LEPxGdbG8a9FRFEwTS4n0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=kaxNwg+M; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41400a9844aso24710825e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 18:16:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1711242983; x=1711847783; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hj3nbqsaWy4/WykWj9OgUFJmXIp54cueJHiM6uesgks=;
-        b=kaxNwg+MRlC4met1zCvsRTV2H4tEZov/XyqwnGUVyRvNWhTDhu/WuC1EkLWHdLky0d
-         yAxsmJm2+o03j7eiM+Y5LFcQCi/EcGWKFHAgDvb2BthfSm+C3xYoB9uoYJuuQABYopvk
-         uVGW+QxDkMk0xOMmV4F3KTkQkVT5Ozh8i7E1H7ET8GGwQWzERRiVZsv3dq4vekT/fv76
-         ufhesSq0cHf3WoXDlXUh1GTY+l3j9EhzzxzLhXp/n6ryeeDSI69lUzxyIJpNc/iip/bC
-         2MjAKJmgBTeK92BcgFd5IvNrwEf22hIGlnzZ15lGjJfFkNz/88qWN9ibOWbcHP1nNqoG
-         Pl4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711242983; x=1711847783;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hj3nbqsaWy4/WykWj9OgUFJmXIp54cueJHiM6uesgks=;
-        b=DIRagkFpyaFiBAVC5IniaLkr4pLg/30GGYOrT0njHletLFIV/v0oXvZD05OgqBZ/6r
-         EI5uSZ5ABqchAhJou7PEbjsXhiaaQCiZBPv3S9uJC3MtLopfFGYupHi9DpwUVM70IETC
-         e2l61zaAlWgEthUNtNL6B70hFfRqbyZafjhbmuFe0C64p0gz6VIt6Fum36jOx5KwS61p
-         ODDP+/pHuwKzCUrifDJYFPuePCqHp+NzzkHcdJunpieO+84TKoSy6sE9ZreAOArEO2UJ
-         o+D76nyEcLdh0a7G3l6b+Bz64vJO1RGPlAWp9z5hGqvQxui4PRNfzbirJT6QGr20tZsQ
-         tllQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUPr3/nP22F9lzJdz2Mxbhoz4gxQtElbVGQZEBhp8C2onhH896TIrO7hLaDinMWgr6uP6ta5bbPki/70Uxt7f/yWm1JgbRRjNGuaEgE
-X-Gm-Message-State: AOJu0YxrWtA3cBMY4CHD7N21P+XddLyev8o7P+mGGacBuOHzRz0RWTMP
-	VwkMnDCenKb2eRc4ndBhZIBB+iYxjutihgkUwuQ0NghHL0NbImWFuUU9e7JuHu4=
-X-Google-Smtp-Source: AGHT+IHflvLhmel8QwO8scfz+plP+5vxLslqjuEFmb8+UDJJ+6nPk0a9pQQQAU9hiijCFr0cli5P0w==
-X-Received: by 2002:a05:6000:381:b0:341:a63c:58bc with SMTP id u1-20020a056000038100b00341a63c58bcmr2515999wrf.2.1711242982577;
-        Sat, 23 Mar 2024 18:16:22 -0700 (PDT)
-Received: from airbuntu (host81-157-90-255.range81-157.btcentralplus.com. [81.157.90.255])
-        by smtp.gmail.com with ESMTPSA id bl40-20020adfe268000000b0033e03d37685sm5555058wrb.55.2024.03.23.18.16.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 18:16:22 -0700 (PDT)
-Date: Sun, 24 Mar 2024 01:16:20 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-	vschneid@redhat.com, qperret@google.com
-Subject: Re: [PATCH v2 2/2] sched/fair: Use helper functions to access
- rd->overload
-Message-ID: <20240324011620.f3mmywh44htvlb5m@airbuntu>
-References: <20240322141632.28654-1-sshegde@linux.ibm.com>
- <20240322141632.28654-3-sshegde@linux.ibm.com>
+	s=arc-20240116; t=1711243167; c=relaxed/simple;
+	bh=TSFL6ZPHf+nNmZN+mCrQRVmu2K+uA7T8UTvuYZPSASo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s596kTSZrUN7st/aGBg2mS06oX1HH1w3T3+dB3F0rpPaYvB0DNmIyszV/eo5Wc5OgrMPTFAm8hdRw31G7B/4bE/If/U8NDCS+ZTwHc0PIehkAw+Ju1cRBKG2CKSJJIeN+oAjdFuQr9ssM4P+37egpUMqVYS1ut74C/KPd2oEfz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rRDXvXuP; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=wi2LTI5KP53CdNiOrYDHD4tTYnyBEg2RipTULkJ4IRM=; b=rRDXvXuPpC8yTHiw6Pqb7l8czJ
+	zIS6KU5zxoaXKjRcqGyLnpkLYImkubIoRFPG5QJ02jpARz/K3nbOr59QomAZ1P9+nUjEqiTaMnHVu
+	c7sb8Cm4ZOZvUdTyLln6Z91fC8snZ4LzvbEoUjPZCN8HBibknob1cCH1HxUm2WIk0cpY4FdneTzHT
+	78xVgCpjpXN2NylIxDbMIBQYkwUvKoe5H9/JL3Qp+unVfmpRq/66fh2oGpxMGB9d8nlmzwxQMgEwV
+	wDxkzlQzgEEKroY0OdUSobaLKpnaqBCWefobPw8oMvwK7yJSbArxJxEf8SND1DmGwvaiZB/c3TfXg
+	TLFJIzEg==;
+Received: from fpd2fa7e2a.ap.nuro.jp ([210.250.126.42] helo=[192.168.1.8])
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1roCW4-0000000Cwtk-1hTK;
+	Sun, 24 Mar 2024 01:19:16 +0000
+Message-ID: <63e4017f-dcdd-4c28-9591-1ce7f0e9b761@infradead.org>
+Date: Sun, 24 Mar 2024 10:19:06 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240322141632.28654-3-sshegde@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] powerpc: ps3: mark ps3_notification_device static for
+ stack usage
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Arnd Bergmann <arnd@kernel.org>
+Cc: llvm@lists.linux.dev, Kevin Hao <haokexin@gmail.com>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, linux-kernel@vger.kernel.org,
+ Nathan Chancellor <nathan@kernel.org>, Nicholas Piggin <npiggin@gmail.com>,
+ Justin Stitt <justinstitt@google.com>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+ Bill Wendling <morbo@google.com>
+References: <20240320180333.151043-1-arnd@kernel.org>
+ <CAMuHMdW41e+DSBKBgugTkjoLy6bXfji-KWmB_d9EstEv01eC6w@mail.gmail.com>
+ <87f6365f-a40e-4606-baff-170cb8fc48f3@infradead.org>
+ <7f854130-e92f-488f-9c56-a65f86b95567@app.fastmail.com>
+From: Geoff Levand <geoff@infradead.org>
+In-Reply-To: <7f854130-e92f-488f-9c56-a65f86b95567@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 03/22/24 19:46, Shrikanth Hegde wrote:
-> rd->overload is accessed at multiple places. Instead it could use helper
-> get/set functions. This would make the code more readable and easy to
-> maintain.
+On 3/23/24 05:24, Arnd Bergmann wrote:
+> On Fri, Mar 22, 2024, at 09:34, Geoff Levand wrote:
+>> On 3/21/24 17:32, Geert Uytterhoeven wrote:
+>>> --- a/arch/powerpc/platforms/ps3/device-init.c
+>>>> +++ b/arch/powerpc/platforms/ps3/device-init.c
+>>>> @@ -770,7 +770,7 @@ static struct task_struct *probe_task;
+>>>>
+>>>>  static int ps3_probe_thread(void *data)
+>>>>  {
+>>>> -       struct ps3_notification_device dev;
+>>>> +       static struct ps3_notification_device dev;
+>>>>         int res;
+>>>>         unsigned int irq;
+>>>>         u64 lpar;
+>>>
+>>> Making it static increases kernel size for everyone.  So I'd rather
+>>> allocate it dynamically. The thread already allocates a buffer, which
+>>> can be replaced at no cost by allocating a structure containing both
+>>> the ps3_notification_device and the buffer.
 > 
-> No change in functionality intended.
+> I didn't think it mattered much, given that you would rarely
+> have a kernel with PS3 support along with other platforms.
 > 
-> Suggested-by: Qais Yousef <qyousef@layalina.io>
-
-Thanks for following up!
-
-> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c  |  7 ++++---
->  kernel/sched/sched.h | 14 ++++++++++++--
->  2 files changed, 16 insertions(+), 5 deletions(-)
+> I suppose it does increase the size for a PS3-only kernel
+> as well, while your version makes it smaller.
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index eeebadd7d9ae..cee99c93e6a4 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10621,8 +10621,9 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+>> Here's what I came up with.  It builds for me without warnings.
+>> I haven't tested it yet.  A review would be appreciated.
 > 
->  	if (!env->sd->parent) {
->  		/* update overload indicator if we are at root domain */
-> -		if (READ_ONCE(env->dst_rq->rd->overload) != (sg_status & SG_OVERLOAD))
-> -			WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
-> +		if (is_rd_overloaded(env->dst_rq->rd) != (sg_status & SG_OVERLOAD))
-> +			set_rd_overload_status(env->dst_rq->rd,
-> +					       sg_status & SG_OVERLOAD);
-
-A bit picky, but..
-
-Wouldn't it be better to encapsulate the check of whether we're writing a new
-value inside set_rd_overload_status()? Only write if it the value changed and
-all future users wouldn't care then.
-
-I think no need to wrap the line too.
-
+> It seems a little complicated but looks all correct to
+> me and reduces both stack and .data size, so
 > 
->  		/* Update over-utilization (tipping point, U >= 0) indicator */
->  		set_rd_overutilized_status(env->dst_rq->rd,
-> @@ -12344,7 +12345,7 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
->  	rcu_read_lock();
->  	sd = rcu_dereference_check_sched_domain(this_rq->sd);
-> 
-> -	if (!READ_ONCE(this_rq->rd->overload) ||
-> +	if (!is_rd_overloaded(this_rq->rd) ||
->  	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
-> 
->  		if (sd)
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 41024c1c49b4..c91eb8811bef 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -918,6 +918,16 @@ extern void rq_attach_root(struct rq *rq, struct root_domain *rd);
->  extern void sched_get_rd(struct root_domain *rd);
->  extern void sched_put_rd(struct root_domain *rd);
-> 
-> +static inline int is_rd_overloaded(struct root_domain *rd)
-> +{
-> +	return READ_ONCE(rd->overload);
-> +}
-> +
-> +static inline void set_rd_overload_status(struct root_domain *rd, int status)
-> +{
-> +	WRITE_ONCE(rd->overload, status);
-> +}
-> +
->  #ifdef HAVE_RT_PUSH_IPI
->  extern void rto_push_irq_work_func(struct irq_work *work);
->  #endif
-> @@ -2518,8 +2528,8 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
-> 
->  #ifdef CONFIG_SMP
->  	if (prev_nr < 2 && rq->nr_running >= 2) {
-> -		if (!READ_ONCE(rq->rd->overload))
-> -			WRITE_ONCE(rq->rd->overload, 1);
-> +		if (!is_rd_overloaded(rq->rd))
-> +			set_rd_overload_status(rq->rd, 1);
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-While at it, could you write SG_OVERLOAD instead of 1?
+Thanks Arnd.  I also thought it was a bit too much.  I made a simpler
+version that I'll post as a separate message.
 
-Both patches LGTM otherwise
+-Geoff
 
-Reviewed-by: Qais Yousef <qyousef@layalina.io>
-
-
-Thanks!
-
---
-Qais Yousef
-
->  	}
->  #endif
-> 
-> --
-> 2.39.3
-> 
 
