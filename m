@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-112760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EECC887DDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:11:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D82A887DE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A25741F21371
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:11:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD86F2808FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C00B482C9;
-	Sun, 24 Mar 2024 17:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C124AEE1;
+	Sun, 24 Mar 2024 17:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YgNQMkVv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bzFGPAdu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C756247A6F;
-	Sun, 24 Mar 2024 17:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88261BDCB;
+	Sun, 24 Mar 2024 17:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711300011; cv=none; b=MS07d/U1zEQ3BACFxGH3MsM9st85q4+aJca0wb6LFsRe9CCM6qchw0nopY8mu0KgRPVZWO8fd3a7ogmiBvvcQwoaWRdKEYMXuXqCn0br6oouQmnI/qUW3bFqol0pA1YC2g6WIRY+7e+t01pMcjEinYnEdTo2BAzhKOS98Lc6F/s=
+	t=1711300015; cv=none; b=NV7VUTk68KNesZOHrGqBRWNodCHSJ6xVWGcRmrOwojcESYKuwxB28+pipCBQDj3fiGXnfBJoOdZpR51eMLqtH+eALOGTJ3BfjPx7gRIfcReFZKX+FPeoJ3uL2kekp8hFFrk3lu+F/2LUsZvwvoI9FEtYgPNNhJgt6zIhpvLgduc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711300011; c=relaxed/simple;
-	bh=OtAGbeU5mxTavpUec3StFvPEE4SSEplTjeR8N2SdDAE=;
+	s=arc-20240116; t=1711300015; c=relaxed/simple;
+	bh=y2NskhnlSLEQYW+qjoUoLdVRGSkSj7HF4N5cY7/qLkk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FKdMhO++4BDT8SdK7EQiXBTXRo/Qyix3KQ83LCqx7wSV+i3x1Ce9ML1gNyeFpPcLh1QG4JHnfVlap3pIBjseDwp/3yWzLZWfXCdBcv/00TX5KVO8PUd11bN99nuaaahFvTalX5jtq75D9ICcl0sqnP0HUBpc0R2s0/xuZYqvsqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YgNQMkVv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A376AC433C7;
-	Sun, 24 Mar 2024 17:06:49 +0000 (UTC)
+	 MIME-Version; b=TK0EIzrOB8e3n+q5YO86P+EnwMf5Z08QMMbWGMIU8rpg55cUApNuCCcKnPlQW8rSG0b5oJwivZSTBQvCQd/ZLHYhXQWqfeLgkTLrX6yAOFsVURAXgnY3blfs3hCS326628BCyQRFO8VSchhtcsx0kCGLkVaYLZL4COswiQfKDgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bzFGPAdu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 396AFC433F1;
+	Sun, 24 Mar 2024 17:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711300011;
-	bh=OtAGbeU5mxTavpUec3StFvPEE4SSEplTjeR8N2SdDAE=;
+	s=k20201202; t=1711300015;
+	bh=y2NskhnlSLEQYW+qjoUoLdVRGSkSj7HF4N5cY7/qLkk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YgNQMkVvRTxAi9UIP0yYkbIB/3k2b6+1/nXj6yVLEMqCzFadVn1DdSABSzYVcVtGA
-	 kQvyZIKvSrpOfu+A2Jv3vbSbDTE9+cmqNNqRHRvnyU5eqaQ4QlDM5BIB3f9VwSND7B
-	 lkcERyy8uOGIv13Z6R4HcqA5v7c40TxOjHqqMjdCsazqE3hb9zoEpyYdO28Q50OlEv
-	 PpyCLeG1Ik6a3UEJjwyABouIngx+wUM9sVB5deF6MX56deoguWhwQRULRAuFobjmmO
-	 59UO1rCjkBQinoYzVr96Gckg7c40wTFPQVUuLmdpHhh0Q4YVTG/XbuH5LY2VkyrjO8
-	 RgOX1RQU7Ha0A==
+	b=bzFGPAduNVb/FGdMME4e00q++hVWnHz/Tq63G0vCrDUfAivuvjfhXMvTj+jIj9Zlv
+	 j8JaOnM/bqwEjrgpt1/TSJRqYOWCTxqvr4ZG2H65vdS8WwBviO3Vm8yX9myfWjxgQB
+	 NMjVzahGU6zQHObqcx/d8ZmfscPt5mNWprFTfS2EPMhEsIl5EVywwGveM0PDQRUDSb
+	 o8/XFvKDQy9mHlRMwQXxFPIkLpMFbrpZkmoUVQAWoIxCBByORLps6zbWt6jMWW41cw
+	 aVmw5FoROgamrJLWO0H/FqwZwRx4Fm3MDiSHYL71KDaZAgcYu5rkB8li0VNSGgXamU
+	 93euomrpO1hOA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,17 +49,23 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
 	quic_neeraju@quicinc.com,
 	joel@joelfernandes.org,
 	josh@joshtriplett.org,
+	kent.overstreet@linux.dev,
+	akpm@linux-foundation.org,
+	oleg@redhat.com,
+	arnd@arndb.de,
+	hca@linux.ibm.com,
+	brauner@kernel.org,
+	surenb@google.com,
+	mjguzik@gmail.com,
+	npiggin@gmail.com,
+	zhangpeng.00@bytedance.com,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 03/11] rcu-tasks: Add data to eliminate RCU-tasks/do_exit() deadlocks
-Date: Sun, 24 Mar 2024 13:06:33 -0400
-Message-ID: <20240324170645.546220-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 04/11] rcu-tasks: Initialize data to eliminate RCU-tasks/do_exit() deadlocks
+Date: Sun, 24 Mar 2024 13:06:34 -0400
+Message-ID: <20240324170645.546220-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324170645.546220-1-sashal@kernel.org>
 References: <20240324170645.546220-1-sashal@kernel.org>
@@ -76,7 +82,7 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit bfe93930ea1ea3c6c115a7d44af6e4fea609067e ]
+[ Upstream commit 46faf9d8e1d52e4a91c382c6c72da6bd8e68297b ]
 
 Holding a mutex across synchronize_rcu_tasks() and acquiring
 that same mutex in code called from do_exit() after its call to
@@ -93,7 +99,7 @@ In addition, if a task voluntarily context switches during that time
 RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
 just as well take advantage of that fact.
 
-This commit therefore adds the data structures that will be needed
+This commit therefore initializes the data structures that will be needed
 to rely on these quiescent states and to eliminate these deadlocks.
 
 Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
@@ -107,43 +113,48 @@ Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sched.h | 2 ++
- kernel/rcu/tasks.h    | 2 ++
- 2 files changed, 4 insertions(+)
+ init/init_task.c   | 1 +
+ kernel/fork.c      | 1 +
+ kernel/rcu/tasks.h | 2 ++
+ 3 files changed, 4 insertions(+)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 77f01ac385f7a..3d83cc397eac1 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -854,6 +854,8 @@ struct task_struct {
- 	u8				rcu_tasks_idx;
- 	int				rcu_tasks_idle_cpu;
- 	struct list_head		rcu_tasks_holdout_list;
-+	int				rcu_tasks_exit_cpu;
-+	struct list_head		rcu_tasks_exit_list;
- #endif /* #ifdef CONFIG_TASKS_RCU */
- 
+diff --git a/init/init_task.c b/init/init_task.c
+index ff6c4b9bfe6b1..fd9e27185e23a 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -152,6 +152,7 @@ struct task_struct init_task
+ 	.rcu_tasks_holdout = false,
+ 	.rcu_tasks_holdout_list = LIST_HEAD_INIT(init_task.rcu_tasks_holdout_list),
+ 	.rcu_tasks_idle_cpu = -1,
++	.rcu_tasks_exit_list = LIST_HEAD_INIT(init_task.rcu_tasks_exit_list),
+ #endif
  #ifdef CONFIG_TASKS_TRACE_RCU
+ 	.trc_reader_nesting = 0,
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 177ce7438db6b..d73fdfc207bee 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1976,6 +1976,7 @@ static inline void rcu_copy_process(struct task_struct *p)
+ 	p->rcu_tasks_holdout = false;
+ 	INIT_LIST_HEAD(&p->rcu_tasks_holdout_list);
+ 	p->rcu_tasks_idle_cpu = -1;
++	INIT_LIST_HEAD(&p->rcu_tasks_exit_list);
+ #endif /* #ifdef CONFIG_TASKS_RCU */
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	p->trc_reader_nesting = 0;
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 65e000ca332cc..cce0604f6fcc1 100644
+index cce0604f6fcc1..91ed14b83333b 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -32,6 +32,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @rtp_irq_work: IRQ work queue for deferred wakeups.
-  * @barrier_q_head: RCU callback for barrier operation.
-  * @rtp_blkd_tasks: List of tasks blocked as readers.
-+ * @rtp_exit_list: List of tasks in the latter portion of do_exit().
-  * @cpu: CPU number corresponding to this entry.
-  * @rtpp: Pointer to the rcu_tasks structure.
-  */
-@@ -46,6 +47,7 @@ struct rcu_tasks_percpu {
- 	struct irq_work rtp_irq_work;
- 	struct rcu_head barrier_q_head;
- 	struct list_head rtp_blkd_tasks;
-+	struct list_head rtp_exit_list;
- 	int cpu;
- 	struct rcu_tasks *rtpp;
- };
+@@ -277,6 +277,8 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
+ 		rtpcp->rtpp = rtp;
+ 		if (!rtpcp->rtp_blkd_tasks.next)
+ 			INIT_LIST_HEAD(&rtpcp->rtp_blkd_tasks);
++		if (!rtpcp->rtp_exit_list.next)
++			INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
+ 	}
+ 
+ 	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d.\n", rtp->name,
 -- 
 2.43.0
 
