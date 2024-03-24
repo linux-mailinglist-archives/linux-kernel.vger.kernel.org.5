@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B44BE888BF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:05:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CAA8889942
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:06:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5C0A1C29D5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:05:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D933B2A7128
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6123E27EE4C;
-	Mon, 25 Mar 2024 00:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF873A8FE2;
+	Mon, 25 Mar 2024 03:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YrNM+P6l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="McPOlGbB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57BC179201;
-	Sun, 24 Mar 2024 23:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C2B1791FF;
+	Sun, 24 Mar 2024 23:39:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323586; cv=none; b=ifAy8JDkFmc/IR0AjtZUT/LtoY2Wkq7T70UZ6LQ6cJ843ls0/adOvM9HTDesqq6itLWwT4jbp2LgGFo2NAc6AhKbrV+j+JpsEl+3HkYiUJJb5eWc3Z6rL9/CsdaDudt3Y3nllyVSSFY9tiaiT0m4gq8YUZ1gfmiMag59uyrCJjg=
+	t=1711323586; cv=none; b=GyuAkWjvdBEbYDi56PoMlqCzfD2/MpQ1VV11pFyVZQV/w+3dbhb5+cqD6uWooEwQiqJTEq1XYN2VTBf67fjUS9ffN+nW1WVdUXkXYrDq3PwxLvF5SnuUD6h4Y/wFxJHfGcY5TXVU5gXTNFKy0WjP9rlNMV7fTRZJ7YxUhX9mkY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323586; c=relaxed/simple;
-	bh=cNTc0foQCXZmIToOgPyjkik9S7rJXFiU9PdOqTuNIxE=;
+	bh=3PvprwhOCGenibaX4x5mcox1m9f8MXwYIxwZC7iVdEM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=i9h+jYxlA1Ih3C/ZEM5eisRWprZyk89nV945/LYFqGGwSfJgYSSOPNHuhKLXfxtBd8yyrBlx0+04JjHodcuoR0yE6dPLtg1uBaNW/1yVStB25rjAf0iH0AHYnVcIw2zfOun20oH6aV9V+Pn7vF6YyqNNVGffstfBh2ZxMnZ4ECw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YrNM+P6l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD36C433C7;
-	Sun, 24 Mar 2024 23:39:44 +0000 (UTC)
+	 MIME-Version; b=JlDZF77J0v7xR8luSAlFUFtwp7cmVpWzY3Ylpq4l1Cf0P3mi6bAV91vpgnrWNW4B6wlGNOFQxpF1FKgUdPonXvFX8dnzVeKSn3lEk29PO3lxQPIuAMs/CkimImMVvz65hlSNqn13vX6iJnKbjX6yvxRO6UfSzD32CwR0GCUUxug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=McPOlGbB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EFBC41679;
+	Sun, 24 Mar 2024 23:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323585;
-	bh=cNTc0foQCXZmIToOgPyjkik9S7rJXFiU9PdOqTuNIxE=;
+	s=k20201202; t=1711323586;
+	bh=3PvprwhOCGenibaX4x5mcox1m9f8MXwYIxwZC7iVdEM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YrNM+P6lhUDy3vGUIulL9+KTlUb/me7j74BytuQsa5Pf82cIoaaluhdu/aaRZukNU
-	 NUvclMF3Erq+45mEOOLhzo4x/ESGmuPASXYq0Sw0CeWZqyDyQD9vplRk1Wo18Kq2fn
-	 Gz6/5wJY1t6tsxQPj8KW15C6wrW9tPmn/xWRETZiOhIDEX+77PEIjPU5vf4p+5RRhf
-	 Y/V1g+vs1+VfDqjfTx/9rpYCgG6w3bFX8PlxVDMKdemeUbivtjSAA6PO38EcqpqGg5
-	 WhYrkykWfLG6pTze28PgXCATW5K4MUZ6RH7SyUCh62iwOCRshFOjgPO8FqiZD7vo7f
-	 0NHPagdZT3VJA==
+	b=McPOlGbBpa6f/2EkGssmRJhf+fZ2aWuNuWq9NV0m9Q+x5BLZbJ538ED6GVSlwCS9l
+	 TrcxGnBVjsPigUszrP4gXi1QpkczXrNn7W7PzALczJHjn4LQ2Y2lb77tBkAV2pkJKi
+	 cRsXlzIilvanuSMutO1QHTtVuy68h9dArpWeCz9lXBCZamI5VMplxcSq8fEaW8W5UG
+	 aU2bP1bcZfvdu50RqD/Ln4SqCyaA4AjKEOI9OoEp6esUHBWIpECeDnlLThDSr1PXuD
+	 VlkK7ZmK/tHCpo/7vM/liNFJ1O0We7HHoV9DyyK8jZ7Du6QFf37n3pX3cGMaBoD/iW
+	 jtiw0HLPc/5wg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shigeru Yoshida <syoshida@redhat.com>,
-	syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 292/317] hsr: Fix uninit-value access in hsr_get_node()
-Date: Sun, 24 Mar 2024 19:34:32 -0400
-Message-ID: <20240324233458.1352854-293-sashal@kernel.org>
+Subject: [PATCH 5.15 293/317] net: mtk_eth_soc: move MAC_MCR setting to mac_finish()
+Date: Sun, 24 Mar 2024 19:34:33 -0400
+Message-ID: <20240324233458.1352854-294-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,96 +62,88 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Shigeru Yoshida <syoshida@redhat.com>
+From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit ddbec99f58571301679addbc022256970ca3eac6 ]
+[ Upstream commit 0e37ad71b2ff772009595002da2860999e98e14e ]
 
-KMSAN reported the following uninit-value access issue [1]:
+Move the setting of the MTK_MAC_MCR register from the end of mac_config
+into the phylink mac_finish() method, to keep it as the very last write
+that is done during configuration.
 
-=====================================================
-BUG: KMSAN: uninit-value in hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
- hsr_get_node+0xa2e/0xa40 net/hsr/hsr_framereg.c:246
- fill_frame_info net/hsr/hsr_forward.c:577 [inline]
- hsr_forward_skb+0xe12/0x30e0 net/hsr/hsr_forward.c:615
- hsr_dev_xmit+0x1a1/0x270 net/hsr/hsr_device.c:223
- __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
- netdev_start_xmit include/linux/netdevice.h:4954 [inline]
- xmit_one net/core/dev.c:3548 [inline]
- dev_hard_start_xmit+0x247/0xa10 net/core/dev.c:3564
- __dev_queue_xmit+0x33b8/0x5130 net/core/dev.c:4349
- dev_queue_xmit include/linux/netdevice.h:3134 [inline]
- packet_xmit+0x9c/0x6b0 net/packet/af_packet.c:276
- packet_snd net/packet/af_packet.c:3087 [inline]
- packet_sendmsg+0x8b1d/0x9f30 net/packet/af_packet.c:3119
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- __sys_sendto+0x735/0xa10 net/socket.c:2191
- __do_sys_sendto net/socket.c:2203 [inline]
- __se_sys_sendto net/socket.c:2199 [inline]
- __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- kmem_cache_alloc_node+0x5e9/0xb10 mm/slub.c:3523
- kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
- __alloc_skb+0x318/0x740 net/core/skbuff.c:651
- alloc_skb include/linux/skbuff.h:1286 [inline]
- alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6334
- sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2787
- packet_alloc_skb net/packet/af_packet.c:2936 [inline]
- packet_snd net/packet/af_packet.c:3030 [inline]
- packet_sendmsg+0x70e8/0x9f30 net/packet/af_packet.c:3119
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- __sys_sendto+0x735/0xa10 net/socket.c:2191
- __do_sys_sendto net/socket.c:2203 [inline]
- __se_sys_sendto net/socket.c:2199 [inline]
- __x64_sys_sendto+0x125/0x1c0 net/socket.c:2199
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 1 PID: 5033 Comm: syz-executor334 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
-
-If the packet type ID field in the Ethernet header is either ETH_P_PRP or
-ETH_P_HSR, but it is not followed by an HSR tag, hsr_get_skb_sequence_nr()
-reads an invalid value as a sequence number. This causes the above issue.
-
-This patch fixes the issue by returning NULL if the Ethernet header is not
-followed by an HSR tag.
-
-Fixes: f266a683a480 ("net/hsr: Better frame dispatch")
-Reported-and-tested-by: syzbot+2ef3a8ce8e91b5a50098@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=2ef3a8ce8e91b5a50098 [1]
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-Link: https://lore.kernel.org/r/20240312152719.724530-1-syoshida@redhat.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Stable-dep-of: f1b85ef15a99 ("net: mediatek: mtk_eth_soc: clear MAC_MCR_FORCE_LINK only when MAC is up")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/hsr/hsr_framereg.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 33 ++++++++++++++-------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
 
-diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
-index 8c9a20e99f0f4..e0aeeeda3c876 100644
---- a/net/hsr/hsr_framereg.c
-+++ b/net/hsr/hsr_framereg.c
-@@ -237,6 +237,10 @@ struct hsr_node *hsr_get_node(struct hsr_port *port, struct list_head *node_db,
- 	 */
- 	if (ethhdr->h_proto == htons(ETH_P_PRP) ||
- 	    ethhdr->h_proto == htons(ETH_P_HSR)) {
-+		/* Check if skb contains hsr_ethhdr */
-+		if (skb->mac_len < sizeof(struct hsr_ethhdr))
-+			return NULL;
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index 139dfdb1e58bd..c9d9a082c9f83 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -223,8 +223,8 @@ static void mtk_mac_config(struct phylink_config *config, unsigned int mode,
+ 	struct mtk_mac *mac = container_of(config, struct mtk_mac,
+ 					   phylink_config);
+ 	struct mtk_eth *eth = mac->hw;
+-	u32 mcr_cur, mcr_new, sid, i;
+ 	int val, ge_mode, err = 0;
++	u32 sid, i;
+ 
+ 	/* MT76x8 has no hardware settings between for the MAC */
+ 	if (!MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628) &&
+@@ -359,6 +359,25 @@ static void mtk_mac_config(struct phylink_config *config, unsigned int mode,
+ 		return;
+ 	}
+ 
++	return;
 +
- 		/* Use the existing sequence_nr from the tag as starting point
- 		 * for filtering duplicate frames.
- 		 */
++err_phy:
++	dev_err(eth->dev, "%s: GMAC%d mode %s not supported!\n", __func__,
++		mac->id, phy_modes(state->interface));
++	return;
++
++init_err:
++	dev_err(eth->dev, "%s: GMAC%d mode %s err: %d!\n", __func__,
++		mac->id, phy_modes(state->interface), err);
++}
++
++static int mtk_mac_finish(struct phylink_config *config, unsigned int mode,
++			  phy_interface_t interface)
++{
++	struct mtk_mac *mac = container_of(config, struct mtk_mac,
++					   phylink_config);
++	u32 mcr_cur, mcr_new;
++
+ 	/* Setup gmac */
+ 	mcr_cur = mtk_r32(mac->hw, MTK_MAC_MCR(mac->id));
+ 	mcr_new = mcr_cur;
+@@ -370,16 +389,7 @@ static void mtk_mac_config(struct phylink_config *config, unsigned int mode,
+ 	if (mcr_new != mcr_cur)
+ 		mtk_w32(mac->hw, mcr_new, MTK_MAC_MCR(mac->id));
+ 
+-	return;
+-
+-err_phy:
+-	dev_err(eth->dev, "%s: GMAC%d mode %s not supported!\n", __func__,
+-		mac->id, phy_modes(state->interface));
+-	return;
+-
+-init_err:
+-	dev_err(eth->dev, "%s: GMAC%d mode %s err: %d!\n", __func__,
+-		mac->id, phy_modes(state->interface), err);
++	return 0;
+ }
+ 
+ static void mtk_mac_pcs_get_state(struct phylink_config *config,
+@@ -562,6 +572,7 @@ static const struct phylink_mac_ops mtk_phylink_ops = {
+ 	.mac_pcs_get_state = mtk_mac_pcs_get_state,
+ 	.mac_an_restart = mtk_mac_an_restart,
+ 	.mac_config = mtk_mac_config,
++	.mac_finish = mtk_mac_finish,
+ 	.mac_link_down = mtk_mac_link_down,
+ 	.mac_link_up = mtk_mac_link_up,
+ };
 -- 
 2.43.0
 
