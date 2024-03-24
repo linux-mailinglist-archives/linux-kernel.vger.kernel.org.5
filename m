@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-116079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2914C889926
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:03:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2670D88958F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:31:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6E9E29E28B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:03:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B96C11F30DCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:31:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BE73A473D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A033A4739;
 	Mon, 25 Mar 2024 03:29:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YE3AVvfH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nVIhcwd+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9659177A99;
-	Sun, 24 Mar 2024 23:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8C4177A9B;
+	Sun, 24 Mar 2024 23:38:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323516; cv=none; b=GQGQXhL3kXWvTg4uxQ8fRFB8Gezg5BLVtmU/F6WDVvzTtMLCMrhH2wxkRqrKoKqWEuSyOqRP/KIrUhu+48tRvp7j/9Yuy5GncpTgoEqCjEDBS6UveAnCVyZ4e8CIHx5XwVHgt2dAgv+jJMjtVs+ojKgvLP6O/E8ao9EohFHitmQ=
+	t=1711323517; cv=none; b=Q2z+KaggCierlAhBbGN9M34k+GvTt0p9wHAQUMzffASZcYHkFOQ6WkcBt7QGPUrXhizLyYqBSWFqFzih4WhaklB4c/o5vfvA7XbY2yB30XO5XqFStis2g0rylsK/p8sdfkh4+Cj4EPMbQsmBvDyEEY2rB/Jqypsju3xukg5Qr4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323516; c=relaxed/simple;
-	bh=8NG5ryWG5HYBva078aNyd9BCSi5cg3Cn9gXeZNtAs18=;
+	s=arc-20240116; t=1711323517; c=relaxed/simple;
+	bh=Dmi5nBFpgY5kImSUT5dFKiVM+QenL1/FmXSXxJ9lA6c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jBuhwRmvU7tL2HGxInECJDu2DPupZDVsgtvOowMchqxNZDX0j9ynpF1lZYObDHrjUYzKR+52FW2ENQjXYLNVHkABUCOHmQhhYLwXmlT+wEPEer0JRuaoA2IUBZCR8R+LbSkiXJTWBEB9FtZ9/uWGw/Rk5bzwJNOZz4hXcs1RAe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YE3AVvfH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC9ADC433C7;
-	Sun, 24 Mar 2024 23:38:34 +0000 (UTC)
+	 MIME-Version; b=ddY/84ftd1RZzsxxyHHbVXwEnT1tnHfYRa647HsGBOT1IZCKrwxJJVjDVGre7tB4e4Ay+meHfITeJ932WZSBSrS8p/4FJIoSvqYgidt530X2y5IttweFxH/nhgOtC1lFDH20U9wW1je5d1UPtsjf1ujK+vZZjN7uvNgQVGg2WZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nVIhcwd+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA897C433F1;
+	Sun, 24 Mar 2024 23:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323515;
-	bh=8NG5ryWG5HYBva078aNyd9BCSi5cg3Cn9gXeZNtAs18=;
+	s=k20201202; t=1711323516;
+	bh=Dmi5nBFpgY5kImSUT5dFKiVM+QenL1/FmXSXxJ9lA6c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YE3AVvfHoJTGNNZ4J/qm+HZLesYrNtPSEKQcQ0ytdTHX9ielZhTCkeTBYBgrym+th
-	 AwkzGDRU+2PibPsvA4dK/gAc6+QVAYb5qn6rm5tzntUM7w7dv6H2gAimYtn/t2nQxs
-	 pK4q/9JpAo/H+Z4hxHV7uwkueolztQVV3h4+lj40kjFwDeRJzHiQYbR3TFKUB303SP
-	 83rHUxrxxHMOlqUZ+7GtXyprj2ENHq9MrdzKJnIft2wTYTzD4l90s7asSNnvu1B7fH
-	 UhgL9Cj5P4umZrsgQzXechEBXHo8kx/jDXpuOlTmue1o5Kot63yhuNBEbeuMAq94B7
-	 HaKbGDPUGk2GQ==
+	b=nVIhcwd+QytCgaBTpGsBm3dX/FacJBJXbpOnbhbmkNfhd9BzSNDKQLDX8FUkWmhYw
+	 9lNIC+Ar0Yba3sFzXfA+mNEDL6pZQpl1VOz4ZRcniIvX4cw5O5+g0kisThH1Nm01XY
+	 zpvBO/9DD2sFmM8h7nKGmnMxsxp1oDUCHHH+jcYU6BJ9g5lhxAYWsCaYghtDmLm5fq
+	 E3rwN7mFMleeoA0ZQmEmr8P8AQXhfcAt66QXqUpkmUq5xSzY+I4cFmHq2S2BrhYYyi
+	 lguOwT4M4o6msmJX/vLJ6AFJMmx8mK+SjeFpV23/fu13rqfH2SDU/+cC2ndouNThCZ
+	 iJSLro2y8Sz/A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
+Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Aradhya Bhatia <a-bhatia1@ti.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 222/317] crypto: arm/sha - fix function cast warnings
-Date: Sun, 24 Mar 2024 19:33:22 -0400
-Message-ID: <20240324233458.1352854-223-sashal@kernel.org>
+Subject: [PATCH 5.15 223/317] drm/tidss: Fix initial plane zpos values
+Date: Sun, 24 Mar 2024 19:33:23 -0400
+Message-ID: <20240324233458.1352854-224-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,113 +62,54 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-[ Upstream commit 53cc9baeb9bc2a187eb9c9790d30995148852b12 ]
+[ Upstream commit 3ec948ccb2c4b99e8fbfdd950adbe92ea577b395 ]
 
-clang-16 warns about casting between incompatible function types:
+When the driver sets up the zpos property it sets the default zpos value
+to the HW id of the plane. That is fine as such, but as on many DSS
+versions the driver arranges the DRM planes in a different order than
+the HW planes (to keep the non-scalable planes first), this leads to odd
+initial zpos values. An example is J721e, where the initial zpos values
+for DRM planes are 1, 3, 0, 2.
 
-arch/arm/crypto/sha256_glue.c:37:5: error: cast from 'void (*)(u32 *, const void *, unsigned int)' (aka 'void (*)(unsigned int *, const void *, unsigned int)') to 'sha256_block_fn *' (aka 'void (*)(struct sha256_state *, const unsigned char *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   37 |                                 (sha256_block_fn *)sha256_block_data_order);
-      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-arch/arm/crypto/sha512-glue.c:34:3: error: cast from 'void (*)(u64 *, const u8 *, int)' (aka 'void (*)(unsigned long long *, const unsigned char *, int)') to 'sha512_block_fn *' (aka 'void (*)(struct sha512_state *, const unsigned char *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   34 |                 (sha512_block_fn *)sha512_block_data_order);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In theory the userspace should configure the zpos values properly when
+using multiple planes, and in that sense the initial zpos values
+shouldn't matter, but there's really no reason not to fix this and help
+the userspace apps which don't handle zpos perfectly. In particular,
+some versions of Weston seem to have issues dealing with the planes
+with the current default zpos values.
 
-Fix the prototypes for the assembler functions to match the typedef.
-The code already relies on the digest being the first part of the
-state structure, so there is no change in behavior.
+So let's change the zpos values for the DRM planes to 0, 1, 2, 3.
 
-Fixes: c80ae7ca3726 ("crypto: arm/sha512 - accelerated SHA-512 using ARM generic ASM and NEON")
-Fixes: b59e2ae3690c ("crypto: arm/sha256 - move SHA-224/256 ASM/NEON implementation to base layer")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Another option would be to configure the planes marked as primary planes
+to zpos 0. On a two display system this would give us plane zpos values
+of 0, 0, 1, 2. The end result and behavior would be very similar in this
+option, and I'm not aware that this would actually help us in any way.
+So, to keep the code simple, I opted for the 0, 1, 2, 3 values.
+
+Fixes: 32a1795f57ee ("drm/tidss: New driver for TI Keystone platform Display SubSystem")
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240213-tidss-fixes-v1-1-d709e8dfa505@ideasonboard.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/crypto/sha256_glue.c | 13 +++++--------
- arch/arm/crypto/sha512-glue.c | 12 +++++-------
- 2 files changed, 10 insertions(+), 15 deletions(-)
+ drivers/gpu/drm/tidss/tidss_plane.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/crypto/sha256_glue.c b/arch/arm/crypto/sha256_glue.c
-index 433ee4ddce6c8..f85933fdec75f 100644
---- a/arch/arm/crypto/sha256_glue.c
-+++ b/arch/arm/crypto/sha256_glue.c
-@@ -24,8 +24,8 @@
+diff --git a/drivers/gpu/drm/tidss/tidss_plane.c b/drivers/gpu/drm/tidss/tidss_plane.c
+index 217415ec8eea1..8ccd7d31c01b3 100644
+--- a/drivers/gpu/drm/tidss/tidss_plane.c
++++ b/drivers/gpu/drm/tidss/tidss_plane.c
+@@ -210,7 +210,7 @@ struct tidss_plane *tidss_plane_create(struct tidss_device *tidss,
  
- #include "sha256_glue.h"
+ 	drm_plane_helper_add(&tplane->plane, &tidss_plane_helper_funcs);
  
--asmlinkage void sha256_block_data_order(u32 *digest, const void *data,
--					unsigned int num_blks);
-+asmlinkage void sha256_block_data_order(struct sha256_state *state,
-+					const u8 *data, int num_blks);
+-	drm_plane_create_zpos_property(&tplane->plane, hw_plane_id, 0,
++	drm_plane_create_zpos_property(&tplane->plane, tidss->num_planes, 0,
+ 				       num_planes - 1);
  
- int crypto_sha256_arm_update(struct shash_desc *desc, const u8 *data,
- 			     unsigned int len)
-@@ -33,23 +33,20 @@ int crypto_sha256_arm_update(struct shash_desc *desc, const u8 *data,
- 	/* make sure casting to sha256_block_fn() is safe */
- 	BUILD_BUG_ON(offsetof(struct sha256_state, state) != 0);
- 
--	return sha256_base_do_update(desc, data, len,
--				(sha256_block_fn *)sha256_block_data_order);
-+	return sha256_base_do_update(desc, data, len, sha256_block_data_order);
- }
- EXPORT_SYMBOL(crypto_sha256_arm_update);
- 
- static int crypto_sha256_arm_final(struct shash_desc *desc, u8 *out)
- {
--	sha256_base_do_finalize(desc,
--				(sha256_block_fn *)sha256_block_data_order);
-+	sha256_base_do_finalize(desc, sha256_block_data_order);
- 	return sha256_base_finish(desc, out);
- }
- 
- int crypto_sha256_arm_finup(struct shash_desc *desc, const u8 *data,
- 			    unsigned int len, u8 *out)
- {
--	sha256_base_do_update(desc, data, len,
--			      (sha256_block_fn *)sha256_block_data_order);
-+	sha256_base_do_update(desc, data, len, sha256_block_data_order);
- 	return crypto_sha256_arm_final(desc, out);
- }
- EXPORT_SYMBOL(crypto_sha256_arm_finup);
-diff --git a/arch/arm/crypto/sha512-glue.c b/arch/arm/crypto/sha512-glue.c
-index 0635a65aa488b..1be5bd498af36 100644
---- a/arch/arm/crypto/sha512-glue.c
-+++ b/arch/arm/crypto/sha512-glue.c
-@@ -25,27 +25,25 @@ MODULE_ALIAS_CRYPTO("sha512");
- MODULE_ALIAS_CRYPTO("sha384-arm");
- MODULE_ALIAS_CRYPTO("sha512-arm");
- 
--asmlinkage void sha512_block_data_order(u64 *state, u8 const *src, int blocks);
-+asmlinkage void sha512_block_data_order(struct sha512_state *state,
-+					u8 const *src, int blocks);
- 
- int sha512_arm_update(struct shash_desc *desc, const u8 *data,
- 		      unsigned int len)
- {
--	return sha512_base_do_update(desc, data, len,
--		(sha512_block_fn *)sha512_block_data_order);
-+	return sha512_base_do_update(desc, data, len, sha512_block_data_order);
- }
- 
- static int sha512_arm_final(struct shash_desc *desc, u8 *out)
- {
--	sha512_base_do_finalize(desc,
--		(sha512_block_fn *)sha512_block_data_order);
-+	sha512_base_do_finalize(desc, sha512_block_data_order);
- 	return sha512_base_finish(desc, out);
- }
- 
- int sha512_arm_finup(struct shash_desc *desc, const u8 *data,
- 		     unsigned int len, u8 *out)
- {
--	sha512_base_do_update(desc, data, len,
--		(sha512_block_fn *)sha512_block_data_order);
-+	sha512_base_do_update(desc, data, len, sha512_block_data_order);
- 	return sha512_arm_final(desc, out);
- }
- 
+ 	ret = drm_plane_create_color_properties(&tplane->plane,
 -- 
 2.43.0
 
