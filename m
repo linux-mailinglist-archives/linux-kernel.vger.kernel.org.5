@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FB3B8898FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:58:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F59889095
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FD85295519
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:57:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 276A11F2B2C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650C1396665;
-	Mon, 25 Mar 2024 03:05:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD6113CAAE;
+	Sun, 24 Mar 2024 23:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vRDWy+2y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YDma95Qj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A34548EC;
-	Sun, 24 Mar 2024 23:18:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4782B234D7A;
+	Sun, 24 Mar 2024 23:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322286; cv=none; b=TnbhVKNq5e2Ayf3JDnsuFmL0X8hUckp2a/HzTBr3gibOcmKlfD6l/pMCUboQGtPDlPx9hwRFlz6guajWJxYHzSKpDf22JbUWMQbv5oHCGv3iYsQ5MHpJ16CjeNqdnC1+BxmKb7ChH9pXA5ePT/fEenxfAF9OX4gOtY/n6CkTriw=
+	t=1711322288; cv=none; b=EAUb12sg9LWrTxUgpncuJeMp1GxtkNn6nwwwhx9uCLML6hDqH7tuqYbYG/lwBV/dl8y9vLJYozNEinV3gsi/vQj+9w/E++QWAUPOKSehPAX7UHAMpUdDN0lLsB+vsf50zI0GyxtH5hXUPO3ItkBIXoAyQnntmU3T0VoNWlbHy3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322286; c=relaxed/simple;
-	bh=aOtOQZUuSnr0lLTRQxgN4glJphn+Zqcuou6Khw4hzys=;
+	s=arc-20240116; t=1711322288; c=relaxed/simple;
+	bh=dhKFxGipNUYb7+OZCcYXRa1jL6XDpWTD56tS1MNSVQM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pFPV1sLPPHq00NAWQUCyw5j2pRn41RydgyclAhSNEuT0Vg5TE/whzwymR4w/o+elO8J7OglhqTxK8iu4GUm6aWoUDU8Q/lzez7n1Udfbz6g9Bu6yzNxg22730KBEQ38E8PnWkva2Vaa5RsjC3GhRc45zXWp4l4hMpwMIatOWLFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vRDWy+2y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80A66C433F1;
-	Sun, 24 Mar 2024 23:18:05 +0000 (UTC)
+	 MIME-Version; b=sv1mdtfNZLfxSK8XHSFfkwf/GDbpnE262G/pm5j601tC4bz6WAOvkfmiI0YMzmq7SQIm1rww8TgY+AZMAy+Cw/x87YT2b36146pGToLf2InLeVGWfkSasXeGDbU0wDWHmafGEq8W6zABlrmmXOV5fXbmikaWd0kMev18sv3a/ZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YDma95Qj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C3AEC433F1;
+	Sun, 24 Mar 2024 23:18:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322286;
-	bh=aOtOQZUuSnr0lLTRQxgN4glJphn+Zqcuou6Khw4hzys=;
+	s=k20201202; t=1711322287;
+	bh=dhKFxGipNUYb7+OZCcYXRa1jL6XDpWTD56tS1MNSVQM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vRDWy+2y1EUqJIls0jBQOBsj9l6b0iAInF8/JuvpVBYI39LsJDzlVX2+6Zjaoxnfs
-	 DZ/YJNTsHaNJkSconS+mbylOhCJ7wADGjuGdPeR5zkT7ZWe6x+RrdhxqzwbmidRJK3
-	 siH61iCq2g2PzoCVuZ9XSbs9arLZ2vC2yV0KzV1BtYdcp1Ub/NAImGQXCVgU5py4JR
-	 QWN9TBYyGGArGoZ3IxIrJRSvl5uNmBihHYXB/rGdHgE7mCq2MT2GVMR7Vcz5lu+cW+
-	 ReIHx3ZzT/iX80gCTu2phFlduqKejbh5lQ48t9pkLcYSJy73+IH5IUMOi3Vy1jz05N
-	 2Tn9+xpYkVqpw==
+	b=YDma95QjSGdDWTQOfovNnFc8zQ4YCSrzOq7lIlBGFZCLPpIwpuBN/EMmcRvCIi5uE
+	 XHp+YCSFYTcSKxGjYaU4aFogg+JMN6wVG3gBMcoLMvTED0HEC329ibBnwupnds/mwR
+	 cMphEDPMZh6ftEUd43GsZtYBNDgnnwxAj2KTaVJnXd+uG46LtmBY2DPz2sIxzbcV3d
+	 M5xcxFnRIM//B698G7EJ5GIM9Cw7TLxV3tcZ5VJp2J6m+dgXw/ZVzmGA//+gOa1XYe
+	 3lyGWMr++jQ7QBQswto0sM+gghaLFzZImwmXCrpOA/FOePzTNqY9ZvEc0iBgN7fgf3
+	 8CZ9sRFhM1xBQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chao Yu <chao@kernel.org>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 369/451] f2fs: compress: fix to check zstd compress level correctly in mount option
-Date: Sun, 24 Mar 2024 19:10:45 -0400
-Message-ID: <20240324231207.1351418-370-sashal@kernel.org>
+Subject: [PATCH 6.1 370/451] net: sunrpc: Fix an off by one in rpc_sockaddr2uaddr()
+Date: Sun, 24 Mar 2024 19:10:46 -0400
+Message-ID: <20240324231207.1351418-371-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,57 +63,40 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chao Yu <chao@kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit e39602da752cd1d0462e3fa04074146f6f2803f6 ]
+[ Upstream commit d6f4de70f73a106986ee315d7d512539f2f3303a ]
 
-f2fs only support to config zstd compress level w/ a positive number due
-to layout design, but since commit e0c1b49f5b67 ("lib: zstd: Upgrade to
-latest upstream zstd version 1.4.10"), zstd supports negative compress
-level, so that zstd_min_clevel() may return a negative number, then w/
-below mount option, .compress_level can be configed w/ a negative number,
-which is not allowed to f2fs, let's add check condition to avoid it.
+The intent is to check if the strings' are truncated or not. So, >= should
+be used instead of >, because strlcat() and snprintf() return the length of
+the output, excluding the trailing NULL.
 
-mount -o compress_algorithm=zstd:4294967295 /dev/sdx /mnt/f2fs
-
-Fixes: 00e120b5e4b5 ("f2fs: assign default compression level")
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: a02d69261134 ("SUNRPC: Provide functions for managing universal addresses")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/super.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ net/sunrpc/addr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 0c0d0671febea..c529ce5d986cc 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -649,7 +649,7 @@ static int f2fs_set_lz4hc_level(struct f2fs_sb_info *sbi, const char *str)
- #ifdef CONFIG_F2FS_FS_ZSTD
- static int f2fs_set_zstd_level(struct f2fs_sb_info *sbi, const char *str)
- {
--	unsigned int level;
-+	int level;
- 	int len = 4;
- 
- 	if (strlen(str) == len) {
-@@ -663,9 +663,15 @@ static int f2fs_set_zstd_level(struct f2fs_sb_info *sbi, const char *str)
- 		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
- 		return -EINVAL;
+diff --git a/net/sunrpc/addr.c b/net/sunrpc/addr.c
+index d435bffc61999..97ff11973c493 100644
+--- a/net/sunrpc/addr.c
++++ b/net/sunrpc/addr.c
+@@ -284,10 +284,10 @@ char *rpc_sockaddr2uaddr(const struct sockaddr *sap, gfp_t gfp_flags)
  	}
--	if (kstrtouint(str + 1, 10, &level))
-+	if (kstrtoint(str + 1, 10, &level))
- 		return -EINVAL;
  
-+	/* f2fs does not support negative compress level now */
-+	if (level < 0) {
-+		f2fs_info(sbi, "do not support negative compress level: %d", level);
-+		return -ERANGE;
-+	}
-+
- 	if (!f2fs_is_compress_level_valid(COMPRESS_ZSTD, level)) {
- 		f2fs_info(sbi, "invalid zstd compress level: %d", level);
- 		return -EINVAL;
+ 	if (snprintf(portbuf, sizeof(portbuf),
+-		     ".%u.%u", port >> 8, port & 0xff) > (int)sizeof(portbuf))
++		     ".%u.%u", port >> 8, port & 0xff) >= (int)sizeof(portbuf))
+ 		return NULL;
+ 
+-	if (strlcat(addrbuf, portbuf, sizeof(addrbuf)) > sizeof(addrbuf))
++	if (strlcat(addrbuf, portbuf, sizeof(addrbuf)) >= sizeof(addrbuf))
+ 		return NULL;
+ 
+ 	return kstrdup(addrbuf, gfp_flags);
 -- 
 2.43.0
 
