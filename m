@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-113372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C61B8883CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:20:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E468883CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:20:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07987282FDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:20:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 574E71F25992
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:20:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872F019E685;
-	Sun, 24 Mar 2024 22:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D4719D8B9;
+	Sun, 24 Mar 2024 22:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gef299Z4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QonjUkfY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E5819E66D;
-	Sun, 24 Mar 2024 22:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B4519E687;
+	Sun, 24 Mar 2024 22:42:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320173; cv=none; b=u4K3u2sI/483gwYT1Z4MF/9Za/qYUxmZuO7M8yu4k4yxbvWNvV+Psrc0KTY37GaBgh1chyioiEgZ8sj8NRjTNVQWf8IkoV93WN8nlvJL5lLtOdrI+v0pc+MHCseWlbm/CfwvVRlTRoQAZNjHmSglGQQ8sscaJux9d3LKxYuIyjc=
+	t=1711320174; cv=none; b=QKSaUjg8bBKZes9iDjE88NbvHz1PvuWZRUVzsLL5s8eSdNHeT3niSjVdk2QehrqwhOBsY/R5u7Jvm/BbseXFDonFTaqdul0dMF269d8833L3PNRoE9ezOQFIAm1lbf44o1i4/0t5gcwz1B5lZ4xOuzJGURu/JB3mkqr6abmwh3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320173; c=relaxed/simple;
-	bh=Z8X2zP+nEhY/enFqxgIxcycK4W9hG7UStcYvoIYNi8M=;
+	s=arc-20240116; t=1711320174; c=relaxed/simple;
+	bh=UcpuHo6S1LSr579056nVXn/HN/K/fVaSCMdpsLmxNuU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c5q1uIOKfi8hbIWnLWKqBxUr02uvTtiT8d5eEOMGiAYIuMVF55hH7jLZduhzB3iCFPLgnzpfZu3o3OyiqTjgl1N+jwFN3AO3QZCY7ETRINJ2AY2PrAZ9YuBKClgG0SbcdVfO0XMzB06BMh9j1Wd1A2ADSHxixl+blyuN1EWXwl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gef299Z4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB338C433B1;
-	Sun, 24 Mar 2024 22:42:52 +0000 (UTC)
+	 MIME-Version; b=kGkqxtubtX1eypOdPUro45NpsQVb8NoAQ5qvzfBvgBNqC2fB9gkXZ4M6bbnnyig9AqXuUSyjsJw/x7sY2sipO6Sh+rGNCLKzqY/OekraaZxgQozHIz10iivC16Py/Yu+mvgPrxUXw41X92Fverssp/T14cNWw0wfy6n6QQ5Kl1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QonjUkfY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93D3BC43601;
+	Sun, 24 Mar 2024 22:42:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320173;
-	bh=Z8X2zP+nEhY/enFqxgIxcycK4W9hG7UStcYvoIYNi8M=;
+	s=k20201202; t=1711320174;
+	bh=UcpuHo6S1LSr579056nVXn/HN/K/fVaSCMdpsLmxNuU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Gef299Z4C94fQh0YJhcfhKCh18mmd2PC2l9/mXPp0hmjVx54g5RgUG+kPMaCoeFBC
-	 AxyQNFiyrkL0WeSIXiK2HNnIzThcEPjVwPZL5JVOj7kIE4MS8PTnt+jGyxLr+xM+p/
-	 NtxP5eHru8iiWcups2v4kyRuYJPaOb2Ezq14kaJLcBcmZoLy1mqr6ud427tlE3ZMj9
-	 7o/ehDw/B+GLviqITnEsueoRWXGGosbm5mKV3NXp82XhNATqzzW2GOm6VnMWkX28xY
-	 n6hP7A3umZ6cbyGG0UKgtEIp+9LEB07fV4Ba2TFb5To8BhxBdIFJD3kw7UhrfZdZx2
-	 fXPwchwnRNYjw==
+	b=QonjUkfYNAY3BvupFqgso/TRrCpmQWJfdEEiqpgMPwIG3kcTQCKnS9nEp/G27HH9v
+	 krGGXuzk8PNJRYI5thCpGYY34whXI5tjmg+fa3Dr0oBTtVf5dqXkrgGvfq2xVgihme
+	 nRx5TUb/FcsDwiZadk2bIoJzmagwroP4SvNHIb8E/TW+3TP5VYOrQyfcXa/MayJ3rE
+	 DMUixBzkGnA82ZfTkuNezEFNzjzVX8GsC0YjetZ6JiHsrI3E+RSr3Bu79ooJTuFoTr
+	 e8r13URz8Z6bF7WMj3Qb3Dp3K2yJ2/ZDEOloJTyY4bo0IUsQv7BRrIAiKaq5k5Krjr
+	 oJ1XjWi89SqRQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jerome Brunet <jbrunet@baylibre.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Leonard Lausen <leonard@lausen.nl>,
+	Connor Abbott <cwabbott0@gmail.com>,
+	Rob Clark <robdclark@chromium.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 481/715] ASoC: meson: axg-tdm-interface: add frame rate constraint
-Date: Sun, 24 Mar 2024 18:31:00 -0400
-Message-ID: <20240324223455.1342824-482-sashal@kernel.org>
+Subject: [PATCH 6.8 482/715] drm/msm/a6xx: specify UBWC config for sc7180
+Date: Sun, 24 Mar 2024 18:31:01 -0400
+Message-ID: <20240324223455.1342824-483-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,84 +64,50 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit 59c6a3a43b221cc2a211181b1298e43b2c2df782 ]
+[ Upstream commit 0d7dfc79fb9b4b81f642f84796111f2bae8427e2 ]
 
-According to Amlogic datasheets for the SoCs supported by this driver, the
-maximum bit clock rate is 100MHz.
+Historically the Adreno driver has not been updating memory
+configuration registers on a618 (SC7180 platform) implying that the
+default configuration is fine. After the rework performed in the commit
+8814455a0e54 ("drm/msm: Refactor UBWC config setting") the function
+a6xx_calc_ubwc_config() still contained this shortcut and did not
+calculate UBWC configuration. However the function which now actually
+updates hardware registers, a6xx_set_ubwc_config(), doesn't contain such
+check.
 
-The tdm interface allows the rates listed by the DAI driver, regardless of
-the number slots or their width. However, these will impact the bit clock
-rate.
+Rather than adding the check to a6xx_set_ubwc_config(), fill in the
+UBWC config for a618 (based on readings from SC7180).
 
-Hitting the 100MHz limit is very unlikely for most use cases but it is
-possible.
-
-For example with 32 slots / 32 bits wide, the maximum rate is no longer
-384kHz but ~96kHz.
-
-Add the constraint accordingly if the component is not already active.
-If it is active, the rate is already constrained by the first stream rate.
-
-Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://msgid.link/r/20240223175116.2005407-3-jbrunet@baylibre.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Leonard Lausen <leonard@lausen.nl>
+Link: https://gitlab.freedesktop.org/drm/msm/-/issues/49
+Fixes: 8814455a0e54 ("drm/msm: Refactor UBWC config setting")
+Cc: Connor Abbott <cwabbott0@gmail.com>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Connor Abbott <cwabbott0@gmail.com>
+Patchwork: https://patchwork.freedesktop.org/patch/579113/
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/axg-tdm-interface.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index cd5168e826df4..2cedbce738373 100644
---- a/sound/soc/meson/axg-tdm-interface.c
-+++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -12,6 +12,9 @@
- 
- #include "axg-tdm.h"
- 
-+/* Maximum bit clock frequency according the datasheets */
-+#define MAX_SCLK 100000000 /* Hz */
-+
- enum {
- 	TDM_IFACE_PAD,
- 	TDM_IFACE_LOOPBACK,
-@@ -153,19 +156,27 @@ static int axg_tdm_iface_startup(struct snd_pcm_substream *substream,
- 		return -EINVAL;
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index c9c55e2ea5849..dc80e5940f51e 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1292,9 +1292,8 @@ static void a6xx_calc_ubwc_config(struct adreno_gpu *gpu)
+ 		gpu->ubwc_config.ubwc_mode = 1;
  	}
  
--	/* Apply component wide rate symmetry */
- 	if (snd_soc_component_active(dai->component)) {
-+		/* Apply component wide rate symmetry */
- 		ret = snd_pcm_hw_constraint_single(substream->runtime,
- 						   SNDRV_PCM_HW_PARAM_RATE,
- 						   iface->rate);
--		if (ret < 0) {
--			dev_err(dai->dev,
--				"can't set iface rate constraint\n");
--			return ret;
--		}
-+
-+	} else {
-+		/* Limit rate according to the slot number and width */
-+		unsigned int max_rate =
-+			MAX_SCLK / (iface->slots * iface->slot_width);
-+		ret = snd_pcm_hw_constraint_minmax(substream->runtime,
-+						   SNDRV_PCM_HW_PARAM_RATE,
-+						   0, max_rate);
- 	}
+-	/* a618 is using the hw default values */
+ 	if (adreno_is_a618(gpu))
+-		return;
++		gpu->ubwc_config.highest_bank_bit = 14;
  
--	return 0;
-+	if (ret < 0)
-+		dev_err(dai->dev, "can't set iface rate constraint\n");
-+	else
-+		ret = 0;
-+
-+	return ret;
- }
- 
- static int axg_tdm_iface_set_stream(struct snd_pcm_substream *substream,
+ 	if (adreno_is_a619_holi(gpu))
+ 		gpu->ubwc_config.highest_bank_bit = 13;
 -- 
 2.43.0
 
