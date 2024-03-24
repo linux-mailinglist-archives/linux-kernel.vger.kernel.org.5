@@ -1,102 +1,120 @@
-Return-Path: <linux-kernel+bounces-112549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 103F9887B68
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:14:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3405887B6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:18:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8029E1C2105A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:14:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E9A91F22173
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:18:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2424439;
-	Sun, 24 Mar 2024 02:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C98128FA;
+	Sun, 24 Mar 2024 02:18:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bc96guzj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NWEnTBrL"
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2464D81E;
-	Sun, 24 Mar 2024 02:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3750181E;
+	Sun, 24 Mar 2024 02:18:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711246483; cv=none; b=dKN3vc6aYyRMFRGtImvbk4vt6GzFLQACYyFHMCorlkMqMLrMBIAW5XowM3Jl2VG7QdxwYrFASpDz7Pi4DRqL4sL+23Xc7pGgNxI6KWicgNFfp5/njxMEm9V0+5+lX8j0/bGqWmnlNnhiliWSyBTgVMXhDSmzieK2rfdD9whP3Hg=
+	t=1711246697; cv=none; b=Ke2KTxSdPWQnnoejH5Ni2Eo28/sXoXfbBH0/XYI01JLqmIuv7L8pocA0lHnDefK6ET8FNNnjuYFIc08jb4lgm7Z8/E9D/cDXaO6yWuW+NTj51vp0ocvMGttNSqgP3lmOytM409lKC/LhRTJj2bkeoZN+cfLpj65pM1zVIm0Sz+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711246483; c=relaxed/simple;
-	bh=4i4BgjkutHOyxQNBbaoCLs26rtfvwXtsWOZ6p4wy4TA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=CUP/7swT3ngGLTsqr23LDxt25j+WMjXUJJtMsTCRiUw495DQnykwp7gL7d5VJd/K1aIHo1isfSNEtqsVLVpN6/xZE8LkzX8Al6Ay0KJFELrGKFiFbSEcd/CQxuQaQXh30G51jU1YBhf7Y+6m9hCD+heR2wLC2ho1+WisZA4Nrqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bc96guzj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 775F5C433C7;
-	Sun, 24 Mar 2024 02:14:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711246482;
-	bh=4i4BgjkutHOyxQNBbaoCLs26rtfvwXtsWOZ6p4wy4TA=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=bc96guzjjAsYjbVDO+YyU4yBxKS1Ck/FggYXeZl8u1pK2+3HPIawKkdEbN36ROUbo
-	 YGU2GFGInWBVOFdVyTJDlTNuPrT91E2pX0y8TTX5xnRHSV1A2rGBDLgITEGDb6EiET
-	 wklKd4ULsv3bZNePrujdNvd4G2Vx5803sOW97gUJScFhMUFpIgssAC4dNUUO0Tp1aF
-	 GtbitDPA26U/a3WdxcbNexfQ7CTjKAAmZDh2VQrgE/XbQ4YlIrIGoYqu6b8sGLATfJ
-	 PHf6jQPq5JDl9H80ylo0VTLYIomQobjwN5p8oi7muAzHeSmYpvR+SGyrtFS4BmO5p+
-	 7ITEHSUQTNmcg==
+	s=arc-20240116; t=1711246697; c=relaxed/simple;
+	bh=yg2Hm/IVogTNhzTU6kYBtYGgvcIfGxbzMCVal4KJTBE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=kGSCj5NiIE+nlC+/C/o4l+msEpKttEnm2B5v1INS4lfpBhnvd0Joltm6luzp7O0/9+16Cu1zF+xg5NLGDW2BLp3mwXumhQSn7Vu4++lo67NJMmpjL/FRybDTw4hRxJRZGAN02KpwiEZhj+EUHcVAzwyR0vTKQkuTrOuomqnfvL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NWEnTBrL; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42f52226f9bso14309921cf.3;
+        Sat, 23 Mar 2024 19:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711246695; x=1711851495; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jCmO03+9RwSrIzYMZH8CI854XN/NKy5dCm9nFGp2TmQ=;
+        b=NWEnTBrL4GE44uG5IZM46qwETZqc2cMPOyeBvXaX3SibRgKtP/W21lkapksc21p6iL
+         BO1BAW/B1Csz/td5htpoBeE3R00XF+gL9fTPTxL/pev5ZFLNc0KbygdNU/iIpWJ0EHtA
+         eIWyTl+0o9sjhUh+sCZv3KBIGB4FnwjaE93L7xZTjrvn5X+dCsn6NlGJ/ESzticoAaJE
+         jqT5gw8SzoDho/zfAWC6g34Gdk/mNH9KoG0u2EVHV7VmaQ4g1bmtL1yuF5q5Z10a/zQu
+         4USbST/bej0bljKmgcK4ZDvCwSwhyLf5lCZgJ1dBWY/sLTVtz0OpToaXTU50A4JvgbVK
+         WbHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711246695; x=1711851495;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jCmO03+9RwSrIzYMZH8CI854XN/NKy5dCm9nFGp2TmQ=;
+        b=qSGE56Zyc9ZLHJ7gXR+PW7Zyhu6x+JVqBRfvJzfVv4jE8yDue6ZVepwyFkCy2mKKTB
+         j5Brs+FpZySv/IU6JwqIq7+dwVBinH/dCrWfzJ6rfLdtx7rQfw+6MP5ZqGPXh0C2KHmH
+         yVJDWDchHzyOfBwiuPP1G/uX7hW7jepTtIFKF0HRgvEfKpxN9sSfsV3orM8yt73eRUM+
+         CA/SeWRAc+idNhpHzvNjO3Di7kuvyk3MEHlRmwE8QWj1/dMxELQhAWMpu6UB3Ep5L2ad
+         z2dcu6K5akC2BdUZT4/V840TtA5xJs0dvuQItMYlPfJ/MhYvTFkGkBDHqBMTkhtut6+l
+         YT2A==
+X-Forwarded-Encrypted: i=1; AJvYcCV8q7H8jsB675kYUSd/5T1VTLqlTZAK2dTAhEfUOJgFg+pjlbW5C0/H7gMdV/fOGYZm4O/uJBrFG3a1sGTwHPEtD0RXj/WfLrcwxhjNDBu97EVMy0KjudMF4ce+AyJkya66NFKlpgYpGpOnwhpkVXq05t0X7czZmHyfR83ReA==
+X-Gm-Message-State: AOJu0YwumM5NZ11hduNeNWJIQuD/HzRlB460To42JEJqBPbP7ebsD1+b
+	OFH8g5xfxCN9BOs3eZdIQJrna/2r03geM/tgx/IK4RqJtbyQ6kfF
+X-Google-Smtp-Source: AGHT+IGh/jWvNaLRJjSPNs9Rwcwu8fSVukUF2Zz0KdTMlUOdm3xrgN6zskrs7VdYu1qupJisaB0fPw==
+X-Received: by 2002:a05:622a:14d1:b0:431:1b29:58e9 with SMTP id u17-20020a05622a14d100b004311b2958e9mr5189035qtx.68.1711246694960;
+        Sat, 23 Mar 2024 19:18:14 -0700 (PDT)
+Received: from l1441l.lan0.xorvpn.com (pool-98-116-41-146.nycmny.fios.verizon.net. [98.116.41.146])
+        by smtp.gmail.com with ESMTPSA id bc13-20020a05622a1ccd00b004309b22265asm1266241qtb.75.2024.03.23.19.18.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Mar 2024 19:18:14 -0700 (PDT)
+From: Daniel Hodges <hodges.daniel.scott@gmail.com>
+To: andrew@lunn.ch
+Cc: ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	hodges.daniel.scott@gmail.com,
+	lee@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-leds@vger.kernel.org,
+	pavel@ucw.cz
+Subject: Re: [PATCH 1/3] leds: trigger: legtrig-bpf: Add ledtrig-bpf module
+Date: Sat, 23 Mar 2024 22:15:01 -0400
+Message-ID: <20240324021811.20794-1-hodges.daniel.scott@gmail.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <a9662071-8050-46b7-8416-d440d45bbb52@lunn.ch>
+References: <a9662071-8050-46b7-8416-d440d45bbb52@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 24 Mar 2024 04:14:36 +0200
-Message-Id: <D01M8YKG5ZG0.287OTMCUU2KP5@kernel.org>
-Subject: Re: [PATCH v4] Documentation: tpm_tis
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Daniel P. Smith"
- <dpsmith@apertussolutions.com>, <linux-integrity@vger.kernel.org>
-Cc: "Jonathan Corbet" <corbet@lwn.net>, "Lino Sanfilippo"
- <l.sanfilippo@kunbus.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Peter Huewe"
- <peterhuewe@gmx.de>, "James Bottomley"
- <James.Bottomley@HansenPartnership.com>, "Alexander Steffen"
- <Alexander.Steffen@infineon.com>, <keyrings@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Randy Dunlap"
- <rdunlap@infradead.org>, "Richard Cochran" <richardcochran@gmail.com>,
- "open list:PTP HARDWARE CLOCK SUPPORT:Keyword:(?:b|_)ptp(?:b|_)"
- <netdev@vger.kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240322123542.24158-1-jarkko@kernel.org>
- <5a494de5-b004-440c-bcdf-7bdfa3a8c508@apertussolutions.com>
- <D01CLI2TC5SZ.1A48PDHM5F3UA@kernel.org>
-In-Reply-To: <D01CLI2TC5SZ.1A48PDHM5F3UA@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sat Mar 23, 2024 at 8:40 PM EET, Jarkko Sakkinen wrote:
-> > Would it be worth clarifying here that one of those interfaces is=20
-> > defined in the Mobile TPM specification, which also refers to its=20
-> > interface as the CRB interface. In the past, this has caused great=20
-> > confusion when working with individuals from the embedded community,=20
-> > e.g., Arm. The Mobile TPM CRB interface, which can also be found being=
-=20
-> > used by some generations of AMD fTPM, is a doorbell style interface=20
-> > using general-purpose memory. I would also point out that the Mobile TP=
-M=20
-> > CRB interface does not provide for the concept of localities.
+
+> On Fri, Mar 22, 2024 at 10:08:14AM -0400, Daniel Hodges wrote:
+> > This patch adds a led trigger that interfaces with the bpf subsystem. It
+> > allows for BPF programs to control LED activity through calling bpf
+> > kfuncs. This functionality is useful in giving users a physical
+> > indication that a BPF program has performed an operation such as
+> > handling a packet or probe point.
 >
-> I don't necessarily disagree but it is out of scope for this. I'm not
-> sure tho why "mobile" CRB would ever need that sort of separate
-> dicussion.
+> Don't you want a mechanism to say which LED it should blink? Say you
+> have a BPF IR receiver, a BPF kernel scheduler and a BPF firewall. All
+> sharing the same LED is probably not what you want. Each probably
+> wants its own LED.
 >
-> Some CRB implementations have localities some don't, and also fTPM
-> implementations on x86 vary, no need to state that separately for
-> mobile.
+>       Andrew
 
-I.e. the variance exist but it is not "mobile" specific.
+Yeah, I think that makes sense. I guess the idea with this patch set was
+more or less to show the simple implementation. Since there can be
+multiple devices the trigger probably needs a registry of the active
+led_classdev names or other id. Alexei mentioned the xt_led which looks
+like it is rather similar as well. I can give this another shot, but I
+didn't want to go too far down the rabbit hole without getting some
+signal on the idea in general.
 
-E.g. when I developed tpm_crb in 2014 at that time Intel PTT only
-had a single locality (AFAIK later multiple localities were added
-to support TXT).
+PS Sorry to folks if I've directly replied to your comments. I'm still in the
+process of setting up my email workflow.
 
-In all cases this tpm_crb discussion is not really part of tpm_tis
-discussion.
-
-BR, Jarkko
+- Daniel
 
