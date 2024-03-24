@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC2F7888CE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:35:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71D8B8893AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:34:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19E221C2A751
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:35:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FA80B23953
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B638C28A662;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42AC01C3A30;
 	Mon, 25 Mar 2024 01:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qp+nYn3B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uVQfOj3b"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE01180A9C;
-	Sun, 24 Mar 2024 23:47:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE13180A9B;
+	Sun, 24 Mar 2024 23:47:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324058; cv=none; b=mIZQzsXjW2tWZjXAO1LiZAmf/JBCA3ig5P94qVYkD0UEBARjPqjydejgPIyDFE/3bnyjA4PHjavJ/pTIbVxXvI0Pq210jvTQF9CpjOF1y4eawXZZsihJLGl+BqhNDqEsVs/oWH7j2Iz7oVpv2+Zal6BRzv1mYyW2SdVqha1V8Jo=
+	t=1711324057; cv=none; b=loy0gdvGH6Nu+4BlcyEqgBvSU4B5PODVqQWf5zDj5CYURDWJe+gdvMVXfMo0KruLz7YLQl29SglhYiIyvsfSnemGmmK9nrmSXEW/Ya6+FuYj+Onn3uJuVewuQJ9TNeOUp7sc70uPYMOpIaJQybWM7OIdP6lsOifYGqx6kYkhQ0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324058; c=relaxed/simple;
-	bh=MRDmClh3Cke92m76M4nPCaQOFMb5bQB4ZRJEkFsfWQo=;
+	s=arc-20240116; t=1711324057; c=relaxed/simple;
+	bh=TTPp54xaP7hPOWsq1BkuCXtQRgtzjCMxElupHnk0CuQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KiNtwD9WAAuvN09or6ulBxU2JW8N6A/E7wZfDshJqdEGaQSfdgXBU1sb0L2KU6tiRy/0Nhlp55Ge/ztE1iwSttuJ/Cvkhp7Q5xjBNbQwADiT4Gus5mw3SinCkKz9ecg4MpbUX7vjPgDf+1ed8osgcwmXCSzsw+hekXkTwzIi4CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qp+nYn3B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 266D2C433B1;
+	 MIME-Version; b=at0hZ1PZybRLCg2RQqlRtp/70eJ9tv2tY3Y8cF7NFpt9giSpkxevGx2ef+GEvgxBQoZ/eohuKE7RK2cXxdWrE3yg8m44+YvvtreEBWZy+krS2Z0cglC0QqCYyLsiaWOzuMpNje4ORL5FpaWnWhPEr57egKC5dNXM9U6tEp9dNW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uVQfOj3b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10F4AC433C7;
 	Sun, 24 Mar 2024 23:47:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324056;
-	bh=MRDmClh3Cke92m76M4nPCaQOFMb5bQB4ZRJEkFsfWQo=;
+	s=k20201202; t=1711324057;
+	bh=TTPp54xaP7hPOWsq1BkuCXtQRgtzjCMxElupHnk0CuQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qp+nYn3BLwpgPoJCM86Ia1LAcHUb1RamApX/L4miQvwuxYw0iBDj3H5SG3OXqR6dI
-	 Q7ctFiAA1HHGw9PjKnWBR+cvHj37l1zVpxT664Km43rOhwPmP+AxQQ9WBD3S3KOfIu
-	 MzbY9QZWs2X5p+qU0RaJ7ug48sNI/+24KarsDVL61Ids46+ZOEnBbUpucbknkIznF6
-	 1H4JbjzEK6k0Hi04aXTYxBGpgHMToETjQVVmnlDWCI7fkx7U58+Z2tCwY7BnOez/Yz
-	 mRyyI/SJzGnJm/QEY49M78KW07GyjSvR++FH0vkpgH3V20MRXn1hvxxj9B+fwQE1/p
-	 1W9aJOFENpQ1Q==
+	b=uVQfOj3bEkzEEHxwDI74mIOlkQTQRWKbkb+xeC3HwRzLodGle/8C/gO3MmgjPkUlN
+	 8hcBKbXlHusUjBjEAe9qs5iBW51ZxpOIhHgBN7WoyimmWK6OhQdKtIWFcV7JH89Fga
+	 7E5pbqmwf8SE6N06rP15IabJGGhAx7HDp6e+SQhridlgUeYemXn/GsUG6ad2m9b+Ud
+	 45Nb8y2BWwBCw0cbz2oVDy/IXEhT+8QyNtcRT9cHjT2+FTOecEhEkd1VPyULxcvO3X
+	 11AR1mkqT6dXwEPI7hyJCZ+I9IqwZnBW6MprYrQCQFg/jo50yjVERc925EeLuEXxYy
+	 eX1ahLBgF497w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arthur Kiyanovski <akiyano@amazon.com>,
+Cc: Kamal Heib <kheib@redhat.com>,
+	Jacob Keller <jacob.e.keller@intel.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 057/183] net: ena: cosmetic: fix line break issues
-Date: Sun, 24 Mar 2024 19:44:30 -0400
-Message-ID: <20240324234638.1355609-58-sashal@kernel.org>
+Subject: [PATCH 5.4 058/183] net: ena: Remove ena_select_queue
+Date: Sun, 24 Mar 2024 19:44:31 -0400
+Message-ID: <20240324234638.1355609-59-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,69 +63,64 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arthur Kiyanovski <akiyano@amazon.com>
+From: Kamal Heib <kheib@redhat.com>
 
-[ Upstream commit 46143e58884025292bd977ca8bc0fdd9dac47c4c ]
+[ Upstream commit 78e886ba2b549945ecada055ee0765f0ded5707a ]
 
-1. Join unnecessarily broken short lines in ena_com.c ena_netdev.c
-2. Fix Indentations of broken lines
+Avoid the following warnings by removing the ena_select_queue() function
+and rely on the net core to do the queue selection, The issue happen
+when an skb received from an interface with more queues than ena is
+forwarded to the ena interface.
 
-Signed-off-by: Arthur Kiyanovski <akiyano@amazon.com>
+[ 1176.159959] eth0 selects TX queue 11, but real number of TX queues is 8
+[ 1176.863976] eth0 selects TX queue 14, but real number of TX queues is 8
+[ 1180.767877] eth0 selects TX queue 14, but real number of TX queues is 8
+[ 1188.703742] eth0 selects TX queue 14, but real number of TX queues is 8
+
+Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
+Signed-off-by: Kamal Heib <kheib@redhat.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Stable-dep-of: 78e886ba2b54 ("net: ena: Remove ena_select_queue")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amazon/ena/ena_com.c    | 8 +++-----
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 3 +--
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_com.c b/drivers/net/ethernet/amazon/ena/ena_com.c
-index 9225733f4fece..29700fee42e9d 100644
---- a/drivers/net/ethernet/amazon/ena/ena_com.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_com.c
-@@ -375,7 +375,7 @@ static int ena_com_init_io_sq(struct ena_com_dev *ena_dev,
- 		io_sq->bounce_buf_ctrl.next_to_use = 0;
- 
- 		size = io_sq->bounce_buf_ctrl.buffer_size *
--			 io_sq->bounce_buf_ctrl.buffers_num;
-+			io_sq->bounce_buf_ctrl.buffers_num;
- 
- 		dev_node = dev_to_node(ena_dev->dmadev);
- 		set_dev_node(ena_dev->dmadev, ctx->numa_node);
-@@ -702,8 +702,7 @@ static int ena_com_config_llq_info(struct ena_com_dev *ena_dev,
- 		/* The desc list entry size should be whole multiply of 8
- 		 * This requirement comes from __iowrite64_copy()
- 		 */
--		pr_err("illegal entry size %d\n",
--		       llq_info->desc_list_entry_size);
-+		pr_err("illegal entry size %d\n", llq_info->desc_list_entry_size);
- 		return -EINVAL;
- 	}
- 
-@@ -2063,8 +2062,7 @@ void ena_com_aenq_intr_handler(struct ena_com_dev *dev, void *data)
- 
- 	/* write the aenq doorbell after all AENQ descriptors were read */
- 	mb();
--	writel_relaxed((u32)aenq->head,
--		       dev->reg_bar + ENA_REGS_AENQ_HEAD_DB_OFF);
-+	writel_relaxed((u32)aenq->head, dev->reg_bar + ENA_REGS_AENQ_HEAD_DB_OFF);
- }
- 
- int ena_com_dev_reset(struct ena_com_dev *ena_dev,
 diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 2e5348ec2a2e9..734da4e9ead2f 100644
+index 734da4e9ead2f..8e2e0c3bee0b9 100644
 --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
 +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -2401,8 +2401,7 @@ static u16 ena_select_queue(struct net_device *dev, struct sk_buff *skb,
- 	return qid;
+@@ -2385,22 +2385,6 @@ static netdev_tx_t ena_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
  }
  
--static void ena_config_host_info(struct ena_com_dev *ena_dev,
--				 struct pci_dev *pdev)
-+static void ena_config_host_info(struct ena_com_dev *ena_dev, struct pci_dev *pdev)
+-static u16 ena_select_queue(struct net_device *dev, struct sk_buff *skb,
+-			    struct net_device *sb_dev)
+-{
+-	u16 qid;
+-	/* we suspect that this is good for in--kernel network services that
+-	 * want to loop incoming skb rx to tx in normal user generated traffic,
+-	 * most probably we will not get to this
+-	 */
+-	if (skb_rx_queue_recorded(skb))
+-		qid = skb_get_rx_queue(skb);
+-	else
+-		qid = netdev_pick_tx(dev, skb, NULL);
+-
+-	return qid;
+-}
+-
+ static void ena_config_host_info(struct ena_com_dev *ena_dev, struct pci_dev *pdev)
  {
  	struct ena_admin_host_info *host_info;
- 	int rc;
+@@ -2549,7 +2533,6 @@ static const struct net_device_ops ena_netdev_ops = {
+ 	.ndo_open		= ena_open,
+ 	.ndo_stop		= ena_close,
+ 	.ndo_start_xmit		= ena_start_xmit,
+-	.ndo_select_queue	= ena_select_queue,
+ 	.ndo_get_stats64	= ena_get_stats64,
+ 	.ndo_tx_timeout		= ena_tx_timeout,
+ 	.ndo_change_mtu		= ena_change_mtu,
 -- 
 2.43.0
 
