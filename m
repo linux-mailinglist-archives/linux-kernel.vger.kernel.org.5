@@ -1,54 +1,60 @@
-Return-Path: <linux-kernel+bounces-115605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D38088A05A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:52:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E76C5888834
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:21:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF2A0B633EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:27:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2A82287AAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114F5253973;
-	Mon, 25 Mar 2024 02:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D172E14D45B;
+	Sun, 24 Mar 2024 23:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUZI2hqU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="deCH9EC8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E96E130AD6;
-	Sun, 24 Mar 2024 23:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE901FEC4C;
+	Sun, 24 Mar 2024 23:02:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321354; cv=none; b=DzIsVTI9q1UhnPaoP95sX//jXv/gDR9uX8tgOzBqnx34+jJ502rBZkVNaSlzppnFtStclcV4AyrmXW9YO3GNSb3FCzUVjPP7Ak2Bh/BzB5DIGqjk60PXm+/UFtSE1h90DNM1ZTCtOGmAC8bnSCf1s678WsPpsZtHhRpbNMlVd9Y=
+	t=1711321356; cv=none; b=e5+w6s+oox1DL5EvOdxn+EnByQh+Jv5UK3CC6nzJhjTBxM5hb9JngiXJDxDAhTsgr34/VdfBBoMIwXss0y1P3DJ2I9N+iZTFt+ThJa0OFF4PlLW6l6arZUYY+E8BawiRrbsVjbin5PFkPjZSiRxWXtUniLT8vH/HapniG7pRLH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321354; c=relaxed/simple;
-	bh=jtxf9O/jwcbFCCjmh74DlbdpYuDebk1mTbL4kpKOfUM=;
+	s=arc-20240116; t=1711321356; c=relaxed/simple;
+	bh=onkvyguq4HFdPtigEVPnPbofRG4g4WsxNdnGYH6yWSI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MXtfhoNiV8WP0bI6s/CgC8bkeP4IAwiTX5Imyds2TyF3FwPHyTD2hRUGA6GepS2v3oiqwNckLuxPwv6zVs0QmutGaTx81HTmxeAwQlWWIUw6vHAaLWvdXIxaB+LHKyUaeOuipeuLLeqhhg9/4ZFR6ejoj5sGMtG6rg04Yffg2Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RUZI2hqU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8B45C43390;
-	Sun, 24 Mar 2024 23:02:32 +0000 (UTC)
+	 MIME-Version; b=uhiUSztAHFXcbBhwBMdBmHq6cSs5cujUMOTFwfc+IbxcF3IoTV/EJD8vmE40byvN63QOn0pjnGhjbONX9YNI+CGfnIZ81nodRHSuLbCIv1BQG3W5caMVFXLdnQDmQP/7yhEYgrmxm/9InxSWD/gv4cleQbSDFA440g9sby4gvmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=deCH9EC8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2407C433A6;
+	Sun, 24 Mar 2024 23:02:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321353;
-	bh=jtxf9O/jwcbFCCjmh74DlbdpYuDebk1mTbL4kpKOfUM=;
+	s=k20201202; t=1711321354;
+	bh=onkvyguq4HFdPtigEVPnPbofRG4g4WsxNdnGYH6yWSI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RUZI2hqUONZUinqUSfBHl2R1pY3xEzgXGsxZChry6q1T3I4F6OzzdQKedZAF5lkej
-	 gInDjMNvOGCG/K282Fgl+uUnDziCmx55e5+Wtx+oBigp01yf9BfBe2w8t6wAc6FP89
-	 xk82vhXT3uqYy5q6b1iuVlWjiaZZlxfc/xFFmxSlP0kimTShN8RNqJQOhuuv9iVnLf
-	 m7NiOYa2bsfUiCJvmzEaP05hnvWDFmv6MmhOoFgS3OT22C6i7axqYcN87cJbInvPqN
-	 owPD977icRCL0d4moawCulcldAyfEQ0ffQiKbzlueJ3k/R+joEU2HvW1rNRMxcjnfy
-	 s+0GydgOC82uQ==
+	b=deCH9EC8/2r3bZH56nxV6fBCbWeqtLX2Lk6IFsUK5IECz6PtvYwexwsbnOFfFAVcT
+	 FzWNlVqg20Gko6PQe1cI0dIETzlhuWTvYCnaMqPA+lO2gyS5/GFHYZv6jXBRRCRs2r
+	 s+z5M32zTwb8LmYR7QrCvPoJl/RWI5sVA7ZFxn36XwDUKkzAGYoqchmOSkHlQQQ+WT
+	 MzjVAeTk/LX9A+VUj9zw8yXDl3DHvtjdGVjgYP4sYIfVnYg++4ij9bFS0izncJ4nHh
+	 /TKtk2nUWbiCUcly/dOm1oIZzB5lv+/8EFMR+ztU2nJZ5R/D2ES6YujRP/L0LekFgn
+	 jrmIaPJzcpMoA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>,
+Cc: Bart Van Assche <bvanassche@acm.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Kanchan Joshi <joshi.k@samsung.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
 	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 078/638] iomap: clear the per-folio dirty bits on all writeback failures
-Date: Sun, 24 Mar 2024 18:51:55 -0400
-Message-ID: <20240324230116.1348576-79-sashal@kernel.org>
+Subject: [PATCH 6.6 079/638] fs: Fix rw_hint validation
+Date: Sun, 24 Mar 2024 18:51:56 -0400
+Message-ID: <20240324230116.1348576-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,68 +68,64 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christoph Hellwig <hch@lst.de>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 7ea1d9b4a840c2dd01d1234663d4a8ef256cfe39 ]
+[ Upstream commit ec16b147a55bfa14e858234eb7b1a7c8e7cd5021 ]
 
-write_cache_pages always clear the page dirty bit before calling into the
-file systems, and leaves folios with a writeback failure without the
-dirty bit after return.  We also clear the per-block writeback bits for
-writeback failures unless no I/O has submitted, which will leave the
-folio in an inconsistent state where it doesn't have the folio dirty,
-but one or more per-block dirty bits.  This seems to be due the place
-where the iomap_clear_range_dirty call was inserted into the existing
-not very clearly structured code when adding per-block dirty bit support
-and not actually intentional.  Switch to always clearing the dirty on
-writeback failure.
+Reject values that are valid rw_hints after truncation but not before
+truncation by passing an untruncated value to rw_hint_valid().
 
-Fixes: 4ce02c679722 ("iomap: Add per-block dirty state tracking to improve performance")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20231207072710.176093-2-hch@lst.de
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Kanchan Joshi <joshi.k@samsung.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Chuck Lever <chuck.lever@oracle.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 5657cb0797c4 ("fs/fcntl: use copy_to/from_user() for u64 types")
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Link: https://lore.kernel.org/r/20240202203926.2478590-2-bvanassche@acm.org
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/iomap/buffered-io.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ fs/fcntl.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 2bc0aa23fde3b..1c63e48230aed 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1830,16 +1830,10 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- 	if (unlikely(error)) {
- 		/*
- 		 * Let the filesystem know what portion of the current page
--		 * failed to map. If the page hasn't been added to ioend, it
--		 * won't be affected by I/O completion and we must unlock it
--		 * now.
-+		 * failed to map.
- 		 */
- 		if (wpc->ops->discard_folio)
- 			wpc->ops->discard_folio(folio, pos);
--		if (!count) {
--			folio_unlock(folio);
--			goto done;
--		}
- 	}
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index e871009f6c889..9f606714d081b 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -268,7 +268,7 @@ static int f_getowner_uids(struct file *filp, unsigned long arg)
+ }
+ #endif
  
- 	/*
-@@ -1848,6 +1842,16 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- 	 * all the dirty bits in the folio here.
- 	 */
- 	iomap_clear_range_dirty(folio, 0, folio_size(folio));
-+
-+	/*
-+	 * If the page hasn't been added to the ioend, it won't be affected by
-+	 * I/O completion and we must unlock it now.
-+	 */
-+	if (error && !count) {
-+		folio_unlock(folio);
-+		goto done;
-+	}
-+
- 	folio_start_writeback(folio);
- 	folio_unlock(folio);
+-static bool rw_hint_valid(enum rw_hint hint)
++static bool rw_hint_valid(u64 hint)
+ {
+ 	switch (hint) {
+ 	case RWH_WRITE_LIFE_NOT_SET:
+@@ -288,19 +288,17 @@ static long fcntl_rw_hint(struct file *file, unsigned int cmd,
+ {
+ 	struct inode *inode = file_inode(file);
+ 	u64 __user *argp = (u64 __user *)arg;
+-	enum rw_hint hint;
+-	u64 h;
++	u64 hint;
+ 
+ 	switch (cmd) {
+ 	case F_GET_RW_HINT:
+-		h = inode->i_write_hint;
+-		if (copy_to_user(argp, &h, sizeof(*argp)))
++		hint = inode->i_write_hint;
++		if (copy_to_user(argp, &hint, sizeof(*argp)))
+ 			return -EFAULT;
+ 		return 0;
+ 	case F_SET_RW_HINT:
+-		if (copy_from_user(&h, argp, sizeof(h)))
++		if (copy_from_user(&hint, argp, sizeof(hint)))
+ 			return -EFAULT;
+-		hint = (enum rw_hint) h;
+ 		if (!rw_hint_valid(hint))
+ 			return -EINVAL;
  
 -- 
 2.43.0
