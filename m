@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2284488856F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:07:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88539888571
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:07:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97AFDB225A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:07:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9DD81C24CF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5E11C9855;
-	Sun, 24 Mar 2024 22:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB07E1C9876;
+	Sun, 24 Mar 2024 22:46:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CgSa2u39"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TPPK1lGb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78CF1C8822;
-	Sun, 24 Mar 2024 22:46:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CEC1C985D;
+	Sun, 24 Mar 2024 22:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320380; cv=none; b=TlRjlPaNsUxeLDwQctDScaErc+poFn8sOj40V9a8QAZDI9asEBTaN5olxarbWnSedl97G+/Ua4fWCsFJ1QWsIFNh0Zk8PQWXbheAqoKwsnNRlbV+2W/vshiwUj8MszV9RBUt4tzkwCDisHIk41cZ1HY7Q2gRvKERgUjyVd7CktQ=
+	t=1711320381; cv=none; b=WelaQrxWjXLyHY3SvdMYlApUsv+nuXiJ2/7m9c/yN/Z1b5nMfN7Gu20y+71GyyKVOTBcO6xJA6eeIsGoqX8I+oc81P+X3et2PfXQ30WaHKwXQnXnl0hOgL0+xRYTgLHLjdoHuuW4sRAtI6kT/WEY1urkQTyVAtAxrUJQ4wJfLDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320380; c=relaxed/simple;
-	bh=X/3XYKAUHv8Ahibku5Y9s1Ozf8W++cB+0fCChROp5Z0=;
+	s=arc-20240116; t=1711320381; c=relaxed/simple;
+	bh=bF7GE1W3zXbp8SDL+EKrXe62S2HrG2hpuza1NbZUjCQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J7K9GymfTC7EsnJ0bFYdowvmANokx3QdC7Hq92nqTqdOEMbDaFRd+tl1lDzs3hSR0lpjJ/P0GwL52FllO1P77hADZ0QK6mjEscF54f+lJ4aj6EWDLUeF1O6u/JJ1/h4iKu+3nQrXztfkLqzOrE2y7F/Wexq3A7LiGpjH1aRIjvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CgSa2u39; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 124D7C433B1;
-	Sun, 24 Mar 2024 22:46:19 +0000 (UTC)
+	 MIME-Version; b=QtCBd1545FTDRtaW4MhxAIHkuWpe3TErg/49dEIVctJW12jVBZLhkj4CpHU3bBvdxyv0qn1p9PZYBBE8RkZJsdZKOlizlib7Rk4zqE2V9hXB2LwtkLpe9RhLE+ruGIWikYAsxupqxBkKmlfcsqQvNcstDVE7j95dtZvE+qy6x6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TPPK1lGb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 083C2C43399;
+	Sun, 24 Mar 2024 22:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320380;
-	bh=X/3XYKAUHv8Ahibku5Y9s1Ozf8W++cB+0fCChROp5Z0=;
+	s=k20201202; t=1711320381;
+	bh=bF7GE1W3zXbp8SDL+EKrXe62S2HrG2hpuza1NbZUjCQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CgSa2u39ntVodhTYZ+tXxTll/KICCG/ON1rKfkneI3sSLTOMZ6LQftDrx+o61dzxJ
-	 30O/cl889uGsbqQe8eCT8Ikh5Y+kJg6R+Je5MRn3Nc1ZAG6ibvruMRMQuSoCF1wTj8
-	 a6C8qVTEmj8WwCuBN9nZX1bjzviFHX5lF+AdcQ3siGFohKn3YbtS3QIdM9sc6LZU0x
-	 S61vHbJCd2qFkaUXDPH8MkqAEU9R2nLDGs/AncHqhgikyyTBUEDxxCvOW5fSg15RsV
-	 J7oU2nysFITnQwOaq8ko3MT8CdlsN85mibp4ryBFGI+PTE3k1wypgxoGw1qqY1bS34
-	 3A+9amR3xfvhA==
+	b=TPPK1lGbYpZx/PegbJXqXG6KlGnf0tGQpfang8DzOFEBKuoD+MQJ3lOWlw/iiJYJk
+	 Onngxbxz9vgt5yTl6109ct1bMqXe5EjQ6YtIElmMMKXzv8sNJCtMAQWn9VlztljRE0
+	 DP/s9kmaqyUVfY0lakHfhtRHKsqkbElokDwO+IqeWZpeywC1f8ZuLTuly6QRgDldXS
+	 nKZGfWuK8fEH5jithCW7zZw42RL53P7uc66JNFqFnrcYrtDxmGGJOFVvmaIziF/g2N
+	 VMJdfcvYaLByzlJOJx/vnfy22dTQsHuicKzW0kqRWRavSFePkBqy+6pBWb03hE/WWb
+	 WLIXtEyJNddxQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dave Airlie <airlied@redhat.com>,
-	Danilo Krummrich <dakr@redhat.com>,
+Cc: Xiubo Li <xiubli@redhat.com>,
+	Frank Hsiao <frankhsiao@qnap.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 686/715] nouveau/gsp: don't check devinit disable on GSP.
-Date: Sun, 24 Mar 2024 18:34:25 -0400
-Message-ID: <20240324223455.1342824-687-sashal@kernel.org>
+Subject: [PATCH 6.8 687/715] ceph: stop copying to iter at EOF on sync reads
+Date: Sun, 24 Mar 2024 18:34:26 -0400
+Message-ID: <20240324223455.1342824-688-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,37 +63,71 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dave Airlie <airlied@redhat.com>
+From: Xiubo Li <xiubli@redhat.com>
 
-[ Upstream commit 5d4e8ae6e57b025802aadf55a4775c55cceb75f1 ]
+[ Upstream commit 1065da21e5df9d843d2c5165d5d576be000142a6 ]
 
-GSP should be handling this and I can see no evidence in opengpu
-driver that this register should be touched.
+If EOF is encountered, ceph_sync_read() return value is adjusted down
+according to i_size, but the "to" iter is advanced by the actual number
+of bytes read.  Then, when retrying, the remainder of the range may be
+skipped incorrectly.
 
-Fixed acceleration on 2080 Ti GPUs.
+Ensure that the "to" iter is advanced only until EOF.
 
-Fixes: 15740541e8f0 ("drm/nouveau/devinit/tu102-: prepare for GSP-RM")
+[ idryomov: changelog ]
 
-Signed-off-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240314014521.2695233-1-airlied@gmail.com
+Fixes: c3d8e0b5de48 ("ceph: return the real size read when it hits EOF")
+Reported-by: Frank Hsiao <frankhsiao@qnap.com>
+Signed-off-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Ilya Dryomov <idryomov@gmail.com>
+Tested-by: Frank Hsiao <frankhsiao@qnap.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c | 1 -
- 1 file changed, 1 deletion(-)
+ fs/ceph/file.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c
-index 666eb93b1742c..11b4c9c274a1a 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/devinit/r535.c
-@@ -41,7 +41,6 @@ r535_devinit_new(const struct nvkm_devinit_func *hw,
+diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+index abe8028d95bf4..3d1cd079dbf16 100644
+--- a/fs/ceph/file.c
++++ b/fs/ceph/file.c
+@@ -1138,7 +1138,12 @@ ssize_t __ceph_sync_read(struct inode *inode, loff_t *ki_pos,
+ 		}
  
- 	rm->dtor = r535_devinit_dtor;
- 	rm->post = hw->post;
--	rm->disable = hw->disable;
+ 		idx = 0;
+-		left = ret > 0 ? ret : 0;
++		if (ret <= 0)
++			left = 0;
++		else if (off + ret > i_size)
++			left = i_size - off;
++		else
++			left = ret;
+ 		while (left > 0) {
+ 			size_t plen, copied;
  
- 	ret = nv50_devinit_new_(rm, device, type, inst, pdevinit);
- 	if (ret)
+@@ -1167,15 +1172,13 @@ ssize_t __ceph_sync_read(struct inode *inode, loff_t *ki_pos,
+ 	}
+ 
+ 	if (ret > 0) {
+-		if (off > *ki_pos) {
+-			if (off >= i_size) {
+-				*retry_op = CHECK_EOF;
+-				ret = i_size - *ki_pos;
+-				*ki_pos = i_size;
+-			} else {
+-				ret = off - *ki_pos;
+-				*ki_pos = off;
+-			}
++		if (off >= i_size) {
++			*retry_op = CHECK_EOF;
++			ret = i_size - *ki_pos;
++			*ki_pos = i_size;
++		} else {
++			ret = off - *ki_pos;
++			*ki_pos = off;
+ 		}
+ 
+ 		if (last_objver)
 -- 
 2.43.0
 
