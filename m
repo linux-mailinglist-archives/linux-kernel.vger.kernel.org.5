@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A183F888F13
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:36:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C00B68887E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:13:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 563771F328E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:36:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A0A328FFCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9101FB08B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838DD1FB081;
 	Sun, 24 Mar 2024 23:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="goDebecm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a7c1aSj6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D05012FB04;
-	Sun, 24 Mar 2024 23:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6AA1FA83B;
+	Sun, 24 Mar 2024 23:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321291; cv=none; b=EHXN7cZZrcajYGeO/Cq7+JxqtMP+ZrdX5kmbu4/9y5FBO1Sezug/DKOUSN7HeJTDTHYHDPe2SMWMME06f+AzXHzDl1ZE8+TwPDviG3F2AeY8x/rxBSfWiBQ+vtsva/+PDscKBAsnHBnw8rzGxqlc55vzKYc2LdbZifEIivMSgBY=
+	t=1711321291; cv=none; b=GO2ZUH7iY9I78S/jP3xA7Ur6IxgPLPwCC13ZWpzniS0JBPSxhx0XeFbsQYDA90bCbAo5t3cZhRZqSlxM2j0ZmVLgOL6qkp7Hzoy6FgXIhbbN94e3/ZPt/4kn/j11DDuWrEjdwndIG0FYPXGTYccVGOviljsQSn7l6XlkeZzcmdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321291; c=relaxed/simple;
-	bh=W4RwcyHV3K6Low51NVIhVtApOG+DXghL1IwfkGZklV4=;
+	bh=nFdvnctb3HwjwC3YYHCe4RQV74wIoxZXlt0S3wnnHOQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZMKI3l8gKqSV+0cebrrPGqYuXrgrhppamNtkAJIPGWf7s8dYVrQlJIkjjxY2LpOLQwMjNUvrkdgycJhVVASrp8s0pqWiqrnTI5nRMMm7T1UeLERB/j+hBRXP0508tmry4NMnMSnB8Uxbt2U7C+7j+A5XnxT5y0G5u1dFO1apzEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=goDebecm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79EF0C43390;
-	Sun, 24 Mar 2024 23:01:29 +0000 (UTC)
+	 MIME-Version; b=hpPgc5ccCxoeD7Myz9p152XM1z9HpjR9/svV7JW52RWtzq5Less74KpRiDo3Qw/G4QVMBr8HaQPn5p1WJwJmy9EVK25UCMUp5eYPr25IyvkxRzT77yVSi9JFz5d3Ld6+I46yDEIaBJ6ln1i6yvKppZXce5k4Ugd+WOu+DUGlPzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a7c1aSj6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E18BC433F1;
+	Sun, 24 Mar 2024 23:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321290;
-	bh=W4RwcyHV3K6Low51NVIhVtApOG+DXghL1IwfkGZklV4=;
+	s=k20201202; t=1711321291;
+	bh=nFdvnctb3HwjwC3YYHCe4RQV74wIoxZXlt0S3wnnHOQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=goDebecmuMH7Upr1ZillyK6ZRXQHR6Fdw0O9ol084MpvkGCB5J51woHUfV0yZX0PJ
-	 Yd544YCTlkgo1evh1Ef8wZYk9dcCXtU/c075KVUy3i9vrOPUsXS8x7vb9O9+uddBfU
-	 QiPkeFj0eIf5mYbzIit+ZBr3mJaGIT3YcbF7UTOm3NQTTk0iZa5GL5nysFYyod1ORe
-	 grk08+KpBvbVZosyEO9Aq9+JlUQp++cr2neyq5fqFxrUQkYeWBmeBd6EK0DNfG4XOq
-	 DU2fWzKm33g0AKYjcFMNnnj37OoF1gJKuEnJ6/VQGHNIMcQUdEV8+supQVXG29MjV5
-	 agnDbpcywKWZg==
+	b=a7c1aSj6gHqD3EX0j5SyAAAgt8YiYb4QPLdtOyp1zif9KdXqsEvte/VvO5uEEop9d
+	 Dzyzp4efMQ47YPthjFwwLGSlLtlLrv7AnUQfA3iSDCJmFv8xANqBMxowB4YcBFKuOg
+	 Qo8WsCFQfa/WZWIbzvvtHLALvNXzB96DICpIdFTgtKY+6jdcSV9JkraLmCmmJgbS88
+	 vgQBrxyoJ+9bMssKFTwox80Za4Or1oFtE7mVTrWGOxbAOIBvvndkLGMToPvqHrFMjc
+	 61ujfc8G8fGc1TgntKYPX590aaoodyYEQIv4zkU7LP/gJi4DlzhEbsGJYXNR3lKIxr
+	 FNw4w5xZjMp5Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Mark Brown <broonie@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 012/638] spi: intel-pci: Add support for Lunar Lake-M SPI serial flash
-Date: Sun, 24 Mar 2024 18:50:49 -0400
-Message-ID: <20240324230116.1348576-13-sashal@kernel.org>
+Subject: [PATCH 6.6 013/638] regmap: kunit: Ensure that changed bytes are actually different
+Date: Sun, 24 Mar 2024 18:50:50 -0400
+Message-ID: <20240324230116.1348576-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,33 +62,144 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 8f44e3808200c1434c26ef459722f88f48b306df ]
+[ Upstream commit 2f0dbb24f78a333433a2b875c0b76bf55c119cd4 ]
 
-Add Intel Lunar Lake-M PCI ID to the driver list of supported devices.
-This is the same controller found in previous generations.
+During the cache sync test we verify that values we expect to have been
+written only to the cache do not appear in the hardware. This works most
+of the time but since we randomly generate both the original and new values
+there is a low probability that these values may actually be the same.
+Wrap get_random_bytes() to ensure that the values are different, there
+are other tests which should have similar verification that we actually
+changed something.
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Link: https://msgid.link/r/20240212082027.2462849-1-mika.westerberg@linux.intel.com
+While we're at it refactor the test to use three changed values rather
+than attempting to use one of them twice, that just complicates checking
+that our new values are actually new.
+
+We use random generation to try to avoid data dependencies in the tests.
+
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://msgid.link/r/20240211-regmap-kunit-random-change-v3-1-e387a9ea4468@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-intel-pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/base/regmap/regmap-kunit.c | 54 +++++++++++++++++++++---------
+ 1 file changed, 38 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/spi/spi-intel-pci.c b/drivers/spi/spi-intel-pci.c
-index 07d20ca1164c3..4337ca51d7aa2 100644
---- a/drivers/spi/spi-intel-pci.c
-+++ b/drivers/spi/spi-intel-pci.c
-@@ -85,6 +85,7 @@ static const struct pci_device_id intel_spi_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0xa2a4), (unsigned long)&cnl_info },
- 	{ PCI_VDEVICE(INTEL, 0xa324), (unsigned long)&cnl_info },
- 	{ PCI_VDEVICE(INTEL, 0xa3a4), (unsigned long)&cnl_info },
-+	{ PCI_VDEVICE(INTEL, 0xa823), (unsigned long)&cnl_info },
- 	{ },
- };
- MODULE_DEVICE_TABLE(pci, intel_spi_pci_ids);
+diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
+index 264d29b3fced0..5f1e914646cd9 100644
+--- a/drivers/base/regmap/regmap-kunit.c
++++ b/drivers/base/regmap/regmap-kunit.c
+@@ -9,6 +9,23 @@
+ 
+ #define BLOCK_TEST_SIZE 12
+ 
++static void get_changed_bytes(void *orig, void *new, size_t size)
++{
++	char *o = orig;
++	char *n = new;
++	int i;
++
++	get_random_bytes(new, size);
++
++	/*
++	 * This could be nicer and more efficient but we shouldn't
++	 * super care.
++	 */
++	for (i = 0; i < size; i++)
++		while (n[i] == o[i])
++			get_random_bytes(&n[i], 1);
++}
++
+ static const struct regmap_config test_regmap_config = {
+ 	.max_register = BLOCK_TEST_SIZE,
+ 	.reg_stride = 1,
+@@ -1131,7 +1148,7 @@ static void raw_sync(struct kunit *test)
+ 	struct regmap *map;
+ 	struct regmap_config config;
+ 	struct regmap_ram_data *data;
+-	u16 val[2];
++	u16 val[3];
+ 	u16 *hw_buf;
+ 	unsigned int rval;
+ 	int i;
+@@ -1145,17 +1162,13 @@ static void raw_sync(struct kunit *test)
+ 
+ 	hw_buf = (u16 *)data->vals;
+ 
+-	get_random_bytes(&val, sizeof(val));
++	get_changed_bytes(&hw_buf[2], &val[0], sizeof(val));
+ 
+ 	/* Do a regular write and a raw write in cache only mode */
+ 	regcache_cache_only(map, true);
+-	KUNIT_EXPECT_EQ(test, 0, regmap_raw_write(map, 2, val, sizeof(val)));
+-	if (config.val_format_endian == REGMAP_ENDIAN_BIG)
+-		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 6,
+-						      be16_to_cpu(val[0])));
+-	else
+-		KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 6,
+-						      le16_to_cpu(val[0])));
++	KUNIT_EXPECT_EQ(test, 0, regmap_raw_write(map, 2, val,
++						  sizeof(u16) * 2));
++	KUNIT_EXPECT_EQ(test, 0, regmap_write(map, 4, val[2]));
+ 
+ 	/* We should read back the new values, and defaults for the rest */
+ 	for (i = 0; i < config.max_register + 1; i++) {
+@@ -1164,24 +1177,34 @@ static void raw_sync(struct kunit *test)
+ 		switch (i) {
+ 		case 2:
+ 		case 3:
+-		case 6:
+ 			if (config.val_format_endian == REGMAP_ENDIAN_BIG) {
+ 				KUNIT_EXPECT_EQ(test, rval,
+-						be16_to_cpu(val[i % 2]));
++						be16_to_cpu(val[i - 2]));
+ 			} else {
+ 				KUNIT_EXPECT_EQ(test, rval,
+-						le16_to_cpu(val[i % 2]));
++						le16_to_cpu(val[i - 2]));
+ 			}
+ 			break;
++		case 4:
++			KUNIT_EXPECT_EQ(test, rval, val[i - 2]);
++			break;
+ 		default:
+ 			KUNIT_EXPECT_EQ(test, config.reg_defaults[i].def, rval);
+ 			break;
+ 		}
+ 	}
++
++	/*
++	 * The value written via _write() was translated by the core,
++	 * translate the original copy for comparison purposes.
++	 */
++	if (config.val_format_endian == REGMAP_ENDIAN_BIG)
++		val[2] = cpu_to_be16(val[2]);
++	else
++		val[2] = cpu_to_le16(val[2]);
+ 	
+ 	/* The values should not appear in the "hardware" */
+-	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[2], val, sizeof(val));
+-	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[6], val, sizeof(u16));
++	KUNIT_EXPECT_MEMNEQ(test, &hw_buf[2], &val[0], sizeof(val));
+ 
+ 	for (i = 0; i < config.max_register + 1; i++)
+ 		data->written[i] = false;
+@@ -1192,8 +1215,7 @@ static void raw_sync(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, regcache_sync(map));
+ 
+ 	/* The values should now appear in the "hardware" */
+-	KUNIT_EXPECT_MEMEQ(test, &hw_buf[2], val, sizeof(val));
+-	KUNIT_EXPECT_MEMEQ(test, &hw_buf[6], val, sizeof(u16));
++	KUNIT_EXPECT_MEMEQ(test, &hw_buf[2], &val[0], sizeof(val));
+ 
+ 	regmap_exit(map);
+ }
 -- 
 2.43.0
 
