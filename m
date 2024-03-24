@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26BF188872C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:53:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA47C888734
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:54:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 583011C26012
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:53:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 607451F24568
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF3D13A25F;
-	Sun, 24 Mar 2024 23:07:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE88D1ED0C3;
+	Sun, 24 Mar 2024 23:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pRxXWc/v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e6M55cjF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F86F1ED73F;
-	Sun, 24 Mar 2024 22:56:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7834B12BE96;
+	Sun, 24 Mar 2024 22:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320995; cv=none; b=Nme9D9ez6o9c3P/okjOWff7h3jXwQSFEDyL6hv28h4ye6AMLweBiBBbTCq9qZslZowCyHzKNsKUGR1mEfGqCfHfo8dpu+WNVf9TGybuIfoWCdpwiwS9ppqxKhaVZo619jUH+tCodGEc/KvhQiyBvaC8dbjMSAVaUlbxVYuFlnkM=
+	t=1711320996; cv=none; b=R+ILK0euXvKikK8+7Jx6/CZHg1Qoib8tRhnywlTnG3pKWZUKxuLA956Po7hSD5FsQlivxLYMfG9laEHAVrZlP1413wsISGynvnSJJ1H2S9rRyawryQjZ/OMoNJQdHxUOGUlmoAgwEgKpeBdQvDuWHWzuNx72AGBiTrlJjKWCK8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320995; c=relaxed/simple;
-	bh=E5Wrq7Gz9HeqfWiBi72Qv+1hoPP8IyLLFnOGhZKyAPw=;
+	s=arc-20240116; t=1711320996; c=relaxed/simple;
+	bh=7wj8ZEH9eF/rvciTwJY3fQEtLoBzj6aYEvY8TxBcH3I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eJ46DYddNtZ26hqYzqmctpKEOHGRA24i9Jtk/FAMy5ZmET9s9FXIqXd7g8SK+Y+tAplUtj/jdBC/SvbB7DYr+eeIOQOC/TeR0gUTSbEAExr009d2iE9HoPo6o1vGBJa1TWybq55zhq35KNDd1KQgGZcwIHTNuyIEfQfub8M9QPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pRxXWc/v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0324C43394;
-	Sun, 24 Mar 2024 22:56:33 +0000 (UTC)
+	 MIME-Version; b=U/wQFNCyLzLjYcJwxFfYDCKNveMIL4R5tAgO2X+cLEy4rpOfiSctv75Ovfv9pAPQo3D3gJioYc8tioEPZ0Nc4DDmz3gbk5nmefyFNzum0J5mPHyiorWmbVxUs5eiFwsBqs6PlH9Fi0PzQ/1UdXMeWwn4sDJpQHhXrJSyDsIWyFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e6M55cjF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B51EEC433F1;
+	Sun, 24 Mar 2024 22:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320994;
-	bh=E5Wrq7Gz9HeqfWiBi72Qv+1hoPP8IyLLFnOGhZKyAPw=;
+	s=k20201202; t=1711320995;
+	bh=7wj8ZEH9eF/rvciTwJY3fQEtLoBzj6aYEvY8TxBcH3I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pRxXWc/vXHA0KtgXWgq9pUEptkPgY2GcjL0GLMfOJYropB96xk+uLzMnv3s4+t/2g
-	 kyhHJOtQhm6HCo0USELvNQFEK0Xz+3tXW7dv3nwnPy6/EmtGMfkrdBflh/X0Ka/j5f
-	 8tnxjZfjL9D9Ek1ey/TN88PgUfJVl9wuPGbUqPyDdKz7uWpyOdARMaLzTbjTPGn+fZ
-	 kmJZrqOqkTuACI0wOzEbfbbhfPO4ckXAMhaX+y5n7EYen9bceft2R3WwiCeyXNkdVJ
-	 VOXP7XIA861u+0mTWj05RbWl7hOiPT5N7d/KUkjC57XzZi0Mb9Y60yWZHVoAxHERiM
-	 ORY4BkaU17NNA==
+	b=e6M55cjFo5Cm9avtKnHygvM+NuMKtHKCHwgjAEwBrCuCVGRNT/ziXkQm1FSIj5ujZ
+	 aX/jdSpVxe3CR+bJGXFyz3qvQyZxZlL+KYW9yXr3r7LGzFXuD50Dbe7oXWB35LPU43
+	 sclULqYSLEpv+zA1LBNi3gHFV7lwBulhsDLcoUDLRV4gs5IXnp+VDzN8rzTSdJa4Gb
+	 zLfKyyq/RvfrRh7XRlv9/KQg9HkZLOq+yoFjEfZYioIwvHAdk1LOijdWeRaMG6d6Ww
+	 iHxY97Y46OwCpOL21mn0PcKukYCon+mypIYbQkXPhh0lhwtN3XivJTcNRyKE0Q3zMt
+	 lzfP0HaKojwFw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Gergo Koteles <soyer@irl.hu>,
 	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 556/713] ALSA: hda/tas2781: use dev_dbg in system_resume
-Date: Sun, 24 Mar 2024 18:44:42 -0400
-Message-ID: <20240324224720.1345309-557-sashal@kernel.org>
+Subject: [PATCH 6.7 557/713] ALSA: hda/tas2781: add lock to system_suspend
+Date: Sun, 24 Mar 2024 18:44:43 -0400
+Message-ID: <20240324224720.1345309-558-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,35 +64,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Gergo Koteles <soyer@irl.hu>
 
-[ Upstream commit c850c9121cc8de867ce3ac36b9ae9d05f62bef14 ]
+[ Upstream commit c58e6ed55a1bb9811d6d936d001b068bb0419467 ]
 
-The system_resume function uses dev_info for tracing, but the other pm
-functions use dev_dbg.
-
-Use dev_dbg as the other pm functions.
+Add the missing lock around tasdevice_tuning_switch().
 
 Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
 Signed-off-by: Gergo Koteles <soyer@irl.hu>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Message-ID: <140f3c689c9eb5874e6eb48a570fcd8207f06a41.1709918447.git.soyer@irl.hu>
+Message-ID: <c666da13d4bc48cd1ab1357479e0c6096541372c.1709918447.git.soyer@irl.hu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/tas2781_hda_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/tas2781_hda_i2c.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index 9f98965742e83..c39a5404fb392 100644
+index c39a5404fb392..10b5624b1f1f0 100644
 --- a/sound/pci/hda/tas2781_hda_i2c.c
 +++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -813,7 +813,7 @@ static int tas2781_system_resume(struct device *dev)
- 		tas_hda->priv->ndev * TASDEVICE_SPEAKER_CALIBRATION_SIZE;
- 	int i, ret;
- 
--	dev_info(tas_hda->priv->dev, "System Resume\n");
-+	dev_dbg(tas_hda->priv->dev, "System Resume\n");
- 
- 	ret = pm_runtime_force_resume(dev);
+@@ -796,9 +796,13 @@ static int tas2781_system_suspend(struct device *dev)
  	if (ret)
+ 		return ret;
+ 
++	mutex_lock(&tas_hda->priv->codec_lock);
++
+ 	/* Shutdown chip before system suspend */
+ 	tasdevice_tuning_switch(tas_hda->priv, 1);
+ 
++	mutex_unlock(&tas_hda->priv->codec_lock);
++
+ 	/*
+ 	 * Reset GPIO may be shared, so cannot reset here.
+ 	 * However beyond this point, amps may be powered down.
 -- 
 2.43.0
 
