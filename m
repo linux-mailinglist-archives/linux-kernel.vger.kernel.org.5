@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-114379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65BEF888A1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:10:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D35DC888A1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:11:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FFC6290933
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:10:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D913290911
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:11:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7359270C8C;
-	Sun, 24 Mar 2024 23:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB682716A4;
+	Sun, 24 Mar 2024 23:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G4MOw5xf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pg5g3174"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC13C217DE7;
-	Sun, 24 Mar 2024 23:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B57217E05;
+	Sun, 24 Mar 2024 23:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321779; cv=none; b=m+tq/josuztnvbB2a9lWPGdhD0hFXLbSIMwAXSOhVY4v2K7xmWzoVJK4kIj7UmwOx4vAx9othQyF6kslGInm4XJUNO5AYX12xC84EYf43cJ00xj3DXeq7KEAMokOxrr/2wwBfq6JFJ/x9xn6jAlv+P/+nMWFkVGVubmrAQ4MOqo=
+	t=1711321781; cv=none; b=I9eeaoy3zsUZl2/f6oHqufxk9rnCADsKSNeI3TO6PXmPZvQ+tuC+kBbB8wo43yPnamdhIcDT65vmNREU8Pw/lCOOs1oU/DAxouLKEPcd7g/10t3cKq089GCsCsQKeSL6eFiCSK/nmJFTqvdSGP2SHTtK7N6z7kpwaGXvD2sPU38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321779; c=relaxed/simple;
-	bh=c+A4NeIGq37Vm8i5Cry9H8iEiSFWR9RE6zV+f7W98mQ=;
+	s=arc-20240116; t=1711321781; c=relaxed/simple;
+	bh=Nq/1J7cAFfxLhMkKfL+OgxXajCbPPICS93POMZRo9rA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mjI95Lubcv6JdnBdv8y0idMOPiR+NhJK8oWifHC07THm3iWcU9ibVGfnxGhH+bgO0Aot0CEMCMgfi2vBl3FekWrskNJpIgv+IBMYRi1wYv0o7ks2NVgUqdctEq2TAPy3agZhQt9RMsnxhHmVh+vkN0AExAvEVRI1z4dVn+G1WHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G4MOw5xf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16DCAC433F1;
-	Sun, 24 Mar 2024 23:09:37 +0000 (UTC)
+	 MIME-Version; b=X+7NOy1XLxaSch/oihMUpuq24JN7I+BVH65w6PN4aJ037byHyVIOjw2sUapGaCmobhW7WyTZmhYpSe+Kvpl+tM2Ilz8YGbvYcWU0Y1QUJiLTYiO0D89pJ81kL4c/k99uuoNOIK0QBVDW+Y9c0bm7vIm72dJnrLn81s2tcKE5BYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pg5g3174; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F10FAC43394;
+	Sun, 24 Mar 2024 23:09:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321778;
-	bh=c+A4NeIGq37Vm8i5Cry9H8iEiSFWR9RE6zV+f7W98mQ=;
+	s=k20201202; t=1711321779;
+	bh=Nq/1J7cAFfxLhMkKfL+OgxXajCbPPICS93POMZRo9rA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=G4MOw5xfA+MGoYgq8LP/JkHZXlaj6/NgEQqJenmJUBJVXKIaVertdRUAxEg6ymoo9
-	 spAJhBWJID+AgS3E52wxmwIYeHmr50bEKrvUqW+UPrSA9PXE+a3LcvtNwAfztSM16p
-	 q1dZiy6POUmXt0P6FeeY54PGAA2jYf13tjJCAXwoJQikf4L7og7CkaQ4MbpJrTDHa7
-	 ZVnfLxBysTeez8j3n8n3uARO4jazK0AmMnQsWALxN9xr2NoY0UQIqsaRcDl9YrN0Qs
-	 aEiQizDg60YEdQuvrzwVXCg4PpGh/SykgV7BR1hwDYViB2P0qDxzJ7VDTxplkNcic/
-	 nsTN8Z7+Av0FQ==
+	b=pg5g3174rwK9N5IXIRpxyKaeRet5/qC6dw1RKIyDl7lR4M9MKapx5ISG+4KPFTE+R
+	 VfXmh+30qxn//yK85DxBFM5mSCN3wkCC/V1WyggqyzdEulOdIAVYGXNE/t2kYrC0JN
+	 la+25RWQOcXBYSEUtfvG8SnlU081dt7LpxXSLY1cjy6vHH9bQ/uZAv/WB1c+82vSev
+	 fxMMX+3q12mXoJcsNdBUyxHhh4af/5sjKtZ++ZXU5A+irK3FXWJNYsjpKawspmpk+M
+	 /EjE8BivbQp2UZEJ7gvn4Al0eEAPlJtDONDPk+mP5DOcTq4qgU+zJr7oZ9R2CaR0ba
+	 OqdDfbYnXrSOQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johan Carlsson <johan.carlsson@teenage.engineering>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Mustafa Ismail <mustafa.ismail@intel.com>,
+	Shiraz Saleem <shiraz.saleem@intel.com>,
+	Sindhu Devale <sindhu.devale@intel.com>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 506/638] ALSA: usb-audio: Stop parsing channels bits when all channels are found.
-Date: Sun, 24 Mar 2024 18:59:03 -0400
-Message-ID: <20240324230116.1348576-507-sashal@kernel.org>
+Subject: [PATCH 6.6 507/638] RDMA/irdma: Remove duplicate assignment
+Date: Sun, 24 Mar 2024 18:59:04 -0400
+Message-ID: <20240324230116.1348576-508-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,40 +64,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johan Carlsson <johan.carlsson@teenage.engineering>
+From: Mustafa Ismail <mustafa.ismail@intel.com>
 
-[ Upstream commit a39d51ff1f52cd0b6fe7d379ac93bd8b4237d1b7 ]
+[ Upstream commit 926e8ea4b8dac84f6d14a4b60d0653f1f2ba9431 ]
 
-If a usb audio device sets more bits than the amount of channels
-it could write outside of the map array.
+Remove the unneeded assignment of the qp_num which is already
+set in irdma_create_qp().
 
-Signed-off-by: Johan Carlsson <johan.carlsson@teenage.engineering>
-Fixes: 04324ccc75f9 ("ALSA: usb-audio: add channel map support")
-Message-ID: <20240313081509.9801-1-johan.carlsson@teenage.engineering>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
+Link: https://lore.kernel.org/r/20240131233953.400483-1-sindhu.devale@intel.com
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/stream.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/irdma/verbs.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 3d4add94e367d..d5409f3879455 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -300,9 +300,12 @@ static struct snd_pcm_chmap_elem *convert_chmap(int channels, unsigned int bits,
- 	c = 0;
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 60618b2046b97..ca3e89909ecf4 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -719,7 +719,6 @@ static int irdma_setup_kmode_qp(struct irdma_device *iwdev,
+ 		info->rq_pa + (ukinfo->rq_depth * IRDMA_QP_WQE_MIN_SIZE);
+ 	ukinfo->sq_size = ukinfo->sq_depth >> ukinfo->sq_shift;
+ 	ukinfo->rq_size = ukinfo->rq_depth >> ukinfo->rq_shift;
+-	ukinfo->qp_id = iwqp->ibqp.qp_num;
  
- 	if (bits) {
--		for (; bits && *maps; maps++, bits >>= 1)
-+		for (; bits && *maps; maps++, bits >>= 1) {
- 			if (bits & 1)
- 				chmap->map[c++] = *maps;
-+			if (c == chmap->channels)
-+				break;
-+		}
- 	} else {
- 		/* If we're missing wChannelConfig, then guess something
- 		    to make sure the channel map is not skipped entirely */
+ 	iwqp->max_send_wr = (ukinfo->sq_depth - IRDMA_SQ_RSVD) >> ukinfo->sq_shift;
+ 	iwqp->max_recv_wr = (ukinfo->rq_depth - IRDMA_RQ_RSVD) >> ukinfo->rq_shift;
+@@ -944,7 +943,7 @@ static int irdma_create_qp(struct ib_qp *ibqp,
+ 	iwqp->host_ctx.size = IRDMA_QP_CTX_SIZE;
+ 
+ 	init_info.pd = &iwpd->sc_pd;
+-	init_info.qp_uk_init_info.qp_id = iwqp->ibqp.qp_num;
++	init_info.qp_uk_init_info.qp_id = qp_num;
+ 	if (!rdma_protocol_roce(&iwdev->ibdev, 1))
+ 		init_info.qp_uk_init_info.first_sq_wq = 1;
+ 	iwqp->ctx_info.qp_compl_ctx = (uintptr_t)qp;
 -- 
 2.43.0
 
