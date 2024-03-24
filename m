@@ -1,55 +1,62 @@
-Return-Path: <linux-kernel+bounces-113384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3EE08883E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:23:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4398883E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F9531F27991
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:23:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A87DB23812
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876BE1A03C7;
-	Sun, 24 Mar 2024 22:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19E671A1328;
+	Sun, 24 Mar 2024 22:43:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H7PJuW96"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DE4S6xqA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56211A0B0A;
-	Sun, 24 Mar 2024 22:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5078F1A130F;
+	Sun, 24 Mar 2024 22:43:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320185; cv=none; b=R0NN/ZRMtkZCWduassWT5YNucpxjdM7BKBK/izXE+iJoyRZx7OqfyHEnk4J2yEKiDpgGm3SDt6wisNQd/nGS6Zhqh4tcYjJ0/xUkgVtHSsfahqfv9D02/wPRcMJP1eo+xcaL906AWO9U8ajV/RdRulZm80kmVt96AGcCOc8RLvg=
+	t=1711320187; cv=none; b=WSzoE55l5b1Rez/wZpW4xWCcjzqubwfdR6/+zbhJWq1xrRPS9/6y9ipvn3epILNPhbndo/mcr35OuInv75j1vB8MLqSKlIg4V59UeOyVAGptZyJHLe3tkS73Xi7+J2h0GQH0iqaiX+n3zMfDOeOphN85iZqL/FUcf1syXQluMOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320185; c=relaxed/simple;
-	bh=S8kbZG+dRKcv3OEWd9mM3vMaqdUCQsDUNZLrWHaOi5Y=;
+	s=arc-20240116; t=1711320187; c=relaxed/simple;
+	bh=FaMMzGF3uDIogoO+PFY/77q0D1RR1vmlPJX2EYNM7/Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j04S7IldtcriMMh180d09D9/nPgkyVt84IMj7of52jhm4EiqxOyuQAC8Z2ua/2ZYLv4hol533BSxai01nwoKQ//Az5Uyme53c3K/No4Tw8GINDdYUE28Vuc8UGhKFGcNEaYxL6lpZOWugONic9MVWZnGuQ2A3EVmW7LolDwB1rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H7PJuW96; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92135C433C7;
-	Sun, 24 Mar 2024 22:43:04 +0000 (UTC)
+	 MIME-Version; b=kaZ+njZ/W22tfo5NV3xJHp2OH3bdilwO3OW3DcEGtwDgMNtRBBZXt5B4z+XIxE8NVOXYENxptO4KoS7h3B+O1RNwvBJXEGz+8Q9ZLasj2E03HfKufL12TWBoZ/zedyuYKwkSj+KOlqkS9WE1aScAzYl/tl6560/a4sFC8KQCfpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DE4S6xqA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B4DC433F1;
+	Sun, 24 Mar 2024 22:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320185;
-	bh=S8kbZG+dRKcv3OEWd9mM3vMaqdUCQsDUNZLrWHaOi5Y=;
+	s=k20201202; t=1711320187;
+	bh=FaMMzGF3uDIogoO+PFY/77q0D1RR1vmlPJX2EYNM7/Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H7PJuW960o15T++AEsgXMI9Srd4Zlbdvu/Q2XHd58s9IUo9+bd1jJELcXrnL3YY3r
-	 PZsvJ/+P3qfQTC2g2Lrno9kfx/4UIs4ljukaGAuxcOrV5or3lDwi2dwx03PyllkhwR
-	 llbzar7+468g6Y+FmJwMDwiwZGDdwB/wBuk0D/d0lu0n7LQYOyMxjYwXAouCbtPET6
-	 H2t3sENTzWVQm9fWi3tzV0VKYQRk7lksGEihs+ST7UgDKY/0YlTKbRJsfHU0aHC1jr
-	 lH69fiffj0t6Qb5yw6yZqHbdGeEUYVzAsSC2aGX7KRKa8bQgxnXBoPS8bylxgRr5aM
-	 Wjz0KCDhxMvBg==
+	b=DE4S6xqAkE3eelOI1OQmdgbRaZlt2XdUjR6Wbp05UACfPzOLpFmmnVnzQjdAptqGq
+	 vluMOS1rrhXLKEggqfK261+TkUuwav8agKMBzHQ3axX+rWjllQ+Btp07o86SO+87YD
+	 kY42WNJ3N/p4tqu3yAA4xQRkaX7GMuPbL93aOHSIm4abdqeiutWvoSHdUCkYqTtBH2
+	 4jN2H39b83t4oyJZMPB0Q0ekNZY9+Mqr8n3Xgm6spvYEEFGQcq53DjYOzAUcG86N1E
+	 gHDw37hpvdwVgJgDIkVTp0PglJTsB33C3oR47dT50ah4vFiCDUOie00eIQ3f8nZ58j
+	 QFpfKv/DinMkA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Ricardo Ribalda <ribalda@chromium.org>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Stephen Boyd <swboyd@chromium.org>,
+	Jason Ling <jasonling@chromium.org>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	llvm@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 493/715] media: mediatek: vcodec: avoid -Wcast-function-type-strict warning
-Date: Sun, 24 Mar 2024 18:31:12 -0400
-Message-ID: <20240324223455.1342824-494-sashal@kernel.org>
+Subject: [PATCH 6.8 494/715] arm64: ftrace: Don't forbid CALL_OPS+CC_OPTIMIZE_FOR_SIZE with Clang
+Date: Sun, 24 Mar 2024 18:31:13 -0400
+Message-ID: <20240324223455.1342824-495-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,91 +70,50 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Stephen Boyd <swboyd@chromium.org>
 
-[ Upstream commit bfb1b99802ef16045402deb855c197591dc78886 ]
+[ Upstream commit a743f26d03a96593c0f3d05dc26b388f45de67c9 ]
 
-The ipi handler here tries hard to maintain const-ness of its argument,
-but by doing that causes a warning about function type casts:
+Per commit b3f11af9b2ce ("arm64: ftrace: forbid CALL_OPS with
+CC_OPTIMIZE_FOR_SIZE"), GCC is silently ignoring `-falign-functions=N`
+when passed `-Os`, causing functions to be improperly aligned. This
+doesn't seem to be a problem with Clang though, where enabling CALL_OPS
+with CC_OPTIMIZE_FOR_SIZE doesn't spit out any warnings at boot about
+misaligned patch-sites. Only forbid CALL_OPS if GCC is used and we're
+optimizing for size so that CALL_OPS can be used with clang optimizing
+for size.
 
-drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c:38:32: error: cast from 'mtk_vcodec_ipi_handler' (aka 'void (*)(void *, unsigned int, void *)') to 'ipi_handler_t' (aka 'void (*)(const void *, unsigned int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   38 |         ipi_handler_t handler_const = (ipi_handler_t)handler;
-      |                                       ^~~~~~~~~~~~~~~~~~~~~~
-
-Remove the hack and just use a non-const argument.
-
-Fixes: bf1d556ad4e0 ("media: mtk-vcodec: abstract firmware interface")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Jason Ling <jasonling@chromium.org>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Bill Wendling <morbo@google.com>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: llvm@lists.linux.dev
+Fixes: b3f11af9b2ce ("arm64: ftrace: forbid CALL_OPS with CC_OPTIMIZE_FOR_SIZE")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/r/20240223064032.3463229-1-swboyd@chromium.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c      |  2 +-
- .../mediatek/vcodec/common/mtk_vcodec_fw_vpu.c         | 10 +---------
- drivers/media/platform/mediatek/vpu/mtk_vpu.c          |  2 +-
- drivers/media/platform/mediatek/vpu/mtk_vpu.h          |  2 +-
- 4 files changed, 4 insertions(+), 12 deletions(-)
+ arch/arm64/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c b/drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c
-index b065ccd069140..378a1cba0144f 100644
---- a/drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c
-+++ b/drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c
-@@ -26,7 +26,7 @@ static void mtk_mdp_vpu_handle_init_ack(const struct mdp_ipi_comm_ack *msg)
- 	vpu->inst_addr = msg->vpu_inst_addr;
- }
- 
--static void mtk_mdp_vpu_ipi_handler(const void *data, unsigned int len,
-+static void mtk_mdp_vpu_ipi_handler(void *data, unsigned int len,
- 				    void *priv)
- {
- 	const struct mdp_ipi_comm_ack *msg = data;
-diff --git a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-index 9f6e4b59455da..4c34344dc7dcb 100644
---- a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-+++ b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-@@ -29,15 +29,7 @@ static int mtk_vcodec_vpu_set_ipi_register(struct mtk_vcodec_fw *fw, int id,
- 					   mtk_vcodec_ipi_handler handler,
- 					   const char *name, void *priv)
- {
--	/*
--	 * The handler we receive takes a void * as its first argument. We
--	 * cannot change this because it needs to be passed down to the rproc
--	 * subsystem when SCP is used. VPU takes a const argument, which is
--	 * more constrained, so the conversion below is safe.
--	 */
--	ipi_handler_t handler_const = (ipi_handler_t)handler;
--
--	return vpu_ipi_register(fw->pdev, id, handler_const, name, priv);
-+	return vpu_ipi_register(fw->pdev, id, handler, name, priv);
- }
- 
- static int mtk_vcodec_vpu_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
-diff --git a/drivers/media/platform/mediatek/vpu/mtk_vpu.c b/drivers/media/platform/mediatek/vpu/mtk_vpu.c
-index 7243604a82a5b..724ae7c2ab3ba 100644
---- a/drivers/media/platform/mediatek/vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mediatek/vpu/mtk_vpu.c
-@@ -635,7 +635,7 @@ int vpu_load_firmware(struct platform_device *pdev)
- }
- EXPORT_SYMBOL_GPL(vpu_load_firmware);
- 
--static void vpu_init_ipi_handler(const void *data, unsigned int len, void *priv)
-+static void vpu_init_ipi_handler(void *data, unsigned int len, void *priv)
- {
- 	struct mtk_vpu *vpu = priv;
- 	const struct vpu_run *run = data;
-diff --git a/drivers/media/platform/mediatek/vpu/mtk_vpu.h b/drivers/media/platform/mediatek/vpu/mtk_vpu.h
-index a56053ff135af..da05f3e740810 100644
---- a/drivers/media/platform/mediatek/vpu/mtk_vpu.h
-+++ b/drivers/media/platform/mediatek/vpu/mtk_vpu.h
-@@ -17,7 +17,7 @@
-  * VPU interfaces with other blocks by share memory and interrupt.
-  */
- 
--typedef void (*ipi_handler_t) (const void *data,
-+typedef void (*ipi_handler_t) (void *data,
- 			       unsigned int len,
- 			       void *priv);
- 
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index aa7c1d4351396..6b96d75a3a3d8 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -198,7 +198,7 @@ config ARM64
+ 		if DYNAMIC_FTRACE_WITH_ARGS && DYNAMIC_FTRACE_WITH_CALL_OPS
+ 	select HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS \
+ 		if (DYNAMIC_FTRACE_WITH_ARGS && !CFI_CLANG && \
+-		    !CC_OPTIMIZE_FOR_SIZE)
++		    (CC_IS_CLANG || !CC_OPTIMIZE_FOR_SIZE))
+ 	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+ 		if DYNAMIC_FTRACE_WITH_ARGS
+ 	select HAVE_SAMPLE_FTRACE_DIRECT
 -- 
 2.43.0
 
