@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7BDE888D3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:43:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA399889318
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72CAA286F07
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:43:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A8491F32CEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3522FD891;
-	Mon, 25 Mar 2024 01:04:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA30A2FD89E;
+	Mon, 25 Mar 2024 01:04:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RO6UHQW8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fmTX5IEM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3454181B8E;
-	Sun, 24 Mar 2024 23:48:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC8E181B9E;
+	Sun, 24 Mar 2024 23:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324116; cv=none; b=GsUGrEQsozKDkhJcWZsU93KAkF14NZ7nrnRKkN/S421HrcRrY7nG7wrC/RIN/2i8ubfdNA4w4LQHftDes3tRvvxAnPHxosSbyLgUlN0IerIpXR9PKvedCO17wQxZUm/VEe7H+bTWh9exexocKpNQk3BEFktDEjW4Qo0occQI1dA=
+	t=1711324116; cv=none; b=XvcpjBs+HjHtB0Ap9SB7djQp69Xsw3BXaJhut3y38kD+GnHV9hJ1C9vCTU+sImwsa01iCaHgZZfaPN3b0EvwiFK0sF4bDTNSXlNqgi+KNUIPM6z9GLGM9fHdKL8MsGAq3jUXITw1j2NkUKllQ07cK+1zy6PZMYWEQXtXjVff9I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324116; c=relaxed/simple;
-	bh=ch4msB6QbAfyxOHVuIwLakn8UTa3SdoazWxzYOmU5xY=;
+	bh=u0e++ePWbuatnqhuMRpq9QLbdz3k9Keaoa75jKdDe04=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pjiw05bMWz67gNe+3Jkwvh+2bk0XYAYkvgtbBgueWasyMMD7V7hCOqDgSJ7IezuW3zk7h/GbWlzHHppOk6zGdpvGKkk71LtM/UBX76oJ91E0uzaWDogrYqpx9JX2iSBqwMnMbvnW+DPPgvllEAYL79/RVIHgsasNx5ZacZcKXJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RO6UHQW8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13589C43390;
-	Sun, 24 Mar 2024 23:48:33 +0000 (UTC)
+	 MIME-Version; b=tw6D2hdnuHKrzrTK/mV+/7d52wkB6ZHkJBh9VoVnavXgFqdBL8+hO+pvmKMQEOBThA8gjbUnFpQqwib/2hHfYX9VEjRzRoCksHMV2BikcH+pDpa67VKIobw0TtV8fDAo+TwHqTBvvuMLdS3YmGg3rcFtGL4WR9Q5/oKfNs8oLig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fmTX5IEM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 130E9C433C7;
+	Sun, 24 Mar 2024 23:48:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324114;
-	bh=ch4msB6QbAfyxOHVuIwLakn8UTa3SdoazWxzYOmU5xY=;
+	s=k20201202; t=1711324115;
+	bh=u0e++ePWbuatnqhuMRpq9QLbdz3k9Keaoa75jKdDe04=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RO6UHQW8+83koF5R/hPr26UZj4BbpxSxzL57T0niPnjzuzEWe/PSwhnK/cu57q6BJ
-	 qZ26yxB5wYhecDaH2eNOz7Qw9Lp4rKyr97E0zenhpHzMdKEDA/vQbfCtTRk8yXR56R
-	 LEyoB3w879CIDJ7kE96Pj6RSU/tM4rX7Xa17mBKBS8a3SdFlqobdgnuZNpGV7kHedr
-	 QjKfko7UMERUzTUmRl5m9RmE930Fie8TLhinoEAVL4+OKvm2nzLuA9ipmwDWUNL41r
-	 5FLdIUxBgu8KFOkPvbYw420pqqzGNbENEtQHS2R3UyMeLlL64OfHHYnB7nalGDMUNf
-	 hkIh3iAftaE4w==
+	b=fmTX5IEMYg2o2ANHBX1Y/V231rfA03/cCOeRZw9wueY/PAUzapINZQt6ggz4P+CXb
+	 iyuDPoV9D11vE0xt/POOYiyC7F6oSwbE5thJJLUIDxb1L47no+6XWxsrFWt/HDLusV
+	 z1fhhzs2dHs+eqeEX2y+g0JCHAdIxec0ick3Fa+f1UpTVzS4fxxghUa/qxuzVOpNab
+	 qMwL2jPF4KVspDUbno5k67g7PyUhAmhMRPWbFTkh5cdqOFo1ywId54u1nmpUhH6aeU
+	 2lUje+fXlTPnY88HVWJ0ysUHjcPsNcVWkarfE2464bGuGmeTyg6UBaCA7BlMTUicBb
+	 8NdUWIA465yAg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yang Jihong <yangjihong1@huawei.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 113/183] perf thread_map: Free strlist on normal path in thread_map__new_by_tid_str()
-Date: Sun, 24 Mar 2024 19:45:26 -0400
-Message-ID: <20240324234638.1355609-114-sashal@kernel.org>
+Subject: [PATCH 5.4 114/183] drm/radeon/ni: Fix wrong firmware size logging in ni_init_microcode()
+Date: Sun, 24 Mar 2024 19:45:27 -0400
+Message-ID: <20240324234638.1355609-115-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -63,42 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yang Jihong <yangjihong1@huawei.com>
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-[ Upstream commit 1eb3d924e3c0b8c27388b0583a989d757866efb6 ]
+[ Upstream commit c4891d979c7668b195a0a75787967ec95a24ecef ]
 
-slist needs to be freed in both error path and normal path in
-thread_map__new_by_tid_str().
+Clean up a typo in pr_err() erroneously printing NI MC 'rdev->mc_fw->size'
+during SMC firmware load. Log 'rdev->smc_fw->size' instead.
 
-Fixes: b52956c961be3a04 ("perf tools: Allow multiple threads or processes in record, stat, top")
-Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/r/20240206083228.172607-6-yangjihong1@huawei.com
+Found by Linux Verification Center (linuxtesting.org) with static
+analysis tool SVACE.
+
+Fixes: 6596afd48af4 ("drm/radeon/kms: add dpm support for btc (v3)")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/thread_map.c | 2 +-
+ drivers/gpu/drm/radeon/ni.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/thread_map.c b/tools/perf/util/thread_map.c
-index c9bfe4696943b..cee7fc3b5bb0c 100644
---- a/tools/perf/util/thread_map.c
-+++ b/tools/perf/util/thread_map.c
-@@ -279,13 +279,13 @@ struct perf_thread_map *thread_map__new_by_tid_str(const char *tid_str)
- 		threads->nr = ntasks;
+diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
+index 410f626a39d43..1fa48853b54e4 100644
+--- a/drivers/gpu/drm/radeon/ni.c
++++ b/drivers/gpu/drm/radeon/ni.c
+@@ -826,7 +826,7 @@ int ni_init_microcode(struct radeon_device *rdev)
+ 			err = 0;
+ 		} else if (rdev->smc_fw->size != smc_req_size) {
+ 			pr_err("ni_mc: Bogus length %zu in firmware \"%s\"\n",
+-			       rdev->mc_fw->size, fw_name);
++			       rdev->smc_fw->size, fw_name);
+ 			err = -EINVAL;
+ 		}
  	}
- out:
-+	strlist__delete(slist);
- 	if (threads)
- 		refcount_set(&threads->refcnt, 1);
- 	return threads;
- 
- out_free_threads:
- 	zfree(&threads);
--	strlist__delete(slist);
- 	goto out;
- }
- 
 -- 
 2.43.0
 
