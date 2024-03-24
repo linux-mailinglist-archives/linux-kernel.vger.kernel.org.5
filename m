@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-116157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D52928899D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:17:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3438B888CFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:37:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 894A51F33B58
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:17:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7085AB2D32F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B8372827DD;
-	Mon, 25 Mar 2024 03:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255BE2E2D35;
+	Mon, 25 Mar 2024 00:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dzFR8A29"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oKVDcEXm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245B117B4FB;
-	Sun, 24 Mar 2024 23:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BBDA17B509;
+	Sun, 24 Mar 2024 23:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323724; cv=none; b=ib6f2naLsQYcXCRY+sfVhrIWxXryqEEcSaYoZI4nYimv3fqVWea6K4ekA6YyvCO8Xd7KhrwgM7I17xsjbHAILtTG2Ti9MUGsE8xZXpUvwQmjqjSbCB2opOn6nAuL2gzsXqyI5fbjVorN+sLMQLwcfmwNkhHc86Nuuh/XOSTh5IE=
+	t=1711323724; cv=none; b=Lip1Aauxc1FttVTL0b5YPpgzRqoV6CiaCp24Opyc7pQDwvxzV12FannsprT+bh+YAbyPpKjRBcnzq5gyBpbNhArM3zYpkQ39oLHc5uXqydFvZCEBIszkOfboY7n6bnxXGp39q6aTR5eMwoVvz6nm0q9v6d9rQmSsfBLj+ZGd7Ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323724; c=relaxed/simple;
-	bh=EWdZk2t0N8dwccaXvhhlbSDrH2hjfcC9HGHEuRAS7cM=;
+	bh=wTx2CP0rQOPjoKpSAi8r0GICFQMvOfBkNPFf9R3b24w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qeUQrehLQI+aH6/gHFc1mrxYEcBrBq08BjKM61xd5J8LPpLta38qcqiNiU1mVAY+b/e3i7Bwggeh/jSl62KuRQBCvkOy167QNGFHlPCS7r2nb8RJSrHT/f4B51yshBTt0bRlSF+OklU0QqDdjSStxWT6GHPYJFJSnNknF3gVlbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dzFR8A29; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B253C433C7;
-	Sun, 24 Mar 2024 23:42:02 +0000 (UTC)
+	 MIME-Version; b=BwIbj8OHjYIwudEZSXS78H+qd6PIe24VBSO74HrtKZR9MT8wh/cSwzYIOQnd2Cr2s6hFmY7wRRQHMF43Drb+H9eL9QU5iOfu2QQ+c6N7UktWdnoBKq9716iRGs+vLjeJLwSJ7UNPxOiLCahKEI+fPhQ7kC25dU3taP6ARYVEOXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oKVDcEXm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47AA8C433A6;
+	Sun, 24 Mar 2024 23:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323723;
-	bh=EWdZk2t0N8dwccaXvhhlbSDrH2hjfcC9HGHEuRAS7cM=;
+	s=k20201202; t=1711323724;
+	bh=wTx2CP0rQOPjoKpSAi8r0GICFQMvOfBkNPFf9R3b24w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dzFR8A29vSyrNFSMX3aONdAqnpNEgXWVBPOdzOZJjmL+xAaBqmJHl4hR4q1n2mP1+
-	 DvA8WyiXZAgTOQOHcACGZWbcjch7WtOFi9ydM9LdXLOeP0eC87wOEEMXEpW3ncD3OH
-	 jg+gGeSE6TmbcNV3wN1R5EsH7gUKBuobKiSzm7slidiNKnWip0o/EFdh0XuL05Jvm9
-	 Q8rsjETMfkYU2HQie7zfHvtDZxXrmyiBczjRr8p2V5DluvLCTnURQa29sFaMINHAGv
-	 gR6Or4sS/iq8EIw515OyAVmzaBS0oaKn+2KGMdqx5loiU1T0eJ52awWKI4aku+soLu
-	 LLqabG4Fs8yBQ==
+	b=oKVDcEXmVTlUt+yV/kg46kkOkfErAaoyRqcHMQxZrk4MzeEcqM7GWFu2FeNBavRvw
+	 5NdKjWHpl3/ggAwZDyi8LpKdgjna+/czSRh2fEgVnxV1yHqV/b9vElA4ripPUs2nYU
+	 606KIEXeKW1FrZkq4M9K78Sfmyevv28CGclI5MPpYaDaSUD9NYE5gE4Db0X7kagGeO
+	 7I8BB9od03YPgzkv5VW0QlckyHdiUKkj1Av2ZyLhCHdmuXRBlMF0QcuIYJqagXy6Yw
+	 4ZW5BFfvBCRExTIh9aGrUqnR+pAtAi3oJALbkzMIOwwnhyjhZRK9UgJT4WePVlIrWc
+	 QX/IxG29/SH1g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jie Wang <wangjie125@huawei.com>,
-	Jijie Shao <shaojijie@huawei.com>,
+Cc: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
+	Michael Trimarchi <michael@amarulasolutions.com>,
+	Alberto Bianchi <alberto.bianchi@amarulasolutions.com>,
+	Andrew Lunn <andrew@lunn.ch>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 096/238] net: hns3: fix port duplex configure error in IMP reset
-Date: Sun, 24 Mar 2024 19:38:04 -0400
-Message-ID: <20240324234027.1354210-97-sashal@kernel.org>
+Subject: [PATCH 5.10 097/238] net: phy: DP83822: enable rgmii mode if phy_interface_is_rgmii
+Date: Sun, 24 Mar 2024 19:38:05 -0400
+Message-ID: <20240324234027.1354210-98-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -63,42 +65,57 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jie Wang <wangjie125@huawei.com>
+From: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
 
-[ Upstream commit 11d80f79dd9f871a52feba4bf24b5ac39f448eb7 ]
+[ Upstream commit 621427fbdada788f18f77238e1c36f463c2cb9d1 ]
 
-Currently, the mac port is fixed to configured as full dplex mode in
-hclge_mac_init() when driver initialization or reset restore. Users may
-change the mode to half duplex with ethtool,  so it may cause the user
-configuration dropped after reset.
+RGMII mode can be enable from dp83822 straps, and also writing bit 9
+of register 0x17 - RMII and Status Register (RCSR).
+When phy_interface_is_rgmii rgmii mode must be enabled, same for
+contrary, this prevents malconfigurations of hw straps
 
-To fix it, don't change the duplex mode when resetting.
+References:
+ - https://www.ti.com/lit/gpn/dp83822i p66
 
-Fixes: 2d03eacc0b7e ("net: hns3: Only update mac configuation when necessary")
-Signed-off-by: Jie Wang <wangjie125@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+Signed-off-by: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
+Co-developed-by: Michael Trimarchi <michael@amarulasolutions.com>
+Suggested-by: Alberto Bianchi <alberto.bianchi@amarulasolutions.com>
+Tested-by: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
+Stable-dep-of: c8a5c731fd12 ("net: phy: dp83822: Fix RGMII TX delay configuration")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/phy/dp83822.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index deba485ced1bd..c14c391a0cec6 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -2723,7 +2723,10 @@ static int hclge_mac_init(struct hclge_dev *hdev)
- 	int ret;
+diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+index 81412999445d8..dce87589b1120 100644
+--- a/drivers/net/phy/dp83822.c
++++ b/drivers/net/phy/dp83822.c
+@@ -94,7 +94,8 @@
+ #define DP83822_WOL_INDICATION_SEL BIT(8)
+ #define DP83822_WOL_CLR_INDICATION BIT(11)
  
- 	hdev->support_sfp_query = true;
--	hdev->hw.mac.duplex = HCLGE_MAC_FULL;
+-/* RSCR bits */
++/* RCSR bits */
++#define DP83822_RGMII_MODE_EN	BIT(9)
+ #define DP83822_RX_CLK_SHIFT	BIT(12)
+ #define DP83822_TX_CLK_SHIFT	BIT(11)
+ 
+@@ -386,6 +387,12 @@ static int dp83822_config_init(struct phy_device *phydev)
+ 			if (err)
+ 				return err;
+ 		}
 +
-+	if (!test_bit(HCLGE_STATE_RST_HANDLING, &hdev->state))
-+		hdev->hw.mac.duplex = HCLGE_MAC_FULL;
-+
- 	ret = hclge_cfg_mac_speed_dup_hw(hdev, hdev->hw.mac.speed,
- 					 hdev->hw.mac.duplex);
- 	if (ret)
++		phy_set_bits_mmd(phydev, DP83822_DEVADDR,
++					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
++	} else {
++		phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
++					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
+ 	}
+ 
+ 	if (dp83822->fx_enabled) {
 -- 
 2.43.0
 
