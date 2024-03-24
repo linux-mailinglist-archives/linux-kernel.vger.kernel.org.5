@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-113351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD7B48883A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:15:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC20A8883A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87EA91F239B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDE8B1C239FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9209019A5FA;
-	Sun, 24 Mar 2024 22:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA3719A61A;
+	Sun, 24 Mar 2024 22:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V2rMjTPR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LidR+aS3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0E1199EBC;
-	Sun, 24 Mar 2024 22:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B0B19A5FF;
+	Sun, 24 Mar 2024 22:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320151; cv=none; b=FdO1JBrqGP9cKnqTDzl1HVrEUyo85eCnp9A8Rb27qXJptEE3invbswP5BWzIs7w+yLnjRTwJRozUej7jtXBeiZMrf8dVhE80j1ZL+p78PruzyRsnKE3fgUEbteO4Xo0XLkfHpQnARGg9LL2tUNjUL+04e0WI9+E4SNK8KMm3VJQ=
+	t=1711320152; cv=none; b=m3n6QTdbMCkCP7VpiMK6ByIxE5aTYKTUO23VW469rn+UZUWlE9+NPuSO5TGDa5OTlYYjSU2ct1PBqWQipv9B6hFYqKdt5+3jN/0/aMa7C/kqwBcM+WccQOggppSCB6udVxjyGh1it00UphF52BhsVkIEUduHNsm785YOz5b1pl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320151; c=relaxed/simple;
-	bh=9ZETl/gy0Y8jktpocnhL5DTxHf3vVl9bRFVzwPJKPDI=;
+	s=arc-20240116; t=1711320152; c=relaxed/simple;
+	bh=BjcuebaRPfYPlAqyCr+uValv4NECtfJPw+lWn86FniE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=maoEq3a3sh7hWviL8BSFoOwzayNTfZ3mCp2M+gfSEgSelW3nVIRWwDlN5QtRf+vxQLfAi4/YxvBvx1ustQqkdbws7+QVDs2YdUxk9Z6OQRz3XwEstAHNcHA6cGuA2FwdrxTRsod/3Aqklmq182dmOXTagvgvUHIBOVQ56HyCRTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V2rMjTPR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3BA5C43394;
-	Sun, 24 Mar 2024 22:42:30 +0000 (UTC)
+	 MIME-Version; b=IrubJ5WOQ6nLwadUPdFpNkIZ580i09AOFzUze1VJjdz6DLV+Dc3j0mUum2I1zZUIo3frqQ11NVnNLVeJ8NhSa08Y9C1iOB9UR1IFZLxN+MsQi9J+IFVwMGzPgxBNm24LAu5CTo9psoKHu1bTuI2ErP2CFhgSGjftm7cf98ndhGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LidR+aS3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D471DC433C7;
+	Sun, 24 Mar 2024 22:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320151;
-	bh=9ZETl/gy0Y8jktpocnhL5DTxHf3vVl9bRFVzwPJKPDI=;
+	s=k20201202; t=1711320152;
+	bh=BjcuebaRPfYPlAqyCr+uValv4NECtfJPw+lWn86FniE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=V2rMjTPRAtxHKCPCiGLcZcyg+lmJQUal/tH3E8NyGKvwMzYDpt92VkVIX6EGsPhi4
-	 KGHAzPrrKBj5KdmC1nNr4QBeGHQTUtYS6eUxOC9DrUYjkhglnhvjr02QxTb3NxeweT
-	 jIItGO2R8YPI9vrpVef4DRCRFJ+pAhcHuUsGTxyAmWlLu2A9Di9mmImL5vMFYK/RAS
-	 kja9aDwAxPjAlIYlmKj1k3DbiigrOcLo7j3bB4Xh9aA1bV/irc8PDekPS89ks9g7LB
-	 AYAeYMLVKJD+wmGsyisGSgy0XdL4gNGLZHbC+cyEFV6MEd5jqK0LMZAP/SDHm3n2YM
-	 ntyXhonAtnmDQ==
+	b=LidR+aS36zpYRMvgB0h7lRwWJToY7OuQ5aE/hBFB0mbp4mimu9j7XxfwS8NdVdpYM
+	 Ufy3ljHc7owgV0dZfh3e9pgwGVc5m7lVyLsbEzSN1De6RiO2apgU/Uw2VYyRWD6etX
+	 CPdB0t1qencaRUlC0zt7/8l/fdoztgd9LiIPYE20IW7F94fn8fBg6gm/xfi5g5BrpG
+	 2vXw/T/T1JDLTCvBEroBAzC32xmGaHIs/lPFcY6dIPltdiwoowNmEok5u5/0f17SH2
+	 LIMd8EGWj/t5rQFNtR7EwHGiGkfqryRcsd4Ch3vRpHi9ZIhgFLRSUsqs4QAVfUhY9F
+	 yt0aiK8NHCU5Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 460/715] media: ivsc: csi: Swap SINK and SOURCE pads
-Date: Sun, 24 Mar 2024 18:30:39 -0400
-Message-ID: <20240324223455.1342824-461-sashal@kernel.org>
+Subject: [PATCH 6.8 461/715] media: i2c: imx290: Fix IMX920 typo
+Date: Sun, 24 Mar 2024 18:30:40 -0400
+Message-ID: <20240324223455.1342824-462-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,46 +65,66 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit 48f5fd8967f8dd01679fc1618b0cba02095cddc5 ]
+[ Upstream commit 6fc62efa266b0918c7b226f45c2eccfcf99a6d8e ]
 
-This patch swaps SINK and SOURCE pads of the MEI CSI sub-device. While
-this does change the UAPI by swapping the pads, the driver has never been
-usable in upstream kernel as the Intel IPU6 driver it depends on any
-functionality has not yet been merged.
+Replace IMX920 by IMX290.
 
-Fixes: 29006e196a56 ("media: pci: intel: ivsc: Add CSI submodule")
+Fixes: b4ab57b07c5b9 ("media: i2c: imx290: Add crop selection targets support")
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/intel/ivsc/mei_csi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/i2c/imx290.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/pci/intel/ivsc/mei_csi.c b/drivers/media/pci/intel/ivsc/mei_csi.c
-index 15b905f66ab72..3c74d06a27fad 100644
---- a/drivers/media/pci/intel/ivsc/mei_csi.c
-+++ b/drivers/media/pci/intel/ivsc/mei_csi.c
-@@ -71,8 +71,8 @@ enum ivsc_privacy_status {
- };
+diff --git a/drivers/media/i2c/imx290.c b/drivers/media/i2c/imx290.c
+index 9967f34774334..4150e6e4b9a63 100644
+--- a/drivers/media/i2c/imx290.c
++++ b/drivers/media/i2c/imx290.c
+@@ -150,10 +150,10 @@
  
- enum csi_pads {
--	CSI_PAD_SOURCE,
- 	CSI_PAD_SINK,
-+	CSI_PAD_SOURCE,
- 	CSI_NUM_PADS
- };
+ #define IMX290_PIXEL_ARRAY_WIDTH			1945
+ #define IMX290_PIXEL_ARRAY_HEIGHT			1097
+-#define IMX920_PIXEL_ARRAY_MARGIN_LEFT			12
+-#define IMX920_PIXEL_ARRAY_MARGIN_RIGHT			13
+-#define IMX920_PIXEL_ARRAY_MARGIN_TOP			8
+-#define IMX920_PIXEL_ARRAY_MARGIN_BOTTOM		9
++#define IMX290_PIXEL_ARRAY_MARGIN_LEFT			12
++#define IMX290_PIXEL_ARRAY_MARGIN_RIGHT			13
++#define IMX290_PIXEL_ARRAY_MARGIN_TOP			8
++#define IMX290_PIXEL_ARRAY_MARGIN_BOTTOM		9
+ #define IMX290_PIXEL_ARRAY_RECORDING_WIDTH		1920
+ #define IMX290_PIXEL_ARRAY_RECORDING_HEIGHT		1080
  
-@@ -587,7 +587,7 @@ static int mei_csi_notify_bound(struct v4l2_async_notifier *notifier,
- 	csi->remote_pad = pad;
+@@ -1161,10 +1161,10 @@ static int imx290_get_selection(struct v4l2_subdev *sd,
+ 		 * The sensor moves the readout by 1 pixel based on flips to
+ 		 * keep the Bayer order the same.
+ 		 */
+-		sel->r.top = IMX920_PIXEL_ARRAY_MARGIN_TOP
++		sel->r.top = IMX290_PIXEL_ARRAY_MARGIN_TOP
+ 			   + (IMX290_PIXEL_ARRAY_RECORDING_HEIGHT - format->height) / 2
+ 			   + imx290->vflip->val;
+-		sel->r.left = IMX920_PIXEL_ARRAY_MARGIN_LEFT
++		sel->r.left = IMX290_PIXEL_ARRAY_MARGIN_LEFT
+ 			    + (IMX290_PIXEL_ARRAY_RECORDING_WIDTH - format->width) / 2
+ 			    + imx290->hflip->val;
+ 		sel->r.width = format->width;
+@@ -1183,8 +1183,8 @@ static int imx290_get_selection(struct v4l2_subdev *sd,
+ 		return 0;
  
- 	return media_create_pad_link(&subdev->entity, pad,
--				     &csi->subdev.entity, 1,
-+				     &csi->subdev.entity, CSI_PAD_SINK,
- 				     MEDIA_LNK_FL_ENABLED |
- 				     MEDIA_LNK_FL_IMMUTABLE);
- }
+ 	case V4L2_SEL_TGT_CROP_DEFAULT:
+-		sel->r.top = IMX920_PIXEL_ARRAY_MARGIN_TOP;
+-		sel->r.left = IMX920_PIXEL_ARRAY_MARGIN_LEFT;
++		sel->r.top = IMX290_PIXEL_ARRAY_MARGIN_TOP;
++		sel->r.left = IMX290_PIXEL_ARRAY_MARGIN_LEFT;
+ 		sel->r.width = IMX290_PIXEL_ARRAY_RECORDING_WIDTH;
+ 		sel->r.height = IMX290_PIXEL_ARRAY_RECORDING_HEIGHT;
+ 
 -- 
 2.43.0
 
