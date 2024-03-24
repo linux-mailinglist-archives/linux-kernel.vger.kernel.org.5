@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-115398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF81B8893CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:38:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F535888649
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:28:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22CE8291BD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3505B20F4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5D21D6861;
-	Mon, 25 Mar 2024 02:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6C71DCCA4;
+	Sun, 24 Mar 2024 22:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e0hgrQBi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZaNT7Oy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDB41DC80A;
-	Sun, 24 Mar 2024 22:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC2D1DC81D;
+	Sun, 24 Mar 2024 22:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320713; cv=none; b=JEecrSD45ta59mS7Vb0zT3QmXYON2C+vFpP0JBMRGtGjztTllEjfuR+oxBgP/XsbOZSp082alGySnLKzzNhpsPdwy7ubMnqXXJMBsHG9ro+hbUzq74io9nMadqOYuhwia6Ntbx9rOwhSr6lsvGq/IBtuCqtkCwMixbuLgyk4cY4=
+	t=1711320715; cv=none; b=N1ZxrRhU/IYZu9wnw16RvallDNm7jMctwpEI/D+X/Ed7kybYGSx6CyO4rn21uEZOMMPUFn3ePEH+I0y1hEDf1+PW1EHQoRvhCv19NeX8u4GBEGtXi5+RSP50PVr/3fnCHpO/bPZqY9BuPrfz9l3xD6vxNCRBLOsa1Vg/q+atqmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320713; c=relaxed/simple;
-	bh=xZCKW/24TgRh7+E7gd9pRTBVZMgGEG5kgKUeClJxXso=;
+	s=arc-20240116; t=1711320715; c=relaxed/simple;
+	bh=VhGrNDsi/hSAF7zLn+fZKZbQpK32uQKZn69jSk9m1gs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lDGCZDh3k2b+2gXNHPTp9RoJLaXncFzUy6h7WRPZc02twMmPJ6C6obpIJt2dkXfyh69banrP3Tvnr14PEaOx/GQmlbRN4P3Fl9pijWmWBnAExmVvOAnqyF4Dxbv8k+3RkIYKXSq7SHFIBlrLiDhDCwuFXw1/Cf/DcrzzyvwYSZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e0hgrQBi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C048BC43390;
-	Sun, 24 Mar 2024 22:51:52 +0000 (UTC)
+	 MIME-Version; b=oTvIFzNONaZRBiERHWWcQTNvG5nxfnUCE0GMeM8PI/uMorSMyZGAcPX9wq37V/F8c0NV0zcF0qZrwTM7dLp3S1fhM6Sic0JTWDHn088yOyDwF90INbDpXdyt1B3u+au/0WBRWk2P9siqf+BYnhnd7PBP/bkuQcgspvo0dj0nYsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZaNT7Oy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D96D0C43399;
+	Sun, 24 Mar 2024 22:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320713;
-	bh=xZCKW/24TgRh7+E7gd9pRTBVZMgGEG5kgKUeClJxXso=;
+	s=k20201202; t=1711320714;
+	bh=VhGrNDsi/hSAF7zLn+fZKZbQpK32uQKZn69jSk9m1gs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e0hgrQBid+jtvjw5b2DWQwPxOoIm9lzptNIv29HyG/vvJC7gKtg2496X0GUeabKe4
-	 IvVnPDeSb1rUx+BI3yDdbWOP05CYY/8akcyzbrE/ALBIpDIUuNxv4HuLyYP8tiukTE
-	 q0lBa0Zm8AcOdIL2iYF2EsKswii7ShgOYZ9uJYa4N5buVY2LY84acRrgexeiJJmj4H
-	 VVOfmTlszyK5IugKGTLRbG9ihpTNE0izEs9h2v0dYspRa7l1iQT2Pk8Uo3foZwkZs1
-	 P+6gt+mN7sLr8Vm3CfgEYz5bwMfAW51yEr4QNHy28Z1OoHreM+kVSjBwujtoLJOEP1
-	 cxTGzmrduW5Ew==
+	b=ZZaNT7Oy1NN+w+TFfBwl6NuhovXEcoh3sDeEMDGkv2h1HY1iGaFvvPf7NOjKXshA5
+	 RAjQRaGOT+aS0jpKulH4qZ2najcoyBNCGkMFbVe16xKfvjIkdyf6JYLMN68y+UqZkW
+	 eS87g1TDEuWv7KhG49XWbX8gLWNGu7wwJxmBM8R53NDra1NfDv7ipTDRPDhk3uGoH3
+	 JmBtc+1cvkxjCrJWJCtMp9aRSqN9EQam7SCvNu5vsPIT8lEqKll03v7yJE+VY5cJK8
+	 GF43xZV3PmpflPyO5YbZmnVq1GKmVwX74SIppl5O2qaWaLUI9O+qhtGJAKWgep9+A2
+	 HOLMWvOmMA5Wg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: Devarsh Thakkar <devarsht@ti.com>,
 	Aradhya Bhatia <a-bhatia1@ti.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 276/713] arm64: dts: ti: Add common1 register space for AM65x SoC
-Date: Sun, 24 Mar 2024 18:40:02 -0400
-Message-ID: <20240324224720.1345309-277-sashal@kernel.org>
+Subject: [PATCH 6.7 277/713] arm64: dts: ti: Add common1 register space for AM62x SoC
+Date: Sun, 24 Mar 2024 18:40:03 -0400
+Message-ID: <20240324224720.1345309-278-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -66,40 +66,40 @@ Content-Transfer-Encoding: 8bit
 
 From: Devarsh Thakkar <devarsht@ti.com>
 
-[ Upstream commit 1a5010eade10b409d353b770d97b548b0fbdf5d7 ]
+[ Upstream commit 7d8ee2c3b8a2aabb9ce75795bad20773bfe1ba13 ]
 
-This adds common1 register space for AM65x SoC which is using TI's Keystone
+This adds common1 register space for AM62x SoC which is using TI's Keystone
 display hardware and supporting it as described in
 Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
 
-Fixes: fc539b90eda2 ("arm64: dts: ti: am654: Add DSS node")
+Fixes: 8ccc1073c7bb ("arm64: dts: ti: k3-am62-main: Add node for DSS")
 Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
 Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
-Link: https://lore.kernel.org/r/20240216062426.4170528-3-devarsht@ti.com
+Link: https://lore.kernel.org/r/20240216062426.4170528-4-devarsht@ti.com
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 5 +++--
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-index 29048d6577cf6..fa2304a7cb1ec 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-@@ -1013,9 +1013,10 @@ dss: dss@4a00000 {
- 		      <0x0 0x04a07000 0x0 0x1000>, /* ovr1 */
- 		      <0x0 0x04a08000 0x0 0x1000>, /* ovr2 */
- 		      <0x0 0x04a0a000 0x0 0x1000>, /* vp1 */
--		      <0x0 0x04a0b000 0x0 0x1000>; /* vp2 */
-+		      <0x0 0x04a0b000 0x0 0x1000>, /* vp2 */
-+		      <0x0 0x04a01000 0x0 0x1000>; /* common1 */
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+index c1ace4a376d17..2f318c5287581 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+@@ -757,9 +757,10 @@ dss: dss@30200000 {
+ 		      <0x00 0x30207000 0x00 0x1000>, /* ovr1 */
+ 		      <0x00 0x30208000 0x00 0x1000>, /* ovr2 */
+ 		      <0x00 0x3020a000 0x00 0x1000>, /* vp1: Used for OLDI */
+-		      <0x00 0x3020b000 0x00 0x1000>; /* vp2: Used as DPI Out */
++		      <0x00 0x3020b000 0x00 0x1000>, /* vp2: Used as DPI Out */
++		      <0x00 0x30201000 0x00 0x1000>; /* common1 */
  		reg-names = "common", "vidl1", "vid",
--			"ovr1", "ovr2", "vp1", "vp2";
-+			"ovr1", "ovr2", "vp1", "vp2", "common1";
- 
- 		ti,am65x-oldi-io-ctrl = <&dss_oldi_io_ctrl>;
- 
+-			    "ovr1", "ovr2", "vp1", "vp2";
++			    "ovr1", "ovr2", "vp1", "vp2", "common1";
+ 		power-domains = <&k3_pds 186 TI_SCI_PD_EXCLUSIVE>;
+ 		clocks = <&k3_clks 186 6>,
+ 			 <&dss_vp1_clk>,
 -- 
 2.43.0
 
