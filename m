@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-115011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE93E888C84
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:23:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A482C889A16
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:23:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A58E828D60E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:23:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A6991F2D7AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80C02E79AC;
-	Mon, 25 Mar 2024 00:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9330E3B8670;
+	Mon, 25 Mar 2024 03:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/P1p8Ml"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tyN32Nmf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF63817C62A;
-	Sun, 24 Mar 2024 23:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA47517C638;
+	Sun, 24 Mar 2024 23:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323773; cv=none; b=Ft4FqgzwOW5brY++K4UKs1OPa8l5qvbjDMAZBtscJQjZ8pvsu9e26D6t+s1MtRukjGSKQ3PkQoseXeX7ADNVAZubrnNqzsbGyhUE0pTpY1i2Zk/jHuUhiVDY1c/ctWGGFnD4DWSPVPabjkuWckcX2kbnCfwC5lUX8+gL81dxxi0=
+	t=1711323773; cv=none; b=dN0fYrL4HUrTx1OdiIctt01hvemwTpmhurJ+Z2bInVSjujScRDgOgf43E4ffOUeDibwwJr87na5Jqd+eboF1iM27N8jDXX2XE5Fcfz9Ms9qR0nm9Ll2h3EeGx/RFWKsHOVqJvtcelPJAwUC5UY/0lM+8wygiuZrQs85ISZ8t7EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323773; c=relaxed/simple;
-	bh=YursBE3me5FjFg7Ottu7FxhGl98rPwWeMhXNNqt8iWw=;
+	bh=BAZzIM9JpzWbgzhrY9OZLIrNdLPXeXZI5MUQmeGqK7I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OCHMA0V+btp9b4nU1ZW5MQP/Oyqeop1LWNXTpH8b/3SnLBZPqbhHuxKOEgS2TwbdSwcT9m3zBl9OtuT72yD+DOeFxHRELY4C6Yc0y9xucDtxxa2YrMY9XIWA8YMNRLQDxVdQdjUoVS5SkRCelcgl+kwOETxDhuUK+Pb7b2j81c8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T/P1p8Ml; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A357C433C7;
-	Sun, 24 Mar 2024 23:42:51 +0000 (UTC)
+	 MIME-Version; b=plUysMRRlz/nz0beqWT2RP4xdC2fpfavxUgk9aVH+N8cZnp9m9ifvTWZGMgCD64nGuVogfYKuilHqb4zdwjvL6TDh+QpbGOSTSTTrjOhVpGBNAlKKwDH3JK2TBDcflpcBG5ZdSsk3AYapEm4uLy+zr7tW022eOz9+IxcRGE6zBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tyN32Nmf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E10F5C433A6;
+	Sun, 24 Mar 2024 23:42:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323772;
-	bh=YursBE3me5FjFg7Ottu7FxhGl98rPwWeMhXNNqt8iWw=;
+	s=k20201202; t=1711323773;
+	bh=BAZzIM9JpzWbgzhrY9OZLIrNdLPXeXZI5MUQmeGqK7I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T/P1p8MlJeY5/ZtELMKIy/KhrkG6Y0R0Nh+eTF8lXRhX+MmO4WdVD/jO5o4KR1MB7
-	 6znobDS1Y0uo9QtDER09bmEdNRzvfqXUpPBqgxAe9BLy0ozFEe06vFm7y3v15J+Z+D
-	 f7sTZgGjEK/3f9z3QMz07LyNVZRQh4ydOB7krDCXLJdKn3gAxrhy+9GDgbwFDVPEAg
-	 eDfndUgjub1tUAGQNBkLjE3tdNVghFBMqxfEi9q1jMQC8MJpCbe+ur/4t9JRm0sriG
-	 2xL1PtItdi9WQCbf1i10TCLX2UxlH5ktA6iO9DCvMngc3cSOK3tINeDDj3DFl8F3Pj
-	 ZL5hXMS/cBcPQ==
+	b=tyN32NmfxW8nyC4FbOmlwy7HSF9MGjczFcJaQ2ol6BNu9lt+bBQjV1FwcPs3+8KKt
+	 tPnTt7fLaNC0IIQcN9KnNzul7qqUr++F76Mbgjq/hqhudSHCe1zGTHe7VOoU3gD3CI
+	 EygCaYiQOgkSnnNZjNPZEFmz2ijJ48LAx848QmmmSlNI+WNaOi2YRa4Ps/bUt9AZFz
+	 VngJHB+Z5iJizc0JifPFkzbuickCYJLYuhEFTv/MP20spTIo1sOu1Px9d1Hsl6XmW3
+	 A/e9iBTzi+wp5CTxR8Zqdgla3a0fy5+LSXMdC3xoY7CtNbTJUiBIWIXI9R65S14Vij
+	 9AzcnCuRWXXnQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+Cc: Jerome Brunet <jbrunet@baylibre.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Justin Stitt <justinstitt@google.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 148/238] ASoC: meson: Use dev_err_probe() helper
-Date: Sun, 24 Mar 2024 19:38:56 -0400
-Message-ID: <20240324234027.1354210-149-sashal@kernel.org>
+Subject: [PATCH 5.10 149/238] ASoC: meson: aiu: fix function pointer type mismatch
+Date: Sun, 24 Mar 2024 19:38:57 -0400
+Message-ID: <20240324234027.1354210-150-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,418 +64,83 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit 2ff4e003e8e105fb65c682c876a5cb0e00f854bf ]
+[ Upstream commit 98ac85a00f31d2e9d5452b825a9ed0153d934043 ]
 
-Use the dev_err_probe() helper, instead of open-coding the same
-operation.
+clang-16 warns about casting functions to incompatible types, as is done
+here to call clk_disable_unprepare:
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20211214020843.2225831-17-kuninori.morimoto.gx@renesas.com
+sound/soc/meson/aiu.c:243:12: error: cast from 'void (*)(struct clk *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  243 |                                        (void(*)(void *))clk_disable_unprepare,
+
+The pattern of getting, enabling and setting a disable callback for a
+clock can be replaced with devm_clk_get_enabled(), which also fixes
+this warning.
+
+Fixes: 6ae9ca9ce986 ("ASoC: meson: aiu: add i2s and spdif support")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+Link: https://msgid.link/r/20240213215807.3326688-2-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Stable-dep-of: 98ac85a00f31 ("ASoC: meson: aiu: fix function pointer type mismatch")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/aiu.c               | 36 +++++++--------------
- sound/soc/meson/axg-fifo.c          | 16 +++------
- sound/soc/meson/axg-pdm.c           | 25 ++++-----------
- sound/soc/meson/axg-spdifin.c       | 17 +++-------
- sound/soc/meson/axg-spdifout.c      | 17 +++-------
- sound/soc/meson/axg-tdm-formatter.c | 50 ++++++++---------------------
- sound/soc/meson/axg-tdm-interface.c | 25 ++++-----------
- sound/soc/meson/meson-card-utils.c  |  8 ++---
- sound/soc/meson/t9015.c             | 14 +++-----
- 9 files changed, 56 insertions(+), 152 deletions(-)
+ sound/soc/meson/aiu.c | 19 ++++---------------
+ sound/soc/meson/aiu.h |  1 -
+ 2 files changed, 4 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/meson/aiu.c b/sound/soc/meson/aiu.c
-index dc35ca79021c5..386a31a044700 100644
+index 386a31a044700..03bc3e5b6cab5 100644
 --- a/sound/soc/meson/aiu.c
 +++ b/sound/soc/meson/aiu.c
-@@ -218,34 +218,23 @@ static int aiu_clk_get(struct device *dev)
+@@ -215,11 +215,12 @@ static const char * const aiu_spdif_ids[] = {
+ static int aiu_clk_get(struct device *dev)
+ {
+ 	struct aiu *aiu = dev_get_drvdata(dev);
++	struct clk *pclk;
  	int ret;
  
- 	aiu->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(aiu->pclk)) {
--		if (PTR_ERR(aiu->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the aiu pclk\n");
--		return PTR_ERR(aiu->pclk);
--	}
-+	if (IS_ERR(aiu->pclk))
-+		return dev_err_probe(dev, PTR_ERR(aiu->pclk), "Can't get the aiu pclk\n");
+-	aiu->pclk = devm_clk_get(dev, "pclk");
+-	if (IS_ERR(aiu->pclk))
+-		return dev_err_probe(dev, PTR_ERR(aiu->pclk), "Can't get the aiu pclk\n");
++	pclk = devm_clk_get_enabled(dev, "pclk");
++	if (IS_ERR(pclk))
++		return dev_err_probe(dev, PTR_ERR(pclk), "Can't get the aiu pclk\n");
  
  	aiu->spdif_mclk = devm_clk_get(dev, "spdif_mclk");
--	if (IS_ERR(aiu->spdif_mclk)) {
--		if (PTR_ERR(aiu->spdif_mclk) != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the aiu spdif master clock\n");
--		return PTR_ERR(aiu->spdif_mclk);
--	}
-+	if (IS_ERR(aiu->spdif_mclk))
-+		return dev_err_probe(dev, PTR_ERR(aiu->spdif_mclk),
-+				     "Can't get the aiu spdif master clock\n");
+ 	if (IS_ERR(aiu->spdif_mclk))
+@@ -236,18 +237,6 @@ static int aiu_clk_get(struct device *dev)
+ 	if (ret)
+ 		return dev_err_probe(dev, ret, "Can't get the spdif clocks\n");
  
- 	ret = aiu_clk_bulk_get(dev, aiu_i2s_ids, ARRAY_SIZE(aiu_i2s_ids),
- 			       &aiu->i2s);
+-	ret = clk_prepare_enable(aiu->pclk);
 -	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the i2s clocks\n");
+-		dev_err(dev, "peripheral clock enable failed\n");
 -		return ret;
 -	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Can't get the i2s clocks\n");
+-
+-	ret = devm_add_action_or_reset(dev,
+-				       (void(*)(void *))clk_disable_unprepare,
+-				       aiu->pclk);
+-	if (ret)
+-		dev_err(dev, "failed to add reset action on pclk");
+-
+ 	return ret;
+ }
  
- 	ret = aiu_clk_bulk_get(dev, aiu_spdif_ids, ARRAY_SIZE(aiu_spdif_ids),
- 			       &aiu->spdif);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Can't get the spdif clocks\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Can't get the spdif clocks\n");
+diff --git a/sound/soc/meson/aiu.h b/sound/soc/meson/aiu.h
+index 87aa19ac4af3a..44f8c213d35a0 100644
+--- a/sound/soc/meson/aiu.h
++++ b/sound/soc/meson/aiu.h
+@@ -33,7 +33,6 @@ struct aiu_platform_data {
+ };
  
- 	ret = clk_prepare_enable(aiu->pclk);
- 	if (ret) {
-@@ -281,11 +270,8 @@ static int aiu_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, aiu);
- 
- 	ret = device_reset(dev);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Failed to reset device\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to reset device\n");
- 
- 	regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(regs))
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index b2e867113226b..295c0fc30745e 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -350,20 +350,12 @@ int axg_fifo_probe(struct platform_device *pdev)
- 	}
- 
- 	fifo->pclk = devm_clk_get(dev, NULL);
--	if (IS_ERR(fifo->pclk)) {
--		if (PTR_ERR(fifo->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %ld\n",
--				PTR_ERR(fifo->pclk));
--		return PTR_ERR(fifo->pclk);
--	}
-+	if (IS_ERR(fifo->pclk))
-+		return dev_err_probe(dev, PTR_ERR(fifo->pclk), "failed to get pclk\n");
- 
- 	fifo->arb = devm_reset_control_get_exclusive(dev, NULL);
--	if (IS_ERR(fifo->arb)) {
--		if (PTR_ERR(fifo->arb) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get arb reset: %ld\n",
--				PTR_ERR(fifo->arb));
--		return PTR_ERR(fifo->arb);
--	}
-+	if (IS_ERR(fifo->arb))
-+		return dev_err_probe(dev, PTR_ERR(fifo->arb), "failed to get arb reset\n");
- 
- 	fifo->irq = of_irq_get(dev->of_node, 0);
- 	if (fifo->irq <= 0) {
-diff --git a/sound/soc/meson/axg-pdm.c b/sound/soc/meson/axg-pdm.c
-index bfd37d49a73ef..672e43a9729dc 100644
---- a/sound/soc/meson/axg-pdm.c
-+++ b/sound/soc/meson/axg-pdm.c
-@@ -586,7 +586,6 @@ static int axg_pdm_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct axg_pdm *priv;
- 	void __iomem *regs;
--	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -611,28 +610,16 @@ static int axg_pdm_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk)) {
--		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->pclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get pclk\n");
- 
- 	priv->dclk = devm_clk_get(dev, "dclk");
--	if (IS_ERR(priv->dclk)) {
--		ret = PTR_ERR(priv->dclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get dclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->dclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->dclk), "failed to get dclk\n");
- 
- 	priv->sysclk = devm_clk_get(dev, "sysclk");
--	if (IS_ERR(priv->sysclk)) {
--		ret = PTR_ERR(priv->sysclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get dclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->sysclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->sysclk), "failed to get dclk\n");
- 
- 	return devm_snd_soc_register_component(dev, &axg_pdm_component_drv,
- 					       &axg_pdm_dai_drv, 1);
-diff --git a/sound/soc/meson/axg-spdifin.c b/sound/soc/meson/axg-spdifin.c
-index 7aaded1fc376b..245189d2ee95f 100644
---- a/sound/soc/meson/axg-spdifin.c
-+++ b/sound/soc/meson/axg-spdifin.c
-@@ -439,7 +439,6 @@ static int axg_spdifin_probe(struct platform_device *pdev)
- 	struct axg_spdifin *priv;
- 	struct snd_soc_dai_driver *dai_drv;
- 	void __iomem *regs;
--	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -464,20 +463,12 @@ static int axg_spdifin_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk)) {
--		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->pclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get pclk\n");
- 
- 	priv->refclk = devm_clk_get(dev, "refclk");
--	if (IS_ERR(priv->refclk)) {
--		ret = PTR_ERR(priv->refclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get mclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->refclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->refclk), "failed to get mclk\n");
- 
- 	dai_drv = axg_spdifin_get_dai_drv(dev, priv);
- 	if (IS_ERR(dai_drv)) {
-diff --git a/sound/soc/meson/axg-spdifout.c b/sound/soc/meson/axg-spdifout.c
-index e769a5ee6e27e..3960d082e1436 100644
---- a/sound/soc/meson/axg-spdifout.c
-+++ b/sound/soc/meson/axg-spdifout.c
-@@ -403,7 +403,6 @@ static int axg_spdifout_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct axg_spdifout *priv;
- 	void __iomem *regs;
--	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -422,20 +421,12 @@ static int axg_spdifout_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk)) {
--		ret = PTR_ERR(priv->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->pclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get pclk\n");
- 
- 	priv->mclk = devm_clk_get(dev, "mclk");
--	if (IS_ERR(priv->mclk)) {
--		ret = PTR_ERR(priv->mclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get mclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(priv->mclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->mclk), "failed to get mclk\n");
- 
- 	return devm_snd_soc_register_component(dev, &axg_spdifout_component_drv,
- 			axg_spdifout_dai_drv, ARRAY_SIZE(axg_spdifout_dai_drv));
-diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
-index 4834cfd163c03..63333a2b0a9c3 100644
---- a/sound/soc/meson/axg-tdm-formatter.c
-+++ b/sound/soc/meson/axg-tdm-formatter.c
-@@ -265,7 +265,6 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 	const struct axg_tdm_formatter_driver *drv;
- 	struct axg_tdm_formatter *formatter;
- 	void __iomem *regs;
--	int ret;
- 
- 	drv = of_device_get_match_data(dev);
- 	if (!drv) {
-@@ -292,57 +291,34 @@ int axg_tdm_formatter_probe(struct platform_device *pdev)
- 
- 	/* Peripharal clock */
- 	formatter->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(formatter->pclk)) {
--		ret = PTR_ERR(formatter->pclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get pclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->pclk))
-+		return dev_err_probe(dev, PTR_ERR(formatter->pclk), "failed to get pclk\n");
- 
- 	/* Formatter bit clock */
- 	formatter->sclk = devm_clk_get(dev, "sclk");
--	if (IS_ERR(formatter->sclk)) {
--		ret = PTR_ERR(formatter->sclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->sclk))
-+		return dev_err_probe(dev, PTR_ERR(formatter->sclk), "failed to get sclk\n");
- 
- 	/* Formatter sample clock */
- 	formatter->lrclk = devm_clk_get(dev, "lrclk");
--	if (IS_ERR(formatter->lrclk)) {
--		ret = PTR_ERR(formatter->lrclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->lrclk))
-+		return dev_err_probe(dev, PTR_ERR(formatter->lrclk), "failed to get lrclk\n");
- 
- 	/* Formatter bit clock input multiplexer */
- 	formatter->sclk_sel = devm_clk_get(dev, "sclk_sel");
--	if (IS_ERR(formatter->sclk_sel)) {
--		ret = PTR_ERR(formatter->sclk_sel);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk_sel: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->sclk_sel))
-+		return dev_err_probe(dev, PTR_ERR(formatter->sclk_sel), "failed to get sclk_sel\n");
- 
- 	/* Formatter sample clock input multiplexer */
- 	formatter->lrclk_sel = devm_clk_get(dev, "lrclk_sel");
--	if (IS_ERR(formatter->lrclk_sel)) {
--		ret = PTR_ERR(formatter->lrclk_sel);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk_sel: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->lrclk_sel))
-+		return dev_err_probe(dev, PTR_ERR(formatter->lrclk_sel),
-+				     "failed to get lrclk_sel\n");
- 
- 	/* Formatter dedicated reset line */
- 	formatter->reset = devm_reset_control_get_optional_exclusive(dev, NULL);
--	if (IS_ERR(formatter->reset)) {
--		ret = PTR_ERR(formatter->reset);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get reset: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(formatter->reset))
-+		return dev_err_probe(dev, PTR_ERR(formatter->reset), "failed to get reset\n");
- 
- 	return devm_snd_soc_register_component(dev, drv->component_drv,
- 					       NULL, 0);
-diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index 87cac440b3693..e076ced300257 100644
---- a/sound/soc/meson/axg-tdm-interface.c
-+++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -517,21 +517,13 @@ static int axg_tdm_iface_probe(struct platform_device *pdev)
- 
- 	/* Bit clock provided on the pad */
- 	iface->sclk = devm_clk_get(dev, "sclk");
--	if (IS_ERR(iface->sclk)) {
--		ret = PTR_ERR(iface->sclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get sclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(iface->sclk))
-+		return dev_err_probe(dev, PTR_ERR(iface->sclk), "failed to get sclk\n");
- 
- 	/* Sample clock provided on the pad */
- 	iface->lrclk = devm_clk_get(dev, "lrclk");
--	if (IS_ERR(iface->lrclk)) {
--		ret = PTR_ERR(iface->lrclk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get lrclk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(iface->lrclk))
-+		return dev_err_probe(dev, PTR_ERR(iface->lrclk), "failed to get lrclk\n");
- 
- 	/*
- 	 * mclk maybe be missing when the cpu dai is in slave mode and
-@@ -542,13 +534,10 @@ static int axg_tdm_iface_probe(struct platform_device *pdev)
- 	iface->mclk = devm_clk_get(dev, "mclk");
- 	if (IS_ERR(iface->mclk)) {
- 		ret = PTR_ERR(iface->mclk);
--		if (ret == -ENOENT) {
-+		if (ret == -ENOENT)
- 			iface->mclk = NULL;
--		} else {
--			if (ret != -EPROBE_DEFER)
--				dev_err(dev, "failed to get mclk: %d\n", ret);
--			return ret;
--		}
-+		else
-+			return dev_err_probe(dev, ret, "failed to get mclk\n");
- 	}
- 
- 	return devm_snd_soc_register_component(dev,
-diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
-index 300ac8be46ef8..0e2691f011b7b 100644
---- a/sound/soc/meson/meson-card-utils.c
-+++ b/sound/soc/meson/meson-card-utils.c
-@@ -85,11 +85,9 @@ int meson_card_parse_dai(struct snd_soc_card *card,
- 
- 	ret = of_parse_phandle_with_args(node, "sound-dai",
- 					 "#sound-dai-cells", 0, &args);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			dev_err(card->dev, "can't parse dai %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(card->dev, ret, "can't parse dai\n");
-+
- 	*dai_of_node = args.np;
- 
- 	return snd_soc_get_dai_name(&args, dai_name);
-diff --git a/sound/soc/meson/t9015.c b/sound/soc/meson/t9015.c
-index 56d2592c16d53..cb1eaf678fc3f 100644
---- a/sound/soc/meson/t9015.c
-+++ b/sound/soc/meson/t9015.c
-@@ -258,18 +258,12 @@ static int t9015_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, priv);
- 
- 	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk)) {
--		if (PTR_ERR(priv->pclk) != -EPROBE_DEFER)
--			dev_err(dev, "failed to get core clock\n");
--		return PTR_ERR(priv->pclk);
--	}
-+	if (IS_ERR(priv->pclk))
-+		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get core clock\n");
- 
- 	priv->avdd = devm_regulator_get(dev, "AVDD");
--	if (IS_ERR(priv->avdd)) {
--		if (PTR_ERR(priv->avdd) != -EPROBE_DEFER)
--			dev_err(dev, "failed to AVDD\n");
--		return PTR_ERR(priv->avdd);
--	}
-+	if (IS_ERR(priv->avdd))
-+		return dev_err_probe(dev, PTR_ERR(priv->avdd), "failed to AVDD\n");
- 
- 	ret = clk_prepare_enable(priv->pclk);
- 	if (ret) {
+ struct aiu {
+-	struct clk *pclk;
+ 	struct clk *spdif_mclk;
+ 	struct aiu_interface i2s;
+ 	struct aiu_interface spdif;
 -- 
 2.43.0
 
