@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-115920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF3A8898AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:46:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7CB38898AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7E201F2DAB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:46:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A268F2A49C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE8738B012;
-	Mon, 25 Mar 2024 03:03:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7D32666B4;
+	Mon, 25 Mar 2024 03:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ip+NDEOH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ot5afAK3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A631487F9;
-	Sun, 24 Mar 2024 23:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCBB148FE7;
+	Sun, 24 Mar 2024 23:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322115; cv=none; b=tOBasQpRa2JeuTIBM8IaQloSwCkEyUi83H1Q5MOmk19zKM4aILsqPV+QJ9jC4InPKB04HbfGKQmiTvmaSPnNODb1xi4WaFgX3NypbR2EAXH6l2p58QB2DAmjG4WZejsHGkBxSWF9+lEMuhxLGmH2eWMtYpaGj2C2c+lpSR5MhA0=
+	t=1711322116; cv=none; b=t7+fGtfhwY0iyuDCtpJ6VMCTYFZm8nnRS0HphMIFyNcP9zOwGNxCi+nnIcB34JVIy/tUPjMfiGboLaMZPSY/0CRm4DfZ/k7i2hKwhPYbecFXaybXYspiopf1sWaqqkea9EFMI24Bem+gdb8hZf4dPRlmnawpkPX7gsKrF9P3YIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322115; c=relaxed/simple;
-	bh=Nmw5THMc56boYoN+6LILknPlj2jAuIWd5p8Yh2bj8GQ=;
+	s=arc-20240116; t=1711322116; c=relaxed/simple;
+	bh=fX6AZ+UGxnxJZMDeWsDLp4MrCDnpwCiiPlfQdIChI+0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NSpp1+5IcHvfNO5sroQo95G9iDR49LGOrhS3EdtRfiMP3eABsRuPvVPskeeZNeaEs9mq8XrFVYLrUVXPqdpP4NOss/nBHeq1ir70Oa3H58HlZyPPjCaTPCURCQQr897XxkfcZHbrkOUDeZbhOKDxE95vn4jDB90KR8pVsVqSvvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ip+NDEOH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CB2FC433C7;
-	Sun, 24 Mar 2024 23:15:14 +0000 (UTC)
+	 MIME-Version; b=U3/cj0zxeObYLZZA3tWOWHEphz2gneTWz9mErUDoyKrfu8b319AxGdVyBZR8QmK2kXZiHo1PvCmQkYtHCGmQs6hYdrh4vUVxyp2rRQioeeeHNxmWd4CMaecbhBhfiTSJCVYi27BzHEBvJ9BdkCxvG8KixVW4+3YYOsZQGPQXwyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ot5afAK3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AC06C433F1;
+	Sun, 24 Mar 2024 23:15:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322115;
-	bh=Nmw5THMc56boYoN+6LILknPlj2jAuIWd5p8Yh2bj8GQ=;
+	s=k20201202; t=1711322116;
+	bh=fX6AZ+UGxnxJZMDeWsDLp4MrCDnpwCiiPlfQdIChI+0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ip+NDEOHtv8AusZZrboVf+m55llIwpiqpbLBS5XclYn/wDU/YmGW0tcyqJDEN95Z3
-	 edK8i0iPE3LathAWLIPqy+ePZohupAR9UKgFVBSiyxIeaZJIGCPnOXqHVqTidRACIE
-	 qUrwZm4PNaRZfmyRZmbhL9wVTRWyhGeBHAN/+nAtufmTOdqpBMxCsQkgzSpy60jErj
-	 5wAYaDIT48U51JgrOel0CZLJvvBP2cxYx02wzuwUobEoPJIPyJa25ePGBrFOBktJZC
-	 yBan5Te7LSkZsq92ukfl+IxC/FilFB/ScKwcorzumpUNJzDzbYtm/KEJR663R4G3Ui
-	 dNRNliWL6shGQ==
+	b=Ot5afAK3BvbRPMuPd2JwU9n0WQr/I3R1DpQgghZP+OmoGZHaoRYpOyuM3Q+MOeiIi
+	 H/1ZulEvXKDGB9CfqMOqDg++gTTWWBYymLGLhGL7UnECvysj1KotTldRcG1fYrwvP5
+	 JKrvHWNMO8e6blzTTvJ7WxUmqjKSmU8c2kJ5cTawo0aYbiMBuVK764m6ExiInyG3T1
+	 72QPJkAaTAFVPqZTIcszZJjgVxa3pcN0RUWlC1XO0VGin+qhLyuwiUJptncUtDRT1H
+	 Jj20yTHYoF0GJCMlQ+wqc6j43n28tYRFdKt8jfRjZvnlv/pkuLtjahNrRK+WDOkz/x
+	 1d6GnWCkQw2aA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Bitterblue Smith <rtl8821cerfe2@gmail.com>,
-	Ping-Ke Shih <pkshih@realtek.com>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Haorong Ye <yehaorong@bytedance.com>,
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Joerg Roedel <jroedel@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 190/451] wifi: rtw88: 8821c: Fix false alarm count
-Date: Sun, 24 Mar 2024 19:07:46 -0400
-Message-ID: <20240324231207.1351418-191-sashal@kernel.org>
+Subject: [PATCH 6.1 191/451] PCI: Make pci_dev_is_disconnected() helper public for other drivers
+Date: Sun, 24 Mar 2024 19:07:47 -0400
+Message-ID: <20240324231207.1351418-192-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -63,38 +66,65 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Bitterblue Smith <rtl8821cerfe2@gmail.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
 
-[ Upstream commit c238adbc578eeb70cbc8fdd1bef3666b0f585b13 ]
+[ Upstream commit 39714fd73c6b60a8d27bcc5b431afb0828bf4434 ]
 
-total_fa_cnt is supposed to include cck_fa_cnt and ofdm_fa_cnt, not just
-ofdm_fa_cnt.
+Make pci_dev_is_disconnected() public so that it can be called from
+Intel VT-d driver to quickly fix/workaround the surprise removal
+unplug hang issue for those ATS capable devices on PCIe switch downstream
+hotplug capable ports.
 
-Fixes: 960361238b86 ("rtw88: 8821c: add false alarm statistics")
-Signed-off-by: Bitterblue Smith <rtl8821cerfe2@gmail.com>
-Acked-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/f3cb6d17-e4e4-44a7-9c9b-72aed994b5c9@gmail.com
+Beside pci_device_is_present() function, this one has no config space
+space access, so is light enough to optimize the normal pure surprise
+removal and safe removal flow.
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+Tested-by: Haorong Ye <yehaorong@bytedance.com>
+Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Link: https://lore.kernel.org/r/20240301080727.3529832-2-haifeng.zhao@linux.intel.com
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Stable-dep-of: 4fc82cd907ac ("iommu/vt-d: Don't issue ATS Invalidation request when device is disconnected")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw88/rtw8821c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/pci.h   | 5 -----
+ include/linux/pci.h | 5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/rtw8821c.c b/drivers/net/wireless/realtek/rtw88/rtw8821c.c
-index 609a2b86330d8..50e3e46f7d8aa 100644
---- a/drivers/net/wireless/realtek/rtw88/rtw8821c.c
-+++ b/drivers/net/wireless/realtek/rtw88/rtw8821c.c
-@@ -674,9 +674,9 @@ static void rtw8821c_false_alarm_statistics(struct rtw_dev *rtwdev)
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index e1d02b7c60294..9950deeb047a7 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -357,11 +357,6 @@ static inline int pci_dev_set_disconnected(struct pci_dev *dev, void *unused)
+ 	return 0;
+ }
  
- 	dm_info->cck_fa_cnt = cck_fa_cnt;
- 	dm_info->ofdm_fa_cnt = ofdm_fa_cnt;
-+	dm_info->total_fa_cnt = ofdm_fa_cnt;
- 	if (cck_enable)
- 		dm_info->total_fa_cnt += cck_fa_cnt;
--	dm_info->total_fa_cnt = ofdm_fa_cnt;
+-static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
+-{
+-	return dev->error_state == pci_channel_io_perm_failure;
+-}
+-
+ /* pci_dev priv_flags */
+ #define PCI_DEV_ADDED 0
+ #define PCI_DPC_RECOVERED 1
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index eccaf1abea79d..f5d89a4b811f1 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -2355,6 +2355,11 @@ static inline struct pci_dev *pcie_find_root_port(struct pci_dev *dev)
+ 	return NULL;
+ }
  
- 	crc32_cnt = rtw_read32(rtwdev, REG_CRC_CCK);
- 	dm_info->cck_ok_cnt = FIELD_GET(GENMASK(15, 0), crc32_cnt);
++static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
++{
++	return dev->error_state == pci_channel_io_perm_failure;
++}
++
+ void pci_request_acs(void);
+ bool pci_acs_enabled(struct pci_dev *pdev, u16 acs_flags);
+ bool pci_acs_path_enabled(struct pci_dev *start,
 -- 
 2.43.0
 
