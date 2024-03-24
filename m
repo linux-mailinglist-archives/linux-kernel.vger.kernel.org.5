@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-116071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92C0C889554
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:25:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC484889557
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:25:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C42AC1C2F8C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:25:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C7651F34A19
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4F32888FF;
-	Mon, 25 Mar 2024 03:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979A42892A1;
+	Mon, 25 Mar 2024 03:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uwa3zTRJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ipXR1IFv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0613727A82F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBBFD27A834;
 	Sun, 24 Mar 2024 23:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323491; cv=none; b=PZvU4n5XoVQA+7Bl3X+qAhxS53w3vBmD3UabBObycSJ3qkKopBOtCTgUUPWR5oFDWAw9JwXNx8i1YudKJg/i2w6qHQ9qiZ6NZF3/6hoNKRATlz8jVo4HQeKsQKjs9ue5RDJkAEXvXPWJ9GAnfjvH0yS20JdT89yrMEZblSIxCe4=
+	t=1711323491; cv=none; b=T3O0TZRsEXt2vHeTFke3Jmqj5FZWBDZqjs/rXg05g+Nxcp/cB5steza+UyZ8cnzV9btb2qaGrKv1L+iqHZDRIV9kYRvStZy4W+nnaNurUyppmb1Ijf1yIRNErayorpCPDpBs9rdrjqnXVD7lsRs2r0C6qGehn89e2x4Sjo4hTgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323491; c=relaxed/simple;
-	bh=ch4msB6QbAfyxOHVuIwLakn8UTa3SdoazWxzYOmU5xY=;
+	bh=tKj454ypPCbhkDrsMDWUObexL7a78f2S5jbHcsMACmk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BU2x47vpUMKkCeZIjZJBDSOr2ceiBwNjEkLaO/+KPR2yHoIqkBbMbBIJkZENe2UYs6DROiQonP1pFHi0xZvAmALs/eH9ca4uBrneeON8WV62AhxBTtdpkJw4Fr9kq9s/XGqFDx6RqG8am9s6aMcsg+JV/xGxIAcPpW/XVvZhZFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uwa3zTRJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E3A3C43394;
-	Sun, 24 Mar 2024 23:38:10 +0000 (UTC)
+	 MIME-Version; b=on9mwN1e9TT1STjH0QRnOGwMI087AdbnZF7EinB6AcKmOxSecAqTzBXfML/9EF7EfIdl9WNK8W55VwVYC7ewwaIR9Q8F926yxhjsIoM7kwKzT/ba3spd1Y8YCVHp+lG0AF3bA8Sh5q6s3H0n9XBObo9E30G9tVnDeqW4UgeNMOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ipXR1IFv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26FBDC433F1;
+	Sun, 24 Mar 2024 23:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323490;
-	bh=ch4msB6QbAfyxOHVuIwLakn8UTa3SdoazWxzYOmU5xY=;
+	s=k20201202; t=1711323491;
+	bh=tKj454ypPCbhkDrsMDWUObexL7a78f2S5jbHcsMACmk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uwa3zTRJvf5w/J2k9+F+12KZbkW4nqhbduJH2cBuK+r9YeqzJ4lXpjO6Q/QGa1Bfu
-	 0OJ7/8UfwJqi5FSRsu9UNN6RywI2LOhfwBGr7Qsgr7pHnL8QdcdEP7kxE7KzjJFioL
-	 Snh1V0pDoE4vSM/ELgPPUzwmeHe/znJbG3DOLkJnI1Oy0Hjcf19MhwE/VuGqUAegHW
-	 R4NaOufCg52uW5nPGEOvPwTrVL0Lm9dX7x0xowM9SymoGZh69HJCin9SIDbCMgg7Xu
-	 0crGqB2SdGNCNFw2nwKWtx5L0fNVS60hA5cEszgMLZ3Bb1u8TTKZ/STW7M8val2+IH
-	 Gy55+aO43wzuw==
+	b=ipXR1IFv+xoaHZRpijhWdjvg6+i3gYtaiUdfkczgY6Id6HYlCduyZE9Ng7MQwofOP
+	 NkM0/b8rZvFNstmrcS4PLe4n822QO7cM+5bYtTlO7r+Ji4ddkYNxQOM8tT4SDdZEIb
+	 g+jX/rUUTQ7VHRMLE8zb5fmsOmjeNq6Aaro7I/lLc2PXw9wq37EmqkmidvrtdX9JnF
+	 6sb84L7MXJgQQU929dUjCYp5z1YgOhOsAuM7YZVczl3MQq0CPlQ37XxXsn+zMBJN1H
+	 jE9ojTSMAAHfmPK5Gf/uPsmt3v87RA3kWVcVfyHca9FZ77uplNmRn/0W7ZEkqnLHjE
+	 mNVvl6DufqPjA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yang Jihong <yangjihong1@huawei.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 196/317] perf thread_map: Free strlist on normal path in thread_map__new_by_tid_str()
-Date: Sun, 24 Mar 2024 19:32:56 -0400
-Message-ID: <20240324233458.1352854-197-sashal@kernel.org>
+Subject: [PATCH 5.15 197/317] drm/radeon/ni: Fix wrong firmware size logging in ni_init_microcode()
+Date: Sun, 24 Mar 2024 19:32:57 -0400
+Message-ID: <20240324233458.1352854-198-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,42 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yang Jihong <yangjihong1@huawei.com>
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-[ Upstream commit 1eb3d924e3c0b8c27388b0583a989d757866efb6 ]
+[ Upstream commit c4891d979c7668b195a0a75787967ec95a24ecef ]
 
-slist needs to be freed in both error path and normal path in
-thread_map__new_by_tid_str().
+Clean up a typo in pr_err() erroneously printing NI MC 'rdev->mc_fw->size'
+during SMC firmware load. Log 'rdev->smc_fw->size' instead.
 
-Fixes: b52956c961be3a04 ("perf tools: Allow multiple threads or processes in record, stat, top")
-Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/r/20240206083228.172607-6-yangjihong1@huawei.com
+Found by Linux Verification Center (linuxtesting.org) with static
+analysis tool SVACE.
+
+Fixes: 6596afd48af4 ("drm/radeon/kms: add dpm support for btc (v3)")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/thread_map.c | 2 +-
+ drivers/gpu/drm/radeon/ni.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/thread_map.c b/tools/perf/util/thread_map.c
-index c9bfe4696943b..cee7fc3b5bb0c 100644
---- a/tools/perf/util/thread_map.c
-+++ b/tools/perf/util/thread_map.c
-@@ -279,13 +279,13 @@ struct perf_thread_map *thread_map__new_by_tid_str(const char *tid_str)
- 		threads->nr = ntasks;
+diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
+index 4a364ca7a1be7..b041b6bfaeca6 100644
+--- a/drivers/gpu/drm/radeon/ni.c
++++ b/drivers/gpu/drm/radeon/ni.c
+@@ -813,7 +813,7 @@ int ni_init_microcode(struct radeon_device *rdev)
+ 			err = 0;
+ 		} else if (rdev->smc_fw->size != smc_req_size) {
+ 			pr_err("ni_mc: Bogus length %zu in firmware \"%s\"\n",
+-			       rdev->mc_fw->size, fw_name);
++			       rdev->smc_fw->size, fw_name);
+ 			err = -EINVAL;
+ 		}
  	}
- out:
-+	strlist__delete(slist);
- 	if (threads)
- 		refcount_set(&threads->refcnt, 1);
- 	return threads;
- 
- out_free_threads:
- 	zfree(&threads);
--	strlist__delete(slist);
- 	goto out;
- }
- 
 -- 
 2.43.0
 
