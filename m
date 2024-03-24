@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28B03888C36
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:13:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7841D88959E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59FEB1C29CA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:13:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32EAE298CE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B51281C04;
-	Mon, 25 Mar 2024 00:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B963AFAA4;
+	Mon, 25 Mar 2024 03:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e9RJagsy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KGID7eUH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42602131188;
-	Sun, 24 Mar 2024 23:41:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E697131187;
+	Sun, 24 Mar 2024 23:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323683; cv=none; b=GbnNuskwn/MHri0Ww9c/d3lGjzPqOOJmj0m8BSW/uvv9nyaMxUks7b5jtHnexWUOfvmXsRwF1CNNse5vJKm1/Y6LAhxeWSGtkTAf020OZM3r950mu6GlfQ6Ah3OAiBnb57FTbK3Yrw2lcOyHkhzvGNTDygIh6KpUwXaKGyzjAgQ=
+	t=1711323683; cv=none; b=WMRSqJgmqmQedxoKeEma6Y6JqT03ihXxKJ5N6aVqVufENmpkSAqHuUqO3LWfjrFKi0lzjsvJBbtWKAX/if6RiFuPRH1JvQnnMKgRuH1yvTYwPKKZ50sETHwvhdAf1pd8n/FprNdf9lmy5f8E7oDfZG5gIVJ6/IZK/ez+fxWbNl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323683; c=relaxed/simple;
-	bh=PAMZMwA6ckum7R7Mm0LbM8DTdW/7ofn9I96UXMzIw1g=;
+	bh=QyAnXMWYQENBOHd4XUvZKCz+yB+VOQoDw0E4z1GetK0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oBPqRW0Dq+vv/ilH3EitpwSlxhtSaKSm4nvD9HYIO5ZL4nQgHT+2lDnZYtu4fx4K1LoZFh5Y9Q64vIY7wKeBjLNfjKqscRGVM4WFjr/GmOQDPAriuZBaogSXchYHMJkx9tFJ53ePQWBQSktqDGDjLSI5muDxsaWIHD4Ux8X3WzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e9RJagsy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84608C43394;
-	Sun, 24 Mar 2024 23:41:21 +0000 (UTC)
+	 MIME-Version:Content-Type; b=k/ZGeu9boezr1TEmy1nA/C88Ek/lcUh/kkePw6YprRInpwgNL3gMqTWRcLM/p0k3c2WTqnPozB17qh5qelGJCQ+IFFDmor3MDi9dakzkVOVGVeyllTFGyLcnzX/dYkBYPR3nLVlV+3IrCxGXK+1HcBl2mzIbvP/XLERYcEp1XsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KGID7eUH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 678EEC433C7;
+	Sun, 24 Mar 2024 23:41:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323682;
-	bh=PAMZMwA6ckum7R7Mm0LbM8DTdW/7ofn9I96UXMzIw1g=;
+	s=k20201202; t=1711323683;
+	bh=QyAnXMWYQENBOHd4XUvZKCz+yB+VOQoDw0E4z1GetK0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e9RJagsyR6VxSnjjQ3fEs1iDCTR0V6TKTsd1ULfhvEnF5BeZI9MMIxU9W1Mew+Ew9
-	 c2kq1euZ6SSMYmkhbcVxnAJkr6jgMYTUm6pi6eQjI2wN51ADkKafaS77l+oe5zCwEL
-	 Mc5KLHnkZVWaMF1Kb2EFArUVAftLeAENyES2nesJ5kYUt9rThNjleAiTrdaWgrO9dE
-	 C7O+XDq6HzMQ/3YK1h+x/4ePgcPYZa8WKTzhrRScnctKVglYDsHE0rE558mJstW+ho
-	 GpOIrUOT2o53pmSvLzKhCY+P5xa/ukKDMcqstlDnACUQXc6qJ6FcuUzosfzFDwiRAx
-	 1zTkVblQCev8g==
+	b=KGID7eUHnco+UOMoSmXPPnhGRkFdu1YpN0kNGON5Ixa4y+9Fvk9fgUEpCX5/IK0AZ
+	 7/7H1eu94RdzFLD+eCJHtYjCAUSlhtLg2xwGo4CBqOWi7/GDm4PqSh/jTznx813mmg
+	 mk74kIJf3QlXD1aOgwYWnHm8quTfKYs7cX/8jdV/fctfVkXP0+rD/8LajwqiDNJafA
+	 t8P/h+DIZlnOsZ/PfcNLBbpGx/YlwN6Nd4Dqr6/dGlCOGU16kpU3BJTJJsXq8YdV0t
+	 5mVYcJZD9df19EPX5WdUTkv4qrLugjBYVKfuOZYBhZwMjDuiDlBxPvQ+v5I8aHxMcR
+	 i7vqjPsKkDY0Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Ubisectech Sirius <bugreport@ubisectech.com>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 054/238] af_unix: Annotate data-race of gc_in_progress in wait_for_unix_gc().
-Date: Sun, 24 Mar 2024 19:37:22 -0400
-Message-ID: <20240324234027.1354210-55-sashal@kernel.org>
+Subject: [PATCH 5.10 055/238] wifi: ath9k: delay all of ath9k_wmi_event_tasklet() until init is complete
+Date: Sun, 24 Mar 2024 19:37:23 -0400
+Message-ID: <20240324234027.1354210-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -58,41 +59,123 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit 31e03207119a535d0b0e3b3a7f91983aeb2cb14d ]
+[ Upstream commit 24355fcb0d4cbcb6ddda262596558e8cfba70f11 ]
 
-gc_in_progress is changed under spin_lock(&unix_gc_lock),
-but wait_for_unix_gc() reads it locklessly.
+The ath9k_wmi_event_tasklet() used in ath9k_htc assumes that all the data
+structures have been fully initialised by the time it runs. However, because of
+the order in which things are initialised, this is not guaranteed to be the
+case, because the device is exposed to the USB subsystem before the ath9k driver
+initialisation is completed.
 
-Let's use READ_ONCE().
+We already committed a partial fix for this in commit:
+8b3046abc99e ("ath9k_htc: fix NULL pointer dereference at ath9k_htc_tx_get_packet()")
 
-Fixes: 5f23b734963e ("net: Fix soft lockups/OOM issues w/ unix garbage collector")
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-Link: https://lore.kernel.org/r/20240123170856.41348-2-kuniyu@amazon.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+However, that commit only aborted the WMI_TXSTATUS_EVENTID command in the event
+tasklet, pairing it with an "initialisation complete" bit in the TX struct. It
+seems syzbot managed to trigger the race for one of the other commands as well,
+so let's just move the existing synchronisation bit to cover the whole
+tasklet (setting it at the end of ath9k_htc_probe_device() instead of inside
+ath9k_tx_init()).
+
+Link: https://lore.kernel.org/r/ed1d2c66-1193-4c81-9542-d514c29ba8b8.bugreport@ubisectech.com
+Fixes: 8b3046abc99e ("ath9k_htc: fix NULL pointer dereference at ath9k_htc_tx_get_packet()")
+Reported-by: Ubisectech Sirius <bugreport@ubisectech.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://msgid.link/20240126140218.1033443-1-toke@toke.dk
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/unix/garbage.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath9k/htc.h          |  2 +-
+ drivers/net/wireless/ath/ath9k/htc_drv_init.c |  4 ++++
+ drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |  4 ----
+ drivers/net/wireless/ath/ath9k/wmi.c          | 10 ++++++----
+ 4 files changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/net/unix/garbage.c b/net/unix/garbage.c
-index dc27635403932..9121a4d5436d5 100644
---- a/net/unix/garbage.c
-+++ b/net/unix/garbage.c
-@@ -198,7 +198,7 @@ void wait_for_unix_gc(void)
- 	if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC &&
- 	    !READ_ONCE(gc_in_progress))
- 		unix_gc();
--	wait_event(unix_gc_wait, gc_in_progress == false);
-+	wait_event(unix_gc_wait, !READ_ONCE(gc_in_progress));
+diff --git a/drivers/net/wireless/ath/ath9k/htc.h b/drivers/net/wireless/ath/ath9k/htc.h
+index 237f4ec2cffd7..6c33e898b3000 100644
+--- a/drivers/net/wireless/ath/ath9k/htc.h
++++ b/drivers/net/wireless/ath/ath9k/htc.h
+@@ -306,7 +306,6 @@ struct ath9k_htc_tx {
+ 	DECLARE_BITMAP(tx_slot, MAX_TX_BUF_NUM);
+ 	struct timer_list cleanup_timer;
+ 	spinlock_t tx_lock;
+-	bool initialized;
+ };
+ 
+ struct ath9k_htc_tx_ctl {
+@@ -515,6 +514,7 @@ struct ath9k_htc_priv {
+ 	unsigned long ps_usecount;
+ 	bool ps_enabled;
+ 	bool ps_idle;
++	bool initialized;
+ 
+ #ifdef CONFIG_MAC80211_LEDS
+ 	enum led_brightness brightness;
+diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_init.c b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+index 96a3185a96d75..b014185373f34 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+@@ -966,6 +966,10 @@ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
+ 
+ 	htc_handle->drv_priv = priv;
+ 
++	/* Allow ath9k_wmi_event_tasklet() to operate. */
++	smp_wmb();
++	priv->initialized = true;
++
+ 	return 0;
+ 
+ err_init:
+diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
+index 5037142c5a822..95146ec754d5c 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
+@@ -810,10 +810,6 @@ int ath9k_tx_init(struct ath9k_htc_priv *priv)
+ 	skb_queue_head_init(&priv->tx.data_vo_queue);
+ 	skb_queue_head_init(&priv->tx.tx_failed);
+ 
+-	/* Allow ath9k_wmi_event_tasklet(WMI_TXSTATUS_EVENTID) to operate. */
+-	smp_wmb();
+-	priv->tx.initialized = true;
+-
+ 	return 0;
  }
  
- /* The external entry point: unix_gc() */
+diff --git a/drivers/net/wireless/ath/ath9k/wmi.c b/drivers/net/wireless/ath/ath9k/wmi.c
+index 1476b42b52a91..805ad31edba2b 100644
+--- a/drivers/net/wireless/ath/ath9k/wmi.c
++++ b/drivers/net/wireless/ath/ath9k/wmi.c
+@@ -155,6 +155,12 @@ void ath9k_wmi_event_tasklet(struct tasklet_struct *t)
+ 		}
+ 		spin_unlock_irqrestore(&wmi->wmi_lock, flags);
+ 
++		/* Check if ath9k_htc_probe_device() completed. */
++		if (!data_race(priv->initialized)) {
++			kfree_skb(skb);
++			continue;
++		}
++
+ 		hdr = (struct wmi_cmd_hdr *) skb->data;
+ 		cmd_id = be16_to_cpu(hdr->command_id);
+ 		wmi_event = skb_pull(skb, sizeof(struct wmi_cmd_hdr));
+@@ -169,10 +175,6 @@ void ath9k_wmi_event_tasklet(struct tasklet_struct *t)
+ 					     &wmi->drv_priv->fatal_work);
+ 			break;
+ 		case WMI_TXSTATUS_EVENTID:
+-			/* Check if ath9k_tx_init() completed. */
+-			if (!data_race(priv->tx.initialized))
+-				break;
+-
+ 			spin_lock_bh(&priv->tx.tx_lock);
+ 			if (priv->tx.flags & ATH9K_HTC_OP_TX_DRAIN) {
+ 				spin_unlock_bh(&priv->tx.tx_lock);
 -- 
 2.43.0
 
