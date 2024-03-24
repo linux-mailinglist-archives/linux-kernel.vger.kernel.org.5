@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-115763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0570888990A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:59:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97837889789
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:17:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F0ECB35378
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:16:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C87C01C2EF52
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B9F2618C2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8C72618C7;
 	Mon, 25 Mar 2024 03:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hJe/DZKS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oDOrXlja"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627101448EE;
-	Sun, 24 Mar 2024 23:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477151448F5;
+	Sun, 24 Mar 2024 23:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321959; cv=none; b=JVll19vW1/SpAVuQQ22zDA06GoJDTSuD+ovwTnNK5rU37a8ULf+jouW8oiCNOyKhTUljeZLLyK6c7mtph9Dqw+LtY6V9eNPwu1+hXeHboKwfDU9XzKTX4ufk0DYIWIbnPDcoLk4IRIc1TYx+we0SswdRX1ICFaabHZu3muevzSo=
+	t=1711321960; cv=none; b=hjptru3TMTYQJV1LjecjwhvL9I496Akz8I3oqPZQj6UF7UuEqZWNaIprvoW9j5TXE+Rsi0CV/tMnt28sHbqOv2UkvaTbM2v8Hhg05N5xfL7HL06jdQG12rP1FY7mv9flY8V+I0F23uFOcs1ng+TIE2xC74x4zBnqjLWMTKr7duE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321959; c=relaxed/simple;
-	bh=xQC6o6+q3OtIE2gwfV+uYfObv8PJwHK9mSaRmCA0uMY=;
+	s=arc-20240116; t=1711321960; c=relaxed/simple;
+	bh=T/akRPi5ao0d12BmCz3WEgH+FPHY9KHNebOOEFBHkBM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hh3EporKyPjoBzaGaR6IMbdAdf5P4BFHzwyZSrGkMhp68FghOA5x+7Q5EL8D4WI9chYn4tbwKzQWWccr30PZ2N7GDBKkSlWTdOpcpzzBgjQB2p4Q/zEZriGIYYkvXoSJv8V/8nipBdnrs4zMN2bFXvFsmiMnJp+9mblHLz6DJk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hJe/DZKS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F2E7C433C7;
-	Sun, 24 Mar 2024 23:12:38 +0000 (UTC)
+	 MIME-Version; b=fa9sSSyMqO92BvKMHiysvbgIlfRosuhICfcgWdLO3rqQ7IWG+fqnOWMbFDQwWDE/9cwVY8Q2/z8MH8BkBb0iUl2/bide08qlHMlWS8tzfoL6iELQT29v+JQcPUC1pmCfk0yrUH3gETLp7LlxjiIxcITYW69JIHVcLjspXRIak7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oDOrXlja; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 861C1C43399;
+	Sun, 24 Mar 2024 23:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321959;
-	bh=xQC6o6+q3OtIE2gwfV+uYfObv8PJwHK9mSaRmCA0uMY=;
+	s=k20201202; t=1711321960;
+	bh=T/akRPi5ao0d12BmCz3WEgH+FPHY9KHNebOOEFBHkBM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hJe/DZKSt/S7ZE6m/VwbW57VsxPLy9aHdpy1KWXmuGkpGQ8FaxvOAAG5NZ5dyLuZm
-	 E+QgRCPIf+yDXbLEoUTD76SPFnF00z4dJH8rXexLcSUTHj5Yjg+ytzj8rCr+mHlWNv
-	 b26Ohf8AmTL3PpPCxUSbF1CYTjtlLisZVNGYdA5LfGBdmT9g2PBQ5cc/V5mB/Sqs34
-	 8Y+L0u4vKZV9TgNXofRusaxtZYV0L8KrMzjCfMPmkx8KFHocQYkvysuQMOattiG8BS
-	 HCHlPkTgambYWGqgTp4iKs3CrwDZF/TzncT2PAyL54MQVPeYO8Be+U1t9CuPyo3bYR
-	 GIlYHzSvBux0g==
+	b=oDOrXljaPq+pQKnMtyq8/dcWg/jJVJr+rRefTUPdVRGJnLmyGY9X74HSOakFvNiTM
+	 uzBceLPwbRlZSK3Ht/yUeZmfKsfOYkOZG01rZJ2VPMg6g20DFdSSpd+RdU6aDBMQgs
+	 GhQ0KX2S8IGlygwg4acGLW00VKc1ezdPZ4rz8L4GwWvpfnl/Uv0Krk83BTzwQCljnH
+	 3n/LSO8vf7VwF7y6kn4J8z5JHeLwXakmgTWog45lz8jUFWNwRX7NtnpPr/RG4ZUo8P
+	 FaJTx0NH3iKrIYAw6yEs8LOhoUhCWvvb5qRCdKIcgJu+N4IhwZrXO55g/v3Lv9/H3e
+	 exDkjrjwD/UVw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yishai Hadas <yishaih@nvidia.com>,
-	Tamar Mashiah <tmashiah@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 031/451] RDMA/mlx5: Relax DEVX access upon modify commands
-Date: Sun, 24 Mar 2024 19:05:07 -0400
-Message-ID: <20240324231207.1351418-32-sashal@kernel.org>
+Subject: [PATCH 6.1 032/451] riscv: dts: sifive: add missing #interrupt-cells to pmic
+Date: Sun, 24 Mar 2024 19:05:08 -0400
+Message-ID: <20240324231207.1351418-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,45 +62,34 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yishai Hadas <yishaih@nvidia.com>
+From: Conor Dooley <conor.dooley@microchip.com>
 
-[ Upstream commit be551ee1574280ef8afbf7c271212ac3e38933ef ]
+[ Upstream commit ce6b6d1513965f500a05f3facf223fa01fd74920 ]
 
-Relax DEVX access upon modify commands to be UVERBS_ACCESS_READ.
+At W=2 dtc complains:
+hifive-unmatched-a00.dts:120.10-238.4: Warning (interrupt_provider): /soc/i2c@10030000/pmic@58: Missing '#interrupt-cells' in interrupt provider
 
-The kernel doesn't need to protect what firmware protects, or what
-causes no damage to anyone but the user.
+Add the missing property.
 
-As firmware needs to protect itself from parallel access to the same
-object, don't block parallel modify/query commands on the same object in
-the kernel side.
-
-This change will allow user space application to run parallel updates to
-different entries in the same bulk object.
-
-Tested-by: Tamar Mashiah <tmashiah@nvidia.com>
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
-Link: https://lore.kernel.org/r/7407d5ed35dc427c1097699e12b49c01e1073406.1706433934.git.leon@kernel.org
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/devx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index f8e2baed27a5c..7013ce20549bd 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -2951,7 +2951,7 @@ DECLARE_UVERBS_NAMED_METHOD(
- 	MLX5_IB_METHOD_DEVX_OBJ_MODIFY,
- 	UVERBS_ATTR_IDR(MLX5_IB_ATTR_DEVX_OBJ_MODIFY_HANDLE,
- 			UVERBS_IDR_ANY_OBJECT,
--			UVERBS_ACCESS_WRITE,
-+			UVERBS_ACCESS_READ,
- 			UA_MANDATORY),
- 	UVERBS_ATTR_PTR_IN(
- 		MLX5_IB_ATTR_DEVX_OBJ_MODIFY_CMD_IN,
+diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+index 07387f9c135ca..72b87b08ab444 100644
+--- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
++++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+@@ -123,6 +123,7 @@ pmic@58 {
+ 		interrupt-parent = <&gpio>;
+ 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
+ 
+ 		onkey {
+ 			compatible = "dlg,da9063-onkey";
 -- 
 2.43.0
 
