@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-116256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69DF48895D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:39:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4B018892F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:16:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23EDB298BFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:39:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79A531F3121F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FAA12893D5;
-	Mon, 25 Mar 2024 03:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A32C13E417;
+	Mon, 25 Mar 2024 01:01:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dG9wXmMx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DnEIyoi1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F0E288916;
-	Sun, 24 Mar 2024 23:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF8F1802C7;
+	Sun, 24 Mar 2024 23:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324033; cv=none; b=hSyl6rhkDjiJi1LeKC1gzXXCGRExAFuRjWlMba3Vii+9kqYtnZhZCwIEjsEDZAq5aEWOBfXH2hBOTJNH/dw7NXaiial1WYCcOKhvVUMOXpSmFd8ZWBEmzRdoiZRhCSrrW1yIwe5vfF6llV0AOhAA5A9b4zhyhlDZnVgat7s+uZw=
+	t=1711324035; cv=none; b=Fa5Wd9aXo5lpx8ufKtI7ro/UXX+2B+DqUI1tBzEt4gsbQEzt6sxAgWtMO+cpPoj1PHiypW5l1DX12EMjXedMzqmzTaGL6DxclTzngXzdCVA7UcmWTva34zDE4/fYJiIe0dDIFHUj0LcD8/40H9+bcDfsROFruiccCdW9SkYO7oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324033; c=relaxed/simple;
-	bh=YeEcgtNG14s91o5QteY4cf13XJRDzXh4Bs56jSDt/XY=;
+	s=arc-20240116; t=1711324035; c=relaxed/simple;
+	bh=yVN4Xq1hPzjmTAe9lqpsrKxthUFKTj3EMUvWmyoZXkw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NoHMAPuYC1juMFl/9Qo5cEVFra2c0OEIYx8bdUb53K80HhAUoU6l7IeLiwhFE3ygXobN84Y2PzsvD/w7fXp7s6csYuc9w6c0HbSZNs4VH7uvdPahC5cCcfvTFRRQ3MaR9j/OmoZwcYyk4l573x5DmqbbYohN2Wc7uyzuflbgXtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dG9wXmMx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B070C43390;
-	Sun, 24 Mar 2024 23:47:12 +0000 (UTC)
+	 MIME-Version; b=X3w409eGH2OSfFRfvv958nEkv1inkU1cM1/FQvnsEl3gcP7Szx9Y0xZLxS1LLTKnCCtzvJQH0y+VQzgCkBJDch8TjyakuCX//LUUC55aBKEM7GvcI+gSTzepz4EQlwrP0sSTyNdEpR2Wi3f15cryRmlpb2IikugO9Af2yfUghBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DnEIyoi1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87894C433F1;
+	Sun, 24 Mar 2024 23:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324033;
-	bh=YeEcgtNG14s91o5QteY4cf13XJRDzXh4Bs56jSDt/XY=;
+	s=k20201202; t=1711324034;
+	bh=yVN4Xq1hPzjmTAe9lqpsrKxthUFKTj3EMUvWmyoZXkw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dG9wXmMx2AqCDKoTjDowH7XiBpTC/G+UQ7Ilmw7GJH8gLS6k+CI905qkJwxoTy8R/
-	 QAitUYuNPnJqXTIaqiG94296DhCZUJf38J9j9unRqNWXbcPR4vhjPgxUy/5XNO10Is
-	 7cgnW5YRk63O7NjbB07V47Ymzt2i3EKK3ko/xYidLQ3pi+CNgId2synBwfLVkUciHt
-	 fL/kLHWYvr3jXoXYcuAjPHkuJ9pG77fv3ENETBQxpeq/HNiGEH5zfNJ7tnGxDhA2m/
-	 l9cusKiVJoRDrTzs18gu5Ax5VYroRP4uN2Oo18ApRMYxqX7fn9Al4w0VjWIbv1YHvY
-	 hYQqfubEo+gHA==
+	b=DnEIyoi1K6F3gyc7vwA7MKdupyhi7ti/3FQVZ366SkjyU9/U2AP5rN5WVG4QK09R3
+	 UKirrFNyT3tdQZHTJ0jrIZKQxJg4N1OCZeoYIhRlqp+TiSAQmLywdWOWkQo5N2UGU3
+	 vsCyQQM+kZzxYvbCsc8dhY5+oeln8bvISLQKgT1ocU0kPsVFh9Eq8tS6l+l5ZHoSPU
+	 63tjcTjbc1Zggp7C4xq+wWjypxUP5pRdj7p6M9XSMvZplkqNdFb8pU+AsulPpvNThh
+	 ZKb+YW24SFK4Yb3GRvDWl2QD1v6Un4tIkXTme0h9pjrOsIPDXTt+NXFzqiJifPlyO8
+	 dgPUd/WU0lYyw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: Rahul Rameshbabu <sergeantsagara@protonmail.com>,
 	Julian Calaby <julian.calaby@gmail.com>,
 	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 034/183] wifi: b43: Stop correct queue in DMA worker when QoS is disabled
-Date: Sun, 24 Mar 2024 19:44:07 -0400
-Message-ID: <20240324234638.1355609-35-sashal@kernel.org>
+Subject: [PATCH 5.4 035/183] wifi: b43: Disable QoS for bcm4331
+Date: Sun, 24 Mar 2024 19:44:08 -0400
+Message-ID: <20240324234638.1355609-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -65,62 +65,64 @@ Content-Transfer-Encoding: 8bit
 
 From: Rahul Rameshbabu <sergeantsagara@protonmail.com>
 
-[ Upstream commit 581c8967d66c4961076dbbee356834e9c6777184 ]
+[ Upstream commit 09795bded2e725443fe4a4803cae2079cdaf7b26 ]
 
-When QoS is disabled, the queue priority value will not map to the correct
-ieee80211 queue since there is only one queue. Stop queue 0 when QoS is
-disabled to prevent trying to stop a non-existent queue and failing to stop
-the actual queue instantiated.
+bcm4331 seems to not function correctly with QoS support. This may be due
+to issues with currently available firmware or potentially a device
+specific issue.
 
-Fixes: bad691946966 ("b43: avoid packet losses in the dma worker code.")
+When queues that are not of the default "best effort" priority are
+selected, traffic appears to not transmit out of the hardware while no
+errors are returned. This behavior is present among all the other priority
+queues: video, voice, and background. While this can be worked around by
+setting a kernel parameter, the default behavior is problematic for most
+users and may be difficult to debug. This patch offers a working out-of-box
+experience for bcm4331 users.
+
+Log of the issue (using ssh low-priority traffic as an example):
+    ssh -T -vvvv git@github.com
+    OpenSSH_9.6p1, OpenSSL 3.0.12 24 Oct 2023
+    debug1: Reading configuration data /etc/ssh/ssh_config
+    debug2: checking match for 'host * exec "/nix/store/q1c2flcykgr4wwg5a6h450hxbk4ch589-bash-5.2-p15/bin/bash -c '/nix/store/c015armnkhr6v18za0rypm7sh1i8js8w-gnupg-2.4.1/bin/gpg-connect-agent --quiet updatestartuptty /bye >/dev/null 2>&1'"' host github.com originally github.com
+    debug3: /etc/ssh/ssh_config line 5: matched 'host "github.com"'
+    debug1: Executing command: '/nix/store/q1c2flcykgr4wwg5a6h450hxbk4ch589-bash-5.2-p15/bin/bash -c '/nix/store/c015armnkhr6v18za0rypm7sh1i8js8w-gnupg-2.4.1/bin/gpg-connect-agent --quiet updatestartuptty /bye >/dev/null 2>&1''
+    debug3: command returned status 0
+    debug3: /etc/ssh/ssh_config line 5: matched 'exec "/nix/store/q1c2flcykgr4wwg5a6h450hxbk4ch589-bash-5.2-p15/bin/bash -c '/nix/store/c015armnkhr6v18za0r"'
+    debug2: match found
+    debug1: /etc/ssh/ssh_config line 9: Applying options for *
+    debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/home/binary-eater/.ssh/known_hosts'
+    debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/home/binary-eater/.ssh/known_hosts2'
+    debug2: resolving "github.com" port 22
+    debug3: resolve_host: lookup github.com:22
+    debug3: channel_clear_timeouts: clearing
+    debug3: ssh_connect_direct: entering
+    debug1: Connecting to github.com [192.30.255.113] port 22.
+    debug3: set_sock_tos: set socket 3 IP_TOS 0x48
+
+Fixes: e6f5b934fba8 ("b43: Add QOS support")
 Signed-off-by: Rahul Rameshbabu <sergeantsagara@protonmail.com>
 Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
 Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20231231050300.122806-4-sergeantsagara@protonmail.com
+Link: https://msgid.link/20231231050300.122806-5-sergeantsagara@protonmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/b43/main.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/net/wireless/broadcom/b43/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/broadcom/b43/main.c b/drivers/net/wireless/broadcom/b43/main.c
-index 3ad94dad2d89b..b4701846caf3e 100644
+index b4701846caf3e..e466324a1fd24 100644
 --- a/drivers/net/wireless/broadcom/b43/main.c
 +++ b/drivers/net/wireless/broadcom/b43/main.c
-@@ -3601,7 +3601,7 @@ static void b43_tx_work(struct work_struct *work)
- 				err = b43_dma_tx(dev, skb);
- 			if (err == -ENOSPC) {
- 				wl->tx_queue_stopped[queue_num] = true;
--				ieee80211_stop_queue(wl->hw, queue_num);
-+				b43_stop_queue(dev, queue_num);
- 				skb_queue_head(&wl->tx_queue[queue_num], skb);
- 				break;
- 			}
-@@ -3625,6 +3625,7 @@ static void b43_op_tx(struct ieee80211_hw *hw,
- 		      struct sk_buff *skb)
- {
- 	struct b43_wl *wl = hw_to_b43_wl(hw);
-+	u16 skb_queue_mapping;
+@@ -2585,7 +2585,8 @@ static void b43_request_firmware(struct work_struct *work)
  
- 	if (unlikely(skb->len < 2 + 2 + 6)) {
- 		/* Too short, this can't be a valid frame. */
-@@ -3633,12 +3634,12 @@ static void b43_op_tx(struct ieee80211_hw *hw,
- 	}
- 	B43_WARN_ON(skb_shinfo(skb)->nr_frags);
+ start_ieee80211:
+ 	wl->hw->queues = B43_QOS_QUEUE_NUM;
+-	if (!modparam_qos || dev->fw.opensource)
++	if (!modparam_qos || dev->fw.opensource ||
++	    dev->dev->chip_id == BCMA_CHIP_ID_BCM4331)
+ 		wl->hw->queues = 1;
  
--	skb_queue_tail(&wl->tx_queue[skb->queue_mapping], skb);
--	if (!wl->tx_queue_stopped[skb->queue_mapping]) {
-+	skb_queue_mapping = skb_get_queue_mapping(skb);
-+	skb_queue_tail(&wl->tx_queue[skb_queue_mapping], skb);
-+	if (!wl->tx_queue_stopped[skb_queue_mapping])
- 		ieee80211_queue_work(wl->hw, &wl->tx_work);
--	} else {
--		ieee80211_stop_queue(wl->hw, skb->queue_mapping);
--	}
-+	else
-+		b43_stop_queue(wl->current_dev, skb_queue_mapping);
- }
- 
- static void b43_qos_params_upload(struct b43_wldev *dev,
+ 	err = ieee80211_register_hw(wl->hw);
 -- 
 2.43.0
 
