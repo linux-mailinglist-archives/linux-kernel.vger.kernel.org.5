@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-112916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53515887FBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:42:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 825FE887FBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:42:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7BFA1F21725
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:42:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38D171F2101D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B236E615;
-	Sun, 24 Mar 2024 22:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31136EB51;
+	Sun, 24 Mar 2024 22:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ksGCOPnn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="feQg+1S9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5E56DCF5;
-	Sun, 24 Mar 2024 22:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EE06E619;
+	Sun, 24 Mar 2024 22:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319728; cv=none; b=lX1sFkJSWcJBco9cN73kH+vOScZJzqWlZJsFdx3McgoeRl6Voh7MZ3LP0dM/9wG72x2KU4VYpxX0O/s6odLst/8kJJOepo8KZvpsbfYjLe3X1iecF2rc98i6b1gUAqgpDUfq1aIAFA3AkMdQ9EJWy8EZtDgM5tTJociO7rrrYhk=
+	t=1711319729; cv=none; b=R/3c2TF6wXKgGCxPtCc619Iq+V14u/Do1zsJiP8A9ihVC0whtzT4mB7tevI3225FtWfYhPKzxDPVDou687B6ondSJJSzzGvz9ODMcEmqFXPd5t5IhcQNhWptldKOz7MePcPJqzMS8+06Q6nqMcKcrSo9v/cLLbpjlOANhThjRSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319728; c=relaxed/simple;
-	bh=UtPbFHo8lwti70qwLux/kF9zRmuI2UztEodfyyPfoCg=;
+	s=arc-20240116; t=1711319729; c=relaxed/simple;
+	bh=//otllxWTZARqxoMNJaZWiaXPi8swLKbFrMrfBueuy4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U1IxLBpD6CcIfEOlrV2pzqIkbbZAik6xSevIpP3MsLx8ZPyepcwZZuyv81r1vy5skp/9FjF9mSXeC2aT6kal0OYExMk7Yj5q2r7nqaLDPR8xgUE9oUqjXN+aQQTXN8Qysk93RLskaqgv3lDLXTHDPjLtuGNGOGYPUlAVhbOyjL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ksGCOPnn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5D1CC433C7;
-	Sun, 24 Mar 2024 22:35:26 +0000 (UTC)
+	 MIME-Version; b=OIBOccocdmWbIlgIhBR8bzk8/tbOgfgvGLXCMmwPY+E4CEeldCgpF60Ip3s5AkIku9ZFGYQ+Woqo7GMDbddUr4lu8ChZJpfXESL38Ws2iUp2DnMObqc5NVqIM0INohTuTx68WLb8EKuGP98CsUhIHuhrwLtHuqoVRx6PwGaANDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=feQg+1S9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0869AC43390;
+	Sun, 24 Mar 2024 22:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319727;
-	bh=UtPbFHo8lwti70qwLux/kF9zRmuI2UztEodfyyPfoCg=;
+	s=k20201202; t=1711319728;
+	bh=//otllxWTZARqxoMNJaZWiaXPi8swLKbFrMrfBueuy4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ksGCOPnnbpSerW8vz6zFtqvEmug78gJKX0Uu4O/yUZDVNQXuTFd1sdN7aJ0GzQshI
-	 GkQW1G1zsW/bQa+Of6NjvWO+Ul0bmamNrpNM4Yw57GgJDDMYzT1l7eI6i5b4oT3HVq
-	 COrBFDtgH1a5PfKJ9yHtniUPcLldSxEdiC3s3DgPzxsrY1CezKOyVUJuVhdqXr4lfx
-	 D1y4SbJYj354eR+bEry9IhqnOwpTFSxCfceJUcYpcdtN1GOYG/qr9dRPwh6kmMQZv3
-	 7BxrhmQ4C34YGcyLPbunKmPvtG1UaE70RncX8ij4Po7ycsS529eFoLqokW+5AxdcjM
-	 g2VxMTs2c8qnA==
+	b=feQg+1S9dNPqbCXbdBZk/RbP+6arGQX+mIcw9qOKCI1jk//96gsj839QwMI1kLDat
+	 ELBz6+3NtYNXTmo6ZGpVdL1sKEYoeTdotnO6tTRi+IClgOofPJuMdz0SaTmkrL6cnW
+	 2+NGal4MM9Pa6MWoeHqQeozX+PKBX/ho/zCAkathd4PvF7vjCdx82m1IEdazpjAEej
+	 yDBm+pm7+F/tzsybZB7p+sOWvgmS4TWfeX9dPPxmzdIzVBBvn1Dk91RwjZbqZnnmAK
+	 NM8eFAt0d/1pRjTBGWQu0zXFknknhZm525heftVbTmDsz2WU4yRmxoSv68yL1fwhNi
+	 d/eULWOCqQQbQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: David Gow <davidgow@google.com>,
 	Guenter Roeck <linux@roeck-us.net>,
-	Daniel Latypov <dlatypov@google.com>,
+	Justin Stitt <justinstitt@google.com>,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 029/715] lib/cmdline: Fix an invalid format specifier in an assertion msg
-Date: Sun, 24 Mar 2024 18:23:28 -0400
-Message-ID: <20240324223455.1342824-30-sashal@kernel.org>
+Subject: [PATCH 6.8 030/715] lib: memcpy_kunit: Fix an invalid format specifier in an assertion msg
+Date: Sun, 24 Mar 2024 18:23:29 -0400
+Message-ID: <20240324223455.1342824-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -66,39 +66,46 @@ Content-Transfer-Encoding: 8bit
 
 From: David Gow <davidgow@google.com>
 
-[ Upstream commit d2733a026fc7247ba42d7a8e1b737cf14bf1df21 ]
+[ Upstream commit 0a549ed22c3c7cc6da5c5f5918efd019944489a5 ]
 
-The correct format specifier for p - n (both p and n are pointers) is
-%td, as the type should be ptrdiff_t.
+The 'i' passed as an assertion message is a size_t, so should use '%zu',
+not '%d'.
 
-This was discovered by annotating KUnit assertion macros with gcc's
-printf specifier, but note that gcc incorrectly suggested a %d or %ld
-specifier (depending on the pointer size of the architecture being
-built).
+This was found by annotating the _MSG() variants of KUnit's assertions
+to let gcc validate the format strings.
 
-Fixes: 0ea09083116d ("lib/cmdline: Allow get_options() to take 0 to validate the input")
+Fixes: bb95ebbe89a7 ("lib: Introduce CONFIG_MEMCPY_KUNIT_TEST")
 Signed-off-by: David Gow <davidgow@google.com>
 Tested-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/cmdline_kunit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/memcpy_kunit.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/cmdline_kunit.c b/lib/cmdline_kunit.c
-index d4572dbc91453..705b82736be08 100644
---- a/lib/cmdline_kunit.c
-+++ b/lib/cmdline_kunit.c
-@@ -124,7 +124,7 @@ static void cmdline_do_one_range_test(struct kunit *test, const char *in,
- 			    n, e[0], r[0]);
- 
- 	p = memchr_inv(&r[1], 0, sizeof(r) - sizeof(r[0]));
--	KUNIT_EXPECT_PTR_EQ_MSG(test, p, NULL, "in test %u at %u out of bound", n, p - r);
-+	KUNIT_EXPECT_PTR_EQ_MSG(test, p, NULL, "in test %u at %td out of bound", n, p - r);
- }
- 
- static void cmdline_test_range(struct kunit *test)
+diff --git a/lib/memcpy_kunit.c b/lib/memcpy_kunit.c
+index 440aee705ccca..30e00ef0bf2e0 100644
+--- a/lib/memcpy_kunit.c
++++ b/lib/memcpy_kunit.c
+@@ -32,7 +32,7 @@ struct some_bytes {
+ 	BUILD_BUG_ON(sizeof(instance.data) != 32);	\
+ 	for (size_t i = 0; i < sizeof(instance.data); i++) {	\
+ 		KUNIT_ASSERT_EQ_MSG(test, instance.data[i], v, \
+-			"line %d: '%s' not initialized to 0x%02x @ %d (saw 0x%02x)\n", \
++			"line %d: '%s' not initialized to 0x%02x @ %zu (saw 0x%02x)\n", \
+ 			__LINE__, #instance, v, i, instance.data[i]);	\
+ 	}	\
+ } while (0)
+@@ -41,7 +41,7 @@ struct some_bytes {
+ 	BUILD_BUG_ON(sizeof(one) != sizeof(two)); \
+ 	for (size_t i = 0; i < sizeof(one); i++) {	\
+ 		KUNIT_EXPECT_EQ_MSG(test, one.data[i], two.data[i], \
+-			"line %d: %s.data[%d] (0x%02x) != %s.data[%d] (0x%02x)\n", \
++			"line %d: %s.data[%zu] (0x%02x) != %s.data[%zu] (0x%02x)\n", \
+ 			__LINE__, #one, i, one.data[i], #two, i, two.data[i]); \
+ 	}	\
+ 	kunit_info(test, "ok: " TEST_OP "() " name "\n");	\
 -- 
 2.43.0
 
