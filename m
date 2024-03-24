@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 002F4888C97
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:25:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF06888E1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFA6C28D0D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:25:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACA73B22A6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5442EA324;
-	Mon, 25 Mar 2024 00:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366DD2EA327;
+	Mon, 25 Mar 2024 00:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="olHMhOxp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jwSxvTx1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA22917C6C9;
-	Sun, 24 Mar 2024 23:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1B817C6C0;
+	Sun, 24 Mar 2024 23:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323799; cv=none; b=D5HFBjKuAmPP0tgKENpBX+If4ONRMLUtRZkFfSzKI2585UVWoTz6o/CaN8DGcsQPF5yZzx/DeRIHy+Wea1dnIyal96xOtnyPMDlcMh/MYTnR8P+M1D92hWtqvfBxVxFPCF9kpafJpJaMoqB0D3hPlgWq8eFRuU8mNhz92OnsRWg=
+	t=1711323800; cv=none; b=K/K3IvyhZ/oz4ze/FlCD2JhJ5jsANzUvbgvrPJw/dw/KyAWZ74YqcmnaN+onPR4yUGJ8rhEPimaUeQbGHJtlCiDWgU6giA5ihZ5rzkJzowfaa1KPRsT1psmIE+gCwTS5MW8OQnuTIeLI0Ue8gWPvHtgPVxdeI2ywp0WCNTmlBiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323799; c=relaxed/simple;
-	bh=7NUHxeM3H+naqYQrNNM4q/hfhzTzd4IROGguJ8zofz0=;
+	s=arc-20240116; t=1711323800; c=relaxed/simple;
+	bh=L0IdWhpYfyRmSo+2O7cJbuZhIX4b6VvSMb8tOxtFHZQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S7747DuWGj/azQA3/g9w1k1kxEvelbR+zcUxgtmP0lhVY4Jg+DnHr20ov5x013J7HRNoRxF+nPwfDe9JObczeGrOkO7G6M2q5aICclfLiqU9sa11lLCTRSkCKu9PQqlD7lA9042l5uGRBo78wu71CrvuEYcXyNKB0agaTjIP0ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=olHMhOxp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2158C43390;
-	Sun, 24 Mar 2024 23:43:17 +0000 (UTC)
+	 MIME-Version; b=Gzsg0C7zUHHE6NnQ1kg3KpweyXieFQK2Lxo8ba/Q3n7mQQkd2iOb+42Ye2qyPiAJiMdFLwZzvN4bbhe9GpRRmd2IT04QTItvDexiQqnwWtWLuRfiVDqG3tUZp4yXbFL5azfAIJmaUhKzr4OZVAz10G+Sr1gb2Y2zyp2YqiHKzLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jwSxvTx1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEE0CC433C7;
+	Sun, 24 Mar 2024 23:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323798;
-	bh=7NUHxeM3H+naqYQrNNM4q/hfhzTzd4IROGguJ8zofz0=;
+	s=k20201202; t=1711323799;
+	bh=L0IdWhpYfyRmSo+2O7cJbuZhIX4b6VvSMb8tOxtFHZQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=olHMhOxpb0yRbBro/zm9KfCnLAjjdSdIovKugD29CjgekmdSRjLGyuxbNRdpuMgj9
-	 EXMKcAn2wXO5/hsWwZg7eLe9/Atksd1SjsfNfOXz+VF7vbplqpX/WYACt3NM+Ykuky
-	 5bpxkSwMzlKSFq0oSdsB2fWC1r86XZzD1F0nLGSciPiEeflN7USSwaew2LiujOlv7H
-	 sJpj69DcEHCyQn1jPvyMcfJAvTs+uc8ZmM3ijwdaV0VOkzSX5H6sMOtmq4TSsUdi/b
-	 8PUJpUycuFs6GSULUO/62eFhr80cgWIzeMbqDKY/r3X0rWipmFF30UDytCmN7cFYGt
-	 NytXZFfljAtoA==
+	b=jwSxvTx15Wy8NwFXYh6lRGSmhkbHuCJcjr44BNrOZ4AHniMV55NvAf2+qLrvyYaYq
+	 gAqYha8vSqqzA42pILfBWt4EjylC9EbIi49oVl7xmqA0Y/v9gKCxJN8lkuqAAuBykj
+	 qRAWDXjVOr11FqUeSjLmcuoYzIwnPfhXoLNbYNV1dqDbNi+4qyN5zy5AhlzG6rKLmo
+	 CVl2GQ4TCFlkeVjDd1XSe4jqRhKhxGtPgQc9qkBBpHIEBIysl0dg9jxSLQWBNZCNUP
+	 bTilwAeOBGdlz+CJPuMx7ATs5a/TyLGnWZxwZVyDVP2URE27X2bkdnyw9Pq0wKUbif
+	 0vEnZW+H5QL2w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Ricardo Ribalda <ribalda@chromium.org>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>,
+	CK Hu <ck.hu@mediatek.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 176/238] media: mediatek: vcodec: avoid -Wcast-function-type-strict warning
-Date: Sun, 24 Mar 2024 19:39:24 -0400
-Message-ID: <20240324234027.1354210-177-sashal@kernel.org>
+Subject: [PATCH 5.10 177/238] drm/mediatek: Fix a null pointer crash in mtk_drm_crtc_finish_page_flip
+Date: Sun, 24 Mar 2024 19:39:25 -0400
+Message-ID: <20240324234027.1354210-178-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -63,91 +63,78 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit bfb1b99802ef16045402deb855c197591dc78886 ]
+[ Upstream commit c958e86e9cc1b48cac004a6e245154dfba8e163b ]
 
-The ipi handler here tries hard to maintain const-ness of its argument,
-but by doing that causes a warning about function type casts:
+It's possible that mtk_crtc->event is NULL in
+mtk_drm_crtc_finish_page_flip().
 
-drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c:38:32: error: cast from 'mtk_vcodec_ipi_handler' (aka 'void (*)(void *, unsigned int, void *)') to 'ipi_handler_t' (aka 'void (*)(const void *, unsigned int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   38 |         ipi_handler_t handler_const = (ipi_handler_t)handler;
-      |                                       ^~~~~~~~~~~~~~~~~~~~~~
+pending_needs_vblank value is set by mtk_crtc->event, but in
+mtk_drm_crtc_atomic_flush(), it's is not guarded by the same
+lock in mtk_drm_finish_page_flip(), thus a race condition happens.
 
-Remove the hack and just use a non-const argument.
+Consider the following case:
 
-Fixes: bf1d556ad4e0 ("media: mtk-vcodec: abstract firmware interface")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CPU1                              CPU2
+step 1:
+mtk_drm_crtc_atomic_begin()
+mtk_crtc->event is not null,
+                                  step 1:
+                                  mtk_drm_crtc_atomic_flush:
+                                  mtk_drm_crtc_update_config(
+                                      !!mtk_crtc->event)
+step 2:
+mtk_crtc_ddp_irq ->
+mtk_drm_finish_page_flip:
+lock
+mtk_crtc->event set to null,
+pending_needs_vblank set to false
+unlock
+                                  pending_needs_vblank set to true,
+
+                                  step 2:
+                                  mtk_crtc_ddp_irq ->
+                                  mtk_drm_finish_page_flip called again,
+                                  pending_needs_vblank is still true
+                                  //null pointer
+
+Instead of guarding the entire mtk_drm_crtc_atomic_flush(), it's more
+efficient to just check if mtk_crtc->event is null before use.
+
+Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Link: https://patchwork.kernel.org/project/dri-devel/patch/20240223212404.3709690-1-hsinyi@chromium.org/
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-mdp/mtk_mdp_vpu.c          |  2 +-
- drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_vpu.c | 10 +---------
- drivers/media/platform/mtk-vpu/mtk_vpu.c              |  2 +-
- drivers/media/platform/mtk-vpu/mtk_vpu.h              |  2 +-
- 4 files changed, 4 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_vpu.c b/drivers/media/platform/mtk-mdp/mtk_mdp_vpu.c
-index b065ccd069140..378a1cba0144f 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_vpu.c
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_vpu.c
-@@ -26,7 +26,7 @@ static void mtk_mdp_vpu_handle_init_ack(const struct mdp_ipi_comm_ack *msg)
- 	vpu->inst_addr = msg->vpu_inst_addr;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index 1eaf513166a1a..d08827803a32f 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -84,11 +84,13 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+ 	struct drm_crtc *crtc = &mtk_crtc->base;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&crtc->dev->event_lock, flags);
+-	drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
+-	drm_crtc_vblank_put(crtc);
+-	mtk_crtc->event = NULL;
+-	spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++	if (mtk_crtc->event) {
++		spin_lock_irqsave(&crtc->dev->event_lock, flags);
++		drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
++		drm_crtc_vblank_put(crtc);
++		mtk_crtc->event = NULL;
++		spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++	}
  }
  
--static void mtk_mdp_vpu_ipi_handler(const void *data, unsigned int len,
-+static void mtk_mdp_vpu_ipi_handler(void *data, unsigned int len,
- 				    void *priv)
- {
- 	const struct mdp_ipi_comm_ack *msg = data;
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_vpu.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_vpu.c
-index cfc7ebed8fb7a..1ec29f1b163a1 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_vpu.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_vpu.c
-@@ -29,15 +29,7 @@ static int mtk_vcodec_vpu_set_ipi_register(struct mtk_vcodec_fw *fw, int id,
- 					   mtk_vcodec_ipi_handler handler,
- 					   const char *name, void *priv)
- {
--	/*
--	 * The handler we receive takes a void * as its first argument. We
--	 * cannot change this because it needs to be passed down to the rproc
--	 * subsystem when SCP is used. VPU takes a const argument, which is
--	 * more constrained, so the conversion below is safe.
--	 */
--	ipi_handler_t handler_const = (ipi_handler_t)handler;
--
--	return vpu_ipi_register(fw->pdev, id, handler_const, name, priv);
-+	return vpu_ipi_register(fw->pdev, id, handler, name, priv);
- }
- 
- static int mtk_vcodec_vpu_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index e7c4b0dd588a9..a2f61d97ffeb1 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -612,7 +612,7 @@ int vpu_load_firmware(struct platform_device *pdev)
- }
- EXPORT_SYMBOL_GPL(vpu_load_firmware);
- 
--static void vpu_init_ipi_handler(const void *data, unsigned int len, void *priv)
-+static void vpu_init_ipi_handler(void *data, unsigned int len, void *priv)
- {
- 	struct mtk_vpu *vpu = priv;
- 	const struct vpu_run *run = data;
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.h b/drivers/media/platform/mtk-vpu/mtk_vpu.h
-index ee7c552ce9289..d4453b4bcee92 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.h
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.h
-@@ -15,7 +15,7 @@
-  * VPU interfaces with other blocks by share memory and interrupt.
-  **/
- 
--typedef void (*ipi_handler_t) (const void *data,
-+typedef void (*ipi_handler_t) (void *data,
- 			       unsigned int len,
- 			       void *priv);
- 
+ static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
 -- 
 2.43.0
 
