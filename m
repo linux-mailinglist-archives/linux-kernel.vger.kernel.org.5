@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-114671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D05BD888BA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:56:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB607889CB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:25:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F3C41F28017
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:56:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9502FB39ED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC2018AFE5;
-	Sun, 24 Mar 2024 23:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE8E238491;
+	Mon, 25 Mar 2024 03:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pewN/9CY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GySkVJsz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7318237B7A;
-	Sun, 24 Mar 2024 23:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248F6237B7E;
+	Sun, 24 Mar 2024 23:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322316; cv=none; b=snw/V3LvFVG2aGN1TAgxA/9JAjbc2yaUnSID0heIEeWozH4TZ6pobzN6PR39C2pU9iIaioNBSYyumE4/5uGG8Par9QdCHK1AGjCQ9bdv030u8J212Zm9HRWHIIHl3+fX0hVFC+2yTT+HbPJsXl6tYCPT3QNsRNjiK8KHADX09Nk=
+	t=1711322317; cv=none; b=WceXkxcBS8QRw6WLqIslspYcgYEBLIY7qt3JwlIZKWy7gADqno+fpqM6VpGckEpabuudEvo9fRnwoAi/aGePm3l2gX0opAx3eXBjaL3pqiMi88/89/zxHVTJ5fo48auhN7R995VSp9SwVT7CDcnxchFLG4Yqt50+BpFsI6vChpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322316; c=relaxed/simple;
-	bh=8ZKUgi6Zm68D4WzC4t+cU2OxTpDWbRbA9/z+ZTeTjWQ=;
+	s=arc-20240116; t=1711322317; c=relaxed/simple;
+	bh=5ex7yP4jprfK8YUjgXF5PPPPCNtG9gQ87hwsbntwqpk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JsJvoJcv6ZFIOvoWHS8UCX6nTpgOKQ9JnYHILVVz9SXv/6kq/ei19pVGVLxUFGgzDqkdWDfIi8vsaTZyvgp+B8eeBi+CMFdaMhBRs5OxSzLj6qjW4Xxac/Ikg+4geK5AOn3EByzt5L6AF2oW/nr/zwV+9WPmn4CE7VjlzZ0wbzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pewN/9CY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA7B5C43399;
-	Sun, 24 Mar 2024 23:18:34 +0000 (UTC)
+	 MIME-Version:Content-Type; b=YdMIZXLw6qSQM9A6VcrwNFgN8Rym9uC6K2JCyJX6qe/mgXpNkl0YMCLLJh5QwupagmEJjD4YAKdnsIWGQjB1c14XUFIWHWUAHEmbyVxvHwRwWslz09J9c86RA8L8mK2iiJpXWBNNuD1LdiWlQ2SBiPtbTpJ+uvGI6vcexpT44Hw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GySkVJsz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBF02C43390;
+	Sun, 24 Mar 2024 23:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322315;
-	bh=8ZKUgi6Zm68D4WzC4t+cU2OxTpDWbRbA9/z+ZTeTjWQ=;
+	s=k20201202; t=1711322316;
+	bh=5ex7yP4jprfK8YUjgXF5PPPPCNtG9gQ87hwsbntwqpk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pewN/9CYLxpD93shOidL3wqjw3uzBt4KlUEpPthK0MYiodPef98j5aadVV7zC1NwG
-	 SHO3qZnwjYkck/Y4NjdsbMU7dqfoa8HrsTrBuMz0+hCeqyOT9cTYYAQwSr8aItjFg4
-	 q2ic4QjJG2qw2HoTBn5jFUolGBg/Sm0rxKTUXP9uyDWjHfQ2eve9rLXHG1eENVVqyH
-	 06a7hI3mDH7+HKVuFSLawY//eJMnYGhXouOEJZCgdZUSy/nBbmrGUs00JGfhxoX0sn
-	 itd8sRfm1SY8u/WJLSNQ/2DAtYzW93IVG941/+kmZEhcGXXJClrgCgdON3NttMVIjO
-	 KRbt4y2zJi8Ew==
+	b=GySkVJsz+UKX/MnUicxAzfQvPwurgbWaYnlGkBnK+O8NHlWhjJ8TFnK+u4/9wiZGO
+	 D2PI9rrcweLAZ8Sb96QNUWS4uobBKl6omg9nUP4h+JjfGVW8iI+J8TCd+9C8XwvjOn
+	 IV4HPMec1tfU+Yj7hMsV8WPhwsUvJ0VS5iLHWT9KVwuEy90ZdDcBmp1NozqnVAUVfP
+	 vngh0SMyMZwE7VO/CDSC6URmtE0IsoLTpq54jkoK9UXjpfmHkYZ4Qilzoolx+taZcE
+	 xwchlT4hGL6g2hFc3mw5JbYgBbSvdSVux2exa+i6Qn92oIXG5J2UxTomrw/62nCgoq
+	 1ygsckaOl9vNQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Rui Miguel Silva <rmfrfs@gmail.com>,
-	Alex Elder <elder@linaro.org>,
+Cc: Colin Ian King <colin.i.king@gmail.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 398/451] staging: greybus: fix get_channel_from_mode() failure path
-Date: Sun, 24 Mar 2024 19:11:14 -0400
-Message-ID: <20240324231207.1351418-399-sashal@kernel.org>
+Subject: [PATCH 6.1 399/451] usb: gadget: net2272: Use irqflags in the call to net2272_probe_fin
+Date: Sun, 24 Mar 2024 19:11:15 -0400
+Message-ID: <20240324231207.1351418-400-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -60,56 +59,47 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+From: Colin Ian King <colin.i.king@gmail.com>
 
-[ Upstream commit 34164202a5827f60a203ca9acaf2d9f7d432aac8 ]
+[ Upstream commit 600556809f04eb3bbccd05218215dcd7b285a9a9 ]
 
-The get_channel_from_mode() function is supposed to return the channel
-which matches the mode.  But it has a bug where if it doesn't find a
-matching channel then it returns the last channel.  It should return
-NULL instead.
+Currently the variable irqflags is being set but is not being used,
+it appears it should be used in the call to net2272_probe_fin
+rather than IRQF_TRIGGER_LOW being used. Kudos to Uwe Kleine-König
+for suggesting the fix.
 
-Also remove an unnecessary NULL check on "channel".
+Cleans up clang scan build warning:
+drivers/usb/gadget/udc/net2272.c:2610:15: warning: variable 'irqflags'
+set but not used [-Wunused-but-set-variable]
 
-Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Reviewed-by: Alex Elder <elder@linaro.org>
-Link: https://lore.kernel.org/r/379c0cb4-39e0-4293-8a18-c7b1298e5420@moroto.mountain
+Fixes: ceb80363b2ec ("USB: net2272: driver for PLX NET2272 USB device controller")
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20240307181734.2034407-1-colin.i.king@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/light.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/udc/net2272.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-index 87d36948c6106..c6bd86a5335ab 100644
---- a/drivers/staging/greybus/light.c
-+++ b/drivers/staging/greybus/light.c
-@@ -100,15 +100,15 @@ static struct led_classdev *get_channel_cdev(struct gb_channel *channel)
- static struct gb_channel *get_channel_from_mode(struct gb_light *light,
- 						u32 mode)
- {
--	struct gb_channel *channel = NULL;
-+	struct gb_channel *channel;
- 	int i;
- 
- 	for (i = 0; i < light->channels_count; i++) {
- 		channel = &light->channels[i];
--		if (channel && channel->mode == mode)
--			break;
-+		if (channel->mode == mode)
-+			return channel;
+diff --git a/drivers/usb/gadget/udc/net2272.c b/drivers/usb/gadget/udc/net2272.c
+index 538c1b9a28835..c42d5aa99e81a 100644
+--- a/drivers/usb/gadget/udc/net2272.c
++++ b/drivers/usb/gadget/udc/net2272.c
+@@ -2650,7 +2650,7 @@ net2272_plat_probe(struct platform_device *pdev)
+ 		goto err_req;
  	}
--	return channel;
-+	return NULL;
- }
  
- static int __gb_lights_flash_intensity_set(struct gb_channel *channel,
+-	ret = net2272_probe_fin(dev, IRQF_TRIGGER_LOW);
++	ret = net2272_probe_fin(dev, irqflags);
+ 	if (ret)
+ 		goto err_io;
+ 
 -- 
 2.43.0
 
