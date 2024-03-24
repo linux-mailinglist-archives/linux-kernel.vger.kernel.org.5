@@ -1,59 +1,61 @@
-Return-Path: <linux-kernel+bounces-113821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23DD7888E9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:24:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C769E8894ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:12:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 517461C2B35F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:24:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C1D2B25BA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25169130AF3;
-	Sun, 24 Mar 2024 23:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DAD21E6F43;
+	Mon, 25 Mar 2024 02:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ep47OYaA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fAFpoYJW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718041DB087;
-	Sun, 24 Mar 2024 22:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3501DB09B;
+	Sun, 24 Mar 2024 22:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320851; cv=none; b=QDzazybxYoqn8Ge/FGIkcSP/1+KdbTOkWp/69NmxotKL1vsLfFUZUliCWudNkq2xaccP2VIgMQXRhOv/XDj5XdF0iW+evuXbhlbgjrd57OtFxE38NyetR0Gvbbikd5RLxqihnlVTGmK9o/P8T3E+DcoYExq3MucGp1jwkRcSxXc=
+	t=1711320852; cv=none; b=AnFyyFtnqarw9gZOi2lXpuzqypAZVans62JGa804CXjpHJoNuWhsQZePa+Z7DzQFM+c0PtrgV0VsK3f0LoKdvrqejkdf/+VaP8QP7BXkrdUlSmJ1YErxQ39WnSgkyOELBdZzZLpOjiI0uMDLdNoW/T9ffrKwctTs8K/6SD81/ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320851; c=relaxed/simple;
-	bh=2xVeTehfVDyxoTKFCXcy33KAjVDc4xn38/mSPSwJRCY=;
+	s=arc-20240116; t=1711320852; c=relaxed/simple;
+	bh=KKAX63E2UjWlYV/JoCCOLDPiHQImCjytiQ3NA2dE3Ek=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qS5DGfHJUqQYP50G/QJi1+8/6Dt05fcQE35Lsxy336ogd8RODGJFq50Wq1d8zp0DTWgMYQV8PkYwXxE297DV0tvHSyxV0UeIY57MbL/VqG2FOfu9QcsFZhTMrC5aULFIp+4+aIxS7K+cl/ySx2e7poznQhxNY5MrP/HdWIq3AUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ep47OYaA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AE32C43390;
-	Sun, 24 Mar 2024 22:54:09 +0000 (UTC)
+	 MIME-Version; b=PZR7nLKBP19EQIhNCK2PvcLIKXO/80PFaWGnSCC+zL5xja8CsuXjxE4Ssl3NdQ3I97UgY6h9idqznVD3wbVwfeBF/KOXK25aHDJ97mW17wvEGwaahu8n+DC7cOI1DMgdezHusELB3/iTUCTfbeuNQnaShdBSFd2ZoBTPOoMqqw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fAFpoYJW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB1FAC433F1;
+	Sun, 24 Mar 2024 22:54:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320850;
-	bh=2xVeTehfVDyxoTKFCXcy33KAjVDc4xn38/mSPSwJRCY=;
+	s=k20201202; t=1711320852;
+	bh=KKAX63E2UjWlYV/JoCCOLDPiHQImCjytiQ3NA2dE3Ek=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ep47OYaAw8Nhn56BU+Tj38OdznWK67HERrrZRa4xTHtNZ+cHcsVxh1DJCIUDUvcA6
-	 lrgxJdfPc6M3Nd/fRnzDDyddSht3xWbeWjrjc2dQfy+xvW7R3CdBpD0kniXO44X/F7
-	 FcvHwuGRL11s/l8ZJvWTVYkq6d7EQqGjyOiKHT/rEX+tqfxMvEeuag2ZRq1yHlr29k
-	 Q8RwEmIuaLgw/tnZ3xswJJRbErzWkYdXbMn2ny7qTmU+VUAdW9Q2vaimRfDqXZF1rM
-	 qBrQGvffCQjPRrplD5BTDBn4gkR/Fn3FUV7LHEdBD3U9z8XBa8D0eIdGgNE/5QsoVk
-	 oJBv3EEpC7Z+A==
+	b=fAFpoYJW3p45jF1XhVtPii6dsTJs1SN3+3fRTtOkuvsX+qOgfVSusBxput0gpFzHe
+	 ELIvWK9DIlQLZJiricEkXpKTanbAGKgjSaQAh0gKsVGnQ69YrqchK76FWNS5ymPNl1
+	 ob7qRFavOin5hMaDe2BbXPdgz+1eQLs0O05Omh3m67s/CUC7h8lsigMfunuQvyD1XM
+	 A9OaG0XrtDQ1Mg4iCXMNw4BxEwpbj9Geztq0M/cP/wdyxF0JK+A36GdUkm8h0E4Sh/
+	 LKvORTqtfvZpRK8JcuIINTqJhDFL7uWT7nK6PqUMWsy7DIJSMPkxq+CqrJ139nph0o
+	 tNmpFZ/xY+syA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Alex Hung <alex.hung@amd.com>,
-	Qingqing Zhuo <qingqing.zhuo@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Aurabindo Pillai <aurabindo.pillai@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Harry Wentland <harry.wentland@amd.com>,
+Cc: Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	James Clark <james.clark@arm.com>,
+	Caleb Biggers <caleb.biggers@intel.com>,
+	Edward Baker <edward.baker@intel.com>,
+	Perry Taylor <perry.taylor@intel.com>,
+	Samantha Alt <samantha.alt@intel.com>,
+	Weilin Wang <weilin.wang@intel.com>,
+	Namhyung Kim <namhyung@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 415/713] drm/amd/display: Fix a potential buffer overflow in 'dp_dsc_clock_en_read()'
-Date: Sun, 24 Mar 2024 18:42:21 -0400
-Message-ID: <20240324224720.1345309-416-sashal@kernel.org>
+Subject: [PATCH 6.7 416/713] perf pmu: Treat the msr pmu as software
+Date: Sun, 24 Mar 2024 18:42:22 -0400
+Message-ID: <20240324224720.1345309-417-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -67,43 +69,88 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+From: Ian Rogers <irogers@google.com>
 
-[ Upstream commit 4b09715f1504f1b6e8dff0e9643630610bc05141 ]
+[ Upstream commit 24852ef2e2d5c555c2da05baff112ea414b6e0f5 ]
 
-Tell snprintf() to store at most 10 bytes in the output buffer
-instead of 30.
+The msr PMU is a software one, meaning msr events may be grouped
+with events in a hardware context. As the msr PMU isn't marked as a
+software PMU by perf_pmu__is_software, groups with the msr PMU in
+are broken and the msr events placed in a different group. This
+may lead to multiplexing errors where a hardware event isn't
+counted while the msr event, such as tsc, is. Fix all of this by
+marking the msr PMU as software, which agrees with the driver.
 
-Fixes the below:
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_debugfs.c:1508 dp_dsc_clock_en_read() error: snprintf() is printing too much 30 vs 10
+Before:
+```
+$ perf stat -e '{slots,tsc}' -a true
+WARNING: events were regrouped to match PMUs
 
-Fixes: c06e09b76639 ("drm/amd/display: Add DSC parameters logging to debugfs")
-Cc: Alex Hung <alex.hung@amd.com>
-Cc: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+ Performance counter stats for 'system wide':
+
+         1,750,335      slots
+         4,243,557      tsc
+
+       0.001456717 seconds time elapsed
+```
+
+After:
+```
+$ perf stat -e '{slots,tsc}' -a true
+ Performance counter stats for 'system wide':
+
+        12,526,380      slots
+         3,415,163      tsc
+
+       0.001488360 seconds time elapsed
+```
+
+Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
+Signed-off-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: James Clark <james.clark@arm.com>
+Cc: Caleb Biggers <caleb.biggers@intel.com>
+Cc: Edward Baker <edward.baker@intel.com>
+Cc: Perry Taylor <perry.taylor@intel.com>
+Cc: Samantha Alt <samantha.alt@intel.com>
+Cc: Weilin Wang <weilin.wang@intel.com>
+Link: https://lore.kernel.org/r/20240124234200.1510417-1-irogers@google.com
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/pmu.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-index 45c972f2630d8..417c9cb47b89e 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-@@ -1483,7 +1483,7 @@ static ssize_t dp_dsc_clock_en_read(struct file *f, char __user *buf,
- 	const uint32_t rd_buf_size = 10;
- 	struct pipe_ctx *pipe_ctx;
- 	ssize_t result = 0;
--	int i, r, str_len = 30;
-+	int i, r, str_len = 10;
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index d3c9aa4326bee..33e783fc908fe 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -1756,6 +1756,12 @@ bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name)
  
- 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+ bool perf_pmu__is_software(const struct perf_pmu *pmu)
+ {
++	const char *known_sw_pmus[] = {
++		"kprobe",
++		"msr",
++		"uprobe",
++	};
++
+ 	if (pmu->is_core || pmu->is_uncore || pmu->auxtrace)
+ 		return false;
+ 	switch (pmu->type) {
+@@ -1767,7 +1773,11 @@ bool perf_pmu__is_software(const struct perf_pmu *pmu)
+ 	case PERF_TYPE_BREAKPOINT:	return true;
+ 	default: break;
+ 	}
+-	return !strcmp(pmu->name, "kprobe") || !strcmp(pmu->name, "uprobe");
++	for (size_t i = 0; i < ARRAY_SIZE(known_sw_pmus); i++) {
++		if (!strcmp(pmu->name, known_sw_pmus[i]))
++			return true;
++	}
++	return false;
+ }
  
+ FILE *perf_pmu__open_file(const struct perf_pmu *pmu, const char *name)
 -- 
 2.43.0
 
