@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F1DC8894B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:06:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B60018897FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:24:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0B7D1C2F461
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:06:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55B6F1F38BED
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:24:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172F61703DF;
-	Mon, 25 Mar 2024 03:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0823736C7;
+	Mon, 25 Mar 2024 03:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ddTHGMDe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W2rxi9c4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C092145B3B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E63BF145FE9;
 	Sun, 24 Mar 2024 23:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322047; cv=none; b=aPSrTh8Sehz8Glfz8O1eolQO65EWHBSaFrSbfD6V/P/nxkKLbjBpFwLa3EX+LiZMUBncjATgGESok1m/2znmHqbjTbfpwIh5YjwCknQmGKrmztmpJEKJkF4H1J4y3OLhUA2UjhiIAy2rmOy33vFnMxlZVe6Pjs1XGN4i2bXrKCM=
+	t=1711322048; cv=none; b=NxJYhyM7jO3wwx4Sn6uF8BJZ7pwPWHAV0m9drYqLnFvjY73rWW/VzLLinZxIxeU5iVYriS6B9+Q/Ywa+23jG124xV4zSdQXvBORg0c0TpMsyKtPLQGsv+uL8RTcqtauhSTNUV614J052D3ekNSKnQ2yQoi2PEPiE5uoBLWg17Ks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322047; c=relaxed/simple;
-	bh=9Jwo5MuWcAgGBmzbxKCppdwX4vW5rbfFnUdR44EgPL8=;
+	s=arc-20240116; t=1711322048; c=relaxed/simple;
+	bh=R/IatUZ1AMwOdQhzRAN+1ix9xjDHHA/aOlINXqZbzSg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nu6UxVL7SOqKO+05aiPtjdRR4DM1HcQISFQznC5Wkn5DSnOT3Puf4JLp0tGLjaYuwgfy0N0UTbelJdBZXuJIF6wSHjNX3Lprdk0f5fwJWO1BW8g98TFcnbjkeAPc18qadhx2VaUkD4B0GWLx0WrPM91WgucGfv73rqlFAAzAQc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ddTHGMDe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A7DBC433F1;
-	Sun, 24 Mar 2024 23:14:06 +0000 (UTC)
+	 MIME-Version; b=YXmA8TMAW25roe5kklje8OgcVNqH0zWLIOPyhQITEt7VX1/uOaR9xIS0ahGkPifejctUnj72/mWjNPbHWvvMmKIeDiC7hCSgioWZDzvfAQF/QDb6fpJ1GlQ2GeYRAoMbjwVFvtHoceiaBq/zrdy7PPuGg0whxskxsPVFYt6EsCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W2rxi9c4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 305A6C433C7;
+	Sun, 24 Mar 2024 23:14:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322046;
-	bh=9Jwo5MuWcAgGBmzbxKCppdwX4vW5rbfFnUdR44EgPL8=;
+	s=k20201202; t=1711322047;
+	bh=R/IatUZ1AMwOdQhzRAN+1ix9xjDHHA/aOlINXqZbzSg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ddTHGMDek7fUzHxvFm/xE9Y4SgJ1eMeJRRaI8Mu/gBLDISBrztYDoVvhiCFHQSmIG
-	 HxPUzWf0jS4gWp++v0W0jeKqYgTT3NxF7VXgRHYGheMDzH20fL4pvvH/OLJYFhBUSk
-	 z+XfAHmUJeIbQMiOuFkevP+PiOUlZsoVNbvZaiswJ1Z3oLTosfZ5IpVrofPjCj4491
-	 y2ctdtEuuPIfHF0FMwhc9Ljnbhf7l4/8bfHmNjDThe6OtttODF6ltme34gDulMafFP
-	 VFe2H+Ag9iAY0+n40s5vblLJK5EqgyLbM4dFmxkGv29u6W4IwZRvOrnvCEEAozO6QX
-	 YR/S1Cpl6KOwg==
+	b=W2rxi9c4auHSAByJPHzd4Blm6h3YQK+0CXZq1ry93LHsqvBrNIkX8jeE1+SHZgsSl
+	 jMBuYj4nb5ORVgu2XwPzGFt469WVK421HYkElKWLo9plGc7BgNEwIVaslCCbGxHTer
+	 G4dvhVQOgHVagUmWRufyWSi76VxRJxD3/kNCZK4U98ua6h6WwGH4lRqrL82EuaFAEP
+	 0u5qdDvH9uwEoMkF54QMNK5q+VdeUSZAodofgfNOEPxUhN8aRlkF94Zb8s7TinMT0l
+	 79hW+sR5M9aMWo88HvpO5wU3kj2a6mQYm+goLB5gQlsGzohNG6GKoU4zUXAPDZQpUm
+	 wy7sm8GzZo28g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Martin Kaiser <martin@kaiser.cx>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+Cc: Tim Harvey <tharvey@gateworks.com>,
+	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 119/451] gpio: vf610: allow disabling the vf610 driver
-Date: Sun, 24 Mar 2024 19:06:35 -0400
-Message-ID: <20240324231207.1351418-120-sashal@kernel.org>
+Subject: [PATCH 6.1 120/451] arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS
+Date: Sun, 24 Mar 2024 19:06:36 -0400
+Message-ID: <20240324231207.1351418-121-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,41 +62,83 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Martin Kaiser <martin@kaiser.cx>
+From: Tim Harvey <tharvey@gateworks.com>
 
-[ Upstream commit f57595788244a838deec2d3be375291327cbc035 ]
+[ Upstream commit ec2cb52fcfef5d58574f2cfbc9a99ffc20ae5a9d ]
 
-The vf610 gpio driver is enabled by default for all i.MX machines,
-without any option to disable it in a board-specific config file.
+The GW71xx does not have a gpio controlled vbus regulator but it does
+require some pinctrl. Remove the regulator and move the valid pinctrl
+into the usbotg1 node.
 
-Most i.MX chipsets have no hardware for this driver. Change the default
-to enable GPIO_VF610 for SOC_VF610 and disable it otherwise.
-
-Add a text description after the bool type, this makes the driver
-selectable by make config etc.
-
-Fixes: 30a35c07d9e9 ("gpio: vf610: drop the SOC_VF610 dependency for GPIO_VF610")
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Fixes: bd306fdb4e60 ("arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS")
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../dts/freescale/imx8mm-venice-gw71xx.dtsi   | 29 ++++++-------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 3e8e5f4ffa59f..700f71c954956 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -679,7 +679,8 @@ config GPIO_UNIPHIER
- 	  Say yes here to support UniPhier GPIOs.
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+index c557dbf4dcd60..2e90466db89a0 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+@@ -47,17 +47,6 @@ pps {
+ 		gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+ 		status = "okay";
+ 	};
+-
+-	reg_usb_otg1_vbus: regulator-usb-otg1 {
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_reg_usb1_en>;
+-		compatible = "regulator-fixed";
+-		regulator-name = "usb_otg1_vbus";
+-		gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+-		enable-active-high;
+-		regulator-min-microvolt = <5000000>;
+-		regulator-max-microvolt = <5000000>;
+-	};
+ };
  
- config GPIO_VF610
--	def_bool y
-+	bool "VF610 GPIO support"
-+	default y if SOC_VF610
- 	depends on ARCH_MXC
- 	select GPIOLIB_IRQCHIP
- 	help
+ /* off-board header */
+@@ -146,9 +135,10 @@ &uart3 {
+ };
+ 
+ &usbotg1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg1>;
+ 	dr_mode = "otg";
+ 	over-current-active-low;
+-	vbus-supply = <&reg_usb_otg1_vbus>;
+ 	status = "okay";
+ };
+ 
+@@ -206,14 +196,6 @@ MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x41
+ 		>;
+ 	};
+ 
+-	pinctrl_reg_usb1_en: regusb1grp {
+-		fsl,pins = <
+-			MX8MM_IOMUXC_GPIO1_IO10_GPIO1_IO10	0x41
+-			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
+-			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
+-		>;
+-	};
+-
+ 	pinctrl_spi2: spi2grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0xd6
+@@ -236,4 +218,11 @@ MX8MM_IOMUXC_UART3_RXD_UART3_DCE_RX	0x140
+ 			MX8MM_IOMUXC_UART3_TXD_UART3_DCE_TX	0x140
+ 		>;
+ 	};
++
++	pinctrl_usbotg1: usbotg1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
++			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
++		>;
++	};
+ };
 -- 
 2.43.0
 
