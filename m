@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CD12888DF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:02:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031B4888DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7919A1C29FD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:02:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96F3B1F2A681
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46071CD9C4;
-	Mon, 25 Mar 2024 01:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E112F3120B1;
+	Mon, 25 Mar 2024 01:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T7YFjK9+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kzRfICY2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F26297D69;
-	Sun, 24 Mar 2024 23:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B60B297D7F;
+	Sun, 24 Mar 2024 23:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324349; cv=none; b=IccQt1DEp49CGgeAKSq8GenwqZYjFs/moW6Pw0cNyvh8E6UJfSmcnv3+vibmmcgmAqXjrItTVlY7L2t8n26wHlJWoS15FZQhE2j+dEhGTWxe4Z+UE1763NzTMyXME9LuIbRa8RfzsnuUtyMGBe6m46QHRg1/agKPR+PHpnugpNA=
+	t=1711324350; cv=none; b=K7GYzb6FWm5hW+HYrddowG1+rkYemphN8awQzyleopgDoAfFxoCIBqoiHJJZ9HkcJP5XXEdlG9EWi1BYYDwOpo1hfSh6umUwWWwhKClpQBae3nap8nl3unySBIraTV3H8qkHuQv1xuYjTlveMDDzup/ya41Iuo2v56nj08fc1x8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324349; c=relaxed/simple;
-	bh=yQrRVRg9O4wS1MvntWCu1dUYsbk/+L2CI1WsSOqBqYg=;
+	s=arc-20240116; t=1711324350; c=relaxed/simple;
+	bh=K2LQes7JjM0UFh5ceniDTXtDQaOnZxHXjD4dPexjMAs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qqYB5ETyzp7YQ30fPON3mTZtnVfxfawGAdYCbAe0CQmG91bgg6olcD+y19cNplJOCTbVBSp5lcfjRBA5LYzY14AWR0QjKrE2AJCkR4nru1RCdcxd0r/CubVFIe0v3INhHw5U5tcUu1hzgwmHLXY1n2Rvu3FrTU4qv+oU09KOCO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T7YFjK9+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0A1FC43390;
-	Sun, 24 Mar 2024 23:52:27 +0000 (UTC)
+	 MIME-Version; b=miioF8IVo6JEwM0ZEbNqrk0Zj12LpZNrgtE11DBGjJseZ6vTj9OOTLQGp2BDieJR/UrSwhnc73YwhFXD3WvmJWSAm7QMaqlApnqby9dOU1Ixk5wAhnhCfIGcXgEDcNjWgJNnq0JSIzj9jF/s1/NZCsz6QRF6qrLxZycSmZ+QHyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kzRfICY2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF5CCC433C7;
+	Sun, 24 Mar 2024 23:52:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324348;
-	bh=yQrRVRg9O4wS1MvntWCu1dUYsbk/+L2CI1WsSOqBqYg=;
+	s=k20201202; t=1711324349;
+	bh=K2LQes7JjM0UFh5ceniDTXtDQaOnZxHXjD4dPexjMAs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T7YFjK9+aMLu2WcDK6j1P0OicW2/MJ6kGnuUdtvJiN52nDciVSczrTOj96eHYw6Z/
-	 MKHzie6vjMBZ0mxfpKbPxr4HwxBYm22jfEDsfxxAgIYPNfjs9a9OuDmCtevH0ezwBI
-	 eD56GLhl10EBCrWyUf1Tr3r8+f0S05Vr4+qaKudFCS2bMhgYqdt67WMmh+JEKpEvDD
-	 91DuAKF3G7mMqDJ2jpQD2Ej5hqaYs3lPrH9ksDFaPcpRjQrDbSLFzFy6D3/W/ew3Or
-	 F6aYuT1K1X+kqnmhVqiFi2UVMcpXO6jub50urGnKjygvbObSBIwT1oFmO0s1D/FCUJ
-	 AAuqQ+eul5N0g==
+	b=kzRfICY2h5vwuZ8hbKrnNNhupus1VeXpaKzuW12k5eiLV1bhkhCvDBEwE1fZ6SUNs
+	 /CM/IMHeaq+cRfGWoWYxDgZ4Gw2o5a1ND3URWNMNY/DqUnzwiTPybVLaf+1Zz9X8KS
+	 oyPAF5pQYa6mNwfu557y05D0ALgYCKtNezhPR4UHkGR5tSrIVV+YCF8/93WGvTuhYA
+	 pZib8oAT5gaI7f29iQuX9ETD2Ku9pD6r6SYLX0vOjKNsCmZ92fGW8eVRDFCHZU7KfR
+	 vN2Mf59OWHZy/WflMyjxM7TKTVbD3vxkv+oFsho0hJ9C2JMyan+lnk7x/uqvw09oyJ
+	 PhmXkcAq8dwQQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhipeng Lu <alexious@zju.edu.cn>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>,
+	CK Hu <ck.hu@mediatek.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 117/148] media: go7007: fix a memleak in go7007_load_encoder
-Date: Sun, 24 Mar 2024 19:49:41 -0400
-Message-ID: <20240324235012.1356413-118-sashal@kernel.org>
+Subject: [PATCH 4.19 118/148] drm/mediatek: Fix a null pointer crash in mtk_drm_crtc_finish_page_flip
+Date: Sun, 24 Mar 2024 19:49:42 -0400
+Message-ID: <20240324235012.1356413-119-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -62,55 +63,78 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Zhipeng Lu <alexious@zju.edu.cn>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit b9b683844b01d171a72b9c0419a2d760d946ee12 ]
+[ Upstream commit c958e86e9cc1b48cac004a6e245154dfba8e163b ]
 
-In go7007_load_encoder, bounce(i.e. go->boot_fw), is allocated without
-a deallocation thereafter. After the following call chain:
+It's possible that mtk_crtc->event is NULL in
+mtk_drm_crtc_finish_page_flip().
 
-saa7134_go7007_init
-  |-> go7007_boot_encoder
-        |-> go7007_load_encoder
-  |-> kfree(go)
+pending_needs_vblank value is set by mtk_crtc->event, but in
+mtk_drm_crtc_atomic_flush(), it's is not guarded by the same
+lock in mtk_drm_finish_page_flip(), thus a race condition happens.
 
-go is freed and thus bounce is leaked.
+Consider the following case:
 
-Fixes: 95ef39403f89 ("[media] go7007: remember boot firmware")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CPU1                              CPU2
+step 1:
+mtk_drm_crtc_atomic_begin()
+mtk_crtc->event is not null,
+                                  step 1:
+                                  mtk_drm_crtc_atomic_flush:
+                                  mtk_drm_crtc_update_config(
+                                      !!mtk_crtc->event)
+step 2:
+mtk_crtc_ddp_irq ->
+mtk_drm_finish_page_flip:
+lock
+mtk_crtc->event set to null,
+pending_needs_vblank set to false
+unlock
+                                  pending_needs_vblank set to true,
+
+                                  step 2:
+                                  mtk_crtc_ddp_irq ->
+                                  mtk_drm_finish_page_flip called again,
+                                  pending_needs_vblank is still true
+                                  //null pointer
+
+Instead of guarding the entire mtk_drm_crtc_atomic_flush(), it's more
+efficient to just check if mtk_crtc->event is null before use.
+
+Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Link: https://patchwork.kernel.org/project/dri-devel/patch/20240223212404.3709690-1-hsinyi@chromium.org/
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/go7007/go7007-driver.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/usb/go7007/go7007-driver.c b/drivers/media/usb/go7007/go7007-driver.c
-index c7b5a3321cd74..15f78d3ce3bac 100644
---- a/drivers/media/usb/go7007/go7007-driver.c
-+++ b/drivers/media/usb/go7007/go7007-driver.c
-@@ -88,7 +88,7 @@ static int go7007_load_encoder(struct go7007 *go)
- 	const struct firmware *fw_entry;
- 	char fw_name[] = "go7007/go7007fw.bin";
- 	void *bounce;
--	int fw_len, rv = 0;
-+	int fw_len;
- 	u16 intr_val, intr_data;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index eac9caf322f90..fb7262ed9b699 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -79,11 +79,13 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+ 	struct drm_crtc *crtc = &mtk_crtc->base;
+ 	unsigned long flags;
  
- 	if (go->boot_fw == NULL) {
-@@ -117,9 +117,11 @@ static int go7007_load_encoder(struct go7007 *go)
- 	    go7007_read_interrupt(go, &intr_val, &intr_data) < 0 ||
- 			(intr_val & ~0x1) != 0x5a5a) {
- 		v4l2_err(go, "error transferring firmware\n");
--		rv = -1;
-+		kfree(go->boot_fw);
-+		go->boot_fw = NULL;
-+		return -1;
- 	}
--	return rv;
-+	return 0;
+-	spin_lock_irqsave(&crtc->dev->event_lock, flags);
+-	drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
+-	drm_crtc_vblank_put(crtc);
+-	mtk_crtc->event = NULL;
+-	spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++	if (mtk_crtc->event) {
++		spin_lock_irqsave(&crtc->dev->event_lock, flags);
++		drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
++		drm_crtc_vblank_put(crtc);
++		mtk_crtc->event = NULL;
++		spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++	}
  }
  
- MODULE_FIRMWARE("go7007/go7007fw.bin");
+ static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
 -- 
 2.43.0
 
