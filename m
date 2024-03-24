@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-115214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A736688935A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:27:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E03288935B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478061F3016B
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0951629AA18
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4E441CB69A;
-	Mon, 25 Mar 2024 01:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8C51CBDEB;
+	Mon, 25 Mar 2024 01:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X4kly8S/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NmAUavp5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC72A22E7EE;
-	Sun, 24 Mar 2024 23:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFC322E7F3;
+	Sun, 24 Mar 2024 23:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324302; cv=none; b=VaKWmHC2K2KsJgEdqY240mNCmqJ9KF+f4Cpn8+c/637LemAs3xYEmzaW6SgiCQU69upkT/Cv4VgW7Tpf77BdZZn62AdLgN1n7VKlrSZDm+j4eZjx2K7DciJR2+G/UO5aBrI3fR47tm1BhNZNgM658EFLnRlRMna/EWPl4OYyFR8=
+	t=1711324303; cv=none; b=poCgRhD2Dobz9/YF932BQaljxbVKGU+hDe6u7mtbbuzzbQLSq1FoxPfniDa6pbpsKpAmxTG+bgEEktmIOSERtkIq89qTqKh5YXZaEfmQBpeRtq4BSW0AUJcglG2CdWV0VppimX0EXa5vbP8I3pebyF8i0DphLMQyKGLWdFCezKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324302; c=relaxed/simple;
-	bh=C+/70BqqoyuoI5rGiAd0yfx6Jfh9xe8UtZavuyGWL7E=;
+	s=arc-20240116; t=1711324303; c=relaxed/simple;
+	bh=6gbpBif9goTkU8krONbkMQJBzcRlkeg/lr9CK6CErfM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aGlkpncpAmRySBmVRKLD8faMFb1CocjhUDE5PkC5DVk9nbrYPB8USPUJ3cnYWEj33xF9IgshVvg6ajdSJc0QgmBv20oY+4kIMNBwVgvv/yT/uRjdOmdbd9KrD4q97BrKagIpG+Q+LxVdUuI+3hBE5/mjZdyWT9PEOHN6Y6iPnAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X4kly8S/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAA5CC433C7;
-	Sun, 24 Mar 2024 23:51:40 +0000 (UTC)
+	 MIME-Version; b=IDU+xAiFA7SuCUKI/1xyorLgcLWynW6g5+OT4bx0lKE4QAFCgIYKx8+6PCugnhe7buUL8/+MEnkRiUX5pYj9d6DYY3ySxw43ec0oh/eBL8edwasWfQaVhbLUUKps8N2L6e5XXJqdTQApgTqWfXqFOMhawwlNeEtZfHnnkvRV87c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NmAUavp5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD52AC433F1;
+	Sun, 24 Mar 2024 23:51:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324301;
-	bh=C+/70BqqoyuoI5rGiAd0yfx6Jfh9xe8UtZavuyGWL7E=;
+	s=k20201202; t=1711324303;
+	bh=6gbpBif9goTkU8krONbkMQJBzcRlkeg/lr9CK6CErfM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=X4kly8S/Psnianm9om9dt9zjWpNyxNc9dRCpobL67lSivDB4daq2uAdkaE613sXx5
-	 53uXUw1ytRJqqkj9SZaB0wl9LhdDpddlVxSkFLLrKooQY5elfh/1n6VaWGWVxYpt+O
-	 5FoV6Z1UVkxVghIContedz2XKxCGwxAIlAbKj3Ew7gq3mloNFIpcDUBzzGu1QfTr/Y
-	 rFDqeRtP762lzHlp2yKr09OMtoD/iDddq6Ylxe25Xc+j3Z7zBZJnj1kEEoGVpE8SfN
-	 4pE62tiFixsFNzaLD9pXvvyKC8ToCsVMh37hJ/8HTEtW+qgKygkWV0hiKoRcSRimFL
-	 bgoqA7O9Xfu/Q==
+	b=NmAUavp5225H+Qc6XrjoqP43EfTkxZHXUgs/aGeTwufKoI6/stDrOLJh4DbbjmHLg
+	 u7Xjee+O11oJ0Kb5Dn09TJ86OxUgMa/QgszFBKuc6TcKX3UQIjBWg4r+XJJWAW5OpT
+	 rqGoyL++FjoSuFanD/YvIH4TqqQIMv1z1r574pLmkMx4iHG/2uoSc/ztQO9f4pLA+f
+	 DvGKvs2QoXaCXqGssWFNP7+nQ+C0hNFtp5J3qp3CrL5aBmo4ac29rj10xdVwquYWEI
+	 fUIvqvRHijfjeU1GhqwRJn9RhppkyilrPc/pCFpwDmcTmZvidRPmlr8Vx51PG3O1ud
+	 rq/2U+SlKlKOg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Robert Foss <rfoss@kernel.org>,
+Cc: Yang Jihong <yangjihong1@huawei.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Ian Rogers <irogers@google.com>,
+	Namhyung Kim <namhyung@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 075/148] media: tc358743: register v4l2 async device only after successful setup
-Date: Sun, 24 Mar 2024 19:48:59 -0400
-Message-ID: <20240324235012.1356413-76-sashal@kernel.org>
+Subject: [PATCH 4.19 076/148] perf evsel: Fix duplicate initialization of data->id in evsel__parse_sample()
+Date: Sun, 24 Mar 2024 19:49:00 -0400
+Message-ID: <20240324235012.1356413-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -62,48 +64,35 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
+From: Yang Jihong <yangjihong1@huawei.com>
 
-[ Upstream commit 87399f1ff92203d65f1febf5919429f4bb613a02 ]
+[ Upstream commit 4962aec0d684c8edb14574ccd0da53e4926ff834 ]
 
-Ensure the device has been setup correctly before registering the v4l2
-async device, thus allowing userspace to access.
+data->id has been initialized at line 2362, remove duplicate initialization.
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Robert Foss <rfoss@kernel.org>
-Fixes: 4c5211a10039 ("[media] tc358743: register v4l2 asynchronous subdevice")
-Signed-off-by: Robert Foss <rfoss@kernel.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240110090111.458115-1-alexander.stein@ew.tq-group.com
+Fixes: 3ad31d8a0df2 ("perf evsel: Centralize perf_sample initialization")
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Reviewed-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/r/20240127025756.4041808-1-yangjihong1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tc358743.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/perf/util/evsel.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
-index 079b8db4bc48b..2650be358b027 100644
---- a/drivers/media/i2c/tc358743.c
-+++ b/drivers/media/i2c/tc358743.c
-@@ -2107,9 +2107,6 @@ static int tc358743_probe(struct i2c_client *client,
- 	state->mbus_fmt_code = MEDIA_BUS_FMT_RGB888_1X24;
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 11a2aa80802d5..0644ae23122cd 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2116,7 +2116,6 @@ int perf_evsel__parse_sample(struct perf_evsel *evsel, union perf_event *event,
+ 	data->period = evsel->attr.sample_period;
+ 	data->cpumode = event->header.misc & PERF_RECORD_MISC_CPUMODE_MASK;
+ 	data->misc    = event->header.misc;
+-	data->id = -1ULL;
+ 	data->data_src = PERF_MEM_DATA_SRC_NONE;
  
- 	sd->dev = &client->dev;
--	err = v4l2_async_register_subdev(sd);
--	if (err < 0)
--		goto err_hdl;
- 
- 	mutex_init(&state->confctl_mutex);
- 
-@@ -2167,6 +2164,10 @@ static int tc358743_probe(struct i2c_client *client,
- 	if (err)
- 		goto err_work_queues;
- 
-+	err = v4l2_async_register_subdev(sd);
-+	if (err < 0)
-+		goto err_work_queues;
-+
- 	v4l2_info(sd, "%s found @ 0x%x (%s)\n", client->name,
- 		  client->addr << 1, client->adapter->name);
- 
+ 	if (event->header.type != PERF_RECORD_SAMPLE) {
 -- 
 2.43.0
 
