@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D03C888B27
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:42:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2EED889076
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB6EE291025
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:42:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 009561C2C3A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F3E29BF12;
-	Sun, 24 Mar 2024 23:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48BE029CBEB;
+	Sun, 24 Mar 2024 23:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oDSdSM8O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M8Hdhj0j"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EAAD2308AD;
-	Sun, 24 Mar 2024 23:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAE92308BA;
+	Sun, 24 Mar 2024 23:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322229; cv=none; b=WL9TyUSX/ZcSiglKI8iWSpdYnW+YNktVd7cF+vg7zPqjONPtu6QX8ezHzvtDj92nBjX80nZJvYo/eluwym8LVTHbhg/m44McKAdS007bvWx5K1ATrcy8OUrWzxMrPf0AU7EtkGEMLuf5p68aEGA+7l+WjLqnumNp2azkbOtAR/U=
+	t=1711322230; cv=none; b=YYt19QF+XJ9T3iibt0yorc1eYa6IHtyA0NtaOoJn66RG2zk5NEXnSIH7SElaLdeu7Ko8zb22KRefAGFHA9lq3+OMAMgMV/FAtLfFtRn2JsmNhR6GIXdgqkliLhMkA+Rvsr3MDcJNAMgkYT4kVMr8oaCgpro7vvQOUb9xfbpWT6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322229; c=relaxed/simple;
-	bh=9jN6vKZ98/bJPDMoRNuvk8UuWNbHvTAGirA78gAMS2I=;
+	s=arc-20240116; t=1711322230; c=relaxed/simple;
+	bh=MSxCy/4TxfYruyCaWrEQgACwt3pBEGbUGmPsGDUWZeg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jAeFPdA/FCpTbCGtAezAw47x8CLbbo5zjb2GDSlZD2wZmF37dGQRO4mPeo2hCEMbW+5PjOiN6Yy/Yidbru0dYDJ92OlJeATjDw2g1OGldBC+DQ9x9LgU/nOHlPmptUgUUxVtKmArW0NAFLPvaFOjya90UM+07kcTN3/cvxQ+4D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oDSdSM8O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5AAAC433C7;
-	Sun, 24 Mar 2024 23:17:07 +0000 (UTC)
+	 MIME-Version; b=dD5k5tBLY9sKPZl79UQ6suSAXgGgaxn1xaGLsxPj2m0nKmASUmrunesaL7Hmi2cuF9JZM7AWOkRfpN4Jt2kSYuXlZCpmrRLpbLtDaOsH/RfJh7NSw7dWOqRdUASc0efCSjoAd3xyWmyh8KqQq3hsRTrh9BVRqrpaEThBDSBruE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M8Hdhj0j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEF37C43394;
+	Sun, 24 Mar 2024 23:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322228;
-	bh=9jN6vKZ98/bJPDMoRNuvk8UuWNbHvTAGirA78gAMS2I=;
+	s=k20201202; t=1711322229;
+	bh=MSxCy/4TxfYruyCaWrEQgACwt3pBEGbUGmPsGDUWZeg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oDSdSM8Ob2SkQCrjxeDQEpUAAvU2OmE9OcehPf9sMv2nQWTDPJ9wjE771H5VfIdmn
-	 jrsrTT95iQfpAWq14UnI8BlLHZPEWcbLLYOt7UGngSil2YZdlfnkrGuPMo3ULg14w+
-	 nwWudp5we4aHAVgYnKO5IPdxW9qQ8TRnC/aV9IdKlgYZNHxbh62VvgkVQgBw0/PqQa
-	 eu73i0CVvXM2K3u+irYeMhnvbly5J/glpzwfUs/HHQ1WhdIu/qrxWc/M2cnlbe6ys0
-	 1fnoRLCgZHH9qpcDZ51lhpJ4p6FGa2430ieRHszuucwaYdwYWcnuzoH60mKv4eQ+Oe
-	 DGj9jKKruV4xg==
+	b=M8Hdhj0jmLkprMQQ8ksOkmjMWwzJggfok3yIceNp8T/5dZJTIGNPrNPqtdDqgCzYe
+	 b0b/ERQlB7MH/l+q3RWeQusEFd47G6z5rE6LDAg6YR0ttHU2rAfVT8e7+DIn5bpbru
+	 vhe5MTHhHZHMgl6xddHEidDSLEzYTYTLbQONoySXHSKx8kSq6lc7VcmQ3qwlDq23P5
+	 F/ia0BTHM7Ygik21WGjkye+WkyCm15sCqG0hDhLh4gXCgaXqa32lNkN2TwqYMFBvH6
+	 +7tMZxJycGsoup8Gkqr9pDbrHgLeLnzHrXTqWlSR495dlMcrXMEbJ2y/GLbaDXe6jO
+	 4r1+p2GngVPow==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Stephen Boyd <sboyd@kernel.org>,
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
+	Thierry Reding <treding@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 309/451] clk: hisilicon: hi3559a: Fix an erroneous devm_kfree()
-Date: Sun, 24 Mar 2024 19:09:45 -0400
-Message-ID: <20240324231207.1351418-310-sashal@kernel.org>
+Subject: [PATCH 6.1 310/451] drm/tegra: put drm_gem_object ref on error in tegra_fb_create
+Date: Sun, 24 Mar 2024 19:09:46 -0400
+Message-ID: <20240324231207.1351418-311-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,40 +62,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Fedor Pchelkin <pchelkin@ispras.ru>
 
-[ Upstream commit 64c6a38136b74a2f18c42199830975edd9fbc379 ]
+[ Upstream commit 32e5a120a5105bce01561978ee55aee8e40ac0dc ]
 
-'p_clk' is an array allocated just before the for loop for all clk that
-need to be registered.
-It is incremented at each loop iteration.
+Inside tegra_fb_create(), drm_gem_object_lookup() increments ref count of
+the found object. But if the following size check fails then the last
+found object's ref count should be put there as the unreferencing loop
+can't detect this situation.
 
-If a clk_register() call fails, 'p_clk' may point to something different
-from what should be freed.
+Found by Linux Verification Center (linuxtesting.org).
 
-The best we can do, is to avoid this wrong release of memory.
-
-Fixes: 6c81966107dc ("clk: hisilicon: Add clock driver for hi3559A SoC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/773fc8425c3b8f5b0ca7c1d89f15b65831a85ca9.1705850155.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: de2ba664c30f ("gpu: host1x: drm: Add memory manager and fb")
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231215093356.12067-1-pchelkin@ispras.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/hisilicon/clk-hi3559a.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/tegra/fb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/clk-hi3559a.c
-index 9ea1a80acbe8b..0272276550ff1 100644
---- a/drivers/clk/hisilicon/clk-hi3559a.c
-+++ b/drivers/clk/hisilicon/clk-hi3559a.c
-@@ -491,7 +491,6 @@ static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clks,
+diff --git a/drivers/gpu/drm/tegra/fb.c b/drivers/gpu/drm/tegra/fb.c
+index 9291209154a7a..a688ecf08451e 100644
+--- a/drivers/gpu/drm/tegra/fb.c
++++ b/drivers/gpu/drm/tegra/fb.c
+@@ -166,6 +166,7 @@ struct drm_framebuffer *tegra_fb_create(struct drm_device *drm,
  
- 		clk = clk_register(NULL, &p_clk->hw);
- 		if (IS_ERR(clk)) {
--			devm_kfree(dev, p_clk);
- 			dev_err(dev, "%s: failed to register clock %s\n",
- 			       __func__, clks[i].name);
- 			continue;
+ 		if (gem->size < size) {
+ 			err = -EINVAL;
++			drm_gem_object_put(gem);
+ 			goto unreference;
+ 		}
+ 
 -- 
 2.43.0
 
