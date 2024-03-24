@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-115832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEEF5889830
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B67B889857
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:36:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8ACB429CD8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:30:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1564F2A2E0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2EB16E88B;
-	Mon, 25 Mar 2024 03:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA88158A31;
+	Mon, 25 Mar 2024 03:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J/p5tFJ4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iEsO+LQe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EA2145B2D;
-	Sun, 24 Mar 2024 23:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE330145343;
+	Sun, 24 Mar 2024 23:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322032; cv=none; b=E3bpMJWatDF9wcVvBLYR9F3QpeYtdyCCSBRyxzmRqGju6K2tu2lG5RTSAnh8Y8gZoXoyWbWjZSvtt7T+vxvVnwfvdDs+RMXtyNfjPtMohUpohC9T6foMiRcFlUF/UtFnczrebQyHs9I+eaD5GNyGPq8CjnXXALXr8cgs2HU+gMI=
+	t=1711322031; cv=none; b=bFaUuPKHNvRJhRi+pxQozuBHcO6UL5jQib1jpDaeaWrXDHEeF7O6DAI5vUurFEgO24HcWgyB6vIOZ+0Py46bFop4ddHTSdofz+64H6zI1iKRYCryAIMurQT1EpYz6dmj/ALZifd21e8UTeEBxg4V1yNZVlBQBwLvHuQ4/lTTE9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322032; c=relaxed/simple;
-	bh=WWgtDIV9J28S4Sbj8l/mMebPZPCkN9iMzwE5lhXBPpo=;
+	s=arc-20240116; t=1711322031; c=relaxed/simple;
+	bh=ixIHT+JxOs9u7DVRarGZieExS4raCUeJ/OKOiBYn+fs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IRI+D3MVBHW6LRvZNSQK4Jcn3wB8LTLRJxrHZtJC/JYWVFrXpMQaSzu4PO4OLqIu1LqEp20jc6TsNaCH/TLnRIMjTDOXoK/zn0TJepIdESsWRka/ewSomh8JpD+0+hb2uNpQcla2I/Rs6dFxQyQu9zT655hJNcubXbbW4tFVViM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J/p5tFJ4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC771C433A6;
-	Sun, 24 Mar 2024 23:13:49 +0000 (UTC)
+	 MIME-Version; b=l0m69TynS/91fK7dsBZ1GaJguKrYqJ/B3aAVelQMheyLWG8BZfTttBYhIkd3bGljm/RK45eyKIbc7yUZ2BYpouhHnzrav6m+q2Cmo2athjt/0XctqO82FBD77SBJM03YHOB1OgxFc46CZeTcvQQVbdzaHbEV8DSZw8CMY4vVw+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iEsO+LQe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161B2C433C7;
+	Sun, 24 Mar 2024 23:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322030;
-	bh=WWgtDIV9J28S4Sbj8l/mMebPZPCkN9iMzwE5lhXBPpo=;
+	s=k20201202; t=1711322031;
+	bh=ixIHT+JxOs9u7DVRarGZieExS4raCUeJ/OKOiBYn+fs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=J/p5tFJ4hUsg5T+suIIvlOIJMzIXhd7HpUo2aeKPzLsNX8t7Bazs13glEhEZiIQnn
-	 MVGL19IrV3byaXZ0q+3VExUkcrrFoUPEe9VHFQKoWJRrsFN5ysvBIs/LnsnOk4izM8
-	 G1nkhoeCCg6dh/5eK+B8S/yrtxCz55byhdKuKjvXZSFoe404hPDuCZ6WHsQ8Dza0Oz
-	 ZhJ2GQw8zKOOc8gS74GJEJOyKoeP7NDho8OTwTr2nr7wJCeQKinLmEjDieLtCwB7W5
-	 gcJzSUvQGq3Ykb4MEdSpgdFk81M7v15JVRa3p5AgtZMFM+NJrDO/1swEVDeW3rTj0Y
-	 oxFI/X9i7WhRQ==
+	b=iEsO+LQeAbnQ4ACiRz6aO72KqVEWQJP9bB0NYKJxG+uDrh4YkQJiwdWIyF8ZZSbTr
+	 fvtBXNusX3lADX2D+7Xb2g5FgFie0JmQkElFZWZmyllAAAKu2y2XZV0sSXs4IFhcbg
+	 hEZjH/CwLBqaWxkXvQ8CFS3FYSWeLKeJajL0T/DrbZUJIq8D6YRS6mWaZT2wMYgHiN
+	 RQOcvazujIrjJoiPo/pDeHDLnFCstJYHMacUujcOc60jOkyeEyfCE1rzbdQ3fvHkVs
+	 qWxJQs68THd6bDoztF7rdd9CADXqkYGnRtyGFJDbAbZcNgjyOWPHLVrzFt5yg0qwf/
+	 8HurDTUskYk7A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrey Grafin <conquistador@yandex-team.ru>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Hou Tao <houtao1@huawei.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 102/451] selftest/bpf: Add map_in_maps with BPF_MAP_TYPE_PERF_EVENT_ARRAY values
-Date: Sun, 24 Mar 2024 19:06:18 -0400
-Message-ID: <20240324231207.1351418-103-sashal@kernel.org>
+Subject: [PATCH 6.1 103/451] af_unix: Annotate data-race of gc_in_progress in wait_for_unix_gc().
+Date: Sun, 24 Mar 2024 19:06:19 -0400
+Message-ID: <20240324231207.1351418-104-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -65,95 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andrey Grafin <conquistador@yandex-team.ru>
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
 
-[ Upstream commit 40628f9fff73adecac77a9aa390f8016724cad99 ]
+[ Upstream commit 31e03207119a535d0b0e3b3a7f91983aeb2cb14d ]
 
-Check that bpf_object__load() successfully creates map_in_maps
-with BPF_MAP_TYPE_PERF_EVENT_ARRAY values.
-These changes cover fix in the previous patch
-"libbpf: Apply map_set_def_max_entries() for inner_maps on creation".
+gc_in_progress is changed under spin_lock(&unix_gc_lock),
+but wait_for_unix_gc() reads it locklessly.
 
-A command line output is:
-- w/o fix
-$ sudo ./test_maps
-libbpf: map 'mim_array_pe': failed to create inner map: -22
-libbpf: map 'mim_array_pe': failed to create: Invalid argument(-22)
-libbpf: failed to load object './test_map_in_map.bpf.o'
-Failed to load test prog
+Let's use READ_ONCE().
 
-- with fix
-$ sudo ./test_maps
-..
-test_maps: OK, 0 SKIPPED
-
-Fixes: 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map support")
-Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Acked-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/bpf/20240117130619.9403-2-conquistador@yandex-team.ru
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: 5f23b734963e ("net: Fix soft lockups/OOM issues w/ unix garbage collector")
+Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Link: https://lore.kernel.org/r/20240123170856.41348-2-kuniyu@amazon.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/progs/test_map_in_map.c     | 26 +++++++++++++++++++
- tools/testing/selftests/bpf/test_maps.c       |  6 ++++-
- 2 files changed, 31 insertions(+), 1 deletion(-)
+ net/unix/garbage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map.c b/tools/testing/selftests/bpf/progs/test_map_in_map.c
-index f416032ba858b..b295f9b721bf8 100644
---- a/tools/testing/selftests/bpf/progs/test_map_in_map.c
-+++ b/tools/testing/selftests/bpf/progs/test_map_in_map.c
-@@ -21,6 +21,32 @@ struct {
- 	__type(value, __u32);
- } mim_hash SEC(".maps");
+diff --git a/net/unix/garbage.c b/net/unix/garbage.c
+index ab2c83d58b62a..9bfffe2a7f020 100644
+--- a/net/unix/garbage.c
++++ b/net/unix/garbage.c
+@@ -198,7 +198,7 @@ void wait_for_unix_gc(void)
+ 	if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC &&
+ 	    !READ_ONCE(gc_in_progress))
+ 		unix_gc();
+-	wait_event(unix_gc_wait, gc_in_progress == false);
++	wait_event(unix_gc_wait, !READ_ONCE(gc_in_progress));
+ }
  
-+/* The following three maps are used to test
-+ * perf_event_array map can be an inner
-+ * map of hash/array_of_maps.
-+ */
-+struct perf_event_array {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} inner_map0 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__array(values, struct perf_event_array);
-+} mim_array_pe SEC(".maps") = {
-+	.values = {&inner_map0}};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__array(values, struct perf_event_array);
-+} mim_hash_pe SEC(".maps") = {
-+	.values = {&inner_map0}};
-+
- SEC("xdp")
- int xdp_mimtest0(struct xdp_md *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index b73152822aa28..81cd48cc80c23 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1190,7 +1190,11 @@ static void test_map_in_map(void)
- 		goto out_map_in_map;
- 	}
- 
--	bpf_object__load(obj);
-+	err = bpf_object__load(obj);
-+	if (err) {
-+		printf("Failed to load test prog\n");
-+		goto out_map_in_map;
-+	}
- 
- 	map = bpf_object__find_map_by_name(obj, "mim_array");
- 	if (!map) {
+ /* The external entry point: unix_gc() */
 -- 
 2.43.0
 
