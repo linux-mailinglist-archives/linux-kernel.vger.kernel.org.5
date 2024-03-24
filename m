@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66452888D58
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:45:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F162288A2FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FEC028D851
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:45:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83561B32325
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007692FFFE8;
-	Mon, 25 Mar 2024 01:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693363CB057;
+	Mon, 25 Mar 2024 03:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W+xABXX6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qy1QBpp8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0652B229BE4;
-	Sun, 24 Mar 2024 23:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FB0229BE2;
+	Sun, 24 Mar 2024 23:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324130; cv=none; b=p64Eb7ElusAC8DaGIKXktLzJjDHNxHJNROygF2RuzgElLRqgT9Iv+MUKi2FmdypAS84WPVg4hnFCu1+KZGVXiU9XGB533ixi0Lm0eXXm7/S9yJgAZWhP9nhACf4wZIviIrIeA7RA7FjJZgx0s2KHvBwc3Njwnypgx+1va73sc4I=
+	t=1711324129; cv=none; b=MMud+AnCnj5b05XSfj46ZD8jPxyJ6VDmIPzPlZpmhacvC5DqjmDRgCpRJfQQLjLwIORziMP9PpoF7kMetAuJiilirMQ8EDERhgCumYjkubEIo1Hdal02x2AVeBycc9ZW2cnH2OwyoPjPT3tPrJq9K79OseiO5tqudq0sZ4g7i7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324130; c=relaxed/simple;
-	bh=7MrEm1QVokqmLB43b20sXLc56N+gXSom4+OqZ57+/do=;
+	s=arc-20240116; t=1711324129; c=relaxed/simple;
+	bh=SivIxMd8V2PKFtctNm/0bRHV2kuANutFT4M8RmAb+n0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ToQSjpOjhujLOtOj7vxxC4JrYeuyT4O03qPCtldd72UV8abZmxG084goQDVo3xicGJ8yF8KtXc9rRAjFBvKfVIHysuqoD+4IjD5Ff/FHvnJn/W554VqV52DYhod5jhAd5Q9W20z2BSoutCq43cL/k1LNaFx6NS7p3Zp+ByjL54g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W+xABXX6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F39EAC433C7;
-	Sun, 24 Mar 2024 23:48:47 +0000 (UTC)
+	 MIME-Version; b=b1pFRyCqikH5tEO53bbAlw4cxz/BVSi4sbiru57j/E411rqwPZbBedRJ2Z1HM3uBc5Zc8x2ria/2Wl0F97aJ06XXhvYYaQU3Iphb0SUMkMM4qRt/4zjvdpn/s3lgSqf1VVQIffpqWNwKTvCBdD4N56zOWiH+3l2N91EEDNbR3cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qy1QBpp8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEE64C433F1;
+	Sun, 24 Mar 2024 23:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324128;
-	bh=7MrEm1QVokqmLB43b20sXLc56N+gXSom4+OqZ57+/do=;
+	s=k20201202; t=1711324129;
+	bh=SivIxMd8V2PKFtctNm/0bRHV2kuANutFT4M8RmAb+n0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W+xABXX6FK98LaOJ0wMt1E81AP2zkRNrFTvMG9gJ4iZZlHzrOam3b95LyF0P1yhxC
-	 KeOdkdnPTOZxFUeA5dqb4wgVL8fcOHWSHpIJlv9ijkU08NCSOQ+hb8fAcQkooAzI0/
-	 aQgY2cNE96X7o1z4X1suY4E2rQcBtdEAqHNjQmiMnKGEawhz+u4II+DtXp1KGreWAf
-	 z9a7L7R1dtENvp/yZVx9ZRQEkx//XKhGnPwFxwTHnfk7UxUcsgWGBm0DAnLfnyYaTR
-	 5ZkEMt0QQZvuXfM2VFwzjy65IOR576ssnpDgTCWzk87O1g/4d2XUVPIokjENbBfEsO
-	 qbMgs5xwEex/w==
+	b=qy1QBpp8Ng9LlbP2wAhzt/4EHQ1lHJIm9RmSf28TSpJ6JOF43be4zrPozOHFTIvi4
+	 8ZiScElp93e5RsJ4hNzc7tQ6bn5wBSMrBRkmHTjYVl8ax5upqHOGYYizG0LcE16P2a
+	 F8/8f6u81dR7p4JxkNkSNk5EdK1VG4u7wmRQXcex3JotVbQe4QjRUlko4b4PPPRrF5
+	 2or3CUZfwLPOOKQtfmkwkxeAENWyGNP9OOSOyScgOQpUsjuAQSgcpjRiPdMcGChhDD
+	 egAon85hFmFOugJ26ATVZH+9tdiofQot0DkgWKjRvIzogox9hZx/M8T/0VX9HH0cGz
+	 YWsB4/eKq8JPA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Peter Griffin <peter.griffin@linaro.org>,
 	Lee Jones <lee@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 126/183] mfd: syscon: Call of_node_put() only when of_parse_phandle() takes a ref
-Date: Sun, 24 Mar 2024 19:45:39 -0400
-Message-ID: <20240324234638.1355609-127-sashal@kernel.org>
+Subject: [PATCH 5.4 127/183] mfd: altera-sysmgr: Call of_node_put() only when of_parse_phandle() takes a ref
+Date: Sun, 24 Mar 2024 19:45:40 -0400
+Message-ID: <20240324234638.1355609-128-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -64,37 +64,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Peter Griffin <peter.griffin@linaro.org>
 
-[ Upstream commit d2b0680cf3b05490b579e71b0df6e07451977745 ]
+[ Upstream commit e28c28a34ee9fa2ea671a20e5e7064e6220d55e7 ]
 
 of_parse_phandle() returns a device_node with refcount incremented, which
 the callee needs to call of_node_put() on when done. We should only call
 of_node_put() when the property argument is provided though as otherwise
 nothing has taken a reference on the node.
 
-Fixes: 45330bb43421 ("mfd: syscon: Allow property as NULL in syscon_regmap_lookup_by_phandle")
+Fixes: f36e789a1f8d ("mfd: altera-sysmgr: Add SOCFPGA System Manager")
 Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-Link: https://lore.kernel.org/r/20240220115012.471689-2-peter.griffin@linaro.org
+Link: https://lore.kernel.org/r/20240220115012.471689-4-peter.griffin@linaro.org
 Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/syscon.c | 4 +++-
+ drivers/mfd/altera-sysmgr.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-index 660723276481c..9ec90ce12f4d7 100644
---- a/drivers/mfd/syscon.c
-+++ b/drivers/mfd/syscon.c
-@@ -219,7 +219,9 @@ struct regmap *syscon_regmap_lookup_by_phandle(struct device_node *np,
- 		return ERR_PTR(-ENODEV);
+diff --git a/drivers/mfd/altera-sysmgr.c b/drivers/mfd/altera-sysmgr.c
+index d2a13a547a3ca..5610a5d9fad12 100644
+--- a/drivers/mfd/altera-sysmgr.c
++++ b/drivers/mfd/altera-sysmgr.c
+@@ -109,7 +109,9 @@ struct regmap *altr_sysmgr_regmap_lookup_by_phandle(struct device_node *np,
  
- 	regmap = syscon_node_to_regmap(syscon_np);
--	of_node_put(syscon_np);
-+
+ 	dev = driver_find_device_by_of_node(&altr_sysmgr_driver.driver,
+ 					    (void *)sysmgr_np);
+-	of_node_put(sysmgr_np);
 +	if (property)
-+		of_node_put(syscon_np);
++		of_node_put(sysmgr_np);
++
+ 	if (!dev)
+ 		return ERR_PTR(-EPROBE_DEFER);
  
- 	return regmap;
- }
 -- 
 2.43.0
 
