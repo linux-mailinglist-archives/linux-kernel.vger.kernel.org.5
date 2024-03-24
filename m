@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-114695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED7D888BC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:59:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BF0B888BC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:59:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7908C296C85
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:59:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBD9B1F27DC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581C12B92ED;
-	Mon, 25 Mar 2024 00:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AFF2B92E0;
+	Mon, 25 Mar 2024 00:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RpglrO1y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mvEmv0mX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC94D15F419;
-	Sun, 24 Mar 2024 23:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA79C15F418;
+	Sun, 24 Mar 2024 23:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322343; cv=none; b=XNPu+cc1GIpW0Sd78HdsrLmPOLmUR4yK2d6fo20gJnZ3mPpIN8KjZd317MCKgEOKGjjeulYs96snO6uj76maXkG5YQmofCVRZwQoVrsDZkHikw2xE4Nt4jYwMJztr/u2XoO88AXhxpv9Hv5oEz60Id1Gnid3IuSAx7/pS4yHZWk=
+	t=1711322343; cv=none; b=aTeH7peN10bV8MTJcRNVbUZ2Pr4ypFfkvRoy6HJEj5vM+UjF9lt290v1S11Yp691UNtvo2ui/hE2JPsYSm7kM4xseT3+HgzceYLfcIGj1c7O2b5Rg0sk5DxEfILd3sx2oXSj7mDStOA1XqziqkMY7M6xZHQd9yXm1hQFAZzW6gY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322343; c=relaxed/simple;
-	bh=1i31f10u/aBPlrtTCzD1Dyn80j1e4nsPA8POBUcaYVA=;
+	bh=jlEAspSQ5hbXwQe80k66wh6DemfEAphhDgRnHGqwfKc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U+FqSldnGioSq+CB3X+kNkykWXJZCl3db5NNWb6Qe9GxFvYBAY0yz7hD7OsjV+Vn+CsIgj5ja46rZSrffheQAEuKk/9IjwCaR/NENZOOIeltLUJmzhMF3mxN0hHDw+vZB00cylIkHHJDCyLuD45nqxr5/J5+G6GKppLA54y8ql4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RpglrO1y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD497C43390;
-	Sun, 24 Mar 2024 23:19:01 +0000 (UTC)
+	 MIME-Version; b=VS6hE7RqzjYpFIq8KgZsfU9TGGttCfO7PtJpfb1cHdkwUXIYgNUyS+giS+osfbc0hNPzq53nMWEluHwbPB0Amjm5GKmp85aTfLWn6CHAJhYB74RWVYqMTsNsPaGZoPpkln5sFLFhlfZV3twHvv85LBtrDOJY4n63FZikXGzvCuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mvEmv0mX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3D54C433A6;
+	Sun, 24 Mar 2024 23:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322342;
-	bh=1i31f10u/aBPlrtTCzD1Dyn80j1e4nsPA8POBUcaYVA=;
+	s=k20201202; t=1711322343;
+	bh=jlEAspSQ5hbXwQe80k66wh6DemfEAphhDgRnHGqwfKc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RpglrO1yUUZRPkyiP0JYz1sKs5de8YykjcLJy3Qu53oU6iTYLNlL1p+0qbfcarCMW
-	 JRr4vNq5xq7S0fYXVZqW8VgEAeXnwcAbNu0u+a0/5VwaWV7KxvfDb20Qzq71XXI82/
-	 mKpNGmxt7t6qgHBP+LppoR2XpIFUQhk/ZFo/FPvy3/nKS/0gXKPPhLMbrdHD2B8zpm
-	 edlTa7QEgPOKtIgIjxBMjoictF145ZjocE49y+M33S0AZQjj9HevDVw7hBAePnzAES
-	 +CLBl3yCtSowIeZsgjAA9eBhiFw7dxnmYvEwM7MOFlv3C2y+P8I2OgfJ8pBl9hRlzp
-	 oexjEGUVGcisw==
+	b=mvEmv0mXlB2P+LIo/jNEHZCWzwkH/bKH/1Ld7leZlSOvl5+pMkbEE3bKs0vrlbi2b
+	 lVF/AGT7tEqFZW+Q5XtWC/9dZCYKHd5hh4Sx3sTk7QSvk96VjE+A96+fKxcyM4z14w
+	 YVoewJe5Wwj3wj1TYGYCztqjLiClBXS5Y5ylVxkSSdagiTI6wfFkTHYjw2sHYguv27
+	 CRENtBgLZvzlMy+tb5p4Iiy7stBEbINb5SIOT/4RUnsBoKw/S1g0oNtMFRRpM4qpdY
+	 tDT51cZsrerC+raZyPokyO7GgWP9jfjP+A49ZuZv4Km3h8E67Yx+kLvL20IYIOAjv7
+	 Nl/Z8JIhdonKw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tobias Brunner <tobias@strongswan.org>,
-	David Ahern <dsahern@kernel.org>,
-	Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
+	Russell King <rmk+kernel@armlinux.org.uk>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 424/451] ipv4: raw: Fix sending packets from raw sockets via IPsec tunnels
-Date: Sun, 24 Mar 2024 19:11:40 -0400
-Message-ID: <20240324231207.1351418-425-sashal@kernel.org>
+Subject: [PATCH 6.1 425/451] net: phy: fix phy_read_poll_timeout argument type in genphy_loopback
+Date: Sun, 24 Mar 2024 19:11:41 -0400
+Message-ID: <20240324231207.1351418-426-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,42 +63,51 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tobias Brunner <tobias@strongswan.org>
+From: Nikita Kiryushin <kiryushin@ancud.ru>
 
-[ Upstream commit c9b3b81716c5b92132a6c1d4ac3c48a7b44082ab ]
+[ Upstream commit 32fa4366cc4da1c97b725a0066adf43c6b298f37 ]
 
-Since the referenced commit, the xfrm_inner_extract_output() function
-uses the protocol field to determine the address family.  So not setting
-it for IPv4 raw sockets meant that such packets couldn't be tunneled via
-IPsec anymore.
+read_poll_timeout inside phy_read_poll_timeout can set val negative
+in some cases (for example, __mdiobus_read inside phy_read can return
+-EOPNOTSUPP).
 
-IPv6 raw sockets are not affected as they already set the protocol since
-9c9c9ad5fae7 ("ipv6: set skb->protocol on tcp, raw and ip6_append_data
-genereated skbs").
+Supposedly, commit 4ec732951702 ("net: phylib: fix phy_read*_poll_timeout()")
+should fix problems with wrong-signed vals, but I do not see how
+as val is sent to phy_read as is and __val = phy_read (not val)
+is checked for sign.
 
-Fixes: f4796398f21b ("xfrm: Remove inner/outer modes from output path")
-Signed-off-by: Tobias Brunner <tobias@strongswan.org>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Reviewed-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Link: https://lore.kernel.org/r/c5d9a947-eb19-4164-ac99-468ea814ce20@strongswan.org
+Change val type for signed to allow better error handling as done in other
+phy_read_poll_timeout callers. This will not fix any error handling
+by itself, but allows, for example, to modify cond with appropriate
+sign check or check resulting val separately.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 014068dcb5b1 ("net: phy: genphy_loopback: add link speed configuration")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Link: https://lore.kernel.org/r/20240315175052.8049-1-kiryushin@ancud.ru
 Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/raw.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/phy/phy_device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv4/raw.c b/net/ipv4/raw.c
-index 7c63b91edbf7a..ee0efd0efec40 100644
---- a/net/ipv4/raw.c
-+++ b/net/ipv4/raw.c
-@@ -348,6 +348,7 @@ static int raw_send_hdrinc(struct sock *sk, struct flowi4 *fl4,
- 		goto error;
- 	skb_reserve(skb, hlen);
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 45b07004669d6..f25b0d338ca8d 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -2640,8 +2640,8 @@ EXPORT_SYMBOL(genphy_resume);
+ int genphy_loopback(struct phy_device *phydev, bool enable)
+ {
+ 	if (enable) {
+-		u16 val, ctl = BMCR_LOOPBACK;
+-		int ret;
++		u16 ctl = BMCR_LOOPBACK;
++		int ret, val;
  
-+	skb->protocol = htons(ETH_P_IP);
- 	skb->priority = READ_ONCE(sk->sk_priority);
- 	skb->mark = sockc->mark;
- 	skb->tstamp = sockc->transmit_time;
+ 		ctl |= mii_bmcr_encode_fixed(phydev->speed, phydev->duplex);
+ 
 -- 
 2.43.0
 
