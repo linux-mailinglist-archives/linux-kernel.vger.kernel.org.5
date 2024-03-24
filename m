@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-113551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91F988853B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:02:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB13C88853D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:02:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAB401C248B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:02:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 826D92843D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FB841C42C1;
-	Sun, 24 Mar 2024 22:45:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24F41C42E7;
+	Sun, 24 Mar 2024 22:45:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NTbi8jmd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ABi1Tlvj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A4A1C3A3B;
-	Sun, 24 Mar 2024 22:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB3E1C42CD;
+	Sun, 24 Mar 2024 22:45:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320353; cv=none; b=F/ST8D5webFsKvYhbifH9tSUWAyLtF25DutRTv1cBa8qeMrr0dEmzkOS3ORWD2UjGKpqptR3kWdVlosHhdZAnkSSeaPJy7TtuvtJv1lNzSDRrWOfYidBE+TZ1XsRGcKiDYYCbArjTtS25zH24+S4omKDPAAPmOARW5Al60MGuYA=
+	t=1711320355; cv=none; b=mqQPUtCr5JPH2RdOen7LkqO55DkIhFawgH7HFs2aevlq5GoqMfQhcsEiHWIERLfiQsTQt6kpIu89gNrQ/9Fmp5CYvCX0eMaQlyvg0Q7/g0UO/uN5+5bCQOP0kJdvOrfkbHa7yB/8QhV9AKsTYfn4mEq1Sf9DEfaaxLDJtv7OL5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320353; c=relaxed/simple;
-	bh=JpwvVIpZkwE2cb/Wp3divkSsIYGOFDTGKt9N5N2jBis=;
+	s=arc-20240116; t=1711320355; c=relaxed/simple;
+	bh=4Q5VSj8UVNpxlhvvNrZRTDDSe/QJXv1nABEHoGyUDxk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p25YUtuKarYiCnoUGfUjWN/6WVDv9YIcgug9GAT4N5/m+k9l9smYSSFyxtt/8zriUoSQfD1cDGVa31n3bzQCK0qVVGUYu7BrHwZtqD6W7Pz082xwnnVO0QhRGzZ3mhxLcJBgYtN9fBnveyWGMR7Nt4tP58vxl7UbClu/hIMVi/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NTbi8jmd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C69E3C433B2;
-	Sun, 24 Mar 2024 22:45:52 +0000 (UTC)
+	 MIME-Version:Content-Type; b=rvS4ZB0aemE4JD9stJz7ZHaPyNSDT8zqM1nvbwC90GUOvJYCSSq/rdEpGp4dvjG8CbJaKDISyQWXsFJ6cVSvyBctRM/rQpkAZNxzFS3VxjIgxd7A3XRzCF4/Qh9s63w7rW3ZZE6Ue8sVhuL+4YMD5s1q9QV19sF8tnAEA+z9XRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ABi1Tlvj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1936C433F1;
+	Sun, 24 Mar 2024 22:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320353;
-	bh=JpwvVIpZkwE2cb/Wp3divkSsIYGOFDTGKt9N5N2jBis=;
+	s=k20201202; t=1711320354;
+	bh=4Q5VSj8UVNpxlhvvNrZRTDDSe/QJXv1nABEHoGyUDxk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NTbi8jmdJdR008fezQR1pbIn9rEyWC6aqzAr12i7/ZsiMhEPkZNgJALCm+Znslv1B
-	 aHptuIWU2ECxQgCilp3vB30xN7rBevLOMHVJvLsz6FWnWVVqgVgpLTeWVA94q4762i
-	 AU+ZCeUKgKt8G0ipO4HsVhPu2Nx3Y7fVLwWJ+9ujdCZAaeQv57OKQ/XeLhDBEeD4hv
-	 3YNYA7o8BGLcBqJ2Rvdugja8/bbNwJT+lVyrbgr6fbYFfsI1zgMOVVB62CZmNEwszi
-	 tUhXSEKgzaXyuqeh/YwyKbHDpzjLgT9mci7AahKg0Rfwx5ESeA7Qi9s1Da2Lgww/eO
-	 LPTivLSABPkBg==
+	b=ABi1TlvjDEEM5c2XT2KXn8F5XRNWS2M/U6NqTxJ9nIJrtH02SCTJszS4z/2C6xhhQ
+	 sqaOh7R4MnDk/qkpUjLUdqrHRvWyP/vlThX6WVRyQde/nAJllCmpEs+bBKvDrRMh2+
+	 SsFufh98crmTaOA8Rkn+ewOwW09Jo5r0JGq+CeU8R1yFtJbnHCTX9++I4f9aq9z6rs
+	 WcjCuhDxgemMGYsp4/2PSgvnPYoXlMTvO0rk5TUq9HE7bUyfMVmTy55d1s+7uBWEJN
+	 eH27sBg+A6rM43fWQAYcJjTuPPQ3wXvLxcnKvYbKhAaGvlWlUox9U1Nw2q3sSeCJC5
+	 GB0ysButTPKEQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chunguang Xu <chunguang.xu@shopee.com>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>,
+Cc: Matthew Brost <matthew.brost@intel.com>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 660/715] nvme: fix reconnection fail due to reserved tag allocation
-Date: Sun, 24 Mar 2024 18:33:59 -0400
-Message-ID: <20240324223455.1342824-661-sashal@kernel.org>
+Subject: [PATCH 6.8 661/715] drm/xe: Invalidate userptr VMA on page pin fault
+Date: Sun, 24 Mar 2024 18:34:00 -0400
+Message-ID: <20240324223455.1342824-662-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -61,80 +59,172 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chunguang Xu <chunguang.xu@shopee.com>
+From: Matthew Brost <matthew.brost@intel.com>
 
-[ Upstream commit de105068fead55ed5c07ade75e9c8e7f86a00d1d ]
+[ Upstream commit 386021394394eccef248dc5eb9c9370240821a8c ]
 
-We found a issue on production environment while using NVMe over RDMA,
-admin_q reconnect failed forever while remote target and network is ok.
-After dig into it, we found it may caused by a ABBA deadlock due to tag
-allocation. In my case, the tag was hold by a keep alive request
-waiting inside admin_q, as we quiesced admin_q while reset ctrl, so the
-request maked as idle and will not process before reset success. As
-fabric_q shares tagset with admin_q, while reconnect remote target, we
-need a tag for connect command, but the only one reserved tag was held
-by keep alive command which waiting inside admin_q. As a result, we
-failed to reconnect admin_q forever. In order to fix this issue, I
-think we should keep two reserved tags for admin queue.
+Rather than return an error to the user or ban the VM when userptr VMA
+page pin fails with -EFAULT, invalidate VMA mappings. This supports the
+UMD use case of freeing userptr while still having bindings.
 
-Fixes: ed01fee283a0 ("nvme-fabrics: only reserve a single tag")
-Signed-off-by: Chunguang Xu <chunguang.xu@shopee.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Now that non-faulting VMs can invalidate VMAs, drop the usm prefix for
+the tile_invalidated member.
+
+v2:
+ - Fix build error (CI)
+v3:
+ - Don't invalidate VMA if in fault mode, rather kill VM (Thomas)
+ - Update commit message with tile_invalidated name chagne (Thomas)
+ - Wait VM bookkeep slots with VM resv lock (Thomas)
+v4:
+ - Move list_del_init(&userptr.repin_link) after error check (Thomas)
+ - Assert not in fault mode (Matthew)
+
+Fixes: dd08ebf6c352 ("drm/xe: Introduce a new DRM driver for Intel GPUs")
+Signed-off-by: Matthew Brost <matthew.brost@intel.com>
+Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240312183907.933835-1-matthew.brost@intel.com
+(cherry picked from commit 521db22a1d70dbc596a07544a738416025b1b63c)
+Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c    | 6 ++++--
- drivers/nvme/host/fabrics.h | 7 -------
- 2 files changed, 4 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/xe/xe_gt_pagefault.c |  4 ++--
+ drivers/gpu/drm/xe/xe_trace.h        |  2 +-
+ drivers/gpu/drm/xe/xe_vm.c           | 32 +++++++++++++++++++++-------
+ drivers/gpu/drm/xe/xe_vm_types.h     |  7 ++----
+ 4 files changed, 29 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 0a96362912ced..fe3627c5bdc99 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -4359,7 +4359,8 @@ int nvme_alloc_admin_tag_set(struct nvme_ctrl *ctrl, struct blk_mq_tag_set *set,
- 	set->ops = ops;
- 	set->queue_depth = NVME_AQ_MQ_TAG_DEPTH;
- 	if (ctrl->ops->flags & NVME_F_FABRICS)
--		set->reserved_tags = NVMF_RESERVED_TAGS;
-+		/* Reserved for fabric connect and keep alive */
-+		set->reserved_tags = 2;
- 	set->numa_node = ctrl->numa_node;
- 	set->flags = BLK_MQ_F_NO_SCHED;
- 	if (ctrl->ops->flags & NVME_F_BLOCKING)
-@@ -4428,7 +4429,8 @@ int nvme_alloc_io_tag_set(struct nvme_ctrl *ctrl, struct blk_mq_tag_set *set,
- 	if (ctrl->quirks & NVME_QUIRK_SHARED_TAGS)
- 		set->reserved_tags = NVME_AQ_DEPTH;
- 	else if (ctrl->ops->flags & NVME_F_FABRICS)
--		set->reserved_tags = NVMF_RESERVED_TAGS;
-+		/* Reserved for fabric connect */
-+		set->reserved_tags = 1;
- 	set->numa_node = ctrl->numa_node;
- 	set->flags = BLK_MQ_F_SHOULD_MERGE;
- 	if (ctrl->ops->flags & NVME_F_BLOCKING)
-diff --git a/drivers/nvme/host/fabrics.h b/drivers/nvme/host/fabrics.h
-index 06cc54851b1be..37c974c38dcb0 100644
---- a/drivers/nvme/host/fabrics.h
-+++ b/drivers/nvme/host/fabrics.h
-@@ -18,13 +18,6 @@
- /* default is -1: the fail fast mechanism is disabled  */
- #define NVMF_DEF_FAIL_FAST_TMO		-1
+diff --git a/drivers/gpu/drm/xe/xe_gt_pagefault.c b/drivers/gpu/drm/xe/xe_gt_pagefault.c
+index e2cf1759527c6..ab8536c4fd580 100644
+--- a/drivers/gpu/drm/xe/xe_gt_pagefault.c
++++ b/drivers/gpu/drm/xe/xe_gt_pagefault.c
+@@ -69,7 +69,7 @@ static bool access_is_atomic(enum access_type access_type)
+ static bool vma_is_valid(struct xe_tile *tile, struct xe_vma *vma)
+ {
+ 	return BIT(tile->id) & vma->tile_present &&
+-		!(BIT(tile->id) & vma->usm.tile_invalidated);
++		!(BIT(tile->id) & vma->tile_invalidated);
+ }
  
--/*
-- * Reserved one command for internal usage.  This command is used for sending
-- * the connect command, as well as for the keep alive command on the admin
-- * queue once live.
-- */
--#define NVMF_RESERVED_TAGS	1
--
- /*
-  * Define a host as seen by the target.  We allocate one at boot, but also
-  * allow the override it when creating controllers.  This is both to provide
+ static bool vma_matches(struct xe_vma *vma, u64 page_addr)
+@@ -226,7 +226,7 @@ static int handle_pagefault(struct xe_gt *gt, struct pagefault *pf)
+ 
+ 	if (xe_vma_is_userptr(vma))
+ 		ret = xe_vma_userptr_check_repin(to_userptr_vma(vma));
+-	vma->usm.tile_invalidated &= ~BIT(tile->id);
++	vma->tile_invalidated &= ~BIT(tile->id);
+ 
+ unlock_dma_resv:
+ 	drm_exec_fini(&exec);
+diff --git a/drivers/gpu/drm/xe/xe_trace.h b/drivers/gpu/drm/xe/xe_trace.h
+index 4ddc55527f9ab..846f14507d5ff 100644
+--- a/drivers/gpu/drm/xe/xe_trace.h
++++ b/drivers/gpu/drm/xe/xe_trace.h
+@@ -468,7 +468,7 @@ DEFINE_EVENT(xe_vma, xe_vma_userptr_invalidate,
+ 	     TP_ARGS(vma)
+ );
+ 
+-DEFINE_EVENT(xe_vma, xe_vma_usm_invalidate,
++DEFINE_EVENT(xe_vma, xe_vma_invalidate,
+ 	     TP_PROTO(struct xe_vma *vma),
+ 	     TP_ARGS(vma)
+ );
+diff --git a/drivers/gpu/drm/xe/xe_vm.c b/drivers/gpu/drm/xe/xe_vm.c
+index 3b21afe5b4883..a2397f232efc6 100644
+--- a/drivers/gpu/drm/xe/xe_vm.c
++++ b/drivers/gpu/drm/xe/xe_vm.c
+@@ -706,6 +706,7 @@ int xe_vm_userptr_pin(struct xe_vm *vm)
+ 	int err = 0;
+ 	LIST_HEAD(tmp_evict);
+ 
++	xe_assert(vm->xe, !xe_vm_in_fault_mode(vm));
+ 	lockdep_assert_held_write(&vm->lock);
+ 
+ 	/* Collect invalidated userptrs */
+@@ -722,11 +723,27 @@ int xe_vm_userptr_pin(struct xe_vm *vm)
+ 	list_for_each_entry_safe(uvma, next, &vm->userptr.repin_list,
+ 				 userptr.repin_link) {
+ 		err = xe_vma_userptr_pin_pages(uvma);
+-		if (err < 0)
+-			return err;
++		if (err == -EFAULT) {
++			list_del_init(&uvma->userptr.repin_link);
+ 
+-		list_del_init(&uvma->userptr.repin_link);
+-		list_move_tail(&uvma->vma.combined_links.rebind, &vm->rebind_list);
++			/* Wait for pending binds */
++			xe_vm_lock(vm, false);
++			dma_resv_wait_timeout(xe_vm_resv(vm),
++					      DMA_RESV_USAGE_BOOKKEEP,
++					      false, MAX_SCHEDULE_TIMEOUT);
++
++			err = xe_vm_invalidate_vma(&uvma->vma);
++			xe_vm_unlock(vm);
++			if (err)
++				return err;
++		} else {
++			if (err < 0)
++				return err;
++
++			list_del_init(&uvma->userptr.repin_link);
++			list_move_tail(&uvma->vma.combined_links.rebind,
++				       &vm->rebind_list);
++		}
+ 	}
+ 
+ 	return 0;
+@@ -2010,7 +2027,7 @@ static int xe_vm_prefetch(struct xe_vm *vm, struct xe_vma *vma,
+ 			return err;
+ 	}
+ 
+-	if (vma->tile_mask != (vma->tile_present & ~vma->usm.tile_invalidated)) {
++	if (vma->tile_mask != (vma->tile_present & ~vma->tile_invalidated)) {
+ 		return xe_vm_bind(vm, vma, q, xe_vma_bo(vma), syncs, num_syncs,
+ 				  true, first_op, last_op);
+ 	} else {
+@@ -3184,9 +3201,8 @@ int xe_vm_invalidate_vma(struct xe_vma *vma)
+ 	u8 id;
+ 	int ret;
+ 
+-	xe_assert(xe, xe_vm_in_fault_mode(xe_vma_vm(vma)));
+ 	xe_assert(xe, !xe_vma_is_null(vma));
+-	trace_xe_vma_usm_invalidate(vma);
++	trace_xe_vma_invalidate(vma);
+ 
+ 	/* Check that we don't race with page-table updates */
+ 	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
+@@ -3224,7 +3240,7 @@ int xe_vm_invalidate_vma(struct xe_vma *vma)
+ 		}
+ 	}
+ 
+-	vma->usm.tile_invalidated = vma->tile_mask;
++	vma->tile_invalidated = vma->tile_mask;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/gpu/drm/xe/xe_vm_types.h b/drivers/gpu/drm/xe/xe_vm_types.h
+index 7300eea5394ba..5b96549479504 100644
+--- a/drivers/gpu/drm/xe/xe_vm_types.h
++++ b/drivers/gpu/drm/xe/xe_vm_types.h
+@@ -83,11 +83,8 @@ struct xe_vma {
+ 		struct work_struct destroy_work;
+ 	};
+ 
+-	/** @usm: unified shared memory state */
+-	struct {
+-		/** @tile_invalidated: VMA has been invalidated */
+-		u8 tile_invalidated;
+-	} usm;
++	/** @tile_invalidated: VMA has been invalidated */
++	u8 tile_invalidated;
+ 
+ 	/** @tile_mask: Tile mask of where to create binding for this VMA */
+ 	u8 tile_mask;
 -- 
 2.43.0
 
