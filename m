@@ -1,368 +1,189 @@
-Return-Path: <linux-kernel+bounces-112649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4A0E887C86
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:36:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8484E887C88
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C070281A99
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:36:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A889E1C20AF7
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA4517742;
-	Sun, 24 Mar 2024 11:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B279D179AA;
+	Sun, 24 Mar 2024 11:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qCh1Ncfb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="wpDcD+vY"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F33A28E7;
-	Sun, 24 Mar 2024 11:36:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699246FB5;
+	Sun, 24 Mar 2024 11:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711280192; cv=none; b=nHFJKNMgOd7vZ4AqiqD31U8P38wjXHPAkJv6mbv/KAKWyuJczlAgUVICab0rUKn94Z7/AQKzW1eJW8ou7Wboxw4GsRqLEjYpY8aTzjxX3+7Wbp9nMJAAhx/l1RvzVSKfaTdpCsAP99BVTw3KDoh9OllfL1T0ZrtfCp80xkMX/6E=
+	t=1711280389; cv=none; b=qJ0rKQYL3BpxH/mKY2h7anNLd5qwU7um7pHjb3cTDHVhJEK5wYbmCbuTq2x0oRXZgZdiTCg9NtkfMBHPWZffx8v/x4N8gQy3XWimPbB7RLsxRw83ifaorjsXsUCnR3B++TC4sBXeaXhBUuSm/HzsmOyNroA3XZLjSr+wsSKzHaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711280192; c=relaxed/simple;
-	bh=0ad8LYllcbY4Ac2blpqvmpG1kU1FUyA+sNyhDuKl5f8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rk05QWRLdEzDPqRuVqRSlAhlhFK9gaqylsAHfvnq7s90GghZJhrHelxlEMrzdJeYEBry9iZK+UxCnCPuwoNtKJRFy8wUnodhpzO+sgzUE45PB3E2qhMN/y9g+qSteXLV2/rDclUnB0InsLfWUug6Ro/OEDHK4xwrQSocmpNOToU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qCh1Ncfb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F065C433C7;
-	Sun, 24 Mar 2024 11:36:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711280191;
-	bh=0ad8LYllcbY4Ac2blpqvmpG1kU1FUyA+sNyhDuKl5f8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qCh1NcfbjoXGii1W8TH7gL8OCr2oAEHwDzqvQviVBOQCJGT0/TVbW8/JtxCfWKpS6
-	 NU0EQkiVye6Eth8SDKB/X/hIH6Fdgkf5UH1IHCP+ShbeONDk588sadfpSLucwEZwAw
-	 9hKgBWgTSzZIMOI3tXNwPoG/uyyaF++f0YWe2dH3KsKZv94MCQrTq6AS27PJc9KCWb
-	 yCoBDj2Sk21bejzqBVUji1SocMX+QE9SWqZY74JMftVkZOXl5JgBrF5ApteAhXVWVV
-	 YEI7GGhodIMLhdreZKTQp48iq7vmYFDo04scisXO8G749NLkbA9AmCKwiMU8qWftN4
-	 kkiOuf65udL7w==
-Date: Sun, 24 Mar 2024 11:36:16 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>
-Cc: lars@metafoo.de, andriy.shevchenko@linux.intel.com,
- ang.iglesiasg@gmail.com, mazziesaccount@gmail.com, ak@it-klinger.de,
- petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
- linus.walleij@linaro.org, semen.protsenko@linaro.org,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] iio: pressure: Generalize
- read_{temp/press/humid}() functions
-Message-ID: <20240324113616.02f9f391@jic23-huawei>
-In-Reply-To: <20240319002925.2121016-4-vassilisamir@gmail.com>
-References: <20240319002925.2121016-1-vassilisamir@gmail.com>
-	<20240319002925.2121016-4-vassilisamir@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711280389; c=relaxed/simple;
+	bh=3DAN+ZuR4BCK0R8mQkOH/01GQK1FQY2hVj9coW1xG4k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ksNQwmYojcfflDl1rOC2v0a6uKUfMwXMP1NHr7XivScvmCrokhPHhZ5A7K+o4Tgps5761R8uTEeAULnRhe1KN74lG/DRA1ptliWI0/aqsZtndJ2KFhl0zgSLMU18B19eJqZH6CDh8H3F4VrRrkhQQwZN53+6KaqRq567IniFEuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=wpDcD+vY; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=/pm71XqUg2Me/5kzVzyvAIWcLcizOGK383LNxU+r5/U=; b=wpDcD+vYSME5DYWATYlNDH/YEg
+	/jTLStgE7PwCf0v4Whv7leAPkpSEkEs08V3YRE91IZ0qWmO7QOBStdHNfbEwxncMIqr4agFzSG94Z
+	eC1i59HSLICUSu/PbGSGEnjt0s2ar/Upqey60Jd3DoTiAiIrbMNSBtEVRHEOAkXFEsGBvGZaVemYs
+	9tb8rb+A2OBfdHY8c7uVIzCcQMLQorS6o26D9Dp67R48HrLs0Nf6ntIpYMENrpaELL/DW+qAcfWSr
+	gyTYpakQ9VyLcSGyEoFS0wjOJ6Ja5eaXk9tf8zXSaPGi32wYs/rLH6VnAfGd+L75WSPgjlG7Fh7Lk
+	dR4fLziA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:59938)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1roMC7-0002Ei-1W;
+	Sun, 24 Mar 2024 11:39:19 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1roMC0-0006UM-Tn; Sun, 24 Mar 2024 11:39:13 +0000
+Date: Sun, 24 Mar 2024 11:39:12 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Daniel Golle <daniel@makrotopia.org>, Andrew Lunn <andrew@lunn.ch>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	=?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+	SkyLake Huang <SkyLake.Huang@mediatek.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 0/3] Fix EEE support for MT7531 and MT7988 SoC switch
+Message-ID: <ZgAQ4Ihsn6RCk7xx@shell.armlinux.org.uk>
+References: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v>
+ <ZfnYkuzuvwLepIfC@makrotopia.org>
+ <00ec9779-19ce-4005-83f0-f4abf37350fc@arinc9.com>
+ <6cb585f6-6da8-45a2-a28b-2fb556f95672@lunn.ch>
+ <Zfn1DxkEa3u-f7l2@makrotopia.org>
+ <38798882-c033-4949-9446-4c6f15c25ebe@gmail.com>
+ <0fbe7ba2-6529-4118-b050-8ea76d28b712@arinc9.com>
+ <11b2a4d1-66d8-4bcf-b1a8-20a635b99cc4@gmail.com>
+ <5a4c0436-cd78-419f-af14-9c4e0c0435e3@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a4c0436-cd78-419f-af14-9c4e0c0435e3@arinc9.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, 19 Mar 2024 01:29:22 +0100
-Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
-
-> Add the coefficients for the IIO standard units and the return
-> IIO value inside the chip_info structure.
+On Sun, Mar 24, 2024 at 12:47:08PM +0300, Arınç ÜNAL wrote:
+> On 21/03/2024 18:31, Florian Fainelli wrote:
+> > On 3/21/24 09:09, Arınç ÜNAL wrote:
+> > > I have started testing MT7531 with EEE enabled and immediately experienced
+> > > frames that wouldn't egress the switch or improperly received on the link
+> > > partner.
+> > > 
+> > > SoC MAC       <-EEE off-> MT7531 P6 MAC (acting as PHY)
+> > > MT7531 P0 MAC <-EEE on -> MT7531 P0 PHY
+> > > MT7531 P0 PHY <-EEE on -> Computer connected with twisted pair
+> > 
+> > OK, so this is intended to describe that the SoC's Ethernet MAC link to the integrated switch did not use EEE only the user-facing ports. That makes sense because it's all digital logic and you are not going to be seeing much power saving from having EEE enabled between the SoC's Ethernet MAC and CPU port of the switch, that said, however, I wonder if this has an impact on any form of flow control within the switch that is reacting to LPI and you need EEE to be enabled end-to-end?
 > 
-> Remove the calculations with the coefficients for the IIO unit
-> compatibility from inside the read_{temp/press/humid}() functions
-> and move it to the general read_raw() function.
+> I've tested pinging between my computers with EEE enabled interfaces. The
+> behaviour is identical.
 > 
-> Execute the calculations with the coefficients inside the read_raw()
-> oneshot capture function.
+> > 
+> > > 
+> > > I've tested pinging from the SoC's CPU. Packet capturing on the twisted
+> > > pair computer showed very few frames were being received.
+> > > 
+> > > # ping 192.168.2.2
+> > > PING 192.168.2.2 (192.168.2.2): 56 data bytes
+> > > 64 bytes from 192.168.2.2: seq=36 ttl=64 time=0.486 ms
+> > > ^C
+> > > --- 192.168.2.2 ping statistics ---
+> > > 64 packets transmitted, 1 packets received, 98% packet loss
+> > > round-trip min/avg/max = 0.486/0.486/0.486 ms
+> > > 
+> > > It seems there's less loss when frames are passed more frequently.
+> > 
+> > That would point to an issue getting in and out of LPI, do you see these packet losses even with different LPI timeouts?
 > 
-> In this way, all the data for the calculation of the value are
-> located in the chip_info structure of the respective sensor.
+> The NICs on my computers don't seem to allow changing the tx-lpi and
+> tx-timer options.
 > 
-> Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
-Hi,
-
-Perhaps it's later in the series, but I still don't much like the hidden nature
-of t_fine. I'd much rather that was explicitly 'returned' by the function
-- by that I mean read_temp takes an s32 *t_fine and provides that if the pointer
-isn't NULL.
-
-Then drop the cached value in bmp280_data which I think just serves to make
-this code less readable than it could be.
-
-Then bmp280_compensate_pressure() can take a struct bmp280_calib, s32 adc_press and
-s32 t_fine so it just has the data it needs.
-Something similar for bmp280_compenstate_temp()
-
-Obviously this is cleaning up stuff that's been there a long time, but
-given you are generalizing these functions this seems like the time to
-make these other changes.
-
-As it stands, I don't think this code works as t_fine isn't updated
-everywhere it needs to be and that is hidden away by it being updated
-as a side effect of other calls.
-
-Jonathan
-
-
-> ---
->  drivers/iio/pressure/bmp280-core.c | 189 +++++++++++++++--------------
->  drivers/iio/pressure/bmp280.h      |  13 +-
->  2 files changed, 106 insertions(+), 96 deletions(-)
+> Computer 1 (Intel I219-V, driver: e1000e):
 > 
-> diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-> index f7a13ff6f26c..6d6173c4b744 100644
-> --- a/drivers/iio/pressure/bmp280-core.c
-> +++ b/drivers/iio/pressure/bmp280-core.c
-> @@ -363,10 +363,9 @@ static u32 bmp280_compensate_press(struct bmp280_data *data,
->  	return (u32)p;
->  }
->  
-> -static int bmp280_read_temp(struct bmp280_data *data,
-> -			    int *val, int *val2)
-> +static int bmp280_read_temp(struct bmp280_data *data, s32 *comp_temp)
->  {
-> -	s32 adc_temp, comp_temp;
-> +	s32 adc_temp;
->  	int ret;
->  
->  	ret = regmap_bulk_read(data->regmap, BMP280_REG_TEMP_MSB,
-> @@ -382,29 +381,20 @@ static int bmp280_read_temp(struct bmp280_data *data,
->  		dev_err(data->dev, "reading temperature skipped\n");
->  		return -EIO;
->  	}
-> -	comp_temp = bmp280_compensate_temp(data, adc_temp);
->  
-> -	/*
-> -	 * val might be NULL if we're called by the read_press routine,
-> -	 * who only cares about the carry over t_fine value.
-> -	 */
-> -	if (val) {
-> -		*val = comp_temp * 10;
-> -		return IIO_VAL_INT;
-> -	}
-> +	if (comp_temp)
-> +		*comp_temp = bmp280_compensate_temp(data, adc_temp);
+> $ sudo ethtool --set-eee eno1 tx-timer 15
+> netlink error: Invalid argument
+> 
+> $ sudo ethtool --show-eee eno1
+> EEE settings for eno1:
+> 	EEE status: enabled - active
+> 	Tx LPI: 17 (us)
+> 	Supported EEE link modes:  100baseT/Full
+> 	                           1000baseT/Full
+> 	Advertised EEE link modes:  100baseT/Full
+> 	                            1000baseT/Full
+> 	Link partner advertised EEE link modes:  100baseT/Full
+> 	                                         1000baseT/Full
+> 
+> Computer 2 (Realtek RTL8111H, driver: r8169):
+> 
+> $ sudo ethtool --set-eee eno1 tx-lpi on
+> 
+> $ sudo ethtool --show-eee eno1
+> EEE settings for eno1:
+> 	EEE status: enabled - active
+> 	Tx LPI: disabled
+> 	Supported EEE link modes:  100baseT/Full
+> 	                           1000baseT/Full
+> 	Advertised EEE link modes:  100baseT/Full
+> 	                            1000baseT/Full
+> 	Link partner advertised EEE link modes:  100baseT/Full
+> 	                                         1000baseT/Full
+> 
+> I've tested with switch ports interfaces' tx-timer from 0 to 40, same
+> tx-timer for both interfaces. Loss is still there.
 
-As below, I don't think this is updating t_fine.
-Another reason to make that update very obvious rather than burried
-in this function call.
+EEE implementations tend to be a mess in the way drivers implement the
+API, so one can't at the moment rely on what ethtool says about the
+status. Sadly, this is what happens when driver authors are left to
+their own ends. :(
 
->  
->  	return 0;
->  }
->  
-> -static int bmp280_read_press(struct bmp280_data *data,
-> -			     int *val, int *val2)
-> +static int bmp280_read_press(struct bmp280_data *data, u32 *comp_press)
->  {
-> -	u32 comp_press;
->  	s32 adc_press;
->  	int ret;
->  
->  	/* Read and compensate temperature so we get a reading of t_fine. */
-> -	ret = bmp280_read_temp(data, NULL, NULL);
-> +	ret = bmp280_read_temp(data, NULL);
->  	if (ret < 0)
->  		return ret;
->  
-> @@ -421,22 +411,19 @@ static int bmp280_read_press(struct bmp280_data *data,
->  		dev_err(data->dev, "reading pressure skipped\n");
->  		return -EIO;
->  	}
-> -	comp_press = bmp280_compensate_press(data, adc_press);
->  
-> -	*val = comp_press;
-> -	*val2 = 256000;
-> +	*comp_press = bmp280_compensate_press(data, adc_press);
->  
-> -	return IIO_VAL_FRACTIONAL;
-> +	return 0;
->  }
->  
-> -static int bmp280_read_humid(struct bmp280_data *data, int *val, int *val2)
-> +static int bmp280_read_humid(struct bmp280_data *data, u32 *comp_humidity)
->  {
-> -	u32 comp_humidity;
->  	s32 adc_humidity;
->  	int ret;
->  
->  	/* Read and compensate temperature so we get a reading of t_fine. */
-> -	ret = bmp280_read_temp(data, NULL, NULL);
-> +	ret = bmp280_read_temp(data, NULL);
->  	if (ret < 0)
->  		return ret;
->  
-> @@ -453,11 +440,10 @@ static int bmp280_read_humid(struct bmp280_data *data, int *val, int *val2)
->  		dev_err(data->dev, "reading humidity skipped\n");
->  		return -EIO;
->  	}
-> -	comp_humidity = bmp280_compensate_humidity(data, adc_humidity);
->  
-> -	*val = comp_humidity * 1000 / 1024;
-> +	*comp_humidity = bmp280_compensate_humidity(data, adc_humidity);
->  
-> -	return IIO_VAL_INT;
-> +	return 0;
->  }
->  
->  static int bmp280_read_raw_guarded(struct iio_dev *indio_dev,
-> @@ -465,6 +451,8 @@ static int bmp280_read_raw_guarded(struct iio_dev *indio_dev,
->  				   int *val, int *val2, long mask)
->  {
->  	struct bmp280_data *data = iio_priv(indio_dev);
-> +	int chan_value;
-> +	int ret;
->  
->  	guard(mutex)(&data->lock);
->  
-> @@ -472,11 +460,29 @@ static int bmp280_read_raw_guarded(struct iio_dev *indio_dev,
->  	case IIO_CHAN_INFO_PROCESSED:
->  		switch (chan->type) {
->  		case IIO_HUMIDITYRELATIVE:
-> -			return data->chip_info->read_humid(data, val, val2);
-> +			ret = data->chip_info->read_humid(data, &chan_value);
-> +			if (ret)
-> +				return ret;
-> +
-> +			*val = data->chip_info->humid_coeffs[0] * chan_value;
-> +			*val2 = data->chip_info->humid_coeffs[1];
-> +			return data->chip_info->humid_coeffs_type;
->  		case IIO_PRESSURE:
-> -			return data->chip_info->read_press(data, val, val2);
-> +			ret = data->chip_info->read_press(data, &chan_value);
-> +			if (ret)
-> +				return ret;
-> +
-> +			*val = data->chip_info->press_coeffs[0] * chan_value;
-> +			*val2 = data->chip_info->press_coeffs[1];
-> +			return data->chip_info->press_coeffs_type;
->  		case IIO_TEMP:
-> -			return data->chip_info->read_temp(data, val, val2);
-> +			ret = data->chip_info->read_temp(data, &chan_value);
-> +			if (ret)
-> +				return ret;
-> +
-> +			*val = data->chip_info->temp_coeffs[0] * chan_value;
-> +			*val2 = data->chip_info->temp_coeffs[1];
-> +			return data->chip_info->temp_coeffs_type;
->  		default:
->  			return -EINVAL;
->  		}
-> @@ -787,6 +793,8 @@ static int bmp280_chip_config(struct bmp280_data *data)
->  
->  static const int bmp280_oversampling_avail[] = { 1, 2, 4, 8, 16 };
->  static const u8 bmp280_chip_ids[] = { BMP280_CHIP_ID };
-> +static const int bmp280_temp_coeffs[] = { 10, 1 };
-> +static const int bmp280_press_coeffs[] = { 1, 256000 };
->  
->  const struct bmp280_chip_info bmp280_chip_info = {
->  	.id_reg = BMP280_REG_ID,
-> @@ -815,6 +823,11 @@ const struct bmp280_chip_info bmp280_chip_info = {
->  	.num_oversampling_press_avail = ARRAY_SIZE(bmp280_oversampling_avail),
->  	.oversampling_press_default = BMP280_OSRS_PRESS_16X - 1,
->  
-> +	.temp_coeffs = bmp280_temp_coeffs,
-> +	.temp_coeffs_type = IIO_VAL_FRACTIONAL,
-> +	.press_coeffs = bmp280_press_coeffs,
-> +	.press_coeffs_type = IIO_VAL_FRACTIONAL,
-> +
->  	.chip_config = bmp280_chip_config,
->  	.read_temp = bmp280_read_temp,
->  	.read_press = bmp280_read_press,
-> @@ -841,6 +854,7 @@ static int bme280_chip_config(struct bmp280_data *data)
->  }
->  
->  static const u8 bme280_chip_ids[] = { BME280_CHIP_ID };
-> +static const int bme280_humid_coeffs[] = { 1000, 1024 };
->  
->  const struct bmp280_chip_info bme280_chip_info = {
->  	.id_reg = BMP280_REG_ID,
-> @@ -863,6 +877,14 @@ const struct bmp280_chip_info bme280_chip_info = {
->  	.num_oversampling_humid_avail = ARRAY_SIZE(bmp280_oversampling_avail),
->  	.oversampling_humid_default = BMP280_OSRS_HUMIDITY_16X - 1,
->  
-> +	.temp_coeffs = bmp280_temp_coeffs,
-> +	.temp_coeffs_type = IIO_VAL_FRACTIONAL,
-> +	.press_coeffs = bmp280_press_coeffs,
-> +	.press_coeffs_type = IIO_VAL_FRACTIONAL,
-> +	.humid_coeffs = bme280_humid_coeffs,
-> +	.humid_coeffs_type = IIO_VAL_FRACTIONAL,
-> +
-> +
-One blank line is almost always enough.
+> I suppose the MT7531 switch PHYs need calibration for EEE that is currently
+> missing from the mediatek-ge driver.
 
->  	.chip_config = bme280_chip_config,
->  	.read_temp = bmp280_read_temp,
->  	.read_press = bmp280_read_press,
-> @@ -988,9 +1010,8 @@ static u32 bmp380_compensate_press(struct bmp280_data *data, u32 adc_press)
->  	return comp_press;
->  }
->  
-> -static int bmp380_read_temp(struct bmp280_data *data, int *val, int *val2)
-> +static int bmp380_read_temp(struct bmp280_data *data, s32 *comp_temp)
->  {
-> -	s32 comp_temp;
->  	u32 adc_temp;
->  	int ret;
->  
-> @@ -1006,29 +1027,20 @@ static int bmp380_read_temp(struct bmp280_data *data, int *val, int *val2)
->  		dev_err(data->dev, "reading temperature skipped\n");
->  		return -EIO;
->  	}
-> -	comp_temp = bmp380_compensate_temp(data, adc_temp);
->  
-> -	/*
-> -	 * Val might be NULL if we're called by the read_press routine,
-> -	 * who only cares about the carry over t_fine value.
-> -	 */
-> -	if (val) {
-> -		/* IIO reports temperatures in milli Celsius */
-> -		*val = comp_temp * 10;
-> -		return IIO_VAL_INT;
-> -	}
-> +	if (comp_temp)
-> +		*comp_temp = bmp380_compensate_temp(data, adc_temp);
->  
+EEE is quite simple from the software point of view. There is software
+negotiation of the modules that EEE supports, and then there is are
+one or more timers that affect the behaviour of EEE. The LPI timer is
+"how long the link needs to be idle for before _this_ end signals that
+it _can_ enter low power state". The link only enters low power state
+when *both* ends of the link signal that they can enter low power
+state.
 
-I'm confused. If comp_temp is not provided then t_fine isn't updated
-so this function isn't doing anything?
+What calibration would be necessary?
 
->  	return 0;
->  }
->  
-> -static int bmp380_read_press(struct bmp280_data *data, int *val, int *val2)
-> +static int bmp380_read_press(struct bmp280_data *data, u32 *comp_press)
->  {
-> -	s32 comp_press;
->  	u32 adc_press;
->  	int ret;
->  
->  	/* Read and compensate for temperature so we get a reading of t_fine */
-
-As above, I don't think it does. 
-
-> -	ret = bmp380_read_temp(data, NULL, NULL);
-> +	ret = bmp380_read_temp(data, NULL);
->  	if (ret)
->  		return ret;
->  
-> @@ -1044,13 +1056,10 @@ static int bmp380_read_press(struct bmp280_data *data, int *val, int *val2)
->  		dev_err(data->dev, "reading pressure skipped\n");
->  		return -EIO;
->  	}
-> -	comp_press = bmp380_compensate_press(data, adc_press);
->  
-> -	*val = comp_press;
-> -	/* Compensated pressure is in cPa (centipascals) */
-> -	*val2 = 100000;
-> +	*comp_press = bmp380_compensate_press(data, adc_press);
->  
-> -	return IIO_VAL_FRACTIONAL;
-> +	return 0;
->  }
->  
-
-J
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
