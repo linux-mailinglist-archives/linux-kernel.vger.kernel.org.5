@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34200889257
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:03:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FBBA889B94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D711FB2F344
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:53:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 586F2B265AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C15842CCB75;
-	Mon, 25 Mar 2024 00:54:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B946E3A6CF9;
+	Mon, 25 Mar 2024 03:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vDRZnGyF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r2sc5nuc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C03C17889F;
-	Sun, 24 Mar 2024 23:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527E71788A3;
+	Sun, 24 Mar 2024 23:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323557; cv=none; b=SdyNSg+g4y1E9NjcB/Fc0q/9qd02b7jxPV9cVvG/MxVPKtCffbYFpA3Ry8VyfsDSwvPauc2WySWK026VNM7v4Zq6T2cZ7KApcRXfDU+J/n8h/FXQ/Iqw+YH6yMaC1Pq8OWDMXdC5tyuVij1fqckylPoAVK4D9J/sXnuwzRChRW8=
+	t=1711323558; cv=none; b=GxNaBND5NFzaaOsFKa1aijjIRn9HqOAJuIZ75Zeqorhn9kxXXwcNzSCVXZLho06vx7ZHXrxPpC+RnZjeQIH0KqX3SPhgrO5XsIGAZmY/idp/qQ81R0nAcveEHeGN3FUOUGvIEO84bhONIDEjaDEo5jAsL7nrPxTn8r1MnvYmEEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323557; c=relaxed/simple;
-	bh=AS+JGYpUDsPlHwpiNSjJhMQhjdqKCPCQtDNBzfmKuyQ=;
+	s=arc-20240116; t=1711323558; c=relaxed/simple;
+	bh=FW4rGZt3DNRlT3vaTYKQZ+V+cMEHg6iz456kybMECmI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IUGOCj4QSICZXBl+fIP0YHhcPH3sir9SLl6lqpgnp5nfBo5MGCAmDNnw8gV4psUoloAVkiXxUXfoE+/ZPcLNo/FAXeE8MxkAvswYvjjqRGvUPkSzM2vvdUTenDEgGGyJZ8drxTsuaiPhi3eqHCA4GExQKmag4inQo3zw8R4QJPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vDRZnGyF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 982FFC433F1;
-	Sun, 24 Mar 2024 23:39:15 +0000 (UTC)
+	 MIME-Version; b=A4OcrBmM0Zhz3KG6sMqj4Gy83rxuwBrZ3y8CB6DjuyXdW6boaOM1QJW7gVRlG7nGIBSj6ONBXdpB9gtkkJCCHMn8EtI9eGFpqw/20fmbMEpMIHBO3fRwTyxOUYEPVOl3H5edwsAt9cJzBQcwqajTfq773SpJeavTJJy7UmXsAlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r2sc5nuc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E8DEC43390;
+	Sun, 24 Mar 2024 23:39:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323556;
-	bh=AS+JGYpUDsPlHwpiNSjJhMQhjdqKCPCQtDNBzfmKuyQ=;
+	s=k20201202; t=1711323557;
+	bh=FW4rGZt3DNRlT3vaTYKQZ+V+cMEHg6iz456kybMECmI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vDRZnGyFqOhJgsHO6k4eU4OLHtm07t4UZAtXFoKoi0ajTI/dOwRoOafmGucCS+2tm
-	 pKUSbBw5Z+JDiVMUZUQaDkg+b0vdCjYzGyJyzitxCSnzVG1SzOU1WqWukBhHLHqAXH
-	 UMtFJ0GXpLnLQLVrkwEI/1Mc0+BkgpS+ca/6NzUeS1r+OBOd6RX8DhMlSpos7O+sxD
-	 PRSWA5nKgEn7apNGCxaAKrMiH5zbg/oaFbMeZQQ1ahmPvRu6E8Yhi8IykkotRVPPXP
-	 8d2K/ew4+0JUqbf63Sq4bU6r+Bm45m1kPTfM51F9yUXt/5TVPAIUjiE4Sbb2UnSqMY
-	 CRIWTZoG9ZBTw==
+	b=r2sc5nucWrgMMGGAgKjQx2byiCUP6wZYc1FnO9L+LYRPENU6QNKH414AFn1t/Irdf
+	 BlIFpcabZTdVeD5m2kk7oEkyr8YTbrkCVQpR2SDSfOI1wc8tdbgxlWiraJ32bWA+oj
+	 mae8MxEP1AwP+POkhwZbUt1SRw1R7xSuP8xlpgO6Zy3phnYCMcs/tO0x2a3LwpafZu
+	 z6IPh9Mw9SWs9EwPtQ/KgI9UyCRsNIl7GezzEghIYTh27UhmZ9H7xwqD5M/dE+HZQY
+	 uLSvf0l8p3QLCaAkJ5NB72CKvK/I4qfn3glditrR5EmiSgFkziRyB+xG1wsH8+SXoF
+	 mKZXsLJW8ITsg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Shifeng Li <lishifeng@sangfor.com.cn>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jason Gunthorpe <jgg@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 263/317] scsi: csiostor: Avoid function pointer casts
-Date: Sun, 24 Mar 2024 19:34:03 -0400
-Message-ID: <20240324233458.1352854-264-sashal@kernel.org>
+Subject: [PATCH 5.15 264/317] RDMA/device: Fix a race between mad_client and cm_client init
+Date: Sun, 24 Mar 2024 19:34:04 -0400
+Message-ID: <20240324233458.1352854-265-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -62,133 +63,131 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Shifeng Li <lishifeng@sangfor.com.cn>
 
-[ Upstream commit 9f3dbcb5632d6876226031d552ef6163bb3ad215 ]
+[ Upstream commit 7a8bccd8b29c321ac181369b42b04fecf05f98e2 ]
 
-csiostor uses function pointer casts to keep the csio_ln_ev state machine
-hidden, but this causes warnings about control flow integrity (KCFI)
-violations in clang-16 and higher:
+The mad_client will be initialized in enable_device_and_get(), while the
+devices_rwsem will be downgraded to a read semaphore. There is a window
+that leads to the failed initialization for cm_client, since it can not
+get matched mad port from ib_mad_port_list, and the matched mad port will
+be added to the list after that.
 
-drivers/scsi/csiostor/csio_lnode.c:1098:33: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1098 |         return (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready));
-      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/scsi/csiostor/csio_lnode.c:1369:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1369 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_uninit)) {
-      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/scsi/csiostor/csio_lnode.c:1373:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1373 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready)) {
-      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/scsi/csiostor/csio_lnode.c:1377:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1377 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_offline)) {
-      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mad_client    |                       cm_client
+------------------|--------------------------------------------------------
+ib_register_device|
+enable_device_and_get
+down_write(&devices_rwsem)
+xa_set_mark(&devices, DEVICE_REGISTERED)
+downgrade_write(&devices_rwsem)
+                  |
+                  |ib_cm_init
+                  |ib_register_client(&cm_client)
+                  |down_read(&devices_rwsem)
+                  |xa_for_each_marked (&devices, DEVICE_REGISTERED)
+                  |add_client_context
+                  |cm_add_one
+                  |ib_register_mad_agent
+                  |ib_get_mad_port
+                  |__ib_get_mad_port
+                  |list_for_each_entry(entry, &ib_mad_port_list, port_list)
+                  |return NULL
+                  |up_read(&devices_rwsem)
+                  |
+add_client_context|
+ib_mad_init_device|
+ib_mad_port_open  |
+list_add_tail(&port_priv->port_list, &ib_mad_port_list)
+up_read(&devices_rwsem)
+                  |
 
-Move the enum into a shared header so the correct types can be used without
-the need for casts.
+Fix it by using down_write(&devices_rwsem) in ib_register_client().
 
-Fixes: a3667aaed569 ("[SCSI] csiostor: Chelsio FCoE offload driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20240213100518.457623-1-arnd@kernel.org
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: d0899892edd0 ("RDMA/device: Provide APIs from the core code to help unregistration")
+Link: https://lore.kernel.org/r/20240203035313.98991-1-lishifeng@sangfor.com.cn
+Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/csiostor/csio_defs.h  | 18 ++++++++++++++++--
- drivers/scsi/csiostor/csio_lnode.c |  8 ++++----
- drivers/scsi/csiostor/csio_lnode.h | 13 -------------
- 3 files changed, 20 insertions(+), 19 deletions(-)
+ drivers/infiniband/core/device.c | 37 +++++++++++++++++++-------------
+ 1 file changed, 22 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/scsi/csiostor/csio_defs.h b/drivers/scsi/csiostor/csio_defs.h
-index c38017b4af982..e50e93e7fe5a1 100644
---- a/drivers/scsi/csiostor/csio_defs.h
-+++ b/drivers/scsi/csiostor/csio_defs.h
-@@ -73,7 +73,21 @@ csio_list_deleted(struct list_head *list)
- #define csio_list_prev(elem)	(((struct list_head *)(elem))->prev)
- 
- /* State machine */
--typedef void (*csio_sm_state_t)(void *, uint32_t);
-+struct csio_lnode;
-+
-+/* State machine evets */
-+enum csio_ln_ev {
-+	CSIO_LNE_NONE = (uint32_t)0,
-+	CSIO_LNE_LINKUP,
-+	CSIO_LNE_FAB_INIT_DONE,
-+	CSIO_LNE_LINK_DOWN,
-+	CSIO_LNE_DOWN_LINK,
-+	CSIO_LNE_LOGO,
-+	CSIO_LNE_CLOSE,
-+	CSIO_LNE_MAX_EVENT,
-+};
-+
-+typedef void (*csio_sm_state_t)(struct csio_lnode *ln, enum csio_ln_ev evt);
- 
- struct csio_sm {
- 	struct list_head	sm_list;
-@@ -83,7 +97,7 @@ struct csio_sm {
- static inline void
- csio_set_state(void *smp, void *state)
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 2c2ac63b39c42..725f2719132fb 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1729,7 +1729,7 @@ static int assign_client_id(struct ib_client *client)
  {
--	((struct csio_sm *)smp)->sm_state = (csio_sm_state_t)state;
-+	((struct csio_sm *)smp)->sm_state = state;
+ 	int ret;
+ 
+-	down_write(&clients_rwsem);
++	lockdep_assert_held(&clients_rwsem);
+ 	/*
+ 	 * The add/remove callbacks must be called in FIFO/LIFO order. To
+ 	 * achieve this we assign client_ids so they are sorted in
+@@ -1738,14 +1738,11 @@ static int assign_client_id(struct ib_client *client)
+ 	client->client_id = highest_client_id;
+ 	ret = xa_insert(&clients, client->client_id, client, GFP_KERNEL);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	highest_client_id++;
+ 	xa_set_mark(&clients, client->client_id, CLIENT_REGISTERED);
+-
+-out:
+-	up_write(&clients_rwsem);
+-	return ret;
++	return 0;
  }
  
- static inline void
-diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
-index d5ac938970232..5b3ffefae476d 100644
---- a/drivers/scsi/csiostor/csio_lnode.c
-+++ b/drivers/scsi/csiostor/csio_lnode.c
-@@ -1095,7 +1095,7 @@ csio_handle_link_down(struct csio_hw *hw, uint8_t portid, uint32_t fcfi,
- int
- csio_is_lnode_ready(struct csio_lnode *ln)
+ static void remove_client_id(struct ib_client *client)
+@@ -1775,25 +1772,35 @@ int ib_register_client(struct ib_client *client)
  {
--	return (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready));
-+	return (csio_get_state(ln) == csio_lns_ready);
+ 	struct ib_device *device;
+ 	unsigned long index;
++	bool need_unreg = false;
+ 	int ret;
+ 
+ 	refcount_set(&client->uses, 1);
+ 	init_completion(&client->uses_zero);
++
++	/*
++	 * The devices_rwsem is held in write mode to ensure that a racing
++	 * ib_register_device() sees a consisent view of clients and devices.
++	 */
++	down_write(&devices_rwsem);
++	down_write(&clients_rwsem);
+ 	ret = assign_client_id(client);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+-	down_read(&devices_rwsem);
++	need_unreg = true;
+ 	xa_for_each_marked (&devices, index, device, DEVICE_REGISTERED) {
+ 		ret = add_client_context(device, client);
+-		if (ret) {
+-			up_read(&devices_rwsem);
+-			ib_unregister_client(client);
+-			return ret;
+-		}
++		if (ret)
++			goto out;
+ 	}
+-	up_read(&devices_rwsem);
+-	return 0;
++	ret = 0;
++out:
++	up_write(&clients_rwsem);
++	up_write(&devices_rwsem);
++	if (need_unreg && ret)
++		ib_unregister_client(client);
++	return ret;
  }
+ EXPORT_SYMBOL(ib_register_client);
  
- /*****************************************************************************/
-@@ -1366,15 +1366,15 @@ csio_free_fcfinfo(struct kref *kref)
- void
- csio_lnode_state_to_str(struct csio_lnode *ln, int8_t *str)
- {
--	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_uninit)) {
-+	if (csio_get_state(ln) == csio_lns_uninit) {
- 		strcpy(str, "UNINIT");
- 		return;
- 	}
--	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready)) {
-+	if (csio_get_state(ln) == csio_lns_ready) {
- 		strcpy(str, "READY");
- 		return;
- 	}
--	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_offline)) {
-+	if (csio_get_state(ln) == csio_lns_offline) {
- 		strcpy(str, "OFFLINE");
- 		return;
- 	}
-diff --git a/drivers/scsi/csiostor/csio_lnode.h b/drivers/scsi/csiostor/csio_lnode.h
-index 372a67d122d38..607698a0f0631 100644
---- a/drivers/scsi/csiostor/csio_lnode.h
-+++ b/drivers/scsi/csiostor/csio_lnode.h
-@@ -53,19 +53,6 @@
- extern int csio_fcoe_rnodes;
- extern int csio_fdmi_enable;
- 
--/* State machine evets */
--enum csio_ln_ev {
--	CSIO_LNE_NONE = (uint32_t)0,
--	CSIO_LNE_LINKUP,
--	CSIO_LNE_FAB_INIT_DONE,
--	CSIO_LNE_LINK_DOWN,
--	CSIO_LNE_DOWN_LINK,
--	CSIO_LNE_LOGO,
--	CSIO_LNE_CLOSE,
--	CSIO_LNE_MAX_EVENT,
--};
--
--
- struct csio_fcf_info {
- 	struct list_head	list;
- 	uint8_t			priority;
 -- 
 2.43.0
 
