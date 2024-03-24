@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F48A888B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FE258898F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3BDC1F2774A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:47:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B61B1F33536
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BED2A4905;
-	Sun, 24 Mar 2024 23:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26822695C4;
+	Mon, 25 Mar 2024 03:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MNTm2Y2t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mt2lZwhl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B682234500;
-	Sun, 24 Mar 2024 23:18:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B66814E2D1;
+	Sun, 24 Mar 2024 23:18:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322281; cv=none; b=jqozN2D2a0Ss1jy1EfsJAhes3YrIKMi32V7DdIp963bTtnRGog9dsVP8b3tqvcwNqLeOxIRHfK0lSB4fCOI5gjGO02WjF7yLKBEz5+zSvXGU1Z/SVMzRHqBAMtzvU1oBROYYD/rsuNLqa4RyB/d7Wfv3smlaRjzl7JJKrqo8vaM=
+	t=1711322281; cv=none; b=Sr9kwztiXfKll6ZrmQJVCuLTJAHMu7ImB7UCjX0zcgzCyyuX4b+saW13OxQS7s5nivnpaOfVzvS+aHYrlkCWwc96lyrsn+p7dESs7Ghar86wYFQ7gFmUdlfudJVrQsk/jEudc7Kp89sJQmM1TMSZWTqzp1TkvXRbZw1v7Km4HHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322281; c=relaxed/simple;
-	bh=KF94tE9wc8iQd/yr9pjHcO4zDQAEnIv2U/NDSyNuoXY=;
+	bh=AS+JGYpUDsPlHwpiNSjJhMQhjdqKCPCQtDNBzfmKuyQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PrZms/Ay+4ybUIaqghA4JPfuKnD286lYrgFfsuAUe1pQ3+M6SeLsdWBrzAfwVhjMxuogD7iZCfaUBRTaHi/tcYo1dr6CKrwSvzpYPXpruDf2Hs/7nJMOSWOt+lTUxWW8vHDi/Wg7avLIloMs9eiQjHdbB2mFEdOo3RdVimldPic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MNTm2Y2t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EEABC433F1;
-	Sun, 24 Mar 2024 23:17:59 +0000 (UTC)
+	 MIME-Version; b=jVn4eNClFQ/sSPbjvHxbk8JvXd7ZFv4LtS5SOdKevJQb0I0oF8i36Ld/HPnkFnWbQUbOwtZWV9htQe4ZBKfwIoxKBGUoPTgCmzJIUGwIARpvGpTZ23XM9MvkuVDeywe1xxhb5KJkHOzHsyK3VThrQcoabO/RhP9228zFLjkpvJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mt2lZwhl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91ADEC43394;
+	Sun, 24 Mar 2024 23:18:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322280;
-	bh=KF94tE9wc8iQd/yr9pjHcO4zDQAEnIv2U/NDSyNuoXY=;
+	s=k20201202; t=1711322281;
+	bh=AS+JGYpUDsPlHwpiNSjJhMQhjdqKCPCQtDNBzfmKuyQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MNTm2Y2t567o92JGDqgjBuG0CIL2oGr10dSN8tZxr8gTCRdBraSxh576y+8wo62cD
-	 q8WHsXxWsqdiCcTFr5GK6/wog8L8va5xgW/BMczejkC0PRniMT4s1K8RlW9xoT7wwJ
-	 bUmwoujFtuUduv8rkFl2wGy0UllNvZfuWBzd78CohkpensrNmVEAkDpgvimMVLNt1D
-	 64Y38aoSqUpOZU7nQnlQvvHIIZfcCDw7kBMGlJ/VSq8OdZkXdfYMNsUZSasqtRKW02
-	 mUe7EtbhmSjQbx6N5cW91PvxF4yK0AhePZ+U02tFwg8wY7Vbuok2gJpGuOPm7+kyDH
-	 dichUQ6e9jufA==
+	b=Mt2lZwhlwbRI1NOlbWrr0C4Z6Ad4f39k41bubtwDW/PN5IyqXiLz2TFGtxWZrPCg+
+	 YzfHxqxFpA+FkD3AkwIw4aVjvPCv36W1sKL95QuT2eHMh7Q0AbLn7I3OATUgYMzz82
+	 ewbiPbqRpYS14TLU7YKeVItiX3OcZT84d3V2EF37PVEqc0Q36WYvrZgOJ+Qrdkm229
+	 0hTELRbmMYSeE8YG7j2O1k44J8pW+/1RBL/Bq3dcNPKdqo+WdddQxXHYfIrDW1D4bF
+	 pezqWEgkyoHhxYnkoRWDC/bSJEzoLqZZkZ2fIW9hXvfu/RlH2jm5QhTXniOwXzTT4y
+	 FzUS2U5j1LuBg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chao Yu <chao@kernel.org>,
-	Zhiguo Niu <zhiguo.niu@unisoc.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 363/451] f2fs: fix to avoid potential panic during recovery
-Date: Sun, 24 Mar 2024 19:10:39 -0400
-Message-ID: <20240324231207.1351418-364-sashal@kernel.org>
+Subject: [PATCH 6.1 364/451] scsi: csiostor: Avoid function pointer casts
+Date: Sun, 24 Mar 2024 19:10:40 -0400
+Message-ID: <20240324231207.1351418-365-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -63,107 +62,133 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chao Yu <chao@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 21ec68234826b1b54ab980a8df6e33c74cfbee58 ]
+[ Upstream commit 9f3dbcb5632d6876226031d552ef6163bb3ad215 ]
 
-During recovery, if FAULT_BLOCK is on, it is possible that
-f2fs_reserve_new_block() will return -ENOSPC during recovery,
-then it may trigger panic.
+csiostor uses function pointer casts to keep the csio_ln_ev state machine
+hidden, but this causes warnings about control flow integrity (KCFI)
+violations in clang-16 and higher:
 
-Also, if fault injection rate is 1 and only FAULT_BLOCK fault
-type is on, it may encounter deadloop in loop of block reservation.
+drivers/scsi/csiostor/csio_lnode.c:1098:33: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1098 |         return (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready));
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/csiostor/csio_lnode.c:1369:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1369 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_uninit)) {
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/csiostor/csio_lnode.c:1373:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1373 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready)) {
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/scsi/csiostor/csio_lnode.c:1377:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+ 1377 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_offline)) {
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Let's change as below to fix these issues:
-- remove bug_on() to avoid panic.
-- limit the loop count of block reservation to avoid potential
-deadloop.
+Move the enum into a shared header so the correct types can be used without
+the need for casts.
 
-Fixes: 956fa1ddc132 ("f2fs: fix to check return value of f2fs_reserve_new_block()")
-Reported-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: a3667aaed569 ("[SCSI] csiostor: Chelsio FCoE offload driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20240213100518.457623-1-arnd@kernel.org
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/f2fs.h     |  5 +++++
- fs/f2fs/recovery.c | 33 ++++++++++++++++-----------------
- 2 files changed, 21 insertions(+), 17 deletions(-)
+ drivers/scsi/csiostor/csio_defs.h  | 18 ++++++++++++++++--
+ drivers/scsi/csiostor/csio_lnode.c |  8 ++++----
+ drivers/scsi/csiostor/csio_lnode.h | 13 -------------
+ 3 files changed, 20 insertions(+), 19 deletions(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index a81091a5e282d..f5d69893d2d92 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -74,6 +74,11 @@ struct f2fs_fault_info {
+diff --git a/drivers/scsi/csiostor/csio_defs.h b/drivers/scsi/csiostor/csio_defs.h
+index c38017b4af982..e50e93e7fe5a1 100644
+--- a/drivers/scsi/csiostor/csio_defs.h
++++ b/drivers/scsi/csiostor/csio_defs.h
+@@ -73,7 +73,21 @@ csio_list_deleted(struct list_head *list)
+ #define csio_list_prev(elem)	(((struct list_head *)(elem))->prev)
  
- extern const char *f2fs_fault_name[FAULT_MAX];
- #define IS_FAULT_SET(fi, type) ((fi)->inject_type & BIT(type))
+ /* State machine */
+-typedef void (*csio_sm_state_t)(void *, uint32_t);
++struct csio_lnode;
 +
-+/* maximum retry count for injected failure */
-+#define DEFAULT_FAILURE_RETRY_COUNT		8
-+#else
-+#define DEFAULT_FAILURE_RETRY_COUNT		1
- #endif
++/* State machine evets */
++enum csio_ln_ev {
++	CSIO_LNE_NONE = (uint32_t)0,
++	CSIO_LNE_LINKUP,
++	CSIO_LNE_FAB_INIT_DONE,
++	CSIO_LNE_LINK_DOWN,
++	CSIO_LNE_DOWN_LINK,
++	CSIO_LNE_LOGO,
++	CSIO_LNE_CLOSE,
++	CSIO_LNE_MAX_EVENT,
++};
++
++typedef void (*csio_sm_state_t)(struct csio_lnode *ln, enum csio_ln_ev evt);
  
- /*
-diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-index 53a6487f91e44..f5efc37a2b513 100644
---- a/fs/f2fs/recovery.c
-+++ b/fs/f2fs/recovery.c
-@@ -582,6 +582,19 @@ static int check_index_in_prev_nodes(struct f2fs_sb_info *sbi,
- 	return 0;
+ struct csio_sm {
+ 	struct list_head	sm_list;
+@@ -83,7 +97,7 @@ struct csio_sm {
+ static inline void
+ csio_set_state(void *smp, void *state)
+ {
+-	((struct csio_sm *)smp)->sm_state = (csio_sm_state_t)state;
++	((struct csio_sm *)smp)->sm_state = state;
  }
  
-+static int f2fs_reserve_new_block_retry(struct dnode_of_data *dn)
-+{
-+	int i, err = 0;
-+
-+	for (i = DEFAULT_FAILURE_RETRY_COUNT; i > 0; i--) {
-+		err = f2fs_reserve_new_block(dn);
-+		if (!err)
-+			break;
-+	}
-+
-+	return err;
-+}
-+
- static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
- 					struct page *page)
+ static inline void
+diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
+index d5ac938970232..5b3ffefae476d 100644
+--- a/drivers/scsi/csiostor/csio_lnode.c
++++ b/drivers/scsi/csiostor/csio_lnode.c
+@@ -1095,7 +1095,7 @@ csio_handle_link_down(struct csio_hw *hw, uint8_t portid, uint32_t fcfi,
+ int
+ csio_is_lnode_ready(struct csio_lnode *ln)
  {
-@@ -683,14 +696,8 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
- 		 */
- 		if (dest == NEW_ADDR) {
- 			f2fs_truncate_data_blocks_range(&dn, 1);
--			do {
--				err = f2fs_reserve_new_block(&dn);
--				if (err == -ENOSPC) {
--					f2fs_bug_on(sbi, 1);
--					break;
--				}
--			} while (err &&
--				IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
-+
-+			err = f2fs_reserve_new_block_retry(&dn);
- 			if (err)
- 				goto err;
- 			continue;
-@@ -698,16 +705,8 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+-	return (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready));
++	return (csio_get_state(ln) == csio_lns_ready);
+ }
  
- 		/* dest is valid block, try to recover from src to dest */
- 		if (f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
+ /*****************************************************************************/
+@@ -1366,15 +1366,15 @@ csio_free_fcfinfo(struct kref *kref)
+ void
+ csio_lnode_state_to_str(struct csio_lnode *ln, int8_t *str)
+ {
+-	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_uninit)) {
++	if (csio_get_state(ln) == csio_lns_uninit) {
+ 		strcpy(str, "UNINIT");
+ 		return;
+ 	}
+-	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready)) {
++	if (csio_get_state(ln) == csio_lns_ready) {
+ 		strcpy(str, "READY");
+ 		return;
+ 	}
+-	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_offline)) {
++	if (csio_get_state(ln) == csio_lns_offline) {
+ 		strcpy(str, "OFFLINE");
+ 		return;
+ 	}
+diff --git a/drivers/scsi/csiostor/csio_lnode.h b/drivers/scsi/csiostor/csio_lnode.h
+index 372a67d122d38..607698a0f0631 100644
+--- a/drivers/scsi/csiostor/csio_lnode.h
++++ b/drivers/scsi/csiostor/csio_lnode.h
+@@ -53,19 +53,6 @@
+ extern int csio_fcoe_rnodes;
+ extern int csio_fdmi_enable;
+ 
+-/* State machine evets */
+-enum csio_ln_ev {
+-	CSIO_LNE_NONE = (uint32_t)0,
+-	CSIO_LNE_LINKUP,
+-	CSIO_LNE_FAB_INIT_DONE,
+-	CSIO_LNE_LINK_DOWN,
+-	CSIO_LNE_DOWN_LINK,
+-	CSIO_LNE_LOGO,
+-	CSIO_LNE_CLOSE,
+-	CSIO_LNE_MAX_EVENT,
+-};
 -
- 			if (src == NULL_ADDR) {
--				do {
--					err = f2fs_reserve_new_block(&dn);
--					if (err == -ENOSPC) {
--						f2fs_bug_on(sbi, 1);
--						break;
--					}
--				} while (err &&
--					IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
-+				err = f2fs_reserve_new_block_retry(&dn);
- 				if (err)
- 					goto err;
- 			}
+-
+ struct csio_fcf_info {
+ 	struct list_head	list;
+ 	uint8_t			priority;
 -- 
 2.43.0
 
