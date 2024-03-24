@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DFDC8897B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:19:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60536889A8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:31:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12C21B3E6EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:57:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FBCB1F33294
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41F81D5F6B;
-	Mon, 25 Mar 2024 02:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC791D5675;
+	Mon, 25 Mar 2024 02:32:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nMkZqIbM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vn/sk8hu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABBB7FBC4;
-	Sun, 24 Mar 2024 22:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 391637FBD1;
+	Sun, 24 Mar 2024 22:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320494; cv=none; b=dq8KyZSnAnlE8WeyyzR2+wrB4qXhIqeuRpSI2RRHN8HXsmiVSq7gfb1NyoBJ3HkKP/YlABEYoQtEycucUU1vIckeq8Spuho5PfJAwzlDpxC4DyQ6xeMMoRmVaXyCg/miI0hlVzJJD5Z3jN66sXApRtJee9mUZar5CZVXKnVG/Ok=
+	t=1711320495; cv=none; b=tR6oaxXAHje3ysYQKcM2OPp/3E5A84gMj4sB+S8M3IT3/r25IjrvEth1r8B7Ueh6QvGDxkp2OuoBedYgHXTSv4+G/MkqW/pwoy3dMFOWmNktoEOEuNXL0FvAVEHsKUAbeUT5BQ7QhnWaY58SlMIHYdTWyeyu1SvQcjNqT1LLL4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320494; c=relaxed/simple;
-	bh=v/GqwctWlG2sHaK90uHM0kIohRdym6r35L14FSDIhDA=;
+	s=arc-20240116; t=1711320495; c=relaxed/simple;
+	bh=kifoJ9eFImu0n8wwJjHxP546xn+Rp7wiVvjJnpRAhdE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MXsOwYam8gYirdJgc0OWnmm/MJCTCJKjUQZFj9bS4HWvJnudFkf2zYwbtMo7jupTg6I/2VvT13o6G6IKkq0TzzxBbB6LiVK9ZWyKhDjSdN+QmX8GLnmHu+UQfZ12UWuSC/D9WkfoKkXvWIuEb61AtJ9zr59rkNVlg2DmIH0f2Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nMkZqIbM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 761E3C43394;
-	Sun, 24 Mar 2024 22:48:13 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bQKrMVgZcpBXVwVGFlZOw9NXNJyEJTbvHGem8S2LAvZDyznSjBTp5qE7Afwlbiy9Ewk8eiaaj7IpIUkhUZddOUTSzSdSiZaZUxBqv0ilPwthhUJk7c/oIXUO52Lc8946ONTdgq6ygKFJDnytmQEIumlZs4/c0xD7a232hmT05vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vn/sk8hu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F31DC433F1;
+	Sun, 24 Mar 2024 22:48:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320494;
-	bh=v/GqwctWlG2sHaK90uHM0kIohRdym6r35L14FSDIhDA=;
+	s=k20201202; t=1711320495;
+	bh=kifoJ9eFImu0n8wwJjHxP546xn+Rp7wiVvjJnpRAhdE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nMkZqIbMNJQh4E/78wOl7aL0mysP+GEpCGxy9bKRHIV238aDjPCm7AT4ZVu6X/C6X
-	 pAHMSSiBXf7aew8qJ42JT0QqC4MBzO+RLnFKzteMfgtN+tOFkhCNKlMm3QWyaFInD5
-	 +zcJkwnePTc8jTZg2YtieG4dM2rGu5ibZ0z4qWTsbBBPJ5VoPqyzWoTKtum8hxDxM2
-	 ofOmMkWePTcuypEoXdVTlaX0IrbgLHWUOHBhEoE2UkjMX9i3+vb0X+b5jtJYXkDmXp
-	 9jMmivLUYNnAzHiIaeAkGqEG9637bZuNpWZwkPYDuqU3SvioNw5RG0E1VDCTGehUm8
-	 ra3gvw4DRP1Sg==
+	b=Vn/sk8hukyRbOydgItX4PyBsoEJtvuUsriDJFTTw88Umil0TvFqsg4MtSwuGQwd4z
+	 9RrQ9eBY/pvrrNwGFP/khZUFFP9bCmZX7eD8wM9ERYgZJAWj8WEfqDPkwv1jOAyKnd
+	 SvS6sRGw0WuBJOVNxB5dSux5c0Hu1zcuz8G62YOJt6gJKr91kby2WNVSW6OFNGGpZy
+	 3fbzbKRgb0wSSspo2J1hL49w9PjGBXiEGHiQfkU+Z1DdBCPbykFqVI8G1lYYv8ZMFT
+	 7NGCEMDAet3Im3PYZA36kqIDRwxUcbSfBVMaH9iER3952sx/jGKUXgfTfQzwxoRcL2
+	 VHikqPwK7QJDQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	David Sterba <dsterba@suse.com>,
+Cc: =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+	Dhruva Gole <d-gole@ti.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 053/713] btrfs: fix data race at btrfs_use_block_rsv() when accessing block reserve
-Date: Sun, 24 Mar 2024 18:36:19 -0400
-Message-ID: <20240324224720.1345309-54-sashal@kernel.org>
+Subject: [PATCH 6.7 054/713] spi: cadence-qspi: put runtime in runtime PM hooks names
+Date: Sun, 24 Mar 2024 18:36:20 -0400
+Message-ID: <20240324224720.1345309-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -58,105 +59,65 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Théo Lebrun <theo.lebrun@bootlin.com>
 
-[ Upstream commit c7bb26b847e5b97814f522686068c5628e2b3646 ]
+[ Upstream commit 4efa1250b59ebf47ce64a7b6b7c3e2e0a2a9d35a ]
 
-At btrfs_use_block_rsv() we read the size of a block reserve without
-locking its spinlock, which makes KCSAN complain because the size of a
-block reserve is always updated while holding its spinlock. The report
-from KCSAN is the following:
+Follow kernel naming convention with regards to power-management
+callback function names.
 
-  [653.313148] BUG: KCSAN: data-race in btrfs_update_delayed_refs_rsv [btrfs] / btrfs_use_block_rsv [btrfs]
+The convention in the kernel is:
+ - prefix_suspend means the system-wide suspend callback;
+ - prefix_runtime_suspend means the runtime PM suspend callback.
+The same applies to resume callbacks.
 
-  [653.314755] read to 0x000000017f5871b8 of 8 bytes by task 7519 on cpu 0:
-  [653.314779]  btrfs_use_block_rsv+0xe4/0x2f8 [btrfs]
-  [653.315606]  btrfs_alloc_tree_block+0xdc/0x998 [btrfs]
-  [653.316421]  btrfs_force_cow_block+0x220/0xe38 [btrfs]
-  [653.317242]  btrfs_cow_block+0x1ac/0x568 [btrfs]
-  [653.318060]  btrfs_search_slot+0xda2/0x19b8 [btrfs]
-  [653.318879]  btrfs_del_csums+0x1dc/0x798 [btrfs]
-  [653.319702]  __btrfs_free_extent.isra.0+0xc24/0x2028 [btrfs]
-  [653.320538]  __btrfs_run_delayed_refs+0xd3c/0x2390 [btrfs]
-  [653.321340]  btrfs_run_delayed_refs+0xae/0x290 [btrfs]
-  [653.322140]  flush_space+0x5e4/0x718 [btrfs]
-  [653.322958]  btrfs_preempt_reclaim_metadata_space+0x102/0x2f8 [btrfs]
-  [653.323781]  process_one_work+0x3b6/0x838
-  [653.323800]  worker_thread+0x75e/0xb10
-  [653.323817]  kthread+0x21a/0x230
-  [653.323836]  __ret_from_fork+0x6c/0xb8
-  [653.323855]  ret_from_fork+0xa/0x30
-
-  [653.323887] write to 0x000000017f5871b8 of 8 bytes by task 576 on cpu 3:
-  [653.323906]  btrfs_update_delayed_refs_rsv+0x1a4/0x250 [btrfs]
-  [653.324699]  btrfs_add_delayed_data_ref+0x468/0x6d8 [btrfs]
-  [653.325494]  btrfs_free_extent+0x76/0x120 [btrfs]
-  [653.326280]  __btrfs_mod_ref+0x6a8/0x6b8 [btrfs]
-  [653.327064]  btrfs_dec_ref+0x50/0x70 [btrfs]
-  [653.327849]  walk_up_proc+0x236/0xa50 [btrfs]
-  [653.328633]  walk_up_tree+0x21c/0x448 [btrfs]
-  [653.329418]  btrfs_drop_snapshot+0x802/0x1328 [btrfs]
-  [653.330205]  btrfs_clean_one_deleted_snapshot+0x184/0x238 [btrfs]
-  [653.330995]  cleaner_kthread+0x2b0/0x2f0 [btrfs]
-  [653.331781]  kthread+0x21a/0x230
-  [653.331800]  __ret_from_fork+0x6c/0xb8
-  [653.331818]  ret_from_fork+0xa/0x30
-
-So add a helper to get the size of a block reserve while holding the lock.
-Reading the field while holding the lock instead of using the data_race()
-annotation is used in order to prevent load tearing.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Link: https://msgid.link/r/20240222-cdns-qspi-pm-fix-v4-3-6b6af8bcbf59@bootlin.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/block-rsv.c |  2 +-
- fs/btrfs/block-rsv.h | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
+ drivers/spi/spi-cadence-quadspi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index ceb5f586a2d55..1043a8142351b 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -494,7 +494,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
- 
- 	block_rsv = get_block_rsv(trans, root);
- 
--	if (unlikely(block_rsv->size == 0))
-+	if (unlikely(btrfs_block_rsv_size(block_rsv) == 0))
- 		goto try_reserve;
- again:
- 	ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
-diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
-index fb440a074700a..43a9a6b5a79f4 100644
---- a/fs/btrfs/block-rsv.h
-+++ b/fs/btrfs/block-rsv.h
-@@ -117,4 +117,20 @@ static inline u64 btrfs_block_rsv_reserved(struct btrfs_block_rsv *rsv)
- 	return ret;
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 731775d34d393..4b2d42e54f568 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1927,7 +1927,7 @@ static void cqspi_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
  }
  
-+/*
-+ * Get the size of a block reserve in a context where getting a stale value is
-+ * acceptable, instead of accessing it directly and trigger data race warning
-+ * from KCSAN.
-+ */
-+static inline u64 btrfs_block_rsv_size(struct btrfs_block_rsv *rsv)
-+{
-+	u64 ret;
-+
-+	spin_lock(&rsv->lock);
-+	ret = rsv->size;
-+	spin_unlock(&rsv->lock);
-+
-+	return ret;
-+}
-+
- #endif /* BTRFS_BLOCK_RSV_H */
+-static int cqspi_suspend(struct device *dev)
++static int cqspi_runtime_suspend(struct device *dev)
+ {
+ 	struct cqspi_st *cqspi = dev_get_drvdata(dev);
+ 
+@@ -1936,7 +1936,7 @@ static int cqspi_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int cqspi_resume(struct device *dev)
++static int cqspi_runtime_resume(struct device *dev)
+ {
+ 	struct cqspi_st *cqspi = dev_get_drvdata(dev);
+ 
+@@ -1949,8 +1949,8 @@ static int cqspi_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_suspend,
+-				 cqspi_resume, NULL);
++static DEFINE_RUNTIME_DEV_PM_OPS(cqspi_dev_pm_ops, cqspi_runtime_suspend,
++				 cqspi_runtime_resume, NULL);
+ 
+ static const struct cqspi_driver_platdata cdns_qspi = {
+ 	.quirks = CQSPI_DISABLE_DAC_MODE,
 -- 
 2.43.0
 
