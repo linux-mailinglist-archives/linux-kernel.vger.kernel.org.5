@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83582888125
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:14:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63A48888127
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 421D41F24B3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:14:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FF4B2818CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787C31474B6;
-	Sun, 24 Mar 2024 22:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C5DB145B3C;
+	Sun, 24 Mar 2024 22:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e40wPAE6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qugSufB3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA9A14601C;
-	Sun, 24 Mar 2024 22:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA681474B8;
+	Sun, 24 Mar 2024 22:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319868; cv=none; b=I8gI2E15/ph+QvMuUbGL+QhF5AAYec73JpXHKzf5a+60l/pUN7uRNK7l3oayxWd8QMdp06ByhAr9uqD90c1srQCxepzkQq3js97ZIC1UKTpJSqXYmW4Em6QmGZNXiTFZD70pS5iA+yL7bHgYdiKfTnP4R3Rnk77HnyJfg38hSBo=
+	t=1711319869; cv=none; b=kR0gDChwuedRSfVH/uNfVjCAVwpgITTUVzHizXvI+qClcOgW6a1c13AOgAxbn1RioBzEs1JqpdFqABItkNR9LKUhlCPWTZ61ryV8xLgM4rFucVQyqtIadcqvwA9NffkX9c/nA2Ag3OWJUVpcURu8BWJKU4kWG4FtBajunXhMxxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319868; c=relaxed/simple;
-	bh=vRIH/teENEUyKZXX8+33/a5ZC/EJzFWpJ0jYowbh0yQ=;
+	s=arc-20240116; t=1711319869; c=relaxed/simple;
+	bh=xZvsKGoR/svHEqZp3qpLgCTKbWwG471nH+E4WozJpus=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eqUJCLwfI2oagdSl8WtBEnL7UpSFZ1W3eD5LLy7tIucLrN8HMQFVksRmnERtN+95PrGS5zPdhJ1tX0SwutyedYqplVyFaw3SQrUBlUavn+ZTM+HpUyTBQng7fHrIGlasxTwXg2CiMf7XrTVaEn1j0TNMl0E1ktdS2Id8yy1Olak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e40wPAE6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D637CC43390;
-	Sun, 24 Mar 2024 22:37:47 +0000 (UTC)
+	 MIME-Version; b=rQDV2GeLjuNTiCx+YiqHYuVLqbqTPhUVuDqu2/7MXIvDdisaLaPJampwZPhN4vEtlerxFcTZ3i5U2tb58LZ5QWvU9WHiAiF/tb/y9H4fIui07p37IjCdNMdBtg/jvkpeINGD63bmCuaiADDmkAP0AvaAwqxrJpQHF1/XzH04T/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qugSufB3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9843C433A6;
+	Sun, 24 Mar 2024 22:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319868;
-	bh=vRIH/teENEUyKZXX8+33/a5ZC/EJzFWpJ0jYowbh0yQ=;
+	s=k20201202; t=1711319869;
+	bh=xZvsKGoR/svHEqZp3qpLgCTKbWwG471nH+E4WozJpus=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e40wPAE6HfiV9K1GnaKzRF6YhDdzwbHabW9FLzU2ta8iaEvpHv+qKQqHGljsCc4mG
-	 TcMF4O1llrxwFanvLkVP767/1i/cWdVBbvfm6fhsVI2gJWonXd3uDnhiKtQxm4hAag
-	 GSKRwXoWF/S4jNZjuaK+fZp1TEb4E91ulpW8rkm5xnMWX4yGyQk0X/G2ye7QOFgSxL
-	 D1Yar70tMZq9ku4A3WMDFBCYu8lLI7iG/rq0vv3oU+CLJw2oRFS8oUhkaDKgAzkqxI
-	 FNhXQROXURwhaCszm7oEXmHfsbpErqsrNDaw+SNNC5GyvLqV+azXMDWU6W3IWLG8oC
-	 0F9ZrtEgzpKpA==
+	b=qugSufB3lcB5u/n14s843SFK+QmLjZA7eApTyMBm89zio4MySYMCozsmu1PjTj6Uf
+	 +8grHeCvpPtTrrF2eNQcrZ/v67fmz48fgFQ5/+n1gj4AA8caWOtQwNqxscOfgtK2E1
+	 9/F0tJSnmpVbYCLyJUBqg3vYVg/OMnhzrOJbcak3ZnhfKsAAE0sl3p/gNsGPi+1reE
+	 IxolHAm13vtZ+rwNxnWjHw+zJJ5IHsCvHwqpUQK2oROHyTILLxO7vzzPshMV/7UlCK
+	 jCVC8jdrsDsRMFVyHmFpfOs9vWr5pqjgYt4erFJXRLO3pqq1VYn3z4LTK6nf7XRSe6
+	 QYxiZex6r8kbQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+Cc: Thomas Richter <tmricht@linux.ibm.com>,
+	Sumanth Korikkar <sumanthk@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 173/715] wifi: iwlwifi: mvm: don't set replay counters to 0xff
-Date: Sun, 24 Mar 2024 18:25:52 -0400
-Message-ID: <20240324223455.1342824-174-sashal@kernel.org>
+Subject: [PATCH 6.8 174/715] s390/pai: fix attr_event_free upper limit for pai device drivers
+Date: Sun, 24 Mar 2024 18:25:53 -0400
+Message-ID: <20240324223455.1342824-175-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,50 +63,56 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Thomas Richter <tmricht@linux.ibm.com>
 
-[ Upstream commit d5bd4041cd70faf26fc9a54bd6f172537bbe77f3 ]
+[ Upstream commit 225d09d6e5f3870560665a1829d2db79330b4c58 ]
 
-The firmware (later) actually uses the values even for keys
-that are invalid as far as the host is concerned, later in
-rekeying, and then only sets the low 48 bits since the PNs
-are only 48 bits over the air. It does, however, compare the
-full 64 bits later, obviously causing problems.
+When the device drivers are initialized, a sysfs directory
+is created. This contains many attributes which are allocated with
+kzalloc(). Should it fail, the memory for the attributes already
+created is freed in attr_event_free(). Its second parameter is number
+of attribute elements to delete. This parameter is off by one.
+When i. e. the 10th attribute fails to get created, attributes
+numbered 0 to 9 should be deleted. Currently only attributes
+numbered 0 to 8 are deleted.
 
-Remove the memset and use kzalloc instead to avoid any old
-heap data leaking to the firmware. We already init all the
-other fields in the struct anyway. This leaves the data set
-to zero for any unused fields, so the firmware can look at
-them safely even if they're not used right now.
-
-Fixes: 79e561f0f05a ("iwlwifi: mvm: d3: implement RSC command version 5")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Link: https://msgid.link/20240206175739.462101146fef.I10f3855b99417af4247cff04af78dcbc6cb75c9c@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 39d62336f5c1 ("s390/pai: add support for cryptography counters")
+Reported-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/d3.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/s390/kernel/perf_pai_crypto.c | 2 +-
+ arch/s390/kernel/perf_pai_ext.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/d3.c b/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-index 03d0c9ab73fc0..2a08369238f23 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-@@ -461,12 +461,10 @@ static int iwl_mvm_wowlan_config_rsc_tsc(struct iwl_mvm *mvm,
- 		struct wowlan_key_rsc_v5_data data = {};
- 		int i;
- 
--		data.rsc = kmalloc(sizeof(*data.rsc), GFP_KERNEL);
-+		data.rsc = kzalloc(sizeof(*data.rsc), GFP_KERNEL);
- 		if (!data.rsc)
- 			return -ENOMEM;
- 
--		memset(data.rsc, 0xff, sizeof(*data.rsc));
--
- 		for (i = 0; i < ARRAY_SIZE(data.rsc->mcast_key_id_map); i++)
- 			data.rsc->mcast_key_id_map[i] =
- 				IWL_MCAST_KEY_MAP_INVALID;
+diff --git a/arch/s390/kernel/perf_pai_crypto.c b/arch/s390/kernel/perf_pai_crypto.c
+index bf8a672b15a41..522a5ea0a9f49 100644
+--- a/arch/s390/kernel/perf_pai_crypto.c
++++ b/arch/s390/kernel/perf_pai_crypto.c
+@@ -721,7 +721,7 @@ static int __init attr_event_init(void)
+ 	for (i = 0; i < ARRAY_SIZE(paicrypt_ctrnames); i++) {
+ 		ret = attr_event_init_one(attrs, i);
+ 		if (ret) {
+-			attr_event_free(attrs, i - 1);
++			attr_event_free(attrs, i);
+ 			return ret;
+ 		}
+ 	}
+diff --git a/arch/s390/kernel/perf_pai_ext.c b/arch/s390/kernel/perf_pai_ext.c
+index af7f2b538c8fd..95d1a890640a3 100644
+--- a/arch/s390/kernel/perf_pai_ext.c
++++ b/arch/s390/kernel/perf_pai_ext.c
+@@ -611,7 +611,7 @@ static int __init attr_event_init(void)
+ 	for (i = 0; i < ARRAY_SIZE(paiext_ctrnames); i++) {
+ 		ret = attr_event_init_one(attrs, i);
+ 		if (ret) {
+-			attr_event_free(attrs, i - 1);
++			attr_event_free(attrs, i);
+ 			return ret;
+ 		}
+ 	}
 -- 
 2.43.0
 
