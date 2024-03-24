@@ -1,146 +1,228 @@
-Return-Path: <linux-kernel+bounces-112579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A3D2887BA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:07:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8F6B887BA5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC8591C20B1D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:07:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A278828238B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A539470;
-	Sun, 24 Mar 2024 04:07:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A9CC13D;
+	Sun, 24 Mar 2024 04:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kuDNcU91"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EeTEmael"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697E423CE
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 04:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71897C147
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 04:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711253224; cv=none; b=LFeIaa5VYrfzzeavs9RULWX5gQI+EFRb/rPH325eRYtiV/HEER/yjbgpit/UvQvovn1xs2dhS/5O/UIOkTC8yup5HcId3HEsVLg6QBv39tGTGajr4QuW8nu1Q05zsWpa/ip9iNgSex3RR7acbfPcXiNVFnCnwP+aW9Vy8EjRKZc=
+	t=1711254011; cv=none; b=AWXQpHy9vmSBiISN64ufp2VlWBWO71sJRzY5HibXZ6kBxgdt/TL51ry/fSJr4ZCjMcgIEABBdQtVlTWIoVhWWOZ8GXnhssvAmAINuUsbMfTyA0beKr1WfzyUAQ4HQpu9oiY1mxO2OydaJh27q6H1cUurjLbPmncC79x0romSOvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711253224; c=relaxed/simple;
-	bh=rtihWBQcO+f01Fp1toRH6VRZJC7RziVDNZH5AjaCfek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=limyGw5DOs3OLZP9RpWdScOK8nUT2PNUqdGZGWwbZ5useqjL6JEpN0687/LiUCopeOmvor+adJkVpKhmpfYkrnl+M+OMglFNMMFpVoemgMrbRjwYuBanP2/t/ibBvZyHQaFfIzYvuTfaliIEOO46QDXkuiVvSsKR5F5vsSNmaWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kuDNcU91; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33ed5b6bf59so2303715f8f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 21:07:02 -0700 (PDT)
+	s=arc-20240116; t=1711254011; c=relaxed/simple;
+	bh=95ms0aFUD9O9975yQNDa5gcNkITjTEOulTrT0kmC1ZM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=O0df6gInFP3W0DaYXc3U3sy4LW+2P26yikobKqljTMXCANattwBHZiBKzQgn6B+ozGUg7QJ43rjQueWJrkeI0j4AoIrxjpKX+5lRu/tUudbppW/Sck8AuIAet4WyraCs4WM9Tz+KeRyQQmLrqEsDFhVSbshCl+n1oLowNIUJM4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EeTEmael; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-428405a0205so197231cf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 21:20:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711253221; x=1711858021; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CoEoEfVFuz6mK2rsSHpUkc2k4VLzktd6pNRYNSI33vg=;
-        b=kuDNcU91QzGP6EsiVc5rOxA05DdBN6Uld2aYCnDT3L415lTXVhJE0V0X9Kaqdok+sG
-         l45NXvZGvmJ9GTlPmZSaAQK/jcXxN2NI9JkUmv8mFr4h1Lw/vIlNPo+62Gr54wc6Nc6o
-         FtvUyVgHw62ujPRE/u47nIGWNHaO0c6l4A0br7AMuqF28/FQj6aZthxMIRAwMXCiTCDh
-         3uCwp/MlmAJpokbi5IZUL1IFOGe+Wvr67O8ONgubyNdroL28BcTGS517VATlVPgf29Np
-         i7zIdX/CAAIgasqeuizujjo2/ek+dzDb4NeqfjbSt7gamW8Npk6xnvodYGx0sVM+Hcvq
-         quGw==
+        d=google.com; s=20230601; t=1711254008; x=1711858808; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=11ZNxGSEABtgKanbMQX/CUTIfZEWkcBe4fYAq+k7twQ=;
+        b=EeTEmaelXVK6ZNM9cb7bp+7VdBNFBGhEPTo/a/0o8NujOR79zSzfgpXou5+tUEHd0L
+         Dk5GcMAnC0Tt9saMuinzJRSzuvcFCIrZPxBlgiKzg7mz5Cobo489dbtWI5VZ8M+GsGCk
+         nNByGQ9CYqe5cqarHZGndkuwtefUo5rxkDZZf5bA3nB/UiosxzJ7S9N+cs80IOTtjieO
+         KYQ7rWcb2g4pMCBBfT1w6xnQ/ItsdMBkJvWpguniWna0M6O0r1WETvFxNHt1+NVUUrT+
+         hwJolA4r5c5sSmUNeP5PShs811ujWjwdehrxspWlW8lHyUSBaNdAN/rziPxMPtEvUQh2
+         oEOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711253221; x=1711858021;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711254008; x=1711858808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CoEoEfVFuz6mK2rsSHpUkc2k4VLzktd6pNRYNSI33vg=;
-        b=X2+XGZrgTBrMXyiKspfkZoMpCogtmYmA/od2OwOU+4N7GzSLYagCArB6iB2ssG/rlh
-         7jnN66IujXD5ERRXWDG/K8l/RRdei2099D3j6fMibHMKAYeAHEvCQnftTc8PF2nhrC5H
-         GSnPd3wbb6fwgg+AdgnKUPsQu9nvq3oLuqsZBakUalulovHdPfC+pFRNAPJ36mZ8x22h
-         e6Ka+QoZEFTCnDmj3GSZ16uBBgrzNBOT6HExYEPjRcJx+DhRET3KrT/DuncrBrQW9lyt
-         zQvTThr9dX7RVgzkErjtBsMSf355KDsg5xqxi07bwxVW3jCvxcZDmvnD2rE+EsYkzaYD
-         t2FA==
-X-Forwarded-Encrypted: i=1; AJvYcCUz6OrBefe6wAQj8IC6RBeu8xyslyTyzymX0z1+Yf3ia0h/ZOhlYN6FZHYtYXzvYCfx961CYRLLHaOV41/Z1FkW7FtM2QNcKCGen2eS
-X-Gm-Message-State: AOJu0Yxqu/A1P52GvIsF7918TsQI6PuRRpkVl+czoeyd37seU4JB4mmp
-	TwCfdpV+t0iq8POu++ec7LeyRVTY0pYIVZRf8dYu8FSnd2/ZXIIw
-X-Google-Smtp-Source: AGHT+IEveqr8Ikeunb9ZMOPuR2Y8bK0WNDTQp9eMtP2gcjqHfA+X7uAYuBF26KK1Brd/v1Sz6y6mXA==
-X-Received: by 2002:a5d:6382:0:b0:33e:7aff:a3a0 with SMTP id p2-20020a5d6382000000b0033e7affa3a0mr2140376wru.71.1711253220432;
-        Sat, 23 Mar 2024 21:07:00 -0700 (PDT)
-Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
-        by smtp.gmail.com with ESMTPSA id h2-20020a5d5042000000b00341c162a6d4sm2770501wrt.107.2024.03.23.21.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 21:06:59 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Sun, 24 Mar 2024 05:06:57 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Baoquan He <bhe@redhat.com>
-Cc: kexec@lists.infradead.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-	akpm@linux-foundation.org, chenhuacai@loongson.cn,
-	dyoung@redhat.com, jbohac@suse.cz, lihuafei1@huawei.com,
-	chenhaixiang3@huawei.com
-Subject: Re: [PATCH] crash: use macro to add crashk_res into iomem early for
- specific arch
-Message-ID: <Zf+m4YtKtmdrjw4Q@gmail.com>
-References: <20240324033513.1027427-1-bhe@redhat.com>
+        bh=11ZNxGSEABtgKanbMQX/CUTIfZEWkcBe4fYAq+k7twQ=;
+        b=omalatdObRzJc/2dazHZW76O6y6YmXNRkqvITEqEyDsxkSXV7/6fV46of6d3cgfwZN
+         5Efn2PW699+4f53bTbI2A3hAdlCbNj1zXTaALbt//sRMDUr1WMr7Q8FxzW0vYziVWBks
+         rC6BwhNMoef5BdU3Ejz/wTHB9aLw8PL74HEFYrrh3JnUySGEor1QLq1tqX2lE98U99nK
+         BNi3FzZzsxV/xxbJyYMIsaDjRBESzQEI41OI/D1EXvZm9Ff1hUAUUvZ9x1h5x3HWm0R4
+         7GatBENR/M3uBDQh5BiE7aUMIVgbD24gSGnXUeXnCqYNKpmK+Nbfix0wFDokrx08/kRP
+         R5Mw==
+X-Forwarded-Encrypted: i=1; AJvYcCWacz1KhEo1fegM/+u73uetUEGdnUpKYAka0Cr9UyUnZwZb59ABkjJ5ZvjKzBumlyge8SqG8YKg5ANArx7/XmZrBwmGlMSMOXzM0f+x
+X-Gm-Message-State: AOJu0YzLesq7KO74KiHYbnS5/SepMKQ6VBmfgV0w37ze7L/KHTWiQmT7
+	HcBM5eqrQloI3NCwL4O/11kDe7XjfS3J0eL4J1f336nDENEV3jZgU4p0szLxrGLRsjLr1Wr9dAD
+	whI+oU0DFkgXyciqAeF4PC79hgY5YtHLHyLDU
+X-Google-Smtp-Source: AGHT+IH0LnzQsJ51QAgtlV6rhO7iPkQPlSuXshI9DyzE+30UBUayfKD/oAf2LKrmlDVM4f2QpeJOkJN5d1YcVgBp2fI=
+X-Received: by 2002:a05:622a:606:b0:431:2648:ac30 with SMTP id
+ z6-20020a05622a060600b004312648ac30mr834239qta.28.1711254008147; Sat, 23 Mar
+ 2024 21:20:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324033513.1027427-1-bhe@redhat.com>
+References: <20240209031441.943012-1-weilin.wang@intel.com> <20240209031441.943012-5-weilin.wang@intel.com>
+In-Reply-To: <20240209031441.943012-5-weilin.wang@intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sat, 23 Mar 2024 21:19:57 -0700
+Message-ID: <CAP-5=fVUJayXeKwtCnSjoUrw0HMJJa00RYrMhm-stjUwxDyefQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 04/15] find_bit: add _find_last_and_bit() to
+ support finding the most significant set bit
+To: weilin.wang@intel.com
+Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
+	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
+	Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-* Baoquan He <bhe@redhat.com> wrote:
-
-> There are regression reports[1][2] that crashkernel region on x86_64 can't
-> be added into iomem tree sometime. This causes the later failure of kdump
-> loading.
-> 
-> This happened after commit 4a693ce65b18 ("kdump: defer the insertion of
-> crashkernel resources") was merged.
-> 
-> Even though, these reported issues are proved to be related to other
-> component, they are just exposed after above commmit applied, I still
-> would like to keep crashk_res and crashk_low_res being added into iomem
-> early as before because the early adding has been always there on x86_64
-> and working very well. For safety of kdump, Let's change it back.
-> 
-> Here, add a macro HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY to limit that
-> only ARCH defining the macro can have the early adding
-> crashk_res/_low_res into iomem. Then define
-> HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY on x86 to enable it.
-> 
-> Note: In reserve_crashkernel_low(), there's a remnant of crashk_low_res
-> hanlding which was mistakenly added back in commit 85fcde402db1 ("kexec:
-> split crashkernel reservation code out from crash_core.c").
-> 
-> [1]
-> [PATCH V2] x86/kexec: do not update E820 kexec table for setup_data
-> https://lore.kernel.org/all/Zfv8iCL6CT2JqLIC@darkstar.users.ipa.redhat.com/T/#u
-> 
-> [2]
-> Question about Address Range Validation in Crash Kernel Allocation
-> https://lore.kernel.org/all/4eeac1f733584855965a2ea62fa4da58@huawei.com/T/#u
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
+On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
+>
+> From: Weilin Wang <weilin.wang@intel.com>
+>
+> This function is required for more efficient PMU counter assignment.
+>
+> When we use bitmap to log available PMU counters and counters that suppor=
+t a
+> given event, we want to find a most significant set bit so that we could
+> starting assigning counters with larger index first. This is helpful
+> because counters with smaller indexes usually are more generic and
+> support more events.
+>
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 > ---
->  arch/x86/include/asm/crash_reserve.h | 2 ++
->  kernel/crash_reserve.c               | 7 +++++++
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/crash_reserve.h b/arch/x86/include/asm/crash_reserve.h
-> index 152239f95541..4681a543eba3 100644
-> --- a/arch/x86/include/asm/crash_reserve.h
-> +++ b/arch/x86/include/asm/crash_reserve.h
-> @@ -39,4 +39,6 @@ static inline unsigned long crash_low_size_default(void)
->  #endif
+>  tools/include/linux/find.h | 18 ++++++++++++++++++
+>  tools/lib/find_bit.c       | 33 +++++++++++++++++++++++++++++++++
+>  2 files changed, 51 insertions(+)
+>
+> diff --git a/tools/include/linux/find.h b/tools/include/linux/find.h
+> index 38c0a542b0e2..fce336ec2b96 100644
+> --- a/tools/include/linux/find.h
+> +++ b/tools/include/linux/find.h
+> @@ -18,6 +18,8 @@ extern unsigned long _find_first_bit(const unsigned lon=
+g *addr, unsigned long si
+>  extern unsigned long _find_first_and_bit(const unsigned long *addr1,
+>                                          const unsigned long *addr2, unsi=
+gned long size);
+>  extern unsigned long _find_first_zero_bit(const unsigned long *addr, uns=
+igned long size);
+> +extern unsigned long _find_last_and_bit(const unsigned long *addr1,
+> +                                        const unsigned long *addr2, unsi=
+gned long size);
+>
+>  #ifndef find_next_bit
+>  /**
+> @@ -174,4 +176,20 @@ unsigned long find_first_zero_bit(const unsigned lon=
+g *addr, unsigned long size)
 >  }
->  
-> +# define HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY
+>  #endif
+>
+> +#ifndef find_last_and_bit
+> +static inline
+> +unsigned long find_last_and_bit(const unsigned long *addr1,
+> +                               const unsigned long *addr2,
+> +                               unsigned long size)
+> +{
+> +       if (small_const_nbits(size)) {
+> +               unsigned long val =3D *addr1 & *addr2 & GENMASK(size - 1,=
+ 0);
 > +
+> +               return val ? __fls(val) : size;
+> +       }
+> +
+> +       return _find_last_and_bit(addr1, addr2, size);
+> +}
+> +#endif
+> +
+>  #endif /*__LINUX_FIND_H_ */
+> diff --git a/tools/lib/find_bit.c b/tools/lib/find_bit.c
+> index 6a3dc167d30e..e475a7368e36 100644
+> --- a/tools/lib/find_bit.c
+> +++ b/tools/lib/find_bit.c
+> @@ -67,6 +67,27 @@ out:                                                  =
+                       \
+>         sz;                                                              =
+       \
+>  })
+>
+> +/*
+> + * Common helper for find_bit() function family
+> + * @FETCH: The expression that fetches and pre-processes each word of bi=
+tmap(s)
+> + * @MUNGE: The expression that post-processes a word containing found bi=
+t (may be empty)
+> + * @size: The bitmap size in bits
+> + */
+> +#define FIND_LAST_BIT(FETCH, MUNGE, size)                               =
+       \
+> +({                                                                      =
+       \
+> +       unsigned long idx, val, sz =3D (size);                           =
+         \
+> +                                                                        =
+       \
+> +       for (idx =3D ((size - 1) / BITS_PER_LONG); idx >=3D 0; idx--) {  =
+                   \
+> +               val =3D (FETCH);                                         =
+         \
+> +               if (val) {                                               =
+       \
+> +                       sz =3D min(idx * BITS_PER_LONG + __fls(MUNGE(val)=
+), sz);  \
+> +                       break;                                           =
+       \
+> +               }                                                        =
+       \
+> +       }                                                                =
+       \
+> +                                                                        =
+       \
+> +       sz;                                                              =
+       \
+> +})
+> +
+>  #ifndef find_first_bit
+>  /*
+>   * Find the first set bit in a memory region.
+> @@ -121,3 +142,15 @@ unsigned long _find_next_zero_bit(const unsigned lon=
+g *addr, unsigned long nbits
+>         return FIND_NEXT_BIT(~addr[idx], /* nop */, nbits, start);
+>  }
+>  #endif
+> +
+> +#ifndef find_last_and_bit
+> +/*
+> + * Find the last set bit in two memory regions.
+> + */
+> +unsigned long _find_last_and_bit(const unsigned long *addr1,
+> +                                 const unsigned long *addr2,
+> +                                 unsigned long size)
+> +{
+> +       return FIND_LAST_BIT(addr1[idx] & addr2[idx], /* nop */, size);
 
-Any reason for that stray space?
+The "/* nop */" argument is weird but existing style.
+
+Reviewed-by: Ian Rogers <irogers@google.com>
 
 Thanks,
+Ian
 
-	Ingo
+> +}
+> +#endif
+> \ No newline at end of file
+> --
+> 2.42.0
+>
 
