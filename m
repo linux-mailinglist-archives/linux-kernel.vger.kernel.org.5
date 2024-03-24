@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA73C8890B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 664748896B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17F321C2C7E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:25:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A4691C305F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABA52B8513;
-	Mon, 25 Mar 2024 00:00:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4BB39B0E6;
+	Mon, 25 Mar 2024 03:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VteGJ2eb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="moIqEMx5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC97923A758;
-	Sun, 24 Mar 2024 23:19:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 811E223A750;
+	Sun, 24 Mar 2024 23:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322346; cv=none; b=RydoWUBibvhtpNnAREGkILxswXaRjKvGxw+pXKpzEhI0mqg+5jNK/X/0elOI/LB0nXxgnhDjaOv9D4EWELLvX7dJMjWznLRrUIhNtuZ78MDAilMX2Gw92xDVTQLyfOnMFY569rsRrkqP8Bm9YcmU+b4YNPSvbN62Q9QVUXWaESo=
+	t=1711322346; cv=none; b=VyRLiLuHM+bzuiV5ZotxENk/Yf8VUOXy9tab/T8p0VD8KNaKiTMsMOZ1I4gh+3nalu3JkZ/NQmTUTzMfjApkXI/lCsCjHisMNMeDON9bKnuZ5MPU8bgGwjMXnLDF4WnzLLxgjDw8v8WUH8ASlvpgxu1hhYYrvTSOSQHt9NmSrTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322346; c=relaxed/simple;
-	bh=ImYJx3//S3lb8pzEBjnxmyZSCu8/oqDudWFtAKGWTJA=;
+	bh=wq1NU6b4yh8pENqwqKMnwfMu+mw7da+AGRLm2NEShzU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mDaXHUR0rnideGPfxYcQcXTwOhBPoNERUwnqb/5XgGevQ1UWj/oWWFfocEqiVr6bBcY6riGwhXc5hFa47ThmNYSx7PzoDMzR1C9E2cLeCNoDW3XBvVQUyuj+D2+qhA5d+uAAd1P68Pq/QkpG8NAkd2tZKDg9Zx/9DR6d/eEokf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VteGJ2eb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4AAEC433C7;
-	Sun, 24 Mar 2024 23:19:04 +0000 (UTC)
+	 MIME-Version; b=O9GSie7RIVWWaHkP8HtkB2HZFJM5mm12aaFUdoNpfjBpgw1UlRTVhiVPS68V2eH1QrZstHiQwYT/P74GaaXuU7PYLcODN+Rcf2DGy3sUuvr3EBamKSGnDMQzhfiLfVt0bXdBFtcbxTfVgi9V9NZ9pY2DCmnfaxtOvDra1tvGLEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=moIqEMx5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2BC2C43390;
+	Sun, 24 Mar 2024 23:19:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322345;
-	bh=ImYJx3//S3lb8pzEBjnxmyZSCu8/oqDudWFtAKGWTJA=;
+	s=k20201202; t=1711322346;
+	bh=wq1NU6b4yh8pENqwqKMnwfMu+mw7da+AGRLm2NEShzU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VteGJ2ebgRY6OLMo9UFXVJdOOsTL/mwqcwqv4C/IzvGdQCYERtNjl+mIG7OHqRzuY
-	 2pUj3mf0t1J4fafMeq0Gp3OrCSioaXegnIGevM+0R/Er45qlcNypEKsRpJo8wAwJX6
-	 sCYTsFZWf73OSx7tq2LXfWsmE34S51Mu+jlovTrKhxOQkwHVeAyt/Y+3f/R3Fco++q
-	 rS5a/t3uO+/c7wmtQDg6tYNmwboMylk57HV2Rr66n9PKnM5zwMg5JpTgUtd1CcYKex
-	 A6HlUnXJGA2P+GI5OII+Zgwop4Wf+aqfVOZ/E497mz41VuMOvwvsP8sth0tKWtoqlW
-	 fngNOC/YdEYZQ==
+	b=moIqEMx58NXEVwq/aorsMFv6lPE69dOmZ/HVy1FFTYfKUPSBky45n0CsyyBu4oMDf
+	 a25TpxdG4OKIgn5IvH7FkTk1XgLYzyW0QBrttGuCBpFSTtze//pgxaBD6s26nQkFUg
+	 Yzzs6et9T/zS2gwtSV6XgA4SSVchi62X0EPJoGhTRKgkOpDGP0vIYKKTAN+0eF6g2z
+	 oY5HaA8cPB5rCGDE1L/6YKgI5vpDs0HXmcq0zMWlxnlT0J9mn0KPXYrhhuiWuZIZg0
+	 /aau7CkqOiMYmjQIL3Kyki2RkrMnYV185fiSVE4oRYXpEFmYAZWiVp8i19yFMIXqt+
+	 Zke5UxGtoJ1Yw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Thinh Tran <thinhtr@linux.ibm.com>,
-	Jiri Pirko <jiri@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Srujana Challa <schalla@marvell.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 427/451] net/bnx2x: Prevent access to a freed page in page_pool
-Date: Sun, 24 Mar 2024 19:11:43 -0400
-Message-ID: <20240324231207.1351418-428-sashal@kernel.org>
+Subject: [PATCH 6.1 428/451] octeontx2-af: recover CPT engine when it gets fault
+Date: Sun, 24 Mar 2024 19:11:44 -0400
+Message-ID: <20240324231207.1351418-429-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -63,87 +62,197 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Thinh Tran <thinhtr@linux.ibm.com>
+From: Srujana Challa <schalla@marvell.com>
 
-[ Upstream commit d27e2da94a42655861ca4baea30c8cd65546f25d ]
+[ Upstream commit 07ea567d84cdf0add274d66db7c02b55b818d517 ]
 
-Fix race condition leading to system crash during EEH error handling
+When CPT engine has uncorrectable errors, it will get halted and
+must be disabled and re-enabled. This patch adds code for the same.
 
-During EEH error recovery, the bnx2x driver's transmit timeout logic
-could cause a race condition when handling reset tasks. The
-bnx2x_tx_timeout() schedules reset tasks via bnx2x_sp_rtnl_task(),
-which ultimately leads to bnx2x_nic_unload(). In bnx2x_nic_unload()
-SGEs are freed using bnx2x_free_rx_sge_range(). However, this could
-overlap with the EEH driver's attempt to reset the device using
-bnx2x_io_slot_reset(), which also tries to free SGEs. This race
-condition can result in system crashes due to accessing freed memory
-locations in bnx2x_free_rx_sge()
-
-799  static inline void bnx2x_free_rx_sge(struct bnx2x *bp,
-800				struct bnx2x_fastpath *fp, u16 index)
-801  {
-802	struct sw_rx_page *sw_buf = &fp->rx_page_ring[index];
-803     struct page *page = sw_buf->page;
-...
-where sw_buf was set to NULL after the call to dma_unmap_page()
-by the preceding thread.
-
-    EEH: Beginning: 'slot_reset'
-    PCI 0011:01:00.0#10000: EEH: Invoking bnx2x->slot_reset()
-    bnx2x: [bnx2x_io_slot_reset:14228(eth1)]IO slot reset initializing...
-    bnx2x 0011:01:00.0: enabling device (0140 -> 0142)
-    bnx2x: [bnx2x_io_slot_reset:14244(eth1)]IO slot reset --> driver unload
-    Kernel attempted to read user page (0) - exploit attempt? (uid: 0)
-    BUG: Kernel NULL pointer dereference on read at 0x00000000
-    Faulting instruction address: 0xc0080000025065fc
-    Oops: Kernel access of bad area, sig: 11 [#1]
-    .....
-    Call Trace:
-    [c000000003c67a20] [c00800000250658c] bnx2x_io_slot_reset+0x204/0x610 [bnx2x] (unreliable)
-    [c000000003c67af0] [c0000000000518a8] eeh_report_reset+0xb8/0xf0
-    [c000000003c67b60] [c000000000052130] eeh_pe_report+0x180/0x550
-    [c000000003c67c70] [c00000000005318c] eeh_handle_normal_event+0x84c/0xa60
-    [c000000003c67d50] [c000000000053a84] eeh_event_handler+0xf4/0x170
-    [c000000003c67da0] [c000000000194c58] kthread+0x1c8/0x1d0
-    [c000000003c67e10] [c00000000000cf64] ret_from_kernel_thread+0x5c/0x64
-
-To solve this issue, we need to verify page pool allocations before
-freeing.
-
-Fixes: 4cace675d687 ("bnx2x: Alloc 4k fragment for each rx ring buffer element")
-Signed-off-by: Thinh Tran <thinhtr@linux.ibm.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Link: https://lore.kernel.org/r/20240315205535.1321-1-thinhtr@linux.ibm.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Srujana Challa <schalla@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Stable-dep-of: a88e0f936ba9 ("octeontx2: Detect the mbox up or down message via register")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../ethernet/marvell/octeontx2/af/rvu_cpt.c   | 110 +++++++++++++-----
+ 1 file changed, 80 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
-index d8b1824c334d3..0bc1367fd6492 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
-@@ -1002,9 +1002,6 @@ static inline void bnx2x_set_fw_mac_addr(__le16 *fw_hi, __le16 *fw_mid,
- static inline void bnx2x_free_rx_mem_pool(struct bnx2x *bp,
- 					  struct bnx2x_alloc_pool *pool)
- {
--	if (!pool->page)
--		return;
--
- 	put_page(pool->page);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
+index 38bbae5d9ae05..1ed16ce515bb1 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cpt.c
+@@ -37,34 +37,60 @@
+ 	(_rsp)->free_sts_##etype = free_sts;                        \
+ })
  
- 	pool->page = NULL;
-@@ -1015,6 +1012,9 @@ static inline void bnx2x_free_rx_sge_range(struct bnx2x *bp,
+-static irqreturn_t rvu_cpt_af_flt_intr_handler(int irq, void *ptr)
++static irqreturn_t cpt_af_flt_intr_handler(int vec, void *ptr)
  {
+ 	struct rvu_block *block = ptr;
+ 	struct rvu *rvu = block->rvu;
+ 	int blkaddr = block->addr;
+-	u64 reg0, reg1, reg2;
+-
+-	reg0 = rvu_read64(rvu, blkaddr, CPT_AF_FLTX_INT(0));
+-	reg1 = rvu_read64(rvu, blkaddr, CPT_AF_FLTX_INT(1));
+-	if (!is_rvu_otx2(rvu)) {
+-		reg2 = rvu_read64(rvu, blkaddr, CPT_AF_FLTX_INT(2));
+-		dev_err_ratelimited(rvu->dev,
+-				    "Received CPTAF FLT irq : 0x%llx, 0x%llx, 0x%llx",
+-				     reg0, reg1, reg2);
+-	} else {
+-		dev_err_ratelimited(rvu->dev,
+-				    "Received CPTAF FLT irq : 0x%llx, 0x%llx",
+-				     reg0, reg1);
++	u64 reg, val;
++	int i, eng;
++	u8 grp;
++
++	reg = rvu_read64(rvu, blkaddr, CPT_AF_FLTX_INT(vec));
++	dev_err_ratelimited(rvu->dev, "Received CPTAF FLT%d irq : 0x%llx", vec, reg);
++
++	i = -1;
++	while ((i = find_next_bit((unsigned long *)&reg, 64, i + 1)) < 64) {
++		switch (vec) {
++		case 0:
++			eng = i;
++			break;
++		case 1:
++			eng = i + 64;
++			break;
++		case 2:
++			eng = i + 128;
++			break;
++		}
++		grp = rvu_read64(rvu, blkaddr, CPT_AF_EXEX_CTL2(eng)) & 0xFF;
++		/* Disable and enable the engine which triggers fault */
++		rvu_write64(rvu, blkaddr, CPT_AF_EXEX_CTL2(eng), 0x0);
++		val = rvu_read64(rvu, blkaddr, CPT_AF_EXEX_CTL(eng));
++		rvu_write64(rvu, blkaddr, CPT_AF_EXEX_CTL(eng), val & ~1ULL);
++
++		rvu_write64(rvu, blkaddr, CPT_AF_EXEX_CTL2(eng), grp);
++		rvu_write64(rvu, blkaddr, CPT_AF_EXEX_CTL(eng), val | 1ULL);
+ 	}
+-
+-	rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT(0), reg0);
+-	rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT(1), reg1);
+-	if (!is_rvu_otx2(rvu))
+-		rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT(2), reg2);
++	rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT(vec), reg);
+ 
+ 	return IRQ_HANDLED;
+ }
+ 
++static irqreturn_t rvu_cpt_af_flt0_intr_handler(int irq, void *ptr)
++{
++	return cpt_af_flt_intr_handler(CPT_AF_INT_VEC_FLT0, ptr);
++}
++
++static irqreturn_t rvu_cpt_af_flt1_intr_handler(int irq, void *ptr)
++{
++	return cpt_af_flt_intr_handler(CPT_AF_INT_VEC_FLT1, ptr);
++}
++
++static irqreturn_t rvu_cpt_af_flt2_intr_handler(int irq, void *ptr)
++{
++	return cpt_af_flt_intr_handler(CPT_10K_AF_INT_VEC_FLT2, ptr);
++}
++
+ static irqreturn_t rvu_cpt_af_rvu_intr_handler(int irq, void *ptr)
+ {
+ 	struct rvu_block *block = ptr;
+@@ -119,8 +145,10 @@ static void cpt_10k_unregister_interrupts(struct rvu_block *block, int off)
  	int i;
  
-+	if (!fp->page_pool.page)
-+		return;
+ 	/* Disable all CPT AF interrupts */
+-	for (i = 0; i < CPT_10K_AF_INT_VEC_RVU; i++)
+-		rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1C(i), 0x1);
++	rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1C(0), ~0ULL);
++	rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1C(1), ~0ULL);
++	rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1C(2), 0xFFFF);
 +
- 	if (fp->mode == TPA_MODE_DISABLED)
- 		return;
+ 	rvu_write64(rvu, blkaddr, CPT_AF_RVU_INT_ENA_W1C, 0x1);
+ 	rvu_write64(rvu, blkaddr, CPT_AF_RAS_INT_ENA_W1C, 0x1);
  
+@@ -151,7 +179,7 @@ static void cpt_unregister_interrupts(struct rvu *rvu, int blkaddr)
+ 
+ 	/* Disable all CPT AF interrupts */
+ 	for (i = 0; i < CPT_AF_INT_VEC_RVU; i++)
+-		rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1C(i), 0x1);
++		rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1C(i), ~0ULL);
+ 	rvu_write64(rvu, blkaddr, CPT_AF_RVU_INT_ENA_W1C, 0x1);
+ 	rvu_write64(rvu, blkaddr, CPT_AF_RAS_INT_ENA_W1C, 0x1);
+ 
+@@ -172,16 +200,31 @@ static int cpt_10k_register_interrupts(struct rvu_block *block, int off)
+ {
+ 	struct rvu *rvu = block->rvu;
+ 	int blkaddr = block->addr;
++	irq_handler_t flt_fn;
+ 	int i, ret;
+ 
+ 	for (i = CPT_10K_AF_INT_VEC_FLT0; i < CPT_10K_AF_INT_VEC_RVU; i++) {
+ 		sprintf(&rvu->irq_name[(off + i) * NAME_SIZE], "CPTAF FLT%d", i);
++
++		switch (i) {
++		case CPT_10K_AF_INT_VEC_FLT0:
++			flt_fn = rvu_cpt_af_flt0_intr_handler;
++			break;
++		case CPT_10K_AF_INT_VEC_FLT1:
++			flt_fn = rvu_cpt_af_flt1_intr_handler;
++			break;
++		case CPT_10K_AF_INT_VEC_FLT2:
++			flt_fn = rvu_cpt_af_flt2_intr_handler;
++			break;
++		}
+ 		ret = rvu_cpt_do_register_interrupt(block, off + i,
+-						    rvu_cpt_af_flt_intr_handler,
+-						    &rvu->irq_name[(off + i) * NAME_SIZE]);
++						    flt_fn, &rvu->irq_name[(off + i) * NAME_SIZE]);
+ 		if (ret)
+ 			goto err;
+-		rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1S(i), 0x1);
++		if (i == CPT_10K_AF_INT_VEC_FLT2)
++			rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1S(i), 0xFFFF);
++		else
++			rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1S(i), ~0ULL);
+ 	}
+ 
+ 	ret = rvu_cpt_do_register_interrupt(block, off + CPT_10K_AF_INT_VEC_RVU,
+@@ -208,8 +251,8 @@ static int cpt_register_interrupts(struct rvu *rvu, int blkaddr)
+ {
+ 	struct rvu_hwinfo *hw = rvu->hw;
+ 	struct rvu_block *block;
++	irq_handler_t flt_fn;
+ 	int i, offs, ret = 0;
+-	char irq_name[16];
+ 
+ 	if (!is_block_implemented(rvu->hw, blkaddr))
+ 		return 0;
+@@ -226,13 +269,20 @@ static int cpt_register_interrupts(struct rvu *rvu, int blkaddr)
+ 		return cpt_10k_register_interrupts(block, offs);
+ 
+ 	for (i = CPT_AF_INT_VEC_FLT0; i < CPT_AF_INT_VEC_RVU; i++) {
+-		snprintf(irq_name, sizeof(irq_name), "CPTAF FLT%d", i);
++		sprintf(&rvu->irq_name[(offs + i) * NAME_SIZE], "CPTAF FLT%d", i);
++		switch (i) {
++		case CPT_AF_INT_VEC_FLT0:
++			flt_fn = rvu_cpt_af_flt0_intr_handler;
++			break;
++		case CPT_AF_INT_VEC_FLT1:
++			flt_fn = rvu_cpt_af_flt1_intr_handler;
++			break;
++		}
+ 		ret = rvu_cpt_do_register_interrupt(block, offs + i,
+-						    rvu_cpt_af_flt_intr_handler,
+-						    irq_name);
++						    flt_fn, &rvu->irq_name[(offs + i) * NAME_SIZE]);
+ 		if (ret)
+ 			goto err;
+-		rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1S(i), 0x1);
++		rvu_write64(rvu, blkaddr, CPT_AF_FLTX_INT_ENA_W1S(i), ~0ULL);
+ 	}
+ 
+ 	ret = rvu_cpt_do_register_interrupt(block, offs + CPT_AF_INT_VEC_RVU,
 -- 
 2.43.0
 
