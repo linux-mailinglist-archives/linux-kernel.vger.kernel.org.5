@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-112726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 268F7887D76
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:26:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9C8D887D7E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:33:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BB231C20ADF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:26:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 070101C20B0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:33:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6317C18659;
-	Sun, 24 Mar 2024 15:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FCAF18E3A;
+	Sun, 24 Mar 2024 15:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="eJiQuMTb"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="NkVGcMWH"
 Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1852107;
-	Sun, 24 Mar 2024 15:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB1018651;
+	Sun, 24 Mar 2024 15:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711293960; cv=none; b=WBqSjuS9nf+1jI/4WkOeL9i9BkBpvCGKw7WDaLXXMitpm5ABn0vlrRQTGJlyQCmgcko6JVzcbqw9sj7Disa55k2CfznwepBS2uxkCTZjqX6ZHi1YoOepBqdHb/z6FKuiXX5oP+YCk6INg5S1JqWJx4JWIu719ISE5X/L8xUIAm8=
+	t=1711294387; cv=none; b=FSENSWPQ5tGxL0CXiU7gugrY16okaY3D9C/sHEWEXQBXlHztPigitkNng6wx450nlGZ8jV0x9+zzr4opVxmSKhjUikOkLcVVnZ4jsK+jrMPge6Xua9dzWliZRjgDaHZ2ZGo8lpOUi5jnhSolJUmvagivocF4UUQ1YdPudhHAT4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711293960; c=relaxed/simple;
-	bh=4uehC6kd6vVBhjMWaG54gnvU5tDXuRlGD+paJ+A4wNM=;
+	s=arc-20240116; t=1711294387; c=relaxed/simple;
+	bh=wUAtV8wQbBO1XcNrunnboFHejfDjPcWWK1zxAkVYNI4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AJjyN1JqRM77nh0sGcO9NV7NEGCy8kFi04e3T1x8Mj8mhlOxFvCivlitGSqIQ8W8z1hRHLox+ami86qXHKsQLuNE3C0/KoAV+rXMIb4QsBkaAO8ON1Zw7F0CzuY4K8mPC5VGuX+tX0nsZxIEtXZCY4+ZHhDtvfSwRhbpW9tXkXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=eJiQuMTb; arc=none smtp.client-ip=156.67.10.101
+	 Content-Type:Content-Disposition:In-Reply-To; b=im4eu2V6WKpYGlb9lVElrwx8RQnaBBq6q+pduSrW4x+/KWnzzDkgZFfdedhUbaIgS3n+AFAcOEzDrVIOExK2jiKLHNsXCMTISFfR1WqzYFmRWKAYwZ4E4RK1VE0Kq7R57DLH/PDxA5Xksgf/F29HvkA592ewMjWN623HfgXitQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=NkVGcMWH; arc=none smtp.client-ip=156.67.10.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
@@ -35,114 +35,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
 	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
 	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=Tp7gUCtuROuSbcpwnhbXJLwSPqSbYkCqzDSlfDFnpWI=; b=eJ
-	iQuMTbTSPacdDPPXFm8ZF4DcIkLkDalxUt5Be8FAhI9Cxe9N9sTkqhJxo1YoVsJ+qlSixIYJnp9Ei
-	Kx1NrE41BOIg66jSUd+W+fbyjGar30/kc8pbKGLrFn3ufJgAMoE9qY8hbDBB6wvLCT2OWkYgRp0RI
-	wBgP3Xaa8kGp8cM=;
+	In-Reply-To:References; bh=2TlEn+OknbnKMHjb6XpI9hq5uQzUBuHZ9lTXfUcMn94=; b=Nk
+	VGcMWHr/2wzNCPmwHvsmx+9GLsGt5NjrUwpnHMrtWL5Z9hzFLS8v3wd0ibOCK69KHdVYswtdigpbn
+	3dk6rkf1r42P4xn5gy/+/Bkk+6+nQYmFRArMRe/91Kl05l0cIMRPo7cIB4bWbwCx2dr5OXlKOysXZ
+	WgWcFIpuY8OcVNc=;
 Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
 	(envelope-from <andrew@lunn.ch>)
-	id 1roPiy-00B6N8-ED; Sun, 24 Mar 2024 16:25:28 +0100
-Date: Sun, 24 Mar 2024 16:25:28 +0100
+	id 1roPq9-00B6On-FO; Sun, 24 Mar 2024 16:32:53 +0100
+Date: Sun, 24 Mar 2024 16:32:53 +0100
 From: Andrew Lunn <andrew@lunn.ch>
-To: Elad Nachman <enachman@marvell.com>
-Cc: Taras Chornyi <taras.chornyi@plvision.eu>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
-	"thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-	"przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
-	"dkirjanov@suse.de" <dkirjanov@suse.de>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to probe
- twice
-Message-ID: <6dae31dc-8c4f-4b8d-80e4-120619119326@lunn.ch>
-References: <20240320172008.2989693-1-enachman@marvell.com>
- <4104387a-d7b5-4029-b822-060ef478c6e3@lunn.ch>
- <BN9PR18MB42517F8E84C8C18078E45C37DB322@BN9PR18MB4251.namprd18.prod.outlook.com>
- <89a01616-57c2-4338-b469-695bdc731dee@lunn.ch>
- <BL1PR18MB42488523A5E05291EA57D0AEDB372@BL1PR18MB4248.namprd18.prod.outlook.com>
+To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 4/4] net: dsa: realtek: add LED drivers for
+ rtl8366rb
+Message-ID: <f76754f9-4141-4d48-81e8-f43aa2dfa90c@lunn.ch>
+References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
+ <20240310-realtek-led-v1-4-4d9813ce938e@gmail.com>
+ <d064b1be-1004-487b-9944-b62d91b671c9@lunn.ch>
+ <CAJq09z54+049aPL2LzAqAFigrvpchPhv_YQ6yJ5C9b9J7mngLQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BL1PR18MB42488523A5E05291EA57D0AEDB372@BL1PR18MB4248.namprd18.prod.outlook.com>
+In-Reply-To: <CAJq09z54+049aPL2LzAqAFigrvpchPhv_YQ6yJ5C9b9J7mngLQ@mail.gmail.com>
 
-> > > Originally, the pain point for Kory was the rmmod + insmod re-probing
-> > > failure, Which is only fixed by the first two commits, so I see little
-> > > point in submitting 3-5 alone, Without fixing Kory's problem.
-> > 
-> > I thought Kory's problem was actually EPROBE_DEFER? The resources needed
-> > for the PoE are not available, so probing the switch needs to happen again
-> > later, when PoE can get the resources it needs.
-> 
-> No, the PoE is the general high level application where he noted the problem.
-> There is no PoE code nor special PoE resources in the Prestera driver.
+> OK, I'll add _group_/_GROUP_ both to the enum name and macros. Led
+> blink rate, for example, is global, used by all groups. However, it
+> will be difficult to respect the 80 columns limit passing
+> RTL8366RB_LED_GROUP_OFF to a rb8366rb_set_ledgroup_mode function with
+> only two levels of indentation. Do you have any recommendations?
 
-So here is Köry email:
+https://www.kernel.org/doc/html/v4.10/process/coding-style.html
 
-https://lore.kernel.org/netdev/20240208101005.29e8c7f3@kmaincent-XPS-13-7390/T/#mb898bb2a4bf07776d79f1a19b6a8420716ecb4a3
+  Now, some people will claim that having 8-character indentations
+  makes the code move too far to the right, and makes it hard to read
+  on a 80-character terminal screen. The answer to that is that if you
+  need more than 3 levels of indentation, youâ€™re screwed anyway, and
+  should fix your program.
 
-I don't see why the prestera needs to be involved in PoE itself. It is
-just a MAC. PoE happens much lower down in the network stack. Same as
-Prestera uses phylink, it does not need to know about the PHYs or the
-SFP modules, phylink manages them, not prestera.
+  Functions should be short and sweet, and do just one thing. They
+  should fit on one or two screenfuls of text (the ISO/ANSI screen
+  size is 80x24, as we all know), and do one thing and do that well.
 
-> The problem was caused because the module exit was lacking the so called
-> "switch HW reset" API call which would cause the firmware to exit to the firmware
-> loader on the firmware CPU, and move to the state in the state machine when
-> it can receive new firmware from the host CPU (running the Prestera switchDev
-> driver).
-> 
-> > 
-> > But if that is going to take 30 seconds, i'm not sure we can call EPROBE_DEFER
-> > solved.
-> > 
-> > The later patches are pretty simple, don't need discussion, so could be
-> > merged. However, i think we need to explore different possible solutions for
-> > firmware {re}loading.
-> > 
-> > > The problem is not with the hardware, but with the existing firmware
-> > > code on the Firmware cpu, most probably secure-boot protected, which
-> > > lacks the ABIs to report to The kernel what is loaded, what version, what
-> > state, etc.
-> > 
-> > Can you at least tell if it is running firmware?
-> 
-> There is no existing API/ABI for that.
+Maybe you need to use more helper functions?
 
-Do you at least have the ability to determine if an API call exists or
-not? It sounds like your firmware needs extending to support returning
-the version. If the API is missing, you know it is 4.1 or older. If it
-does exist, it will return 4.2 or higher.
-
-> > Can you explain the boot in a bit more detail. Are you saying it could be
-> > running an old firmware when the driver first loads? So you need to hit it with
-> 
-> Exactly.
-> 
-> > a reset in order to load the firmware for /lib/firmware, which might be newer
-> > than what it is already running?
-> 
-> Right. And there is also the configuration. There is no telling what kind of
-> Configuration the existing firmware is running. Just using the existing firmware
-> Will lead to the situation where Linux kernel side will report certain configuration
-> (via ip link / ip addr / tc , etc.) but the firmware configuration is completely different.
-
-Well, during probe and -EPRODE_DEFER, linux has no configuration,
-since the driver failed to probe. However, for a rmmod/modprobe, the
-firmware could have stale configuration. However pretty much every
-device i've come across has the concept of a software reset which
-clears out the configuration. Seems to be something else your firmware
-is missing.
-
-	Andrew
+      Andrew
 
