@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-113018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE968880CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:05:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C608880D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D5E11C2127B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:05:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54ABA1C2124B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E3F4E1A8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE9D13793B;
 	Sun, 24 Mar 2024 22:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j6wvVavK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PES7IwWn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68583137907;
-	Sun, 24 Mar 2024 22:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E10D13791C;
+	Sun, 24 Mar 2024 22:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319829; cv=none; b=XIcsJ3zpBmJstS1Qnh6cnG3rI3XDIhXJjfEiLiRnm3xjZkHpAdSO5gy6T2qS67DFunEK8asbh1nXVLrSC10Nn2qrxtV5IV7Dm3TfbtC/QV5lXRgJcY8rK2baBci+OwhLu5mTpndnuMhrbKGPHKHlny7YSoE1OwYVsmjHIi+tZHw=
+	t=1711319830; cv=none; b=Pcd+Su1EyiY9b2HGldY7lPwZgLychPTf+n+gSen8vn8SrxqeHKLnAO/puAHzzPEGn3LIMi9bme7FSKq3MA/HYa/Clis4LRy92clVTsjJ7dmnvn9p+VtBILVfOnlZ2vDSI9IbrbW8PDXSM3F58kOn5dLVlxC9zO0LIZiAJSO4g40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319829; c=relaxed/simple;
-	bh=afXxZDuytKdo2b9kX8f74F3OLY83odqcQkTH0+MIdeY=;
+	s=arc-20240116; t=1711319830; c=relaxed/simple;
+	bh=/DKVbN6tduAwbcxg3CQbSjcbip6MeRF1LCLPOK6gFqw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lTZdnEUs9IK64Jw6UqPuBmKGZLHZjEflvKly8jQFtiHj9ProgLPJmPqvXzGQMGuTjryNfXwawgw5v0zqX0gEsAAV2fEcUMMrWXuNmrjTb8goOtTtd3PtXtmqycGgyvF4Wwm5xYRIpgpP2b80sc9AWr/DIRe9ghcdj/1JyAnf2fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j6wvVavK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E2C6C433C7;
-	Sun, 24 Mar 2024 22:37:08 +0000 (UTC)
+	 MIME-Version; b=mMK+k0V7FaItgPeRyubfGHIP9pEDF5GPKO0yELDT3dCIEBU+x/RauD+25/Jacmgeks5ejDuniqHiU8lmIF8uxgApOMA32/rS7R6dr4ArwU8hoXb53iWiG8clne422qa3L9+u2vxINLlNSFblvf10OKvhbhQiiklvitlsk7S2RQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PES7IwWn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 407D2C433A6;
+	Sun, 24 Mar 2024 22:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319829;
-	bh=afXxZDuytKdo2b9kX8f74F3OLY83odqcQkTH0+MIdeY=;
+	s=k20201202; t=1711319830;
+	bh=/DKVbN6tduAwbcxg3CQbSjcbip6MeRF1LCLPOK6gFqw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j6wvVavK2NqTDt/omJukgnuy4LwgYAxxLFj+D6QvlZGOKjETJkjEQX22UY6WyMVhR
-	 fah7WHP8m0lwztq4glgw9zcxTL5A6mbdzYmoMp1SvSAbFpiRtn1Ljg/WGoAwWWePCw
-	 fJASypTfTKryt1HPdEAIDyPcmk1pLFXqijIo+Fq0BBxAm3GzWywhQ0aekSmUmGBGWQ
-	 9ZfuwYEV0hAf+tHM8w2HDTzWz6LkvTCD0O7I6CIPAmGEUodvn0PCBXehov8oVHvz8q
-	 LYcFl6VNp3wZSjkHC2jC/CXOR1SYYTnXLQCgyVDpK7KJBBTTPGCUWvihPeyKOwKD8d
-	 L9n/ZtAG2hAyQ==
+	b=PES7IwWns0Pmim+PGGBhL3OD5iV1/qT7S8qetMYnhfJohWGscrTrqIOi3gpPZkREj
+	 d5MV9p0JEtbObBdBlaHBe0I6dtFQsFQ+cdfRKa2lKGXnZ5IkuMsbG2fCabf3R6yWkh
+	 yef7cWGIyEaS9Rp6iG0Sn4qblvvWDLDjR7QfQjQyWQeA5CfT1ThBRJJSDEetqjnpqC
+	 3ltt5uses5091ltZEA3enNF8Q4oA+7Y71v/fWGoi22o8UzGe0j4OenySf/SM6HIS93
+	 N4xMJvS0DPZm+QjVaO6D1Er/uuc+V9DA81BhJzc3atNLdZCL4ddKx+Z/p9PB/8a85d
+	 1866ZdKOxTVOQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Mukesh Sisodiya <mukesh.sisodiya@intel.com>,
-	Gregory Greenman <gregory.greenman@intel.com>,
+Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 131/715] wifi: iwlwifi: always have 'uats_enabled'
-Date: Sun, 24 Mar 2024 18:25:10 -0400
-Message-ID: <20240324223455.1342824-132-sashal@kernel.org>
+Subject: [PATCH 6.8 132/715] wifi: iwlwifi: mvm: fix the TLC command after ADD_STA
+Date: Sun, 24 Mar 2024 18:25:11 -0400
+Message-ID: <20240324223455.1342824-133-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,40 +63,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 
-[ Upstream commit f639602a58e7564dd091c7c0793f61042bad9bb6 ]
+[ Upstream commit 0fcdf55fced7121c43fa576433986f1c04115b73 ]
 
-We check this in code that'd be complicated to put under
-ifdef (CONFIG_ACPI), so just always have 'uats_enabled'.
+ADD_STA resets the link quality data inside the firmware. This is not
+supposed to happen and has been fixed for newer devices. For older
+devices (AX201 and down), this makes us send frames with rates that are
+not in the TLC table.
 
-Fixes: 4a9bb5b4d949 ("wifi: iwlwifi: fw: Add support for UATS table in UHB")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Reviewed-by: Mukesh Sisodiya <mukesh.sisodiya@intel.com>
-Reviewed-by: Gregory Greenman <gregory.greenman@intel.com>
+Fixes: 5a86dcb4a908 ("wifi: iwlwifi: mvm: update station's MFP flag after association")
+Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Reviewed-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Link: https://msgid.link/20240129211905.bdc5fb20f00a.I902d801d79873c5c9cd51cef8e8226e2acefe88d@changeid
+Link: https://msgid.link/20240129211905.1deca7eaff14.I597abd7aab36fdab4aa8311a48c98a3d5bd433ba@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/fw/runtime.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/runtime.h b/drivers/net/wireless/intel/iwlwifi/fw/runtime.h
-index 357727774db90..baabb8e321f8d 100644
---- a/drivers/net/wireless/intel/iwlwifi/fw/runtime.h
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/runtime.h
-@@ -173,9 +173,9 @@ struct iwl_fw_runtime {
- 	struct iwl_sar_offset_mapping_cmd sgom_table;
- 	bool sgom_enabled;
- 	u8 reduced_power_flags;
--	bool uats_enabled;
- 	struct iwl_uats_table_cmd uats_table;
- #endif
-+	bool uats_enabled;
- };
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index 346512696bd1c..f60d4258e1b95 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -3809,13 +3809,17 @@ iwl_mvm_sta_state_assoc_to_authorized(struct iwl_mvm *mvm,
  
- void iwl_fw_runtime_init(struct iwl_fw_runtime *fwrt, struct iwl_trans *trans,
+ 	mvm_sta->authorized = true;
+ 
+-	iwl_mvm_rs_rate_init_all_links(mvm, vif, sta);
+-
+ 	/* MFP is set by default before the station is authorized.
+ 	 * Clear it here in case it's not used.
+ 	 */
+-	if (!sta->mfp)
+-		return callbacks->update_sta(mvm, vif, sta);
++	if (!sta->mfp) {
++		int ret = callbacks->update_sta(mvm, vif, sta);
++
++		if (ret)
++			return ret;
++	}
++
++	iwl_mvm_rs_rate_init_all_links(mvm, vif, sta);
+ 
+ 	return 0;
+ }
 -- 
 2.43.0
 
