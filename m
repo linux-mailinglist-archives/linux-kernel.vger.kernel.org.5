@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-115441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B5308896DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:00:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 564FB88868B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:35:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CE741C30706
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:00:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B2021F24FC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5E3213454;
-	Mon, 25 Mar 2024 02:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74EB912DD8F;
+	Sun, 24 Mar 2024 22:59:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NS/j0kj2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="owHhWoPQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B59128366;
-	Sun, 24 Mar 2024 22:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B6A1E307A;
+	Sun, 24 Mar 2024 22:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320795; cv=none; b=PQ/PBv1NsOXuKd9LCRk4K6V2RblnK23Wy3F/tXTQIdV5UdCTzVQ3djNkmkGffghzLjBB8Lunw5Hm9JJ8y9ayqzpCXyYdP5sJ1J2o6NqE1NZzbSoj5tmjGa7cQkciKSWhO1Zn4hM7/KGhUltSWwXjtlARJ2zPh5qRGmHn+ke5zr0=
+	t=1711320796; cv=none; b=fYOWyz5Bfm8flL2JdAbqOrPYNLtEHz33dDXToVuvZZUGESqQc31WmR+7eOpSzLfjAPI6J5Meoy8nESd/6OxghfUzhOaomi5EwneSm+trIxB/nR3ocySSpI1ehUdZkXpgjD4ld/4Dn05kcYKy+ov8fD/l2NxuIIrkexyBPgeT6aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320795; c=relaxed/simple;
-	bh=36c3PdCk3dmv9ATi1Ur1ycwjHJ3q6K33jYl8d79ERfA=;
+	s=arc-20240116; t=1711320796; c=relaxed/simple;
+	bh=1CZXj3ZSEJhTLO9kDaryueK7/Emi8Jki56hPONpCagg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ovALxmQ+/LqulpkA6bB99X5lk5hW1Tl4Yh0qVaZNXUUOSu8VTqI0jskr8Q/OoKfQXpgumRPbPAgUMECCx5a4YEZEd8Ic8Tn+CqGvjsDg1dI9+BjS2LSIPEPrrmVzDSaFybNZsdAj+fxFNJQ/+1lgZH81NXH1/m+3Q4YqorwuOSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NS/j0kj2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA411C433F1;
-	Sun, 24 Mar 2024 22:53:13 +0000 (UTC)
+	 MIME-Version; b=cuFkdTSkizYl6YQAP4UXxQh1OQnNNfQsCEdShN45X0VYE0M20DRNeml5a5Y4RVgmxWm/EqFe2R56pePk1MbsJ+MIRO7ACpxamk9dpjjTduQ+CE6z0FgMYIsarnar5+dgGbEmt+znRUWiXyLiJNasvUIHxDtaL+S0hLQHDGXS14g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=owHhWoPQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB1A5C433C7;
+	Sun, 24 Mar 2024 22:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320794;
-	bh=36c3PdCk3dmv9ATi1Ur1ycwjHJ3q6K33jYl8d79ERfA=;
+	s=k20201202; t=1711320795;
+	bh=1CZXj3ZSEJhTLO9kDaryueK7/Emi8Jki56hPONpCagg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NS/j0kj2RJPFtFVkdvyTNLEcGnSCWcfKucaIbLmYFvJULI4ePsAE9MpOWmn+AvKQ5
-	 9n7SaxTBJmSDxFWOsoMa4NhZKH5jC+L6bt6CmwOrLTlcItJHuINi+Mx94+dH16VPmO
-	 wMhj/0x5zUZZSwn/nRi4BDxbOW7vRXyx/Yk/fU0tGVtj8Z7MaBofRO4IiUgoyzR+9X
-	 UAaGY2oAJDqondIBt45/Wrp6i9ahwa1gv80cMOav58uNC71wjpfcQwZyS/EtpCY3Hi
-	 QAm/t4y0tFQXmkuS+HCvjJ8h+0vFz6+Lk3MGuzcUw5/FgQWsrN1KWnO5gWTcQXMd+E
-	 GEzAn2vN+zxgA==
+	b=owHhWoPQI/AM4SRq5ki9OlWo1RfmwZI5X7i0M+aNahMpa4p+llUnY0FNuO413MF8V
+	 4uW4Hm4hLiE1j1mZw8RptT3MGiDuh2QlUzWSIcUXdaVoE3XBWlsZoKML0rbPLu7/ie
+	 33Sw6PFR72UrFOOJjCE4nQqK6ubqGZZ5bhkrkNkXOlHfSK6pMAdav+lwX8BznW3OkE
+	 lzOm18Di2zbLY6AGi1GH2pesSPu7AIL8AXfzbUhlhmjn6HrnpfsXxjF8Fvc570ElXG
+	 zVs2ybldZywlZOoTJ9/90PK0tl6fQ3vsMsMcnRsv1P3bKgpE6D6qSUtJ/qgHf6SZqZ
+	 x/1uRf8c+Yq+g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chen Ni <nichen@iscas.ac.cn>,
-	Simon Horman <horms@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Heiko Carstens <hca@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 358/713] sr9800: Add check for usbnet_get_endpoints
-Date: Sun, 24 Mar 2024 18:41:24 -0400
-Message-ID: <20240324224720.1345309-359-sashal@kernel.org>
+Subject: [PATCH 6.7 359/713] s390/cache: prevent rebuild of shared_cpu_list
+Date: Sun, 24 Mar 2024 18:41:25 -0400
+Message-ID: <20240324224720.1345309-360-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,38 +61,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chen Ni <nichen@iscas.ac.cn>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 07161b2416f740a2cb87faa5566873f401440a61 ]
+[ Upstream commit cb0cd4ee11142339f2d47eef6db274290b7a482d ]
 
-Add check for usbnet_get_endpoints() and return the error if it fails
-in order to transfer the error.
+With commit 36bbc5b4ffab ("cacheinfo: Allow early detection and population
+of cache attributes") the shared cpu list for each cache level higher than
+L1 is rebuilt even if the list already has been set up.
 
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Fixes: 19a38d8e0aa3 ("USB2NET : SR9800 : One chip USB2.0 USB2NET SR9800 Device Driver Support")
-Link: https://lore.kernel.org/r/20240305075927.261284-1-nichen@iscas.ac.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This is caused by the removal of the cpumask_empty() check within
+cache_shared_cpu_map_setup().
+
+However architectures can enforce that the shared cpu list is not rebuilt
+by simply setting cpu_map_populated of the per cpu cache info structure to
+true, which is also the fix for this problem.
+
+Before:
+$ cat /sys/devices/system/cpu/cpu1/cache/index2/shared_cpu_list
+0-7
+
+After:
+$ cat /sys/devices/system/cpu/cpu1/cache/index2/shared_cpu_list
+1
+
+Fixes: 36bbc5b4ffab ("cacheinfo: Allow early detection and population of cache attributes")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/sr9800.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/s390/kernel/cache.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/usb/sr9800.c b/drivers/net/usb/sr9800.c
-index 143bd4ab160df..57947a5590cca 100644
---- a/drivers/net/usb/sr9800.c
-+++ b/drivers/net/usb/sr9800.c
-@@ -737,7 +737,9 @@ static int sr9800_bind(struct usbnet *dev, struct usb_interface *intf)
- 
- 	data->eeprom_len = SR9800_EEPROM_LEN;
- 
--	usbnet_get_endpoints(dev, intf);
-+	ret = usbnet_get_endpoints(dev, intf);
-+	if (ret)
-+		goto out;
- 
- 	/* LED Setting Rule :
- 	 * AABB:CCDD
+diff --git a/arch/s390/kernel/cache.c b/arch/s390/kernel/cache.c
+index 56254fa06f990..4f26690302209 100644
+--- a/arch/s390/kernel/cache.c
++++ b/arch/s390/kernel/cache.c
+@@ -166,5 +166,6 @@ int populate_cache_leaves(unsigned int cpu)
+ 			ci_leaf_init(this_leaf++, pvt, ctype, level, cpu);
+ 		}
+ 	}
++	this_cpu_ci->cpu_map_populated = true;
+ 	return 0;
+ }
 -- 
 2.43.0
 
