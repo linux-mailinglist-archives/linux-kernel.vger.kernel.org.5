@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-114275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 095DB8891B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:47:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C9B88916B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:41:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCE14B33A2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:53:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFA53B33531
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:53:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA23525D05A;
-	Sun, 24 Mar 2024 23:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7E015D5CC;
+	Sun, 24 Mar 2024 23:26:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yrah0G7v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W/DgLJio"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA00F13959B;
-	Sun, 24 Mar 2024 23:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F13561EBD24;
+	Sun, 24 Mar 2024 23:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321646; cv=none; b=JoeJNnT/faRMlj0dMEVh/qa2B6K2BUMpLqvgh8gnj5QxljBuK8BWXF0QcXuVmD2wcB9BquwiiZqg7dbWfeUOzyoKTcbSqSGcyJFKTsj1iux8ViyeiSdhwZdM1mjLxYIvE8uTg1sUvq3Vsgzo0QvGx9KE/HTerGsKu0E2PACU9Aw=
+	t=1711321648; cv=none; b=qkyju48pSb9c6i0sXthRAme36wNVQXm6m91jtN6AzXBqBCLX9DAA3F+6voFjyZScT00CKrxA59xDWMOHHfo//0DNUCVmUy8ZwiOlYZKFu9ije6hj0vWauKs2hwx4CVYDlMCgNxQqqxV1rUp+ZvxyBy5UdUYXOC5p3QB7exIs6Yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321646; c=relaxed/simple;
-	bh=k1718tIRVtyBuPuPME4HoGIOwyBFb8V0fUYLmvZcUbM=;
+	s=arc-20240116; t=1711321648; c=relaxed/simple;
+	bh=i6qbJ0YigLE3yuZNNmqK6Rf7CvUlWxagcLz5SoaV904=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ksz9uYhmaUtshlxG+rSrgkFR8+5IIT4zC9e/qb0Yq+WZz5Ko4zynNPkUv2KpAfvg0sgfm/wJ9Px3ZUB1/xFj8EussMD1m+228rb08jNqnny4F4Spn1ydOVDLVlFBWdTk0GYawZYGMbMn1wmOJu3DKptjegSmbE30MbtFmyFyPXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yrah0G7v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D498C43394;
-	Sun, 24 Mar 2024 23:07:24 +0000 (UTC)
+	 MIME-Version; b=AXUEQeQ1CrUSwmA70EPGESIK//gM2u6CQwhTUObCWWS/NU227Tm72JNp7lX03kiksG8qqT3bmI1PKLTvOtTPz7r+H0ONK9wMTs+mLqhKK0YeH4UcGs1bGsMW4qTpV078qqfpMWtSY9SVOe3TdtRM2ewDTbfTmw8+Bz5sPi1mplA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W/DgLJio; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C270C433C7;
+	Sun, 24 Mar 2024 23:07:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321645;
-	bh=k1718tIRVtyBuPuPME4HoGIOwyBFb8V0fUYLmvZcUbM=;
+	s=k20201202; t=1711321646;
+	bh=i6qbJ0YigLE3yuZNNmqK6Rf7CvUlWxagcLz5SoaV904=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Yrah0G7vekACaALfeW/LhpNDMOQhaBLNbcgmbLW4g4sIv+bM7FURUvV1ra8zdiqKN
-	 iXp2V37Jge2sC9J4j6sJ4XIBFGs36v93092YFwgAeEHnTKpgsWDuGqAg0L/IDcKC7c
-	 A+TMkBkdYOgc/eWzjdWSrRSPnAnERclWRVFqeJfedmuPo746QSFp/IXjkWf6SWiNLD
-	 VM4cqNedcePSmt4/IvddjPD5Jh/LqgCT9Pe3Y7bS141pIC0G7cVTm0rZwy+Xe+9IUb
-	 9oDHrpq2uopngkfwfOz3gJKFRm0i47otqUbQamtq90BPWQDuUbzX6AOl9qq7Vu+uBn
-	 /xrmXIQvpsyeQ==
+	b=W/DgLJiooIa9qG0qSUzXfIyYeOBLiAfMTSU8P+Ex/mRpGHcXiD+2aMsGySNmZB7B3
+	 gRK6iS1iOPQDIo+/2gdIwJahv6cSiYXt/gJbTsfvtU8tYfS2fdwNFGm2XEco0rJwEx
+	 MGzLUiVqsbf6uH2kfqJEWpCi9gkJGktwBueU/jP2cxf5jsDYqmK83HMtXYTBDA75YL
+	 lI+cHsiCVeR2KLgf3zR0VWUBQ0bZXi00PDuIE4vnA574KZQDwK588qEad8m3lThcH+
+	 IIDP2xi9Gq3ifa9oIkvHlyxuHAyC8/BaoYFLVkDrTdY9OcZfsEnWHzT1LEidpsLBv5
+	 OOmyWyV4d5hwg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sam Protsenko <semen.protsenko@linaro.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+Cc: Julien Massot <julien.massot@collabora.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 375/638] clk: samsung: exynos850: Propagate SPI IPCLK rate change
-Date: Sun, 24 Mar 2024 18:56:52 -0400
-Message-ID: <20240324230116.1348576-376-sashal@kernel.org>
+Subject: [PATCH 6.6 376/638] media: v4l2: cci: print leading 0 on error
+Date: Sun, 24 Mar 2024 18:56:53 -0400
+Message-ID: <20240324230116.1348576-377-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,171 +64,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Sam Protsenko <semen.protsenko@linaro.org>
+From: Julien Massot <julien.massot@collabora.com>
 
-[ Upstream commit 67c15187d4910ee353374676d4dddf09d8cb227e ]
+[ Upstream commit 58ab1f9e140006e9e5686640f1773260038fe889 ]
 
-When SPI transfer is being prepared, the spi-s3c64xx driver will call
-clk_set_rate() to change the rate of SPI source clock (IPCLK). But IPCLK
-is a gate (leaf) clock, so it must propagate the rate change up the
-clock tree, so that corresponding DIV clocks can actually change their
-divider values. Add CLK_SET_RATE_PARENT flag to corresponding clocks for
-all SPI instances in Exynos850 (spi_0, spi_1 and spi_2) to make it
-possible. This change involves next clocks:
+In some error cases leading '0' for register address
+were missing.
 
-usi_spi_0:
-
-    Clock                  Block       Div range
-    --------------------------------------------
-    gout_spi0_ipclk        CMU_PERI    -
-    dout_peri_spi0         CMU_PERI    /1..32
-    mout_peri_spi_user     CMU_PERI    -
-    dout_peri_ip           CMU_TOP     /1..16
-
-usi_cmgp0:
-
-    Clock                  Block       Div range
-    --------------------------------------------
-    gout_cmgp_usi0_ipclk   CMU_CMGP    -
-    dout_cmgp_usi0         CMU_CMGP    /1..32
-    mout_cmgp_usi0         CMU_CMGP    -
-    gout_clkcmu_cmgp_bus   CMU_APM     -
-    dout_apm_bus           CMU_APM     /1..8
-
-usi_cmgp1:
-
-    Clock                  Block       Div range
-    --------------------------------------------
-    gout_cmgp_usi1_ipclk   CMU_CMGP    -
-    dout_cmgp_usi1         CMU_CMGP    /1..32
-    mout_cmgp_usi1         CMU_CMGP    -
-    gout_clkcmu_cmgp_bus   CMU_APM     -
-    dout_apm_bus           CMU_APM     /1..8
-
-With input clock of 400 MHz, this scheme provides next IPCLK rate range,
-for each SPI block:
-
-    SPI0:   781 kHz ... 400 MHz
-    SPI1/2: 1.6 MHz ... 400 MHz
-
-Accounting for internal /4 divider in SPI blocks, and because the max
-SPI frequency is limited at 50 MHz, it gives us next SPI SCK rates:
-
-    SPI0:   200 kHz ... 49.9 MHz
-    SPI1/2: 400 kHz ... 49.9 MHz
-
-Which should cover all possible applications of SPI bus. Of course,
-setting SPI frequency to values as low as 500 kHz will also affect the
-common bus dividers (dout_apm_bus or dout_peri_ip), which in turn
-effectively lowers the rates for all leaf bus clocks derived from those
-dividers, like HSI2C and I3C clocks. But at least it gives the board
-designer a choice, whether to keep all clocks (SPI/HSI2C/I3C) at high
-frequencies, or make all those clocks have lower frequencies. Not
-propagating the rate change to those common dividers would limit this
-choice to "only high frequencies are allowed for SPI/HSI2C/I3C" option,
-making the common dividers useless. This decision follows the "Worse is
-better" approach, relying on the users/engineers to know the system
-internals when working with such low-level features, instead of trying
-to account for all possible use-cases.
-
-Fixes: 7dd05578198b ("clk: samsung: Introduce Exynos850 clock driver")
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Link: https://lore.kernel.org/r/20240125013858.3986-2-semen.protsenko@linaro.org
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Fixes: 613cbb91e9ce ("media: Add MIPI CCI register access helper functions")
+Signed-off-by: Julien Massot <julien.massot@collabora.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/samsung/clk-exynos850.c | 33 +++++++++++++++--------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+ drivers/media/v4l2-core/v4l2-cci.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-index bdc1eef7d6e54..c7b0b9751307b 100644
---- a/drivers/clk/samsung/clk-exynos850.c
-+++ b/drivers/clk/samsung/clk-exynos850.c
-@@ -605,7 +605,7 @@ static const struct samsung_div_clock apm_div_clks[] __initconst = {
+diff --git a/drivers/media/v4l2-core/v4l2-cci.c b/drivers/media/v4l2-core/v4l2-cci.c
+index 10005c80f43b5..ee3475bed37fa 100644
+--- a/drivers/media/v4l2-core/v4l2-cci.c
++++ b/drivers/media/v4l2-core/v4l2-cci.c
+@@ -32,7 +32,7 @@ int cci_read(struct regmap *map, u32 reg, u64 *val, int *err)
  
- static const struct samsung_gate_clock apm_gate_clks[] __initconst = {
- 	GATE(CLK_GOUT_CLKCMU_CMGP_BUS, "gout_clkcmu_cmgp_bus", "dout_apm_bus",
--	     CLK_CON_GAT_CLKCMU_CMGP_BUS, 21, 0, 0),
-+	     CLK_CON_GAT_CLKCMU_CMGP_BUS, 21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_CLKCMU_CHUB_BUS, "gout_clkcmu_chub_bus",
- 	     "mout_clkcmu_chub_bus",
- 	     CLK_CON_GAT_GATE_CLKCMU_CHUB_BUS, 21, 0, 0),
-@@ -974,19 +974,19 @@ static const struct samsung_fixed_rate_clock cmgp_fixed_clks[] __initconst = {
- static const struct samsung_mux_clock cmgp_mux_clks[] __initconst = {
- 	MUX(CLK_MOUT_CMGP_ADC, "mout_cmgp_adc", mout_cmgp_adc_p,
- 	    CLK_CON_MUX_CLK_CMGP_ADC, 0, 1),
--	MUX(CLK_MOUT_CMGP_USI0, "mout_cmgp_usi0", mout_cmgp_usi0_p,
--	    CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP0, 0, 1),
--	MUX(CLK_MOUT_CMGP_USI1, "mout_cmgp_usi1", mout_cmgp_usi1_p,
--	    CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP1, 0, 1),
-+	MUX_F(CLK_MOUT_CMGP_USI0, "mout_cmgp_usi0", mout_cmgp_usi0_p,
-+	      CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP0, 0, 1, CLK_SET_RATE_PARENT, 0),
-+	MUX_F(CLK_MOUT_CMGP_USI1, "mout_cmgp_usi1", mout_cmgp_usi1_p,
-+	      CLK_CON_MUX_MUX_CLK_CMGP_USI_CMGP1, 0, 1, CLK_SET_RATE_PARENT, 0),
- };
+ 	ret = regmap_bulk_read(map, reg, buf, len);
+ 	if (ret) {
+-		dev_err(regmap_get_device(map), "Error reading reg 0x%4x: %d\n",
++		dev_err(regmap_get_device(map), "Error reading reg 0x%04x: %d\n",
+ 			reg, ret);
+ 		goto out;
+ 	}
+@@ -131,7 +131,7 @@ int cci_write(struct regmap *map, u32 reg, u64 val, int *err)
  
- static const struct samsung_div_clock cmgp_div_clks[] __initconst = {
- 	DIV(CLK_DOUT_CMGP_ADC, "dout_cmgp_adc", "gout_clkcmu_cmgp_bus",
- 	    CLK_CON_DIV_DIV_CLK_CMGP_ADC, 0, 4),
--	DIV(CLK_DOUT_CMGP_USI0, "dout_cmgp_usi0", "mout_cmgp_usi0",
--	    CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP0, 0, 5),
--	DIV(CLK_DOUT_CMGP_USI1, "dout_cmgp_usi1", "mout_cmgp_usi1",
--	    CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP1, 0, 5),
-+	DIV_F(CLK_DOUT_CMGP_USI0, "dout_cmgp_usi0", "mout_cmgp_usi0",
-+	      CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP0, 0, 5, CLK_SET_RATE_PARENT, 0),
-+	DIV_F(CLK_DOUT_CMGP_USI1, "dout_cmgp_usi1", "mout_cmgp_usi1",
-+	      CLK_CON_DIV_DIV_CLK_CMGP_USI_CMGP1, 0, 5, CLK_SET_RATE_PARENT, 0),
- };
+ 	ret = regmap_bulk_write(map, reg, buf, len);
+ 	if (ret)
+-		dev_err(regmap_get_device(map), "Error writing reg 0x%4x: %d\n",
++		dev_err(regmap_get_device(map), "Error writing reg 0x%04x: %d\n",
+ 			reg, ret);
  
- static const struct samsung_gate_clock cmgp_gate_clks[] __initconst = {
-@@ -1001,12 +1001,12 @@ static const struct samsung_gate_clock cmgp_gate_clks[] __initconst = {
- 	     "gout_clkcmu_cmgp_bus",
- 	     CLK_CON_GAT_GOUT_CMGP_GPIO_PCLK, 21, CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_GOUT_CMGP_USI0_IPCLK, "gout_cmgp_usi0_ipclk", "dout_cmgp_usi0",
--	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_IPCLK, 21, 0, 0),
-+	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_IPCLK, 21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_CMGP_USI0_PCLK, "gout_cmgp_usi0_pclk",
- 	     "gout_clkcmu_cmgp_bus",
- 	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_PCLK, 21, 0, 0),
- 	GATE(CLK_GOUT_CMGP_USI1_IPCLK, "gout_cmgp_usi1_ipclk", "dout_cmgp_usi1",
--	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_IPCLK, 21, 0, 0),
-+	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_IPCLK, 21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_CMGP_USI1_PCLK, "gout_cmgp_usi1_pclk",
- 	     "gout_clkcmu_cmgp_bus",
- 	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP1_PCLK, 21, 0, 0),
-@@ -1557,8 +1557,9 @@ static const struct samsung_mux_clock peri_mux_clks[] __initconst = {
- 	    mout_peri_uart_user_p, PLL_CON0_MUX_CLKCMU_PERI_UART_USER, 4, 1),
- 	MUX(CLK_MOUT_PERI_HSI2C_USER, "mout_peri_hsi2c_user",
- 	    mout_peri_hsi2c_user_p, PLL_CON0_MUX_CLKCMU_PERI_HSI2C_USER, 4, 1),
--	MUX(CLK_MOUT_PERI_SPI_USER, "mout_peri_spi_user", mout_peri_spi_user_p,
--	    PLL_CON0_MUX_CLKCMU_PERI_SPI_USER, 4, 1),
-+	MUX_F(CLK_MOUT_PERI_SPI_USER, "mout_peri_spi_user",
-+	      mout_peri_spi_user_p, PLL_CON0_MUX_CLKCMU_PERI_SPI_USER, 4, 1,
-+	      CLK_SET_RATE_PARENT, 0),
- };
- 
- static const struct samsung_div_clock peri_div_clks[] __initconst = {
-@@ -1568,8 +1569,8 @@ static const struct samsung_div_clock peri_div_clks[] __initconst = {
- 	    CLK_CON_DIV_DIV_CLK_PERI_HSI2C_1, 0, 5),
- 	DIV(CLK_DOUT_PERI_HSI2C2, "dout_peri_hsi2c2", "gout_peri_hsi2c2",
- 	    CLK_CON_DIV_DIV_CLK_PERI_HSI2C_2, 0, 5),
--	DIV(CLK_DOUT_PERI_SPI0, "dout_peri_spi0", "mout_peri_spi_user",
--	    CLK_CON_DIV_DIV_CLK_PERI_SPI_0, 0, 5),
-+	DIV_F(CLK_DOUT_PERI_SPI0, "dout_peri_spi0", "mout_peri_spi_user",
-+	      CLK_CON_DIV_DIV_CLK_PERI_SPI_0, 0, 5, CLK_SET_RATE_PARENT, 0),
- };
- 
- static const struct samsung_gate_clock peri_gate_clks[] __initconst = {
-@@ -1611,7 +1612,7 @@ static const struct samsung_gate_clock peri_gate_clks[] __initconst = {
- 	     "mout_peri_bus_user",
- 	     CLK_CON_GAT_GOUT_PERI_PWM_MOTOR_PCLK, 21, 0, 0),
- 	GATE(CLK_GOUT_SPI0_IPCLK, "gout_spi0_ipclk", "dout_peri_spi0",
--	     CLK_CON_GAT_GOUT_PERI_SPI_0_IPCLK, 21, 0, 0),
-+	     CLK_CON_GAT_GOUT_PERI_SPI_0_IPCLK, 21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_SPI0_PCLK, "gout_spi0_pclk", "mout_peri_bus_user",
- 	     CLK_CON_GAT_GOUT_PERI_SPI_0_PCLK, 21, 0, 0),
- 	GATE(CLK_GOUT_SYSREG_PERI_PCLK, "gout_sysreg_peri_pclk",
+ out:
 -- 
 2.43.0
 
