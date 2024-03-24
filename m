@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE05C8886E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:45:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4971D889BC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77879B21351
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:45:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC9C92E227E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3AD2036FC;
-	Sun, 24 Mar 2024 23:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D55B02210FC;
+	Mon, 25 Mar 2024 02:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mD7Ge3zx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V2mHQTtv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936F1147C9B;
-	Sun, 24 Mar 2024 22:54:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771D7129A82;
+	Sun, 24 Mar 2024 22:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320878; cv=none; b=NjwCLzjgki83Z0lp+pD0z+4Afj1GJrZ+fG3uQ5S3wIY31Wea2xRk/Mf5jaNCXUv7pGhEip1zrWwyDHf/LRbP874YzySG/j3rsHB2GWzU4a40e0oOyDnMjPmAQzhQhHctbifnVuzq1gp9RS0wzAScKGJnLpLwYcE9s5g/8tt4uZY=
+	t=1711320879; cv=none; b=Svt938EgsLFzfXT7ZrkdqY8xUEfWN+z3K3X69rJVRDvPumeu7rI1/+hKXGcYLfoEwlzIYYvDMeT/hheO/6N4IADxfyU+xnrGd++iDcpZE2g3+bYsmfS5Cu0KbvLNFP+kAj/r+7XCobjVHlxjfzyxcSLnRLbgzr7PeKTCP1B+WNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320878; c=relaxed/simple;
-	bh=+9L2sOYcn70slea3K+0x6ySDW9NT356ZLSJHuWQ40e4=;
+	s=arc-20240116; t=1711320879; c=relaxed/simple;
+	bh=jmu23GktzhpBdA3rPY3ZLQOVWrFuA9mTgWTolJwlTE0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O7qNxNnOoIo8LI9ItAI+A/AX8a8rAhaw5YyaKrmlbFpVDsf3X2RQLo4NVxFk6IoJ+EIQSLGz/9CuFVSkvtcQhtKCWxSWs9qmCfa1N7t5gho/shTIhmjhzx7CvEtuv9LO5Eulhk5awF2VVyL9UTxS8jtYgmLx4tX9GtQXUqSUXww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mD7Ge3zx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D577CC43390;
-	Sun, 24 Mar 2024 22:54:36 +0000 (UTC)
+	 MIME-Version; b=izXgruHonUY8281Tgz8AuXqEx+T2xEq/nwdLRkRZcARwWdofOQT6AxXV8KXk2vo7vD+sap0M7rfwyU2uI9yBE5E8QN3nauv7MsB78SewQL7PQJGgpVtM9WZypNqSya9ZeFOorlA0bwYue98l4l+ZCm4ZtAfrnSiWmyj8JijmPeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V2mHQTtv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBB5AC43394;
+	Sun, 24 Mar 2024 22:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320877;
-	bh=+9L2sOYcn70slea3K+0x6ySDW9NT356ZLSJHuWQ40e4=;
+	s=k20201202; t=1711320878;
+	bh=jmu23GktzhpBdA3rPY3ZLQOVWrFuA9mTgWTolJwlTE0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mD7Ge3zxfnR0HTIjAfJVbgHOBY0OmqZxhMOMlGgX8ktvEEX2fcdycsI01/b4vGnET
-	 axkmH82/yovHpdSRyRZElzdIKgqnp6PwLieP3+2Xh6R/LI7noD5FtmHyodKjvO2kSK
-	 Z1AKjvvHriWHc0xHTZ97N3mEZxBf3O3jqAUxXGTFfcXpJLvxmIrznPX6xHeTOy8pvY
-	 EvBgrFqZ+L0B+uy134Ez5X/R2Wm63ltwv/Yq/E9UY1zanCauHpLvnlr9fy92P24xP2
-	 QPJMnXOGl+8wKAiGyWBN05QrmyY2cWisJy6gV1G0wW5yAYS7Yn0XWIl8FSDnsuhBle
-	 toaih+QKxV5Xw==
+	b=V2mHQTtv3XPLl9xOzVDvd6aqCa5ZNIOfPYZPezJS6fCDGggQIgsTXz6vQBc27ofj1
+	 1CtwqsmdACww7ZBrdMQm8bjT/3u68oHE9QFALd6EMuLVeRiWLfdBtkqqErcGVb4UJB
+	 j+0wmxR5bJp8dTlZO4Ad3EFgTzqI56/MQknJ8ugeL5TIqnHA8PlmOxmqdSbemgLRtW
+	 4UTgC5cSjSZFYxWgvMnGGFzLoYLCGmGvaDAj/hYO+sLO5nDcogUaTyvbJ1lAJWO7Y5
+	 KXJHWIYboVVIPDhAhDn2GE8/Ym0e679HGp6iOHb3rhzVsMMlZ+xZ90X0cBxb1opyGV
+	 0xeUWhJL1+YxQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Bjorn Helgaas <bhelgaas@google.com>,
+Cc: Quanyang Wang <quanyang.wang@windriver.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 442/713] PCI: switchtec: Fix an error handling path in switchtec_pci_probe()
-Date: Sun, 24 Mar 2024 18:42:48 -0400
-Message-ID: <20240324224720.1345309-443-sashal@kernel.org>
+Subject: [PATCH 6.7 443/713] crypto: xilinx - call finalize with bh disabled
+Date: Sun, 24 Mar 2024 18:42:49 -0400
+Message-ID: <20240324224720.1345309-444-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,49 +62,70 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-[ Upstream commit dec529b0b0572b32f9eb91c882dd1f08ca657efb ]
+[ Upstream commit a853450bf4c752e664abab0b2fad395b7ad7701c ]
 
-The commit in Fixes changed the logic on how resources are released and
-introduced a new switchtec_exit_pci() that need to be called explicitly in
-order to undo a corresponding switchtec_init_pci().
+When calling crypto_finalize_request, BH should be disabled to avoid
+triggering the following calltrace:
 
-This was done in the remove function, but not in the probe.
+    ------------[ cut here ]------------
+    WARNING: CPU: 2 PID: 74 at crypto/crypto_engine.c:58 crypto_finalize_request+0xa0/0x118
+    Modules linked in: cryptodev(O)
+    CPU: 2 PID: 74 Comm: firmware:zynqmp Tainted: G           O       6.8.0-rc1-yocto-standard #323
+    Hardware name: ZynqMP ZCU102 Rev1.0 (DT)
+    pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+    pc : crypto_finalize_request+0xa0/0x118
+    lr : crypto_finalize_request+0x104/0x118
+    sp : ffffffc085353ce0
+    x29: ffffffc085353ce0 x28: 0000000000000000 x27: ffffff8808ea8688
+    x26: ffffffc081715038 x25: 0000000000000000 x24: ffffff880100db00
+    x23: ffffff880100da80 x22: 0000000000000000 x21: 0000000000000000
+    x20: ffffff8805b14000 x19: ffffff880100da80 x18: 0000000000010450
+    x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+    x14: 0000000000000003 x13: 0000000000000000 x12: ffffff880100dad0
+    x11: 0000000000000000 x10: ffffffc0832dcd08 x9 : ffffffc0812416d8
+    x8 : 00000000000001f4 x7 : ffffffc0830d2830 x6 : 0000000000000001
+    x5 : ffffffc082091000 x4 : ffffffc082091658 x3 : 0000000000000000
+    x2 : ffffffc7f9653000 x1 : 0000000000000000 x0 : ffffff8802d20000
+    Call trace:
+     crypto_finalize_request+0xa0/0x118
+     crypto_finalize_aead_request+0x18/0x30
+     zynqmp_handle_aes_req+0xcc/0x388
+     crypto_pump_work+0x168/0x2d8
+     kthread_worker_fn+0xfc/0x3a0
+     kthread+0x118/0x138
+     ret_from_fork+0x10/0x20
+    irq event stamp: 40
+    hardirqs last  enabled at (39): [<ffffffc0812416f8>] _raw_spin_unlock_irqrestore+0x70/0xb0
+    hardirqs last disabled at (40): [<ffffffc08122d208>] el1_dbg+0x28/0x90
+    softirqs last  enabled at (36): [<ffffffc080017dec>] kernel_neon_begin+0x8c/0xf0
+    softirqs last disabled at (34): [<ffffffc080017dc0>] kernel_neon_begin+0x60/0xf0
+    ---[ end trace 0000000000000000 ]---
 
-Fix the probe now.
-
-Fixes: df25461119d9 ("PCI: switchtec: Fix stdev_release() crash after surprise hot remove")
-Link: https://lore.kernel.org/r/01446d2ccb91a578239915812f2b7dfbeb2882af.1703428183.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: 4d96f7d48131 ("crypto: xilinx - Add Xilinx AES driver")
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/switch/switchtec.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/crypto/xilinx/zynqmp-aes-gcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index 1804794d0e686..5a4adf6c04cf8 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -1672,7 +1672,7 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
- 	rc = switchtec_init_isr(stdev);
- 	if (rc) {
- 		dev_err(&stdev->dev, "failed to init isr.\n");
--		goto err_put;
-+		goto err_exit_pci;
+diff --git a/drivers/crypto/xilinx/zynqmp-aes-gcm.c b/drivers/crypto/xilinx/zynqmp-aes-gcm.c
+index 3c205324b22b6..e614057188409 100644
+--- a/drivers/crypto/xilinx/zynqmp-aes-gcm.c
++++ b/drivers/crypto/xilinx/zynqmp-aes-gcm.c
+@@ -231,7 +231,10 @@ static int zynqmp_handle_aes_req(struct crypto_engine *engine,
+ 		err = zynqmp_aes_aead_cipher(areq);
  	}
  
- 	iowrite32(SWITCHTEC_EVENT_CLEAR |
-@@ -1693,6 +1693,8 @@ static int switchtec_pci_probe(struct pci_dev *pdev,
++	local_bh_disable();
+ 	crypto_finalize_aead_request(engine, areq, err);
++	local_bh_enable();
++
+ 	return 0;
+ }
  
- err_devadd:
- 	stdev_kill(stdev);
-+err_exit_pci:
-+	switchtec_exit_pci(stdev);
- err_put:
- 	ida_free(&switchtec_minor_ida, MINOR(stdev->dev.devt));
- 	put_device(&stdev->dev);
 -- 
 2.43.0
 
