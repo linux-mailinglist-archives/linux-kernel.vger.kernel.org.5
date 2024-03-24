@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D06D8888717
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:51:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BE1888EC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:28:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 851201F259C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:51:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C540128EAA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB58613958D;
-	Sun, 24 Mar 2024 23:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13A7920CDE6;
+	Sun, 24 Mar 2024 23:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L+eov45X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZaRzE56Q"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138191EC63F;
-	Sun, 24 Mar 2024 22:55:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A3AD1EC644;
+	Sun, 24 Mar 2024 22:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320949; cv=none; b=qYDUhMUki29UPpFDkOcZrnRUXm85TVNqLbYqJq+kcOjwi9A7kWTWAIDlte4QR7L9uROcdN8XEiQ/rCfSPpg5eEJKZNev0248gp6KIH76PCnBd93JhEVIQAnyHP6fcqyahsT037unjqg4MLq4K0xdmkRlLx8zxiKKAbk/xDXhoX8=
+	t=1711320950; cv=none; b=OWIywDq0/FaTxNWwh3QT8LcZaLXtzzC0xU9oHvxMboqAyXosgQfsd65sseGBg2ekFPWIMt6BNQzDFxNyuYwNCZs7pmbZ4szVRHzEAF1cWe261Tqn7Unj/rNej94jIQwJn5g7LSsvlv6p4vd8ls/chlei6rutqk/pmaNF1cdnFUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320949; c=relaxed/simple;
-	bh=Z8X2zP+nEhY/enFqxgIxcycK4W9hG7UStcYvoIYNi8M=;
+	s=arc-20240116; t=1711320950; c=relaxed/simple;
+	bh=XxGmLl6+DooQ9xpblrIj6cmIex0vd08lyEIDlpuMsCk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EJCK9tUzdFlRJ9SOMhkPO51UtyY4zt6AgT6AnZJEJ+vDh1YwFKw5tanfXrqU3BGHx0wNKPy0Upg8ezzCnsc7rbUs/C6laTbidI/7vtHysTpqYPoMHaJ/GxALzmXXbARnzqyat/JC/YKJ9JQJiNBzirOg9KIq7x/HZ9Zntr0NW/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L+eov45X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE97BC433A6;
-	Sun, 24 Mar 2024 22:55:46 +0000 (UTC)
+	 MIME-Version; b=lXe3iiNGV4Wp45msyMNnUZWg55hEl85NtPF91CtblA8foZHK5HfMytsSmGXbZnAoDzMGtLw5yvs3porKzoB2XlyR+ZW5xPx/LL/SUO+mj5JJwDRJ1ZWzWnuZuKDGgVeKkNhYWLIk9W48ZubIz8mVRpGCX0nRsEyqpquGZGiApXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZaRzE56Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D243DC433C7;
+	Sun, 24 Mar 2024 22:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320947;
-	bh=Z8X2zP+nEhY/enFqxgIxcycK4W9hG7UStcYvoIYNi8M=;
+	s=k20201202; t=1711320948;
+	bh=XxGmLl6+DooQ9xpblrIj6cmIex0vd08lyEIDlpuMsCk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L+eov45XysMISHJHqZ9wQHhhryRk8WCrKAVFCqpc984U2cKUZ1xt+/2FQAlmdcPsr
-	 /WTMgGjB4dhYNma111qBGRtQLimjmt3EBZTXqZh1xIbGMJ8Tyyrf69fRxg8o7VpP7j
-	 iW0BxhiTtTbzeP76WNXFyCu54YfNxHleRxB8HHhEULsfBl3KJ+PvDBz1u0+Ik7HzFg
-	 cdBY7Tw1NgXSyu5xC0SJ8MWUnHyLt6k3RnnoELGPFXzFG9vB30Q1HGIrxzwRUsdcl+
-	 oPG4psM2zYMprYnfPfXINclBo4pp3dYjZpLz2QgWFDH9v39IBs3ngDeVT5f7v3/idg
-	 k6bayTMJYG7fg==
+	b=ZaRzE56Q3HFkS7qkLsS2TI+x2Y7gx/Ve3TTZdLsb/sxHFWvWujXESqAUiZ46GzUHR
+	 ujOocNRaXuSIzppm8Ht1HhbjEhJhcOTrn2+rxpNskflgV8beyZa3tXDSH302VFC0Uy
+	 RK8egHKYACuALxmwgZ9AK4ODlb31wusryH1Qft4x+uhpJSmPW3Hh/L036eWs1sTykO
+	 SRy3luDUqqrdG7RVcByrZfd2w7M+ErFcCM3+ysejkETaRzAdfmuh/R/japYl2GkR0s
+	 rAaTyf1s7Q2qqF3G31f2VwktiFap7lgqNtx4+cstrwhjoyKOwT4OMKuobK6F48OemM
+	 SUwuzTNokSwxg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jerome Brunet <jbrunet@baylibre.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Rob Clark <robdclark@chromium.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 511/713] ASoC: meson: axg-tdm-interface: add frame rate constraint
-Date: Sun, 24 Mar 2024 18:43:57 -0400
-Message-ID: <20240324224720.1345309-512-sashal@kernel.org>
+Subject: [PATCH 6.7 512/713] drm/msm/a7xx: Fix LLC typo
+Date: Sun, 24 Mar 2024 18:43:58 -0400
+Message-ID: <20240324224720.1345309-513-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,84 +62,34 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Rob Clark <robdclark@chromium.org>
 
-[ Upstream commit 59c6a3a43b221cc2a211181b1298e43b2c2df782 ]
+[ Upstream commit 0776ad9274d96d132131af66a5941df45b9d46b4 ]
 
-According to Amlogic datasheets for the SoCs supported by this driver, the
-maximum bit clock rate is 100MHz.
+We'd miss actually activating LLC.
 
-The tdm interface allows the rates listed by the DAI driver, regardless of
-the number slots or their width. However, these will impact the bit clock
-rate.
-
-Hitting the 100MHz limit is very unlikely for most use cases but it is
-possible.
-
-For example with 32 slots / 32 bits wide, the maximum rate is no longer
-384kHz but ~96kHz.
-
-Add the constraint accordingly if the component is not already active.
-If it is active, the rate is already constrained by the first stream rate.
-
-Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://msgid.link/r/20240223175116.2005407-3-jbrunet@baylibre.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Fixes: af66706accdf ("drm/msm/a6xx: Add skeleton A7xx support")
+Patchwork: https://patchwork.freedesktop.org/patch/573043/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/axg-tdm-interface.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index cd5168e826df4..2cedbce738373 100644
---- a/sound/soc/meson/axg-tdm-interface.c
-+++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -12,6 +12,9 @@
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 500ed2d183fcc..edc1eeef844ef 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -2416,7 +2416,7 @@ static int a6xx_gmu_pm_resume(struct msm_gpu *gpu)
  
- #include "axg-tdm.h"
+ 	msm_devfreq_resume(gpu);
  
-+/* Maximum bit clock frequency according the datasheets */
-+#define MAX_SCLK 100000000 /* Hz */
-+
- enum {
- 	TDM_IFACE_PAD,
- 	TDM_IFACE_LOOPBACK,
-@@ -153,19 +156,27 @@ static int axg_tdm_iface_startup(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
+-	adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate : a6xx_llc_activate(a6xx_gpu);
++	adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate(a6xx_gpu) : a6xx_llc_activate(a6xx_gpu);
  
--	/* Apply component wide rate symmetry */
- 	if (snd_soc_component_active(dai->component)) {
-+		/* Apply component wide rate symmetry */
- 		ret = snd_pcm_hw_constraint_single(substream->runtime,
- 						   SNDRV_PCM_HW_PARAM_RATE,
- 						   iface->rate);
--		if (ret < 0) {
--			dev_err(dai->dev,
--				"can't set iface rate constraint\n");
--			return ret;
--		}
-+
-+	} else {
-+		/* Limit rate according to the slot number and width */
-+		unsigned int max_rate =
-+			MAX_SCLK / (iface->slots * iface->slot_width);
-+		ret = snd_pcm_hw_constraint_minmax(substream->runtime,
-+						   SNDRV_PCM_HW_PARAM_RATE,
-+						   0, max_rate);
- 	}
- 
--	return 0;
-+	if (ret < 0)
-+		dev_err(dai->dev, "can't set iface rate constraint\n");
-+	else
-+		ret = 0;
-+
-+	return ret;
+ 	return ret;
  }
- 
- static int axg_tdm_iface_set_stream(struct snd_pcm_substream *substream,
 -- 
 2.43.0
 
