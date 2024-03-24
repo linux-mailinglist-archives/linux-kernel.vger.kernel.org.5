@@ -1,123 +1,126 @@
-Return-Path: <linux-kernel+bounces-112640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC70C887C5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:56:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13A8C887C6A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BDD91C20AD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:56:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA4D3281D93
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18699175B6;
-	Sun, 24 Mar 2024 10:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BBA517741;
+	Sun, 24 Mar 2024 11:04:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UQdMRJgm"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="t7zxPixu";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0zP5b/bm"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B4117589
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 10:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC92171B6;
+	Sun, 24 Mar 2024 11:04:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711277755; cv=none; b=OkkpEkhxS6J3QkvhDNpPLD0LmzJAfjhfEdaSBYpboo5aOVCC9E5VzINPkeYDhESQIZSPCHeDaxgN2Zk7+WCNLjOSO/5edZzGdsIFN/gsac9cWUBhvFxBWEaIZtL3nYI4XNmub/y6YhGVwrwkFckmn/bBBM5myUB+hYM20tBkbsU=
+	t=1711278267; cv=none; b=oVqCPF1Se4RQfCcQz+VHvJWsBxVZhclnn60wwuTydp8C2o/gqvxsqVTNxJpbSJ9gYpwudEQQUPjlO5onDr+uXVRvC9adJd+Ryv6TEmnagbQIScPISN5MZc2NkgfZmnL4PV/eXl0ZRHQpyDp1K1YGXT3NQXW7JFNNHFn2RH/u1To=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711277755; c=relaxed/simple;
-	bh=DOwSL7mXDyPOAjM0UkBuYKsf3EoBGfoyowiAFlRJIsU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VwJTr3sNBl2k4QQ/ggNKWVMXSjhg3uOPrfvkTBAMRLHUx3Nl80QjjoAe8G9rZHTyRzjGq0oc+Ys0NNvhAdAYoO5r72ECYrNy+jKdB/kjZAREudooaV5nhUwfDGPXoy+dkePBk5urUSY1T6ywiDqg84cCP5GMPXsjkEe1Kh0QbFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UQdMRJgm; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso3214504276.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 03:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711277753; x=1711882553; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DOwSL7mXDyPOAjM0UkBuYKsf3EoBGfoyowiAFlRJIsU=;
-        b=UQdMRJgmLJHvmCiShSG2dwpgUsED1zrEULD12xEdXiXrANAbNW4siyhRdC7Zlr2T4r
-         03tp9Ylc7DxyB+ah8AcTAckckAjeKIUgfRSThIPTPHW17ZgmiXOs19EazWiqlPQnTwQk
-         NBUSm+/E8uPlVbQZH23YS+vxY3TNeHRY4V+9BHyzjtbM1igPgWYU5QCEtzZyH2xLWyZi
-         B5qAbrDmuME0NC0wfzUdq7iFBJ27+jBgP3AeL7Hy8ASFRWJSOkL3KU+uFycsNNikgRS6
-         ggQkCOszC2+LLhUh3vL7qDbOe1N6l3VGrmuqdvuQxHaXxrsZrgngpi+P/gNx95swnCiB
-         jrjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711277753; x=1711882553;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DOwSL7mXDyPOAjM0UkBuYKsf3EoBGfoyowiAFlRJIsU=;
-        b=sipugXjZtgt9/szGnv7IinRDFW3hwqTSN9EAmFbGUb3SH9Yc3gCI0qeGBsTomUTUx0
-         zAdmZ5wuzHHc7zGuiya9p02r+tNwUqm8Fx11O3EfpGwJh3gU71JtY2+G69JGPg/WcNHf
-         xZ5zooGGdBaNtzDffuIgIx4zrPIMlCPsvR1wBYErm5MdwdTVWW5VA6LGydcBsekpzsN7
-         eLxkHL/3leDujh8xYthNCo283bP76zdAf18vwqYJY28IfdZ7WAmCQvgueDFgD5neGXTA
-         SGDKb5AOxKcUrBhUE7SClTin/R+pHiyK6zrg2gqO9wigFN8Rq99WnxiD0kNXiSyhSXnP
-         juwg==
-X-Forwarded-Encrypted: i=1; AJvYcCWUczCCCdlxGm3VO5zuEUF/nln7vOSntya8H3BOnS8K54y8zVGwrZhjL0ZH6zfn/OOrbljQy2a1b4zrFp0n1cKIyHga5Lvu+ZdtLmcl
-X-Gm-Message-State: AOJu0YzW+Lvy7Olnb/GlYh6yoSDB26KrDoHK9dfa8q9ebYE5StU6I0wZ
-	sEc+D1Ne7iOGzJdeZR5GJzgLP5kC7MYDv87q8GP2yXd17fMV2xVqW1lDlVJtXaCcOUz7qmMppSG
-	LDs4mos/za8yO7oOdL2t/IWJC1KTjuV9UWJVbgQ==
-X-Google-Smtp-Source: AGHT+IExyKjpZseSV1kpJ7RcBkKqU6Q57JVG4+6PiFJV0gPMfZO9nn0Edo5Fex/bx491hEBPiYAPOfEi0VViYT9ql54=
-X-Received: by 2002:a5b:181:0:b0:dce:2e9:a637 with SMTP id r1-20020a5b0181000000b00dce02e9a637mr2807424ybl.20.1711277752811;
- Sun, 24 Mar 2024 03:55:52 -0700 (PDT)
+	s=arc-20240116; t=1711278267; c=relaxed/simple;
+	bh=oVWt1URKKwcX1yBL2A/VUlUd8pg+WwR5QCUkGAW00E8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZwhjuIlr3QFth+i4t4U5wl7GHSJk7sC2MqPyVjJYkzTWws5iEj6WS6rJvWGSIlH9myVN0xW+WrRtD8/hFeyd0L4ESQqN0r+JpvVoggfhrNewAkfOsLqr1z4Sj7udOA/m6FWVc45IvP7QgtDYgTaSeO1DCjNCtpgDNmL2oWodg5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=t7zxPixu; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0zP5b/bm; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711278262;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2/mH+jshQDq36UblDsSyrijdM7u3yitlRALbmDQiFhQ=;
+	b=t7zxPixu7qaYG51JCvo1ZOQWA/ACxTuuj8zFnDgHzHPztgwklM3NQLGEeGfO8BtnUwz/9i
+	pMirW20R4/jgtZHyn4BZtu2Aw10yVVIbYif1WtvymjBtuXW6Zq1kE8o3Ub5vLfyVU7QfxG
+	0UvoNfkcKVyNQgQNJYAtQZTDia3pdd9N/ttYXkZL5zIN0Qlcjw7QPiLkgaz6k5y0x62R9d
+	gb4gV1ENpfo41Fs4Vh9hxDWidwK3q5uwumbcrHQ6ypY/0fa2+ZRexzovLfG0d0Iuv2RrWA
+	6nfB/08D+O2qpTLhxDIfCO1B7j8WuvenOW9n9RbCBDfUh2ZAZfAWfLtdRXNmtg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711278262;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2/mH+jshQDq36UblDsSyrijdM7u3yitlRALbmDQiFhQ=;
+	b=0zP5b/bmPCg1ZQGyVupWSN3TpJwnNzP0yHkov/wwsnDRr2CvA/XIPR6n90Ossh1xnUewt0
+	gBjxUzMze3k1OaAQ==
+To: Thomas Gleixner <tglx@linutronix.de>, Sagi Maimon <maimon.sagi@gmail.com>
+Cc: richardcochran@gmail.com, luto@kernel.org, mingo@redhat.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ arnd@arndb.de, geert@linux-m68k.org, peterz@infradead.org,
+ hannes@cmpxchg.org, sohil.mehta@intel.com, rick.p.edgecombe@intel.com,
+ nphamcs@gmail.com, palmer@sifive.com, keescook@chromium.org,
+ legion@kernel.org, mark.rutland@arm.com, mszeredi@redhat.com,
+ casey@schaufler-ca.com, reibax@gmail.com, davem@davemloft.net,
+ brauner@kernel.org, linux-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
+In-Reply-To: <875xxdhj8k.ffs@tglx>
+References: <878r29hjds.ffs@tglx> <875xxdhj8k.ffs@tglx>
+Date: Sun, 24 Mar 2024 12:04:20 +0100
+Message-ID: <87msqnrivf.fsf@kurt.kurt.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321-apss-ipq-pll-cleanup-v2-0-201f3cf79fd4@gmail.com>
- <20240321-apss-ipq-pll-cleanup-v2-3-201f3cf79fd4@gmail.com>
- <CAA8EJprr4E1CM4f+eBzdRN41nm33xY-hRPQDn3peR94vLyJsYQ@mail.gmail.com>
- <ca4d85f1-397e-4c43-8548-436b9238e85e@gmail.com> <CAA8EJpp9jyCHgMSEBMumSz7xXUkMRm3wapjUdjzeOuJSpH5g5w@mail.gmail.com>
- <a34f1ab4-e505-4281-9a8f-b72c62beed5d@gmail.com>
-In-Reply-To: <a34f1ab4-e505-4281-9a8f-b72c62beed5d@gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 24 Mar 2024 12:55:41 +0200
-Message-ID: <CAA8EJpqDzKnwuHVwKpKURELB+fnGFEB221z+pOSYypCUy2MwuA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] clk: qcom: apss-ipq-pll: remove 'pll_type' field
- from struct 'apss_pll_data'
-To: Gabor Juhos <j4g8y7@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-On Sun, 24 Mar 2024 at 09:29, Gabor Juhos <j4g8y7@gmail.com> wrote:
->
-> 2024. 03. 22. 23:33 keltez=C3=A9ssel, Dmitry Baryshkov =C3=ADrta:
->
-> ...
->
-> >> Although my opinion that it is redundant still stand, but I'm not agai=
-nst
-> >> keeping the pll_type. However if we keep that, then at least we should=
- use
-> >> private enums (IPQ_APSS_PLL_TYPE_* or similar) for that in order to ma=
-ke it more
-> >> obvious that it means a different thing than the CLK_ALPHA_PLL_TYPE_* =
-values.
-> >>
-> >> This solution would be more acceptable?
-> >
-> > This looks like a slight overkill, but yes, it is more acceptable. The
-> > logic should be type =3D> functions, not the other way around.
-> >
-> >
->
-> If that is overkill, it does not worth the change. I will drop the patch =
-and
-> send an updated series.
+--=-=-=
+Content-Type: text/plain
 
-Either way is fine to me.
+On Sat Mar 23 2024, Thomas Gleixner wrote:
+> On Sat, Mar 23 2024 at 01:38, Thomas Gleixner wrote:
+>> PTP_SYS_OFFSET_EXTENDED moves the outer sample points as close as
+>> possible to the actual PCH read and provides both outer samples to user
+>> space for analysis. It was introduced for a reason, no?
+>
+> That said, it's a sad state of affairs that 16 drivers which did exist
+> before the introduction of the gettimex64() callback have not been
+> converted over to it within 4.5 years.
+>
+> What's even worse is that 14 drivers have been merged _after_ the
+> gettimex64() callback got introduced without implementing it:
+>
 
+[...]
 
---=20
-With best wishes
-Dmitry
+> 2020-11-05   drivers/net/dsa/hirschmann/hellcreek_ptp.c
+
+Oh, my bad. Let me switch this one to gettimex64() then.
+
+Thanks,
+Kurt
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmYACLQTHGt1cnRAbGlu
+dXRyb25peC5kZQAKCRDBk9HyqkZzgkX6D/0Up3j+XE9kDqSQoc2pu9NoxF6Srmub
+lTxnMPB7Vq5dkXM1EYUhK4Mji31dmYDdt70y0O9DrAke9RcGbWk3v45Yb2fMMWNe
+UHjol/JoZIuFdqOw8Tm8soYkB76mf1vTBgZvwDJrmBoJhVYHGZgpQhd7/VxRp1Kn
+TON3EpUj1kH9BoZTmzai8NFVivqMPrkdJTtErYZckaD7uO3lqxzTQsQ1C3SPaqZM
+TGe/WHSDudT6vov8ousEzNxoHPJt/JcJj9CFJnyYVk1wtaGBrbuU68tht4AgBd7o
+v6jiTKxpGFFqtMZISPLUgYasPwUjxCgsrEVxQmQGBzZOG+nHfP+kKKEwgafV+HSc
+jZOK52LBnaaVCdGIlwEMJUOpk8AVN6rReeUqWIHJEcezKUVn6Elo3RRyrH33aq5t
+L6sm3k1IzMGHwyhmLgp6ep/YDBHgWbSJ3qXyEr7Bet7Zq99IiynTLg11GX68QSc2
+MVBb1zldKucN3BnFl2B6sqwexbtxPNGNm5dXPJWKLLIdmh47kVFOH4+0fvwBpveu
+5Gwp5q+JZYSlqit9SfLkt2jRORt1MZmwxn4JH06+23CQ+fT/+uQBZMA8AfUtK4PJ
+7+R8WDXAZnr/ZDjXzv5zJbj49Z3X8CPKFFGWfQdCC16VMpUQPDLLslO4nZFnrXtM
+Ig6ltOiLusm+Ew==
+=e9pu
+-----END PGP SIGNATURE-----
+--=-=-=--
 
