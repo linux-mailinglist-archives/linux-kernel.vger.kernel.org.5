@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6CBC8894CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:09:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D68889877
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:39:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B7FE1F2D684
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:09:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2010429760C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B253839B4;
-	Mon, 25 Mar 2024 03:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29518227518;
+	Mon, 25 Mar 2024 03:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OcQC7QF5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OxgAd/jZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481E0146019;
-	Sun, 24 Mar 2024 23:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA2914601C;
+	Sun, 24 Mar 2024 23:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322076; cv=none; b=a1VdmT6VeV9giz4fAV1EpVEWb0NG8TEAsgkJsBcWF0k3FfSHjtaJk2G9cvBcNExDsi3HIqLEtESBjtv7mHRRQBEClGyHelDbrpckvvQKAT6HNElSdGEITENyPnZWdm4gxriYFi1vBYWQZReEu7DvHvamN8Ns82Lqe6lvJFh4jYQ=
+	t=1711322078; cv=none; b=I24neWEx1PB7cpC5kX7XG2sAe1sOO7ABwJ3nXU8zCySYy+1upQi/6E8VOYEL/4u/NlkA6t4fGGsS/BHVsUkZqqk5bnwfTRHcDQDoBnNuoj1bDWR7XB9AB73LfjxUmKUMwmcd1ezGTobgnP/xevX2zpZg4x56jfV+MHRCL1h2B7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322076; c=relaxed/simple;
-	bh=fX80GMalYyvbWjTGR43Qrf2n8NK9uE12CRuupmtEfWE=;
+	s=arc-20240116; t=1711322078; c=relaxed/simple;
+	bh=uHy+ZQRtaiUU/OqpA7P1f9fxwPU31Q0gaycK+CSU++4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EUki/146IjljTBSRiqHoJIcq2lsH8No9a2UELrYwA98Qemr2VbrI7IzJMHXxi9L/uMO5OazEqnaRGcmlGpQSsKx7Qs/2T1i9QUlQnHOxDm/agZXKOiwitaPbv6DJkAdRLbQ3ZLTyS4TfkufX5kK3JsSoqay+uVsZnSv7HRMWHfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OcQC7QF5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FA2CC433C7;
-	Sun, 24 Mar 2024 23:14:35 +0000 (UTC)
+	 MIME-Version; b=qqUR3BYKd/lrTDd3PXoc17DYkMe2YbZ1gaN5aVbyruiZe5qWmvx/IK/JDrJQGQRz6fAwS9Mqe1tZSW4t0N7boIJY7nEgg3di49nBjmzloAfFFZmsQQ1ajFAbDzLnZCVYeu9YLQbM1ZAj2ZTOLyKVHIydSXHGfEo7OajeQzfs5VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OxgAd/jZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AA96C43390;
+	Sun, 24 Mar 2024 23:14:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322076;
-	bh=fX80GMalYyvbWjTGR43Qrf2n8NK9uE12CRuupmtEfWE=;
+	s=k20201202; t=1711322077;
+	bh=uHy+ZQRtaiUU/OqpA7P1f9fxwPU31Q0gaycK+CSU++4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OcQC7QF5Tmk8os6GY0pZEyxq+GNDwnWj8UcxbvwafTmcSpz9v0Z5u0r/LrWZZGcDi
-	 QTwdOF//0wicKR/U4Vhe3njFKZUsZ2VYeEKUZ6vPXCZHb78ZeBTn9+dFOi2qavpqi9
-	 l2SNYGb8gu0+BgGUkdLJpBPLQuTTMiHGO1SUZc95JfhpJPdrRSELSyzxv3woU42tEP
-	 S1/3+IqhHhwdGdkb9jIgwyLmGTwD2+vlkdiRcDIOcFpA9AP85zJ3B6te3+VrNxJIQl
-	 OapXWnJU4DpCKiXaPIsptb9F5ZXEbI5NYw40tjCBJkkH6JFSMR3CV+0jwA3gMDPt+H
-	 ACiiP7KNA6oOQ==
+	b=OxgAd/jZZlHd6+RAiLi4RVJ1uTB1F/gT7a3+oCLsasLhxsl0OlqzkpCYxf+skHefn
+	 HVFXz/cDKkzBLI8i7axT51BJww/94velkJC4TfFPbKw7+wl/ncH8Cj/eNZhKmaqKwR
+	 wZV3+zjdaMcmA/ps2LuXT7kU2XRM41KqrCJvOEZR/fX20fPrgjPkEN3JKuFRxHJsVA
+	 ZeOkXuxyxTPE/QbqdFQZAoR9xlpaiyn/9obNM1Ni9uavndyTZOFiQ9GfOZS4ima22A
+	 TQmv5nfOjID3IFR11uTcMwfHpmV5bbh1vVhPn/V80+wb00lvgvAAwMe49Xr+Rs2cdj
+	 QzIpXZheyW4Fw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Stanislav Fomichev <sdf@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 149/451] selftests/bpf: Add global subprog context passing tests
-Date: Sun, 24 Mar 2024 19:07:05 -0400
-Message-ID: <20240324231207.1351418-150-sashal@kernel.org>
+Subject: [PATCH 6.1 150/451] bpf: don't infer PTR_TO_CTX for programs with unnamed context type
+Date: Sun, 24 Mar 2024 19:07:06 -0400
+Message-ID: <20240324231207.1351418-151-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -65,153 +64,93 @@ Content-Transfer-Encoding: 8bit
 
 From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit e2b5cfc978f871996d1f8667515c0e06b33e620e ]
+[ Upstream commit 879bbe7aa4afa80acf72a1cad7f52416ea78c52d ]
 
-Add tests validating that it's possible to pass context arguments into
-global subprogs for various types of programs, including a particularly
-tricky KPROBE programs (which cover kprobes, uprobes, USDTs, a vast and
-important class of programs).
+For program types that don't have named context type name (e.g., BPF
+iterator programs or tracepoint programs), ctx_tname will be a non-NULL
+empty string. For such programs it shouldn't be possible to have
+PTR_TO_CTX argument for global subprogs based on type name alone.
+arg:ctx tag is the only way to have PTR_TO_CTX passed into global
+subprog for such program types.
 
+Fix this loophole, which currently would assume PTR_TO_CTX whenever
+user uses a pointer to anonymous struct as an argument to their global
+subprogs. This happens in practice with the following (quite common, in
+practice) approach:
+
+typedef struct { /* anonymous */
+    int x;
+} my_type_t;
+
+int my_subprog(my_type_t *arg) { ... }
+
+User's intent is to have PTR_TO_MEM argument for `arg`, but verifier
+will complain about expecting PTR_TO_CTX.
+
+This fix also closes unintended s390x-specific KPROBE handling of
+PTR_TO_CTX case. Selftest change is necessary to accommodate this.
+
+Fixes: 91cc1a99740e ("bpf: Annotate context types")
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/bpf/20230216045954.3002473-4-andrii@kernel.org
-Stable-dep-of: 879bbe7aa4af ("bpf: don't infer PTR_TO_CTX for programs with unnamed context type")
+Link: https://lore.kernel.org/r/20240212233221.2575350-4-andrii@kernel.org
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../bpf/prog_tests/test_global_funcs.c        |   2 +
- .../bpf/progs/test_global_func_ctx_args.c     | 104 ++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+ kernel/bpf/btf.c                              |  3 +++
+ .../bpf/progs/test_global_func_ctx_args.c     | 19 +++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-index 2ff4d5c7abfce..e0879df38639b 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-@@ -18,6 +18,7 @@
- #include "test_global_func15.skel.h"
- #include "test_global_func16.skel.h"
- #include "test_global_func17.skel.h"
-+#include "test_global_func_ctx_args.skel.h"
- 
- void test_test_global_funcs(void)
- {
-@@ -38,4 +39,5 @@ void test_test_global_funcs(void)
- 	RUN_TESTS(test_global_func15);
- 	RUN_TESTS(test_global_func16);
- 	RUN_TESTS(test_global_func17);
-+	RUN_TESTS(test_global_func_ctx_args);
- }
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 7582ec4fd4131..73c36ff758b5e 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5135,6 +5135,9 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
+ 		bpf_log(log, "Please fix kernel include/linux/bpf_types.h\n");
+ 		return NULL;
+ 	}
++	/* program types without named context types work only with arg:ctx tag */
++	if (ctx_tname[0] == '\0')
++		return false;
+ 	/* only compare that prog's ctx type name is the same as
+ 	 * kernel expects. No need to compare field by field.
+ 	 * It's ok for bpf prog to do:
 diff --git a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-new file mode 100644
-index 0000000000000..7faa8eef0598b
---- /dev/null
+index 7faa8eef0598b..144d30e654ad2 100644
+--- a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
 +++ b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-@@ -0,0 +1,104 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+static long stack[256];
-+
-+/*
-+ * KPROBE contexts
+@@ -26,6 +26,23 @@ int kprobe_typedef_ctx(void *ctx)
+ 	return kprobe_typedef_ctx_subprog(ctx);
+ }
+ 
++/* s390x defines:
++ *
++ * typedef user_pt_regs bpf_user_pt_regs_t;
++ * typedef struct { ... } user_pt_regs;
++ *
++ * And so "canonical" underlying struct type is anonymous.
++ * So on s390x only valid ways to have PTR_TO_CTX argument in global subprogs
++ * are:
++ *   - bpf_user_pt_regs_t *ctx (typedef);
++ *   - struct bpf_user_pt_regs_t *ctx (backwards compatible struct hack);
++ *   - void *ctx __arg_ctx (arg:ctx tag)
++ *
++ * Other architectures also allow using underlying struct types (e.g.,
++ * `struct pt_regs *ctx` for x86-64)
 + */
++#ifndef bpf_target_s390
 +
-+__weak int kprobe_typedef_ctx_subprog(bpf_user_pt_regs_t *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
+ #define pt_regs_struct_t typeof(*(__PT_REGS_CAST((struct pt_regs *)NULL)))
+ 
+ __weak int kprobe_struct_ctx_subprog(pt_regs_struct_t *ctx)
+@@ -40,6 +57,8 @@ int kprobe_resolved_ctx(void *ctx)
+ 	return kprobe_struct_ctx_subprog(ctx);
+ }
+ 
++#endif
 +
-+SEC("?kprobe")
-+__success
-+int kprobe_typedef_ctx(void *ctx)
-+{
-+	return kprobe_typedef_ctx_subprog(ctx);
-+}
-+
-+#define pt_regs_struct_t typeof(*(__PT_REGS_CAST((struct pt_regs *)NULL)))
-+
-+__weak int kprobe_struct_ctx_subprog(pt_regs_struct_t *ctx)
-+{
-+	return bpf_get_stack((void *)ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?kprobe")
-+__success
-+int kprobe_resolved_ctx(void *ctx)
-+{
-+	return kprobe_struct_ctx_subprog(ctx);
-+}
-+
-+/* this is current hack to make this work on old kernels */
-+struct bpf_user_pt_regs_t {};
-+
-+__weak int kprobe_workaround_ctx_subprog(struct bpf_user_pt_regs_t *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?kprobe")
-+__success
-+int kprobe_workaround_ctx(void *ctx)
-+{
-+	return kprobe_workaround_ctx_subprog(ctx);
-+}
-+
-+/*
-+ * RAW_TRACEPOINT contexts
-+ */
-+
-+__weak int raw_tp_ctx_subprog(struct bpf_raw_tracepoint_args *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?raw_tp")
-+__success
-+int raw_tp_ctx(void *ctx)
-+{
-+	return raw_tp_ctx_subprog(ctx);
-+}
-+
-+/*
-+ * RAW_TRACEPOINT_WRITABLE contexts
-+ */
-+
-+__weak int raw_tp_writable_ctx_subprog(struct bpf_raw_tracepoint_args *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?raw_tp")
-+__success
-+int raw_tp_writable_ctx(void *ctx)
-+{
-+	return raw_tp_writable_ctx_subprog(ctx);
-+}
-+
-+/*
-+ * PERF_EVENT contexts
-+ */
-+
-+__weak int perf_event_ctx_subprog(struct bpf_perf_event_data *ctx)
-+{
-+	return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-+}
-+
-+SEC("?perf_event")
-+__success
-+int perf_event_ctx(void *ctx)
-+{
-+	return perf_event_ctx_subprog(ctx);
-+}
+ /* this is current hack to make this work on old kernels */
+ struct bpf_user_pt_regs_t {};
+ 
 -- 
 2.43.0
 
