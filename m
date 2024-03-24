@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516858880B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:02:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26AD98880B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:02:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3E131F25F35
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:02:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ABD71C211A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156AA130AE0;
-	Sun, 24 Mar 2024 22:36:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2E5130E2E;
+	Sun, 24 Mar 2024 22:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AgeOh++F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ete0feBV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C368130AC8;
-	Sun, 24 Mar 2024 22:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A303F130AF0;
+	Sun, 24 Mar 2024 22:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319815; cv=none; b=pjJS9CFRWz62PozR/Yw9VCBjNnliG59dGkRPtBBrYXBv2xutA6QcpoIMPu5/5YmVlqt8BZD5JJuiRbxM8x3u+RTz2lbNJfZA8uGZ8AvOw+pTcCGJsQXv6dzNwiApr6sg4MoBMtvY4yL+EAwJTXMjvUAMwa6+Br68QJXYwQUe3wY=
+	t=1711319816; cv=none; b=jwJ8x2s/aQGBJsqaZZQruAqYweiwy7pkqcapE5vun4DlS0Ole5O7oKaQay9fIAi9y/Zb9RcuSuB6Jx02g9KZmDOg93w4ejG+vZGvf6AAmaKXcXIouQaoYGW6xJN8fC4/FWGh3FQjIKvzYiELYWm1OvnzBqcVSLZJpVY2HFb13LA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319815; c=relaxed/simple;
-	bh=EIbMxu/q2XMUhSWQMGGLvMeG00Row+WgL4DEBSSi048=;
+	s=arc-20240116; t=1711319816; c=relaxed/simple;
+	bh=v7G71XpAS4tiF9hc66eXK5SwNfvpgF8Od1uEjij+cHg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AHWHO/x5cVJaYW/zaPr/BZLE/vNbS2/Nf2COQx+QAunk1ER3h169XdppqcEFnsY5GjnErxD9lKQnajGqK8jlg/s7PMWOThGqwGJgywzSU1+I4QbAEjtvfMeTJtFgaW2JRACZvulmB6cDkKER/WV1Hha8F+xvXCN5OKLO4hcx1EA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AgeOh++F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8976BC43394;
-	Sun, 24 Mar 2024 22:36:54 +0000 (UTC)
+	 MIME-Version; b=RqAPuABDRCcmVPoYmHU6hgiNaskqKILtBF8nmoGOfZOual/FwIbQ6Rs232Aebwm115Cdm9mqvBJttIZ5Rn0b4xWGTQQi0Ow0mo9gXxizpcy31MAvPUl8VYPt7HuiDVRTL/yzlof1hi6doN9HqFTDrKaDTyYAMpQzxbdEdzob1zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ete0feBV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F53AC433A6;
+	Sun, 24 Mar 2024 22:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319815;
-	bh=EIbMxu/q2XMUhSWQMGGLvMeG00Row+WgL4DEBSSi048=;
+	s=k20201202; t=1711319816;
+	bh=v7G71XpAS4tiF9hc66eXK5SwNfvpgF8Od1uEjij+cHg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AgeOh++FyCRiksr6g9S8uA536oLYmqFEycD4A6nP7YtKUVa7AEfZ318HUIMkz6GQ/
-	 kQtbkCpDTOJseoe8rQhEkNAL81X2mfC5zzo7UnpdukK7j49A9AcTga9+ZMOBS8yAH/
-	 Ti0l7mtXaiBkLywDbAIBs3jTgJqABs4CqG5a6DVMpKlnXzEL4i1tGO4zlbdMoTAUPj
-	 s9ooSBpSKn4Vbrthh1F86ou3cMO53Gw+EFKKgqy+otvCiNh+MCNA7okQ+g9zqFG5GG
-	 rUGQmW5bFJtIJLM7OZVugQVmX3m7FEbWkqNlLXTT6vpXZw2jvO7Xwn7W9xelRlMzTX
-	 np/iwIb6KNWEw==
+	b=ete0feBVfHrCncrbkfowqj5GRp8LIBvupWxIHatgHxA6X4tuLeyNFEfCr0Zamn1Fe
+	 soWpsJqXjFZGNLQ2BDrxDijHJ+b/SH9E5rC0SgqTsjN0ASFvLVUJvsieqjw+xT6+1A
+	 PRrzJ0iSbSk7BtpCwEMhpknt6k0Z9lKzgQCAqDbmYH5J36U0mmatgTBbgyfTQeTN/8
+	 e/2WF1IpSwjLh15UTyHPEurCl4iXCE/W0YKZx+ihHLor5E8ELZoVJx+D5KNc2Chv3d
+	 aLpIeLaufjQ2giCNKElz2jzc/1F0M1BcGfur3Xyku7FpOmyEC1+Vg91QsZ0jjh9y+U
+	 CeqalD3GEoUXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Frank Li <Frank.Li@nxp.com>,
-	Shawn Guo <shawnguo@kernel.org>,
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eduard Zingerman <eddyz87@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 117/715] arm64: dts: imx8qm: Correct edma3 power-domains and interrupt numbers
-Date: Sun, 24 Mar 2024 18:24:56 -0400
-Message-ID: <20240324223455.1342824-118-sashal@kernel.org>
+Subject: [PATCH 6.8 118/715] libbpf: Add missing LIBBPF_API annotation to libbpf_set_memlock_rlim API
+Date: Sun, 24 Mar 2024 18:24:57 -0400
+Message-ID: <20240324223455.1342824-119-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,63 +63,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Frank Li <Frank.Li@nxp.com>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 5136ea6b109de66b1327a3069f88ad8f5efb37b2 ]
+[ Upstream commit 93ee1eb85e28d1e35bb059c1f5965d65d5fc83c2 ]
 
-It is eDMA1 at QM, which have the same register with eDMA3 at qxp.
+LIBBPF_API annotation seems missing on libbpf_set_memlock_rlim API, so
+add it to make this API callable from libbpf's shared library version.
 
-The below commit fix panic problem.
-commit b37e75bddc35 ("arm64: dts: imx8qm: Add imx8qm's own pm to avoid panic during startup")
-
-This fixes the IRQ and DMA channel numbers. While QM eDMA1 technically has
-32 channels, only 10 channels are likely used for I2C. The exact IRQ
-numbers for the remaining channels were unclear in the reference manual.
-
-Fixes: e4d7a330fb7a ("arm64: dts: imx8: add edma[0..3]")
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: e542f2c4cd16 ("libbpf: Auto-bump RLIMIT_MEMLOCK if kernel needs it for BPF")
+Fixes: ab9a5a05dc48 ("libbpf: fix up few libbpf.map problems")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Link: https://lore.kernel.org/bpf/20240201172027.604869-3-andrii@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ tools/lib/bpf/bpf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi b/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi
-index 453fabfd17b81..cafc1383115ab 100644
---- a/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi
-@@ -96,7 +96,20 @@ &edma2 {
- 	status = "okay";
- };
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index d0f53772bdc02..dad7917903d19 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -35,7 +35,7 @@
+ extern "C" {
+ #endif
  
-+/* It is eDMA1 in 8QM RM, but 8QXP it is eDMA3 */
- &edma3 {
-+	reg = <0x5a9f0000 0x210000>;
-+	dma-channels = <10>;
-+	interrupts = <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 427 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 428 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 429 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 430 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 431 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 432 IRQ_TYPE_LEVEL_HIGH>,
-+		     <GIC_SPI 433 IRQ_TYPE_LEVEL_HIGH>;
- 	power-domains = <&pd IMX_SC_R_DMA_1_CH0>,
- 			<&pd IMX_SC_R_DMA_1_CH1>,
- 			<&pd IMX_SC_R_DMA_1_CH2>,
-@@ -104,7 +117,9 @@ &edma3 {
- 			<&pd IMX_SC_R_DMA_1_CH4>,
- 			<&pd IMX_SC_R_DMA_1_CH5>,
- 			<&pd IMX_SC_R_DMA_1_CH6>,
--			<&pd IMX_SC_R_DMA_1_CH7>;
-+			<&pd IMX_SC_R_DMA_1_CH7>,
-+			<&pd IMX_SC_R_DMA_1_CH8>,
-+			<&pd IMX_SC_R_DMA_1_CH9>;
- };
+-int libbpf_set_memlock_rlim(size_t memlock_bytes);
++LIBBPF_API int libbpf_set_memlock_rlim(size_t memlock_bytes);
  
- &flexcan1 {
+ struct bpf_map_create_opts {
+ 	size_t sz; /* size of this struct for forward/backward compatibility */
 -- 
 2.43.0
 
