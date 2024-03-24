@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-113178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7967F888214
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:37:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 092FE888216
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93700B232DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:37:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B36D21F218AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B2B1769FA;
-	Sun, 24 Mar 2024 22:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4341176A19;
+	Sun, 24 Mar 2024 22:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFrQ92eC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AVWTE4fv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADC41769E4;
-	Sun, 24 Mar 2024 22:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AB6176A03;
+	Sun, 24 Mar 2024 22:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319980; cv=none; b=FAgpeX2jj5pJf80n+QnkjqayjjXTwn9VA0WpsDpDeM9ptU/vfFb9uRwjcXZL+gqsfXMVJ9/o7Nx4nWFTRaHJUOmFVay53bJdvPHM8rGA5PuGdEdb3ZhWQ/mVLRIk/r21GsdUoqsHW5HKINURdqrqxcp1h/8c6zlJxkf+ycSqM0w=
+	t=1711319982; cv=none; b=glt+Qy0QiBWjjQI50gPb7Ft+EU1oh1y7l/FB9tY0W/ZOUtOnYaiL5jnpkSv3H1KXu7S04JSajZZw+syLbI+ZuLlzRywbCJLfj3KAZQE7Y36CWSh3/8Hv5VIdcbSMyegCTX5U0ZQsGWjm+OvxizF3UTQoOryhRBusxDg6saxthFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319980; c=relaxed/simple;
-	bh=k9fXtCbqXNZ0AnUWWV++CufZSs17sIiecx+63pb9vlI=;
+	s=arc-20240116; t=1711319982; c=relaxed/simple;
+	bh=1Ex5kFBpZC5U0wW56mG+2vwHB7YDpbOowaTErJyFC9o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uc122Fn+eTevhl5k7ihxwsZbrQbZpcDq0B76gPRYKu8NQthbfWp45xKiin9FqZW8RRSawON72wNyafJkqK1veauD8/nUv6FnhU2r8nZkrXdxs0VFwtLufG9hjmEw7GRTkh7qFsEXm8A5ckEbd4luH2WajnnE3OADlURScLUhj5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HFrQ92eC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C06D6C433F1;
-	Sun, 24 Mar 2024 22:39:39 +0000 (UTC)
+	 MIME-Version; b=AG2wQi54QBXyAYM526RHI1oaiBYmgWnIzdG9VSXlzG1xcWSEgQyDrwL6bcWm/CSKAigjwLFA9hsEecZFRiVumxSF+TvHWpPOJk6KVKIm/FpN4gIlzNGG0zK4ntLq23zX9EBBfJ2TT0v511YwFUesdFI69CfAVs+4vzZiVE51XrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AVWTE4fv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB90CC43330;
+	Sun, 24 Mar 2024 22:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319980;
-	bh=k9fXtCbqXNZ0AnUWWV++CufZSs17sIiecx+63pb9vlI=;
+	s=k20201202; t=1711319981;
+	bh=1Ex5kFBpZC5U0wW56mG+2vwHB7YDpbOowaTErJyFC9o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HFrQ92eC45Ll9sTswyYvPNnBNyd+VjNjV3XLeYfAy6wbGj/FrHodv1s+/9W2TI3uF
-	 U9OstyeplxmTx5XUMxc7uZZyEtyllJbXAgzhV44COOFTAVxo3ztBqj8Giyqir4xlyT
-	 lL8eQJrdL+3PD5l58rlMpJjgH4Gw/5WOp1LOu7tiy/1LUfo6uWRc0UVaNNlkd96ToF
-	 V+I5wkLjb7AzU1qjlw5vEjJDJXava+7aA6274xiNT6QMn2nKGbNtHR/+6YlZQaeDtB
-	 1CK85q+GgAnsjdm3tCJdmQYVYJZXqpnUXGJBjJEZWFNWsN+8Z+0lJtEn31hHfciKwv
-	 60aOOvDOfVNYA==
+	b=AVWTE4fvWFoEmMkZPXD3EOToaYVaJ6JjHf2NwQlPFojC9xMVN3c/I92tKcIgyrX38
+	 VijdBi2cxtxKFY31HlwJuS6thqEno+hrHJUqLf9bT8yP/V2qUnpaEsH7MLSJ5Mmjt+
+	 Su4Si4vxZ5yqdJuH46KfWNAiA3bjCRNVXKr9lQ79kgrP3zMwoGo5qUzEen6rXjYSmu
+	 zWnqVU2WjXjHsXRYHuEU6eg4TPRDFZ25HJvaf2M3ciPuak9dBACtUPvxL8XvvE4Xa5
+	 t0nC/qzi0Sa8HykzLYIpDIcenoX/e5lwnO8pv/kf3PZpxDZT8T1t0wt5QI2T7TDhgy
+	 GDZT85eTds0zA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: Bitterblue Smith <rtl8821cerfe2@gmail.com>,
 	Ping-Ke Shih <pkshih@realtek.com>,
 	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 287/715] wifi: rtw88: 8821cu: Fix firmware upload fail
-Date: Sun, 24 Mar 2024 18:27:46 -0400
-Message-ID: <20240324223455.1342824-288-sashal@kernel.org>
+Subject: [PATCH 6.8 288/715] wifi: rtw88: 8821c: Fix beacon loss and disconnect
+Date: Sun, 24 Mar 2024 18:27:47 -0400
+Message-ID: <20240324223455.1342824-289-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,92 +65,82 @@ Content-Transfer-Encoding: 8bit
 
 From: Bitterblue Smith <rtl8821cerfe2@gmail.com>
 
-[ Upstream commit 41a7acb7dde8395f52a707bbba7712a898dfafb0 ]
+[ Upstream commit e1dfa21427baeb813f9a2f9ceab6b7d32c3ca425 ]
 
-RTL8822CU, RTL8822BU, and RTL8821CU need an extra register write after
-reading and writing certain addresses.
+Tenda U9 V2.0, which contains RTL8811CU, is practically unusable because
+of frequent disconnections:
 
-Without this, the firmware upload fails approximately more than 50% of
-the time.
+Feb 23 14:46:45 ideapad2 wpa_supplicant[427]: wlp3s0f3u2: CTRL-EVENT-BEACON-LOSS
+Feb 23 14:46:46 ideapad2 wpa_supplicant[427]: wlp3s0f3u2: CTRL-EVENT-DISCONNECTED
+	bssid=90:55:de:__:__:__ reason=4 locally_generated=1
 
-Tested with RTL8811CU (Tenda U9 V2.0) which is the same as RTL8821CU
-but without Bluetooth.
+Feb 23 14:46:52 ideapad2 wpa_supplicant[427]: wlp3s0f3u2: CTRL-EVENT-CONNECTED
+	- Connection to 90:55:de:__:__:__ completed [id=0 id_str=]
+Feb 23 14:46:54 ideapad2 wpa_supplicant[427]: wlp3s0f3u2: CTRL-EVENT-BEACON-LOSS
+Feb 23 14:46:55 ideapad2 wpa_supplicant[427]: wlp3s0f3u2: CTRL-EVENT-DISCONNECTED
+	bssid=90:55:de:__:__:__ reason=4 locally_generated=1
 
-Fixes: a82dfd33d123 ("wifi: rtw88: Add common USB chip support")
+Feb 23 14:47:01 ideapad2 wpa_supplicant[427]: wlp3s0f3u2: CTRL-EVENT-CONNECTED
+	- Connection to 90:55:de:__:__:__ completed [id=0 id_str=]
+Feb 23 14:47:04 ideapad2 wpa_supplicant[427]: wlp3s0f3u2: CTRL-EVENT-BEACON-LOSS
+Feb 23 14:47:05 ideapad2 wpa_supplicant[427]: wlp3s0f3u2: CTRL-EVENT-DISCONNECTED
+	bssid=90:55:de:__:__:__ reason=4 locally_generated=1
+
+This is caused by a mistake in the chip initialisation. This version of
+the chip requires loading an extra AGC table right after the main one,
+but the extra table is being loaded at the wrong time, in
+rtw_chip_board_info_setup().
+
+Move the extra AGC table loading to the right place, in
+rtw_phy_load_tables().
+
+The rtw_chip_board_info_setup() can only do "software" things, and
+rtw_phy_load_tables() can really do IO.
+
+Fixes: 5d6651fe8583 ("rtw88: 8821c: support RFE type2 wifi NIC")
 Signed-off-by: Bitterblue Smith <rtl8821cerfe2@gmail.com>
 Acked-by: Ping-Ke Shih <pkshih@realtek.com>
 Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/f12ed39d-28e8-4b8b-8d22-447bcf295afc@gmail.com
+Link: https://msgid.link/276c31d8-b9a8-4e54-a3ac-09b74657aff7@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtw88/usb.c | 40 ++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ drivers/net/wireless/realtek/rtw88/main.c | 2 --
+ drivers/net/wireless/realtek/rtw88/phy.c  | 3 +++
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/usb.c b/drivers/net/wireless/realtek/rtw88/usb.c
-index e6ab1ac6d7093..a0188511099a1 100644
---- a/drivers/net/wireless/realtek/rtw88/usb.c
-+++ b/drivers/net/wireless/realtek/rtw88/usb.c
-@@ -33,6 +33,36 @@ static void rtw_usb_fill_tx_checksum(struct rtw_usb *rtwusb,
- 	rtw_tx_fill_txdesc_checksum(rtwdev, &pkt_info, skb->data);
- }
+diff --git a/drivers/net/wireless/realtek/rtw88/main.c b/drivers/net/wireless/realtek/rtw88/main.c
+index 6d22628129d0d..ffba6b88f392c 100644
+--- a/drivers/net/wireless/realtek/rtw88/main.c
++++ b/drivers/net/wireless/realtek/rtw88/main.c
+@@ -2032,8 +2032,6 @@ static int rtw_chip_board_info_setup(struct rtw_dev *rtwdev)
+ 	rtw_phy_setup_phy_cond(rtwdev, hal->pkg_type);
  
-+static void rtw_usb_reg_sec(struct rtw_dev *rtwdev, u32 addr, __le32 *data)
-+{
-+	struct rtw_usb *rtwusb = rtw_get_usb_priv(rtwdev);
-+	struct usb_device *udev = rtwusb->udev;
-+	bool reg_on_section = false;
-+	u16 t_reg = 0x4e0;
-+	u8 t_len = 1;
-+	int status;
-+
-+	/* There are three sections:
-+	 * 1. on (0x00~0xFF; 0x1000~0x10FF): this section is always powered on
-+	 * 2. off (< 0xFE00, excluding "on" section): this section could be
-+	 *    powered off
-+	 * 3. local (>= 0xFE00): usb specific registers section
-+	 */
-+	if (addr <= 0xff || (addr >= 0x1000 && addr <= 0x10ff))
-+		reg_on_section = true;
-+
-+	if (!reg_on_section)
-+		return;
-+
-+	status = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
-+				 RTW_USB_CMD_REQ, RTW_USB_CMD_WRITE,
-+				 t_reg, 0, data, t_len, 500);
-+
-+	if (status != t_len && status != -ENODEV)
-+		rtw_err(rtwdev, "%s: reg 0x%x, usb write %u fail, status: %d\n",
-+			__func__, t_reg, t_len, status);
-+}
-+
- static u32 rtw_usb_read(struct rtw_dev *rtwdev, u32 addr, u16 len)
+ 	rtw_phy_init_tx_power(rtwdev);
+-	if (rfe_def->agc_btg_tbl)
+-		rtw_load_table(rtwdev, rfe_def->agc_btg_tbl);
+ 	rtw_load_table(rtwdev, rfe_def->phy_pg_tbl);
+ 	rtw_load_table(rtwdev, rfe_def->txpwr_lmt_tbl);
+ 	rtw_phy_tx_power_by_rate_config(hal);
+diff --git a/drivers/net/wireless/realtek/rtw88/phy.c b/drivers/net/wireless/realtek/rtw88/phy.c
+index 128e75a81bf3c..37ef80c9091db 100644
+--- a/drivers/net/wireless/realtek/rtw88/phy.c
++++ b/drivers/net/wireless/realtek/rtw88/phy.c
+@@ -1761,12 +1761,15 @@ static void rtw_load_rfk_table(struct rtw_dev *rtwdev)
+ 
+ void rtw_phy_load_tables(struct rtw_dev *rtwdev)
  {
- 	struct rtw_usb *rtwusb = rtw_get_usb_priv(rtwdev);
-@@ -58,6 +88,11 @@ static u32 rtw_usb_read(struct rtw_dev *rtwdev, u32 addr, u16 len)
- 		rtw_err(rtwdev, "read register 0x%x failed with %d\n",
- 			addr, ret);
++	const struct rtw_rfe_def *rfe_def = rtw_get_rfe_def(rtwdev);
+ 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 	u8 rf_path;
  
-+	if (rtwdev->chip->id == RTW_CHIP_TYPE_8822C ||
-+	    rtwdev->chip->id == RTW_CHIP_TYPE_8822B ||
-+	    rtwdev->chip->id == RTW_CHIP_TYPE_8821C)
-+		rtw_usb_reg_sec(rtwdev, addr, data);
-+
- 	return le32_to_cpu(*data);
- }
+ 	rtw_load_table(rtwdev, chip->mac_tbl);
+ 	rtw_load_table(rtwdev, chip->bb_tbl);
+ 	rtw_load_table(rtwdev, chip->agc_tbl);
++	if (rfe_def->agc_btg_tbl)
++		rtw_load_table(rtwdev, rfe_def->agc_btg_tbl);
+ 	rtw_load_rfk_table(rtwdev);
  
-@@ -102,6 +137,11 @@ static void rtw_usb_write(struct rtw_dev *rtwdev, u32 addr, u32 val, int len)
- 	if (ret < 0 && ret != -ENODEV && count++ < 4)
- 		rtw_err(rtwdev, "write register 0x%x failed with %d\n",
- 			addr, ret);
-+
-+	if (rtwdev->chip->id == RTW_CHIP_TYPE_8822C ||
-+	    rtwdev->chip->id == RTW_CHIP_TYPE_8822B ||
-+	    rtwdev->chip->id == RTW_CHIP_TYPE_8821C)
-+		rtw_usb_reg_sec(rtwdev, addr, data);
- }
- 
- static void rtw_usb_write8(struct rtw_dev *rtwdev, u32 addr, u8 val)
+ 	for (rf_path = 0; rf_path < rtwdev->hal.rf_path_num; rf_path++) {
 -- 
 2.43.0
 
