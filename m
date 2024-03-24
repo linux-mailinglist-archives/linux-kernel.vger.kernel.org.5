@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 703D7888484
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:42:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E86888849D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0754F1F245A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:42:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52F7FB21D39
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7361B16B3;
-	Sun, 24 Mar 2024 22:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D031B16D5;
+	Sun, 24 Mar 2024 22:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uBpo3bxQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d62P8tl6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972511B0DFF;
-	Sun, 24 Mar 2024 22:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DB81B16BA;
+	Sun, 24 Mar 2024 22:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320261; cv=none; b=AxNKhB/p7bBPgtp6SfIb7PlYJ1sXxQVTO2mIwvUqQyZGtWWf+NFbNopI6TzKfZxnfCcNEOpXXB7D2qAH+Murhf5zdKEmkNTYeje7zVNqULmiF4UpDbErA8dIMOlOm4pL7tbaRLNr+N9djL33fdnKUjva3nwnIbmVF7JW6h4DKIs=
+	t=1711320262; cv=none; b=hLgShUrry4nb/k6WI6HJiBW8qQLxuQSkzHoRUpWdx7252vkVr4Hk6UsKQI0Xu9bDHIwR5lgcClyPTbe6be4kXSdGNVz7Y2x68aYu8+hcptYDTVNqmsvI6UcRoGcUWIyTpfd2a/gsGNHSxq1ZtmOrQNWwpTj2Jotrj4XH4TEBw0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320261; c=relaxed/simple;
-	bh=4C25oCwPgly30uqHrAYSqQTvBxyzpXbGxKpIMOxu0jU=;
+	s=arc-20240116; t=1711320262; c=relaxed/simple;
+	bh=tvr6kTmhbZ3h56f2WbWt45CJd1mLr8noobwId+SR7mM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hYF9SSi3ZQ4W2jArmh3MtstToRKWFz610EoBvlbMbBNsMa5uztvA08OkxjPPP4p/vSbdhXzWCaZ33lAPMQQeHZrCPmWULcbS0Phv7qMseZMnh5dBpTcz2hxKYycgf5Fq3niO6+Zw0SIOd5dw6bOcUO+L0567zehaI0Pls9qIge4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uBpo3bxQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB16FC433C7;
-	Sun, 24 Mar 2024 22:44:20 +0000 (UTC)
+	 MIME-Version; b=a440W0ugimiqVB9kYCwydlzaWkN1OpHcvW04sjCO/oP6CbcC+xap2+L5vJxhb3O1i34CyNVabodsaCorvcuDNY3Ae8kxJll93sxObykIr6SlioB4WukY5J2STk6DyTnuuk3QOqSfiepxU2GtcQpZnlKRY4owTGUlJIXTK8Xq2Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d62P8tl6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B13D2C43390;
+	Sun, 24 Mar 2024 22:44:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320261;
-	bh=4C25oCwPgly30uqHrAYSqQTvBxyzpXbGxKpIMOxu0jU=;
+	s=k20201202; t=1711320262;
+	bh=tvr6kTmhbZ3h56f2WbWt45CJd1mLr8noobwId+SR7mM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uBpo3bxQ/7P0omDL7tjRyt39uv4DiNk2LH91j9AqHzBAbBSIqV6nYNRuu1q7bVOEd
-	 hJZY5x5Ay302uUKMstW/IL9Iqk8OAkI4+ILwAEzZ95LxaNfiEszWnY6wWMMF9tUIO4
-	 JQ6VZK1HwbjBsRLFznKZM5ASp1xdpiIEHc16VHlp5DuEaK8ksvW63UI73PQv6upmK5
-	 C9nBJGibzUejIGT3avmrGeFWx7QLK46ikzhBQI8Pjf7brbAFKeAwkmOBNA5ZY4KDks
-	 F/klgJOd5CSHSSClhquc+s+1Mwz8xFrTunMKErD551YVGaRw2hifcR1azWGdB5jV1T
-	 aDP7yul9FDApg==
+	b=d62P8tl6tKN76GAnTbdoHKEDrU/UmUE0jWcQcMwFkeCyGtUj4ICLTTgOc0438znIh
+	 cSO67/XXNcm+iHYluRkWyJ4ZIHs8Gc4ALN4Nt26zuC4arXCw4TUApWf6tRJeJx3MR+
+	 7GuMa2dJuKdr+cgwuy1EeaDwT+yTEAMBSfgyri0EUi/eZOou285RmRnA9RolRiuctU
+	 ugvdeJ6g2p3aYJlXkOD1s6NxnpecuzX+HG3SsPjf/toamIl97IaGQr1nE0bf/m8c8i
+	 mWGgInqb5UUjTG2Xp9E0ntHZj6UpekuvwTu8Kg7h3zcFsAtfhy8gYqgnM3TuNS/9HK
+	 K/csn45aiJCXw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dylan Hung <dylan_hung@aspeedtech.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+Cc: Luoyouming <luoyouming@huawei.com>,
+	Junxian Huang <huangjunxian6@hisilicon.com>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 569/715] i3c: dw: Disable IBI IRQ depends on hot-join and SIR enabling
-Date: Sun, 24 Mar 2024 18:32:28 -0400
-Message-ID: <20240324223455.1342824-570-sashal@kernel.org>
+Subject: [PATCH 6.8 570/715] RDMA/hns: Fix mis-modifying default congestion control algorithm
+Date: Sun, 24 Mar 2024 18:32:29 -0400
+Message-ID: <20240324223455.1342824-571-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,39 +63,132 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dylan Hung <dylan_hung@aspeedtech.com>
+From: Luoyouming <luoyouming@huawei.com>
 
-[ Upstream commit 10201396ef6455a68ac671fa0163205d327ebb70 ]
+[ Upstream commit d20a7cf9f714f0763efb56f0f2eeca1cb91315ed ]
 
-Disable IBI IRQ signal and status only when hot-join and SIR enabling of
-all target devices attached to the bus are disabled.
+Commit 27c5fd271d8b ("RDMA/hns: The UD mode can only be configured
+with DCQCN") adds a check of congest control alorithm for UD. But
+that patch causes a problem: hr_dev->caps.congest_type is global,
+used by all QPs, so modifying this field to DCQCN for UD QPs causes
+other QPs unable to use any other algorithm except DCQCN.
 
-Fixes: e389b1d72a62 ("i3c: dw: Add support for in-band interrupts")
+Revert the modification in commit 27c5fd271d8b ("RDMA/hns: The UD
+mode can only be configured with DCQCN"). Add a new field cong_type
+to struct hns_roce_qp and configure DCQCN for UD QPs.
 
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
-Link: https://lore.kernel.org/r/20240119054547.983693-1-dylan_hung@aspeedtech.com
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Fixes: 27c5fd271d8b ("RDMA/hns: The UD mode can only be configured with DCQCN")
+Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
+Signed-off-by: Luoyouming <luoyouming@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+Link: https://lore.kernel.org/r/20240219061805.668170-1-huangjunxian6@hisilicon.com
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i3c/master/dw-i3c-master.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_device.h | 17 +++++++++--------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 16 ++++++++++------
+ 2 files changed, 19 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
-index ef5751e91cc9e..276153e10f5a4 100644
---- a/drivers/i3c/master/dw-i3c-master.c
-+++ b/drivers/i3c/master/dw-i3c-master.c
-@@ -1163,8 +1163,10 @@ static void dw_i3c_master_set_sir_enabled(struct dw_i3c_master *master,
- 		global = reg == 0xffffffff;
- 		reg &= ~BIT(idx);
- 	} else {
--		global = reg == 0;
-+		bool hj_rejected = !!(readl(master->regs + DEVICE_CTRL) & DEV_CTRL_HOT_JOIN_NACK);
-+
- 		reg |= BIT(idx);
-+		global = (reg == 0xffffffff) && hj_rejected;
- 	}
- 	writel(reg, master->regs + IBI_SIR_REQ_REJECT);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index b1fce5ddf6316..46f8a631093ba 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -585,6 +585,13 @@ struct hns_roce_work {
+ 	u32 queue_num;
+ };
  
++enum hns_roce_cong_type {
++	CONG_TYPE_DCQCN,
++	CONG_TYPE_LDCP,
++	CONG_TYPE_HC3,
++	CONG_TYPE_DIP,
++};
++
+ struct hns_roce_qp {
+ 	struct ib_qp		ibqp;
+ 	struct hns_roce_wq	rq;
+@@ -628,6 +635,7 @@ struct hns_roce_qp {
+ 	struct list_head	sq_node; /* all send qps are on a list */
+ 	struct hns_user_mmap_entry *dwqe_mmap_entry;
+ 	u32			config;
++	enum hns_roce_cong_type	cong_type;
+ };
+ 
+ struct hns_roce_ib_iboe {
+@@ -699,13 +707,6 @@ struct hns_roce_eq_table {
+ 	struct hns_roce_eq	*eq;
+ };
+ 
+-enum cong_type {
+-	CONG_TYPE_DCQCN,
+-	CONG_TYPE_LDCP,
+-	CONG_TYPE_HC3,
+-	CONG_TYPE_DIP,
+-};
+-
+ struct hns_roce_caps {
+ 	u64		fw_ver;
+ 	u8		num_ports;
+@@ -835,7 +836,7 @@ struct hns_roce_caps {
+ 	u16		default_aeq_period;
+ 	u16		default_aeq_arm_st;
+ 	u16		default_ceq_arm_st;
+-	enum cong_type	cong_type;
++	enum hns_roce_cong_type cong_type;
+ };
+ 
+ enum hns_roce_device_state {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 8206daea6767d..34e58e09b15d8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4745,12 +4745,15 @@ static int check_cong_type(struct ib_qp *ibqp,
+ 			   struct hns_roce_congestion_algorithm *cong_alg)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+ 
+-	if (ibqp->qp_type == IB_QPT_UD)
+-		hr_dev->caps.cong_type = CONG_TYPE_DCQCN;
++	if (ibqp->qp_type == IB_QPT_UD || ibqp->qp_type == IB_QPT_GSI)
++		hr_qp->cong_type = CONG_TYPE_DCQCN;
++	else
++		hr_qp->cong_type = hr_dev->caps.cong_type;
+ 
+ 	/* different congestion types match different configurations */
+-	switch (hr_dev->caps.cong_type) {
++	switch (hr_qp->cong_type) {
+ 	case CONG_TYPE_DCQCN:
+ 		cong_alg->alg_sel = CONG_DCQCN;
+ 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
+@@ -4778,8 +4781,8 @@ static int check_cong_type(struct ib_qp *ibqp,
+ 	default:
+ 		ibdev_warn(&hr_dev->ib_dev,
+ 			   "invalid type(%u) for congestion selection.\n",
+-			   hr_dev->caps.cong_type);
+-		hr_dev->caps.cong_type = CONG_TYPE_DCQCN;
++			   hr_qp->cong_type);
++		hr_qp->cong_type = CONG_TYPE_DCQCN;
+ 		cong_alg->alg_sel = CONG_DCQCN;
+ 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
+ 		cong_alg->dip_vld = DIP_INVALID;
+@@ -4798,6 +4801,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 	struct hns_roce_congestion_algorithm cong_field;
+ 	struct ib_device *ibdev = ibqp->device;
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibdev);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+ 	u32 dip_idx = 0;
+ 	int ret;
+ 
+@@ -4810,7 +4814,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 		return ret;
+ 
+ 	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
+-		     hr_dev->caps.cong_type * HNS_ROCE_CONG_SIZE);
++		     hr_qp->cong_type * HNS_ROCE_CONG_SIZE);
+ 	hr_reg_clear(qpc_mask, QPC_CONG_ALGO_TMPL_ID);
+ 	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
+ 	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SEL);
 -- 
 2.43.0
 
