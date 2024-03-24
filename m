@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-113904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87C1F888747
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:55:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBFC3888746
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:55:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42C42294243
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:55:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F40D1F25BEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:55:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB92210878;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FD021086F;
 	Sun, 24 Mar 2024 23:08:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AsHQ+c06"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hO8b136d"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4127D1ED71B;
-	Sun, 24 Mar 2024 22:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDA81ED71F;
+	Sun, 24 Mar 2024 22:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320989; cv=none; b=pf8NULwh+zG8ktPi2jc54ugBfWw7XX8U/ekH2CWs3BJ/tYRlKny7ZJ57jwcIqTLoS7jUTO1PiaFQR/M17MYx2AqT5fNhwu5rUgg3TaxNda3jgr5H6A+yhVsdLlDwwFhita/mfECoiOJqkLZD1EhxmK8/zImnD3DM/VtAjx26Vtw=
+	t=1711320990; cv=none; b=n9IgSimRA/YfeqVQmPOmjssDbaFKt+2u7gzg/KuQMFPzN4kbSA+F10mqZXWHQMGqL3OKrn6w8j+4CPeMtx78kndPVsmL3D6pq692uvIEs7fYZ1gq2JfvIEvok74xb0SJElAnoSQcgQwVcWl7U0VcXgYtJm2v9EMxH1m/eoOjw68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320989; c=relaxed/simple;
-	bh=F+WnyX1dM7yyvbEYpvwspvjG+I3TNKFtsHAdgv0gaHY=;
+	s=arc-20240116; t=1711320990; c=relaxed/simple;
+	bh=kj/dL7YvE+j0vQYw0fIYQJlGNwGBPNnRWNUy8qy+woc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Mf9eT17vZein/uZ8K0kJGeBWqLbWvaLA2DD7roJ55d4Li4A0EzEuuPK+AKnN5X/GjezBPGKDuCP6QD6BzX2qLDTfL/jy6rCcx1q+XBRdD/GU89M2szY/N0wSQyaMJSUJqpn6q76W/B0Fg9U8FO8j2zQvA6o+5Y172CkyISwVvIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AsHQ+c06; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4529FC43399;
-	Sun, 24 Mar 2024 22:56:27 +0000 (UTC)
+	 MIME-Version; b=hRn7ZEvbsctIOrxCqujmY/cHC7G84vyaHTwGimPmxcSep5+0TrfX2lLHCPMPc6e791ZgGSz+0pS4gwfK8B0t2dx0pQYhq67ycBm/mcq2ABrMZqHl1tvn2H3CWcWJImV/5LbM6SY54T9pYr6G5tIMUwQ2itGVp1j2MHk/i/lmKak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hO8b136d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 606AEC433F1;
+	Sun, 24 Mar 2024 22:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320988;
-	bh=F+WnyX1dM7yyvbEYpvwspvjG+I3TNKFtsHAdgv0gaHY=;
+	s=k20201202; t=1711320989;
+	bh=kj/dL7YvE+j0vQYw0fIYQJlGNwGBPNnRWNUy8qy+woc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AsHQ+c06K5Sru/eXioh3PF9pgJmNRcoG0AM8j0IQeDOQGCsDhteWwYpx8kHrgAy2m
-	 c55bY7+/6dvpas73n+30eGfp5a1bbl5yOJuWpOvE5kF5632QNPWDalP9DEbIlfCfvs
-	 AU006BN9DBxvze4YOY1KuSjyELYSREBduG39Ty5MNG0HJBfCteT+71faSPCr3AF0kO
-	 DGfHW22KHFGEFkl1Fn95VM+bCEQa+WfCN9dMCCD4ydH3emsqPRKTlZCEv4vEu98dcy
-	 x0x9FPCOhcBQDcSgmnjgZ+dGolgrJzLg+A8dSF2lb8pV/paUtivWCCxUuIiIMgAg8v
-	 pFiW3vCUSeGcA==
+	b=hO8b136dWmYY/ZLJsvH1sY/YFez37nIBvk6Ksf7PQEUiGf1aQ8yyQ/wx+MBA4fKsw
+	 HyIMA+1Hvr2sYFQhV3EkWruvsIGLUmSorxToUx50FGmpRyU4jocgPJNddbxVBBNTlk
+	 nro1dq/TKmdcNZ1fBLgA/OIQnB6JtvETFlOnCbw7xzrgJQ9T68Uo5MrP8e6zUZxmZI
+	 vR0qHA40ch/+owFG1mDSZfAwnPQKKUbmRootC3dK5PUbRaLzMAn4EKOxwPja49ivtS
+	 DoO+tc2quBOMJ5R+Tgiu9xdS/o+0zpIFSV/A4VCMqEeB6cT3ZCBPt+1v/HuCdHQrZW
+	 XATBsAX+GmcTQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jonathan Bell <jonathan@raspberrypi.com>,
-	Stefan Wahren <wahrenst@gmx.net>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	David Howells <dhowells@redhat.com>,
+	Steve French <sfrench@samba.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 551/713] PCI: brcmstb: Fix broken brcm_pcie_mdio_write() polling
-Date: Sun, 24 Mar 2024 18:44:37 -0400
-Message-ID: <20240324224720.1345309-552-sashal@kernel.org>
+Subject: [PATCH 6.7 552/713] smb: do not test the return value of folio_start_writeback()
+Date: Sun, 24 Mar 2024 18:44:38 -0400
+Message-ID: <20240324224720.1345309-553-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -60,44 +60,52 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jonathan Bell <jonathan@raspberrypi.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-[ Upstream commit 039741a8d7c9a01c1bc84a5ac5aa770a5e138a30 ]
+[ Upstream commit a9540e35624d1475f47dbf6353eed8b99936d36e ]
 
-The MDIO_WT_DONE() macro tests bit 31, which is always 0 (== done) as
-readw_poll_timeout_atomic() does a 16-bit read. Replace with the readl
-variant.
+In preparation for removing the return value entirely, stop testing it
+in smb.
 
-[kwilczynski: commit log]
-Fixes: ca5dcc76314d ("PCI: brcmstb: Replace status loops with read_poll_timeout_atomic()")
-Link: https://lore.kernel.org/linux-pci/20240217133722.14391-1-wahrenst@gmx.net
-Signed-off-by: Jonathan Bell <jonathan@raspberrypi.com>
-Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-Signed-off-by: Krzysztof Wilczyński <kwilczynski@kernel.org>
-Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Link: https://lkml.kernel.org/r/20231108204605.745109-4-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Steve French <sfrench@samba.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Stable-dep-of: f3dc1bdb6b0b ("cifs: Fix writeback data corruption")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-brcmstb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/smb/client/file.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index f9dd6622fe109..e47a77f943b1e 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -330,7 +330,7 @@ static int brcm_pcie_mdio_write(void __iomem *base, u8 port,
- 	readl(base + PCIE_RC_DL_MDIO_ADDR);
- 	writel(MDIO_DATA_DONE_MASK | wrdata, base + PCIE_RC_DL_MDIO_WR_DATA);
+diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
+index 4cbb5487bd8d0..043bee4020a91 100644
+--- a/fs/smb/client/file.c
++++ b/fs/smb/client/file.c
+@@ -2709,8 +2709,7 @@ static void cifs_extend_writeback(struct address_space *mapping,
+ 			 */
+ 			if (!folio_clear_dirty_for_io(folio))
+ 				WARN_ON(1);
+-			if (folio_start_writeback(folio))
+-				WARN_ON(1);
++			folio_start_writeback(folio);
  
--	err = readw_poll_timeout_atomic(base + PCIE_RC_DL_MDIO_WR_DATA, data,
-+	err = readl_poll_timeout_atomic(base + PCIE_RC_DL_MDIO_WR_DATA, data,
- 					MDIO_WT_DONE(data), 10, 100);
- 	return err;
- }
+ 			*_count -= folio_nr_pages(folio);
+ 			folio_unlock(folio);
+@@ -2745,8 +2744,7 @@ static ssize_t cifs_write_back_from_locked_folio(struct address_space *mapping,
+ 	int rc;
+ 
+ 	/* The folio should be locked, dirty and not undergoing writeback. */
+-	if (folio_start_writeback(folio))
+-		WARN_ON(1);
++	folio_start_writeback(folio);
+ 
+ 	count -= folio_nr_pages(folio);
+ 	len = folio_size(folio);
 -- 
 2.43.0
 
