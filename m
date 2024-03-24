@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-116096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 710EE889941
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:06:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 233E0889BD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:03:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33CB02A70E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:06:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD334B2C7CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FBE3A8179;
-	Mon, 25 Mar 2024 03:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23607181B95;
+	Mon, 25 Mar 2024 03:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KiURJUtl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fMyUXeSh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B43A27DE07;
-	Sun, 24 Mar 2024 23:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74EA227DE0F;
+	Sun, 24 Mar 2024 23:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323573; cv=none; b=imo35hP3DcCHN/AvzWoPbgZSxLuPinmWWCyby8Dh96EqLhhFH8GTuUUONkB6BrQYA1A0I8PIf4mEgCAUGwAXPFW1nf8wRmbBxhncZwwCFm7MCWqDY6FItgDa2DOczwjZmuzfGbbkLFJZdHVySdKY6F92JdDFot4ILDhZ9BsLkms=
+	t=1711323574; cv=none; b=qMFF2lEFwsDAgEtje7JjiTndhsiphW3Cknsq4GHBq/gF2LHvYiGsu+SWMd+b4EZ5XLEoCaDBZZDnHdelhvQ0sgtOjThQBGUmRSoxhqioKh07jXkuxwH3cSqfPMTAXr1uoCUF23M9JxHwIMJXMhPd7BtYOHmzMwkHNL/ECsMfIm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323573; c=relaxed/simple;
-	bh=76JkSKRm97cAdcOCps2E8v0iYvWOcRRw5O6tKYzS5aU=;
+	s=arc-20240116; t=1711323574; c=relaxed/simple;
+	bh=gZlmWmYHeEPssd+jm6Q0rdE6stob/+WnvKW/S/OzDzE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Eq9MdRNUfJZWpGRi3UVwVtuEgkN+H73zT4EtMKF/w6swqtnaWxH0KY4aHc4uj8DCpzKxZ7TXoSG7gcPTpr5aqqiU6iOuWL9IxPlyf+onjGSNwEv2RneamQynfHo6dQo5pci4cLgYIm1tIy7sCicAtz/Cq2088u2V5k2krZMZiKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KiURJUtl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D6BC43399;
-	Sun, 24 Mar 2024 23:39:31 +0000 (UTC)
+	 MIME-Version; b=gPTI754ARl5FHKyNihHoG542X0B8i3kVE/Df8q7Pxua/OPHdu1Y35VgWvCg8DUSmwRHjkYONgPPrLwc+ZjgQRYXpwfqKn1H40Fb5FYFmjWi7oIaLnSpJKzNYXj/6Ecn5z2AKuVZZ/Txs+hsgirn+kajfKLcxdsK+bfsGaDcwk5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fMyUXeSh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13ACC43390;
+	Sun, 24 Mar 2024 23:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323572;
-	bh=76JkSKRm97cAdcOCps2E8v0iYvWOcRRw5O6tKYzS5aU=;
+	s=k20201202; t=1711323573;
+	bh=gZlmWmYHeEPssd+jm6Q0rdE6stob/+WnvKW/S/OzDzE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KiURJUtln9/vq+Mfy2HPAJsEgzWQpKaMFOPNuL3s9iYd8zl6jbBdBlKguBPgqr7Cv
-	 kEQ/iQkPM8opHWM6zgsxzdeFxdoKG/V8pyVcFUyjnASnMk60J97an65YIQXhrspbCi
-	 sY9ZA+1reRaZXMHqzXeCDX5+Pjt30oWukbKYpi6MbezhP6HtpXZ++8mv4lTdHSAnoD
-	 +YcvVupQZm/1Cu9i/4TShH1tGSYwDIfqsy3Ho0FYgpUx9a8daOTjChiiyeAhYZstb8
-	 gO6b9IVrKURBJPO5VCD1vXj5cnVwGHGCy9sencYEceDbg1YN38kbdv8ANcr7q9WnIb
-	 ANr8X80eQIuHA==
+	b=fMyUXeShIr48kE1lTlL40QU0yY5rLEP7UzPB/0SJwGlxbo5FXqjoODhaReaURIDtr
+	 GTIlhld8cAqdZd/Dwl8uqTSbjKAjFQmPw+eYfjGG5y8tbOJzsRQ2aBCQT9Q38ttNvs
+	 lzIkiLckP9ODTq8ycyIQ80zCei6F77AV6+e0RH1Zq7/MiFZOk9v+X1Hw9KzItWxpRC
+	 Ttkel4Gydmo4aRxrG5xf/XhC2BS0i/ER6kZcx3pgxmgZ3WXw977JfTzWK7ZyIuVduV
+	 2KAAxzX1uFdzLQrOXUxMFRPsAsBiCR6JL5wV/SNqSc+2jUMDh5QrXIhs02Yq7SO0R/
+	 u/9k/VGipTZBw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Sam Protsenko <semen.protsenko@linaro.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 279/317] serial: max310x: fix syntax error in IRQ error message
-Date: Sun, 24 Mar 2024 19:34:19 -0400
-Message-ID: <20240324233458.1352854-280-sashal@kernel.org>
+Subject: [PATCH 5.15 280/317] tty: serial: samsung: fix tx_empty() to return TIOCSER_TEMT
+Date: Sun, 24 Mar 2024 19:34:20 -0400
+Message-ID: <20240324233458.1352854-281-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,38 +63,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-[ Upstream commit 8ede8c6f474255b2213cccd7997b993272a8e2f9 ]
+[ Upstream commit 314c2b399288f0058a8c5b6683292cbde5f1531b ]
 
-Replace g with q.
+The core expects for tx_empty() either TIOCSER_TEMT when the tx is
+empty or 0 otherwise. s3c24xx_serial_txempty_nofifo() might return
+0x4, and at least uart_get_lsr_info() tries to clear exactly
+TIOCSER_TEMT (BIT(1)). Fix tx_empty() to return TIOCSER_TEMT.
 
-Helpful when grepping thru source code or logs for
-"request" keyword.
-
-Fixes: f65444187a66 ("serial: New serial driver MAX310X")
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Link: https://lore.kernel.org/r/20240118152213.2644269-6-hugo@hugovil.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Link: https://lore.kernel.org/r/20240119104526.1221243-2-tudor.ambarus@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/samsung_tty.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index c122e7e90fc89..714c23f9504fc 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1433,7 +1433,7 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 	if (!ret)
- 		return 0;
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index 09b2b40b63c4d..7d3630ddebb39 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -991,11 +991,10 @@ static unsigned int s3c24xx_serial_tx_empty(struct uart_port *port)
+ 		if ((ufstat & info->tx_fifomask) != 0 ||
+ 		    (ufstat & info->tx_fifofull))
+ 			return 0;
+-
+-		return 1;
++		return TIOCSER_TEMT;
+ 	}
  
--	dev_err(dev, "Unable to reguest IRQ %i\n", irq);
-+	dev_err(dev, "Unable to request IRQ %i\n", irq);
+-	return s3c24xx_serial_txempty_nofifo(port);
++	return s3c24xx_serial_txempty_nofifo(port) ? TIOCSER_TEMT : 0;
+ }
  
- out_uart:
- 	for (i = 0; i < devtype->nr; i++) {
+ /* no modem control lines */
 -- 
 2.43.0
 
