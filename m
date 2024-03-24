@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7D4888ABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:28:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A9CD889766
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:15:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D1CE1F23F4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:28:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAFCA1C3091C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E712261AF;
-	Sun, 24 Mar 2024 23:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDD8369DE5;
+	Mon, 25 Mar 2024 02:59:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aACjLFEJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nrFPAfzf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE26512D77B;
-	Sun, 24 Mar 2024 23:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADAC12D76B;
+	Sun, 24 Mar 2024 23:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321951; cv=none; b=kvAxtjCWR2+KcE7eLruX3Jk+rPWGI6shCjRthjFSgZ79BipmmYT5jrsYZGfKT/Uy1vkju6mQp2RRN/j9BHOx4/QFMUjUwloF3Qh0QfqATWDmpTSDmcHzpBc4JREJT/vy3DcpcfdmSTUP/ypFHI2kOqeHwTsGpJdaI0HAZXIiQP8=
+	t=1711321950; cv=none; b=SpB6fvxpf1fYYT8P9azotCnd9zxahvEVl0yUaFiJdVroQemLOEmnAWwcNW8SRgKSC0/C4kAU+NZKsFrXVCu3ET90HJlj/0bQ4NHSA8uXuKQq/QN7E+EcS4/1s8GEzoymIzOj83mKqh8cLNM1ajbc4+qT6ROZBW7KilMAGGho0+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321951; c=relaxed/simple;
-	bh=k7GFb6/TvOGC/i81ZOJPpaXASgmoQdLymtrJI639qzI=;
+	s=arc-20240116; t=1711321950; c=relaxed/simple;
+	bh=f65IT3YJW0iM5S2hwJ/ZJqvbC+2+6g5WS+AfeSKUXOI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ny82pPNEHERa4P3sfEqIOw9D22zQh/Nd1lp71dx+kDYTOkQVQXUTEaTJ7V6sPKRc1htZW67Wdwc0zmTCBzVUaO6qgVrTwu9NCJneeup5ndGWe1qa3EB/JAeOx4PrCaAzbjZuWyR6vEYOa/bkuk2F7rO4irXgoIUW/sFaiVCTK6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aACjLFEJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E1E9C433C7;
-	Sun, 24 Mar 2024 23:12:28 +0000 (UTC)
+	 MIME-Version; b=a7dgkJzX3brVkKZ6qjnRXeI0xHafD9EIv63qQ81nlvtg3LtfFCLm4b00zl2QcME69GuDp+bErY/RbiTRrJHBTNHk7MidJaEHrDp/B284hko4uzhj4SvfTd92MwNNBsR7OnSsOZV/tnSvXdqs35nvL5MigtrIxEjp7F6ma+HqxQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nrFPAfzf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D678C43390;
+	Sun, 24 Mar 2024 23:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321949;
-	bh=k7GFb6/TvOGC/i81ZOJPpaXASgmoQdLymtrJI639qzI=;
+	s=k20201202; t=1711321950;
+	bh=f65IT3YJW0iM5S2hwJ/ZJqvbC+2+6g5WS+AfeSKUXOI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aACjLFEJi0y3eVTdoblZdELmHKI2nHxgaK7VouOWcHYhe3Ei/Z7DzDYL/TXvf9Uvn
-	 L8Bx7HEjMB6rp5PHjTRXTm1WVz9XBluGlBjxdIw981RDnDNcc+LMgd4gru7hntnS/X
-	 wjKfT8xLcd8WJv0L2ZPwRoVs8jW3AUh0BWzr9PQLoCH8azaOusylmRaHMfj3t6iWIe
-	 aElQM35hlMtl3JmUrnMvMH8bKBvv4PR6Xa9WBkU9UIlEakybSVizfQzpjy++007/wE
-	 diESrCtO39Du3b/HTVTCxnFxqUpN53sMISRWlxfkVKPFU1LicetVuWVCSEdC4rh8Gr
-	 XZMes2kFH5p7w==
+	b=nrFPAfzfNJp7ZUEaAwfBxQYLe82WxPu40amS2Drfzx5OdN3AyF+R3NZGBoDcmRdz4
+	 aHwFEieJ5V1nrISMTz37OaDygzckDwDJP5faB490YaEPEapiDlEGJrTSowCN39MXgA
+	 SL3T7CSQ0/c0uwaHeWVl7zS8mZvn4Lt+/Ikp/jfWJegCM3hTJ1/5o7ChudNsMcHieF
+	 Yht3/U6tNX/c0XaqNUDqQ7tY+bkcZM5e66IhmuhpDEdOLlv5a9ifWRi5ayJIRSSpMp
+	 G+jXn1JUJB4LGZpniD7WmB8zHsQtLqRNDvFQDbFyS9WRLX5m07xiuZXbMmVfJbC4GQ
+	 YX9NT0w6XMAYQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 021/451] selftests: tls: use exact comparison in recv_partial
-Date: Sun, 24 Mar 2024 19:04:57 -0400
-Message-ID: <20240324231207.1351418-22-sashal@kernel.org>
+Subject: [PATCH 6.1 022/451] ASoC: rt5645: Make LattePanda board DMI match more precise
+Date: Sun, 24 Mar 2024 19:04:58 -0400
+Message-ID: <20240324231207.1351418-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -63,42 +62,61 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 49d821064c44cb5ffdf272905236012ea9ce50e3 ]
+[ Upstream commit 551539a8606e28cb2a130f8ef3e9834235b456c4 ]
 
-This exact case was fail for async crypto and we weren't
-catching it.
+The DMI strings used for the LattePanda board DMI quirks are very generic.
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Using the dmidecode database from https://linux-hardware.org/ shows
+that the chosen DMI strings also match the following 2 laptops
+which also have a rt5645 codec:
+
+Insignia NS-P11W7100 https://linux-hardware.org/?computer=E092FFF8BA04
+Insignia NS-P10W8100 https://linux-hardware.org/?computer=AFB6C0BF7934
+
+All 4 hw revisions of the LattePanda board have "S70CR" in their BIOS
+version DMI strings:
+
+DF-BI-7-S70CR100-*
+DF-BI-7-S70CR110-*
+DF-BI-7-S70CR200-*
+LP-BS-7-S70CR700-*
+
+See e.g. https://linux-hardware.org/?computer=D98250A817C0
+
+Add a partial (non exact) DMI match on this string to make the LattePanda
+board DMI match more precise to avoid false-positive matches.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://msgid.link/r/20240211212736.179605-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/tls.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5645.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
-index 5b80fb155d549..d89ee6e1926c7 100644
---- a/tools/testing/selftests/net/tls.c
-+++ b/tools/testing/selftests/net/tls.c
-@@ -926,12 +926,12 @@ TEST_F(tls, recv_partial)
- 
- 	memset(recv_mem, 0, sizeof(recv_mem));
- 	EXPECT_EQ(send(self->fd, test_str, send_len, 0), send_len);
--	EXPECT_NE(recv(self->cfd, recv_mem, strlen(test_str_first),
--		       MSG_WAITALL), -1);
-+	EXPECT_EQ(recv(self->cfd, recv_mem, strlen(test_str_first),
-+		       MSG_WAITALL), strlen(test_str_first));
- 	EXPECT_EQ(memcmp(test_str_first, recv_mem, strlen(test_str_first)), 0);
- 	memset(recv_mem, 0, sizeof(recv_mem));
--	EXPECT_NE(recv(self->cfd, recv_mem, strlen(test_str_second),
--		       MSG_WAITALL), -1);
-+	EXPECT_EQ(recv(self->cfd, recv_mem, strlen(test_str_second),
-+		       MSG_WAITALL), strlen(test_str_second));
- 	EXPECT_EQ(memcmp(test_str_second, recv_mem, strlen(test_str_second)),
- 		  0);
- }
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 844d14d4c9a51..aac9140749968 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3802,6 +3802,16 @@ static const struct dmi_system_id dmi_platform_data[] = {
+ 		  DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+ 		  DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
+ 		  DMI_EXACT_MATCH(DMI_BOARD_VERSION, "Default string"),
++		  /*
++		   * Above strings are too generic, LattePanda BIOS versions for
++		   * all 4 hw revisions are:
++		   * DF-BI-7-S70CR100-*
++		   * DF-BI-7-S70CR110-*
++		   * DF-BI-7-S70CR200-*
++		   * LP-BS-7-S70CR700-*
++		   * Do a partial match for S70CR to avoid false positive matches.
++		   */
++		  DMI_MATCH(DMI_BIOS_VERSION, "S70CR"),
+ 		},
+ 		.driver_data = (void *)&lattepanda_board_platform_data,
+ 	},
 -- 
 2.43.0
 
