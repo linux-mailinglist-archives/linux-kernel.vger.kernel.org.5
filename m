@@ -1,166 +1,210 @@
-Return-Path: <linux-kernel+bounces-112590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD509887BB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:06:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C63D887BC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:20:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 431561F212F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:06:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 395761C20DCF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460851426B;
-	Sun, 24 Mar 2024 05:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56DAE14012;
+	Sun, 24 Mar 2024 05:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IsWxc7XQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MX/Gxhq/"
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44C8134BE
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAD21A38DE
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711256767; cv=none; b=QBJqk9vu4s5O4ufO9Kplnew6jQg0ip0NwCv8OR9//L3pcBxDwV+pGcAUSN5+66UP8iZ0zCdQUZqjgCp5zRiEg2KwOoQ43Vp3BcAaTUGrnmySTf6TLsByNLAbhV5vRJowQDswTjJSW80QDlsyCs+OIk+TpZHnM60ebpu4mKYU5v8=
+	t=1711257622; cv=none; b=I5n3PgceO/jsBkmtX/zrkitGZFCXii/0px60S0j2k4oyLvvJAatNU5eQF2nogz4B95K2eXZWau1J/HOUrwAwxFi+9eDDFSi7TtWhnqQ1UyE0WpB4eqihShV1TLlXDFa57E+0uJiqAWVkypZyJDyW+zxlRJrIBwz/eSQNNHR3P+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711256767; c=relaxed/simple;
-	bh=R1JIMxCTBe/b+a+qC/2RObOqzW1ENmG9//PB/KrwKSk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fhrpI3iqk53A4dhGlYUlaI1kjYhttsdLtQhq751XMyZyKyw+qeMExE5bYnxoNtZvYXyIeOLuXMzx7OSswoUmB0LeRjSvh3LFgOmUMY/tMENBlf4gLhaPlHBNoQYakwmg001s/7gjp8oMGwlpD02ZNYJEZumKzB6EYw71pEu/FJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IsWxc7XQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711256764;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=9duXSLuXHV8vFOCQXD8+b0A+1FBJ4vf3M5EGD4lf1a4=;
-	b=IsWxc7XQy+23Kn2VKyuHSyCdcvpyVeBI6GY0/jAiCxsK11kQUCDCspyVe/Rp2M6OK3e9w/
-	AtwiroKmu4Jyp9ra0N5RwUuTn39LkGt46/lz4xtZhdfR8HjMbNWYxW7lSsKwxx4XxoT4Qy
-	yNG7UG+dq073QkrqDLJ4Sct4bWNMqHU=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-455-NZMH7caLMYugY4ZG_wyl1w-1; Sun, 24 Mar 2024 01:06:02 -0400
-X-MC-Unique: NZMH7caLMYugY4ZG_wyl1w-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5ca5b61c841so2208365a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 22:06:01 -0700 (PDT)
+	s=arc-20240116; t=1711257622; c=relaxed/simple;
+	bh=huo0FqZh8qWe0LH5J17ricm/+PWwwHEYbbGfD/miNbQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pE872O+Off0FOTsrKrmZwyrVzgyiaR7CC2M9m2Eq4c7IhvaYlQHtjEtKUmnPDM7W1jerWDwMhNoxBuwVvpI3sLkt/u0CTqU0bFVE+FY/XgdjmCYEY8xbWnKqydEzEWksX0kn72ZyfLNxiuQAGo7axOFuKtdfuMMUMDK9fwgPIg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MX/Gxhq/; arc=none smtp.client-ip=209.85.166.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36880dc41c0so108415ab.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 22:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711257620; x=1711862420; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kw1SuZHQQ91QtNOEACeszDGcG3fk1mZSY8v6Xr5GmH4=;
+        b=MX/Gxhq/iIiiZ0Sdenq12yPvEWRUUl1mXn60P8HUlAsHSElFe10T3vARJX9bJrAZD0
+         qe9yvrNldhqjsxiO1MiCOCi0Zcsi4UKjRJj6W1Oq8p67qzRPy5ANWUsvwnbyg/+VJLf1
+         990jLIs7D5Ev9UAWGT07ZFq+1wYrNz0pYLNMMzSw2cH/ViR4wNi/kyWCZrbY65yLKDw2
+         PWx2da4c9A+Q8gibEy0ucZH59JowEQGG03DD+LnO4rQ5yN4eitBLk7k8CBee/uS0hsk5
+         TxDB+8Qkvm7nhSxPxeJe/Nj6FholAyvLuz502eF2oWBKRBeA7huYfCbm1t87dpX1sClF
+         DFKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711256761; x=1711861561;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9duXSLuXHV8vFOCQXD8+b0A+1FBJ4vf3M5EGD4lf1a4=;
-        b=XWz6MJMLPhYmXruLBv3nJbfMc0Id6psURohJ5ZEpF0J78YKkeRSTaCuOCcmKspEbg0
-         Uv7k18CsipSST8LnAs9EXHhfgD6aCUFz5Jsnt8KmPP4+GgFsgEaemIboaksqnU+OGQb5
-         U/yXmbeBmsM8sz9ID/O+MZSxvKBILVa4LcYcFWL6+VzWQTugEcsIwBD6ItmgH4+Mskvf
-         wDkwwmohecqevwSYzeCJC5pOU1SwoQ3AKneuAVG/PmC1lVkwducZchTObq539gMEV5qQ
-         tNTQM9g6FUqpvV81iqteuqvzycuHP/6RLyZHOBtj5w11IS8iT0NjkUNMJtoEL9euM00j
-         Gssg==
-X-Forwarded-Encrypted: i=1; AJvYcCXPW7ut24vAdNJ/hAIR1zp2/rJY/cWjmOyE1rBsqU4qV4rdbut8rm3AQRcbfLywZMhRxnixnQ020ssgDK8qLnAg2nulJtTA5C1nbOP/
-X-Gm-Message-State: AOJu0YzSEJEgRFNtAdY7y5JKy461Qa6JocwXKo0vb4VmdQXnHgDy4J7R
-	kQ7j0zeEB2LTyXvbrjlRYSAHvwUeIqQ1w+MUz5IZOpuKTzWw7+kfrzNDfLdxpBO4z2/2FUpmZ4K
-	ekU/9406UNfOLVCVm3wQd1V8TpXy2NxnwCLq3GXht2ZdGfBNQvLY8J4qIrhRz8g==
-X-Received: by 2002:a17:902:6ac9:b0:1dd:d431:3388 with SMTP id i9-20020a1709026ac900b001ddd4313388mr3044294plt.68.1711256761167;
-        Sat, 23 Mar 2024 22:06:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEz5guYJ9WMtWgo31CoOgbHkCiVmglV+L41zWnEE9mIBfhDjcUN0Qp+RadlqkxX65rQUFW1AQ==
-X-Received: by 2002:a17:902:6ac9:b0:1dd:d431:3388 with SMTP id i9-20020a1709026ac900b001ddd4313388mr3044285plt.68.1711256760796;
-        Sat, 23 Mar 2024 22:06:00 -0700 (PDT)
-Received: from kernel-devel.local ([240d:1a:c0d:9f00:6883:65ff:fe1c:cf69])
-        by smtp.gmail.com with ESMTPSA id x16-20020a1709027c1000b001dc486f0cbesm2379329pll.222.2024.03.23.22.05.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 22:06:00 -0700 (PDT)
-From: Shigeru Yoshida <syoshida@redhat.com>
-To: davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Shigeru Yoshida <syoshida@redhat.com>,
-	syzkaller <syzkaller@googlegroups.com>
-Subject: [PATCH net] ipv4: Fix uninit-value access in __ip_make_skb()
-Date: Sun, 24 Mar 2024 14:05:54 +0900
-Message-ID: <20240324050554.1609460-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1711257620; x=1711862420;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kw1SuZHQQ91QtNOEACeszDGcG3fk1mZSY8v6Xr5GmH4=;
+        b=fxYmiBDlttMOZrF+WjBRtbiCcK66H74WyhR25W4IA/yFr7CdsqWCqDiQY8CKRisffB
+         r1CRKPyUJ/b3QBn2LRdU80yOKbuF+8mE7emwnW+UXfHx3y4n6Wvp/7DF5Qfa63lYqCUQ
+         x31o6ZToQ/v1XjZhZ7Xal+OCLrrVezI4jKneL2AInvv8PF1SAaT3Dp211mP9zbtVHfIV
+         byc2AASJWoVLPBYok9INlzWbd/D0bvJ7c0M43Ja786febDvBt5IzsPjmVTCoI+Xmf/0/
+         LbLknaUJjMmqh0lZHN+Uu6X1AC1iEWrsKFikjs4HA2QKU1ccngV/x7jas62D+szLYMIY
+         2DJw==
+X-Forwarded-Encrypted: i=1; AJvYcCXniOd3XjPKZsm/AOtcSd5qcanbncA+iD3bPEg6Isfq5fFHbm1npdayj1Hc84xvZksQtkJjml+AznUmxCLRELVmeuUMe0WHT92N8Qug
+X-Gm-Message-State: AOJu0YxUBAMcvNYJq2hqNZwZ36Z4FEq5EcbBTrGlcN4yhgG3XYfcXc2H
+	Xi3eW7CluTlwEED8tCnwShBxHbZrllr23OnBOu88kRtlSj++YePhMDKMxOjtURsZAaRTZIuvuk8
+	jmeKdiFBGFlRDFS0GcBsaEDX2RPAJvdI3Iteb
+X-Google-Smtp-Source: AGHT+IGzjQ9GZvPCCC08VsFv7CWQiTGELgPQgjgxPRZOGgogAqPAoIQPy2YAoAWbaMlFrohJxx8Y6IHi9FwsjM1Fr0c=
+X-Received: by 2002:a05:6e02:2184:b0:366:63a7:78e6 with SMTP id
+ j4-20020a056e02218400b0036663a778e6mr820057ila.28.1711257620064; Sat, 23 Mar
+ 2024 22:20:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240209031441.943012-1-weilin.wang@intel.com> <20240209031441.943012-10-weilin.wang@intel.com>
+In-Reply-To: <20240209031441.943012-10-weilin.wang@intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sat, 23 Mar 2024 22:20:05 -0700
+Message-ID: <CAP-5=fV8fUBZihx-7wQf+DgOqoii5VVMs+Y3kFmg+5JdkD0NQA@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 09/15] perf stat: Add function to handle special
+ events in hardware-grouping
+To: weilin.wang@intel.com
+Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
+	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
+	Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-KMSAN reported uninit-value access in __ip_make_skb() [1].  __ip_make_skb()
-tests HDRINCL to know if the skb has icmphdr. However, HDRINCL can cause a
-race condition. If calling setsockopt(2) with IP_HDRINCL changes HDRINCL
-while __ip_make_skb() is running, the function will access icmphdr in the
-skb even if it is not included. This causes the issue reported by KMSAN.
+On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
+>
+> From: Weilin Wang <weilin.wang@intel.com>
+>
+> There are some special events like topdown events and TSC that are not
+> described in pmu-event JSON files. Add support to handle this type of
+> events. This should be considered as a temporary solution because includi=
+ng
+> these events in JSON files would be a better solution.
+>
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> ---
+>  tools/perf/util/metricgroup.c | 38 ++++++++++++++++++++++++++++++++++-
+>  1 file changed, 37 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
+c
+> index 660c6b9b5fa7..a0579b0f81e5 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -160,6 +160,20 @@ struct metric {
+>
+>  /* Maximum number of counters per PMU*/
+>  #define NR_COUNTERS    16
+> +/* Special events that are not described in pmu-event JSON files.
+> + * topdown-* and TSC use dedicated registers, set as free
+> + * counter for grouping purpose
 
-Check FLOWI_FLAG_KNOWN_NH on fl4->flowi4_flags instead of testing HDRINCL
-on the socket.
+msr/tsc/ is a software event where reading the value is done by rdtsc.
+Unlike tool events like duration_time we want msr/tsc/ in the group
+with the other hardware events so its running/enabled time scaling
+matches.
 
-[1]
-BUG: KMSAN: uninit-value in __ip_make_skb+0x2b74/0x2d20 net/ipv4/ip_output.c:1481
- __ip_make_skb+0x2b74/0x2d20 net/ipv4/ip_output.c:1481
- ip_finish_skb include/net/ip.h:243 [inline]
- ip_push_pending_frames+0x4c/0x5c0 net/ipv4/ip_output.c:1508
- raw_sendmsg+0x2381/0x2690 net/ipv4/raw.c:654
- inet_sendmsg+0x27b/0x2a0 net/ipv4/af_inet.c:851
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x274/0x3c0 net/socket.c:745
- __sys_sendto+0x62c/0x7b0 net/socket.c:2191
- __do_sys_sendto net/socket.c:2203 [inline]
- __se_sys_sendto net/socket.c:2199 [inline]
- __x64_sys_sendto+0x130/0x200 net/socket.c:2199
- do_syscall_64+0xd8/0x1f0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
+To some extent the topdown- events do exist in the json as
+"TOPDOWN.*". Looking at
+tools/perf/pmu-events/arch/x86/tigerlake/pipeline.json I see just
+TOPDOWN.BACKEND_BOUND_SLOTS. Perhaps we can add the rest rather than
+have a workaround here?
 
-Uninit was created at:
- slab_post_alloc_hook mm/slub.c:3804 [inline]
- slab_alloc_node mm/slub.c:3845 [inline]
- kmem_cache_alloc_node+0x5f6/0xc50 mm/slub.c:3888
- kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:577
- __alloc_skb+0x35a/0x7c0 net/core/skbuff.c:668
- alloc_skb include/linux/skbuff.h:1318 [inline]
- __ip_append_data+0x49ab/0x68c0 net/ipv4/ip_output.c:1128
- ip_append_data+0x1e7/0x260 net/ipv4/ip_output.c:1365
- raw_sendmsg+0x22b1/0x2690 net/ipv4/raw.c:648
- inet_sendmsg+0x27b/0x2a0 net/ipv4/af_inet.c:851
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x274/0x3c0 net/socket.c:745
- __sys_sendto+0x62c/0x7b0 net/socket.c:2191
- __do_sys_sendto net/socket.c:2203 [inline]
- __se_sys_sendto net/socket.c:2199 [inline]
- __x64_sys_sendto+0x130/0x200 net/socket.c:2199
- do_syscall_64+0xd8/0x1f0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
+If topdown events are in json and msr/tsc/ is treated like a software
+event, as we do here:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/util/parse-events.c?h=3Dperf-tools-next#n1920
+perhaps we don't need the special events category?
 
-Fixes: 99e5acae193e ("ipv4: Fix potential uninit variable access bug in __ip_make_skb()")
-Reported-by: syzkaller <syzkaller@googlegroups.com>
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
-I think IPv6 has a similar issue. If this patch is accepted, I will send
-a patch for IPv6.
----
- net/ipv4/ip_output.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Ian
 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 1fe794967211..39229fd0601a 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -1473,7 +1473,7 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
- 		 * by icmp_hdr(skb)->type.
- 		 */
- 		if (sk->sk_type == SOCK_RAW &&
--		    !inet_test_bit(HDRINCL, sk))
-+		    !(fl4->flowi4_flags & FLOWI_FLAG_KNOWN_NH))
- 			icmp_type = fl4->fl4_icmp_type;
- 		else
- 			icmp_type = icmp_hdr(skb)->type;
--- 
-2.44.0
-
+> + */
+> +enum special_events {
+> +       TOPDOWN =3D 0,
+> +       TSC     =3D 1,
+> +       SPECIAL_EVENT_MAX,
+> +};
+> +
+> +static const char *const special_event_names[SPECIAL_EVENT_MAX] =3D {
+> +       "topdown-",
+> +       "TSC",
+> +};
+>
+>  /**
+>   * An event used in a metric. This info is for metric grouping.
+> @@ -2102,6 +2116,15 @@ static int create_grouping(struct list_head *pmu_i=
+nfo_list,
+>         return ret;
+>  };
+>
+> +static bool is_special_event(const char *id)
+> +{
+> +       for (int i =3D 0; i < SPECIAL_EVENT_MAX; i++) {
+> +               if (!strncmp(id, special_event_names[i], strlen(special_e=
+vent_names[i])))
+> +                       return true;
+> +       }
+> +       return false;
+> +}
+> +
+>  /**
+>   * hw_aware_build_grouping - Build event groupings by reading counter
+>   * requirement of the events and counter available on the system from
+> @@ -2126,6 +2149,17 @@ static int hw_aware_build_grouping(struct expr_par=
+se_ctx *ctx __maybe_unused,
+>         hashmap__for_each_entry(ctx->ids, cur, bkt) {
+>                 const char *id =3D cur->pkey;
+>
+> +               if (is_special_event(id)) {
+> +                       struct metricgroup__event_info *event;
+> +
+> +                       event =3D event_info__new(id, "default_core", "0"=
+,
+> +                                               /*free_counter=3D*/true);
+> +                       if (!event)
+> +                               goto err_out;
+> +
+> +                       list_add(&event->nd, &event_info_list);
+> +                       continue;
+> +               }
+>                 ret =3D get_metricgroup_events(id, etable, &event_info_li=
+st);
+>                 if (ret)
+>                         goto err_out;
+> @@ -2597,8 +2631,10 @@ int metricgroup__parse_groups(struct evlist *perf_=
+evlist,
+>                 ret =3D hw_aware_parse_groups(perf_evlist, pmu, str,
+>                             metric_no_threshold, user_requested_cpu_list,=
+ system_wide,
+>                             /*fake_pmu=3D*/NULL, metric_events, table);
+> -               if (!ret)
+> +               if (!ret) {
+> +                       pr_info("Hardware aware grouping completed\n");
+>                         return 0;
+> +               }
+>         }
+>
+>         return parse_groups(perf_evlist, pmu, str, metric_no_group, metri=
+c_no_merge,
+> --
+> 2.42.0
+>
 
