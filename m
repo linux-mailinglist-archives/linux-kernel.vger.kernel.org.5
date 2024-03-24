@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1072D888DB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:56:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B0B889E42
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:05:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40C2D1C240D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:56:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C36861F37515
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CFD51CB667;
-	Mon, 25 Mar 2024 01:09:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080833D52A3;
+	Mon, 25 Mar 2024 03:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O7tUZDH0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HVl2O/Qg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406DF2944A9;
-	Sun, 24 Mar 2024 23:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0CC2944A1;
+	Sun, 24 Mar 2024 23:51:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324286; cv=none; b=KbLnvjuiE0mW26Wwi+IFXK56SF6wj17IPpbg84v96LrrllHQ+NaB6z2uFihOpIajzB7q6o+sNQ8a73JjAOCn6VCHi31WPq+X9JHXliPD0+Z1PS1wMamhBjp8Ih8L9RhzVSAY9IEgis3Gfc0knc7QCwvX2QoBpZ+p9+MbMoNi90g=
+	t=1711324287; cv=none; b=Rydr6EGhtqR+2dN7Eu6bE9/DzLfQYuc64A6H/6YxftJtesFy7SBfU/bL7BArIrmvBD7HNIS9gCkroM1ZefTbnIWwS5FU0F+3X/IZJiz8xGp81l4wFh3EBDlryV2NbfhLxD+sMuCHfYHj6NML16OiqVh1v1DHXsVDKX9jamkuCe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324286; c=relaxed/simple;
-	bh=8y2ALWR45OaPP3Yk7OH4re6Oss8mMCQwxJVebggh1Wc=;
+	s=arc-20240116; t=1711324287; c=relaxed/simple;
+	bh=AtFzqDVBmi7701nAnV2WFXR0J4wXEjsi4aMYf0fKSDE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ab5zgNKONiNwqYDYUwbMZkjC5nhBNsPzFmiU6JDcU3L5wntiNYZJPtkH68o37umqxT/rdKGlpZF3rfaFg0He0Dy2fADiyIFd8wwf3CyGbPJS7nMrgFmQxcHapfqvlqWh3xMfkSr/IyUiGKi1aCQOSdvmlLGAK5zNjRpmOdxMrVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O7tUZDH0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28DFFC43394;
-	Sun, 24 Mar 2024 23:51:24 +0000 (UTC)
+	 MIME-Version; b=PwdrtcFX/cGlTaDNZhcNA2Yrlad+cQE5a5iCKc56S4F5K5tKNznH/Va9quJqsCeDZomOtSYT8tUE6+n0pjDdN+a92wQtGwvYkwFTKvx3l5LX4PuZc8ftMi9k7f8rcCImDvIAa6SmFKg5R9qejEnojHJ7RWDmYi28onJm4R4t3ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HVl2O/Qg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6683AC433A6;
+	Sun, 24 Mar 2024 23:51:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324285;
-	bh=8y2ALWR45OaPP3Yk7OH4re6Oss8mMCQwxJVebggh1Wc=;
+	s=k20201202; t=1711324286;
+	bh=AtFzqDVBmi7701nAnV2WFXR0J4wXEjsi4aMYf0fKSDE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O7tUZDH0IL8g2nGp1D9zwpbQBdEwtfHH8KF/w8890dBPb4z9yMH/VqQgXxNGgWYx1
-	 +2teSjcRURxO0ff01QQlcf0KfRTqMI8tBoMUOhU+Vp0EvCtlEbSiPJm8jjoipBPEAK
-	 sxD/6lkqAAw7YLEzZ4/erZ6dvTXxplWfwXJGsil+tI52+hkBVNwwN3p68xnuJnB2+K
-	 8AIhfFvTO3ncT9S06QHMkETaiLeSXtMuBxDvnZBwmA8Rva/iKvPUbihWJa5oAKA1Sp
-	 i2tdtGS/Xp/0c8NkI1+52IqaJQsEQqu8Zx7DgM4Rf71Wqf0469GnQYPrbD7J1SzSaX
-	 /C7LRkpie3fYg==
+	b=HVl2O/QgvXYWUQm7eLnvGv1688zmcksbEdBX9aIBuvsXbkGCMor+X/HRR6YLSp33T
+	 RkShRrOq2/N6uGSVwqLWyn4RdbB3hZ/Z/70xoEWKdHGXwRliw2A01EtsoyO6ls/giq
+	 7stYlFkHx8GTALBgqiQTQU3zJlIO8t2xgocPuiejZ/mLjT+eyb5zYD8mcoommvmBfC
+	 tSJiy3PDKBxAfIfcna+MTyo3e6zeJPLf/4L17Ik0aDToxbKg92e+wi4wid2SZxWuoe
+	 94U3vyNt+RBtcm5iKPuCg0lPWKEQ+m0eFgob2DGNC1hgTs/gM9AHDT1yeMT8a7f7+R
+	 iLLRy9mYBAsNg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 061/148] net: kcm: fix incorrect parameter validation in the kcm_getsockopt) function
-Date: Sun, 24 Mar 2024 19:48:45 -0400
-Message-ID: <20240324235012.1356413-62-sashal@kernel.org>
+Subject: [PATCH 4.19 062/148] net/x25: fix incorrect parameter validation in the x25_getsockopt() function
+Date: Sun, 24 Mar 2024 19:48:46 -0400
+Message-ID: <20240324235012.1356413-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -64,7 +64,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 
-[ Upstream commit 3ed5f415133f9b7518fbe55ba9ae9a3f5e700929 ]
+[ Upstream commit d6eb8de2015f0c24822e47356f839167ebde2945 ]
 
 The 'len' variable can't be negative when assigned the result of
 'min_t' because all 'min_t' parameters are cast to unsigned int,
@@ -73,31 +73,33 @@ and then the minimum one is chosen.
 To fix the logic, check 'len' as read from 'optlen',
 where the types of relevant variables are (signed) int.
 
-Fixes: ab7ac4eb9832 ("kcm: Kernel Connection Multiplexor module")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/kcm/kcmsock.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/x25/af_x25.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-index a82892c288600..45450f0fd9acb 100644
---- a/net/kcm/kcmsock.c
-+++ b/net/kcm/kcmsock.c
-@@ -1276,10 +1276,11 @@ static int kcm_getsockopt(struct socket *sock, int level, int optname,
+diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
+index 9d0328bb30ca1..8d78f204ba3c1 100644
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -475,12 +475,12 @@ static int x25_getsockopt(struct socket *sock, int level, int optname,
  	if (get_user(len, optlen))
- 		return -EFAULT;
+ 		goto out;
  
 -	len = min_t(unsigned int, len, sizeof(int));
+-
+ 	rc = -EINVAL;
  	if (len < 0)
- 		return -EINVAL;
+ 		goto out;
  
 +	len = min_t(unsigned int, len, sizeof(int));
 +
- 	switch (optname) {
- 	case KCM_RECV_DISABLE:
- 		val = kcm->rx_disabled;
+ 	rc = -EFAULT;
+ 	if (put_user(len, optlen))
+ 		goto out;
 -- 
 2.43.0
 
