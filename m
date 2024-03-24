@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-116248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46A8B889DC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:53:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5399C88966E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:51:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAC201F36C90
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:53:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AA8AB26FAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 232303C4256;
-	Mon, 25 Mar 2024 03:36:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69DC83C2524;
+	Mon, 25 Mar 2024 03:35:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXDyNkkl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BTtSQJ5t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2616C17EB7A;
-	Sun, 24 Mar 2024 23:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71B713C83C;
+	Sun, 24 Mar 2024 23:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324008; cv=none; b=IGRXn2PToLk3saSO6QiEv2Nfz7eXOTaNfpxF2ZQE5xPygC1mb4EbUGYBu8+0booPL/4lhcR978aSkXhKjt9+Z/0g7VR7y1aAI1BmvaLK+WpJ40Jj9CuDnIT3Y7/sf6t0bGR5R2/vBkSZTYGxUWFnEcOlGtlJ4vl1PAeP9C2p7rU=
+	t=1711324008; cv=none; b=nI2c5FXdZnHn3Xp7cuB70aHkx0KjhJDnZHcbrwj31+Z/4P1EucYja3VsyC6v9VLy4rp5iaU+I84fZItZkZqpi4TlwJnSlxLXwLF8ZqdynPTclAHKETsJmPQzubjjoTpk5tXX2AsmKnF6/OLRJIz6q7ZbRSW6ZTdPaALRfWds+lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324008; c=relaxed/simple;
-	bh=6zsh90FjlNz03vkNYYf8ZUIghWHUOsxZgTKLCL4hVMM=;
+	bh=q/zQI/aVAcj6DReUdBtfbzpmGks9RLFWREZi7JOicZU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ja1lqz7a+bjYR3gUaDv0mbBeMNKE4P6yPOBNsrzxn04YrI/mW0HjQR6FhXHeUBKN75IKPx3AMoXaZTMfr4siFpKPmgj7CvQQEWMDRx4097M/pwzqy5J9mkSyIZprSilHraNpxgGnmlgsr0xuu8Pzcau+UEJnDf5KJIkfQ7BG+mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXDyNkkl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BBBDC433F1;
+	 MIME-Version; b=bzbVCKHrK9medmdto64GbR8aREfh6pFm82pNNTGonGw/1mt/mHBqYW0kU1KtQvZh/JSyWskhuuUfUDfLhiM4hgaDqyEUI8OWk2j1sXukjA2muLkck7qMIIxhPkM9f6clwv5XLgJSqLCMnqpuRNFOJgqE264qnTpIqrNlVpSiIv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BTtSQJ5t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 024BAC43390;
 	Sun, 24 Mar 2024 23:46:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324006;
-	bh=6zsh90FjlNz03vkNYYf8ZUIghWHUOsxZgTKLCL4hVMM=;
+	s=k20201202; t=1711324007;
+	bh=q/zQI/aVAcj6DReUdBtfbzpmGks9RLFWREZi7JOicZU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MXDyNkklRmk52bcbitSxR/aF337OSF+q6tFmarZR9rvz7BNR5kPHrJ7PQx6UxJDDv
-	 kGznPmjiRKrySsTcox+XO52wehabY/gvr1DV8928DqZ3jJCuEKqA9Hxf1elLZAFB5R
-	 N88M3gcrBFDCYDOhyRaEI/A+1gL0m136YQyAP2CE54melwnt6SIzjWsJBZGkn9SN3O
-	 piFE/UWHMKjKIaz15PA0o+izfYpqXnl/ptCzykWW3fbpIhFfNvLJyPKwJK+HLrYspu
-	 BkMr2wz8f0RMCfHhJwSvpSDpQOTXyhUX5Zrp6mBmB7cwqZc5S5KPeiBDoyeXQtifU8
-	 Tb8Bi10vo2NxQ==
+	b=BTtSQJ5tHjGaIJaD5DM+uU+jbDlkdJbzsa4YqiTKRQr8USy9ifwrOB7RwOWi1S5aG
+	 YG6gPpkUFPFDbd12l3Uz1vGWFpdiRbWWy4FVIbWoleGzCCn4PMdgVEWEJcMswWAOlS
+	 2va2KIA0GTA/q6MnL593fXvnb/VVpA0t49ZO7uliZupQO95ldL5wKrRGqIWgTMdoEL
+	 1KK8uu3eqa/oZeAg1AQe3Vor0QxFnclOH+eu9ulCvjqCF3SZbbwdhz5POg0UxMeaMU
+	 MnQDYd/BOR5tg2VP+KuXo0hZrCVItK0gNJqISRBaaKteSy0LsUv0uCwSZNEC1kUNPG
+	 tRhXS17E+Qqsw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Manuel Fombuena <fombuena@outlook.com>,
-	Jiri Kosina <jkosina@suse.com>,
+Cc: Yishai Hadas <yishaih@nvidia.com>,
+	Tamar Mashiah <tmashiah@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 007/183] HID: multitouch: Add required quirk for Synaptics 0xcddc device
-Date: Sun, 24 Mar 2024 19:43:40 -0400
-Message-ID: <20240324234638.1355609-8-sashal@kernel.org>
+Subject: [PATCH 5.4 008/183] RDMA/mlx5: Relax DEVX access upon modify commands
+Date: Sun, 24 Mar 2024 19:43:41 -0400
+Message-ID: <20240324234638.1355609-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,38 +64,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Manuel Fombuena <fombuena@outlook.com>
+From: Yishai Hadas <yishaih@nvidia.com>
 
-[ Upstream commit 1741a8269e1c51fa08d4bfdf34667387a6eb10ec ]
+[ Upstream commit be551ee1574280ef8afbf7c271212ac3e38933ef ]
 
-Add support for the pointing stick (Accupoint) and 2 mouse buttons.
+Relax DEVX access upon modify commands to be UVERBS_ACCESS_READ.
 
-Present on some Toshiba/dynabook Portege X30 and X40 laptops.
+The kernel doesn't need to protect what firmware protects, or what
+causes no damage to anyone but the user.
 
-It should close https://bugzilla.kernel.org/show_bug.cgi?id=205817
+As firmware needs to protect itself from parallel access to the same
+object, don't block parallel modify/query commands on the same object in
+the kernel side.
 
-Signed-off-by: Manuel Fombuena <fombuena@outlook.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.com>
+This change will allow user space application to run parallel updates to
+different entries in the same bulk object.
+
+Tested-by: Tamar Mashiah <tmashiah@nvidia.com>
+Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+Link: https://lore.kernel.org/r/7407d5ed35dc427c1097699e12b49c01e1073406.1706433934.git.leon@kernel.org
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-multitouch.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/infiniband/hw/mlx5/devx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index c37399f61c67b..c3810e7140a55 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -2090,6 +2090,10 @@ static const struct hid_device_id mt_devices[] = {
- 		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
- 			USB_VENDOR_ID_SYNAPTICS, 0xcd7e) },
- 
-+	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
-+		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
-+			USB_VENDOR_ID_SYNAPTICS, 0xcddc) },
-+
- 	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
- 		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
- 			USB_VENDOR_ID_SYNAPTICS, 0xce08) },
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index 26cc7bbcdfe6a..7a3b56c150799 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -2811,7 +2811,7 @@ DECLARE_UVERBS_NAMED_METHOD(
+ 	MLX5_IB_METHOD_DEVX_OBJ_MODIFY,
+ 	UVERBS_ATTR_IDR(MLX5_IB_ATTR_DEVX_OBJ_MODIFY_HANDLE,
+ 			UVERBS_IDR_ANY_OBJECT,
+-			UVERBS_ACCESS_WRITE,
++			UVERBS_ACCESS_READ,
+ 			UA_MANDATORY),
+ 	UVERBS_ATTR_PTR_IN(
+ 		MLX5_IB_ATTR_DEVX_OBJ_MODIFY_CMD_IN,
 -- 
 2.43.0
 
