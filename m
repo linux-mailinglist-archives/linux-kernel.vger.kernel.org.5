@@ -1,134 +1,96 @@
-Return-Path: <linux-kernel+bounces-112834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B986887ED3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:11:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9146588AA16
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:50:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFC1F1F2122E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:11:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C333E1C34AB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:50:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B9B10949;
-	Sun, 24 Mar 2024 20:11:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB3971746;
+	Mon, 25 Mar 2024 15:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qj+s5LNJ"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="W9qFDpeK"
+Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B93F9EB;
-	Sun, 24 Mar 2024 20:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE14C128395;
+	Mon, 25 Mar 2024 15:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711311083; cv=none; b=LnamYA1GLeVHAafRnKaK3bhtCe8DHAorAgS14/5v37taRmWHuhwdOILJkLBRojTJK7NNRa8qq1c5GfgPg8Q0GtQiJVZFAyQBDpMRcV5oLfIVeQg45+NnVE7luO8+jhw7oXSjoXIPg2DpMpjaybAlPWK+Yii4ySHHor2HJu/2l04=
+	t=1711379322; cv=none; b=Rr1TsCyFCcHAzrcbfrjPuonuWTDiVV2ibtMqBZWKK4/1wFXPEUm/VU08mQe704VrRKiQFUgkdAZSHEKuYvLVfltLzGEN44nixFroCYQum6748WPrxQ5C4dDNH4H2kHTUeR+GmICAFYiZBQI/G7ErIxnMBoXxl85ljJYIkMJj2OM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711311083; c=relaxed/simple;
-	bh=YfShyLlMU4oc5HThsKpL/da4VjS/5TBjcBDjAl1yFYU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OmWWIF7BfDF8pPAxwtKs81Lx7itChHZrBjeUaUd1vxENY1iYNoaKgTatGciJsSM1O2ZtSpbPAC5FmKhcKS5t2FOHLekTiGkKZlqCghK/OMQrNgZQkxVwPgy7zJrIB3uEdw+WmAv/7iJ/pReRuZm4xtz4cPK6KBuSKBTOgRc3B3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qj+s5LNJ; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d485886545so65620901fa.2;
-        Sun, 24 Mar 2024 13:11:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711311080; x=1711915880; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BdRDKLqI7DjUpUVxY41B4kNIhxfYBVE7snw01hwzEWw=;
-        b=Qj+s5LNJNq4V9eLOWlCYdL2AstOLBYhgrzTmbh9X4awtwCdslVurEKF2djQXbH/zsH
-         Vcw5tLzytmZhya7DLwvQQjwybIFXFgcsahLxAfdO/vcs97Q/oA6kSShIjf+FTV2Cn+or
-         soVtKa/g8hJxjfN5nm06yk4fDUhxSakAhCB9kYYQGWseYaz8Z4+fwwNcVgv3aCPBJlT+
-         kbkDg5VHpt29eCv1jWyKydu6oGX0aMpvGtl2fUFZGP7A4E/2Ah58/UFsp4FNtcvXGKUW
-         gO05xhvx6Tk52neBB8MEuxCz3dBA1V3UENEJiZM4GN0P4EIoDiOmHrw/ugs2PI0R1zgf
-         puaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711311080; x=1711915880;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BdRDKLqI7DjUpUVxY41B4kNIhxfYBVE7snw01hwzEWw=;
-        b=OQ2mviJ6uTqPApIrBwXAIeXrGzB/KLTcsNxY3I0MhbK6273DGvuVJEQSefE055MZkZ
-         UuQR2egd9zrZDDB2UufjylP5JHMBzVWvxyvOM1D4xBw+KrlzxvH0SrXHGJKdTNdqtGfq
-         28kFLsfj+wLH9cT7FK34/f/LjyKV66LwbzMF0xmBDRYbKt0FeaH3e77Fxh04tXQbkqDs
-         Unnl0U1onQbyhJDCZ7m833WW2bqHDXg9s/jGzEr0NHcBBSc+PQh1tKANLRdmHxXN0itr
-         6KIbPUzHx21HuiGd8uGuZujbyneOtzxzjin3gkUin6BwMQNmTr8Pum9DZg9sWYscrtHC
-         ICjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXH2BZDJQgynQQacac7j1OYCho8gd++O3DKb3rg+IqpSF4l1EDrTNM7zuvOVUfOJxhf9eANFfCWkVMZaf0R3X/urwkOBt3WV9mA3AG63sVNVMYW3Ex2oiq4KxW1pnEUYD+O5QNd44xxaJmm6ZQPS75DcmSvUy+6bswYsT03bABlpUzxLLeSj4Vf2JqDRVHp3cyGCH3kbHNumW7DzETeBbq7KbEHxU4oLQ==
-X-Gm-Message-State: AOJu0Yx3X3wQF9MvA5ozLozhjplLmJMVBnSYMzJjaLCr+t1RDfAXMoiH
-	VZpR/I4FLRirneQDSBU9Hx9FwUI0p4YchkVeK/pnhftSGWVJ8lPAwQX/CABCgft2XdlV2Nq2FOY
-	X3xTSiaGajBpB/fvY7wTvFvi5acM=
-X-Google-Smtp-Source: AGHT+IE9S7GsrcuYSQ6UjCF21DOHCzkHnAa+0LFD989vbFcSCjq0DO3UrxnZWo7r0yFZ40OrDic1sGRcNWa1klIwAFw=
-X-Received: by 2002:ac2:446b:0:b0:515:8dd3:e94d with SMTP id
- y11-20020ac2446b000000b005158dd3e94dmr3311694lfl.68.1711311080226; Sun, 24
- Mar 2024 13:11:20 -0700 (PDT)
+	s=arc-20240116; t=1711379322; c=relaxed/simple;
+	bh=4eUXmKM7SyiyHM/IxR2x3wjvf4JQ3Ytj0cbIwS+59Tc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TdJHqmPo5Vu+ddJfKWvSJy9BEIFwfw2hePl9snZBWAmQ1H17Oy/gxbjsSp+Pp7QG/cE4FevA1yOi/uy9TciYoo9ohdnyUz9/7yfKu5agVbKPchMxXWE8CcqpLi7nCQnbHbNMjG/9OHz5dNWRa+0+54tC6o0iibVG3fDHM7hW9+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=W9qFDpeK; arc=none smtp.client-ip=161.97.139.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
+Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
+	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rolwF-003KEw-0u;
+	Mon, 25 Mar 2024 16:08:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=sWnFDfi1/XqxIpOEFodQssSrAAdigmg6P7HROJwwOI4=; b=W9qFDpeKt57pNsUuHdG4rbVqS/
+	Xia3MmBHHQ9FIzT5KmUnjwn/B0O9nIDIaZCGsj4hIPyfUSsSb+5ERzwkPjHcj878yfoHGjNbaQlax
+	3uOdBAhZvlLI+5VHhnzRRj/U0E5S4f14dWPCvqT0eUGLUlQpzC0oUQAydZSO4T4dEklNfwwbz6Rxw
+	MAFAm/FOITk5X+XjUD180WE89gr1z7WfBFA1/Rl2EZ3zScpmS4ggYM0kWru/P5HmEKq7JQZiYyTyl
+	L/zBTpSnspJeoFozbvR8k/i6FDIIMwisiJa9DBdl8MpXhfuIXsh2fA4CGqe6MHXe4xk/DkgZQ+c0c
+	V1yFjzXw==;
+Received: from p2003010777026a001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7702:6a00:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andreas@kemnade.info>)
+	id 1roUCT-000Y9b-VS; Sun, 24 Mar 2024 21:12:13 +0100
+Received: from andi by aktux with local (Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1roUCS-000yR4-21;
+	Sun, 24 Mar 2024 21:12:12 +0100
+From: Andreas Kemnade <andreas@kemnade.info>
+To: lee@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	mazziesaccount@gmail.com,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev
+Cc: Andreas Kemnade <andreas@kemnade.info>
+Subject: [RFC PATCH 0/2] mfd: rohm-bd71828: Add power off
+Date: Sun, 24 Mar 2024 21:12:08 +0100
+Message-Id: <20240324201210.232301-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324150107.976025-1-hpa@redhat.com> <20240324150107.976025-6-hpa@redhat.com>
-In-Reply-To: <20240324150107.976025-6-hpa@redhat.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Sun, 24 Mar 2024 22:10:44 +0200
-Message-ID: <CAHp75Vdo5TMqm8H0OCGw5=_dwY1M0N4DOYUZy5NEbfJ1=KxXXQ@mail.gmail.com>
-Subject: Re: [PATCH v5 RESEND 5/6] power: supply: power-supply-leds: Add
- charging_red_full_green trigger for RGB LED
-To: Kate Hsuan <hpa@redhat.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
-	linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Mar 24, 2024 at 5:02=E2=80=AFPM Kate Hsuan <hpa@redhat.com> wrote:
->
-> Add a charging_red_full_green LED trigger and the trigger is based on
-> led_mc_trigger_event() which can set an RGB LED when the trigger is
-> triggered. The LED will show red when the battery status is charging.
-> The LED will show green when the battery status is full.
->
-> Link: https://lore.kernel.org/linux-leds/f40a0b1a-ceac-e269-c2dd-0158c5b4=
-a1ad@gmail.com/T/#t
+Add power off functionality. Marked as RFC because of magic numbers
+without a good source and strange delays. The only information source is
+only a vendor kernel.
 
-You can drop the 'T/#t' part.
+Andreas Kemnade (2):
+  dt-bindings: mfd: Add ROHM BD71828 system-power-controller property
+  mfd: rohm-bd71828: Add power off functionality
 
-..
+ .../bindings/mfd/rohm,bd71828-pmic.yaml       |  2 ++
+ drivers/mfd/rohm-bd71828.c                    | 31 ++++++++++++++++++-
+ 2 files changed, 32 insertions(+), 1 deletion(-)
 
-> +               led_mc_trigger_event(psy->charging_red_full_green_trig,
-> +                                    intensity_green,
-> +                                    3,
+-- 
+2.39.2
 
-ARRAY_SIZE()
-
-> +                                    LED_FULL);
-
-..
-
-> +               led_mc_trigger_event(psy->charging_red_full_green_trig,
-> +                                    intensity_red,
-> +                                    3,
-
-Ditto.
-
-> +                                    LED_FULL);
-
-..
-
-> +               led_mc_trigger_event(psy->charging_red_full_green_trig,
-> +                                    intensity_red,
-> +                                    3,
-
-Ditto.
-
-> +                                    LED_OFF);
-
---=20
-With Best Regards,
-Andy Shevchenko
 
