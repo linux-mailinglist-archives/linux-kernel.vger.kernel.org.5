@@ -1,107 +1,146 @@
-Return-Path: <linux-kernel+bounces-112551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5EA5887B6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BEAF887B71
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:25:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFDB8282383
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:18:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCC422823F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D91F6127;
-	Sun, 24 Mar 2024 02:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBCE44439;
+	Sun, 24 Mar 2024 02:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="mdwqG+3F"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bG9rclhs"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3006B81E;
-	Sun, 24 Mar 2024 02:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BED028F1
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 02:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711246706; cv=none; b=e7PS6kQO3GxgM3Bb3szbR2f2MSoBNr1tsa40CsjPBTRBLJq7SM07pGs/IA16pY+rKalYmrdeNWZ5koJKYZmFT795FBwmcm3Awa8KRyTKZeh8OnDX1Cw6q4Mm+hVkEAGqlTDuM+jJZmeMGNcjZvqUStfbMdr4K9d0W9Ly1BS6kg8=
+	t=1711247144; cv=none; b=lVFLljIBPD5cjrjC88JJK6oCmA0g7DEcrhJn6pr3Cm+B1LeLzMkLCBIKN4/VsVznw3MlYQXHdr/fM6CmqDNv3cKWe7UQXFi9xt3TibLEXEL5Uv/Hznbknu9Xkz08oalaGNmScE007JH1hmNHkqlu3m6U31iqMSfrcXCOBvHfP6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711246706; c=relaxed/simple;
-	bh=F7pwxm/tPBGKtUMC3ZEfCKwrCmIoRVUfDtH/CDYn3zQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=VsIgaDkoaQloFmBoLLKOoR0PJzWWfLEWUj0YNZzgqiuCkpdVzSkyqkgh187Ir9zWAoAoQDFk8+qrSuD5Oiuml4F0rjxhOAAkzH+nMp/azaqMow0gVACNvpQXpgJtDMgsaOeg5CLfuHH3BhdwgFND6JLi73vK/lLgoQ7oTlxBHdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=fail (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=mdwqG+3F reason="signature verification failed"; arc=none smtp.client-ip=156.67.10.101; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711247144; c=relaxed/simple;
+	bh=Lf8yoDkOzrlo1LsMbwoX0ZqzqnhmbHCAwtRTnmQiewA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dj2+keEMxETT6E/YZkjm+o9wrcY1IOmvjRNlcLqw145TB+NiW6RM1xmBdrjEGbcXT6lJ8nxOEQwb/ju8Wt8UZ3HDedC+qjyDcym3+gLSw7V+4i/fU5sVimJZE3+F/Bs2DeQC6v+enuE53aYtfqFlmxY348R6JHBC7E19FADRF8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bG9rclhs; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-430ccb3d65eso25263761cf.2;
-        Sat, 23 Mar 2024 19:18:24 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a470d7f77eeso410644666b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 19:25:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711247141; x=1711851941; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hjNxjQJRQ/l7WCeyRyW/5FcOffEjbz9J38JL7rInVM8=;
+        b=bG9rclhsXCVT2cso3Doc++TBF+TzflA9hr/HB+ChzOLQUKI74LSAAajqsw2D6Xqc2N
+         JBodNs41T7+/Jy1t/F2V8zxef81onfDSwc8YxEQdRbgcjZNLw2z6a+V80mNzhGeHDZxK
+         0cSZkrx+3+4jkiukRQ2zHB2OtkPB68XjCzzuHs5Ithl0MgpAncMFDmeAqEoAxhdjrdV+
+         JCIsejrcLEIsk8i2MjmfUkJ7JujAbIyhfWvq3dgAu66TbhrTs2xzmflygOPiOeCkjIGB
+         KE2JBRRrgsDt/eULbZ9b1P95NbjWzK4Vz5JbvouMHlBpi3oUDfzTzIXgcxghA83wtRDu
+         q04Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711246704; x=1711851504;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :list-unsubscribe:list-subscribe:list-id:precedence:dkim-signature
-         :references:in-reply-to:message-id:date:subject:cc:to:from
+        d=1e100.net; s=20230601; t=1711247141; x=1711851941;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AJuSN2mVtkWQkOpaD8kHP46jLo5a0+0zPP26wEDEV+I=;
-        b=pDRZTC0Mq6mRdHaGobo78rxCltbGz9WLlWZz2itzB5vvbTxjpwEbPEE+Soon05IVmN
-         LkpTaAIkMwQ0iDchKsSS0JqbMDhsFbyh6HzFHm+A08LVJfOI1n5lWnrcCPiBIxCaoK+1
-         GOUqBsgcsRt8WigluS8VanFKciAFD+/DikNyWLKHgYaYzg1i9c6PchMoa823Y6oLq7T/
-         RhsK3xZ0HDzNG4OerfuO+GIg03BaBC4FiJK2KylWOVe5CV/qnvGMq1k/WeFMG8bpSmNn
-         3nSV6kC5EqwE6DzzNc+BmEdq1SMDGp099eNowVRHKlnGrpXqnmIleJNdD2YEmVt37mPd
-         42LA==
-X-Forwarded-Encrypted: i=1; AJvYcCVYKKErEfVU+wSld46Qka0BnAPlbm5cqWRLQZLDPMsK3PERSzG1h6cc0q/tcVQDsV4g6CNVrrO9N2wR+NhNXIIBp6UxGGjAlNwpbTzUk0DYBn2hGHo2Ma6iy4fOon+BjkigRopbAy+nRd2tpBZXTMsrnB2KejwJmu3AGcuh/Q==
-X-Gm-Message-State: AOJu0YxslrTEJ/YXKkzYFKbtQeCVqdJwVoMh3c0ILUMViYC6VzjgDGKA
-	GqyjcpyQUm8bLvv6OGv7WJrh/+GdanB61AHkRu0TAnvCoNdKpqn0
-X-Google-Smtp-Source: AGHT+IHfae4sSWGgGhbwqfimhP9OqnVAZk5eIcBi4qMuJEqqbsNr0gM5SssOJWxb6nduPIOrhnE6og==
-X-Received: by 2002:a05:622a:174b:b0:431:4e88:b8ef with SMTP id l11-20020a05622a174b00b004314e88b8efmr925159qtk.26.1711246703894;
-        Sat, 23 Mar 2024 19:18:23 -0700 (PDT)
-Received: from l1441l.lan0.xorvpn.com (pool-98-116-41-146.nycmny.fios.verizon.net. [98.116.41.146])
-        by smtp.gmail.com with ESMTPSA id bc13-20020a05622a1ccd00b004309b22265asm1266241qtb.75.2024.03.23.19.18.23
+        bh=hjNxjQJRQ/l7WCeyRyW/5FcOffEjbz9J38JL7rInVM8=;
+        b=xS/DRFsHJNPVY/Qh/EDEzYASfP5OtKr+lk8zFJWPRplX4ffx/jglbY8pBSN/IlHqAg
+         VKGO3SxHLWVod7qEHMMS573BOVCPVltDqI1fHS3mZAX08J04PrtSqMCIVRYd2h27pxay
+         9GSUDDPJFS34icmRyOvscoMZ1s76VeEvBVDdFIRUcbZHzRUPQrW3FgrpPuknTdNqAhFr
+         skaInH3ivQLHOAxyZFQ9px6S2q6up0rruFvU3ef1EF8qOMHSvfU7ICfLkY/ZoloFJmH2
+         O0J/pbFRQItFHBk/YFtNK6RnpO6FU91xR6sm9OvTiAOCsS+DwsN5oYNXZTIhSOqkmz6r
+         /vlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUPyKWTf02xGMqmAyThvBzuQ4nRN9LeAo7g8BAitVW1As3Ozl+flnObdQUytP6NYZ0xsTVyc/KVtGAxeZVW3wDXJG5wCOEwOD639PfB
+X-Gm-Message-State: AOJu0YwD9mpOG080zMdk49IHx0pqZRLVe8i784HAni77Aca/0e40q9X2
+	B9eXCNUS07GLJln7HJdDDR5AncQSYTGzcBNyrjXSb/cp3GjdOuwbM5/Xu3OvgpY=
+X-Google-Smtp-Source: AGHT+IECuNIWdaxTRasUz7/0wdaVGWw7V2dyP/WSCsevXmk/2AuD4jHTfkoaoknrctQf9XrqHtzxYg==
+X-Received: by 2002:a17:906:f194:b0:a46:a662:e56f with SMTP id gs20-20020a170906f19400b00a46a662e56fmr2470442ejb.38.1711247140185;
+        Sat, 23 Mar 2024 19:25:40 -0700 (PDT)
+Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
+        by smtp.gmail.com with ESMTPSA id e18-20020a170906c01200b00a472eb53793sm1498478ejz.161.2024.03.23.19.25.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Mar 2024 19:18:23 -0700 (PDT)
-From: Daniel Hodges <hodges.daniel.scott@gmail.com>
-To: andrew@lunn.ch,
-	Daniel Hodges <hodges.daniel.scott@gmail.com>
-Cc: ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	lee@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-leds@vger.kernel.org,
-	pavel@ucw.cz
-Subject: Re: [PATCH 1/3] leds: trigger: legtrig-bpf: Add ledtrig-bpf module
-Date: Sat, 23 Mar 2024 22:15:02 -0400
-Message-ID: <a9662071-8050-46b7-8416-d440d45bbb52@lunn.ch>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <ac8e77881212e18d117059a698affd6afc2607af.1711113657.git.hodges.daniel.scott@gmail.com>
-References: <cover.1711113657.git.hodges.daniel.scott@gmail.com> <ac8e77881212e18d117059a698affd6afc2607af.1711113657.git.hodges.daniel.scott@gmail.com>
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101]) (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits)) (No client certificate requested) by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDF12940B; Sat, 23 Mar 2024 22:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch; s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version: References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject: Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding: Content-ID:Content-Description:Content-Disposition:In-Reply-To:References; bh=F33wnbx3Y36tdDg+lawZFiW4Fv7MKDor5UODN7GSPC8=; b=mdwqG+3FksuYxx7/e8MH3Wp5bU 4QoFdM3A/3u16qenQEZuOh35DPyFmWVNmeYw3kPwA7ZpH3e+kaRugfnzAmcr1fvQds7NQA4u6nSk+ rCbjDcrwOptaGm/CITDxSLalhNdDLB7TXz5MXlwt71jxo9rfjT+KeWStdOnagboJIML8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2) (envelope-from <andrew@lunn.ch>) id 1ro9hQ-00B4Rx-HJ; Sat, 23 Mar 2024 23:18:48 +0100
-Precedence: bulk
+        Sat, 23 Mar 2024 19:25:39 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Sun, 24 Mar 2024 03:25:37 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: Brian Gerst <brgerst@gmail.com>, linux-kernel@vger.kernel.org,
+	x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
+	David.Laight@aculab.com,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
+Message-ID: <Zf+PIYP4TyF6ZRVy@gmail.com>
+References: <20240322165233.71698-1-brgerst@gmail.com>
+ <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
 
-From: Andrew Lunn <andrew@lunn.ch>
 
-On Fri, Mar 22, 2024 at 10:08:14AM -0400, Daniel Hodges wrote:
-> This patch adds a led trigger that interfaces with the bpf subsystem. It
-> allows for BPF programs to control LED activity through calling bpf
-> kfuncs. This functionality is useful in giving users a physical
-> indication that a BPF program has performed an operation such as
-> handling a packet or probe point.
+* Uros Bizjak <ubizjak@gmail.com> wrote:
 
-Don't you want a mechanism to say which LED it should blink? Say you
-have a BPF IR receiver, a BPF kernel scheduler and a BPF firewall. All
-sharing the same LED is probably not what you want. Each probably
-wants its own LED.
+> On Fri, Mar 22, 2024 at 5:52 PM Brian Gerst <brgerst@gmail.com> wrote:
+> >
+> > Currently, x86-64 uses an unusual percpu layout, where the percpu section
+> > is linked at absolute address 0.  The reason behind this is that older GCC
+> > versions placed the stack protector (if enabled) at a fixed offset from the
+> > GS segment base.  Since the GS segement is also used for percpu variables,
+> > this forced the current layout.
+> >
+> > GCC since version 8.1 supports a configurable location for the stack
+> > protector value, which allows removal of the restriction on how the percpu
+> > section is linked.  This allows the percpu section to be linked normally,
+> > like other architectures.  In turn, this allows removal of code that was
+> > needed to support the zero-based percpu section.
+> 
+> The number of simplifications throughout the code, enabled by this
+> patch set, is really impressive, and it reflects the number of
+> workarounds to enable the feature that was originally not designed for
+> the kernel usage. As noted above, this issue was recognized in the GCC
+> compiler and the stack protector support was generalized by adding
+> configurable location for the stack protector value [1,2].
+> 
+> The improved stack protector support was implemented in gcc-8.1,
+> released on May 2, 2018, when linux 4.17 was in development. In light
+> of this fact, and 5 (soon 6) GCC major releases later, I'd like to ask
+> if the objtool support to fixup earlier compilers is really necessary.
+> Please note that years ago x86_32 simply dropped stack protector
+> support with earlier compilers and IMO, we should follow this example
+> also with x86_64, because:
 
-      Andrew
+Ack on raising the minimum version requirement for x86-64 
+stackprotector to 8.1 or so - this causes no real pain on the distro 
+side: when *this* new kernel of ours is picked by a distro, it almost 
+always goes hand in hand with a compiler version upgrade.
 
+We should be careful with fixes marked for -stable backport, but other 
+than that, new improvements like Brian's series are a fair game to 
+tweak compiler version requirements.
+
+But please emit a (single) prominent build-time warning if a feature is 
+disabled though, even if there are no functional side-effects, such as 
+for hardening features.
+
+In general distro kernel developers & maintainers like seeing the 
+performance (and other) effects of their compiler version choices, but 
+we are not very transparent about this: our fallbacks are way too 
+opaque right now.
+
+Thanks,
+
+	Ingo
 
