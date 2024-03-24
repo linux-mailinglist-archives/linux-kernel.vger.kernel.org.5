@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-116267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99DD889DDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64CEA889305
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:18:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88F391F37245
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:56:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D276C1F3286A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC7028A58D;
-	Mon, 25 Mar 2024 03:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5CA2F840E;
+	Mon, 25 Mar 2024 01:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F9sQV0pl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KLQzYfrZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CEC181334;
-	Sun, 24 Mar 2024 23:47:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 812D31802C0;
+	Sun, 24 Mar 2024 23:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324080; cv=none; b=XbhxvEmlRUjGZS+T8iqVKLDtERiX8WUiOHXur5hdKT754xPXXuiP3atxdCZ51LzxvdoM5MtLIjf/5l/wo4FOQm0qvN3t0d0sP1hASXihrGXvD4FFbxSdCxqfNQyzfN7wcbY4TA27NtRqcKo1N0u0viyZ8Sptwbo+OiGfAHJSMgQ=
+	t=1711324081; cv=none; b=NpQ4Ff+FuCMgdly2zhp5HC+xzsqrGUb4ETtQFIkjflZZiK7JAEhBjjEpbHR7WhNsn6+VBEE7WnnIxRxe4qajPvxJc6mG6YMof+/Buj4SvT4rwlTQZgjhIlXR472XFVv55qQ/+uCPNjNWcNIBRFEkVnJ4w2Qqxn7W+CjqvIC0Dpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324080; c=relaxed/simple;
-	bh=Jl624/yQTx+aht0Fvw+Xpx7HC3ohezQCwwbaYhQE/nY=;
+	s=arc-20240116; t=1711324081; c=relaxed/simple;
+	bh=jlq9gbxywDwNsqbzWZRis+/iVmpZIiTCgDSTxuMz0/E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mz1lL+mqXZEeZ9UPw1FceJlwnS3dsVO5h2K4K/pPPr++pOE/FPEXcnleY3ja+DEzMRe33YpOivyrx4sPz+qm8Vjlu7JpE15j5eZikm2H9Ofmx7ABpZB8/urzM8qTC/ao2Sz4grtVmGzFVeMMzn+aUuzGycOc3ldIKahOID/uC0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F9sQV0pl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65F75C43390;
-	Sun, 24 Mar 2024 23:47:58 +0000 (UTC)
+	 MIME-Version; b=NelOyhFxWWt94SEBgUq3FxXHqzxvfCWSHLW+h2rM6uhbN2dcly4O0SDE6x/FhW66jRxTn7lDZ/LZCYakO1NIrnVLKjs//rgAAd4A0KvBofLEILQZ/1l/+hI2THC1TieTZ60Jup86bIQDLbIaJFQS7wc+E0HZbS40HONR9Bq9ou8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KLQzYfrZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB364C433C7;
+	Sun, 24 Mar 2024 23:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324079;
-	bh=Jl624/yQTx+aht0Fvw+Xpx7HC3ohezQCwwbaYhQE/nY=;
+	s=k20201202; t=1711324080;
+	bh=jlq9gbxywDwNsqbzWZRis+/iVmpZIiTCgDSTxuMz0/E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=F9sQV0pl8gUPmgV7p53+XCEyY06n3GqNUxkskAcQZ7E09WoZLsdayeyScPj3rhK06
-	 8cdfLFZsNh4aws87iAq7J8H1IWmCYsMT00VypdVL5iisypBixgXD67naVC2M68fBa0
-	 hLvgHEnj/PPw1Jjd9A9XAd7vM63RcacOHrObbJjvfopnSm6stTdPFXLwwx83sKglUy
-	 RFmrL38xzpD8vYlCzGP4bNpAoCLb0SCbQik09hRkkFeQ7ALv4EWOqKGJAU4/VHYwVJ
-	 fIcvR0DaX/kT9l2omxNg1cR6PMa2gIiGMmIuuHT6P7k0f1nHUWg5qUHr30OC8pZaCh
-	 gyPnaAnD3Uz+A==
+	b=KLQzYfrZ0xE//iAFvYOQxtNoiMUzp+SzbTkkDVOcwiozP3mmBE5uiPn/BBrbqKKT2
+	 Sz0Ma+/OJlMDtzMpPd9vk5huil2TyfzBWeqonKUdMnKmfVWh0Imrc4OfY720Q0zRWX
+	 F8zzSO9c4Zf1ZOLanlmfsp0cyHuo+PO6ACor6Qln2Lr0Nye7aIbUJBMsTKRPVdEiMf
+	 l4y4RHIbJG0YlzeZkTZ8ct9PrXrp6SCtnarYS5FmuCdwcD7RtKBA6exFhmuWln2FjQ
+	 WDhhwwnY7laJMlzOtvHLpUbg/mRXCbYJIJXVhSjEtzxdKwudGLSYcQ2aganvcj9RIu
+	 FiUg39YIx+Oaw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>,
-	Willem de Bruijn <willemb@google.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 079/183] udp: fix incorrect parameter validation in the udp_lib_getsockopt() function
-Date: Sun, 24 Mar 2024 19:44:52 -0400
-Message-ID: <20240324234638.1355609-80-sashal@kernel.org>
+Subject: [PATCH 5.4 080/183] net: kcm: fix incorrect parameter validation in the kcm_getsockopt) function
+Date: Sun, 24 Mar 2024 19:44:53 -0400
+Message-ID: <20240324234638.1355609-81-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -65,7 +64,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 
-[ Upstream commit 4bb3ba7b74fceec6f558745b25a43c6521cf5506 ]
+[ Upstream commit 3ed5f415133f9b7518fbe55ba9ae9a3f5e700929 ]
 
 The 'len' variable can't be negative when assigned the result of
 'min_t' because all 'min_t' parameters are cast to unsigned int,
@@ -74,33 +73,31 @@ and then the minimum one is chosen.
 To fix the logic, check 'len' as read from 'optlen',
 where the types of relevant variables are (signed) int.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+Fixes: ab7ac4eb9832 ("kcm: Kernel Connection Multiplexor module")
 Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/udp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/kcm/kcmsock.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index a6f982b2d32af..3b3f944798850 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2679,11 +2679,11 @@ int udp_lib_getsockopt(struct sock *sk, int level, int optname,
+diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+index 8a8ea7e6774d5..920b0ebf1cb80 100644
+--- a/net/kcm/kcmsock.c
++++ b/net/kcm/kcmsock.c
+@@ -1277,10 +1277,11 @@ static int kcm_getsockopt(struct socket *sock, int level, int optname,
  	if (get_user(len, optlen))
  		return -EFAULT;
  
 -	len = min_t(unsigned int, len, sizeof(int));
--
  	if (len < 0)
  		return -EINVAL;
  
 +	len = min_t(unsigned int, len, sizeof(int));
 +
  	switch (optname) {
- 	case UDP_CORK:
- 		val = READ_ONCE(up->corkflag);
+ 	case KCM_RECV_DISABLE:
+ 		val = kcm->rx_disabled;
 -- 
 2.43.0
 
