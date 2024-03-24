@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4287688A3DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:14:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B07E28888CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:37:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2956EB66878
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:32:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D489D1C2666B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE4D34D476;
-	Mon, 25 Mar 2024 02:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FE9246E30;
+	Sun, 24 Mar 2024 23:21:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D1X/D/wW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rej8Uvbg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2874E204FA3;
-	Sun, 24 Mar 2024 23:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6C1204FA2;
+	Sun, 24 Mar 2024 23:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321475; cv=none; b=NEFWANY/ZZLvs0uE/MQIxOT3vwuf50hpoI8hx98MexElxYbBN6MED33an7gStVMKW5OMJ16t07B6glaguIajxXcV+x4qVhp7knQckpJCUegEJnwlyVurQDWR79+y2/8HOm6KHDzpk5Y3CjviduvQ0P5/MN09BNjBurMNs3B1LTA=
+	t=1711321477; cv=none; b=RkeIvsp99bhk/gzm6wA/FoGsZ0tlsuY7bwxEqj+zJirgHf7kVHvqdbk+QqeRmiTqd5EWZ3PuTzlU/p37jJz19NQN4NsMjCRiqQWHSsISRdugNO0P7pcrXUCU/8dO6WCuFotTc+0p8aB7Ln3oU81nrwBXM+lcSk8fs5/xjkTonZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321475; c=relaxed/simple;
-	bh=6czK7Hn3MnAD3YyAV5TfrDyAIetWQpDb15+Q7U90avU=;
+	s=arc-20240116; t=1711321477; c=relaxed/simple;
+	bh=of02US8bUUeHmltBhwO0q0jgCHO9nnXXigQFqbU83BU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jWt82T/n15AhyT+Owdq0WF4Kro4NwjuQMMqW0vbnUEcbKFoPkvUHz2ng+lW3slqbD2+0esVxknUqfkggrJC+ofLthvS6CASyzsnug0ZwUulJWTAyy+cJ7ioc8cI18HKdUVWAo9VOcL7TA9J1ArFvF+yyvdJloCaBcEC5sXy8fkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D1X/D/wW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50E74C43390;
-	Sun, 24 Mar 2024 23:04:34 +0000 (UTC)
+	 MIME-Version; b=tahdsGNy2gYWWBVeF17boEv0eXKyA50GCEMm3FE9qqKJ476KSVkc2+tKE0bm6XLG6RgrtVZEAGzB+mrrCW4pz7PsB9zUeLSo4TxbXpNjAHivP0i2pMU1fulE9YdHtzCJfPFWlli9UnaJUvQzmfz1aHkDXoXfcLKQdhNw+EszDgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rej8Uvbg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC56C433F1;
+	Sun, 24 Mar 2024 23:04:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711321475;
-	bh=6czK7Hn3MnAD3YyAV5TfrDyAIetWQpDb15+Q7U90avU=;
+	bh=of02US8bUUeHmltBhwO0q0jgCHO9nnXXigQFqbU83BU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=D1X/D/wW8CTHryYYqDDX+Ns6qQlR4NS9SNGywjDpuj+JSviAMIQtOkkMWM7h44fli
-	 oOhCGwTYbB/SyH9NmqXno5JlsJflNOjUr55EFUS2osVofDr2Wrh3qYg+55Po6XgeEs
-	 o3lUzMFt0X4TEMCzPuAVlOEJ9+Z+2a/W2oGEWbdP82VgB/2FDUqahHr3BCdRs9drW7
-	 XFEcc0mwlyyU19OHNJcqIkTZ7Xbjqbkp/QlvpXYcWeS67O8UMYiKjGihVQ0j7ocfjm
-	 dpTeF/Yl0W+iS49FjD5aF5V4+z6kWsocnPhMPPFPY0c9mlV/XG0R3jC3CQml969E/x
-	 yQYCdaHn/Frtw==
+	b=Rej8UvbgwW/JVhS1jMst/WIQpKE86KlUD/b8DRDJu/R72uu/gCnWBbILiOOZSvhZO
+	 XRf9bE9QURobD6FqGH6n7QXPi/phb6xa5oqJlTr7k9txZaelzFUU48V1t/xWReB8Oh
+	 bCthv7iTwzCUm5PyfMfss6BNLJGlD39zWyIerfrgZetPKOb+IX4WVq0yOlms3cCqM/
+	 biYqebNesvil+M+jnpefmqlHTzj6qp+PGBtJJNOPmqmjwA/Qnc360pkvLZ92KqtDku
+	 d9H+MorJLObas/Q6UT0NE5R7pdmIFwvrycTcHuoNbaLuVj5O+Y8jlIGb8u1uGv2BUo
+	 pV3s34hgZ2NbQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	Fangrui Song <maskray@google.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
+Cc: Petr Machata <petrm@nvidia.com>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 200/638] s390/vdso: drop '-fPIC' from LDFLAGS
-Date: Sun, 24 Mar 2024 18:53:57 -0400
-Message-ID: <20240324230116.1348576-201-sashal@kernel.org>
+Subject: [PATCH 6.6 201/638] selftests: forwarding: Add missing config entries
+Date: Sun, 24 Mar 2024 18:53:58 -0400
+Message-ID: <20240324230116.1348576-202-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,64 +62,81 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Petr Machata <petrm@nvidia.com>
 
-[ Upstream commit 0628c03934187be33942580e10bb9afcc61adeed ]
+[ Upstream commit 4acf4e62cd572b0c806035046b3698f5585ab821 ]
 
-'-fPIC' as an option to the linker does not do what it seems like it
-should. With ld.bfd, it is treated as '-f PIC', which does not make
-sense based on the meaning of '-f':
+The config file contains a partial kernel configuration to be used by
+`virtme-configkernel --custom'. The presumption is that the config file
+contains all Kconfig options needed by the selftests from the directory.
 
-  -f SHLIB, --auxiliary SHLIB Auxiliary filter for shared object symbol table
+In net/forwarding/config, many are missing, which manifests as spurious
+failures when running the selftests, with messages about unknown device
+types, qdisc kinds or classifier actions. Add the missing configurations.
 
-When building with ld.lld (currently under review in a GitHub pull
-request), it just errors out because '-f' means nothing and neither does
-'-fPIC':
+Tested the resulting configuration using virtme-ng as follows:
 
-  ld.lld: error: unknown argument '-fPIC'
+ # vng -b -f tools/testing/selftests/net/forwarding/config
+ # vng --user root
+ (within the VM:)
+ # make -C tools/testing/selftests TARGETS=net/forwarding run_tests
 
-'-fPIC' was blindly copied from CFLAGS when the vDSO stopped being
-linked with '$(CC)', it should not be needed. Remove it to clear up the
-build failure with ld.lld.
-
-Fixes: 2b2a25845d53 ("s390/vdso: Use $(LD) instead of $(CC) to link vDSO")
-Link: https://github.com/llvm/llvm-project/pull/75643
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Link: https://lore.kernel.org/r/20240130-s390-vdso-drop-fpic-from-ldflags-v1-1-094ad104fc55@kernel.org
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Link: https://lore.kernel.org/r/025abded7ff9cea5874a7fe35dcd3fd41bf5e6ac.1706286755.git.petrm@nvidia.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Stable-dep-of: f0ddf15f0a74 ("selftests: forwarding: Add missing multicast routing config entries")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/vdso32/Makefile | 2 +-
- arch/s390/kernel/vdso64/Makefile | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/forwarding/config | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/arch/s390/kernel/vdso32/Makefile b/arch/s390/kernel/vdso32/Makefile
-index 23e868b79a6c9..c4b14a8700d88 100644
---- a/arch/s390/kernel/vdso32/Makefile
-+++ b/arch/s390/kernel/vdso32/Makefile
-@@ -22,7 +22,7 @@ KBUILD_CFLAGS_32 := $(filter-out -m64,$(KBUILD_CFLAGS))
- KBUILD_CFLAGS_32 := $(filter-out -mno-pic-data-is-text-relative,$(KBUILD_CFLAGS_32))
- KBUILD_CFLAGS_32 += -m31 -fPIC -shared -fno-common -fno-builtin
- 
--LDFLAGS_vdso32.so.dbg += -fPIC -shared -soname=linux-vdso32.so.1 \
-+LDFLAGS_vdso32.so.dbg += -shared -soname=linux-vdso32.so.1 \
- 	--hash-style=both --build-id=sha1 -melf_s390 -T
- 
- $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_32)
-diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/Makefile
-index fc1c6ff8178f5..11f798e6cfea7 100644
---- a/arch/s390/kernel/vdso64/Makefile
-+++ b/arch/s390/kernel/vdso64/Makefile
-@@ -26,7 +26,7 @@ KBUILD_AFLAGS_64 += -m64
- KBUILD_CFLAGS_64 := $(filter-out -m64,$(KBUILD_CFLAGS))
- KBUILD_CFLAGS_64 := $(filter-out -mno-pic-data-is-text-relative,$(KBUILD_CFLAGS_64))
- KBUILD_CFLAGS_64 += -m64 -fPIC -fno-common -fno-builtin
--ldflags-y := -fPIC -shared -soname=linux-vdso64.so.1 \
-+ldflags-y := -shared -soname=linux-vdso64.so.1 \
- 	     --hash-style=both --build-id=sha1 -T
- 
- $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_64)
+diff --git a/tools/testing/selftests/net/forwarding/config b/tools/testing/selftests/net/forwarding/config
+index 697994a9278bb..ba23435145827 100644
+--- a/tools/testing/selftests/net/forwarding/config
++++ b/tools/testing/selftests/net/forwarding/config
+@@ -6,14 +6,42 @@ CONFIG_IPV6_MULTIPLE_TABLES=y
+ CONFIG_NET_VRF=m
+ CONFIG_BPF_SYSCALL=y
+ CONFIG_CGROUP_BPF=y
++CONFIG_DUMMY=m
++CONFIG_IPV6=y
++CONFIG_IPV6_GRE=m
++CONFIG_MACVLAN=m
+ CONFIG_NET_ACT_CT=m
+ CONFIG_NET_ACT_MIRRED=m
+ CONFIG_NET_ACT_MPLS=m
++CONFIG_NET_ACT_PEDIT=m
++CONFIG_NET_ACT_POLICE=m
++CONFIG_NET_ACT_SAMPLE=m
++CONFIG_NET_ACT_SKBEDIT=m
++CONFIG_NET_ACT_TUNNEL_KEY=m
+ CONFIG_NET_ACT_VLAN=m
+ CONFIG_NET_CLS_FLOWER=m
+ CONFIG_NET_CLS_MATCHALL=m
++CONFIG_NET_CLS_BASIC=m
++CONFIG_NET_EMATCH=y
++CONFIG_NET_EMATCH_META=m
++CONFIG_NET_IPGRE=m
++CONFIG_NET_IPGRE_DEMUX=m
++CONFIG_NET_IPIP=m
++CONFIG_NET_SCH_ETS=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_ACT_GACT=m
++CONFIG_NET_SCH_PRIO=m
++CONFIG_NET_SCH_RED=m
++CONFIG_NET_SCH_TBF=m
++CONFIG_NET_TC_SKB_EXT=y
++CONFIG_NET_TEAM=y
++CONFIG_NET_TEAM_MODE_LOADBALANCE=y
++CONFIG_NETFILTER=y
++CONFIG_NF_CONNTRACK=m
++CONFIG_NF_FLOW_TABLE=m
++CONFIG_NF_TABLES=m
+ CONFIG_VETH=m
+ CONFIG_NAMESPACES=y
+ CONFIG_NET_NS=y
++CONFIG_VXLAN=m
++CONFIG_XFRM_USER=m
 -- 
 2.43.0
 
