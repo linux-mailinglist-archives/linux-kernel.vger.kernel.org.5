@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-113152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A83FC8881E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE9B28881E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:32:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58B481F216DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:31:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A575B1F2166C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D62171E4E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F0F171E64;
 	Sun, 24 Mar 2024 22:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pUWSHjh1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QoQXtTrs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFB117166F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F9A171E43;
 	Sun, 24 Mar 2024 22:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319955; cv=none; b=bLfUAnZKwIBbmTKt6sOROtA+Gt96OeJmAlscExEaMjpCLbhJ1uyHQ3SkkLpCuLANSo7gfIBmlci9t4JnytIcSyTvvR3nzzW+Bu1wPunaaoU9AE7XoAuPv7z9Ip1ilWwWTX9CyPenazTACoOtVB5A++MXhGO0z5NJk49qnBeQAzA=
+	t=1711319956; cv=none; b=VtQPyyHXcaJopMxSkcUasQ7f12li3ABdJ4GTo2CgkgOnLT/d3ggsVYqDLTTCRmvUrPF84eBFBsFXAixoDtKq3zM7Lm0F7jQLsWNJQ5gG1krCZCWXGe2IjzpdxHy/hUoIpWjtMkA8KiCggFdG0iwy7igNM7avR28+PtpZGcWs7JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319955; c=relaxed/simple;
-	bh=983g+75i0F3kiQCRwasLkkri3umIsFUdvvOJTOdXjMM=;
+	s=arc-20240116; t=1711319956; c=relaxed/simple;
+	bh=3ROeb6f/oWDvJLS5zUVN+VKwhzwBKnpR4YsCgI+SwU4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p+VMo23CqJC2E4xSuyOO9gVAMqsQfxOXQbriD5UUUvP6Nq/xiGzPMMZg6kJpCFnxPiOeRToOzWOBTO8gC4gnp6nBNr0G/IQNf9tHXnrfi3Cm1oeysxnDL6vh9yo5nDz/UPIRAHI3ixQ42c2bAKRCg2p13NHRLvN6fiYubNA7/QI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pUWSHjh1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32A2FC43390;
-	Sun, 24 Mar 2024 22:39:14 +0000 (UTC)
+	 MIME-Version; b=jNM1vWECROnQqx4uCbCKjr+NvWKSOA3D3eC8ZPw0YVRijxkrE8bV9wpo1IQgib17wk+xrOc7YwnZRrYBYBeFKdYiCjNQY3Upq/iORFy+Dg5GLaiDBVoNRzwghxD5jhzswsPPDWYF3Sg5lpbIZNiLwlVRvkMgxZzGgHuVS10h6Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QoQXtTrs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34226C43394;
+	Sun, 24 Mar 2024 22:39:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319954;
-	bh=983g+75i0F3kiQCRwasLkkri3umIsFUdvvOJTOdXjMM=;
+	s=k20201202; t=1711319955;
+	bh=3ROeb6f/oWDvJLS5zUVN+VKwhzwBKnpR4YsCgI+SwU4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pUWSHjh1Ir4JtEewXa5YVzIwh5uKLbacbpyBSP6C9Fhv/usKFWjURQ4YBoKVESMUE
-	 QJrDy5ysyJcMO939JQM6mfb43vpIUdKoRpcgumcoej8sRf1ck9LDth+xIaL2l6XGcL
-	 oZfM/kma4Xn1a3mm/7FtnHW+24MSFWbPDxdJFdI+/oKO1GcYont4gYYinZuGkcR4jW
-	 xu/GIPALrfRTx4D0yo3RZBxd6MMDWwmkZt6ZVpXO2imTlFo0tvAncvHxaADpZOXYW/
-	 XDS4p1AjDtcsJbvtanI1JoGPB1UgwWXH3BN/qlUi3p5ufULP7T4HJ5CLvv/+rOm7GU
-	 us5/Xas2dhaIw==
+	b=QoQXtTrsagw2AfgSnoN6aZIhyWYS3P04nASwrZXpJhpQkquhQMMFusnaujJFRj10x
+	 6ed1a3/g93OaBO4I23OokJRGoTXrCG/IW0/9Hzm3U3ujmMz/JROQHCLRVgUTQSltf/
+	 A1+ss5Qo2LfMsZJ8OUdBKaAv+IV8ZK6e7TcT2BFt33b1vOTjULwba9ZLv5ZJM9pcHi
+	 7Rezr0kNnnaXtbz+kmfdczdvdFtNnKKst1TQpJCEfWK/QSiJxbJuP7Ph+Se/gWm65/
+	 iutAMB/PlR/eVF6BI+D1l3kM359ryfKg4kp6G3Mrbz5DhO2HbLK4fnXF5yB94umihC
+	 +9/DTl6cWbBLA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jeremy Kerr <jk@codeconstruct.com.au>,
-	Jian Zhang <zhangjian.3032@bytedance.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 261/715] net: mctp: copy skb ext data when fragmenting
-Date: Sun, 24 Mar 2024 18:27:20 -0400
-Message-ID: <20240324223455.1342824-262-sashal@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 6.8 262/715] pstore: inode: Only d_invalidate() is needed
+Date: Sun, 24 Mar 2024 18:27:21 -0400
+Message-ID: <20240324223455.1342824-263-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,60 +61,63 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jeremy Kerr <jk@codeconstruct.com.au>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 1394c1dec1c619a46867ed32791a29695372bff8 ]
+[ Upstream commit a43e0fc5e9134a46515de2f2f8d4100b74e50de3 ]
 
-If we're fragmenting on local output, the original packet may contain
-ext data for the MCTP flows. We'll want this in the resulting fragment
-skbs too.
+Unloading a modular pstore backend with records in pstorefs would
+trigger the dput() double-drop warning:
 
-So, do a skb_ext_copy() in the fragmentation path, and implement the
-MCTP-specific parts of an ext copy operation.
+  WARNING: CPU: 0 PID: 2569 at fs/dcache.c:762 dput.part.0+0x3f3/0x410
 
-Fixes: 67737c457281 ("mctp: Pass flow data & flow release events to drivers")
-Reported-by: Jian Zhang <zhangjian.3032@bytedance.com>
-Signed-off-by: Jeremy Kerr <jk@codeconstruct.com.au>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Using the combo of d_drop()/dput() (as mentioned in
+Documentation/filesystems/vfs.rst) isn't the right approach here, and
+leads to the reference counting problem seen above. Use d_invalidate()
+and update the code to not bother checking for error codes that can
+never happen.
+
+Suggested-by: Alexander Viro <viro@zeniv.linux.org.uk>
+Fixes: 609e28bb139e ("pstore: Remove filesystem records when backend is unregistered")
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- net/core/skbuff.c | 8 ++++++++
- net/mctp/route.c  | 3 +++
- 2 files changed, 11 insertions(+)
+ fs/pstore/inode.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index edbbef563d4d9..71dee435d549d 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -6736,6 +6736,14 @@ static struct skb_ext *skb_ext_maybe_cow(struct skb_ext *old,
- 		for (i = 0; i < sp->len; i++)
- 			xfrm_state_hold(sp->xvec[i]);
- 	}
-+#endif
-+#ifdef CONFIG_MCTP_FLOWS
-+	if (old_active & (1 << SKB_EXT_MCTP)) {
-+		struct mctp_flow *flow = skb_ext_get_ptr(old, SKB_EXT_MCTP);
-+
-+		if (flow->key)
-+			refcount_inc(&flow->key->refs);
-+	}
- #endif
- 	__skb_ext_put(old);
- 	return new;
-diff --git a/net/mctp/route.c b/net/mctp/route.c
-index ceee44ea09d97..01c530dbc1a65 100644
---- a/net/mctp/route.c
-+++ b/net/mctp/route.c
-@@ -843,6 +843,9 @@ static int mctp_do_fragment_route(struct mctp_route *rt, struct sk_buff *skb,
- 		/* copy message payload */
- 		skb_copy_bits(skb, pos, skb_transport_header(skb2), size);
+diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
+index d0d9bfdad30cc..56815799ce798 100644
+--- a/fs/pstore/inode.c
++++ b/fs/pstore/inode.c
+@@ -307,7 +307,6 @@ int pstore_put_backend_records(struct pstore_info *psi)
+ {
+ 	struct pstore_private *pos, *tmp;
+ 	struct dentry *root;
+-	int rc = 0;
  
-+		/* we need to copy the extensions, for MCTP flow data */
-+		skb_ext_copy(skb2, skb);
-+
- 		/* do route */
- 		rc = rt->output(rt, skb2);
- 		if (rc)
+ 	root = psinfo_lock_root();
+ 	if (!root)
+@@ -317,11 +316,8 @@ int pstore_put_backend_records(struct pstore_info *psi)
+ 		list_for_each_entry_safe(pos, tmp, &records_list, list) {
+ 			if (pos->record->psi == psi) {
+ 				list_del_init(&pos->list);
+-				rc = simple_unlink(d_inode(root), pos->dentry);
+-				if (WARN_ON(rc))
+-					break;
+-				d_drop(pos->dentry);
+-				dput(pos->dentry);
++				d_invalidate(pos->dentry);
++				simple_unlink(d_inode(root), pos->dentry);
+ 				pos->dentry = NULL;
+ 			}
+ 		}
+@@ -329,7 +325,7 @@ int pstore_put_backend_records(struct pstore_info *psi)
+ 
+ 	inode_unlock(d_inode(root));
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ /*
 -- 
 2.43.0
 
