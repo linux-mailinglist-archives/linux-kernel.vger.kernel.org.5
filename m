@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 387CC888F1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:37:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB8C0888D28
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:41:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4A08B2BC47
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:41:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD5681C298AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873A91C634B;
-	Mon, 25 Mar 2024 01:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0114E1C633C;
+	Mon, 25 Mar 2024 01:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oYCDEdy+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TVMRGc6i"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566F218147F;
-	Sun, 24 Mar 2024 23:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFDC18148A;
+	Sun, 24 Mar 2024 23:48:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324107; cv=none; b=ZUiUl4uMFTsEI1LezNQ+YvRxmYNzGI5Cgarl41YDwiqgIyvPTOaCuP/y6E/pTzyoWhXMML7MlCgn5/l21F1UcfviRZAVUQ2ZMaj0uitizRxwUSNQF6kYgxQg6AzaqM6nXDnSm3eBNDxV588mDhXofgcRCbYvAs8xewjDsAnUf0s=
+	t=1711324108; cv=none; b=DdFTK0h46L1SF7bdCZjos8c9Vo9jc3ALzK87sRP/ztrK3qeEKsuN7WtIH2fvaH5NSRIo2Vih8pN1C+dGBytPLb0cUmTUPjBf4qt79RCNubP+KS9/7MBHSLbXxJv5MKsz9bl128Kkh+y/9qqiC+C1Z/j+voZlJ7RSBL99XbdJA3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324107; c=relaxed/simple;
-	bh=iHOmPupuYN1u4C6Wff80pv7Gaw7k94/ErZJbEesHVgs=;
+	s=arc-20240116; t=1711324108; c=relaxed/simple;
+	bh=xrN0NI/UzUokrl36YEZidI4lp+eL3iyinCugmIvfvhw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Sr+CD1cOVRMXjboBSBeDvrb4sd0AvNFNJOMUs5iIn9NvK6/pFrbgDAXLc4BZwy6hfTxyD21Uc0GIjMw98JX7bUAFvMfb82KhsCSXFesl3APSvuyMQnenbgU2QylWVsJOlaNBx0zi/sZyyQrVQmXFYPFcOuwFYmgyoZYg+12qIXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oYCDEdy+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96498C433F1;
-	Sun, 24 Mar 2024 23:48:25 +0000 (UTC)
+	 MIME-Version; b=RbAr93t2GqY3q9kfbwrpdwfneXvhKC0GH67hhW4CfSpi5yq3oVTwAl1tkDmybohSIgdEVpnxRxhxdGpKDtxmUicILsvAiYgMLALoVWWyJ52PtgHKnv/REJ79rRocACAr5XDLvotei3yDHnmJWCJCQBCqN5VclreNmYAuHISbUlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TVMRGc6i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C343C433A6;
+	Sun, 24 Mar 2024 23:48:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324106;
-	bh=iHOmPupuYN1u4C6Wff80pv7Gaw7k94/ErZJbEesHVgs=;
+	s=k20201202; t=1711324107;
+	bh=xrN0NI/UzUokrl36YEZidI4lp+eL3iyinCugmIvfvhw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oYCDEdy+DAaVIVgVL8WTyEobvANwV1Q0wxd7X/PO7655XKYLyCsZGjXqp8Wiqo3JF
-	 1SYnzxUXwQPG99/PmTBgMPrEwlFxdUzuFKuDPNgXujc/Oxu25zSz53vA4lBpOazH/o
-	 q4sLXysqKbGCrnZ2yyPb1aAoauPqurWi6HuzMZ4XmZHi0yJsCzQbc6eGryZ98H/3v4
-	 q0Cfe6Bte599jg/03pcZjKlgRFuGM0tdHobyhgSJ6trhmT7ILtj0pluG+sW8yzCZOM
-	 XpthUfdOhGAcUVI64REgutgYJi4SHyp/czYdxNENyvMZtI/W0Ty6slCgWZN/4bUthJ
-	 ihbBoR9mGueYQ==
+	b=TVMRGc6iXCylAl2ULexLmI87qAW4hrivSFR+Ko7msITgWstkCpfl0rLGQyoyssQRS
+	 xxpTsobDePYmFm/d1ZXRXKxB1Dk9jLEgxAKFiZH58q6rPO7IXGoU/P4TohCsTYlcts
+	 Q7e0WT8z0SnJFU4DxckOeuFGVWXPSOGo5T+Hl4ztM5u2vHIyGcoGCFa7C7INF7Ylww
+	 /JdsGtf0FFwKu0b6oHzheznrSybnnkHr4l1FPdlwdG6s/+yUuSjfsOQ/V2XZQISwE9
+	 Hy6KL8BZApBU/5EQYUKj0Mp/LbXIu0O+M2zy9hWQ7RPoNmVMsfkL+TyKNx2TgMM4de
+	 7KmlXruXVCmaQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+Cc: Robert Marko <robimarko@gmail.com>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 105/183] clk: qcom: reset: Allow specifying custom reset delay
-Date: Sun, 24 Mar 2024 19:45:18 -0400
-Message-ID: <20240324234638.1355609-106-sashal@kernel.org>
+Subject: [PATCH 5.4 106/183] clk: qcom: reset: support resetting multiple bits
+Date: Sun, 24 Mar 2024 19:45:19 -0400
+Message-ID: <20240324234638.1355609-107-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,62 +62,67 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+From: Robert Marko <robimarko@gmail.com>
 
-[ Upstream commit 2cb8a39b6781ea23accd1fa93b3ad000d0948aec ]
+[ Upstream commit 4a5210893625f89723ea210d7c630b730abb37ad ]
 
-The amount of time required between asserting and deasserting the reset
-signal can vary depending on the involved hardware component. Sometimes
-1 us might not be enough and a larger delay is necessary to conform to
-the specifications.
+This patch adds the support for giving the complete bitmask
+in reset structure and reset operation will use this bitmask
+for all reset operations.
 
-Usually this is worked around in the consuming drivers, by replacing
-reset_control_reset() with a sequence of reset_control_assert(), waiting
-for a custom delay, followed by reset_control_deassert().
+Currently, reset structure only takes a single bit for each reset
+and then calculates the bitmask by using the BIT() macro.
 
-However, in some cases the driver making use of the reset is generic and
-can be used with different reset controllers. In this case the reset
-time requirement is better handled directly by the reset controller
-driver.
+However, this is not sufficient anymore for newer SoC-s like IPQ8074,
+IPQ6018 and more, since their networking resets require multiple bits
+to be asserted in order to properly reset the HW block completely.
 
-Make this possible by adding an "udelay" field to the qcom_reset_map
-that allows setting a different reset delay (in microseconds).
+So, in order to allow asserting multiple bits add "bitmask" field to
+qcom_reset_map, and then use that bitmask value if its populated in the
+driver, if its not populated, then we just default to existing behaviour
+and calculate the bitmask on the fly.
 
-Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Signed-off-by: Robert Marko <robimarko@gmail.com>
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
-Link: https://lore.kernel.org/r/20220706134132.3623415-4-stephan.gerhold@kernkonzept.com
+Link: https://lore.kernel.org/r/20221107132901.489240-1-robimarko@gmail.com
 Stable-dep-of: 2f8cf2c3f3e3 ("clk: qcom: reset: Ensure write completion on reset de/assertion")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/reset.c | 4 +++-
+ drivers/clk/qcom/reset.c | 4 ++--
  drivers/clk/qcom/reset.h | 1 +
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/qcom/reset.c b/drivers/clk/qcom/reset.c
-index 819d194be8f7b..2a16adb572d2b 100644
+index 2a16adb572d2b..0e914ec7aeae1 100644
 --- a/drivers/clk/qcom/reset.c
 +++ b/drivers/clk/qcom/reset.c
-@@ -13,8 +13,10 @@
+@@ -30,7 +30,7 @@ qcom_reset_assert(struct reset_controller_dev *rcdev, unsigned long id)
  
- static int qcom_reset(struct reset_controller_dev *rcdev, unsigned long id)
- {
-+	struct qcom_reset_controller *rst = to_qcom_reset_controller(rcdev);
-+
- 	rcdev->ops->assert(rcdev, id);
--	udelay(1);
-+	udelay(rst->reset_map[id].udelay ?: 1); /* use 1 us as default */
- 	rcdev->ops->deassert(rcdev, id);
- 	return 0;
+ 	rst = to_qcom_reset_controller(rcdev);
+ 	map = &rst->reset_map[id];
+-	mask = BIT(map->bit);
++	mask = map->bitmask ? map->bitmask : BIT(map->bit);
+ 
+ 	return regmap_update_bits(rst->regmap, map->reg, mask, mask);
+ }
+@@ -44,7 +44,7 @@ qcom_reset_deassert(struct reset_controller_dev *rcdev, unsigned long id)
+ 
+ 	rst = to_qcom_reset_controller(rcdev);
+ 	map = &rst->reset_map[id];
+-	mask = BIT(map->bit);
++	mask = map->bitmask ? map->bitmask : BIT(map->bit);
+ 
+ 	return regmap_update_bits(rst->regmap, map->reg, mask, 0);
  }
 diff --git a/drivers/clk/qcom/reset.h b/drivers/clk/qcom/reset.h
-index 2a08b5e282c77..b8c113582072b 100644
+index b8c113582072b..9a47c838d9b1b 100644
 --- a/drivers/clk/qcom/reset.h
 +++ b/drivers/clk/qcom/reset.h
-@@ -11,6 +11,7 @@
- struct qcom_reset_map {
+@@ -12,6 +12,7 @@ struct qcom_reset_map {
  	unsigned int reg;
  	u8 bit;
-+	u8 udelay;
+ 	u8 udelay;
++	u32 bitmask;
  };
  
  struct regmap;
