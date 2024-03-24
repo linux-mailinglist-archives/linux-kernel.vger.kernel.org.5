@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-116158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B4D48899CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:16:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12EEB888C60
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D31D1C20E7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:16:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBA091F28DD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445542827D4;
-	Mon, 25 Mar 2024 03:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4F217AF9B;
+	Mon, 25 Mar 2024 00:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gbz10e9J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DzpW7mxr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8351D17B513;
-	Sun, 24 Mar 2024 23:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BE817B519;
+	Sun, 24 Mar 2024 23:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323726; cv=none; b=S3V5YVnVJuig5LzfyFrjWk1VqkWSB57u3jI7YdSt3rwBYUOVDUAZbVzv9KtGF5JGZReLjs8vuwo753JbvB6S3+8tfFInBOju6UoSh7cckzYkx4t4lCHOavE/DmTaot+pBSwT5YD7eSforNhml7NAlITbYGgUxa9qh2k4niTAxMA=
+	t=1711323727; cv=none; b=dYFYCJPBXcns4gn8CslKmUBzpwivohUraMMxxxprfxQGLPti3XFyvICPnVnEPbyaaNvhjXa40uMgYdNFLDWZI5UMT0Gfb0RQlOtfrmE85C3jYUNsmj+tNEIXH+vo96XtNOIORQtf+qkrddXzzu7WRTOuilEoXcG78dV9g+mjhmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323726; c=relaxed/simple;
-	bh=CkgFxL9FgjAMNaLTaZvuR6d3RbTc8CUeahwUgaq3dA4=;
+	s=arc-20240116; t=1711323727; c=relaxed/simple;
+	bh=FU8bOYJOpA7z5HZUBn8V79nlonCFP1MChAiD587xR18=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UzHs0gkZ+9W5R1rEo9Z0L6hbAFoc9ADYUDArkstXTFqna4Udm/e08LbN+WLRvagWfh4SBJyCQNn+vPXKONmka6KZmKpIwLX48EgBMo600OPUGbzU+4G43mOTi932oMBIDP3ILiIPMpa6O03sr8XG4tJ2dwkG+BlQtcSnEHV6ZuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gbz10e9J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71AD4C433F1;
-	Sun, 24 Mar 2024 23:42:04 +0000 (UTC)
+	 MIME-Version; b=ArCZGgWRnS5h0CYhpyWoxt0joBX3I/GejCwzt+31KcneP4REJLFXjxL0UQQnGcXi8RYgPRDEYyZvOMv/yuTB0WT5UJ1Q1AisTzbi9fmX7J7gxiTe6IL70ZK5VCR1RZFKKZAylZIOtx/44Top8/OEeWZZAfNvs73zj32LyKiU0Pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzpW7mxr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 573A4C433C7;
+	Sun, 24 Mar 2024 23:42:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323725;
-	bh=CkgFxL9FgjAMNaLTaZvuR6d3RbTc8CUeahwUgaq3dA4=;
+	s=k20201202; t=1711323726;
+	bh=FU8bOYJOpA7z5HZUBn8V79nlonCFP1MChAiD587xR18=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gbz10e9JoAp2H3rTMtvaaCNublGsmFvDANLwrmj3XzkKkzEkQdEIWCY4ouLgvWKIs
-	 zKVkTuxLcn5qzxpZefWRwy8LzowStb8Aqo3ye5ORybinfiysL2WSNsnUzSEP5HFZbN
-	 NGzi53/kxrBwdIHjIqnrlYenlcMtJ8rrPsiWkeIL4ENi56n3SfKESJyHgNiD6g5+t6
-	 xOAoB7TPcmEAo6Vw6yZ/R9Jzix4qRZjFp53la/U33tpWRwpdrGNmteUnKzE1iVKfii
-	 h5EZAXWxPqQnUGT/IihVzokRT5J75KL9dr7sAn1Gpk5E1xQWQ4fmdXJfHp/3CGKBGG
-	 NR/jDNZo47WhQ==
+	b=DzpW7mxrH+GLwsfSeFj+kW9LBbzI2zpw//kPq5gGrBAWVMHLstju8CdLd1zaRojPH
+	 jq+xBt8LCP3vaG5BytdyibwPOVJDIZLr3l5judsz/88QHmmGtPpElkgl3UE0zajW+9
+	 zTb6C1eJZcK9oykD8W0tzUmc/70y+MmGbtzRaoFeg7dMSJ+9AIedee97b2UTua3XxS
+	 VnlTyfYBIRMBRmapWbPRVupi4lKPLbLY/MPRMs51brmqZzKT6R9cGSnulFbXGvF30t
+	 5UyW2zzG4fVpg3ckQDTz6wX6CKwOLXhfgEPxgS5qgZob56kkwyxOPvxihPa94cW8oB
+	 P+gAGxHY29lfg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tim Pambor <tp@osasysteme.de>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Viresh Kumar <viresh.kumar@linaro.org>,
+	kernel test robot <lkp@intel.com>,
+	Dhruva Gole <d-gole@ti.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 098/238] net: phy: dp83822: Fix RGMII TX delay configuration
-Date: Sun, 24 Mar 2024 19:38:06 -0400
-Message-ID: <20240324234027.1354210-99-sashal@kernel.org>
+Subject: [PATCH 5.10 099/238] OPP: debugfs: Fix warning around icc_get_name()
+Date: Sun, 24 Mar 2024 19:38:07 -0400
+Message-ID: <20240324234027.1354210-100-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,89 +63,48 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tim Pambor <tp@osasysteme.de>
+From: Viresh Kumar <viresh.kumar@linaro.org>
 
-[ Upstream commit c8a5c731fd1223090af57da33838c671a7fc6a78 ]
+[ Upstream commit 28330ceb953e39880ea77da4895bb902a1244860 ]
 
-The logic for enabling the TX clock shift is inverse of enabling the RX
-clock shift. The TX clock shift is disabled when DP83822_TX_CLK_SHIFT is
-set. Correct the current behavior and always write the delay configuration
-to ensure consistent delay settings regardless of bootloader configuration.
+If the kernel isn't built with interconnect support, icc_get_name()
+returns NULL and we get following warning:
 
-Reference: https://www.ti.com/lit/ds/symlink/dp83822i.pdf p. 69
+drivers/opp/debugfs.c: In function 'bw_name_read':
+drivers/opp/debugfs.c:43:42: error: '%.62s' directive argument is null [-Werror=format-overflow=]
+         i = scnprintf(buf, sizeof(buf), "%.62s\n", icc_get_name(path));
 
-Fixes: 8095295292b5 ("net: phy: DP83822: Add setting the fixed internal delay")
-Signed-off-by: Tim Pambor <tp@osasysteme.de>
-Link: https://lore.kernel.org/r/20240305110608.104072-1-tp@osasysteme.de
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fix it.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402141313.81ltVF5g-lkp@intel.com/
+Fixes: 0430b1d5704b0 ("opp: Expose bandwidth information via debugfs")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/dp83822.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ drivers/opp/debugfs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index dce87589b1120..14c5e082ccc8f 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -359,7 +359,7 @@ static int dp83822_config_init(struct phy_device *phydev)
+diff --git a/drivers/opp/debugfs.c b/drivers/opp/debugfs.c
+index 60f4ff8e044d1..016dea5a412be 100644
+--- a/drivers/opp/debugfs.c
++++ b/drivers/opp/debugfs.c
+@@ -36,10 +36,12 @@ static ssize_t bw_name_read(struct file *fp, char __user *userbuf,
+ 			    size_t count, loff_t *ppos)
  {
- 	struct dp83822_private *dp83822 = phydev->priv;
- 	struct device *dev = &phydev->mdio.dev;
--	int rgmii_delay;
-+	int rgmii_delay = 0;
- 	s32 rx_int_delay;
- 	s32 tx_int_delay;
- 	int err = 0;
-@@ -369,30 +369,33 @@ static int dp83822_config_init(struct phy_device *phydev)
- 		rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
- 						      true);
+ 	struct icc_path *path = fp->private_data;
++	const char *name = icc_get_name(path);
+ 	char buf[64];
+-	int i;
++	int i = 0;
  
--		if (rx_int_delay <= 0)
--			rgmii_delay = 0;
--		else
--			rgmii_delay = DP83822_RX_CLK_SHIFT;
-+		/* Set DP83822_RX_CLK_SHIFT to enable rx clk internal delay */
-+		if (rx_int_delay > 0)
-+			rgmii_delay |= DP83822_RX_CLK_SHIFT;
+-	i = scnprintf(buf, sizeof(buf), "%.62s\n", icc_get_name(path));
++	if (name)
++		i = scnprintf(buf, sizeof(buf), "%.62s\n", name);
  
- 		tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
- 						      false);
-+
-+		/* Set DP83822_TX_CLK_SHIFT to disable tx clk internal delay */
- 		if (tx_int_delay <= 0)
--			rgmii_delay &= ~DP83822_TX_CLK_SHIFT;
--		else
- 			rgmii_delay |= DP83822_TX_CLK_SHIFT;
- 
--		if (rgmii_delay) {
--			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
--					       MII_DP83822_RCSR, rgmii_delay);
--			if (err)
--				return err;
--		}
-+		err = phy_modify_mmd(phydev, DP83822_DEVADDR, MII_DP83822_RCSR,
-+				     DP83822_RX_CLK_SHIFT | DP83822_TX_CLK_SHIFT, rgmii_delay);
-+		if (err)
-+			return err;
-+
-+		err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
-+				       MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
- 
--		phy_set_bits_mmd(phydev, DP83822_DEVADDR,
--					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
-+		if (err)
-+			return err;
- 	} else {
--		phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
--					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
-+		err = phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
-+					 MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
-+
-+		if (err)
-+			return err;
- 	}
- 
- 	if (dp83822->fx_enabled) {
+ 	return simple_read_from_buffer(userbuf, count, ppos, buf, i);
+ }
 -- 
 2.43.0
 
