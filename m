@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-113204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F6DD88824D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:43:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0AAD88824A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6120C1C22735
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:43:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75F301F21D44
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4245C61A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE9817D241;
 	Sun, 24 Mar 2024 22:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c9li5U84"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bi0wxxlm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85CE17C6D7;
-	Sun, 24 Mar 2024 22:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA7617D228;
+	Sun, 24 Mar 2024 22:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320006; cv=none; b=TdS4MH00xEe9XdlzFWz/zobs0XN7jTN6UWH/9H13zjO5er28qmpggu2xGPckvrgkZqzgWOk+37FF11O70CFGN6+RztSe5FqB7OJAewonol+ENDkDwvruQpJLczS9+I0KPWAS5CuEGpbVOgp5Q+UIZl939eZWbOwUCqKCrg+46OU=
+	t=1711320007; cv=none; b=powViEbk3gCVdEnWPcOrm+vHAQr6dICWUQ0zDKqGyNBWHt4B1Lfiv4fzvmznSHDclRQ/vaXLsxmuUjAj3w1/4VwfoEukHPgcu+d+r7KG+X0GHthkTDADP1TeK/2+aVFXRhpzZRhHN077RLLqjAwCyqR0z2ji8RoB22xJuJMcNcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320006; c=relaxed/simple;
-	bh=eZ8P3VvFJh8AOiFHtetE+vSb5xhTtJgCpVECyeF04SA=;
+	s=arc-20240116; t=1711320007; c=relaxed/simple;
+	bh=DJS3TGp3Td4MV9ZRjIwo5xMPi1BQTcb3/FYgdCrfEqo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RVSXGhmnDUc6MgSFWNA8Ry1Pv8YeOTattN37ryBaOJfsLzHcO8//QAZyRzcKtCWaXqyr63UBd5wo4JhNuAMrzXXinHO+6/rft5R/aduH5//CbqpLzLzYUBcmLkQUXDS3a3VX0zFW/pWh7vfkqqiW+QSHS04GNUGfH0LQpT2EqTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c9li5U84; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3B9BC43399;
-	Sun, 24 Mar 2024 22:40:05 +0000 (UTC)
+	 MIME-Version; b=cE2T0aPT+g6VhJZ5yeT0ce9vwbAM3JwCKDDRidggr2q5l4Lf+j4fsV9hECHjmTMMZGJSNsPQF+WEuy2AmPeLStYvp/gwlPR2sVv2u42I1pFpt4JamYQF81HId0GvTmE/AtEhbaioRpmq+5JeaSfwgK/YWxNLdB6WbRnxy/KvoCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bi0wxxlm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0E9CC433F1;
+	Sun, 24 Mar 2024 22:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320006;
-	bh=eZ8P3VvFJh8AOiFHtetE+vSb5xhTtJgCpVECyeF04SA=;
+	s=k20201202; t=1711320007;
+	bh=DJS3TGp3Td4MV9ZRjIwo5xMPi1BQTcb3/FYgdCrfEqo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=c9li5U84URkqNto81I00q47G6+N8Gcn4V8F7jYHos3fxnrTWv1rG4c/rvvDk+5X+J
-	 8QrbHFAZkRRHww2kxECLGlrIvMN+cneheznxz6Ny+npZaj84fz7lZ0CbUnpIQ6Y0rT
-	 euAK4jqJDRjntj9vCSUXTdLxmuVRjwYmZMKOa42HxU9pFafOTS4Z2V8HVKVAj1IXTn
-	 IdDpwNd3w/+i8WTDI7V6Wt16wixJ3Ljk3dxBC/uQQIVjET2fKgSXawTIs4qpf4ChE1
-	 xtYqm7OTPmpXSgKOwc/85O9v6Il9vUVptHY+nEtdSjEjf5g1vS2UZ9UCM10vMIPDU6
-	 NNfw1ikRuZyWg==
+	b=bi0wxxlmbGD36mkdAwNw1jBoDGOeoGcC6n5ki994OZOOzY8ogBCSYqb1EFypREDxH
+	 hPqjXYSnKmmlwnoJgZ1bipySV/41oN5D1FSsd00xFA1nNiZ2AtMpccjIYzsaLlllGg
+	 BQKPdkEohIjGoTgrS2ty3OwoIqX3+wmRVC5yhUux+ocAnqnEonLSbU2FC08KFVXUq4
+	 5lgL0CCJC6Sxkkfg7yTZZsXsBH6OTI5StFkFTL7+whlA4OObrfE0NgbmjbUnHf1HFa
+	 RAkinz3+MSVaax2I4/gHZyo6yAQbKGjGPrz6RWA94Dj3MGAXa6hbZzTmKw/WLOH5f4
+	 PQDyPbIvbvtpw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 313/715] Bluetooth: msft: Fix memory leak
-Date: Sun, 24 Mar 2024 18:28:12 -0400
-Message-ID: <20240324223455.1342824-314-sashal@kernel.org>
+Subject: [PATCH 6.8 314/715] Bluetooth: btusb: Fix memory leak
+Date: Sun, 24 Mar 2024 18:28:13 -0400
+Message-ID: <20240324223455.1342824-315-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,38 +63,64 @@ Content-Transfer-Encoding: 8bit
 
 From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit a6e06258f4c31eba0fcd503e19828b5f8fe7b08b ]
+[ Upstream commit 79f4127a502c5905f04da1f20a7bbe07103fb77c ]
 
-Fix leaking buffer allocated to send MSFT_OP_LE_MONITOR_ADVERTISEMENT.
+This checks if CONFIG_DEV_COREDUMP is enabled before attempting to clone
+the skb and also make sure btmtk_process_coredump frees the skb passed
+following the same logic.
 
-Fixes: 9e14606d8f38 ("Bluetooth: msft: Extended monitor tracking by address filter")
+Fixes: 0b7015132878 ("Bluetooth: btusb: mediatek: add MediaTek devcoredump support")
 Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/msft.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/bluetooth/btmtk.c |  4 +++-
+ drivers/bluetooth/btusb.c | 10 ++++++----
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index 630e3023273b2..9612c5d1b13f6 100644
---- a/net/bluetooth/msft.c
-+++ b/net/bluetooth/msft.c
-@@ -875,6 +875,7 @@ static int msft_add_address_filter_sync(struct hci_dev *hdev, void *data)
- 		remove = true;
- 		goto done;
- 	}
-+
- 	cp->sub_opcode           = MSFT_OP_LE_MONITOR_ADVERTISEMENT;
- 	cp->rssi_high		 = address_filter->rssi_high;
- 	cp->rssi_low		 = address_filter->rssi_low;
-@@ -887,6 +888,8 @@ static int msft_add_address_filter_sync(struct hci_dev *hdev, void *data)
+diff --git a/drivers/bluetooth/btmtk.c b/drivers/bluetooth/btmtk.c
+index aaabb732082cd..285418dbb43f5 100644
+--- a/drivers/bluetooth/btmtk.c
++++ b/drivers/bluetooth/btmtk.c
+@@ -372,8 +372,10 @@ int btmtk_process_coredump(struct hci_dev *hdev, struct sk_buff *skb)
+ 	struct btmediatek_data *data = hci_get_priv(hdev);
+ 	int err;
  
- 	skb = __hci_cmd_sync(hdev, hdev->msft_opcode, size, cp,
- 			     HCI_CMD_TIMEOUT);
-+	kfree(cp);
+-	if (!IS_ENABLED(CONFIG_DEV_COREDUMP))
++	if (!IS_ENABLED(CONFIG_DEV_COREDUMP)) {
++		kfree_skb(skb);
+ 		return 0;
++	}
+ 
+ 	switch (data->cd_info.state) {
+ 	case HCI_DEVCOREDUMP_IDLE:
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index d31edad7a0560..6cb87d47ad7d5 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3273,7 +3273,6 @@ static int btusb_recv_acl_mtk(struct hci_dev *hdev, struct sk_buff *skb)
+ {
+ 	struct btusb_data *data = hci_get_drvdata(hdev);
+ 	u16 handle = le16_to_cpu(hci_acl_hdr(skb)->handle);
+-	struct sk_buff *skb_cd;
+ 
+ 	switch (handle) {
+ 	case 0xfc6f:		/* Firmware dump from device */
+@@ -3286,9 +3285,12 @@ static int btusb_recv_acl_mtk(struct hci_dev *hdev, struct sk_buff *skb)
+ 		 * for backward compatibility, so we have to clone the packet
+ 		 * extraly for the in-kernel coredump support.
+ 		 */
+-		skb_cd = skb_clone(skb, GFP_ATOMIC);
+-		if (skb_cd)
+-			btmtk_process_coredump(hdev, skb_cd);
++		if (IS_ENABLED(CONFIG_DEV_COREDUMP)) {
++			struct sk_buff *skb_cd = skb_clone(skb, GFP_ATOMIC);
 +
- 	if (IS_ERR(skb)) {
- 		bt_dev_err(hdev, "Failed to enable address %pMR filter",
- 			   &address_filter->bdaddr);
++			if (skb_cd)
++				btmtk_process_coredump(hdev, skb_cd);
++		}
+ 
+ 		fallthrough;
+ 	case 0x05ff:		/* Firmware debug logging 1 */
 -- 
 2.43.0
 
