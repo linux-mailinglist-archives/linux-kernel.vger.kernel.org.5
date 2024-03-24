@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14691889750
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:13:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 156D188A01F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2AC429C729
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:13:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD2A9B41A36
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF841F0941;
-	Mon, 25 Mar 2024 02:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F44364708;
+	Mon, 25 Mar 2024 02:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dVInhzR7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I1/4eMPH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7913B2197D8;
-	Sun, 24 Mar 2024 23:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825A52197D7;
+	Sun, 24 Mar 2024 23:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321810; cv=none; b=hJl24WKOorSdSY3x6V2GxCfgoMqS0SD81p/wdQFt2WVf3Dpv5iSunt7/kOf72DfrnPiD3+utNSMlMoB6BPqITMuV1+LMmEQt5gnNkt8BwmDvYzXHZRf5ySeOtjwwE0ZcPF3tDMb6cc0u8sE89SLDm2JZIWZDzVJB/CEnNaeTbZI=
+	t=1711321812; cv=none; b=JUgaSdzaTFRKv2jcDG7R3BK0TSmDvSs9bAOFmLxmNCBV4GFZsaxHUnTsGk8AcXegW44jcIgpphoHqUDman4smYHcERTwA4aN2bRg/sgB0fPcWy5yT4t0gWkJIypyMgHuBuT7STFybKBzwf7USVvytpcyLaMdczulx77cT82p8E0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321810; c=relaxed/simple;
-	bh=GO2fC8zPeV/fqzrSgnMiqqZl+QzQKu1vQQTDzD4a9oI=;
+	s=arc-20240116; t=1711321812; c=relaxed/simple;
+	bh=I8ZEAf3dinyvI/3ws4H3uGRlv1YlJNvEjPVFatNhj1w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j9pDpyOekYPAouP9a1OcYuQbPzheNzVL5d7HNSie4K0EvTtD4S+X0ugRNuuqFcw2DB1tQpurTVyp93dFIXPdJp5bQdQxqXYza52aVAqTBO591E30jG6R8D/YXTnNOUy1RBdsLE0o2jihqgU9cDcQEFT9izzmMwu2Vx4p6aOP7fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dVInhzR7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85F63C433C7;
-	Sun, 24 Mar 2024 23:10:09 +0000 (UTC)
+	 MIME-Version; b=ldEKGLHxsHD1X7ttjkVvncZtG9c8JOGN5nqAp6p/1d0n4JU/XHd6S9J6IaSTXbMipfsQzzmUVTq2dCoY+BUBT9C9Vihj3wjCNiSf/KC8HMrVv0OMI5isE3S1VT+aEbUoL6xQpe1g5t9YfQZitMNP6SxxxoP93sFU2LV+cc7SEKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I1/4eMPH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BAD1C43394;
+	Sun, 24 Mar 2024 23:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321810;
-	bh=GO2fC8zPeV/fqzrSgnMiqqZl+QzQKu1vQQTDzD4a9oI=;
+	s=k20201202; t=1711321811;
+	bh=I8ZEAf3dinyvI/3ws4H3uGRlv1YlJNvEjPVFatNhj1w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dVInhzR7D+voSPr0Ktj05103F++/EGPxcF7bDNd4PiEQzlYXOrMElseHVeZnRFgO9
-	 QqRZ9JgMz1fhWzW7K4zRZzeW1RHHsmUK2bLOBG25z9pLkyHBeuqBqN9DC2K9j3D90K
-	 N+ujxLltZFmq63H2r2oM+gJmSrYE4h524FrJQTfLtj+F5hnIVmCLinU4VJrysOlfb9
-	 wHqka1uo7vk738CwoiUTF9ojQxIecjQcUO90lCBqucIq+MS+23LqVQkp9tf/BWG9go
-	 Xoj8ZBJXwOa3QS7t22AOO1GLuR0F3WPQMqMcBqwk3jxbJfEHi+ZganD2ltflNEXcgh
-	 MVPf3CwNGo9jQ==
+	b=I1/4eMPHygSh0E7k7CKr7DDyPVDY6r3juAPPwfLA1XYYmEKX2WnRcM9BtZVS5NyYy
+	 UG0LQrmdiiIMVS7INBP3e2UkmkSAhP2D8FBQy5ltH6rmkk8VHWCW12HNkv/Anrez04
+	 xfEl0lEHs6ZW69QY3fawb5tvm3b61adwZoUCaMGIHQ/KehPr4gciHsTByodwwUk7Uf
+	 yo73Fdps/UyLEUn5mqcVaMmxJo5mad4XP6zQ6jZjWLINmdU/tSpjt+QyGLD/ZDCNkQ
+	 R0Tnzkj4zdm9U4q+thHIu8OsDJdLErlXdXyCAoWlJyololilhFziPUoJ3fy7Wwe14v
+	 ShZi7fv6EjjyA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chao Yu <chao@kernel.org>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
+Cc: Konstantin Taranov <kotaranov@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 538/638] f2fs: ro: compress: fix to avoid caching unaligned extent
-Date: Sun, 24 Mar 2024 18:59:35 -0400
-Message-ID: <20240324230116.1348576-539-sashal@kernel.org>
+Subject: [PATCH 6.6 539/638] RDMA/mana_ib: Fix bug in creation of dma regions
+Date: Sun, 24 Mar 2024 18:59:36 -0400
+Message-ID: <20240324230116.1348576-540-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,128 +62,34 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chao Yu <chao@kernel.org>
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-[ Upstream commit 4b99ecd304290c4ef55666a62c89dfb2dbf0b2cd ]
+[ Upstream commit e02497fb654689049ba8b46f098f17d5f19e0b3c ]
 
-Mapping info from dump.f2fs:
-i_addr[0x2d] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0x2e]                 		[0x   10428 : 66600]
-i_addr[0x2f]                 		[0x   10429 : 66601]
-i_addr[0x30]                 		[0x   1042a : 66602]
+Use ib_umem_dma_offset() helper to calculate correct dma offset.
 
-f2fs_io fiemap 37 1 /mnt/f2fs/disk-58390c8c.raw
-
-Previsouly, it missed to align fofs and ofs_in_node to cluster_size,
-result in adding incorrect read extent cache, fix it.
-
-Before:
-f2fs_update_read_extent_tree_range: dev = (253,48), ino = 5, pgofs = 37, len = 4, blkaddr = 66600, c_len = 3
-
-After:
-f2fs_update_read_extent_tree_range: dev = (253,48), ino = 5, pgofs = 36, len = 4, blkaddr = 66600, c_len = 3
-
-Fixes: 94afd6d6e525 ("f2fs: extent cache: support unaligned extent")
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter")
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+Link: https://lore.kernel.org/r/1709560361-26393-2-git-send-email-kotaranov@linux.microsoft.com
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/compress.c | 10 ++++++----
- fs/f2fs/f2fs.h     |  6 ++++--
- fs/f2fs/node.c     | 20 ++++++++++++++------
- 3 files changed, 24 insertions(+), 12 deletions(-)
+ drivers/infiniband/hw/mana/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 8093d2f2a174f..a7037644b9324 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1810,16 +1810,18 @@ void f2fs_put_page_dic(struct page *page, bool in_task)
-  * check whether cluster blocks are contiguous, and add extent cache entry
-  * only if cluster blocks are logically and physically contiguous.
-  */
--unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn)
-+unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn,
-+						unsigned int ofs_in_node)
- {
--	bool compressed = f2fs_data_blkaddr(dn) == COMPRESS_ADDR;
-+	bool compressed = data_blkaddr(dn->inode, dn->node_page,
-+					ofs_in_node) == COMPRESS_ADDR;
- 	int i = compressed ? 1 : 0;
- 	block_t first_blkaddr = data_blkaddr(dn->inode, dn->node_page,
--						dn->ofs_in_node + i);
-+							ofs_in_node + i);
+diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+index 7be4c3adb4e2b..ab91009aea883 100644
+--- a/drivers/infiniband/hw/mana/main.c
++++ b/drivers/infiniband/hw/mana/main.c
+@@ -358,7 +358,7 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+ 			     sizeof(struct gdma_create_dma_region_resp));
  
- 	for (i += 1; i < F2FS_I(dn->inode)->i_cluster_size; i++) {
- 		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
--						dn->ofs_in_node + i);
-+							ofs_in_node + i);
+ 	create_req->length = umem->length;
+-	create_req->offset_in_page = umem->address & (page_sz - 1);
++	create_req->offset_in_page = ib_umem_dma_offset(umem, page_sz);
+ 	create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
+ 	create_req->page_count = num_pages_total;
  
- 		if (!__is_valid_data_blkaddr(blkaddr))
- 			break;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index e6c22a392cdb0..54311765df373 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4288,7 +4288,8 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc);
- void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
- 				bool in_task);
- void f2fs_put_page_dic(struct page *page, bool in_task);
--unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn);
-+unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn,
-+						unsigned int ofs_in_node);
- int f2fs_init_compress_ctx(struct compress_ctx *cc);
- void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse);
- void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
-@@ -4345,7 +4346,8 @@ static inline void f2fs_put_page_dic(struct page *page, bool in_task)
- {
- 	WARN_ON_ONCE(1);
- }
--static inline unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn) { return 0; }
-+static inline unsigned int f2fs_cluster_blocks_are_contiguous(
-+			struct dnode_of_data *dn, unsigned int ofs_in_node) { return 0; }
- static inline bool f2fs_sanity_check_cluster(struct dnode_of_data *dn) { return false; }
- static inline int f2fs_init_compress_inode(struct f2fs_sb_info *sbi) { return 0; }
- static inline void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi) { }
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 9e00932770d8a..cdd890dbd5e34 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -852,21 +852,29 @@ int f2fs_get_dnode_of_data(struct dnode_of_data *dn, pgoff_t index, int mode)
- 
- 	if (is_inode_flag_set(dn->inode, FI_COMPRESSED_FILE) &&
- 					f2fs_sb_has_readonly(sbi)) {
--		unsigned int c_len = f2fs_cluster_blocks_are_contiguous(dn);
-+		unsigned int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
-+		unsigned int ofs_in_node = dn->ofs_in_node;
-+		pgoff_t fofs = index;
-+		unsigned int c_len;
- 		block_t blkaddr;
- 
-+		/* should align fofs and ofs_in_node to cluster_size */
-+		if (fofs % cluster_size) {
-+			fofs = round_down(fofs, cluster_size);
-+			ofs_in_node = round_down(ofs_in_node, cluster_size);
-+		}
-+
-+		c_len = f2fs_cluster_blocks_are_contiguous(dn, ofs_in_node);
- 		if (!c_len)
- 			goto out;
- 
--		blkaddr = f2fs_data_blkaddr(dn);
-+		blkaddr = data_blkaddr(dn->inode, dn->node_page, ofs_in_node);
- 		if (blkaddr == COMPRESS_ADDR)
- 			blkaddr = data_blkaddr(dn->inode, dn->node_page,
--						dn->ofs_in_node + 1);
-+						ofs_in_node + 1);
- 
- 		f2fs_update_read_extent_tree_range_compressed(dn->inode,
--					index, blkaddr,
--					F2FS_I(dn->inode)->i_cluster_size,
--					c_len);
-+					fofs, blkaddr, cluster_size, c_len);
- 	}
- out:
- 	return 0;
 -- 
 2.43.0
 
