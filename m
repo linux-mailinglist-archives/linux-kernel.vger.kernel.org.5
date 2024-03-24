@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB868895FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:45:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC47A888EE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:30:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1553B29F62
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:47:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6684128FB2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942C2247F73;
-	Mon, 25 Mar 2024 02:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6A9217DE6;
+	Sun, 24 Mar 2024 23:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uTfd0efA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NZOcrSxV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E2D1EF7C7;
-	Sun, 24 Mar 2024 22:57:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629A81EF7D8;
+	Sun, 24 Mar 2024 22:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321032; cv=none; b=CWOnmMW1Novyz2J/YWEJIHuKBEjt6WSkGDeWqmFtuqR7VoLBFauPYkKmIy+s0iUM2caN+MkmPuI0XyjigdjpUL4k4RE9pSxWIrRQGJh70l1AxIQyuOxYWw6F0OaZoxl8kHQVYKSIlBLYW2Ax05MN+aG8VBFS3tBOggBO4TnObUI=
+	t=1711321034; cv=none; b=MTWQSaGPdwyVpfNyFyhYYX7khg6tTcvnoYxZ/xdw1pFhQPVmjqpd9WT6eZrS/3fuQ9h8HxKq9rvDG7VsWfq61ZY0RHObQKEz0Lb8YiNyEc5g6dUDlsXrrgH95zfOozrmm2ZReAc5WnASiTM2pJEO5nAXhPGR0o1d6dG7wrbCfHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321032; c=relaxed/simple;
-	bh=lBPcE1Ic6z1sS/Iye+yuDhIyA+ugd+Zw7quz6IQHgDs=;
+	s=arc-20240116; t=1711321034; c=relaxed/simple;
+	bh=Be12DoVp7XADLp9Bormw6tugEx6d6axCRHPLss9SA6E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h+1NIe+MfNbKlVc6kqHOD2goQjM4i4FLXydGfHrfwRodh7KRIiOAjnBGpTbIrgQF4dDXTVxEV1SzYpJpTQ0NO/mCPgBxxqVWEmc97wfc3sm+NZanN5C9dZsdm7hv429Xh9yg7hEHtnINgvT6BpYJ5oEv/R0VPFJXeBF7sOVZfjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uTfd0efA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8330C433C7;
-	Sun, 24 Mar 2024 22:57:11 +0000 (UTC)
+	 MIME-Version; b=Wy0H5JW/c3HlcmJNoUmFe2wiusTEqT4Gr/MxYPFQl3hrQHhhvgIJq1Ox4XNvFYY7Vxis+PsZpZH9PA0Yz5tx3+zui7fFPCovwwGNJj8P/jkjktZ2/Z7XtnWJsvynOSSnt2S+TWD2STnmanrpnLoqQrPizjs8R/zzRGUPZwfemuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NZOcrSxV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F785C433F1;
+	Sun, 24 Mar 2024 22:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321032;
-	bh=lBPcE1Ic6z1sS/Iye+yuDhIyA+ugd+Zw7quz6IQHgDs=;
+	s=k20201202; t=1711321033;
+	bh=Be12DoVp7XADLp9Bormw6tugEx6d6axCRHPLss9SA6E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uTfd0efAUlbUqk0Pz/M1a2BmAb+8wfvWPeKJQJygsP6cyigDIqHrZoQHYv872towh
-	 IV0wKF8zh4MN/zdrygcWMFuLpLrq0cXEHdDp+d4pbmRB8ewKjJTM2ilJNNijLCwbBC
-	 S4ElwgfBm7rGQZV8XHfF6ywe2fiRiCQdISfuytmTjEwo6Uq4tA0dXym/7Crr2sXyYE
-	 +cY1/XPQiXI4wKJQgV942H2+qMfLmrgjA0DtZ8BwZu9wh1lvGO5SOPLi81ggeHB8HV
-	 NDWYkLu9PJTlFIXfGbKdcyM7QKSg1nkMU/0fWYbmBek4N6AzZG7DSAT3y6glGvTrgw
-	 EaCDuI8qKgSAA==
+	b=NZOcrSxVsb2ROX8CDD1vcRo/Xe6UhuiZHP8qqzxpO219cHfUitrh2BO9aF6WXrGKY
+	 kW61xo8vCMT6YEW5oBXCHDO9xjW5/M56b38FdnpsWE/k2YuerR+KXLEbyZ3axS3oSH
+	 95r0tC5yAQ0yyFaKKrx21uX/MRouXO1oj+s7UD0TvxKL5eQfsro4A2o8qH85GevLrJ
+	 t/HMKYvjTHBmT8eeYDjFkcE173SVUwGre+sfx4RjJJo0s5CNGh/ap5pAbcGtZTVqBM
+	 1+Rf3h23eJSJhjczqn2PeistDBIl/ZR42cupViiNT61cqwWx4A+BZcDx3hzSMhtpUb
+	 DiQnc7viL9bIg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Chao Yu <chao@kernel.org>,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 595/713] f2fs: fix to use correct segment type in f2fs_allocate_data_block()
-Date: Sun, 24 Mar 2024 18:45:21 -0400
-Message-ID: <20240324224720.1345309-596-sashal@kernel.org>
+Subject: [PATCH 6.7 596/713] f2fs: ro: compress: fix to avoid caching unaligned extent
+Date: Sun, 24 Mar 2024 18:45:22 -0400
+Message-ID: <20240324224720.1345309-597-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,40 +64,126 @@ Content-Transfer-Encoding: 8bit
 
 From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 7324858237829733dec9c670170df2377c5ca6e2 ]
+[ Upstream commit 4b99ecd304290c4ef55666a62c89dfb2dbf0b2cd ]
 
-@type in f2fs_allocate_data_block() indicates log header's type, it
-can be CURSEG_COLD_DATA_PINNED or CURSEG_ALL_DATA_ATGC, rather than
-type of data/node, however IS_DATASEG()/IS_NODESEG() only accept later
-one, fix it.
+Mapping info from dump.f2fs:
+i_addr[0x2d] cluster flag    		[0xfffffffe : 4294967294]
+i_addr[0x2e]                 		[0x   10428 : 66600]
+i_addr[0x2f]                 		[0x   10429 : 66601]
+i_addr[0x30]                 		[0x   1042a : 66602]
 
-Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
+f2fs_io fiemap 37 1 /mnt/f2fs/disk-58390c8c.raw
+
+Previsouly, it missed to align fofs and ofs_in_node to cluster_size,
+result in adding incorrect read extent cache, fix it.
+
+Before:
+f2fs_update_read_extent_tree_range: dev = (253,48), ino = 5, pgofs = 37, len = 4, blkaddr = 66600, c_len = 3
+
+After:
+f2fs_update_read_extent_tree_range: dev = (253,48), ino = 5, pgofs = 36, len = 4, blkaddr = 66600, c_len = 3
+
+Fixes: 94afd6d6e525 ("f2fs: extent cache: support unaligned extent")
 Signed-off-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/segment.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/f2fs/compress.c | 10 ++++++----
+ fs/f2fs/f2fs.h     |  6 ++++--
+ fs/f2fs/node.c     | 20 ++++++++++++++------
+ 3 files changed, 24 insertions(+), 12 deletions(-)
 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index cb49b2d15c59d..7b7ed2dac16b8 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3490,12 +3490,12 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 	locate_dirty_segment(sbi, GET_SEGNO(sbi, old_blkaddr));
- 	locate_dirty_segment(sbi, GET_SEGNO(sbi, *new_blkaddr));
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 06e9bbfba1f1a..52f407b9789b1 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1817,16 +1817,18 @@ void f2fs_put_page_dic(struct page *page, bool in_task)
+  * check whether cluster blocks are contiguous, and add extent cache entry
+  * only if cluster blocks are logically and physically contiguous.
+  */
+-unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn)
++unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn,
++						unsigned int ofs_in_node)
+ {
+-	bool compressed = f2fs_data_blkaddr(dn) == COMPRESS_ADDR;
++	bool compressed = data_blkaddr(dn->inode, dn->node_page,
++					ofs_in_node) == COMPRESS_ADDR;
+ 	int i = compressed ? 1 : 0;
+ 	block_t first_blkaddr = data_blkaddr(dn->inode, dn->node_page,
+-						dn->ofs_in_node + i);
++							ofs_in_node + i);
  
--	if (IS_DATASEG(type))
-+	if (IS_DATASEG(curseg->seg_type))
- 		atomic64_inc(&sbi->allocated_data_blocks);
+ 	for (i += 1; i < F2FS_I(dn->inode)->i_cluster_size; i++) {
+ 		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
+-						dn->ofs_in_node + i);
++							ofs_in_node + i);
  
- 	up_write(&sit_i->sentry_lock);
+ 		if (!__is_valid_data_blkaddr(blkaddr))
+ 			break;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 655e27e7bef9c..bdae73e2540a5 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -4291,7 +4291,8 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc);
+ void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed,
+ 				bool in_task);
+ void f2fs_put_page_dic(struct page *page, bool in_task);
+-unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn);
++unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn,
++						unsigned int ofs_in_node);
+ int f2fs_init_compress_ctx(struct compress_ctx *cc);
+ void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse);
+ void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
+@@ -4348,7 +4349,8 @@ static inline void f2fs_put_page_dic(struct page *page, bool in_task)
+ {
+ 	WARN_ON_ONCE(1);
+ }
+-static inline unsigned int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn) { return 0; }
++static inline unsigned int f2fs_cluster_blocks_are_contiguous(
++			struct dnode_of_data *dn, unsigned int ofs_in_node) { return 0; }
+ static inline bool f2fs_sanity_check_cluster(struct dnode_of_data *dn) { return false; }
+ static inline int f2fs_init_compress_inode(struct f2fs_sb_info *sbi) { return 0; }
+ static inline void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi) { }
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 9b546fd210100..2ea9c99e7dcb7 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -852,21 +852,29 @@ int f2fs_get_dnode_of_data(struct dnode_of_data *dn, pgoff_t index, int mode)
  
--	if (page && IS_NODESEG(type)) {
-+	if (page && IS_NODESEG(curseg->seg_type)) {
- 		fill_node_footer_blkaddr(page, NEXT_FREE_BLKADDR(sbi, curseg));
+ 	if (is_inode_flag_set(dn->inode, FI_COMPRESSED_FILE) &&
+ 					f2fs_sb_has_readonly(sbi)) {
+-		unsigned int c_len = f2fs_cluster_blocks_are_contiguous(dn);
++		unsigned int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
++		unsigned int ofs_in_node = dn->ofs_in_node;
++		pgoff_t fofs = index;
++		unsigned int c_len;
+ 		block_t blkaddr;
  
- 		f2fs_inode_chksum_set(sbi, page);
++		/* should align fofs and ofs_in_node to cluster_size */
++		if (fofs % cluster_size) {
++			fofs = round_down(fofs, cluster_size);
++			ofs_in_node = round_down(ofs_in_node, cluster_size);
++		}
++
++		c_len = f2fs_cluster_blocks_are_contiguous(dn, ofs_in_node);
+ 		if (!c_len)
+ 			goto out;
+ 
+-		blkaddr = f2fs_data_blkaddr(dn);
++		blkaddr = data_blkaddr(dn->inode, dn->node_page, ofs_in_node);
+ 		if (blkaddr == COMPRESS_ADDR)
+ 			blkaddr = data_blkaddr(dn->inode, dn->node_page,
+-						dn->ofs_in_node + 1);
++						ofs_in_node + 1);
+ 
+ 		f2fs_update_read_extent_tree_range_compressed(dn->inode,
+-					index, blkaddr,
+-					F2FS_I(dn->inode)->i_cluster_size,
+-					c_len);
++					fofs, blkaddr, cluster_size, c_len);
+ 	}
+ out:
+ 	return 0;
 -- 
 2.43.0
 
