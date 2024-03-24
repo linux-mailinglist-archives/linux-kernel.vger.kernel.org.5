@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-115509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF36889C03
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:08:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EB70888720
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:52:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0BE81C32DEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:08:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6D651F24D50
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6706B237B76;
-	Mon, 25 Mar 2024 02:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A94D20CE08;
+	Sun, 24 Mar 2024 23:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E926Ogxq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fUm+XMmb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F101D1EC642;
-	Sun, 24 Mar 2024 22:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87EB1EC654;
+	Sun, 24 Mar 2024 22:55:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320953; cv=none; b=oHvVUf1GwEOQmn0iBpmdX7kicb5nCuRfiROu5fcEyc8/VNuuFyiFh6ZcQMXISENx4qOuoT9AiiP3rAfa4L2N3IFakkF7zOUWhbCxfYzvF9c5NfrqSUYbDTaErMehL9lnnSwQG/BvuAPmt0M/1wNeaalC3oTTtBuqpfcI98srz0E=
+	t=1711320954; cv=none; b=MMOm3EgPnBN3f/O+yKFUSyIi4Xonf2v665urCU0Cv4PMXp8z7lLpPGWVTZCdMLnRwO4uIdeNNEa/M93L1EGaXiW87uWBXG17ml7w0gOSVCvWFGZyJmwA2/XZlJZMhdb/zP4iDr8ldonlsV87eToGeSLkE/mxiF+w+dsXptLCL/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320953; c=relaxed/simple;
-	bh=EUd3H01z/g6e+KfDNp6I74U5/lYNo/7jxkXAtx9zt4Y=;
+	s=arc-20240116; t=1711320954; c=relaxed/simple;
+	bh=zIzrS9FnuADVM5W+mS2X8Ece0Bn7nG81SCezXMUw+EM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qpiD0YkiJv7IhPT3u5WdmK2OKFSMArgc0dY36yVdjRr/iJsfLXbu7DM6hjYC9ciZIAmeX7Vv1jozODoOvhcM0+xxlWn5/y9AReciSCm5i+uf7Bk+Tsvh3MF+isDicf2yV0d7U9OETTcJdhqZ0BvvNvyyeP+e8NzZmKyjvV7TsBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E926Ogxq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEC52C43394;
-	Sun, 24 Mar 2024 22:55:51 +0000 (UTC)
+	 MIME-Version; b=X0Ni4zuzJMpVkyXjpE6CU/megvg7Pni4aEWYSnHbLlhrD6TMPVLZCUvbhksc2KbvTSJOyPD8R2MsstmTrpx3dzwxy7WUtXAmtyvXcQRqL6skqsbmtIzMvEneDLHEsvG2S2plnj7fHDTIrJFBVIeJsJkzByPUgpZ4nCTc3rh9Ixc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fUm+XMmb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5412C43390;
+	Sun, 24 Mar 2024 22:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320952;
-	bh=EUd3H01z/g6e+KfDNp6I74U5/lYNo/7jxkXAtx9zt4Y=;
+	s=k20201202; t=1711320953;
+	bh=zIzrS9FnuADVM5W+mS2X8Ece0Bn7nG81SCezXMUw+EM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E926OgxqxeVUK/7KBnaN3+YMEkUDoZWpc5lT60TDST25CxiGRMgIgEWuiAdNw4gMT
-	 8kVSd/j/w/oDuuIRiQ8UJsNAf7FBO+FZiXT6HHnkZb2rw6Ioyc3d60waFrkUjKepaC
-	 rHz3yBa7AEFQSikwvW6BZSEHsDqC4HRF9+PUFwUKhXaGGRtu9rV1O1QCowaU9k2j/t
-	 OHZPaxhLJoo50Gh8iQoU62K5/x0461/mpoNhs3QNl/Haaui2fXI2+dAdMlYIvH6F8c
-	 7uyR5VHE21jHthjOs/jCEKFHEGO0RMnDMYPZMT/3+0haU8lF0Nno1ChtBwxtDkqKkn
-	 x3P1X8lPJAmkQ==
+	b=fUm+XMmbmR8zVSGNRnzVpTVVqGqnd7HLqmqtFjgRvRYHhx9puTt8iCosfuvYWKy5M
+	 AoBe/lNDwP7qAdJ0zqjFB8PfYFW9u7nssZVuEqhE+sGTDCDGd5Jq9d++VNYK+oWFQF
+	 lHmdIDFCqZmM+HLWZZcn8MKD0NL8ZVrNzkGyFTKSwBxF1FB5vNpcm4mN4BmhO8zuvW
+	 l88LYtcvT9o9w2U0dbOwnpU4DaTYlBZ3ENX+HhA7ArNfsh9aHty7t3O67bCI94mZGJ
+	 sXNAIsOn8OFmAXXwqFzasvwKt+koXYMw2WUyB1jExn2s9CWrzyxySCR+3rkTBZT4dq
+	 JffUgBO+wld6g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-	Jammy Zhou <Jammy.Zhou@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Edward Adam Davis <eadavis@qq.com>,
+	syzbot+ce750e124675d4599449@syzkaller.appspotmail.com,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 516/713] drm/amdgpu: Fix missing break in ATOM_ARG_IMM Case of atom_get_src_int()
-Date: Sun, 24 Mar 2024 18:44:02 -0400
-Message-ID: <20240324224720.1345309-517-sashal@kernel.org>
+Subject: [PATCH 6.7 517/713] media: pvrusb2: fix uaf in pvr2_context_set_notify
+Date: Sun, 24 Mar 2024 18:44:03 -0400
+Message-ID: <20240324224720.1345309-518-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -60,47 +59,77 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+From: Edward Adam Davis <eadavis@qq.com>
 
-[ Upstream commit 7cf1ad2fe10634238b38442a851d89514cb14ea2 ]
+[ Upstream commit 0a0b79ea55de8514e1750884e5fec77f9fdd01ee ]
 
-Missing break statement in the ATOM_ARG_IMM case of a switch statement,
-adds the missing break statement, ensuring that the program's control
-flow is as intended.
+[Syzbot reported]
+BUG: KASAN: slab-use-after-free in pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
+Read of size 4 at addr ffff888113aeb0d8 by task kworker/1:1/26
 
-Fixes the below:
-drivers/gpu/drm/amd/amdgpu/atom.c:323 atom_get_src_int() warn: ignoring unreachable code.
+CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 6.8.0-rc1-syzkaller-00046-gf1a27f081c1f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:488
+ kasan_report+0xda/0x110 mm/kasan/report.c:601
+ pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
+ pvr2_context_notify drivers/media/usb/pvrusb2/pvrusb2-context.c:95 [inline]
+ pvr2_context_disconnect+0x94/0xb0 drivers/media/usb/pvrusb2/pvrusb2-context.c:272
 
-Fixes: d38ceaf99ed0 ("drm/amdgpu: add core driver (v4)")
-Cc: Jammy Zhou <Jammy.Zhou@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Freed by task 906:
+kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
+kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
+poison_slab_object mm/kasan/common.c:241 [inline]
+__kasan_slab_free+0x106/0x1b0 mm/kasan/common.c:257
+kasan_slab_free include/linux/kasan.h:184 [inline]
+slab_free_hook mm/slub.c:2121 [inline]
+slab_free mm/slub.c:4299 [inline]
+kfree+0x105/0x340 mm/slub.c:4409
+pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:137 [inline]
+pvr2_context_thread_func+0x69d/0x960 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
+
+[Analyze]
+Task A set disconnect_flag = !0, which resulted in Task B's condition being met
+and releasing mp, leading to this issue.
+
+[Fix]
+Place the disconnect_flag assignment operation after all code in pvr2_context_disconnect()
+to avoid this issue.
+
+Reported-and-tested-by: syzbot+ce750e124675d4599449@syzkaller.appspotmail.com
+Fixes: e5be15c63804 ("V4L/DVB (7711): pvrusb2: Fix race on module unload")
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/atom.c | 2 +-
+ drivers/media/usb/pvrusb2/pvrusb2-context.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/atom.c b/drivers/gpu/drm/amd/amdgpu/atom.c
-index 2c221000782cd..1b51be9b5f36b 100644
---- a/drivers/gpu/drm/amd/amdgpu/atom.c
-+++ b/drivers/gpu/drm/amd/amdgpu/atom.c
-@@ -313,7 +313,7 @@ static uint32_t atom_get_src_int(atom_exec_context *ctx, uint8_t attr,
- 				DEBUG("IMM 0x%02X\n", val);
- 			return val;
- 		}
--		return 0;
-+		break;
- 	case ATOM_ARG_PLL:
- 		idx = U8(*ptr);
- 		(*ptr)++;
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+index 58f2f3ff10ee2..73c95ba2328a4 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+@@ -267,9 +267,9 @@ static void pvr2_context_exit(struct pvr2_context *mp)
+ void pvr2_context_disconnect(struct pvr2_context *mp)
+ {
+ 	pvr2_hdw_disconnect(mp->hdw);
+-	mp->disconnect_flag = !0;
+ 	if (!pvr2_context_shutok())
+ 		pvr2_context_notify(mp);
++	mp->disconnect_flag = !0;
+ }
+ 
+ 
 -- 
 2.43.0
 
