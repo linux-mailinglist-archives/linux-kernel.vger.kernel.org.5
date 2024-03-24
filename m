@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-112977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E10E888036
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:56:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3928A888038
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:56:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7444281669
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:56:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1A3A281412
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB91012BEB4;
-	Sun, 24 Mar 2024 22:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1EB12BF0C;
+	Sun, 24 Mar 2024 22:36:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KZUGYMM8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kxe0SgyR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB89012BE94;
-	Sun, 24 Mar 2024 22:36:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD7C12BEAA;
+	Sun, 24 Mar 2024 22:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319790; cv=none; b=MMBXmTvAqG0C3E7khJZZyv+x1qrSo3PCpY3ExYenlzpTKhrcaeobDYYnoiAH53i2WFQZjJesqe9zFJpWkdTTs3ZMnuBKwyeEOrPZmePbwVR+eckT0UEwY8PasGu8xFTIFU0raI3xSiAZEqCOqQ1RpjPaPV3FXqItExH9YwUxarw=
+	t=1711319790; cv=none; b=Z3fGXzSW+vig+KAvMgpYt2RFQzLi0bz0A+rxeHytrw1u0BTSBaKe1E8qyhoPq7V75VsyW1LULMGpaKd1eGfHQsZ5r0mdXX1Q7YejOwjwzPA02iD5gWgsJW9Kkh2wrp0OvbLXaOjNNeBy3840y/suw2HwyQmo3jRns3R0efP4PNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711319790; c=relaxed/simple;
-	bh=K757j1h2gj/8YT/wZT3TO9lwrI+Py+jNR2IhmZioBqg=;
+	bh=tdPXBerBXov0spvfnNiuYzMsfFi3OFvV7DejymwhKRU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sFw1Ji7SsX0Rbcnep4eW/4mZ/Y2+/6eiX00IuoFb/KEn6zetiO2+4zv7UeLLxfuMJG9z8leZ4/w/2DHjmE0sokrdQ5VWKB3+8isa04AdXuaH0B+RDh/UAA1spkEToNMtzX0GjHijXALgeEqtAsaPDLhuI1Rt3UCIli/06Af0ZHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KZUGYMM8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEC4FC433C7;
-	Sun, 24 Mar 2024 22:36:28 +0000 (UTC)
+	 MIME-Version; b=UDc7wjfvvsZBMeOPaB50rLtvMz89olEWV7p+ssjxbsWzyNf782fXTrupGLvirC9ncYxy/uwyo+0NDe9eVMzYqS9aZj4J80luLIuiHg3WCN47NrlOTRX7tBeLWPomGHsr1eKpOyVmOPt8ONEiApLK22a11O8w7YmyWp7MlE2w8og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kxe0SgyR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D15C8C433B1;
+	Sun, 24 Mar 2024 22:36:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319789;
-	bh=K757j1h2gj/8YT/wZT3TO9lwrI+Py+jNR2IhmZioBqg=;
+	s=k20201202; t=1711319790;
+	bh=tdPXBerBXov0spvfnNiuYzMsfFi3OFvV7DejymwhKRU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KZUGYMM8v+8dPIYa5EiZBT5xohrlD4tPCpmAqISi24HTOibmS8XgJ4KjD1i1zay1c
-	 KbD82yE/nScCQIvD56HDNOBKypKpT48ja93J2T6DAM3wCE4gMCqYBlghVIBnXCbfkW
-	 KLjljs6opq3lGV8ZzQ2rhBs/3Np3UU1UWJa/8WY3OjPP4QcsT9HnJDY/HQCXBmksiV
-	 lRJocuToIjsnY1YCLWu7PSkopXulGQkjS83IBiCU9WXLpmUnckfhfz5tUHRia6NiHm
-	 5zQ1NhtXOj/EmoDaLszSJ2vDXvslzjYJNtyRfRu7JHkFo13xA3pf2JBpB2//FZQX8a
-	 C3hfTaItvXdGA==
+	b=Kxe0SgyRcQhmKr31ojXs7+HDR4RRt9HC7Z08qSW6Hm8qzIDQYb6lljEatsFPEbujd
+	 BBJrZEH9K3YGxXyu8ZMI657BDp2vjnndUHlSoomrbl4u99QjKAUcD6YdEdnWDbDxI4
+	 wAsk7zLGvdtByK9FWQHfZspIej6l1QX8MHWi8Y/tZ8XbQSlj+/56PuS0uYPqGqbMJH
+	 shABi1M2VJp9lb1hVrgL0jYdNrFbok/cg0DKeDRa6cCOXiaNButq0HJzsI2ipRu+vG
+	 h3/4B+8uUxuF9xUBCC+pf2/sb4ZhA4XRnfmxl/VwjEokdH2GeaGprMleEwruIqkl/1
+	 ozELmkTxu9SnA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
+Cc: Benjamin Berg <benjamin.berg@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 090/715] selftests/bpf: Wait for the netstamp_needed_key static key to be turned on
-Date: Sun, 24 Mar 2024 18:24:29 -0400
-Message-ID: <20240324223455.1342824-91-sashal@kernel.org>
+Subject: [PATCH 6.8 091/715] wifi: cfg80211: add RNR with reporting AP information
+Date: Sun, 24 Mar 2024 18:24:30 -0400
+Message-ID: <20240324223455.1342824-92-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,183 +63,298 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-[ Upstream commit ce6f6cffaeaa0a3bcdafcae7fe03c68c3afae631 ]
+[ Upstream commit 4d1d6b3f45999b1ddde53831d639a67e2655285f ]
 
-After the previous patch that speeded up the test (by avoiding neigh
-discovery in IPv6), the BPF CI occasionally hits this error:
+If the reporting AP is part of the same MLD, then an entry in the RNR is
+required in order to discover it again from the BSS generated from the
+per-STA profile in the Multi-Link Probe Response.
 
-rcv tstamp unexpected pkt rcv tstamp: actual 0 == expected 0
+We need this because we do not have a direct concept of an MLD AP and
+just do the lookup from one to the other on the fly if needed. As such,
+we need to ensure that this lookup will work both ways.
 
-The test complains about the cmsg returned from the recvmsg() does not
-have the rcv timestamp. Setting skb->tstamp or not is
-controlled by a kernel static key "netstamp_needed_key". The static
-key is enabled whenever this is at least one sk with the SOCK_TIMESTAMP
-set.
-
-The test_redirect_dtime does use setsockopt() to turn on
-the SOCK_TIMESTAMP for the reading sk. In the kernel
-net_enable_timestamp() has a delay to enable the "netstamp_needed_key"
-when CONFIG_JUMP_LABEL is set. This potential delay is the likely reason
-for packet missing rcv timestamp occasionally.
-
-This patch is to create udp sockets with SOCK_TIMESTAMP set.
-It sends and receives some packets until the received packet
-has a rcv timestamp. It currently retries at most 5 times with 1s
-in between. This should be enough to wait for the "netstamp_needed_key".
-It then holds on to the socket and only closes it at the end of the test.
-This guarantees that the test has the "netstamp_needed_key" key turned
-on from the beginning.
-
-To simplify the udp sockets setup, they are sending/receiving packets
-in the same netns (ns_dst is used) and communicate over the "lo" dev.
-Hence, the patch enables the "lo" dev in the ns_dst.
-
-Fixes: c803475fd8dd ("bpf: selftests: test skb->tstamp in redirect_neigh")
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20240120060518.3604920-2-martin.lau@linux.dev
+Fixes: 2481b5da9c6b ("wifi: cfg80211: handle BSS data contained in ML probe responses")
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Link: https://msgid.link/20240102213313.4cb3dbb1d84f.I7c74edec83c5d7598cdd578929fd0876d67aef7f@changeid
+[roll in off-by-one fix and test updates from Benjamin]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/prog_tests/tc_redirect.c    | 79 ++++++++++++++++++-
- 1 file changed, 75 insertions(+), 4 deletions(-)
+ net/wireless/scan.c       | 135 ++++++++++++++++++++++++++++++++++++--
+ net/wireless/tests/scan.c |  36 +++++++++-
+ 2 files changed, 163 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-index 610887157fd85..dbe06aeaa2b27 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-@@ -291,6 +291,7 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
- 	SYS(fail, "ip addr add " IP4_DST "/32 dev dst");
- 	SYS(fail, "ip addr add " IP6_DST "/128 dev dst nodad");
- 	SYS(fail, "ip link set dev dst up");
-+	SYS(fail, "ip link set dev lo up");
- 
- 	SYS(fail, "ip route add " IP4_SRC "/32 dev dst scope global");
- 	SYS(fail, "ip route add " IP4_NET "/16 dev dst scope global");
-@@ -468,7 +469,7 @@ static int set_forwarding(bool enable)
+diff --git a/net/wireless/scan.c b/net/wireless/scan.c
+index 389a52c29bfc7..7c9dc52ed783e 100644
+--- a/net/wireless/scan.c
++++ b/net/wireless/scan.c
+@@ -2674,6 +2674,103 @@ cfg80211_tbtt_info_for_mld_ap(const u8 *ie, size_t ielen, u8 mld_id, u8 link_id,
  	return 0;
  }
  
--static void rcv_tstamp(int fd, const char *expected, size_t s)
-+static int __rcv_tstamp(int fd, const char *expected, size_t s, __u64 *tstamp)
- {
- 	struct __kernel_timespec pkt_ts = {};
- 	char ctl[CMSG_SPACE(sizeof(pkt_ts))];
-@@ -489,7 +490,7 @@ static void rcv_tstamp(int fd, const char *expected, size_t s)
- 
- 	ret = recvmsg(fd, &msg, 0);
- 	if (!ASSERT_EQ(ret, s, "recvmsg"))
--		return;
-+		return -1;
- 	ASSERT_STRNEQ(data, expected, s, "expected rcv data");
- 
- 	cmsg = CMSG_FIRSTHDR(&msg);
-@@ -498,6 +499,12 @@ static void rcv_tstamp(int fd, const char *expected, size_t s)
- 		memcpy(&pkt_ts, CMSG_DATA(cmsg), sizeof(pkt_ts));
- 
- 	pkt_ns = pkt_ts.tv_sec * NSEC_PER_SEC + pkt_ts.tv_nsec;
-+	if (tstamp) {
-+		/* caller will check the tstamp itself */
-+		*tstamp = pkt_ns;
-+		return 0;
-+	}
-+
- 	ASSERT_NEQ(pkt_ns, 0, "pkt rcv tstamp");
- 
- 	ret = clock_gettime(CLOCK_REALTIME, &now_ts);
-@@ -507,6 +514,60 @@ static void rcv_tstamp(int fd, const char *expected, size_t s)
- 	if (ASSERT_GE(now_ns, pkt_ns, "check rcv tstamp"))
- 		ASSERT_LT(now_ns - pkt_ns, 5 * NSEC_PER_SEC,
- 			  "check rcv tstamp");
-+	return 0;
-+}
-+
-+static void rcv_tstamp(int fd, const char *expected, size_t s)
++static struct element *
++cfg80211_gen_reporter_rnr(struct cfg80211_bss *source_bss, bool is_mbssid,
++			  bool same_mld, u8 link_id, u8 bss_change_count,
++			  gfp_t gfp)
 +{
-+	__rcv_tstamp(fd, expected, s, NULL);
-+}
++	const struct cfg80211_bss_ies *ies;
++	struct ieee80211_neighbor_ap_info ap_info;
++	struct ieee80211_tbtt_info_ge_11 tbtt_info;
++	u32 short_ssid;
++	const struct element *elem;
++	struct element *res;
 +
-+static int wait_netstamp_needed_key(void)
-+{
-+	int opt = 1, srv_fd = -1, cli_fd = -1, nretries = 0, err, n;
-+	char buf[] = "testing testing";
-+	struct nstoken *nstoken;
-+	__u64 tstamp = 0;
-+
-+	nstoken = open_netns(NS_DST);
-+	if (!nstoken)
-+		return -1;
-+
-+	srv_fd = start_server(AF_INET6, SOCK_DGRAM, "::1", 0, 0);
-+	if (!ASSERT_GE(srv_fd, 0, "start_server"))
-+		goto done;
-+
-+	err = setsockopt(srv_fd, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
-+			 &opt, sizeof(opt));
-+	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS_NEW)"))
-+		goto done;
-+
-+	cli_fd = connect_to_fd(srv_fd, TIMEOUT_MILLIS);
-+	if (!ASSERT_GE(cli_fd, 0, "connect_to_fd"))
-+		goto done;
-+
-+again:
-+	n = write(cli_fd, buf, sizeof(buf));
-+	if (!ASSERT_EQ(n, sizeof(buf), "send to server"))
-+		goto done;
-+	err = __rcv_tstamp(srv_fd, buf, sizeof(buf), &tstamp);
-+	if (!ASSERT_OK(err, "__rcv_tstamp"))
-+		goto done;
-+	if (!tstamp && nretries++ < 5) {
-+		sleep(1);
-+		printf("netstamp_needed_key retry#%d\n", nretries);
-+		goto again;
-+	}
-+
-+done:
-+	if (!tstamp && srv_fd != -1) {
-+		close(srv_fd);
-+		srv_fd = -1;
-+	}
-+	if (cli_fd != -1)
-+		close(cli_fd);
-+	close_netns(nstoken);
-+	return srv_fd;
- }
- 
- static void snd_tstamp(int fd, char *b, size_t s)
-@@ -843,11 +904,20 @@ static void test_tc_redirect_dtime(struct netns_setup_result *setup_result)
- {
- 	struct test_tc_dtime *skel;
- 	struct nstoken *nstoken;
--	int err;
-+	int hold_tstamp_fd, err;
-+
-+	/* Hold a sk with the SOCK_TIMESTAMP set to ensure there
-+	 * is no delay in the kernel net_enable_timestamp().
-+	 * This ensures the following tests must have
-+	 * non zero rcv tstamp in the recvmsg().
++	/*
++	 * We only generate the RNR to permit ML lookups. For that we do not
++	 * need an entry for the corresponding transmitting BSS, lets just skip
++	 * it even though it would be easy to add.
 +	 */
-+	hold_tstamp_fd = wait_netstamp_needed_key();
-+	if (!ASSERT_GE(hold_tstamp_fd, 0, "wait_netstamp_needed_key"))
-+		return;
++	if (!same_mld)
++		return NULL;
++
++	/* We could use tx_data->ies if we change cfg80211_calc_short_ssid */
++	rcu_read_lock();
++	ies = rcu_dereference(source_bss->ies);
++
++	ap_info.tbtt_info_len = offsetofend(typeof(tbtt_info), mld_params);
++	ap_info.tbtt_info_hdr =
++			u8_encode_bits(IEEE80211_TBTT_INFO_TYPE_TBTT,
++				       IEEE80211_AP_INFO_TBTT_HDR_TYPE) |
++			u8_encode_bits(0, IEEE80211_AP_INFO_TBTT_HDR_COUNT);
++
++	ap_info.channel = ieee80211_frequency_to_channel(source_bss->channel->center_freq);
++
++	/* operating class */
++	elem = cfg80211_find_elem(WLAN_EID_SUPPORTED_REGULATORY_CLASSES,
++				  ies->data, ies->len);
++	if (elem && elem->datalen >= 1) {
++		ap_info.op_class = elem->data[0];
++	} else {
++		struct cfg80211_chan_def chandef;
++
++		/* The AP is not providing us with anything to work with. So
++		 * make up a somewhat reasonable operating class, but don't
++		 * bother with it too much as no one will ever use the
++		 * information.
++		 */
++		cfg80211_chandef_create(&chandef, source_bss->channel,
++					NL80211_CHAN_NO_HT);
++
++		if (!ieee80211_chandef_to_operating_class(&chandef,
++							  &ap_info.op_class))
++			goto out_unlock;
++	}
++
++	/* Just set TBTT offset and PSD 20 to invalid/unknown */
++	tbtt_info.tbtt_offset = 255;
++	tbtt_info.psd_20 = IEEE80211_RNR_TBTT_PARAMS_PSD_RESERVED;
++
++	memcpy(tbtt_info.bssid, source_bss->bssid, ETH_ALEN);
++	if (cfg80211_calc_short_ssid(ies, &elem, &short_ssid))
++		goto out_unlock;
++
++	rcu_read_unlock();
++
++	tbtt_info.short_ssid = cpu_to_le32(short_ssid);
++
++	tbtt_info.bss_params = IEEE80211_RNR_TBTT_PARAMS_SAME_SSID;
++
++	if (is_mbssid) {
++		tbtt_info.bss_params |= IEEE80211_RNR_TBTT_PARAMS_MULTI_BSSID;
++		tbtt_info.bss_params |= IEEE80211_RNR_TBTT_PARAMS_TRANSMITTED_BSSID;
++	}
++
++	tbtt_info.mld_params.mld_id = 0;
++	tbtt_info.mld_params.params =
++		le16_encode_bits(link_id, IEEE80211_RNR_MLD_PARAMS_LINK_ID) |
++		le16_encode_bits(bss_change_count,
++				 IEEE80211_RNR_MLD_PARAMS_BSS_CHANGE_COUNT);
++
++	res = kzalloc(struct_size(res, data,
++				  sizeof(ap_info) + ap_info.tbtt_info_len),
++		      gfp);
++	if (!res)
++		return NULL;
++
++	/* Copy the data */
++	res->id = WLAN_EID_REDUCED_NEIGHBOR_REPORT;
++	res->datalen = sizeof(ap_info) + ap_info.tbtt_info_len;
++	memcpy(res->data, &ap_info, sizeof(ap_info));
++	memcpy(res->data + sizeof(ap_info), &tbtt_info, ap_info.tbtt_info_len);
++
++	return res;
++
++out_unlock:
++	rcu_read_unlock();
++	return NULL;
++}
++
+ static void
+ cfg80211_parse_ml_elem_sta_data(struct wiphy *wiphy,
+ 				struct cfg80211_inform_single_bss_data *tx_data,
+@@ -2687,13 +2784,14 @@ cfg80211_parse_ml_elem_sta_data(struct wiphy *wiphy,
+ 		.source_bss = source_bss,
+ 		.bss_source = BSS_SOURCE_STA_PROFILE,
+ 	};
++	struct element *reporter_rnr = NULL;
+ 	struct ieee80211_multi_link_elem *ml_elem;
+ 	struct cfg80211_mle *mle;
+ 	u16 control;
+ 	u8 ml_common_len;
+-	u8 *new_ie;
++	u8 *new_ie = NULL;
+ 	struct cfg80211_bss *bss;
+-	int mld_id;
++	u8 mld_id, reporter_link_id, bss_change_count;
+ 	u16 seen_links = 0;
+ 	const u8 *pos;
+ 	u8 i;
+@@ -2715,8 +2813,14 @@ cfg80211_parse_ml_elem_sta_data(struct wiphy *wiphy,
  
- 	skel = test_tc_dtime__open();
- 	if (!ASSERT_OK_PTR(skel, "test_tc_dtime__open"))
--		return;
-+		goto done;
+ 	ml_common_len = ml_elem->variable[0];
  
- 	skel->rodata->IFINDEX_SRC = setup_result->ifindex_src_fwd;
- 	skel->rodata->IFINDEX_DST = setup_result->ifindex_dst_fwd;
-@@ -892,6 +962,7 @@ static void test_tc_redirect_dtime(struct netns_setup_result *setup_result)
+-	/* length + MLD MAC address + link ID info + BSS Params Change Count */
+-	pos = ml_elem->variable + 1 + 6 + 1 + 1;
++	/* length + MLD MAC address */
++	pos = ml_elem->variable + 1 + 6;
++
++	reporter_link_id = pos[0];
++	pos += 1;
++
++	bss_change_count = pos[0];
++	pos += 1;
  
- done:
- 	test_tc_dtime__destroy(skel);
-+	close(hold_tstamp_fd);
+ 	if (u16_get_bits(control, IEEE80211_MLC_BASIC_PRES_MED_SYNC_DELAY))
+ 		pos += 2;
+@@ -2747,10 +2851,21 @@ cfg80211_parse_ml_elem_sta_data(struct wiphy *wiphy,
+ 	if (!mle)
+ 		return;
+ 
++	/* No point in doing anything if there is no per-STA profile */
++	if (!mle->sta_prof[0])
++		goto out;
++
+ 	new_ie = kmalloc(IEEE80211_MAX_DATA_LEN, gfp);
+ 	if (!new_ie)
+ 		goto out;
+ 
++	reporter_rnr = cfg80211_gen_reporter_rnr(source_bss,
++						 u16_get_bits(control,
++							      IEEE80211_MLC_BASIC_PRES_MLD_ID),
++						 mld_id == 0, reporter_link_id,
++						 bss_change_count,
++						 gfp);
++
+ 	for (i = 0; i < ARRAY_SIZE(mle->sta_prof) && mle->sta_prof[i]; i++) {
+ 		const struct ieee80211_neighbor_ap_info *ap_info;
+ 		enum nl80211_band band;
+@@ -2860,7 +2975,16 @@ cfg80211_parse_ml_elem_sta_data(struct wiphy *wiphy,
+ 
+ 		data.ielen += sizeof(*ml_elem) + ml_common_len;
+ 
+-		/* TODO: Add an RNR containing only the reporting AP */
++		if (reporter_rnr && (use_for & NL80211_BSS_USE_FOR_NORMAL)) {
++			if (data.ielen + sizeof(struct element) +
++			    reporter_rnr->datalen > IEEE80211_MAX_DATA_LEN)
++				continue;
++
++			memcpy(new_ie + data.ielen, reporter_rnr,
++			       sizeof(struct element) + reporter_rnr->datalen);
++			data.ielen += sizeof(struct element) +
++				      reporter_rnr->datalen;
++		}
+ 
+ 		bss = cfg80211_inform_single_bss_data(wiphy, &data, gfp);
+ 		if (!bss)
+@@ -2869,6 +2993,7 @@ cfg80211_parse_ml_elem_sta_data(struct wiphy *wiphy,
+ 	}
+ 
+ out:
++	kfree(reporter_rnr);
+ 	kfree(new_ie);
+ 	kfree(mle);
  }
+diff --git a/net/wireless/tests/scan.c b/net/wireless/tests/scan.c
+index 77854161cd22b..f9ea44aee9952 100644
+--- a/net/wireless/tests/scan.c
++++ b/net/wireless/tests/scan.c
+@@ -2,7 +2,7 @@
+ /*
+  * KUnit tests for inform_bss functions
+  *
+- * Copyright (C) 2023 Intel Corporation
++ * Copyright (C) 2023-2024 Intel Corporation
+  */
+ #include <linux/ieee80211.h>
+ #include <net/cfg80211.h>
+@@ -406,9 +406,27 @@ static struct inform_bss_ml_sta_case {
+ 	const char *desc;
+ 	int mld_id;
+ 	bool sta_prof_vendor_elems;
++	bool include_oper_class;
+ } inform_bss_ml_sta_cases[] = {
+-	{ .desc = "no_mld_id", .mld_id = 0, .sta_prof_vendor_elems = false },
+-	{ .desc = "mld_id_eq_1", .mld_id = 1, .sta_prof_vendor_elems = true },
++	{
++		.desc = "zero_mld_id",
++		.mld_id = 0,
++		.sta_prof_vendor_elems = false,
++	}, {
++		.desc = "zero_mld_id_with_oper_class",
++		.mld_id = 0,
++		.sta_prof_vendor_elems = false,
++		.include_oper_class = true,
++	}, {
++		.desc = "mld_id_eq_1",
++		.mld_id = 1,
++		.sta_prof_vendor_elems = true,
++	}, {
++		.desc = "mld_id_eq_1_with_oper_class",
++		.mld_id = 1,
++		.sta_prof_vendor_elems = true,
++		.include_oper_class = true,
++	},
+ };
+ KUNIT_ARRAY_PARAM_DESC(inform_bss_ml_sta, inform_bss_ml_sta_cases, desc)
  
- static void test_tc_redirect_neigh_fib(struct netns_setup_result *setup_result)
+@@ -515,6 +533,12 @@ static void test_inform_bss_ml_sta(struct kunit *test)
+ 	skb_put_u8(input, 4);
+ 	skb_put_data(input, "TEST", 4);
+ 
++	if (params->include_oper_class) {
++		skb_put_u8(input, WLAN_EID_SUPPORTED_REGULATORY_CLASSES);
++		skb_put_u8(input, 1);
++		skb_put_u8(input, 81);
++	}
++
+ 	skb_put_u8(input, WLAN_EID_REDUCED_NEIGHBOR_REPORT);
+ 	skb_put_u8(input, sizeof(rnr));
+ 	skb_put_data(input, &rnr, sizeof(rnr));
+@@ -582,15 +606,21 @@ static void test_inform_bss_ml_sta(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, ies->tsf, tsf + le64_to_cpu(sta_prof.tsf_offset));
+ 	/* Resulting length should be:
+ 	 * SSID (inherited) + RNR (inherited) + vendor element(s) +
++	 * operating class (if requested) +
++	 * generated RNR (if MLD ID == 0) +
+ 	 * MLE common info + MLE header and control
+ 	 */
+ 	if (params->sta_prof_vendor_elems)
+ 		KUNIT_EXPECT_EQ(test, ies->len,
+ 				6 + 2 + sizeof(rnr) + 2 + 160 + 2 + 165 +
++				(params->include_oper_class ? 3 : 0) +
++				(!params->mld_id ? 22 : 0) +
+ 				mle_basic_common_info.var_len + 5);
+ 	else
+ 		KUNIT_EXPECT_EQ(test, ies->len,
+ 				6 + 2 + sizeof(rnr) + 2 + 155 +
++				(params->include_oper_class ? 3 : 0) +
++				(!params->mld_id ? 22 : 0) +
+ 				mle_basic_common_info.var_len + 5);
+ 	rcu_read_unlock();
+ 
 -- 
 2.43.0
 
