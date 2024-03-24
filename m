@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-115418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD772889B74
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:53:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11CAC88A290
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B2F81C34644
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:53:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B418CB25771
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C6D206CAD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14427206CA5;
 	Mon, 25 Mar 2024 02:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pczxqz1K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X7pa3we+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 811FD82D8C;
-	Sun, 24 Mar 2024 22:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D80182D8B;
+	Sun, 24 Mar 2024 22:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320597; cv=none; b=sBReYwhFm2bQwwh5o38pDgMQy+6Y0SJCsX3yQKwz2a9FQJnxpZlwncOJ1k+W3lsVzhzV6anMDxillx7Qe+OJGeylaynY3srIxfYF9SrkdOqb8Z4CxFlkBM2LTkilunBtU/AyU1kNgrLyujXKcb4DpJNj4iF2Fd56SIpV42OySp4=
+	t=1711320597; cv=none; b=ACAx2E5wMTdWBRmU0/ikxIwp4xNy/Sg1CZjdwCIfhUH8Y3np/2lIHcsy4xVcu6YJA38yOuJZjvBltPXkQCC+H0VO0BeFoYBIMQ7ZV221I3Ximh6Q43QHIV1KKEkpNOLfiRbsHUS7BAbhRQ2hNz8RiRbEtePEVnLvtlQ8TSgsrjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320597; c=relaxed/simple;
-	bh=WXJELdjmfhpY9E4BbpJkUyyeE92xfAoPZohF6gyjslc=;
+	bh=dXhu3Gxj9j/STkTusaqz4bh9YSL4l8LOfPOtBesofQE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QVQ+CLVTUziHMH9etM9FJW127mQwBM1Dzw9PRoUHsyRJPcpxig+WFtKu2dqpMx4z/XS1x1EMKKJ+qzyLHJnKKkgVq8LrtlvL0c+dB+vYEwCLEE0Xz1PoWFfUWkIME4JK6zJqRzV+U0pS97JCbPol+lYGqH4MRuoZ7Xrrb6Qbik8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pczxqz1K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CDF4C43394;
-	Sun, 24 Mar 2024 22:49:55 +0000 (UTC)
+	 MIME-Version; b=BFNrluHlEnaHvwF1TmF/B/IfgXWMRkf/xCzFNFp23NZgfjgj9PIXZ7cTZioXROCER5dQx6EHxyrzQJgvR/VforgDdNQuM31w8+zUxNSxtxdnt40wVoeyESRo/Rn+CuuaOna90iplDh00VgYhQwscxLp+/QEOXZcg/XjZ43KXkfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X7pa3we+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6E8FC433A6;
+	Sun, 24 Mar 2024 22:49:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320596;
-	bh=WXJELdjmfhpY9E4BbpJkUyyeE92xfAoPZohF6gyjslc=;
+	s=k20201202; t=1711320597;
+	bh=dXhu3Gxj9j/STkTusaqz4bh9YSL4l8LOfPOtBesofQE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Pczxqz1Kf7i/2a1cFhn5kQhtK9X77ncWYYGfLrHxTkjteykakubpyTjybiSMla6aG
-	 PgqU8il4aVZUmlXX9OiFgEhOqOX3k5JOBKAhGmc3Y6rKFJU0FyLX9K3SYT9khPieTO
-	 4UtKDbh6qdfom1Ovs9IZNUQvO5UYYd70oZOh8bkVVQcL/OT/bE3KivjS1jOWS6DQK3
-	 btajftCJk6mIozaOgFfR7xhElSq2YyApMVnJgQcKFd7msQB81Sv05eSj5+VI6uEmUm
-	 w8tjEl39cyI+0LuCklWGulzw0lAIB84I+dt7r71ShZZkOSWDetdcInvdSl9h06EbvW
-	 LliO4ECQPKvCw==
+	b=X7pa3we+AXGlM23N7t/7HOIxiVJjXiwFRn3llMPs3yB0GY2NaDv24A+onNe7m5QBf
+	 NPnTgTDoL3SrDXUEqq1ZBx1foich/0b4s8b377MjB8CYzUm3UtPJfeGcIraa8DrXlS
+	 25YqX+wvudmJOJwXF2pym0PpW3JSJzr8D6cZgpK1fhmVSs65nxR4pMX5C3LLjJdxIM
+	 aAmv+yi5n4XSQQzC2lkHxp2AZsOm4eEnaS/+GOfqmKb2yroizfNOto1rXJXTcoV7jF
+	 rOWoJnuytCl9VUffgwgUf2fFXhXmbwPMynXFWu0JiBNQtgOw0KVVXNi36wduaMXrgf
+	 cYUg1N1CdkA5g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrey Grafin <conquistador@yandex-team.ru>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Hou Tao <houtao1@huawei.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Sriram R <quic_srirrama@quicinc.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 157/713] selftest/bpf: Add map_in_maps with BPF_MAP_TYPE_PERF_EVENT_ARRAY values
-Date: Sun, 24 Mar 2024 18:38:03 -0400
-Message-ID: <20240324224720.1345309-158-sashal@kernel.org>
+Subject: [PATCH 6.7 158/713] wifi: ath12k: Fix issues in channel list update
+Date: Sun, 24 Mar 2024 18:38:04 -0400
+Message-ID: <20240324224720.1345309-159-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -65,95 +63,99 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andrey Grafin <conquistador@yandex-team.ru>
+From: Sriram R <quic_srirrama@quicinc.com>
 
-[ Upstream commit 40628f9fff73adecac77a9aa390f8016724cad99 ]
+[ Upstream commit 67a48d937fac917947540c9f89630d472cd61fcb ]
 
-Check that bpf_object__load() successfully creates map_in_maps
-with BPF_MAP_TYPE_PERF_EVENT_ARRAY values.
-These changes cover fix in the previous patch
-"libbpf: Apply map_set_def_max_entries() for inner_maps on creation".
+Currently, the logic used to select the 6 GHz band is incorrect,
+which may cause 6 GHz supported channels to not be updated properly.
+This is because the 6 GHz Max frequency supported by the driver is
+being compared to the Max frequency supported on the board. If in
+some cases, the 6 GHz Max frequency supported on the board is less
+than the defined 6 GHz Max frequency, all 6 GHz channels are disabled.
+To address this, compare the max frequency supported by the board to
+the defined 6 GHz Minimum frequency by the driver.
 
-A command line output is:
-- w/o fix
-$ sudo ./test_maps
-libbpf: map 'mim_array_pe': failed to create inner map: -22
-libbpf: map 'mim_array_pe': failed to create: Invalid argument(-22)
-libbpf: failed to load object './test_map_in_map.bpf.o'
-Failed to load test prog
+Similarly, when a dual mac card supports both 6 GHz and 5 GHz radios,
+if the 5 GHz radio gets enumerated first before 6 GHz, the checks in
+ath12k_mac_setup_channels_rates() can cause the 5 GHz channels which
+were enabled earlier to get disabled when the 6 GHz channel list is
+updated. This is because the Min 6 GHz frequency defined in the driver
+is 5945 MHz, which should be 5925 MHz since channel 2 is not considered
+currently, but the firmware can pass 5925 MHz as the minimum.
+Hence, update the Min frequency supported by the driver to 5925 MHz.
 
-- with fix
-$ sudo ./test_maps
-..
-test_maps: OK, 0 SKIPPED
+In addition, ensure that the channel list update to firmware updates
+only the channels that the current radio (ar) supports rather than
+considering the wiphy support. This would be required when multiple pdevs
+are supported in a wiphy and they support different ranges of frequencies
+or bands as in single wiphy support.
 
-Fixes: 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map support")
-Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Acked-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/bpf/20240117130619.9403-2-conquistador@yandex-team.ru
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: d889913205cf ("wifi: ath12k: driver for Qualcomm Wi-Fi 7 devices")
+
+Tested-on: QCN9274 hw2.0 PCI WLAN.WBE.1.0.1-00029-QCAHKSWPL_SILICONZ-1
+Tested-on: QCN9274 hw2.0 PCI WLAN.WBE.1.1.1-00188-QCAHKSWPL_SILICONZ-1
+Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0.c5-00481-QCAHMTSWPL_V1.0_V2.0_SILICONZ-3
+
+Signed-off-by: Sriram R <quic_srirrama@quicinc.com>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://msgid.link/20240117062628.8260-1-quic_srirrama@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/progs/test_map_in_map.c     | 26 +++++++++++++++++++
- tools/testing/selftests/bpf/test_maps.c       |  6 ++++-
- 2 files changed, 31 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath12k/core.h | 2 +-
+ drivers/net/wireless/ath/ath12k/mac.c  | 2 +-
+ drivers/net/wireless/ath/ath12k/reg.c  | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map.c b/tools/testing/selftests/bpf/progs/test_map_in_map.c
-index f416032ba858b..b295f9b721bf8 100644
---- a/tools/testing/selftests/bpf/progs/test_map_in_map.c
-+++ b/tools/testing/selftests/bpf/progs/test_map_in_map.c
-@@ -21,6 +21,32 @@ struct {
- 	__type(value, __u32);
- } mim_hash SEC(".maps");
+diff --git a/drivers/net/wireless/ath/ath12k/core.h b/drivers/net/wireless/ath/ath12k/core.h
+index 68c42ca44fcb5..d67494de44920 100644
+--- a/drivers/net/wireless/ath/ath12k/core.h
++++ b/drivers/net/wireless/ath/ath12k/core.h
+@@ -418,7 +418,7 @@ struct ath12k_sta {
+ };
  
-+/* The following three maps are used to test
-+ * perf_event_array map can be an inner
-+ * map of hash/array_of_maps.
-+ */
-+struct perf_event_array {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} inner_map0 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__array(values, struct perf_event_array);
-+} mim_array_pe SEC(".maps") = {
-+	.values = {&inner_map0}};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__array(values, struct perf_event_array);
-+} mim_hash_pe SEC(".maps") = {
-+	.values = {&inner_map0}};
-+
- SEC("xdp")
- int xdp_mimtest0(struct xdp_md *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 7fc00e423e4dd..e0dd101c9f2bd 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1190,7 +1190,11 @@ static void test_map_in_map(void)
- 		goto out_map_in_map;
+ #define ATH12K_MIN_5G_FREQ 4150
+-#define ATH12K_MIN_6G_FREQ 5945
++#define ATH12K_MIN_6G_FREQ 5925
+ #define ATH12K_MAX_6G_FREQ 7115
+ #define ATH12K_NUM_CHANS 100
+ #define ATH12K_MAX_5G_CHAN 173
+diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
+index b698e55a5b7bf..075ca1c34986b 100644
+--- a/drivers/net/wireless/ath/ath12k/mac.c
++++ b/drivers/net/wireless/ath/ath12k/mac.c
+@@ -7188,7 +7188,7 @@ static int ath12k_mac_setup_channels_rates(struct ath12k *ar,
  	}
  
--	bpf_object__load(obj);
-+	err = bpf_object__load(obj);
-+	if (err) {
-+		printf("Failed to load test prog\n");
-+		goto out_map_in_map;
-+	}
+ 	if (supported_bands & WMI_HOST_WLAN_5G_CAP) {
+-		if (reg_cap->high_5ghz_chan >= ATH12K_MAX_6G_FREQ) {
++		if (reg_cap->high_5ghz_chan >= ATH12K_MIN_6G_FREQ) {
+ 			channels = kmemdup(ath12k_6ghz_channels,
+ 					   sizeof(ath12k_6ghz_channels), GFP_KERNEL);
+ 			if (!channels) {
+diff --git a/drivers/net/wireless/ath/ath12k/reg.c b/drivers/net/wireless/ath/ath12k/reg.c
+index 5c006256c82ad..fcb76f92a7dec 100644
+--- a/drivers/net/wireless/ath/ath12k/reg.c
++++ b/drivers/net/wireless/ath/ath12k/reg.c
+@@ -103,7 +103,7 @@ int ath12k_reg_update_chan_list(struct ath12k *ar)
  
- 	map = bpf_object__find_map_by_name(obj, "mim_array");
- 	if (!map) {
+ 	bands = hw->wiphy->bands;
+ 	for (band = 0; band < NUM_NL80211_BANDS; band++) {
+-		if (!bands[band])
++		if (!(ar->mac.sbands[band].channels && bands[band]))
+ 			continue;
+ 
+ 		for (i = 0; i < bands[band]->n_channels; i++) {
+@@ -129,7 +129,7 @@ int ath12k_reg_update_chan_list(struct ath12k *ar)
+ 	ch = arg->channel;
+ 
+ 	for (band = 0; band < NUM_NL80211_BANDS; band++) {
+-		if (!bands[band])
++		if (!(ar->mac.sbands[band].channels && bands[band]))
+ 			continue;
+ 
+ 		for (i = 0; i < bands[band]->n_channels; i++) {
 -- 
 2.43.0
 
