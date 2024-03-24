@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98FB08884FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ABC748884FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:55:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8AE71C24414
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:55:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8EDE1C243E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD3E1BDB87;
-	Sun, 24 Mar 2024 22:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCDC1BDBA7;
+	Sun, 24 Mar 2024 22:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E35IQHVM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bhzEVXfO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267CD1BD5FB;
-	Sun, 24 Mar 2024 22:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601741BDB8F;
+	Sun, 24 Mar 2024 22:45:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320321; cv=none; b=Jm8UpIKMh7UbL2JBJFhbljXylIrPhlZWf6mxVI+fV+TNu6UQ7U3fFG9u+eJLvCHWDcDgjkadgmj70VFRGaWw5iWhf6idJUgaR28sQrPCA1X3SMMuxFK5/j5RsMaN4XTSLk7PthKEhdMmwabaZtT+xOhAAxKc5mwL0Tlr/bLBJC8=
+	t=1711320322; cv=none; b=beY6NXuySux2UBa4wNoobYQWzDVNaVNeqKsflqvXCt0ZaQq6yatn4Mh+3V3lAo9sHgAp2xPrK4tDtGtOqqyK0ns2iI2yCKi3BQ+We3O7Mydwmzrpx7yzoPlJ1uGeLXmjlDNvGc/BVEDdvAvTKYsmXr/aYoQ2kzrhOESbIt10wgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320321; c=relaxed/simple;
-	bh=0U+5D4DRz8h15rzlQU+NzAMENCJf/RgVlOr9F6AF2wY=;
+	s=arc-20240116; t=1711320322; c=relaxed/simple;
+	bh=8jusht4l5bIJ/bAuq/+9JuK/sqkynemaRzFgoT/98JE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JkJcWNeDzAIQOhfp4wq9D5Xfzfatxwr6dIYWv8rRLuhTzyE0wDEVds0KR1OmLBAxkTKvk9y68p+Dy1RQKj9ELiyvZosRdkxID/K450t81OpDq85JseBCaY4XdpR6csCsapKgzJpUWkwhEeqaNg7NSEeomubdFcDi3Ky6liJ1UQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E35IQHVM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C7ABC43390;
-	Sun, 24 Mar 2024 22:45:20 +0000 (UTC)
+	 MIME-Version; b=K9GLsHoGY/8H58kynOdGh3Y921XoatyFhF80nznhbfdt7vIr6Yd2PCdis8dj5pCo9kRpUeWKfaickuQIQyys2lBLLSgg77unRO+XBB3DSRe5QqZcfIJL65aBBzRdplg03hUlwOQvN3Vm+P55eUbFivTrrEEShV8JE04Tqk0JrFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bhzEVXfO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C6CAC43399;
+	Sun, 24 Mar 2024 22:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320321;
-	bh=0U+5D4DRz8h15rzlQU+NzAMENCJf/RgVlOr9F6AF2wY=;
+	bh=8jusht4l5bIJ/bAuq/+9JuK/sqkynemaRzFgoT/98JE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E35IQHVMb44n5nMKW/9eEEwP5PFdiUm2+IglrLoX1NaQZmyPVbMroTTt++ck4sZ/d
-	 9gKWmJscObgeHAH22AJaaGwf8BtbSMnNLJ0bQgCZLjQAzRsyzqiWYUzMmLgNdcw84s
-	 DKD7f7XecOqC5tZ64DykPfq1bcxNWbSan4ohHSP7IiIWac897+ygb9TRgwOODoFHV4
-	 3MpZfcfBHFQJZOGfODdJ3MvJEMglaUSz4VwR9uf6Sz8Mbyy6Of6MIuMHwzZvMZEdIy
-	 iyK75l3o9TPR8mrflUpB67/sw+VbcoWYqHT6XDm/prnid0fSm8abdR422k4VcArCZn
-	 K86Ax8ItbMzQg==
+	b=bhzEVXfOFZS/CweD8WW0F9PbAcWnY2gc45yYQynj88MAoE0eqY0nVjNquDFF6LM0n
+	 AFnmgFIvJwc/YAUeFR9QjPmT1E3PrhFfR8frtCeRsePxP4Tl8V9/PaN8+VTG2DOlTz
+	 R54QsJJeESJX2+HjUBF2SbatLWW4xLHfIgFx8hAYL/MtQdZy9rgF58+0WD9rocQMWm
+	 LmGV+QTud+ZRoBgM/xLsVv4An/B+E/ZgcPgSFiveDwfBDHlhKGMh11JeblB5vGGntx
+	 Js0Yzuv4RRxRm4gABdcfhN0sVYawpKEdTYl1uob5uLD/sgmTdctxVekh+Dv6lXGI9n
+	 jibCerHjYuaPA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Antoniu Miclaus <antoniu.miclaus@analog.com>,
-	Nuno Sa <nuno.sa@analog.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 628/715] rtc: max31335: fix interrupt status reg
-Date: Sun, 24 Mar 2024 18:33:27 -0400
-Message-ID: <20240324223455.1342824-629-sashal@kernel.org>
+Subject: [PATCH 6.8 629/715] serial: 8250_exar: Don't remove GPIO device on suspend
+Date: Sun, 24 Mar 2024 18:33:28 -0400
+Message-ID: <20240324223455.1342824-630-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,39 +62,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Antoniu Miclaus <antoniu.miclaus@analog.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit c12e67e076cbcb86fd9c3cb003a344ec684138a6 ]
+[ Upstream commit 73b5a5c00be39e23b194bad10e1ea8bb73eee176 ]
 
-Fix the register value comparison in the `max31335_volatile_reg`
-function for the interrupt status register.
+It seems a copy&paste mistake that suspend callback removes the GPIO
+device. There is no counterpart of this action, means once suspended
+there is no more GPIO device available untile full unbind-bind cycle
+is performed. Remove suspicious GPIO device removal in suspend.
 
-MAX31335_STATUS1 macro definition corresponds to the actual
-interrupt status register.
-
-Fixes: dedaf03b99d6 ("rtc: max31335: add driver support")
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20240219091616.24480-1-antoniu.miclaus@analog.com
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Fixes: d0aeaa83f0b0 ("serial: exar: split out the exar code from 8250_pci")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20240219150627.2101198-2-andriy.shevchenko@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-max31335.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_exar.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/rtc/rtc-max31335.c b/drivers/rtc/rtc-max31335.c
-index 402fda8fd5488..a2441e5c2c74d 100644
---- a/drivers/rtc/rtc-max31335.c
-+++ b/drivers/rtc/rtc-max31335.c
-@@ -204,7 +204,7 @@ static bool max31335_volatile_reg(struct device *dev, unsigned int reg)
- 		return true;
+diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
+index 23366f868ae3a..dab94835b6f5f 100644
+--- a/drivers/tty/serial/8250/8250_exar.c
++++ b/drivers/tty/serial/8250/8250_exar.c
+@@ -753,6 +753,7 @@ static void exar_pci_remove(struct pci_dev *pcidev)
+ 	for (i = 0; i < priv->nr; i++)
+ 		serial8250_unregister_port(priv->line[i]);
  
- 	/* interrupt status register */
--	if (reg == MAX31335_INT_EN1_A1IE)
-+	if (reg == MAX31335_STATUS1)
- 		return true;
++	/* Ensure that every init quirk is properly torn down */
+ 	if (priv->board->exit)
+ 		priv->board->exit(pcidev);
+ }
+@@ -767,10 +768,6 @@ static int __maybe_unused exar_suspend(struct device *dev)
+ 		if (priv->line[i] >= 0)
+ 			serial8250_suspend_port(priv->line[i]);
  
- 	/* temperature registers */
+-	/* Ensure that every init quirk is properly torn down */
+-	if (priv->board->exit)
+-		priv->board->exit(pcidev);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
