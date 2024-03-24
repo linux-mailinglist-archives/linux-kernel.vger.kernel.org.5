@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-113176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CC1A888210
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:37:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1819888213
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A07F2B2458D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:37:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D48A41C223E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67895130A6A;
-	Sun, 24 Mar 2024 22:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD5E1769F3;
+	Sun, 24 Mar 2024 22:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gOyzzzjT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eMna+JM/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE93130A4D;
-	Sun, 24 Mar 2024 22:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF94130A6E;
+	Sun, 24 Mar 2024 22:39:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319978; cv=none; b=pcdGlJW0ZXo54l5tuWCojNy8vX2A78BnkT1IzzbaAVHOAAyW7Pzy8HWhz5fbl87mX7yI5pOvSxgp5DQBvIhagqpDE/FoS6pIWYC6ulYwiX8vjKUx1ZEHycyLpX3ScJOSRti6PC2xKiHm889PeFkB010G15LQrYPHoNn6R2J8V44=
+	t=1711319979; cv=none; b=c9xPlIlkNO9/SNCeKYxo9czP7Kw9lQgy5z30eXKDXHSa3wlSr7dvo8wUHoRW3s4QE7dr7Bi9xGjbCi+BJZ8gInh65mS+BQZFLK9CeT5OfQiMiKaxuw0Y2IHUtS0Dbg31B3aWS8H52ZJcIBNPvT7uLNFntbxx/YPcUwzy4et7k14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319978; c=relaxed/simple;
-	bh=yoUldDTV2NJujGlAxoNcWJ40t+aa06GDaoJ4gRjf/do=;
+	s=arc-20240116; t=1711319979; c=relaxed/simple;
+	bh=R9B4lL1lL2pQWZMKSMku/DSdwCaHjPU1Eeal9bS1cgM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dn2yFHywUrPWE8zOWxSDkaay3BrNKUD+yqREuRiOTGbez0lHG20qKE7rkNJNaScqeBqfI7G40jRM9hLmswr/UP5kYK/YlQ6R/XX1mIMMACml7gyCXJUSBsCpSVBgBp15O8Vm8CjORvkcB9AcT074p3au50ve6BdWJitgD1xhdTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gOyzzzjT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99BD4C43601;
-	Sun, 24 Mar 2024 22:39:37 +0000 (UTC)
+	 MIME-Version; b=AKz7Q5D56DvynKWuBOa+six3GRNQwXIIFMPlZjE3NTKa+eOpetAE+Ba+Z2cYyvcj2ZEJKQY9/9wj6SY5yWY9NzE39fno4Q9ArqnNiUir3RdE4mcbYOOXOf6nXzFiDWLUS/HirOICWbU8dc3FmPqqmpfKytpBXon+plQXoT2Cg1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eMna+JM/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C46D6C433C7;
+	Sun, 24 Mar 2024 22:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319978;
-	bh=yoUldDTV2NJujGlAxoNcWJ40t+aa06GDaoJ4gRjf/do=;
+	s=k20201202; t=1711319979;
+	bh=R9B4lL1lL2pQWZMKSMku/DSdwCaHjPU1Eeal9bS1cgM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gOyzzzjTfRlOT/Mfb3OlEfbJcRpv1IdiXE3oA9tJih63muFH2RVgqZGvoab5gAEBr
-	 ym7zNi798T9m3hLpyE+zyuycrp+SkWYJFJWxJrgHc5UlIVJrQDVsjA2QEdFLkVm28G
-	 K6afLnAFhzclCc0tQZSQs91/9xbWXs4a6YRTR0iT9bWV4U8A39x6AMn///BdfcgBYE
-	 YV1COK0iUJLfLxGkY7bIUIlWsUTwekzrIX+jbWnK+HtW5ifiA4cF1oNyV3HFsze5cf
-	 +hnJEuhfQZjkFuAFqefZjohmaCSL8fXUCY1fmkiiEF/ndK+GoSIKsyNEitaC1NXX9+
-	 pNNxj7jEb4GJA==
+	b=eMna+JM/3z/ETg9Gfqr56XxwQr+9rVLusDYE+3ri4yNcZ2I23eM1qgcp/tMCjQjpy
+	 9uayRhcUoq70TUqH+tVsOkXiNqoOA78UARWCVWQlG5q1HGTtPcDc/BppiOzpsac7AX
+	 +kEMbVtS/t68NQ9awIHEG4Ixbf+nl3JyJMggEwvBijs2M4C1NHZ2q2VUAaTK49S0wU
+	 94y6iwn363Smo24zbTw+YhMKBhXuSw4O1ms4dtLyxzMtBMamGYyxIlna3jDbffByQH
+	 epEDmbkAG+8B27UD87V/c0d5U56zJ0lBrQ5flgZ81wbfQ+MIX83NKDk9YbKbYQAEx/
+	 kwnFABKm8Ma5w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Perry Yuan <perry.yuan@amd.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Gino Badouri <badouri.g@gmail.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 285/715] ACPI: CPPC: enable AMD CPPC V2 support for family 17h processors
-Date: Sun, 24 Mar 2024 18:27:44 -0400
-Message-ID: <20240324223455.1342824-286-sashal@kernel.org>
+Subject: [PATCH 6.8 286/715] btrfs: fix race when detecting delalloc ranges during fiemap
+Date: Sun, 24 Mar 2024 18:27:45 -0400
+Message-ID: <20240324223455.1342824-287-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,45 +63,509 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Perry Yuan <perry.yuan@amd.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit a51ab63b297ce9e26e3ffb9be896018a42d5f32f ]
+[ Upstream commit 978b63f7464abcfd364a6c95f734282c50f3decf ]
 
-As there are some AMD processors which only support CPPC V2 firmware and
-BIOS implementation, the amd_pstate driver will be failed to load when
-system booting with below kernel warning message:
+For fiemap we recently stopped locking the target extent range for the
+whole duration of the fiemap call, in order to avoid a deadlock in a
+scenario where the fiemap buffer happens to be a memory mapped range of
+the same file. This use case is very unlikely to be useful in practice but
+it may be triggered by fuzz testing (syzbot, etc).
 
-[    0.477523] amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
+This however introduced a race that makes us miss delalloc ranges for
+file regions that are currently holes, so the caller of fiemap will not
+be aware that there's data for some file regions. This can be quite
+serious for some use cases - for example in coreutils versions before 9.0,
+the cp program used fiemap to detect holes and data in the source file,
+copying only regions with data (extents or delalloc) from the source file
+to the destination file in order to preserve holes (see the documentation
+for its --sparse command line option). This means that if cp was used
+with a source file that had delalloc in a hole, the destination file could
+end up without that data, which is effectively a data loss issue, if it
+happened to hit the race described below.
 
-To make the amd_pstate driver can be loaded on those TR40 processors, it
-needs to match x86_model from 0x30 to 0x7F for family 17H.
-With the change, the system can load amd_pstate driver as expected.
+The race happens like this:
 
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Reported-by: Gino Badouri <badouri.g@gmail.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218171
-Fixes: fbd74d1689 ("ACPI: CPPC: Fix enabling CPPC on AMD systems with shared memory")
-Signed-off-by: Perry Yuan <perry.yuan@amd.com>
-Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+1) Fiemap is called, without the FIEMAP_FLAG_SYNC flag, for a file that
+   has delalloc in the file range [64M, 65M[, which is currently a hole;
+
+2) Fiemap locks the inode in shared mode, then starts iterating the
+   inode's subvolume tree searching for file extent items, without having
+   the whole fiemap target range locked in the inode's io tree - the
+   change introduced recently by commit b0ad381fa769 ("btrfs: fix
+   deadlock with fiemap and extent locking"). It only locks ranges in
+   the io tree when it finds a hole or prealloc extent since that
+   commit;
+
+3) Note that fiemap clones each leaf before using it, and this is to
+   avoid deadlocks when locking a file range in the inode's io tree and
+   the fiemap buffer is memory mapped to some file, because writing
+   to the page with btrfs_page_mkwrite() will wait on any ordered extent
+   for the page's range and the ordered extent needs to lock the range
+   and may need to modify the same leaf, therefore leading to a deadlock
+   on the leaf;
+
+4) While iterating the file extent items in the cloned leaf before
+   finding the hole in the range [64M, 65M[, the delalloc in that range
+   is flushed and its ordered extent completes - meaning the corresponding
+   file extent item is in the inode's subvolume tree, but not present in
+   the cloned leaf that fiemap is iterating over;
+
+5) When fiemap finds the hole in the [64M, 65M[ range by seeing the gap in
+   the cloned leaf (or a file extent item with disk_bytenr == 0 in case
+   the NO_HOLES feature is not enabled), it will lock that file range in
+   the inode's io tree and then search for delalloc by checking for the
+   EXTENT_DELALLOC bit in the io tree for that range and ordered extents
+   (with btrfs_find_delalloc_in_range()). But it finds nothing since the
+   delalloc in that range was already flushed and the ordered extent
+   completed and is gone - as a result fiemap will not report that there's
+   delalloc or an extent for the range [64M, 65M[, so user space will be
+   mislead into thinking that there's a hole in that range.
+
+This could actually be sporadically triggered with test case generic/094
+from fstests, which reports a missing extent/delalloc range like this:
+
+#  generic/094 2s ... - output mismatch (see /home/fdmanana/git/hub/xfstests/results//generic/094.out.bad)
+#      --- tests/generic/094.out	2020-06-10 19:29:03.830519425 +0100
+#      +++ /home/fdmanana/git/hub/xfstests/results//generic/094.out.bad	2024-02-28 11:00:00.381071525 +0000
+#      @@ -1,3 +1,9 @@
+#       QA output created by 094
+#       fiemap run with sync
+#       fiemap run without sync
+#      +ERROR: couldn't find extent at 7
+#      +map is 'HHDDHPPDPHPH'
+#      +logical: [       5..       6] phys:   301517..  301518 flags: 0x800 tot: 2
+#      +logical: [       8..       8] phys:   301520..  301520 flags: 0x800 tot: 1
+#      ...
+#      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/094.out /home/fdmanana/git/hub/xfstests/results//generic/094.out.bad'  to see the entire diff)
+
+So in order to fix this, while still avoiding deadlocks in the case where
+the fiemap buffer is memory mapped to the same file, change fiemap to work
+like the following:
+
+1) Always lock the whole range in the inode's io tree before starting to
+   iterate the inode's subvolume tree searching for file extent items,
+   just like we did before commit b0ad381fa769 ("btrfs: fix deadlock with
+   fiemap and extent locking");
+
+2) Now instead of writing to the fiemap buffer every time we have an extent
+   to report, write instead to a temporary buffer (1 page), and when that
+   buffer becomes full, stop iterating the file extent items, unlock the
+   range in the io tree, release the search path, submit all the entries
+   kept in that buffer to the fiemap buffer, and then resume the search
+   for file extent items after locking again the remainder of the range in
+   the io tree.
+
+   The buffer having a size of a page, allows for 146 entries in a system
+   with 4K pages. This is a large enough value to have a good performance
+   by avoiding too many restarts of the search for file extent items.
+   In other words this preserves the huge performance gains made in the
+   last two years to fiemap, while avoiding the deadlocks in case the
+   fiemap buffer is memory mapped to the same file (useless in practice,
+   but possible and exercised by fuzz testing and syzbot).
+
+Fixes: b0ad381fa769 ("btrfs: fix deadlock with fiemap and extent locking")
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/acpi/cppc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/extent_io.c | 221 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 160 insertions(+), 61 deletions(-)
 
-diff --git a/arch/x86/kernel/acpi/cppc.c b/arch/x86/kernel/acpi/cppc.c
-index 8d8752b44f113..ff8f25faca3dd 100644
---- a/arch/x86/kernel/acpi/cppc.c
-+++ b/arch/x86/kernel/acpi/cppc.c
-@@ -20,7 +20,7 @@ bool cpc_supported_by_cpu(void)
- 		    (boot_cpu_data.x86_model >= 0x20 && boot_cpu_data.x86_model <= 0x2f)))
- 			return true;
- 		else if (boot_cpu_data.x86 == 0x17 &&
--			 boot_cpu_data.x86_model >= 0x70 && boot_cpu_data.x86_model <= 0x7f)
-+			 boot_cpu_data.x86_model >= 0x30 && boot_cpu_data.x86_model <= 0x7f)
- 			return true;
- 		return boot_cpu_has(X86_FEATURE_CPPC);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 8b4bef05e2221..7761d7d93ba98 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2453,12 +2453,65 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
+ 	return try_release_extent_state(tree, page, mask);
+ }
+ 
++struct btrfs_fiemap_entry {
++	u64 offset;
++	u64 phys;
++	u64 len;
++	u32 flags;
++};
++
+ /*
+- * To cache previous fiemap extent
++ * Indicate the caller of emit_fiemap_extent() that it needs to unlock the file
++ * range from the inode's io tree, unlock the subvolume tree search path, flush
++ * the fiemap cache and relock the file range and research the subvolume tree.
++ * The value here is something negative that can't be confused with a valid
++ * errno value and different from 1 because that's also a return value from
++ * fiemap_fill_next_extent() and also it's often used to mean some btree search
++ * did not find a key, so make it some distinct negative value.
++ */
++#define BTRFS_FIEMAP_FLUSH_CACHE (-(MAX_ERRNO + 1))
++
++/*
++ * Used to:
++ *
++ * - Cache the next entry to be emitted to the fiemap buffer, so that we can
++ *   merge extents that are contiguous and can be grouped as a single one;
+  *
+- * Will be used for merging fiemap extent
++ * - Store extents ready to be written to the fiemap buffer in an intermediary
++ *   buffer. This intermediary buffer is to ensure that in case the fiemap
++ *   buffer is memory mapped to the fiemap target file, we don't deadlock
++ *   during btrfs_page_mkwrite(). This is because during fiemap we are locking
++ *   an extent range in order to prevent races with delalloc flushing and
++ *   ordered extent completion, which is needed in order to reliably detect
++ *   delalloc in holes and prealloc extents. And this can lead to a deadlock
++ *   if the fiemap buffer is memory mapped to the file we are running fiemap
++ *   against (a silly, useless in practice scenario, but possible) because
++ *   btrfs_page_mkwrite() will try to lock the same extent range.
+  */
+ struct fiemap_cache {
++	/* An array of ready fiemap entries. */
++	struct btrfs_fiemap_entry *entries;
++	/* Number of entries in the entries array. */
++	int entries_size;
++	/* Index of the next entry in the entries array to write to. */
++	int entries_pos;
++	/*
++	 * Once the entries array is full, this indicates what's the offset for
++	 * the next file extent item we must search for in the inode's subvolume
++	 * tree after unlocking the extent range in the inode's io tree and
++	 * releasing the search path.
++	 */
++	u64 next_search_offset;
++	/*
++	 * This matches struct fiemap_extent_info::fi_mapped_extents, we use it
++	 * to count ourselves emitted extents and stop instead of relying on
++	 * fiemap_fill_next_extent() because we buffer ready fiemap entries at
++	 * the @entries array, and we want to stop as soon as we hit the max
++	 * amount of extents to map, not just to save time but also to make the
++	 * logic at extent_fiemap() simpler.
++	 */
++	unsigned int extents_mapped;
++	/* Fields for the cached extent (unsubmitted, not ready, extent). */
+ 	u64 offset;
+ 	u64 phys;
+ 	u64 len;
+@@ -2466,6 +2519,28 @@ struct fiemap_cache {
+ 	bool cached;
+ };
+ 
++static int flush_fiemap_cache(struct fiemap_extent_info *fieinfo,
++			      struct fiemap_cache *cache)
++{
++	for (int i = 0; i < cache->entries_pos; i++) {
++		struct btrfs_fiemap_entry *entry = &cache->entries[i];
++		int ret;
++
++		ret = fiemap_fill_next_extent(fieinfo, entry->offset,
++					      entry->phys, entry->len,
++					      entry->flags);
++		/*
++		 * Ignore 1 (reached max entries) because we keep track of that
++		 * ourselves in emit_fiemap_extent().
++		 */
++		if (ret < 0)
++			return ret;
++	}
++	cache->entries_pos = 0;
++
++	return 0;
++}
++
+ /*
+  * Helper to submit fiemap extent.
+  *
+@@ -2480,8 +2555,8 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
+ 				struct fiemap_cache *cache,
+ 				u64 offset, u64 phys, u64 len, u32 flags)
+ {
++	struct btrfs_fiemap_entry *entry;
+ 	u64 cache_end;
+-	int ret = 0;
+ 
+ 	/* Set at the end of extent_fiemap(). */
+ 	ASSERT((flags & FIEMAP_EXTENT_LAST) == 0);
+@@ -2494,7 +2569,9 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
+ 	 * find an extent that starts at an offset behind the end offset of the
+ 	 * previous extent we processed. This happens if fiemap is called
+ 	 * without FIEMAP_FLAG_SYNC and there are ordered extents completing
+-	 * while we call btrfs_next_leaf() (through fiemap_next_leaf_item()).
++	 * after we had to unlock the file range, release the search path, emit
++	 * the fiemap extents stored in the buffer (cache->entries array) and
++	 * the lock the remainder of the range and re-search the btree.
+ 	 *
+ 	 * For example we are in leaf X processing its last item, which is the
+ 	 * file extent item for file range [512K, 1M[, and after
+@@ -2607,11 +2684,35 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
+ 
+ emit:
+ 	/* Not mergeable, need to submit cached one */
+-	ret = fiemap_fill_next_extent(fieinfo, cache->offset, cache->phys,
+-				      cache->len, cache->flags);
+-	cache->cached = false;
+-	if (ret)
+-		return ret;
++
++	if (cache->entries_pos == cache->entries_size) {
++		/*
++		 * We will need to research for the end offset of the last
++		 * stored extent and not from the current offset, because after
++		 * unlocking the range and releasing the path, if there's a hole
++		 * between that end offset and this current offset, a new extent
++		 * may have been inserted due to a new write, so we don't want
++		 * to miss it.
++		 */
++		entry = &cache->entries[cache->entries_size - 1];
++		cache->next_search_offset = entry->offset + entry->len;
++		cache->cached = false;
++
++		return BTRFS_FIEMAP_FLUSH_CACHE;
++	}
++
++	entry = &cache->entries[cache->entries_pos];
++	entry->offset = cache->offset;
++	entry->phys = cache->phys;
++	entry->len = cache->len;
++	entry->flags = cache->flags;
++	cache->entries_pos++;
++	cache->extents_mapped++;
++
++	if (cache->extents_mapped == fieinfo->fi_extents_max) {
++		cache->cached = false;
++		return 1;
++	}
+ assign:
+ 	cache->cached = true;
+ 	cache->offset = offset;
+@@ -2737,8 +2838,8 @@ static int fiemap_search_slot(struct btrfs_inode *inode, struct btrfs_path *path
+ 	 * neighbour leaf).
+ 	 * We also need the private clone because holding a read lock on an
+ 	 * extent buffer of the subvolume's b+tree will make lockdep unhappy
+-	 * when we call fiemap_fill_next_extent(), because that may cause a page
+-	 * fault when filling the user space buffer with fiemap data.
++	 * when we check if extents are shared, as backref walking may need to
++	 * lock the same leaf we are processing.
+ 	 */
+ 	clone = btrfs_clone_extent_buffer(path->nodes[0]);
+ 	if (!clone)
+@@ -2778,34 +2879,16 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
+ 	 * it beyond i_size.
+ 	 */
+ 	while (cur_offset < end && cur_offset < i_size) {
+-		struct extent_state *cached_state = NULL;
+ 		u64 delalloc_start;
+ 		u64 delalloc_end;
+ 		u64 prealloc_start;
+-		u64 lockstart;
+-		u64 lockend;
+ 		u64 prealloc_len = 0;
+ 		bool delalloc;
+ 
+-		lockstart = round_down(cur_offset, inode->root->fs_info->sectorsize);
+-		lockend = round_up(end, inode->root->fs_info->sectorsize);
+-
+-		/*
+-		 * We are only locking for the delalloc range because that's the
+-		 * only thing that can change here.  With fiemap we have a lock
+-		 * on the inode, so no buffered or direct writes can happen.
+-		 *
+-		 * However mmaps and normal page writeback will cause this to
+-		 * change arbitrarily.  We have to lock the extent lock here to
+-		 * make sure that nobody messes with the tree while we're doing
+-		 * btrfs_find_delalloc_in_range.
+-		 */
+-		lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+ 		delalloc = btrfs_find_delalloc_in_range(inode, cur_offset, end,
+ 							delalloc_cached_state,
+ 							&delalloc_start,
+ 							&delalloc_end);
+-		unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+ 		if (!delalloc)
+ 			break;
+ 
+@@ -2973,6 +3056,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		  u64 start, u64 len)
+ {
+ 	const u64 ino = btrfs_ino(inode);
++	struct extent_state *cached_state = NULL;
+ 	struct extent_state *delalloc_cached_state = NULL;
+ 	struct btrfs_path *path;
+ 	struct fiemap_cache cache = { 0 };
+@@ -2985,26 +3069,33 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 	bool stopped = false;
+ 	int ret;
+ 
++	cache.entries_size = PAGE_SIZE / sizeof(struct btrfs_fiemap_entry);
++	cache.entries = kmalloc_array(cache.entries_size,
++				      sizeof(struct btrfs_fiemap_entry),
++				      GFP_KERNEL);
+ 	backref_ctx = btrfs_alloc_backref_share_check_ctx();
+ 	path = btrfs_alloc_path();
+-	if (!backref_ctx || !path) {
++	if (!cache.entries || !backref_ctx || !path) {
+ 		ret = -ENOMEM;
+ 		goto out;
  	}
+ 
++restart:
+ 	range_start = round_down(start, sectorsize);
+ 	range_end = round_up(start + len, sectorsize);
+ 	prev_extent_end = range_start;
+ 
++	lock_extent(&inode->io_tree, range_start, range_end, &cached_state);
++
+ 	ret = fiemap_find_last_extent_offset(inode, path, &last_extent_end);
+ 	if (ret < 0)
+-		goto out;
++		goto out_unlock;
+ 	btrfs_release_path(path);
+ 
+ 	path->reada = READA_FORWARD;
+ 	ret = fiemap_search_slot(inode, path, range_start);
+ 	if (ret < 0) {
+-		goto out;
++		goto out_unlock;
+ 	} else if (ret > 0) {
+ 		/*
+ 		 * No file extent item found, but we may have delalloc between
+@@ -3051,7 +3142,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 						  backref_ctx, 0, 0, 0,
+ 						  prev_extent_end, hole_end);
+ 			if (ret < 0) {
+-				goto out;
++				goto out_unlock;
+ 			} else if (ret > 0) {
+ 				/* fiemap_fill_next_extent() told us to stop. */
+ 				stopped = true;
+@@ -3107,7 +3198,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 								  extent_gen,
+ 								  backref_ctx);
+ 				if (ret < 0)
+-					goto out;
++					goto out_unlock;
+ 				else if (ret > 0)
+ 					flags |= FIEMAP_EXTENT_SHARED;
+ 			}
+@@ -3118,9 +3209,9 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		}
+ 
+ 		if (ret < 0) {
+-			goto out;
++			goto out_unlock;
+ 		} else if (ret > 0) {
+-			/* fiemap_fill_next_extent() told us to stop. */
++			/* emit_fiemap_extent() told us to stop. */
+ 			stopped = true;
+ 			break;
+ 		}
+@@ -3129,12 +3220,12 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ next_item:
+ 		if (fatal_signal_pending(current)) {
+ 			ret = -EINTR;
+-			goto out;
++			goto out_unlock;
+ 		}
+ 
+ 		ret = fiemap_next_leaf_item(inode, path);
+ 		if (ret < 0) {
+-			goto out;
++			goto out_unlock;
+ 		} else if (ret > 0) {
+ 			/* No more file extent items for this inode. */
+ 			break;
+@@ -3143,22 +3234,12 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 	}
+ 
+ check_eof_delalloc:
+-	/*
+-	 * Release (and free) the path before emitting any final entries to
+-	 * fiemap_fill_next_extent() to keep lockdep happy. This is because
+-	 * once we find no more file extent items exist, we may have a
+-	 * non-cloned leaf, and fiemap_fill_next_extent() can trigger page
+-	 * faults when copying data to the user space buffer.
+-	 */
+-	btrfs_free_path(path);
+-	path = NULL;
+-
+ 	if (!stopped && prev_extent_end < range_end) {
+ 		ret = fiemap_process_hole(inode, fieinfo, &cache,
+ 					  &delalloc_cached_state, backref_ctx,
+ 					  0, 0, 0, prev_extent_end, range_end - 1);
+ 		if (ret < 0)
+-			goto out;
++			goto out_unlock;
+ 		prev_extent_end = range_end;
+ 	}
+ 
+@@ -3166,28 +3247,16 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		const u64 i_size = i_size_read(&inode->vfs_inode);
+ 
+ 		if (prev_extent_end < i_size) {
+-			struct extent_state *cached_state = NULL;
+ 			u64 delalloc_start;
+ 			u64 delalloc_end;
+-			u64 lockstart;
+-			u64 lockend;
+ 			bool delalloc;
+ 
+-			lockstart = round_down(prev_extent_end, sectorsize);
+-			lockend = round_up(i_size, sectorsize);
+-
+-			/*
+-			 * See the comment in fiemap_process_hole as to why
+-			 * we're doing the locking here.
+-			 */
+-			lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+ 			delalloc = btrfs_find_delalloc_in_range(inode,
+ 								prev_extent_end,
+ 								i_size - 1,
+ 								&delalloc_cached_state,
+ 								&delalloc_start,
+ 								&delalloc_end);
+-			unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+ 			if (!delalloc)
+ 				cache.flags |= FIEMAP_EXTENT_LAST;
+ 		} else {
+@@ -3195,9 +3264,39 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		}
+ 	}
+ 
++out_unlock:
++	unlock_extent(&inode->io_tree, range_start, range_end, &cached_state);
++
++	if (ret == BTRFS_FIEMAP_FLUSH_CACHE) {
++		btrfs_release_path(path);
++		ret = flush_fiemap_cache(fieinfo, &cache);
++		if (ret)
++			goto out;
++		len -= cache.next_search_offset - start;
++		start = cache.next_search_offset;
++		goto restart;
++	} else if (ret < 0) {
++		goto out;
++	}
++
++	/*
++	 * Must free the path before emitting to the fiemap buffer because we
++	 * may have a non-cloned leaf and if the fiemap buffer is memory mapped
++	 * to a file, a write into it (through btrfs_page_mkwrite()) may trigger
++	 * waiting for an ordered extent that in order to complete needs to
++	 * modify that leaf, therefore leading to a deadlock.
++	 */
++	btrfs_free_path(path);
++	path = NULL;
++
++	ret = flush_fiemap_cache(fieinfo, &cache);
++	if (ret)
++		goto out;
++
+ 	ret = emit_last_fiemap_cache(fieinfo, &cache);
+ out:
+ 	free_extent_state(delalloc_cached_state);
++	kfree(cache.entries);
+ 	btrfs_free_backref_share_ctx(backref_ctx);
+ 	btrfs_free_path(path);
+ 	return ret;
 -- 
 2.43.0
 
