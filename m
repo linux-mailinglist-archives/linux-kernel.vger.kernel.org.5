@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E41C888C8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:24:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51BC888C88
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4016F1C2A0BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:24:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4D8A28CD07
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9851C1303;
-	Mon, 25 Mar 2024 00:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05761C1397;
+	Mon, 25 Mar 2024 00:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hn05a89H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pmSL00rl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99E028452D;
-	Sun, 24 Mar 2024 23:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD53B28452B;
+	Sun, 24 Mar 2024 23:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323786; cv=none; b=KfjVmkyp4DbF7pdIw5oNbob2JNK2gQZfQ2JdgbL3/aylOqEpL3Il8x527u8Lewx8v1h7RPMoMbOahWruc7UK61umByzPt2tbdPF2iadvQ5S6XYnNAOogmMGWSBq4nWVGcTPvFI4VfX5TlMC+p1xvzl9UBLIqrUz43GjNCZYzdVk=
+	t=1711323785; cv=none; b=skAI6R/ek4naf0nsWXkf8aETN6vpcm9HiieBqCtLIHrR4IoZRJX3QoBZ3tS/XI68VNiZwfcEizMxrFO/x3JuQCnEEqEOriJTnz/qOV8iv4SBzt3mCbxWj4QqlivdZWEv2Hsbnd8phT28SeA8fk0+C8fuDiUMNW1+q2csV4Vu+1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323786; c=relaxed/simple;
-	bh=rNDijfEyC5ir0j9HjxxEwdGbtVG4058Sq8QzGTqaCdg=;
+	s=arc-20240116; t=1711323785; c=relaxed/simple;
+	bh=Ahjw586ptN4sdwzK489e5WfNo6aZ+MPOLgqVLZPcfa4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VEg0I/IeVlkgq8Ys+CGlehhIFyiHi2cR7pRbYt/4f6/uBf/j08+ViEL6LNciCCy+yc3Fp3OR1MMZAXTpMa0SukFw45ZIFscB4tpd5u6udNu6bo2UJSLh5+kGrFTHAzX+UhKRbPH2D2xlVNhsR3Nv0KFR8nQ3rGeqwB8+vHIWmZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hn05a89H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 314FFC433F1;
-	Sun, 24 Mar 2024 23:43:04 +0000 (UTC)
+	 MIME-Version; b=PjBQmEjUTJhITcRu5lEV/DXPaoQdhqKAzhTupaejtG7AFp0PN1NUUXAlyb8BePJTyZYPKUm75bRNYSxGE7gdYk5wRMXk3ridX0PZ+jGdLydMYI4XNTNQU9RleC0k71KR3uE3AiwL3YN3u/cJ1VHnckWpDUFq7fy0Ni03v2mGiSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pmSL00rl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19BD3C433C7;
+	Sun, 24 Mar 2024 23:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323784;
-	bh=rNDijfEyC5ir0j9HjxxEwdGbtVG4058Sq8QzGTqaCdg=;
+	s=k20201202; t=1711323785;
+	bh=Ahjw586ptN4sdwzK489e5WfNo6aZ+MPOLgqVLZPcfa4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Hn05a89HpiMO4DA9nrlbCSJS5TWfP2JDv39N4dYZc4ENDpIZvr1BThMR8kB2DL6DT
-	 ZStOR6sNhTV/JFiEMBpEB4qM3fXrHzlIrObqUSuwuQ4agz/EINDHLxiMHygkNWHp7d
-	 FQzgmNQbUfIbh/iZCO3GIBOmO0sVrSyir2TuHrQmudlIq8WCnhsIHMhVzf39LfXk8t
-	 JDjVMvgEhYasKNjvvVdLW6nPlSL44CeHx4UVTK7niNuAkxx+PFAK7W7uRdwZh+2dcO
-	 984qY069g436619uxVdSk32oewsCpFtBuvztFaN5cgrF6BLUrMQ8Qp50MY6PIj8WFs
-	 NMkeRz4xVleGw==
+	b=pmSL00rlO9e8s7kBynQrlJ8UHI1Ar/gMgRHoUNNXjemrZMNQGhQse4kTEezW/dDJs
+	 rTdEfjpK3QzZkzmIY58avGyuesPq5H3P3IOfOJRPSr1Y91Rv+ag5T1hqi9yjg3IrUR
+	 CoAj1cAHvi7DYWQz2ELPQVlv3KnjDZvGoNqggdOvqOl17/v5cH1Z1rX8+z3B6eJ2O0
+	 SMf8IVNDlgIuvJoFBiBQihP29Bmic9pq79RbDSRbnW0lp5nGqg3zbTfK+wcAW0Tt1M
+	 2fi1hMieN+TaRq47cBqPV5lvV3rZ8LEV/0dymMhi1k3QHU8pUi0mNxD0Wk7RPMkeT7
+	 2RfNAgA1z1Ztw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Stephen Boyd <sboyd@kernel.org>,
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
+	Thierry Reding <treding@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 161/238] clk: hisilicon: hi3519: Release the correct number of gates in hi3519_clk_unregister()
-Date: Sun, 24 Mar 2024 19:39:09 -0400
-Message-ID: <20240324234027.1354210-162-sashal@kernel.org>
+Subject: [PATCH 5.10 162/238] drm/tegra: put drm_gem_object ref on error in tegra_fb_create
+Date: Sun, 24 Mar 2024 19:39:10 -0400
+Message-ID: <20240324234027.1354210-163-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,36 +62,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Fedor Pchelkin <pchelkin@ispras.ru>
 
-[ Upstream commit 74e39f526d95c0c119ada1874871ee328c59fbee ]
+[ Upstream commit 32e5a120a5105bce01561978ee55aee8e40ac0dc ]
 
-The gates are stored in 'hi3519_gate_clks', not 'hi3519_mux_clks'.
-This is also in line with how hisi_clk_register_gate() is called in the
-probe.
+Inside tegra_fb_create(), drm_gem_object_lookup() increments ref count of
+the found object. But if the following size check fails then the last
+found object's ref count should be put there as the unreferencing loop
+can't detect this situation.
 
-Fixes: 224b3b262c52 ("clk: hisilicon: hi3519: add driver remove path and fix some issues")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/c3f1877c9a0886fa35c949c8f0ef25547f284f18.1704912510.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Found by Linux Verification Center (linuxtesting.org).
+
+Fixes: de2ba664c30f ("gpu: host1x: drm: Add memory manager and fb")
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231215093356.12067-1-pchelkin@ispras.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/hisilicon/clk-hi3519.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/tegra/fb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/hisilicon/clk-hi3519.c b/drivers/clk/hisilicon/clk-hi3519.c
-index ad0c7f350cf03..60d8a27a90824 100644
---- a/drivers/clk/hisilicon/clk-hi3519.c
-+++ b/drivers/clk/hisilicon/clk-hi3519.c
-@@ -130,7 +130,7 @@ static void hi3519_clk_unregister(struct platform_device *pdev)
- 	of_clk_del_provider(pdev->dev.of_node);
+diff --git a/drivers/gpu/drm/tegra/fb.c b/drivers/gpu/drm/tegra/fb.c
+index 01939c57fc74d..2040dbfed7e21 100644
+--- a/drivers/gpu/drm/tegra/fb.c
++++ b/drivers/gpu/drm/tegra/fb.c
+@@ -155,6 +155,7 @@ struct drm_framebuffer *tegra_fb_create(struct drm_device *drm,
  
- 	hisi_clk_unregister_gate(hi3519_gate_clks,
--				ARRAY_SIZE(hi3519_mux_clks),
-+				ARRAY_SIZE(hi3519_gate_clks),
- 				crg->clk_data);
- 	hisi_clk_unregister_mux(hi3519_mux_clks,
- 				ARRAY_SIZE(hi3519_mux_clks),
+ 		if (gem->size < size) {
+ 			err = -EINVAL;
++			drm_gem_object_put(gem);
+ 			goto unreference;
+ 		}
+ 
 -- 
 2.43.0
 
