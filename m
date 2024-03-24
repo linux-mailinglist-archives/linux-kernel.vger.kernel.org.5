@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E798886EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:46:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35FF78886E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:45:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78DB21C260F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:46:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0B3A1F255C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8D81339B1;
-	Sun, 24 Mar 2024 23:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E8D1E8907;
+	Sun, 24 Mar 2024 23:04:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qKQ35BZp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oz5ACIru"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848B91E9655;
-	Sun, 24 Mar 2024 22:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AEB51E9653;
+	Sun, 24 Mar 2024 22:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320899; cv=none; b=OqIebb8beoIK7aLmP8bIAYZGcXJYcS4MvhQC+fNVbu+BYpUc3OAsN7nhe9Ox+zzzECCzFbpsCaCdiPAeKqSp74MRKLrgG7AWxY20k/xwgj2ipfY4oNtCXghuG0AVrw6DZgnqxlsUTY+vi1GEI3W1qcDfcfPRo+SKNG1zcP+iLNg=
+	t=1711320899; cv=none; b=aMDkd2D/9E8vRl7KVYCN0lw86GspZS4CwtswTfNxzkmLRyey9l34v1JKyYesPC/ccajAduQCpdIPQHDkI5BAPBS9o4faYTL6Fu74YDSMvKalLMZrllPCpQwfTwCeQjJM8zCUUxgzgdQ6NU14LrVBCIKbP43uzhBzy1VXFNsGEBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320899; c=relaxed/simple;
-	bh=+PUu5RM10hKszLtQ9PhN2GrdWiBPvEkFSKTRdD/60jc=;
+	bh=BUaEXJZUG8etbIU7z42ZW4ULk/Wh+ZSN13xgmYO0WqQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eaSgl02HOmkbTuL0b1Uy82e9CLIi1FZ0+6Ofi1qIRipCqAUiw2z9uIAU/3wyapz5DlRURzUBrvOa4DxarUwDxoFWMW6Q52gInmPlp97i98NgSRfMs5vgA6STTinhOyN9qkAnK+LWsx7cj6ai5D0BWE+6QbQc1UOSUMKHmpfQLT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qKQ35BZp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB083C433F1;
-	Sun, 24 Mar 2024 22:54:57 +0000 (UTC)
+	 MIME-Version; b=Alk0f1yS+frJWr0suEoPmCZMhfuDp/LcdNmkNoCw7dvpQzcg4twCb7TZ+eGKdtJXt1lGHwxhEspmOTBFFSn7VP+Rlc3JYM31HZpF397KGHhlnaH/aogq1s7omlSkZ3DSe2MxZHglbJ+wP0iv1uYZcCOe5kCqUb53MN95LExXWEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oz5ACIru; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A86CAC43399;
+	Sun, 24 Mar 2024 22:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320898;
-	bh=+PUu5RM10hKszLtQ9PhN2GrdWiBPvEkFSKTRdD/60jc=;
+	s=k20201202; t=1711320899;
+	bh=BUaEXJZUG8etbIU7z42ZW4ULk/Wh+ZSN13xgmYO0WqQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qKQ35BZp0JWGG5fePZMLn09aaTXHK+JDcUfeQoo2kgMmAHJIVfdNFYUJglbyj+QGD
-	 qyeGZ1EZdZ6ssPNGWDkRfkhGtMKwyKQC8/8vwrlvRb67PIQzPB9UM+hJVNujymi4jy
-	 WuNysMwP8UjFDSDU6XIgAp4vhUtcQihjkTwHp9SpwmLFyl2pm3D6BLSVxLOKcanLmZ
-	 WgyVcZu6OX8u2L8GjtfgN75ePkwuns3OXR0+nU11OueuR0gwsQ9qAi+jG8KnFQl7+z
-	 1i+goupkWhw8Ej8qdh2tIHcOb7JoyLuQVvOR6TIQ8TyD8rT7ecw2TEESHfIg5Bhw0Q
-	 VhaR/7wf5c31g==
+	b=Oz5ACIrude7WKhFMQiM0Ic3t4IBlBoPoUXk6gatTLvIxkTx4xl6wRsLG0qDQOE8PA
+	 P5PB2FcjymHuVClK3Qg7DdlZbYf4VM4zpSsckwD67u9r7wc7IEsblg2rRH13Okjk2Q
+	 bQwNl7gb1F1/DLch+NsA70iKgFNVL6RgEZ4/fJDNnRS0dShTSbe9cQ6g1/47OPl/l0
+	 hjV+SkuOIGe4fVDyIfoO5ihMW2Wd/3E9hzI1Mn3TZ8eGK/L9l4IYRjxzh79GkU9gny
+	 ZIbql9pcXBX+qc+jxzT/YDL1W2ob8qAvfwY5PfbEwjc5hA4Eaplwax+Hnpel/Y+7nG
+	 rDgnYGRV4j8mA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	kernel test robot <lkp@intel.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 461/713] powerpc: Force inlining of arch_vmap_p{u/m}d_supported()
-Date: Sun, 24 Mar 2024 18:43:07 -0400
-Message-ID: <20240324224720.1345309-462-sashal@kernel.org>
+Subject: [PATCH 6.7 462/713] ASoC: SOF: Add some bounds checking to firmware data
+Date: Sun, 24 Mar 2024 18:43:08 -0400
+Message-ID: <20240324224720.1345309-463-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,63 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Dan Carpenter <dan.carpenter@linaro.org>
 
-[ Upstream commit c5aebb53b32460bc52680dd4e2a2f6b84d5ea521 ]
+[ Upstream commit 98f681b0f84cfc3a1d83287b77697679e0398306 ]
 
-arch_vmap_pud_supported() and arch_vmap_pmd_supported() are
-expected to constant-fold to false when RADIX is not enabled.
+Smatch complains about "head->full_size - head->header_size" can
+underflow.  To some extent, we're always going to have to trust the
+firmware a bit.  However, it's easy enough to add a check for negatives,
+and let's add a upper bounds check as well.
 
-Force inlining in order to avoid following failure which
-leads to unexpected call of non-existing pud_set_huge() and
-pmd_set_huge() on powerpc 8xx.
-
-In function 'pud_huge_tests',
-    inlined from 'debug_vm_pgtable' at mm/debug_vm_pgtable.c:1399:2:
-/arch/powerpc/include/asm/vmalloc.h:9:33: warning: inlining failed in call to 'arch_vmap_pud_supported.isra': call is unlikely and code size would grow [-Winline]
-    9 | #define arch_vmap_pud_supported arch_vmap_pud_supported
-      |                                 ^~~~~~~~~~~~~~~~~~~~~~~
-/arch/powerpc/include/asm/vmalloc.h:10:20: note: in expansion of macro 'arch_vmap_pud_supported'
-   10 | static inline bool arch_vmap_pud_supported(pgprot_t prot)
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~
-/arch/powerpc/include/asm/vmalloc.h:9:33: note: called from here
-    9 | #define arch_vmap_pud_supported arch_vmap_pud_supported
-mm/debug_vm_pgtable.c:458:14: note: in expansion of macro 'arch_vmap_pud_supported'
-  458 |         if (!arch_vmap_pud_supported(args->page_prot) ||
-      |              ^~~~~~~~~~~~~~~~~~~~~~~
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402131836.OU1TDuoi-lkp@intel.com/
-Fixes: 8309c9d71702 ("powerpc: inline huge vmap supported functions")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/bbd84ad52bf377e8d3b5865a906f2dc5d99964ba.1707832677.git.christophe.leroy@csgroup.eu
+Fixes: d2458baa799f ("ASoC: SOF: ipc3-loader: Implement firmware parsing and loading")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Link: https://msgid.link/r/5593d147-058c-4de3-a6f5-540ecb96f6f8@moroto.mountain
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/vmalloc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/ipc3-loader.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/vmalloc.h b/arch/powerpc/include/asm/vmalloc.h
-index 4c69ece52a31e..59ed89890c902 100644
---- a/arch/powerpc/include/asm/vmalloc.h
-+++ b/arch/powerpc/include/asm/vmalloc.h
-@@ -7,14 +7,14 @@
- #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+diff --git a/sound/soc/sof/ipc3-loader.c b/sound/soc/sof/ipc3-loader.c
+index 28218766d2114..6e3ef06721106 100644
+--- a/sound/soc/sof/ipc3-loader.c
++++ b/sound/soc/sof/ipc3-loader.c
+@@ -148,6 +148,8 @@ static size_t sof_ipc3_fw_parse_ext_man(struct snd_sof_dev *sdev)
  
- #define arch_vmap_pud_supported arch_vmap_pud_supported
--static inline bool arch_vmap_pud_supported(pgprot_t prot)
-+static __always_inline bool arch_vmap_pud_supported(pgprot_t prot)
- {
- 	/* HPT does not cope with large pages in the vmalloc area */
- 	return radix_enabled();
- }
+ 	head = (struct sof_ext_man_header *)fw->data;
+ 	remaining = head->full_size - head->header_size;
++	if (remaining < 0 || remaining > sdev->basefw.fw->size)
++		return -EINVAL;
+ 	ext_man_size = ipc3_fw_ext_man_size(sdev, fw);
  
- #define arch_vmap_pmd_supported arch_vmap_pmd_supported
--static inline bool arch_vmap_pmd_supported(pgprot_t prot)
-+static __always_inline bool arch_vmap_pmd_supported(pgprot_t prot)
- {
- 	return radix_enabled();
- }
+ 	/* Assert firmware starts with extended manifest */
 -- 
 2.43.0
 
