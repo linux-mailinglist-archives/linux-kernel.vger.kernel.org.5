@@ -1,59 +1,56 @@
-Return-Path: <linux-kernel+bounces-114571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71DC588906A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:17:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4962B888B14
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:39:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B2872910A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:17:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCDFC1F275C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722B713C9B5;
-	Sun, 24 Mar 2024 23:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F94297D76;
+	Sun, 24 Mar 2024 23:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QI1TASP/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PklAE7Wh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556DE1FD5BF;
-	Sun, 24 Mar 2024 23:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69AF61FD5C5;
+	Sun, 24 Mar 2024 23:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322209; cv=none; b=CqpP853XPfcSQGH7/kKBjtVooK+nMe2nfTcxGLvr0tf7LHbrERxmYhOYpT4u0AkRkgw952sB/2wdWBe/1jmD1vFJ9guA9L3UPf5j4srOcc7UQCchvPVD4iBYD8dYfk6PW5h+aXqQqctKSIB2TNRIgruBRuw7hnS7MFlO1QUxoUM=
+	t=1711322210; cv=none; b=BqA3D+neBAdwfvvfusYy32E77TUopnTv6vSnJ53EkGWcqdS9cfZ6+e2y71taDJ/rTmcdj8Qe9lR8gWvGscqwVj3/6HrlJfwF7ixFdyjzhrVdrBDu6hwZ54Ko1sUTd4sQ2NfM+zpAIt6H0U6iGr5kNCnVxuALRc9JjB53WZRP9s0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322209; c=relaxed/simple;
-	bh=3Jooysg2d7dUW3AZXTUrMFQ11QszUv+fKMskEuERJz0=;
+	s=arc-20240116; t=1711322210; c=relaxed/simple;
+	bh=ZuBDzA0LJ2LWcinmQ68PW2D0/5IeWTgCwZspXksVE5o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p0xigfLXJOnhCkiML5XqiDQ5+qBaeZopzx/6rD6Y15ys6GFvwsR0kw+Q7gO5JuGeckX7BuP7q3UmqKgkm2qshSooom69F4w4cBC7t5JhmUfULLyWuiNg3HvMmi8XuWbodAZGYoBMW4SMRVqlhcKgLl8LvsXJqQ9751xPCnEWWmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QI1TASP/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2097AC433C7;
-	Sun, 24 Mar 2024 23:16:47 +0000 (UTC)
+	 MIME-Version; b=mgYx+kAqjYjeKreLZKeyUYBu42fs/pBfTMRLg3OSKM5Ulfr9XTm88kngK6c48FpvSg2DGhjPEOJuLweRU0eai8GyJwBfYFcH7yJeMkuyDDyMpX11pD0VRiSS490JfyfliGZaZjQxGMyys5YhxdYquPvJX3yMAlX+cHeI35mT1sI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PklAE7Wh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779C8C433F1;
+	Sun, 24 Mar 2024 23:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322208;
-	bh=3Jooysg2d7dUW3AZXTUrMFQ11QszUv+fKMskEuERJz0=;
+	s=k20201202; t=1711322209;
+	bh=ZuBDzA0LJ2LWcinmQ68PW2D0/5IeWTgCwZspXksVE5o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QI1TASP/iQbggKpA912jHpjwP05ZmVQt7h0n6S+jl7wKEEzAerBb/M3oqCIn4Qcbn
-	 Dp0TObQCD0qTFx+DeRX2528u7Rzdcay+R8jaU4N6XApwGsWFiMSfDJpv7bwiBMgPWd
-	 qv3WN0IB6Zr8mi4o/GdZ4he2mSidZIUxVQjS3r4uMD7ORMeeZcuVhsN7ddimHILGMq
-	 3+yEth31oqyiMU3I+oRYwKFZhc4UP2kQBCOR4Cp7qYVBtqJ6sxCOgCNCpfTckdSn1o
-	 0FK4ChtDtwc5UvSX2p91WoLKaNkPCbldKrmx0JsTHs/eeo/1+fCZrfP2UBySpC9PwB
-	 J0GhbrwoRVrSQ==
+	b=PklAE7WhwOnlvpxRAui5Ra2sVnsZ9OBwKy/bASknWv+LP6uPB05+IM11Oes8jYwUN
+	 FP6wjRlBZ6SfUFCNV3uRduQgKvV6kg1UPJ9szqDcpZtCt/qrym8ZIx8MLKXNOH8g6D
+	 brx1cYM/YwqgWftGCiiULYyrecSk9UGv8U6pxsd9e3s2nmK6IZnAFUVrUC2e4qrCTw
+	 Wy/yS3mnKdTaeXCVaRY3ifJrutlAja3zrgcCVp8nx6vNT9HvLT8KQL1+chAw7gK6WR
+	 HnjxBFyzbrfwsgIe9n07W5gOmaeU7EplZJchUQzggdIV0IZ4SyxAyTh+nxFRVBTDNn
+	 VG2UNyERShDxw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	James Clark <james.clark@arm.com>,
-	Kaige Ye <ye@kaige.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Namhyung Kim <namhyung@kernel.org>,
+Cc: Jerome Brunet <jbrunet@baylibre.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Justin Stitt <justinstitt@google.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 288/451] perf stat: Avoid metric-only segv
-Date: Sun, 24 Mar 2024 19:09:24 -0400
-Message-ID: <20240324231207.1351418-289-sashal@kernel.org>
+Subject: [PATCH 6.1 289/451] ASoC: meson: aiu: fix function pointer type mismatch
+Date: Sun, 24 Mar 2024 19:09:25 -0400
+Message-ID: <20240324231207.1351418-290-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -67,41 +64,83 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ian Rogers <irogers@google.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit 2543947c77e0e224bda86b4e7220c2f6714da463 ]
+[ Upstream commit 98ac85a00f31d2e9d5452b825a9ed0153d934043 ]
 
-Cycles is recognized as part of a hard coded metric in stat-shadow.c,
-it may call print_metric_only with a NULL fmt string leading to a
-segfault. Handle the NULL fmt explicitly.
+clang-16 warns about casting functions to incompatible types, as is done
+here to call clk_disable_unprepare:
 
-Fixes: 088519f318be ("perf stat: Move the display functions to stat-display.c")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: Kaige Ye <ye@kaige.org>
-Cc: John Garry <john.g.garry@oracle.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/r/20240209204947.3873294-4-irogers@google.com
+sound/soc/meson/aiu.c:243:12: error: cast from 'void (*)(struct clk *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  243 |                                        (void(*)(void *))clk_disable_unprepare,
+
+The pattern of getting, enabling and setting a disable callback for a
+clock can be replaced with devm_clk_get_enabled(), which also fixes
+this warning.
+
+Fixes: 6ae9ca9ce986 ("ASoC: meson: aiu: add i2s and spdif support")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+Link: https://msgid.link/r/20240213215807.3326688-2-jbrunet@baylibre.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/stat-display.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/meson/aiu.c | 19 ++++---------------
+ sound/soc/meson/aiu.h |  1 -
+ 2 files changed, 4 insertions(+), 16 deletions(-)
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index bc866d18973e4..ef9a3df459657 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -366,7 +366,7 @@ static void print_metric_only(struct perf_stat_config *config,
- 	if (color)
- 		mlen += strlen(color) + sizeof(PERF_COLOR_RESET) - 1;
+diff --git a/sound/soc/meson/aiu.c b/sound/soc/meson/aiu.c
+index 88e611e64d14f..077b9c0b6c4ca 100644
+--- a/sound/soc/meson/aiu.c
++++ b/sound/soc/meson/aiu.c
+@@ -218,11 +218,12 @@ static const char * const aiu_spdif_ids[] = {
+ static int aiu_clk_get(struct device *dev)
+ {
+ 	struct aiu *aiu = dev_get_drvdata(dev);
++	struct clk *pclk;
+ 	int ret;
  
--	color_snprintf(str, sizeof(str), color ?: "", fmt, val);
-+	color_snprintf(str, sizeof(str), color ?: "", fmt ?: "", val);
- 	fprintf(out, "%*s ", mlen, str);
+-	aiu->pclk = devm_clk_get(dev, "pclk");
+-	if (IS_ERR(aiu->pclk))
+-		return dev_err_probe(dev, PTR_ERR(aiu->pclk), "Can't get the aiu pclk\n");
++	pclk = devm_clk_get_enabled(dev, "pclk");
++	if (IS_ERR(pclk))
++		return dev_err_probe(dev, PTR_ERR(pclk), "Can't get the aiu pclk\n");
+ 
+ 	aiu->spdif_mclk = devm_clk_get(dev, "spdif_mclk");
+ 	if (IS_ERR(aiu->spdif_mclk))
+@@ -239,18 +240,6 @@ static int aiu_clk_get(struct device *dev)
+ 	if (ret)
+ 		return dev_err_probe(dev, ret, "Can't get the spdif clocks\n");
+ 
+-	ret = clk_prepare_enable(aiu->pclk);
+-	if (ret) {
+-		dev_err(dev, "peripheral clock enable failed\n");
+-		return ret;
+-	}
+-
+-	ret = devm_add_action_or_reset(dev,
+-				       (void(*)(void *))clk_disable_unprepare,
+-				       aiu->pclk);
+-	if (ret)
+-		dev_err(dev, "failed to add reset action on pclk");
+-
+ 	return ret;
  }
  
+diff --git a/sound/soc/meson/aiu.h b/sound/soc/meson/aiu.h
+index 393b6c2307e49..0f94c8bf60818 100644
+--- a/sound/soc/meson/aiu.h
++++ b/sound/soc/meson/aiu.h
+@@ -33,7 +33,6 @@ struct aiu_platform_data {
+ };
+ 
+ struct aiu {
+-	struct clk *pclk;
+ 	struct clk *spdif_mclk;
+ 	struct aiu_interface i2s;
+ 	struct aiu_interface spdif;
 -- 
 2.43.0
 
