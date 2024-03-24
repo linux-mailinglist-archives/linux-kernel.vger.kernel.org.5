@@ -1,194 +1,142 @@
-Return-Path: <linux-kernel+bounces-112710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FBED887D38
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 72F5F887D3C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247551C20ABD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 14:38:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A52951C20A42
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 14:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F21A182D4;
-	Sun, 24 Mar 2024 14:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FC918622;
+	Sun, 24 Mar 2024 14:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="Zgfs6kJu"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W7ENOZGf"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A3810A19;
-	Sun, 24 Mar 2024 14:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AF618030
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 14:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711291128; cv=none; b=AHtZntQMt/ESxFy7I2U/NkGuJ4TgornTIQm6V/JFzYlG592otj0EYPqmg7uoaX1p0iGhpAMYs95UZLXEEjerMGmYzFa5LMl0qLGrT/6vS+/hQYc0juSU0oRULELc7jKAv0FzjbTEiHp8I6WzFH2ByIp+yVvsGASaQq13lNFVFAU=
+	t=1711291739; cv=none; b=B8NsahqkWtno6IfVdLF1cDgd3UZNZ4BC1T4pAXN13YvGryC8CYn2Pia5PJKahc4r26oYfexFLs3uKUvrxc//nKCXfWO9FzGazTb/+PSu3T2nvmhyR4IYKJVH+JuhCCGTEKcTVrNy7t1ORyyHbXaESDqOI5IxMg3IFW0710oxGUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711291128; c=relaxed/simple;
-	bh=IbsCl9l2o8yFRzxnTIHD21nvFORmc81BmARxaSCYcRc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TFzAoXww/IhaYzSVaJtJ9wOVKELuMb2yjm/JgU6Rn6AUaLcu181OI+UjpEPgoQ+RLpR48A6hTGKwRgJOpwRWcSI5grYynWs/ACEGMCd90qz7XSjtOILGyvt+3GOeA3ndgPpZ0aFEHCoE9Vx0PRTBs7Moktx4shvNrl+xPXwMnCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=Zgfs6kJu; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1711291118;
-	bh=IbsCl9l2o8yFRzxnTIHD21nvFORmc81BmARxaSCYcRc=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=Zgfs6kJu7XcbbtN5sfNCkJmpgBquCo0qpHVWDb0ye12q1YA2pIun9RU/ncnRIrm2m
-	 ZQCq4XQbP7vMZSbG3oyJ3blii5OrRtC/jpxV83y96CJ4eMOCbQA96dM+ZhxattXuxs
-	 uNdiWM2T1ep3SipujgMP1W2b5bXHOM3wo9GsfsMg=
-Received: from [IPv6:240e:358:11fe:a000:dc73:854d:832e:8] (unknown [IPv6:240e:358:11fe:a000:dc73:854d:832e:8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 06DBA6737D;
-	Sun, 24 Mar 2024 10:38:26 -0400 (EDT)
-Message-ID: <0c3c6f3cae125fd51105264308aff5d9968a65e2.camel@xry111.site>
-Subject: Re: [PATCH v8 4/4] riscv: dts: thead: Enable LicheePi 4A eMMC and
- microSD
-From: Xi Ruoyao <xry111@xry111.site>
-To: Drew Fustini <drew@pdp7.com>, Maxim Kiselev <bigunclemax@gmail.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor@kernel.org>, 
- devicetree@vger.kernel.org, dfustini@baylibre.com, guoren@kernel.org, 
- jkridner@beagleboard.org, jszhang@kernel.org, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, open list
- <linux-kernel@vger.kernel.org>,  linux-riscv@lists.infradead.org, Palmer
- Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- robertcnelson@beagleboard.org, Rob Herring <robh+dt@kernel.org>, 
- wefu@redhat.com
-Date: Sun, 24 Mar 2024 22:38:21 +0800
-In-Reply-To: <Zf+A7KEYL/tZb9/N@x1>
-References: 
-	<CALHCpMhc1F5Ue7U_gsDXREHUZRVQJNYRCJxYxoNqbN=-39jf7A@mail.gmail.com>
-	 <Zf+A7KEYL/tZb9/N@x1>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1711291739; c=relaxed/simple;
+	bh=+hmNad4AcBKeWQma6Izd7CkEUkildK4LrIOj1dEfDRg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ltVpYPN6ecODPvIX86olmjZD2kSC1EfBzsU9aFWDcotmFT2+BldjylPL4R34aAMs50esabeQzuM4h4xagLLSjDEm+3JUUVGQ/2TKxbkl4wyygeRrPmKSFAB8q7LmEl40BbVE8aALaRyVeJEmoP9v+vAWNu0Q/VNGk3/gJe6StfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W7ENOZGf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711291736;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P6C7+8Wp6+2qZOsRGd4+RkqMnsrYwdbiueBVs6ZMFIQ=;
+	b=W7ENOZGfYNHCzGi+ZsZ3/pK9Lu14EfBxYNvZONg+2TwpcwVucsWVPYMalhHjzY+t9L/xbt
+	XSpVsjdV/xBfQTEamH4M87bBs/Y/+SDhYcxpHj4L6JoCEAfjDHzm+x8cL1u+jp4db0jdrp
+	m4Svy6hlCoRQG1WO4DXyogQOQQsUBOg=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-460-QpYV1TKSORG8UeZIs3bxqw-1; Sun, 24 Mar 2024 10:48:54 -0400
+X-MC-Unique: QpYV1TKSORG8UeZIs3bxqw-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2a00fbe5192so2797571a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 07:48:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711291734; x=1711896534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P6C7+8Wp6+2qZOsRGd4+RkqMnsrYwdbiueBVs6ZMFIQ=;
+        b=tvVmUo5yj29nEAJXNK3QkzdeMUbAfYjWCcvKdUp4ttdCgNErzytoVL34CyD5ocnROn
+         fF8EI5z/E7hPippGp/g6CGDYX7lB+ZRvUME+/+DcknCc0weP0Ujf3b5W67XggHqFyAlO
+         j1lrKuLWGFxfUIOsh2wzJwtj3YM24bTW18P/lnJ2mf6917/s4PqJlTD4RnsTLaWvlMdz
+         nVfDPL9RMq8y6uVkSyR8zlsn5Rj+2Jxqs431GLaHgtI6tzBSHotpHzGPCegc9jotyIec
+         VakHIUL3jjl0/CIOYDHadYF7Hy5ZzXK0tB8jL1qV9aXOuR8RnvVRRJkrnMIFncE6nzQx
+         ki9A==
+X-Forwarded-Encrypted: i=1; AJvYcCUD0GM8iQJBmko6ih2M5o1EZwajMtU0Sq3YfUg6J1dnbbHFAWa7S/VU3HnK52AVfMTM/4VPmkXDSOtP9Cl3T65ZMtKNtRd9TywxjUbw
+X-Gm-Message-State: AOJu0YxzjgLX9ppL/fFpCRhbpH6d27MriMXCPNG44m+1zhQra3SnVm2X
+	dER6iOMbbF8edeSHmGmx3sfksIeTHqfYltji3pqhT9T196CV/M7t5VXGO6fQPE7OCpA1/yQ8L4H
+	g+QiJgMV8ajOaaSpuhDIVz4GGle2/x8KoOAv6Ly6H4hd2Nmq39f427EvWaKlFBVzgADkpXnA+cz
+	hC1Y1v3lDv36kzycUaODCqyWGTpHj/BrPe9T8q
+X-Received: by 2002:a17:90b:1004:b0:29c:6000:a12b with SMTP id gm4-20020a17090b100400b0029c6000a12bmr3410706pjb.38.1711291733809;
+        Sun, 24 Mar 2024 07:48:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFTD1jp0nZuoHDHAd1Pk4uTsJIWjJGwFeXb0QFll1ryEavOQegPIcvGaYKN72cZx2wc/59DCc28e68iStBHLpI=
+X-Received: by 2002:a17:90b:1004:b0:29c:6000:a12b with SMTP id
+ gm4-20020a17090b100400b0029c6000a12bmr3410693pjb.38.1711291733484; Sun, 24
+ Mar 2024 07:48:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240306025801.8814-1-hpa@redhat.com> <20240306025801.8814-3-hpa@redhat.com>
+ <Ze-N_y5Tbjc93aRp@surfacebook.localdomain> <CAEth8oEdzomdn5avXf44HXpoMFDfGpOjjxPFtaGkh0EhfZsPMQ@mail.gmail.com>
+ <CAHp75VeoZ7p=7e9CgZftT5hThf-uMaUrqZBv=+tNYiUOevUOnw@mail.gmail.com>
+In-Reply-To: <CAHp75VeoZ7p=7e9CgZftT5hThf-uMaUrqZBv=+tNYiUOevUOnw@mail.gmail.com>
+From: Kate Hsuan <hpa@redhat.com>
+Date: Sun, 24 Mar 2024 22:48:42 +0800
+Message-ID: <CAEth8oFPwBKPRdTFqgtC8TXYVp1QcRzz-tuwy03VkanWOWfSpA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] leds: rgb: leds-ktd202x: Get device properties
+ through fwnode to support ACPI
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
+	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2024-03-23 at 18:25 -0700, Drew Fustini wrote:
-> On Wed, Mar 20, 2024 at 03:28:19PM +0300, Maxim Kiselev wrote:
-> > Hi Xi, Drew
-> >=20
-> > I have the same problem with SD on my LicheePi 4A.
-> >=20
-> > After some investigations I found how to fix this tuning error.
-> > Here is the patch that increases tuning loop count from
-> > 40(MAX_TUNING_LOOP at sdhci.c) to 128.
-> >=20
-> > diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> > b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> > index 8d6cfb648096..da8f5820fb69 100644
-> > --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> > +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> > @@ -706,6 +706,7 @@ static int th1520_execute_tuning(struct
-> > sdhci_host
-> > *host, u32 opcode)
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* perform tuning */
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sdhci_start_tuning(host);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host->tuning_loop_count =3D 128:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host->tuning_err =3D __sdhci=
-_execute_tuning(host, opcode);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (host->tuning_err) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 /* disable auto-tuning upon tuning error */
-> >=20
-> > After that change tuning works fine. The same value of loop count is
-> > used in RevyOS BSP
-> > https://github.com/revyos/thead-kernel/blob/c6d4e5df18a17903d012ffd89e6=
-7d0ee5ce6cf2d/drivers/mmc/host/sdhci-of-dwcmshc.c#L185
-> >=20
-> > Honestly, it looks a little bit strange for me.
-> >=20
-> > It seems that the tuning algorithm requires to move through
-> > all the taps of delay line(128 taps?) even if we use THRESHOLD_MODE
-> > instend LARGEST_WIN_MODE (I mean bit 2 in AT_CTRL_R(0x540)
-> > register).
-> >=20
-> > Xi, could you also test my fix on your board?
+On Sat, Mar 23, 2024 at 12:02=E2=80=AFAM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Fri, Mar 22, 2024 at 7:45=E2=80=AFAM Kate Hsuan <hpa@redhat.com> wrote=
+:
+> > On Tue, Mar 12, 2024 at 7:04=E2=80=AFAM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+>
+> ...
+>
+> > > > +     chip->num_leds =3D (unsigned long)i2c_get_match_data(client);
+> > >
+> > > No warnings during compilation?
+> > Yes, the compiler doesn't complain about it.
+>
+> And for 32-bit mode as well?
+>
 
-It works for me as well.  I'm now getting:
+Hi Andy,
 
-[    0.854357] mmc1: new ultra high speed SDR104 SDXC card at address aaaa
-[    0.862267] mmcblk1: mmc1:aaaa SR256 238 GiB
-[    0.876623]  mmcblk1: p1
+I've tested it with 32bits kernel build and the compiler didn't
+complain about the warnings.
 
-Tested-by: Xi Ruoyao <xry111@xry111.site>
+> ...
+>
+> P.S. You have commented only on the two comments. What about the rest?
 
-Thanks a lot!
+For the rest, including variable renaming, error number shadowing, and
+"%pfw" were fixed in the v5 patch.
+I sent the patch but I forgot to add you.
+I'll resend the v5 patch and keep you in the loop.
 
-> Thanks for figuring this out!
->=20
-> When I was upstreaming support, I noticed __sdhci_execute_tuning() in
-> T-Head's version of sdhci-of-dwcmshc.c seemed to duplicate what already
-> existed in drivers/mmc/host/sdhci.c. I had thought T-Head copied it
-> because it was a static function.
->=20
-> 9cc811a342be ("mmc: sdhci: add __sdhci_execute_tuning() to header")
-> allowed me to remove __sdhci_execute_tuning() from sdhci-of-dwcmshc.
-> However, I overlooked this resulted in changing the tuning loop from
-> 128 back to the upstream default of 40.
->=20
-> Before this change, the microSD did work for me on the lpi4 but I would
-> see the following:
->=20
-> [=C2=A0=C2=A0=C2=A0 4.182483] mmc1: Tuning failed, falling back to fixed =
-sampling
-> clock
-> [=C2=A0=C2=A0=C2=A0 4.189022] sdhci-dwcmshc ffe7090000.mmc: tuning failed=
-: -11
-> [=C2=A0=C2=A0=C2=A0 4.194734] mmc1: tuning execution failed: -5
-> [=C2=A0=C2=A0=C2=A0 4.287899] mmc1: new high speed SDHC card at address a=
-aaa
-> [=C2=A0=C2=A0=C2=A0 4.299763] mmcblk1: mmc1:aaaa SD32G 29.7 GiB
-> [=C2=A0=C2=A0=C2=A0 4.316963]=C2=A0 mmcblk1: p1 p2
->=20
-> root@lpi4amain:~# cat /sys/kernel/debug/mmc1/ios
-> clock:		50000000 Hz
-> actual clock:	49500000 Hz
-> vdd:		21 (3.3 ~ 3.4 V)
-> bus mode:	2 (push-pull)
-> chip select:	0 (don't care)
-> power mode:	2 (on)
-> bus width:	2 (4 bits)
-> timing spec:	2 (sd high-speed)
-> signal voltage:	0 (3.30 V)
-> driver type:	0 (driver type B)
->=20
-> With the change to 128, I no longer see the tuning failure and the
-> microSD continues to work okay:
->=20
-> [=C2=A0=C2=A0=C2=A0 4.307040] mmc1: new ultra high speed SDR104 SDHC card=
- at address
-> aaaa
-> [=C2=A0=C2=A0=C2=A0 4.320462] mmcblk1: mmc1:aaaa SD32G 29.7 GiB
-> [=C2=A0=C2=A0=C2=A0 4.338646]=C2=A0 mmcblk1: p1 p2
->=20
-> root@lpi4amain:/sys/kernel/debug/mmc1# cat ios
-> clock:		198000000 Hz
-> actual clock:	198000000 Hz
-> vdd:		21 (3.3 ~ 3.4 V)
-> bus mode:	2 (push-pull)
-> chip select:	0 (don't care)
-> power mode:	2 (on)
-> bus width:	2 (4 bits)
-> timing spec:	6 (sd uhs SDR104)
-> signal voltage:	1 (1.80 V)
-> driver type:	0 (driver type B)
->=20
-> This has the benefit of the card now works at 198 MHz in SDR104 mode
-> instead of 50 MHz when tuning failed.
->=20
-> Tested-by: Drew Fustini <drew@pdp7.com>
+Thank you :)
+
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+
 
 --=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+BR,
+Kate
+
 
