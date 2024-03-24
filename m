@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-113788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B001C888698
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:37:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C356388869D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A82628F5D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:37:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64853B218A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1630614D2BD;
-	Sun, 24 Mar 2024 23:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24C314D70E;
+	Sun, 24 Mar 2024 23:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dLtgq2Ru"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FoVDj5uc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AC8128368;
-	Sun, 24 Mar 2024 22:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F69128386;
+	Sun, 24 Mar 2024 22:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320801; cv=none; b=XP1gja21RC+DRpI8Ukr01fFtUC2idWqpPCx9RsVFJQqaq02li4XXXAQ4kMsj9fw30lEaT351vxmyBoVg3d8YvNUy2X6WSnC0CoehhM2P2snP3GZxHb9D/0lYojSudXp3F2+ojN3JkYIig4cZmcqjS7MSeMx8kApt9qQDKNedpuM=
+	t=1711320803; cv=none; b=n+6uBUephKNVbHKs5IYMlfin7mLH908JlQ+7kcqOiWphvdyWCoutqkVlhjwuIhVvHttjhG5ajYtwIYpZUyGdwK/LRXIDOrzpP269zbFCl64+Xt3F1BG5hju4T4uMazTS44afkhAB3lHuK5GUJKzUoabybfLODAqCgYnYmqYOWPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320801; c=relaxed/simple;
-	bh=WTXrESP4wD3TzDbEwiBdO61iJBAqJ9D7jDgdCi3pw6M=;
+	s=arc-20240116; t=1711320803; c=relaxed/simple;
+	bh=pNcFH+ooFkIv/Gh6pWZygMrI9+wZ6KT5OyHzXrzdBTc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RtXecMf2LThkaGB7C4AcbvkukL3DKuoTWlYT78RONwds4AyUVnRZGWY6SNVTkbVG6hMD7OMmUVtHw2xbSsfdJEeNRUxXImS6iAPn0KJ8+cVkvEsUhKwwkAqErDq1QFpX+hRDJFosb47hovJIOWlYhiDZtDXzMalLb6v2MnKuOq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dLtgq2Ru; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF23C433F1;
-	Sun, 24 Mar 2024 22:53:20 +0000 (UTC)
+	 MIME-Version; b=AL0z8MZNdvDrci1u91pWPVHFV/Q+LD5mVvU76MfyL2ZrjgNI/IPAWFuGD4rSyipuIY8iaxBS0R3eRshUBadS3cOHWqez0mZweMFyqN2zh8ebMCu+DC3VmVKdzjZNfqkrR8wDsVR66reQVds6c351cOGuTr0TT4jiTkcCsyqgAy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FoVDj5uc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 300AAC43390;
+	Sun, 24 Mar 2024 22:53:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320800;
-	bh=WTXrESP4wD3TzDbEwiBdO61iJBAqJ9D7jDgdCi3pw6M=;
+	s=k20201202; t=1711320802;
+	bh=pNcFH+ooFkIv/Gh6pWZygMrI9+wZ6KT5OyHzXrzdBTc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dLtgq2RusHx1OlQg82lI4VMimP1AcUlDDqNPf+D5jvG5MCV/j8Mb9LzRdgTGtvoJ2
-	 gjYfBFuGx0iHmtnwVujgmV+UY18hhjW58b9V9pDOoOZK9Ox2X4x+o4kiV/EC5deKsP
-	 NqvU/RVnaphjOe7SUUjV1ECeMaNnNfbSQfbLtlikYH2QcJ58yh4etrSrYLgAuiVbbY
-	 Hbi1mAViGZOu7U8Gg/Nsg/YBPgOIXHo87lhza86VleWIxAUJmJ3ZTxvnAALFBkbR+G
-	 AXLXfltpgT1ujQj0GzO9bLMS45QaTEzvnrdHfSQLp2EJceqkJw+wkisZwTxqvKDwuM
-	 j6r0Otc2+QI+g==
+	b=FoVDj5ucybIRw2upv0FYUE+cgNdYdi233/uv4k6aimRQYceA0G9mdpUzyY+hP2TcS
+	 vjKIy9AJ7e3mye97sm8teDH5WlA8SaRjvOUzn9gjCLgPzXXYe55MDCXw7vmneTrGLS
+	 QIvjhLxlHB3RwKeV2WDhtpZp0N5kTnKPrGpHRnXJLWQILGeKHAVwS4yCHZSQ3vgWQn
+	 biE3QcrRaWbZ58f3HNrIGirb0ONAUVU6Wy6l3GA4rDcIvi3BN2nrWSpW/Y99six3G7
+	 FpDL85meQI3txfoFlkJE5MWRoSd1F8sJXtQ/DcD4T2CUTQiiFXA45A2gMi7u2jY+/u
+	 l7/5Vi9Kly6Og==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Bert Karwatzki <spasswolf@web.de>,
-	Lu Baolu <baolu.lu@linux.intel.com>,
-	Joerg Roedel <jroedel@suse.de>,
+Cc: Shiming Cheng <shiming.cheng@mediatek.com>,
+	Lena Wang <lena.wang@mediatek.com>,
+	David Ahern <dsahern@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 365/713] iommu: Fix compilation without CONFIG_IOMMU_INTEL
-Date: Sun, 24 Mar 2024 18:41:31 -0400
-Message-ID: <20240324224720.1345309-366-sashal@kernel.org>
+Subject: [PATCH 6.7 366/713] ipv6: fib6_rules: flush route cache when rule is changed
+Date: Sun, 24 Mar 2024 18:41:32 -0400
+Message-ID: <20240324224720.1345309-367-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,66 +64,53 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Bert Karwatzki <spasswolf@web.de>
+From: Shiming Cheng <shiming.cheng@mediatek.com>
 
-[ Upstream commit 70bad345e622c23bb530016925c936ab04a646ac ]
+[ Upstream commit c4386ab4f6c600f75fdfd21143f89bac3e625d0d ]
 
-When the kernel is comiled with CONFIG_IRQ_REMAP=y but without
-CONFIG_IOMMU_INTEL compilation fails since commit def054b01a8678 with an
-undefined reference to device_rbtree_find(). This patch makes sure that
-intel specific code is only compiled with CONFIG_IOMMU_INTEL=y.
+When rule policy is changed, ipv6 socket cache is not refreshed.
+The sock's skb still uses a outdated route cache and was sent to
+a wrong interface.
 
-Signed-off-by: Bert Karwatzki <spasswolf@web.de>
-Fixes: 80a9b50c0b9e ("iommu/vt-d: Improve ITE fault handling if target  device isn't present")
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20240307194419.15801-1-spasswolf@web.de
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+To avoid this error we should update fib node's version when
+rule is changed. Then skb's route will be reroute checked as
+route cache version is already different with fib node version.
+The route cache is refreshed to match the latest rule.
+
+Fixes: 101367c2f8c4 ("[IPV6]: Policy Routing Rules")
+Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/Kconfig         | 2 +-
- drivers/iommu/intel/Makefile  | 2 ++
- drivers/iommu/irq_remapping.c | 3 ++-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ net/ipv6/fib6_rules.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 7673bb82945b6..a66f7df7a2b0b 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -195,7 +195,7 @@ source "drivers/iommu/iommufd/Kconfig"
- config IRQ_REMAP
- 	bool "Support for Interrupt Remapping"
- 	depends on X86_64 && X86_IO_APIC && PCI_MSI && ACPI
--	select DMAR_TABLE
-+	select DMAR_TABLE if INTEL_IOMMU
- 	help
- 	  Supports Interrupt remapping for IO-APIC and MSI devices.
- 	  To use x2apic mode in the CPU's which support x2APIC enhancements or
-diff --git a/drivers/iommu/intel/Makefile b/drivers/iommu/intel/Makefile
-index 5dabf081a7793..5402b699a1229 100644
---- a/drivers/iommu/intel/Makefile
-+++ b/drivers/iommu/intel/Makefile
-@@ -5,5 +5,7 @@ obj-$(CONFIG_DMAR_TABLE) += trace.o cap_audit.o
- obj-$(CONFIG_DMAR_PERF) += perf.o
- obj-$(CONFIG_INTEL_IOMMU_DEBUGFS) += debugfs.o
- obj-$(CONFIG_INTEL_IOMMU_SVM) += svm.o
-+ifdef CONFIG_INTEL_IOMMU
- obj-$(CONFIG_IRQ_REMAP) += irq_remapping.o
-+endif
- obj-$(CONFIG_INTEL_IOMMU_PERF_EVENTS) += perfmon.o
-diff --git a/drivers/iommu/irq_remapping.c b/drivers/iommu/irq_remapping.c
-index 83314b9d8f38b..ee59647c20501 100644
---- a/drivers/iommu/irq_remapping.c
-+++ b/drivers/iommu/irq_remapping.c
-@@ -99,7 +99,8 @@ int __init irq_remapping_prepare(void)
- 	if (disable_irq_remap)
- 		return -ENOSYS;
+diff --git a/net/ipv6/fib6_rules.c b/net/ipv6/fib6_rules.c
+index 7c20038330104..be52b18e08a6b 100644
+--- a/net/ipv6/fib6_rules.c
++++ b/net/ipv6/fib6_rules.c
+@@ -449,6 +449,11 @@ static size_t fib6_rule_nlmsg_payload(struct fib_rule *rule)
+ 	       + nla_total_size(16); /* src */
+ }
  
--	if (intel_irq_remap_ops.prepare() == 0)
-+	if (IS_ENABLED(CONFIG_INTEL_IOMMU) &&
-+	    intel_irq_remap_ops.prepare() == 0)
- 		remap_ops = &intel_irq_remap_ops;
- 	else if (IS_ENABLED(CONFIG_AMD_IOMMU) &&
- 		 amd_iommu_irq_ops.prepare() == 0)
++static void fib6_rule_flush_cache(struct fib_rules_ops *ops)
++{
++	rt_genid_bump_ipv6(ops->fro_net);
++}
++
+ static const struct fib_rules_ops __net_initconst fib6_rules_ops_template = {
+ 	.family			= AF_INET6,
+ 	.rule_size		= sizeof(struct fib6_rule),
+@@ -461,6 +466,7 @@ static const struct fib_rules_ops __net_initconst fib6_rules_ops_template = {
+ 	.compare		= fib6_rule_compare,
+ 	.fill			= fib6_rule_fill,
+ 	.nlmsg_payload		= fib6_rule_nlmsg_payload,
++	.flush_cache		= fib6_rule_flush_cache,
+ 	.nlgroup		= RTNLGRP_IPV6_RULE,
+ 	.owner			= THIS_MODULE,
+ 	.fro_net		= &init_net,
 -- 
 2.43.0
 
