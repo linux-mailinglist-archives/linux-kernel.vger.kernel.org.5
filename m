@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80F09888106
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:11:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21CAA888108
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:11:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21F89B23C9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:11:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FB5E1C21330
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9881419B5;
-	Sun, 24 Mar 2024 22:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1011E1420D2;
+	Sun, 24 Mar 2024 22:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K3jHMzxh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OiRBAtin"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46EAC140E58;
-	Sun, 24 Mar 2024 22:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB3E524DC;
+	Sun, 24 Mar 2024 22:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319854; cv=none; b=GZ3qKwcFIGpZFCJT3jXxXp6bKGfQ/kjiZ2NU7bRJykmavskA8WOZS+3BuQVstf+DwRUoT4tgEj8hY+27Xj/9k9KhFxTAmvn1xfiSSZU5GWLcL2055d8Lt6HuqWhWoUgccksKzeKaY+kX1Wybd7UyFLST9lWxo5vUxU4DezChX+A=
+	t=1711319855; cv=none; b=jsqTp/gWa6yk/ydjPvB47UMZHzOyyAtGu72A0kLa9MTO0WWviuvFeeDL7BemcbTrQoALZ8iqfg9tk3MXxuR1p+u3HHAIu0P6pxpYOSjEyY47dIb8nW3u8PtD53TcMK569khxv6jd6gbQhEKgISeiDQSF+VqQ9QtZlE9VzBUemj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319854; c=relaxed/simple;
-	bh=3dyTJT4nnoaVRgAZyeo0M/RmlnJNy3l+FyeWtIk1zoM=;
+	s=arc-20240116; t=1711319855; c=relaxed/simple;
+	bh=bm0nHDz5om7WHLyihz32vRBvx8OpXaA6YLsgeYe1SWI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=auw24PSA4XITlpnsjlWf2lDmAIiyzAhkfoTs1QmpakLuLqyQVSNddilN/IAEVlulCWLaZnKxnww2A5fqNu/zr/cNYfwht/fwEQ/qve8FLvgyGgFhzSfqAYXedRfD0s4EBgNRS6DNFnEsbJVy8Id6pDlIcJrquRMIKAlpncPCif4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K3jHMzxh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DBF2C43399;
-	Sun, 24 Mar 2024 22:37:33 +0000 (UTC)
+	 MIME-Version; b=sFNhR25EXgvplKITzl8KYZH4CH+0TpviXCtPiUAtm+09YTDEO4uKg+gqDmsIMKIHOgl/cnzk38FUltZ8zYGMSvV0NsY0Vr6M6ZltmK+e2tbw40aP5RtPS0fWfVMt+ZV6loV0FOB59xGP8Gu1fc29s54KyOc9CDXjmYmqPAzUF9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OiRBAtin; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5850FC433F1;
+	Sun, 24 Mar 2024 22:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319854;
-	bh=3dyTJT4nnoaVRgAZyeo0M/RmlnJNy3l+FyeWtIk1zoM=;
+	s=k20201202; t=1711319855;
+	bh=bm0nHDz5om7WHLyihz32vRBvx8OpXaA6YLsgeYe1SWI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K3jHMzxh6q6/wP4x9N+XEr1ux1ke74uhS7Wo35hAQuE81gP0VRXALwHDEeVU50Ggp
-	 OaLrsYrtiWecb/2aqN2IArnOy5b40R2BCU8bHUHNgcXQFliqVK9OxEnNIrP9vuFwQP
-	 Ly40pD5FaV7TVUYumdsb6FbiFTw/vwgpx71W7Xorxc9X48ygKp5pPMA3JovYA/B5cE
-	 wGCEbt+IRW9XFxiWQIMFUlpCoA8R8qCZXQiH6RT110ZsmXhIIjo6heo5pfb0VCb4Mk
-	 ug5G1LoxPFLR5XFnGCyzUfbm3lQO1Olt5RxWq/XCf4v0R/1LIF6wwma6yeT6WUMVJr
-	 ut6b+lmwO1qjA==
+	b=OiRBAtinypgsGzN5wca30VlofG/R/wJKJFTzaWflYm4Q26ChWM4JgcklHs5RHBqYG
+	 Yw7nEK87RdSpAJlIa4S0eE0et2EqQ4Batvo7ulYY/RK9UqRp2kZVqpkPZyN6IEAt1v
+	 wI2a3rZ+rwDaOxZgE3EZEh+PjVjAvSdv6Vc5hF4hVAOCTrUA7uaVGgLusvCrtKuwt4
+	 jROiQxJInTAEzSohc0YDJXPN+fgu6Mxnlusv9/RUX4d7w6B/GRSzkJh2KbscDcHP8I
+	 4NEOouYEkmbZvlETsyLOlQybQSnhCOtR3jGfek7tTo7kwW3Uv8FOS5FNcUJ4eicHTw
+	 wObajVDRmWwaw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Kang Yang <quic_kangyang@quicinc.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 157/715] arm64: dts: qcom: sm8650: Fix UFS PHY clocks
-Date: Sun, 24 Mar 2024 18:25:36 -0400
-Message-ID: <20240324223455.1342824-158-sashal@kernel.org>
+Subject: [PATCH 6.8 158/715] wifi: ath12k: fix incorrect logic of calculating vdev_stats_id
+Date: Sun, 24 Mar 2024 18:25:37 -0400
+Message-ID: <20240324223455.1342824-159-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,46 +63,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+From: Kang Yang <quic_kangyang@quicinc.com>
 
-[ Upstream commit 0f9b8054bb4abd7b4686cc66b85f71fec9160136 ]
+[ Upstream commit 019b58dcb6ed267e17b7efd03ec8575c1b67d942 ]
 
-QMP PHY used in SM8650 requires 3 clocks:
+During calculate vdev_stats_id, will compare vdev_stats_id with
+ATH12K_INVAL_VDEV_STATS_ID by '<='. If vdev_stats_id is relatively
+small, then assign ATH12K_INVAL_VDEV_STATS_ID to vdev_stats_id.
 
-* ref - 19.2MHz reference clock from RPMh
-* ref_aux - Auxiliary reference clock from GCC
-* qref - QREF clock from TCSR
+This logic is incorrect. Firstly, should use '>=' instead of '<=' to
+check if this u8 variable exceeds the max valid range.
 
-Fixes: 10e024671295 ("arm64: dts: qcom: sm8650: add interconnect dependent device nodes")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20240131-ufs-phy-clock-v3-17-58a49d2f4605@linaro.org
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Secondly, should use the maximum value as comparison value.
+
+Correct comparison symbols and use the maximum value
+ATH12K_MAX_VDEV_STATS_ID for comparison.
+
+Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0.c5-00481-QCAHMTSWPL_V1.0_V2.0_SILICONZ-3
+
+Fixes: d889913205cf ("wifi: ath12k: driver for Qualcomm Wi-Fi 7 devices")
+Signed-off-by: Kang Yang <quic_kangyang@quicinc.com>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://msgid.link/20240130040303.370590-3-quic_kangyang@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath12k/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index 2df77123a8c7b..bad0eb84549fe 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -2448,10 +2448,12 @@ ufs_mem_phy: phy@1d80000 {
- 			compatible = "qcom,sm8650-qmp-ufs-phy";
- 			reg = <0 0x01d80000 0 0x2000>;
- 
--			clocks = <&tcsr TCSR_UFS_CLKREF_EN>,
--				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>,
-+				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
-+				 <&tcsr TCSR_UFS_CLKREF_EN>;
- 			clock-names = "ref",
--				      "ref_aux";
-+				      "ref_aux",
-+				      "qref";
- 
- 			resets = <&ufs_mem_hc 0>;
- 			reset-names = "ufsphy";
+diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
+index f4e5dc363472b..b965fc46ad89a 100644
+--- a/drivers/net/wireless/ath/ath12k/mac.c
++++ b/drivers/net/wireless/ath/ath12k/mac.c
+@@ -5269,7 +5269,7 @@ ath12k_mac_get_vdev_stats_id(struct ath12k_vif *arvif)
+ 	do {
+ 		if (ab->free_vdev_stats_id_map & (1LL << vdev_stats_id)) {
+ 			vdev_stats_id++;
+-			if (vdev_stats_id <= ATH12K_INVAL_VDEV_STATS_ID) {
++			if (vdev_stats_id >= ATH12K_MAX_VDEV_STATS_ID) {
+ 				vdev_stats_id = ATH12K_INVAL_VDEV_STATS_ID;
+ 				break;
+ 			}
 -- 
 2.43.0
 
