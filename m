@@ -1,55 +1,66 @@
-Return-Path: <linux-kernel+bounces-113957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8EC888EF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:31:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9361288879A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:05:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2E1D1F2788C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:31:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F55E28848E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD6A15575B;
-	Sun, 24 Mar 2024 23:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6EEE21C19D;
+	Sun, 24 Mar 2024 23:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cHjSjUg0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j5EiQQ8G"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289CC12CD8D;
-	Sun, 24 Mar 2024 22:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2FF1F10B0;
+	Sun, 24 Mar 2024 22:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321068; cv=none; b=IHFZ3JOzAbomXG/nl7AxIz7w8pxfuegtsmyySQCQd2XM8S1vFhOFghFAR/9QEiaNNPNv4srEsSBX0LsK1SDAPS7EWKA8YnhrGNGtBI4SF7yfwynnw+mnX7HaPnNOCbMw5nxZrhxOHPS2GylZEFJgg8iw6PNRJkljnR/ITpAJ1w0=
+	t=1711321071; cv=none; b=h4GnwaNA7/rg/xvfdEONfj96K0EYPtWXol50RFTCe46CoTyXQXQPLy/hMay37nkdce3IwtiVMDm73+0LqQeGvnQRvrE9ey4FIJp3FYlzNdtumhi635s6FAbrZs6jWV8516vodSfuvyu5ZdtKcnJej/f8HJFB0vGgt7j9bQwz5io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321068; c=relaxed/simple;
-	bh=9UOR8yfN7Io1/nGO1CWtAhcJh70F2yuivoI9uxE5Q4c=;
+	s=arc-20240116; t=1711321071; c=relaxed/simple;
+	bh=auK8R9Pko+8qzyQY9/nghXInMkBIXsa2OBgChzHHXdM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UvB6GIpZrbE5CZW8gu0EZ6lgp/ZyPb/Le52IGTyDkUUdUF7gv1wEV+bvefZHcmYNPFLIM0CyJwrlxgbfVFz9gUa5pAlgbzL+8mx6gEPQVZK38Aoszp/h/9pG4XdilUvlLvCE/equcc7j+cyHmxRgAlnn96rHVwqb5PXV6DP0ab0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cHjSjUg0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D9FEC43390;
-	Sun, 24 Mar 2024 22:57:47 +0000 (UTC)
+	 MIME-Version; b=XDv6WC81eXP1CXxcimpTNkIaU/+oUNYeet83blq7r0o+dP01JPf4EcuMxGEkROPjwMw5nOjIzSaSWrWGzU2g//9aUuRr3dM6OtWIqdeK80GxnECxH+ywvf3XPJarFXcJif7bK9+sN4WJLZp073+jzx297zlIh7csgjlcuQEQtGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j5EiQQ8G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F080C433C7;
+	Sun, 24 Mar 2024 22:57:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321068;
-	bh=9UOR8yfN7Io1/nGO1CWtAhcJh70F2yuivoI9uxE5Q4c=;
+	s=k20201202; t=1711321070;
+	bh=auK8R9Pko+8qzyQY9/nghXInMkBIXsa2OBgChzHHXdM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cHjSjUg0B7x7SHcvFUMQzTSiOITGoTrGMcWqinwHaWaUC+zycjielriNPks1h6XEK
-	 MspamQnzwNpKHDXMtJ3uVeCTZWM+nAA90Ou81q7ooE9FCsr4kgCoQGEgt6cfaZ6KQ1
-	 45uEsX/2DfB+Gkawy9Lzsh/JtUcNUg2EFR6u3b/1stcNFx14Wh9T7DKoWPB6vSTQNt
-	 OWqZJEFXA9SqEoFwMhRHDW4GvbFePq/fqiPkNYvgKMwHPf5X4nkCJyZwa298j1WP2G
-	 oUrRJncEDrV6WPlFfyIomtMfqjtw0GLyj0viJXrZ7p7dI1teDldUQDhsxObLvlQsru
-	 yMnm4ECVyO1Mw==
+	b=j5EiQQ8GwKbok3hH+PEt6h+naJ9md59vvthaC7XO2XP39UqMQgN47xe56GLgNX0V5
+	 fByjIV2hTpBZOYlrNmf52Cn6Q1ZTo6eSTtax4zIGPUPhREwUIWFERALn4G/V5OlzPR
+	 M8Dn6P7PoyOit0wUkZpXxGldfyxBOTN0NJnZciIv5jUZlQynyl3GfU8ELdBV443ZBL
+	 0J40AKmYdjTBbv9cYmuzef2g91Q9035YFBHbUm7oq8G5bOrdPhIzdjsiVgA8zbPWAN
+	 mk1+yZoBMKOjjLG63FN+NTXsG64TdIeyq3x8XMlk1UIYq5tBsJz4KGW6wYHKS62ddr
+	 bbvUO0FC35uKg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yang Jihong <yangjihong1@huawei.com>,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Eddie Huang <eddie.huang@mediatek.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-rtc@vger.kernel.org,
+	Marc Zyngier <maz@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Peter Rosin <peda@axentia.se>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 632/713] hwtracing: hisi_ptt: Move type check to the beginning of hisi_ptt_pmu_event_init()
-Date: Sun, 24 Mar 2024 18:45:58 -0400
-Message-ID: <20240324224720.1345309-633-sashal@kernel.org>
+Subject: [PATCH 6.7 633/713] rtc: mt6397: select IRQ_DOMAIN instead of depending on it
+Date: Sun, 24 Mar 2024 18:45:59 -0400
+Message-ID: <20240324224720.1345309-634-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,52 +74,57 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yang Jihong <yangjihong1@huawei.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 06226d120a28f146abd3637799958a4dc4dbb7a1 ]
+[ Upstream commit 544c42f798e1651dcb04fb0395219bf0f1c2607e ]
 
-When perf_init_event() calls perf_try_init_event() to init pmu driver,
-searches for the next pmu driver only when the return value is -ENOENT.
-Therefore, hisi_ptt_pmu_event_init() needs to check the type at the
-beginning of the function.
-Otherwise, in the case of perf-task mode, perf_try_init_event() returns
--EOPNOTSUPP and skips subsequent pmu drivers, causes perf_init_event() to
-fail.
+IRQ_DOMAIN is a hidden (not user visible) symbol. Users cannot set
+it directly thru "make *config", so drivers should select it instead
+of depending on it if they need it.
+Relying on it being set for a dependency is risky.
 
-Fixes: ff0de066b463 ("hwtracing: hisi_ptt: Add trace function support for HiSilicon PCIe Tune and Trace device")
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20240108121906.3514820-1-yangjihong1@huawei.com
+Consistently using "select" or "depends on" can also help reduce
+Kconfig circular dependency issues.
+
+Therefore, change the use of "depends on" for IRQ_DOMAIN to
+"select" for RTC_DRV_MT6397.
+
+Fixes: 04d3ba70a3c9 ("rtc: mt6397: add IRQ domain dependency")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Eddie Huang <eddie.huang@mediatek.com>
+Cc: Sean Wang <sean.wang@mediatek.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: linux-rtc@vger.kernel.org
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Peter Rosin <peda@axentia.se>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20240213050258.6167-1-rdunlap@infradead.org
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/ptt/hisi_ptt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/rtc/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
-index a991ecb7515a3..24a1f7797aeb6 100644
---- a/drivers/hwtracing/ptt/hisi_ptt.c
-+++ b/drivers/hwtracing/ptt/hisi_ptt.c
-@@ -995,6 +995,9 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
- 	int ret;
- 	u32 val;
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index 3814e0845e772..b1e1d277d4593 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -1832,7 +1832,8 @@ config RTC_DRV_MT2712
  
-+	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
-+		return -ENOENT;
-+
- 	if (event->cpu < 0) {
- 		dev_dbg(event->pmu->dev, "Per-task mode not supported\n");
- 		return -EOPNOTSUPP;
-@@ -1003,9 +1006,6 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
- 	if (event->attach_state & PERF_ATTACH_TASK)
- 		return -EOPNOTSUPP;
- 
--	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
--		return -ENOENT;
--
- 	ret = hisi_ptt_trace_valid_filter(hisi_ptt, event->attr.config);
- 	if (ret < 0)
- 		return ret;
+ config RTC_DRV_MT6397
+ 	tristate "MediaTek PMIC based RTC"
+-	depends on MFD_MT6397 || (COMPILE_TEST && IRQ_DOMAIN)
++	depends on MFD_MT6397 || COMPILE_TEST
++	select IRQ_DOMAIN
+ 	help
+ 	  This selects the MediaTek(R) RTC driver. RTC is part of MediaTek
+ 	  MT6397 PMIC. You should enable MT6397 PMIC MFD before select
 -- 
 2.43.0
 
