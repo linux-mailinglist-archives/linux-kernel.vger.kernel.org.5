@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BAF888BCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:00:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 902AC888CA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:26:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C607297943
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:00:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 322ADB226CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5286313CC55;
-	Mon, 25 Mar 2024 00:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C157A15FCE4;
+	Mon, 25 Mar 2024 00:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AtTaqhJg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z6LiakG/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C0B15FA7A;
-	Sun, 24 Mar 2024 23:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA8615FA86;
+	Sun, 24 Mar 2024 23:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322354; cv=none; b=lrYJyNkpvUVb4XEIyHSJKE18803wCkQbzLPAB5nNBjehkDvRoPBNooSwhAeiz87FPACf1P2r43vUug8eGpR8z8olO20r3hNgkddvXFXSTJx7e+DWgwCfbTg9d6uBPtOwox+4Mstu/2jr9BGSx8dwogK6w05/R1nuYCaM9XuHy+0=
+	t=1711322354; cv=none; b=Hxl0OtD27hVITjkQg6kh9bxIsPymnoj98og9MxZdQP+19g3AStfkP5w3R8rXdbNhtAZJpfiqAZ5aoA2eDOIWK4oq78ogbBYDMZUBIz2l7B8Sv8ovW9zjFNAUf4Bt0q/usg7cOlazNhXPnaPcwgIHJKp4Yr+uyswrvK4kFKfGosE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322354; c=relaxed/simple;
-	bh=ZImDsyZT8sY0bml6pXAWTDFF5at1/jbbazN+gtwFXbs=;
+	bh=nJZ/aigk7V6NhgFPyvhOixWtqTeCEOdc8GJutmJugFk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=po9VRO8TJXttHzVt/dYlXW/NNxCH0ZoG5OMrHfs9k5YHu4P3AGq9PiMVTgXMrXPykjA+x+2k2ZUvF/FbT1g7g55JrqMLY7JzJjVNCZDxu5pCb8/PR8eld0lOzT/A9oUSXKgyfuqBWb2rn4+cvEHYX3WoD24Z6y1PAqiGIBe77Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AtTaqhJg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0FBCC433B1;
-	Sun, 24 Mar 2024 23:19:11 +0000 (UTC)
+	 MIME-Version; b=XplXjSO+12zjTYK4qQZ0wjYsjIhpmLbMBuEHs78UV9LmUeOMb3ZRXVCyf+d+mP6+NrKcTA291jO8hY+xyufrYCKlRu2ES6sKzHFME+96IFpASRMEn7ycihUeBFlS7qdE7115B89FtTbiWsyuC3CMNFI4bcShCR1NIXDSgxwEb/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z6LiakG/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5E30C43390;
+	Sun, 24 Mar 2024 23:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322352;
-	bh=ZImDsyZT8sY0bml6pXAWTDFF5at1/jbbazN+gtwFXbs=;
+	s=k20201202; t=1711322353;
+	bh=nJZ/aigk7V6NhgFPyvhOixWtqTeCEOdc8GJutmJugFk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AtTaqhJgaEXODzVboYkLNoJg4ejGVxue3RwdwFJakTdAtMTJivFGX7aVvg7M9JANF
-	 ARuN6nlWYiew4fZ+F6kjoclYIEanGwhUr1Wx5Gz31NR/4V8GNGULqGcopoLC+iVeaQ
-	 ssegeoI/6UZXLV8h3xkPqu0IamnCJOGNf3qP2btgsKwSUt9epspVkPT6j0xvNLjyC6
-	 45Tlj7jMstiiOg8JP2nsTAPI5mqmL0vVU+mSpQOUQYKKD1tgTiAwvzIktLqQZ2aiyy
-	 mMAykZtxsKHxW/hbhh0Y8/sw3nNa5bHV8CPjcA14aa5kXEPFcwrPQBaiO4AkcBvybN
-	 ZY17oxGHdzm7Q==
+	b=Z6LiakG/1reUwugY+U9imJXrHJQc1Vvb2xkKt28tvBTbj3m/1l/3RQL+Pdi1ZzQKn
+	 omRDvdiT3Nfi42iUmEWZ97EYOJgTymfRGTK5mCU/g4LIvfGWABKla4RE9gkErmrzwj
+	 ymBMVmvtuXjXyIoZrcjqZbaKblv/R8VWKAe0AMZqTRC9nxBuiNkWVAwly1ordEj9O4
+	 GuIYeln07+p449XtJwtqxpycf5/klFHpuqOuE7VGvhPP2fPvtsizRL6ksj3bTqbFzt
+	 RI03ZuDVP25m5LKJbLbC9PHpw0O6jEqE/gBOsv6T0Vt9ROUtCDZmjUrBkf6HRfzTGA
+	 uc1t962aBRjBA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Subbaraya Sundeep <sbhatta@marvell.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 434/451] octeontx2-pf: Use default max_active works instead of one
-Date: Sun, 24 Mar 2024 19:11:50 -0400
-Message-ID: <20240324231207.1351418-435-sashal@kernel.org>
+Subject: [PATCH 6.1 435/451] octeontx2-pf: Send UP messages to VF only when VF is up.
+Date: Sun, 24 Mar 2024 19:11:51 -0400
+Message-ID: <20240324231207.1351418-436-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,48 +64,35 @@ Content-Transfer-Encoding: 8bit
 
 From: Subbaraya Sundeep <sbhatta@marvell.com>
 
-[ Upstream commit 7558ce0d974ced1dc07edc1197f750fe28c52e57 ]
+[ Upstream commit dfcf6355f53b1796cf7fd50a4f27b18ee6a3497a ]
 
-Only one execution context for the workqueue used for PF and
-VFs mailbox communication is incorrect since multiple works are
-queued simultaneously by all the VFs and PF link UP messages.
-Hence use default number of execution contexts by passing zero
-as max_active to alloc_workqueue function. With this fix in place,
-modify UP messages also to wait until completion.
+When PF sending link status messages to VF, it is possible
+that by the time link_event_task work function is executed
+VF might have brought down. Hence before sending VF link
+status message check whether VF is up to receive it.
 
-Fixes: d424b6c02415 ("octeontx2-pf: Enable SRIOV and added VF mbox handling")
+Fixes: ad513ed938c9 ("octeontx2-vf: Link event notification support")
 Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 3f044b161e8bf..a6c5f6a2dab07 100644
+index a6c5f6a2dab07..7e2c30927c312 100644
 --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
 +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -583,8 +583,9 @@ static int otx2_pfvf_mbox_init(struct otx2_nic *pf, int numvfs)
- 	if (!pf->mbox_pfvf)
- 		return -ENOMEM;
+@@ -3062,6 +3062,9 @@ static void otx2_vf_link_event_task(struct work_struct *work)
+ 	vf_idx = config - config->pf->vf_configs;
+ 	pf = config->pf;
  
--	pf->mbox_pfvf_wq = alloc_ordered_workqueue("otx2_pfvf_mailbox",
--						   WQ_HIGHPRI | WQ_MEM_RECLAIM);
-+	pf->mbox_pfvf_wq = alloc_workqueue("otx2_pfvf_mailbox",
-+					   WQ_UNBOUND | WQ_HIGHPRI |
-+					   WQ_MEM_RECLAIM, 0);
- 	if (!pf->mbox_pfvf_wq)
- 		return -ENOMEM;
++	if (config->intf_down)
++		return;
++
+ 	mutex_lock(&pf->mbox.lock);
  
-@@ -3086,7 +3087,7 @@ static void otx2_vf_link_event_task(struct work_struct *work)
- 
- 	otx2_mbox_wait_for_zero(&pf->mbox_pfvf[0].mbox_up, vf_idx);
- 
--	otx2_mbox_msg_send_up(&pf->mbox_pfvf[0].mbox_up, vf_idx);
-+	otx2_sync_mbox_up_msg(&pf->mbox_pfvf[0], vf_idx);
- 
- 	mutex_unlock(&pf->mbox.lock);
- }
+ 	dwork = &config->link_event_work;
 -- 
 2.43.0
 
