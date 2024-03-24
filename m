@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-115774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AE758897AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF1F889807
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C7631C30A81
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:19:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A14461C312CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6C436D0F8;
-	Mon, 25 Mar 2024 03:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5B7374707;
+	Mon, 25 Mar 2024 03:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+t3mM9d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cvfg0FNf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76283145B05;
-	Sun, 24 Mar 2024 23:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A830C14534E;
+	Sun, 24 Mar 2024 23:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321993; cv=none; b=lQLKnQQD7mANMP/2U005YvBeJPrCSnh01T2cx3y8mhJnksB+tu2dnVeaUB416i0+VOVJBkH4EbZL4inI5y2oIeQgz5jLDRy3ZkQkRxva0P7OQO1Mv7XEsUut/6QLHULLrpfRGdkZWhiVQHITIU73jWbrO81BkR/sGJvyJ4ycm3Y=
+	t=1711321995; cv=none; b=t2tqqTTTq9z2O3AtwTYhlC0wMP1yJ0L4UIjQNT2jyKnaC0gLkEmEfCmD/ZblkxGEuv/p36eYla5SRlMFKKRWFsYhlJAeyfJKTybh9MhUvySxMmgVukz6vM1P1LGK1n9ze5niuI2TM97fGHcUe4KyyloHPNJqeaOYB3TI5nx8UZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321993; c=relaxed/simple;
-	bh=AvB2jOdPf2snJyGE9H3oF9PY1mJQo3Q/t+9yru2FeY0=;
+	s=arc-20240116; t=1711321995; c=relaxed/simple;
+	bh=c/8ThzkfXePMKSUnih7WKsu2s/C2H5smRXIfTXnLdnc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nOID53Fg6p1yxpCtzxFYAcCp+hvKjhenL1f7IH2yNL8UObQXwznzosRkpIFpTMMUfkeEr5dGIY5R5AY4qjlCzYFt5CTY/lMINx49OOcCYFVwmq0b69ovA+sKnzhJ8eEcXn4qECESHcrPLEKiohghKRf/bZz0k6HXv7cl2+1bZXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z+t3mM9d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 830ABC433B1;
-	Sun, 24 Mar 2024 23:13:12 +0000 (UTC)
+	 MIME-Version; b=Du9e7vv4gmsyGdmBZUd2TZJeBzBlYCMPbDvWt9sMZRXFYTGGWCY3fu7EbW5Ww8VEXi0Qkufuf7i/pxObH15tmmp/NiMUJQmdkWTLJbrMN1opG8CqQ36xuN6t1FbQE7zVdmxE5+JOMVnRcdp7n1SeMNdjxxoAB7NySuEFe1ndxIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cvfg0FNf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CCB2C43394;
+	Sun, 24 Mar 2024 23:13:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321993;
-	bh=AvB2jOdPf2snJyGE9H3oF9PY1mJQo3Q/t+9yru2FeY0=;
+	s=k20201202; t=1711321994;
+	bh=c/8ThzkfXePMKSUnih7WKsu2s/C2H5smRXIfTXnLdnc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Z+t3mM9dkGE0HboF7J0m3cSE7mL+a4N1vZIN/+Z2g2KwLp4hib5wLzwFHOkqtOcp/
-	 rHA3w1JFaRuiPS82ANkafzYH7wA1h35Ycp9s871MQFX1i/cHCHSpZavgkyf3vjLwQd
-	 a2NjYC4t5QwZrjG+0Yzl5bc13JYepE3N59CBhadbEnng0s7pWLNaOn674TazVykW4G
-	 829Q3ujQo1mkKkwLiq/6XS8cMsS7oTzTn9vUH+VJ6TUEa9QdmEo7eNiNxLifzGXVtz
-	 8ftWRqI6ZexyHTTN24RB1WSS5MBEX7/68C3dXPgWpIbxgC61gw1f7h3wbLvLU306Tu
-	 51ELuG/pESSkg==
+	b=Cvfg0FNfl+qKRvLQDwVj+hw+wjl4O4hLzxanav+ekWMH84oz4hHd98P3LUYHZ9TQo
+	 dRLdScsejb0xMHbO/bDqu1VTIIvvVXASOUp5Foam8bsJ9DM9l7ORylf0bPw+Gsnz8C
+	 yBuSK4l08UGUcKNkiXcyI7Zl7rLJmm3G57zcA2LJYLHiX1mGg9KWyuOZG/wSrym7TV
+	 PduSKoeUDGFOBG/jnTKuhYOuJAc+tOovK0CB5pFvj+3CQCR3i/PuDjmNthaXZofYhs
+	 N+NEq0er58IBUrNSLmlTMp9BHc28G6q0F6LDUJaMANz+yJefftm6JsJytO19KVjNbm
+	 o9X4UBl8zYHzw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Navid Emamdoost <navid.emamdoost@gmail.com>,
-	Michal Kubecek <mkubecek@suse.cz>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
 	Kees Cook <keescook@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
+	Andi Kleen <ak@linux.intel.com>,
+	Jan Kara <jack@suse.cz>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 065/451] nbd: null check for nla_nest_start
-Date: Sun, 24 Mar 2024 19:05:41 -0400
-Message-ID: <20240324231207.1351418-66-sashal@kernel.org>
+Subject: [PATCH 6.1 066/451] fs/select: rework stack allocation hack for clang
+Date: Sun, 24 Mar 2024 19:05:42 -0400
+Message-ID: <20240324231207.1351418-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,41 +65,65 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 31edf4bbe0ba27fd03ac7d87eb2ee3d2a231af6d ]
+[ Upstream commit ddb9fd7a544088ed70eccbb9f85e9cc9952131c1 ]
 
-nla_nest_start() may fail and return NULL. Insert a check and set errno
-based on other call sites within the same source code.
+A while ago, we changed the way that select() and poll() preallocate
+a temporary buffer just under the size of the static warning limit of
+1024 bytes, as clang was frequently going slightly above that limit.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
-Fixes: 47d902b90a32 ("nbd: add a status netlink command")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20240218042534.it.206-kees@kernel.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The warnings have recently returned and I took another look. As it turns
+out, clang is not actually inherently worse at reserving stack space,
+it just happens to inline do_select() into core_sys_select(), while gcc
+never inlines it.
+
+Annotate do_select() to never be inlined and in turn remove the special
+case for the allocation size. This should give the same behavior for
+both clang and gcc all the time and once more avoids those warnings.
+
+Fixes: ad312f95d41c ("fs/select: avoid clang stack usage warning")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20240216202352.2492798-1-arnd@kernel.org
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/nbd.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/select.c          | 2 +-
+ include/linux/poll.h | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 9a53165de4cef..5c4be8dda253c 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -2408,6 +2408,12 @@ static int nbd_genl_status(struct sk_buff *skb, struct genl_info *info)
- 	}
+diff --git a/fs/select.c b/fs/select.c
+index 0ee55af1a55c2..d4d881d439dcd 100644
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -476,7 +476,7 @@ static inline void wait_key_set(poll_table *wait, unsigned long in,
+ 		wait->_key |= POLLOUT_SET;
+ }
  
- 	dev_list = nla_nest_start_noflag(reply, NBD_ATTR_DEVICE_LIST);
-+	if (!dev_list) {
-+		nlmsg_free(reply);
-+		ret = -EMSGSIZE;
-+		goto out;
-+	}
-+
- 	if (index == -1) {
- 		ret = idr_for_each(&nbd_index_idr, &status_cb, reply);
- 		if (ret) {
+-static int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
++static noinline_for_stack int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
+ {
+ 	ktime_t expire, *to = NULL;
+ 	struct poll_wqueues table;
+diff --git a/include/linux/poll.h b/include/linux/poll.h
+index a9e0e1c2d1f2f..d1ea4f3714a84 100644
+--- a/include/linux/poll.h
++++ b/include/linux/poll.h
+@@ -14,11 +14,7 @@
+ 
+ /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
+    additional memory. */
+-#ifdef __clang__
+-#define MAX_STACK_ALLOC 768
+-#else
+ #define MAX_STACK_ALLOC 832
+-#endif
+ #define FRONTEND_STACK_ALLOC	256
+ #define SELECT_STACK_ALLOC	FRONTEND_STACK_ALLOC
+ #define POLL_STACK_ALLOC	FRONTEND_STACK_ALLOC
 -- 
 2.43.0
 
