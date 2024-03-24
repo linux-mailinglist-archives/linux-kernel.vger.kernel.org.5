@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21CAA888108
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:11:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E88188810A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FB5E1C21330
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:11:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B57571F231E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1011E1420D2;
-	Sun, 24 Mar 2024 22:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0279914263A;
+	Sun, 24 Mar 2024 22:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OiRBAtin"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a6iGaK1l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB3E524DC;
-	Sun, 24 Mar 2024 22:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7B352F68;
+	Sun, 24 Mar 2024 22:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319855; cv=none; b=jsqTp/gWa6yk/ydjPvB47UMZHzOyyAtGu72A0kLa9MTO0WWviuvFeeDL7BemcbTrQoALZ8iqfg9tk3MXxuR1p+u3HHAIu0P6pxpYOSjEyY47dIb8nW3u8PtD53TcMK569khxv6jd6gbQhEKgISeiDQSF+VqQ9QtZlE9VzBUemj4=
+	t=1711319856; cv=none; b=lfXKdt7333IbE4Wp2n+g8ALdGHu9bRntvjy1cVSZm21ghgYjc8t8aC+6B+YD4Unm58hvwNnsySwi34QicdQ243td0nOTUAm2P+9hBtXJOL0xWh9R6pEH6iZ9yPMMIZPPf5bqj/bKVaCbBD+sjdFUcPZU2xMo/wE6Uo/EwfdWxL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319855; c=relaxed/simple;
-	bh=bm0nHDz5om7WHLyihz32vRBvx8OpXaA6YLsgeYe1SWI=;
+	s=arc-20240116; t=1711319856; c=relaxed/simple;
+	bh=JOG+YyezGeMBbIJgXZ49Ud5Nd6CLwHeZEpDp+srOCHU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sFNhR25EXgvplKITzl8KYZH4CH+0TpviXCtPiUAtm+09YTDEO4uKg+gqDmsIMKIHOgl/cnzk38FUltZ8zYGMSvV0NsY0Vr6M6ZltmK+e2tbw40aP5RtPS0fWfVMt+ZV6loV0FOB59xGP8Gu1fc29s54KyOc9CDXjmYmqPAzUF9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OiRBAtin; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5850FC433F1;
-	Sun, 24 Mar 2024 22:37:34 +0000 (UTC)
+	 MIME-Version; b=pbe2W0DyQLg7Cwy+ibxwrpA2Nstykm2mxj3pJljh9aHm+bkkqrICYk71wJppA/vp6gprCXTt3q+CpV+Z59GvAakkvtkYnp2qeHzhLfYRQsjaZ4BHS53wmv9GaIZiRs/H4igDAkK16NzqugINYFsuHyXj1iBJ6vmWL1w7QTqAqvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a6iGaK1l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520CBC43390;
+	Sun, 24 Mar 2024 22:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711319855;
-	bh=bm0nHDz5om7WHLyihz32vRBvx8OpXaA6YLsgeYe1SWI=;
+	bh=JOG+YyezGeMBbIJgXZ49Ud5Nd6CLwHeZEpDp+srOCHU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OiRBAtinypgsGzN5wca30VlofG/R/wJKJFTzaWflYm4Q26ChWM4JgcklHs5RHBqYG
-	 Yw7nEK87RdSpAJlIa4S0eE0et2EqQ4Batvo7ulYY/RK9UqRp2kZVqpkPZyN6IEAt1v
-	 wI2a3rZ+rwDaOxZgE3EZEh+PjVjAvSdv6Vc5hF4hVAOCTrUA7uaVGgLusvCrtKuwt4
-	 jROiQxJInTAEzSohc0YDJXPN+fgu6Mxnlusv9/RUX4d7w6B/GRSzkJh2KbscDcHP8I
-	 4NEOouYEkmbZvlETsyLOlQybQSnhCOtR3jGfek7tTo7kwW3Uv8FOS5FNcUJ4eicHTw
-	 wObajVDRmWwaw==
+	b=a6iGaK1lY0NAYjEnKTbAu9+/jJDbfNkFAW6o1y1mt/I9SUy/Pyz87DlGQ+s+6kVZr
+	 ElxNxBrDeNkiNMN3j50DjDO8WrsyOi4kYX3QuCKAfNAxdedIERCDA2lvAvDDJDJbOm
+	 2QKwzzecxAla6PrSvTti7LXYUwY6S3usQPUOpb/Mq0RMIZHtVTH05IMzjsIpH6pa4F
+	 ZzMEdX2bOvxZp+/xnmomcxmcZAJloZmZKNhoVYVZSXDnkf87aohsldVbQS9yeWA1JE
+	 uOPMnSsbl3huiJAegvLEe5bM1DO7as/e71OcADJuG14Iy5mIqFbmrHDS5HTpmjS1ff
+	 wodHL8ZsUJ5rQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kang Yang <quic_kangyang@quicinc.com>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Kalle Valo <quic_kvalo@quicinc.com>,
+Cc: John Ogness <john.ogness@linutronix.de>,
+	Petr Mladek <pmladek@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 158/715] wifi: ath12k: fix incorrect logic of calculating vdev_stats_id
-Date: Sun, 24 Mar 2024 18:25:37 -0400
-Message-ID: <20240324223455.1342824-159-sashal@kernel.org>
+Subject: [PATCH 6.8 159/715] printk: nbcon: Relocate 32bit seq macros
+Date: Sun, 24 Mar 2024 18:25:38 -0400
+Message-ID: <20240324223455.1342824-160-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,47 +62,154 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kang Yang <quic_kangyang@quicinc.com>
+From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 019b58dcb6ed267e17b7efd03ec8575c1b67d942 ]
+[ Upstream commit 5b73e706f00f3553e1a4efbb31951ce9fe18f2dc ]
 
-During calculate vdev_stats_id, will compare vdev_stats_id with
-ATH12K_INVAL_VDEV_STATS_ID by '<='. If vdev_stats_id is relatively
-small, then assign ATH12K_INVAL_VDEV_STATS_ID to vdev_stats_id.
+The macros __seq_to_nbcon_seq() and __nbcon_seq_to_seq() are
+used to provide support for atomic handling of sequence numbers
+on 32bit systems. Until now this was only used by nbcon.c,
+which is why they were located in nbcon.c and include nbcon in
+the name.
 
-This logic is incorrect. Firstly, should use '>=' instead of '<=' to
-check if this u8 variable exceeds the max valid range.
+In a follow-up commit this functionality is also needed by
+printk_ringbuffer. Rather than duplicating the functionality,
+relocate the macros to printk_ringbuffer.h.
 
-Secondly, should use the maximum value as comparison value.
+Also, since the macros will be no longer nbcon-specific, rename
+them to __u64seq_to_ulseq() and __ulseq_to_u64seq().
 
-Correct comparison symbols and use the maximum value
-ATH12K_MAX_VDEV_STATS_ID for comparison.
+This does not result in any functional change.
 
-Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0.c5-00481-QCAHMTSWPL_V1.0_V2.0_SILICONZ-3
-
-Fixes: d889913205cf ("wifi: ath12k: driver for Qualcomm Wi-Fi 7 devices")
-Signed-off-by: Kang Yang <quic_kangyang@quicinc.com>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://msgid.link/20240130040303.370590-3-quic_kangyang@quicinc.com
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20240207134103.1357162-2-john.ogness@linutronix.de
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Stable-dep-of: 5f72e52ba959 ("printk: ringbuffer: Do not skip non-finalized records with prb_next_seq()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath12k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/printk/nbcon.c             | 41 +++----------------------------
+ kernel/printk/printk_ringbuffer.h | 33 +++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
-index f4e5dc363472b..b965fc46ad89a 100644
---- a/drivers/net/wireless/ath/ath12k/mac.c
-+++ b/drivers/net/wireless/ath/ath12k/mac.c
-@@ -5269,7 +5269,7 @@ ath12k_mac_get_vdev_stats_id(struct ath12k_vif *arvif)
- 	do {
- 		if (ab->free_vdev_stats_id_map & (1LL << vdev_stats_id)) {
- 			vdev_stats_id++;
--			if (vdev_stats_id <= ATH12K_INVAL_VDEV_STATS_ID) {
-+			if (vdev_stats_id >= ATH12K_MAX_VDEV_STATS_ID) {
- 				vdev_stats_id = ATH12K_INVAL_VDEV_STATS_ID;
- 				break;
- 			}
+diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+index b96077152f49d..c8093bcc01fe6 100644
+--- a/kernel/printk/nbcon.c
++++ b/kernel/printk/nbcon.c
+@@ -140,39 +140,6 @@ static inline bool nbcon_state_try_cmpxchg(struct console *con, struct nbcon_sta
+ 	return atomic_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_state), &cur->atom, new->atom);
+ }
+ 
+-#ifdef CONFIG_64BIT
+-
+-#define __seq_to_nbcon_seq(seq) (seq)
+-#define __nbcon_seq_to_seq(seq) (seq)
+-
+-#else /* CONFIG_64BIT */
+-
+-#define __seq_to_nbcon_seq(seq) ((u32)seq)
+-
+-static inline u64 __nbcon_seq_to_seq(u32 nbcon_seq)
+-{
+-	u64 seq;
+-	u64 rb_next_seq;
+-
+-	/*
+-	 * The provided sequence is only the lower 32 bits of the ringbuffer
+-	 * sequence. It needs to be expanded to 64bit. Get the next sequence
+-	 * number from the ringbuffer and fold it.
+-	 *
+-	 * Having a 32bit representation in the console is sufficient.
+-	 * If a console ever gets more than 2^31 records behind
+-	 * the ringbuffer then this is the least of the problems.
+-	 *
+-	 * Also the access to the ring buffer is always safe.
+-	 */
+-	rb_next_seq = prb_next_seq(prb);
+-	seq = rb_next_seq - ((u32)rb_next_seq - nbcon_seq);
+-
+-	return seq;
+-}
+-
+-#endif /* CONFIG_64BIT */
+-
+ /**
+  * nbcon_seq_read - Read the current console sequence
+  * @con:	Console to read the sequence of
+@@ -183,7 +150,7 @@ u64 nbcon_seq_read(struct console *con)
+ {
+ 	unsigned long nbcon_seq = atomic_long_read(&ACCESS_PRIVATE(con, nbcon_seq));
+ 
+-	return __nbcon_seq_to_seq(nbcon_seq);
++	return __ulseq_to_u64seq(prb, nbcon_seq);
+ }
+ 
+ /**
+@@ -204,7 +171,7 @@ void nbcon_seq_force(struct console *con, u64 seq)
+ 	 */
+ 	u64 valid_seq = max_t(u64, seq, prb_first_valid_seq(prb));
+ 
+-	atomic_long_set(&ACCESS_PRIVATE(con, nbcon_seq), __seq_to_nbcon_seq(valid_seq));
++	atomic_long_set(&ACCESS_PRIVATE(con, nbcon_seq), __u64seq_to_ulseq(valid_seq));
+ 
+ 	/* Clear con->seq since nbcon consoles use con->nbcon_seq instead. */
+ 	con->seq = 0;
+@@ -223,11 +190,11 @@ void nbcon_seq_force(struct console *con, u64 seq)
+  */
+ static void nbcon_seq_try_update(struct nbcon_context *ctxt, u64 new_seq)
+ {
+-	unsigned long nbcon_seq = __seq_to_nbcon_seq(ctxt->seq);
++	unsigned long nbcon_seq = __u64seq_to_ulseq(ctxt->seq);
+ 	struct console *con = ctxt->console;
+ 
+ 	if (atomic_long_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_seq), &nbcon_seq,
+-				    __seq_to_nbcon_seq(new_seq))) {
++				    __u64seq_to_ulseq(new_seq))) {
+ 		ctxt->seq = new_seq;
+ 	} else {
+ 		ctxt->seq = nbcon_seq_read(con);
+diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+index 18cd25e489b89..b82a96dc2ea2b 100644
+--- a/kernel/printk/printk_ringbuffer.h
++++ b/kernel/printk/printk_ringbuffer.h
+@@ -381,4 +381,37 @@ bool prb_read_valid_info(struct printk_ringbuffer *rb, u64 seq,
+ u64 prb_first_valid_seq(struct printk_ringbuffer *rb);
+ u64 prb_next_seq(struct printk_ringbuffer *rb);
+ 
++#ifdef CONFIG_64BIT
++
++#define __u64seq_to_ulseq(u64seq) (u64seq)
++#define __ulseq_to_u64seq(rb, ulseq) (ulseq)
++
++#else /* CONFIG_64BIT */
++
++#define __u64seq_to_ulseq(u64seq) ((u32)u64seq)
++
++static inline u64 __ulseq_to_u64seq(struct printk_ringbuffer *rb, u32 ulseq)
++{
++	u64 seq;
++	u64 rb_next_seq;
++
++	/*
++	 * The provided sequence is only the lower 32 bits of the ringbuffer
++	 * sequence. It needs to be expanded to 64bit. Get the next sequence
++	 * number from the ringbuffer and fold it.
++	 *
++	 * Having a 32bit representation in the console is sufficient.
++	 * If a console ever gets more than 2^31 records behind
++	 * the ringbuffer then this is the least of the problems.
++	 *
++	 * Also the access to the ring buffer is always safe.
++	 */
++	rb_next_seq = prb_next_seq(rb);
++	seq = rb_next_seq - ((u32)rb_next_seq - ulseq);
++
++	return seq;
++}
++
++#endif /* CONFIG_64BIT */
++
+ #endif /* _KERNEL_PRINTK_RINGBUFFER_H */
 -- 
 2.43.0
 
