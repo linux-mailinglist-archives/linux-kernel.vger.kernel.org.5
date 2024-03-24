@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-115414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23715889B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:52:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C64B8893E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:41:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B72A51F3590D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:52:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94207B29923
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718212057C2;
-	Mon, 25 Mar 2024 02:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE6613443B;
+	Mon, 25 Mar 2024 02:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bBtCzUPN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u1yt5nKK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E288C1D7931;
-	Sun, 24 Mar 2024 22:50:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09FB71D793D;
+	Sun, 24 Mar 2024 22:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320610; cv=none; b=F9eVcVimAfEMwPKR93fhaQhRCYpfip9+whDNZzp50X9JcZF9MDxwSpFmyebHM9XZZYa3B1CxFve+ZtqiyYAigXr3aBv9utZqTHo55I+/7dBmMVOMW7scJZSww+zIpJ14g5QCoWCZAqhjaiIhby9WZjhNj59+yH6IAF6sOFEGcB0=
+	t=1711320611; cv=none; b=INxRn4GqxKLsvqtvyg41Pn8n+u/8k7mYlOk19QOLvtbljn+4IU2MuCJq8friBut/kxiUuyrCHspEaI5pKXMI3NuQfKmJU/jMTIc/kgAHKTW39+k51qGdUME2xSZmsHmJr/3nvE7H2J0TE3rhmkPHIlttgifQazpmx8DCR0+8osU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320610; c=relaxed/simple;
-	bh=iD2tP2w5qBXFxh/WQCe5efjp671Yj3yfU9cw0LsYFyI=;
+	s=arc-20240116; t=1711320611; c=relaxed/simple;
+	bh=UcRpu7p1jKQyG+pfEXtk4kRecvA2V6BI+5dODNtRxC4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AuoZV5pVicYi1O8QFqRurUSjx47DdqgstYdsdtQoV9utuHLJw3FIG++7neS+ad5RNTx8fUCC6wBHVikHz1Ee0jfWJ6N7QTi5gpVa/LsSqOT7pLCZvIo2BEOxptvbpciwv8McbzBUyrlyjwHR8S+ZFzj6nAtzPkXC9mrHIrbBzSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bBtCzUPN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01D01C433C7;
-	Sun, 24 Mar 2024 22:50:07 +0000 (UTC)
+	 MIME-Version; b=eUCFAWbce6rk4CkmyYPjB9gd4amxRpnxhIUcMtYo0XheAI9ZzWiIF/kvMPR5WTfqNVRTVCZvitLH6xFz8KVic0CKaXOuIR+hJPgR29Qpdpklszt0AUq4MBqgl19pIptq7uUsQhl0TFrD9jk4CG6Jl9BjMN8O6+huMnEVNKGndH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u1yt5nKK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14440C43390;
+	Sun, 24 Mar 2024 22:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320608;
-	bh=iD2tP2w5qBXFxh/WQCe5efjp671Yj3yfU9cw0LsYFyI=;
+	s=k20201202; t=1711320609;
+	bh=UcRpu7p1jKQyG+pfEXtk4kRecvA2V6BI+5dODNtRxC4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bBtCzUPNYdneLOpN6ziQXnS3ocR7T6+g2PaVOgSEJUhvFgpWD80Qx8C4f3PiULLnQ
-	 zxThtLpDqcXuwt3PoyPyiziGcBF0wXxcQ5SF7TyURUPqiJ7MGjuRMz2j7fOiP0YBD+
-	 HyZ4teVbTqWl+PP39kFyiJthMjYd7FSCSdCd1oMyvx0JsaRVFJPxDrsUNYjyPKetFZ
-	 IYBmC6heuQjELNNUed3ndr3K/nxLSlXdgmM0TIcVIyImsZBGnLfAbHo/T8uawooHH4
-	 JSjtHGu2S239ogHEqOd82+/YswBaCgCtM28/S6qR410UnGtCTLHXjSym0JSyiv6pWe
-	 GYJ1xP/nrfpZA==
+	b=u1yt5nKKcltx8qKOxuLCkkUPwU+5UKUlk+SS2jQwNK0LG2+jw5I6TOv47BkR0htMf
+	 m9ryvDV20sJDWLq46Q/cCefmBbGo9J/JCnDaQmQ5pau+NwHqXzq39ynJTPWomTvGu3
+	 tfmx3b/RCLUA7AQRQdiPdjIOKAJbhkRgb8VuE/1ZCGjgjcDC9BSBa9QrgqXU2PZCzt
+	 NSDsKesf0Sgd7RvMaBcMYc4oxThzOzbZ8+zuRV2oeeYu7bR2IisAl+JwX2i7olJecc
+	 HlSP48P6toa8Kxu87w0uHGq0fv6QtwTngDiE5GLHwUDIhuxCoXCDPTh8ZO7h9HWRRO
+	 aru/0a2fhKmaw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Bjorn Andersson <quic_bjorande@quicinc.com>,
 	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 169/713] pmdomain: qcom: rpmhpd: Drop SA8540P gfx.lvl
-Date: Sun, 24 Mar 2024 18:38:15 -0400
-Message-ID: <20240324224720.1345309-170-sashal@kernel.org>
+Subject: [PATCH 6.7 170/713] arm64: dts: qcom: sa8540p: Drop gfx.lvl as power-domain for gpucc
+Date: Sun, 24 Mar 2024 18:38:16 -0400
+Message-ID: <20240324224720.1345309-171-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -66,35 +66,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-[ Upstream commit 883957bee580b723fd87d49ac73e0c84fc03a446 ]
+[ Upstream commit fd5821a1a83c969ed2dcc72fef885f3a82c1d978 ]
 
-On SA8295P and SA8540P gfx.lvl is not provdied by rpmh, but rather is
-handled by an external regulator (max20411). Drop gfx.lvl from the list
-of power-domains exposed on this platform.
+The SA8295P and SA8540P uses an external regulator (max20411), and
+gfx.lvl is not provided by rpmh. Drop the power-domains property of the
+gpucc node to reflect this.
 
-Fixes: f68f1cb3437d ("soc: qcom: rpmhpd: add sc8280xp & sa8540p rpmh power-domains")
+Fixes: eec51ab2fd6f ("arm64: dts: qcom: sc8280xp: Add GPU related nodes")
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20240125-sa8295p-gpu-v4-4-7011c2a63037@quicinc.com
 Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+Link: https://lore.kernel.org/r/20240125-sa8295p-gpu-v4-5-7011c2a63037@quicinc.com
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pmdomain/qcom/rpmhpd.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/qcom/sa8540p.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/pmdomain/qcom/rpmhpd.c b/drivers/pmdomain/qcom/rpmhpd.c
-index 0f0943e3efe50..e4d5afab7b3b2 100644
---- a/drivers/pmdomain/qcom/rpmhpd.c
-+++ b/drivers/pmdomain/qcom/rpmhpd.c
-@@ -217,7 +217,6 @@ static struct rpmhpd *sa8540p_rpmhpds[] = {
- 	[SC8280XP_CX] = &cx,
- 	[SC8280XP_CX_AO] = &cx_ao,
- 	[SC8280XP_EBI] = &ebi,
--	[SC8280XP_GFX] = &gfx,
- 	[SC8280XP_LCX] = &lcx,
- 	[SC8280XP_LMX] = &lmx,
- 	[SC8280XP_MMCX] = &mmcx,
+diff --git a/arch/arm64/boot/dts/qcom/sa8540p.dtsi b/arch/arm64/boot/dts/qcom/sa8540p.dtsi
+index 96b2c59ad02b4..23888029cc117 100644
+--- a/arch/arm64/boot/dts/qcom/sa8540p.dtsi
++++ b/arch/arm64/boot/dts/qcom/sa8540p.dtsi
+@@ -168,6 +168,9 @@ opp-2592000000 {
+ };
+ 
+ &gpucc {
++	/* SA8295P and SA8540P doesn't provide gfx.lvl */
++	/delete-property/ power-domains;
++
+ 	status = "disabled";
+ };
+ 
 -- 
 2.43.0
 
