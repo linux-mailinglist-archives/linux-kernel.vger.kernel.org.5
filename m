@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-114909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CE82889303
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:18:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 710EE889941
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:06:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08436B2E203
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:09:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33CB02A70E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DC02D3769;
-	Mon, 25 Mar 2024 00:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FBE3A8179;
+	Mon, 25 Mar 2024 03:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K3Q+RvvU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KiURJUtl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FCC627DE03;
-	Sun, 24 Mar 2024 23:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B43A27DE07;
+	Sun, 24 Mar 2024 23:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323572; cv=none; b=JMvoTOBWXSUzGUyICxV5/7X40K59gkxU3Y19Y/Pdvw8Wu/XdJqN5T3DbP5oBKCgMy30/O1s43PEY64j1jQ6Cj3bBHTMtkGhphC8bQeTL0pYy3HyNSSX5p/Za97r/9pMsOhpvs29RF+6RtNPT7wlMj2f4ZmT8su+gFw4fNHCYdbk=
+	t=1711323573; cv=none; b=imo35hP3DcCHN/AvzWoPbgZSxLuPinmWWCyby8Dh96EqLhhFH8GTuUUONkB6BrQYA1A0I8PIf4mEgCAUGwAXPFW1nf8wRmbBxhncZwwCFm7MCWqDY6FItgDa2DOczwjZmuzfGbbkLFJZdHVySdKY6F92JdDFot4ILDhZ9BsLkms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323572; c=relaxed/simple;
-	bh=haI25pQhwibAlMtUHP3+8VFUK+05ciCLNtXIXuVN0M0=;
+	s=arc-20240116; t=1711323573; c=relaxed/simple;
+	bh=76JkSKRm97cAdcOCps2E8v0iYvWOcRRw5O6tKYzS5aU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GdSYkrmKYftV6AhdGw1f4HqijLrQPgpZpFzr/KgW79W/7KMdLhwAgQMDvwGKNrXjhsJjliIH2RckygSVrZPokORcD2+m+8OnVwWdVMvVPhuY4wmO8ulwbIKQpfJAqpuR3jh9enWf5u56ohFqKvGGtFMiZmH8nGPPXc4SY3P6FSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K3Q+RvvU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92C2AC43394;
-	Sun, 24 Mar 2024 23:39:30 +0000 (UTC)
+	 MIME-Version; b=Eq9MdRNUfJZWpGRi3UVwVtuEgkN+H73zT4EtMKF/w6swqtnaWxH0KY4aHc4uj8DCpzKxZ7TXoSG7gcPTpr5aqqiU6iOuWL9IxPlyf+onjGSNwEv2RneamQynfHo6dQo5pci4cLgYIm1tIy7sCicAtz/Cq2088u2V5k2krZMZiKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KiURJUtl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D6BC43399;
+	Sun, 24 Mar 2024 23:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323571;
-	bh=haI25pQhwibAlMtUHP3+8VFUK+05ciCLNtXIXuVN0M0=;
+	s=k20201202; t=1711323572;
+	bh=76JkSKRm97cAdcOCps2E8v0iYvWOcRRw5O6tKYzS5aU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K3Q+RvvU4cEiN4bE3a9EKd+q+iOwZyc4WRuyKuNqlPr72H2l3pCw2f6FoKCqHMupt
-	 TxTK/0Ylx3BMDyNwYezA2srqWVMCYSZA41vQQzEGYrOGUCgMgdzd+Vt5UeKdzwHMwf
-	 wHx0Rue539CujF0vVplhxp83SHnIZUH7LOw6/3vK1B484ViylL5CT/QwHO/k6PN9Y/
-	 jgb2VERJqsEPxtKXVTRz8IJ8kTCCyIHlfNetZp2uPzNOhC6FdnrC0YrFmxXJ5rd45R
-	 L3qDjQLkNlb9yxnkgI95FQYF+VeUTKG8YxddqR8TfaLIyw96Sh9jDPFe+/I61t2Qld
-	 tMD2/7yi9lbnA==
+	b=KiURJUtln9/vq+Mfy2HPAJsEgzWQpKaMFOPNuL3s9iYd8zl6jbBdBlKguBPgqr7Cv
+	 kEQ/iQkPM8opHWM6zgsxzdeFxdoKG/V8pyVcFUyjnASnMk60J97an65YIQXhrspbCi
+	 sY9ZA+1reRaZXMHqzXeCDX5+Pjt30oWukbKYpi6MbezhP6HtpXZ++8mv4lTdHSAnoD
+	 +YcvVupQZm/1Cu9i/4TShH1tGSYwDIfqsy3Ho0FYgpUx9a8daOTjChiiyeAhYZstb8
+	 gO6b9IVrKURBJPO5VCD1vXj5cnVwGHGCy9sencYEceDbg1YN38kbdv8ANcr7q9WnIb
+	 ANr8X80eQIuHA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Martin Hostettler <textshell@uchuujin.de>,
-	Helge Deller <deller@gmx.de>,
+Cc: Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 278/317] tty: vt: fix 20 vs 0x20 typo in EScsiignore
-Date: Sun, 24 Mar 2024 19:34:18 -0400
-Message-ID: <20240324233458.1352854-279-sashal@kernel.org>
+Subject: [PATCH 5.15 279/317] serial: max310x: fix syntax error in IRQ error message
+Date: Sun, 24 Mar 2024 19:34:19 -0400
+Message-ID: <20240324233458.1352854-280-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -64,43 +63,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-[ Upstream commit 0e6a92f67c8a94707f7bb27ac29e2bdf3e7c167d ]
+[ Upstream commit 8ede8c6f474255b2213cccd7997b993272a8e2f9 ]
 
-The if (c >= 20 && c <= 0x3f) test added in commit 7a99565f8732 is
-wrong.  20 is DC4 in ascii and it makes no sense to consider that as the
-bottom limit. Instead, it should be 0x20 as in the other test in
-the commit above. This is supposed to NOT change anything as we handle
-interesting 20-0x20 asciis far before this if.
+Replace g with q.
 
-So for sakeness, change to 0x20 (which is SPACE).
+Helpful when grepping thru source code or logs for
+"request" keyword.
 
-Signed-off-by: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Fixes: 7a99565f8732 ("vt: ignore csi sequences with intermediate characters.")
-Cc: Martin Hostettler <textshell@uchuujin.de>
-Link: https://lore.kernel.org/all/ZaP45QY2WEsDqoxg@neutronstar.dyndns.org/
-Tested-by: Helge Deller <deller@gmx.de> # parisc STI console
-Link: https://lore.kernel.org/r/20240122110401.7289-4-jirislaby@kernel.org
+Fixes: f65444187a66 ("serial: New serial driver MAX310X")
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Link: https://lore.kernel.org/r/20240118152213.2644269-6-hugo@hugovil.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/vt/vt.c | 2 +-
+ drivers/tty/serial/max310x.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index b8f5bc19416d9..442579f087c7c 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -2515,7 +2515,7 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
- 		}
- 		return;
- 	case EScsiignore:
--		if (c >= 20 && c <= 0x3f)
-+		if (c >= 0x20 && c <= 0x3f)
- 			return;
- 		vc->vc_state = ESnormal;
- 		return;
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index c122e7e90fc89..714c23f9504fc 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1433,7 +1433,7 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 	if (!ret)
+ 		return 0;
+ 
+-	dev_err(dev, "Unable to reguest IRQ %i\n", irq);
++	dev_err(dev, "Unable to request IRQ %i\n", irq);
+ 
+ out_uart:
+ 	for (i = 0; i < devtype->nr; i++) {
 -- 
 2.43.0
 
