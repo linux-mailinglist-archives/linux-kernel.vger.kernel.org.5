@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65EA58898AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:46:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49A6088988C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:42:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A6E2B3C179
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:41:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B2141C2C19E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4974F38661B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F4538662B;
 	Mon, 25 Mar 2024 03:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZzeOKG3q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jLJgB7p0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6901474A2;
-	Sun, 24 Mar 2024 23:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04B01474AF;
+	Sun, 24 Mar 2024 23:14:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322088; cv=none; b=MbJ5Gq2uOJXlxJYRXMOBMWUN+H4CkGnLDIufBH3QNyet2zNATW3YTAkjGAWinTjbMUjKp0qiIkRikeLwxMceWKkqubM0qXkMqxmsJI6v8YTQWNQnhktlhdcZ2md+mMxqA4cKviE40+Hg9DcKSYcRUUqmYz3p7xa8gPl1nzp5f4s=
+	t=1711322089; cv=none; b=GespaH/4L01nHCEaeozITkoOQDJ+CGzQIq6go8q6kLu3sqB37l8zL7QpwE8VdgWndWEIOgI8O06oDJQV4bgrUmlyDnIamEnqK8Bzv4pxF5xnL9dt5oijczBN5Aqf2dszTgWyPVDNjFMGLZUmsAg4FxZzpvwHEL101VKNsC7bhMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322088; c=relaxed/simple;
-	bh=lthKCzVmzbEZRonMzWJu28LZfwWlrNRNz5JWSujoI/8=;
+	s=arc-20240116; t=1711322089; c=relaxed/simple;
+	bh=TLtPW5ESOsYge5j1u9lbdb9PepDoBxuqqQPnetMEBfo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VhuxqywtMMB9MI6Md+Z+0t+2obXsnf3UJX/ps8iBluG7zziRpP4Dude+d/jFEdEk0y7505AaRgRCenfDNcmcLmvwWS4xW7Qua1NMYsqEMjkx6PJ3sPcWdmouyFk867N8nqH9PVRKNcHl3BSHhzXrnQDyiWivKcdI8A/HQLYuqt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZzeOKG3q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4861C433F1;
-	Sun, 24 Mar 2024 23:14:47 +0000 (UTC)
+	 MIME-Version; b=JVRDu4lIdNh4dw57VpskKOp/HL2btLGNW0oocpzyhWqb+VN0Aa6zLeImlre4NXs4jVy+LYc2ipZcu9kXOUd1jDyXpILnKUZUVyM0tOsvd8Sz50Mt7lpLD8Srie7TPt74YfHFO46I7b3bfu5wfj+e7W0hRUy5MywxV2mZCdyjXyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jLJgB7p0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E330EC43390;
+	Sun, 24 Mar 2024 23:14:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322088;
-	bh=lthKCzVmzbEZRonMzWJu28LZfwWlrNRNz5JWSujoI/8=;
+	s=k20201202; t=1711322089;
+	bh=TLtPW5ESOsYge5j1u9lbdb9PepDoBxuqqQPnetMEBfo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZzeOKG3qtNdFtTdynHrqbUsfmtwfW1VOrLDFDIJHPo2Xj7ou1KzXyEWJQjwyK6UV/
-	 55cxfbTN073jnZ8GdZPzFpc8RVPiB3JsbD+HFJkSEPV5M0dmtQOL1hPGbJrt3JpNWv
-	 lkEfahGHvt7RMNfEuI9SHpYcaxzi4bUZbXhUPVsEuEvov+4q6MEOEW3zxtDCEI0g6k
-	 VyTn0PytJ1nqyPD9KKe6T3QwRy0HNQtHIr2C3RPaQOziUy8WutkbbxUzO6hR+pRg5L
-	 Vrn2AC8gd+j7IsVWuARdBOCMvTjHmywyH5wJ2j4JMIyvYVwxsCaP6NIPD8aQQhfcwV
-	 pnd1iIUJ82z+w==
+	b=jLJgB7p0bLCwIq6Dji//G9uSsDhGcEHhJKznvuNQrwQVSx/mhssviaVSSZvsaTrka
+	 1SU7N0KJ2nbPGHp3oAVTfcc6+lkZryghZ8vIg++sEdRwaVVH2JnLbZAZNNJNcP/N7e
+	 +c9mMhQjAy+v+ioT9U4aMAU22uYuGuTgF8ffF9eEhU98avnZ7NjnrLo0IYnw1ABBm9
+	 vra9XOC3C9W3pvvXUIiZNWoSiQORRlxffOzkJsyttRZPUrhkbLZssHp89LdAvNtPwL
+	 /pyJwoB/Qze9gswUWcTrqW+DhmepLrrrjG2F+JoGV1ID9b5ZbOKFksH/9paTFxxnGv
+	 xfRTgPMXVOrrg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hsin-Te Yuan <yuanhsinte@google.com>,
-	Hsin-Te Yuan <yuanhsinte@chromium.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+Cc: Andre Przywara <andre.przywara@arm.com>,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 162/451] arm64: dts: mt8195-cherry-tomato: change watchdog reset boot flow
-Date: Sun, 24 Mar 2024 19:07:18 -0400
-Message-ID: <20240324231207.1351418-163-sashal@kernel.org>
+Subject: [PATCH 6.1 163/451] firmware: arm_scmi: Fix double free in SMC transport cleanup path
+Date: Sun, 24 Mar 2024 19:07:19 -0400
+Message-ID: <20240324231207.1351418-164-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -63,64 +63,97 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hsin-Te Yuan <yuanhsinte@google.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit ef569d5db50e7edd709e482157769a5b3c367e22 ]
+[ Upstream commit f1d71576d2c9ec8fdb822173fa7f3de79475e9bd ]
 
-The external output reset signal was originally disabled and sent from
-firmware. However, an unfixed bug in the firmware on tomato prevents
-the signal from being sent, causing the device to fail to boot. To fix
-this, enable external output reset signal to allow the device to reboot
-normally.
+When the generic SCMI code tears down a channel, it calls the chan_free
+callback function, defined by each transport. Since multiple protocols
+might share the same transport_info member, chan_free() might want to
+clean up the same member multiple times within the given SCMI transport
+implementation. In this case, it is SMC transport. This will lead to a NULL
+pointer dereference at the second time:
 
-Fixes: 5eb2e303ec6b ("arm64: dts: mediatek: Introduce MT8195 Cherry platform's Tomato")
-Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20240124-send-upstream-v3-1-5097c9862a73@chromium.org
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+    | scmi_protocol scmi_dev.1: Enabled polling mode TX channel - prot_id:16
+    | arm-scmi firmware:scmi: SCMI Notifications - Core Enabled.
+    | arm-scmi firmware:scmi: unable to communicate with SCMI
+    | Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+    | Mem abort info:
+    |   ESR = 0x0000000096000004
+    |   EC = 0x25: DABT (current EL), IL = 32 bits
+    |   SET = 0, FnV = 0
+    |   EA = 0, S1PTW = 0
+    |   FSC = 0x04: level 0 translation fault
+    | Data abort info:
+    |   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+    |   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+    |   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+    | user pgtable: 4k pages, 48-bit VAs, pgdp=0000000881ef8000
+    | [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
+    | Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+    | Modules linked in:
+    | CPU: 4 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc2-00124-g455ef3d016c9-dirty #793
+    | Hardware name: FVP Base RevC (DT)
+    | pstate: 61400009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+    | pc : smc_chan_free+0x3c/0x6c
+    | lr : smc_chan_free+0x3c/0x6c
+    | Call trace:
+    |  smc_chan_free+0x3c/0x6c
+    |  idr_for_each+0x68/0xf8
+    |  scmi_cleanup_channels.isra.0+0x2c/0x58
+    |  scmi_probe+0x434/0x734
+    |  platform_probe+0x68/0xd8
+    |  really_probe+0x110/0x27c
+    |  __driver_probe_device+0x78/0x12c
+    |  driver_probe_device+0x3c/0x118
+    |  __driver_attach+0x74/0x128
+    |  bus_for_each_dev+0x78/0xe0
+    |  driver_attach+0x24/0x30
+    |  bus_add_driver+0xe4/0x1e8
+    |  driver_register+0x60/0x128
+    |  __platform_driver_register+0x28/0x34
+    |  scmi_driver_init+0x84/0xc0
+    |  do_one_initcall+0x78/0x33c
+    |  kernel_init_freeable+0x2b8/0x51c
+    |  kernel_init+0x24/0x130
+    |  ret_from_fork+0x10/0x20
+    | Code: f0004701 910a0021 aa1403e5 97b91c70 (b9400280)
+    | ---[ end trace 0000000000000000 ]---
+
+Simply check for the struct pointer being NULL before trying to access
+its members, to avoid this situation.
+
+This was found when a transport doesn't really work (for instance no SMC
+service), the probe routines then tries to clean up, and triggers a crash.
+
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Fixes: 1dc6558062da ("firmware: arm_scmi: Add smc/hvc transport")
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Link: https://lore.kernel.org/r/20240126122325.2039669-1-andre.przywara@arm.com
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts | 4 ++++
- 3 files changed, 12 insertions(+)
+ drivers/firmware/arm_scmi/smc.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-index 3348ba69ff6cf..d86d193e5a75e 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
-@@ -13,3 +13,7 @@ / {
- &ts_10 {
- 	status = "okay";
- };
+diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+index ac0bd51ef16a2..42ea308a2c1d5 100644
+--- a/drivers/firmware/arm_scmi/smc.c
++++ b/drivers/firmware/arm_scmi/smc.c
+@@ -171,6 +171,13 @@ static int smc_chan_free(int id, void *p, void *data)
+ 	struct scmi_chan_info *cinfo = p;
+ 	struct scmi_smc *scmi_info = cinfo->transport_info;
+ 
++	/*
++	 * Different protocols might share the same chan info, so a previous
++	 * smc_chan_free call might have already freed the structure.
++	 */
++	if (!scmi_info)
++		return 0;
 +
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-index 4669e9d917f8c..5356f53308e24 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
-@@ -33,3 +33,7 @@ pins-low-power-pcie0-disable {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-index 5021edd02f7c1..fca3606cb951e 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
-@@ -34,3 +34,7 @@ pins-low-power-pcie0-disable {
- &ts_10 {
- 	status = "okay";
- };
-+
-+&watchdog {
-+	/delete-property/ mediatek,disable-extrst;
-+};
+ 	/* Ignore any possible further reception on the IRQ path */
+ 	if (scmi_info->irq > 0)
+ 		free_irq(scmi_info->irq, scmi_info);
 -- 
 2.43.0
 
