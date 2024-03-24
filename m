@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A89728885F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:20:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F50B889CF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:33:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9A1B1C2550D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:20:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDB9DB36176
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097F91D8DD8;
-	Sun, 24 Mar 2024 22:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D641F30D2;
+	Mon, 25 Mar 2024 02:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UnWeakQm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ACpBC8hQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED09783CBC;
-	Sun, 24 Mar 2024 22:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F75C83CD2;
+	Sun, 24 Mar 2024 22:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320636; cv=none; b=UWJkI6XAyb1OfsBGDmGVY1ynBY5zaZG+DAdP4cXbrFh4cJyadS+vW5qBSB+K0wh261AYbME9GiptebpWEzSblqnDt4/nU0y2t6o3r2TNuYq4OZjDuhnDBLgHK7MYC0o78chrUDxpxx+2SzlciQiT6SZGMa/D4Og/BGaB2Ttw2AU=
+	t=1711320636; cv=none; b=LngyMbpz3Hulb8fAE1zMLVvCuuutPjQsv+6iWgnbXJMrQNuNQuAhB+GjmUcqcdPL1s0Hdukw73dSAnvRXaFyidW0RTkSGax1nAIBwldO7GQ8SR9A3NJpZ0Xkl7NjpXjTSvNZNyHnPrxs40lFYbU9lWjAdZ93tXw7xr1XRAJi1TM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320636; c=relaxed/simple;
-	bh=R5MgffQAqsovV9p+t6iCvXpyZJGJXls0j6QgS0aphW8=;
+	bh=aJJzQQrpiTfZBv6U5QGeic3fSx+uw2bw3ZShTZrhi5o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Tn/++8ovsSUjntQvnQg+jmmRC/HYWYAkpncU19KHv78p62d4wzN2pKY/6B57eE2JRALmYp9vnFUb9eeLDPbzEL6ktHpkpt+rEPpEylyNwYYJmuZbXMS/nz8+owF7xqu8tsouNveZgBBwJf1/URqT4Dk2k6Rrv598RPuQq4Y0dmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UnWeakQm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D953C43394;
-	Sun, 24 Mar 2024 22:50:34 +0000 (UTC)
+	 MIME-Version; b=J4ZdIFK/y7R6TFL1VlX9TcAB3W74zNNfcMUTn9xrdTcqnLGwHOcddqHgNS+lfGGq9VTMm01QOajEsT8c3szkT2oQhp1YH7Ck6aJ+/VA4gs1+KA2q8EnEf5/z8flSmGZj/ZqhKRBu1sfZQUQgOhQi2vEvLsVK7vt9vWooJ2xukOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ACpBC8hQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B30EC433C7;
+	Sun, 24 Mar 2024 22:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320634;
-	bh=R5MgffQAqsovV9p+t6iCvXpyZJGJXls0j6QgS0aphW8=;
+	s=k20201202; t=1711320635;
+	bh=aJJzQQrpiTfZBv6U5QGeic3fSx+uw2bw3ZShTZrhi5o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UnWeakQmmFuxvLh593vpxCZNb3Zjs8/j4AppQowLEyQSWvMOVh9LtFtOE7+EkAGPm
-	 w7BKHckTikNyATZFA+vbiNkltTC/CZKU0kCBYSORxZTp5zIrfBZt9wFSqRt9mNRs5r
-	 AwLtQls35XBz4EegkiuLi+6MyM44nai9meFYKuNKUngwZ5a1JJI23pXGvkzaFcANeE
-	 kzWPTgFGDH29pl4BbVZY8InGH/Bz29Znhd0izLN/or/119HDzM4KvoUtXmpWz98ttF
-	 TueE+z2tK9/OLStFOK++wmhuHYxTVigVqYRfVsT4zrXgl+IdgwALZRHW08ToEqXD5F
-	 7948yv76tX5yg==
+	b=ACpBC8hQK1A43BXKzl1VFun/TB1XTaozESFsLxB6EV49hRf8rKOiS3r/U/rL1GCWT
+	 6XRCRbAC98PlYRNr7EpcHyT2QnNZnOkfVFRvRVcywe5V+XmuLmCDG7CG5RTozx0hpl
+	 /UX+3XwlKDusfMQbunKKyN/m0GOwod0kKDavJu2ZS6bG4HJG8FC/R50D8LixVzQw+Y
+	 BZ4rNOpMdMpe+XWGtcTkxZ9NSqoyzsVPqIAQP5VWeUrxoCao1ogM8LWGmsCtYKMNTJ
+	 Urr8YIlyaB1St0zssd06YeksgMrLtw3FvSTT6W9mPckdcSBIH7qL9AvhI5RO8KrW5z
+	 z6e49GTsJQPBA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: Martin Kaiser <martin@kaiser.cx>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 196/713] wifi: iwlwifi: read BIOS PNVM only for non-Intel SKU
-Date: Sun, 24 Mar 2024 18:38:42 -0400
-Message-ID: <20240324224720.1345309-197-sashal@kernel.org>
+Subject: [PATCH 6.7 197/713] gpio: vf610: allow disabling the vf610 driver
+Date: Sun, 24 Mar 2024 18:38:43 -0400
+Message-ID: <20240324224720.1345309-198-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,68 +62,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+From: Martin Kaiser <martin@kaiser.cx>
 
-[ Upstream commit c868a189ecfe8cc0b3173c2eaa7f0b659326c151 ]
+[ Upstream commit f57595788244a838deec2d3be375291327cbc035 ]
 
-The driver is supposed to read the PNVM from BIOS only for non-Intel
-SKUs. For Intel SKUs the OEM ID will be 0.
-Read BIOS PNVM only when a non-Intel SKU is indicated.
+The vf610 gpio driver is enabled by default for all i.MX machines,
+without any option to disable it in a board-specific config file.
 
-Fixes: b99e32cbfdf6 ("wifi: iwlwifi: Take loading and setting of pnvm image out of parsing part")
-Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Reviewed-by: Gregory Greenman <gregory.greenman@intel.com>
-Link: https://msgid.link/20240131091413.3625cf1223d3.Ieffda5f506713b1c979388dd7a0e1c1a0145cfca@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Most i.MX chipsets have no hardware for this driver. Change the default
+to enable GPIO_VF610 for SOC_VF610 and disable it otherwise.
+
+Add a text description after the bool type, this makes the driver
+selectable by make config etc.
+
+Fixes: 30a35c07d9e9 ("gpio: vf610: drop the SOC_VF610 dependency for GPIO_VF610")
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/fw/pnvm.c | 30 ++++++++++++--------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ drivers/gpio/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
-index 650e4bde9c17b..56ee0ceed78ab 100644
---- a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
-@@ -255,21 +255,27 @@ static u8 *iwl_get_pnvm_image(struct iwl_trans *trans_p, size_t *len)
- 	struct pnvm_sku_package *package;
- 	u8 *image = NULL;
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index b3a133ed31ee5..41b51536bd867 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -691,7 +691,8 @@ config GPIO_UNIPHIER
+ 	  Say yes here to support UniPhier GPIOs.
  
--	/* First attempt to get the PNVM from BIOS */
--	package = iwl_uefi_get_pnvm(trans_p, len);
--	if (!IS_ERR_OR_NULL(package)) {
--		if (*len >= sizeof(*package)) {
--			/* we need only the data */
--			*len -= sizeof(*package);
--			image = kmemdup(package->data, *len, GFP_KERNEL);
-+	/* Get PNVM from BIOS for non-Intel SKU */
-+	if (trans_p->sku_id[2]) {
-+		package = iwl_uefi_get_pnvm(trans_p, len);
-+		if (!IS_ERR_OR_NULL(package)) {
-+			if (*len >= sizeof(*package)) {
-+				/* we need only the data */
-+				*len -= sizeof(*package);
-+				image = kmemdup(package->data,
-+						*len, GFP_KERNEL);
-+			}
-+			/*
-+			 * free package regardless of whether kmemdup
-+			 * succeeded
-+			 */
-+			kfree(package);
-+			if (image)
-+				return image;
- 		}
--		/* free package regardless of whether kmemdup succeeded */
--		kfree(package);
--		if (image)
--			return image;
- 	}
- 
--	/* If it's not available, try from the filesystem */
-+	/* If it's not available, or for Intel SKU, try from the filesystem */
- 	if (iwl_pnvm_get_from_fs(trans_p, &image, len))
- 		return NULL;
- 	return image;
+ config GPIO_VF610
+-	def_bool y
++	bool "VF610 GPIO support"
++	default y if SOC_VF610
+ 	depends on ARCH_MXC
+ 	select GPIOLIB_IRQCHIP
+ 	help
 -- 
 2.43.0
 
