@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-114790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFCE889251
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C6DE88950D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:17:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 975CC29806D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:03:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAC8F29714B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503B81B7CE0;
-	Mon, 25 Mar 2024 00:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8440F26B818;
+	Mon, 25 Mar 2024 03:27:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XnfQPwSr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d6D15jeP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F872276C50;
-	Sun, 24 Mar 2024 23:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2F4C276C52;
+	Sun, 24 Mar 2024 23:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323395; cv=none; b=nWf2Kx/KNsRXhnGup4JTrMpC7SBNJ2zo489vcVL5QZf3442CV2CiL3lKqlmGXU8KXnIBaWCgJ2uwAdeGSId6sG1fc5yY1u5faoSmnDZ+DXDfDAQcofhXM1pIMBBO/BUrGRVkDEKr8Swno8qkUB0LBmTtTwGp4f9PoPMZllw2lc0=
+	t=1711323395; cv=none; b=OddUsV1bHiJvVTXwkHUSQxRmJRMeaEIXXDNUc+09J4ksZfLg+ZPpHcJoRwFb26NS7KUMD9xIQ4zjJ4qhfAq1x/GYDhy7c5YL2/2G+yFMIo5vTLLzaxVBD8EV4zw05hBEnuVi1uftIDV+2q5DQQwh7As8VOQmPvZkOPldRJdBTaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323395; c=relaxed/simple;
-	bh=Ty54UJkyHxXnxmNG3U9Di3z28hRX9+NIx75utLzM6ws=;
+	bh=zWlzrrm/5wQhSozp+1bHo/83+epwrXZElVWrst8o21k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GXxZQ/xF0t1+bCu67upWuUZz1WnsesXUDXFanESiGLliZbpZYgBKzAaGpTKWuEZ9X5um8SCvpqc54jIa9jwhgbmmV4MXht+YzNVPpc8BUmw1Jt6ZQNnCjiKCDuWoBYUu/r77BLXDFjc2YMc66svK37yqfN/BJpOkStznMb1PQ7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XnfQPwSr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB02FC43399;
-	Sun, 24 Mar 2024 23:36:33 +0000 (UTC)
+	 MIME-Version; b=cQnh+YOgMH6ec0Lx9PI7mc3c0O8mVppaO/5rQfjXjHpQAHXsg0rolXdZMEZrScycdl0E6TP8jpVGg5d4S3fIEtBX1SNI3LFb8PQFwxoZ0YzuRX3hJ4WNkykwRQ+rvxHPEYtgSRO0wpZqkDvFcGrMG4/sTOu0yZjqG2Y9RzkJ3hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d6D15jeP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3A98C433F1;
+	Sun, 24 Mar 2024 23:36:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323394;
-	bh=Ty54UJkyHxXnxmNG3U9Di3z28hRX9+NIx75utLzM6ws=;
+	s=k20201202; t=1711323395;
+	bh=zWlzrrm/5wQhSozp+1bHo/83+epwrXZElVWrst8o21k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XnfQPwSr1FJTU2S377JBE0o4hypQn3viyLNwivR69kR90H3+6HLvz6FbU7d81fU6T
-	 3tZT2Qz23YrcHDrjm76u+SpUxYltE6KhFmWV1pwqft82sG/Qh7jbVimUlnk9EHWhTK
-	 eUGc8gQMyP/Dsi/xWB3Ll+IcFe8m1bNgsjykG6q5UDl0ZG+4ByfR3k0r3HM/kYIQWa
-	 kWyfPk7pWcFDbPYIys9bpUtEnINDlVKNpK4PjVZU1Qw8r+hVlOX9fgrMuDUNbGwEYb
-	 PDfviYfDcw6fRDQmPxUZVBmRSpE7n9XJiz/w4ipciOOTaulzhIadxh4lEKrBfVWBKE
-	 bmHLGbXdIGXhQ==
+	b=d6D15jePQjHcjKyHOqEK9QdipMOL0uYc8UBeHY6GACXglxvJv02XDephX7eZ7yfyD
+	 FMX2tQqbGVm90Q3XUWfBSCpG6z+1/KwZg+eiH8Jum09x3lfaLaZIfHixA3W/xqzVD2
+	 3KgMceYiiS2s0eEqqAoROM6vWAwDln58lu4lV1XropV+VhFulFg/rDItxVegqHmjVb
+	 gQhmNkUp3OFhCwus8HL0mxcjo4kg78LHymXOMMHrXkRXhFtlQ+LnjTIoJnEeocEQGE
+	 ISitSVrME6zS+SDbZA/jz+xSZBouT5hvBEVHcDVD/9VAvt0tVWp5dWLJTHemc3V2Mi
+	 tQE4aaxmp+95g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	Fangrui Song <maskray@google.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	Taehee Yoo <ap420073@gmail.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	David Ahern <dsahern@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 095/317] s390/vdso: drop '-fPIC' from LDFLAGS
-Date: Sun, 24 Mar 2024 19:31:15 -0400
-Message-ID: <20240324233458.1352854-96-sashal@kernel.org>
+Subject: [PATCH 5.15 096/317] ipv6: mcast: remove one synchronize_net() barrier in ipv6_mc_down()
+Date: Sun, 24 Mar 2024 19:31:16 -0400
+Message-ID: <20240324233458.1352854-97-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,64 +65,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 0628c03934187be33942580e10bb9afcc61adeed ]
+[ Upstream commit 17ef8efc00b34918b966388b2af0993811895a8c ]
 
-'-fPIC' as an option to the linker does not do what it seems like it
-should. With ld.bfd, it is treated as '-f PIC', which does not make
-sense based on the meaning of '-f':
+As discussed in the past (commit 2d3916f31891 ("ipv6: fix skb drops
+in igmp6_event_query() and igmp6_event_report()")) I think the
+synchronize_net() call in ipv6_mc_down() is not needed.
 
-  -f SHLIB, --auxiliary SHLIB Auxiliary filter for shared object symbol table
+Under load, synchronize_net() can last between 200 usec and 5 ms.
 
-When building with ld.lld (currently under review in a GitHub pull
-request), it just errors out because '-f' means nothing and neither does
-'-fPIC':
+KASAN seems to agree as well.
 
-  ld.lld: error: unknown argument '-fPIC'
-
-'-fPIC' was blindly copied from CFLAGS when the vDSO stopped being
-linked with '$(CC)', it should not be needed. Remove it to clear up the
-build failure with ld.lld.
-
-Fixes: 2b2a25845d53 ("s390/vdso: Use $(LD) instead of $(CC) to link vDSO")
-Link: https://github.com/llvm/llvm-project/pull/75643
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Link: https://lore.kernel.org/r/20240130-s390-vdso-drop-fpic-from-ldflags-v1-1-094ad104fc55@kernel.org
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: f185de28d9ae ("mld: add new workqueues for process mld events")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Taehee Yoo <ap420073@gmail.com>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: David Ahern <dsahern@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/vdso32/Makefile | 2 +-
- arch/s390/kernel/vdso64/Makefile | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/ipv6/mcast.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/s390/kernel/vdso32/Makefile b/arch/s390/kernel/vdso32/Makefile
-index 245bddfe9bc0e..cc513add48eb5 100644
---- a/arch/s390/kernel/vdso32/Makefile
-+++ b/arch/s390/kernel/vdso32/Makefile
-@@ -22,7 +22,7 @@ KBUILD_AFLAGS_32 += -m31 -s
- KBUILD_CFLAGS_32 := $(filter-out -m64,$(KBUILD_CFLAGS))
- KBUILD_CFLAGS_32 += -m31 -fPIC -shared -fno-common -fno-builtin
+diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
+index 0ea7d97cdc025..6e5d1ade48a89 100644
+--- a/net/ipv6/mcast.c
++++ b/net/ipv6/mcast.c
+@@ -2722,7 +2722,6 @@ void ipv6_mc_down(struct inet6_dev *idev)
+ 	/* Should stop work after group drop. or we will
+ 	 * start work again in mld_ifc_event()
+ 	 */
+-	synchronize_net();
+ 	mld_query_stop_work(idev);
+ 	mld_report_stop_work(idev);
  
--LDFLAGS_vdso32.so.dbg += -fPIC -shared -soname=linux-vdso32.so.1 \
-+LDFLAGS_vdso32.so.dbg += -shared -soname=linux-vdso32.so.1 \
- 	--hash-style=both --build-id=sha1 -melf_s390 -T
- 
- $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_32)
-diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/Makefile
-index 1605ba45ac4c0..42d918d50a1ff 100644
---- a/arch/s390/kernel/vdso64/Makefile
-+++ b/arch/s390/kernel/vdso64/Makefile
-@@ -26,7 +26,7 @@ KBUILD_AFLAGS_64 += -m64 -s
- 
- KBUILD_CFLAGS_64 := $(filter-out -m64,$(KBUILD_CFLAGS))
- KBUILD_CFLAGS_64 += -m64 -fPIC -fno-common -fno-builtin
--ldflags-y := -fPIC -shared -soname=linux-vdso64.so.1 \
-+ldflags-y := -shared -soname=linux-vdso64.so.1 \
- 	     --hash-style=both --build-id=sha1 -T
- 
- $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_64)
 -- 
 2.43.0
 
