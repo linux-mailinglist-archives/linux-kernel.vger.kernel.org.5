@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2E7388934F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:25:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DB26888E57
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:15:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68FD8298B65
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:25:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02667B31F38
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1017D30B4B6;
-	Mon, 25 Mar 2024 01:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCEE530A54C;
+	Mon, 25 Mar 2024 01:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sKvs4eCw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H/jMGFHB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1388184121;
-	Sun, 24 Mar 2024 23:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A215A18413E;
+	Sun, 24 Mar 2024 23:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324265; cv=none; b=W6LT+5g8EodjFXJv/ZDUUgNbK444cWWNS2D4QW+cYTRp92eEmGQVrMyFpy4qkoSNuD9WtKj69xJIP5l/ZfsH5Db/T5+GUssfS9kwA9bzajjPztL7iRFlJk7dUrKBNvkYvhQg7ZapWRXhXgukFSs/oDiZTra4G9/Ieni7rLaY8MI=
+	t=1711324266; cv=none; b=c6SKBNksOsNz0SCQOelxfIJ6f4/CNJpA/5YG63L7nbhFcpq32HtrPyhc5OkE5q8iMZeuLn3b8NYXATIe629GfD9psjbNLCaMqhgFdnhI3DrN52af+Zu2sPKsFBlbAKf7nM8LMjrnF0juGsuEI04fmwyoJYhYBc8fsWz2Sk0thP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324265; c=relaxed/simple;
-	bh=bFIW337YZEgPJGcH3SHvm6AhFeA3r3vl6XB2wyPDraM=;
+	s=arc-20240116; t=1711324266; c=relaxed/simple;
+	bh=+aq8RLJbLgc5VXsalxjuBQSCjf84gqPif4nLSjN1eYE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OeOTCpxgAuZmbIA0UKNIlWJMAMXRULv/qIRZmuSLeufreKy7ro/nVp+a4t3b/jYLMHc/3YtvyhWyyoAbSS70xgF/FNxDytDGoI1fKSTjJbhyLnSruNYTfcnv6Qc+TqjCvbyhofPA9YO9PoFINYYpaIRgja9lCTSibJjR8il/K1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sKvs4eCw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD884C433C7;
-	Sun, 24 Mar 2024 23:51:03 +0000 (UTC)
+	 MIME-Version; b=jD/d45iKzh4TqFTNEJGtFdzOGbzzqggLnwOGAnwx91Q6H17cx8aACa6HmLHh+Tz+ms1ju7IjmUt8LMoUclNSeWPj6AkVEaQg0uP7Pg1zbKdo0TVplcZQDTR0epsgnVouPipkzqCxCzg1hxNZyHdj0Kv2xSintsaszmq3nVnXuNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H/jMGFHB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D81A2C43390;
+	Sun, 24 Mar 2024 23:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324264;
-	bh=bFIW337YZEgPJGcH3SHvm6AhFeA3r3vl6XB2wyPDraM=;
+	s=k20201202; t=1711324265;
+	bh=+aq8RLJbLgc5VXsalxjuBQSCjf84gqPif4nLSjN1eYE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sKvs4eCwJNycwuAK+gUJ48A3KdXbau3D7+iHualN/aOEBd7wudtdTK7S10H2Hv2VX
-	 1qkkiBsLCbh7h3CNjgc2iesP/Rx9zsb+urNiPh0V2PQ3qF2RaJqxVqzJ/wmms75oO4
-	 sFQHWJRy5HpPkZ4g+chEal0qyy3ssU4jLGEL0WPiNAuyswftJ4ig5FG7cUG2oZJX9z
-	 GKlrpupLKsstJv0aIPSUh6LxO8UzCuAwC+l4laU9besVbp5IgGmgNfFDo8DIDTv/KY
-	 txNbojdxKdV3lcl8ZbuDRPQtyMSskTKLuVzIh13Gyr++b80vRTEUbf49qeoeTZo28+
-	 5A3sOeXAHn8IA==
+	b=H/jMGFHBSZ/oQJt1+OUQ4Hs7y0E7EJZIrymcomZt+IfYZqiknljxA8FnFg9dxRzp6
+	 9R03o7QgwxI2rUzY5g4P5x3gy1kPd0YY1QRIDtMajqSwxwm8YAMxajxjWrlY+qpzs6
+	 Yo6GB5RoHE86w2GV8MRwB8Zus1UYjY/2Iy1G7l+rhjBSrZtXm7oiEnTTw3wq55LqqQ
+	 aEP1Lbt6YOkoNhK5yIULnImW/i71Wb8lW7TXMAMXXRKqu/75YojZuuLxKQLupieDQx
+	 0fvV/SyDVSNADKhU1rA+rF3iGG4Jf6X/Up2meD35DfWFIyCwKRLfIrkEg6JM8GAu1q
+	 tQcZ1mFqjSxWg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Linus Walleij <linus.walleij@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 044/148] wifi: brcmsmac: avoid function pointer casts
-Date: Sun, 24 Mar 2024 19:48:28 -0400
-Message-ID: <20240324235012.1356413-45-sashal@kernel.org>
+Subject: [PATCH 4.19 045/148] ARM: dts: arm: realview: Fix development chip ROM compatible value
+Date: Sun, 24 Mar 2024 19:48:29 -0400
+Message-ID: <20240324235012.1356413-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,79 +62,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit e1ea6db35fc3ba5ff063f097385e9f7a88c25356 ]
+[ Upstream commit 3baa4c5143d65ebab2de0d99a395e5f4f1f46608 ]
 
-An old cleanup went a little too far and causes a warning with clang-16
-and higher as it breaks control flow integrity (KCFI) rules:
+When the development chip ROM was added, the "direct-mapped" compatible
+value was already obsolete.  In addition, the device node lacked the
+accompanying "probe-type" property, causing the old physmap_of_core
+driver to fall back to trying all available probe types.
+Unfortunately this fallback was lost when the DT and pdata cases were
+merged.
 
-drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c:64:34: error: cast from 'void (*)(struct brcms_phy *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   64 |                         brcms_init_timer(physhim->wl, (void (*)(void *))fn,
-      |                                                       ^~~~~~~~~~~~~~~~~~~~
+Fix this by using the modern "mtd-rom" compatible value instead.
 
-Change this one instance back to passing a void pointer so it can be
-used with the timer callback interface.
-
-Fixes: d89a4c80601d ("staging: brcm80211: removed void * from softmac phy")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240213100548.457854-1-arnd@kernel.org
+Fixes: 5c3f5edbe0a1dff3 ("ARM: realview: add flash devices to the PB1176 DTS")
+Fixes: 642b1e8dbed7bbbf ("mtd: maps: Merge physmap_of.c into physmap-core.c")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c   | 3 ++-
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c  | 5 ++---
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h  | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/arm-realview-pb1176.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c
-index 35e3b101e5cf0..bedb1f73ef24e 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c
-@@ -394,8 +394,9 @@ struct shared_phy *wlc_phy_shared_attach(struct shared_phy_params *shp)
- 	return sh;
- }
+diff --git a/arch/arm/boot/dts/arm-realview-pb1176.dts b/arch/arm/boot/dts/arm-realview-pb1176.dts
+index 83e0fbc4a1a10..350a5dbd36130 100644
+--- a/arch/arm/boot/dts/arm-realview-pb1176.dts
++++ b/arch/arm/boot/dts/arm-realview-pb1176.dts
+@@ -427,7 +427,7 @@ pb1176_serial3: serial@1010f000 {
  
--static void wlc_phy_timercb_phycal(struct brcms_phy *pi)
-+static void wlc_phy_timercb_phycal(void *ptr)
- {
-+	struct brcms_phy *pi = ptr;
- 	uint delay = 5;
- 
- 	if (PHY_PERICAL_MPHASE_PENDING(pi)) {
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c
-index a0de5db0cd646..b723817915365 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c
-@@ -57,12 +57,11 @@ void wlc_phy_shim_detach(struct phy_shim_info *physhim)
- }
- 
- struct wlapi_timer *wlapi_init_timer(struct phy_shim_info *physhim,
--				     void (*fn)(struct brcms_phy *pi),
-+				     void (*fn)(void *pi),
- 				     void *arg, const char *name)
- {
- 	return (struct wlapi_timer *)
--			brcms_init_timer(physhim->wl, (void (*)(void *))fn,
--					 arg, name);
-+			brcms_init_timer(physhim->wl, fn, arg, name);
- }
- 
- void wlapi_free_timer(struct wlapi_timer *t)
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h
-index dd8774717adee..27d0934e600ed 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h
-@@ -131,7 +131,7 @@ void wlc_phy_shim_detach(struct phy_shim_info *physhim);
- 
- /* PHY to WL utility functions */
- struct wlapi_timer *wlapi_init_timer(struct phy_shim_info *physhim,
--				     void (*fn)(struct brcms_phy *pi),
-+				     void (*fn)(void *pi),
- 				     void *arg, const char *name);
- void wlapi_free_timer(struct wlapi_timer *t);
- void wlapi_add_timer(struct wlapi_timer *t, uint ms, int periodic);
+ 		/* Direct-mapped development chip ROM */
+ 		pb1176_rom@10200000 {
+-			compatible = "direct-mapped";
++			compatible = "mtd-rom";
+ 			reg = <0x10200000 0x4000>;
+ 			bank-width = <1>;
+ 		};
 -- 
 2.43.0
 
