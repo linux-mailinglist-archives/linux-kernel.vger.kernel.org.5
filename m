@@ -1,58 +1,60 @@
-Return-Path: <linux-kernel+bounces-112661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD0EF887CAD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:16:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815FF887CB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:19:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 615EE281ADF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:16:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3D471C20A86
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C99C17BBA;
-	Sun, 24 Mar 2024 12:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3F117BB7;
+	Sun, 24 Mar 2024 12:19:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W2IbvpxJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YYMg6VO/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAF317736;
-	Sun, 24 Mar 2024 12:16:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF2B2CA4;
+	Sun, 24 Mar 2024 12:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711282583; cv=none; b=sxJjnqvzht+EhMCxf8AlsZqOjkr9afx/alwQ2taRaxDhAWQwIlZL52oToxQScz8OYB1KPTDWv+EjaJx58Eu2Eqrp9V3YC1oiI+3W2RcdRKRs/wM9PRZY2d2ddXeRYT1VqpW0iJ2V+w3deZJxGWfZIY+C6qJnY32266pQHl1IBRA=
+	t=1711282747; cv=none; b=pbGuRqq2nXqSdO9u1zJIHVEHlRBrC6R9KrlO/JNPArfXZpm6l1guHEuRvgBg9RDQHnoPU6W+4sCvLkgiSvmA515jTWmS5ypJQJ2MTLGOuLjdn6dF7EwAyDiH9F2T1emjxKO04l36VVOsJqAZcaC61IxXO+00EgYsbVj0Xm+dEFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711282583; c=relaxed/simple;
-	bh=PXRDCrEc+u0PcMCf601WouC7laGk8s3Xs3CLxtUdZV8=;
+	s=arc-20240116; t=1711282747; c=relaxed/simple;
+	bh=+pU0k+ZWilbCia11XhbE7gGOdKY/GmRecul8h9PKu88=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WV0wIzW3YzFzTw1W3pxlXFGoM5RCnvZL0D7kS0kSjJ+aeDtq2xYRJVOIU9Bwt8u2YBLdl0RCOJiG9cjV2UdObQ7o/sml8N7h+DCbiCNDEpHxiFtEgOeQCJhm0qPFXXSUqrlQEIcfyrqHz/1Ac5rZ28kHiw2ACt61yQq5lJsTJgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W2IbvpxJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF9ABC433F1;
-	Sun, 24 Mar 2024 12:16:19 +0000 (UTC)
+	 MIME-Version:Content-Type; b=LQeHp5lpuJRbGHynVivNYMfOYr0wzmmejL2U+rDLvb7+TsK7vF7ZC8K41jK01D+ltDA7kyOLzH825YP3J97WuMYv6yaJhyO4YO+3WnFi1Ei2YylANc5pdlJ+kjDvEZBjGzGASD/mVGbk+myIDTXxUOXXRwom9dckqBn/6odCEQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YYMg6VO/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9E44C433C7;
+	Sun, 24 Mar 2024 12:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711282583;
-	bh=PXRDCrEc+u0PcMCf601WouC7laGk8s3Xs3CLxtUdZV8=;
+	s=k20201202; t=1711282747;
+	bh=+pU0k+ZWilbCia11XhbE7gGOdKY/GmRecul8h9PKu88=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=W2IbvpxJguEvyynQn3fQMmrclzMYGYbmKLk7n4wJSDydWgpdywkTh+AAKPWM5ye1o
-	 9A2VvfuhQSU5DKJvfFksMKWi/lU5r6UEPJYvc8f5RCDMQUIvHw0GGOPuILFrGoAhfe
-	 KarfpwLVN1J0oflthQ21t0kb2QTCRK4xZbTgXhFiD7cNWTdbM4nynxp1wmqOaHBENc
-	 6pWqkarUElQRuAIZDBMASCe/R/GYQTygjl24O7sGU4BV15egclY5HVq514VahafcDF
-	 dII1OZzGBkzI88iKqRlDoyGqHMvQ5kkvDj6xLjEb5HeCE02AOk5ZNRLhvsFUhnfJzy
-	 sxRI+wF7FrXBA==
-Date: Sun, 24 Mar 2024 12:16:08 +0000
+	b=YYMg6VO/64puC/UfwZMRjYpEiwE10K9N5zInYwqr9GFBeEjm9EIgT2f04QGJ4WeYC
+	 6A+jillw6tEA3Y0HS56QKe8LahS8ev7njVTBVN4Qqjaeb/+w9WfntMLFzjpR9NK3O0
+	 6u1UbMxKNfCO4vJ6q834jG31nz3LMutzsdjRKm0fXrfy70nn/y0QsZHTXjbhRO7kR6
+	 Jh4qaF353ifpq8CmzsCj7w19wODa3f72Z5W9OwQ5Tm5b184/ux03gbGtYqFp+OZ/RS
+	 mDebvOoBO8+CiRW8mZzkNkgNl/I8bo1a5HA6r9FEoZ1z7rocdlxchm7zt4mMSdA9Ex
+	 AE26KNGlwVrBA==
+Date: Sun, 24 Mar 2024 12:18:53 +0000
 From: Jonathan Cameron <jic23@kernel.org>
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>, Srinivas
- Pandruvada <srinivas.pandruvada@linux.intel.com>, Benjamin Tissoires
- <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org,
- linux-iio@vger.kernel.org, Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v4 2/4] HID: hid-sensor-custom: Convert sprintf() family
- to sysfs_emit() family
-Message-ID: <20240324121608.30b2217b@jic23-huawei>
-In-Reply-To: <20240319054527.1581299-2-lizhijian@fujitsu.com>
-References: <20240319054527.1581299-1-lizhijian@fujitsu.com>
-	<20240319054527.1581299-2-lizhijian@fujitsu.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: David Lechner <dlechner@baylibre.com>, Michael Hennerich
+ <michael.hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: ad7944: simplify adi,spi-mode property
+ parsing
+Message-ID: <20240324121853.460ba5f8@jic23-huawei>
+In-Reply-To: <Zf8_NZ5cNb9TVThx@surfacebook.localdomain>
+References: <20240319-ad7944-cleanups-v2-1-50e77269351b@baylibre.com>
+	<CAHp75VeO_=r_pMBUTaQQYKDRAV-OVfTnPYPwV8f7KDzOhaBCvQ@mail.gmail.com>
+	<CAMknhBETEP123=EHycGtFEJjQ+NPssLXmw9ZdDoY8CRsWiSxVQ@mail.gmail.com>
+	<20240323182918.2cf624b6@jic23-huawei>
+	<Zf8_NZ5cNb9TVThx@surfacebook.localdomain>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -60,86 +62,90 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 19 Mar 2024 13:45:25 +0800
-Li Zhijian <lizhijian@fujitsu.com> wrote:
+On Sat, 23 Mar 2024 22:44:37 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-> or sysfs_emit_at() when formatting the value to be returned to user space.
-> 
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
-> 
-> sprintf() and scnprintf() will be converted as well if they have.
-> 
-> Generally, this patch is generated by
-> make coccicheck M=<path/to/file> MODE=patch \
-> COCCI=scripts/coccinelle/api/device_attr_show.cocci
-> 
-> No functional change intended
-> 
-> CC: Jiri Kosina <jikos@kernel.org>
-> CC: Jonathan Cameron <jic23@kernel.org>
-> CC: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> CC: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> CC: linux-input@vger.kernel.org
-> CC: linux-iio@vger.kernel.org
+> Sat, Mar 23, 2024 at 06:29:18PM +0000, Jonathan Cameron kirjoitti:
+> > On Tue, 19 Mar 2024 10:28:31 -0500
+> > David Lechner <dlechner@baylibre.com> wrote: =20
+> > > On Tue, Mar 19, 2024 at 10:01=E2=80=AFAM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote: =20
+> > > > On Tue, Mar 19, 2024 at 4:28=E2=80=AFPM David Lechner <dlechner@bay=
+libre.com> wrote:   =20
+>=20
+> ...
+>=20
+> > > > > +       ret =3D device_property_match_property_string(dev, "adi,s=
+pi-mode",
+> > > > > +                                                   ad7944_spi_mo=
+des,
+> > > > > +                                                   ARRAY_SIZE(ad=
+7944_spi_modes));
+> > > > > +       if (ret < 0) {
+> > > > > +               if (ret !=3D -EINVAL)
+> > > > > +                       return dev_err_probe(dev, ret,
+> > > > > +                                            "getting adi,spi-mod=
+e property failed\n");   =20
+> > > >   =20
+> > > > > -               adc->spi_mode =3D ret;
+> > > > > -       } else {   =20
+> > > >
+> > > > Actually we may even leave these unchanged
+> > > >   =20
+> > > > >                 /* absence of adi,spi-mode property means default=
+ mode */
+> > > > >                 adc->spi_mode =3D AD7944_SPI_MODE_DEFAULT;
+> > > > > +       } else {
+> > > > > +               adc->spi_mode =3D ret;
+> > > > >         }   =20
+> > > >
+> > > >        ret =3D device_property_match_property_string(dev, "adi,spi-=
+mode",
+> > > >                                                    ad7944_spi_modes,
+> > > >
+> > > > ARRAY_SIZE(ad7944_spi_modes));
+> > > >        if (ret >=3D 0) {
+> > > >                adc->spi_mode =3D ret;
+> > > >        } else if (ret !=3D -EINVAL) {
+> > > >                        return dev_err_probe(dev, ret,
+> > > >                                             "getting adi,spi-mode
+> > > > property failed\n");
+> > > >        } else {
+> > > >                /* absence of adi,spi-mode property means default mo=
+de */
+> > > >                adc->spi_mode =3D AD7944_SPI_MODE_DEFAULT;
+> > > >        }
+> > > >
+> > > > But I can admit this is not an often used approach.
+> > > >   =20
+> > >=20
+> > > I think Jonathan prefers to have the error path first, so I would like
+> > > to wait and see if he has an opinion here. =20
+> > I do prefer error paths first.  Thanks. =20
+>=20
+> Still the above can be refactored to have one line less
+>=20
+> 	ret =3D device_property_match_property_string(dev, "adi,spi-mode",
+>                                                     ad7944_spi_modes,
+> 						    ARRAY_SIZE(ad7944_spi_modes));
+> 	if (ret =3D=3D -EINVAL) {
+> 		/* absence of adi,spi-mode property means default mode */
+> 		adc->spi_mode =3D AD7944_SPI_MODE_DEFAULT;
+> 	} else if (ret < 0) {
+> 		return dev_err_probe(dev, ret, "getting adi,spi-mode property failed\n"=
+);
+> 	} else {
+> 		adc->spi_mode =3D ret;
+>         }
+>=20
+True.  I'll take a patch doing that, but I'm not going to tweak
+it again directly.
 
-As a general rule, don't have cc's of lists up here. It makes
-a mess of the logs. Also once you have another tag drop CC of
-same person (even if it's a different email address).
+Thanks,
 
-We don't want to fill the git log with useless information.
-
-I think git is fine picking up CC's from below the --- so you
-can add them there if it simplifies how you send your patch
-sets out.
-
-
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
-> V3:
->    rewrap the line as will be under 80 chars and add Reviewed-by # Jonathan
-> This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
-> Split them per subsystem so that the maintainer can review it easily
-> [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
-> ---
->  drivers/hid/hid-sensor-custom.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-sensor-custom.c b/drivers/hid/hid-sensor-custom.c
-> index d85398721659..ac214777d7d9 100644
-> --- a/drivers/hid/hid-sensor-custom.c
-> +++ b/drivers/hid/hid-sensor-custom.c
-> @@ -155,7 +155,7 @@ static ssize_t enable_sensor_show(struct device *dev,
->  {
->  	struct hid_sensor_custom *sensor_inst = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", sensor_inst->enable);
-> +	return sysfs_emit(buf, "%d\n", sensor_inst->enable);
->  }
->  
->  static int set_power_report_state(struct hid_sensor_custom *sensor_inst,
-> @@ -372,14 +372,13 @@ static ssize_t show_value(struct device *dev, struct device_attribute *attr,
->  				     sizeof(struct hid_custom_usage_desc),
->  				     usage_id_cmp);
->  		if (usage_desc)
-> -			return snprintf(buf, PAGE_SIZE, "%s\n",
-> -					usage_desc->desc);
-> +			return sysfs_emit(buf, "%s\n", usage_desc->desc);
->  		else
-> -			return sprintf(buf, "not-specified\n");
-> +			return sysfs_emit(buf, "not-specified\n");
->  	 } else
->  		return -EINVAL;
->  
-> -	return sprintf(buf, "%d\n", value);
-> +	return sysfs_emit(buf, "%d\n", value);
->  }
->  
->  static ssize_t store_value(struct device *dev, struct device_attribute *attr,
+Jonathan
 
 
