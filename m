@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86BD58887EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:13:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF370888F18
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:36:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1AA61C26E77
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:13:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97A6128A5AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC711FB085;
-	Sun, 24 Mar 2024 23:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A369815B123;
+	Sun, 24 Mar 2024 23:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U6rH/Igy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vhx+wykr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B0912FB17;
-	Sun, 24 Mar 2024 23:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A8312FB23;
+	Sun, 24 Mar 2024 23:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321300; cv=none; b=RfmgQSM3m4vFsb20woHiky13zV2HSmlQBYFw2Z/cm6vPdbFP9FSd7dl2DJ+BpZi0iowSTh+hn/fKZ239tzfZCbqKkFiS1p/arTbkobxIiErRfW4kZNB8wAMdwSsFSkg1KBVJ5h3r8LahBJMULJ7sE4m5MphSfxKgHeX3ZN7XOpo=
+	t=1711321300; cv=none; b=rha6qbzC2kpdK0d46pmcBYn3snzhZGZKf40/nVdhSfXP5cuzKs39FaGvngxhCxVKFpntaS+90mRiHzF8xpPJNCrOVzmy3nNe5X+vr0h0ghb8r3071t2+/x9dDiv6kkUM5+2P01H6ju75Jd9Eppf6iXMOJSUf9TeVxsnOpw9c3+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321300; c=relaxed/simple;
-	bh=FkzDlT8ctDyCauDA5oCuwo7gENN9bz4/MUbxBdnuFjM=;
+	bh=2BdqdFEP9DNIj4Ti/gNcxrXdKA23Zc1z1zE0/5TQH0U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lo+FA53DnUyhsBR0Wp3dq0tPDt+2CJmHwI95BWtouBfyZV58sqrJoi2j1JdVaCtQi/r5/LeRF4okBAh0CQwLa/hOIMMxLbWAvt6CvqtAyyMuZoCD+UOU9zqZf3tfTs2SSgzZEehWzyAngxcbLHJ8qMhj8q+szT6H10kwrarcO6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U6rH/Igy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FCFDC433A6;
+	 MIME-Version; b=n2Kw5h5adDr9QvMlohJ5YRnfxWTyuizaOHGpGGz5mgeUw+VF/Q6vD6fsVFKOYKvsgnWwWzL9/yoyhdtGPSo4EmvSDiZyO6jco4FhNmYbEOxfdEFU74V4tcUXXNpOC8VYW285qmsHaKPmj/h5n+e8SV/nIsxxbpy61f8DbVg4Go0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vhx+wykr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12B45C433C7;
 	Sun, 24 Mar 2024 23:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321298;
-	bh=FkzDlT8ctDyCauDA5oCuwo7gENN9bz4/MUbxBdnuFjM=;
+	s=k20201202; t=1711321299;
+	bh=2BdqdFEP9DNIj4Ti/gNcxrXdKA23Zc1z1zE0/5TQH0U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U6rH/IgyYAtU6ihcspC2Fsp3TS5+2jM7qR8qFXbTMnd8Hw9UN62Q37Q9nTWRVNsYF
-	 8OaSfwuhhuD+L/KHrxZswDYIoQIqlG4IewwEm1MPYI4HaHLPNC0IbQbK98JXS/uglb
-	 JBCpGnIP4oGinzKTyYZemXS+6iNDMawBrAG+zLoYAvGOAceMajHPQRQpG7xJqTOD55
-	 tOUi1+iYvPX3Tf35NMR3HhTDZCY3kCwn+1UW8jH0NepQSe++Iqo2zi0YbXwduHWKMO
-	 inwMaPkqdwb7ykj4Xnr2Z4OBIORx/E/QM7JJT03zitVC8o2gxsuNhhz82b47eH6aka
-	 0qdR42QSwADGA==
+	b=Vhx+wykrgUUz6HZT8pMHcdVisPk1R6lavShNCI+oXE2O/w8csaRNLcLet4WZ8XTsT
+	 1tH6lKd70nyRK7u6GLPUCM5O9LztAklFQtFRoW3N2yWxVq+EQRV14IFL5qnHnJOkxL
+	 Ehz5QHTDIXrKgdrUOzhhgP13sXBYDc2VgRleoXj5UI1zoBshQaXUfldJDMbVTXLfaR
+	 DO7FAOfvtkDmYLZ7Dquz1AwK582utKh0njEunBQMLMb4hXbd7eFWhxHNuK4CcG2YWO
+	 DuoonJzmYOe1dB3TJsH/aV78Nu77wLXSNEK8rF/C4x2hDymGXpSgKr9K1fR4VQ8HE3
+	 PU01XxyxFZVew==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Conor Dooley <conor.dooley@microchip.com>,
+Cc: Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 021/638] soc: microchip: Fix POLARFIRE_SOC_SYS_CTRL input prompt
-Date: Sun, 24 Mar 2024 18:50:58 -0400
-Message-ID: <20240324230116.1348576-22-sashal@kernel.org>
+Subject: [PATCH 6.6 022/638] arm64: dts: rockchip: mark system power controller on rk3588-evb1
+Date: Sun, 24 Mar 2024 18:50:59 -0400
+Message-ID: <20240324230116.1348576-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,31 +62,33 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-[ Upstream commit 6dd9a236042e305d7b69ee92db7347bf5943e7d3 ]
+[ Upstream commit fc4657971be31ae679e2bbeee2fb8e93a7a063eb ]
 
-The symbol's prompt should be a one-line description, instead of just
-duplicating the symbol name.
+Mark the primary PMIC as system-power-controller, so that the
+system properly shuts down on poweroff.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Link: https://lore.kernel.org/r/20240117191555.86138-1-sebastian.reichel@collabora.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/microchip/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/soc/microchip/Kconfig b/drivers/soc/microchip/Kconfig
-index eb656b33156ba..f19e74d342aa2 100644
---- a/drivers/soc/microchip/Kconfig
-+++ b/drivers/soc/microchip/Kconfig
-@@ -1,5 +1,5 @@
- config POLARFIRE_SOC_SYS_CTRL
--	tristate "POLARFIRE_SOC_SYS_CTRL"
-+	tristate "Microchip PolarFire SoC (MPFS) system controller support"
- 	depends on POLARFIRE_SOC_MAILBOX
- 	help
- 	  This driver adds support for the PolarFire SoC (MPFS) system controller.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
+index 229a9111f5eb0..fa8286a325af7 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts
+@@ -215,6 +215,7 @@ pmic@0 {
+ 			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
+ 		pinctrl-names = "default";
+ 		spi-max-frequency = <1000000>;
++		system-power-controller;
+ 
+ 		vcc1-supply = <&vcc5v0_sys>;
+ 		vcc2-supply = <&vcc5v0_sys>;
 -- 
 2.43.0
 
