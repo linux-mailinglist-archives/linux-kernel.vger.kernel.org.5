@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 031B4888DE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 161B1888DE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96F3B1F2A681
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:00:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 475FA1C2A9EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E112F3120B1;
-	Mon, 25 Mar 2024 01:11:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2AC13120DA;
+	Mon, 25 Mar 2024 01:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kzRfICY2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r1iFPM4b"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B60B297D7F;
-	Sun, 24 Mar 2024 23:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CAA3184F16;
+	Sun, 24 Mar 2024 23:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324350; cv=none; b=K7GYzb6FWm5hW+HYrddowG1+rkYemphN8awQzyleopgDoAfFxoCIBqoiHJJZ9HkcJP5XXEdlG9EWi1BYYDwOpo1hfSh6umUwWWwhKClpQBae3nap8nl3unySBIraTV3H8qkHuQv1xuYjTlveMDDzup/ya41Iuo2v56nj08fc1x8=
+	t=1711324351; cv=none; b=UWcmvPMcExEUMXdJBDK2c0ZKg6+sDn8zDxiCYye39h/faOwlI2U+IQNcF+fmf7Nq+Q3q5maL7rRY9QYCaPpfnlEYBrq27VVjPxosuKAhFdgeEfQDkNch6XLmegcT7jz4AO2u8b5xJmSTt4DvjU4Qm5VWErDs1iTummrjZRe7YC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324350; c=relaxed/simple;
-	bh=K2LQes7JjM0UFh5ceniDTXtDQaOnZxHXjD4dPexjMAs=;
+	s=arc-20240116; t=1711324351; c=relaxed/simple;
+	bh=xdYX57chPMnvS6qLPTAspRcpHQPWGDUFRC2Tqpzle2A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=miioF8IVo6JEwM0ZEbNqrk0Zj12LpZNrgtE11DBGjJseZ6vTj9OOTLQGp2BDieJR/UrSwhnc73YwhFXD3WvmJWSAm7QMaqlApnqby9dOU1Ixk5wAhnhCfIGcXgEDcNjWgJNnq0JSIzj9jF/s1/NZCsz6QRF6qrLxZycSmZ+QHyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kzRfICY2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF5CCC433C7;
-	Sun, 24 Mar 2024 23:52:28 +0000 (UTC)
+	 MIME-Version; b=ByLdEBlpepfmFCnLFPQsxnCt+/CjyO0MXW5CZy85gkagwRGbhZCgLAiqO/lg98dZjdk2ZPDQYZLP4F7tp1bJZJQ49Qp98IfZ7ChD7jQzbsMYDkUe6odXk47tPUQamHUv9i3eJLu7EDaeIcrj9ORTlTWTMEgbmypqEISh3VfpqbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r1iFPM4b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC6EC433F1;
+	Sun, 24 Mar 2024 23:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324349;
-	bh=K2LQes7JjM0UFh5ceniDTXtDQaOnZxHXjD4dPexjMAs=;
+	s=k20201202; t=1711324351;
+	bh=xdYX57chPMnvS6qLPTAspRcpHQPWGDUFRC2Tqpzle2A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kzRfICY2h5vwuZ8hbKrnNNhupus1VeXpaKzuW12k5eiLV1bhkhCvDBEwE1fZ6SUNs
-	 /CM/IMHeaq+cRfGWoWYxDgZ4Gw2o5a1ND3URWNMNY/DqUnzwiTPybVLaf+1Zz9X8KS
-	 oyPAF5pQYa6mNwfu557y05D0ALgYCKtNezhPR4UHkGR5tSrIVV+YCF8/93WGvTuhYA
-	 pZib8oAT5gaI7f29iQuX9ETD2Ku9pD6r6SYLX0vOjKNsCmZ92fGW8eVRDFCHZU7KfR
-	 vN2Mf59OWHZy/WflMyjxM7TKTVbD3vxkv+oFsho0hJ9C2JMyan+lnk7x/uqvw09oyJ
-	 PhmXkcAq8dwQQ==
+	b=r1iFPM4baYRvbF7BqnJWJhOnQESqP9e3oDPQy7xjOcxiRpkhHo6Uq7QOiP8STbGlU
+	 QBGe1BM1MWHB9jPlJqjiS2pkg6zvkO/7xHGwZV1xB2HmwwRBUKYzr0j7ReuqFX47eT
+	 WycUa1jtTlVUqNhV+xPu2iCyMIeogmjdDNsVEgTAEVQpHZtag3mpQH5mXuDnTjVcNe
+	 6UsyrccrLU7vOi8pTlkzTKbtVFJZVJFZLcLDuTdA/5DcuNHaD8jCLO2owwu7A/MfYz
+	 pwOMwTut8OjJTH6twbdyRF4xg9PgjGjyQgS71qY+ByE26uwBQAIOCjyfAWMdyaqw/o
+	 dSddhlO+DPFXA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hsin-Yi Wang <hsinyi@chromium.org>,
-	CK Hu <ck.hu@mediatek.com>,
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+Cc: Kajol Jain <kjain@linux.ibm.com>,
+	Akanksha J N <akanksha@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 118/148] drm/mediatek: Fix a null pointer crash in mtk_drm_crtc_finish_page_flip
-Date: Sun, 24 Mar 2024 19:49:42 -0400
-Message-ID: <20240324235012.1356413-119-sashal@kernel.org>
+Subject: [PATCH 4.19 119/148] powerpc/hv-gpci: Fix the H_GET_PERF_COUNTER_INFO hcall return value checks
+Date: Sun, 24 Mar 2024 19:49:43 -0400
+Message-ID: <20240324235012.1356413-120-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,78 +63,115 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hsin-Yi Wang <hsinyi@chromium.org>
+From: Kajol Jain <kjain@linux.ibm.com>
 
-[ Upstream commit c958e86e9cc1b48cac004a6e245154dfba8e163b ]
+[ Upstream commit ad86d7ee43b22aa2ed60fb982ae94b285c1be671 ]
 
-It's possible that mtk_crtc->event is NULL in
-mtk_drm_crtc_finish_page_flip().
+Running event hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/
+in one of the system throws below error:
 
-pending_needs_vblank value is set by mtk_crtc->event, but in
-mtk_drm_crtc_atomic_flush(), it's is not guarded by the same
-lock in mtk_drm_finish_page_flip(), thus a race condition happens.
+ ---Logs---
+ # perf list | grep hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles
+  hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=?/[Kernel PMU event]
 
-Consider the following case:
+ # perf stat -v -e hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/ sleep 2
+Using CPUID 00800200
+Control descriptor is not initialized
+Warning:
+hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/ event is not supported by the kernel.
+failed to read counter hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/
 
-CPU1                              CPU2
-step 1:
-mtk_drm_crtc_atomic_begin()
-mtk_crtc->event is not null,
-                                  step 1:
-                                  mtk_drm_crtc_atomic_flush:
-                                  mtk_drm_crtc_update_config(
-                                      !!mtk_crtc->event)
-step 2:
-mtk_crtc_ddp_irq ->
-mtk_drm_finish_page_flip:
-lock
-mtk_crtc->event set to null,
-pending_needs_vblank set to false
-unlock
-                                  pending_needs_vblank set to true,
+ Performance counter stats for 'system wide':
 
-                                  step 2:
-                                  mtk_crtc_ddp_irq ->
-                                  mtk_drm_finish_page_flip called again,
-                                  pending_needs_vblank is still true
-                                  //null pointer
+   <not supported>      hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/
 
-Instead of guarding the entire mtk_drm_crtc_atomic_flush(), it's more
-efficient to just check if mtk_crtc->event is null before use.
+       2.000700771 seconds time elapsed
 
-Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Link: https://patchwork.kernel.org/project/dri-devel/patch/20240223212404.3709690-1-hsinyi@chromium.org/
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+The above error is because of the hcall failure as required
+permission "Enable Performance Information Collection" is not set.
+Based on current code, single_gpci_request function did not check the
+error type incase hcall fails and by default returns EINVAL. But we can
+have other reasons for hcall failures like H_AUTHORITY/H_PARAMETER with
+detail_rc as GEN_BUF_TOO_SMALL, for which we need to act accordingly.
+
+Fix this issue by adding new checks in the single_gpci_request and
+h_gpci_event_init functions.
+
+Result after fix patch changes:
+
+ # perf stat -e hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/ sleep 2
+Error:
+No permission to enable hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/ event.
+
+Fixes: 220a0c609ad1 ("powerpc/perf: Add support for the hv gpci (get performance counter info) interface")
+Reported-by: Akanksha J N <akanksha@linux.ibm.com>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20240229122847.101162-1-kjain@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ arch/powerpc/perf/hv-gpci.c | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index eac9caf322f90..fb7262ed9b699 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -79,11 +79,13 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
- 	struct drm_crtc *crtc = &mtk_crtc->base;
- 	unsigned long flags;
+diff --git a/arch/powerpc/perf/hv-gpci.c b/arch/powerpc/perf/hv-gpci.c
+index 126409bb5626e..8ae70b5952a54 100644
+--- a/arch/powerpc/perf/hv-gpci.c
++++ b/arch/powerpc/perf/hv-gpci.c
+@@ -157,6 +157,20 @@ static unsigned long single_gpci_request(u32 req, u32 starting_index,
  
--	spin_lock_irqsave(&crtc->dev->event_lock, flags);
--	drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
--	drm_crtc_vblank_put(crtc);
--	mtk_crtc->event = NULL;
--	spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
-+	if (mtk_crtc->event) {
-+		spin_lock_irqsave(&crtc->dev->event_lock, flags);
-+		drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
-+		drm_crtc_vblank_put(crtc);
-+		mtk_crtc->event = NULL;
-+		spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
-+	}
- }
+ 	ret = plpar_hcall_norets(H_GET_PERF_COUNTER_INFO,
+ 			virt_to_phys(arg), HGPCI_REQ_BUFFER_SIZE);
++
++	/*
++	 * ret value as 'H_PARAMETER' with detail_rc as 'GEN_BUF_TOO_SMALL',
++	 * specifies that the current buffer size cannot accommodate
++	 * all the information and a partial buffer returned.
++	 * Since in this function we are only accessing data for a given starting index,
++	 * we don't need to accommodate whole data and can get required count by
++	 * accessing first entry data.
++	 * Hence hcall fails only incase the ret value is other than H_SUCCESS or
++	 * H_PARAMETER with detail_rc value as GEN_BUF_TOO_SMALL(0x1B).
++	 */
++	if (ret == H_PARAMETER && be32_to_cpu(arg->params.detail_rc) == 0x1B)
++		ret = 0;
++
+ 	if (ret) {
+ 		pr_devel("hcall failed: 0x%lx\n", ret);
+ 		goto out;
+@@ -221,6 +235,7 @@ static int h_gpci_event_init(struct perf_event *event)
+ {
+ 	u64 count;
+ 	u8 length;
++	unsigned long ret;
  
- static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+ 	/* Not our event */
+ 	if (event->attr.type != event->pmu->type)
+@@ -260,13 +275,23 @@ static int h_gpci_event_init(struct perf_event *event)
+ 	}
+ 
+ 	/* check if the request works... */
+-	if (single_gpci_request(event_get_request(event),
++	ret = single_gpci_request(event_get_request(event),
+ 				event_get_starting_index(event),
+ 				event_get_secondary_index(event),
+ 				event_get_counter_info_version(event),
+ 				event_get_offset(event),
+ 				length,
+-				&count)) {
++				&count);
++
++	/*
++	 * ret value as H_AUTHORITY implies that partition is not permitted to retrieve
++	 * performance information, and required to set
++	 * "Enable Performance Information Collection" option.
++	 */
++	if (ret == H_AUTHORITY)
++		return -EPERM;
++
++	if (ret) {
+ 		pr_devel("gpci hcall failed\n");
+ 		return -EINVAL;
+ 	}
 -- 
 2.43.0
 
