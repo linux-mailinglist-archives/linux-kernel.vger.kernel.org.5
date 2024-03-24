@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-113280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6D2588830F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:59:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C60D888311
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0463F1C231D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:59:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CABAD28693B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EAD18C9CD;
-	Sun, 24 Mar 2024 22:41:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0EE18C9E1;
+	Sun, 24 Mar 2024 22:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CJBZyrsi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOUY25by"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD6C18C220;
-	Sun, 24 Mar 2024 22:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A1C18C9CA;
+	Sun, 24 Mar 2024 22:41:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320081; cv=none; b=hdPXrg5mJF1U33V9IFunQQLnmliMXDrADmuCamKQUf7KEJwn6ua4U/mXxL/5vrlm21LuRbATRLXlA+KMhjXCefEM4dbuwWBc/5x7nUiEwwQtuk9fv2Vgadwt3ynTJZn+ZXkVt03e/sHAoqlhxSI6fCdrEgkExnW1VLuEdq2O9DA=
+	t=1711320081; cv=none; b=ViIz8Xg5ArxbTF3NAJHBUABYGNPedELGHYULlH8DKnUg8M7z4tpQGS2q8zt1r0S5JiFgmI3x/4wiBj6l0VMff9ZVuL9M/aHBl6tWC1NNqH/7/4ZKEYaeIkeLieGc6y6kBL4sSNLaVfhL4fmtrq+XDpQKq+HFIrxlAxDTFe6dqPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320081; c=relaxed/simple;
-	bh=i6qbJ0YigLE3yuZNNmqK6Rf7CvUlWxagcLz5SoaV904=;
+	bh=PoyZnFczcwt9O6M6VXmc7lHJigt0cR0l+Qp9md3dErc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hkRgilwQ/co63ps1pWTbQv+DQKLQIjhEyMNm4j1OXoQcSFKQM9v2b9WX3Rh568FuCchhWU16h2mZFuyieALOSl07dZXpiM4d+WaCwQ90RcJ4EGJAOtSd2QFXlpmb95KwPAMJW4xaJsz30u1/tb6Znroe+W57EO7A8JMyqAbYNAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CJBZyrsi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E08EC43399;
-	Sun, 24 Mar 2024 22:41:19 +0000 (UTC)
+	 MIME-Version; b=kqNGUmn78g4I2cg80unTIqHv7LJJOJk1g82q/YpDd88cxPLa0z4eGGBub7k54Me3jnGCw+9Hdw79pDgOKef52Q7Z4A6f8BJQtiGDeltQaDCg+AJQQBqzfoG1X64X5o6j6J0AqI++H3XwN/XhNupNXEjIGwgaUvsQhCVuU6k5Ax8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OOUY25by; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B56BCC43390;
+	Sun, 24 Mar 2024 22:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320080;
-	bh=i6qbJ0YigLE3yuZNNmqK6Rf7CvUlWxagcLz5SoaV904=;
+	s=k20201202; t=1711320081;
+	bh=PoyZnFczcwt9O6M6VXmc7lHJigt0cR0l+Qp9md3dErc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CJBZyrsigbHvBUEUNRc7cGemNZ98NP6fy5O5R/LlUATIXv3YNTVe4VzsWzLnem5rP
-	 t3g+dJ/VJRiGH8owtz1wy+g+xtaX1V3BQETq52ZJRqcUkAy/XbgWP8CelPXFcTRqcA
-	 bUTEwMBbqcPwJuKt5ui/9eBaz54DM1Fwys7HITiW71JeO/0ffHmZuBGJOqW23nxRWa
-	 2Npi+8CvELsLCVgXEfBthDaOHidDjROOoBBX9Jd0AIARUNFtf7qepNfI8fqjlClUms
-	 F4NYVsKpvGOWwbz5lJbjgnAKcFhTM1t1P0Q0+0tIbRcTbKlWxSybSoxbbLwiYrPdEG
-	 WsHdy++AdaL+w==
+	b=OOUY25by674rOdH3uLeGdijZkulZd09uNyGF+ARvsKI+3Kc9AxQhKuJ6JJHrHNI58
+	 GoxnItkG7r6Z7hjyZK67eQFUgzsurV76V3SqNMU/qgLLkB0sTeOpGEl1v2jD7nyEVM
+	 mR1wZo9cYsAQpEdkAyWhWtIpdpe03sYmUYO5109hlyEhbWDahCL9VcHnnAS2EerLM1
+	 tnEbMRMcSW9DjDYo8/jnqCf6Bq7VFmrXfsZ4aiOfncw2T9t8aDbtiBmClEurl0Jq2T
+	 YXWZZA26Q4klQ0mMXmX7YVN+uEfawksUfaQjqgE5/K+OZZFhQ+tfOnxM+arUWU+dCp
+	 9+UUljAIx/zJQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Julien Massot <julien.massot@collabora.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
+Cc: Yang Jihong <yangjihong1@huawei.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Ian Rogers <irogers@google.com>,
+	Namhyung Kim <namhyung@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 389/715] media: v4l2: cci: print leading 0 on error
-Date: Sun, 24 Mar 2024 18:29:28 -0400
-Message-ID: <20240324223455.1342824-390-sashal@kernel.org>
+Subject: [PATCH 6.8 390/715] perf evsel: Fix duplicate initialization of data->id in evsel__parse_sample()
+Date: Sun, 24 Mar 2024 18:29:29 -0400
+Message-ID: <20240324223455.1342824-391-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,45 +64,35 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Julien Massot <julien.massot@collabora.com>
+From: Yang Jihong <yangjihong1@huawei.com>
 
-[ Upstream commit 58ab1f9e140006e9e5686640f1773260038fe889 ]
+[ Upstream commit 4962aec0d684c8edb14574ccd0da53e4926ff834 ]
 
-In some error cases leading '0' for register address
-were missing.
+data->id has been initialized at line 2362, remove duplicate initialization.
 
-Fixes: 613cbb91e9ce ("media: Add MIPI CCI register access helper functions")
-Signed-off-by: Julien Massot <julien.massot@collabora.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Fixes: 3ad31d8a0df2 ("perf evsel: Centralize perf_sample initialization")
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Reviewed-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/r/20240127025756.4041808-1-yangjihong1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-cci.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/util/evsel.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-cci.c b/drivers/media/v4l2-core/v4l2-cci.c
-index 10005c80f43b5..ee3475bed37fa 100644
---- a/drivers/media/v4l2-core/v4l2-cci.c
-+++ b/drivers/media/v4l2-core/v4l2-cci.c
-@@ -32,7 +32,7 @@ int cci_read(struct regmap *map, u32 reg, u64 *val, int *err)
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 6d7c9c58a9bcb..727dae445da9f 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2363,7 +2363,6 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ 	data->period = evsel->core.attr.sample_period;
+ 	data->cpumode = event->header.misc & PERF_RECORD_MISC_CPUMODE_MASK;
+ 	data->misc    = event->header.misc;
+-	data->id = -1ULL;
+ 	data->data_src = PERF_MEM_DATA_SRC_NONE;
+ 	data->vcpu = -1;
  
- 	ret = regmap_bulk_read(map, reg, buf, len);
- 	if (ret) {
--		dev_err(regmap_get_device(map), "Error reading reg 0x%4x: %d\n",
-+		dev_err(regmap_get_device(map), "Error reading reg 0x%04x: %d\n",
- 			reg, ret);
- 		goto out;
- 	}
-@@ -131,7 +131,7 @@ int cci_write(struct regmap *map, u32 reg, u64 val, int *err)
- 
- 	ret = regmap_bulk_write(map, reg, buf, len);
- 	if (ret)
--		dev_err(regmap_get_device(map), "Error writing reg 0x%4x: %d\n",
-+		dev_err(regmap_get_device(map), "Error writing reg 0x%04x: %d\n",
- 			reg, ret);
- 
- out:
 -- 
 2.43.0
 
