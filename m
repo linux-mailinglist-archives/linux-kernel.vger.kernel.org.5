@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11F7D889A64
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:29:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D9A8894C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:07:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7915FB386E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:35:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB8B51F3086E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F68A145FFD;
-	Mon, 25 Mar 2024 03:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0ABE3709C6;
+	Mon, 25 Mar 2024 03:01:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t+nCJZy9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y3X6BvFR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D35D44393;
-	Sun, 24 Mar 2024 23:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D70145B1F;
+	Sun, 24 Mar 2024 23:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322018; cv=none; b=Ka371zvUO6zSui4LBAzjoTnrPvyxGRSA0SuF2qwOW51L/7QVe2wgXjbOS3DMCig0sD7SbrIvlwpp7HjKlgvp9ueB3rVd38ETxDKOdAbjHiu0DowUBHaYqOQK3TL56+KTMUwaTpcX7pG35z0ys/s7sSZfjJiRC7Yzj1bRhPHaC5w=
+	t=1711322019; cv=none; b=QkbQeW0sUhjbNohCITPKSDF3j3Tk80J+DTaGdXnRIvBqUAZACERJ8XV6s9+DU18C7ZvgJRQiVpsBNL8u5518LI2uXZxLKcakBQee75HTtN1aPVJG0q9t9AUFSFGy1fTcHCeRa43NfA7PJ+vPQP+5sPQkhC2z0KAYVJK6cV3Tj88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322018; c=relaxed/simple;
-	bh=sBEVLsaBwotO3KJqTYYim7Q+8BgEHlMSoiIUYwGIHLo=;
+	s=arc-20240116; t=1711322019; c=relaxed/simple;
+	bh=rM/a6NXuhaaDJxRNqFU+vOj3znGsfhW1ZP19rBQIkT4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iMx/rOq+HvRV+l/KmNwJG2AXXqE9VkBE7Aae66OyN66Rp/GNUI08GMZa/7xAmaeJnxU9hXD0r9bf4uj+Ws2z9Q5o+TgQpPNrbo336tKudopC1Z5YZmhF13O4/txbgranzzd2CEvTxbACq/UNt8FvMu2yZP3MA10xcTW8pXDVBNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t+nCJZy9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73908C43390;
-	Sun, 24 Mar 2024 23:13:37 +0000 (UTC)
+	 MIME-Version:Content-Type; b=lVHsIgoTpZZSE26Irhpc9XWEgngTPBkExjOWncxq/B09wgwUFsyiheBWe/THjLxzaXOAejTM4ylf14FRlnG9LYGi3J7vzXE2ajwj7xUhpkFGONw7/PEipx/S5uv0Sqxr9i0IHFw9DsNQRItlyBGjeoI8XZsFU1hqf/feUMY5Kfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y3X6BvFR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72A5EC433F1;
+	Sun, 24 Mar 2024 23:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322018;
-	bh=sBEVLsaBwotO3KJqTYYim7Q+8BgEHlMSoiIUYwGIHLo=;
+	s=k20201202; t=1711322019;
+	bh=rM/a6NXuhaaDJxRNqFU+vOj3znGsfhW1ZP19rBQIkT4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=t+nCJZy91ZizS9upVSKGwTw3rQ+zxc0hdsUe058VAUgdPjPhD1yEJQK6YnFhcHnPg
-	 barQASs1lP/Tp/i+1UnUH5rl/jonfefRQff6mu1NY4m0OeGC/codFbOO/WtaTG5tK0
-	 1QYSOsyg/piA21Kc6kZcTUGulFZk5bP+v2JwZv3pjV7R5CCnHnyufOBRKnm72FoJ/E
-	 7bRk+hTRbZkLshklmMAH3mKOROcvlPCqcGNXMikvIFFc6yYU4Gn4AG78sbHrORop9w
-	 wD5ljDHQLsl+YwAooET6rLFrAmwX8swZojjs7MOleHLhB4qv+S52WNcCsXVzNZFvs2
-	 L4LnlUwdJZtsw==
+	b=Y3X6BvFRNma5N9snvapp1mpFsCrYaTM0KpTW2ARIUbL3fYLmN/r4lzhdXrx1w6QSm
+	 NTr0xpnskSs3TWU5Z3vwGrXBIw9RgiLI8TrhT3cYFjiozHaXJl4B9uFnGC/movicf7
+	 WNFV8qLqHuVYqQrAC45CzxIT9H2cpmEoOfs0OvBRXLLM9agVuSMV9tczVEGB3uwuVu
+	 YrI7GKGRvaL3xeFViCnDlNPF8NosItKuE4NKZa+a38Vp5kb2amM3DAnrcJiEgboKb6
+	 J6I2k+awl5s5tBoXhQCCAJO69JLU1TXXmIsLeSy8gPXZ/dwVotx88DbbHkig/MRnbw
+	 ytZJLP4XISpHQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Martin Kaistra <martin.kaistra@linutronix.de>,
-	Ping-Ke Shih <pkshih@realtek.com>,
+Cc: Ajay Singh <ajay.kathat@microchip.com>,
+	=?UTF-8?q?Alexis=20Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
 	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 090/451] wifi: rtl8xxxu: add cancel_work_sync() for c2hcmd_work
-Date: Sun, 24 Mar 2024 19:06:06 -0400
-Message-ID: <20240324231207.1351418-91-sashal@kernel.org>
+Subject: [PATCH 6.1 091/451] wifi: wilc1000: do not realloc workqueue everytime an interface is added
+Date: Sun, 24 Mar 2024 19:06:07 -0400
+Message-ID: <20240324231207.1351418-92-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -59,39 +59,122 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Martin Kaistra <martin.kaistra@linutronix.de>
+From: Ajay Singh <ajay.kathat@microchip.com>
 
-[ Upstream commit 1213acb478a7181cd73eeaf00db430f1e45b1361 ]
+[ Upstream commit 328efda22af81130c2ad981c110518cb29ff2f1d ]
 
-The workqueue might still be running, when the driver is stopped. To
-avoid a use-after-free, call cancel_work_sync() in rtl8xxxu_stop().
+Commit 09ed8bfc5215 ("wilc1000: Rename workqueue from "WILC_wq" to
+"NETDEV-wq"") moved workqueue creation in wilc_netdev_ifc_init in order to
+set the interface name in the workqueue name. However, while the driver
+needs only one workqueue, the wilc_netdev_ifc_init is called each time we
+add an interface over a phy, which in turns overwrite the workqueue with a
+new one. This can be observed with the following commands:
 
-Fixes: e542e66b7c2e ("rtl8xxxu: add bluetooth co-existence support for single antenna")
-Signed-off-by: Martin Kaistra <martin.kaistra@linutronix.de>
-Reviewed-by: Ping-Ke Shih <pkshih@realtek.com>
+for i in $(seq 0 10)
+do
+  iw phy phy0 interface add wlan1 type managed
+  iw dev wlan1 del
+done
+ps -eo pid,comm|grep wlan
+
+ 39 kworker/R-wlan0
+ 98 kworker/R-wlan1
+102 kworker/R-wlan1
+105 kworker/R-wlan1
+108 kworker/R-wlan1
+111 kworker/R-wlan1
+114 kworker/R-wlan1
+117 kworker/R-wlan1
+120 kworker/R-wlan1
+123 kworker/R-wlan1
+126 kworker/R-wlan1
+129 kworker/R-wlan1
+
+Fix this leakage by putting back hif_workqueue allocation in
+wilc_cfg80211_init. Regarding the workqueue name, it is indeed relevant to
+set it lowercase, however it is not  attached to a specific netdev, so
+enforcing netdev name in the name is not so relevant. Still, enrich the
+name with the wiphy name to make it clear which phy is using the workqueue.
+
+Fixes: 09ed8bfc5215 ("wilc1000: Rename workqueue from "WILC_wq" to "NETDEV-wq"")
+Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
+Co-developed-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
 Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240111163628.320697-2-martin.kaistra@linutronix.de
+Link: https://msgid.link/20240115-wilc_1000_fixes-v1-3-54d29463a738@bootlin.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/microchip/wilc1000/cfg80211.c | 11 ++++++++++-
+ drivers/net/wireless/microchip/wilc1000/netdev.c   | 10 +---------
+ 2 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-index 6dd5ec1e4d8c3..ccac47dd781d6 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-@@ -6542,6 +6542,7 @@ static void rtl8xxxu_stop(struct ieee80211_hw *hw)
- 	if (priv->usb_interrupts)
- 		rtl8xxxu_write32(priv, REG_USB_HIMR, 0);
+diff --git a/drivers/net/wireless/microchip/wilc1000/cfg80211.c b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+index b545d93c6e374..2f75dc4b47975 100644
+--- a/drivers/net/wireless/microchip/wilc1000/cfg80211.c
++++ b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+@@ -1810,15 +1810,24 @@ int wilc_cfg80211_init(struct wilc **wilc, struct device *dev, int io_type,
+ 	INIT_LIST_HEAD(&wl->rxq_head.list);
+ 	INIT_LIST_HEAD(&wl->vif_list);
  
-+	cancel_work_sync(&priv->c2hcmd_work);
- 	cancel_delayed_work_sync(&priv->ra_watchdog);
++	wl->hif_workqueue = alloc_ordered_workqueue("%s", WQ_MEM_RECLAIM,
++						    wiphy_name(wl->wiphy));
++	if (!wl->hif_workqueue) {
++		ret = -ENOMEM;
++		goto free_cfg;
++	}
+ 	vif = wilc_netdev_ifc_init(wl, "wlan%d", WILC_STATION_MODE,
+ 				   NL80211_IFTYPE_STATION, false);
+ 	if (IS_ERR(vif)) {
+ 		ret = PTR_ERR(vif);
+-		goto free_cfg;
++		goto free_hq;
+ 	}
  
- 	rtl8xxxu_free_rx_resources(priv);
+ 	return 0;
+ 
++free_hq:
++	destroy_workqueue(wl->hif_workqueue);
++
+ free_cfg:
+ 	wilc_wlan_cfg_deinit(wl);
+ 
+diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
+index e9f59de31b0b9..0e6eeeed2e086 100644
+--- a/drivers/net/wireless/microchip/wilc1000/netdev.c
++++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
+@@ -977,13 +977,6 @@ struct wilc_vif *wilc_netdev_ifc_init(struct wilc *wl, const char *name,
+ 		goto error;
+ 	}
+ 
+-	wl->hif_workqueue = alloc_ordered_workqueue("%s-wq", WQ_MEM_RECLAIM,
+-						    ndev->name);
+-	if (!wl->hif_workqueue) {
+-		ret = -ENOMEM;
+-		goto unregister_netdev;
+-	}
+-
+ 	ndev->needs_free_netdev = true;
+ 	vif->iftype = vif_type;
+ 	vif->idx = wilc_get_available_idx(wl);
+@@ -996,12 +989,11 @@ struct wilc_vif *wilc_netdev_ifc_init(struct wilc *wl, const char *name,
+ 
+ 	return vif;
+ 
+-unregister_netdev:
++error:
+ 	if (rtnl_locked)
+ 		cfg80211_unregister_netdevice(ndev);
+ 	else
+ 		unregister_netdev(ndev);
+-  error:
+ 	free_netdev(ndev);
+ 	return ERR_PTR(ret);
+ }
 -- 
 2.43.0
 
