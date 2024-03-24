@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82C2E8885AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:13:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89E808885AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A55AD1C250CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:13:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DAF01F23862
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB7076417;
-	Sun, 24 Mar 2024 22:47:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F72F1D1D67;
+	Sun, 24 Mar 2024 22:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJm7lTqb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="td5JIwy/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C39E1CF8D2;
-	Sun, 24 Mar 2024 22:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE801CF8D7;
+	Sun, 24 Mar 2024 22:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320447; cv=none; b=cctvv7exLPIHe/zLQt57gcUi80Y7+H2/jNwbOzjx0MRtt+EPbIVgTr4e6TRjOQv6NnYDIolqqDayS2rT2wQeJONu8ikjZGKrr4d9AilKskZ4UjqG+PMQk5YL7Qhab8EdgPKbbncyq74/9i1Q9Xz0Wns4e0QZ8B1SThRpX4+Fziw=
+	t=1711320448; cv=none; b=C/EUobPwynWpnnouJGCC7BDkf+FifvPLmQ6agbaZDAKe8MvJtOQezM96JQEhSwuFdKRZeta1Cx0U8dPNSXAhLNQmv4js7JB4LTJCxs9uUgc+ZUup/C+Hilea0iIUeLIMIf8dcg4yZcvNOHyZs1qQTmF0fr5l2vNbQ/INFNLsCPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320447; c=relaxed/simple;
-	bh=G78L1tou1cSU+q6VxHI+foG7pc7rJWJylN4hyYR0c6U=;
+	s=arc-20240116; t=1711320448; c=relaxed/simple;
+	bh=bnbHqN1p6Pi+S070hSgaMpfnK259Dy/ZeqRsKyuue0E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=irNnfjBbjoyo8PtPSeekLDyOkpYMy2mFuXMeLcK7DzA75w3RnnbpWPNWHTH/WA35pLovgA4Medw81qBlPXgRu5EMvhvys0W+txA/sFFcOEhWvDpfqPnRPVEkKCCQLyzvCSjBPKcl1B8/3NlOhAUpZUVSjsJjDFGS4HVFS7j3eFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJm7lTqb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 763B2C433F1;
-	Sun, 24 Mar 2024 22:47:26 +0000 (UTC)
+	 MIME-Version; b=tND9qmg+so64FpH2RdmlDib2m1iT+Fc9BaV2yDBo9cdglgmVV7VMN+Yri2q6QUQAhH8QDowz2A11kR2lE1b8erTC9DfKerwVEpVvEXwAM6BmzhyjtyOR4ctDOKhgxqb+li2mEjlxTfO3uJMSfBQZHeAG7aoVe6bvmzsMbDSEahw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=td5JIwy/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 776D8C433C7;
+	Sun, 24 Mar 2024 22:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320447;
-	bh=G78L1tou1cSU+q6VxHI+foG7pc7rJWJylN4hyYR0c6U=;
+	s=k20201202; t=1711320448;
+	bh=bnbHqN1p6Pi+S070hSgaMpfnK259Dy/ZeqRsKyuue0E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BJm7lTqbaR/nOhvQLQlh1349nxqQQIxBa2YC4XwCaQrW54Ht0JRpVwv4d3PO1uBmk
-	 +QMDVRD942U/UzXXdDlqRSOmuxV02Lc/oRUOB/XuuninOr+NokQPnHJbkpPTNe/bC8
-	 SoyiVTKZuQEc8awXQo2FfuEQNOpdZA+yiaOzma+2zvaOGka0dI3mMaC3snuvT8qciW
-	 cCptMnYBjUE980QKaONqqY70x1Il6jCteBOukKK9aseZSeAayeH8/gCw/CAlNIoNeM
-	 Rpgvvb7rT2Ju8wQRtvalqsuZmLmphqFH5JwErMUGQiqdRGuwkAeP174ixSJGS2iV+K
-	 TU8IQbQOeR3Pw==
+	b=td5JIwy/U19v7VqG4INC0PoSKWXZuB7VtSwXwYzWDsiGlEU+VbWb0P/to5kmbAS2L
+	 v4tvTjodoig34CvbTzaTA+w1Wsf9VA9isRjc55N9zFeCS4/Z5PEf9RdzFMeCGX35/9
+	 MNJxKVXpgH7PY7RAgsO9UJ6x+HoWTDTBOaqJTM/IpCmLpUKKRn6jbirT6j/uF021qt
+	 z2lwtKWj+9tN6k3bZbJnFUuHukJCcVqlI77dMXv+zpVp8dAC0oVLzMkd9nAxFeAuWH
+	 Eq7n3ensbL4+ti3Cg8tt91HJTXymR/w2M8wo5Q8xGFLdpZ8Yxqb9HQefgb/CuHx79w
+	 PiMJgHcZyApLA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
+Cc: Oleksandr Natalenko <oleksandr@natalenko.name>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Jiri Kosina <jkosina@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 005/713] media: rkisp1: Fix IRQ handling due to shared interrupts
-Date: Sun, 24 Mar 2024 18:35:31 -0400
-Message-ID: <20240324224720.1345309-6-sashal@kernel.org>
+Subject: [PATCH 6.7 006/713] HID: logitech-hidpp: Do not flood kernel log
+Date: Sun, 24 Mar 2024 18:35:32 -0400
+Message-ID: <20240324224720.1345309-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,138 +63,69 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
 
-[ Upstream commit ffb635bb398fc07cb38f8a7b4a82cbe5f412f08e ]
+[ Upstream commit 411a20db905b44e18cc9129b745f1d5deba4eae5 ]
 
-The driver requests the interrupts as IRQF_SHARED, so the interrupt
-handlers can be called at any time. If such a call happens while the ISP
-is powered down, the SoC will hang as the driver tries to access the
-ISP registers.
+Since commit 680ee411a98e ("HID: logitech-hidpp: Fix connect event race")
+the following messages appear in the kernel log from time to time:
 
-This can be reproduced even without the platform sharing the IRQ line:
-Enable CONFIG_DEBUG_SHIRQ and unload the driver, and the board will
-hang.
+logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+logitech-hidpp-device 0003:046D:408A.0005: HID++ 4.5 device connected.
+logitech-hidpp-device 0003:046D:4051.0006: Disconnected
+logitech-hidpp-device 0003:046D:408A.0005: Disconnected
 
-Fix this by adding a new field, 'irqs_enabled', which is used to bail
-out from the interrupt handler when the ISP is not operational.
+As discussed, print the first per-device "device connected" message
+at info level, demoting subsequent messages to debug level. Also,
+demote the "Disconnected message" to debug level unconditionally.
 
-Link: https://lore.kernel.org/r/20231218-rkisp-shirq-fix-v1-2-173007628248@ideasonboard.com
-
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Link: https://lore.kernel.org/lkml/3277085.44csPzL39Z@natalenko.name/
+Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../platform/rockchip/rkisp1/rkisp1-capture.c |  3 +++
- .../platform/rockchip/rkisp1/rkisp1-common.h  |  2 ++
- .../platform/rockchip/rkisp1/rkisp1-csi.c     |  3 +++
- .../platform/rockchip/rkisp1/rkisp1-dev.c     | 22 +++++++++++++++++++
- .../platform/rockchip/rkisp1/rkisp1-isp.c     |  3 +++
- 5 files changed, 33 insertions(+)
+ drivers/hid/hid-logitech-hidpp.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-index c6d7e01c89494..3752b702e270b 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-@@ -725,6 +725,9 @@ irqreturn_t rkisp1_capture_isr(int irq, void *ctx)
- 	unsigned int i;
- 	u32 status;
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index 6ef0c88e3e60a..d2f3f234f29de 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -203,6 +203,8 @@ struct hidpp_device {
+ 	struct hidpp_scroll_counter vertical_wheel_counter;
  
-+	if (!rkisp1->irqs_enabled)
-+		return IRQ_NONE;
+ 	u8 wireless_feature_index;
 +
- 	status = rkisp1_read(rkisp1, RKISP1_CIF_MI_MIS);
- 	if (!status)
- 		return IRQ_NONE;
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-index 2d7f06281c390..a4e272adc1ad0 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-@@ -449,6 +449,7 @@ struct rkisp1_debug {
-  * @debug:	   debug params to be exposed on debugfs
-  * @info:	   version-specific ISP information
-  * @irqs:          IRQ line numbers
-+ * @irqs_enabled:  the hardware is enabled and can cause interrupts
-  */
- struct rkisp1_device {
- 	void __iomem *base_addr;
-@@ -470,6 +471,7 @@ struct rkisp1_device {
- 	struct rkisp1_debug debug;
- 	const struct rkisp1_info *info;
- 	int irqs[RKISP1_NUM_IRQS];
-+	bool irqs_enabled;
++	bool connected_once;
  };
  
- /*
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-index 702adee83322b..7320c1c72e688 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-@@ -196,6 +196,9 @@ irqreturn_t rkisp1_csi_isr(int irq, void *ctx)
- 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
- 	u32 val, status;
+ /* HID++ 1.0 error codes */
+@@ -988,8 +990,13 @@ static int hidpp_root_get_protocol_version(struct hidpp_device *hidpp)
+ 	hidpp->protocol_minor = response.rap.params[1];
  
-+	if (!rkisp1->irqs_enabled)
-+		return IRQ_NONE;
-+
- 	status = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_MIS);
- 	if (!status)
- 		return IRQ_NONE;
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-index acc559652d6eb..73cf08a740118 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-@@ -305,6 +305,24 @@ static int __maybe_unused rkisp1_runtime_suspend(struct device *dev)
- {
- 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
- 
-+	rkisp1->irqs_enabled = false;
-+	/* Make sure the IRQ handler will see the above */
-+	mb();
-+
-+	/*
-+	 * Wait until any running IRQ handler has returned. The IRQ handler
-+	 * may get called even after this (as it's a shared interrupt line)
-+	 * but the 'irqs_enabled' flag will make the handler return immediately.
-+	 */
-+	for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il) {
-+		if (rkisp1->irqs[il] == -1)
-+			continue;
-+
-+		/* Skip if the irq line is the same as previous */
-+		if (il == 0 || rkisp1->irqs[il - 1] != rkisp1->irqs[il])
-+			synchronize_irq(rkisp1->irqs[il]);
-+	}
-+
- 	clk_bulk_disable_unprepare(rkisp1->clk_size, rkisp1->clks);
- 	return pinctrl_pm_select_sleep_state(dev);
- }
-@@ -321,6 +339,10 @@ static int __maybe_unused rkisp1_runtime_resume(struct device *dev)
- 	if (ret)
- 		return ret;
- 
-+	rkisp1->irqs_enabled = true;
-+	/* Make sure the IRQ handler will see the above */
-+	mb();
-+
+ print_version:
+-	hid_info(hidpp->hid_dev, "HID++ %u.%u device connected.\n",
+-		 hidpp->protocol_major, hidpp->protocol_minor);
++	if (!hidpp->connected_once) {
++		hid_info(hidpp->hid_dev, "HID++ %u.%u device connected.\n",
++			 hidpp->protocol_major, hidpp->protocol_minor);
++		hidpp->connected_once = true;
++	} else
++		hid_dbg(hidpp->hid_dev, "HID++ %u.%u device connected.\n",
++			 hidpp->protocol_major, hidpp->protocol_minor);
  	return 0;
  }
  
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-index 5fbc47bda6831..caffea6a46186 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-@@ -971,6 +971,9 @@ irqreturn_t rkisp1_isp_isr(int irq, void *ctx)
- 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
- 	u32 status, isp_err;
- 
-+	if (!rkisp1->irqs_enabled)
-+		return IRQ_NONE;
-+
- 	status = rkisp1_read(rkisp1, RKISP1_CIF_ISP_MIS);
- 	if (!status)
- 		return IRQ_NONE;
+@@ -4184,7 +4191,7 @@ static void hidpp_connect_event(struct work_struct *work)
+ 	/* Get device version to check if it is connected */
+ 	ret = hidpp_root_get_protocol_version(hidpp);
+ 	if (ret) {
+-		hid_info(hidpp->hid_dev, "Disconnected\n");
++		hid_dbg(hidpp->hid_dev, "Disconnected\n");
+ 		if (hidpp->battery.ps) {
+ 			hidpp->battery.online = false;
+ 			hidpp->battery.status = POWER_SUPPLY_STATUS_UNKNOWN;
 -- 
 2.43.0
 
