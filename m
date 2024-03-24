@@ -1,55 +1,52 @@
-Return-Path: <linux-kernel+bounces-115250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EEF788936F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:29:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA648889E6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:09:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A07591C2E2A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:28:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F7A31F378C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77AE3155C8;
-	Mon, 25 Mar 2024 01:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EE229CC3A;
+	Mon, 25 Mar 2024 03:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RJu2Wiic"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C6+T3Pw8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F958185F10;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC7E185F0F;
 	Sun, 24 Mar 2024 23:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324383; cv=none; b=Pmg0melOPeG6DzoHY3qctiAD3sRloqts0dQP0C2p9H5WNX+zNVPhj1NFmhLmJkw/lR59684cw66CgAw3gm0OryH+oJ00hF1DvP7lsqJ0DUtJLhGO6GO4FXhbHJTqTvFMmA9Rgf6fvFslFluIzUTra4YdKkp/V26fM7iVeegNE0U=
+	t=1711324383; cv=none; b=gzH/HV6I1Sw0tZMHTZEIQJBQW4Mv6qEwDwqoDd7K9aDPyYU2zGc8EJ56BHuG75i9afBEELQZRgzT9urnJOaslayydRixPhYxTJR2bSC3TIof9of/fEUIQVOB9lJJRHNB8g4gEmKNd9A+9l1sg4k/6UEZeTJDxvSzgE0Pn0NCpHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324383; c=relaxed/simple;
-	bh=gBjRgf2c4ckdFBsCgqHjXuNR2hYxP1M+DsSB92YDHhc=;
+	bh=YXHz/LDJi9Lq/bWF7mF1aEuybGMh23jcPOzyOV1E314=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qANxfTb+QB1zzK6UAhyVzZHBc2wpOgunfPbiIqqoMN77/oJujOT3oxKsjRCJ/EmtnvjyfGM25QCQRdxFgGcLR51cLdLN7quX8p+6BdR5jKUR4UXkWDLC3zS1iDIVFNGgZBkq1zZHnh1DW21vyGYn09F8e4k8t3MxFe+fSWFhDpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RJu2Wiic; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F0DC433C7;
-	Sun, 24 Mar 2024 23:53:01 +0000 (UTC)
+	 MIME-Version; b=ehiZQPi0QCp/r8FdicLRsTQKSq0Q6ERZVNAwGaTtkT6hjlgq/Ju5q1mC22P21BDPOcOKPppkKfEZqCogVhIZBlIZm7fLoSGTRuZf/jq8bWJMxaX2squ2RpW0MUpqqoL/jWiHNkZWo4VZInfFB+SrbgaU+VZf/Hdwv/YZASy9ynA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C6+T3Pw8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 549ECC43390;
+	Sun, 24 Mar 2024 23:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711324382;
-	bh=gBjRgf2c4ckdFBsCgqHjXuNR2hYxP1M+DsSB92YDHhc=;
+	bh=YXHz/LDJi9Lq/bWF7mF1aEuybGMh23jcPOzyOV1E314=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RJu2Wiic0cbWEUrP1Hb3hGpHlLAFX1OEEmVpRr9KtKxS2BsZQRl9wdgZ4vM3N0QGn
-	 ayZSer3rA30jCFWwn+3TsAtUevLWhB1vDeo1q4x0Utsi+Z7tqrBnKM+XLUoL1+rMt/
-	 vH4HMWa+BZCxvUzi8MQhG/O/2saQQSATi5/uD2zavrgIMAtAc246hWzAr2iYa2nJtD
-	 oZqhCitNL3YP9aHJYqLDUD2Yhd0/hnw+M93KHmhAldEj8Jq6+GBmlXGV9SWweIvzHm
-	 hqAcAy+V8ILDhadxTrDIVTSgA0S9Iol+ltL/x9QGib5W36sN2qNDp8TieIO96rXRB3
-	 zYNQEbdVj5iww==
+	b=C6+T3Pw8ggEjit/bgK60qzalMe4l6aIuSppLzCJbQ/nuhR8xB0SDE/sTTI+ortAjn
+	 H644tU32D93w60wVKdvf4gHK/C1+h3v4HF1l/69l/uEcnk+I5uicft5Yn2f/VZOsxJ
+	 ad29iOtZi/oVNuxWjjSo6qqo4sS3lOn6ARjWqVoUpJidgQcol5z1bu/koO6wrlBlOL
+	 W7+Z+tBmnZYCQ5C/mkkRrj8stBteZOvQ/jv0RiEg9wwY9o1+XZIH2Bl76F9x/08Kqo
+	 YTnETHRCA+UMBhPFFx4uvd/dUvAPMbWV/ourQT1tjM8ErWwDmVrlGuRVt47olDGNPY
+	 LBUPHZmLtbpXg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Fei Shao <fshao@chromium.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Mark Brown <broonie@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 147/148] spi: spi-mt65xx: Fix NULL pointer access in interrupt handler
-Date: Sun, 24 Mar 2024 19:50:11 -0400
-Message-ID: <20240324235012.1356413-148-sashal@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 148/148] Linux 4.19.311-rc1
+Date: Sun, 24 Mar 2024 19:50:12 -0400
+Message-ID: <20240324235012.1356413-149-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,59 +60,26 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Fei Shao <fshao@chromium.org>
-
-[ Upstream commit a20ad45008a7c82f1184dc6dee280096009ece55 ]
-
-The TX buffer in spi_transfer can be a NULL pointer, so the interrupt
-handler may end up writing to the invalid memory and cause crashes.
-
-Add a check to trans->tx_buf before using it.
-
-Fixes: 1ce24864bff4 ("spi: mediatek: Only do dma for 4-byte aligned buffers")
-Signed-off-by: Fei Shao <fshao@chromium.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://msgid.link/r/20240321070942.1587146-2-fshao@chromium.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-mt65xx.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index faca2ab758992..89ec119215371 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -524,17 +524,19 @@ static irqreturn_t mtk_spi_interrupt(int irq, void *dev_id)
- 		mdata->xfer_len = min(MTK_SPI_MAX_FIFO_SIZE, len);
- 		mtk_spi_setup_packet(master);
+diff --git a/Makefile b/Makefile
+index 96be210bd42b9..ee1f1c3c00e4c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,8 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0
+ VERSION = 4
+ PATCHLEVEL = 19
+-SUBLEVEL = 310
+-EXTRAVERSION =
++SUBLEVEL = 311
++EXTRAVERSION = -rc1
+ NAME = "People's Front"
  
--		cnt = mdata->xfer_len / 4;
--		iowrite32_rep(mdata->base + SPI_TX_DATA_REG,
--				trans->tx_buf + mdata->num_xfered, cnt);
-+		if (trans->tx_buf) {
-+			cnt = mdata->xfer_len / 4;
-+			iowrite32_rep(mdata->base + SPI_TX_DATA_REG,
-+					trans->tx_buf + mdata->num_xfered, cnt);
- 
--		remainder = mdata->xfer_len % 4;
--		if (remainder > 0) {
--			reg_val = 0;
--			memcpy(&reg_val,
--				trans->tx_buf + (cnt * 4) + mdata->num_xfered,
--				remainder);
--			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
-+			remainder = mdata->xfer_len % 4;
-+			if (remainder > 0) {
-+				reg_val = 0;
-+				memcpy(&reg_val,
-+					trans->tx_buf + (cnt * 4) + mdata->num_xfered,
-+					remainder);
-+				writel(reg_val, mdata->base + SPI_TX_DATA_REG);
-+			}
- 		}
- 
- 		mtk_spi_enable_transfer(master);
+ # *DOCUMENTATION*
 -- 
 2.43.0
 
