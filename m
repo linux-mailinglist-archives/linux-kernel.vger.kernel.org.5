@@ -1,53 +1,55 @@
-Return-Path: <linux-kernel+bounces-114637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FAAF888B6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:50:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70E4F888B93
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:53:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B403E1C23FD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:50:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2610A1F27DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274A9234D68;
-	Sun, 24 Mar 2024 23:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3E82ADE01;
+	Sun, 24 Mar 2024 23:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQi6QtkK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p4t+Kg4U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BFF02365A4;
-	Sun, 24 Mar 2024 23:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8892365BF;
+	Sun, 24 Mar 2024 23:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322303; cv=none; b=ieRKWqGWzxGTJdK176QHXqUjvJBCdrBNc6lqv1DA5qMyZcbUtWB6Hcg/zY1MRnAI2PDxrxIL483VQTkfL9svEZqdfWsMF61C4JhUF0QLwbcpqveAufgC3vzZtCfCtxt12L4Da4ljVK2FbV/uEXeq5/WsZu+UKCBtf0nAmxcKT3w=
+	t=1711322304; cv=none; b=G8iIlMo4nyVLmqFccRwvsGdU9DumitTbwQAq4W9XXA29ZMLNnGir3QWL9EurgwX74K736Q480Zh6B/vDPTwDgcKxgFp5EvXzAv2A05/ss/bLvPVYLkTVw4i9eTyQK5eVc8Qq8jR10Ll/zPDS1HIWqyEtkt0xuCpJs45a/ke931w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322303; c=relaxed/simple;
-	bh=K6X5WjRVRF0L1mfohnD+dgPFYx3wAX97Iy/2G9o1zdE=;
+	s=arc-20240116; t=1711322304; c=relaxed/simple;
+	bh=c5HtwREgdbx3pjbaaaxDoZl/rJ5CeduvwI9/zEFsZ0w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WTPqFu1J076cUSCnMx0H3KFg+O3101lldMP8fB6hpalE5dkhrKJ+i5iOttw+lHFVlalYjKulPvUWl41yMtaIOYEvTNMYmNN5ZxtHkDaUvkWxFJgVp1uZhqypVvBHVN3jj2abuH6BwWR5ifLLkpsK3YeDXuVILUE0PWogoJIKX3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQi6QtkK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0CC6C433C7;
-	Sun, 24 Mar 2024 23:18:21 +0000 (UTC)
+	 MIME-Version; b=Rzln+1mOLjuSuHUed7/iCFtPrOoKo1ZohyLzXZGx1dYGwYu2xYrOJ0dbrAdKML4DimUk7rNXIaZZHVso50n/xJ2RffEQI+WMy+L9HFJuLgCO/1KrEzT1ELahXtETOLTw1DQgEv1VFK6TgX1I651/cc9VFiTVse1QHBST1yT4QE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p4t+Kg4U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E78EC43390;
+	Sun, 24 Mar 2024 23:18:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322302;
-	bh=K6X5WjRVRF0L1mfohnD+dgPFYx3wAX97Iy/2G9o1zdE=;
+	s=k20201202; t=1711322303;
+	bh=c5HtwREgdbx3pjbaaaxDoZl/rJ5CeduvwI9/zEFsZ0w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hQi6QtkKGxNmucIaDa4ECdcbnt9EGCjOnsiMYosiBQGF0SGof/SZ0ECeiRejk37jQ
-	 PRsmCaGvhbjrjVpOx05rPsmgn10rR0Ynn+0wym35M1hsVDh4A3tO56ftQz/v6ZxGlj
-	 J44WVgkdbgx/+qiTO1/p1Rlcx8xc8w/7tJ3GnCQoyDc9IFpcROGFTVai63rqlhzsLP
-	 sHhTedOQ6peSLSRuVIMciRByuKbb46XdLwkEuSTLWylPtkAaq5+1WcEARCgYarCvXU
-	 ImtF4gZ5pewZ53NVFLaJhxgJ97nySvmQewfapthrRc52jFxCsvAv7Amr+2oFH0iEZn
-	 kH96ZPi3WNzDw==
+	b=p4t+Kg4UXeGtg6n1JZzCRtypQwuoB777703YHzDi3SoaICxT1KStv7BW+jN6nzwYe
+	 33ST/i1I3qURkl/G/ALnlk4GxvKzbUtSVsyMNjX1tH0od5x0Bw84c/hF+xr+GEDdg/
+	 7zEsd5phpwvnXCn53iApAU2k38Ppg9xOy0JXk+flMlKIVpyAQz6ztyfgbCZC6xMBoi
+	 sO0IfsLJa9+8QFZ3JQN0XcXq0/dZl+xJBqKH5Bdf9ylys7ofCXifOyLj9LKtULqRjc
+	 1vLMKJfiz+j0bmtkkJdcGSQm/aGKJh5FbvVNciCK4Rn1sZHeIYMSbPrNOC2MpCx58A
+	 G2rSDkKJbfrRQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ian Abbott <abbotti@mev.co.uk>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 6.1 385/451] comedi: comedi_test: Prevent timers rescheduling during deletion
-Date: Sun, 24 Mar 2024 19:11:01 -0400
-Message-ID: <20240324231207.1351418-386-sashal@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.1 386/451] remoteproc: stm32: use correct format strings on 64-bit
+Date: Sun, 24 Mar 2024 19:11:02 -0400
+Message-ID: <20240324231207.1351418-387-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -61,126 +63,91 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit f53641a6e849034a44bf80f50245a75d7a376025 upstream.
+[ Upstream commit 03bd158e1535e68bcd2b1e095b0ebcad7c84bd20 ]
 
-The comedi_test devices have a couple of timers (ai_timer and ao_timer)
-that can be started to simulate hardware interrupts.  Their expiry
-functions normally reschedule the timer.  The driver code calls either
-del_timer_sync() or del_timer() to delete the timers from the queue, but
-does not currently prevent the timers from rescheduling themselves so
-synchronized deletion may be ineffective.
+With CONFIG_ARCH_STM32 making it into arch/arm64, a couple of format
+strings no longer work, since they rely on size_t being compatible
+with %x, or they print an 'int' using %z:
 
-Add a couple of boolean members (one for each timer: ai_timer_enable and
-ao_timer_enable) to the device private data structure to indicate
-whether the timers are allowed to reschedule themselves.  Set the member
-to true when adding the timer to the queue, and to false when deleting
-the timer from the queue in the waveform_ai_cancel() and
-waveform_ao_cancel() functions.
+drivers/remoteproc/stm32_rproc.c: In function 'stm32_rproc_mem_alloc':
+drivers/remoteproc/stm32_rproc.c:122:22: error: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'size_t' {aka 'long unsigned int'} [-Werror=format=]
+drivers/remoteproc/stm32_rproc.c:122:40: note: format string is defined here
+  122 |         dev_dbg(dev, "map memory: %pa+%x\n", &mem->dma, mem->len);
+      |                                       ~^
+      |                                        |
+      |                                        unsigned int
+      |                                       %lx
+drivers/remoteproc/stm32_rproc.c:125:30: error: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'size_t' {aka 'long unsigned int'} [-Werror=format=]
+drivers/remoteproc/stm32_rproc.c:125:65: note: format string is defined here
+  125 |                 dev_err(dev, "Unable to map memory region: %pa+%x\n",
+      |                                                                ~^
+      |                                                                 |
+      |                                                                 unsigned int
+      |                                                                %lx
+drivers/remoteproc/stm32_rproc.c: In function 'stm32_rproc_get_loaded_rsc_table':
+drivers/remoteproc/stm32_rproc.c:646:30: error: format '%zx' expects argument of type 'size_t', but argument 4 has type 'int' [-Werror=format=]
+drivers/remoteproc/stm32_rproc.c:646:66: note: format string is defined here
+  646 |                 dev_err(dev, "Unable to map memory region: %pa+%zx\n",
+      |                                                                ~~^
+      |                                                                  |
+      |                                                                  long unsigned int
+      |                                                                %x
 
-The del_timer_sync() function is also called from the waveform_detach()
-function, but the timer enable members will already be set to false when
-that function is called, so no change is needed there.
+Fix up all three instances to work across architectures, and enable
+compile testing for this driver to ensure it builds everywhere.
 
-Fixes: 403fe7f34e33 ("staging: comedi: comedi_test: fix timer race conditions")
-Cc: stable@vger.kernel.org # 4.4+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20240214100747.16203-1-abbotti@mev.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Stable-dep-of: 32381bbccba4 ("remoteproc: stm32: Fix incorrect type in assignment for va")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/comedi/drivers/comedi_test.c | 30 ++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+ drivers/remoteproc/Kconfig       | 2 +-
+ drivers/remoteproc/stm32_rproc.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/comedi/drivers/comedi_test.c b/drivers/comedi/drivers/comedi_test.c
-index 0b5c0af1cebf0..626d53bf9146a 100644
---- a/drivers/comedi/drivers/comedi_test.c
-+++ b/drivers/comedi/drivers/comedi_test.c
-@@ -85,6 +85,8 @@ struct waveform_private {
- 	struct comedi_device *dev;	/* parent comedi device */
- 	u64 ao_last_scan_time;		/* time of previous AO scan in usec */
- 	unsigned int ao_scan_period;	/* AO scan period in usec */
-+	bool ai_timer_enable:1;		/* should AI timer be running? */
-+	bool ao_timer_enable:1;		/* should AO timer be running? */
- 	unsigned short ao_loopbacks[N_CHANS];
- };
+diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+index 1660197866531..d93113b6ffaa1 100644
+--- a/drivers/remoteproc/Kconfig
++++ b/drivers/remoteproc/Kconfig
+@@ -313,7 +313,7 @@ config ST_SLIM_REMOTEPROC
  
-@@ -234,8 +236,12 @@ static void waveform_ai_timer(struct timer_list *t)
- 			time_increment = devpriv->ai_convert_time - now;
- 		else
- 			time_increment = 1;
--		mod_timer(&devpriv->ai_timer,
--			  jiffies + usecs_to_jiffies(time_increment));
-+		spin_lock(&dev->spinlock);
-+		if (devpriv->ai_timer_enable) {
-+			mod_timer(&devpriv->ai_timer,
-+				  jiffies + usecs_to_jiffies(time_increment));
-+		}
-+		spin_unlock(&dev->spinlock);
+ config STM32_RPROC
+ 	tristate "STM32 remoteproc support"
+-	depends on ARCH_STM32
++	depends on ARCH_STM32 || COMPILE_TEST
+ 	depends on REMOTEPROC
+ 	select MAILBOX
+ 	help
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index 8746cbb1f168d..e432febf4337b 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -118,10 +118,10 @@ static int stm32_rproc_mem_alloc(struct rproc *rproc,
+ 	struct device *dev = rproc->dev.parent;
+ 	void *va;
+ 
+-	dev_dbg(dev, "map memory: %pa+%x\n", &mem->dma, mem->len);
++	dev_dbg(dev, "map memory: %pad+%zx\n", &mem->dma, mem->len);
+ 	va = ioremap_wc(mem->dma, mem->len);
+ 	if (IS_ERR_OR_NULL(va)) {
+-		dev_err(dev, "Unable to map memory region: %pa+%x\n",
++		dev_err(dev, "Unable to map memory region: %pad+0x%zx\n",
+ 			&mem->dma, mem->len);
+ 		return -ENOMEM;
  	}
+@@ -627,7 +627,7 @@ stm32_rproc_get_loaded_rsc_table(struct rproc *rproc, size_t *table_sz)
  
- overrun:
-@@ -391,9 +397,12 @@ static int waveform_ai_cmd(struct comedi_device *dev,
- 	 * Seem to need an extra jiffy here, otherwise timer expires slightly
- 	 * early!
- 	 */
-+	spin_lock_bh(&dev->spinlock);
-+	devpriv->ai_timer_enable = true;
- 	devpriv->ai_timer.expires =
- 		jiffies + usecs_to_jiffies(devpriv->ai_convert_period) + 1;
- 	add_timer(&devpriv->ai_timer);
-+	spin_unlock_bh(&dev->spinlock);
- 	return 0;
- }
- 
-@@ -402,6 +411,9 @@ static int waveform_ai_cancel(struct comedi_device *dev,
- {
- 	struct waveform_private *devpriv = dev->private;
- 
-+	spin_lock_bh(&dev->spinlock);
-+	devpriv->ai_timer_enable = false;
-+	spin_unlock_bh(&dev->spinlock);
- 	if (in_softirq()) {
- 		/* Assume we were called from the timer routine itself. */
- 		del_timer(&devpriv->ai_timer);
-@@ -493,8 +505,12 @@ static void waveform_ao_timer(struct timer_list *t)
- 		unsigned int time_inc = devpriv->ao_last_scan_time +
- 					devpriv->ao_scan_period - now;
- 
--		mod_timer(&devpriv->ao_timer,
--			  jiffies + usecs_to_jiffies(time_inc));
-+		spin_lock(&dev->spinlock);
-+		if (devpriv->ao_timer_enable) {
-+			mod_timer(&devpriv->ao_timer,
-+				  jiffies + usecs_to_jiffies(time_inc));
-+		}
-+		spin_unlock(&dev->spinlock);
- 	}
- 
- underrun:
-@@ -515,9 +531,12 @@ static int waveform_ao_inttrig_start(struct comedi_device *dev,
- 	async->inttrig = NULL;
- 
- 	devpriv->ao_last_scan_time = ktime_to_us(ktime_get());
-+	spin_lock_bh(&dev->spinlock);
-+	devpriv->ao_timer_enable = true;
- 	devpriv->ao_timer.expires =
- 		jiffies + usecs_to_jiffies(devpriv->ao_scan_period);
- 	add_timer(&devpriv->ao_timer);
-+	spin_unlock_bh(&dev->spinlock);
- 
- 	return 1;
- }
-@@ -602,6 +621,9 @@ static int waveform_ao_cancel(struct comedi_device *dev,
- 	struct waveform_private *devpriv = dev->private;
- 
- 	s->async->inttrig = NULL;
-+	spin_lock_bh(&dev->spinlock);
-+	devpriv->ao_timer_enable = false;
-+	spin_unlock_bh(&dev->spinlock);
- 	if (in_softirq()) {
- 		/* Assume we were called from the timer routine itself. */
- 		del_timer(&devpriv->ao_timer);
+ 	ddata->rsc_va = devm_ioremap_wc(dev, rsc_pa, RSC_TBL_SIZE);
+ 	if (IS_ERR_OR_NULL(ddata->rsc_va)) {
+-		dev_err(dev, "Unable to map memory region: %pa+%zx\n",
++		dev_err(dev, "Unable to map memory region: %pa+%x\n",
+ 			&rsc_pa, RSC_TBL_SIZE);
+ 		ddata->rsc_va = NULL;
+ 		return ERR_PTR(-ENOMEM);
 -- 
 2.43.0
 
