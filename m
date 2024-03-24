@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-114412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28378888FE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:05:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40963888A57
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC96E1F2B306
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:05:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F295D1F23137
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1C1278987;
-	Sun, 24 Mar 2024 23:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA592789AB;
+	Sun, 24 Mar 2024 23:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ieyewu7H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h3CxrLUO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700B021AFC5;
-	Sun, 24 Mar 2024 23:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4937D21AFD4;
+	Sun, 24 Mar 2024 23:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321826; cv=none; b=nC4bwJQKjGqa5yVByfUG3tpkZtGl+Kp/I13neQ4YYPK+k/qOSLeFbW3qQnNVI/Do64ZQ7B8yR05Ji94LvItwfwPAURZ18ogneSoPb3mooxHD5ZBT8OU3iR0G6lrAG38px6eHR5an9y2pNcmzOr8boqLYKTNJ8Fhk5wGJez/xQ6o=
+	t=1711321827; cv=none; b=eplgnYKrBj4bhOz38YyP06tCUE/KqHKV1Deikz2h9VnRHusMc0Tc+jNSb7iQjtQibQqFfyKhuB879X3cAOesJ8uWT9I7CgDSEhT02FFZBRpkAYojwofSYIjduEnXoUmDOumUagPsovn1lnCB71Q6DKnyCJyyCc4DGv/lg7KfJ4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321826; c=relaxed/simple;
-	bh=ugff2LHVRFathEQ6wJJFeYiUK/FNblnUf9BbyLAEWyc=;
+	s=arc-20240116; t=1711321827; c=relaxed/simple;
+	bh=U7g9Y0xZPvSe/JiBFaypvdFGXsPf97kTS1mDNLbllxU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SmCHxSOq8tJZ/5aVz+TCcPa7OCqUGdiDNPAbIjutgGFJs6zBHVw19WQ86H21XFPEeYjnhBqr4EnYOmHqSlu05XeJQlkE3DuF1nigZJJa5guySM+yZvSLtkcN1QsztmWtJplvQ2yfBeCyqlNszitX/V1OvWX5Oar4MKhPkMqBwGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ieyewu7H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83623C43399;
-	Sun, 24 Mar 2024 23:10:24 +0000 (UTC)
+	 MIME-Version; b=ZnAR+qKdPv8MzM3QfWb1Kjwo/TOAcQme7Fg/MP1qAh+M/QNA19MTeUSwhXBxiJXhIS/qdLIvScT02EaVOJxpq0KUcw2wSfDPxKMkIcRrOBP4um5mEe/iYuOUCtmmfhLfuoAqE/lUh5goAxzqLHqjtWlngyKZY3aU6AW08i/8tZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h3CxrLUO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52166C433C7;
+	Sun, 24 Mar 2024 23:10:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711321825;
-	bh=ugff2LHVRFathEQ6wJJFeYiUK/FNblnUf9BbyLAEWyc=;
+	bh=U7g9Y0xZPvSe/JiBFaypvdFGXsPf97kTS1mDNLbllxU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ieyewu7HFgnLBooPqypA4j/56vU+4faMbmLo5uraUwcZOz3G9PyMAHTLZtNuggTyE
-	 LJ99NXHLySk9JjQGwAiZQiwvEQDEy3DX9jtJQSKDfwk+bJDj9VrtbkFvaU7D/v7nOt
-	 Xy8QS2ozWJVKFKLHWiUIcRpxFnjuFfMjThIJAoGlxdoxZb6h4aD54VfGi45DJym897
-	 P1xRRPkXfbY7HKfy/kllesMQIssJQYHn2ZFUuU25CrDQvaG/CtftBXC0aoX2tzN1TI
-	 hqN2JXIyXKm9hinxgLKzSZee2T+oExIRnooZTr5LUVmNSdIJKlQ2xj7gwVpFVenL5b
-	 4P7QXk7bzPxDg==
+	b=h3CxrLUO4qWoh2irUeiHLIp36ZxRWXhgF/n3qhiA2MW7gf+aR6P270g641STUYgZj
+	 mpyv/h9kM/HWNy1V82u0uOn8j6GGN5GFYD53j+tkhvF2sC/wNHcfU8teTnD24ni3Gf
+	 luR6wNwjQI7Kfq7pEBQgFwoOVdk6/GceZrn6gFt4VOG7um+DDr0bamjisHpmDGq8U4
+	 yy9Yrww0beaaqIZCjXxXNYys39fUasBe+2HrHJZM2I6tMhnUxxM/IR4vfqoSBSo7zH
+	 IHSiEYNkq/nED0R8o3ZvJMgUZcbljfx/z+2g4RIONZi75SlG0TtD5yam35s9QG3qxq
+	 o73XiFPwX//Ug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ian Abbott <abbotti@mev.co.uk>,
+Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
+	Tomas Winkler <tomas.winkler@intel.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 6.6 553/638] comedi: comedi_test: Prevent timers rescheduling during deletion
-Date: Sun, 24 Mar 2024 18:59:50 -0400
-Message-ID: <20240324230116.1348576-554-sashal@kernel.org>
+Subject: [PATCH 6.6 554/638] mei: gsc_proxy: match component when GSC is on different bus
+Date: Sun, 24 Mar 2024 18:59:51 -0400
+Message-ID: <20240324230116.1348576-555-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -61,126 +62,65 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-commit f53641a6e849034a44bf80f50245a75d7a376025 upstream.
+commit a0776c214d47ea4f7aaef138095beaa41cff03ef upstream.
 
-The comedi_test devices have a couple of timers (ai_timer and ao_timer)
-that can be started to simulate hardware interrupts.  Their expiry
-functions normally reschedule the timer.  The driver code calls either
-del_timer_sync() or del_timer() to delete the timers from the queue, but
-does not currently prevent the timers from rescheduling themselves so
-synchronized deletion may be ineffective.
+On Arrow Lake S systems, MEI is no longer strictly connected to bus 0,
+while graphics remain exclusively on bus 0. Adapt the component
+matching logic to accommodate this change:
 
-Add a couple of boolean members (one for each timer: ai_timer_enable and
-ao_timer_enable) to the device private data structure to indicate
-whether the timers are allowed to reschedule themselves.  Set the member
-to true when adding the timer to the queue, and to false when deleting
-the timer from the queue in the waveform_ai_cancel() and
-waveform_ao_cancel() functions.
+Original behavior: Required both MEI and graphics to be on the same
+bus 0.
 
-The del_timer_sync() function is also called from the waveform_detach()
-function, but the timer enable members will already be set to false when
-that function is called, so no change is needed there.
+New behavior: Only enforces graphics to be on bus 0 (integrated),
+allowing MEI to reside on any bus.
+This ensures compatibility with Arrow Lake S and maintains functionality
+for the legacy systems.
 
-Fixes: 403fe7f34e33 ("staging: comedi: comedi_test: fix timer race conditions")
-Cc: stable@vger.kernel.org # 4.4+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20240214100747.16203-1-abbotti@mev.co.uk
+Fixes: 1dd924f6885b ("mei: gsc_proxy: add gsc proxy driver")
+Cc: stable@vger.kernel.org # v6.3+
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Link: https://lore.kernel.org/r/20240220200020.231192-1-tomas.winkler@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/comedi/drivers/comedi_test.c | 30 ++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+ drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/comedi/drivers/comedi_test.c b/drivers/comedi/drivers/comedi_test.c
-index 30ea8b53ebf81..05ae9122823f8 100644
---- a/drivers/comedi/drivers/comedi_test.c
-+++ b/drivers/comedi/drivers/comedi_test.c
-@@ -87,6 +87,8 @@ struct waveform_private {
- 	struct comedi_device *dev;	/* parent comedi device */
- 	u64 ao_last_scan_time;		/* time of previous AO scan in usec */
- 	unsigned int ao_scan_period;	/* AO scan period in usec */
-+	bool ai_timer_enable:1;		/* should AI timer be running? */
-+	bool ao_timer_enable:1;		/* should AO timer be running? */
- 	unsigned short ao_loopbacks[N_CHANS];
- };
+diff --git a/drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c b/drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c
+index be52b113aea93..89364bdbb1290 100644
+--- a/drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c
++++ b/drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c
+@@ -96,7 +96,8 @@ static const struct component_master_ops mei_component_master_ops = {
+  *
+  *    The function checks if the device is pci device and
+  *    Intel VGA adapter, the subcomponent is SW Proxy
+- *    and the parent of MEI PCI and the parent of VGA are the same PCH device.
++ *    and the VGA is on the bus 0 reserved for built-in devices
++ *    to reject discrete GFX.
+  *
+  * @dev: master device
+  * @subcomponent: subcomponent to match (I915_COMPONENT_SWPROXY)
+@@ -123,7 +124,8 @@ static int mei_gsc_proxy_component_match(struct device *dev, int subcomponent,
+ 	if (subcomponent != I915_COMPONENT_GSC_PROXY)
+ 		return 0;
  
-@@ -236,8 +238,12 @@ static void waveform_ai_timer(struct timer_list *t)
- 			time_increment = devpriv->ai_convert_time - now;
- 		else
- 			time_increment = 1;
--		mod_timer(&devpriv->ai_timer,
--			  jiffies + usecs_to_jiffies(time_increment));
-+		spin_lock(&dev->spinlock);
-+		if (devpriv->ai_timer_enable) {
-+			mod_timer(&devpriv->ai_timer,
-+				  jiffies + usecs_to_jiffies(time_increment));
-+		}
-+		spin_unlock(&dev->spinlock);
- 	}
- 
- overrun:
-@@ -393,9 +399,12 @@ static int waveform_ai_cmd(struct comedi_device *dev,
- 	 * Seem to need an extra jiffy here, otherwise timer expires slightly
- 	 * early!
- 	 */
-+	spin_lock_bh(&dev->spinlock);
-+	devpriv->ai_timer_enable = true;
- 	devpriv->ai_timer.expires =
- 		jiffies + usecs_to_jiffies(devpriv->ai_convert_period) + 1;
- 	add_timer(&devpriv->ai_timer);
-+	spin_unlock_bh(&dev->spinlock);
- 	return 0;
+-	return component_compare_dev(dev->parent, ((struct device *)data)->parent);
++	/* Only built-in GFX */
++	return (pdev->bus->number == 0);
  }
  
-@@ -404,6 +413,9 @@ static int waveform_ai_cancel(struct comedi_device *dev,
- {
- 	struct waveform_private *devpriv = dev->private;
- 
-+	spin_lock_bh(&dev->spinlock);
-+	devpriv->ai_timer_enable = false;
-+	spin_unlock_bh(&dev->spinlock);
- 	if (in_softirq()) {
- 		/* Assume we were called from the timer routine itself. */
- 		del_timer(&devpriv->ai_timer);
-@@ -495,8 +507,12 @@ static void waveform_ao_timer(struct timer_list *t)
- 		unsigned int time_inc = devpriv->ao_last_scan_time +
- 					devpriv->ao_scan_period - now;
- 
--		mod_timer(&devpriv->ao_timer,
--			  jiffies + usecs_to_jiffies(time_inc));
-+		spin_lock(&dev->spinlock);
-+		if (devpriv->ao_timer_enable) {
-+			mod_timer(&devpriv->ao_timer,
-+				  jiffies + usecs_to_jiffies(time_inc));
-+		}
-+		spin_unlock(&dev->spinlock);
+ static int mei_gsc_proxy_probe(struct mei_cl_device *cldev,
+@@ -146,7 +148,7 @@ static int mei_gsc_proxy_probe(struct mei_cl_device *cldev,
  	}
  
- underrun:
-@@ -517,9 +533,12 @@ static int waveform_ao_inttrig_start(struct comedi_device *dev,
- 	async->inttrig = NULL;
- 
- 	devpriv->ao_last_scan_time = ktime_to_us(ktime_get());
-+	spin_lock_bh(&dev->spinlock);
-+	devpriv->ao_timer_enable = true;
- 	devpriv->ao_timer.expires =
- 		jiffies + usecs_to_jiffies(devpriv->ao_scan_period);
- 	add_timer(&devpriv->ao_timer);
-+	spin_unlock_bh(&dev->spinlock);
- 
- 	return 1;
- }
-@@ -604,6 +623,9 @@ static int waveform_ao_cancel(struct comedi_device *dev,
- 	struct waveform_private *devpriv = dev->private;
- 
- 	s->async->inttrig = NULL;
-+	spin_lock_bh(&dev->spinlock);
-+	devpriv->ao_timer_enable = false;
-+	spin_unlock_bh(&dev->spinlock);
- 	if (in_softirq()) {
- 		/* Assume we were called from the timer routine itself. */
- 		del_timer(&devpriv->ao_timer);
+ 	component_match_add_typed(&cldev->dev, &master_match,
+-				  mei_gsc_proxy_component_match, cldev->dev.parent);
++				  mei_gsc_proxy_component_match, NULL);
+ 	if (IS_ERR_OR_NULL(master_match)) {
+ 		ret = -ENOMEM;
+ 		goto err_exit;
 -- 
 2.43.0
 
