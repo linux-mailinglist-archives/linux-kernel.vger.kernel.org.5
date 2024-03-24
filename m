@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-114306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 601F0888A06
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:08:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DEE48889B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:01:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DC40B223D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:01:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A00851C20B5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72C5210190;
-	Sun, 24 Mar 2024 23:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9942C58106;
+	Sun, 24 Mar 2024 23:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nqKjYiSE"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kefrF0Z8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC0C20FABA;
-	Sun, 24 Mar 2024 23:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC36113A896;
+	Sun, 24 Mar 2024 23:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321685; cv=none; b=ut9JplIhe5flI9T4iFrpopGQCxP3Vg00eRUeCBg3gHmWmFGCopQPJnP4fs7pJbgOHQk4lXA/R7QKaoJcAbZN6jH8mmJxuPuY/LpypsMMUlkKaGeotv0qadmy3teBMl5MqOyJXsDEYCveZrbqJ0pGN8bU5yqommv1kW/SSIgcnhI=
+	t=1711321686; cv=none; b=RHY/KoK4FoLIwT18pIbf8TTKJ+SuU5wHTNGkLX3ajd+LpTHX5f7Wyl6RjvmyngrkjaaKQva/89cFxLiDfOXdHei/Z3ShyFAuzZuQrqb6Mkt1oq4JqkHrZBXNqSBZBiP1uRqSpDVEczTX3j4VDrcce6tj4T+pEo03Tcr+N5mW8l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321685; c=relaxed/simple;
-	bh=32Gku5sbfFWN/XgXjEhBLHodUGyYu8Wv1FUmnhm2HPQ=;
+	s=arc-20240116; t=1711321686; c=relaxed/simple;
+	bh=+PUu5RM10hKszLtQ9PhN2GrdWiBPvEkFSKTRdD/60jc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nXrk2bPEm3PY/W/wQ/kZr1wDXwfLIBxPVY0SqxStGGP/bQeT+YWO9sa2qckbwuY4YlxNMpDGV8co6De8tLFG5p2lne5qy4KQAVCIJO3U9I+dJcx4HWhNAwoK4o/FLdkyZzR3kBFAyQnV2TihqpibLCWmoGCAXlEVuoNvXlr4yyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nqKjYiSE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66056C43390;
-	Sun, 24 Mar 2024 23:08:03 +0000 (UTC)
+	 MIME-Version; b=UVLObqkWdDCm6okfDJBC8RjJXpCaPT38nn79IUPECG4Ulc5dODCktNJCAco3JoiUtkwKnYoUYpG+U+fLhwdMao21sZxVGtosIy2z5M1DTIMvNLn/5/gJ+lAdKHSvPIgO85bK60wy4DQ39PJZQVz9rbNt2S5VQbAQJ0w39mX5W/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kefrF0Z8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80438C43394;
+	Sun, 24 Mar 2024 23:08:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321684;
-	bh=32Gku5sbfFWN/XgXjEhBLHodUGyYu8Wv1FUmnhm2HPQ=;
+	s=k20201202; t=1711321685;
+	bh=+PUu5RM10hKszLtQ9PhN2GrdWiBPvEkFSKTRdD/60jc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nqKjYiSE7nHZvrEPj4xXpjNAUfvmAi2jTBCon6aa1QOOvveL6sQrTUMa+dbECMex2
-	 pUVz6JHe1pGbfltbFJ7w3oN1Yo+fWRZEbnV+pztx+XTc0uaETJiZ1uGVIz9W5kra2W
-	 WkRPEjs1f9Z3/4E8leNN2kHev3S5nWUmTDEDgey3eZRNvBqiMFKdOfchRFi8h8kng4
-	 HkjY5O4eTQkMGkFj9EGievN8BMsNJaMHYF+zOymPRXjAgTeYmffm7LDaoDQWxTlu8k
-	 e9Md/tc2yoTFdMuXL4XtiweUhomWUS+H7DIN/bCgwKIr527wSAZxRov8JE3tqsMbaY
-	 Kf9sDYk6H1vRQ==
+	b=kefrF0Z8eeG4mtigTo/6idbTySJgnpHXDRH92Dhyb7Qq68RlGSXOLOcv8J5qzq5gY
+	 fC/nxssmTEJA+hGEXj1h+KlQ2oPTSAzE/zePlsEynD1bYSLd5MF8lzQLxAZ8w4suER
+	 P9n4mE3KbHdt/j08KUKK0gvn0DWrBeDvHWcYW6dWtqd6yzLxlZPj0+73CywLXJOIGa
+	 nasqMZSNE3HI9BFXTvkiMv05x3ygCtBOdshw8uI+ICA2cqYs72gFpdahcPxdHFc68S
+	 cgkxW3851tpHdZ8iCccdVB1rJsxewrXHsZ62SCrUhAUPmM1jJtqBK9qzaHUlt5w/ZW
+	 qydfb7JjJSQPw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jerome Brunet <jbrunet@baylibre.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Justin Stitt <justinstitt@google.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	kernel test robot <lkp@intel.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 412/638] ASoC: meson: t9015: fix function pointer type mismatch
-Date: Sun, 24 Mar 2024 18:57:29 -0400
-Message-ID: <20240324230116.1348576-413-sashal@kernel.org>
+Subject: [PATCH 6.6 413/638] powerpc: Force inlining of arch_vmap_p{u/m}d_supported()
+Date: Sun, 24 Mar 2024 18:57:30 -0400
+Message-ID: <20240324230116.1348576-414-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,81 +63,63 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 5ad992c71b6a8e8a547954addc7af9fbde6ca10a ]
+[ Upstream commit c5aebb53b32460bc52680dd4e2a2f6b84d5ea521 ]
 
-clang-16 warns about casting functions to incompatible types, as is done
-here to call clk_disable_unprepare:
+arch_vmap_pud_supported() and arch_vmap_pmd_supported() are
+expected to constant-fold to false when RADIX is not enabled.
 
-sound/soc/meson/t9015.c:274:4: error: cast from 'void (*)(struct clk *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-  274 |                         (void(*)(void *))clk_disable_unprepare,
+Force inlining in order to avoid following failure which
+leads to unexpected call of non-existing pud_set_huge() and
+pmd_set_huge() on powerpc 8xx.
 
-The pattern of getting, enabling and setting a disable callback for a
-clock can be replaced with devm_clk_get_enabled(), which also fixes
-this warning.
+In function 'pud_huge_tests',
+    inlined from 'debug_vm_pgtable' at mm/debug_vm_pgtable.c:1399:2:
+/arch/powerpc/include/asm/vmalloc.h:9:33: warning: inlining failed in call to 'arch_vmap_pud_supported.isra': call is unlikely and code size would grow [-Winline]
+    9 | #define arch_vmap_pud_supported arch_vmap_pud_supported
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~
+/arch/powerpc/include/asm/vmalloc.h:10:20: note: in expansion of macro 'arch_vmap_pud_supported'
+   10 | static inline bool arch_vmap_pud_supported(pgprot_t prot)
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~
+/arch/powerpc/include/asm/vmalloc.h:9:33: note: called from here
+    9 | #define arch_vmap_pud_supported arch_vmap_pud_supported
+mm/debug_vm_pgtable.c:458:14: note: in expansion of macro 'arch_vmap_pud_supported'
+  458 |         if (!arch_vmap_pud_supported(args->page_prot) ||
+      |              ^~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 33901f5b9b16 ("ASoC: meson: add t9015 internal DAC driver")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Link: https://msgid.link/r/20240213215807.3326688-3-jbrunet@baylibre.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402131836.OU1TDuoi-lkp@intel.com/
+Fixes: 8309c9d71702 ("powerpc: inline huge vmap supported functions")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/bbd84ad52bf377e8d3b5865a906f2dc5d99964ba.1707832677.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/t9015.c | 20 ++++----------------
- 1 file changed, 4 insertions(+), 16 deletions(-)
+ arch/powerpc/include/asm/vmalloc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/meson/t9015.c b/sound/soc/meson/t9015.c
-index 9c6b4dac68932..571f65788c592 100644
---- a/sound/soc/meson/t9015.c
-+++ b/sound/soc/meson/t9015.c
-@@ -48,7 +48,6 @@
- #define POWER_CFG	0x10
+diff --git a/arch/powerpc/include/asm/vmalloc.h b/arch/powerpc/include/asm/vmalloc.h
+index 4c69ece52a31e..59ed89890c902 100644
+--- a/arch/powerpc/include/asm/vmalloc.h
++++ b/arch/powerpc/include/asm/vmalloc.h
+@@ -7,14 +7,14 @@
+ #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
  
- struct t9015 {
--	struct clk *pclk;
- 	struct regulator *avdd;
- };
+ #define arch_vmap_pud_supported arch_vmap_pud_supported
+-static inline bool arch_vmap_pud_supported(pgprot_t prot)
++static __always_inline bool arch_vmap_pud_supported(pgprot_t prot)
+ {
+ 	/* HPT does not cope with large pages in the vmalloc area */
+ 	return radix_enabled();
+ }
  
-@@ -249,6 +248,7 @@ static int t9015_probe(struct platform_device *pdev)
- 	struct t9015 *priv;
- 	void __iomem *regs;
- 	struct regmap *regmap;
-+	struct clk *pclk;
- 	int ret;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -256,26 +256,14 @@ static int t9015_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	platform_set_drvdata(pdev, priv);
- 
--	priv->pclk = devm_clk_get(dev, "pclk");
--	if (IS_ERR(priv->pclk))
--		return dev_err_probe(dev, PTR_ERR(priv->pclk), "failed to get core clock\n");
-+	pclk = devm_clk_get_enabled(dev, "pclk");
-+	if (IS_ERR(pclk))
-+		return dev_err_probe(dev, PTR_ERR(pclk), "failed to get core clock\n");
- 
- 	priv->avdd = devm_regulator_get(dev, "AVDD");
- 	if (IS_ERR(priv->avdd))
- 		return dev_err_probe(dev, PTR_ERR(priv->avdd), "failed to AVDD\n");
- 
--	ret = clk_prepare_enable(priv->pclk);
--	if (ret) {
--		dev_err(dev, "core clock enable failed\n");
--		return ret;
--	}
--
--	ret = devm_add_action_or_reset(dev,
--			(void(*)(void *))clk_disable_unprepare,
--			priv->pclk);
--	if (ret)
--		return ret;
--
- 	ret = device_reset(dev);
- 	if (ret) {
- 		dev_err(dev, "reset failed\n");
+ #define arch_vmap_pmd_supported arch_vmap_pmd_supported
+-static inline bool arch_vmap_pmd_supported(pgprot_t prot)
++static __always_inline bool arch_vmap_pmd_supported(pgprot_t prot)
+ {
+ 	return radix_enabled();
+ }
 -- 
 2.43.0
 
