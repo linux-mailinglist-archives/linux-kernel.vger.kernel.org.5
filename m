@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F1D8891AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:46:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0902588954C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:24:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 411461F2DC6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:46:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8676297C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E5F2C50EA;
-	Mon, 25 Mar 2024 00:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB5B2811A0;
+	Mon, 25 Mar 2024 03:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aM6EO2ui"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oEbqJETY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1019513C670;
-	Sun, 24 Mar 2024 23:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B60713C672;
+	Sun, 24 Mar 2024 23:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323479; cv=none; b=aaVP/TdZQEbMiTnJ9pt29H/910MvQXM6hK3KBPbp6IDFoeL6aFw3Pcf+K3KFJOEQMRJOwfb1IfGtYJTtCCyxIcLNQYVXMlnOvt2swJ8y6zljJpiSPgbfB8aUz89nSV8Pqpoq11NBgxJAqKg8iUul7OS+dggl3zCAdaRJCKH6cOI=
+	t=1711323479; cv=none; b=LX8hmcmFXxrfBEJuL0WyyN+dJgH/FaueAp9BX/X6gTgHRon/Qli1QWh/C/SqoVPu2uCd0w9qKpeAn20Tx26AXWZfFJlGiUa5aZeaqPEi9yWCpJ5hyL9rASybLuIxmiQi1S5Z6uCjJJNLCZmjREp+Q3rQ4A188kszuGNO25zsNas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323479; c=relaxed/simple;
-	bh=1DhKusQ9HhD6fC5v6ak+Lgulwfz5amcq1rUMjvB5gtY=;
+	bh=jiL9wfyJXlDE5MK27tjQQfAKCMTvZq36JY4t91RIOjA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fy4MS46S2mgQlxox7tHPynKK33C9UrLNbawtA9SPnwdKkqZkHNRIFyQfrJbV07L+iG5zSBKtiT1dRDzQCI0Fxx2BXrBukx0re7/LVAekFk3hxUcaNSwZ2VoyybhOZtsPr1oq846QVdcpaZZOQkT3zzOBSgWctJCc5EdhMMtZEdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aM6EO2ui; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DC3FC433A6;
-	Sun, 24 Mar 2024 23:37:57 +0000 (UTC)
+	 MIME-Version; b=ItUx9/2z1Q6FInjQy+rq7rKlJY9yiqEQXT/bfaHQ2bqH5E2zFvv85NSMCfpaP/ceGAgZuBRIrwvpvEFZW+rQw67sqUlfF+PX635/2kp/kprdZVWOP8HfrYwX3E92as5evZEyaqNZG7J0/nA6LAPo+KfY329DWVm6pMPFnK5bzWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oEbqJETY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 349A3C43390;
+	Sun, 24 Mar 2024 23:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323477;
-	bh=1DhKusQ9HhD6fC5v6ak+Lgulwfz5amcq1rUMjvB5gtY=;
+	s=k20201202; t=1711323478;
+	bh=jiL9wfyJXlDE5MK27tjQQfAKCMTvZq36JY4t91RIOjA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aM6EO2uiu90nYLEt2WV4Vu1eBmSvJELUdBvtJ9SUyRAxc1kARPq2G5JHm94OMaPfQ
-	 e+i9TXE7f2wvPXbRa1yS/Oqy4D97R0af5g5XAQDK5x7JhRZz1cW3EDkLX7gjfQ6uCM
-	 q77F7+9r0qtrzFJOK0y/jfmBikG2oO2wjXqwLH9lDNxprHG8h+fOwUzTwzq4mLtq5+
-	 k6vUY2AW6s409noeVzwsrsde9ZWufIXM4R0w8GPSYrnPYdH7GQ9fNYjurfHXEFswRC
-	 ChUOKLBm8RzQL1z95h6kmMUtVoFmUe/l9trLnfF91TzQco75G53vcX4jbqwvMEkxqW
-	 Stpm9Hq2NqoLA==
+	b=oEbqJETY6ouO8KEkO+z6wTooNmD9cTSIOt0eFi9tWyJkh5TtjzBZddRgeCkrVxt+b
+	 TC1K3ilX9ZjauyHV4Iy1QqLTv3WPAxM7g8Wx2MXqFAtFsw1Bkqfwm+bszHjnwhO1hw
+	 Xp2XiSPT8x9H+rkEB4JXkG8DwTem318ylV/0PUlMMKExgkL59qTpot/uDAr+yeIK6g
+	 1CYmnU2eYje3agreM0eMb64NSO1nM9TApqjW258QnZhoPZ8I9CPX+0ewZW6lApAkkX
+	 bX37XE6kv3IVc0g5aq7ZYpjHGVWfxIWGDQsoHsVxryfdKW4V3cdKEo4lMhR4AIRNKg
+	 SH5RYcpoLTD6g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Igor Prusov <ivprusov@salutedevices.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 182/317] clk: meson: Add missing clocks to axg_clk_regmaps
-Date: Sun, 24 Mar 2024 19:32:42 -0400
-Message-ID: <20240324233458.1352854-183-sashal@kernel.org>
+Subject: [PATCH 5.15 183/317] media: em28xx: annotate unchecked call to media_device_register()
+Date: Sun, 24 Mar 2024 19:32:43 -0400
+Message-ID: <20240324233458.1352854-184-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -62,81 +63,40 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Igor Prusov <ivprusov@salutedevices.com>
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-[ Upstream commit ba535bce57e71463a86f8b33a0ea88c26e3a6418 ]
+[ Upstream commit fd61d77a3d28444b2635f0c8b5a2ecd6a4d94026 ]
 
-Some clocks were missing from axg_clk_regmaps, which caused kernel panic
-during cat /sys/kernel/debug/clk/clk_summary
+Static analyzers generate alerts for an unchecked call to
+`media_device_register()`. However, in this case, the device will work
+reliably without the media controller API.
 
-[   57.349402] Unable to handle kernel NULL pointer dereference at virtual address 00000000000001fc
-..
-[   57.430002] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   57.436900] pc : regmap_read+0x1c/0x88
-[   57.440608] lr : clk_regmap_gate_is_enabled+0x3c/0xb0
-[   57.445611] sp : ffff800082f1b690
-[   57.448888] x29: ffff800082f1b690 x28: 0000000000000000 x27: ffff800080eb9a70
-[   57.455961] x26: 0000000000000007 x25: 0000000000000016 x24: 0000000000000000
-[   57.463033] x23: ffff800080e8b488 x22: 0000000000000015 x21: ffff00000e7e7000
-[   57.470106] x20: ffff00000400ec00 x19: 0000000000000000 x18: ffffffffffffffff
-[   57.477178] x17: 0000000000000000 x16: 0000000000000000 x15: ffff0000042a3000
-[   57.484251] x14: 0000000000000000 x13: ffff0000042a2fec x12: 0000000005f5e100
-[   57.491323] x11: abcc77118461cefd x10: 0000000000000020 x9 : ffff8000805e4b24
-[   57.498396] x8 : ffff0000028063c0 x7 : ffff800082f1b710 x6 : ffff800082f1b710
-[   57.505468] x5 : 00000000ffffffd0 x4 : ffff800082f1b6e0 x3 : 0000000000001000
-[   57.512541] x2 : ffff800082f1b6e4 x1 : 000000000000012c x0 : 0000000000000000
-[   57.519615] Call trace:
-[   57.522030]  regmap_read+0x1c/0x88
-[   57.525393]  clk_regmap_gate_is_enabled+0x3c/0xb0
-[   57.530050]  clk_core_is_enabled+0x44/0x120
-[   57.534190]  clk_summary_show_subtree+0x154/0x2f0
-[   57.538847]  clk_summary_show_subtree+0x220/0x2f0
-[   57.543505]  clk_summary_show_subtree+0x220/0x2f0
-[   57.548162]  clk_summary_show_subtree+0x220/0x2f0
-[   57.552820]  clk_summary_show_subtree+0x220/0x2f0
-[   57.557477]  clk_summary_show_subtree+0x220/0x2f0
-[   57.562135]  clk_summary_show_subtree+0x220/0x2f0
-[   57.566792]  clk_summary_show_subtree+0x220/0x2f0
-[   57.571450]  clk_summary_show+0x84/0xb8
-[   57.575245]  seq_read_iter+0x1bc/0x4b8
-[   57.578954]  seq_read+0x8c/0xd0
-[   57.582059]  full_proxy_read+0x68/0xc8
-[   57.585767]  vfs_read+0xb0/0x268
-[   57.588959]  ksys_read+0x70/0x108
-[   57.592236]  __arm64_sys_read+0x24/0x38
-[   57.596031]  invoke_syscall+0x50/0x128
-[   57.599740]  el0_svc_common.constprop.0+0x48/0xf8
-[   57.604397]  do_el0_svc+0x28/0x40
-[   57.607675]  el0_svc+0x34/0xb8
-[   57.610694]  el0t_64_sync_handler+0x13c/0x158
-[   57.615006]  el0t_64_sync+0x190/0x198
-[   57.618635] Code: a9bd7bfd 910003fd a90153f3 aa0003f3 (b941fc00)
-[   57.624668] ---[ end trace 0000000000000000 ]---
+Add a comment above the call to prevent future unnecessary changes.
 
-[jbrunet: add missing Fixes tag]
-Signed-off-by: Igor Prusov <ivprusov@salutedevices.com>
-Link: https://lore.kernel.org/r/20240202172537.1.I64656c75d84284bc91e6126b50b33c502be7c42a@changeid
-Fixes: 14ebb3154b8f ("clk: meson: axg: add Video Clocks")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Fixes: 37ecc7b1278f ("[media] em28xx: add media controller support")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/axg.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/usb/em28xx/em28xx-cards.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/clk/meson/axg.c b/drivers/clk/meson/axg.c
-index 2ad3801398dc1..7802dabb26f6d 100644
---- a/drivers/clk/meson/axg.c
-+++ b/drivers/clk/meson/axg.c
-@@ -2144,7 +2144,9 @@ static struct clk_regmap *const axg_clk_regmaps[] = {
- 	&axg_vclk_input,
- 	&axg_vclk2_input,
- 	&axg_vclk_div,
-+	&axg_vclk_div1,
- 	&axg_vclk2_div,
-+	&axg_vclk2_div1,
- 	&axg_vclk_div2_en,
- 	&axg_vclk_div4_en,
- 	&axg_vclk_div6_en,
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index 92d867fc519c4..8ab10518957c4 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -4099,6 +4099,10 @@ static int em28xx_usb_probe(struct usb_interface *intf,
+ 	 * topology will likely change after the load of the em28xx subdrivers.
+ 	 */
+ #ifdef CONFIG_MEDIA_CONTROLLER
++	/*
++	 * No need to check the return value, the device will still be
++	 * usable without media controller API.
++	 */
+ 	retval = media_device_register(dev->media_dev);
+ #endif
+ 
 -- 
 2.43.0
 
