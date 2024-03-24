@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-113581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3150C888577
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B88888579
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:08:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86D99282CBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:08:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0CB6284975
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810A674E3A;
-	Sun, 24 Mar 2024 22:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59E91CA4FF;
+	Sun, 24 Mar 2024 22:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HiwgzBYa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ciz9SzHL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75DA1C9EC8;
-	Sun, 24 Mar 2024 22:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04121CA4E6;
+	Sun, 24 Mar 2024 22:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320384; cv=none; b=oYNoXMvwQipTtTtmkpncos22BTsUtJYVcJhrdfD5pkuF1eTnQ5EEO9Iz3d3VzP2ViszbhIvGDaAtnlHJMeKGrnZzrCUY/1lGZyDUSCo83V3GntlgLEjGyWb5wNMPKgd2VKie+DEwz0gnNSA+jLTcX4cGzXii+SsbcSwxAxLBHYY=
+	t=1711320386; cv=none; b=Ewq2zpEgIdJKj8xFgdkIy7u40RAOKqGO90m5Ie1HbMMHkTjJQ1Lbt0Iut8bm6kNOuU070WpQNzgja3fqGgsEYIKppl4R/tXbXxkBdLL+XXvbijzJupPeg+AtZ0FUCFl/b2RgQThREec9VCIl67ryZ1B8H4Gg6OLV0gpNM3Z88LY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320384; c=relaxed/simple;
-	bh=ImYJx3//S3lb8pzEBjnxmyZSCu8/oqDudWFtAKGWTJA=;
+	s=arc-20240116; t=1711320386; c=relaxed/simple;
+	bh=M3RyVEmAdG18Uf98CnWxfJEQF+9AM22OpQEfaCG5vEs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BbB6E05D/TD+bM5J+1C8/pzLrKhjOYsrDyXVta6Is0AvYvrAWQM2Y6qLuJkPkG0YGfuPf9fLHoxyga0JSwmqzsYRH8wEprM5FnT9X0XQq+HRZTecH/s0Lj+oz4Vp6flBogCqyA0tkirAWFFGWqks+rXKSNhvDl0I5TjcEk+LloY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HiwgzBYa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9977C433F1;
-	Sun, 24 Mar 2024 22:46:23 +0000 (UTC)
+	 MIME-Version; b=RKMnhN/DrYbMlHgUEIRq7L26nPBnl/Iys1xzZsRE2cOEpT8qcZ+wAwi2VAuccAahaXcYvYmOZ2HY57mIHgzM7ptyUO/Rja3Hdo7Rzpu8astRTF8yqZb3cq9MgcyfmX0ibPGV+wGOlnheE0Whna8IkMZdZROxPPqCMDIG6G1E9ZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ciz9SzHL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB982C433C7;
+	Sun, 24 Mar 2024 22:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320384;
-	bh=ImYJx3//S3lb8pzEBjnxmyZSCu8/oqDudWFtAKGWTJA=;
+	s=k20201202; t=1711320385;
+	bh=M3RyVEmAdG18Uf98CnWxfJEQF+9AM22OpQEfaCG5vEs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HiwgzBYaTWYwkiKCMOzCYBjgjEhqPA1WnJa1Cj4ji+kvNCxubdjc3/qFkF8dT/9Ok
-	 IhlgRIg6m+2ZNleznElvP9UDGym5iTweUgKsDHAzxFup3rduhvxo60FB6bMOKCBjXO
-	 4hgYWySlgP+6XjrMRnDXFbRjjtXbO/6TOMZyg3PQq72uRt3rn4yu6dipYPXk6bWYiU
-	 Fkq/OcV2rYR5mjvGPN0Je2qDodiFhftH+7DhUgIEsf+F7CRZA98eq+REiuIXraRake
-	 ooUBBQrFI0RNoksxGJmiWWwk69BhvrKQ2Dr+eati6+0pBpfNtf7r+PfBiYZB4kk6oQ
-	 K6Dne5iJyA0NQ==
+	b=Ciz9SzHLi4mD3stnIFjkQSJuTDCPC5qhpAvFjUapvBU6OE7x4ule3ObgwiQISZC0T
+	 ujBuIyTaZfLuRY3tOV5HjIKvAGIgF4nopD2f9QTBsMt2Bi0QU3UtlNZQcJCHHmuUsD
+	 +bmnrDG6gdaNk9SFt/s5fLMksrSQqO7NO5IXCuU9laMc5L0emKgh3pE0Iwc45TutZT
+	 PJ4eTu9H300urfkS/riyliRvJQ3n3IAYni9yfoq3DzFRCsu2P2W05TNJE90B01pmNu
+	 l05Q3hjwnktCaBbhBnPhYh0gDPPY9WJ7iI/KSzHBl3AvFBYfj/W2rGEahSgw4vJHxa
+	 owgBwap1inb4g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Thinh Tran <thinhtr@linux.ibm.com>,
-	Jiri Pirko <jiri@nvidia.com>,
+Cc: Jiri Pirko <jiri@nvidia.com>,
+	Chenyuan Yang <chenyuan0y@gmail.com>,
+	Parav Pandit <parav@nvidia.com>,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 690/715] net/bnx2x: Prevent access to a freed page in page_pool
-Date: Sun, 24 Mar 2024 18:34:29 -0400
-Message-ID: <20240324223455.1342824-691-sashal@kernel.org>
+Subject: [PATCH 6.8 691/715] devlink: fix port new reply cmd type
+Date: Sun, 24 Mar 2024 18:34:30 -0400
+Message-ID: <20240324223455.1342824-692-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,87 +65,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Thinh Tran <thinhtr@linux.ibm.com>
+From: Jiri Pirko <jiri@nvidia.com>
 
-[ Upstream commit d27e2da94a42655861ca4baea30c8cd65546f25d ]
+[ Upstream commit 78a2f5e6c15d8dcbd6495bb9635c7cb89235dfc5 ]
 
-Fix race condition leading to system crash during EEH error handling
+Due to a c&p error, port new reply fills-up cmd with wrong value,
+any other existing port command replies and notifications.
 
-During EEH error recovery, the bnx2x driver's transmit timeout logic
-could cause a race condition when handling reset tasks. The
-bnx2x_tx_timeout() schedules reset tasks via bnx2x_sp_rtnl_task(),
-which ultimately leads to bnx2x_nic_unload(). In bnx2x_nic_unload()
-SGEs are freed using bnx2x_free_rx_sge_range(). However, this could
-overlap with the EEH driver's attempt to reset the device using
-bnx2x_io_slot_reset(), which also tries to free SGEs. This race
-condition can result in system crashes due to accessing freed memory
-locations in bnx2x_free_rx_sge()
+Fix it by filling cmd with value DEVLINK_CMD_PORT_NEW.
 
-799  static inline void bnx2x_free_rx_sge(struct bnx2x *bp,
-800				struct bnx2x_fastpath *fp, u16 index)
-801  {
-802	struct sw_rx_page *sw_buf = &fp->rx_page_ring[index];
-803     struct page *page = sw_buf->page;
-...
-where sw_buf was set to NULL after the call to dma_unmap_page()
-by the preceding thread.
+Skimmed through devlink userspace implementations, none of them cares
+about this cmd value.
 
-    EEH: Beginning: 'slot_reset'
-    PCI 0011:01:00.0#10000: EEH: Invoking bnx2x->slot_reset()
-    bnx2x: [bnx2x_io_slot_reset:14228(eth1)]IO slot reset initializing...
-    bnx2x 0011:01:00.0: enabling device (0140 -> 0142)
-    bnx2x: [bnx2x_io_slot_reset:14244(eth1)]IO slot reset --> driver unload
-    Kernel attempted to read user page (0) - exploit attempt? (uid: 0)
-    BUG: Kernel NULL pointer dereference on read at 0x00000000
-    Faulting instruction address: 0xc0080000025065fc
-    Oops: Kernel access of bad area, sig: 11 [#1]
-    .....
-    Call Trace:
-    [c000000003c67a20] [c00800000250658c] bnx2x_io_slot_reset+0x204/0x610 [bnx2x] (unreliable)
-    [c000000003c67af0] [c0000000000518a8] eeh_report_reset+0xb8/0xf0
-    [c000000003c67b60] [c000000000052130] eeh_pe_report+0x180/0x550
-    [c000000003c67c70] [c00000000005318c] eeh_handle_normal_event+0x84c/0xa60
-    [c000000003c67d50] [c000000000053a84] eeh_event_handler+0xf4/0x170
-    [c000000003c67da0] [c000000000194c58] kthread+0x1c8/0x1d0
-    [c000000003c67e10] [c00000000000cf64] ret_from_kernel_thread+0x5c/0x64
-
-To solve this issue, we need to verify page pool allocations before
-freeing.
-
-Fixes: 4cace675d687 ("bnx2x: Alloc 4k fragment for each rx ring buffer element")
-Signed-off-by: Thinh Tran <thinhtr@linux.ibm.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Link: https://lore.kernel.org/r/20240315205535.1321-1-thinhtr@linux.ibm.com
+Reported-by: Chenyuan Yang <chenyuan0y@gmail.com>
+Closes: https://lore.kernel.org/all/ZfZcDxGV3tSy4qsV@cy-server/
+Fixes: cd76dcd68d96 ("devlink: Support add and delete devlink port")
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+Reviewed-by: Parav Pandit <parav@nvidia.com>
+Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Link: https://lore.kernel.org/r/20240318091908.2736542-1-jiri@resnulli.us
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/devlink/port.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
-index d8b1824c334d3..0bc1367fd6492 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
-@@ -1002,9 +1002,6 @@ static inline void bnx2x_set_fw_mac_addr(__le16 *fw_hi, __le16 *fw_mid,
- static inline void bnx2x_free_rx_mem_pool(struct bnx2x *bp,
- 					  struct bnx2x_alloc_pool *pool)
- {
--	if (!pool->page)
--		return;
--
- 	put_page(pool->page);
- 
- 	pool->page = NULL;
-@@ -1015,6 +1012,9 @@ static inline void bnx2x_free_rx_sge_range(struct bnx2x *bp,
- {
- 	int i;
- 
-+	if (!fp->page_pool.page)
-+		return;
-+
- 	if (fp->mode == TPA_MODE_DISABLED)
- 		return;
- 
+diff --git a/net/devlink/port.c b/net/devlink/port.c
+index 4b2d46ccfe484..118d130d2afd5 100644
+--- a/net/devlink/port.c
++++ b/net/devlink/port.c
+@@ -889,7 +889,7 @@ int devlink_nl_port_new_doit(struct sk_buff *skb, struct genl_info *info)
+ 		err = -ENOMEM;
+ 		goto err_out_port_del;
+ 	}
+-	err = devlink_nl_port_fill(msg, devlink_port, DEVLINK_CMD_NEW,
++	err = devlink_nl_port_fill(msg, devlink_port, DEVLINK_CMD_PORT_NEW,
+ 				   info->snd_portid, info->snd_seq, 0, NULL);
+ 	if (WARN_ON_ONCE(err))
+ 		goto err_out_msg_free;
 -- 
 2.43.0
 
