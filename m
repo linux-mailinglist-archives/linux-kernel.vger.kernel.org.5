@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5072A888905
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6912888906
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01F3D1F2CC8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:42:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C3261F2CDAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C732024DBAB;
-	Sun, 24 Mar 2024 23:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A19E24DBB4;
+	Sun, 24 Mar 2024 23:23:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VYvwMGLH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GGBcZMO4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34421514F7;
-	Sun, 24 Mar 2024 23:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850621514FF;
+	Sun, 24 Mar 2024 23:05:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321533; cv=none; b=WOBA4O4CIIIUvdrFBmcRXejW8SEqsg4/8S9BR4MEtRm5EDtt5omWpb0m0T5ZhNHZ21+/GTmuxTw5vCGlawbgQkxx/b29oDriItzA4jopZs9J1AXJEyZbn4bv5Akbjam0Wefzrjghy9IgPd1RmJ4Pq1H4Aasm/2/j+n53FgT1xr0=
+	t=1711321533; cv=none; b=E8DmeohTFBvd29Q389UOubsc5kKFXDVHCU0TKIEMeUU82YKpwGgIEm6UCtxibO6scKoGKLAdiOQy4FeQtsp0b7/Tuuf9k9FdLLYXe+AOO4wVLbmqY5ELitmPeaEsfoYuZyt8I+NOTGtKfUBHBnKhbdsjVNPznJF5HxhqovIcVAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321533; c=relaxed/simple;
-	bh=hyROmaA6Q7+b/zmxeASSX3HaH0N+z82aRXBd1lKaYLE=;
+	bh=UJVecGRcsJMrble1axSJMuG0b3FUpXz2QsuhpnXy+d0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RGcnx0PJuQ052UBPNecUj0uAj76NkcQWgU5vytpUKW5pErx/vsLzNJAsM/rv/a4ULyIB8Ao3+EHp0jv5VkwbgODWBTS1M9bJk6fNqsdzoUB0Y+wwT+x7wOut5Iai86IbiQQHrSF40Eoeju8z/mOdxMtTgpcJ8D2huY16FELxMXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VYvwMGLH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B80F2C433F1;
-	Sun, 24 Mar 2024 23:05:30 +0000 (UTC)
+	 MIME-Version; b=jlWwuwl3kLvYeQM1UJZLfrqAn1OJ5TfnKlAc1l54+BZJBWT7fRFE+l3oDuW+UNPE26K95NeYYEDSpc3OeVJMkYrzzzhtaZg58AlKMKMVyx3YxnLA7Gzfq8JXs4dwjPEmiKw7vCh6MQPjcquMYEz80J6wfs85tvVNMhhs845bGMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GGBcZMO4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B00B1C433C7;
+	Sun, 24 Mar 2024 23:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321531;
-	bh=hyROmaA6Q7+b/zmxeASSX3HaH0N+z82aRXBd1lKaYLE=;
+	s=k20201202; t=1711321532;
+	bh=UJVecGRcsJMrble1axSJMuG0b3FUpXz2QsuhpnXy+d0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VYvwMGLHfOm0wekZsMZPB5oJKh/DozDbjWjkSWgFK1hJFBl+FAS7uVeRBYnyUgNdm
-	 fSgfR3RDPCjNyIrRstp7JYwliR7SYYD7leMmmngiY7/bVkcquHWDyDkkopLbg9TPqS
-	 /kMpvdHDTTErLrRmBTy3zdJCfGw+wihm2zEW9KIfVhZObGpLNanREml3JeU7DSWmxF
-	 Yux6rbBbOC69bYwfpiYpQ2EFFSfACAcsHHeNgLcHYY8eVO+r+gb+bTxO4jEs84wt6T
-	 m+yXNSezmm1dvBScAQfWuex3x6f6ok8wiCJgrZtEa0Jpe8onQ6WVviWMoAk1GhAFv5
-	 2obbM9epKEutQ==
+	b=GGBcZMO4FXacUp6mMS8G9NG4weGxl9KQL1/1ECP3i68rfFGGRMY4FvYleCNQRyTGk
+	 3WqW081654j/7W+DTg2BkJDvh4EZZTkAHn+Hg5dssTQf+UF3IALd/XngSX9aqVpRsS
+	 K6CapOzC0Y4Ha7H3eKRMfMCzQH22YM/nUq+sCD6E3GSorKKOjnKlaCeAEzBDkeAmT4
+	 xjzgimexRfsrxHtVYFFnNtaXCeAB4+SfFfQ8H67rCYJrBnOA8lRSdy+RE4OEcipJm0
+	 ZH6RXj1oNKZirX01LZwV3fVtZQTzGBhvg7nl+5Znbjs+gCQErDzhq7s35ePcb6wR3l
+	 KHmB/VMPpWeYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Deren Wu <deren.wu@mediatek.com>,
-	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+Cc: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>,
+	Leon Yen <leon.yen@mediatek.com>,
 	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 258/638] wifi: mt76: mt7921e: fix use-after-free in free_irq()
-Date: Sun, 24 Mar 2024 18:54:55 -0400
-Message-ID: <20240324230116.1348576-259-sashal@kernel.org>
+Subject: [PATCH 6.6 259/638] wifi: mt76: mt792x: fix a potential loading failure of the 6Ghz channel config from ACPI
+Date: Sun, 24 Mar 2024 18:54:56 -0400
+Message-ID: <20240324230116.1348576-260-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,90 +63,80 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Deren Wu <deren.wu@mediatek.com>
+From: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>
 
-[ Upstream commit c957280ef6ab6bdf559a91ae693a6b34310697e3 ]
+[ Upstream commit 07ce1d46372489d90f9cccebb3277d1af801c4b9 ]
 
-From commit a304e1b82808 ("[PATCH] Debug shared irqs"), there is a test
-to make sure the shared irq handler should be able to handle the unexpected
-event after deregistration. For this case, let's apply MT76_REMOVED flag to
-indicate the device was removed and do not run into the resource access
-anymore.
+In some case, the MTCL table will exist, but MTDS table will not.
+So the SAR will init fail. This patch make MTCL and MTDS can exist
+with no dependence.
 
-BUG: KASAN: use-after-free in mt7921_irq_handler+0xd8/0x100 [mt7921e]
-Read of size 8 at addr ffff88824a7d3b78 by task rmmod/11115
-CPU: 28 PID: 11115 Comm: rmmod Tainted: G        W    L    5.17.0 #10
-Hardware name: Micro-Star International Co., Ltd. MS-7D73/MPG B650I
-EDGE WIFI (MS-7D73), BIOS 1.81 01/05/2024
-Call Trace:
- <TASK>
- dump_stack_lvl+0x6f/0xa0
- print_address_description.constprop.0+0x1f/0x190
- ? mt7921_irq_handler+0xd8/0x100 [mt7921e]
- ? mt7921_irq_handler+0xd8/0x100 [mt7921e]
- kasan_report.cold+0x7f/0x11b
- ? mt7921_irq_handler+0xd8/0x100 [mt7921e]
- mt7921_irq_handler+0xd8/0x100 [mt7921e]
- free_irq+0x627/0xaa0
- devm_free_irq+0x94/0xd0
- ? devm_request_any_context_irq+0x160/0x160
- ? kobject_put+0x18d/0x4a0
- mt7921_pci_remove+0x153/0x190 [mt7921e]
- pci_device_remove+0xa2/0x1d0
- __device_release_driver+0x346/0x6e0
- driver_detach+0x1ef/0x2c0
- bus_remove_driver+0xe7/0x2d0
- ? __check_object_size+0x57/0x310
- pci_unregister_driver+0x26/0x250
- __do_sys_delete_module+0x307/0x510
- ? free_module+0x6a0/0x6a0
- ? fpregs_assert_state_consistent+0x4b/0xb0
- ? rcu_read_lock_sched_held+0x10/0x70
- ? syscall_enter_from_user_mode+0x20/0x70
- ? trace_hardirqs_on+0x1c/0x130
- do_syscall_64+0x5c/0x80
- ? trace_hardirqs_on_prepare+0x72/0x160
- ? do_syscall_64+0x68/0x80
- ? trace_hardirqs_on_prepare+0x72/0x160
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Closes: https://lore.kernel.org/linux-wireless/CABXGCsOdvVwdLmSsC8TZ1jF0UOg_F_W3wqLECWX620PUkvNk=A@mail.gmail.com/
-Fixes: 9270270d6219 ("wifi: mt76: mt7921: fix PCI DMA hang after reboot")
-Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Signed-off-by: Deren Wu <deren.wu@mediatek.com>
+Fixes: f965333e491e ("mt76: mt7921: introduce ACPI SAR support")
+Signed-off-by: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>
+Signed-off-by: Leon Yen <leon.yen@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/pci.c | 1 +
- drivers/net/wireless/mediatek/mt76/mt792x_dma.c | 2 ++
- 2 files changed, 3 insertions(+)
+ .../wireless/mediatek/mt76/mt792x_acpi_sar.c  | 26 ++++++++++---------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-index f04e7095e1810..49d4f3c4829ea 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-@@ -387,6 +387,7 @@ static void mt7921_pci_remove(struct pci_dev *pdev)
- 	struct mt792x_dev *dev = container_of(mdev, struct mt792x_dev, mt76);
+diff --git a/drivers/net/wireless/mediatek/mt76/mt792x_acpi_sar.c b/drivers/net/wireless/mediatek/mt76/mt792x_acpi_sar.c
+index 303c0f5c9c662..c4e3bfcc519e2 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt792x_acpi_sar.c
++++ b/drivers/net/wireless/mediatek/mt76/mt792x_acpi_sar.c
+@@ -66,13 +66,15 @@ mt792x_acpi_read(struct mt792x_dev *dev, u8 *method, u8 **tbl, u32 *len)
+ }
  
- 	mt7921e_unregister_device(dev);
-+	set_bit(MT76_REMOVED, &mdev->phy.state);
- 	devm_free_irq(&pdev->dev, pdev->irq, dev);
- 	mt76_free_device(&dev->mt76);
- 	pci_free_irq_vectors(pdev);
-diff --git a/drivers/net/wireless/mediatek/mt76/mt792x_dma.c b/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
-index a3dbd3865b2f5..be3119aa9afa1 100644
---- a/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
-@@ -12,6 +12,8 @@ irqreturn_t mt792x_irq_handler(int irq, void *dev_instance)
+ /* MTCL : Country List Table for 6G band */
+-static void
++static int
+ mt792x_asar_acpi_read_mtcl(struct mt792x_dev *dev, u8 **table, u8 *version)
  {
- 	struct mt792x_dev *dev = dev_instance;
+-	if (mt792x_acpi_read(dev, MT792x_ACPI_MTCL, table, NULL) < 0)
+-		*version = 1;
+-	else
+-		*version = 2;
++	int ret;
++
++	*version = ((ret = mt792x_acpi_read(dev, MT792x_ACPI_MTCL, table, NULL)) < 0)
++		   ? 1 : 2;
++
++	return ret;
+ }
  
-+	if (test_bit(MT76_REMOVED, &dev->mt76.phy.state))
-+		return IRQ_NONE;
- 	mt76_wr(dev, dev->irq_map->host_irq_enable, 0);
+ /* MTDS : Dynamic SAR Power Table */
+@@ -166,16 +168,16 @@ int mt792x_init_acpi_sar(struct mt792x_dev *dev)
+ 	if (!asar)
+ 		return -ENOMEM;
  
- 	if (!test_bit(MT76_STATE_INITIALIZED, &dev->mphy.state))
+-	mt792x_asar_acpi_read_mtcl(dev, (u8 **)&asar->countrylist, &asar->ver);
++	ret = mt792x_asar_acpi_read_mtcl(dev, (u8 **)&asar->countrylist, &asar->ver);
++	if (ret) {
++		devm_kfree(dev->mt76.dev, asar->countrylist);
++		asar->countrylist = NULL;
++	}
+ 
+-	/* MTDS is mandatory. Return error if table is invalid */
+ 	ret = mt792x_asar_acpi_read_mtds(dev, (u8 **)&asar->dyn, asar->ver);
+ 	if (ret) {
+ 		devm_kfree(dev->mt76.dev, asar->dyn);
+-		devm_kfree(dev->mt76.dev, asar->countrylist);
+-		devm_kfree(dev->mt76.dev, asar);
+-
+-		return ret;
++		asar->dyn = NULL;
+ 	}
+ 
+ 	/* MTGS is optional */
+@@ -290,7 +292,7 @@ int mt792x_init_acpi_sar_power(struct mt792x_phy *phy, bool set_default)
+ 	const struct cfg80211_sar_capa *capa = phy->mt76->hw->wiphy->sar_capa;
+ 	int i;
+ 
+-	if (!phy->acpisar)
++	if (!phy->acpisar || !((struct mt792x_acpi_sar *)phy->acpisar)->dyn)
+ 		return 0;
+ 
+ 	/* When ACPI SAR enabled in HW, we should apply rules for .frp
 -- 
 2.43.0
 
