@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 235A58889D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:05:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7AA288971D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 885C6B28D7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:01:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7332E29B2D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:08:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6647613C3C0;
-	Sun, 24 Mar 2024 23:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C86925A1EF;
+	Mon, 25 Mar 2024 02:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l0DaaTiz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OHct1SrK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EDAE13A89D;
-	Sun, 24 Mar 2024 23:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C6313A89B;
+	Sun, 24 Mar 2024 23:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321687; cv=none; b=B9qtocPNSTGnwpOjbC1kvwVprMD5NtYcZwYZXpG+hd3VE86B2NpISejQe63/9vR36iey4lqWLYfg4nq6rvtterOjT6CqZcskB6Fhbn+zzTftVV2Yn2I0de15+ngSxbyBKbRaskU/ytJtPZZY0wnzw/YW2iWeflQAuip2FP8eZ+A=
+	t=1711321687; cv=none; b=csy4Q0gillaiq4eE1diKAmaqjaWS7ckWtLV+Qm80+f0wXwILrnllL9YrjFkvuNDTJazRD3RouGH5e78FaoywCImkzKHjPUj0c/ePUcINdRKNQ6FK84yKK7xajptNcnkZKP2F9AewjsTbuoxUE5Mvf/PIcMUH/XQPDVpUFeO3H4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321687; c=relaxed/simple;
-	bh=BUaEXJZUG8etbIU7z42ZW4ULk/Wh+ZSN13xgmYO0WqQ=;
+	bh=rKYlC7jVDqXNr3hDf0STuqNXitRGrhJcxmC1di3E12E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CTMQKTO2b1cskZRdKAphA5Spc/51JKIqxg8ySjP7knR5XZZIuCwNsiOpUemWSZhnsBeErbQKV/EoVoYkERTl4UwsYzMcSolhW77/pGM+ISqlQU3geYhFpFHwmIQyyCBcBuITyeDysodusAKozoAdr5qID4nn8aJw1AG4ZE4ZIOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l0DaaTiz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9C1C433C7;
-	Sun, 24 Mar 2024 23:08:05 +0000 (UTC)
+	 MIME-Version; b=Nv7vtP0Jl41jgP5x9SitW2sMxP1VrWCpJ4YNtSqfJKw7mhH9FicIzaYr8CI2FOn7ICT6nMOnuYJF/KC7ipSVRv1wpQoRBLbcgXdeGGJgHksTY1nTeK8R+UWSMdhueKn5IL72uuRRjRL5bRbYg4dH6RxYyGIkoN/jlvK/c9wo4NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OHct1SrK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66266C433F1;
+	Sun, 24 Mar 2024 23:08:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321686;
-	bh=BUaEXJZUG8etbIU7z42ZW4ULk/Wh+ZSN13xgmYO0WqQ=;
+	s=k20201202; t=1711321687;
+	bh=rKYlC7jVDqXNr3hDf0STuqNXitRGrhJcxmC1di3E12E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l0DaaTizaVRUrTbYjAerSbukEtqcFSDDPJ7IqfB9yRKdcG4lfsf8AzH+FGOScEIqX
-	 SEF1ZrcXJhbt/vDs20JY/uNI7YFUsDjmZwP0x8qkT6ozkv+K966cbZqLuiviTw4/js
-	 USC/Rzpqt9Je23KxL0Y72bl5u3qmIcV7ibILBRKE4ylj8GaYCl9eUa2mbcK2fz/whH
-	 Q2Md1XqzM9QTFQIkLRTO0B1S1MUHGmv5V9x95IkzRPgqF/UO4esHpZCx2uLns3jx2O
-	 gJCVPjbwgzZOouvrDeDfMGTTWcq123fZ4geb5ZTEhuc9ohNqnCzm4NvocaWcfl6nno
-	 SAMpr+/tDVjgg==
+	b=OHct1SrKKndNr8vZ3WwRsQHvfRtthGA1iv3P1r510pBnftRzRw9mDqnS2IKMSA1Ps
+	 DmPERuWHnNJ4uvoYgIEM20UX8MgotbF3En/q9j8Oxud77tzAe7TakO2NKevSJNc0ms
+	 fYEjdqHx5KFB5pQWAPdHduNfD/+NyWRCyiQToi29Q1oqEfMLtJnnnmoBDUIWCWy0yX
+	 saqy081QwFui0rvvRc3563fQzAzcf8eSHRmm3gDRIXeEIfpDn+BTfB2snUfXfbRqSJ
+	 Q+eZRGAjzBjQmEo637X1T/G2za/X0o7UdKAEWTIC/FpT7cDKddU8oZUWE0KQGAT4rO
+	 lFKHmFVNEDmIg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Helen Koike <helen.koike@collabora.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 414/638] ASoC: SOF: Add some bounds checking to firmware data
-Date: Sun, 24 Mar 2024 18:57:31 -0400
-Message-ID: <20240324230116.1348576-415-sashal@kernel.org>
+Subject: [PATCH 6.6 415/638] drm: ci: use clk_ignore_unused for apq8016
+Date: Sun, 24 Mar 2024 18:57:32 -0400
+Message-ID: <20240324230116.1348576-416-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,37 +63,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit 98f681b0f84cfc3a1d83287b77697679e0398306 ]
+[ Upstream commit aa1267e673fe5307cf00d02add4017d2878598b6 ]
 
-Smatch complains about "head->full_size - head->header_size" can
-underflow.  To some extent, we're always going to have to trust the
-firmware a bit.  However, it's easy enough to add a check for negatives,
-and let's add a upper bounds check as well.
+If the ADV7511 bridge driver is compiled as a module, while DRM_MSM is
+built-in, the clk_disable_unused congests with the runtime PM handling
+of the DSI PHY for the clk_prepare_lock(). This causes apq8016 runner to
+fail without completing any jobs ([1]). Drop the BM_CMDLINE which
+duplicate the command line from the .baremetal-igt-arm64 clause and
+enforce the clk_ignore_unused kernelarg instead to make apq8016 runner
+work.
 
-Fixes: d2458baa799f ("ASoC: SOF: ipc3-loader: Implement firmware parsing and loading")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Link: https://msgid.link/r/5593d147-058c-4de3-a6f5-540ecb96f6f8@moroto.mountain
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[1] https://gitlab.freedesktop.org/drm/msm/-/jobs/54990475
+
+Fixes: 0119c894ab0d ("drm: Add initial ci/ subdirectory")
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Acked-by: Helen Koike <helen.koike@collabora.com>
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240214083708.2323967-1-dmitry.baryshkov@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/ipc3-loader.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/ci/test.yml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc3-loader.c b/sound/soc/sof/ipc3-loader.c
-index 28218766d2114..6e3ef06721106 100644
---- a/sound/soc/sof/ipc3-loader.c
-+++ b/sound/soc/sof/ipc3-loader.c
-@@ -148,6 +148,8 @@ static size_t sof_ipc3_fw_parse_ext_man(struct snd_sof_dev *sdev)
- 
- 	head = (struct sof_ext_man_header *)fw->data;
- 	remaining = head->full_size - head->header_size;
-+	if (remaining < 0 || remaining > sdev->basefw.fw->size)
-+		return -EINVAL;
- 	ext_man_size = ipc3_fw_ext_man_size(sdev, fw);
- 
- 	/* Assert firmware starts with extended manifest */
+diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+index 6473cddaa7a96..e5b7d309ca186 100644
+--- a/drivers/gpu/drm/ci/test.yml
++++ b/drivers/gpu/drm/ci/test.yml
+@@ -104,7 +104,10 @@ msm:apq8016:
+     DRIVER_NAME: msm
+     BM_DTB: https://${PIPELINE_ARTIFACTS_BASE}/arm64/apq8016-sbc.dtb
+     GPU_VERSION: apq8016
+-    BM_CMDLINE: "ip=dhcp console=ttyMSM0,115200n8 $BM_KERNEL_EXTRA_ARGS root=/dev/nfs rw nfsrootdebug nfsroot=,tcp,nfsvers=4.2 init=/init $BM_KERNELARGS"
++    # disabling unused clocks congests with the MDSS runtime PM trying to
++    # disable those clocks and causes boot to fail.
++    # Reproducer: DRM_MSM=y, DRM_I2C_ADV7511=m
++    BM_KERNEL_EXTRA_ARGS: clk_ignore_unused
+     RUNNER_TAG: google-freedreno-db410c
+   script:
+     - ./install/bare-metal/fastboot.sh
 -- 
 2.43.0
 
