@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64183888370
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:10:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B33888372
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187A61F22906
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:10:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D92491F21FD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62091959AA;
-	Sun, 24 Mar 2024 22:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82368195FC4;
+	Sun, 24 Mar 2024 22:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ix5E9tan"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cUNoVPMT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE79A19598E;
-	Sun, 24 Mar 2024 22:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33821959AD;
+	Sun, 24 Mar 2024 22:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320128; cv=none; b=YPXboBy1w9Nk4hqvZLTYUI/FXJjRDc3eSfK0WKFnREAi2hDhFkdnbxY7hQwIDQDVQkBeZzAH/e6auOzjkH3ysK4BHQzthmxGnNKB9rs0b1gpzApukZ/890pcNmvJRLC/yssEAb+Wbzcsv5zCAWgDYY8+Ul8KCHyajq3u5s2ZN8s=
+	t=1711320129; cv=none; b=HgHSLfmfIjlmnYBfID+iHho0kzsknVHiaHa0NDLlWi8IGxQeyP2RSAgA38l4gjub6i7CsR5VFILd+wEsVvXEf6etiPVBicpsuwKxczjOMlARqHCa5mEmHJyByomW2Kz1iBCSz6m7g71yG3rSaMcZ1tof82Q1yOGS6P4TuT/ulLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320128; c=relaxed/simple;
-	bh=zDxp0X0bOAEC9vzerTtKQqP0T4Kf9x+qIRrMhp7/2mE=;
+	s=arc-20240116; t=1711320129; c=relaxed/simple;
+	bh=8J2VO8R09ZLCYY05FLmoDdK50R8Wf5+5OrJMHEcST8w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iB56AzCl2JxzWj4mwWjjcZzuPxMD49wh1/JtQwncVdzMC1CIaqi4oKrlkKksG13J9uBrE0IkaHWJ4aHDSqbLDw6vopJrrCQWKmoVWdImC3pt0UAN+XiTcz75zgWHlE6JmNMiR1WE5mEICpkklNE6kuW+USuFFOIpyD+8jzj6UYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ix5E9tan; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16161C433A6;
-	Sun, 24 Mar 2024 22:42:07 +0000 (UTC)
+	 MIME-Version; b=b2XKbiBNmV3JAuOoSyRxEfFF7jdvlBZvkvHIn8KtkoRfn31xBLREjqXgf1MOuXkGNW+oF0Oy6SG00LQTBm0tDjOsE5eadCH4vu8ZI0GsYLTe3RRG/Hh5DdEMUtSdSmmP9XROjgRm6/wR45gBokvEbKaM0JVf/0ckge2LAbQ50U4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cUNoVPMT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2B97C433C7;
+	Sun, 24 Mar 2024 22:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320128;
-	bh=zDxp0X0bOAEC9vzerTtKQqP0T4Kf9x+qIRrMhp7/2mE=;
+	s=k20201202; t=1711320129;
+	bh=8J2VO8R09ZLCYY05FLmoDdK50R8Wf5+5OrJMHEcST8w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ix5E9tanjI+Iy6IQp8JsA1aLPgiXfZ8kittpALUKoYLFStAhIodOo0RaJzVUP4HpV
-	 Q4g7fRG+vYaFyAlOqJemPJX3SYjRT2aCuXriLdSrNIXKnd3OVLZuKkaHlCAeKN7IU8
-	 EGJpujQkmmp0HNG0G5WDJ+ZO/0mXHfLyKC0MazogIWLbOtnY9ihOfH3NHThs/lABMW
-	 kOvuY06UuUPYxsug0dsicNwuJuYAfbrZIbQUwOllyLVfjlP+4/4aub7nMG34huc5VW
-	 1f/WO/WJHl+wjXWOhj3syeD8JpFRHbYBk8S3cFZo10Ui8gA/rSouTfz4yxu/Qz6hrL
-	 tRBHnfk6mEvEA==
+	b=cUNoVPMT5vk+46JIMPirzWq3as8qhzIfq7mLv5cyYeN0lLw65FCRQX4qXfbluMkMO
+	 dV1dbsnjN/XxKjs5LIGcsu8K9MIrXf+YiwGvIX92Nl0ZNmATySVscTCJdiOk4mnFrt
+	 Fg5EHKxgTnB4rlTtEnV8b6h2wahuaYDEVePF0oN7KvuZ/qbQCaAllHKpEvtkz5+3gK
+	 PP0B5EFsw0K/MN1LS5CcGS92qH41S3gj+SxD2DIxSnX990K1qyD277pLDS6GRI8pv9
+	 Tmj3I8LZOJMMAhTgAv70Afg/HeaZsKq/0HBw70jGsxYj/3GdQ+XxQo3TqiMFExVbiG
+	 wpwClVBVz9b9g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jernej Skrabec <jernej.skrabec@gmail.com>,
+Cc: Changhuang Liang <changhuang.liang@starfivetech.com>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 436/715] media: sun8i-di: Fix chroma difference threshold
-Date: Sun, 24 Mar 2024 18:30:15 -0400
-Message-ID: <20240324223455.1342824-437-sashal@kernel.org>
+Subject: [PATCH 6.8 437/715] staging: media: starfive: Set 16 bpp for capture_raw device
+Date: Sun, 24 Mar 2024 18:30:16 -0400
+Message-ID: <20240324223455.1342824-438-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,34 +62,58 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jernej Skrabec <jernej.skrabec@gmail.com>
+From: Changhuang Liang <changhuang.liang@starfivetech.com>
 
-[ Upstream commit 856525e8db272b0ce6d9c6e6c2eeb97892b485a6 ]
+[ Upstream commit a38cd27c9ee8c25308b71ea16393d0c231e9bde4 ]
 
-While there is no good explanation what this value does, vendor driver
-uses value 31 for it. Align driver with it.
+For StarFive JH7110 Camera Subsystem, capture_raw video device output
+raw10 pixelformat requires 16bit of alignment.
 
-Fixes: a4260ea49547 ("media: sun4i: Add H3 deinterlace driver")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Fixes: e080f339c80a ("media: staging: media: starfive: camss: Add capture driver")
+Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/sunxi/sun8i-di/sun8i-di.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/starfive/camss/stf-capture.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-index 5d58a5e781371..a1c35a2b68ed9 100644
---- a/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-+++ b/drivers/media/platform/sunxi/sun8i-di/sun8i-di.c
-@@ -304,7 +304,7 @@ static void deinterlace_init(struct deinterlace_dev *dev)
+diff --git a/drivers/staging/media/starfive/camss/stf-capture.c b/drivers/staging/media/starfive/camss/stf-capture.c
+index 70c24b050a1b5..ec5169e7b3918 100644
+--- a/drivers/staging/media/starfive/camss/stf-capture.c
++++ b/drivers/staging/media/starfive/camss/stf-capture.c
+@@ -20,28 +20,28 @@ static const struct stfcamss_format_info stf_wr_fmts[] = {
+ 		.pixelformat = V4L2_PIX_FMT_SRGGB10,
+ 		.planes = 1,
+ 		.vsub = { 1 },
+-		.bpp = 10,
++		.bpp = 16,
+ 	},
+ 	{
+ 		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
+ 		.pixelformat = V4L2_PIX_FMT_SGRBG10,
+ 		.planes = 1,
+ 		.vsub = { 1 },
+-		.bpp = 10,
++		.bpp = 16,
+ 	},
+ 	{
+ 		.code = MEDIA_BUS_FMT_SGBRG10_1X10,
+ 		.pixelformat = V4L2_PIX_FMT_SGBRG10,
+ 		.planes = 1,
+ 		.vsub = { 1 },
+-		.bpp = 10,
++		.bpp = 16,
+ 	},
+ 	{
+ 		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
+ 		.pixelformat = V4L2_PIX_FMT_SBGGR10,
+ 		.planes = 1,
+ 		.vsub = { 1 },
+-		.bpp = 10,
++		.bpp = 16,
+ 	},
+ };
  
- 	deinterlace_clr_set_bits(dev, DEINTERLACE_CHROMA_DIFF,
- 				 DEINTERLACE_CHROMA_DIFF_TH_MSK,
--				 DEINTERLACE_CHROMA_DIFF_TH(5));
-+				 DEINTERLACE_CHROMA_DIFF_TH(31));
- }
- 
- static inline struct deinterlace_ctx *deinterlace_file2ctx(struct file *file)
 -- 
 2.43.0
 
