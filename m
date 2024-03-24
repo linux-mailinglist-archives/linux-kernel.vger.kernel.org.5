@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-115841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B958C88983F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:32:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F67A889837
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E76B51C317D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:32:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09AB929D6CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB8737BFB8;
-	Mon, 25 Mar 2024 03:01:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D01D3709D4;
+	Mon, 25 Mar 2024 03:01:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fC1mlgw+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EL+qEFt8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08380145FF6;
-	Sun, 24 Mar 2024 23:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64C9145FFA;
+	Sun, 24 Mar 2024 23:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322057; cv=none; b=hvOxCziT7mAog6YnvsA2genikBpc3PF6e4sB2n0DM/o8DIZ7X/CQyPnWGHF1PkBR3rJlHDQ5p13NexqrJ0tpfvfnUnw75oyGHVmECOl+CdHNlE5W1wFXvAy5G6tm7bD/HhyTO1eQTlPh0sCUBPGTqY2uLepDw5SJDa/Fbyb1lBM=
+	t=1711322057; cv=none; b=jqHPGT2NgRDyQAmXQnqMIWjkD8cBRPmJ+MkR1Tpxi96MNG8h+a94M86kb3uQXA/l1ccZZb55Pcbc0C6sMYIEdfmnULRnkQSczej88BKpN0mvr9qyeqdtgt354Irnar0q6HehGHvwjk/vR7GK5DgVevFAwkOaRCzym8HMZ5NUHnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711322057; c=relaxed/simple;
-	bh=VpsD2P4bz6+1wRTNrTSuNjvgkclOAGy4jeGl9qKsjhc=;
+	bh=NPq6MquJ5yUC5CMPcnfevOigtOVMb24x6buBjtq8ZJI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ngkXXrS127/s3dvt4YCxJfg50gDgvlRs3LY+Ey0vD39uBt1iePIm0Qo2h3M2oOhZ/ERzWcVhH6TxRyx6o15nh6PaQ6+ycwE0ByYiKufDbSWYVrVyyAhrB2ynnL6u9Ih7inhvMI8mi4JGhyUq2HCWU4G/orIqbZo1GR5NR6HZqnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fC1mlgw+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C61C9C43394;
-	Sun, 24 Mar 2024 23:14:15 +0000 (UTC)
+	 MIME-Version; b=bukf2UQFgLf0H3Sa38IlgiejBirehnmm+g8WEc54jUoPARAGuJJmdRTK1hABEeCEtSG9X5rEp8wTrW9dMRRL7zaWn7/sM5NEvC3DFimtbiREa0wkgxxySGX5596yy9w76c3YclSc7VQkZnzz3RJlh2K17jJzIg1LVn8lOnR8/p4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EL+qEFt8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA88CC433C7;
+	Sun, 24 Mar 2024 23:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322056;
-	bh=VpsD2P4bz6+1wRTNrTSuNjvgkclOAGy4jeGl9qKsjhc=;
+	s=k20201202; t=1711322057;
+	bh=NPq6MquJ5yUC5CMPcnfevOigtOVMb24x6buBjtq8ZJI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fC1mlgw+0lDUsFvjrshctcWEoo0V4UD+U8J/ILJgbDpD4PgHlbc2xJwXM2mFtk2Qk
-	 Q1rUSqipyQT1PUgwSSwTe4UvyucKrwtlQuNQzQViZUE6WDlmb9ZeZ8V94KqbelD6V/
-	 eoHL6s96pOmvK/udWEfFESrE37yS4Ogg6g8Rq/FRSaHgvGd3KYvNTtDviTIFBQSgpT
-	 jbJjCfkti3hbQVonUedvKstQ9mCrOX2y/HsAqZXFqoBXrd5DjMM6hg7b9/kqFa554K
-	 0x4W1KLijONCZ8ICO6V5fkMuMDEfHr+GDLQx0Lm6PfNZJ558Cg5ze0Welp4omneF34
-	 WSZ2dnIiRknzQ==
+	b=EL+qEFt8YnF1D8EXtjAXS17jpNIU9lV0XeYhqh2Qkaz8zJ7aB/SeSxLgW5nMEp0lk
+	 oj9dGN9Yk1afg3H65Glj0SPKoKSKndOqoCABLdQFDHqr26fPe2w9078C1z5lPKJFyF
+	 Lmj+RD2ZiK6H4CbEuLW5OkQ693b67dzLzQTuEpxVu+RCTilg+5Za4FK4WgV8DQihjS
+	 c2Qpe/IaHGATXYiqOc5syP9za/Kx/pEN7tWwiL9SjHAlCnUs4Zya/ywQ0kQNZkpj39
+	 SVuXkLcMUD27WmXBe+R9BsIo+npEqb4CEbjnURXKVgTaT/71te0wLLjFOljFWLuLqH
+	 ppnIcR4Lh5ZOA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Jeffrey Hugo <quic_jhugo@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Brian Masney <bmasney@redhat.com>,
+	Konrad Dybcio <konrad.dybcio@somainline.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 129/451] arm64: dts: qcom: msm8998: declare VLS CLAMP register for USB3 PHY
-Date: Sun, 24 Mar 2024 19:06:45 -0400
-Message-ID: <20240324231207.1351418-130-sashal@kernel.org>
+Subject: [PATCH 6.1 130/451] arm64: dts: qcom: sc8280xp: update UFS PHY nodes
+Date: Sun, 24 Mar 2024 19:06:46 -0400
+Message-ID: <20240324231207.1351418-131-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,51 +64,117 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Johan Hovold <johan+linaro@kernel.org>
 
-[ Upstream commit fc835b2311d4deb85d776c1d73562338462aa7ac ]
+[ Upstream commit 33c4e6588e4f018abc43381ee21fe2bed37e34a5 ]
 
-The USB3 PHY on the MSM8998 platform doesn't have built-in
-PCS_MISC_CLAMP_ENABLE register. Instead clamping is handled separately
-via the register in the TCSR space. Declare corresponding register.
+Update the UFS PHY nodes to match the new binding.
 
-Fixes: 026dad8f5873 ("arm64: dts: qcom: msm8998: Add USB-related nodes")
-Cc: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Link: https://lore.kernel.org/r/20240117-usbc-phy-vls-clamp-v2-4-a950c223f10f@linaro.org
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Reviewed-by: Brian Masney <bmasney@redhat.com>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Link: https://lore.kernel.org/r/20221104092045.17410-3-johan+linaro@kernel.org
+Stable-dep-of: 1d4ef9644e21 ("arm64: dts: qcom: sc8280xp: Fix UFS PHY clocks")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8998.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 49 +++++++++-----------------
+ 1 file changed, 17 insertions(+), 32 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index 6eef7cbe7d7bf..6c3aecea20370 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -1052,6 +1052,11 @@ tcsr_regs_1: syscon@1f60000 {
- 			reg = <0x01f60000 0x20000>;
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+index 7e3aaf5de3f5c..88140ce104a44 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+@@ -845,7 +845,7 @@ ufs_mem_hc: ufs@1d84000 {
+ 				     "jedec,ufs-2.0";
+ 			reg = <0 0x01d84000 0 0x3000>;
+ 			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
+-			phys = <&ufs_mem_phy_lanes>;
++			phys = <&ufs_mem_phy>;
+ 			phy-names = "ufsphy";
+ 			lanes-per-direction = <2>;
+ 			#reset-cells = <1>;
+@@ -887,27 +887,20 @@ ufs_mem_hc: ufs@1d84000 {
+ 
+ 		ufs_mem_phy: phy@1d87000 {
+ 			compatible = "qcom,sc8280xp-qmp-ufs-phy";
+-			reg = <0 0x01d87000 0 0x1c8>;
+-			#address-cells = <2>;
+-			#size-cells = <2>;
+-			ranges;
+-			clock-names = "ref",
+-				      "ref_aux";
++			reg = <0 0x01d87000 0 0x1000>;
++
+ 			clocks = <&gcc GCC_UFS_CARD_CLKREF_CLK>,
+ 				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
++			clock-names = "ref", "ref_aux";
++
++			power-domains = <&gcc UFS_PHY_GDSC>;
+ 
+ 			resets = <&ufs_mem_hc 0>;
+ 			reset-names = "ufsphy";
+-			status = "disabled";
+ 
+-			ufs_mem_phy_lanes: phy@1d87400 {
+-				reg = <0 0x01d87400 0 0x108>,
+-				      <0 0x01d87600 0 0x1e0>,
+-				      <0 0x01d87c00 0 0x1dc>,
+-				      <0 0x01d87800 0 0x108>,
+-				      <0 0x01d87a00 0 0x1e0>;
+-				#phy-cells = <0>;
+-			};
++			#phy-cells = <0>;
++
++			status = "disabled";
  		};
  
-+		tcsr_regs_2: syscon@1fc0000 {
-+			compatible = "qcom,msm8998-tcsr", "syscon";
-+			reg = <0x01fc0000 0x26000>;
-+		};
-+
- 		tlmm: pinctrl@3400000 {
- 			compatible = "qcom,msm8998-pinctrl";
- 			reg = <0x03400000 0xc00000>;
-@@ -2058,6 +2063,8 @@ usb3phy: phy@c010000 {
- 			reset-names = "phy",
- 				      "phy_phy";
+ 		ufs_card_hc: ufs@1da4000 {
+@@ -915,7 +908,7 @@ ufs_card_hc: ufs@1da4000 {
+ 				     "jedec,ufs-2.0";
+ 			reg = <0 0x01da4000 0 0x3000>;
+ 			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>;
+-			phys = <&ufs_card_phy_lanes>;
++			phys = <&ufs_card_phy>;
+ 			phy-names = "ufsphy";
+ 			lanes-per-direction = <2>;
+ 			#reset-cells = <1>;
+@@ -956,28 +949,20 @@ ufs_card_hc: ufs@1da4000 {
  
-+			qcom,tcsr-reg = <&tcsr_regs_2 0xb244>;
+ 		ufs_card_phy: phy@1da7000 {
+ 			compatible = "qcom,sc8280xp-qmp-ufs-phy";
+-			reg = <0 0x01da7000 0 0x1c8>;
+-			#address-cells = <2>;
+-			#size-cells = <2>;
+-			ranges;
+-			clock-names = "ref",
+-				      "ref_aux";
++			reg = <0 0x01da7000 0 0x1000>;
 +
- 			status = "disabled";
+ 			clocks = <&gcc GCC_UFS_1_CARD_CLKREF_CLK>,
+ 				 <&gcc GCC_UFS_CARD_PHY_AUX_CLK>;
++			clock-names = "ref", "ref_aux";
++
++			power-domains = <&gcc UFS_CARD_GDSC>;
+ 
+ 			resets = <&ufs_card_hc 0>;
+ 			reset-names = "ufsphy";
+ 
+-			status = "disabled";
++			#phy-cells = <0>;
+ 
+-			ufs_card_phy_lanes: phy@1da7400 {
+-				reg = <0 0x01da7400 0 0x108>,
+-				      <0 0x01da7600 0 0x1e0>,
+-				      <0 0x01da7c00 0 0x1dc>,
+-				      <0 0x01da7800 0 0x108>,
+-				      <0 0x01da7a00 0 0x1e0>;
+-				#phy-cells = <0>;
+-			};
++			status = "disabled";
  		};
  
+ 		tcsr_mutex: hwlock@1f40000 {
 -- 
 2.43.0
 
