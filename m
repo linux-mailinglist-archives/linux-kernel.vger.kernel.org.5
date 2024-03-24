@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6EB388A1A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:22:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0E338896EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE420B244E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:26:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D35341C308B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE6125287D;
-	Mon, 25 Mar 2024 02:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A5D25395A;
+	Mon, 25 Mar 2024 02:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z76051WE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jWjh4A7z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469EE14F122;
-	Sun, 24 Mar 2024 23:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEA514F131;
+	Sun, 24 Mar 2024 23:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321346; cv=none; b=e10xPxXBbUwTnEg05C7BdgqyNvPJRbUUme85HfYDp5F+/Oz3Fr0GaIXUB+RwNj83/dlE7Lcjis9QRwJsZEC+reTXV+qUn3TUG2O/QxvSgS5SUa3weItRkC0oMrLwht5KSb/G9xGGcCf6eXvRkKaGXsQUtM2seiNcNY0Cl8nfSb4=
+	t=1711321348; cv=none; b=gqhGjgZ1gD8A9Y6XArYPow+kc/h0Gfc8OkbM1dfcLhQ0p/NNVATBSxBTorrEjo3nBp+iJSWdZc14KWfNsF3XotMbTzZ0NR74yyuoDMv4NgwsqfQr+aVB96r9l7YNxnbZ8kL65B4kgSgLdZ0Ylv9B+VbxC/C/7BQpEAYkmuecSJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321346; c=relaxed/simple;
-	bh=SceaZmCpQTkY+KSCgdHN+OVnB1Mmup/sCz2d/q4qxb8=;
+	s=arc-20240116; t=1711321348; c=relaxed/simple;
+	bh=EvH3SPEWqAXMvuGevgVNS69+E2/o6n7RXD3FQR983OI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e4nKMaHl2ZaTspqbFe9wXR4jVP1M+2P1hg0Tpn9K29PZ2vBxKJ99SheQW/NWm5GaHAWgcvanEaaSFfDdV/jvNxPPJTVrnCX3+rdctQEcusmTG6Xf/MHSsfFBfh785kco6US0MROXREngyaUVJxWDv3aXFZGjOM9JJ4X9nb8VWjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z76051WE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 871D3C43390;
-	Sun, 24 Mar 2024 23:02:25 +0000 (UTC)
+	 MIME-Version; b=SiGpd/XqI2mj8zSwCjLfiVIVZGx1idC7PIAmZV+2k06TssBL15sg09gPDnmxyK+lLtiOgT+b8lK4bvnvBqOm9lBOS2wCrHy5kZm+buewFTmxwRWeWLIk80AgZIdyH0zjiOKIG5NoZrzpp3zxHEaXk1d4I6BLXs/uZwAkhwnf/Xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jWjh4A7z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B128C43394;
+	Sun, 24 Mar 2024 23:02:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321346;
-	bh=SceaZmCpQTkY+KSCgdHN+OVnB1Mmup/sCz2d/q4qxb8=;
+	s=k20201202; t=1711321347;
+	bh=EvH3SPEWqAXMvuGevgVNS69+E2/o6n7RXD3FQR983OI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Z76051WESXsqAp1J1XjsiYNoQEY1fGhGEksE6LU4a+j2rNa/5B5T30DThhWadBOCV
-	 YmXgudLiihaQCCCnFr7D/A90ZJrXyKajqsGDYNYw8eTkL7mWy9ZWnxW/oQYW2DaSc8
-	 pyQuw1tXtDQ4LkJw5UcObv/OBYRlqszCxw/tRCYU9ccOrz5Ftm21p4897Jt6GOEsSy
-	 b/yGLPx3VWnD/ot8mM4rjxSEQ9mj7rxkvksWNLNaqbDp12km8S9ucdidu2dBqCzrfw
-	 xS9zdpzl5MVoDi4tG4LBKg+2RArFop4WYV7f8hNky9vkG5MvpPtb0c9ItEEXq8/6p/
-	 F0Hyqx6P16upQ==
+	b=jWjh4A7zkyEisVzWVr0XfLbYsuK611qII6sW/LEPRrZ2HarCZokg2yt3ypB34N0Mc
+	 XCEkkJdo30YOefCES3H+F8EzJleFTV/kROAcwfVGWTVCFSrwMr3BdacBV2K3I6jSr3
+	 EDeylfTjuZ060zBQv9mMBLP6qFxtCDbvG9CpAlG7krc5LjB28gWyAT0er7BHhfIlBS
+	 eETENioOORau5zF1L0TDobSZnNQI72GRN4OHcq0NSJ/2fJSahgju7oKsHr2XQrv2K/
+	 o/CWKVycTRErBV7V0sgZf/6dD/+8D88SfporYuEXAua063lS+yEiXRKs9qrHQEVNkt
+	 o7eCSrNU44l+A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Tejun Heo <tj@kernel.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 070/638] workqueue: Factor out pwq_is_empty()
-Date: Sun, 24 Mar 2024 18:51:47 -0400
-Message-ID: <20240324230116.1348576-71-sashal@kernel.org>
+Subject: [PATCH 6.6 071/638] workqueue: Replace pwq_activate_inactive_work() with [__]pwq_activate_work()
+Date: Sun, 24 Mar 2024 18:51:48 -0400
+Message-ID: <20240324230116.1348576-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,71 +64,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Tejun Heo <tj@kernel.org>
 
-[ Upstream commit afa87ce85379e2d93863fce595afdb5771a84004 ]
+[ Upstream commit 4c6380305d21e36581b451f7337a36c93b64e050 ]
 
-"!pwq->nr_active && list_empty(&pwq->inactive_works)" test is repeated
-multiple times. Let's factor it out into pwq_is_empty().
+To prepare for unbound nr_active handling improvements, move work activation
+part of pwq_activate_inactive_work() into __pwq_activate_work() and add
+pwq_activate_work() which tests WORK_STRUCT_INACTIVE and updates nr_active.
+
+pwq_activate_first_inactive() and try_to_grab_pending() are updated to use
+pwq_activate_work(). The latter conversion is functionally identical. For
+the former, this conversion adds an unnecessary WORK_STRUCT_INACTIVE
+testing. This is temporary and will be removed by the next patch.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
 Stable-dep-of: 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/workqueue.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ kernel/workqueue.c | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 3aa48ba8c7175..3eb0408133ada 100644
+index 3eb0408133ada..3436fd266cde0 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -1450,6 +1450,11 @@ static void put_pwq_unlocked(struct pool_workqueue *pwq)
- 	}
+@@ -1455,16 +1455,36 @@ static bool pwq_is_empty(struct pool_workqueue *pwq)
+ 	return !pwq->nr_active && list_empty(&pwq->inactive_works);
  }
  
-+static bool pwq_is_empty(struct pool_workqueue *pwq)
-+{
-+	return !pwq->nr_active && list_empty(&pwq->inactive_works);
+-static void pwq_activate_inactive_work(struct work_struct *work)
++static void __pwq_activate_work(struct pool_workqueue *pwq,
++				struct work_struct *work)
+ {
+-	struct pool_workqueue *pwq = get_work_pwq(work);
+-
+ 	trace_workqueue_activate_work(work);
+ 	if (list_empty(&pwq->pool->worklist))
+ 		pwq->pool->watchdog_ts = jiffies;
+ 	move_linked_works(work, &pwq->pool->worklist, NULL);
+ 	__clear_bit(WORK_STRUCT_INACTIVE_BIT, work_data_bits(work));
 +}
 +
- static void pwq_activate_inactive_work(struct work_struct *work)
- {
- 	struct pool_workqueue *pwq = get_work_pwq(work);
-@@ -3319,7 +3324,7 @@ void drain_workqueue(struct workqueue_struct *wq)
- 		bool drained;
++/**
++ * pwq_activate_work - Activate a work item if inactive
++ * @pwq: pool_workqueue @work belongs to
++ * @work: work item to activate
++ *
++ * Returns %true if activated. %false if already active.
++ */
++static bool pwq_activate_work(struct pool_workqueue *pwq,
++			      struct work_struct *work)
++{
++	struct worker_pool *pool = pwq->pool;
++
++	lockdep_assert_held(&pool->lock);
++
++	if (!(*work_data_bits(work) & WORK_STRUCT_INACTIVE))
++		return false;
++
+ 	pwq->nr_active++;
++	__pwq_activate_work(pwq, work);
++	return true;
+ }
  
- 		raw_spin_lock_irq(&pwq->pool->lock);
--		drained = !pwq->nr_active && list_empty(&pwq->inactive_works);
-+		drained = pwq_is_empty(pwq);
- 		raw_spin_unlock_irq(&pwq->pool->lock);
+ static void pwq_activate_first_inactive(struct pool_workqueue *pwq)
+@@ -1472,7 +1492,7 @@ static void pwq_activate_first_inactive(struct pool_workqueue *pwq)
+ 	struct work_struct *work = list_first_entry(&pwq->inactive_works,
+ 						    struct work_struct, entry);
  
- 		if (drained)
-@@ -4779,7 +4784,7 @@ static bool pwq_busy(struct pool_workqueue *pwq)
+-	pwq_activate_inactive_work(work);
++	pwq_activate_work(pwq, work);
+ }
  
- 	if ((pwq != pwq->wq->dfl_pwq) && (pwq->refcnt > 1))
- 		return true;
--	if (pwq->nr_active || !list_empty(&pwq->inactive_works))
-+	if (!pwq_is_empty(pwq))
- 		return true;
+ /**
+@@ -1610,8 +1630,7 @@ static int try_to_grab_pending(struct work_struct *work, bool is_dwork,
+ 		 * management later on and cause stall.  Make sure the work
+ 		 * item is activated before grabbing.
+ 		 */
+-		if (*work_data_bits(work) & WORK_STRUCT_INACTIVE)
+-			pwq_activate_inactive_work(work);
++		pwq_activate_work(pwq, work);
  
- 	return false;
-@@ -5217,7 +5222,7 @@ void show_one_workqueue(struct workqueue_struct *wq)
- 	unsigned long flags;
- 
- 	for_each_pwq(pwq, wq) {
--		if (pwq->nr_active || !list_empty(&pwq->inactive_works)) {
-+		if (!pwq_is_empty(pwq)) {
- 			idle = false;
- 			break;
- 		}
-@@ -5229,7 +5234,7 @@ void show_one_workqueue(struct workqueue_struct *wq)
- 
- 	for_each_pwq(pwq, wq) {
- 		raw_spin_lock_irqsave(&pwq->pool->lock, flags);
--		if (pwq->nr_active || !list_empty(&pwq->inactive_works)) {
-+		if (!pwq_is_empty(pwq)) {
- 			/*
- 			 * Defer printing to avoid deadlocks in console
- 			 * drivers that queue work while holding locks
+ 		list_del_init(&work->entry);
+ 		pwq_dec_nr_in_flight(pwq, *work_data_bits(work));
 -- 
 2.43.0
 
