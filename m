@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 990FB888184
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 68299888186
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:23:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9E6C1C21A62
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:23:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 949E01C21A3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:23:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652A91586F2;
-	Sun, 24 Mar 2024 22:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D27158D79;
+	Sun, 24 Mar 2024 22:38:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rcedlwfc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mN3FhzuT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CB71586DB;
-	Sun, 24 Mar 2024 22:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F36158D61;
+	Sun, 24 Mar 2024 22:38:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319915; cv=none; b=nyYZ7mXeKsgL3iMOAwhC37oZ5yUDJi25uYzcaXUKzcgerVxlaZ3uYnE6UB0To2G26ApZ8SpVfMRzTHVlJBuT3efen7SXs+ZacKx2BWe51y83BPvjBmeGNV2dMNwvKD/x79pVd9nBkSp9gnkPeKtcbS7KePRryZLC/kxHCR7RDgM=
+	t=1711319917; cv=none; b=f0l87rY7BRUSkRaM+yWW2WKueZx5YDQWBzX7K58FkFlmQMhUz4r6zvK1Q6kFFKPfs9IGuGj0dgp99SSLS68RkOczCsvHxyE2g/gd+38UFE8NnVYpLt4eMrEwdVvEsoEWtytREtHLzCPFJufgRTQzU+QvqbjnV2lW/X2SniHKqxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319915; c=relaxed/simple;
-	bh=hgKXfShRnwipZ+Km/9JNBJH4+qiU82rIGPcSvqOOfTc=;
+	s=arc-20240116; t=1711319917; c=relaxed/simple;
+	bh=NWPrkaaaSy9kKYxmurUP9GafqEG7VJh8Z50d+eN03o8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cXHJyDA21WXlvhcNrG8fGvQlpCDeopVkGczlrAsCDwbfZcHfi7eD/rhxnIzxic4OZs95hnYKY54sjVW11q/pCqG55bg7nzv/HCPQUUeGFGR5L1toAaX6XtVqphC6siEMBC0qTQV//3eSA7hRtKqcpgvWtMZJHJGfN6KeLuJAMKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rcedlwfc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE79BC433C7;
-	Sun, 24 Mar 2024 22:38:34 +0000 (UTC)
+	 MIME-Version; b=nAc4dywXo9g1jstQa55sxq/ZorNL+vwCeCODnOQRZts4W8C1g6V8Us17uwWRuSclylqQubdwFcAS4COqfN95QrQDtfPFxDRXyy31CAUB+lSpVhbMWFmBhS9hfldNb1UM5ksNSBDbpU5+q/j6WtNalm5WD8HO0nisqIohYM6eXks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mN3FhzuT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C60C433F1;
+	Sun, 24 Mar 2024 22:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319915;
-	bh=hgKXfShRnwipZ+Km/9JNBJH4+qiU82rIGPcSvqOOfTc=;
+	s=k20201202; t=1711319916;
+	bh=NWPrkaaaSy9kKYxmurUP9GafqEG7VJh8Z50d+eN03o8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RcedlwfcHitWfKYyZkYc1E9pcG5ETATo58m578/bOwVNJyzM8d/+K16lr8TsKIQpm
-	 INNDy4pi9QMica8SJ6XL2GSUGkQnyHzijHSAIzjPGnAoUkTBOufFGzE9C89de20AIK
-	 G0and/efekhaOVBuMAjCR24IBlYncpvpn9cYXiFGo9GW8haXMQmDfGOafAejOr4pJF
-	 Fg5Z5o8g1dAs3da7QFkKU5UnzQ67mvdM0f0ryAmifrMceAOQBFKkgsFrJNq3Zx7aZ4
-	 6UaqR1mHwBT12Yh9JCXEsT7hdS2LDrmeM/16Xr0OpLKNjsCSUNq50OwcWHAtOkE6NC
-	 iCJ/SB4JkSxwA==
+	b=mN3FhzuTHqJvmoO4r2pWKNmJ9zVblJNM9BAnZm9Uk/vqfN7t9upk/+FHAo970mG6i
+	 Moed8CffcAktcI4MB3xDlfKZtwX+LiYsS+0TGtQbP7EGg54OFT5W5216NhApcmlv95
+	 lTuMMD7DloN3sOPk4gGAdwV0D4j9OcCOgw0DuGGNNz3Wrj7LklilY04qN3ueMGsrfz
+	 nix8H4FLy6j0kDQ2Kbwq2Ud2vq6ZyCPaETOhlzuZcjggXP4fQUZ+ne76HGpKXpUvXq
+	 46opjab65jxRP9ETkLUpY975V3iF3b52ap9CtoAg9hk4umiLVcfKte0UPPZGD1ll5J
+	 +si3qkSWhN9Og==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Judith Mendez <jm@ti.com>,
-	Wadim Egorov <w.egorov@phytec.de>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Hsin-Te Yuan <yuanhsinte@google.com>,
+	Hsin-Te Yuan <yuanhsinte@chromium.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 221/715] arm64: dts: ti: k3-am64-main: Fix ITAP/OTAP values for MMC
-Date: Sun, 24 Mar 2024 18:26:40 -0400
-Message-ID: <20240324223455.1342824-222-sashal@kernel.org>
+Subject: [PATCH 6.8 222/715] arm64: dts: mt8195-cherry-tomato: change watchdog reset boot flow
+Date: Sun, 24 Mar 2024 18:26:41 -0400
+Message-ID: <20240324223455.1342824-223-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,57 +63,64 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Judith Mendez <jm@ti.com>
+From: Hsin-Te Yuan <yuanhsinte@google.com>
 
-[ Upstream commit 379c7752bbd0e81654544a896dd19c19ebb6faba ]
+[ Upstream commit ef569d5db50e7edd709e482157769a5b3c367e22 ]
 
-Update MMC0/MMC1 OTAP/ITAP values according to the datasheet
-[0], refer to Table 7-68 for MMC0 and Table 7-77 for MMC1.
+The external output reset signal was originally disabled and sent from
+firmware. However, an unfixed bug in the firmware on tomato prevents
+the signal from being sent, causing the device to fail to boot. To fix
+this, enable external output reset signal to allow the device to reboot
+normally.
 
-[0] https://www.ti.com/lit/ds/symlink/am6442.pdf
-
-Fixes: 8abae9389bdb ("arm64: dts: ti: Add support for AM642 SoC")
-Signed-off-by: Judith Mendez <jm@ti.com>
-Tested-by: Wadim Egorov <w.egorov@phytec.de>
-Link: https://lore.kernel.org/r/20240213235701.2438513-5-jm@ti.com
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Fixes: 5eb2e303ec6b ("arm64: dts: mediatek: Introduce MT8195 Cherry platform's Tomato")
+Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://lore.kernel.org/r/20240124-send-upstream-v3-1-5097c9862a73@chromium.org
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts | 4 ++++
+ 3 files changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index e348114f42e01..ba624ef72f5b4 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -633,6 +633,9 @@ sdhci0: mmc@fa10000 {
- 		ti,otap-del-sel-mmc-hs = <0x0>;
- 		ti,otap-del-sel-ddr52 = <0x6>;
- 		ti,otap-del-sel-hs200 = <0x7>;
-+		ti,itap-del-sel-legacy = <0x10>;
-+		ti,itap-del-sel-mmc-hs = <0xa>;
-+		ti,itap-del-sel-ddr52 = <0x3>;
- 		status = "disabled";
- 	};
- 
-@@ -645,12 +648,16 @@ sdhci1: mmc@fa00000 {
- 		clock-names = "clk_ahb", "clk_xin";
- 		ti,trm-icp = <0x2>;
- 		ti,otap-del-sel-legacy = <0x0>;
--		ti,otap-del-sel-sd-hs = <0xf>;
-+		ti,otap-del-sel-sd-hs = <0x0>;
- 		ti,otap-del-sel-sdr12 = <0xf>;
- 		ti,otap-del-sel-sdr25 = <0xf>;
- 		ti,otap-del-sel-sdr50 = <0xc>;
- 		ti,otap-del-sel-sdr104 = <0x6>;
- 		ti,otap-del-sel-ddr50 = <0x9>;
-+		ti,itap-del-sel-legacy = <0x0>;
-+		ti,itap-del-sel-sd-hs = <0x0>;
-+		ti,itap-del-sel-sdr12 = <0x0>;
-+		ti,itap-del-sel-sdr25 = <0x0>;
- 		ti,clkbuf-sel = <0x7>;
- 		status = "disabled";
- 	};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
+index 2d5e8f371b6de..a82d716f10d44 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
+@@ -23,3 +23,7 @@ &sound {
+ &ts_10 {
+ 	status = "okay";
+ };
++
++&watchdog {
++	/delete-property/ mediatek,disable-extrst;
++};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
+index 2586c32ce6e6f..2fe20e0dad836 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
+@@ -43,3 +43,7 @@ &sound {
+ &ts_10 {
+ 	status = "okay";
+ };
++
++&watchdog {
++	/delete-property/ mediatek,disable-extrst;
++};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
+index f54f9477b99da..dd294ca98194c 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
+@@ -44,3 +44,7 @@ &sound {
+ &ts_10 {
+ 	status = "okay";
+ };
++
++&watchdog {
++	/delete-property/ mediatek,disable-extrst;
++};
 -- 
 2.43.0
 
