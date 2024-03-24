@@ -1,56 +1,59 @@
-Return-Path: <linux-kernel+bounces-113758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6F10888E77
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:19:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEE218893E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 568921F319BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:19:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F04021C2EB43
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E9212CD87;
-	Sun, 24 Mar 2024 22:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9B3212D0D;
+	Mon, 25 Mar 2024 02:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MqEGjE3l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqZbv/7S"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 266F6127B63;
-	Sun, 24 Mar 2024 22:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB9D14658F;
+	Sun, 24 Mar 2024 22:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320778; cv=none; b=UzTIKUITT92PcmCS9s0gxCpdrtfh2Pk5L/Wlso9Qov+fgsfs6Ke60YM5KnctYxOAvLSz7RvRW/vgvqilKvibnGP70Jc4LOjwVsCNLYdwBESVXI0My9n7Y9wGsy1g9eThDtiE2jw9QJBFGh68kVWHQcLLiuCYnGKeCxCTPZUrfTA=
+	t=1711320779; cv=none; b=bpyOOWKTq+u3HczBAX0J9MQki2U3JdBAM3TrBm/TPjYCUzSW8uEtYXBj0x6bsPTRMIZ/vGLA2cNrWWdICMpz8gTZw2+lwYc2amFh/0lCLtNPiruXMTm8D2EWXR3+2GaEhfS4BcO+NNjB8nSMVPBuxG7/x6vOOM5GE1HUjIYLAKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320778; c=relaxed/simple;
-	bh=5PFsaQlyqdwHk72k/+qjhy0XjH+8BI1+xj26NDsB7+s=;
+	s=arc-20240116; t=1711320779; c=relaxed/simple;
+	bh=jj07wmei3mN6ZMOc0Yk4DtKf6tEJuooz99NDNP+fkjo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GIqRqgU+euOijDrj5mlwko4N6AH74m3GppbkQJUcVryFQS0Kd180PPeObVxv9E+Rm1oRQqoXUO+bfhK53qrpvaAdWs/iNSFkZFpeJoDaI3oDQbPqv2MDn/8GcBNuYx/Bi4HvjJtudpXBP+xbOCGuz5CdFe19Oisx6SMHfya5vDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MqEGjE3l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34409C43390;
-	Sun, 24 Mar 2024 22:52:57 +0000 (UTC)
+	 MIME-Version; b=aZR7KNwMWtufeacDYLy2S1IYz37HeNMIJMu9ieBRWbV9OJDBUm5Fw/rDpa0AvUH7JE+P9Kwpq7tEGz+xF+6Vth12SAos/7PYMp+eghDiNAbBAKfc1ll+6htI3oxoU80B0ILI/ZYVNNLJqDOMSh3kcC2X7UYW/62DqGnFOm/nhuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dqZbv/7S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A68CC433F1;
+	Sun, 24 Mar 2024 22:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320778;
-	bh=5PFsaQlyqdwHk72k/+qjhy0XjH+8BI1+xj26NDsB7+s=;
+	s=k20201202; t=1711320779;
+	bh=jj07wmei3mN6ZMOc0Yk4DtKf6tEJuooz99NDNP+fkjo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MqEGjE3luNu7cPLvvQA5Pbh3FRH0tqi0Sr9Ab6MBn80M8XHxuh1VSFEmPMWqqhmgN
-	 oEHnKeNGsJTc59c9kmEfmzpVptRNuX2EECT3iCNLhRzhP/n8ZC+sHjlLi1+ktS+5pP
-	 wc/wETHdbXqI8HlGF6sBJGLaLgKuvUkV9JjalnFHNBn2EnTqgRhfrGCXGADWzrIEEa
-	 7Utfwt1npYE+CJQ1E4Up0vSwnUjcwkB1iGlWks8p/aXVvkoBIP1lc65DtTGZERgspu
-	 5q6Lo5F+q3KCpYn5Nj74xfWXq6vvaWorzfs8xhvrrTYSmTgznC6r8XrSZUfoDaTOaL
-	 xlVq8dv637xyg==
+	b=dqZbv/7SHQVBZzazZiyQapwONwZnst91dXPKlJKRS6GhNEE64WvQ2hv3PopQ2n3NJ
+	 0TYzGBo027g7z2JkndDKV7I9IYhScYwgusseDZyN9+BpfEDFzQjJq2KAhsURyGvGfe
+	 vn0BHYl+1ifn5M06kXpEiWFCsqnN7NBYTkFE7FIBfVqzn+tuvrFrmYg+/erPs1d11E
+	 xuIu8LtsMoLUifgwxMVaWrW0ct9hQ2rvuYvUf8kC+C2R74F5tE1KkjaKBtvXyBDonG
+	 BYR/aFcKEVRkZ42JkOuWV3YcOEat/BydnQ/JRu25vqldxt937HW6dfN5rxavSMttIw
+	 OIJRajK3qwvUw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	Richard Cochran <richardcochran@gmail.com>,
+Cc: Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Nebojsa Stevanovic <nebojsa.stevanovic@gcore.com>,
+	Christian Rohmann <christian.rohmann@inovex.de>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Simon Horman <horms@kernel.org>,
 	Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>,
 	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 341/713] igb: Fix missing time sync events
-Date: Sun, 24 Mar 2024 18:41:07 -0400
-Message-ID: <20240324224720.1345309-342-sashal@kernel.org>
+Subject: [PATCH 6.7 342/713] ice: fix stats being updated by way too large values
+Date: Sun, 24 Mar 2024 18:41:08 -0400
+Message-ID: <20240324224720.1345309-343-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,92 +67,88 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 
-[ Upstream commit ee14cc9ea19ba9678177e2224a9c58cce5937c73 ]
+[ Upstream commit 257310e998700e60382fbd3f4fd275fdbd9b2aaf ]
 
-Fix "double" clearing of interrupts, which can cause external events
-or timestamps to be missed.
+Simplify stats accumulation logic to fix the case where we don't take
+previous stat value into account, we should always respect it.
 
-The E1000_TSIRC Time Sync Interrupt Cause register can be cleared in two
-ways, by either reading it or by writing '1' into the specific cause
-bit. This is documented in section 8.16.1.
+Main netdev stats of our PF (Tx/Rx packets/bytes) were reported orders of
+magnitude too big during OpenStack reconfiguration events, possibly other
+reconfiguration cases too.
 
-The following flow was used:
-    1. read E1000_TSIRC into 'tsicr';
-    2. handle the interrupts present into 'tsirc' and mark them in 'ack';
-    3. write 'ack' into E1000_TSICR;
+The regression was reported to be between 6.1 and 6.2, so I was almost
+certain that on of the two "preserve stats over reset" commits were the
+culprit. While reading the code, it was found that in some cases we will
+increase the stats by arbitrarily large number (thanks to ignoring "-prev"
+part of condition, after zeroing it).
 
-As both (1) and (3) will clear the interrupt cause, if the same
-interrupt happens again between (1) and (3) it will be ignored,
-causing events to be missed.
+Note that this fixes also the case where we were around limits of u64, but
+that was not the regression reported.
 
-Remove the extra clear in (3).
+Full disclosure: I remember suggesting this particular piece of code to
+Ben a few years ago, so blame on me.
 
-Fixes: 00c65578b47b ("igb: enable internal PPS for the i210")
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Fixes: 2fd5e433cd26 ("ice: Accumulate HW and Netdev statistics over reset")
+Reported-by: Nebojsa Stevanovic <nebojsa.stevanovic@gcore.com>
+Link: https://lore.kernel.org/intel-wired-lan/VI1PR02MB439744DEDAA7B59B9A2833FE912EA@VI1PR02MB4397.eurprd02.prod.outlook.com
+Reported-by: Christian Rohmann <christian.rohmann@inovex.de>
+Link: https://lore.kernel.org/intel-wired-lan/f38a6ca4-af05-48b1-a3e6-17ef2054e525@inovex.de
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
 Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com> (A Contingent worker at Intel)
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 23 +++++------------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_main.c | 24 +++++++++++------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index b2295caa2f0ab..ada42ba635498 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -6984,44 +6984,31 @@ static void igb_extts(struct igb_adapter *adapter, int tsintr_tt)
- static void igb_tsync_interrupt(struct igb_adapter *adapter)
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index a9cca2d24120a..dabf33cec3e1b 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -6572,6 +6572,7 @@ static void ice_update_vsi_ring_stats(struct ice_vsi *vsi)
  {
- 	struct e1000_hw *hw = &adapter->hw;
--	u32 ack = 0, tsicr = rd32(E1000_TSICR);
-+	u32 tsicr = rd32(E1000_TSICR);
- 	struct ptp_clock_event event;
+ 	struct rtnl_link_stats64 *net_stats, *stats_prev;
+ 	struct rtnl_link_stats64 *vsi_stats;
++	struct ice_pf *pf = vsi->back;
+ 	u64 pkts, bytes;
+ 	int i;
  
- 	if (tsicr & TSINTR_SYS_WRAP) {
- 		event.type = PTP_CLOCK_PPS;
- 		if (adapter->ptp_caps.pps)
- 			ptp_clock_event(adapter->ptp_clock, &event);
--		ack |= TSINTR_SYS_WRAP;
+@@ -6617,21 +6618,18 @@ static void ice_update_vsi_ring_stats(struct ice_vsi *vsi)
+ 	net_stats = &vsi->net_stats;
+ 	stats_prev = &vsi->net_stats_prev;
+ 
+-	/* clear prev counters after reset */
+-	if (vsi_stats->tx_packets < stats_prev->tx_packets ||
+-	    vsi_stats->rx_packets < stats_prev->rx_packets) {
+-		stats_prev->tx_packets = 0;
+-		stats_prev->tx_bytes = 0;
+-		stats_prev->rx_packets = 0;
+-		stats_prev->rx_bytes = 0;
++	/* Update netdev counters, but keep in mind that values could start at
++	 * random value after PF reset. And as we increase the reported stat by
++	 * diff of Prev-Cur, we need to be sure that Prev is valid. If it's not,
++	 * let's skip this round.
++	 */
++	if (likely(pf->stat_prev_loaded)) {
++		net_stats->tx_packets += vsi_stats->tx_packets - stats_prev->tx_packets;
++		net_stats->tx_bytes += vsi_stats->tx_bytes - stats_prev->tx_bytes;
++		net_stats->rx_packets += vsi_stats->rx_packets - stats_prev->rx_packets;
++		net_stats->rx_bytes += vsi_stats->rx_bytes - stats_prev->rx_bytes;
  	}
  
- 	if (tsicr & E1000_TSICR_TXTS) {
- 		/* retrieve hardware timestamp */
- 		schedule_work(&adapter->ptp_tx_work);
--		ack |= E1000_TSICR_TXTS;
- 	}
- 
--	if (tsicr & TSINTR_TT0) {
-+	if (tsicr & TSINTR_TT0)
- 		igb_perout(adapter, 0);
--		ack |= TSINTR_TT0;
--	}
- 
--	if (tsicr & TSINTR_TT1) {
-+	if (tsicr & TSINTR_TT1)
- 		igb_perout(adapter, 1);
--		ack |= TSINTR_TT1;
--	}
- 
--	if (tsicr & TSINTR_AUTT0) {
-+	if (tsicr & TSINTR_AUTT0)
- 		igb_extts(adapter, 0);
--		ack |= TSINTR_AUTT0;
--	}
- 
--	if (tsicr & TSINTR_AUTT1) {
-+	if (tsicr & TSINTR_AUTT1)
- 		igb_extts(adapter, 1);
--		ack |= TSINTR_AUTT1;
--	}
+-	/* update netdev counters */
+-	net_stats->tx_packets += vsi_stats->tx_packets - stats_prev->tx_packets;
+-	net_stats->tx_bytes += vsi_stats->tx_bytes - stats_prev->tx_bytes;
+-	net_stats->rx_packets += vsi_stats->rx_packets - stats_prev->rx_packets;
+-	net_stats->rx_bytes += vsi_stats->rx_bytes - stats_prev->rx_bytes;
 -
--	/* acknowledge the interrupts */
--	wr32(E1000_TSICR, ack);
- }
- 
- static irqreturn_t igb_msix_other(int irq, void *data)
+ 	stats_prev->tx_packets = vsi_stats->tx_packets;
+ 	stats_prev->tx_bytes = vsi_stats->tx_bytes;
+ 	stats_prev->rx_packets = vsi_stats->rx_packets;
 -- 
 2.43.0
 
