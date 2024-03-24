@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E86888849D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:46:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B648D888487
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:43:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52F7FB21D39
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:42:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E77021C23301
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D031B16D5;
-	Sun, 24 Mar 2024 22:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC86F1B1FD3;
+	Sun, 24 Mar 2024 22:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d62P8tl6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NBsDZs8Y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DB81B16BA;
-	Sun, 24 Mar 2024 22:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53C87174A;
+	Sun, 24 Mar 2024 22:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320262; cv=none; b=hLgShUrry4nb/k6WI6HJiBW8qQLxuQSkzHoRUpWdx7252vkVr4Hk6UsKQI0Xu9bDHIwR5lgcClyPTbe6be4kXSdGNVz7Y2x68aYu8+hcptYDTVNqmsvI6UcRoGcUWIyTpfd2a/gsGNHSxq1ZtmOrQNWwpTj2Jotrj4XH4TEBw0w=
+	t=1711320264; cv=none; b=iRk9nhpHIeYrIiyj+v2b86+HJ5eBOuqkawi50QjfFusn2QJANEal3sgcj8GQU36hMWv7wO+37hD58+mXi9kvLTTfPkfdsxieFLquIHjrov4z/ebWqc8/ZjKsk7+zixq4/EXKgbuYRQ6hPltipR4GjrsvsFgpSBJgNsTvqkPFxOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320262; c=relaxed/simple;
-	bh=tvr6kTmhbZ3h56f2WbWt45CJd1mLr8noobwId+SR7mM=;
+	s=arc-20240116; t=1711320264; c=relaxed/simple;
+	bh=w9hTT74KPxpjUb9Jz1A1kgmJgCEjM1yGi+Xx/yRSAec=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a440W0ugimiqVB9kYCwydlzaWkN1OpHcvW04sjCO/oP6CbcC+xap2+L5vJxhb3O1i34CyNVabodsaCorvcuDNY3Ae8kxJll93sxObykIr6SlioB4WukY5J2STk6DyTnuuk3QOqSfiepxU2GtcQpZnlKRY4owTGUlJIXTK8Xq2Ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d62P8tl6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B13D2C43390;
-	Sun, 24 Mar 2024 22:44:21 +0000 (UTC)
+	 MIME-Version; b=hZno8mV0aAIS5PeKmNlSeCa4VE+z+OBc7Z+76t3NKt6hZYsN/q3tNRLU5SL2UTvmw1ZNPyiyhNc6N3YzqKQBujAmxeRM/YlA85cPLdWQXpnxZxbjXQujmb6UxV0oKJxCzFLYsTdIQ3+lK3UH8od995gY3YEv08Yw+AYQS1NiKe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NBsDZs8Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE996C433A6;
+	Sun, 24 Mar 2024 22:44:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320262;
-	bh=tvr6kTmhbZ3h56f2WbWt45CJd1mLr8noobwId+SR7mM=;
+	s=k20201202; t=1711320263;
+	bh=w9hTT74KPxpjUb9Jz1A1kgmJgCEjM1yGi+Xx/yRSAec=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=d62P8tl6tKN76GAnTbdoHKEDrU/UmUE0jWcQcMwFkeCyGtUj4ICLTTgOc0438znIh
-	 cSO67/XXNcm+iHYluRkWyJ4ZIHs8Gc4ALN4Nt26zuC4arXCw4TUApWf6tRJeJx3MR+
-	 7GuMa2dJuKdr+cgwuy1EeaDwT+yTEAMBSfgyri0EUi/eZOou285RmRnA9RolRiuctU
-	 ugvdeJ6g2p3aYJlXkOD1s6NxnpecuzX+HG3SsPjf/toamIl97IaGQr1nE0bf/m8c8i
-	 mWGgInqb5UUjTG2Xp9E0ntHZj6UpekuvwTu8Kg7h3zcFsAtfhy8gYqgnM3TuNS/9HK
-	 K/csn45aiJCXw==
+	b=NBsDZs8YvoThD6XRrd3NXZ2DVAbvfkI+A/Xf7rJecOHzpk7YgX5opcDjsDmyYQ68H
+	 pK1HyyjJuxrj7jSmZA2jffLzy16NMUpg30IRJAQ0UY4c1vY2KHcmvDJCu8dF6ERlx/
+	 iFEOb3XwZAin5e2tz4Dcgj+6ScD6KmPg2ruMPfMRLzzMyTsW2J8+qPy1Y/Ounr52Zz
+	 VSHqp2SQlQWmhrMJhydaB8fmrgRQdN3WAo2kGaOrsXU/Dbtm+4CeqFAmJ8Xqzp2ESu
+	 VFCBsB3JWTn0vEoeJ6wUUv/tXT39qsqGOG5u2yNTHtkmOCGOmvi2jQXOKN7cgQutxZ
+	 WGi89oD6jvh8w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Luoyouming <luoyouming@huawei.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: Shifeng Li <lishifeng@sangfor.com.cn>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jason Gunthorpe <jgg@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 570/715] RDMA/hns: Fix mis-modifying default congestion control algorithm
-Date: Sun, 24 Mar 2024 18:32:29 -0400
-Message-ID: <20240324223455.1342824-571-sashal@kernel.org>
+Subject: [PATCH 6.8 571/715] RDMA/device: Fix a race between mad_client and cm_client init
+Date: Sun, 24 Mar 2024 18:32:30 -0400
+Message-ID: <20240324223455.1342824-572-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,132 +63,131 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Luoyouming <luoyouming@huawei.com>
+From: Shifeng Li <lishifeng@sangfor.com.cn>
 
-[ Upstream commit d20a7cf9f714f0763efb56f0f2eeca1cb91315ed ]
+[ Upstream commit 7a8bccd8b29c321ac181369b42b04fecf05f98e2 ]
 
-Commit 27c5fd271d8b ("RDMA/hns: The UD mode can only be configured
-with DCQCN") adds a check of congest control alorithm for UD. But
-that patch causes a problem: hr_dev->caps.congest_type is global,
-used by all QPs, so modifying this field to DCQCN for UD QPs causes
-other QPs unable to use any other algorithm except DCQCN.
+The mad_client will be initialized in enable_device_and_get(), while the
+devices_rwsem will be downgraded to a read semaphore. There is a window
+that leads to the failed initialization for cm_client, since it can not
+get matched mad port from ib_mad_port_list, and the matched mad port will
+be added to the list after that.
 
-Revert the modification in commit 27c5fd271d8b ("RDMA/hns: The UD
-mode can only be configured with DCQCN"). Add a new field cong_type
-to struct hns_roce_qp and configure DCQCN for UD QPs.
+    mad_client    |                       cm_client
+------------------|--------------------------------------------------------
+ib_register_device|
+enable_device_and_get
+down_write(&devices_rwsem)
+xa_set_mark(&devices, DEVICE_REGISTERED)
+downgrade_write(&devices_rwsem)
+                  |
+                  |ib_cm_init
+                  |ib_register_client(&cm_client)
+                  |down_read(&devices_rwsem)
+                  |xa_for_each_marked (&devices, DEVICE_REGISTERED)
+                  |add_client_context
+                  |cm_add_one
+                  |ib_register_mad_agent
+                  |ib_get_mad_port
+                  |__ib_get_mad_port
+                  |list_for_each_entry(entry, &ib_mad_port_list, port_list)
+                  |return NULL
+                  |up_read(&devices_rwsem)
+                  |
+add_client_context|
+ib_mad_init_device|
+ib_mad_port_open  |
+list_add_tail(&port_priv->port_list, &ib_mad_port_list)
+up_read(&devices_rwsem)
+                  |
 
-Fixes: 27c5fd271d8b ("RDMA/hns: The UD mode can only be configured with DCQCN")
-Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
-Signed-off-by: Luoyouming <luoyouming@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-Link: https://lore.kernel.org/r/20240219061805.668170-1-huangjunxian6@hisilicon.com
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Fix it by using down_write(&devices_rwsem) in ib_register_client().
+
+Fixes: d0899892edd0 ("RDMA/device: Provide APIs from the core code to help unregistration")
+Link: https://lore.kernel.org/r/20240203035313.98991-1-lishifeng@sangfor.com.cn
+Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h | 17 +++++++++--------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 16 ++++++++++------
- 2 files changed, 19 insertions(+), 14 deletions(-)
+ drivers/infiniband/core/device.c | 37 +++++++++++++++++++-------------
+ 1 file changed, 22 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index b1fce5ddf6316..46f8a631093ba 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -585,6 +585,13 @@ struct hns_roce_work {
- 	u32 queue_num;
- };
- 
-+enum hns_roce_cong_type {
-+	CONG_TYPE_DCQCN,
-+	CONG_TYPE_LDCP,
-+	CONG_TYPE_HC3,
-+	CONG_TYPE_DIP,
-+};
-+
- struct hns_roce_qp {
- 	struct ib_qp		ibqp;
- 	struct hns_roce_wq	rq;
-@@ -628,6 +635,7 @@ struct hns_roce_qp {
- 	struct list_head	sq_node; /* all send qps are on a list */
- 	struct hns_user_mmap_entry *dwqe_mmap_entry;
- 	u32			config;
-+	enum hns_roce_cong_type	cong_type;
- };
- 
- struct hns_roce_ib_iboe {
-@@ -699,13 +707,6 @@ struct hns_roce_eq_table {
- 	struct hns_roce_eq	*eq;
- };
- 
--enum cong_type {
--	CONG_TYPE_DCQCN,
--	CONG_TYPE_LDCP,
--	CONG_TYPE_HC3,
--	CONG_TYPE_DIP,
--};
--
- struct hns_roce_caps {
- 	u64		fw_ver;
- 	u8		num_ports;
-@@ -835,7 +836,7 @@ struct hns_roce_caps {
- 	u16		default_aeq_period;
- 	u16		default_aeq_arm_st;
- 	u16		default_ceq_arm_st;
--	enum cong_type	cong_type;
-+	enum hns_roce_cong_type cong_type;
- };
- 
- enum hns_roce_device_state {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 8206daea6767d..34e58e09b15d8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4745,12 +4745,15 @@ static int check_cong_type(struct ib_qp *ibqp,
- 			   struct hns_roce_congestion_algorithm *cong_alg)
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 67bcea7a153c6..07cb6c5ffda00 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1730,7 +1730,7 @@ static int assign_client_id(struct ib_client *client)
  {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 
--	if (ibqp->qp_type == IB_QPT_UD)
--		hr_dev->caps.cong_type = CONG_TYPE_DCQCN;
-+	if (ibqp->qp_type == IB_QPT_UD || ibqp->qp_type == IB_QPT_GSI)
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
-+	else
-+		hr_qp->cong_type = hr_dev->caps.cong_type;
- 
- 	/* different congestion types match different configurations */
--	switch (hr_dev->caps.cong_type) {
-+	switch (hr_qp->cong_type) {
- 	case CONG_TYPE_DCQCN:
- 		cong_alg->alg_sel = CONG_DCQCN;
- 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
-@@ -4778,8 +4781,8 @@ static int check_cong_type(struct ib_qp *ibqp,
- 	default:
- 		ibdev_warn(&hr_dev->ib_dev,
- 			   "invalid type(%u) for congestion selection.\n",
--			   hr_dev->caps.cong_type);
--		hr_dev->caps.cong_type = CONG_TYPE_DCQCN;
-+			   hr_qp->cong_type);
-+		hr_qp->cong_type = CONG_TYPE_DCQCN;
- 		cong_alg->alg_sel = CONG_DCQCN;
- 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
- 		cong_alg->dip_vld = DIP_INVALID;
-@@ -4798,6 +4801,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
- 	struct hns_roce_congestion_algorithm cong_field;
- 	struct ib_device *ibdev = ibqp->device;
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibdev);
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 	u32 dip_idx = 0;
  	int ret;
  
-@@ -4810,7 +4814,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
- 		return ret;
+-	down_write(&clients_rwsem);
++	lockdep_assert_held(&clients_rwsem);
+ 	/*
+ 	 * The add/remove callbacks must be called in FIFO/LIFO order. To
+ 	 * achieve this we assign client_ids so they are sorted in
+@@ -1739,14 +1739,11 @@ static int assign_client_id(struct ib_client *client)
+ 	client->client_id = highest_client_id;
+ 	ret = xa_insert(&clients, client->client_id, client, GFP_KERNEL);
+ 	if (ret)
+-		goto out;
++		return ret;
  
- 	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
--		     hr_dev->caps.cong_type * HNS_ROCE_CONG_SIZE);
-+		     hr_qp->cong_type * HNS_ROCE_CONG_SIZE);
- 	hr_reg_clear(qpc_mask, QPC_CONG_ALGO_TMPL_ID);
- 	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
- 	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SEL);
+ 	highest_client_id++;
+ 	xa_set_mark(&clients, client->client_id, CLIENT_REGISTERED);
+-
+-out:
+-	up_write(&clients_rwsem);
+-	return ret;
++	return 0;
+ }
+ 
+ static void remove_client_id(struct ib_client *client)
+@@ -1776,25 +1773,35 @@ int ib_register_client(struct ib_client *client)
+ {
+ 	struct ib_device *device;
+ 	unsigned long index;
++	bool need_unreg = false;
+ 	int ret;
+ 
+ 	refcount_set(&client->uses, 1);
+ 	init_completion(&client->uses_zero);
++
++	/*
++	 * The devices_rwsem is held in write mode to ensure that a racing
++	 * ib_register_device() sees a consisent view of clients and devices.
++	 */
++	down_write(&devices_rwsem);
++	down_write(&clients_rwsem);
+ 	ret = assign_client_id(client);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 
+-	down_read(&devices_rwsem);
++	need_unreg = true;
+ 	xa_for_each_marked (&devices, index, device, DEVICE_REGISTERED) {
+ 		ret = add_client_context(device, client);
+-		if (ret) {
+-			up_read(&devices_rwsem);
+-			ib_unregister_client(client);
+-			return ret;
+-		}
++		if (ret)
++			goto out;
+ 	}
+-	up_read(&devices_rwsem);
+-	return 0;
++	ret = 0;
++out:
++	up_write(&clients_rwsem);
++	up_write(&devices_rwsem);
++	if (need_unreg && ret)
++		ib_unregister_client(client);
++	return ret;
+ }
+ EXPORT_SYMBOL(ib_register_client);
+ 
 -- 
 2.43.0
 
