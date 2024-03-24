@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 068BE889B9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:57:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71BFA88869F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 381061C34A07
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:57:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2536B1F250EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B72F214850;
-	Mon, 25 Mar 2024 02:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA3C712F392;
+	Sun, 24 Mar 2024 23:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QCZLaLnA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aOkHQqq4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE4D146A95;
-	Sun, 24 Mar 2024 22:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118EE128387;
+	Sun, 24 Mar 2024 22:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320806; cv=none; b=Ae2GNjAlvwnjGJZ8LMhJ1gTVDsBnvZrRYxqJ75xAaZ9NTbHO5YhGRsHHe+tebplCk3KxlZHomYBwvVoQ9XfsiRDJrkqSl9lNgNzrc5TUjU4CsKuPjEfU6Hi7OjAJqSAU+591fvb7q/i9pVsT/YrZ8FX3Z7tBXxZkICNfWZlvNs4=
+	t=1711320807; cv=none; b=D7SzlXZZnIVTdFmUR+o+7te1o1uzk3V3Ts9zWFL0gECLeZRmIg6thMxVS3+WC7SDHdombUizPD4s3VBJODMPnbpfASysKUOmWWEBVCi9/T2ineDHN8XVZOj5bxR8hZCqt9XH8av0Npzg2sS0qDuD3mCtVVSB3b+bigzv59zJph4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320806; c=relaxed/simple;
-	bh=fGzJ+yDOc3uNG1UiulHN3KFRF0/HMCzgPfkQ8z7nWQA=;
+	s=arc-20240116; t=1711320807; c=relaxed/simple;
+	bh=vP825Ku2Y5fpQtvsySFA7Z6w4KP+omheovnqVtB+F0Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R1Hcre/ksTVgHgr/9TXUHbzzF2WqZsDXMUkiJS94lQ6yKV0NyS1l4GgYD+HjNoHsw6IiaxEkpsZ00KPH1T9pqkdeOcU6ZAj3PrMIuSXhozC4WeQ5/+dub7EvMdI9wW7qpj+cuENrpPuZ29CIeLBQv93S4B6qyjrrMgRi0PNAdgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QCZLaLnA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 549A1C433C7;
-	Sun, 24 Mar 2024 22:53:24 +0000 (UTC)
+	 MIME-Version; b=GOWUv6niJnwPUmwVp6ZMr6FKJ6e08pAfVWa97jNID7hdXgrFC3TE2ZVP6DYvM+JUDBq6gvqnZghlFfWsNyXJOKwOKZGxtccUeyZSuzTnem0lIGjVfrAVH5AJZ8FX3dDB0X/QEN/Dae79I8nHkmKQEVWxEyTkvpSc4jiPom/v8pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aOkHQqq4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50EB4C433F1;
+	Sun, 24 Mar 2024 22:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320805;
-	bh=fGzJ+yDOc3uNG1UiulHN3KFRF0/HMCzgPfkQ8z7nWQA=;
+	bh=vP825Ku2Y5fpQtvsySFA7Z6w4KP+omheovnqVtB+F0Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QCZLaLnAq3P9vbijyh7hLgbX1vUgpQBT01uf0uhNMUOULmv8zF4RGXCz5a4aVjbQX
-	 eMuZDciamJDYOfeKgWuMt6LdmMrWeKcGfI0DvmvF/kg10cq1nXewyPMIrPRq4qDdO6
-	 BdfiKAQJCApl7UokWFuJCjONcs1UTOewxsWIqaPK41nFJw1QU3dFV/4xucaV1mRVJk
-	 W5B7+MZE7RLuaOaUAiZgjj7aaA+Vnm2vahDcum3ix3XSJ2mdnHxLMAb1xSTtUsJAAQ
-	 xQ0IFbOAMeNceUJQQIC/P489YMFiNtJyvl2EGfDE/yWD5nq6d2kEyWQt8zB3jkmx+0
-	 ms1LZp8yQflpA==
+	b=aOkHQqq43/VKJKvJ/yDp5mXXOjSblQKx5PND+3hpWDWkxxN0IDfVqbGeozV9Zfm++
+	 v2dVEhRG9kmUS/TCXQ/gH8JV/6mAM0ZdKPLTvnghacjAhUqdoCmdhLW0KHyUkFDPc5
+	 bDk1lT4Ywixz31QEF3+DB7f0deqvYagOxjauYUauo0a5LDFpWbACSbebq2FRhRKgU8
+	 BG7SyCNKW09wCegHE4uVkAhLRoAUSY8+Iol84QdLghFhMBhyGSOCWRtSahdHgh1KU+
+	 WNJ1OXtSPJT0mqeumFzt/HVXk9eBnROi4269jsWFgVS6B8xwNcfAdCFogFFOIRrEqa
+	 RdJGzx+qOySiQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jiri Pirko <jiri@nvidia.com>,
-	Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+Cc: Jijie Shao <shaojijie@huawei.com>,
 	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 369/713] dpll: fix dpll_xa_ref_*_del() for multiple registrations
-Date: Sun, 24 Mar 2024 18:41:35 -0400
-Message-ID: <20240324224720.1345309-370-sashal@kernel.org>
+Subject: [PATCH 6.7 370/713] net: hns3: fix wrong judgment condition issue
+Date: Sun, 24 Mar 2024 18:41:36 -0400
+Message-ID: <20240324224720.1345309-371-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,61 +62,34 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jiri Pirko <jiri@nvidia.com>
+From: Jijie Shao <shaojijie@huawei.com>
 
-[ Upstream commit b446631f355ece73b13c311dd712c47381a23172 ]
+[ Upstream commit 07a1d6dc90baedcf5d713e2b003b9e387130ee30 ]
 
-Currently, if there are multiple registrations of the same pin on the
-same dpll device, following warnings are observed:
-WARNING: CPU: 5 PID: 2212 at drivers/dpll/dpll_core.c:143 dpll_xa_ref_pin_del.isra.0+0x21e/0x230
-WARNING: CPU: 5 PID: 2212 at drivers/dpll/dpll_core.c:223 __dpll_pin_unregister+0x2b3/0x2c0
+In hns3_dcbnl_ieee_delapp, should check ieee_delapp not ieee_setapp.
+This path fix the wrong judgment.
 
-The problem is, that in both dpll_xa_ref_dpll_del() and
-dpll_xa_ref_pin_del() registration is only removed from list in case the
-reference count drops to zero. That is wrong, the registration has to
-be removed always.
-
-To fix this, remove the registration from the list and free
-it unconditionally, instead of doing it only when the ref reference
-counter reaches zero.
-
-Fixes: 9431063ad323 ("dpll: core: Add DPLL framework base functions")
-Signed-off-by: Jiri Pirko <jiri@nvidia.com>
-Reviewed-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Fixes: 0ba22bcb222d ("net: hns3: add support config dscp map to tc")
+Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dpll/dpll_core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_dcbnl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dpll/dpll_core.c b/drivers/dpll/dpll_core.c
-index f8fbf03942888..e72ebdf621509 100644
---- a/drivers/dpll/dpll_core.c
-+++ b/drivers/dpll/dpll_core.c
-@@ -128,9 +128,9 @@ static int dpll_xa_ref_pin_del(struct xarray *xa_pins, struct dpll_pin *pin,
- 		reg = dpll_pin_registration_find(ref, ops, priv);
- 		if (WARN_ON(!reg))
- 			return -EINVAL;
-+		list_del(&reg->list);
-+		kfree(reg);
- 		if (refcount_dec_and_test(&ref->refcount)) {
--			list_del(&reg->list);
--			kfree(reg);
- 			xa_erase(xa_pins, i);
- 			WARN_ON(!list_empty(&ref->registration_list));
- 			kfree(ref);
-@@ -208,9 +208,9 @@ dpll_xa_ref_dpll_del(struct xarray *xa_dplls, struct dpll_device *dpll,
- 		reg = dpll_pin_registration_find(ref, ops, priv);
- 		if (WARN_ON(!reg))
- 			return;
-+		list_del(&reg->list);
-+		kfree(reg);
- 		if (refcount_dec_and_test(&ref->refcount)) {
--			list_del(&reg->list);
--			kfree(reg);
- 			xa_erase(xa_dplls, i);
- 			WARN_ON(!list_empty(&ref->registration_list));
- 			kfree(ref);
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_dcbnl.c b/drivers/net/ethernet/hisilicon/hns3/hns3_dcbnl.c
+index 3b6dbf158b98d..f72dc0cee30e5 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_dcbnl.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_dcbnl.c
+@@ -76,7 +76,7 @@ static int hns3_dcbnl_ieee_delapp(struct net_device *ndev, struct dcb_app *app)
+ 	if (hns3_nic_resetting(ndev))
+ 		return -EBUSY;
+ 
+-	if (h->kinfo.dcb_ops->ieee_setapp)
++	if (h->kinfo.dcb_ops->ieee_delapp)
+ 		return h->kinfo.dcb_ops->ieee_delapp(h, app);
+ 
+ 	return -EOPNOTSUPP;
 -- 
 2.43.0
 
