@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57BDF889174
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:41:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAFE7889176
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 132EC29582F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:41:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 658891F2D53A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CB92BF2E1;
-	Mon, 25 Mar 2024 00:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A831E2BEC29;
+	Mon, 25 Mar 2024 00:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FhsyWPT6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kH2IMjLw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE92130A6D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB60D130A68;
 	Sun, 24 Mar 2024 23:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323432; cv=none; b=E7G/pNd2ACeyXKOlZa10c0UtJZouXGrvQ39VBgEwgFSkfmuQmcnAwk3g6Hq5e5eW8EyQMPAibHimJsw3L2M8XlqBx27QLiwHsh7VARKrVG9ry+LDh9NPgD1h7bIDPxYTbYwyQSr1bRtb8xz0R+DSwgwpN2WIyPGoRdbr+33aq8g=
+	t=1711323431; cv=none; b=nl9suqHzNCnnA/BxyLtxURhwUrXromF6JiljOLGjZf68DUOxZhkkamPCBO5RCZz8OXi/MXQzAjaiI1tecSwjgpdZfPfbJa6OOubLhLyYYfyXn61k/fwdU2FMmkPuwtT7IyCxGEfyvXBzbcIIU+Daiu0odT3jJUZg/0f22DCvL9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323432; c=relaxed/simple;
-	bh=NPjfnzED8BoT35x6bgMnmQsuwCdMFgSn/d3NxJwHA54=;
+	s=arc-20240116; t=1711323431; c=relaxed/simple;
+	bh=D0joGjw/fnnGUxOcyDbl6L1fMbAAXFAAFW3iPfcU4CI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JaVOZL91XJw03VyZacnCDggBlWvQgYxcY1FCraQAOuWZ05x0oI9LbeN/vhJVLrVfHd7XuLfXx2YigjdPyE4gEBrgja0Ao02mZyrON4LFDNJnJbBd+GqoGHK7J/WCcfOHXOUoa0erMki4oXX+iTmezYTNO3BE50fQn1coBTjefF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FhsyWPT6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29FECC433B1;
-	Sun, 24 Mar 2024 23:37:10 +0000 (UTC)
+	 MIME-Version:Content-Type; b=IwUKqXz7w/FCAKrl2MY2MNWWCIUeXxayYdkXZiPfwdKp5u2vvPOFAUZJNRL3HoEmkU5dKF0DzeiujZi4UYBWdShAyTJ98xoAwLpRJvGRoeprP4krWMa004be2mJB6mINBPdDlne1QB+hLyrpq5P/Jd4X0odc85XXz8GEZcY0Lms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kH2IMjLw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25F30C433C7;
+	Sun, 24 Mar 2024 23:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323430;
-	bh=NPjfnzED8BoT35x6bgMnmQsuwCdMFgSn/d3NxJwHA54=;
+	s=k20201202; t=1711323431;
+	bh=D0joGjw/fnnGUxOcyDbl6L1fMbAAXFAAFW3iPfcU4CI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FhsyWPT6aX4LRgFlxkiic8TmDohiAtSaWFTmpIzof5G3oACBC8IOeuaSlRCpEKn2Z
-	 xaFja10ieWtJq7ncdyG9t2iwDHTkjo5m8+TU1o4Btq3AtIsStzNFpu013kzkAw1lWk
-	 pRDJTdVc8gscld8hPJjBxlQtBVBd7ejlx6XcbmxM73xvcc80rVZlDqF9zJyELRHl3+
-	 2K8LxEMwRa+j6IPsH19Ms/7mJI1Kzm5QsSN5HvxaJ3cZGpoyHd+vASXCP8QcgVxyKh
-	 j0gJlBatt9vT1LyqnPM10/cSuIO3gs92hcGsn/uWLUtSpUxEASVXQ/VBJsmEz+sVYK
-	 objCgghR09fFw==
+	b=kH2IMjLwCpq2WyOA3lLAxK76aIZmhSeznwigyvFX8+jsMdreIcnnjiWPnpRZceDRZ
+	 vNxUm8ofPYZ2fnLaMY2e62Y8lYn9YpvlqQuSirf3h5eqlSOR9A4hjEzQBJ8EJ3Rf8S
+	 NysoZvMAUSgZ2HS0XSyA7wq+qqH4eMDvvsUxy5KN3ZMLW9OowZj69o69zCBwd9qjGG
+	 q4HF83HyHOwNZhzueDSY5+n8Wp+1h/jv+bC5zLdcKdVmszuDWcgS6ghs8WpuZLmx8v
+	 ptLjisWETsJEs9P6lcbKuoSI6y4BogfKEJkFwslp9f1nfhbKBNz5nRZuB/K7CwjTl9
+	 TGSX4Sz+041KQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 133/317] bpf: Fix DEVMAP_HASH overflow check on 32-bit arches
-Date: Sun, 24 Mar 2024 19:31:53 -0400
-Message-ID: <20240324233458.1352854-134-sashal@kernel.org>
+Subject: [PATCH 5.15 134/317] bpf: Fix hashtab overflow check on 32-bit arches
+Date: Sun, 24 Mar 2024 19:31:54 -0400
+Message-ID: <20240324233458.1352854-135-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -66,59 +65,58 @@ Content-Transfer-Encoding: 8bit
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit 281d464a34f540de166cee74b723e97ac2515ec3 ]
+[ Upstream commit 6787d916c2cf9850c97a0a3f73e08c43e7d973b1 ]
 
-The devmap code allocates a number hash buckets equal to the next power
-of two of the max_entries value provided when creating the map. When
-rounding up to the next power of two, the 32-bit variable storing the
-number of buckets can overflow, and the code checks for overflow by
-checking if the truncated 32-bit value is equal to 0. However, on 32-bit
-arches the rounding up itself can overflow mid-way through, because it
-ends up doing a left-shift of 32 bits on an unsigned long value. If the
-size of an unsigned long is four bytes, this is undefined behaviour, so
-there is no guarantee that we'll end up with a nice and tidy 0-value at
-the end.
+The hashtab code relies on roundup_pow_of_two() to compute the number of
+hash buckets, and contains an overflow check by checking if the
+resulting value is 0. However, on 32-bit arches, the roundup code itself
+can overflow by doing a 32-bit left-shift of an unsigned long value,
+which is undefined behaviour, so it is not guaranteed to truncate
+neatly. This was triggered by syzbot on the DEVMAP_HASH type, which
+contains the same check, copied from the hashtab code. So apply the same
+fix to hashtab, by moving the overflow check to before the roundup.
 
-Syzbot managed to turn this into a crash on arm32 by creating a
-DEVMAP_HASH with max_entries > 0x80000000 and then trying to update it.
-Fix this by moving the overflow check to before the rounding up
-operation.
-
-Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devices by hashed index")
-Link: https://lore.kernel.org/r/000000000000ed666a0611af6818@google.com
-Reported-and-tested-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
+Fixes: daaf427c6ab3 ("bpf: fix arraymap NULL deref and missing overflow and zero size checks")
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Message-ID: <20240307120340.99577-2-toke@redhat.com>
+Message-ID: <20240307120340.99577-3-toke@redhat.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/devmap.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ kernel/bpf/hashtab.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index f02d04540c0c0..b591073c5f83d 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -130,13 +130,14 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 	bpf_map_init_from_attr(&dtab->map, attr);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 28b43642c0593..f53b4f04b935c 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -504,7 +504,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 							  num_possible_cpus());
+ 	}
  
- 	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
--		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
--
--		if (!dtab->n_buckets) /* Overflow check */
-+		/* hash table size must be power of 2; roundup_pow_of_two() can
-+		 * overflow into UB on 32-bit arches, so check that first
-+		 */
-+		if (dtab->map.max_entries > 1UL << 31)
- 			return -EINVAL;
--	}
- 
--	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
-+		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
+-	/* hash table size must be power of 2 */
++	/* hash table size must be power of 2; roundup_pow_of_two() can overflow
++	 * into UB on 32-bit arches, so check that first
++	 */
++	err = -E2BIG;
++	if (htab->map.max_entries > 1UL << 31)
++		goto free_htab;
 +
- 		dtab->dev_index_head = dev_map_create_hash(dtab->n_buckets,
- 							   dtab->map.numa_node);
- 		if (!dtab->dev_index_head)
+ 	htab->n_buckets = roundup_pow_of_two(htab->map.max_entries);
+ 
+ 	htab->elem_size = sizeof(struct htab_elem) +
+@@ -514,10 +520,8 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 	else
+ 		htab->elem_size += round_up(htab->map.value_size, 8);
+ 
+-	err = -E2BIG;
+-	/* prevent zero size kmalloc and check for u32 overflow */
+-	if (htab->n_buckets == 0 ||
+-	    htab->n_buckets > U32_MAX / sizeof(struct bucket))
++	/* check for u32 overflow */
++	if (htab->n_buckets > U32_MAX / sizeof(struct bucket))
+ 		goto free_htab;
+ 
+ 	err = -ENOMEM;
 -- 
 2.43.0
 
