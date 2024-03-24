@@ -1,323 +1,165 @@
-Return-Path: <linux-kernel+bounces-112626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D13A4887C23
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:47:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65623887C26
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AD281F2176A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 09:47:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CF001C20F4A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 09:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4D3171D1;
-	Sun, 24 Mar 2024 09:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77EC17555;
+	Sun, 24 Mar 2024 09:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="ulT+xelw"
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="U61oCGXp"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B3A171A2;
-	Sun, 24 Mar 2024 09:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A2316415;
+	Sun, 24 Mar 2024 09:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711273622; cv=none; b=gf1dkgp/2hmGaoJ92iNLJs1PweJTqRKhE/Eeq6O8wZcqPT23+1DIqpyMmFHGBZnuqAlrXJcXRgTNdhNAjJjIGgaYVcQ6XhF+QauQuqasezcrmYuihRrsJVVIj0lECut/wgZ+lCD6IT0R/+Jz+td46D1q4OkJoxLKwi12VeMBQuA=
+	t=1711273646; cv=none; b=i8ZFtqnM9Ns8yOXtsmYSnDPq67hkB/f48y8F7BQg70oi6CX122NvLpLlWfBockIKIGbFMthuFUBOtoHR8lexb8wNVuqtCLFFt/mYIbNj4EgudCBwVgrM6jqSuwUkTsooCpMv83P6UlzMM0Mt1wCKNmNnZNrWj6rf6/ZKAsDE3n8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711273622; c=relaxed/simple;
-	bh=vg22wvRaImHSRK29DouL3P4j14EI5HioU/goXeuQ9Xk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CM3jnqhATVvu4QOosTkH06d4XqhtK5vCWezWRvtn5k1E5dHOmUYrxYkdT5y6EowKTlgLFJxYR/6Sz9uoLm67chz82lJZ/harB1+dev6g7U4gwCN0jXskQG1dUUuXoGsTiD/4h203cY6qs5Uk6OuGgy+6Q4OlJ/tVdEeq3L8Nq9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=ulT+xelw; arc=none smtp.client-ip=217.72.192.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=valentinobst.de;
-	s=s1-ionos; t=1711273594; x=1711878394; i=kernel@valentinobst.de;
-	bh=lHy1y6Ut+eu8IfdG9YkmmRwgAlBAOPmUhT80g/+ou1w=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=ulT+xelw3AL8dQR42xHakYbrq+fM+g0S2BYsYsX6qqMyNp4ETbAUx1cTTrt25m0n
-	 oE9rWgtKFRe58SD3zLONrRXTFwjtjgJy0aqqKl+7knLK3dXxXWVZappb1nSMCvmCd
-	 JGMjfULA4thymTXwPTfT1+3dbYDR3Udhd0us2GLq+kQnUVBqSn0Am5d9OTro4Aec0
-	 J4qMPPtDvNXWm+XFh5VaObP7fkGYuDDliC14izWLmtADWDLC1CWb47r0VP9KraZdb
-	 0KzSoZxjXlzBD4oTKPYYvvCSiZ/HiZukO5lhQSQfGdX7ryMxlvGq8GKIvtOtIuAjM
-	 YZFt2U3fAhgZFAR+WA==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from archbook.speedport.ip ([80.133.136.30]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MORR2-1rOOph1hJW-00Ptuv; Sun, 24 Mar 2024 10:40:27 +0100
-From: Valentin Obst <kernel@valentinobst.de>
-To: boqun.feng@gmail.com,
-	aliceryhl@google.com
-Cc: a.hindborg@samsung.com,
-	alex.gaynor@gmail.com,
-	benno.lossin@proton.me,
-	bjorn3_gh@protonmail.com,
-	gary@garyguo.net,
-	heghedus.razvan@protonmail.com,
-	jstultz@google.com,
-	lina@asahilina.net,
-	linux-kernel@vger.kernel.org,
-	ojeda@kernel.org,
-	rust-for-linux@vger.kernel.org,
-	sboyd@kernel.org,
-	tglx@linutronix.de,
-	wedsonaf@gmail.com,
-	Valentin Obst <kernel@valentinobst.de>
-Subject: Re: [PATCH v2] rust: time: add Ktime
-Date: Sun, 24 Mar 2024 10:40:23 +0100
-Message-ID: <20240324094023.22317-1-kernel@valentinobst.de>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <Zf2kio8NYG5DEgyY@tardis>
-References: <Zf2kio8NYG5DEgyY@tardis>
+	s=arc-20240116; t=1711273646; c=relaxed/simple;
+	bh=GWj5y/Qc1K9AjsAliy3LtjX0FL9bQH9JNI+Du7zxiQM=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=BCkmWrW02oE8sThkqcB/8FJ6UBMAPM8V2gJP4WBXiWej6NBxf58JP/lwb1oRSHA3qFwOVcyNtvgrltAlU+MqLiVetEXb3l+7D2grcZo5sY9xJ0R8BGPBcpzZZVbgF73kY2oi9cXjXYP6XIJoPMiX4WlVKwv5yaimADtZFxftgpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=U61oCGXp; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D280C40002;
+	Sun, 24 Mar 2024 09:47:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1711273635;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f73/Dv7onEyO5WX6ZGZIZmakEQpnxirbQv7vQRZBis4=;
+	b=U61oCGXpXRQHJIhDTF91TvYBDsLhHB1RxvBJ4BongC/t9IUZixLMFfWJCkbf/I1R9LCTss
+	LbCTa4/lz7pFpk8TTyIuR0FBdkR7Om55Rde9zwnLXpzNZn8+fbxbSmVdAMXxf9CRaYqtSx
+	V+Y6tNLH0IQ2OoAJcGgXEbVhFm0TPnnC+F6UhHZ6yedNXazTppRP9+cB2Yd0NhO8CfVPx/
+	epUGhMDav2BQrpoQwf9Bnpp1ONpvcZ+pl1KBb4zqii/3a7HaciXiZiSnLfrLIDKcyXEn6e
+	Nihvh1gBioe3f8bjApjJeLZE7uaBXQEkU7ClIYQohmFRSlAElVYXE6FgAdA7Ww==
+Message-ID: <5a4c0436-cd78-419f-af14-9c4e0c0435e3@arinc9.com>
+Date: Sun, 24 Mar 2024 12:47:08 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nzzrJCoj6NX4ScKNf3cE9I7BlD3VPm5Gm02o18PQBGUmaVQDxZI
- dCiOZmo+b0fi9z+78xk3llzXNs8sgCIfDuOd0Pa+eoRrVbDdOlbv1/8TNaFuj9cuDCtcDNf
- NBgqRnMJUTs/NQk/lN8MloHL6LMduGECsMtypxrmeRfidNB6WNttSxbs6BjVE+j8C3aW3SF
- ckJSBqmBSEEem0+vRFn1Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YQ9nLrGc6/I=;kSJPO86pOaRelClRwbqa+ChiguD
- P32qYOc5mP3LWY4cPk2L9/64D9v8NeCyJRWzze/UyhFRhOqgHLUbDWixI2LFksC+bXQlwGl+o
- gS7bdUYHrACYgDxuyt8IN0y0I7oNKH0J1xQ10bDWbZHshSHeLUuYP8ZCtxeJTIPLonw82i7HU
- nVsEr1tw/ob3ULQgDU1FEMrq2l+xash2lc3sL25KkNwRphd/oOdGeIM79TOLGYqvJwBHr3lUm
- OH6e9BT75dCzvJ6Fi7OlWIMa7M6BiYjL6NGa/ibV6jESwSCGWVc8IHTRzoT1EO6A6j1KVhr1T
- wwBbYFfvr+8M7EZhJULski9qH89XM/Qvizjelh6rhFUXoFgoiJWYLKUaVLHkxpYfcrZdw9UG+
- DWY2iZMyK8t5nQ5RaEoccEl2ArWwwAWac4bY8us7VBCnx6DxZGEVIio7kkoVpCm2ajXwmUCQd
- hTRe4C4zTpLQDXFdhOdwhwiIXKCrkCvy327XyR54OrXuP1G+rARxeJllT6pm39wR4GAupFA76
- OfXOFEIQwl5timAgIcxwMpiTxE+NZgA4rTickFBZoAl96Wf88WW2UuZOw/xTQmA29v4TFWeJn
- CDEwAywaYxPPGkB8z7Bv11kg+Pk+8NRMhw18PuHfzNoyJq7edEe8027qd5aaOUNq6fQ3RFs6m
- ToVq8lueRtxeAwYdjzxv3VjkwIPPBVRxNOJ59BI0J3u7KJ6lykfl9dVnzcIyhdapbZ94/Rrf4
- 1/TM7RTaL+7kjVC9Z/8UCGAQIJIklz32rWzofkN7HUJQwYtb9iXqVo=
+User-Agent: Mozilla Thunderbird
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Subject: Re: [PATCH 0/3] Fix EEE support for MT7531 and MT7988 SoC switch
+To: Florian Fainelli <f.fainelli@gmail.com>,
+ Daniel Golle <daniel@makrotopia.org>, Andrew Lunn <andrew@lunn.ch>
+Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+ Russell King <linux@armlinux.org.uk>,
+ SkyLake Huang <SkyLake.Huang@mediatek.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v>
+ <ZfnYkuzuvwLepIfC@makrotopia.org>
+ <00ec9779-19ce-4005-83f0-f4abf37350fc@arinc9.com>
+ <6cb585f6-6da8-45a2-a28b-2fb556f95672@lunn.ch>
+ <Zfn1DxkEa3u-f7l2@makrotopia.org>
+ <38798882-c033-4949-9446-4c6f15c25ebe@gmail.com>
+ <0fbe7ba2-6529-4118-b050-8ea76d28b712@arinc9.com>
+ <11b2a4d1-66d8-4bcf-b1a8-20a635b99cc4@gmail.com>
+Content-Language: en-US
+In-Reply-To: <11b2a4d1-66d8-4bcf-b1a8-20a635b99cc4@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-> Subject: [PATCH] rust: time: Add clock source reading functionality
->
-> Introduce wrappers around `ktime_t` with a time duration type `KTime`
-> and a timestamp type `Instant`.
->
-> Rust Binder will use these bindings to compute how many milliseconds a
-> transaction has been active for when dumping the current state of the
-> Binder driver. This replicates the logic in C Binder [1].
->
-> For a usage example in Rust Binder, see [2].
->
-> The `ktime_get` method cannot be safely called in NMI context. This
-> requirement is not checked by these abstractions, but it is intended
-> that klint [3] or a similar tool will be used to check it in the future.
->
-> Link: https://lore.kernel.org/lkml/5ac8c0d09392290be789423f0dd78a520b830=
-fab.1682333709.git.zhangchuang3@xiaomi.com/ [1]
-> Link: https://r.android.com/3004103 [2]
-> Link: https://rust-for-linux.com/klint [3]
-> Originally-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
-> Originally-by: Asahi Lina <lina@asahilina.net>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  rust/kernel/time.rs | 158 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 158 insertions(+)
->
-> diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
-> index 25a896eed468..50cc063aa9b4 100644
-> --- a/rust/kernel/time.rs
-> +++ b/rust/kernel/time.rs
-> @@ -4,6 +4,15 @@
->  //!
->  //! This module contains the kernel APIs related to time and timers tha=
-t
->  //! have been ported or wrapped for usage by Rust code in the kernel.
-> +//!
-> +//! C header: [`include/linux/jiffies.h`](srctree/include/linux/jiffies=
-h).
-> +//! C header: [`include/linux/ktime.h`](srctree/include/linux/ktime.h).
-> +
-> +use crate::pr_err;
-> +use core::marker::PhantomData;
-> +
-> +/// The number of nanoseconds per millisecond.
-> +pub const NSEC_PER_MSEC: i64 =3D bindings::NSEC_PER_MSEC as i64;
->
->  /// The time unit of Linux kernel. One jiffy equals (1/HZ) second.
->  pub type Jiffies =3D core::ffi::c_ulong;
-> @@ -18,3 +27,152 @@ pub fn msecs_to_jiffies(msecs: Msecs) -> Jiffies {
->      // matter what the argument is.
->      unsafe { bindings::__msecs_to_jiffies(msecs) }
->  }
-> +
-> +/// A kernel time duration.
-> +///
-> +/// This type basically wraps the `ktime_t` with one restriction: it sh=
-ould only be used for
-> +/// representing a time duration, in other words, it's not the type for=
- timestamps.
-> +#[repr(transparent)]
-> +#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
-> +pub struct KTime {
-> +    inner: bindings::ktime_t,
-> +}
-> +
-> +impl KTime {
-> +    /// Create a [`KTime`] from a raw `ktime_t`.
-> +    #[inline]
-> +    pub fn from_raw(inner: bindings::ktime_t) -> Self {
-> +        Self { inner }
-> +    }
+On 21/03/2024 18:31, Florian Fainelli wrote:
+> On 3/21/24 09:09, Arınç ÜNAL wrote:
+>> I have started testing MT7531 with EEE enabled and immediately experienced
+>> frames that wouldn't egress the switch or improperly received on the link
+>> partner.
+>>
+>> SoC MAC       <-EEE off-> MT7531 P6 MAC (acting as PHY)
+>> MT7531 P0 MAC <-EEE on -> MT7531 P0 PHY
+>> MT7531 P0 PHY <-EEE on -> Computer connected with twisted pair
+> 
+> OK, so this is intended to describe that the SoC's Ethernet MAC link to the integrated switch did not use EEE only the user-facing ports. That makes sense because it's all digital logic and you are not going to be seeing much power saving from having EEE enabled between the SoC's Ethernet MAC and CPU port of the switch, that said, however, I wonder if this has an impact on any form of flow control within the switch that is reacting to LPI and you need EEE to be enabled end-to-end?
 
-Eventually we might want to be able to create instances of types that
-represent durations in const contexts, e.g., for fixed thresholds or
-fixed offsets to relative timers. Would it make sense to '/fn/const fn/'
-for the `KTime` (or `Ktime`) methods that support it?
+I've tested pinging between my computers with EEE enabled interfaces. The
+behaviour is identical.
 
-[For that use case the naming/signature `from_raw(inner: bindings::ktime_t=
-)`
-could maybe also be changed to something like `new(duration: i64)`, i.e.,
-make it sound less like an internal API.]
+> 
+>>
+>> I've tested pinging from the SoC's CPU. Packet capturing on the twisted
+>> pair computer showed very few frames were being received.
+>>
+>> # ping 192.168.2.2
+>> PING 192.168.2.2 (192.168.2.2): 56 data bytes
+>> 64 bytes from 192.168.2.2: seq=36 ttl=64 time=0.486 ms
+>> ^C
+>> --- 192.168.2.2 ping statistics ---
+>> 64 packets transmitted, 1 packets received, 98% packet loss
+>> round-trip min/avg/max = 0.486/0.486/0.486 ms
+>>
+>> It seems there's less loss when frames are passed more frequently.
+> 
+> That would point to an issue getting in and out of LPI, do you see these packet losses even with different LPI timeouts?
 
-	- Best Valentin
+The NICs on my computers don't seem to allow changing the tx-lpi and
+tx-timer options.
 
-> +
-> +    /// Divide the number of nanoseconds by a compile-time constant.
-> +    #[inline]
-> +    fn divns_constant<const DIV: i64>(self) -> i64 {
-> +        self.to_ns() / DIV
-> +    }
-> +
-> +    /// Returns the number of nanoseconds.
-> +    #[inline]
-> +    pub fn to_ns(self) -> i64 {
-> +        self.inner
-> +    }
-> +
-> +    /// Returns the number of milliseconds.
-> +    #[inline]
-> +    pub fn to_ms(self) -> i64 {
-> +        self.divns_constant::<NSEC_PER_MSEC>()
-> +    }
-> +}
-> +
-> +impl core::ops::Sub for KTime {
-> +    type Output =3D KTime;
-> +
-> +    #[inline]
-> +    fn sub(self, other: KTime) -> KTime {
-> +        Self {
-> +            inner: self.inner - other.inner,
-> +        }
-> +    }
-> +}
-> +
-> +/// Represents a clock, that is, a unique time source and it can be que=
-ried for the current time.
-> +pub trait Clock: Sized {
-> +    /// Returns the current time for this clock.
-> +    fn now() -> Instant<Self>;
-> +}
-> +
-> +/// Marker trait for clock sources that are guaranteed to be monotonic.
-> +pub trait Monotonic {}
-> +
-> +/// An instant in time associated with a given clock source.
-> +#[derive(Debug)]
-> +pub struct Instant<T: Clock> {
-> +    ktime: KTime,
-> +    _type: PhantomData<T>,
-> +}
-> +
-> +impl<T: Clock> Clone for Instant<T> {
-> +    fn clone(&self) -> Self {
-> +        *self
-> +    }
-> +}
-> +
-> +impl<T: Clock> Copy for Instant<T> {}
-> +
-> +impl<T: Clock> Instant<T> {
-> +    fn new(ktime: KTime) -> Self {
-> +        Instant {
-> +            ktime,
-> +            _type: PhantomData,
-> +        }
-> +    }
-> +
-> +    /// Returns the time elapsed since an earlier [`Instant`], or None =
-if the argument is a later
-> +    /// Instant.
-> +    ///
-> +    /// # Examples
-> +    ///
-> +    /// ```
-> +    /// use kernel::time::{Clock, clock::KernelTime};
-> +    ///
-> +    /// let a =3D KernelTime::now();
-> +    /// let b =3D KernelTime::now();
-> +    ///
-> +    /// // `KernelTime` is monotonic.
-> +    /// assert_eq!(a.since(b), None);
-> +    /// assert_eq!(b.since(a).map(|d| d.to_ns() >=3D 0), Some(true));
-> +    ///
-> +    /// ```
-> +    pub fn since(&self, earlier: Instant<T>) -> Option<KTime> {
-> +        if self.ktime < earlier.ktime {
-> +            None
-> +        } else {
-> +            Some(self.ktime - earlier.ktime)
-> +        }
-> +    }
-> +}
-> +
-> +impl<T: Clock + Monotonic> Instant<T> {
-> +    /// Returns the time elapsed since this [`Instant`].
-> +    ///
-> +    /// This is guaranteed to return a non-negative result, since it is=
- only implemented for
-> +    /// monotonic clocks.
-> +    ///
-> +    /// # Examples
-> +    ///
-> +    /// ```
-> +    /// use kernel::time::{Clock, clock::KernelTime};
-> +    ///
-> +    /// let a =3D KernelTime::now();
-> +    ///
-> +    /// // `KernelTime` is monotonic.
-> +    /// assert!(a.elapsed().to_ns() >=3D 0);
-> +    ///
-> +    /// ```
-> +    pub fn elapsed(&self) -> KTime {
-> +        self.since(T::now()).unwrap_or_else(|| {
-> +            pr_err!(
-> +                "Monotonic clock {} went backwards!",
-> +                core::any::type_name::<T>()
-> +            );
-> +            KTime::from_raw(0)
-> +        })
-> +    }
-> +}
-> +
-> +/// Contains the various clock source types available to the kernel.
-> +pub mod clock {
-> +    use super::*;
-> +
-> +    /// A clock representing the default kernel time source (`CLOCK_MON=
-OTONIC`).
-> +    pub struct KernelTime;
-> +
-> +    impl Monotonic for KernelTime {}
+Computer 1 (Intel I219-V, driver: e1000e):
 
-nit: blank line missing
+$ sudo ethtool --set-eee eno1 tx-timer 15
+netlink error: Invalid argument
 
-> +    impl Clock for KernelTime {
-> +        #[inline]
-> +        fn now() -> Instant<Self> {
-> +            // SAFETY: It is always safe to call `ktime_get` outside of=
- NMI context.
-> +            Instant::<Self>::new(KTime::from_raw(unsafe { bindings::kti=
-me_get() }))
-> +        }
-> +    }
-> +}
+$ sudo ethtool --show-eee eno1
+EEE settings for eno1:
+	EEE status: enabled - active
+	Tx LPI: 17 (us)
+	Supported EEE link modes:  100baseT/Full
+	                           1000baseT/Full
+	Advertised EEE link modes:  100baseT/Full
+	                            1000baseT/Full
+	Link partner advertised EEE link modes:  100baseT/Full
+	                                         1000baseT/Full
+
+Computer 2 (Realtek RTL8111H, driver: r8169):
+
+$ sudo ethtool --set-eee eno1 tx-lpi on
+
+$ sudo ethtool --show-eee eno1
+EEE settings for eno1:
+	EEE status: enabled - active
+	Tx LPI: disabled
+	Supported EEE link modes:  100baseT/Full
+	                           1000baseT/Full
+	Advertised EEE link modes:  100baseT/Full
+	                            1000baseT/Full
+	Link partner advertised EEE link modes:  100baseT/Full
+	                                         1000baseT/Full
+
+I've tested with switch ports interfaces' tx-timer from 0 to 40, same
+tx-timer for both interfaces. Loss is still there.
+
+I suppose the MT7531 switch PHYs need calibration for EEE that is currently
+missing from the mediatek-ge driver.
+
+Arınç
 
