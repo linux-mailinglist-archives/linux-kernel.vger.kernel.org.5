@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D43E88915B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:39:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95B5B88961C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:46:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 397A52940C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:39:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E62EB39F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:18:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96922698F9;
-	Mon, 25 Mar 2024 00:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD0526E61B;
+	Mon, 25 Mar 2024 03:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mwNV7FGS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h0ZA34m4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E018F2779D9;
-	Sun, 24 Mar 2024 23:36:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E122779D7;
+	Sun, 24 Mar 2024 23:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323413; cv=none; b=ZiON/x7rbGMgeIfFhDXr6Ym5gpZL5nOuv9jPG584zf5BlHjX7NcORfD7N9KJIiYRLRVA9L4w2LCNyUYnEIJi1Xv8GKWb6dbBmMcQfBqT5ylFGtceqg/BdxRouWlnZrgNQF25M8UlfLdW7Qh66Mr2DX8jX8aV8UfypSD/hn9oU5c=
+	t=1711323412; cv=none; b=Fj6mT6MCiVJhbVKkFS5iAQsLKwkoqHOTi/i8WWlxNQX56d4oOCfaBS54LnJNbev0SYvx98+AXzDjJnsnY/jIaHWsaGkMMdI759X7zrPWYkVvT10QAz86V7vVNleUClz2DgpCn+7P5tBd4lsL2LWoP4Y1GOydDRiSr8vLcbqrsYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323413; c=relaxed/simple;
-	bh=WubfcSULKJ4wzT3l0PE5wg/VyrYArkzhxC2koqHrvV4=;
+	s=arc-20240116; t=1711323412; c=relaxed/simple;
+	bh=vI7cyIplM0mY+XAcjngitzBuY6u1HBmAHntcvWfZL/s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bx/yMqOHLE7tLNDPNz8E5TZAuCuEnV951+Pm9yRLIidgq/NB2KKMlQJjKztiFXywq9ty161YPVLJ6Z3ev2dhejGQYamq7zDPhZZh4DZdHXtv3SqVqlHgdMV7hZk0A5zBA2RGh4AJ4KKdFdIWHnLzd3SI2OoiFPaay2gPaZFmMgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mwNV7FGS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1343BC433F1;
-	Sun, 24 Mar 2024 23:36:50 +0000 (UTC)
+	 MIME-Version:Content-Type; b=cJQd8pytrDq+AWIf5QenA2I46YHqwm+CbJb+Yf8IiIB6ERu2VpRQF/GuThE6HYMi5c34z3av7wI8ygEz7jJ/crPYwDBFeFdidLYUeVcSn9x+75YA3PgVFcIX/WRt2WPfFk1NvNesh/cRpyJRqV9dZfMYk10G9n0AeJKr6fnD3LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h0ZA34m4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E4EC43390;
+	Sun, 24 Mar 2024 23:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323411;
-	bh=WubfcSULKJ4wzT3l0PE5wg/VyrYArkzhxC2koqHrvV4=;
+	s=k20201202; t=1711323412;
+	bh=vI7cyIplM0mY+XAcjngitzBuY6u1HBmAHntcvWfZL/s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mwNV7FGSuTegb5VAdCb0EcKAWoN9LMF4W9ggxx8qYPm7H3Yd2nocm6Hcnm7mIhGQS
-	 6J9slp4KwBpPTxEvYBypHPTrNfA1F11fONADHF4srmiNsowNM57fdtZ83QUaPWwZuz
-	 TXZRxXdnTaQMTGo3w6ab5coCZ9m3n0+K7ks4FPPg6lwBfNURD10vXgHxRbU8d4zCKM
-	 ovpMQgVApcoBSPeGJdhkzcck69ysrMuk1c1rvPj6DWmyw3M+KxuIB8hHlzn+Ikw5JL
-	 oDAdFzHzwv2S3lKd4eOWJhfD+AuoBYH3YG7wAINf3pnkxbdbzk9jsvPnL/p3t3UKLm
-	 GWz2Mv/4MsWOg==
+	b=h0ZA34m4kQaaa6vEwKbk03l4mhH3UrzsPdwhHMr497TmUZ3HcYMq2jBYxhuPWzN1J
+	 jk5lJ0mofWNLlKaobn5yTkhAIanqUMWMvfhH7XUe92EqoCXq38jts7P2TARRqvEGNI
+	 TcP1US1I1vdLu3gw1YS7blP5fTaE7nOVBBtkSsL188UrBvpWvqmKGwlPzo1dAb0XHN
+	 zpedBr6ug4CdZqsFvmcy4d5gQiiCYWIFeUcxTxEzlTgeZRJc8QXXgtNhW9u81sduFI
+	 YtRnOn/JnPf9qGQkepeXlNjONGPza3zVLvjhB+Y1PF5HUKn2uopGfn/IthIEUh/8io
+	 rV8fzme05Zdew==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
-	Andrew Lunn <andrew@lunn.ch>,
 	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 113/317] ARM: dts: imx6dl-yapp4: Fix typo in the QCA switch register address
-Date: Sun, 24 Mar 2024 19:31:33 -0400
-Message-ID: <20240324233458.1352854-114-sashal@kernel.org>
+Subject: [PATCH 5.15 114/317] ARM: dts: imx6dl-yapp4: Move the internal switch PHYs under the switch node
+Date: Sun, 24 Mar 2024 19:31:34 -0400
+Message-ID: <20240324233458.1352854-115-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -66,35 +65,90 @@ Content-Transfer-Encoding: 8bit
 
 From: Michal Vokáč <michal.vokac@ysoft.com>
 
-[ Upstream commit 023bd910d3ab735459f84b22bb99fb9e00bd9d76 ]
+[ Upstream commit 79978bff2e4b8e05ebdf5fc3ee6b794002393484 ]
 
-This change does not have any functional effect. The switch works just
-fine without this patch as it has full access to all the addresses
-on the bus. This is simply a clean-up to set the node name address
-and reg address to the same value.
+We identified that the PHYs actually do not work since commit 7da7b84fee58
+("ARM: dts: imx6dl-yapp4: Move phy reset into switch node") as
+a coincidence of several circumstances.
 
-Fixes: 15b43e497ffd ("ARM: dts: imx6dl-yapp4: Use correct pseudo PHY address for the switch")
+The reset signal is kept asserted by a pull-down resistor on the board
+unless it is deasserted by GPIO from the SoC. This is to keep the switch
+dead until it is configured properly by the kernel and user space.
+
+Prior to the referenced commit the switch was reset by the FEC driver
+and the reset GPIO was actively deasserted. The mdio-bus was scanned
+and the attached switch and its PHYs were found and configured.
+
+With the referenced commit the switch is reset by the qca8k driver.
+Because of another bug in the qca8k driver, functionality of the reset
+pin depends on its pre-kernel configuration. See commit c44fc98f0a8f
+("net: dsa: qca8k: fix illegal usage of GPIO")
+
+The problem did not appear until we removed support for the switch
+and configuration of its reset pin from the bootloader.
+
+To fix that, properly describe the internal mdio-bus configuration of
+the qca8334 switch. The PHYs are internal to the switch and sit on its
+internal mdio-bus.
+
+Fixes: 7da7b84fee58 ("ARM: dts: imx6dl-yapp4: Move phy reset into switch node")
 Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 23 ++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-index 844f31f7c4114..76da90e858045 100644
+index 76da90e858045..69ad1f198fa71 100644
 --- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
 +++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-@@ -127,7 +127,7 @@ phy_port3: phy@2 {
+@@ -117,14 +117,6 @@ mdio {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
  
+-		phy_port2: phy@1 {
+-			reg = <1>;
+-		};
+-
+-		phy_port3: phy@2 {
+-			reg = <2>;
+-		};
+-
  		switch@10 {
  			compatible = "qca,qca8334";
--			reg = <10>;
-+			reg = <0x10>;
- 			reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+ 			reg = <0x10>;
+@@ -149,15 +141,30 @@ fixed-link {
+ 				eth2: port@2 {
+ 					reg = <2>;
+ 					label = "eth2";
++					phy-mode = "internal";
+ 					phy-handle = <&phy_port2>;
+ 				};
  
- 			switch_ports: ports {
+ 				eth1: port@3 {
+ 					reg = <3>;
+ 					label = "eth1";
++					phy-mode = "internal";
+ 					phy-handle = <&phy_port3>;
+ 				};
+ 			};
++
++			mdio {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				phy_port2: ethernet-phy@1 {
++					reg = <1>;
++				};
++
++				phy_port3: ethernet-phy@2 {
++					reg = <2>;
++				};
++			};
+ 		};
+ 	};
+ };
 -- 
 2.43.0
 
