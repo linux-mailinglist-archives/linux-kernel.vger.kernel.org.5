@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-114214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A77888F99
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:55:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A62D889465
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16400B2DCC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:49:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35A6F292B8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D7325119A;
-	Sun, 24 Mar 2024 23:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC066353017;
+	Mon, 25 Mar 2024 02:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cwhW9kXR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G6FMd3s+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191FA13793C;
-	Sun, 24 Mar 2024 23:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581D6137C22;
+	Sun, 24 Mar 2024 23:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321554; cv=none; b=rIRRGhxWrIu1vmzpis6N5JtwmnTgWDHk1hDlcZIUmha3/0VRUPfgwZJxG/M5pGgaJUBBMRX7SW4LsUtmIM3ugTHIGx40HvxbVC0ELPKZMG86RNoMHDN0hSZvnh0L+lIIb8oar0Z5i0lyjW9jMI3VR8yRlA0Z+Lif1W8Wn46YPJA=
+	t=1711321555; cv=none; b=FkCpKQNQtozW/iRPXc+wPAbSJiUu8HTuftbPVb6x9jUHfkz0sQxkobGw8qCmM2BUFA/95hYd4twTmNLlZ2ZsS4z5bXOT2WWUxJFrZFFVV9KiVySqVhNtDjnnwUYThDHdnWtf4WCiCivBnR5YWUu2BCjXzze+xtYyz+1QWUIs1zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321554; c=relaxed/simple;
-	bh=mqDHnKF4JwaqvMbLj6PvJjzjGLsRXI6R6B2MXr+ey/o=;
+	s=arc-20240116; t=1711321555; c=relaxed/simple;
+	bh=Oy4cmeOCNXlltoZON9vom6KxuGfFKgp8FtaL4HrwVTg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O25/3o94rHPYzspOv2d0pUG634nDEIVtK2Y0oZUvPH1JCm+F057eH0b05LOUPXJRdyL2+jH5scPFsZedy96prqBiLfZjaqVQf77HQ5HKax2iIBzHJpaS6gXVGyNBaB1F7V9TIqwCl1c0TbuHarv3O4rkzl+s+yAHkJ8p4jiEynY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cwhW9kXR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 297E4C43390;
-	Sun, 24 Mar 2024 23:05:52 +0000 (UTC)
+	 MIME-Version; b=knGkzqN6USgVUHb+KIxoQG6nkUj7zzYNi5zl6OjoCokdsPULbOAC8lZVyuFmrElxsHnS9ClLwC7k6CbKfCVLWezhLw8qercdiYYLjIM0eNXdhuCQ3cpqvzC5zixM1lNRclFGtrfHRW/ve7jANzdksdVQ5huxmSsBn9pPBy5U5bU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G6FMd3s+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C173C433C7;
+	Sun, 24 Mar 2024 23:05:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711321553;
-	bh=mqDHnKF4JwaqvMbLj6PvJjzjGLsRXI6R6B2MXr+ey/o=;
+	bh=Oy4cmeOCNXlltoZON9vom6KxuGfFKgp8FtaL4HrwVTg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cwhW9kXR/1oPJfOiqqV3mmtG9j+PjcwFEnEjHbApFsOSKm+m3XPLQzkxfSvhVMnMa
-	 FhMS0XWkiJPLaMvFb/MhS/e5Gz8Q63sMBJtsqHRt5OZIt2sncWKbRboME2O6xW6DhC
-	 sfGtP/b/Iia6wz3B36TGTadQSe8j910I4VPGKz58nQEGENuDN/oDzd+mOT1s3PFG/g
-	 yqmEmgbqXtzBXYj9uGwkT2dmXqEHMf0rApWnlqDSv/s7Dqi34mEoxtWpFwa0QZIxxX
-	 tlOp+HTJbaZN+9XAFDv0Qt9DVt8LHZGKtwHgGdapM9/czfR7MvuOkGHH+gNthUpEUE
-	 16ORbLg/LioIw==
+	b=G6FMd3s+lk+08q5clbCFwCENSmkRYqJek8jCyPInHvbFtcHw6mjwGoT79cjkLFA+K
+	 JHY0djz7ANeUVtTyr/lBy425enhe6bLk8J5Bik/vwPTQjjUFYbkimXQk+wlYuG1R2A
+	 H/91U19UoKiBNqfa5GgD0Vy8UTh8kJ/tRhBRBxXZUGGKaL3Yz0xN9pe7a22GyXH30e
+	 1RtGlq1j3nMuBypBXSNOQyMt/8n6EYS/eoI4yEixkeiIfXLEctiKwD5YzCEvkFw4dL
+	 ilX0KKPxwSPjaHeiV9n8B7u7mqFkfH6QIcw+fp59QBkeZXEz6xBjBG5X3ztASdgbjw
+	 QxMTYwZjwT2aQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
-	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-	Nicolin Chen <nicolinc@nvidia.com>,
-	Will Deacon <will@kernel.org>,
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
+	kernel test robot <lkp@intel.com>,
+	Kees Cook <keescook@chromium.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 281/638] iommu/arm-smmu-v3: Check that the RID domain is S1 in SVA
-Date: Sun, 24 Mar 2024 18:55:18 -0400
-Message-ID: <20240324230116.1348576-282-sashal@kernel.org>
+Subject: [PATCH 6.6 282/638] objtool: Fix UNWIND_HINT_{SAVE,RESTORE} across basic blocks
+Date: Sun, 24 Mar 2024 18:55:19 -0400
+Message-ID: <20240324230116.1348576-283-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,59 +63,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-[ Upstream commit ae91f6552c301e5e8569667e9d5440d5f75a90c4 ]
+[ Upstream commit 10b4c4bce3f5541f54bcc2039720b11d2bc96d79 ]
 
-The SVA code only works if the RID domain is a S1 domain and has already
-installed the cdtable.
+If SAVE and RESTORE unwind hints are in different basic blocks, and
+objtool sees the RESTORE before the SAVE, it errors out with:
 
-Originally the check for this was in arm_smmu_sva_bind() but when the op
-was removed the test didn't get copied over to the new
-arm_smmu_sva_set_dev_pasid().
+  vmlinux.o: warning: objtool: vmw_port_hb_in+0x242: objtool isn't smart enough to handle this CFI save/restore combo
 
-Without the test wrong usage usually will hit a WARN_ON() in
-arm_smmu_write_ctx_desc() due to a missing ctx table.
+In such a case, defer following the RESTORE block until the
+straight-line path gets followed later.
 
-However, the next patches wil change things so that an IDENTITY domain is
-not a struct arm_smmu_domain and this will get into memory corruption if
-the struct is wrongly casted.
-
-Fail in arm_smmu_sva_set_dev_pasid() if the STE does not have a S1, which
-is a proxy for the STE having a pointer to the CD table. Write it in a way
-that will be compatible with the next patches.
-
-Fixes: 386fa64fd52b ("arm-smmu-v3/sva: Add SVA domain support")
-Reported-by: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Closes: https://lore.kernel.org/linux-iommu/2a828e481416405fb3a4cceb9e075a59@huawei.com/
-Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Link: https://lore.kernel.org/r/11-v6-96275f25c39d+2d4-smmuv3_newapi_p1_jgg@nvidia.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 8faea26e6111 ("objtool: Re-add UNWIND_HINT_{SAVE_RESTORE}")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402240702.zJFNmahW-lkp@intel.com/
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Link: https://lore.kernel.org/r/20240227073527.avcm5naavbv3cj5s@treble
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ tools/objtool/check.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-index 8a16cd3ef487c..cc33e8297b8d0 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-@@ -352,7 +352,13 @@ __arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm)
- 	struct arm_smmu_bond *bond;
- 	struct arm_smmu_master *master = dev_iommu_priv_get(dev);
- 	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
--	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
-+	struct arm_smmu_domain *smmu_domain;
-+
-+	if (!(domain->type & __IOMMU_DOMAIN_PAGING))
-+		return -ENODEV;
-+	smmu_domain = to_smmu_domain(domain);
-+	if (smmu_domain->stage != ARM_SMMU_DOMAIN_S1)
-+		return -ENODEV;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e308d1ba664ef..e3fc263b1b206 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -3604,6 +3604,18 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 				}
  
- 	if (!master || !master->sva_enabled)
- 		return ERR_PTR(-ENODEV);
+ 				if (!save_insn->visited) {
++					/*
++					 * If the restore hint insn is at the
++					 * beginning of a basic block and was
++					 * branched to from elsewhere, and the
++					 * save insn hasn't been visited yet,
++					 * defer following this branch for now.
++					 * It will be seen later via the
++					 * straight-line path.
++					 */
++					if (!prev_insn)
++						return 0;
++
+ 					WARN_INSN(insn, "objtool isn't smart enough to handle this CFI save/restore combo");
+ 					return 1;
+ 				}
 -- 
 2.43.0
 
