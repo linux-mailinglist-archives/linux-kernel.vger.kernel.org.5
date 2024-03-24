@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-113947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE38B888787
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:03:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 458E2889C57
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:17:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF7281C26551
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:03:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB97B2E358C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 147C41EF7F1;
-	Sun, 24 Mar 2024 23:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366E024BC0C;
+	Mon, 25 Mar 2024 02:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A/+tJD4C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jkC/EUUU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED35F1EFE4B;
-	Sun, 24 Mar 2024 22:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3E081EFE51;
+	Sun, 24 Mar 2024 22:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321052; cv=none; b=fCqk0OSVUPz8ekABfHX1LlUDb2Dl/vA4fYd+CgtuK6EYXe2Y/YMhS1hyI54FrL7/mMsdSl2BcqYZ2Xkmknukm4gjeYRcFoGhRe+Yv0d/noteiKFmmKHydOyjNHn6w2ROKEK5KXy1FlPQh9CpUnahmZkF3vMGgVFTqyyiN5DC/oo=
+	t=1711321052; cv=none; b=Y3wgvrx0jRvdwtVAQRl0DJkZ0qMtKqJzI4SIw/IZEdV/iwoVVoLDrwfzUDf2rvhRqXYAD9BDcEVs8IBTw3fc9j1lr80pP9Rab6i2zCqo81gBRH+/SXTnyMuThss0llNEWA3DPqMTwPJho+/8Y+ueA4dwwaWSxZbnpHV6gznaxsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321052; c=relaxed/simple;
-	bh=EKeavYQEZFDvRJNtVtMfsm98ElmzCnmdX0039Xcx5Kc=;
+	bh=zSaTQbLe5/o3mV5I+JsovcB5JCLObPOmrNcs48f9lrA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TMlHqzwDUmgkxoe1f6OszOX0+6rR4sHctIwkuWn7dIFnV/yXw7/g+m889HeFfPz8qGm9can4/xHiWWB5veIJ+uKPH5Xc4cJz5XOIZXo23/1unaUdIZO4lQzlz4KPdHsL9of4p1+mSJHaK1f+3+j/IdbQEAkmsH4gm67TQAV2qyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A/+tJD4C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50885C433F1;
-	Sun, 24 Mar 2024 22:57:31 +0000 (UTC)
+	 MIME-Version; b=MwO3GCUdPaULEWA7J+zs+1CTZUo2ZFeWRy3HRWuZQir2tFADS4FPIdiwkXJbXEDyDdqK90LLB8PftQ3VS9Pq/afNFAbB7XwC2q2DtaZ8tdi64dXSwrT2OPO4HoMsqWv2jbUrL9uOvUuruI9zdPWWjR4OVWXZdE1iESHhAQeBzso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jkC/EUUU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BC73C43394;
+	Sun, 24 Mar 2024 22:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321051;
-	bh=EKeavYQEZFDvRJNtVtMfsm98ElmzCnmdX0039Xcx5Kc=;
+	s=k20201202; t=1711321052;
+	bh=zSaTQbLe5/o3mV5I+JsovcB5JCLObPOmrNcs48f9lrA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A/+tJD4CJmSCms+JYlZSUWM+bgPZ+At36FnekqBs33XG+8sURgz4JEKwl77KF5JQW
-	 84cBv/jFPybKWJozkOwZkUH1Bz7bh2zK0OkrTGlsb0SXmC2sPcQrSZcGtwc8ES2lwb
-	 oEXkjtjkxBj7C5ZGZknoNIZ4O33XqHeEscbA/cWz38aGrMpuulFjIrAZiBv+2ByruS
-	 3uZakUsJOx9vB1IH3cWvVzn+LNkWyQtgRrA59QGMxMa8f+hWZlySJbQwAUivNHYZAJ
-	 4ufUsPKTfQNosC1XBE+5bOSKnquoSWVUJZKq6wRE4TGm1gU0D1xcv9TDkybNt5S/FG
-	 Cr7L3TfbHNtlQ==
+	b=jkC/EUUU9tAHEkZYRKo91SjmDQYhoH1GutRRKFcRRjezx/vdKOyDEicdm2CIDf/uS
+	 UBS6wVgMDocpt9nhxJQ0w22SNZGc4RJBnq+qN5FaQZgTizzRDw4obRn4gIF6O4Lk/l
+	 GDofBXLB8oUmol536irXDo0m5y39GsSQjjdGubVQ+XdL+LBFDL4lx/+mtJSuRgfQiX
+	 ufQGHMgYC0+szoGvXVHGwPlFFIIKbVkwCEi7EZt80THJbaJDx1tZRjAezLpClVkq0b
+	 PLVKLtBZG621ap1uDcecg3/Ef0qpZ9UIthY92zBZV6bWGaEK03Z4OQGqXs+bYvy9I4
+	 G9fUr0XCrVpWQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+Cc: Frej Drejhammar <frej.drejhammar@gmail.com>,
+	Ian Abbott <abbotti@mev.co.uk>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 6.7 615/713] bcachefs: Fix BTREE_ITER_FILTER_SNAPSHOTS on inodes btree
-Date: Sun, 24 Mar 2024 18:45:41 -0400
-Message-ID: <20240324224720.1345309-616-sashal@kernel.org>
+Subject: [PATCH 6.7 616/713] comedi: comedi_8255: Correct error in subdevice initialization
+Date: Sun, 24 Mar 2024 18:45:42 -0400
+Message-ID: <20240324224720.1345309-617-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -61,42 +62,119 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kent Overstreet <kent.overstreet@linux.dev>
+From: Frej Drejhammar <frej.drejhammar@gmail.com>
 
-commit 204f45140faa0772d2ca1b3de96d1c0fb3db8e77 upstream.
+commit cfa9ba1ae0bef0681833a22d326174fe633caab5 upstream.
 
-If we're in FILTER_SNAPSHOTS mode and we start scanning a range of the
-keyspace where no keys are visible in the current snapshot, we have a
-problem - we'll scan for a very long time before scanning terminates.
+The refactoring done in commit 5c57b1ccecc7 ("comedi: comedi_8255: Rework
+subdevice initialization functions") to the initialization of the io
+field of struct subdev_8255_private broke all cards using the
+drivers/comedi/drivers/comedi_8255.c module.
 
-Awhile back, this was fixed for most cases with peek_upto() (and
-assertions that enforce that it's being used).
+Prior to 5c57b1ccecc7, __subdev_8255_init() initialized the io field
+in the newly allocated struct subdev_8255_private to the non-NULL
+callback given to the function, otherwise it used a flag parameter to
+select between subdev_8255_mmio and subdev_8255_io. The refactoring
+removed that logic and the flag, as subdev_8255_mm_init() and
+subdev_8255_io_init() now explicitly pass subdev_8255_mmio and
+subdev_8255_io respectively to __subdev_8255_init(), only
+__subdev_8255_init() never sets spriv->io to the supplied
+callback. That spriv->io is NULL leads to a later BUG:
 
-But the fix missed the fact that the inodes btree is different - every
-key offset is in a different snapshot tree, not just the inode field.
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+PGD 0 P4D 0
+Oops: 0010 [#1] SMP PTI
+CPU: 1 PID: 1210 Comm: systemd-udevd Not tainted 6.7.3-x86_64 #1
+Hardware name: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffa3f1c02d7b78 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: ffff91f847aefd00 RCX: 000000000000009b
+RDX: 0000000000000003 RSI: 0000000000000001 RDI: ffff91f840f6fc00
+RBP: ffff91f840f6fc00 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000000 R11: 000000000000005f R12: 0000000000000000
+R13: 0000000000000000 R14: ffffffffc0102498 R15: ffff91f847ce6ba8
+FS:  00007f72f4e8f500(0000) GS:ffff91f8d5c80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000010540e000 CR4: 00000000000406f0
+Call Trace:
+ <TASK>
+ ? __die_body+0x15/0x57
+ ? page_fault_oops+0x2ef/0x33c
+ ? insert_vmap_area.constprop.0+0xb6/0xd5
+ ? alloc_vmap_area+0x529/0x5ee
+ ? exc_page_fault+0x15a/0x489
+ ? asm_exc_page_fault+0x22/0x30
+ __subdev_8255_init+0x79/0x8d [comedi_8255]
+ pci_8255_auto_attach+0x11a/0x139 [8255_pci]
+ comedi_auto_config+0xac/0x117 [comedi]
+ ? __pfx___driver_attach+0x10/0x10
+ pci_device_probe+0x88/0xf9
+ really_probe+0x101/0x248
+ __driver_probe_device+0xbb/0xed
+ driver_probe_device+0x1a/0x72
+ __driver_attach+0xd4/0xed
+ bus_for_each_dev+0x76/0xb8
+ bus_add_driver+0xbe/0x1be
+ driver_register+0x9a/0xd8
+ comedi_pci_driver_register+0x28/0x48 [comedi_pci]
+ ? __pfx_pci_8255_driver_init+0x10/0x10 [8255_pci]
+ do_one_initcall+0x72/0x183
+ do_init_module+0x5b/0x1e8
+ init_module_from_file+0x86/0xac
+ __do_sys_finit_module+0x151/0x218
+ do_syscall_64+0x72/0xdb
+ entry_SYSCALL_64_after_hwframe+0x6e/0x76
+RIP: 0033:0x7f72f50a0cb9
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 47 71 0c 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffd47e512d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+RAX: ffffffffffffffda RBX: 0000562dd06ae070 RCX: 00007f72f50a0cb9
+RDX: 0000000000000000 RSI: 00007f72f52d32df RDI: 000000000000000e
+RBP: 0000000000000000 R08: 00007f72f5168b20 R09: 0000000000000000
+R10: 0000000000000050 R11: 0000000000000246 R12: 00007f72f52d32df
+R13: 0000000000020000 R14: 0000562dd06785c0 R15: 0000562dcfd0e9a8
+ </TASK>
+Modules linked in: 8255_pci(+) comedi_8255 comedi_pci comedi intel_gtt e100(+) acpi_cpufreq rtc_cmos usbhid
+CR2: 0000000000000000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffa3f1c02d7b78 EFLAGS: 00010202
+RAX: 0000000000000000 RBX: ffff91f847aefd00 RCX: 000000000000009b
+RDX: 0000000000000003 RSI: 0000000000000001 RDI: ffff91f840f6fc00
+RBP: ffff91f840f6fc00 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000000 R11: 000000000000005f R12: 0000000000000000
+R13: 0000000000000000 R14: ffffffffc0102498 R15: ffff91f847ce6ba8
+FS:  00007f72f4e8f500(0000) GS:ffff91f8d5c80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000010540e000 CR4: 00000000000406f0
 
-Fixes:
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+This patch simply corrects the above mistake by initializing spriv->io
+to the given io callback.
+
+Fixes: 5c57b1ccecc7 ("comedi: comedi_8255: Rework subdevice initialization functions")
+Signed-off-by: Frej Drejhammar <frej.drejhammar@gmail.com>
+Cc: stable@vger.kernel.org
+Acked-by: Ian Abbott <abbotti@mev.co.uk>
+Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20240211175822.1357-1-frej.drejhammar@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/bcachefs/btree_iter.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/comedi/drivers/comedi_8255.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/bcachefs/btree_iter.c b/fs/bcachefs/btree_iter.c
-index da594e0067697..816ecc3375196 100644
---- a/fs/bcachefs/btree_iter.c
-+++ b/fs/bcachefs/btree_iter.c
-@@ -2094,7 +2094,9 @@ struct bkey_s_c bch2_btree_iter_peek_upto(struct btree_iter *iter, struct bpos e
- 		 * isn't monotonically increasing before FILTER_SNAPSHOTS, and
- 		 * that's what we check against in extents mode:
- 		 */
--		if (k.k->p.inode > end.inode)
-+		if (unlikely(!(iter->flags & BTREE_ITER_IS_EXTENTS)
-+			     ? bkey_gt(k.k->p, end)
-+			     : k.k->p.inode > end.inode))
- 			goto end;
+diff --git a/drivers/comedi/drivers/comedi_8255.c b/drivers/comedi/drivers/comedi_8255.c
+index e4974b508328d..a933ef53845a5 100644
+--- a/drivers/comedi/drivers/comedi_8255.c
++++ b/drivers/comedi/drivers/comedi_8255.c
+@@ -159,6 +159,7 @@ static int __subdev_8255_init(struct comedi_device *dev,
+ 		return -ENOMEM;
  
- 		if (iter->update_path &&
+ 	spriv->context = context;
++	spriv->io      = io;
+ 
+ 	s->type		= COMEDI_SUBD_DIO;
+ 	s->subdev_flags	= SDF_READABLE | SDF_WRITABLE;
 -- 
 2.43.0
 
