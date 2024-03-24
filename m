@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 088AA88828D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:51:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BAA88828F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A73D1C219BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:51:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEC621F21D75
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2DDB132812;
-	Sun, 24 Mar 2024 22:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC92184EEB;
+	Sun, 24 Mar 2024 22:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UtfoF4rF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ttKLGsTT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19EA81327F7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB01132816;
 	Sun, 24 Mar 2024 22:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320039; cv=none; b=uqbhF4UqT5tPdhoyT2jInwrkr/CG1G9fHNfqi4C2o4SwF2SeZoiFjkWg8uvg+33Dnq6r2aLBkvqyaQxW5Tx/Y230bhONC48wXOvrfNJLREgiH5XDeakh+zzptr8PcxGRtSRcZXKRGCZUKh5cL8FV5Oxhr2muPIJ+pmQNbRiRrRU=
+	t=1711320040; cv=none; b=hpn5siXjnvp1pC+4wdYPQ6TGgciB9QH6E0/fQt3cj3ZGY5PuHkiGrXB0mcsVQwFq4Qckwandip8QcCsyEDI7hp7OGtGXH6g1fN7sFdu6AKH7s5LNZiRkGi1tjBUL+qoAfwPY+oIAGGouakOZYNQ8+WfgySGvGq9PICiKW/qhFlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320039; c=relaxed/simple;
-	bh=MPJsfCYG3IQN5G/QHQfx5aTxiuzR9zsnaOhfuWbMtVI=;
+	s=arc-20240116; t=1711320040; c=relaxed/simple;
+	bh=vN3j9v6c8tpDTvMyTzIX1vPcPw4IN6LGhMc4RM+tovY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ThhH1HdLDxEdvmUC2dHvpKs9zOntY47ZeNotEL8Fg0DkQ1AmTKUnpEvn1hsgkTSPKmNJtLFXXb79xSMOnpbHring7UllijQIjYvz+HbaMcks8LAMi8GCGOfTmyB4KhmZ8fzRFbSKjPdMUli8ZddH589VDyOsQ7acPrv3NTkzJ2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UtfoF4rF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4238FC433A6;
-	Sun, 24 Mar 2024 22:40:38 +0000 (UTC)
+	 MIME-Version; b=KBJmk/syOPJBy3ASbUDD5CaGn6Pr/wax1Hvbc8TXQItr1DD06N7HSHoXdstECHsHPb8V25Cxp4K2fvPGxv3pDY1HciTiKnQ2e392jerYOUExdFW3E4hPnlqpwfHi0BnHobWDh+/wezwDuGu7YT5N2iaEfsnceP45ypoDP3Ittlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ttKLGsTT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D198C433C7;
+	Sun, 24 Mar 2024 22:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320039;
-	bh=MPJsfCYG3IQN5G/QHQfx5aTxiuzR9zsnaOhfuWbMtVI=;
+	bh=vN3j9v6c8tpDTvMyTzIX1vPcPw4IN6LGhMc4RM+tovY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UtfoF4rFgWMhsaC1bED+3EBLOYUl8QldKqPvBi7w/SBAwZGEniN2bKtgd7csW5SvS
-	 VYEaJjglqfUKFPnevaamF1z6A/WyrUu9N3M+GcGm2GXpt38tz0sZG3N12Ny6K01HYo
-	 GtmUjq2DuMKBNOliQKnFmHvbfxyl1tb/EjKLORF/qcGB4+O/lTLYumV9Uwd8kOMlKa
-	 7kruMuoleVM13ZpC5Xv/swQ1oYHSRRfXbMB5BkaeRKuckHiliMJ+U0n6adkkbtRz2C
-	 42e02Cdxib1e+N+R2kMmpP9+ghxOSbwVuy5YweQmWCGzABukE68QjvIbxY9SNDYxaL
-	 CLMzCVzHhFF0A==
+	b=ttKLGsTT6ukoiXkmZKLgDqbYAEnQHQOa7MYXDOfBhnC2W2Ysr17czTnh795+R7GFx
+	 7y65wEau5f5FNx4csL3NWAnxI8x/ucTCD9LSTtagH3y/9VcAPJgFkNJ6fu4iESIxDi
+	 xvgOk2uCY3jkf8nnia4jAU343RTHhCamlGrWqqxbT2mYNxnotB/4Yv6l4CNj9yr3pH
+	 lOLOkuPKZWpTaIdStbZmWjCftP+BGw+0SusYuIAyocYzf/OSv67vbPmX5CvngRKWDf
+	 A40RJf91FE2241lwO36gvZm6DwgvigwxbiXFSSnd3prlR2PjKp9Px81PlI3zxiSJHl
+	 YNlhjQBowb0ZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ming Lei <ming.lei@redhat.com>,
-	Patrick Plenefisch <simonpatp@gmail.com>,
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
 	Mike Snitzer <snitzer@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 347/715] dm raid: fix false positive for requeue needed during reshape
-Date: Sun, 24 Mar 2024 18:28:46 -0400
-Message-ID: <20240324223455.1342824-348-sashal@kernel.org>
+Subject: [PATCH 6.8 348/715] dm: call the resume method on internal suspend
+Date: Sun, 24 Mar 2024 18:28:47 -0400
+Message-ID: <20240324223455.1342824-349-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,44 +62,121 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit b25b8f4b8ecef0f48c05f0c3572daeabefe16526 ]
+[ Upstream commit 65e8fbde64520001abf1c8d0e573561b4746ef38 ]
 
-An empty flush doesn't have a payload, so it should never be looked at
-when considering to possibly requeue a bio for the case when a reshape
-is in progress.
+There is this reported crash when experimenting with the lvm2 testsuite.
+The list corruption is caused by the fact that the postsuspend and resume
+methods were not paired correctly; there were two consecutive calls to the
+origin_postsuspend function. The second call attempts to remove the
+"hash_list" entry from a list, while it was already removed by the first
+call.
 
-Fixes: 9dbd1aa3a81c ("dm raid: add reshaping support to the target")
-Reported-by: Patrick Plenefisch <simonpatp@gmail.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Fix __dm_internal_resume so that it calls the preresume and resume
+methods of the table's targets.
+
+If a preresume method of some target fails, we are in a tricky situation.
+We can't return an error because dm_internal_resume isn't supposed to
+return errors. We can't return success, because then the "resume" and
+"postsuspend" methods would not be paired correctly. So, we set the
+DMF_SUSPENDED flag and we fake normal suspend - it may confuse userspace
+tools, but it won't cause a kernel crash.
+
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:56!
+invalid opcode: 0000 [#1] PREEMPT SMP
+CPU: 1 PID: 8343 Comm: dmsetup Not tainted 6.8.0-rc6 #4
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:__list_del_entry_valid_or_report+0x77/0xc0
+<snip>
+RSP: 0018:ffff8881b831bcc0 EFLAGS: 00010282
+RAX: 000000000000004e RBX: ffff888143b6eb80 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff819053d0 RDI: 00000000ffffffff
+RBP: ffff8881b83a3400 R08: 00000000fffeffff R09: 0000000000000058
+R10: 0000000000000000 R11: ffffffff81a24080 R12: 0000000000000001
+R13: ffff88814538e000 R14: ffff888143bc6dc0 R15: ffffffffa02e4bb0
+FS:  00000000f7c0f780(0000) GS:ffff8893f0a40000(0000) knlGS:0000000000000000
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 0000000057fb5000 CR3: 0000000143474000 CR4: 00000000000006b0
+Call Trace:
+ <TASK>
+ ? die+0x2d/0x80
+ ? do_trap+0xeb/0xf0
+ ? __list_del_entry_valid_or_report+0x77/0xc0
+ ? do_error_trap+0x60/0x80
+ ? __list_del_entry_valid_or_report+0x77/0xc0
+ ? exc_invalid_op+0x49/0x60
+ ? __list_del_entry_valid_or_report+0x77/0xc0
+ ? asm_exc_invalid_op+0x16/0x20
+ ? table_deps+0x1b0/0x1b0 [dm_mod]
+ ? __list_del_entry_valid_or_report+0x77/0xc0
+ origin_postsuspend+0x1a/0x50 [dm_snapshot]
+ dm_table_postsuspend_targets+0x34/0x50 [dm_mod]
+ dm_suspend+0xd8/0xf0 [dm_mod]
+ dev_suspend+0x1f2/0x2f0 [dm_mod]
+ ? table_deps+0x1b0/0x1b0 [dm_mod]
+ ctl_ioctl+0x300/0x5f0 [dm_mod]
+ dm_compat_ctl_ioctl+0x7/0x10 [dm_mod]
+ __x64_compat_sys_ioctl+0x104/0x170
+ do_syscall_64+0x184/0x1b0
+ entry_SYSCALL_64_after_hwframe+0x46/0x4e
+RIP: 0033:0xf7e6aead
+<snip>
+---[ end trace 0000000000000000 ]---
+
+Fixes: ffcc39364160 ("dm: enhance internal suspend and resume interface")
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 Signed-off-by: Mike Snitzer <snitzer@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-raid.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/md/dm.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index eb009d6bb03a1..13eb47b997f94 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3329,14 +3329,14 @@ static int raid_map(struct dm_target *ti, struct bio *bio)
- 	struct mddev *mddev = &rs->md;
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 8dcabf84d866e..0dc3650c7f4ca 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -2945,6 +2945,9 @@ static void __dm_internal_suspend(struct mapped_device *md, unsigned int suspend
  
- 	/*
--	 * If we're reshaping to add disk(s)), ti->len and
-+	 * If we're reshaping to add disk(s), ti->len and
- 	 * mddev->array_sectors will differ during the process
- 	 * (ti->len > mddev->array_sectors), so we have to requeue
- 	 * bios with addresses > mddev->array_sectors here or
- 	 * there will occur accesses past EOD of the component
- 	 * data images thus erroring the raid set.
- 	 */
--	if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
-+	if (unlikely(bio_has_data(bio) && bio_end_sector(bio) > mddev->array_sectors))
- 		return DM_MAPIO_REQUEUE;
+ static void __dm_internal_resume(struct mapped_device *md)
+ {
++	int r;
++	struct dm_table *map;
++
+ 	BUG_ON(!md->internal_suspend_count);
  
- 	md_handle_request(mddev, bio);
+ 	if (--md->internal_suspend_count)
+@@ -2953,12 +2956,23 @@ static void __dm_internal_resume(struct mapped_device *md)
+ 	if (dm_suspended_md(md))
+ 		goto done; /* resume from nested suspend */
+ 
+-	/*
+-	 * NOTE: existing callers don't need to call dm_table_resume_targets
+-	 * (which may fail -- so best to avoid it for now by passing NULL map)
+-	 */
+-	(void) __dm_resume(md, NULL);
+-
++	map = rcu_dereference_protected(md->map, lockdep_is_held(&md->suspend_lock));
++	r = __dm_resume(md, map);
++	if (r) {
++		/*
++		 * If a preresume method of some target failed, we are in a
++		 * tricky situation. We can't return an error to the caller. We
++		 * can't fake success because then the "resume" and
++		 * "postsuspend" methods would not be paired correctly, and it
++		 * would break various targets, for example it would cause list
++		 * corruption in the "origin" target.
++		 *
++		 * So, we fake normal suspend here, to make sure that the
++		 * "resume" and "postsuspend" methods will be paired correctly.
++		 */
++		DMERR("Preresume method failed: %d", r);
++		set_bit(DMF_SUSPENDED, &md->flags);
++	}
+ done:
+ 	clear_bit(DMF_SUSPENDED_INTERNALLY, &md->flags);
+ 	smp_mb__after_atomic();
 -- 
 2.43.0
 
