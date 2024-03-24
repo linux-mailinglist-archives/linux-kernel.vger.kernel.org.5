@@ -1,160 +1,127 @@
-Return-Path: <linux-kernel+bounces-112813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 187AF887E7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:57:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A22BB887E83
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3351281528
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:57:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DB64281089
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 938B2111A3;
-	Sun, 24 Mar 2024 18:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F4A9DDAB;
+	Sun, 24 Mar 2024 19:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eV0IRH3f"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WCk43MTH"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EDFDDD2
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 18:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF24DD51D;
+	Sun, 24 Mar 2024 19:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711306636; cv=none; b=foiuNh9KQk72iGnjBWHS2UAoA02n2HwamPQgNmxRI99VojjDonhjteBbojzhNhX/562dZhSso2vV8qgKdKyKMmBj3H4d8vKFnbkak9Q8efRq7E/XKm1cuwhQJ1onECW2PrEAdImkg+ZUrgVo9LpfnT115+TkvEXmCpl/RCQSi28=
+	t=1711306823; cv=none; b=iiHTOCTGVqY0W4yUpi/7kN+urePCvfq3Hr9X9VwYFbQzLLvXi13z1X/HoZBdz0ZYTNewttLU0mkbETz8WP4IgUhjc49AIIgy3ZuQ3MNKaSbS7Pxv6SvZ0r+OoN5XgKtJu0i1SXDi6ZeUEDpmMGFfyRKBktw1soLP+XfvQXx65EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711306636; c=relaxed/simple;
-	bh=PkLbbZIwmrZ4R8j4F93QwuHkzPwVCdYCtB3RljpFxJA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=KoIGZOfnhBiYSMGvjlspK8XuCEx5wW0DNgDixlUSPkGQxJ0C774y+2twdslxBdzX/znXNNH7ZwjSqXCzYhroQcIS3e5yBtW2Zp3Zzh8wRPH7IFGKcU6zQKBgawLSAsb9+VpNGnbx18RhVMzVyZ4hpYV2y8tgeaH/MyoZS+4+SDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eV0IRH3f; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso3222989a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 11:57:14 -0700 (PDT)
+	s=arc-20240116; t=1711306823; c=relaxed/simple;
+	bh=0uDTXPO9DAZL/Vz6XeOcY9b3jjyTrfYWOY4uqX6iy14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hwG4yPfm+ZEubMdr0GvPcLP/nScjzeRtxxBKu07XNXVRAJSUbVeSZwLh2PlNkFD1FXLoOSP5U4PISJEZwnrfxOMfqx7W4jLgBTWrfit7pg9vPGCo80eRIxlKCJJ7OKg+5ft4U+gW2yPc9LoOJHPFcSaP22iQDl6i3ya5RL45TLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WCk43MTH; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so3284554276.2;
+        Sun, 24 Mar 2024 12:00:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711306633; x=1711911433; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9tVdKnRbHolCy0YCQM9W1+uOdyw8nD9ks6qcNg/Gsxw=;
-        b=eV0IRH3fx+0WrzFqkw4gTlRQy9x/u05svlkVFG2JvCbo1otrbLdCfnHPozcQGpF6z3
-         ZDicudQyXpa+UsjrFTsPuv2nt1GbiEA11z/IlFM4vjh2M1x17dBswS+p8P3239rEst4x
-         5dolJrnarMw6G/fyGf+FETptxGte8XQvGHtzFB9RsMYzhckOMCLPviD5lUk3yuZthBOu
-         x6TiZwa1M6N81fpRrYb1uf61VK7L1lAPVsfCMUj2RToOlPwJAyo/0pOV0TgI8oaXrUsm
-         n7dc9VqJFQle+ujWhk1oeb5FKIK5puBJ2VEvlQusYZlg86AkdhUABTgw4vtQFLqDap46
-         zNNw==
+        d=gmail.com; s=20230601; t=1711306816; x=1711911616; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zs3jwcD+bSMxZx0cQlLSPlfHe7+Vx3v1SzeuR8ex/8w=;
+        b=WCk43MTHvwdKZ2rMA5K/H3f02ncp1nEOt73mwCmiJEdameR3bfCV97Xd/3cLBjXK54
+         yuGGFS1ai5mXdBdQy9WPyWWYGaWcVaTYspfdrSHupGKjZZXTun9f3sA0qsqhpIh6G7Yw
+         5uNFKM/mLpu+f7e3Ti2XwYg4QIC3ikp0sTTHdCdXGSAPiRhnqginpDVQImez9zH3jSFp
+         92K9ZIfbccVINq0+4fYMH3O0RgLjEW3+qYC2mJSee2a4/nYFdh3AX60kLFHg3HGx28PF
+         9Pn2OoYU9h4EeLgOcON4UNwFYRj/MPUfmSwMwG0T/eKGoIesbVwOUFJ9WolPjAt2ftur
+         NU4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711306633; x=1711911433;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711306816; x=1711911616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9tVdKnRbHolCy0YCQM9W1+uOdyw8nD9ks6qcNg/Gsxw=;
-        b=ggpg50QEK93K1R5NYlEWgEQ2bv0QmyU94tN69TrMECgxvTJIpCX49XH3IMBvmK5rvH
-         ahpqMtGdaC+LLuSS2PBTxUho27ZYSU9JrmhGUULenFoTMdaRIyxtdP0wWNG3WG8bi3q6
-         C8Y0ocXe5mYwz3kSWmHD44nyk6Ds3t6PM/POM+WNHmCRWZEkvnXekV9LfJoTvTzPcJuf
-         161po3B3t07m2kdlkfkgsUJMLFR2AA3iotBrLny1LL6UBxKYG8fAJ5SpzrmdmFlGI3u8
-         rQS1ajIV3XwQvzstb8CuHh8LwH0xYi6mY1FKoI5nksTBDgjXkZvOHmkkKGkGhs3X6cLs
-         7Vng==
-X-Forwarded-Encrypted: i=1; AJvYcCU1waMXM4juMhH0+mXZvOvvYtSHjBkKKIQPvkXPkHcGKUEZRuIZTVvt54R8oY72fq7YoUkbhy/SccTMNHAZo2JgDEw0llnd7bFBpSVp
-X-Gm-Message-State: AOJu0Yzge7dKH6M5sNpNsnkDtA3s7ndHUeLr9FJN2RmkfHs+snUmSChi
-	lnDcRDjcFisb5egFS92T/VpFLHSiLf/KkpOJe8bbKt1JX0t8wGnYKlOrJLD+OEtovLigh0MDQkW
-	G
-X-Google-Smtp-Source: AGHT+IFlYd+N1SyUJACbQyzR/wjIo0WO1tpDaoNq3dpNT1n+rRamvALgE4pqCFDWWqICzw6XTh9dvg==
-X-Received: by 2002:a17:907:7e9a:b0:a47:a340:c9c1 with SMTP id qb26-20020a1709077e9a00b00a47a340c9c1mr1428858ejc.27.1711306632877;
-        Sun, 24 Mar 2024 11:57:12 -0700 (PDT)
-Received: from [127.0.1.1] ([79.114.172.194])
-        by smtp.gmail.com with ESMTPSA id m19-20020a1709060d9300b00a45c9945251sm2194008eji.192.2024.03.24.11.57.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 11:57:12 -0700 (PDT)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Sun, 24 Mar 2024 20:56:52 +0200
-Subject: [PATCH v4 2/2] drm/msm/dp: Add support for the X1E80100
+        bh=Zs3jwcD+bSMxZx0cQlLSPlfHe7+Vx3v1SzeuR8ex/8w=;
+        b=eZGtVO/m8x9V9E5Jq9yeuLRnYV34jaBlpeadkpfDjXN5o3BONaAR9gE60qeu09f6Nw
+         O8L6RIJEkD8XLrDVXlh/Fba9NhZpsKaGFn74zI/+b2vY/tIkA1wm94WlAVOStLyKLss+
+         IvC1wv+TfYzgwRDRe3Ig7oC7IkaZc6jJOS0fgc8Ehmm3EU6/MEL3CTHi9uw7Mvvx7zf4
+         mLHXoxy1VsQmwaUnxHzIyTaEoo/xvzs8ZXATun2I0sk3FxrwIsFx93n6188nfzVtY0Yw
+         HbRVjvh43DMC4nlr6PFqFqNNErB/NQqquvAnHTEcslXGYxH7sDgnbdEEzHriIIu5g6qf
+         rYdw==
+X-Forwarded-Encrypted: i=1; AJvYcCWi77NA9RSORxt7SCVV6bshVHuXVb5IHqa3lyZTyMOZ6r+/7j1CCSTi24C25EWBnUGx3SvHKs0WScss0zda0G0u4FHap//Bh1IUyhZCjqeAr8H9Umin6sTplPicA79V6Ii1DU3MSuDv62tiyTEyzYGTP/bvg0oEExtBYLSOzQse2yLOGg==
+X-Gm-Message-State: AOJu0YwYsbW5WPLiYFvhU4geoPdywWENWaB8scJPFAjxqirylmvj137A
+	IIsU2C5yCWp8VlqCKcvLJj+KSi8whOzElA1RxYY3NaLcs0mck+Yasd2HwLMZVO9Euqd1zBcbOrp
+	ta0U+c69crlmZ3hFRStvwVgWIx84=
+X-Google-Smtp-Source: AGHT+IHrUHSUlApoRrfkRpt7zMExqBxrDGo9f0m60Rh2RG+K+WM9Y21zRhb+EO3yu0XN+fiKxztqhEdYDuiOXHvXrpg=
+X-Received: by 2002:a25:8609:0:b0:dcc:f6e2:44d0 with SMTP id
+ y9-20020a258609000000b00dccf6e244d0mr3338435ybk.37.1711306815913; Sun, 24 Mar
+ 2024 12:00:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240324-x1e80100-display-refactor-connector-v4-2-e0ebaea66a78@linaro.org>
-References: <20240324-x1e80100-display-refactor-connector-v4-0-e0ebaea66a78@linaro.org>
-In-Reply-To: <20240324-x1e80100-display-refactor-connector-v4-0-e0ebaea66a78@linaro.org>
-To: Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Johan Hovold <johan@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1668; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=PkLbbZIwmrZ4R8j4F93QwuHkzPwVCdYCtB3RljpFxJA=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBmAHeCsdSOdvDkDbPs2pH76+yTRro3YCA8q9GcP
- YnUm/UMdjaJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZgB3ggAKCRAbX0TJAJUV
- Vv47D/0bPwjqwBogmWH/gMYQiaOjOdd6oFTtCgEga2cRuC8pRUc/ojjgmMIeVDB38fOLJBWEU17
- p2QOOJKSWkeing/ZZqf883t2nfmg65Td2WSPkzyAc4l+y/joHDet+X9pigoK8ooI/g3/u+ZJrhL
- msjRbA4jbqtzUY1i31gywnPC6b/Na+fWtoD7ESMIfP89pn7ayOi+bkdgjcLLARvR6Je1f6RFkoP
- WOeAbwh42Ntxp9NdelGpTMn0qUMqmV/IhmtHPZkQNGWYIgC8HpI8NkZB4nINR42edrAgwmXmpnG
- Ww8KVz4SVaJakO4LqGpB/fjZB+tKlnqxhQfbWufuyAgL3Ny33wIz5v1ENIaV10CP76uTm1YDLo9
- bPLjNC97jnrRRCZ313O8TAKgVJ+SiynpC/yCPp/djnEB8bv5a3sNvDJNn1ZG44DuOeAgRzOFe7d
- /mVEZM20uyNkTMntw8BTyao/mVvHZ8KVekyVYb2e9IBuF8f8T3FoyZ95ZK9ID8WLSAGMJlIQ8gH
- 2mNj/S8CzrQYd3NPuz9VAPaJq25EVGJBBk8iugr7DViW6IDzQHDv07z/mB8s0+EUDyKFZbxmSH1
- 62rlNUJ4GrUCNXiF46OaRkmxqVnjYcI+bstOWoP6HeMmiI5kb7V7OeKt0QjIedIjhH2U+ac9cZs
- LSkgE4FXQkBq1vg==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+References: <20240323122030.21800-1-l.rubusch@gmail.com> <20240323122030.21800-4-l.rubusch@gmail.com>
+ <20240324133238.61d5f989@jic23-huawei>
+In-Reply-To: <20240324133238.61d5f989@jic23-huawei>
+From: Lothar Rubusch <l.rubusch@gmail.com>
+Date: Sun, 24 Mar 2024 19:59:39 +0100
+Message-ID: <CAFXKEHaeWbLV6g9eEdp9de5sZO0TJPRrJvsVxnGCf9jzdxwgHA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] iio: accel: adxl345: Add spi-3wire option
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: lars@metafoo.de, Michael.Hennerich@analog.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, eraretuya@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add the X1E80100 DP descs and compatible. This platform will be using
-a single compatible for both eDP and DP mode. The actual mode will
-be set based on the presence of the panel node in DT.
+On Sun, Mar 24, 2024 at 2:32=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
+ wrote:
+>
+> On Sat, 23 Mar 2024 12:20:27 +0000
+> Lothar Rubusch <l.rubusch@gmail.com> wrote:
+>
+> > Add a setup function implementation to the spi module to enable
+> > spi-3wire as option when specified in the device-tree.
+> >
+> > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+> > ---
+> >  drivers/iio/accel/adxl345.h     |  3 +++
+> >  drivers/iio/accel/adxl345_spi.c | 12 +++++++++++-
+> >  2 files changed, 14 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
+> > index 3c1ded0c2..6b84a2cee 100644
+> > --- a/drivers/iio/accel/adxl345.h
+> > +++ b/drivers/iio/accel/adxl345.h
+> > @@ -8,6 +8,9 @@
+> >  #ifndef _ADXL345_H_
+> >  #define _ADXL345_H_
+> >
+> > +#define ADXL345_REG_DATA_FORMAT              0x31
+> > +#define ADXL345_DATA_FORMAT_SPI         BIT(6) /* spi-3wire */
+> Name it that, rather than using a comment.   No need to precisely
+> match datasheet naming - you are naming the value not the field here.
+>
+> ADXL345_DATA_FORMAT_SPI_3_WRITE perhaps?
+>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Would you accept the following instead?
+ADXL345_DATA_FORMAT_SPI_3WIRE
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 9169a739cc54..521cba76d2a0 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -171,6 +171,14 @@ static const struct msm_dp_desc sm8650_dp_descs[] = {
- 	{}
- };
- 
-+static const struct msm_dp_desc x1e80100_dp_descs[] = {
-+	{ .io_start = 0x0ae90000, .id = MSM_DP_CONTROLLER_0, .wide_bus_supported = true },
-+	{ .io_start = 0x0ae98000, .id = MSM_DP_CONTROLLER_1, .wide_bus_supported = true },
-+	{ .io_start = 0x0ae9a000, .id = MSM_DP_CONTROLLER_2, .wide_bus_supported = true },
-+	{ .io_start = 0x0aea0000, .id = MSM_DP_CONTROLLER_3, .wide_bus_supported = true },
-+	{}
-+};
-+
- static const struct of_device_id dp_dt_match[] = {
- 	{ .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_descs },
- 	{ .compatible = "qcom,sc7280-dp", .data = &sc7280_dp_descs },
-@@ -182,6 +190,7 @@ static const struct of_device_id dp_dt_match[] = {
- 	{ .compatible = "qcom,sdm845-dp", .data = &sc7180_dp_descs },
- 	{ .compatible = "qcom,sm8350-dp", .data = &sm8350_dp_descs },
- 	{ .compatible = "qcom,sm8650-dp", .data = &sm8650_dp_descs },
-+	{ .compatible = "qcom,x1e80100-dp", .data = &x1e80100_dp_descs },
- 	{}
- };
- 
+In the OF binding it is SPI_3WIRE. So, from this perspective I think it wou=
+ld
+be consistent naming.
 
--- 
-2.34.1
-
+(...)
 
