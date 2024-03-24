@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-114310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05F76888A10
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:09:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 574B08889AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:01:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7A56B25AD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:00:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11200289A41
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30119263839;
-	Sun, 24 Mar 2024 23:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B02413C3D9;
+	Sun, 24 Mar 2024 23:28:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VuVJH+Zy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p/mHW+Fn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE3E153570;
-	Sun, 24 Mar 2024 23:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52015153576;
+	Sun, 24 Mar 2024 23:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321689; cv=none; b=ZD7cc/P8wOIT2FEcI+bUzdmgaCDKquRJqfOtsRQKJV8+k346y3geFJBPGkKWcPDjTtLpdqws0jTPLB/y5KE5+FPlca/Kwmbv0FvbnSab3tg6r9nF6nldrwUGN2bj/p7c3Ca4Xkxd9s87xUmyqy9Od1VdhdNTKdCcp//0rEZ0wzs=
+	t=1711321690; cv=none; b=WWB25nMh3zvn/WP6iRiLQd+vqC4LlvgOoK1qpWUrlgIIaF8zcLt5IfxcVokDav14pM0TZR5/ruVvK2UjLXj93ZCUpkQCbhf6Bf6ZlRDOAkwbNkKjSoh6+KQs1uITA82Vqwt1gaNQZXxkYVqG8G2b28gt/cXn77q3FST/GsmUIF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321689; c=relaxed/simple;
-	bh=oqhLPo+DOeJ4q8k2R1Tcqp5ocx3a9IJ+GYd3/R2/ZIM=;
+	s=arc-20240116; t=1711321690; c=relaxed/simple;
+	bh=c5uf/Q9F27X3x1EsJkrtqlk02vwMsZglIgOetVWKTvA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f6l2plq1ncdIxEdSKi5QSK/0npLde8UhyhTzrDIliB/op5XvdNcnLlx3zDIaDZZ2jD3g0rL3/atPa4FB+I/fi7RLIT2mfaEHH7FS4MqKv0VC5pYoIJLb7DFlZhhwom3yokAcTlj0AE/5yAluNn55Gdn//NJ2ozbLv7KisDFcXkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VuVJH+Zy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E883C43394;
-	Sun, 24 Mar 2024 23:08:07 +0000 (UTC)
+	 MIME-Version; b=URBPheiYWCu/jyv3oqV3m2K+YaZ1/S6tiiEBd8S6O+DbAdEykH5Dl/yLWH5mgwu7NKw9S49r3vU2BJDLo5FKFWVWoYnT2giWJodyhJUAH5hb4CR6XWMW0f43KTZXcf4tpc/pKeavPZTVM0DXyhmOD5nnlGliLMLvu82dWuXlFyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p/mHW+Fn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76CF1C433C7;
+	Sun, 24 Mar 2024 23:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321688;
-	bh=oqhLPo+DOeJ4q8k2R1Tcqp5ocx3a9IJ+GYd3/R2/ZIM=;
+	s=k20201202; t=1711321689;
+	bh=c5uf/Q9F27X3x1EsJkrtqlk02vwMsZglIgOetVWKTvA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VuVJH+ZyBux8zduCBtepjJNd6xTdurIjAuSwbJEAwo4TxpjVB2mzajGBl6xUIihdd
-	 buVPCmbg5JJFhZKJRqvTptdn8oRtHvoTES8X1ICIlbDWieCvB3/+NmqHVOke/kKD6f
-	 lXhojDdn/yJnu3U2WXd9hGyospqcqfvowKXkdJQTqzEEmEfDnVPkPg4Ky0rATQM4xI
-	 0uB2SnD7SZEZk/n9UDnaClI02zW03Ky0BbkUbsqiFud/RROZBHnxZAw2wo9DTBHmoB
-	 PHKSoKme0zBkIJl1ENQTR2ZZAn2wFD4zbAKznkSCCILI4vmnSwSP31WC0g5UFwCkex
-	 n/k4U1+X8pLnA==
+	b=p/mHW+FnTiO8FFlm02dcRs/OzpjFeX2/DhEuztdejTfiXtU3IfzGL1CtdpIUSCiTF
+	 WW87wImE4iGU0FT5K5nN97+5I6QgehWSkHduixsn0d2eTguAuc49XDAH1k3LnIBlcz
+	 NIK35lkeUsH5bkU2IDlgaBDqims/NwcGJ/8rs5duT9npaPo1ULymlGan8Rf4P+zHw3
+	 8vfH5sr0XXPxrGdoHrdokVMUBrXrzYOJlc9arMvpAwaXjcxlUNNGtYkEa3CWithn+R
+	 hOShB0QTwKe5Wy0shHGvtFYOJ3D2oUcxWDfTCV2D9GgJApl3h4YyjZmNcqidbYZ+GZ
+	 h+oHM81t6hzqg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yang Yingliang <yangyingliang@huawei.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Dave Jiang <dave.jiang@intel.com>,
+Cc: Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 416/638] NTB: fix possible name leak in ntb_register_device()
-Date: Sun, 24 Mar 2024 18:57:33 -0400
-Message-ID: <20240324230116.1348576-417-sashal@kernel.org>
+Subject: [PATCH 6.6 417/638] media: cedrus: h265: Fix configuring bitstream size
+Date: Sun, 24 Mar 2024 18:57:34 -0400
+Message-ID: <20240324230116.1348576-418-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -60,85 +59,74 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-[ Upstream commit aebfdfe39b9327a3077d0df8db3beb3160c9bdd0 ]
+[ Upstream commit 3a11887f7f11a6bb1f05e7f67b3ea20dadfec443 ]
 
-If device_register() fails in ntb_register_device(), the device name
-allocated by dev_set_name() should be freed. As per the comment in
-device_register(), callers should use put_device() to give up the
-reference in the error path. So fix this by calling put_device() in the
-error path so that the name can be freed in kobject_cleanup().
+bit_size field holds size of slice, not slice + header. Because of HW
+quirks, driver can't program in just slice, but also preceding header.
+But that means that currently used bit_size is wrong (too small).
+Instead, just use size of whole buffer. There is no harm in doing this.
 
-As a result of this, put_device() in the error path of
-ntb_register_device() is removed and the actual error is returned.
-
-Fixes: a1bd3baeb2f1 ("NTB: Add NTB hardware abstraction layer")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20231201033057.1399131-1-yangyingliang@huaweicloud.com
-[mani: reworded commit message]
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Fixes: 86caab29da78 ("media: cedrus: Add HEVC/H.265 decoding support")
+Suggested-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/core.c                            | 8 +++++++-
- drivers/pci/endpoint/functions/pci-epf-vntb.c | 6 +-----
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ drivers/staging/media/sunxi/cedrus/cedrus_h265.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/ntb/core.c b/drivers/ntb/core.c
-index 27dd93deff6e5..d702bee780826 100644
---- a/drivers/ntb/core.c
-+++ b/drivers/ntb/core.c
-@@ -100,6 +100,8 @@ EXPORT_SYMBOL(ntb_unregister_client);
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+index fc9297232456f..16c822637dc6e 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+@@ -427,11 +427,11 @@ static int cedrus_h265_setup(struct cedrus_ctx *ctx, struct cedrus_run *run)
+ 	unsigned int ctb_addr_x, ctb_addr_y;
+ 	struct cedrus_buffer *cedrus_buf;
+ 	dma_addr_t src_buf_addr;
+-	dma_addr_t src_buf_end_addr;
+ 	u32 chroma_log2_weight_denom;
+ 	u32 num_entry_point_offsets;
+ 	u32 output_pic_list_index;
+ 	u32 pic_order_cnt[2];
++	size_t slice_bytes;
+ 	u8 padding;
+ 	int count;
+ 	u32 reg;
+@@ -443,6 +443,7 @@ static int cedrus_h265_setup(struct cedrus_ctx *ctx, struct cedrus_run *run)
+ 	pred_weight_table = &slice_params->pred_weight_table;
+ 	num_entry_point_offsets = slice_params->num_entry_point_offsets;
+ 	cedrus_buf = vb2_to_cedrus_buffer(&run->dst->vb2_buf);
++	slice_bytes = vb2_get_plane_payload(&run->src->vb2_buf, 0);
  
- int ntb_register_device(struct ntb_dev *ntb)
- {
-+	int ret;
-+
- 	if (!ntb)
- 		return -EINVAL;
- 	if (!ntb->pdev)
-@@ -120,7 +122,11 @@ int ntb_register_device(struct ntb_dev *ntb)
- 	ntb->ctx_ops = NULL;
- 	spin_lock_init(&ntb->ctx_lock);
+ 	/*
+ 	 * If entry points offsets are present, we should get them
+@@ -490,7 +491,7 @@ static int cedrus_h265_setup(struct cedrus_ctx *ctx, struct cedrus_run *run)
  
--	return device_register(&ntb->dev);
-+	ret = device_register(&ntb->dev);
-+	if (ret)
-+		put_device(&ntb->dev);
-+
-+	return ret;
- }
- EXPORT_SYMBOL(ntb_register_device);
+ 	cedrus_write(dev, VE_DEC_H265_BITS_OFFSET, 0);
  
-diff --git a/drivers/pci/endpoint/functions/pci-epf-vntb.c b/drivers/pci/endpoint/functions/pci-epf-vntb.c
-index 3f60128560ed0..2b7bc5a731dd6 100644
---- a/drivers/pci/endpoint/functions/pci-epf-vntb.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-vntb.c
-@@ -1278,15 +1278,11 @@ static int pci_vntb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	ret = ntb_register_device(&ndev->ntb);
- 	if (ret) {
- 		dev_err(dev, "Failed to register NTB device\n");
--		goto err_register_dev;
-+		return ret;
- 	}
+-	reg = slice_params->bit_size;
++	reg = slice_bytes * 8;
+ 	cedrus_write(dev, VE_DEC_H265_BITS_LEN, reg);
  
- 	dev_dbg(dev, "PCI Virtual NTB driver loaded\n");
- 	return 0;
+ 	/* Source beginning and end addresses. */
+@@ -504,10 +505,7 @@ static int cedrus_h265_setup(struct cedrus_ctx *ctx, struct cedrus_run *run)
+ 
+ 	cedrus_write(dev, VE_DEC_H265_BITS_ADDR, reg);
+ 
+-	src_buf_end_addr = src_buf_addr +
+-			   DIV_ROUND_UP(slice_params->bit_size, 8);
 -
--err_register_dev:
--	put_device(&ndev->ntb.dev);
--	return -EINVAL;
- }
+-	reg = VE_DEC_H265_BITS_END_ADDR_BASE(src_buf_end_addr);
++	reg = VE_DEC_H265_BITS_END_ADDR_BASE(src_buf_addr + slice_bytes);
+ 	cedrus_write(dev, VE_DEC_H265_BITS_END_ADDR, reg);
  
- static struct pci_device_id pci_vntb_table[] = {
+ 	/* Coding tree block address */
 -- 
 2.43.0
 
