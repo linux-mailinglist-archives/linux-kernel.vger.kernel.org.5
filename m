@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F285788A137
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:13:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAD578886A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5F95B3527D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:58:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 059B01C25BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:38:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B60218520;
-	Mon, 25 Mar 2024 02:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EE551E4A11;
+	Sun, 24 Mar 2024 23:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WmFuq9WS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tjAbnaui"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525541E5866;
-	Sun, 24 Mar 2024 22:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33BB71E5856;
+	Sun, 24 Mar 2024 22:53:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320829; cv=none; b=Bic71f6+jXtuVSW88U0NDDiKt49ZhmKrnqEHHp1xVDiPAxAqzoiWi7Y2Na+D5GHBLEOFbwCM19mCVxFqNRJ4gp9ymPUVK2C3C0fR27W6Dc0Yhudrx5g94s0Zuui/FRe4oBuxyYk7SdaQP2YwDlvxsJlk071z1vdY85fLFnIYOJ8=
+	t=1711320831; cv=none; b=kQQVurSB1D0oDrwNOoaLps8E4GZPa3Hh9Y2hT1YvAqoNvxsgqsdViZEfmxT+7HyOMJjKQnRkyxoKSfNfkZpAaP/U+1ucHuriCkhkrP3+oq0nFImJFEZVvac4U9Oa6mLN3EwoijuvyPDqe/tXdWmcCYfUj+W9tzN5f96/+FrvRgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320829; c=relaxed/simple;
-	bh=+vKf/AD+EU5ShwD9w5bCge7Hc87d+rNN8o9xeCJe6BY=;
+	s=arc-20240116; t=1711320831; c=relaxed/simple;
+	bh=xx4kwvzAxT8EfZAIHWdVzcLqTUvuj8Q6VMgCYvPhFCo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eOMm1wN9r3YgzrzjooUf6d22QYRYX5FPaV4mXqKkvlxgNwV7kXwaVlduXnFC54yWnfWVq93YcYpXUpqDWdFdnJs+6kWb1R+fFm9RvOZVjAP0uQBa2uh5K3UOKEvR025OIx80nydt289OMiX6v4qc06KUcZumc5A0xiTwRg39CZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WmFuq9WS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B68EC43390;
-	Sun, 24 Mar 2024 22:53:48 +0000 (UTC)
+	 MIME-Version; b=acSbmWXurrpKeZm5X2sIvigayx5w4Ic/Bkf+Dvhxvcvw7xduEIFVcjIOoKEW6N2R1/dsMQIy1bpEMZuAFvqIKOOAHnebANH1TQfSbpnc83DiW73jEjK587jgvu3lx6r8mkKmxhpLN2VqbQbpddhPirX6TiFR0ccZc4nMG8eVkMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tjAbnaui; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7191CC43394;
+	Sun, 24 Mar 2024 22:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320829;
-	bh=+vKf/AD+EU5ShwD9w5bCge7Hc87d+rNN8o9xeCJe6BY=;
+	s=k20201202; t=1711320830;
+	bh=xx4kwvzAxT8EfZAIHWdVzcLqTUvuj8Q6VMgCYvPhFCo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WmFuq9WSaAZ1clZgm/acDvKyC+9ISbUwVx9doA7IuNW0+y41yaRnWwr+8jk22MbSV
-	 KtsfDKiqEznCbkteE71/tF6hJKWO7wwl+6Gtaz3n7BKR40cIuK/SsFo39FTScOSi8W
-	 lnDnO89JDf3xeL7H8BVXOjgfrDXIo8aomPaQsGnLM0zrBTn0UehBJVK146RlsMAunN
-	 bYIEFwo871abyupC/T000QTzOLePdhjagRpnMaYhdOX6LQ0TxAYDYKZOdEht1v4kNY
-	 LDFsUEMRbAXQ/TjXluRL6t9AmShItlAbuMdS2UYyqs8WVO/ibAf9NSGVdAoaYGmCLo
-	 3QeOUFV+jiC1g==
+	b=tjAbnauiifz0+8vEmJCbUZWjB2HNSWNBHvNEf4i4XkdywBUAouD8Dz2V6l9u6Btem
+	 JAQr1NKCqptJP0FbqoGPhgBsrm7/roFvLEEX4uMxi+uXOKesXv8Tw8EyM7z67nkBjc
+	 dfzAD6eZOqCNnlkWtlxZIMtI9XiBdH5m5Sn4BPfW7wmKTj5qvWcXKbKjUDgq3bUOth
+	 cJywLWkvxI0mVBXnlzX21E2dZBpUwdYyJvWz9uY6t4whv4onIgy5MuAfnNPXqPgjqd
+	 4aYAr/CHzOgQzrqrkG08cTxI3k4i/VcU3tRKTDWtnyveuqx40HKIPMZDUFXkC7MLuO
+	 ORVHnfD8YHwbg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	Thierry Reding <treding@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 394/713] drm/tegra: rgb: Fix some error handling paths in tegra_dc_rgb_probe()
-Date: Sun, 24 Mar 2024 18:42:00 -0400
-Message-ID: <20240324224720.1345309-395-sashal@kernel.org>
+Subject: [PATCH 6.7 395/713] drm/tegra: rgb: Fix missing clk_put() in the error handling paths of tegra_dc_rgb_probe()
+Date: Sun, 24 Mar 2024 18:42:01 -0400
+Message-ID: <20240324224720.1345309-396-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,77 +64,45 @@ Content-Transfer-Encoding: 8bit
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit bc456b5d93dbfdbd89f2a036f4f3d8026595f9e4 ]
+[ Upstream commit 45c8034db47842b25a3ab6139d71e13b4e67b9b3 ]
 
-If an error occurs after calling tegra_output_probe(),
-tegra_output_remove() should be called as already done in the remove
-function.
+If clk_get_sys(..., "pll_d2_out0") fails, the clk_get_sys() call must be
+undone.
 
-Fixes: 59d29c0ec93f ("drm/tegra: Allocate resources at probe time")
+Add the missing clk_put and a new 'put_pll_d_out0' label in the error
+handling path, and use it.
+
+Fixes: 0c921b6d4ba0 ("drm/tegra: dc: rgb: Allow changing PLLD rate on Tegra30+")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Thierry Reding <treding@nvidia.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/0001f61eb89048bc36241629b564195689cf54b6.1693667005.git.christophe.jaillet@wanadoo.fr
+Link: https://patchwork.freedesktop.org/patch/msgid/0182895ead4e4730426616b0d9995954c960b634.1693667005.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/rgb.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/tegra/rgb.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/tegra/rgb.c b/drivers/gpu/drm/tegra/rgb.c
-index fc66bbd913b24..53c492b13d129 100644
+index 53c492b13d129..1e8ec50b759e4 100644
 --- a/drivers/gpu/drm/tegra/rgb.c
 +++ b/drivers/gpu/drm/tegra/rgb.c
-@@ -225,26 +225,28 @@ int tegra_dc_rgb_probe(struct tegra_dc *dc)
- 	rgb->clk = devm_clk_get(dc->dev, NULL);
- 	if (IS_ERR(rgb->clk)) {
- 		dev_err(dc->dev, "failed to get clock\n");
--		return PTR_ERR(rgb->clk);
-+		err = PTR_ERR(rgb->clk);
-+		goto remove;
- 	}
- 
- 	rgb->clk_parent = devm_clk_get(dc->dev, "parent");
- 	if (IS_ERR(rgb->clk_parent)) {
- 		dev_err(dc->dev, "failed to get parent clock\n");
--		return PTR_ERR(rgb->clk_parent);
-+		err = PTR_ERR(rgb->clk_parent);
-+		goto remove;
- 	}
- 
- 	err = clk_set_parent(rgb->clk, rgb->clk_parent);
- 	if (err < 0) {
- 		dev_err(dc->dev, "failed to set parent clock: %d\n", err);
--		return err;
-+		goto remove;
- 	}
- 
- 	rgb->pll_d_out0 = clk_get_sys(NULL, "pll_d_out0");
- 	if (IS_ERR(rgb->pll_d_out0)) {
- 		err = PTR_ERR(rgb->pll_d_out0);
- 		dev_err(dc->dev, "failed to get pll_d_out0: %d\n", err);
--		return err;
-+		goto remove;
- 	}
- 
- 	if (dc->soc->has_pll_d2_out0) {
-@@ -252,13 +254,17 @@ int tegra_dc_rgb_probe(struct tegra_dc *dc)
+@@ -254,7 +254,7 @@ int tegra_dc_rgb_probe(struct tegra_dc *dc)
  		if (IS_ERR(rgb->pll_d2_out0)) {
  			err = PTR_ERR(rgb->pll_d2_out0);
  			dev_err(dc->dev, "failed to get pll_d2_out0: %d\n", err);
--			return err;
-+			goto remove;
+-			goto remove;
++			goto put_pll;
  		}
  	}
  
- 	dc->rgb = &rgb->output;
+@@ -262,6 +262,8 @@ int tegra_dc_rgb_probe(struct tegra_dc *dc)
  
  	return 0;
-+
-+remove:
-+	tegra_output_remove(&rgb->output);
-+	return err;
- }
  
- void tegra_dc_rgb_remove(struct tegra_dc *dc)
++put_pll:
++	clk_put(rgb->pll_d_out0);
+ remove:
+ 	tegra_output_remove(&rgb->output);
+ 	return err;
 -- 
 2.43.0
 
