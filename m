@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-113572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88A9F888565
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:06:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A316888567
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:06:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 445B4283FF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:06:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE58AB23A08
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DBE51C8808;
-	Sun, 24 Mar 2024 22:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440B91C8829;
+	Sun, 24 Mar 2024 22:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RGTk0a8W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cl6fKrql"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801F813E8BC;
-	Sun, 24 Mar 2024 22:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0671C880B;
+	Sun, 24 Mar 2024 22:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320375; cv=none; b=aWfTWAxYhZhG7LcE3P0aF1XPt1c69LFtnqXRmSTXmzRPxL1e/ATAZ8GDQ4r5WUFki3XwbXxzDdajiC3e61Ze/087giu91zFo5WWdj2VNyBGEN+faxzPzsFRBon+HU/81P5kFDweZBKnQPww7JBJHdK2/IN0Eml7/zBEU7yAvDPo=
+	t=1711320376; cv=none; b=gWNFsQNBepjUNx/NTCogKJNJLwiRWBwHknwRz5I8ENxK1jRFq/sCWYpZyLGnC6C9YkDy9oWf5gEXLpbi/TfInnOxNQj/3VuKaXPIdwFBMaM737vCBJ47G4L0N9inPm4l00kh0Q1Kzw8bPqKH6ORxCgBkdOauALlCPEa1m4Pj060=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320375; c=relaxed/simple;
-	bh=CHvIGZoy1lKp51lgMJA/2rQsWMnoPJipLMus7XjzkAs=;
+	s=arc-20240116; t=1711320376; c=relaxed/simple;
+	bh=RMsiwQfl7cYHKFn8JymDMhMZpp+GCZ0RkLUQJ2lV0CU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uqQ8eQJ5vTZ+SovDMMQ9KRTWmmI7WCK8WpVgOJ+zvZrB0FmQYg6Z2ot0KcU0fc+6zlufFY8+jVEs9209oDZeCpFCE87imlLcyB7g9eZOolA7ojBd3gnQT6s96ky1A414xPSRGQ14HBrTDOL89urU8emm3+H0LIShABNXucFXo0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RGTk0a8W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53047C43390;
-	Sun, 24 Mar 2024 22:46:14 +0000 (UTC)
+	 MIME-Version; b=RSDaVH7Pmtygkt4AlmvBvCY/WboTpC++Y4S0VYHbs7OuUCmi8ua68+u977PmJbTu2xg1kz4jW1tKdJoune07QSqDR9Vn3bYKcG1ot0MJO+FGDtb2vFyn+Dgi++5J478Z1N1itbVVnJDLqjZHHuXMv3KMkGy0H3K10Rcj3OB1Dg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cl6fKrql; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 659E6C43399;
+	Sun, 24 Mar 2024 22:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320375;
-	bh=CHvIGZoy1lKp51lgMJA/2rQsWMnoPJipLMus7XjzkAs=;
+	s=k20201202; t=1711320376;
+	bh=RMsiwQfl7cYHKFn8JymDMhMZpp+GCZ0RkLUQJ2lV0CU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RGTk0a8W+PLN5Gzhwa6EFAeeS18HX28gD9IkKwTwaE/QEmrVXloh6vjhhLVYHkM8M
-	 H2eTLaBdhiD7pJPSeXzeJQx1GAYWBfYd/lzYNphKiFHNvSG14fiMP04xIn6fqyKXd/
-	 47uVo4nGL39MfhyjCEnPIpea2ceAPT8T9CzFa8jtNeidioG1bfQAsm170I/wBSTfB7
-	 zHd9jAdhv/hy9OO+0C3mJ7hIaBjSwZkfJ3MnfROKCu26SEaQYRnoj+P6GmY8/2LFfG
-	 9eMAC9a99VlpJ+TMj3pMfTDp7OiSUSope1uPvKj23ZaxS19v2CktMqHF6HlOlD3YN+
-	 YZcRFByUpS2xQ==
+	b=Cl6fKrqlUJPLdHoc92cfccCee4mWLDvf+2y1HFmsDr+mjXgEFuLnG4HBis8c0irE8
+	 1GT9DCADdLD/j1iJVCJMC+YFxUxQNW+kPfBho/jI7fDGUlotmKWizHGNS1lwxE7p2m
+	 zmtYrP+lo+nywJA/M2U8GXci6Ica/cyHOJ7Ww5R537xWY0uGR4JPOb3xiiRWNSoGhN
+	 +Jg+nZC6he5CSm7Giq3vrUxqvM45q8LsuISPaYYi1BUpWPYuKbyU7roBJ9LZlrwjmp
+	 6h0+3v8LEUtFEd51zeBg33N+6QEZqaW8j3Hi0FnobiLpw59AwUTGUCR53MOKHN1WFu
+	 ONfAEmjdgDAqg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eric Dumazet <edumazet@google.com>,
-	Coco Li <lixiaoyan@google.com>,
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Jiri Pirko <jiri@nvidia.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 681/715] net: move dev->state into net_device_read_txrx group
-Date: Sun, 24 Mar 2024 18:34:20 -0400
-Message-ID: <20240324223455.1342824-682-sashal@kernel.org>
+Subject: [PATCH 6.8 682/715] wireguard: receive: annotate data-race around receiving_counter.counter
+Date: Sun, 24 Mar 2024 18:34:21 -0400
+Message-ID: <20240324223455.1342824-683-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,80 +65,83 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Eric Dumazet <edumazet@google.com>
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-[ Upstream commit f6e0a4984c2e7244689ea87b62b433bed9d07e94 ]
+[ Upstream commit bba045dc4d996d03dce6fe45726e78a1a1f6d4c3 ]
 
-dev->state can be read in rx and tx fast paths.
+Syzkaller with KCSAN identified a data-race issue when accessing
+keypair->receiving_counter.counter. Use READ_ONCE() and WRITE_ONCE()
+annotations to mark the data race as intentional.
 
-netif_running() which needs dev->state is called from
-- enqueue_to_backlog() [RX path]
-- __dev_direct_xmit()  [TX path]
+    BUG: KCSAN: data-race in wg_packet_decrypt_worker / wg_packet_rx_poll
 
-Fixes: 43a71cd66b9c ("net-device: reorganize net_device fast path variables")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Coco Li <lixiaoyan@google.com>
+    write to 0xffff888107765888 of 8 bytes by interrupt on cpu 0:
+     counter_validate drivers/net/wireguard/receive.c:321 [inline]
+     wg_packet_rx_poll+0x3ac/0xf00 drivers/net/wireguard/receive.c:461
+     __napi_poll+0x60/0x3b0 net/core/dev.c:6536
+     napi_poll net/core/dev.c:6605 [inline]
+     net_rx_action+0x32b/0x750 net/core/dev.c:6738
+     __do_softirq+0xc4/0x279 kernel/softirq.c:553
+     do_softirq+0x5e/0x90 kernel/softirq.c:454
+     __local_bh_enable_ip+0x64/0x70 kernel/softirq.c:381
+     __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:167 [inline]
+     _raw_spin_unlock_bh+0x36/0x40 kernel/locking/spinlock.c:210
+     spin_unlock_bh include/linux/spinlock.h:396 [inline]
+     ptr_ring_consume_bh include/linux/ptr_ring.h:367 [inline]
+     wg_packet_decrypt_worker+0x6c5/0x700 drivers/net/wireguard/receive.c:499
+     process_one_work kernel/workqueue.c:2633 [inline]
+     ...
+
+    read to 0xffff888107765888 of 8 bytes by task 3196 on cpu 1:
+     decrypt_packet drivers/net/wireguard/receive.c:252 [inline]
+     wg_packet_decrypt_worker+0x220/0x700 drivers/net/wireguard/receive.c:501
+     process_one_work kernel/workqueue.c:2633 [inline]
+     process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2706
+     worker_thread+0x525/0x730 kernel/workqueue.c:2787
+     ...
+
+Fixes: a9e90d9931f3 ("wireguard: noise: separate receive counter from send counter")
+Reported-by: syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Link: https://lore.kernel.org/r/20240314200845.3050179-1-edumazet@google.com
 Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/networking/net_cachelines/net_device.rst | 2 +-
- include/linux/netdevice.h                              | 2 +-
- net/core/dev.c                                         | 3 ++-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/wireguard/receive.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/networking/net_cachelines/net_device.rst b/Documentation/networking/net_cachelines/net_device.rst
-index dceb49d56a911..70c4fb9d4e5ce 100644
---- a/Documentation/networking/net_cachelines/net_device.rst
-+++ b/Documentation/networking/net_cachelines/net_device.rst
-@@ -13,7 +13,7 @@ struct_dev_ifalias*                 ifalias
- unsigned_long                       mem_end                                                         
- unsigned_long                       mem_start                                                       
- unsigned_long                       base_addr                                                       
--unsigned_long                       state                                                           
-+unsigned_long                       state                   read_mostly         read_mostly         netif_running(dev)
- struct_list_head                    dev_list                                                        
- struct_list_head                    napi_list                                                       
- struct_list_head                    unreg_list                                                      
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 78a09af89e39b..dba428b3a87a5 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -2144,6 +2144,7 @@ struct net_device {
- 		struct pcpu_sw_netstats __percpu	*tstats;
- 		struct pcpu_dstats __percpu		*dstats;
- 	};
-+	unsigned long		state;
- 	unsigned int		flags;
- 	unsigned short		hard_header_len;
- 	netdev_features_t	features;
-@@ -2189,7 +2190,6 @@ struct net_device {
- 	 *	part of the usual set specified in Space.c.
- 	 */
+diff --git a/drivers/net/wireguard/receive.c b/drivers/net/wireguard/receive.c
+index a176653c88616..db01ec03bda00 100644
+--- a/drivers/net/wireguard/receive.c
++++ b/drivers/net/wireguard/receive.c
+@@ -251,7 +251,7 @@ static bool decrypt_packet(struct sk_buff *skb, struct noise_keypair *keypair)
  
--	unsigned long		state;
+ 	if (unlikely(!READ_ONCE(keypair->receiving.is_valid) ||
+ 		  wg_birthdate_has_expired(keypair->receiving.birthdate, REJECT_AFTER_TIME) ||
+-		  keypair->receiving_counter.counter >= REJECT_AFTER_MESSAGES)) {
++		  READ_ONCE(keypair->receiving_counter.counter) >= REJECT_AFTER_MESSAGES)) {
+ 		WRITE_ONCE(keypair->receiving.is_valid, false);
+ 		return false;
+ 	}
+@@ -318,7 +318,7 @@ static bool counter_validate(struct noise_replay_counter *counter, u64 their_cou
+ 		for (i = 1; i <= top; ++i)
+ 			counter->backtrack[(i + index_current) &
+ 				((COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1)] = 0;
+-		counter->counter = their_counter;
++		WRITE_ONCE(counter->counter, their_counter);
+ 	}
  
- 	struct list_head	dev_list;
- 	struct list_head	napi_list;
-diff --git a/net/core/dev.c b/net/core/dev.c
-index f56f81e587236..439419d912eb0 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -11631,11 +11631,12 @@ static void __init net_dev_struct_check(void)
+ 	index &= (COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1;
+@@ -463,7 +463,7 @@ int wg_packet_rx_poll(struct napi_struct *napi, int budget)
+ 			net_dbg_ratelimited("%s: Packet has invalid nonce %llu (max %llu)\n",
+ 					    peer->device->dev->name,
+ 					    PACKET_CB(skb)->nonce,
+-					    keypair->receiving_counter.counter);
++					    READ_ONCE(keypair->receiving_counter.counter));
+ 			goto next;
+ 		}
  
- 	/* TXRX read-mostly hotpath */
- 	CACHELINE_ASSERT_GROUP_MEMBER(struct net_device, net_device_read_txrx, lstats);
-+	CACHELINE_ASSERT_GROUP_MEMBER(struct net_device, net_device_read_txrx, state);
- 	CACHELINE_ASSERT_GROUP_MEMBER(struct net_device, net_device_read_txrx, flags);
- 	CACHELINE_ASSERT_GROUP_MEMBER(struct net_device, net_device_read_txrx, hard_header_len);
- 	CACHELINE_ASSERT_GROUP_MEMBER(struct net_device, net_device_read_txrx, features);
- 	CACHELINE_ASSERT_GROUP_MEMBER(struct net_device, net_device_read_txrx, ip6_ptr);
--	CACHELINE_ASSERT_GROUP_SIZE(struct net_device, net_device_read_txrx, 38);
-+	CACHELINE_ASSERT_GROUP_SIZE(struct net_device, net_device_read_txrx, 46);
- 
- 	/* RX read-mostly hotpath */
- 	CACHELINE_ASSERT_GROUP_MEMBER(struct net_device, net_device_read_rx, ptype_specific);
 -- 
 2.43.0
 
