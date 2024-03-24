@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-112993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E694E88809D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:00:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18C5588809F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:00:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46327B21532
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:00:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2E681F2478D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E5612EBD9;
-	Sun, 24 Mar 2024 22:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875C04C60B;
+	Sun, 24 Mar 2024 22:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N/IuPgar"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxQH8enf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE41712EBC4;
-	Sun, 24 Mar 2024 22:36:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2CDF12EBDE;
+	Sun, 24 Mar 2024 22:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319805; cv=none; b=cUkMRzq6aek4GGWe7dLgCsbFDkIoPGKFUftjTOX+D1RwwsOumj82EPb5izN8wulZc0HTMos8Zi4H2vMbNyvgYwGY/PPqQRHprePwUxfFjqPeQk71+pB/G3JZAC+9DygJoziY7hFtZH43nlLuMKYSHcNxZMAanqUQU1EZCZ/txRw=
+	t=1711319806; cv=none; b=MC2WoPZW6s2RRkphHneXzSBkzkUbKLNqXSdS6V35Cj9f+a+HDNyaOEo9Xz8MxVTodE/jitQANavU0SkD/NQAZl+1VlCieDu9LhmD16UPt9go8OPhFlS1GeGP4WRGPYtKXAU7Sb32JuoKzXtjgOAlW1Tx3v/b2kyAn/LwinNuWY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319805; c=relaxed/simple;
-	bh=+4AiABqnksxNdiMVZMOXIxNcwiZbJbOVBDo6C4zJjWs=;
+	s=arc-20240116; t=1711319806; c=relaxed/simple;
+	bh=9Qq1iVEdw0G3vZVt9MiiXBeQOuukWCru2oMuL3av5NQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tKEieE1GFhG05q6gvpkwdOjrRq+1C3/ZE/yLPkvJatGMC8cnfapffr3zWdRTMRoQyaIkDEve0sRKjoX9aTZntMn44oOMlWbKCaoyAWrG3bxfGoTKTW4xPEj28FwyA612FmtK0PYX2cliggjGQRP8u5RmCYm2tslv7mH4LTiV0NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N/IuPgar; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7C15C43394;
-	Sun, 24 Mar 2024 22:36:44 +0000 (UTC)
+	 MIME-Version; b=oDoZSD2pXg46VrCNQ9WZxZc5EFA+Tow6nhQSffASZDxLSHHJHABDKARBJ7WWsuj0UH/fLJQPFBj4At5w3qooK1B5eFd4xMcHx5eyjGYb+2PexvQS3wQsOvF3R6RJmNZD90lGxihcJdRKdUQD7LLmcJBI2Uzm0Cjuis4NZROT4rM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxQH8enf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9088C433B1;
+	Sun, 24 Mar 2024 22:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319805;
-	bh=+4AiABqnksxNdiMVZMOXIxNcwiZbJbOVBDo6C4zJjWs=;
+	s=k20201202; t=1711319806;
+	bh=9Qq1iVEdw0G3vZVt9MiiXBeQOuukWCru2oMuL3av5NQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N/IuPgarsXYorAjwEjxnY459Q+AR2jy5pN14diIHPyMhdhrqixIpjcLHi+mYuPufY
-	 t1g+kzfhNo98e6V2N+U3be6W2C+9k5U8o/9aG70xKrIsJQOSp+ZHc4gAcNP1Ld7hNL
-	 RdBwRqu2cbgAOu/iV3koH44efqEfGMiCZfSdsegWU0g3G+L1SUU/Cm0wnhM7oBNaVo
-	 rWrCU/8B9XS0oCfDxvVVLZ1xSBEZxCwadkYmpKa29g7KxrvNjO05tFlWK8ECGUniPn
-	 7IkMTz2imltHkmcMsaGi+9dKpQIUkhDgnqQq0RhYkcLHNxi17Kf2TDNo/nJzWBklil
-	 VLuDi1DHOje1g==
+	b=jxQH8enfb875uJ1vHGeKYZle4JBzMO84OnRGVqThYqZ4BP8AO2Xtp2Is8CO/Eq3zb
+	 +DoPE24T7XEeHM25AMZcwjtbZ+geO2EhzGWGA1ToSvLtShFyO31S3BzzWhlEWeUqFW
+	 EivMIH61aVshrv3luiNNnxmKuEyEpqQKxNnvKuJYveh/cdkCCOMwtsI3hfW8rQxwe/
+	 F638sFHRWj8SNXAze/jHtOsVthUhz62PyE3jMo6myz6oLZLudsECsFaQAdqcQ/2hTa
+	 5ppgiF5pYazxYgT/xbzSyPQ+DOBnBCIEQs+tnNYV/QhKcC+jPrxlXZahm14FEb4kCz
+	 YXswy5HCT9XvA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 106/715] arm64: dts: renesas: r8a779g0: Restore sort order
-Date: Sun, 24 Mar 2024 18:24:45 -0400
-Message-ID: <20240324223455.1342824-107-sashal@kernel.org>
+Subject: [PATCH 6.8 107/715] arm64: dts: renesas: r8a779g0: Add missing SCIF_CLK2
+Date: Sun, 24 Mar 2024 18:24:46 -0400
+Message-ID: <20240324223455.1342824-108-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,122 +63,63 @@ Content-Transfer-Encoding: 8bit
 
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 8b93657c976a61726d7ffbe8d019b84b4abfb673 ]
+[ Upstream commit 08e799f6bce80dd63c174d8d0fc61d1a6149960b ]
 
-Numerical by unit address, alphabetical by node name.
+R-Car V4H actually has two SCIF_CLK pins.
+The second pin provides the SCIF_CLK signal for HSCIF2 and SCIF4.
 
+Fixes: a4c31c56d2d35641 ("arm64: dts: renesas: r8a779g0: Add SCIF nodes")
+Fixes: 39d9dfc6fbe1860e ("arm64: dts: renesas: r8a779g0: Add remaining HSCIF nodes")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/f00ef274a73c8fd60f940a1649423a8927b9ae8a.1705324708.git.geert+renesas@glider.be
-Stable-dep-of: 08e799f6bce8 ("arm64: dts: renesas: r8a779g0: Add missing SCIF_CLK2")
+Link: https://lore.kernel.org/r/72f20c1bf32187bd30a963cafe27252907d661f9.1705589612.git.geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/r8a779g0.dtsi | 72 +++++++++++------------
- 1 file changed, 36 insertions(+), 36 deletions(-)
+ arch/arm64/boot/dts/renesas/r8a779g0.dtsi | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/renesas/r8a779g0.dtsi b/arch/arm64/boot/dts/renesas/r8a779g0.dtsi
-index d3d25e077c5d5..3be1159982b20 100644
+index 3be1159982b20..0c83940b3d8a1 100644
 --- a/arch/arm64/boot/dts/renesas/r8a779g0.dtsi
 +++ b/arch/arm64/boot/dts/renesas/r8a779g0.dtsi
-@@ -161,11 +161,6 @@ L3_CA76_1: cache-controller-1 {
- 		};
+@@ -185,13 +185,19 @@ psci {
+ 		method = "smc";
  	};
  
--	psci {
--		compatible = "arm,psci-1.0", "arm,psci-0.2";
--		method = "smc";
--	};
--
- 	extal_clk: extal {
- 		compatible = "fixed-clock";
- 		#clock-cells = <0>;
-@@ -185,6 +180,11 @@ pmu_a76 {
- 		interrupts-extended = <&gic GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
- 	};
- 
-+	psci {
-+		compatible = "arm,psci-1.0", "arm,psci-0.2";
-+		method = "smc";
-+	};
-+
- 	/* External SCIF clock - to be overridden by boards that provide it */
+-	/* External SCIF clock - to be overridden by boards that provide it */
++	/* External SCIF clocks - to be overridden by boards that provide them */
  	scif_clk: scif {
  		compatible = "fixed-clock";
-@@ -1777,6 +1777,37 @@ ssi0: ssi-0 {
- 			};
- 		};
+ 		#clock-cells = <0>;
+ 		clock-frequency = <0>;
+ 	};
  
-+		mmc0: mmc@ee140000 {
-+			compatible = "renesas,sdhi-r8a779g0",
-+				     "renesas,rcar-gen4-sdhi";
-+			reg = <0 0xee140000 0 0x2000>;
-+			interrupts = <GIC_SPI 440 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 706>,
-+				 <&cpg CPG_CORE R8A779G0_CLK_SD0H>;
-+			clock-names = "core", "clkh";
-+			power-domains = <&sysc R8A779G0_PD_ALWAYS_ON>;
-+			resets = <&cpg 706>;
-+			max-frequency = <200000000>;
-+			iommus = <&ipmmu_ds0 32>;
-+			status = "disabled";
-+		};
++	scif_clk2: scif2 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <0>;
++	};
 +
-+		rpc: spi@ee200000 {
-+			compatible = "renesas,r8a779g0-rpc-if",
-+				     "renesas,rcar-gen4-rpc-if";
-+			reg = <0 0xee200000 0 0x200>,
-+			      <0 0x08000000 0 0x04000000>,
-+			      <0 0xee208000 0 0x100>;
-+			reg-names = "regs", "dirmap", "wbuf";
-+			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 629>;
-+			power-domains = <&sysc R8A779G0_PD_ALWAYS_ON>;
-+			resets = <&cpg 629>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		ipmmu_rt0: iommu@ee480000 {
- 			compatible = "renesas,ipmmu-r8a779g0",
- 				     "renesas,rcar-gen4-ipmmu-vmsa";
-@@ -1886,37 +1917,6 @@ ipmmu_mm: iommu@eefc0000 {
- 			#iommu-cells = <1>;
- 		};
- 
--		mmc0: mmc@ee140000 {
--			compatible = "renesas,sdhi-r8a779g0",
--				     "renesas,rcar-gen4-sdhi";
--			reg = <0 0xee140000 0 0x2000>;
--			interrupts = <GIC_SPI 440 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&cpg CPG_MOD 706>,
--				 <&cpg CPG_CORE R8A779G0_CLK_SD0H>;
--			clock-names = "core", "clkh";
--			power-domains = <&sysc R8A779G0_PD_ALWAYS_ON>;
--			resets = <&cpg 706>;
--			max-frequency = <200000000>;
--			iommus = <&ipmmu_ds0 32>;
--			status = "disabled";
--		};
--
--		rpc: spi@ee200000 {
--			compatible = "renesas,r8a779g0-rpc-if",
--				     "renesas,rcar-gen4-rpc-if";
--			reg = <0 0xee200000 0 0x200>,
--			      <0 0x08000000 0 0x04000000>,
--			      <0 0xee208000 0 0x100>;
--			reg-names = "regs", "dirmap", "wbuf";
--			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&cpg CPG_MOD 629>;
--			power-domains = <&sysc R8A779G0_PD_ALWAYS_ON>;
--			resets = <&cpg 629>;
--			#address-cells = <1>;
--			#size-cells = <0>;
--			status = "disabled";
--		};
--
- 		gic: interrupt-controller@f1000000 {
- 			compatible = "arm,gic-v3";
- 			#interrupt-cells = <3>;
+ 	soc: soc {
+ 		compatible = "simple-bus";
+ 		interrupt-parent = <&gic>;
+@@ -681,7 +687,7 @@ hscif2: serial@e6560000 {
+ 			interrupts = <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cpg CPG_MOD 516>,
+ 				 <&cpg CPG_CORE R8A779G0_CLK_SASYNCPERD1>,
+-				 <&scif_clk>;
++				 <&scif_clk2>;
+ 			clock-names = "fck", "brg_int", "scif_clk";
+ 			dmas = <&dmac0 0x35>, <&dmac0 0x34>,
+ 			       <&dmac1 0x35>, <&dmac1 0x34>;
+@@ -1057,7 +1063,7 @@ scif4: serial@e6c40000 {
+ 			interrupts = <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&cpg CPG_MOD 705>,
+ 				 <&cpg CPG_CORE R8A779G0_CLK_SASYNCPERD1>,
+-				 <&scif_clk>;
++				 <&scif_clk2>;
+ 			clock-names = "fck", "brg_int", "scif_clk";
+ 			dmas = <&dmac0 0x59>, <&dmac0 0x58>,
+ 			       <&dmac1 0x59>, <&dmac1 0x58>;
 -- 
 2.43.0
 
