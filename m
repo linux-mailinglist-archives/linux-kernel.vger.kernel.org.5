@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874718896C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:57:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B933889A8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AACE71C2FD8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:57:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ECD71C33354
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D7F1D4C42;
-	Mon, 25 Mar 2024 02:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57251D5652;
+	Mon, 25 Mar 2024 02:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DB3IbRKQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cC4Kztk1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45EB77FBB6;
-	Sun, 24 Mar 2024 22:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355767FBBD;
+	Sun, 24 Mar 2024 22:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320490; cv=none; b=MeLaBKUKExlSZmtzh27R9q/ypCbho7rDdserNQLeAdvfNqCwHgF+jY40OlscnFI6vsWdfavtJDHXC4pxIeX4sNTtgy2BfNPdelW1hhT3/o/8BkTxUUJGemvHThx4UhJ8emyj8/mke4hzdxm0tfttmoE1IfiS0jg0QOUolcHUGk0=
+	t=1711320491; cv=none; b=qG6qbhfXQxlweXJ85ygUIABqxmjxGdrL9WAlvZY4EUSTx+7Q6TmvVa06C3QRSDkk142JLlX/poxg22ci2pgnvHPh2VkZEFAHjTkOYYrt4Yywf4KiGiqwaMnAQKF17kbJSREDXMzr4XGQRC+aNKwQocgo7Nfa/vz/m7Z19/7gsak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320490; c=relaxed/simple;
-	bh=olviz3N7KgcKZNdsBQeT6Zs90vm3EAN2EEUiaQCQYdk=;
+	s=arc-20240116; t=1711320491; c=relaxed/simple;
+	bh=O3gGOkuRyZFboL0fmOL3hrmSbPvbiXSEcZC/rrfIDxE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y2icErTe1i0nwVjjHLY1jKBFBqsDqefugOA8CZLFoO4xAhpZHdOWYYI0WqM9G9/1Se9zrVN3nunNNbqjavguE/2eEq3Ea9hDD9lfO/CJ82O9+QBw94CPeyymaZNQa6Q106yDJLG151L8pr90GAKK/eTm8g/pY8eA4BTI+pyHk8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DB3IbRKQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60EEAC43399;
-	Sun, 24 Mar 2024 22:48:09 +0000 (UTC)
+	 MIME-Version; b=T1BVDlAoVO4jQLq9/kWMdbDoNvzxGgzXJ2jwCMpKacwnsUu9Oacr5QXl+etlsaLq9H9MKN6nRti76/1xYjCv1dHY4Gxv2+U5JBmwfWhTED7ewCMBsvnNyZdlGi44zlbXIMTeOdaPF1i84eTCVxrEDkIs6smMPRHN5n5YWwTu7B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cC4Kztk1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E325C433C7;
+	Sun, 24 Mar 2024 22:48:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320490;
-	bh=olviz3N7KgcKZNdsBQeT6Zs90vm3EAN2EEUiaQCQYdk=;
+	s=k20201202; t=1711320491;
+	bh=O3gGOkuRyZFboL0fmOL3hrmSbPvbiXSEcZC/rrfIDxE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DB3IbRKQVo/QZb8A3xHYfMj99sFOQLT0ZQ67elFK7EWVQym/PzCzhyu5VlFLxAdg0
-	 h0UbVJLsXgKe+khG1JK7oekdrpqxbdeni9IjGEt8xFs9QLaRbxAJgs+y+taWZLG/77
-	 36o0+IKBoAWIncP3adnZ9xo8QQuCH/9aZbJLdPB2O1i5R/vg70z6/cNbj3PCtZiPr0
-	 rbWJQwusiR0hYpU3qgwmZQawdDYqp6LxTEV0xZi72nF/uPJBzuIjh67WE3zKjbCAHk
-	 byxtjnWEYi4/po1trqwLNqQz6ujdqM8eWMT3Ty3eZGXP+uXss9ASo5RaF+TJn/iCwz
-	 8oohhMygSwuUQ==
+	b=cC4Kztk1gliV/Kfy/ZmfSysFD5iox9TcOe21G1IbIqkBQJyOprbOFF2gEmx66hXwl
+	 ObWaraxrz5BWB/ItawEN0YMpAMYaZN9l6RPUkAqw/33f3iUCXBdjBUVs26/QyA4zdU
+	 u7vMQI5SgWuS91FOtZLpaMWz8tNKaqNq/D+76VEG71D9gnHwqNXD9zzxuzuww1n41Z
+	 0Gg5pN0TWGSjB1r2aZFdcKpgOkGtqtXEwnz4wTFr2Tiy6/M6/G644ZTzn1XrK80sda
+	 4efVHQkuvqz60aiD/td/oDRhM9q6ah0GojbKs5TQE7FN2mnJ2/9w7hwOyl4atztaYy
+	 EvuHwsWXeBYiQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>,
+Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
 	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
 	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 049/713] wifi: iwlwifi: mvm: ensure offloading TID queue exists
-Date: Sun, 24 Mar 2024 18:36:15 -0400
-Message-ID: <20240324224720.1345309-50-sashal@kernel.org>
+Subject: [PATCH 6.7 050/713] wifi: iwlwifi: mvm: fix the TXF mapping for BZ devices
+Date: Sun, 24 Mar 2024 18:36:16 -0400
+Message-ID: <20240324224720.1345309-51-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,115 +63,102 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 
-[ Upstream commit 78f65fbf421a61894c14a1b91fe2fb4437b3fe5f ]
+[ Upstream commit d3433d1bb7bde449035f54b7000361ce151bad07 ]
 
-The resume code path assumes that the TX queue for the offloading TID
-has been configured. At resume time it then tries to sync the write
-pointer as it may have been updated by the firmware.
+Those devices' fifos are numbered differently.
+Because of that, we were looking at the size of the VO fifo size to
+determine the size of the A-MSDU which led to a lower throughput.
 
-In the unusual event that no packets have been send on TID 0, the queue
-will not have been allocated and this causes a crash. Fix this by
-ensuring the queue exist at suspend time.
+Note that for those devices the only user of the AC -> fifo mapping is
+the size limitation of A-MSDU.
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Link: https://msgid.link/20240218194912.6632e6dc7b35.Ie6e6a7488c9c7d4529f13d48f752b5439d8ac3c4@changeid
+Link: https://msgid.link/20240218194912.da336ca2fa0a.I73e44d5fc474ebb6f275b9008950e59c012f33b2@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/d3.c  |  9 ++++++-
- drivers/net/wireless/intel/iwlwifi/mvm/sta.c | 28 ++++++++++++++++++++
- drivers/net/wireless/intel/iwlwifi/mvm/sta.h |  3 ++-
- 3 files changed, 38 insertions(+), 2 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/fw/api/txq.h   | 12 +++++++++++-
+ drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c | 11 +++++++++++
+ drivers/net/wireless/intel/iwlwifi/mvm/mvm.h      |  8 ++++++--
+ 3 files changed, 28 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/d3.c b/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-index 92c45571bd691..a640860ab7acd 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-@@ -1286,7 +1286,9 @@ static int __iwl_mvm_suspend(struct ieee80211_hw *hw,
- 
- 		mvm->net_detect = true;
- 	} else {
--		struct iwl_wowlan_config_cmd wowlan_config_cmd = {};
-+		struct iwl_wowlan_config_cmd wowlan_config_cmd = {
-+			.offloading_tid = 0,
-+		};
- 
- 		wowlan_config_cmd.sta_id = mvmvif->deflink.ap_sta_id;
- 
-@@ -1298,6 +1300,11 @@ static int __iwl_mvm_suspend(struct ieee80211_hw *hw,
- 			goto out_noreset;
- 		}
- 
-+		ret = iwl_mvm_sta_ensure_queue(
-+			mvm, ap_sta->txq[wowlan_config_cmd.offloading_tid]);
-+		if (ret)
-+			goto out_noreset;
-+
- 		ret = iwl_mvm_get_wowlan_config(mvm, wowlan, &wowlan_config_cmd,
- 						vif, mvmvif, ap_sta);
- 		if (ret)
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-index bba96a9688906..9905925142279 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-@@ -1502,6 +1502,34 @@ static int iwl_mvm_sta_alloc_queue(struct iwl_mvm *mvm,
- 	return ret;
- }
- 
-+int iwl_mvm_sta_ensure_queue(struct iwl_mvm *mvm,
-+			     struct ieee80211_txq *txq)
-+{
-+	struct iwl_mvm_txq *mvmtxq = iwl_mvm_txq_from_mac80211(txq);
-+	int ret = -EINVAL;
-+
-+	lockdep_assert_held(&mvm->mutex);
-+
-+	if (likely(test_bit(IWL_MVM_TXQ_STATE_READY, &mvmtxq->state)) ||
-+	    !txq->sta) {
-+		return 0;
-+	}
-+
-+	if (!iwl_mvm_sta_alloc_queue(mvm, txq->sta, txq->ac, txq->tid)) {
-+		set_bit(IWL_MVM_TXQ_STATE_READY, &mvmtxq->state);
-+		ret = 0;
-+	}
-+
-+	local_bh_disable();
-+	spin_lock(&mvm->add_stream_lock);
-+	if (!list_empty(&mvmtxq->list))
-+		list_del_init(&mvmtxq->list);
-+	spin_unlock(&mvm->add_stream_lock);
-+	local_bh_enable();
-+
-+	return ret;
-+}
-+
- void iwl_mvm_add_new_dqa_stream_wk(struct work_struct *wk)
- {
- 	struct iwl_mvm *mvm = container_of(wk, struct iwl_mvm,
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/sta.h b/drivers/net/wireless/intel/iwlwifi/mvm/sta.h
-index b33a0ce096d46..3cf8a70274ce8 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/sta.h
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/sta.h
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/api/txq.h b/drivers/net/wireless/intel/iwlwifi/fw/api/txq.h
+index 9c69d36743846..e6c0f928a6bbf 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/api/txq.h
++++ b/drivers/net/wireless/intel/iwlwifi/fw/api/txq.h
 @@ -1,6 +1,6 @@
  /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
  /*
-- * Copyright (C) 2012-2014, 2018-2023 Intel Corporation
-+ * Copyright (C) 2012-2014, 2018-2024 Intel Corporation
-  * Copyright (C) 2013-2014 Intel Mobile Communications GmbH
-  * Copyright (C) 2015-2016 Intel Deutschland GmbH
+- * Copyright (C) 2005-2014, 2019-2021, 2023 Intel Corporation
++ * Copyright (C) 2005-2014, 2019-2021, 2023-2024 Intel Corporation
+  * Copyright (C) 2013-2015 Intel Mobile Communications GmbH
+  * Copyright (C) 2016-2017 Intel Deutschland GmbH
   */
-@@ -571,6 +571,7 @@ void iwl_mvm_modify_all_sta_disable_tx(struct iwl_mvm *mvm,
- 				       bool disable);
+@@ -66,6 +66,16 @@ enum iwl_gen2_tx_fifo {
+ 	IWL_GEN2_TRIG_TX_FIFO_VO,
+ };
  
- void iwl_mvm_csa_client_absent(struct iwl_mvm *mvm, struct ieee80211_vif *vif);
-+int iwl_mvm_sta_ensure_queue(struct iwl_mvm *mvm, struct ieee80211_txq *txq);
- void iwl_mvm_add_new_dqa_stream_wk(struct work_struct *wk);
- int iwl_mvm_add_pasn_sta(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
- 			 struct iwl_mvm_int_sta *sta, u8 *addr, u32 cipher,
++enum iwl_bz_tx_fifo {
++	IWL_BZ_EDCA_TX_FIFO_BK,
++	IWL_BZ_EDCA_TX_FIFO_BE,
++	IWL_BZ_EDCA_TX_FIFO_VI,
++	IWL_BZ_EDCA_TX_FIFO_VO,
++	IWL_BZ_TRIG_TX_FIFO_BK,
++	IWL_BZ_TRIG_TX_FIFO_BE,
++	IWL_BZ_TRIG_TX_FIFO_VI,
++	IWL_BZ_TRIG_TX_FIFO_VO,
++};
+ /**
+  * enum iwl_tx_queue_cfg_actions - TXQ config options
+  * @TX_QUEUE_CFG_ENABLE_QUEUE: enable a queue
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
+index c4f96125cf33a..25a5a31e63c2a 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
+@@ -31,6 +31,17 @@ const u8 iwl_mvm_ac_to_gen2_tx_fifo[] = {
+ 	IWL_GEN2_TRIG_TX_FIFO_BK,
+ };
+ 
++const u8 iwl_mvm_ac_to_bz_tx_fifo[] = {
++	IWL_BZ_EDCA_TX_FIFO_VO,
++	IWL_BZ_EDCA_TX_FIFO_VI,
++	IWL_BZ_EDCA_TX_FIFO_BE,
++	IWL_BZ_EDCA_TX_FIFO_BK,
++	IWL_BZ_TRIG_TX_FIFO_VO,
++	IWL_BZ_TRIG_TX_FIFO_VI,
++	IWL_BZ_TRIG_TX_FIFO_BE,
++	IWL_BZ_TRIG_TX_FIFO_BK,
++};
++
+ struct iwl_mvm_mac_iface_iterator_data {
+ 	struct iwl_mvm *mvm;
+ 	struct ieee80211_vif *vif;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h b/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
+index f2af3e5714090..3be67f0ff74f7 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mvm.h
+@@ -1574,12 +1574,16 @@ static inline int iwl_mvm_max_active_links(struct iwl_mvm *mvm,
+ 
+ extern const u8 iwl_mvm_ac_to_tx_fifo[];
+ extern const u8 iwl_mvm_ac_to_gen2_tx_fifo[];
++extern const u8 iwl_mvm_ac_to_bz_tx_fifo[];
+ 
+ static inline u8 iwl_mvm_mac_ac_to_tx_fifo(struct iwl_mvm *mvm,
+ 					   enum ieee80211_ac_numbers ac)
+ {
+-	return iwl_mvm_has_new_tx_api(mvm) ?
+-		iwl_mvm_ac_to_gen2_tx_fifo[ac] : iwl_mvm_ac_to_tx_fifo[ac];
++	if (mvm->trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_BZ)
++		return iwl_mvm_ac_to_bz_tx_fifo[ac];
++	if (iwl_mvm_has_new_tx_api(mvm))
++		return iwl_mvm_ac_to_gen2_tx_fifo[ac];
++	return iwl_mvm_ac_to_tx_fifo[ac];
+ }
+ 
+ struct iwl_rate_info {
 -- 
 2.43.0
 
