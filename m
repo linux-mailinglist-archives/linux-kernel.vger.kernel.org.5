@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 987788880DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 967068880DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54321281B8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:06:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 519B3281BE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEE6139562;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7737A139567;
 	Sun, 24 Mar 2024 22:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j3gQNCL6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CWus3nS9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31CD21386B9;
-	Sun, 24 Mar 2024 22:37:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9C51386D5;
+	Sun, 24 Mar 2024 22:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319835; cv=none; b=U7aiK2DiipgWxWwrss6WtnUttVdhhiDfo7zHlwXlD5yhe7nRaAqSswYI0AbZ/wZFcVqP1Bd18+7PqclKSoUSv5m2G3k/jFEthcVZ4Zcb8MZ+kTqakgp4Fu5U0s5zUkh9ymxTr+5B1tVsGrpUs0mce0QBMV9M/GT3dI6Q94XPC7U=
+	t=1711319835; cv=none; b=M3DKeQaFmZmWPqwNOVDhx7zEl6tijatowGv247NDGM0/XUa6kSZliWpizVwHR+4P/ih4odpSa0npGH+N9Gw3sGJXyTwxYTXHlu1CMv5XfDBuBDR6qmCsVf/NGqMUqW3RT15hTSnOxM5kfgLdJkawMKezrLIAFf94woSP7bfbW4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711319835; c=relaxed/simple;
-	bh=gZBhs5OFS0aSII4De22PvYT5QM8kh5F/h4/+8pOfbgY=;
+	bh=49DnlI4xLg7fy52362vWUJfff/Ui3fQ8OkDoSAzHm0A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SLQ8FXbwXhFwZZN70OPhYbAZd9h13IQOx6t9iRGxXUgCN1D/+JqZbM6dUyF2Bx2xgT23eiQEaBb5NWgJ+E5KWjFcnR7TkT1UrD+LExmfrNvhsLm8abwo/VIKkEvEZufme933WTkBJaQPM/bikkhX21BL1zvRAoUAssJ/h5kC28s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j3gQNCL6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 110B0C43399;
-	Sun, 24 Mar 2024 22:37:13 +0000 (UTC)
+	 MIME-Version; b=cayqfoaV5mJJktB6WAJgLCcmsoPreVe0P9mRd+bxVouQQ2dGx/5Y//PDCnfcFFv32a00AHbxFEurC4JLT4057uCX5v3tixGVLlzmyxAVrUolhYpDFSXwWx++dg7ATHwzU8apzLgPaQuZUhZ8G/6E4wzOa3wPuLAaDH+oYpUCyJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CWus3nS9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC448C433F1;
+	Sun, 24 Mar 2024 22:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319834;
-	bh=gZBhs5OFS0aSII4De22PvYT5QM8kh5F/h4/+8pOfbgY=;
+	s=k20201202; t=1711319835;
+	bh=49DnlI4xLg7fy52362vWUJfff/Ui3fQ8OkDoSAzHm0A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j3gQNCL6xcTXtpByWjaqIvxd3KNlwUvMkpn5aEx99rLL1QA5kDB54Tm8UjT32KTMI
-	 hVjwvbQRpFlrxcTGsimT5zr5fxYJi9Qt9fm7nAf3GfK4sFBA4yfYEyOeuW41jfVSq3
-	 bTGdqGNxcYquyBELgjq4n/Zq+p+BRt4qRZsgmf6BzJutLOLHmeuQQ+CFZWvuIjFael
-	 lUj1hgRZQYR45Gvi1zQPqjSDY8UB4qRmftI0UXQ0jQ4r0m0jKsyUDLxKLxgVuVWHn6
-	 0sj7siUlXXYgRqIRpGPNdOpb01QpfhEGWatB00/KmeotuywbU0Za46QeoEZbux6m2J
-	 PhJjirEp+0IYw==
+	b=CWus3nS9BKw7fxkguM1u8m3ZoOBox672PXzYRjq+dnAQsYbzCbfOOUqOvI+pWFXBg
+	 ZSTAnZ+3h9WTpdTEww1pZpcdR1gScdBXwYYzo1VBGQ/vBYlqKor/Fp9hCtqKBi1FMX
+	 HRgHTGaMU4mqdRdyL+v7HAcFo/ZFZW1SZdRJF63QM4y5bTDp03Zg7fDzJzKU7cF5Az
+	 FSdvz0id6udtMsrmdEqnK3enhztKWfTI13QQVaT2APbvfRHbxGSdd5Wchkq4WoN+lv
+	 aXOZFzK9IScCAswaxjcakYtb8XVE3spj459xaRIixcgf3cV1i6OVx8/pD1lS+SYqO7
+	 PenAOpKLUBwxg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Tim Harvey <tharvey@gateworks.com>,
+	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 137/715] bpf: don't emit warnings intended for global subprogs for static subprogs
-Date: Sun, 24 Mar 2024 18:25:16 -0400
-Message-ID: <20240324223455.1342824-138-sashal@kernel.org>
+Subject: [PATCH 6.8 138/715] arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS
+Date: Sun, 24 Mar 2024 18:25:17 -0400
+Message-ID: <20240324223455.1342824-139-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,57 +62,83 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Tim Harvey <tharvey@gateworks.com>
 
-[ Upstream commit 1eb986746a67952df86eb2c50a36450ef103d01b ]
+[ Upstream commit ec2cb52fcfef5d58574f2cfbc9a99ffc20ae5a9d ]
 
-When btf_prepare_func_args() was generalized to handle both static and
-global subprogs, a few warnings/errors that are meant only for global
-subprog cases started to be emitted for static subprogs, where they are
-sort of expected and irrelavant.
+The GW71xx does not have a gpio controlled vbus regulator but it does
+require some pinctrl. Remove the regulator and move the valid pinctrl
+into the usbotg1 node.
 
-Stop polutting verifier logs with irrelevant scary-looking messages.
-
-Fixes: e26080d0da87 ("bpf: prepare btf_prepare_func_args() for handling static subprogs")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/r/20240202190529.2374377-4-andrii@kernel.org
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: bd306fdb4e60 ("arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS")
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/btf.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../dts/freescale/imx8mm-venice-gw71xx.dtsi   | 29 ++++++-------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index dbe7a590f565a..92aa3cf0396b8 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -7009,6 +7009,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
- 	args = (const struct btf_param *)(t + 1);
- 	nargs = btf_type_vlen(t);
- 	if (nargs > MAX_BPF_FUNC_REG_ARGS) {
-+		if (!is_global)
-+			return -EINVAL;
- 		bpf_log(log, "Global function %s() with %d > %d args. Buggy compiler.\n",
- 			tname, nargs, MAX_BPF_FUNC_REG_ARGS);
- 		return -EINVAL;
-@@ -7018,6 +7020,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
- 	while (btf_type_is_modifier(t))
- 		t = btf_type_by_id(btf, t->type);
- 	if (!btf_type_is_int(t) && !btf_is_any_enum(t)) {
-+		if (!is_global)
-+			return -EINVAL;
- 		bpf_log(log,
- 			"Global function %s() doesn't return scalar. Only those are supported.\n",
- 			tname);
-@@ -7091,6 +7095,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
- 			sub->args[i].arg_type = ARG_ANYTHING;
- 			continue;
- 		}
-+		if (!is_global)
-+			return -EINVAL;
- 		bpf_log(log, "Arg#%d type %s in %s() is not supported yet.\n",
- 			i, btf_type_str(t), tname);
- 		return -EINVAL;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+index 6425773f68e0a..bbbaf2165ea28 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+@@ -47,17 +47,6 @@ pps {
+ 		gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+ 		status = "okay";
+ 	};
+-
+-	reg_usb_otg1_vbus: regulator-usb-otg1 {
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_reg_usb1_en>;
+-		compatible = "regulator-fixed";
+-		regulator-name = "usb_otg1_vbus";
+-		gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+-		enable-active-high;
+-		regulator-min-microvolt = <5000000>;
+-		regulator-max-microvolt = <5000000>;
+-	};
+ };
+ 
+ /* off-board header */
+@@ -144,9 +133,10 @@ &uart3 {
+ };
+ 
+ &usbotg1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg1>;
+ 	dr_mode = "otg";
+ 	over-current-active-low;
+-	vbus-supply = <&reg_usb_otg1_vbus>;
+ 	status = "okay";
+ };
+ 
+@@ -204,14 +194,6 @@ MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x41
+ 		>;
+ 	};
+ 
+-	pinctrl_reg_usb1_en: regusb1grp {
+-		fsl,pins = <
+-			MX8MM_IOMUXC_GPIO1_IO10_GPIO1_IO10	0x41
+-			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
+-			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
+-		>;
+-	};
+-
+ 	pinctrl_spi2: spi2grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0xd6
+@@ -234,4 +216,11 @@ MX8MM_IOMUXC_UART3_RXD_UART3_DCE_RX	0x140
+ 			MX8MM_IOMUXC_UART3_TXD_UART3_DCE_TX	0x140
+ 		>;
+ 	};
++
++	pinctrl_usbotg1: usbotg1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
++			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
++		>;
++	};
+ };
 -- 
 2.43.0
 
