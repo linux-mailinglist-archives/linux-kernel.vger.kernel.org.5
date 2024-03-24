@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-113760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51220888673
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:33:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08562888677
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:34:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB368B20FE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:33:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27941F24971
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:34:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022981F10B8;
-	Sun, 24 Mar 2024 22:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A39212D1F0;
+	Sun, 24 Mar 2024 22:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RZR/gHdR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gfiAkPN3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF691E16BB;
-	Sun, 24 Mar 2024 22:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8DC146583;
+	Sun, 24 Mar 2024 22:52:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320777; cv=none; b=lL0LJeRT65IRnOaR6cpuj8FlvAqtkJE2um1udGhsg0d99y91jbG6Iqeu5mJkHLuUQoOpLMWlPAV2B4crvbbp3w0CeslMvkZ7yNXoAiVr7TtodTpVzefI2Y33PoUAEUX6HALJ7Dbgu95mkGlVmID214x9u/MsUo9iLj+JesPjwig=
+	t=1711320778; cv=none; b=sDWReW5GENWjuHyKBAtuM2btd7eHwRJiER75+wyNVLQUjBVIsyszGMF0553MC4TS2bAOlzBht+0dBMuh+ax2/zSVY0GJHHYJFlkjpOAd50i+8rC3g73nvwxKXFLbEl73YGuWVwCAZRIWTTQP2VFZMxbHORgUQa4nYIxT8kQBoDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320777; c=relaxed/simple;
-	bh=xebV7HPWNpbnV+Y2jNiYGd33ZX2Fo8aoBdz1hxyhr5k=;
+	s=arc-20240116; t=1711320778; c=relaxed/simple;
+	bh=SyyvxpOBiscFYM8hG/1wtsgj6jCx4t5ztVWGGSs0e6k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=httpejkomWIuTPebdzKzn/2/OiDDTdLp8ALsZFib/gnweLmr5Sw6cl1EgTD1+3mCmzmLlrxRTrVbdkIA+5aiAAVXoXm5f5tt+JF8lD0U7gDtjbxzLMgbm8nv+EM9kapyUIjbuhU8LDBIYSAYWy9rk3WcHDdRrtij8dGjHcVSWL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RZR/gHdR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECC49C433C7;
-	Sun, 24 Mar 2024 22:52:54 +0000 (UTC)
+	 MIME-Version; b=hVQ5rv8nTaNrRpkBV6qMPopbEG1qS3lw0HdiUbMyAsnMctp2LVerjWDSvtzwDsKNZkdMCNtFozNPu/xE8Nm3vSfNBqhhI/0nIDI4KKRTK/hQLGz5I/bXYgVgEIMtrcl0OzxDuZWjecJDbh7PzX/ExOZUWqBIjxvbzbEaDv29fm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gfiAkPN3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EFCAC43394;
+	Sun, 24 Mar 2024 22:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320775;
-	bh=xebV7HPWNpbnV+Y2jNiYGd33ZX2Fo8aoBdz1hxyhr5k=;
+	s=k20201202; t=1711320776;
+	bh=SyyvxpOBiscFYM8hG/1wtsgj6jCx4t5ztVWGGSs0e6k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RZR/gHdRYsKljMNDPHbHDM/1+47d+fhOXWgRbkntp5z0j1XadZsbaGGKR/wglj376
-	 GSW92N6tZ8C2XFGKx4ldbl6ubzJ0mZab6SVhVviOjQ2Q9eMd4QvWXpu+rjpnzRSfSs
-	 kljzqbwnnOlGbkX4mTBmzGFTLz6PxZb2/zqxHRUv8KAgpsVoOG11iviHx0NbZolUVp
-	 nmHlqsLRH6F7aJ7wC7g/Okk9TZH6WvuyHcQRajMAky+ydhWaOwzqZqGgyLPXWQF5Mm
-	 IF21zZtog8mLyhiE8bMcLRj/EkD90DFj7VnQz1VNWO4tXmh80EaPJVu2FM8QVSkbKL
-	 bujiYGiYgS6rA==
+	b=gfiAkPN3Me1MXd5XYxHY5yGuQVjiHB4tMWEs93n6xdpZ14fUJboS8H5U1EEOLio5b
+	 rQCHLqjOcUiLsTwkK09HkNN+StjmpPSTxByO7oauSODgwsDkyj8s1XrKHdgH06A8Wu
+	 darwpCFJYsRcPW/z4uGmb4g+BqDVAcLM82zk5sKamivzF8VaZ+aqMMtuQNFxgyr4V+
+	 xkT/anZiWGmOUnHBo9bJSgcGVaa8IV/ud4w2k3MXE/8w1nJ0ig32zh32rmR5R2wnzA
+	 VO5wnHeTd9WP9CYcZxajEgDmKEPM0IW0hhRbg40E7dZBkYCTa9rIh15rsaL8rTdhXq
+	 gStPCswK79E4w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Haorong Ye <yehaorong@bytedance.com>,
-	Lu Baolu <baolu.lu@linux.intel.com>,
-	Joerg Roedel <jroedel@suse.de>,
+Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	Kurt Kanzenbach <kurt@linutronix.de>,
+	Naama Meir <naamax.meir@linux.intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 339/713] iommu/vt-d: Don't issue ATS Invalidation request when device is disconnected
-Date: Sun, 24 Mar 2024 18:41:05 -0400
-Message-ID: <20240324224720.1345309-340-sashal@kernel.org>
+Subject: [PATCH 6.7 340/713] igc: Fix missing time sync events
+Date: Sun, 24 Mar 2024 18:41:06 -0400
+Message-ID: <20240324224720.1345309-341-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -65,200 +64,106 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 
-[ Upstream commit 4fc82cd907ac075648789cc3a00877778aa1838b ]
+[ Upstream commit 244ae992e3e80e5c9c272c77324c831148457f95 ]
 
-For those endpoint devices connect to system via hotplug capable ports,
-users could request a hot reset to the device by flapping device's link
-through setting the slot's link control register, as pciehp_ist() DLLSC
-interrupt sequence response, pciehp will unload the device driver and
-then power it off. thus cause an IOMMU device-TLB invalidation (Intel
-VT-d spec, or ATS Invalidation in PCIe spec r6.1) request for non-existence
-target device to be sent and deadly loop to retry that request after ITE
-fault triggered in interrupt context.
+Fix "double" clearing of interrupts, which can cause external events
+or timestamps to be missed.
 
-That would cause following continuous hard lockup warning and system hang
+The IGC_TSIRC Time Sync Interrupt Cause register can be cleared in two
+ways, by either reading it or by writing '1' into the specific cause
+bit. This is documented in section 8.16.1.
 
-[ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
-[ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
-[ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
-[ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
-         OE    kernel version xxxx
-[ 4223.822623] Hardware name: vendorname xxxx 666-106,
-BIOS 01.01.02.03.01 05/15/2023
-[ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
-[ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
- 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
-0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-[ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-[ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-[ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-[ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-[ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-[ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-[ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
-knlGS:0000000000000000
-[ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
-[ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-[ 4223.822628] PKRU: 55555554
-[ 4223.822628] Call Trace:
-[ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
-[ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
-[ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
-[ 4223.822629]  intel_iommu_release_device+0x1f/0x30
-[ 4223.822629]  iommu_release_device+0x33/0x60
-[ 4223.822629]  iommu_bus_notifier+0x7f/0x90
-[ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
-[ 4223.822630]  device_del+0x2e5/0x420
-[ 4223.822630]  pci_remove_bus_device+0x70/0x110
-[ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
-[ 4223.822631]  pciehp_disable_slot+0x6b/0x100
-[ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
-[ 4223.822631]  pciehp_ist+0x176/0x180
-[ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
-[ 4223.822632]  irq_thread_fn+0x19/0x50
-[ 4223.822632]  irq_thread+0x104/0x190
-[ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
-[ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
-[ 4223.822633]  kthread+0x114/0x130
-[ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
-[ 4223.822633]  ret_from_fork+0x1f/0x30
-[ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
-[ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
-         OE     kernel version xxxx
-[ 4223.822634] Hardware name: vendorname xxxx 666-106,
-BIOS 01.01.02.03.01 05/15/2023
-[ 4223.822634] Call Trace:
-[ 4223.822634]  <NMI>
-[ 4223.822635]  dump_stack+0x6d/0x88
-[ 4223.822635]  panic+0x101/0x2d0
-[ 4223.822635]  ? ret_from_fork+0x11/0x30
-[ 4223.822635]  nmi_panic.cold.14+0xc/0xc
-[ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
-[ 4223.822636]  __perf_event_overflow+0x4f/0xf0
-[ 4223.822636]  handle_pmi_common+0x1ef/0x290
-[ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
-[ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
-[ 4223.822637]  ? __native_set_fixmap+0x24/0x30
-[ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
-[ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
-[ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
-[ 4223.822638]  perf_event_nmi_handler+0x24/0x40
-[ 4223.822638]  nmi_handle+0x4d/0xf0
-[ 4223.822638]  default_do_nmi+0x49/0x100
-[ 4223.822638]  exc_nmi+0x134/0x180
-[ 4223.822639]  end_repeat_nmi+0x16/0x67
-[ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
-[ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
- 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
- 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-[ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-[ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-[ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-[ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-[ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-[ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-[ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
-[ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
-[ 4223.822642]  </NMI>
-[ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
-[ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
-[ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
-[ 4223.822643]  intel_iommu_release_device+0x1f/0x30
-[ 4223.822643]  iommu_release_device+0x33/0x60
-[ 4223.822643]  iommu_bus_notifier+0x7f/0x90
-[ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
-[ 4223.822644]  device_del+0x2e5/0x420
-[ 4223.822644]  pci_remove_bus_device+0x70/0x110
-[ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
-[ 4223.822644]  pciehp_disable_slot+0x6b/0x100
-[ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
-[ 4223.822645]  pciehp_ist+0x176/0x180
-[ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
-[ 4223.822645]  irq_thread_fn+0x19/0x50
-[ 4223.822646]  irq_thread+0x104/0x190
-[ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
-[ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
-[ 4223.822646]  kthread+0x114/0x130
-[ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
-[ 4223.822647]  ret_from_fork+0x1f/0x30
-[ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
-range: 0xffffffff80000000-0xffffffffbfffffff)
+The following flow was used:
+ 1. read IGC_TSIRC into 'tsicr';
+ 2. handle the interrupts present in 'tsirc' and mark them in 'ack';
+ 3. write 'ack' into IGC_TSICR;
 
-Such issue could be triggered by all kinds of regular surprise removal
-hotplug operation. like:
+As both (1) and (3) will clear the interrupt cause, if the same
+interrupt happens again between (1) and (3) it will be ignored,
+causing events to be missed.
 
-1. pull EP(endpoint device) out directly.
-2. turn off EP's power.
-3. bring the link down.
-etc.
+Remove the extra clear in (3).
 
-this patch aims to work for regular safe removal and surprise removal
-unplug. these hot unplug handling process could be optimized for fix the
-ATS Invalidation hang issue by calling pci_dev_is_disconnected() in
-function devtlb_invalidation_with_pasid() to check target device state to
-avoid sending meaningless ATS Invalidation request to iommu when device is
-gone. (see IMPLEMENTATION NOTE in PCIe spec r6.1 section 10.3.1)
-
-For safe removal, device wouldn't be removed until the whole software
-handling process is done, it wouldn't trigger the hard lock up issue
-caused by too long ATS Invalidation timeout wait. In safe removal path,
-device state isn't set to pci_channel_io_perm_failure in
-pciehp_unconfigure_device() by checking 'presence' parameter, calling
-pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will return
-false there, wouldn't break the function.
-
-For surprise removal, device state is set to pci_channel_io_perm_failure in
-pciehp_unconfigure_device(), means device is already gone (disconnected)
-call pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will
-return true to break the function not to send ATS Invalidation request to
-the disconnected device blindly, thus avoid to trigger further ITE fault,
-and ITE fault will block all invalidation request to be handled.
-furthermore retry the timeout request could trigger hard lockup.
-
-safe removal (present) & surprise removal (not present)
-
-pciehp_ist()
-   pciehp_handle_presence_or_link_change()
-     pciehp_disable_slot()
-       remove_board()
-         pciehp_unconfigure_device(presence) {
-           if (!presence)
-                pci_walk_bus(parent, pci_dev_set_disconnected, NULL);
-           }
-
-this patch works for regular safe removal and surprise removal of ATS
-capable endpoint on PCIe switch downstream ports.
-
-Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table interface")
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-Tested-by: Haorong Ye <yehaorong@bytedance.com>
-Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
-Link: https://lore.kernel.org/r/20240301080727.3529832-3-haifeng.zhao@linux.intel.com
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Fixes: 2c344ae24501 ("igc: Add support for TX timestamping")
+Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
+Tested-by: Kurt Kanzenbach <kurt@linutronix.de> # Intel i225
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Tested-by: Naama Meir <naamax.meir@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/pasid.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/intel/igc/igc_main.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 6e102cbbde845..cc2490e5cfb6b 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -481,6 +481,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
- 	if (!info || !info->ats_enabled)
- 		return;
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 58ffddc6419ad..45716d271d955 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -5304,25 +5304,22 @@ igc_features_check(struct sk_buff *skb, struct net_device *dev,
  
-+	if (pci_dev_is_disconnected(to_pci_dev(dev)))
-+		return;
-+
- 	sid = info->bus << 8 | info->devfn;
- 	qdep = info->ats_qdep;
- 	pfsid = info->pfsid;
+ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ {
+-	u32 ack, tsauxc, sec, nsec, tsicr;
+ 	struct igc_hw *hw = &adapter->hw;
++	u32 tsauxc, sec, nsec, tsicr;
+ 	struct ptp_clock_event event;
+ 	struct timespec64 ts;
+ 
+ 	tsicr = rd32(IGC_TSICR);
+-	ack = 0;
+ 
+ 	if (tsicr & IGC_TSICR_SYS_WRAP) {
+ 		event.type = PTP_CLOCK_PPS;
+ 		if (adapter->ptp_caps.pps)
+ 			ptp_clock_event(adapter->ptp_clock, &event);
+-		ack |= IGC_TSICR_SYS_WRAP;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_TXTS) {
+ 		/* retrieve hardware timestamp */
+ 		igc_ptp_tx_tstamp_event(adapter);
+-		ack |= IGC_TSICR_TXTS;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_TT0) {
+@@ -5336,7 +5333,6 @@ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ 		wr32(IGC_TSAUXC, tsauxc);
+ 		adapter->perout[0].start = ts;
+ 		spin_unlock(&adapter->tmreg_lock);
+-		ack |= IGC_TSICR_TT0;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_TT1) {
+@@ -5350,7 +5346,6 @@ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ 		wr32(IGC_TSAUXC, tsauxc);
+ 		adapter->perout[1].start = ts;
+ 		spin_unlock(&adapter->tmreg_lock);
+-		ack |= IGC_TSICR_TT1;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_AUTT0) {
+@@ -5360,7 +5355,6 @@ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ 		event.index = 0;
+ 		event.timestamp = sec * NSEC_PER_SEC + nsec;
+ 		ptp_clock_event(adapter->ptp_clock, &event);
+-		ack |= IGC_TSICR_AUTT0;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_AUTT1) {
+@@ -5370,11 +5364,7 @@ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ 		event.index = 1;
+ 		event.timestamp = sec * NSEC_PER_SEC + nsec;
+ 		ptp_clock_event(adapter->ptp_clock, &event);
+-		ack |= IGC_TSICR_AUTT1;
+ 	}
+-
+-	/* acknowledge the interrupts */
+-	wr32(IGC_TSICR, ack);
+ }
+ 
+ /**
 -- 
 2.43.0
 
