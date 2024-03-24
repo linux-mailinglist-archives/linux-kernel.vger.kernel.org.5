@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC33888641
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:27:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3735988863D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:27:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F3691C24B96
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:27:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFCE31F23D55
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157541E9634;
-	Sun, 24 Mar 2024 22:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0921DC7ED;
+	Sun, 24 Mar 2024 22:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YbudiNPf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d+5NUZsE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AD121DBF5F;
-	Sun, 24 Mar 2024 22:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222B186AD0;
+	Sun, 24 Mar 2024 22:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320705; cv=none; b=clpeIK3DcUOSHg+sXm8Px0zGgZhGtbKBX8/xsv4re/1snk6y5HLJbJ8brZcMsKUb3SILCJpoE/ZH54dRb++Wxu38uOiVhoQvD7LXZuvB4IketvoE7qrByE5LxePd+ZKbdHfIMlySBMq/BoSbB9op5djgiTodSPSik7RTSaJMP/k=
+	t=1711320706; cv=none; b=Mq0srs3zuUmGgnuHrU6cE9I1TgjnoBr++3KSXKYS7tur950vGcG/4CaIQqJ/Dm7K7IItR2LMx/SbIRqigPqjKssOyvVb3rtjDSS0eoOGxA7UaswD86V5dPkrYtmVcfFc6V9H5CDBQAeE6oEzI1W354Cj6b2ylQavPTSCUPD62T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320705; c=relaxed/simple;
-	bh=98j6jLoLgdzCjoiivLq8/nnY3kT0E7I8/IbXH8EktOE=;
+	s=arc-20240116; t=1711320706; c=relaxed/simple;
+	bh=OC6s1nGnzvG27cdhEV9v+152Ge649GD6EUnGf7Ba9Jc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XocehRnZxS1NEAPSE7PoyjEEU3NwdWmbDhNa91N/8sXAoAgOktTuanof7B/S3PySans7DZpGAv+TIUcbHnk3Wdg3V68sQX4g9T67AYFBTmYbQMzC6NPGd02LmQn5ILms1APeag335Tkqd5BWPUGCDqsxLt9JGucQj0UvygApM5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YbudiNPf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E246C433F1;
-	Sun, 24 Mar 2024 22:51:43 +0000 (UTC)
+	 MIME-Version; b=dPKtxHZWOrRjxNNYfB/V4FHCSSkPDJZRGkq188OWydI+1QKLIvKEMTeggjqIVkUa9nEDSlxAcT+QqDMiexLVyXwcV8GJ8bw/l1SOjgiN+sEKVpbr677K1DFPtlalQzWfomSMj6u8RVf7jJRK5ZgxuK++HJH9iM68NHrKe7Ajdxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d+5NUZsE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D987C433C7;
+	Sun, 24 Mar 2024 22:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320704;
-	bh=98j6jLoLgdzCjoiivLq8/nnY3kT0E7I8/IbXH8EktOE=;
+	s=k20201202; t=1711320705;
+	bh=OC6s1nGnzvG27cdhEV9v+152Ge649GD6EUnGf7Ba9Jc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YbudiNPfYKbowusO9sTJIcMpxM+6s2D0IWoE88DejySLspnxK3IP3KELrZFlusjwd
-	 NlPZAe66ei+6kpltWe3V4pmHXLpC/De7t7UjjgidPEYLJs/nNCr+DInc6y9YRedydA
-	 9wQNYm1ocbtRK+npEE1/vK1nVjegjgiKeziaUCd9IbBZdv/0K+CRs5nspia+6L/2gD
-	 gxc+7vIklCs7/6d0QdS32CPVFQ5UXrUHroeyZdABueEaLxYePpiPvJYUT1JCT/4rd/
-	 eFDAvJ6ESUA9puS69gJoousIwlxlZ/clU2d0KudZecCBXE9jLyW6qM0S6+IQdr1kmS
-	 ZkRgqy3XznpXQ==
+	b=d+5NUZsELkUpUeje0JT2uO037NFH6IaR6UE/3QjRV13CQn8hos38U+J3KQ90QzNDp
+	 HxFhIsPv5Eg0ACu8kPLFfjsjgNIPUiR6X5gAmtKIItDB6mUy/PtzWgJpDioH3SqDi0
+	 px+MGKX3rh1e5MkYRHHg8L4b2Ar6rDCM3wvg+eXLQVIlM0iUvlcTG5k7Ginq59qoNC
+	 J57kOOic/p7v9T8Owsf5MEVQ+dOZo4yRuk6wixoVDfD1YJwV/UHuoarVhRzmMseg6r
+	 ZjB7cD2aWHTWLgd8f889yiccbQTVp6ynniyGpGJOEPlF+tbZgKLYJxITrddE5bjzIK
+	 7MDKF6DyD2kmg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 266/713] arm64: dts: qcom: sm8150: correct PCIe wake-gpios
-Date: Sun, 24 Mar 2024 18:39:52 -0400
-Message-ID: <20240324224720.1345309-267-sashal@kernel.org>
+Subject: [PATCH 6.7 267/713] powercap: dtpm_cpu: Fix error check against freq_qos_add_request()
+Date: Sun, 24 Mar 2024 18:39:53 -0400
+Message-ID: <20240324224720.1345309-268-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,38 +62,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-[ Upstream commit 7c38989d0f7a35c83e7c4781271d42662903fa8d ]
+[ Upstream commit b50155cb0d609437236c88201206267835c6f965 ]
 
-Bindings allow a "wake", not "enable", GPIO.  Schematics also use WAKE
-name for the pin:
+The caller of the function freq_qos_add_request() checks again a non
+zero value but freq_qos_add_request() can return '1' if the request
+already exists. Therefore, the setup function fails while the QoS
+request actually did not failed.
 
-  sa8155p-adp.dtb: pcie@1c00000: Unevaluated properties are not allowed ('enable-gpio' was unexpected)
+Fix that by changing the check against a negative value like all the
+other callers of the function.
 
-Fixes: a1c86c680533 ("arm64: dts: qcom: sm8150: Add PCIe nodes")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20240108131216.53867-2-krzysztof.kozlowski@linaro.org
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Fixes: 0e8f68d7f0485 ("Add CPU energy model based support")
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 2 +-
+ drivers/powercap/dtpm_cpu.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index a662f09fdbe19..2678eac1ec794 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -1879,7 +1879,7 @@ pcie0: pci@1c00000 {
- 			phy-names = "pciephy";
+diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+index 9193c3b8edebe..ae7ee611978ba 100644
+--- a/drivers/powercap/dtpm_cpu.c
++++ b/drivers/powercap/dtpm_cpu.c
+@@ -219,7 +219,7 @@ static int __dtpm_cpu_setup(int cpu, struct dtpm *parent)
+ 	ret = freq_qos_add_request(&policy->constraints,
+ 				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
+ 				   pd->table[pd->nr_perf_states - 1].frequency);
+-	if (ret)
++	if (ret < 0)
+ 		goto out_dtpm_unregister;
  
- 			perst-gpios = <&tlmm 35 GPIO_ACTIVE_HIGH>;
--			enable-gpio = <&tlmm 37 GPIO_ACTIVE_HIGH>;
-+			wake-gpios = <&tlmm 37 GPIO_ACTIVE_HIGH>;
- 
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&pcie0_default_state>;
+ 	cpufreq_cpu_put(policy);
 -- 
 2.43.0
 
