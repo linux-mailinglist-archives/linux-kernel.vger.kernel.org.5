@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DAC0888A22
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C451888A23
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:11:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8F5E1F23AC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:11:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD2091F23CA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:11:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135B32716C4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629762716D0;
 	Sun, 24 Mar 2024 23:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gww13tkf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ks0ILXNF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E20B6217E0C;
-	Sun, 24 Mar 2024 23:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C9413DB9C;
+	Sun, 24 Mar 2024 23:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321782; cv=none; b=hLnWzfrs4XN6M0ijPzL0Qpoekza0i5X4ZL9QIAWkWeJGcZbNE68DG2qNlWHUfp4/jyExE422jJ4FMeXEDWnIE3QqPul7lAiaWA6+mjlQAil/IaW8rQK+5cmDE/HhBB3JlSbCZDZyg9jIyQhfmbsN5WzKzxY02/S8IdPAUXV6eN4=
+	t=1711321783; cv=none; b=bBcWVsKAnwtKtYTGmu5ZaoFdiqR45Snii79N6GkD2/mw99QXoKkGlNo2pIJTPNTy3ZQLjMrNCRR6qC0gn+251pgGPjGMu3tOQ7G0+/5GLYnBEieA8FN3gKMzq5yKP5s3SnSeKzgyVRW+GG7VwGfogEgiDvFsFye1dVpHn8xwJ2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321782; c=relaxed/simple;
-	bh=hkI4T48tky6Dsn098i4nYiPHOajWB4JBuWm2GZ+ywxE=;
+	s=arc-20240116; t=1711321783; c=relaxed/simple;
+	bh=SQE28cMxEAiEuIhjCqcbYaWkpFWJGWdkOW+wcgGJzeQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K7xNd5EqTJUS2hvfeA5QdBVyuxpEiJtNf2zZnz/53fQyRyyYksJ1zGexOIfk13Gwizw82ixId5Qfd1/+1v74xVHpkg4qwyDzKUqrPclY+Pw2oInVFZQ2Q102fyLCT18kEHOJ93kuQGFRLnzKn55k7glp4lVRv6QIEerLaW5cd2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gww13tkf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1417CC43390;
-	Sun, 24 Mar 2024 23:09:39 +0000 (UTC)
+	 MIME-Version; b=UxbFLo8oQp5UhAu3DdnnJlCRDFCDqwjg5aQITss4e+yIl9m78K0Z1Wl3Uha+V9Qh1PIFO0O+jJE1ujHhHrkvSakt2cGlBnuylbmsyBFj2hrrAZ+WLSem+aT+TnYVu3hgFUcVHea7X72QpNrQ6+7zGfkecl/2Hw/hQpYJ34nJtX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ks0ILXNF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 147EFC433F1;
+	Sun, 24 Mar 2024 23:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321780;
-	bh=hkI4T48tky6Dsn098i4nYiPHOajWB4JBuWm2GZ+ywxE=;
+	s=k20201202; t=1711321781;
+	bh=SQE28cMxEAiEuIhjCqcbYaWkpFWJGWdkOW+wcgGJzeQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Gww13tkf3iy7G+o7FySOflCXhLn7H27tOc3NgrUIyhJw0p26R2WXnKfzA4mW+buXN
-	 KfXUAhf30MxSG5MGeVDscIQexYYOyZgJMXHsojb68551ZPL+B4dh8FUqIbBICp4/Yo
-	 jAS1Gj6E6ykiybI8XW/xBwvUA9kBvFP7ljTAeMIkkGh03agYF9f6/WNRS6spmHfUrR
-	 6xC51RNJ4LeyeqSfU50CLjuKhDqXE+kBdqeKUi76pppriZW3pN1OusSnsMZqxvTDGE
-	 gsk8u5Gx42XYLLX8gPNTdd2OVQpaWqJtsuKV2IlJtm8oPxq1YqOfWq09dYkK5xYQ/8
-	 2ZSh5vo9kwEeA==
+	b=ks0ILXNFkr1DPZITTOQf3e4tcJ5fY61Gx3P1rJmYKSI3uuhztp4Ic+tq4RV6jIXu0
+	 udgLzClFRt27+eb/NGB+5U45BBGc4d3P9nvcH4SsMEbXrnx53pTSB2/3yH5dLqlq+m
+	 4sQi8aWJeyBiv+6Vd4EZpJOw2ou2jWJqm35heM5HFbpvcCPLw8nbzAHFqOtrX3q/GF
+	 VF61P9MQ58WHmnwwAewOcfBPh5bUySzjti3JhjYkNZfiu12wA8DjzoZ+BBzGFRLeMc
+	 gp0eRVMwi6vbRu/jswwssGGGxTkTOJZePOTDeV1uUJQvsa0LWA8Kdco0ysHVh4ZOFD
+	 gNQnRJa971WlQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: William Kucharski <william.kucharski@oracle.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: Chao Yu <chao@kernel.org>,
+	Daeho Jeong <daehojeong@google.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 508/638] RDMA/srpt: Do not register event handler until srpt device is fully setup
-Date: Sun, 24 Mar 2024 18:59:05 -0400
-Message-ID: <20240324230116.1348576-509-sashal@kernel.org>
+Subject: [PATCH 6.6 509/638] f2fs: compress: fix to guarantee persisting compressed blocks by CP
+Date: Sun, 24 Mar 2024 18:59:06 -0400
+Message-ID: <20240324230116.1348576-510-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,58 +63,146 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: William Kucharski <william.kucharski@oracle.com>
+From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit c21a8870c98611e8f892511825c9607f1e2cd456 ]
+[ Upstream commit 8a430dd49e9cb021372b0ad91e60aeef9c6ced00 ]
 
-Upon rare occasions, KASAN reports a use-after-free Write
-in srpt_refresh_port().
+If data block in compressed cluster is not persisted with metadata
+during checkpoint, after SPOR, the data may be corrupted, let's
+guarantee to write compressed page by checkpoint.
 
-This seems to be because an event handler is registered before the
-srpt device is fully setup and a race condition upon error may leave a
-partially setup event handler in place.
-
-Instead, only register the event handler after srpt device initialization
-is complete.
-
-Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
-Signed-off-by: William Kucharski <william.kucharski@oracle.com>
-Link: https://lore.kernel.org/r/20240202091549.991784-2-william.kucharski@oracle.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Reviewed-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/srpt/ib_srpt.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/f2fs/compress.c |  4 +++-
+ fs/f2fs/data.c     | 17 +++++++++--------
+ fs/f2fs/f2fs.h     |  4 +++-
+ 3 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 015bfeede90e1..45547bf281e31 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -3209,7 +3209,6 @@ static int srpt_add_one(struct ib_device *device)
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 372616ca8fb5b..dfc59a658836f 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1413,6 +1413,8 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+ 	struct f2fs_sb_info *sbi = bio->bi_private;
+ 	struct compress_io_ctx *cic =
+ 			(struct compress_io_ctx *)page_private(page);
++	enum count_type type = WB_DATA_TYPE(page,
++				f2fs_is_compressed_page(page));
+ 	int i;
  
- 	INIT_IB_EVENT_HANDLER(&sdev->event_handler, sdev->device,
- 			      srpt_event_handler);
--	ib_register_event_handler(&sdev->event_handler);
+ 	if (unlikely(bio->bi_status))
+@@ -1420,7 +1422,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
  
- 	for (i = 1; i <= sdev->device->phys_port_cnt; i++) {
- 		sport = &sdev->port[i - 1];
-@@ -3232,6 +3231,7 @@ static int srpt_add_one(struct ib_device *device)
+ 	f2fs_compress_free_page(page);
+ 
+-	dec_page_count(sbi, F2FS_WB_DATA);
++	dec_page_count(sbi, type);
+ 
+ 	if (atomic_dec_return(&cic->pending_pages))
+ 		return;
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index f5f33926acf88..349c9559f0b36 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -48,7 +48,7 @@ void f2fs_destroy_bioset(void)
+ 	bioset_exit(&f2fs_bioset);
+ }
+ 
+-static bool __is_cp_guaranteed(struct page *page)
++bool f2fs_is_cp_guaranteed(struct page *page)
+ {
+ 	struct address_space *mapping = page->mapping;
+ 	struct inode *inode;
+@@ -65,8 +65,6 @@ static bool __is_cp_guaranteed(struct page *page)
+ 			S_ISDIR(inode->i_mode))
+ 		return true;
+ 
+-	if (f2fs_is_compressed_page(page))
+-		return false;
+ 	if ((S_ISREG(inode->i_mode) && IS_NOQUOTA(inode)) ||
+ 			page_private_gcing(page))
+ 		return true;
+@@ -338,7 +336,7 @@ static void f2fs_write_end_io(struct bio *bio)
+ 
+ 	bio_for_each_segment_all(bvec, bio, iter_all) {
+ 		struct page *page = bvec->bv_page;
+-		enum count_type type = WB_DATA_TYPE(page);
++		enum count_type type = WB_DATA_TYPE(page, false);
+ 
+ 		if (page_private_dummy(page)) {
+ 			clear_page_private_dummy(page);
+@@ -762,7 +760,7 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
+ 		wbc_account_cgroup_owner(fio->io_wbc, fio->page, PAGE_SIZE);
+ 
+ 	inc_page_count(fio->sbi, is_read_io(fio->op) ?
+-			__read_io_type(page) : WB_DATA_TYPE(fio->page));
++			__read_io_type(page) : WB_DATA_TYPE(fio->page, false));
+ 
+ 	if (is_read_io(bio_op(bio)))
+ 		f2fs_submit_read_bio(fio->sbi, bio, fio->type);
+@@ -973,7 +971,7 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
+ 	if (fio->io_wbc)
+ 		wbc_account_cgroup_owner(fio->io_wbc, fio->page, PAGE_SIZE);
+ 
+-	inc_page_count(fio->sbi, WB_DATA_TYPE(page));
++	inc_page_count(fio->sbi, WB_DATA_TYPE(page, false));
+ 
+ 	*fio->last_block = fio->new_blkaddr;
+ 	*fio->bio = bio;
+@@ -1007,6 +1005,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	enum page_type btype = PAGE_TYPE_OF_BIO(fio->type);
+ 	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
+ 	struct page *bio_page;
++	enum count_type type;
+ 
+ 	f2fs_bug_on(sbi, is_read_io(fio->op));
+ 
+@@ -1046,7 +1045,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	/* set submitted = true as a return value */
+ 	fio->submitted = 1;
+ 
+-	inc_page_count(sbi, WB_DATA_TYPE(bio_page));
++	type = WB_DATA_TYPE(bio_page, fio->compressed_page);
++	inc_page_count(sbi, type);
+ 
+ 	if (io->bio &&
+ 	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
+@@ -1059,7 +1059,8 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 		if (F2FS_IO_ALIGNED(sbi) &&
+ 				(fio->type == DATA || fio->type == NODE) &&
+ 				fio->new_blkaddr & F2FS_IO_SIZE_MASK(sbi)) {
+-			dec_page_count(sbi, WB_DATA_TYPE(bio_page));
++			dec_page_count(sbi, WB_DATA_TYPE(bio_page,
++						fio->compressed_page));
+ 			fio->retry = 1;
+ 			goto skip;
  		}
- 	}
- 
-+	ib_register_event_handler(&sdev->event_handler);
- 	spin_lock(&srpt_dev_lock);
- 	list_add_tail(&sdev->list, &srpt_dev_list);
- 	spin_unlock(&srpt_dev_lock);
-@@ -3242,7 +3242,6 @@ static int srpt_add_one(struct ib_device *device)
- 
- err_port:
- 	srpt_unregister_mad_agent(sdev, i);
--	ib_unregister_event_handler(&sdev->event_handler);
- err_cm:
- 	if (sdev->cm_id)
- 		ib_destroy_cm_id(sdev->cm_id);
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index ac924c8226e3c..e4d2ac1f79c59 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1075,7 +1075,8 @@ struct f2fs_sm_info {
+  * f2fs monitors the number of several block types such as on-writeback,
+  * dirty dentry blocks, dirty node blocks, and dirty meta blocks.
+  */
+-#define WB_DATA_TYPE(p)	(__is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
++#define WB_DATA_TYPE(p, f)			\
++	(f || f2fs_is_cp_guaranteed(p) ? F2FS_WB_CP_DATA : F2FS_WB_DATA)
+ enum count_type {
+ 	F2FS_DIRTY_DENTS,
+ 	F2FS_DIRTY_DATA,
+@@ -3794,6 +3795,7 @@ void f2fs_init_ckpt_req_control(struct f2fs_sb_info *sbi);
+  */
+ int __init f2fs_init_bioset(void);
+ void f2fs_destroy_bioset(void);
++bool f2fs_is_cp_guaranteed(struct page *page);
+ int f2fs_init_bio_entry_cache(void);
+ void f2fs_destroy_bio_entry_cache(void);
+ void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
 -- 
 2.43.0
 
