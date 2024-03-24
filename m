@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01B2E88841A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D134F88841C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:30:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61A42B224D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:29:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58645B228F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D0C1A6990;
-	Sun, 24 Mar 2024 22:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A891A69B4;
+	Sun, 24 Mar 2024 22:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NcLhzsZD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9K4zOv2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5241A62FA;
-	Sun, 24 Mar 2024 22:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F3C1A6997;
+	Sun, 24 Mar 2024 22:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320212; cv=none; b=PoeHHw0nuucYVoq2oYHsBB0evwbdsXkFRAJiopUG0c6TSc0boPttZNoQm1e605kJ61JAYxXq7WGm/Ajl4XzlnqbEAb+fT8a9TbGCwLY72DYbNsFNjNoiLKwtrUtxoldujw24Syzmx/R+B7kzHn5MLbY4v8d5casU4lXCTpjtAxQ=
+	t=1711320213; cv=none; b=JdK51YeqsGJnGJusTCgzzQj0FGSBWvh952qvX0BrcleiE/BxxMkPVyD1ypGywSVBrKmwurQhc8UvKg1UfQ4KMry4tkT8Ol1KfoiyGQp7O6PRLrVabpz/OLqSkR0lm2bbCgc8iRaOAAE7to8PV1QJB2odQqgkJQvKWYQQwUjcokk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320212; c=relaxed/simple;
-	bh=4FUPlWa79cawkkNKxG7WUAwRAA85F1SBpHi+Rf23veo=;
+	s=arc-20240116; t=1711320213; c=relaxed/simple;
+	bh=1L5gyKnUNDWV2C0YYKufGqLKY6PpoYok9dEErj71eac=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U2jlxa7YtzY/39kqvr4jlNmRX9kUCYeDaZ8wV0r1LMpcFDROlIkbSmb8SHSPzfixjFAwhowpJDeozrZBnPhbksLsehbfuNJju1vgBDbea9k2Dbgf6XfeohpmpYy4UFRbh1qYURXkqATb/3vCnro50aJqI0oXQmJ5d1QAvRDdUvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NcLhzsZD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72154C43601;
-	Sun, 24 Mar 2024 22:43:31 +0000 (UTC)
+	 MIME-Version; b=ddtvmkwv1l330KTNNLepnKcV7G81EOtoGyCYYMMHwIhvL48qbuBMDXSg9Jq2l1qmvQMkqi0MlCDiQFW5MgDvLw4UVUyLVuY6vuWt6FPPJEEM6OZ7Ryn1avq4XfN4VQKYWJgKLJteJCCkhAF665xXcnplgm8mZmfIiHPhGM9d8NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9K4zOv2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DC01C433C7;
+	Sun, 24 Mar 2024 22:43:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320212;
-	bh=4FUPlWa79cawkkNKxG7WUAwRAA85F1SBpHi+Rf23veo=;
+	s=k20201202; t=1711320213;
+	bh=1L5gyKnUNDWV2C0YYKufGqLKY6PpoYok9dEErj71eac=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NcLhzsZDOeK9Rp2MAlxJKWKOa4bfRReWrHl5sggmMZk7GHM3stmsAHb49TbddyqBC
-	 bwG1biw5wbVH3EriPBH9zCtgJ2gQSNP6nKiFMWF4tox0Bj4IQwd8/wuP/41QRpBA7a
-	 xuX9v5+SVTPERlpwBZky7sZSmM/NwHZx9iEGuqsaewO6hXEZ/W0/L9GlEgrBFisCVq
-	 Z1oVjN+tSz3mcWbtijAmX73ioG6cdH9fLtSh9wu8CkwHS2G+iPnRZ+Euc56Cnxs/My
-	 58GgaqZyxeCwh5BB08FANDVujr+7h3DjGpCV6rltV5uobIPj9ZxWFGjuDwNRiHjQqu
-	 Bpo4Xap9c89qw==
+	b=W9K4zOv20eE4YCl1VMdy0ARzY4sWAfZAxX1ZzeEF/7p0uUe+6COzm5IFDtClUs8+G
+	 d3HoJ3KcS4MKQ2F0/iRZ6uaIc0+pN+Rd+Byl/psdouuOgqpx74cv5YwfeIz2TU13IG
+	 OKU12anOAIz8ClP9YIAuVWIveqjfWzCUx9Jzs8cveMhLyjtt3z6zJVp8/s7o8Lmxfd
+	 qfJyDlnXGmgwbFo0C5YgOE1AsLlOt5lUZDqNiNHLoHwYAuOg5i3p2m5rw6I8FTTeYz
+	 FCOLRE4ecLamX6qsL69RYsZINBCHI3GzOksm5UVrIRz2epRJMOcJNjNAqRvAE0ME/U
+	 kpjVICx6jwWag==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Anup Patel <apatel@ventanamicro.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Anup Patel <anup@brainfault.org>,
+Cc: George Stark <gnstark@salutedevices.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Lee Jones <lee@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 519/715] RISC-V: KVM: Forward SEED CSR access to user space
-Date: Sun, 24 Mar 2024 18:31:38 -0400
-Message-ID: <20240324223455.1342824-520-sashal@kernel.org>
+Subject: [PATCH 6.8 520/715] leds: aw2013: Unlock mutex before destroying it
+Date: Sun, 24 Mar 2024 18:31:39 -0400
+Message-ID: <20240324223455.1342824-521-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,59 +63,35 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Anup Patel <apatel@ventanamicro.com>
+From: George Stark <gnstark@salutedevices.com>
 
-[ Upstream commit d808f0b1be4888a87524164bc7dad2242734de38 ]
+[ Upstream commit 6969d0a2ba1adc9ba6a49b9805f24080896c255c ]
 
-The SEED CSR access from VS/VU mode (guest) will always trap to
-HS-mode (KVM) when Zkr extension is available to the Guest/VM.
+In the probe() callback in case of error mutex is destroyed being locked
+which is not allowed so unlock the mutex before destroying.
 
-Forward this CSR access to KVM user space so that it can be
-emulated based on the method chosen by VMM.
-
-Fixes: f370b4e668f0 ("RISC-V: KVM: Allow scalar crypto extensions for Guest/VM")
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-Signed-off-by: Anup Patel <anup@brainfault.org>
+Fixes: 59ea3c9faf32 ("leds: add aw2013 driver")
+Signed-off-by: George Stark <gnstark@salutedevices.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20231214173614.2820929-2-gnstark@salutedevices.com
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kvm/vcpu_insn.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/leds/leds-aw2013.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/riscv/kvm/vcpu_insn.c b/arch/riscv/kvm/vcpu_insn.c
-index 7a6abed41bc17..ee7215f4071f5 100644
---- a/arch/riscv/kvm/vcpu_insn.c
-+++ b/arch/riscv/kvm/vcpu_insn.c
-@@ -7,6 +7,8 @@
- #include <linux/bitops.h>
- #include <linux/kvm_host.h>
+diff --git a/drivers/leds/leds-aw2013.c b/drivers/leds/leds-aw2013.c
+index 91f44b23cb113..17235a5e576ae 100644
+--- a/drivers/leds/leds-aw2013.c
++++ b/drivers/leds/leds-aw2013.c
+@@ -405,6 +405,7 @@ static int aw2013_probe(struct i2c_client *client)
+ 			       chip->regulators);
  
-+#include <asm/cpufeature.h>
-+
- #define INSN_OPCODE_MASK	0x007c
- #define INSN_OPCODE_SHIFT	2
- #define INSN_OPCODE_SYSTEM	28
-@@ -213,9 +215,20 @@ struct csr_func {
- 		    unsigned long wr_mask);
- };
- 
-+static int seed_csr_rmw(struct kvm_vcpu *vcpu, unsigned int csr_num,
-+			unsigned long *val, unsigned long new_val,
-+			unsigned long wr_mask)
-+{
-+	if (!riscv_isa_extension_available(vcpu->arch.isa, ZKR))
-+		return KVM_INSN_ILLEGAL_TRAP;
-+
-+	return KVM_INSN_EXIT_TO_USER_SPACE;
-+}
-+
- static const struct csr_func csr_funcs[] = {
- 	KVM_RISCV_VCPU_AIA_CSR_FUNCS
- 	KVM_RISCV_VCPU_HPMCOUNTER_CSR_FUNCS
-+	{ .base = CSR_SEED, .count = 1, .func = seed_csr_rmw },
- };
- 
- /**
+ error:
++	mutex_unlock(&chip->mutex);
+ 	mutex_destroy(&chip->mutex);
+ 	return ret;
+ }
 -- 
 2.43.0
 
