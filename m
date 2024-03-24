@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-113187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C3F5888226
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:39:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81D1A888229
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:39:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ED541F21BA4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:39:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADB821C22455
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7D0178CCD;
-	Sun, 24 Mar 2024 22:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DB7178CF1;
+	Sun, 24 Mar 2024 22:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mW0P7HOH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GxsHbRC0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAEB17831C;
-	Sun, 24 Mar 2024 22:39:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8AA178CCF;
+	Sun, 24 Mar 2024 22:39:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319990; cv=none; b=MswAodL0Jz2da9LtwdPT1pbJ/WsGauA2nh9Twc3LlQ5rFV85Hi8KLc3Bx/iICj71kqnh48aztRUSDTSlakdYMRDIN4IIhtpXaHTbhGhoxEVkeftryE+tN6xMmfVKj3IWtE1zlKefSirODXK00QmkEkKzKrIRyiVtpgh4jaoHnJM=
+	t=1711319991; cv=none; b=d4E3gEKCAko/PiXTHqY+UluoQAykzqYvWC6oT5HnMLzrMUilCkiyx3TLwMLoP7kADKbmT6dP8YHXUcFVvl1rp8+FRQ5JqVE+IuwP5zfPwFqmYYTBxjBGK3Chuf2rF+OUyQjgnTWsZq/qI2s7JXsa1EXdRBU/G2hqQKabtmSX4Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319990; c=relaxed/simple;
-	bh=IxEqqKIe9EzhCZoMkEFAE23hSEe6gRgkdmo8KMpCwJA=;
+	s=arc-20240116; t=1711319991; c=relaxed/simple;
+	bh=3IZlNOzBqHQHY4gQvWgHcGXr5SgHDQHzF++1kUXuWEg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q6yFpglA07oineuw6XJmGx2wSD8mUPiG+qIjaIXKTCken0U3T38+2Si0849O3d+Pt0y2igGwJ/oI1mUwUA95yTh0zSr2Kyk3ehymsz0dH9RfXfGjWeMgi81EQNdColcqQuW7gCNIH7VhmfrJe+C9zRmhAqPgoCWNFnIcbmPC1+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mW0P7HOH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84B4CC43399;
-	Sun, 24 Mar 2024 22:39:49 +0000 (UTC)
+	 MIME-Version; b=pRaOSAITMB+6asD63D1qe8Qf0MIXjGJkRh80UhsYgcKBCljm6qLaAUCzp08hxWAPRNQDFFRjugb9UOuPm7n9YYQmi7EQq5NpNFFKFkG0COsgXUwSCTXnuddtTeYcl2NQbB8/VvXPvzps4plq9xBj/uXQARpJMwNvq2Tyb6QgE4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GxsHbRC0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8419EC433F1;
+	Sun, 24 Mar 2024 22:39:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319990;
-	bh=IxEqqKIe9EzhCZoMkEFAE23hSEe6gRgkdmo8KMpCwJA=;
+	s=k20201202; t=1711319991;
+	bh=3IZlNOzBqHQHY4gQvWgHcGXr5SgHDQHzF++1kUXuWEg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mW0P7HOHLMZyMFgUur5AVeIGy5k6spVZL3X1JJXhUpMxELngygBf/QtOMuN6OJs0M
-	 s3ilSfuxsXMoQxlNFe6jsFX67a+oq/Fw25Y3N0/s25ufSBcPPd8/h2fmUaBWjoVXZG
-	 sn65jI8YkoVroPRPwpBsji3+64ypvjkqO3YGMZw0SP9Pbz5dxYCjhXEAiByj9AwDZE
-	 J5V3zx5Q6Cw99UBCERy+bguP8T6g+kB43GHCksgNhLYkrjykKKXzK0cCc9qMqnkM27
-	 HaBFXO56ULGf2H9T6IZc6DaQoXhHngWePY3wIQLddftBsI21DdmSvK7ylNgIPF4SHI
-	 tt9ASBnGrO3hw==
+	b=GxsHbRC0ORk50Gr5c1nJyJvSwmVTZNOXwdmuRSL5uuhmY4JL4Sy7DnTupEAaFu+P0
+	 823zcy0pI54mtBp2YZyabgPhW2bbykILbDkbdDVF8n7PZ/K0hJ1mTITpSZQvF9192H
+	 WN4lKwGvmXwOB/nMRGuhvFLMFMh/96k9/TxPyeQ/pEfuIZycVU0THCq79R01k90V9Q
+	 /Pg7NKhoR1tsdKYBMqzdQQeoU/kigDdDF7488Fjo0lsPsTdsxXG7a5ywc/Ry8OtWwc
+	 1C9Kghq3cBF9V1GzwVZeOc7oBpTVZ3Q2d5jFS0AwbVqFuSfcDfuJytN2JOIAUZZqGT
+	 tytkB9wB0nHKw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Lu Baolu <baolu.lu@linux.intel.com>,
 	Jason Gunthorpe <jgg@nvidia.com>,
+	Kevin Tian <kevin.tian@intel.com>,
 	Joerg Roedel <jroedel@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 296/715] iommu/vt-d: Use device rbtree in iopf reporting path
-Date: Sun, 24 Mar 2024 18:27:55 -0400
-Message-ID: <20240324223455.1342824-297-sashal@kernel.org>
+Subject: [PATCH 6.8 297/715] iommu: Add static iommu_ops->release_domain
+Date: Sun, 24 Mar 2024 18:27:56 -0400
+Message-ID: <20240324223455.1342824-298-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,124 +66,90 @@ Content-Transfer-Encoding: 8bit
 
 From: Lu Baolu <baolu.lu@linux.intel.com>
 
-[ Upstream commit def054b01a867822254e1dda13d587f5c7a99e2a ]
+[ Upstream commit 0061ffe289e19caabeea8103e69cb0f1896e34d8 ]
 
-The existing I/O page fault handler currently locates the PCI device by
-calling pci_get_domain_bus_and_slot(). This function searches the list
-of all PCI devices until the desired device is found. To improve lookup
-efficiency, replace it with device_rbtree_find() to search the device
-within the probed device rbtree.
+The current device_release callback for individual iommu drivers does the
+following:
 
-The I/O page fault is initiated by the device, which does not have any
-synchronization mechanism with the software to ensure that the device
-stays in the probed device tree. Theoretically, a device could be released
-by the IOMMU subsystem after device_rbtree_find() and before
-iopf_get_dev_fault_param(), which would cause a use-after-free problem.
+1) Silent IOMMU DMA translation: It detaches any existing domain from the
+   device and puts it into a blocking state (some drivers might use the
+   identity state).
+2) Resource release: It releases resources allocated during the
+   device_probe callback and restores the device to its pre-probe state.
 
-Add a mutex to synchronize the I/O page fault reporting path and the IOMMU
-release device path. This lock doesn't introduce any performance overhead,
-as the conflict between I/O page fault reporting and device releasing is
-very rare.
+Step 1 is challenging for individual iommu drivers because each must check
+if a domain is already attached to the device. Additionally, if a deferred
+attach never occurred, the device_release should avoid modifying hardware
+configuration regardless of the reason for its call.
 
+To simplify this process, introduce a static release_domain within the
+iommu_ops structure. It can be either a blocking or identity domain
+depending on the iommu hardware. The iommu core will decide whether to
+attach this domain before the device_release callback, eliminating the
+need for repetitive code in various drivers.
+
+Consequently, the device_release callback can focus solely on the opposite
+operations of device_probe, including releasing all resources allocated
+during that callback.
+
+Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Link: https://lore.kernel.org/r/20240220065939.121116-3-baolu.lu@linux.intel.com
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Link: https://lore.kernel.org/r/20240305013305.204605-2-baolu.lu@linux.intel.com
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Stable-dep-of: 81e921fd3216 ("iommu/vt-d: Fix NULL domain on device release")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/dmar.c  |  1 +
- drivers/iommu/intel/iommu.c |  3 +++
- drivers/iommu/intel/iommu.h |  2 ++
- drivers/iommu/intel/svm.c   | 17 +++++++++--------
- 4 files changed, 15 insertions(+), 8 deletions(-)
+ drivers/iommu/iommu.c | 19 +++++++++++++++----
+ include/linux/iommu.h |  1 +
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index ad8a340fc7f1d..36d7427b12026 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -1097,6 +1097,7 @@ static int alloc_iommu(struct dmar_drhd_unit *drhd)
- 	iommu->segment = drhd->segment;
- 	iommu->device_rbtree = RB_ROOT;
- 	spin_lock_init(&iommu->device_rbtree_lock);
-+	mutex_init(&iommu->iopf_lock);
- 	iommu->node = NUMA_NO_NODE;
- 
- 	ver = readl(iommu->reg + DMAR_VER_REG);
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 9e07e4425ff65..31b5d852ba732 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -4431,8 +4431,11 @@ static struct iommu_device *intel_iommu_probe_device(struct device *dev)
- static void intel_iommu_release_device(struct device *dev)
- {
- 	struct device_domain_info *info = dev_iommu_priv_get(dev);
-+	struct intel_iommu *iommu = info->iommu;
- 
-+	mutex_lock(&iommu->iopf_lock);
- 	device_rbtree_remove(info);
-+	mutex_unlock(&iommu->iopf_lock);
- 	dmar_remove_one_dev_info(dev);
- 	intel_pasid_free_table(dev);
- 	intel_iommu_debugfs_remove_dev(info);
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index df00240ebe90b..cd267ba64eda1 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -719,6 +719,8 @@ struct intel_iommu {
- #endif
- 	struct iopf_queue *iopf_queue;
- 	unsigned char iopfq_name[16];
-+	/* Synchronization between fault report and iommu device release. */
-+	struct mutex iopf_lock;
- 	struct q_inval  *qi;            /* Queued invalidation info */
- 	u32 iommu_state[MAX_SR_DMAR_REGS]; /* Store iommu states between suspend and resume.*/
- 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 40edd282903fb..ec47ec81f0ecd 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -650,7 +650,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 	struct intel_iommu *iommu = d;
- 	struct page_req_dsc *req;
- 	int head, tail, handled;
--	struct pci_dev *pdev;
-+	struct device *dev;
- 	u64 address;
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index d14413916f93a..cd1210026ac53 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -463,13 +463,24 @@ static void iommu_deinit_device(struct device *dev)
  
  	/*
-@@ -696,23 +696,24 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 		if (unlikely(req->lpig && !req->rd_req && !req->wr_req))
- 			goto prq_advance;
+ 	 * release_device() must stop using any attached domain on the device.
+-	 * If there are still other devices in the group they are not effected
++	 * If there are still other devices in the group, they are not affected
+ 	 * by this callback.
+ 	 *
+-	 * The IOMMU driver must set the device to either an identity or
+-	 * blocking translation and stop using any domain pointer, as it is
+-	 * going to be freed.
++	 * If the iommu driver provides release_domain, the core code ensures
++	 * that domain is attached prior to calling release_device. Drivers can
++	 * use this to enforce a translation on the idle iommu. Typically, the
++	 * global static blocked_domain is a good choice.
++	 *
++	 * Otherwise, the iommu driver must set the device to either an identity
++	 * or a blocking translation in release_device() and stop using any
++	 * domain pointer, as it is going to be freed.
++	 *
++	 * Regardless, if a delayed attach never occurred, then the release
++	 * should still avoid touching any hardware configuration either.
+ 	 */
++	if (!dev->iommu->attach_deferred && ops->release_domain)
++		ops->release_domain->ops->attach_dev(ops->release_domain, dev);
++
+ 	if (ops->release_device)
+ 		ops->release_device(dev);
  
--		pdev = pci_get_domain_bus_and_slot(iommu->segment,
--						   PCI_BUS_NUM(req->rid),
--						   req->rid & 0xff);
- 		/*
- 		 * If prq is to be handled outside iommu driver via receiver of
- 		 * the fault notifiers, we skip the page response here.
- 		 */
--		if (!pdev)
-+		mutex_lock(&iommu->iopf_lock);
-+		dev = device_rbtree_find(iommu, req->rid);
-+		if (!dev) {
-+			mutex_unlock(&iommu->iopf_lock);
- 			goto bad_req;
-+		}
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 5e27cb3a3be99..c948289f64d08 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -487,6 +487,7 @@ struct iommu_ops {
+ 	struct module *owner;
+ 	struct iommu_domain *identity_domain;
+ 	struct iommu_domain *blocked_domain;
++	struct iommu_domain *release_domain;
+ 	struct iommu_domain *default_domain;
+ };
  
--		if (intel_svm_prq_report(iommu, &pdev->dev, req))
-+		if (intel_svm_prq_report(iommu, dev, req))
- 			handle_bad_prq_event(iommu, req, QI_RESP_INVALID);
- 		else
--			trace_prq_report(iommu, &pdev->dev, req->qw_0, req->qw_1,
-+			trace_prq_report(iommu, dev, req->qw_0, req->qw_1,
- 					 req->priv_data[0], req->priv_data[1],
- 					 iommu->prq_seq_number++);
--		pci_dev_put(pdev);
-+		mutex_unlock(&iommu->iopf_lock);
- prq_advance:
- 		head = (head + sizeof(*req)) & PRQ_RING_MASK;
- 	}
 -- 
 2.43.0
 
