@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-116254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC00889F75
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:30:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73C078895CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:39:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF641BA1CFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:53:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2160A1F2FFA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727933C585D;
-	Mon, 25 Mar 2024 03:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2C43C582D;
+	Mon, 25 Mar 2024 03:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AotkNofG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Elwtz9Wu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53E61802AD;
-	Sun, 24 Mar 2024 23:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF25C1802B5;
+	Sun, 24 Mar 2024 23:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324023; cv=none; b=ogA5eJAv1wrZPgxALVEVOU+sbxWNJZuBkCG/yCb/Z6cWaWIj+oEGCmRReRmjymxsD5poyswCkAJSBLJZcGh63f6eqjVGDC8k1+OHYYYUZo//VTsG/MAya1Ubj0Yv9G4xs2JjKELTxzxSdP5N0fWi9Cw6Vn67lIXjfWO//qCe4U8=
+	t=1711324024; cv=none; b=UWj6isaXIK21yvdrZ/fbHHimwmbESgwZ3fwDZQT9eqa+PTcpP2ksb5azyhgU5SwHRIlpKNuL0jWGHmS5bXogniYOtL3Njecsr4cTC3xuGKi/cGgixsjUz8zb/TZxtSz4IUZHDLSV7BOSqaoPBjedvYOfeRaXleZM8Vbx0D/wWFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324023; c=relaxed/simple;
-	bh=FJ7fTfbr0MetlnQpTrBJURTUL1X9wGEpmm5HLaUebVc=;
+	s=arc-20240116; t=1711324024; c=relaxed/simple;
+	bh=AdKOgoZ7YM6xhwA39T+067LYWPCUSATZWLKHjQVp4b4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zjr0z4VxN3Oiw61Nk5fFg7jaLMcog+Zq0ys6aG8RWyKshRBbhWJL3880SnjHqKBt+6cFdrM0vrTzgwaQGEwUs3VE1pv3WmyMt5NrHvqYOVf5KIIPaJy6v8UpT15rE1uOmJQ+5kJcLHAG9021VkmFVKIXW2bBxUfSjYNTwf2GT+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AotkNofG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1361C433C7;
-	Sun, 24 Mar 2024 23:47:02 +0000 (UTC)
+	 MIME-Version; b=lDi+V5ujOs8sqP8C2KvCpBzqK7On3JT8Gt+4BCXvYaJXwB6NFCMgHzsa0lWcZaeW1VCRbVF8/q2xE86L/D6QWm2fEzkEctTgJU9W5VAQ53pW89DRDwt353u5rknGON2A1ZlgKKnQxWE/3mt91EzOwUo4AXOvb7xgUffFzmrvU1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Elwtz9Wu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA14BC43390;
+	Sun, 24 Mar 2024 23:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324023;
-	bh=FJ7fTfbr0MetlnQpTrBJURTUL1X9wGEpmm5HLaUebVc=;
+	s=k20201202; t=1711324024;
+	bh=AdKOgoZ7YM6xhwA39T+067LYWPCUSATZWLKHjQVp4b4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AotkNofG5faXbQ5TUEvk/EsMLnQcyE8utDW9oH8BFApjCAEnANHbXR8iEKR7zG4Rh
-	 9+hVHehApmXOTErC4+1YW1QojsbU+6gNHn+8reADLOykneaNK5NKlwVI0xW+TicwbL
-	 cPS79PmkbTZO6tYFFYHAbcaU2zrGCkfTbPTNXi7JsVudC2MpnUmUp1XfD3W6rY/CTm
-	 OotSpERb1biJJBSYZY2dLBbSvtthyI296VvVUbXWVAxNgcq0jqTR9nujTkCchueLYz
-	 y5D/9y//XvLMKN/4ODWdIssapQ40eb8D/wQ5qgzse/iONiZYflULJRX03ifzPOhKU1
-	 k7dR8MRK2xAMQ==
+	b=Elwtz9Wufg1fOo/VT5YlYkRb2gIqq7WinQ8MnMlM4Q781gi2iAW4j/Kzp+kXY1pyH
+	 rpkhIUlL6uAVQyi+S594DFFvh04YcOg0/7k/eczTtevocWC+mmox9UTgd/b9ajh3HM
+	 WUlGR1i0JSwN311iwYjhaaWhfeESKn68RcayVIw9ZPM+dCZhrBd06NkHVE00gQPeWS
+	 svjTkn+UrsgtvrL4P5iHEoUm3pNIvWoFBvv7J7ERgqyJzUQn8F5lDs+XFznf0P1Hxe
+	 YNiGMbs9rgJAv3iIkZSeNU2FJtknsl4sgKd7u8r5wcXMjEczGnWFkBzo9hd74W6sXq
+	 Ah0IE4mKovILQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Kees Cook <keescook@chromium.org>,
-	Andi Kleen <ak@linux.intel.com>,
-	Jan Kara <jack@suse.cz>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Chun-Yi Lee <jlee@suse.com>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 024/183] fs/select: rework stack allocation hack for clang
-Date: Sun, 24 Mar 2024 19:43:57 -0400
-Message-ID: <20240324234638.1355609-25-sashal@kernel.org>
+Subject: [PATCH 5.4 025/183] aoe: fix the potential use-after-free problem in aoecmd_cfg_pkts
+Date: Sun, 24 Mar 2024 19:43:58 -0400
+Message-ID: <20240324234638.1355609-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -65,65 +62,86 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Chun-Yi Lee <jlee@suse.com>
 
-[ Upstream commit ddb9fd7a544088ed70eccbb9f85e9cc9952131c1 ]
+[ Upstream commit f98364e926626c678fb4b9004b75cacf92ff0662 ]
 
-A while ago, we changed the way that select() and poll() preallocate
-a temporary buffer just under the size of the static warning limit of
-1024 bytes, as clang was frequently going slightly above that limit.
+This patch is against CVE-2023-6270. The description of cve is:
 
-The warnings have recently returned and I took another look. As it turns
-out, clang is not actually inherently worse at reserving stack space,
-it just happens to inline do_select() into core_sys_select(), while gcc
-never inlines it.
+  A flaw was found in the ATA over Ethernet (AoE) driver in the Linux
+  kernel. The aoecmd_cfg_pkts() function improperly updates the refcnt on
+  `struct net_device`, and a use-after-free can be triggered by racing
+  between the free on the struct and the access through the `skbtxq`
+  global queue. This could lead to a denial of service condition or
+  potential code execution.
 
-Annotate do_select() to never be inlined and in turn remove the special
-case for the allocation size. This should give the same behavior for
-both clang and gcc all the time and once more avoids those warnings.
+In aoecmd_cfg_pkts(), it always calls dev_put(ifp) when skb initial
+code is finished. But the net_device ifp will still be used in
+later tx()->dev_queue_xmit() in kthread. Which means that the
+dev_put(ifp) should NOT be called in the success path of skb
+initial code in aoecmd_cfg_pkts(). Otherwise tx() may run into
+use-after-free because the net_device is freed.
 
-Fixes: ad312f95d41c ("fs/select: avoid clang stack usage warning")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20240216202352.2492798-1-arnd@kernel.org
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+This patch removed the dev_put(ifp) in the success path in
+aoecmd_cfg_pkts(), and added dev_put() after skb xmit in tx().
+
+Link: https://nvd.nist.gov/vuln/detail/CVE-2023-6270
+Fixes: 7562f876cd93 ("[NET]: Rework dev_base via list_head (v3)")
+Signed-off-by: Chun-Yi Lee <jlee@suse.com>
+Link: https://lore.kernel.org/r/20240305082048.25526-1-jlee@suse.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/select.c          | 2 +-
- include/linux/poll.h | 4 ----
- 2 files changed, 1 insertion(+), 5 deletions(-)
+ drivers/block/aoe/aoecmd.c | 12 ++++++------
+ drivers/block/aoe/aoenet.c |  1 +
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/fs/select.c b/fs/select.c
-index 7716d9d5be1e8..f405dc5adf3ca 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -475,7 +475,7 @@ static inline void wait_key_set(poll_table *wait, unsigned long in,
- 		wait->_key |= POLLOUT_SET;
- }
+diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
+index 3cf9bc5d8d959..3d5117be57f9f 100644
+--- a/drivers/block/aoe/aoecmd.c
++++ b/drivers/block/aoe/aoecmd.c
+@@ -420,13 +420,16 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
+ 	rcu_read_lock();
+ 	for_each_netdev_rcu(&init_net, ifp) {
+ 		dev_hold(ifp);
+-		if (!is_aoe_netif(ifp))
+-			goto cont;
++		if (!is_aoe_netif(ifp)) {
++			dev_put(ifp);
++			continue;
++		}
  
--static int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
-+static noinline_for_stack int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
- {
- 	ktime_t expire, *to = NULL;
- 	struct poll_wqueues table;
-diff --git a/include/linux/poll.h b/include/linux/poll.h
-index 1cdc32b1f1b08..7e0fdcf905d2e 100644
---- a/include/linux/poll.h
-+++ b/include/linux/poll.h
-@@ -16,11 +16,7 @@
- extern struct ctl_table epoll_table[]; /* for sysctl */
- /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
-    additional memory. */
--#ifdef __clang__
--#define MAX_STACK_ALLOC 768
--#else
- #define MAX_STACK_ALLOC 832
--#endif
- #define FRONTEND_STACK_ALLOC	256
- #define SELECT_STACK_ALLOC	FRONTEND_STACK_ALLOC
- #define POLL_STACK_ALLOC	FRONTEND_STACK_ALLOC
+ 		skb = new_skb(sizeof *h + sizeof *ch);
+ 		if (skb == NULL) {
+ 			printk(KERN_INFO "aoe: skb alloc failure\n");
+-			goto cont;
++			dev_put(ifp);
++			continue;
+ 		}
+ 		skb_put(skb, sizeof *h + sizeof *ch);
+ 		skb->dev = ifp;
+@@ -441,9 +444,6 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
+ 		h->major = cpu_to_be16(aoemajor);
+ 		h->minor = aoeminor;
+ 		h->cmd = AOECMD_CFG;
+-
+-cont:
+-		dev_put(ifp);
+ 	}
+ 	rcu_read_unlock();
+ }
+diff --git a/drivers/block/aoe/aoenet.c b/drivers/block/aoe/aoenet.c
+index 63773a90581dd..1e66c7a188a12 100644
+--- a/drivers/block/aoe/aoenet.c
++++ b/drivers/block/aoe/aoenet.c
+@@ -64,6 +64,7 @@ tx(int id) __must_hold(&txlock)
+ 			pr_warn("aoe: packet could not be sent on %s.  %s\n",
+ 				ifp ? ifp->name : "netif",
+ 				"consider increasing tx_queue_len");
++		dev_put(ifp);
+ 		spin_lock_irq(&txlock);
+ 	}
+ 	return 0;
 -- 
 2.43.0
 
