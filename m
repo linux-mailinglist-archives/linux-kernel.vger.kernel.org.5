@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C71888D57
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:45:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EB36888D5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:46:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A812E1F2A1AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:45:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58F8428D65C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D361C6FD8;
-	Mon, 25 Mar 2024 01:04:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022CA1C6FE3;
+	Mon, 25 Mar 2024 01:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l/lySQEG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vOqsvwZp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B50229BFC;
-	Sun, 24 Mar 2024 23:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314C2229C04;
+	Sun, 24 Mar 2024 23:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324133; cv=none; b=tyR5zJv28SAyOsyCeBaRqbT1E1yZRMzwKuPmEaWfa9SXoXCEglYqA0Wfg3mQKTCbvHY0zs3vGBFedRjE+lIzDL8vtiEpF+6YjEbOZFdiXT6V/uWn9C7xKy5UGHNBuK56yNMrrPF17rJP4xApG2np67u5iOF6QV8nCpSn/qZsNZU=
+	t=1711324134; cv=none; b=jTLPivObf37tvYzjBqeYnSJdGfeao1CuYKsUKeknlZIGIyHk9QICzYNTJEiYnZZd95NcdQIMiSws1LGnJsgmQNO2ajRDhgy3gRXZd1P/NpzT6pqZnGah2ustcCCACLbZWtP6EzZ27PR2c0xH+ysKN8UCXbm1Yxgol6Tsrp2zkMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324133; c=relaxed/simple;
-	bh=MA3h5jTrsIKATIHVkASldqtCcIv3oJwBvd1pfRey8s0=;
+	s=arc-20240116; t=1711324134; c=relaxed/simple;
+	bh=AzJDd6RMY3BBgLb2b4nm2mnDH2oSiiGl+bC7buMZM0w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ts+5B8F2vllQDzBtbHuP+Zq7zOJH40GC0AgLInN6QOKRewF+QK9PXw5IXgN6RDJdFyYQfE7bgjdoGZQBVjNLEOc++mwAoe1OnFelrFBo6wjxGqc3PHz8w+MAFWdnM/wbnDotObcV1fcca/ekwq/iHNAxBvJmP6WuO2dFToQ5uiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l/lySQEG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71D64C43390;
-	Sun, 24 Mar 2024 23:48:51 +0000 (UTC)
+	 MIME-Version; b=SjQm6kSUhhm1xmTnG5oI8VN4LtYGjdds/Hjxfo7pNlRA0Bmm9Y39xpcAhydCHQhyAjiOVty3/W+g/sUicCMIVEqdFp878H86Afnz9cVXJjwruoD3w+GG/CcFs/VgbZ7fmpcAxDPedpiZM8kuAVfF7O4zOUQ/dR49NgzvYpZDixw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vOqsvwZp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D121C43399;
+	Sun, 24 Mar 2024 23:48:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324132;
-	bh=MA3h5jTrsIKATIHVkASldqtCcIv3oJwBvd1pfRey8s0=;
+	s=k20201202; t=1711324133;
+	bh=AzJDd6RMY3BBgLb2b4nm2mnDH2oSiiGl+bC7buMZM0w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l/lySQEGZy0gl2AWmPbVC26yWzvj+Vt4tXnRFEQhMRLJNU8OCb5Xs2yXGR8K+QcdF
-	 Oy159PfHUStgDa8X0IPYiDKfFKK0j3YUtG7g+ITJgutyaVuVp97f0QTWfiDKKU70r6
-	 rgW0HYc0FooRgpbStAlZCmwBvTIgiIHfNKKHISUpZL9/flhKoFhlGcdz8P7e2F+6XE
-	 Yed1J2REg838nUQd+0xPWamXJFpn5rcJSMbXPiEKoUpkldngNMWq0+bgqPlSHsFUxq
-	 6FkASqixQg/Sva7sS7Hi7dyLNOYmqSnN4v87mqnIq4fhJxyiwvW7Hrm1ih46G5b2/K
-	 YnyN21R+TuGiw==
+	b=vOqsvwZpoHeh+O/+jDgX34Hfhrf2vySlYNhGh5Ga+PW3uyhe3gGq1oir+ynurA95u
+	 2jjDezagnGwdjoLgqwzoNjPLEskgdr037ExRHJPp+YskhGMT/KoGnvjywzogjyWyM7
+	 5WpDK/H89uAvBQYEHMZ70Z+fFvv+JED88T+xHY/jCEZCQahcH8+idVGerVv6Dy5XMv
+	 /G28JO+FZqi3QxrHghfP0F0WCjt+wmDoo1I0ddGv0qwHLrfIClc8Vun4HAI5b7Dxa9
+	 mQoRL/HGp7h/Bp/Y/WM1EZAweUoHnrpVuFsQynUuGWG8pJJBfnrfB9lHgj7mEoQtRe
+	 MmoqzpO9GgWAQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baruch Siach <baruch@tkos.co.il>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 129/183] mtd: maps: physmap-core: fix flash size larger than 32-bit
-Date: Sun, 24 Mar 2024 19:45:42 -0400
-Message-ID: <20240324234638.1355609-130-sashal@kernel.org>
+Subject: [PATCH 5.4 130/183] mtd: rawnand: lpc32xx_mlc: fix irq handler prototype
+Date: Sun, 24 Mar 2024 19:45:43 -0400
+Message-ID: <20240324234638.1355609-131-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,37 +62,50 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Baruch Siach <baruch@tkos.co.il>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 3884f03edd34887514a0865a80769cd5362d5c3b ]
+[ Upstream commit 347b828882e6334690e7003ce5e2fe5f233dc508 ]
 
-mtd-ram can potentially be larger than 4GB. get_bitmask_order() uses
-fls() that is not guaranteed to work with values larger than 32-bit.
-Specifically on aarch64 fls() returns 0 when all 32 LSB bits are clear.
-Use fls64() instead.
+clang-16 warns about mismatched function prototypes:
 
-Fixes: ba32ce95cbd987 ("mtd: maps: Merge gpio-addr-flash.c into physmap-core.c")
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+drivers/mtd/nand/raw/lpc32xx_mlc.c:783:29: error: cast from 'irqreturn_t (*)(int, struct lpc32xx_nand_host *)' (aka 'enum irqreturn (*)(int, struct lpc32xx_nand_host *)') to 'irq_handler_t' (aka 'enum irqreturn (*)(int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+
+Change the interrupt handler to the normal way of just passing
+a void* pointer and converting it inside the function..
+
+Fixes: 70f7cb78ec53 ("mtd: add LPC32xx MLC NAND driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/9fbf3664ce00f8b07867f1011834015f21d162a5.1707388458.git.baruch@tkos.co.il
+Link: https://lore.kernel.org/linux-mtd/20240213100146.455811-1-arnd@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/maps/physmap-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/lpc32xx_mlc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index e4f72b2df8039..fa7e1c0b70c64 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -505,7 +505,7 @@ static int physmap_flash_probe(struct platform_device *dev)
- 		if (!info->maps[i].phys)
- 			info->maps[i].phys = res->start;
+diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+index 78b31f845c50a..a7d0a76eee7f4 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+@@ -304,8 +304,9 @@ static int lpc32xx_nand_device_ready(struct nand_chip *nand_chip)
+ 	return 0;
+ }
  
--		info->win_order = get_bitmask_order(resource_size(res)) - 1;
-+		info->win_order = fls64(resource_size(res)) - 1;
- 		info->maps[i].size = BIT(info->win_order +
- 					 (info->gpios ?
- 					  info->gpios->ndescs : 0));
+-static irqreturn_t lpc3xxx_nand_irq(int irq, struct lpc32xx_nand_host *host)
++static irqreturn_t lpc3xxx_nand_irq(int irq, void *data)
+ {
++	struct lpc32xx_nand_host *host = data;
+ 	uint8_t sr;
+ 
+ 	/* Clear interrupt flag by reading status */
+@@ -778,7 +779,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 		goto release_dma_chan;
+ 	}
+ 
+-	if (request_irq(host->irq, (irq_handler_t)&lpc3xxx_nand_irq,
++	if (request_irq(host->irq, &lpc3xxx_nand_irq,
+ 			IRQF_TRIGGER_HIGH, DRV_NAME, host)) {
+ 		dev_err(&pdev->dev, "Error requesting NAND IRQ\n");
+ 		res = -ENXIO;
 -- 
 2.43.0
 
