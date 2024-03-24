@@ -1,64 +1,54 @@
-Return-Path: <linux-kernel+bounces-115531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA025889C37
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 21958889415
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:46:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32E081F35E11
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:13:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EAA41F2C90E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9831243CE2;
-	Mon, 25 Mar 2024 02:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460C62429E3;
+	Mon, 25 Mar 2024 02:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SsN2yjC7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cV40omRV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82C71ED72A;
-	Sun, 24 Mar 2024 22:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E461ED728;
+	Sun, 24 Mar 2024 22:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320993; cv=none; b=BS1lymt1LVWx07Od0rWnhMloVLhWx6m6eJtdAOpMYvU0QujUol1hldi3L9VT7RTitoyzpSAAH6ZtaEI18AkugEWBfTbydXpcLGENP4UYMsmvMuO9RSxNC6Wy12IocQ6dtWPZGIvvYhuijOVMeQvO3mmhEDgToD6HyfaZj36lk0c=
+	t=1711320993; cv=none; b=e2kDPiqUEHUrdvQNmHY9Gy64QVaNhhn+i7p2UAbfrGaNPe2hww0y2q1209E0nL1uxiP2MrVRGGPjTx9bM6uIDDTO4RupdvWDYAUuO3Njaov/hmOitGDdLTbjrIsn2dMRP+UC7OhBZCxaRFmupBFSAUs+1kcceTOS38epkf7xLzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320993; c=relaxed/simple;
-	bh=Fce2uAMlEnrqUcEAnjpgsiZXj803UTDlk5q8XPPatnk=;
+	bh=CzuQnAE+kjH3T/uAch/fuVdQVF0vpHp6kXOpSJSIq2k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wsbrka+9Wh5hB6KxSt8e6rTydqdtltu/lsk2TXk1656sSPD8qadjZRBS2Lk8NjhOaCY9bJ/iYWynu7TaTMZRIrA0Amx4BoMAARGR9OEXqQtiBelQyzbb0RfagUhTQOrcNQ3eGOODdNmyfqWYMyH0tYpJVZgXrDnA2zRCfN94Lt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SsN2yjC7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24802C433F1;
-	Sun, 24 Mar 2024 22:56:31 +0000 (UTC)
+	 MIME-Version; b=PR46b1WGKNww85P7+5c2ck5W5wnKujD/1dvl50BnETytC2IYSMchnYSb+DXX+s/nQEIttwM8BB0so4k3b65VMHh9vaoNpxIwXmEe95K5AzS6X3DZbkvpYSC93OQ4uM3vznw+CdXmYsrMyegoUarpnoPlNGfsFFNlVlS+uG4jQ7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cV40omRV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDC9FC43399;
+	Sun, 24 Mar 2024 22:56:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320992;
-	bh=Fce2uAMlEnrqUcEAnjpgsiZXj803UTDlk5q8XPPatnk=;
+	s=k20201202; t=1711320993;
+	bh=CzuQnAE+kjH3T/uAch/fuVdQVF0vpHp6kXOpSJSIq2k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SsN2yjC7sFmPp5o1h2DRaLPsqchbC3cNYAfedtyh6va97zq0Xx8K1xLuz7FLWVoP5
-	 I/jkIVQ4esMlvcLUctpq5M6P0Aop7JMZct5jubLirawguvOQ66baZG+s3n28kdBA0v
-	 zvbcbb5ZPBU9nqIN+wP7OwVSS74CT4lEUDFW1rK7iCxWvonE00yTAihpWGwiAzxwNX
-	 FLqPFUkOcpbmE1usnuDdpK9y95e4wbKuq2POYkVywEZpGY8fZWS+A93Z5nLQuLhSXN
-	 Nl3bBm4d9hpXDAx7aGomBdPOz2SreHjQSGHv/8hr5By68fVMEyEIpGmQVDYJEsS4yK
-	 VO1pJbXUOn0Pg==
+	b=cV40omRVPuVlZAsbK0Ko8d3cESa/jK46mWv19cWIBX0Ed4tRPzDEEQop9kyJcFsle
+	 IfkKC3EWf0UG0Ye/XP2fq/TiRaheFcknEIqzigtspwwW1kquY1qWzrICWYl3usrtW8
+	 aIDUjgC0Rn1AWrZLaZG5NP4EKUgxh7Irr8EOs3E1ev8L2W7kvtFnlXjqw6XmX4nPz0
+	 jvdcwysKLm8oHVVYUf0ggaSx1DPP+IrddRIGNWpLPwkMfh+uOVhmRqI+s1rvrtPq12
+	 2Hfc7P6a1KQ8NIltt5E38XecfBFTokP+a9MHvFDn8MSITE838v9Box1SxWQsIRukIa
+	 m6TQAlgQC/HJA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Tom Talpey <tom@talpey.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	netfs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	Steve French <stfrench@microsoft.com>,
+Cc: Athaariq Ardhiansyah <foss@athaariq.my.id>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 554/713] cifs: Fix writeback data corruption
-Date: Sun, 24 Mar 2024 18:44:40 -0400
-Message-ID: <20240324224720.1345309-555-sashal@kernel.org>
+Subject: [PATCH 6.7 555/713] ALSA: hda/realtek: fix ALC285 issues on HP Envy x360 laptops
+Date: Sun, 24 Mar 2024 18:44:41 -0400
+Message-ID: <20240324224720.1345309-556-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -72,508 +62,145 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: David Howells <dhowells@redhat.com>
+From: Athaariq Ardhiansyah <foss@athaariq.my.id>
 
-[ Upstream commit f3dc1bdb6b0b0693562c7c54a6c28bafa608ba3c ]
+[ Upstream commit c062166995c9e57d5cd508b332898f79da319802 ]
 
-cifs writeback doesn't correctly handle the case where
-cifs_extend_writeback() hits a point where it is considering an additional
-folio, but this would overrun the wsize - at which point it drops out of
-the xarray scanning loop and calls xas_pause().  The problem is that
-xas_pause() advances the loop counter - thereby skipping that page.
+Realtek codec on HP Envy laptop series are heavily modified by vendor.
+Therefore, need intervention to make it work properly. The patch fixes:
 
-What needs to happen is for xas_reset() to be called any time we decide we
-don't want to process the page we're looking at, but rather send the
-request we are building and start a new one.
+- B&O soundbar speakers (between lid and keyboard) activation
+- Enable LED on mute button
+- Add missing process coefficient which affects the output amplifier
+- Volume control synchronization between B&O soundbar and side speakers
+- Unmute headset output on several HP Envy models
+- Auto-enable headset mic when plugged
 
-Fix this by copying and adapting the netfslib writepages code as a
-temporary measure, with cifs writeback intending to be offloaded to
-netfslib in the near future.
+This patch was tested on HP Envy x360 13-AR0107AU with Realtek ALC285
 
-This also fixes the issue with the use of filemap_get_folios_tag() causing
-retry of a bunch of pages which the extender already dealt with.
+The only unsolved problem is output amplifier of all built-in speakers
+is too weak, which causes volume of built-in speakers cannot be loud
+as vendor's proprietary driver due to missing _DSD parameter in the
+firmware. The solution is currently on research. Expected to has another
+patch in the future.
 
-This can be tested by creating, say, a 64K file somewhere not on cifs
-(otherwise copy-offload may get underfoot), mounting a cifs share with a
-wsize of 64000, copying the file to it and then comparing the original file
-and the copy:
+Potential fix to related issues, need test before close those issues:
 
-        dd if=/dev/urandom of=/tmp/64K bs=64k count=1
-        mount //192.168.6.1/test /mnt -o user=...,pass=...,wsize=64000
-        cp /tmp/64K /mnt/64K
-        cmp /tmp/64K /mnt/64K
+- https://bugzilla.kernel.org/show_bug.cgi?id=189331
+- https://bugzilla.kernel.org/show_bug.cgi?id=216632
+- https://bugzilla.kernel.org/show_bug.cgi?id=216311
+- https://bugzilla.kernel.org/show_bug.cgi?id=213507
 
-Without the fix, the cmp fails at position 64000 (or shortly thereafter).
-
-Fixes: d08089f649a0 ("cifs: Change the I/O paths to use an iterator rather than a page list")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Steve French <sfrench@samba.org>
-cc: Paulo Alcantara <pc@manguebit.com>
-cc: Ronnie Sahlberg <ronniesahlberg@gmail.com>
-cc: Shyam Prasad N <sprasad@microsoft.com>
-cc: Tom Talpey <tom@talpey.com>
-cc: Jeff Layton <jlayton@kernel.org>
-cc: linux-cifs@vger.kernel.org
-cc: samba-technical@lists.samba.org
-cc: netfs@lists.linux.dev
-cc: linux-fsdevel@vger.kernel.org
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Athaariq Ardhiansyah <foss@athaariq.my.id>
+Message-ID: <20240310140249.3695-1-foss@athaariq.my.id>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/client/file.c | 283 ++++++++++++++++++++++++-------------------
- 1 file changed, 157 insertions(+), 126 deletions(-)
+ sound/pci/hda/patch_realtek.c | 63 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
 
-diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index 7320272ef0074..c156460eb5587 100644
---- a/fs/smb/client/file.c
-+++ b/fs/smb/client/file.c
-@@ -2622,20 +2622,20 @@ static int cifs_partialpagewrite(struct page *page, unsigned from, unsigned to)
-  * dirty pages if possible, but don't sleep while doing so.
-  */
- static void cifs_extend_writeback(struct address_space *mapping,
-+				  struct xa_state *xas,
- 				  long *_count,
- 				  loff_t start,
- 				  int max_pages,
--				  size_t max_len,
--				  unsigned int *_len)
-+				  loff_t max_len,
-+				  size_t *_len)
- {
- 	struct folio_batch batch;
- 	struct folio *folio;
--	unsigned int psize, nr_pages;
--	size_t len = *_len;
--	pgoff_t index = (start + len) / PAGE_SIZE;
-+	unsigned int nr_pages;
-+	pgoff_t index = (start + *_len) / PAGE_SIZE;
-+	size_t len;
- 	bool stop = true;
- 	unsigned int i;
--	XA_STATE(xas, &mapping->i_pages, index);
- 
- 	folio_batch_init(&batch);
- 
-@@ -2646,54 +2646,64 @@ static void cifs_extend_writeback(struct address_space *mapping,
- 		 */
- 		rcu_read_lock();
- 
--		xas_for_each(&xas, folio, ULONG_MAX) {
-+		xas_for_each(xas, folio, ULONG_MAX) {
- 			stop = true;
--			if (xas_retry(&xas, folio))
-+			if (xas_retry(xas, folio))
- 				continue;
- 			if (xa_is_value(folio))
- 				break;
--			if (folio->index != index)
-+			if (folio->index != index) {
-+				xas_reset(xas);
- 				break;
-+			}
-+
- 			if (!folio_try_get_rcu(folio)) {
--				xas_reset(&xas);
-+				xas_reset(xas);
- 				continue;
- 			}
- 			nr_pages = folio_nr_pages(folio);
--			if (nr_pages > max_pages)
-+			if (nr_pages > max_pages) {
-+				xas_reset(xas);
- 				break;
-+			}
- 
- 			/* Has the page moved or been split? */
--			if (unlikely(folio != xas_reload(&xas))) {
-+			if (unlikely(folio != xas_reload(xas))) {
- 				folio_put(folio);
-+				xas_reset(xas);
- 				break;
- 			}
- 
- 			if (!folio_trylock(folio)) {
- 				folio_put(folio);
-+				xas_reset(xas);
- 				break;
- 			}
--			if (!folio_test_dirty(folio) || folio_test_writeback(folio)) {
-+			if (!folio_test_dirty(folio) ||
-+			    folio_test_writeback(folio)) {
- 				folio_unlock(folio);
- 				folio_put(folio);
-+				xas_reset(xas);
- 				break;
- 			}
- 
- 			max_pages -= nr_pages;
--			psize = folio_size(folio);
--			len += psize;
-+			len = folio_size(folio);
- 			stop = false;
--			if (max_pages <= 0 || len >= max_len || *_count <= 0)
--				stop = true;
- 
- 			index += nr_pages;
-+			*_count -= nr_pages;
-+			*_len += len;
-+			if (max_pages <= 0 || *_len >= max_len || *_count <= 0)
-+				stop = true;
-+
- 			if (!folio_batch_add(&batch, folio))
- 				break;
- 			if (stop)
- 				break;
- 		}
- 
--		if (!stop)
--			xas_pause(&xas);
-+		xas_pause(xas);
- 		rcu_read_unlock();
- 
- 		/* Now, if we obtained any pages, we can shift them to being
-@@ -2710,16 +2720,12 @@ static void cifs_extend_writeback(struct address_space *mapping,
- 			if (!folio_clear_dirty_for_io(folio))
- 				WARN_ON(1);
- 			folio_start_writeback(folio);
--
--			*_count -= folio_nr_pages(folio);
- 			folio_unlock(folio);
- 		}
- 
- 		folio_batch_release(&batch);
- 		cond_resched();
- 	} while (!stop);
--
--	*_len = len;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index baf550b5a7c49..0c746613c5ae0 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6696,6 +6696,60 @@ static void alc285_fixup_hp_spectre_x360(struct hda_codec *codec,
+ 	}
  }
  
- /*
-@@ -2727,8 +2733,10 @@ static void cifs_extend_writeback(struct address_space *mapping,
-  */
- static ssize_t cifs_write_back_from_locked_folio(struct address_space *mapping,
- 						 struct writeback_control *wbc,
-+						 struct xa_state *xas,
- 						 struct folio *folio,
--						 loff_t start, loff_t end)
-+						 unsigned long long start,
-+						 unsigned long long end)
- {
- 	struct inode *inode = mapping->host;
- 	struct TCP_Server_Info *server;
-@@ -2737,17 +2745,18 @@ static ssize_t cifs_write_back_from_locked_folio(struct address_space *mapping,
- 	struct cifs_credits credits_on_stack;
- 	struct cifs_credits *credits = &credits_on_stack;
- 	struct cifsFileInfo *cfile = NULL;
--	unsigned int xid, wsize, len;
--	loff_t i_size = i_size_read(inode);
--	size_t max_len;
-+	unsigned long long i_size = i_size_read(inode), max_len;
-+	unsigned int xid, wsize;
-+	size_t len = folio_size(folio);
- 	long count = wbc->nr_to_write;
- 	int rc;
- 
- 	/* The folio should be locked, dirty and not undergoing writeback. */
-+	if (!folio_clear_dirty_for_io(folio))
-+		WARN_ON_ONCE(1);
- 	folio_start_writeback(folio);
- 
- 	count -= folio_nr_pages(folio);
--	len = folio_size(folio);
- 
- 	xid = get_xid();
- 	server = cifs_pick_channel(cifs_sb_master_tcon(cifs_sb)->ses);
-@@ -2777,9 +2786,10 @@ static ssize_t cifs_write_back_from_locked_folio(struct address_space *mapping,
- 	wdata->server = server;
- 	cfile = NULL;
- 
--	/* Find all consecutive lockable dirty pages, stopping when we find a
--	 * page that is not immediately lockable, is not dirty or is missing,
--	 * or we reach the end of the range.
-+	/* Find all consecutive lockable dirty pages that have contiguous
-+	 * written regions, stopping when we find a page that is not
-+	 * immediately lockable, is not dirty or is missing, or we reach the
-+	 * end of the range.
- 	 */
- 	if (start < i_size) {
- 		/* Trim the write to the EOF; the extra data is ignored.  Also
-@@ -2799,19 +2809,18 @@ static ssize_t cifs_write_back_from_locked_folio(struct address_space *mapping,
- 			max_pages -= folio_nr_pages(folio);
- 
- 			if (max_pages > 0)
--				cifs_extend_writeback(mapping, &count, start,
-+				cifs_extend_writeback(mapping, xas, &count, start,
- 						      max_pages, max_len, &len);
- 		}
--		len = min_t(loff_t, len, max_len);
- 	}
--
--	wdata->bytes = len;
-+	len = min_t(unsigned long long, len, i_size - start);
- 
- 	/* We now have a contiguous set of dirty pages, each with writeback
- 	 * set; the first page is still locked at this point, but all the rest
- 	 * have been unlocked.
- 	 */
- 	folio_unlock(folio);
-+	wdata->bytes = len;
- 
- 	if (start < i_size) {
- 		iov_iter_xarray(&wdata->iter, ITER_SOURCE, &mapping->i_pages,
-@@ -2862,102 +2871,118 @@ static ssize_t cifs_write_back_from_locked_folio(struct address_space *mapping,
- /*
-  * write a region of pages back to the server
-  */
--static int cifs_writepages_region(struct address_space *mapping,
--				  struct writeback_control *wbc,
--				  loff_t start, loff_t end, loff_t *_next)
-+static ssize_t cifs_writepages_begin(struct address_space *mapping,
-+				     struct writeback_control *wbc,
-+				     struct xa_state *xas,
-+				     unsigned long long *_start,
-+				     unsigned long long end)
- {
--	struct folio_batch fbatch;
-+	struct folio *folio;
-+	unsigned long long start = *_start;
-+	ssize_t ret;
- 	int skips = 0;
- 
--	folio_batch_init(&fbatch);
--	do {
--		int nr;
--		pgoff_t index = start / PAGE_SIZE;
-+search_again:
-+	/* Find the first dirty page. */
-+	rcu_read_lock();
- 
--		nr = filemap_get_folios_tag(mapping, &index, end / PAGE_SIZE,
--					    PAGECACHE_TAG_DIRTY, &fbatch);
--		if (!nr)
-+	for (;;) {
-+		folio = xas_find_marked(xas, end / PAGE_SIZE, PAGECACHE_TAG_DIRTY);
-+		if (xas_retry(xas, folio) || xa_is_value(folio))
-+			continue;
-+		if (!folio)
- 			break;
- 
--		for (int i = 0; i < nr; i++) {
--			ssize_t ret;
--			struct folio *folio = fbatch.folios[i];
-+		if (!folio_try_get_rcu(folio)) {
-+			xas_reset(xas);
-+			continue;
-+		}
- 
--redo_folio:
--			start = folio_pos(folio); /* May regress with THPs */
-+		if (unlikely(folio != xas_reload(xas))) {
-+			folio_put(folio);
-+			xas_reset(xas);
-+			continue;
-+		}
- 
--			/* At this point we hold neither the i_pages lock nor the
--			 * page lock: the page may be truncated or invalidated
--			 * (changing page->mapping to NULL), or even swizzled
--			 * back from swapper_space to tmpfs file mapping
--			 */
--			if (wbc->sync_mode != WB_SYNC_NONE) {
--				ret = folio_lock_killable(folio);
--				if (ret < 0)
--					goto write_error;
--			} else {
--				if (!folio_trylock(folio))
--					goto skip_write;
--			}
-+		xas_pause(xas);
++static void alc285_fixup_hp_envy_x360(struct hda_codec *codec,
++				      const struct hda_fixup *fix,
++				      int action)
++{
++	static const struct coef_fw coefs[] = {
++		WRITE_COEF(0x08, 0x6a0c), WRITE_COEF(0x0d, 0xa023),
++		WRITE_COEF(0x10, 0x0320), WRITE_COEF(0x1a, 0x8c03),
++		WRITE_COEF(0x25, 0x1800), WRITE_COEF(0x26, 0x003a),
++		WRITE_COEF(0x28, 0x1dfe), WRITE_COEF(0x29, 0xb014),
++		WRITE_COEF(0x2b, 0x1dfe), WRITE_COEF(0x37, 0xfe15),
++		WRITE_COEF(0x38, 0x7909), WRITE_COEF(0x45, 0xd489),
++		WRITE_COEF(0x46, 0x00f4), WRITE_COEF(0x4a, 0x21e0),
++		WRITE_COEF(0x66, 0x03f0), WRITE_COEF(0x67, 0x1000),
++		WRITE_COEF(0x6e, 0x1005), { }
++	};
++
++	static const struct hda_pintbl pincfgs[] = {
++		{ 0x12, 0xb7a60130 },  /* Internal microphone*/
++		{ 0x14, 0x90170150 },  /* B&O soundbar speakers */
++		{ 0x17, 0x90170153 },  /* Side speakers */
++		{ 0x19, 0x03a11040 },  /* Headset microphone */
++		{ }
++	};
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		snd_hda_apply_pincfgs(codec, pincfgs);
++
++		/* Fixes volume control problem for side speakers */
++		alc295_fixup_disable_dac3(codec, fix, action);
++
++		/* Fixes no sound from headset speaker */
++		snd_hda_codec_amp_stereo(codec, 0x21, HDA_OUTPUT, 0, -1, 0);
++
++		/* Auto-enable headset mic when plugged */
++		snd_hda_jack_set_gating_jack(codec, 0x19, 0x21);
++
++		/* Headset mic volume enhancement */
++		snd_hda_codec_set_pin_target(codec, 0x19, PIN_VREF50);
++		break;
++	case HDA_FIXUP_ACT_INIT:
++		alc_process_coef_fw(codec, coefs);
++		break;
++	case HDA_FIXUP_ACT_BUILD:
++		rename_ctl(codec, "Bass Speaker Playback Volume",
++			   "B&O-Tuned Playback Volume");
++		rename_ctl(codec, "Front Playback Switch",
++			   "B&O Soundbar Playback Switch");
++		rename_ctl(codec, "Bass Speaker Playback Switch",
++			   "Side Speaker Playback Switch");
 +		break;
 +	}
-+	rcu_read_unlock();
-+	if (!folio)
-+		return 0;
- 
--			if (folio->mapping != mapping ||
--			    !folio_test_dirty(folio)) {
--				start += folio_size(folio);
--				folio_unlock(folio);
--				continue;
--			}
-+	start = folio_pos(folio); /* May regress with THPs */
- 
--			if (folio_test_writeback(folio) ||
--			    folio_test_fscache(folio)) {
--				folio_unlock(folio);
--				if (wbc->sync_mode == WB_SYNC_NONE)
--					goto skip_write;
-+	/* At this point we hold neither the i_pages lock nor the page lock:
-+	 * the page may be truncated or invalidated (changing page->mapping to
-+	 * NULL), or even swizzled back from swapper_space to tmpfs file
-+	 * mapping
-+	 */
-+lock_again:
-+	if (wbc->sync_mode != WB_SYNC_NONE) {
-+		ret = folio_lock_killable(folio);
-+		if (ret < 0)
-+			return ret;
-+	} else {
-+		if (!folio_trylock(folio))
-+			goto search_again;
-+	}
- 
--				folio_wait_writeback(folio);
-+	if (folio->mapping != mapping ||
-+	    !folio_test_dirty(folio)) {
-+		start += folio_size(folio);
-+		folio_unlock(folio);
-+		goto search_again;
-+	}
-+
-+	if (folio_test_writeback(folio) ||
-+	    folio_test_fscache(folio)) {
-+		folio_unlock(folio);
-+		if (wbc->sync_mode != WB_SYNC_NONE) {
-+			folio_wait_writeback(folio);
- #ifdef CONFIG_CIFS_FSCACHE
--				folio_wait_fscache(folio);
-+			folio_wait_fscache(folio);
- #endif
--				goto redo_folio;
--			}
--
--			if (!folio_clear_dirty_for_io(folio))
--				/* We hold the page lock - it should've been dirty. */
--				WARN_ON(1);
--
--			ret = cifs_write_back_from_locked_folio(mapping, wbc, folio, start, end);
--			if (ret < 0)
--				goto write_error;
--
--			start += ret;
--			continue;
--
--write_error:
--			folio_batch_release(&fbatch);
--			*_next = start;
--			return ret;
-+			goto lock_again;
-+		}
- 
--skip_write:
--			/*
--			 * Too many skipped writes, or need to reschedule?
--			 * Treat it as a write error without an error code.
--			 */
-+		start += folio_size(folio);
-+		if (wbc->sync_mode == WB_SYNC_NONE) {
- 			if (skips >= 5 || need_resched()) {
- 				ret = 0;
--				goto write_error;
-+				goto out;
- 			}
--
--			/* Otherwise, just skip that folio and go on to the next */
- 			skips++;
--			start += folio_size(folio);
--			continue;
- 		}
-+		goto search_again;
-+	}
- 
--		folio_batch_release(&fbatch);		
--		cond_resched();
--	} while (wbc->nr_to_write > 0);
-+	ret = cifs_write_back_from_locked_folio(mapping, wbc, xas, folio, start, end);
-+out:
-+	if (ret > 0)
-+		*_start = start + ret;
-+	return ret;
 +}
- 
--	*_next = start;
--	return 0;
-+/*
-+ * Write a region of pages back to the server
-+ */
-+static int cifs_writepages_region(struct address_space *mapping,
-+				  struct writeback_control *wbc,
-+				  unsigned long long *_start,
-+				  unsigned long long end)
-+{
-+	ssize_t ret;
 +
-+	XA_STATE(xas, &mapping->i_pages, *_start / PAGE_SIZE);
-+
-+	do {
-+		ret = cifs_writepages_begin(mapping, wbc, &xas, _start, end);
-+		if (ret > 0 && wbc->nr_to_write > 0)
-+			cond_resched();
-+	} while (ret > 0 && wbc->nr_to_write > 0);
-+
-+	return ret > 0 ? 0 : ret;
- }
+ /* for hda_fixup_thinkpad_acpi() */
+ #include "thinkpad_helper.c"
  
- /*
-@@ -2966,7 +2991,7 @@ static int cifs_writepages_region(struct address_space *mapping,
- static int cifs_writepages(struct address_space *mapping,
- 			   struct writeback_control *wbc)
- {
--	loff_t start, next;
-+	loff_t start, end;
- 	int ret;
- 
- 	/* We have to be careful as we can end up racing with setattr()
-@@ -2974,28 +2999,34 @@ static int cifs_writepages(struct address_space *mapping,
- 	 * to prevent it.
- 	 */
- 
--	if (wbc->range_cyclic) {
-+	if (wbc->range_cyclic && mapping->writeback_index) {
- 		start = mapping->writeback_index * PAGE_SIZE;
--		ret = cifs_writepages_region(mapping, wbc, start, LLONG_MAX, &next);
--		if (ret == 0) {
--			mapping->writeback_index = next / PAGE_SIZE;
--			if (start > 0 && wbc->nr_to_write > 0) {
--				ret = cifs_writepages_region(mapping, wbc, 0,
--							     start, &next);
--				if (ret == 0)
--					mapping->writeback_index =
--						next / PAGE_SIZE;
--			}
-+		ret = cifs_writepages_region(mapping, wbc, &start, LLONG_MAX);
-+		if (ret < 0)
-+			goto out;
-+
-+		if (wbc->nr_to_write <= 0) {
-+			mapping->writeback_index = start / PAGE_SIZE;
-+			goto out;
- 		}
-+
-+		start = 0;
-+		end = mapping->writeback_index * PAGE_SIZE;
-+		mapping->writeback_index = 0;
-+		ret = cifs_writepages_region(mapping, wbc, &start, end);
-+		if (ret == 0)
-+			mapping->writeback_index = start / PAGE_SIZE;
- 	} else if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX) {
--		ret = cifs_writepages_region(mapping, wbc, 0, LLONG_MAX, &next);
-+		start = 0;
-+		ret = cifs_writepages_region(mapping, wbc, &start, LLONG_MAX);
- 		if (wbc->nr_to_write > 0 && ret == 0)
--			mapping->writeback_index = next / PAGE_SIZE;
-+			mapping->writeback_index = start / PAGE_SIZE;
- 	} else {
--		ret = cifs_writepages_region(mapping, wbc,
--					     wbc->range_start, wbc->range_end, &next);
-+		start = wbc->range_start;
-+		ret = cifs_writepages_region(mapping, wbc, &start, wbc->range_end);
- 	}
- 
-+out:
- 	return ret;
- }
- 
+@@ -7291,6 +7345,7 @@ enum {
+ 	ALC280_FIXUP_HP_9480M,
+ 	ALC245_FIXUP_HP_X360_AMP,
+ 	ALC285_FIXUP_HP_SPECTRE_X360_EB1,
++	ALC285_FIXUP_HP_ENVY_X360,
+ 	ALC288_FIXUP_DELL_HEADSET_MODE,
+ 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC288_FIXUP_DELL_XPS_13,
+@@ -9266,6 +9321,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc285_fixup_hp_spectre_x360_eb1
+ 	},
++	[ALC285_FIXUP_HP_ENVY_X360] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_hp_envy_x360,
++		.chained = true,
++		.chain_id = ALC285_FIXUP_HP_GPIO_AMP_INIT,
++	},
+ 	[ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc285_fixup_ideapad_s740_coef,
+@@ -9848,6 +9909,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
+ 	SND_PCI_QUIRK(0x103c, 0x8537, "HP ProBook 440 G6", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
++	SND_PCI_QUIRK(0x103c, 0x85de, "HP Envy x360 13-ar0xxx", ALC285_FIXUP_HP_ENVY_X360),
+ 	SND_PCI_QUIRK(0x103c, 0x860f, "HP ZBook 15 G6", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x861f, "HP Elite Dragonfly G1", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+@@ -10541,6 +10603,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
+ 	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
+ 	{.id = ALC285_FIXUP_HP_SPECTRE_X360_EB1, .name = "alc285-hp-spectre-x360-eb1"},
++	{.id = ALC285_FIXUP_HP_ENVY_X360, .name = "alc285-hp-envy-x360"},
+ 	{.id = ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP, .name = "alc287-ideapad-bass-spk-amp"},
+ 	{.id = ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN, .name = "alc287-yoga9-bass-spk-pin"},
+ 	{.id = ALC623_FIXUP_LENOVO_THINKSTATION_P340, .name = "alc623-lenovo-thinkstation-p340"},
 -- 
 2.43.0
 
