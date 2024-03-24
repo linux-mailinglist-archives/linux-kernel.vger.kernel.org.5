@@ -1,647 +1,273 @@
-Return-Path: <linux-kernel+bounces-112614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2647B887BF8
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 08:45:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EB55887BFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 08:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 909EC1F21C33
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 07:45:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DB911C21490
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 07:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D8AC17BCE;
-	Sun, 24 Mar 2024 07:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CB715AC4;
+	Sun, 24 Mar 2024 07:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="RV/Bh+hj"
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2058.outbound.protection.outlook.com [40.107.14.58])
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="HCIQZKGe"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A46B17BB4;
-	Sun, 24 Mar 2024 07:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2AA01426E;
+	Sun, 24 Mar 2024 07:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711266256; cv=fail; b=j5TVyycjCvBJaPGcoGkbLiddf+K7aj8zTWccB0y0KEzsgGoJwZChyeTCOTj2MBABoZGp4DBHT5i+lOMQNlODwUZscuKj3F8kUjBoqefwfzGLFWVE0nn90MasS4iym9jLuYe6u4ncIRuQN7QWicUeYw9eOqAa8zvqDnmfB8T62Ts=
+	t=1711266834; cv=fail; b=YNDKIaxvaL1GYtL4Uy/EATc2i8ydaGxhfZ48x1dFpVuu841ChK4MW0MxNu/V7GzXP+c6rFO5VDyjHmlTPPeig/XQCGcCDXT97grFNFbTPGmd4pIISXBPXZWYd/Tb3yT8fz3cDPBejw6Spm89E9BJgSTj5K77SPQEAOv+cWbdpKg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711266256; c=relaxed/simple;
-	bh=/ONMWA5HwK7f2Lau5bEiPM0rZ6FI1rljIhuFBs9ogjY=;
-	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=bTxh5jP8TeTM1+lowHdACQkEppk3BfxPcXUrbDlmbKsRv4KV57/4Y74j5LlUU0yj/J2ZnH7Z/pATeaFlLJPk3dTczYFEEmOoVgfgK/JdQ44x5AoqCYDPAb498/tlWPtnAerP9O94cMwL4yz0sSNk19uEqYk4TQuVf8Z+DI5iBd8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=RV/Bh+hj; arc=fail smtp.client-ip=40.107.14.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+	s=arc-20240116; t=1711266834; c=relaxed/simple;
+	bh=z+hkFQEYyVRjugZ57866YPMpTMegtvG+elSab0R2q5s=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZK+R+wQsf8ikDWFTkgLdrRYOYhgD/zs+7ByXC93tnysw1BqmfEPTXbnq3N85iPU53amDF2rSZQk2fPsdQX25dA/WLHXVZ04MjYRN3Z9avLB0MTKt2nx0pFbHHOhOLj3RrmZJV9BRAtkb9OJ8i8qhrrVz9pHAsB7hZsB9OMtpUdw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=HCIQZKGe; arc=fail smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42O5hGQt018820;
+	Sun, 24 Mar 2024 00:53:22 -0700
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x1xkhbb49-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 24 Mar 2024 00:53:21 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L1Ckw7Xqv2+qII/3Q3YDmKyDHeT8NOF2k9mvaUEx4jtX1QKxdckqafOnw4KYYAHQ7xw3EVeFEimxqHjfrTdtS/w4Jny8n0ZhjV5RzV+A1LLOm8MzebrRHtjNnvTMwnPkWA4/VTPrKx+rvu0VP8Jpr27PLhypAlLda5+t7n2yqDhTCzmmT3JFmdlSBXt+23P4EKqdSUsSaDwU6VYr970eXr3yx2B/liCYX0WdlPwvhVJotwNc8gAx0A7bxkgRahirHZs8S15Jy347OmO6ONYRkxmTd48LRYPUkaD+bqEoKRjnLqxrSolLuqPMSDjqkAtAltNLDiPnM72rShhi1YbemQ==
+ b=WjXyLP3qh30nXRdksKfybpFHIf3odenzMQmW2unUWjucUwAbE68t85WbdQ5AUolxgyhIYqwKgaRNeA8J9v+gDZ/AXEQY7i4jfON4KfTwrzFtzClxkrNmLcIXrn/ZTNDwVKpHXDVVWVOiCeaWKMEh8aBXOYzYyka/qijvII0R9cZS1UB3sgs4g3lkkYH8hj3SuYRZDVBO5z3ZLyeDmU5/zlW25VUqOSr/Q8UC+DptisFxxyo9kohIoQ7hzZOp++JuFYgY31JDezC1eNROf9BTQnKNcHiBMfnTrViTZFBtFew1RSqbjxWR4eA+KfQUmPUq7RHxCqIWZ4LPY7VkQAxJPQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nSMzMeRyEuAdBLvPMQRnGts0Y+Aedb8psU6zwGhY10I=;
- b=Yv5PCV2uOARDiwkRFvc+xheK4EXKRWHf+cVogi9F7CXvM+U/Y6sLs1nNyLw3O6lhSLi9eFW78Dh3kU6X04BZwu9oRvaaaOF3yg9KpVDtnjTf+7SI/PSjDoArORucPIm2vG41IOS0Xd+zIl3SCnYuk32OkCzE97RRpJEh5FMDmS/jagkxBAveIPZAIpCHDYDRHDLZkDLFZiEBhVleq98BzE7hLUY83UqnOhWYKvaJxh1RGxEPe3eq9FpOBCgamYpB3cYRdYKySC1p8jMhqrwIOXNNNDQzT7jmsDokDfY3lJ4FSTN32k2hdAEg/4oLnU4xfH8To4pJEedCF8BswQT8ZA==
+ bh=hCv7GaHn+H0XwA2yI1nmyMJlpT0aevkqglNDfAkEBuE=;
+ b=FbnHbI0k4WksLp1x+xAYtu73mfU8zaKg0UvtyeWO9ogaGF51jrvjpu3+J46Q97gLpuSQfIDIZ9voXJ6VeuogBPx+YIeRm8n4J9IBfJfgogYlUhNwopJtbdsY/ZtjCCP+4zqzxSLGVqYXe8z0WYGwZeVX20olT28cPGsWRU5Niu/t7ZHgXUdZefefj7/V30+tJsMk+pj4CcAzmuyeJEeScoOnPAsTWeJrreegXljW7ZTrKHMv/D9CHbd+Vm5WEHbn1dZ5sA6R4CymEA+u+RyvA9Jx5skF3eOsLvY+v9BabckNO9rSKEm4WYqjoRGmChQNdP7gCyLojjSBTXTZNfKElA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nSMzMeRyEuAdBLvPMQRnGts0Y+Aedb8psU6zwGhY10I=;
- b=RV/Bh+hjXSq7jjdd6Z+OswBUWC+bxVOvW0qBLnj786h/QzUknczddX+99GbmfcquJopH46AkH42No9+C44Ka0otFkqThvY2Ien7Qyse0ZElkMOH2ge8rpQHJZmViSVqrBaOSTmq6FJP9BbWFJqPwmarzHAyfuHA5Pf+a0VRWmHg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by PAXPR04MB8573.eurprd04.prod.outlook.com (2603:10a6:102:214::5) with
+ bh=hCv7GaHn+H0XwA2yI1nmyMJlpT0aevkqglNDfAkEBuE=;
+ b=HCIQZKGedsVI7EWDKWd8lNtN/FfbZcDLRcfAqXA6alWQE2cWgwzOroPhcWukPIYWXjG93fcIJ15E05aJ64xJL0yJx4NVw/KgegFI4GNe2OBSBZg87cDgpv15LfN464W51aM7HYobsGvVLaZj/owkKCGrnBfJIfftit1ZgtrL5Bc=
+Received: from BL1PR18MB4248.namprd18.prod.outlook.com (2603:10b6:208:311::15)
+ by PH0PR18MB3863.namprd18.prod.outlook.com (2603:10b6:510:49::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Sun, 24 Mar
- 2024 07:44:11 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.037; Sun, 24 Mar 2024
- 07:44:11 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date: Sun, 24 Mar 2024 15:52:03 +0800
-Subject: [PATCH v5 4/4] clk: imx: add i.MX95 BLK CTL clk driver
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240324-imx95-blk-ctl-v5-4-7a706174078a@nxp.com>
-References: <20240324-imx95-blk-ctl-v5-0-7a706174078a@nxp.com>
-In-Reply-To: <20240324-imx95-blk-ctl-v5-0-7a706174078a@nxp.com>
-To: Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, Abel Vesa <abelvesa@kernel.org>
-Cc: linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711266729; l=13472;
- i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=l4DlMaNZtr5nsDFzShy8D+H0Cb79cmMx/CoZVs4+aCg=;
- b=wAeVNu0Lnlb7BIheYg8vwO33sGCHCkBBf34IbLSeyYmGomVsz1d0WsIcvExgncM1wVZMDWqkc
- DRD8HpwpEZKCBWADhE7ngD1KZb6PB7/wfCs4mViAg6Ye5LzcL/fNZhD
-X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
- pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
-X-ClientProxiedBy: SG2PR03CA0110.apcprd03.prod.outlook.com
- (2603:1096:4:91::14) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Sun, 24 Mar
+ 2024 07:53:17 +0000
+Received: from BL1PR18MB4248.namprd18.prod.outlook.com
+ ([fe80::1aec:98f1:125e:8fbb]) by BL1PR18MB4248.namprd18.prod.outlook.com
+ ([fe80::1aec:98f1:125e:8fbb%2]) with mapi id 15.20.7409.028; Sun, 24 Mar 2024
+ 07:53:17 +0000
+From: Elad Nachman <enachman@marvell.com>
+To: Andrew Lunn <andrew@lunn.ch>
+CC: Taras Chornyi <taras.chornyi@plvision.eu>,
+        "davem@davemloft.net"
+	<davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        "przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
+        "dkirjanov@suse.de" <dkirjanov@suse.de>,
+        "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to probe
+ twice
+Thread-Topic: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to probe
+ twice
+Thread-Index: AQHaeurjPmANQMrOHkqJdwxY/uh+37FBVLMAgAEesYCAACDkgIAD853Q
+Date: Sun, 24 Mar 2024 07:53:17 +0000
+Message-ID: 
+ <BL1PR18MB42488523A5E05291EA57D0AEDB372@BL1PR18MB4248.namprd18.prod.outlook.com>
+References: <20240320172008.2989693-1-enachman@marvell.com>
+ <4104387a-d7b5-4029-b822-060ef478c6e3@lunn.ch>
+ <BN9PR18MB42517F8E84C8C18078E45C37DB322@BN9PR18MB4251.namprd18.prod.outlook.com>
+ <89a01616-57c2-4338-b469-695bdc731dee@lunn.ch>
+In-Reply-To: <89a01616-57c2-4338-b469-695bdc731dee@lunn.ch>
+Accept-Language: he-IL, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR18MB4248:EE_|PH0PR18MB3863:EE_
+x-ms-office365-filtering-correlation-id: 6d393fc3-b650-49e4-dd3f-08dc4bd77781
+x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ il7TGruOxwGgerDQXdSTIf6LnTwlhnunUTYmBCjEWUxo+MWc6ELjxYqLPoVHIHGkBvht4Uh1EsfALUBCfql24NLyKNojHTmp4Bpbzm3+dbEnnwUsHVsmbnTbTrBrWgrERWl4dV3AK0+BCJgT32szP3KhED+LwvvGr8N+crKTsh7PVGoIGRr+8/TS0zuaX6esqd5DGIQlNfh8YRjwaDzfRQ5WkMjbJZ7//KHP+sO2Zg8Niqzpy8kzxSSSs3yLqafksk6KQkahZa1gV9FrMQjbxgCRTVks3nCepPWnu6941AJ/nMIk1BrYObJ7vqTFCkVNgTn3qd85s5mhsR90LcK4TPYonOiudb1QcZOfZ/2QohAsiHYirebR0CBa+oTmDSYT6R1AexpxxcGrFyljCENCmBjqP1x0Shi9BZP32z/IXXaWdMc+OWx0O1p34wrxQn1j0LrUhILTLUceYdMxB2WGAawMHgDeVXam2dRNfS3Z1/wFaKsKJtzg5huWMHlWqkYVxQ/84OGliYuiaK7tx7f2JEkT91O/6Bevsvb5EFGQJ2UKMliJ7U6ykgHY7H+Feo29J9JNZgfwl+FbFwddCvZT82TSFuoYjwapRYZc7pSuf5US4JJFADUImv65xvoc5fII6OPCyVjF8C6rR8lC/xNVnayDio0nWDInFFBTxE3RpQBxtq81EKp9tDs4cwdOUJeJPYHyKiWjmK1f+Wx0TGOyG0gby7EACDCIIROmqZ6Pc14=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR18MB4248.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?MyFEsX9PVgujvIFjoM+PcUGn2bNroaKfcMPdsqkW1WodI7OA8FJyyjBtC4Cg?=
+ =?us-ascii?Q?y/4uUOSBiEZL/KYAF9YupRVUIkVl4Q4apD6ngk78QlFonyQhCjvMn1pn+Ltm?=
+ =?us-ascii?Q?Mh3HKs0abzRVNHCSTFyeXwKwHgcpsxkM3U0Z4hHfjizKUItxZ+8d/rySGMjm?=
+ =?us-ascii?Q?zBAB9ILngDkLfX2qJT+9N0tmPa+6H9y4I/DGBrHbBCKYojBBg+0PBbfoG/DE?=
+ =?us-ascii?Q?07tGf8qCulq1ZbtWbS39Y7vl0GYodKc75Bao7AN17JzZqoYFGUKh1bJzCG52?=
+ =?us-ascii?Q?f+Kurue+5RMRr5KTlOJawqCYCQRK8XJArDHM6wYO8eFGO5aAdcbYJqJixOCX?=
+ =?us-ascii?Q?3NuaApa96tZQ0bIWpaKsEd3TUw2NqikthDAbC9sak9aYryWAArjR2bj0GcPq?=
+ =?us-ascii?Q?hMudzE7KPaUukrsinKiJA8HeY1TgC8rUhCG6gIeLl2M3Etxvh1yhuf7jRt/J?=
+ =?us-ascii?Q?hLtTwBwBls3NLBi5XoNi7hxLeQTyXrkdNbdQnfSxRrQh4tgUgGy5GAw5h5qn?=
+ =?us-ascii?Q?yxuY5HvoFKZWcjCA9Qr34OPBsGoV/JSBQiOj0be0PfRbqTWQizj/FGDAGuGX?=
+ =?us-ascii?Q?of2Y/ijOjNjMYDTnx/tyZGXBty5lbKQjMK1pittyppU+TeyvePcnqogY8ESY?=
+ =?us-ascii?Q?ze+bWT4caHDB+xnYt6XP1HAZW/ytlfjEivsByzywppGlzAwkeE3l/IOaLDG4?=
+ =?us-ascii?Q?MOnkguNRIUGhI6A56oqadg0LzL1vkRGHto1hcCyOSOuURzSOqKiCk9Ad2Inl?=
+ =?us-ascii?Q?6EVQin6U2c5u0X5JYWAl9zY6INE/UB4llPj3rRlH6FlhYqMdta0fvroSQfZv?=
+ =?us-ascii?Q?sLJYFo8xHWA7YlVqjWznApl5z+epW7RZTbGHhebwTUYNPCmBVHXwdYHSjMKt?=
+ =?us-ascii?Q?Hjxftpar6Q9FPDoRLEdIErnJ0qh/vGsN/cO58nRkdPCHxmt0DFX1Vc+yN7SL?=
+ =?us-ascii?Q?UChikzhvpjYtxg8MyjGuTMfKKdsVikYZUshOiuUOFg2KmJgPKV8pQFMPYej4?=
+ =?us-ascii?Q?Aice0AWOPSN1bHdBNTq10s6yK3Ft9tifE92Nvt1YU/0FPwmiuWA2PiSxc2Ad?=
+ =?us-ascii?Q?HiR1Tf5d0VeQmB8MXiZX/qbyKRy2EQ8nj6Sc/EBI9PL3ebXv590E3Ugqd3EV?=
+ =?us-ascii?Q?HrjnS/9Vr+hKjaOKduR0WGdeDKEJoB6uOujb/AkFV+IqTHE6lBVivDsd3IR+?=
+ =?us-ascii?Q?wty8ic3DPmBeyEqwbJgFnsupWfjdN4lOFdHDO6jbWiudXp40Om1XPJ6VFP18?=
+ =?us-ascii?Q?1rdU4NN95gZASmvnbNlV2Om/EvSe8laIkJSm/8qE9TGPBDkwINcEZqo+aDTJ?=
+ =?us-ascii?Q?bGGGze0Z+YsF3pz041nT9J6h+8jKSxtXWwBPG/qyKnUh4VO4cZCpvee238lY?=
+ =?us-ascii?Q?d5cHlQBVgcLGA2CM4Tpc/MiBh7gYaCygg3J5rZywe3PJ7CWa+EZtWGLalIlW?=
+ =?us-ascii?Q?pCoEcA9Cbih+0aaQmL/lM0orktQ5C5vSijpBpAZUTSsQXHCJ7ri7/3l/2DTq?=
+ =?us-ascii?Q?NTfBo1RaZ68v+gIxEV4jYKCsv09OEPCtgl/6u5OP4LsAqRJJMiaTsgOb8YSu?=
+ =?us-ascii?Q?E38NltSmdAXpKAamHdHUKugpidxUa2ASLoWOhDrF?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|PAXPR04MB8573:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3be63ba3-5698-4cde-89d5-08dc4bd631bc
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	MG74kizBpw8GKuQaCk4nxH8lzmLoKs/+e4JKROPGiSnk1Z1QLnxvkAEyzPb7tkUCQGG2Qjh93gP3WLEQMlJROm41PpJ4SuNjShBl4ipVJY3bmvjkNewoDaEF7Xw0TqG29U//IfcSid6zdX3EMPzirQiY/jDszp/dbruUv67eAlUPkwGf9W4wA6+vpB8HZEeDFUNCliYoSDcxw5qLRy/G7PkxhY4IFALTe3RW1HkppeaWzrWfxq3OXNXy8PaaYCmakEh5ozX3wAwtV/zBDWvYoJ3XuT8pTOMZHxtbwMP29E/dVXdsz5GetU11BbAVfU+KJyZXUZ9v3Qbt9TPZPFPsW7AGCTzpr4BrBt0yS4584maJE/nV43NBLv7S7ih2Bo6+fg3Kn4KTkS8TRifn/OdI5/RJsYCVO7yjcjQS2x/9eV032DXyDpDCdHhNHyFxBpQLceXBrQn8cexOwCvU79g9yKgYDpVHqGBzUZmyradC335Y5LDSIYXQ9gmbQZ2qgjFjSuLvEfBUIWNBwWFuuW/z0qZrtdwJWysMvZS2PuGf1mbNgQeIrBZnq9UPBQTU8TIWRh7MZOdhkgNnJFZv6JPt6Y8G6PseAlQYYUdxloh8MYAB6MSs0lIxWA4tWctT6FSwvWQ+jY5cUE3VaL/sIJU58eoCAgjWU0VWtHyZZNqqFykhbX6ULlsPoM5NXP/BSLIRKWAnyqlvPJ6F+HBYDqnJV9+E6g4/MVKL5Vpw0MlvOT0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(52116005)(366007)(921011)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YVFOVVhpU0s5VCthV1ViQi90bXBYUHRkemJyVGYrcE5hUUJnbGxSaTJDVmM1?=
- =?utf-8?B?YmZNMytVUUl5RjNIUERBNTFyK0t0anlTaTQvYUpPM2Jsa1l3dTJ5TFFPcVdl?=
- =?utf-8?B?QVZZd1ZNNG9VcHNnSitlS3RqSlVtaXA4Q09Sb0wyR2x6eWhJeS9vWjBvMmox?=
- =?utf-8?B?T3doOXJiMjlGL3RNdnAyZGx5ZXB4UWIyeDhtd3VHTFpUcEUzbElsZDl4ZUE4?=
- =?utf-8?B?TEJUR0lqY0orOExqRUtIMmVZZC82RlQzZ2dkYnRQRXpoV2gzSDdOdThHNG1u?=
- =?utf-8?B?ZVI3N1I5L2wxOFNTM21zcVlabEwzeHNBTGx6ZWtJWmVwT05jbnNxRVVpTkFu?=
- =?utf-8?B?NDYwWXhBNXQ3VDJqWW1rOWo3UkpUTVdXL09aUWdjMkFyV3gwRlJFYXRYbXg4?=
- =?utf-8?B?bGlYWTJKTFF1TVpuendCSk1rR0hwTVUwZUxUNUkwZjdWRVU5emRUdmUyVURZ?=
- =?utf-8?B?V3NQUSt6TmpNZklybG53SWVDMTlFTjVJOEJoaWFtMUhyalNkTm1yS1hIRXZy?=
- =?utf-8?B?Y2ZqVDF2cC9Vdkk4TVE4TkN2TjN5V21HUXNlaEsvdCtGekNLeHZzV0VzOVg1?=
- =?utf-8?B?d3M0VUs3ZTltb3YxcG5vMEQrVFg3Y2xWaEpXT0xTNHZRemtQbVRNcktOa2l1?=
- =?utf-8?B?eERLRndsWGhSM1IxRjBqZk1qL2swVE1PY1VnYk5FSlNnV3F6S1RXcG9QZ29B?=
- =?utf-8?B?emt6bkczVndsejFaUnVRNnI1ellOaXhkNjJyTEhLNkhxZ2JZZm4xdFNiOTVt?=
- =?utf-8?B?YWNvQ2dWRVF0Qlo0SzdJaml5NEpidHQ2TWJMQ1l1aGFkeUdra2tLYXFza3NB?=
- =?utf-8?B?RExwM1E4dHZnM0VwSS9RVTNKUk0reTBjbXBMQVBoWGgvaVFMWi9OcnE3RTJP?=
- =?utf-8?B?Tkxwa0pYWkRpWGw2Szg3a2RiOFF4eitCREswVWM4V0htZWxIdFV5TWRJd3RM?=
- =?utf-8?B?NExsaThiNFI1MER1UVBtdTdsa1JpbVhlTzgzTjhaUmJDWFh4WGF2RHVGcVhP?=
- =?utf-8?B?L2xPN2YvYXgrTzdaN0Jyckt3eCtiUmFQY0FiVFFCSU5jeXAvSEh3ZnJ6THVq?=
- =?utf-8?B?d2N1eWRCcmxGS2lQQUtCNGo4L1AySHVpNWoxNmI3bWUzN0VSWUNQL0dPSnk0?=
- =?utf-8?B?aDZZWE9rK3FLbFQ0V0dhVFVRbEk2cUYrMlNUdXd2RDh2blp3dXFqMUhEWits?=
- =?utf-8?B?Mk1aYWR1cFUzaDYxWmQ2azBiRjhPWU5mTkFmUXF0ZkthR2MreUo2YVgyb2FL?=
- =?utf-8?B?YTBydjlORFJWdFdOWE9yRWlIbytwRGVFWG9vWmlxdlc2L01zTlNjY2pVaG1H?=
- =?utf-8?B?dUxHV2V4R1pQVGJpRXZUVjNRcGtIdm8rdGgrcVh4TVFOekl5eHJObkZURTAv?=
- =?utf-8?B?aDhwQlB4U213NWFHeFUxMDg0TS9rcGIyK3F4eXJkaUt5K1RvUEw2dnFVcThw?=
- =?utf-8?B?Vi9kcXhXWUFCL1pCZElBdVFuOC80TFVVaWR5eEx4TjdPV1FweWs3Rjhmdmpa?=
- =?utf-8?B?Q1pVQmlWaEZhWWhxTDVOOXp3aHdhY3pTOVVla0lFcisxRDBveG1IRkhYYmF6?=
- =?utf-8?B?VXdJWDNRblgrbERscERnN1dQd0I2QmhnZTBVeHlrVE50RnFQeko4dm9wbzY3?=
- =?utf-8?B?bUlCeGpyOFluL1ZLUW40QmJIVjZzN0E2bm1oWk5ONFRKZlpSOTFaT1pCMFhh?=
- =?utf-8?B?WElQSlVFZS9aZjY5dVd6cWs2V0VvVlRLeWcyWGJyQWFwVEh6YnZBeWd0L2xU?=
- =?utf-8?B?SFR2c25ocnpQOUlJN2tObXRPY1lEdU4wNDZsOGxiN1hJS1BuQXJ3bUJ0cnJ1?=
- =?utf-8?B?N3dBWHhadCszWU1UZXpicmRDTFBNdHlhOG84MmQxc3JpK1NJUnpNQS9GTmpQ?=
- =?utf-8?B?SmMvSTluYlVtakhDZG1tYmg0RzRQUTNRek1PMmJBSVY0NzNhT24zTjJuYldq?=
- =?utf-8?B?M2pvZWZ3SzlLNmRhMU1GVHFJd3RHaWJyV3dwZk5tN1NqQ240SExjdmhEbmxK?=
- =?utf-8?B?S0VFc0JPdXcyc0p3L3QvZTFvTFhZN21nb3l2b3JEVytDYlVFempPOWNQd3lY?=
- =?utf-8?B?aWdGbGFPWEEwenYvR1piQWhUZ1NFV25kNm1IMng5d2lKdlhNSndja0Z0d2Zp?=
- =?utf-8?Q?v2ImxwRVfCqX4VNCFsRBOUQlb?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3be63ba3-5698-4cde-89d5-08dc4bd631bc
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-OriginatorOrg: marvell.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2024 07:44:11.0207
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR18MB4248.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d393fc3-b650-49e4-dd3f-08dc4bd77781
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2024 07:53:17.4725
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8n0DzLUIupEAnolOywkEeU1YWoj5B6FcfpFheG+X8ueWk96kgombGmfzUrczn3i9c5IfHGo5C1TK8rG8b35QiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8573
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xxG807mSScFNsqRyODXW4PeHnLVFubZJGPysRdOHD/mCwKL1dGJkLaglfjjBR/c3KBukQ4NQ3m8moTJMVKqwqQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR18MB3863
+X-Proofpoint-ORIG-GUID: 7KvjaJp8lFiz-9KXu6p_CBUNnnrv-DrO
+X-Proofpoint-GUID: 7KvjaJp8lFiz-9KXu6p_CBUNnnrv-DrO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-24_04,2024-03-21_02,2023-05-22_02
 
-From: Peng Fan <peng.fan@nxp.com>
 
-i.MX95 has BLK CTL modules in various MIXes, the BLK CTL modules
-support clock features such as mux/gate/div. This patch
-is to add the clock feature of BLK CTL modules
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/clk/imx/Kconfig             |   7 +
- drivers/clk/imx/Makefile            |   1 +
- drivers/clk/imx/clk-imx95-blk-ctl.c | 438 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 446 insertions(+)
+> -----Original Message-----
+> From: Andrew Lunn <andrew@lunn.ch>
+> Sent: Thursday, March 21, 2024 9:22 PM
+> To: Elad Nachman <enachman@marvell.com>
+> Cc: Taras Chornyi <taras.chornyi@plvision.eu>; davem@davemloft.net;
+> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
+> kory.maincent@bootlin.com; thomas.petazzoni@bootlin.com;
+> miquel.raynal@bootlin.com; przemyslaw.kitszel@intel.com;
+> dkirjanov@suse.de; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [EXTERNAL] Re: [PATCH v2 0/5] Fix prestera driver fail to pr=
+obe
+> twice
+>=20
+> > Originally, the pain point for Kory was the rmmod + insmod re-probing
+> > failure, Which is only fixed by the first two commits, so I see little
+> > point in submitting 3-5 alone, Without fixing Kory's problem.
+>=20
+> I thought Kory's problem was actually EPROBE_DEFER? The resources needed
+> for the PoE are not available, so probing the switch needs to happen agai=
+n
+> later, when PoE can get the resources it needs.
 
-diff --git a/drivers/clk/imx/Kconfig b/drivers/clk/imx/Kconfig
-index db3bca5f4ec9..6da0fba68225 100644
---- a/drivers/clk/imx/Kconfig
-+++ b/drivers/clk/imx/Kconfig
-@@ -114,6 +114,13 @@ config CLK_IMX93
- 	help
- 	    Build the driver for i.MX93 CCM Clock Driver
- 
-+config CLK_IMX95_BLK_CTL
-+	tristate "IMX95 Clock Driver for BLK CTL"
-+	depends on ARCH_MXC || COMPILE_TEST
-+	select MXC_CLK
-+	help
-+	    Build the clock driver for i.MX95 BLK CTL
-+
- config CLK_IMXRT1050
- 	tristate "IMXRT1050 CCM Clock Driver"
- 	depends on SOC_IMXRT || COMPILE_TEST
-diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
-index d4b8e10b1970..03f2b2a1ab63 100644
---- a/drivers/clk/imx/Makefile
-+++ b/drivers/clk/imx/Makefile
-@@ -31,6 +31,7 @@ obj-$(CONFIG_CLK_IMX8MP) += clk-imx8mp.o clk-imx8mp-audiomix.o
- obj-$(CONFIG_CLK_IMX8MQ) += clk-imx8mq.o
- 
- obj-$(CONFIG_CLK_IMX93) += clk-imx93.o
-+obj-$(CONFIG_CLK_IMX95_BLK_CTL) += clk-imx95-blk-ctl.o
- 
- obj-$(CONFIG_MXC_CLK_SCU) += clk-imx-scu.o clk-imx-lpcg-scu.o clk-imx-acm.o
- clk-imx-scu-$(CONFIG_CLK_IMX8QXP) += clk-scu.o clk-imx8qxp.o \
-diff --git a/drivers/clk/imx/clk-imx95-blk-ctl.c b/drivers/clk/imx/clk-imx95-blk-ctl.c
-new file mode 100644
-index 000000000000..afda463e28b1
---- /dev/null
-+++ b/drivers/clk/imx/clk-imx95-blk-ctl.c
-@@ -0,0 +1,438 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2024 NXP
-+ */
-+
-+#include <dt-bindings/clock/nxp,imx95-clock.h>
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/debugfs.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/types.h>
-+
-+enum {
-+	CLK_GATE,
-+	CLK_DIVIDER,
-+	CLK_MUX,
-+};
-+
-+struct imx95_blk_ctl {
-+	struct device *dev;
-+	spinlock_t lock;
-+	struct clk *clk_apb;
-+
-+	void __iomem *base;
-+	/* clock gate register */
-+	u32 clk_reg_restore;
-+};
-+
-+struct imx95_blk_ctl_clk_dev_data {
-+	const char *name;
-+	const char * const *parent_names;
-+	u32 num_parents;
-+	u32 reg;
-+	u32 bit_idx;
-+	u32 bit_width;
-+	u32 clk_type;
-+	u32 flags;
-+	u32 flags2;
-+	u32 type;
-+};
-+
-+struct imx95_blk_ctl_dev_data {
-+	const struct imx95_blk_ctl_clk_dev_data *clk_dev_data;
-+	u32 num_clks;
-+	bool rpm_enabled;
-+	u32 clk_reg_offset;
-+};
-+
-+static const struct imx95_blk_ctl_clk_dev_data vpublk_clk_dev_data[] = {
-+	[IMX95_CLK_VPUBLK_WAVE] = {
-+		.name = "vpublk_wave_vpu",
-+		.parent_names = (const char *[]){ "vpu", },
-+		.num_parents = 1,
-+		.reg = 8,
-+		.bit_idx = 0,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_VPUBLK_JPEG_ENC] = {
-+		.name = "vpublk_jpeg_enc",
-+		.parent_names = (const char *[]){ "vpujpeg", },
-+		.num_parents = 1,
-+		.reg = 8,
-+		.bit_idx = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_VPUBLK_JPEG_DEC] = {
-+		.name = "vpublk_jpeg_dec",
-+		.parent_names = (const char *[]){ "vpujpeg", },
-+		.num_parents = 1,
-+		.reg = 8,
-+		.bit_idx = 2,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	}
-+};
-+
-+static const struct imx95_blk_ctl_dev_data vpublk_dev_data = {
-+	.num_clks = IMX95_CLK_VPUBLK_END,
-+	.clk_dev_data = vpublk_clk_dev_data,
-+	.rpm_enabled = true,
-+	.clk_reg_offset = 8,
-+};
-+
-+static const struct imx95_blk_ctl_clk_dev_data camblk_clk_dev_data[] = {
-+	[IMX95_CLK_CAMBLK_CSI2_FOR0] = {
-+		.name = "camblk_csi2_for0",
-+		.parent_names = (const char *[]){ "camisi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 0,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_CAMBLK_CSI2_FOR1] = {
-+		.name = "camblk_csi2_for1",
-+		.parent_names = (const char *[]){ "camisi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_CAMBLK_ISP_AXI] = {
-+		.name = "camblk_isp_axi",
-+		.parent_names = (const char *[]){ "camaxi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 4,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_CAMBLK_ISP_PIXEL] = {
-+		.name = "camblk_isp_pixel",
-+		.parent_names = (const char *[]){ "camisi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 5,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_CAMBLK_ISP] = {
-+		.name = "camblk_isp",
-+		.parent_names = (const char *[]){ "camisi", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 6,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	}
-+};
-+
-+static const struct imx95_blk_ctl_dev_data camblk_dev_data = {
-+	.num_clks = IMX95_CLK_CAMBLK_END,
-+	.clk_dev_data = camblk_clk_dev_data,
-+	.clk_reg_offset = 0,
-+};
-+
-+static const struct imx95_blk_ctl_clk_dev_data lvds_clk_dev_data[] = {
-+	[IMX95_CLK_DISPMIX_LVDS_PHY_DIV] = {
-+		.name = "ldb_phy_div",
-+		.parent_names = (const char *[]){ "ldbpll", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 0,
-+		.bit_width = 1,
-+		.type = CLK_DIVIDER,
-+		.flags2 = CLK_DIVIDER_POWER_OF_TWO,
-+	},
-+	[IMX95_CLK_DISPMIX_LVDS_CH0_GATE] = {
-+		.name = "lvds_ch0_gate",
-+		.parent_names = (const char *[]){ "ldb_phy_div", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 1,
-+		.bit_width = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_DISPMIX_LVDS_CH1_GATE] = {
-+		.name = "lvds_ch1_gate",
-+		.parent_names = (const char *[]){ "ldb_phy_div", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 2,
-+		.bit_width = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_DISPMIX_PIX_DI0_GATE] = {
-+		.name = "lvds_di0_gate",
-+		.parent_names = (const char *[]){ "ldb_pll_div7", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 3,
-+		.bit_width = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+	[IMX95_CLK_DISPMIX_PIX_DI1_GATE] = {
-+		.name = "lvds_di1_gate",
-+		.parent_names = (const char *[]){ "ldb_pll_div7", },
-+		.num_parents = 1,
-+		.reg = 0,
-+		.bit_idx = 4,
-+		.bit_width = 1,
-+		.type = CLK_GATE,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.flags2 = CLK_GATE_SET_TO_DISABLE,
-+	},
-+};
-+
-+static const struct imx95_blk_ctl_dev_data lvds_csr_dev_data = {
-+	.num_clks = IMX95_CLK_DISPMIX_LVDS_CSR_END,
-+	.clk_dev_data = lvds_clk_dev_data,
-+	.clk_reg_offset = 0,
-+};
-+
-+static const struct imx95_blk_ctl_clk_dev_data dispmix_csr_clk_dev_data[] = {
-+	[IMX95_CLK_DISPMIX_ENG0_SEL] = {
-+		.name = "disp_engine0_sel",
-+		.parent_names = (const char *[]){"videopll1", "dsi_pll", "ldb_pll_div7", },
-+		.num_parents = 4,
-+		.reg = 0,
-+		.bit_idx = 0,
-+		.bit_width = 2,
-+		.type = CLK_MUX,
-+		.flags = CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
-+	},
-+	[IMX95_CLK_DISPMIX_ENG1_SEL] = {
-+		.name = "disp_engine1_sel",
-+		.parent_names = (const char *[]){"videopll1", "dsi_pll", "ldb_pll_div7", },
-+		.num_parents = 4,
-+		.reg = 0,
-+		.bit_idx = 2,
-+		.bit_width = 2,
-+		.type = CLK_MUX,
-+		.flags = CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
-+	}
-+};
-+
-+static const struct imx95_blk_ctl_dev_data dispmix_csr_dev_data = {
-+	.num_clks = IMX95_CLK_DISPMIX_END,
-+	.clk_dev_data = dispmix_csr_clk_dev_data,
-+	.clk_reg_offset = 0,
-+};
-+
-+static int imx95_bc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	const struct imx95_blk_ctl_dev_data *bc_data;
-+	struct imx95_blk_ctl *bc;
-+	struct clk_hw_onecell_data *clk_hw_data;
-+	struct clk_hw **hws;
-+	void __iomem *base;
-+	int i, ret;
-+
-+	bc = devm_kzalloc(dev, sizeof(*bc), GFP_KERNEL);
-+	if (!bc)
-+		return -ENOMEM;
-+	bc->dev = dev;
-+	dev_set_drvdata(&pdev->dev, bc);
-+
-+	spin_lock_init(&bc->lock);
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	bc->base = base;
-+	bc->clk_apb = devm_clk_get(dev, NULL);
-+	if (IS_ERR(bc->clk_apb))
-+		return dev_err_probe(dev, PTR_ERR(bc->clk_apb), "failed to get APB clock\n");
-+
-+	ret = clk_prepare_enable(bc->clk_apb);
-+	if (ret) {
-+		dev_err(dev, "failed to enable apb clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	bc_data = of_device_get_match_data(dev);
-+	if (!bc_data)
-+		return devm_of_platform_populate(dev);
-+
-+	clk_hw_data = devm_kzalloc(dev, struct_size(clk_hw_data, hws, bc_data->num_clks),
-+				   GFP_KERNEL);
-+	if (!clk_hw_data)
-+		return -ENOMEM;
-+
-+	if (bc_data->rpm_enabled)
-+		pm_runtime_enable(&pdev->dev);
-+
-+	clk_hw_data->num = bc_data->num_clks;
-+	hws = clk_hw_data->hws;
-+
-+	for (i = 0; i < bc_data->num_clks; i++) {
-+		const struct imx95_blk_ctl_clk_dev_data *data = &bc_data->clk_dev_data[i];
-+		void __iomem *reg = base + data->reg;
-+
-+		if (data->type == CLK_MUX) {
-+			hws[i] = clk_hw_register_mux(dev, data->name, data->parent_names,
-+						     data->num_parents, data->flags, reg,
-+						     data->bit_idx, data->bit_width,
-+						     data->flags2, &bc->lock);
-+		} else if (data->type == CLK_DIVIDER) {
-+			hws[i] = clk_hw_register_divider(dev, data->name, data->parent_names[0],
-+							 data->flags, reg, data->bit_idx,
-+							 data->bit_width, data->flags2, &bc->lock);
-+		} else {
-+			hws[i] = clk_hw_register_gate(dev, data->name, data->parent_names[0],
-+						      data->flags, reg, data->bit_idx,
-+						      data->flags2, &bc->lock);
-+		}
-+		if (IS_ERR(hws[i])) {
-+			ret = PTR_ERR(hws[i]);
-+			dev_err(dev, "failed to register: %s:%d\n", data->name, ret);
-+			goto cleanup;
-+		}
-+	}
-+
-+	ret = of_clk_add_hw_provider(dev->of_node, of_clk_hw_onecell_get, clk_hw_data);
-+	if (ret)
-+		goto cleanup;
-+
-+	ret = devm_of_platform_populate(dev);
-+	if (ret) {
-+		of_clk_del_provider(dev->of_node);
-+		goto cleanup;
-+	}
-+
-+	if (pm_runtime_enabled(bc->dev))
-+		clk_disable_unprepare(bc->clk_apb);
-+
-+	return 0;
-+
-+cleanup:
-+	for (i = 0; i < bc_data->num_clks; i++) {
-+		if (IS_ERR_OR_NULL(hws[i]))
-+			continue;
-+		clk_hw_unregister(hws[i]);
-+	}
-+
-+	if (bc_data->rpm_enabled)
-+		pm_runtime_disable(&pdev->dev);
-+
-+	return ret;
-+}
-+
-+#ifdef CONFIG_PM
-+static int imx95_bc_runtime_suspend(struct device *dev)
-+{
-+	struct imx95_blk_ctl *bc = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(bc->clk_apb);
-+	return 0;
-+}
-+
-+static int imx95_bc_runtime_resume(struct device *dev)
-+{
-+	struct imx95_blk_ctl *bc = dev_get_drvdata(dev);
-+
-+	return clk_prepare_enable(bc->clk_apb);
-+}
-+#endif
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int imx95_bc_suspend(struct device *dev)
-+{
-+	struct imx95_blk_ctl *bc = dev_get_drvdata(dev);
-+	const struct imx95_blk_ctl_dev_data *bc_data;
-+	int ret;
-+
-+	bc_data = of_device_get_match_data(dev);
-+	if (!bc_data)
-+		return 0;
-+
-+	if (bc_data->rpm_enabled) {
-+		ret = pm_runtime_get_sync(bc->dev);
-+		if (ret < 0) {
-+			pm_runtime_put_noidle(bc->dev);
-+			return ret;
-+		}
-+	}
-+
-+	bc->clk_reg_restore = readl(bc->base + bc_data->clk_reg_offset);
-+
-+	return 0;
-+}
-+
-+static int imx95_bc_resume(struct device *dev)
-+{
-+	struct imx95_blk_ctl *bc = dev_get_drvdata(dev);
-+	const struct imx95_blk_ctl_dev_data *bc_data;
-+
-+	bc_data = of_device_get_match_data(dev);
-+	if (!bc_data)
-+		return 0;
-+
-+	writel(bc->clk_reg_restore, bc->base + bc_data->clk_reg_offset);
-+
-+	if (bc_data->rpm_enabled)
-+		pm_runtime_put(bc->dev);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops imx95_bc_pm_ops = {
-+	SET_RUNTIME_PM_OPS(imx95_bc_runtime_suspend, imx95_bc_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(imx95_bc_suspend, imx95_bc_resume)
-+};
-+
-+static const struct of_device_id imx95_bc_of_match[] = {
-+	{ .compatible = "nxp,imx95-camera-csr", .data = &camblk_dev_data },
-+	{ .compatible = "nxp,imx95-display-master-csr", },
-+	{ .compatible = "nxp,imx95-lvds-csr", .data = &lvds_csr_dev_data },
-+	{ .compatible = "nxp,imx95-display-csr", .data = &dispmix_csr_dev_data },
-+	{ .compatible = "nxp,imx95-vpu-csr", .data = &vpublk_dev_data },
-+	{ /* Sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, imx95_bc_of_match);
-+
-+static struct platform_driver imx95_bc_driver = {
-+	.probe = imx95_bc_probe,
-+	.driver = {
-+		.name = "imx95-blk-ctl",
-+		.of_match_table = of_match_ptr(imx95_bc_of_match),
-+		.pm = &imx95_bc_pm_ops,
-+	},
-+};
-+module_platform_driver(imx95_bc_driver);
-+
-+MODULE_DESCRIPTION("NXP i.MX95 blk ctl driver");
-+MODULE_AUTHOR("Peng Fan <peng.fan@nxp.com>");
-+MODULE_LICENSE("GPL");
+No, the PoE is the general high level application where he noted the proble=
+m.
+There is no PoE code nor special PoE resources in the Prestera driver.
+The problem was caused because the module exit was lacking the so called
+"switch HW reset" API call which would cause the firmware to exit to the fi=
+rmware
+loader on the firmware CPU, and move to the state in the state machine when
+it can receive new firmware from the host CPU (running the Prestera switchD=
+ev
+driver).
 
--- 
-2.37.1
+>=20
+> But if that is going to take 30 seconds, i'm not sure we can call EPROBE_=
+DEFER
+> solved.
+>=20
+> The later patches are pretty simple, don't need discussion, so could be
+> merged. However, i think we need to explore different possible solutions =
+for
+> firmware {re}loading.
+>=20
+> > The problem is not with the hardware, but with the existing firmware
+> > code on the Firmware cpu, most probably secure-boot protected, which
+> > lacks the ABIs to report to The kernel what is loaded, what version, wh=
+at
+> state, etc.
+>=20
+> Can you at least tell if it is running firmware?
+
+There is no existing API/ABI for that.
+
+>=20
+> Can you explain the boot in a bit more detail. Are you saying it could be
+> running an old firmware when the driver first loads? So you need to hit i=
+t with
+
+Exactly.
+
+> a reset in order to load the firmware for /lib/firmware, which might be n=
+ewer
+> than what it is already running?
+
+Right. And there is also the configuration. There is no telling what kind o=
+f
+Configuration the existing firmware is running. Just using the existing fir=
+mware
+Will lead to the situation where Linux kernel side will report certain conf=
+iguration
+(via ip link / ip addr / tc , etc.) but the firmware configuration is compl=
+etely different.
+Loading the firmware again will configure the switch to the default setting=
+, making
+Sure that the Linux kernel switchDev side is synchronized with the firmware=
+ side
+And the actual switch configuration.
+Unfortunately, there is currently no API/ABI for warm-boot synchronization =
+from
+The firmware side to the Kernel switchdev side.
+
+>=20
+> That would imply the device has FLASH and has a copy of firmware in it? A=
+nd
+
+Not of the firmware, the flash holds the firmware loader code.
+This is a limited functionality code which has only the minimal API/ABI to =
+load
+The next firmware.
+
+> if that is true, i think that also implies you have no way to upgrade the=
+ image
+> in FLASH? Otherwise you would implement "devlink flash" to allow it to be
+> upgraded. You then would not need to load the firmware on driver probe...=
+.
+
+Right. This is a limitation of the design made. There is no option to upgra=
+de the
+Firmware loader binary on the flash, and many boards have it in secure boot=
+,
+Which means it cannot be upgraded without bricking the firmware=20
+CPU loader binary...
+
+>=20
+> 	Andrew
+>=20
+>=20
 
 
