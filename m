@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D2E889243
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:01:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDBC5889543
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F26E2B25D26
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:47:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DC661F32EB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFEA1BA680;
-	Mon, 25 Mar 2024 00:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F42282A76;
+	Mon, 25 Mar 2024 03:29:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XQ5LT+6O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="etQ7rCGT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82D11774E1;
-	Sun, 24 Mar 2024 23:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDDA1774DC;
+	Sun, 24 Mar 2024 23:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323482; cv=none; b=uAKkKMorPYuGEBlcqBBe4oOlXuThUUDdlLcDiU4DGTqbTCCD/hyo2q1J5sngm8EVuaQv7aE+v14YfbufcyqWnVR23oecxL37wpgUjr2JQ4IsSeaPdBpqhA88o0qOB8QsfssGeutlyYFKpbqd1uprx8b6PYakeeA2HaaKlTwSGUk=
+	t=1711323482; cv=none; b=QRhhAiIQLd+DBHD9MtlSlZbMJU9B7lLIsAy2DvhnFMi6pBdo2Y3L19xfQ8B+cZCzFCJOR0rLvdAfZgJvIH1oIjBa6mCkToD2+R4Ypc8bGQYHAsSvQEkt1TAsr9v7GN2BGir+CI6MdMJqUoH6yFQ8cp8eXFB8cupHQZVE3FLFjkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323482; c=relaxed/simple;
-	bh=AMhjcr4iHcg/uPkM3R5hsZYfMAcH9jNbS1n+IIKneoc=;
+	bh=J5+ydmUTB6GHW5Flj4avryRijwC5zl0W+aYGABAuqX8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eVGWIgvRJwbV1sfwXGhzvO/a79q/GJK7VR28/ye8vD6yE+n6g1I8jkyc1HOf/gFOsa81fA9viv0L6utmh7Pp/GHW6gbAyCzIB9ei72txHWDJr0Jfue0ksvFgsMQ9CuxK7+DzZlvdDC0oBWUAzY4UydORMxwvcfVOHFanBxGSQIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XQ5LT+6O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85ABC43390;
-	Sun, 24 Mar 2024 23:38:00 +0000 (UTC)
+	 MIME-Version; b=PgJI91quu4wW3SLzgNHa64jxsqGhpYm0Gi98J/0cipWuAxK/762FiRwnflJaN+o+PvIPYQAuUK1wW0eUBi///+fo6xl5lwvdiYgGWqje43bzpY8wzYF/UHikiJrj2mkg/fYYmaG9JQlYsCIj1h3rHtROzQVFZcn73V/NaKVYwKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=etQ7rCGT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5BF7C43394;
+	Sun, 24 Mar 2024 23:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323481;
-	bh=AMhjcr4iHcg/uPkM3R5hsZYfMAcH9jNbS1n+IIKneoc=;
+	s=k20201202; t=1711323482;
+	bh=J5+ydmUTB6GHW5Flj4avryRijwC5zl0W+aYGABAuqX8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XQ5LT+6OVBHYn2+3sR8fwiUkj3d+quS/yVUVQjnj4nUTXHEa8c4chuDuBGHR2Ff/e
-	 TP6rhF8Hdk9BBrkMKe1Gi0+trvnEDnmR7RiXJim4P5Gu5gevgY2SJAqNk4h62vtnEv
-	 0AO5tOhMP9xSMnWyJzcUePh68XNwtVUEacJM5gJq80f1GGf+9FY0mwBbLnebMErcvt
-	 t9ScEq/WAQprCAJkLmMgwdAMnXXXB9PXl/nnIP7L24bIcPnS+Lut70NbEULfDPhosb
-	 y8ADSFyiy8lWjYulHT9SV/CDFuUg4IoYvgNAcYvguBIV1+u6q0nrfN3wAmqWwo5dBg
-	 pAQf0v3JDCWVQ==
+	b=etQ7rCGTULQhHPdfo1fZcQ7/S2J6TGGeXyTxPEGGQEyC6xcukaXaga0G+gO9LvbLH
+	 ELvqCmzOUNR7X/LOcnlH6f6B/H0O2dEZ/7PmpHDYxOV7PEsXT3CX/xidMgFuLvfKn+
+	 gAvTayKe84diRQUjCyeBP3H4kG7nXMpAlQs0vhF/RKvmH2WXcXX/l6l84PI+rQUegT
+	 WsObAzhtmBKQHnq5YLnVb/URI/TsaoSeip4QG3j1eNaI43g/bZWLj2jcdEbKiqTjzk
+	 F2/nXprqXpEE+ME6L2sKY32A3osCV6b7NBW5NRQCKgxG1QIvISewVQO0yqq4S0pGJ5
+	 pO/PCYTN09rYg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhipeng Lu <alexious@zju.edu.cn>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
+Cc: Chen-Yu Tsai <wenst@chromium.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 186/317] media: edia: dvbdev: fix a use-after-free
-Date: Sun, 24 Mar 2024 19:32:46 -0400
-Message-ID: <20240324233458.1352854-187-sashal@kernel.org>
+Subject: [PATCH 5.15 187/317] pinctrl: mediatek: Drop bogus slew rate register range for MT8192
+Date: Sun, 24 Mar 2024 19:32:47 -0400
+Message-ID: <20240324233458.1352854-188-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -62,82 +63,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Zhipeng Lu <alexious@zju.edu.cn>
+From: Chen-Yu Tsai <wenst@chromium.org>
 
-[ Upstream commit 8c64f4cdf4e6cc5682c52523713af8c39c94e6d5 ]
+[ Upstream commit e15ab05a6b3ed42f2f43f8bd1a1abdbde64afecd ]
 
-In dvb_register_device, *pdvbdev is set equal to dvbdev, which is freed
-in several error-handling paths. However, *pdvbdev is not set to NULL
-after dvbdev's deallocation, causing use-after-frees in many places,
-for example, in the following call chain:
+The MT8192 does not support configuring pin slew rate. This is evident
+from both the datasheet, and the fact that the driver points the slew
+rate register range at the GPIO direction register range.
 
-budget_register
-  |-> dvb_dmxdev_init
-        |-> dvb_register_device
-  |-> dvb_dmxdev_release
-        |-> dvb_unregister_device
-              |-> dvb_remove_device
-                    |-> dvb_device_put
-                          |-> kref_put
+Drop the bogus setting.
 
-When calling dvb_unregister_device, dmxdev->dvbdev (i.e. *pdvbdev in
-dvb_register_device) could point to memory that had been freed in
-dvb_register_device. Thereafter, this pointer is transferred to
-kref_put and triggering a use-after-free.
-
-Link: https://lore.kernel.org/linux-media/20240203134046.3120099-1-alexious@zju.edu.cn
-Fixes: b61901024776 ("V4L/DVB (5244): Dvbdev: fix illegal re-usage of fileoperations struct")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Fixes: d32f38f2a8fc ("pinctrl: mediatek: Add pinctrl driver for mt8192")
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://lore.kernel.org/r/20240131071910.3950450-2-wenst@chromium.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-core/dvbdev.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/pinctrl/mediatek/pinctrl-mt8192.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index 3a83e8e092568..23a0c209744dc 100644
---- a/drivers/media/dvb-core/dvbdev.c
-+++ b/drivers/media/dvb-core/dvbdev.c
-@@ -504,6 +504,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		dvbdevfops = kmemdup(template->fops, sizeof(*dvbdevfops), GFP_KERNEL);
- 		if (!dvbdevfops) {
- 			kfree(dvbdev);
-+			*pdvbdev = NULL;
- 			mutex_unlock(&dvbdev_register_lock);
- 			return -ENOMEM;
- 		}
-@@ -512,6 +513,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		if (!new_node) {
- 			kfree(dvbdevfops);
- 			kfree(dvbdev);
-+			*pdvbdev = NULL;
- 			mutex_unlock(&dvbdev_register_lock);
- 			return -ENOMEM;
- 		}
-@@ -545,6 +547,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		}
- 		list_del (&dvbdev->list_head);
- 		kfree(dvbdev);
-+		*pdvbdev = NULL;
- 		up_write(&minor_rwsem);
- 		mutex_unlock(&dvbdev_register_lock);
- 		return -EINVAL;
-@@ -567,6 +570,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		dvb_media_device_free(dvbdev);
- 		list_del (&dvbdev->list_head);
- 		kfree(dvbdev);
-+		*pdvbdev = NULL;
- 		mutex_unlock(&dvbdev_register_lock);
- 		return ret;
- 	}
-@@ -585,6 +589,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		dvb_media_device_free(dvbdev);
- 		list_del (&dvbdev->list_head);
- 		kfree(dvbdev);
-+		*pdvbdev = NULL;
- 		mutex_unlock(&dvbdev_register_lock);
- 		return PTR_ERR(clsdev);
- 	}
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8192.c b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
+index 0c16b2c756bf3..f3020e3c8533b 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8192.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
+@@ -1346,7 +1346,6 @@ static const struct mtk_pin_reg_calc mt8192_reg_cals[PINCTRL_PIN_REG_MAX] = {
+ 	[PINCTRL_PIN_REG_DIR] = MTK_RANGE(mt8192_pin_dir_range),
+ 	[PINCTRL_PIN_REG_DI] = MTK_RANGE(mt8192_pin_di_range),
+ 	[PINCTRL_PIN_REG_DO] = MTK_RANGE(mt8192_pin_do_range),
+-	[PINCTRL_PIN_REG_SR] = MTK_RANGE(mt8192_pin_dir_range),
+ 	[PINCTRL_PIN_REG_SMT] = MTK_RANGE(mt8192_pin_smt_range),
+ 	[PINCTRL_PIN_REG_IES] = MTK_RANGE(mt8192_pin_ies_range),
+ 	[PINCTRL_PIN_REG_PU] = MTK_RANGE(mt8192_pin_pu_range),
 -- 
 2.43.0
 
