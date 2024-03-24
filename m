@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-114060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3E7C88882C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:20:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC0F889CB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E313288704
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:20:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22DD61F363F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7782320E7;
-	Sun, 24 Mar 2024 23:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F132530D2;
+	Mon, 25 Mar 2024 02:48:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DFfyMt0I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JUH/NSS/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEE414F115;
-	Sun, 24 Mar 2024 23:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8353D14F11B;
+	Sun, 24 Mar 2024 23:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321344; cv=none; b=P4PUzXZG8dqVnQq804ot7dYxXEeLwpLMPkZU3RCb9DDHjPchD7DWVpHBaks+OnJd6V4u4u8dqqVuXj1lGbK0KEK7i5rS5OTEXqr1p3H7dxKFLGmRRtlTHGe2HxHJDWY4sM0YPaJqJ6TPnIdBDRapMAD8HhkdjN8dkurQ6YSbbj8=
+	t=1711321345; cv=none; b=ZPQyGcQ1ltS1P2+bhz92cZLJGdksSZ2vJ3B4qWnCcMEmvO5PezpBlJ6o9Eq3XF4RlNw54oBx0oB7EaoF1M7MnrnMhH8ZwUp/0UHa/3YE7EMcBQXOhH3KKUtn6JdKW+WoQHffi/Yscy8XUHgOQzeOVslaemDvXGq7SPWOUaROSCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321344; c=relaxed/simple;
-	bh=XBHbYPR8C3NkL6EjNIF6UM5IMap2ZDW4fEy/kjUMKuw=;
+	s=arc-20240116; t=1711321345; c=relaxed/simple;
+	bh=4HzUgQJ1cTA7sevheQM8td4jHmu+l+Xbddni5/4LvTI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rEZmc4qUJkW6+vUkvYXqQXL+66kxBQHl4IMtkZkcSuUjuuA6Q99khO/l/0I0/VLa0+xjgXKERVkt591Byv0wiNnJA5AxPjlA5XylRm/iNhPB3MuBfL1ISGzdjXE1QnSyUkPrZROazQiC/x06g9g2IiGJ9AETLaaXpws9lZnbfyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DFfyMt0I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E70C43394;
-	Sun, 24 Mar 2024 23:02:22 +0000 (UTC)
+	 MIME-Version; b=sVs0iIhoF465s/tgcIG9S+YyD81oe+QphXNNdYL26N0nxgiYEwACrEmBP5z1DoQUkNYz4anO33lYbwXw6Cd/4x538z/fBnHyeg6AfNtUZiQR7w+Pzlao8jtgJrp9HVsRn4jaXfebqNfdQ/HIv7or4Au6XxZC/x41TigeV1irw9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JUH/NSS/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1881C43399;
+	Sun, 24 Mar 2024 23:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321343;
-	bh=XBHbYPR8C3NkL6EjNIF6UM5IMap2ZDW4fEy/kjUMKuw=;
+	s=k20201202; t=1711321344;
+	bh=4HzUgQJ1cTA7sevheQM8td4jHmu+l+Xbddni5/4LvTI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DFfyMt0I+a9vu1Chct3xFeO59bAma23dypLp6UMyWEHhSOL4HqsqiEkKtJW3QhMT/
-	 5UvBgSC2i/KaR20gZCfFUJGhHaTparaUHCZ06+mbAvBvDAwWwQwuV/HzfKWIkPrBQR
-	 IimnkUJFHKBLAj++IPutZ+gSs03TWExwuOq1uCFEGqaO9QovjW3YxsWoIKoXEgt2/J
-	 AwIkYDvFg/p35JaqEqYiFK1ynMHLknHPg24idVRTv0zD2l6n7xJZuvObm3oEZ9SiL1
-	 0H5qXUTf25uQFod0VfQaE6Bq3lo9dOdc+bfAar+dHPqYaD1HX6e5RA4FuJ9d3Y7xnp
-	 3YQVR+jpKcM2w==
+	b=JUH/NSS/J7M1j6wpT738vrmCCsbt+PGS6WclrGPeq2R/zWVvll4VTOoTvO1rP9QA2
+	 yalpHsx8yuICilS8mxkJFoCATnYgj22hXQ7n3UxV0QajcKvCdy+ARjjiDX49FtYEK6
+	 zcgWxGweSx9AREG7l3/FisNrRTPjM87UxNmveh2yDuplcm3doBxddVLXpkKyFaHCXL
+	 nSvtWc+uHPKFM542rCrZtve6vRQhxEbfhoz9Ex4vxZI2wxhvCjQcxm6iAumn6EomZ5
+	 UdxwG0lRo3i6hWLwryYFbPZPAyP2oEw0cG8uj8o1g+6N3wYaGxg0IVcI8pN1wR/o5q
+	 K6sR3bMStGpCQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Chuck Lever III <chuck.lever@oracle.com>,
-	syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com,
-	Jan Kara <jack@suse.cz>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Audra Mitchell <audra@redhat.com>,
+	Tejun Heo <tj@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 067/638] do_sys_name_to_handle(): use kzalloc() to fix kernel-infoleak
-Date: Sun, 24 Mar 2024 18:51:44 -0400
-Message-ID: <20240324230116.1348576-68-sashal@kernel.org>
+Subject: [PATCH 6.6 068/638] workqueue.c: Increase workqueue name length
+Date: Sun, 24 Mar 2024 18:51:45 -0400
+Message-ID: <20240324230116.1348576-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -65,70 +62,58 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+From: Audra Mitchell <audra@redhat.com>
 
-[ Upstream commit 3948abaa4e2be938ccdfc289385a27342fb13d43 ]
+[ Upstream commit 31c89007285d365aa36f71d8fb0701581c770a27 ]
 
-syzbot identified a kernel information leak vulnerability in
-do_sys_name_to_handle() and issued the following report [1].
+Currently we limit the size of the workqueue name to 24 characters due to
+commit ecf6881ff349 ("workqueue: make workqueue->name[] fixed len")
+Increase the size to 32 characters and print a warning in the event
+the requested name is larger than the limit of 32 characters.
 
-[1]
-"BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
-BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
- instrument_copy_to_user include/linux/instrumented.h:114 [inline]
- _copy_to_user+0xbc/0x100 lib/usercopy.c:40
- copy_to_user include/linux/uaccess.h:191 [inline]
- do_sys_name_to_handle fs/fhandle.c:73 [inline]
- __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
- __se_sys_name_to_handle_at+0x949/0xb10 fs/fhandle.c:94
- __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
- ...
-
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
- kmalloc include/linux/slab.h:604 [inline]
- do_sys_name_to_handle fs/fhandle.c:39 [inline]
- __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
- __se_sys_name_to_handle_at+0x441/0xb10 fs/fhandle.c:94
- __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
- ...
-
-Bytes 18-19 of 20 are uninitialized
-Memory access of size 20 starts at ffff888128a46380
-Data copied to user address 0000000020000240"
-
-Per Chuck Lever's suggestion, use kzalloc() instead of kmalloc() to
-solve the problem.
-
-Fixes: 990d6c2d7aee ("vfs: Add name to file handle conversion support")
-Suggested-by: Chuck Lever III <chuck.lever@oracle.com>
-Reported-and-tested-by: <syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com>
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Link: https://lore.kernel.org/r/20240119153906.4367-1-n.zhandarovich@fintech.ru
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Audra Mitchell <audra@redhat.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Stable-dep-of: 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fhandle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/workqueue.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/fs/fhandle.c b/fs/fhandle.c
-index 6ea8d35a9382a..99dcf07cfecfe 100644
---- a/fs/fhandle.c
-+++ b/fs/fhandle.c
-@@ -40,7 +40,7 @@ static long do_sys_name_to_handle(const struct path *path,
- 	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
- 		return -EINVAL;
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index fd7b84b06d926..e004e65ae987e 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -108,7 +108,7 @@ enum {
+ 	RESCUER_NICE_LEVEL	= MIN_NICE,
+ 	HIGHPRI_NICE_LEVEL	= MIN_NICE,
  
--	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
-+	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
- 			 GFP_KERNEL);
- 	if (!handle)
- 		return -ENOMEM;
+-	WQ_NAME_LEN		= 24,
++	WQ_NAME_LEN		= 32,
+ };
+ 
+ /*
+@@ -4673,6 +4673,7 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 	va_list args;
+ 	struct workqueue_struct *wq;
+ 	struct pool_workqueue *pwq;
++	int len;
+ 
+ 	/*
+ 	 * Unbound && max_active == 1 used to imply ordered, which is no longer
+@@ -4699,9 +4700,12 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 	}
+ 
+ 	va_start(args, max_active);
+-	vsnprintf(wq->name, sizeof(wq->name), fmt, args);
++	len = vsnprintf(wq->name, sizeof(wq->name), fmt, args);
+ 	va_end(args);
+ 
++	if (len >= WQ_NAME_LEN)
++		pr_warn_once("workqueue: name exceeds WQ_NAME_LEN. Truncating to: %s\n", wq->name);
++
+ 	max_active = max_active ?: WQ_DFL_ACTIVE;
+ 	max_active = wq_clamp_max_active(max_active, flags, wq->name);
+ 
 -- 
 2.43.0
 
