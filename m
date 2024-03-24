@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-113973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40BE38887B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D04788887A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:06:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D444B1F262AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:07:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FD701F262EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A23156665;
-	Sun, 24 Mar 2024 23:11:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8257D156676;
+	Sun, 24 Mar 2024 23:11:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I+sWM0D/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DQURhXbq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25531F23C3;
-	Sun, 24 Mar 2024 22:58:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003901F23CB;
+	Sun, 24 Mar 2024 22:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321097; cv=none; b=JGm550pZgHHFc0e6+krwQI5d4dxQuh7LDwfbWyk967hby0WHZvwCdEeps5blZFyroWZP6o3+wVwhSql0ZvDe3CulaDM/DCdEXQM/TJjTfOnA9N2PawswlcIetwudK5Ndb5H4SiXfFZ/qVhI/eiCRBo2Iphkkgyh/+qY4urmTOVo=
+	t=1711321099; cv=none; b=QV9TLCMCEOtGnPYMHpj/FYpOKZ3rQ6r70IK4QrK/DvZUyqwg4bvTpDZlVHXQKzHgysXB8iH6b1TjXlJhyTRTiJn+0WSeIXW+6wd8RbGWgAw4YaaSO+P09z1zO041551b8Pi0YSpACVf5xU6duus9K5C7QCBQeqPXgaV7kTVe9zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321097; c=relaxed/simple;
-	bh=2MsH1en75wwKv4amJIJMmpNHNy66nBsPjlTIusOeyOk=;
+	s=arc-20240116; t=1711321099; c=relaxed/simple;
+	bh=lHXQ2K8+8QPy1rd/IpDoX2dRit57EmurvmqurFZMb7w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kwIZiVFy3NhRWxsmriJtyVm4UCPLBXnrrqKHNVS5kLRn+FPQSuDNWNK/LYtxcvA1X26VmBhao0IBQYEXwcVIn74BPDa/PAMquAUeoCAZNUv6uPkir8b8cuceSkQ8+gLE5ZDR+AY2UizPMZR3WgoLwEK+x19zFXoh+n8hTGKVxVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I+sWM0D/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D722C43394;
+	 MIME-Version; b=JpOgS+kRF7IFNu2Y+YYr5VlT5uBbFpOuoHhzyHYzjLXekNeJWTAFUut/tfOqLHt8jtpE8/SFOkgrOPEvm1rjAsMB7Ko1nWkquwzz87ioJjnsctWeSMSSYnKIoyvYu9WxubREf7BSKcl90//3kNzgy99MoAMzg1Xj6nFd4MCbN/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DQURhXbq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11BF6C43390;
 	Sun, 24 Mar 2024 22:58:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321096;
-	bh=2MsH1en75wwKv4amJIJMmpNHNy66nBsPjlTIusOeyOk=;
+	s=k20201202; t=1711321097;
+	bh=lHXQ2K8+8QPy1rd/IpDoX2dRit57EmurvmqurFZMb7w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I+sWM0D/J8f5pVeKmaIENqxAzLbw7NmUmuF5UCeOh4nYaTVhooEr9t5xKAJYOVVE7
-	 WjtGhpvOXJwRX7kUQ9iu79AURWN/EQ2mhTRNiPZT6hMq82cBnOuuLEX3zH92UJUK5Z
-	 XwJAa0xfaCv2qAmKpdQn/yxzFf4rNGiVPzFJ5jM4ErpUh6blOcdbV1g+Lta1Y3XwXE
-	 F4NisWq1T3rvsaE/55TQSiRR40qSdX1x6J8U/LeRMdi/Uqfn+yQXIJir/DNLT9n3uc
-	 n+ygvuKShWfMP36wiV/sNDTQ1Mgzoj8et6uiSdgOkLGsPEwbr/ewDlxGEuXerp/dx8
-	 38PR1zKrsMC+w==
+	b=DQURhXbqiHL950laaFMWjBSh7Dj6A7sDyckd9irL1wS6l6D3ime2dTq03Ieo4QkxG
+	 yO5Vws6HPUxYorijoXIYNmGII2KccYMQnopVwV4LrCN4YoIDIveTehKdeeOBvFoEiF
+	 JTWySMrrMiHm1iyiy1+/2jX21gH/4fg4Px3BV6TbGyGJQMYwDq5ipKCtcexGgljUwo
+	 94/QHTRPE+h93qp3fJve0mTBJ1+LwWYdk2rfGqW8nplipuuBZmxPmUHa/c+zCzbs9b
+	 G39RyTnlZZK/Zv5TRxQ70RjeJXU0lu72QaL+I5V0+TYe0NmSIfS+Uz1RnHHbfMxprl
+	 Ln1hau0FnMi5w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
-	Jens Axboe <axboe@kernel.dk>,
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>,
+	syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 659/713] io_uring: Fix release of pinned pages when __io_uaddr_map fails
-Date: Sun, 24 Mar 2024 18:46:25 -0400
-Message-ID: <20240324224720.1345309-660-sashal@kernel.org>
+Subject: [PATCH 6.7 660/713] tcp: Fix refcnt handling in __inet_hash_connect().
+Date: Sun, 24 Mar 2024 18:46:26 -0400
+Message-ID: <20240324224720.1345309-661-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,86 +64,90 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Gabriel Krisman Bertazi <krisman@suse.de>
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
 
-[ Upstream commit 67d1189d1095d471ed7fa426c7e384a7140a5dd7 ]
+[ Upstream commit 04d9d1fc428ac9f581d55118d67e0cb546701feb ]
 
-Looking at the error path of __io_uaddr_map, if we fail after pinning
-the pages for any reasons, ret will be set to -EINVAL and the error
-handler won't properly release the pinned pages.
+syzbot reported a warning in sk_nulls_del_node_init_rcu().
 
-I didn't manage to trigger it without forcing a failure, but it can
-happen in real life when memory is heavily fragmented.
+The commit 66b60b0c8c4a ("dccp/tcp: Unhash sk from ehash for tb2 alloc
+failure after check_estalblished().") tried to fix an issue that an
+unconnected socket occupies an ehash entry when bhash2 allocation fails.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
-Fixes: 223ef4743164 ("io_uring: don't allow IORING_SETUP_NO_MMAP rings on highmem pages")
-Link: https://lore.kernel.org/r/20240313213912.1920-1-krisman@suse.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+In such a case, we need to revert changes done by check_established(),
+which does not hold refcnt when inserting socket into ehash.
+
+So, to revert the change, we need to __sk_nulls_add_node_rcu() instead
+of sk_nulls_add_node_rcu().
+
+Otherwise, sock_put() will cause refcnt underflow and leak the socket.
+
+[0]:
+WARNING: CPU: 0 PID: 23948 at include/net/sock.h:799 sk_nulls_del_node_init_rcu+0x166/0x1a0 include/net/sock.h:799
+Modules linked in:
+CPU: 0 PID: 23948 Comm: syz-executor.2 Not tainted 6.8.0-rc6-syzkaller-00159-gc055fc00c07b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:sk_nulls_del_node_init_rcu+0x166/0x1a0 include/net/sock.h:799
+Code: e8 7f 71 c6 f7 83 fb 02 7c 25 e8 35 6d c6 f7 4d 85 f6 0f 95 c0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 1b 6d c6 f7 90 <0f> 0b 90 eb b2 e8 10 6d c6 f7 4c 89 e7 be 04 00 00 00 e8 63 e7 d2
+RSP: 0018:ffffc900032d7848 EFLAGS: 00010246
+RAX: ffffffff89cd0035 RBX: 0000000000000001 RCX: 0000000000040000
+RDX: ffffc90004de1000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: 1ffff1100439ac26 R08: ffffffff89ccffe3 R09: 1ffff1100439ac28
+R10: dffffc0000000000 R11: ffffed100439ac29 R12: ffff888021cd6140
+R13: dffffc0000000000 R14: ffff88802a9bf5c0 R15: ffff888021cd6130
+FS:  00007f3b823f16c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3b823f0ff8 CR3: 000000004674a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __inet_hash_connect+0x140f/0x20b0 net/ipv4/inet_hashtables.c:1139
+ dccp_v6_connect+0xcb9/0x1480 net/dccp/ipv6.c:956
+ __inet_stream_connect+0x262/0xf30 net/ipv4/af_inet.c:678
+ inet_stream_connect+0x65/0xa0 net/ipv4/af_inet.c:749
+ __sys_connect_file net/socket.c:2048 [inline]
+ __sys_connect+0x2df/0x310 net/socket.c:2065
+ __do_sys_connect net/socket.c:2075 [inline]
+ __se_sys_connect net/socket.c:2072 [inline]
+ __x64_sys_connect+0x7a/0x90 net/socket.c:2072
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f3b8167dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f3b823f10c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: ffffffffffffffda RBX: 00007f3b817abf80 RCX: 00007f3b8167dda9
+RDX: 000000000000001c RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00007f3b823f1120 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 000000000000000b R14: 00007f3b817abf80 R15: 00007ffd3beb57b8
+ </TASK>
+
+Reported-by: syzbot+12c506c1aae251e70449@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=12c506c1aae251e70449
+Fixes: 66b60b0c8c4a ("dccp/tcp: Unhash sk from ehash for tb2 alloc failure after check_estalblished().")
+Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20240308201623.65448-1-kuniyu@amazon.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- io_uring/io_uring.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ net/ipv4/inet_hashtables.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index 205dad9603733..45d6e440bdc04 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -2683,7 +2683,7 @@ static void *__io_uaddr_map(struct page ***pages, unsigned short *npages,
- 	struct page **page_array;
- 	unsigned int nr_pages;
- 	void *page_addr;
--	int ret, i;
-+	int ret, i, pinned;
+diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+index 9456bf9e2705b..7967ff7e02f79 100644
+--- a/net/ipv4/inet_hashtables.c
++++ b/net/ipv4/inet_hashtables.c
+@@ -1137,7 +1137,7 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
+ 		sock_prot_inuse_add(net, sk->sk_prot, -1);
  
- 	*npages = 0;
+ 		spin_lock(lock);
+-		sk_nulls_del_node_init_rcu(sk);
++		__sk_nulls_del_node_init_rcu(sk);
+ 		spin_unlock(lock);
  
-@@ -2697,12 +2697,12 @@ static void *__io_uaddr_map(struct page ***pages, unsigned short *npages,
- 	if (!page_array)
- 		return ERR_PTR(-ENOMEM);
- 
--	ret = pin_user_pages_fast(uaddr, nr_pages, FOLL_WRITE | FOLL_LONGTERM,
--					page_array);
--	if (ret != nr_pages) {
--err:
--		io_pages_free(&page_array, ret > 0 ? ret : 0);
--		return ret < 0 ? ERR_PTR(ret) : ERR_PTR(-EFAULT);
-+
-+	pinned = pin_user_pages_fast(uaddr, nr_pages, FOLL_WRITE | FOLL_LONGTERM,
-+				     page_array);
-+	if (pinned != nr_pages) {
-+		ret = (pinned < 0) ? pinned : -EFAULT;
-+		goto free_pages;
- 	}
- 
- 	page_addr = page_address(page_array[0]);
-@@ -2716,7 +2716,7 @@ static void *__io_uaddr_map(struct page ***pages, unsigned short *npages,
- 		 * didn't support this feature.
- 		 */
- 		if (PageHighMem(page_array[i]))
--			goto err;
-+			goto free_pages;
- 
- 		/*
- 		 * No support for discontig pages for now, should either be a
-@@ -2725,13 +2725,17 @@ static void *__io_uaddr_map(struct page ***pages, unsigned short *npages,
- 		 * just fail them with EINVAL.
- 		 */
- 		if (page_address(page_array[i]) != page_addr)
--			goto err;
-+			goto free_pages;
- 		page_addr += PAGE_SIZE;
- 	}
- 
- 	*pages = page_array;
- 	*npages = nr_pages;
- 	return page_to_virt(page_array[0]);
-+
-+free_pages:
-+	io_pages_free(&page_array, pinned > 0 ? pinned : 0);
-+	return ERR_PTR(ret);
- }
- 
- static void *io_rings_map(struct io_ring_ctx *ctx, unsigned long uaddr,
+ 		sk->sk_hash = 0;
 -- 
 2.43.0
 
