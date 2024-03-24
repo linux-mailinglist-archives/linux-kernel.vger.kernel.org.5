@@ -1,58 +1,53 @@
-Return-Path: <linux-kernel+bounces-114901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D44F2889214
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:58:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B34C889219
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 868C01F2D131
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:58:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC3B41C2DC2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654B62D1878;
-	Mon, 25 Mar 2024 00:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 026AA2D1895;
+	Mon, 25 Mar 2024 00:55:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i09gg5Qr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AbLjfzFx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA20517831E;
-	Sun, 24 Mar 2024 23:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECEA178CC3;
+	Sun, 24 Mar 2024 23:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323567; cv=none; b=bt21z1Ak0Gk8m2lt8TzT64/ofh0kLj3XkF3IOvxlGGYBVyi6G7yK15V86W2RRc+ZIZp6iW5yXFbIiJlK0aNIAV0V4R8VfPumjuAtKylRkfTA3HPw/+X/Cx8Nx12ze2svZlcSbKh4Jg5O0S6WVrAEgVjtwQ02U175lHe9Ug6Z4H0=
+	t=1711323568; cv=none; b=pLfJT7Xea9HLhZdB6Mf2Qi+Jltis257SgAKu6iRrg6BWo+RNzoLduKWibDYAyNE58LEFPj/HSHjQI74JZsF8JDW2ZFFpyC9j+4TawcCNgAHuGQoefW9d5id0iKB/QNigmDd/EQ34w0GyPh8PFw4H4NeJDIqbdjL4rXuSvO8E7YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323567; c=relaxed/simple;
-	bh=lYH8x8NXl+D9jSgcCFP/jUoI1eKm4X/OKybsLqIHfWM=;
+	s=arc-20240116; t=1711323568; c=relaxed/simple;
+	bh=eijCuQ1jqO3YPjRi/TEwrn5Nr7gd0LKFppwpqIhn5rQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KDYCvxAzKVs8bEdRj4a5/EqjGESdvFg70K4QMgiad7dlxN0wgyHyixadZcXu7hvOn/WJapFEL8gfhjTiucP3IMigmjdc2b9bH2pLzaygLBo5Bm2tTTCVb0bgOcr5Y+HRTHvc6T2OZj1uLip2Cyx26GdPfmaWPw39WRrBFo/dVPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i09gg5Qr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A48F5C433A6;
-	Sun, 24 Mar 2024 23:39:25 +0000 (UTC)
+	 MIME-Version; b=hYSCA68Ks0jfjK4KJicITVzaSjYqhVhADmw+T7Kd1c/UdxvgT1xjRJq0mnkg/UFs/xcARSPnqNR4c/HbewBRiJJSpCwKZ0I+gbLZeN0V+hz3/In5NO5L9UYVLDtY299Q6idJ+4QtmSXopiksHHjIMTnlkEPX6P4tBHVgFAX+8KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AbLjfzFx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E499DC433F1;
+	Sun, 24 Mar 2024 23:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323566;
-	bh=lYH8x8NXl+D9jSgcCFP/jUoI1eKm4X/OKybsLqIHfWM=;
+	s=k20201202; t=1711323567;
+	bh=eijCuQ1jqO3YPjRi/TEwrn5Nr7gd0LKFppwpqIhn5rQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=i09gg5QrfjbIe6h109YUp0NnPoW/5qvrY6ePxDebJCPVh+PX9q9ViNJVixt3GLZS4
-	 GPSh0VvIULab4ciRwHgLhJ7qa/snv+tUPnWO/jVOydbpjARtbZPAHxokP/CvwrGa6P
-	 ovlX7WMahSPMqKdeDsDeKpJVmRTSc2+pA1/lDbW1A1HhplnlpqISz7DhbJGwq3bcB/
-	 9XWypTOzK1dKbAl/hT+Jlzx8Zx+o1Wab+NVz1oJvEZoQ8RktKCaagCDN0cu+9a/LbC
-	 /QSNvAxsqPhwfuD7rZbOeIqqwb30v3Fq03j1dMUCOZL5ehDx8hpNMdXMAnl5TK0QyJ
-	 q/o1q7lLUtYFg==
+	b=AbLjfzFxePxOwGOG0T5hpd7ikTN3mi80o5loD8+d9CgtqCzwLZ5QCSHoO/ndsKo42
+	 hv3ZyUGv8llyKx9AQQRTV23yb0E5b5lY2dwSW2U7gC5ueRgJE7ipTVdkoBvNJ/M1HD
+	 XzjO0CCSR65L69Gsb0O6WheWUIRd57Oz0znffkvOczpSWn6//nSCVpWT7pG4xIihGC
+	 ok/BJg00jYVYvpdYORQh8sk5iBuicRYqw4j3msqw4rRuqoeslRp8pUer7O7+6h0mGG
+	 enoMjoVbU5ctBbDz/mXZyKv3qrxEcPdO0VmEQbgV43zy5g9ciDpq4r7LPaXGQL9TE6
+	 5AdFdWPn8JmTg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>,
-	Markus Suvanto <markus.suvanto@gmail.com>,
-	Jeffrey E Altman <jaltman@auristor.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	linux-afs@lists.infradead.org,
-	Christian Brauner <brauner@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 273/317] afs: Revert "afs: Hide silly-rename files from userspace"
-Date: Sun, 24 Mar 2024 19:34:13 -0400
-Message-ID: <20240324233458.1352854-274-sashal@kernel.org>
+Cc: Ian Abbott <abbotti@mev.co.uk>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 5.15 274/317] comedi: comedi_test: Prevent timers rescheduling during deletion
+Date: Sun, 24 Mar 2024 19:34:14 -0400
+Message-ID: <20240324233458.1352854-275-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -66,53 +61,126 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: David Howells <dhowells@redhat.com>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-[ Upstream commit 0aec3847d044273733285dcff90afda89ad461d2 ]
+commit f53641a6e849034a44bf80f50245a75d7a376025 upstream.
 
-This reverts commit 57e9d49c54528c49b8bffe6d99d782ea051ea534.
+The comedi_test devices have a couple of timers (ai_timer and ao_timer)
+that can be started to simulate hardware interrupts.  Their expiry
+functions normally reschedule the timer.  The driver code calls either
+del_timer_sync() or del_timer() to delete the timers from the queue, but
+does not currently prevent the timers from rescheduling themselves so
+synchronized deletion may be ineffective.
 
-This undoes the hiding of .__afsXXXX silly-rename files.  The problem with
-hiding them is that rm can't then manually delete them.
+Add a couple of boolean members (one for each timer: ai_timer_enable and
+ao_timer_enable) to the device private data structure to indicate
+whether the timers are allowed to reschedule themselves.  Set the member
+to true when adding the timer to the queue, and to false when deleting
+the timer from the queue in the waveform_ai_cancel() and
+waveform_ao_cancel() functions.
 
-This also reverts commit 5f7a07646655fb4108da527565dcdc80124b14c4 ("afs: Fix
-endless loop in directory parsing") as that's a bugfix for the above.
+The del_timer_sync() function is also called from the waveform_detach()
+function, but the timer enable members will already be set to false when
+that function is called, so no change is needed there.
 
-Fixes: 57e9d49c5452 ("afs: Hide silly-rename files from userspace")
-Reported-by: Markus Suvanto <markus.suvanto@gmail.com>
-Link: https://lists.infradead.org/pipermail/linux-afs/2024-February/008102.html
-Signed-off-by: David Howells <dhowells@redhat.com>
-Link: https://lore.kernel.org/r/3085695.1710328121@warthog.procyon.org.uk
-Reviewed-by: Jeffrey E Altman <jaltman@auristor.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 403fe7f34e33 ("staging: comedi: comedi_test: fix timer race conditions")
+Cc: stable@vger.kernel.org # 4.4+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20240214100747.16203-1-abbotti@mev.co.uk
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/afs/dir.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/comedi/drivers/comedi_test.c | 30 ++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index c4e22e9f7a666..cec18f9f8bd7a 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -492,16 +492,6 @@ static int afs_dir_iterate_block(struct afs_vnode *dvnode,
- 			continue;
- 		}
+diff --git a/drivers/comedi/drivers/comedi_test.c b/drivers/comedi/drivers/comedi_test.c
+index cbc225eb19918..bea9a3adf08c8 100644
+--- a/drivers/comedi/drivers/comedi_test.c
++++ b/drivers/comedi/drivers/comedi_test.c
+@@ -87,6 +87,8 @@ struct waveform_private {
+ 	struct comedi_device *dev;	/* parent comedi device */
+ 	u64 ao_last_scan_time;		/* time of previous AO scan in usec */
+ 	unsigned int ao_scan_period;	/* AO scan period in usec */
++	bool ai_timer_enable:1;		/* should AI timer be running? */
++	bool ao_timer_enable:1;		/* should AO timer be running? */
+ 	unsigned short ao_loopbacks[N_CHANS];
+ };
  
--		/* Don't expose silly rename entries to userspace. */
--		if (nlen > 6 &&
--		    dire->u.name[0] == '.' &&
--		    ctx->actor != afs_lookup_filldir &&
--		    ctx->actor != afs_lookup_one_filldir &&
--		    memcmp(dire->u.name, ".__afs", 6) == 0) {
--			ctx->pos = blkoff + next * sizeof(union afs_xdr_dirent);
--			continue;
--		}
--
- 		/* found the next entry */
- 		if (!dir_emit(ctx, dire->u.name, nlen,
- 			      ntohl(dire->u.vnode),
+@@ -236,8 +238,12 @@ static void waveform_ai_timer(struct timer_list *t)
+ 			time_increment = devpriv->ai_convert_time - now;
+ 		else
+ 			time_increment = 1;
+-		mod_timer(&devpriv->ai_timer,
+-			  jiffies + usecs_to_jiffies(time_increment));
++		spin_lock(&dev->spinlock);
++		if (devpriv->ai_timer_enable) {
++			mod_timer(&devpriv->ai_timer,
++				  jiffies + usecs_to_jiffies(time_increment));
++		}
++		spin_unlock(&dev->spinlock);
+ 	}
+ 
+ overrun:
+@@ -393,9 +399,12 @@ static int waveform_ai_cmd(struct comedi_device *dev,
+ 	 * Seem to need an extra jiffy here, otherwise timer expires slightly
+ 	 * early!
+ 	 */
++	spin_lock_bh(&dev->spinlock);
++	devpriv->ai_timer_enable = true;
+ 	devpriv->ai_timer.expires =
+ 		jiffies + usecs_to_jiffies(devpriv->ai_convert_period) + 1;
+ 	add_timer(&devpriv->ai_timer);
++	spin_unlock_bh(&dev->spinlock);
+ 	return 0;
+ }
+ 
+@@ -404,6 +413,9 @@ static int waveform_ai_cancel(struct comedi_device *dev,
+ {
+ 	struct waveform_private *devpriv = dev->private;
+ 
++	spin_lock_bh(&dev->spinlock);
++	devpriv->ai_timer_enable = false;
++	spin_unlock_bh(&dev->spinlock);
+ 	if (in_softirq()) {
+ 		/* Assume we were called from the timer routine itself. */
+ 		del_timer(&devpriv->ai_timer);
+@@ -495,8 +507,12 @@ static void waveform_ao_timer(struct timer_list *t)
+ 		unsigned int time_inc = devpriv->ao_last_scan_time +
+ 					devpriv->ao_scan_period - now;
+ 
+-		mod_timer(&devpriv->ao_timer,
+-			  jiffies + usecs_to_jiffies(time_inc));
++		spin_lock(&dev->spinlock);
++		if (devpriv->ao_timer_enable) {
++			mod_timer(&devpriv->ao_timer,
++				  jiffies + usecs_to_jiffies(time_inc));
++		}
++		spin_unlock(&dev->spinlock);
+ 	}
+ 
+ underrun:
+@@ -517,9 +533,12 @@ static int waveform_ao_inttrig_start(struct comedi_device *dev,
+ 	async->inttrig = NULL;
+ 
+ 	devpriv->ao_last_scan_time = ktime_to_us(ktime_get());
++	spin_lock_bh(&dev->spinlock);
++	devpriv->ao_timer_enable = true;
+ 	devpriv->ao_timer.expires =
+ 		jiffies + usecs_to_jiffies(devpriv->ao_scan_period);
+ 	add_timer(&devpriv->ao_timer);
++	spin_unlock_bh(&dev->spinlock);
+ 
+ 	return 1;
+ }
+@@ -604,6 +623,9 @@ static int waveform_ao_cancel(struct comedi_device *dev,
+ 	struct waveform_private *devpriv = dev->private;
+ 
+ 	s->async->inttrig = NULL;
++	spin_lock_bh(&dev->spinlock);
++	devpriv->ao_timer_enable = false;
++	spin_unlock_bh(&dev->spinlock);
+ 	if (in_softirq()) {
+ 		/* Assume we were called from the timer routine itself. */
+ 		del_timer(&devpriv->ao_timer);
 -- 
 2.43.0
 
