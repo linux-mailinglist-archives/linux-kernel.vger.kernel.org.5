@@ -1,143 +1,140 @@
-Return-Path: <linux-kernel+bounces-112791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61FA7887E2F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:45:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56EB2887E34
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:59:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1738C1F21280
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:45:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D0301C20AA2
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D511AACF;
-	Sun, 24 Mar 2024 17:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182151AAD2;
+	Sun, 24 Mar 2024 17:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cuz/wuUi"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="u0RcmHdo"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164BC17555
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 17:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D512519BA2;
+	Sun, 24 Mar 2024 17:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711302321; cv=none; b=jIx2hvvJca3mF0MbAb/gQbYNU9MqBeyvPzawk1ox/UnzOqzOgIwUkcUzToEPVD4d+e3OmZt7fpDoxh7A8tE50zi21FT+/h/23r27ItFg3QUORU+lSRSDiayJ5jTMkeWHeVig91/VXEFHFw+dXvwS98eC1Hr4gQTiqwXGILeEUvo=
+	t=1711303173; cv=none; b=FwkT8uGZf9WskzBTkLj/4AofKEne3C173RZ5/1RdwZqgJaaTY72vUxbJo7i51pGO12beghiAoFGtXjdihsg78EPdmGBiQ8uzHMH+AJGdg3TS9VFJazaAyhsHRqqWXWieHImy2b3yxOJ0hlZIWow/BukW5YDaTNLBzCwQMbKaBmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711302321; c=relaxed/simple;
-	bh=xdIW6mBPIRVyFNi0g6EGkmhDMUnRw/D1b7czg+0i/ck=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N/AYlfRZ6xF7Ck1fY1KenXxew+So8PBVBpmtticYqreY3I9NjA2WQFpl6BQpsP4dOH4zizxPSbrpAYX0BDV71mm3ZSpdxqdZsKm8BoFFEU6OqKRJzwd1dF5Z9+OFLOwxtVkH+b2NiSNjyQkavw3seZAdMLoLaNDCF/EzG9TMB/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cuz/wuUi; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51381021af1so5588187e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 10:45:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1711302317; x=1711907117; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oe6GIQzO/C567doEXwsmBSySXlt6oy2RX728KJkYzKg=;
-        b=cuz/wuUik3HMnipgbKl49knUONIng5nCb6owYldFOa8oqyekrKdz8CXhHZDcF0c36r
-         yJ+3e1lI1BSlsZoioQ1RfsMcVut2iEYDDUOmggpVxkKILQQMu3+DH/N635ZR5F/6ys+h
-         spbWrOaD7TFDHtX9/U3C/jO8S2YN4bEP7C1is=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711302317; x=1711907117;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oe6GIQzO/C567doEXwsmBSySXlt6oy2RX728KJkYzKg=;
-        b=AGi2XcxLusoD9gysmtKEEdimdAQLHCwcuH/nO5S4B1ywY1nS54zlFps9sgNFTZgNBC
-         b7lp7q3KuHvxnEiQ2jswQRSp8ySKkLV/GptNk0juXkvAwHZsxtUCkswLI3Um15FBbBXM
-         4e/Iw2EmC4izxaBBiuIY2Hu3I3HBZ5SO0F4hXoE7jeF7mmn25xo0B6n/DS17+HB5n58M
-         CbWKKjcf1o/woHXmSoTdENkUw4GRuug7Anf4+goEwEQacrv502XgttKnG352AzSciw9c
-         HMTVaXhwvPL+JEm0IHhMI+E0XLEkmc4UH2GTYQh1G5PUOtsIiVqlohGq+3XQOMRLx+Up
-         lQkw==
-X-Forwarded-Encrypted: i=1; AJvYcCVpcZezP+6ipgK8+ui1Eq/n736UE7QLrqpBeGf8wlRFLHNlQDw43xSPaZaqmDKSX/5M/xAyLB7yfDE+F52aeLeGPhC0SUaK2qXzv9ZY
-X-Gm-Message-State: AOJu0YxT4FFnbRqRz08jDX8DtsBhhtpNHFztxVSzVpOdHVe9GYvMWVCX
-	uyLr6M0QxvXAiqdFwHcEuxPgtWwrDxj4B1qkRXQg6LGhhy/z+2Zl2bCz/Hly32xd3FOfZYIuSgn
-	1DzHT8Q==
-X-Google-Smtp-Source: AGHT+IHyXCi92r/SsM99N1uBJykepDc9bb3pcnU5LDSDZPiYCwKEU2QQptL2KdRyBZiBYloqyGTkfw==
-X-Received: by 2002:ac2:504c:0:b0:513:c223:f0e4 with SMTP id a12-20020ac2504c000000b00513c223f0e4mr4007907lfm.10.1711302317209;
-        Sun, 24 Mar 2024 10:45:17 -0700 (PDT)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id m19-20020a1709060d9300b00a45c9945251sm2142167eji.192.2024.03.24.10.45.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Mar 2024 10:45:16 -0700 (PDT)
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4147c4862caso19513365e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 10:45:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXR4OVs7njxhKFGPcHARvkjxSriJTFkdhK4uLV3tW4PddcA1mUF0hb3AY3TTladFOQWo5/KAMYB7coTRu3OhNSTxdZXM8OmOR/lVjiE
-X-Received: by 2002:a19:ca19:0:b0:515:9ce3:daa3 with SMTP id
- a25-20020a19ca19000000b005159ce3daa3mr3631407lfg.37.1711302295763; Sun, 24
- Mar 2024 10:44:55 -0700 (PDT)
+	s=arc-20240116; t=1711303173; c=relaxed/simple;
+	bh=vOzA/tKqPZp4+9Wm+5C8N3FOA99D7YrNR9zQplxWvkY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=gfkuYpxVhVSYdk5OuEr/vdFlTvZmGoqzr1bQnkERc50S0XaSL6g/OdgXrP2uB+kHaEwfw5S0MZDFlKC1oDzSrjyE29ziNgD2PhKigOjfQ8HRrRSVl//roU7JTmjVk9/xWhZZjzldKxug87sLbp6/TzajEogUmqyOWmSVao2vduw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=u0RcmHdo; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 41699120003;
+	Sun, 24 Mar 2024 20:52:33 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 41699120003
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1711302753;
+	bh=rPCKzwxY/P8E8hlP0ZyZIPxAhwhwOHS8SkfFEzDhMSE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=u0RcmHdomX0A7S94roBud3m3OftVEWIzyfo0+wLhUD5RNO2YIkm+Bu+sexbKz179I
+	 i5GpnTO/k7ENM3P7qRlc6B6vZqKFCKks80+FEUdIZzUFiLmcW4x9WMI4RwDatDFD+s
+	 74VhHD8YZCnqv3GTD0mCN/EuweCj7PqXiHaozecwcU+QA5GnFuJ1v8BlPSQH1zvKKd
+	 Ub+6IlO1kQcvkqML+hbN7VHMgEfmPuNcbPG0++Sw67iUPMk2tVUOvD8BGR6OOzMjZ3
+	 urrDZRZmxUZ0I5/8cNdc7ZI870Fc8Z7WiQRuHU+sxzLq25zcJtMwWOzVeay3zaRvL9
+	 zYYThkk6c+Khg==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Sun, 24 Mar 2024 20:52:33 +0300 (MSK)
+Received: from [192.168.20.2] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 24 Mar 2024 20:52:32 +0300
+Message-ID: <2bc7976b-3910-4a44-a969-7b6bc5d72869@salutedevices.com>
+Date: Sun, 24 Mar 2024 20:51:04 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
- <20240301-slab-memcg-v1-4-359328a46596@suse.cz> <CAHk-=whgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0=m1A@mail.gmail.com>
- <20240324022731.GR538574@ZenIV>
-In-Reply-To: <20240324022731.GR538574@ZenIV>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 24 Mar 2024 10:44:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgBQPxKh1cGhGoo=SmJq72H4VObrkVxQepooaq18H4=oA@mail.gmail.com>
-Message-ID: <CAHk-=wgBQPxKh1cGhGoo=SmJq72H4VObrkVxQepooaq18H4=oA@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/4] UNFINISHED mm, fs: use kmem_cache_charge() in path_openat()
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>, 
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 06/25] ASoC: meson: g12a-toacodec: fix "Lane Select" width
+Content-Language: en-US
+To: Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet
+	<jbrunet@baylibre.com>, Michael Turquette <mturquette@baylibre.com>, Stephen
+ Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman <khilman@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Liam Girdwood
+	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Linus Walleij
+	<linus.walleij@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+	<tiwai@suse.com>, <linux-amlogic@lists.infradead.org>,
+	<linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+	<linux-gpio@vger.kernel.org>
+CC: <kernel@salutedevices.com>
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-7-jan.dakinevich@salutedevices.com>
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+In-Reply-To: <20240314232201.2102178-7-jan.dakinevich@salutedevices.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184373 [Mar 24 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 11 0.3.11 5ecf9895443a5066245fcb91e8430edf92b1b594, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:7.1.1,5.0.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/24 14:08:00 #24408963
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-[ Al, I hope your email works now ]
+Sorry, I screwed up. Original code is correct. I mixed up the maximum
+value and bit offset.
 
-On Sat, 23 Mar 2024 at 19:27, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> We can have the same file occuring in many slots of many descriptor tables,
-> obviously.  So it would have to be a flag (in ->f_mode?) set by it, for
-> "someone's already charged for it", or you'll end up with really insane
-> crap on each fork(), dup(), etc.
+On 3/15/24 02:21, Jan Dakinevich wrote:
+> For both G12A and SM1 the width of "Lane Select" should be 2, not 3.
+> Otherwise, it overlaps with "Source".
+> 
+> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+> ---
+>  sound/soc/meson/g12a-toacodec.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
+> index 531bb8707a3e..b92de2235627 100644
+> --- a/sound/soc/meson/g12a-toacodec.c
+> +++ b/sound/soc/meson/g12a-toacodec.c
+> @@ -229,11 +229,11 @@ static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
+>  };
+>  
+>  static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
+> -	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 3, 0),
+> +	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 2, 0),
+>  };
+>  
+>  static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
+> -	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 3, 0),
+> +	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 2, 0),
+>  };
+>  
+>  static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
 
-Nope.
-
-That flag already exists in the slab code itself with this patch. The
-kmem_cache_charge() thing itself just sets the "I'm charged" bit in
-the slab header, and you're done. Any subsequent fd_install (with dup,
-or fork or whatever) simply is irrelevant.
-
-In fact, dup and fork and friends won't need to worry about this,
-because they only work on files that have already been installed, so
-they know the file is already accounted.
-
-So it's only the initial open() case that needs to do the
-kmem_cache_charge() as it does the fd_install.
-
-> But there's also MAP_ANON with its setup_shmem_file(), with the resulting
-> file not going into descriptor tables at all, and that's not a rare thing.
-
-Just making alloc_file_pseudo() do a SLAB_ACOUNT should take care of
-all the normal case.
-
-For once, the core allocator is not exposed very much, so we can
-literally just look at "who does alloc_file*()" and it turns out it's
-all pretty well abstracted out.
-
-So I think it's mainly the three cases of 'alloc_empty_file()' that
-would be affected and need to check that they actually do the
-fd_install() (or release it).
-
-Everything else should either not account at all (if they know they
-are doing temporary kernel things), or always account (eg
-alloc_file_pseudo()).
-
-               Linus
+-- 
+Best regards
+Jan Dakinevich
 
