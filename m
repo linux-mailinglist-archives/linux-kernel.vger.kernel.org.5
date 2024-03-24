@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 133EC8893A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:33:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70BC3889AD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:36:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44EEB1C2E885
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:33:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E6191F2E563
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0FA1E1680;
-	Mon, 25 Mar 2024 02:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D6D1E5860;
+	Mon, 25 Mar 2024 02:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G2zbLnis"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j7+7wRMs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F161D1D4C;
-	Sun, 24 Mar 2024 22:48:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DB01D1D50;
+	Sun, 24 Mar 2024 22:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320531; cv=none; b=prKENz6XOcm/xKTXm/83VxsrEbG9dxFcd/TbbVyI5gPKGtUNl9huieCK/VOpxyHuKOKbQDwVsrz3Qq19S0cAlp6Dcxu7GNf4OvpBvh/Rw77Z+XMU1tg0iLLxbOvAt5SNqTqWBWTEY5SD4Dkf6a8hK9FhBvCVp+1PpPVFbhSfq+w=
+	t=1711320531; cv=none; b=eBC/BvHpKHC7sLqh/tpgLZL/k3CQLic2dUry/quSc8b8o6F3TepmN5vsnF8DIctGlIZLGlpY/ICqJBRe0kEu6Bv/flC0AGDSMO/bHrkAwRkZsGtZrRJJfGi6oLzS/6FWLMJkGc6cDrq4o3F4qvtjcaFwTlAnxZvsQeKDQTLEGkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320531; c=relaxed/simple;
-	bh=kfUHX9dNA6VHlvW4hx4foa6phsP6hWb01o+wTBPm9Go=;
+	bh=Vk4HTc/xRaVdkDvNcdfvdHv7Ol25Px/EUYYf8d2Z9es=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GZHdBiVxDNilBG0av1D9jEOdEg/66jiwxYw+v5jiPi1z/jFYB0vOKyJ+/rWeBG5PEIzuaUptYuGvTf6/AMheXaJ0GGW63D4eoGKSYvcDBi3tRZ3Amj06g2kUowyBoitHSiDfQo1BdyDedrWEmeUD43ms0eTNPWTVRHsRndldZeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G2zbLnis; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D84AFC433C7;
-	Sun, 24 Mar 2024 22:48:48 +0000 (UTC)
+	 MIME-Version; b=uAknNExHsyNVflEkFN/DQjXW8U5mKIxYwAeexll/WWYx411bEei62ynjfmxvSpL2Bkdjm49OhJbH1StFS3A+aJv58AEwcqHl5KAC5sZqIa7KT3JHyaBRvwtgi6kukFEZMkHdsOhm5s1P+A1VK6YMpgaGzxTn+1cyITg4caWa/tc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j7+7wRMs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D467EC433A6;
+	Sun, 24 Mar 2024 22:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320529;
-	bh=kfUHX9dNA6VHlvW4hx4foa6phsP6hWb01o+wTBPm9Go=;
+	s=k20201202; t=1711320530;
+	bh=Vk4HTc/xRaVdkDvNcdfvdHv7Ol25Px/EUYYf8d2Z9es=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=G2zbLnisKCPx8QmRkESBRKXOA6LyQdlXvV6U4ueTzvKoPpSBFloi4LnvPMuGuaonU
-	 I/18z5kt7OpqVOBEh3nQMBMtEUoxTyVscebYSQ/wRHAcgLrmhWJmhaGNlHAZd3QRDv
-	 UgGf5gWRXk7aMFYc37Dzn6NpcsGKiF7s3WRi9pkWBro6q9COXL/BN+nxxRMN5uTTNi
-	 nDCSATDzueCtEpcDAc18wLwv/oIt5dp1r4SiK2wZ7UwgTESR9Nf9fHnwkHwxjocQt2
-	 hFAfUvl+WfJ7ZQPD6B7PhS2bUtCWh1qaMwKqqFtwGnPHOKADFkzyzpCcCozuuGNu7Q
-	 TiQUqC8CvyYSA==
+	b=j7+7wRMscMY0O3YollNuqTrM8dhJve9wHnQ7syTlL18OalNagT0XyLM+bu46vSnPH
+	 0DnnYGMFidFjfm5F25yTklt/C1M2xauSy6h83dsKlUJtI2Q3NQKhSbhSx85o8RLfjs
+	 BX10a3tCbzbcUVSF6xd5vM6zQLNOrj8fs6hUwerzB9bP+mzxF9LWqwqOjHHxcwQ5lZ
+	 MXm0bF+M0mZZAISPNuBbAoIwDoTuEfLJUJC//iGoTRuh68sp2jlXn/FYwvpgccvV2F
+	 mb33k0Dtq/Ws19CVH+inKyzIXA4wpQyEK6dtzXPd9Ap51VG4tDeNMRVCWrWC+yxxhB
+	 lsUM4+mnRszBA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Nathan Chancellor <nathan@kernel.org>,
+Cc: Christoph Hellwig <hch@lst.de>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 091/713] workqueue: Don't call cpumask_test_cpu() with -1 CPU in wq_update_node_max_active()
-Date: Sun, 24 Mar 2024 18:36:57 -0400
-Message-ID: <20240324224720.1345309-92-sashal@kernel.org>
+Subject: [PATCH 6.7 092/713] iomap: clear the per-folio dirty bits on all writeback failures
+Date: Sun, 24 Mar 2024 18:36:58 -0400
+Message-ID: <20240324224720.1345309-93-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,58 +62,69 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tejun Heo <tj@kernel.org>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 15930da42f8981dc42c19038042947b475b19f47 ]
+[ Upstream commit 7ea1d9b4a840c2dd01d1234663d4a8ef256cfe39 ]
 
-For wq_update_node_max_active(), @off_cpu of -1 indicates that no CPU is
-going down. The function was incorrectly calling cpumask_test_cpu() with -1
-CPU leading to oopses like the following on some archs:
+write_cache_pages always clear the page dirty bit before calling into the
+file systems, and leaves folios with a writeback failure without the
+dirty bit after return.  We also clear the per-block writeback bits for
+writeback failures unless no I/O has submitted, which will leave the
+folio in an inconsistent state where it doesn't have the folio dirty,
+but one or more per-block dirty bits.  This seems to be due the place
+where the iomap_clear_range_dirty call was inserted into the existing
+not very clearly structured code when adding per-block dirty bit support
+and not actually intentional.  Switch to always clearing the dirty on
+writeback failure.
 
-  Unable to handle kernel paging request at virtual address ffff0002100296e0
-  ..
-  pc : wq_update_node_max_active+0x50/0x1fc
-  lr : wq_update_node_max_active+0x1f0/0x1fc
-  ...
-  Call trace:
-    wq_update_node_max_active+0x50/0x1fc
-    apply_wqattrs_commit+0xf0/0x114
-    apply_workqueue_attrs_locked+0x58/0xa0
-    alloc_workqueue+0x5ac/0x774
-    workqueue_init_early+0x460/0x540
-    start_kernel+0x258/0x684
-    __primary_switched+0xb8/0xc0
-  Code: 9100a273 35000d01 53067f00 d0016dc1 (f8607a60)
-  ---[ end trace 0000000000000000 ]---
-  Kernel panic - not syncing: Attempted to kill the idle task!
-  ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
-
-Fix it.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Link: http://lkml.kernel.org/r/91eacde0-df99-4d5c-a980-91046f66e612@samsung.com
-Fixes: 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
+Fixes: 4ce02c679722 ("iomap: Add per-block dirty state tracking to improve performance")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20231207072710.176093-2-hch@lst.de
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/iomap/buffered-io.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 6b18926cf3523..6f7cb619aa5e4 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1500,7 +1500,7 @@ static void wq_update_node_max_active(struct workqueue_struct *wq, int off_cpu)
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index f72df2babe561..fc5c64712318a 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -1843,16 +1843,10 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+ 	if (unlikely(error)) {
+ 		/*
+ 		 * Let the filesystem know what portion of the current page
+-		 * failed to map. If the page hasn't been added to ioend, it
+-		 * won't be affected by I/O completion and we must unlock it
+-		 * now.
++		 * failed to map.
+ 		 */
+ 		if (wpc->ops->discard_folio)
+ 			wpc->ops->discard_folio(folio, pos);
+-		if (!count) {
+-			folio_unlock(folio);
+-			goto done;
+-		}
+ 	}
  
- 	lockdep_assert_held(&wq->mutex);
+ 	/*
+@@ -1861,6 +1855,16 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+ 	 * all the dirty bits in the folio here.
+ 	 */
+ 	iomap_clear_range_dirty(folio, 0, folio_size(folio));
++
++	/*
++	 * If the page hasn't been added to the ioend, it won't be affected by
++	 * I/O completion and we must unlock it now.
++	 */
++	if (error && !count) {
++		folio_unlock(folio);
++		goto done;
++	}
++
+ 	folio_start_writeback(folio);
+ 	folio_unlock(folio);
  
--	if (!cpumask_test_cpu(off_cpu, effective))
-+	if (off_cpu >= 0 && !cpumask_test_cpu(off_cpu, effective))
- 		off_cpu = -1;
- 
- 	total_cpus = cpumask_weight_and(effective, cpu_online_mask);
 -- 
 2.43.0
 
