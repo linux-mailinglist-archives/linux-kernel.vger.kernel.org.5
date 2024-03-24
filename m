@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-115152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0D65888D78
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:49:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 750F38896B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:56:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 904E31F2A552
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:49:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2120BB2FFE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0C428F3DE;
-	Mon, 25 Mar 2024 01:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E31F3CDFE4;
+	Mon, 25 Mar 2024 03:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rxdJ04Uv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TAixVkCe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B908828ECCC;
-	Sun, 24 Mar 2024 23:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E400B28ECD6;
+	Sun, 24 Mar 2024 23:49:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324171; cv=none; b=LUMi7BsFbLoinhZS1ckVZKMc7mmppRu4aXYzHedpKknF8L+n6iWdeE3hJkjhLGl7cSAYYXR2FxxQhgqCHy5i1oUP85SProLvSA/lNRFso3bCMaLt28uQstSM291Ojd2w2rjulBReBzCH8BXfSoJNbHRMwQpMm+RGkbN/x1sLKd4=
+	t=1711324173; cv=none; b=KbTenzeg64/eiX+L8UTO5VT28SbaSj5Y3cwoXA9/Hp1VxM6NgfwrhAG81M/Jib/KduSz/6oo8E4i0tWjXzryxs8kMnC/z0ekGAPTJoB6NkU6MabnTIYncxTodHXn1ewMDLZwmeqBZIEcxMS/hBCmPJXV3Dl0HTvSbRAjAqthoWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324171; c=relaxed/simple;
-	bh=6++RCpH2hCFj5OF3LzO27qxjf79fu8qDIIPUQYtLPu8=;
+	s=arc-20240116; t=1711324173; c=relaxed/simple;
+	bh=B3AEFgsF6eEwX1vG9pSxc1+bF7vd44baeJOC8d+07Rw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bnNYWb1dzSVS1S5NkFP3ZINfwyIrMUHUZaEnbx6Fez5gNtSkERm+7SOqhJv6UXUuyP63HwQdzgBapZP/b1/oJaUPSg27+rh9vv1pzE6FrhRZsobAwlqUXwRBFA2UrYU6+XiCHxsv4JoD3JZSwrxKi4jbBrvKRjB7zQ2diOBJlLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rxdJ04Uv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF73BC433F1;
-	Sun, 24 Mar 2024 23:49:29 +0000 (UTC)
+	 MIME-Version; b=k1Xt9bAJ96vAcwCN78WfQ1fzFWIswgb8nQQEDkTEv2kMM3nSLrXWi7MANfD0kqoj8vJ91QFzuiHx1/xZ+zvU5YZybQlcL7lPOdRCktNv7W92lp0b1b6YxbG/j2ZRRhm63OxdrbQV2vPgnh4sMMojPwSUIbxGQBmgDOabWLYNISQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TAixVkCe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0E5DC43390;
+	Sun, 24 Mar 2024 23:49:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324170;
-	bh=6++RCpH2hCFj5OF3LzO27qxjf79fu8qDIIPUQYtLPu8=;
+	s=k20201202; t=1711324171;
+	bh=B3AEFgsF6eEwX1vG9pSxc1+bF7vd44baeJOC8d+07Rw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rxdJ04UvI/8GHFUMp4kM2v28LZSlHMM0Be1SZUvaB1GA9SVwYVkbI67xgYcY71hAO
-	 hSj1bCM2MlgBHNBv+zHZ4jfJhsGt/urP4PU5LR0rpDF+ZF65zebqT9CDgU2PokSJiL
-	 RIh0hVBynb7z9a3UinK6OnUwTia6YjqB4G221hslqDuvlmuMC+b4M8JRkr3JVRXEZ3
-	 up8f43N/sq+Ie6aGw4xYKkIUDwnvEKyXq8WcH40pkFqDXFxLFGevZzaspd2Fxirfyc
-	 E/fJwJC4+z9eW9UfARkkezexUplZpLJBo4H2mMspcffA/o/7PmPIOv4TjBfzZn8VqH
-	 BaK52XixxRofw==
+	b=TAixVkCeQl2VExY3b2hJoLmE8jBYhiKogd6/lE3/fCtVt+ajoP5yLQTpcApMi/uFT
+	 X5d4C8y4lOnX19rtx5Z8lqx+U9HDuVNMUK3YmhWb7tjwZGnDLo5ay3LznGR/CTgzXm
+	 4mZ7fa5DozIVj2a3VF9xZyXvCyWLOFf1ab2gchpjsIo2HoBVE2ZpHBvzJWNuYJ/PfZ
+	 MVBrYJSzR5Sv6TgOuPQO7+jBROfQBrvfRbb2ghqJVS3FOQ4JJj4YGCE2Yc502ImGvL
+	 0/GhnRn518VO5VnZv1FLxwcVWyhFjjTjUuO3m1zpY2mKUlc/DYrNtyp7uezVQ7klCj
+	 jrphjkt2UWLMg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Sam Protsenko <semen.protsenko@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 163/183] tty: serial: samsung: fix tx_empty() to return TIOCSER_TEMT
-Date: Sun, 24 Mar 2024 19:46:16 -0400
-Message-ID: <20240324234638.1355609-164-sashal@kernel.org>
+Subject: [PATCH 5.4 164/183] kconfig: fix infinite loop when expanding a macro at the end of file
+Date: Sun, 24 Mar 2024 19:46:17 -0400
+Message-ID: <20240324234638.1355609-165-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -63,43 +61,45 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 314c2b399288f0058a8c5b6683292cbde5f1531b ]
+[ Upstream commit af8bbce92044dc58e4cc039ab94ee5d470a621f5 ]
 
-The core expects for tx_empty() either TIOCSER_TEMT when the tx is
-empty or 0 otherwise. s3c24xx_serial_txempty_nofifo() might return
-0x4, and at least uart_get_lsr_info() tries to clear exactly
-TIOCSER_TEMT (BIT(1)). Fix tx_empty() to return TIOCSER_TEMT.
+A macro placed at the end of a file with no newline causes an infinite
+loop.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Link: https://lore.kernel.org/r/20240119104526.1221243-2-tudor.ambarus@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[Test Kconfig]
+  $(info,hello)
+  \ No newline at end of file
+
+I realized that flex-provided input() returns 0 instead of EOF when it
+reaches the end of a file.
+
+Fixes: 104daea149c4 ("kconfig: reference environment variables directly and remove 'option env='")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/samsung.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ scripts/kconfig/lexer.l | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/samsung.c b/drivers/tty/serial/samsung.c
-index 24f9bd9101662..78d97dbfc18a8 100644
---- a/drivers/tty/serial/samsung.c
-+++ b/drivers/tty/serial/samsung.c
-@@ -800,11 +800,10 @@ static unsigned int s3c24xx_serial_tx_empty(struct uart_port *port)
- 		if ((ufstat & info->tx_fifomask) != 0 ||
- 		    (ufstat & info->tx_fifofull))
- 			return 0;
--
--		return 1;
-+		return TIOCSER_TEMT;
- 	}
+diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
+index 6354c905b006f..3bf90d01c39f9 100644
+--- a/scripts/kconfig/lexer.l
++++ b/scripts/kconfig/lexer.l
+@@ -305,8 +305,11 @@ static char *expand_token(const char *in, size_t n)
+ 	new_string();
+ 	append_string(in, n);
  
--	return s3c24xx_serial_txempty_nofifo(port);
-+	return s3c24xx_serial_txempty_nofifo(port) ? TIOCSER_TEMT : 0;
- }
- 
- /* no modem control lines */
+-	/* get the whole line because we do not know the end of token. */
+-	while ((c = input()) != EOF) {
++	/*
++	 * get the whole line because we do not know the end of token.
++	 * input() returns 0 (not EOF!) when it reachs the end of file.
++	 */
++	while ((c = input()) != 0) {
+ 		if (c == '\n') {
+ 			unput(c);
+ 			break;
 -- 
 2.43.0
 
