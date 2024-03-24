@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-113424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2266A888436
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB21888438
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEE682837F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:33:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 790DB283CCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E70F1A9288;
-	Sun, 24 Mar 2024 22:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D471A929A;
+	Sun, 24 Mar 2024 22:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SXGNWHK7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RpbaADs5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF5D1A926D;
-	Sun, 24 Mar 2024 22:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D58A1A9280;
+	Sun, 24 Mar 2024 22:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320226; cv=none; b=tbnpkU98OsdQrTe2zIB7Y3fx3/SzUmBNdx2T/3O2IGhHeH+DydNS30M9EyKIxtPXu2t7IqIG9cIp200QAbOqhQdf9+hl9RM2/ytD3S2vzW3EBcYvP7TLLDk1wRo9FeTb6ZLiYWWN/pa7/Lnxnsme4HAgAIa7TLmtZPK8I+blqEM=
+	t=1711320227; cv=none; b=U8e788cCiAMMtNzYNA5v/Rt70R4uANwydluNputnkyafV+vUZvWrlNRp5tPHLvKoFmLpiLnvzpVT4o0sPMFiy8j0QeRCfAyBzItTPLuRSw6bFtnEegqXx37xVjvAzpK+IQa/vJVnFOd4FzV9uXT+7hyvazgsliwtE/ZJxiSC+WI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320226; c=relaxed/simple;
-	bh=sp+I6BBlIcJS79pai/X5kIFjSazMkV/hJKZ8rNYUafs=;
+	s=arc-20240116; t=1711320227; c=relaxed/simple;
+	bh=lMDwXgjBgx1W6oFjiAwsW9y0JAZStVheK4KXw9VyuEQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q6ITIfne2tzXI6Sr7P5km+i/EjAFPO/68IUZ0KD4OxZ5Qbfh7m9u/jiIH8VmyS6CotuVQ4eoO1LthsFCE/GD2ngeoBXk8FgIkX3HIXq4aHehMXrRqcAefCGXvU6UU8TxkIDOR84SPTON18cPB3in128z/VTKZCeMb+ZQwXUu8S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SXGNWHK7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F52C43399;
-	Sun, 24 Mar 2024 22:43:45 +0000 (UTC)
+	 MIME-Version; b=GkY4B8ZGcDnI2BErSS49NGvAxwRMaAn5f4AazTMWJtoNge1D/UYrnejbIL5NmVNZHtM5r3fqetXm6kY3ekrsNqND+IjaLF90EYWtrCgjrE6AjmQ5WDGigUlkCiYlOSvORq1Gz+e5sSzm6AGRicrUyb22mRdR/H+QsJ+DeI1ewtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RpbaADs5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E880C43390;
+	Sun, 24 Mar 2024 22:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320226;
-	bh=sp+I6BBlIcJS79pai/X5kIFjSazMkV/hJKZ8rNYUafs=;
+	s=k20201202; t=1711320227;
+	bh=lMDwXgjBgx1W6oFjiAwsW9y0JAZStVheK4KXw9VyuEQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SXGNWHK7LRs6oIwPqFnA9q2Nvj2e8J6iQpups3jsTT5xtm5n+p4X3o+XlZ7izNjbu
-	 Zu7zJ1g/o2GWSG0jldT+TK1e2pEA2V7bySS0KS3F+/uPCBO68kKxfoO+PjdU0/6tO4
-	 QISQ7JpfBO30JtNTEk7+xBlLypZGficcd58UeKA3YqZigGUgz4HmiF3lsG9inWytZ2
-	 synSBYFM20JnUEP2YD6yhcJ9gskjMQPEQFQRpMr+7Vn0a9ATFQWAh4mOiNJKh+MLzi
-	 Ql1f9PcpeIKpJF/jVmT2M5LcRRocAnj4+jU3dBj5ktdVYl0+jlE5WlKIHgcfVBICeQ
-	 u/5+BRhQrSZSQ==
+	b=RpbaADs53AwIPksvhfmA0Q3EGq2ZO1mRFMxhuPwp7FFcZPkbNmBjzA2yXLEdEErIw
+	 42ftwfg5O4K5RgI+1nHruVNy0+w0YiIhveKC54ZM1A90adI2z9IkuJYWTRIxFNh2Tf
+	 89hoqf2QPlQHyxdVDl0AND6FLIRJvI2ELagyNtTxiy5JQODOVZpWnmlFxquC5E1FnL
+	 LTEDvy1Xh10wAP4nn0uurWmqxxNpoG+t0Me8iUZKlhYTQOgRkSYj/R08wZo//bUE+3
+	 9sHJIzCQyjj9g74qwRwrpEHnv7vdoFbFhuSnary/k8Cs3LwujGu6D9/JIINCZY1seR
+	 brVi0pWPspkEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sam Ravnborg <sam@ravnborg.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Stephen Boyd <sboyd@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 533/715] sparc32: Fix section mismatch in leon_pci_grpci
-Date: Sun, 24 Mar 2024 18:31:52 -0400
-Message-ID: <20240324223455.1342824-534-sashal@kernel.org>
+Subject: [PATCH 6.8 534/715] clk: Fix clk_core_get NULL dereference
+Date: Sun, 24 Mar 2024 18:31:53 -0400
+Message-ID: <20240324223455.1342824-535-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,60 +62,54 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Sam Ravnborg <sam@ravnborg.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-[ Upstream commit 24338a6ae13cb743ced77da1b3a12c83f08a0c96 ]
+[ Upstream commit e97fe4901e0f59a0bfd524578fe3768f8ca42428 ]
 
-Passing a datastructre marked _initconst to platform_driver_register()
-is wrong. Drop the __initconst notation.
+It is possible for clk_core_get to dereference a NULL in the following
+sequence:
 
-This fixes the following warnings:
+clk_core_get()
+    of_clk_get_hw_from_clkspec()
+        __of_clk_get_hw_from_provider()
+            __clk_get_hw()
 
-WARNING: modpost: vmlinux: section mismatch in reference: grpci1_of_driver+0x30 (section: .data) -> grpci1_of_match (section: .init.rodata)
-WARNING: modpost: vmlinux: section mismatch in reference: grpci2_of_driver+0x30 (section: .data) -> grpci2_of_match (section: .init.rodata)
+__clk_get_hw() can return NULL which is dereferenced by clk_core_get() at
+hw->core.
 
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Andreas Larsson <andreas@gaisler.com>
-Fixes: 4154bb821f0b ("sparc: leon: grpci1: constify of_device_id")
-Fixes: 03949b1cb9f1 ("sparc: leon: grpci2: constify of_device_id")
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Reviewed-by: Andreas Larsson <andreas@gaisler.com>
-Tested-by: Andreas Larsson <andreas@gaisler.com>
-Signed-off-by: Andreas Larsson <andreas@gaisler.com>
-Link: https://lore.kernel.org/r/20240224-sam-fix-sparc32-all-builds-v2-7-1f186603c5c4@ravnborg.org
+Prior to commit dde4eff47c82 ("clk: Look for parents with clkdev based
+clk_lookups") the check IS_ERR_OR_NULL() was performed which would have
+caught the NULL.
+
+Reading the description of this function it talks about returning NULL but
+that cannot be so at the moment.
+
+Update the function to check for hw before dereferencing it and return NULL
+if hw is NULL.
+
+Fixes: dde4eff47c82 ("clk: Look for parents with clkdev based clk_lookups")
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Link: https://lore.kernel.org/r/20240302-linux-next-24-03-01-simple-clock-fixes-v1-1-25f348a5982b@linaro.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sparc/kernel/leon_pci_grpci1.c | 2 +-
- arch/sparc/kernel/leon_pci_grpci2.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/clk/clk.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/sparc/kernel/leon_pci_grpci1.c b/arch/sparc/kernel/leon_pci_grpci1.c
-index 8700a0e3b0df7..b2b639bee0684 100644
---- a/arch/sparc/kernel/leon_pci_grpci1.c
-+++ b/arch/sparc/kernel/leon_pci_grpci1.c
-@@ -697,7 +697,7 @@ static int grpci1_of_probe(struct platform_device *ofdev)
- 	return err;
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 2253c154a8248..20c4b28fed061 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -418,6 +418,9 @@ static struct clk_core *clk_core_get(struct clk_core *core, u8 p_index)
+ 	if (IS_ERR(hw))
+ 		return ERR_CAST(hw);
+ 
++	if (!hw)
++		return NULL;
++
+ 	return hw->core;
  }
  
--static const struct of_device_id grpci1_of_match[] __initconst = {
-+static const struct of_device_id grpci1_of_match[] = {
- 	{
- 	 .name = "GAISLER_PCIFBRG",
- 	 },
-diff --git a/arch/sparc/kernel/leon_pci_grpci2.c b/arch/sparc/kernel/leon_pci_grpci2.c
-index 60b6bdf7761fb..ac2acd62a24ec 100644
---- a/arch/sparc/kernel/leon_pci_grpci2.c
-+++ b/arch/sparc/kernel/leon_pci_grpci2.c
-@@ -889,7 +889,7 @@ static int grpci2_of_probe(struct platform_device *ofdev)
- 	return err;
- }
- 
--static const struct of_device_id grpci2_of_match[] __initconst = {
-+static const struct of_device_id grpci2_of_match[] = {
- 	{
- 	 .name = "GAISLER_GRPCI2",
- 	 },
 -- 
 2.43.0
 
