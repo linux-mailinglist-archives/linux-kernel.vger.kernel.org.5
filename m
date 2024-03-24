@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8518988839D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:15:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C93288839F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2CC9280DAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:15:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6F76281A1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B54EB199E95;
-	Sun, 24 Mar 2024 22:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA07199EB8;
+	Sun, 24 Mar 2024 22:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b1Hd5Cyl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JRAhbIcF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFAB5198B75;
-	Sun, 24 Mar 2024 22:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE750199E9A;
+	Sun, 24 Mar 2024 22:42:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320150; cv=none; b=NjAT0M13iTautpzJanwgl+JUt44uC1d/YKiFL1GcCEKaLL/sqXcFEsq+jTy69nQFkYer461sXh+6Pk2I8iMPw2JcFd2FhOVnUUytT0l3060Zv+290PsFo+VLcvM4KlROHTKLBWxc9Cvqm3l/g4inEnQoQUjrc2KUZIJPWf5FE3E=
+	t=1711320150; cv=none; b=e7FiqfQDEAG7pjGKfVFDg6OEoc5Ch55V4Ps/wFmhZngqFeAlehF4J0kilxbuHpm1DDzjqa/tHZEtNMXuzvOvyMAmcx2FZv9iedZ4qxdoLqitQCCBUchSH71LxP5VS6TOQIXbXVIMTlO10CzvLom3v5qzcY6bWmlBPYrlSPa32rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320150; c=relaxed/simple;
-	bh=1csZ9x4MyVNb8NfT0+Ah6w2V60OsIm+IajesknxVD8Y=;
+	bh=QDq+Wacgo7Tvlg5d3XH68gvV/+2+r70i/mI+JetZZfg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kr1HpMhteQxF7wYee487pMwdmVPs6nV+hrtYa/knL8P9+B0MCd0ZMZCa+n7o78Uu/D8uc1QyDCzghTvTGPK4Ui3J4+LTvr/CRVDt4oHz3axh6f/wZulZ53K4RQpFysPgo09W/KS0IfdIZ3orWpqe5W1PIfP8JnGJV02JLU5lEQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b1Hd5Cyl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 335C0C43394;
+	 MIME-Version:Content-Type; b=F6qfYrtLKv3ycPSLTjC6ipwtXLreit7/0Nn5m7xhqQ7BnWzCsVLryvj1novMI3Ff1azj25dGFuL0QwY1TxruIICv3Gf11Sq8ByH3twNWtN80Mb4CyL6rK1Sg4S63B0weTNdEnCxDUTZx2VzgYlqEoASfCxbpt2dojBScMHnTN8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JRAhbIcF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16155C43390;
 	Sun, 24 Mar 2024 22:42:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320149;
-	bh=1csZ9x4MyVNb8NfT0+Ah6w2V60OsIm+IajesknxVD8Y=;
+	s=k20201202; t=1711320150;
+	bh=QDq+Wacgo7Tvlg5d3XH68gvV/+2+r70i/mI+JetZZfg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b1Hd5CylH6jdeTwtHIEibNMBoljLlZGVHzuZVqqsfOEb3fLF2CWxoOupfvsmyqYI3
-	 gk/hatObXj+9Vl2BJv+D/nSC2xkeIkrBfGoVrqEBh7T9eZgBzPdNgnisWVxlo9ZOIu
-	 c0vkm3GydZEEJ3j5cF6g33ieZE85E157bhb71l23ghfC/JeB2r2fgOtrfzoD1nrylF
-	 vboJkOkfiB0a9gnYXCtmGmzkVBUhyCQ/ZT0HbQ6e70zlesXuuHbejV7nI5OZi1aKcb
-	 e76GhkGVSmDWvXcp/DvXoSuxO+kDf6bfMcEOasW7wvUc4+oqi8VyLqzyI5Yjtypp/J
-	 6uMoCDSjuJP2w==
+	b=JRAhbIcFGuqFZZmLoD8TuJeTSttmD4J8YsY5tlvpwG8e50em24LAHa6xvOMfcNlon
+	 RGi3bdo2ff9V7QL72G9kHCLqVd6CsbYe6hNCyyHQMmSHOijcqj1PeldlWa3md7jE8o
+	 IBZpAjBTDH0/W+F4M5NDKkJU+iqI/nEc1tnsmXJXzgT8323HEHlyMkwxvxBjHGD2fu
+	 n3swNQcceVIVwclFsNTAxh/IKQ2LEV6Wx29roNlAGN1bdXJawrNU0+qKvVCauoIzSB
+	 64vu1wuVzMGVfTa8LSP9LMtU9l5Ve8X7iTuXrZzB6VhJB5OyaRISks8wPh/Xqjk/T+
+	 Xa/HxJsX1GP1A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Thierry Reding <treding@nvidia.com>,
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 458/715] drm/tegra: put drm_gem_object ref on error in tegra_fb_create
-Date: Sun, 24 Mar 2024 18:30:37 -0400
-Message-ID: <20240324223455.1342824-459-sashal@kernel.org>
+Subject: [PATCH 6.8 459/715] tty: mips_ejtag_fdc: Fix passing incompatible pointer type warning
+Date: Sun, 24 Mar 2024 18:30:38 -0400
+Message-ID: <20240324223455.1342824-460-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -58,41 +58,50 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Fedor Pchelkin <pchelkin@ispras.ru>
+From: Serge Semin <fancer.lancer@gmail.com>
 
-[ Upstream commit 32e5a120a5105bce01561978ee55aee8e40ac0dc ]
+[ Upstream commit 188942f05ce45f80c06f7242ad7478bd204c3387 ]
 
-Inside tegra_fb_create(), drm_gem_object_lookup() increments ref count of
-the found object. But if the following size check fails then the last
-found object's ref count should be put there as the unreferencing loop
-can't detect this situation.
+mips_ejtag_fdc_encode() method expects having a first argument passed of
+the "u8 **" type, meanwhile the driver passes the "const char **" type.
+That causes the next build-warning:
 
-Found by Linux Verification Center (linuxtesting.org).
+drivers/tty/mips_ejtag_fdc.c: In function ‘mips_ejtag_fdc_console_write’:
+drivers/tty/mips_ejtag_fdc.c:343:32: error: passing argument 1 of ‘mips_ejtag_fdc_encode’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+   word = mips_ejtag_fdc_encode(&buf_ptr, &buf_len, 1);
+                                ^
+drivers/tty/mips_ejtag_fdc.c:216:24: note: expected ‘const u8 ** {aka const unsigned char **}’ but argument is of type ‘const char **’
+ static struct fdc_word mips_ejtag_fdc_encode(const u8 **ptrs,
+                        ^~~~~~~~~~~~~~~~~~~~~
 
-Fixes: de2ba664c30f ("gpu: host1x: drm: Add memory manager and fb")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231215093356.12067-1-pchelkin@ispras.ru
+Fix it by altering the type of the pointer which is passed to the
+mips_ejtag_fdc_encode() method.
+
+Fixes: ce7cbd9a6c81 ("tty: mips_ejtag_fdc: use u8 for character pointers")
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/fb.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/mips_ejtag_fdc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tegra/fb.c b/drivers/gpu/drm/tegra/fb.c
-index a719af1dc9a57..46170753699dc 100644
---- a/drivers/gpu/drm/tegra/fb.c
-+++ b/drivers/gpu/drm/tegra/fb.c
-@@ -159,6 +159,7 @@ struct drm_framebuffer *tegra_fb_create(struct drm_device *drm,
- 
- 		if (gem->size < size) {
- 			err = -EINVAL;
-+			drm_gem_object_put(gem);
- 			goto unreference;
- 		}
+diff --git a/drivers/tty/mips_ejtag_fdc.c b/drivers/tty/mips_ejtag_fdc.c
+index aac80b69a069c..afbf7738c7c47 100644
+--- a/drivers/tty/mips_ejtag_fdc.c
++++ b/drivers/tty/mips_ejtag_fdc.c
+@@ -309,7 +309,7 @@ static void mips_ejtag_fdc_console_write(struct console *c, const char *s,
+ 	unsigned int i, buf_len, cpu;
+ 	bool done_cr = false;
+ 	char buf[4];
+-	const char *buf_ptr = buf;
++	const u8 *buf_ptr = buf;
+ 	/* Number of bytes of input data encoded up to each byte in buf */
+ 	u8 inc[4];
  
 -- 
 2.43.0
