@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E17B6888CC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:30:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E314888C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:25:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB7F1B2151E
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BEF91C2A163
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2AD517CF45;
-	Mon, 25 Mar 2024 00:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4681C17F6;
+	Mon, 25 Mar 2024 00:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ydh3eR7A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pIsHpqcK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C157117C6D2;
-	Sun, 24 Mar 2024 23:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A582917C6D9;
+	Sun, 24 Mar 2024 23:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323801; cv=none; b=aYtM2fXZ0dtwX23Lj7OtbLEMEl8eoBDD0JthseSOlbVU5mSWMOq8BhMcPQHWS4xhXcXEQmuidZDlMxJu6FJrzosIvuWqhh1Yu2+QhkOeLp4/FKSYYGVvtnFNB9chUrzDTnYxFkrwllQPO+SSELU8dx67IZQgiKInMtaAWC1+aog=
+	t=1711323802; cv=none; b=t4JQV2rd9nkyMNxOVj7ArhcripbBnwjjuqlpQlG50bDeCATfQbdQ1uI+CtYg90/qagMX3nTMD2Itgu3qdTlsobx3wp83ISqxWyddS9UMwwStWm1AbOjQzNaHf7W/DemE4CprXCJGpMaurxiYKybUwjJwXVKbNX4gsW1msBUhYfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323801; c=relaxed/simple;
-	bh=tfhiyz79ICdQeKvhnCLH9GxQyaU1564g7hI9bfQA7x4=;
+	s=arc-20240116; t=1711323802; c=relaxed/simple;
+	bh=ljODnJprINJouMOUr8OzHtLvij5iu2kW/2nFcfMeJ7A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hv0WspnBwoGC2cZHbv75nJ4lPmZ0d+38o87tzTMDNtV+roVQgfI0fvMoAEWqDbF7OZ/I+jkO0mlzrsXsxujC/eV/dJC7hRly3/j8YVj42NWAXT6QyJ5HWGyccohJXIjLbYB1z0WSx67GuenNy8xnPzAw0XnISFwDVcNeLGrZX34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ydh3eR7A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA0D8C43394;
-	Sun, 24 Mar 2024 23:43:19 +0000 (UTC)
+	 MIME-Version; b=Z/0l+xjfhdqmi5bCO+SoNuObCRH36js20NBtxeAlxJx+eCODbVRhBbSAOAo3ty9irz0bcgmMo4WYC+5MQrO1JWX0s6xNygWVyrTM8tjVxQ00OHB/1ZxxEbgGwDcnrR26nattEUcKv/Z/NDG6bFln4tCYaRnunFdx+IOIFHfuJ6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pIsHpqcK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4CDEC433A6;
+	Sun, 24 Mar 2024 23:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323800;
-	bh=tfhiyz79ICdQeKvhnCLH9GxQyaU1564g7hI9bfQA7x4=;
+	s=k20201202; t=1711323801;
+	bh=ljODnJprINJouMOUr8OzHtLvij5iu2kW/2nFcfMeJ7A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ydh3eR7A4KnYNTmNgsBCUwj2ZUhy2WaCkRSugq/pwJgOD33j+yRS0Fl9RKv/Cfiyv
-	 jde8JsBVGtOvrK6B6fEXkkGr8MyiBHTdyxaIFwXdR9chtohUC7E7jd7FYWbI6B1Ie5
-	 dNLbOH6Pn2bnM7uz2QRzQJdpq8AwHyLUvmvuJ/pF+6dnIg+XGq9O+ko6rdtnr0j0Re
-	 x1sl2QurzRn7CSyETTbnD+q0UiNMNZ9zNswIcwpMhAmYz2niAmvGgb1i+1Kfic2f5/
-	 9nC+eMmc3A2h7N2aMSMXlSjaTSlRmh49wqYYVIId39OlRQl0z2eYcHqsopj02Nx9Xh
-	 IbLDoYZRvmz7A==
+	b=pIsHpqcKNo69LmjozyN9ZLy+qWIGeX7Qm5aWqgPxnMw45Baa+USU4hO+vYTdIz4r9
+	 6o0yDsFkbC+cAE/teXlJo4IbZTNI5hTWztBNn7uDOs3zz/mEz2BfKfh1QUz48sWUnx
+	 hUz6jmiod05GXEs3ruBNcabeA6Wb2wfvVHkZvi11zM7o2O6j8vHMQPOGJAEPVFE33A
+	 odwF4DrToAmnSewYoWCrxsTpLTS/8wLYzKx8bzGFPGtHaqzGjfroKA440E4v03Z2nP
+	 iqAqGtbT0y4ZbGmh/6YbEUb7KlxviiIsFjUqFkoSPe3hRjO+Gj1hgu3TVQnRBbpgFO
+	 aUL6knntn/Psg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kajol Jain <kjain@linux.ibm.com>,
-	Akanksha J N <akanksha@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
+Cc: Paloma Arellano <quic_parellan@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 178/238] powerpc/hv-gpci: Fix the H_GET_PERF_COUNTER_INFO hcall return value checks
-Date: Sun, 24 Mar 2024 19:39:26 -0400
-Message-ID: <20240324234027.1354210-179-sashal@kernel.org>
+Subject: [PATCH 5.10 179/238] drm/msm/dpu: add division of drm_display_mode's hskew parameter
+Date: Sun, 24 Mar 2024 19:39:27 -0400
+Message-ID: <20240324234027.1354210-180-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -63,115 +62,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kajol Jain <kjain@linux.ibm.com>
+From: Paloma Arellano <quic_parellan@quicinc.com>
 
-[ Upstream commit ad86d7ee43b22aa2ed60fb982ae94b285c1be671 ]
+[ Upstream commit 551ee0f210991d25f336bc27262353bfe99d3eed ]
 
-Running event hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/
-in one of the system throws below error:
+Setting up the timing engine when the physical encoder has a split role
+neglects dividing the drm_display_mode's hskew parameter. Let's fix this
+since this must also be done in preparation for implementing YUV420 over
+DP.
 
- ---Logs---
- # perf list | grep hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles
-  hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=?/[Kernel PMU event]
-
- # perf stat -v -e hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/ sleep 2
-Using CPUID 00800200
-Control descriptor is not initialized
-Warning:
-hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/ event is not supported by the kernel.
-failed to read counter hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/
-
- Performance counter stats for 'system wide':
-
-   <not supported>      hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/
-
-       2.000700771 seconds time elapsed
-
-The above error is because of the hcall failure as required
-permission "Enable Performance Information Collection" is not set.
-Based on current code, single_gpci_request function did not check the
-error type incase hcall fails and by default returns EINVAL. But we can
-have other reasons for hcall failures like H_AUTHORITY/H_PARAMETER with
-detail_rc as GEN_BUF_TOO_SMALL, for which we need to act accordingly.
-
-Fix this issue by adding new checks in the single_gpci_request and
-h_gpci_event_init functions.
-
-Result after fix patch changes:
-
- # perf stat -e hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/ sleep 2
-Error:
-No permission to enable hv_gpci/dispatch_timebase_by_processor_processor_time_in_timebase_cycles,phys_processor_idx=0/ event.
-
-Fixes: 220a0c609ad1 ("powerpc/perf: Add support for the hv gpci (get performance counter info) interface")
-Reported-by: Akanksha J N <akanksha@linux.ibm.com>
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20240229122847.101162-1-kjain@linux.ibm.com
+Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Signed-off-by: Paloma Arellano <quic_parellan@quicinc.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Patchwork: https://patchwork.freedesktop.org/patch/579605/
+Link: https://lore.kernel.org/r/20240222194025.25329-3-quic_parellan@quicinc.com
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/perf/hv-gpci.c | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/perf/hv-gpci.c b/arch/powerpc/perf/hv-gpci.c
-index 28b770bbc10b4..2a054de80e50b 100644
---- a/arch/powerpc/perf/hv-gpci.c
-+++ b/arch/powerpc/perf/hv-gpci.c
-@@ -164,6 +164,20 @@ static unsigned long single_gpci_request(u32 req, u32 starting_index,
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+index 805e059b50b71..33880f66625e6 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+@@ -265,12 +265,14 @@ static void dpu_encoder_phys_vid_setup_timing_engine(
+ 		mode.htotal >>= 1;
+ 		mode.hsync_start >>= 1;
+ 		mode.hsync_end >>= 1;
++		mode.hskew >>= 1;
  
- 	ret = plpar_hcall_norets(H_GET_PERF_COUNTER_INFO,
- 			virt_to_phys(arg), HGPCI_REQ_BUFFER_SIZE);
-+
-+	/*
-+	 * ret value as 'H_PARAMETER' with detail_rc as 'GEN_BUF_TOO_SMALL',
-+	 * specifies that the current buffer size cannot accommodate
-+	 * all the information and a partial buffer returned.
-+	 * Since in this function we are only accessing data for a given starting index,
-+	 * we don't need to accommodate whole data and can get required count by
-+	 * accessing first entry data.
-+	 * Hence hcall fails only incase the ret value is other than H_SUCCESS or
-+	 * H_PARAMETER with detail_rc value as GEN_BUF_TOO_SMALL(0x1B).
-+	 */
-+	if (ret == H_PARAMETER && be32_to_cpu(arg->params.detail_rc) == 0x1B)
-+		ret = 0;
-+
- 	if (ret) {
- 		pr_devel("hcall failed: 0x%lx\n", ret);
- 		goto out;
-@@ -228,6 +242,7 @@ static int h_gpci_event_init(struct perf_event *event)
- {
- 	u64 count;
- 	u8 length;
-+	unsigned long ret;
- 
- 	/* Not our event */
- 	if (event->attr.type != event->pmu->type)
-@@ -258,13 +273,23 @@ static int h_gpci_event_init(struct perf_event *event)
+ 		DPU_DEBUG_VIDENC(phys_enc,
+-			"split_role %d, halve horizontal %d %d %d %d\n",
++			"split_role %d, halve horizontal %d %d %d %d %d\n",
+ 			phys_enc->split_role,
+ 			mode.hdisplay, mode.htotal,
+-			mode.hsync_start, mode.hsync_end);
++			mode.hsync_start, mode.hsync_end,
++			mode.hskew);
  	}
  
- 	/* check if the request works... */
--	if (single_gpci_request(event_get_request(event),
-+	ret = single_gpci_request(event_get_request(event),
- 				event_get_starting_index(event),
- 				event_get_secondary_index(event),
- 				event_get_counter_info_version(event),
- 				event_get_offset(event),
- 				length,
--				&count)) {
-+				&count);
-+
-+	/*
-+	 * ret value as H_AUTHORITY implies that partition is not permitted to retrieve
-+	 * performance information, and required to set
-+	 * "Enable Performance Information Collection" option.
-+	 */
-+	if (ret == H_AUTHORITY)
-+		return -EPERM;
-+
-+	if (ret) {
- 		pr_devel("gpci hcall failed\n");
- 		return -EINVAL;
- 	}
+ 	drm_mode_to_intf_timing_params(phys_enc, &mode, &timing_params);
 -- 
 2.43.0
 
