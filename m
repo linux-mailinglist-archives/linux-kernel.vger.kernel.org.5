@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-115065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9030F888CD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:32:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D4888894B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C18541C2A632
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:32:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DCBBB33C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:17:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251792F2D90;
-	Mon, 25 Mar 2024 01:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31CEA1C320A;
+	Mon, 25 Mar 2024 01:01:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5Ift529"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AJgnNNXw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566732892BF;
-	Sun, 24 Mar 2024 23:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8257F2892C5;
+	Sun, 24 Mar 2024 23:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324040; cv=none; b=qztxjFB3QacPciLg+puMwEtT/o/Yt8VlMtKxcjGugRrQNqF4vIEo7o1PMmDImJu20DukdDb6mrIryK53wLIY1fYWTnQafILjSfHzq1s6bncRPaYzjE1wot2e8XMU3ojDCHNl34Iasilqyc9Ht2D1aslB3sTqsgJyBCy7LLtmepI=
+	t=1711324041; cv=none; b=XKjVb0pr9VTuXu2DbasqzD7o1LswNVua4sQzl1ClWC8eXzHK+jwKLUJ8nPgabGD7Wr373uxPqPRu6n0RYFgClvyd1IifNI/AAnWwfLqsArGtBAFJ9J/kZgcKCHKARoFziGUTEjaPuvsoXA3LBUadPsR8ArXY5zUi3sRI4Cmpu7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324040; c=relaxed/simple;
-	bh=/7/1b9rks8twEubNpUt8qsAQs2IeCT+nNQFQ6FdH8sI=;
+	s=arc-20240116; t=1711324041; c=relaxed/simple;
+	bh=3LozpwnbnWU3VCjQuiw9+8pmki9smLffvfOJBovQu50=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pTOe3nHqr/F1DEir8A4OSS6N4MSJMM9gfnlETDm3XCOluu0aORmPmyubzGCnGLNQUzFWGFMhTapy1ZMn6bKuZZ2lu2gDvoih2HlDyGmz3cKBn2y9V5762G57H5HskS9KAFakK082+LhwZzZv1ELVG904T/kLD8mzzl5UN/Cqdjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5Ift529; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92922C43399;
-	Sun, 24 Mar 2024 23:47:18 +0000 (UTC)
+	 MIME-Version; b=gh3Pw6NWBNXxshARbodgFP5hQyl7h874kWK1C3ABWRkXucqOIRHPfTNlchRw6go0SSi12Td1i16d8FmaZigcLzoxPjT4NfeR2BoC4tUVHyo6TsJzT2XRjTkwt9isvA4mCS1Nymr1LRiazcIqGTTp/lBYwJsTru+vdEfso0BzfVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AJgnNNXw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A3A3C43390;
+	Sun, 24 Mar 2024 23:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324039;
-	bh=/7/1b9rks8twEubNpUt8qsAQs2IeCT+nNQFQ6FdH8sI=;
+	s=k20201202; t=1711324040;
+	bh=3LozpwnbnWU3VCjQuiw9+8pmki9smLffvfOJBovQu50=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b5Ift529qPMO+w4GK6j9ST7lPrONGI5MQKjCFHVDRj3xFaAAFHtVDz2fbSSCfP5ZP
-	 w73QMkGC+1CO8P/f/mKAMY4K8dJHK6ypS/PKaWudCrZKVIWzU85UW7HQ6mGswVG4fi
-	 ybZq/msTzyAu4kzdTMEub0KKntT/wcLxJdXH2IOXat2F88M6MQlBhiOpIUaL6XyjkH
-	 CBIEnqtQqnkgQZTouUE0UmkYbO9UcTWkjSg9mTJ2vzEWgYmcV+i9eez4ZqRegjLjRe
-	 +WhhxVvDbsf/XnTcR8JZXSYPP8GiSMhPnsZX0bnfkW6mpoR6W0pIe1WkNi0aMhJFjs
-	 Jg6ckSnHSbTAA==
+	b=AJgnNNXwd24AnOBBIgwTwfDI3qeKh6r8toL4eWVg2oFGj74b9WxiAV0sDfGbYeWtu
+	 s5R3+BKrcE04GiRjUBLFsIOJZILeaLIjrDYABQMDSxin2dlgfY0JAMFD1Arv2Fb4Z3
+	 2pus4oa9rw62H+2/CEgc7QHmTOxk/vWH8aVMIukSX4I6aZB098tsoXCP4ACRKs3VM6
+	 Zd4lULv5NM2kIsnf+jY3z9DEj5N/u2r9N2PWCW3EPXNWPXkbGijAb0k5yFJIx8ytdS
+	 FQ1/uztQnN3gt2fGc7/yYOYALH+TzOKeBWQxcxci3LGXzjHRlXl86f0dSH3zV4X0TS
+	 aErI2dkvGWpFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Anastasia Belova <abelova@astralinux.ru>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	Guillaume Nault <gnault@redhat.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/183] cpufreq: brcmstb-avs-cpufreq: add check for cpufreq_cpu_get's return value
-Date: Sun, 24 Mar 2024 19:44:13 -0400
-Message-ID: <20240324234638.1355609-41-sashal@kernel.org>
+Subject: [PATCH 5.4 041/183] sock_diag: annotate data-races around sock_diag_handlers[family]
+Date: Sun, 24 Mar 2024 19:44:14 -0400
+Message-ID: <20240324234638.1355609-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -62,36 +65,72 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Anastasia Belova <abelova@astralinux.ru>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit f661017e6d326ee187db24194cabb013d81bc2a6 ]
+[ Upstream commit efd402537673f9951992aea4ef0f5ff51d858f4b ]
 
-cpufreq_cpu_get may return NULL. To avoid NULL-dereference check it
-and return 0 in case of error.
+__sock_diag_cmd() and sock_diag_bind() read sock_diag_handlers[family]
+without a lock held.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Use READ_ONCE()/WRITE_ONCE() annotations to avoid potential issues.
 
-Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
-Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fixes: 8ef874bfc729 ("sock_diag: Move the sock_ code to net/core/")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Guillaume Nault <gnault@redhat.com>
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/brcmstb-avs-cpufreq.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/core/sock_diag.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-index 541486217984b..1302e1900dcb1 100644
---- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
-+++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-@@ -457,6 +457,8 @@ static bool brcm_avs_is_firmware_loaded(struct private_data *priv)
- static unsigned int brcm_avs_cpufreq_get(unsigned int cpu)
- {
- 	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-+	if (!policy)
-+		return 0;
- 	struct private_data *priv = policy->driver_data;
+diff --git a/net/core/sock_diag.c b/net/core/sock_diag.c
+index c13ffbd33d8d6..315a5200d170b 100644
+--- a/net/core/sock_diag.c
++++ b/net/core/sock_diag.c
+@@ -188,7 +188,7 @@ int sock_diag_register(const struct sock_diag_handler *hndl)
+ 	if (sock_diag_handlers[hndl->family])
+ 		err = -EBUSY;
+ 	else
+-		sock_diag_handlers[hndl->family] = hndl;
++		WRITE_ONCE(sock_diag_handlers[hndl->family], hndl);
+ 	mutex_unlock(&sock_diag_table_mutex);
  
- 	return brcm_avs_get_frequency(priv->base);
+ 	return err;
+@@ -204,7 +204,7 @@ void sock_diag_unregister(const struct sock_diag_handler *hnld)
+ 
+ 	mutex_lock(&sock_diag_table_mutex);
+ 	BUG_ON(sock_diag_handlers[family] != hnld);
+-	sock_diag_handlers[family] = NULL;
++	WRITE_ONCE(sock_diag_handlers[family], NULL);
+ 	mutex_unlock(&sock_diag_table_mutex);
+ }
+ EXPORT_SYMBOL_GPL(sock_diag_unregister);
+@@ -222,7 +222,7 @@ static int __sock_diag_cmd(struct sk_buff *skb, struct nlmsghdr *nlh)
+ 		return -EINVAL;
+ 	req->sdiag_family = array_index_nospec(req->sdiag_family, AF_MAX);
+ 
+-	if (sock_diag_handlers[req->sdiag_family] == NULL)
++	if (READ_ONCE(sock_diag_handlers[req->sdiag_family]) == NULL)
+ 		sock_load_diag_module(req->sdiag_family, 0);
+ 
+ 	mutex_lock(&sock_diag_table_mutex);
+@@ -281,12 +281,12 @@ static int sock_diag_bind(struct net *net, int group)
+ 	switch (group) {
+ 	case SKNLGRP_INET_TCP_DESTROY:
+ 	case SKNLGRP_INET_UDP_DESTROY:
+-		if (!sock_diag_handlers[AF_INET])
++		if (!READ_ONCE(sock_diag_handlers[AF_INET]))
+ 			sock_load_diag_module(AF_INET, 0);
+ 		break;
+ 	case SKNLGRP_INET6_TCP_DESTROY:
+ 	case SKNLGRP_INET6_UDP_DESTROY:
+-		if (!sock_diag_handlers[AF_INET6])
++		if (!READ_ONCE(sock_diag_handlers[AF_INET6]))
+ 			sock_load_diag_module(AF_INET6, 0);
+ 		break;
+ 	}
 -- 
 2.43.0
 
