@@ -1,210 +1,125 @@
-Return-Path: <linux-kernel+bounces-112591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C63D887BC3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:20:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B9BA887BD5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 07:00:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 395761C20DCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:20:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 072C228242A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56DAE14012;
-	Sun, 24 Mar 2024 05:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MX/Gxhq/"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233A114286;
+	Sun, 24 Mar 2024 06:00:31 +0000 (UTC)
+Received: from ms-10.1blu.de (ms-10.1blu.de [178.254.4.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAD21A38DE
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99AF82CA4;
+	Sun, 24 Mar 2024 06:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.254.4.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711257622; cv=none; b=I5n3PgceO/jsBkmtX/zrkitGZFCXii/0px60S0j2k4oyLvvJAatNU5eQF2nogz4B95K2eXZWau1J/HOUrwAwxFi+9eDDFSi7TtWhnqQ1UyE0WpB4eqihShV1TLlXDFa57E+0uJiqAWVkypZyJDyW+zxlRJrIBwz/eSQNNHR3P+0=
+	t=1711260030; cv=none; b=tmMuFPu3jKr1hzn/j4PZdc7Ns37W1LEoPwBaV3nVEpfd6FS1CgEnmsZROkTfF/YC38FGBJT2fEu6WOk7Mq1i7pD8amsJmygCEBmLsARxvI+n3pYg0t5gXkftsrcucvL4dMO0sGqbS0n+kf5Vt/wr2BRH+i86C1lVx2Ri+psU5ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711257622; c=relaxed/simple;
-	bh=huo0FqZh8qWe0LH5J17ricm/+PWwwHEYbbGfD/miNbQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pE872O+Off0FOTsrKrmZwyrVzgyiaR7CC2M9m2Eq4c7IhvaYlQHtjEtKUmnPDM7W1jerWDwMhNoxBuwVvpI3sLkt/u0CTqU0bFVE+FY/XgdjmCYEY8xbWnKqydEzEWksX0kn72ZyfLNxiuQAGo7axOFuKtdfuMMUMDK9fwgPIg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MX/Gxhq/; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36880dc41c0so108415ab.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 22:20:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711257620; x=1711862420; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kw1SuZHQQ91QtNOEACeszDGcG3fk1mZSY8v6Xr5GmH4=;
-        b=MX/Gxhq/iIiiZ0Sdenq12yPvEWRUUl1mXn60P8HUlAsHSElFe10T3vARJX9bJrAZD0
-         qe9yvrNldhqjsxiO1MiCOCi0Zcsi4UKjRJj6W1Oq8p67qzRPy5ANWUsvwnbyg/+VJLf1
-         990jLIs7D5Ev9UAWGT07ZFq+1wYrNz0pYLNMMzSw2cH/ViR4wNi/kyWCZrbY65yLKDw2
-         PWx2da4c9A+Q8gibEy0ucZH59JowEQGG03DD+LnO4rQ5yN4eitBLk7k8CBee/uS0hsk5
-         TxDB+8Qkvm7nhSxPxeJe/Nj6FholAyvLuz502eF2oWBKRBeA7huYfCbm1t87dpX1sClF
-         DFKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711257620; x=1711862420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kw1SuZHQQ91QtNOEACeszDGcG3fk1mZSY8v6Xr5GmH4=;
-        b=fxYmiBDlttMOZrF+WjBRtbiCcK66H74WyhR25W4IA/yFr7CdsqWCqDiQY8CKRisffB
-         r1CRKPyUJ/b3QBn2LRdU80yOKbuF+8mE7emwnW+UXfHx3y4n6Wvp/7DF5Qfa63lYqCUQ
-         x31o6ZToQ/v1XjZhZ7Xal+OCLrrVezI4jKneL2AInvv8PF1SAaT3Dp211mP9zbtVHfIV
-         byc2AASJWoVLPBYok9INlzWbd/D0bvJ7c0M43Ja786febDvBt5IzsPjmVTCoI+Xmf/0/
-         LbLknaUJjMmqh0lZHN+Uu6X1AC1iEWrsKFikjs4HA2QKU1ccngV/x7jas62D+szLYMIY
-         2DJw==
-X-Forwarded-Encrypted: i=1; AJvYcCXniOd3XjPKZsm/AOtcSd5qcanbncA+iD3bPEg6Isfq5fFHbm1npdayj1Hc84xvZksQtkJjml+AznUmxCLRELVmeuUMe0WHT92N8Qug
-X-Gm-Message-State: AOJu0YxUBAMcvNYJq2hqNZwZ36Z4FEq5EcbBTrGlcN4yhgG3XYfcXc2H
-	Xi3eW7CluTlwEED8tCnwShBxHbZrllr23OnBOu88kRtlSj++YePhMDKMxOjtURsZAaRTZIuvuk8
-	jmeKdiFBGFlRDFS0GcBsaEDX2RPAJvdI3Iteb
-X-Google-Smtp-Source: AGHT+IGzjQ9GZvPCCC08VsFv7CWQiTGELgPQgjgxPRZOGgogAqPAoIQPy2YAoAWbaMlFrohJxx8Y6IHi9FwsjM1Fr0c=
-X-Received: by 2002:a05:6e02:2184:b0:366:63a7:78e6 with SMTP id
- j4-20020a056e02218400b0036663a778e6mr820057ila.28.1711257620064; Sat, 23 Mar
- 2024 22:20:20 -0700 (PDT)
+	s=arc-20240116; t=1711260030; c=relaxed/simple;
+	bh=s8cMKpHaAcyyuLqkjUj7usrzSAx6MOM0pJf8hD0ogvY=;
+	h=From:Subject:To:Cc:Message-ID:Date:MIME-Version:Content-Type; b=GgkkGPcQ8O182MWwChXj+IcKX05Sr+hrHYYbrD5OJ1pqBWDVJkiCmvJGTKplWQgD29mKd6dtI21BH0a7LtiJX3BcZ/R8a+KhHCFdyxl48iZMqmon1jxrnEooeVwhbhqcmJ2Gpx/CINuMdMqFwk0lYrxnxszpsKbf7hUBNjEj+fU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jsigle.com; spf=pass smtp.mailfrom=jsigle.com; arc=none smtp.client-ip=178.254.4.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jsigle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jsigle.com
+Received: from [87.102.202.253] (helo=[192.168.1.64])
+	by ms-10.1blu.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <joerg.sigle@jsigle.com>)
+	id 1roGKA-001UXd-CP;
+	Sun, 24 Mar 2024 06:23:14 +0100
+From: "Joerg M. Sigle" <joerg.sigle@jsigle.com>
+Subject: Patch [001/001] Documentation: Correct small errors in recently added
+ info on CPU vulnerabilities
+Openpgp: preference=signencrypt
+Autocrypt: addr=joerg.sigle@jsigle.com; prefer-encrypt=mutual; keydata=
+ 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
+ 8PuOAKC9roFUBE+MA3ttuTAdqMIxhIo1cw==
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Daniel Sneddon <daniel.sneddon@linux.intel.com>
+Message-ID: <ba47d363-28e8-b470-7752-b684e3d05250@jsigle.com>
+Date: Sun, 24 Mar 2024 06:23:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209031441.943012-1-weilin.wang@intel.com> <20240209031441.943012-10-weilin.wang@intel.com>
-In-Reply-To: <20240209031441.943012-10-weilin.wang@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Sat, 23 Mar 2024 22:20:05 -0700
-Message-ID: <CAP-5=fV8fUBZihx-7wQf+DgOqoii5VVMs+Y3kFmg+5JdkD0NQA@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 09/15] perf stat: Add function to handle special
- events in hardware-grouping
-To: weilin.wang@intel.com
-Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
-	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
-	Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE-1901
+Content-Transfer-Encoding: 7bit
+X-Con-Id: 102464
+X-Con-U: 0-joergsigle
 
-On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> There are some special events like topdown events and TSC that are not
-> described in pmu-event JSON files. Add support to handle this type of
-> events. This should be considered as a temporary solution because includi=
-ng
-> these events in JSON files would be a better solution.
->
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/perf/util/metricgroup.c | 38 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 37 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
-c
-> index 660c6b9b5fa7..a0579b0f81e5 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -160,6 +160,20 @@ struct metric {
->
->  /* Maximum number of counters per PMU*/
->  #define NR_COUNTERS    16
-> +/* Special events that are not described in pmu-event JSON files.
-> + * topdown-* and TSC use dedicated registers, set as free
-> + * counter for grouping purpose
+From: Joerg-Michael Sigle <joerg.sigle@jsigle.com>
 
-msr/tsc/ is a software event where reading the value is done by rdtsc.
-Unlike tool events like duration_time we want msr/tsc/ in the group
-with the other hardware events so its running/enabled time scaling
-matches.
+In file     Documentation/admin-guide/hw-vuln/gather_data_sampling.rst
+the words   Guest can infer guest from other guests
+should be   Guests can infer data from other guests
 
-To some extent the topdown- events do exist in the json as
-"TOPDOWN.*". Looking at
-tools/perf/pmu-events/arch/x86/tigerlake/pipeline.json I see just
-TOPDOWN.BACKEND_BOUND_SLOTS. Perhaps we can add the rest rather than
-have a workaround here?
+Found in 15.5.152, this may affect all kernel versions with the same documentation file.
+The error came as part of commit 8974eb588283b7d44a7c91fa09fcbaf380339f3a in the master branch.
 
-If topdown events are in json and msr/tsc/ is treated like a software
-event, as we do here:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/parse-events.c?h=3Dperf-tools-next#n1920
-perhaps we don't need the special events category?
+Signed-off-by: Joerg-Michael Sigle <joerg.sigle@jsigle.com>
 
-Thanks,
-Ian
+---
 
-> + */
-> +enum special_events {
-> +       TOPDOWN =3D 0,
-> +       TSC     =3D 1,
-> +       SPECIAL_EVENT_MAX,
-> +};
-> +
-> +static const char *const special_event_names[SPECIAL_EVENT_MAX] =3D {
-> +       "topdown-",
-> +       "TSC",
-> +};
->
->  /**
->   * An event used in a metric. This info is for metric grouping.
-> @@ -2102,6 +2116,15 @@ static int create_grouping(struct list_head *pmu_i=
-nfo_list,
->         return ret;
->  };
->
-> +static bool is_special_event(const char *id)
-> +{
-> +       for (int i =3D 0; i < SPECIAL_EVENT_MAX; i++) {
-> +               if (!strncmp(id, special_event_names[i], strlen(special_e=
-vent_names[i])))
-> +                       return true;
-> +       }
-> +       return false;
-> +}
-> +
->  /**
->   * hw_aware_build_grouping - Build event groupings by reading counter
->   * requirement of the events and counter available on the system from
-> @@ -2126,6 +2149,17 @@ static int hw_aware_build_grouping(struct expr_par=
-se_ctx *ctx __maybe_unused,
->         hashmap__for_each_entry(ctx->ids, cur, bkt) {
->                 const char *id =3D cur->pkey;
->
-> +               if (is_special_event(id)) {
-> +                       struct metricgroup__event_info *event;
-> +
-> +                       event =3D event_info__new(id, "default_core", "0"=
-,
-> +                                               /*free_counter=3D*/true);
-> +                       if (!event)
-> +                               goto err_out;
-> +
-> +                       list_add(&event->nd, &event_info_list);
-> +                       continue;
-> +               }
->                 ret =3D get_metricgroup_events(id, etable, &event_info_li=
-st);
->                 if (ret)
->                         goto err_out;
-> @@ -2597,8 +2631,10 @@ int metricgroup__parse_groups(struct evlist *perf_=
-evlist,
->                 ret =3D hw_aware_parse_groups(perf_evlist, pmu, str,
->                             metric_no_threshold, user_requested_cpu_list,=
- system_wide,
->                             /*fake_pmu=3D*/NULL, metric_events, table);
-> -               if (!ret)
-> +               if (!ret) {
-> +                       pr_info("Hardware aware grouping completed\n");
->                         return 0;
-> +               }
->         }
->
->         return parse_groups(perf_evlist, pmu, str, metric_no_group, metri=
-c_no_merge,
-> --
-> 2.42.0
->
+The corrected text is in section "Attack scenarios", example 4; also visible in the 2nd diff output in:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=8974eb588283b7d44a7c91fa09fcbaf380339f3a
+
+I'm submitting this patch to you as you're referenced in that patch
+or shown by scripts/get_maintainer.pl -f Documentation/admin-guide/hw-vuln/
+Hope this is ok and useful. Thanks & kind regards, Joerg
+
+
+# diff -ru a/Documentation/admin-guide/hw-vuln/gather_data_sampling.rst b/Documentation/admin-guide/hw-vuln/gather_data_sampling.rst
+--- a/Documentation/admin-guide/hw-vuln/gather_data_sampling.rst        2024-03-15 19:30:36.000000000 +0100
++++ b/Documentation/admin-guide/hw-vuln/gather_data_sampling.rst        2024-03-24 06:07:51.847427462 +0100
+@@ -32,7 +32,7 @@
+        Non-enclaves can infer SGX enclave data
+        Userspace can infer kernel data
+        Guests can infer data from hosts
+-       Guest can infer guest from other guests
++       Guests can infer data from other guests
+        Users can infer data from other users
+
+ Because of this, it is important to ensure that the mitigation stays enabled in
 
