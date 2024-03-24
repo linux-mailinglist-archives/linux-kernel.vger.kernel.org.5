@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-116112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53377889964
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:09:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14DD888995E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:08:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E64E51F31BE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:09:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 962861F3270A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5435A181D1A;
-	Mon, 25 Mar 2024 03:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F39A3AB7D7;
+	Mon, 25 Mar 2024 03:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijloQtLL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijZdy8z6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3372801FC;
-	Sun, 24 Mar 2024 23:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA97280203;
+	Sun, 24 Mar 2024 23:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323636; cv=none; b=WaoUS35zjxNMjLSfgQM/gM4UoLXA7N7nCYerJuTV2BVUwGXH4Hq/Z+pvV9LAP2k1q0rvrfILpxeOvkTXxb597XSwsbicos8/hNz7gHo//shK59KNXyOJDwDBEVACMKA6LNoPZT2PIGZllwHxbKn+gdgLcAJvZrO01dj7/1s5mA8=
+	t=1711323637; cv=none; b=tfueCE3dUDNn6D5Yvj9tAVpnjXVmvzCXHyzJhPmikxRU+bR4JdPxdgi55Vp7BsJKxS7yuUYpBBn4rs/x2hgd/3Xnj9ZRle5SJHXCNEMQ/vNcPgzxFOzLntfsbnxesVa03w6KEL5XCSlXbD2h/Vy2Rjw9RA7pM5zAUggHZIgzz8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323636; c=relaxed/simple;
-	bh=wN9qknYWyXLhykrwy7deV6GMrdHRh+3YLf4iu0Y3Nyo=;
+	s=arc-20240116; t=1711323637; c=relaxed/simple;
+	bh=tjjI2nsFG1aGxXNU8gC7cWP86c+GUyG67wihdRCmajA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JWTEi4PahRLQ+lX7WFNLwUf6uyhw/Pw50V+uX3vDS2S5pxakt/MyPiVUWwFSRPNnMjisPd8e9UQln+mtCoCdJGHN91VblnD4yQR9FgR2dsIdigOaqMbV+GqyQGtdd8Fmws/sXAAwmKviB0+PLMfhw3sIlGJ0pyyhHd542YO8umI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijloQtLL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9A2C433B1;
-	Sun, 24 Mar 2024 23:40:35 +0000 (UTC)
+	 MIME-Version; b=G9lbFitmdgm72nmDBtbEnj7xoorK9CawpAqFVIZmED5rj9luhLBT8MPWF7y3m3qNgdyvEsPoKBfOPE4ubctXGNzOp+wpu2/+zf+N2l4oVC8JsNQyInpuqvjhzbLmFF/RN52LM/IbuGPPPNJXrpWM8g7yaykgF9t2VP6w9es0icU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijZdy8z6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DF44C433F1;
+	Sun, 24 Mar 2024 23:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323636;
-	bh=wN9qknYWyXLhykrwy7deV6GMrdHRh+3YLf4iu0Y3Nyo=;
+	s=k20201202; t=1711323637;
+	bh=tjjI2nsFG1aGxXNU8gC7cWP86c+GUyG67wihdRCmajA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ijloQtLLT4Cc3q8p3gBW47KIf8Wte33UMOZiO/59UWWdbKhwuQq0md7kczOZPOyua
-	 P8lKNtPXeoj59GC5uvNrfquXmeXxCIed4OwW/D59r6GNJi2yOcHUXonGjjz6h8KAF/
-	 1OgKMPs/eErrz2EZqAi//XniZqRV3Wh640DmHU/sJ9+7W6vETOB5IagD04LU0m6plb
-	 z6S+Muap1vpGp3tckoGZyeB1PUzGfZWupClH0pDoFp7r3CFP7EY77ZoCwPMt/9BtdN
-	 nlLysxNnrP+HQC3JMTU5wycxu4q2AUSTc449Tg/MTXzNlNLFaORqKo3JYWyuI/fJYy
-	 GCFXIQgrW8KEQ==
+	b=ijZdy8z69XJWaWgDssJFUzlKCb+rfhGEJFuZczreAxWexakfzysW0LDsO478o2Bqd
+	 Sk+WkB+mKH40kXsynRAzyfmtV/VQoKWrjCAlFZ8cTtp3DgDWYUOkNvwbH3rrMup4v/
+	 4jwQEqZSueTwtgrDmAIfitifqWCTitIgz0fgE6aZfv23opSTYyaSQzz0g4RENBA7Fo
+	 GgZSK8urEsoDtU9ySAZMwofeEZ/sw7WXcY//Nxx7AnMigaUGq2my40WF0YgH5OitR3
+	 WOw9eDuIeuuu3MI66LaRa+Z8HtZSB+krZasGo5jTXxgP0AbO4r/xVhQMCFGH0w+Ora
+	 jCKTpqvBTxBQA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Kunwu Chan <chentao@kylinos.cn>,
+	kernel test robot <lkp@intel.com>,
+	Markus Elfring <Markus.Elfring@web.de>,
+	Juergen Gross <jgross@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 007/238] ASoC: rt5645: Make LattePanda board DMI match more precise
-Date: Sun, 24 Mar 2024 19:36:35 -0400
-Message-ID: <20240324234027.1354210-8-sashal@kernel.org>
+Subject: [PATCH 5.10 008/238] x86/xen: Add some null pointer checking to smp.c
+Date: Sun, 24 Mar 2024 19:36:36 -0400
+Message-ID: <20240324234027.1354210-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,61 +64,77 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Kunwu Chan <chentao@kylinos.cn>
 
-[ Upstream commit 551539a8606e28cb2a130f8ef3e9834235b456c4 ]
+[ Upstream commit 3693bb4465e6e32a204a5b86d3ec7e6b9f7e67c2 ]
 
-The DMI strings used for the LattePanda board DMI quirks are very generic.
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure. Ensure the allocation was successful
+by checking the pointer validity.
 
-Using the dmidecode database from https://linux-hardware.org/ shows
-that the chosen DMI strings also match the following 2 laptops
-which also have a rt5645 codec:
-
-Insignia NS-P11W7100 https://linux-hardware.org/?computer=E092FFF8BA04
-Insignia NS-P10W8100 https://linux-hardware.org/?computer=AFB6C0BF7934
-
-All 4 hw revisions of the LattePanda board have "S70CR" in their BIOS
-version DMI strings:
-
-DF-BI-7-S70CR100-*
-DF-BI-7-S70CR110-*
-DF-BI-7-S70CR200-*
-LP-BS-7-S70CR700-*
-
-See e.g. https://linux-hardware.org/?computer=D98250A817C0
-
-Add a partial (non exact) DMI match on this string to make the LattePanda
-board DMI match more precise to avoid false-positive matches.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://msgid.link/r/20240211212736.179605-1-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401161119.iof6BQsf-lkp@intel.com/
+Suggested-by: Markus Elfring <Markus.Elfring@web.de>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/20240119094948.275390-1-chentao@kylinos.cn
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/xen/smp.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 04457cbed5b4e..5db63ef33f1a2 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3772,6 +3772,16 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		  DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
- 		  DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
- 		  DMI_EXACT_MATCH(DMI_BOARD_VERSION, "Default string"),
-+		  /*
-+		   * Above strings are too generic, LattePanda BIOS versions for
-+		   * all 4 hw revisions are:
-+		   * DF-BI-7-S70CR100-*
-+		   * DF-BI-7-S70CR110-*
-+		   * DF-BI-7-S70CR200-*
-+		   * LP-BS-7-S70CR700-*
-+		   * Do a partial match for S70CR to avoid false positive matches.
-+		   */
-+		  DMI_MATCH(DMI_BIOS_VERSION, "S70CR"),
- 		},
- 		.driver_data = (void *)&lattepanda_board_platform_data,
- 	},
+diff --git a/arch/x86/xen/smp.c b/arch/x86/xen/smp.c
+index cdec892b28e2e..a641e0d452194 100644
+--- a/arch/x86/xen/smp.c
++++ b/arch/x86/xen/smp.c
+@@ -65,6 +65,8 @@ int xen_smp_intr_init(unsigned int cpu)
+ 	char *resched_name, *callfunc_name, *debug_name;
+ 
+ 	resched_name = kasprintf(GFP_KERNEL, "resched%d", cpu);
++	if (!resched_name)
++		goto fail_mem;
+ 	per_cpu(xen_resched_irq, cpu).name = resched_name;
+ 	rc = bind_ipi_to_irqhandler(XEN_RESCHEDULE_VECTOR,
+ 				    cpu,
+@@ -77,6 +79,8 @@ int xen_smp_intr_init(unsigned int cpu)
+ 	per_cpu(xen_resched_irq, cpu).irq = rc;
+ 
+ 	callfunc_name = kasprintf(GFP_KERNEL, "callfunc%d", cpu);
++	if (!callfunc_name)
++		goto fail_mem;
+ 	per_cpu(xen_callfunc_irq, cpu).name = callfunc_name;
+ 	rc = bind_ipi_to_irqhandler(XEN_CALL_FUNCTION_VECTOR,
+ 				    cpu,
+@@ -90,6 +94,9 @@ int xen_smp_intr_init(unsigned int cpu)
+ 
+ 	if (!xen_fifo_events) {
+ 		debug_name = kasprintf(GFP_KERNEL, "debug%d", cpu);
++		if (!debug_name)
++			goto fail_mem;
++
+ 		per_cpu(xen_debug_irq, cpu).name = debug_name;
+ 		rc = bind_virq_to_irqhandler(VIRQ_DEBUG, cpu,
+ 					     xen_debug_interrupt,
+@@ -101,6 +108,9 @@ int xen_smp_intr_init(unsigned int cpu)
+ 	}
+ 
+ 	callfunc_name = kasprintf(GFP_KERNEL, "callfuncsingle%d", cpu);
++	if (!callfunc_name)
++		goto fail_mem;
++
+ 	per_cpu(xen_callfuncsingle_irq, cpu).name = callfunc_name;
+ 	rc = bind_ipi_to_irqhandler(XEN_CALL_FUNCTION_SINGLE_VECTOR,
+ 				    cpu,
+@@ -114,6 +124,8 @@ int xen_smp_intr_init(unsigned int cpu)
+ 
+ 	return 0;
+ 
++ fail_mem:
++	rc = -ENOMEM;
+  fail:
+ 	xen_smp_intr_free(cpu);
+ 	return rc;
 -- 
 2.43.0
 
