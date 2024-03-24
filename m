@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DFF888914D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:38:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 551808895DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55F74293D91
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:38:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AC8BB3B5A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:18:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D905F25B25F;
-	Mon, 25 Mar 2024 00:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C25726CC25;
+	Mon, 25 Mar 2024 03:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pHw1xF8l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kq4r6Gny"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61636175CB1;
-	Sun, 24 Mar 2024 23:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D2F5175CAA;
+	Sun, 24 Mar 2024 23:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323406; cv=none; b=h8JnB8ZyEDMhnbCRvBkoIo7spcKxpknDhTiEdL9sOrRLnWLmr82ATY67h7kna3C7y+3w4KnY7uMGr8mVWczDBYu/i4hsQyP387ZDHxSeoxxxcDBuo5ekXqlNmP+h5SJLcmqGO4LfBgTCBvrvWqDZZ4tz+ybLbLXunuYPgegX9AQ=
+	t=1711323407; cv=none; b=oFtjSmGpkF2K8y5C8TIVji3beUhSOyaST347nJ2NOJVYPRg2LVPiGh9fioHMpiDTc5RV5X15MEb5XeEDEMqLTxQRWAWdbYUvwRURitC/JCjLsEX0R2mvTmvHjPVtiQ7locbJzCCiMpDmUkkp6iKiGf+yG/+XxZoKq5iusnFrC6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323406; c=relaxed/simple;
-	bh=nt4DweudXrWSOOYE0nV/wX2peusxuk3T7M9VaEFEUOQ=;
+	s=arc-20240116; t=1711323407; c=relaxed/simple;
+	bh=BVOqvSyGtKmf/122ACtzVkhhLsTLB3szaQSQ0zvlj5s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dQKQLe9EkI4Y+tF0f2yw68RyjH43YkINsQ9IzWd1z/wWfIEo9rH3hvLqU0HB3CVcwuhfpxWNxpMa5BlwKmvTXQPJz5ztmwbwZBdGmQywBpmoxkOIoU1fuHxFvVQmG0kqlfrHw5emEad4wzugE1xYPGRxwwD3zmFI9R1jex7SpK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pHw1xF8l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89F6EC43394;
-	Sun, 24 Mar 2024 23:36:45 +0000 (UTC)
+	 MIME-Version; b=g8MOct9dlltuzxeRNYRocgBBZfmRhbH+VmYQacmtdzTMaMLp5ePgmCRMnWeUTFUYoA3K6I919ltLzhMYWsouH5O9MBpI3GnP1zk4ESfoe4ZvS/I8bSoZtVy0ROf5FapX/uENxp70aELDGMy2k9n9sb/W/f1VvaBy0IPs/c5RQ3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kq4r6Gny; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87770C433B1;
+	Sun, 24 Mar 2024 23:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323406;
-	bh=nt4DweudXrWSOOYE0nV/wX2peusxuk3T7M9VaEFEUOQ=;
+	s=k20201202; t=1711323407;
+	bh=BVOqvSyGtKmf/122ACtzVkhhLsTLB3szaQSQ0zvlj5s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pHw1xF8lgCJvgIFvXcn7v7B+2xec5eauqIZPrtkjTDs2jd3PPOrE1YT8BPsWIPnIg
-	 MklB8qPuHG+mVOwaNgvBN74M8YDw+McBzQ/0oGM9ywOUuP0SA2aTGcnByoQAQt8js2
-	 kpT+SuwOsgZoc26SQdzqkJ2NVRiztvYfAPymAfTTyrptgtVdFNsYGsZCFoMvxlWxCV
-	 qsBGgvOqZ35yFEEhGf5itdf7MaZ5EmHYKjGdCoztbbQVrb0l1v2FXekYLTs/fOFDD1
-	 efq40Ktogivb/zjDNhGQMb2rCD5wlRQimesGBKMHbcE51rJT/ZD0q4j/jpZQA/dLER
-	 3sH95rYcdXWPQ==
+	b=kq4r6GnyS0Ob70h+LgEfGgcyul54KPbsbN2vMyg8WyA3cRhwLZq+XKLqEFASR940I
+	 j6kbdiFrC01p7xDmSfK34ZLH1HGLAnqmxEAZFUWZ0jKcTbEC/BJMM0iqNKzEYdbixI
+	 aG1dBNaN8yxjRpwu9mG0oRJvuC/gufZz2bVb8q2oDWGlf+4XJQGV6MqMqSxmMlR4HE
+	 X7MDPMkjYPKAd4x/biJUcIjpu/qZSua9dwg0MJ2IeSf8utV74UaYHSJy/GwqHLoCZR
+	 g2HZOZrJBvxAIPNHKCKk/hJRPxCyjfDKHNnEsGLOilrz6YiX4xVYLzlkl+gsuxUuPm
+	 kskv4y2Ok+vQQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Kamal Heib <kheib@redhat.com>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 107/317] wifi: brcmsmac: avoid function pointer casts
-Date: Sun, 24 Mar 2024 19:31:27 -0400
-Message-ID: <20240324233458.1352854-108-sashal@kernel.org>
+Subject: [PATCH 5.15 108/317] net: ena: Remove ena_select_queue
+Date: Sun, 24 Mar 2024 19:31:28 -0400
+Message-ID: <20240324233458.1352854-109-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,79 +63,64 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Kamal Heib <kheib@redhat.com>
 
-[ Upstream commit e1ea6db35fc3ba5ff063f097385e9f7a88c25356 ]
+[ Upstream commit 78e886ba2b549945ecada055ee0765f0ded5707a ]
 
-An old cleanup went a little too far and causes a warning with clang-16
-and higher as it breaks control flow integrity (KCFI) rules:
+Avoid the following warnings by removing the ena_select_queue() function
+and rely on the net core to do the queue selection, The issue happen
+when an skb received from an interface with more queues than ena is
+forwarded to the ena interface.
 
-drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c:64:34: error: cast from 'void (*)(struct brcms_phy *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   64 |                         brcms_init_timer(physhim->wl, (void (*)(void *))fn,
-      |                                                       ^~~~~~~~~~~~~~~~~~~~
+[ 1176.159959] eth0 selects TX queue 11, but real number of TX queues is 8
+[ 1176.863976] eth0 selects TX queue 14, but real number of TX queues is 8
+[ 1180.767877] eth0 selects TX queue 14, but real number of TX queues is 8
+[ 1188.703742] eth0 selects TX queue 14, but real number of TX queues is 8
 
-Change this one instance back to passing a void pointer so it can be
-used with the timer callback interface.
-
-Fixes: d89a4c80601d ("staging: brcm80211: removed void * from softmac phy")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240213100548.457854-1-arnd@kernel.org
+Fixes: 1738cd3ed342 ("net: ena: Add a driver for Amazon Elastic Network Adapters (ENA)")
+Signed-off-by: Kamal Heib <kheib@redhat.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c   | 3 ++-
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c  | 5 ++---
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h  | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/amazon/ena/ena_netdev.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c
-index ccc621b8ed9f2..4a1fe982a948e 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_cmn.c
-@@ -383,8 +383,9 @@ struct shared_phy *wlc_phy_shared_attach(struct shared_phy_params *shp)
- 	return sh;
+diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+index 7d4b862be783d..43c099141e211 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
++++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+@@ -3187,22 +3187,6 @@ static netdev_tx_t ena_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
  }
  
--static void wlc_phy_timercb_phycal(struct brcms_phy *pi)
-+static void wlc_phy_timercb_phycal(void *ptr)
+-static u16 ena_select_queue(struct net_device *dev, struct sk_buff *skb,
+-			    struct net_device *sb_dev)
+-{
+-	u16 qid;
+-	/* we suspect that this is good for in--kernel network services that
+-	 * want to loop incoming skb rx to tx in normal user generated traffic,
+-	 * most probably we will not get to this
+-	 */
+-	if (skb_rx_queue_recorded(skb))
+-		qid = skb_get_rx_queue(skb);
+-	else
+-		qid = netdev_pick_tx(dev, skb, NULL);
+-
+-	return qid;
+-}
+-
+ static void ena_config_host_info(struct ena_com_dev *ena_dev, struct pci_dev *pdev)
  {
-+	struct brcms_phy *pi = ptr;
- 	uint delay = 5;
- 
- 	if (PHY_PERICAL_MPHASE_PENDING(pi)) {
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c
-index a0de5db0cd646..b723817915365 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c
-@@ -57,12 +57,11 @@ void wlc_phy_shim_detach(struct phy_shim_info *physhim)
- }
- 
- struct wlapi_timer *wlapi_init_timer(struct phy_shim_info *physhim,
--				     void (*fn)(struct brcms_phy *pi),
-+				     void (*fn)(void *pi),
- 				     void *arg, const char *name)
- {
- 	return (struct wlapi_timer *)
--			brcms_init_timer(physhim->wl, (void (*)(void *))fn,
--					 arg, name);
-+			brcms_init_timer(physhim->wl, fn, arg, name);
- }
- 
- void wlapi_free_timer(struct wlapi_timer *t)
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h
-index dd8774717adee..27d0934e600ed 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.h
-@@ -131,7 +131,7 @@ void wlc_phy_shim_detach(struct phy_shim_info *physhim);
- 
- /* PHY to WL utility functions */
- struct wlapi_timer *wlapi_init_timer(struct phy_shim_info *physhim,
--				     void (*fn)(struct brcms_phy *pi),
-+				     void (*fn)(void *pi),
- 				     void *arg, const char *name);
- void wlapi_free_timer(struct wlapi_timer *t);
- void wlapi_add_timer(struct wlapi_timer *t, uint ms, int periodic);
+ 	struct device *dev = &pdev->dev;
+@@ -3372,7 +3356,6 @@ static const struct net_device_ops ena_netdev_ops = {
+ 	.ndo_open		= ena_open,
+ 	.ndo_stop		= ena_close,
+ 	.ndo_start_xmit		= ena_start_xmit,
+-	.ndo_select_queue	= ena_select_queue,
+ 	.ndo_get_stats64	= ena_get_stats64,
+ 	.ndo_tx_timeout		= ena_tx_timeout,
+ 	.ndo_change_mtu		= ena_change_mtu,
 -- 
 2.43.0
 
