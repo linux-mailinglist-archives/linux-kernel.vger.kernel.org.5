@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B14888480
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:42:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5C4488847A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:41:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6B8AB22899
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:41:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F514287FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19821B05E1;
-	Sun, 24 Mar 2024 22:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A779D1B05FC;
+	Sun, 24 Mar 2024 22:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QrtLL/hW"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yty6ycDz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F171AFCEE;
-	Sun, 24 Mar 2024 22:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3611B05E0;
+	Sun, 24 Mar 2024 22:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320257; cv=none; b=Vs78LUBTzwdX8JjLT4PGBSJZsW2avZ/Inz9xpno0RwoPpff/IYbvaK7KpNwzocBqwRxknI2n2nDt5khQEfYdcb/AVgWBd4nF6ycYtKcrFk9nYBMTCfb5nt9EABhet2n226tk+N/sKC7n7KpAXC+s+QS/4F932AMef8orl5baGDQ=
+	t=1711320258; cv=none; b=k45/fiN0MsHe2EBMVtTVL/gyzn6VPW5KAPVoXrdOPY8ZgH7LU81NVdDtc9xwCSpbE0+72tAKQRN3Zr+Vxi+UelNG2qdxQ3g73qIXEJKaVz7+XX2emD+vi1zz6OXQN0NrHy3kVv7DMu3vDJQOJg0ofvmD+ngpBwrFa2Agv9dckGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320257; c=relaxed/simple;
-	bh=WB7D8v23obP/TjwQh7iM+gl7QpnCg9eEFLWDW9/GHMM=;
+	s=arc-20240116; t=1711320258; c=relaxed/simple;
+	bh=lVupnWNU3hkptSIUQAk0+mojeFHZSupwvBO9FdQSs2g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QdHQqf/u8ja83zklCQwrAXBgON2dwDv8Y8CK6cRYHKSy2trdcHplNz/ihr8iDhd9DhrZu0cVC1XCrwiiO6fJx9i4j/IYTKc8G/xqyJkdYpWZlfWXWsOnl1dwPQOF6N51pWc3R3gdvQngdgXMttBKGNSp6cT7zxipsHkFJGiRFpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QrtLL/hW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FD1FC43330;
-	Sun, 24 Mar 2024 22:44:15 +0000 (UTC)
+	 MIME-Version; b=gApWfZjhO7gky0EpdzVY3+xRw+yNhZpoYwpkz5hL9KKbLmPSarynHKDZnfaztk+b4TZB7W/DUDXRQeVOJXfSOHxUlHFDjjr9kIirLE3RBmcePYNB59eBNDHOC0mqAg7XBzq4f5bowMIenBVGOXX6kT1twzRWUR5gQyS2BEdALkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yty6ycDz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A9DAC433C7;
+	Sun, 24 Mar 2024 22:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320256;
-	bh=WB7D8v23obP/TjwQh7iM+gl7QpnCg9eEFLWDW9/GHMM=;
+	s=k20201202; t=1711320257;
+	bh=lVupnWNU3hkptSIUQAk0+mojeFHZSupwvBO9FdQSs2g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QrtLL/hW0LIxFVFHqAu6A3bW7xtX+OQmZbsUIV9etrXnXsqBpkUC77+NQ3u/VPcda
-	 jjBFPVcahbiHosYagc67fcGXJI6vXpzjkikDj4vY9azxUJjuwPdYYCV2iMvvu6JMxd
-	 kW04QkVon8ZorHyOq/FPkYyB496IEuvkchbPGfWm6GF6ZEnGeFnpdKc+mUXWHEWWK2
-	 uGzg0B02VOTE5YKqONEWj1EoZRQPd0z7Up5Xvhp+d3MJxhbmsPKvNjzWSZxbepPQkk
-	 jc6Foj7wyOIKgYkzU5FswsWMhN5ftb6Qkotg/1AdjOXA20mvhd8UGPkUCs1DSX97jX
-	 lXAHVe3ry4FWQ==
+	b=Yty6ycDzLBKjQp5nCbjJspC0qiegsUpsaXIZVHmfMz0GyBpRq+sCLeyyQSc7DOrmQ
+	 VhBiOwpnaZo474/HE6FZVCfhij7VKfiItH/gdvbtqLfLrdSWJhtO7epO+8ZJXxGORU
+	 HqP7RYkKPQ02zA38GgLlnT5C5aBW0i7QYeTKSeRSK3Ap7MBuFBrSfT4BH4hKKDnXpr
+	 rq7YuVwig/gF8hIJopEb1ozfztGjnpEzP2VONS1tEhfu9Xs0E5M2m7AzH1TrxQ2fBg
+	 nfQ5hncnX7IMqbIwdnZgY+DH6P3shZDZIE4XHLm7F8ykXL9CDnJM6QSHVCPPbS3rZS
+	 2jQsj2zksLsNw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chao Yu <chao@kernel.org>,
-	Daeho Jeong <daehojeong@google.com>,
+Cc: Wenjie Qi <qwjhust@gmail.com>,
+	Chao Yu <chao@kernel.org>,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 564/715] f2fs: zone: fix to wait completion of last bio in zone correctly
-Date: Sun, 24 Mar 2024 18:32:23 -0400
-Message-ID: <20240324223455.1342824-565-sashal@kernel.org>
+Subject: [PATCH 6.8 565/715] f2fs: fix NULL pointer dereference in f2fs_submit_page_write()
+Date: Sun, 24 Mar 2024 18:32:24 -0400
+Message-ID: <20240324223455.1342824-566-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,45 +63,75 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chao Yu <chao@kernel.org>
+From: Wenjie Qi <qwjhust@gmail.com>
 
-[ Upstream commit 536af8211586af09c5bea1c15ad28ddec5f66a97 ]
+[ Upstream commit c2034ef6192a65a986a45c2aa2ed05824fdc0e9f ]
 
-It needs to check last zone_pending_bio and wait IO completion before
-traverse next fio in io->io_list, otherwise, bio in next zone may be
-submitted before all IO completion in current zone.
+BUG: kernel NULL pointer dereference, address: 0000000000000014
+RIP: 0010:f2fs_submit_page_write+0x6cf/0x780 [f2fs]
+Call Trace:
+<TASK>
+? show_regs+0x6e/0x80
+? __die+0x29/0x70
+? page_fault_oops+0x154/0x4a0
+? prb_read_valid+0x20/0x30
+? __irq_work_queue_local+0x39/0xd0
+? irq_work_queue+0x36/0x70
+? do_user_addr_fault+0x314/0x6c0
+? exc_page_fault+0x7d/0x190
+? asm_exc_page_fault+0x2b/0x30
+? f2fs_submit_page_write+0x6cf/0x780 [f2fs]
+? f2fs_submit_page_write+0x736/0x780 [f2fs]
+do_write_page+0x50/0x170 [f2fs]
+f2fs_outplace_write_data+0x61/0xb0 [f2fs]
+f2fs_do_write_data_page+0x3f8/0x660 [f2fs]
+f2fs_write_single_data_page+0x5bb/0x7a0 [f2fs]
+f2fs_write_cache_pages+0x3da/0xbe0 [f2fs]
+..
+It is possible that other threads have added this fio to io->bio
+and submitted the io->bio before entering f2fs_submit_page_write().
+At this point io->bio = NULL.
+If is_end_zone_blkaddr(sbi, fio->new_blkaddr) of this fio is true,
+then an NULL pointer dereference error occurs at bio_get(io->bio).
+The original code for determining zone end was after "out:",
+which would have missed some fio who is zone end. I've moved
+ this code before "skip:" to make sure it's done for each fio.
 
 Fixes: e067dc3c6b9c ("f2fs: maintain six open zones for zoned devices")
-Cc: Daeho Jeong <daehojeong@google.com>
-Signed-off-by: Chao Yu <chao@kernel.org>
-Reviewed-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
+Reviewed-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/data.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/f2fs/data.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 65fe48bb17d16..ac82e69a9f5fd 100644
+index ac82e69a9f5fd..05158f89ef32d 100644
 --- a/fs/f2fs/data.c
 +++ b/fs/f2fs/data.c
-@@ -1010,7 +1010,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	f2fs_bug_on(sbi, is_read_io(fio->op));
+@@ -1080,10 +1080,6 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	io->last_block_in_bio = fio->new_blkaddr;
  
- 	f2fs_down_write(&io->io_rwsem);
--
-+next:
+ 	trace_f2fs_submit_page_write(fio->page, fio);
+-skip:
+-	if (fio->in_list)
+-		goto next;
+-out:
  #ifdef CONFIG_BLK_DEV_ZONED
- 	if (f2fs_sb_has_blkzoned(sbi) && btype < META && io->zone_pending_bio) {
- 		wait_for_completion_io(&io->zone_wait);
-@@ -1020,7 +1020,6 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 	if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
+ 			is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
+@@ -1096,6 +1092,10 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+ 		__submit_merged_bio(io);
  	}
  #endif
- 
--next:
- 	if (fio->in_list) {
- 		spin_lock(&io->io_lock);
- 		if (list_empty(&io->io_list)) {
++skip:
++	if (fio->in_list)
++		goto next;
++out:
+ 	if (is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN) ||
+ 				!f2fs_is_checkpoint_ready(sbi))
+ 		__submit_merged_bio(io);
 -- 
 2.43.0
 
