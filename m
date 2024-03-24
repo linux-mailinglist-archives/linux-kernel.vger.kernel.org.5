@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-112997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA258880A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:00:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F16FC8880A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:01:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A4391C212C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:00:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 917041F24D15
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99E412F586;
-	Sun, 24 Mar 2024 22:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD9012F5A0;
+	Sun, 24 Mar 2024 22:36:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iX6htGVX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V4A63o6/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF1612F389;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8F712F588;
 	Sun, 24 Mar 2024 22:36:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319809; cv=none; b=i4mULMbLL+sXf6dKjsr0H8pdHcJNN8AtqkZW03T0Xtix8u+/qCizBTjqjt4P6PCE1Cf6huWmyowBlmmlbNymBFqYKQNphFQy+fSZ94kNAna4jaG2R0l7LOZNP0lN5S/x3tUaXLkNCKZ2y6MH6xquO9lySw4z3GlXOVoc/IptcnI=
+	t=1711319810; cv=none; b=F3G43zTQuoNxxygiUl5rkJfNK+fY0zLMs80GmrmuU05V1CvmD5s9gUSZpWgohnbzbyRpVqy/kDQmmIa+vZ8ycuK8QWRvNquBCXu6DOlB7ZgOXl5HREAiqw9KesGvYABRZpGEyNQ8s8frZxazSMIOV2CAcJbTaEy1gatYcOtbEXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319809; c=relaxed/simple;
-	bh=5jaLuzVu03LfcgTNCeqDwZBUUHqQVrNeybRDDhk2+Y0=;
+	s=arc-20240116; t=1711319810; c=relaxed/simple;
+	bh=2diJNys690X5vuo8K0Z2rkLA90NikcwwPE7MwS9PceI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sd6V+IW4r++U7BnD3pmh1I/hKVMcqtnTYdB287RKfrFVmOlZmckgf3De7ROHHWy+gTlG+JmL9ChP0RyvfLRZsox588Yu9MzK8CMctLC9WiPSHMPXVQ1K8wZcxqzj9iGnliRgOhOaC5LChwqaCpWDfagr52T72SR71dY38JKmMG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iX6htGVX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43468C433F1;
-	Sun, 24 Mar 2024 22:36:48 +0000 (UTC)
+	 MIME-Version; b=qg1gI/EdNzZoFZU2xDmNSmVG2PfQ6DP/MYnlXd9cdJ2GQYwzvT46hr/Uf5jXjb8xkVHBIx+vhvdQtbYJXxFjMWftMKPFaWWj5uzJtKJaNHatfyhiLjZqn8T5m/EdkRLPi6IcUYpgclx4XlQ4Qc3NWPPoLT24wE2C067QdZSQaII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V4A63o6/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 296F9C43394;
+	Sun, 24 Mar 2024 22:36:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319808;
-	bh=5jaLuzVu03LfcgTNCeqDwZBUUHqQVrNeybRDDhk2+Y0=;
+	s=k20201202; t=1711319809;
+	bh=2diJNys690X5vuo8K0Z2rkLA90NikcwwPE7MwS9PceI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iX6htGVXDZHwxBEw91TpxQ11fS/qutH7ktcrxwlvJ6/yrtbKtIgHt23shUuIf3gBG
-	 HODmlvhfZCEcgZy56zDeHc+0y4gzg9C79iDAwSjTrmGGHZCpIANDW68ZQdDPDWwTJu
-	 +ZZ0w2a4LbjPwvUjRElAvH5ar5VnW3DT8+Q9hZIOr5jkxXHAG6dj+dSIJiPNXG5VvD
-	 IaCZ4eSY6CTPxTnMVAtqkWmMa9M+7ayVecAVQZyUeM1LrZYL/nIwfLmZN/e5+2V7jx
-	 mG6SBY6gbukNiapT6exd0g8DNRMTp6ucKVuD0Gdf92LoqMkPtRhnA7XIrj8MPY8cCI
-	 yvj2kxQU2Y2ZQ==
+	b=V4A63o6//R4Mt4+Jl2g+B6hqU3rlKOaPetR12NgcMF9h13bhGBh4uRsW0mlAefDd6
+	 1LBtXq/OeBJnyq8BOHAV/tU4p2X022etGrn1bezOZmr/8RXIwoDhRsvqufjELU4LWA
+	 Cgv3b16eBubkVZICJJw8uY8ZgnlFOCKJs0NVZARs5ccPCAobvx2zjpLCQxcdtXbEKC
+	 scdX+2HtmhzUD8o5FfC/4IuWqha06E7aEWpbWJ6QjsR0nBdjaEQAfwQQ0zKGwnKLuw
+	 2JFtU7dRawjwKdIGoj+cg/+7sNswUDhIKK5jMJTllCPMbHhQl+DxrV3iIAeBg3d860
+	 y6GGo5rdVxdDg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Frieder Schrempf <frieder.schrempf@kontron.de>,
 	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 110/715] arm64: dts: imx8mm-kontron: Disable pullups for I2C signals on SL/BL i.MX8MM
-Date: Sun, 24 Mar 2024 18:24:49 -0400
-Message-ID: <20240324223455.1342824-111-sashal@kernel.org>
+Subject: [PATCH 6.8 111/715] arm64: dts: imx8mm-kontron: Disable pullups for onboard UART signals on BL OSM-S board
+Date: Sun, 24 Mar 2024 18:24:50 -0400
+Message-ID: <20240324223455.1342824-112-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,48 +64,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-[ Upstream commit f19e5bb91d53264d7dac5d845a4825afadf72440 ]
+[ Upstream commit c6d9b5672a0e2c4b1079a50d2fc8780c40cfd3eb ]
 
-There are external pullup resistors on the board and due to silicon
-errata ERR050080 let's disable the internal ones to prevent any
-unwanted behavior in case they wear out.
+These signals are actively driven by the SoC or by the onboard
+transceiver. There's no need to enable the internal pull resistors
+and due to silicon errata ERR050080 let's disable the internal ones
+to prevent any unwanted behavior in case they wear out.
 
-Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+Fixes: de9618e84f76 ("arm64: dts: Add support for Kontron SL/BL i.MX8MM OSM-S")
 Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts  | 4 ++--
- arch/arm64/boot/dts/freescale/imx8mm-kontron-sl.dtsi | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ .../dts/freescale/imx8mm-kontron-bl-osm-s.dts    | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts
-index dcec57c20399e..5fd2e45258b11 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl.dts
-@@ -279,8 +279,8 @@ MX8MM_IOMUXC_SAI3_MCLK_GPIO5_IO2		0x19
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
+index 0730c22e5b6b9..1dd03ef0a7835 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-bl-osm-s.dts
+@@ -313,19 +313,19 @@ MX8MM_IOMUXC_SAI5_MCLK_GPIO3_IO25		0x19
  
- 	pinctrl_i2c4: i2c4grp {
+ 	pinctrl_uart1: uart1grp {
  		fsl,pins = <
--			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL			0x400001c3
--			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA			0x400001c3
-+			MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL			0x40000083
-+			MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA			0x40000083
+-			MX8MM_IOMUXC_SAI2_RXC_UART1_DCE_RX		0x140
+-			MX8MM_IOMUXC_SAI2_RXFS_UART1_DCE_TX		0x140
+-			MX8MM_IOMUXC_SAI2_RXD0_UART1_DCE_RTS_B		0x140
+-			MX8MM_IOMUXC_SAI2_TXFS_UART1_DCE_CTS_B		0x140
++			MX8MM_IOMUXC_SAI2_RXC_UART1_DCE_RX		0x0
++			MX8MM_IOMUXC_SAI2_RXFS_UART1_DCE_TX		0x0
++			MX8MM_IOMUXC_SAI2_RXD0_UART1_DCE_RTS_B		0x0
++			MX8MM_IOMUXC_SAI2_TXFS_UART1_DCE_CTS_B		0x0
  		>;
  	};
  
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-sl.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-sl.dtsi
-index 1f8326613ee9e..2076148e08627 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-sl.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-sl.dtsi
-@@ -237,8 +237,8 @@ MX8MM_IOMUXC_ECSPI1_SS0_GPIO5_IO9		0x19
- 
- 	pinctrl_i2c1: i2c1grp {
+ 	pinctrl_uart2: uart2grp {
  		fsl,pins = <
--			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL			0x400001c3
--			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x400001c3
-+			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL			0x40000083
-+			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x40000083
+-			MX8MM_IOMUXC_SAI3_TXFS_UART2_DCE_RX		0x140
+-			MX8MM_IOMUXC_SAI3_TXC_UART2_DCE_TX		0x140
+-			MX8MM_IOMUXC_SAI3_RXD_UART2_DCE_RTS_B		0x140
+-			MX8MM_IOMUXC_SAI3_RXC_UART2_DCE_CTS_B		0x140
++			MX8MM_IOMUXC_SAI3_TXFS_UART2_DCE_RX		0x0
++			MX8MM_IOMUXC_SAI3_TXC_UART2_DCE_TX		0x0
++			MX8MM_IOMUXC_SAI3_RXD_UART2_DCE_RTS_B		0x0
++			MX8MM_IOMUXC_SAI3_RXC_UART2_DCE_CTS_B		0x0
  		>;
  	};
  
