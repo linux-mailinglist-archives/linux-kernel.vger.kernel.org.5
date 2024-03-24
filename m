@@ -1,125 +1,127 @@
-Return-Path: <linux-kernel+bounces-114821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E97F88925C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:04:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D703888C2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:12:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55F38B2D084
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:42:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E1021C26F36
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40AB62C0134;
-	Mon, 25 Mar 2024 00:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A01252DD216;
+	Mon, 25 Mar 2024 00:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Rn3ZXEup"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="piiy2pgy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625E517655F;
-	Sun, 24 Mar 2024 23:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A622811A9;
+	Sun, 24 Mar 2024 23:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323442; cv=none; b=Jlxgk4E1Qku1bGgd74VfbM+L6hBkmXyvNs91o4zo38hRfEFxZsV8xbPpbpabWl1dA+imQZFCRqXIql3aqhPJR5dOE0trT/f2gn5+UKUTXP0RtOBDK4msNvfKz6qIRnjD++MIDKte4sMhEKNHV0KzIuTLuhE5DCSkmRWOEM3D8BQ=
+	t=1711323671; cv=none; b=QPgqs6TkC43vSMDji6QpiqDdv/0mfaCqUO0o2TeBrOPwsiJHi24Az0pP/lLKQDQZx1bdw3mZzXJetDXRX9rQItbNlw9yu4EoN1+y/g6YaoNtTcbReiIaI4Ri1dXy2fLYm/EXo3X3E0/wnhOg6UaiJS1RSOKcaHOcJLGFAGfD2Ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323442; c=relaxed/simple;
-	bh=FiUcIHSFBZBxALtmt61YlYMiFB6wlrdxR2XHmKr2s7U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=favyb5F3OrEMpateG3M8MGMcWkZIo9rCV6PvgS//O9ZNBakKo5XN5ArKg2zLulzc/LPsjpBOyTEZ2cbmNo7CYzua0WbDr33B0EatD5xtf7pizIXQ6uvmchtW/smN7grOv2vOTEnXX5D4N3l22aGcat2qonzwZvl/0h2CW7zl/lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Rn3ZXEup; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FiUcIHSFBZBxALtmt61YlYMiFB6wlrdxR2XHmKr2s7U=; b=Rn3ZXEupjlK9s8ygJnhwVpaGLT
-	dYBT49gIZK2OasO7sRPbhGvozmqTWhWXakl0JdzZ5cKLRDR+c36ME7FaSO3vP+vc0ab55QyF/Tbnm
-	VR7AcUA32IstZO1srXhjDa7+/jYt21mfVP/hFgBA0du80/ImT2KAK+oV3TS9s3xBjbeYDQ0epZRT9
-	GWvOmvyJ3hc5FwMK5EXCGJeM7XPDrx8s13MBRdQZ+diEbvQ1lBI8OFOgmdCv5v+duYq9iPYpNvFOW
-	CEk3k5Zos95tElXC8siQdd3gLpPlZrUQyJ+KwVU69saNmVUOftUpZrECpAe7ts+UYRmTnl4jGiUGq
-	G4f556uA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1roXOo-0000000DuZF-2Stz;
-	Sun, 24 Mar 2024 23:37:15 +0000
-Date: Sun, 24 Mar 2024 16:37:10 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeelb@google.com>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
- custom page providers
-Message-ID: <ZgC5JoSiWAYf3IgX@infradead.org>
-References: <20240305020153.2787423-1-almasrymina@google.com>
- <20240305020153.2787423-3-almasrymina@google.com>
- <ZfegzB341oNc_Ocz@infradead.org>
- <CAHS8izOUi6qGp=LSQb_o5oph-EnhNOuhLkPSfbQRU3eniZvbdA@mail.gmail.com>
+	s=arc-20240116; t=1711323671; c=relaxed/simple;
+	bh=3NZJxN1ilBXYbX6v5QjBJ8M3TSMEdpCJXEWGJUSKqo8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Mo3603XEOAnemabM6U3yV8xww/oaCu+Cd6oDNBC3QVmRNcYz7fJU4evySvvdGCCI5XNx9ipVxQEDrTrcWcB0xexcjKNvLvbSBau2J6TVAlA2NWrIQkb4Gp1Jg5vThKaKsqAVUfmDEqQhx8rYbbxmwda8rLjYMSI8bFYYDXCUPxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=piiy2pgy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B715C43390;
+	Sun, 24 Mar 2024 23:41:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711323670;
+	bh=3NZJxN1ilBXYbX6v5QjBJ8M3TSMEdpCJXEWGJUSKqo8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=piiy2pgyvYkhSRp4/GD4caYUBTPKhuF3Kq7cxoIvqGD80KH6ImpYbV5wirLe2MuJR
+	 kTP0RQu0UUNOv1a8MIJATRnHqFcucdinunxyh2bKAIZUTQGEx/Vrp0o1Gm4LKajUjY
+	 MeuFJ9P5lCtBB5Xn2By49HiZzlR8fXRTZuc8b3q/bY+ER6wMveKm5RcG3kNHPY6ZQY
+	 sB+FHh59Pbl7GCGaur/+8xPPmurGirOaQwlyV7zOtEAy3yeDCZt+OlN5gCTD3yCLXN
+	 so4f3tTegx35DzErd1yvd8XjAefQG4OtytzofBbed/ghBiUPRxffkSLeJcr02ezpal
+	 0jbHteMwTvgcQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Rahul Rameshbabu <sergeantsagara@protonmail.com>,
+	Julian Calaby <julian.calaby@gmail.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 042/238] wifi: b43: Stop correct queue in DMA worker when QoS is disabled
+Date: Sun, 24 Mar 2024 19:37:10 -0400
+Message-ID: <20240324234027.1354210-43-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
+References: <20240324234027.1354210-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHS8izOUi6qGp=LSQb_o5oph-EnhNOuhLkPSfbQRU3eniZvbdA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 22, 2024 at 10:54:54AM -0700, Mina Almasry wrote:
-> Sorry I don't mean to argue but as David mentioned, there are some
-> plans in the works and ones not in the works to extend this to other
-> memory types. David mentioned io_uring & Jakub's huge page use cases
-> which may want to re-use this design. I have an additional one in
-> mind, which is extending devmem TCP for storage devices. Currently
-> storage devices do not support dmabuf and my understanding is that
-> it's very hard to do so, and NVMe uses pci_p2pdma instead. I wonder if
-> it's possible to extend devmem TCP in the future to support pci_p2pdma
-> to support nvme devices in the future.
+From: Rahul Rameshbabu <sergeantsagara@protonmail.com>
 
-The block layer needs to suppotr dmabuf for this kind of I/O.
-Any special netdev to block side channel will be NAKed before you can
-even send it out.
+[ Upstream commit 581c8967d66c4961076dbbee356834e9c6777184 ]
+
+When QoS is disabled, the queue priority value will not map to the correct
+ieee80211 queue since there is only one queue. Stop queue 0 when QoS is
+disabled to prevent trying to stop a non-existent queue and failing to stop
+the actual queue instantiated.
+
+Fixes: bad691946966 ("b43: avoid packet losses in the dma worker code.")
+Signed-off-by: Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Reviewed-by: Julian Calaby <julian.calaby@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/20231231050300.122806-4-sergeantsagara@protonmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/broadcom/b43/main.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/broadcom/b43/main.c b/drivers/net/wireless/broadcom/b43/main.c
+index f175dbaffc300..6100c0d2a7f3c 100644
+--- a/drivers/net/wireless/broadcom/b43/main.c
++++ b/drivers/net/wireless/broadcom/b43/main.c
+@@ -3603,7 +3603,7 @@ static void b43_tx_work(struct work_struct *work)
+ 				err = b43_dma_tx(dev, skb);
+ 			if (err == -ENOSPC) {
+ 				wl->tx_queue_stopped[queue_num] = true;
+-				ieee80211_stop_queue(wl->hw, queue_num);
++				b43_stop_queue(dev, queue_num);
+ 				skb_queue_head(&wl->tx_queue[queue_num], skb);
+ 				break;
+ 			}
+@@ -3627,6 +3627,7 @@ static void b43_op_tx(struct ieee80211_hw *hw,
+ 		      struct sk_buff *skb)
+ {
+ 	struct b43_wl *wl = hw_to_b43_wl(hw);
++	u16 skb_queue_mapping;
+ 
+ 	if (unlikely(skb->len < 2 + 2 + 6)) {
+ 		/* Too short, this can't be a valid frame. */
+@@ -3635,12 +3636,12 @@ static void b43_op_tx(struct ieee80211_hw *hw,
+ 	}
+ 	B43_WARN_ON(skb_shinfo(skb)->nr_frags);
+ 
+-	skb_queue_tail(&wl->tx_queue[skb->queue_mapping], skb);
+-	if (!wl->tx_queue_stopped[skb->queue_mapping]) {
++	skb_queue_mapping = skb_get_queue_mapping(skb);
++	skb_queue_tail(&wl->tx_queue[skb_queue_mapping], skb);
++	if (!wl->tx_queue_stopped[skb_queue_mapping])
+ 		ieee80211_queue_work(wl->hw, &wl->tx_work);
+-	} else {
+-		ieee80211_stop_queue(wl->hw, skb->queue_mapping);
+-	}
++	else
++		b43_stop_queue(wl->current_dev, skb_queue_mapping);
+ }
+ 
+ static void b43_qos_params_upload(struct b43_wldev *dev,
+-- 
+2.43.0
+
 
