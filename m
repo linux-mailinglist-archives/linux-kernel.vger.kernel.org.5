@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD1FE88902E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:12:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 763F18894A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDD431C2B975
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:12:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ADAA1F33AEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADCC92892D4;
-	Sun, 24 Mar 2024 23:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508BD25FF6F;
+	Mon, 25 Mar 2024 02:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHdsgDvk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UjvauvGT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 297A6225219;
-	Sun, 24 Mar 2024 23:12:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8B62251F3;
+	Sun, 24 Mar 2024 23:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321941; cv=none; b=lWav+pCX+36Wabd8NGaVfo4aeUU8JbCPzapTvNyC5zB26h7spNtAvFmZj1YfifOuwGDJzDSw4hlmgvlmwVd7wRfmBXpjAdMxHs+NyERnssK4wadVajF6FeaC1LRb8Pfyd+Ts3KodtaSlHZcqZKVJCaSNEMN/7EKtQj/zhfDWTSw=
+	t=1711321941; cv=none; b=HaVZuPse1jAf88oQwf9xlS1QOoG5F/MI+GiV9LEcNbzZJTlBF476epY62xMCbkRP9ILJVzbhr97IjuNimOOvlK5aMeXtTNLCm+wkv7hRqMsHSHjdry/gqBaWTQxjbHdAq4XJOjNBx03rbwxaJq6ccwSmQKKsBhBlcYBYmfG1QCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321941; c=relaxed/simple;
-	bh=QojNL+Cb9RditocGthFN/Ct6+fVG+hVShAGwJAb8Xxg=;
+	bh=5Z5U0pAw/7zQacgJCSeiw1RFy6/bQLMKwZHPHOQAhKQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G2TmIAaw0EdTt9/ddQKhd7ooC/KyegKT5p2mRC2SOQAtVwkyrWtiIqkWuYymJ3qo1eYwaHfRU7udyi9lVMZu/l6iBJuCn8V+XRCx0GDX0x0ZSovmqoxLvkWV354EySRJPk+F0X2xNVBnRn5ja7Sb0lUt/tvhYkQ7dqm7CiXAbYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XHdsgDvk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6590DC43399;
-	Sun, 24 Mar 2024 23:12:19 +0000 (UTC)
+	 MIME-Version; b=TVB8x2Mg8zLyrQeSh1qyOdNYL9CnQG0vtbqlUPmc6t9o9R6d1iAbNgTfSBdiZ+niAjgJhBhAw5mrmZJ0k7NyafuYxMmvloaWRQ5b27K1np2qPDv6rxxHthKbAl5+n30Di1Dc71OhcS8kT8T0WYYlezTI06IRjp+M7Y/W5TtvyvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UjvauvGT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C9AEC43394;
+	Sun, 24 Mar 2024 23:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711321940;
-	bh=QojNL+Cb9RditocGthFN/Ct6+fVG+hVShAGwJAb8Xxg=;
+	bh=5Z5U0pAw/7zQacgJCSeiw1RFy6/bQLMKwZHPHOQAhKQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XHdsgDvkGy0+I1RuocdNrYvbS/KbygKFD/HQP9yVMTW2aQ9np3piVh/ejZJRNAcnV
-	 cqTrOgh9JMPJavXilP8HdddEHJPXVbLI2Q97OWM2WijvjajXWt2JoIodKwC2cd0kJp
-	 0HaIdDwZdcfnnmi++zmXIyGSIuFGW8QIm0rsoX1eXeEBLffTSH8MvYBqlAP21tbqfw
-	 P2sM8llO+5Vd95da+glMMTJRW1tqEo7S44we2hr1duJFi2JnQ7m+VkPaQAK9B/n/gu
-	 Te2Yc7kTxVpGEcs60sonmZai1LMwsKqqzJWi3Cjt3Zed9oBtDUm7DWna4a1FP0nuVu
-	 lQnk63e1Y0B5w==
+	b=UjvauvGTgq+RSTI5e+9XraPD9QXELQFYDchAOnueJrr0GwrVl8KDzIikuxJ8G8NWx
+	 R3k64lAWJwZEgODeiy9SnMdiT7VebxaA/Y8rTwIKOqx9jWPMgpZGQGfJP63mrBjd2/
+	 BLqj29J+i2Q/LamxWIkz1QerKWc19W5cJZMmBQJ8Wjypi+QhzqzE9rNoba095ZEAZA
+	 igKE1CY/tL+gQEHtQrN7GTgTFCaWVV6r2oaIbYP9Y1ST8VNFqQLuUz1Ki/9vmwh+tm
+	 eGp1vn1ucyYWMEwfS/0fH3DW4mklh6b+apP5faq3ogMKGTzAW+zzOPFEfaXAUx1DYy
+	 56w+dLNVwqhdA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jeff Layton <jlayton@kernel.org>,
 	Chuck Lever <chuck.lever@oracle.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 011/451] nfsd: don't take/put an extra reference when putting a file
-Date: Sun, 24 Mar 2024 19:04:47 -0400
-Message-ID: <20240324231207.1351418-12-sashal@kernel.org>
+Subject: [PATCH 6.1 012/451] nfsd: update comment over __nfsd_file_cache_purge
+Date: Sun, 24 Mar 2024 19:04:48 -0400
+Message-ID: <20240324231207.1351418-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,34 +64,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit b2ff1bd71db2a1b193a6dde0845adcd69cbcf75e ]
-
-The last thing that filp_close does is an fput, so don't bother taking
-and putting the extra reference.
+[ Upstream commit 972cc0e0924598cb293b919d39c848dc038b2c28 ]
 
 Signed-off-by: Jeff Layton <jlayton@kernel.org>
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/filecache.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/nfsd/filecache.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
-index 50349449a4e52..51e2947c21a7d 100644
+index 51e2947c21a7d..9b7082fdd2115 100644
 --- a/fs/nfsd/filecache.c
 +++ b/fs/nfsd/filecache.c
-@@ -382,10 +382,8 @@ nfsd_file_free(struct nfsd_file *nf)
- 	if (nf->nf_mark)
- 		nfsd_file_mark_put(nf->nf_mark);
- 	if (nf->nf_file) {
--		get_file(nf->nf_file);
--		filp_close(nf->nf_file, NULL);
- 		nfsd_file_check_write_error(nf);
--		fput(nf->nf_file);
-+		filp_close(nf->nf_file, NULL);
- 	}
- 
- 	/*
+@@ -907,7 +907,8 @@ nfsd_file_cache_init(void)
+  * @net: net-namespace to shut down the cache (may be NULL)
+  *
+  * Walk the nfsd_file cache and close out any that match @net. If @net is NULL,
+- * then close out everything. Called when an nfsd instance is being shut down.
++ * then close out everything. Called when an nfsd instance is being shut down,
++ * and when the exports table is flushed.
+  */
+ static void
+ __nfsd_file_cache_purge(struct net *net)
 -- 
 2.43.0
 
