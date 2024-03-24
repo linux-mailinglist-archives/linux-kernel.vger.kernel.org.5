@@ -1,161 +1,500 @@
-Return-Path: <linux-kernel+bounces-112588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45D9A887BB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:00:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3090A887BB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:01:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F64A1C20B4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:00:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 494A91C20C61
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3085F14008;
-	Sun, 24 Mar 2024 05:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480AB13FFC;
+	Sun, 24 Mar 2024 05:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gGdorOui"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U1aT446R"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12E6944F;
-	Sun, 24 Mar 2024 05:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F2C134BE
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:01:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711256431; cv=none; b=m6uaeP1RJ4ru04+I8rxZhTdsQfpu/kwR2bd68OEhfDgbg6limvv9jeVIJuImflU1d1MmAsuJlbVowuZUHb0iBLdyDhL6run3r32kXvgcULibtdGP6xEnuJsL5/ufA2R+GZXmjpekjwNEAbYGLIP/p5xosoOWkfn8yLruYjOhdQA=
+	t=1711256463; cv=none; b=diLxpaR3WGC+6xGAASoFL8AmcsvxZm5cHoSO29MRytfhjxZY8YsnZlQj76vGdGr1wr/cdSMumPhtoQ9LrOJC4hmUcWvycUqA8+CzPaNYWKdxoQ2gruWdRAuoWgUfqxlyHxNcxgpWibyTowzPmL0YR0UwFuQWBqSFywEgACqlCNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711256431; c=relaxed/simple;
-	bh=s2PpLuMCSXF9aw2S1I7AerrJRZw6llL62KMpMWQBEEY=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=FX72TdZNpfGllkpz55Smc3DceIlrheZdnsmewO8tKSAyrgZpubJk1LyeHckv3L5/J/AXlkCOLEABZyPmUxLCDpjIYp/GGCNxhfvkEUd+mck7JCLMhaMDrZpIsTSreuSaoXlyWRk3Thoz13xV5R8yYd5QHbqiaguljSgR5xLhwjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gGdorOui; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-515a86daf09so321311e87.3;
-        Sat, 23 Mar 2024 22:00:29 -0700 (PDT)
+	s=arc-20240116; t=1711256463; c=relaxed/simple;
+	bh=ODFwLX9Fn2KMSx7qcNbVg/+GM1fR7v524i6YHGil1hY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SNXZErwvYaGg8mHNs1NlLS45xTw4sB1COTrEaU2pT2ljv8ChQt3nwiqw9YhoKBkkFVybW1lI6mKVuWcftkNUg04cVnIYLelkwA+LCAwAedzwdpvVH8bEh+c0okwLM4Mwnkh5q/fgsJHkBeJ5z2gJLq5kcVqWLUXpuRb5PVVbgYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U1aT446R; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dee917abd5so91865ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 22:01:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711256427; x=1711861227; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yvEdxnpAVsEIe0YNE5Idfj6+Zl6YWvhI7C+nvup/Fgw=;
-        b=gGdorOuih3uOmAu7ADmNnh9Y1GULQ0MbemyCYuqjXN6zipYOxzgA+BWf8uXPZDr/Sn
-         0tEVxt4Z4/BL2a4NLaD8lzxNUl71sGuYFJ9WJPT235EYBgKQcYV1JaxsO6LIXzBS7TB5
-         E/AaHcjx38+Y2vpx8PmxvpkhJ9ys+G21h0yzOaQ3zRj77jTHbDNaKcAtfJ5pC6WXKSRz
-         5UgzeTwDOso7mi3fEs47+peW+oPLXQ55vxPXRLP3CUz5z6TJ7IDQJMUkop5v4y7XZU9s
-         Q1QPF0RcfjBIH3e9tt68R+7Q39PaSLxOlDVLA6N7U0ftAlJ4sAX7o3iL/X3OxMLfE1P0
-         HCYA==
+        d=google.com; s=20230601; t=1711256461; x=1711861261; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=InmmgUILAkTU/zdBr9e+023lOFWPccpL4BLezUKiyvA=;
+        b=U1aT446RpmUxwUd5u0l5jIkY2oORBAbnW/OKA/jDukhzDCXGGEk7UW00PH/OmZgXWy
+         RJUidYw2+Z0ZtaCaFUHIQ2EblkquLcKfrajVQC/jFyoUtgEcT88UroxjlrBhfgupnPTO
+         j1ZF5FHt/REYyIJOOHuYSID/3NV858GXyMSApzOKkAZ4FlSxdn8IOS+nShcg51B/cMh1
+         Y2Ua/WL3svcs7sFiX4+IHSBIsBfOhA2tMbBfwEWjZsKZou9oP5sC9XQMbCk/O3aSvyAf
+         BSNQ0V+UUqo/fPKSH3qgDoVtzX/+9RTUDo69nEdJNi4nWIqkDgVWaKtvoHahGkZwiktE
+         mmDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711256427; x=1711861227;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yvEdxnpAVsEIe0YNE5Idfj6+Zl6YWvhI7C+nvup/Fgw=;
-        b=mH5Ra3Yu9doJlKM8GXZvVlpIrKLoBYqsSBF7nhidQudK40X/3ubfWccY0VadFtoRT0
-         gn+8wG4tggVAgLlMmPgmVd6tvh1cvLlTJZSbJrx49h/HBQMZsKOfIayQA4LCVieEFGps
-         PaS3+N1Mepe5PpqAEJOjMFiq4Dak/aLCHeBmkL34GoI25EbV4piu6Xo7GAboLH6OGrNk
-         klkSh0AqXL5qox7WzmezcEBYR+HIUh+w/xJPPE+3Sn0pL5X27x6HdiOTdmdoFNh43C8g
-         UKllPMLOx/6l1Dto+JsScEZllBY26sg/XUqeytHOeNyd54vTfYgQADMGEt5qhILKmdgP
-         sGeA==
-X-Forwarded-Encrypted: i=1; AJvYcCUni7DTRaI62rUnDl2UkbrpuuyxFA8lLi/losT/DS3hbOmmW/hfvNJj/H7JpzSsYXtnJ3KNHU6RXuIchev0V6sarg/wXFQUj01AkUPivA==
-X-Gm-Message-State: AOJu0YxY/r6mBXiu5SMBV5ryjojJHA74ULptFj7qUsLaPEt1HyP3CpI9
-	b0DEyID0CqtFxWXFnyzG3Lud8J0O2WOqai3A3fH/YlVeQDWhOknZs0++HpXEAU699+KFNpdWlPe
-	6ujBQW+Xs5oxrwGaoPaApPYCfmYwQJT4F9v0=
-X-Google-Smtp-Source: AGHT+IFDlM7PxTIiXR+ZmPGP67FVm99FaL3V3gogWvv54SBA4jhbjyqeg40wLbYRkAw2FRoxovQ6kGhRNxVIFuJTqso=
-X-Received: by 2002:a05:6512:616:b0:513:ccec:a822 with SMTP id
- b22-20020a056512061600b00513cceca822mr2667910lfe.28.1711256427032; Sat, 23
- Mar 2024 22:00:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711256461; x=1711861261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=InmmgUILAkTU/zdBr9e+023lOFWPccpL4BLezUKiyvA=;
+        b=i4XYkj+eM4HPQXm/SPijVHSaXL9HHhRxSaiFX9EDJRqNpUjx2rEZPhiRd1ugKxROAg
+         mNTJbQozEMtQuSuLE1dShKeIrABH8TtUmCVn5AVwSTeaKuR5B1vSn5yglj5L/3cQ0t93
+         cxKPX830OSSPVBvdGPD92Z8x12KDhOQ09Mht7DKgTpB7PeFtrej/RNQhI2pTCXtYJrNL
+         A8sjR6O2rMF07rwxNIPFv8RFW9WeEoMatnUOH225dPxfWdWPV0xvVVRa8TUQT1sNYI+V
+         XSFMC8g9PTFecjoYBTmHXpvNILt2lyJIsLEcF9IdqRLaudhJO6FBXmOu9p6K6Ua7xXoO
+         ZQCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUs6amjl06Yf+NrJLcorYuzd/6miMKNeYCPLNhH92l3aNJocM1X6A46I8pTvmNA4d434tp3aIg+U1m8y64bTYsnc4ixV0a9MhH3enai
+X-Gm-Message-State: AOJu0YzQlHNC1q0yD7Dd+l+Qr2HUxuPQFi6OyUTF1QEgVMkWUswVEgH4
+	3fkGpyp5PabRKf57Gv5GtE3csNwJ/JTqBq0pL7NXdmV85s3DfZxhpOEavRooxaeSa7eLPT9E8Me
+	Zr9a3uwCStpAVC7/Cf5egG1+V/xQmU6Q01ZVj
+X-Google-Smtp-Source: AGHT+IFRLtzYeikYDJRd6r6mtzRnkIWaNwWpiU9m9dgliaVL1vqbm/fYNe8JudivriIfNA5c4ImfwpaxT+oslt7yUoI=
+X-Received: by 2002:a17:902:ea01:b0:1e0:b622:4e24 with SMTP id
+ s1-20020a170902ea0100b001e0b6224e24mr16770plg.20.1711256460308; Sat, 23 Mar
+ 2024 22:01:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Steve French <smfrench@gmail.com>
-Date: Sun, 24 Mar 2024 00:00:15 -0500
-Message-ID: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
-Subject: kernel crash in mknod
-To: LKML <linux-kernel@vger.kernel.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, Roberto Sassu <roberto.sassu@huawei.com>
-Cc: CIFS <linux-cifs@vger.kernel.org>, Paulo Alcantara <pc@manguebit.com>, 
-	Christian Brauner <christian@brauner.io>
+References: <20240209031441.943012-1-weilin.wang@intel.com> <20240209031441.943012-8-weilin.wang@intel.com>
+In-Reply-To: <20240209031441.943012-8-weilin.wang@intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sat, 23 Mar 2024 22:00:49 -0700
+Message-ID: <CAP-5=fU-JoD20zLVBgjDfR8bDqdb_s+pJqXZqJdSdgFnsfbiTg@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 07/15] perf stat: Add functions to create new group
+ and assign events into groups
+To: weilin.wang@intel.com
+Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
+	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
+	Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Anyone else seeing this kernel crash in do_mknodat (I see it with a
-simple "mkfifo" on smb3 mount).  I started seeing this in 6.9-rc (did
-not see it in 6.8).   I did not see it with the 3/12/23 mainline
-(early in the 6.9-rc merge Window) but I do see it in the 3/22 build
-so it looks like the regression was introduced by:
+On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
+>
+> From: Weilin Wang <weilin.wang@intel.com>
+>
+> Add struct metricgroup__pmu_group_list to hold the lists of groups from
+> different PMUs. Each PMU has one separate list.
+>
+> Add struct metricgroup__group as one node (one group in the grouping
+> result) of the metricgroup__pmu_group_list. It uses two bitmaps to log
+> counter availabilities(gp counters and fixed counters).
+>
+> Add functions to create group and assign event into the groups based on t=
+he
+> event restrictions (struct metricgroup__event_info) and counter
+> availability (pmu_info_list and bitmaps). New group is inserted into the
+> list of groups.
+>
+> Add functions to handle counter bitmaps. Add functions do find and insert
+> operations to handle inserting event into groups.
+>
+> Add function to fill all bits of one counter bitmap. Add functions to
+> create new groups when no counter is available in all the existing groups=
+.
+>
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 
-commit 08abce60d63fb55f440c393f4508e99064f2fd91
-Author: Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu Feb 15 11:31:02 2024 +0100
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-    security: Introduce path_post_mknod hook
-
-    In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-    the path_post_mknod hook.
-
-    IMA-appraisal requires all existing files in policy to have a file
-    hash/signature stored in security.ima. An exception is made for empty files
-    created by mknod, by tagging them as new files.
-
-    LSMs could also take some action after files are created.
-
-    The new hook cannot return an error and cannot cause the operation to be
-    reverted.
-
-Dmesg showing the crash it causes below:
-
-[   84.862122] RIP: 0010:security_path_post_mknod+0x9/0x60
-[   84.862139] Code: 41 5e 5d 31 d2 31 f6 31 ff c3 cc cc cc cc 0f 1f
-00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 48
-8b 46 30 <f6> 40 0d 02 75 43 55 48 89 e5 41 55 49 89 fd 41 54 49 89 f4
-53 48
-[   84.862149] RSP: 0018:ffffa22dc1f6bdc8 EFLAGS: 00010246
-[   84.862159] RAX: 0000000000000000 RBX: ffff8d4fc85da000 RCX: 0000000000000000
-[   84.862167] RDX: 0000000000000000 RSI: ffff8d502473a900 RDI: ffffffffaa26f6e0
-[   84.862174] RBP: ffffa22dc1f6be28 R08: 0000000000000000 R09: 0000000000000000
-[   84.862181] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[   84.862187] R13: ffff8d502473a900 R14: 0000000000001000 R15: 0000000000000000
-[   84.862195] FS:  00007d2c5c075800(0000) GS:ffff8d573b880000(0000)
-knlGS:0000000000000000
-[   84.862204] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   84.862211] CR2: 000000000000000d CR3: 000000018d63a005 CR4: 00000000003706f0
-[   84.862219] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   84.862225] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   84.862232] Call Trace:
-[   84.862238]  <TASK>
-[   84.862248]  ? show_regs+0x6c/0x80
-[   84.862262]  ? __die+0x24/0x80
-[   84.862273]  ? page_fault_oops+0x96/0x1b0
-[   84.862290]  ? do_user_addr_fault+0x30c/0x730
-[   84.862304]  ? exc_page_fault+0x82/0x1b0
-[   84.862318]  ? asm_exc_page_fault+0x27/0x30
-[   84.862338]  ? security_path_post_mknod+0x9/0x60
-[   84.862350]  ? do_mknodat+0x191/0x2c0
-[   84.862365]  __x64_sys_mknodat+0x37/0x50
-[   84.862376]  do_syscall_64+0x81/0x180
-[   84.862387]  ? count_memcg_events.constprop.0+0x2a/0x50
-[   84.862402]  ? handle_mm_fault+0xaf/0x330
-[   84.862418]  ? do_user_addr_fault+0x33f/0x730
-[   84.862430]  ? irqentry_exit_to_user_mode+0x6a/0x260
-[   84.862442]  ? irqentry_exit+0x43/0x50
-[   84.862453]  ? exc_page_fault+0x93/0x1b0
-[   84.862464]  entry_SYSCALL_64_after_hwframe+0x6c/0x74
-[   84.862476] RIP: 0033:0x7d2c5bf19e07
-[   84.862536] Code: 9c ff ff ff e9 0a 00 00 00 66 2e 0f 1f 84 00 00
-00 00 00 f3 0f 1e fa 48 89 c8 48 c1 e8 20 75 2b 41 89 ca b8 03 01 00
-00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 e1 3f 0e 00 f7 d8 64 89
-02 b8
-[   84.862544] RSP: 002b:00007ffc1b2c4568 EFLAGS: 00000246 ORIG_RAX:
-0000000000000103
-[   84.862556] RAX: ffffffffffffffda RBX: 00007ffc1b2c4718 RCX: 00007d2c5bf19e07
-[   84.862563] RDX: 00000000000011b6 RSI: 00007ffc1b2c6712 RDI: 00000000ffffff9c
-[   84.862570] RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
-[   84.862576] R10: 0000000000000000 R11: 0000000000000246 R12: 00007d2c5bffe428
-[   84.862582] R13: 0000000000000000 R14: 00007ffc1b2c6712 R15: 00007d2c5c199000
-[   84.862597]  </TASK>
-
-
---
 Thanks,
+Ian
 
-Steve
+> ---
+>  tools/perf/util/metricgroup.c | 296 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 296 insertions(+)
+>
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
+c
+> index 9061ed4ca015..f86e9a0b0d65 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -192,6 +192,41 @@ struct metricgroup__pmu_counters {
+>         size_t num_counters;
+>         size_t num_fixed_counters;
+>  };
+> +/**
+> + * A list of event groups for this pmu.
+> + * This is updated during the grouping.
+> + */
+> +struct metricgroup__pmu_group_list {
+> +       struct list_head nd;
+> +       /** The name of the pmu(/core) the events collected on. */
+> +       const char *pmu_name;
+> +       /** The number of gp counters in the pmu(/core). */
+> +       size_t num_counters;
+> +       /** The number of fixed counters in the pmu(/core) if applicable.=
+ */
+> +       size_t num_fixed_counters;
+> +       /** Head to the list of groups using this pmu(/core)*/
+> +       struct list_head group_head;
+> +};
+> +/**
+> + * This is one node in the metricgroup__pmu_group_list.
+> + * It represents on group.
+> + */
+> +struct metricgroup__group {
+> +       struct list_head nd;
+> +       /** The bitmaps represent availability of the counters.
+> +        *  They are updated once the corresponding counter is used by
+> +        *  an event (event inserted into the group).
+> +        */
+> +       DECLARE_BITMAP(gp_counters, NR_COUNTERS);
+> +       DECLARE_BITMAP(fixed_counters, NR_COUNTERS);
+> +       /** Head to the list of event names in this group*/
+> +       struct list_head event_head;
+> +};
+> +
+> +struct metricgroup__group_events {
+> +       struct list_head nd;
+> +       const char *event_name;
+> +};
+>
+>  /**
+>   * Each group is one node in the group string list.
+> @@ -1487,6 +1522,34 @@ static int set_counter_bitmap(int pos, unsigned lo=
+ng *bitmap)
+>         return 0;
+>  }
+>
+> +/**
+> + * Returns 0 on success. Finds the last counter that is not used in pmu_=
+counters
+> + * and supports the event, included in event_counters.
+> + */
+> +static int find_counter_bitmap(const unsigned long *pmu_counters,
+> +                             const unsigned long *event_counters,
+> +                             unsigned long *bit)
+> +{
+> +       /*It is helpful to assign from the highest bit because some event=
+s can
+> +        *only be collected using GP0-3.
+> +        */
+> +       unsigned long find_bit =3D find_last_and_bit(pmu_counters, event_=
+counters, NR_COUNTERS);
+> +
+> +       if (find_bit =3D=3D NR_COUNTERS)
+> +               return -ERANGE;
+> +       *bit =3D find_bit;
+> +       return 0;
+> +}
+> +
+> +static int use_counter_bitmap(unsigned long *bitmap,
+> +                            unsigned long find_bit)
+> +{
+> +       if (find_bit >=3D NR_COUNTERS)
+> +               return -EINVAL;
+> +       __clear_bit(find_bit, bitmap);
+> +       return 0;
+> +}
+> +
+>  static int parse_fixed_counter(const char *counter,
+>                               unsigned long *bitmap,
+>                               bool *fixed)
+> @@ -1544,6 +1607,38 @@ static int parse_counter(const char *counter,
+>         return 0;
+>  }
+>
+> +static void group_event_list_free(struct metricgroup__group *groups)
+> +{
+> +       struct metricgroup__group_events *e, *tmp;
+> +
+> +       list_for_each_entry_safe(e, tmp, &groups->event_head, nd) {
+> +               list_del_init(&e->nd);
+> +               free(e);
+> +       }
+> +}
+> +
+> +static void group_list_free(struct metricgroup__pmu_group_list *groups)
+> +{
+> +       struct metricgroup__group *g, *tmp;
+> +
+> +       list_for_each_entry_safe(g, tmp, &groups->group_head, nd) {
+> +               list_del_init(&g->nd);
+> +               group_event_list_free(g);
+> +               free(g);
+> +       }
+> +}
+> +
+> +static void metricgroup__free_group_list(struct list_head *groups)
+> +{
+> +       struct metricgroup__pmu_group_list *g, *tmp;
+> +
+> +       list_for_each_entry_safe(g, tmp, groups, nd) {
+> +               list_del_init(&g->nd);
+> +               group_list_free(g);
+> +               free(g);
+> +       }
+> +}
+> +
+>  static void metricgroup__free_event_info(struct list_head
+>                                         *event_info_list)
+>  {
+> @@ -1719,6 +1814,203 @@ static int get_pmu_counter_layouts(struct list_he=
+ad *pmu_info_list,
+>         return ret;
+>  }
+>
+> +static int fill_counter_bitmap(unsigned long *bitmap, int start, int siz=
+e)
+> +{
+> +       int ret;
+> +
+> +       bitmap_zero(bitmap, NR_COUNTERS);
+> +
+> +       for (int pos =3D start; pos < start + size; pos++) {
+> +               ret =3D set_counter_bitmap(pos, bitmap);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +       return 0;
+> +}
+> +
+> +/**
+> + * Find if there is a counter available for event e in current_group. If=
+ a
+> + * counter is available, use this counter by filling the bit in the corr=
+ect
+> + * counter bitmap. Otherwise, return error (-ERANGE).
+> + */
+> +static int find_and_set_counters(struct metricgroup__event_info *e,
+> +                               struct metricgroup__group *current_group)
+> +{
+> +       int ret;
+> +       unsigned long find_bit =3D 0;
+> +
+> +       if (e->free_counter)
+> +               return 0;
+> +       if (e->fixed_counter) {
+> +               ret =3D find_counter_bitmap(current_group->fixed_counters=
+, e->counters,
+> +                                        &find_bit);
+> +               if (ret)
+> +                       return ret;
+> +               pr_debug("found counter for [event]=3D%s [e->fixed_counte=
+rs]=3D%lu\n",
+> +                       e->name, *current_group->fixed_counters);
+> +               ret =3D use_counter_bitmap(current_group->fixed_counters,=
+ find_bit);
+> +       } else {
+> +               ret =3D find_counter_bitmap(current_group->gp_counters, e=
+->counters,
+> +                                        &find_bit);
+> +               if (ret)
+> +                       return ret;
+> +               pr_debug("found counter for [event]=3D%s [e->gp_counters]=
+=3D%lu\n",
+> +                       e->name, *current_group->gp_counters);
+> +               ret =3D use_counter_bitmap(current_group->gp_counters, fi=
+nd_bit);
+> +       }
+> +       return ret;
+> +}
+> +
+> +static int _insert_event(struct metricgroup__event_info *e,
+> +                       struct metricgroup__group *group)
+> +{
+> +       struct metricgroup__group_events *event =3D malloc(sizeof(struct =
+metricgroup__group_events));
+> +
+> +       if (!event)
+> +               return -ENOMEM;
+> +       event->event_name =3D e->name;
+> +       if (e->fixed_counter)
+> +               list_add(&event->nd, &group->event_head);
+> +       else
+> +               list_add_tail(&event->nd, &group->event_head);
+> +       return 0;
+> +}
+> +
+> +/**
+> + * Insert the new_group node at the end of the group list.
+> + */
+> +static int insert_new_group(struct list_head *head,
+> +                          struct metricgroup__group *new_group,
+> +                          size_t num_counters,
+> +                          size_t num_fixed_counters)
+> +{
+> +       INIT_LIST_HEAD(&new_group->event_head);
+> +       fill_counter_bitmap(new_group->gp_counters, 0, num_counters);
+> +       fill_counter_bitmap(new_group->fixed_counters, 0, num_fixed_count=
+ers);
+> +       list_add_tail(&new_group->nd, head);
+> +       return 0;
+> +}
+> +
+> +/**
+> + * Insert event e into a group capable to include it
+> + *
+> + */
+> +static int insert_event_to_group(struct metricgroup__event_info *e,
+> +                               struct metricgroup__pmu_group_list *pmu_g=
+roup_head)
+> +{
+> +       struct metricgroup__group *g;
+> +       int ret;
+> +       struct list_head *head;
+> +
+> +       list_for_each_entry(g, &pmu_group_head->group_head, nd) {
+> +               ret =3D find_and_set_counters(e, g);
+> +               if (!ret) { /* return if successfully find and set counte=
+r*/
+> +                       ret =3D _insert_event(e, g);
+> +                       return ret;
+> +               }
+> +       }
+> +       /*
+> +        * We were not able to find an existing group to insert this even=
+t.
+> +        * Continue to create a new group and insert the event in it.
+> +        */
+> +       {
+> +               struct metricgroup__group *current_group =3D
+> +                               malloc(sizeof(struct metricgroup__group))=
+;
+> +
+> +               if (!current_group)
+> +                       return -ENOMEM;
+> +               pr_debug("create_new_group for [event] %s\n", e->name);
+> +
+> +               head =3D &pmu_group_head->group_head;
+> +               ret =3D insert_new_group(head, current_group, pmu_group_h=
+ead->num_counters,
+> +                                     pmu_group_head->num_fixed_counters)=
+;
+> +               if (ret)
+> +                       return ret;
+> +               ret =3D find_and_set_counters(e, current_group);
+> +               if (ret)
+> +                       return ret;
+> +               ret =3D _insert_event(e, current_group);
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +/**
+> + * assign_event_grouping - Assign an event into a group. If existing gro=
+up
+> + * cannot include it, create a new group and insert the event to it.
+> + */
+> +static int assign_event_grouping(struct metricgroup__event_info *e,
+> +                               struct list_head *pmu_info_list,
+> +                               struct list_head *groups)
+> +{
+> +       int ret =3D 0;
+> +
+> +       struct metricgroup__pmu_group_list *g =3D NULL;
+> +       struct metricgroup__pmu_group_list *pmu_group_head =3D NULL;
+> +
+> +       list_for_each_entry(g, groups, nd) {
+> +               if (!strcasecmp(g->pmu_name, e->pmu_name)) {
+> +                       pr_debug("found group for event %s in pmu %s\n", =
+e->name, g->pmu_name);
+> +                       pmu_group_head =3D g;
+> +                       break;
+> +               }
+> +       }
+> +       if (!pmu_group_head) {
+> +               struct metricgroup__pmu_counters *p;
+> +
+> +               pmu_group_head =3D malloc(sizeof(struct metricgroup__pmu_=
+group_list));
+> +               if (!pmu_group_head)
+> +                       return -ENOMEM;
+> +               INIT_LIST_HEAD(&pmu_group_head->group_head);
+> +               pr_debug("create new group for event %s in pmu %s\n", e->=
+name, e->pmu_name);
+> +               pmu_group_head->pmu_name =3D e->pmu_name;
+> +               list_for_each_entry(p, pmu_info_list, nd) {
+> +                       if (!strcasecmp(p->name, e->pmu_name)) {
+> +                               pmu_group_head->num_counters =3D p->num_c=
+ounters;
+> +                               pmu_group_head->num_fixed_counters =3D p-=
+>num_fixed_counters;
+> +                               break;
+> +                       }
+> +               }
+> +               list_add_tail(&pmu_group_head->nd, groups);
+> +       }
+> +
+> +       ret =3D insert_event_to_group(e, pmu_group_head);
+> +       return ret;
+> +}
+> +
+> +/**
+> + * create_grouping - Create a list of groups and place all the events of
+> + * event_info_list into these groups.
+> + * @pmu_info_list: the list of PMU units info based on pmu-events data, =
+used for
+> + * creating new groups.
+> + * @event_info_list: the list of events to be grouped.
+> + * @groupings: the list of groups with events placed in.
+> + * @modifier: any modifiers added to the events.
+> + */
+> +static int create_grouping(struct list_head *pmu_info_list,
+> +                         struct list_head *event_info_list,
+> +                         struct list_head *groupings __maybe_unused,
+> +                         const char *modifier __maybe_unused)
+> +{
+> +       int ret =3D 0;
+> +       struct metricgroup__event_info *e;
+> +       LIST_HEAD(groups);
+> +       char *bit_buf =3D malloc(NR_COUNTERS);
+> +
+> +       //TODO: for each new core group, we should consider to add events=
+ that uses fixed counters
+> +       list_for_each_entry(e, event_info_list, nd) {
+> +               bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_CO=
+UNTERS);
+> +               pr_debug("Event name %s, [pmu]=3D%s, [counters]=3D%s\n", =
+e->name,
+> +                       e->pmu_name, bit_buf);
+> +               ret =3D assign_event_grouping(e, pmu_info_list, &groups);
+> +               if (ret)
+> +                       goto out;
+> +       }
+> +out:
+> +       metricgroup__free_group_list(&groups);
+> +       return ret;
+> +};
+> +
+>  /**
+>   * hw_aware_build_grouping - Build event groupings by reading counter
+>   * requirement of the events and counter available on the system from
+> @@ -1750,6 +2042,10 @@ static int hw_aware_build_grouping(struct expr_par=
+se_ctx *ctx __maybe_unused,
+>                         goto err_out;
+>         }
+>         ret =3D get_pmu_counter_layouts(&pmu_info_list, ltable);
+> +       if (ret)
+> +               goto err_out;
+> +       ret =3D create_grouping(&pmu_info_list, &event_info_list, groupin=
+gs,
+> +                            modifier);
+>
+>  err_out:
+>         metricgroup__free_event_info(&event_info_list);
+> --
+> 2.42.0
+>
 
