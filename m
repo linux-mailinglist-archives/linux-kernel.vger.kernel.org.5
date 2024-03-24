@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A9C88894D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:10:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C40088898A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:44:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD87A1F2F596
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:10:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00AB41C3128B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C209388179;
-	Mon, 25 Mar 2024 03:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19F538A95F;
+	Mon, 25 Mar 2024 03:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NSMoKyOO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jET9BDOG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386021487C5;
-	Sun, 24 Mar 2024 23:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBC11487E5;
+	Sun, 24 Mar 2024 23:15:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322112; cv=none; b=Ix8AomSfOUDdpo0m6NjHAzktVT+3Yu127izN7PoNZD2IfuYR3yyncaD005lhFS/+fKZJToIiS54r1qfpEiDC7HYQmn8Xuc5ag174F7EdJhWSLHFgVd8h3ZiBVGf2WbcZX4IVHySE7GoRpzInssyTa6iXVqCP0qaRU4uD/83MM/Q=
+	t=1711322113; cv=none; b=KG40Gm2La6NnDWnsN/JKfrFSs9u7RsspnDX13ats+w3uhJdYkeQNiqOXlKnfKgflhXC1GHXuXpEnoP89y9joE3Z8jc/vsDhle0XTg0lwdI7r2orykB4iPJUnFuW5/K4odLCyOb1VMuwoKItYSAPgCBhOObcvgdfzIQbubu/0Ujk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322112; c=relaxed/simple;
-	bh=uRoRsaHWAWpKpAmF0MLAb2S1bcEcuSVKZ2mxImqiWlo=;
+	s=arc-20240116; t=1711322113; c=relaxed/simple;
+	bh=tIcxQzNmFWHotMJD6l4C8jJZ1FEs83u8EzsH84cKWSU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O5KhXph0XkfNJfTbSsELgq7G1jVnfvAGRWdKFWY32kBZIvWCv3wwRqJ45W/6SB0e5J14WQDeZTeArdHsoYKoFqXN7qAPrgstXC26kz3ureaRiBd40CrTUHivo7jJWQbF5pgQb1oCcvWcRivtV2JX6SNLc7/Iz6adbT3sUwGPSyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NSMoKyOO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76A80C433C7;
-	Sun, 24 Mar 2024 23:15:10 +0000 (UTC)
+	 MIME-Version; b=nhBUFFeY7Hw5wsq0ZZ5XtCp+ERCxzAXtcuNiRWhRk9T+p4lxFX4H/0PCgle200v40kAAHLCBJZz8/5c87IFx1yoqMDZ47Vs/MeDBMpWnM5rmyhrt2Zye6aaTsFLU1luyNFCUsilSKL4nXMkTBe4FuSxq88VHzivvRzBb0AUJChM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jET9BDOG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BC84C43390;
+	Sun, 24 Mar 2024 23:15:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322111;
-	bh=uRoRsaHWAWpKpAmF0MLAb2S1bcEcuSVKZ2mxImqiWlo=;
+	s=k20201202; t=1711322112;
+	bh=tIcxQzNmFWHotMJD6l4C8jJZ1FEs83u8EzsH84cKWSU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NSMoKyOOSw26R2vSQRKXUWXNn3aLbSfyUnpm3qCVwXrzqqI7zmPQc4ZnkrpWBXp47
-	 sV5mWHhkKiTbnfQkiXdDKpO5pjCO/4ZiRXo3YHL8KHpauqmhsLwzs+lnE6rt1Yn7U7
-	 sibOorirpvAKIUfSylD5ivxadVsSaltsnh1cSil9ai3gsl1nGFyEO4e6dVrt61aqPK
-	 SkzQQWtSu6eAAFN87QHgxW2RDPe87arOPNKJnCDbOHioByJ/veCjCJwmXxFJUib5b3
-	 0YWutrETKatjn0Ez0d7yZa4rdB1nrTvztGwi6FjpFqZ6GZwyJl5IHMoJXlUHOtF+Rn
-	 0wfSlYY8kFuRQ==
+	b=jET9BDOGuqMrfOpa/zEqxGPj5/vnBHm+U4OKrk70RwOaiExc/T2t6Nr8fOZ3JlnhJ
+	 jGqrgZf8gOrLW0ac9lA0hrQ7JPfSEsndBhHXDPZ56euRhjKc7qWNOsFmhEBQ5YorUV
+	 QR3oa+ym0XzL7jgbQCTB5mzgL9kGiWzpW3NYtE8nETSXdANNbe1BTV+3s9hbB0Cw9l
+	 OfYkswP/Azz/9C3n9eE9jxuHVhhI8TK8kBvpQuK0VNOQLUlIFHZvSNtQW75fNe+mX8
+	 EFWcxYmD2tnQ9O7j2UVA7ZatFi+9bqekxyHiW26IZilknZ+PnLgH+CmjyONwpoxtI1
+	 lxQS4aaYDrShQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhipeng Lu <alexious@zju.edu.cn>,
-	Chuck Lever <chuck.lever@oracle.com>,
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 186/451] SUNRPC: fix some memleaks in gssx_dec_option_array
-Date: Sun, 24 Mar 2024 19:07:42 -0400
-Message-ID: <20240324231207.1351418-187-sashal@kernel.org>
+Subject: [PATCH 6.1 187/451] mmc: wmt-sdmmc: remove an incorrect release_mem_region() call in the .remove function
+Date: Sun, 24 Mar 2024 19:07:43 -0400
+Message-ID: <20240324231207.1351418-188-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,84 +62,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Zhipeng Lu <alexious@zju.edu.cn>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 3cfcfc102a5e57b021b786a755a38935e357797d ]
+[ Upstream commit ae5004a40a262d329039b99b62bd3fe7645b66ad ]
 
-The creds and oa->data need to be freed in the error-handling paths after
-their allocation. So this patch add these deallocations in the
-corresponding paths.
+This looks strange to call release_mem_region() in a remove function
+without any request_mem_region() in the probe or "struct resource"
+somewhere.
 
-Fixes: 1d658336b05f ("SUNRPC: Add RPC based upcall mechanism for RPCGSS auth")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+So remove the corresponding code.
+
+Fixes: 3a96dff0f828 ("mmc: SD/MMC Host Controller for Wondermedia WM8505/WM8650")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/bb0bb1ed1e18de55e8c0547625bde271e64b8c31.1708983064.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/auth_gss/gss_rpc_xdr.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ drivers/mmc/host/wmt-sdmmc.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/net/sunrpc/auth_gss/gss_rpc_xdr.c b/net/sunrpc/auth_gss/gss_rpc_xdr.c
-index d79f12c2550ac..cb32ab9a83952 100644
---- a/net/sunrpc/auth_gss/gss_rpc_xdr.c
-+++ b/net/sunrpc/auth_gss/gss_rpc_xdr.c
-@@ -250,8 +250,8 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
+diff --git a/drivers/mmc/host/wmt-sdmmc.c b/drivers/mmc/host/wmt-sdmmc.c
+index 9aa3027ca25e4..f2abebb2d8574 100644
+--- a/drivers/mmc/host/wmt-sdmmc.c
++++ b/drivers/mmc/host/wmt-sdmmc.c
+@@ -886,7 +886,6 @@ static int wmt_mci_remove(struct platform_device *pdev)
+ {
+ 	struct mmc_host *mmc;
+ 	struct wmt_mci_priv *priv;
+-	struct resource *res;
+ 	u32 reg_tmp;
  
- 	creds = kzalloc(sizeof(struct svc_cred), GFP_KERNEL);
- 	if (!creds) {
--		kfree(oa->data);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto free_oa;
- 	}
+ 	mmc = platform_get_drvdata(pdev);
+@@ -914,9 +913,6 @@ static int wmt_mci_remove(struct platform_device *pdev)
+ 	clk_disable_unprepare(priv->clk_sdmmc);
+ 	clk_put(priv->clk_sdmmc);
  
- 	oa->data[0].option.data = CREDS_VALUE;
-@@ -265,29 +265,40 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	release_mem_region(res->start, resource_size(res));
+-
+ 	mmc_free_host(mmc);
  
- 		/* option buffer */
- 		p = xdr_inline_decode(xdr, 4);
--		if (unlikely(p == NULL))
--			return -ENOSPC;
-+		if (unlikely(p == NULL)) {
-+			err = -ENOSPC;
-+			goto free_creds;
-+		}
- 
- 		length = be32_to_cpup(p);
- 		p = xdr_inline_decode(xdr, length);
--		if (unlikely(p == NULL))
--			return -ENOSPC;
-+		if (unlikely(p == NULL)) {
-+			err = -ENOSPC;
-+			goto free_creds;
-+		}
- 
- 		if (length == sizeof(CREDS_VALUE) &&
- 		    memcmp(p, CREDS_VALUE, sizeof(CREDS_VALUE)) == 0) {
- 			/* We have creds here. parse them */
- 			err = gssx_dec_linux_creds(xdr, creds);
- 			if (err)
--				return err;
-+				goto free_creds;
- 			oa->data[0].value.len = 1; /* presence */
- 		} else {
- 			/* consume uninteresting buffer */
- 			err = gssx_dec_buffer(xdr, &dummy);
- 			if (err)
--				return err;
-+				goto free_creds;
- 		}
- 	}
- 	return 0;
-+
-+free_creds:
-+	kfree(creds);
-+free_oa:
-+	kfree(oa->data);
-+	oa->data = NULL;
-+	return err;
- }
- 
- static int gssx_dec_status(struct xdr_stream *xdr,
+ 	dev_info(&pdev->dev, "WMT MCI device removed\n");
 -- 
 2.43.0
 
