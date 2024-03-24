@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7ECC889BA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:58:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAD0B889060
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:17:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BEAA2C1A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:58:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8AFCB23AE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2933621FA1C;
-	Mon, 25 Mar 2024 02:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387411E7E1E;
+	Sun, 24 Mar 2024 23:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxd3dzmO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BnC697HX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8DC129A6C;
-	Sun, 24 Mar 2024 22:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B33129A71;
+	Sun, 24 Mar 2024 22:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320870; cv=none; b=oIyIJCJwjP/cfMuyhXaqyCncQkwfTEIoRj+VLlXXs1jesIlWBK+CZG1pSqcaS1ZBPjjq8zqgdLzZH8osx6V8IM/PrxYkmRtYCzgxdNyjZ3JEf6I8glrdfpIhwWIbjCjr0h6HIzO8VeEBSMd2CpGVSPdx90wDQYfniBaQYHRDau4=
+	t=1711320872; cv=none; b=YodrcYZoWwEpbzpEiUaaak5j7qvkCB5hdGYvW31LxDcNQq7XWmV7QHREBNzd2yvDAIYC7rY3D+JYI659cDfvEYY3+UY0Z9X129qsdF10H4M6c9rO9S95IyoUBFCJp8ilKPX/B5f8eAvzpyy7evE+keo3b19NHSOA32X580qDpUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320870; c=relaxed/simple;
-	bh=CppLPCfjU49vHu7bNWvje6/foOrxod7vVRZITwIj2fk=;
+	s=arc-20240116; t=1711320872; c=relaxed/simple;
+	bh=FeJ7rRD6Pl0PL3JQV059ZhHkAnbDL0udLtd1lvou/3w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X0xE6a51Qi+/Jyjom/PYg2meHTiuV8nnFqutsEYq4mzkuopzoOAvLdvOJAi7KRGxSNomsWqZRA8RngSxQZSpWILvaLuBA/5VxZ1JgLRJglTcY+uab1N18iZfOw+iZ82ITRFWZ6Qlrb6gGzYuTdxr/sutg4zx83/cy7ai6nwohu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxd3dzmO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63BD9C43399;
-	Sun, 24 Mar 2024 22:54:29 +0000 (UTC)
+	 MIME-Version:Content-Type; b=OjPiagzbgOsOZu2BNC3fRt47O52mz9E9uXjqgCpo4+S7ntFoOE7f9vDnyakjTSf/kjXwvfNiua4doKd5+DP/NdpwCwJ60E+FfaI5jEN0QgHDg5E8io9vD+BdsZpgdnpUcHIVfnIMlesMA4OcIM+4dpuY4OZzi89/WyuGP+9NPhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BnC697HX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63AF8C433C7;
+	Sun, 24 Mar 2024 22:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320870;
-	bh=CppLPCfjU49vHu7bNWvje6/foOrxod7vVRZITwIj2fk=;
+	s=k20201202; t=1711320871;
+	bh=FeJ7rRD6Pl0PL3JQV059ZhHkAnbDL0udLtd1lvou/3w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kxd3dzmO4aYtTAXZ6AA/jlDjDZP8jAnF3E3AQOZ5nsONqmR4ArCs5AQxmYmFzDKOb
-	 rhnhCS4MfLG3lyWMXPvaky4CiMCQD0gMHRxtvv3bNDMnYRp6zKjfuQ6xozkjrAKBpW
-	 mGHkdDDgDaUiufc+usGwmZQM1N1VKEXrIJYi4Fl9pGaPPmv7KqUVKDO+KYuW6S0LSf
-	 XBOYLfA2gHzSTL3mfAFB0/C1pgL8dlFe2jKNGk94rjTGdXqzUe2uE/AX+KHe6JxUUY
-	 c/r9yn/v9ozArwINGGSw451QPilyqI/2YseJ2QoVxSKxRM71ZF5clIy+20SFJgDmeP
-	 TXfeOFWFFx9UA==
+	b=BnC697HXP0zQzFugApuUW4fQ+xzTH5q6mSyvrIZgjfxdQv/m5tbZg30YJZy1DQrn1
+	 FpfgcEgqsKOWOI9vKVkDsdzoF5DZDCzS0npPC27qCV1wsUS5ncQx44GoCao1738YO2
+	 P/egCdzSeb+XlWHUvb0uafLi5BUquPwPKKRzzXwch/FEbbraiA2vmBCyYUCaIbOavP
+	 XfBrhwiADIgT8WgkTcLWEKdC8wVGtTMeWdKvpCmgAOH3L+WXCNfIeFmeqkkR0uXgli
+	 8Oq/GvcREgWxVLOkJVo3X3AuvdLtCqZ93khEQwXWphOcpGWXRLEOdqx5N7Zx0h/yde
+	 zFHDNJ10Iipjg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chen-Yu Tsai <wenst@chromium.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
+Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 434/713] pinctrl: mediatek: Drop bogus slew rate register range for MT8192
-Date: Sun, 24 Mar 2024 18:42:40 -0400
-Message-ID: <20240324224720.1345309-435-sashal@kernel.org>
+Subject: [PATCH 6.7 435/713] drm/amdgpu: Fix potential out-of-bounds access in 'amdgpu_discovery_reg_base_init()'
+Date: Sun, 24 Mar 2024 18:42:41 -0400
+Message-ID: <20240324224720.1345309-436-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -59,42 +59,63 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chen-Yu Tsai <wenst@chromium.org>
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit e15ab05a6b3ed42f2f43f8bd1a1abdbde64afecd ]
+[ Upstream commit cdb637d339572398821204a1142d8d615668f1e9 ]
 
-The MT8192 does not support configuring pin slew rate. This is evident
-from both the datasheet, and the fact that the driver points the slew
-rate register range at the GPIO direction register range.
+The issue arises when the array 'adev->vcn.vcn_config' is accessed
+before checking if the index 'adev->vcn.num_vcn_inst' is within the
+bounds of the array.
 
-Drop the bogus setting.
+The fix involves moving the bounds check before the array access. This
+ensures that 'adev->vcn.num_vcn_inst' is within the bounds of the array
+before it is used as an index.
 
-Fixes: d32f38f2a8fc ("pinctrl: mediatek: Add pinctrl driver for mt8192")
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20240131071910.3950450-2-wenst@chromium.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:1289 amdgpu_discovery_reg_base_init() error: testing array offset 'adev->vcn.num_vcn_inst' after use.
+
+Fixes: a0ccc717c4ab ("drm/amdgpu/discovery: validate VCN and SDMA instances")
+Cc: Christian König <christian.koenig@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/mediatek/pinctrl-mt8192.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8192.c b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-index dee1b3aefd36e..bf5788d6810ff 100644
---- a/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-+++ b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
-@@ -1379,7 +1379,6 @@ static const struct mtk_pin_reg_calc mt8192_reg_cals[PINCTRL_PIN_REG_MAX] = {
- 	[PINCTRL_PIN_REG_DIR] = MTK_RANGE(mt8192_pin_dir_range),
- 	[PINCTRL_PIN_REG_DI] = MTK_RANGE(mt8192_pin_di_range),
- 	[PINCTRL_PIN_REG_DO] = MTK_RANGE(mt8192_pin_do_range),
--	[PINCTRL_PIN_REG_SR] = MTK_RANGE(mt8192_pin_dir_range),
- 	[PINCTRL_PIN_REG_SMT] = MTK_RANGE(mt8192_pin_smt_range),
- 	[PINCTRL_PIN_REG_IES] = MTK_RANGE(mt8192_pin_ies_range),
- 	[PINCTRL_PIN_REG_PU] = MTK_RANGE(mt8192_pin_pu_range),
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
+index c7d60dd0fb975..4f9900779ef9e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
+@@ -1278,11 +1278,10 @@ static int amdgpu_discovery_reg_base_init(struct amdgpu_device *adev)
+ 				 *     0b10 : encode is disabled
+ 				 *     0b01 : decode is disabled
+ 				 */
+-				adev->vcn.vcn_config[adev->vcn.num_vcn_inst] =
+-					ip->revision & 0xc0;
+-				ip->revision &= ~0xc0;
+ 				if (adev->vcn.num_vcn_inst <
+ 				    AMDGPU_MAX_VCN_INSTANCES) {
++					adev->vcn.vcn_config[adev->vcn.num_vcn_inst] =
++						ip->revision & 0xc0;
+ 					adev->vcn.num_vcn_inst++;
+ 					adev->vcn.inst_mask |=
+ 						(1U << ip->instance_number);
+@@ -1293,6 +1292,7 @@ static int amdgpu_discovery_reg_base_init(struct amdgpu_device *adev)
+ 						adev->vcn.num_vcn_inst + 1,
+ 						AMDGPU_MAX_VCN_INSTANCES);
+ 				}
++				ip->revision &= ~0xc0;
+ 			}
+ 			if (le16_to_cpu(ip->hw_id) == SDMA0_HWID ||
+ 			    le16_to_cpu(ip->hw_id) == SDMA1_HWID ||
 -- 
 2.43.0
 
