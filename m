@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B0C888B16
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:40:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3585A888B1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 822951C28FE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:40:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E60EB28E78D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0D822F4F1;
-	Sun, 24 Mar 2024 23:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533D1185F09;
+	Sun, 24 Mar 2024 23:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TOBfIDDm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JgBwFWEF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A503122F8D0;
-	Sun, 24 Mar 2024 23:16:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C59A22F8D5;
+	Sun, 24 Mar 2024 23:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322214; cv=none; b=tnh3fn5Abl5g39QonZAi6UHpk1kh+h7lKqCwG7xHN9glsEa0anl+FLJmIZulCFQc7x5+xJB/NzWkQic0aTuVFbnLolU53x5RgzEk9IK3bd12EcZGOfK6EeJTSXw7ZV8xdIfR/XSG4wfb74pPP0WdJ9MMjWLwdotmNi0vly9OcxU=
+	t=1711322215; cv=none; b=UTAF1AnmosptfNQMwuAX7EMvk+0KwxIHEkJpUOYaJkariJ+dFV91jigVL5R1FdYSKXTeKknWIIgu5O7dAMsL3eKHUOM6z75vRllW/GitFTki09CwITWhjaM6zknE2WA5HlW/ubANz7SgoyJH2MjwnQZQxeype2ba8rBNqk4lSGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322214; c=relaxed/simple;
-	bh=BUaEXJZUG8etbIU7z42ZW4ULk/Wh+ZSN13xgmYO0WqQ=;
+	s=arc-20240116; t=1711322215; c=relaxed/simple;
+	bh=6/TKhYAWFLjY1q5mVhCWhWF3ca2KGgT9UOud7UTcL94=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JNqoiyPW7+QEMHlFWmN9jBdRIf+EsAq3hScvW8qHqO6jdjYv6KAsaPr6yHEk22Ef3O0/Oo+sNsDqoaRAIzFKLOXyas8GES1sW6HJ6XFLxApk8DC9InjLrupkiFtgao5hCYYFgCdtiFJriFsWYpFcNI9FeLrrA4ERj+aDuhKfm6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TOBfIDDm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFE95C433F1;
-	Sun, 24 Mar 2024 23:16:52 +0000 (UTC)
+	 MIME-Version; b=OLfMxX5WKQ6EVy7Eo+NeYsAtb1LqJ7q6M3beQ26hflzV9bMGBafCKSoOuT2Wp7RlKbuvCbioFQvTe8CylaFrTAEky+hgmgm0CpUmqHUR9v/NrasNposCg31ACbjUgxHqdb6D0RM1o8UQPZnbYCX8S88Cw13Dk7FX4frU4ReDDWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JgBwFWEF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9400C433C7;
+	Sun, 24 Mar 2024 23:16:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322213;
-	bh=BUaEXJZUG8etbIU7z42ZW4ULk/Wh+ZSN13xgmYO0WqQ=;
+	s=k20201202; t=1711322214;
+	bh=6/TKhYAWFLjY1q5mVhCWhWF3ca2KGgT9UOud7UTcL94=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TOBfIDDm8Z/KEyAQW1sVlj50TAVNSv6Rh1uK4msq7A7MY8nY5v+XQOTlIUvSqGkVa
-	 5c4Vvnmet65xeZvpomL23RgPLWDK3sbAi/jPm2RZK5rN83ZIuyblaWA+rqwYRHOKHU
-	 Uc/ygwo6GBRVhwIOe1Dq5gM4T5y43MjaZHiUHknIRUDFsv05ptEYCLRAxfIIxVROFP
-	 Xgz22LHNT3+CKxLyls2To1957wnwA/Il1r3D9v6QY+6+7l/GSU096IjzMbkXP95sUv
-	 uUNELb1n2Veq1KjKW1FmDV+8tbn9fUMPopE0VQo2OlJjUxR0NLrvs8HoN/FG4mXGZX
-	 3rdXoXWbXiLxQ==
+	b=JgBwFWEFtQ7I58mLgmVHeoSRUP+uoUe6NTypo1I1l56zslx5yUFPfPOxPhtkjSvwF
+	 0jFarhfgenYH5xKF3DUsCWarcOuvIUk8dedCZQWQ2gMMMq9k5ATQuGBZNyM3C7g3Ba
+	 9fqhxh7eVRzHjI9ZpCL/EhuQxOvZUiCxc0VfGGvvpfUkWyDEn0lo6KF/p/GC6JuHtT
+	 lcIr35ARIbtbdolNN15oBXBs/UiNc/A/FakJKTGeXJiKQiJ9d2PY5IlUiloH5Dd78U
+	 Zbyt4i5FFl8glWqHNJp4C+dTlWLmiJNmxbpLPavFEjH6kBseQZAxcRkOeshs3bFGtC
+	 t9N0NxZXtn8Cw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
+Cc: ruanjinjie <ruanjinjie@huawei.com>,
+	Jon Mason <jdmason@kudzu.us>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 293/451] ASoC: SOF: Add some bounds checking to firmware data
-Date: Sun, 24 Mar 2024 19:09:29 -0400
-Message-ID: <20240324231207.1351418-294-sashal@kernel.org>
+Subject: [PATCH 6.1 294/451] NTB: EPF: fix possible memory leak in pci_vntb_probe()
+Date: Sun, 24 Mar 2024 19:09:30 -0400
+Message-ID: <20240324231207.1351418-295-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -62,37 +62,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+From: ruanjinjie <ruanjinjie@huawei.com>
 
-[ Upstream commit 98f681b0f84cfc3a1d83287b77697679e0398306 ]
+[ Upstream commit 956578e3d397e00d6254dc7b5194d28587f98518 ]
 
-Smatch complains about "head->full_size - head->header_size" can
-underflow.  To some extent, we're always going to have to trust the
-firmware a bit.  However, it's easy enough to add a check for negatives,
-and let's add a upper bounds check as well.
+As ntb_register_device() don't handle error of device_register(),
+if ntb_register_device() returns error in pci_vntb_probe(), name of kobject
+which is allocated in dev_set_name() called in device_add() is leaked.
 
-Fixes: d2458baa799f ("ASoC: SOF: ipc3-loader: Implement firmware parsing and loading")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Link: https://msgid.link/r/5593d147-058c-4de3-a6f5-540ecb96f6f8@moroto.mountain
-Signed-off-by: Mark Brown <broonie@kernel.org>
+As comment of device_add() says, it should call put_device() to drop the
+reference count that was set in device_initialize()
+when it fails, so the name can be freed in kobject_cleanup().
+
+Signed-off-by: ruanjinjie <ruanjinjie@huawei.com>
+Signed-off-by: Jon Mason <jdmason@kudzu.us>
+Stable-dep-of: aebfdfe39b93 ("NTB: fix possible name leak in ntb_register_device()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/ipc3-loader.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pci/endpoint/functions/pci-epf-vntb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/ipc3-loader.c b/sound/soc/sof/ipc3-loader.c
-index 28218766d2114..6e3ef06721106 100644
---- a/sound/soc/sof/ipc3-loader.c
-+++ b/sound/soc/sof/ipc3-loader.c
-@@ -148,6 +148,8 @@ static size_t sof_ipc3_fw_parse_ext_man(struct snd_sof_dev *sdev)
+diff --git a/drivers/pci/endpoint/functions/pci-epf-vntb.c b/drivers/pci/endpoint/functions/pci-epf-vntb.c
+index 8c6931210ac4d..cd985a41c8d65 100644
+--- a/drivers/pci/endpoint/functions/pci-epf-vntb.c
++++ b/drivers/pci/endpoint/functions/pci-epf-vntb.c
+@@ -1288,6 +1288,7 @@ static int pci_vntb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	return 0;
  
- 	head = (struct sof_ext_man_header *)fw->data;
- 	remaining = head->full_size - head->header_size;
-+	if (remaining < 0 || remaining > sdev->basefw.fw->size)
-+		return -EINVAL;
- 	ext_man_size = ipc3_fw_ext_man_size(sdev, fw);
+ err_register_dev:
++	put_device(&ndev->ntb.dev);
+ 	return -EINVAL;
+ }
  
- 	/* Assert firmware starts with extended manifest */
 -- 
 2.43.0
 
