@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88400889126
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:35:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37CF788924C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:02:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0FF41C2D065
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:35:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAD8E1F2D307
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CBEC1B3FC9;
-	Mon, 25 Mar 2024 00:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A801B48A9;
+	Mon, 25 Mar 2024 00:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pW4Q6luP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tEsbj28x"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7719C2762A3;
-	Sun, 24 Mar 2024 23:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8CC2762B2;
+	Sun, 24 Mar 2024 23:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323384; cv=none; b=eEqOYluGbhlkWqMPuVxyR12AIbHqADyS/jS4H9gCTzqt2q763CDPtoEmrBiN/uqjgrqYCsk4n3f5uEt7NYKsBQj5CHDFfOuHLHL5lLguKVwgO51UfXAKfNOeuXtO9Jjf8gp+6tO07/2dxq9YX9fUfPD9lO+QzLXX4rQUYBG+xOg=
+	t=1711323386; cv=none; b=Ws5OYnI7faqnMydUAiSMFv03vkHcyo4f0q3gmQnzduzJDR4U2jNe2lPNHvL5epy1XtswZSZfxZ2KyoRk6XPQ5eI5rOL8rcRsvnvhK7CZSgooiDGsgkMqgl5sJm6Wn7M/bt9v0U3W+npUmk9uSYG1KyF4r1gzB6mlCYfs1gehQfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323384; c=relaxed/simple;
-	bh=LvtZg5e0VQtOBT+DmVlIpjevxUc7VebV46SOEb3fPHw=;
+	s=arc-20240116; t=1711323386; c=relaxed/simple;
+	bh=eTI9IOKkvtOB8T26gH1qSqbthfn8ohH424sihv1I7Fk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rJnDq29VePLFwTreV2iJd+SL8iq6Fm6fpLeODuzh7vtpsaScLPO0gklOJvwCLCZBxRjnFVkcjgzxLppVfSGQIgbvaWxLiVDZwXh4AMiKMxfjx7pgeXhLeqS7kfRfxERCF8s6ZOQLUBpq+L3ItM8gqKbhSt/Ivzjh+q/Wq/tekCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pW4Q6luP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1DDBC433A6;
-	Sun, 24 Mar 2024 23:36:23 +0000 (UTC)
+	 MIME-Version; b=QZaWU36lUmxwtCnjELLAzzEbG8ebZye9U88jUj+lvgnLX33SZt3W8msuKhGz2kGCEbVIEo28ibMK5bNbRn7sLXiCJay6ep1/GBpAPcmxHOv9jg9lenydhnytBHqv8ULCp0wnrkEh+MeAcLcszzrNJFWuwnKgGFNaXalgqWGDzNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tEsbj28x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ABC5C43399;
+	Sun, 24 Mar 2024 23:36:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323384;
-	bh=LvtZg5e0VQtOBT+DmVlIpjevxUc7VebV46SOEb3fPHw=;
+	s=k20201202; t=1711323385;
+	bh=eTI9IOKkvtOB8T26gH1qSqbthfn8ohH424sihv1I7Fk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pW4Q6luPYaAQ26nYDDHXb3l//kenFn5SbXy3T3oK3fSLzp3yOECwk6oov2CMJrBRD
-	 2rqYc8iqNGo8qXUvuJh7Uqsl3MROPfXHXvYcaZmnQZBugQE6FpDMEeYxGbEAWqWB4s
-	 Hc9dCIF6yv35bzxb+ztlAKmlLORAElI22pYq39IV+ETmtp4y8kc1mobzyR8CXHaAZl
-	 yIgP0yyLBopG72WD22YIIvYClH70j7VIbtrARl/XTcMhCgNnYYYvpvXZYJMm6V4Arw
-	 z/xgIXfRIciD86baKXyiV95lLSdfUs4VPxjNnOzd9JrD3xEkBsPlXfmcA8MvYI1uXS
-	 XBOJRwMYl44Ow==
+	b=tEsbj28xp7FODlhEqitMa5fswOPRrLiZ01WPNxZVMbtdqxldSuOWyeSD6fdTGTF0D
+	 DT7D5yH9paIkhmisT/rWdeaud7s7pGATCTGNMeO3qj3rLEmwp7wd+dC0cMCIHGzGqM
+	 ZuSJCGIcOp6aUDGuATIjcJM7teaZC2enzF7ygzI2fxfiWpLAAkTBKeLmFiqbFXNPP1
+	 W4/8lslv4W++YixO08NsxL0ZZZxUPEhtysVZTj/hfUmJ4qcXAtFgXVQPD/9fsNMFN1
+	 NSIz+mKXR8MAGE4tgJrMd6USd04JOIBL1tPQ+iN53K0ZTXxfc1SuQqldADow0Eh2ZQ
+	 rYJcRISiKKB9w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Breno Leitao <leitao@debian.org>,
-	Jiri Pirko <jiri@nvidia.com>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Zhipeng Lu <alexious@zju.edu.cn>,
+	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 084/317] net: blackhole_dev: fix build warning for ethh set but not used
-Date: Sun, 24 Mar 2024 19:31:04 -0400
-Message-ID: <20240324233458.1352854-85-sashal@kernel.org>
+Subject: [PATCH 5.15 085/317] wifi: libertas: fix some memleaks in lbs_allocate_cmd_buffer()
+Date: Sun, 24 Mar 2024 19:31:05 -0400
+Message-ID: <20240324233458.1352854-86-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -63,47 +62,55 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Breno Leitao <leitao@debian.org>
+From: Zhipeng Lu <alexious@zju.edu.cn>
 
-[ Upstream commit 843a8851e89e2e85db04caaf88d8554818319047 ]
+[ Upstream commit 5f0e4aede01cb01fa633171f0533affd25328c3a ]
 
-lib/test_blackhole_dev.c sets a variable that is never read, causing
-this following building warning:
+In the for statement of lbs_allocate_cmd_buffer(), if the allocation of
+cmdarray[i].cmdbuf fails, both cmdarray and cmdarray[i].cmdbuf needs to
+be freed. Otherwise, there will be memleaks in lbs_allocate_cmd_buffer().
 
-	lib/test_blackhole_dev.c:32:17: warning: variable 'ethh' set but not used [-Wunused-but-set-variable]
-
-Remove the variable struct ethhdr *ethh, which is unused.
-
-Fixes: 509e56b37cc3 ("blackhole_dev: add a selftest")
-Signed-off-by: Breno Leitao <leitao@debian.org>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 876c9d3aeb98 ("[PATCH] Marvell Libertas 8388 802.11b/g USB driver")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://msgid.link/20240126075336.2825608-1-alexious@zju.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/test_blackhole_dev.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/wireless/marvell/libertas/cmd.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/lib/test_blackhole_dev.c b/lib/test_blackhole_dev.c
-index 4c40580a99a36..f247089d63c08 100644
---- a/lib/test_blackhole_dev.c
-+++ b/lib/test_blackhole_dev.c
-@@ -29,7 +29,6 @@ static int __init test_blackholedev_init(void)
- {
- 	struct ipv6hdr *ip6h;
- 	struct sk_buff *skb;
--	struct ethhdr *ethh;
- 	struct udphdr *uh;
- 	int data_len;
- 	int ret;
-@@ -61,7 +60,7 @@ static int __init test_blackholedev_init(void)
- 	ip6h->saddr = in6addr_loopback;
- 	ip6h->daddr = in6addr_loopback;
- 	/* Ether */
--	ethh = (struct ethhdr *)skb_push(skb, sizeof(struct ethhdr));
-+	skb_push(skb, sizeof(struct ethhdr));
- 	skb_set_mac_header(skb, 0);
+diff --git a/drivers/net/wireless/marvell/libertas/cmd.c b/drivers/net/wireless/marvell/libertas/cmd.c
+index a4d9dd73b2588..db9a852fa58a3 100644
+--- a/drivers/net/wireless/marvell/libertas/cmd.c
++++ b/drivers/net/wireless/marvell/libertas/cmd.c
+@@ -1133,7 +1133,7 @@ int lbs_allocate_cmd_buffer(struct lbs_private *priv)
+ 		if (!cmdarray[i].cmdbuf) {
+ 			lbs_deb_host("ALLOC_CMD_BUF: ptempvirtualaddr is NULL\n");
+ 			ret = -1;
+-			goto done;
++			goto free_cmd_array;
+ 		}
+ 	}
  
- 	skb->protocol = htons(ETH_P_IPV6);
+@@ -1141,8 +1141,17 @@ int lbs_allocate_cmd_buffer(struct lbs_private *priv)
+ 		init_waitqueue_head(&cmdarray[i].cmdwait_q);
+ 		lbs_cleanup_and_insert_cmd(priv, &cmdarray[i]);
+ 	}
+-	ret = 0;
++	return 0;
+ 
++free_cmd_array:
++	for (i = 0; i < LBS_NUM_CMD_BUFFERS; i++) {
++		if (cmdarray[i].cmdbuf) {
++			kfree(cmdarray[i].cmdbuf);
++			cmdarray[i].cmdbuf = NULL;
++		}
++	}
++	kfree(priv->cmd_array);
++	priv->cmd_array = NULL;
+ done:
+ 	return ret;
+ }
 -- 
 2.43.0
 
