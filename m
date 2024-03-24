@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 004B6888FE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:04:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDEA888A6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 950101F2AFF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:04:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FEA0B2BA98
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 683A7175556;
-	Sun, 24 Mar 2024 23:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A8C275512;
+	Sun, 24 Mar 2024 23:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXCXnj43"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dNCMNXeK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F312197A2;
-	Sun, 24 Mar 2024 23:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508AD2197AB;
+	Sun, 24 Mar 2024 23:10:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321806; cv=none; b=lOo2b19fC9k3OscXFuDWlaVw157a/tjFm30NDmmQEGu6mToLP5pTpzWAH2ZEVsPOGABd9KHgbMUAaWoSsS8MZwbUgZMW1IPTvDqGTzpaRRfoaE1sddPOHWeoKfrM0qMFcLVJ4O+6r73IIaDjNkhp9Sy/Tl3mF8bUf2gp1df8vaQ=
+	t=1711321807; cv=none; b=mMvLhGy6aCwJw57ZwvaBOztuaXb97XPqUhSLrc2g31RY3MHU8VwhG1JTtRUvt4jChlLHRoenSo31g60PKcYoIU0MjF3p3nOmCS6hfws4Ghahg3oMukjnS+WsO6j/wJosgKom9nu7vKuDp5CEmOSMT62B94kVnN37vpCLDdf1E1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321806; c=relaxed/simple;
-	bh=LtYnrhYo+eNtp1rSFQNEN4dv3bTabf23/mW1wEBRXE8=;
+	s=arc-20240116; t=1711321807; c=relaxed/simple;
+	bh=MpvWpxPIpAPm2MVsULn7crocH4OeN2+YDLBGTOZoCJ0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jMp+XHXTveoUZFrw8Ek4GveTBZHYAxaUAVATITtb50BbAIL891qYUXDBXQ5vfDXkgyng/q5qeKeyBN+p9oDmXNC0uaKC0CbkkkIOsNvUW++79f4lR6Ug3tzpKI9iy3ZRznlaOR7zG0u4RYGz9+ksKb3KbzxNlYTaMvLb0BBb7tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXCXnj43; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8D97C433F1;
-	Sun, 24 Mar 2024 23:10:04 +0000 (UTC)
+	 MIME-Version; b=TBdyUENsffC5COldWb8klOHnDtq4vxxUsRKO+6UC3McfhMOFeW1Tfj4xBhea/HKW9b39wYjYSnwqzxd+UTUebivL4/IhDGzxgVKT3jn4OpIEtyTbW0Y8zT4eEEaui4oxfOc8qBh+mN+rmKDjKd2m11Fj0jmYK7fkLkyh79KQ0UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dNCMNXeK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F2CBC433B2;
+	Sun, 24 Mar 2024 23:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321805;
-	bh=LtYnrhYo+eNtp1rSFQNEN4dv3bTabf23/mW1wEBRXE8=;
+	s=k20201202; t=1711321806;
+	bh=MpvWpxPIpAPm2MVsULn7crocH4OeN2+YDLBGTOZoCJ0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GXCXnj43AJmFDQikBiY7WIZuRR06eXrsDKebV63LsroEvq9pvRU+MdR5pHV5bm9MO
-	 QgluKq0/+p8gfjSWQ/OTZVyvFW40Ir56RsexnkzT7eQKmrJdVbOKi9n6TaF1Ba+p1G
-	 9fQbpfDswMslMRgUAM7nww0l8CPldBo43c7xXmqs2fP5iunlLu1O5wV8x8p9os1Ifg
-	 3QQnBK8I99mvrDpA4EU685wIyGJ5g5zS8Arry3hBwPeMAb3cHjbycvyIVzEQyBUEBF
-	 1BzaTC9qOKoU9gjhyj19lYV7ZlR9vkzmPbCl3HTQnoheCx83DSoEtSheKokBhV5q2R
-	 2yD77cJZmrMtA==
+	b=dNCMNXeKg0uC1yGgr+S8R0fwiBqWyl6ewk4+Y/+K+9oe2JO5HyDnvqhjKqgfjN+BF
+	 4P/+MoRMeWBm08rBAQmdCmS4ksJM56kf7JmFIuMEXpLiubvA12bG1pWJ+bNfQtpvQF
+	 e/2ZBf55q2TB4zsExKM81eTNVmW28VUIIn7JkTQAy03478G2lCr3IGl1BwrajBBpMf
+	 ybm0a7EaSsFwHikw8d4uYlddx3PPT9pFue/2I6WHp9+dokYyLQ4BAkf3SyY03cNlSA
+	 vGLixpeDLYTKpPpH1PtH0EossPkltUPmJkPZmMNVM660udHevTQkZvYgr19a+D19dR
+	 0xHGw+GS1IPBw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chao Yu <chao@kernel.org>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 533/638] f2fs: compress: fix to check compress flag w/ .i_sem lock
-Date: Sun, 24 Mar 2024 18:59:30 -0400
-Message-ID: <20240324230116.1348576-534-sashal@kernel.org>
+Subject: [PATCH 6.6 534/638] f2fs: check number of blocks in a current section
+Date: Sun, 24 Mar 2024 18:59:31 -0400
+Message-ID: <20240324230116.1348576-535-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,51 +62,65 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chao Yu <chao@kernel.org>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit ea59b12ac69774c08aa95cd5b6100700ea0cce97 ]
+[ Upstream commit 7af2df0f67a1469762e59be3726a803882d83f6f ]
 
-It needs to check compress flag w/ .i_sem lock, otherwise, compressed
-inode may be disabled after the check condition, it's not needed to
-set compress option on non-compress inode.
+In cfd66bb715fd ("f2fs: fix deadloop in foreground GC"), we needed to check
+the number of blocks in a section instead of the segment.
 
-Fixes: e1e8debec656 ("f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl")
-Signed-off-by: Chao Yu <chao@kernel.org>
+Fixes: cfd66bb715fd ("f2fs: fix deadloop in foreground GC")
+Reviewed-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/file.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/f2fs/segment.h | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index f41788ab0cf45..2c2ddb0d15836 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -3989,16 +3989,20 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
- 				sizeof(option)))
- 		return -EFAULT;
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index 2ca8fb5d0dc4d..20580ebd24138 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -573,23 +573,22 @@ static inline bool has_curseg_enough_space(struct f2fs_sb_info *sbi,
+ 			unsigned int node_blocks, unsigned int dent_blocks)
+ {
  
--	if (!f2fs_compressed_file(inode) ||
--			option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
--			option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
--			option.algorithm >= COMPRESS_MAX)
-+	if (option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
-+		option.log_cluster_size > MAX_COMPRESS_LOG_SIZE ||
-+		option.algorithm >= COMPRESS_MAX)
- 		return -EINVAL;
+-	unsigned int segno, left_blocks;
++	unsigned segno, left_blocks;
+ 	int i;
  
- 	file_start_write(filp);
- 	inode_lock(inode);
+-	/* check current node segment */
++	/* check current node sections in the worst case. */
+ 	for (i = CURSEG_HOT_NODE; i <= CURSEG_COLD_NODE; i++) {
+ 		segno = CURSEG_I(sbi, i)->segno;
+-		left_blocks = f2fs_usable_blks_in_seg(sbi, segno) -
+-				get_seg_entry(sbi, segno)->ckpt_valid_blocks;
+-
++		left_blocks = CAP_BLKS_PER_SEC(sbi) -
++				get_ckpt_valid_blocks(sbi, segno, true);
+ 		if (node_blocks > left_blocks)
+ 			return false;
+ 	}
  
- 	f2fs_down_write(&F2FS_I(inode)->i_sem);
-+	if (!f2fs_compressed_file(inode)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	if (f2fs_is_mmap_file(inode) || get_dirty_pages(inode)) {
- 		ret = -EBUSY;
- 		goto out;
+-	/* check current data segment */
++	/* check current data section for dentry blocks. */
+ 	segno = CURSEG_I(sbi, CURSEG_HOT_DATA)->segno;
+-	left_blocks = f2fs_usable_blks_in_seg(sbi, segno) -
+-			get_seg_entry(sbi, segno)->ckpt_valid_blocks;
++	left_blocks = CAP_BLKS_PER_SEC(sbi) -
++			get_ckpt_valid_blocks(sbi, segno, true);
+ 	if (dent_blocks > left_blocks)
+ 		return false;
+ 	return true;
+@@ -638,7 +637,7 @@ static inline bool has_not_enough_free_secs(struct f2fs_sb_info *sbi,
+ 
+ 	if (free_secs > upper_secs)
+ 		return false;
+-	else if (free_secs <= lower_secs)
++	if (free_secs <= lower_secs)
+ 		return true;
+ 	return !curseg_space;
+ }
 -- 
 2.43.0
 
