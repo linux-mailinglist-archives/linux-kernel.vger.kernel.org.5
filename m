@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A357B888233
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:41:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBDB0888235
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:41:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33943B24169
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:41:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08D6F1C22695
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0F257308;
-	Sun, 24 Mar 2024 22:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2AD131195;
+	Sun, 24 Mar 2024 22:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IZTvSIb0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W7+MND6x"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E28179FC5;
-	Sun, 24 Mar 2024 22:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044D65BADF;
+	Sun, 24 Mar 2024 22:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319997; cv=none; b=OYXnCPnYarlm7riv20HC7SeUJpwWP0ycTY2PzVHCsE01u7GYq6rh5/V46lfC/bjBUf1VRgY9KPPsi10/MfGLyDRuUUWO0WRX5n7OWHqFjLZSGin0G4uYG1jdVz4GZgl2Ga079jCfXjYaVsPy2+XmmXGmTjrX9FyHM6ISeuCdnX4=
+	t=1711319998; cv=none; b=fz3+6clHgVUmKBdID3qXxXnLAsRdQeMd3XAsydsZ+BqhPpXX540+Op890j+UukCNxcQdtBGon7LBweshTY5eQrB1KSkpxLizDPQaURzEi1RgRLgda5tF8CsSHybsZJwt5QPyyDnEOeM3CGI1oLbsZCbf+RmtrsxwZ23dU5JI6t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319997; c=relaxed/simple;
-	bh=n0ZZGalvuA0PD6jzMmVDBM2mpyQqpmLP63G0KklBvQ4=;
+	s=arc-20240116; t=1711319998; c=relaxed/simple;
+	bh=tosONE1ZR1Z4f9tEU+BN8SkJFGiVft4BZq34dziYWus=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=df6VaHJ/5vGD09ROJqc74ZlCYIvaDeKu6M5rRzHct0khoblh0lmLT53f8rV+X/3Bcmc2/zHNLnhZ+DSil7KzqgFvF6jHRYAnRXUYzAzgrSeCX1jF8MdZ+35BFBBbHeyyjOTPeqLMZ9DRuxjaCYCpFFNi3y2SL3XBXofFG/RT4Gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IZTvSIb0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58CEBC433B2;
-	Sun, 24 Mar 2024 22:39:56 +0000 (UTC)
+	 MIME-Version:Content-Type; b=L0qc3wdfhNcCYvoykVaMR7noXMPA6agktdIkSqDZH/JQL6tIs9TyMTc3Qiwk4Etwp7XA9aevEelyyvkWDKL6lxyG/bEOUbfT2EiweT9i9XaFJ5aTSXxLU0yV9RlYffgQfkx4vZshzYSjk+VVduJnX78kDWNOPCDiGtEmdto+cmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W7+MND6x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 423F5C43394;
+	Sun, 24 Mar 2024 22:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711319997;
-	bh=n0ZZGalvuA0PD6jzMmVDBM2mpyQqpmLP63G0KklBvQ4=;
+	bh=tosONE1ZR1Z4f9tEU+BN8SkJFGiVft4BZq34dziYWus=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IZTvSIb0qsdVsHz2aitxCc/ru/iBh4HqVvfsA33qHVOduBtJozK32deH3Hm0T3nSx
-	 tA4dNzBXHpBcAbH+VBfTli+hXdSRBXjEK0p3DwWxUFngu6fyB+YaAoF6OUmIN3Giq6
-	 ktdqdUphVgUBl+GaNZeALDvKKAlFvJM73sHQyabZ5rArJm8P1gOSJeeFcBHqSMoFIz
-	 ukDHoxMxeHpzKMBMMERytedX7npYO5uRhFK0Umw5HwoP6+gAL0Eom530u2kNeJ1eJa
-	 eCW9mJp+2tINaCI1gYqYSQQQKjarISOxsrwMnGElC5X3ETU7pquiy4JnDd0HsP7g+u
-	 e3DZG9soO6BuQ==
+	b=W7+MND6x3h7uq/RsHPnSspKDTVKiUiA2CicP6n+Lpc+dzVHMt6inioAo0Ps3nw45L
+	 /OCsFkQOLarcsgLuoLJSb/vox+6Tez3PA4tkYuBZ4YEyZxhn06VF7F5zH33BZ6TNx4
+	 dy2CXrDSJwQt7lDHxf1Q/IPHOSnnzxnLEbLfoXyOsj3CbrIgYGrRxfeOOoeIsDPZz/
+	 cJf94dC0p0IHSfLRnL2tg5HNoYW8eNpHsF0DW82VsmT5xvJfwnP7Qk6JbRq9ceBOO5
+	 pCTdCq5G/m6vyC0n5O7UGI+NuFdQ9PzQApS7qZr1+zmPw7H0hya8nsxJOCMx8czKQf
+	 KGuVB0z9fKEog==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
 	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 302/715] Bluetooth: Remove HCI_POWER_OFF_TIMEOUT
-Date: Sun, 24 Mar 2024 18:28:01 -0400
-Message-ID: <20240324223455.1342824-303-sashal@kernel.org>
+Subject: [PATCH 6.8 303/715] Bluetooth: mgmt: Remove leftover queuing of power_off work
+Date: Sun, 24 Mar 2024 18:28:02 -0400
+Message-ID: <20240324223455.1342824-304-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,32 +65,71 @@ Content-Transfer-Encoding: 8bit
 
 From: Jonas Dreßler <verdre@v0yd.nl>
 
-[ Upstream commit 968667f2e0345a67a6eea5a502f4659085666564 ]
+[ Upstream commit fee054b7579fe252f8b9e6c17b9c5bfdaa84dd7e ]
 
-With commit cf75ad8b41d2 ("Bluetooth: hci_sync: Convert MGMT_SET_POWERED"),
-the power off sequence got refactored so that this timeout was no longer
-necessary, let's remove the leftover define from the header too.
+Queuing of power_off work was introduced in these functions with commits
+8b064a3ad377 ("Bluetooth: Clean up HCI state when doing power off") and
+c9910d0fb4fc ("Bluetooth: Fix disconnecting connections in non-connected
+states") in an effort to clean up state and do things like disconnecting
+devices before actually powering off the device.
+
+After that, commit a3172b7eb4a2 ("Bluetooth: Add timer to force power off")
+introduced a timeout to ensure that the device actually got powered off,
+even if some of the cleanup work would never complete.
+
+This code later got refactored with commit cf75ad8b41d2 ("Bluetooth:
+hci_sync: Convert MGMT_SET_POWERED"), which made powering off the device
+synchronous and removed the need for initiating the power_off work from
+other places. The timeout mentioned above got removed too, because we now
+also made use of the command timeout during power on/off.
+
+These days the power_off work still exists, but it only seems to only be
+used for HCI_AUTO_OFF functionality, which is why we never noticed
+those two leftover places where we queue power_off work. So let's remove
+that code.
 
 Fixes: cf75ad8b41d2 ("Bluetooth: hci_sync: Convert MGMT_SET_POWERED")
 Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
 Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/bluetooth/hci.h | 1 -
- 1 file changed, 1 deletion(-)
+ net/bluetooth/mgmt.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index bdee5d649cc61..f7918c7551834 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -437,7 +437,6 @@ enum {
- #define HCI_NCMD_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
- #define HCI_ACL_TX_TIMEOUT	msecs_to_jiffies(45000)	/* 45 seconds */
- #define HCI_AUTO_OFF_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
--#define HCI_POWER_OFF_TIMEOUT	msecs_to_jiffies(5000)	/* 5 seconds */
- #define HCI_LE_CONN_TIMEOUT	msecs_to_jiffies(20000)	/* 20 seconds */
- #define HCI_LE_AUTOCONN_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index ee3b4aad8bd8d..688890f581cba 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -9766,14 +9766,6 @@ void mgmt_device_disconnected(struct hci_dev *hdev, bdaddr_t *bdaddr,
+ 	struct mgmt_ev_device_disconnected ev;
+ 	struct sock *sk = NULL;
  
+-	/* The connection is still in hci_conn_hash so test for 1
+-	 * instead of 0 to know if this is the last one.
+-	 */
+-	if (mgmt_powering_down(hdev) && hci_conn_count(hdev) == 1) {
+-		cancel_delayed_work(&hdev->power_off);
+-		queue_work(hdev->req_workqueue, &hdev->power_off.work);
+-	}
+-
+ 	if (!mgmt_connected)
+ 		return;
+ 
+@@ -9830,14 +9822,6 @@ void mgmt_connect_failed(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
+ {
+ 	struct mgmt_ev_connect_failed ev;
+ 
+-	/* The connection is still in hci_conn_hash so test for 1
+-	 * instead of 0 to know if this is the last one.
+-	 */
+-	if (mgmt_powering_down(hdev) && hci_conn_count(hdev) == 1) {
+-		cancel_delayed_work(&hdev->power_off);
+-		queue_work(hdev->req_workqueue, &hdev->power_off.work);
+-	}
+-
+ 	bacpy(&ev.addr.bdaddr, bdaddr);
+ 	ev.addr.type = link_to_bdaddr(link_type, addr_type);
+ 	ev.status = mgmt_status(status);
 -- 
 2.43.0
 
