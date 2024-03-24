@@ -1,53 +1,57 @@
-Return-Path: <linux-kernel+bounces-115176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22246888D96
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:53:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59151888D99
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5369D1C2989E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:53:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDAB31F2AD1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D903F308405;
-	Mon, 25 Mar 2024 01:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9709A74E25;
+	Mon, 25 Mar 2024 01:07:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mP6+/gNl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GpY2x8uO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2942813C90C;
-	Sun, 24 Mar 2024 23:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AAB291B65;
+	Sun, 24 Mar 2024 23:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324235; cv=none; b=I0oEbR0PUm4ON3HT/C2ys16Spr1aDDgXlSgnmrlp91BLOkftRvCdCTB700Fh3PQvaqZDObqN9FUFlxIPSG45pPMRCe40c+rBjBt6EEL8KQCTH30IUfn9zsrPun9buv9EeaIdGU9DN5O+bx3sIDysR0AvQLAbJtGJeVdpIOxqbf4=
+	t=1711324236; cv=none; b=pIc7RhlpuPlgjn4iej5h+PlcVzIRIVB+1WOG4QuSQ51xQsffvYVrLX52q4mDTxW9yxfW1Pv4HIymq7qrDrj/zByUqo9wSqBo2uPXZHCjZl94XlTUL4swnd8/0Qv53CxdR5jF0voSNyqZg330xi24VtZ1TM4UCkyEx2x7FJTORnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324235; c=relaxed/simple;
-	bh=THPvOALJ4wvUxBHy4l+81UW2a018QyQ7BQ7O93l7i20=;
+	s=arc-20240116; t=1711324236; c=relaxed/simple;
+	bh=C33EEltJRwHMDdwN6dS+Wo7jrwyUKT4NvKbIs0EN4cM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O7wZl0SnnARUVSgPTHvxe5PF9TZ+X7+5Qbh5KcvekLXXaH2zSqgqMMC42OcvRHjA9vxxC6dwafu6FIlmRNVURLsfqttpnHLjmQO30eKZ7gTVDL84viBpDhChmqt4gdw0QLVKihqV4AvaxuwpWH+UMYd16d3TO6jtzJZacjPimPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mP6+/gNl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 492CAC43394;
-	Sun, 24 Mar 2024 23:50:33 +0000 (UTC)
+	 MIME-Version; b=hjN5m7o8vHCHYGMOHAmbLKnMjgeOBJ42N3hjV+S+An47hV6LOyd/RgKj4QReuOmUonOE2sqS/ZHx7essN21Jjq9O3gmQINmRtdu6Js4yVn1gom/KR34qQJ07r1ig3lixo17kZI1kc5o1hOeV8/3AuyX3Aq5zgYG9y85R+6OF3ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GpY2x8uO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19379C433A6;
+	Sun, 24 Mar 2024 23:50:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324233;
-	bh=THPvOALJ4wvUxBHy4l+81UW2a018QyQ7BQ7O93l7i20=;
+	s=k20201202; t=1711324235;
+	bh=C33EEltJRwHMDdwN6dS+Wo7jrwyUKT4NvKbIs0EN4cM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mP6+/gNlUHU1C+Y8v/LdI7f2Yy4aFt2Ypq/LKCemTmdYkzsBJDa1qfALKxZ16GUbE
-	 TA+3KQ+vwxazi1UdKmBgTX/AXDaGUN2QnX+5eu8OgOh3bNftakNLFhasym0r0LLwVU
-	 2BLHPt4Akl7pIPDhVxhEGw9Ewd9tFLonHmcauTRDZq8BQHBFQzzJ+4Zs7tMQQkZLlZ
-	 jpntQvKYRP6CVb3gQXj3GBX84Pm3pzP0KMUyBKG8dyEKlYkZ0R5tgNeQFbA/saikfv
-	 7w2ZmdzHKMW6zJB/eUBfvMmjjodp/+r3VZS0WW9sMHGYP6c+J8PoXoYgSDI36Iogla
-	 Dnbo4wPDBDFRw==
+	b=GpY2x8uOK0zA8PegS5Qrq1Y2AmuNw6sH33hhcQtZSMY9C8hcsnLDYVp+rFtUAruwx
+	 vbJG1Xjsc5F/QIgf0kT49coHId4suyCN16Fi6/SQmz6PBW5mUjb106TVFyACin4I9O
+	 tDt3Ntp4ZYJJR52U7raa9VCM8UbqsB5q7JJxAfaXExGpSEaI5luHZNleVMQ1oLjK+p
+	 bywSb95wBoAKSBJ7cswVL3vahYtuEVt2xnw82KY7mSDdEJ/MYwHPSYR0l+WPLtR4XH
+	 TJsx+D1dFG+k89AR2DxSIMaEQ0yqZahHLw/ff1R2tHA6NohRSc2PQcHhPGxA56UWmN
+	 zxiTTKXNYaPEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Chuck Lever III <chuck.lever@oracle.com>,
+	syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com,
+	Jan Kara <jack@suse.cz>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 017/148] crypto: algif_aead - Only wake up when ctx->more is zero
-Date: Sun, 24 Mar 2024 19:48:01 -0400
-Message-ID: <20240324235012.1356413-18-sashal@kernel.org>
+Subject: [PATCH 4.19 018/148] do_sys_name_to_handle(): use kzalloc() to fix kernel-infoleak
+Date: Sun, 24 Mar 2024 19:48:02 -0400
+Message-ID: <20240324235012.1356413-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -61,139 +65,70 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-[ Upstream commit f3c802a1f30013f8f723b62d7fa49eb9e991da23 ]
+[ Upstream commit 3948abaa4e2be938ccdfc289385a27342fb13d43 ]
 
-AEAD does not support partial requests so we must not wake up
-while ctx->more is set.  In order to distinguish between the
-case of no data sent yet and a zero-length request, a new init
-flag has been added to ctx.
+syzbot identified a kernel information leak vulnerability in
+do_sys_name_to_handle() and issued the following report [1].
 
-SKCIPHER has also been modified to ensure that at least a block
-of data is available if there is more data to come.
+[1]
+"BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ copy_to_user include/linux/uaccess.h:191 [inline]
+ do_sys_name_to_handle fs/fhandle.c:73 [inline]
+ __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
+ __se_sys_name_to_handle_at+0x949/0xb10 fs/fhandle.c:94
+ __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
+ ...
 
-Fixes: 2d97591ef43d ("crypto: af_alg - consolidation of...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ do_sys_name_to_handle fs/fhandle.c:39 [inline]
+ __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
+ __se_sys_name_to_handle_at+0x441/0xb10 fs/fhandle.c:94
+ __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
+ ...
+
+Bytes 18-19 of 20 are uninitialized
+Memory access of size 20 starts at ffff888128a46380
+Data copied to user address 0000000020000240"
+
+Per Chuck Lever's suggestion, use kzalloc() instead of kmalloc() to
+solve the problem.
+
+Fixes: 990d6c2d7aee ("vfs: Add name to file handle conversion support")
+Suggested-by: Chuck Lever III <chuck.lever@oracle.com>
+Reported-and-tested-by: <syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com>
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Link: https://lore.kernel.org/r/20240119153906.4367-1-n.zhandarovich@fintech.ru
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/af_alg.c         | 11 ++++++++---
- crypto/algif_aead.c     |  4 ++--
- crypto/algif_skcipher.c |  4 ++--
- include/crypto/if_alg.h |  4 +++-
- 4 files changed, 15 insertions(+), 8 deletions(-)
+ fs/fhandle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-index ed62632a1c355..78f041754f04f 100644
---- a/crypto/af_alg.c
-+++ b/crypto/af_alg.c
-@@ -648,6 +648,7 @@ void af_alg_pull_tsgl(struct sock *sk, size_t used, struct scatterlist *dst,
+diff --git a/fs/fhandle.c b/fs/fhandle.c
+index 0ee727485615b..cb78dbfd7cd51 100644
+--- a/fs/fhandle.c
++++ b/fs/fhandle.c
+@@ -37,7 +37,7 @@ static long do_sys_name_to_handle(struct path *path,
+ 	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
+ 		return -EINVAL;
  
- 	if (!ctx->used)
- 		ctx->merge = 0;
-+	ctx->init = ctx->more;
- }
- EXPORT_SYMBOL_GPL(af_alg_pull_tsgl);
- 
-@@ -747,9 +748,10 @@ EXPORT_SYMBOL_GPL(af_alg_wmem_wakeup);
-  *
-  * @sk socket of connection to user space
-  * @flags If MSG_DONTWAIT is set, then only report if function would sleep
-+ * @min Set to minimum request size if partial requests are allowed.
-  * @return 0 when writable memory is available, < 0 upon error
-  */
--int af_alg_wait_for_data(struct sock *sk, unsigned flags)
-+int af_alg_wait_for_data(struct sock *sk, unsigned flags, unsigned min)
- {
- 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	struct alg_sock *ask = alg_sk(sk);
-@@ -767,7 +769,9 @@ int af_alg_wait_for_data(struct sock *sk, unsigned flags)
- 		if (signal_pending(current))
- 			break;
- 		timeout = MAX_SCHEDULE_TIMEOUT;
--		if (sk_wait_event(sk, &timeout, (ctx->used || !ctx->more),
-+		if (sk_wait_event(sk, &timeout,
-+				  ctx->init && (!ctx->more ||
-+						(min && ctx->used >= min)),
- 				  &wait)) {
- 			err = 0;
- 			break;
-@@ -856,7 +860,7 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	}
- 
- 	lock_sock(sk);
--	if (!ctx->more && ctx->used) {
-+	if (ctx->init && (init || !ctx->more)) {
- 		err = -EINVAL;
- 		goto unlock;
- 	}
-@@ -867,6 +871,7 @@ int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 			memcpy(ctx->iv, con.iv->iv, ivsize);
- 
- 		ctx->aead_assoclen = con.aead_assoclen;
-+		ctx->init = true;
- 	}
- 
- 	while (size) {
-diff --git a/crypto/algif_aead.c b/crypto/algif_aead.c
-index 4cb2b12175490..63ba443b23157 100644
---- a/crypto/algif_aead.c
-+++ b/crypto/algif_aead.c
-@@ -110,8 +110,8 @@ static int _aead_recvmsg(struct socket *sock, struct msghdr *msg,
- 	size_t usedpages = 0;		/* [in]  RX bufs to be used from user */
- 	size_t processed = 0;		/* [in]  TX bufs to be consumed */
- 
--	if (!ctx->used) {
--		err = af_alg_wait_for_data(sk, flags);
-+	if (!ctx->init || ctx->more) {
-+		err = af_alg_wait_for_data(sk, flags, 0);
- 		if (err)
- 			return err;
- 	}
-diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
-index af08fc18a4926..6cfdbe71a2ce3 100644
---- a/crypto/algif_skcipher.c
-+++ b/crypto/algif_skcipher.c
-@@ -65,8 +65,8 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
- 	int err = 0;
- 	size_t len = 0;
- 
--	if (!ctx->used) {
--		err = af_alg_wait_for_data(sk, flags);
-+	if (!ctx->init || (ctx->more && ctx->used < bs)) {
-+		err = af_alg_wait_for_data(sk, flags, bs);
- 		if (err)
- 			return err;
- 	}
-diff --git a/include/crypto/if_alg.h b/include/crypto/if_alg.h
-index f0c83a7bd078b..69fc69973269e 100644
---- a/include/crypto/if_alg.h
-+++ b/include/crypto/if_alg.h
-@@ -140,6 +140,7 @@ struct af_alg_async_req {
-  *			SG?
-  * @enc:		Cryptographic operation to be performed when
-  *			recvmsg is invoked.
-+ * @init:		True if metadata has been sent.
-  * @len:		Length of memory allocated for this data structure.
-  * @inflight:		Non-zero when AIO requests are in flight.
-  */
-@@ -157,6 +158,7 @@ struct af_alg_ctx {
- 	bool more;
- 	bool merge;
- 	bool enc;
-+	bool init;
- 
- 	unsigned int len;
- 
-@@ -234,7 +236,7 @@ unsigned int af_alg_count_tsgl(struct sock *sk, size_t bytes, size_t offset);
- void af_alg_pull_tsgl(struct sock *sk, size_t used, struct scatterlist *dst,
- 		      size_t dst_offset);
- void af_alg_wmem_wakeup(struct sock *sk);
--int af_alg_wait_for_data(struct sock *sk, unsigned flags);
-+int af_alg_wait_for_data(struct sock *sk, unsigned flags, unsigned min);
- int af_alg_sendmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 		   unsigned int ivsize);
- ssize_t af_alg_sendpage(struct socket *sock, struct page *page,
+-	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
++	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
+ 			 GFP_KERNEL);
+ 	if (!handle)
+ 		return -ENOMEM;
 -- 
 2.43.0
 
