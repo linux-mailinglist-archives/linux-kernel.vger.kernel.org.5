@@ -1,306 +1,161 @@
-Return-Path: <linux-kernel+bounces-112587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E35A887BB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:58:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D9A887BB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82AA0282563
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:58:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F64A1C20B4C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94E913FF6;
-	Sun, 24 Mar 2024 04:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3085F14008;
+	Sun, 24 Mar 2024 05:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3Xqo8yzy"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gGdorOui"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5E6134BE
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 04:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12E6944F;
+	Sun, 24 Mar 2024 05:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711256302; cv=none; b=NHtC24WbOCQg+8S17qVkFK0IXw2yV+lG2RFHXKBfrbwN9kXHJpE79/coCBVFPfJ6NDSgjfvpgCumfb/fiFB8cPtWDRl6v2aVmudBu+WC8Yyf1JBYJFYFQv+BWt6DPSz917hdt2kj8/4oPFDSS3wZSjyOE2lPFzGyFn4pua1mtHk=
+	t=1711256431; cv=none; b=m6uaeP1RJ4ru04+I8rxZhTdsQfpu/kwR2bd68OEhfDgbg6limvv9jeVIJuImflU1d1MmAsuJlbVowuZUHb0iBLdyDhL6run3r32kXvgcULibtdGP6xEnuJsL5/ufA2R+GZXmjpekjwNEAbYGLIP/p5xosoOWkfn8yLruYjOhdQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711256302; c=relaxed/simple;
-	bh=Gu6WmAVAclfnwbUUBsxi8oNc/q6lur63hnxYQBkX69M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UNRrkwNxDZpWrCSSnk4w8VbaRSgcWsICa34sf9C6D5l7eFBVd3o8XF7/+5sJBUld7OMKFxWR3L6pS/b79od/gAY/NWxQTq9a3trO5OS5X8IsL+tvb/wMn3PTEt77P3SXfzJCRmD+ItSe3+P/07Xa8WMeQ5BqKGHeJspDuDNQgk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3Xqo8yzy; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-428405a0205so200071cf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 21:58:20 -0700 (PDT)
+	s=arc-20240116; t=1711256431; c=relaxed/simple;
+	bh=s2PpLuMCSXF9aw2S1I7AerrJRZw6llL62KMpMWQBEEY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=FX72TdZNpfGllkpz55Smc3DceIlrheZdnsmewO8tKSAyrgZpubJk1LyeHckv3L5/J/AXlkCOLEABZyPmUxLCDpjIYp/GGCNxhfvkEUd+mck7JCLMhaMDrZpIsTSreuSaoXlyWRk3Thoz13xV5R8yYd5QHbqiaguljSgR5xLhwjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gGdorOui; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-515a86daf09so321311e87.3;
+        Sat, 23 Mar 2024 22:00:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711256299; x=1711861099; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JY//JH8+Rx3oZ3x/aWWGC7L77LyNr1dunyhwT54TMMI=;
-        b=3Xqo8yzyu7AboN8rUdFa24jMTlwP1QfIitrvWr8HFXt/1fCsn+0uqAQQ8vkLSc63oe
-         1Yozn94AfVLdYyhcNJlliFEfida7g5jzrfzefxfsKx4j8AGCLV45IGIdFR3wqgNQiEAS
-         RsoblSkUkxFvEp6v2mmv5QQPJlf1bXIVwC5f5zXLK3k7Gc4+0ZbpI4ytsGXExDuAKu57
-         sXKbHGUUOx93A5D3/HBxB7tZomRUeXFhqShcZ7h9CTGvf4+Q6lkuTS2Kzdl67Nw9oQJL
-         ofCxsJ6puCG0Igb7UY6Qc57wzBdm4VcdQ4/Xif/yjONY2tSbw6nRHVKYVSAxFRyT8yKx
-         tlvw==
+        d=gmail.com; s=20230601; t=1711256427; x=1711861227; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yvEdxnpAVsEIe0YNE5Idfj6+Zl6YWvhI7C+nvup/Fgw=;
+        b=gGdorOuih3uOmAu7ADmNnh9Y1GULQ0MbemyCYuqjXN6zipYOxzgA+BWf8uXPZDr/Sn
+         0tEVxt4Z4/BL2a4NLaD8lzxNUl71sGuYFJ9WJPT235EYBgKQcYV1JaxsO6LIXzBS7TB5
+         E/AaHcjx38+Y2vpx8PmxvpkhJ9ys+G21h0yzOaQ3zRj77jTHbDNaKcAtfJ5pC6WXKSRz
+         5UgzeTwDOso7mi3fEs47+peW+oPLXQ55vxPXRLP3CUz5z6TJ7IDQJMUkop5v4y7XZU9s
+         Q1QPF0RcfjBIH3e9tt68R+7Q39PaSLxOlDVLA6N7U0ftAlJ4sAX7o3iL/X3OxMLfE1P0
+         HCYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711256299; x=1711861099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JY//JH8+Rx3oZ3x/aWWGC7L77LyNr1dunyhwT54TMMI=;
-        b=Uc+OBpHJCUAY/cLHZOVNiNPbRUuyHbk0Y75vl9BXolVo5t/a4zSvvLDxNqcAeCT5Mr
-         dgmVEBxJsS+Fi7OBxeJ25h1jZzMi2TwO7cp9Mnl+uXfMPG4oQI9HAuCdKthpd4C6xaBR
-         eV3YqB1VYxY5zpORmJLEf0M/IeWcx2mNCGu4SUFCjzst6z4cCgUmLlls1IQIijnR0wYj
-         btVEomBRRhL5kNVi7JPcGpjpX/DnjqbbIEMqJtWxSV+xXPdsgNbSt9ZHz4B7A4eF/Ysj
-         MIMNoEL/MGS6c35OU9g7X6uzEaimpn0XmejLh7wOw/lYGvZxt8oJN7MXDwx1SEJ5KBLc
-         EwHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWO2lV0Ea0co5lAo7a/GIZQ7jsScSKuCD9MYafmahbdEM9MGLX19wv0MXkJPCSjTUddv9mOssAY7hLXGgv2wvMUBJjx/bCq0POuD5D5
-X-Gm-Message-State: AOJu0Yx1abObDkCKcSdgO6fpdWZ7eYJ7EfeSBUMo13rayqL+cj3ROTGf
-	WqaYAZSX9tWDwOov+cWGTIAi0YhoMMhqJDMvAyJeDp4N878LqAi/8MXmLEw8XWabBHS7r+lKbH3
-	8vgDxXZhD1RskyZ+hLOvwrCWFnD588AKVbnud
-X-Google-Smtp-Source: AGHT+IEh4lGd8nHzLHIi/RvfxCQ/XmqIhKb/J0p1RLSmdYaDboNf82KRHWSG68zD5PxR/7eMC2VXvwu08GORzEaOXKY=
-X-Received: by 2002:a05:622a:3ce:b0:431:55a:57fa with SMTP id
- k14-20020a05622a03ce00b00431055a57famr909008qtx.16.1711256299136; Sat, 23 Mar
- 2024 21:58:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711256427; x=1711861227;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yvEdxnpAVsEIe0YNE5Idfj6+Zl6YWvhI7C+nvup/Fgw=;
+        b=mH5Ra3Yu9doJlKM8GXZvVlpIrKLoBYqsSBF7nhidQudK40X/3ubfWccY0VadFtoRT0
+         gn+8wG4tggVAgLlMmPgmVd6tvh1cvLlTJZSbJrx49h/HBQMZsKOfIayQA4LCVieEFGps
+         PaS3+N1Mepe5PpqAEJOjMFiq4Dak/aLCHeBmkL34GoI25EbV4piu6Xo7GAboLH6OGrNk
+         klkSh0AqXL5qox7WzmezcEBYR+HIUh+w/xJPPE+3Sn0pL5X27x6HdiOTdmdoFNh43C8g
+         UKllPMLOx/6l1Dto+JsScEZllBY26sg/XUqeytHOeNyd54vTfYgQADMGEt5qhILKmdgP
+         sGeA==
+X-Forwarded-Encrypted: i=1; AJvYcCUni7DTRaI62rUnDl2UkbrpuuyxFA8lLi/losT/DS3hbOmmW/hfvNJj/H7JpzSsYXtnJ3KNHU6RXuIchev0V6sarg/wXFQUj01AkUPivA==
+X-Gm-Message-State: AOJu0YxY/r6mBXiu5SMBV5ryjojJHA74ULptFj7qUsLaPEt1HyP3CpI9
+	b0DEyID0CqtFxWXFnyzG3Lud8J0O2WOqai3A3fH/YlVeQDWhOknZs0++HpXEAU699+KFNpdWlPe
+	6ujBQW+Xs5oxrwGaoPaApPYCfmYwQJT4F9v0=
+X-Google-Smtp-Source: AGHT+IFDlM7PxTIiXR+ZmPGP67FVm99FaL3V3gogWvv54SBA4jhbjyqeg40wLbYRkAw2FRoxovQ6kGhRNxVIFuJTqso=
+X-Received: by 2002:a05:6512:616:b0:513:ccec:a822 with SMTP id
+ b22-20020a056512061600b00513cceca822mr2667910lfe.28.1711256427032; Sat, 23
+ Mar 2024 22:00:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209031441.943012-1-weilin.wang@intel.com> <20240209031441.943012-7-weilin.wang@intel.com>
-In-Reply-To: <20240209031441.943012-7-weilin.wang@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Sat, 23 Mar 2024 21:58:08 -0700
-Message-ID: <CAP-5=fX1-oO-Q6Oj3G3FmpMunXv=ufUwCBK0-XHtEgvb1SescA@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 06/15] perf stat: Add functions to get counter info
-To: weilin.wang@intel.com
-Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
-	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
-	Mark Rutland <mark.rutland@arm.com>
+From: Steve French <smfrench@gmail.com>
+Date: Sun, 24 Mar 2024 00:00:15 -0500
+Message-ID: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+Subject: kernel crash in mknod
+To: LKML <linux-kernel@vger.kernel.org>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>, Roberto Sassu <roberto.sassu@huawei.com>
+Cc: CIFS <linux-cifs@vger.kernel.org>, Paulo Alcantara <pc@manguebit.com>, 
+	Christian Brauner <christian@brauner.io>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> Add data structure metricgroup__pmu_counters to represent hardware counte=
-rs
-> available in the system.
->
-> Add functions to parse pmu-events and create the list of pmu_info_list to
-> hold the counter information of the system.
->
-> Add functions to free pmu_info_list and event_info_list before exit
-> grouping for hardware-grouping method
->
-> This method would fall back to normal grouping when event json files do n=
-ot
-> support hardware aware grouping.
->
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+Anyone else seeing this kernel crash in do_mknodat (I see it with a
+simple "mkfifo" on smb3 mount).  I started seeing this in 6.9-rc (did
+not see it in 6.8).   I did not see it with the 3/12/23 mainline
+(early in the 6.9-rc merge Window) but I do see it in the 3/22 build
+so it looks like the regression was introduced by:
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+commit 08abce60d63fb55f440c393f4508e99064f2fd91
+Author: Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu Feb 15 11:31:02 2024 +0100
 
+    security: Introduce path_post_mknod hook
+
+    In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+    the path_post_mknod hook.
+
+    IMA-appraisal requires all existing files in policy to have a file
+    hash/signature stored in security.ima. An exception is made for empty files
+    created by mknod, by tagging them as new files.
+
+    LSMs could also take some action after files are created.
+
+    The new hook cannot return an error and cannot cause the operation to be
+    reverted.
+
+Dmesg showing the crash it causes below:
+
+[   84.862122] RIP: 0010:security_path_post_mknod+0x9/0x60
+[   84.862139] Code: 41 5e 5d 31 d2 31 f6 31 ff c3 cc cc cc cc 0f 1f
+00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 48
+8b 46 30 <f6> 40 0d 02 75 43 55 48 89 e5 41 55 49 89 fd 41 54 49 89 f4
+53 48
+[   84.862149] RSP: 0018:ffffa22dc1f6bdc8 EFLAGS: 00010246
+[   84.862159] RAX: 0000000000000000 RBX: ffff8d4fc85da000 RCX: 0000000000000000
+[   84.862167] RDX: 0000000000000000 RSI: ffff8d502473a900 RDI: ffffffffaa26f6e0
+[   84.862174] RBP: ffffa22dc1f6be28 R08: 0000000000000000 R09: 0000000000000000
+[   84.862181] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[   84.862187] R13: ffff8d502473a900 R14: 0000000000001000 R15: 0000000000000000
+[   84.862195] FS:  00007d2c5c075800(0000) GS:ffff8d573b880000(0000)
+knlGS:0000000000000000
+[   84.862204] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   84.862211] CR2: 000000000000000d CR3: 000000018d63a005 CR4: 00000000003706f0
+[   84.862219] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   84.862225] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   84.862232] Call Trace:
+[   84.862238]  <TASK>
+[   84.862248]  ? show_regs+0x6c/0x80
+[   84.862262]  ? __die+0x24/0x80
+[   84.862273]  ? page_fault_oops+0x96/0x1b0
+[   84.862290]  ? do_user_addr_fault+0x30c/0x730
+[   84.862304]  ? exc_page_fault+0x82/0x1b0
+[   84.862318]  ? asm_exc_page_fault+0x27/0x30
+[   84.862338]  ? security_path_post_mknod+0x9/0x60
+[   84.862350]  ? do_mknodat+0x191/0x2c0
+[   84.862365]  __x64_sys_mknodat+0x37/0x50
+[   84.862376]  do_syscall_64+0x81/0x180
+[   84.862387]  ? count_memcg_events.constprop.0+0x2a/0x50
+[   84.862402]  ? handle_mm_fault+0xaf/0x330
+[   84.862418]  ? do_user_addr_fault+0x33f/0x730
+[   84.862430]  ? irqentry_exit_to_user_mode+0x6a/0x260
+[   84.862442]  ? irqentry_exit+0x43/0x50
+[   84.862453]  ? exc_page_fault+0x93/0x1b0
+[   84.862464]  entry_SYSCALL_64_after_hwframe+0x6c/0x74
+[   84.862476] RIP: 0033:0x7d2c5bf19e07
+[   84.862536] Code: 9c ff ff ff e9 0a 00 00 00 66 2e 0f 1f 84 00 00
+00 00 00 f3 0f 1e fa 48 89 c8 48 c1 e8 20 75 2b 41 89 ca b8 03 01 00
+00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 e1 3f 0e 00 f7 d8 64 89
+02 b8
+[   84.862544] RSP: 002b:00007ffc1b2c4568 EFLAGS: 00000246 ORIG_RAX:
+0000000000000103
+[   84.862556] RAX: ffffffffffffffda RBX: 00007ffc1b2c4718 RCX: 00007d2c5bf19e07
+[   84.862563] RDX: 00000000000011b6 RSI: 00007ffc1b2c6712 RDI: 00000000ffffff9c
+[   84.862570] RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+[   84.862576] R10: 0000000000000000 R11: 0000000000000246 R12: 00007d2c5bffe428
+[   84.862582] R13: 0000000000000000 R14: 00007ffc1b2c6712 R15: 00007d2c5c199000
+[   84.862597]  </TASK>
+
+
+--
 Thanks,
-Ian
 
-> ---
->  tools/perf/util/metricgroup.c | 101 ++++++++++++++++++++++++++++++++--
->  1 file changed, 97 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
-c
-> index 2a917220fb34..9061ed4ca015 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -179,6 +179,20 @@ struct metricgroup__event_info {
->         DECLARE_BITMAP(counters, NR_COUNTERS);
->  };
->
-> +/**
-> + * A node is the counter availability of a pmu.
-> + * This info is built up at the beginning from JSON file and
-> + * used as a reference in metric grouping process.
-> + */
-> +struct metricgroup__pmu_counters {
-> +       struct list_head nd;
-> +       /** The name of the pmu the event collected on. */
-> +       const char *name;
-> +       /** The number of gp counters in the pmu. */
-> +       size_t num_counters;
-> +       size_t num_fixed_counters;
-> +};
-> +
->  /**
->   * Each group is one node in the group string list.
->   */
-> @@ -1530,6 +1544,27 @@ static int parse_counter(const char *counter,
->         return 0;
->  }
->
-> +static void metricgroup__free_event_info(struct list_head
-> +                                       *event_info_list)
-> +{
-> +       struct metricgroup__event_info *e, *tmp;
-> +
-> +       list_for_each_entry_safe(e, tmp, event_info_list, nd) {
-> +               list_del_init(&e->nd);
-> +               free(e);
-> +       }
-> +}
-> +
-> +static void metricgroup__free_pmu_info(struct list_head *pmu_info_list)
-> +{
-> +       struct metricgroup__pmu_counters *p, *tmp;
-> +
-> +       list_for_each_entry_safe(p, tmp, pmu_info_list, nd) {
-> +               list_del_init(&p->nd);
-> +               free(p);
-> +       }
-> +}
-> +
->  static struct metricgroup__event_info *event_info__new(const char *name,
->                                                       const char *pmu_nam=
-e,
->                                                       const char *counter=
-,
-> @@ -1548,7 +1583,7 @@ static struct metricgroup__event_info *event_info__=
-new(const char *name,
->
->         e->name =3D name;
->         e->free_counter =3D free_counter;
-> -       e->pmu_name =3D strdup(pmu_name);
-> +       e->pmu_name =3D pmu_name;
->         if (free_counter) {
->                 ret =3D set_counter_bitmap(0, e->counters);
->                 if (ret)
-> @@ -1583,7 +1618,9 @@ static int metricgroup__add_metric_event_callback(c=
-onst struct pmu_event *pe,
->         struct metricgroup__add_metric_event_data *d =3D data;
->
->         if (!strcasecmp(pe->name, d->event_name)) {
-> -               event =3D event_info__new(d->event_id, pe->pmu, pe->count=
-er, /*free_counter=3D*/false);
-> +               if (!pe->counters)
-> +                       return -EINVAL;
-> +               event =3D event_info__new(d->event_id, pe->pmu, pe->count=
-ers, /*free_counter=3D*/false);
->                 if (!event)
->                         return -ENOMEM;
->                 list_add(&event->nd, d->list);
-> @@ -1622,7 +1659,7 @@ static int get_metricgroup_events(const char *full_=
-id,
->                         .event_name =3D id,
->                         .event_id =3D full_id,
->                 };
-> -               ret =3D pmu_events_table_for_each_event(table,
-> +               ret =3D pmu_events_table__for_each_event(table, /*pmu=3D*=
-/NULL,
->                                 metricgroup__add_metric_event_callback, &=
-data);
->         }
->
-> @@ -1631,6 +1668,57 @@ static int get_metricgroup_events(const char *full=
-_id,
->         return ret;
->  }
->
-> +static struct metricgroup__pmu_counters *pmu_layout__new(const struct pm=
-u_layout *pl)
-> +{
-> +       struct metricgroup__pmu_counters *l;
-> +
-> +       l =3D zalloc(sizeof(*l));
-> +
-> +       if (!l)
-> +               return NULL;
-> +
-> +       l->name =3D pl->pmu;
-> +       l->num_counters =3D pl->num_counters;
-> +       l->num_fixed_counters =3D pl->num_fixed_counters;
-> +       pr_debug("create new pmu_layout: [pmu]=3D%s, [gp_size]=3D%ld, [fi=
-xed_size]=3D%ld\n",
-> +               l->name, l->num_counters, l->num_fixed_counters);
-> +       return l;
-> +}
-> +
-> +static int metricgroup__add_pmu_layout_callback(const struct pmu_layout =
-*pl,
-> +                                               void *data)
-> +{
-> +       struct metricgroup__pmu_counters *pmu;
-> +       struct list_head *d =3D data;
-> +       int ret =3D 0;
-> +
-> +       pmu =3D pmu_layout__new(pl);
-> +       if (!pmu)
-> +               return -ENOMEM;
-> +       list_add(&pmu->nd, d);
-> +       return ret;
-> +}
-> +
-> +/**
-> + * get_pmu_counter_layouts - Find counter info of the architecture from
-> + * the pmu_layouts table
-> + * @pmu_info_list: the list that the new counter info of a pmu is added =
-to.
-> + * @table: pmu_layouts table that is searched for counter info.
-> + */
-> +static int get_pmu_counter_layouts(struct list_head *pmu_info_list,
-> +                                  const struct pmu_layouts_table
-> +                                  *table)
-> +{
-> +       LIST_HEAD(list);
-> +       int ret;
-> +
-> +       ret =3D pmu_layouts_table__for_each_layout(table,
-> +                                               metricgroup__add_pmu_layo=
-ut_callback, &list);
-> +
-> +       list_splice(&list, pmu_info_list);
-> +       return ret;
-> +}
-> +
->  /**
->   * hw_aware_build_grouping - Build event groupings by reading counter
->   * requirement of the events and counter available on the system from
-> @@ -1649,6 +1737,7 @@ static int hw_aware_build_grouping(struct expr_pars=
-e_ctx *ctx __maybe_unused,
->         LIST_HEAD(event_info_list);
->         size_t bkt;
->         const struct pmu_events_table *etable =3D perf_pmu__find_events_t=
-able(NULL);
-> +       const struct pmu_layouts_table *ltable =3D perf_pmu__find_layouts=
-_table(NULL);
->
->  #define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
->         hashmap__for_each_entry(ctx->ids, cur, bkt) {
-> @@ -1658,9 +1747,13 @@ static int hw_aware_build_grouping(struct expr_par=
-se_ctx *ctx __maybe_unused,
->
->                 ret =3D get_metricgroup_events(id, etable, &event_info_li=
-st);
->                 if (ret)
-> -                       return ret;
-> +                       goto err_out;
->         }
-> +       ret =3D get_pmu_counter_layouts(&pmu_info_list, ltable);
->
-> +err_out:
-> +       metricgroup__free_event_info(&event_info_list);
-> +       metricgroup__free_pmu_info(&pmu_info_list);
->         return ret;
->  #undef RETURN_IF_NON_ZERO
->  }
-> --
-> 2.42.0
->
+Steve
 
