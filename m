@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-112941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C22887FEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:48:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB7A887FEE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:48:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01DA11C208F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:48:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2F8D1F23426
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:48:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4438005B;
-	Sun, 24 Mar 2024 22:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA1080C09;
+	Sun, 24 Mar 2024 22:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jL8lHQxU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hR2xXuwf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E16E780026;
-	Sun, 24 Mar 2024 22:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBAE380612;
+	Sun, 24 Mar 2024 22:35:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319754; cv=none; b=flp4jv9DAlCL2XYwhTU47Pka6XJN3bhDg4UzrxgicmEanOVcZDxa5FyMGwx6M7E4HOCWn52Lu4DpvysWfFY6BJvWKFQLhBXo+jGqpHxNoa0PlX/fgBRKvQwxoHCzXaqJqg8KuiZ6dmrvZXjj+JKbeqij6XCUjHXxm8QZSK/jZco=
+	t=1711319755; cv=none; b=J2MVcaxSJBef/9WDkoiNDuCeGX+Q83t2hRdBIegoKc8fl2dXMTEcd4zny2aCiOuum7V99vaU7dLokBn0nv08IqrWaruEj+muStLW+j5siPAiJ4yMtZIIGzSl4hQ6d6JfBDVZ8gx0rf2XwRUG3Xgrmf9FozGdtmI3rRJ01xKeJ7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319754; c=relaxed/simple;
-	bh=pPJ1TW10UmyE3sNxjNNcrlM7CqVYVT02xmFTk6rywQk=;
+	s=arc-20240116; t=1711319755; c=relaxed/simple;
+	bh=oYYvn/6nxGWAVbko5rNqBa3zP6x2dNPOvgw8qbioNx4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fK+pD/aXtmPTetdorG93M4sb3EHcLG0b6jbxCEStmjxy/TenHU7Zp49261XMsTcSlq5Ls/Pzqc48XmkLxaOdj65XiMhufW6Gd5eRWtgjIS1YCy5K3NK6/lqOn+Ubf93VuwajUyx8OkEhX7iQJsh1uKaxu+b1iMtcnQ66jrQ9Y3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jL8lHQxU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13EB6C43390;
-	Sun, 24 Mar 2024 22:35:52 +0000 (UTC)
+	 MIME-Version; b=gWJzbTAgq3WMOPq8p2aRYYmawAaWrzNJ0cEZpMS/1RnAc0pIrDA/6Myol/1sg890KG5dQTGZIkk92RH6xCFj/A6tEFbSA4N6fNbReV4J8X3qMAyi/TyUD1Ztin7vSdI5hhg9Tu0gv7rra35f9qtHjBph4MJuKQDaMQa1JI4G9Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hR2xXuwf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F2D2C433C7;
+	Sun, 24 Mar 2024 22:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319753;
-	bh=pPJ1TW10UmyE3sNxjNNcrlM7CqVYVT02xmFTk6rywQk=;
+	s=k20201202; t=1711319754;
+	bh=oYYvn/6nxGWAVbko5rNqBa3zP6x2dNPOvgw8qbioNx4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jL8lHQxUGNnLP+gv4xf9XLv712GDiA4hBrTtvasMBilHBeKJja/NJdLncKp7MUMSA
-	 lU4qh3Ks2CIPfQnrDCUGq16eUrAAuF3/z8PuNZHwUXcIjUCWP+oxA6aEbThNQPxBYF
-	 W3SNkr0fN9JfilhMGB6uCfQd5XxIpLI001Fas/EgjUJ/K2zgLkDXXEUuAzev/DkqOL
-	 U8Jxus9pIVU1AborhMkulbHErnO5FzGylort7eWMmqSITqGPsp9IhdVi7vE1AEOkDE
-	 b+sI2b2pJhMyqncEdc7QXFWnSLr7LgUL7utpJZh1CaKdvBQWv65uX7MG3g8v61HMCW
-	 85nPucBK0ZRWw==
+	b=hR2xXuwfjXPU3owqX0ayc+3+aZbqYzJb+qJ4vMjD4v9jwhqRW9j96Pm/glurdb/PC
+	 Q4K4S6Zyf6j0+BvsOLFmdUtVtIAxIW5U60+WUGpuwSrB6eO4wp0A7JBlhi2xQ0pd9j
+	 C5Tyrh6M1JXD9vViLkgxsxOvDyu0A2nIu/Y8+GVGg3TaYtqIXtuVfEQXXDwrRK2fY2
+	 fqNXRSoJAJJpy6OMdXta/JnHWrG3RJLzmBW/M826kRdbnFHq/crjZw53GOe7I0KlCP
+	 DpGSqfu2M/zL4yuvdc0D/d48R92IoRdIHvV7s4gN/LoGia2x4dbVKjmipx89tSoWei
+	 lHM422INdSLkQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Keisuke Nishimura <keisuke.nishimura@inria.fr>,
-	Julia Lawall <julia.lawall@inria.fr>,
-	Ingo Molnar <mingo@kernel.org>,
+Cc: Xingyuan Mo <hdthky0@gmail.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 054/715] sched/fair: Take the scheduling domain into account in select_idle_core()
-Date: Sun, 24 Mar 2024 18:23:53 -0400
-Message-ID: <20240324223455.1342824-55-sashal@kernel.org>
+Subject: [PATCH 6.8 055/715] wifi: ath10k: fix NULL pointer dereference in ath10k_wmi_tlv_op_pull_mgmt_tx_compl_ev()
+Date: Sun, 24 Mar 2024 18:23:54 -0400
+Message-ID: <20240324223455.1342824-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,52 +63,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+From: Xingyuan Mo <hdthky0@gmail.com>
 
-[ Upstream commit 23d04d8c6b8ec339057264659b7834027f3e6a63 ]
+[ Upstream commit ad25ee36f00172f7d53242dc77c69fff7ced0755 ]
 
-When picking a CPU on task wakeup, select_idle_core() has to take
-into account the scheduling domain where the function looks for the CPU.
+We should check whether the WMI_TLV_TAG_STRUCT_MGMT_TX_COMPL_EVENT tlv is
+present before accessing it, otherwise a null pointer deference error will
+occur.
 
-This is because the "isolcpus" kernel command line option can remove CPUs
-from the domain to isolate them from other SMT siblings.
-
-This change replaces the set of CPUs allowed to run the task from
-p->cpus_ptr by the intersection of p->cpus_ptr and sched_domain_span(sd)
-which is stored in the 'cpus' argument provided by select_idle_cpu().
-
-Fixes: 9fe1f127b913 ("sched/fair: Merge select_idle_core/cpu()")
-Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240110131707.437301-2-keisuke.nishimura@inria.fr
+Fixes: dc405152bb64 ("ath10k: handle mgmt tx completion event")
+Signed-off-by: Xingyuan Mo <hdthky0@gmail.com>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://msgid.link/20231208043433.271449-1-hdthky0@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 66457d4b8965c..e2b4e0396af84 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7289,7 +7289,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 		if (!available_idle_cpu(cpu)) {
- 			idle = false;
- 			if (*idle_cpu == -1) {
--				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, cpus)) {
- 					*idle_cpu = cpu;
- 					break;
- 				}
-@@ -7297,7 +7297,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 			}
- 			break;
- 		}
--		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
-+		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, cpus))
- 			*idle_cpu = cpu;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 6b6aa3c367448..0ce08e9a0a3d2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -851,6 +851,10 @@ ath10k_wmi_tlv_op_pull_mgmt_tx_compl_ev(struct ath10k *ar, struct sk_buff *skb,
  	}
  
+ 	ev = tb[WMI_TLV_TAG_STRUCT_MGMT_TX_COMPL_EVENT];
++	if (!ev) {
++		kfree(tb);
++		return -EPROTO;
++	}
+ 
+ 	arg->desc_id = ev->desc_id;
+ 	arg->status = ev->status;
 -- 
 2.43.0
 
