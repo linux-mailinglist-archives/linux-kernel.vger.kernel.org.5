@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B810388831D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:01:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1220688831F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:01:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EAA31F2630F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:01:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43F051C23335
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B5D6BB4E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC9618E0D1;
 	Sun, 24 Mar 2024 22:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="po2yI47z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQX4ijUv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5186418D886;
-	Sun, 24 Mar 2024 22:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 250486BB51;
+	Sun, 24 Mar 2024 22:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320087; cv=none; b=D+SHHB9FRZxAzcSXlKPqNwOi0wQAszJg5nND5bINOykY+NQ7RCq0o07suN/0rCLbUkwez1+FDHCFO51R+Z+bu710fl+mJt5B32Axodh7CDI/ITq4PKnzKbIy3E4UQHBH0SMtFwh2oJpRDYyO7GxxY3MQxjxoU92XiHii3VCclBM=
+	t=1711320088; cv=none; b=E3JuI49N3pWWFXbDHc61iaVCVKpci9CwowbPBuija+sUkEazoKtxtcepGx18+qX1x3fVfvwTXlkvSuBkmZxm9Asqr1JBOimwPIymGYMeQBhDzptla3x5MPPx+okJOEL6QZisUTYQ32K1gsaOR0wa/siDCcK8GOkj/xTlA5H4BNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320087; c=relaxed/simple;
-	bh=EWgKnN4Jo0bf+oXAc5grq6JHSvSF9OfBeXnKDb9HOws=;
+	s=arc-20240116; t=1711320088; c=relaxed/simple;
+	bh=d6lzkkIjVC8j7FCAyLRzMX5ir2uPOxbS8UYQkWRwhlM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DNnOLwUqzeRtkUkpyFExU41JeAbqpD2GAFzDBHBRcJnKRW+4nIQqGdw+jZB9X8W0Pm2gltpj4JuhxGR+emsi6FyMW7rCsiyV+AhDBz9vI1Zd3AgbjZaJWmcEkcOWkeeUKZebc2bqmNPYDDhA37NU4oTzbdI70/wUs9e+cY1yCvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=po2yI47z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35C8EC433F1;
-	Sun, 24 Mar 2024 22:41:26 +0000 (UTC)
+	 MIME-Version; b=Y46QL5DDgxmWWhCYYvoM8Xcmo/jtEDcf2CcVwu5vDp0Ekzk3SpXQmlkfCNPX0uO+4534VbddlmYj5KzE5TsXGdOtAMtpCKO5K+WCY00Z6ytB7q2taMN9vZvTthXAes6AIye2EvVvYshpQ0bw4oioSwrVG/7Lh0zrlSx8pPLOlNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CQX4ijUv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D144C433C7;
+	Sun, 24 Mar 2024 22:41:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320086;
-	bh=EWgKnN4Jo0bf+oXAc5grq6JHSvSF9OfBeXnKDb9HOws=;
+	s=k20201202; t=1711320087;
+	bh=d6lzkkIjVC8j7FCAyLRzMX5ir2uPOxbS8UYQkWRwhlM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=po2yI47zHtQihVtZxa5IrNbfCZXbAxTP2HwiKwi3z/GibvlJPyVl1OS3hyiTGwO0K
-	 h25A8gneFUjMd8jObQKr6IirO5VoC3bsx80PYpjE9GLWs0VaERPBLB5JRCh96fsnRB
-	 CGVz0ItQHtA9I2v383wgO0/F0j1ywVoft1+PdD8HzSnN/q5r0/eQzsLtUQHFs7G9uS
-	 coGXAlAQDG7nkxVcgwTruqa9okXEbdc8ZlQHJnfvIjBj2+JcQuisZz5cORd2H2UBmE
-	 xYPa6zwevsZNquIs1sdtfcUo41HUW/3E1EmlnG9vbK3jT0EaA0qa+Uo9nsiv7/S4FX
-	 5kEVZFz8tGgjw==
+	b=CQX4ijUvkMl/CYFB9Pg2IhrXEc57kxKfvrti/osl2DMGDWjM+MoFVtRccNZ346WHi
+	 EYUY0t4nybEDaiVnYbMOZaXdOVeEYUEz1tQK1LIs6P3dJcOliX5Trgpghbsf4ooxag
+	 3EghFDi2DLCZSQhCYGiWpcuB1hYOS9+f79cd0Pqe1P6VxiMiuyZ27PLppYNyN5+alk
+	 9AAE6jJ65YhXMOMFIa1JkxfiLTIOojIo4Zo1XxgMG4ti9xAezREvWxCb/nvw26MAnH
+	 8ZWH01JnuKIpY3hEfgnrw1L9C+Kd2PxaaUcV8p+YiIX5AjMwKk5ARu7vt+1stDB8cd
+	 T4baoQ8wjyZSA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Zhipeng Lu <alexious@zju.edu.cn>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 395/715] media: v4l2-tpg: fix some memleaks in tpg_alloc
-Date: Sun, 24 Mar 2024 18:29:34 -0400
-Message-ID: <20240324223455.1342824-396-sashal@kernel.org>
+Subject: [PATCH 6.8 396/715] media: v4l2-mem2mem: fix a memleak in v4l2_m2m_register_entity
+Date: Sun, 24 Mar 2024 18:29:35 -0400
+Message-ID: <20240324223455.1342824-397-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,108 +64,44 @@ Content-Transfer-Encoding: 8bit
 
 From: Zhipeng Lu <alexious@zju.edu.cn>
 
-[ Upstream commit 8cf9c5051076e0eb958f4361d50d8b0c3ee6691c ]
+[ Upstream commit 8f94b49a5b5d386c038e355bef6347298aabd211 ]
 
-In tpg_alloc, resources should be deallocated in each and every
-error-handling paths, since they are allocated in for statements.
-Otherwise there would be memleaks because tpg_free is called only when
-tpg_alloc return 0.
+The entity->name (i.e. name) is allocated in v4l2_m2m_register_entity
+but isn't freed in its following error-handling paths. This patch
+adds such deallocation to prevent memleak of entity->name.
 
-Fixes: 63881df94d3e ("[media] vivid: add the Test Pattern Generator")
+Fixes: be2fff656322 ("media: add helpers for memory-to-memory media controller")
 Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 52 +++++++++++++++----
- 1 file changed, 42 insertions(+), 10 deletions(-)
+ drivers/media/v4l2-core/v4l2-mem2mem.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-index a366566f22c3b..642c48e8c1f58 100644
---- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-+++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-@@ -113,6 +113,7 @@ int tpg_alloc(struct tpg_data *tpg, unsigned max_w)
- {
- 	unsigned pat;
- 	unsigned plane;
-+	int ret = 0;
+diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+index 9e983176542be..75517134a5e94 100644
+--- a/drivers/media/v4l2-core/v4l2-mem2mem.c
++++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+@@ -1087,11 +1087,17 @@ static int v4l2_m2m_register_entity(struct media_device *mdev,
+ 	entity->function = function;
  
- 	tpg->max_line_width = max_w;
- 	for (pat = 0; pat < TPG_MAX_PAT_LINES; pat++) {
-@@ -121,14 +122,18 @@ int tpg_alloc(struct tpg_data *tpg, unsigned max_w)
- 
- 			tpg->lines[pat][plane] =
- 				vzalloc(array3_size(max_w, 2, pixelsz));
--			if (!tpg->lines[pat][plane])
--				return -ENOMEM;
-+			if (!tpg->lines[pat][plane]) {
-+				ret = -ENOMEM;
-+				goto free_lines;
-+			}
- 			if (plane == 0)
- 				continue;
- 			tpg->downsampled_lines[pat][plane] =
- 				vzalloc(array3_size(max_w, 2, pixelsz));
--			if (!tpg->downsampled_lines[pat][plane])
--				return -ENOMEM;
-+			if (!tpg->downsampled_lines[pat][plane]) {
-+				ret = -ENOMEM;
-+				goto free_lines;
-+			}
- 		}
- 	}
- 	for (plane = 0; plane < TPG_MAX_PLANES; plane++) {
-@@ -136,18 +141,45 @@ int tpg_alloc(struct tpg_data *tpg, unsigned max_w)
- 
- 		tpg->contrast_line[plane] =
- 			vzalloc(array_size(pixelsz, max_w));
--		if (!tpg->contrast_line[plane])
--			return -ENOMEM;
-+		if (!tpg->contrast_line[plane]) {
-+			ret = -ENOMEM;
-+			goto free_contrast_line;
-+		}
- 		tpg->black_line[plane] =
- 			vzalloc(array_size(pixelsz, max_w));
--		if (!tpg->black_line[plane])
--			return -ENOMEM;
-+		if (!tpg->black_line[plane]) {
-+			ret = -ENOMEM;
-+			goto free_contrast_line;
-+		}
- 		tpg->random_line[plane] =
- 			vzalloc(array3_size(max_w, 2, pixelsz));
--		if (!tpg->random_line[plane])
--			return -ENOMEM;
-+		if (!tpg->random_line[plane]) {
-+			ret = -ENOMEM;
-+			goto free_contrast_line;
-+		}
- 	}
- 	return 0;
-+
-+free_contrast_line:
-+	for (plane = 0; plane < TPG_MAX_PLANES; plane++) {
-+		vfree(tpg->contrast_line[plane]);
-+		vfree(tpg->black_line[plane]);
-+		vfree(tpg->random_line[plane]);
-+		tpg->contrast_line[plane] = NULL;
-+		tpg->black_line[plane] = NULL;
-+		tpg->random_line[plane] = NULL;
+ 	ret = media_entity_pads_init(entity, num_pads, pads);
+-	if (ret)
++	if (ret) {
++		kfree(entity->name);
++		entity->name = NULL;
+ 		return ret;
 +	}
-+free_lines:
-+	for (pat = 0; pat < TPG_MAX_PAT_LINES; pat++)
-+		for (plane = 0; plane < TPG_MAX_PLANES; plane++) {
-+			vfree(tpg->lines[pat][plane]);
-+			tpg->lines[pat][plane] = NULL;
-+			if (plane == 0)
-+				continue;
-+			vfree(tpg->downsampled_lines[pat][plane]);
-+			tpg->downsampled_lines[pat][plane] = NULL;
-+		}
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(tpg_alloc);
+ 	ret = media_device_register_entity(mdev, entity);
+-	if (ret)
++	if (ret) {
++		kfree(entity->name);
++		entity->name = NULL;
+ 		return ret;
++	}
  
+ 	return 0;
+ }
 -- 
 2.43.0
 
