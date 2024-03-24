@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D85388854B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:03:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 391B988854D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:03:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9672CB2317E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:03:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6CDD284E45
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BBE1C5AB8;
-	Sun, 24 Mar 2024 22:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B0DA1C5ACB;
+	Sun, 24 Mar 2024 22:46:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hl0oYw0y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WoPsTdSG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF921C4B04;
-	Sun, 24 Mar 2024 22:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD721C5ABE;
+	Sun, 24 Mar 2024 22:46:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320361; cv=none; b=qETOlOtPc7qtNMNfIvvL7FbrL/jnLeCPt9EAS2UkNKSHezp886FD9nJZ6Nf4YWTCNUUSfbnKI7WwFFcBopn8xZO3VVDWYRInWPK/+DkCw1eWRdXm9kEfBhQIjiyPhpCp/IsBpFUdvHKtpwOYIj4TFRxbntHKOLueU/oV4Vee2Bg=
+	t=1711320362; cv=none; b=jBJnTor2HxagB9BVJ0wfr002LUtt0CRhJUCWnV8iiTjeopFo5PdQmUKMZwSvQqwFM+5H66Mtm7FsCSIJR6Gixh0WTwsmr878d8fOhEZKVf07WwAJ4351JJKjpDLpSUa3qdJAUyoWHcqNtUg/8rMVQFguD5O/TATcj6IJ8f9wPh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320361; c=relaxed/simple;
-	bh=QSd/rPvy0AGEzL/3UhUypo+X8oPGOL0/YBA1xIlL6MU=;
+	s=arc-20240116; t=1711320362; c=relaxed/simple;
+	bh=HF7/g01MyF5usS4jtmaXCrXMB/637THnKn0KAttJEFY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=slb45JASWoX6jI5U24I86Ifu3+cERKEJW+Tu8ZKxvFxOc6MpQHZlD+DlKVXNu9GWIrOA13tY2w+vfp0DykWMm7WiACVugIhTokFrOEqHSUVVxYsyC2bzfFTf2AX0R54xZa/S2DKY5j/a4tdFvN/sGqOh8rVyWnIjY+JrMlbSDbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hl0oYw0y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A97A7C43399;
-	Sun, 24 Mar 2024 22:46:00 +0000 (UTC)
+	 MIME-Version; b=PkXxWtolMRI+oICOyD5xR718TCX+QA+Lyh3RYBkSQ6gmXdhAZGgB6V+j7G3lDmEvFqRJP+TxzRYyb8+E04vPoUcBkgkcBFsC5/zpxAIVDfKnhQMWm2ZlV1UaUtfNX1MM8/LFnvSy8Eni/f3EFH7gJuIsca8MuioRfxsAHFP81X8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WoPsTdSG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2154C433A6;
+	Sun, 24 Mar 2024 22:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320361;
-	bh=QSd/rPvy0AGEzL/3UhUypo+X8oPGOL0/YBA1xIlL6MU=;
+	s=k20201202; t=1711320362;
+	bh=HF7/g01MyF5usS4jtmaXCrXMB/637THnKn0KAttJEFY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hl0oYw0yci4LODvOZjXXvGiRY9sxToGfxKiq5yeBHPbkqmpR11rgRMyNccap0djpV
-	 TdB5HnK/hDmyh8QRNtLnYv4O+hY86f+Yfgk4lkrhKrTRDJ5fBat6TuySQynNljVle8
-	 EQoVIcq9lmxb/gvjlHWEwH2Cac2Rw1fCo5FbbNaS48nrGNPiLnbEPT8DR26XnwErxO
-	 5p9rsdkvyU17L2ynayZTDFRbp7omS+wp7gDdrxbkcRoHZYCgvNdU9nof8F/8wXP3Sj
-	 hb1qN0T+0sKrPTUGNLl+K9wxLs64EpXpFniq+hqWajmXQnnCvzGMAH7S9zMhNYzLgM
-	 4jwT64EXFr6Lg==
+	b=WoPsTdSGDp34Q/xZG7Z9UL33va0i+/nDc1cO+YFpwaKXKa18BdOMIkbH+6JQqsprY
+	 IAmBK3m+9AVAGLlNL/4Wo/iAhRx0nVZq4AzBhSG44/diPUO57Q84LMuyrxZt/wN3wF
+	 SiU0NRAGaAPYunxlMrk6YgCBJlcZzT9GE8OKSq3kWFXuZwLv5G58Jaaeg7Nr1+bX8+
+	 48SeAjJHAKezet2Byoqhd7qIJ8e5Bpd+AwGNcBBSkHjMdPrUWOP/e7KVZlRJGv8BAU
+	 vjjmHf3u2D8OEEGO+hA5WH9DOQwgY8cebutlb47+vHYbin+N1x8uBup+PU0CSZtZWH
+	 NsIgXXIrxb73w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
+Cc: Juergen Gross <jgross@suse.com>,
+	Demi Marie Obenour <demi@invisiblethingslab.com>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 668/715] riscv: Fix compilation error with FAST_GUP and rv32
-Date: Sun, 24 Mar 2024 18:34:07 -0400
-Message-ID: <20240324223455.1342824-669-sashal@kernel.org>
+Subject: [PATCH 6.8 669/715] xen/evtchn: avoid WARN() when unbinding an event channel
+Date: Sun, 24 Mar 2024 18:34:08 -0400
+Message-ID: <20240324223455.1342824-670-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,40 +63,60 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
+From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 2bb7e0c49302feec1c2f777bbfe8726169986ed8 ]
+[ Upstream commit 51c23bd691c0f1fb95b29731c356c6fd69925d17 ]
 
-By surrounding the definition of pte_leaf_size() with a ifdef napot as
-it should have been.
+When unbinding a user event channel, the related handler might be
+called a last time in case the kernel was built with
+CONFIG_DEBUG_SHIRQ. This might cause a WARN() in the handler.
 
-Fixes: e0fe5ab4192c ("riscv: Fix pte_leaf_size() for NAPOT")
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Link: https://lore.kernel.org/r/20240304080247.387710-1-alexghiti@rivosinc.com
-Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Avoid that by adding an "unbinding" flag to struct user_event which
+will short circuit the handler.
+
+Fixes: 9e90e58c11b7 ("xen: evtchn: Allow shared registration of IRQ handers")
+Reported-by: Demi Marie Obenour <demi@invisiblethingslab.com>
+Tested-by: Demi Marie Obenour <demi@invisiblethingslab.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Link: https://lore.kernel.org/r/20240313071409.25913-2-jgross@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/include/asm/pgtable.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/xen/evtchn.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 6066822e7396f..3422ced8a07fd 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -439,9 +439,11 @@ static inline pte_t pte_mkhuge(pte_t pte)
- 	return pte;
- }
+diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+index 59717628ca42b..f6a2216c2c870 100644
+--- a/drivers/xen/evtchn.c
++++ b/drivers/xen/evtchn.c
+@@ -85,6 +85,7 @@ struct user_evtchn {
+ 	struct per_user_data *user;
+ 	evtchn_port_t port;
+ 	bool enabled;
++	bool unbinding;
+ };
  
-+#ifdef CONFIG_RISCV_ISA_SVNAPOT
- #define pte_leaf_size(pte)	(pte_napot(pte) ?				\
- 					napot_cont_size(napot_cont_order(pte)) :\
- 					PAGE_SIZE)
-+#endif
+ static void evtchn_free_ring(evtchn_port_t *ring)
+@@ -164,6 +165,10 @@ static irqreturn_t evtchn_interrupt(int irq, void *data)
+ 	struct per_user_data *u = evtchn->user;
+ 	unsigned int prod, cons;
  
- #ifdef CONFIG_NUMA_BALANCING
- /*
++	/* Handler might be called when tearing down the IRQ. */
++	if (evtchn->unbinding)
++		return IRQ_HANDLED;
++
+ 	WARN(!evtchn->enabled,
+ 	     "Interrupt for port %u, but apparently not enabled; per-user %p\n",
+ 	     evtchn->port, u);
+@@ -421,6 +426,7 @@ static void evtchn_unbind_from_user(struct per_user_data *u,
+ 
+ 	BUG_ON(irq < 0);
+ 
++	evtchn->unbinding = true;
+ 	unbind_from_irqhandler(irq, evtchn);
+ 
+ 	del_evtchn(u, evtchn);
 -- 
 2.43.0
 
