@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51B46888848
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:23:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4BEA88884C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:23:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 836941C27504
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:23:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B7D71F256C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C37F2365BA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8AD314F9C3;
 	Sun, 24 Mar 2024 23:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9tnF1r1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hNU2LyuH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32440130E2F;
-	Sun, 24 Mar 2024 23:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C131130E34;
+	Sun, 24 Mar 2024 23:02:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321378; cv=none; b=F6jVQiv78XVOCXZVdmzv1D3yqK5KOPAFFdsrGaFLrUqaGk+KKYJ/odvg++B6+H5L4dSneZBeXQPI0Wz+rIbD4a8GdttWkiyZbREEpxS/b7yeb+RiH8GqB7Ezbd4E88Pev7AtHa+8pqG79deeWush2lzPehxCVoAvTMn5CwoAuz8=
+	t=1711321379; cv=none; b=sb4k6yXYj65vw1u5OohHKZm95NNLCjQtr0qpBmbbEhhmBh8F/LtP2Cqmop2MGN70WFsswHKhwR9iL3qZ+9SpjtRa3xHe6hSHvtATOS0f7O2fsHbiL7HStpG2LVLEvwNSwBYRgAmGq/LgQ/GmDBz6ctCopR1UpCCmyCrVgvV2IU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321378; c=relaxed/simple;
-	bh=+mRypTj2AN+uFrmsMst73xXavbGCXAj069qIzrAjzZE=;
+	s=arc-20240116; t=1711321379; c=relaxed/simple;
+	bh=MQ8BlB4JG1jjZwfj5Rva8ULNhjxYa7cmFF0KVqjjOCo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PTcDxpVu5cL1/zPS4lkI/X60JVQWaSBBFIZgM8cHbS9jTWHxP4vEGTSDllM5mDkCbYiswIWpShc4fFK8y3ISZ/ys1jjVLudwpFy4uqfhdcGCJcqiOiIUDGAS+/qtjTxTcm2Dc1Vtq6clirSniENqltaJ65tvQgtQRpoMkANd0z0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9tnF1r1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B4DCC433F1;
-	Sun, 24 Mar 2024 23:02:56 +0000 (UTC)
+	 MIME-Version; b=dumeJvzpA8SYsiJrSVNi4Jou/JmqMnfDlsom062vM9hJQxir5+GmBO+xtM9RsEBFpiOGXJmhIOvWNmXP7F30KiRxMaITc17xG1iL2C9kKklPw3nuwFl3Ltry96tn7dPHPhifDIzkDDkvUjtoBTcPvKyTuFyXMk4l/1DkdP44hPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hNU2LyuH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59200C43399;
+	Sun, 24 Mar 2024 23:02:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321377;
-	bh=+mRypTj2AN+uFrmsMst73xXavbGCXAj069qIzrAjzZE=;
+	s=k20201202; t=1711321378;
+	bh=MQ8BlB4JG1jjZwfj5Rva8ULNhjxYa7cmFF0KVqjjOCo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=V9tnF1r1584Y1EcuAt4aL7iexq9/ad6hKhe/88OJhjKRpHFsdLEdteAIlBIk8h5xA
-	 09XJqwCkwpa3bPoBnk5ERj25eELiLAF6LOMJHnHbK0WQy+DTyr6cCaPpO2anx4DYig
-	 UT0qi2mgh4sUP7Ba747SqVhlERLaIn1JZn0rTI5KdKJOiKK2sJ/CVkeZgso6VUO9Az
-	 6GDGmle2hqbHChgpGw3nYvxBODFkv+bbb+vlOf5Bq7onLYnTyn0+5dEVYOE5eoG04G
-	 Ypar0QQQqAHRWvZxIDQ0AjkgmgIYUZfYkx+23NRR2qutwhBD2lNkVTyoxuRGNsh7/f
-	 x1pL3FA62wIpw==
+	b=hNU2LyuH4090KT/uXGtuxtjAqdB7OPqX8L4vkQFwgAsCHJIZd2U5d6YVvLGQ0AfjZ
+	 jEa5Vf9ujPzsNdFcr5jjwE83HH4LQBkAlbyfrJ0vRMFjVlJNvatyBzqk3ZJ8CRhTqz
+	 T1h79F5Da030LM10cluEXGTDX4OuA2naYLp6r7SuludILACxWBwft2l0b2HAhRr+hs
+	 uA9gs1vT0DYgTXRA5G+YtKvApP9cIo8v4rr9pDEpemLV1aETYv5DzertRHtfkzCWVq
+	 liGkdj/eyigVR5/PlNpdD4Q1Msz94NoSbfa+f/58IVEXDqtPY9PlVWmC8kdTz625GT
+	 j3XWNwmt7oMUA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+Cc: Chun-Yi Lee <jlee@suse.com>,
 	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 101/638] io_uring/net: fix overflow check in io_recvmsg_mshot_prep()
-Date: Sun, 24 Mar 2024 18:52:18 -0400
-Message-ID: <20240324230116.1348576-102-sashal@kernel.org>
+Subject: [PATCH 6.6 102/638] aoe: fix the potential use-after-free problem in aoecmd_cfg_pkts
+Date: Sun, 24 Mar 2024 18:52:19 -0400
+Message-ID: <20240324230116.1348576-103-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,52 +62,86 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+From: Chun-Yi Lee <jlee@suse.com>
 
-[ Upstream commit 8ede3db5061bb1fe28e2c9683329aafa89d2b1b4 ]
+[ Upstream commit f98364e926626c678fb4b9004b75cacf92ff0662 ]
 
-The "controllen" variable is type size_t (unsigned long).  Casting it
-to int could lead to an integer underflow.
+This patch is against CVE-2023-6270. The description of cve is:
 
-The check_add_overflow() function considers the type of the destination
-which is type int.  If we add two positive values and the result cannot
-fit in an integer then that's counted as an overflow.
+  A flaw was found in the ATA over Ethernet (AoE) driver in the Linux
+  kernel. The aoecmd_cfg_pkts() function improperly updates the refcnt on
+  `struct net_device`, and a use-after-free can be triggered by racing
+  between the free on the struct and the access through the `skbtxq`
+  global queue. This could lead to a denial of service condition or
+  potential code execution.
 
-However, if we cast "controllen" to an int and it turns negative, then
-negative values *can* fit into an int type so there is no overflow.
+In aoecmd_cfg_pkts(), it always calls dev_put(ifp) when skb initial
+code is finished. But the net_device ifp will still be used in
+later tx()->dev_queue_xmit() in kthread. Which means that the
+dev_put(ifp) should NOT be called in the success path of skb
+initial code in aoecmd_cfg_pkts(). Otherwise tx() may run into
+use-after-free because the net_device is freed.
 
-Good: 100 + (unsigned long)-4 = 96  <-- overflow
- Bad: 100 + (int)-4 = 96 <-- no overflow
+This patch removed the dev_put(ifp) in the success path in
+aoecmd_cfg_pkts(), and added dev_put() after skb xmit in tx().
 
-I deleted the cast of the sizeof() as well.  That's not a bug but the
-cast is unnecessary.
-
-Fixes: 9b0fc3c054ff ("io_uring: fix types in io_recvmsg_multishot_overflow")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Link: https://lore.kernel.org/r/138bd2e2-ede8-4bcc-aa7b-f3d9de167a37@moroto.mountain
+Link: https://nvd.nist.gov/vuln/detail/CVE-2023-6270
+Fixes: 7562f876cd93 ("[NET]: Rework dev_base via list_head (v3)")
+Signed-off-by: Chun-Yi Lee <jlee@suse.com>
+Link: https://lore.kernel.org/r/20240305082048.25526-1-jlee@suse.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- io_uring/net.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/block/aoe/aoecmd.c | 12 ++++++------
+ drivers/block/aoe/aoenet.c |  1 +
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/io_uring/net.c b/io_uring/net.c
-index 1d9bfde71809a..058e04ea68c04 100644
---- a/io_uring/net.c
-+++ b/io_uring/net.c
-@@ -544,10 +544,10 @@ static int io_recvmsg_mshot_prep(struct io_kiocb *req,
+diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
+index d7317425be510..cc9077b588d7e 100644
+--- a/drivers/block/aoe/aoecmd.c
++++ b/drivers/block/aoe/aoecmd.c
+@@ -419,13 +419,16 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
+ 	rcu_read_lock();
+ 	for_each_netdev_rcu(&init_net, ifp) {
+ 		dev_hold(ifp);
+-		if (!is_aoe_netif(ifp))
+-			goto cont;
++		if (!is_aoe_netif(ifp)) {
++			dev_put(ifp);
++			continue;
++		}
  
- 		if (unlikely(namelen < 0))
- 			return -EOVERFLOW;
--		if (check_add_overflow((int)sizeof(struct io_uring_recvmsg_out),
-+		if (check_add_overflow(sizeof(struct io_uring_recvmsg_out),
- 					namelen, &hdr))
- 			return -EOVERFLOW;
--		if (check_add_overflow(hdr, (int)controllen, &hdr))
-+		if (check_add_overflow(hdr, controllen, &hdr))
- 			return -EOVERFLOW;
- 
- 		iomsg->namelen = namelen;
+ 		skb = new_skb(sizeof *h + sizeof *ch);
+ 		if (skb == NULL) {
+ 			printk(KERN_INFO "aoe: skb alloc failure\n");
+-			goto cont;
++			dev_put(ifp);
++			continue;
+ 		}
+ 		skb_put(skb, sizeof *h + sizeof *ch);
+ 		skb->dev = ifp;
+@@ -440,9 +443,6 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
+ 		h->major = cpu_to_be16(aoemajor);
+ 		h->minor = aoeminor;
+ 		h->cmd = AOECMD_CFG;
+-
+-cont:
+-		dev_put(ifp);
+ 	}
+ 	rcu_read_unlock();
+ }
+diff --git a/drivers/block/aoe/aoenet.c b/drivers/block/aoe/aoenet.c
+index 63773a90581dd..1e66c7a188a12 100644
+--- a/drivers/block/aoe/aoenet.c
++++ b/drivers/block/aoe/aoenet.c
+@@ -64,6 +64,7 @@ tx(int id) __must_hold(&txlock)
+ 			pr_warn("aoe: packet could not be sent on %s.  %s\n",
+ 				ifp ? ifp->name : "netif",
+ 				"consider increasing tx_queue_len");
++		dev_put(ifp);
+ 		spin_lock_irq(&txlock);
+ 	}
+ 	return 0;
 -- 
 2.43.0
 
