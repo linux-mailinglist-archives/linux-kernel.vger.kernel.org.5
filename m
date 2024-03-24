@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535E0888D27
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:41:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE39888DFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:04:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E92628C5C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:41:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3046B2E090
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B8E2FC042;
-	Mon, 25 Mar 2024 01:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D8813E6A2;
+	Mon, 25 Mar 2024 01:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eTXTHELu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ydr9DINa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6725181835;
-	Sun, 24 Mar 2024 23:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E99181476;
+	Sun, 24 Mar 2024 23:48:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324096; cv=none; b=BF18wFdOtRidV0GYeVHqL91eg50pAQs0vcNto56mG6zFSRmrR3ksuuSJYFifYPHXhYrK1MMnFugRBPWjmbFUa/tzjWrUzPCFO8gBl5nwg7+eUDt8+8aNYN60fXLZR2vHc5/Bwidy0EnYM4S4wzF8PDITlPpYiTUp+Bie0SiQdDU=
+	t=1711324098; cv=none; b=iFInKKRFA3WsU+ygVAf+9UTeI8aLLIH46aicaoAjyI6aKbSBP4V8kHGFl2UckGR1AN313+jHeec55/Bq2G0bCf0fIMmCn6KUICNoBq2WgiAK1JBucSRAJ0HpZMh3i9nYJei2dhF3sYwxLn+YzRtCou0PrQiZJydlRJ9frKAkN6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324096; c=relaxed/simple;
-	bh=ZVMI9u3hWeyYxvmD5YmP6NstIdy1DXLiyWbxUzkS5nw=;
+	s=arc-20240116; t=1711324098; c=relaxed/simple;
+	bh=sJQ8UZ4SBoO1+vqNVm8qn6td0Err00uTMoDvqacQoPQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tKOdSMjqKX4m2Lk+vLGNPGuzv0E6bVjD0LX1HLdT9dF59NudF0kCND2xvYIRTgaRpHe0RPIm6v0JlkjZPcMpUKjSJPnHTH5mqwO8VkjsjYTc0n+NiIYMvyBIG1XsggpeqCK9ppGbqW5vfxtcXjMglCzYU4rBWhPeify/8i34DbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eTXTHELu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0A2CC433F1;
-	Sun, 24 Mar 2024 23:48:14 +0000 (UTC)
+	 MIME-Version:Content-Type; b=qcjSyf0BRl0ADdAihSQ0wOi9MYmcBp/QijeI0iniCOst80XTFbubHJcnDLdIvy2Z55rnD4kENQgh7AGWvSOkRhSOVj6DdeJYGmWgewtIkwrayjWQhfsBn+q/0AzJvGvCne4IWrgQPHnz56DbLlHXMfkjbiGzRVptXhWLqI7O8JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ydr9DINa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9A80C433C7;
+	Sun, 24 Mar 2024 23:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324095;
-	bh=ZVMI9u3hWeyYxvmD5YmP6NstIdy1DXLiyWbxUzkS5nw=;
+	s=k20201202; t=1711324097;
+	bh=sJQ8UZ4SBoO1+vqNVm8qn6td0Err00uTMoDvqacQoPQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eTXTHELuAwQ1rfQGfTDMH7VlTC6tJSKt2tljjrXFF7qF+bCABDMWu31KxmsfOSvDB
-	 wFEyOtG//diRUWHZJpE9hbBNL+pPVSrQUnhhSGIUv/pbr9Y5392EQXh+lVdxVgks3I
-	 MG1Benvg9po2KqmApUOKbsiF1tkrE7IsEdhj4agUoWr3YCe4XYPVz5Vf1RbUoU7q5j
-	 uJbwjdFO2n4HU0pxmssLRkoI0QJySQ3J9uaMNcTKsxpePBwazhCBzKf8m5oap9VptZ
-	 PP/e4dEkduvJkDq9LqNhV+ZcRleMhimED6stXlVTPQ3qnnEQ+ThsVRWOr87mKDwIVo
-	 surAVcDTwE8eA==
+	b=Ydr9DINanPRQpHpb5N1DNptWHKYj8/5lep5kqpf6JI7MgzUFVm19J+XguDcw5FH/3
+	 Vt2HYacXMdBsl0BegJzxhZWxiNWgGc/DLS1dXa2MlmECKPEmWoBTGxTy+RhhDrG7p3
+	 FfTNpWbZjberV+0nce1QBKe1Ul7DUaefsc3hvf3Umv0ZmxqDeZaHNe8NlvKqdTZ8Zx
+	 1bvbSFGr2R5zxZnKhicvbDkUBBqh8Csaeft6Pw1U2nxYCix66cPW4pi6KOjQ1hHM+6
+	 mcXsi7rahGV7gNk5k984r6gd3DpTNxHFSDI762ce5IyFKqRw5CVt3s05pAAjLFLQyc
+	 Ia8CYHXxV7KuQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Robert Foss <rfoss@kernel.org>,
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/183] media: tc358743: register v4l2 async device only after successful setup
-Date: Sun, 24 Mar 2024 19:45:08 -0400
-Message-ID: <20240324234638.1355609-96-sashal@kernel.org>
+Subject: [PATCH 5.4 096/183] PCI/DPC: Print all TLP Prefixes, not just the first
+Date: Sun, 24 Mar 2024 19:45:09 -0400
+Message-ID: <20240324234638.1355609-97-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -58,52 +58,45 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
+From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit 87399f1ff92203d65f1febf5919429f4bb613a02 ]
+[ Upstream commit 6568d82512b0a64809acff3d7a747362fa4288c8 ]
 
-Ensure the device has been setup correctly before registering the v4l2
-async device, thus allowing userspace to access.
+The TLP Prefix Log Register consists of multiple DWORDs (PCIe r6.1 sec
+7.9.14.13) but the loop in dpc_process_rp_pio_error() keeps reading from
+the first DWORD, so we print only the first PIO TLP Prefix (duplicated
+several times), and we never print the second, third, etc., Prefixes.
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Robert Foss <rfoss@kernel.org>
-Fixes: 4c5211a10039 ("[media] tc358743: register v4l2 asynchronous subdevice")
-Signed-off-by: Robert Foss <rfoss@kernel.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240110090111.458115-1-alexander.stein@ew.tq-group.com
+Add the iteration count based offset calculation into the config read.
+
+Fixes: f20c4ea49ec4 ("PCI/DPC: Add eDPC support")
+Link: https://lore.kernel.org/r/20240118110815.3867-1-ilpo.jarvinen@linux.intel.com
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+[bhelgaas: add user-visible details to commit log]
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tc358743.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/pci/pcie/dpc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
-index 76c443067ec2d..ef1460c61bea0 100644
---- a/drivers/media/i2c/tc358743.c
-+++ b/drivers/media/i2c/tc358743.c
-@@ -2107,9 +2107,6 @@ static int tc358743_probe(struct i2c_client *client)
- 	state->mbus_fmt_code = MEDIA_BUS_FMT_RGB888_1X24;
+diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+index a32ec3487a8d0..d5734a83606fb 100644
+--- a/drivers/pci/pcie/dpc.c
++++ b/drivers/pci/pcie/dpc.c
+@@ -195,7 +195,7 @@ static void dpc_process_rp_pio_error(struct dpc_dev *dpc)
  
- 	sd->dev = &client->dev;
--	err = v4l2_async_register_subdev(sd);
--	if (err < 0)
--		goto err_hdl;
- 
- 	mutex_init(&state->confctl_mutex);
- 
-@@ -2167,6 +2164,10 @@ static int tc358743_probe(struct i2c_client *client)
- 	if (err)
- 		goto err_work_queues;
- 
-+	err = v4l2_async_register_subdev(sd);
-+	if (err < 0)
-+		goto err_work_queues;
-+
- 	v4l2_info(sd, "%s found @ 0x%x (%s)\n", client->name,
- 		  client->addr << 1, client->adapter->name);
- 
+ 	for (i = 0; i < dpc->rp_log_size - 5; i++) {
+ 		pci_read_config_dword(pdev,
+-			cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG, &prefix);
++			cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG + i * 4, &prefix);
+ 		pci_err(pdev, "TLP Prefix Header: dw%d, %#010x\n", i, prefix);
+ 	}
+  clear_status:
 -- 
 2.43.0
 
