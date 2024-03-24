@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-113199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC66888823E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:42:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C90888241
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:42:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 396CA1F2166C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:42:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94F231C22652
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:42:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D3017BB0F;
-	Sun, 24 Mar 2024 22:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C427717BB3D;
+	Sun, 24 Mar 2024 22:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sAGV/Izz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EwdCznYc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5823C17AFBA;
-	Sun, 24 Mar 2024 22:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A833617BB14;
+	Sun, 24 Mar 2024 22:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320002; cv=none; b=ulo6pskEJ1yVDNxnXODXLwoeYfQEr0hTrL/sCTGvszcaCuwed+2gfgGPqa5D3IsvSaVmJYYEZvCJUKvgTyOSXq62jdsNkWLxJV4VAVf4DaSzz3vbfKHhpA44UbzdmU1UzcC1joDTjh6N9Z5Exxj8gGMkonOuJRaK8pipuwdXDO8=
+	t=1711320003; cv=none; b=pAca8v3Tzac1ScF1c/m7N9hiKXYKNtwjgbDY0OzMzefw08fhjM7i6cl8HZlNHI8ECn+SUYalqNFhQXibqxYiQcu8Di2VQYEjdRoETclhPL1WvUnvHIk+Z1NcErUCtOVvn6qNwI3w9KEiCZCqYJ7am6cD1ZJru+dPCdDPNvyNJOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320002; c=relaxed/simple;
-	bh=VGpJg9nUtL5QVkUKtg/CMgG2y38usEe4a4r4Fwz44gE=;
+	s=arc-20240116; t=1711320003; c=relaxed/simple;
+	bh=o1PrxWBeDcVkLBc9bFA7XtFajJXADeAu5yZGrI0gE4E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CgDzvQnJtsXursLuJ6sd97wyAtwApTVi4cv836Ubzbc7020vmP3dGNHqodQjOvPMYkANgfDOGyZcPjYdwQ8yWnky92Q952OqZsRElDMEYs/+GAPs3VfazzuAg7FEj2TKEgeQ9ku5gVFjd3OLxEvpHzoDQO3xNF2zezojZLb0GZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sAGV/Izz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5F5BC433F1;
-	Sun, 24 Mar 2024 22:40:01 +0000 (UTC)
+	 MIME-Version; b=pUTwhTI+3uJN8BUluBvxc1f5s/xqIv1UyzOeyrVqZbZN7HhGth+0PZsAvtBpLSco502BBkL4awJdTjFK1YX2KyIJMxwtZ9V8ahnc0qwxx9L0yFUYfgJ381esTpmMfKzAZDGeCtYkFqpXF4dKLt/2CrOsCm6jJGckNIDo5yA30Jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EwdCznYc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75B0AC433A6;
+	Sun, 24 Mar 2024 22:40:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320002;
-	bh=VGpJg9nUtL5QVkUKtg/CMgG2y38usEe4a4r4Fwz44gE=;
+	s=k20201202; t=1711320003;
+	bh=o1PrxWBeDcVkLBc9bFA7XtFajJXADeAu5yZGrI0gE4E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sAGV/Izz+/YVyNhgwzoOCY0mLTfIpUVfGmRLv9Mh5fnSUkpwARByH+Z+lUotN2kp7
-	 nkuD1ndPVJOE9xDqDWjbRx0pTZQXp9q67hSUAM6LeVuVb0t0WoXhFFJacuiMGN9SZk
-	 JYVU+wMupgPAnfUj/8y9za1OKBX3ei0F8+bIreoO8/HdJbUrjN6qY7tKZe0ksPWtvJ
-	 nppFRWqBNZ/MfVLe/HXKwfQ9YG2/ha+AkAI/zz36eIqF7hqj2Lm1FsOyA9lP/78aty
-	 d4+BYZykexwXhyM0+3C/qQ5bDNeLshBA1kORUTOT/NOEbE73xwk8ShQOKgdijOM/YO
-	 Ut7Ho5Jz6Bu4Q==
+	b=EwdCznYc4kMxdPnHhEJOsrj3cT/7e7q9bMQSvOBuuUX08tCgmEhAvSMwRWmdjCozv
+	 jNrdLKWnM7ZLpgyY6bmQBwKC6s4D6hqF0kpQpCfRl7KOqhoNzflv9ZEElEiEjSg8lJ
+	 dHmTzPX51B66wZHvTLqHnR09a5quDt74jYEqGwBdmTOLLtjJBL0JbBDmwy0kFkWC8T
+	 /a7PB0yUAPSXWFDRRQxK71JoJXI5RMOtWfJSduwZlM6z+sqazOYMQErFAON/kee11u
+	 fhIbwLv0vkpiRJrsiUkUSocO9EHpBGjJXKmlsH2nkOFqhmkfm/0ABwBBzvXFKIQ49R
+	 QnaG6ZX70VhRg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 308/715] Bluetooth: hci_core: Cancel request on command timeout
-Date: Sun, 24 Mar 2024 18:28:07 -0400
-Message-ID: <20240324223455.1342824-309-sashal@kernel.org>
+Subject: [PATCH 6.8 309/715] Bluetooth: hci_sync: Fix overwriting request callback
+Date: Sun, 24 Mar 2024 18:28:08 -0400
+Message-ID: <20240324223455.1342824-310-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,241 +63,253 @@ Content-Transfer-Encoding: 8bit
 
 From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-[ Upstream commit 63298d6e752fc0ec7f5093860af8bc9f047b30c8 ]
+[ Upstream commit 2615fd9a7c2507eb3be3fbe49dcec88a2f56454a ]
 
-If command has timed out call __hci_cmd_sync_cancel to notify the
-hci_req since it will inevitably cause a timeout.
+In a few cases the stack may generate commands as responses to events
+which would happen to overwrite the sent_cmd, so this attempts to store
+the request in req_skb so even if sent_cmd is replaced with a new
+command the pending request will remain in stored in req_skb.
 
-This also rework the code around __hci_cmd_sync_cancel since it was
-wrongly assuming it needs to cancel timer as well, but sometimes the
-timers have not been started or in fact they already had timed out in
-which case they don't need to be cancel yet again.
-
+Fixes: 6a98e3836fa2 ("Bluetooth: Add helper for serialized HCI command execution")
 Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Stable-dep-of: 2615fd9a7c25 ("Bluetooth: hci_sync: Fix overwriting request callback")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/bluetooth/hci_sync.h |  2 +-
- net/bluetooth/hci_core.c         | 84 ++++++++++++++++++++++----------
- net/bluetooth/hci_request.c      |  2 +-
- net/bluetooth/hci_sync.c         | 20 ++++----
- net/bluetooth/mgmt.c             |  2 +-
- 5 files changed, 71 insertions(+), 39 deletions(-)
+ include/net/bluetooth/hci_core.h |  1 +
+ net/bluetooth/hci_conn.c         |  2 +-
+ net/bluetooth/hci_core.c         | 46 ++++++++++++++++++++++----------
+ net/bluetooth/hci_event.c        | 18 ++++++-------
+ net/bluetooth/hci_sync.c         | 21 ++++++++++++---
+ 5 files changed, 61 insertions(+), 27 deletions(-)
 
-diff --git a/include/net/bluetooth/hci_sync.h b/include/net/bluetooth/hci_sync.h
-index 6efbc2152146b..e2582c2425449 100644
---- a/include/net/bluetooth/hci_sync.h
-+++ b/include/net/bluetooth/hci_sync.h
-@@ -42,7 +42,7 @@ int __hci_cmd_sync_status_sk(struct hci_dev *hdev, u16 opcode, u32 plen,
- void hci_cmd_sync_init(struct hci_dev *hdev);
- void hci_cmd_sync_clear(struct hci_dev *hdev);
- void hci_cmd_sync_cancel(struct hci_dev *hdev, int err);
--void __hci_cmd_sync_cancel(struct hci_dev *hdev, int err);
-+void hci_cmd_sync_cancel_sync(struct hci_dev *hdev, int err);
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index 8f8dd91737142..d1228857b1d0f 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -552,6 +552,7 @@ struct hci_dev {
+ 	__u32			req_status;
+ 	__u32			req_result;
+ 	struct sk_buff		*req_skb;
++	struct sk_buff		*req_rsp;
  
- int hci_cmd_sync_submit(struct hci_dev *hdev, hci_cmd_sync_work_func_t func,
- 			void *data, hci_cmd_sync_work_destroy_t destroy);
+ 	void			*smp_data;
+ 	void			*smp_bredr_data;
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index fc4d72f83ac25..ba330114d38f7 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -3010,7 +3010,7 @@ int hci_abort_conn(struct hci_conn *conn, u8 reason)
+ 		case HCI_EV_LE_CONN_COMPLETE:
+ 		case HCI_EV_LE_ENHANCED_CONN_COMPLETE:
+ 		case HCI_EVT_LE_CIS_ESTABLISHED:
+-			hci_cmd_sync_cancel(hdev, -ECANCELED);
++			hci_cmd_sync_cancel(hdev, ECANCELED);
+ 			break;
+ 		}
+ 	}
 diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 2821a42cefdc6..539305b9a0e27 100644
+index 539305b9a0e27..96707deef296b 100644
 --- a/net/bluetooth/hci_core.c
 +++ b/net/bluetooth/hci_core.c
-@@ -1492,10 +1492,11 @@ static void hci_cmd_timeout(struct work_struct *work)
+@@ -1491,8 +1491,8 @@ static void hci_cmd_timeout(struct work_struct *work)
+ 	struct hci_dev *hdev = container_of(work, struct hci_dev,
  					    cmd_timer.work);
  
- 	if (hdev->sent_cmd) {
--		struct hci_command_hdr *sent = (void *) hdev->sent_cmd->data;
--		u16 opcode = __le16_to_cpu(sent->opcode);
-+		u16 opcode = hci_skb_opcode(hdev->sent_cmd);
+-	if (hdev->sent_cmd) {
+-		u16 opcode = hci_skb_opcode(hdev->sent_cmd);
++	if (hdev->req_skb) {
++		u16 opcode = hci_skb_opcode(hdev->req_skb);
  
  		bt_dev_err(hdev, "command 0x%4.4x tx timeout", opcode);
-+
-+		hci_cmd_sync_cancel_sync(hdev, ETIMEDOUT);
- 	} else {
- 		bt_dev_err(hdev, "command tx timeout");
- 	}
-@@ -2826,6 +2827,23 @@ int hci_unregister_suspend_notifier(struct hci_dev *hdev)
- 	return ret;
- }
  
-+/* Cancel ongoing command synchronously:
-+ *
-+ * - Cancel command timer
-+ * - Reset command counter
-+ * - Cancel command request
-+ */
-+static void hci_cancel_cmd_sync(struct hci_dev *hdev, int err)
-+{
-+	bt_dev_dbg(hdev, "err 0x%2.2x", err);
-+
-+	cancel_delayed_work_sync(&hdev->cmd_timer);
-+	cancel_delayed_work_sync(&hdev->ncmd_timer);
-+	atomic_set(&hdev->cmd_cnt, 1);
-+
-+	hci_cmd_sync_cancel_sync(hdev, -err);
+@@ -2796,6 +2796,7 @@ void hci_release_dev(struct hci_dev *hdev)
+ 	ida_destroy(&hdev->unset_handle_ida);
+ 	ida_simple_remove(&hci_index_ida, hdev->id);
+ 	kfree_skb(hdev->sent_cmd);
++	kfree_skb(hdev->req_skb);
+ 	kfree_skb(hdev->recv_event);
+ 	kfree(hdev);
+ }
+@@ -3125,21 +3126,33 @@ int __hci_cmd_send(struct hci_dev *hdev, u16 opcode, u32 plen,
+ EXPORT_SYMBOL(__hci_cmd_send);
+ 
+ /* Get data from the previously sent command */
+-void *hci_sent_cmd_data(struct hci_dev *hdev, __u16 opcode)
++static void *hci_cmd_data(struct sk_buff *skb, __u16 opcode)
+ {
+ 	struct hci_command_hdr *hdr;
+ 
+-	if (!hdev->sent_cmd)
++	if (!skb || skb->len < HCI_COMMAND_HDR_SIZE)
+ 		return NULL;
+ 
+-	hdr = (void *) hdev->sent_cmd->data;
++	hdr = (void *)skb->data;
+ 
+ 	if (hdr->opcode != cpu_to_le16(opcode))
+ 		return NULL;
+ 
+-	BT_DBG("%s opcode 0x%4.4x", hdev->name, opcode);
++	return skb->data + HCI_COMMAND_HDR_SIZE;
 +}
-+
- /* Suspend HCI device */
- int hci_suspend_dev(struct hci_dev *hdev)
- {
-@@ -2843,7 +2861,7 @@ int hci_suspend_dev(struct hci_dev *hdev)
- 		return 0;
  
- 	/* Cancel potentially blocking sync operation before suspend */
--	__hci_cmd_sync_cancel(hdev, -EHOSTDOWN);
-+	hci_cancel_cmd_sync(hdev, -EHOSTDOWN);
- 
- 	hci_req_sync_lock(hdev);
- 	ret = hci_suspend_sync(hdev);
-@@ -4128,6 +4146,33 @@ static void hci_rx_work(struct work_struct *work)
- 	}
- }
- 
-+static void hci_send_cmd_sync(struct hci_dev *hdev, struct sk_buff *skb)
+-	return hdev->sent_cmd->data + HCI_COMMAND_HDR_SIZE;
++/* Get data from the previously sent command */
++void *hci_sent_cmd_data(struct hci_dev *hdev, __u16 opcode)
 +{
-+	int err;
++	void *data;
 +
-+	bt_dev_dbg(hdev, "skb %p", skb);
++	/* Check if opcode matches last sent command */
++	data = hci_cmd_data(hdev->sent_cmd, opcode);
++	if (!data)
++		/* Check if opcode matches last request */
++		data = hci_cmd_data(hdev->req_skb, opcode);
 +
-+	kfree_skb(hdev->sent_cmd);
-+
-+	hdev->sent_cmd = skb_clone(skb, GFP_KERNEL);
-+	if (!hdev->sent_cmd) {
-+		skb_queue_head(&hdev->cmd_q, skb);
-+		queue_work(hdev->workqueue, &hdev->cmd_work);
-+		return;
-+	}
-+
-+	err = hci_send_frame(hdev, skb);
-+	if (err < 0) {
-+		hci_cmd_sync_cancel_sync(hdev, err);
-+		return;
-+	}
-+
-+	if (hci_req_status_pend(hdev))
-+		hci_dev_set_flag(hdev, HCI_CMD_PENDING);
-+
-+	atomic_dec(&hdev->cmd_cnt);
-+}
-+
- static void hci_cmd_work(struct work_struct *work)
- {
- 	struct hci_dev *hdev = container_of(work, struct hci_dev, cmd_work);
-@@ -4142,30 +4187,15 @@ static void hci_cmd_work(struct work_struct *work)
- 		if (!skb)
- 			return;
++	return data;
+ }
  
--		kfree_skb(hdev->sent_cmd);
--
--		hdev->sent_cmd = skb_clone(skb, GFP_KERNEL);
--		if (hdev->sent_cmd) {
--			int res;
--			if (hci_req_status_pend(hdev))
--				hci_dev_set_flag(hdev, HCI_CMD_PENDING);
--			atomic_dec(&hdev->cmd_cnt);
-+		hci_send_cmd_sync(hdev, skb);
+ /* Get data from last received event */
+@@ -4040,17 +4053,19 @@ void hci_req_cmd_complete(struct hci_dev *hdev, u16 opcode, u8 status,
+ 	if (!status && !hci_req_is_complete(hdev))
+ 		return;
  
--			res = hci_send_frame(hdev, skb);
--			if (res < 0)
--				__hci_cmd_sync_cancel(hdev, -res);
--
--			rcu_read_lock();
--			if (test_bit(HCI_RESET, &hdev->flags) ||
--			    hci_dev_test_flag(hdev, HCI_CMD_DRAIN_WORKQUEUE))
--				cancel_delayed_work(&hdev->cmd_timer);
--			else
--				queue_delayed_work(hdev->workqueue, &hdev->cmd_timer,
--						   HCI_CMD_TIMEOUT);
--			rcu_read_unlock();
--		} else {
--			skb_queue_head(&hdev->cmd_q, skb);
--			queue_work(hdev->workqueue, &hdev->cmd_work);
--		}
-+		rcu_read_lock();
-+		if (test_bit(HCI_RESET, &hdev->flags) ||
-+		    hci_dev_test_flag(hdev, HCI_CMD_DRAIN_WORKQUEUE))
-+			cancel_delayed_work(&hdev->cmd_timer);
-+		else
-+			queue_delayed_work(hdev->workqueue, &hdev->cmd_timer,
-+					   HCI_CMD_TIMEOUT);
-+		rcu_read_unlock();
++	skb = hdev->req_skb;
++
+ 	/* If this was the last command in a request the complete
+-	 * callback would be found in hdev->sent_cmd instead of the
++	 * callback would be found in hdev->req_skb instead of the
+ 	 * command queue (hdev->cmd_q).
+ 	 */
+-	if (bt_cb(hdev->sent_cmd)->hci.req_flags & HCI_REQ_SKB) {
+-		*req_complete_skb = bt_cb(hdev->sent_cmd)->hci.req_complete_skb;
++	if (skb && bt_cb(skb)->hci.req_flags & HCI_REQ_SKB) {
++		*req_complete_skb = bt_cb(skb)->hci.req_complete_skb;
+ 		return;
  	}
- }
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 6e023b0104b03..00e02138003ec 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -895,7 +895,7 @@ void hci_request_setup(struct hci_dev *hdev)
  
- void hci_request_cancel_all(struct hci_dev *hdev)
- {
--	__hci_cmd_sync_cancel(hdev, ENODEV);
-+	hci_cmd_sync_cancel_sync(hdev, ENODEV);
+-	if (bt_cb(hdev->sent_cmd)->hci.req_complete) {
+-		*req_complete = bt_cb(hdev->sent_cmd)->hci.req_complete;
++	if (skb && bt_cb(skb)->hci.req_complete) {
++		*req_complete = bt_cb(skb)->hci.req_complete;
+ 		return;
+ 	}
  
- 	cancel_interleave_scan(hdev);
+@@ -4167,8 +4182,11 @@ static void hci_send_cmd_sync(struct hci_dev *hdev, struct sk_buff *skb)
+ 		return;
+ 	}
+ 
+-	if (hci_req_status_pend(hdev))
+-		hci_dev_set_flag(hdev, HCI_CMD_PENDING);
++	if (hci_req_status_pend(hdev) &&
++	    !hci_dev_test_and_set_flag(hdev, HCI_CMD_PENDING)) {
++		kfree_skb(hdev->req_skb);
++		hdev->req_skb = skb_clone(skb, GFP_KERNEL);
++	}
+ 
+ 	atomic_dec(&hdev->cmd_cnt);
  }
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 9ee66b393981b..6275b14b56927 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -4381,7 +4381,7 @@ static void hci_cmd_status_evt(struct hci_dev *hdev, void *data,
+ 	 * (since for this kind of commands there will not be a command
+ 	 * complete event).
+ 	 */
+-	if (ev->status || (hdev->sent_cmd && !hci_skb_event(hdev->sent_cmd))) {
++	if (ev->status || (hdev->req_skb && !hci_skb_event(hdev->req_skb))) {
+ 		hci_req_cmd_complete(hdev, *opcode, ev->status, req_complete,
+ 				     req_complete_skb);
+ 		if (hci_dev_test_flag(hdev, HCI_CMD_PENDING)) {
+@@ -7327,10 +7327,10 @@ static void hci_le_meta_evt(struct hci_dev *hdev, void *data,
+ 	bt_dev_dbg(hdev, "subevent 0x%2.2x", ev->subevent);
+ 
+ 	/* Only match event if command OGF is for LE */
+-	if (hdev->sent_cmd &&
+-	    hci_opcode_ogf(hci_skb_opcode(hdev->sent_cmd)) == 0x08 &&
+-	    hci_skb_event(hdev->sent_cmd) == ev->subevent) {
+-		*opcode = hci_skb_opcode(hdev->sent_cmd);
++	if (hdev->req_skb &&
++	    hci_opcode_ogf(hci_skb_opcode(hdev->req_skb)) == 0x08 &&
++	    hci_skb_event(hdev->req_skb) == ev->subevent) {
++		*opcode = hci_skb_opcode(hdev->req_skb);
+ 		hci_req_cmd_complete(hdev, *opcode, 0x00, req_complete,
+ 				     req_complete_skb);
+ 	}
+@@ -7717,10 +7717,10 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
+ 	}
+ 
+ 	/* Only match event if command OGF is not for LE */
+-	if (hdev->sent_cmd &&
+-	    hci_opcode_ogf(hci_skb_opcode(hdev->sent_cmd)) != 0x08 &&
+-	    hci_skb_event(hdev->sent_cmd) == event) {
+-		hci_req_cmd_complete(hdev, hci_skb_opcode(hdev->sent_cmd),
++	if (hdev->req_skb &&
++	    hci_opcode_ogf(hci_skb_opcode(hdev->req_skb)) != 0x08 &&
++	    hci_skb_event(hdev->req_skb) == event) {
++		hci_req_cmd_complete(hdev, hci_skb_opcode(hdev->req_skb),
+ 				     status, &req_complete, &req_complete_skb);
+ 		req_evt = event;
+ 	}
 diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-index 5716345a26dfb..5236fe72a8553 100644
+index 5236fe72a8553..684a6ac02b80d 100644
 --- a/net/bluetooth/hci_sync.c
 +++ b/net/bluetooth/hci_sync.c
-@@ -584,7 +584,7 @@ void hci_cmd_sync_clear(struct hci_dev *hdev)
- 	mutex_unlock(&hdev->cmd_sync_work_lock);
- }
+@@ -32,6 +32,10 @@ static void hci_cmd_sync_complete(struct hci_dev *hdev, u8 result, u16 opcode,
+ 	hdev->req_result = result;
+ 	hdev->req_status = HCI_REQ_DONE;
  
--void __hci_cmd_sync_cancel(struct hci_dev *hdev, int err)
-+void hci_cmd_sync_cancel(struct hci_dev *hdev, int err)
- {
- 	bt_dev_dbg(hdev, "err 0x%2.2x", err);
++	/* Free the request command so it is not used as response */
++	kfree_skb(hdev->req_skb);
++	hdev->req_skb = NULL;
++
+ 	if (skb) {
+ 		struct sock *sk = hci_skb_sk(skb);
  
-@@ -592,15 +592,17 @@ void __hci_cmd_sync_cancel(struct hci_dev *hdev, int err)
- 		hdev->req_result = err;
- 		hdev->req_status = HCI_REQ_CANCELED;
+@@ -39,7 +43,7 @@ static void hci_cmd_sync_complete(struct hci_dev *hdev, u8 result, u16 opcode,
+ 		if (sk)
+ 			sock_put(sk);
  
--		cancel_delayed_work_sync(&hdev->cmd_timer);
--		cancel_delayed_work_sync(&hdev->ncmd_timer);
--		atomic_set(&hdev->cmd_cnt, 1);
--
--		wake_up_interruptible(&hdev->req_wait_q);
-+		queue_work(hdev->workqueue, &hdev->cmd_sync_cancel_work);
+-		hdev->req_skb = skb_get(skb);
++		hdev->req_rsp = skb_get(skb);
  	}
- }
-+EXPORT_SYMBOL(hci_cmd_sync_cancel);
  
--void hci_cmd_sync_cancel(struct hci_dev *hdev, int err)
-+/* Cancel ongoing command request synchronously:
-+ *
-+ * - Set result and mark status to HCI_REQ_CANCELED
-+ * - Wakeup command sync thread
-+ */
-+void hci_cmd_sync_cancel_sync(struct hci_dev *hdev, int err)
- {
- 	bt_dev_dbg(hdev, "err 0x%2.2x", err);
+ 	wake_up_interruptible(&hdev->req_wait_q);
+@@ -187,8 +191,8 @@ struct sk_buff *__hci_cmd_sync_sk(struct hci_dev *hdev, u16 opcode, u32 plen,
  
-@@ -608,10 +610,10 @@ void hci_cmd_sync_cancel(struct hci_dev *hdev, int err)
- 		hdev->req_result = err;
- 		hdev->req_status = HCI_REQ_CANCELED;
+ 	hdev->req_status = 0;
+ 	hdev->req_result = 0;
+-	skb = hdev->req_skb;
+-	hdev->req_skb = NULL;
++	skb = hdev->req_rsp;
++	hdev->req_rsp = NULL;
  
--		queue_work(hdev->workqueue, &hdev->cmd_sync_cancel_work);
-+		wake_up_interruptible(&hdev->req_wait_q);
+ 	bt_dev_dbg(hdev, "end: err %d", err);
+ 
+@@ -4836,6 +4840,11 @@ int hci_dev_open_sync(struct hci_dev *hdev)
+ 			hdev->sent_cmd = NULL;
+ 		}
+ 
++		if (hdev->req_skb) {
++			kfree_skb(hdev->req_skb);
++			hdev->req_skb = NULL;
++		}
++
+ 		clear_bit(HCI_RUNNING, &hdev->flags);
+ 		hci_sock_dev_event(hdev, HCI_DEV_CLOSE);
+ 
+@@ -4996,6 +5005,12 @@ int hci_dev_close_sync(struct hci_dev *hdev)
+ 		hdev->sent_cmd = NULL;
  	}
- }
--EXPORT_SYMBOL(hci_cmd_sync_cancel);
-+EXPORT_SYMBOL(hci_cmd_sync_cancel_sync);
  
- /* Submit HCI command to be run in as cmd_sync_work:
-  *
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index 7490092ccb2de..cc8efdc4ad431 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -1404,7 +1404,7 @@ static int set_powered(struct sock *sk, struct hci_dev *hdev, void *data,
++	/* Drop last request */
++	if (hdev->req_skb) {
++		kfree_skb(hdev->req_skb);
++		hdev->req_skb = NULL;
++	}
++
+ 	clear_bit(HCI_RUNNING, &hdev->flags);
+ 	hci_sock_dev_event(hdev, HCI_DEV_CLOSE);
  
- 	/* Cancel potentially blocking sync operation before power off */
- 	if (cp->val == 0x00) {
--		__hci_cmd_sync_cancel(hdev, -EHOSTDOWN);
-+		hci_cmd_sync_cancel_sync(hdev, -EHOSTDOWN);
- 		err = hci_cmd_sync_queue(hdev, set_powered_sync, cmd,
- 					 mgmt_set_powered_complete);
- 	} else {
 -- 
 2.43.0
 
