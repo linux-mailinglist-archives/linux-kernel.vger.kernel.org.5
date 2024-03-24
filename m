@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 620238885F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:21:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 048A48885F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C55828CB7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:21:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 326071C25604
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8B51272CF;
-	Sun, 24 Mar 2024 22:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078BD144302;
+	Sun, 24 Mar 2024 22:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O4/ZxaO8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mwQxMktD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292051D8BA0;
-	Sun, 24 Mar 2024 22:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120C083CB2;
+	Sun, 24 Mar 2024 22:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320637; cv=none; b=TfBu2OGIWASp2Pnamfy5n2bb3iXJmkLIQHnDxomceSKpqepmFe6QX8zBW8kVJGe7Yt2lshGQ7etV4Q+LfTDOvW1vpF0JZ09nOUvGgn0FMJkNJc/D6TJ1hT6Q4RglONygg7ByZVMyFHzb6+cYBfFAjxjUM3yT5e9JwGa604CWKvg=
+	t=1711320639; cv=none; b=IEiJM1lcbCn+3GYwkUa1K9LFAy2DskJfj/4CzKFhqBJusztlooRZm0rQFlVFhF3I+v0Uvqpt0+Lr6N4We/prSLerzwsprSJ3vMX0BS7uetdIvIP8CubwKnypKx11aMJaGv8EpGaF97q4nbpDRm4LFOIlSRVliTPa9+zzfNxcbqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320637; c=relaxed/simple;
-	bh=Rk1Q+Aok+VkjPFU/uEYsGNr2WdeCIZyK5WHjnMJWslQ=;
+	s=arc-20240116; t=1711320639; c=relaxed/simple;
+	bh=49DnlI4xLg7fy52362vWUJfff/Ui3fQ8OkDoSAzHm0A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SFjAxv1lVQX5f69g3sNM7KR0GwkLWQ52vT9Wi/K9zGs/ELF9314Xg25XxrGZyXVUrTGinweafa3/SfJADk7x0WPdoxyEswnh64YsaJxvnEXokoSAGysnxRnaRFktvk8EJ8adCWAJyu9bnTOg6dvNtNnf3DWuwVASmIuluHMaWds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O4/ZxaO8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48984C433F1;
-	Sun, 24 Mar 2024 22:50:36 +0000 (UTC)
+	 MIME-Version; b=MPyGyiCj600HQ6QvgxypPgWHdgstTIdSis/lHGzkUDaxwx1UpJf0/09k0rJWi82TXBcerWk49BQrepPblqg5ZEIhVYW2n54UF3nsQDIdjJ6yLCIckT48fA8a+g7nj2GGahtSXgfmPk+qwUV521P+7fl5/+PJpDqkis78+pUiHMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mwQxMktD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EC1CC43399;
+	Sun, 24 Mar 2024 22:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320637;
-	bh=Rk1Q+Aok+VkjPFU/uEYsGNr2WdeCIZyK5WHjnMJWslQ=;
+	bh=49DnlI4xLg7fy52362vWUJfff/Ui3fQ8OkDoSAzHm0A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O4/ZxaO8PMqliNl+7KLodkuLq1XbIWvKzXQZfRh8Ow67nbbY4EQj6dtoUhC0zh5tg
-	 c9cPNoHxdOADPutAcKqIJk/zs3RmF7xADoTTRW/LUQ7GS9Jvb+bu+4ID8NpgQtXHRJ
-	 yL+9eLCAhLP2vBghXO8jcWrlDe4NJAatriUUI6/S8Bar12orYV0FgTNUDc41FQO4j5
-	 LIjDPyn5DFZeUZVk5YDNFfSXSB+hFCuOsRj1fTzuCbJsV5Dgn9pk8r482C+SKLZIvE
-	 7xNU+z5tZulkiavoAsJW6Fki0RvzBLcqI+1RRkwUjIa4yP0YsO5kTQQWZhQB/LlQsF
-	 iDCbaufmFv8kQ==
+	b=mwQxMktD6gvNq3Cfxc+nMmwGAkclGuOB5XSeYoRB/fsGyAQshejL87sVB8Cke+XlG
+	 PxeD1tHRQHmdi83dlKNC8vHEz1d/F/x3L4CYUAqsi+zWyHZs1A6NUCFdYNYuFWz6mt
+	 hySOR+4JoxC/AENcvmpZ392zhxhRajOfjkE7YJUArpQoS0RlLcH6iDOMXCbiKin2Mo
+	 +Q5+YVzzgMtIR0Zxd7+q+qVfwoOFX39miwWuB6hCFmbo1JeAvaWJRvg7J5YQRbfHj+
+	 HrFdm0/ksFKc5L7ISisJSj9+0CIhWUSgElYq/o0wxIIoQOwRCOd0xIPakGoCRSr8Bj
+	 cCD189Wn9z2PA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
+Cc: Tim Harvey <tharvey@gateworks.com>,
+	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 198/713] selftests/bpf: trace_helpers.c: do not use poisoned type
-Date: Sun, 24 Mar 2024 18:38:44 -0400
-Message-ID: <20240324224720.1345309-199-sashal@kernel.org>
+Subject: [PATCH 6.7 199/713] arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS
+Date: Sun, 24 Mar 2024 18:38:45 -0400
+Message-ID: <20240324224720.1345309-200-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,41 +62,83 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+From: Tim Harvey <tharvey@gateworks.com>
 
-[ Upstream commit a68b50f47bec8bd6a33b07b7e1562db2553981a7 ]
+[ Upstream commit ec2cb52fcfef5d58574f2cfbc9a99ffc20ae5a9d ]
 
-After commit c698eaebdf47 ("selftests/bpf: trace_helpers.c: Optimize
-kallsyms cache") trace_helpers.c now includes libbpf_internal.h, and
-thus can no longer use the u32 type (among others) since they are poison
-in libbpf_internal.h. Replace u32 with __u32 to fix the following error
-when building trace_helpers.c on powerpc:
+The GW71xx does not have a gpio controlled vbus regulator but it does
+require some pinctrl. Remove the regulator and move the valid pinctrl
+into the usbotg1 node.
 
-  error: attempt to use poisoned "u32"
-
-Fixes: c698eaebdf47 ("selftests/bpf: trace_helpers.c: Optimize kallsyms cache")
-Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/r/20240202095559.12900-1-shung-hsi.yu@suse.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+Fixes: bd306fdb4e60 ("arm64: dts: imx8mm-venice-gw71xx: fix USB OTG VBUS")
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/trace_helpers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../dts/freescale/imx8mm-venice-gw71xx.dtsi   | 29 ++++++-------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 4faa898ff7fc4..27fd7ed3e4b0c 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -271,7 +271,7 @@ ssize_t get_uprobe_offset(const void *addr)
- 	 * addi  r2,r2,XXXX
- 	 */
- 	{
--		const u32 *insn = (const u32 *)(uintptr_t)addr;
-+		const __u32 *insn = (const __u32 *)(uintptr_t)addr;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+index 6425773f68e0a..bbbaf2165ea28 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+@@ -47,17 +47,6 @@ pps {
+ 		gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+ 		status = "okay";
+ 	};
+-
+-	reg_usb_otg1_vbus: regulator-usb-otg1 {
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_reg_usb1_en>;
+-		compatible = "regulator-fixed";
+-		regulator-name = "usb_otg1_vbus";
+-		gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+-		enable-active-high;
+-		regulator-min-microvolt = <5000000>;
+-		regulator-max-microvolt = <5000000>;
+-	};
+ };
  
- 		if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
- 		     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
+ /* off-board header */
+@@ -144,9 +133,10 @@ &uart3 {
+ };
+ 
+ &usbotg1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg1>;
+ 	dr_mode = "otg";
+ 	over-current-active-low;
+-	vbus-supply = <&reg_usb_otg1_vbus>;
+ 	status = "okay";
+ };
+ 
+@@ -204,14 +194,6 @@ MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x41
+ 		>;
+ 	};
+ 
+-	pinctrl_reg_usb1_en: regusb1grp {
+-		fsl,pins = <
+-			MX8MM_IOMUXC_GPIO1_IO10_GPIO1_IO10	0x41
+-			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
+-			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
+-		>;
+-	};
+-
+ 	pinctrl_spi2: spi2grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0xd6
+@@ -234,4 +216,11 @@ MX8MM_IOMUXC_UART3_RXD_UART3_DCE_RX	0x140
+ 			MX8MM_IOMUXC_UART3_TXD_UART3_DCE_TX	0x140
+ 		>;
+ 	};
++
++	pinctrl_usbotg1: usbotg1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x141
++			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x41
++		>;
++	};
+ };
 -- 
 2.43.0
 
