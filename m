@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 130D48889FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:08:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D17BA889725
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:09:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 448D51C2867A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:08:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BE0B29B9EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A250317265E;
-	Sun, 24 Mar 2024 23:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E9B25A8D8;
+	Mon, 25 Mar 2024 02:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E0QCSfgl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDC9DAc5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE0A1EEEF3;
-	Sun, 24 Mar 2024 23:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCAD1EEEF2;
+	Sun, 24 Mar 2024 23:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321745; cv=none; b=Srlw7w9oFarplnMaMPjbjYrLtVHNUkbC/W/AL7SsV8RfnVcKMNUo4vUNbjGcZ6va2CcGdYfHqGdR6Zm3TQdC1Kd/3kP3g0CATLPkHiFwKT807GP01j/YMFKBSV6Gm2Pgd/8MCCvbzVo5b4EWcaDd3nwcelitgunB+hSwXwdNgus=
+	t=1711321745; cv=none; b=qFKea/O02sypilldGmbbDoR/RtxuRWVIpaZz+vw6VomJV1/qcmoSBBdIs9OSrBAKsqQWO4+Dr4gilbApLd+vtG88lglqa9+gW2DOvTKI9cJaUmUTOIecFOHLWfD5NeI1rlypowFe7QwgYTxnRyr3+g7ekJ6Zn8sE43519w4uWPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321745; c=relaxed/simple;
-	bh=/OkvdvR70NnVfY2Fr/0spMghmmbQzum0lIGGLUM9FCI=;
+	bh=6d8vYBUrO4Vbhqa++pTzSboo0d76L1VMT2hA2lPcTZM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PgsxlaclU/Na0e4kM2Jyyk/R59Riq/iRxwBhquMdLujQFcDjmnoD4+X4B9ILuUVdNqXzrP5f7RAb0TLDaAf+oevV2DUGwmX2Qfqds+ZcTmhExvNQeqJokBm7sS9IMMklXXL56AwA72hPnea4wUoHU1cbN32O+6PrpAxsdl6aB/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E0QCSfgl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8D04C43394;
-	Sun, 24 Mar 2024 23:09:03 +0000 (UTC)
+	 MIME-Version; b=e1n3MQD+QDYV5H2RAu+PTaFhHgRJskQYwHDSNozHrYOgTh4x46lU5WbDfVrM/wNKVoxIK2J3WWtMNB2EIo+DU0KKxEBcgAnPTFgMIsREZAtfmPm54E5SKfCGITfXnJybHorUdRAw7a4PM3JNuKKfDpJJi7Az/roKRJwU52VQR/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDC9DAc5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC5D9C433F1;
+	Sun, 24 Mar 2024 23:09:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321744;
-	bh=/OkvdvR70NnVfY2Fr/0spMghmmbQzum0lIGGLUM9FCI=;
+	s=k20201202; t=1711321745;
+	bh=6d8vYBUrO4Vbhqa++pTzSboo0d76L1VMT2hA2lPcTZM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E0QCSfglGrO1kaxJwjX5a3KM/z+oAtzPdZrnR8N/hUCGM7ciCELiWFgakmzaND/hL
-	 eywijjfzV1iwy96XUspxQJaDUNekpoQtbJ4vmHqJIXTsWB1Q1s0miRbQkJxTPhDQLC
-	 jRsJ9vprFYGYuJY3KLFTyRxd6SY/gcGAJZZuO5nvm1i0QW9KRFXO9hObWaWrM9zXqC
-	 28QELGlBh/i2Vqs3ClrD8nB1M4Inv/FAs3Ebn6JjNr+gOoklXOj9zI5o7dxDo5hleO
-	 yZMYCF4jNl840dX27JpjmuPTaqN941vkp2mgMZS8F1unT+HMt8xnS9bLr83zcEZBLR
-	 WJX0H9AkpM4mQ==
+	b=sDC9DAc5L8tmj1wKmr/WgwCvsK2uqzGqo94nSB7VQ1uKpPSS0nm94lP3sHBEWzyh9
+	 f2xhmQk3xLx8O7gA9TsaF5bpkLq4b+eTYzNEdWOCgb3qALwODkSeYE9UoIBqRc/dJu
+	 TBdvwrBwVqGdgX9OP73MKFTcl4fFrXOrqvd4G/D16eq/YSm5wMegIURzUm6peVRrYF
+	 Y7rKIfcPj7DRBCCiLorMJBvL41cZej3/bv9u52rMU0motyJLfxaPBcuf4KnW4g3O3K
+	 VN8lj8w3tqu+ro0obAu/p0H0PmVE7Hf5wJLWl2Plvz9C3D517S1IrUWEa+TSP8VNqR
+	 1j5wVrOL4Nx7Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
-	Lee Jones <lee@kernel.org>,
+Cc: Qiheng Lin <linqiheng@huawei.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 472/638] mfd: cs42l43: Fix wrong register defaults
-Date: Sun, 24 Mar 2024 18:58:29 -0400
-Message-ID: <20240324230116.1348576-473-sashal@kernel.org>
+Subject: [PATCH 6.6 473/638] powerpc/pseries: Fix potential memleak in papr_get_attr()
+Date: Sun, 24 Mar 2024 18:58:30 -0400
+Message-ID: <20240324230116.1348576-474-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,109 +62,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+From: Qiheng Lin <linqiheng@huawei.com>
 
-[ Upstream commit c9e1e505cde1a8ddd0968b4d54ec2ea1937dfe00 ]
+[ Upstream commit cda9c0d556283e2d4adaa9960b2dc19b16156bae ]
 
-A few regs have unnecessary values in defaults, change them to match the
-datasheet
+`buf` is allocated in papr_get_attr(), and krealloc() of `buf`
+could fail. We need to free the original `buf` in the case of failure.
 
-Fixes: ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
-
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20240229155616.118457-1-mstrozek@opensource.cirrus.com
-Signed-off-by: Lee Jones <lee@kernel.org>
+Fixes: 3c14b73454cf ("powerpc/pseries: Interface to represent PAPR firmware attributes")
+Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20221208133449.16284-1-linqiheng@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/cs42l43.c | 68 +++++++++++++++++++++----------------------
- 1 file changed, 34 insertions(+), 34 deletions(-)
+ arch/powerpc/platforms/pseries/papr_platform_attributes.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-index 7b6d07cbe6fc6..73c88ee6a866c 100644
---- a/drivers/mfd/cs42l43.c
-+++ b/drivers/mfd/cs42l43.c
-@@ -131,38 +131,38 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
- 	{ CS42L43_ASP_TX_CH4_CTRL,			0x00170091 },
- 	{ CS42L43_ASP_TX_CH5_CTRL,			0x001700C1 },
- 	{ CS42L43_ASP_TX_CH6_CTRL,			0x001700F1 },
--	{ CS42L43_ASPTX1_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX2_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX3_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX4_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX5_INPUT,				0x00800000 },
--	{ CS42L43_ASPTX6_INPUT,				0x00800000 },
--	{ CS42L43_SWIRE_DP1_CH1_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP1_CH2_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP1_CH3_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP1_CH4_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP2_CH1_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP2_CH2_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP3_CH1_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP3_CH2_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP4_CH1_INPUT,			0x00800000 },
--	{ CS42L43_SWIRE_DP4_CH2_INPUT,			0x00800000 },
--	{ CS42L43_ASRC_INT1_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_INT2_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_INT3_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_INT4_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_DEC1_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_DEC2_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_DEC3_INPUT1,			0x00800000 },
--	{ CS42L43_ASRC_DEC4_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC1INT1_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC1INT2_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC1DEC1_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC1DEC2_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC2INT1_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC2INT2_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC2DEC1_INPUT1,			0x00800000 },
--	{ CS42L43_ISRC2DEC2_INPUT1,			0x00800000 },
-+	{ CS42L43_ASPTX1_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX2_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX3_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX4_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX5_INPUT,				0x00000000 },
-+	{ CS42L43_ASPTX6_INPUT,				0x00000000 },
-+	{ CS42L43_SWIRE_DP1_CH1_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP1_CH2_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP1_CH3_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP1_CH4_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP2_CH1_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP2_CH2_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP3_CH1_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP3_CH2_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP4_CH1_INPUT,			0x00000000 },
-+	{ CS42L43_SWIRE_DP4_CH2_INPUT,			0x00000000 },
-+	{ CS42L43_ASRC_INT1_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_INT2_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_INT3_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_INT4_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_DEC1_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_DEC2_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_DEC3_INPUT1,			0x00000000 },
-+	{ CS42L43_ASRC_DEC4_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC1INT1_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC1INT2_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC1DEC1_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC1DEC2_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC2INT1_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC2INT2_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC2DEC1_INPUT1,			0x00000000 },
-+	{ CS42L43_ISRC2DEC2_INPUT1,			0x00000000 },
- 	{ CS42L43_EQ1MIX_INPUT1,			0x00800000 },
- 	{ CS42L43_EQ1MIX_INPUT2,			0x00800000 },
- 	{ CS42L43_EQ1MIX_INPUT3,			0x00800000 },
-@@ -171,8 +171,8 @@ const struct reg_default cs42l43_reg_default[CS42L43_N_DEFAULTS] = {
- 	{ CS42L43_EQ2MIX_INPUT2,			0x00800000 },
- 	{ CS42L43_EQ2MIX_INPUT3,			0x00800000 },
- 	{ CS42L43_EQ2MIX_INPUT4,			0x00800000 },
--	{ CS42L43_SPDIF1_INPUT1,			0x00800000 },
--	{ CS42L43_SPDIF2_INPUT1,			0x00800000 },
-+	{ CS42L43_SPDIF1_INPUT1,			0x00000000 },
-+	{ CS42L43_SPDIF2_INPUT1,			0x00000000 },
- 	{ CS42L43_AMP1MIX_INPUT1,			0x00800000 },
- 	{ CS42L43_AMP1MIX_INPUT2,			0x00800000 },
- 	{ CS42L43_AMP1MIX_INPUT3,			0x00800000 },
+diff --git a/arch/powerpc/platforms/pseries/papr_platform_attributes.c b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
+index 526c621b098be..eea2041b270b5 100644
+--- a/arch/powerpc/platforms/pseries/papr_platform_attributes.c
++++ b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
+@@ -101,10 +101,12 @@ static int papr_get_attr(u64 id, struct energy_scale_attribute *esi)
+ 		esi_buf_size = ESI_HDR_SIZE + (CURR_MAX_ESI_ATTRS * max_esi_attrs);
+ 
+ 		temp_buf = krealloc(buf, esi_buf_size, GFP_KERNEL);
+-		if (temp_buf)
++		if (temp_buf) {
+ 			buf = temp_buf;
+-		else
+-			return -ENOMEM;
++		} else {
++			ret = -ENOMEM;
++			goto out_buf;
++		}
+ 
+ 		goto retry;
+ 	}
 -- 
 2.43.0
 
