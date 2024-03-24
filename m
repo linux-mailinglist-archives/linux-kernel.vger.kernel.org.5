@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-114213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B24D888FFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:07:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A77888F99
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:55:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9A26B2A0EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:48:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16400B2DCC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2747D251169;
-	Sun, 24 Mar 2024 23:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D7325119A;
+	Sun, 24 Mar 2024 23:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nAHubKPM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cwhW9kXR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06920137936;
-	Sun, 24 Mar 2024 23:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191FA13793C;
+	Sun, 24 Mar 2024 23:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321553; cv=none; b=EuckhKTqLniqPl5ysGflEy8qW7T8wS9KZKt5dOguMIj4naAeV3E3m3/45Kr0jtHkOPWiCwYqi071EOehaiHY44KgpUbZpvr9Ppy5XVHKpdK9nKlApJ4G0qQ/rQCGGRmF+DTGdoWhvXj2yExWW6mtdKr9NROTQ6h/Ja9mpP1x/JA=
+	t=1711321554; cv=none; b=rIRRGhxWrIu1vmzpis6N5JtwmnTgWDHk1hDlcZIUmha3/0VRUPfgwZJxG/M5pGgaJUBBMRX7SW4LsUtmIM3ugTHIGx40HvxbVC0ELPKZMG86RNoMHDN0hSZvnh0L+lIIb8oar0Z5i0lyjW9jMI3VR8yRlA0Z+Lif1W8Wn46YPJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321553; c=relaxed/simple;
-	bh=fEwnBI35cXTjGoBBgXolNQPB6xmc4Wr8Ex5Lp9+T2DU=;
+	s=arc-20240116; t=1711321554; c=relaxed/simple;
+	bh=mqDHnKF4JwaqvMbLj6PvJjzjGLsRXI6R6B2MXr+ey/o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eqVUGeNEBpqYc1rEgF1/ah3PXhtYOECqOeAcFemL10S0QpMptdQS7io2vcMU2aX7aKEA4aHK1ABTt6lMULBMmz59MrjFPMuLg8WfIaiSD416o/0p2jdpDpmJwif6HStiR6fqD+hIsErzciA/FJHFjtzOHHQqNcpepOb8HQbNeS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nAHubKPM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 020E9C433C7;
-	Sun, 24 Mar 2024 23:05:50 +0000 (UTC)
+	 MIME-Version; b=O25/3o94rHPYzspOv2d0pUG634nDEIVtK2Y0oZUvPH1JCm+F057eH0b05LOUPXJRdyL2+jH5scPFsZedy96prqBiLfZjaqVQf77HQ5HKax2iIBzHJpaS6gXVGyNBaB1F7V9TIqwCl1c0TbuHarv3O4rkzl+s+yAHkJ8p4jiEynY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cwhW9kXR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 297E4C43390;
+	Sun, 24 Mar 2024 23:05:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321551;
-	bh=fEwnBI35cXTjGoBBgXolNQPB6xmc4Wr8Ex5Lp9+T2DU=;
+	s=k20201202; t=1711321553;
+	bh=mqDHnKF4JwaqvMbLj6PvJjzjGLsRXI6R6B2MXr+ey/o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nAHubKPMxnbdN901JwDofDfaaonz3WdiYhPnHre3TiHEWFaferRCgBjS4fU8BmuYb
-	 j6wd7PfFsMtEQuWXQRBFUTL2deYcMCeKTHaJgpCXOmDVd++GnbDcbYGISGk+LmvBti
-	 Pv7H5mvIYFuQtT8h3KtnwyJPFY6S4v+seqUlAFB05p37EujbCz1XXctryWvClV0QTZ
-	 /bBcVKU0hNfYFN7v3i9NFWw5CT9+EmfW4KNg1GC/abBj80eRHDREnPo1GlA2obo301
-	 JM88EYx+iDNJZYtdTakOzts/vA+C/I04pTGe3bPiPQNPvOsKCvGFnqac9ZIndE8Z3E
-	 aZ1Et+wPnPvvA==
+	b=cwhW9kXR/1oPJfOiqqV3mmtG9j+PjcwFEnEjHbApFsOSKm+m3XPLQzkxfSvhVMnMa
+	 FhMS0XWkiJPLaMvFb/MhS/e5Gz8Q63sMBJtsqHRt5OZIt2sncWKbRboME2O6xW6DhC
+	 sfGtP/b/Iia6wz3B36TGTadQSe8j910I4VPGKz58nQEGENuDN/oDzd+mOT1s3PFG/g
+	 yqmEmgbqXtzBXYj9uGwkT2dmXqEHMf0rApWnlqDSv/s7Dqi34mEoxtWpFwa0QZIxxX
+	 tlOp+HTJbaZN+9XAFDv0Qt9DVt8LHZGKtwHgGdapM9/czfR7MvuOkGHH+gNthUpEUE
+	 16ORbLg/LioIw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Heiko Stuebner <heiko.stuebner@cherry.de>,
-	Sugar Zhang <sugar.zhang@rock-chips.com>,
-	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-	Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-	Heiko Stuebner <heiko@sntech.de>,
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+	Nicolin Chen <nicolinc@nvidia.com>,
+	Will Deacon <will@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 280/638] arm64: dts: rockchip: drop rockchip,trcm-sync-tx-only from rk3588 i2s
-Date: Sun, 24 Mar 2024 18:55:17 -0400
-Message-ID: <20240324230116.1348576-281-sashal@kernel.org>
+Subject: [PATCH 6.6 281/638] iommu/arm-smmu-v3: Check that the RID domain is S1 in SVA
+Date: Sun, 24 Mar 2024 18:55:18 -0400
+Message-ID: <20240324230116.1348576-282-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -65,53 +64,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Heiko Stuebner <heiko.stuebner@cherry.de>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-[ Upstream commit a8037ceb89649659831e86a87a9329d1bb43c735 ]
+[ Upstream commit ae91f6552c301e5e8569667e9d5440d5f75a90c4 ]
 
-The rockchip,trcm-sync-tx-only property is at this time only documented
-for the tdm variant of Rockchip i2s controllers.
+The SVA code only works if the RID domain is a S1 domain and has already
+installed the cdtable.
 
-While there was a series [0] adding code and binding for the property,
-it doesn't seem to have gone forward back in 2021.
+Originally the check for this was in arm_smmu_sva_bind() but when the op
+was removed the test didn't get copied over to the new
+arm_smmu_sva_set_dev_pasid().
 
-So for now fix the devicetree check by removing the property from rk3588
-i2s controllers until support for it gets merged.
+Without the test wrong usage usually will hit a WARN_ON() in
+arm_smmu_write_ctx_desc() due to a missing ctx table.
 
-[0] https://patchwork.kernel.org/project/linux-rockchip/patch/1629796734-4243-5-git-send-email-sugar.zhang@rock-chips.com/
+However, the next patches wil change things so that an IDENTITY domain is
+not a struct arm_smmu_domain and this will get into memory corruption if
+the struct is wrongly casted.
 
-Fixes: 8ae112a5554f ("arm64: dts: rockchip: Add rk3588s I2S nodes")
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
-Reviewed-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
-Link: https://lore.kernel.org/r/20240227164659.705271-2-heiko@sntech.de
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fail in arm_smmu_sva_set_dev_pasid() if the STE does not have a S1, which
+is a proxy for the STE having a pointer to the CD table. Write it in a way
+that will be compatible with the next patches.
+
+Fixes: 386fa64fd52b ("arm-smmu-v3/sva: Add SVA domain support")
+Reported-by: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Closes: https://lore.kernel.org/linux-iommu/2a828e481416405fb3a4cceb9e075a59@huawei.com/
+Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Link: https://lore.kernel.org/r/11-v6-96275f25c39d+2d4-smmuv3_newapi_p1_jgg@nvidia.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-index 4aa516ff156df..aa18cf1d1afaa 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-@@ -1542,7 +1542,6 @@ i2s2_2ch: i2s@fe490000 {
- 		dmas = <&dmac1 0>, <&dmac1 1>;
- 		dma-names = "tx", "rx";
- 		power-domains = <&power RK3588_PD_AUDIO>;
--		rockchip,trcm-sync-tx-only;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s2m1_lrck
- 			     &i2s2m1_sclk
-@@ -1563,7 +1562,6 @@ i2s3_2ch: i2s@fe4a0000 {
- 		dmas = <&dmac1 2>, <&dmac1 3>;
- 		dma-names = "tx", "rx";
- 		power-domains = <&power RK3588_PD_AUDIO>;
--		rockchip,trcm-sync-tx-only;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2s3_lrck
- 			     &i2s3_sclk
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+index 8a16cd3ef487c..cc33e8297b8d0 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+@@ -352,7 +352,13 @@ __arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm)
+ 	struct arm_smmu_bond *bond;
+ 	struct arm_smmu_master *master = dev_iommu_priv_get(dev);
+ 	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
+-	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
++	struct arm_smmu_domain *smmu_domain;
++
++	if (!(domain->type & __IOMMU_DOMAIN_PAGING))
++		return -ENODEV;
++	smmu_domain = to_smmu_domain(domain);
++	if (smmu_domain->stage != ARM_SMMU_DOMAIN_S1)
++		return -ENODEV;
+ 
+ 	if (!master || !master->sva_enabled)
+ 		return ERR_PTR(-ENODEV);
 -- 
 2.43.0
 
