@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-116307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28561889E21
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF4E1888D8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D13961F37245
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:02:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A31A1F2A7B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:51:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E683D0CD9;
-	Mon, 25 Mar 2024 03:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B714B3066D5;
+	Mon, 25 Mar 2024 01:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mnhHeOvO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pgfAWwYZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD0113C8EC;
-	Sun, 24 Mar 2024 23:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05568181D0A;
+	Sun, 24 Mar 2024 23:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324220; cv=none; b=InjePGCBjJUOs2WDX1KJVx6gG/Xc//Oiwi50PMqJyAt3yMl1H/L+nGScThaFg8Hs3ZA3pRNJFgMZuJ7qY+Y1xCRNkkGcHH4b8Y4iMFUmk13aGRZqJELnZzPl5VTNrTuTdvDF3gNsHOckg2xMFLkEGdFFvSaEFwYe2Qze+7176Qk=
+	t=1711324221; cv=none; b=swP4X6fJYHHe+hebB8h+QF/L+s8tn2z7gubv94rU0bis6hOsrsM/EVR4XVhnez4wtInB0bLywy+iWt92N+ZF1GWPHBFKVP9+XThq6Bk2XaeYI1LirfNUqVkcbLJWHH5/nL2tg22fy6uVIOm5OGwM3q6/9O18aNY+zm47pxCxP5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324220; c=relaxed/simple;
-	bh=KXobGiOoIaXzXOXJJJNhZJEIoAnZhnUZnhGA9Ii+OtU=;
+	s=arc-20240116; t=1711324221; c=relaxed/simple;
+	bh=/nChahqELmINXvbQzfOoAMqupqs+JnDqhzIcM9K/gI8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CCiJq82SkIRVMEekP1FH6wK59vp5lDmIIgWbY1UPSsa/XfpyrCawoXtPRScKpx4cWD6VdAHM5hiMHVooAOG+A7Tzc4QqDBTowCkHdyExunCaeOd0EX3IWjIApd+00V4an0WM1GT1hHlTe9w7lLwD/NphWPLvYvUZz+JszbQImAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mnhHeOvO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 363E1C43399;
-	Sun, 24 Mar 2024 23:50:17 +0000 (UTC)
+	 MIME-Version; b=ngqkYV5XFG7I8zR5ppc8aovrc5/a1iDJUapmPnR1bnvY8UZFIXDBxWQzhcCx3VQswWmL3FHiI+ZFIe8XcI9UzPWx3Q+klH+n6T/BVfBFJbYL38GMIz2e9l6hWHRnXMUm6GJBCZ08U8fQRkCi8Tisk1SknXtbL/mdf94cb9XLz88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pgfAWwYZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 401ACC433F1;
+	Sun, 24 Mar 2024 23:50:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711324219;
-	bh=KXobGiOoIaXzXOXJJJNhZJEIoAnZhnUZnhGA9Ii+OtU=;
+	bh=/nChahqELmINXvbQzfOoAMqupqs+JnDqhzIcM9K/gI8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mnhHeOvOaz36TSZHzWTyITyAYQoi9ZDhVgkRiOu/yoqqzKeNU/kAI8cJGubNIHyIQ
-	 KraJDITnxRu8ep093PQmUFqYT+I8wV3a3RR829/mX61HA1pWTpTDr2WZdQxXB6RHUD
-	 EBV3lU6AQF6wJrwaf5C0csj2ceJUn35UHcmt20nj/2bJaPY/aBByUHz3a7JFxYgI0Y
-	 zapTy4aQ+/ApboD8KU+HTpLzl7c2rJp85W0tuOMFlQK/+kqjoSPHKvmbRhVnL9KYcn
-	 BW7qE9hBS9w+e/1MwUaxOsR5G0k2FJKBuRW0U0fxdUxL652BGKW7GNuO8Vcb4uqhkR
-	 rHwQ3Z8sNSJVA==
+	b=pgfAWwYZGbIJE12neJQOZJQckuLLTebkE/wQJJBgPsFrC5grSXmQUxEd+r/sUcssA
+	 0EUzAwueRJ9Xf6nBta74fLX51q542KgCDA7Dk3CNgs0carUZ77lDbEt9Pqc0OdXOQ6
+	 vYqUSqPbnAaBerDYdYuTHHQR5enJNZYhhRk/gv3y7WvkbfDtDiKDoR4OEIiL0NeEaL
+	 Iaov/2zgGzK2pKuVuTdGbdED2gwYMI2sZqmQ9baBCywB71gKcqaMUyr9f6a//vY6PR
+	 hEU/B/1dAYF/USaaKJKWpzzOf1FwVLOl7oCqKMHvEA5dEZulWWV/aXxYmUIwCSCg/K
+	 YyoLju+FqUggg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kunwu Chan <chentao@kylinos.cn>,
-	kernel test robot <lkp@intel.com>,
-	Markus Elfring <Markus.Elfring@web.de>,
-	Juergen Gross <jgross@suse.com>,
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 002/148] x86/xen: Add some null pointer checking to smp.c
-Date: Sun, 24 Mar 2024 19:47:46 -0400
-Message-ID: <20240324235012.1356413-3-sashal@kernel.org>
+Subject: [PATCH 4.19 003/148] MIPS: Clear Cause.BD in instruction_pointer_set
+Date: Sun, 24 Mar 2024 19:47:47 -0400
+Message-ID: <20240324235012.1356413-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -64,77 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <chentao@kylinos.cn>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-[ Upstream commit 3693bb4465e6e32a204a5b86d3ec7e6b9f7e67c2 ]
+[ Upstream commit 9d6e21ddf20293b3880ae55b9d14de91c5891c59 ]
 
-kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+Clear Cause.BD after we use instruction_pointer_set to override
+EPC.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202401161119.iof6BQsf-lkp@intel.com/
-Suggested-by: Markus Elfring <Markus.Elfring@web.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/20240119094948.275390-1-chentao@kylinos.cn
-Signed-off-by: Juergen Gross <jgross@suse.com>
+This can prevent exception_epc check against instruction code at
+new return address.
+It won't be considered as "in delay slot" after epc being overridden
+anyway.
+
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/xen/smp.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/mips/include/asm/ptrace.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/xen/smp.c b/arch/x86/xen/smp.c
-index a1cc855c539c1..a76ba342a6695 100644
---- a/arch/x86/xen/smp.c
-+++ b/arch/x86/xen/smp.c
-@@ -65,6 +65,8 @@ int xen_smp_intr_init(unsigned int cpu)
- 	char *resched_name, *callfunc_name, *debug_name;
+diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
+index b6578611dddbf..e45c082e12316 100644
+--- a/arch/mips/include/asm/ptrace.h
++++ b/arch/mips/include/asm/ptrace.h
+@@ -65,6 +65,7 @@ static inline void instruction_pointer_set(struct pt_regs *regs,
+                                            unsigned long val)
+ {
+ 	regs->cp0_epc = val;
++	regs->cp0_cause &= ~CAUSEF_BD;
+ }
  
- 	resched_name = kasprintf(GFP_KERNEL, "resched%d", cpu);
-+	if (!resched_name)
-+		goto fail_mem;
- 	per_cpu(xen_resched_irq, cpu).name = resched_name;
- 	rc = bind_ipi_to_irqhandler(XEN_RESCHEDULE_VECTOR,
- 				    cpu,
-@@ -77,6 +79,8 @@ int xen_smp_intr_init(unsigned int cpu)
- 	per_cpu(xen_resched_irq, cpu).irq = rc;
- 
- 	callfunc_name = kasprintf(GFP_KERNEL, "callfunc%d", cpu);
-+	if (!callfunc_name)
-+		goto fail_mem;
- 	per_cpu(xen_callfunc_irq, cpu).name = callfunc_name;
- 	rc = bind_ipi_to_irqhandler(XEN_CALL_FUNCTION_VECTOR,
- 				    cpu,
-@@ -90,6 +94,9 @@ int xen_smp_intr_init(unsigned int cpu)
- 
- 	if (!xen_fifo_events) {
- 		debug_name = kasprintf(GFP_KERNEL, "debug%d", cpu);
-+		if (!debug_name)
-+			goto fail_mem;
-+
- 		per_cpu(xen_debug_irq, cpu).name = debug_name;
- 		rc = bind_virq_to_irqhandler(VIRQ_DEBUG, cpu,
- 					     xen_debug_interrupt,
-@@ -101,6 +108,9 @@ int xen_smp_intr_init(unsigned int cpu)
- 	}
- 
- 	callfunc_name = kasprintf(GFP_KERNEL, "callfuncsingle%d", cpu);
-+	if (!callfunc_name)
-+		goto fail_mem;
-+
- 	per_cpu(xen_callfuncsingle_irq, cpu).name = callfunc_name;
- 	rc = bind_ipi_to_irqhandler(XEN_CALL_FUNCTION_SINGLE_VECTOR,
- 				    cpu,
-@@ -114,6 +124,8 @@ int xen_smp_intr_init(unsigned int cpu)
- 
- 	return 0;
- 
-+ fail_mem:
-+	rc = -ENOMEM;
-  fail:
- 	xen_smp_intr_free(cpu);
- 	return rc;
+ /* Query offset/name of register from its name/offset */
 -- 
 2.43.0
 
