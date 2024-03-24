@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB76889237
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 614E68890D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:28:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEC2C1C2DDFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:00:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D6271C2C9AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606411B5DC3;
-	Mon, 25 Mar 2024 00:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C15A91B675F;
+	Mon, 25 Mar 2024 00:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SBLzdHFX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WJRMwtCE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429712733E3;
-	Sun, 24 Mar 2024 23:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 305012733EC;
+	Sun, 24 Mar 2024 23:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323321; cv=none; b=s6lWh+ZkQ8rYWoUxkckobpK/SY2vJ9BQ857fdX4S79aCpJ5K2PdgCBCK2iOdnPanW+wm7+AjwU9bIaZr3+pbhFw1UGrl0y41nbzpjYLbdMFeukXA5/plq2zGvQrlxKMPfVYdroZMaOYruPsWlxj/Zu4DpSm2hUDDxNRNEkApV68=
+	t=1711323322; cv=none; b=m4h0MEotB0pu8/UVOSpcGNjlgvIyRgcFRiAucLD+cVmcjgTWPn58g5U9A7c5tLEdU94awW3lfSJssponZp+ohDuYPUdh8rh0APhhC/CwmeVkHt3+putiXoRrpwp6xOpT6pJ+I06DzRNyfe5NuqFW2657eG4PHaBPQzg1NSk5YFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323321; c=relaxed/simple;
-	bh=DDOX3T0lZuNLGsUeStj+eXV4HiTTPbTPnMakOgBV/qk=;
+	s=arc-20240116; t=1711323322; c=relaxed/simple;
+	bh=GnWtl6l52l+gUbfZkM8BRybvjTAPzKv3zjCkOuB8YF4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sBS8hQWYzbvzDj9nd3XbYzRJ0KZxUgy4mAU1aoB8B0luQue60S3cMcN+feP+EIaP6tbSvmnHVA+bFtnAfSh24oa3rFmSrDwvKTIh/EJcznxolMACeb0CJqkc/O8PZ/1VCngurE2G5cgwxnmLJJ0bHSbmjeaa6Jo4r6TnpyiZT5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SBLzdHFX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7968DC433C7;
-	Sun, 24 Mar 2024 23:35:19 +0000 (UTC)
+	 MIME-Version; b=ERs2z588yUaqfhMJQG/vy5LTw9mc6DJoKyyCFfEu+QE+L0FTz/J6ChnFI80gJKz52j49mSozNYrgVvy7qLJslevqtL9pz5cB2DXBFpYIqMSrGapQDVBixJViJgXFdeKnybUxA6EaeoBowOyYa9gzFMCf/eMWSHqbYfk0bkeQXGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WJRMwtCE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 678D0C433A6;
+	Sun, 24 Mar 2024 23:35:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323320;
-	bh=DDOX3T0lZuNLGsUeStj+eXV4HiTTPbTPnMakOgBV/qk=;
+	s=k20201202; t=1711323321;
+	bh=GnWtl6l52l+gUbfZkM8BRybvjTAPzKv3zjCkOuB8YF4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SBLzdHFXmiH9ehI5qH74+LZuj0Q+858S+VKkJnUUjkcqvFmI+x5PYV3IkUS3jr07C
-	 lYB8uVSqHngU6GZ7Seq+nayKRRXat7LfHoP3SyrMRUcq9RzKVkvagWwIvOHcHVEK+2
-	 yDSXGU5lFvdMi8s9G3b30kjUTAHVVFh07JQWSMhwCz0ScLwoGbaQgGc0DosFD777+u
-	 +OOJs9wVd6UnRPI2nTPwAVgTdFQCgY/Sc2s56RuKdK7gDkJT6BJZND85PPbQSakIEC
-	 TMk5e6yBtA2MaS7aMOsJzHUlcuujGuS1PVL4HyJgVit+XsY/vZwFBHRzmRiv9aAnWU
-	 1j+CQ5Lt59few==
+	b=WJRMwtCEkb9j11WnPVx1r2IxZaUMM0vFrm/TscpzxPjndHUHvcJomQSbZbDo91DYo
+	 gPqmLgt+1wGzaKynMcadqrRFRHWIXJDNkXOr7ZkgtmYGqvK4ssryzYf5LSVjO9gmQY
+	 vX9MRDBc6y2rsodtxRxm9tH+NUe/wwlAeh86uunOQ5fWK2gHo1okE3QYIgvK1+I3gf
+	 h+WOCpc4VMufjRLYrlQrt3ux/ODFSpxE6CahZuYV32yU0zoc7Gj3x30ynDfkdKeSBg
+	 oyb4SV/fnA1/6t+9iOYS1YxaNCpJmT7AYqScmJaXCYicXHFxkmKetlZsW62Iw7dQr3
+	 7AgQ+UnF2OYkQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
+Cc: Ranjan Kumar <ranjan.kumar@broadcom.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 020/317] dm-verity, dm-crypt: align "struct bvec_iter" correctly
-Date: Sun, 24 Mar 2024 19:30:00 -0400
-Message-ID: <20240324233458.1352854-21-sashal@kernel.org>
+Subject: [PATCH 5.15 021/317] scsi: mpt3sas: Prevent sending diag_reset when the controller is ready
+Date: Sun, 24 Mar 2024 19:30:01 -0400
+Message-ID: <20240324233458.1352854-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -62,68 +62,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Ranjan Kumar <ranjan.kumar@broadcom.com>
 
-[ Upstream commit 787f1b2800464aa277236a66eb3c279535edd460 ]
+[ Upstream commit ee0017c3ed8a8abfa4d40e42f908fb38c31e7515 ]
 
-"struct bvec_iter" is defined with the __packed attribute, so it is
-aligned on a single byte. On X86 (and on other architectures that support
-unaligned addresses in hardware), "struct bvec_iter" is accessed using the
-8-byte and 4-byte memory instructions, however these instructions are less
-efficient if they operate on unaligned addresses.
+If the driver detects that the controller is not ready before sending the
+first IOC facts command, it will wait for a maximum of 10 seconds for it to
+become ready. However, even if the controller becomes ready within 10
+seconds, the driver will still issue a diagnostic reset.
 
-(on RISC machines that don't have unaligned access in hardware, GCC
-generates byte-by-byte accesses that are very inefficient - see [1])
+Modify the driver to avoid sending a diag reset if the controller becomes
+ready within the 10-second wait time.
 
-This commit reorders the entries in "struct dm_verity_io" and "struct
-convert_context", so that "struct bvec_iter" is aligned on 8 bytes.
-
-[1] https://lore.kernel.org/all/ZcLuWUNRZadJr0tQ@fedora/T/
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@kernel.org>
+Signed-off-by: Ranjan Kumar <ranjan.kumar@broadcom.com>
+Link: https://lore.kernel.org/r/20240221071724.14986-1-ranjan.kumar@broadcom.com
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-crypt.c  | 4 ++--
- drivers/md/dm-verity.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/mpt3sas/mpt3sas_base.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 5904af05f6057..a3db76dcdb3ec 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -49,11 +49,11 @@
- struct convert_context {
- 	struct completion restart;
- 	struct bio *bio_in;
--	struct bio *bio_out;
- 	struct bvec_iter iter_in;
-+	struct bio *bio_out;
- 	struct bvec_iter iter_out;
--	u64 cc_sector;
- 	atomic_t cc_pending;
-+	u64 cc_sector;
- 	union {
- 		struct skcipher_request *req;
- 		struct aead_request *req_aead;
-diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
-index 78d1e51195ada..f61c89c79cf5b 100644
---- a/drivers/md/dm-verity.h
-+++ b/drivers/md/dm-verity.h
-@@ -74,11 +74,11 @@ struct dm_verity_io {
- 	/* original value of bio->bi_end_io */
- 	bio_end_io_t *orig_bi_end_io;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
+index e524e1fc53fa3..8325875bfc4ed 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@ -7238,7 +7238,9 @@ _base_wait_for_iocstate(struct MPT3SAS_ADAPTER *ioc, int timeout)
+ 		return -EFAULT;
+ 	}
  
-+	struct bvec_iter iter;
+- issue_diag_reset:
++	return 0;
 +
- 	sector_t block;
- 	unsigned n_blocks;
- 
--	struct bvec_iter iter;
--
- 	struct work_struct work;
- 
- 	/*
++issue_diag_reset:
+ 	rc = _base_diag_reset(ioc);
+ 	return rc;
+ }
 -- 
 2.43.0
 
