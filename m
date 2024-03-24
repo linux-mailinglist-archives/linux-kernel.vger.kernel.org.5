@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-114173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 642568888E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:38:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CABB988A087
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:57:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A18B1F28254
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12017B3DDDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A39156963;
-	Sun, 24 Mar 2024 23:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F8534E9D1;
+	Mon, 25 Mar 2024 02:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q3IoukpM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jEGOv6lT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF7A136678;
-	Sun, 24 Mar 2024 23:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D1D136996;
+	Sun, 24 Mar 2024 23:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321495; cv=none; b=ajxazDZSXpZRY1vWg1ptvXTdeHVYLGbbSj0OZwB+Kgi24ZsNj7+utZFsL110hxHqDaeCSdc4oIn3grY6BabFzBVL4c5EyU2cmx1PJzaLnokjUh9cw4atJF22ViKMrqHhzFJNWaYk2JVYKfKOvAksQbKLmuaBNn0Xo1a1KglE0Bs=
+	t=1711321496; cv=none; b=tj9eo0jX07JhKwYJhkld85IvdwO9Glqki1esG4ia0b1851YB1RnkGPA2iBQg9QVx5z0sWu5C10Jc7v2lEw2mEqYFgVrzTsAN0K3aJhE921Wc51V6Spnm1oF2enTxr5odZhDSux3eAVWB5ntpjwiK4tnPg3R8N2zXLw4cMF3BaSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321495; c=relaxed/simple;
-	bh=zDwrV9qQ/N4C7MwDZaNZ+GJUXT8auFLqKHkwnMxLKcQ=;
+	s=arc-20240116; t=1711321496; c=relaxed/simple;
+	bh=9u5NrhJcsS9DElx+ocr086SXQ18+mS2wYgg/2/lpBXU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XjatkSraATFsXw5fvMnJM549wMMsSHIYvLpg1GSWOCFIf3xuC0/BM22bnTV/AQZoSg9cT0PnHEelhhW+FMC9LJ/BDvjfCLoKK5Xgh1E17ZLkVW6+OvUY4AkOgcYJ1B8IP8O6oz5SU2u/MShJZxBkr5xsvgbwuYXkcU3rHOiI3NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q3IoukpM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8122DC43394;
-	Sun, 24 Mar 2024 23:04:53 +0000 (UTC)
+	 MIME-Version; b=KF6Y5bL0OuStM3FUfUZcJLF6MDH33fXi6FuuY9eN1GaENVcZUJPO2MnpoXSDRYenFtFErQAslRl0JGHMwvDphk1sC/ODq3AuZrOx+6V0vu5EKdDhvdKlLQG+gS90kXvtalcbVVIo5HwRzDERyFeXzaKnwwGhKPTKoZC/YKvIfyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jEGOv6lT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62808C43399;
+	Sun, 24 Mar 2024 23:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321494;
-	bh=zDwrV9qQ/N4C7MwDZaNZ+GJUXT8auFLqKHkwnMxLKcQ=;
+	s=k20201202; t=1711321495;
+	bh=9u5NrhJcsS9DElx+ocr086SXQ18+mS2wYgg/2/lpBXU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q3IoukpMGZxZWYSMYu9ObdvH66sKOOngj8Fdk5+mBtOFvHC5gb7n9qCG5qVccy1WN
-	 0onc+uU0iAdHuoUqugZ+tVg7YyvwUGNC+0ISi6fSzLYwKgWOXirdyP4Rhn7ejz0Q0p
-	 vvpzhu+mPt3OocmGWuIYn1MusWLidKWGiByiSdldZFyfCD0D+WmnupuMOqFGjSAaAV
-	 CIETuyQfeye/D+14IzZKEYJGQhLAw6l6hIfiKVkNA0pRcKKydXwkHzmZwXWJFbFZ4T
-	 IV62iowguPQ1pdu1Okeml3YhMpGdvIXl614aWX7Ek+WjCFr2kv6aWBCqNGLghyxI2A
-	 hKrKwEUkHLVtQ==
+	b=jEGOv6lTW1W2T0Lb8pk0/1SRxNBaninMYefnrN9q5r0tXp4p8OA/IFfnX3bz6Mr0c
+	 BVQhYmB7nIc81pZQdSwL+pZp/T7hLtkYDJ9ERT8cxiQDx4A/RR149VN5uiJwAfQu6S
+	 d0bvct3tFcrKM/DfWDO9R2YDLb6G1CUiv+nrizIeYKixLQR2W96e6ovpSm80zNV1GR
+	 uy04GV75UCLmQhtTXvcDH/qeJ3fH+Y9Mef7AJYHTdqwtuzPRF6Rda7cELdvOBYzFfw
+	 6gW6ZcTRBGHmgjXFlM0VAWzo24d3C4cPQw4l4BnK5VZ1Vfl/GTehYGAbZM1T/8o0AS
+	 9xi7m1XIdXSCA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+Cc: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
+	Elliot Berman <quic_eberman@quicinc.com>,
+	Mukesh Ojha <quic_mojha@quicinc.com>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 219/638] arm64: dts: qcom: sdm845: Use the Low Power Island CX/MX for SLPI
-Date: Sun, 24 Mar 2024 18:54:16 -0400
-Message-ID: <20240324230116.1348576-220-sashal@kernel.org>
+Subject: [PATCH 6.6 220/638] soc: qcom: llcc: Check return value on Broadcast_OR reg read
+Date: Sun, 24 Mar 2024 18:54:17 -0400
+Message-ID: <20240324230116.1348576-221-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,37 +64,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
+From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
 
-[ Upstream commit 5dd227ccfb9568935bdaf82bc1893b36457dd4d3 ]
+[ Upstream commit ceeaddc19a90039861564d8e1078b778a8f95101 ]
 
-The SLPI is powered by the Low Power Island power rails. Fix the incorrect
-assignment.
+Commit c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support")
+introduced a new 4.1 if statement in llcc_update_act_ctrl() without
+considering that ret might be overwritten. So, add return value check
+after Broadcast_OR register read in llcc_update_act_ctrl().
 
-Fixes: 74588aada59a ("arm64: dts: qcom: sdm845: add SLPI remoteproc")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20231220-topic-sdm845_slpi_lcxmx-v1-1-db7c72ef99ae@linaro.org
+Fixes: c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support")
+Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
+Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+Link: https://lore.kernel.org/r/20240212183515.433873-1-quic_uchalich@quicinc.com
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soc/qcom/llcc-qcom.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 234d7875cd8e1..5bf0d5af452af 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3363,8 +3363,8 @@ slpi_pas: remoteproc@5c00000 {
+diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+index e877aace11555..03d5de759b256 100644
+--- a/drivers/soc/qcom/llcc-qcom.c
++++ b/drivers/soc/qcom/llcc-qcom.c
+@@ -610,6 +610,8 @@ static int llcc_update_act_ctrl(u32 sid,
+ 	ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
+ 				      slice_status, !(slice_status & status),
+ 				      0, LLCC_STATUS_READ_DELAY);
++	if (ret)
++		return ret;
  
- 			qcom,qmp = <&aoss_qmp>;
- 
--			power-domains = <&rpmhpd SDM845_CX>,
--					<&rpmhpd SDM845_MX>;
-+			power-domains = <&rpmhpd SDM845_LCX>,
-+					<&rpmhpd SDM845_LMX>;
- 			power-domain-names = "lcx", "lmx";
- 
- 			memory-region = <&slpi_mem>;
+ 	if (drv_data->version >= LLCC_VERSION_4_1_0_0)
+ 		ret = regmap_write(drv_data->bcast_regmap, act_clear_reg,
 -- 
 2.43.0
 
