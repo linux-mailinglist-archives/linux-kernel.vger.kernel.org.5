@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-115178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59151888D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:53:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 054B2888D91
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:52:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDAB31F2AD1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:53:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEF5A1F2AAE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9709A74E25;
-	Mon, 25 Mar 2024 01:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EF630906D;
+	Mon, 25 Mar 2024 01:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GpY2x8uO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GSb5uQwx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AAB291B65;
-	Sun, 24 Mar 2024 23:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4F8291B71;
+	Sun, 24 Mar 2024 23:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324236; cv=none; b=pIc7RhlpuPlgjn4iej5h+PlcVzIRIVB+1WOG4QuSQ51xQsffvYVrLX52q4mDTxW9yxfW1Pv4HIymq7qrDrj/zByUqo9wSqBo2uPXZHCjZl94XlTUL4swnd8/0Qv53CxdR5jF0voSNyqZg330xi24VtZ1TM4UCkyEx2x7FJTORnM=
+	t=1711324237; cv=none; b=Cd9avDY926LeMs2EemoSJKH9tDehFT+15SK7/aXgLiPjM8/ovJhMwTSd/IiOrzntArtFHiDdy85A6D8TcL6z6n626lHASNioLG6UfsYGpUqx3xTBrTR0os1ecg+58Qei3b0aelnanwQ9L4OgHGMsywetkArO0yLfGN07/OwvrRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324236; c=relaxed/simple;
-	bh=C33EEltJRwHMDdwN6dS+Wo7jrwyUKT4NvKbIs0EN4cM=;
+	s=arc-20240116; t=1711324237; c=relaxed/simple;
+	bh=YwkUYtGUobi3t4tiHcyMA4AKW9oJPCy4a1YK7+7rYIU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hjN5m7o8vHCHYGMOHAmbLKnMjgeOBJ42N3hjV+S+An47hV6LOyd/RgKj4QReuOmUonOE2sqS/ZHx7essN21Jjq9O3gmQINmRtdu6Js4yVn1gom/KR34qQJ07r1ig3lixo17kZI1kc5o1hOeV8/3AuyX3Aq5zgYG9y85R+6OF3ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GpY2x8uO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19379C433A6;
-	Sun, 24 Mar 2024 23:50:34 +0000 (UTC)
+	 MIME-Version; b=pNagUEm8/vTKag3dl4J3c6j5Il3aUIojMgHHuYDpaY5fHfcMV10z58LdCIQO7Izqt9lfanVD00Ob0YPyRUot197VzTjZ7iVY/YI2nC5Ma6UDOstEsI4Ny2AVM5aObe89dLDiTUOztR6lmyCxFTKbAlBXYcMCyJx+2XzGWooX7Uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GSb5uQwx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1572C43394;
+	Sun, 24 Mar 2024 23:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324235;
-	bh=C33EEltJRwHMDdwN6dS+Wo7jrwyUKT4NvKbIs0EN4cM=;
+	s=k20201202; t=1711324236;
+	bh=YwkUYtGUobi3t4tiHcyMA4AKW9oJPCy4a1YK7+7rYIU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GpY2x8uOK0zA8PegS5Qrq1Y2AmuNw6sH33hhcQtZSMY9C8hcsnLDYVp+rFtUAruwx
-	 vbJG1Xjsc5F/QIgf0kT49coHId4suyCN16Fi6/SQmz6PBW5mUjb106TVFyACin4I9O
-	 tDt3Ntp4ZYJJR52U7raa9VCM8UbqsB5q7JJxAfaXExGpSEaI5luHZNleVMQ1oLjK+p
-	 bywSb95wBoAKSBJ7cswVL3vahYtuEVt2xnw82KY7mSDdEJ/MYwHPSYR0l+WPLtR4XH
-	 TJsx+D1dFG+k89AR2DxSIMaEQ0yqZahHLw/ff1R2tHA6NohRSc2PQcHhPGxA56UWmN
-	 zxiTTKXNYaPEg==
+	b=GSb5uQwxFoNiJJMnngo1COEc57IK1Q3ttVCNlOXkk0wnmueTX5Scq79U6D1P/+M4s
+	 F6I9rf3w15r6+4HkCiAu4gL5JQ+5rQPOyHG+d38rCtqe/K97bOZ9bn6VwtL0lu6nPe
+	 wlsmaCdlYvLrrz9sWjEFcv81Mfv2bQqoSMT3f/FMHQopEsjq0+ikFcyCRkAu8lk883
+	 F9pY8aGyHrFuZLOXYddI+8H9jz2CALcYWh9eUVKexp39x1Cyde7UgO6zAYRK36WOki
+	 HX/ij6i1V8aA0L7C7t/i114p+jUNMaO/N8WLGvR0a9TR6L8P4eNSClLCIAO133V0ZR
+	 V9GFcflr905wQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Chuck Lever III <chuck.lever@oracle.com>,
-	syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Kees Cook <keescook@chromium.org>,
+	Andi Kleen <ak@linux.intel.com>,
 	Jan Kara <jack@suse.cz>,
 	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 018/148] do_sys_name_to_handle(): use kzalloc() to fix kernel-infoleak
-Date: Sun, 24 Mar 2024 19:48:02 -0400
-Message-ID: <20240324235012.1356413-19-sashal@kernel.org>
+Subject: [PATCH 4.19 019/148] fs/select: rework stack allocation hack for clang
+Date: Sun, 24 Mar 2024 19:48:03 -0400
+Message-ID: <20240324235012.1356413-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -65,70 +65,65 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 3948abaa4e2be938ccdfc289385a27342fb13d43 ]
+[ Upstream commit ddb9fd7a544088ed70eccbb9f85e9cc9952131c1 ]
 
-syzbot identified a kernel information leak vulnerability in
-do_sys_name_to_handle() and issued the following report [1].
+A while ago, we changed the way that select() and poll() preallocate
+a temporary buffer just under the size of the static warning limit of
+1024 bytes, as clang was frequently going slightly above that limit.
 
-[1]
-"BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
-BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
- instrument_copy_to_user include/linux/instrumented.h:114 [inline]
- _copy_to_user+0xbc/0x100 lib/usercopy.c:40
- copy_to_user include/linux/uaccess.h:191 [inline]
- do_sys_name_to_handle fs/fhandle.c:73 [inline]
- __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
- __se_sys_name_to_handle_at+0x949/0xb10 fs/fhandle.c:94
- __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
- ...
+The warnings have recently returned and I took another look. As it turns
+out, clang is not actually inherently worse at reserving stack space,
+it just happens to inline do_select() into core_sys_select(), while gcc
+never inlines it.
 
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
- kmalloc include/linux/slab.h:604 [inline]
- do_sys_name_to_handle fs/fhandle.c:39 [inline]
- __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
- __se_sys_name_to_handle_at+0x441/0xb10 fs/fhandle.c:94
- __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
- ...
+Annotate do_select() to never be inlined and in turn remove the special
+case for the allocation size. This should give the same behavior for
+both clang and gcc all the time and once more avoids those warnings.
 
-Bytes 18-19 of 20 are uninitialized
-Memory access of size 20 starts at ffff888128a46380
-Data copied to user address 0000000020000240"
-
-Per Chuck Lever's suggestion, use kzalloc() instead of kmalloc() to
-solve the problem.
-
-Fixes: 990d6c2d7aee ("vfs: Add name to file handle conversion support")
-Suggested-by: Chuck Lever III <chuck.lever@oracle.com>
-Reported-and-tested-by: <syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com>
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Link: https://lore.kernel.org/r/20240119153906.4367-1-n.zhandarovich@fintech.ru
+Fixes: ad312f95d41c ("fs/select: avoid clang stack usage warning")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20240216202352.2492798-1-arnd@kernel.org
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fhandle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/select.c          | 2 +-
+ include/linux/poll.h | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/fs/fhandle.c b/fs/fhandle.c
-index 0ee727485615b..cb78dbfd7cd51 100644
---- a/fs/fhandle.c
-+++ b/fs/fhandle.c
-@@ -37,7 +37,7 @@ static long do_sys_name_to_handle(struct path *path,
- 	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
- 		return -EINVAL;
+diff --git a/fs/select.c b/fs/select.c
+index 1c3985d0bcc3e..e09c43cd75bbb 100644
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -448,7 +448,7 @@ static inline void wait_key_set(poll_table *wait, unsigned long in,
+ 		wait->_key |= POLLOUT_SET;
+ }
  
--	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
-+	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
- 			 GFP_KERNEL);
- 	if (!handle)
- 		return -ENOMEM;
+-static int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
++static noinline_for_stack int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
+ {
+ 	ktime_t expire, *to = NULL;
+ 	struct poll_wqueues table;
+diff --git a/include/linux/poll.h b/include/linux/poll.h
+index 1cdc32b1f1b08..7e0fdcf905d2e 100644
+--- a/include/linux/poll.h
++++ b/include/linux/poll.h
+@@ -16,11 +16,7 @@
+ extern struct ctl_table epoll_table[]; /* for sysctl */
+ /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
+    additional memory. */
+-#ifdef __clang__
+-#define MAX_STACK_ALLOC 768
+-#else
+ #define MAX_STACK_ALLOC 832
+-#endif
+ #define FRONTEND_STACK_ALLOC	256
+ #define SELECT_STACK_ALLOC	FRONTEND_STACK_ALLOC
+ #define POLL_STACK_ALLOC	FRONTEND_STACK_ALLOC
 -- 
 2.43.0
 
