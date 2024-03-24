@@ -1,109 +1,105 @@
-Return-Path: <linux-kernel+bounces-112864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1503887F2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:26:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77CE6887F34
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 836FA1F215EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:26:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A79DD1C210ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BB61CF96;
-	Sun, 24 Mar 2024 21:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E291CF87;
+	Sun, 24 Mar 2024 21:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H3wO1wvc"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="DE/d3Shl"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75ED91C292
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 21:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAAE0DF78;
+	Sun, 24 Mar 2024 21:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711315579; cv=none; b=Sm3ETPJ4OcGxMv6Dkm9Z2xYarSPAm5G+1x1E+ivCQu+1G/7UKUz8phW0aAx/aSYZDBcqcTCxOuATvZwBzvUnUvi51WOnodY1/KlqmvaVAO6lPQEGy3jIej0Tgxx5uyfiRyMY13LfNyMHBVPM6gDl67pKHpF6rk13BD1n0DQa5a8=
+	t=1711316146; cv=none; b=vAI/zU+9dIKeNBc6CR/kD/H+Ni/DpjLVBYqLr/LHG19AqLEvKlMo9LT2SIIu7+auL8iP6qShi71b1QJHaBPVfD2JeAy7IXC25JbvG4U1ygGcvK0zXuyWjxAQfoT5zMeDNvEHnoh+i2dIFAg5eORZlYap4YhdBkiKnVUXHX2EZC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711315579; c=relaxed/simple;
-	bh=KKl6wWS260X61pqvbsfcKnOIji56BqFVJYwHX5ROGcY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UM5oC4NfLYsaNOSi0GxOdE6xOSt6vcjcv0MvM7dpxxUEcDebo7umNZF/Gro05lsPwVSDPdG6gIdBAxOX92DhjZKrl8WUbzAsUsemDyFt+0oDa8ufwJoY1zXOulawKkegyjJGUCadZkjM+fvgyRK5fseQnWCXuAEGljChiEEcNTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=H3wO1wvc; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-609f4d8551eso37896957b3.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 14:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711315577; x=1711920377; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8UBUPxS321/AJf/zeuMrnHeAqSxFl6swaOw2l9wbH8s=;
-        b=H3wO1wvcz1O3AS8Bi5sr1Yp1RCF5KI7ntF7/eyMiEuPXDPVgJWXGWbTrsXrxewnoPq
-         IpHd/KrwPcswTODF143HGyVCxB841jX09yrMugS27TcpWYS2OVj/ZaFVVUv7OyM1xA+n
-         F6REpmleVSbiZ/K+WHpNS/U+f4YHN+2RZeavFCKuUV0HDeY7ZzbOoB3UoNf14gjSwpzu
-         xeswF6yliMAQXaSA4Fmo2qz39c4hdZ2zremsBofAoVQHaoyU3rleJkBfjGEPs2SrFf7U
-         LgjwMuBc93Kp3r+ldY/sZD4hibIEjxPMAVW/TtHGhBfD4k0J3gjQi9sjFDMQ/V4xBhWy
-         DoHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711315577; x=1711920377;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8UBUPxS321/AJf/zeuMrnHeAqSxFl6swaOw2l9wbH8s=;
-        b=ke/p5MRNmttYz9PxYMMgElxcLGEdV1NGCpjzrN59gUD2Ao9vTy1Wd+11XyoOQpXfjj
-         3alARu7A3miCW3UAfDG1omRSHvagEpRBawxXCF2c3cjLx83WLlOR3G9tPdgyFyIh5Ukc
-         c6SAbCj8+bBbinmwqY+r26RT4mg82nljPbNwFLJz7eK6SDcvBlrB9jTrzAbHgQflctRF
-         QfLdVPRr9LtxM4E7FYliXArBRZGvTU2j77xXSIr+Xb/H9wgXOXVp07XGfe7P/tE0mqaf
-         rNKN7ljDvNfdKX1iYTGOWM9qMK0keDXYm4AtPN7zPfVuFS08uIQJTYSup/F6sQencp5w
-         RMfw==
-X-Forwarded-Encrypted: i=1; AJvYcCWR9XGKNpj/nX1ugbUeMBBKwph+oIXQBFP4YBiEAqlnVUsqX7ohcDEaGxLF1s9vej9oYEQ3l8t6Sd6ebNWaDlV188txS20XhwWyEZkM
-X-Gm-Message-State: AOJu0YzeUuSRFNi0B9s6qKmosJhkkogNQ6IBnoXoFYIMmDgt354UtsmE
-	hz6OaHQss0IjwLIG0/SaMg3VRBWgEv0AKEEcIAngNBtcbvpX311LCoHgFhoVU/WNZza4UhvJHqw
-	PKWKAwkpddm7/zvc7v6x1sMSvWU4pytkAGHSSKA==
-X-Google-Smtp-Source: AGHT+IG/BGMQhZLtiVAhPS3yZQIGBjfnOqHRCzrw1QQAMhgO2W6ZqAaMDp//3sX/c/QhGU7sxClNAVK8ToaSEIU60Zg=
-X-Received: by 2002:a25:d804:0:b0:dcf:a42b:7e2b with SMTP id
- p4-20020a25d804000000b00dcfa42b7e2bmr2460474ybg.3.1711315577391; Sun, 24 Mar
- 2024 14:26:17 -0700 (PDT)
+	s=arc-20240116; t=1711316146; c=relaxed/simple;
+	bh=8VK5MAL1Y2pBiI1ogdpkEIrQoqmkK6MUPC790OBfci0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=C2Kn8rfPNmN1dsa1yJ6oScC3c+S3JYOhNvtatZedFD9wRqImUmYbckEpaGN5oQdSxPZlMT6xoQLSEoFGro0tMyLgarFuPMCya9uvBq28djWQANMrupAJn8Z83D4rWuQwsBYtE6bX4xMaVv9Ov/4NI7BdeRkxRNhWSH52DnrpYCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=DE/d3Shl; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1711316132;
+	bh=ulW3Cqm8/uV68AdhJwzVhvDjYc3Mc32LlRTTtsYRRrg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=DE/d3ShlekHMObGGTslu2yeTYgkVALoKey4N2vsNMzy3osc9SwvZXbiVzQ7+P0ymB
+	 JnlLdtNotLgzfEeR2vurldW5z+rJAGorQM/YhFi5iavYw2PInujo/rxf07sxbrE9+D
+	 LgvRxF3GhZl9YpaabeFY06wJB+0MNfrZaqlvXgsQnTSGXuS4RUfiiW9+smprjzTUlS
+	 pM7eu6EEqI0TiY/tweZFKYIL36bPtQ/9nwvzSN7CnIRLMs/tL/N86reU9nDkklh6XR
+	 Q33xumIFoee/oVQvhDoK1nHhjr6Zw1ARWLxrf+HXpNYxt718zR7tqBQn84FgaO7aFd
+	 +iJ82FKWbsT5w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V2q9Z6J5fz4wcv;
+	Mon, 25 Mar 2024 08:35:30 +1100 (AEDT)
+Date: Mon, 25 Mar 2024 08:34:35 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>, Jani Nikula
+ <jani.nikula@linux.intel.com>, Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Lucas De Marchi <lucas.demarchi@intel.com>, Intel Graphics
+ <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: fetch warning for the drm-intel tree
+Message-ID: <20240325083435.4f970eec@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324-x1e80100-phy-edp-compatible-refactor-v5-0-a0db5f3150bc@linaro.org>
- <20240324-x1e80100-phy-edp-compatible-refactor-v5-1-a0db5f3150bc@linaro.org>
-In-Reply-To: <20240324-x1e80100-phy-edp-compatible-refactor-v5-1-a0db5f3150bc@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 24 Mar 2024 23:26:06 +0200
-Message-ID: <CAA8EJprPgZJ7hZooJEs1ysn2Py=M_rJguuVdXFuBK757q86ZAQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND v5 1/2] phy: Add Embedded DisplayPort and
- DisplayPort submodes
-To: Abel Vesa <abel.vesa@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Johan Hovold <johan@kernel.org>, linux-phy@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/UGcDP=zHKknV.w3ZXcL/qbe";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sun, 24 Mar 2024 at 20:50, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> In some cases, a DP PHY needs to be configured to work in eDP mode.
-> So add submodes for both DP and eDP so they can be used by the
-> controllers for specifying the mode the PHY should be configured in.
->
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  include/linux/phy/phy-dp.h | 3 +++
->  1 file changed, 3 insertions(+)
+--Sig_/UGcDP=zHKknV.w3ZXcL/qbe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Hi all,
 
-Vinod, we'd need an immutable branch or a tag for this patch, so that
-we can merge DP changes during this cycle
+fetching the drm-intel tree produced this warning:
 
--- 
-With best wishes
-Dmitry
+Commit
+
+  326e30e4624c ("drm/i915: Drop dead code for pvc")
+
+added this unexpected file:
+
+  drivers/gpu/drm/i915/gt/intel_workarounds.c.rej
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/UGcDP=zHKknV.w3ZXcL/qbe
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYAnGsACgkQAVBC80lX
+0Gxo8AgAmqbGXsK/2qwAmioQ+KoJpnbquSXlo91O7wkT9mnhzfKnXScsS6L/SDen
+II6GsCtREg48Wno0CC2Cdh5AOVAcmbeZW5fwIv1c9ESQSsIzaXARn3yllQnK2TNQ
+N/8j/N+Y1u1Tuig6W5pF8C5orCb3dgTmpwA2dGhj4BC9pRUYMvjbH67hHSdFZbRj
+BkPucMX8DUq/5zNZ6wK7Y5PcAqxzZwfCDzd5O7ze0EPXB7tJ3yoaPX+IgV8elULP
+kqoWs3jADnijg6PUUYCblfuC4u1xqf8RKbKKWdd1e5gxfs8p3VZDArD1mlfZrn9i
+A9AXoiUiomFeoMpEb/6YclMRtlFIxg==
+=DpOw
+-----END PGP SIGNATURE-----
+
+--Sig_/UGcDP=zHKknV.w3ZXcL/qbe--
 
