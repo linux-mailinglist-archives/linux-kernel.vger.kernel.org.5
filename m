@@ -1,119 +1,86 @@
-Return-Path: <linux-kernel+bounces-112555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F4011887B7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:40:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0F7887B7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:51:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5309282CCE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:40:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF0E81F221BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C18E28E7;
-	Sun, 24 Mar 2024 02:39:58 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AE81870;
+	Sun, 24 Mar 2024 02:51:06 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8E919E;
-	Sun, 24 Mar 2024 02:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD8819E
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 02:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711247997; cv=none; b=piiwxLpYcDM0JzZvRvsTySYzSm3/Rovtkpgl0G7PACpXjgfGGctaDnEwRUVBIM6jKscDoSJJiP+6oPTD5HxdiZ3w5lTcpZtKyDgh9WVETnnfLjwUg3PpdUWbI59iqSGy0r0uqOZXUEHgLOfPYCgLnEGNEHeOWjDGi9QawwpcLgc=
+	t=1711248666; cv=none; b=WMWBsow3HJ2q2MlMnotBO01KZcw9wg9ZKWh/c96wzBTB8QJXKnvxeIMsc4qM0PZQ2F5AFp4uKCBQvT8rGDL1cOJS8UahXNfcLHvYJUoA683e/wIFL3cyjYEgh9matFNAkgVpEBMCKWssPoV5conBBSktihk8UYKahaqx9TojmzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711247997; c=relaxed/simple;
-	bh=/vmD1Hg9GT3TdhXbCTlhgCSzd6lXMUJPnovLcw2v91g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NZPfvKNKJ88nUpqDtDqvikVbNBaV6eBEDb6X4yXp7MwWvjcLsxTMLKz9TYhj9cYJDh0Bu6wImM+cydIED0IR1HnJSKjiMIuQcEyD7gg2rqdug4vAbdlRTjId/RPIMzewTwRqM3lMiPxYw8IYp3p0PBhk+JB583o39jMzxFowTmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4V2KwN53PpztQWp;
-	Sun, 24 Mar 2024 10:37:24 +0800 (CST)
-Received: from kwepemd100009.china.huawei.com (unknown [7.221.188.135])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9C7CC1404F7;
-	Sun, 24 Mar 2024 10:39:45 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemd100009.china.huawei.com (7.221.188.135) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Sun, 24 Mar 2024 10:39:44 +0800
-Message-ID: <6095ba3b-ffda-4ca7-9da4-d841782006a2@huawei.com>
-Date: Sun, 24 Mar 2024 10:39:43 +0800
+	s=arc-20240116; t=1711248666; c=relaxed/simple;
+	bh=GGX21EKY1DxGg5lM+IvKAfFuR1djJQaZasNApvsks/M=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=WKxUpPpnfatV9tTAUBWcNbZvQa4IKRzH8r2OEsOlUCcQWR56LnLclsxWwu9+3xb72GnVkbXL+mY9EWAnXLb2xbnUBF5U3xwbD7R9hac+3kJ/6vmFzyFdOB3jWWKCZ9myvYXhOtuNyCG1EP8U60Ub5tnvAUCxnSw23yC5GSUB1pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cef80a1e5bso316522939f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 19:51:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711248663; x=1711853463;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=59bhkrzAoJ+6qkVOS/b/c62pyhjPKklvf8CLHJEOdxQ=;
+        b=onMS6t8DtNWHZsrTNneNcw16o7ItA4CF/aXXivAAkLiKvd2n2Ukaft9WlTCmf6RkAF
+         eqXwqlP67ZjQhyTOyon7gdjHmNdDbOxzi5FUBLjtJYPnNXQf0w9AvjxCs8W8PvSy2B+9
+         LBWFgPKX85doxnuXkAvcS6ID1sol0NCFj7Uqz79idOe5dV3RJXrXPlk64ZlMCFTYt0TU
+         w4wOie7pSFmqzuvykthjlsagE5NvdocFnXp1lfGdFgOmPe81J1jbHg+XherrHvJZafvr
+         ydaU1K92ajD0MqwLPuPD3pZn0qnhk+C3AGmiHnWgOCmZvIP9E/DLaQPVmTGup4e3cE2l
+         8ApQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVbD7Y0vRShz8LFf9CT6wgiPfxIzjXBFs54d8+P48LGiln5f8JdJIEXMxYat0p6uRt9o7qQ2QVUSpI8Kibi5NqHCdlo8mn3Vg12CVYd
+X-Gm-Message-State: AOJu0YyXZlqFmmz8lE/8J/Pm2bqEJh/qMOgUvbHRLcWaXgN25QxALRKM
+	RBLyJABgm1IWDa+Oha0zXj6C8wluDSVc+C91z5fd9kAaLC+f2vR/jB7ETN0nlpDOtDebwXj883e
+	Y8fFu8DY2bVaTPdTXurSZ2JRRfVFd9apT1vj2d09QmkrUxRej5YmbwqQ=
+X-Google-Smtp-Source: AGHT+IEYXhifpbtBJCPTB28Xg1XEaBRkaDiHM/LU5ym8ycpiYGmyxpA4jnMtT29Boq1imA9W3pYYZ/WNLYLtI71wwWWz4XxfCzTX
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/2] bpf,riscv: Implement bpf_addr_space_cast
- instruction
-Content-Language: en-US
-To: Puranjay Mohan <puranjay12@gmail.com>
-CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
-	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
-	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Luke Nelson
-	<luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, <bpf@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240323154652.54572-1-puranjay12@gmail.com>
- <20240323154652.54572-3-puranjay12@gmail.com>
- <3e07fb21-da08-4183-8bd4-064b519c7ddb@huawei.com>
- <mb61pjzlslwp9.fsf@gmail.com>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <mb61pjzlslwp9.fsf@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100009.china.huawei.com (7.221.188.135)
+X-Received: by 2002:a05:6638:4111:b0:47c:184a:42d1 with SMTP id
+ ay17-20020a056638411100b0047c184a42d1mr3342jab.1.1711248663188; Sat, 23 Mar
+ 2024 19:51:03 -0700 (PDT)
+Date: Sat, 23 Mar 2024 19:51:03 -0700
+In-Reply-To: <20240323224657.2722-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1254406145f207b@google.com>
+Subject: Re: [syzbot] [batman?] [bpf?] possible deadlock in lock_timer_base
+From: syzbot <syzbot+8983d6d4f7df556be565@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 2024/3/24 0:49, Puranjay Mohan wrote:
-> Pu Lehui <pulehui@huawei.com> writes:
-> 
->> On 2024/3/23 23:46, Puranjay Mohan wrote:
->>> LLVM generates bpf_addr_space_cast instruction while translating
->> [snip]
->>>    
->>>    /* Convert from ninsns to bytes. */
->>> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
->>> index f51b832eafb6..3c389e75cb96 100644
->>> --- a/arch/riscv/net/bpf_jit_comp64.c
->>> +++ b/arch/riscv/net/bpf_jit_comp64.c
->>> @@ -1083,6 +1083,16 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
->>>    	/* dst = src */
->>>    	case BPF_ALU | BPF_MOV | BPF_X:
->>>    	case BPF_ALU64 | BPF_MOV | BPF_X:
->>> +		if (BPF_CLASS(insn->code) == BPF_ALU64 && insn->off == BPF_ADDR_SPACE_CAST &&
->>> +		    insn->imm == 1U << 16) {
->>> +			emit_mv(RV_REG_T1, rs, ctx); > +			emit_zextw(RV_REG_T1, RV_REG_T1, ctx);
->> combine mv and zextw will be better
-> 
-> Do you suggest doing:
-> 
-> emit_zextw(RV_REG_T1, rs, ctx);
-> 
-> Will do it in next version.
-> 
->>> +			emit_imm(rd, (ctx->user_vm_start >> 32) << 32, ctx);
->>> +			emit(rv_beq(RV_REG_T1, RV_REG_ZERO, 4), ctx);
->>> +			emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
->>> +			emit_mv(rd, RV_REG_T1, ctx);
->> ditto, but for or and mv
-> 
-> How would we combine or and mv?
-> also, we have a beq above and in one case both or and mv should happen,
-> but in other case only mv should happen.
-> 
-Okay, another branch is that t1 is zero, but not rd.
+Reported-and-tested-by: syzbot+8983d6d4f7df556be565@syzkaller.appspotmail.com
 
-> Thanks,
-> Puranjay
+Tested on:
+
+commit:         ea80e3ed net: ethernet: mtk_eth_soc: fix PPE hanging i..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12583185180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=8983d6d4f7df556be565
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12f9eaa5180000
+
+Note: testing is done by a robot and is best-effort only.
 
