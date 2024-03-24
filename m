@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A8B088908C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:21:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F48A888B5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BFD31C2C573
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:21:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3BDC1F2774A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D142A3597;
-	Sun, 24 Mar 2024 23:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BED2A4905;
+	Sun, 24 Mar 2024 23:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NbvZ+zpT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MNTm2Y2t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C20B233CFE;
-	Sun, 24 Mar 2024 23:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B682234500;
+	Sun, 24 Mar 2024 23:18:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322280; cv=none; b=gmLalwHqbNlwCNVzvYaOAvYQq4gz2Jz7qqPVcwL3jZy2mXWotpp9FGqDwFe01dzFXD1X8mHHIruJyV7iwKglHQoWjmHISckm6hggjrymfHuYog16Kjtxr99ApayOLrhExXYNzFMCtf8gK2V8njAgq0pJclrr8milOkvSniTDq84=
+	t=1711322281; cv=none; b=jqozN2D2a0Ss1jy1EfsJAhes3YrIKMi32V7DdIp963bTtnRGog9dsVP8b3tqvcwNqLeOxIRHfK0lSB4fCOI5gjGO02WjF7yLKBEz5+zSvXGU1Z/SVMzRHqBAMtzvU1oBROYYD/rsuNLqa4RyB/d7Wfv3smlaRjzl7JJKrqo8vaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322280; c=relaxed/simple;
-	bh=Wb0lZEF+fzsfKq5nbyUbEiq7f5MQZ2qsQZlboYEXHig=;
+	s=arc-20240116; t=1711322281; c=relaxed/simple;
+	bh=KF94tE9wc8iQd/yr9pjHcO4zDQAEnIv2U/NDSyNuoXY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YhYwd0mhgboplfiCfQRLkMUtW1SsFAtv3tyZckALVUqDJ+Ys5YtfapzSYELaVhqjP5cYhbu7DeXGNToVWgh6pWRx78oixBOCAtSz3sKRPg00v1AAxOP16fTjtVjzrFyyEoi+wzM8D7yBrRsFo2keI7QeTOh6sEBGbFXZPzUyp00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NbvZ+zpT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A38FFC43390;
-	Sun, 24 Mar 2024 23:17:58 +0000 (UTC)
+	 MIME-Version; b=PrZms/Ay+4ybUIaqghA4JPfuKnD286lYrgFfsuAUe1pQ3+M6SeLsdWBrzAfwVhjMxuogD7iZCfaUBRTaHi/tcYo1dr6CKrwSvzpYPXpruDf2Hs/7nJMOSWOt+lTUxWW8vHDi/Wg7avLIloMs9eiQjHdbB2mFEdOo3RdVimldPic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MNTm2Y2t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EEABC433F1;
+	Sun, 24 Mar 2024 23:17:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322279;
-	bh=Wb0lZEF+fzsfKq5nbyUbEiq7f5MQZ2qsQZlboYEXHig=;
+	s=k20201202; t=1711322280;
+	bh=KF94tE9wc8iQd/yr9pjHcO4zDQAEnIv2U/NDSyNuoXY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NbvZ+zpTgUsVH6YYCdBdY0eHo6wpSgENIYlweNfMhu0ct/nbCYcscNO9PPC8Zp/gr
-	 SCEdXcA6PYM0k6tlgoM3ScdxWc6bkpvzXQQ427WaHvxjEW1FjdklAGKWsvmNJ8sjRs
-	 XxuQBssL10oHVanB0AbYeMDNFuOtH/b80qaUeW7kIn3llRljad8xX7IQ4KuglBa3NZ
-	 MCne6Wf2o/wfUgNGhThBzMaiiJRA/22hLAzKdgbBCbnG11GH1OkfPFZXJRwOgfi7TN
-	 9/i+U83lWvBnA1E2pRdxNFIiPikB9nJ6m5+uCi9orOtdSI/PWXA1vhO8xxurGW++g8
-	 nLHIxqWJf82VA==
+	b=MNTm2Y2t567o92JGDqgjBuG0CIL2oGr10dSN8tZxr8gTCRdBraSxh576y+8wo62cD
+	 q8WHsXxWsqdiCcTFr5GK6/wog8L8va5xgW/BMczejkC0PRniMT4s1K8RlW9xoT7wwJ
+	 bUmwoujFtuUduv8rkFl2wGy0UllNvZfuWBzd78CohkpensrNmVEAkDpgvimMVLNt1D
+	 64Y38aoSqUpOZU7nQnlQvvHIIZfcCDw7kBMGlJ/VSq8OdZkXdfYMNsUZSasqtRKW02
+	 mUe7EtbhmSjQbx6N5cW91PvxF4yK0AhePZ+U02tFwg8wY7Vbuok2gJpGuOPm7+kyDH
+	 dichUQ6e9jufA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Chao Yu <chao@kernel.org>,
+	Zhiguo Niu <zhiguo.niu@unisoc.com>,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 362/451] f2fs: compress: fix to cover f2fs_disable_compressed_file() w/ i_sem
-Date: Sun, 24 Mar 2024 19:10:38 -0400
-Message-ID: <20240324231207.1351418-363-sashal@kernel.org>
+Subject: [PATCH 6.1 363/451] f2fs: fix to avoid potential panic during recovery
+Date: Sun, 24 Mar 2024 19:10:39 -0400
+Message-ID: <20240324231207.1351418-364-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -64,59 +65,105 @@ Content-Transfer-Encoding: 8bit
 
 From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 2f9420d3a94aeebd92db88f00f4f2f1a3bd3f6cf ]
+[ Upstream commit 21ec68234826b1b54ab980a8df6e33c74cfbee58 ]
 
-- f2fs_disable_compressed_file
-  - check inode_has_data
-					- f2fs_file_mmap
-					- mkwrite
-					 - f2fs_get_block_locked
-					 : update metadata in compressed
-					   inode's disk layout
-  - fi->i_flags &= ~F2FS_COMPR_FL
-  - clear_inode_flag(inode, FI_COMPRESSED_FILE);
+During recovery, if FAULT_BLOCK is on, it is possible that
+f2fs_reserve_new_block() will return -ENOSPC during recovery,
+then it may trigger panic.
 
-we should use i_sem lock to prevent above race case.
+Also, if fault injection rate is 1 and only FAULT_BLOCK fault
+type is on, it may encounter deadloop in loop of block reservation.
 
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Let's change as below to fix these issues:
+- remove bug_on() to avoid panic.
+- limit the loop count of block reservation to avoid potential
+deadloop.
+
+Fixes: 956fa1ddc132 ("f2fs: fix to check return value of f2fs_reserve_new_block()")
+Reported-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
 Signed-off-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/f2fs.h | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ fs/f2fs/f2fs.h     |  5 +++++
+ fs/f2fs/recovery.c | 33 ++++++++++++++++-----------------
+ 2 files changed, 21 insertions(+), 17 deletions(-)
 
 diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 2afb91471b535..a81091a5e282d 100644
+index a81091a5e282d..f5d69893d2d92 100644
 --- a/fs/f2fs/f2fs.h
 +++ b/fs/f2fs/f2fs.h
-@@ -4367,15 +4367,24 @@ static inline bool f2fs_disable_compressed_file(struct inode *inode)
- {
- 	struct f2fs_inode_info *fi = F2FS_I(inode);
+@@ -74,6 +74,11 @@ struct f2fs_fault_info {
  
--	if (!f2fs_compressed_file(inode))
-+	f2fs_down_write(&F2FS_I(inode)->i_sem);
+ extern const char *f2fs_fault_name[FAULT_MAX];
+ #define IS_FAULT_SET(fi, type) ((fi)->inject_type & BIT(type))
 +
-+	if (!f2fs_compressed_file(inode)) {
-+		f2fs_up_write(&F2FS_I(inode)->i_sem);
- 		return true;
--	if (S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))
-+	}
-+	if (f2fs_is_mmap_file(inode) ||
-+		(S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))) {
-+		f2fs_up_write(&F2FS_I(inode)->i_sem);
- 		return false;
-+	}
++/* maximum retry count for injected failure */
++#define DEFAULT_FAILURE_RETRY_COUNT		8
++#else
++#define DEFAULT_FAILURE_RETRY_COUNT		1
+ #endif
  
- 	fi->i_flags &= ~F2FS_COMPR_FL;
- 	stat_dec_compr_inode(inode);
- 	clear_inode_flag(inode, FI_COMPRESSED_FILE);
- 	f2fs_mark_inode_dirty_sync(inode, true);
-+
-+	f2fs_up_write(&F2FS_I(inode)->i_sem);
- 	return true;
+ /*
+diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+index 53a6487f91e44..f5efc37a2b513 100644
+--- a/fs/f2fs/recovery.c
++++ b/fs/f2fs/recovery.c
+@@ -582,6 +582,19 @@ static int check_index_in_prev_nodes(struct f2fs_sb_info *sbi,
+ 	return 0;
  }
  
++static int f2fs_reserve_new_block_retry(struct dnode_of_data *dn)
++{
++	int i, err = 0;
++
++	for (i = DEFAULT_FAILURE_RETRY_COUNT; i > 0; i--) {
++		err = f2fs_reserve_new_block(dn);
++		if (!err)
++			break;
++	}
++
++	return err;
++}
++
+ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+ 					struct page *page)
+ {
+@@ -683,14 +696,8 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+ 		 */
+ 		if (dest == NEW_ADDR) {
+ 			f2fs_truncate_data_blocks_range(&dn, 1);
+-			do {
+-				err = f2fs_reserve_new_block(&dn);
+-				if (err == -ENOSPC) {
+-					f2fs_bug_on(sbi, 1);
+-					break;
+-				}
+-			} while (err &&
+-				IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
++
++			err = f2fs_reserve_new_block_retry(&dn);
+ 			if (err)
+ 				goto err;
+ 			continue;
+@@ -698,16 +705,8 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+ 
+ 		/* dest is valid block, try to recover from src to dest */
+ 		if (f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
+-
+ 			if (src == NULL_ADDR) {
+-				do {
+-					err = f2fs_reserve_new_block(&dn);
+-					if (err == -ENOSPC) {
+-						f2fs_bug_on(sbi, 1);
+-						break;
+-					}
+-				} while (err &&
+-					IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
++				err = f2fs_reserve_new_block_retry(&dn);
+ 				if (err)
+ 					goto err;
+ 			}
 -- 
 2.43.0
 
