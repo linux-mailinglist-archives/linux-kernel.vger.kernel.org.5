@@ -1,55 +1,59 @@
-Return-Path: <linux-kernel+bounces-113334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A7C288837E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:12:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ED3D888380
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:12:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2646B23031
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:12:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D061E1C22BC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:12:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62FFC196E1C;
-	Sun, 24 Mar 2024 22:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 770BE197552;
+	Sun, 24 Mar 2024 22:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9aCKPHc"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UzhDlEPx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F09C196E06;
-	Sun, 24 Mar 2024 22:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D7A6D1AB;
+	Sun, 24 Mar 2024 22:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320135; cv=none; b=Riw6V6oGtTgnKdxJb9+61eJ/IN8RmtE9TKABKI0nxgrpwKz/XHIaft1pDOhCRU2u1y4HobImCB85L5cw5we5l42B4JyeSEkXG0viDGCyJcPB+l1Nu3lFibAy0vIeUagyQCQhegEQ3vJSAlxR3AKi/qlSwPNnwqxwk/bF3O65GuU=
+	t=1711320136; cv=none; b=rgUloBT2bzc6LBxPr0fJeZo8N66oYo3TKp44l1/hjs6AX/tEvNBvDaU45kZfHhfX0bXPPKgvqP1lrDMvsoP0p5k23DGsND1Xnm11ZJkgav1OZKbN46gweWVZTFy1sCp0a8AgwbVM2WA/s0XcZlpIBwtuZYNrs2+5zgMYkEUOb1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320135; c=relaxed/simple;
-	bh=bZsBnUnfKdFw2VCk5QyKwh671+Xs8KoP7fsGfnZBPpw=;
+	s=arc-20240116; t=1711320136; c=relaxed/simple;
+	bh=AE78y5qGH6kGnE6uPJn7AzC5Sja71QGpBQCSPAruAfo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sD7in7fwPPYqx106r1BNYiRVuXaLqb8koPGZQeebpVAgpUsG76prrsAxBiUNq9GBqTxc9l5BztT/yXZ4z/UF0x9vxH4DzrU1RLYPCWU31EjO5yFbIcV5DWY/bgQR6Fg6K6ojaDHAcpwo2wPbEG/kd9wmoU1A/OBgXsKd+xZLBDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9aCKPHc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F082C433C7;
-	Sun, 24 Mar 2024 22:42:14 +0000 (UTC)
+	 MIME-Version; b=uUccQHdvdXXKHnIn+cqPlM5vNMIUfK6f0rmotWwZnFQESChNsrcC0+12dJSZpk8tXdKrp1lq3dO5q/ZUm71dnIejvFXo34BHhOSRwas6sr3EJi8Yr8u8SE2BZPn0YrBK3BedwsGB0XbrsMZzFtmpdUlZskHNAYJfS647iP5Kp+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UzhDlEPx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69243C433A6;
+	Sun, 24 Mar 2024 22:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320135;
-	bh=bZsBnUnfKdFw2VCk5QyKwh671+Xs8KoP7fsGfnZBPpw=;
+	s=k20201202; t=1711320136;
+	bh=AE78y5qGH6kGnE6uPJn7AzC5Sja71QGpBQCSPAruAfo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=V9aCKPHc6tf5RCfwZAK9q2jln8Q+iDeNr9FP2iCaf5LG+Cl2HSOXFdnLNn/Cz/VJ8
-	 B40ds8Blj95ONRXAfSmPuxBMTBb+3vXE+EEJGhWI2YSlUtMTzkDM3rQ/UeQUA/xZ39
-	 nNtFiVhThnEv1lTbST6JVHNwB/3M2HspFTaLkCNinTRtrq2qzMxLmWrwx5kWbzBkZz
-	 9LCfgwSmLFFF2eeSAXwOROmlvX7Xs54OkbLxAxBN0pCuyprOqTuQ5fztkd1zarIv9d
-	 Gv6kEJHEjWe4t4TQk0S7Ne2OAoG8j1hfQS+DOet5YIFcfpVsqnF41Pj/bvFYRKYXxE
-	 m3UKf5WXkpAVA==
+	b=UzhDlEPxmo52JkcDlI900XwSL/3JmwuoAFkMS9nnND+vsS+w+4IPaPVLvluwAKswZ
+	 noyrh9cfpMt/cesNeU0YZ2kGr0d/OqMD3/NkbWDydM9oUCPN2VozdlfG9pwrv03Nsl
+	 CbU9SmdHOCEw7DXZSLbBDDZz5rhRRdB2wgLafQN4VSwruECEAbuTsR0Fl9pvKlE2Mb
+	 c4x0mKVb97mk+4RIAlu1czP9NPFWW6ziuHiU4wiHFsyORyA8CP7v/leEYkk7ZqujVW
+	 3ma9MFF/8Z40Q7GUCKNCTo5n2U/+RL9twM8ZJACdaP1Kyek7H0MdVGQ0fLv8kpmjuz
+	 LhD/3DbdDL6sA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Caleb Connolly <caleb.connolly@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+	Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+	Roman Li <roman.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Tom Chung <chiahsuan.chung@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 443/715] clk: qcom: dispcc-sdm845: Adjust internal GDSC wait times
-Date: Sun, 24 Mar 2024 18:30:22 -0400
-Message-ID: <20240324223455.1342824-444-sashal@kernel.org>
+Subject: [PATCH 6.8 444/715] drm/amd/display: Add 'replay' NULL check in 'edp_set_replay_allow_active()'
+Date: Sun, 24 Mar 2024 18:30:23 -0400
+Message-ID: <20240324223455.1342824-445-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,36 +67,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit 117e7dc697c2739d754db8fe0c1e2d4f1f5d5f82 ]
+[ Upstream commit f6aed043ee5d75b3d1bfc452b1a9584b63c8f76b ]
 
-SDM845 downstream uses non-default values for GDSC internal waits.
-Program them accordingly to avoid surprises.
+In the first if statement, we're checking if 'replay' is NULL. But in
+the second if statement, we're not checking if 'replay' is NULL again
+before calling replay->funcs->replay_set_power_opt().
 
-Fixes: 81351776c9fb ("clk: qcom: Add display clock controller driver for SDM845")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Tested-by: Caleb Connolly <caleb.connolly@linaro.org> # OnePlus 6
-Link: https://lore.kernel.org/r/20240103-topic-845gdsc-v1-1-368efbe1a61d@linaro.org
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+if (replay == NULL && force_static)
+    return false;
+
+..
+
+if (link->replay_settings.replay_feature_enabled &&
+    replay->funcs->replay_set_power_opt) {
+	replay->funcs->replay_set_power_opt(replay, *power_opts, panel_inst);
+	link->replay_settings.replay_power_opt_active = *power_opts;
+}
+
+If 'replay' is NULL, this will cause a null pointer dereference.
+
+Fixes the below found by smatch:
+drivers/gpu/drm/amd/amdgpu/../display/dc/link/protocols/link_edp_panel_control.c:895 edp_set_replay_allow_active() error: we previously assumed 'replay' could be null (see line 887)
+
+Fixes: c7ddc0a800bc ("drm/amd/display: Add Functions to enable Freesync Panel Replay")
+Cc: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
+Cc: Roman Li <roman.li@amd.com>
+Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Cc: Tom Chung <chiahsuan.chung@amd.com>
+Suggested-by: Tom Chung <chiahsuan.chung@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Tom Chung <chiahsuan.chung@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/dispcc-sdm845.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../drm/amd/display/dc/link/protocols/link_edp_panel_control.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/qcom/dispcc-sdm845.c b/drivers/clk/qcom/dispcc-sdm845.c
-index 735adfefc3798..e792e0b130d33 100644
---- a/drivers/clk/qcom/dispcc-sdm845.c
-+++ b/drivers/clk/qcom/dispcc-sdm845.c
-@@ -759,6 +759,8 @@ static struct clk_branch disp_cc_mdss_vsync_clk = {
+diff --git a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
+index 046d3e2054153..f1489f4a40c12 100644
+--- a/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
++++ b/drivers/gpu/drm/amd/display/dc/link/protocols/link_edp_panel_control.c
+@@ -892,7 +892,8 @@ bool edp_set_replay_allow_active(struct dc_link *link, const bool *allow_active,
  
- static struct gdsc mdss_gdsc = {
- 	.gdscr = 0x3000,
-+	.en_few_wait_val = 0x6,
-+	.en_rest_wait_val = 0x5,
- 	.pd = {
- 		.name = "mdss_gdsc",
- 	},
+ 	/* Set power optimization flag */
+ 	if (power_opts && link->replay_settings.replay_power_opt_active != *power_opts) {
+-		if (link->replay_settings.replay_feature_enabled && replay->funcs->replay_set_power_opt) {
++		if (replay != NULL && link->replay_settings.replay_feature_enabled &&
++		    replay->funcs->replay_set_power_opt) {
+ 			replay->funcs->replay_set_power_opt(replay, *power_opts, panel_inst);
+ 			link->replay_settings.replay_power_opt_active = *power_opts;
+ 		}
 -- 
 2.43.0
 
