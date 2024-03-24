@@ -1,56 +1,53 @@
-Return-Path: <linux-kernel+bounces-113643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ACC8888E23
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:09:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71CF08885D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4594D297B32
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:09:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 958AA1C25338
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48161D8BC3;
-	Sun, 24 Mar 2024 22:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5D084A2B;
+	Sun, 24 Mar 2024 22:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ejoD+RvL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bMHwz1sQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54101D44AF;
-	Sun, 24 Mar 2024 22:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7143D1D44B8;
+	Sun, 24 Mar 2024 22:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320556; cv=none; b=RcJ46/Evfpy2+4FlCkWN2fsNvi1z1PncKetigKVbshFirIRO50O7/by6K/O/5T54Zk4xD6zLzGHEXfBzbOJGuPr1KncPylofj7YYEo67JJhX1ENYcdu9CDPaXuCCkeKpS4DykSEjDu3qA2PmaGNLVdqvFEeuUKoX9ujzCgJoclY=
+	t=1711320557; cv=none; b=KLvpTC43pXGnFbUItiOYOxcDqQkO6NYLm1Sfme8H4o6ZOaxcZoTZE5FNdZKRxFI6gmunuGH0sm+RbdSbG4yaKQGE4vBQ6tZRdiSF8hEOLfgzYdCduHrSKDg+3FVM+Z2o+hOMU0TqNxp3+rbmUL3BSAYwfpgjrXwFDUz7UqxneFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320556; c=relaxed/simple;
-	bh=vqjNV31bAJM76RZC3bgXxtzZINuHlO/JuRr4ZD6dRS4=;
+	s=arc-20240116; t=1711320557; c=relaxed/simple;
+	bh=o0P18BDc75hN2CyaedHN48mE5buT5ZzzGqs59ZBu8ls=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FIqrQ78PVXwQEcV3ir6GH+KlrJHMXgjY02RPUEAKxeWwkzPcIxzLNcqHmjnWVJ0VojDdPrjynN9SU00M8qrpQJYy4uOh5Nqxb17REifDHd7OLCraFegSx89Z2K3X1NbFbH6gsxjIcKY5JUkR2YXBQuRYCr4iZN95y86K7XwESlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ejoD+RvL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7159C433C7;
-	Sun, 24 Mar 2024 22:49:14 +0000 (UTC)
+	 MIME-Version; b=Mer6JQhv/gvvA9qK1sMMGrsjtY3jZQGbNHBEyADM0L8Zqw0gh6wsd3EuHdkScB6W60OPcvzGV/SkBGnLmYHHWJPp7UAuUxdC7aQTX0jJy2BGCrKao9Ji+aRWrb6Eh8qBgI/5zP7DB2Beol3/368Z/YgxLUAZWuVjaTFZimsXm20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bMHwz1sQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC1D6C433F1;
+	Sun, 24 Mar 2024 22:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320555;
-	bh=vqjNV31bAJM76RZC3bgXxtzZINuHlO/JuRr4ZD6dRS4=;
+	s=k20201202; t=1711320556;
+	bh=o0P18BDc75hN2CyaedHN48mE5buT5ZzzGqs59ZBu8ls=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ejoD+RvLaTXOI5EowjalqC+qmNfhUUrBVsXzu/2LyggJes7jrhtXYAV4hG37A5Kqo
-	 lTk1XhIJHpcYMOzQ7U248SlpMsmDtQ/6VcAawNKlqmEEehii6DFHCNaKi5VhQlu+T/
-	 xnXk8uuLi+3nqWlr85G6TtMVR/YGnGLo2BlFS4ii1GLguO/4M2TwxCdhWkWX7FYqKo
-	 gr8297/4OVI3vGC4lc53SfSjwjaFnz+rZjVpt1HZZkujFpYCYyWDji4TBigmUtOKMh
-	 DsHgv0rpgkww+F10QRvvtohbBt58KWU/GkwqmBuZ5psLbt7/AjakUw36UFk9U8s0FU
-	 ho6mIWQjHvOfA==
+	b=bMHwz1sQUThKXqc8MlTOOKXi8SPWceOGugFMGA+Jbodpgq/9mkshk/k3ld2UWqrtB
+	 /XurdISA5wmSp0qfIBh0Kp908eh3qeC7tA0V+VlX3ORNpyTfpqMaEx2HbUjeme3dHM
+	 nmU9n9TVQJ8uS+YEboWSfnQPvK3364ZeBgvbBzXTxXIBC8BTBJyv7KD0E1w38M44r6
+	 5GfRJ5CfNp4591E2ol37C3vieIvDNPhpW/ug1YuUI1uz7nYsxec25VPOOIEqES2EE7
+	 hJzba8Fm92e7B78fif5y/3+8rNzzCji6yB90mi2FmJqet7Wrh5FgvIQn5NNDsyLz/d
+	 ca4JwFvAoGOvA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yu Kuai <yukuai3@huawei.com>,
-	Paul Luse <paul.e.luse@linux.intel.com>,
-	Xiao Ni <xni@redhat.com>,
-	Song Liu <song@kernel.org>,
+Cc: Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 116/713] md/raid1: fix choose next idle in read_balance()
-Date: Sun, 24 Mar 2024 18:37:22 -0400
-Message-ID: <20240324224720.1345309-117-sashal@kernel.org>
+Subject: [PATCH 6.7 117/713] io_uring/net: unify how recvmsg and sendmsg copy in the msghdr
+Date: Sun, 24 Mar 2024 18:37:23 -0400
+Message-ID: <20240324224720.1345309-118-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,146 +61,328 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 257ac239ffcfd097a9a0732bf5095fb00164f334 ]
+[ Upstream commit 52307ac4f2b507f60bae6df5be938d35e199c688 ]
 
-Commit 12cee5a8a29e ("md/raid1: prevent merging too large request") add
-the case choose next idle in read_balance():
+For recvmsg, we roll our own since we support buffer selections. This
+isn't the case for sendmsg right now, but in preparation for doing so,
+make the recvmsg copy helpers generic so we can call them from the
+sendmsg side as well.
 
-read_balance:
- for_each_rdev
-  if(next_seq_sect == this_sector || dist == 0)
-  -> sequential reads
-   best_disk = disk;
-   if (...)
-    choose_next_idle = 1
-    continue;
-
- for_each_rdev
- -> iterate next rdev
-  if (pending == 0)
-   best_disk = disk;
-   -> choose the next idle disk
-   break;
-
-  if (choose_next_idle)
-   -> keep using this rdev if there are no other idle disk
-   contine
-
-However, commit 2e52d449bcec ("md/raid1: add failfast handling for reads.")
-remove the code:
-
--               /* If device is idle, use it */
--               if (pending == 0) {
--                       best_disk = disk;
--                       break;
--               }
-
-Hence choose next idle will never work now, fix this problem by
-following:
-
-1) don't set best_disk in this case, read_balance() will choose the best
-   disk after iterating all the disks;
-2) add 'pending' so that other idle disk will be chosen;
-3) add a new local variable 'sequential_disk' to record the disk, and if
-   there is no other idle disk, 'sequential_disk' will be chosen;
-
-Fixes: 2e52d449bcec ("md/raid1: add failfast handling for reads.")
-Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
-Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Xiao Ni <xni@redhat.com>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240229095714.926789-5-yukuai1@huaweicloud.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Stable-dep-of: 8ede3db5061b ("io_uring/net: fix overflow check in io_recvmsg_mshot_prep()")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/raid1.c | 32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+ io_uring/net.c | 271 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 142 insertions(+), 129 deletions(-)
 
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 27d15b640eff3..750a802478e52 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -600,13 +600,12 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 	const sector_t this_sector = r1_bio->sector;
- 	int sectors;
- 	int best_good_sectors;
--	int best_disk, best_dist_disk, best_pending_disk;
-+	int best_disk, best_dist_disk, best_pending_disk, sequential_disk;
- 	int disk;
- 	sector_t best_dist;
- 	unsigned int min_pending;
- 	struct md_rdev *rdev;
- 	int choose_first;
--	int choose_next_idle;
+diff --git a/io_uring/net.c b/io_uring/net.c
+index 161622029147c..ef495e2aac2bc 100644
+--- a/io_uring/net.c
++++ b/io_uring/net.c
+@@ -204,16 +204,150 @@ static int io_setup_async_msg(struct io_kiocb *req,
+ 	return -EAGAIN;
+ }
  
- 	/*
- 	 * Check if we can balance. We can balance on the whole
-@@ -617,11 +616,11 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 	sectors = r1_bio->sectors;
- 	best_disk = -1;
- 	best_dist_disk = -1;
-+	sequential_disk = -1;
- 	best_dist = MaxSector;
- 	best_pending_disk = -1;
- 	min_pending = UINT_MAX;
- 	best_good_sectors = 0;
--	choose_next_idle = 0;
- 	clear_bit(R1BIO_FailFast, &r1_bio->state);
- 
- 	if ((conf->mddev->recovery_cp < this_sector + sectors) ||
-@@ -714,7 +713,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 			int opt_iosize = bdev_io_opt(rdev->bdev) >> 9;
- 			struct raid1_info *mirror = &conf->mirrors[disk];
- 
--			best_disk = disk;
- 			/*
- 			 * If buffered sequential IO size exceeds optimal
- 			 * iosize, check if there is idle disk. If yes, choose
-@@ -733,15 +731,22 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 			    mirror->next_seq_sect > opt_iosize &&
- 			    mirror->next_seq_sect - opt_iosize >=
- 			    mirror->seq_start) {
--				choose_next_idle = 1;
--				continue;
-+				/*
-+				 * Add 'pending' to avoid choosing this disk if
-+				 * there is other idle disk.
-+				 */
-+				pending++;
-+				/*
-+				 * If there is no other idle disk, this disk
-+				 * will be chosen.
-+				 */
-+				sequential_disk = disk;
-+			} else {
-+				best_disk = disk;
-+				break;
- 			}
--			break;
- 		}
- 
--		if (choose_next_idle)
--			continue;
--
- 		if (min_pending > pending) {
- 			min_pending = pending;
- 			best_pending_disk = disk;
-@@ -753,6 +758,13 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
- 		}
- 	}
- 
-+	/*
-+	 * sequential IO size exceeds optimal iosize, however, there is no other
-+	 * idle disk, so choose the sequential disk.
-+	 */
-+	if (best_disk == -1 && min_pending != 0)
-+		best_disk = sequential_disk;
++static bool io_recvmsg_multishot_overflow(struct io_async_msghdr *iomsg)
++{
++	int hdr;
 +
- 	/*
- 	 * If all disks are rotational, choose the closest disk. If any disk is
- 	 * non-rotational, choose the disk with less pending request even the
++	if (iomsg->namelen < 0)
++		return true;
++	if (check_add_overflow((int)sizeof(struct io_uring_recvmsg_out),
++			       iomsg->namelen, &hdr))
++		return true;
++	if (check_add_overflow(hdr, (int)iomsg->controllen, &hdr))
++		return true;
++
++	return false;
++}
++
++#ifdef CONFIG_COMPAT
++static int __io_compat_msg_copy_hdr(struct io_kiocb *req,
++				    struct io_async_msghdr *iomsg,
++				    struct sockaddr __user **addr, int ddir)
++{
++	struct io_sr_msg *sr = io_kiocb_to_cmd(req, struct io_sr_msg);
++	struct compat_msghdr msg;
++	struct compat_iovec __user *uiov;
++	int ret;
++
++	if (copy_from_user(&msg, sr->umsg_compat, sizeof(msg)))
++		return -EFAULT;
++
++	ret = __get_compat_msghdr(&iomsg->msg, &msg, addr);
++	if (ret)
++		return ret;
++
++	uiov = compat_ptr(msg.msg_iov);
++	if (req->flags & REQ_F_BUFFER_SELECT) {
++		compat_ssize_t clen;
++
++		iomsg->free_iov = NULL;
++		if (msg.msg_iovlen == 0) {
++			sr->len = 0;
++		} else if (msg.msg_iovlen > 1) {
++			return -EINVAL;
++		} else {
++			if (!access_ok(uiov, sizeof(*uiov)))
++				return -EFAULT;
++			if (__get_user(clen, &uiov->iov_len))
++				return -EFAULT;
++			if (clen < 0)
++				return -EINVAL;
++			sr->len = clen;
++		}
++
++		if (ddir == ITER_DEST && req->flags & REQ_F_APOLL_MULTISHOT) {
++			iomsg->namelen = msg.msg_namelen;
++			iomsg->controllen = msg.msg_controllen;
++			if (io_recvmsg_multishot_overflow(iomsg))
++				return -EOVERFLOW;
++		}
++
++		return 0;
++	}
++
++	iomsg->free_iov = iomsg->fast_iov;
++	ret = __import_iovec(ddir, (struct iovec __user *)uiov, msg.msg_iovlen,
++				UIO_FASTIOV, &iomsg->free_iov,
++				&iomsg->msg.msg_iter, true);
++	if (unlikely(ret < 0))
++		return ret;
++
++	return 0;
++}
++#endif
++
++static int __io_msg_copy_hdr(struct io_kiocb *req, struct io_async_msghdr *iomsg,
++			     struct sockaddr __user **addr, int ddir)
++{
++	struct io_sr_msg *sr = io_kiocb_to_cmd(req, struct io_sr_msg);
++	struct user_msghdr msg;
++	int ret;
++
++	if (copy_from_user(&msg, sr->umsg, sizeof(*sr->umsg)))
++		return -EFAULT;
++
++	ret = __copy_msghdr(&iomsg->msg, &msg, addr);
++	if (ret)
++		return ret;
++
++	if (req->flags & REQ_F_BUFFER_SELECT) {
++		if (msg.msg_iovlen == 0) {
++			sr->len = iomsg->fast_iov[0].iov_len = 0;
++			iomsg->fast_iov[0].iov_base = NULL;
++			iomsg->free_iov = NULL;
++		} else if (msg.msg_iovlen > 1) {
++			return -EINVAL;
++		} else {
++			if (copy_from_user(iomsg->fast_iov, msg.msg_iov,
++					   sizeof(*msg.msg_iov)))
++				return -EFAULT;
++			sr->len = iomsg->fast_iov[0].iov_len;
++			iomsg->free_iov = NULL;
++		}
++
++		if (ddir == ITER_DEST && req->flags & REQ_F_APOLL_MULTISHOT) {
++			iomsg->namelen = msg.msg_namelen;
++			iomsg->controllen = msg.msg_controllen;
++			if (io_recvmsg_multishot_overflow(iomsg))
++				return -EOVERFLOW;
++		}
++
++		return 0;
++	}
++
++	iomsg->free_iov = iomsg->fast_iov;
++	ret = __import_iovec(ddir, msg.msg_iov, msg.msg_iovlen, UIO_FASTIOV,
++				&iomsg->free_iov, &iomsg->msg.msg_iter, false);
++	if (unlikely(ret < 0))
++		return ret;
++
++	return 0;
++}
++
++static int io_msg_copy_hdr(struct io_kiocb *req, struct io_async_msghdr *iomsg,
++			   struct sockaddr __user **addr, int ddir)
++{
++	iomsg->msg.msg_name = &iomsg->addr;
++	iomsg->msg.msg_iter.nr_segs = 0;
++
++#ifdef CONFIG_COMPAT
++	if (req->ctx->compat)
++		return __io_compat_msg_copy_hdr(req, iomsg, addr, ddir);
++#endif
++
++	return __io_msg_copy_hdr(req, iomsg, addr, ddir);
++}
++
+ static int io_sendmsg_copy_hdr(struct io_kiocb *req,
+ 			       struct io_async_msghdr *iomsg)
+ {
+ 	struct io_sr_msg *sr = io_kiocb_to_cmd(req, struct io_sr_msg);
+ 	int ret;
+ 
+-	iomsg->msg.msg_name = &iomsg->addr;
+-	iomsg->free_iov = iomsg->fast_iov;
+-	ret = sendmsg_copy_msghdr(&iomsg->msg, sr->umsg, sr->msg_flags,
+-					&iomsg->free_iov);
++	ret = io_msg_copy_hdr(req, iomsg, NULL, ITER_SOURCE);
++	if (ret)
++		return ret;
++
+ 	/* save msg_control as sys_sendmsg() overwrites it */
+ 	sr->msg_control = iomsg->msg.msg_control_user;
+ 	return ret;
+@@ -435,142 +569,21 @@ int io_send(struct io_kiocb *req, unsigned int issue_flags)
+ 	return IOU_OK;
+ }
+ 
+-static bool io_recvmsg_multishot_overflow(struct io_async_msghdr *iomsg)
+-{
+-	int hdr;
+-
+-	if (iomsg->namelen < 0)
+-		return true;
+-	if (check_add_overflow((int)sizeof(struct io_uring_recvmsg_out),
+-			       iomsg->namelen, &hdr))
+-		return true;
+-	if (check_add_overflow(hdr, (int)iomsg->controllen, &hdr))
+-		return true;
+-
+-	return false;
+-}
+-
+-static int __io_recvmsg_copy_hdr(struct io_kiocb *req,
+-				 struct io_async_msghdr *iomsg)
+-{
+-	struct io_sr_msg *sr = io_kiocb_to_cmd(req, struct io_sr_msg);
+-	struct user_msghdr msg;
+-	int ret;
+-
+-	if (copy_from_user(&msg, sr->umsg, sizeof(*sr->umsg)))
+-		return -EFAULT;
+-
+-	ret = __copy_msghdr(&iomsg->msg, &msg, &iomsg->uaddr);
+-	if (ret)
+-		return ret;
+-
+-	if (req->flags & REQ_F_BUFFER_SELECT) {
+-		if (msg.msg_iovlen == 0) {
+-			sr->len = iomsg->fast_iov[0].iov_len = 0;
+-			iomsg->fast_iov[0].iov_base = NULL;
+-			iomsg->free_iov = NULL;
+-		} else if (msg.msg_iovlen > 1) {
+-			return -EINVAL;
+-		} else {
+-			if (copy_from_user(iomsg->fast_iov, msg.msg_iov, sizeof(*msg.msg_iov)))
+-				return -EFAULT;
+-			sr->len = iomsg->fast_iov[0].iov_len;
+-			iomsg->free_iov = NULL;
+-		}
+-
+-		if (req->flags & REQ_F_APOLL_MULTISHOT) {
+-			iomsg->namelen = msg.msg_namelen;
+-			iomsg->controllen = msg.msg_controllen;
+-			if (io_recvmsg_multishot_overflow(iomsg))
+-				return -EOVERFLOW;
+-		}
+-	} else {
+-		iomsg->free_iov = iomsg->fast_iov;
+-		ret = __import_iovec(ITER_DEST, msg.msg_iov, msg.msg_iovlen, UIO_FASTIOV,
+-				     &iomsg->free_iov, &iomsg->msg.msg_iter,
+-				     false);
+-		if (ret > 0)
+-			ret = 0;
+-	}
+-
+-	return ret;
+-}
+-
+-#ifdef CONFIG_COMPAT
+-static int __io_compat_recvmsg_copy_hdr(struct io_kiocb *req,
+-					struct io_async_msghdr *iomsg)
+-{
+-	struct io_sr_msg *sr = io_kiocb_to_cmd(req, struct io_sr_msg);
+-	struct compat_msghdr msg;
+-	struct compat_iovec __user *uiov;
+-	int ret;
+-
+-	if (copy_from_user(&msg, sr->umsg_compat, sizeof(msg)))
+-		return -EFAULT;
+-
+-	ret = __get_compat_msghdr(&iomsg->msg, &msg, &iomsg->uaddr);
+-	if (ret)
+-		return ret;
+-
+-	uiov = compat_ptr(msg.msg_iov);
+-	if (req->flags & REQ_F_BUFFER_SELECT) {
+-		compat_ssize_t clen;
+-
+-		iomsg->free_iov = NULL;
+-		if (msg.msg_iovlen == 0) {
+-			sr->len = 0;
+-		} else if (msg.msg_iovlen > 1) {
+-			return -EINVAL;
+-		} else {
+-			if (!access_ok(uiov, sizeof(*uiov)))
+-				return -EFAULT;
+-			if (__get_user(clen, &uiov->iov_len))
+-				return -EFAULT;
+-			if (clen < 0)
+-				return -EINVAL;
+-			sr->len = clen;
+-		}
+-
+-		if (req->flags & REQ_F_APOLL_MULTISHOT) {
+-			iomsg->namelen = msg.msg_namelen;
+-			iomsg->controllen = msg.msg_controllen;
+-			if (io_recvmsg_multishot_overflow(iomsg))
+-				return -EOVERFLOW;
+-		}
+-	} else {
+-		iomsg->free_iov = iomsg->fast_iov;
+-		ret = __import_iovec(ITER_DEST, (struct iovec __user *)uiov, msg.msg_iovlen,
+-				   UIO_FASTIOV, &iomsg->free_iov,
+-				   &iomsg->msg.msg_iter, true);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+-	return 0;
+-}
+-#endif
+-
+ static int io_recvmsg_copy_hdr(struct io_kiocb *req,
+ 			       struct io_async_msghdr *iomsg)
+ {
+-	iomsg->msg.msg_name = &iomsg->addr;
+-	iomsg->msg.msg_iter.nr_segs = 0;
+-
+-#ifdef CONFIG_COMPAT
+-	if (req->ctx->compat)
+-		return __io_compat_recvmsg_copy_hdr(req, iomsg);
+-#endif
+-
+-	return __io_recvmsg_copy_hdr(req, iomsg);
++	return io_msg_copy_hdr(req, iomsg, &iomsg->uaddr, ITER_DEST);
+ }
+ 
+ int io_recvmsg_prep_async(struct io_kiocb *req)
+ {
++	struct io_async_msghdr *iomsg;
+ 	int ret;
+ 
+ 	if (!io_msg_alloc_async_prep(req))
+ 		return -ENOMEM;
+-	ret = io_recvmsg_copy_hdr(req, req->async_data);
++	iomsg = req->async_data;
++	ret = io_recvmsg_copy_hdr(req, iomsg);
+ 	if (!ret)
+ 		req->flags |= REQ_F_NEED_CLEANUP;
+ 	return ret;
 -- 
 2.43.0
 
