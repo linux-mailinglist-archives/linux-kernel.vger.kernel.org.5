@@ -1,53 +1,56 @@
-Return-Path: <linux-kernel+bounces-114473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E04E988905C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:17:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94B30888AA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:24:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1045B2CCB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:10:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41D0B1F25F96
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEE32853CB;
-	Sun, 24 Mar 2024 23:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D079017C646;
+	Sun, 24 Mar 2024 23:42:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HfLZ9LYx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DNyuK8IZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7B8156C49;
-	Sun, 24 Mar 2024 23:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8BC156C5B;
+	Sun, 24 Mar 2024 23:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321897; cv=none; b=Sqz1Ik5h4ZD09W3sRY/Mp6iaHPLwrUYQcSBYjU3ZxnWRQ8/JI/iuEO4LiTfibQ0ooEGWfG0TC1w2/+GaaQJajEe1q45CiyLG7fSLH7UiMXf0laGUGpfNino8HmQPNDNS1JbMgxo2mmdAdTqkNzMXXqiyBOCEBjBFTTO0hcPBIoY=
+	t=1711321898; cv=none; b=QioecpSqnINFHIAYhhxEeiRvtyip8oNSX6fCuiTO0swK1kynaBndmGNwfa6eJmxJdf9KyQzckfu1Oq2VSpAw6kQ16rePw1AyahDCDEaDfm8HTRLM5VPkljYGwGQ8620bhsjTUliA4tJB2fQJI1MuHhq4nLJLAcomVSNAfcjNscU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321897; c=relaxed/simple;
-	bh=QtPeuKSCloDhnaL1gJF50s6+yRvjF257YTBkRXOS2A0=;
+	s=arc-20240116; t=1711321898; c=relaxed/simple;
+	bh=Hu+ax5wSak1Lm1AsnCUL7UUmvAU1Wb0Gj04ZedWy7Do=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aj1q3umvq3QcT/HfZpZ0UUlbe89mfmwk6f7EtWwwZHeA+lgpMgp5RAMxRs3EmBIMc411azO8Yr7HPq9ErhtJW1rSBXxTKqvMA9XxpFHl1pGkwEfTllm/gA6irGuTBRRSCkIyvS66SSNqeeYzmffJEocIl469m9vHCkmB9BnlS88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HfLZ9LYx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B42D9C43390;
-	Sun, 24 Mar 2024 23:11:35 +0000 (UTC)
+	 MIME-Version; b=CDF/StWbGRDViGBAzGO+pFi29xop3UkstltoCARFLBrRPEJ8NiN1RNDcOb7xpEKslCzv189NlViQtPibjllHqAnRa8TTyhqRmvcz5lXpXNZigmEu9fA0q6r4hE+InDMpqt5+hK74SLsopv+B65KlKs3+0TBJgIyhXH1aO/g1BTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DNyuK8IZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81D6AC433C7;
+	Sun, 24 Mar 2024 23:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321896;
-	bh=QtPeuKSCloDhnaL1gJF50s6+yRvjF257YTBkRXOS2A0=;
+	s=k20201202; t=1711321897;
+	bh=Hu+ax5wSak1Lm1AsnCUL7UUmvAU1Wb0Gj04ZedWy7Do=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HfLZ9LYxWIwcEq2B7wQC5VOuQkX3d8/gWEkIDukmp5J9iy1SU7Q8sgAy/Ur5FKvno
-	 nWTKKUoqTTvViQzcGd56CLdwuZCCvdTEPsAFbLH9Kp4W8z6q4rvkHB08zdzDsdIw2a
-	 AQk/j1ForM0hybkm6XLSdgaK6EYYolFEhoJSsjMzazhB/rZRgBPZ27zxm1FuHy/R3M
-	 LPm2hPMiIwe5x20MZfa9sKdDJOYePbL6r/uh7biEsL/d1osueTMpuf8EJ/ho5L65AQ
-	 XVivAh4yT2gpDx+pChUOVKFoYjzG22XM9Vny2c83aObrw6P+pZmQe+RSEuq9mrmvQ0
-	 Dax51umM6KYog==
+	b=DNyuK8IZSMS2YZEZAm+Hu6CrayuPcFIGoDSK11Yjihp4bRIaYfMn/Ey5dafXu2suj
+	 SlMj/MpsO2xNgqQi4mBhDnKmUs5q/2xrQFeg+N+4pUi+P1qYN7oRJfSILEecCXiAWs
+	 m5Wc69IYfmnc+6/8fYfqMSuGr45a3Rq2BdKYopG9wYFaud9R2pQo5lvISIW79p122d
+	 g4XrG8ifEtU8224NaBUv3dt2xPITnnmAxkD9zxMpN5I234hyvc0Ynpy26+GQYdjguR
+	 ed2w0DliwLrdV+IrB9ivbX8MA7/0UGadt4UWzpzTWEGW013DxXMsaiWjQ90+JhtDn6
+	 JL/HpK/p3RD6g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+Cc: Yan Zhai <yan@cloudflare.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 625/638] netfilter: nf_tables: do not compare internal table flags on updates
-Date: Sun, 24 Mar 2024 19:01:02 -0400
-Message-ID: <20240324230116.1348576-626-sashal@kernel.org>
+Subject: [PATCH 6.6 626/638] rcu: add a helper to report consolidated flavor QS
+Date: Sun, 24 Mar 2024 19:01:03 -0400
+Message-ID: <20240324230116.1348576-627-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -61,32 +64,74 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Yan Zhai <yan@cloudflare.com>
 
-[ Upstream commit 4a0e7f2decbf9bd72461226f1f5f7dcc4b08f139 ]
+[ Upstream commit 1a77557d48cff187a169c2aec01c0dd78a5e7e50 ]
 
-Restore skipping transaction if table update does not modify flags.
+When under heavy load, network processing can run CPU-bound for many
+tens of seconds. Even in preemptible kernels (non-RT kernel), this can
+block RCU Tasks grace periods, which can cause trace-event removal to
+take more than a minute, which is unacceptably long.
 
-Fixes: 179d9ba5559a ("netfilter: nf_tables: fix table flag updates")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+This commit therefore creates a new helper function that passes through
+both RCU and RCU-Tasks quiescent states every 100 milliseconds. This
+hard-coded value suffices for current workloads.
+
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
+Signed-off-by: Yan Zhai <yan@cloudflare.com>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+Link: https://lore.kernel.org/r/90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Stable-dep-of: d6dbbb11247c ("net: report RCU QS on threaded NAPI repolling")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/rcupdate.h | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 8808d78d65235..a7f10941a935a 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -1213,7 +1213,7 @@ static int nf_tables_updtable(struct nft_ctx *ctx)
- 	if (flags & ~NFT_TABLE_F_MASK)
- 		return -EOPNOTSUPP;
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 44aab5c0bd2c1..9ad656b28847f 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -252,6 +252,37 @@ do { \
+ 	cond_resched(); \
+ } while (0)
  
--	if (flags == ctx->table->flags)
-+	if (flags == (ctx->table->flags & NFT_TABLE_F_MASK))
- 		return 0;
- 
- 	if ((nft_table_has_owner(ctx->table) &&
++/**
++ * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
++ * @old_ts: jiffies at start of processing.
++ *
++ * This helper is for long-running softirq handlers, such as NAPI threads in
++ * networking. The caller should initialize the variable passed in as @old_ts
++ * at the beginning of the softirq handler. When invoked frequently, this macro
++ * will invoke rcu_softirq_qs() every 100 milliseconds thereafter, which will
++ * provide both RCU and RCU-Tasks quiescent states. Note that this macro
++ * modifies its old_ts argument.
++ *
++ * Because regions of code that have disabled softirq act as RCU read-side
++ * critical sections, this macro should be invoked with softirq (and
++ * preemption) enabled.
++ *
++ * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT kernels would
++ * have more chance to invoke schedule() calls and provide necessary quiescent
++ * states. As a contrast, calling cond_resched() only won't achieve the same
++ * effect because cond_resched() does not provide RCU-Tasks quiescent states.
++ */
++#define rcu_softirq_qs_periodic(old_ts) \
++do { \
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
++	    time_after(jiffies, (old_ts) + HZ / 10)) { \
++		preempt_disable(); \
++		rcu_softirq_qs(); \
++		preempt_enable(); \
++		(old_ts) = jiffies; \
++	} \
++} while (0)
++
+ /*
+  * Infrastructure to implement the synchronize_() primitives in
+  * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
 -- 
 2.43.0
 
