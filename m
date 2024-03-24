@@ -1,83 +1,118 @@
-Return-Path: <linux-kernel+bounces-113144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E3DF8881CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:30:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22674888E43
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:13:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3590B1F2187D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:30:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B70E91F2F26B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A9316F8E5;
-	Sun, 24 Mar 2024 22:39:11 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CDBA1E1683;
+	Sun, 24 Mar 2024 22:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MZ8Ix4Ze"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBF916EC04;
-	Sun, 24 Mar 2024 22:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745BF1D8BD9;
+	Sun, 24 Mar 2024 22:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319951; cv=none; b=nS8U4+psogbVSQVJIyclIs9g3Frb0MxZ2NtnAvEtEPTpD7VWmiMQYHvyL903f1Yei1GDS5VAO4MmydoKb2p8ZkCPdtfohalCmKcJOJ8fEUW27sprFsA7H73x5eg1gnGRAkyiW8N4Vd6xvVDUHGkm38bzrZ+Dr0r3WNGXUjkbeLY=
+	t=1711320647; cv=none; b=GIcio6Fh0zFM+9669nuMoIIJkVaN3vne9U9sxBB6q7FDTaCjA344YmkIik+Er3lBTLwRM+fNnM1i0LmAtsd+S+F9Wt2YA59iQ6vc6QawSsDBxb0myZW3Tn1Nc0S/mn2XrK0IyTgWh9/rdu771Rw6UEa2fFW85INcqHUjMNnLb+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319951; c=relaxed/simple;
-	bh=8a8yUbpxmH47E3+zw0R/B+Uv/KODFRMskQlpXkg9AKE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UNE/WnYM8tkEkVX9N22e1mtrsh4EVextQ62eN9SNEvHt5GbxpySOtZd/YBwxECdwXethPNJTP2iK7oFMa9OXcqOP2CmmWeDisB87rKNJHaYASGiZNZndMMg0JpyxYao/CPCd5ZS+r9IO9Ek+QTgoXfQbMyySUrNThaFsFj7qaNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875a9e.versanet.de ([83.135.90.158] helo=phil.lan)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1roWUV-0007sn-Gi; Sun, 24 Mar 2024 23:38:59 +0100
-From: Heiko Stuebner <heiko@sntech.de>
-To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	linux-kernel@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	erkin.bozoglu@xeront.com,
-	mithat.guner@xeront.com
-Subject: Re: [PATCH] arm64: dts: rockchip: set PHY address of MT7531 switch to 0x1f
-Date: Sun, 24 Mar 2024 23:38:52 +0100
-Message-Id: <171131986741.918919.17715253575566956746.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240314-for-rockchip-mt7531-phy-address-v1-1-743b5873358f@arinc9.com>
-References: <20240314-for-rockchip-mt7531-phy-address-v1-1-743b5873358f@arinc9.com>
+	s=arc-20240116; t=1711320647; c=relaxed/simple;
+	bh=PRDR/PMenEpU2rk6usu6sYB/5zgkZIR5qd7nhUTXkT8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=XRpMrQoIJ6X1a1hCpE+L8DerGeM9fHzf36Eb4IETskUeNNOFdTAUlvPSDL5WLDdQz2zi9wST8kGQYSwdVTGgS1aF1xumsla5jkdBLOoktS81Vf9PMS+OmyOUtfT3fUIDeghOsiTYPZ7b3cost/10iEmeeTJEoqG189yy9KhN2M0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZ8Ix4Ze; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05733C433F1;
+	Sun, 24 Mar 2024 22:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711320646;
+	bh=PRDR/PMenEpU2rk6usu6sYB/5zgkZIR5qd7nhUTXkT8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=MZ8Ix4ZejDJ7xsE5Ja9Mjpx/vJwPvYZ2cibj8UV1AywsOjLSzBAM5F47RJwGG/biq
+	 NLv72ryyA8kwtBTOUmnH+RUpfJ5ryE/JU3MUzwxCxVWcVOrXgjonyzpeVgHHh10IGB
+	 RtI97+9EhqMvJqcKnFUu0KpgcvV9PidDIvEsAtg0I5NobQkLtZqkdY2w8wBPc4IMpg
+	 eINGrB1sstMGHNJ9xxsrGKFPYxBB8RoCocAC60FkpzovqEweuuuqU/UX3Tsbla3F8a
+	 cTWSgwHiEND6Fv/LqHSduSuSPvnIi0az+5ucBR/lZ6ZZHrnqP2wsxn6MBWK1thNmMp
+	 nNKR4/fbYr2tA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Jayesh Choudhary <j-choudhary@ti.com>,
+	Nishanth Menon <nm@ti.com>,
+	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Aradhya Bhatia <a-bhatia1@ti.com>,
+	Enric Balletbo i Serra <eballetbo@redhat.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.7 207/713] arm64: dts: ti: k3-am69-sk: remove assigned-clock-parents for unused VP
+Date: Sun, 24 Mar 2024 18:38:53 -0400
+Message-ID: <20240324224720.1345309-208-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
+References: <20240324224720.1345309-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-On Thu, 14 Mar 2024 15:24:35 +0300, Arınç ÜNAL wrote:
-> The MT7531 switch listens on PHY address 0x1f on an MDIO bus. I've got two
-> findings that support this. There's no bootstrapping option to change the
-> PHY address of the switch. The Linux driver hardcodes 0x1f as the PHY
-> address of the switch. So the reg property on the device tree is currently
-> ignored by the Linux driver.
-> 
-> Therefore, describe the correct PHY address on Banana Pi BPI-R2 Pro that
-> has this switch.
-> 
-> [...]
+From: Jayesh Choudhary <j-choudhary@ti.com>
 
-Applied, thanks!
+[ Upstream commit cfdb4f7ffdb855c1a3d274dc7757e780dcbf2d55 ]
 
-[1/1] arm64: dts: rockchip: set PHY address of MT7531 switch to 0x1f
-      commit: a2ac2a1b02590a22a236c43c455f421cdede45f5
+VP2 and VP3 are unused video ports and VP3 share the same parent
+clock as VP1 causing issue with pixel clock setting for HDMI (VP1).
+The current DM firmware does not support changing parent clock if it
+is shared by another component. It returns 0 for the determine_rate
+query before causing set_rate to set the clock at default maximum of
+1.8GHz which is a lot more than the maximum frequency videoports can
+support (600MHz) causing SYNC LOST issues.
+So remove the parent clocks for unused VPs to avoid conflict.
 
-Best regards,
+Fixes: 6f8605fd7d11 ("arm64: dts: ti: k3-am69-sk: Add DP and HDMI support")
+Reported-by: Nishanth Menon <nm@ti.com>
+Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+Tested-by: Enric Balletbo i Serra <eballetbo@redhat.com>
+Link: https://lore.kernel.org/r/20240201142308.4954-1-j-choudhary@ti.com
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+index 9868c7049bfb9..fafa09d6dcc64 100644
+--- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
+@@ -824,13 +824,9 @@ &dss {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&dss_vout0_pins_default>;
+ 	assigned-clocks = <&k3_clks 218 2>,
+-			  <&k3_clks 218 5>,
+-			  <&k3_clks 218 14>,
+-			  <&k3_clks 218 18>;
++			  <&k3_clks 218 5>;
+ 	assigned-clock-parents = <&k3_clks 218 3>,
+-				 <&k3_clks 218 7>,
+-				 <&k3_clks 218 16>,
+-				 <&k3_clks 218 22>;
++				 <&k3_clks 218 7>;
+ };
+ 
+ &serdes_wiz4 {
 -- 
-Heiko Stuebner <heiko@sntech.de>
+2.43.0
+
 
