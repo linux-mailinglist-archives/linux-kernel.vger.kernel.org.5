@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 592AD888756
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:57:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D962888757
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:57:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D04601F2589F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:57:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 976661F23E51
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB3021256B;
-	Sun, 24 Mar 2024 23:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D8D212574;
+	Sun, 24 Mar 2024 23:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WIjfAwVm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pErq8HCo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF79E149C66;
-	Sun, 24 Mar 2024 22:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1ABC43AB4;
+	Sun, 24 Mar 2024 22:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321007; cv=none; b=RUReXQKM1PaI+saLDNOUGVcqXEQn+ABxa8GRptmLbwPCshMsWaRVWLwb5/KoGeI0XqDRCrV0z7YCzAxyaeBeH3nAxEPB07PhKwukvr8pxqgSMgq0k6HgtN0Y7b74DWebzlO4l6HLpvz6FKefp/mUYsmeIC4E3MXfnmThBvBatik=
+	t=1711321008; cv=none; b=m2Ahxn4FlXbbxd0Ymm2s7JkqTlJWaYTrYzIZAB7Q/a7VNEntDAQ2u+bSH1Ho0SwqYt2lZWr/DAd7yNDSyBibHx7NhLQXMqbEf661vnUaSnXdNiLh2FnYdkSr+Ti+4LxwPpf8oKYrbA1dey6m4po//VCplWEnBNArH0GJwmaS0HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321007; c=relaxed/simple;
-	bh=8GbiNBINI7eELsDDxsTJBY9poV2VqsNUaNayQzLsUY0=;
+	s=arc-20240116; t=1711321008; c=relaxed/simple;
+	bh=YwUHoIoI+YU3f9pCODPkvt6pbROHpbZYcDXdvhp8+Bc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r/y6e6944OOPGre+eGC6NnXe+HI35TUOdw3YaM8S57v7Bq4y/Lj1hqH1/+8REyfjzmqI/ld/2uPjsIKxO5RyeD6xZTDccm8fWqG0sOH3pd2ZUmaQBzrgD0LzPhKu5SjAJyq2jBSbFuZNC55e/ga30sAVX/sqeFe0JNBi5DMqCjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WIjfAwVm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2445FC43399;
-	Sun, 24 Mar 2024 22:56:45 +0000 (UTC)
+	 MIME-Version; b=Cf4yWl4yFm6CYMzzjR8rqvcQwonRdThCnSLdGZIUoD/NJHZfvJ2JrZ26VL6rmb/Y/fit9rekVvI3DLRI/9DtKeqau1wM3wHosNeRFcFx/48hnEEPJYaEbOWLNls/UN9fect0A5u2v41iHkZfXYhrdiMVFR2gx03XWp3KZ82lVK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pErq8HCo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23BE2C43390;
+	Sun, 24 Mar 2024 22:56:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321005;
-	bh=8GbiNBINI7eELsDDxsTJBY9poV2VqsNUaNayQzLsUY0=;
+	s=k20201202; t=1711321006;
+	bh=YwUHoIoI+YU3f9pCODPkvt6pbROHpbZYcDXdvhp8+Bc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WIjfAwVmqDJwK6j5DXXAi0IeGrEG+o0iLS0Mx0RyEcgV18DesiSwVdvCI/n/LIJyr
-	 90Fc2c/xx86AF2Qy2naARZd4eM2CHAvF7CV8fPJPZHbGUeJt4ywrdIt67GFQMwXt5e
-	 qYyXGbzvpk2tREnaMbQQ1GC6QxeLchkdlzs1AYHpz4pu7QP2zSkHJ6DEwxNHIfAFZC
-	 pOiFB435RolevDZffRkBu+AG2a3D1NObQNjTZhXcvf2DTFYIsdGVsXiTIrvhZZd6vu
-	 cvqlHL5uBiw2n/ogCPmPnN4Tr9afTrgB+W3JngddLZCKLwmHyMMPf56ewRFuhULTLB
-	 WvUVtbckYGt0A==
+	b=pErq8HCoPyFxWMA8MyXZmhARMFyyt+fc8amiZdtMCBgoHnzL7AOXbYYXFm2QKZjjE
+	 MD7JbRA/PIbU8Mjo33NauuvtO0v0dbly/P2m7283poP3Zsq47EwxSyAOw9kPyOMidI
+	 HWAPJaFhnvgHTJQ/fjauxNv9xyHQPgl5I/ltc5/PRDzgI9ZUdWprH24t1C8b/pm2TY
+	 2QehFpm/J9vKkdvoQsEnNDIPjoXNGlVkHYixOz6W6nxssXgCLCBPfzZXM/xXQNjdZf
+	 3mHTG0tRnwB8QMO0hRe4wLSw2yEMcFMDgiWmWuFvM7QF6rWwVb92XpZo/GI2DoIsPM
+	 YljLfNkdIM+VA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chao Yu <chao@kernel.org>,
-	Daeho Jeong <daehojeong@google.com>,
+Cc: Sheng Yong <shengyong@oppo.com>,
+	Chao Yu <chao@kernel.org>,
 	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 568/713] f2fs: compress: fix to cover normal cluster write with cp_rwsem
-Date: Sun, 24 Mar 2024 18:44:54 -0400
-Message-ID: <20240324224720.1345309-569-sashal@kernel.org>
+Subject: [PATCH 6.7 569/713] f2fs: compress: fix to check unreleased compressed cluster
+Date: Sun, 24 Mar 2024 18:44:55 -0400
+Message-ID: <20240324224720.1345309-570-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,123 +63,54 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Chao Yu <chao@kernel.org>
+From: Sheng Yong <shengyong@oppo.com>
 
-[ Upstream commit fd244524c2cf07b5f4c3fe8abd6a99225c76544b ]
+[ Upstream commit eb8fbaa53374e0a2d4381190abfe708481517bbb ]
 
-When we overwrite compressed cluster w/ normal cluster, we should
-not unlock cp_rwsem during f2fs_write_raw_pages(), otherwise data
-will be corrupted if partial blocks were persisted before CP & SPOR,
-due to cluster metadata wasn't updated atomically.
+Compressed cluster may not be released due to we can fail in
+release_compress_blocks(), fix to handle reserved compressed
+cluster correctly in reserve_compress_blocks().
 
 Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Reviewed-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Sheng Yong <shengyong@oppo.com>
 Signed-off-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/compress.c | 27 ++++++++++++++++++---------
- fs/f2fs/data.c     |  3 ++-
- 2 files changed, 20 insertions(+), 10 deletions(-)
+ fs/f2fs/file.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 8453a06630208..94e0b0aa95e9b 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1445,12 +1445,14 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
- }
- 
- static int f2fs_write_raw_pages(struct compress_ctx *cc,
--					int *submitted,
-+					int *submitted_p,
- 					struct writeback_control *wbc,
- 					enum iostat_type io_type)
- {
- 	struct address_space *mapping = cc->inode->i_mapping;
--	int _submitted, compr_blocks, ret, i;
-+	struct f2fs_sb_info *sbi = F2FS_M_SB(mapping);
-+	int submitted, compr_blocks, i;
-+	int ret = 0;
- 
- 	compr_blocks = f2fs_compressed_blocks(cc);
- 
-@@ -1465,6 +1467,10 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
- 	if (compr_blocks < 0)
- 		return compr_blocks;
- 
-+	/* overwrite compressed cluster w/ normal cluster */
-+	if (compr_blocks > 0)
-+		f2fs_lock_op(sbi);
-+
- 	for (i = 0; i < cc->cluster_size; i++) {
- 		if (!cc->rpages[i])
- 			continue;
-@@ -1489,7 +1495,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
- 		if (!clear_page_dirty_for_io(cc->rpages[i]))
- 			goto continue_unlock;
- 
--		ret = f2fs_write_single_data_page(cc->rpages[i], &_submitted,
-+		ret = f2fs_write_single_data_page(cc->rpages[i], &submitted,
- 						NULL, NULL, wbc, io_type,
- 						compr_blocks, false);
- 		if (ret) {
-@@ -1497,26 +1503,29 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
- 				unlock_page(cc->rpages[i]);
- 				ret = 0;
- 			} else if (ret == -EAGAIN) {
-+				ret = 0;
- 				/*
- 				 * for quota file, just redirty left pages to
- 				 * avoid deadlock caused by cluster update race
- 				 * from foreground operation.
- 				 */
- 				if (IS_NOQUOTA(cc->inode))
--					return 0;
--				ret = 0;
-+					goto out;
- 				f2fs_io_schedule_timeout(DEFAULT_IO_TIMEOUT);
- 				goto retry_write;
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index a05781e708d66..01b6295341918 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -3631,7 +3631,13 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+ 				goto next;
  			}
--			return ret;
-+			goto out;
+ 
+-			if (__is_valid_data_blkaddr(blkaddr)) {
++			/*
++			 * compressed cluster was not released due to it
++			 * fails in release_compress_blocks(), so NEW_ADDR
++			 * is a possible case.
++			 */
++			if (blkaddr == NEW_ADDR ||
++				__is_valid_data_blkaddr(blkaddr)) {
+ 				compr_blocks++;
+ 				continue;
+ 			}
+@@ -3641,6 +3647,11 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
  		}
  
--		*submitted += _submitted;
-+		*submitted_p += submitted;
- 	}
- 
--	f2fs_balance_fs(F2FS_M_SB(mapping), true);
-+out:
-+	if (compr_blocks > 0)
-+		f2fs_unlock_op(sbi);
- 
--	return 0;
-+	f2fs_balance_fs(sbi, true);
-+	return ret;
- }
- 
- int f2fs_write_multi_pages(struct compress_ctx *cc,
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 4b0c2ceb5dbfd..b7845be96f6d4 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2851,7 +2851,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 		.encrypted_page = NULL,
- 		.submitted = 0,
- 		.compr_blocks = compr_blocks,
--		.need_lock = LOCK_RETRY,
-+		.need_lock = compr_blocks ? LOCK_DONE : LOCK_RETRY,
- 		.post_read = f2fs_post_read_required(inode) ? 1 : 0,
- 		.io_type = io_type,
- 		.io_wbc = wbc,
-@@ -2935,6 +2935,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 	if (err == -EAGAIN) {
- 		err = f2fs_do_write_data_page(&fio);
- 		if (err == -EAGAIN) {
-+			f2fs_bug_on(sbi, compr_blocks);
- 			fio.need_lock = LOCK_REQ;
- 			err = f2fs_do_write_data_page(&fio);
- 		}
+ 		reserved = cluster_size - compr_blocks;
++
++		/* for the case all blocks in cluster were reserved */
++		if (reserved == 1)
++			goto next;
++
+ 		ret = inc_valid_block_count(sbi, dn->inode, &reserved);
+ 		if (ret)
+ 			return ret;
 -- 
 2.43.0
 
