@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D24BE8884B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:50:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E6188884A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:47:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5625EB2735A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:47:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD8D928978E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6551D46544;
-	Sun, 24 Mar 2024 22:44:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529D61B5DBA;
+	Sun, 24 Mar 2024 22:44:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kHIa8154"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uzPCSozY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5864B13CFAD;
-	Sun, 24 Mar 2024 22:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB721B5DA0;
+	Sun, 24 Mar 2024 22:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320281; cv=none; b=h5Zc/J2nf6wsbaNVClC3SpnBmO5FlFdL3QH2vh90R9+dpHiBqjPGDTFG9as9OgzniJRDQtzJd0MaCaN8FRW8tCxiGkySTcTW9XUR+PGaOKaoDvdfSqQdyHHMjkRdXXvr4vFCfPatVhbGTUk9hnA07I0KbDJDumbnAdAIMlkmn98=
+	t=1711320282; cv=none; b=kKZWDPGlDuqoYvFmPsG70hf6iF7hsYCsAesjr5GmZb8FPfpQSheuz5ysoHxYAEc1lFHjEPQGtc46c2b/ggSr2luQF9rQ7niIbYXNY4s+7Xvbx4VBETDqQ6bvCA79FZ+lDv/QEVpVkwofuewqT6MBQcJkqj2eeQzZzg8ESaJgUw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320281; c=relaxed/simple;
-	bh=yjLYgT5qBCA+qUBcthLTka4Zl8Zq8SMNFOCI+pGEgHA=;
+	s=arc-20240116; t=1711320282; c=relaxed/simple;
+	bh=yUS06+jBKCnlD25vjcbgsGFLnvBZQdDnVaI/PR/gXtk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kgPatP+0EJdo5O0Iwsb7shAZHiV+TuxYBjWeyFP5UcWxY7iFU/Grx09jI1etdBAd3Bx/xSFZQICaa0jAomruh1fDIHqrvM2EEq7VczHZEAORTLV5UBookfV3uS0iz3mxNvRYf3lGn1Iluzx1SGO0a2CL1Khk43obWVWaN+ZWMfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kHIa8154; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27177C43394;
-	Sun, 24 Mar 2024 22:44:40 +0000 (UTC)
+	 MIME-Version; b=rHp/cHL8M9hxx9LSCoA6NuopmuZJ2lB0wBfOnqTw1LaZ14YR2XSMjQkcePUg7mqrj0tOJfOECFD+xZf5K4av7wjpYI+dc8lZxvTMrpC7tL90uxeNnj7UWMociyOFDDYXDiOVCuzs8A9YeiqaJsqmAvzhfilwpUDBCXWSMItFOEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uzPCSozY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C1ADC433C7;
+	Sun, 24 Mar 2024 22:44:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320281;
-	bh=yjLYgT5qBCA+qUBcthLTka4Zl8Zq8SMNFOCI+pGEgHA=;
+	s=k20201202; t=1711320282;
+	bh=yUS06+jBKCnlD25vjcbgsGFLnvBZQdDnVaI/PR/gXtk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kHIa8154sFPH0ED9r8XzRjziYIIRwZSskvTIqp8xxd6BbkfPUzcbqO0y21G0Xkb38
-	 X6PQAmgTv2tYklbkiwhbpX/HUX2LEcSHtAavXTsszPC9zZldptT4b/DDsh5FKXuy/g
-	 efha8XhspHr2PsdyQtD/7GHGP7yjEDxqQW+nO2Ii2dsT6z8lebTRR6pFNcv4XzOc3o
-	 Je71JkaLF/IxzLbyXAwh9GVLhgTxqhMS0Oyj5ZS0yVjtT683vAW0HyLNqG6iOqnzHf
-	 x75xEb9BXb+b4g94Dw/cPpOI3dTVGxXHP2apjfsJpdzuOqdw4VqfMePcrnw9irMYTU
-	 oWsL9CNcRE97w==
+	b=uzPCSozY71BQJlpL3TIsmzaCpvMDHiYAk7jFA/+hEE7fBBUmoHqBCuAEDyQLtIEFd
+	 pF2jqOdhP4nO8RRqrPr2QwGsFjASnKPx/25RYjCnSRkfPkyyC7fJpfJ1JHUPZOhBdv
+	 6quphhHAihgjZgQO5lMAYMNCcrOcIXeI6EisbeWqnAuM4Zndz2iKw2e1skDAfw5LNd
+	 qh5IN2ONzg98hYOJ6wsS6W7UyQntwOwgrCn9C0QhEBNlWg4BQPnFKDTy8i1xNZGL0B
+	 pwYU7+tJ1VBTkq+TLc2f6GJbVtA5dDW1uq58ubGlP7wnkBIzYFyL1clKs6aIbd4xoG
+	 F5RkvowDyAfXg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Konstantin Taranov <kotaranov@microsoft.com>,
-	Zhu Yanjun <yanjun.zhu@linux.dev>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: Jeff LaBundy <jeff@labundy.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 589/715] RDMA/mana_ib: Use virtual address in dma regions for MRs
-Date: Sun, 24 Mar 2024 18:32:48 -0400
-Message-ID: <20240324223455.1342824-590-sashal@kernel.org>
+Subject: [PATCH 6.8 590/715] Input: iqs7222 - add support for IQS7222D v1.1 and v1.2
+Date: Sun, 24 Mar 2024 18:32:49 -0400
+Message-ID: <20240324223455.1342824-591-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,214 +62,145 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+From: Jeff LaBundy <jeff@labundy.com>
 
-[ Upstream commit 2d5c00815778ec4f4e0a84e405e3e157b7815db1 ]
+[ Upstream commit 992cf65674778e22436807796b2df927de21bb75 ]
 
-Introduce mana_ib_create_dma_region() to create dma regions with iova
-for MRs. It allows creating MRs with any page offset. Previously,
-only page-aligned addresses worked.
+The vendor has introduced two new revisions with slightly different
+memory maps; update the driver to support them.
 
-For dma regions that must have a zero dma offset (e.g., for queues),
-mana_ib_create_zero_offset_dma_region() is added.
-To get the zero offset, ib_umem_find_best_pgoff() is used with zero
-pgoff_bitmask.
-
-Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter")
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-Link: https://lore.kernel.org/r/1709560361-26393-3-git-send-email-kotaranov@linux.microsoft.com
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Fixes: dd24e202ac72 ("Input: iqs7222 - add support for Azoteq IQS7222D")
+Signed-off-by: Jeff LaBundy <jeff@labundy.com>
+Link: https://lore.kernel.org/r/ZelTRYX3fenMQuhF@nixie71
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mana/cq.c      |  4 +--
- drivers/infiniband/hw/mana/main.c    | 40 +++++++++++++++++++++-------
- drivers/infiniband/hw/mana/mana_ib.h |  7 +++--
- drivers/infiniband/hw/mana/mr.c      |  4 +--
- drivers/infiniband/hw/mana/qp.c      |  6 ++---
- drivers/infiniband/hw/mana/wq.c      |  4 +--
- 6 files changed, 45 insertions(+), 20 deletions(-)
+ drivers/input/misc/iqs7222.c | 112 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
 
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index 83d20c3f048df..4a71e678d09c1 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -48,7 +48,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		return err;
- 	}
- 
--	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region);
-+	err = mana_ib_create_zero_offset_dma_region(mdev, cq->umem, &cq->gdma_region);
- 	if (err) {
- 		ibdev_dbg(ibdev,
- 			  "Failed to create dma region for create cq, %d\n",
-@@ -57,7 +57,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	}
- 
- 	ibdev_dbg(ibdev,
--		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-+		  "create_dma_region ret %d gdma_region 0x%llx\n",
- 		  err, cq->gdma_region);
- 
- 	/*
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index dd570832d61ea..71e33feee61bb 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -301,8 +301,8 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev *dev, struct gdma_context *gc,
- 	return 0;
- }
- 
--int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
--				 mana_handle_t *gdma_region)
-+static int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-+					mana_handle_t *gdma_region, unsigned long page_sz)
- {
- 	struct gdma_dma_region_add_pages_req *add_req = NULL;
- 	size_t num_pages_processed = 0, num_pages_to_handle;
-@@ -314,7 +314,6 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
- 	size_t max_pgs_create_cmd;
- 	struct gdma_context *gc;
- 	size_t num_pages_total;
--	unsigned long page_sz;
- 	unsigned int tail = 0;
- 	u64 *page_addr_list;
- 	void *request_buf;
-@@ -323,12 +322,6 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
- 	gc = mdev_to_gc(dev);
- 	hwc = gc->hwc.driver_data;
- 
--	/* Hardware requires dma region to align to chosen page size */
--	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
--	if (!page_sz) {
--		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
--		return -ENOMEM;
--	}
- 	num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
- 
- 	max_pgs_create_cmd =
-@@ -414,6 +407,35 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
- 	return err;
- }
- 
-+int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-+			      mana_handle_t *gdma_region, u64 virt)
-+{
-+	unsigned long page_sz;
-+
-+	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
-+	if (!page_sz) {
-+		ibdev_dbg(&dev->ib_dev, "Failed to find page size.\n");
-+		return -EINVAL;
-+	}
-+
-+	return mana_ib_gd_create_dma_region(dev, umem, gdma_region, page_sz);
-+}
-+
-+int mana_ib_create_zero_offset_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-+					  mana_handle_t *gdma_region)
-+{
-+	unsigned long page_sz;
-+
-+	/* Hardware requires dma region to align to chosen page size */
-+	page_sz = ib_umem_find_best_pgoff(umem, PAGE_SZ_BM, 0);
-+	if (!page_sz) {
-+		ibdev_dbg(&dev->ib_dev, "Failed to find page size.\n");
-+		return -EINVAL;
-+	}
-+
-+	return mana_ib_gd_create_dma_region(dev, umem, gdma_region, page_sz);
-+}
-+
- int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev, u64 gdma_region)
- {
- 	struct gdma_context *gc = mdev_to_gc(dev);
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 6a03ae645c012..f83390eebb7d7 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -160,8 +160,11 @@ static inline struct net_device *mana_ib_get_netdev(struct ib_device *ibdev, u32
- 
- int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
- 
--int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
--				 mana_handle_t *gdma_region);
-+int mana_ib_create_zero_offset_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-+					  mana_handle_t *gdma_region);
-+
-+int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-+			      mana_handle_t *gdma_region, u64 virt);
- 
- int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
- 				  mana_handle_t gdma_region);
-diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-index ee4d4f83467c8..b70b13484f097 100644
---- a/drivers/infiniband/hw/mana/mr.c
-+++ b/drivers/infiniband/hw/mana/mr.c
-@@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
- 		goto err_free;
- 	}
- 
--	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle);
-+	err = mana_ib_create_dma_region(dev, mr->umem, &dma_region_handle, iova);
- 	if (err) {
- 		ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
- 			  err);
-@@ -135,7 +135,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
- 	}
- 
- 	ibdev_dbg(ibdev,
--		  "mana_ib_gd_create_dma_region ret %d gdma_region %llx\n", err,
-+		  "create_dma_region ret %d gdma_region %llx\n", err,
- 		  dma_region_handle);
- 
- 	mr_params.pd_handle = pd->pd_handle;
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 5d4c05dcd0032..6e7627745c957 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	}
- 	qp->sq_umem = umem;
- 
--	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
--					   &qp->sq_gdma_region);
-+	err = mana_ib_create_zero_offset_dma_region(mdev, qp->sq_umem,
-+						    &qp->sq_gdma_region);
- 	if (err) {
- 		ibdev_dbg(&mdev->ib_dev,
- 			  "Failed to create dma region for create qp-raw, %d\n",
-@@ -367,7 +367,7 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	}
- 
- 	ibdev_dbg(&mdev->ib_dev,
--		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-+		  "create_dma_region ret %d gdma_region 0x%llx\n",
- 		  err, qp->sq_gdma_region);
- 
- 	/* Create a WQ on the same port handle used by the Ethernet */
-diff --git a/drivers/infiniband/hw/mana/wq.c b/drivers/infiniband/hw/mana/wq.c
-index 372d361510e0c..7c9c699625734 100644
---- a/drivers/infiniband/hw/mana/wq.c
-+++ b/drivers/infiniband/hw/mana/wq.c
-@@ -46,7 +46,7 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
- 	wq->wq_buf_size = ucmd.wq_buf_size;
- 	wq->rx_object = INVALID_MANA_HANDLE;
- 
--	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region);
-+	err = mana_ib_create_zero_offset_dma_region(mdev, wq->umem, &wq->gdma_region);
- 	if (err) {
- 		ibdev_dbg(&mdev->ib_dev,
- 			  "Failed to create dma region for create wq, %d\n",
-@@ -55,7 +55,7 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
- 	}
- 
- 	ibdev_dbg(&mdev->ib_dev,
--		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-+		  "create_dma_region ret %d gdma_region 0x%llx\n",
- 		  err, wq->gdma_region);
- 
- 	/* WQ ID is returned at wq_create time, doesn't know the value yet */
+diff --git a/drivers/input/misc/iqs7222.c b/drivers/input/misc/iqs7222.c
+index 36aeeae776110..9ca5a743f19fe 100644
+--- a/drivers/input/misc/iqs7222.c
++++ b/drivers/input/misc/iqs7222.c
+@@ -620,6 +620,118 @@ static const struct iqs7222_dev_desc iqs7222_devs[] = {
+ 			},
+ 		},
+ 	},
++	{
++		.prod_num = IQS7222_PROD_NUM_D,
++		.fw_major = 1,
++		.fw_minor = 2,
++		.touch_link = 1770,
++		.allow_offset = 9,
++		.event_offset = 10,
++		.comms_offset = 11,
++		.reg_grps = {
++			[IQS7222_REG_GRP_STAT] = {
++				.base = IQS7222_SYS_STATUS,
++				.num_row = 1,
++				.num_col = 7,
++			},
++			[IQS7222_REG_GRP_CYCLE] = {
++				.base = 0x8000,
++				.num_row = 7,
++				.num_col = 2,
++			},
++			[IQS7222_REG_GRP_GLBL] = {
++				.base = 0x8700,
++				.num_row = 1,
++				.num_col = 3,
++			},
++			[IQS7222_REG_GRP_BTN] = {
++				.base = 0x9000,
++				.num_row = 14,
++				.num_col = 3,
++			},
++			[IQS7222_REG_GRP_CHAN] = {
++				.base = 0xA000,
++				.num_row = 14,
++				.num_col = 4,
++			},
++			[IQS7222_REG_GRP_FILT] = {
++				.base = 0xAE00,
++				.num_row = 1,
++				.num_col = 2,
++			},
++			[IQS7222_REG_GRP_TPAD] = {
++				.base = 0xB000,
++				.num_row = 1,
++				.num_col = 24,
++			},
++			[IQS7222_REG_GRP_GPIO] = {
++				.base = 0xC000,
++				.num_row = 3,
++				.num_col = 3,
++			},
++			[IQS7222_REG_GRP_SYS] = {
++				.base = IQS7222_SYS_SETUP,
++				.num_row = 1,
++				.num_col = 12,
++			},
++		},
++	},
++	{
++		.prod_num = IQS7222_PROD_NUM_D,
++		.fw_major = 1,
++		.fw_minor = 1,
++		.touch_link = 1774,
++		.allow_offset = 9,
++		.event_offset = 10,
++		.comms_offset = 11,
++		.reg_grps = {
++			[IQS7222_REG_GRP_STAT] = {
++				.base = IQS7222_SYS_STATUS,
++				.num_row = 1,
++				.num_col = 7,
++			},
++			[IQS7222_REG_GRP_CYCLE] = {
++				.base = 0x8000,
++				.num_row = 7,
++				.num_col = 2,
++			},
++			[IQS7222_REG_GRP_GLBL] = {
++				.base = 0x8700,
++				.num_row = 1,
++				.num_col = 3,
++			},
++			[IQS7222_REG_GRP_BTN] = {
++				.base = 0x9000,
++				.num_row = 14,
++				.num_col = 3,
++			},
++			[IQS7222_REG_GRP_CHAN] = {
++				.base = 0xA000,
++				.num_row = 14,
++				.num_col = 4,
++			},
++			[IQS7222_REG_GRP_FILT] = {
++				.base = 0xAE00,
++				.num_row = 1,
++				.num_col = 2,
++			},
++			[IQS7222_REG_GRP_TPAD] = {
++				.base = 0xB000,
++				.num_row = 1,
++				.num_col = 24,
++			},
++			[IQS7222_REG_GRP_GPIO] = {
++				.base = 0xC000,
++				.num_row = 3,
++				.num_col = 3,
++			},
++			[IQS7222_REG_GRP_SYS] = {
++				.base = IQS7222_SYS_SETUP,
++				.num_row = 1,
++				.num_col = 12,
++			},
++		},
++	},
+ 	{
+ 		.prod_num = IQS7222_PROD_NUM_D,
+ 		.fw_major = 0,
 -- 
 2.43.0
 
