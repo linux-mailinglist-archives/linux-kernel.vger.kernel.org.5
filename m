@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C61518899FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:20:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2ED888C3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0291F1C32CFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:20:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F16C31F28914
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A28A3B507B;
-	Mon, 25 Mar 2024 03:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33B221F9EE;
+	Mon, 25 Mar 2024 00:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ULl0YH6c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p5trB/hG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04DD282A73;
-	Sun, 24 Mar 2024 23:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67A4282A8D;
+	Sun, 24 Mar 2024 23:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323741; cv=none; b=PfWgr/bE2/ul3hkWtjj467muVSkPsPnoANve8YpWVtESbuacqPZWOCU5RgNFlBdhcDkADLoly6M+i+itNbFAOJZY6NDAW/Ko8l7R6mHbjRcAJkd85cdbuShN3Lm7he15SaBSR9PghJBNVIELhK7yD3GPgM3+ecejLav0VOUrExg=
+	t=1711323743; cv=none; b=agbh8cKh20y194x9CTRP3ikOGkdxCcuBadZ8nXN6POR3uo8bLHvrTUoOvHulFuRIVRB8rasy7adEi/tPZE6GCC41HJn8NW4MKAgoUazjIThK2Ar4dv9ivlHVhw1PI4lLdas76npR4ff1Dw31HeBWisoaTjLPu6k0sbcuHkHcYiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323741; c=relaxed/simple;
-	bh=+ZUl4XWyX2TC41ftSNhfrfsALGaw+PtYVx7wA53zQtM=;
+	s=arc-20240116; t=1711323743; c=relaxed/simple;
+	bh=RZNVU4IURpxBQT1ORogNbGIWkBlDKgL0aWdcsIXGZEw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lWP/cVuh1QHOKorZbeSvqlF847n1C6NWFvD1VBOMXziixCkMO7OBcQrFiRt7lLWKsTa0za1iG0dDwSPXqEJtfZQ/ApeBO4p8oMA5yJUItsgv2FaR2jxUSHkbM3qpbrXWyjK5CrbYJRMQIKgEQTVt3/hFji9Jq9I4VwFIZFK3tlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ULl0YH6c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AD48C43390;
-	Sun, 24 Mar 2024 23:42:20 +0000 (UTC)
+	 MIME-Version; b=H8ke+JGLuXGShm+a7y/bf4uvg1wlHjQbIOm6T9GpPCujzUhLqrel8fdaYsLjNitJKpaFcI8jMUp7YBOtZAY+o10MWsKlmVd6A/DQdMOdrwUxCYymve2dceS9/rQ8VD5BmBqwwJLsyEmbRKzt5s490Rcci/EI2kbiMx7HfZCIBBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p5trB/hG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3EC5C433C7;
+	Sun, 24 Mar 2024 23:42:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323741;
-	bh=+ZUl4XWyX2TC41ftSNhfrfsALGaw+PtYVx7wA53zQtM=;
+	s=k20201202; t=1711323742;
+	bh=RZNVU4IURpxBQT1ORogNbGIWkBlDKgL0aWdcsIXGZEw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ULl0YH6crH9JuJ+mzicjUUkhtWX1ZbZa3NQjRI2ustjjWNucs6n8f89xIQTn8kaiV
-	 /LU1HAS4kT/D1yc7iPLTjh7uiJG/34UOy80CFV/YSIblxEOgcd5H5hbfLkvhqvzyix
-	 pbGVDR2jWtpXvyYoWJYBntYBqbfUMbwSijqDq2mIVWMzkKb7FtnnyVaz1cxia/e7j/
-	 wmPg6ybrXAjf+hex8e9YK2m1+BnrVykK2ECzHMnVC9mFK9+VTMz4t76qdb/TvH4KZm
-	 EQ/6+PnHD7lykQFKEB7/NAYGo29EAV51J7G7mGpvFgKvp8zItEuR1ARw731Fs6gjm8
-	 df814pepgPYDA==
+	b=p5trB/hGPGT5+ScNI68RJvPjIK2+dZxEBuB4rxWyxLI9kzU8S6zoAi49jEo5I+2ma
+	 4nx/poDQHXcmut6y2ag9H+4mvjeEBrFVd+bIwBCyyMXKkOWQP4GoWHvP5Gd/dg19bp
+	 Y+l3klQvezACgq89v/dadX4ZBKhRzSdzXf9mE/Cxv0jqG09wQ3iLKV/7+kUfBZwT9p
+	 dAp2hW4BwdiSe/52ZmD5Bb319nne74Q3bmXETySn5WOW1rL58z4LPTzkaLV44wMzcV
+	 xLv1erTAvqXjoN0NGmUAdz4VXGC+sBuQt5cIgyXIRRzsQqT0HjqwFGUZznffqhNKg2
+	 /SOlst89ZLTMA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	Thierry Reding <treding@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 116/238] drm/tegra: dsi: Fix missing pm_runtime_disable() in the error handling path of tegra_dsi_probe()
-Date: Sun, 24 Mar 2024 19:38:24 -0400
-Message-ID: <20240324234027.1354210-117-sashal@kernel.org>
+Subject: [PATCH 5.10 117/238] drm/tegra: output: Fix missing i2c_put_adapter() in the error handling paths of tegra_output_probe()
+Date: Sun, 24 Mar 2024 19:38:25 -0400
+Message-ID: <20240324234027.1354210-118-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -64,32 +64,70 @@ Content-Transfer-Encoding: 8bit
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 5286a9fc280c45b6b307ee1b07f7a997e042252c ]
+[ Upstream commit 2db4578ef6ffb2b52115ca0ebf897b60ec559556 ]
 
-If an error occurs after calling pm_runtime_enable(), pm_runtime_disable()
-should be called as already done in the remove function.
+If an error occurs after a successful of_get_i2c_adapter_by_node() call, it
+should be undone by a corresponding i2c_put_adapter().
 
-Fixes: ef8187d75265 ("drm/tegra: dsi: Implement runtime PM")
+Add the missing i2c_put_adapter() call.
+
+Fixes: 9be7d864cf07 ("drm/tegra: Implement panel support")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Thierry Reding <treding@nvidia.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/ee4a15c9cd4b574a55cd67c30d2411239ba2cee9.1693667005.git.christophe.jaillet@wanadoo.fr
+Link: https://patchwork.freedesktop.org/patch/msgid/b38604178991e1f08b2cda219103be266be2d680.1693667005.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/dsi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/tegra/output.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/tegra/dsi.c b/drivers/gpu/drm/tegra/dsi.c
-index 815e32e05f600..7bb26655cb3cc 100644
---- a/drivers/gpu/drm/tegra/dsi.c
-+++ b/drivers/gpu/drm/tegra/dsi.c
-@@ -1665,6 +1665,7 @@ static int tegra_dsi_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/gpu/drm/tegra/output.c b/drivers/gpu/drm/tegra/output.c
+index 47d26b5d99456..7ccd010a821b7 100644
+--- a/drivers/gpu/drm/tegra/output.c
++++ b/drivers/gpu/drm/tegra/output.c
+@@ -139,8 +139,10 @@ int tegra_output_probe(struct tegra_output *output)
+ 						       GPIOD_IN,
+ 						       "HDMI hotplug detect");
+ 	if (IS_ERR(output->hpd_gpio)) {
+-		if (PTR_ERR(output->hpd_gpio) != -ENOENT)
+-			return PTR_ERR(output->hpd_gpio);
++		if (PTR_ERR(output->hpd_gpio) != -ENOENT) {
++			err = PTR_ERR(output->hpd_gpio);
++			goto put_i2c;
++		}
  
- unregister:
-+	pm_runtime_disable(&pdev->dev);
- 	mipi_dsi_host_unregister(&dsi->host);
- mipi_free:
- 	tegra_mipi_free(dsi->mipi);
+ 		output->hpd_gpio = NULL;
+ 	}
+@@ -149,7 +151,7 @@ int tegra_output_probe(struct tegra_output *output)
+ 		err = gpiod_to_irq(output->hpd_gpio);
+ 		if (err < 0) {
+ 			dev_err(output->dev, "gpiod_to_irq(): %d\n", err);
+-			return err;
++			goto put_i2c;
+ 		}
+ 
+ 		output->hpd_irq = err;
+@@ -162,7 +164,7 @@ int tegra_output_probe(struct tegra_output *output)
+ 		if (err < 0) {
+ 			dev_err(output->dev, "failed to request IRQ#%u: %d\n",
+ 				output->hpd_irq, err);
+-			return err;
++			goto put_i2c;
+ 		}
+ 
+ 		output->connector.polled = DRM_CONNECTOR_POLL_HPD;
+@@ -176,6 +178,12 @@ int tegra_output_probe(struct tegra_output *output)
+ 	}
+ 
+ 	return 0;
++
++put_i2c:
++	if (output->ddc)
++		i2c_put_adapter(output->ddc);
++
++	return err;
+ }
+ 
+ void tegra_output_remove(struct tegra_output *output)
 -- 
 2.43.0
 
