@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-113535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CCB388851A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:58:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA87688851C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 182E32856D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:58:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FD731F22C8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A65774402;
-	Sun, 24 Mar 2024 22:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AC41C09B5;
+	Sun, 24 Mar 2024 22:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ALMemXB4"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mPaqOTZ0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EBE21C0188;
-	Sun, 24 Mar 2024 22:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A98F013E031;
+	Sun, 24 Mar 2024 22:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320336; cv=none; b=CWdS3dnMtPpXoXNLHI7mS+89hFHnvRfhiTW1S8mkKr/pQQ1e/nuLsqWPMg7rp1TBTkdj0pT6+6pNiTiE72sPC4fEiIWEHyh123c22lclB8wNf5Tv3J+NEWihhshdOjTRuSrV6eOvd9Lr7lulLCWH4aSpM4ueL8J/mfCDhErDSHI=
+	t=1711320337; cv=none; b=KPWDsKGLnHs98zvEhOSp6LNoe+vF+OcjY9RHo59vq9QlxQOzdjKiPNQGJzrhLMTmArhQMnT+LxQDn3yZFR1r68kGKQp9APuMYBfrj5SaVrpDsTt1Z4Cwr1nNqyke1Bv6iqLy1S3FIZkA8K2OTp4Jors1M4lCfYnfs9xqapQ+4Ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320336; c=relaxed/simple;
-	bh=6LxWEiI6N3uyWI9KmVjIkYgvU6bm4k+qHC3TMOmC8Gw=;
+	s=arc-20240116; t=1711320337; c=relaxed/simple;
+	bh=/xAFj90ZDfHZPfW2KNKnXlfs/ETDEw2eAYIWvVZUf4Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DMhho+uh/A7m2Bq/TYqjNbH6m4MzifjBIh+276aeaYODn5s6wRRpYz3jGTnFCNL7B4xR600PGQKGNEKiu+SZ5QEguH2dKs+S9DBExWsu+OuHUQoQbz+soakIa63ucC/5Hwxa3qozYcPWX+TNPJnLLM+IsCFQ/YGwp645VKXFZvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ALMemXB4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE9DC43399;
-	Sun, 24 Mar 2024 22:45:35 +0000 (UTC)
+	 MIME-Version; b=E6ZtgmWDMEPshUPeLJgxgyzHeZJ2z68vhQRriYodGc/Px6gzk/Y5bo71CLbMkofbcdhMGYI4P7z3G9X7bOd57JiS0XUbBIJJ7JR4cTN5T385jmP3bac/jwkV7ktW0jdEvdmTH5pNuDgNrWbT7ZO/8jBgqPCTkLhYmWfAROeiaZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mPaqOTZ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7908C433C7;
+	Sun, 24 Mar 2024 22:45:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320336;
-	bh=6LxWEiI6N3uyWI9KmVjIkYgvU6bm4k+qHC3TMOmC8Gw=;
+	s=k20201202; t=1711320337;
+	bh=/xAFj90ZDfHZPfW2KNKnXlfs/ETDEw2eAYIWvVZUf4Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ALMemXB4C3EESmHUo2XmBlpYR5ba1cXvDFXXGIFSkrOy87qkdMBbpaV1SPwE+6YEB
-	 GJ0rBDvdHHUliWQ00IdRYxM7Ak9c1SosHJrOY2qa7cWCwPX3exjpWIATZGfLPufkym
-	 ByY2N3e80MlPt+L2D+N+1Q7ekJo/r/0Jeh+KsqW8ZC0j/PyvsRn4zr6p2w3piC9Ku2
-	 ZiFvxcI2sdgop+UBLL7DOn9HxSoS2pcuGBrxAmUueQhOfOxZxJf/w5uADQMpV+F8l8
-	 QvpWvg0XQBsaW0vh6KmN6DFYlpMGOs8yXpe8jNOFLhEl1CX1DfRMzUy+TWmg6ODbl3
-	 3NDQVYACOUpIg==
+	b=mPaqOTZ0/5eJIqX7G/4YPiZPVg4rJUJh/0wYid/OTQitzKzcX5hnZa6gbDCTH4hag
+	 Oqxp4fBsYyOnqA8NLiRWnCpjDt7pjJpdzoGwh6nc6fOb9766czE6+6fu7f0UwibsdC
+	 1Cy5heWQUxA4FmFUK3tF/jXKo3nPypQrRysyx0dM/DkbC2pu7dazViN44pM0X8onqd
+	 wRU4pMQcoMXr6VC3mUeZSUnURvQRkhotElF4GxUWzN5IUairC8H9YI1+JMVCY6SsOj
+	 NtUC/w7vdMfh+LUq/O4/RB2FNfOMqdSWwE7AyN+dykUBDqf+ktB6/8rghlASS/dD7f
+	 t58lWkQrXI+8Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eric Dumazet <edumazet@google.com>,
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>,
+	syzkaller <syzkaller@googlegroups.com>,
+	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 644/715] tcp: Fix NEW_SYN_RECV handling in inet_twsk_purge()
-Date: Sun, 24 Mar 2024 18:33:43 -0400
-Message-ID: <20240324223455.1342824-645-sashal@kernel.org>
+Subject: [PATCH 6.8 645/715] rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
+Date: Sun, 24 Mar 2024 18:33:44 -0400
+Message-ID: <20240324223455.1342824-646-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,113 +64,152 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Eric Dumazet <edumazet@google.com>
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
 
-[ Upstream commit 1c4e97dd2d3c9a3e84f7e26346aa39bc426d3249 ]
+[ Upstream commit 2a750d6a5b365265dbda33330a6188547ddb5c24 ]
 
-inet_twsk_purge() uses rcu to find TIME_WAIT and NEW_SYN_RECV
-objects to purge.
+syzkaller reported a warning of netns tracker [0] followed by KASAN
+splat [1] and another ref tracker warning [1].
 
-These objects use SLAB_TYPESAFE_BY_RCU semantic and need special
-care. We need to use refcount_inc_not_zero(&sk->sk_refcnt).
+syzkaller could not find a repro, but in the log, the only suspicious
+sequence was as follows:
 
-Reuse the existing correct logic I wrote for TIME_WAIT,
-because both structures have common locations for
-sk_state, sk_family, and netns pointer.
+  18:26:22 executing program 1:
+  r0 = socket$inet6_mptcp(0xa, 0x1, 0x106)
+  ...
+  connect$inet6(r0, &(0x7f0000000080)={0xa, 0x4001, 0x0, @loopback}, 0x1c) (async)
 
-If after the refcount_inc_not_zero() the object fields longer match
-the keys, use sock_gen_put(sk) to release the refcount.
+The notable thing here is 0x4001 in connect(), which is RDS_TCP_PORT.
 
-Then we can call inet_twsk_deschedule_put() for TIME_WAIT,
-inet_csk_reqsk_queue_drop_and_put() for NEW_SYN_RECV sockets,
-with BH disabled.
+So, the scenario would be:
 
-Then we need to restart the loop because we had drop rcu_read_lock().
+  1. unshare(CLONE_NEWNET) creates a per netns tcp listener in
+      rds_tcp_listen_init().
+  2. syz-executor connect()s to it and creates a reqsk.
+  3. syz-executor exit()s immediately.
+  4. netns is dismantled.  [0]
+  5. reqsk timer is fired, and UAF happens while freeing reqsk.  [1]
+  6. listener is freed after RCU grace period.  [2]
 
-Fixes: 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in inet_twsk_purge()")
-Link: https://lore.kernel.org/netdev/CANn89iLvFuuihCtt9PME2uS1WJATnf5fKjDToa1WzVnRzHnPfg@mail.gmail.com/T/#u
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20240308200122.64357-2-kuniyu@amazon.com
+Basically, reqsk assumes that the listener guarantees netns safety
+until all reqsk timers are expired by holding the listener's refcount.
+However, this was not the case for kernel sockets.
+
+Commit 740ea3c4a0b2 ("tcp: Clean up kernel listener's reqsk in
+inet_twsk_purge()") fixed this issue only for per-netns ehash.
+
+Let's apply the same fix for the global ehash.
+
+[0]:
+ref_tracker: net notrefcnt@0000000065449cc3 has 1/1 users at
+     sk_alloc (./include/net/net_namespace.h:337 net/core/sock.c:2146)
+     inet6_create (net/ipv6/af_inet6.c:192 net/ipv6/af_inet6.c:119)
+     __sock_create (net/socket.c:1572)
+     rds_tcp_listen_init (net/rds/tcp_listen.c:279)
+     rds_tcp_init_net (net/rds/tcp.c:577)
+     ops_init (net/core/net_namespace.c:137)
+     setup_net (net/core/net_namespace.c:340)
+     copy_net_ns (net/core/net_namespace.c:497)
+     create_new_namespaces (kernel/nsproxy.c:110)
+     unshare_nsproxy_namespaces (kernel/nsproxy.c:228 (discriminator 4))
+     ksys_unshare (kernel/fork.c:3429)
+     __x64_sys_unshare (kernel/fork.c:3496)
+     do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83)
+     entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129)
+..
+WARNING: CPU: 0 PID: 27 at lib/ref_tracker.c:179 ref_tracker_dir_exit (lib/ref_tracker.c:179)
+
+[1]:
+BUG: KASAN: slab-use-after-free in inet_csk_reqsk_queue_drop (./include/net/inet_hashtables.h:180 net/ipv4/inet_connection_sock.c:952 net/ipv4/inet_connection_sock.c:966)
+Read of size 8 at addr ffff88801b370400 by task swapper/0/0
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <IRQ>
+ dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
+ print_report (mm/kasan/report.c:378 mm/kasan/report.c:488)
+ kasan_report (mm/kasan/report.c:603)
+ inet_csk_reqsk_queue_drop (./include/net/inet_hashtables.h:180 net/ipv4/inet_connection_sock.c:952 net/ipv4/inet_connection_sock.c:966)
+ reqsk_timer_handler (net/ipv4/inet_connection_sock.c:979 net/ipv4/inet_connection_sock.c:1092)
+ call_timer_fn (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/timer.h:127 kernel/time/timer.c:1701)
+ __run_timers.part.0 (kernel/time/timer.c:1752 kernel/time/timer.c:2038)
+ run_timer_softirq (kernel/time/timer.c:2053)
+ __do_softirq (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/irq.h:142 kernel/softirq.c:554)
+ irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632 kernel/softirq.c:644)
+ sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1076 (discriminator 14))
+ </IRQ>
+
+Allocated by task 258 on cpu 0 at 83.612050s:
+ kasan_save_stack (mm/kasan/common.c:48)
+ kasan_save_track (mm/kasan/common.c:68)
+ __kasan_slab_alloc (mm/kasan/common.c:343)
+ kmem_cache_alloc (mm/slub.c:3813 mm/slub.c:3860 mm/slub.c:3867)
+ copy_net_ns (./include/linux/slab.h:701 net/core/net_namespace.c:421 net/core/net_namespace.c:480)
+ create_new_namespaces (kernel/nsproxy.c:110)
+ unshare_nsproxy_namespaces (kernel/nsproxy.c:228 (discriminator 4))
+ ksys_unshare (kernel/fork.c:3429)
+ __x64_sys_unshare (kernel/fork.c:3496)
+ do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83)
+ entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129)
+
+Freed by task 27 on cpu 0 at 329.158864s:
+ kasan_save_stack (mm/kasan/common.c:48)
+ kasan_save_track (mm/kasan/common.c:68)
+ kasan_save_free_info (mm/kasan/generic.c:643)
+ __kasan_slab_free (mm/kasan/common.c:265)
+ kmem_cache_free (mm/slub.c:4299 mm/slub.c:4363)
+ cleanup_net (net/core/net_namespace.c:456 net/core/net_namespace.c:446 net/core/net_namespace.c:639)
+ process_one_work (kernel/workqueue.c:2638)
+ worker_thread (kernel/workqueue.c:2700 kernel/workqueue.c:2787)
+ kthread (kernel/kthread.c:388)
+ ret_from_fork (arch/x86/kernel/process.c:153)
+ ret_from_fork_asm (arch/x86/entry/entry_64.S:250)
+
+The buggy address belongs to the object at ffff88801b370000
+ which belongs to the cache net_namespace of size 4352
+The buggy address is located 1024 bytes inside of
+ freed 4352-byte region [ffff88801b370000, ffff88801b371100)
+
+[2]:
+WARNING: CPU: 0 PID: 95 at lib/ref_tracker.c:228 ref_tracker_free (lib/ref_tracker.c:228 (discriminator 1))
+Modules linked in:
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+RIP: 0010:ref_tracker_free (lib/ref_tracker.c:228 (discriminator 1))
+..
+Call Trace:
+<IRQ>
+ __sk_destruct (./include/net/net_namespace.h:353 net/core/sock.c:2204)
+ rcu_core (./arch/x86/include/asm/preempt.h:26 kernel/rcu/tree.c:2165 kernel/rcu/tree.c:2433)
+ __do_softirq (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/irq.h:142 kernel/softirq.c:554)
+ irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632 kernel/softirq.c:644)
+ sysvec_apic_timer_interrupt (arch/x86/kernel/apic/apic.c:1076 (discriminator 14))
+</IRQ>
+
+Reported-by: syzkaller <syzkaller@googlegroups.com>
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Fixes: 467fa15356ac ("RDS-TCP: Support multiple RDS-TCP listen endpoints, one per netns.")
+Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20240308200122.64357-3-kuniyu@amazon.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/inet_timewait_sock.c | 41 ++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 22 deletions(-)
+ net/ipv4/tcp_minisocks.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_sock.c
-index 5befa4de5b241..e8de45d34d56a 100644
---- a/net/ipv4/inet_timewait_sock.c
-+++ b/net/ipv4/inet_timewait_sock.c
-@@ -263,12 +263,12 @@ void __inet_twsk_schedule(struct inet_timewait_sock *tw, int timeo, bool rearm)
- }
- EXPORT_SYMBOL_GPL(__inet_twsk_schedule);
- 
-+/* Remove all non full sockets (TIME_WAIT and NEW_SYN_RECV) for dead netns */
- void inet_twsk_purge(struct inet_hashinfo *hashinfo, int family)
- {
--	struct inet_timewait_sock *tw;
--	struct sock *sk;
- 	struct hlist_nulls_node *node;
- 	unsigned int slot;
-+	struct sock *sk;
- 
- 	for (slot = 0; slot <= hashinfo->ehash_mask; slot++) {
- 		struct inet_ehash_bucket *head = &hashinfo->ehash[slot];
-@@ -277,38 +277,35 @@ void inet_twsk_purge(struct inet_hashinfo *hashinfo, int family)
- 		rcu_read_lock();
- restart:
- 		sk_nulls_for_each_rcu(sk, node, &head->chain) {
--			if (sk->sk_state != TCP_TIME_WAIT) {
--				/* A kernel listener socket might not hold refcnt for net,
--				 * so reqsk_timer_handler() could be fired after net is
--				 * freed.  Userspace listener and reqsk never exist here.
--				 */
--				if (unlikely(sk->sk_state == TCP_NEW_SYN_RECV &&
--					     hashinfo->pernet)) {
--					struct request_sock *req = inet_reqsk(sk);
+diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
+index 9e85f2a0bddd4..0ecc7311dc6ce 100644
+--- a/net/ipv4/tcp_minisocks.c
++++ b/net/ipv4/tcp_minisocks.c
+@@ -398,10 +398,6 @@ void tcp_twsk_purge(struct list_head *net_exit_list, int family)
+ 			/* Even if tw_refcount == 1, we must clean up kernel reqsk */
+ 			inet_twsk_purge(net->ipv4.tcp_death_row.hashinfo, family);
+ 		} else if (!purged_once) {
+-			/* The last refcount is decremented in tcp_sk_exit_batch() */
+-			if (refcount_read(&net->ipv4.tcp_death_row.tw_refcount) == 1)
+-				continue;
 -
--					inet_csk_reqsk_queue_drop_and_put(req->rsk_listener, req);
--				}
-+			int state = inet_sk_state_load(sk);
- 
-+			if ((1 << state) & ~(TCPF_TIME_WAIT |
-+					     TCPF_NEW_SYN_RECV))
- 				continue;
--			}
- 
--			tw = inet_twsk(sk);
--			if ((tw->tw_family != family) ||
--				refcount_read(&twsk_net(tw)->ns.count))
-+			if (sk->sk_family != family ||
-+			    refcount_read(&sock_net(sk)->ns.count))
- 				continue;
- 
--			if (unlikely(!refcount_inc_not_zero(&tw->tw_refcnt)))
-+			if (unlikely(!refcount_inc_not_zero(&sk->sk_refcnt)))
- 				continue;
- 
--			if (unlikely((tw->tw_family != family) ||
--				     refcount_read(&twsk_net(tw)->ns.count))) {
--				inet_twsk_put(tw);
-+			if (unlikely(sk->sk_family != family ||
-+				     refcount_read(&sock_net(sk)->ns.count))) {
-+				sock_gen_put(sk);
- 				goto restart;
- 			}
- 
- 			rcu_read_unlock();
- 			local_bh_disable();
--			inet_twsk_deschedule_put(tw);
-+			if (state == TCP_TIME_WAIT) {
-+				inet_twsk_deschedule_put(inet_twsk(sk));
-+			} else {
-+				struct request_sock *req = inet_reqsk(sk);
-+
-+				inet_csk_reqsk_queue_drop_and_put(req->rsk_listener,
-+								  req);
-+			}
- 			local_bh_enable();
- 			goto restart_rcu;
+ 			inet_twsk_purge(&tcp_hashinfo, family);
+ 			purged_once = true;
  		}
 -- 
 2.43.0
