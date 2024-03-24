@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-113173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF3E88820A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:36:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0F2E88820C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:36:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FA121F21B7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:36:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B3C41C21F19
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75EC2175C97;
-	Sun, 24 Mar 2024 22:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73366175CB4;
+	Sun, 24 Mar 2024 22:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kgwspFE0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ln7VZ+rH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADAF2174945;
-	Sun, 24 Mar 2024 22:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87522175C9A;
+	Sun, 24 Mar 2024 22:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319975; cv=none; b=q4wGAFr6bsTnXILdRBMhojt35gjgDTv9SpnFy/5WjP0vdkXLKEMNn7gdpwOgDPH6N5sJdL9q2oQ9ZjKy2jLA76V81DfehgNSua4JnipEMX/en17/zsElgZPchViXgsSCHyuC+eriX5ryV0G4ViwOxnWb7WccUnkDeRqUFPS5MAo=
+	t=1711319976; cv=none; b=hiUbwklH0Tix21hskJCYy3wIl436oNaAB9L4rG4PB/RUN5+QZXp+rXGdGIt0EmIcmw8wWvA9An7dDGVuS5FzmSFqSe1PmzaGsp9m8Gguy+wNrRKgayWjszESEh5+YO7YE24HAYkRkPbTzePCtdA6USz1rptTK8x4C+G9RI3qmcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319975; c=relaxed/simple;
-	bh=syZ7zM0ZQCpE2wuH6W5pZKG769FBlLja+iwHGtXJ1Ww=;
+	s=arc-20240116; t=1711319976; c=relaxed/simple;
+	bh=puQb5c0VDCrUhJLPMw1yY8HRPfs5JtJz+AqwO2U7XmQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XcQMsOIwV33Vf0gJ6Wlhstb72gQl8h29kqTlSAoJCPoaxaHTJ5CbTsvYt31QHHXOF15YH6XsU/0b1a1LMlmm+TE70gUd5c3Mwr/PJxu2uPztUyNvK8HtzWVNCH9BvuJFVgQHb6qaQDgkGgSt2lTLuA4hcihK0MOgCIdG/5X19pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kgwspFE0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87C32C43390;
-	Sun, 24 Mar 2024 22:39:34 +0000 (UTC)
+	 MIME-Version; b=N6QsE3ZU3pe257VGp9VSsgdjoVveaszSTV6TVq/5p1FEq6lSnHEHLMWPmaLo6Rq5kCG2w+8VI1kmOAf5vL60W1gD3pH3LRZ8fsnrRmswD7rrpAttebdu6UNZtI6m+hQPe/GligqRqTaTB2s/VTYU2+ZJL+I2OtJkqp5qX7z70NE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ln7VZ+rH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97DB2C43394;
+	Sun, 24 Mar 2024 22:39:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319975;
-	bh=syZ7zM0ZQCpE2wuH6W5pZKG769FBlLja+iwHGtXJ1Ww=;
+	s=k20201202; t=1711319976;
+	bh=puQb5c0VDCrUhJLPMw1yY8HRPfs5JtJz+AqwO2U7XmQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kgwspFE0k2R40Z8fdN1q+enl9S3XYs/8igsXhwuEJG2FpPIrXd4baHj6qmA5wJakk
-	 bYtkSHujcJW+rCgu75pbYrE3A80z49SyMXwAJVbZtjndhttVAL8lbnP2dcgDCAH7vL
-	 QlMZhk6IzwQCeq4fHGb6MlZrWRbC1EGK1AkAk1Ya0JdTBF6csSfyTucMHGD0iemC7o
-	 Bd2jBtUFc0HiH/xqqa5MDWOA96Z1kJNwEq3NE0aULjaBIvc67fnnKs/m2TygyP47hE
-	 XJ0/uglhWA2YFNnbzQol4j8R2qVKaSD+GDpzeGZcejZi6fuWUJgoSSpE+kJk0PTpSX
-	 SxKY6Z20FTC9w==
+	b=ln7VZ+rHNud/3OCSu89VJ33V0bIBl9Pr6GM5XoaQpSdiDBkRFgKpfgU+sMWNIs0xJ
+	 HujEwdO67aD4Pm0STxfGi/QknujGxvJaEwaIdX4GO5bLnbfUGKbyb7wFfRwebUlFje
+	 8vn5tyUM0+wQLmlNmmJsVvfJDyvTYppyI1nbuJkzb2YbyVcpx81le93ADYfy60uequ
+	 1aN35ysZ3V25iAx3eSC4iYKQrqiTPjmYTkhD3uEH79bjhajRXKkf2oYRde7akrse9s
+	 gi+xaWzP5LqPBXUdPL3jemdkFEgUFw1DuGBFhoAgckp6IhPm0+KdiOuhg8OokH/glN
+	 YW/ebfjoeUBpA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: Abel Vesa <abel.vesa@linaro.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 282/715] arm64: dts: qcom: sm8550: Fix SPMI channels size
-Date: Sun, 24 Mar 2024 18:27:41 -0400
-Message-ID: <20240324223455.1342824-283-sashal@kernel.org>
+Subject: [PATCH 6.8 283/715] arm64: dts: qcom: sm8650: Fix SPMI channels size
+Date: Sun, 24 Mar 2024 18:27:42 -0400
+Message-ID: <20240324223455.1342824-284-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -66,7 +66,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Abel Vesa <abel.vesa@linaro.org>
 
-[ Upstream commit 77dd1e50ffcba33c3195ae4fc78f354368ddacb2 ]
+[ Upstream commit a4f82b8045e3c7913266aa6ea1ee15752a062abd ]
 
 The actual size of the channels registers region is 4MB, according to the
 documentation. This issue was not caught until now because the driver was
@@ -75,23 +75,23 @@ multiple buses. Thie driver is using platform_get_resource_byname() and
 devm_ioremap() towards that purpose, which intentionally avoids
 devm_request_mem_region() altogether.
 
-Fixes: ffc50b2d3828 ("arm64: dts: qcom: Add base SM8550 dtsi")
+Fixes: 10e024671295 ("arm64: dts: qcom: sm8650: add interconnect dependent device nodes")
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
-Link: https://lore.kernel.org/r/20240221-dts-qcom-sm8550-fix-spmi-chnls-size-v2-1-72b5efd9dc4f@linaro.org
+Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8650-QRD
+Link: https://lore.kernel.org/r/20240221-dts-qcom-sm8550-fix-spmi-chnls-size-v2-2-72b5efd9dc4f@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/sm8650.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index ee1ba5a8c8fc2..90acdf16b8307 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -3248,7 +3248,7 @@ sram@c3f0000 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+index bad0eb84549fe..0e4bd83b2c68a 100644
+--- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+@@ -3705,7 +3705,7 @@ sram@c3f0000 {
  		spmi_bus: spmi@c400000 {
  			compatible = "qcom,spmi-pmic-arb";
  			reg = <0 0x0c400000 0 0x3000>,
