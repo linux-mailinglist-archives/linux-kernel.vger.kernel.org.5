@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-112913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDDAD887FB3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:41:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1E0E887FB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:42:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A8551C21179
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:41:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36C07B21CC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466636CDA7;
-	Sun, 24 Mar 2024 22:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40EBF6CDCE;
+	Sun, 24 Mar 2024 22:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEWWheiW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lm3vhMkV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763366BFBF;
-	Sun, 24 Mar 2024 22:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789DB6CDAD;
+	Sun, 24 Mar 2024 22:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319724; cv=none; b=khqTzxz5BG8Xb/XSgoNouS9nVA9Vk/oFtbG+cp5rJnBF560qaQSFeBTSCIkFsC/7I5nJ8YBzStem2BwvgfSn4QOGcXGJAIxhWkyH4PltVaB3mj4NEsPGulkA2tdjYRBQdDuHe0q9i/VbBjcFlFWlWGlUPvGhElUYAtGv7XriU08=
+	t=1711319725; cv=none; b=g0f6s5KrdHygWNVLlZZ+XcY52DsX8mHdRkM3FqfB1aNBK6ModCUx6kjVnANgQaAP9kkcWgyoT226RtVVfGMVRXB7JsUJi7OyiHAyzPI8EOQsXkJL7o7w/5+YKVj5oXrvDFWK5AvkItNaNmuJfxJcBfLSMnAZR1/O3L/cg413Y7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319724; c=relaxed/simple;
-	bh=A9hhnNGKNJQvbzqjwj11sc2xcTjo7vfpsW+pBYyE2/k=;
+	s=arc-20240116; t=1711319725; c=relaxed/simple;
+	bh=fzaSZg1cousZPFs9g2V1Go91FbBqdlg74fePrxfpCrA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I6jQiOr0DSdomLskWaBCj9zH1dT6XvmeY8kceHoK6MMsCwHIxTaK44J8YzGsPrIRPxJ541LaJB3AAHkK9Kwa9mFTucPVcSxt5YlpHpr9EnLsXt8IDLfiH0D/uqzoCJV1V8MPbbd7hwUORlBGEPcNUB5zRGZITDH4APYcbsLHGuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEWWheiW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9A7C433C7;
-	Sun, 24 Mar 2024 22:35:23 +0000 (UTC)
+	 MIME-Version; b=sZeTTEKGJV+yGsh0798W6T9hbWz1loFBBjJ16N/paqsIFsZ44hnhRlUoLQgF0Ss8LDyUerDmjyPzn0KUNUEWl7svLbnTY4bJqutyhw4PPqrfYXqyvTtgTzP8t4p5sOkvPQ/+NK8TkoDGMoTVkoS1dX1+GGhkWhDKRWeCsL2P+Cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lm3vhMkV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B6F9C433A6;
+	Sun, 24 Mar 2024 22:35:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319724;
-	bh=A9hhnNGKNJQvbzqjwj11sc2xcTjo7vfpsW+pBYyE2/k=;
+	s=k20201202; t=1711319725;
+	bh=fzaSZg1cousZPFs9g2V1Go91FbBqdlg74fePrxfpCrA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AEWWheiW6txc+xSEbVqe5FmchDSWK3vdqL2uDTRolvCrsJIXoylb2cXX7MX2d+qLI
-	 z5LCFL/shzVXyr0YBTsKfFW3YdQxY8wyha/drPADn/c/On1b63sIsW+oKBMZVDTfnT
-	 QRU0ODPP57sMuhZEHX4x5arbgw8QMXW9if04p1uo/9avDD5SFY1LfX6Qa3/aTzkHSI
-	 KwgloABaTjLko7dDJ/UEK8tWeByngqvVEecFrb/aMJQPE8e+4j0EEvbKG/odIrNYgJ
-	 XPajJ6MMnvr9VBFmcVHThz56facv2fINyCdEXsju8z/WwsJJc8qRpEdcWJ/F+rWn7W
-	 O5CXYjn1T/cmg==
+	b=Lm3vhMkVizUdZ4fbGKTV0IkEWKJ9sCCCsTc26TA2YR2k/7APhETlzzWvjA3AMNGLA
+	 myYdMMrzmd6g5z8ivQJIGcN8Ozu2rpTPeX/zh6+O7kvRVm+voWScGyWllhmnsJmGET
+	 qYwJDCFAEoc7BNzG4bhzs6Q76t0E3JJa/VSAHDi2qqF+O6m+3g+TOK+IDYlpc9mblM
+	 U1jGXbL2RVKmtllyc1Qmobj7eIOviAmtTF/U7d/Tm9j84zSZKF7ha1glPkKZsvYsT+
+	 /FI7yKmqNrgZGKm7UlV5wLcBBmdzFKW2HbwWbIhfrffbeGlf2yYnjemWaIF1OE6FTz
+	 9IcJK8FG/ejEQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maxime Ripard <mripard@kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	David Gow <davidgow@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Eric Biggers <ebiggers@google.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 026/715] kunit: Setup DMA masks on the kunit device
-Date: Sun, 24 Mar 2024 18:23:25 -0400
-Message-ID: <20240324223455.1342824-27-sashal@kernel.org>
+Subject: [PATCH 6.8 027/715] ovl: Always reject mounting over case-insensitive directories
+Date: Sun, 24 Mar 2024 18:23:26 -0400
+Message-ID: <20240324223455.1342824-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,58 +63,96 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Maxime Ripard <mripard@kernel.org>
+From: Gabriel Krisman Bertazi <krisman@suse.de>
 
-[ Upstream commit c5215d54dc10e801a6cefef62445a00a4c28a515 ]
+[ Upstream commit 2824083db76cb9d4b7910607b367e93b02912865 ]
 
-Commit d393acce7b3f ("drm/tests: Switch to kunit devices") switched the
-DRM device creation helpers from an ad-hoc implementation to the new
-kunit device creation helpers introduced in commit d03c720e03bd ("kunit:
-Add APIs for managing devices").
+overlayfs relies on the filesystem setting DCACHE_OP_HASH or
+DCACHE_OP_COMPARE to reject mounting over case-insensitive directories.
 
-However, while the DRM helpers were using a platform_device, the kunit
-helpers are using a dedicated bus and device type.
+Since commit bb9cd9106b22 ("fscrypt: Have filesystems handle their
+d_ops"), we set ->d_op through a hook in ->d_lookup, which
+means the root dentry won't have them, causing the mount to accidentally
+succeed.
 
-That situation creates small differences in the initialisation, and one
-of them is that the kunit devices do not have the DMA masks setup. In
-turn, this means that we can't do any kind of DMA buffer allocation
-anymore, which creates a regression on some (downstream for now) tests.
+In v6.7-rc7, the following sequence will succeed to mount, but any
+dentry other than the root dentry will be a "weird" dentry to ovl and
+fail with EREMOTE.
 
-Let's set up a default DMA mask that should work on any platform to fix
-it.
+  mkfs.ext4 -O casefold lower.img
+  mount -O loop lower.img lower
+  mount -t overlay -o lowerdir=lower,upperdir=upper,workdir=work ovl /mnt
 
-Fixes: d03c720e03bd ("kunit: Add APIs for managing devices")
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: David Gow <davidgow@google.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Mounting on a subdirectory fails, as expected, because DCACHE_OP_HASH
+and DCACHE_OP_COMPARE are properly set by ->lookup.
+
+Fix by explicitly rejecting superblocks that allow case-insensitive
+dentries. Yes, this will be solved when we move d_op configuration back
+to ->s_d_op. Yet, we better have an explicit fix to avoid messing up
+again.
+
+While there, re-sort the entries to have more descriptive error messages
+first.
+
+Fixes: bb9cd9106b22 ("fscrypt: Have filesystems handle their d_ops")
+Acked-by: Amir Goldstein <amir73il@gmail.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Link: https://lore.kernel.org/r/20240221171412.10710-2-krisman@suse.de
+Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/kunit/device.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/overlayfs/params.c | 14 +++++++++++---
+ include/linux/fs.h    |  9 +++++++++
+ 2 files changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/lib/kunit/device.c b/lib/kunit/device.c
-index 644a38a1f5b1c..9ea399049749e 100644
---- a/lib/kunit/device.c
-+++ b/lib/kunit/device.c
-@@ -10,6 +10,7 @@
-  */
+diff --git a/fs/overlayfs/params.c b/fs/overlayfs/params.c
+index 112b4b12f8252..36dcc530ac286 100644
+--- a/fs/overlayfs/params.c
++++ b/fs/overlayfs/params.c
+@@ -280,12 +280,20 @@ static int ovl_mount_dir_check(struct fs_context *fc, const struct path *path,
+ {
+ 	struct ovl_fs_context *ctx = fc->fs_private;
  
- #include <linux/device.h>
-+#include <linux/dma-mapping.h>
+-	if (ovl_dentry_weird(path->dentry))
+-		return invalfc(fc, "filesystem on %s not supported", name);
+-
+ 	if (!d_is_dir(path->dentry))
+ 		return invalfc(fc, "%s is not a directory", name);
  
- #include <kunit/test.h>
- #include <kunit/device.h>
-@@ -133,6 +134,9 @@ static struct kunit_device *kunit_device_register_internal(struct kunit *test,
- 		return ERR_PTR(err);
- 	}
- 
-+	kunit_dev->dev.dma_mask = &kunit_dev->dev.coherent_dma_mask;
-+	kunit_dev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
++	/*
++	 * Root dentries of case-insensitive capable filesystems might
++	 * not have the dentry operations set, but still be incompatible
++	 * with overlayfs.  Check explicitly to prevent post-mount
++	 * failures.
++	 */
++	if (sb_has_encoding(path->mnt->mnt_sb))
++		return invalfc(fc, "case-insensitive capable filesystem on %s not supported", name);
 +
- 	kunit_add_action(test, device_unregister_wrapper, &kunit_dev->dev);
++	if (ovl_dentry_weird(path->dentry))
++		return invalfc(fc, "filesystem on %s not supported", name);
  
- 	return kunit_dev;
+ 	/*
+ 	 * Check whether upper path is read-only here to report failures
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 1fbc72c5f112c..630468c005040 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3281,6 +3281,15 @@ extern int generic_check_addressable(unsigned, u64);
+ 
+ extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
+ 
++static inline bool sb_has_encoding(const struct super_block *sb)
++{
++#if IS_ENABLED(CONFIG_UNICODE)
++	return !!sb->s_encoding;
++#else
++	return false;
++#endif
++}
++
+ int may_setattr(struct mnt_idmap *idmap, struct inode *inode,
+ 		unsigned int ia_valid);
+ int setattr_prepare(struct mnt_idmap *, struct dentry *, struct iattr *);
 -- 
 2.43.0
 
