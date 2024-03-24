@@ -1,54 +1,53 @@
-Return-Path: <linux-kernel+bounces-114153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58409888F54
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F7398888BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D9241F2C46D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:45:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 046EB1F2A749
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD33824546D;
-	Sun, 24 Mar 2024 23:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A92F154C05;
+	Sun, 24 Mar 2024 23:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tcm6gzhz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DARfLaLQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCCE92046D4;
-	Sun, 24 Mar 2024 23:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965D52046DC;
+	Sun, 24 Mar 2024 23:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321467; cv=none; b=ojwsGG+JX/zl5uU/eDn7GDXZ+d4Tc8Spma+cNSfilOF972W+XZTZfeUUdzu+DrwwzTSlWMcYVnqk4haofB6gorQnyox44epfiblRgUdFVCZB8ywt7P/WM/krtZ5hWc1vtlKcAsQeWxnQUZtY0gV9luc69LQmeCNwM5av3EJXT4g=
+	t=1711321468; cv=none; b=nkDlbxtuOQwbV/HNiFx4ci9UiF1SL8oa+nNsmtrfpr1RxYQSqM86q8CMfAs83ryFY9EjGPqmVKhjYk3h7JV5WP29lKm5KpbV1r618tvQcjbLKxRTmsjNghOufaeEANlv36Sjnp7DKoR3P5qJzy+VS7rBH1+Qutk4pBj9RM2wR38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321467; c=relaxed/simple;
-	bh=6Pqk+h8glXpp8xRTwV434H7x7q75+UK2vck8COxArEo=;
+	s=arc-20240116; t=1711321468; c=relaxed/simple;
+	bh=6hCrKi98dMVDgFgeCygjagN6sTUVvKnVanZ0V+Mizj8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DO+AHp6Fn6QdH90VCkk5K6Z88rld4eGPpWwFGPYkk5cNHvjUXFgZRx/a/BVTHHXwguS1ukUsuYfS3Jg1rhVGpf9EJ7LscnzFTNV8PimUH6WnHi1va4avxV6ByCKQE8Jaepy3MFLO5KYMg5+aj/b6+U6kOI5YGlArac9EUW59YbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tcm6gzhz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1087DC433F1;
-	Sun, 24 Mar 2024 23:04:25 +0000 (UTC)
+	 MIME-Version:Content-Type; b=o2+uONPoMd4F84HzWHAMn7HbAx1zMiOEskZQggHpLWIDLv6e4SE9d3IKnajSvLBuYsVdY6kzjDizEUhl3DXMLdm83pxg/n91bxcjsLaSR+7cqqDxgoEAgttHqmEWN3Y3RIZfxM4ZpLpVSGVnO16DTaLwc+RQfa3icIvw6WHJYYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DARfLaLQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE158C433C7;
+	Sun, 24 Mar 2024 23:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321466;
-	bh=6Pqk+h8glXpp8xRTwV434H7x7q75+UK2vck8COxArEo=;
+	s=k20201202; t=1711321467;
+	bh=6hCrKi98dMVDgFgeCygjagN6sTUVvKnVanZ0V+Mizj8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Tcm6gzhzNgkUVIfVY8aPkUvhcyxlUL0cb1wNgEDoEph7o90HfSf5xkSn9gTsDoKmT
-	 dF7fL+6Vk6dGQ8Y4SMrW65+UpSEwHyl4Gnvb52t5twNjhn8SuRgs3wP2Fm0Dvr+EMd
-	 wO46uIdWQQ+VTFb0OWXv3O4lEan9ErNImrVnqOkJr1yoKqSaG0rA8ZYLDaYHkXsBso
-	 L57x21pKXriqC0/lyS44LA5uMlZ9WSadpxQWsl949M+oGHs9pSzS7Dx4Ir/s6B94VY
-	 TfGmzS2D+NCvf1UfdMsk44hTL4RZFMzcL9knk+yFLPXG/gbo2O6OAwvrKHN37p3ZHs
-	 Qsb6wBAViFJZA==
+	b=DARfLaLQ22oUGHahDyRQRxruanNdsGaGaXTLbxUv0TdJzWtN146V8PJzqoh2nZsc6
+	 VL9Zm+BxguusSwMcaHIaGD2FYj1GVgd4TTbcT5pIR+wlk8WpRdoO4z57uJbCwzqZLs
+	 wfFrCbCdFjaXI1KY3dddd63jXQSVOrVap+BRbj7Y7n/jQP133BQh0JBUmFu0wl2utg
+	 AdfoTWBfjoyDV8GNHNRjSrbRef/Xu+QuttcWhC6othvn31pItWpMXYumvHG1ZoV9ax
+	 v4nA1vs7I0u1chIxTop0LWBaSSoImdoUzcaLvV1oflmrZilYAWL2mGKpIz0JsAisRr
+	 OkKK/+I9/ee7Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Petr Mladek <pmladek@suse.com>,
-	John Ogness <john.ogness@linutronix.de>,
+Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 191/638] printk: Disable passing console lock owner completely during panic()
-Date: Sun, 24 Mar 2024 18:53:48 -0400
-Message-ID: <20240324230116.1348576-192-sashal@kernel.org>
+Subject: [PATCH 6.6 192/638] pwm: sti: Fix capture for st,pwm-num-chan < st,capture-num-chan
+Date: Sun, 24 Mar 2024 18:53:49 -0400
+Message-ID: <20240324230116.1348576-193-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -58,118 +57,62 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Petr Mladek <pmladek@suse.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit d04d5882cd678b898a9d7c5aee6afbe9e6e77fcd ]
+[ Upstream commit 5f623835584f1c8d1030666796f40c47a448ce0b ]
 
-The commit d51507098ff91 ("printk: disable optimistic spin
-during panic") added checks to avoid becoming a console waiter
-if a panic is in progress.
+The driver only used the number of pwm channels to set the pwm_chip's
+npwm member. The result is that if there are more capture channels than
+PWM channels specified in the device tree, only a part of the capture
+channel is usable. Fix that by passing the bigger channel count to the
+pwm framework. This makes it possible that the .apply() callback is
+called with .hwpwm >= pwm_num_devs, catch that case and return an error
+code.
 
-However, the transition to panic can occur while there is
-already a waiter. The current owner should not pass the lock to
-the waiter because it might get stopped or blocked anytime.
-
-Also the panic context might pass the console lock owner to an
-already stopped waiter by mistake. It might happen when
-console_flush_on_panic() ignores the current lock owner, for
-example:
-
-CPU0                                CPU1
-----                                ----
-console_lock_spinning_enable()
-                                    console_trylock_spinning()
-                                      [CPU1 now console waiter]
-NMI: panic()
-  panic_other_cpus_shutdown()
-                                    [stopped as console waiter]
-  console_flush_on_panic()
-    console_lock_spinning_enable()
-    [print 1 record]
-    console_lock_spinning_disable_and_check()
-      [handover to stopped CPU1]
-
-This results in panic() not flushing the panic messages.
-
-Fix these problems by disabling all spinning operations
-completely during panic().
-
-Another advantage is that it prevents possible deadlocks caused
-by "console_owner_lock". The panic() context does not need to
-take it any longer. The lockless checks are safe because the
-functions become NOPs when they see the panic in progress. All
-operations manipulating the state are still synchronized by the
-lock even when non-panic CPUs would notice the panic
-synchronously.
-
-The current owner might stay spinning. But non-panic() CPUs
-would get stopped anyway and the panic context will never start
-spinning.
-
-Fixes: dbdda842fe96 ("printk: Add console owner and waiter logic to load balance console writes")
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Link: https://lore.kernel.org/r/20240207134103.1357162-12-john.ogness@linutronix.de
-Signed-off-by: Petr Mladek <pmladek@suse.com>
+Fixes: c97267ae831d ("pwm: sti: Add PWM capture callback")
+Link: https://lore.kernel.org/r/20240204212043.2951852-2-u.kleine-koenig@pengutronix.de
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/printk/printk.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/pwm/pwm-sti.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 0b3af1529778c..b67fbae1299fa 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -1850,10 +1850,23 @@ static bool console_waiter;
-  */
- static void console_lock_spinning_enable(void)
+diff --git a/drivers/pwm/pwm-sti.c b/drivers/pwm/pwm-sti.c
+index c8800f84b917f..c782378dff5e5 100644
+--- a/drivers/pwm/pwm-sti.c
++++ b/drivers/pwm/pwm-sti.c
+@@ -395,8 +395,17 @@ static int sti_pwm_capture(struct pwm_chip *chip, struct pwm_device *pwm,
+ static int sti_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 			 const struct pwm_state *state)
  {
-+	/*
-+	 * Do not use spinning in panic(). The panic CPU wants to keep the lock.
-+	 * Non-panic CPUs abandon the flush anyway.
-+	 *
-+	 * Just keep the lockdep annotation. The panic-CPU should avoid
-+	 * taking console_owner_lock because it might cause a deadlock.
-+	 * This looks like the easiest way how to prevent false lockdep
-+	 * reports without handling races a lockless way.
-+	 */
-+	if (panic_in_progress())
-+		goto lockdep;
-+
- 	raw_spin_lock(&console_owner_lock);
- 	console_owner = current;
- 	raw_spin_unlock(&console_owner_lock);
++	struct sti_pwm_chip *pc = to_sti_pwmchip(chip);
++	struct sti_pwm_compat_data *cdata = pc->cdata;
++	struct device *dev = pc->dev;
+ 	int err;
  
-+lockdep:
- 	/* The waiter may spin on us after setting console_owner */
- 	spin_acquire(&console_owner_dep_map, 0, 0, _THIS_IP_);
- }
-@@ -1878,6 +1891,22 @@ static int console_lock_spinning_disable_and_check(int cookie)
- {
- 	int waiter;
- 
-+	/*
-+	 * Ignore spinning waiters during panic() because they might get stopped
-+	 * or blocked at any time,
-+	 *
-+	 * It is safe because nobody is allowed to start spinning during panic
-+	 * in the first place. If there has been a waiter then non panic CPUs
-+	 * might stay spinning. They would get stopped anyway. The panic context
-+	 * will never start spinning and an interrupted spin on panic CPU will
-+	 * never continue.
-+	 */
-+	if (panic_in_progress()) {
-+		/* Keep lockdep happy. */
-+		spin_release(&console_owner_dep_map, _THIS_IP_);
-+		return 0;
++	if (pwm->hwpwm >= cdata->pwm_num_devs) {
++		dev_err(dev, "device %u is not valid for pwm mode\n",
++			pwm->hwpwm);
++		return -EINVAL;
 +	}
 +
- 	raw_spin_lock(&console_owner_lock);
- 	waiter = READ_ONCE(console_waiter);
- 	console_owner = NULL;
+ 	if (state->polarity != PWM_POLARITY_NORMAL)
+ 		return -EINVAL;
+ 
+@@ -647,7 +656,7 @@ static int sti_pwm_probe(struct platform_device *pdev)
+ 
+ 	pc->chip.dev = dev;
+ 	pc->chip.ops = &sti_pwm_ops;
+-	pc->chip.npwm = pc->cdata->pwm_num_devs;
++	pc->chip.npwm = max(cdata->pwm_num_devs, cdata->cpt_num_devs);
+ 
+ 	for (i = 0; i < cdata->cpt_num_devs; i++) {
+ 		struct sti_cpt_ddata *ddata = &cdata->ddata[i];
 -- 
 2.43.0
 
