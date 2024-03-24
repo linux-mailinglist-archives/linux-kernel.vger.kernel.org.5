@@ -1,146 +1,133 @@
-Return-Path: <linux-kernel+bounces-112816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF422887E87
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:06:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD09887E86
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 20:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE4171C208C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:06:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EA7FB20DB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9035FFBE8;
-	Sun, 24 Mar 2024 19:05:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF93DDB3;
+	Sun, 24 Mar 2024 19:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="AKP17Gxe"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bT6TFEEV"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513F1F9EC
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 19:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB0C17FE;
+	Sun, 24 Mar 2024 19:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711307154; cv=none; b=rPsCHi8iuH/CWqZ9mA5MUP8exEFvzixW6UPKvNwVlmwsLiYqrCxbd8jpuIs26fBfZfZWFVYZQ93uCBSpT7LLt0H5V9DnFPwVri/vmIDEs+7pJYl5Rr9M33cJieUXJ8rCZRNNzG1pP9MpWxI6Mgdpv+S+onrbq+xCE64lLwzjBto=
+	t=1711307149; cv=none; b=b49hMEDOjphN3N7RttWnp9pfdVrCMzUeaUubmhaZSUE5JnNQsBuGyNhpDeSBO35MAaztHEnBqynI1+cTg3asve9Yfnk9PlShICIITGh18mw3lC6820fe6IZGJgWNY6J0hak+JgBbvyS4rvbw4RTy19KulqaVgaGigwDhrnq3xeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711307154; c=relaxed/simple;
-	bh=tgO22Q9yqEl4xTkxs57KMZtwHtF8TrCvj8tYkyXVw8c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NxSVjNdowb7xH605XpUtUD1raGvhFspas9Gv0jnWLk9elbXlyw9FVFAwifMozTDe3rSqWMPZtvQ+90Cv5x9V8XTdlaq4HbssrR0slAoZvAKxv7GyLqk35z8d2Bp7TACXUAVfMSqwOcu7enLE1kuKXk0srVwrmXK/2SAxvgeuPuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=AKP17Gxe; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1711307149;
-	bh=tgO22Q9yqEl4xTkxs57KMZtwHtF8TrCvj8tYkyXVw8c=;
-	h=From:To:Cc:Subject:Date:From;
-	b=AKP17Gxev8kIv2QPAtTKDDY/7PdBAJFi4w0M5rnuVnJ35USratbY+r+APk8uhAN+Q
-	 K/cVpo597rKAy3f15H7loTEy1UaUHTqi5vHar7FDv1JEBBeL09OXxwyy7I+bv990q8
-	 lEpJqgneeesqNuTp2FoZinE4FQq7FSU0YAIwqBTg=
-Received: from stargazer.. (unknown [IPv6:240e:358:11fe:a000:dc73:854d:832e:8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id EA8A0668E6;
-	Sun, 24 Mar 2024 15:05:44 -0400 (EDT)
-From: Xi Ruoyao <xry111@xry111.site>
-To: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xi Ruoyao <xry111@xry111.site>
-Subject: [PATCH v2] x86/mm: Don't disable INVLPG if "incomplete Global INVLPG flushes" is fixed by microcode
-Date: Mon, 25 Mar 2024 03:05:03 +0800
-Message-ID: <20240324190503.116160-1-xry111@xry111.site>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711307149; c=relaxed/simple;
+	bh=Ba3kjhiP6SQpATgAj98BY87JCQv8Qb8fcnl864/zUec=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eLIcf2lROU06QaCWjp9/xCYi7dUfLMcbR3pY65RmSH2Jas8Skrug0uzA7/HhMOOQoGuL0QQMARNGgFDeiLOMlq5nJPfi3IFhOwd/6fzMzBQV2X4TQ33loK1Hte7lXaV1hgxSA4nq55WByMOAmyhxrC1mYRWMZfJzpuiqIcMROxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bT6TFEEV; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41485b58b7bso3191185e9.2;
+        Sun, 24 Mar 2024 12:05:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711307146; x=1711911946; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y/vGi9mIqib7R1uxthBhoWVrJSnd7HDnqCJJjjy98Rc=;
+        b=bT6TFEEVcgrApoUzVSdxR4v5Dt0m68Ja76CTU6GXJ6EYKp4QDnhtI4zkWkLdphsA20
+         yvYXFfPO9mYYUqwgsoEPqyKtq4RSIKOmn2yswb1Kkg9epIhX5YyF1P91qg3MbjAu6KSN
+         ET6GdKUioXFvIZBOTGHPHIiIPr7aOQxlxY7IL2/1LZy6bJFKH2kFqKYjpr0CM+ymiirC
+         XQ5tdeWylkciP+QkLtTeC0OTspOuDxAVQvX0rmBF0xffbcVcEjNBAOUs/HTTVfIIytwP
+         IIX+pm+li5Bx8YtNQ62usxk4olju/ifnhagy57YJTzCDeu/RkrM+ABiEdiAakzyhQ9HT
+         MkeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711307146; x=1711911946;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y/vGi9mIqib7R1uxthBhoWVrJSnd7HDnqCJJjjy98Rc=;
+        b=VpspPIqSXRdPIccQShfdHHaRA0A8V4SLJRAMEPA5UyOTrzrD3/A4wjzik+SdXBuwQK
+         +gypPyvXawpLEllxs6Mvyw62d8ZGdrDwFBDe+M24fBRoxEpp9vK2n8s/ZyZBGDj8yu7b
+         B3SFKjwRzeOxromjCGeZfDYgapsTjGg1/1+5CtLyz2FfoZyzzZKTDYPycG1SyzJqHwiI
+         mkpecsTT5uAmV/Olqr5rdPjpVysYApb0LTj6Bxn4xWCt2RV742cFx7kPG6v9DGK4U1c/
+         1M5k9EqVIKsog7380iv+GgN5yvZND4E7kij2H7k92CGnKyhAOqq7yOWDi70/1/lZZpHC
+         Ixpg==
+X-Forwarded-Encrypted: i=1; AJvYcCU174WPS0W/t9VzpFPGzDEcjLMNdiQMLAasOqeIV+4jiX7z198f6PSMLnykrKXnOE4hBxxZlHaAe7z+UdJhv7KAAJWOFd74Vw09lFlcinPVqg4QrvsX3HH48Z3KjNegV3W3nBQYs9hhu965P0wsiEvJItEYpW+7hzv2nsbqQ2uPxCVakQ==
+X-Gm-Message-State: AOJu0Yy/PmQYfBcSWIFeDOGJ/LdCdc52k2q6ioYHxESVrDx/LocUqW/U
+	65TqTI4FvC216U1syKwjFlC9hCitk5oyUKDoYPwwvN4GZ4z0fC7Z
+X-Google-Smtp-Source: AGHT+IFExVmL53lKILc8q5yW5V63K/emv1t9YdL7Q54eRZ1zjCPdModFP2EqUlorVAZSdwx7IScHHw==
+X-Received: by 2002:a05:600c:5c4:b0:413:ef97:45e5 with SMTP id p4-20020a05600c05c400b00413ef9745e5mr3548347wmd.21.1711307145597;
+        Sun, 24 Mar 2024 12:05:45 -0700 (PDT)
+Received: from ?IPV6:2a02:8389:41cf:e200:2e5e:f14e:aa7c:2010? (2a02-8389-41cf-e200-2e5e-f14e-aa7c-2010.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:2e5e:f14e:aa7c:2010])
+        by smtp.gmail.com with ESMTPSA id o18-20020a05600c4fd200b0041463334822sm6018443wmq.26.2024.03.24.12.05.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Mar 2024 12:05:45 -0700 (PDT)
+Message-ID: <d4bebe80-ade4-4b91-91e8-6d67fe4b69cd@gmail.com>
+Date: Sun, 24 Mar 2024 20:05:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: iio: health: maxim,max30102: add
+ max30101
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matt Ranostay <matt@ranostay.sg>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240321-max30101-v1-0-00b83e966824@gmail.com>
+ <20240321-max30101-v1-1-00b83e966824@gmail.com>
+ <20240324134615.0380ef81@jic23-huawei>
+Content-Language: en-US, de-AT
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <20240324134615.0380ef81@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Per the "Processor Specification Update" documentations referred by the
-intel-microcode-20240312 release note, this microcode release has fixed
-the issue for all affected models.
+On 3/24/24 14:46, Jonathan Cameron wrote:
+> On Thu, 21 Mar 2024 19:33:48 +0100
+> Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
+> 
+>> The Maxim max30101 irs the replacement for the max30105, which is no
+>> longer recommended for future designs.
+>>
+>> The max30101 does not require new properties, and it can be described
+>> with the existing ones for the max30105.
+>>
+>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> 
+> Given there were no driver changes, is it fully compatible?
+> i.e. Should we have a fallback compatible here?
+> 
+> properties:
+>   compatible:
+>     oneOf:
+>        - items:
+>            - const: maxim,max30101
+>            - const: maxim,max30105
+>        - enum:
+>            - maxim,max30102
+>            - maxim,max30105
+> 
+> So that a DTS file could use
+> compatible = "maxim,max30101", "maxim,max30105"
+> and work with older kernels as well as new ones that understand the new ID?
+> 
 
-So don't disable INVLPG if the microcode is new enough.
+According to the manufacturer, it is fully compatible, and apart from
+the pinout, I could not find any difference beyond the device description.
 
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/168436059559.404.13934972543631851306.tip-bot2@tip-bot2/
-Link: https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/releases/tag/microcode-20240312
-Link: https://cdrdv2.intel.com/v1/dl/getContent/740518 # RPL042, rev. 13
-Link: https://cdrdv2.intel.com/v1/dl/getContent/682436 # ADL063, rev. 24
-Signed-off-by: Xi Ruoyao <xry111@xry111.site>
----
- arch/x86/mm/init.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+I like the idea of having a fallback compatible for older kernels, so I
+will add it to v2 as you suggested.
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index 679893ea5e68..c52be4e66e44 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -261,33 +261,41 @@ static void __init probe_page_size_mask(void)
- 	}
- }
- 
--#define INTEL_MATCH(_model) { .vendor  = X86_VENDOR_INTEL,	\
--			      .family  = 6,			\
--			      .model = _model,			\
--			    }
-+#define INTEL_MATCH(_model, _fixed_microcode)	\
-+    { .vendor		= X86_VENDOR_INTEL,	\
-+      .family		= 6,			\
-+      .model		= _model,		\
-+      .driver_data	= _fixed_microcode,	\
-+    }
-+
- /*
-  * INVLPG may not properly flush Global entries
-- * on these CPUs when PCIDs are enabled.
-+ * on these CPUs when PCIDs are enabled and the
-+ * microcode is not updated to fix the issue.
-  */
- static const struct x86_cpu_id invlpg_miss_ids[] = {
--	INTEL_MATCH(INTEL_FAM6_ALDERLAKE   ),
--	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L ),
--	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT ),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE  ),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S),
-+	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x34),
-+	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x432),
-+	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x15),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE,	0x122),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P,	0x4121),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S,	0x34),
- 	{}
- };
- 
- static void setup_pcid(void)
- {
-+	const struct x86_cpu_id *invlpg_miss_match;
-+
- 	if (!IS_ENABLED(CONFIG_X86_64))
- 		return;
- 
- 	if (!boot_cpu_has(X86_FEATURE_PCID))
- 		return;
- 
--	if (x86_match_cpu(invlpg_miss_ids)) {
-+	invlpg_miss_match = x86_match_cpu(invlpg_miss_ids);
-+	if (invlpg_miss_match &&
-+	    invlpg_miss_match->driver_data > boot_cpu_data.microcode) {
- 		pr_info("Incomplete global flushes, disabling PCID");
- 		setup_clear_cpu_cap(X86_FEATURE_PCID);
- 		return;
--- 
-2.44.0
-
+Thanks and best regards,
+Javier Carrasco
 
