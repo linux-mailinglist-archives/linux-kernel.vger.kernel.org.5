@@ -1,66 +1,54 @@
-Return-Path: <linux-kernel+bounces-116296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6072C889E13
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:01:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A8B889329
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:22:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15B892A6959
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:01:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D3111F2F6AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA393CE8CE;
-	Mon, 25 Mar 2024 03:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0269F3041A9;
+	Mon, 25 Mar 2024 01:05:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LTGxOBzM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X3yV1K59"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E795628ECDD;
-	Sun, 24 Mar 2024 23:49:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD21C18274C;
+	Sun, 24 Mar 2024 23:49:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324174; cv=none; b=qlrUG+NxoVXgitvF5sh9LaVvjM71aGtyo9DeL0RpHt81HsP8IsINduMzwqFJREQnUM/mrdqolNxzOdlbt+usGtW8C3x032/V0cHRtnhNTAQ3sG1qULJZsUlAegbxnmVU9O3fUdxJzCthrn9b6dzNyhofwh2lkOu9oTFKGDUwWik=
+	t=1711324174; cv=none; b=sOvd43h0acTu58gJn9efhb0E1/1i0Up8O5M2FJoacaAL0DdXFzugWemuHkuwHd8zzA8Y0nG/VKUbxC+lvUKbXUXut0zqqVQlsi1oBA8M7xj7a8t8uM04i1yojd6p5ebmSR9CEyNQIQzmHl7Rm0Y2qGbzwXpbKPTaCYZJfr82rds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324174; c=relaxed/simple;
-	bh=B16OLgDJ2vIDMaCBoBbJgafklwHkdpKCJzzjn0IAS6c=;
+	bh=gTEIx53Lg9NHoGicBRiMsdfaDzGWKuRbLE9XgKQJHp0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VLwrjMv3TBne6Tc6M11axuVkkUZY31FAwo/GLCuUA7mZsNLvSXt0ZWzjwTEKFOz2BrhhG6GKWlkCa/nXy6tCFdEYbg5Bnc7fYZISYobZXAbxhtXu+nQKsdPRB4yrURrU3JjnG4Sb7gZIWqAQd4tpg2NC8Jsyz+Ofe+w54VwbEDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LTGxOBzM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14243C433F1;
-	Sun, 24 Mar 2024 23:49:31 +0000 (UTC)
+	 MIME-Version; b=Rje9ByGxV62PIDlfSlCvhiER2YbacqpxDkwtGdJuld2E19E9V+Fee3O8IcdBSrRGX071D6MWIJ94sRl/eRoZAGRH/BHFM+Li1od/GgODNoCGcac+30yc4n4Lnbiu6zHaQ6ZYdsY35akMRR6e2+Ua0sIECcthNx9EYEvMXKDtq4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X3yV1K59; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A1E2C43399;
+	Sun, 24 Mar 2024 23:49:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324173;
-	bh=B16OLgDJ2vIDMaCBoBbJgafklwHkdpKCJzzjn0IAS6c=;
+	s=k20201202; t=1711324174;
+	bh=gTEIx53Lg9NHoGicBRiMsdfaDzGWKuRbLE9XgKQJHp0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LTGxOBzMQH2xTbfCgoS4925pRK7nr+plYw08rDdgxol5GLFzNP4g6F3f1TSqWdCO2
-	 x9ly+e2pv/Yzc5puTC3VhB/Gz9L9MKBovVRE3JLAgVCm9uz+AWKKxtHgEEypXV/vwf
-	 R6v9v/ejnQ7m/Nqt2wkHgpfQsU20GxjHSvqe3Yqg0lVX8yGTn/Tzhek+cV94ICDOri
-	 iL6XXLU3JG47rA2wxwLo+3ukrbnOrmn/0ZUQt4D1SOa8tfYgHr5IJFZBCb3QrPs8q1
-	 t6/wwrRBwuD9meYUntA8wJ10x8KLFQ2un9PybQHV7LF0fThAPgm128PBoAv0GKLBCB
-	 Pu8GahqTyQCHA==
+	b=X3yV1K59zCf1/KJROa8baMmD0Zz14f65oShiykRjA0Or+fed2x8VZP2tnyyrTojxa
+	 vv123Fz8G/JzLwSDeV1kicC7dBcez2a6wwPFIOsx1z0qOObPNnSmjyRUxqOaXlUOgE
+	 zqmtx63ypeSF4/wWGo6fi2btMgHqIpOB7vnOXQTnjEG/+2JEOHQC8ps5nkQwTOqA7N
+	 akL5RWXFuZi9E1g2iW9d+1vRK+tvwaMApzziEeb/8U8LH0pb2m921Xsatc1cJD9IkY
+	 G2kLxWI+HosAnFsZQ2WNlpSEHhUIhRJakRcFVeva/cXX+vIJJPg8fvReUk+dqWv1HZ
+	 KALPFCA/rhOhw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Eddie Huang <eddie.huang@mediatek.com>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	linux-rtc@vger.kernel.org,
-	Marc Zyngier <maz@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Peter Rosin <peda@axentia.se>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 165/183] rtc: mt6397: select IRQ_DOMAIN instead of depending on it
-Date: Sun, 24 Mar 2024 19:46:18 -0400
-Message-ID: <20240324234638.1355609-166-sashal@kernel.org>
+Subject: [PATCH 5.4 166/183] serial: 8250_exar: Don't remove GPIO device on suspend
+Date: Sun, 24 Mar 2024 19:46:19 -0400
+Message-ID: <20240324234638.1355609-167-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -74,57 +62,47 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 544c42f798e1651dcb04fb0395219bf0f1c2607e ]
+[ Upstream commit 73b5a5c00be39e23b194bad10e1ea8bb73eee176 ]
 
-IRQ_DOMAIN is a hidden (not user visible) symbol. Users cannot set
-it directly thru "make *config", so drivers should select it instead
-of depending on it if they need it.
-Relying on it being set for a dependency is risky.
+It seems a copy&paste mistake that suspend callback removes the GPIO
+device. There is no counterpart of this action, means once suspended
+there is no more GPIO device available untile full unbind-bind cycle
+is performed. Remove suspicious GPIO device removal in suspend.
 
-Consistently using "select" or "depends on" can also help reduce
-Kconfig circular dependency issues.
-
-Therefore, change the use of "depends on" for IRQ_DOMAIN to
-"select" for RTC_DRV_MT6397.
-
-Fixes: 04d3ba70a3c9 ("rtc: mt6397: add IRQ domain dependency")
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Eddie Huang <eddie.huang@mediatek.com>
-Cc: Sean Wang <sean.wang@mediatek.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: Alessandro Zummo <a.zummo@towertech.it>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: linux-rtc@vger.kernel.org
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Peter Rosin <peda@axentia.se>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Link: https://lore.kernel.org/r/20240213050258.6167-1-rdunlap@infradead.org
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Fixes: d0aeaa83f0b0 ("serial: exar: split out the exar code from 8250_pci")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20240219150627.2101198-2-andriy.shevchenko@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_exar.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 0ad8d84aeb339..22638878c9819 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -1811,7 +1811,8 @@ config RTC_DRV_MOXART
+diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
+index 93367dea4d8a5..0dfe9ceb032a5 100644
+--- a/drivers/tty/serial/8250/8250_exar.c
++++ b/drivers/tty/serial/8250/8250_exar.c
+@@ -639,6 +639,7 @@ static void exar_pci_remove(struct pci_dev *pcidev)
+ 	for (i = 0; i < priv->nr; i++)
+ 		serial8250_unregister_port(priv->line[i]);
  
- config RTC_DRV_MT6397
- 	tristate "MediaTek PMIC based RTC"
--	depends on MFD_MT6397 || (COMPILE_TEST && IRQ_DOMAIN)
-+	depends on MFD_MT6397 || COMPILE_TEST
-+	select IRQ_DOMAIN
- 	help
- 	  This selects the MediaTek(R) RTC driver. RTC is part of MediaTek
- 	  MT6397 PMIC. You should enable MT6397 PMIC MFD before select
++	/* Ensure that every init quirk is properly torn down */
+ 	if (priv->board->exit)
+ 		priv->board->exit(pcidev);
+ }
+@@ -653,10 +654,6 @@ static int __maybe_unused exar_suspend(struct device *dev)
+ 		if (priv->line[i] >= 0)
+ 			serial8250_suspend_port(priv->line[i]);
+ 
+-	/* Ensure that every init quirk is properly torn down */
+-	if (priv->board->exit)
+-		priv->board->exit(pcidev);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
