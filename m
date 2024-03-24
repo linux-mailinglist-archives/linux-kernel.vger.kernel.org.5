@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CAD0888575
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3150C888577
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:08:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FC12831D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:08:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86D99282CBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35CB1C9ECB;
-	Sun, 24 Mar 2024 22:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810A674E3A;
+	Sun, 24 Mar 2024 22:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="njw8ca5x"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HiwgzBYa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FBCD1C9EB1;
-	Sun, 24 Mar 2024 22:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75DA1C9EC8;
+	Sun, 24 Mar 2024 22:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320384; cv=none; b=tOtNzxlQDL21enzF0hCDLWh26c9cBsm7nvccgzHDoMd1nyh7B6767ZMc5hoWREVyWMRJ89hdpYjhdT6C45TJn4zDXzWlULbF8h1qXbbTN2omPfClN/PTn8Z5RkcGZGKSjufBGTsP/B2wUdHB70YduxeaLJ3eOoX5AvC9wIBQ7MU=
+	t=1711320384; cv=none; b=oYNoXMvwQipTtTtmkpncos22BTsUtJYVcJhrdfD5pkuF1eTnQ5EEO9Iz3d3VzP2ViszbhIvGDaAtnlHJMeKGrnZzrCUY/1lGZyDUSCo83V3GntlgLEjGyWb5wNMPKgd2VKie+DEwz0gnNSA+jLTcX4cGzXii+SsbcSwxAxLBHYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320384; c=relaxed/simple;
-	bh=qPqRV2EP6kpC6/451Xi6W2Alk4HTibFzdN5q6rAgiqw=;
+	bh=ImYJx3//S3lb8pzEBjnxmyZSCu8/oqDudWFtAKGWTJA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BNp+IwE6KqaLbGOzBUxCRFLTGEKQXfbZmX0ggOypNb+K83Vxd0ehJj7JJustw+zllBBxOvK1jeJfrO7xTCXHBHQyhOXA+FGQDgyXxf3nMktVRs8AJw5aQivXck+q+dpJHm1D6DXYAM8l7oMyKXKofCJ4UOWVyLQwSts94IYR/iM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=njw8ca5x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01A77C43390;
-	Sun, 24 Mar 2024 22:46:22 +0000 (UTC)
+	 MIME-Version; b=BbB6E05D/TD+bM5J+1C8/pzLrKhjOYsrDyXVta6Is0AvYvrAWQM2Y6qLuJkPkG0YGfuPf9fLHoxyga0JSwmqzsYRH8wEprM5FnT9X0XQq+HRZTecH/s0Lj+oz4Vp6flBogCqyA0tkirAWFFGWqks+rXKSNhvDl0I5TjcEk+LloY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HiwgzBYa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9977C433F1;
+	Sun, 24 Mar 2024 22:46:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320383;
-	bh=qPqRV2EP6kpC6/451Xi6W2Alk4HTibFzdN5q6rAgiqw=;
+	s=k20201202; t=1711320384;
+	bh=ImYJx3//S3lb8pzEBjnxmyZSCu8/oqDudWFtAKGWTJA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=njw8ca5xSVXWPXWrIpmGL6/spAV/81oJCtXKd8Id0M36NR3vplhnKou+ZDxUlIzAR
-	 ed8e/+eHrq3AXz/RhnEAmmwQ1jgrK2tvOZco/tI3ocwt2Uu6qbtUM3cYM4pwiD+i1r
-	 ZsLKQjxzzOFNw6bF87s39bT4hhFl45svhCuB3VDt566HTX2NnvvMKL5CvKFjto9peU
-	 2AZggU/dyOPbfyiZcuYjXTWDXMIKt2NczSBaPCotdv5wvDV4MsC4cyP3WlPizNAV1I
-	 3JPEDbiShWw1Oh7Cb2qr21xGIWv/gGZvnapl90fH7jX5TKrgHocT/eOivsJNIKv3lt
-	 OX6b/+VGrqtMQ==
+	b=HiwgzBYaTWYwkiKCMOzCYBjgjEhqPA1WnJa1Cj4ji+kvNCxubdjc3/qFkF8dT/9Ok
+	 IhlgRIg6m+2ZNleznElvP9UDGym5iTweUgKsDHAzxFup3rduhvxo60FB6bMOKCBjXO
+	 4hgYWySlgP+6XjrMRnDXFbRjjtXbO/6TOMZyg3PQq72uRt3rn4yu6dipYPXk6bWYiU
+	 Fkq/OcV2rYR5mjvGPN0Je2qDodiFhftH+7DhUgIEsf+F7CRZA98eq+REiuIXraRake
+	 ooUBBQrFI0RNoksxGJmiWWwk69BhvrKQ2Dr+eati6+0pBpfNtf7r+PfBiYZB4kk6oQ
+	 K6Dne5iJyA0NQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
+Cc: Thinh Tran <thinhtr@linux.ibm.com>,
+	Jiri Pirko <jiri@nvidia.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 689/715] dm-integrity: fix a memory leak when rechecking the data
-Date: Sun, 24 Mar 2024 18:34:28 -0400
-Message-ID: <20240324223455.1342824-690-sashal@kernel.org>
+Subject: [PATCH 6.8 690/715] net/bnx2x: Prevent access to a freed page in page_pool
+Date: Sun, 24 Mar 2024 18:34:29 -0400
+Message-ID: <20240324223455.1342824-691-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,44 +63,86 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Thinh Tran <thinhtr@linux.ibm.com>
 
-[ Upstream commit 55e565c42dce81a4e49c13262d5bc4eb4c2e588a ]
+[ Upstream commit d27e2da94a42655861ca4baea30c8cd65546f25d ]
 
-Memory for the "checksums" pointer will leak if the data is rechecked
-after checksum failure (because the associated kfree won't happen due
-to 'goto skip_io').
+Fix race condition leading to system crash during EEH error handling
 
-Fix this by freeing the checksums memory before recheck, and just use
-the "checksum_onstack" memory for storing checksum during recheck.
+During EEH error recovery, the bnx2x driver's transmit timeout logic
+could cause a race condition when handling reset tasks. The
+bnx2x_tx_timeout() schedules reset tasks via bnx2x_sp_rtnl_task(),
+which ultimately leads to bnx2x_nic_unload(). In bnx2x_nic_unload()
+SGEs are freed using bnx2x_free_rx_sge_range(). However, this could
+overlap with the EEH driver's attempt to reset the device using
+bnx2x_io_slot_reset(), which also tries to free SGEs. This race
+condition can result in system crashes due to accessing freed memory
+locations in bnx2x_free_rx_sge()
 
-Fixes: c88f5e553fe3 ("dm-integrity: recheck the integrity tag after a failure")
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@kernel.org>
+799  static inline void bnx2x_free_rx_sge(struct bnx2x *bp,
+800				struct bnx2x_fastpath *fp, u16 index)
+801  {
+802	struct sw_rx_page *sw_buf = &fp->rx_page_ring[index];
+803     struct page *page = sw_buf->page;
+...
+where sw_buf was set to NULL after the call to dma_unmap_page()
+by the preceding thread.
+
+    EEH: Beginning: 'slot_reset'
+    PCI 0011:01:00.0#10000: EEH: Invoking bnx2x->slot_reset()
+    bnx2x: [bnx2x_io_slot_reset:14228(eth1)]IO slot reset initializing...
+    bnx2x 0011:01:00.0: enabling device (0140 -> 0142)
+    bnx2x: [bnx2x_io_slot_reset:14244(eth1)]IO slot reset --> driver unload
+    Kernel attempted to read user page (0) - exploit attempt? (uid: 0)
+    BUG: Kernel NULL pointer dereference on read at 0x00000000
+    Faulting instruction address: 0xc0080000025065fc
+    Oops: Kernel access of bad area, sig: 11 [#1]
+    .....
+    Call Trace:
+    [c000000003c67a20] [c00800000250658c] bnx2x_io_slot_reset+0x204/0x610 [bnx2x] (unreliable)
+    [c000000003c67af0] [c0000000000518a8] eeh_report_reset+0xb8/0xf0
+    [c000000003c67b60] [c000000000052130] eeh_pe_report+0x180/0x550
+    [c000000003c67c70] [c00000000005318c] eeh_handle_normal_event+0x84c/0xa60
+    [c000000003c67d50] [c000000000053a84] eeh_event_handler+0xf4/0x170
+    [c000000003c67da0] [c000000000194c58] kthread+0x1c8/0x1d0
+    [c000000003c67e10] [c00000000000cf64] ret_from_kernel_thread+0x5c/0x64
+
+To solve this issue, we need to verify page pool allocations before
+freeing.
+
+Fixes: 4cace675d687 ("bnx2x: Alloc 4k fragment for each rx ring buffer element")
+Signed-off-by: Thinh Tran <thinhtr@linux.ibm.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Link: https://lore.kernel.org/r/20240315205535.1321-1-thinhtr@linux.ibm.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-integrity.c | 6 +++---
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
-index 1fc901df84eb1..f194ce6bfacb5 100644
---- a/drivers/md/dm-integrity.c
-+++ b/drivers/md/dm-integrity.c
-@@ -1848,12 +1848,12 @@ static void integrity_metadata(struct work_struct *w)
- 			r = dm_integrity_rw_tag(ic, checksums, &dio->metadata_block, &dio->metadata_offset,
- 						checksums_ptr - checksums, dio->op == REQ_OP_READ ? TAG_CMP : TAG_WRITE);
- 			if (unlikely(r)) {
-+				if (likely(checksums != checksums_onstack))
-+					kfree(checksums);
- 				if (r > 0) {
--					integrity_recheck(dio, checksums);
-+					integrity_recheck(dio, checksums_onstack);
- 					goto skip_io;
- 				}
--				if (likely(checksums != checksums_onstack))
--					kfree(checksums);
- 				goto error;
- 			}
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
+index d8b1824c334d3..0bc1367fd6492 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
+@@ -1002,9 +1002,6 @@ static inline void bnx2x_set_fw_mac_addr(__le16 *fw_hi, __le16 *fw_mid,
+ static inline void bnx2x_free_rx_mem_pool(struct bnx2x *bp,
+ 					  struct bnx2x_alloc_pool *pool)
+ {
+-	if (!pool->page)
+-		return;
+-
+ 	put_page(pool->page);
+ 
+ 	pool->page = NULL;
+@@ -1015,6 +1012,9 @@ static inline void bnx2x_free_rx_sge_range(struct bnx2x *bp,
+ {
+ 	int i;
+ 
++	if (!fp->page_pool.page)
++		return;
++
+ 	if (fp->mode == TPA_MODE_DISABLED)
+ 		return;
  
 -- 
 2.43.0
