@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-116292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3EC5889E07
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:00:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29459889324
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:21:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3192D1C33B25
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:00:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2071F32DF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:21:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645173CD5D8;
-	Mon, 25 Mar 2024 03:38:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED651C7877;
+	Mon, 25 Mar 2024 01:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XFxY+sUS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVEazqfl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6599C182719;
-	Sun, 24 Mar 2024 23:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7CE182747;
+	Sun, 24 Mar 2024 23:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324159; cv=none; b=AFRtrIW/AyhVWAxKzBxwtxj113DQ1B/Y3aDWUD4efeBOuu3uDQ37ggs1prymkFlKCchVRqV74MIncqyW0zlZUzZRrW86TpKffBMt8OIiJkV+3KUfkkwr/4mYa3dzQVwJXCf0tXyrvzJw+enEfflXM9cFUkXicmIzQqiF9Z3kLhI=
+	t=1711324162; cv=none; b=FZv+RngouE8gMYsL9g2tWEJekaOY9Qgqvmj9K/0uy5P7sTHRvQNO0WbmLNiIQg00VuEy3h35BsgLdYeUS/y7uHKncPx+ViCC0WzqAv7TKxVm5+62RfiR9OMcnoEImnIzgl1NJ/o2DlxeVWmwxlEMY1z0my9kuweO/20TbXTWtFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324159; c=relaxed/simple;
-	bh=YMMs4rKE/JrIxOl9vv/9pBf6Z6Drk20xRncw7/KxpV8=;
+	s=arc-20240116; t=1711324162; c=relaxed/simple;
+	bh=pP09BQR5vGUKD4rX+sTintaCEvicXfwuzCjxTMxtbw8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cWAgHjIJWpHrp2rFHZqss+lSlzlfaq52FPTQcKDpPYJTce9sm9D1kq7qc+xPXWltf/aci8O0F0X/StNs4d+5KkBrkhVcKOfUrFKhlFodzKvKFF+9ZYB6TicoFZRIwBi5H5s+glP1HVpEyopBsCeMWzawalPZvJl24mNn2cksKEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XFxY+sUS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A070C43390;
-	Sun, 24 Mar 2024 23:49:18 +0000 (UTC)
+	 MIME-Version; b=patv23yqtj8R37DUdubo7eW5OxFZYPvSZrdgd21PBqWb3qppahvcAVsqQ/EGLekysxxesTkb5pmTAXOZv6kLz5VYNoGOKBOTsJ9jWD9dEvZ02VmJyM6iEJSgKOJqK/FvXtNOSMwDLrbr4oKHd/1HDi6HsjDuJwawZYeZiPj+W/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVEazqfl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB693C433C7;
+	Sun, 24 Mar 2024 23:49:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324159;
-	bh=YMMs4rKE/JrIxOl9vv/9pBf6Z6Drk20xRncw7/KxpV8=;
+	s=k20201202; t=1711324161;
+	bh=pP09BQR5vGUKD4rX+sTintaCEvicXfwuzCjxTMxtbw8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XFxY+sUSvL3HmFEDlxmZu5UEWsornYZI+U5MkXQj1n92eOSnIifxDKexf4Lz+qQej
-	 oXdNveqWx6T+5qrvaTZ2s8iTZZtyXfZrJHhQRqGj24MtGf/+BNEUOm10wVRsbAGjSt
-	 8h5pq0Dw8uqDnEhorr3lT/zLQEwb30YCLCQ45UXEzfAdWK2tS89FuL4pbQP6J+qwKf
-	 Yq+7h8yDRIKBfzfZ3im5I7hz2O0Icm6F/ghBuVsaU635m07uPsdhb7pZCiX8C4NMdb
-	 LhtMVqPuFkoVBZxMLtQXXoTWAobkcwX+5RhozAWmY5H8OkHb3u2XlKNFtIjYmzzpLZ
-	 ENgvMa6/9l2Sw==
+	b=CVEazqflDcVyh31Wk1pKFKwC4o7ja4ux4QCoOH85y2HfbV/fRQnZq7l7QOHv6GiMl
+	 d7oR8fMkv25UTVJ+8RphTJlGST7aUL608+ghgk7cv/efPccX7iqv9nhyBWjdqij7Vm
+	 OK6slo9ngj3bJV30QSHr4HtoG6eLxQdIfYUeI8ElnWOe8ZMVCbEAYJVC3uuKg2UGMR
+	 t/DNESetryKemoctEMeMsCDQONLrC8jhXrcP7Tw4IZ37MNVHNFIQC3QUYM2KcLqFkl
+	 JkCsfJgwhYYgGr6eV3OcueVJKMvNi/kodyu7ebpuw8jDLkhE5gSvUrTlqy8pBvjZHB
+	 BPPY5xDMtchvg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Kees Cook <keescook@chromium.org>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 155/183] scsi: bfa: Fix function pointer type mismatch for hcb_qe->cbfn
-Date: Sun, 24 Mar 2024 19:46:08 -0400
-Message-ID: <20240324234638.1355609-156-sashal@kernel.org>
+Subject: [PATCH 5.4 156/183] net: sunrpc: Fix an off by one in rpc_sockaddr2uaddr()
+Date: Sun, 24 Mar 2024 19:46:09 -0400
+Message-ID: <20240324234638.1355609-157-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234638.1355609-1-sashal@kernel.org>
 References: <20240324234638.1355609-1-sashal@kernel.org>
@@ -63,150 +63,40 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit b69600231f751304db914c63b937f7098ed2895c ]
+[ Upstream commit d6f4de70f73a106986ee315d7d512539f2f3303a ]
 
-Some callback functions used here take a boolean argument, others take a
-status argument. This breaks KCFI type checking, so clang now warns about
-the function pointer cast:
+The intent is to check if the strings' are truncated or not. So, >= should
+be used instead of >, because strlcat() and snprintf() return the length of
+the output, excluding the trailing NULL.
 
-drivers/scsi/bfa/bfad_bsg.c:2138:29: error: cast from 'void (*)(void *, enum bfa_status)' to 'bfa_cb_cbfn_t' (aka 'void (*)(void *, enum bfa_boolean)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-
-Assuming the code is actually correct here and the callers always match the
-argument types of the callee, rework this to replace the explicit cast with
-a union of the two pointer types. This does not change the behavior of the
-code, so if something is actually broken here, a larger rework may be
-necessary.
-
-Fixes: 37ea0558b87a ("[SCSI] bfa: Added support to collect and reset fcport stats")
-Fixes: 3ec4f2c8bff2 ("[SCSI] bfa: Added support to configure QOS and collect stats.")
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20240222124433.2046570-1-arnd@kernel.org
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: a02d69261134 ("SUNRPC: Provide functions for managing universal addresses")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/bfa/bfa.h      |  9 ++++++++-
- drivers/scsi/bfa/bfa_core.c |  4 +---
- drivers/scsi/bfa/bfa_ioc.h  |  8 ++++++--
- drivers/scsi/bfa/bfad_bsg.c | 11 ++++-------
- 4 files changed, 19 insertions(+), 13 deletions(-)
+ net/sunrpc/addr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/bfa/bfa.h b/drivers/scsi/bfa/bfa.h
-index 7bd2ba1ad4d11..f30fe324e6ecc 100644
---- a/drivers/scsi/bfa/bfa.h
-+++ b/drivers/scsi/bfa/bfa.h
-@@ -20,7 +20,6 @@
- struct bfa_s;
- 
- typedef void (*bfa_isr_func_t) (struct bfa_s *bfa, struct bfi_msg_s *m);
--typedef void (*bfa_cb_cbfn_status_t) (void *cbarg, bfa_status_t status);
- 
- /*
-  * Interrupt message handlers
-@@ -437,4 +436,12 @@ struct bfa_cb_pending_q_s {
- 	(__qe)->data = (__data);				\
- } while (0)
- 
-+#define bfa_pending_q_init_status(__qe, __cbfn, __cbarg, __data) do {	\
-+	bfa_q_qe_init(&((__qe)->hcb_qe.qe));			\
-+	(__qe)->hcb_qe.cbfn_status = (__cbfn);			\
-+	(__qe)->hcb_qe.cbarg = (__cbarg);			\
-+	(__qe)->hcb_qe.pre_rmv = BFA_TRUE;			\
-+	(__qe)->data = (__data);				\
-+} while (0)
-+
- #endif /* __BFA_H__ */
-diff --git a/drivers/scsi/bfa/bfa_core.c b/drivers/scsi/bfa/bfa_core.c
-index 0f554ebb8f2c6..09819f076699f 100644
---- a/drivers/scsi/bfa/bfa_core.c
-+++ b/drivers/scsi/bfa/bfa_core.c
-@@ -1907,15 +1907,13 @@ bfa_comp_process(struct bfa_s *bfa, struct list_head *comp_q)
- 	struct list_head		*qe;
- 	struct list_head		*qen;
- 	struct bfa_cb_qe_s	*hcb_qe;
--	bfa_cb_cbfn_status_t	cbfn;
- 
- 	list_for_each_safe(qe, qen, comp_q) {
- 		hcb_qe = (struct bfa_cb_qe_s *) qe;
- 		if (hcb_qe->pre_rmv) {
- 			/* qe is invalid after return, dequeue before cbfn() */
- 			list_del(qe);
--			cbfn = (bfa_cb_cbfn_status_t)(hcb_qe->cbfn);
--			cbfn(hcb_qe->cbarg, hcb_qe->fw_status);
-+			hcb_qe->cbfn_status(hcb_qe->cbarg, hcb_qe->fw_status);
- 		} else
- 			hcb_qe->cbfn(hcb_qe->cbarg, BFA_TRUE);
+diff --git a/net/sunrpc/addr.c b/net/sunrpc/addr.c
+index 0d4a2bb09589c..be2fc88f5bde1 100644
+--- a/net/sunrpc/addr.c
++++ b/net/sunrpc/addr.c
+@@ -288,10 +288,10 @@ char *rpc_sockaddr2uaddr(const struct sockaddr *sap, gfp_t gfp_flags)
  	}
-diff --git a/drivers/scsi/bfa/bfa_ioc.h b/drivers/scsi/bfa/bfa_ioc.h
-index 933a1c3890ff5..5e568d6d7b261 100644
---- a/drivers/scsi/bfa/bfa_ioc.h
-+++ b/drivers/scsi/bfa/bfa_ioc.h
-@@ -361,14 +361,18 @@ struct bfa_reqq_wait_s {
- 	void	*cbarg;
- };
  
--typedef void	(*bfa_cb_cbfn_t) (void *cbarg, bfa_boolean_t complete);
-+typedef void (*bfa_cb_cbfn_t) (void *cbarg, bfa_boolean_t complete);
-+typedef void (*bfa_cb_cbfn_status_t) (void *cbarg, bfa_status_t status);
+ 	if (snprintf(portbuf, sizeof(portbuf),
+-		     ".%u.%u", port >> 8, port & 0xff) > (int)sizeof(portbuf))
++		     ".%u.%u", port >> 8, port & 0xff) >= (int)sizeof(portbuf))
+ 		return NULL;
  
- /*
-  * Generic BFA callback element.
-  */
- struct bfa_cb_qe_s {
- 	struct list_head	qe;
--	bfa_cb_cbfn_t	cbfn;
-+	union {
-+		bfa_cb_cbfn_status_t	cbfn_status;
-+		bfa_cb_cbfn_t		cbfn;
-+	};
- 	bfa_boolean_t	once;
- 	bfa_boolean_t	pre_rmv;	/* set for stack based qe(s) */
- 	bfa_status_t	fw_status;	/* to access fw status in comp proc */
-diff --git a/drivers/scsi/bfa/bfad_bsg.c b/drivers/scsi/bfa/bfad_bsg.c
-index a76c968dbac59..9f5964944d787 100644
---- a/drivers/scsi/bfa/bfad_bsg.c
-+++ b/drivers/scsi/bfa/bfad_bsg.c
-@@ -2135,8 +2135,7 @@ bfad_iocmd_fcport_get_stats(struct bfad_s *bfad, void *cmd)
- 	struct bfa_cb_pending_q_s cb_qe;
+-	if (strlcat(addrbuf, portbuf, sizeof(addrbuf)) > sizeof(addrbuf))
++	if (strlcat(addrbuf, portbuf, sizeof(addrbuf)) >= sizeof(addrbuf))
+ 		return NULL;
  
- 	init_completion(&fcomp.comp);
--	bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp,
--			   &fcomp, &iocmd->stats);
-+	bfa_pending_q_init_status(&cb_qe, bfad_hcb_comp, &fcomp, &iocmd->stats);
- 	spin_lock_irqsave(&bfad->bfad_lock, flags);
- 	iocmd->status = bfa_fcport_get_stats(&bfad->bfa, &cb_qe);
- 	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-@@ -2159,7 +2158,7 @@ bfad_iocmd_fcport_reset_stats(struct bfad_s *bfad, void *cmd)
- 	struct bfa_cb_pending_q_s cb_qe;
- 
- 	init_completion(&fcomp.comp);
--	bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp, &fcomp, NULL);
-+	bfa_pending_q_init_status(&cb_qe, bfad_hcb_comp, &fcomp, NULL);
- 
- 	spin_lock_irqsave(&bfad->bfad_lock, flags);
- 	iocmd->status = bfa_fcport_clear_stats(&bfad->bfa, &cb_qe);
-@@ -2443,8 +2442,7 @@ bfad_iocmd_qos_get_stats(struct bfad_s *bfad, void *cmd)
- 	struct bfa_fcport_s *fcport = BFA_FCPORT_MOD(&bfad->bfa);
- 
- 	init_completion(&fcomp.comp);
--	bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp,
--			   &fcomp, &iocmd->stats);
-+	bfa_pending_q_init_status(&cb_qe, bfad_hcb_comp, &fcomp, &iocmd->stats);
- 
- 	spin_lock_irqsave(&bfad->bfad_lock, flags);
- 	WARN_ON(!bfa_ioc_get_fcmode(&bfad->bfa.ioc));
-@@ -2474,8 +2472,7 @@ bfad_iocmd_qos_reset_stats(struct bfad_s *bfad, void *cmd)
- 	struct bfa_fcport_s *fcport = BFA_FCPORT_MOD(&bfad->bfa);
- 
- 	init_completion(&fcomp.comp);
--	bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp,
--			   &fcomp, NULL);
-+	bfa_pending_q_init_status(&cb_qe, bfad_hcb_comp, &fcomp, NULL);
- 
- 	spin_lock_irqsave(&bfad->bfad_lock, flags);
- 	WARN_ON(!bfa_ioc_get_fcmode(&bfad->bfa.ioc));
+ 	return kstrdup(addrbuf, gfp_flags);
 -- 
 2.43.0
 
