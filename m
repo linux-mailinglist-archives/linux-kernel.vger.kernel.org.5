@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-113767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C75B88867E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:34:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44857888E75
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:19:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B83E728707D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:34:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F367C28F606
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B931F30A3;
-	Sun, 24 Mar 2024 22:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F3D12C80A;
+	Sun, 24 Mar 2024 22:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hy4rf5wk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QQ59bnhP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8755E1E16A0;
-	Sun, 24 Mar 2024 22:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5EE1E16AE;
+	Sun, 24 Mar 2024 22:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320774; cv=none; b=Xb+/9KkHD+4iw7zdQH9CorKB6E9jUsgHcLilV+UbnuUWSIfskSXz8OfedSJ0Bs1SVFU9/xdH/6RJ7fPjPdSu/AAq0dpF2YoSvH9/eZAZ0Z/Z+MXHWj7kZi+wG6U/eZE3CbfPDmlkiVEB+R3s8vAlKXdhxt85nivL+V/ZfSnv/Po=
+	t=1711320775; cv=none; b=XkaVhs/+9hH5VRig8MBF5PlXJTJMx42y83LQ4yj43w8+ITYtAPzwDx2f3X3CwtMQNILDKLROstO7EKborCBf/axACDONYiIUMDB84RfcJ8bd5r2Ii+UttrJ2HdElzPAVPFBfg7Ri/4LpUlRlVXVVAcA0XKO/O3f84k1EtqUPW1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320774; c=relaxed/simple;
-	bh=g8KGzfYA/4PhED1+413GJMaRIZogAcuGh0s7OPJeDzw=;
+	s=arc-20240116; t=1711320775; c=relaxed/simple;
+	bh=7z9VKnEcVKttCYMNNEZ3RltWsrm5wlUFur33f2x7As0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o2bGlKfPBrCPINy9U8edXvNjZuiaxED1/tldxlmsUdJQWQnRxqtGBKeU/l4km26INRUhhwTKtcxMRXOaQakDsHmYyeAV+G9ycnDHkRyE/nkEn5bZUcdZKg0yHkxJgHY9Xfg0oSzjs+UvVMmqFhLc9qgmtZu5EkAD8CUfwqpAr5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hy4rf5wk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 972C5C433B1;
-	Sun, 24 Mar 2024 22:52:52 +0000 (UTC)
+	 MIME-Version; b=Tos6bC4GRbyLc4WoKgfJjxPNk6KUw/AYtLxlVYh4QMBQyVJQbqzJqiJkXrtFCWWLWLPXKSO9ZSga8/l3B6IkXNHri8AEQ3ElP44cz4oDN/e91+x/7nCl6TAjS6Hxoy/KpDDYkhy7gUNqORM064yDza13MmnhDdE77TAt3xNwfAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QQ59bnhP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD4C7C433F1;
+	Sun, 24 Mar 2024 22:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320773;
-	bh=g8KGzfYA/4PhED1+413GJMaRIZogAcuGh0s7OPJeDzw=;
+	s=k20201202; t=1711320774;
+	bh=7z9VKnEcVKttCYMNNEZ3RltWsrm5wlUFur33f2x7As0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Hy4rf5wkI5bOYL4vlWGt+IiMgR0j95UurJBut9XENO4laEDvJ6vEJLfxhRT1ImTos
-	 ywoeFU+byzKkxAqvrZY2ZHO9pyItI6cFG8jxx2ux9z/KLjlvo7RpoyiRQdMVsrEGWR
-	 AhsddVTb/z8utyBWfdP6FVAfcTsZ4bEsv6ExGwd/Ep7vxCIok5urSNG9PFLZ68pLkF
-	 aCddcMuoEPz9aGTkbeIb9Qf9yDk7npCDtAx5f+mXDXe+SB9qHIpulNdkmaJE1uTTti
-	 LEg21yCLl5qU8awu3RK2e1F//uAUciBCagAaiRVJhTbhudNxk9FvFctW30WuM47KWN
-	 eIdnkAY+KOFNw==
+	b=QQ59bnhP6kTC+L6442cpzj9iCPzFPEBoL07n5ptFo7EsPZKbzUdwboJggyE3xSCvF
+	 8TGC236b+edv1ILwwwrqCWNcucj36t5j7NZ+J28k7OB6YthoPamnL5kgQ51wyGt3gr
+	 1E18uVVbPmS7ADVMlaGnnLt1m3K5ZBaDRTasExIkeCAyDkO5LVOquxarOB6gr+KCwl
+	 hAfptTBkYHPtJZykLNkfGWdEmwWw3/fDjkbbMdt/orBwVWpa9LRLoPNsVcBJhB18Gv
+	 5O6b/4p/vmlXDQn0u4mSGMCczgW38aIz+6I2Anthawjf9VycdlNVDJzkv/U1FhV3ss
+	 dLCA2HE+gA+Xg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Duoming Zhou <duoming@zju.edu.cn>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Kees Cook <keescook@chromium.org>,
-	Kalle Valo <kvalo@kernel.org>,
+Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Haorong Ye <yehaorong@bytedance.com>,
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Joerg Roedel <jroedel@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 337/713] wifi: brcm80211: handle pmk_op allocation failure
-Date: Sun, 24 Mar 2024 18:41:03 -0400
-Message-ID: <20240324224720.1345309-338-sashal@kernel.org>
+Subject: [PATCH 6.7 338/713] PCI: Make pci_dev_is_disconnected() helper public for other drivers
+Date: Sun, 24 Mar 2024 18:41:04 -0400
+Message-ID: <20240324224720.1345309-339-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,42 +66,65 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Duoming Zhou <duoming@zju.edu.cn>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
 
-[ Upstream commit b4152222e04cb8afeeca239c90e3fcaf4c553b42 ]
+[ Upstream commit 39714fd73c6b60a8d27bcc5b431afb0828bf4434 ]
 
-The kzalloc() in brcmf_pmksa_v3_op() will return null if the
-physical memory has run out. As a result, if we dereference
-the null value, the null pointer dereference bug will happen.
+Make pci_dev_is_disconnected() public so that it can be called from
+Intel VT-d driver to quickly fix/workaround the surprise removal
+unplug hang issue for those ATS capable devices on PCIe switch downstream
+hotplug capable ports.
 
-Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
-for pmk_op.
+Beside pci_device_is_present() function, this one has no config space
+space access, so is light enough to optimize the normal pure surprise
+removal and safe removal flow.
 
-Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V3 operations")
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240229103153.18533-1-duoming@zju.edu.cn
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+Tested-by: Haorong Ye <yehaorong@bytedance.com>
+Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+Link: https://lore.kernel.org/r/20240301080727.3529832-2-haifeng.zhao@linux.intel.com
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Stable-dep-of: 4fc82cd907ac ("iommu/vt-d: Don't issue ATS Invalidation request when device is disconnected")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/pci/pci.h   | 5 -----
+ include/linux/pci.h | 5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 44cea18dd20ed..8facd40d713e6 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -4322,6 +4322,9 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
- 	int ret;
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 24ae29f0d36d7..1697cb8289d49 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -366,11 +366,6 @@ static inline int pci_dev_set_disconnected(struct pci_dev *dev, void *unused)
+ 	return 0;
+ }
  
- 	pmk_op = kzalloc(sizeof(*pmk_op), GFP_KERNEL);
-+	if (!pmk_op)
-+		return -ENOMEM;
+-static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
+-{
+-	return dev->error_state == pci_channel_io_perm_failure;
+-}
+-
+ /* pci_dev priv_flags */
+ #define PCI_DEV_ADDED 0
+ #define PCI_DPC_RECOVERED 1
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 675937a5bd7ce..ca0e61c838e83 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -2511,6 +2511,11 @@ static inline struct pci_dev *pcie_find_root_port(struct pci_dev *dev)
+ 	return NULL;
+ }
+ 
++static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
++{
++	return dev->error_state == pci_channel_io_perm_failure;
++}
 +
- 	pmk_op->version = cpu_to_le16(BRCMF_PMKSA_VER_3);
- 
- 	if (!pmksa) {
+ void pci_request_acs(void);
+ bool pci_acs_enabled(struct pci_dev *pdev, u16 acs_flags);
+ bool pci_acs_path_enabled(struct pci_dev *start,
 -- 
 2.43.0
 
