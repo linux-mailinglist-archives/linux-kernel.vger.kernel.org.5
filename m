@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391B988854D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E3488854F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:04:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6CDD284E45
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:03:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B0F8283347
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B0DA1C5ACB;
-	Sun, 24 Mar 2024 22:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342C913E6A9;
+	Sun, 24 Mar 2024 22:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WoPsTdSG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q6n7Eugt"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD721C5ABE;
-	Sun, 24 Mar 2024 22:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685F51C5ADC;
+	Sun, 24 Mar 2024 22:46:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320362; cv=none; b=jBJnTor2HxagB9BVJ0wfr002LUtt0CRhJUCWnV8iiTjeopFo5PdQmUKMZwSvQqwFM+5H66Mtm7FsCSIJR6Gixh0WTwsmr878d8fOhEZKVf07WwAJ4351JJKjpDLpSUa3qdJAUyoWHcqNtUg/8rMVQFguD5O/TATcj6IJ8f9wPh0=
+	t=1711320363; cv=none; b=C/x0ZR3yCaHk+vjSWGRf61gkr0EhmpccRqgckTM0Xsl3HEokQm7y/c35dWPLrLuVeYVPvR+gF3kj5okQ2fv9+Cps2Q+IqbFbHY/1Owai32XWIMSumwzJClyRZ3EfdTx3bqDUJP53R9MD5f6irQ2alNR5SzQjcLtLVGwf+rSnJro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320362; c=relaxed/simple;
-	bh=HF7/g01MyF5usS4jtmaXCrXMB/637THnKn0KAttJEFY=;
+	s=arc-20240116; t=1711320363; c=relaxed/simple;
+	bh=9yc9RzzNYFFCXj9TA2BrTsYbnJHVTSRf/XwLJhzcGW8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PkXxWtolMRI+oICOyD5xR718TCX+QA+Lyh3RYBkSQ6gmXdhAZGgB6V+j7G3lDmEvFqRJP+TxzRYyb8+E04vPoUcBkgkcBFsC5/zpxAIVDfKnhQMWm2ZlV1UaUtfNX1MM8/LFnvSy8Eni/f3EFH7gJuIsca8MuioRfxsAHFP81X8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WoPsTdSG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2154C433A6;
-	Sun, 24 Mar 2024 22:46:01 +0000 (UTC)
+	 MIME-Version; b=EaQU6WMAF9HAz+IL1foXaKK+dZk9maOnMS3lacRNIvcclGpiNefc3v1bHRvR7X7HhF5wuxWrNxHlN//uYO2vaGwRLmF8WdX+uobEI1eB/Up/JVMUVR8gtbjk/DBDxEb0KhdHSQlJje5GsUhgKMk70e3v5wK2l0nR1jF2ahneNkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q6n7Eugt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0535C433C7;
+	Sun, 24 Mar 2024 22:46:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320362;
-	bh=HF7/g01MyF5usS4jtmaXCrXMB/637THnKn0KAttJEFY=;
+	s=k20201202; t=1711320363;
+	bh=9yc9RzzNYFFCXj9TA2BrTsYbnJHVTSRf/XwLJhzcGW8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WoPsTdSGDp34Q/xZG7Z9UL33va0i+/nDc1cO+YFpwaKXKa18BdOMIkbH+6JQqsprY
-	 IAmBK3m+9AVAGLlNL/4Wo/iAhRx0nVZq4AzBhSG44/diPUO57Q84LMuyrxZt/wN3wF
-	 SiU0NRAGaAPYunxlMrk6YgCBJlcZzT9GE8OKSq3kWFXuZwLv5G58Jaaeg7Nr1+bX8+
-	 48SeAjJHAKezet2Byoqhd7qIJ8e5Bpd+AwGNcBBSkHjMdPrUWOP/e7KVZlRJGv8BAU
-	 vjjmHf3u2D8OEEGO+hA5WH9DOQwgY8cebutlb47+vHYbin+N1x8uBup+PU0CSZtZWH
-	 NsIgXXIrxb73w==
+	b=Q6n7Eugt5MKAM/2+nDOgvMkEx3yNj+3Rtihn49xFySzgbxHwkCCOzipHclYW14RW9
+	 dbjkcB1ca3l1lGWC7LmLR+iWP95JeAyXIwhphesMeDFPuON7h/Vj8NAMC50Ufy5aiK
+	 dElX1K4ltiG0wljo4ynLgFpPB8LX+Xn+bdQwIKAjts4RQyzmxIW+Q/Lu10ETCwFXwB
+	 c7QHB5C1cy0yOqczyPxdbaPIYhbzvRfuitalOOvAhXES6fF6kRFQdcqTB91PhiPbcJ
+	 01eKsgPa5XhIAvPRLBVmanAW2d62xbwciY2NZ2EpDv8rT3IMAks7G2ygmbP5D3OsUh
+	 fMi31Hkg07u7w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Juergen Gross <jgross@suse.com>,
-	Demi Marie Obenour <demi@invisiblethingslab.com>,
 	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 669/715] xen/evtchn: avoid WARN() when unbinding an event channel
-Date: Sun, 24 Mar 2024 18:34:08 -0400
-Message-ID: <20240324223455.1342824-670-sashal@kernel.org>
+Subject: [PATCH 6.8 670/715] xen/events: increment refcnt only if event channel is refcounted
+Date: Sun, 24 Mar 2024 18:34:09 -0400
+Message-ID: <20240324223455.1342824-671-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,58 +64,111 @@ Content-Transfer-Encoding: 8bit
 
 From: Juergen Gross <jgross@suse.com>
 
-[ Upstream commit 51c23bd691c0f1fb95b29731c356c6fd69925d17 ]
+[ Upstream commit d277f9d82802223f242cd9b60c988cfdda1d6be0 ]
 
-When unbinding a user event channel, the related handler might be
-called a last time in case the kernel was built with
-CONFIG_DEBUG_SHIRQ. This might cause a WARN() in the handler.
+In bind_evtchn_to_irq_chip() don't increment the refcnt of the event
+channel blindly. In case the event channel is NOT refcounted, issue a
+warning instead.
 
-Avoid that by adding an "unbinding" flag to struct user_event which
-will short circuit the handler.
+Add an additional safety net by doing the refcnt increment only if the
+caller has specified IRQF_SHARED in the irqflags parameter.
 
 Fixes: 9e90e58c11b7 ("xen: evtchn: Allow shared registration of IRQ handers")
-Reported-by: Demi Marie Obenour <demi@invisiblethingslab.com>
-Tested-by: Demi Marie Obenour <demi@invisiblethingslab.com>
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Reviewed-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Link: https://lore.kernel.org/r/20240313071409.25913-2-jgross@suse.com
+Link: https://lore.kernel.org/r/20240313071409.25913-3-jgross@suse.com
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/evtchn.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/xen/events/events_base.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
-index 59717628ca42b..f6a2216c2c870 100644
---- a/drivers/xen/evtchn.c
-+++ b/drivers/xen/evtchn.c
-@@ -85,6 +85,7 @@ struct user_evtchn {
- 	struct per_user_data *user;
- 	evtchn_port_t port;
- 	bool enabled;
-+	bool unbinding;
- };
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index 3b9f080109d7e..27553673e46bc 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -1190,7 +1190,7 @@ int xen_pirq_from_irq(unsigned irq)
+ EXPORT_SYMBOL_GPL(xen_pirq_from_irq);
  
- static void evtchn_free_ring(evtchn_port_t *ring)
-@@ -164,6 +165,10 @@ static irqreturn_t evtchn_interrupt(int irq, void *data)
- 	struct per_user_data *u = evtchn->user;
- 	unsigned int prod, cons;
+ static int bind_evtchn_to_irq_chip(evtchn_port_t evtchn, struct irq_chip *chip,
+-				   struct xenbus_device *dev)
++				   struct xenbus_device *dev, bool shared)
+ {
+ 	int ret = -ENOMEM;
+ 	struct irq_info *info;
+@@ -1224,7 +1224,8 @@ static int bind_evtchn_to_irq_chip(evtchn_port_t evtchn, struct irq_chip *chip,
+ 		 */
+ 		bind_evtchn_to_cpu(info, 0, false);
+ 	} else if (!WARN_ON(info->type != IRQT_EVTCHN)) {
+-		info->refcnt++;
++		if (shared && !WARN_ON(info->refcnt < 0))
++			info->refcnt++;
+ 	}
  
-+	/* Handler might be called when tearing down the IRQ. */
-+	if (evtchn->unbinding)
-+		return IRQ_HANDLED;
-+
- 	WARN(!evtchn->enabled,
- 	     "Interrupt for port %u, but apparently not enabled; per-user %p\n",
- 	     evtchn->port, u);
-@@ -421,6 +426,7 @@ static void evtchn_unbind_from_user(struct per_user_data *u,
+ 	ret = info->irq;
+@@ -1237,13 +1238,13 @@ static int bind_evtchn_to_irq_chip(evtchn_port_t evtchn, struct irq_chip *chip,
  
- 	BUG_ON(irq < 0);
+ int bind_evtchn_to_irq(evtchn_port_t evtchn)
+ {
+-	return bind_evtchn_to_irq_chip(evtchn, &xen_dynamic_chip, NULL);
++	return bind_evtchn_to_irq_chip(evtchn, &xen_dynamic_chip, NULL, false);
+ }
+ EXPORT_SYMBOL_GPL(bind_evtchn_to_irq);
  
-+	evtchn->unbinding = true;
- 	unbind_from_irqhandler(irq, evtchn);
+ int bind_evtchn_to_irq_lateeoi(evtchn_port_t evtchn)
+ {
+-	return bind_evtchn_to_irq_chip(evtchn, &xen_lateeoi_chip, NULL);
++	return bind_evtchn_to_irq_chip(evtchn, &xen_lateeoi_chip, NULL, false);
+ }
+ EXPORT_SYMBOL_GPL(bind_evtchn_to_irq_lateeoi);
  
- 	del_evtchn(u, evtchn);
+@@ -1295,7 +1296,8 @@ static int bind_ipi_to_irq(unsigned int ipi, unsigned int cpu)
+ 
+ static int bind_interdomain_evtchn_to_irq_chip(struct xenbus_device *dev,
+ 					       evtchn_port_t remote_port,
+-					       struct irq_chip *chip)
++					       struct irq_chip *chip,
++					       bool shared)
+ {
+ 	struct evtchn_bind_interdomain bind_interdomain;
+ 	int err;
+@@ -1307,14 +1309,14 @@ static int bind_interdomain_evtchn_to_irq_chip(struct xenbus_device *dev,
+ 					  &bind_interdomain);
+ 
+ 	return err ? : bind_evtchn_to_irq_chip(bind_interdomain.local_port,
+-					       chip, dev);
++					       chip, dev, shared);
+ }
+ 
+ int bind_interdomain_evtchn_to_irq_lateeoi(struct xenbus_device *dev,
+ 					   evtchn_port_t remote_port)
+ {
+ 	return bind_interdomain_evtchn_to_irq_chip(dev, remote_port,
+-						   &xen_lateeoi_chip);
++						   &xen_lateeoi_chip, false);
+ }
+ EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irq_lateeoi);
+ 
+@@ -1430,7 +1432,8 @@ static int bind_evtchn_to_irqhandler_chip(evtchn_port_t evtchn,
+ {
+ 	int irq, retval;
+ 
+-	irq = bind_evtchn_to_irq_chip(evtchn, chip, NULL);
++	irq = bind_evtchn_to_irq_chip(evtchn, chip, NULL,
++				      irqflags & IRQF_SHARED);
+ 	if (irq < 0)
+ 		return irq;
+ 	retval = request_irq(irq, handler, irqflags, devname, dev_id);
+@@ -1471,7 +1474,8 @@ static int bind_interdomain_evtchn_to_irqhandler_chip(
+ {
+ 	int irq, retval;
+ 
+-	irq = bind_interdomain_evtchn_to_irq_chip(dev, remote_port, chip);
++	irq = bind_interdomain_evtchn_to_irq_chip(dev, remote_port, chip,
++						  irqflags & IRQF_SHARED);
+ 	if (irq < 0)
+ 		return irq;
+ 
 -- 
 2.43.0
 
