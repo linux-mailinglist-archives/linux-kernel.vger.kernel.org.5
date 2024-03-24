@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-114623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DDA488908E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:21:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E6B888B58
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:47:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BDF21F251B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:21:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8238729395A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A762A4909;
-	Sun, 24 Mar 2024 23:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE322188A72;
+	Sun, 24 Mar 2024 23:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cXRUUe+R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ehJLEeOO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6587E234D87;
-	Sun, 24 Mar 2024 23:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4DC234D7C;
+	Sun, 24 Mar 2024 23:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322289; cv=none; b=R8RNacZbSQhoRxxgCOrVE6VUspUsFXYifvOF5q7LNzfcFzD6CEBc68TTElIKwqx9iGq1QWEjQn4RDOjqMI5i6qSq2JWv3kryCjRig9h/CyiyU1P9xyBFzvTiVPDyMOTVSNirsDye9rbugEOg1G0xMRNA3PvMKJ+iCkBvLNmD+34=
+	t=1711322290; cv=none; b=WxTeTcgvo6MZr94FwWGrl2naEJQxTpVAR/xIDYPb4YxCufUz4FpIL3efBj1qv97WZNGbwIpudAAvFzCIjwzsWL/Tp1Y1ZHOy8W5PUJVPJcbUfv/qnWnNjS3tw9WtmZrUIIdkj4yMlKJ/u0zZcsJa8pW8zHoMMwxl97tY8oNkKjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322289; c=relaxed/simple;
-	bh=yYO9KRfCndalG65ITRxpc4yjL9HO5ZNlZM30I0MbeX0=;
+	s=arc-20240116; t=1711322290; c=relaxed/simple;
+	bh=g1ekMzSm4txgtotmTsA3S1y1NJqyvLL1l8D4Mk/0VZ0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KA+YbJTZ74kEkT0vENCCibvbNH8Tu6bZk+8yy84rEOD9RtstvHuw+JccLHvJ99E29doQ7dBrACmClJ98787Ideo4rmCvKiHISBuxwjiSqIg3u2QRlvWfFCPV8MbzkzOCJic/pJqq+KvTPtI+fydDvVwWuHbCILTp684d1MfQfPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cXRUUe+R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CC84C43394;
-	Sun, 24 Mar 2024 23:18:07 +0000 (UTC)
+	 MIME-Version; b=gqFLlLqBceL8pCpD7CyL4QJIJ1Jqdnfp3y5aG7WurtOpPhVSrwRYw7pJlq9qyplAkqtlDo2g5tGM24hHEh8/SlGGTuII/A49zUeg2s4h1VVYGUXfg4R9wVw8H1kc1tf2bYGeMWVFoTlKyfBJ4+Rk5jTI+ZNfMj8uKJ4T8kOXntM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ehJLEeOO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ABFAC433C7;
+	Sun, 24 Mar 2024 23:18:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322288;
-	bh=yYO9KRfCndalG65ITRxpc4yjL9HO5ZNlZM30I0MbeX0=;
+	s=k20201202; t=1711322289;
+	bh=g1ekMzSm4txgtotmTsA3S1y1NJqyvLL1l8D4Mk/0VZ0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cXRUUe+RUW7RxfJr4LS/i3LgD+WQxUmyq9Vpbe9AQE4nI17o5NulaY+pVITigfCrh
-	 GV0gy8elzrsazkQCZQuxxlbFfDwpGQKnQITGfl4+5KQkr2D38NfgtCtvbk/CAUz+g5
-	 /EgsJ4PrkKsRphxyL8ENYwlu4Rin5i9dauTxC49IEVn0TD8tPLxhVz1suqcoQa22m8
-	 Q5dyyPF58MFa+sKhviQgTAereN7aNpLbyEEZtmzamWRKsAiI/jNrXADd1kROzjoTnn
-	 XMAhCQg892Is0/bFgSYs6F0F8WZwcTL7BmEtQJ4HyFGHWIEG62XubWd2Xkt05W/qS0
-	 B3fhwBrv0jMag==
+	b=ehJLEeOO7oeRCOzGB60jAU9dby7nF0FkQ6JPwFAe+zwi4j7BDNYbBj+PmwA8elrbZ
+	 WEebhIH1jFlQ2rlkRWQp3XW4hrhFkRMNqpNvaWgfYn0x6K2Doz1V0JYmnIiOxeUi/5
+	 Prl1XftTkhbw6GelJM/cytEGQEyAxp5OKdqzSb935VP3Be1e5LWOrSwejNL6sc9H5T
+	 8LGVGGSLyLukagcDU1cFAj5f6NFyGxRw0km4+SntRKPScUqcfONKTQv1oIIuvoCxuH
+	 mMvaSXQ6kiGIMPAmmkg8vJLWkAmXRNBgdnHE5DZdwhwcpLvksRY+MRyPiU7Q3sGcUY
+	 5cgC6i23eOUhg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: Jorge Mora <jmora1300@gmail.com>,
 	Benjamin Coddington <bcodding@redhat.com>,
 	Trond Myklebust <trond.myklebust@hammerspace.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 371/451] NFSv4.2: fix nfs4_listxattr kernel BUG at mm/usercopy.c:102
-Date: Sun, 24 Mar 2024 19:10:47 -0400
-Message-ID: <20240324231207.1351418-372-sashal@kernel.org>
+Subject: [PATCH 6.1 372/451] NFSv4.2: fix listxattr maximum XDR buffer size
+Date: Sun, 24 Mar 2024 19:10:48 -0400
+Message-ID: <20240324231207.1351418-373-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -66,95 +66,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Jorge Mora <jmora1300@gmail.com>
 
-[ Upstream commit 251a658bbfceafb4d58c76b77682c8bf7bcfad65 ]
+[ Upstream commit bcac8bff90a6ee1629f90669cdb9d28fb86049b0 ]
 
-A call to listxattr() with a buffer size = 0 returns the actual
-size of the buffer needed for a subsequent call. When size > 0,
-nfs4_listxattr() does not return an error because either
-generic_listxattr() or nfs4_listxattr_nfs4_label() consumes
-exactly all the bytes then size is 0 when calling
-nfs4_listxattr_nfs4_user() which then triggers the following
-kernel BUG:
+Switch order of operations to avoid creating a short XDR buffer:
+e.g., buflen = 12, old xdrlen = 12, new xdrlen = 20.
 
-  [   99.403778] kernel BUG at mm/usercopy.c:102!
-  [   99.404063] Internal error: Oops - BUG: 00000000f2000800 [#1] SMP
-  [   99.408463] CPU: 0 PID: 3310 Comm: python3 Not tainted 6.6.0-61.fc40.aarch64 #1
-  [   99.415827] Call trace:
-  [   99.415985]  usercopy_abort+0x70/0xa0
-  [   99.416227]  __check_heap_object+0x134/0x158
-  [   99.416505]  check_heap_object+0x150/0x188
-  [   99.416696]  __check_object_size.part.0+0x78/0x168
-  [   99.416886]  __check_object_size+0x28/0x40
-  [   99.417078]  listxattr+0x8c/0x120
-  [   99.417252]  path_listxattr+0x78/0xe0
-  [   99.417476]  __arm64_sys_listxattr+0x28/0x40
-  [   99.417723]  invoke_syscall+0x78/0x100
-  [   99.417929]  el0_svc_common.constprop.0+0x48/0xf0
-  [   99.418186]  do_el0_svc+0x24/0x38
-  [   99.418376]  el0_svc+0x3c/0x110
-  [   99.418554]  el0t_64_sync_handler+0x120/0x130
-  [   99.418788]  el0t_64_sync+0x194/0x198
-  [   99.418994] Code: aa0003e3 d000a3e0 91310000 97f49bdb (d4210000)
+Having a short XDR buffer leads to lxa_maxcount be a few bytes
+less than what is needed to retrieve the whole list when using
+a buflen as returned by a call with size = 0:
+    buflen = listxattr(path, NULL, 0);
+    buf = malloc(buflen);
+    buflen = listxattr(path, buf, buflen);
 
-Issue is reproduced when generic_listxattr() returns 'system.nfs4_acl',
-thus calling lisxattr() with size = 16 will trigger the bug.
+For a file with one attribute (name = '123456'), the first call
+with size = 0 will return buflen = 12 ('user.123456\x00').
+The second call with size = 12, sends LISTXATTRS with
+lxa_maxcount = 12 + 8 (cookie) + 4 (array count) = 24. The
+XDR buffer needs 8 (cookie) + 4 (array count) + 4 (name count)
++ 6 (name len) + 2 (padding) + 4 (eof) = 28 which is 4 bytes
+shorter than the lxa_maxcount provided in the call.
 
-Add check on nfs4_listxattr() to return ERANGE error when it is
-called with size > 0 and the return value is greater than size.
-
-Fixes: 012a211abd5d ("NFSv4.2: hook in the user extended attribute handlers")
+Fixes: 04a5da690e8f ("NFSv4.2: define limits and sizes for user xattr handling")
 Signed-off-by: Jorge Mora <mora@netapp.com>
 Reviewed-by: Benjamin Coddington <bcodding@redhat.com>
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4proc.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ fs/nfs/nfs42.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index ec3f0103e1a7f..7cc74f7451d67 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -10592,29 +10592,33 @@ const struct nfs4_minor_version_ops *nfs_v4_minor_ops[] = {
- static ssize_t nfs4_listxattr(struct dentry *dentry, char *list, size_t size)
+diff --git a/fs/nfs/nfs42.h b/fs/nfs/nfs42.h
+index b59876b01a1e3..0282d93c8bccb 100644
+--- a/fs/nfs/nfs42.h
++++ b/fs/nfs/nfs42.h
+@@ -55,11 +55,14 @@ int nfs42_proc_removexattr(struct inode *inode, const char *name);
+  * They would be 7 bytes long in the eventual buffer ("user.x\0"), and
+  * 8 bytes long XDR-encoded.
+  *
+- * Include the trailing eof word as well.
++ * Include the trailing eof word as well and make the result a multiple
++ * of 4 bytes.
+  */
+ static inline u32 nfs42_listxattr_xdrsize(u32 buflen)
  {
- 	ssize_t error, error2, error3;
-+	size_t left = size;
- 
--	error = generic_listxattr(dentry, list, size);
-+	error = generic_listxattr(dentry, list, left);
- 	if (error < 0)
- 		return error;
- 	if (list) {
- 		list += error;
--		size -= error;
-+		left -= error;
- 	}
- 
--	error2 = nfs4_listxattr_nfs4_label(d_inode(dentry), list, size);
-+	error2 = nfs4_listxattr_nfs4_label(d_inode(dentry), list, left);
- 	if (error2 < 0)
- 		return error2;
- 
- 	if (list) {
- 		list += error2;
--		size -= error2;
-+		left -= error2;
- 	}
- 
--	error3 = nfs4_listxattr_nfs4_user(d_inode(dentry), list, size);
-+	error3 = nfs4_listxattr_nfs4_user(d_inode(dentry), list, left);
- 	if (error3 < 0)
- 		return error3;
- 
--	return error + error2 + error3;
-+	error += error2 + error3;
-+	if (size && error > size)
-+		return -ERANGE;
-+	return error;
+-	return ((buflen / (XATTR_USER_PREFIX_LEN + 2)) * 8) + 4;
++	u32 size = 8 * buflen / (XATTR_USER_PREFIX_LEN + 2) + 4;
++
++	return (size + 3) & ~3;
  }
- 
- static void nfs4_enable_swap(struct inode *inode)
+ #endif /* CONFIG_NFS_V4_2 */
+ #endif /* __LINUX_FS_NFS_NFS4_2_H */
 -- 
 2.43.0
 
