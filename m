@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 028EA88859B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:12:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F25C88859C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:12:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CB0828534E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:12:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 156E81F225ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D6D1CDDF1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2D61CDE01;
 	Sun, 24 Mar 2024 22:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pTGyP1sX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fLXfxWkc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7334C1CD63D;
-	Sun, 24 Mar 2024 22:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA651CDDE8;
+	Sun, 24 Mar 2024 22:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320401; cv=none; b=RtGYukZiBDF9wGCYY4N/+7s+LQBbKtLUJmEUBWdP1JcscDpjQq5ogONFrLw2Vv/Nj9w4uKUW5zL0EuQwH+e0G6G80Cj3jweIY85AA87qo8rwUQdPixFTvVy43euml7uruoMi5AuPpK0/ZIZ68W/NCHkY3DQuAT/KNY1urC8J5fA=
+	t=1711320402; cv=none; b=BDcnoy2NTTZ7oWXLRZFkXqnpGJZ2PKrHdPJpa/4NgG9kaYt8Nf2V5WJJyjlGjimeylGLmllmZdLWrNxD5epuNVvX8oQlvgiDRZD63g6+cccv8vArfbQEui1UUKX7BiFO8fk8zQhfKDnHw+WPiR2Qj4lvECP7fNpdpU4BwxMyMoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320401; c=relaxed/simple;
-	bh=a9Cs2p1wQQk0ARZrSRJcYxqYEZLmVyiF7pHASeh1Qn8=;
+	s=arc-20240116; t=1711320402; c=relaxed/simple;
+	bh=0xJ+qloyoX7no++YWtVrlTrA5iVh3b8gZloLuJhdlI4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LzDG3DGIJROSIK4MOPITcrhxE8WcrImfc2c5uSNXZDbaW2yivaXyIcZ9A6NyBKvyiN/BO051ElL+HleQbc+rC2c6k9AboZ3+qaIYijMbpSgb804v8RFY79R2duAd5PMHsLo2Eyc7MnOYYJ9zWEkYARbue0UQMXsl9nGF+tvVl8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pTGyP1sX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 622E8C43399;
-	Sun, 24 Mar 2024 22:46:40 +0000 (UTC)
+	 MIME-Version; b=CThoWpLomvlEEABkvErk4qF38WSECujDCQJE3iYXQ01Hno2d0qZopB1dkekYZPUhWlHRQYqjwNZKR+6E0oC47nnjz5+P7PHfEc0lG1CbEzhpnPWKVQNckZ64jyL4T+bKVqYxngQGgV4NnXiA9txu7R0dka2SQwe4J2tRsE4oXZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fLXfxWkc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BAC3C433C7;
+	Sun, 24 Mar 2024 22:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320401;
-	bh=a9Cs2p1wQQk0ARZrSRJcYxqYEZLmVyiF7pHASeh1Qn8=;
+	bh=0xJ+qloyoX7no++YWtVrlTrA5iVh3b8gZloLuJhdlI4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pTGyP1sX9erMxTDNn0cugDM8B1eIYM/rBFSQ7GhThHVNv79eyfH+d4Zi8jCu5C8cN
-	 AhVraJ/N5BvWva7EcviKh0kt+jIB5KaYXVaaTZIdTr3EhbugGOMv88BV93U3/kW9Iq
-	 39x0b9xRzEKkIMzP0mDNuQX+g6xGxaC/Mk2rJhI4lFM0aBPUmidmkyQL+JieJhs/oS
-	 mBZCI5mY6w+I/bB/fjodVjLipPfTFczBwul5Vo8FoJ7ILesd72ZAcBYQ4yLVSEVFEw
-	 mzTRFlUGzv1gRyQyIIKRft/u1LaV+wZSx5F7mx9jiRoMr/QAsAmOvalSjp88dbaPP3
-	 lFNFT0xIWSfoA==
+	b=fLXfxWkcsx07pX/pwUaHgqAKNZ7bqmhELJu1LNuiR8XxVP6d6fSVXtpGIMcp8DBpr
+	 Gs4CnQykJgekqsbtiW6zOirXAbxnKoUvaY3vvWAIUPumxnNsRO6/avtM+Md5rhzt9k
+	 TwfZ+1QUcEqxu4qTEIL9eLG6V6CF8LZ9Pt08qDzyUd5LF2y3axnXThUSffxpFhG/fa
+	 xz+Hyp3q7VmtdhXAgwpWqDRbW8GEG4x8Ko+JJWIeQ+8a7GuvbfQn2W3NsuK3R5q9da
+	 G3QhtB+rOFKvzgJs7gDF+0qH78RgM807z80AsiXm8P8KOpGevZLbAh268zkDLS6k0m
+	 u6hbbcgL/hi6A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Quan Tian <tianquan23@gmail.com>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 707/715] net: dsa: mt7530: fix handling of all link-local frames
-Date: Sun, 24 Mar 2024 18:34:46 -0400
-Message-ID: <20240324223455.1342824-708-sashal@kernel.org>
+Subject: [PATCH 6.8 708/715] netfilter: nf_tables: Fix a memory leak in nf_tables_updchain
+Date: Sun, 24 Mar 2024 18:34:47 -0400
+Message-ID: <20240324223455.1342824-709-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -58,142 +58,73 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+From: Quan Tian <tianquan23@gmail.com>
 
-[ Upstream commit 69ddba9d170bdaee1dc0eb4ced38d7e4bb7b92af ]
+[ Upstream commit 7eaf837a4eb5f74561e2486972e7f5184b613f6e ]
 
-Currently, the MT753X switches treat frames with :01-0D and :0F MAC DAs as
-regular multicast frames, therefore flooding them to user ports.
+If nft_netdev_register_hooks() fails, the memory associated with
+nft_stats is not freed, causing a memory leak.
 
-On page 205, section "8.6.3 Frame filtering" of the active standard, IEEE
-Std 802.1Q™-2022, it is stated that frames with 01:80:C2:00:00:00-0F as MAC
-DA must only be propagated to C-VLAN and MAC Bridge components. That means
-VLAN-aware and VLAN-unaware bridges. On the switch designs with CPU ports,
-these frames are supposed to be processed by the CPU (software). So we make
-the switch only forward them to the CPU port. And if received from a CPU
-port, forward to a single port. The software is responsible of making the
-switch conform to the latter by setting a single port as destination port
-on the special tag.
+This patch fixes it by moving nft_stats_alloc() down after
+nft_netdev_register_hooks() succeeds.
 
-This switch intellectual property cannot conform to this part of the
-standard fully. Whilst the REV_UN frame tag covers the remaining :04-0D and
-:0F MAC DAs, it also includes :22-FF which the scope of propagation is not
-supposed to be restricted for these MAC DAs.
-
-Set frames with :01-03 MAC DAs to be trapped to the CPU port(s). Add a
-comment for the remaining MAC DAs.
-
-Note that the ingress port must have a PVID assigned to it for the switch
-to forward untagged frames. A PVID is set by default on VLAN-aware and
-VLAN-unaware ports. However, when the network interface that pertains to
-the ingress port is attached to a vlan_filtering enabled bridge, the user
-can remove the PVID assignment from it which would prevent the link-local
-frames from being trapped to the CPU port. I am yet to see a way to forward
-link-local frames while preventing other untagged frames from being
-forwarded too.
-
-Fixes: b8f126a8d543 ("net-next: dsa: add dsa support for Mediatek MT7530 switch")
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Fixes: b9703ed44ffb ("netfilter: nf_tables: support for adding new devices to an existing netdev chain")
+Signed-off-by: Quan Tian <tianquan23@gmail.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mt7530.c | 37 +++++++++++++++++++++++++++++++++----
- drivers/net/dsa/mt7530.h | 13 +++++++++++++
- 2 files changed, 46 insertions(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index ae39d669d30ce..40ae44c9945b1 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -998,6 +998,21 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
- 	mutex_unlock(&priv->reg_mutex);
- }
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 0fe2abf27d12f..6873c9815cd31 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2619,19 +2619,6 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+ 		}
+ 	}
  
-+/* On page 205, section "8.6.3 Frame filtering" of the active standard, IEEE Std
-+ * 802.1Q™-2022, it is stated that frames with 01:80:C2:00:00:00-0F as MAC DA
-+ * must only be propagated to C-VLAN and MAC Bridge components. That means
-+ * VLAN-aware and VLAN-unaware bridges. On the switch designs with CPU ports,
-+ * these frames are supposed to be processed by the CPU (software). So we make
-+ * the switch only forward them to the CPU port. And if received from a CPU
-+ * port, forward to a single port. The software is responsible of making the
-+ * switch conform to the latter by setting a single port as destination port on
-+ * the special tag.
-+ *
-+ * This switch intellectual property cannot conform to this part of the standard
-+ * fully. Whilst the REV_UN frame tag covers the remaining :04-0D and :0F MAC
-+ * DAs, it also includes :22-FF which the scope of propagation is not supposed
-+ * to be restricted for these MAC DAs.
-+ */
- static void
- mt753x_trap_frames(struct mt7530_priv *priv)
- {
-@@ -1012,13 +1027,27 @@ mt753x_trap_frames(struct mt7530_priv *priv)
- 		   MT753X_BPDU_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
- 		   MT753X_BPDU_CPU_ONLY);
+-	if (nla[NFTA_CHAIN_COUNTERS]) {
+-		if (!nft_is_base_chain(chain)) {
+-			err = -EOPNOTSUPP;
+-			goto err_hooks;
+-		}
+-
+-		stats = nft_stats_alloc(nla[NFTA_CHAIN_COUNTERS]);
+-		if (IS_ERR(stats)) {
+-			err = PTR_ERR(stats);
+-			goto err_hooks;
+-		}
+-	}
+-
+ 	if (!(table->flags & NFT_TABLE_F_DORMANT) &&
+ 	    nft_is_base_chain(chain) &&
+ 	    !list_empty(&hook.list)) {
+@@ -2646,6 +2633,20 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+ 	}
  
--	/* Trap LLDP frames with :0E MAC DA to the CPU port(s) and egress them
--	 * VLAN-untagged.
-+	/* Trap frames with :01 and :02 MAC DAs to the CPU port(s) and egress
-+	 * them VLAN-untagged.
-+	 */
-+	mt7530_rmw(priv, MT753X_RGAC1, MT753X_R02_EG_TAG_MASK |
-+		   MT753X_R02_PORT_FW_MASK | MT753X_R01_EG_TAG_MASK |
-+		   MT753X_R01_PORT_FW_MASK,
-+		   MT753X_R02_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+		   MT753X_R02_PORT_FW(MT753X_BPDU_CPU_ONLY) |
-+		   MT753X_R01_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+		   MT753X_BPDU_CPU_ONLY);
+ 	unregister = true;
 +
-+	/* Trap frames with :03 and :0E MAC DAs to the CPU port(s) and egress
-+	 * them VLAN-untagged.
- 	 */
- 	mt7530_rmw(priv, MT753X_RGAC2, MT753X_R0E_EG_TAG_MASK |
--		   MT753X_R0E_PORT_FW_MASK,
-+		   MT753X_R0E_PORT_FW_MASK | MT753X_R03_EG_TAG_MASK |
-+		   MT753X_R03_PORT_FW_MASK,
- 		   MT753X_R0E_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
--		   MT753X_R0E_PORT_FW(MT753X_BPDU_CPU_ONLY));
-+		   MT753X_R0E_PORT_FW(MT753X_BPDU_CPU_ONLY) |
-+		   MT753X_R03_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
-+		   MT753X_BPDU_CPU_ONLY);
- }
- 
- static int
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index cef2af3f24d58..75bc9043c8c0a 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -73,12 +73,25 @@ enum mt753x_id {
- #define  MT753X_BPDU_EG_TAG(x)		FIELD_PREP(MT753X_BPDU_EG_TAG_MASK, x)
- #define  MT753X_BPDU_PORT_FW_MASK	GENMASK(2, 0)
- 
-+/* Register for :01 and :02 MAC DA frame control */
-+#define MT753X_RGAC1			0x28
-+#define  MT753X_R02_EG_TAG_MASK		GENMASK(24, 22)
-+#define  MT753X_R02_EG_TAG(x)		FIELD_PREP(MT753X_R02_EG_TAG_MASK, x)
-+#define  MT753X_R02_PORT_FW_MASK	GENMASK(18, 16)
-+#define  MT753X_R02_PORT_FW(x)		FIELD_PREP(MT753X_R02_PORT_FW_MASK, x)
-+#define  MT753X_R01_EG_TAG_MASK		GENMASK(8, 6)
-+#define  MT753X_R01_EG_TAG(x)		FIELD_PREP(MT753X_R01_EG_TAG_MASK, x)
-+#define  MT753X_R01_PORT_FW_MASK	GENMASK(2, 0)
++	if (nla[NFTA_CHAIN_COUNTERS]) {
++		if (!nft_is_base_chain(chain)) {
++			err = -EOPNOTSUPP;
++			goto err_hooks;
++		}
 +
- /* Register for :03 and :0E MAC DA frame control */
- #define MT753X_RGAC2			0x2c
- #define  MT753X_R0E_EG_TAG_MASK		GENMASK(24, 22)
- #define  MT753X_R0E_EG_TAG(x)		FIELD_PREP(MT753X_R0E_EG_TAG_MASK, x)
- #define  MT753X_R0E_PORT_FW_MASK	GENMASK(18, 16)
- #define  MT753X_R0E_PORT_FW(x)		FIELD_PREP(MT753X_R0E_PORT_FW_MASK, x)
-+#define  MT753X_R03_EG_TAG_MASK		GENMASK(8, 6)
-+#define  MT753X_R03_EG_TAG(x)		FIELD_PREP(MT753X_R03_EG_TAG_MASK, x)
-+#define  MT753X_R03_PORT_FW_MASK	GENMASK(2, 0)
- 
- enum mt753x_bpdu_port_fw {
- 	MT753X_BPDU_FOLLOW_MFC,
++		stats = nft_stats_alloc(nla[NFTA_CHAIN_COUNTERS]);
++		if (IS_ERR(stats)) {
++			err = PTR_ERR(stats);
++			goto err_hooks;
++		}
++	}
++
+ 	err = -ENOMEM;
+ 	trans = nft_trans_alloc(ctx, NFT_MSG_NEWCHAIN,
+ 				sizeof(struct nft_trans_chain));
 -- 
 2.43.0
 
