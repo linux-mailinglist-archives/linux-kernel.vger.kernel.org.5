@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F350488A52D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A92889F94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:32:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F776B2C5AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:44:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AB49B2286F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F16D3BA323;
-	Mon, 25 Mar 2024 03:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199B73BA35B;
+	Mon, 25 Mar 2024 03:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XQ1W0nxx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aoFhEBLa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E295284551;
-	Sun, 24 Mar 2024 23:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B5428455B;
+	Sun, 24 Mar 2024 23:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323792; cv=none; b=r+l3ouKoDbH/GPYyWcO/+hvzED80XWWdwFUbp/wrmhmL+gDst1f9H5RsaXRDhq0gHEVfmd4oY9TQKCUqMecToQZj/ORyy4G8iBYXx8Orn1J8fnmacTuxBB5GLjcVRQD/WkqE2NHTmeZ0mp31/g1G2VFQbY8OuSbiS3Qfa/iuNqE=
+	t=1711323794; cv=none; b=IhNqZusL2hZoyNHeLhTalPVw2s51hJzp500E2zRvVBKlH0vK/YgoqlRyfeLL9WHA3uKmdU3abuJkAHE72RiLiZ4/9nYnZwMdC8/bZRJDf+a9C8bxZDMe1mj6fRXpGOSgxI3es2/AtdaEDQQYVXSvq5Bo6bVxY6pQ3ZyN6D1wVuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323792; c=relaxed/simple;
-	bh=s6m5EmNhs2Ghj/NYFkNGqUdDS4byPtOw1zu8uhIlB5s=;
+	s=arc-20240116; t=1711323794; c=relaxed/simple;
+	bh=myIllbPmWSYMqa2z/yZAREFiWRKzaKp/8Lpn3zjJYXM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nEOfip5TD8Eeb6onJxAJnMDeemBdNbirTnLMbtr9lVZ6aYa5YzZNHE98nuXS5gPuxx7kPaMzmg4+uqdIiLsrG7aRue1ykVKi8e2xdnf+axsMkUpovCfZdcYSIL+lbgsMvD+IVN5bVz7jg/um4Bs/X518+aRTiilnJFtV5c2+Q5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XQ1W0nxx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 580F0C433F1;
-	Sun, 24 Mar 2024 23:43:11 +0000 (UTC)
+	 MIME-Version; b=WCdjLXVXWnPJbSG1HhMCvv0Y4GbKOdjeaOUSGLYVHAYEgxdHDpX6hTZlrL2r99uycW8cMmxxhJJo9F0PJD5kkKsf1tTYdITMYXX0z1aaap6u8yFuJL4OLp66R5pq2qEGUBWvxLkRmN+VJeVSneRhoFqnsdsGmPzgVQesxkhkBQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aoFhEBLa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42892C43390;
+	Sun, 24 Mar 2024 23:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711323792;
-	bh=s6m5EmNhs2Ghj/NYFkNGqUdDS4byPtOw1zu8uhIlB5s=;
+	bh=myIllbPmWSYMqa2z/yZAREFiWRKzaKp/8Lpn3zjJYXM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XQ1W0nxx5wVIewUNDsMMfY7Q7JC0D3z2p/GSOmj3jAvYpZCrcVw7hxp2FVnuYKlVu
-	 XCpl42vrH47lxFd4sdhn5EVVt4Ck1Yp9z1jh6IrZUYinIN/LoKd+ztAoKtzhF057Wj
-	 dneVLUpTbdQBnDSGwX/tLE9O68wzWH3nj0QxmkgJfP925JjOG25S+mYNLS/WCc2J9Q
-	 YI5E6CvgaVtjnU+nFdrgJM0q2pEDbkfL106WzMMlOPw5vI/sPSfqK8dx4obixyq8Po
-	 x/KW6/FsziIrfS6AdLtH1v8zZ7LjmE60+7SGFeV+3T2LNW5ezVS0Cu6Vd3zXb/LtBy
-	 gfh+/6YQg60Iw==
+	b=aoFhEBLaz4bgpW0DiI7G9IMHj4naRfo3zOJ6CFnOA24tlZeBpc0dBDNvk7cRXb1WY
+	 oqd6D+pcynfNPJF9aWzzNW3BjJtrmPjTHTqfIdKy8HcQmUI48axCBPPJ7oJIxzb7rS
+	 j5mKB6g5WLIWABp3jHejxeyxvlltJRW5KGc82rxoB2kFuPssKHTAEUMVVJbQje/N7M
+	 FTRDQhbsQcSkLlhQpEANoEwHr2PnD8fDIbqEIXalHH/f8mNJfrMoMkQzpT1TfsZub0
+	 4tSFGcrwbS/QKL0U6D3o0Qowh7Z+/P9EaB3xO9X1r/8c9FbdMwYhhX4XVZO+sAkyrS
+	 +q9EjrYZx7SYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Jerome Brunet <jbrunet@baylibre.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 169/238] ASoC: meson: axg-tdm-interface: fix mclk setup without mclk-fs
-Date: Sun, 24 Mar 2024 19:39:17 -0400
-Message-ID: <20240324234027.1354210-170-sashal@kernel.org>
+Subject: [PATCH 5.10 170/238] ASoC: meson: axg-tdm-interface: add frame rate constraint
+Date: Sun, 24 Mar 2024 19:39:18 -0400
+Message-ID: <20240324234027.1354210-171-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -64,45 +64,82 @@ Content-Transfer-Encoding: 8bit
 
 From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit e3741a8d28a1137f8b19ae6f3d6e3be69a454a0a ]
+[ Upstream commit 59c6a3a43b221cc2a211181b1298e43b2c2df782 ]
 
-By default, when mclk-fs is not provided, the tdm-interface driver
-requests an MCLK that is 4x the bit clock, SCLK.
+According to Amlogic datasheets for the SoCs supported by this driver, the
+maximum bit clock rate is 100MHz.
 
-However there is no justification for this:
+The tdm interface allows the rates listed by the DAI driver, regardless of
+the number slots or their width. However, these will impact the bit clock
+rate.
 
-* If the codec needs MCLK for its operation, mclk-fs is expected to be set
-  according to the codec requirements.
-* If the codec does not need MCLK the minimum is 2 * SCLK, because this is
-  minimum the divider between SCLK and MCLK can do.
+Hitting the 100MHz limit is very unlikely for most use cases but it is
+possible.
 
-Multiplying by 4 may cause problems because the PLL limit may be reached
-sooner than it should, so use 2x instead.
+For example with 32 slots / 32 bits wide, the maximum rate is no longer
+384kHz but ~96kHz.
+
+Add the constraint accordingly if the component is not already active.
+If it is active, the rate is already constrained by the first stream rate.
 
 Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://msgid.link/r/20240223175116.2005407-2-jbrunet@baylibre.com
+Link: https://msgid.link/r/20240223175116.2005407-3-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/axg-tdm-interface.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/meson/axg-tdm-interface.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index e076ced300257..ac43a7ab7bcf6 100644
+index ac43a7ab7bcf6..60d132ab1ab78 100644
 --- a/sound/soc/meson/axg-tdm-interface.c
 +++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -266,8 +266,8 @@ static int axg_tdm_iface_set_sclk(struct snd_soc_dai *dai,
- 	srate = iface->slots * iface->slot_width * params_rate(params);
+@@ -12,6 +12,9 @@
  
- 	if (!iface->mclk_rate) {
--		/* If no specific mclk is requested, default to bit clock * 4 */
--		clk_set_rate(iface->mclk, 4 * srate);
-+		/* If no specific mclk is requested, default to bit clock * 2 */
-+		clk_set_rate(iface->mclk, 2 * srate);
- 	} else {
- 		/* Check if we can actually get the bit clock from mclk */
- 		if (iface->mclk_rate % srate) {
+ #include "axg-tdm.h"
+ 
++/* Maximum bit clock frequency according the datasheets */
++#define MAX_SCLK 100000000 /* Hz */
++
+ enum {
+ 	TDM_IFACE_PAD,
+ 	TDM_IFACE_LOOPBACK,
+@@ -155,19 +158,27 @@ static int axg_tdm_iface_startup(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* Apply component wide rate symmetry */
+ 	if (snd_soc_component_active(dai->component)) {
++		/* Apply component wide rate symmetry */
+ 		ret = snd_pcm_hw_constraint_single(substream->runtime,
+ 						   SNDRV_PCM_HW_PARAM_RATE,
+ 						   iface->rate);
+-		if (ret < 0) {
+-			dev_err(dai->dev,
+-				"can't set iface rate constraint\n");
+-			return ret;
+-		}
++
++	} else {
++		/* Limit rate according to the slot number and width */
++		unsigned int max_rate =
++			MAX_SCLK / (iface->slots * iface->slot_width);
++		ret = snd_pcm_hw_constraint_minmax(substream->runtime,
++						   SNDRV_PCM_HW_PARAM_RATE,
++						   0, max_rate);
+ 	}
+ 
+-	return 0;
++	if (ret < 0)
++		dev_err(dai->dev, "can't set iface rate constraint\n");
++	else
++		ret = 0;
++
++	return ret;
+ }
+ 
+ static int axg_tdm_iface_set_stream(struct snd_pcm_substream *substream,
 -- 
 2.43.0
 
