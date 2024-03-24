@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C7978881C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:29:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5DC98881C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:29:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7FC0281EA9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:28:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 033A21C21EAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9189213C3F0;
-	Sun, 24 Mar 2024 22:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5748D16FF5D;
+	Sun, 24 Mar 2024 22:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M2TNCxdZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ux/1ZNf/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C329C13C3D2;
-	Sun, 24 Mar 2024 22:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 840B313C3ED;
+	Sun, 24 Mar 2024 22:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319945; cv=none; b=hJayHOyWz4K5JOJtR0Y+9kXFkYRKgV/mftfyuf6HoY3PhkTQN8AIsK8bJKQcj0WVgq9H6T9raym4WBG84GOFFLl/kmCTodweX7BEJYs11NKGlGtDbpOrOe4w4S5txoVke143B9k/LaTTt3iE6U1MoOGlbo3MCF3+PAmExibEpxI=
+	t=1711319946; cv=none; b=SwnJZ6kMIcGixawWWAEwgnJoCgVA1Rl/BsKh6qeUOOG85eqhfcOu1T1JEE4dE4WWqAeJ2WXTkrhICHudjwJ8RFEn6Gdjpk7ylJXGHA1toY1a+QBfyMmuRN1nHr28e46unCO8IGE3INHGUnB9RULvR4mxhXl+NZV4Hokfe20JN8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319945; c=relaxed/simple;
-	bh=ikmk3d//F6F+x4ngv5EXpqUTA6+K6pqxRuJxID3wO00=;
+	s=arc-20240116; t=1711319946; c=relaxed/simple;
+	bh=Q4+ByOQI6AC/hRIgafFeNoLkyAsC2er0jPK3iWRch10=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZQxQOHzKuYB0wnjpcjghkshNAbeE5ZZMEC+ohSxW4Yb9I6ElS0lrQ0//awbYTSnBxHppsb5Hi8bDTIAztoHHwlQ9HmQP4/IdV+zqKOT7ymrUu9uSv+11gsWelmBBTZ78Ajzg6A6jkIu6h57+GcGyWR5b7PBq7JvRAcgCNOdOKbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M2TNCxdZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3A9AC433C7;
-	Sun, 24 Mar 2024 22:39:04 +0000 (UTC)
+	 MIME-Version; b=DV5JKPx4unxtOgwSBuzhRS8V3o1AkX3tjWs126rLFfsehKe0ID2HEX5erdXfgMm/WAwIxY255/4YO21wYkJVui3YZqgZyb0t54MpVofK5fmhSyO7uua/q1JkHPyVz6qoWKsXc44s053ezmIZM45DQWfEM4sl2xEtmmlgF9NmEvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=fail (0-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ux/1ZNf/ reason="key not found in DNS"; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3B1BC433B1;
+	Sun, 24 Mar 2024 22:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319945;
-	bh=ikmk3d//F6F+x4ngv5EXpqUTA6+K6pqxRuJxID3wO00=;
+	s=k20201202; t=1711319946;
+	bh=Q4+ByOQI6AC/hRIgafFeNoLkyAsC2er0jPK3iWRch10=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=M2TNCxdZAe6pu70aIctDst0dFMg8fjDAkBirYe2g1jprJ1TThAibst5JYB6QYeWT3
-	 Jzw7jP4AM5Ya+oFung838GhYq0IrLBC2Z7f44NTnCmgznb5WOirLe5y59V8UnQbOzw
-	 UoGQh+ajoKMtLG631IUprxLI7j+/5ziNz1Xw/Rw+kpmJCfz0sOVU4fPCO0K4SRceEc
-	 5dsDtXxGd8oFYGvx5Bo53xPsairo4kzzJ0ZWpPdc0SNqQeeOr7NwR9eNR7wm/c3Any
-	 Eq+OGV7LsKwSovLp6t9o46wO3Io/HSQoL++nijVs2+fiy5ipqmzJ2xSaRs4c8bIogt
-	 zdlRhtS4IaWgA==
+	b=Ux/1ZNf/bgR6ROWRWO9mviR+2OFYvVB0fJ0Bsq/YjWfnqU3r3w3Rwpk3AfDvzE+EN
+	 0s/x2EqQOCofqQzi+50V9L6Ja+vxXu3/i+mvIIXC5e1Tv122kkOC2MoN3kKTLk87Sn
+	 qE3RcloRljtKC1Codb64t46KZevrXmYeWpPuIgXCtileP5IAuEzSFSWZ9tbYU7MsMF
+	 nhQ9dcFJt0r1fsRjISLnwHm3midh35+QOCJZadx5EizOkvryJViI8Vy2Ab32QoWZrc
+	 RRQyV2BaiRDONq9O8pKCOT8Si4sfiLBKiz4ytpWa2qtVXpF9ScwyIOxCoQedUYPVKa
+	 QI6kbdeCjPamA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Deren Wu <deren.wu@mediatek.com>,
-	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
 	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 251/715] wifi: mt76: mt7921e: fix use-after-free in free_irq()
-Date: Sun, 24 Mar 2024 18:27:10 -0400
-Message-ID: <20240324223455.1342824-252-sashal@kernel.org>
+Subject: [PATCH 6.8 252/715] wifi: mt76: mt7925e: fix use-after-free in free_irq()
+Date: Sun, 24 Mar 2024 18:27:11 -0400
+Message-ID: <20240324223455.1342824-253-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,7 +64,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Deren Wu <deren.wu@mediatek.com>
 
-[ Upstream commit c957280ef6ab6bdf559a91ae693a6b34310697e3 ]
+[ Upstream commit a5a5f4413d91f395cb2d89829d376d7393ad48b9 ]
 
 From commit a304e1b82808 ("[PATCH] Debug shared irqs"), there is a test
 to make sure the shared irq handler should be able to handle the unexpected
@@ -73,80 +72,26 @@ event after deregistration. For this case, let's apply MT76_REMOVED flag to
 indicate the device was removed and do not run into the resource access
 anymore.
 
-BUG: KASAN: use-after-free in mt7921_irq_handler+0xd8/0x100 [mt7921e]
-Read of size 8 at addr ffff88824a7d3b78 by task rmmod/11115
-CPU: 28 PID: 11115 Comm: rmmod Tainted: G        W    L    5.17.0 #10
-Hardware name: Micro-Star International Co., Ltd. MS-7D73/MPG B650I
-EDGE WIFI (MS-7D73), BIOS 1.81 01/05/2024
-Call Trace:
- <TASK>
- dump_stack_lvl+0x6f/0xa0
- print_address_description.constprop.0+0x1f/0x190
- ? mt7921_irq_handler+0xd8/0x100 [mt7921e]
- ? mt7921_irq_handler+0xd8/0x100 [mt7921e]
- kasan_report.cold+0x7f/0x11b
- ? mt7921_irq_handler+0xd8/0x100 [mt7921e]
- mt7921_irq_handler+0xd8/0x100 [mt7921e]
- free_irq+0x627/0xaa0
- devm_free_irq+0x94/0xd0
- ? devm_request_any_context_irq+0x160/0x160
- ? kobject_put+0x18d/0x4a0
- mt7921_pci_remove+0x153/0x190 [mt7921e]
- pci_device_remove+0xa2/0x1d0
- __device_release_driver+0x346/0x6e0
- driver_detach+0x1ef/0x2c0
- bus_remove_driver+0xe7/0x2d0
- ? __check_object_size+0x57/0x310
- pci_unregister_driver+0x26/0x250
- __do_sys_delete_module+0x307/0x510
- ? free_module+0x6a0/0x6a0
- ? fpregs_assert_state_consistent+0x4b/0xb0
- ? rcu_read_lock_sched_held+0x10/0x70
- ? syscall_enter_from_user_mode+0x20/0x70
- ? trace_hardirqs_on+0x1c/0x130
- do_syscall_64+0x5c/0x80
- ? trace_hardirqs_on_prepare+0x72/0x160
- ? do_syscall_64+0x68/0x80
- ? trace_hardirqs_on_prepare+0x72/0x160
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Closes: https://lore.kernel.org/linux-wireless/CABXGCsOdvVwdLmSsC8TZ1jF0UOg_F_W3wqLECWX620PUkvNk=A@mail.gmail.com/
-Fixes: 9270270d6219 ("wifi: mt76: mt7921: fix PCI DMA hang after reboot")
-Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Fixes: c948b5da6bbe ("wifi: mt76: mt7925: add Mediatek Wi-Fi7 driver for mt7925 chips")
 Signed-off-by: Deren Wu <deren.wu@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/pci.c | 1 +
- drivers/net/wireless/mediatek/mt76/mt792x_dma.c | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/net/wireless/mediatek/mt76/mt7925/pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-index dde26f3274783..82cf3ce90b52f 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-@@ -387,6 +387,7 @@ static void mt7921_pci_remove(struct pci_dev *pdev)
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7925/pci.c b/drivers/net/wireless/mediatek/mt76/mt7925/pci.c
+index 74cfba7675beb..07b74d492ce15 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7925/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7925/pci.c
+@@ -427,6 +427,7 @@ static void mt7925_pci_remove(struct pci_dev *pdev)
  	struct mt792x_dev *dev = container_of(mdev, struct mt792x_dev, mt76);
  
- 	mt7921e_unregister_device(dev);
+ 	mt7925e_unregister_device(dev);
 +	set_bit(MT76_REMOVED, &mdev->phy.state);
  	devm_free_irq(&pdev->dev, pdev->irq, dev);
  	mt76_free_device(&dev->mt76);
  	pci_free_irq_vectors(pdev);
-diff --git a/drivers/net/wireless/mediatek/mt76/mt792x_dma.c b/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
-index 8fa36b59e738d..5cc2d59b774af 100644
---- a/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt792x_dma.c
-@@ -12,6 +12,8 @@ irqreturn_t mt792x_irq_handler(int irq, void *dev_instance)
- {
- 	struct mt792x_dev *dev = dev_instance;
- 
-+	if (test_bit(MT76_REMOVED, &dev->mt76.phy.state))
-+		return IRQ_NONE;
- 	mt76_wr(dev, dev->irq_map->host_irq_enable, 0);
- 
- 	if (!test_bit(MT76_STATE_INITIALIZED, &dev->mphy.state))
 -- 
 2.43.0
 
