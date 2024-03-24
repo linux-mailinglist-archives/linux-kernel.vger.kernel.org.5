@@ -1,143 +1,96 @@
-Return-Path: <linux-kernel+bounces-112525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34ED887B25
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 01:02:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FCBB887B27
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 01:07:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4387B2133E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 00:02:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0559C281DD1
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 00:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1AB81E;
-	Sun, 24 Mar 2024 00:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D237F9;
+	Sun, 24 Mar 2024 00:07:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mblCrbov"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="l+0EGp6d"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17EF7EC4;
-	Sun, 24 Mar 2024 00:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BB319E;
+	Sun, 24 Mar 2024 00:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711238557; cv=none; b=qhB7mRDX39+5rzoejonqIoRZa5Aqz+7wEeFGyEKuc1fqWlr9sGPll/xvl6ri8XmiYdxY5O6YF+sCSuZ1x3KPoJjGBysTdzHFtPH+BwKEqoOFl4dzXdCqpNZ4l94suJtwpNj+IV95yBn46eS8GCEtzm6OSVxHbEN+dI3/Tq021iQ=
+	t=1711238842; cv=none; b=lSj4xQ/YAisctfn96Oigq8+gk6wFqzM2q6gCg91Qr/bPNmwBVCBEm7e9KHH9IGsHltmB9xTnr+Zk0kawjxie2MIvcm00ApHMDHDJvid4nSwrAnOchx+8b+NeqfRC6P+Okdle/ts3YI62/IClniA9//1fBRoASnLbE0sj+d6uYOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711238557; c=relaxed/simple;
-	bh=Fi9jn9xhea3Eqr2Fwon3wNGvHYW3Esicm6biLdBkR+s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F/YMGBftXXpyOtkUWtTiVW4NfIXQ4IpzbMsZsIPKuPP2LrYFEdo0qM2mKHOKeTAxAQ/3l5DY7t9/oRIL/5Jsn/B348QPN5bf0G6YjKodhE9lslxbhzm3WKRxa43y6mRIs6lbWqJpRkY8x097AUuz/0eIHxysdaWJtK6XHeI2C2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mblCrbov; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a46cd9e7fcaso382602766b.1;
-        Sat, 23 Mar 2024 17:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711238554; x=1711843354; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NrERVl7fRobrwC10yk2s2onot9WRsDJnDzX1zxJyjwk=;
-        b=mblCrbov0d6HgLCOGECkakEzlVJ8vN4+W+ARF6SfS0LMBt+fKxvKY+7P9scexEK0mH
-         6LI8RLLB3Bvf2405PiocW9sqz6UQizgSBfDCwMV4qISpOngNW3gufXmPW9ysOPoxx6gz
-         aGAoRjtLGs8v5Vl8KODFOIveIBGsfntlPf+XoL/ms5N5ZH+8PY70fnvZlB/j4ppBz+39
-         1Q2vyjOucuGjHfrUxrlw7a1OsMX2JJwfYkQw2c1YZwIhEJbf0/uskfaZdwlyQfCRCcn8
-         CRjy8M+CG7M5LBNKsEiQEstIiIwwmAIAM15o3d9/pcnfkK12BTH1+zR4OBUSq68wkCN0
-         3Ftw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711238554; x=1711843354;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NrERVl7fRobrwC10yk2s2onot9WRsDJnDzX1zxJyjwk=;
-        b=Hbz/3f13jYTJDjE3e2CxOWdIe37/zz1GMraQIuIFwy7GwkP995aXIRbqPUx4bWs6ZL
-         uUWc4HTe9Heot7KgJ2p6gw+u/d3jDYPt2M9k+Hxeme9pUgjV3g7UU2AR0LReeG4cGjk5
-         A4AHOaeg3PTt99Ofq4kH73t5Iw5UQvX1mdsmoQvFmTAgep6Ui9YvCzbW6M18KUhaR2vi
-         TLxdRNnIwZfS1CF6c2OebtrqzEgQ8MjJKx7wexwZFAytq0Sabq8thmIbZfzY91b5SDe5
-         5PwzbWmJxDgQ8H3h5Izpj5t6WNcToHTkv2sB8rOhdQgtnRzarYHYLUE8/6awgqClgrv4
-         MtQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXEEvVSQ7Kh6MbYG1b+3laeS6xNw7pCfR3N2GM/ivRASmAriKqqGiaZVwW+Mz7fIbODO6PqXViY87VoG/uckJQsyBaaUy4Ms0ZVbn2BuFx52iqUN+j35HG9PddREGwiyUlgKd2LsD69ouFTnd8tOJAXT5CIkUUde20tL9n1TCUHACn4Xg==
-X-Gm-Message-State: AOJu0Yz4DNjmUqwGPerYpeFahTxlKKH/vAcnLK4dV3tk9ePE1TtCuuH0
-	6tuZxcGf7SNu/bqTp9pUjrOVtNb9QR3ynP0of68S5gvdZPyEOL/s
-X-Google-Smtp-Source: AGHT+IFhO6YVTUasRqpMP/iFm84HriWglmNUAWmJyzycChzZD235X9oPbIcfDaXRaGTIhzAhvr36qw==
-X-Received: by 2002:a17:906:240c:b0:a46:bd1d:d9c9 with SMTP id z12-20020a170906240c00b00a46bd1dd9c9mr2383059eja.31.1711238554112;
-        Sat, 23 Mar 2024 17:02:34 -0700 (PDT)
-Received: from ?IPV6:2a02:8389:41cf:e200:5b00:ff22:8933:f27e? (2a02-8389-41cf-e200-5b00-ff22-8933-f27e.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:5b00:ff22:8933:f27e])
-        by smtp.gmail.com with ESMTPSA id bh9-20020a170906a0c900b00a461b1e814asm1401032ejb.130.2024.03.23.17.02.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Mar 2024 17:02:33 -0700 (PDT)
-Message-ID: <6e68e0ca-2f3e-41a7-bb96-00fbdadc4436@gmail.com>
-Date: Sun, 24 Mar 2024 01:02:31 +0100
+	s=arc-20240116; t=1711238842; c=relaxed/simple;
+	bh=GS7gNRT7PexvXxuEFt3v2Enrciz6Z+dU+tKwg55TQt8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=olxFCKqZyADIX7mMPGN1lIkHbfuC82Pukl1QUQknRebANmNU5gD2UYySrJ6eNP5IB9pqXXzTA/2wHrf5pj3rQgMIFEXW7ZjQAUrClxBOV7isTPJkunlQfiluCy7P0oD9VgVYe0eNXTaxiVMARd8Qv/Zk4jUe/6VPPDAI54lsQMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=l+0EGp6d; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Type:MIME-Version:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=bkNbDv/jXWfri6VlbU+GiesUQ/cf40GorjdK3AmoNuE=; b=l+0EGp6dd8T961i3D1AL/SBR+M
+	D/qYWvbGxFHfaOM2ErCVC/ZXlvAKGtohWh8QNPntftHvL0ymS0J2cVtHCqWbHmXI1ZktjHwKru54v
+	zJHmg0FtaXIxr8J5fmgLbLB3jGJT4e2ulKotCSS8wjtrRQ3D5axyX/i28f0dS2ebQ+wjMxN2QZC95
+	qQqDRAKJNjzzPRG5+z82KS5psnUIuScy+kyLVXmdfV5RPQY7fiXl5SYxyZk6YobgwZIZn737zR5o8
+	G8KYRdSrcX+pxQ5TObrL205AleGdwzeyiZcp4RnBiQ3lGtJoVzUYjdW2yZYlin5VquwMtCv1vfX/e
+	moT9Nu4w==;
+Received: from [111.223.108.129] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1roBOP-0000000BRY3-1vUI;
+	Sun, 24 Mar 2024 00:07:17 +0000
+Date: Sun, 24 Mar 2024 08:07:11 +0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+Subject: [GIT PULL] dma-mapping fixes for Linux 6.9
+Message-ID: <Zf9ur7uQA0JLleTU@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] dt-bindings: rtc: armada-380-rtc: convert to dtschema
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Baruch Siach <baruch@tkos.co.il>,
- linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240323-rtc-yaml-v1-0-0c5d12b1b89d@gmail.com>
- <20240323-rtc-yaml-v1-1-0c5d12b1b89d@gmail.com>
- <20240323233742bfb9ba4a@mail.local>
-Content-Language: en-US, de-AT
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20240323233742bfb9ba4a@mail.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 3/24/24 00:37, Alexandre Belloni wrote:
-> On 23/03/2024 23:46:13+0100, Javier Carrasco wrote:
->> Convert existing binding to dtschema to support validation.
->>
->> +required:
->> +  - compatible
->> +  - reg
->> +  - reg-names
->> +  - interrupts
->> +
->> +additionalProperties: false
-> 
-> This is not correct because at least start-year is supported. Please
-> check for all your other submissions too.
-> 
+The following changes since commit b9fa16949d18e06bdf728a560f5c8af56d2bdcaf:
 
-allOf:
-  - $ref: rtc.yaml#
+  dma-direct: Leak pages on dma_set_decrypted() failure (2024-02-28 05:31:38 -0800)
 
-is missing, and then
+are available in the Git repository at:
 
-unvealuatedProperties: false
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-6.9-2024-03-24
 
-to account for that.
+for you to fetch changes up to 14cebf689a78e8a1c041138af221ef6eac6bc7da:
 
-"start-year" is read in the RTC base class, so I wonder why so many RTC
-bindings add a reference to rtc.yaml, but then use
+  swiotlb: Reinstate page-alignment for mappings >= PAGE_SIZE (2024-03-13 11:39:34 -0700)
 
-additionalProperties: false
+----------------------------------------------------------------
+dma-mapping fixes for Linux 6.9
 
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +
->> +    rtc@a3800 {
->> +        compatible = "marvell,armada-380-rtc";
->> +        reg = <0xa3800 0x20>, <0x184a0 0x0c>;
->> +        reg-names = "rtc", "rtc-soc";
->> +        interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
->> +    };
->>
->> -- 
->> 2.40.1
->>
-> 
+This has a set of swiotlb alignment fixes for sometimes very long
+standing bugs from Will.  We've been discussion them for a while and they
+should be solid now.
 
-Thanks and best regards,
-Javier Carrasco
+----------------------------------------------------------------
+Nicolin Chen (1):
+      iommu/dma: Force swiotlb_max_mapping_size on an untrusted device
+
+Will Deacon (5):
+      swiotlb: Fix double-allocation of slots due to broken alignment handling
+      swiotlb: Enforce page alignment in swiotlb_alloc()
+      swiotlb: Honour dma_alloc_coherent() alignment in swiotlb_alloc()
+      swiotlb: Fix alignment checks when both allocation and DMA masks are present
+      swiotlb: Reinstate page-alignment for mappings >= PAGE_SIZE
+
+ drivers/iommu/dma-iommu.c |  9 +++++++++
+ kernel/dma/swiotlb.c      | 45 +++++++++++++++++++++++++++++++++------------
+ 2 files changed, 42 insertions(+), 12 deletions(-)
 
