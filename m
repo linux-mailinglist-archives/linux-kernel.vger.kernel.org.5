@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BF2D8880BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:03:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D9D28880BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:03:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DBF91C21199
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:03:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC376280995
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:03:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031AA131759;
-	Sun, 24 Mar 2024 22:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03745131E39;
+	Sun, 24 Mar 2024 22:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NZunQo7E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C+Ji2PQZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255F013172A;
-	Sun, 24 Mar 2024 22:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2024113175C;
+	Sun, 24 Mar 2024 22:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319819; cv=none; b=gc8JcvbeqemEfhT3pPnvSvnMdnlH3jsrGLQPeJcJvb2RXyXLMLmi4AD9QrD2Uu2X9V68Xjx2BucQpJOpIvsRoKGsvjwpA6Y8lZ/rEnANIViVy2vvkPSNYX/UJ5VUTzo4sHw0iTwxYoBTf/Bn5AFRh6I9T98UI0VT0VB9795mAhw=
+	t=1711319820; cv=none; b=f3Q87IG8olraiynSdcvbjlaHbDgLcTyfjZL2uWUH38Vp5SQpv9G73hxJyMCfaqpP24oMSlSlN4hJHu+1H+iAEJwc0ry1FsywLrow6pIEOHNLfSAL6VjFgNJkaX0L9x5MqfW9tH7MG0csgbTiH9Vu/KAi+MnZP/6ole/2L07Tr2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319819; c=relaxed/simple;
-	bh=ub5gTDg45u7ZTcHGkS5iJFn3fIXQKswUIcupG71O8js=;
+	s=arc-20240116; t=1711319820; c=relaxed/simple;
+	bh=rM3dsPA2kSnTAIx0YDesNOq5Kux+L3ZJpjx1smEwXuw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rs90tazKUNNiyISn4PdZQKusWu7yQINdYYYHkQ7CjGCRisiyqlXZX+7Hu8LX39nvxQpkvHke2AgRlbQNuZ3bjYhHDyKS+hXHQuW+9maUgLGZ5Q4Y6mIKcqPU6J5kf8CL9zSu8nI8o3ybgjKjZ2sdlbZwM3T4jrM0xHLUMM0a7fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NZunQo7E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DBADC433F1;
-	Sun, 24 Mar 2024 22:36:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=j9LfLstoPIktDxMkEjdHI4+g3AzryFSvl85CIMZ8f6c88VLbdkk6wRkUOy6JZAEQhBiGQo/8aJfNn3XOv2p3muSxbcuCX7fQY0DAQ82giXICpwDQaTvm+pODr5VIaLQfAPBgsvQuFDRzygB8DZwqvvMv1Zafc0/bGm+NyVw5d+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C+Ji2PQZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49896C433C7;
+	Sun, 24 Mar 2024 22:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319819;
-	bh=ub5gTDg45u7ZTcHGkS5iJFn3fIXQKswUIcupG71O8js=;
+	s=k20201202; t=1711319820;
+	bh=rM3dsPA2kSnTAIx0YDesNOq5Kux+L3ZJpjx1smEwXuw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NZunQo7ETtp8cYDeJ2Pa5JpKbidqe414BYoHJbwXOV3c+m5IOPpYWlbNY3A5cjLDI
-	 kOXGBgAjLo0Usnt7wVP0iVDcdNjzSWJJbyGVWyl9LZmW12jrFyX1gh/umMJiYskG8L
-	 0+9AcAx3APKGek+Iku6/BUKslDHTwWTDtpS1jRHfgwtme2EoSrA/nPjVNkJa6onCE4
-	 nPmfA8WFYtE8oJqB3SFYaRZeZTL5PQSKG7OENClxnv23nN5Yh/rYFc61jkgQnIWjHy
-	 mjmME/pPn8hDZao3PzV5LU9EhpkJ+NIRmAjbdmMowtw8Vo8hSXDk2hhPGBzY8gFjMv
-	 GjzkMmq87qUGg==
+	b=C+Ji2PQZVS25YKD55zRqObEfE8JU0ZOcZYx7SEBm6JVAi7JtGP0d/0oZ2mNW9LFVU
+	 0BNVaQhm94n6+fI1H2Rpr4AfKs4poqX4HS8pmI5lzw/l0xr8L1BSWmfNneKORdoWxc
+	 ygpe8P+2z9dnCWQx3CZx861xoIzCyIJIel2nl+r7qv4xxOWao6Q1zhU+gNKyNbVOLi
+	 FK2zfAsMiTIMjAvqVu/nLXBAq0wCpeRma7z2r980MtJAYYrSRUqYWcnMCQbiaIs7vC
+	 T+s+1sqi7TLWU4xzjOVm1LbBAi97SQ4pCblB4azqMpvu0DyUQcGHfqUM104P8o3i6r
+	 WNaWeGFz/D6HQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eduard Zingerman <eddyz87@gmail.com>,
+Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Ubisectech Sirius <bugreport@ubisectech.com>,
+	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 121/715] libbpf: Add missed btf_ext__raw_data() API
-Date: Sun, 24 Mar 2024 18:25:00 -0400
-Message-ID: <20240324223455.1342824-122-sashal@kernel.org>
+Subject: [PATCH 6.8 122/715] wifi: ath9k: delay all of ath9k_wmi_event_tasklet() until init is complete
+Date: Sun, 24 Mar 2024 18:25:01 -0400
+Message-ID: <20240324223455.1342824-123-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -59,83 +59,123 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit b9551da8cf3ade01a50316df8a618fd945723ee0 ]
+[ Upstream commit 24355fcb0d4cbcb6ddda262596558e8cfba70f11 ]
 
-Another API that was declared in libbpf.map but actual implementation
-was missing. btf_ext__get_raw_data() was intended as a discouraged alias
-to consistently-named btf_ext__raw_data(), so make this an actuality.
+The ath9k_wmi_event_tasklet() used in ath9k_htc assumes that all the data
+structures have been fully initialised by the time it runs. However, because of
+the order in which things are initialised, this is not guaranteed to be the
+case, because the device is exposed to the USB subsystem before the ath9k driver
+initialisation is completed.
 
-Fixes: 20eccf29e297 ("libbpf: hide and discourage inconsistently named getters")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/bpf/20240201172027.604869-5-andrii@kernel.org
+We already committed a partial fix for this in commit:
+8b3046abc99e ("ath9k_htc: fix NULL pointer dereference at ath9k_htc_tx_get_packet()")
+
+However, that commit only aborted the WMI_TXSTATUS_EVENTID command in the event
+tasklet, pairing it with an "initialisation complete" bit in the TX struct. It
+seems syzbot managed to trigger the race for one of the other commands as well,
+so let's just move the existing synchronisation bit to cover the whole
+tasklet (setting it at the end of ath9k_htc_probe_device() instead of inside
+ath9k_tx_init()).
+
+Link: https://lore.kernel.org/r/ed1d2c66-1193-4c81-9542-d514c29ba8b8.bugreport@ubisectech.com
+Fixes: 8b3046abc99e ("ath9k_htc: fix NULL pointer dereference at ath9k_htc_tx_get_packet()")
+Reported-by: Ubisectech Sirius <bugreport@ubisectech.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://msgid.link/20240126140218.1033443-1-toke@toke.dk
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/btf.c      | 6 +++++-
- tools/lib/bpf/libbpf.map | 2 +-
- tools/lib/bpf/linker.c   | 2 +-
- 3 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath9k/htc.h          |  2 +-
+ drivers/net/wireless/ath/ath9k/htc_drv_init.c |  4 ++++
+ drivers/net/wireless/ath/ath9k/htc_drv_txrx.c |  4 ----
+ drivers/net/wireless/ath/ath9k/wmi.c          | 10 ++++++----
+ 4 files changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index b61bc5d1009b7..119d45eadb2ed 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -3044,12 +3044,16 @@ struct btf_ext *btf_ext__new(const __u8 *data, __u32 size)
- 	return btf_ext;
+diff --git a/drivers/net/wireless/ath/ath9k/htc.h b/drivers/net/wireless/ath/ath9k/htc.h
+index 237f4ec2cffd7..6c33e898b3000 100644
+--- a/drivers/net/wireless/ath/ath9k/htc.h
++++ b/drivers/net/wireless/ath/ath9k/htc.h
+@@ -306,7 +306,6 @@ struct ath9k_htc_tx {
+ 	DECLARE_BITMAP(tx_slot, MAX_TX_BUF_NUM);
+ 	struct timer_list cleanup_timer;
+ 	spinlock_t tx_lock;
+-	bool initialized;
+ };
+ 
+ struct ath9k_htc_tx_ctl {
+@@ -515,6 +514,7 @@ struct ath9k_htc_priv {
+ 	unsigned long ps_usecount;
+ 	bool ps_enabled;
+ 	bool ps_idle;
++	bool initialized;
+ 
+ #ifdef CONFIG_MAC80211_LEDS
+ 	enum led_brightness brightness;
+diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_init.c b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+index 0aa5bdeb44a1b..3633f9eb2c559 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+@@ -966,6 +966,10 @@ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
+ 
+ 	htc_handle->drv_priv = priv;
+ 
++	/* Allow ath9k_wmi_event_tasklet() to operate. */
++	smp_wmb();
++	priv->initialized = true;
++
+ 	return 0;
+ 
+ err_init:
+diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
+index efcaeccb055aa..ce9c04e418b8d 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
+@@ -815,10 +815,6 @@ int ath9k_tx_init(struct ath9k_htc_priv *priv)
+ 	skb_queue_head_init(&priv->tx.data_vo_queue);
+ 	skb_queue_head_init(&priv->tx.tx_failed);
+ 
+-	/* Allow ath9k_wmi_event_tasklet(WMI_TXSTATUS_EVENTID) to operate. */
+-	smp_wmb();
+-	priv->tx.initialized = true;
+-
+ 	return 0;
  }
  
--const void *btf_ext__get_raw_data(const struct btf_ext *btf_ext, __u32 *size)
-+const void *btf_ext__raw_data(const struct btf_ext *btf_ext, __u32 *size)
- {
- 	*size = btf_ext->data_size;
- 	return btf_ext->data;
- }
+diff --git a/drivers/net/wireless/ath/ath9k/wmi.c b/drivers/net/wireless/ath/ath9k/wmi.c
+index 1476b42b52a91..805ad31edba2b 100644
+--- a/drivers/net/wireless/ath/ath9k/wmi.c
++++ b/drivers/net/wireless/ath/ath9k/wmi.c
+@@ -155,6 +155,12 @@ void ath9k_wmi_event_tasklet(struct tasklet_struct *t)
+ 		}
+ 		spin_unlock_irqrestore(&wmi->wmi_lock, flags);
  
-+__attribute__((alias("btf_ext__raw_data")))
-+const void *btf_ext__get_raw_data(const struct btf_ext *btf_ext, __u32 *size);
++		/* Check if ath9k_htc_probe_device() completed. */
++		if (!data_race(priv->initialized)) {
++			kfree_skb(skb);
++			continue;
++		}
 +
-+
- struct btf_dedup;
- 
- static struct btf_dedup *btf_dedup_new(struct btf *btf, const struct btf_dedup_opts *opts);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 386964f572a8f..86804fd90dd1a 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -325,7 +325,6 @@ LIBBPF_0.7.0 {
- 		bpf_xdp_detach;
- 		bpf_xdp_query;
- 		bpf_xdp_query_id;
--		btf_ext__raw_data;
- 		libbpf_probe_bpf_helper;
- 		libbpf_probe_bpf_map_type;
- 		libbpf_probe_bpf_prog_type;
-@@ -413,4 +412,5 @@ LIBBPF_1.4.0 {
- 	global:
- 		bpf_token_create;
- 		btf__new_split;
-+		btf_ext__raw_data;
- } LIBBPF_1.3.0;
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 16bca56002ab3..0d4be829551b5 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -2732,7 +2732,7 @@ static int finalize_btf(struct bpf_linker *linker)
- 
- 	/* Emit .BTF.ext section */
- 	if (linker->btf_ext) {
--		raw_data = btf_ext__get_raw_data(linker->btf_ext, &raw_sz);
-+		raw_data = btf_ext__raw_data(linker->btf_ext, &raw_sz);
- 		if (!raw_data)
- 			return -ENOMEM;
- 
+ 		hdr = (struct wmi_cmd_hdr *) skb->data;
+ 		cmd_id = be16_to_cpu(hdr->command_id);
+ 		wmi_event = skb_pull(skb, sizeof(struct wmi_cmd_hdr));
+@@ -169,10 +175,6 @@ void ath9k_wmi_event_tasklet(struct tasklet_struct *t)
+ 					     &wmi->drv_priv->fatal_work);
+ 			break;
+ 		case WMI_TXSTATUS_EVENTID:
+-			/* Check if ath9k_tx_init() completed. */
+-			if (!data_race(priv->tx.initialized))
+-				break;
+-
+ 			spin_lock_bh(&priv->tx.tx_lock);
+ 			if (priv->tx.flags & ATH9K_HTC_OP_TX_DRAIN) {
+ 				spin_unlock_bh(&priv->tx.tx_lock);
 -- 
 2.43.0
 
