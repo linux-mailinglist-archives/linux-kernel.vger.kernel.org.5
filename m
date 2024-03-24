@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-114949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22C5A8892B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:11:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCDCC88959F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5475D1C2E386
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:11:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71B501F31FEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C07E1BF203;
-	Mon, 25 Mar 2024 00:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140A118276D;
+	Mon, 25 Mar 2024 03:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fbIK+w/G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UXPLzQd9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE61817A90A;
-	Sun, 24 Mar 2024 23:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343AF17A90B;
+	Sun, 24 Mar 2024 23:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323691; cv=none; b=rzNWSEfOX1HUlUtOfUl3zZTakB9BfWE2kbZCNIpP8Gp2m6D2q/lp921UjvkxMzsi2Pu6lqZnGarqPfZAb5RVxqK8+k4NKUoINHtkUxqOkPwLFKhmcEde/FYT6/4dHp/8bkIAtVxhTVnZ4y0b7YmAVUqIn5U9ur8A1mSFeqrOKcU=
+	t=1711323691; cv=none; b=NyfIUsqxS8rNwhIOy25dK3Lnw7XlNY9serFblhlaWiAi271ZZllTejw5Ik2YOLhQyd6hXR4NalsFLDC50eDJtG/7aaw/LZkAHKqQmxMVdRqa+YeiCGeqm7X0r37vA10myKq2b8fghfzsSzSlHr7FtxWUhU1pukc+t4buBhunRHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323691; c=relaxed/simple;
-	bh=21kd0MNS3pEpDqW586UDWv2efJv8oqkhwV370kyKQdc=;
+	bh=YcupNQxkyz3XG7lX4bTxXOqOKbkMCzLitxyZm3jArR8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mk7mwDSXmVmapEFFxFrCg9QafFVsSntTCnSjgxCYA2d4UCQKOK2pJnwH3dVu5dJ6+VRzphprmqM7m6ZfaFN1uskjwFnzKaCtTHxonRWYEJBX35bQmD7w0YGp+vXrc4HuGewlI+V8Bh4qewVt0YiiT3hC9oK8FX2jiKZRv7NmorI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fbIK+w/G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 229E5C43390;
-	Sun, 24 Mar 2024 23:41:29 +0000 (UTC)
+	 MIME-Version:Content-Type; b=BZAw9lY2P0CWp+dLyZD5sEcYxTS3BvleIHlVUCNGmh99rQgXiFnhqzv7nUfN0/S8O9SiYbak+6IpPJYb0MiHgmdsPUw6b5CmrpjgHdSLUrOP2Tebn2GVosu3l+D5yoOVRkVnnR5T6m+0o67d4QjOuvIvdSRzbwh60kQLgeK72wI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UXPLzQd9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D2C4C433C7;
+	Sun, 24 Mar 2024 23:41:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323689;
-	bh=21kd0MNS3pEpDqW586UDWv2efJv8oqkhwV370kyKQdc=;
+	s=k20201202; t=1711323691;
+	bh=YcupNQxkyz3XG7lX4bTxXOqOKbkMCzLitxyZm3jArR8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fbIK+w/G54Iq57eXBzzygICPdwZcEalFLT9tvWL3/Gw1sLSkp/f8yksXw/3GenKaH
-	 u5gBAlMAZqY44BB+0ZZCZ8QQY3OgSJBFXfyKRoVPLnUFQbqhhwMyMaTsb0RvaNDCc6
-	 cr0/+KV7VFxV6IioVB1IGOlxWrEmF4VMGcNwC/83GnQEBlWxcFQvCPw67eVIzaJhDf
-	 ONdasOnrBqdRx1OlNN71TUSCRIuFoemUPBi+htYeJE3c10pK3y/3HDyMn8rJohTVCz
-	 uyDAB+JpoyalNHnKBtPvO7wZe7P0svr8fX5xIPGgOFNVFJ/nHQiFCAXDS87EVNNWt6
-	 i9TIR8/mdktxg==
+	b=UXPLzQd9y8CVXAcGmKPRjvH4HWrDFM+p4q6PM7AW8waEP6oJeRONTjdYsdOqzZb6s
+	 8VC2Xhen91ZJ5Ler+k1stvqJMRF3WxFDl48ngC90+nZhNNPnj1r/qEOVxBz04x2Qv9
+	 cYFWGj5W2Pq61jMvfWCxdI1N2T44KNNyxebzBe9xJ+Rcisira8JjmHKh6LbV8RYAS8
+	 lUHgxu3ZPBuyJQ4eIE7KLfDNr1pdRCZEYkcQUl5O8xCKpl79Ef8RFbKkUtbVyrF8Xi
+	 RGr3YLg1KDpOW3RmPKlZKgzKJM3nviconz3kChRimcbo5V5aPBD7M2usCqNrIjByU6
+	 g0SifJOLVA5Lw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <kafai@fb.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 062/238] arm64: dts: mediatek: mt7622: add missing "device_type" to memory nodes
-Date: Sun, 24 Mar 2024 19:37:30 -0400
-Message-ID: <20240324234027.1354210-63-sashal@kernel.org>
+Subject: [PATCH 5.10 063/238] bpf: Factor out bpf_spin_lock into helpers.
+Date: Sun, 24 Mar 2024 19:37:31 -0400
+Message-ID: <20240324234027.1354210-64-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -64,51 +66,81 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Alexei Starovoitov <ast@kernel.org>
 
-[ Upstream commit 99d100e00144bc01b49a697f4bc4398f2f7e7ce4 ]
+[ Upstream commit c1b3fed319d32a721d4b9c17afaeb430444ff773 ]
 
-This fixes:
-arch/arm64/boot/dts/mediatek/mt7622-rfb1.dtb: /: memory@40000000: 'device_type' is a required property
-        from schema $id: http://devicetree.org/schemas/memory.yaml#
-arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dtb: /: memory@40000000: 'device_type' is a required property
-        from schema $id: http://devicetree.org/schemas/memory.yaml#
+Move ____bpf_spin_lock/unlock into helpers to make it more clear
+that quadruple underscore bpf_spin_lock/unlock are irqsave/restore variants.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20240122132357.31264-1-zajec5@gmail.com
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Link: https://lore.kernel.org/bpf/20210715005417.78572-3-alexei.starovoitov@gmail.com
+Stable-dep-of: 178c54666f9c ("bpf: Mark bpf_spin_{lock,unlock}() helpers with notrace correctly")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts | 1 +
- arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts             | 1 +
- 2 files changed, 2 insertions(+)
+ kernel/bpf/helpers.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-index 7e6cffdc5a551..778174a7d649b 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
-@@ -71,6 +71,7 @@ red {
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 0efe7c7bfe5e9..d758641973d6d 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -278,13 +278,18 @@ static inline void __bpf_spin_unlock(struct bpf_spin_lock *lock)
  
- 	memory@40000000 {
- 		reg = <0 0x40000000 0 0x40000000>;
-+		device_type = "memory";
- 	};
+ static DEFINE_PER_CPU(unsigned long, irqsave_flags);
  
- 	reg_1p8v: regulator-1p8v {
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts b/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-index 993f033d0bf04..810575de66702 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-@@ -57,6 +57,7 @@ wps {
+-notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
++static inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
+ {
+ 	unsigned long flags;
  
- 	memory@40000000 {
- 		reg = <0 0x40000000 0 0x20000000>;
-+		device_type = "memory";
- 	};
+ 	local_irq_save(flags);
+ 	__bpf_spin_lock(lock);
+ 	__this_cpu_write(irqsave_flags, flags);
++}
++
++notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
++{
++	__bpf_spin_lock_irqsave(lock);
+ 	return 0;
+ }
  
- 	reg_1p8v: regulator-1p8v {
+@@ -295,13 +300,18 @@ const struct bpf_func_proto bpf_spin_lock_proto = {
+ 	.arg1_type	= ARG_PTR_TO_SPIN_LOCK,
+ };
+ 
+-notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
++static inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock)
+ {
+ 	unsigned long flags;
+ 
+ 	flags = __this_cpu_read(irqsave_flags);
+ 	__bpf_spin_unlock(lock);
+ 	local_irq_restore(flags);
++}
++
++notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
++{
++	__bpf_spin_unlock_irqrestore(lock);
+ 	return 0;
+ }
+ 
+@@ -322,9 +332,9 @@ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+ 	else
+ 		lock = dst + map->spin_lock_off;
+ 	preempt_disable();
+-	____bpf_spin_lock(lock);
++	__bpf_spin_lock_irqsave(lock);
+ 	copy_map_value(map, dst, src);
+-	____bpf_spin_unlock(lock);
++	__bpf_spin_unlock_irqrestore(lock);
+ 	preempt_enable();
+ }
+ 
 -- 
 2.43.0
 
