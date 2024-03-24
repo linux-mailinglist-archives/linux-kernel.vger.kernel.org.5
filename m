@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-115554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C178889C59
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:17:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 440CB888EEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:31:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A06471F3646B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:17:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 745101C2B1AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533CF24CB5B;
-	Mon, 25 Mar 2024 02:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D61218536;
+	Sun, 24 Mar 2024 23:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Eq4GcX9I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PtYp27w3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F7112C7FA;
-	Sun, 24 Mar 2024 22:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C51C14B060;
+	Sun, 24 Mar 2024 22:57:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321059; cv=none; b=pZlT9+eXzd/J8ZnUIGVuwfr8Ihyb4vpSlKjPW+HUbiO8Gv+7Kgnvjbay1fQXiMvizPNRlvdtkvM4LdFZVVAvXf4ytQrTZ0oiqsi+rx7OtU15sIfzwlJuEwrifJtwTuRPRLOsxMmDpV/VaxbSfKmRqMAcqVPyVJqbHNUX1GSsZiw=
+	t=1711321059; cv=none; b=gcd4l0R9qF8tTNyJyPfRQk2nROGs2RxknqZBikPZa5XJnGyRM4/QU4fn79LWV9Nv1BkiG6a3G/qP/6+sCoPTZd72OkGM60gvpN7QY+0kkrPPuQ5/e8T/lTFwWkiW4K3m/nUfmwGUG5ueDn+6RY+2z8wbrCkgas6EsugB8Y32THA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321059; c=relaxed/simple;
-	bh=zwUzAYaODXUuLSoh8bMxnP8uZUATi/z+9DEgZAogWqg=;
+	bh=pFIIlrZbJ15cWdRVN9XchhUl6r/wmivpKBhy4sGA2fU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G2D+sItm0d8ZYD1crh0HfVKDJ2SlCcb5CKvMOwC5PzaDqTn8UCx/tU7FiSZ2TlbtZw8DoDnCu2tPeT5AlshwA2lUKOYE0azumRO7h3pXKtU8bkCtQXtauFrDMwWPuWOtPZWHv2oreaXG+jjYxtPBd8S8tSUOy1u9dR9G02vyT4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Eq4GcX9I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91EB6C433F1;
-	Sun, 24 Mar 2024 22:57:37 +0000 (UTC)
+	 MIME-Version; b=Zbd3Cu1fFAHxBC3qSTNkZnTRU2Xzy96z2T7up6NMzD/hK42D3YvsyncbeAjC4vl2B4u/S7eAXcDk5FDBHfPlVdWXZH0uqTUv5rfrlvyv4kY04xZugf2fJY+2fBkwta/I53Ld60oVUdADCsFtOBmrEI3/u28C/iIev2QHFTkKZMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PtYp27w3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77C90C433C7;
+	Sun, 24 Mar 2024 22:57:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321058;
-	bh=zwUzAYaODXUuLSoh8bMxnP8uZUATi/z+9DEgZAogWqg=;
+	s=k20201202; t=1711321059;
+	bh=pFIIlrZbJ15cWdRVN9XchhUl6r/wmivpKBhy4sGA2fU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Eq4GcX9IzRIEbPArSzuGyHf3q9PPmm/OvoMVxx/UKB9Yx9VfPUC6yGd+XyrxDtuNo
-	 zv44VMtrv9kDI96l4vSRvZ3vYT6BbwaVMNqFSlySM90EwXn/RlWHtUZyqaLg83AgC0
-	 vCvbepowgYd/JkXP0BbCTCTHBADM8M28aKiu9XywDOtJJbdKZ/e62/KENigxAdHgha
-	 JEJVqn+Wifi+jwqZU5JZZphUapdBtsjSOVbT+3atGFYXUNHbEgo0BZUOOZzf5kUPXb
-	 3oy1CmN2YXnClQUwm+0tfINIwrBY0z8VBqQ5TGIQW51O4BN1hUDHNVbfk9abngq/8x
-	 BqhazniTKSIWg==
+	b=PtYp27w3xmjLRlPHsdgr0zWHgvfCRgCxFP8831RrKosAW4PVF1X6MrSO3MI4KaFWA
+	 U+8H/bRLQZVaXpusHQky4ouEo/+DmdwLMBQXOecZUlbG6ETiSShzLuv6BiYxP0ZNLl
+	 UBQgUBKSoLDs52sl2ETy5v3luVbry94wxScLRB9W8BvcOQFVB+g4K4kSKIvHmZ4DLL
+	 7aGc47UIZSV7GpB6loZ/zGZw+rpLH9Xtr7V0PAKNd+5dRndsz1IL++tfbJ/mDVun7P
+	 PJGs2QxSbm1xfWrbe2yg5rG/pAoFSidBCIPuA23PKhML6tDRGJARpNlGoTUWeKvZ5P
+	 ePBsuwjY3lXFg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sean Anderson <sean.anderson@seco.com>,
+Cc: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	Martin Hostettler <textshell@uchuujin.de>,
+	Helge Deller <deller@gmx.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 622/713] usb: phy: generic: Get the vbus supply
-Date: Sun, 24 Mar 2024 18:45:48 -0400
-Message-ID: <20240324224720.1345309-623-sashal@kernel.org>
+Subject: [PATCH 6.7 623/713] tty: vt: fix 20 vs 0x20 typo in EScsiignore
+Date: Sun, 24 Mar 2024 18:45:49 -0400
+Message-ID: <20240324224720.1345309-624-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,41 +64,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Sean Anderson <sean.anderson@seco.com>
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 
-[ Upstream commit 75fd6485cccef269ac9eb3b71cf56753341195ef ]
+[ Upstream commit 0e6a92f67c8a94707f7bb27ac29e2bdf3e7c167d ]
 
-While support for working with a vbus was added, the regulator was never
-actually gotten (despite what was documented). Fix this by actually
-getting the supply from the device tree.
+The if (c >= 20 && c <= 0x3f) test added in commit 7a99565f8732 is
+wrong.  20 is DC4 in ascii and it makes no sense to consider that as the
+bottom limit. Instead, it should be 0x20 as in the other test in
+the commit above. This is supposed to NOT change anything as we handle
+interesting 20-0x20 asciis far before this if.
 
-Fixes: 7acc9973e3c4 ("usb: phy: generic: add vbus support")
-Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-Link: https://lore.kernel.org/r/20240123225111.1629405-3-sean.anderson@seco.com
+So for sakeness, change to 0x20 (which is SPACE).
+
+Signed-off-by: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Fixes: 7a99565f8732 ("vt: ignore csi sequences with intermediate characters.")
+Cc: Martin Hostettler <textshell@uchuujin.de>
+Link: https://lore.kernel.org/all/ZaP45QY2WEsDqoxg@neutronstar.dyndns.org/
+Tested-by: Helge Deller <deller@gmx.de> # parisc STI console
+Link: https://lore.kernel.org/r/20240122110401.7289-4-jirislaby@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/phy/phy-generic.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/tty/vt/vt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/phy/phy-generic.c b/drivers/usb/phy/phy-generic.c
-index 770081b828a42..b855d291dfe6b 100644
---- a/drivers/usb/phy/phy-generic.c
-+++ b/drivers/usb/phy/phy-generic.c
-@@ -268,6 +268,13 @@ int usb_phy_gen_create_phy(struct device *dev, struct usb_phy_generic *nop)
- 		return dev_err_probe(dev, PTR_ERR(nop->vbus_draw),
- 				     "could not get vbus regulator\n");
- 
-+	nop->vbus_draw = devm_regulator_get_exclusive(dev, "vbus");
-+	if (PTR_ERR(nop->vbus_draw) == -ENODEV)
-+		nop->vbus_draw = NULL;
-+	if (IS_ERR(nop->vbus_draw))
-+		return dev_err_probe(dev, PTR_ERR(nop->vbus_draw),
-+				     "could not get vbus regulator\n");
-+
- 	nop->dev		= dev;
- 	nop->phy.dev		= nop->dev;
- 	nop->phy.label		= "nop-xceiv";
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 156efda7c80d6..6617d3a8e84c9 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -2469,7 +2469,7 @@ static void do_con_trol(struct tty_struct *tty, struct vc_data *vc, int c)
+ 		}
+ 		return;
+ 	case EScsiignore:
+-		if (c >= 20 && c <= 0x3f)
++		if (c >= 0x20 && c <= 0x3f)
+ 			return;
+ 		vc->vc_state = ESnormal;
+ 		return;
 -- 
 2.43.0
 
