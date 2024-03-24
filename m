@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBC8D889843
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:33:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34EBE8898F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:56:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 094931C31730
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:33:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD61DB3757C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34D6226934;
-	Mon, 25 Mar 2024 03:02:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C215380812;
+	Mon, 25 Mar 2024 03:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rQs6+edn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LgfDWIlB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42880145B1D;
-	Sun, 24 Mar 2024 23:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC4A535AB;
+	Sun, 24 Mar 2024 23:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322020; cv=none; b=e2krg7GEpM5x2iSFtAayqL1FmYxl4k2eWk5XJBtJ/43SrLPBDCZlcRAGwcK+cecR6YAHNPC1xpf99C2XA+/FDkOZ3ExsvirSspLCzYA+R3r4BoRPzUw2GVnAPZmY3uyH/N/JsqQi3yZS4NHyUv9QuYL30iXESwsCuDRuZeK/ORw=
+	t=1711322021; cv=none; b=o45T4uPXs6cuqXhE4VH/hyvrrjq4s3hUwzvMtRM9Ulb8EsRcwobTWLOB3NII/otaX4NTNFoYpeDwaF3NAisQRqgOL0/KAjopqOFLoKMarKmCTjOtnjbGB9W8Zsh7CsW5Cf6l8/WlrOmd/JGE6rIAh1l5BDlZIIe/+Jf6p31yvb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322020; c=relaxed/simple;
-	bh=LOdq1mNqCD1OLC2zN1bxNCWDll0+7fgycknYNHN/tG0=;
+	s=arc-20240116; t=1711322021; c=relaxed/simple;
+	bh=aQivHdRDzH/uaTKCJGoM2Wbuj+eFNqRsoXYaBwP44/w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LXe+Mvlt906xbGc9pyaA+Hrm0imp7966Do8B3/J2mD9RXQkWQ+N1DlJneC1AjdVz2VPJhoOw545dC9LR6ioxzWAGAk9WmwA+RvRrwI1hf9ML5gvcCLzqjSBDUIo8O+YQgisZs7XM+1hb0T2Y26JX8fUBPnmChtzYA6qxv8EQwe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rQs6+edn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DDD0C433C7;
-	Sun, 24 Mar 2024 23:13:39 +0000 (UTC)
+	 MIME-Version; b=HFVRWYFsFKuc/gZJGwNZ9/KVmTRPPoooJfarljzSV8ytzJ67X82m2ku+9PHvsT/U/7fIO+ro/yHfkAjMhvetNxHJM8hWRkTIHoigvQbNiR7frB6drPUFN1F1bq2xkNPK4L1rR3zFJIlhCnjvQtYZmtYF+eJ2S/P8Uyd1ghlHkXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LgfDWIlB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 650D6C433A6;
+	Sun, 24 Mar 2024 23:13:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322020;
-	bh=LOdq1mNqCD1OLC2zN1bxNCWDll0+7fgycknYNHN/tG0=;
+	s=k20201202; t=1711322021;
+	bh=aQivHdRDzH/uaTKCJGoM2Wbuj+eFNqRsoXYaBwP44/w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rQs6+ednZ8g7vYVKrXlocmMWbS/dwgPipez23y34FkC4upMwFeUZ9dNyU1OcbgG95
-	 PJtY7oppTonrZb2dxZZvLr6MgE0cxkOgPPSg6USxG/OwwScpI1Wr9cf1EIAdwqmbPn
-	 YQ9cTVdZ7IcAhX7hguMwOOGpX6TYb9CUZFaOMmQ1dg3VSGdFGqCIqIOshJQ2i4LoA+
-	 iXzRMXrVWrJ6is4nHZE95uP6zmNzPZBfni32RVAf4EOJmcTwQRy3BpipLdXUcSxiwe
-	 w7vmLKirBTSVDHMj4GDhUky2sNwZo/I6O7Pe3dGlKlNFeYIRJG2B36zMMcxCwcnWLq
-	 dYG2FB+y7CVDg==
+	b=LgfDWIlBEQiqjKnAf+Lfv0hqt38CUIxFzIj9EmPY0sPflW2vhl/KfUjoCUc/9z/ig
+	 ku+uSl1e8T8OREXfQ+YBH/iQdqoWbT9k64NW7RGanC8Y5cqN+S33qahodAFdFUumKZ
+	 6CiswVRiNEElzoNqk3wQeA+Pr470mx4swV0UVlcbckLIHVCisAQuonPRmHGR/Em3UY
+	 YRlsIVvGNZxvwyB/zVjqjoRyTaBCaRZAy61gn0ENuxx2g2+uIq6koN3dj3qpOBcu5K
+	 ph4eNRNcu6US2jvZ6DdfaUTvdjeXGaLJ7tZoIW3q5ZI2drXEfr92SaIzXK4mEghoMO
+	 sTu9qXGFEqAXw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ajay Singh <ajay.kathat@microchip.com>,
-	=?UTF-8?q?Alexis=20Lothor=C3=A9?= <alexis.lothore@bootlin.com>,
+Cc: Jinjie Ruan <ruanjinjie@huawei.com>,
+	Russell King <linux@armlinux.org.uk>,
 	Kalle Valo <kvalo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 092/451] wifi: wilc1000: fix multi-vif management when deleting a vif
-Date: Sun, 24 Mar 2024 19:06:08 -0400
-Message-ID: <20240324231207.1351418-93-sashal@kernel.org>
+Subject: [PATCH 6.1 093/451] wifi: mwifiex: debugfs: Drop unnecessary error check for debugfs_create_dir()
+Date: Sun, 24 Mar 2024 19:06:09 -0400
+Message-ID: <20240324231207.1351418-94-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -59,54 +59,47 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ajay Singh <ajay.kathat@microchip.com>
+From: Jinjie Ruan <ruanjinjie@huawei.com>
 
-[ Upstream commit 12cfc9c8d3faf887a202c89bc312202445fca7e8 ]
+[ Upstream commit 50180c7f8e3de7c2d87f619131776598fcb1478d ]
 
-Adding then removing a second vif currently makes the first vif not working
-anymore. This is visible for example when we have a first interface
-connected to some access point:
-- create a wpa_supplicant.conf with some AP credentials
-- wpa_supplicant -Dnl80211 -c /etc/wpa_supplicant.conf -i wlan0
-- dhclient wlan0
-- iw phy phy0 interface add wlan1 type managed
-- iw dev wlan1 del
-wlan0 does not manage properly traffic anymore (eg: ping not working)
+debugfs_create_dir() returns ERR_PTR and never return NULL.
 
-This is due to vif mode being incorrectly reconfigured with some default
-values in del_virtual_intf, affecting by default first vif.
+As Russell suggested, this patch removes the error checking for
+debugfs_create_dir(). This is because the DebugFS kernel API is developed
+in a way that the caller can safely ignore the errors that occur during
+the creation of DebugFS nodes. The debugfs APIs have a IS_ERR() judge in
+start_creating() which can handle it gracefully. So these checks are
+unnecessary.
 
-Prevent first vif from being affected on second vif removal by removing vif
-mode change command in del_virtual_intf
-
-Fixes: 9bc061e88054 ("staging: wilc1000: added support to dynamically add/remove interfaces")
-Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
-Co-developed-by: Alexis Lothoré <alexis.lothore@bootlin.com>
-Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
+Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+Suggested-by: Russell King (Oracle) <linux@armlinux.org.uk>
 Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240115-wilc_1000_fixes-v1-5-54d29463a738@bootlin.com
+Link: https://msgid.link/20230903030216.1509013-3-ruanjinjie@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/microchip/wilc1000/cfg80211.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/wireless/marvell/mwifiex/debugfs.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/wireless/microchip/wilc1000/cfg80211.c b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-index 2f75dc4b47975..6f3245a43aef1 100644
---- a/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-+++ b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-@@ -1615,7 +1615,6 @@ static int del_virtual_intf(struct wiphy *wiphy, struct wireless_dev *wdev)
- 	cfg80211_unregister_netdevice(vif->ndev);
- 	vif->monitor_flag = 0;
+diff --git a/drivers/net/wireless/marvell/mwifiex/debugfs.c b/drivers/net/wireless/marvell/mwifiex/debugfs.c
+index 63f232c723374..55ca5b287fe7f 100644
+--- a/drivers/net/wireless/marvell/mwifiex/debugfs.c
++++ b/drivers/net/wireless/marvell/mwifiex/debugfs.c
+@@ -964,9 +964,6 @@ mwifiex_dev_debugfs_init(struct mwifiex_private *priv)
+ 	priv->dfs_dev_dir = debugfs_create_dir(priv->netdev->name,
+ 					       mwifiex_dfs_dir);
  
--	wilc_set_operation_mode(vif, 0, 0, 0);
- 	mutex_lock(&wl->vif_mutex);
- 	list_del_rcu(&vif->list);
- 	wl->vif_num--;
+-	if (!priv->dfs_dev_dir)
+-		return;
+-
+ 	MWIFIEX_DFS_ADD_FILE(info);
+ 	MWIFIEX_DFS_ADD_FILE(debug);
+ 	MWIFIEX_DFS_ADD_FILE(getlog);
 -- 
 2.43.0
 
