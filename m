@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-112775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F924887DFE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:15:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 763BD887E01
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49D401C20A32
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:15:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16DBCB228D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1AB95B053;
-	Sun, 24 Mar 2024 17:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A5A5BAFA;
+	Sun, 24 Mar 2024 17:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WylR+HgC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ok39JWwp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157FD5A0FC;
-	Sun, 24 Mar 2024 17:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019875B200;
+	Sun, 24 Mar 2024 17:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711300040; cv=none; b=VMJoRIq5YJXnWTXrZg/Gp4h0BeWYneEe3/M6fOGtQjS9m0ogj/zRQ6JxVFru2diIA81EPf0qnCx21ZvQ+yxuUhlqgyZDZNmGITdpq/ej+lh+/ckuKBAgUyB59r5YfbcHUxqhvxoUcw+j6h+EJl9YdSHr1FYFr0Jk8RzH4B3iCz0=
+	t=1711300041; cv=none; b=Fro+mEFl9u74Qto/0wMePpydFRkiBokiJMst2wyCJFI6MlGuZTNdx7S+BkyV4VSfohrT+e2ewyTWQWO1/nGHrbcQW9UzAmq+IIuNBnu+24evVXMu619TzpXUG2sSW5PYUfQpdT3k+uechzzk0fK8yY/GYeON2ClmbbORAbNuuFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711300040; c=relaxed/simple;
-	bh=aySIcr4UqZJMOTSbmO06wvPBSpJQfBmCrnR+w0/YUuY=;
+	s=arc-20240116; t=1711300041; c=relaxed/simple;
+	bh=XN56H29/t+TQV91EAOIpRPn/BfVIQUAtf2rRHgpwWT0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=euHNjlzLZuNZlB+QEQGn1p1e3oQjgIRhaxZr4gSXqX4CqGN2Rkq3O9d4e4kbHjiHCxEiF9numybTe18wCTAI5xJmsos9klMHvVTc7zeHokiz77yFNN4VdQolhVwp+qbim+92i73RYNfm3JOxsb3xg42bXoFlCB2ZzRPykTv2sH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WylR+HgC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBB72C43390;
-	Sun, 24 Mar 2024 17:07:18 +0000 (UTC)
+	 MIME-Version; b=r6OKPZCDhmiEL+o60qqUQ9KyaEH5xRgsWdqwRtsFELDaJQh3but7fZVzlYM+Y42qsTqdOq+aa36HJG7RXHchp5mdGX8vYj2wAsVgOOww0WoBhi6DiN/Eyk5o1tKoLnefERda2DRfT/ts9sdqy3n5aB1laejik+LoDd9f804/0gI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ok39JWwp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 118CDC433F1;
+	Sun, 24 Mar 2024 17:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711300039;
-	bh=aySIcr4UqZJMOTSbmO06wvPBSpJQfBmCrnR+w0/YUuY=;
+	s=k20201202; t=1711300040;
+	bh=XN56H29/t+TQV91EAOIpRPn/BfVIQUAtf2rRHgpwWT0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WylR+HgCcbt9hWyvH83ybZbySPLb0haqzfSW0MPaQ8HBLzIY3FbtLZEk18M5oV+CE
-	 OyXHQXXekab9z8VIrO7lz1GpBr5eGYdT6SWxWa56KIHX7WorwvQ8gNh2Dsi1zmzwD9
-	 XDpB89GtYCwn1g3p/ZTJ6XycWrnkn17IUUMZIGUKbLIXZt9vGW5xTebH94qkvMr9RW
-	 aEoGVyxzP4Av9JHwzGn6rkhso81RX4lTanQt2saDdGwAjZSbRJWv8e9pKMN2Q6/Tvo
-	 85jPPJJcXhMyB5dV5/us9QFPE6+Pg6RjwcEu5qJurSxFCYfryxyV46NrCBxPWouSo3
-	 Y/kzqyiuLhpdQ==
+	b=ok39JWwpKUH9+M4m3hhq8A5yJPl9acW8HWtpVXSo5IPl2eIzJwkIgG1Gi10d/UnOa
+	 tEETHayTpDn0hVWhWWucJbQaWwmFmGZqG7Tr/OYQA9xz00qEDG/LnXWwLoBt4jUnXv
+	 LMeiuoyKPQc/4c6o46Bu7WnYt+li2eUfqtmEu7apRbDqq9feAQI+tRsUIb6QaoGH81
+	 ONDXZHSILPydzlrPXM1JfMeqPCAMvludoKaKcjfrEZ3GnRTQx98ECSInqp4bH9WeZT
+	 UpCFGBEfieYH7iLr6hZacGctZveLUWjTANj/Kf65Y7V/CgsfXnA7obzxF9MtTi9syP
+	 cYmBsSjmkoGDg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
 	Sasha Levin <sashal@kernel.org>,
-	viro@zeniv.linux.org.uk,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 6/7] fs: improve dump_mapping() robustness
-Date: Sun, 24 Mar 2024 13:07:06 -0400
-Message-ID: <20240324170709.546465-6-sashal@kernel.org>
+	sagi@grimberg.me,
+	linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 7/7] nvme: clear caller pointer on identify failure
+Date: Sun, 24 Mar 2024 13:07:07 -0400
+Message-ID: <20240324170709.546465-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324170709.546465-1-sashal@kernel.org>
 References: <20240324170709.546465-1-sashal@kernel.org>
@@ -66,93 +65,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.82
 Content-Transfer-Encoding: 8bit
 
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit 8b3d838139bcd1e552f1899191f734264ce2a1a5 ]
+[ Upstream commit 7e80eb792bd7377a20f204943ac31c77d859be89 ]
 
-We met a kernel crash issue when running stress-ng testing, and the
-system crashes when printing the dentry name in dump_mapping().
+The memory allocated for the identification is freed on failure. Set
+it to NULL so the caller doesn't have a pointer to that freed address.
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-pc : dentry_name+0xd8/0x224
-lr : pointer+0x22c/0x370
-sp : ffff800025f134c0
-.....
-Call trace:
-  dentry_name+0xd8/0x224
-  pointer+0x22c/0x370
-  vsnprintf+0x1ec/0x730
-  vscnprintf+0x2c/0x60
-  vprintk_store+0x70/0x234
-  vprintk_emit+0xe0/0x24c
-  vprintk_default+0x3c/0x44
-  vprintk_func+0x84/0x2d0
-  printk+0x64/0x88
-  __dump_page+0x52c/0x530
-  dump_page+0x14/0x20
-  set_migratetype_isolate+0x110/0x224
-  start_isolate_page_range+0xc4/0x20c
-  offline_pages+0x124/0x474
-  memory_block_offline+0x44/0xf4
-  memory_subsys_offline+0x3c/0x70
-  device_offline+0xf0/0x120
-  ......
-
-The root cause is that, one thread is doing page migration, and we will
-use the target page's ->mapping field to save 'anon_vma' pointer between
-page unmap and page move, and now the target page is locked and refcount
-is 1.
-
-Currently, there is another stress-ng thread performing memory hotplug,
-attempting to offline the target page that is being migrated. It discovers
-that the refcount of this target page is 1, preventing the offline operation,
-thus proceeding to dump the page. However, page_mapping() of the target
-page may return an incorrect file mapping to crash the system in dump_mapping(),
-since the target page->mapping only saves 'anon_vma' pointer without setting
-PAGE_MAPPING_ANON flag.
-
-The page migration issue has been fixed by commit d1adb25df711 ("mm: migrate:
-fix getting incorrect page mapping during page migration"). In addition,
-Matthew suggested we should also improve dump_mapping()'s robustness to
-resilient against the kernel crash [1].
-
-With checking the 'dentry.parent' and 'dentry.d_name.name' used by
-dentry_name(), I can see dump_mapping() will output the invalid dentry
-instead of crashing the system when this issue is reproduced again.
-
-[12211.189128] page:fffff7de047741c0 refcount:1 mapcount:0 mapping:ffff989117f55ea0 index:0x1 pfn:0x211dd07
-[12211.189144] aops:0x0 ino:1 invalid dentry:74786574206e6870
-[12211.189148] flags: 0x57ffffc0000001(locked|node=1|zone=2|lastcpupid=0x1fffff)
-[12211.189150] page_type: 0xffffffff()
-[12211.189153] raw: 0057ffffc0000001 0000000000000000 dead000000000122 ffff989117f55ea0
-[12211.189154] raw: 0000000000000001 0000000000000001 00000001ffffffff 0000000000000000
-[12211.189155] page dumped because: unmovable page
-
-[1] https://lore.kernel.org/all/ZXxn%2F0oixJxxAnpF@casper.infradead.org/
-
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Link: https://lore.kernel.org/r/937ab1f87328516821d39be672b6bc18861d9d3e.1705391420.git.baolin.wang@linux.alibaba.com
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/host/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 8cfda7a6d5900..5ad22efb5def4 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -589,7 +589,8 @@ void dump_mapping(const struct address_space *mapping)
- 	}
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 0c088db944706..20c79cc67ce54 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1363,8 +1363,10 @@ static int nvme_identify_ctrl(struct nvme_ctrl *dev, struct nvme_id_ctrl **id)
  
- 	dentry_ptr = container_of(dentry_first, struct dentry, d_u.d_alias);
--	if (get_kernel_nofault(dentry, dentry_ptr)) {
-+	if (get_kernel_nofault(dentry, dentry_ptr) ||
-+	    !dentry.d_parent || !dentry.d_name.name) {
- 		pr_warn("aops:%ps ino:%lx invalid dentry:%px\n",
- 				a_ops, ino, dentry_ptr);
- 		return;
+ 	error = nvme_submit_sync_cmd(dev->admin_q, &c, *id,
+ 			sizeof(struct nvme_id_ctrl));
+-	if (error)
++	if (error) {
+ 		kfree(*id);
++		*id = NULL;
++	}
+ 	return error;
+ }
+ 
+@@ -1493,6 +1495,7 @@ static int nvme_identify_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 	if (error) {
+ 		dev_warn(ctrl->device, "Identify namespace failed (%d)\n", error);
+ 		kfree(*id);
++		*id = NULL;
+ 	}
+ 	return error;
+ }
 -- 
 2.43.0
 
