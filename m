@@ -1,117 +1,107 @@
-Return-Path: <linux-kernel+bounces-112595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5255F887BCA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:46:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC514887BCE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E51FB1F2171D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:46:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 604DA1F21AEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB5114280;
-	Sun, 24 Mar 2024 05:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713021426E;
+	Sun, 24 Mar 2024 05:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="FR1efPh+"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="FRt+yN14"
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267FC1A38FF;
-	Sun, 24 Mar 2024 05:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6136814008
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711259205; cv=none; b=buCWaf0BXw7U5AEP8/RuSH66g4MUKlJEfpX0kSB6lZnu375QFnE7pXLrmaCY5CSLUlirMGP/sXSrMKaHcu0tuq6+kS1mt8qwaZdbMldAdRHTneYy3zqzijSSi06i9Q621FtCS3jInSGVqIOzWQrNb8hUQeUULmDPgaVGXNAZtDw=
+	t=1711259639; cv=none; b=gjChvJOW4ehZniMZjpJXd97JMnDcwhrrjckmh/7/XYs6D0yRsog1s8OWPkaWkboFEeR4cN6d+4q49GicVM2PRILm5Y824kzQe2vlc3YeSnWJc8983wkd5MYRoSZUSC2rhFyyjMh10afROKPIgISVfcmddQEnTxwtOOHIJgOrjns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711259205; c=relaxed/simple;
-	bh=ZdMk2+QQU6WaQaTZwwrBGsmbnw7raeC1F7UhsPN3KUQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I3fpTJEIX4LBZaMRLQDI2Z2qcFwJA7cp59g/yTA3M/VhrkUSTQLOSiErV+DVMGS13BSDrUCOBoFW7bwgVO033iEfXiWehmcaJhsceJQrayvym0pcmPSSM4Xqy2qoNfFdQfgU2d8nKgYkETsW59RWwF0exPw4ERtsZ4gBBQCw51Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=FR1efPh+; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=O8CCWKw9gWzyR41X6fBvNpozhoGEljQYmnOirFrjEsQ=; b=FR1efPh+v2DmePoy0goXs9XQI7
-	8/BNKVhBbYAnStkIPwQcGtPi9npwvkqkXEcsJ+amOp0iFTcwZ+HZjEhNreE8CxcU9Yz9OCLORp8sn
-	LgiT7wwpw9ultvHUIWAIbvHPOMB53L5PjK2lNZz7dZUNA32F6vfb5Muq1fvVJvHKyM5iJvXra5TD7
-	9igi9CRPD7l01+9/A7KK8dCYHYn2HhGPMayig6f4M8Wpr2n0pIFnd6xgw2k0vtKOQdf/QKtODkvat
-	BddQMcrAxcOnb73mvP2F03P/PETJCmJ2XcCjeDzfDTqa1qVHWLDJRZSeaPn2x5bDU4AzWsJ7CEROc
-	6gK0EnKw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1roGgm-00Fd0I-38;
-	Sun, 24 Mar 2024 05:46:37 +0000
-Date: Sun, 24 Mar 2024 05:46:36 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Steve French <smfrench@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	CIFS <linux-cifs@vger.kernel.org>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Christian Brauner <christian@brauner.io>
-Subject: Re: kernel crash in mknod
-Message-ID: <20240324054636.GT538574@ZenIV>
-References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+	s=arc-20240116; t=1711259639; c=relaxed/simple;
+	bh=k6K1qJsbWkoTQwo17/BGCwBZeOrK8asEP4jPl+ndMqc=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=E+Ebt4hG+KiKyS8m9u7KgVND7ojSpl8HXrwlImKTa/w8HQG2HRn3CAQ/8nQez1u6MaHwEmyxfOUDhD9482za8HSMshmb+Nx9ODffUMoq5ZO4KtvlqZC+fviUv/zRucuuYXoD55xG7zsha5S3YmF9MTlxCjtewFi9MhPK/IrnCwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=FRt+yN14; arc=none smtp.client-ip=91.218.175.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
+	s=key1; t=1711259634;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9noNjRG5J01WXAhzTC1re8jGZ/L4ci7PArNMcz5zSdQ=;
+	b=FRt+yN14LDuW1S6eg8vkC3y3RQTlw8VeiBduPXcNaOVh2vzfl3Zr4moDi2HpyjFMUdKOG7
+	iJpbQ2XpTeuM7oTLaEpRiPsG511uyJ0jk2Wv6FictZ5XD6ZyQeFKhhkxMA5EEqqk+2hvgg
+	xURZ9BsoXz99aUh/+kz7tnMFILdhGP2a6DrluqaWS/MIX/hP0g8f6OhQK0YGNYScJmDd9j
+	RTLTehHG3wy9zfyT83xUbnTJA26G5wviE+rTe4eQsvJM069gvwCJQFBS0JdHI+SQsQgQzb
+	84VwvrMMSuLUGL6hyCjqGVmpioNzTJXPOWF2Jqi8B3uxNV/it1K5/uBGpUSndw==
+Date: Sun, 24 Mar 2024 05:53:52 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Clayton Craft" <clayton@craftyguy.net>
+Message-ID: <2a15095b2b6343f63e228443d9fd3f35872b6d09@craftyguy.net>
+TLS-Required: No
+Subject: Re: x86_64 32-bit EFI mixed mode boot broken
+To: "Ard Biesheuvel" <ardb@kernel.org>
+Cc: "Hans de Goede" <hdegoede@redhat.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, "Thomas
+ Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
+ "Borislav Petkov" <bp@alien8.de>, "Dave Hansen"
+ <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
+In-Reply-To: <CAMj1kXHEJuZH4GsPKpu2vn6NQtKq1FBUtb-Rkfatwa63brgXpw@mail.gmail.com>
+References: <20240321150510.GI8211@craftyguy.net>
+ <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+ <20240321170641.GK8211@craftyguy.net>
+ <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
+ <20240322091857.GM8211@craftyguy.net>
+ <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
+ <fe09869c2d853bde8ce0feb537c4dab09014f5d9@craftyguy.net>
+ <CAMj1kXEH4CTnQ3d+Z-TnqNUhFaFc1yH+Eaa6cHk9-vZ_geQ2nw@mail.gmail.com>
+ <8a64ba697d719bc9750e6fffc268e194dfde16e5@craftyguy.net>
+ <CAMj1kXEk=7_BoaavZtZs7giBq4Kwk-QQoNjMZS=rWLJP=LdVLw@mail.gmail.com>
+ <CAMj1kXHEJuZH4GsPKpu2vn6NQtKq1FBUtb-Rkfatwa63brgXpw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Mar 24, 2024 at 12:00:15AM -0500, Steve French wrote:
-> Anyone else seeing this kernel crash in do_mknodat (I see it with a
-> simple "mkfifo" on smb3 mount).  I started seeing this in 6.9-rc (did
-> not see it in 6.8).   I did not see it with the 3/12/23 mainline
-> (early in the 6.9-rc merge Window) but I do see it in the 3/22 build
-> so it looks like the regression was introduced by:
+March 23, 2024 at 10:18 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
+> On Sat, 23 Mar 2024 at 14:39, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >=20
+>=20>  OK.
+> >=20
+>=20>  I have reshuffled the branch and put the patch you identified as t=
+he
+> >=20
+>=20>  one fixing the boot first. Please double check whether this change
+> >=20
+>=20>  still fixes the boot for you.
+> >=20
+>=20>  https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log=
+/?h=3Defi-clayton-2
+> >=20
+>=20>  If so, we can try applying it to mainline, and merge it if it work=
+s there too.
 
-	FWIW, successful ->mknod() is allowed to return 0 and unhash
-dentry, rather than bothering with lookups.  So commit in question
-is bogus - lack of error does *NOT* mean that you have struct inode
-existing, let alone attached to dentry.  That kind of behaviour
-used to be common for network filesystems more than just for ->mknod(),
-the theory being "if somebody wants to look at it, they can bloody
-well pay the cost of lookup after dcache miss".
+This branch boots on my Bay Trail systems.
 
-Said that, the language in D/f/vfs.rst is vague as hell and is very easy
-to misread in direction of "you must instantiate".
 
-Thankfully, there's no counterpart with mkdir - *there* it's not just
-possible, it's inevitable in some cases for e.g. nfs.
+> I have a mainline branch with the same change applied, please try that =
+one too.
 
-What the hell is that hook doing in non-S_IFREG cases, anyway?  Move it
-up and be done with it...
+I assume this is the `efi-mixed-mode-boot-hack` branch, if so then this b=
+ranch also boots on these systems.
 
-diff --git a/fs/namei.c b/fs/namei.c
-index ceb9ddf8dfdd..821fe0e3f171 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -4050,6 +4050,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
- 		case 0: case S_IFREG:
- 			error = vfs_create(idmap, path.dentry->d_inode,
- 					   dentry, mode, true);
-+			if (!error)
-+				error = security_path_post_mknod(idmap, dentry);
- 			break;
- 		case S_IFCHR: case S_IFBLK:
- 			error = vfs_mknod(idmap, path.dentry->d_inode,
-@@ -4061,10 +4063,6 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
- 			break;
- 	}
- 
--	if (error)
--		goto out2;
--
--	security_path_post_mknod(idmap, dentry);
- out2:
- 	done_path_create(&path, dentry);
- 	if (retry_estale(error, lookup_flags)) {
+-Clayton
 
