@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-114171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 660B68888DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:38:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BA0F8888D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 973C41C27151
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB4592897C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631D5206072;
-	Sun, 24 Mar 2024 23:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22AF7206078;
+	Sun, 24 Mar 2024 23:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WFEiS2ex"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h3bDG5Xh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892D32057F9;
-	Sun, 24 Mar 2024 23:04:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831CD2057F8;
+	Sun, 24 Mar 2024 23:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321491; cv=none; b=hwWceyWaJaa6EJf88tP1mz4a9gfSmKdsDi3849yeQKd9373LNQcHlwRHC9/uPvgY7/sAyN9Vb6FoA/EWWBZilsMSy3A7VckjTCGXv6b6nKg8uq/Qj2XU21oKzmWrsuFavEBugkNYmtln7VweMd1fes02v1tKJXS29XSHef4dUTw=
+	t=1711321491; cv=none; b=rSq41UWjuigL4TyBBCz7p7x3M2vwUPSBkp2Denmz1cSdLG3wBi903UtJdv2VoNWvZuS0hPDVy3G1rZtKs0ZvsCJ95N0ZrIZ4WzW+PYBYpp1LW16Agi0sWZqD6weRbW5TVdiEGFx3izlUJ07e1+D2g72qCuCWuyh4DOY1sHoabfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321491; c=relaxed/simple;
-	bh=z9jUFiSp3MUg0mH6coUgrT0+E54jL2MUqfmnswH9CjU=;
+	bh=SSr5RFektTQL/EnOjOh7JFgVsHETDVqB8XLdmop9QhU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g7cvxyfyWimISkwm3oJVcKi+TpCrO2353AFAB3xbhtlfgAFkIAGcNkO+XIolWHI0bKNeLPLPURi7vmrPNLNPIrFlyzI4NN+hOGwVf+YTjRvPXHWd/or1dVQ9d7NckX4WJNz9rxNaj/plHyCkzCW3HTxl6JNXmAwJe5XCbKW+TqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WFEiS2ex; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C903C43390;
-	Sun, 24 Mar 2024 23:04:49 +0000 (UTC)
+	 MIME-Version; b=jcJMHpSyQ1laggAkFeLE+c7/SJE9/e3hJE61LWJsEiBe/6cS5bFMi9Imq9oOWMXhvSmjHeGm2sUacetGros+Ks89AucmqmFUXW4sEKG8l5dnUjZynNh+hZDXR2hsXdwaWFZSElCCvCL+Xc3e451E3TJ8ezKk4phuxP29zMTNK84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h3bDG5Xh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC3F7C433C7;
+	Sun, 24 Mar 2024 23:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321490;
-	bh=z9jUFiSp3MUg0mH6coUgrT0+E54jL2MUqfmnswH9CjU=;
+	s=k20201202; t=1711321491;
+	bh=SSr5RFektTQL/EnOjOh7JFgVsHETDVqB8XLdmop9QhU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WFEiS2exCdKKt7wvDiPm10iriDzXh2lGMZMMnSZoEruQaK8x0jo3g9asIba6D08Pb
-	 HwRf2rk9feUZdNoE46S1nYLqPYqS7vRSjHxxD+gf6NCWuLDj3gevv0EbY26IhqAJ9s
-	 fYFMf363IDWvbFJH72oiAkQKjbwD7fwvB6dZD7xrqVy4W2YtxVe9BTyPEe21x6aaUi
-	 rmBkzL9gki8Csxr9kziOtdDF93kZpCDFW+ur7EWl71MYewVbMkegTkfwyTu4S+X7XU
-	 X98LJTXBStvK06+idG8IRNmAWvXlic/31H9x6/uZ5Z47X2I9KF1j/Wh9oJPpPqKXRi
-	 cyYFKj55ppqsQ==
+	b=h3bDG5XhP8y9pTqwOCJEGnlVojj9qIhi93MwWdn3EVz0XTkYvgS0mveV81oETMG5d
+	 UIl+y0mTpTcyE7MqqKtWFBVVaAfss0u/RZfgI4Tl9wQEl2Yu+evIkCH/9KiMrKBZqK
+	 tMnVW2vS3PkgP5ZeHIPX/Wdm+AXGPqQ3mHxmWEOXeH8QUoxff+COjzvSdymf56g1qb
+	 DqO8NWZqyYx+Fo1awKO2NtEUkl+7tiI6kaVkcKRaIfD9EzXxbrAQ67czOxefPfM/TO
+	 IuDJWE9R+08JNndr4M4Kk6k/b+mpzcA6GC1L/rlZjucovj+vfw7khhyRFQ4fHoFyRT
+	 Cu0rNkNCNLyTg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Markus Schneider-Pargmann <msp@baylibre.com>,
-	Judith Mendez <jm@ti.com>,
-	Simon Horman <horms@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
+Cc: Ilan Peer <ilan.peer@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 215/638] can: m_can: Start/Cancel polling timer together with interrupts
-Date: Sun, 24 Mar 2024 18:54:12 -0400
-Message-ID: <20240324230116.1348576-216-sashal@kernel.org>
+Subject: [PATCH 6.6 216/638] wifi: iwlwifi: mvm: Fix the listener MAC filter flags
+Date: Sun, 24 Mar 2024 18:54:13 -0400
+Message-ID: <20240324230116.1348576-217-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,80 +63,35 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Markus Schneider-Pargmann <msp@baylibre.com>
+From: Ilan Peer <ilan.peer@intel.com>
 
-[ Upstream commit a163c5761019b94258ca655b27b46e82657fd6f5 ]
+[ Upstream commit 4cdb86487e3eaddb4b3a7df30ae709e810aac84b ]
 
-Interrupts are enabled/disabled in more places than just m_can_start()
-and m_can_stop(). Couple the polling timer with enabling/disabling of
-all interrupts to achieve equivalent behavior.
+One of the flags was from the wrong API.
 
-Cc: Judith Mendez <jm@ti.com>
-Fixes: b382380c0d2d ("can: m_can: Add hrtimer to generate software interrupt")
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://lore.kernel.org/all/20240207093220.2681425-2-msp@baylibre.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 9be162a7b670 ("wifi: iwlwifi: mvm: add support for the new MAC CTXT command")
+Signed-off-by: Ilan Peer <ilan.peer@intel.com>
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Link: https://msgid.link/20240208185302.a338c30ec4e9.Ic2813cdeba4443c692d462fc4859392f069d7e33@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/m_can/m_can.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mld-mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 16ecc11c7f62a..2395b1225cc8a 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -418,6 +418,13 @@ static void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac.c b/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac.c
+index f313a8d771e42..ad78c69cc6cb7 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mld-mac.c
+@@ -167,7 +167,7 @@ static int iwl_mvm_mld_mac_ctxt_cmd_listener(struct iwl_mvm *mvm,
+ 	iwl_mvm_mld_mac_ctxt_cmd_common(mvm, vif, &cmd, action);
  
- static inline void m_can_enable_all_interrupts(struct m_can_classdev *cdev)
- {
-+	if (!cdev->net->irq) {
-+		dev_dbg(cdev->dev, "Start hrtimer\n");
-+		hrtimer_start(&cdev->hrtimer,
-+			      ms_to_ktime(HRTIMER_POLL_INTERVAL_MS),
-+			      HRTIMER_MODE_REL_PINNED);
-+	}
-+
- 	/* Only interrupt line 0 is used in this driver */
- 	m_can_write(cdev, M_CAN_ILE, ILE_EINT0);
- }
-@@ -425,6 +432,11 @@ static inline void m_can_enable_all_interrupts(struct m_can_classdev *cdev)
- static inline void m_can_disable_all_interrupts(struct m_can_classdev *cdev)
- {
- 	m_can_write(cdev, M_CAN_ILE, 0x0);
-+
-+	if (!cdev->net->irq) {
-+		dev_dbg(cdev->dev, "Stop hrtimer\n");
-+		hrtimer_cancel(&cdev->hrtimer);
-+	}
- }
- 
- /* Retrieve internal timestamp counter from TSCV.TSC, and shift it to 32-bit
-@@ -1417,12 +1429,6 @@ static int m_can_start(struct net_device *dev)
- 
- 	m_can_enable_all_interrupts(cdev);
- 
--	if (!dev->irq) {
--		dev_dbg(cdev->dev, "Start hrtimer\n");
--		hrtimer_start(&cdev->hrtimer, ms_to_ktime(HRTIMER_POLL_INTERVAL_MS),
--			      HRTIMER_MODE_REL_PINNED);
--	}
--
- 	return 0;
- }
- 
-@@ -1577,11 +1583,6 @@ static void m_can_stop(struct net_device *dev)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 
--	if (!dev->irq) {
--		dev_dbg(cdev->dev, "Stop hrtimer\n");
--		hrtimer_cancel(&cdev->hrtimer);
--	}
--
- 	/* disable all interrupts */
- 	m_can_disable_all_interrupts(cdev);
- 
+ 	cmd.filter_flags = cpu_to_le32(MAC_CFG_FILTER_PROMISC |
+-				       MAC_FILTER_IN_CONTROL_AND_MGMT |
++				       MAC_CFG_FILTER_ACCEPT_CONTROL_AND_MGMT |
+ 				       MAC_CFG_FILTER_ACCEPT_BEACON |
+ 				       MAC_CFG_FILTER_ACCEPT_PROBE_REQ |
+ 				       MAC_CFG_FILTER_ACCEPT_GRP);
 -- 
 2.43.0
 
