@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-113769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B98D88867C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 740E0888687
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD5881C259C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:34:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A27641C25A35
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1633614BF93;
-	Sun, 24 Mar 2024 22:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0AA1E169B;
+	Sun, 24 Mar 2024 22:59:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eqoea4Y7"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KDinYUrv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD691E306F;
-	Sun, 24 Mar 2024 22:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858631E3077;
+	Sun, 24 Mar 2024 22:53:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320794; cv=none; b=JoPcLvvBmu01JN1EKywKuhtrWj6Js/ja5kZ3Tz+daLXHq6ilpBPO8wr5ai6OqVQAWlK/u4U8eKjULVEc8WUEiQS+VFamt2mvH/uh+j0M1iKERW/r0FuH+7TmIKS94Zw5pnEjZb8GWHOuF+uPzdPXTJ6ldZeCpR2H5k7qdZrImS4=
+	t=1711320794; cv=none; b=n+Ry+Lg55qbPFcSawKpUf8kxQKxn8waLK/WhW+xl80f49/uVMEHN0G9Cn9EFSYWy8rh7HOLubArGZNY6aaALPgqXDcI+zLMxvSUSz2F5d7LslLKMGNoNATGxeoQfLfmDWuRfHSwePcBOpPo12B3IOvFjpVjvfKt8mKOBiwDw3uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320794; c=relaxed/simple;
-	bh=8Mq+y2b4QoasCHiS9C0t/oVV7yRpu9gPxY4aigJk7HQ=;
+	bh=CgppWVbYSdfdH7pUfBvvux86ej8YyJiAHOmFHrzmnXI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xb/U8ZzxO2MAzN/RepRvUcDAzY2D3VrBMqVVbcgogQwtxNKCJXwRqhIEgyfwhrUMiLjGCvswoeBWTeG9KeO8gS0481uxeUZm9qMdNPVvRNQz0bHxSgEMXOFuGutFmT1le8NNSkVVOroka9ck9kmUX7P1MK8LBDG+R0G6nt1cMRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eqoea4Y7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0375C43394;
-	Sun, 24 Mar 2024 22:53:11 +0000 (UTC)
+	 MIME-Version; b=GyX2xF0PzfGRkjnN3BhnrxghEUUwdKS8coW1BqgHrmJQ6AlgWSxIkjnDEqmUz5rJczNH9KBoLyOI6jhEXKzMGitOuZryZ22Z7Ge6VmDb3FEp6vVknUBgfHU2c9/DdspFvN6rK2epyuYD6+n7hkNDXgDNqljWGPQzB7EYEm45Mlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KDinYUrv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0FE1C433C7;
+	Sun, 24 Mar 2024 22:53:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320792;
-	bh=8Mq+y2b4QoasCHiS9C0t/oVV7yRpu9gPxY4aigJk7HQ=;
+	s=k20201202; t=1711320793;
+	bh=CgppWVbYSdfdH7pUfBvvux86ej8YyJiAHOmFHrzmnXI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eqoea4Y7isbu5krH1q/wOwyMJ0cWgUFPg2zFWJOIB1uN0rqtUwheNkcn5U+lcbyAa
-	 t6F1GheN3CdUmAAMCA0Xrr1xmzCLTflvRbdPms7t3rh1afX3Amt0qK0wh1XszotOVJ
-	 FT2ZrBV67Ef1X2n6uJ53gUScYRNZhyhDNT9JYmDFdllOYchwHv8LQKBBZQrKKiRnWp
-	 Z5bh+q+wagMxeckX0rQoo60kMGof+NpSnBMIZZQAlhBAvlJ5tMNrPXdN5EveQPM6Ot
-	 FWLT4Y3xBHM5qvFxNz+1L0lyYXDnzv7KAdYsQEHpiZd1tkT/OwoEovyD8vORbPTZfI
-	 Pt0D+bC4HWw0Q==
+	b=KDinYUrvNwqQEga4rZCweR5LpJNlnqRodC36iUzt8JT/BHXY1crwxXIFnrE8IjkS3
+	 yADnuraL7ejvBz+2JwbGagItIG4xOtCfOUMDU/0wyS+VthbliUAht7Qb1NR/gVhl0q
+	 Xu7xKmWbNUoOJq6PcBC2I+Cjg6JS5zeN2lkYHlSpSLxAIbzvOMpKHoQrxpj9vN0+oW
+	 cA8nwouf/eygonKQvqLbVkdQMTGAI8sTXWz+F8+W9uGEnelIA48yMFl9EFy4Klu3G5
+	 uxqgu9OzKdXTE7NxXcYumI2pIMzznWAfZHPMFV4bVx8jCL7PEIff9rW6F2hjijtfI3
+	 BqWC+DdIBvEkQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+Cc: Pauli Virtanen <pav@iki.fi>,
+	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 356/713] Bluetooth: af_bluetooth: Fix deadlock
-Date: Sun, 24 Mar 2024 18:41:22 -0400
-Message-ID: <20240324224720.1345309-357-sashal@kernel.org>
+Subject: [PATCH 6.7 357/713] Bluetooth: fix use-after-free in accessing skb after sending it
+Date: Sun, 24 Mar 2024 18:41:23 -0400
+Message-ID: <20240324224720.1345309-358-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -61,88 +62,59 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Pauli Virtanen <pav@iki.fi>
 
-[ Upstream commit f7b94bdc1ec107c92262716b073b3e816d4784fb ]
+[ Upstream commit 947ec0d002dce8577b655793dcc6fc78d67b7cb6 ]
 
-Attemting to do sock_lock on .recvmsg may cause a deadlock as shown
-bellow, so instead of using sock_sock this uses sk_receive_queue.lock
-on bt_sock_ioctl to avoid the UAF:
+hci_send_cmd_sync first sends skb and then tries to clone it.  However,
+the driver may have already freed the skb at that point.
 
-INFO: task kworker/u9:1:121 blocked for more than 30 seconds.
-      Not tainted 6.7.6-lemon #183
-Workqueue: hci0 hci_rx_work
-Call Trace:
- <TASK>
- __schedule+0x37d/0xa00
- schedule+0x32/0xe0
- __lock_sock+0x68/0xa0
- ? __pfx_autoremove_wake_function+0x10/0x10
- lock_sock_nested+0x43/0x50
- l2cap_sock_recv_cb+0x21/0xa0
- l2cap_recv_frame+0x55b/0x30a0
- ? psi_task_switch+0xeb/0x270
- ? finish_task_switch.isra.0+0x93/0x2a0
- hci_rx_work+0x33a/0x3f0
- process_one_work+0x13a/0x2f0
- worker_thread+0x2f0/0x410
- ? __pfx_worker_thread+0x10/0x10
- kthread+0xe0/0x110
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x2c/0x50
- ? __pfx_kthread+0x10/0x10
- ret_from_fork_asm+0x1b/0x30
- </TASK>
+Fix by cloning the sent_cmd cloned just above, instead of the original.
 
-Fixes: 2e07e8348ea4 ("Bluetooth: af_bluetooth: Fix Use-After-Free in bt_sock_recvmsg")
+Log:
+================================================================
+BUG: KASAN: slab-use-after-free in __copy_skb_header+0x1a/0x240
+..
+Call Trace: ..
+ __skb_clone+0x59/0x2c0
+ hci_cmd_work+0x3b3/0x3d0 [bluetooth]
+ process_one_work+0x459/0x900
+..
+Allocated by task 129: ...
+ __alloc_skb+0x1ae/0x220
+ __hci_cmd_sync_sk+0x44c/0x7a0 [bluetooth]
+ __hci_cmd_sync_status+0x24/0xb0 [bluetooth]
+ set_cig_params_sync+0x778/0x7d0 [bluetooth]
+..
+Freed by task 0: ...
+ kmem_cache_free+0x157/0x3c0
+ __usb_hcd_giveback_urb+0x11e/0x1e0
+ usb_giveback_urb_bh+0x1ad/0x2a0
+ tasklet_action_common.isra.0+0x259/0x4a0
+ __do_softirq+0x15b/0x5a7
+================================================================
+
+Fixes: 2615fd9a7c25 ("Bluetooth: hci_sync: Fix overwriting request callback")
+Signed-off-by: Pauli Virtanen <pav@iki.fi>
 Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/af_bluetooth.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ net/bluetooth/hci_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/af_bluetooth.c b/net/bluetooth/af_bluetooth.c
-index b93464ac3517f..67604ccec2f42 100644
---- a/net/bluetooth/af_bluetooth.c
-+++ b/net/bluetooth/af_bluetooth.c
-@@ -309,14 +309,11 @@ int bt_sock_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 	if (flags & MSG_OOB)
- 		return -EOPNOTSUPP;
- 
--	lock_sock(sk);
--
- 	skb = skb_recv_datagram(sk, flags, &err);
- 	if (!skb) {
- 		if (sk->sk_shutdown & RCV_SHUTDOWN)
- 			err = 0;
- 
--		release_sock(sk);
- 		return err;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 85a91c438d721..7d5334b529834 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -4185,7 +4185,7 @@ static void hci_send_cmd_sync(struct hci_dev *hdev, struct sk_buff *skb)
+ 	if (hci_req_status_pend(hdev) &&
+ 	    !hci_dev_test_and_set_flag(hdev, HCI_CMD_PENDING)) {
+ 		kfree_skb(hdev->req_skb);
+-		hdev->req_skb = skb_clone(skb, GFP_KERNEL);
++		hdev->req_skb = skb_clone(hdev->sent_cmd, GFP_KERNEL);
  	}
  
-@@ -346,8 +343,6 @@ int bt_sock_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 
- 	skb_free_datagram(sk, skb);
- 
--	release_sock(sk);
--
- 	if (flags & MSG_TRUNC)
- 		copied = skblen;
- 
-@@ -570,10 +565,11 @@ int bt_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
- 		if (sk->sk_state == BT_LISTEN)
- 			return -EINVAL;
- 
--		lock_sock(sk);
-+		spin_lock(&sk->sk_receive_queue.lock);
- 		skb = skb_peek(&sk->sk_receive_queue);
- 		amount = skb ? skb->len : 0;
--		release_sock(sk);
-+		spin_unlock(&sk->sk_receive_queue.lock);
-+
- 		err = put_user(amount, (int __user *)arg);
- 		break;
- 
+ 	atomic_dec(&hdev->cmd_cnt);
 -- 
 2.43.0
 
