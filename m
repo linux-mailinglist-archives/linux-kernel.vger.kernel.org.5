@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-113373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6E468883CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CBA68883D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 574E71F25992
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:20:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B5681F2591F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D4719D8B9;
-	Sun, 24 Mar 2024 22:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C7D19EE22;
+	Sun, 24 Mar 2024 22:42:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QonjUkfY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ip+5CDQU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B4519E687;
-	Sun, 24 Mar 2024 22:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF03F19EE05;
+	Sun, 24 Mar 2024 22:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320174; cv=none; b=QKSaUjg8bBKZes9iDjE88NbvHz1PvuWZRUVzsLL5s8eSdNHeT3niSjVdk2QehrqwhOBsY/R5u7Jvm/BbseXFDonFTaqdul0dMF269d8833L3PNRoE9ezOQFIAm1lbf44o1i4/0t5gcwz1B5lZ4xOuzJGURu/JB3mkqr6abmwh3w=
+	t=1711320175; cv=none; b=N4hpBhbluh8NnANByrlXLo8T6edie4tKwdsX34wxZBupA0CkXmp5o1tPu99E4zcAEpBTAsqZuQ2O8qB81whEjxRKKRGjsPy4jNCdoI/4WwbIqlgTkQtBlAyP5XY2SAbBmtnxEJE9zX3OA4J//+KHXMeUDgxx3aIddxJhGgmuRtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320174; c=relaxed/simple;
-	bh=UcpuHo6S1LSr579056nVXn/HN/K/fVaSCMdpsLmxNuU=;
+	s=arc-20240116; t=1711320175; c=relaxed/simple;
+	bh=97fYqvoyWoojc4WVtMU5TN0AQq0iEGtqgA6cQ1Sz7iA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kGkqxtubtX1eypOdPUro45NpsQVb8NoAQ5qvzfBvgBNqC2fB9gkXZ4M6bbnnyig9AqXuUSyjsJw/x7sY2sipO6Sh+rGNCLKzqY/OekraaZxgQozHIz10iivC16Py/Yu+mvgPrxUXw41X92Fverssp/T14cNWw0wfy6n6QQ5Kl1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QonjUkfY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93D3BC43601;
-	Sun, 24 Mar 2024 22:42:53 +0000 (UTC)
+	 MIME-Version; b=F2o4LT1amJKe0oBXLdPaA6lOUcNZEDsGoMLoOk3sJoz/2Va9r8h6IWV3TUsG5z26vGQFdgSfXaZCLb3xckIV9vkYdZBCPEpPirElWxslZdOI/MoTr8x2HDGBYeRN3Bk2qLFHPHyaZsP9IVYQro1/XQhAu7U9SUljhwxizo6H1BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ip+5CDQU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5BF5C433F1;
+	Sun, 24 Mar 2024 22:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320174;
-	bh=UcpuHo6S1LSr579056nVXn/HN/K/fVaSCMdpsLmxNuU=;
+	s=k20201202; t=1711320175;
+	bh=97fYqvoyWoojc4WVtMU5TN0AQq0iEGtqgA6cQ1Sz7iA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QonjUkfYNAY3BvupFqgso/TRrCpmQWJfdEEiqpgMPwIG3kcTQCKnS9nEp/G27HH9v
-	 krGGXuzk8PNJRYI5thCpGYY34whXI5tjmg+fa3Dr0oBTtVf5dqXkrgGvfq2xVgihme
-	 nRx5TUb/FcsDwiZadk2bIoJzmagwroP4SvNHIb8E/TW+3TP5VYOrQyfcXa/MayJ3rE
-	 DMUixBzkGnA82ZfTkuNezEFNzjzVX8GsC0YjetZ6JiHsrI3E+RSr3Bu79ooJTuFoTr
-	 e8r13URz8Z6bF7WMj3Qb3Dp3K2yJ2/ZDEOloJTyY4bo0IUsQv7BRrIAiKaq5k5Krjr
-	 oJ1XjWi89SqRQ==
+	b=Ip+5CDQULsKJbQYBKWqtDZAF6FcS5q5ksUUdt3wPatODbG2m+2K5m+nx+R9YLVjK0
+	 9df7uV+D7eAeb2Fswjt6b5L4ScH4f5z5SijsonQggh40WeXjUC1f/ekXEtBXVX2HP6
+	 A4cSxSbZm2o7k5nRjJ584A08Bp7ln/wgQGSOdfaxWaerKm4EmTm1jiNDc2luXiBxVx
+	 SeRm03nL8MLJpDL5HgVbwZu+2D52pCs8sDiJXo8eudWkBiBFfBc30PFRtFwSCcRePx
+	 pSuVwEk/UGlkMis45yjVIX4JpoEentWjNNVQM2qVxMVqMUCN18rJa61eDBaAHHJkHf
+	 mFBae/6/NgBig==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Leonard Lausen <leonard@lausen.nl>,
-	Connor Abbott <cwabbott0@gmail.com>,
-	Rob Clark <robdclark@chromium.org>,
+Cc: Rob Clark <robdclark@chromium.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 482/715] drm/msm/a6xx: specify UBWC config for sc7180
-Date: Sun, 24 Mar 2024 18:31:01 -0400
-Message-ID: <20240324223455.1342824-483-sashal@kernel.org>
+Subject: [PATCH 6.8 483/715] drm/msm/a7xx: Fix LLC typo
+Date: Sun, 24 Mar 2024 18:31:02 -0400
+Message-ID: <20240324223455.1342824-484-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,50 +62,34 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Rob Clark <robdclark@chromium.org>
 
-[ Upstream commit 0d7dfc79fb9b4b81f642f84796111f2bae8427e2 ]
+[ Upstream commit 0776ad9274d96d132131af66a5941df45b9d46b4 ]
 
-Historically the Adreno driver has not been updating memory
-configuration registers on a618 (SC7180 platform) implying that the
-default configuration is fine. After the rework performed in the commit
-8814455a0e54 ("drm/msm: Refactor UBWC config setting") the function
-a6xx_calc_ubwc_config() still contained this shortcut and did not
-calculate UBWC configuration. However the function which now actually
-updates hardware registers, a6xx_set_ubwc_config(), doesn't contain such
-check.
+We'd miss actually activating LLC.
 
-Rather than adding the check to a6xx_set_ubwc_config(), fill in the
-UBWC config for a618 (based on readings from SC7180).
-
-Reported-by: Leonard Lausen <leonard@lausen.nl>
-Link: https://gitlab.freedesktop.org/drm/msm/-/issues/49
-Fixes: 8814455a0e54 ("drm/msm: Refactor UBWC config setting")
-Cc: Connor Abbott <cwabbott0@gmail.com>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Connor Abbott <cwabbott0@gmail.com>
-Patchwork: https://patchwork.freedesktop.org/patch/579113/
 Signed-off-by: Rob Clark <robdclark@chromium.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Fixes: af66706accdf ("drm/msm/a6xx: Add skeleton A7xx support")
+Patchwork: https://patchwork.freedesktop.org/patch/573043/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index c9c55e2ea5849..dc80e5940f51e 100644
+index dc80e5940f51e..fd60e49b8ec4d 100644
 --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
 +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1292,9 +1292,8 @@ static void a6xx_calc_ubwc_config(struct adreno_gpu *gpu)
- 		gpu->ubwc_config.ubwc_mode = 1;
- 	}
+@@ -2426,7 +2426,7 @@ static int a6xx_gmu_pm_resume(struct msm_gpu *gpu)
  
--	/* a618 is using the hw default values */
- 	if (adreno_is_a618(gpu))
--		return;
-+		gpu->ubwc_config.highest_bank_bit = 14;
+ 	msm_devfreq_resume(gpu);
  
- 	if (adreno_is_a619_holi(gpu))
- 		gpu->ubwc_config.highest_bank_bit = 13;
+-	adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate : a6xx_llc_activate(a6xx_gpu);
++	adreno_is_a7xx(adreno_gpu) ? a7xx_llc_activate(a6xx_gpu) : a6xx_llc_activate(a6xx_gpu);
+ 
+ 	return ret;
+ }
 -- 
 2.43.0
 
