@@ -1,60 +1,56 @@
-Return-Path: <linux-kernel+bounces-112745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF052887DBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:08:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BD92887DBF
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:08:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5081E1F21305
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:08:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0DF1B2164C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1D32E64E;
-	Sun, 24 Mar 2024 17:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9719937155;
+	Sun, 24 Mar 2024 17:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SItpqB2w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B6ka3JHU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BB32C1B1;
-	Sun, 24 Mar 2024 17:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCEFF33CC1;
+	Sun, 24 Mar 2024 17:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711299973; cv=none; b=Kraa7W0WhCF8saAgtjvDWAUrIHUeRmoxDmUVtnjwFRnNtB2PZ50RsYlKkz9MrPGMVktEPYa+ACgNMbfQd7tsimli9O0WcKkBMc9x8AlJFaTYmV2RtXD8Z+Yx3ZPvyibjPFMDTnYYfmt6zWhMy3fImXWbAqbcFAjF7DJNa8CJuC8=
+	t=1711299973; cv=none; b=gOGELPyojnsG1G4Gy43yRbgXVSKvMmc5+36JZopIWn67bfozwwSIna79z9Oa/11OAoVlTJRIqA3SjDDfzpnuw472yQ7w4/O+ZqSBxv87QoSVKyKIIIjel773ItEIhEOppexnXtzJTlWSZtdRiUr4nWeGIwL00wwA0T8DjS2kx/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711299973; c=relaxed/simple;
-	bh=M5KWR1kOnUHwDGq3v++7oLxZFhzioC3ac36tmPcpu1M=;
+	bh=5otAryG/WYRNcxOQAOAJo949yLsICvxts9fIOJuqL1k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zu5KcaQaI4Y9DgaEYgtwJ8Mwf+2wMNhg+KvZTy6e+KuaPkCcohD5s6jzn0PTOkcA0hxUKdiCCa6N9/QVxaG75+hohlFmxDyT7IO0e2eeHC3qCm/UBsDnMwCxXTgF1LEoXuX5BZgsqxzifhaXxek667IzOya8yg+dKNEWVfu9Iso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SItpqB2w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50FB9C433F1;
-	Sun, 24 Mar 2024 17:06:11 +0000 (UTC)
+	 MIME-Version; b=bBzQLQKbHPJrv2Un8DbyujQk+xtSPm+PHbnhgjLigBfXHOvXVtlVM2cjz4/YdkL48euCCSLrqCJS/a4JAG3BRjnzEXwZHtjZqJWuTKQwQv6K7IoqKSPG30qbIfsE8iqT3MxCgYgCEGtlH2h6u+0pCDwwomRndixDabWvFT7QkWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B6ka3JHU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E31DEC433C7;
+	Sun, 24 Mar 2024 17:06:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711299972;
-	bh=M5KWR1kOnUHwDGq3v++7oLxZFhzioC3ac36tmPcpu1M=;
+	s=k20201202; t=1711299973;
+	bh=5otAryG/WYRNcxOQAOAJo949yLsICvxts9fIOJuqL1k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SItpqB2wJcPo3jzrTHWdKTi3loFtZ9trGBGEemN+BD9hVs/h29i+02Rc689Fmnq4j
-	 gWh5bgz8x0yaCc4K8ozluCBlw+f/8u3N3w99a2uFRLsnYOdNzkym+5BNhyMyWWQ+7A
-	 GR0HfbjCgap7rThdaBoHGULjK7FOZoZZf0Mr5uke5klwUpz/khgdYW1LetEOrnxT+s
-	 hifaNmMsRaV67KkMqAdeVgeAyjdVP+ZRN3PnRvjU8dQ8pyrWfjtcpP2UCYNzZAH5aq
-	 HrmzSipxuDBvFtcmJ37J0Mt5h/6J0KSdyyJtrxowUSTEiIpIZVXIblbYspyRkL5Cko
-	 oGGAPbmertNRg==
+	b=B6ka3JHUB3k6V7C91Zg4OuFBfh5wJBIZfetOtH7RsSW83GA6f5YHvTLEkWUWtHlro
+	 c+K35N0QgDfJh3PFAUfFi3jN+r/J/8pLC/DCIR+K3ukPIyWr4GOYFywFeiGDCv9uQd
+	 nYOsDwmJt6Le+YIF+tYnq3Upl/2mvOT+eGTBEaB+EJ6mfwks3N4NcdWZOi4FvXXe57
+	 9QZeFS+HAoHO9IsqZmYPlfWrrebaZvhvSzKiKY1Pe67qMIBqiJ250L8ljklAN2k+HD
+	 KaerEwlM3vFG4liB7uUSalwgiYsBuQoe93PpaqVsecIfZRPcB5F97eTd4Yqc+a9czs
+	 KE5OVegNZZkVg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zqiang <qiang.zhang1211@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
+Cc: Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
 	Sasha Levin <sashal@kernel.org>,
-	quic_neeraju@quicinc.com,
-	josh@joshtriplett.org,
-	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 10/11] rcu/nocb: Fix WARN_ON_ONCE() in the rcu_nocb_bypass_lock()
-Date: Sun, 24 Mar 2024 13:05:45 -0400
-Message-ID: <20240324170552.545730-10-sashal@kernel.org>
+	sagi@grimberg.me,
+	linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.8 11/11] nvme: clear caller pointer on identify failure
+Date: Sun, 24 Mar 2024 13:05:46 -0400
+Message-ID: <20240324170552.545730-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324170552.545730-1-sashal@kernel.org>
 References: <20240324170552.545730-1-sashal@kernel.org>
@@ -69,62 +65,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.1
 Content-Transfer-Encoding: 8bit
 
-From: Zqiang <qiang.zhang1211@gmail.com>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit dda98810b552fc6bf650f4270edeebdc2f28bd3f ]
+[ Upstream commit 7e80eb792bd7377a20f204943ac31c77d859be89 ]
 
-For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
-CONFIG_RCU_LAZY=y, the following scenarios will trigger WARN_ON_ONCE()
-in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended() functions:
+The memory allocated for the identification is freed on failure. Set
+it to NULL so the caller doesn't have a pointer to that freed address.
 
-        CPU2                                               CPU11
-kthread
-rcu_nocb_cb_kthread                                       ksys_write
-rcu_do_batch                                              vfs_write
-rcu_torture_timer_cb                                      proc_sys_write
-__kmem_cache_free                                         proc_sys_call_handler
-kmemleak_free                                             drop_caches_sysctl_handler
-delete_object_full                                        drop_slab
-__delete_object                                           shrink_slab
-put_object                                                lazy_rcu_shrink_scan
-call_rcu                                                  rcu_nocb_flush_bypass
-__call_rcu_commn                                            rcu_nocb_bypass_lock
-                                                            raw_spin_trylock(&rdp->nocb_bypass_lock) fail
-                                                            atomic_inc(&rdp->nocb_lock_contended);
-rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
- WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
-                            |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
-
-Reproduce this bug with "echo 3 > /proc/sys/vm/drop_caches".
-
-This commit therefore uses rcu_nocb_try_flush_bypass() instead of
-rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan().  If the nocb_bypass
-queue is being flushed, then rcu_nocb_try_flush_bypass will return
-directly.
-
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 4efbf7333d4e1..d430b4656f59e 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1383,7 +1383,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 			rcu_nocb_unlock_irqrestore(rdp, flags);
- 			continue;
- 		}
--		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
-+		rcu_nocb_try_flush_bypass(rdp, jiffies);
- 		rcu_nocb_unlock_irqrestore(rdp, flags);
- 		wake_nocb_gp(rdp, false);
- 		sc->nr_to_scan -= _count;
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 0a96362912ced..39ee3036bd516 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1398,8 +1398,10 @@ static int nvme_identify_ctrl(struct nvme_ctrl *dev, struct nvme_id_ctrl **id)
+ 
+ 	error = nvme_submit_sync_cmd(dev->admin_q, &c, *id,
+ 			sizeof(struct nvme_id_ctrl));
+-	if (error)
++	if (error) {
+ 		kfree(*id);
++		*id = NULL;
++	}
+ 	return error;
+ }
+ 
+@@ -1528,6 +1530,7 @@ int nvme_identify_ns(struct nvme_ctrl *ctrl, unsigned nsid,
+ 	if (error) {
+ 		dev_warn(ctrl->device, "Identify namespace failed (%d)\n", error);
+ 		kfree(*id);
++		*id = NULL;
+ 	}
+ 	return error;
+ }
 -- 
 2.43.0
 
