@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-113256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E69A48882B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:55:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65B568882B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 863421F223E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:55:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2156E287B95
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45A1187E8B;
-	Sun, 24 Mar 2024 22:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA40C13CA88;
+	Sun, 24 Mar 2024 22:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I37O5HjN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WTb8QbJ3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED5E187E6D;
-	Sun, 24 Mar 2024 22:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72F3187E90;
+	Sun, 24 Mar 2024 22:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320056; cv=none; b=cs7NK6rbOEJ8RBq6hQjGIQMIMWd3jfl1HTZH0bdt2BRido9PZCiuyHdkEjyYuigLwurmE7cAqcMW/THZcObFJN8dyAYuUp0CI5Rjb5GnmalrM/6QKw7X/mUIzxXn/iC9gn72RalsN5gnc/dtfk1LYDo5JFx23tEoPAMRpW12ZDg=
+	t=1711320056; cv=none; b=jnu2luSg0Bn8UhdrbhWAJBDQBUJnEnVMCZHeQJH07i3SbOLKKB7IeYRGAHr0iPjpHnXiV7vCe9fE0Gx40JjZiB91hxUAqDYniuhK54NdTYlL4ShqDWs3P7wO2+IiVfisVNvhRnLqT/HPfLn00oXCKfTFIct80qkOdDhE2MrYXW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320056; c=relaxed/simple;
-	bh=0nT6+dnLat5eW46YYuat1egqogoXhgAReEx7/an+0Fs=;
+	bh=+rMlh2QubRCArm0kM1Dj0Fl4nnNuuvzgyDokws4LcJY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GsELGmXW5My+29kC0igKiG4LoieDZfb5AmeE1+rT6KVJ4ZFo/35ze5gtT0ykydZO8imcR6C8ELuXp1cOSqegbgusl7Zq5fzaNjUe5VScRc/FZhcPY+O3BhnbXiBSgQaHonHLfH0Aoc34pP1/3vVsIp2CpNVOFmW2iTA92Lc4S/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I37O5HjN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C437C433F1;
+	 MIME-Version; b=I2KOScESkXiz0kEDWRFdvZxsxzoMgBZ6EXClZmnaqjD+3CF4HoHF7yePENKKdkK05CHt6+ycTCXIPn6TFF+56MGjV69C6eMpMTmGe2OG/9lXpms5MY3rbRNO7ugRvjukFDXwfVBjlq94c4/aoSjxLgmTIR23ip8eLIgPpLGoPcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WTb8QbJ3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EF4BC433A6;
 	Sun, 24 Mar 2024 22:40:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320055;
-	bh=0nT6+dnLat5eW46YYuat1egqogoXhgAReEx7/an+0Fs=;
+	s=k20201202; t=1711320056;
+	bh=+rMlh2QubRCArm0kM1Dj0Fl4nnNuuvzgyDokws4LcJY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I37O5HjNSeBQCM6xRflx/AMKd3ey5UzG5frdF1nhAVmOqzl6BxyrKMTEMnuJ4dfPG
-	 fSk2C6su7Z5FLEwIN/g/vbB6cPLTi97EAqb2JbvaVHX2H90fK3caqxGFXTqoImJ/+U
-	 iNieJKMCiGUql7TXxAOL15lNoVyWsKVT4cXQKilL9pdI4DOexqVwEam9w8+Vp88X+l
-	 I7WGR+8lVnSH25/r4r10ZZPYY6+psuJb5s+b7ZGYYqTHDd9iNKrhTX49m5IH7x8dV+
-	 nH4YdhrpGlxhrdH+TJiTB92EFeKDvYt9rUbM1rE6viDlonhzEeVwr0vEwR3tGRzkEO
-	 YJ5G0ZFmYsCLQ==
+	b=WTb8QbJ3PCMdPSCOXww8imJ4NoYlbD7md0hQMdq3jcWUgarwIMGjDYO7twkl9b7/Q
+	 yskPhXKQ1SgU04JiL/FV3fOuf0Q4x2Gq6q/+o0mKOEAHgOZnlUhmqX7FLSSgrN3c9e
+	 xmy8mSNFZT9NV6GauZkQlk3zWj2hnpaJ7K7BRe5kJVWu18MV1qy0MT8DiN7a//nz9t
+	 eCn5yjkAW6EP1tWFLdGSmZLcT/fu59wHIFXJecwSiuJD74x7X3MdnN6Zpx81/qfnXS
+	 P+QxnHXomMhUfvFEkYNb8yJJFOQyzpV86K8bpyZ+wV8WUr4PQRjPJ8SoPb0ZAkE5eL
+	 sAwFlCIzhKv1g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhipeng Lu <alexious@zju.edu.cn>,
-	Qiang Yu <yuq825@gmail.com>,
+Cc: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Emil Velikov <emil.velikov@collabora.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 365/715] drm/lima: fix a memleak in lima_heap_alloc
-Date: Sun, 24 Mar 2024 18:29:04 -0400
-Message-ID: <20240324223455.1342824-366-sashal@kernel.org>
+Subject: [PATCH 6.8 366/715] ASoC: amd: acp: Add missing error handling in sof-mach
+Date: Sun, 24 Mar 2024 18:29:05 -0400
+Message-ID: <20240324223455.1342824-367-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,70 +63,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Zhipeng Lu <alexious@zju.edu.cn>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 
-[ Upstream commit 04ae3eb470e52a3c41babe85ff8cee195e4dcbea ]
+[ Upstream commit d0ada20279db2649a7549a2b8a4a3379c59f238d ]
 
-When lima_vm_map_bo fails, the resources need to be deallocated, or
-there will be memleaks.
+Handle potential acp_sofdsp_dai_links_create() errors in ACP SOF machine
+driver's probe function.  Note there is no need for an undo.
 
-Fixes: 6aebc51d7aef ("drm/lima: support heap buffer creation")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Signed-off-by: Qiang Yu <yuq825@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240117071328.3811480-1-alexious@zju.edu.cn
+While at it, switch to dev_err_probe().
+
+Fixes: 9f84940f5004 ("ASoC: amd: acp: Add SOF audio support on Chrome board")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
+Link: https://msgid.link/r/20231219030728.2431640-4-cristian.ciocaltea@collabora.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/lima/lima_gem.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ sound/soc/amd/acp/acp-sof-mach.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
-index 4f9736e5f929b..7ea244d876ca6 100644
---- a/drivers/gpu/drm/lima/lima_gem.c
-+++ b/drivers/gpu/drm/lima/lima_gem.c
-@@ -75,29 +75,34 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
- 	} else {
- 		bo->base.sgt = kmalloc(sizeof(*bo->base.sgt), GFP_KERNEL);
- 		if (!bo->base.sgt) {
--			sg_free_table(&sgt);
--			return -ENOMEM;
-+			ret = -ENOMEM;
-+			goto err_out0;
- 		}
- 	}
+diff --git a/sound/soc/amd/acp/acp-sof-mach.c b/sound/soc/amd/acp/acp-sof-mach.c
+index 20b94814a0462..b86f65d420054 100644
+--- a/sound/soc/amd/acp/acp-sof-mach.c
++++ b/sound/soc/amd/acp/acp-sof-mach.c
+@@ -126,16 +126,14 @@ static int acp_sof_probe(struct platform_device *pdev)
+ 	if (dmi_id && dmi_id->driver_data)
+ 		acp_card_drvdata->tdm_mode = dmi_id->driver_data;
  
- 	ret = dma_map_sgtable(dev, &sgt, DMA_BIDIRECTIONAL, 0);
+-	acp_sofdsp_dai_links_create(card);
++	ret = acp_sofdsp_dai_links_create(card);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret, "Failed to create DAI links\n");
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
 -	if (ret) {
--		sg_free_table(&sgt);
--		kfree(bo->base.sgt);
--		bo->base.sgt = NULL;
+-		dev_err(&pdev->dev,
+-				"devm_snd_soc_register_card(%s) failed: %d\n",
+-				card->name, ret);
 -		return ret;
 -	}
+-
 +	if (ret)
-+		goto err_out1;
- 
- 	*bo->base.sgt = sgt;
- 
- 	if (vm) {
- 		ret = lima_vm_map_bo(vm, bo, old_size >> PAGE_SHIFT);
- 		if (ret)
--			return ret;
-+			goto err_out2;
- 	}
- 
- 	bo->heap_size = new_size;
++		return dev_err_probe(&pdev->dev, ret,
++				     "Failed to register card(%s)\n", card->name);
  	return 0;
-+
-+err_out2:
-+	dma_unmap_sgtable(dev, &sgt, DMA_BIDIRECTIONAL, 0);
-+err_out1:
-+	kfree(bo->base.sgt);
-+	bo->base.sgt = NULL;
-+err_out0:
-+	sg_free_table(&sgt);
-+	return ret;
  }
  
- int lima_gem_create_handle(struct drm_device *dev, struct drm_file *file,
 -- 
 2.43.0
 
