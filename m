@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-113378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D208883DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:22:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC8DF8883DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE30528334A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:22:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 290281C234FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6461719FD74;
-	Sun, 24 Mar 2024 22:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFEB719FD9E;
+	Sun, 24 Mar 2024 22:43:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rSu/i80p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GkmJ4MJy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD6119F53F;
-	Sun, 24 Mar 2024 22:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29E119FD82;
+	Sun, 24 Mar 2024 22:43:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320179; cv=none; b=dXlXAWhEjCA5uHmpyz7cCmiU4H615mxKMGBPjoIvyF1qdfWFCPqsVWu6zpQzQVjQ2pvM70tatVxWKrYyC5uiSPoDZYJu6xW/FwyjR2GPZ49QsSvzeELUi8f0EBycv3Ke1MTvDwaZEdgKpNaAETooqZssuRNzLDwSAT/ngvuteww=
+	t=1711320181; cv=none; b=g1PtUiyVVBD4+yZQAhsldRVd18pd8L76+zdiaOR+AG6feQiz49jJyXejDjNNSQ91KOfIq3NSIOanx+FCvMjfYiP4eWOehCttmaJGekcFm0ID5QJH2HC0+Z2bRgYv0s8axXOOApW1dJpN5m69y8RkLR9fKh98IMQdk1JjRCFPwB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320179; c=relaxed/simple;
-	bh=Fh4E4z39r7oA0cEzec0Z79XrPswQA0teNAo3fCt4Zg4=;
+	s=arc-20240116; t=1711320181; c=relaxed/simple;
+	bh=QKC9+Re7sEtL0gom4oBbG8bBk7rzUVifjFxB/JrvpDI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XaJVElvJNWi0IH9Z0619L3TvGcdhxNKrvwj2I/93+1lsBZYLIiTn3se77yJHRnbHDkCfwY6wigAp6sYjIsGKzZoENhRgPx+zLAP1/hmollOE/mA7zcSuHqkwyXJfQPO9ofWwWmn8Y33bNTg74kmuXPGFvx1czXfLWQamtK7o4hE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rSu/i80p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5751C433C7;
-	Sun, 24 Mar 2024 22:42:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=dW3OTGZS1t2/TdqM1tCKBfshCW1OE6ZWWP7WOAl4bfL6+gEUIVbG5b6g54c4wfpSOc0vC7n5fFGCXdqXoprbpDW4oHpCywEC3XM5Nabfp6mvh8DzhrHJTVKHUTkaiaxBEepAlh87kIkmMH2uY8xTPLBKVlsG5EXGmPvNBuW7Lo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GkmJ4MJy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFD57C43394;
+	Sun, 24 Mar 2024 22:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320179;
-	bh=Fh4E4z39r7oA0cEzec0Z79XrPswQA0teNAo3fCt4Zg4=;
+	s=k20201202; t=1711320180;
+	bh=QKC9+Re7sEtL0gom4oBbG8bBk7rzUVifjFxB/JrvpDI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rSu/i80pftd9RIFSFKbR5wmGkSfLfY6ep9dBmoKRpualdMZg6Dg0H+i+QF7tflkDj
-	 TynEnarb6XNUseQFwIyUiIt1QldSuuRxzZnNkLlEMyOm1SpG5SxDOeeTvZyFtPAfzU
-	 lzCZEIyeGNcRixx96dCutCCMOKTU7B3hiak+RGlYCetC4aF2lzasohF4G+TS7SRCSz
-	 VgILVUcPlpoZ8sYINbrpwWPW/WFtcGWq1EzDN/w08m1PA3wNN//L6a8YL43utNTNp/
-	 R8JxlVGXrien5ost36XHaAMIopr5eTQGahCd5NjyBwUoUCOqPbNhKm28dY3XtrAf3K
-	 SZ4asOYpkVvJA==
+	b=GkmJ4MJyP3mDQSIY+Ktp2zaLuW3745jJjk9BhTUBH6QE/pewENESQ28OdBvxhDb5W
+	 MnDSV3WXdnsD0eYAphGli17lGbjCkBtEelXVIidq/4p5+CB/BlMgdOZmka2wp4bHIJ
+	 Z5ohLgG/e74/KmK/iTSdAoRMAYTFEiRSygLlwQVrqp05Z+Mw/WPVKQ9IInb24W4ec3
+	 5XKiFD1m/4X+AX5P1ZHOld1hSrMXPV0URnlyZThwYSXQGTJPHqI4+xWAdABm7Fifax
+	 dZxp9KfmqjvTeiDLZcz8dbJ28tPR5M2mrW+MsT3sisy1TZoydRfrvaPgKWZt7O/lUn
+	 iJmOw2gQw6FZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-	Akshata MukundShetty <akshata.mukundshetty@amd.com>,
-	Jiri Kosina <jkosina@suse.com>,
+Cc: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+	Jammy Zhou <Jammy.Zhou@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 487/715] HID: amd_sfh: Avoid disabling the interrupt
-Date: Sun, 24 Mar 2024 18:31:06 -0400
-Message-ID: <20240324223455.1342824-488-sashal@kernel.org>
+Subject: [PATCH 6.8 488/715] drm/amdgpu: Fix missing break in ATOM_ARG_IMM Case of atom_get_src_int()
+Date: Sun, 24 Mar 2024 18:31:07 -0400
+Message-ID: <20240324223455.1342824-489-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -59,105 +60,47 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
+From: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
 
-[ Upstream commit c1db0073212ef39d5a46c2aea5e49bf884375ce4 ]
+[ Upstream commit 7cf1ad2fe10634238b38442a851d89514cb14ea2 ]
 
-HP ProBook x360 435 G7 using older version of firmware which doesn't
-support disabling the interrupt for all commands. Hence avoid disabling
-the interrupt for that particular model.
+Missing break statement in the ATOM_ARG_IMM case of a switch statement,
+adds the missing break statement, ensuring that the program's control
+flow is as intended.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218104
-Fixes: b300667b33b2 ("HID: amd_sfh: Disable the interrupt for all command")
-Co-developed-by: Akshata MukundShetty <akshata.mukundshetty@amd.com>
-Signed-off-by: Akshata MukundShetty <akshata.mukundshetty@amd.com>
-Signed-off-by: Basavaraj Natikar <Basavaraj.Natikar@amd.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.com>
+Fixes the below:
+drivers/gpu/drm/amd/amdgpu/atom.c:323 atom_get_src_int() warn: ignoring unreachable code.
+
+Fixes: d38ceaf99ed0 ("drm/amdgpu: add core driver (v4)")
+Cc: Jammy Zhou <Jammy.Zhou@amd.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/amd-sfh-hid/amd_sfh_pcie.c | 30 +++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/atom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c b/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
-index 2530fa98b568b..ce449da08e9ba 100644
---- a/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
-+++ b/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
-@@ -35,6 +35,8 @@ static int sensor_mask_override = -1;
- module_param_named(sensor_mask, sensor_mask_override, int, 0444);
- MODULE_PARM_DESC(sensor_mask, "override the detected sensors mask");
- 
-+static bool intr_disable = true;
-+
- static int amd_sfh_wait_response_v2(struct amd_mp2_dev *mp2, u8 sid, u32 sensor_sts)
- {
- 	union cmd_response cmd_resp;
-@@ -55,7 +57,7 @@ static void amd_start_sensor_v2(struct amd_mp2_dev *privdata, struct amd_mp2_sen
- 
- 	cmd_base.ul = 0;
- 	cmd_base.cmd_v2.cmd_id = ENABLE_SENSOR;
--	cmd_base.cmd_v2.intr_disable = 1;
-+	cmd_base.cmd_v2.intr_disable = intr_disable;
- 	cmd_base.cmd_v2.period = info.period;
- 	cmd_base.cmd_v2.sensor_id = info.sensor_idx;
- 	cmd_base.cmd_v2.length = 16;
-@@ -73,7 +75,7 @@ static void amd_stop_sensor_v2(struct amd_mp2_dev *privdata, u16 sensor_idx)
- 
- 	cmd_base.ul = 0;
- 	cmd_base.cmd_v2.cmd_id = DISABLE_SENSOR;
--	cmd_base.cmd_v2.intr_disable = 1;
-+	cmd_base.cmd_v2.intr_disable = intr_disable;
- 	cmd_base.cmd_v2.period = 0;
- 	cmd_base.cmd_v2.sensor_id = sensor_idx;
- 	cmd_base.cmd_v2.length  = 16;
-@@ -87,7 +89,7 @@ static void amd_stop_all_sensor_v2(struct amd_mp2_dev *privdata)
- 	union sfh_cmd_base cmd_base;
- 
- 	cmd_base.cmd_v2.cmd_id = STOP_ALL_SENSORS;
--	cmd_base.cmd_v2.intr_disable = 1;
-+	cmd_base.cmd_v2.intr_disable = intr_disable;
- 	cmd_base.cmd_v2.period = 0;
- 	cmd_base.cmd_v2.sensor_id = 0;
- 
-@@ -292,6 +294,26 @@ int amd_sfh_irq_init(struct amd_mp2_dev *privdata)
- 	return 0;
- }
- 
-+static int mp2_disable_intr(const struct dmi_system_id *id)
-+{
-+	intr_disable = false;
-+	return 0;
-+}
-+
-+static const struct dmi_system_id dmi_sfh_table[] = {
-+	{
-+		/*
-+		 * https://bugzilla.kernel.org/show_bug.cgi?id=218104
-+		 */
-+		.callback = mp2_disable_intr,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP ProBook x360 435 G7"),
-+		},
-+	},
-+	{}
-+};
-+
- static const struct dmi_system_id dmi_nodevs[] = {
- 	{
- 		/*
-@@ -315,6 +337,8 @@ static int amd_mp2_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
- 	if (dmi_first_match(dmi_nodevs))
- 		return -ENODEV;
- 
-+	dmi_check_system(dmi_sfh_table);
-+
- 	privdata = devm_kzalloc(&pdev->dev, sizeof(*privdata), GFP_KERNEL);
- 	if (!privdata)
- 		return -ENOMEM;
+diff --git a/drivers/gpu/drm/amd/amdgpu/atom.c b/drivers/gpu/drm/amd/amdgpu/atom.c
+index a33e890c70d90..ac51d19b518ca 100644
+--- a/drivers/gpu/drm/amd/amdgpu/atom.c
++++ b/drivers/gpu/drm/amd/amdgpu/atom.c
+@@ -313,7 +313,7 @@ static uint32_t atom_get_src_int(atom_exec_context *ctx, uint8_t attr,
+ 				DEBUG("IMM 0x%02X\n", val);
+ 			return val;
+ 		}
+-		return 0;
++		break;
+ 	case ATOM_ARG_PLL:
+ 		idx = U8(*ptr);
+ 		(*ptr)++;
 -- 
 2.43.0
 
