@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286CD889A0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:23:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CC7C888C71
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADED71F2D642
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:23:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E9861C2A047
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4363B785C;
-	Mon, 25 Mar 2024 03:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17F32E5EA4;
+	Mon, 25 Mar 2024 00:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AkFhEpyQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QE/XbbGc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD17917C19E;
-	Sun, 24 Mar 2024 23:42:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F49317C1A4;
+	Sun, 24 Mar 2024 23:42:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323759; cv=none; b=lUZblm7ApVArkYTiJnFdhUDSBv0afq7/gpZPpF09I10SQysEGNOTrVh8WM8YEmQrD8L3XflP2Nh1mXCW9aydptBRWhw7CJpL7eAJe/72kjNQLTn+s4begbjpDR6oVq4u23I8eoG37IE132NrEi2LidVC+xOoHZpJh4JsFmRdZUw=
+	t=1711323761; cv=none; b=SHuoF4RkmXlYWs0SayILJVOPokgT5aDcBilWymwE8/XaUw4j06HV9GsNemQz4rqRJOr49DicexG8H7ZqkGOhN28YZV12dDU03pfa7IERA2G6nbhn0nGOOikZKC17uL88RgVmnSS/cQZNjA3t5npnPP9qdU5QNxddu6Genk9y0po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323759; c=relaxed/simple;
-	bh=lZi2nF932yfaJDHA0T9yEuil3WiBHFu4xjhRzOjRwU8=;
+	s=arc-20240116; t=1711323761; c=relaxed/simple;
+	bh=AMhjcr4iHcg/uPkM3R5hsZYfMAcH9jNbS1n+IIKneoc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AmOeGBALKhMdlVxFxRaK/1ZVFGUf99vIe5e/08kaiDYedlgKIbc5SramDyLI9f8eMHrg9+7tk2j6ihFC7TKUz/CTqtf1usOcOzfmJ7GhkYaU7sgYUiacHJDIObWTw0hYYXX7R2DzX9Vmhi7TFaHuT6uxLN8nVc16jrpJ48DrYBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AkFhEpyQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE6EEC433F1;
-	Sun, 24 Mar 2024 23:42:38 +0000 (UTC)
+	 MIME-Version; b=tbeYsJqRbYYR6B4jxYkvXKhyhvSoxAyyPSP2cKtvxuqnu7QLPSuUTbYpaIFlcYRNq2R1JpG5wVqRv5/Q+/qCxmQrO0RpETqJm0xOJ9EvxeuWluTXOoFRGJu/ZsifqbPtZ+BvTqWr5H2jGt+HBcB10w5G3B92Cd6ozFdIaTPrNiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QE/XbbGc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0F89C433A6;
+	Sun, 24 Mar 2024 23:42:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323759;
-	bh=lZi2nF932yfaJDHA0T9yEuil3WiBHFu4xjhRzOjRwU8=;
+	s=k20201202; t=1711323760;
+	bh=AMhjcr4iHcg/uPkM3R5hsZYfMAcH9jNbS1n+IIKneoc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AkFhEpyQjyvXmptwbBiY3LolvGtAUB+H+GaQBeCpNc7IM2UR6czMK8fU1DwOQhCxq
-	 jkMdj9w5+vPdhfiFZOKBhE5X1CUPphbjK0KA38IluD/eLPQAcnL4ZWlKRu0B+haLgU
-	 sz1PYf8VgQPmm/FoEi6rLE14xofwueEV6Wh3rLXUhlah0V+Ho485i3YbWwPBdMKVG+
-	 7Pd5+CZSBUuDev3GmjeV0EhXau52aLs3AYt+y3Z+cfbARYj5AjnGQkOJ4JPZKjgVDS
-	 MJwetYFLFtury08UXaBITIKE76IaLNIihMQmju/SOosg8icvSKYI9mTXQLH2Rl+ykO
-	 5cmj75ePg/kGw==
+	b=QE/XbbGcMhSFnlR6mkqOX9OYVH0Tv85WCTB9rmgg1TenjvVPV+sJ/rdcE3SS77TMK
+	 HAjLtTRegKFLWokP8J/emyi0QyUN/CguI0SZaUJtQWBpmjEk9lBhi0HvxPFct7aDOo
+	 13Q8cov9vAVdYKZzHHOVoEm1Wrs48rKtEJuU3ZWSvQtqxR+ByMDDvQyQddJpLSAQIe
+	 BuIVLLh5w7GXGzncSjul2Je4+HQxMUaasl1cTMeXPXd3oBV/TN+Y+6pa7lawx+3ZiV
+	 9c6VTPPP3SdUqiWW6D4tnaak7YT3GRCBAzkzMb23ObsHRZF8Fc3Yx5whzhi5pUNkQj
+	 z/CTIh0Kj8ihQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Zhipeng Lu <alexious@zju.edu.cn>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 134/238] media: v4l2-mem2mem: fix a memleak in v4l2_m2m_register_entity
-Date: Sun, 24 Mar 2024 19:38:42 -0400
-Message-ID: <20240324234027.1354210-135-sashal@kernel.org>
+Subject: [PATCH 5.10 135/238] media: edia: dvbdev: fix a use-after-free
+Date: Sun, 24 Mar 2024 19:38:43 -0400
+Message-ID: <20240324234027.1354210-136-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -64,44 +64,80 @@ Content-Transfer-Encoding: 8bit
 
 From: Zhipeng Lu <alexious@zju.edu.cn>
 
-[ Upstream commit 8f94b49a5b5d386c038e355bef6347298aabd211 ]
+[ Upstream commit 8c64f4cdf4e6cc5682c52523713af8c39c94e6d5 ]
 
-The entity->name (i.e. name) is allocated in v4l2_m2m_register_entity
-but isn't freed in its following error-handling paths. This patch
-adds such deallocation to prevent memleak of entity->name.
+In dvb_register_device, *pdvbdev is set equal to dvbdev, which is freed
+in several error-handling paths. However, *pdvbdev is not set to NULL
+after dvbdev's deallocation, causing use-after-frees in many places,
+for example, in the following call chain:
 
-Fixes: be2fff656322 ("media: add helpers for memory-to-memory media controller")
+budget_register
+  |-> dvb_dmxdev_init
+        |-> dvb_register_device
+  |-> dvb_dmxdev_release
+        |-> dvb_unregister_device
+              |-> dvb_remove_device
+                    |-> dvb_device_put
+                          |-> kref_put
+
+When calling dvb_unregister_device, dmxdev->dvbdev (i.e. *pdvbdev in
+dvb_register_device) could point to memory that had been freed in
+dvb_register_device. Thereafter, this pointer is transferred to
+kref_put and triggering a use-after-free.
+
+Link: https://lore.kernel.org/linux-media/20240203134046.3120099-1-alexious@zju.edu.cn
+Fixes: b61901024776 ("V4L/DVB (5244): Dvbdev: fix illegal re-usage of fileoperations struct")
 Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-mem2mem.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/media/dvb-core/dvbdev.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-index ad14d52141067..56d320b1a1ca7 100644
---- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-+++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-@@ -1053,11 +1053,17 @@ static int v4l2_m2m_register_entity(struct media_device *mdev,
- 	entity->function = function;
- 
- 	ret = media_entity_pads_init(entity, num_pads, pads);
--	if (ret)
-+	if (ret) {
-+		kfree(entity->name);
-+		entity->name = NULL;
+diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
+index 3a83e8e092568..23a0c209744dc 100644
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -504,6 +504,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		dvbdevfops = kmemdup(template->fops, sizeof(*dvbdevfops), GFP_KERNEL);
+ 		if (!dvbdevfops) {
+ 			kfree(dvbdev);
++			*pdvbdev = NULL;
+ 			mutex_unlock(&dvbdev_register_lock);
+ 			return -ENOMEM;
+ 		}
+@@ -512,6 +513,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		if (!new_node) {
+ 			kfree(dvbdevfops);
+ 			kfree(dvbdev);
++			*pdvbdev = NULL;
+ 			mutex_unlock(&dvbdev_register_lock);
+ 			return -ENOMEM;
+ 		}
+@@ -545,6 +547,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		}
+ 		list_del (&dvbdev->list_head);
+ 		kfree(dvbdev);
++		*pdvbdev = NULL;
+ 		up_write(&minor_rwsem);
+ 		mutex_unlock(&dvbdev_register_lock);
+ 		return -EINVAL;
+@@ -567,6 +570,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		dvb_media_device_free(dvbdev);
+ 		list_del (&dvbdev->list_head);
+ 		kfree(dvbdev);
++		*pdvbdev = NULL;
+ 		mutex_unlock(&dvbdev_register_lock);
  		return ret;
-+	}
- 	ret = media_device_register_entity(mdev, entity);
--	if (ret)
-+	if (ret) {
-+		kfree(entity->name);
-+		entity->name = NULL;
- 		return ret;
-+	}
- 
- 	return 0;
- }
+ 	}
+@@ -585,6 +589,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 		dvb_media_device_free(dvbdev);
+ 		list_del (&dvbdev->list_head);
+ 		kfree(dvbdev);
++		*pdvbdev = NULL;
+ 		mutex_unlock(&dvbdev_register_lock);
+ 		return PTR_ERR(clsdev);
+ 	}
 -- 
 2.43.0
 
