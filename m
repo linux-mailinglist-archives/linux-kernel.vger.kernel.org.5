@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-115235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD73A889367
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:28:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDCE7888DE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ABF21C2C9A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:28:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 764F328E3BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8D81CCE32;
-	Mon, 25 Mar 2024 01:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A802978E6;
+	Mon, 25 Mar 2024 01:11:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tVb8LdNd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QZOQM20e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BDDD18520B;
-	Sun, 24 Mar 2024 23:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B467B185218;
+	Sun, 24 Mar 2024 23:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324332; cv=none; b=kWAE+6fpH/fdQhK9r1blQSj+ZoNQcNXgHeU1bAXZFN/VTBpJt192l8pjRqTGdnrNUGT0YRh3D7KeIwVNulJHQif2hxF4BQqErKj+xHKL3E39g2WrMFoGpoeDHGzTo06+T2yuCDYGUvkitT1uUAi0cMgw9y6xkXFVrGqFUeUhrD4=
+	t=1711324333; cv=none; b=HsOLDxTCuv7XH3glb2spfR++6oKcHTAVT9vB9lFRScXJnapHQmWnahXKNIOuy+TM+INEsOPyMr3XmRqR0YGPYI1FfS33Lt+TvLNWDFvm6lJenYz1rXLm+Nm2s5sUICoynlZOhc0laxUUbPH+3HmB3NAQicuWqp/fhV/fg1GRB70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324332; c=relaxed/simple;
-	bh=5s0pWDmBEPFIOy02KFQp8liTlWUa2O7endpq9tizYYc=;
+	s=arc-20240116; t=1711324333; c=relaxed/simple;
+	bh=YCkvSQzEv+R4kiRtPg/vr7zwuz9GHECujORNUOw4sgA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nHyC2iGJW/p6JrBPAoMqG4msNYRU3+sAG2ZULbVL9J+I1oprsfbxleowX/AOKEbP8bpzBvTZfS9v13swz3/+DsSLJ944nLiHoyD2S7TDWAZjG3THVeqk8+RY88DxE7apWCn3GP73jVRg00CyY5ugpLzQeY2Lf8raQpANqw5/rHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tVb8LdNd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7D2DC43399;
-	Sun, 24 Mar 2024 23:52:10 +0000 (UTC)
+	 MIME-Version; b=R92IL3/L4I5cpsikleFc2/7xdfYF+66M1LX4xZLqIfPQqLR4gsPb1iZG6nYAXYUhdiV63mje4i8yD49I9MNkhgmxs9lKREyX08guhrI8dI944ARb0eLpZfKoqjPben0st9p+mlNZTmgd6ovFCTqzn3Ii5AkvhkhJxnyJai5WxzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QZOQM20e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF659C43390;
+	Sun, 24 Mar 2024 23:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324331;
-	bh=5s0pWDmBEPFIOy02KFQp8liTlWUa2O7endpq9tizYYc=;
+	s=k20201202; t=1711324332;
+	bh=YCkvSQzEv+R4kiRtPg/vr7zwuz9GHECujORNUOw4sgA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tVb8LdNdBn0AWBKsCziX53A81poQKGHBDIrX3OzcWcwMnvCYl9ntqCWNfyrNtWjQb
-	 3lcv5qnUcdVdmCKEEQ7c+rRTNsHS8pxOCMm97PNZpidab/KX/kHZZdy1UCj4KhMWf+
-	 CX0yfjR96nFrr4Rne1bMxyWsbPHX/NCZmwKfTGaz1Xp2rRXSAbOG9sdpMtivd/oZki
-	 vNOr7mc2g41PPsou1x60zW7NmiR1YmvKqrOvZ8oOlclvH3bqobRTUdvVgpqUaCVeh/
-	 /GMKpAxcakH5umo+dsFWy+A+DU1mXNkzNVuS8d63XEDDPDDlKpvNj0/X0ZGJZbpYuI
-	 RuQitMXGGJwyA==
+	b=QZOQM20eEqJBKzyb8zA97RTNGtp9wRElpJhebDelx5A5f4GzPsf9JvoOgqTm/4mCs
+	 bngnZmlRkhNn8oohw7n/UZ840H6Z+7SCll8A4Cb6eFaIZpUgnMCD1D0/KuJXmXtq5o
+	 UrBgYp2gyeOip8Jm27JyEDVO67UacHbc3u/XHk6b8eJtad/H/mfK+vlc0k8GVmvbEI
+	 WEy28xl4CiiMQi57c/BAYURj0RFJTF+tnm0lz5c+Ga24xgbGwDYmv2M5Vd3X9Oz7JA
+	 ohXDf5j18Gp/TECRp9ed+vfyYwen1HARt/E6Ue3GX854jO0CENv2bDZf7NJaNr39ZM
+	 brWdMmxWh/lKg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+Cc: Govind Singh <govinds@codeaurora.org>,
+	Bjorn Andersson <bjorn.andersson@linaro.org>,
+	Niklas Cassel <niklas.cassel@linaro.org>,
+	Brian Norris <briannorris@chromium.org>,
+	Kalle Valo <kvalo@codeaurora.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 102/148] media: pvrusb2: fix pvr2_stream_callback casts
-Date: Sun, 24 Mar 2024 19:49:26 -0400
-Message-ID: <20240324235012.1356413-103-sashal@kernel.org>
+Subject: [PATCH 4.19 103/148] firmware: qcom: scm: Add WLAN VMID for Qualcomm SCM interface
+Date: Sun, 24 Mar 2024 19:49:27 -0400
+Message-ID: <20240324235012.1356413-104-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -62,113 +65,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Govind Singh <govinds@codeaurora.org>
 
-[ Upstream commit 30baa4a96b23add91a87305baaeba82c4e109e1f ]
+[ Upstream commit cc53aabcc283c36274d3f3ce9adc4b40c21d4838 ]
 
-clang-16 complains about a control flow integrity (KCFI) issue in pvrusb2,
-which casts three different prototypes into pvr2_stream_callback:
+Add WLAN related VMID's to support wlan driver to set up
+the remote's permissions call via TrustZone.
 
-drivers/media/usb/pvrusb2/pvrusb2-v4l2.c:1070:30: error: cast from 'void (*)(struct pvr2_v4l2_fh *)' to 'pvr2_stream_callback' (aka 'void (*)(void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1070 |         pvr2_stream_set_callback(sp,(pvr2_stream_callback)pvr2_v4l2_notify,fh);
-      |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/media/usb/pvrusb2/pvrusb2-context.c:110:6: error: cast from 'void (*)(struct pvr2_context *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-  110 |                                         (void (*)(void *))pvr2_context_notify,
-      |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/media/usb/pvrusb2/pvrusb2-dvb.c:152:6: error: cast from 'void (*)(struct pvr2_dvb_adapter *)' to 'pvr2_stream_callback' (aka 'void (*)(void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-  152 |                                  (pvr2_stream_callback) pvr2_dvb_notify, adap);
-      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Change the functions to actually take a void* argument so the cast is no longer
-needed.
-
-Fixes: bb8ce9d9143c ("V4L/DVB (7682): pvrusb2-dvb: finish up stream & buffer handling")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Govind Singh <govinds@codeaurora.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Stable-dep-of: 117e7dc697c2 ("clk: qcom: dispcc-sdm845: Adjust internal GDSC wait times")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/pvrusb2/pvrusb2-context.c | 8 ++++----
- drivers/media/usb/pvrusb2/pvrusb2-dvb.c     | 6 ++++--
- drivers/media/usb/pvrusb2/pvrusb2-v4l2.c    | 6 ++++--
- 3 files changed, 12 insertions(+), 8 deletions(-)
+ include/linux/qcom_scm.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-index 9236463ba269f..28a9cfef8f9f2 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-@@ -99,8 +99,10 @@ static void pvr2_context_destroy(struct pvr2_context *mp)
- }
+diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
+index 116b81ac442ad..1637385bcc171 100644
+--- a/include/linux/qcom_scm.h
++++ b/include/linux/qcom_scm.h
+@@ -1,4 +1,4 @@
+-/* Copyright (c) 2010-2015, The Linux Foundation. All rights reserved.
++/* Copyright (c) 2010-2015, 2018, The Linux Foundation. All rights reserved.
+  * Copyright (C) 2015 Linaro Ltd.
+  *
+  * This program is free software; you can redistribute it and/or modify
+@@ -33,6 +33,8 @@ struct qcom_scm_vmperm {
  
- 
--static void pvr2_context_notify(struct pvr2_context *mp)
-+static void pvr2_context_notify(void *ptr)
- {
-+	struct pvr2_context *mp = ptr;
-+
- 	pvr2_context_set_notify(mp,!0);
- }
- 
-@@ -115,9 +117,7 @@ static void pvr2_context_check(struct pvr2_context *mp)
- 		pvr2_trace(PVR2_TRACE_CTXT,
- 			   "pvr2_context %p (initialize)", mp);
- 		/* Finish hardware initialization */
--		if (pvr2_hdw_initialize(mp->hdw,
--					(void (*)(void *))pvr2_context_notify,
--					mp)) {
-+		if (pvr2_hdw_initialize(mp->hdw, pvr2_context_notify, mp)) {
- 			mp->video_stream.stream =
- 				pvr2_hdw_get_video_stream(mp->hdw);
- 			/* Trigger interface initialization.  By doing this
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-dvb.c b/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
-index 4b32b21411695..f326ab9a272e6 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-dvb.c
-@@ -97,8 +97,10 @@ static int pvr2_dvb_feed_thread(void *data)
- 	return stat;
- }
- 
--static void pvr2_dvb_notify(struct pvr2_dvb_adapter *adap)
-+static void pvr2_dvb_notify(void *ptr)
- {
-+	struct pvr2_dvb_adapter *adap = ptr;
-+
- 	wake_up(&adap->buffer_wait_data);
- }
- 
-@@ -158,7 +160,7 @@ static int pvr2_dvb_stream_do_start(struct pvr2_dvb_adapter *adap)
- 	}
- 
- 	pvr2_stream_set_callback(pvr->video_stream.stream,
--				 (pvr2_stream_callback) pvr2_dvb_notify, adap);
-+				 pvr2_dvb_notify, adap);
- 
- 	ret = pvr2_stream_set_buffer_count(stream, PVR2_DVB_BUFFER_COUNT);
- 	if (ret < 0) return ret;
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
-index 04d334152eae2..5e2c9aa649648 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
-@@ -1055,8 +1055,10 @@ static int pvr2_v4l2_open(struct file *file)
- }
- 
- 
--static void pvr2_v4l2_notify(struct pvr2_v4l2_fh *fhp)
-+static void pvr2_v4l2_notify(void *ptr)
- {
-+	struct pvr2_v4l2_fh *fhp = ptr;
-+
- 	wake_up(&fhp->wait_data);
- }
- 
-@@ -1089,7 +1091,7 @@ static int pvr2_v4l2_iosetup(struct pvr2_v4l2_fh *fh)
- 
- 	hdw = fh->channel.mc_head->hdw;
- 	sp = fh->pdi->stream->stream;
--	pvr2_stream_set_callback(sp,(pvr2_stream_callback)pvr2_v4l2_notify,fh);
-+	pvr2_stream_set_callback(sp, pvr2_v4l2_notify, fh);
- 	pvr2_hdw_set_stream_type(hdw,fh->pdi->config);
- 	if ((ret = pvr2_hdw_set_streaming(hdw,!0)) < 0) return ret;
- 	return pvr2_ioread_set_enabled(fh->rhp,!0);
+ #define QCOM_SCM_VMID_HLOS       0x3
+ #define QCOM_SCM_VMID_MSS_MSA    0xF
++#define QCOM_SCM_VMID_WLAN       0x18
++#define QCOM_SCM_VMID_WLAN_CE    0x19
+ #define QCOM_SCM_PERM_READ       0x4
+ #define QCOM_SCM_PERM_WRITE      0x2
+ #define QCOM_SCM_PERM_EXEC       0x1
 -- 
 2.43.0
 
