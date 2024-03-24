@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-115309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F6B1889A93
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:31:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F746889495
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:03:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 096CE29A1E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:31:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D4D2B2C3CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:31:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78A01D6954;
-	Mon, 25 Mar 2024 02:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A7415ECEE;
+	Mon, 25 Mar 2024 02:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EmJt0wq7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RriCyZuX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E46A80021;
-	Sun, 24 Mar 2024 22:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977B28002A;
+	Sun, 24 Mar 2024 22:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320502; cv=none; b=akeDqbjbG2t52+0kIBh3ZUmM2sN47P0zpyj42aH1N+wsK8loCQ2mNKOkzejdIcJoxoCTiIqgu0L+sQ0A7T8wnh20fnKpfVLuxmrKxZx4w7ilFhtGj+nfYgKZSHwglDgtG7CMJ2z5TdhbChJ/N6q3aLQl5IxYFvcLNbWEYe866WI=
+	t=1711320503; cv=none; b=JkRyaVJSIBLiCAjPFO4o2p3JIDs6FsfBtfxw05D0ePtFDQMZux5hsgQcy0FUwNpQq9fbdi+Py+JS/9qbPoHhKRSt1XYgn3KPNOn2TlhZNSi4RtXQ6mC+emf3sbQO47gVKhXRKu20c4Ro7LgUqefY66kaSjCJcWG450EBYNT7jmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320502; c=relaxed/simple;
-	bh=vGsRcugzQXk3Cte7pTGXjU6O3+vYXY4P4bjFaOnISPY=;
+	s=arc-20240116; t=1711320503; c=relaxed/simple;
+	bh=OgG/WDJUTsEvv9Tyw8GnnVBTZTEmUUmnwLIp/HEj/Eg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qZlG8GRip18HlgoIF+DUbhbMdZSf4mrOOFu584q+5IrQ2Vn4G3qwht0NBFlnxfxqqbXWgA6vxQigBqf3Aq3QfLoKTkZ4il2nGV7kqSmH+4oJQqzDIwQ15ZXEKHUK/ziMcL8g0mv7vijxb2WqFM0Evd8cQJaxpF9m7sT4EMIWCgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EmJt0wq7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE854C433C7;
-	Sun, 24 Mar 2024 22:48:21 +0000 (UTC)
+	 MIME-Version:Content-Type; b=RT829Vy5Phzz1dwDnXTmi/2NU0B+G/tHgLM22yIYkLvJvPpcW1fm9PNcJ5LBMbeiYGrtTjbxhJmIskn3pVFYvswoJOrSgYHSBu4aZFNxqxlahY2MQnTIp/S3Z0jv1bP9hY/aqlWiXJp5//3yB/EPrPcxh/CizsqVI0xzq0YRi3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RriCyZuX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4FA4C43390;
+	Sun, 24 Mar 2024 22:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320502;
-	bh=vGsRcugzQXk3Cte7pTGXjU6O3+vYXY4P4bjFaOnISPY=;
+	s=k20201202; t=1711320503;
+	bh=OgG/WDJUTsEvv9Tyw8GnnVBTZTEmUUmnwLIp/HEj/Eg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EmJt0wq7bppQzJwOP7KIZzDelfh3Ns6Qhq2aBM8I92gyWxp0nbJxcVVZ6D9KzNzMe
-	 ZtIPHM2TNLtBqpD9ZYKrnBAEGWySRhbrNNLKYODoASeEPi2p17qg66qMhI/LKIO9LU
-	 zTiLGlA0rVtlBIyMGIenJKU6tpfbvWhL+tDEQMAKyQKbiRuXHKlF7lRm/UtUcXEqlh
-	 RzN46kreuYMeY5vw86TLq4QYITFKUV+4gv61lB+w8aWB1ctEtFKntm/n68FqUwvwOF
-	 EpegNPaMPxtBS36H4hhm0EvaJG4hheTICTNcZ6g2HMyb9i5ylxDFGpSv4vDkP3qL+Y
-	 BuEF199UZ330Q==
+	b=RriCyZuX15QM2sU9nriKQNuXda5FwE3tbj2tgshwXu1ytbnQFKFzlZECXxXa+pM9s
+	 7bPQQ0O0vL0fTOUgxfFkbfk4qyu7t0yTzihH+pqeNBDiEBjiDnpxxrPcco60R8MAJ0
+	 vyGNszDykR4Xi2nIa4swb/difhUxaC/F4jBb7zGdk9zaCHN/OpJAB9/BSQSTjYHrV0
+	 QAkJtpC+a8xBZCJOFsKlwWeDknaWLfBK8RYGs9uezT0rRWv7txc2e1rsFtYO7NHu+c
+	 XMQ+tJWS8b5lO0t1I+wvPTWgsL+OguFeo5UbLK8r7PT/Z6+/7UxfbzDfsgUluoCymG
+	 cF0GsQoKHuGeg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Prike Liang <Prike.Liang@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: Matthew Auld <matthew.auld@intel.com>,
+	Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 062/713] drm/amdgpu: Enable gpu reset for S3 abort cases on Raven series
-Date: Sun, 24 Mar 2024 18:36:28 -0400
-Message-ID: <20240324224720.1345309-63-sashal@kernel.org>
+Subject: [PATCH 6.7 063/713] drm/buddy: check range allocation matches alignment
+Date: Sun, 24 Mar 2024 18:36:29 -0400
+Message-ID: <20240324224720.1345309-64-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -58,92 +59,50 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Prike Liang <Prike.Liang@amd.com>
+From: Matthew Auld <matthew.auld@intel.com>
 
-[ Upstream commit c671ec01311b4744b377f98b0b4c6d033fe569b3 ]
+[ Upstream commit 2986314aa811c8a23aeb292edd30315495d54966 ]
 
-Currently, GPU resets can now be performed successfully on the Raven
-series. While GPU reset is required for the S3 suspend abort case.
-So now can enable gpu reset for S3 abort cases on the Raven series.
+Likely not a big deal for real users, but for consistency we should
+respect the min_page_size here. Main issue is that bias allocations
+turns into normal range allocation if the range and size matches
+exactly, and in the next patch we want to add some unit tests for this
+part of the api.
 
-Signed-off-by: Prike Liang <Prike.Liang@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Matthew Auld <matthew.auld@intel.com>
+Cc: Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
+Cc: Christian König <christian.koenig@amd.com>
+Reviewed-by: Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240219121851.25774-5-matthew.auld@intel.com
+Signed-off-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/soc15.c | 45 +++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 20 deletions(-)
+ drivers/gpu/drm/drm_buddy.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
-index 9b5af3f1383a7..f9ba1803046d9 100644
---- a/drivers/gpu/drm/amd/amdgpu/soc15.c
-+++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
-@@ -574,11 +574,34 @@ soc15_asic_reset_method(struct amdgpu_device *adev)
- 		return AMD_RESET_METHOD_MODE1;
- }
+diff --git a/drivers/gpu/drm/drm_buddy.c b/drivers/gpu/drm/drm_buddy.c
+index f3a6ac908f815..5ebdd6f8f36e6 100644
+--- a/drivers/gpu/drm/drm_buddy.c
++++ b/drivers/gpu/drm/drm_buddy.c
+@@ -771,8 +771,12 @@ int drm_buddy_alloc_blocks(struct drm_buddy *mm,
+ 		return -EINVAL;
  
-+static bool soc15_need_reset_on_resume(struct amdgpu_device *adev)
-+{
-+	u32 sol_reg;
+ 	/* Actual range allocation */
+-	if (start + size == end)
++	if (start + size == end) {
++		if (!IS_ALIGNED(start | end, min_block_size))
++			return -EINVAL;
 +
-+	sol_reg = RREG32_SOC15(MP0, 0, mmMP0_SMN_C2PMSG_81);
-+
-+	/* Will reset for the following suspend abort cases.
-+	 * 1) Only reset limit on APU side, dGPU hasn't checked yet.
-+	 * 2) S3 suspend abort and TOS already launched.
-+	 */
-+	if (adev->flags & AMD_IS_APU && adev->in_s3 &&
-+			!adev->suspend_complete &&
-+			sol_reg)
-+		return true;
-+
-+	return false;
-+}
-+
- static int soc15_asic_reset(struct amdgpu_device *adev)
- {
- 	/* original raven doesn't have full asic reset */
--	if ((adev->apu_flags & AMD_APU_IS_RAVEN) ||
--	    (adev->apu_flags & AMD_APU_IS_RAVEN2))
-+	/* On the latest Raven, the GPU reset can be performed
-+	 * successfully. So now, temporarily enable it for the
-+	 * S3 suspend abort case.
-+	 */
-+	if (((adev->apu_flags & AMD_APU_IS_RAVEN) ||
-+	    (adev->apu_flags & AMD_APU_IS_RAVEN2)) &&
-+		!soc15_need_reset_on_resume(adev))
- 		return 0;
+ 		return __drm_buddy_alloc_range(mm, start, size, NULL, blocks);
++	}
  
- 	switch (soc15_asic_reset_method(adev)) {
-@@ -1297,24 +1320,6 @@ static int soc15_common_suspend(void *handle)
- 	return soc15_common_hw_fini(adev);
- }
- 
--static bool soc15_need_reset_on_resume(struct amdgpu_device *adev)
--{
--	u32 sol_reg;
--
--	sol_reg = RREG32_SOC15(MP0, 0, mmMP0_SMN_C2PMSG_81);
--
--	/* Will reset for the following suspend abort cases.
--	 * 1) Only reset limit on APU side, dGPU hasn't checked yet.
--	 * 2) S3 suspend abort and TOS already launched.
--	 */
--	if (adev->flags & AMD_IS_APU && adev->in_s3 &&
--			!adev->suspend_complete &&
--			sol_reg)
--		return true;
--
--	return false;
--}
--
- static int soc15_common_resume(void *handle)
- {
- 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 	original_size = size;
+ 	original_min_size = min_block_size;
 -- 
 2.43.0
 
