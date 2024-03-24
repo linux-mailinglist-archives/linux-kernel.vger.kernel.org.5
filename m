@@ -1,62 +1,63 @@
-Return-Path: <linux-kernel+bounces-112758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4466A887DD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:11:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18FAC887DDB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7814B21F5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:11:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 347201C20D2C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A78199BC;
-	Sun, 24 Mar 2024 17:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1337545BF0;
+	Sun, 24 Mar 2024 17:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tvT6blnZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lAvvk6Bd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B23A18054;
-	Sun, 24 Mar 2024 17:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555BA1B94B;
+	Sun, 24 Mar 2024 17:06:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711300008; cv=none; b=kGeVMK7Qbdbm7sdJ8DjplMD3VS1sF3orcmpWM+8BOf36ByINW3A8Otj0Mtel+tizEAnR/GDUEY/+UmH17Ofvqh9tN8tnS6ApJoLZE/+yU5LgzmwwcqnV10WvhkE+l4qhxlacb+UoKkdUdIGp3gA0tOqL/7CNxl2lYhbWnoej5MQ=
+	t=1711300009; cv=none; b=GSfEsGx8ojzbI1UIRhJc8jS0VjzdJIiWQCn9g36u8jGuq+4a2PZuK0DqFuPl85PIxDjMOwJu2epPIqexvoy+8SeaefMglxv+Vgd398ArMahMSTdcCO9Jcznhv68JCCzUURCvZnhEKZsxFEcqT76tYtJetF+RLo+g6/tOb2W/OA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711300008; c=relaxed/simple;
-	bh=vY2dHuMi+WBs3WDDgt1k83JDIfXf2frpp4A0vqx+Qsc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WvH3SPSa+rZ9ywUonEPbwOi5Y2/SG0wXc+3rt35OiTmOnLJQ1e/4Qh8MUbAfxkbA/n35Tr/xs0ouxtcgL91IEWf96PvdiE7UTkG3c/j4dwPFPihg6AyUpqo6iEv/B8mzJefUSBZJG6/tHQ19lThCHlYDpjaYdSac6xBT0TNC3u8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tvT6blnZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ECEEC433F1;
-	Sun, 24 Mar 2024 17:06:46 +0000 (UTC)
+	s=arc-20240116; t=1711300009; c=relaxed/simple;
+	bh=slTNCGICSXhv0R9PYIlhq5xx5106itMekrzuvhanb7M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UssRqOYFCvaD7QYyPpkt32latGHHu+TrFrtZRl+btzb1Bn17tGLzYFDOJQEwa7Shl85GA02n+vby3lri1MCmKaOHqC+e7sKWNGvlP66GnZz9haHNU5Or5BchEdrnu6qceQh1KEcxCNo/4UHbyFFQW0IeXp2+Y7a4pO4myJvzWfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lAvvk6Bd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DFB5C433B1;
+	Sun, 24 Mar 2024 17:06:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711300007;
-	bh=vY2dHuMi+WBs3WDDgt1k83JDIfXf2frpp4A0vqx+Qsc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=tvT6blnZynOAbebF0awqL/kBSNQd7CWUj+iU/Pr774Rb8vUYwLBKIEantIrpADj1Y
-	 SRpU5p1nwbUNzaayRwAZNRZBzDYVjRdOxk+EqgpGR8OW4DCQB235iWkBcqgsqI5Uyf
-	 TkGjBhQpqXbPHqeIRpOvWiS1rgPwkwQ245cqAAcoqD22Vd+jeMkA9l64DKFC2SHv39
-	 ahA4rDmi6dBvkzoMTYqpDV+hA5pCLd4/pBbM0AxGhf6ugfx6dlG2kqothMggepAepq
-	 QDCiBoUd2+oInUWxa4Sw1lHkcJ8QIc3qKCS/vkXmBw3NXM3slObZ/wb7i0NZd/DwT/
-	 hPlC0spf9AeKw==
+	s=k20201202; t=1711300009;
+	bh=slTNCGICSXhv0R9PYIlhq5xx5106itMekrzuvhanb7M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=lAvvk6BdouyZ5ad9CrQa2cYMzsbRCZTMWGyKwz6X1pV+N1tBTauCG1Xq+nbPCqRp/
+	 SbsDnsF65I+8t8cXGBkcSKo7In3UQPR4J0MCFjaP9CoHa/SAtrRzL1FKDHsfmON5+6
+	 kqKmdvxsaUmCMzVtjnluHOsjcFMUwvDWtqZa1j6BVsZPvYbarfhQ2rrlh78JFVoN0Q
+	 rUqvck1g4vRicbSaaWqDDX2CXUueQp7oKkRbiT50cM9qO9obACK1LXfiQFEyq109Rd
+	 R6JMEX2zKglqaZM9vnuzkOc4thsr4y702FjD+KqmxL9uai2dfJEcZvrr/L86i2ip2M
+	 sDxmo7FhWNUdA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-	syzbot <syzbot+69b40dc5fd40f32c199f@syzkaller.appspotmail.com>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	jlayton@kernel.org,
-	jack@suse.cz,
-	akpm@linux-foundation.org,
-	xiubli@redhat.com,
-	willy@infradead.org,
-	princekumarmaurya06@gmail.com
-Subject: [PATCH AUTOSEL 6.6 01/11] sysv: don't call sb_bread() with pointers_lock held
-Date: Sun, 24 Mar 2024 13:06:31 -0400
-Message-ID: <20240324170645.546220-1-sashal@kernel.org>
+	frederic@kernel.org,
+	quic_neeraju@quicinc.com,
+	joel@joelfernandes.org,
+	josh@joshtriplett.org,
+	rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 02/11] rcu-tasks: Repair RCU Tasks Trace quiescence check
+Date: Sun, 24 Mar 2024 13:06:32 -0400
+Message-ID: <20240324170645.546220-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240324170645.546220-1-sashal@kernel.org>
+References: <20240324170645.546220-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,92 +69,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.22
 Content-Transfer-Encoding: 8bit
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit f123dc86388cb669c3d6322702dc441abc35c31e ]
+[ Upstream commit 2eb52fa8900e642b3b5054c4bf9776089d2a935f ]
 
-syzbot is reporting sleep in atomic context in SysV filesystem [1], for
-sb_bread() is called with rw_spinlock held.
+The context-switch-time check for RCU Tasks Trace quiescence expects
+current->trc_reader_special.b.need_qs to be zero, and if so, updates
+it to TRC_NEED_QS_CHECKED.  This is backwards, because if this value
+is zero, there is no RCU Tasks Trace grace period in flight, an thus
+no need for a quiescent state.  Instead, when a grace period starts,
+this field is set to TRC_NEED_QS.
 
-A "write_lock(&pointers_lock) => read_lock(&pointers_lock) deadlock" bug
-and a "sb_bread() with write_lock(&pointers_lock)" bug were introduced by
-"Replace BKL for chain locking with sysvfs-private rwlock" in Linux 2.5.12.
+This commit therefore changes the check from zero to TRC_NEED_QS.
 
-Then, "[PATCH] err1-40: sysvfs locking fix" in Linux 2.6.8 fixed the
-former bug by moving pointers_lock lock to the callers, but instead
-introduced a "sb_bread() with read_lock(&pointers_lock)" bug (which made
-this problem easier to hit).
-
-Al Viro suggested that why not to do like get_branch()/get_block()/
-find_shared() in Minix filesystem does. And doing like that is almost a
-revert of "[PATCH] err1-40: sysvfs locking fix" except that get_branch()
- from with find_shared() is called without write_lock(&pointers_lock).
-
-Reported-by: syzbot <syzbot+69b40dc5fd40f32c199f@syzkaller.appspotmail.com>
-Link: https://syzkaller.appspot.com/bug?extid=69b40dc5fd40f32c199f
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Link: https://lore.kernel.org/r/0d195f93-a22a-49a2-0020-103534d6f7f6@I-love.SAKURA.ne.jp
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/sysv/itree.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ include/linux/rcupdate.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/sysv/itree.c b/fs/sysv/itree.c
-index edb94e55de8e5..7b2a07a31e463 100644
---- a/fs/sysv/itree.c
-+++ b/fs/sysv/itree.c
-@@ -82,9 +82,6 @@ static inline sysv_zone_t *block_end(struct buffer_head *bh)
- 	return (sysv_zone_t*)((char*)bh->b_data + bh->b_size);
- }
- 
--/*
-- * Requires read_lock(&pointers_lock) or write_lock(&pointers_lock)
-- */
- static Indirect *get_branch(struct inode *inode,
- 			    int depth,
- 			    int offsets[],
-@@ -104,15 +101,18 @@ static Indirect *get_branch(struct inode *inode,
- 		bh = sb_bread(sb, block);
- 		if (!bh)
- 			goto failure;
-+		read_lock(&pointers_lock);
- 		if (!verify_chain(chain, p))
- 			goto changed;
- 		add_chain(++p, bh, (sysv_zone_t*)bh->b_data + *++offsets);
-+		read_unlock(&pointers_lock);
- 		if (!p->key)
- 			goto no_block;
- 	}
- 	return NULL;
- 
- changed:
-+	read_unlock(&pointers_lock);
- 	brelse(bh);
- 	*err = -EAGAIN;
- 	goto no_block;
-@@ -218,9 +218,7 @@ static int get_block(struct inode *inode, sector_t iblock, struct buffer_head *b
- 		goto out;
- 
- reread:
--	read_lock(&pointers_lock);
- 	partial = get_branch(inode, depth, offsets, chain, &err);
--	read_unlock(&pointers_lock);
- 
- 	/* Simplest case - block found, no allocation needed */
- 	if (!partial) {
-@@ -290,9 +288,9 @@ static Indirect *find_shared(struct inode *inode,
- 	*top = 0;
- 	for (k = depth; k > 1 && !offsets[k-1]; k--)
- 		;
-+	partial = get_branch(inode, k, offsets, chain, &err);
- 
- 	write_lock(&pointers_lock);
--	partial = get_branch(inode, k, offsets, chain, &err);
- 	if (!partial)
- 		partial = chain + k-1;
- 	/*
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 44aab5c0bd2c1..f9173b972c7e2 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -189,9 +189,9 @@ void rcu_tasks_trace_qs_blkd(struct task_struct *t);
+ 	do {									\
+ 		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
+ 										\
+-		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
++		if (unlikely(READ_ONCE((t)->trc_reader_special.b.need_qs) == TRC_NEED_QS) &&	\
+ 		    likely(!___rttq_nesting)) {					\
+-			rcu_trc_cmpxchg_need_qs((t), 0,	TRC_NEED_QS_CHECKED);	\
++			rcu_trc_cmpxchg_need_qs((t), TRC_NEED_QS, TRC_NEED_QS_CHECKED);	\
+ 		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
+ 			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
+ 			rcu_tasks_trace_qs_blkd(t);				\
 -- 
 2.43.0
 
