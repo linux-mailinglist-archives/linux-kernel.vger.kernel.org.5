@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A23B2888E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:21:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29596888E96
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:23:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A743BB271FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:55:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBF5CB2B05F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819E130B4AD;
-	Mon, 25 Mar 2024 01:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC90C1CAC60;
+	Mon, 25 Mar 2024 01:09:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yuzr3y6k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+S0MSJQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15FAA184303;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00763184403;
 	Sun, 24 Mar 2024 23:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324269; cv=none; b=VgqvgjH1SjPvKUyYTv7M2EnG+TxhKMf2WoTBaMGsdtpagYEhgyPSr8mA2JrAhZ4JCIBcIh4X21q1MRdV0p3cBcn6YSqV2+hceMzjIg1nCgGikrE7ABgG9BIPjk5D/pD08F4kb0sYkZ8mUVVdwtkQ5zH0P8qX3xFX8u8EZydC5tA=
+	t=1711324270; cv=none; b=Ccr8rf9NqqIULkK38NsPbwPIDRkQr4kpl7VnYhDwQceZVUlqnJZYyzNteEz4/ofgL4B8trskkjU9sY6idctZp3rTo0Km+hbCgGS6Y1eLos4w7oY03wUu41MArvHcA7wuPfyf3pU3Kl4fKxLrawd/13RotPsJCfbufWasdbzEivo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324269; c=relaxed/simple;
-	bh=FaVXkdVeySI9vjG797fmEk7rhM4ih4kJDsRRP8xVya4=;
+	s=arc-20240116; t=1711324270; c=relaxed/simple;
+	bh=t0dlIHKdQlh5FOxOWMgprE0F0SGdYtgOUdiJq8cKvLg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FqVAn6Em5U5D1lnVfUFovMdeHHflQzod6yG6/7kJzKSI+DHnsdcRZBsmLdHKq9cmGUHcB9wvp21PElKdgzGupl/UHorZhEpVrDm8eiScdE9F0PRUSgdgkHVG8LlefHSRbsvwDAG7YjQ7anAbOYrN1JOSEKv5bKmxUTTKZTQhpwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yuzr3y6k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10FB3C43394;
-	Sun, 24 Mar 2024 23:51:06 +0000 (UTC)
+	 MIME-Version; b=eBVNS7XvonIRCrGCLlaoCfiuVyhHF4Rcffsr5w4oqQofN3FuD9ZX5lIPPtyJ9UG1TovWbe+kEVlEkJ2tvWWCGZrQY8SFjhhbGMW0G9JRNEmuaXFGqj5wg2O+ElRiFsgyxSCgRRU9U3+MF1o8w9RIuEs051wi4IP9l/PfqnQvEtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+S0MSJQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A85AC433C7;
+	Sun, 24 Mar 2024 23:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711324268;
-	bh=FaVXkdVeySI9vjG797fmEk7rhM4ih4kJDsRRP8xVya4=;
+	bh=t0dlIHKdQlh5FOxOWMgprE0F0SGdYtgOUdiJq8cKvLg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Yuzr3y6kf1qwzmiejBDEg3k7up/VIjmcXDNGor1M6W1o1nKbFokNF5RTUArgRko0X
-	 DAsIAuxl/zWbdnyr2PlbyG+JuSvKJrLA4yv8ensqJs76JcVoMGkVS/5SbFOlu2u3tj
-	 jldlvdgR1BOJWuz6j3JIGUmWfftkLP8m3Bp75n+msH2b5zivNSHbhk4aRam6p8ILWY
-	 QZvliqxpy9ToQeotgWz+PWQyM0MYnSNcD3ReaHEdpZQwoiMgwqpn/jUx3lEciGdv9K
-	 13aAtZ1DntLl+eGz9JTP01p4cFonfd10VdVV0WJ9Xkz7hkZOZA3b7wJWwT4FH9nQfi
-	 ACrLUNFvoK/hw==
+	b=g+S0MSJQbzShn6+1lhH83E4nepGjkZXnS9yH01EvY/MsrnM+sXqsSiUh8mxXfjZDm
+	 tYA2x2OV+xCyeeowKb2X3hN3+r15desgnhUmp5NDKJPk6jXEnJ4bX5x437k4BMsd8S
+	 orToadriWLygdJiCIPuY6DVZNvOY3Xg5b4b7wERcw9ZM868fvYtTpzxPh+GPK7YXJB
+	 oLIQTwfXVzMAbuicbl+J3jZg/nTL5QEHFU4Jp7DVGoUyxLutXk47OWkeO4zWf07tRl
+	 xyLnVkVSKq2i81U7WMgeFkuiY1xnhQI83vnJ1gsXaIOLn7TsfD9krwl3oRU6TDayqC
+	 3lLG79Wihy/IA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>,
-	Guixiong Wei <guixiongwei@gmail.com>,
-	Juergen Gross <jgross@suse.com>,
+Cc: Zhipeng Lu <alexious@zju.edu.cn>,
+	Chuck Lever <chuck.lever@oracle.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 047/148] x86, relocs: Ignore relocations in .notes section
-Date: Sun, 24 Mar 2024 19:48:31 -0400
-Message-ID: <20240324235012.1356413-48-sashal@kernel.org>
+Subject: [PATCH 4.19 048/148] SUNRPC: fix some memleaks in gssx_dec_option_array
+Date: Sun, 24 Mar 2024 19:48:32 -0400
+Message-ID: <20240324235012.1356413-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,52 +62,84 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <keescook@chromium.org>
+From: Zhipeng Lu <alexious@zju.edu.cn>
 
-[ Upstream commit aaa8736370db1a78f0e8434344a484f9fd20be3b ]
+[ Upstream commit 3cfcfc102a5e57b021b786a755a38935e357797d ]
 
-When building with CONFIG_XEN_PV=y, .text symbols are emitted into
-the .notes section so that Xen can find the "startup_xen" entry point.
-This information is used prior to booting the kernel, so relocations
-are not useful. In fact, performing relocations against the .notes
-section means that the KASLR base is exposed since /sys/kernel/notes
-is world-readable.
+The creds and oa->data need to be freed in the error-handling paths after
+their allocation. So this patch add these deallocations in the
+corresponding paths.
 
-To avoid leaking the KASLR base without breaking unprivileged tools that
-are expecting to read /sys/kernel/notes, skip performing relocations in
-the .notes section. The values readable in .notes are then identical to
-those found in System.map.
-
-Reported-by: Guixiong Wei <guixiongwei@gmail.com>
-Closes: https://lore.kernel.org/all/20240218073501.54555-1-guixiongwei@gmail.com/
-Fixes: 5ead97c84fa7 ("xen: Core Xen implementation")
-Fixes: da1a679cde9b ("Add /sys/kernel/notes")
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: 1d658336b05f ("SUNRPC: Add RPC based upcall mechanism for RPCGSS auth")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/tools/relocs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/sunrpc/auth_gss/gss_rpc_xdr.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index aa046d46ff8ff..c7f1d1759c855 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -579,6 +579,14 @@ static void print_absolute_relocs(void)
- 		if (!(sec_applies->shdr.sh_flags & SHF_ALLOC)) {
- 			continue;
- 		}
-+		/*
-+		 * Do not perform relocations in .notes section; any
-+		 * values there are meant for pre-boot consumption (e.g.
-+		 * startup_xen).
-+		 */
-+		if (sec_applies->shdr.sh_type == SHT_NOTE) {
-+			continue;
+diff --git a/net/sunrpc/auth_gss/gss_rpc_xdr.c b/net/sunrpc/auth_gss/gss_rpc_xdr.c
+index 444380f968f11..730a9c4dc9931 100644
+--- a/net/sunrpc/auth_gss/gss_rpc_xdr.c
++++ b/net/sunrpc/auth_gss/gss_rpc_xdr.c
+@@ -263,8 +263,8 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
+ 
+ 	creds = kzalloc(sizeof(struct svc_cred), GFP_KERNEL);
+ 	if (!creds) {
+-		kfree(oa->data);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto free_oa;
+ 	}
+ 
+ 	oa->data[0].option.data = CREDS_VALUE;
+@@ -278,29 +278,40 @@ static int gssx_dec_option_array(struct xdr_stream *xdr,
+ 
+ 		/* option buffer */
+ 		p = xdr_inline_decode(xdr, 4);
+-		if (unlikely(p == NULL))
+-			return -ENOSPC;
++		if (unlikely(p == NULL)) {
++			err = -ENOSPC;
++			goto free_creds;
 +		}
- 		sh_symtab  = sec_symtab->symtab;
- 		sym_strtab = sec_symtab->link->strtab;
- 		for (j = 0; j < sec->shdr.sh_size/sizeof(Elf_Rel); j++) {
+ 
+ 		length = be32_to_cpup(p);
+ 		p = xdr_inline_decode(xdr, length);
+-		if (unlikely(p == NULL))
+-			return -ENOSPC;
++		if (unlikely(p == NULL)) {
++			err = -ENOSPC;
++			goto free_creds;
++		}
+ 
+ 		if (length == sizeof(CREDS_VALUE) &&
+ 		    memcmp(p, CREDS_VALUE, sizeof(CREDS_VALUE)) == 0) {
+ 			/* We have creds here. parse them */
+ 			err = gssx_dec_linux_creds(xdr, creds);
+ 			if (err)
+-				return err;
++				goto free_creds;
+ 			oa->data[0].value.len = 1; /* presence */
+ 		} else {
+ 			/* consume uninteresting buffer */
+ 			err = gssx_dec_buffer(xdr, &dummy);
+ 			if (err)
+-				return err;
++				goto free_creds;
+ 		}
+ 	}
+ 	return 0;
++
++free_creds:
++	kfree(creds);
++free_oa:
++	kfree(oa->data);
++	oa->data = NULL;
++	return err;
+ }
+ 
+ static int gssx_dec_status(struct xdr_stream *xdr,
 -- 
 2.43.0
 
