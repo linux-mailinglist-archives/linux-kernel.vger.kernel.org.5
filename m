@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81333889652
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:49:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 277CC888F2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:38:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0CE8B2C101
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:51:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D00171F34972
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70F73456E0;
-	Mon, 25 Mar 2024 02:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48BFA1FDA05;
+	Sun, 24 Mar 2024 23:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NHOBafGx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SwKKtf4H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93DE1FD114;
-	Sun, 24 Mar 2024 23:02:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25441FD12A;
+	Sun, 24 Mar 2024 23:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321329; cv=none; b=pT7mARhiJV0Kw+50SR5UYOpwY0XnWoE9KF6eEdAnWcMlM+WaE/awW0pQmMr65QU8BEYh4JvaiKAWid2tg2KT1B62l7wo/YJ7sLlPJ37lquC074S2Pcv4kWMSmALiYhylzVCUseL9CELBeYsXNF7hXbIz24k3KOQtcLx6YUw9oCo=
+	t=1711321331; cv=none; b=eiSCxOHr7u5ixB6am2tBDCMjWRRGfUOztsZHY+DoTl6t5V6yejxp4JbMi3ktAQTz8433CqYH8grPvgGUMp1HeHNPBONDa8/k/NE0JmmVhxKKy279n9EcjXQTXx2svl2HS60faNHCQBe+4pJ8v3UAuxaL6t/Yo0O6ETPio6bz1ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321329; c=relaxed/simple;
-	bh=rd9CTn5d36v+u366AsJVE1eQgwQIsnkSjg/Q6MfoA3Y=;
+	s=arc-20240116; t=1711321331; c=relaxed/simple;
+	bh=ee4JVX+b0jEgqSk/X+DrWDhtXvtITEYxbWllb2TfOyI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AvQvUpICJWf8l9uu09+BKYkWtlIHXs6rUGm0WR3JzMibRkb050y+g+jR9srd/xDsQwKvifeJ9FvhX6yKCFfBcjG9e+1uPnInyrGMXhHUfB9VLuk/4GRDSygnGaHCRdQgYsgOhI9sEkw5gfmQTlynHZp0+op+dL2AjVMBiM9TVQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NHOBafGx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F41BAC433C7;
-	Sun, 24 Mar 2024 23:02:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=oQC3qCkYHaIGIhHauwX+e611l6GuaotsRTx87ZamqcYVIMAgyTu2ikPI0IXfTZChXUuHs96rUC1D0Uag2S8qw2yQlH0DUMn8Chh6bfHUpPJ5ESRw7rVsJN/saVgKRLEKvWHyA+6tuUBbf3PxzZecFaE8BLgWPvyg4utiqSlBDwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SwKKtf4H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAD3C433F1;
+	Sun, 24 Mar 2024 23:02:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321329;
-	bh=rd9CTn5d36v+u366AsJVE1eQgwQIsnkSjg/Q6MfoA3Y=;
+	s=k20201202; t=1711321330;
+	bh=ee4JVX+b0jEgqSk/X+DrWDhtXvtITEYxbWllb2TfOyI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NHOBafGxoE1Gieh1NTYOr6CIJu0suovL3o0t8kE2GkDR7OkVYt/4bJMemYyIdqpx4
-	 IIoO48zPA5BBYHtbjwotTkl5AfeYgLnLR6+4fvU3kcjccggxI3QhgO43LU2l7jk0OW
-	 UWDe1gHmwBZw4ivWQ7tlsdBtjnwmCc39dKnoaGKwfNLTi93xkj7dD6d3a9KOENYJta
-	 ecO6EnQpZ7XoPqjGUukglZ3sWCxVjj7FVd1NZVAbQoueqQLlfseSnk7TpHiN+RwEFU
-	 hNz/5TQQ4JTyoyFppQnroB+LXbXBQT685mfQESzrWiGESkJQdNyKHlSPa/DTryivub
-	 RhaMN6I0DoBhA==
+	b=SwKKtf4HdpKbp4HrjrPwXWQhA/XKFkijugYajkdMmBWHBUgKMegGMfUZnN6FPU+sd
+	 31sz3Y/b8oh24ma9Lr/MLD+Cr897ttdusoqxC3rvBBHcNMJSZAEjFbSuZzInwYsAyz
+	 532XZDEibnizEvlXaRalTfKmrx7O4JlHhQ1mpiYVH25B92yRU7qf7krHIKahBA8gK5
+	 Z4umELK9N2bhigkmp3QhS6KLk1UBFC5sNVdqCk9OiSMjx29A3fSVFYUnFl1X2WMRAb
+	 ErEyrvx4srNUbo8LzVU66CU3vGSck23fr/oC5DGQJR8+rLTFrLCc7KMmbZthONjdha
+	 L25Nm8sVZ9GZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yuxuan Hu <20373622@buaa.edu.cn>,
+Cc: =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Danis?= <frederic.danis@collabora.com>,
 	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 053/638] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
-Date: Sun, 24 Mar 2024 18:51:30 -0400
-Message-ID: <20240324230116.1348576-54-sashal@kernel.org>
+Subject: [PATCH 6.6 054/638] Bluetooth: mgmt: Fix limited discoverable off timeout
+Date: Sun, 24 Mar 2024 18:51:31 -0400
+Message-ID: <20240324230116.1348576-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -58,60 +58,51 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yuxuan Hu <20373622@buaa.edu.cn>
+From: Frédéric Danis <frederic.danis@collabora.com>
 
-[ Upstream commit 2535b848fa0f42ddff3e5255cf5e742c9b77bb26 ]
+[ Upstream commit 0bd1fb586235224048c726922db048d1bce6354a ]
 
-During our fuzz testing of the connection and disconnection process at the
-RFCOMM layer, we discovered this bug. By comparing the packets from a
-normal connection and disconnection process with the testcase that
-triggered a KASAN report. We analyzed the cause of this bug as follows:
+LIMITED_DISCOVERABLE flag is not reset from Class of Device and
+advertisement on limited discoverable timeout. This prevents to pass PTS
+test GAP/DISC/LIMM/BV-02-C
 
-1. In the packets captured during a normal connection, the host sends a
-`Read Encryption Key Size` type of `HCI_CMD` packet
-(Command Opcode: 0x1408) to the controller to inquire the length of
-encryption key.After receiving this packet, the controller immediately
-replies with a Command Completepacket (Event Code: 0x0e) to return the
-Encryption Key Size.
+Calling set_discoverable_sync as when the limited discovery is set
+correctly update the Class of Device and advertisement.
 
-2. In our fuzz test case, the timing of the controller's response to this
-packet was delayed to an unexpected point: after the RFCOMM and L2CAP
-layers had disconnected but before the HCI layer had disconnected.
-
-3. After receiving the Encryption Key Size Response at the time described
-in point 2, the host still called the rfcomm_check_security function.
-However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
-had already been released, and when the function executed
-`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
-specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
-
-To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
-rfcomm_recv_frame in rfcomm_process_rx.
-
-Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
+Signed-off-by: Frédéric Danis <frederic.danis@collabora.com>
 Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/rfcomm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/bluetooth/mgmt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
-index 053ef8f25fae4..1d34d84970332 100644
---- a/net/bluetooth/rfcomm/core.c
-+++ b/net/bluetooth/rfcomm/core.c
-@@ -1941,7 +1941,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
- 	/* Get data directly from socket receive queue without copying it. */
- 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
- 		skb_orphan(skb);
--		if (!skb_linearize(skb)) {
-+		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
- 			s = rfcomm_recv_frame(s, skb);
- 			if (!s)
- 				break;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 9dd815b6603fe..2448a154a4069 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -1045,6 +1045,8 @@ static void rpa_expired(struct work_struct *work)
+ 	hci_cmd_sync_queue(hdev, rpa_expired_sync, NULL, NULL);
+ }
+ 
++static int set_discoverable_sync(struct hci_dev *hdev, void *data);
++
+ static void discov_off(struct work_struct *work)
+ {
+ 	struct hci_dev *hdev = container_of(work, struct hci_dev,
+@@ -1063,7 +1065,7 @@ static void discov_off(struct work_struct *work)
+ 	hci_dev_clear_flag(hdev, HCI_DISCOVERABLE);
+ 	hdev->discov_timeout = 0;
+ 
+-	hci_update_discoverable(hdev);
++	hci_cmd_sync_queue(hdev, set_discoverable_sync, NULL, NULL);
+ 
+ 	mgmt_new_settings(hdev);
+ 
 -- 
 2.43.0
 
