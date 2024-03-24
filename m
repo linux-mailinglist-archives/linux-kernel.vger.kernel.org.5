@@ -1,71 +1,89 @@
-Return-Path: <linux-kernel+bounces-112563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C94F9887B89
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:20:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14155887B8B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 04:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 715981C20D54
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:20:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3A791F219D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3E11C05;
-	Sun, 24 Mar 2024 03:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C8046A2;
+	Sun, 24 Mar 2024 03:29:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvrIiU3w"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jxp8dy49"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893D717F3
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 03:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892961A38DE;
+	Sun, 24 Mar 2024 03:28:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711250429; cv=none; b=oM5sB88AvcAkzL8j2Ft2Xqqrq4PWyRh+q7+YbJotXBiHfg4KYa297ZFFQN8ptcPUmHVc14dWkvhboi6Y9A3oL6BGuPnTV53Rl01HHrgzOnGxptq4ROqbT94GXWYAcmtB6XG9DAzhap8T1QvLaQ6jYThSzzmCkPMlh/WQsDSAzKE=
+	t=1711250941; cv=none; b=flAPVYt8JMZ/omHGYb1wJDyjAFYdHyPtw09X0Z6SyUE7MWcQhkPSSUrOM66J+LHzZ/DYgx7NYtrgYnWW4dnSSuPsT+Z5vIGCJ8ph/91Xa85ruPmxyEFob49KYhf/xrAvt9fno73gcYax7p09kxsECB2gOHAj0CWoK1Nn5bPuXU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711250429; c=relaxed/simple;
-	bh=EhbRsGvqN0jROuWy97R+D3RnYNFRvQyqA2GmT1EXg1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=GUaLIPyyDO1LO+Vx+Y3n0jCuQkijqE31SsyPG8rxEArH3XtSgUasdiJ1Ei8quiPJdlK4NLSRn3cy8a2U1j0lXwgebvnO2/cWrYAuNlCAOe1VQ0fg/HgNloKTBkhcAUSkA/i5N9UJPYlX2/PTJfJ7wrPKRCOrmwKbpR6qu8bIv7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FvrIiU3w; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711250428; x=1742786428;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=EhbRsGvqN0jROuWy97R+D3RnYNFRvQyqA2GmT1EXg1A=;
-  b=FvrIiU3wTcdSzcrwSHmirKbZYetvpx9CiDZAvBJkkHfgmrMA2CcFrrdh
-   fXAL4JlppUVk472Zt4ouMZIXj4fS3tIY8qtuyeEjTbEcubAKqcBgNhrbK
-   WUq9CxdlXMDbI06UU6/IKo+tQJzCauWItew32tzHC6cU71/EJnWUyKvUy
-   3qulp+TLE7ajsbWCcE4VwipjTKPZH8i/KUpgieXH5BTK7UpaTBRjOgkaE
-   bkjcVA/NMaYBAg8urGdq9egUkt0moyGzmjGaRduCrzCTm2p9sAPi4KBTo
-   NBhCx6Iyvv015lXHzw7m0jXMwz16ofstnCf7+QnurbkP6tTrraAHii+Zw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11022"; a="6129139"
-X-IronPort-AV: E=Sophos;i="6.07,150,1708416000"; 
-   d="scan'208";a="6129139"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2024 20:20:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,150,1708416000"; 
-   d="scan'208";a="46269540"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 23 Mar 2024 20:20:25 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1roEPG-000LdL-2f;
-	Sun, 24 Mar 2024 03:20:22 +0000
-Date: Sun, 24 Mar 2024 11:19:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: include/linux/framer/framer.h:184:16: warning: no previous prototype
- for function 'framer_get'
-Message-ID: <202403241110.hfJqeJRu-lkp@intel.com>
+	s=arc-20240116; t=1711250941; c=relaxed/simple;
+	bh=p/DG45cfaW8SBZRy9Pe2lFJhbWEPNRh2Wm9whP/pLtA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y3nUIq1pOtyNvJJPp28saU8UcpsQxL0KoitSURGh3gWwDdRyRWeru8SeAQqXScUX7KwJ9Ys6g6/neoShokOQWl6/XA2S1Gzs5dVbd98CyPrp9kFh+lke6yuEzMJ2WpsDIOyEIqfnDC5QH/r+SFZztOnJsKXBY+2ukZwHMTdgBv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jxp8dy49; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a450bedffdfso384451066b.3;
+        Sat, 23 Mar 2024 20:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711250938; x=1711855738; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PydOQ1bmmSNTs+e+O2bAUybHfmosF+9k+V6RWawPtKc=;
+        b=jxp8dy49SfyG6ag9wCvfzZqyPWSCIetUKySrBJo0YJ4Zxv7kR3TFojC32FVWKi4qIK
+         hPn7zhEgDp2ZQco+110VCEJUwCHqRcGQtWgX2c2aLWMTiyreX7a7UtW46nkdFHtxBhDy
+         qglsS4HoaQU23Hb0pdeN8372kdhji+dVDWjyt1/+1A4F/y/+iyQ7NfGtj1uTyBMhdXBi
+         44/DFMl0ojEbgpDKEK2/nP4HOMoH1fF2yBTMUtsM5nOo9jS1GpdJm+T05D+Ch7+oZxyt
+         lxhTpp6EU8ixNBpsSPdFzT4YhLmfBVRuQzmTnGmHNTTH9xtWRe4HqCXMUAssVMtcukst
+         vV3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711250938; x=1711855738;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PydOQ1bmmSNTs+e+O2bAUybHfmosF+9k+V6RWawPtKc=;
+        b=XfyrkSmvoltaSrnqqjmOj2CxojvxKZ+ZJebNVzEwDDNH2hUATZBKLoqF0c1RELyBxV
+         pdOJbySSrRu0pTyymvwboBetjQjhLBOULGWL5tUgrRwK8jH0iHihaD3HL1cXxlJM0Oyr
+         qGpFtnBn/RnQw5rFrgZhzj9Ydu9aLczwVIklevg1l9Fdxzz9LlepQcBBAEqdnAunobFq
+         nEX3YnNUej2uzpzDQVY8TFRLSY9Sqa8fvU0qkzQFbfw0oUGLCHQEchF44DaqpL5xMu4R
+         rwWFpRnCG/u5hCmGa43izCDm49yf+q/ZVHf4aa4++a69D0wFY2hqBVMVH50alucK5PFP
+         Splw==
+X-Forwarded-Encrypted: i=1; AJvYcCV3cQHZnq10WI4g9dGlPC9yowgjhygnrKppkAvwCto+gETmh1DdK9pF7WW4x339vAzrrTftwTllhn0Jsh4i1zkBirsfSIDiirckk/fnAcmetdAcLAxsrGeo9A+BptWNL1m883MeCyNvPutT3OKHJM5fnhVhaVj3GKkb9TG3QQeWpnBcxQ==
+X-Gm-Message-State: AOJu0YzfaG5tAB8Fdosnb2y7P3efyUt+TMDFMrDvk30lm46K7KIiBYfg
+	ukfZB51EEHBinuNExuHmqx+YJ+LnqakEo+TyC7rsxZYKRVpeZql2
+X-Google-Smtp-Source: AGHT+IFYFSWVv9IbQXjyThKPy1Mf+JJKlcuWw9dw4i0KwdZYpMQbYV1jMgqIe6gUkzqi38r666YnYw==
+X-Received: by 2002:a17:906:f2da:b0:a47:2f8c:7614 with SMTP id gz26-20020a170906f2da00b00a472f8c7614mr2228259ejb.43.1711250937491;
+        Sat, 23 Mar 2024 20:28:57 -0700 (PDT)
+Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
+        by smtp.gmail.com with ESMTPSA id hg24-20020a1709072cd800b00a4750705a07sm413706ejc.190.2024.03.23.20.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Mar 2024 20:28:56 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Sun, 24 Mar 2024 04:28:54 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Jonathan Haslam <jonathan.haslam@gmail.com>
+Cc: linux-trace-kernel@vger.kernel.org, andrii@kernel.org,
+	bpf@vger.kernel.org, rostedt@goodmis.org, mhiramat@kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
+Message-ID: <Zf+d9twfyIDosINf@gmail.com>
+References: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,83 +92,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   70293240c5ce675a67bfc48f419b093023b862b3
-commit: 54762918ca856028d33d1d56d017a4d7706c6196 net: wan: fsl_qmc_hdlc: Add framer support
-date:   13 days ago
-config: powerpc-randconfig-003-20240324 (https://download.01.org/0day-ci/archive/20240324/202403241110.hfJqeJRu-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 23de3862dce582ce91c1aa914467d982cb1a73b4)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240324/202403241110.hfJqeJRu-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403241110.hfJqeJRu-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/net/wan/fsl_qmc_hdlc.c:14:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:8:
-   In file included from include/linux/mm.h:2188:
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   In file included from drivers/net/wan/fsl_qmc_hdlc.c:17:
->> include/linux/framer/framer.h:184:16: warning: no previous prototype for function 'framer_get' [-Wmissing-prototypes]
-     184 | struct framer *framer_get(struct device *dev, const char *con_id)
-         |                ^
-   include/linux/framer/framer.h:184:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     184 | struct framer *framer_get(struct device *dev, const char *con_id)
-         | ^
-         | static 
->> include/linux/framer/framer.h:189:6: warning: no previous prototype for function 'framer_put' [-Wmissing-prototypes]
-     189 | void framer_put(struct device *dev, struct framer *framer)
-         |      ^
-   include/linux/framer/framer.h:189:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     189 | void framer_put(struct device *dev, struct framer *framer)
-         | ^
-         | static 
-   drivers/net/wan/fsl_qmc_hdlc.c:783:25: error: use of undeclared identifier 'qmc_hdlc_driver'; did you mean 'qmc_hdlc_probe'?
-     783 | MODULE_DEVICE_TABLE(of, qmc_hdlc_driver);
-         |                         ^~~~~~~~~~~~~~~
-         |                         qmc_hdlc_probe
-   include/linux/module.h:244:15: note: expanded from macro 'MODULE_DEVICE_TABLE'
-     244 | extern typeof(name) __mod_##type##__##name##_device_table               \
-         |               ^
-   drivers/net/wan/fsl_qmc_hdlc.c:694:12: note: 'qmc_hdlc_probe' declared here
-     694 | static int qmc_hdlc_probe(struct platform_device *pdev)
-         |            ^
-   3 warnings and 1 error generated.
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for HOTPLUG_CPU
-   Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
-   Selected by [y]:
-   - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=y] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
+In-Reply-To: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
 
 
-vim +/framer_get +184 include/linux/framer/framer.h
+* Jonathan Haslam <jonathan.haslam@gmail.com> wrote:
 
-82c944d05b1a24 Herve Codina 2023-11-28  183  
-82c944d05b1a24 Herve Codina 2023-11-28 @184  struct framer *framer_get(struct device *dev, const char *con_id)
-82c944d05b1a24 Herve Codina 2023-11-28  185  {
-82c944d05b1a24 Herve Codina 2023-11-28  186  	return ERR_PTR(-ENOSYS);
-82c944d05b1a24 Herve Codina 2023-11-28  187  }
-82c944d05b1a24 Herve Codina 2023-11-28  188  
-82c944d05b1a24 Herve Codina 2023-11-28 @189  void framer_put(struct device *dev, struct framer *framer)
-82c944d05b1a24 Herve Codina 2023-11-28  190  {
-82c944d05b1a24 Herve Codina 2023-11-28  191  }
-82c944d05b1a24 Herve Codina 2023-11-28  192  
+> Active uprobes are stored in an RB tree and accesses to this tree are
+> dominated by read operations. Currently these accesses are serialized by
+> a spinlock but this leads to enormous contention when large numbers of
+> threads are executing active probes.
+> 
+> This patch converts the spinlock used to serialize access to the
+> uprobes_tree RB tree into a reader-writer spinlock. This lock type
+> aligns naturally with the overwhelmingly read-only nature of the tree
+> usage here. Although the addition of reader-writer spinlocks are
+> discouraged [0], this fix is proposed as an interim solution while an
+> RCU based approach is implemented (that work is in a nascent form). This
+> fix also has the benefit of being trivial, self contained and therefore
+> simple to backport.
+> 
+> This change has been tested against production workloads that exhibit
+> significant contention on the spinlock and an almost order of magnitude
+> reduction for mean uprobe execution time is observed (28 -> 3.5 microsecs).
 
-:::::: The code at line 184 was first introduced by commit
-:::::: 82c944d05b1a24c76948ee9d6bb1d7de1ebb8b3a net: wan: Add framer framework support
+Have you considered/measured per-CPU RW semaphores?
 
-:::::: TO: Herve Codina <herve.codina@bootlin.com>
-:::::: CC: Linus Walleij <linus.walleij@linaro.org>
+Thanks,
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	Ingo
 
