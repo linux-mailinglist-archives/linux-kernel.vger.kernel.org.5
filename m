@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-113494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F7298884C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:50:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D93038884C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:51:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60DF31C241AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:50:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B0F5285F18
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D351B8FAE;
-	Sun, 24 Mar 2024 22:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F731B8FCD;
+	Sun, 24 Mar 2024 22:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K2BdbIlP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PCc9zS/e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0DB1B885F;
-	Sun, 24 Mar 2024 22:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330371B8FB5;
+	Sun, 24 Mar 2024 22:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320296; cv=none; b=k/Y8UeaaX6yJaBcFu134+7jB8w5ZMlwBS3EiLFmbV5gl7Vsv95wtxzM2an56918T5EiQ1X66MRbMfO03LLvHLNfpUK0mc/3Rxr7x5o0XgPIF5LYKm3Gesl07QlU7Uiz7bpkFZt67Mm3oXHRZdK4F5LE84yhEInRLSmdd33ikPlM=
+	t=1711320297; cv=none; b=bqpsovC3rU84LVlv4gkEx3AJcHERnJ67cWET+MlwxJz+FXu62fd2/9pkO6X58ATM/IkWYJOLEmcFFO/M54+btFxQo0a6lDxsLgi8ervPkHTa8M0pQqTtQ1gz0+Lr1IfPFViApTq3pvOaKqztV6N0wr9mFXDuuOekiKBH/pPK1qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320296; c=relaxed/simple;
-	bh=67eAQKcAC4gVWRQlrJDdEVJNqMFb1SeOyoS/9NlUAbg=;
+	s=arc-20240116; t=1711320297; c=relaxed/simple;
+	bh=2s6tXf7LXu3Ki+rm/NhyK94X2tkPoslHX4uEHVLgK8A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tPx4zBfN8SiVlubu32pDlCKPQS0pZXRfodylZ+WmDCKBPVzqeD8LeIvn/iYzYg/DNjauPGY3NL1YRwh+eDyidTQiEDqz8oQmakLByAAxMiq8wgMfVev6W/lj5CbsNxAhJTTPf3K2TEIBtOimDJmLY+27jMqmkDUzW/K2+gGlOHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K2BdbIlP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18CCDC433F1;
-	Sun, 24 Mar 2024 22:44:55 +0000 (UTC)
+	 MIME-Version; b=FFDQakec0C8wqejdbJ2ZzXdZwrCZRNvwzlwsZ7hFV1fTKil3YCX+NraeZ7PMsqUYqLr818SU9gybjEk9F5eo1JaKu7n55M+06TZK+ZYdS6rLUf/mYKvRJ4uSa12DtZpqZpcQocu2CVOHxjbsArmR7LblrADyKEmd8qvnE48HVA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PCc9zS/e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DB5AC43390;
+	Sun, 24 Mar 2024 22:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320295;
-	bh=67eAQKcAC4gVWRQlrJDdEVJNqMFb1SeOyoS/9NlUAbg=;
+	s=k20201202; t=1711320297;
+	bh=2s6tXf7LXu3Ki+rm/NhyK94X2tkPoslHX4uEHVLgK8A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K2BdbIlPI1L21da7cZCB2e0j3uEhXUS/oYJaeygzU5gpuBT9Z5sgDL3fyb8FT1NCe
-	 Q4OS5QDdUj0jmujLeerFsEteyRrkgF4XcXBxZr9zsbHXJXBf5aOTqLN6wwALY0988U
-	 7wfPnYnDdfpPJ73jMQ7DUOgNVaNHAR6dbw4TFF5c1Iu3B5Rjuvf6Gr7dFRxjwDO5Sw
-	 BiJZ6cvmYTAaU//ADd3op18rzT+FHwMXDfR5lntmSTEVOR0/bfajxRnkQNHAt72m1S
-	 A5XCWddQubALUOq+c54/OAHYezlC+fxCtxj4m6k7jv1UvKEENl6M0Js/GujTiB5PjF
-	 i6qivxrAZeV8w==
+	b=PCc9zS/eTvlFeg3Wyb9IeP2lp61c6M2oNmDDgjWLL1Q5OFhE1P6mQ6LfMrOCpYYfw
+	 aZFysYnm4pz2qL1XWMr/XOsAGTQDu0GLlJSfC8HXzm3iYZ9Bi0kReQNMYyqeYG19Ss
+	 BQH590mwTwX3Crq+5k711wY5BqL+nHsuK5HZaqMoEtYX7mjtNBPx98drfwvF+TWat1
+	 qIW+cLlXfIWGCptm/8foGGnXNMXp7suUdMF5530RAP7i4R6bbFFRmPRyLC+vkXHYV7
+	 bXpKmm09b6MrYs4CZ1VF3VyZeC/AC4mgh3KxOE8fVPHOtTYrwlCrc+CWfTBtVXVOC4
+	 ODvNfRgiUvXMA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	linux-afs@lists.infradead.org,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Chao Yu <chao@kernel.org>,
+	syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com,
+	Ed Tsai <Ed.Tsai@mediatek.com>,
+	Hillf Danton <hdanton@sina.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 603/715] afs: Fix occasional rmdir-then-VNOVNODE with generic/011
-Date: Sun, 24 Mar 2024 18:33:02 -0400
-Message-ID: <20240324223455.1342824-604-sashal@kernel.org>
+Subject: [PATCH 6.8 604/715] f2fs: fix to avoid use-after-free issue in f2fs_filemap_fault
+Date: Sun, 24 Mar 2024 18:33:03 -0400
+Message-ID: <20240324223455.1342824-605-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,102 +65,75 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: David Howells <dhowells@redhat.com>
+From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit b74c02a37987d3ea755f96119c527f5e91950592 ]
+[ Upstream commit eb70d5a6c932d9d23f4bb3e7b83782c21ac4b064 ]
 
-Sometimes generic/011 causes kafs to follow up an FS.RemoveDir RPC call by
-spending around a second sending a slew of FS.FetchStatus RPC calls to the
-directory just deleted that then abort with VNOVNODE, indicating deletion
-of the target directory.
+syzbot reports a f2fs bug as below:
 
-This seems to stem from userspace attempting to stat the directory or
-something in it:
+BUG: KASAN: slab-use-after-free in f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
+Read of size 8 at addr ffff88807bb22680 by task syz-executor184/5058
 
-    afs_select_fileserver+0x46d/0xaa2
-    afs_wait_for_operation+0x12/0x17e
-    afs_fetch_status+0x56/0x75
-    afs_validate+0xfb/0x240
-    afs_permission+0xef/0x1b0
-    inode_permission+0x90/0x139
-    link_path_walk.part.0.constprop.0+0x6f/0x2f0
-    path_lookupat+0x4c/0xfa
-    filename_lookup+0x63/0xd7
-    vfs_statx+0x62/0x13f
-    vfs_fstatat+0x72/0x8a
+CPU: 0 PID: 5058 Comm: syz-executor184 Not tainted 6.7.0-syzkaller-09928-g052d534373b7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:488
+ kasan_report+0x142/0x170 mm/kasan/report.c:601
+ f2fs_filemap_fault+0xd1/0x2c0 fs/f2fs/file.c:49
+ __do_fault+0x131/0x450 mm/memory.c:4376
+ do_shared_fault mm/memory.c:4798 [inline]
+ do_fault mm/memory.c:4872 [inline]
+ do_pte_missing mm/memory.c:3745 [inline]
+ handle_pte_fault mm/memory.c:5144 [inline]
+ __handle_mm_fault+0x23b7/0x72b0 mm/memory.c:5285
+ handle_mm_fault+0x27e/0x770 mm/memory.c:5450
+ do_user_addr_fault arch/x86/mm/fault.c:1364 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1507 [inline]
+ exc_page_fault+0x456/0x870 arch/x86/mm/fault.c:1563
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
 
-The issue appears to be that afs_dir_remove_subdir() marks the callback
-promise as being cancelled by setting the expiry time to AFS_NO_CB_PROMISE
-- which then confuses afs_validate() which sends the FetchStatus to try and
-get a new one before it checks for the AFS_VNODE_DELETED flag which
-indicates that we know the directory got deleted.
+The root cause is: in f2fs_filemap_fault(), vmf->vma may be not alive after
+filemap_fault(), so it may cause use-after-free issue when accessing
+vmf->vma->vm_flags in trace_f2fs_filemap_fault(). So it needs to keep vm_flags
+in separated temporary variable for tracepoint use.
 
-Fix this by:
-
- (1) Make afs_check_validity() return true if AFS_VNODE_DELETED is set, and
-     then tweak the return from afs_validate() if the DELETED flag is set.
-
- (2) Move the AFS_VNODE_DELETED check in afs_validate() up above the
-     expiration check to immediately after we've grabbed the validate_lock.
-
-Fixes: 453924de6212 ("afs: Overhaul invalidation handling to better support RO volumes")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Link: https://lore.kernel.org/r/20240313081505.3060173-3-dhowells@redhat.com
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Fixes: 87f3afd366f7 ("f2fs: add tracepoint for f2fs_vm_page_mkwrite()")
+Reported-and-tested-by: syzbot+763afad57075d3f862f2@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/000000000000e8222b060f00db3b@google.com
+Cc: Ed Tsai <Ed.Tsai@mediatek.com>
+Suggested-by: Hillf Danton <hdanton@sina.com>
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/validation.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ fs/f2fs/file.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/afs/validation.c b/fs/afs/validation.c
-index 46b37f2cce7d9..32a53fc8dfb26 100644
---- a/fs/afs/validation.c
-+++ b/fs/afs/validation.c
-@@ -122,6 +122,9 @@ bool afs_check_validity(const struct afs_vnode *vnode)
- 	const struct afs_volume *volume = vnode->volume;
- 	time64_t deadline = ktime_get_real_seconds() + 10;
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index ffe7fca39a8e8..51970b345eeee 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -39,6 +39,7 @@
+ static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
+ {
+ 	struct inode *inode = file_inode(vmf->vma->vm_file);
++	vm_flags_t flags = vmf->vma->vm_flags;
+ 	vm_fault_t ret;
  
-+	if (test_bit(AFS_VNODE_DELETED, &vnode->flags))
-+		return true;
-+
- 	if (atomic_read(&volume->cb_v_check) != atomic_read(&volume->cb_v_break) ||
- 	    atomic64_read(&vnode->cb_expires_at)  <= deadline ||
- 	    volume->cb_expires_at <= deadline ||
-@@ -389,12 +392,17 @@ int afs_validate(struct afs_vnode *vnode, struct key *key)
- 	       key_serial(key));
+ 	ret = filemap_fault(vmf);
+@@ -46,7 +47,7 @@ static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
+ 		f2fs_update_iostat(F2FS_I_SB(inode), inode,
+ 					APP_MAPPED_READ_IO, F2FS_BLKSIZE);
  
- 	if (afs_check_validity(vnode))
--		return 0;
-+		return test_bit(AFS_VNODE_DELETED, &vnode->flags) ? -ESTALE : 0;
+-	trace_f2fs_filemap_fault(inode, vmf->pgoff, vmf->vma->vm_flags, ret);
++	trace_f2fs_filemap_fault(inode, vmf->pgoff, flags, ret);
  
- 	ret = down_write_killable(&vnode->validate_lock);
- 	if (ret < 0)
- 		goto error;
- 
-+	if (test_bit(AFS_VNODE_DELETED, &vnode->flags)) {
-+		ret = -ESTALE;
-+		goto error_unlock;
-+	}
-+
- 	/* Validate a volume after the v_break has changed or the volume
- 	 * callback expired.  We only want to do this once per volume per
- 	 * v_break change.  The actual work will be done when parsing the
-@@ -448,12 +456,6 @@ int afs_validate(struct afs_vnode *vnode, struct key *key)
- 	vnode->cb_ro_snapshot = cb_ro_snapshot;
- 	vnode->cb_scrub = cb_scrub;
- 
--	if (test_bit(AFS_VNODE_DELETED, &vnode->flags)) {
--		_debug("file already deleted");
--		ret = -ESTALE;
--		goto error_unlock;
--	}
--
- 	/* if the vnode's data version number changed then its contents are
- 	 * different */
- 	zap |= test_and_clear_bit(AFS_VNODE_ZAP_DATA, &vnode->flags);
+ 	return ret;
+ }
 -- 
 2.43.0
 
