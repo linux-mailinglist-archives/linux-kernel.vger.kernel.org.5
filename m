@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-115852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA100889847
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:33:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42FB388982B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:29:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946A929F415
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:33:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED67B1F22B35
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:29:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB80B37C915;
-	Mon, 25 Mar 2024 03:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27879378C4C;
+	Mon, 25 Mar 2024 03:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PdSMPKz1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLnqT+wi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8779B535AC;
-	Sun, 24 Mar 2024 23:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D16145B2C;
+	Sun, 24 Mar 2024 23:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322029; cv=none; b=jz4cd3Y5/vLhcncTH53s28COI3A9wZCGyjhzi+JLsVdnv0qUHytwx4ZoJhfN2rnXJHh9nLMVzostb8yHceKzq8nHxgahF6QsFu75kvQd1bhS301JbxzWG1W9kjSAK1a2RFAR6ldCYrcPDjW+OmG+oyAEe4lL3TAG7frSJC6a9ro=
+	t=1711322030; cv=none; b=CAGJUhx1lW9seO8ElDdy9jYyXE+AbEi0KoHQm5pFHuje0ULSKCdtCVnwWOZnrSRhE7/IGHdOQ7PZJmeqq0wQTjmeNUkROc24MjXZAtnpCbPXnYatEgxTRjMQc55E7taNRQ8OKh6WG0m3BxYabO59AlpvZJvYzfbfWxay3TejhTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322029; c=relaxed/simple;
-	bh=uq/8y/d2mm1LK4gZZU9rrLc3HRKyMlwRIrSKlVi9Lr4=;
+	s=arc-20240116; t=1711322030; c=relaxed/simple;
+	bh=NyPwPnV3tRxSLBf5Rdd6hqsddZMu5hwDMK4gpLucHkU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KuPl6o0PEiyo1HRZDbm1IW2iOEnYEDz0zJZ1G8WtXH9RYTUv/Hzp8qWgj8bGWav10RKk1gGObFbC10Hz168B+LCStGHf0P31psl/nzzLArbcgHqAvMCjh7gftjWg8N38MoR/HerOK7ktH8d7EzBm4SnP1AJh5PNiATgLfdWso3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PdSMPKz1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9815CC43390;
-	Sun, 24 Mar 2024 23:13:47 +0000 (UTC)
+	 MIME-Version; b=uzwSNcq+mcimaE/cqQ+ypzegLrm46fYiT4dSdFP74U+naeqzzOjwP4u6O7l+U5Y1416tfi0G2BT8R/tiuHKp/FP7T8aB07hk4WDDig88OVyu4j3z1qkauy548B2jR274HhbN+PFVwIGtATWprjZ46JtIcToRFE4+ZPy8Rn9nGUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLnqT+wi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5CEC43399;
+	Sun, 24 Mar 2024 23:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322028;
-	bh=uq/8y/d2mm1LK4gZZU9rrLc3HRKyMlwRIrSKlVi9Lr4=;
+	s=k20201202; t=1711322029;
+	bh=NyPwPnV3tRxSLBf5Rdd6hqsddZMu5hwDMK4gpLucHkU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PdSMPKz17jVKo+SF1cWfpUxFS+NbvAXyEulrUmLpS+nubpbQ7oPWws6a/UgRFEcak
-	 kZHPU5z4MO/WlQbd5cDjylRis4dFFUKaNQ6VUNPiTViEn+y36baVrcLc+s26DiLd7i
-	 lu+8696blUtPk8tfK5y2kQ4rL3lWaoogevRk54ZyTwk7ruCwT/e9zraRlbE4uX6XNl
-	 ciGfT94KCzqBdLuYLXgooDLgNHpHITeB1cjZKKM76M57o7GpkajVLysejps+/wpc6U
-	 eLj7w9kgEQri64guxJZ483USA2zId2iFn1SU4Fa4ZFxw0FCQQBYyob6qQSXzuLBrOU
-	 I5JhggFbDqVXg==
+	b=lLnqT+wiakqp20JWwBgP2sUi+4fUAWkx/LY0Uj/XZRc8tL21+q49VdyAhuxwknoGc
+	 efFjKsQr3LVYe6L19xcvlzX25q/T97Z66/4NDpTU0Skoqbux/vkhX1iDqLnbF9drmk
+	 Hk0ALvWIpmgURBPVYQZ1sQ8W9/RK0epE/mlyVwVozBoGzMqRzumc5Ma57TzBFQOcpu
+	 eruUgC8rSzwthbd0vDBHr3No0IE5lMBPOVjVrT41BN2DepH9I2S6IXIdqsLRHZdhjI
+	 eunVZzksOuaUw1cYJjVJ+E8Kx06MyQd87u+g839HnzdhG5OR3YsE+kmbaWw1SHuk2U
+	 0oemXCs2VhO0A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <quentin@isovalent.com>,
+Cc: Andrey Grafin <conquistador@yandex-team.ru>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Hou Tao <houtao1@huawei.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 100/451] bpftool: Silence build warning about calloc()
-Date: Sun, 24 Mar 2024 19:06:16 -0400
-Message-ID: <20240324231207.1351418-101-sashal@kernel.org>
+Subject: [PATCH 6.1 101/451] libbpf: Apply map_set_def_max_entries() for inner_maps on creation
+Date: Sun, 24 Mar 2024 19:06:17 -0400
+Message-ID: <20240324231207.1351418-102-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -60,54 +61,56 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Andrey Grafin <conquistador@yandex-team.ru>
 
-[ Upstream commit f5f30386c78105cba520e443a6a9ee945ec1d066 ]
+[ Upstream commit f04deb90e516e8e48bf8693397529bc942a9e80b ]
 
-There exists the following warning when building bpftool:
+This patch allows to auto create BPF_MAP_TYPE_ARRAY_OF_MAPS and
+BPF_MAP_TYPE_HASH_OF_MAPS with values of BPF_MAP_TYPE_PERF_EVENT_ARRAY
+by bpf_object__load().
 
-  CC      prog.o
-prog.c: In function ‘profile_open_perf_events’:
-prog.c:2301:24: warning: ‘calloc’ sizes specified with ‘sizeof’ in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
- 2301 |                 sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
-      |                        ^~~
-prog.c:2301:24: note: earlier argument should specify number of elements, later size of each element
+Previous behaviour created a zero filled btf_map_def for inner maps and
+tried to use it for a map creation but the linux kernel forbids to create
+a BPF_MAP_TYPE_PERF_EVENT_ARRAY map with max_entries=0.
 
-Tested with the latest upstream GCC which contains a new warning option
--Wcalloc-transposed-args. The first argument to calloc is documented to
-be number of elements in array, while the second argument is size of each
-element, just switch the first and second arguments of calloc() to silence
-the build warning, compile tested only.
-
-Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-Link: https://lore.kernel.org/bpf/20240116061920.31172-1-yangtiezhu@loongson.cn
+Fixes: 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map support")
+Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Acked-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/bpf/20240117130619.9403-1-conquistador@yandex-team.ru
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/prog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 41c02b6f6f043..7e0b846e17eef 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -2200,7 +2200,7 @@ static int profile_open_perf_events(struct profiler_bpf *obj)
- 	int map_fd;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e2014b1250ea2..c71d4d0f5c6f3 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -70,6 +70,7 @@
  
- 	profile_perf_events = calloc(
--		sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
-+		obj->rodata->num_cpu * obj->rodata->num_metric, sizeof(int));
- 	if (!profile_perf_events) {
- 		p_err("failed to allocate memory for perf_event array: %s",
- 		      strerror(errno));
+ static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
+ static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
++static int map_set_def_max_entries(struct bpf_map *map);
+ 
+ static const char * const attach_type_name[] = {
+ 	[BPF_CGROUP_INET_INGRESS]	= "cgroup_inet_ingress",
+@@ -4992,6 +4993,9 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+ 
+ 	if (bpf_map_type__is_map_in_map(def->type)) {
+ 		if (map->inner_map) {
++			err = map_set_def_max_entries(map->inner_map);
++			if (err)
++				return err;
+ 			err = bpf_object__create_map(obj, map->inner_map, true);
+ 			if (err) {
+ 				pr_warn("map '%s': failed to create inner map: %d\n",
 -- 
 2.43.0
 
