@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-113010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B8E28880BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:03:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5868E8880C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:04:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85F181F261B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:03:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8983F1C21279
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB72913247A;
-	Sun, 24 Mar 2024 22:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8DF13340F;
+	Sun, 24 Mar 2024 22:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BXFHXH2U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="plO59LZM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF21131E3D;
-	Sun, 24 Mar 2024 22:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AFB132492;
+	Sun, 24 Mar 2024 22:37:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319821; cv=none; b=p4bgB+DKUn9pKy/xYrzGZxaKBpAEJD/T6/RRd6GlraAlbxS1QBvkb8QwOkui49Q+7aGuWBYeCCZ/iKe6OaAKlV3rcwLeayldcuCsM+e6Bpjaqxnurbtl6YyrFZUviQU9yVf7ZVEue/Tdk7K15tYCjmsoIqMajJgGETqrynYGrL0=
+	t=1711319822; cv=none; b=H7PKMHyIEy45Ing8Pu7ymAiWnj0LGH88hi8mLUuDpCUuzTPhXitMVmV0YqD12AihEPOmlyhRRhgua9gG9D4hBUO5USwYqXLMXaBmORPv/w3TdBz1T6f6G6urexCEfFYlJdqtQXdqpZLerpjW03TipmpsiHR2R2EMud/3ZsuSkBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319821; c=relaxed/simple;
-	bh=/lZFRa509+d8US95VkuY8rBTEAwtCvjx3GyeNYLjDC0=;
+	s=arc-20240116; t=1711319822; c=relaxed/simple;
+	bh=CCMTvASji0/stHiT5ImMEo2vqL9mPQDDspFCl9RXgnw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XcVJPqcQz8iy3HEo4SnM8sLk5p+qUTAhWZvQ3jShnx8FxeTj/Ek26MwaB0RoHEQl4IPfGbxPNYuUZFt7C7c7yzuB3+cKRI8MYZ1brBTMMo7Nf6YQBY8HwKarpIXc8Y/uO2dNVYNrqxAG06eEH3RYWwoZ0aD5ZGk+RPuLzivXCks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BXFHXH2U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4268EC433F1;
-	Sun, 24 Mar 2024 22:37:00 +0000 (UTC)
+	 MIME-Version; b=KAf28DxIsPUM45o/9mXyr1TDtVgrYMr1q6LOFP8e2995g1khMKBMStmtun7G2GF+5ZJbYXSww+vwJ5I+IVadORn/eqkWn+jnI+aeQLrXInobdHpQ7/f6ftwYHCWiSo6s9NmZ0oCG2LIjzLQwg5O0ciIi0lu8h6wxiVGVpiAyOyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=plO59LZM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 505D7C43394;
+	Sun, 24 Mar 2024 22:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319821;
-	bh=/lZFRa509+d8US95VkuY8rBTEAwtCvjx3GyeNYLjDC0=;
+	s=k20201202; t=1711319822;
+	bh=CCMTvASji0/stHiT5ImMEo2vqL9mPQDDspFCl9RXgnw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BXFHXH2UK/N/7rFGI2HlTKRTVgPWuAXLsl7xG0ob15e8kxwJxaJm/wjVDlxGtKpvr
-	 yrc7ll4z37Ae3O0RNcGy+4YHg5rmR1K+3uD/9mVzGEkZnQEc1LtF5r+yPk63But6SB
-	 RvijN8N9ZX+2TJ2lfQZYSpdlev6g27BISGECT3g4hChCbPOsgLnnft7Cskyg4HzLUo
-	 5DP6+n5ITFPhEY5HDsqyz6ez7iPFUlA44RisffF6guOVRstIjCxNAcu6KQ3SPYO9fw
-	 ZZ8Wf3lG5mrgtXXssnNyt/6ofGmA8ZxocF4o6lfoRAPDjrtI3QkPI5jDrpw1NDNmpZ
-	 eGeeZp5qxFhKQ==
+	b=plO59LZMxM2D1ai6tS0+AVbxeNPsEgDW4/FCynbQfAmkcbz9SaFHpOTVqXuu83Fzo
+	 dmuObQz/K7RJA/AwoYslTiFG3rIGZusVbDTcy/wJ2EY4lanzFtAR9uQPJ4nkd/BWPc
+	 IS/HJo3qUBoSFGUTYAPZw4N46uH/yvjCni2hvqnuBMCT4NxbLQczwlsiw+25+hxsTw
+	 T0SALn8VHaN+GsDja781YldPUZVQCxkkuboIjWhoIxFj4Q0+1Aa0JXvhAi83LwZyV8
+	 uMnB0+uGQI5rk7QteOF065IY8xheckGymLmPVmwT0Gp0OnWZIQifVuAp5x5P6IQxVZ
+	 eIgPpX/JOdBjw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Wen Gong <quic_wgong@quicinc.com>,
-	Baochen Qiang <quic_bqiang@quicinc.com>,
+Cc: Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>,
 	Jeff Johnson <quic_jjohnson@quicinc.com>,
 	Kalle Valo <quic_kvalo@quicinc.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 123/715] wifi: ath11k: change to move WMI_VDEV_PARAM_SET_HEMU_MODE before WMI_PEER_ASSOC_CMDID
-Date: Sun, 24 Mar 2024 18:25:02 -0400
-Message-ID: <20240324223455.1342824-124-sashal@kernel.org>
+Subject: [PATCH 6.8 124/715] wifi: ath12k: fix fetching MCBC flag for QCN9274
+Date: Sun, 24 Mar 2024 18:25:03 -0400
+Message-ID: <20240324223455.1342824-125-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,95 +63,60 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Wen Gong <quic_wgong@quicinc.com>
+From: Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>
 
-[ Upstream commit 413e20e82ee78f142cb5194fd317db514f012602 ]
+[ Upstream commit 902700d55d4a4522bb3eb4ef94f752a19c42230a ]
 
-Currently when connecting to an AP with 11AX-HE phy mode, host sends
-WMI_VDEV_PARAM_SET_HEMU_MODE parameter to firmware after
-WMI_PEER_ASSOC_CMDID command. This results in TXBF not working, because
-firmware calculates TXBF values while handling WMI_PEER_ASSOC_CMDID,
-however at that time WMI_VDEV_PARAM_SET_HEMU_MODE has not been sent yet.
-See below log:
+In QCN9274, RX packet's multicast and broadcast(MCBC) flag is fetched
+from RX descriptor's msdu_end info5 member but it is not correct
+for QCN9274. Due to this with encryption, ARP request packet is wrongly
+marked as MCBC packet and it is sent to mac80211 without setting
+RX_FLAG_PN_VALIDATED & RX_FLAG_DECRYPTED flag. This results in packet
+getting dropped in mac80211. Hence ping initiated from station to AP
+fails.
 
-AP sends "VHT/HE/EHT NDP Announcement" to station, and station sends
-"Action no Ack" of category code HE to AP, the "Nc Index" and
-"Codebook Information" are wrong:
+Fix this by fetching correct MCBC flag in case of QCN9274.
+For QC9274 MCBC flag should be fetched from RX descriptor's mpdu_start
+info6 member.
 
-Issued action:
-IEEE 802.11 Action No Ack, Flags: ........
-IEEE 802.11 wireless LAN
-    Fixed parameters
-        Category code: HE (30)
-        HE Action: HE Compressed Beamforming And CQI (0)
-            Total length: 152
-            HE MIMO Control: 0x0004008018
-                .... .... .... .... .... .... .... .... .... .000 = Nc Index: 1 Column (0)
-                .... .... .... .... .... .... .... ..0. .... .... = Codebook Information: 0
+Tested-on: QCN9274 hw2.0 PCI WLAN.WBE.1.1.1-00188-QCAHKSWPL_SILICONZ-1
+Tested-on: QCN9274 hw2.0 PCI WLAN.WBE.1.0.1-00029-QCAHKSWPL_SILICONZ-1
+Tested-on: WCN7850 hw2.0 PCI WLAN.HMT.1.0.c5-00481-QCAHMTSWPL_V1.0_V2.0_SILICONZ-3
 
-Change to send WMI_VDEV_PARAM_SET_HEMU_MODE before WMI_PEER_ASSOC_CMDID,
-then firmware will calculate the TXBF values with valid parameters
-instead of empty values. TXBF works well and throughput performance is
-improved from 80 Mbps to 130 Mbps with this patch.
-
-Good action after this patch:
-IEEE 802.11 Action No Ack, Flags: ........
-IEEE 802.11 wireless LAN
-    Fixed parameters
-        Category code: HE (30)
-        HE Action: HE Compressed Beamforming And CQI (0)
-            Total length: 409
-            HE MIMO Control: 0x0004008219
-                .... .... .... .... .... .... .... .... .... .001 = Nc Index: 2 Columns (1)
-                .... .... .... .... .... .... .... ..1. .... .... = Codebook Information: 1
-
-This change applies to all chipsets.
-
-Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
-
-Fixes: 38dfe775d0ab ("wifi: ath11k: push MU-MIMO params from hostapd to hardware")
-Signed-off-by: Wen Gong <quic_wgong@quicinc.com>
-Signed-off-by: Baochen Qiang <quic_bqiang@quicinc.com>
+Fixes: 8f04852e90cb ("wifi: ath12k: Use msdu_end to check MCBC")
+Signed-off-by: Raj Kumar Bhagat <quic_rajkbhag@quicinc.com>
 Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://msgid.link/20240131021832.17298-1-quic_bqiang@quicinc.com
+Link: https://msgid.link/20240129065724.2310207-5-quic_rajkbhag@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/mac.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath12k/hal.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-index b13525bbbb808..b6b474a7f1c9c 100644
---- a/drivers/net/wireless/ath/ath11k/mac.c
-+++ b/drivers/net/wireless/ath/ath11k/mac.c
-@@ -3026,7 +3026,14 @@ static void ath11k_bss_assoc(struct ieee80211_hw *hw,
+diff --git a/drivers/net/wireless/ath/ath12k/hal.c b/drivers/net/wireless/ath/ath12k/hal.c
+index a489369d80687..1bdab8604db94 100644
+--- a/drivers/net/wireless/ath/ath12k/hal.c
++++ b/drivers/net/wireless/ath/ath12k/hal.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: BSD-3-Clause-Clear
+ /*
+  * Copyright (c) 2018-2021 The Linux Foundation. All rights reserved.
+- * Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2021-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ #include <linux/dma-mapping.h>
+ #include "hal_tx.h"
+@@ -449,8 +449,8 @@ static u8 *ath12k_hw_qcn9274_rx_desc_mpdu_start_addr2(struct hal_rx_desc *desc)
  
- 	rcu_read_unlock();
+ static bool ath12k_hw_qcn9274_rx_desc_is_da_mcbc(struct hal_rx_desc *desc)
+ {
+-	return __le16_to_cpu(desc->u.qcn9274.msdu_end.info5) &
+-	       RX_MSDU_END_INFO5_DA_IS_MCBC;
++	return __le32_to_cpu(desc->u.qcn9274.mpdu_start.info6) &
++	       RX_MPDU_START_INFO6_MCAST_BCAST;
+ }
  
-+	if (!ath11k_mac_vif_recalc_sta_he_txbf(ar, vif, &he_cap)) {
-+		ath11k_warn(ar->ab, "failed to recalc he txbf for vdev %i on bss %pM\n",
-+			    arvif->vdev_id, bss_conf->bssid);
-+		return;
-+	}
-+
- 	peer_arg.is_assoc = true;
-+
- 	ret = ath11k_wmi_send_peer_assoc_cmd(ar, &peer_arg);
- 	if (ret) {
- 		ath11k_warn(ar->ab, "failed to run peer assoc for %pM vdev %i: %d\n",
-@@ -3049,12 +3056,6 @@ static void ath11k_bss_assoc(struct ieee80211_hw *hw,
- 		return;
- 	}
- 
--	if (!ath11k_mac_vif_recalc_sta_he_txbf(ar, vif, &he_cap)) {
--		ath11k_warn(ar->ab, "failed to recalc he txbf for vdev %i on bss %pM\n",
--			    arvif->vdev_id, bss_conf->bssid);
--		return;
--	}
--
- 	WARN_ON(arvif->is_up);
- 
- 	arvif->aid = vif->cfg.aid;
+ static void ath12k_hw_qcn9274_rx_desc_get_dot11_hdr(struct hal_rx_desc *desc,
 -- 
 2.43.0
 
