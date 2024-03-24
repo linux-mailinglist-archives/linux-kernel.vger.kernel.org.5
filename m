@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D674F889977
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:10:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C28888D71
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:48:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 144B61C326E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:10:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41561B29744
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67BA728EC2D;
-	Mon, 25 Mar 2024 03:31:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118E12DAACE;
+	Mon, 25 Mar 2024 00:56:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kXZL/o7I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="obJc/MRj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F48179FBD;
-	Sun, 24 Mar 2024 23:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8AEB17A365;
+	Sun, 24 Mar 2024 23:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323649; cv=none; b=fK9HfEEAdsAzfKhw4LikKtLBIc5Dv/6CdI6Aiyg3cvCt9QwZfLYjHP1HBmDLX9nD2jXW5tHqj2wJ4HmxNuMGpsYijLKXjzJ+Ek1S4Z/+Z1RR8xvRuZ7EaXcU1E9832RovSd/xpsTUKZtJyTOTxgPkuTVP14kw+xOrceQoibijv8=
+	t=1711323651; cv=none; b=DrWTGV0JnOh7dq6NBPjXefISBYXN4gkmuy8tqFpEul2JzA0ptw5tuRcjuCJvUROvvNkEuxt5G+pkfVg0dMfWEudBzgZxWIPI91vhbjqwTnOQpSYOfAxQYbrjn0K22i3HwDSYZLzAR4W4mny5YJD/e6WccUBa6SsdZuWJoIIXa9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323649; c=relaxed/simple;
-	bh=Du80a8081lcmLcIyq1r2JOmgELaCBxEoYXMTEtF6bGQ=;
+	s=arc-20240116; t=1711323651; c=relaxed/simple;
+	bh=gAqdm49DZG7gHX8FLf99AYsnKM/Po+UYbJY+eyoQle0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J7WMEBdDhZrXZUdUq8CpYoOE/jdLCD4pJkrgWkPufn88mzAxIkKeA3oL3sys9AnuUFGL5zPBGqbSb9EjUcEcmDwu0KtXmdhWYWGhhVsHVr8UVt46QHI4g+Yz9hk+hm2MvNtCMpIba8MG/qaOThFIiXNzr0VlAAaORtmEiecakpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kXZL/o7I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D1A2C433C7;
-	Sun, 24 Mar 2024 23:40:48 +0000 (UTC)
+	 MIME-Version; b=VquZZUW42xAo/cBYhgYDx49G55/elXztCTNWzsmsf4tK3fZmgYbQCfzBcUFaqj4xbEmTPGUl766QYE0lCfbKt0nChTsgLal0vyngU/1ugWjZskYM5rQrAOgnHltOQvMe53HoOC2hOUVSKKhubcFgCVD6F4/uZOgqJy3eZec8GPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=obJc/MRj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8725C43399;
+	Sun, 24 Mar 2024 23:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323649;
-	bh=Du80a8081lcmLcIyq1r2JOmgELaCBxEoYXMTEtF6bGQ=;
+	s=k20201202; t=1711323650;
+	bh=gAqdm49DZG7gHX8FLf99AYsnKM/Po+UYbJY+eyoQle0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kXZL/o7IT25/uBFUTxGGnKVy1i7IIJO/iGfzogMkVm9W5RG/V8mC5rcXydJSOCKce
-	 DrsvMU2z2iHm5ZLvaSaph4UsLEEqNetSX2+7LUUzrWRKx0pjVgTFHwVnUUNAIo8UvK
-	 SzZWUN9OM7ljQCArGpalsIp0+rWXPdl8McjjxAhmmmsxSeSAY1eN7JlSRmK47UKLwA
-	 v7JKYatbQTEFzpghkwQAT8ftEgDX9hpwaZBTH+mm0yRFpn9S2x5Ox057QHsOIjFwuw
-	 +lNxWV69WtuBkOCCSrFeMbxIonUMAfv4nvEv9QMeZOnC76o4wdOKGj7AXDZCNOG4/p
-	 m8TRXxNNCDb4A==
+	b=obJc/MRjcgkA+mllmrww6+1G284TlnEyeBKJuJvyxJiDaWBAAvKAyA0LM7cX8A6ZZ
+	 E7qvzlULLrXuZR4hymU5avc7pUEE6Fl6tng9xg0DLLJRWZIWpN36v1x0M0oJUjwBWs
+	 Xl/IhXvU5ypFYqcCOgxRpstMurGAgHN59FE+sLKUMD7I6PIRc1dSKQPl+WKB4BxlkG
+	 YI78YirwGVZ/D2OL5XR7kH3HsQoQU8z5Ui+hCWk85W3V6C5v+1jrkK6S8U8kVJ1V6T
+	 MOnHJG1rwXaZChjQIFNmjWqnmCKEvu/DZMOeEhVWfYOHYfNny9lmkWsWP8mBizUCeY
+	 CP+oYXhwwgQJw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yuxuan Hu <20373622@buaa.edu.cn>,
-	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	Adam Goldman <adamg@pobox.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 021/238] Bluetooth: rfcomm: Fix null-ptr-deref in rfcomm_check_security
-Date: Sun, 24 Mar 2024 19:36:49 -0400
-Message-ID: <20240324234027.1354210-22-sashal@kernel.org>
+Subject: [PATCH 5.10 022/238] firewire: core: use long bus reset on gap count error
+Date: Sun, 24 Mar 2024 19:36:50 -0400
+Message-ID: <20240324234027.1354210-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,56 +62,63 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yuxuan Hu <20373622@buaa.edu.cn>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit 2535b848fa0f42ddff3e5255cf5e742c9b77bb26 ]
+[ Upstream commit d0b06dc48fb15902d7da09c5c0861e7f042a9381 ]
 
-During our fuzz testing of the connection and disconnection process at the
-RFCOMM layer, we discovered this bug. By comparing the packets from a
-normal connection and disconnection process with the testcase that
-triggered a KASAN report. We analyzed the cause of this bug as follows:
+When resetting the bus after a gap count error, use a long rather than
+short bus reset.
 
-1. In the packets captured during a normal connection, the host sends a
-`Read Encryption Key Size` type of `HCI_CMD` packet
-(Command Opcode: 0x1408) to the controller to inquire the length of
-encryption key.After receiving this packet, the controller immediately
-replies with a Command Completepacket (Event Code: 0x0e) to return the
-Encryption Key Size.
+IEEE 1394-1995 uses only long bus resets. IEEE 1394a adds the option of
+short bus resets. When video or audio transmission is in progress and a
+device is hot-plugged elsewhere on the bus, the resulting bus reset can
+cause video frame drops or audio dropouts. Short bus resets reduce or
+eliminate this problem. Accordingly, short bus resets are almost always
+preferred.
 
-2. In our fuzz test case, the timing of the controller's response to this
-packet was delayed to an unexpected point: after the RFCOMM and L2CAP
-layers had disconnected but before the HCI layer had disconnected.
+However, on a mixed 1394/1394a bus, a short bus reset can trigger an
+immediate additional bus reset. This double bus reset can be interpreted
+differently by different nodes on the bus, resulting in an inconsistent gap
+count after the bus reset. An inconsistent gap count will cause another bus
+reset, leading to a neverending bus reset loop. This only happens for some
+bus topologies, not for all mixed 1394/1394a buses.
 
-3. After receiving the Encryption Key Size Response at the time described
-in point 2, the host still called the rfcomm_check_security function.
-However, by this time `struct l2cap_conn *conn = l2cap_pi(sk)->chan->conn;`
-had already been released, and when the function executed
-`return hci_conn_security(conn->hcon, d->sec_level, auth_type, d->out);`,
-specifically when accessing `conn->hcon`, a null-ptr-deref error occurred.
+By instead sending a long bus reset after a gap count inconsistency, we
+avoid the doubled bus reset, restoring the bus to normal operation.
 
-To fix this bug, check if `sk->sk_state` is BT_CLOSED before calling
-rfcomm_recv_frame in rfcomm_process_rx.
-
-Signed-off-by: Yuxuan Hu <20373622@buaa.edu.cn>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Adam Goldman <adamg@pobox.com>
+Link: https://sourceforge.net/p/linux1394/mailman/message/58741624/
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/rfcomm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firewire/core-card.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/rfcomm/core.c b/net/bluetooth/rfcomm/core.c
-index 8d6fce9005bdd..4f54c7df3a94f 100644
---- a/net/bluetooth/rfcomm/core.c
-+++ b/net/bluetooth/rfcomm/core.c
-@@ -1937,7 +1937,7 @@ static struct rfcomm_session *rfcomm_process_rx(struct rfcomm_session *s)
- 	/* Get data directly from socket receive queue without copying it. */
- 	while ((skb = skb_dequeue(&sk->sk_receive_queue))) {
- 		skb_orphan(skb);
--		if (!skb_linearize(skb)) {
-+		if (!skb_linearize(skb) && sk->sk_state != BT_CLOSED) {
- 			s = rfcomm_recv_frame(s, skb);
- 			if (!s)
- 				break;
+diff --git a/drivers/firewire/core-card.c b/drivers/firewire/core-card.c
+index be195ba834632..d446a72629414 100644
+--- a/drivers/firewire/core-card.c
++++ b/drivers/firewire/core-card.c
+@@ -500,7 +500,19 @@ static void bm_work(struct work_struct *work)
+ 		fw_notice(card, "phy config: new root=%x, gap_count=%d\n",
+ 			  new_root_id, gap_count);
+ 		fw_send_phy_config(card, new_root_id, generation, gap_count);
+-		reset_bus(card, true);
++		/*
++		 * Where possible, use a short bus reset to minimize
++		 * disruption to isochronous transfers. But in the event
++		 * of a gap count inconsistency, use a long bus reset.
++		 *
++		 * As noted in 1394a 8.4.6.2, nodes on a mixed 1394/1394a bus
++		 * may set different gap counts after a bus reset. On a mixed
++		 * 1394/1394a bus, a short bus reset can get doubled. Some
++		 * nodes may treat the double reset as one bus reset and others
++		 * may treat it as two, causing a gap count inconsistency
++		 * again. Using a long bus reset prevents this.
++		 */
++		reset_bus(card, card->gap_count != 0);
+ 		/* Will allocate broadcast channel after the reset. */
+ 		goto out;
+ 	}
 -- 
 2.43.0
 
