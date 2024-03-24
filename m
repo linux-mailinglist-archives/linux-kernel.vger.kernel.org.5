@@ -1,160 +1,173 @@
-Return-Path: <linux-kernel+bounces-112861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B90DD887F21
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:20:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84E35887F23
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 238A3B20F92
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:20:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4E4CB20FA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 21:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8FC1C292;
-	Sun, 24 Mar 2024 21:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C7B1CD10;
+	Sun, 24 Mar 2024 21:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YeArdLdk"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kLBlLyNo"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DE1101E6
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 21:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4370E1C68C
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 21:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711315226; cv=none; b=qosSjX+kLimhyZzxeYBv0v6Hj/B8/hyIIDToHYyP00Y7Jlhc1RhXYFq4S5Rk6GHy8IX2VoAjOgyENzI67TUS/ao312WnjRBqMJ7GocH1xRx0eUhF71UM8wfvCr1/p5XnwVFMKb2r+4W+UT7lgbTbAhuYdV4hmKiUtpeSgAZeQEU=
+	t=1711315408; cv=none; b=rCTtBJUR1cZqD14AlnlOthuIfftT7MWN926Xd2zCPloHYM2BEAy538f2pZ65OgHgwS8KIlfesWPeIs74/yVE0cdiDVoqj/7sv5dtKVPXsjClQ+nI3lHTkxNIrToMG+t0F/UG0rSzxuRnTaCzKPB68SzFY8yD4ZusGGxjdlL114w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711315226; c=relaxed/simple;
-	bh=t6RgMbQuFwYBOzqxUOSe7Vsk05XtF5E+0zD79Avmkec=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=O3JHcjJ+YVx4WJ9Tp6kbVMNoG8PkgtbxQCI5JCN1Ody4pGZaxXWlb4hWV36+dEwTYHF149pk9K5MiSG2qIbP0xHpJK794of2pN+08kJKg1w9FXTjwcrIgRqkJqnLRjYNhL4nd4HaLu2eU58fpwl/ioxlDfKHPc+NEykDraxeCaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YeArdLdk; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a468226e135so442812266b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 14:20:24 -0700 (PDT)
+	s=arc-20240116; t=1711315408; c=relaxed/simple;
+	bh=mSJwgnsoJJc86hqP5ghSmCR2NxFxgtq7+uHyKYZFYIc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g+MKTz5jE0GFc+OlEoZtdto0wAaIUrJDfKcCGVODz7tcoWlphIvYDL36JZMIA7oGAuHTex5lNzdDWiYSAORX/cWk5HWNHJbZ45gflxe3tthAOjVgS5OC6sQArmLVh9Fs1HML96gSI7qRqltveriFKPePoAPNss59eeWsim7SWWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kLBlLyNo; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5684db9147dso4287807a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 14:23:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711315223; x=1711920023; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qF1RsKVO6ZLPhS9Y03A3EI4O6qFxAObAj5GT0U8NRhc=;
-        b=YeArdLdkAoxzjeTjkMD47Fq70TCcNJyHe3USewwLZq/cROhAi27ys8K369tdBfnbNm
-         jOzr+qEDOhQ40nbI8rfY+SfoVSFkBBBr3xdG440B0ZY9OSb/RhXo3XnhBomyQZDjA6+G
-         9sKxhB6g6EEc8O5sOZFydzQsn7UhfBb/2GkwrJKP9FxIqgCi/jMXqt2dvM8MR7iwpoUF
-         d/f2GyLjk5irIdAd2uQOt8uBn6MIGEZe8nLIa4Bc8OK9ZzRuaQ9FpCTfHTbCkzojqGyN
-         dAvlWpU2OuA15PkgblzkQO3RBHcQIgkyIyoPPpjefeKA60M2ANCXFbfs/VjhY41rvPAp
-         ItlA==
+        d=google.com; s=20230601; t=1711315404; x=1711920204; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rpDW9MNFOfxjG6sVJlDI3bV93UG5A+19Bb8AJvL6hmg=;
+        b=kLBlLyNodJbNJCPfC5JdpmplcgdLTVHLeXSkfhwzySvpVHT7TkwCD+Vo27uNh7LYs4
+         sdbv8UDLtB/mZlej9qKhisWb4Nn1E75BYvB6QDPn8AbuH3aUwrfaR2742GvNapDsoXIw
+         fzvYDWxCpkQkuP3T5bgo5xjN10VH46OCxUhSEsPeES3Oqk2R12IkyJvm90fmAegmQVPN
+         1mSDo10XF7NU9RpyYojc3Haye+sN22fPhhRMCy34rvmP6+wozDU04WowWIJ0aaje1ZLf
+         51o+Y5/jb4DevY7LgWbUgBJolIyOWQkj7MgBFbRO/O1/l5AJ85tEY6swaK8uhvD8BDWn
+         W9Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711315223; x=1711920023;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qF1RsKVO6ZLPhS9Y03A3EI4O6qFxAObAj5GT0U8NRhc=;
-        b=VbmmHcXbGLHRE1anWQElWEUYZrYwJZJJcRDOOCmuQ3mYu2itGGEYHpdf1zNhUrBGay
-         cPLGmnqzO2DOqrwofFwg4S8T0f1883l4ZC0+P/50qnsOI5t8BsVCcHZnf0Yc/rGWRvcE
-         8aFQtn4yZ0KHQV2Y9r8EM9P24mnlsIXDpf/I0zKHlfRnxdLlBjFxO45qLJsRN6Y06un3
-         Pk+0mW7Um5/dTE81r109yMOn4eqEQyXX4Tw0S96unoOmp3Bj32TMhidPsa8st5EJW4Cm
-         lzzMzIwxSmTDx+2vMV2nDn+zlU45JPiL26PocLBtpTtOMJP1+P0e0E+IOzaDjmIYlvIp
-         FbDw==
-X-Forwarded-Encrypted: i=1; AJvYcCVTXfn1OvikSIKKo+FlB9Uhec6Z63+We052hu5/6IXWVhY+tnjsrFx3xCfQoGjWCEDY1bHPVnvWTs7L0Kdbz69oz3OJ7sYX5e/xC8gg
-X-Gm-Message-State: AOJu0YxgyDm863+dizRbNLMXHIbwgqYXDP6plUfXVTw/yEXL03A7M3lY
-	o4XJyvdUPmPbFDZZfk4mCAjuRtfYEkZW6e2qbtm9epovRFBBQXoh
-X-Google-Smtp-Source: AGHT+IG+NXgtAOFTuMD8sUi/FN9UVivknYu0Qyq7HpobZftbODTTgrtyHlAYGht12C+WOlOt1shlQA==
-X-Received: by 2002:a17:906:250a:b0:a47:623:120a with SMTP id i10-20020a170906250a00b00a470623120amr3409206ejb.71.1711315222926;
-        Sun, 24 Mar 2024 14:20:22 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id mc2-20020a170906eb4200b00a47152e6d10sm2318448ejb.134.2024.03.24.14.20.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 14:20:22 -0700 (PDT)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86/percpu: Do not use this_cpu_read_stable_8() for 32 bit targets
-Date: Sun, 24 Mar 2024 22:19:45 +0100
-Message-ID: <20240324212014.310189-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        d=1e100.net; s=20230601; t=1711315404; x=1711920204;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rpDW9MNFOfxjG6sVJlDI3bV93UG5A+19Bb8AJvL6hmg=;
+        b=tbHaMsuG/BlrIP/Pd4vrmbM1REga7CixWtEtyoqKktHibyYWPaRpZjoyZC6ws7o9Rc
+         Yd0hU5wzq9W7juQb1wuD+GaRMe6nbYGzTnMTR+tf5+9c39SfYevZOacYJ7dAsTg0WG4X
+         UMCzsKAnxA/n5UtGwJGw4PylFNmempS2/FfPi/oH2Sdhx869U9kI2gAgARftWJ+BUmlD
+         2CRQXYveZ1UwruYWtF1nyZNY24qGxldgO3YIRlKcclo2AByd94NU5Ormy9pUeSlfrHVK
+         gefRL+nK8Q8FZsB9eMcbBfRpd6VVq/XS0kekwsjqjQJtumxtU6rYJ7QKyZ2WThr99UBa
+         Pa/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWmJ452IlaUeNBQPFVwgvEEWCQv/KiRkbyAc7dmN71f4xBL3gtqfRErMQG9fiGZwPnPTIUx1Od2adnOd1j2Kskl5DcxrxwacMEb2taB
+X-Gm-Message-State: AOJu0YyE2otOtkmE+YbKUs/86hbFFhr8w0cDWpo/SX6CCvgLCdbTPYSR
+	2jHFlOBG0gwcAPzgUjj1CVKWP10/SWHdYXTr59UdF6urdSUtRT4LgNAv/wR+cgYh1DPvCIX4+Ux
+	u84Jma4rMd4sOD4wV334tucBpcBfdv/VZEf0w
+X-Google-Smtp-Source: AGHT+IE2PLpZpD/SdVJ+zLXfepUJR3PSNmH6dMnK9nObvIVnE2sC0l7+uK+5o7TdJyrWuvLbMDmhzclSRq9qCgEwHDc=
+X-Received: by 2002:a17:906:2688:b0:a46:8c40:7a3a with SMTP id
+ t8-20020a170906268800b00a468c407a3amr3560145ejc.26.1711315404261; Sun, 24 Mar
+ 2024 14:23:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240324210447.956973-1-hannes@cmpxchg.org>
+In-Reply-To: <20240324210447.956973-1-hannes@cmpxchg.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Sun, 24 Mar 2024 14:22:46 -0700
+Message-ID: <CAJD7tkaWQAV=X1pzYG=VkWe7Ue9ZFbjt9uQ5m1NJujtLspWJTA@mail.gmail.com>
+Subject: Re: [PATCH] mm: zswap: fix data loss on SWP_SYNCHRONOUS_IO devices
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Zhongkun He <hezhongkun.hzk@bytedance.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <21cnbao@gmail.com>, 
+	Chris Li <chrisl@kernel.org>, Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-this_cpu_read_stable() macro uses __pcpu_size_call_return()
-that unconditionally calls this_cpu_read_stable_8() also for
-32 bit targets. This usage is ivalid as it will result in the
-generation of 64 bit MOVQ instruction on 32 bit targets via
-percpu_stable_op() macro.
+On Sun, Mar 24, 2024 at 2:04=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> Zhongkun He reports data corruption when combining zswap with zram.
+>
+> The issue is the exclusive loads we're doing in zswap. They assume
+> that all reads are going into the swapcache, which can assume
+> authoritative ownership of the data and so the zswap copy can go.
+>
+> However, zram files are marked SWP_SYNCHRONOUS_IO, and faults will try
+> to bypass the swapcache. This results in an optimistic read of the
+> swap data into a page that will be dismissed if the fault fails due to
+> races. In this case, zswap mustn't drop its authoritative copy.
+>
+> Link: https://lore.kernel.org/all/CACSyD1N+dUvsu8=3DzV9P691B9bVq33erwOXNT=
+mEaUbi9DrDeJzw@mail.gmail.com/
+> Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> Fixes: b9c91c43412f ("mm: zswap: support exclusive loads")
+> Cc: stable@vger.kernel.org      [6.5+]
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Tested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
 
-Since there is no generic support for this_cpu_read_stable_8() for
-32 bit targets, the patch defines this_cpu_read_stable_8() to
-BUILD_BUG() when CONFIG_X86_64 is not defined. This way, we are
-sure that this_cpu_read_stable_8() won't actually be used for
-32 bit targets, but it is still defined to prevent build failure.
+Do we also want to mention somewhere (commit log or comment) that
+keeping the entry in the tree is fine because we are still protected
+from concurrent loads/invalidations/writeback by swapcache_prepare()
+setting SWAP_HAS_CACHE or so?
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
----
- arch/x86/include/asm/percpu.h | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+Anyway, this LGTM.
 
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index f6ddbaaf80bc..1f6404e0c428 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -423,10 +423,6 @@ do {									\
-  * actually per-thread variables implemented as per-CPU variables and
-  * thus stable for the duration of the respective task.
-  */
--#define this_cpu_read_stable_1(pcp)	percpu_stable_op(1, "mov", pcp)
--#define this_cpu_read_stable_2(pcp)	percpu_stable_op(2, "mov", pcp)
--#define this_cpu_read_stable_4(pcp)	percpu_stable_op(4, "mov", pcp)
--#define this_cpu_read_stable_8(pcp)	percpu_stable_op(8, "mov", pcp)
- #define this_cpu_read_stable(pcp)	__pcpu_size_call_return(this_cpu_read_stable_, pcp)
- 
- #ifdef CONFIG_USE_X86_SEG_SUPPORT
-@@ -495,6 +491,10 @@ do {									\
- #define this_cpu_read_const(pcp)	({ BUILD_BUG(); (typeof(pcp))0; })
- #endif /* CONFIG_USE_X86_SEG_SUPPORT */
- 
-+#define this_cpu_read_stable_1(pcp)	percpu_stable_op(1, "mov", pcp)
-+#define this_cpu_read_stable_2(pcp)	percpu_stable_op(2, "mov", pcp)
-+#define this_cpu_read_stable_4(pcp)	percpu_stable_op(4, "mov", pcp)
-+
- #define raw_cpu_add_1(pcp, val)		percpu_add_op(1, , (pcp), val)
- #define raw_cpu_add_2(pcp, val)		percpu_add_op(2, , (pcp), val)
- #define raw_cpu_add_4(pcp, val)		percpu_add_op(4, , (pcp), val)
-@@ -546,6 +546,8 @@ do {									\
-  * 32 bit must fall back to generic operations.
-  */
- #ifdef CONFIG_X86_64
-+#define this_cpu_read_stable_8(pcp)	percpu_stable_op(8, "mov", pcp)
-+
- #define raw_cpu_add_8(pcp, val)			percpu_add_op(8, , (pcp), val)
- #define raw_cpu_and_8(pcp, val)			percpu_to_op(8, , "and", (pcp), val)
- #define raw_cpu_or_8(pcp, val)			percpu_to_op(8, , "or", (pcp), val)
-@@ -561,6 +563,9 @@ do {									\
- #define this_cpu_xchg_8(pcp, nval)		this_percpu_xchg_op(pcp, nval)
- #define this_cpu_cmpxchg_8(pcp, oval, nval)	percpu_cmpxchg_op(8, volatile, pcp, oval, nval)
- #define this_cpu_try_cmpxchg_8(pcp, ovalp, nval)	percpu_try_cmpxchg_op(8, volatile, pcp, ovalp, nval)
-+#else
-+/* There is no generic 64 bit read stable operation for 32 bit targets. */
-+#define this_cpu_read_stable_8(pcp)    ({ BUILD_BUG(); (typeof(pcp))0; })
- #endif
- 
- static __always_inline bool x86_this_cpu_constant_test_bit(unsigned int nr,
--- 
-2.42.0
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
+> ---
+>  mm/zswap.c | 23 +++++++++++++++++++----
+>  1 file changed, 19 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 535c907345e0..41a1170f7cfe 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1622,6 +1622,7 @@ bool zswap_load(struct folio *folio)
+>         swp_entry_t swp =3D folio->swap;
+>         pgoff_t offset =3D swp_offset(swp);
+>         struct page *page =3D &folio->page;
+> +       bool swapcache =3D folio_test_swapcache(folio);
+>         struct zswap_tree *tree =3D swap_zswap_tree(swp);
+>         struct zswap_entry *entry;
+>         u8 *dst;
+> @@ -1634,7 +1635,20 @@ bool zswap_load(struct folio *folio)
+>                 spin_unlock(&tree->lock);
+>                 return false;
+>         }
+> -       zswap_rb_erase(&tree->rbroot, entry);
+> +       /*
+> +        * When reading into the swapcache, invalidate our entry. The
+> +        * swapcache can be the authoritative owner of the page and
+> +        * its mappings, and the pressure that results from having two
+> +        * in-memory copies outweighs any benefits of caching the
+> +        * compression work.
+> +        *
+> +        * (Most swapins go through the swapcache. The notable
+> +        * exception is the singleton fault on SWP_SYNCHRONOUS_IO
+> +        * files, which reads into a private page and may free it if
+> +        * the fault fails. We remain the primary owner of the entry.)
+> +        */
+> +       if (swapcache)
+> +               zswap_rb_erase(&tree->rbroot, entry);
+>         spin_unlock(&tree->lock);
+>
+>         if (entry->length)
+> @@ -1649,9 +1663,10 @@ bool zswap_load(struct folio *folio)
+>         if (entry->objcg)
+>                 count_objcg_event(entry->objcg, ZSWPIN);
+>
+> -       zswap_entry_free(entry);
+> -
+> -       folio_mark_dirty(folio);
+> +       if (swapcache) {
+> +               zswap_entry_free(entry);
+> +               folio_mark_dirty(folio);
+> +       }
+>
+>         return true;
+>  }
+> --
+> 2.44.0
+>
 
