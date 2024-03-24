@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28D688911D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:34:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6882888FCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45757B31D93
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 139C71C2C124
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA6C17264D;
-	Sun, 24 Mar 2024 23:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6435526CC15;
+	Sun, 24 Mar 2024 23:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PBv4GbeF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pa6y7zNg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B0413B7A6;
-	Sun, 24 Mar 2024 23:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F42149C63;
+	Sun, 24 Mar 2024 23:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321743; cv=none; b=ugPksYx+mj1DEp6of7XD0IsjVWosiI63L4B3dcTUXrNghNYBhjcgTdaVDxj1Q+QNTsMkUlfdmknpQK+IRV6a0D82FuVOERsI5jee12zuYSsI+ffC5JMmldkfIFuwFYKlVhN9hPJO7dd22ueafWiGSdDZqALD6Bxu7Ak3wFRde1U=
+	t=1711321744; cv=none; b=mgkU+8YR08xZ9zCF4PTefD1w+zETF8xPXDeYprTVjot0gFrsaiP7AYGsds4wKwbIBN8eNticXmez86+OnUo9B8mc+FdoblFcdP6LS6RKkNKw8p0/X6IbYiZw/G8kGqChMZxBSVwuPopTqa9yGLlgVwozTejsrcxSabQSK/c0xIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321743; c=relaxed/simple;
-	bh=Rr7Pi00i2BKkcC7gbeC5htge01QJINLxEHJpcIxDxnE=;
+	s=arc-20240116; t=1711321744; c=relaxed/simple;
+	bh=ua+VfwcWI7gzlSdjQaWA3LQCZzjHOf4dBn9J71Whaxs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L2xJ2anjV1YcGq1mTDWrTeC21FMKVarKcBQEVsuO9A6GxdW+jWFY8g8W6NRL18dyvmD5SSjRygKR2MFJb/LVltRKDszeE+/gst5f5t/x/GCZ8SJC2eDNBBGADPzMPVb2g5m6qgS3rrkmUNCqHjcu0PpwwNEVbmN0Djs9Vli0GDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PBv4GbeF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6CFCC433C7;
-	Sun, 24 Mar 2024 23:09:01 +0000 (UTC)
+	 MIME-Version; b=b5gIU7XuA/GR4g/5Pirtj3hql6u/u9aWFTXscHjxwKGkTJuFIMZWN6auUBPgl9OHD+ttdULxiiatOihDFZzQZcCnzSZWaBmASsAC1qyzIGkj85dN+01oxJlZ6zHa0Jmg5RMRlV4TL02Hn3heMWBku3gagsa428zzTJRgWyGuXUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pa6y7zNg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE58EC433F1;
+	Sun, 24 Mar 2024 23:09:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321742;
-	bh=Rr7Pi00i2BKkcC7gbeC5htge01QJINLxEHJpcIxDxnE=;
+	s=k20201202; t=1711321743;
+	bh=ua+VfwcWI7gzlSdjQaWA3LQCZzjHOf4dBn9J71Whaxs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PBv4GbeFa9+GPDShsB56sdLEJ6vnY2au2PDjqNILTQQBW7op8YU1iwxzFOD5eqPTX
-	 LzXtLS3ZPpRVrRHu/nM7xIwiYvlv/TSOJjtxZPO/bfZUXIdxJzZ0Nut2KU6ahIQRe1
-	 BQa5OsoN0kbjkWlnJWpIppCEPC3SWKEmTtPb673ajTRyYxA7chcf4XPTx4tct9aVwA
-	 6n/xVefAOY6Si0ddCnfnyu+RMypou5gqLQsli4z1Ic76d4OSBVm7EhS27dxPTIMSco
-	 0/1Z73T4mnahNLZDfvB44p26vfzZR9zQilCFtlS1Qttz2UKKFpL65tETfQA9NaKaAM
-	 aXyoBYhR+1gUw==
+	b=pa6y7zNgT8yjcpipJ5I36Fpy84TxNsQFKAgJ3Ou0vWkUF6v89MgPNX2vUWqX+soK6
+	 0vHFCJJFAlxUjsI9N0NUhuoOx3ox3tEb9SNJ4MnKnl7fxqYdI/+j1TQBjdcZ4wOSnL
+	 KvfLXnUEOX/u3YjmnJjcfiFsHyWj20mOFFm/Ca5+R5peWpcCOg3diX8WlpKD0ZoUzn
+	 MAZwCNJcz1nlmooul2kjqSEs1BFpqLpGW6qWmQ87V7RDASYwuBlLjYIcbTgOLNFKlX
+	 UHow4AHnlBn2La53CYf8k34ThZ1ZJsKy6kNjDu+kchIMITtZFWrmsYZVU9THxq7f5S
+	 Zi7QdM4a2sUAA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>,
+	CK Hu <ck.hu@mediatek.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 470/638] gpio: nomadik: fix offset bug in nmk_pmx_set()
-Date: Sun, 24 Mar 2024 18:58:27 -0400
-Message-ID: <20240324230116.1348576-471-sashal@kernel.org>
+Subject: [PATCH 6.6 471/638] drm/mediatek: Fix a null pointer crash in mtk_drm_crtc_finish_page_flip
+Date: Sun, 24 Mar 2024 18:58:28 -0400
+Message-ID: <20240324230116.1348576-472-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -58,57 +59,82 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Théo Lebrun <theo.lebrun@bootlin.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit 53cf6b72e074864b94ade97dcb6f30b5ac1a82dc ]
+[ Upstream commit c958e86e9cc1b48cac004a6e245154dfba8e163b ]
 
-Previously, the statement looked like:
+It's possible that mtk_crtc->event is NULL in
+mtk_drm_crtc_finish_page_flip().
 
-    slpm[x] &= ~BIT(g->grp.pins[i]);
+pending_needs_vblank value is set by mtk_crtc->event, but in
+mtk_drm_crtc_atomic_flush(), it's is not guarded by the same
+lock in mtk_drm_finish_page_flip(), thus a race condition happens.
 
-Where:
- - slpm is a unsigned int pointer;
- - g->grp.pins[i] is a pin number. It can grow to more than 32.
+Consider the following case:
 
-The expected shift amount is a pin bank offset.
+CPU1                              CPU2
+step 1:
+mtk_drm_crtc_atomic_begin()
+mtk_crtc->event is not null,
+                                  step 1:
+                                  mtk_drm_crtc_atomic_flush:
+                                  mtk_drm_crtc_update_config(
+                                      !!mtk_crtc->event)
+step 2:
+mtk_crtc_ddp_irq ->
+mtk_drm_finish_page_flip:
+lock
+mtk_crtc->event set to null,
+pending_needs_vblank set to false
+unlock
+                                  pending_needs_vblank set to true,
 
-This bug does not occur on every group or pin: the altsetting must be
-NMK_GPIO_ALT_C and the pin must be 32 or above. It might have occured.
-For example, in pinctrl-nomadik-db8500.c, pin group i2c3_c_2 has the
-right altsetting and pins 229 and 230.
+                                  step 2:
+                                  mtk_crtc_ddp_irq ->
+                                  mtk_drm_finish_page_flip called again,
+                                  pending_needs_vblank is still true
+                                  //null pointer
 
-Fixes: dbfe8ca259e1 ("pinctrl/nomadik: implement pin multiplexing")
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-Link: https://lore.kernel.org/r/20240228-mbly-gpio-v2-5-3ba757474006@bootlin.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Instead of guarding the entire mtk_drm_crtc_atomic_flush(), it's more
+efficient to just check if mtk_crtc->event is null before use.
+
+Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Link: https://patchwork.kernel.org/project/dri-devel/patch/20240223212404.3709690-1-hsinyi@chromium.org/
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/nomadik/pinctrl-nomadik.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-index 86a638077a697..e7d33093994b2 100644
---- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-+++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-@@ -1573,8 +1573,10 @@ static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned function,
- 		 * Then mask the pins that need to be sleeping now when we're
- 		 * switching to the ALT C function.
- 		 */
--		for (i = 0; i < g->grp.npins; i++)
--			slpm[g->grp.pins[i] / NMK_GPIO_PER_CHIP] &= ~BIT(g->grp.pins[i]);
-+		for (i = 0; i < g->grp.npins; i++) {
-+			unsigned int bit = g->grp.pins[i] % NMK_GPIO_PER_CHIP;
-+			slpm[g->grp.pins[i] / NMK_GPIO_PER_CHIP] &= ~BIT(bit);
-+		}
- 		nmk_gpio_glitch_slpm_init(slpm);
- 	}
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index 80e34b39a6b11..29e021ec6901c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -93,11 +93,13 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+ 	struct drm_crtc *crtc = &mtk_crtc->base;
+ 	unsigned long flags;
  
+-	spin_lock_irqsave(&crtc->dev->event_lock, flags);
+-	drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
+-	drm_crtc_vblank_put(crtc);
+-	mtk_crtc->event = NULL;
+-	spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++	if (mtk_crtc->event) {
++		spin_lock_irqsave(&crtc->dev->event_lock, flags);
++		drm_crtc_send_vblank_event(crtc, mtk_crtc->event);
++		drm_crtc_vblank_put(crtc);
++		mtk_crtc->event = NULL;
++		spin_unlock_irqrestore(&crtc->dev->event_lock, flags);
++	}
+ }
+ 
+ static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
 -- 
 2.43.0
 
