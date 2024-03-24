@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-112970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA12888027
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:54:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0E77888029
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:55:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC8301F210E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:54:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B83E28152C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2D912A154;
-	Sun, 24 Mar 2024 22:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB8F12A178;
+	Sun, 24 Mar 2024 22:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=kernel.org header.i=@kernel.org header.b="YD2x00qI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kltgbURj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F177129A9D;
-	Sun, 24 Mar 2024 22:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE24F12A163;
+	Sun, 24 Mar 2024 22:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319782; cv=none; b=pQwI4nFVO+Slz7b8+cIsVPTr+xSq0AsmHvIOu/WMA/5eqysD4O2Agu3D5lV/fh8N6W3OG4OlQ6My4l5bDMoK+rjJ47NsJ6nedeJ9fvbG3ERjzxXIlLPL6zOQwp/8UkGrSBbEfeP2BFYrsuNb58Bu5uoI3M23NdlBzjvttYdDbSo=
+	t=1711319783; cv=none; b=jdMVUXQar8iXlOTRKFZVbrxmOOicW/kmkf/+o4JEFfVf4G8KYKBwmHq/SZsF7YGFx9UVPd1/Id37NZWqBCkkJj8VPV7GUr9gQKhQAcx/cj4Qa2bwS0ZciNwIuXeH+xJcadibzpUbFW1SWFiZn66lPiZl+0Ch56Jvv5wdTyqQLAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319782; c=relaxed/simple;
-	bh=YSBl1ZyTFCq6mOKswwz7IpYku0zQ+dj1+kqQKD82ROc=;
+	s=arc-20240116; t=1711319783; c=relaxed/simple;
+	bh=S5lSRSEl+8Ri8IPAHVMzY1VhWNuSPB/Hjn9uxUE1cn0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D22Q7gCkCWhdE39yGRXVFq+gjTet4oKZ+lpAwpeCuCjsXq0VY8pDN9UoGwTv+y4VEGm6rXfJ1vrrk1B7CGMik7IkxlOpPSDj48GOMXTlTYLYBYR+vbEmR9ZewtqC/GIz6Uvioxxmqp6BnJYaDzpI0G78ZjUDALKjjhfWevAone8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YD2x00qI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51005C43394;
-	Sun, 24 Mar 2024 22:36:21 +0000 (UTC)
+	 MIME-Version; b=VxPLAnwK0+iSSsuvL2F5nyLkPnCzxBOfDeByinP53L75n4QRHKpBguPnX5cS+xFkGl7cCNNSsaodfwEwcVDvc/2GMv5Ype5rFOoq5XsyOOarxGnxdPNm3Vpjhyuj9QLiGSs6qwgP8EgVJ4OCfFoN3kgiqMPZPc0ogPPjQvERQNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kltgbURj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64B33C43390;
+	Sun, 24 Mar 2024 22:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319782;
-	bh=YSBl1ZyTFCq6mOKswwz7IpYku0zQ+dj1+kqQKD82ROc=;
+	s=k20201202; t=1711319783;
+	bh=S5lSRSEl+8Ri8IPAHVMzY1VhWNuSPB/Hjn9uxUE1cn0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YD2x00qI2Wa6poLYwq9HXMy/WnBy3O3ji6C0g7msux9P9Y88GS3F6HH8VwpZ7BT9H
-	 RIhAguaANMpjzE6b4A4i3DPsli37npB/iQoLnGqW/iTdgDX8UokpO+gHJRaWCd6i4b
-	 lIMVHaiTQCghCLb6AUqWxmjpSAOClYszx1oamhanDtyNQOgpNryQQo6QWbMyoAEnpP
-	 EDCOt6Uq6LwoyqXFkkIqL2iSbrHKqEMr2N4UJmMCbUxiz40geu6F16KuhQGkZImv43
-	 HBHk14ofbum3eQK6Fr1kL3AOIq62gIBPgRQG4Md2VK7l1J7FTBzCgJZVvYhYyPMoF0
-	 GgXeRalQDQ6fA==
+	b=kltgbURjUKeboxIP1kBM8O1ZHWmCE/sqLWloRTlDeFhffeJ97j/43s2nTKPyaX1Pf
+	 p2McEbfHzcjcwkgIIVeP8ZbCN0KLUphB4LNvchyzgz6nqmVFJJLDiV+BCxvBh2Yd5k
+	 FNYE0SlvLlQyefmnVZ0KpSM+vJtLOTv6+0Otm29Wr7yBO5sUAj2SruFjLUXKWr4VKJ
+	 B9nbU94c78168yLbr+4Qq1251c1xpGC4pcYzI7MCvDFkE9pD3qVSoVTvCt4jHYcOQz
+	 mldvqBV5uYolCM6v7JczMHEblqht45cjJCmu+FAygghJRNPRjMv8RKRUTenGGTVkdW
+	 O4PtQLbJxQ05w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>,
+Cc: Artem Savkov <asavkov@redhat.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Quentin Monnet <quentin@isovalent.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Jiri Olsa <jolsa@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 083/715] bpftool: Silence build warning about calloc()
-Date: Sun, 24 Mar 2024 18:24:22 -0400
-Message-ID: <20240324223455.1342824-84-sashal@kernel.org>
+Subject: [PATCH 6.8 084/715] selftests/bpf: Fix potential premature unload in bpf_testmod
+Date: Sun, 24 Mar 2024 18:24:23 -0400
+Message-ID: <20240324223455.1342824-85-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -60,54 +61,64 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Artem Savkov <asavkov@redhat.com>
 
-[ Upstream commit f5f30386c78105cba520e443a6a9ee945ec1d066 ]
+[ Upstream commit d177c1be06ce28aa8c8710ac55be1b5ad3f314c6 ]
 
-There exists the following warning when building bpftool:
+It is possible for bpf_kfunc_call_test_release() to be called from
+bpf_map_free_deferred() when bpf_testmod is already unloaded and
+perf_test_stuct.cnt which it tries to decrease is no longer in memory.
+This patch tries to fix the issue by waiting for all references to be
+dropped in bpf_testmod_exit().
 
-  CC      prog.o
-prog.c: In function ‘profile_open_perf_events’:
-prog.c:2301:24: warning: ‘calloc’ sizes specified with ‘sizeof’ in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
- 2301 |                 sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
-      |                        ^~~
-prog.c:2301:24: note: earlier argument should specify number of elements, later size of each element
+The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
+but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
+synchronous grace periods urgently").
 
-Tested with the latest upstream GCC which contains a new warning option
--Wcalloc-transposed-args. The first argument to calloc is documented to
-be number of elements in array, while the second argument is size of each
-element, just switch the first and second arguments of calloc() to silence
-the build warning, compile tested only.
-
-Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Fixes: 65eb006d85a2 ("bpf: Move kernel test kfuncs to bpf_testmod")
+Signed-off-by: Artem Savkov <asavkov@redhat.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-Link: https://lore.kernel.org/bpf/20240116061920.31172-1-yangtiezhu@loongson.cn
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Link: https://lore.kernel.org/bpf/82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev
+Link: https://lore.kernel.org/bpf/20240110085737.8895-1-asavkov@redhat.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/prog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index feb8e305804fc..9cb42a3366c07 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -2298,7 +2298,7 @@ static int profile_open_perf_events(struct profiler_bpf *obj)
- 	int map_fd;
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 91907b321f913..e7c9e1c7fde04 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -2,6 +2,7 @@
+ /* Copyright (c) 2020 Facebook */
+ #include <linux/btf.h>
+ #include <linux/btf_ids.h>
++#include <linux/delay.h>
+ #include <linux/error-injection.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -544,6 +545,14 @@ static int bpf_testmod_init(void)
  
- 	profile_perf_events = calloc(
--		sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
-+		obj->rodata->num_cpu * obj->rodata->num_metric, sizeof(int));
- 	if (!profile_perf_events) {
- 		p_err("failed to allocate memory for perf_event array: %s",
- 		      strerror(errno));
+ static void bpf_testmod_exit(void)
+ {
++        /* Need to wait for all references to be dropped because
++         * bpf_kfunc_call_test_release() which currently resides in kernel can
++         * be called after bpf_testmod is unloaded. Once release function is
++         * moved into the module this wait can be removed.
++         */
++	while (refcount_read(&prog_test_struct.cnt) > 1)
++		msleep(20);
++
+ 	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
+ }
+ 
 -- 
 2.43.0
 
