@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84446889480
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:00:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67F528887F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 310EEB370F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:50:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24259291177
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC16A25083A;
-	Mon, 25 Mar 2024 02:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55F415ADAC;
+	Sun, 24 Mar 2024 23:15:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mFwpfl1Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZfaAVWgV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E90BB1E5F46;
-	Sun, 24 Mar 2024 23:01:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5E41E5F57;
+	Sun, 24 Mar 2024 23:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321294; cv=none; b=cQRjEwmSingKTfgiIsNrZXj6ZJQyLjLs2mX/komJXNab32tmsa1AJC8gRrhb3CzCV2dbUgdfCom4ctpMMz4UH4B60gTXNIUfFIKJYmLNKrsifO2zwpaypTRwlGvd0hP7X5gzsUrn6lv+WGfeGFfme10wzFldiAgq9pBUG5k/4/0=
+	t=1711321295; cv=none; b=ch7bE/Den6lGgJG/kLQoI+cKMQVlypR598q9MOX1mRZyXcNkuIDKVlueMtvecjbqG+vWqv14gHKruDRd4FaMQF0Rk+n7AgZuz9C3Y2kayaW9qb+R7Ssxsvea51OIADApOWotBT2kc0YQFtQGX29YpluNEWDiFjKbyrKVBlQV4sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321294; c=relaxed/simple;
-	bh=XGGSvzBJNfmfnhL9G/6nyYMIHVzLF9YEZMutrFl1KtE=;
+	s=arc-20240116; t=1711321295; c=relaxed/simple;
+	bh=h7vZhE/3zNxbW/raux5GMr5zWcoQY2up1hIwKwdJiis=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GdgbZJ3a8Hqm20lplPnR9txvH0pVGZx3B9yPDGGxoDqoy57j1uSLCz3mhgjaHQpGvJLctWsHxmGixfFAiXMQ6j4bsr7QuEwyBc0iksG0ArxN888OIiTSic8vE83tCs03vNjhJAtMMqKTalcd+pJlTh5I2awH88RzLkOq/BKcA/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mFwpfl1Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CC5C433F1;
+	 MIME-Version; b=XkHVXY4HcozmC77dD0GO2qI3fMRAqabDs4KNAXnc6wNMSKxRPa6WZ/ojN35cC3hDj9/UL+gpQ6T1mW7hzg2gMyfr16ZjAI0Is4KW5qbJN2mFKC40exUp6VwQH/YBjdProBMkbCBwz9yDWU+ItwunbIk4bpVUmnH2AWvzNo6Dlog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZfaAVWgV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1571AC43390;
 	Sun, 24 Mar 2024 23:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321293;
-	bh=XGGSvzBJNfmfnhL9G/6nyYMIHVzLF9YEZMutrFl1KtE=;
+	s=k20201202; t=1711321294;
+	bh=h7vZhE/3zNxbW/raux5GMr5zWcoQY2up1hIwKwdJiis=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mFwpfl1ZHRtY0tx6jL0dakenpYTwNapYZYsJbbD+UcMZBPK0ixf8IwPSFIK/UE0ue
-	 6mI0lRnyqyD79XCObobhpibkZ1gNzvgUHQ/NvvPU9b66TjvyRNqQTz3yYy76LsyZYT
-	 kiBfZgyM0aaK/cuA14QTg2oE61A9uxQBhRvstHocmfGYbkioST7t5uQEH7zXBj3Qkb
-	 f4+O+vEqNTuU4ZQ57RpYhj8MbMDs9DNcGgDq2Q+BT2XVZO7HiYWn80KI1o/HOiVB9F
-	 0gXS/Y0nlc/6DMuovMIzGFQ49LKEY08/IGoxduc54u1Ap5XA9UZxC9Srl9EDKRJXU5
-	 axjVvsCP99gHQ==
+	b=ZfaAVWgV/klIaQKULmM65NGqaANg8vq6TAC/L3XkbrdgZG8oq7f9fnijcv3GlzvIx
+	 Dkf5ULEwUhj+hv2KtPxJeBla54XSLGolmqpw3VazHxrcrFFf437kae01fmNbEMQCxT
+	 YVEGmJCBVMob0qA3BvcpbQ2V6M9CsCBx+AMDllTdyEBD7jLHfw9tv8E1yTNZv7Z/7+
+	 mghGceDNQZbUmxHCfrbcpPW7/5tK9rpihpsFQhQ66+940ymQWzp78aw63bU7uvRtxv
+	 O7GLQmMiTPHymLnxXZySKMfO1U3K+72G+T/o9wyUO3mss90txTBO1+puOZfRge9GvY
+	 Q9IuKrC7IoeLQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+Cc: Manuel Fombuena <fombuena@outlook.com>,
+	Jiri Kosina <jkosina@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 016/638] MIPS: Clear Cause.BD in instruction_pointer_set
-Date: Sun, 24 Mar 2024 18:50:53 -0400
-Message-ID: <20240324230116.1348576-17-sashal@kernel.org>
+Subject: [PATCH 6.6 017/638] HID: multitouch: Add required quirk for Synaptics 0xcddc device
+Date: Sun, 24 Mar 2024 18:50:54 -0400
+Message-ID: <20240324230116.1348576-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,37 +62,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+From: Manuel Fombuena <fombuena@outlook.com>
 
-[ Upstream commit 9d6e21ddf20293b3880ae55b9d14de91c5891c59 ]
+[ Upstream commit 1741a8269e1c51fa08d4bfdf34667387a6eb10ec ]
 
-Clear Cause.BD after we use instruction_pointer_set to override
-EPC.
+Add support for the pointing stick (Accupoint) and 2 mouse buttons.
 
-This can prevent exception_epc check against instruction code at
-new return address.
-It won't be considered as "in delay slot" after epc being overridden
-anyway.
+Present on some Toshiba/dynabook Portege X30 and X40 laptops.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+It should close https://bugzilla.kernel.org/show_bug.cgi?id=205817
+
+Signed-off-by: Manuel Fombuena <fombuena@outlook.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/ptrace.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/hid-multitouch.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
-index 701a233583c2c..d14d0e37ad02d 100644
---- a/arch/mips/include/asm/ptrace.h
-+++ b/arch/mips/include/asm/ptrace.h
-@@ -60,6 +60,7 @@ static inline void instruction_pointer_set(struct pt_regs *regs,
-                                            unsigned long val)
- {
- 	regs->cp0_epc = val;
-+	regs->cp0_cause &= ~CAUSEF_BD;
- }
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index 5ec1f174127a3..3816fd06bc953 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -2153,6 +2153,10 @@ static const struct hid_device_id mt_devices[] = {
+ 		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
+ 			USB_VENDOR_ID_SYNAPTICS, 0xcd7e) },
  
- /* Query offset/name of register from its name/offset */
++	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
++		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
++			USB_VENDOR_ID_SYNAPTICS, 0xcddc) },
++
+ 	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
+ 		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
+ 			USB_VENDOR_ID_SYNAPTICS, 0xce08) },
 -- 
 2.43.0
 
