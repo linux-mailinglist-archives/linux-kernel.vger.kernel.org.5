@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-112682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 595C8887CEB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 14:41:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B357E887CEE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 14:46:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 841AC1C20DC9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:41:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5D282815D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 13:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6830617C72;
-	Sun, 24 Mar 2024 13:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98BDB17C79;
+	Sun, 24 Mar 2024 13:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i7Bp6qvK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F4EZkOe2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31C117BCA;
-	Sun, 24 Mar 2024 13:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C712107;
+	Sun, 24 Mar 2024 13:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711287691; cv=none; b=OLD8xPO3jfbKUmu4XvIf88gztCflRxkzWtCoKth/oG8D3iigpbEPPTcz5YXi4xsrGSieSweyCV7JB6EpzorzaLmeTwM6E1/oeo5S9+/EfF3SUuKKXJyMB7EQ7QroYi90lELZTskax96SK2arhXL4WQE477mJP3GMpzwxoNw9zTU=
+	t=1711287989; cv=none; b=CNyrOuJftEe4JCO3EmUT80vYz7/uCn1ILOlpPJKRP7o+iXNUPiuN5xNzmPcTlsRS4oWKvpZtCwBI1385EqZ9tnAj2agg9ogF7CkNN79GgOBvjG++4Rsr7wDFXiUjt2fkpgKkTBpBP1reUniGFhZNqACiIaoxOWud80T7uiUdrpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711287691; c=relaxed/simple;
-	bh=EboX70F+3+t7ZeDd01epnf/aRoP9Cg1U0VVgeysaQ6Y=;
+	s=arc-20240116; t=1711287989; c=relaxed/simple;
+	bh=0HlMU7/a84GQ2AgaVMZjHCoXU5bh3NtAqzmZKQB52pQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=giPV5inZsbqR9lgP/yP/nUL2ZaMcBeKMq+ZNXDC65q071g2uk4WC9qt98FuZ7YOtmlxPcZhbbX/LgLzGjGC3nJLCQm1Pb9/Hf6rFaVs6TVMnZ82Z9jFESO27nxDNlwWR5OIYmKgVg1aYMiqQwNILpfYOGoTSY2eZktmaddrYVaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i7Bp6qvK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6E4BC433F1;
-	Sun, 24 Mar 2024 13:41:27 +0000 (UTC)
+	 MIME-Version:Content-Type; b=qrPWs2DEyRuhRHi/QB2cYBiHK4Ah2QVDpJiLKg9ZkYs5dihHwh2b96hw68x7mSy77Wwy6F4+nxB3TKtVraw35Lw0iF6qAkMKOTswK2vdUHba66KyxHGX0CbFRqon34jVulJmsO4r/+MLfg28pip2OgS9HFGZONgiQa0YAFnuLs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F4EZkOe2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B579C433C7;
+	Sun, 24 Mar 2024 13:46:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711287691;
-	bh=EboX70F+3+t7ZeDd01epnf/aRoP9Cg1U0VVgeysaQ6Y=;
+	s=k20201202; t=1711287988;
+	bh=0HlMU7/a84GQ2AgaVMZjHCoXU5bh3NtAqzmZKQB52pQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=i7Bp6qvKwcBVtnti5i61ivt4PJ6c0K/ULRzwp/oFV2OJkxY4eN73PbjpJAgYqRQjB
-	 O52bd5nYw3egIkNOmlIv4YQUQZQqyHEHFi3Hs0UG0e3k4+iP7zTA9ZWYBNXlAnrSFk
-	 sInxRXSoQM/QCRprHj7Fzrl937qZOhNbFeDFpHUq56QLdEB7hU7aG3bvTSaPP/uyff
-	 uMRr31ceHmPJVuc7N9vgNJ62wMz+D4zoOxDUitUgS6zuQy879M0v+i8NIy4WLpfN48
-	 0MwXEOl9gbOCD5fKb36Zby6bmN3yDaq38DVH6RDQcPhL//j0GNTYS69uNGhEP/vGC7
-	 delSV5US26/yA==
-Date: Sun, 24 Mar 2024 13:41:17 +0000
+	b=F4EZkOe24/pnJVnwRg4lRoAiGCTxwRXGEex+ncGUAfSuI7is6JbVgUwLjld/3C/gM
+	 IEg33+IrV2BPkTZtrqrAilrAh1WcpD5gIWvk/sPB3wV7LbSDzzRM/h1YBqZuaZakys
+	 66r75Ix2cIGJuWd3SFfnNP9NLBLWJZ8kMqWgQsPn0i/EUcf2lbXQzu622Ly4jiOxcT
+	 veetDOQt2gUl3TCCP/DI1EJXt7NaeUW3kuNRGHUFFOGhwWfGl8wXs5PbvpRd4QaPZT
+	 gTozr3mx1PnGo1Uywx+ObX1OmzBQGETO4/AnVWImOo7ZX1ZmWnOtS9U4Rz+siJl8WR
+	 1nkvaOOUvDrhA==
+Date: Sun, 24 Mar 2024 13:46:15 +0000
 From: Jonathan Cameron <jic23@kernel.org>
 To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
@@ -50,7 +50,7 @@ Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
  linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 1/2] dt-bindings: iio: health: maxim,max30102: add
  max30101
-Message-ID: <20240324134117.6d1dccb6@jic23-huawei>
+Message-ID: <20240324134615.0380ef81@jic23-huawei>
 In-Reply-To: <20240321-max30101-v1-1-00b83e966824@gmail.com>
 References: <20240321-max30101-v1-0-00b83e966824@gmail.com>
 	<20240321-max30101-v1-1-00b83e966824@gmail.com>
@@ -68,15 +68,30 @@ On Thu, 21 Mar 2024 19:33:48 +0100
 Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
 
 > The Maxim max30101 irs the replacement for the max30105, which is no
-
-is
-
 > longer recommended for future designs.
 > 
 > The max30101 does not require new properties, and it can be described
 > with the existing ones for the max30105.
 > 
 > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
+Given there were no driver changes, is it fully compatible?
+i.e. Should we have a fallback compatible here?
+
+properties:
+  compatible:
+    oneOf:
+       - items:
+           - const: maxim,max30101
+           - const: maxim,max30105
+       - enum:
+           - maxim,max30102
+           - maxim,max30105
+
+So that a DTS file could use
+compatible = "maxim,max30101", "maxim,max30105"
+and work with older kernels as well as new ones that understand the new ID?
+
 > ---
 >  Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml | 3 ++-
 >  1 file changed, 2 insertions(+), 1 deletion(-)
