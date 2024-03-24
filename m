@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-115033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9009888CA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:26:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 239EF888CB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:27:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 260BD1C2A1FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:26:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC0EB1F24CEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3061E2EC085;
-	Mon, 25 Mar 2024 00:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E651C1BEE;
+	Mon, 25 Mar 2024 00:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/CQGL5P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LuyElFY7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7279D17D252;
-	Sun, 24 Mar 2024 23:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837F517DC01;
+	Sun, 24 Mar 2024 23:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323838; cv=none; b=bIPt9vGjn5Dec2oHqroq6KfQFd2mRimGf8hZCHswP97bHAc0PcFn3ekEXbQbkkH97v6ItfeqlNQEp0HC0l8ZrtggL7Mr55zYL1T46w2X/3/apbpwfRPgFstGrYVYMKbx6TIlEp92/6Q8D5wWciBaxSe1f5bHsnEB22cInEBfC7s=
+	t=1711323839; cv=none; b=CCchdfzIaquP8xDb+xQpx0up0uk6YwirUOucTp04hpPPRh/Hf/jS1KbmEU6wcasJ21QHXiKFkA8SLp1lo/7d6yzWGchJ4BRROn/mS31UMkakzGsBSDyY4mGToFXbIv1i9sU+suCiRU8thofCejj+e4km21ZtTzfb/SrbrOSWZEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323838; c=relaxed/simple;
-	bh=gPCxG5KUKMDBx+4xfg2ayTlP2HLGPyoCCR1pzIXSQz8=;
+	s=arc-20240116; t=1711323839; c=relaxed/simple;
+	bh=FTe4ZX7VYZ8SrJmSCLv4eDtXVTPqOYrMW0q9tjbwYoA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dElQdnkmc3+rx39h2FvSJoz/NP98Ta8CuDEXuizzgj1TlAf6grbUWhAX43M9LF2qpXSnt+h/amLvYwP80tuta6MyxNMVZUQiLZYPiH4EQzUoUckgLHszOi+Cfz45ZikrO/4cV16S78Mal+ZuA2DLi6EzNTFhZxg73E/hXJ8FeYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/CQGL5P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B211FC43399;
-	Sun, 24 Mar 2024 23:43:56 +0000 (UTC)
+	 MIME-Version; b=U0Jl3sjOUIkio0mlqMxrIbaP92Y7DtfT+0Oj1VXtcXiliE34qfCicJefwNWKjQSRU9luIECFVZQj5oule6yh+hpaLgSux+5MxNQKQVYzqDl16lWDqKlqZ2TmT7SgT/YOyGreA0mKiOtyE6F9k2503RLd0AVnnIrIDsst1Wd9KOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LuyElFY7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 971DCC433F1;
+	Sun, 24 Mar 2024 23:43:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323837;
-	bh=gPCxG5KUKMDBx+4xfg2ayTlP2HLGPyoCCR1pzIXSQz8=;
+	s=k20201202; t=1711323838;
+	bh=FTe4ZX7VYZ8SrJmSCLv4eDtXVTPqOYrMW0q9tjbwYoA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=m/CQGL5PHG0Cobr2gWZHLxBx3+j3PGp9nQ2mJR2zaQib7tGILczhLeJH3xrdcxx0a
-	 NsiTeA1MsKBsPLnjqF6v7zO+s8DDD0JWWytb23AIpCFQ0v3THO3XijL5s3CVjwbL+M
-	 jY3+dyt5nslBxFx8vwg93G/peFzY5bIgekfgD+416OfXbYcqQMoNc0w2MD12iVg3bF
-	 jXIdB/NzyFhdel68hxgR9fG3u6vnVKmOTPSGrmGAfIz1LJiW9969EkaRobIxzy7hXR
-	 atjhS3Xq4/DS0lmeqBuPc0LsovWBgTlUDn2hOeEWXn88rxNa6bYaLCGGgIffStRASC
-	 DtF2ZFDu/4F+A==
+	b=LuyElFY7GPGKussnd7uTuw/nokc3k4V7rKWNFXpFLkBi0SLHodf3GWVnv0l1TV3Sb
+	 VDXv4zWkqi8YSjyDCdyhEvtx+SGtNLJlZCrlEsh1XOp/bM5LgToa8dErvsBfA6rqdk
+	 5MPr20cBZo/BBEHhPSYThD96D98hqcBb4ChTs2C8HYmvS5w7/uXimmOi0jURjD0Gvd
+	 vISNSn/WQTAnuseudRUN7i6UBV3G0QfgrglI5AxSd/e2CUWjjyQ+BO8aaIQXKXAKkE
+	 hNybGPFzgegwN3ktUj0uIWgZhjSIFI4cfsiOKjGjML5vRV53llxT7j725pWAVrSCkj
+	 eZYTYI5Ih4eSQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	Rui Miguel Silva <rmfrfs@gmail.com>,
+	Alex Elder <elder@linaro.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 215/238] serial: 8250_exar: Don't remove GPIO device on suspend
-Date: Sun, 24 Mar 2024 19:40:03 -0400
-Message-ID: <20240324234027.1354210-216-sashal@kernel.org>
+Subject: [PATCH 5.10 216/238] staging: greybus: fix get_channel_from_mode() failure path
+Date: Sun, 24 Mar 2024 19:40:04 -0400
+Message-ID: <20240324234027.1354210-217-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -62,47 +64,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@linaro.org>
 
-[ Upstream commit 73b5a5c00be39e23b194bad10e1ea8bb73eee176 ]
+[ Upstream commit 34164202a5827f60a203ca9acaf2d9f7d432aac8 ]
 
-It seems a copy&paste mistake that suspend callback removes the GPIO
-device. There is no counterpart of this action, means once suspended
-there is no more GPIO device available untile full unbind-bind cycle
-is performed. Remove suspicious GPIO device removal in suspend.
+The get_channel_from_mode() function is supposed to return the channel
+which matches the mode.  But it has a bug where if it doesn't find a
+matching channel then it returns the last channel.  It should return
+NULL instead.
 
-Fixes: d0aeaa83f0b0 ("serial: exar: split out the exar code from 8250_pci")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20240219150627.2101198-2-andriy.shevchenko@linux.intel.com
+Also remove an unnecessary NULL check on "channel".
+
+Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Reviewed-by: Alex Elder <elder@linaro.org>
+Link: https://lore.kernel.org/r/379c0cb4-39e0-4293-8a18-c7b1298e5420@moroto.mountain
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_exar.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/staging/greybus/light.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-index 6e33c74e569f0..7c28d2752a4cd 100644
---- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -688,6 +688,7 @@ static void exar_pci_remove(struct pci_dev *pcidev)
- 	for (i = 0; i < priv->nr; i++)
- 		serial8250_unregister_port(priv->line[i]);
+diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
+index d2672b65c3f49..e59bb27236b9f 100644
+--- a/drivers/staging/greybus/light.c
++++ b/drivers/staging/greybus/light.c
+@@ -100,15 +100,15 @@ static struct led_classdev *get_channel_cdev(struct gb_channel *channel)
+ static struct gb_channel *get_channel_from_mode(struct gb_light *light,
+ 						u32 mode)
+ {
+-	struct gb_channel *channel = NULL;
++	struct gb_channel *channel;
+ 	int i;
  
-+	/* Ensure that every init quirk is properly torn down */
- 	if (priv->board->exit)
- 		priv->board->exit(pcidev);
+ 	for (i = 0; i < light->channels_count; i++) {
+ 		channel = &light->channels[i];
+-		if (channel && channel->mode == mode)
+-			break;
++		if (channel->mode == mode)
++			return channel;
+ 	}
+-	return channel;
++	return NULL;
  }
-@@ -702,10 +703,6 @@ static int __maybe_unused exar_suspend(struct device *dev)
- 		if (priv->line[i] >= 0)
- 			serial8250_suspend_port(priv->line[i]);
  
--	/* Ensure that every init quirk is properly torn down */
--	if (priv->board->exit)
--		priv->board->exit(pcidev);
--
- 	return 0;
- }
- 
+ static int __gb_lights_flash_intensity_set(struct gb_channel *channel,
 -- 
 2.43.0
 
