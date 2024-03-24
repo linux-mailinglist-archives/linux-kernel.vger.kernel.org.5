@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AC368894E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:11:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86CEE888702
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:49:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FFFEB35430
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:43:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19236B2497D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD71129A9C;
-	Mon, 25 Mar 2024 02:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7ECD2081DF;
+	Sun, 24 Mar 2024 23:05:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EPQpMLkz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TSvjfe3V"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214C21E9F8D;
-	Sun, 24 Mar 2024 22:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 444091E9F9C;
+	Sun, 24 Mar 2024 22:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320906; cv=none; b=n/V0DHc7ydY6mnSVoFXSuLCrn7Jvs/fCQ+b2soWfDnylipxwNYL6hqCL7bJnuTRVYc8rwMB2PoqFqvNPo27YjNs1yKU3eK/VneSb+JVFfqgDcp/c1Qzord/C+ImaovVefuWdrmEw40n/t+juN7ii/pWPCJUqhDBtVN4OWqoRipg=
+	t=1711320907; cv=none; b=NMdr3/H0kI7d//x8PIyRCHgdDnLW26k+WvmZFby7359ejJif2kxF+Od4ZLbBUVup/foPZXc/ju6MmrPS06FXYOQ/0tlFfuc3eyewztX369GBCNZ4XtPD1nuQHggg/D96OspFnhDpq6AAFYNyCjbNuu7MaMC0tzS0s+oZgplnqYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320906; c=relaxed/simple;
-	bh=Gd32IM3+MPoIdKqaSx0pqzYfX7z6P6j7xfsNndqjB/8=;
+	s=arc-20240116; t=1711320907; c=relaxed/simple;
+	bh=BApVoZr1HWgG77uIAlP5say5xUHr6e9CzMP/GXvg8hE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iM0a/WCtvp1pEJBMuCzrvVA8Chbi2h+JEcfp/9BTDF/mOmmU3fP64Qxm0z6Z7uYGbK4viJHuCtLjcdw7n/ZTuk92YBzjQTE+/uA077Lmhcfm/hLL4r/ifGT8oqjDBfsPK5bwS4BuUzpPiRoYCPgAouK1incV1YO3Ap3X6pnBiHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EPQpMLkz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A29BC433C7;
-	Sun, 24 Mar 2024 22:55:05 +0000 (UTC)
+	 MIME-Version; b=GmFOWZjL1pcApkfuH6urtls1TA4C0dxDV44levA8ljI3458+xtxCeEwRg4z4NTBL3jrY+P9QSiUouJETEOfBsR3yktGqF2pjDQrm7jc6Z8f33ua0+m1ucNFFRcd3D5QavWcalcWOdSeeL1UnM1wEfXPRrzLjg14QflNvy4Q0Evg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TSvjfe3V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44E10C43390;
+	Sun, 24 Mar 2024 22:55:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711320906;
-	bh=Gd32IM3+MPoIdKqaSx0pqzYfX7z6P6j7xfsNndqjB/8=;
+	bh=BApVoZr1HWgG77uIAlP5say5xUHr6e9CzMP/GXvg8hE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EPQpMLkzCTuutXGG29xsupB0WDgjoaScYvQB/Fd7SMdPAKSwQjscs/Ch5nQWGJzb0
-	 ZIk75clLm74i/K9ncZVDh/aF5RdhkSSrUcEOYkzcDYCZqxAAebzsOiECEvk3/4Kjiq
-	 xV24vlNFnze9Vs0dciKXzKgO1FstwW+M97mx98HsVoPOdlbE+MASw3xVk3j3rE/odU
-	 w+i7F6i9kMjkHMQAYBzUa289/DLwR4sePQfi/cha+rdBNEwAAAec9jyftsiEWyzaVc
-	 FD38rBDxh9/BIh2eLDboVBHX/fy4izxLPEAlHN8M7NzKvQGxWIIy8DrjXOKRUqMz30
-	 XZ8N9hPolZO+Q==
+	b=TSvjfe3V4IT2yMsJQLu9Hyn/EKyCPtWXeZp9scaK9yEEp13Q0k1ZkyhZ1nkY20ekI
+	 D/q6BD/nlVbCwhLRG7jS1vcaDnHDD+v4t09hceGvyQfzopuqATkkVcVFzBHMsC0DPh
+	 Od54GmkYYIjCdif7SBr2tooj9pKydczJe4OLhNY4brJLVRPGq31fwA4a22vznKS1+z
+	 LZoj+pbowd3qZq0ItMfhKbtmi1M4F/aGpTA6c+ImXF2cE2QpE47nFmnRJU9e9+KNMp
+	 h8rpdV8WJmgBQTDmO1AoeSGU4WhlAH/cwlBf/RPh3q5BM0T8H+mcfspLTcpvBT9ZN6
+	 I5rgQViGJpPwg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lucas Stach <l.stach@pengutronix.de>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
+Cc: Daniil Dulov <d.dulov@aladdin.ru>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 469/713] media: imx: csc/scaler: fix v4l2_ctrl_handler memory leak
-Date: Sun, 24 Mar 2024 18:43:15 -0400
-Message-ID: <20240324224720.1345309-470-sashal@kernel.org>
+Subject: [PATCH 6.7 470/713] media: go7007: add check of return value of go7007_read_addr()
+Date: Sun, 24 Mar 2024 18:43:16 -0400
+Message-ID: <20240324224720.1345309-471-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,33 +62,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Lucas Stach <l.stach@pengutronix.de>
+From: Daniil Dulov <d.dulov@aladdin.ru>
 
-[ Upstream commit 4797a3dd46f220e6d83daf54d70c5b33db6deb01 ]
+[ Upstream commit 0b70530ee740861f4776ff724fcc25023df1799a ]
 
-Free the memory allocated in v4l2_ctrl_handler_init on release.
+If go7007_read_addr() returns error channel is not assigned a value.
+In this case go to allocfail.
 
-Fixes: a8ef0488cc59 ("media: imx: add csc/scaler mem2mem device")
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 866b8695d67e ("Staging: add the go7007 video driver")
+Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/imx/imx-media-csc-scaler.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/usb/go7007/go7007-usb.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/media/imx/imx-media-csc-scaler.c b/drivers/staging/media/imx/imx-media-csc-scaler.c
-index 1fd39a2fca98a..95cca281e8a37 100644
---- a/drivers/staging/media/imx/imx-media-csc-scaler.c
-+++ b/drivers/staging/media/imx/imx-media-csc-scaler.c
-@@ -803,6 +803,7 @@ static int ipu_csc_scaler_release(struct file *file)
+diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
+index eeb85981e02b6..762c13e49bfa5 100644
+--- a/drivers/media/usb/go7007/go7007-usb.c
++++ b/drivers/media/usb/go7007/go7007-usb.c
+@@ -1201,7 +1201,9 @@ static int go7007_usb_probe(struct usb_interface *intf,
+ 				u16 channel;
  
- 	dev_dbg(priv->dev, "Releasing instance %p\n", ctx);
- 
-+	v4l2_ctrl_handler_free(&ctx->ctrl_hdlr);
- 	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
- 	v4l2_fh_del(&ctx->fh);
- 	v4l2_fh_exit(&ctx->fh);
+ 				/* read channel number from GPIO[1:0] */
+-				go7007_read_addr(go, 0x3c81, &channel);
++				if (go7007_read_addr(go, 0x3c81, &channel))
++					goto allocfail;
++
+ 				channel &= 0x3;
+ 				go->board_id = GO7007_BOARDID_ADLINK_MPG24;
+ 				usb->board = board = &board_adlink_mpg24;
 -- 
 2.43.0
 
