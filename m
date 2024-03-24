@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445D2888883
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:29:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C96D889CE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:31:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8D8AB2244D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:29:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C29D72C57CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECD42023AF;
-	Sun, 24 Mar 2024 23:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B3934AD55;
+	Mon, 25 Mar 2024 02:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gFy7tXH6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qSwXsjMW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22F9131E28;
-	Sun, 24 Mar 2024 23:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A74130E23;
+	Sun, 24 Mar 2024 23:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321420; cv=none; b=sbHQnYwVcbllIGyAnXgC4bBG9gBS15VaqCfRCCTzehx160lbPcV+PgIbOw6E5K80D0dJ7Dq1ICdsvGDIgO/nSk13yk9FluEK4+bnMD9brFxBSTNjzsiDbimQr0Nyhf1DYH2zPWeCkPkNAOARg0f6ri0Juz1Wlv3xuEB1RHW0W1o=
+	t=1711321420; cv=none; b=NuKGiln5LT6336lY04mPlBTqoo+Bf+LtrOy9kvnN7/3/pO9STdJA6QY1Pj1zDf1WwjjuAUMrLNKD2ri+S2P0A0CZrwJoXvmvyW+wmIweqi8ZdyksErpaurV/+Jit4ZwcLODpYWcU4CXm3bvaCswTMIU+s7rNheUGeh5mWTNcymw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321420; c=relaxed/simple;
-	bh=qFpUQqMP2OvlrWkLC22tIXBrzZPa6exUEWIiFlsA8jY=;
+	bh=K757j1h2gj/8YT/wZT3TO9lwrI+Py+jNR2IhmZioBqg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=V7iHynjEKqPR9Jg700SFtitRG+RGSQE+TKOt0dwmb8Hg22qp4LaGRg25X44yLXNSKBQgkhZCm4RKZ90uV78vORfm17VGmnIGj2F2v9iGenfzXECNXZ6YBfJ+xdWSALvHO3yuny5tv3zjbJNLRDwKCdnC1LzhI+kM32MaIxPkHis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gFy7tXH6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B24BC43390;
+	 MIME-Version; b=TdhhPZD16Clhoc8LVoRa3IcJ99IHT7QG5uWglN1lvZONs/yLiDIlSzwzqh1ojRQJoheuwbuL0yLV5XVuEQue7Mz1Tb9Mg2MFLRrxrbu5C6kjXWlzAcChYOSvNgB5lUD9hBc/LhfdCF/p8f7mRAG6nl28uZtav8RLoMk8MlSobYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qSwXsjMW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02A4EC43399;
 	Sun, 24 Mar 2024 23:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321419;
-	bh=qFpUQqMP2OvlrWkLC22tIXBrzZPa6exUEWIiFlsA8jY=;
+	s=k20201202; t=1711321420;
+	bh=K757j1h2gj/8YT/wZT3TO9lwrI+Py+jNR2IhmZioBqg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gFy7tXH6rY3YG6i4/qHr24d+oQbHAc0/5k/+5v9BnJ5TcoN6QWQ1nYaQQP+dDsDl5
-	 4JNabEwJ7CYl6mtORAlXjqlVAnTvtBp/osLidw62ji8m2YBhubBr06tsAmWQraGCkq
-	 aPuOVuqVtOLcOFKAVpOnMxDz8mZpFedz0DK9u5g8TdoeIoDQYe6nFK5MnFtj+NNBqG
-	 mJa4f7nFuPLwXlYBtj8gzT3HuRBaI4tV9UZ+xx9bWbJPDcnxHswLL/7R7Ih01aPgwS
-	 Y7LYdphRIz6T3j8u6+JpX5CGAmUjfgj6bUbX8JAZqfDzOb+2LNft6mfMYnha1uajb7
-	 VMOOJwTGbF8CQ==
+	b=qSwXsjMWmxGSKe0QSmBpX4AxgD3j9ssCVOQiUr6VdtK7w15YybMTCsguCAhIfvj9P
+	 F7MQONn98/M7Q3QbCuoAikev26t2VUfG8Lqrx3VXTyW3ozhV/+5FY20PmsDqbqbACp
+	 XCn5KFaD9Q1Cr44g4aUpxZxikJwA4O9M/S1n7kkm27EhW0oaISA63CiKuC6/bC3Qe1
+	 j+xPZ1nxpt41QWZvcJGT0ruucLCVSquNKLuVgw43s6deq3bMOQSGpP1i3XsBVoF1Q/
+	 hzPY31XH6Ju/M7XVcQtfLYUTXwrojFO1YITptBkiPO4CZEXBAojpim/qe3eIZYJhIJ
+	 7L68nKtChiunw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 143/638] selftests/bpf: Fix the flaky tc_redirect_dtime test
-Date: Sun, 24 Mar 2024 18:53:00 -0400
-Message-ID: <20240324230116.1348576-144-sashal@kernel.org>
+Subject: [PATCH 6.6 144/638] selftests/bpf: Wait for the netstamp_needed_key static key to be turned on
+Date: Sun, 24 Mar 2024 18:53:01 -0400
+Message-ID: <20240324230116.1348576-145-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -64,92 +64,181 @@ Content-Transfer-Encoding: 8bit
 
 From: Martin KaFai Lau <martin.lau@kernel.org>
 
-[ Upstream commit 177f1d083a19af58f4b1206d299ed73689249fd8 ]
+[ Upstream commit ce6f6cffaeaa0a3bcdafcae7fe03c68c3afae631 ]
 
-BPF CI has been reporting the tc_redirect_dtime test failing
-from time to time:
+After the previous patch that speeded up the test (by avoiding neigh
+discovery in IPv6), the BPF CI occasionally hits this error:
 
-test_inet_dtime:PASS:setns src 0 nsec
-(network_helpers.c:253: errno: No route to host) Failed to connect to server
-close_netns:PASS:setns 0 nsec
-test_inet_dtime:FAIL:connect_to_fd unexpected connect_to_fd: actual -1 < expected 0
-test_tcp_clear_dtime:PASS:tcp ip6 clear dtime ingress_fwdns_p100 0 nsec
+rcv tstamp unexpected pkt rcv tstamp: actual 0 == expected 0
 
-The connect_to_fd failure (EHOSTUNREACH) is from the
-test_tcp_clear_dtime() test and it is the very first IPv6 traffic
-after setting up all the links, addresses, and routes.
+The test complains about the cmsg returned from the recvmsg() does not
+have the rcv timestamp. Setting skb->tstamp or not is
+controlled by a kernel static key "netstamp_needed_key". The static
+key is enabled whenever this is at least one sk with the SOCK_TIMESTAMP
+set.
 
-The symptom is this first connect() is always slow. In my setup, it
-could take ~3s.
+The test_redirect_dtime does use setsockopt() to turn on
+the SOCK_TIMESTAMP for the reading sk. In the kernel
+net_enable_timestamp() has a delay to enable the "netstamp_needed_key"
+when CONFIG_JUMP_LABEL is set. This potential delay is the likely reason
+for packet missing rcv timestamp occasionally.
 
-After some tracing and tcpdump, the slowness is mostly spent in
-the neighbor solicitation in the "ns_fwd" namespace while
-the "ns_src" and "ns_dst" are fine.
+This patch is to create udp sockets with SOCK_TIMESTAMP set.
+It sends and receives some packets until the received packet
+has a rcv timestamp. It currently retries at most 5 times with 1s
+in between. This should be enough to wait for the "netstamp_needed_key".
+It then holds on to the socket and only closes it at the end of the test.
+This guarantees that the test has the "netstamp_needed_key" key turned
+on from the beginning.
 
-I forced the kernel to drop the neighbor solicitation messages.
-I can then reproduce EHOSTUNREACH. What actually happen could be:
-- the neighbor advertisement came back a little slow.
-- the "ns_fwd" namespace concluded a neighbor discovery failure
-  and triggered the ndisc_error_report() => ip6_link_failure() =>
-  icmpv6_send(skb, ICMPV6_DEST_UNREACH, ICMPV6_ADDR_UNREACH, 0)
-- the client's connect() reports EHOSTUNREACH after receiving
-  the ICMPV6_DEST_UNREACH message.
-
-The neigh table of both "ns_src" and "ns_dst" namespace has already
-been manually populated but not the "ns_fwd" namespace. This patch
-fixes it by manually populating the neigh table also in the "ns_fwd"
-namespace.
-
-Although the namespace configuration part had been existed before
-the tc_redirect_dtime test, still Fixes-tagging the patch when
-the tc_redirect_dtime test was added since it is the only test
-hitting it so far.
+To simplify the udp sockets setup, they are sending/receiving packets
+in the same netns (ns_dst is used) and communicate over the "lo" dev.
+Hence, the patch enables the "lo" dev in the ns_dst.
 
 Fixes: c803475fd8dd ("bpf: selftests: test skb->tstamp in redirect_neigh")
 Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20240120060518.3604920-1-martin.lau@linux.dev
+Link: https://lore.kernel.org/bpf/20240120060518.3604920-2-martin.lau@linux.dev
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ .../selftests/bpf/prog_tests/tc_redirect.c    | 79 ++++++++++++++++++-
+ 1 file changed, 75 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-index 518f143c5b0fe..610887157fd85 100644
+index 610887157fd85..dbe06aeaa2b27 100644
 --- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
 +++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-@@ -188,6 +188,7 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+@@ -291,6 +291,7 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ 	SYS(fail, "ip addr add " IP4_DST "/32 dev dst");
+ 	SYS(fail, "ip addr add " IP6_DST "/128 dev dst nodad");
+ 	SYS(fail, "ip link set dev dst up");
++	SYS(fail, "ip link set dev lo up");
+ 
+ 	SYS(fail, "ip route add " IP4_SRC "/32 dev dst scope global");
+ 	SYS(fail, "ip route add " IP4_NET "/16 dev dst scope global");
+@@ -468,7 +469,7 @@ static int set_forwarding(bool enable)
+ 	return 0;
+ }
+ 
+-static void rcv_tstamp(int fd, const char *expected, size_t s)
++static int __rcv_tstamp(int fd, const char *expected, size_t s, __u64 *tstamp)
  {
- 	struct nstoken *nstoken = NULL;
- 	char src_fwd_addr[IFADDR_STR_LEN+1] = {};
-+	char src_addr[IFADDR_STR_LEN + 1] = {};
- 	int err;
+ 	struct __kernel_timespec pkt_ts = {};
+ 	char ctl[CMSG_SPACE(sizeof(pkt_ts))];
+@@ -489,7 +490,7 @@ static void rcv_tstamp(int fd, const char *expected, size_t s)
  
- 	if (result->dev_mode == MODE_VETH) {
-@@ -208,6 +209,9 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
- 	if (get_ifaddr("src_fwd", src_fwd_addr))
- 		goto fail;
+ 	ret = recvmsg(fd, &msg, 0);
+ 	if (!ASSERT_EQ(ret, s, "recvmsg"))
+-		return;
++		return -1;
+ 	ASSERT_STRNEQ(data, expected, s, "expected rcv data");
  
-+	if (get_ifaddr("src", src_addr))
-+		goto fail;
-+
- 	result->ifindex_src = if_nametoindex("src");
- 	if (!ASSERT_GT(result->ifindex_src, 0, "ifindex_src"))
- 		goto fail;
-@@ -270,6 +274,13 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
- 	SYS(fail, "ip route add " IP4_DST "/32 dev dst_fwd scope global");
- 	SYS(fail, "ip route add " IP6_DST "/128 dev dst_fwd scope global");
+ 	cmsg = CMSG_FIRSTHDR(&msg);
+@@ -498,6 +499,12 @@ static void rcv_tstamp(int fd, const char *expected, size_t s)
+ 		memcpy(&pkt_ts, CMSG_DATA(cmsg), sizeof(pkt_ts));
  
-+	if (result->dev_mode == MODE_VETH) {
-+		SYS(fail, "ip neigh add " IP4_SRC " dev src_fwd lladdr %s", src_addr);
-+		SYS(fail, "ip neigh add " IP6_SRC " dev src_fwd lladdr %s", src_addr);
-+		SYS(fail, "ip neigh add " IP4_DST " dev dst_fwd lladdr %s", MAC_DST);
-+		SYS(fail, "ip neigh add " IP6_DST " dev dst_fwd lladdr %s", MAC_DST);
+ 	pkt_ns = pkt_ts.tv_sec * NSEC_PER_SEC + pkt_ts.tv_nsec;
++	if (tstamp) {
++		/* caller will check the tstamp itself */
++		*tstamp = pkt_ns;
++		return 0;
 +	}
 +
- 	close_netns(nstoken);
+ 	ASSERT_NEQ(pkt_ns, 0, "pkt rcv tstamp");
  
- 	/** setup in 'dst' namespace */
+ 	ret = clock_gettime(CLOCK_REALTIME, &now_ts);
+@@ -507,6 +514,60 @@ static void rcv_tstamp(int fd, const char *expected, size_t s)
+ 	if (ASSERT_GE(now_ns, pkt_ns, "check rcv tstamp"))
+ 		ASSERT_LT(now_ns - pkt_ns, 5 * NSEC_PER_SEC,
+ 			  "check rcv tstamp");
++	return 0;
++}
++
++static void rcv_tstamp(int fd, const char *expected, size_t s)
++{
++	__rcv_tstamp(fd, expected, s, NULL);
++}
++
++static int wait_netstamp_needed_key(void)
++{
++	int opt = 1, srv_fd = -1, cli_fd = -1, nretries = 0, err, n;
++	char buf[] = "testing testing";
++	struct nstoken *nstoken;
++	__u64 tstamp = 0;
++
++	nstoken = open_netns(NS_DST);
++	if (!nstoken)
++		return -1;
++
++	srv_fd = start_server(AF_INET6, SOCK_DGRAM, "::1", 0, 0);
++	if (!ASSERT_GE(srv_fd, 0, "start_server"))
++		goto done;
++
++	err = setsockopt(srv_fd, SOL_SOCKET, SO_TIMESTAMPNS_NEW,
++			 &opt, sizeof(opt));
++	if (!ASSERT_OK(err, "setsockopt(SO_TIMESTAMPNS_NEW)"))
++		goto done;
++
++	cli_fd = connect_to_fd(srv_fd, TIMEOUT_MILLIS);
++	if (!ASSERT_GE(cli_fd, 0, "connect_to_fd"))
++		goto done;
++
++again:
++	n = write(cli_fd, buf, sizeof(buf));
++	if (!ASSERT_EQ(n, sizeof(buf), "send to server"))
++		goto done;
++	err = __rcv_tstamp(srv_fd, buf, sizeof(buf), &tstamp);
++	if (!ASSERT_OK(err, "__rcv_tstamp"))
++		goto done;
++	if (!tstamp && nretries++ < 5) {
++		sleep(1);
++		printf("netstamp_needed_key retry#%d\n", nretries);
++		goto again;
++	}
++
++done:
++	if (!tstamp && srv_fd != -1) {
++		close(srv_fd);
++		srv_fd = -1;
++	}
++	if (cli_fd != -1)
++		close(cli_fd);
++	close_netns(nstoken);
++	return srv_fd;
+ }
+ 
+ static void snd_tstamp(int fd, char *b, size_t s)
+@@ -843,11 +904,20 @@ static void test_tc_redirect_dtime(struct netns_setup_result *setup_result)
+ {
+ 	struct test_tc_dtime *skel;
+ 	struct nstoken *nstoken;
+-	int err;
++	int hold_tstamp_fd, err;
++
++	/* Hold a sk with the SOCK_TIMESTAMP set to ensure there
++	 * is no delay in the kernel net_enable_timestamp().
++	 * This ensures the following tests must have
++	 * non zero rcv tstamp in the recvmsg().
++	 */
++	hold_tstamp_fd = wait_netstamp_needed_key();
++	if (!ASSERT_GE(hold_tstamp_fd, 0, "wait_netstamp_needed_key"))
++		return;
+ 
+ 	skel = test_tc_dtime__open();
+ 	if (!ASSERT_OK_PTR(skel, "test_tc_dtime__open"))
+-		return;
++		goto done;
+ 
+ 	skel->rodata->IFINDEX_SRC = setup_result->ifindex_src_fwd;
+ 	skel->rodata->IFINDEX_DST = setup_result->ifindex_dst_fwd;
+@@ -892,6 +962,7 @@ static void test_tc_redirect_dtime(struct netns_setup_result *setup_result)
+ 
+ done:
+ 	test_tc_dtime__destroy(skel);
++	close(hold_tstamp_fd);
+ }
+ 
+ static void test_tc_redirect_neigh_fib(struct netns_setup_result *setup_result)
 -- 
 2.43.0
 
