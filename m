@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-116194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48C77889A20
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:25:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD6A8888C92
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A09A1C32193
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:25:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8801928D375
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EF317B4F7;
-	Mon, 25 Mar 2024 03:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38812E9AC4;
+	Mon, 25 Mar 2024 00:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="crriO9WD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="utfPA2Os"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1000A284554;
-	Sun, 24 Mar 2024 23:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124B017C6B5;
+	Sun, 24 Mar 2024 23:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323795; cv=none; b=olEyakix9BRGriVinvTTCyMN0Y1aSOjFqG1PNDiaWCJUL3Ph35ATNQwcaXzgion/QCiQajKpchQJNrMjcfyPr6Rx035iz6HtBQ/GrPXppx5YrET/X/KPhOUaIPIEg4v3Nhx0xv2trK6CMd4vOPaG7NGGbAHGaaHYFGIHICE/bjM=
+	t=1711323797; cv=none; b=U/oqN5vkIq1V92K0bMKzx+rtXLHW6+HeUf1WflT/pvmx+lBvlARtqnsWWPvrL++ZOHxgJw7ioQ2QYetQ7hycnwBhAhPWc7OOCCN3UbLzp10TySRUkbpYUUDGA5tSWZk4MHzZkslp3765SzePN2jkybmEFDFJ6xN6Edw6giEMCpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323795; c=relaxed/simple;
-	bh=zIzrS9FnuADVM5W+mS2X8Ece0Bn7nG81SCezXMUw+EM=;
+	s=arc-20240116; t=1711323797; c=relaxed/simple;
+	bh=EpkfoWx72jhMfIWXfpdojzGNUtDam6OnAiKzo5ntHS0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PDXZpmnt3Deldw4ZsqQgM66rZRCJwsxxksBydFC19SIEk4F+XerBZDzK/c3zmSQ5p0XnBRGUDiqtX9VaqJRveiByWPkcAf4gNo2hm++J/rAEY+N3g41t6hbTTiaL2SsKVvXp/pNexZ6HynaCERIbUH3hlNBKHlTXJuSVhkl0KM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=crriO9WD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A36EC43390;
-	Sun, 24 Mar 2024 23:43:14 +0000 (UTC)
+	 MIME-Version; b=X4JueQXidyvsP4E8m309YwK5pCnMBT06csK24uD7wJFznCSD9PJctLIf9DwkC+mHvFHizJQkzpKyecaDokTcJve5Tv4uKmkkrwdUh4pgI5nbuN0pMJF+s/oD/tTlXcs0vq4XwWIlRHeXjcFDtj7NIdUdpPxOpEu4ukbw/iXR57o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=utfPA2Os; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 333E9C433C7;
+	Sun, 24 Mar 2024 23:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323794;
-	bh=zIzrS9FnuADVM5W+mS2X8Ece0Bn7nG81SCezXMUw+EM=;
+	s=k20201202; t=1711323795;
+	bh=EpkfoWx72jhMfIWXfpdojzGNUtDam6OnAiKzo5ntHS0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=crriO9WDUiyYIpP/wGhgS3jj442814iw/PR/loPMdZlnXIG/AoGJf2r2L/kcw83Pt
-	 Fi0caMANeSsWtWIEGBXqUHfEn5rDTYlHUumrjRUgkqIcp5ER4v8quOUzOr1AsI/ANP
-	 d+dhDJaGF0G41kT+RkZBfHd1sGfq6E4fo4JioHa529cNiBr86IMerVOjeieBw6IdZn
-	 7EGsE6ARG3uNpNUcYQDB5prZl9h2gIoG7Uwl89WO5ElpwKtZyOlYQ6R5bkGsJ/T5Cc
-	 LBwdAB0Bru4ZlrmDlJUFcsH444BZGQojKpkn7jHLQJW9+KNrFXfzT54ENOPfnW7Y1J
-	 9iAKs4SyawciA==
+	b=utfPA2OsSraKSEzHa4s0a7jFk9DCMNtg1gQKqXpGYVHDkXZKK14xiWbKufI9CKwQq
+	 ZtJl8cm9cUxGyimvO9XEaEzSZ5E27qC9F58xbwQEiOign0gyc3XP7ZuHCcBVksOHMI
+	 Xlg+RsgKZdW92yRgMEpSdXhqlBljqfBfLscLdbUr75rXAHdwFE5q0zobl3O87Dxx4O
+	 u/p6q3mOu9OX3u0pSNg/5x4GNan7GBPd2tPYXUum/RxvSvZzddvgYhZ4Ir8OWib6Fy
+	 VMtSkje6SrMtQwTGRz67RocPXNT3D6ICVNfaJm1NYCykpQgcOl8WB75jaCMFfZXyeN
+	 dWCE/Z85orRAQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edward Adam Davis <eadavis@qq.com>,
-	syzbot+ce750e124675d4599449@syzkaller.appspotmail.com,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Justin Stitt <justinstitt@google.com>,
 	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 172/238] media: pvrusb2: fix uaf in pvr2_context_set_notify
-Date: Sun, 24 Mar 2024 19:39:20 -0400
-Message-ID: <20240324234027.1354210-173-sashal@kernel.org>
+Subject: [PATCH 5.10 173/238] media: dvb-frontends: avoid stack overflow warnings with clang
+Date: Sun, 24 Mar 2024 19:39:21 -0400
+Message-ID: <20240324234027.1354210-174-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -63,73 +63,93 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Edward Adam Davis <eadavis@qq.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 0a0b79ea55de8514e1750884e5fec77f9fdd01ee ]
+[ Upstream commit 7a4cf27d1f0538f779bf31b8c99eda394e277119 ]
 
-[Syzbot reported]
-BUG: KASAN: slab-use-after-free in pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
-Read of size 4 at addr ffff888113aeb0d8 by task kworker/1:1/26
+A previous patch worked around a KASAN issue in stv0367, now a similar
+problem showed up with clang:
 
-CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 6.8.0-rc1-syzkaller-00046-gf1a27f081c1f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:488
- kasan_report+0xda/0x110 mm/kasan/report.c:601
- pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
- pvr2_context_notify drivers/media/usb/pvrusb2/pvrusb2-context.c:95 [inline]
- pvr2_context_disconnect+0x94/0xb0 drivers/media/usb/pvrusb2/pvrusb2-context.c:272
+drivers/media/dvb-frontends/stv0367.c:1222:12: error: stack frame size (3624) exceeds limit (2048) in 'stv0367ter_set_frontend' [-Werror,-Wframe-larger-than]
+ 1214 | static int stv0367ter_set_frontend(struct dvb_frontend *fe)
 
-Freed by task 906:
-kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
-kasan_save_track+0x14/0x30 mm/kasan/common.c:68
-kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
-poison_slab_object mm/kasan/common.c:241 [inline]
-__kasan_slab_free+0x106/0x1b0 mm/kasan/common.c:257
-kasan_slab_free include/linux/kasan.h:184 [inline]
-slab_free_hook mm/slub.c:2121 [inline]
-slab_free mm/slub.c:4299 [inline]
-kfree+0x105/0x340 mm/slub.c:4409
-pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:137 [inline]
-pvr2_context_thread_func+0x69d/0x960 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
+Rework the stv0367_writereg() function to be simpler and mark both
+register access functions as noinline_for_stack so the temporary
+i2c_msg structures do not get duplicated on the stack when KASAN_STACK
+is enabled.
 
-[Analyze]
-Task A set disconnect_flag = !0, which resulted in Task B's condition being met
-and releasing mp, leading to this issue.
-
-[Fix]
-Place the disconnect_flag assignment operation after all code in pvr2_context_disconnect()
-to avoid this issue.
-
-Reported-and-tested-by: syzbot+ce750e124675d4599449@syzkaller.appspotmail.com
-Fixes: e5be15c63804 ("V4L/DVB (7711): pvrusb2: Fix race on module unload")
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Fixes: 3cd890dbe2a4 ("media: dvb-frontends: fix i2c access helpers for KASAN")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/pvrusb2/pvrusb2-context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/dvb-frontends/stv0367.c | 34 +++++++--------------------
+ 1 file changed, 8 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-index 58f2f3ff10ee2..73c95ba2328a4 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-@@ -267,9 +267,9 @@ static void pvr2_context_exit(struct pvr2_context *mp)
- void pvr2_context_disconnect(struct pvr2_context *mp)
+diff --git a/drivers/media/dvb-frontends/stv0367.c b/drivers/media/dvb-frontends/stv0367.c
+index 0bfca1174e9e7..8cbae8235b174 100644
+--- a/drivers/media/dvb-frontends/stv0367.c
++++ b/drivers/media/dvb-frontends/stv0367.c
+@@ -118,50 +118,32 @@ static const s32 stv0367cab_RF_LookUp2[RF_LOOKUP_TABLE2_SIZE][RF_LOOKUP_TABLE2_S
+ 	}
+ };
+ 
+-static
+-int stv0367_writeregs(struct stv0367_state *state, u16 reg, u8 *data, int len)
++static noinline_for_stack
++int stv0367_writereg(struct stv0367_state *state, u16 reg, u8 data)
  {
- 	pvr2_hdw_disconnect(mp->hdw);
--	mp->disconnect_flag = !0;
- 	if (!pvr2_context_shutok())
- 		pvr2_context_notify(mp);
-+	mp->disconnect_flag = !0;
+-	u8 buf[MAX_XFER_SIZE];
++	u8 buf[3] = { MSB(reg), LSB(reg), data };
+ 	struct i2c_msg msg = {
+ 		.addr = state->config->demod_address,
+ 		.flags = 0,
+ 		.buf = buf,
+-		.len = len + 2
++		.len = 3,
+ 	};
+ 	int ret;
+ 
+-	if (2 + len > sizeof(buf)) {
+-		printk(KERN_WARNING
+-		       "%s: i2c wr reg=%04x: len=%d is too big!\n",
+-		       KBUILD_MODNAME, reg, len);
+-		return -EINVAL;
+-	}
+-
+-
+-	buf[0] = MSB(reg);
+-	buf[1] = LSB(reg);
+-	memcpy(buf + 2, data, len);
+-
+ 	if (i2cdebug)
+ 		printk(KERN_DEBUG "%s: [%02x] %02x: %02x\n", __func__,
+-			state->config->demod_address, reg, buf[2]);
++			state->config->demod_address, reg, data);
+ 
+ 	ret = i2c_transfer(state->i2c, &msg, 1);
+ 	if (ret != 1)
+ 		printk(KERN_ERR "%s: i2c write error! ([%02x] %02x: %02x)\n",
+-			__func__, state->config->demod_address, reg, buf[2]);
++			__func__, state->config->demod_address, reg, data);
+ 
+ 	return (ret != 1) ? -EREMOTEIO : 0;
  }
  
- 
+-static int stv0367_writereg(struct stv0367_state *state, u16 reg, u8 data)
+-{
+-	u8 tmp = data; /* see gcc.gnu.org/bugzilla/show_bug.cgi?id=81715 */
+-
+-	return stv0367_writeregs(state, reg, &tmp, 1);
+-}
+-
+-static u8 stv0367_readreg(struct stv0367_state *state, u16 reg)
++static noinline_for_stack
++u8 stv0367_readreg(struct stv0367_state *state, u16 reg)
+ {
+ 	u8 b0[] = { 0, 0 };
+ 	u8 b1[] = { 0 };
 -- 
 2.43.0
 
