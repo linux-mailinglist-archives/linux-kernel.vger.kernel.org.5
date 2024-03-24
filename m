@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D01488896C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:54:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15C7288895B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:51:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC4DAB24179
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:52:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7C671F2FA51
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:51:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCF116AFBE;
-	Sun, 24 Mar 2024 23:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8544B16AFDF;
+	Sun, 24 Mar 2024 23:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l6NxvZCl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gvQbyrrg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA88152197;
-	Sun, 24 Mar 2024 23:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 840E01384B3;
+	Sun, 24 Mar 2024 23:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321598; cv=none; b=kKHKIDj6vGvXWPth0/b0mB4+IINqc9u7vtvHX31WV/cH8CLoNgGwZEaRIdlv08wVufwipwS4GJ20wcKC8zgwfjV/k5Bptew/Ikh9wCnx1qa5WgPcHIF0E8LhoZjVN2JvHAPFPwL4Rbbl964s5JPikS/Ifn0j83lMsZW9lLL/PPk=
+	t=1711321599; cv=none; b=BsP0TCXnf+rXa4nOr92smFgVyECZ6ktKiKa2CnzIIvL+1wWJ0NCCm3ifQUXtaZWGs3YyrtVBvuq3fAeJIc5Ir0KavZBgmrOtcWBkYYlkiIKPBfdXAeYVImgTkdqV3dk7T5dta2KYl68iqMvUtS7xxYQ50ALslYuSwJuZbyiacB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321598; c=relaxed/simple;
-	bh=eHTqfpRH4w1jwSBCjC/7u/xx40HMa+l75jbyu7n46y0=;
+	s=arc-20240116; t=1711321599; c=relaxed/simple;
+	bh=KMdxwmMNod1obbjCFhfxTYuNvd75ARGzr7DHPrUE1dM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t4815LuB52UzOmVtoKPa3taCEiGQwWjX+/W4GsIB4dGeEvhLMAgsNamSWzbH7I9DsGlrl4RTAfXyvSQ2UUTFaAkgehYCuJHmBcmfVxC0ycEahhd/SsquYEobh7f7jY/bXCL+WcUCElo5uDTP9duwoNpc3pc64nKojFSDz5oI0cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l6NxvZCl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBF18C43394;
-	Sun, 24 Mar 2024 23:06:36 +0000 (UTC)
+	 MIME-Version; b=oa4+x3mSfC6HTrmApk+uQn37vRXfX7GGS/PU+VlAn/ldN5RhMNypxuZIpgXzeqLlVV00kwPzctG1fEfVgA5zWqysvmBjNOHUMTGA24yBIHFE1pi2MURUAdrjHoMb9+fXjyAHg6AHDExnI1v32sbnmvlmJVnirThs5d6CYFPeBX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gvQbyrrg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4CB0C433C7;
+	Sun, 24 Mar 2024 23:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321597;
-	bh=eHTqfpRH4w1jwSBCjC/7u/xx40HMa+l75jbyu7n46y0=;
+	s=k20201202; t=1711321598;
+	bh=KMdxwmMNod1obbjCFhfxTYuNvd75ARGzr7DHPrUE1dM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l6NxvZClaRLACLG82hZLLbvTD5IdjDqCuFT/HSJQDec6M0NgZ/+AhYVht/q83pAI3
-	 T17db60RB+2vmKee/HqbJIpyPIu57CZ3gX31Cr1p82b/35ZeAA1k1/M2hnSQ3br/6H
-	 1UdrZaGXA4wGH31RVZdniT/mT1JkfNdvuXoR9NBcJH+QThk7uNTrzX2MFfro5sJXY/
-	 BHKVBoeEDfnkwbfHM2meP3uNPFR6I94wjnF0isOKYOdiPsuJnEXXKLKxUJiY14Byn/
-	 c4bXd2+Uz3mM5H/gWqRp8lhpqv/0twHr5GutF8DSjRP5+BYiHy+mWj9Q2taFmVxWXq
-	 Pq+5SOuqFAqjQ==
+	b=gvQbyrrgQL3Uq1jkV08tSozwumCG2mP7WaC7WKm8vEjai2nNKQAT+9QNqQv8tzKZG
+	 rLYFqPLHMOiCixbJQJwSjpgjea5NMigB9kztMn9tLva7eAqDpoG2DzwombsUJTjJAT
+	 +KQhUCDRzXDLmXyX2ui1YPSaGCHK3CNo7ZFEXWLoeVCZ40PMQqNkmMZP/LckM42Yxq
+	 MqUqtrYhCHFMLyOLFW7RUxKBoL2GaCjz3JBmrzYrG7pcJvwCTT6SulL/jVRyQACIbf
+	 7uzogGlcIBPFOtaivpZ045hW8PhDsWErpnLr71wZeZuo6uWUDcbou4yWe07+12i6be
+	 vcpjkulkyEPLQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tim Pambor <tp@osasysteme.de>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Jan Kara <jack@suse.cz>,
+	Christoph Hellwig <hch@lst.de>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 327/638] net: phy: dp83822: Fix RGMII TX delay configuration
-Date: Sun, 24 Mar 2024 18:56:04 -0400
-Message-ID: <20240324230116.1348576-328-sashal@kernel.org>
+Subject: [PATCH 6.6 328/638] block: Provide bdev_open_* functions
+Date: Sun, 24 Mar 2024 18:56:05 -0400
+Message-ID: <20240324230116.1348576-329-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,89 +63,130 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tim Pambor <tp@osasysteme.de>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit c8a5c731fd1223090af57da33838c671a7fc6a78 ]
+[ Upstream commit e719b4d156749f02eafed31a3c515f2aa9dcc72a ]
 
-The logic for enabling the TX clock shift is inverse of enabling the RX
-clock shift. The TX clock shift is disabled when DP83822_TX_CLK_SHIFT is
-set. Correct the current behavior and always write the delay configuration
-to ensure consistent delay settings regardless of bootloader configuration.
+Create struct bdev_handle that contains all parameters that need to be
+passed to blkdev_put() and provide bdev_open_* functions that return
+this structure instead of plain bdev pointer. This will eventually allow
+us to pass one more argument to blkdev_put() (renamed to bdev_release())
+without too much hassle.
 
-Reference: https://www.ti.com/lit/ds/symlink/dp83822i.pdf p. 69
-
-Fixes: 8095295292b5 ("net: phy: DP83822: Add setting the fixed internal delay")
-Signed-off-by: Tim Pambor <tp@osasysteme.de>
-Link: https://lore.kernel.org/r/20240305110608.104072-1-tp@osasysteme.de
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20230927093442.25915-1-jack@suse.cz
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Stable-dep-of: 0f28be64d132 ("erofs: fix lockdep false positives on initializing erofs_pseudo_mnt")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/dp83822.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ block/bdev.c           | 48 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/blkdev.h | 10 +++++++++
+ 2 files changed, 58 insertions(+)
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index b7cb71817780c..29e1cbea6dc0c 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -380,7 +380,7 @@ static int dp83822_config_init(struct phy_device *phydev)
+diff --git a/block/bdev.c b/block/bdev.c
+index 04dba25b0019e..5a54977518eea 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -831,6 +831,25 @@ struct block_device *blkdev_get_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ }
+ EXPORT_SYMBOL(blkdev_get_by_dev);
+ 
++struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
++				     const struct blk_holder_ops *hops)
++{
++	struct bdev_handle *handle = kmalloc(sizeof(*handle), GFP_KERNEL);
++	struct block_device *bdev;
++
++	if (!handle)
++		return ERR_PTR(-ENOMEM);
++	bdev = blkdev_get_by_dev(dev, mode, holder, hops);
++	if (IS_ERR(bdev)) {
++		kfree(handle);
++		return ERR_CAST(bdev);
++	}
++	handle->bdev = bdev;
++	handle->holder = holder;
++	return handle;
++}
++EXPORT_SYMBOL(bdev_open_by_dev);
++
+ /**
+  * blkdev_get_by_path - open a block device by name
+  * @path: path to the block device to open
+@@ -869,6 +888,28 @@ struct block_device *blkdev_get_by_path(const char *path, blk_mode_t mode,
+ }
+ EXPORT_SYMBOL(blkdev_get_by_path);
+ 
++struct bdev_handle *bdev_open_by_path(const char *path, blk_mode_t mode,
++		void *holder, const struct blk_holder_ops *hops)
++{
++	struct bdev_handle *handle;
++	dev_t dev;
++	int error;
++
++	error = lookup_bdev(path, &dev);
++	if (error)
++		return ERR_PTR(error);
++
++	handle = bdev_open_by_dev(dev, mode, holder, hops);
++	if (!IS_ERR(handle) && (mode & BLK_OPEN_WRITE) &&
++	    bdev_read_only(handle->bdev)) {
++		bdev_release(handle);
++		return ERR_PTR(-EACCES);
++	}
++
++	return handle;
++}
++EXPORT_SYMBOL(bdev_open_by_path);
++
+ void blkdev_put(struct block_device *bdev, void *holder)
  {
- 	struct dp83822_private *dp83822 = phydev->priv;
- 	struct device *dev = &phydev->mdio.dev;
--	int rgmii_delay;
-+	int rgmii_delay = 0;
- 	s32 rx_int_delay;
- 	s32 tx_int_delay;
- 	int err = 0;
-@@ -390,30 +390,33 @@ static int dp83822_config_init(struct phy_device *phydev)
- 		rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
- 						      true);
+ 	struct gendisk *disk = bdev->bd_disk;
+@@ -905,6 +946,13 @@ void blkdev_put(struct block_device *bdev, void *holder)
+ }
+ EXPORT_SYMBOL(blkdev_put);
  
--		if (rx_int_delay <= 0)
--			rgmii_delay = 0;
--		else
--			rgmii_delay = DP83822_RX_CLK_SHIFT;
-+		/* Set DP83822_RX_CLK_SHIFT to enable rx clk internal delay */
-+		if (rx_int_delay > 0)
-+			rgmii_delay |= DP83822_RX_CLK_SHIFT;
- 
- 		tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
- 						      false);
++void bdev_release(struct bdev_handle *handle)
++{
++	blkdev_put(handle->bdev, handle->holder);
++	kfree(handle);
++}
++EXPORT_SYMBOL(bdev_release);
 +
-+		/* Set DP83822_TX_CLK_SHIFT to disable tx clk internal delay */
- 		if (tx_int_delay <= 0)
--			rgmii_delay &= ~DP83822_TX_CLK_SHIFT;
--		else
- 			rgmii_delay |= DP83822_TX_CLK_SHIFT;
+ /**
+  * lookup_bdev() - Look up a struct block_device by name.
+  * @pathname: Name of the block device in the filesystem.
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index f59fcd5b499a5..5b6e86b2c37a5 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1479,14 +1479,24 @@ extern const struct blk_holder_ops fs_holder_ops;
+ #define sb_open_mode(flags) \
+ 	(BLK_OPEN_READ | (((flags) & SB_RDONLY) ? 0 : BLK_OPEN_WRITE))
  
--		if (rgmii_delay) {
--			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
--					       MII_DP83822_RCSR, rgmii_delay);
--			if (err)
--				return err;
--		}
-+		err = phy_modify_mmd(phydev, DP83822_DEVADDR, MII_DP83822_RCSR,
-+				     DP83822_RX_CLK_SHIFT | DP83822_TX_CLK_SHIFT, rgmii_delay);
-+		if (err)
-+			return err;
++struct bdev_handle {
++	struct block_device *bdev;
++	void *holder;
++};
 +
-+		err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
-+				       MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
+ struct block_device *blkdev_get_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+ 		const struct blk_holder_ops *hops);
+ struct block_device *blkdev_get_by_path(const char *path, blk_mode_t mode,
+ 		void *holder, const struct blk_holder_ops *hops);
++struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
++		const struct blk_holder_ops *hops);
++struct bdev_handle *bdev_open_by_path(const char *path, blk_mode_t mode,
++		void *holder, const struct blk_holder_ops *hops);
+ int bd_prepare_to_claim(struct block_device *bdev, void *holder,
+ 		const struct blk_holder_ops *hops);
+ void bd_abort_claiming(struct block_device *bdev, void *holder);
+ void blkdev_put(struct block_device *bdev, void *holder);
++void bdev_release(struct bdev_handle *handle);
  
--		phy_set_bits_mmd(phydev, DP83822_DEVADDR,
--					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
-+		if (err)
-+			return err;
- 	} else {
--		phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
--					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
-+		err = phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
-+					 MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
-+
-+		if (err)
-+			return err;
- 	}
- 
- 	if (dp83822->fx_enabled) {
+ /* just for blk-cgroup, don't use elsewhere */
+ struct block_device *blkdev_get_no_open(dev_t dev);
 -- 
 2.43.0
 
