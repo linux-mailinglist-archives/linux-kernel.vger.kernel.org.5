@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-112957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E13488800C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:51:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EBB988800F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:52:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C113D1F21877
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:51:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B710AB225D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F75D126F05;
-	Sun, 24 Mar 2024 22:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F7F126F31;
+	Sun, 24 Mar 2024 22:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="njofFJDx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VJr96o8e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB9B86AC9;
-	Sun, 24 Mar 2024 22:36:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4691126F1A;
+	Sun, 24 Mar 2024 22:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319769; cv=none; b=HAXutAfmWIDKOqqB/TrBqC7b29tnJK8mSOGD5/lnXYBsc3/Q0jGcgqOUR1ljDuUINgwXQ8mcWQKmLCm/LTDFX0VxF6juAPTcvH3Mre1QaJZ4uh+C0wIvGWgo126UjZTAV12a7jYZtTxpTHwd6xtGfjBJZ0Xo87KfhOsgzHAqi4Q=
+	t=1711319771; cv=none; b=BiDDTH/Fkf/9jvggiHBzNxMFqssjKR7h7iBBkGYd119wjLlwaUIWNAJTdlOPBQSfSOIHjR/Bzk0eDNMfcMNUOlYhWQMb3N99GAknmMXBJQI00ME9kbXNKTtQp8H9CLWDK1hlu5tpLGIA0eRAiMWJ0KcIeSw3KiNW/+XvXlf/bJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319769; c=relaxed/simple;
-	bh=OEcpBvYt6RTe0MaBpB3+cd6RgldMLzd60t+NxZBffJA=;
+	s=arc-20240116; t=1711319771; c=relaxed/simple;
+	bh=xjqHKYSgG2+1s7bWEwmzpDAXT7akFxCKu5c5fcVHtHU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H1sk+1nFYRf2tQ7n51mgkuxLnf3LJh0juu13zWJRW3xCtZhJMW75a1zTQP0ZsfqtKlPmufY7y7kDRKvp5Su6Id0tKObtqH1kWv0EeUXo1LrGxRHDLVzuqZ+CXc+pVwuxRAqoW4gpI6KjOiEqikf4qz4FNeJ9k3PO4L0FoLWvMtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=njofFJDx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E532EC43399;
-	Sun, 24 Mar 2024 22:36:08 +0000 (UTC)
+	 MIME-Version; b=ZSASYx0kE7lw0Gd1rympUiECUiIi3HwNNzSIsDWFX8nVXNHVxQkrs1LAFTCKtpWdXnkta5N+0VmYOURILxlP18uSHBnXPWlvDGktWOfkIAZOkO6pVwuAWXEjUcO1SqhUL44Q4RXevKOSgYPVC4vWxbwcUVzEq7Mp8LyaknQYNFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VJr96o8e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD2B2C433F1;
+	Sun, 24 Mar 2024 22:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319769;
-	bh=OEcpBvYt6RTe0MaBpB3+cd6RgldMLzd60t+NxZBffJA=;
+	s=k20201202; t=1711319770;
+	bh=xjqHKYSgG2+1s7bWEwmzpDAXT7akFxCKu5c5fcVHtHU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=njofFJDxA0G1g+BKS3LGTNVxO6Yca/UEGB+S7cTWDD1pEi1GxlQdJ8M/oKkNQulEN
-	 4b5gsehDG7WswVtkftgSwYotDHdW0O4VE89ERrwx7VM1eFa7jfxeWr2pRfkjYiCBnv
-	 DqOF9kzK7025/ugr8tg0WRgL/SDZ/0VGhirWyvYik8g+a6Sf1rWMt9nXAnbtAGVxec
-	 hkNVkh1XGqJqTVADju/upyybZMPEqOPzE9Q+Y1vhJIGGa+I3VALVqenSLpM99MnkR7
-	 jwe4+0nmLrDuKXD98KPUx4m6yRiIB/8JDGPSah8+r59y3wL/rm3xwF1IGucLZComjk
-	 Y5muJ5AnuHYAQ==
+	b=VJr96o8eTr8V6EW5mFprFE788foTgDGRx1Pd2H9COvcxTZ8UVrAZfrHH+TbMcjvTF
+	 TH9HbN4hqgxMpSgt4rLVQ1X3jqAEkBxIDukx95mAnetkfhxtsFyOZL/9x/iwXYX3WZ
+	 8nskJj5LTlReTGelv/cd7996ej9ORR38VvwEeF35LknkdNkc9BwipqwG5WuTysOTDi
+	 /S7gqww7mQQj2JroeW8z+8S70/9htmBIewMB8YAGqTCUvcY/hw2wKU47BjiF9NJn/y
+	 HHBtdUhr8RevsFWu2Tx4HZ1Q/AF83StIUyAYX1ngdKzfulsVq41U3bYOEr0iHOEOUN
+	 zv/DCmS/z7Dgw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 070/715] arm64: dts: qcom: x1e80100: drop qcom,drv-count
-Date: Sun, 24 Mar 2024 18:24:09 -0400
-Message-ID: <20240324223455.1342824-71-sashal@kernel.org>
+Subject: [PATCH 6.8 071/715] arm64: dts: qcom: sc8180x: Hook up VDD_CX as GCC parent domain
+Date: Sun, 24 Mar 2024 18:24:10 -0400
+Message-ID: <20240324223455.1342824-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,35 +62,34 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-[ Upstream commit e81e86765f957f3c5d48df9e275c527bd8c14156 ]
+[ Upstream commit 3c58b96df110a80e78fa36ef928f1e6c375008e3 ]
 
-Property qcom,drv-count in the RSC node is not allowed and not used:
+Most of GCC is powered by the CX rail. Describe that relationship to
+let the performance state requests trickle up the chain.
 
-  x1e80100-crd.dtb: rsc@17500000: 'qcom,drv-count' does not match any of the regexes: '^regulators(-[0-9])?$', 'pinctrl-[0-9]+'
-
-Fixes: af16b00578a7 ("arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/r/20231218145050.66394-1-krzysztof.kozlowski@linaro.org
+Fixes: 8575f197b077 ("arm64: dts: qcom: Introduce the SC8180x platform")
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20231230-topic-8180_more_fixes-v1-2-93b5c107ed43@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/x1e80100.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/qcom/sc8180x.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-index 6f75fc342ceb3..be1285d9919e0 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-+++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-@@ -3315,7 +3315,6 @@ apps_rsc: rsc@17500000 {
- 			      <0 0x17510000 0 0x10000>,
- 			      <0 0x17520000 0 0x10000>;
- 			reg-names = "drv-0", "drv-1", "drv-2";
--			qcom,drv-count = <3>;
+diff --git a/arch/arm64/boot/dts/qcom/sc8180x.dtsi b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
+index 0430d99091e30..91fd805f17a1b 100644
+--- a/arch/arm64/boot/dts/qcom/sc8180x.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
+@@ -782,6 +782,7 @@ gcc: clock-controller@100000 {
+ 			clock-names = "bi_tcxo",
+ 				      "bi_tcxo_ao",
+ 				      "sleep_clk";
++			power-domains = <&rpmhpd SC8180X_CX>;
+ 		};
  
- 			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+ 		qupv3_id_0: geniqup@8c0000 {
 -- 
 2.43.0
 
