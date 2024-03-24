@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-113070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BF0E888139
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB1688813C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9093282247
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:15:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78BE12827F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8265B14A083;
-	Sun, 24 Mar 2024 22:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF63814A0AA;
+	Sun, 24 Mar 2024 22:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HRZTH+4N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DV3TyEzE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADCF149E10;
-	Sun, 24 Mar 2024 22:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161A414A091;
+	Sun, 24 Mar 2024 22:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319878; cv=none; b=W4BGHwrM4I/x17cO09aYS4lS69d7SjPIYuXkYPM7JLVFqVf3VsqM0icR6DGUw1QPOeGrDwFpoiM4kYgFH78z0nphzfNRI9grRytTawzHfI8V8LTDfpRLpadrG/SnIBg18NhbWvk/oelFlW8aZs4NoU+eaNv7Z4TtdMY1LGC7ddo=
+	t=1711319880; cv=none; b=C65oHnTmf3j0Y8iyEoMWFeojl6+BBdvw4O3DDLn4YS/GE4xXeHNqDyZUTaZJePOj/3h+ds77+ZoPQGuTD+uWEYiHZDw3Bg2q7biXJB4yTyOSCgtrNcF3IAlxWGetR+YCCsbHEx0RshFdps2Y83+aBZUMszr3MVC3Unke4/3xQEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319878; c=relaxed/simple;
-	bh=9Ax1Uj1kIBKrtW1PQ7nHwXAUOFdXzJH6pmIS0VM1ePU=;
+	s=arc-20240116; t=1711319880; c=relaxed/simple;
+	bh=/Cgj1l+Rb/KLXPOO1028JhYLxPr473Y7ZEhHjRqRylU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OZu6imGGRgkWrYnhOzRt/POODXVYd6inUMfh+yz6p27pGdgMlRORtqAa2Va59GUV6PXy5SMzjkoTXlb44ncZj1r8kva7VJjeW5kzm+6/Z9S6EeUFmn4YQYsG26NNKo3Qxf04tR4lQEAi5b3DtF39FoznXCwBi8hvr352dmYNeww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HRZTH+4N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBBA7C433F1;
-	Sun, 24 Mar 2024 22:37:57 +0000 (UTC)
+	 MIME-Version:Content-Type; b=V1LzNjFlkLhKgfiG7wZ4BQoEmrRZ4D9v5tasAwjz1ehhbkPI2Lvrlkf/5pdJYT0O4+UsBUlvMXLshIegmea8SvAymEbwMskYK3O3BpFbhoic7Sosd1stTrKoVsY4G1DVZDqhyAeiMICi5mWMsjx3e0Vit3BF9leCKuq727aWenw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DV3TyEzE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0711C433C7;
+	Sun, 24 Mar 2024 22:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319878;
-	bh=9Ax1Uj1kIBKrtW1PQ7nHwXAUOFdXzJH6pmIS0VM1ePU=;
+	s=k20201202; t=1711319879;
+	bh=/Cgj1l+Rb/KLXPOO1028JhYLxPr473Y7ZEhHjRqRylU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HRZTH+4NjIA6NY9nBD1GAczpwaLeceXDdrEkzaUXEUxCPTWywp1UGvdYjKatvgrZF
-	 p2Dhb7XXzIJgjqOhBhq4R1XIZEMFXOodAKj5nY+s/TsFozxm2IebJ137l0bQvGJUL3
-	 tNDiz9sOqzVtIYvxZYE5qsTas+D1apFazVXEbrt6dKmf6lfsMJJizg2OgnKMOqL2uT
-	 /hBjhn4XfkjkKZic46IN1QUFYlRT6rzfhEVDRapXT7fkLRnxgDJXjPQMuXVA00SXVA
-	 jJJJxsdgS5yWEafKZj6DTfx3QxdznyGLk7vAxGc90BaHSn1EPOhMJMXwDMFumBuHle
-	 3wRmwb6obpWSg==
+	b=DV3TyEzE0ERD0V4hXLLMGdkNBH6qw/xLbOeSfAA78AEgdsSSVTqUcxRTter3Kxgnh
+	 MqFyGG88MSLyPcOnPvjeVhaV4tencVpOWejrisq2DefAeW+Gz5hNynbL+F2uhN6fmD
+	 3jm9p1MhLmChDsO+7J0gaa/V2yP1c5qqZSXWSYwOgTlQXW21kSWAe4PblU3xRiLEFg
+	 28ggvYKlDZo+5KSUVIX5YeG64MAo9Nr/z6+RSsz9M8qGJyNthgYR9NQYUFvtvG6D8Q
+	 m0xG+bLwLIO7cnmbE0r/ZGK3jnzyMNqIRZ7dT8Glas2nPc8dcW+RfwER+ijVCFzwHv
+	 FdW6sYEQZfFFA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Daniel Golle <daniel@makrotopia.org>,
+	Sam Shih <sam.shih@mediatek.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 183/715] arm64: dts: mediatek: mt7986: fix reference to PWM in fan node
-Date: Sun, 24 Mar 2024 18:26:02 -0400
-Message-ID: <20240324223455.1342824-184-sashal@kernel.org>
+Subject: [PATCH 6.8 184/715] arm64: dts: mediatek: mt7986: drop crypto's unneeded/invalid clock name
+Date: Sun, 24 Mar 2024 18:26:03 -0400
+Message-ID: <20240324223455.1342824-185-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -67,37 +67,38 @@ Content-Transfer-Encoding: 8bit
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 7865abbbdf1e1ee57a0bb8ec83079f8840c16854 ]
+[ Upstream commit bb69d19c649669f700149df309245cd925612f7c ]
 
-This fixes typo and resolves following validation error:
-arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dtb: pwm-fan: pwms: [[54, 0, 10000], [0]] is too long
-        from schema $id: http://devicetree.org/schemas/hwmon/pwm-fan.yaml#
+According to the "inside-secure,safexcel-eip97" binding "clock-names" is
+required only if there are two clocks specified. If present the first
+name must by "core".
 
-Fixes: c26f779a2295 ("arm64: dts: mt7986: add pwm-fan and cooling-maps to BPI-R3 dts")
-Cc: Daniel Golle <daniel@makrotopia.org>
+Name "infra_eip97_ck" is invalid and was probably just a typo. Drop it.
+
+Fixes: ecc5287cfe53 ("arm64: dts: mt7986: add crypto related device nodes")
+Cc: Sam Shih <sam.shih@mediatek.com>
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20231116130816.4932-1-zajec5@gmail.com
+Link: https://lore.kernel.org/r/20231116132411.7665-1-zajec5@gmail.com
 Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts b/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts
-index d06d4af43cbff..e04b1c0c0ebbf 100644
---- a/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts
-@@ -43,7 +43,7 @@ fan: pwm-fan {
- 		#cooling-cells = <2>;
- 		/* cooling level (0, 1, 2) - pwm inverted */
- 		cooling-levels = <255 96 0>;
--		pwms = <&pwm 0 10000 0>;
-+		pwms = <&pwm 0 10000>;
- 		status = "okay";
- 	};
- 
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+index fc751e049953c..a7d9c3246a875 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+@@ -234,7 +234,6 @@ crypto: crypto@10320000 {
+ 				     <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "ring0", "ring1", "ring2", "ring3";
+ 			clocks = <&infracfg CLK_INFRA_EIP97_CK>;
+-			clock-names = "infra_eip97_ck";
+ 			assigned-clocks = <&topckgen CLK_TOP_EIP_B_SEL>;
+ 			assigned-clock-parents = <&apmixedsys CLK_APMIXED_NET2PLL>;
+ 			status = "disabled";
 -- 
 2.43.0
 
