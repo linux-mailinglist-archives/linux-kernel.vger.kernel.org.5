@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9A3B888E12
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:07:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82C2E8885AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74AC6295A93
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:07:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A55AD1C250CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A181411F3;
-	Sun, 24 Mar 2024 22:48:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB7076417;
+	Sun, 24 Mar 2024 22:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IiWF1uoX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJm7lTqb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B40C1CF8CE;
-	Sun, 24 Mar 2024 22:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C39E1CF8D2;
+	Sun, 24 Mar 2024 22:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320446; cv=none; b=jYx1vBHiKNVcY4xDkrJVRsb5iIy2c5rpghys4DE4ILbAGo7WAN9k+zhgzQSvKyTzYv/wUazPlWqRIdTW3Wk7hc+8TjhyJgFhgg2mmg+0VRSdo96weZhbur28VLbpHhzYrMd8pgk7YWeGdXMA84B3WaV/4cva05GKV6tRzlPu+6Q=
+	t=1711320447; cv=none; b=cctvv7exLPIHe/zLQt57gcUi80Y7+H2/jNwbOzjx0MRtt+EPbIVgTr4e6TRjOQv6NnYDIolqqDayS2rT2wQeJONu8ikjZGKrr4d9AilKskZ4UjqG+PMQk5YL7Qhab8EdgPKbbncyq74/9i1Q9Xz0Wns4e0QZ8B1SThRpX4+Fziw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320446; c=relaxed/simple;
-	bh=7s3O442lwN7lnTlv6pQRkhF/q7B5OZA+IrXKh4D9bj0=;
+	s=arc-20240116; t=1711320447; c=relaxed/simple;
+	bh=G78L1tou1cSU+q6VxHI+foG7pc7rJWJylN4hyYR0c6U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KaKzd7SJ7jd11vJcKGfVB015JdJVeMyBl2VCCnuoMtQcfshoCUz6GL0BUFprQkMWSXeR/aRjibVnls+JBJwLE2z8CQpe6oVO3ek08h/B7A1iFbspLwmCRRzPBp2OfYLmlN4cQ0dZksud8qnJD2MTZS37E3qNHqff3sb+xAoDXvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IiWF1uoX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7953FC433C7;
-	Sun, 24 Mar 2024 22:47:25 +0000 (UTC)
+	 MIME-Version; b=irNnfjBbjoyo8PtPSeekLDyOkpYMy2mFuXMeLcK7DzA75w3RnnbpWPNWHTH/WA35pLovgA4Medw81qBlPXgRu5EMvhvys0W+txA/sFFcOEhWvDpfqPnRPVEkKCCQLyzvCSjBPKcl1B8/3NlOhAUpZUVSjsJjDFGS4HVFS7j3eFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJm7lTqb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 763B2C433F1;
+	Sun, 24 Mar 2024 22:47:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320446;
-	bh=7s3O442lwN7lnTlv6pQRkhF/q7B5OZA+IrXKh4D9bj0=;
+	s=k20201202; t=1711320447;
+	bh=G78L1tou1cSU+q6VxHI+foG7pc7rJWJylN4hyYR0c6U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IiWF1uoX2jpml3cI9Pb1xVp/qAUhZ8AuTMa9tKw8BYUAX6lobbvCoaBPAzVstOyFW
-	 ykZZ4XGvmSJwUzWaG7NhHE1eJbZRKeU8w/1/Txk/TAgFPQ5T/14vxidCmTEIZbDJha
-	 RtcUyaBlQcJ+CCNDGyvYBc+LWSkCPl9BkVEWcjqK1X5uvErvhHE3kIpeEgNAGFipPA
-	 GuS7EU+qryxuQzp73bEtnDy0P7YRn2GmY93nHvLc1vQ1pIUxVQ7AkKfkjr3OVT3NTW
-	 R+Y/Oew6w3ZY5QaxTA/CnJLzw/kZtp5aEMi1KzwJvb9+sEiFQw1id031zAKh4QQ2RB
-	 akiGMghJMdl/A==
+	b=BJm7lTqbaR/nOhvQLQlh1349nxqQQIxBa2YC4XwCaQrW54Ht0JRpVwv4d3PO1uBmk
+	 +QMDVRD942U/UzXXdDlqRSOmuxV02Lc/oRUOB/XuuninOr+NokQPnHJbkpPTNe/bC8
+	 SoyiVTKZuQEc8awXQo2FfuEQNOpdZA+yiaOzma+2zvaOGka0dI3mMaC3snuvT8qciW
+	 cCptMnYBjUE980QKaONqqY70x1Il6jCteBOukKK9aseZSeAayeH8/gCw/CAlNIoNeM
+	 Rpgvvb7rT2Ju8wQRtvalqsuZmLmphqFH5JwErMUGQiqdRGuwkAeP174ixSJGS2iV+K
+	 TU8IQbQOeR3Pw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 004/713] soc: qcom: pmic_glink_altmode: fix drm bridge use-after-free
-Date: Sun, 24 Mar 2024 18:35:30 -0400
-Message-ID: <20240324224720.1345309-5-sashal@kernel.org>
+Subject: [PATCH 6.7 005/713] media: rkisp1: Fix IRQ handling due to shared interrupts
+Date: Sun, 24 Mar 2024 18:35:31 -0400
+Message-ID: <20240324224720.1345309-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,109 +63,138 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johan Hovold <johan+linaro@kernel.org>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-commit b979f2d50a099f3402418d7ff5f26c3952fb08bb upstream.
+[ Upstream commit ffb635bb398fc07cb38f8a7b4a82cbe5f412f08e ]
 
-A recent DRM series purporting to simplify support for "transparent
-bridges" and handling of probe deferrals ironically exposed a
-use-after-free issue on pmic_glink_altmode probe deferral.
+The driver requests the interrupts as IRQF_SHARED, so the interrupt
+handlers can be called at any time. If such a call happens while the ISP
+is powered down, the SoC will hang as the driver tries to access the
+ISP registers.
 
-This has manifested itself as the display subsystem occasionally failing
-to initialise and NULL-pointer dereferences during boot of machines like
-the Lenovo ThinkPad X13s.
+This can be reproduced even without the platform sharing the IRQ line:
+Enable CONFIG_DEBUG_SHIRQ and unload the driver, and the board will
+hang.
 
-Specifically, the dp-hpd bridge is currently registered before all
-resources have been acquired which means that it can also be
-deregistered on probe deferrals.
+Fix this by adding a new field, 'irqs_enabled', which is used to bail
+out from the interrupt handler when the ISP is not operational.
 
-In the meantime there is a race window where the new aux bridge driver
-(or PHY driver previously) may have looked up the dp-hpd bridge and
-stored a (non-reference-counted) pointer to the bridge which is about to
-be deallocated.
+Link: https://lore.kernel.org/r/20231218-rkisp-shirq-fix-v1-2-173007628248@ideasonboard.com
 
-When the display controller is later initialised, this triggers a
-use-after-free when attaching the bridges:
-
-	dp -> aux -> dp-hpd (freed)
-
-which may, for example, result in the freed bridge failing to attach:
-
-	[drm:drm_bridge_attach [drm]] *ERROR* failed to attach bridge /soc@0/phy@88eb000 to encoder TMDS-31: -16
-
-or a NULL-pointer dereference:
-
-	Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-	...
-	Call trace:
-	  drm_bridge_attach+0x70/0x1a8 [drm]
-	  drm_aux_bridge_attach+0x24/0x38 [aux_bridge]
-	  drm_bridge_attach+0x80/0x1a8 [drm]
-	  dp_bridge_init+0xa8/0x15c [msm]
-	  msm_dp_modeset_init+0x28/0xc4 [msm]
-
-The DRM bridge implementation is clearly fragile and implicitly built on
-the assumption that bridges may never go away. In this case, the fix is
-to move the bridge registration in the pmic_glink_altmode driver to
-after all resources have been looked up.
-
-Incidentally, with the new dp-hpd bridge implementation, which registers
-child devices, this is also a requirement due to a long-standing issue
-in driver core that can otherwise lead to a probe deferral loop (see
-commit fbc35b45f9f6 ("Add documentation on meaning of -EPROBE_DEFER")).
-
-[DB: slightly fixed commit message by adding the word 'commit']
-Fixes: 080b4e24852b ("soc: qcom: pmic_glink: Introduce altmode support")
-Fixes: 2bcca96abfbf ("soc: qcom: pmic-glink: switch to DRM_AUX_HPD_BRIDGE")
-Cc: <stable@vger.kernel.org>      # 6.3
-Cc: Bjorn Andersson <andersson@kernel.org>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240217150228.5788-4-johan+linaro@kernel.org
-[ johan: backport to 6.7 which does not have DRM aux bridge ]
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/pmic_glink_altmode.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ .../platform/rockchip/rkisp1/rkisp1-capture.c |  3 +++
+ .../platform/rockchip/rkisp1/rkisp1-common.h  |  2 ++
+ .../platform/rockchip/rkisp1/rkisp1-csi.c     |  3 +++
+ .../platform/rockchip/rkisp1/rkisp1-dev.c     | 22 +++++++++++++++++++
+ .../platform/rockchip/rkisp1/rkisp1-isp.c     |  3 +++
+ 5 files changed, 33 insertions(+)
 
-diff --git a/drivers/soc/qcom/pmic_glink_altmode.c b/drivers/soc/qcom/pmic_glink_altmode.c
-index 7ee52cf2570fa..ca58bfa41846c 100644
---- a/drivers/soc/qcom/pmic_glink_altmode.c
-+++ b/drivers/soc/qcom/pmic_glink_altmode.c
-@@ -469,12 +469,6 @@ static int pmic_glink_altmode_probe(struct auxiliary_device *adev,
- 		alt_port->bridge.ops = DRM_BRIDGE_OP_HPD;
- 		alt_port->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+index c6d7e01c89494..3752b702e270b 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+@@ -725,6 +725,9 @@ irqreturn_t rkisp1_capture_isr(int irq, void *ctx)
+ 	unsigned int i;
+ 	u32 status;
  
--		ret = devm_drm_bridge_add(dev, &alt_port->bridge);
--		if (ret) {
--			fwnode_handle_put(fwnode);
--			return ret;
--		}
--
- 		alt_port->dp_alt.svid = USB_TYPEC_DP_SID;
- 		alt_port->dp_alt.mode = USB_TYPEC_DP_MODE;
- 		alt_port->dp_alt.active = 1;
-@@ -525,6 +519,16 @@ static int pmic_glink_altmode_probe(struct auxiliary_device *adev,
- 		}
- 	}
++	if (!rkisp1->irqs_enabled)
++		return IRQ_NONE;
++
+ 	status = rkisp1_read(rkisp1, RKISP1_CIF_MI_MIS);
+ 	if (!status)
+ 		return IRQ_NONE;
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+index 2d7f06281c390..a4e272adc1ad0 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+@@ -449,6 +449,7 @@ struct rkisp1_debug {
+  * @debug:	   debug params to be exposed on debugfs
+  * @info:	   version-specific ISP information
+  * @irqs:          IRQ line numbers
++ * @irqs_enabled:  the hardware is enabled and can cause interrupts
+  */
+ struct rkisp1_device {
+ 	void __iomem *base_addr;
+@@ -470,6 +471,7 @@ struct rkisp1_device {
+ 	struct rkisp1_debug debug;
+ 	const struct rkisp1_info *info;
+ 	int irqs[RKISP1_NUM_IRQS];
++	bool irqs_enabled;
+ };
  
-+	for (port = 0; port < ARRAY_SIZE(altmode->ports); port++) {
-+		alt_port = &altmode->ports[port];
-+		if (!alt_port->altmode)
+ /*
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+index 702adee83322b..7320c1c72e688 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+@@ -196,6 +196,9 @@ irqreturn_t rkisp1_csi_isr(int irq, void *ctx)
+ 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
+ 	u32 val, status;
+ 
++	if (!rkisp1->irqs_enabled)
++		return IRQ_NONE;
++
+ 	status = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_MIS);
+ 	if (!status)
+ 		return IRQ_NONE;
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+index acc559652d6eb..73cf08a740118 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+@@ -305,6 +305,24 @@ static int __maybe_unused rkisp1_runtime_suspend(struct device *dev)
+ {
+ 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
+ 
++	rkisp1->irqs_enabled = false;
++	/* Make sure the IRQ handler will see the above */
++	mb();
++
++	/*
++	 * Wait until any running IRQ handler has returned. The IRQ handler
++	 * may get called even after this (as it's a shared interrupt line)
++	 * but the 'irqs_enabled' flag will make the handler return immediately.
++	 */
++	for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il) {
++		if (rkisp1->irqs[il] == -1)
 +			continue;
 +
-+		ret = devm_drm_bridge_add(dev, &alt_port->bridge);
-+		if (ret)
-+			return ret;
++		/* Skip if the irq line is the same as previous */
++		if (il == 0 || rkisp1->irqs[il - 1] != rkisp1->irqs[il])
++			synchronize_irq(rkisp1->irqs[il]);
 +	}
 +
- 	altmode->client = devm_pmic_glink_register_client(dev,
- 							  altmode->owner_id,
- 							  pmic_glink_altmode_callback,
+ 	clk_bulk_disable_unprepare(rkisp1->clk_size, rkisp1->clks);
+ 	return pinctrl_pm_select_sleep_state(dev);
+ }
+@@ -321,6 +339,10 @@ static int __maybe_unused rkisp1_runtime_resume(struct device *dev)
+ 	if (ret)
+ 		return ret;
+ 
++	rkisp1->irqs_enabled = true;
++	/* Make sure the IRQ handler will see the above */
++	mb();
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+index 5fbc47bda6831..caffea6a46186 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+@@ -971,6 +971,9 @@ irqreturn_t rkisp1_isp_isr(int irq, void *ctx)
+ 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
+ 	u32 status, isp_err;
+ 
++	if (!rkisp1->irqs_enabled)
++		return IRQ_NONE;
++
+ 	status = rkisp1_read(rkisp1, RKISP1_CIF_ISP_MIS);
+ 	if (!status)
+ 		return IRQ_NONE;
 -- 
 2.43.0
 
