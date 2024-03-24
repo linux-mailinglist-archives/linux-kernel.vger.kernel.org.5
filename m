@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-114059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6606A8891BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:48:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3E7C88882C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 421F6B21CB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:39:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E313288704
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6E52319F6;
-	Sun, 24 Mar 2024 23:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7782320E7;
+	Sun, 24 Mar 2024 23:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W3EiC3Yy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DFfyMt0I"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746DD14F10C;
-	Sun, 24 Mar 2024 23:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEE414F115;
+	Sun, 24 Mar 2024 23:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321343; cv=none; b=PcHrPBsyIQcA9aVNQMNx5sz/HVD9S8uIGZJEbw4LVXDyWn/ySotZ1/TBkkA7WClstslckQ0shPgFM+w0zguzzDslav7+x8xolbShv8D1uiIEQf46LbtCgu/d+fpfMP5iWiGlLw8/mOU0CSJA8Ud47hgejJVgp9+xy8WzdoDevOQ=
+	t=1711321344; cv=none; b=P4PUzXZG8dqVnQq804ot7dYxXEeLwpLMPkZU3RCb9DDHjPchD7DWVpHBaks+OnJd6V4u4u8dqqVuXj1lGbK0KEK7i5rS5OTEXqr1p3H7dxKFLGmRRtlTHGe2HxHJDWY4sM0YPaJqJ6TPnIdBDRapMAD8HhkdjN8dkurQ6YSbbj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321343; c=relaxed/simple;
-	bh=6i6wxaZzYQIHnPtoUFQzJHucGTNeOHrxMItXv93pAgw=;
+	s=arc-20240116; t=1711321344; c=relaxed/simple;
+	bh=XBHbYPR8C3NkL6EjNIF6UM5IMap2ZDW4fEy/kjUMKuw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hTNFIlr9Iy2uwr0NbIUAyy53EB98MFQ4KPB+nLXQ9b1pOG+9+urRcQtir8IrU+axvRfdP1/vxrU/oL8NiXa7sh4dM5ewlwG0fer1mHuMAAbQ5mZcpqZPux3ZD2xSVdZadExsuPPfdfme5/EPeApcllST2cyVcWrZZHVSGNzSAAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W3EiC3Yy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B515CC433F1;
-	Sun, 24 Mar 2024 23:02:21 +0000 (UTC)
+	 MIME-Version; b=rEZmc4qUJkW6+vUkvYXqQXL+66kxBQHl4IMtkZkcSuUjuuA6Q99khO/l/0I0/VLa0+xjgXKERVkt591Byv0wiNnJA5AxPjlA5XylRm/iNhPB3MuBfL1ISGzdjXE1QnSyUkPrZROazQiC/x06g9g2IiGJ9AETLaaXpws9lZnbfyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DFfyMt0I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E70C43394;
+	Sun, 24 Mar 2024 23:02:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321342;
-	bh=6i6wxaZzYQIHnPtoUFQzJHucGTNeOHrxMItXv93pAgw=;
+	s=k20201202; t=1711321343;
+	bh=XBHbYPR8C3NkL6EjNIF6UM5IMap2ZDW4fEy/kjUMKuw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W3EiC3YynrLOMpX7NFZvLh/vCMWmGrGuwvqxxWoP0fYZMPF0AqlFT0na6BHCohE/j
-	 tj71hmoDhtkfIqgVGdEe90aBKxmYIH72bDeEVWVfiKwqrvg3Xv8F1ckmVkpLFcuScK
-	 wU9s7PmoCFgiQ11UpQns2uR1LT28hFAqBG710WwchJTQhyxukaNNwz/WHXsUou+PBE
-	 1KkNFZUDUReu4HYB7bisYWNW46DhtQxBHm5hxsuYU9OlolZV2Adan7lb9uYUnbG/I9
-	 1GHlxKJZszhtKYz4GRLrANVxREdD0Zeck/Tg5YxaonRyJt2ooM5KrhzbMOu+XBFDw6
-	 oLiHOmuhtKuHg==
+	b=DFfyMt0I+a9vu1Chct3xFeO59bAma23dypLp6UMyWEHhSOL4HqsqiEkKtJW3QhMT/
+	 5UvBgSC2i/KaR20gZCfFUJGhHaTparaUHCZ06+mbAvBvDAwWwQwuV/HzfKWIkPrBQR
+	 IimnkUJFHKBLAj++IPutZ+gSs03TWExwuOq1uCFEGqaO9QovjW3YxsWoIKoXEgt2/J
+	 AwIkYDvFg/p35JaqEqYiFK1ynMHLknHPg24idVRTv0zD2l6n7xJZuvObm3oEZ9SiL1
+	 0H5qXUTf25uQFod0VfQaE6Bq3lo9dOdc+bfAar+dHPqYaD1HX6e5RA4FuJ9d3Y7xnp
+	 3YQVR+jpKcM2w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stuart Henderson <stuarth@opensource.cirrus.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Chuck Lever III <chuck.lever@oracle.com>,
+	syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com,
+	Jan Kara <jack@suse.cz>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 066/638] ASoC: wm8962: Fix up incorrect error message in wm8962_set_fll
-Date: Sun, 24 Mar 2024 18:51:43 -0400
-Message-ID: <20240324230116.1348576-67-sashal@kernel.org>
+Subject: [PATCH 6.6 067/638] do_sys_name_to_handle(): use kzalloc() to fix kernel-infoleak
+Date: Sun, 24 Mar 2024 18:51:44 -0400
+Message-ID: <20240324230116.1348576-68-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,34 +65,70 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 
-[ Upstream commit 96e202f8c52ac49452f83317cf3b34cd1ad81e18 ]
+[ Upstream commit 3948abaa4e2be938ccdfc289385a27342fb13d43 ]
 
-Use source instead of ret, which seems to be unrelated and will always
-be zero.
+syzbot identified a kernel information leak vulnerability in
+do_sys_name_to_handle() and issued the following report [1].
 
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Link: https://msgid.link/r/20240306161439.1385643-5-stuarth@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[1]
+"BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ _copy_to_user+0xbc/0x100 lib/usercopy.c:40
+ copy_to_user include/linux/uaccess.h:191 [inline]
+ do_sys_name_to_handle fs/fhandle.c:73 [inline]
+ __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
+ __se_sys_name_to_handle_at+0x949/0xb10 fs/fhandle.c:94
+ __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
+ ...
+
+Uninit was created at:
+ slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5c9/0x970 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ do_sys_name_to_handle fs/fhandle.c:39 [inline]
+ __do_sys_name_to_handle_at fs/fhandle.c:112 [inline]
+ __se_sys_name_to_handle_at+0x441/0xb10 fs/fhandle.c:94
+ __x64_sys_name_to_handle_at+0xe4/0x140 fs/fhandle.c:94
+ ...
+
+Bytes 18-19 of 20 are uninitialized
+Memory access of size 20 starts at ffff888128a46380
+Data copied to user address 0000000020000240"
+
+Per Chuck Lever's suggestion, use kzalloc() instead of kmalloc() to
+solve the problem.
+
+Fixes: 990d6c2d7aee ("vfs: Add name to file handle conversion support")
+Suggested-by: Chuck Lever III <chuck.lever@oracle.com>
+Reported-and-tested-by: <syzbot+09b349b3066c2e0b1e96@syzkaller.appspotmail.com>
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+Link: https://lore.kernel.org/r/20240119153906.4367-1-n.zhandarovich@fintech.ru
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 2 +-
+ fs/fhandle.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 914f8eb418357..4f50b07848fd8 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2933,7 +2933,7 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
- 				    WM8962_FLL_FRC_NCO, WM8962_FLL_FRC_NCO);
- 		break;
- 	default:
--		dev_err(component->dev, "Unknown FLL source %d\n", ret);
-+		dev_err(component->dev, "Unknown FLL source %d\n", source);
+diff --git a/fs/fhandle.c b/fs/fhandle.c
+index 6ea8d35a9382a..99dcf07cfecfe 100644
+--- a/fs/fhandle.c
++++ b/fs/fhandle.c
+@@ -40,7 +40,7 @@ static long do_sys_name_to_handle(const struct path *path,
+ 	if (f_handle.handle_bytes > MAX_HANDLE_SZ)
  		return -EINVAL;
- 	}
  
+-	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
++	handle = kzalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
+ 			 GFP_KERNEL);
+ 	if (!handle)
+ 		return -ENOMEM;
 -- 
 2.43.0
 
