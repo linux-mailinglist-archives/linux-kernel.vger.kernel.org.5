@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84A408894FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:15:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1243888DD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C24E9B30C12
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:27:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BD0928F683
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C06310712;
-	Mon, 25 Mar 2024 01:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0461D296BA3;
+	Mon, 25 Mar 2024 01:10:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="brBLmfR2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t+k3imjf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EFB0296166;
-	Sun, 24 Mar 2024 23:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264D2296173;
+	Sun, 24 Mar 2024 23:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324313; cv=none; b=pTd9vkBYvBLL8PdQ1A0YUYlfBW43fqRYCOcn5oUi0GYQgJipCRdCS5+3n8y3b0H3c+fTLsgt2Dy0X3yqbdBDU3itCy/Om/H1zdDAZslIsZ9UfCa1rHFzc8MDgXGiXfqAU6Z0bKmvTPKMsH5bHa2j6FXTz1wIKYxB/hbUuhJ5xRU=
+	t=1711324314; cv=none; b=B3R2d9Qo5HG7JHWxyS1P4lHcfX8eoJ6xW+CWdIETzh5AMFQYVjn6LI9qzoGtzOCHz6CszgM0gRE5gKTQ5BVDTW7Jnx7KSE+g8Kc2ISfZstP+7vrlf8TsUh3lZrcMps8s9zCCUKeKvtJLjIwDoRmtFUQX7T17yHFbrT4oaME1pnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324313; c=relaxed/simple;
-	bh=me2HpTQgosWZGh8i0coUrQySsAR7m8rC0zF8tIHzlWc=;
+	s=arc-20240116; t=1711324314; c=relaxed/simple;
+	bh=P/PAhYD5AdDh+C56c3tbDfUP3ouaglcCX/oQHeHaGdY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qLn0x+t7jvd3NbvB/1wmKggvm69BwxCPxEQxwHbJEpNPpTejm5uxHnJ7/WFI8jSBu1ue6eCrukqQy7V0jPMO1xIdExjxtHSAKmMT00JaSczlBV5fguZMm/BkEsRIneqq5PvspYmvgttKLEv0nKxOIZF9bTj5vMGy1K4qOM6ekyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=brBLmfR2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6409DC433A6;
-	Sun, 24 Mar 2024 23:51:50 +0000 (UTC)
+	 MIME-Version; b=Ah3Lyxhq2Bh6q+VjyQl1MuWt5fzhJYnTRZAEUPM3d07PUbPCihFO2dPqxWlCCnBXxDof1Qfv0m26XJbRnpTFMA74I5aZXCxila8QrddxUL3Kf5NnV114EaNKTY4onT0skbZLd1ZX0vi5SrVq1JJ9nVhbG2G8oaoKN0eL5HEmDzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t+k3imjf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A933C433F1;
+	Sun, 24 Mar 2024 23:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324312;
-	bh=me2HpTQgosWZGh8i0coUrQySsAR7m8rC0zF8tIHzlWc=;
+	s=k20201202; t=1711324313;
+	bh=P/PAhYD5AdDh+C56c3tbDfUP3ouaglcCX/oQHeHaGdY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=brBLmfR2K87teGQ7ZOe0lWcMSwRFziK995A0bJGC3ewdr3Cr87OtNl353USOiJLXF
-	 /F+y9ijEg1Tea5SPMzFRzFPsnHT2Evc2/n1WiirOF4/qTcY7f9NdLrgpih06lm8S22
-	 A97JGgLDv2W1SSoCjq/xIl1JmeyMrBA+IlecCPFoJhAKcuQlstEvpLnFwbj5bQvl21
-	 qcnOPguV2YmGvhuYwmjp9ZcnAYifGgcC/XK82wO/X1Qx/E1WKWKu37DOr1mXlGu0qr
-	 yg1SK7M8qzauj6HZTVpqVTOsDBQ8yE4YaSzL9qDZoW3upc8VBYUBLnqPcg8PRaSA52
-	 qd6PYmZf72Bag==
+	b=t+k3imjfhqleyqj9LRhlk/Mcb7uJ2yuzwTYL+wMP1mbDXCy0bVWegqEut0KlFYs5D
+	 xLQwiKtBW4vTN6EQMurie/rNA6LEFryXR7IEdLg0TpYCgBusoNH4i8WnIJv86vih8Y
+	 SZ1OUGgWIAbOZ5/cNdSbFrIYDdkLi49N6FRcBXSgOjYLv2in/tHj4VZjWdt9+84bRo
+	 SXn5mQLeNmBm1ROTdmHx4jxFpQ5XcpUmi1oywBPBPk/5BUwAyRtI121vZtykLNAm65
+	 wpExJzFZ4/TpZgDKvyJD1iffYNSelafAojsoZyi/dkCAG8o03CoSYZ0OkCkiuBprs9
+	 QFBAC2LwREpHg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Fuqian Huang <huangfq.daxian@gmail.com>,
+Cc: Dinghao Liu <dinghao.liu@zju.edu.cn>,
 	Sean Young <sean@mess.org>,
-	Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 083/148] media: media/dvb: Use kmemdup rather than duplicating its implementation
-Date: Sun, 24 Mar 2024 19:49:07 -0400
-Message-ID: <20240324235012.1356413-84-sashal@kernel.org>
+Subject: [PATCH 4.19 084/148] media: dvbdev: Fix memleak in dvb_register_device
+Date: Sun, 24 Mar 2024 19:49:08 -0400
+Message-ID: <20240324235012.1356413-85-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,70 +63,36 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Fuqian Huang <huangfq.daxian@gmail.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit f6af820ef1be58c2e4b81aa479b9f109eb6344ce ]
+[ Upstream commit 167faadfcf9339088910e9e85a1b711fcbbef8e9 ]
 
-kmemdup is introduced to duplicate a region of memory in a neat way.
-Rather than kmalloc/kzalloc + memcpy, which the programmer needs to
-write the size twice (sometimes lead to mistakes), kmemdup improves
-readability, leads to smaller code and also reduce the chances of mistakes.
-Suggestion to use kmemdup rather than using kmalloc/kzalloc + memcpy.
+When device_create() fails, dvbdev and dvbdevfops should
+be freed just like when dvb_register_media_device() fails.
 
-Signed-off-by: Fuqian Huang <huangfq.daxian@gmail.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Stable-dep-of: 8c64f4cdf4e6 ("media: edia: dvbdev: fix a use-after-free")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-core/dvbdev.c             | 3 +--
- drivers/media/dvb-frontends/drx39xyj/drxj.c | 5 ++---
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ drivers/media/dvb-core/dvbdev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index 1f80c4fa31c9b..5d68ad0ac5d26 100644
+index 5d68ad0ac5d26..8273c969358e6 100644
 --- a/drivers/media/dvb-core/dvbdev.c
 +++ b/drivers/media/dvb-core/dvbdev.c
-@@ -485,7 +485,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		return -ENOMEM;
+@@ -547,6 +547,9 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
+ 	if (IS_ERR(clsdev)) {
+ 		pr_err("%s: failed to create device dvb%d.%s%d (%ld)\n",
+ 		       __func__, adap->num, dnames[type], id, PTR_ERR(clsdev));
++		dvb_media_device_free(dvbdev);
++		kfree(dvbdevfops);
++		kfree(dvbdev);
+ 		return PTR_ERR(clsdev);
  	}
- 
--	dvbdevfops = kzalloc(sizeof(struct file_operations), GFP_KERNEL);
-+	dvbdevfops = kmemdup(template->fops, sizeof(*dvbdevfops), GFP_KERNEL);
- 
- 	if (!dvbdevfops){
- 		kfree (dvbdev);
-@@ -502,7 +502,6 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 	dvbdev->fops = dvbdevfops;
- 	init_waitqueue_head (&dvbdev->wait_queue);
- 
--	memcpy(dvbdevfops, template->fops, sizeof(struct file_operations));
- 	dvbdevfops->owner = adap->module;
- 
- 	list_add_tail (&dvbdev->list_head, &adap->device_list);
-diff --git a/drivers/media/dvb-frontends/drx39xyj/drxj.c b/drivers/media/dvb-frontends/drx39xyj/drxj.c
-index 9670bc98b45a9..33cf6dccb547f 100644
---- a/drivers/media/dvb-frontends/drx39xyj/drxj.c
-+++ b/drivers/media/dvb-frontends/drx39xyj/drxj.c
-@@ -12287,7 +12287,8 @@ struct dvb_frontend *drx39xxj_attach(struct i2c_adapter *i2c)
- 	if (state == NULL)
- 		goto error;
- 
--	demod = kmalloc(sizeof(struct drx_demod_instance), GFP_KERNEL);
-+	demod = kmemdup(&drxj_default_demod_g,
-+			sizeof(struct drx_demod_instance), GFP_KERNEL);
- 	if (demod == NULL)
- 		goto error;
- 
-@@ -12311,8 +12312,6 @@ struct dvb_frontend *drx39xxj_attach(struct i2c_adapter *i2c)
- 	state->demod = demod;
- 
- 	/* setup the demod data */
--	memcpy(demod, &drxj_default_demod_g, sizeof(struct drx_demod_instance));
--
- 	demod->my_i2c_dev_addr = demod_addr;
- 	demod->my_common_attr = demod_comm_attr;
- 	demod->my_i2c_dev_addr->user_data = state;
+ 	dprintk("DVB: register adapter%d/%s%d @ minor: %i (0x%02x)\n",
 -- 
 2.43.0
 
