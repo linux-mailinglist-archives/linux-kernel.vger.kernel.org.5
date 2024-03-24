@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-112717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A29F887D4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:02:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04123887D51
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D74D71F21314
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:02:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 279871C20B0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA5218641;
-	Sun, 24 Mar 2024 15:02:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F49B18622;
+	Sun, 24 Mar 2024 15:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cfswrpdV"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ua2U+Szm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E541D18EB3
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 15:02:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F24BB18E3A
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 15:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711292530; cv=none; b=DYBrWnDHSKJdsacswNpHRv1ButqreLB4XprZz4WLWoL4lJEmCWiRUWSvwdg8fqjHtrUXjOiA5oqih4RsWsiNkjIZzo10UIT1xwqG19QIQECPzy+XHOK93nX1Oz7VjAhDbfhVsCk0hg/UA5Eco0sKSTnZiDffOk1hH35+7UUGw3w=
+	t=1711292541; cv=none; b=WD6tgOWUxZP1fzSHxQGNpYqjSmfq8kZBWklEkWjBqySvnxZNhAyh5dwfsE7SXGDUDoV9k4wwgWLP54tRgZzm5ZMWhkBIQnGOXLav8w5goQ41FVN1EysI8+8hDnhlBYUUIIZKzbcJmWlaehvIHP0epZoQMQHojL6jIeezw1/oszw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711292530; c=relaxed/simple;
-	bh=BXl2p5tUWr3/RxKh6qtz2NqQrLLXJQJVh9VZ4GV3s/4=;
+	s=arc-20240116; t=1711292541; c=relaxed/simple;
+	bh=8wviMhjez8ynGNwxq6Vg2dxfdPvyQOxfXdc24FAdb7k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MeEJ1niJYUMSp3B5n0yPJacDFRdyvbGxHdx7i80mlJw/Ie+BdzcmuTuYkCCt/awnwUu6pq72l2E7holbdCjn74K2Bgt+GHbsBdIuEFv0ecoq5v4976fm+EuxopShH8GDO7UIJtWdxBKLlGxiy4yQEHAbrI3jb+nbG4sKVw6dlKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cfswrpdV; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=T5SqDlwd52AuObbAyZ4ZYsFL5XRg6XacZ0udxlpv9MoYuXctg6sJ6Lo9q+f2ORxSgwmgPKts2/b5Bl2FCquNKsHowT2WFzJhPT1IyNO7ETQhXEu8hIi1y31GIMLy6mIk4f3LU/MFvhRFp7bYewRJcsQ6CKc4bwSr32RL3mxD5JA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ua2U+Szm; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711292528;
+	s=mimecast20190719; t=1711292538;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=j2gwXw6QODjljQp6M70JqMyneJvLdBD1+cRNyvTtfl4=;
-	b=cfswrpdVMVC0amTM3gK7K3roN6KOyKltwoV8jLyDpKna6GinbhLERu7HJbVGDAGh6wrP1i
-	ZCSClYatkxudAkfMK8maP20v84H1XulQvMVW+XC2VbskHd3zFYinjTQjGPs0n+z6TdpA1f
-	+uivT2Z9sbP2aIFfMg3d94vDQSqhaBY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-467-0Vcz9zPEPjKLVXicWTDr6A-1; Sun, 24 Mar 2024 11:02:04 -0400
-X-MC-Unique: 0Vcz9zPEPjKLVXicWTDr6A-1
+	bh=Juxh0o/TxvNt1GDxQbgCsHCyOLSlssRhx4+JL5fURqc=;
+	b=Ua2U+SzmznwBS7UWcnw875tHKsRpknDQHDNa6yNkzAQRtwhnloJEaFVg41X4u/RttHGZZA
+	pvUeKz75SwNhUYNYCD963JaAZzOx66L23SK2515immYW0Il7t7WWkf/Rr0P1QDcik264R9
+	AuyuOTxYQTd+0afeyPY4tqkst8zVToA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-54-aVjBiEaCPj-8hqSNNQQKxA-1; Sun,
+ 24 Mar 2024 11:02:13 -0400
+X-MC-Unique: aVjBiEaCPj-8hqSNNQQKxA-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6D53C810467;
-	Sun, 24 Mar 2024 15:02:03 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 989C02804802;
+	Sun, 24 Mar 2024 15:02:12 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.39.192.75])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id AB77F40C6DB3;
-	Sun, 24 Mar 2024 15:01:57 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id DE3AB40C6DAE;
+	Sun, 24 Mar 2024 15:02:06 +0000 (UTC)
 From: Kate Hsuan <hpa@redhat.com>
 To: Pavel Machek <pavel@ucw.cz>,
 	Lee Jones <lee@kernel.org>,
@@ -67,9 +67,9 @@ To: Pavel Machek <pavel@ucw.cz>,
 	Sebastian Reichel <sre@kernel.org>,
 	linux-pm@vger.kernel.org
 Cc: Kate Hsuan <hpa@redhat.com>
-Subject: [PATCH v5 RESEND 1/6] platform: x86-android-tablets: other: Add swnode for Xiaomi pad2 indicator LED
-Date: Sun, 24 Mar 2024 23:01:02 +0800
-Message-ID: <20240324150107.976025-2-hpa@redhat.com>
+Subject: [PATCH v5 RESEND 2/6] leds: rgb: leds-ktd202x: Get device properties through fwnode to support ACPI
+Date: Sun, 24 Mar 2024 23:01:03 +0800
+Message-ID: <20240324150107.976025-3-hpa@redhat.com>
 In-Reply-To: <20240324150107.976025-1-hpa@redhat.com>
 References: <20240324150107.976025-1-hpa@redhat.com>
 Precedence: bulk
@@ -81,143 +81,228 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-There is a KTD2026 LED controller to manage the indicator LED for Xiaomi
-pad2. The ACPI for it is not properly made so the kernel can't get
-a correct description of it.
-
-This work add a description for this RGB LED controller and also set a
-trigger to indicate the chaging event (bq27520-0-charging). When it is
-charging, the indicator LED will be turn on.
+This LED controller also installed on a Xiaomi pad2 and it is a x86
+platform. The original driver is based on device tree and can't be
+used for this ACPI based system. This patch migrated the driver to
+use fwnode to access the properties. Moreover, the fwnode API
+supports device tree so this work won't effect the original
+implementations.
 
 Signed-off-by: Kate Hsuan <hpa@redhat.com>
 ---
- .../platform/x86/x86-android-tablets/other.c  | 82 +++++++++++++++++++
- .../x86/x86-android-tablets/shared-psy-info.h |  2 +
- 2 files changed, 84 insertions(+)
+ drivers/leds/rgb/Kconfig        |  1 -
+ drivers/leds/rgb/leds-ktd202x.c | 75 ++++++++++++++++++++-------------
+ 2 files changed, 46 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/platform/x86/x86-android-tablets/other.c b/drivers/platform/x86/x86-android-tablets/other.c
-index bc6bbf7ec6ea..1012a158f7b7 100644
---- a/drivers/platform/x86/x86-android-tablets/other.c
-+++ b/drivers/platform/x86/x86-android-tablets/other.c
-@@ -13,6 +13,8 @@
- #include <linux/input.h>
- #include <linux/platform_device.h>
- 
-+#include <dt-bindings/leds/common.h>
-+
- #include "shared-psy-info.h"
- #include "x86-android-tablets.h"
- 
-@@ -593,6 +595,83 @@ const struct x86_dev_info whitelabel_tm800a550l_info __initconst = {
- 	.gpiod_lookup_tables = whitelabel_tm800a550l_gpios,
+diff --git a/drivers/leds/rgb/Kconfig b/drivers/leds/rgb/Kconfig
+index e66bd21b9852..14d6b294a786 100644
+--- a/drivers/leds/rgb/Kconfig
++++ b/drivers/leds/rgb/Kconfig
+@@ -17,7 +17,6 @@ config LEDS_GROUP_MULTICOLOR
+ config LEDS_KTD202X
+ 	tristate "LED support for KTD202x Chips"
+ 	depends on I2C
+-	depends on OF
+ 	select REGMAP_I2C
+ 	help
+ 	  This option enables support for the Kinetic KTD2026/KTD2027
+diff --git a/drivers/leds/rgb/leds-ktd202x.c b/drivers/leds/rgb/leds-ktd202x.c
+index 514965795a10..a75c300040c7 100644
+--- a/drivers/leds/rgb/leds-ktd202x.c
++++ b/drivers/leds/rgb/leds-ktd202x.c
+@@ -99,7 +99,7 @@ struct ktd202x {
+ 	struct device *dev;
+ 	struct regmap *regmap;
+ 	bool enabled;
+-	int num_leds;
++	unsigned long num_leds;
+ 	struct ktd202x_led leds[] __counted_by(num_leds);
  };
  
-+/*
-+ * The fwnode for ktd2026 on Xaomi pad2. It composed of a RGB LED node
-+ * with three subnodes for each color (B/G/R). The RGB LED node is named
-+ * "multi-led" to align with the name in the device tree.
-+ */
-+
-+/* main fwnode for ktd2026 */
-+static const struct software_node ktd2026_node = {
-+	.name = "ktd2026"
-+};
-+
-+static const struct property_entry ktd2026_rgb_led_props[] = {
-+	PROPERTY_ENTRY_U32("reg", 0),
-+	PROPERTY_ENTRY_U32("color", LED_COLOR_ID_RGB),
-+	PROPERTY_ENTRY_STRING("function", "indicator"),
-+	PROPERTY_ENTRY_STRING("linux,default-trigger", "bq27520-0-charging"),
-+	{ }
-+};
-+
-+static const struct software_node ktd2026_rgb_led_node = {
-+	.name = "multi-led",
-+	.properties = ktd2026_rgb_led_props,
-+	.parent = &ktd2026_node,
-+};
-+
-+static const struct property_entry ktd2026_blue_led_props[] = {
-+	PROPERTY_ENTRY_U32("reg", 0),
-+	PROPERTY_ENTRY_U32("color", LED_COLOR_ID_BLUE),
-+	{ }
-+};
-+
-+static const struct software_node ktd2026_blue_led_node = {
-+	.properties = ktd2026_blue_led_props,
-+	.parent = &ktd2026_rgb_led_node,
-+};
-+
-+static const struct property_entry ktd2026_green_led_props[] = {
-+	PROPERTY_ENTRY_U32("reg", 1),
-+	PROPERTY_ENTRY_U32("color", LED_COLOR_ID_GREEN),
-+	{ }
-+};
-+
-+static const struct software_node ktd2026_green_led_node = {
-+	.properties = ktd2026_green_led_props,
-+	.parent = &ktd2026_rgb_led_node,
-+};
-+
-+static const struct property_entry ktd2026_red_led_props[] = {
-+	PROPERTY_ENTRY_U32("reg", 2),
-+	PROPERTY_ENTRY_U32("color", LED_COLOR_ID_RED),
-+	{ }
-+};
-+
-+static const struct software_node ktd2026_red_led_node = {
-+	.properties = ktd2026_red_led_props,
-+	.parent = &ktd2026_rgb_led_node,
-+};
-+
-+static const struct software_node *ktd2026_node_group[] = {
-+	&ktd2026_node,
-+	&ktd2026_rgb_led_node,
-+	&ktd2026_green_led_node,
-+	&ktd2026_blue_led_node,
-+	&ktd2026_red_led_node,
-+	NULL
-+};
-+
-+static int __init xiaomi_mipad2_init(void)
-+{
-+	return software_node_register_node_group(ktd2026_node_group);
-+}
-+
-+static void xiaomi_mipad2_exit(void)
-+{
-+	software_node_unregister_node_group(ktd2026_node_group);
-+}
-+
- /*
-  * If the EFI bootloader is not Xiaomi's own signed Android loader, then the
-  * Xiaomi Mi Pad 2 X86 tablet sets OSID in the DSDT to 1 (Windows), causing
-@@ -616,6 +695,7 @@ static const struct x86_i2c_client_info xiaomi_mipad2_i2c_clients[] __initconst
- 			.type = "ktd2026",
- 			.addr = 0x30,
- 			.dev_name = "ktd2026",
-+			.swnode = &ktd2026_node,
- 		},
- 		.adapter_path = "\\_SB_.PCI0.I2C3",
- 	},
-@@ -624,4 +704,6 @@ static const struct x86_i2c_client_info xiaomi_mipad2_i2c_clients[] __initconst
- const struct x86_dev_info xiaomi_mipad2_info __initconst = {
- 	.i2c_client_info = xiaomi_mipad2_i2c_clients,
- 	.i2c_client_count = ARRAY_SIZE(xiaomi_mipad2_i2c_clients),
-+	.init = xiaomi_mipad2_init,
-+	.exit = xiaomi_mipad2_exit,
- };
-diff --git a/drivers/platform/x86/x86-android-tablets/shared-psy-info.h b/drivers/platform/x86/x86-android-tablets/shared-psy-info.h
-index c2d2968cddc2..8c33ec47ee12 100644
---- a/drivers/platform/x86/x86-android-tablets/shared-psy-info.h
-+++ b/drivers/platform/x86/x86-android-tablets/shared-psy-info.h
-@@ -29,4 +29,6 @@ extern const char * const bq24190_modules[];
- extern const struct platform_device_info int3496_pdevs[];
- extern struct gpiod_lookup_table int3496_reference_gpios;
+@@ -381,16 +381,18 @@ static int ktd202x_blink_mc_set(struct led_classdev *cdev,
+ 				 mc->num_colors);
+ }
  
-+extern const struct software_node ktd2026_leds_node;
+-static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct device_node *np,
++static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct fwnode_handle *fwnode,
+ 				 struct ktd202x_led *led, struct led_init_data *init_data)
+ {
++	struct fwnode_handle *child;
+ 	struct led_classdev *cdev;
+-	struct device_node *child;
+ 	struct mc_subled *info;
+-	int num_channels;
++	int num_channels = 0;
+ 	int i = 0;
+ 
+-	num_channels = of_get_available_child_count(np);
++	fwnode_for_each_available_child_node(fwnode, child) {
++		num_channels++;
++	}
+ 	if (!num_channels || num_channels > chip->num_leds)
+ 		return -EINVAL;
+ 
+@@ -398,22 +400,22 @@ static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct device_node *np,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	for_each_available_child_of_node(np, child) {
++	fwnode_for_each_available_child_node(fwnode, child) {
+ 		u32 mono_color;
+ 		u32 reg;
+ 		int ret;
+ 
+-		ret = of_property_read_u32(child, "reg", &reg);
++		ret = fwnode_property_read_u32(child, "reg", &reg);
+ 		if (ret != 0 || reg >= chip->num_leds) {
+-			dev_err(chip->dev, "invalid 'reg' of %pOFn\n", child);
+-			of_node_put(child);
+-			return -EINVAL;
++			dev_err(chip->dev, "invalid 'reg' of %pfw\n", child);
++			fwnode_handle_put(child);
++			return ret;
+ 		}
+ 
+-		ret = of_property_read_u32(child, "color", &mono_color);
++		ret = fwnode_property_read_u32(child, "color", &mono_color);
+ 		if (ret < 0 && ret != -EINVAL) {
+-			dev_err(chip->dev, "failed to parse 'color' of %pOF\n", child);
+-			of_node_put(child);
++			dev_err(chip->dev, "failed to parse 'color' of %pfw\n", child);
++			fwnode_handle_put(child);
+ 			return ret;
+ 		}
+ 
+@@ -433,16 +435,16 @@ static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct device_node *np,
+ 	return devm_led_classdev_multicolor_register_ext(chip->dev, &led->mcdev, init_data);
+ }
+ 
+-static int ktd202x_setup_led_single(struct ktd202x *chip, struct device_node *np,
++static int ktd202x_setup_led_single(struct ktd202x *chip, struct fwnode_handle *fwnode,
+ 				    struct ktd202x_led *led, struct led_init_data *init_data)
+ {
+ 	struct led_classdev *cdev;
+ 	u32 reg;
+ 	int ret;
+ 
+-	ret = of_property_read_u32(np, "reg", &reg);
++	ret = fwnode_property_read_u32(fwnode, "reg", &reg);
+ 	if (ret != 0 || reg >= chip->num_leds) {
+-		dev_err(chip->dev, "invalid 'reg' of %pOFn\n", np);
++		dev_err(chip->dev, "invalid 'reg' of %pfw\n", fwnode);
+ 		return -EINVAL;
+ 	}
+ 	led->index = reg;
+@@ -454,7 +456,9 @@ static int ktd202x_setup_led_single(struct ktd202x *chip, struct device_node *np
+ 	return devm_led_classdev_register_ext(chip->dev, &led->cdev, init_data);
+ }
+ 
+-static int ktd202x_add_led(struct ktd202x *chip, struct device_node *np, unsigned int index)
++static int ktd202x_add_led(struct ktd202x *chip,
++			   struct fwnode_handle *fwnode_color,
++			   unsigned int index)
+ {
+ 	struct ktd202x_led *led = &chip->leds[index];
+ 	struct led_init_data init_data = {};
+@@ -463,21 +467,21 @@ static int ktd202x_add_led(struct ktd202x *chip, struct device_node *np, unsigne
+ 	int ret;
+ 
+ 	/* Color property is optional in single color case */
+-	ret = of_property_read_u32(np, "color", &color);
++	ret = fwnode_property_read_u32(fwnode_color, "color", &color);
+ 	if (ret < 0 && ret != -EINVAL) {
+-		dev_err(chip->dev, "failed to parse 'color' of %pOF\n", np);
++		dev_err(chip->dev, "failed to parse 'color' of %pfw\n", fwnode_color);
+ 		return ret;
+ 	}
+ 
+ 	led->chip = chip;
+-	init_data.fwnode = of_fwnode_handle(np);
++	init_data.fwnode = fwnode_color;
+ 
+ 	if (color == LED_COLOR_ID_RGB) {
+ 		cdev = &led->mcdev.led_cdev;
+-		ret = ktd202x_setup_led_rgb(chip, np, led, &init_data);
++		ret = ktd202x_setup_led_rgb(chip, fwnode_color, led, &init_data);
+ 	} else {
+ 		cdev = &led->cdev;
+-		ret = ktd202x_setup_led_single(chip, np, led, &init_data);
++		ret = ktd202x_setup_led_single(chip, fwnode_color, led, &init_data);
+ 	}
+ 
+ 	if (ret) {
+@@ -492,26 +496,29 @@ static int ktd202x_add_led(struct ktd202x *chip, struct device_node *np, unsigne
+ 
+ static int ktd202x_probe_dt(struct ktd202x *chip)
+ {
+-	struct device_node *np = dev_of_node(chip->dev), *child;
++	struct fwnode_handle *child, *fwnode;
++	struct device *dev = chip->dev;
+ 	int count;
+ 	int i = 0;
+ 
+-	chip->num_leds = (int)(unsigned long)of_device_get_match_data(chip->dev);
+-
+-	count = of_get_available_child_count(np);
++	count = device_get_child_node_count(dev);
+ 	if (!count || count > chip->num_leds)
+ 		return -EINVAL;
+ 
++	fwnode = dev_fwnode(chip->dev);
++	if (!fwnode)
++		return -ENODEV;
 +
- #endif
+ 	regmap_write(chip->regmap, KTD202X_REG_RESET_CONTROL, KTD202X_RSTR_RESET);
+ 
+ 	/* Allow the device to execute the complete reset */
+ 	usleep_range(200, 300);
+ 
+-	for_each_available_child_of_node(np, child) {
++	fwnode_for_each_available_child_node(fwnode, child) {
+ 		int ret = ktd202x_add_led(chip, child, i);
+ 
+ 		if (ret) {
+-			of_node_put(child);
++			fwnode_handle_put(child);
+ 			return ret;
+ 		}
+ 		i++;
+@@ -554,6 +561,8 @@ static int ktd202x_probe(struct i2c_client *client)
+ 		return ret;
+ 	}
+ 
++	chip->num_leds = (unsigned long)i2c_get_match_data(client);
++
+ 	chip->regulators[0].supply = "vin";
+ 	chip->regulators[1].supply = "vio";
+ 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(chip->regulators), chip->regulators);
+@@ -602,10 +611,17 @@ static void ktd202x_shutdown(struct i2c_client *client)
+ 	regmap_write(chip->regmap, KTD202X_REG_RESET_CONTROL, KTD202X_RSTR_RESET);
+ }
+ 
++static const struct i2c_device_id ktd202x_id[] = {
++	{"ktd2026", KTD2026_NUM_LEDS},
++	{"ktd2027", KTD2027_NUM_LEDS},
++	{}
++};
++MODULE_DEVICE_TABLE(i2c, ktd202x_id);
++
+ static const struct of_device_id ktd202x_match_table[] = {
+ 	{ .compatible = "kinetic,ktd2026", .data = (void *)KTD2026_NUM_LEDS },
+ 	{ .compatible = "kinetic,ktd2027", .data = (void *)KTD2027_NUM_LEDS },
+-	{},
++	{}
+ };
+ MODULE_DEVICE_TABLE(of, ktd202x_match_table);
+ 
+@@ -617,6 +633,7 @@ static struct i2c_driver ktd202x_driver = {
+ 	.probe = ktd202x_probe,
+ 	.remove = ktd202x_remove,
+ 	.shutdown = ktd202x_shutdown,
++	.id_table = ktd202x_id,
+ };
+ module_i2c_driver(ktd202x_driver);
+ 
 -- 
 2.44.0
 
