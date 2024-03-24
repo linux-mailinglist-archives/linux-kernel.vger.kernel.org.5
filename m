@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-114948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2F39888C25
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:11:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F15EE8895AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:35:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36C68295CC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:11:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25A3CB2ECC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB371BF1EA;
-	Mon, 25 Mar 2024 00:57:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDF93AD1A3;
+	Mon, 25 Mar 2024 03:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SNT3HR9V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AdyeCg25"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8B017A39F;
-	Sun, 24 Mar 2024 23:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCBFE17A39D;
+	Sun, 24 Mar 2024 23:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323660; cv=none; b=V4JssnGr36UWCeJJPSCA454V4WQrv9DTdl6vDOMeO0qJ/6Exn0dK451lqAQtvtv3JFSl0/M7lMERvZ7XP86yrT/zXSbmVk1dUpb7qn+D5GwpUe3U7yXV/gowRIakAEE/IEiYio2dTsDNNEdOREf439VME57o+jMJ1Wa/GZCRFLQ=
+	t=1711323660; cv=none; b=iguVXZRgKB+xQyi1t0qpgscAXUIp/PMYx4EGTzRb+mnuq3vb2semPduwERaIm66ca1U/tfN+DnlrSL7a7jybXZUjc6jBAoBZwTd1ed1hZbMYrG+hPeIi6B+Jd2L7ZwXG9KAFunn5wgJD9dhwy7xwYCShhIaNL1zv6R5MdQ6KNtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323660; c=relaxed/simple;
-	bh=2QmnBqFaoclGLhXwzEZp6wAs7/ysaG7ABlc3lWoqZTU=;
+	bh=EvF6yk0rVIb8AReax+xdLMBHydsrlD1ehkezoEOOnWA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IwoZRafgYBeoeDXBWK2rJk856VZjU+hMtKbrjeqrPf9J5Fm0WHkcBxrbTufFVMrKqXnYUn22drYAVZtvCmSvqf6hzq3SIh101Hf0YitBgxUQ+lL91o3tfp6tGMNY9tbp68J3WjBgD1J/7/R3KyiJ8YX57daqHq70xrk+1XM6i6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SNT3HR9V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4050C43390;
-	Sun, 24 Mar 2024 23:40:58 +0000 (UTC)
+	 MIME-Version; b=eiLoL/OSXh7vD3IpnRXhdVZviQSK5hDzZhYUo+LXIB+x8X81eKk3jekfeuMDdIewIAbERh34bvsfEoeDAmKS4efa3bnb1I/IUvVTuRCboST4mMd0yUtGKaYh9WTdwmwmM0ohVv6JrdMcXXJODvC0pPorvSCvobH0OpL8Z+R4C6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AdyeCg25; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1A27C433B2;
+	Sun, 24 Mar 2024 23:40:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323659;
-	bh=2QmnBqFaoclGLhXwzEZp6wAs7/ysaG7ABlc3lWoqZTU=;
+	s=k20201202; t=1711323660;
+	bh=EvF6yk0rVIb8AReax+xdLMBHydsrlD1ehkezoEOOnWA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SNT3HR9VFsSlI3G+PwfxNK4DD2xvT9Jc4FjJcQ19QZQIBnVIauTLVmHjhCW1H1iUH
-	 mDKZV3SY6D+pRvWOrCb18kIPri9AHVoBGWmBj0dX9dpO1yWMg5lgm+Py+yw9nNLI7v
-	 L6iBZenLZUylEj7qeJqYgJUYJxn/bkXAjiZaZHem6PMEg+6d91mzKA/L+9C43NZCn1
-	 wDCunvi4Rr+tQlRQIQ2RgSPbETbpuPLoTQx+A6WQ58bXBWmflx2QBX/SOtYmebSvxe
-	 AbTGCSCQx/rRJmOVifZkKH035uHB5OOQfUx9XXOmrUhU/RMQqtdlL1inXJzPecXTQ+
-	 uuQBd1o0JvhwQ==
+	b=AdyeCg25p2rL5CKYilX8cdFD5P/8DR5BdPkB1zLnBrvrDfQiM86qTR96bvgjV/A0i
+	 0SieehzSoBvfnj9gwG36oLddjWK/SGG67OCAER5dvOPqHQq7SSXJai10YhcGA72Buv
+	 A2zqbCiEuoMJhMnUk/OHxSIbgf9XSmmjYVYBaLZxYsZCoRpn9IciHV0Ht3xF8nk3M5
+	 EdmuJwmkq8wUZAm5EFmEbsklkie+serjO1aWxy+jPkcSkEkoyl2Ywknlmyl97Dt1zQ
+	 lcBOtoOhDXF/skYlp79AgAIvEp6kNDtpxmutx7rCy8Ncxm4ENS5jIQcOTsuHdr7CSG
+	 M2CgPosJp+puQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Kees Cook <keescook@chromium.org>,
-	Andi Kleen <ak@linux.intel.com>,
-	Jan Kara <jack@suse.cz>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Christoph Hellwig <hch@lst.de>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 031/238] fs/select: rework stack allocation hack for clang
-Date: Sun, 24 Mar 2024 19:36:59 -0400
-Message-ID: <20240324234027.1354210-32-sashal@kernel.org>
+Subject: [PATCH 5.10 032/238] block: add a new set_read_only method
+Date: Sun, 24 Mar 2024 19:37:00 -0400
+Message-ID: <20240324234027.1354210-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -65,65 +62,51 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit ddb9fd7a544088ed70eccbb9f85e9cc9952131c1 ]
+[ Upstream commit e00adcadf3af7a8335026d71ab9f0e0a922191ac ]
 
-A while ago, we changed the way that select() and poll() preallocate
-a temporary buffer just under the size of the static warning limit of
-1024 bytes, as clang was frequently going slightly above that limit.
+Add a new method to allow for driver-specific processing when setting or
+clearing the block device read-only state.  This allows to replace the
+cumbersome and error-prone override of the whole ioctl implementation.
 
-The warnings have recently returned and I took another look. As it turns
-out, clang is not actually inherently worse at reserving stack space,
-it just happens to inline do_select() into core_sys_select(), while gcc
-never inlines it.
-
-Annotate do_select() to never be inlined and in turn remove the special
-case for the allocation size. This should give the same behavior for
-both clang and gcc all the time and once more avoids those warnings.
-
-Fixes: ad312f95d41c ("fs/select: avoid clang stack usage warning")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20240216202352.2492798-1-arnd@kernel.org
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Stable-dep-of: 9674f54e41ff ("md: Don't clear MD_CLOSING when the raid is about to stop")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/select.c          | 2 +-
- include/linux/poll.h | 4 ----
- 2 files changed, 1 insertion(+), 5 deletions(-)
+ block/ioctl.c          | 5 +++++
+ include/linux/blkdev.h | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/fs/select.c b/fs/select.c
-index 5edffee1162c2..668a5200503ae 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -475,7 +475,7 @@ static inline void wait_key_set(poll_table *wait, unsigned long in,
- 		wait->_key |= POLLOUT_SET;
+diff --git a/block/ioctl.c b/block/ioctl.c
+index e7eed7dadb5cf..24f8042f12b60 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -405,6 +405,11 @@ static int blkdev_roset(struct block_device *bdev, fmode_t mode,
+ 		return ret;
+ 	if (get_user(n, (int __user *)arg))
+ 		return -EFAULT;
++	if (bdev->bd_disk->fops->set_read_only) {
++		ret = bdev->bd_disk->fops->set_read_only(bdev, n);
++		if (ret)
++			return ret;
++	}
+ 	set_device_ro(bdev, n);
+ 	return 0;
  }
- 
--static int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
-+static noinline_for_stack int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
- {
- 	ktime_t expire, *to = NULL;
- 	struct poll_wqueues table;
-diff --git a/include/linux/poll.h b/include/linux/poll.h
-index 1cdc32b1f1b08..7e0fdcf905d2e 100644
---- a/include/linux/poll.h
-+++ b/include/linux/poll.h
-@@ -16,11 +16,7 @@
- extern struct ctl_table epoll_table[]; /* for sysctl */
- /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
-    additional memory. */
--#ifdef __clang__
--#define MAX_STACK_ALLOC 768
--#else
- #define MAX_STACK_ALLOC 832
--#endif
- #define FRONTEND_STACK_ALLOC	256
- #define SELECT_STACK_ALLOC	FRONTEND_STACK_ALLOC
- #define POLL_STACK_ALLOC	FRONTEND_STACK_ALLOC
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 98fdf5a31fd66..583824f111079 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1883,6 +1883,7 @@ struct block_device_operations {
+ 	void (*unlock_native_capacity) (struct gendisk *);
+ 	int (*revalidate_disk) (struct gendisk *);
+ 	int (*getgeo)(struct block_device *, struct hd_geometry *);
++	int (*set_read_only)(struct block_device *bdev, bool ro);
+ 	/* this callback is with swap_lock and sometimes page table lock held */
+ 	void (*swap_slot_free_notify) (struct block_device *, unsigned long);
+ 	int (*report_zones)(struct gendisk *, sector_t sector,
 -- 
 2.43.0
 
