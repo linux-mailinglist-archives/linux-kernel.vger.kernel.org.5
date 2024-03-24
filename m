@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-114458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BE81889002
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:09:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EA82888A94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BEB31F2E50D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:09:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80F0428B800
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E771311BD;
-	Sun, 24 Mar 2024 23:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27DC17B51B;
+	Sun, 24 Mar 2024 23:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WJh90HfS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EH/Djeog"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66064156884;
-	Sun, 24 Mar 2024 23:11:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA01F15689D;
+	Sun, 24 Mar 2024 23:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321882; cv=none; b=btSTlJYZaeHILqsYR16KoMElaHbFAzYVir2S3B0ckdTK7iREH4W2REp+6shNjWbVo6284IE0VkjdNUTwIdBFaB298bwzDGV6kpqMD2ddOliq05cRdFCRQWai0WUisxTr4pa1iFiIV1qSEfMuf4/r+fNAurYiacnpVVtZICo9/1E=
+	t=1711321883; cv=none; b=Mdc5oXT9Tp7Jg5XBXBBBJw8/kkoIT2cTIPEXYc5+PD63KMhIzsmjcgzZB10v/Nz4lZQau975xeBWEcanuXBFahaihBnHxTdeQXeJ6cXyGyNkc6A9h1aZg6FsRoVdQbLm+rhNMGJDKo9d5slCNS8jmrbk9hXbwI2OZohVn4EHSUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321882; c=relaxed/simple;
-	bh=RMsiwQfl7cYHKFn8JymDMhMZpp+GCZ0RkLUQJ2lV0CU=;
+	s=arc-20240116; t=1711321883; c=relaxed/simple;
+	bh=BjRnn2uAci+SuwZsSH8Z6eRxLJRWal9cId1CxlbJEoA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ad3ImzqhGPk/Fr1tIS4cXuNLrRYUQ4DyHco0QrV2tEjBpiTamI0lwnxjHhVhGfXvXmWrmQAlXcjdndG4Uxu0O/JafL9LyymZfcfyR+BUjyRfMqoYEiOtbXuBQk+4+kEeVKOKNFJg3v2pUQSOoR1tpG6ZDRiH3hivagaTvyBg9gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WJh90HfS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 616AFC43390;
-	Sun, 24 Mar 2024 23:11:20 +0000 (UTC)
+	 MIME-Version; b=bvLplZYjdqaKEM4tvljsuewjvP5N/PSehCq1BYHxC8H/08PgZqpMJp/arQu3dDpxxa/zXPcAu2Gs8K9YQuhMimqJ8f5mILxoUB10b7PLFOXJXrXDedMN567ZiLPer3tpdIx62TF+7P86/pM+QTiHU7iK4czb5HVFkDQgDohHUH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EH/Djeog; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 891C1C433C7;
+	Sun, 24 Mar 2024 23:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321881;
-	bh=RMsiwQfl7cYHKFn8JymDMhMZpp+GCZ0RkLUQJ2lV0CU=;
+	s=k20201202; t=1711321882;
+	bh=BjRnn2uAci+SuwZsSH8Z6eRxLJRWal9cId1CxlbJEoA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WJh90HfSKe8+Jctw2vGAXLkswpsBfHnna4B9bFXKJMdc1tlc+IyMUXl4WN5sf++Ng
-	 G3oldDj/tlU+h+IJgoZasYfUPjwL7Z+z6pP+kRJiAqRdBSjmX1Hoz8j3CTwjg4ZLA4
-	 TabxMQgx1GKrVUFnA4TpXEm0BeYKHrG5EI03jp2c35/+/R2RluXAhx1rEJYvtoKUZL
-	 vB+Guf/qwNjOPa5S33L9aaMq0Tsx4kp8as+yaTMAnCcuhL7LN/hcQZUcpW4eXZVQfm
-	 fc5fWJSauIdApEvz/wnSnjP1CSym3sTjQF9L47iiEvfWkpTNBkdcjtqd0OKm+cFOIo
-	 Y/4kz98TnuzfQ==
+	b=EH/DjeogaL+clwxtIrK0xZTDiCCnrGZ9TH1nAIR4AElCIXhxWvcJODuimNUzrDkVy
+	 TY+SA3ceI0e4Dr2tE7h9Y+n0XEbFN5MouGVbrZjJb2pQOSQwoP3YTKM6Soe/CUvJwi
+	 cG1gfmDZFtVCIqwhXKqySe/GTo1EDYNwpNKiKztw7//4SJ2xoMlmk3FIVaXMes0aCP
+	 OyJUhFqapaEh1Qxt9S3aa6tyzphGjGU6rXW2Ge9NPLhNJfSM9cR2PI63xEhYLggELn
+	 Mx/mX81kTJm71oVJoLJCTvwIKiu4URb39u0HOZ4GF0NiHf6Lyla+MOdSoeJJ+AGcCS
+	 IxtqY8g0V/TRw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Jiri Pirko <jiri@nvidia.com>,
+Cc: Yewon Choi <woni9911@gmail.com>,
+	Michal Kubiak <michal.kubiak@intel.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 609/638] wireguard: receive: annotate data-race around receiving_counter.counter
-Date: Sun, 24 Mar 2024 19:00:46 -0400
-Message-ID: <20240324230116.1348576-610-sashal@kernel.org>
+Subject: [PATCH 6.6 610/638] rds: introduce acquire/release ordering in acquire/release_in_xmit()
+Date: Sun, 24 Mar 2024 19:00:47 -0400
+Message-ID: <20240324230116.1348576-611-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -65,83 +63,49 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+From: Yewon Choi <woni9911@gmail.com>
 
-[ Upstream commit bba045dc4d996d03dce6fe45726e78a1a1f6d4c3 ]
+[ Upstream commit 1422f28826d2a0c11e5240b3e951c9e214d8656e ]
 
-Syzkaller with KCSAN identified a data-race issue when accessing
-keypair->receiving_counter.counter. Use READ_ONCE() and WRITE_ONCE()
-annotations to mark the data race as intentional.
+acquire/release_in_xmit() work as bit lock in rds_send_xmit(), so they
+are expected to ensure acquire/release memory ordering semantics.
+However, test_and_set_bit/clear_bit() don't imply such semantics, on
+top of this, following smp_mb__after_atomic() does not guarantee release
+ordering (memory barrier actually should be placed before clear_bit()).
 
-    BUG: KCSAN: data-race in wg_packet_decrypt_worker / wg_packet_rx_poll
+Instead, we use clear_bit_unlock/test_and_set_bit_lock() here.
 
-    write to 0xffff888107765888 of 8 bytes by interrupt on cpu 0:
-     counter_validate drivers/net/wireguard/receive.c:321 [inline]
-     wg_packet_rx_poll+0x3ac/0xf00 drivers/net/wireguard/receive.c:461
-     __napi_poll+0x60/0x3b0 net/core/dev.c:6536
-     napi_poll net/core/dev.c:6605 [inline]
-     net_rx_action+0x32b/0x750 net/core/dev.c:6738
-     __do_softirq+0xc4/0x279 kernel/softirq.c:553
-     do_softirq+0x5e/0x90 kernel/softirq.c:454
-     __local_bh_enable_ip+0x64/0x70 kernel/softirq.c:381
-     __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:167 [inline]
-     _raw_spin_unlock_bh+0x36/0x40 kernel/locking/spinlock.c:210
-     spin_unlock_bh include/linux/spinlock.h:396 [inline]
-     ptr_ring_consume_bh include/linux/ptr_ring.h:367 [inline]
-     wg_packet_decrypt_worker+0x6c5/0x700 drivers/net/wireguard/receive.c:499
-     process_one_work kernel/workqueue.c:2633 [inline]
-     ...
-
-    read to 0xffff888107765888 of 8 bytes by task 3196 on cpu 1:
-     decrypt_packet drivers/net/wireguard/receive.c:252 [inline]
-     wg_packet_decrypt_worker+0x220/0x700 drivers/net/wireguard/receive.c:501
-     process_one_work kernel/workqueue.c:2633 [inline]
-     process_scheduled_works+0x5b8/0xa30 kernel/workqueue.c:2706
-     worker_thread+0x525/0x730 kernel/workqueue.c:2787
-     ...
-
-Fixes: a9e90d9931f3 ("wireguard: noise: separate receive counter from send counter")
-Reported-by: syzbot+d1de830e4ecdaac83d89@syzkaller.appspotmail.com
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Fixes: 0f4b1c7e89e6 ("rds: fix rds_send_xmit() serialization")
+Fixes: 1f9ecd7eacfd ("RDS: Pass rds_conn_path to rds_send_xmit()")
+Signed-off-by: Yewon Choi <woni9911@gmail.com>
+Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+Link: https://lore.kernel.org/r/ZfQUxnNTO9AJmzwc@libra05
 Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireguard/receive.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/rds/send.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireguard/receive.c b/drivers/net/wireguard/receive.c
-index a176653c88616..db01ec03bda00 100644
---- a/drivers/net/wireguard/receive.c
-+++ b/drivers/net/wireguard/receive.c
-@@ -251,7 +251,7 @@ static bool decrypt_packet(struct sk_buff *skb, struct noise_keypair *keypair)
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 2899def23865f..09a2801106549 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -103,13 +103,12 @@ EXPORT_SYMBOL_GPL(rds_send_path_reset);
  
- 	if (unlikely(!READ_ONCE(keypair->receiving.is_valid) ||
- 		  wg_birthdate_has_expired(keypair->receiving.birthdate, REJECT_AFTER_TIME) ||
--		  keypair->receiving_counter.counter >= REJECT_AFTER_MESSAGES)) {
-+		  READ_ONCE(keypair->receiving_counter.counter) >= REJECT_AFTER_MESSAGES)) {
- 		WRITE_ONCE(keypair->receiving.is_valid, false);
- 		return false;
- 	}
-@@ -318,7 +318,7 @@ static bool counter_validate(struct noise_replay_counter *counter, u64 their_cou
- 		for (i = 1; i <= top; ++i)
- 			counter->backtrack[(i + index_current) &
- 				((COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1)] = 0;
--		counter->counter = their_counter;
-+		WRITE_ONCE(counter->counter, their_counter);
- 	}
+ static int acquire_in_xmit(struct rds_conn_path *cp)
+ {
+-	return test_and_set_bit(RDS_IN_XMIT, &cp->cp_flags) == 0;
++	return test_and_set_bit_lock(RDS_IN_XMIT, &cp->cp_flags) == 0;
+ }
  
- 	index &= (COUNTER_BITS_TOTAL / BITS_PER_LONG) - 1;
-@@ -463,7 +463,7 @@ int wg_packet_rx_poll(struct napi_struct *napi, int budget)
- 			net_dbg_ratelimited("%s: Packet has invalid nonce %llu (max %llu)\n",
- 					    peer->device->dev->name,
- 					    PACKET_CB(skb)->nonce,
--					    keypair->receiving_counter.counter);
-+					    READ_ONCE(keypair->receiving_counter.counter));
- 			goto next;
- 		}
- 
+ static void release_in_xmit(struct rds_conn_path *cp)
+ {
+-	clear_bit(RDS_IN_XMIT, &cp->cp_flags);
+-	smp_mb__after_atomic();
++	clear_bit_unlock(RDS_IN_XMIT, &cp->cp_flags);
+ 	/*
+ 	 * We don't use wait_on_bit()/wake_up_bit() because our waking is in a
+ 	 * hot path and finding waiters is very rare.  We don't want to walk
 -- 
 2.43.0
 
