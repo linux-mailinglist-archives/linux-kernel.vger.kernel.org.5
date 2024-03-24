@@ -1,248 +1,151 @@
-Return-Path: <linux-kernel+bounces-112734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8546887D98
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:28:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF7E6887D9F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 17:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFE241C209AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:28:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F2E8281333
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E91E18EB8;
-	Sun, 24 Mar 2024 16:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="NHi5D1H/"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBB610A19
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 16:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334E3199B8;
+	Sun, 24 Mar 2024 16:50:38 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03756171D1;
+	Sun, 24 Mar 2024 16:50:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711297721; cv=none; b=PIcQ2qcdmKOO1NOlKiTYslMZy12RDC90eUrp+l+wlFIpJ3QGx6gBaVq/5HmJFe9SBSF8t0I86ECSvZv+r8Q6upZIUMm8jy5hYdqcVNr0QrtRALsJnix3tqX5Eky9DcwVTSQyhAFpve+H5r/+3verKCMr779myhqTZNN801kS0/A=
+	t=1711299037; cv=none; b=s3ATE9PF+1J875MCaAxsL/K4heWSn06ZYsztn3M+ouSnA7JYZKLFXbaKbEgY9zTH9qts4dzTZJVv1ASeLQLjbkXJ8Jx6bT/q0Nr+CmPCQDrrorMwfwcIVHa555x55GsHz6Y85rfE457MkALwno3BcMlMWct1mf3c8ocHYvC2Yro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711297721; c=relaxed/simple;
-	bh=VVxT1+30kfFtynlw5txLe5LXptKYOBoBmsWHltYGTU0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bnjFKCXZt+fpXCanJ0DhpwhO46nJkXExvXpABoQl3KYejjFg+bV26msF9erGyAymQhe9bvmwnO5eFLddnW6PgpEE00EvLplfMPqF9LcPjOxUugIILrvSyYrCTR6PjZBEVoo1+Mz+Q3XLgPr9P3cbkneIBmU21DPk0bMAoKy5ohE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=NHi5D1H/; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-	id 87C1D20B74C0; Sun, 24 Mar 2024 09:28:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 87C1D20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1711297713;
-	bh=L7aJR+/O/U52wmp8nXcyTTBjlAy8uzaOy6DxR8fMbvg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NHi5D1H/nl3xhC4xFnWkToLc6k2tX03KxmPP45asdxiiWuALs7QL2DbMuCWfkgtNy
-	 SbameL55W851rQeHRK0xK1OgR0rD0AOcw/ov4LXV46sDmtxb6saDF3a7A3GWtpk4Jh
-	 vJ7XNvC906SDyGSFVZQbOUgBaJlbwh4uxdhOlktA=
-Date: Sun, 24 Mar 2024 09:28:33 -0700
-From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-	mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-	linux-kernel@vger.kernel.org, ssengar@microsoft.com,
-	sgeorgejohn@microsoft.com
-Subject: Re: [PATCH] x86/numa: Map NUMA node to CPUs as per DeviceTree
-Message-ID: <20240324162833.GA18417@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1710265404-23146-1-git-send-email-ssengar@linux.microsoft.com>
- <87v85bfzg0.ffs@tglx>
+	s=arc-20240116; t=1711299037; c=relaxed/simple;
+	bh=XTqqWBJYofix9/upqo66g0+ko3ZgqhuOv6+PQmT0aqg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=RXwBpy6A2kStUAxAEXCUpGiakRjrMWzWoB/2rh3S0e39NEfuRNwLhM+tYz73qZR1FNLId5LPVTP2N5mdpoWwcvRoXeaqdi2Q19ZDO9Teu4z5BF0MiCHO6bEszltnfb3cwd0VjaGsGwpc0M7bbIqPEwKijgMf+lXRYER8dkfuy4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V2hlZ1fj7z6K7JS;
+	Mon, 25 Mar 2024 00:46:02 +0800 (CST)
+Received: from frapeml100008.china.huawei.com (unknown [7.182.85.131])
+	by mail.maildlp.com (Postfix) with ESMTPS id 401151400DB;
+	Mon, 25 Mar 2024 00:50:25 +0800 (CST)
+Received: from frapeml500005.china.huawei.com (7.182.85.13) by
+ frapeml100008.china.huawei.com (7.182.85.131) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 24 Mar 2024 17:50:24 +0100
+Received: from frapeml500005.china.huawei.com ([7.182.85.13]) by
+ frapeml500005.china.huawei.com ([7.182.85.13]) with mapi id 15.01.2507.035;
+ Sun, 24 Mar 2024 17:50:24 +0100
+From: Roberto Sassu <roberto.sassu@huawei.com>
+To: Al Viro <viro@zeniv.linux.org.uk>, Steve French <smfrench@gmail.com>
+CC: LKML <linux-kernel@vger.kernel.org>, linux-fsdevel
+	<linux-fsdevel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>, "Paulo
+ Alcantara" <pc@manguebit.com>, Christian Brauner <christian@brauner.io>,
+	"Mimi Zohar" <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+	"linux-security-module@vger.kernel.org"
+	<linux-security-module@vger.kernel.org>
+Subject: RE: kernel crash in mknod
+Thread-Topic: kernel crash in mknod
+Thread-Index: AQHafag2XY/u/k17xEe65QyoT7TnEbFGUTAAgADHHcA=
+Date: Sun, 24 Mar 2024 16:50:24 +0000
+Message-ID: <3441a4a1140944f5b418b70f557bca72@huawei.com>
+References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+ <20240324054636.GT538574@ZenIV>
+In-Reply-To: <20240324054636.GT538574@ZenIV>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v85bfzg0.ffs@tglx>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Sun, Mar 24, 2024 at 03:59:27PM +0100, Thomas Gleixner wrote:
-> On Tue, Mar 12 2024 at 10:43, Saurabh Sengar wrote:
-> > Currently for DeviceTree bootup, x86 code does the default mapping of
-> > CPUs to NUMA, which is wrong. This can cause incorrect mapping and WARN
-> > on a SMT enabled system like below:
-> >
-> > [0.417551] ------------[ cut here ]------------
-> > [0.417551] Saurabh sched: CPU #1's smt-sibling CPU #0 is not on the same node! [node: 1 != 0]. Ignoring dependency.
-> > [0.417551] WARNING: CPU: 1 PID: 0 at topology_sane.isra.0+0x5c/0x6d
-> > [0.417551] Modules linked in:
-> > [0.417551] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.1.71-microsoft-hcl+ #4
-> > [0.417551] RIP: 0010:topology_sane.isra.0+0x5c/0x6d
-> > [0.417551] Code: 41 39 dc 74 27 80 3d 32 ae 2d 00 00 75 1e 41 89 d9 45 89 e0 44 89 d6 48 c7 c7 00 a6 4a 88 c6 05 19 ae 2d 00 01 e8 6e 1f cb ff <0f> 0b 41 39 dc 5b 41 5c 0f 94 c0 5d c3 cc cc cc cc 55 48 8b 05 05
-> > [0.417551] RSP: 0000:ffffc9000013feb0 EFLAGS: 00010086
-> > [0.417551] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> > [0.417551] RDX: 0000000000000003 RSI: 0000000000000086 RDI: 00000000ffffffff
-> > [0.417551] RBP: ffffc9000013fec0 R08: ffffffff88778160 R09: ffffffff88778160
-> > [0.417551] R10: ffff888227fe26da R11: ffff888227fe26c1 R12: 0000000000000001
-> > [0.417551] R13: 0000000000000000 R14: ffff888216415040 R15: 0000000000000000
-> > [0.417551] FS:  0000000000000000(0000) GS:ffff888216400000(0000) knlGS:0000000000000000
-> > [0.417551] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [0.417551] CR2: 0000000000000000 CR3: 0000000208809001 CR4: 0000000000330ea0
-> > [0.417551] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [0.417551] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-> > [0.417551] Call Trace:
-> > [0.417551]  <TASK>
-> > [0.417551]  ? show_regs.cold+0x1a/0x1f
-> > [0.417551]  ? __warn+0x6e/0xc0
-> > [0.417551]  ? report_bug+0x101/0x1a0
-> > [0.417551]  ? handle_bug+0x40/0x70
-> > [0.417551]  ? exc_invalid_op+0x19/0x70
-> > [0.417551]  ? asm_exc_invalid_op+0x1b/0x20
-> > [0.417551]  ? topology_sane.isra.0+0x5c/0x6d
-> > [0.417551]  match_smt+0xf6/0xfc
-> > [0.417551]  set_cpu_sibling_map.cold+0x24f/0x512
-> > [0.417551]  start_secondary+0x5c/0x110
-> > [0.417551]  secondary_startup_64_no_verify+0xcd/0xdb
-> > [0.417551]  </TASK>
-> > [0.417551] ---[ end trace 0000000000000000 ]---
-> 
-> Can you please trim the backtrace like documented. 95% of the pasted
-> information above is completely irrelevant to understand the issue.
-> 
->  CPU #1's smt-sibling CPU #0 is not on the same node! [node: 1 != 0]. Ignoring dependency.
->  WARNING: CPU: 1 PID: 0 at topology_sane.isra.0+0x5c/0x6d
->   match_smt+0xf6/0xfc
->   set_cpu_sibling_map.cold+0x24f/0x512
->   start_secondary+0x5c/0x110
-> 
-> is more than sufficient, no?
-> 
-> > +static void __init of_parse_and_init_cpus(void)
-> > +{
-> > +	struct device_node *dn;
-> > +	int cpuid = 0;
-> > +	int nid;
-> > +
-> > +	for_each_of_cpu_node(dn) {
-> > +		if (cpuid >= NR_CPUS) {
-> 
-> This condition is wrong. nr_cpu_ids != NR_CPUS.
-> 
-> > +			pr_warn("NR_CPUS too small for %d cpuid\n", cpuid);
-> 
-> What's this for? The APIC enumeration code warns about this already.
-> 
-> > +			return;
-> > +		}
-> > +		nid = of_node_to_nid(dn);
-> > +		numa_set_node(cpuid, nid);
-> > +		cpuid++;
-> > +	}
-> > +}
-> > +
-> >  static int __init numa_init(int (*init_func)(void))
-> >  {
-> >  	int i;
-> > @@ -645,6 +662,9 @@ static int __init numa_init(int (*init_func)(void))
-> >  	if (ret < 0)
-> >  		return ret;
-> >  
-> > +	if (acpi_disabled)
-> > +		of_parse_and_init_cpus();
-> 
-> numa_init() is invoked from x86_numa_init() with the various NUMA init
-> functions as argument and x86_numa_init() already has OF NUMA logic:
-> 
-> #ifdef CONFIG_ACPI_NUMA
-> 		if (!numa_init(x86_acpi_numa_init))
-> 			return;
-> #endif
-> #ifdef CONFIG_AMD_NUMA
-> 		if (!numa_init(amd_numa_init))
-> 			return;
-> #endif
-> 		if (acpi_disabled && !numa_init(of_numa_init))
-> 			return;
-> 
-> of_numa_init() does not do the numa_set_node() part, but that's not a
-> justification to glue this into numa_init() which is firmware
-> independent except for the firmware specific callback argument.
-> 
-> Also x86_numa_init() is invoked _before_ the APIC ID to Linux CPU number
-> association happens, so doing the CPU number to node mapping at this
-> point is just wrong for any CPU number != 0.
-> 
-> It "works" for OF just by chance as the actual APIC enumeration which
-> associates Linux CPU numbers works in the same order, but that does not
-> make it correct in any way.
-> 
-> x86_acpi_numa_init() and amd_numa_init() set up the nodes like
-> of_numa_init() does and aside of that save the APIC ID to node mapping.
-> 
-> Aside of that the numa_set_node() variant happens to "work" for Intel
-> CPUs as srat_detect_node() falls back to cpu_to_node() when
-> numa_cpu_node() returns NO_NUMA_NODE.
-> 
-> Though the AMD variant falls back to cpu_info.topo.llc_id which is not
-> necessarily the same result as what the device tree enumerated.
-> 
-> I can see why you glued it into numa_init():
-> 
->   of_node_to_nid() requires node_possible_map to be initialized, which
->   happens in numa_register_memblks() invoked from numa_init() if the
->   firmware specific callback which enumerates the nodes was successful.
-> 
-> Of course the change log is silent about this.
-> 
-> But there is no reason to scan this right in numa_init() as nothing
-> needs the information to be set at this point, unless I'm missing
-> something obscure, which might be the case when staring at this NUMA
-> enumeration maze.
-> 
-> The CPU to node mapping based on the APIC ID to node mapping happens in
-> init_cpu_to_node() which is after the APIC enumeration and the
-> finalizing of cpu_possible_map completed. At this point the CPU number
-> to APIC ID mapping is stable.
-> 
-> So the uncompiled below should just work, no?
-> 
-> Thanks,
-> 
->         tglx
-> ---
-> --- a/arch/x86/kernel/devicetree.c
-> +++ b/arch/x86/kernel/devicetree.c
-> @@ -24,6 +24,7 @@
->  #include <asm/pci_x86.h>
->  #include <asm/setup.h>
->  #include <asm/i8259.h>
-> +#include <asm/numa.h>
->  #include <asm/prom.h>
->  
->  __initdata u64 initial_dtb;
-> @@ -137,6 +138,7 @@ static void __init dtb_cpu_setup(void)
->  			continue;
->  		}
->  		topology_register_apic(apic_id, CPU_ACPIID_INVALID, true);
-> +		set_apicid_to_node(apic_id, of_node_to_nid(dn));
+> From: Al Viro [mailto:viro@ftp.linux.org.uk] On Behalf Of Al Viro
+> Sent: Sunday, March 24, 2024 6:47 AM
+> On Sun, Mar 24, 2024 at 12:00:15AM -0500, Steve French wrote:
+> > Anyone else seeing this kernel crash in do_mknodat (I see it with a
+> > simple "mkfifo" on smb3 mount).  I started seeing this in 6.9-rc (did
+> > not see it in 6.8).   I did not see it with the 3/12/23 mainline
+> > (early in the 6.9-rc merge Window) but I do see it in the 3/22 build
+> > so it looks like the regression was introduced by:
+>=20
+> 	FWIW, successful ->mknod() is allowed to return 0 and unhash
+> dentry, rather than bothering with lookups.  So commit in question
+> is bogus - lack of error does *NOT* mean that you have struct inode
+> existing, let alone attached to dentry.  That kind of behaviour
+> used to be common for network filesystems more than just for ->mknod(),
+> the theory being "if somebody wants to look at it, they can bloody
+> well pay the cost of lookup after dcache miss".
+>=20
+> Said that, the language in D/f/vfs.rst is vague as hell and is very easy
+> to misread in direction of "you must instantiate".
+>=20
+> Thankfully, there's no counterpart with mkdir - *there* it's not just
+> possible, it's inevitable in some cases for e.g. nfs.
+>=20
+> What the hell is that hook doing in non-S_IFREG cases, anyway?  Move it
+> up and be done with it...
+
+Hi Al
+
+thanks for the patch. Indeed, it was like that before, when instead of
+an LSM hook there was an IMA call.
+
+However, I thought, since we were promoting it as an LSM hook,
+we should be as generic possible, and support more usages than
+what was needed for IMA.
+
+> diff --git a/fs/namei.c b/fs/namei.c
+> index ceb9ddf8dfdd..821fe0e3f171 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -4050,6 +4050,8 @@ static int do_mknodat(int dfd, struct filename *nam=
+e, umode_t mode,
+>  		case 0: case S_IFREG:
+>  			error =3D vfs_create(idmap, path.dentry->d_inode,
+>  					   dentry, mode, true);
+> +			if (!error)
+> +				error =3D security_path_post_mknod(idmap, dentry);
+
+Minor issue, security_path_post_mknod() does not return an error.
+
+Also, please update the description of security_path_post_mknod() to say
+that it is not going to be called for non-regular files.
+
+Hopefully, Paul also agrees with this change.
+
+Other than that, please add my:
+
+Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+
+Thanks
+
+Roberto
+
+>  			break;
+>  		case S_IFCHR: case S_IFBLK:
+>  			error =3D vfs_mknod(idmap, path.dentry->d_inode,
+> @@ -4061,10 +4063,6 @@ static int do_mknodat(int dfd, struct filename *na=
+me, umode_t mode,
+>  			break;
 >  	}
->  }
->  
-
-Thanks for your suggestion. I use this approach because ARM64 and riscv
-platforms were having a function of_parse_and_init_cpus to do the same.
-But I agree in x86 DeviceTree is handled differently, and we can restrict
-the DT related code from numa_init. I will look in to making this approach
-work for our platform and send the new patch.
-
-Few thoughts related to recent change wrt removal of x86_dtb_init:
- 
-I recognize that due to recent changes, each dtb platform will now need to set
-a pointer for x86_init.mpparse.early_parse_smp_cfg to get the dtb_cpu_setup
-executed. This was not the requirement before because earlier x86_dtb_init was
-anyway getting called. Do you think we should improve this as well by setting
-x86_init.mpparse.early_parse_smp_cfg to x86_dtb_parse_smp_config for all the
-dtb platforms by default.
-
-I see the ce4100 platform is setting the parse_smp_cfg, shouldn't the
-early_parse_smp_cfg be more accurate there ?
-
-Let me know if my understanding is correct, I can accommodate these improvements
-as well in my patch series.
-
-- Saurabh
+>=20
+> -	if (error)
+> -		goto out2;
+> -
+> -	security_path_post_mknod(idmap, dentry);
+>  out2:
+>  	done_path_create(&path, dentry);
+>  	if (retry_estale(error, lookup_flags)) {
 
