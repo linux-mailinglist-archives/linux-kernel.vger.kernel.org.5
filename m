@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-116348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0957889E66
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:08:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF3E5888E01
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:04:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55C7B1F3784E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:08:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68A6828F3CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C89229918D;
-	Mon, 25 Mar 2024 03:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C8F1CDE0A;
+	Mon, 25 Mar 2024 01:12:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JxDniNk9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LyZNPJET"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB9A1856D9;
-	Sun, 24 Mar 2024 23:52:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2BC1FD5A3;
+	Sun, 24 Mar 2024 23:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324368; cv=none; b=NYbxvLg9nX3gzaB+y8FEeUqLgPhAdMCuXuQjlW5hT+Vjt06fUNvHDsYYmpXX5jgjW3WHw4l7lwM2HdlGaPCJ3IYfSBqM4ceWGHVbDgg79EcKRDjyxzmmVm6WdoL4B5EFdi2EimgGMoPxQwstIH0ZhJ0VxrADUkAV1cVc0TwYJ/0=
+	t=1711324369; cv=none; b=kt3UBAZ/zCy9LVfgtCnLEyowfpAqCEO+8pF46FrcfpRH6LWILXe0wHbZVtkIdqomXQajOVqyA4M7MPMzN4Mw1SfuoGTY+1koaE1TFsXiTcUPhP6PDAcSdQXoUU8S/lzviPvvuVzOuw/wTGZunkKcAIOzwOvjifdokd/I4PgoY4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324368; c=relaxed/simple;
-	bh=nKQoc1DwiUrnUcoKk605gJP8MdHJHIWy+wH2tgP474o=;
+	s=arc-20240116; t=1711324369; c=relaxed/simple;
+	bh=VFG8uoOm1/L9ANDqRLELcegRMZpFjjikqvQRLkeqTg8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z/mTGMxkSvEbu+P/0+ssd5vxBeH5Q2QXNRwCJ7bQh8DB6IXW84DweaEzDr1aT7xDJUtIc4Mkl8cE8ho6BZWA4oC/av3gJMA2mcuAO1KmZUf3GojMl0PcMnNm6fB1UpYsFFYy3Pu02lSTxQHu6nxR84R0AiXO5CDm5/uGfv12qrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JxDniNk9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD9CBC433F1;
-	Sun, 24 Mar 2024 23:52:46 +0000 (UTC)
+	 MIME-Version; b=ArURvk+7El4BOFRm2YUYpNwuHsN7QL1hwFIYStQe2X3jZjKWj3YY5S07he8pPuQ/n3DEk2tDb3R15qdxGD7phzMY3YAsAXKW+f3vv4VNU1qUSLHDAtMgXMz+slRZHr2RGxTQl9btC3BTBF5SMztijwbI/wrNy7BWX6v21x4M8XM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LyZNPJET; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF2E3C43394;
+	Sun, 24 Mar 2024 23:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324367;
-	bh=nKQoc1DwiUrnUcoKk605gJP8MdHJHIWy+wH2tgP474o=;
+	s=k20201202; t=1711324368;
+	bh=VFG8uoOm1/L9ANDqRLELcegRMZpFjjikqvQRLkeqTg8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JxDniNk9JZDTBIyaAu2ezjBLnglSRHnyrFoVrwOwgsLC7zLc2wQzQ9ZEF+lX131x3
-	 +BPmtrD2X3zZDG450mLhVXKMhXQ7CxpJjdSS83KxgGo0hu0XbSMiOJgHwGMqHegj4g
-	 9YLbiBMD48RMMXQBVSJCNME3mNHaDg7pqcECeaVj7DlHiQ6pcs+PRAGboMlOruEXRE
-	 pFB415D6xdqmVcr6MAS8EV/BPBc6XmB3ilUF1ClusdiR9SWXmpD0p3yWHe5tDQBIy/
-	 fBe4Z2GgYO94nZmM15ndXGxvNTLThBqJ3idW+Keucs4olLGc+6hAcrOd/ek0hHxjml
-	 3lioDmmD98Zow==
+	b=LyZNPJETD/nxXVi/uyprZYVdJqoXt7gWxiVIOUaS+VIhhg/qf3yjozBpuM6Q6Y1G3
+	 n2EiaQU4v5iWEjJMV7peIuQbyunvmvHJW17vwKlyFukPnWpZQ9Mvk+jcW/y7Mbwiv5
+	 GQuDwSZnBogUy6xU8D77t5QdFuVVfDOlQTfALd9vBUbpaCYktxZscu4Xv5SnCiVzr2
+	 ysCqpymSAA8/tCUi/rB48XsyY+lpqYkCH0pO/bWzOnvBiCLhUtgJ6I0tOcVu8zCRoQ
+	 pZwDowVwwCoYN5gjjsSNvmu8lQGNBm+neP6u0rSTkM3aWU+tISHLDPnpdRKpmnejAM
+	 imBETBmYxoJXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Sean Anderson <sean.anderson@seco.com>,
-	stable <stable@kernel.org>,
+Cc: Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 134/148] usb: phy: generic: Get the vbus supply
-Date: Sun, 24 Mar 2024 19:49:58 -0400
-Message-ID: <20240324235012.1356413-135-sashal@kernel.org>
+Subject: [PATCH 4.19 135/148] serial: max310x: fix syntax error in IRQ error message
+Date: Sun, 24 Mar 2024 19:49:59 -0400
+Message-ID: <20240324235012.1356413-136-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,42 +63,38 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Sean Anderson <sean.anderson@seco.com>
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-[ Upstream commit 03e607cbb2931374db1825f371e9c7f28526d3f4 ]
+[ Upstream commit 8ede8c6f474255b2213cccd7997b993272a8e2f9 ]
 
-While support for working with a vbus was added, the regulator was never
-actually gotten (despite what was documented). Fix this by actually
-getting the supply from the device tree.
+Replace g with q.
 
-Fixes: 7acc9973e3c4 ("usb: phy: generic: add vbus support")
-Cc: stable <stable@kernel.org>
-Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-Link: https://lore.kernel.org/r/20220425171412.1188485-3-sean.anderson@seco.com
+Helpful when grepping thru source code or logs for
+"request" keyword.
+
+Fixes: f65444187a66 ("serial: New serial driver MAX310X")
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Link: https://lore.kernel.org/r/20240118152213.2644269-6-hugo@hugovil.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/phy/phy-generic.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/tty/serial/max310x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/phy/phy-generic.c b/drivers/usb/phy/phy-generic.c
-index a53b89be53248..8a04b157f19f3 100644
---- a/drivers/usb/phy/phy-generic.c
-+++ b/drivers/usb/phy/phy-generic.c
-@@ -283,6 +283,13 @@ int usb_phy_gen_create_phy(struct device *dev, struct usb_phy_generic *nop,
- 			return -EPROBE_DEFER;
- 	}
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index e68dbd13110ba..1c8fd06befec4 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1363,7 +1363,7 @@ static int max310x_probe(struct device *dev, struct max310x_devtype *devtype,
+ 	if (!ret)
+ 		return 0;
  
-+	nop->vbus_draw = devm_regulator_get_exclusive(dev, "vbus");
-+	if (PTR_ERR(nop->vbus_draw) == -ENODEV)
-+		nop->vbus_draw = NULL;
-+	if (IS_ERR(nop->vbus_draw))
-+		return dev_err_probe(dev, PTR_ERR(nop->vbus_draw),
-+				     "could not get vbus regulator\n");
-+
- 	nop->dev		= dev;
- 	nop->phy.dev		= nop->dev;
- 	nop->phy.label		= "nop-xceiv";
+-	dev_err(dev, "Unable to reguest IRQ %i\n", irq);
++	dev_err(dev, "Unable to request IRQ %i\n", irq);
+ 
+ out_uart:
+ 	for (i = 0; i < devtype->nr; i++) {
 -- 
 2.43.0
 
