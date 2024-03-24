@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B445888202
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:35:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C39E0888204
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 570DC288136
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:35:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D9B128842E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C92C174EF0;
-	Sun, 24 Mar 2024 22:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD00175540;
+	Sun, 24 Mar 2024 22:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WYUUpFl7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I2eTgha1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EDAA174ED7;
-	Sun, 24 Mar 2024 22:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DF3174EF9;
+	Sun, 24 Mar 2024 22:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319971; cv=none; b=mVPxbkTxrdQ0lj5uSO48tzwvJs+lLT5HFMZTcSviWZtnQ8gw3avzMkFjIKStmF0dukDKQ0gCG3X/vmt9ZMu8Whxuv4kqntUj8BH0vkrjkB9EyAOaH4+IWvGGsBSglGdefYTxoupcQJH0a9nHcLOilso8hCY8xNEVZ52uI4emA6A=
+	t=1711319972; cv=none; b=NgL4D/4hEUqBSvEF8bduFIIz3kQluCOMHxunFpiIb4nMaeWrKh/0Wx3N/w2JNxXKAKV1Zorgr5qqZaAo/6dHKu9kLSLoUg6RNC08CDkZyHd+5m/EkrT0PA+vRJp2DuaIlmCIcKEAP121NcnQHd76IOIuykI3WHx+BtTjvw9nlb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319971; c=relaxed/simple;
-	bh=1lcqNUEnQ0ADi75cyhwnE7U3PFvqMXBMU/9HDfCGPls=;
+	s=arc-20240116; t=1711319972; c=relaxed/simple;
+	bh=sgMet8Ys7vXbgoPCUJNEgcAJoQloFmo0UIL3Zyz8JnI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l267XDpf8iHn85K6/jH9XxAc1e27CZ/KxR4T1cbSSYBJpNxWno/QEDLulxpQUyWCqLwUiXjiIOpIDHiw3zRFB5EmJLB9Tk6pDFVqkfJYjn3AaolZeilEa/7Z0MvZ1S9NyrNKZePsVRcYXhpVmu+W/LeB/fhOlgyAgjD8JOT4tKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WYUUpFl7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0985C43390;
-	Sun, 24 Mar 2024 22:39:30 +0000 (UTC)
+	 MIME-Version; b=fczVpc9c/Bh4g3eZDMx03TpexsoTjEvUgUrY3Zm37xTydb3huVPILdiMR7HXqUmOQYKeM+2iiKZGMHq1t1OD+ncvi6nI0gF/f+RXZae3TzVMjZez21kP7Bh4MBGfnKWyRKdNHOnUlimogGzL76lpQDsJo5AiLEPANgMagAdppHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I2eTgha1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1CD3C43394;
+	Sun, 24 Mar 2024 22:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319971;
-	bh=1lcqNUEnQ0ADi75cyhwnE7U3PFvqMXBMU/9HDfCGPls=;
+	s=k20201202; t=1711319972;
+	bh=sgMet8Ys7vXbgoPCUJNEgcAJoQloFmo0UIL3Zyz8JnI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WYUUpFl7yONBbk83JSCG45Ll6vKnZ/6hZwiDDNt/519sC/zIosumNX/YxytSYWe+y
-	 5U3QYCIROEPBqA3y0hLW9pZFDDwXoZYsIbnYvFbYYDrgMKVAxRIAVXDlUv8MWJpHh3
-	 n/Id7nU5TYShuP6c+nSj+PqZsFTp74fRcK/lO5YvrByIUeyqvVApkk451lInD2R1RF
-	 YMPMLu1H9WIw/FUKvF8SMjaG0Buze50hb+E9ZCfQvoE2jSBKl4fDLZ3HPvfMkKrcq9
-	 FBPEVfKsPLpWlOGfuOpKP3LFE4GvSApOrgj6DHS85m+kTQfyVLbVGHeYQIkoJ4LdeL
-	 AkcI0l7q0sF2Q==
+	b=I2eTgha1CeQNvzO6CVDujF+yXB9dVo+eK1Uug8ewZEaZEVEGlR5o5Aw6bzBV3qhz3
+	 DxJkOysOT+Nn2OCu33VC3wTt/AQCQ8UQJNh2ooPc5a59JITdZhhAa8mUPMShI6s8E7
+	 fsY3Q0MN+0rM9jQBDNZ9UVGMh7kNnDWSAzlAxFHoWaiR5ECnd5+TZ2YlQ1FW/7LzBp
+	 NUke9sbrOSNVUTBS6LxsythoK9eYHtVRHDTskxg7fvf/4IIOgpxpYIRHhokKjks55h
+	 kvJBsesIEJw40PkzTBfAN/8DhkoV72sMFCWzAEGF5n+ImjeF0sM3CpLtaWjBI1Y62k
+	 +R9tVXiqdoFHw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	Kees Cook <keescook@chromium.org>,
+Cc: Kees Cook <keescook@chromium.org>,
+	Guixiong Wei <guixiongwei@gmail.com>,
+	Juergen Gross <jgross@suse.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 278/715] objtool: Fix UNWIND_HINT_{SAVE,RESTORE} across basic blocks
-Date: Sun, 24 Mar 2024 18:27:37 -0400
-Message-ID: <20240324223455.1342824-279-sashal@kernel.org>
+Subject: [PATCH 6.8 279/715] x86, relocs: Ignore relocations in .notes section
+Date: Sun, 24 Mar 2024 18:27:38 -0400
+Message-ID: <20240324223455.1342824-280-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,52 +63,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Josh Poimboeuf <jpoimboe@kernel.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 10b4c4bce3f5541f54bcc2039720b11d2bc96d79 ]
+[ Upstream commit aaa8736370db1a78f0e8434344a484f9fd20be3b ]
 
-If SAVE and RESTORE unwind hints are in different basic blocks, and
-objtool sees the RESTORE before the SAVE, it errors out with:
+When building with CONFIG_XEN_PV=y, .text symbols are emitted into
+the .notes section so that Xen can find the "startup_xen" entry point.
+This information is used prior to booting the kernel, so relocations
+are not useful. In fact, performing relocations against the .notes
+section means that the KASLR base is exposed since /sys/kernel/notes
+is world-readable.
 
-  vmlinux.o: warning: objtool: vmw_port_hb_in+0x242: objtool isn't smart enough to handle this CFI save/restore combo
+To avoid leaking the KASLR base without breaking unprivileged tools that
+are expecting to read /sys/kernel/notes, skip performing relocations in
+the .notes section. The values readable in .notes are then identical to
+those found in System.map.
 
-In such a case, defer following the RESTORE block until the
-straight-line path gets followed later.
-
-Fixes: 8faea26e6111 ("objtool: Re-add UNWIND_HINT_{SAVE_RESTORE}")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402240702.zJFNmahW-lkp@intel.com/
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Link: https://lore.kernel.org/r/20240227073527.avcm5naavbv3cj5s@treble
+Reported-by: Guixiong Wei <guixiongwei@gmail.com>
+Closes: https://lore.kernel.org/all/20240218073501.54555-1-guixiongwei@gmail.com/
+Fixes: 5ead97c84fa7 ("xen: Core Xen implementation")
+Fixes: da1a679cde9b ("Add /sys/kernel/notes")
+Reviewed-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/check.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/x86/tools/relocs.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 548ec3cd7c00c..c4c2f75eadfd9 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -3620,6 +3620,18 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
- 				}
- 
- 				if (!save_insn->visited) {
-+					/*
-+					 * If the restore hint insn is at the
-+					 * beginning of a basic block and was
-+					 * branched to from elsewhere, and the
-+					 * save insn hasn't been visited yet,
-+					 * defer following this branch for now.
-+					 * It will be seen later via the
-+					 * straight-line path.
-+					 */
-+					if (!prev_insn)
-+						return 0;
-+
- 					WARN_INSN(insn, "objtool isn't smart enough to handle this CFI save/restore combo");
- 					return 1;
- 				}
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index a3bae2b24626b..b029fb81ebeee 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -653,6 +653,14 @@ static void print_absolute_relocs(void)
+ 		if (!(sec_applies->shdr.sh_flags & SHF_ALLOC)) {
+ 			continue;
+ 		}
++		/*
++		 * Do not perform relocations in .notes section; any
++		 * values there are meant for pre-boot consumption (e.g.
++		 * startup_xen).
++		 */
++		if (sec_applies->shdr.sh_type == SHT_NOTE) {
++			continue;
++		}
+ 		sh_symtab  = sec_symtab->symtab;
+ 		sym_strtab = sec_symtab->link->strtab;
+ 		for (j = 0; j < sec->shdr.sh_size/sizeof(Elf_Rel); j++) {
 -- 
 2.43.0
 
