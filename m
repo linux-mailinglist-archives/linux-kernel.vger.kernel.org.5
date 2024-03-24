@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-113632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4914B888E1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:08:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AE6D8885C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:16:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD8172962A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:08:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 097C11F237F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE7D1D5F84;
-	Sun, 24 Mar 2024 22:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB93E1D6949;
+	Sun, 24 Mar 2024 22:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HclZI0Gd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+CaWMhy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75281D2AA8;
-	Sun, 24 Mar 2024 22:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8FD1D2AB8;
+	Sun, 24 Mar 2024 22:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320539; cv=none; b=KhRziT/QL5c+TCtGOufSoMPHB7D1ZN9ZLjK1HCcXtTkEYqXYB9916ujFBRHeYU6geegyNqyPU8mc9IFaw7Z9IWg/JryNnJY5b1Us+u26/Q8N9ieCZjcJFBtzbrAnQ9xu6w75OpTX20qkDK7UQ8X4hwuo62Q4K8eJ2Rg5TbRqNlw=
+	t=1711320540; cv=none; b=q5DTlo5gR5+fFp0CXQznvN4T1QWV/ZuCpxciTc2Q8E736f+75rxmbANBRck+ASlaJZlMpZuI0Bsret7a6CKImHQLD/x+k9f7sgv6KtjZSZAr+wADE+pvRuS4fZ/jrvHEkmPwdJxOagtNufDCecRTzWaj1ilVYc2VB/iCiUfMOqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320539; c=relaxed/simple;
-	bh=3F/obsnB6vypavBgIG5iRuZ26KM+eIJVxAzL8Q3GuRc=;
+	s=arc-20240116; t=1711320540; c=relaxed/simple;
+	bh=iuDJNO0DaCTOuSrMMwWIo+ZzkIKJPWt7rbgvtIBljgg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mtqy0giCwsNixPI48WiJETIhmMe7GlTTPHH5tZ+S9URXBJxaZGzWBho6CVZuxB9K8pS2dvL5uQBoRhArKhJ4Hw2UVnq+LgP2n3LceQOGvl2sn9FD1Vm8P86BaegTLxQEHYqedKvtdBLSuIV16dOUIuCPDh9EMPg+X53IxrQZQio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HclZI0Gd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBE1FC43394;
-	Sun, 24 Mar 2024 22:48:57 +0000 (UTC)
+	 MIME-Version; b=IvU55yW1RJLQOJxZ8RK8uNCXpHMqwL8ETLmk+j/ealrxCcy4U0gBYybB0hDDZVVQ9BdYJNv6ojov034j2cyrUhP96YYyBtqH4YG5kpfvQI1vRV5HGoO5c1DHGQPrMzgY7pnJ+LyxfKvjbB50QoTII9cKxhFYmMkJ+s+I4BOH2kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+CaWMhy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEEBEC433C7;
+	Sun, 24 Mar 2024 22:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320538;
-	bh=3F/obsnB6vypavBgIG5iRuZ26KM+eIJVxAzL8Q3GuRc=;
+	s=k20201202; t=1711320539;
+	bh=iuDJNO0DaCTOuSrMMwWIo+ZzkIKJPWt7rbgvtIBljgg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HclZI0GdrQoiAqrQrABv+AhS2jRhv/6Hi0809o9Xi0YHZuCjeLAzCn5WaFmpuzHem
-	 Bh/8/JN9P5i8ncbSfOnfTEYqdXQjFCdLJ83NAu4P20E/UJ67lNFr1m/R6J9BXmhgSd
-	 szfmwmA+LNpMOwSYzWvAcqrNu/xw7gkyeuPqL6EgfvBbyU/AAGD+iujGFiaJ9Jn7uq
-	 weQ9//biGC+XJehJh+UNZkIDV/eNYqJM8IvhVWmFZ9xpnGDKa49O10+MTfGKd1jWpJ
-	 9O9sR/1BKAyPFb1Tbx2/mGxrCO5SvjRg3iqr2E4DHHgKhDQJ0qIj2Xl3l4bOTlYpKg
-	 UjuOGK24BylVw==
+	b=g+CaWMhy12G5xHG1ib30kMmKrbN4X6bbEuyHUWaJLoDuVOdJ+Sx8mUE4lUjIGxzak
+	 EvQbtoe3MtrykbaxqMTbJTPj9fl/4iXtXcUwaE6Wfcvtzt2yIQCwgAnrZa5axNA1sV
+	 PfQ0WDH2aJtTdmDndxjd41RZNT9yPHYiyyhsZboDTmbz+yipc/jqbUu0jEW11tQTVM
+	 ViQ7BBEA4VPXIQMGOW6F+xZcDioes/Dne8zefWxiSVFT4ZRNFVNdKHyUOZAvVF7LBA
+	 gPF3zbRzm4Y38qPP7uSFvdHltRHZotQaxgQHN9hkdiHg6r1wS89PoyPNFpdlTVEQHL
+	 tzveg/HShjWOw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Kalesh Singh <kaleshsingh@google.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
+Cc: Navid Emamdoost <navid.emamdoost@gmail.com>,
+	Michal Kubecek <mkubecek@suse.cz>,
+	Kees Cook <keescook@chromium.org>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 100/713] rcu/exp: Handle RCU expedited grace period kworker allocation failure
-Date: Sun, 24 Mar 2024 18:37:06 -0400
-Message-ID: <20240324224720.1345309-101-sashal@kernel.org>
+Subject: [PATCH 6.7 101/713] nbd: null check for nla_nest_start
+Date: Sun, 24 Mar 2024 18:37:07 -0400
+Message-ID: <20240324224720.1345309-102-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,126 +64,41 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit e7539ffc9a770f36bacedcf0fbfb4bf2f244f4a5 ]
+[ Upstream commit 31edf4bbe0ba27fd03ac7d87eb2ee3d2a231af6d ]
 
-Just like is done for the kworker performing nodes initialization,
-gracefully handle the possible allocation failure of the RCU expedited
-grace period main kworker.
+nla_nest_start() may fail and return NULL. Insert a check and set errno
+based on other call sites within the same source code.
 
-While at it perform a rename of the related checking functions to better
-reflect the expedited specifics.
-
-Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
-Fixes: 9621fbee44df ("rcu: Move expedited grace period (GP) work to RT kthread_worker")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
+Fixes: 47d902b90a32 ("nbd: add a status netlink command")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20240218042534.it.206-kees@kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree.c     |  2 ++
- kernel/rcu/tree_exp.h | 25 +++++++++++++++++++------
- 2 files changed, 21 insertions(+), 6 deletions(-)
+ drivers/block/nbd.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index fc318477877ba..f544f24df1856 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4741,6 +4741,7 @@ static void __init rcu_start_exp_gp_kworkers(void)
- 	rcu_exp_gp_kworker = kthread_create_worker(0, gp_kworker_name);
- 	if (IS_ERR_OR_NULL(rcu_exp_gp_kworker)) {
- 		pr_err("Failed to create %s!\n", gp_kworker_name);
-+		rcu_exp_gp_kworker = NULL;
- 		return;
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index aa65313aabb8d..df738eab02433 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -2437,6 +2437,12 @@ static int nbd_genl_status(struct sk_buff *skb, struct genl_info *info)
  	}
  
-@@ -4749,6 +4750,7 @@ static void __init rcu_start_exp_gp_kworkers(void)
- 		pr_err("Failed to create %s!\n", par_gp_kworker_name);
- 		rcu_exp_par_gp_kworker = NULL;
- 		kthread_destroy_worker(rcu_exp_gp_kworker);
-+		rcu_exp_gp_kworker = NULL;
- 		return;
- 	}
- 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 2ac440bc7e10b..8107f818455da 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -428,7 +428,12 @@ static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
- 	__sync_rcu_exp_select_node_cpus(rewp);
- }
- 
--static inline bool rcu_gp_par_worker_started(void)
-+static inline bool rcu_exp_worker_started(void)
-+{
-+	return !!READ_ONCE(rcu_exp_gp_kworker);
-+}
+ 	dev_list = nla_nest_start_noflag(reply, NBD_ATTR_DEVICE_LIST);
++	if (!dev_list) {
++		nlmsg_free(reply);
++		ret = -EMSGSIZE;
++		goto out;
++	}
 +
-+static inline bool rcu_exp_par_worker_started(void)
- {
- 	return !!READ_ONCE(rcu_exp_par_gp_kworker);
- }
-@@ -478,7 +483,12 @@ static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
- 	__sync_rcu_exp_select_node_cpus(rewp);
- }
- 
--static inline bool rcu_gp_par_worker_started(void)
-+static inline bool rcu_exp_worker_started(void)
-+{
-+	return !!READ_ONCE(rcu_gp_wq);
-+}
-+
-+static inline bool rcu_exp_par_worker_started(void)
- {
- 	return !!READ_ONCE(rcu_par_gp_wq);
- }
-@@ -541,7 +551,7 @@ static void sync_rcu_exp_select_cpus(void)
- 		rnp->exp_need_flush = false;
- 		if (!READ_ONCE(rnp->expmask))
- 			continue; /* Avoid early boot non-existent wq. */
--		if (!rcu_gp_par_worker_started() ||
-+		if (!rcu_exp_par_worker_started() ||
- 		    rcu_scheduler_active != RCU_SCHEDULER_RUNNING ||
- 		    rcu_is_last_leaf_node(rnp)) {
- 			/* No worker started yet or last leaf, do direct call. */
-@@ -956,7 +966,7 @@ static void rcu_exp_print_detail_task_stall_rnp(struct rcu_node *rnp)
-  */
- void synchronize_rcu_expedited(void)
- {
--	bool boottime = (rcu_scheduler_active == RCU_SCHEDULER_INIT);
-+	bool use_worker;
- 	unsigned long flags;
- 	struct rcu_exp_work rew;
- 	struct rcu_node *rnp;
-@@ -967,6 +977,9 @@ void synchronize_rcu_expedited(void)
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
- 
-+	use_worker = (rcu_scheduler_active != RCU_SCHEDULER_INIT) &&
-+		      rcu_exp_worker_started();
-+
- 	/* Is the state is such that the call is a grace period? */
- 	if (rcu_blocking_is_gp()) {
- 		// Note well that this code runs with !PREEMPT && !SMP.
-@@ -996,7 +1009,7 @@ void synchronize_rcu_expedited(void)
- 		return;  /* Someone else did our work for us. */
- 
- 	/* Ensure that load happens before action based on it. */
--	if (unlikely(boottime)) {
-+	if (unlikely(!use_worker)) {
- 		/* Direct call during scheduler init and early_initcalls(). */
- 		rcu_exp_sel_wait_wake(s);
- 	} else {
-@@ -1014,7 +1027,7 @@ void synchronize_rcu_expedited(void)
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
- 
--	if (likely(!boottime))
-+	if (likely(use_worker))
- 		synchronize_rcu_expedited_destroy_work(&rew);
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
+ 	if (index == -1) {
+ 		ret = idr_for_each(&nbd_index_idr, &status_cb, reply);
+ 		if (ret) {
 -- 
 2.43.0
 
