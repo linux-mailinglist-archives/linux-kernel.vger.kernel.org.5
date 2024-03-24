@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-116106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A658889951
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:07:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B71A889950
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:07:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF2C1F325BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:07:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E26E1C31BB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33FAA28DFA7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5184928DFA9;
 	Mon, 25 Mar 2024 03:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q8PQoBTw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/QZslvQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E178178313;
-	Sun, 24 Mar 2024 23:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0668127F0A9;
+	Sun, 24 Mar 2024 23:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323606; cv=none; b=Q8vXHE1J1HrgYw9N8yy+56GWTVkSKbNClf6xBl4saDRVKcFOr7908VCYm8gDkcPwXKl56QhwCI/01FfUH7JAP205OUFRCN85kUj8nlZ2N66W4mCnME2D5dq1cjvNk2sWO8UUQV4gkHfmuC5fK6Q+/ZKeCAFIzvl7vJoSArkIbeo=
+	t=1711323607; cv=none; b=e1+omA3BulWmzqTqST1Xb2sUDVNILceC4eCC5XOS4SSf6IaaMn7w8eH5+t5JB0fMqT27bmqkQv/4i2DiFt7OzrCcW1vzeAOjMcQ7aSHtsZAez2rCTaPb6M6RlTPm5SFAoPKO1cEN3BRM76RE4VEAofiyC8cwOv4FIvHreuAkdN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323606; c=relaxed/simple;
-	bh=ATmspV2YRL0zGBJBt/KTvjwdHW4rqFDudFRNPbL94fY=;
+	s=arc-20240116; t=1711323607; c=relaxed/simple;
+	bh=mkdBLRLJB/dbNCVzygSeDPgi7rbO4NgZJGsQQ/XHGZU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A3Wz6FaYiJF+NZDaso+Tb8fHB6ZfuJgDy9CCMo7/PyXhrG8+eEc4l77H1Y/cE8eQtTUxT/0m3EB9RIcC8gR1yxF4v+1yRMDwWXX/ilfPqPbp+vXmdcN9gCjM0SH9KrjfsrzZ/25JUFS+w6wGgRc4OKNOCWA+S+Cs4b+taAx5Z/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q8PQoBTw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46629C43390;
-	Sun, 24 Mar 2024 23:40:05 +0000 (UTC)
+	 MIME-Version:Content-Type; b=X/39lql7MYK88andzxlfa1Qam7OG8yzOfyWaCGjh/Qx+ukxQ38ybOLkKwizmS7DAyorgT8GD51zSCRTL77h3QeaDX3EYz7T2TRIalSYyfokYxJlN0EpRkSrbph5Tx4xyRs9uKv7zWOljPjMzX7RXAxTZeXom1IAp1VIEwHjxa68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/QZslvQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42E37C43394;
+	Sun, 24 Mar 2024 23:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711323606;
-	bh=ATmspV2YRL0zGBJBt/KTvjwdHW4rqFDudFRNPbL94fY=;
+	bh=mkdBLRLJB/dbNCVzygSeDPgi7rbO4NgZJGsQQ/XHGZU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q8PQoBTw4HrfXQwbOdqrojqRwHDRFAzcRaxAZHAEKHFuiAEFtoJfIAv6xOkFCgE1m
-	 s2REp1Fk+zckLjIHz94YCAvRol6/ZKo8ayKv/NxBlpqNF7DJipfN5nSPkSOilH+5ud
-	 xxb9vmfxOF5o/+03ZHtcBRqvciJpHEP+LyxmtCoWcHMvQjlnb3syBMW5SZI/hCNuuv
-	 8baJ0B1zNE1p95skUadN44suAWdPVQMGZY0pqIg6nPYz98zgxzSPOcFD3zTn1wPx8e
-	 v7Mt7zT5XLDtuyelMs6cAq76qwgB8rbvK60ZToxmsEpKNvMH0+dWkYocAToZl4v5QF
-	 cIAO+PDMuiwGg==
+	b=I/QZslvQ70KDnedmqh6q0AAgwjFAWPxqtJmqP8Mcr2NTQ2QOhp+4yV0US0UYo3Mma
+	 EBG100rW5XRIHhWu1aqvAeUr56DBdN/eUAa2+RDni4BuDf4jy8opYXy1OlGPjJUMbV
+	 yDa4O8dcxsjKZH4PcPeYMfoWvpNPYUO0knf1SaBAhNXJS7hiGTDBIZe4cMtXn/e/sJ
+	 H1VxIoXYU4/F3LQ3ae6AZcotfw/NzsFCfRYU70rEwTWz+SjSoFWPrH8zK77xrx1wzC
+	 DwwJbHCkpUVGt96iGfC5F0rWDln0SDSn9Xh6wKxL87ve3ZyIt4+Rijwe0JFt3Bs2mn
+	 PyJO1ep2uF0/A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 312/317] net: dsa: mt7530: fix handling of 802.1X PAE frames
-Date: Sun, 24 Mar 2024 19:34:52 -0400
-Message-ID: <20240324233458.1352854-313-sashal@kernel.org>
+Subject: [PATCH 5.15 313/317] net: dsa: mt7530: fix link-local frames that ingress vlan filtering ports
+Date: Sun, 24 Mar 2024 19:34:53 -0400
+Message-ID: <20240324233458.1352854-314-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -66,52 +65,174 @@ Content-Transfer-Encoding: 8bit
 
 From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-[ Upstream commit e94b590abfff2cdbf0bdaa7d9904364c8d480af5 ]
+[ Upstream commit e8bf353577f382c7066c661fed41b2adc0fc7c40 ]
 
-802.1X PAE frames are link-local frames, therefore they must be trapped to
-the CPU port. Currently, the MT753X switches treat 802.1X PAE frames as
-regular multicast frames, therefore flooding them to user ports. To fix
-this, set 802.1X PAE frames to be trapped to the CPU port(s).
+Whether VLAN-aware or not, on every VID VLAN table entry that has the CPU
+port as a member of it, frames are set to egress the CPU port with the VLAN
+tag stacked. This is so that VLAN tags can be appended after hardware
+special tag (called DSA tag in the context of Linux drivers).
+
+For user ports on a VLAN-unaware bridge, frame ingressing the user port
+egresses CPU port with only the special tag.
+
+For user ports on a VLAN-aware bridge, frame ingressing the user port
+egresses CPU port with the special tag and the VLAN tag.
+
+This causes issues with link-local frames, specifically BPDUs, because the
+software expects to receive them VLAN-untagged.
+
+There are two options to make link-local frames egress untagged. Setting
+CONSISTENT or UNTAGGED on the EG_TAG bits on the relevant register.
+CONSISTENT means frames egress exactly as they ingress. That means
+egressing with the VLAN tag they had at ingress or egressing untagged if
+they ingressed untagged. Although link-local frames are not supposed to be
+transmitted VLAN-tagged, if they are done so, when egressing through a CPU
+port, the special tag field will be broken.
+
+BPDU egresses CPU port with VLAN tag egressing stacked, received on
+software:
+
+00:01:25.104821 AF Unknown (382365846), length 106:
+                                     | STAG  | | VLAN  |
+        0x0000:  0000 6c27 614d 4143 0001 0000 8100 0001  ..l'aMAC........
+        0x0010:  0026 4242 0300 0000 0000 0000 6c27 614d  .&BB........l'aM
+        0x0020:  4143 0000 0000 0000 6c27 614d 4143 0000  AC......l'aMAC..
+        0x0030:  0000 1400 0200 0f00 0000 0000 0000 0000  ................
+
+BPDU egresses CPU port with VLAN tag egressing untagged, received on
+software:
+
+00:23:56.628708 AF Unknown (25215488), length 64:
+                                     | STAG  |
+        0x0000:  0000 6c27 614d 4143 0001 0000 0026 4242  ..l'aMAC.....&BB
+        0x0010:  0300 0000 0000 0000 6c27 614d 4143 0000  ........l'aMAC..
+        0x0020:  0000 0000 6c27 614d 4143 0000 0000 1400  ....l'aMAC......
+        0x0030:  0200 0f00 0000 0000 0000 0000            ............
+
+BPDU egresses CPU port with VLAN tag egressing tagged, received on
+software:
+
+00:01:34.311963 AF Unknown (25215488), length 64:
+                                     | Mess  |
+        0x0000:  0000 6c27 614d 4143 0001 0001 0026 4242  ..l'aMAC.....&BB
+        0x0010:  0300 0000 0000 0000 6c27 614d 4143 0000  ........l'aMAC..
+        0x0020:  0000 0000 6c27 614d 4143 0000 0000 1400  ....l'aMAC......
+        0x0030:  0200 0f00 0000 0000 0000 0000            ............
+
+To prevent confusing the software, force the frame to egress UNTAGGED
+instead of CONSISTENT. This way, frames can't possibly be received TAGGED
+by software which would have the special tag field broken.
+
+VLAN Tag Egress Procedure
+
+   For all frames, one of these options set the earliest in this order will
+   apply to the frame:
+
+   - EG_TAG in certain registers for certain frames.
+     This will apply to frame with matching MAC DA or EtherType.
+
+   - EG_TAG in the address table.
+     This will apply to frame at its incoming port.
+
+   - EG_TAG in the PVC register.
+     This will apply to frame at its incoming port.
+
+   - EG_CON and [EG_TAG per port] in the VLAN table.
+     This will apply to frame at its outgoing port.
+
+   - EG_TAG in the PCR register.
+     This will apply to frame at its outgoing port.
+
+   EG_TAG in certain registers for certain frames:
+
+   PPPoE Discovery_ARP/RARP: PPP_EG_TAG and ARP_EG_TAG in the APC register.
+   IGMP_MLD: IGMP_EG_TAG and MLD_EG_TAG in the IMC register.
+   BPDU and PAE: BPDU_EG_TAG and PAE_EG_TAG in the BPC register.
+   REV_01 and REV_02: R01_EG_TAG and R02_EG_TAG in the RGAC1 register.
+   REV_03 and REV_0E: R03_EG_TAG and R0E_EG_TAG in the RGAC2 register.
+   REV_10 and REV_20: R10_EG_TAG and R20_EG_TAG in the RGAC3 register.
+   REV_21 and REV_UN: R21_EG_TAG and RUN_EG_TAG in the RGAC4 register.
+
+With this change, it can be observed that a bridge interface with stp_state
+and vlan_filtering enabled will properly block ports now.
 
 Fixes: b8f126a8d543 ("net-next: dsa: add dsa support for Mediatek MT7530 switch")
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Stable-dep-of: e8bf353577f3 ("net: dsa: mt7530: fix link-local frames that ingress vlan filtering ports")
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mt7530.c | 4 ++++
- drivers/net/dsa/mt7530.h | 2 ++
- 2 files changed, 6 insertions(+)
+ drivers/net/dsa/mt7530.c | 23 +++++++++++++++--------
+ drivers/net/dsa/mt7530.h |  9 ++++++++-
+ 2 files changed, 23 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 252e8eaa92767..30570b9dc88f2 100644
+index 30570b9dc88f2..834bcb9d44fd7 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -1000,6 +1000,10 @@ mt753x_trap_frames(struct mt7530_priv *priv)
- 	mt7530_rmw(priv, MT753X_BPC, MT753X_BPDU_PORT_FW_MASK,
+@@ -996,16 +996,23 @@ static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+ static void
+ mt753x_trap_frames(struct mt7530_priv *priv)
+ {
+-	/* Trap BPDUs to the CPU port(s) */
+-	mt7530_rmw(priv, MT753X_BPC, MT753X_BPDU_PORT_FW_MASK,
++	/* Trap 802.1X PAE frames and BPDUs to the CPU port(s) and egress them
++	 * VLAN-untagged.
++	 */
++	mt7530_rmw(priv, MT753X_BPC, MT753X_PAE_EG_TAG_MASK |
++		   MT753X_PAE_PORT_FW_MASK | MT753X_BPDU_EG_TAG_MASK |
++		   MT753X_BPDU_PORT_FW_MASK,
++		   MT753X_PAE_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
++		   MT753X_PAE_PORT_FW(MT753X_BPDU_CPU_ONLY) |
++		   MT753X_BPDU_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
  		   MT753X_BPDU_CPU_ONLY);
  
-+	/* Trap 802.1X PAE frames to the CPU port(s) */
-+	mt7530_rmw(priv, MT753X_BPC, MT753X_PAE_PORT_FW_MASK,
-+		   MT753X_PAE_PORT_FW(MT753X_BPDU_CPU_ONLY));
-+
- 	/* Trap LLDP frames with :0E MAC DA to the CPU port(s) */
- 	mt7530_rmw(priv, MT753X_RGAC2, MT753X_R0E_PORT_FW_MASK,
+-	/* Trap 802.1X PAE frames to the CPU port(s) */
+-	mt7530_rmw(priv, MT753X_BPC, MT753X_PAE_PORT_FW_MASK,
+-		   MT753X_PAE_PORT_FW(MT753X_BPDU_CPU_ONLY));
+-
+-	/* Trap LLDP frames with :0E MAC DA to the CPU port(s) */
+-	mt7530_rmw(priv, MT753X_RGAC2, MT753X_R0E_PORT_FW_MASK,
++	/* Trap LLDP frames with :0E MAC DA to the CPU port(s) and egress them
++	 * VLAN-untagged.
++	 */
++	mt7530_rmw(priv, MT753X_RGAC2, MT753X_R0E_EG_TAG_MASK |
++		   MT753X_R0E_PORT_FW_MASK,
++		   MT753X_R0E_EG_TAG(MT7530_VLAN_EG_UNTAGGED) |
  		   MT753X_R0E_PORT_FW(MT753X_BPDU_CPU_ONLY));
+ }
+ 
 diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index 8cee462d5f1cb..2c895f35383e2 100644
+index 2c895f35383e2..7c0820d341db7 100644
 --- a/drivers/net/dsa/mt7530.h
 +++ b/drivers/net/dsa/mt7530.h
-@@ -65,6 +65,8 @@ enum mt753x_id {
+@@ -64,12 +64,18 @@ enum mt753x_id {
+ 
  /* Registers for BPDU and PAE frame control*/
  #define MT753X_BPC			0x24
- #define  MT753X_BPDU_PORT_FW_MASK	GENMASK(2, 0)
-+#define  MT753X_PAE_PORT_FW_MASK	GENMASK(18, 16)
-+#define  MT753X_PAE_PORT_FW(x)		FIELD_PREP(MT753X_PAE_PORT_FW_MASK, x)
+-#define  MT753X_BPDU_PORT_FW_MASK	GENMASK(2, 0)
++#define  MT753X_PAE_EG_TAG_MASK		GENMASK(24, 22)
++#define  MT753X_PAE_EG_TAG(x)		FIELD_PREP(MT753X_PAE_EG_TAG_MASK, x)
+ #define  MT753X_PAE_PORT_FW_MASK	GENMASK(18, 16)
+ #define  MT753X_PAE_PORT_FW(x)		FIELD_PREP(MT753X_PAE_PORT_FW_MASK, x)
++#define  MT753X_BPDU_EG_TAG_MASK	GENMASK(8, 6)
++#define  MT753X_BPDU_EG_TAG(x)		FIELD_PREP(MT753X_BPDU_EG_TAG_MASK, x)
++#define  MT753X_BPDU_PORT_FW_MASK	GENMASK(2, 0)
  
  /* Register for :03 and :0E MAC DA frame control */
  #define MT753X_RGAC2			0x2c
++#define  MT753X_R0E_EG_TAG_MASK		GENMASK(24, 22)
++#define  MT753X_R0E_EG_TAG(x)		FIELD_PREP(MT753X_R0E_EG_TAG_MASK, x)
+ #define  MT753X_R0E_PORT_FW_MASK	GENMASK(18, 16)
+ #define  MT753X_R0E_PORT_FW(x)		FIELD_PREP(MT753X_R0E_PORT_FW_MASK, x)
+ 
+@@ -252,6 +258,7 @@ enum mt7530_port_mode {
+ enum mt7530_vlan_port_eg_tag {
+ 	MT7530_VLAN_EG_DISABLED = 0,
+ 	MT7530_VLAN_EG_CONSISTENT = 1,
++	MT7530_VLAN_EG_UNTAGGED = 4,
+ };
+ 
+ enum mt7530_vlan_port_attr {
 -- 
 2.43.0
 
