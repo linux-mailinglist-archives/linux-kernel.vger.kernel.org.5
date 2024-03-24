@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-113826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A173A8886D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:43:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 006198886BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:41:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 423A5B23C64
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:43:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF37329126D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5802130E45;
-	Sun, 24 Mar 2024 23:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01081FD109;
+	Sun, 24 Mar 2024 23:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8dVn4gI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EX3hjf6j"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625E71E6F50;
-	Sun, 24 Mar 2024 22:54:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A441E6F5A;
+	Sun, 24 Mar 2024 22:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320856; cv=none; b=Y8oaCwRk5dCBp0NC3cckkpv0kbAPKV2+3DotEyhiQ6v9K6a6UeM54vWEpqq/+MY+9cIG/8d6sh5ANDRtaFbnhoYIlioZ5DaT/3577qbWSZ+FW2xqix9gcx+w0Dxnm9xPHYlFHqFWatOnYAUkcXjEGDK+UjAY2rzQr4bMianhVts=
+	t=1711320857; cv=none; b=nb7ynsoVXB6BiYbJuv0HJGcbCbxIK09t5SdSg2tEJf9sfWhmhkipeB8vC1ppVKqJhbyAkYFEjn4PXs0+wzFqwpYL05cGxylslHgDL5s1EMyGGuaz7ZczIELyZlazdGeNA50hAl+h0dSToyFXi72RECjIx6XMVN+Lbya22qNWV/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320856; c=relaxed/simple;
-	bh=15la2HOP4BZJOz/HljR3aeBvlmkYLsdL1e3Rm1CDSGo=;
+	s=arc-20240116; t=1711320857; c=relaxed/simple;
+	bh=NxVz+WguTMB6Coo2YUZwzcntSivhyOF+Rdca8TF9s9s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LqM2CHcPmDv799Gr1CtcFTaqE66IlIhwxjVNGjtcPAgm699H0NA5j9/P1z3cUIfbFOAf/KNERw7Rm8Hyg08KTC9e6uiOQFNOigsvQ2/YzJhDDqZyXzYpm+7hH+KdKGgYPdxG+c//R0CbgDSkDWdbAOtiIAZsyOzT8tG7BJVoH1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I8dVn4gI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D08CC433C7;
-	Sun, 24 Mar 2024 22:54:14 +0000 (UTC)
+	 MIME-Version; b=VfMNck0h5zP4YYeQaezEInvf4Iv7bgHVH+RsP6sgPm/QxaReP7O6gjum5ezBWaBmmsNzrfWH8bLV0SB6xpt/h40E2xBI4MGLWYNLsXtXPalsu+BjEPHHdPBBli0r6j3T/OfR1itaewqEaVveYGwLGCB2gyyveUA68+1wmpm++Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EX3hjf6j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C92C433F1;
+	Sun, 24 Mar 2024 22:54:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320855;
-	bh=15la2HOP4BZJOz/HljR3aeBvlmkYLsdL1e3Rm1CDSGo=;
+	s=k20201202; t=1711320856;
+	bh=NxVz+WguTMB6Coo2YUZwzcntSivhyOF+Rdca8TF9s9s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I8dVn4gISlcmW9uGs4vdG/eBtwz1/LuGk4PLlwcWp5xkW60GM3FcwrzsuHbALxpCz
-	 IFZ3BL/ml5J1tB1gdDPVTZNG4c4RQsE4BaVsOnIjMyUdW49UkaODTfc3A207GGKOHs
-	 z5vWHXgM/yqy0mKbKDLFoLuSUiXxyUM5+NBqn9dOBf/gBFemPg6k9oeAMOeLbVr+lp
-	 5ErgZNfdGFoNpuUASr3cuVo8kTRQbNNkam1qnXTblOwifj6vqNBmB7O5Xoj8sUN+ve
-	 fRG4JkSn55TOV+mYH7wl1rZ+FZI9AFgac4V4dF/oAz2WCSSoBUhY+BcgYY7JMHm3Wl
-	 NAbZ1oJxN4l6w==
+	b=EX3hjf6jIMvbSHt383OCMIWBMGn/qWZZik2gV1LV/Pq9EmRvHlsAjM1FYnF9DYlz7
+	 dq8hRkaL7/PZe6uXRKxCB58GMYokE3RAMYSeCauo75QzimDQMyCCkEIczO9YRYXd2P
+	 PfkQVaNqD8jIvzdegxfsgnmxRA6p7AuVhzbxQWKSTaUMIIK/h5n8VUEwuFNp5F6e/C
+	 o/tmJJaZZKYuqG1Oyx5CwvEE2Ytb6HI89qBMxHwkh8h2wQcvW2gJy7ZP8ADIZkdyCc
+	 GyDsRYr/Oc6vcJVP8uGOeJ8eV0fLvsQ0hGXiL/zU8VEuFhvhB69jHAQ9ecfacwTGEq
+	 Hl66bqQIwWswg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Martin Krastev <martin.krastev@broadcom.com>,
+	Maaz Mombasawala <maaz.mombasawala@broadcom.com>,
+	Zack Rusin <zack.rusin@broadcom.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 419/713] ASoC: sh: rz-ssi: Fix error message print
-Date: Sun, 24 Mar 2024 18:42:25 -0400
-Message-ID: <20240324224720.1345309-420-sashal@kernel.org>
+Subject: [PATCH 6.7 420/713] drm/vmwgfx: Fix vmw_du_get_cursor_mob fencing of newly-created MOBs
+Date: Sun, 24 Mar 2024 18:42:26 -0400
+Message-ID: <20240324224720.1345309-421-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,37 +63,55 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Martin Krastev <martin.krastev@broadcom.com>
 
-[ Upstream commit 9a6d7c4fb2801b675a9c31a7ceb78c84b8c439bc ]
+[ Upstream commit ed96cf7ad590989b009d6da5cd26387d995dac13 ]
 
-The devm_request_irq() call is done for "dma_rt" interrupt but the error
-message printed "dma_tx" interrupt on failure, fix this by updating
-dma_tx -> dma_rt in dev_err_probe() message. While at it aligned the code.
+The fencing of MOB creation used in vmw_du_get_cursor_mob was incompatible
+with register-based device communication employed by this routine. As a
+result cursor MOB creation was racy, leading to potentially broken/missing
+mouse cursor on desktops using CursorMob device feature.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Fixes: 38c042b59af0248a ("ASoC: sh: rz-ssi: Update interrupt handling for half duplex channels")
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://msgid.link/r/20240130150822.327434-1-prabhakar.mahadev-lad.rj@bp.renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 53bc3f6fb6b3 ("drm/vmwgfx: Clean up cursor mobs")
+Signed-off-by: Martin Krastev <martin.krastev@broadcom.com>
+Reviewed-by: Maaz Mombasawala <maaz.mombasawala@broadcom.com>
+Reviewed-by: Zack Rusin <zack.rusin@broadcom.com>
+Signed-off-by: Zack Rusin <zack.rusin@broadcom.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240126200804.732454-5-zack.rusin@broadcom.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rz-ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
-index 14cf1a41fb0d1..9d103646973ad 100644
---- a/sound/soc/sh/rz-ssi.c
-+++ b/sound/soc/sh/rz-ssi.c
-@@ -1015,7 +1015,7 @@ static int rz_ssi_probe(struct platform_device *pdev)
- 					       dev_name(&pdev->dev), ssi);
- 			if (ret < 0)
- 				return dev_err_probe(&pdev->dev, ret,
--						"irq request error (dma_tx)\n");
-+						     "irq request error (dma_rt)\n");
- 		} else {
- 			if (ssi->irq_tx < 0)
- 				return ssi->irq_tx;
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+index 818b7f109f538..b51578918cf8d 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+@@ -272,6 +272,7 @@ static int vmw_du_get_cursor_mob(struct vmw_cursor_plane *vcp,
+ 	u32 size = vmw_du_cursor_mob_size(vps->base.crtc_w, vps->base.crtc_h);
+ 	u32 i;
+ 	u32 cursor_max_dim, mob_max_size;
++	struct vmw_fence_obj *fence = NULL;
+ 	int ret;
+ 
+ 	if (!dev_priv->has_mob ||
+@@ -313,7 +314,15 @@ static int vmw_du_get_cursor_mob(struct vmw_cursor_plane *vcp,
+ 	if (ret != 0)
+ 		goto teardown;
+ 
+-	vmw_bo_fence_single(&vps->cursor.bo->tbo, NULL);
++	ret = vmw_execbuf_fence_commands(NULL, dev_priv, &fence, NULL);
++	if (ret != 0) {
++		ttm_bo_unreserve(&vps->cursor.bo->tbo);
++		goto teardown;
++	}
++
++	dma_fence_wait(&fence->base, false);
++	dma_fence_put(&fence->base);
++
+ 	ttm_bo_unreserve(&vps->cursor.bo->tbo);
+ 	return 0;
+ 
 -- 
 2.43.0
 
