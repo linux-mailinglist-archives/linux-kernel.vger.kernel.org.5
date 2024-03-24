@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-116188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748778898C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:50:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D34D2888C91
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:24:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AF8FB2CA49
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:35:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89F451F29312
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E403B95DA;
-	Mon, 25 Mar 2024 03:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 328421C1371;
+	Mon, 25 Mar 2024 00:59:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oK+WseEv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KLrcnvIl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9702210DC;
-	Sun, 24 Mar 2024 23:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6A6284522;
+	Sun, 24 Mar 2024 23:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323783; cv=none; b=INPOeLgXnHcw11GpT0LUPijc6bBi9g82sA8SnGUpHjH1JrH4QZGAhVf+PMU7uUUje/TNlryGo6FRUIQ0Bhx1zUlej0XfaBvHA/qlEq0mZdf6hYs+m4bbieRWm6heBswYdswgG8FJ0ugbUbs13tzogo7OowKXB2Ts7/x7qnqy04w=
+	t=1711323784; cv=none; b=i1ceZrJlfQF4zyvyy70+O91PYWAapajXawjUUPCFVtm4wcYTIAc+I7SxhIUQnJ1v5WfF5WYqznGHOrBYUKJJ9WxHrOmqyd+jEvKMfOBtAodm2vAdDfrj0s191hdVvl88EO18DplU8LoUVQ5w7fDmmaJQ+GdG5jovzbU1nZojFKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323783; c=relaxed/simple;
-	bh=UPmJ0oqA11Byc24wBO8q/HFCvObuB20jWO6DOQOtKK4=;
+	s=arc-20240116; t=1711323784; c=relaxed/simple;
+	bh=ztQ8/XKKj53vrj2RHX4SHK5hJSeYb4qx+sJnAISMHI4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D/IPu5QHY7OKubHcnAmTrQDneTUQDPVLMsZluD8z09GUXSQ+SXu6Lwd++hFQL9+6ipqL07GUcKzWm4a21lo/jRmdGgKMYE4zPePCSqAeCuIzC2V5yt+J5V1+nti4HBEJkHLLRNvROu7PfKD/l8HMnp1UBWpZR4/ksKJyhtr/VvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oK+WseEv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D8D6C43609;
-	Sun, 24 Mar 2024 23:43:02 +0000 (UTC)
+	 MIME-Version:Content-Type; b=LoXrlCk/xmkf/jZs/e19jEFPZnVe2ugOFL4D5KD8/wPV4QooDuy/BsxhN6rhvcXVBtN05nVS2yZsHQ5Dpf2jJ/8wUroAs+rdmn04XsC0reD2RY+8aO++f42ue9HrMc5tigP3akHNc2xM21c2peSxI8FncfbXeuGvYSR4WuKIMMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KLrcnvIl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F7D0C43390;
+	Sun, 24 Mar 2024 23:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711323783;
-	bh=UPmJ0oqA11Byc24wBO8q/HFCvObuB20jWO6DOQOtKK4=;
+	bh=ztQ8/XKKj53vrj2RHX4SHK5hJSeYb4qx+sJnAISMHI4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oK+WseEvX1xPAK3hwjgG8TrGzU4yB7xLbjjHGhU5zyYGkYz67cEVfpHMyS1m2T91+
-	 ILw/tXh7dJRlu44bcrk1TWsDTfflvMZDfIRZHBKjOMQr5Uqh2u5SrsSMUxTfPlmaDO
-	 CuDlB68hgvGWmAFSwSXWtYJiYXLbWHDZiMLdnPm/teABwZnQTywsAyz9pbl/MOHjzr
-	 SX2xQmiM7ZRcwqsapMdjPlMAXtgvlJvryUEYPzBKp28nz9FJ8ewOwUecUlncPyMgd6
-	 J2Jc+jVRluS4xYFz6X7SIlZ5CBhlkiafraCHzuyoGlNzlYbNAZJREB45XpGPmxXND3
-	 zHUUw/I8/q/sA==
+	b=KLrcnvIlmtx65KSsNr82+7WoVI+EwmO0YRuMIVjoJkpRUAGJnVz+PQKcar7ln/cNA
+	 4ffjATghIogVvjMPrfWezUOURNZjIIvj+QZLS1jc0+T9XLtflgkvhhSrWQkZQUhckG
+	 nmkhJzBvIrES6f5D+KtsfaoUP7XJ18vBismqRrm8OcEem49cQIkFwX3gQ6q2R1NYIR
+	 uCi41WnQXYBr5Mw4uxxJRDaE61AUoYDw7cOJBYTo+KweMpZS0RmwMKC2gpTYvv/O2A
+	 8vb7wEi7jpYX5TM2FZ9ndu2E7eKKi2wCWaW9KPEJMZzN2GDLfTvI/PFH+G5XxwGwNA
+	 HHMZgJCirCUZA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Alexandre Mergnat <amergnat@baylibre.com>,
-	CK Hu <ck.hu@mediatek.com>,
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+Cc: =?UTF-8?q?J=C3=B6rg=20Wedekind?= <joerg@wedekind.de>,
+	Bjorn Helgaas <bhelgaas@google.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 159/238] drm/mediatek: dsi: Fix DSI RGB666 formats and definitions
-Date: Sun, 24 Mar 2024 19:39:07 -0400
-Message-ID: <20240324234027.1354210-160-sashal@kernel.org>
+Subject: [PATCH 5.10 160/238] PCI: Mark 3ware-9650SE Root Port Extended Tags as broken
+Date: Sun, 24 Mar 2024 19:39:08 -0400
+Message-ID: <20240324234027.1354210-161-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -60,80 +58,56 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+From: Jörg Wedekind <joerg@wedekind.de>
 
-[ Upstream commit fae6f815505301b92d9113764f4d76d0bfe45607 ]
+[ Upstream commit baf67aefbe7d7deafa59ca49612d163f8889934c ]
 
-The register bits definitions for RGB666 formats are wrong in multiple
-ways: first, in the DSI_PS_SEL bits region, the Packed 18-bits RGB666
-format is selected with bit 1, while the Loosely Packed one is bit 2,
-and second - the definition name "LOOSELY_PS_18BIT_RGB666" is wrong
-because the loosely packed format is 24 bits instead!
+Per PCIe r6.1, sec 2.2.6.2 and 7.5.3.4, a Requester may not use 8-bit Tags
+unless its Extended Tag Field Enable is set, but all Receivers/Completers
+must handle 8-bit Tags correctly regardless of their Extended Tag Field
+Enable.
 
-Either way, functions mtk_dsi_ps_control_vact() and mtk_dsi_ps_control()
-do not even agree on the DSI_PS_SEL bit to set in DSI_PSCTRL: one sets
-loosely packed (24) on RGB666, the other sets packed (18), and the other
-way around for RGB666_PACKED.
+Some devices do not handle 8-bit Tags as Completers, so add a quirk for
+them.  If we find such a device, we disable Extended Tags for the entire
+hierarchy to make peer-to-peer DMA possible.
 
-Fixing this entire stack of issues is done in one go:
- - Use the correct bit for the Loosely Packed RGB666 definition
- - Rename LOOSELY_PS_18BIT_RGB666 to LOOSELY_PS_24BIT_RGB666
- - Change ps_bpp_mode in mtk_dsi_ps_control_vact() to set:
-    - Loosely Packed, 24-bits for MIPI_DSI_FMT_RGB666
-    - Packed, 18-bits for MIPI_DSI_FMT_RGB666_PACKED
+The 3ware 9650SE seems to have issues with handling 8-bit tags. Mark it as
+broken.
 
-Fixes: 2e54c14e310f ("drm/mediatek: Add DSI sub driver")
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://patchwork.kernel.org/project/dri-devel/patch/20240215085316.56835-3-angelogioacchino.delregno@collabora.com/
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+This fixes PCI Parity Errors like :
+
+  3w-9xxx: scsi0: ERROR: (0x06:0x000C): PCI Parity Error: clearing.
+  3w-9xxx: scsi0: ERROR: (0x06:0x000D): PCI Abort: clearing.
+  3w-9xxx: scsi0: ERROR: (0x06:0x000E): Controller Queue Error: clearing.
+  3w-9xxx: scsi0: ERROR: (0x06:0x0010): Microcontroller Error: clearing.
+
+Link: https://lore.kernel.org/r/20240219132811.8351-1-joerg@wedekind.de
+Fixes: 60db3a4d8cc9 ("PCI: Enable PCIe Extended Tags if supported")
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=202425
+Signed-off-by: Jörg Wedekind <joerg@wedekind.de>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mediatek/mtk_dsi.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/pci/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index a6e71b7b69b83..17d45f06cedf3 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -68,8 +68,8 @@
- #define DSI_PS_WC			0x3fff
- #define DSI_PS_SEL			(3 << 16)
- #define PACKED_PS_16BIT_RGB565		(0 << 16)
--#define LOOSELY_PS_18BIT_RGB666		(1 << 16)
--#define PACKED_PS_18BIT_RGB666		(2 << 16)
-+#define PACKED_PS_18BIT_RGB666		(1 << 16)
-+#define LOOSELY_PS_24BIT_RGB666		(2 << 16)
- #define PACKED_PS_24BIT_RGB888		(3 << 16)
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index b67aea8d8f197..646807a443e2d 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -5364,6 +5364,7 @@ static void quirk_no_ext_tags(struct pci_dev *pdev)
  
- #define DSI_VSA_NL		0x20
-@@ -365,10 +365,10 @@ static void mtk_dsi_ps_control_vact(struct mtk_dsi *dsi)
- 		ps_bpp_mode |= PACKED_PS_24BIT_RGB888;
- 		break;
- 	case MIPI_DSI_FMT_RGB666:
--		ps_bpp_mode |= PACKED_PS_18BIT_RGB666;
-+		ps_bpp_mode |= LOOSELY_PS_24BIT_RGB666;
- 		break;
- 	case MIPI_DSI_FMT_RGB666_PACKED:
--		ps_bpp_mode |= LOOSELY_PS_18BIT_RGB666;
-+		ps_bpp_mode |= PACKED_PS_18BIT_RGB666;
- 		break;
- 	case MIPI_DSI_FMT_RGB565:
- 		ps_bpp_mode |= PACKED_PS_16BIT_RGB565;
-@@ -419,7 +419,7 @@ static void mtk_dsi_ps_control(struct mtk_dsi *dsi)
- 		dsi_tmp_buf_bpp = 3;
- 		break;
- 	case MIPI_DSI_FMT_RGB666:
--		tmp_reg = LOOSELY_PS_18BIT_RGB666;
-+		tmp_reg = LOOSELY_PS_24BIT_RGB666;
- 		dsi_tmp_buf_bpp = 3;
- 		break;
- 	case MIPI_DSI_FMT_RGB666_PACKED:
+ 	pci_walk_bus(bridge->bus, pci_configure_extended_tags, NULL);
+ }
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_3WARE, 0x1004, quirk_no_ext_tags);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SERVERWORKS, 0x0132, quirk_no_ext_tags);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SERVERWORKS, 0x0140, quirk_no_ext_tags);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SERVERWORKS, 0x0141, quirk_no_ext_tags);
 -- 
 2.43.0
 
