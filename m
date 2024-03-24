@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-115440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 002BC889B91
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:56:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15800888688
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75C802A19B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:56:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46ADA1C25A87
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13082213422;
-	Mon, 25 Mar 2024 02:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8BB12DDB3;
+	Sun, 24 Mar 2024 22:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="susQOmT2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pn01AAhY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0AB1E2579;
-	Sun, 24 Mar 2024 22:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78571127B7F;
+	Sun, 24 Mar 2024 22:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320788; cv=none; b=d/lUeH4LEivyuWLISazPhUaJu57bUyQfJpvPwh4wu3+VW6X6GFfq+sy28t3pjfWe09UuYq+Q3RIedWsBxOEmz5Y6YqefXGLMhIYinM7nZKUG1czLPlbP3LXDOvdjfkXARijUa6T4EA7ZYImWLnkPmuYwM6eaFse6KsGLEzmaCsM=
+	t=1711320789; cv=none; b=ZWu5Wy2I5cvYZFCYis4JNp/V5ada3PjhWgE1ciDa7AFKX2YeNpCStHt/Hzp1lB+2nvr3b9t0/2bIXD1Av2K2Co2hpM6MpVEev8rE1P9asK+UIslS2Y6ZAG2yr6NQHQz3yoPuZKjFRjfUYHlia6ZPuUidRZe8uVUhpz8zMrbR6fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320788; c=relaxed/simple;
-	bh=F9n3JBbUTqN7uVdvLx4GurGXiqLNkb9Gf/PhMZt0Log=;
+	s=arc-20240116; t=1711320789; c=relaxed/simple;
+	bh=ArHPtWX3+1gtQ68zc8c0UMu038IRAJ3nC1hv6nvkR10=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t1oPrZwFRHGDBu9cPwmiQpDFu3DmkbYhTVSlUv7IG2A6j4zSm8qLOjVPmw0JVf8g0BjEXlg1mYqxJSAvTpugrE+LO+w59r+z5kM0nixbchgmIob5eFYf2Ai1wf8sg6RpAMVKxhRqOnc5CM8GTD7uQ068kZwExIDWuVakzldDWj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=susQOmT2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4B4CC433C7;
-	Sun, 24 Mar 2024 22:53:06 +0000 (UTC)
+	 MIME-Version; b=DhiCEle1xXsqsLt6rB31SnN+VbDMWaBe4Trxctole3HoO3aULXpGszF+yUE9oBcWg7LrrRCOvBpSqeKL3vDvUqcdmuRYHjcI4RZJyCS6DEShc0wEgTsJYY4haGb7XPGgO3gA2LIkU+m1W1NDhfd7cvznzTXEDD8SYJVscM+Ab1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pn01AAhY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5E91C43399;
+	Sun, 24 Mar 2024 22:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320787;
-	bh=F9n3JBbUTqN7uVdvLx4GurGXiqLNkb9Gf/PhMZt0Log=;
+	s=k20201202; t=1711320788;
+	bh=ArHPtWX3+1gtQ68zc8c0UMu038IRAJ3nC1hv6nvkR10=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=susQOmT2nmt+D6+RO9E9rzlX0j1laOrpnB9IuS7eFHCSw/2Y96QaTV4DvXxHGrH5V
-	 eDvoAc65CjsOlt33cE/4UwBrVELgOQlWPzVksjuD/MZR6g2s2RRg2Xs1wUlGYht5zr
-	 2+Bat6qLW+gSp0bKGR7ooog1h8NAjB9SDo3xqA0GpaL2KTmyEIvOEBGqqDpo+QGOC+
-	 lnXVZ5VkUWKk/y6nzrQ5oKgUi126nfwbEcg32ooLkAJ1cIZVBdgKhZaG9ud8+JiTdo
-	 SZofgnz8NdI/H44cPupiPmk4JrQadMSTQeWN53NT7UI+bBVojL2in5yWcImro5aTH8
-	 ThjvT3c6RpVvg==
+	b=Pn01AAhYpTfWh1ZyI1SnbMzJ+5FsUYrdsGtrw9Whj8QXOKf/z+nntD4tCUKzZFtZ7
+	 EGQ9Oa4i2U74EbTgQ36uXpT11If++zycBho7fh2Kh1kAV1td3U8TCakTCQX103g9zj
+	 4YeJ/VbgQvCC3VrLAQh7eizjBpK6lMc6WPE11l9OImWX1yXWY+siRjFclv0zfrh2AR
+	 kJAVTG7248Haknm9L6azl/i44rfg5X17DCglJKVMHcO04YIs5+HMUKNQ6MaQKOskfR
+	 7d+Z3rxcJBZSEEkdu32OWYKFLzTRLll7EYcamixxWrRPXwlOsqVhYjRvyYeu24Wy3b
+	 nfyXJ//R9mDmg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+Cc: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 350/713] Bluetooth: hci_sync: Fix overwriting request callback
-Date: Sun, 24 Mar 2024 18:41:16 -0400
-Message-ID: <20240324224720.1345309-351-sashal@kernel.org>
+Subject: [PATCH 6.7 351/713] Bluetooth: hci_h5: Add ability to allocate memory for private data
+Date: Sun, 24 Mar 2024 18:41:17 -0400
+Message-ID: <20240324224720.1345309-352-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -61,255 +62,102 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
 
-[ Upstream commit 2615fd9a7c2507eb3be3fbe49dcec88a2f56454a ]
+[ Upstream commit 7a6d793e9ca8bc0c1d2f0aa0a02ec380d1124c74 ]
 
-In a few cases the stack may generate commands as responses to events
-which would happen to overwrite the sent_cmd, so this attempts to store
-the request in req_skb so even if sent_cmd is replaced with a new
-command the pending request will remain in stored in req_skb.
+In some cases uart-base drivers may need to use priv data. For
+example, to store information needed for devcoredump.
 
-Fixes: 6a98e3836fa2 ("Bluetooth: Add helper for serialized HCI command execution")
+Fixes: 044014ce85a1 ("Bluetooth: btrtl: Add Realtek devcoredump support")
+Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
 Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_conn.c         |  2 +-
- net/bluetooth/hci_core.c         | 46 ++++++++++++++++++++++----------
- net/bluetooth/hci_event.c        | 18 ++++++-------
- net/bluetooth/hci_sync.c         | 21 ++++++++++++---
- 5 files changed, 61 insertions(+), 27 deletions(-)
+ drivers/bluetooth/hci_h5.c     |  4 +++-
+ drivers/bluetooth/hci_serdev.c |  9 +++++----
+ drivers/bluetooth/hci_uart.h   | 12 +++++++++++-
+ 3 files changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 65dd286693527..24446038d8a6d 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -553,6 +553,7 @@ struct hci_dev {
- 	__u32			req_status;
- 	__u32			req_result;
- 	struct sk_buff		*req_skb;
-+	struct sk_buff		*req_rsp;
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index 71e748a9477e4..b66136348bd64 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -113,6 +113,7 @@ struct h5_vnd {
+ 	int (*suspend)(struct h5 *h5);
+ 	int (*resume)(struct h5 *h5);
+ 	const struct acpi_gpio_mapping *acpi_gpio_map;
++	int sizeof_priv;
+ };
  
- 	void			*smp_data;
- 	void			*smp_bredr_data;
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index 029bf74ec5e78..50c55d7335692 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -2977,7 +2977,7 @@ int hci_abort_conn(struct hci_conn *conn, u8 reason)
- 		case HCI_EV_LE_CONN_COMPLETE:
- 		case HCI_EV_LE_ENHANCED_CONN_COMPLETE:
- 		case HCI_EVT_LE_CIS_ESTABLISHED:
--			hci_cmd_sync_cancel(hdev, -ECANCELED);
-+			hci_cmd_sync_cancel(hdev, ECANCELED);
- 			break;
- 		}
- 	}
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 539305b9a0e27..96707deef296b 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1491,8 +1491,8 @@ static void hci_cmd_timeout(struct work_struct *work)
- 	struct hci_dev *hdev = container_of(work, struct hci_dev,
- 					    cmd_timer.work);
+ struct h5_device_data {
+@@ -863,7 +864,8 @@ static int h5_serdev_probe(struct serdev_device *serdev)
+ 	if (IS_ERR(h5->device_wake_gpio))
+ 		return PTR_ERR(h5->device_wake_gpio);
  
--	if (hdev->sent_cmd) {
--		u16 opcode = hci_skb_opcode(hdev->sent_cmd);
-+	if (hdev->req_skb) {
-+		u16 opcode = hci_skb_opcode(hdev->req_skb);
- 
- 		bt_dev_err(hdev, "command 0x%4.4x tx timeout", opcode);
- 
-@@ -2796,6 +2796,7 @@ void hci_release_dev(struct hci_dev *hdev)
- 	ida_destroy(&hdev->unset_handle_ida);
- 	ida_simple_remove(&hci_index_ida, hdev->id);
- 	kfree_skb(hdev->sent_cmd);
-+	kfree_skb(hdev->req_skb);
- 	kfree_skb(hdev->recv_event);
- 	kfree(hdev);
+-	return hci_uart_register_device(&h5->serdev_hu, &h5p);
++	return hci_uart_register_device_priv(&h5->serdev_hu, &h5p,
++					     h5->vnd->sizeof_priv);
  }
-@@ -3125,21 +3126,33 @@ int __hci_cmd_send(struct hci_dev *hdev, u16 opcode, u32 plen,
- EXPORT_SYMBOL(__hci_cmd_send);
  
- /* Get data from the previously sent command */
--void *hci_sent_cmd_data(struct hci_dev *hdev, __u16 opcode)
-+static void *hci_cmd_data(struct sk_buff *skb, __u16 opcode)
+ static void h5_serdev_remove(struct serdev_device *serdev)
+diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
+index f16fd79bc02b8..611a11fbb2f3a 100644
+--- a/drivers/bluetooth/hci_serdev.c
++++ b/drivers/bluetooth/hci_serdev.c
+@@ -300,8 +300,9 @@ static const struct serdev_device_ops hci_serdev_client_ops = {
+ 	.write_wakeup = hci_uart_write_wakeup,
+ };
+ 
+-int hci_uart_register_device(struct hci_uart *hu,
+-			     const struct hci_uart_proto *p)
++int hci_uart_register_device_priv(struct hci_uart *hu,
++			     const struct hci_uart_proto *p,
++			     int sizeof_priv)
  {
- 	struct hci_command_hdr *hdr;
+ 	int err;
+ 	struct hci_dev *hdev;
+@@ -325,7 +326,7 @@ int hci_uart_register_device(struct hci_uart *hu,
+ 	set_bit(HCI_UART_PROTO_READY, &hu->flags);
  
--	if (!hdev->sent_cmd)
-+	if (!skb || skb->len < HCI_COMMAND_HDR_SIZE)
- 		return NULL;
+ 	/* Initialize and register HCI device */
+-	hdev = hci_alloc_dev();
++	hdev = hci_alloc_dev_priv(sizeof_priv);
+ 	if (!hdev) {
+ 		BT_ERR("Can't allocate HCI device");
+ 		err = -ENOMEM;
+@@ -394,7 +395,7 @@ int hci_uart_register_device(struct hci_uart *hu,
+ 	percpu_free_rwsem(&hu->proto_lock);
+ 	return err;
+ }
+-EXPORT_SYMBOL_GPL(hci_uart_register_device);
++EXPORT_SYMBOL_GPL(hci_uart_register_device_priv);
  
--	hdr = (void *) hdev->sent_cmd->data;
-+	hdr = (void *)skb->data;
+ void hci_uart_unregister_device(struct hci_uart *hu)
+ {
+diff --git a/drivers/bluetooth/hci_uart.h b/drivers/bluetooth/hci_uart.h
+index fb4a2d0d8cc80..68c8c7e95d64d 100644
+--- a/drivers/bluetooth/hci_uart.h
++++ b/drivers/bluetooth/hci_uart.h
+@@ -97,7 +97,17 @@ struct hci_uart {
  
- 	if (hdr->opcode != cpu_to_le16(opcode))
- 		return NULL;
- 
--	BT_DBG("%s opcode 0x%4.4x", hdev->name, opcode);
-+	return skb->data + HCI_COMMAND_HDR_SIZE;
-+}
- 
--	return hdev->sent_cmd->data + HCI_COMMAND_HDR_SIZE;
-+/* Get data from the previously sent command */
-+void *hci_sent_cmd_data(struct hci_dev *hdev, __u16 opcode)
+ int hci_uart_register_proto(const struct hci_uart_proto *p);
+ int hci_uart_unregister_proto(const struct hci_uart_proto *p);
+-int hci_uart_register_device(struct hci_uart *hu, const struct hci_uart_proto *p);
++
++int hci_uart_register_device_priv(struct hci_uart *hu,
++				  const struct hci_uart_proto *p,
++				  int sizeof_priv);
++
++static inline int hci_uart_register_device(struct hci_uart *hu,
++					   const struct hci_uart_proto *p)
 +{
-+	void *data;
++	return hci_uart_register_device_priv(hu, p, 0);
++}
 +
-+	/* Check if opcode matches last sent command */
-+	data = hci_cmd_data(hdev->sent_cmd, opcode);
-+	if (!data)
-+		/* Check if opcode matches last request */
-+		data = hci_cmd_data(hdev->req_skb, opcode);
-+
-+	return data;
- }
+ void hci_uart_unregister_device(struct hci_uart *hu);
  
- /* Get data from last received event */
-@@ -4040,17 +4053,19 @@ void hci_req_cmd_complete(struct hci_dev *hdev, u16 opcode, u8 status,
- 	if (!status && !hci_req_is_complete(hdev))
- 		return;
- 
-+	skb = hdev->req_skb;
-+
- 	/* If this was the last command in a request the complete
--	 * callback would be found in hdev->sent_cmd instead of the
-+	 * callback would be found in hdev->req_skb instead of the
- 	 * command queue (hdev->cmd_q).
- 	 */
--	if (bt_cb(hdev->sent_cmd)->hci.req_flags & HCI_REQ_SKB) {
--		*req_complete_skb = bt_cb(hdev->sent_cmd)->hci.req_complete_skb;
-+	if (skb && bt_cb(skb)->hci.req_flags & HCI_REQ_SKB) {
-+		*req_complete_skb = bt_cb(skb)->hci.req_complete_skb;
- 		return;
- 	}
- 
--	if (bt_cb(hdev->sent_cmd)->hci.req_complete) {
--		*req_complete = bt_cb(hdev->sent_cmd)->hci.req_complete;
-+	if (skb && bt_cb(skb)->hci.req_complete) {
-+		*req_complete = bt_cb(skb)->hci.req_complete;
- 		return;
- 	}
- 
-@@ -4167,8 +4182,11 @@ static void hci_send_cmd_sync(struct hci_dev *hdev, struct sk_buff *skb)
- 		return;
- 	}
- 
--	if (hci_req_status_pend(hdev))
--		hci_dev_set_flag(hdev, HCI_CMD_PENDING);
-+	if (hci_req_status_pend(hdev) &&
-+	    !hci_dev_test_and_set_flag(hdev, HCI_CMD_PENDING)) {
-+		kfree_skb(hdev->req_skb);
-+		hdev->req_skb = skb_clone(skb, GFP_KERNEL);
-+	}
- 
- 	atomic_dec(&hdev->cmd_cnt);
- }
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 9ee66b393981b..6275b14b56927 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4381,7 +4381,7 @@ static void hci_cmd_status_evt(struct hci_dev *hdev, void *data,
- 	 * (since for this kind of commands there will not be a command
- 	 * complete event).
- 	 */
--	if (ev->status || (hdev->sent_cmd && !hci_skb_event(hdev->sent_cmd))) {
-+	if (ev->status || (hdev->req_skb && !hci_skb_event(hdev->req_skb))) {
- 		hci_req_cmd_complete(hdev, *opcode, ev->status, req_complete,
- 				     req_complete_skb);
- 		if (hci_dev_test_flag(hdev, HCI_CMD_PENDING)) {
-@@ -7327,10 +7327,10 @@ static void hci_le_meta_evt(struct hci_dev *hdev, void *data,
- 	bt_dev_dbg(hdev, "subevent 0x%2.2x", ev->subevent);
- 
- 	/* Only match event if command OGF is for LE */
--	if (hdev->sent_cmd &&
--	    hci_opcode_ogf(hci_skb_opcode(hdev->sent_cmd)) == 0x08 &&
--	    hci_skb_event(hdev->sent_cmd) == ev->subevent) {
--		*opcode = hci_skb_opcode(hdev->sent_cmd);
-+	if (hdev->req_skb &&
-+	    hci_opcode_ogf(hci_skb_opcode(hdev->req_skb)) == 0x08 &&
-+	    hci_skb_event(hdev->req_skb) == ev->subevent) {
-+		*opcode = hci_skb_opcode(hdev->req_skb);
- 		hci_req_cmd_complete(hdev, *opcode, 0x00, req_complete,
- 				     req_complete_skb);
- 	}
-@@ -7717,10 +7717,10 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
- 	}
- 
- 	/* Only match event if command OGF is not for LE */
--	if (hdev->sent_cmd &&
--	    hci_opcode_ogf(hci_skb_opcode(hdev->sent_cmd)) != 0x08 &&
--	    hci_skb_event(hdev->sent_cmd) == event) {
--		hci_req_cmd_complete(hdev, hci_skb_opcode(hdev->sent_cmd),
-+	if (hdev->req_skb &&
-+	    hci_opcode_ogf(hci_skb_opcode(hdev->req_skb)) != 0x08 &&
-+	    hci_skb_event(hdev->req_skb) == event) {
-+		hci_req_cmd_complete(hdev, hci_skb_opcode(hdev->req_skb),
- 				     status, &req_complete, &req_complete_skb);
- 		req_evt = event;
- 	}
-diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-index f4c53c428305b..183501f921814 100644
---- a/net/bluetooth/hci_sync.c
-+++ b/net/bluetooth/hci_sync.c
-@@ -32,6 +32,10 @@ static void hci_cmd_sync_complete(struct hci_dev *hdev, u8 result, u16 opcode,
- 	hdev->req_result = result;
- 	hdev->req_status = HCI_REQ_DONE;
- 
-+	/* Free the request command so it is not used as response */
-+	kfree_skb(hdev->req_skb);
-+	hdev->req_skb = NULL;
-+
- 	if (skb) {
- 		struct sock *sk = hci_skb_sk(skb);
- 
-@@ -39,7 +43,7 @@ static void hci_cmd_sync_complete(struct hci_dev *hdev, u8 result, u16 opcode,
- 		if (sk)
- 			sock_put(sk);
- 
--		hdev->req_skb = skb_get(skb);
-+		hdev->req_rsp = skb_get(skb);
- 	}
- 
- 	wake_up_interruptible(&hdev->req_wait_q);
-@@ -187,8 +191,8 @@ struct sk_buff *__hci_cmd_sync_sk(struct hci_dev *hdev, u16 opcode, u32 plen,
- 
- 	hdev->req_status = 0;
- 	hdev->req_result = 0;
--	skb = hdev->req_skb;
--	hdev->req_skb = NULL;
-+	skb = hdev->req_rsp;
-+	hdev->req_rsp = NULL;
- 
- 	bt_dev_dbg(hdev, "end: err %d", err);
- 
-@@ -4904,6 +4908,11 @@ int hci_dev_open_sync(struct hci_dev *hdev)
- 			hdev->sent_cmd = NULL;
- 		}
- 
-+		if (hdev->req_skb) {
-+			kfree_skb(hdev->req_skb);
-+			hdev->req_skb = NULL;
-+		}
-+
- 		clear_bit(HCI_RUNNING, &hdev->flags);
- 		hci_sock_dev_event(hdev, HCI_DEV_CLOSE);
- 
-@@ -5065,6 +5074,12 @@ int hci_dev_close_sync(struct hci_dev *hdev)
- 		hdev->sent_cmd = NULL;
- 	}
- 
-+	/* Drop last request */
-+	if (hdev->req_skb) {
-+		kfree_skb(hdev->req_skb);
-+		hdev->req_skb = NULL;
-+	}
-+
- 	clear_bit(HCI_RUNNING, &hdev->flags);
- 	hci_sock_dev_event(hdev, HCI_DEV_CLOSE);
- 
+ int hci_uart_tx_wakeup(struct hci_uart *hu);
 -- 
 2.43.0
 
