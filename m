@@ -1,126 +1,121 @@
-Return-Path: <linux-kernel+bounces-112641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A8C887C6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:04:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58459887C6E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 12:07:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA4D3281D93
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:04:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9CD71F214E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BBA517741;
-	Sun, 24 Mar 2024 11:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BAD17732;
+	Sun, 24 Mar 2024 11:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="t7zxPixu";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0zP5b/bm"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f+Gs6Z+c"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC92171B6;
-	Sun, 24 Mar 2024 11:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA73317589;
+	Sun, 24 Mar 2024 11:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711278267; cv=none; b=oVqCPF1Se4RQfCcQz+VHvJWsBxVZhclnn60wwuTydp8C2o/gqvxsqVTNxJpbSJ9gYpwudEQQUPjlO5onDr+uXVRvC9adJd+Ryv6TEmnagbQIScPISN5MZc2NkgfZmnL4PV/eXl0ZRHQpyDp1K1YGXT3NQXW7JFNNHFn2RH/u1To=
+	t=1711278453; cv=none; b=glBTFPTcJOzv+Ia1/qVxiMTmD2pDP0shiJ0vj6Knzg1ZW1g3ENvPGGb5EXt8b+oGdIkWGvsmiQdPcMwM67t1qi77v+WsfwzZtUoiObYcAnGiZjZvHTz4203NBMWTGLkvZNaFYrVUKwDcQ76OmTZfiV7z5qaz/9inZNQlr7fqRFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711278267; c=relaxed/simple;
-	bh=oVWt1URKKwcX1yBL2A/VUlUd8pg+WwR5QCUkGAW00E8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZwhjuIlr3QFth+i4t4U5wl7GHSJk7sC2MqPyVjJYkzTWws5iEj6WS6rJvWGSIlH9myVN0xW+WrRtD8/hFeyd0L4ESQqN0r+JpvVoggfhrNewAkfOsLqr1z4Sj7udOA/m6FWVc45IvP7QgtDYgTaSeO1DCjNCtpgDNmL2oWodg5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=t7zxPixu; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0zP5b/bm; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711278262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2/mH+jshQDq36UblDsSyrijdM7u3yitlRALbmDQiFhQ=;
-	b=t7zxPixu7qaYG51JCvo1ZOQWA/ACxTuuj8zFnDgHzHPztgwklM3NQLGEeGfO8BtnUwz/9i
-	pMirW20R4/jgtZHyn4BZtu2Aw10yVVIbYif1WtvymjBtuXW6Zq1kE8o3Ub5vLfyVU7QfxG
-	0UvoNfkcKVyNQgQNJYAtQZTDia3pdd9N/ttYXkZL5zIN0Qlcjw7QPiLkgaz6k5y0x62R9d
-	gb4gV1ENpfo41Fs4Vh9hxDWidwK3q5uwumbcrHQ6ypY/0fa2+ZRexzovLfG0d0Iuv2RrWA
-	6nfB/08D+O2qpTLhxDIfCO1B7j8WuvenOW9n9RbCBDfUh2ZAZfAWfLtdRXNmtg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711278262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2/mH+jshQDq36UblDsSyrijdM7u3yitlRALbmDQiFhQ=;
-	b=0zP5b/bmPCg1ZQGyVupWSN3TpJwnNzP0yHkov/wwsnDRr2CvA/XIPR6n90Ossh1xnUewt0
-	gBjxUzMze3k1OaAQ==
-To: Thomas Gleixner <tglx@linutronix.de>, Sagi Maimon <maimon.sagi@gmail.com>
-Cc: richardcochran@gmail.com, luto@kernel.org, mingo@redhat.com,
- bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- arnd@arndb.de, geert@linux-m68k.org, peterz@infradead.org,
- hannes@cmpxchg.org, sohil.mehta@intel.com, rick.p.edgecombe@intel.com,
- nphamcs@gmail.com, palmer@sifive.com, keescook@chromium.org,
- legion@kernel.org, mark.rutland@arm.com, mszeredi@redhat.com,
- casey@schaufler-ca.com, reibax@gmail.com, davem@davemloft.net,
- brauner@kernel.org, linux-kernel@vger.kernel.org,
- linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
-In-Reply-To: <875xxdhj8k.ffs@tglx>
-References: <878r29hjds.ffs@tglx> <875xxdhj8k.ffs@tglx>
-Date: Sun, 24 Mar 2024 12:04:20 +0100
-Message-ID: <87msqnrivf.fsf@kurt.kurt.home>
+	s=arc-20240116; t=1711278453; c=relaxed/simple;
+	bh=c4DwOWppSfnfeU/csggpl62l/AoBhxYYo3PnytUAr6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=olpnrykGYaBdUpDL3IxelmAEklFq3HW/9D0jJh/S3n0f3Zh4z1XPBz4foNI/nVfAI2MhO+sGRiYKgvdHDnvvlOIcTKyKeaOJHbRx4FQD0dfxZRiop8wFkOgeNOhKmhLjpZxUam/CrN2kWwCK9pd7PxvpTd92wOFarCHbWtKzunE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f+Gs6Z+c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00201C433F1;
+	Sun, 24 Mar 2024 11:07:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711278451;
+	bh=c4DwOWppSfnfeU/csggpl62l/AoBhxYYo3PnytUAr6g=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=f+Gs6Z+chTKB0PynaDzxKDYVMmzLIQDib0BphLl9FOGvJ1foQe/nljTsYbLPD5in5
+	 5JlcLQCVTLeuwQnmK7mWGH4MlqyA8g3syPivr/diQf7OQz/IYnKThR/iWh8u79fCku
+	 /2mvNFaLqOkO+Ai7kE86b3sHbN7ZGk21udKOkzOTB7zaC6UA4cMlazn4yI9birZuHc
+	 KLVFQ5ytzdb5J97FVMGouLyjYARbW6wRbA5PVbFKdFxjOPTEJQXvivDXbtAOKK5gFz
+	 YdGoN/w5FVR0Pu2VfxaekhGeANIz2wlpj5Y/fG6EQJ5Pvkiv88AJ6RScBPAoV53WQ/
+	 y0d2JqZdbh1+Q==
+Date: Sun, 24 Mar 2024 11:07:15 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>, Lars-Peter Clausen
+ <lars@metafoo.de>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Matt Ranostay <matt@ranostay.sg>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: iio: health: maxim,max30102: fix
+ compatible check
+Message-ID: <20240324110715.0832e6d6@jic23-huawei>
+In-Reply-To: <20240317-bakery-numeric-a34b928efa6d@spud>
+References: <20240316-max30102_binding_fix-v1-1-e8e58f69ef8a@gmail.com>
+	<20240317-bakery-numeric-a34b928efa6d@spud>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
---=-=-=
-Content-Type: text/plain
+On Sun, 17 Mar 2024 14:37:39 +0000
+Conor Dooley <conor@kernel.org> wrote:
 
-On Sat Mar 23 2024, Thomas Gleixner wrote:
-> On Sat, Mar 23 2024 at 01:38, Thomas Gleixner wrote:
->> PTP_SYS_OFFSET_EXTENDED moves the outer sample points as close as
->> possible to the actual PCH read and provides both outer samples to user
->> space for analysis. It was introduced for a reason, no?
->
-> That said, it's a sad state of affairs that 16 drivers which did exist
-> before the introduction of the gettimex64() callback have not been
-> converted over to it within 4.5 years.
->
-> What's even worse is that 14 drivers have been merged _after_ the
-> gettimex64() callback got introduced without implementing it:
->
-
-[...]
-
-> 2020-11-05   drivers/net/dsa/hirschmann/hellcreek_ptp.c
-
-Oh, my bad. Let me switch this one to gettimex64() then.
+> On Sat, Mar 16, 2024 at 11:56:57PM +0100, Javier Carrasco wrote:
+> > The "maxim,green-led-current-microamp" property is only available for
+> > the max30105 part (it provides an extra green LED), and must be set to
+> > false for the max30102 part.
+> > 
+> > Instead, the max30100 part has been used for that, which is not
+> > supported by this binding (it has its own binding).
+> > 
+> > This error was introduced during the txt to yaml conversion.
+> > 
+> > Fixes: 5a6a65b11e3a ("dt-bindings:iio:health:maxim,max30102: txt to yaml conversion")
+> > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>  
+> 
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Applied to the fixes-togreg branch of iio.git (which I'll rebase on rc1 once available)
+and marked for stable.  Not really a critical thing to backport, but maybe it is worth
+doing as risk is very low
 
 Thanks,
-Kurt
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Jonathan
 
------BEGIN PGP SIGNATURE-----
+> 
+> > ---
+> >  Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml b/Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml
+> > index c13c10c8d65d..eed0df9d3a23 100644
+> > --- a/Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml
+> > @@ -42,7 +42,7 @@ allOf:
+> >        properties:
+> >          compatible:
+> >            contains:
+> > -            const: maxim,max30100
+> > +            const: maxim,max30102
+> >      then:
+> >        properties:
+> >          maxim,green-led-current-microamp: false
+> > 
+> > ---
+> > base-commit: c1f10ac840caced7a9f717d4170dcc14b3fac076
+> > change-id: 20240316-max30102_binding_fix-898e7c94cce9
+> > 
+> > Best regards,
+> > -- 
+> > Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> >   
 
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmYACLQTHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzgkX6D/0Up3j+XE9kDqSQoc2pu9NoxF6Srmub
-lTxnMPB7Vq5dkXM1EYUhK4Mji31dmYDdt70y0O9DrAke9RcGbWk3v45Yb2fMMWNe
-UHjol/JoZIuFdqOw8Tm8soYkB76mf1vTBgZvwDJrmBoJhVYHGZgpQhd7/VxRp1Kn
-TON3EpUj1kH9BoZTmzai8NFVivqMPrkdJTtErYZckaD7uO3lqxzTQsQ1C3SPaqZM
-TGe/WHSDudT6vov8ousEzNxoHPJt/JcJj9CFJnyYVk1wtaGBrbuU68tht4AgBd7o
-v6jiTKxpGFFqtMZISPLUgYasPwUjxCgsrEVxQmQGBzZOG+nHfP+kKKEwgafV+HSc
-jZOK52LBnaaVCdGIlwEMJUOpk8AVN6rReeUqWIHJEcezKUVn6Elo3RRyrH33aq5t
-L6sm3k1IzMGHwyhmLgp6ep/YDBHgWbSJ3qXyEr7Bet7Zq99IiynTLg11GX68QSc2
-MVBb1zldKucN3BnFl2B6sqwexbtxPNGNm5dXPJWKLLIdmh47kVFOH4+0fvwBpveu
-5Gwp5q+JZYSlqit9SfLkt2jRORt1MZmwxn4JH06+23CQ+fT/+uQBZMA8AfUtK4PJ
-7+R8WDXAZnr/ZDjXzv5zJbj49Z3X8CPKFFGWfQdCC16VMpUQPDLLslO4nZFnrXtM
-Ig6ltOiLusm+Ew==
-=e9pu
------END PGP SIGNATURE-----
---=-=-=--
 
