@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70E4F888B93
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:53:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AFD3888B9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:54:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2610A1F27DE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:53:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCA6F1C29754
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3E82ADE01;
-	Sun, 24 Mar 2024 23:57:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43FE18AC7A;
+	Sun, 24 Mar 2024 23:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p4t+Kg4U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ib70hQAz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8892365BF;
-	Sun, 24 Mar 2024 23:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EF0236CF9;
+	Sun, 24 Mar 2024 23:18:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322304; cv=none; b=G8iIlMo4nyVLmqFccRwvsGdU9DumitTbwQAq4W9XXA29ZMLNnGir3QWL9EurgwX74K736Q480Zh6B/vDPTwDgcKxgFp5EvXzAv2A05/ss/bLvPVYLkTVw4i9eTyQK5eVc8Qq8jR10Ll/zPDS1HIWqyEtkt0xuCpJs45a/ke931w=
+	t=1711322306; cv=none; b=IpMFtWWNKuY+HG2oZW62vciE6Q1W61Cxkbr+zLadm58TdGO5SuSZkKoZf4PNhTzzf4HoaBgiScC5a1WNA3OXLaMrgpsHS77hOns2g/YejbkJ9uby1tJFeZL/2eHBf+g9cED3qN7cr+606UOpCWIc7yY83GvA3MNgxB9gzfO4ewk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322304; c=relaxed/simple;
-	bh=c5HtwREgdbx3pjbaaaxDoZl/rJ5CeduvwI9/zEFsZ0w=;
+	s=arc-20240116; t=1711322306; c=relaxed/simple;
+	bh=3eHSTzGY+volY8I/DIfRwdW3njJqTlBMcRH+oJB3T0E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rzln+1mOLjuSuHUed7/iCFtPrOoKo1ZohyLzXZGx1dYGwYu2xYrOJ0dbrAdKML4DimUk7rNXIaZZHVso50n/xJ2RffEQI+WMy+L9HFJuLgCO/1KrEzT1ELahXtETOLTw1DQgEv1VFK6TgX1I651/cc9VFiTVse1QHBST1yT4QE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p4t+Kg4U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E78EC43390;
-	Sun, 24 Mar 2024 23:18:22 +0000 (UTC)
+	 MIME-Version; b=mldvClSNfsFyMUBdiR2otvK1QycHPpxQ3WSmo73S3YYQeAJZ5Ll8hfO4eaUTPSX24XsIQ9YrocqONi9JWyq+sLffNB8InXAmEU11gfNxY8XU/FoiTeFJUQ3Jb3jWDEAhhjFCNcq/hDaa7nGk5KycUAYNm2D5Q5ClqoypnUIFd+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ib70hQAz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A416C43394;
+	Sun, 24 Mar 2024 23:18:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322303;
-	bh=c5HtwREgdbx3pjbaaaxDoZl/rJ5CeduvwI9/zEFsZ0w=;
+	s=k20201202; t=1711322304;
+	bh=3eHSTzGY+volY8I/DIfRwdW3njJqTlBMcRH+oJB3T0E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=p4t+Kg4UXeGtg6n1JZzCRtypQwuoB777703YHzDi3SoaICxT1KStv7BW+jN6nzwYe
-	 33ST/i1I3qURkl/G/ALnlk4GxvKzbUtSVsyMNjX1tH0od5x0Bw84c/hF+xr+GEDdg/
-	 7zEsd5phpwvnXCn53iApAU2k38Ppg9xOy0JXk+flMlKIVpyAQz6ztyfgbCZC6xMBoi
-	 sO0IfsLJa9+8QFZ3JQN0XcXq0/dZl+xJBqKH5Bdf9ylys7ofCXifOyLj9LKtULqRjc
-	 1vLMKJfiz+j0bmtkkJdcGSQm/aGKJh5FbvVNciCK4Rn1sZHeIYMSbPrNOC2MpCx58A
-	 G2rSDkKJbfrRQ==
+	b=Ib70hQAz8zve4ew/I7pbh4zY1OglY2Kxx5f1p9u/wrnRk8eZGj+sujza6oVCmjgsJ
+	 ONfuXN6q1bdPoNuOQ47umnhMhrPOsRsPwD/QfDg1IVMX1XbjIvr2uUvR+gjvVvuQam
+	 Iw8vi8aa5g6RVUvQysf5c6g27KfqJS5YUUgscGJCj4xQwAg1IV2CUaRx8Npmj6IUI9
+	 ++Pj1C5Opw2QIkI+QwImBvcuGHIxx04TugguBlIx3Q6jV/mIgTen6UXR2o8dLt4IIc
+	 mvOOAfHEunhJBRO2LOlR+X+2MQmZNf+N2NlPt3iqDVdy5aOAy7zO1wqrfyNdSG1Leb
+	 wEtOeWmybxV/w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
+Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	kernel test robot <lkp@intel.com>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 386/451] remoteproc: stm32: use correct format strings on 64-bit
-Date: Sun, 24 Mar 2024 19:11:02 -0400
-Message-ID: <20240324231207.1351418-387-sashal@kernel.org>
+Subject: [PATCH 6.1 387/451] remoteproc: stm32: Fix incorrect type in assignment for va
+Date: Sun, 24 Mar 2024 19:11:03 -0400
+Message-ID: <20240324231207.1351418-388-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -63,91 +63,54 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 
-[ Upstream commit 03bd158e1535e68bcd2b1e095b0ebcad7c84bd20 ]
+[ Upstream commit 32381bbccba4c21145c571701f8f7fb1d9b3a92e ]
 
-With CONFIG_ARCH_STM32 making it into arch/arm64, a couple of format
-strings no longer work, since they rely on size_t being compatible
-with %x, or they print an 'int' using %z:
+The sparse tool complains about the attribute conversion between
+a _iomem void * and a void *:
 
-drivers/remoteproc/stm32_rproc.c: In function 'stm32_rproc_mem_alloc':
-drivers/remoteproc/stm32_rproc.c:122:22: error: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'size_t' {aka 'long unsigned int'} [-Werror=format=]
-drivers/remoteproc/stm32_rproc.c:122:40: note: format string is defined here
-  122 |         dev_dbg(dev, "map memory: %pa+%x\n", &mem->dma, mem->len);
-      |                                       ~^
-      |                                        |
-      |                                        unsigned int
-      |                                       %lx
-drivers/remoteproc/stm32_rproc.c:125:30: error: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'size_t' {aka 'long unsigned int'} [-Werror=format=]
-drivers/remoteproc/stm32_rproc.c:125:65: note: format string is defined here
-  125 |                 dev_err(dev, "Unable to map memory region: %pa+%x\n",
-      |                                                                ~^
-      |                                                                 |
-      |                                                                 unsigned int
-      |                                                                %lx
-drivers/remoteproc/stm32_rproc.c: In function 'stm32_rproc_get_loaded_rsc_table':
-drivers/remoteproc/stm32_rproc.c:646:30: error: format '%zx' expects argument of type 'size_t', but argument 4 has type 'int' [-Werror=format=]
-drivers/remoteproc/stm32_rproc.c:646:66: note: format string is defined here
-  646 |                 dev_err(dev, "Unable to map memory region: %pa+%zx\n",
-      |                                                                ~~^
-      |                                                                  |
-      |                                                                  long unsigned int
-      |                                                                %x
+stm32_rproc.c:122:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *va @@     got void [noderef] __iomem * @@
+stm32_rproc.c:122:12: sparse:     expected void *va
+stm32_rproc.c:122:12: sparse:     got void [noderef] __iomem *
 
-Fix up all three instances to work across architectures, and enable
-compile testing for this driver to ensure it builds everywhere.
+Add '__force' to explicitly specify that the cast is intentional.
+This conversion is necessary to cast to virtual addresses pointer,used,
+by the remoteproc core.
 
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Stable-dep-of: 32381bbccba4 ("remoteproc: stm32: Fix incorrect type in assignment for va")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312150052.HCiNKlqB-lkp@intel.com/
+Fixes: 13140de09cc2 ("remoteproc: stm32: add an ST stm32_rproc driver")
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Link: https://lore.kernel.org/r/20240117135312.3381936-2-arnaud.pouliquen@foss.st.com
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/Kconfig       | 2 +-
- drivers/remoteproc/stm32_rproc.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/remoteproc/stm32_rproc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index 1660197866531..d93113b6ffaa1 100644
---- a/drivers/remoteproc/Kconfig
-+++ b/drivers/remoteproc/Kconfig
-@@ -313,7 +313,7 @@ config ST_SLIM_REMOTEPROC
- 
- config STM32_RPROC
- 	tristate "STM32 remoteproc support"
--	depends on ARCH_STM32
-+	depends on ARCH_STM32 || COMPILE_TEST
- 	depends on REMOTEPROC
- 	select MAILBOX
- 	help
 diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 8746cbb1f168d..e432febf4337b 100644
+index e432febf4337b..722cf1cdc2cb0 100644
 --- a/drivers/remoteproc/stm32_rproc.c
 +++ b/drivers/remoteproc/stm32_rproc.c
-@@ -118,10 +118,10 @@ static int stm32_rproc_mem_alloc(struct rproc *rproc,
- 	struct device *dev = rproc->dev.parent;
+@@ -119,7 +119,7 @@ static int stm32_rproc_mem_alloc(struct rproc *rproc,
  	void *va;
  
--	dev_dbg(dev, "map memory: %pa+%x\n", &mem->dma, mem->len);
-+	dev_dbg(dev, "map memory: %pad+%zx\n", &mem->dma, mem->len);
- 	va = ioremap_wc(mem->dma, mem->len);
+ 	dev_dbg(dev, "map memory: %pad+%zx\n", &mem->dma, mem->len);
+-	va = ioremap_wc(mem->dma, mem->len);
++	va = (__force void *)ioremap_wc(mem->dma, mem->len);
  	if (IS_ERR_OR_NULL(va)) {
--		dev_err(dev, "Unable to map memory region: %pa+%x\n",
-+		dev_err(dev, "Unable to map memory region: %pad+0x%zx\n",
+ 		dev_err(dev, "Unable to map memory region: %pad+0x%zx\n",
  			&mem->dma, mem->len);
- 		return -ENOMEM;
- 	}
-@@ -627,7 +627,7 @@ stm32_rproc_get_loaded_rsc_table(struct rproc *rproc, size_t *table_sz)
+@@ -136,7 +136,7 @@ static int stm32_rproc_mem_release(struct rproc *rproc,
+ 				   struct rproc_mem_entry *mem)
+ {
+ 	dev_dbg(rproc->dev.parent, "unmap memory: %pa\n", &mem->dma);
+-	iounmap(mem->va);
++	iounmap((__force __iomem void *)mem->va);
  
- 	ddata->rsc_va = devm_ioremap_wc(dev, rsc_pa, RSC_TBL_SIZE);
- 	if (IS_ERR_OR_NULL(ddata->rsc_va)) {
--		dev_err(dev, "Unable to map memory region: %pa+%zx\n",
-+		dev_err(dev, "Unable to map memory region: %pa+%x\n",
- 			&rsc_pa, RSC_TBL_SIZE);
- 		ddata->rsc_va = NULL;
- 		return ERR_PTR(-ENOMEM);
+ 	return 0;
+ }
 -- 
 2.43.0
 
