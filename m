@@ -1,134 +1,153 @@
-Return-Path: <linux-kernel+bounces-112805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8C5E887E5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:31:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2720887E5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 19:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3FB81C20EFD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:31:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5756A281866
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 18:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6DD7469;
-	Sun, 24 Mar 2024 18:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F63D51D;
+	Sun, 24 Mar 2024 18:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="SMb0ksJ4"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RHG3XvMQ"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF4815BF
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 18:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2C36FB1;
+	Sun, 24 Mar 2024 18:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711305105; cv=none; b=dgDb+CNtIQyQaAyiAGHrpR0RFiaRt1Pb0H7tEGvbmRahqVXm5JKHSLfh38nk+tFSNWdh+IhtUdoDlTYeeBXTec9lOYLBt2xQucDYIG6BdVCeQBqf2otY/Xx5elZraYBxwK7KLeOfJ3Y1b/tHLbE6KeNIRZ9DJAibE7Piymc3Jtk=
+	t=1711305153; cv=none; b=iQauoCGEPdFeO6OpQ+pgeWsPehW/q0dDV/siTPqgTDgwiXUh3q9oqvdnI6LqlzirJr0X27anukRcrnZO1jhK8lOcCQvlMWoOgdua0RhvTKJnw+LbTcY+xhlKvLa9/JtJQ3EZiXlPJR/fdDvEUk5kpqioUm1d2RQDVlzWXxRU7jE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711305105; c=relaxed/simple;
-	bh=uT3yI8Uw1SouPMeSzpY+y7bPttkZ7cNJNJQKqFxOnT4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Zvh7rR5ziE/RPv83+5RbkJKxW5N9H5YVb5rXbFlRbPl8NFOAzzZHviwDIx8GaiKyxfJDTtUYD2bJHDeV7k5Jf6A45LBr1cjNS0oIDcj5GajksBAFJXeHw+6WhutK/rxdMbbKQhI4aPFonpRCBiP8NvkKsyNEr61KUdBbjtlQPnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=SMb0ksJ4; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1711305100;
-	bh=uT3yI8Uw1SouPMeSzpY+y7bPttkZ7cNJNJQKqFxOnT4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=SMb0ksJ4ugEmykdfN1+cHUKjBNnqFS5Yvc7N+COJTWzMbY5Tk1eOlo4P5a9s7vxff
-	 d8dny4h8VHVT0M0d1Og6mq9BzCgQ2IwwTGdcjwKPaJhfqBbqQCL47bL1U1cq9T7RRA
-	 ZSPftAmjtlBOkU1QlYW8kFrPPktW+/vOJa0Jz2RM=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 128CD1A3FB4;
-	Sun, 24 Mar 2024 14:31:38 -0400 (EDT)
-Message-ID: <6cb0333cb0e60aa9f7e914af26c605d075f90d61.camel@xry111.site>
-Subject: Re: [PATCH] x86/mm: Don't disable INVLPG if "incomplete Global
- INVLPG flushes" is fixed by microcode
-From: Xi Ruoyao <xry111@xry111.site>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>,  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin"
- <hpa@zytor.com>, x86@kernel.org, linux-kernel@vger.kernel.org
-Date: Mon, 25 Mar 2024 02:31:37 +0800
-In-Reply-To: <319db7f3-7ce1-4096-a168-e5869c7a42f6@intel.com>
-References: <20240324170630.76084-1-xry111@xry111.site>
-	 <319db7f3-7ce1-4096-a168-e5869c7a42f6@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1711305153; c=relaxed/simple;
+	bh=xACiWGSfAwPijodTq1yeqLhtB8lO5Blz7Pu5eoZFipM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iJgXW7g3lKMojXMGw7IFstBz6LGmV3WVIkQcVdV1rYfYr9PeLsJRHeysgmSkYfXercGR1ZkDBhBEeJsaiQEU2lhCrf109uutGAgQmThbXPy/+x7k0y0tLWa3X5SloniqpzIBdMb+iwZSx+ULaGowbEpsZLo03r+riT+DeoKpgHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RHG3XvMQ; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4146e9e45c8so23581235e9.1;
+        Sun, 24 Mar 2024 11:32:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711305150; x=1711909950; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YgFoPDahBoX9a3c+u51n6JSDl+OQcVW6qMPz/uDOO3s=;
+        b=RHG3XvMQF//UNKZMYYtjyMH0kAtFATKdI1PcRj75D+j772sB4yQy6losGIRhkw7RWg
+         ZKlN6hbavbB7uIEjnc+/ipXA9Q4CEJ27m8zJlTwGf/Hk1xFpJZA6Jz34+XjKa/b8bdVe
+         7ArLfVOlHGyvZFHGfdmvPQuumDHO7pdLTcZlyontgPH3dPO4b7MDGRJ3bwlrKt+idwX1
+         qZu0MrvVhwfCfnyu/kt/WvqVimtBWrEoUxA2GLhwEGyoWtX1Hffd3G7cOlq/DQuJjtoq
+         dmxo4l1MnOg7DEKjM9/9dJa4wKk9BdD/FMtEQZ2XizElZZLvUV9zUNFosWQQJ/S3zBX2
+         WzLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711305150; x=1711909950;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YgFoPDahBoX9a3c+u51n6JSDl+OQcVW6qMPz/uDOO3s=;
+        b=T+MAwR2JClCaspD7vrTaJ4bj19PHbW+jyYo4akZP+Jinaqrm9UL/g/m/0grfIKjG7G
+         uZhGRjJY2XwoL8MDUx34KA/nO94kI5LqCSoWmuq1O+WTLr7cM8rliWThEL+fN1MHAIfy
+         F5QK1Iu5cSCROZVtkXvoY9hRt5RkVaMo3sXAA6TQWGK9ZDgAiI4lWW+e119/lQjGHq75
+         dLtuLIWsHba+mKER3Z/EIRm1sdpqqJYFaHD1eA/ppYS6FaTdmJsbZKxeY6HItShDFuBW
+         lkN5f5o8AlGWuJNEDwZut95wBmAMsLduQWFOAmoHZ+Q4tkqv93n12S1k083WR8F5upRS
+         wKUw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZs3bmtcx6jiHT4aJwp8ZfwKZR16pZqFLo+pYd289Yia1BJNeMa+6GmlcToXHBKAlx8ury4feJoufqWKfgXryghxblN3rsTc3p4TDchdUY/xXl9VWIpHH08ZCS87/oS1DZBvcAwJtCwfet2BwC7iKJ0TEWAl+2+wu0
+X-Gm-Message-State: AOJu0YyGEEnvMfFdLI3vLJC+X7npks109GZwR0GRv+5eyS4WWK/25V0X
+	ZkwqdttSyHg/kqcNcM2+cgvR2VuvsXHARno5qD8v27h7jlDV+V1e
+X-Google-Smtp-Source: AGHT+IGM53m/kDUbq4T3NKJK2jcfwadv9V6wq5bIhWTQF7ZAq8xCTABqtr0XCIKZPrN42QueJyRoIQ==
+X-Received: by 2002:a05:6000:4012:b0:341:cb34:780a with SMTP id cp18-20020a056000401200b00341cb34780amr1386181wrb.28.1711305150093;
+        Sun, 24 Mar 2024 11:32:30 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id t13-20020a5d42cd000000b0033ec312cd8asm7374018wrr.33.2024.03.24.11.32.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 24 Mar 2024 11:32:29 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next] bpf: implement insn_is_cast_user() helper for JITs
+Date: Sun, 24 Mar 2024 18:32:26 +0000
+Message-Id: <20240324183226.29674-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sun, 2024-03-24 at 11:29 -0700, Dave Hansen wrote:
-> On 3/24/24 10:06, Xi Ruoyao wrote:
-> > +/*
-> > + * INVLPG issue is fixed with intel-microcode-20240312 for all
-> > + * affected models.=C2=A0 This table is taken from the release note
-> > + * of this microcode release.
-> > + */
->=20
-> That comment is much more changelog material than code comment material.
->=20
-> > +static const struct x86_cpu_desc invlpg_miss_fixed_ucode[] =3D {
-> > +	INTEL_CPU_DESC(INTEL_FAM6_ALDERLAKE,		2, 0x34),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_ALDERLAKE,		5, 0x34),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_ALDERLAKE_L,		3, 0x432),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_ALDERLAKE_L,		4, 0x432),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_ATOM_GRACEMONT,	0, 0x15),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_RAPTORLAKE,		1, 0x122),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_RAPTORLAKE_P,		2, 0x4121),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_RAPTORLAKE_P,		3, 0x4121),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_RAPTORLAKE_S,		2, 0x34),
-> > +	INTEL_CPU_DESC(INTEL_FAM6_RAPTORLAKE_S,		5, 0x34),
-> > +	{}
-> > +};
->=20
-> Why is this listing individual steppings?=C2=A0 That seems nuts when the
-> issue affects *all* steppings or at least the invlpg_miss_ids[] table
-> says it affects all steppings.
->=20
-> The right way to do this is to take the existing table:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INTEL_MATCH(INTEL_FAM6_ALDERLA=
-KE=C2=A0=C2=A0 ),
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INTEL_MATCH(INTEL_FAM6_ALDERLA=
-KE_L ),
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INTEL_MATCH(INTEL_FAM6_ATOM_GR=
-ACEMONT ),
->=20
-> and simply add the fix version:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INTEL_WHATEVER(INTEL_FAM6_ALDE=
-RLAKE,=C2=A0	=C2=A0 0x034),
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INTEL_WHATEVER(INTEL_FAM6_ALDE=
-RLAKE_L,=C2=A0	=C2=A0 0x432),
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INTEL_WHATEVER(INTEL_FAM6_ATOM=
-_GRACEMONT, 0x015),
->=20
-> Then you do:
->=20
-> 	c =3D x86_match_cpu(invlpg_miss_ids);
-> 	if (boot_cpu_data.microcode >=3D c->data)
-> 		return 0; // no mitiagtion
-> 	// affected, do mitigation
->=20
-> Then there's *one* table listing each model once and no steppings.=C2=A0 =
-I
-> thought there's another example of this _somewhere_ but I couldn't find
-> it in two minutes of grepping.
+Implement a helper function to check if an instruction is
+addr_space_cast from as(0) to as(1). Use this helper in the x86 JIT.
 
-Hmm, I also thought there should be this thing but I couldn't find it...
-Let me try again.
+Other JITs can use this helper when they add support for this instruction.
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ arch/x86/net/bpf_jit_comp.c |  3 +--
+ include/linux/filter.h      | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 9b3136187938..98349d11fae2 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1350,8 +1350,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+ 			break;
+ 
+ 		case BPF_ALU64 | BPF_MOV | BPF_X:
+-			if (insn->off == BPF_ADDR_SPACE_CAST &&
+-			    insn->imm == 1U << 16) {
++			if (insn_is_cast_user(insn)) {
+ 				if (dst_reg != src_reg)
+ 					/* 32-bit mov */
+ 					emit_mov_reg(&prog, false, dst_reg, src_reg);
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index cf12bfa2a78c..42dbceb04ca6 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -228,6 +228,16 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+ 	return insn->code == (BPF_ALU | BPF_MOV | BPF_X) && insn->imm == 1;
+ }
+ 
++/* addr_space_cast from as(0) to as(1) is for converting bpf arena pointers
++ * to pointers in user vma.
++ */
++static inline bool insn_is_cast_user(const struct bpf_insn *insn)
++{
++	return insn->code == (BPF_ALU64 | BPF_MOV | BPF_X) &&
++			      insn->off == BPF_ADDR_SPACE_CAST &&
++			      insn->imm == 1U << 16;
++}
++
+ /* BPF_LD_IMM64 macro encodes single 'load 64-bit immediate' insn */
+ #define BPF_LD_IMM64(DST, IMM)					\
+ 	BPF_LD_IMM64_RAW(DST, 0, IMM)
+-- 
+2.40.1
+
 
