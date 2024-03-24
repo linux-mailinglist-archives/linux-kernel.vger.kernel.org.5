@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-115863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A95D889D5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:42:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1508088984E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:35:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 021A12A701A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:42:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 468D01C31956
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5FE4380800;
-	Mon, 25 Mar 2024 03:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFCA37F7FE;
+	Mon, 25 Mar 2024 03:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BvjhK9sg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TkWgnL6m"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9792A146004;
-	Sun, 24 Mar 2024 23:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C59B535D6;
+	Sun, 24 Mar 2024 23:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322067; cv=none; b=bFQdzwi4ORaNih4c6SlgivkxC01wKsvHvcixi8WXlEMfYrWiTAEzebYVnfY98nCr4qVTbeAgrvEOjygAD3UHEIrw2WfdQZEH+XiTl+ZhNgLMDAp31+qslc1bq6jebwoc37xwwgPbVEH7Y0KMeV26R+BWraZ0Pqc6l+O7bw+r3q4=
+	t=1711322068; cv=none; b=tRdgUdKMYLykBI6VxQaCwsZDW3G+xdWWxvLlcHxr+T82ggMjnST2bmngqyFLmnUG44N8/ZA19WNxYcoG5Lab2nkrNK1amDsxPopJ1YDoKgD1TPGpbtcpVGYQQycumwdDFTKR4KvsyiNRmkvF0xbJ3tWBY2PwLIcmh7N9tDIJr8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322067; c=relaxed/simple;
-	bh=jubhwmrQUsrVgFdJLK6lEL3+DBrHBzq3x+JNYFWCb2c=;
+	s=arc-20240116; t=1711322068; c=relaxed/simple;
+	bh=k/1149o3J3CwTsV927N69j7If6yH6EDi0cJzlDfc+/0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oNmU5dBe1viFt7uzrOu1VZLNwB/Tzi2NCsx/7d2B34MxTB4Nx5vtzYA9efgCeX8AyaoEey3fOdtWH5acqnNjfz523KvN/jcRHYXaet4OEIBZgKdNkpOifSuTcqeEk568BcAB7gu05PVEcvUjjsBJg5t7usRwFbBC31IE9aZ1nh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BvjhK9sg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92613C43394;
-	Sun, 24 Mar 2024 23:14:26 +0000 (UTC)
+	 MIME-Version; b=HvMKcdAGJ98Gb1sEGqnuUcCdieIVvXwAJ2Op5X3P3dWFNJisKibHPWQO49OFr4kzmMGf82DomvlhKi1/Y0DPJgbKwXFeTDHa11XUO9Y4liLVnQw6Oy7lrRphM+Ho4GzlVIc2QVNjbxBoNHThlv2UsSfOtsODcr/8j4ouFbBilM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TkWgnL6m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE56C43399;
+	Sun, 24 Mar 2024 23:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322067;
-	bh=jubhwmrQUsrVgFdJLK6lEL3+DBrHBzq3x+JNYFWCb2c=;
+	s=k20201202; t=1711322068;
+	bh=k/1149o3J3CwTsV927N69j7If6yH6EDi0cJzlDfc+/0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BvjhK9sgmVNzJjOPD/T1jSIzwi/vEgMulMzArYwGMDECXCY50ZUKdGZgsadccEQKM
-	 BRlPVOPtqjDBBSfuazn1TNLeUPRUV6TrLKebCnEv8qqEtBBnN+C3xJ81IN9GwbQGhF
-	 DJp3w380H6ZwWblxx/s743Ecjn2S2X87x1RHR7kv3qBZ0z+yN1CH04WzG0EHA3mB7n
-	 jBIKHgq9dKRxushHLF+lbv1Zyu8MNkF23gLAqNHl2V6K7S2xI0tq8+1QhSdXxV5cGH
-	 5moRPE3QrqatfdPxOaO880gptXe9rrPhO6Y0wd28M2uXbQ6jCCSmpzxNw/EqywQWIl
-	 ge+Ek4gBsprXg==
+	b=TkWgnL6mwEYQgcNj/huZv4InXfMrswmSziZNo9/vRSjyUY9AzTLH1H641BLFlmQ3c
+	 3K8BySz26V3lQjwg8Tt0TeCe428hB2o3RHcXjUkLc5fmr3iVqiS32p7AoyfaYCJwho
+	 4Lb6hQMHM1knRdZ/q7Q02xHGijvlQJCvH05vPS9mQDvW+r5zcwz13XhoA9nRpunNmH
+	 zFGG6dtDld2fZz0U1CVadiRrUJGTKvy+v7gxwG3JpJBKAIrqDc0vGsNBeP5eUaNJ9R
+	 oaJKcOd++OB1z40AvtGzeMthvBFJI18HB3ATCCAhYkPV/mJ6y/vCS3f1C3ID1DVvmi
+	 sf+tQlS6k0LWQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Eric Dumazet <edumazet@google.com>,
-	Taehee Yoo <ap420073@gmail.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	David Ahern <dsahern@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 140/451] ipv6: mcast: remove one synchronize_net() barrier in ipv6_mc_down()
-Date: Sun, 24 Mar 2024 19:06:56 -0400
-Message-ID: <20240324231207.1351418-141-sashal@kernel.org>
+Subject: [PATCH 6.1 141/451] arm64: dts: mt8183: kukui: Split out keyboard node and describe detachables
+Date: Sun, 24 Mar 2024 19:06:57 -0400
+Message-ID: <20240324231207.1351418-142-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -65,41 +62,104 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Eric Dumazet <edumazet@google.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit 17ef8efc00b34918b966388b2af0993811895a8c ]
+[ Upstream commit 82492c4ef8f65f93cd4a35c4b52518935acbb2fa ]
 
-As discussed in the past (commit 2d3916f31891 ("ipv6: fix skb drops
-in igmp6_event_query() and igmp6_event_report()")) I think the
-synchronize_net() call in ipv6_mc_down() is not needed.
+Kukui devices krane, kodana, and kakadu use detachable keyboards, which
+only have switches to be registered.
 
-Under load, synchronize_net() can last between 200 usec and 5 ms.
+Change the keyboard node's compatible of those boards to the newly
+introduced "google,cros-ec-keyb-switches", which won't include matrix
+properties.
 
-KASAN seems to agree as well.
-
-Fixes: f185de28d9ae ("mld: add new workqueues for process mld events")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Taehee Yoo <ap420073@gmail.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Link: https://lore.kernel.org/r/20220527045353.2483042-1-hsinyi@chromium.org
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Stable-dep-of: 04bd6411f506 ("arm64: dts: mt8183: Move CrosEC base detection node to kukui-based DTs")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/mcast.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi | 2 ++
+ arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi  | 6 ++++++
+ arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi  | 6 ++++++
+ arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi   | 6 ++++++
+ arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi         | 1 -
+ 5 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-index 566f3b7b957e9..a777695389403 100644
---- a/net/ipv6/mcast.c
-+++ b/net/ipv6/mcast.c
-@@ -2722,7 +2722,6 @@ void ipv6_mc_down(struct inet6_dev *idev)
- 	/* Should stop work after group drop. or we will
- 	 * start work again in mld_ifc_event()
- 	 */
--	synchronize_net();
- 	mld_query_stop_work(idev);
- 	mld_report_stop_work(idev);
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+index dccf367c7ec6c..3d95625f1b0b4 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
+@@ -4,6 +4,8 @@
+  */
  
+ #include "mt8183-kukui.dtsi"
++/* Must come after mt8183-kukui.dtsi to modify cros_ec */
++#include <arm/cros-ec-keyboard.dtsi>
+ 
+ / {
+ 	panel: panel {
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
+index 50a0dd36b5fb3..a11adeb29b1f2 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
+@@ -372,6 +372,12 @@ pen_eject {
+ 	};
+ };
+ 
++&cros_ec {
++	keyboard-controller {
++		compatible = "google,cros-ec-keyb-switches";
++	};
++};
++
+ &qca_wifi {
+ 	qcom,ath10k-calibration-variant = "GO_KAKADU";
+ };
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
+index 06f8c80bf5536..4864c39e53a4f 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
+@@ -339,6 +339,12 @@ touch_pin_reset: pin_reset {
+ 	};
+ };
+ 
++&cros_ec {
++	keyboard-controller {
++		compatible = "google,cros-ec-keyb-switches";
++	};
++};
++
+ &qca_wifi {
+ 	qcom,ath10k-calibration-variant = "GO_KODAMA";
+ };
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+index a7b0cb3ff7b0a..d5f41c6c98814 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+@@ -343,6 +343,12 @@ rst_pin {
+ 	};
+ };
+ 
++&cros_ec {
++	keyboard-controller {
++		compatible = "google,cros-ec-keyb-switches";
++	};
++};
++
+ &qca_wifi {
+ 	qcom,ath10k-calibration-variant = "LE_Krane";
+ };
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+index a428a581c93a8..de610874a9125 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+@@ -999,5 +999,4 @@ hub@1 {
+ 	};
+ };
+ 
+-#include <arm/cros-ec-keyboard.dtsi>
+ #include <arm/cros-ec-sbs.dtsi>
 -- 
 2.43.0
 
