@@ -1,65 +1,55 @@
-Return-Path: <linux-kernel+bounces-115498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5173B889BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:06:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93C0888871C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2E51F35A7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:06:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A8311F22ADA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A4A23318F;
-	Mon, 25 Mar 2024 02:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD5E13957C;
+	Sun, 24 Mar 2024 23:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HO/tKpNz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FG+8msFS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A672B1EBD2F;
-	Sun, 24 Mar 2024 22:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F0D1EBD3E;
+	Sun, 24 Mar 2024 22:55:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320932; cv=none; b=NhKCzo9Wls5lMy0J4PkoMKP6+aDeDTe3R1Ha8sybjSHfajAiW4UwecaoJLguSDz2ShuAiEUPU1sIEVvpONjo64l4cgnjsI5mPFrQj0xij0fwCJ2JcEohJwr36TY2x7y7w2DxE3xaCoD24XfAK/CXa6Ve+1uimoTl9G3ibgjxfts=
+	t=1711320934; cv=none; b=of/Tl2BDhA2crAT3YAF8H35iSuYIiw7UF/2N18sQ54zB4JBEJuCz5j4bnnXQ1wRQVacuADJ+IrzdF6wEIjq/qiiaqaiPcc9flHdrKlA0Al9a+uzJwZI6LTPTeClFdVjpa4MtA9yV0kzQLLYkH9uoXVwFMLkPu48zyGcHPv1eADA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320932; c=relaxed/simple;
-	bh=Mk6BwSDODLAoCOkqq1DtmiubF/y+lT1FgIFrQKXte1I=;
+	s=arc-20240116; t=1711320934; c=relaxed/simple;
+	bh=8NG5ryWG5HYBva078aNyd9BCSi5cg3Cn9gXeZNtAs18=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P5+mD3T9eCikB39LbJHIZbU5iptjikoSaJG1w8aIRL9Yz774ZK0pMNS6ZBNh85FPwJIKd27JIvEnHOAAW2M5ryWsqQgKTaEl1pD3BN93/GApi6qrrJy2OjcrQeni0rgaoKk/yyw970B9Pg//pr2zXBIAhAOGiwjWXv4zCFEP1lA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HO/tKpNz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51BE3C43399;
-	Sun, 24 Mar 2024 22:55:30 +0000 (UTC)
+	 MIME-Version; b=tfKFSigS4J207MYEs5701RJupoKci5uuCoSWmXNo7jkC3hxp/jkbVZ/68LScM8RSkyVp5Ee5IbOi6JeKGkV6qWM2+9oSYcq+bZE0zM5KHAahOD+OWl85P6ShWQywUZlF6zqMAOX9vQb3K4NwkJulgMon3sRUFG0QEO6dqhWHhow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FG+8msFS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E5A8C433C7;
+	Sun, 24 Mar 2024 22:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320932;
-	bh=Mk6BwSDODLAoCOkqq1DtmiubF/y+lT1FgIFrQKXte1I=;
+	s=k20201202; t=1711320933;
+	bh=8NG5ryWG5HYBva078aNyd9BCSi5cg3Cn9gXeZNtAs18=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HO/tKpNzfHaywlZOZK1wU95+XuKDdWm5QZyC4f0WtsZKQV5Emxt4Wwqa/L8DAAQl/
-	 L+MvS3CsdmkaqzVxlzH90vLAhLcNJcPYt7PL9zUCRT1Dn+eVxMRrYzeozd01GPHYVG
-	 OVs61BI/0aSkaHRhigmAK8jsXNdZBx+NeBvhj/aVlDb2kaRbZD9vNzEKoGy3p1q3f0
-	 Sy2IJkCOqkNJ5W1V69J7A4v2N7BjR+1gu9/ldrsieC24vrg35+kxBKSz27Vaem9GhA
-	 oI3+Ln4WemJ5XZt808/fYgrUlNOqhNgJU9LU27bGPMNG6MjTjGXY8M7PAvKlaKa+BO
-	 BJ9BYeUqa3mzg==
+	b=FG+8msFSiizair3Wx1TSUDCNJ+y7u7y0JPo2QXYxt5RxtlZq9FwDN+YxiLclGzWpZ
+	 zJPZmNWj8mV78rcSrzBwtnBySnsNcYzox4ElevC72RT/e3jux4NXvAZkGbLuVu5XhB
+	 zlDnGCaQEzFfEWcmgR3S9V4R2Vfk2XTiRwCbcpfwmg/JCPxO6aqDSvj3Nbhz3/ia6L
+	 YtfEYb2oz9avYGYzXJX4FEAAkbZCTefTSv0DMYbcraastuXkdmcR+yppB+6nn6KUwx
+	 EN0W0di4bFi34fbb2EL1p1vb96lyeB6hC3Jez/m8bvLTghRjF+hX5/KjXgqTxwvi4G
+	 OsGyn03EsiaWg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	Ian Rogers <irogers@google.com>,
-	James Clark <james.clark@arm.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Hector Martin <marcan@marcan.st>,
-	John Garry <john.g.garry@oracle.com>,
-	Leo Yan <leo.yan@linux.dev>,
-	Mike Leach <mike.leach@linaro.org>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Namhyung Kim <namhyung@kernel.org>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 495/713] perf print-events: make is_event_supported() more robust
-Date: Sun, 24 Mar 2024 18:43:41 -0400
-Message-ID: <20240324224720.1345309-496-sashal@kernel.org>
+Subject: [PATCH 6.7 496/713] crypto: arm/sha - fix function cast warnings
+Date: Sun, 24 Mar 2024 18:43:42 -0400
+Message-ID: <20240324224720.1345309-497-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -73,151 +63,112 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 25412c0364f7110faa6053c73e3fd47ca956b8c3 ]
+[ Upstream commit 53cc9baeb9bc2a187eb9c9790d30995148852b12 ]
 
-Currently the perf tool doesn't detect support for extended event types
-on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
-hardware events into per-PMU events. This is due to the detection of
-extended event types not handling mandatory filters required by the
-M1/M2 PMU driver.
+clang-16 warns about casting between incompatible function types:
 
-PMU drivers and the core perf_events code can require that
-perf_event_attr::exclude_* filters are configured in a specific way and
-may reject certain configurations of filters, for example:
+arch/arm/crypto/sha256_glue.c:37:5: error: cast from 'void (*)(u32 *, const void *, unsigned int)' (aka 'void (*)(unsigned int *, const void *, unsigned int)') to 'sha256_block_fn *' (aka 'void (*)(struct sha256_state *, const unsigned char *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+   37 |                                 (sha256_block_fn *)sha256_block_data_order);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+arch/arm/crypto/sha512-glue.c:34:3: error: cast from 'void (*)(u64 *, const u8 *, int)' (aka 'void (*)(unsigned long long *, const unsigned char *, int)') to 'sha512_block_fn *' (aka 'void (*)(struct sha512_state *, const unsigned char *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+   34 |                 (sha512_block_fn *)sha512_block_data_order);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(a) Many PMUs lack support for any event filtering, and require all
-    perf_event_attr::exclude_* bits to be clear. This includes Alpha's
-    CPU PMU, and ARM CPU PMUs prior to the introduction of PMUv2 in
-    ARMv7,
+Fix the prototypes for the assembler functions to match the typedef.
+The code already relies on the digest being the first part of the
+state structure, so there is no change in behavior.
 
-(b) When /proc/sys/kernel/perf_event_paranoid >= 2, the perf core
-    requires that perf_event_attr::exclude_kernel is set.
-
-(c) The Apple M1/M2 PMU requires that perf_event_attr::exclude_guest is
-    set as the hardware PMU does not count while a guest is running (but
-    might be extended in future to do so).
-
-In is_event_supported(), we try to account for cases (a) and (b), first
-attempting to open an event without any filters, and if this fails,
-retrying with perf_event_attr::exclude_kernel set. We do not account for
-case (c), or any other filters that drivers could theoretically require
-to be set.
-
-Thus is_event_supported() will fail to detect support for any events
-targeting an Apple M1/M2 PMU, even where events would be supported with
-perf_event_attr:::exclude_guest set.
-
-Since commit:
-
-  82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
-
-.. we use is_event_supported() to detect support for extended types,
-with the PMU ID encoded into the perf_event_attr::type. As above, on an
-Apple M1/M2 system this will always fail to detect that the event is
-supported, and consequently we fail to detect support for extended types
-even when these are supported, as they have been since commit:
-
-  5c816728651ae425 ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability")
-
-Due to this, the perf tool will not automatically expand plain
-PERF_TYPE_HARDWARE events into per-PMU events, even when all the
-necessary kernel support is present.
-
-This patch updates is_event_supported() to additionally try opening
-events with perf_event_attr::exclude_guest set, allowing support for
-events to be detected on Apple M1/M2 systems. I believe that this is
-sufficient for all contemporary CPU PMU drivers, though in future it may
-be necessary to check for other combinations of filter bits.
-
-I've deliberately changed the check to not expect a specific error code
-for missing filters, as today ;the kernel may return a number of
-different error codes for missing filters (e.g. -EACCESS, -EINVAL, or
--EOPNOTSUPP) depending on why and where the filter configuration is
-rejected, and retrying for any error is more robust.
-
-Note that this does not remove the need for commit:
-
-  a24d9d9dc096fc0d ("perf parse-events: Make legacy events lower priority than sysfs/JSON")
-
-.. which is still necessary so that named-pmu/event/ events work on
-kernels without extended type support, even if the event name happens to
-be the same as a PERF_EVENT_TYPE_HARDWARE event (e.g. as is the case for
-the M1/M2 PMU's 'cycles' and 'instructions' events).
-
-Fixes: 82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Tested-by: Ian Rogers <irogers@google.com>
-Tested-by: James Clark <james.clark@arm.com>
-Tested-by: Marc Zyngier <maz@kernel.org>
-Cc: Hector Martin <marcan@marcan.st>
-Cc: James Clark <james.clark@arm.com>
-Cc: John Garry <john.g.garry@oracle.com>
-Cc: Leo Yan <leo.yan@linux.dev>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Thomas Richter <tmricht@linux.ibm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/r/20240126145605.1005472-1-mark.rutland@arm.com
+Fixes: c80ae7ca3726 ("crypto: arm/sha512 - accelerated SHA-512 using ARM generic ASM and NEON")
+Fixes: b59e2ae3690c ("crypto: arm/sha256 - move SHA-224/256 ASM/NEON implementation to base layer")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/print-events.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ arch/arm/crypto/sha256_glue.c | 13 +++++--------
+ arch/arm/crypto/sha512-glue.c | 12 +++++-------
+ 2 files changed, 10 insertions(+), 15 deletions(-)
 
-diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
-index b0fc48be623f3..4f67e8f00a4d6 100644
---- a/tools/perf/util/print-events.c
-+++ b/tools/perf/util/print-events.c
-@@ -232,7 +232,6 @@ void print_sdt_events(const struct print_callbacks *print_cb, void *print_state)
- bool is_event_supported(u8 type, u64 config)
+diff --git a/arch/arm/crypto/sha256_glue.c b/arch/arm/crypto/sha256_glue.c
+index 433ee4ddce6c8..f85933fdec75f 100644
+--- a/arch/arm/crypto/sha256_glue.c
++++ b/arch/arm/crypto/sha256_glue.c
+@@ -24,8 +24,8 @@
+ 
+ #include "sha256_glue.h"
+ 
+-asmlinkage void sha256_block_data_order(u32 *digest, const void *data,
+-					unsigned int num_blks);
++asmlinkage void sha256_block_data_order(struct sha256_state *state,
++					const u8 *data, int num_blks);
+ 
+ int crypto_sha256_arm_update(struct shash_desc *desc, const u8 *data,
+ 			     unsigned int len)
+@@ -33,23 +33,20 @@ int crypto_sha256_arm_update(struct shash_desc *desc, const u8 *data,
+ 	/* make sure casting to sha256_block_fn() is safe */
+ 	BUILD_BUG_ON(offsetof(struct sha256_state, state) != 0);
+ 
+-	return sha256_base_do_update(desc, data, len,
+-				(sha256_block_fn *)sha256_block_data_order);
++	return sha256_base_do_update(desc, data, len, sha256_block_data_order);
+ }
+ EXPORT_SYMBOL(crypto_sha256_arm_update);
+ 
+ static int crypto_sha256_arm_final(struct shash_desc *desc, u8 *out)
  {
- 	bool ret = true;
--	int open_return;
- 	struct evsel *evsel;
- 	struct perf_event_attr attr = {
- 		.type = type,
-@@ -246,20 +245,32 @@ bool is_event_supported(u8 type, u64 config)
+-	sha256_base_do_finalize(desc,
+-				(sha256_block_fn *)sha256_block_data_order);
++	sha256_base_do_finalize(desc, sha256_block_data_order);
+ 	return sha256_base_finish(desc, out);
+ }
  
- 	evsel = evsel__new(&attr);
- 	if (evsel) {
--		open_return = evsel__open(evsel, NULL, tmap);
--		ret = open_return >= 0;
-+		ret = evsel__open(evsel, NULL, tmap) >= 0;
+ int crypto_sha256_arm_finup(struct shash_desc *desc, const u8 *data,
+ 			    unsigned int len, u8 *out)
+ {
+-	sha256_base_do_update(desc, data, len,
+-			      (sha256_block_fn *)sha256_block_data_order);
++	sha256_base_do_update(desc, data, len, sha256_block_data_order);
+ 	return crypto_sha256_arm_final(desc, out);
+ }
+ EXPORT_SYMBOL(crypto_sha256_arm_finup);
+diff --git a/arch/arm/crypto/sha512-glue.c b/arch/arm/crypto/sha512-glue.c
+index 0635a65aa488b..1be5bd498af36 100644
+--- a/arch/arm/crypto/sha512-glue.c
++++ b/arch/arm/crypto/sha512-glue.c
+@@ -25,27 +25,25 @@ MODULE_ALIAS_CRYPTO("sha512");
+ MODULE_ALIAS_CRYPTO("sha384-arm");
+ MODULE_ALIAS_CRYPTO("sha512-arm");
  
--		if (open_return == -EACCES) {
-+		if (!ret) {
- 			/*
--			 * This happens if the paranoid value
-+			 * The event may fail to open if the paranoid value
- 			 * /proc/sys/kernel/perf_event_paranoid is set to 2
--			 * Re-run with exclude_kernel set; we don't do that
--			 * by default as some ARM machines do not support it.
--			 *
-+			 * Re-run with exclude_kernel set; we don't do that by
-+			 * default as some ARM machines do not support it.
- 			 */
- 			evsel->core.attr.exclude_kernel = 1;
- 			ret = evsel__open(evsel, NULL, tmap) >= 0;
- 		}
-+
-+		if (!ret) {
-+			/*
-+			 * The event may fail to open if the PMU requires
-+			 * exclude_guest to be set (e.g. as the Apple M1 PMU
-+			 * requires).
-+			 * Re-run with exclude_guest set; we don't do that by
-+			 * default as it's equally legitimate for another PMU
-+			 * driver to require that exclude_guest is clear.
-+			 */
-+			evsel->core.attr.exclude_guest = 1;
-+			ret = evsel__open(evsel, NULL, tmap) >= 0;
-+		}
-+
- 		evsel__delete(evsel);
- 	}
+-asmlinkage void sha512_block_data_order(u64 *state, u8 const *src, int blocks);
++asmlinkage void sha512_block_data_order(struct sha512_state *state,
++					u8 const *src, int blocks);
+ 
+ int sha512_arm_update(struct shash_desc *desc, const u8 *data,
+ 		      unsigned int len)
+ {
+-	return sha512_base_do_update(desc, data, len,
+-		(sha512_block_fn *)sha512_block_data_order);
++	return sha512_base_do_update(desc, data, len, sha512_block_data_order);
+ }
+ 
+ static int sha512_arm_final(struct shash_desc *desc, u8 *out)
+ {
+-	sha512_base_do_finalize(desc,
+-		(sha512_block_fn *)sha512_block_data_order);
++	sha512_base_do_finalize(desc, sha512_block_data_order);
+ 	return sha512_base_finish(desc, out);
+ }
+ 
+ int sha512_arm_finup(struct shash_desc *desc, const u8 *data,
+ 		     unsigned int len, u8 *out)
+ {
+-	sha512_base_do_update(desc, data, len,
+-		(sha512_block_fn *)sha512_block_data_order);
++	sha512_base_do_update(desc, data, len, sha512_block_data_order);
+ 	return sha512_arm_final(desc, out);
+ }
  
 -- 
 2.43.0
