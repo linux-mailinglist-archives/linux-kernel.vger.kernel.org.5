@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-114413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40963888A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:16:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 046B4888A61
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:16:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F295D1F23137
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:16:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8CFFB29AEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA592789AB;
-	Sun, 24 Mar 2024 23:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40EC2176A04;
+	Sun, 24 Mar 2024 23:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h3CxrLUO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ra433hU+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4937D21AFD4;
-	Sun, 24 Mar 2024 23:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0846421AFE5;
+	Sun, 24 Mar 2024 23:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321827; cv=none; b=eplgnYKrBj4bhOz38YyP06tCUE/KqHKV1Deikz2h9VnRHusMc0Tc+jNSb7iQjtQibQqFfyKhuB879X3cAOesJ8uWT9I7CgDSEhT02FFZBRpkAYojwofSYIjduEnXoUmDOumUagPsovn1lnCB71Q6DKnyCJyyCc4DGv/lg7KfJ4M=
+	t=1711321828; cv=none; b=NE+SOumho6IdzkJpRes7oeKkpqgvgeCTpj9XIET1Xe1iiOykHKDUJqZ63jsXYBa7pMeK98Ev5IJl3mL3ynRYXQxcKckxWbcRFC39iv65GO98Vg6GRdohGRBw7YvJb9bPbxHi2M9Qdu5PEhzC1VpUQA+l7MyDL4HOYHeb/iAwxWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321827; c=relaxed/simple;
-	bh=U7g9Y0xZPvSe/JiBFaypvdFGXsPf97kTS1mDNLbllxU=;
+	s=arc-20240116; t=1711321828; c=relaxed/simple;
+	bh=gxkkXHJh6G7hXQBGcJNrYNwlOVNKzUkdQoZBt3MSqoY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZnAR+qKdPv8MzM3QfWb1Kjwo/TOAcQme7Fg/MP1qAh+M/QNA19MTeUSwhXBxiJXhIS/qdLIvScT02EaVOJxpq0KUcw2wSfDPxKMkIcRrOBP4um5mEe/iYuOUCtmmfhLfuoAqE/lUh5goAxzqLHqjtWlngyKZY3aU6AW08i/8tZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h3CxrLUO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52166C433C7;
-	Sun, 24 Mar 2024 23:10:25 +0000 (UTC)
+	 MIME-Version; b=NQygwLjlNHYpjDmJfdyIgT+qmqmJoXEizPRmWMQQzUFZwH1g2Xj2ZrEY6fEM3x/FssEj/CdAqD0AhXxbjAsyepRilVgZDTaVpBcdkdig1xBRn//uBhGyAu0fTwMEsR0L0OgHLdSPhkdAw6wxLwqsTZwcjN1L7srY265cub93LFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ra433hU+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 323CEC433F1;
+	Sun, 24 Mar 2024 23:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321825;
-	bh=U7g9Y0xZPvSe/JiBFaypvdFGXsPf97kTS1mDNLbllxU=;
+	s=k20201202; t=1711321826;
+	bh=gxkkXHJh6G7hXQBGcJNrYNwlOVNKzUkdQoZBt3MSqoY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=h3CxrLUO4qWoh2irUeiHLIp36ZxRWXhgF/n3qhiA2MW7gf+aR6P270g641STUYgZj
-	 mpyv/h9kM/HWNy1V82u0uOn8j6GGN5GFYD53j+tkhvF2sC/wNHcfU8teTnD24ni3Gf
-	 luR6wNwjQI7Kfq7pEBQgFwoOVdk6/GceZrn6gFt4VOG7um+DDr0bamjisHpmDGq8U4
-	 yy9Yrww0beaaqIZCjXxXNYys39fUasBe+2HrHJZM2I6tMhnUxxM/IR4vfqoSBSo7zH
-	 IHSiEYNkq/nED0R8o3ZvJMgUZcbljfx/z+2g4RIONZi75SlG0TtD5yam35s9QG3qxq
-	 o73XiFPwX//Ug==
+	b=Ra433hU+erN2p2yCFJlo2lvfqCNDC7J4lP/mXOK5JoXmootTLl8Z/rrIW7crkJcB2
+	 tSclnURBGwMbzNMUq2yd8fNzRjSz5tTvvDnhtRrNCbUJuqjVzRV2AnOiuCiLdOJDij
+	 WJtMS4cBrMnQZrZIwCMmAec/92OyPo65MHNt/bNe3e/85bBu0jcX5ZhTQ6Ii0QW36A
+	 smt3uEYat58JjP8h/PWxhNFbkc6cEZYS+W4VfzZ6OaL2zbybqppCUfPrg+JCmgbDbe
+	 8bxyc8nmLRpv+G9saCp7AerQi/VFJg2V+EoQ0niobSN/FG1uFhKwEvaEm2aYuM9yfc
+	 i/spkIFHeHJLQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
-	Tomas Winkler <tomas.winkler@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 6.6 554/638] mei: gsc_proxy: match component when GSC is on different bus
-Date: Sun, 24 Mar 2024 18:59:51 -0400
-Message-ID: <20240324230116.1348576-555-sashal@kernel.org>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	kernel test robot <lkp@intel.com>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.6 555/638] remoteproc: stm32: Fix incorrect type in assignment for va
+Date: Sun, 24 Mar 2024 18:59:52 -0400
+Message-ID: <20240324230116.1348576-556-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,65 +63,54 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 
-commit a0776c214d47ea4f7aaef138095beaa41cff03ef upstream.
+[ Upstream commit 32381bbccba4c21145c571701f8f7fb1d9b3a92e ]
 
-On Arrow Lake S systems, MEI is no longer strictly connected to bus 0,
-while graphics remain exclusively on bus 0. Adapt the component
-matching logic to accommodate this change:
+The sparse tool complains about the attribute conversion between
+a _iomem void * and a void *:
 
-Original behavior: Required both MEI and graphics to be on the same
-bus 0.
+stm32_rproc.c:122:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *va @@     got void [noderef] __iomem * @@
+stm32_rproc.c:122:12: sparse:     expected void *va
+stm32_rproc.c:122:12: sparse:     got void [noderef] __iomem *
 
-New behavior: Only enforces graphics to be on bus 0 (integrated),
-allowing MEI to reside on any bus.
-This ensures compatibility with Arrow Lake S and maintains functionality
-for the legacy systems.
+Add '__force' to explicitly specify that the cast is intentional.
+This conversion is necessary to cast to virtual addresses pointer,used,
+by the remoteproc core.
 
-Fixes: 1dd924f6885b ("mei: gsc_proxy: add gsc proxy driver")
-Cc: stable@vger.kernel.org # v6.3+
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Link: https://lore.kernel.org/r/20240220200020.231192-1-tomas.winkler@intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312150052.HCiNKlqB-lkp@intel.com/
+Fixes: 13140de09cc2 ("remoteproc: stm32: add an ST stm32_rproc driver")
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Link: https://lore.kernel.org/r/20240117135312.3381936-2-arnaud.pouliquen@foss.st.com
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/remoteproc/stm32_rproc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c b/drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c
-index be52b113aea93..89364bdbb1290 100644
---- a/drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c
-+++ b/drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c
-@@ -96,7 +96,8 @@ static const struct component_master_ops mei_component_master_ops = {
-  *
-  *    The function checks if the device is pci device and
-  *    Intel VGA adapter, the subcomponent is SW Proxy
-- *    and the parent of MEI PCI and the parent of VGA are the same PCH device.
-+ *    and the VGA is on the bus 0 reserved for built-in devices
-+ *    to reject discrete GFX.
-  *
-  * @dev: master device
-  * @subcomponent: subcomponent to match (I915_COMPONENT_SWPROXY)
-@@ -123,7 +124,8 @@ static int mei_gsc_proxy_component_match(struct device *dev, int subcomponent,
- 	if (subcomponent != I915_COMPONENT_GSC_PROXY)
- 		return 0;
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index 9d9b13530f78a..11bbd6018e984 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -120,7 +120,7 @@ static int stm32_rproc_mem_alloc(struct rproc *rproc,
+ 	void *va;
  
--	return component_compare_dev(dev->parent, ((struct device *)data)->parent);
-+	/* Only built-in GFX */
-+	return (pdev->bus->number == 0);
+ 	dev_dbg(dev, "map memory: %pad+%zx\n", &mem->dma, mem->len);
+-	va = ioremap_wc(mem->dma, mem->len);
++	va = (__force void *)ioremap_wc(mem->dma, mem->len);
+ 	if (IS_ERR_OR_NULL(va)) {
+ 		dev_err(dev, "Unable to map memory region: %pad+0x%zx\n",
+ 			&mem->dma, mem->len);
+@@ -137,7 +137,7 @@ static int stm32_rproc_mem_release(struct rproc *rproc,
+ 				   struct rproc_mem_entry *mem)
+ {
+ 	dev_dbg(rproc->dev.parent, "unmap memory: %pa\n", &mem->dma);
+-	iounmap(mem->va);
++	iounmap((__force __iomem void *)mem->va);
+ 
+ 	return 0;
  }
- 
- static int mei_gsc_proxy_probe(struct mei_cl_device *cldev,
-@@ -146,7 +148,7 @@ static int mei_gsc_proxy_probe(struct mei_cl_device *cldev,
- 	}
- 
- 	component_match_add_typed(&cldev->dev, &master_match,
--				  mei_gsc_proxy_component_match, cldev->dev.parent);
-+				  mei_gsc_proxy_component_match, NULL);
- 	if (IS_ERR_OR_NULL(master_match)) {
- 		ret = -ENOMEM;
- 		goto err_exit;
 -- 
 2.43.0
 
