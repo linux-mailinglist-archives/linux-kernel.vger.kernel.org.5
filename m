@@ -1,85 +1,64 @@
-Return-Path: <linux-kernel+bounces-112630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F7C2887C38
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:27:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF7C887C40
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 11:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43335281C84
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:27:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC7531F21523
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 10:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2309B171C8;
-	Sun, 24 Mar 2024 10:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C64117592;
+	Sun, 24 Mar 2024 10:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a88nlKwt"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y5Soixto"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B4615E89
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 10:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FCA933F9;
+	Sun, 24 Mar 2024 10:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711276071; cv=none; b=OIXXXqWfyqOEXSXTUp91bWGF5JX1ioFZon1FNK8/nj5BBzD+LxFYdPBsKmE2Ichkg6hlLYpknxjO/uWa99ut8IRjffK1vPrNVdX97D7BCknbkWIUVI4L6Nw3WFIFNQfFxfz8rbKU/aPc5q3AVds6/rqtvIH2FQ6FLJdTPJ3sOII=
+	t=1711276251; cv=none; b=R6MmdfUDNrBfliJdkk9vlL3aPDAqAcZhfvZeTniBwpU/A44xb7zkqbbRwa+cPJXiCtyi5i+EVBTpblpxIqsawMIvjsaoPLWLvUcOwy1OVAbFe2ne0tk+DPsA3EkP+lrLOqCy8fugRUTIJt1FBqDnIwLiJuIG6Kgcz7yOzDRKdY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711276071; c=relaxed/simple;
-	bh=g5o4Usv6iCgLDxofD0zUG1xxJtGV/DtXPWmHDLxqyrQ=;
+	s=arc-20240116; t=1711276251; c=relaxed/simple;
+	bh=i/KBVM/hVsILZHtcXZzSHp2NdrbsYCYNR/zIoJ3kBaA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YrCOCUpSDrh6XktYOfJtXCzHuMhXwMHVrBYOJhtIsl/IXzrkhONgu2uQnQRvhK1GQN8+EAw8ZU2kdXEWsRNFPy0cnY81dvFEst5FSU6xJkvBNbYB3PaC5fTxh5A6Rpj5eFgDVIj5dnkfyJ8QZL7xwxsZNytX8g6fFrg0ehj3WNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a88nlKwt; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513e89d0816so4307449e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 03:27:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711276068; x=1711880868; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bauhf/2rjBkok/hrNxsx2Lp6yFKty71agj7qYN59Fb4=;
-        b=a88nlKwtLMDtpmkVgKn7iCcZLp4xcfsLF/PRb8fI2tUjrpxa+XHAKfL3mLDzVOXIe2
-         zXwW8hpfWOijIvX+eWHB9gdtY2z6cMrHIm9NrTyCPvmiY+I1JtqyECoyIIQ9uAfDuA1s
-         ihSOvWluIfTsuQ4UzRzMRbZyHNC3DT59tP8BqDQFoThBgRFdji1CCDb91DmBOTXdvsF8
-         Y/RdhXMKZ9A6XTnHdBjvtVr51CuQLmxflcUacyVloz2gIsQVmVfVVis6rqK9tUmHa+1W
-         I8qQE40s0AARbFnEHIEaqlk0JTDABlAhS/BUgpjgT+JRECapAXDHmuB8MN4wdhVYAeuM
-         UzhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711276068; x=1711880868;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bauhf/2rjBkok/hrNxsx2Lp6yFKty71agj7qYN59Fb4=;
-        b=qOv4vQz6QgDv/FE3K7baiLOl2Y2YLHPreSfK2EgkGNtnYb28cn6rsQ6lzNwgrLV+ei
-         150HwCvXhkzLcbaEr1Q9G5E01VNCiphpj+2XnDRq/jYRI1Y1XII2rTLdMN4ctx8KvJdH
-         9ikJedbarhqyL+m8PfE+LkZAFA8PFPU3N1sFEh7Dyl3bZwBvgtDOIrmwNwa9KM75wyfC
-         FCQUKTUtwVXGLx/dq3Nih13S5pbRt0lzPZW+MgDxqvPV6/T1+aPP2U8W3DzcrNQ01dHf
-         BffsKU21rW3mm/iVcMiftZY1d4ctN+k5nI+c+FZotO7ET/a1djGDVYZhi6PtMNkGVDeP
-         cp2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXh5vlY/eBVtqXQ7GIV5A6m7tKk696+B8FylAeXTo4gw7ix8R5dNL2qMEGAl9WM6bir2iau3CtX+DHPV+Gf25msclxkgsUaghLBGuVI
-X-Gm-Message-State: AOJu0Yw4kwsF1XDPPqDSdHixrr/hW9HV/ZQ6FuvCTUvEQqdtXR83vWW/
-	22xCF53cDE/1odrhRHwMguKiYquBHWJbbBhSVOv26p/gatRsyqrQ
-X-Google-Smtp-Source: AGHT+IFqkThVpXulVzVhNJekNUYVHumLnBKOTdbzFKyjcLlJN4lf7UbH8vVeWJuT2lsfD35b007Cug==
-X-Received: by 2002:ac2:4643:0:b0:513:4705:a4f3 with SMTP id s3-20020ac24643000000b005134705a4f3mr2753394lfo.65.1711276067486;
-        Sun, 24 Mar 2024 03:27:47 -0700 (PDT)
-Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
-        by smtp.gmail.com with ESMTPSA id r18-20020a05600c35d200b00414808dea22sm1107606wmq.0.2024.03.24.03.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 03:27:46 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Sun, 24 Mar 2024 11:27:44 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Baoquan He <bhe@redhat.com>
-Cc: kexec@lists.infradead.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-	akpm@linux-foundation.org, chenhuacai@loongson.cn,
-	dyoung@redhat.com, jbohac@suse.cz, lihuafei1@huawei.com,
-	chenhaixiang3@huawei.com
-Subject: Re: [PATCH] crash: use macro to add crashk_res into iomem early for
- specific arch
-Message-ID: <ZgAAIB6H+7+t7YpW@gmail.com>
-References: <20240324033513.1027427-1-bhe@redhat.com>
- <Zf+m4YtKtmdrjw4Q@gmail.com>
- <Zf/51a+QonYj6sI7@MiWiFi-R3L-srv>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f5BX+OK5GYKXy7ovRB6b9+08fhf3vdPOsbz8VIhlWMLNuvleO3w5/lt/FqHyBqJegcl1xe6pGui21KSdPjT3YVMSj0Ia/Hz5SJCg64I4s/JbWX56+et7/dV6/bBKYYJAbNIBa1vlUUIgHyvO0lI0rmY+QKaRwAkHHsjNfcUeebc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y5Soixto; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 211E3C433F1;
+	Sun, 24 Mar 2024 10:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711276251;
+	bh=i/KBVM/hVsILZHtcXZzSHp2NdrbsYCYNR/zIoJ3kBaA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y5SoixtoQOXDGlmn7h4qZyREMJ6mWoeIaoniDbaB8DYpPY4lP+Fk8FhR3xwxK1gz9
+	 AM/JCXIvzOlhNa5wokIeF6+ZUWRYzPOvRYLye6bcgeNex82WYQCdM0mkSvmmmulpeV
+	 THXt3BFrRP2WCMTz0ZPuCrEKPSW6KRibMppHqcY663WUZURlspcm5IiTZESzoAvUKw
+	 VEMbUJukG4OZ5KnKIb4aQGbCwqGbOFfKBCaRQMeft13CXgUXLJHLDOWtKxvA52sQmr
+	 OinKzNAeqGJ5VJwisWLebE4hjcZGDXK+8ygilZGv3N0ihFBq0TVZCouP+4OQOn1IfL
+	 nOFBi5g8gWsKA==
+Date: Sun, 24 Mar 2024 12:29:39 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, xingwei lee <xrivendell7@gmail.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	samsun1006219@gmail.com, syzkaller-bugs@googlegroups.com,
+	linux-mm <linux-mm@kvack.org>
+Subject: Re: BUG: unable to handle kernel paging request in fuse_copy_do
+Message-ID: <ZgAAk4roqPaJ6gWF@kernel.org>
+References: <CABOYnLyevJeravW=QrH0JUPYEcDN160aZFb7kwndm-J2rmz0HQ@mail.gmail.com>
+ <CAJfpegu8qTARQBftZSaiif0E6dbRcbBvZvW7dQf8sf_ymoogCA@mail.gmail.com>
+ <c58a8dc8-5346-4247-9a0a-8b1be286e779@redhat.com>
+ <CAJfpegt3UCsMmxd0taOY11Uaw5U=eS1fE5dn0wZX3HF0oy8-oQ@mail.gmail.com>
+ <620f68b0-4fe0-4e3e-856a-dedb4bcdf3a7@redhat.com>
+ <CAJfpegub5Ny9kyX+dDbRwx7kd6ZdxtOeQ9RTK8n=LGGSzA9iOQ@mail.gmail.com>
+ <463612f2-5590-4fb3-8273-0d64c3fd3684@redhat.com>
+ <a6632384-c186-4640-8b48-f40d6c4f7d1d@redhat.com>
+ <dd3e28b3-647c-4657-9c3f-9778bb046799@redhat.com>
+ <b40eb0b7-7362-4d19-95b3-e06435e6e09c@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,59 +67,168 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zf/51a+QonYj6sI7@MiWiFi-R3L-srv>
+In-Reply-To: <b40eb0b7-7362-4d19-95b3-e06435e6e09c@redhat.com>
 
-
-* Baoquan He <bhe@redhat.com> wrote:
-
-> On 03/24/24 at 05:06am, Ingo Molnar wrote:
-> > 
-> > * Baoquan He <bhe@redhat.com> wrote:
-> > 
-> ......snip
-> > > ---
-> > >  arch/x86/include/asm/crash_reserve.h | 2 ++
-> > >  kernel/crash_reserve.c               | 7 +++++++
-> > >  2 files changed, 9 insertions(+)
+On Fri, Mar 22, 2024 at 10:56:08PM +0100, David Hildenbrand wrote:
+> On 22.03.24 22:37, David Hildenbrand wrote:
+> > On 22.03.24 22:33, David Hildenbrand wrote:
+> > > On 22.03.24 22:18, David Hildenbrand wrote:
+> > > > On 22.03.24 22:13, Miklos Szeredi wrote:
+> > > > > On Fri, 22 Mar 2024 at 22:08, David Hildenbrand <david@redhat.com> wrote:
+> > > > > > 
+> > > > > > On 22.03.24 20:46, Miklos Szeredi wrote:
+> > > > > > > On Fri, 22 Mar 2024 at 16:41, David Hildenbrand <david@redhat.com> wrote:
+> > > > > > > 
+> > > > > > > > But at least the vmsplice() just seems to work. Which is weird, because
+> > > > > > > > GUP-fast should not apply (page not faulted in?)
+> > > > > > > 
+> > > > > > > But it is faulted in, and that indeed seems to be the root cause.
+> > > > > > 
+> > > > > > secretmem mmap() won't populate the page tables. So it's not faulted in yet.
+> > > > > > 
+> > > > > > When we GUP via vmsplice, GUP-fast should not find it in the page tables
+> > > > > > and fallback to slow GUP.
+> > > > > > 
+> > > > > > There, we seem to pass check_vma_flags(), trigger faultin_page() to
+> > > > > > fault it in, and then find it via follow_page_mask().
+> > > > > > 
+> > > > > > ... and I wonder how we manage to skip check_vma_flags(), or otherwise
+> > > > > > managed to GUP it.
+> > > > > > 
+> > > > > > vmsplice() should, in theory, never succeed here.
+> > > > > > 
+> > > > > > Weird :/
+> > > > > > 
+> > > > > > > Improved repro:
+> > > > > > > 
+> > > > > > > #define _GNU_SOURCE
+> > > > > > > 
+> > > > > > > #include <fcntl.h>
+> > > > > > > #include <unistd.h>
+> > > > > > > #include <stdio.h>
+> > > > > > > #include <errno.h>
+> > > > > > > #include <sys/mman.h>
+> > > > > > > #include <sys/syscall.h>
+> > > > > > > 
+> > > > > > > int main(void)
+> > > > > > > {
+> > > > > > >              int fd1, fd2;
+> > > > > > >              int pip[2];
+> > > > > > >              struct iovec iov;
+> > > > > > >              char *addr;
+> > > > > > >              int ret;
+> > > > > > > 
+> > > > > > >              fd1 = syscall(__NR_memfd_secret, 0);
+> > > > > > >              addr = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, fd1, 0);
+> > > > > > >              ftruncate(fd1, 7);
+> > > > > > >              addr[0] = 1; /* fault in page */
+> > > > > 
+> > > > > Here the page is faulted in and GUP-fast will find it.  It's not in
+> > > > > the kernel page table, but it is in the user page table, which is what
+> > > > > matter for GUP.
+> > > > 
+> > > > Trust me, I know the GUP code very well :P
+> > > > 
+> > > > gup_pte_range -- GUP fast -- contains:
+> > > > 
+> > > > if (unlikely(folio_is_secretmem(folio))) {
+> > > > 	gup_put_folio(folio, 1, flags);
+> > > > 	goto pte_unmap;
+> > > > }
+> > > > 
+> > > > So we "should" be rejecting any secretmem folios and fallback to GUP slow.
+> > > > 
+> > > > 
+> > > > ... we don't check the same in gup_huge_pmd(), but we shouldn't ever see
+> > > > THP in secretmem code.
+> > > > 
 > > > 
-> > > diff --git a/arch/x86/include/asm/crash_reserve.h b/arch/x86/include/asm/crash_reserve.h
-> > > index 152239f95541..4681a543eba3 100644
-> > > --- a/arch/x86/include/asm/crash_reserve.h
-> > > +++ b/arch/x86/include/asm/crash_reserve.h
-> > > @@ -39,4 +39,6 @@ static inline unsigned long crash_low_size_default(void)
-> > >  #endif
-> > >  }
-> > >  
-> > > +# define HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY
-> > > +
+> > > Ehm:
+> > > 
+> > > [   29.441405] Secretmem fault: PFN: 1096177
+> > > [   29.442092] GUP-fast: PFN: 1096177
+> > > 
+> > > 
+> > > ... is folio_is_secretmem() broken?
+> > > 
+> > > ... is it something "obvious" like:
+> > > 
+> > > diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
+> > > index 35f3a4a8ceb1e..6996f1f53f147 100644
+> > > --- a/include/linux/secretmem.h
+> > > +++ b/include/linux/secretmem.h
+> > > @@ -16,7 +16,7 @@ static inline bool folio_is_secretmem(struct folio *folio)
+> > >             * We know that secretmem pages are not compound and LRU so we can
+> > >             * save a couple of cycles here.
+> > >             */
+> > > -       if (folio_test_large(folio) || !folio_test_lru(folio))
+> > > +       if (folio_test_large(folio) || folio_test_lru(folio))
+> > >                    return false;
+> > >            mapping = (struct address_space *)
 > > 
-> > Any reason for that stray space?
+> > ... yes, that does the trick!
+> > 
 > 
-> No clear reason. I saw stray space was added for macro definning when my
-> below patch was merged, not sure if this is preferred.
+> Proper patch (I might send out again on Monday "officially"). There are
+> other improvements we want to do to folio_is_secretmem() in the light of
+> folio_fast_pin_allowed(), that I wanted to do a while ago. I might send
+> a patch for that as well now that I'm at it.
+ 
+The most robust but a bit slower solution is to make folio_is_secretmem()
+call folio_mapping() rather than open code the check.
 
-No, it's not preferred - and I don't see any stray spaces added in the 
-code added by:
+What improvements did you have in mind?
+ 
+> From 85558a46d9f249f26bd77dd3b18d14f248464845 Mon Sep 17 00:00:00 2001
+> From: David Hildenbrand <david@redhat.com>
+> Date: Fri, 22 Mar 2024 22:45:36 +0100
+> Subject: [PATCH] mm/secretmem: fix GUP-fast succeeding on secretmem folios
+> 
+> folio_is_secretmem() states that secretmem folios cannot be LRU folios:
+> so we may only exit early if we find an LRU folio. Yet, we exit early if
+> we find a folio that is not a secretmem folio.
+>
+> Consequently, folio_is_secretmem() fails to detect secretmem folios and,
+> therefore, we can succeed in grabbing a secretmem folio during GUP-fast,
+> crashing the kernel when we later try reading/writing to the folio, because
+> the folio has been unmapped from the directmap.
+> 
+> Reported-by: xingwei lee <xrivendell7@gmail.com>
+> Reported-by: yue sun <samsun1006219@gmail.com>
+> Debugged-by: Miklos Szeredi <miklos@szeredi.hu>
+> Fixes: 1507f51255c9 ("mm: introduce memfd_secret system call to create "secret" memory areas")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-> commit 85fcde402db1 ("kexec: split crashkernel reservation code out from crash_core.c")
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Anyway, please just remove it.
+> ---
+>  include/linux/secretmem.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
+> index 35f3a4a8ceb1..6996f1f53f14 100644
+> --- a/include/linux/secretmem.h
+> +++ b/include/linux/secretmem.h
+> @@ -16,7 +16,7 @@ static inline bool folio_is_secretmem(struct folio *folio)
+>  	 * We know that secretmem pages are not compound and LRU so we can
+>  	 * save a couple of cycles here.
+>  	 */
+> -	if (folio_test_large(folio) || !folio_test_lru(folio))
+> +	if (folio_test_large(folio) || folio_test_lru(folio))
+>  		return false;
+>  	mapping = (struct address_space *)
+> -- 
+> 2.43.2
+> 
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
 
-> And there are a lot of "# define " when searching with 'git grep "# 
-> define " arch/x86/include/'.
-
-The overwhelming majority of those are not standalone defines like 
-yours, but nested/conditional defines where the space is justified:
-
-#ifdef CONFIG_X86_32
-# define MAX_IO_APICS 64
-# define MAX_LOCAL_APIC 256
-#else
-# define MAX_IO_APICS 128
-# define MAX_LOCAL_APIC 32768
-#endif
-
-Thanks,
-
-	Ingo
+-- 
+Sincerely yours,
+Mike.
 
