@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D6F2889BE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:04:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87773889BDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:04:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40EBC2E4652
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:04:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B942E1C2D19D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA00206B2D;
-	Mon, 25 Mar 2024 02:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3385022EAC7;
+	Mon, 25 Mar 2024 02:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IOvDa5We"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s2oUMfzl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7007B1DD2B0;
-	Sun, 24 Mar 2024 22:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B521DD2AB;
+	Sun, 24 Mar 2024 22:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320726; cv=none; b=aXzvmWs3i+7V4pS5dYyXK00nbQQjpBdhJMF9evszFl41iTCUNvhmQ9uqEXiYvCK7Ch8xHFhzqoqJcqljSqjBDbRLTp9Zj2Ot2rWzJtJ812t2AWLGpYsEe3GYnrNVduSntMEwSZl/qUocA7SNfxkwn/eQvIpPi1QHgTcoD92/tZ4=
+	t=1711320726; cv=none; b=aon/NMBMKxHNlkb61kHS8TPcyjXO3LBGzchIQQMA+W20d9T7coxwM7dD1DiYSw+FMWjuDJHJl0hQHWdqfdhQ6gnEYGP6542gVKvz5USib5QoblomYRveAMYym8NtUPtg0jhtxsWUfzNgOJkg1RYSt01pa3v60ewGohp51Hyx9JY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320726; c=relaxed/simple;
-	bh=qcGs7kZbIl6Ak85pu1rldD0TPyy7Kre2X8tOIF/KJVI=;
+	bh=ZqHYJmWbjAaWX7RMHrG6rxMCX1+c2Hs/9yWUkPKYsSc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DFQjil759FcBOfgzOqbkQRFjNJAUD4vkOGJgrcxkHe+5v3//vw5X+Y4heRUdbMglpeQffaJaRDvilTcka3zo3oGXNwcOx3j2E6MxwTS4PkFkTH56Acc2iNHKra0G/NVWEuxJwdvLW+jvA4xK1DXGNfFgbt0JVpJCburcKaza9ZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IOvDa5We; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1454C43390;
-	Sun, 24 Mar 2024 22:52:04 +0000 (UTC)
+	 MIME-Version; b=lVgrdxzWPSIbfwxDdTy8pAV+pDgp9wGVD6ov9JHAEILVYizmfdMJRCcHEPpywbFhPfjZDiLMwS8Bxgi8bEwsufP7wMd33eSd0PsXQtzBvjN8pCeTZr5bEHt+h7KXbPKPW/xm0p5TiR1Y1q0S+1HcpaBZRQEhglCAOlBQPpKgc+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s2oUMfzl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96FE3C43399;
+	Sun, 24 Mar 2024 22:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320725;
-	bh=qcGs7kZbIl6Ak85pu1rldD0TPyy7Kre2X8tOIF/KJVI=;
+	s=k20201202; t=1711320726;
+	bh=ZqHYJmWbjAaWX7RMHrG6rxMCX1+c2Hs/9yWUkPKYsSc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IOvDa5WeeJpis4Ev20PK4qGyghp/pl2ylWHol5QDHzlxIvG00VQS4Ry6AYCUP/ylD
-	 zWLpT5Eb31Ju8/yhXWJYqE6Jx+52gRqV8aBBMnKZRRu6mn2AJX1Vmy/1gu+kPc+7/1
-	 pAJI6VBlfM3sp7bebqZPS+XR+i6HAVAociNjZ6n/nLCPP5OfxDPTDvM4pPiRHydMYr
-	 YQm5pf3PI4ikMy26oGZGiPRqbL+YFmYBVHHhru0ra4Afv5dMgBlckGyF+xB/QkKxzy
-	 C3oQf+1tSeYGPyLWfnb/3gp0brNrn7RfykD5OpW1Pu2WeOB9vD+cwu8Mlm1WNA7fjD
-	 Ol+QOQFyYVtTw==
+	b=s2oUMfzlsaUDxApqjwD2waZRo+nGDcSX68VH9WJz7gq53bQTie5J83uBB5DysXKuU
+	 F+Ik6uKURqUWWNGQQcJcxkzk24yLez67AmzAUYTQOtqe8WyhRr3s0YvcoRYDE3AcWv
+	 +JuFbidjOyQNqGc2yX5TNweFXsTc2PghtAhSqRanY1dpqXiKfc0pIOZ5AA5VdVvlBv
+	 4UqgytJai5e6KmluKlI2NUJRq1ZK69gwRdw0y2CyADqw+6vbEa0EPiqKfz5Wb8QL3B
+	 Vjl79PbnJ6+gClbZWobK/wyL/5UAyYhSgZKrZmnc1Zbz9wwBzjLTzVn9GGmAY7x/2Q
+	 aknmVCwTWxDRA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>,
 	Felix Fietkau <nbd@nbd.name>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 288/713] wifi: mt76: mt7925: fix WoW failed in encrypted mode
-Date: Sun, 24 Mar 2024 18:40:14 -0400
-Message-ID: <20240324224720.1345309-289-sashal@kernel.org>
+Subject: [PATCH 6.7 289/713] wifi: mt76: mt7925: fix the wrong header translation config
+Date: Sun, 24 Mar 2024 18:40:15 -0400
+Message-ID: <20240324224720.1345309-290-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,297 +64,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>
 
-[ Upstream commit 47916693ec7cd1b283ffa7554fc48ff4eec2daa1 ]
+[ Upstream commit d8cf7e1344727b80b4ec3dc17ca520238d55a88d ]
 
-When in suspend mode, WoW (Wake-on-WLAN) fails to wake the system remotely
-due to incorrect encryption mode settings. For the new mt7925 chipset, the
-old STA_REC_KEY_V2 command will send incorrect parameters to the firmware.
-Therefore, STA_REC_KEY_V3 has been introduced as a replacement for it.
+The header translation config should set to broadcast and unicast
+cases correctly, not only unicast case. And also remove the cmds
+of wtbl (wlan table) series, because these MCU commands have
+already been replaced by other commands in mt7925.
 
 Fixes: c948b5da6bbe ("wifi: mt76: mt7925: add Mediatek Wi-Fi7 driver for mt7925 chips")
 Signed-off-by: Ming Yen Hsieh <mingyen.hsieh@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../wireless/mediatek/mt76/mt76_connac_mcu.h  |  1 +
- .../net/wireless/mediatek/mt76/mt7925/main.c  |  3 +-
- .../net/wireless/mediatek/mt76/mt7925/mcu.c   | 86 ++++++++++---------
- .../net/wireless/mediatek/mt76/mt7925/mcu.h   | 70 +++++++++++----
- 4 files changed, 103 insertions(+), 57 deletions(-)
+ .../net/wireless/mediatek/mt76/mt7925/mcu.c   | 32 +++++--------------
+ 1 file changed, 8 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
-index cc6cdbc664290..bf023f317031d 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.h
-@@ -808,6 +808,7 @@ enum {
- 	STA_REC_MLD = 0x20,
- 	STA_REC_EHT = 0x22,
- 	STA_REC_PN_INFO = 0x26,
-+	STA_REC_KEY_V3 = 0x27,
- 	STA_REC_HDRT = 0x28,
- 	STA_REC_HDR_TRANS = 0x2B,
- 	STA_REC_MAX_NUM
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7925/main.c b/drivers/net/wireless/mediatek/mt76/mt7925/main.c
-index b6aa792e5511f..09b53cec750b3 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7925/main.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7925/main.c
-@@ -360,6 +360,7 @@ mt7925_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
- 	mvif->sta.wcid.phy_idx = mvif->mt76.band_idx;
- 	mvif->sta.wcid.hw_key_idx = -1;
- 	mvif->sta.wcid.tx_info |= MT_WCID_TX_INFO_SET;
-+	mvif->sta.vif = mvif;
- 	mt76_wcid_init(&mvif->sta.wcid);
- 
- 	mt7925_mac_wtbl_update(dev, idx,
-@@ -527,7 +528,7 @@ static int mt7925_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 	if (cmd == SET_KEY && !mvif->mt76.cipher) {
- 		struct mt792x_phy *phy = mt792x_hw_phy(hw);
- 
--		mvif->mt76.cipher = mt76_connac_mcu_get_cipher(key->cipher);
-+		mvif->mt76.cipher = mt7925_mcu_get_cipher(key->cipher);
- 		mt7925_mcu_add_bss_info(phy, mvif->mt76.ctx, vif, sta, true);
- 	}
- 
 diff --git a/drivers/net/wireless/mediatek/mt76/mt7925/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7925/mcu.c
-index b21fe015a701b..bafd6ec72ef24 100644
+index bafd6ec72ef24..28b871e552f0c 100644
 --- a/drivers/net/wireless/mediatek/mt76/mt7925/mcu.c
 +++ b/drivers/net/wireless/mediatek/mt76/mt7925/mcu.c
-@@ -921,61 +921,67 @@ mt7925_mcu_sta_key_tlv(struct mt76_wcid *wcid,
- 		       struct ieee80211_key_conf *key,
- 		       enum set_key_cmd cmd)
+@@ -814,6 +814,7 @@ mt7925_mcu_sta_hdr_trans_tlv(struct sk_buff *skb,
+ 			     struct ieee80211_vif *vif,
+ 			     struct ieee80211_sta *sta)
  {
-+	struct mt792x_sta *msta = container_of(wcid, struct mt792x_sta, wcid);
- 	struct sta_rec_sec_uni *sec;
-+	struct mt792x_vif *mvif = msta->vif;
-+	struct ieee80211_sta *sta;
-+	struct ieee80211_vif *vif;
++	struct mt792x_vif *mvif = (struct mt792x_vif *)vif->drv_priv;
+ 	struct sta_rec_hdr_trans *hdr_trans;
+ 	struct mt76_wcid *wcid;
  	struct tlv *tlv;
+@@ -827,7 +828,11 @@ mt7925_mcu_sta_hdr_trans_tlv(struct sk_buff *skb,
+ 	else
+ 		hdr_trans->from_ds = true;
  
--	tlv = mt76_connac_mcu_add_tlv(skb, STA_REC_KEY_V2, sizeof(*sec));
-+	sta = msta == &mvif->sta ?
-+		      NULL :
-+		      container_of((void *)msta, struct ieee80211_sta, drv_priv);
-+	vif = container_of((void *)mvif, struct ieee80211_vif, drv_priv);
+-	wcid = (struct mt76_wcid *)sta->drv_priv;
++	if (sta)
++		wcid = (struct mt76_wcid *)sta->drv_priv;
++	else
++		wcid = &mvif->sta.wcid;
 +
-+	tlv = mt76_connac_mcu_add_tlv(skb, STA_REC_KEY_V3, sizeof(*sec));
- 	sec = (struct sta_rec_sec_uni *)tlv;
--	sec->add = cmd;
-+	sec->bss_idx = mvif->mt76.idx;
-+	sec->is_authenticator = 0;
-+	sec->mgmt_prot = 0;
-+	sec->wlan_idx = (u8)wcid->idx;
-+
-+	if (sta) {
-+		sec->tx_key = 1;
-+		sec->key_type = 1;
-+		memcpy(sec->peer_addr, sta->addr, ETH_ALEN);
-+	} else {
-+		memcpy(sec->peer_addr, vif->bss_conf.bssid, ETH_ALEN);
-+	}
+ 	if (!wcid)
+ 		return;
  
- 	if (cmd == SET_KEY) {
--		struct sec_key_uni *sec_key;
- 		u8 cipher;
+@@ -1577,8 +1582,6 @@ mt7925_mcu_sta_cmd(struct mt76_phy *phy,
+ {
+ 	struct mt76_vif *mvif = (struct mt76_vif *)info->vif->drv_priv;
+ 	struct mt76_dev *dev = phy->dev;
+-	struct wtbl_req_hdr *wtbl_hdr;
+-	struct tlv *sta_wtbl;
+ 	struct sk_buff *skb;
  
--		cipher = mt76_connac_mcu_get_cipher(key->cipher);
--		if (cipher == MCU_CIPHER_NONE)
-+		sec->add = 1;
-+		cipher = mt7925_mcu_get_cipher(key->cipher);
-+		if (cipher == CONNAC3_CIPHER_NONE)
- 			return -EOPNOTSUPP;
- 
--		sec_key = &sec->key[0];
--		sec_key->cipher_len = sizeof(*sec_key);
--
--		if (cipher == MCU_CIPHER_BIP_CMAC_128) {
--			sec_key->wlan_idx = cpu_to_le16(wcid->idx);
--			sec_key->cipher_id = MCU_CIPHER_AES_CCMP;
--			sec_key->key_id = sta_key_conf->keyidx;
--			sec_key->key_len = 16;
--			memcpy(sec_key->key, sta_key_conf->key, 16);
--
--			sec_key = &sec->key[1];
--			sec_key->wlan_idx = cpu_to_le16(wcid->idx);
--			sec_key->cipher_id = MCU_CIPHER_BIP_CMAC_128;
--			sec_key->cipher_len = sizeof(*sec_key);
--			sec_key->key_len = 16;
--			memcpy(sec_key->key, key->key, 16);
--			sec->n_cipher = 2;
-+		if (cipher == CONNAC3_CIPHER_BIP_CMAC_128) {
-+			sec->cipher_id = CONNAC3_CIPHER_BIP_CMAC_128;
-+			sec->key_id = sta_key_conf->keyidx;
-+			sec->key_len = 32;
-+			memcpy(sec->key, sta_key_conf->key, 16);
-+			memcpy(sec->key + 16, key->key, 16);
- 		} else {
--			sec_key->wlan_idx = cpu_to_le16(wcid->idx);
--			sec_key->cipher_id = cipher;
--			sec_key->key_id = key->keyidx;
--			sec_key->key_len = key->keylen;
--			memcpy(sec_key->key, key->key, key->keylen);
-+			sec->cipher_id = cipher;
-+			sec->key_id = key->keyidx;
-+			sec->key_len = key->keylen;
-+			memcpy(sec->key, key->key, key->keylen);
- 
--			if (cipher == MCU_CIPHER_TKIP) {
-+			if (cipher == CONNAC3_CIPHER_TKIP) {
- 				/* Rx/Tx MIC keys are swapped */
--				memcpy(sec_key->key + 16, key->key + 24, 8);
--				memcpy(sec_key->key + 24, key->key + 16, 8);
-+				memcpy(sec->key + 16, key->key + 24, 8);
-+				memcpy(sec->key + 24, key->key + 16, 8);
- 			}
- 
- 			/* store key_conf for BIP batch update */
--			if (cipher == MCU_CIPHER_AES_CCMP) {
-+			if (cipher == CONNAC3_CIPHER_AES_CCMP) {
- 				memcpy(sta_key_conf->key, key->key, key->keylen);
- 				sta_key_conf->keyidx = key->keyidx;
- 			}
--
--			sec->n_cipher = 1;
- 		}
- 	} else {
--		sec->n_cipher = 0;
-+		sec->add = 0;
+ 	skb = __mt76_connac_mcu_alloc_sta_req(dev, mvif, info->wcid,
+@@ -1602,30 +1605,11 @@ mt7925_mcu_sta_cmd(struct mt76_phy *phy,
+ 		mt7925_mcu_sta_state_v2_tlv(phy, skb, info->sta,
+ 					    info->vif, info->rcpi,
+ 					    info->state);
+-		mt7925_mcu_sta_hdr_trans_tlv(skb, info->vif, info->sta);
+ 		mt7925_mcu_sta_mld_tlv(skb, info->vif, info->sta);
  	}
  
- 	return 0;
-@@ -2122,21 +2128,21 @@ mt7925_mcu_bss_sec_tlv(struct sk_buff *skb, struct ieee80211_vif *vif)
- 	sec = (struct bss_sec_tlv *)tlv;
- 
- 	switch (mvif->cipher) {
--	case MCU_CIPHER_GCMP_256:
--	case MCU_CIPHER_GCMP:
-+	case CONNAC3_CIPHER_GCMP_256:
-+	case CONNAC3_CIPHER_GCMP:
- 		sec->mode = MODE_WPA3_SAE;
- 		sec->status = 8;
- 		break;
--	case MCU_CIPHER_AES_CCMP:
-+	case CONNAC3_CIPHER_AES_CCMP:
- 		sec->mode = MODE_WPA2_PSK;
- 		sec->status = 6;
- 		break;
--	case MCU_CIPHER_TKIP:
-+	case CONNAC3_CIPHER_TKIP:
- 		sec->mode = MODE_WPA2_PSK;
- 		sec->status = 4;
- 		break;
--	case MCU_CIPHER_WEP104:
--	case MCU_CIPHER_WEP40:
-+	case CONNAC3_CIPHER_WEP104:
-+	case CONNAC3_CIPHER_WEP40:
- 		sec->mode = MODE_SHARED;
- 		sec->status = 0;
- 		break;
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7925/mcu.h b/drivers/net/wireless/mediatek/mt76/mt7925/mcu.h
-index 0218fd2a0eb01..9fce054e50657 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7925/mcu.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7925/mcu.h
-@@ -159,6 +159,20 @@ enum {
- 	UNI_EVENT_SCAN_DONE_NLO = 3,
- };
- 
-+enum connac3_mcu_cipher_type {
-+	CONNAC3_CIPHER_NONE = 0,
-+	CONNAC3_CIPHER_WEP40 = 1,
-+	CONNAC3_CIPHER_TKIP = 2,
-+	CONNAC3_CIPHER_AES_CCMP = 4,
-+	CONNAC3_CIPHER_WEP104 = 5,
-+	CONNAC3_CIPHER_BIP_CMAC_128 = 6,
-+	CONNAC3_CIPHER_WEP128 = 7,
-+	CONNAC3_CIPHER_WAPI = 8,
-+	CONNAC3_CIPHER_CCMP_256 = 10,
-+	CONNAC3_CIPHER_GCMP = 11,
-+	CONNAC3_CIPHER_GCMP_256 = 12,
-+};
-+
- struct mt7925_mcu_scan_chinfo_event {
- 	u8 nr_chan;
- 	u8 alpha2[3];
-@@ -383,25 +397,22 @@ struct sta_rec_eht {
- 	u8 _rsv2[3];
- } __packed;
- 
--struct sec_key_uni {
--	__le16 wlan_idx;
--	u8 mgmt_prot;
--	u8 cipher_id;
--	u8 cipher_len;
--	u8 key_id;
--	u8 key_len;
--	u8 need_resp;
--	u8 key[32];
--} __packed;
+-	sta_wtbl = mt76_connac_mcu_add_tlv(skb, STA_REC_WTBL,
+-					   sizeof(struct tlv));
 -
- struct sta_rec_sec_uni {
- 	__le16 tag;
- 	__le16 len;
- 	u8 add;
--	u8 n_cipher;
--	u8 rsv[2];
+-	wtbl_hdr = mt76_connac_mcu_alloc_wtbl_req(dev, info->wcid,
+-						  WTBL_RESET_AND_SET,
+-						  sta_wtbl, &skb);
+-	if (IS_ERR(wtbl_hdr))
+-		return PTR_ERR(wtbl_hdr);
 -
--	struct sec_key_uni key[2];
-+	u8 tx_key;
-+	u8 key_type;
-+	u8 is_authenticator;
-+	u8 peer_addr[6];
-+	u8 bss_idx;
-+	u8 cipher_id;
-+	u8 key_id;
-+	u8 key_len;
-+	u8 wlan_idx;
-+	u8 mgmt_prot;
-+	u8 key[32];
-+	u8 key_rsc[16];
- } __packed;
+-	if (info->enable) {
+-		mt76_connac_mcu_wtbl_generic_tlv(dev, skb, info->vif,
+-						 info->sta, sta_wtbl,
+-						 wtbl_hdr);
+-		mt76_connac_mcu_wtbl_hdr_trans_tlv(skb, info->vif, info->wcid,
+-						   sta_wtbl, wtbl_hdr);
+-		if (info->sta)
+-			mt76_connac_mcu_wtbl_ht_tlv(dev, skb, info->sta,
+-						    sta_wtbl, wtbl_hdr,
+-						    true, true);
+-	}
++	if (info->enable)
++		mt7925_mcu_sta_hdr_trans_tlv(skb, info->vif, info->sta);
  
- struct sta_rec_hdr_trans {
-@@ -441,7 +452,7 @@ struct sta_rec_mld {
- 					 sizeof(struct sta_rec_bfee) +		\
- 					 sizeof(struct sta_rec_phy) +		\
- 					 sizeof(struct sta_rec_ra) +		\
--					 sizeof(struct sta_rec_sec) +		\
-+					 sizeof(struct sta_rec_sec_uni) +   \
- 					 sizeof(struct sta_rec_ra_fixed) +	\
- 					 sizeof(struct sta_rec_he_6g_capa) +	\
- 					 sizeof(struct sta_rec_eht) +		\
-@@ -510,6 +521,33 @@ struct mt7925_wow_pattern_tlv {
- 	u8 rsv[4];
- } __packed;
- 
-+static inline enum connac3_mcu_cipher_type
-+mt7925_mcu_get_cipher(int cipher)
-+{
-+	switch (cipher) {
-+	case WLAN_CIPHER_SUITE_WEP40:
-+		return CONNAC3_CIPHER_WEP40;
-+	case WLAN_CIPHER_SUITE_WEP104:
-+		return CONNAC3_CIPHER_WEP104;
-+	case WLAN_CIPHER_SUITE_TKIP:
-+		return CONNAC3_CIPHER_TKIP;
-+	case WLAN_CIPHER_SUITE_AES_CMAC:
-+		return CONNAC3_CIPHER_BIP_CMAC_128;
-+	case WLAN_CIPHER_SUITE_CCMP:
-+		return CONNAC3_CIPHER_AES_CCMP;
-+	case WLAN_CIPHER_SUITE_CCMP_256:
-+		return CONNAC3_CIPHER_CCMP_256;
-+	case WLAN_CIPHER_SUITE_GCMP:
-+		return CONNAC3_CIPHER_GCMP;
-+	case WLAN_CIPHER_SUITE_GCMP_256:
-+		return CONNAC3_CIPHER_GCMP_256;
-+	case WLAN_CIPHER_SUITE_SMS4:
-+		return CONNAC3_CIPHER_WAPI;
-+	default:
-+		return CONNAC3_CIPHER_NONE;
-+	}
-+}
-+
- int mt7925_mcu_set_dbdc(struct mt76_phy *phy);
- int mt7925_mcu_hw_scan(struct mt76_phy *phy, struct ieee80211_vif *vif,
- 		       struct ieee80211_scan_request *scan_req);
+ 	return mt76_mcu_skb_send_msg(dev, skb, info->cmd, true);
+ }
 -- 
 2.43.0
 
