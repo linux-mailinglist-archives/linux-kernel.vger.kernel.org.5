@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34333888481
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:42:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 703D7888484
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD071288A38
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:42:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0754F1F245A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E4B1B0DFB;
-	Sun, 24 Mar 2024 22:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7361B16B3;
+	Sun, 24 Mar 2024 22:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q3VII3py"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uBpo3bxQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A642C1B0DDB;
-	Sun, 24 Mar 2024 22:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972511B0DFF;
+	Sun, 24 Mar 2024 22:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320260; cv=none; b=nmbIaq+e+GK7uy1wvhilYObQWSk58D3N5X+gdnfGTEPeaNqIHmAt40mBz9E66jgVM/6PKXlCMYVq9xBnKCFJ45hmKeBHmu3ETqsgcpnkssb6C/0bxY0Y8GDzoUkjbGCM97tsoKaWkFxy8p+qFjZ21wm0nxLb3WMeehT9fNdnVeM=
+	t=1711320261; cv=none; b=AxNKhB/p7bBPgtp6SfIb7PlYJ1sXxQVTO2mIwvUqQyZGtWWf+NFbNopI6TzKfZxnfCcNEOpXXB7D2qAH+Murhf5zdKEmkNTYeje7zVNqULmiF4UpDbErA8dIMOlOm4pL7tbaRLNr+N9djL33fdnKUjva3nwnIbmVF7JW6h4DKIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320260; c=relaxed/simple;
-	bh=AS+JGYpUDsPlHwpiNSjJhMQhjdqKCPCQtDNBzfmKuyQ=;
+	s=arc-20240116; t=1711320261; c=relaxed/simple;
+	bh=4C25oCwPgly30uqHrAYSqQTvBxyzpXbGxKpIMOxu0jU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MVPIyXrsUl9am2NJkiLXByYfLGK2wPCnBB21a3Pyh71pNflEyW3DmB6JgcVa6cQK+s55nwb/VHL+XRo5qv0zm5LBU93DX113fpsFPad59BtxvleRwcEhkfcC1WszxsI14qjj2qTJCtMp78NT8xY3YPhTzQPpvaSV1v+OUWEhHcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q3VII3py; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7B69C433F1;
-	Sun, 24 Mar 2024 22:44:19 +0000 (UTC)
+	 MIME-Version; b=hYF9SSi3ZQ4W2jArmh3MtstToRKWFz610EoBvlbMbBNsMa5uztvA08OkxjPPP4p/vSbdhXzWCaZ33lAPMQQeHZrCPmWULcbS0Phv7qMseZMnh5dBpTcz2hxKYycgf5Fq3niO6+Zw0SIOd5dw6bOcUO+L0567zehaI0Pls9qIge4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uBpo3bxQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB16FC433C7;
+	Sun, 24 Mar 2024 22:44:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320260;
-	bh=AS+JGYpUDsPlHwpiNSjJhMQhjdqKCPCQtDNBzfmKuyQ=;
+	s=k20201202; t=1711320261;
+	bh=4C25oCwPgly30uqHrAYSqQTvBxyzpXbGxKpIMOxu0jU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q3VII3pyYuoh3xHCnraeLGAcjYSSfv1chbdMjahqujGUK+7s5kq4AzpnhNPMVj1vd
-	 mH8ex6cMAlsdl7o52i1KahmrkY/HmsxFBoN1gehm5Z6fYSyZ8/kQHbJTn+5/oScsvT
-	 uYeQN+1KW4OeWGMUXCHKXy8siJ5eHKNvz117iwICDymobYddNVroOce86mTj6SQam2
-	 Dg5M1+lsIDLqGmQvzDwppGc94XIRyywkwmfH648KFh3+xrPmieoDUxgeLmDrFZbm9c
-	 /pRd71V4t+L09TGZYELhN6LEjOvs30CN3yXeXMghinO0XzJTapSDMGG359mIdqKH8N
-	 3tbsx+N50mY/g==
+	b=uBpo3bxQ/7P0omDL7tjRyt39uv4DiNk2LH91j9AqHzBAbBSIqV6nYNRuu1q7bVOEd
+	 hJZY5x5Ay302uUKMstW/IL9Iqk8OAkI4+ILwAEzZ95LxaNfiEszWnY6wWMMF9tUIO4
+	 JQ6VZK1HwbjBsRLFznKZM5ASp1xdpiIEHc16VHlp5DuEaK8ksvW63UI73PQv6upmK5
+	 C9nBJGibzUejIGT3avmrGeFWx7QLK46ikzhBQI8Pjf7brbAFKeAwkmOBNA5ZY4KDks
+	 F/klgJOd5CSHSSClhquc+s+1Mwz8xFrTunMKErD551YVGaRw2hifcR1azWGdB5jV1T
+	 aDP7yul9FDApg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Dylan Hung <dylan_hung@aspeedtech.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 568/715] scsi: csiostor: Avoid function pointer casts
-Date: Sun, 24 Mar 2024 18:32:27 -0400
-Message-ID: <20240324223455.1342824-569-sashal@kernel.org>
+Subject: [PATCH 6.8 569/715] i3c: dw: Disable IBI IRQ depends on hot-join and SIR enabling
+Date: Sun, 24 Mar 2024 18:32:28 -0400
+Message-ID: <20240324223455.1342824-570-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -62,133 +62,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dylan Hung <dylan_hung@aspeedtech.com>
 
-[ Upstream commit 9f3dbcb5632d6876226031d552ef6163bb3ad215 ]
+[ Upstream commit 10201396ef6455a68ac671fa0163205d327ebb70 ]
 
-csiostor uses function pointer casts to keep the csio_ln_ev state machine
-hidden, but this causes warnings about control flow integrity (KCFI)
-violations in clang-16 and higher:
+Disable IBI IRQ signal and status only when hot-join and SIR enabling of
+all target devices attached to the bus are disabled.
 
-drivers/scsi/csiostor/csio_lnode.c:1098:33: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1098 |         return (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready));
-      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/scsi/csiostor/csio_lnode.c:1369:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1369 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_uninit)) {
-      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/scsi/csiostor/csio_lnode.c:1373:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1373 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready)) {
-      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/scsi/csiostor/csio_lnode.c:1377:29: error: cast from 'void (*)(struct csio_lnode *, enum csio_ln_ev)' to 'csio_sm_state_t' (aka 'void (*)(void *, unsigned int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
- 1377 |         if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_offline)) {
-      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fixes: e389b1d72a62 ("i3c: dw: Add support for in-band interrupts")
 
-Move the enum into a shared header so the correct types can be used without
-the need for casts.
-
-Fixes: a3667aaed569 ("[SCSI] csiostor: Chelsio FCoE offload driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20240213100518.457623-1-arnd@kernel.org
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
+Link: https://lore.kernel.org/r/20240119054547.983693-1-dylan_hung@aspeedtech.com
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/csiostor/csio_defs.h  | 18 ++++++++++++++++--
- drivers/scsi/csiostor/csio_lnode.c |  8 ++++----
- drivers/scsi/csiostor/csio_lnode.h | 13 -------------
- 3 files changed, 20 insertions(+), 19 deletions(-)
+ drivers/i3c/master/dw-i3c-master.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/csiostor/csio_defs.h b/drivers/scsi/csiostor/csio_defs.h
-index c38017b4af982..e50e93e7fe5a1 100644
---- a/drivers/scsi/csiostor/csio_defs.h
-+++ b/drivers/scsi/csiostor/csio_defs.h
-@@ -73,7 +73,21 @@ csio_list_deleted(struct list_head *list)
- #define csio_list_prev(elem)	(((struct list_head *)(elem))->prev)
- 
- /* State machine */
--typedef void (*csio_sm_state_t)(void *, uint32_t);
-+struct csio_lnode;
+diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
+index ef5751e91cc9e..276153e10f5a4 100644
+--- a/drivers/i3c/master/dw-i3c-master.c
++++ b/drivers/i3c/master/dw-i3c-master.c
+@@ -1163,8 +1163,10 @@ static void dw_i3c_master_set_sir_enabled(struct dw_i3c_master *master,
+ 		global = reg == 0xffffffff;
+ 		reg &= ~BIT(idx);
+ 	} else {
+-		global = reg == 0;
++		bool hj_rejected = !!(readl(master->regs + DEVICE_CTRL) & DEV_CTRL_HOT_JOIN_NACK);
 +
-+/* State machine evets */
-+enum csio_ln_ev {
-+	CSIO_LNE_NONE = (uint32_t)0,
-+	CSIO_LNE_LINKUP,
-+	CSIO_LNE_FAB_INIT_DONE,
-+	CSIO_LNE_LINK_DOWN,
-+	CSIO_LNE_DOWN_LINK,
-+	CSIO_LNE_LOGO,
-+	CSIO_LNE_CLOSE,
-+	CSIO_LNE_MAX_EVENT,
-+};
-+
-+typedef void (*csio_sm_state_t)(struct csio_lnode *ln, enum csio_ln_ev evt);
- 
- struct csio_sm {
- 	struct list_head	sm_list;
-@@ -83,7 +97,7 @@ struct csio_sm {
- static inline void
- csio_set_state(void *smp, void *state)
- {
--	((struct csio_sm *)smp)->sm_state = (csio_sm_state_t)state;
-+	((struct csio_sm *)smp)->sm_state = state;
- }
- 
- static inline void
-diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
-index d5ac938970232..5b3ffefae476d 100644
---- a/drivers/scsi/csiostor/csio_lnode.c
-+++ b/drivers/scsi/csiostor/csio_lnode.c
-@@ -1095,7 +1095,7 @@ csio_handle_link_down(struct csio_hw *hw, uint8_t portid, uint32_t fcfi,
- int
- csio_is_lnode_ready(struct csio_lnode *ln)
- {
--	return (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready));
-+	return (csio_get_state(ln) == csio_lns_ready);
- }
- 
- /*****************************************************************************/
-@@ -1366,15 +1366,15 @@ csio_free_fcfinfo(struct kref *kref)
- void
- csio_lnode_state_to_str(struct csio_lnode *ln, int8_t *str)
- {
--	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_uninit)) {
-+	if (csio_get_state(ln) == csio_lns_uninit) {
- 		strcpy(str, "UNINIT");
- 		return;
+ 		reg |= BIT(idx);
++		global = (reg == 0xffffffff) && hj_rejected;
  	}
--	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_ready)) {
-+	if (csio_get_state(ln) == csio_lns_ready) {
- 		strcpy(str, "READY");
- 		return;
- 	}
--	if (csio_get_state(ln) == ((csio_sm_state_t)csio_lns_offline)) {
-+	if (csio_get_state(ln) == csio_lns_offline) {
- 		strcpy(str, "OFFLINE");
- 		return;
- 	}
-diff --git a/drivers/scsi/csiostor/csio_lnode.h b/drivers/scsi/csiostor/csio_lnode.h
-index 372a67d122d38..607698a0f0631 100644
---- a/drivers/scsi/csiostor/csio_lnode.h
-+++ b/drivers/scsi/csiostor/csio_lnode.h
-@@ -53,19 +53,6 @@
- extern int csio_fcoe_rnodes;
- extern int csio_fdmi_enable;
+ 	writel(reg, master->regs + IBI_SIR_REQ_REJECT);
  
--/* State machine evets */
--enum csio_ln_ev {
--	CSIO_LNE_NONE = (uint32_t)0,
--	CSIO_LNE_LINKUP,
--	CSIO_LNE_FAB_INIT_DONE,
--	CSIO_LNE_LINK_DOWN,
--	CSIO_LNE_DOWN_LINK,
--	CSIO_LNE_LOGO,
--	CSIO_LNE_CLOSE,
--	CSIO_LNE_MAX_EVENT,
--};
--
--
- struct csio_fcf_info {
- 	struct list_head	list;
- 	uint8_t			priority;
 -- 
 2.43.0
 
