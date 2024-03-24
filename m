@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-113359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65DC08883B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:17:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 514E18883B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD3E1B21295
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:17:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E648A1F24B26
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C94D19BBB0;
-	Sun, 24 Mar 2024 22:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4915E19C3AC;
+	Sun, 24 Mar 2024 22:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKtXdLeX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eX7BGfNw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8969719BB93;
-	Sun, 24 Mar 2024 22:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826EC19BBB7;
+	Sun, 24 Mar 2024 22:42:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320160; cv=none; b=ZJIEenlUNf0Nels9cK3DqljWCLPMeEuDStMMLREV87/eQigrBJPWpE+1gqjoe/8o74pmYGgZe09LxRTN9wcDFKbSFyOHh4z1ncURD/sVFLr1ZB7GOoGmNfYHg0IJ6M0+dfyNwapDQqh5pUvdcqXGAWmSsiROYrgCqt15izghGuc=
+	t=1711320161; cv=none; b=UMYMjRYEppUCkcKBizUVo2ELMMUK2kYPd6Yu4tB1trWQXH0iLEKFtABx8QQ2qZwb8hlGhCaKeQ1xkpbvAC+W0ZDOC09v5E6c+V1OEVRk50qCVJXMhQp4//MFmH7+jesqieOngxkNZ96EX4Ijrk/Adz6LgmT4PCqDPoXSCKgVbAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320160; c=relaxed/simple;
-	bh=8BK6+/8kcaLej6DGTBCcocnkWvmX8qwCPKlOjlJU6Ts=;
+	s=arc-20240116; t=1711320161; c=relaxed/simple;
+	bh=6NKZ+nns2FDi5/2LhPWcehmggKBZIPf/gzGtIL9UKCE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZiA6lF0t++WIaPd9lMVMkCv9muVTt3g1EJfsEJ8odqo3RTJLZ2sQqG+KwzizVfNwUj4pkgNeudlh8eKY0mSZLYdeHFiHDyzMJMY4NlGxKaABN/WvOd1C6zUczHOAOlRiw+oYGMnfnw8wR9zN0koARHENLwCyUel0o+bDq26zgng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKtXdLeX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4B10C433F1;
-	Sun, 24 Mar 2024 22:42:39 +0000 (UTC)
+	 MIME-Version; b=NyFX8YFVuIbSlxanDJIqV485fC/84m+lOBYu/aZgSx1reTkRloMrEVlqBUB/cdJ4hhNIQ+O0oZan8f1MQlHhS0sR0aCsgko9mM8t6DPaRSPE9MNo6sdCPwe7oCiuZUjQnV27pZpTadovVx1Xsj6C00y6Rz3WCEmYuPl5bIFcB94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eX7BGfNw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB8CC433C7;
+	Sun, 24 Mar 2024 22:42:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320160;
-	bh=8BK6+/8kcaLej6DGTBCcocnkWvmX8qwCPKlOjlJU6Ts=;
+	s=k20201202; t=1711320161;
+	bh=6NKZ+nns2FDi5/2LhPWcehmggKBZIPf/gzGtIL9UKCE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MKtXdLeXajB6BOoJrE2Nwa6fpbLFLQ736Lhneae/V4xW8KBS0o7zy2Y0a3+zKlsEs
-	 U7NgU7ZxFLIpLCu/RDX7bW6U2TCBRffJ276qpN0su+QCu1XbWmpjZAhqbjyr8RIJwe
-	 RLbWue2bUKb9I1ZSF68wG8Ude/SvurUH/otxVJUYss9ELwyCCV1V0kkoTFrASYhntd
-	 9u2q+D3luRDgp4o1lCKP+s6XLPcsVgWzFMW6PYTTa53890c5K1TBxq+ZYCkofXexgV
-	 FBAbiyKidzWZXC/EDer9PoxdHKD/NnLDXJztuwDWBXhD2bpPi63TOx6sZjjSxqqrWb
-	 4XF4/9v/sgu6g==
+	b=eX7BGfNwGrsIeiIAhkUsSG8JKXTXL9R3jTPk0ij1Cn4gq0yCX0M8FyoiI/5MCx8gH
+	 tPVKIXd2BFtBsrcwy5/oBOowyKEIzVdecc7EFxhKan9P9MAmpJHrvL9ckef24XmOyr
+	 nvtw04flbSkCvNuSJ9IGXrfkab/OrHC+pqHDcRUWr7CS9NIGnM/9vfCC4bMFoPAouy
+	 Lw35vy5bKIkufecBwjftfo5AlA8xV8/gIKEMfgeqobqLtgl6FjEiwDeeabGG1iX4Lf
+	 Z0aB1EbYCUuEpvgCQoHTL1yqt6dumnaz9TXopaKHY0mrbpoFryXqyLNTD3pIWQRnVk
+	 53XdkVhV4ibng==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -47,9 +47,9 @@ Cc: Adam Guerin <adam.guerin@intel.com>,
 	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 468/715] crypto: qat - removed unused macro in adf_cnv_dbgfs.c
-Date: Sun, 24 Mar 2024 18:30:47 -0400
-Message-ID: <20240324223455.1342824-469-sashal@kernel.org>
+Subject: [PATCH 6.8 469/715] crypto: qat - avoid division by zero
+Date: Sun, 24 Mar 2024 18:30:48 -0400
+Message-ID: <20240324223455.1342824-470-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,37 +65,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Adam Guerin <adam.guerin@intel.com>
 
-[ Upstream commit 9a5dcada14d5e027856a1bc38443e54111438da6 ]
+[ Upstream commit f99fb7d660f7c818105803f1f1915396a14d18ad ]
 
-This macro was added but never used, remove it.
+Check if delta_us is not zero and return -EINVAL if it is.
+delta_us is unlikely to be zero as there is a sleep between the reads of
+the two timestamps.
 
 This is to fix the following warning when compiling the QAT driver
-using the clang compiler with CC=clang W=2:
-    drivers/crypto/intel/qat/qat_common/adf_cnv_dbgfs.c:19:9: warning: macro is not used [-Wunused-macros]
-       19 | #define CNV_SLICE_ERR_MASK              GENMASK(7, 0)
-          |         ^
+using clang scan-build:
+    drivers/crypto/intel/qat/qat_common/adf_clock.c:87:9: warning: Division by zero [core.DivideZero]
+       87 |         temp = DIV_ROUND_CLOSEST_ULL(temp, delta_us);
+          |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: d807f0240c71 ("crypto: qat - add cnv_errors debugfs file")
+Fixes: e2980ba57e79 ("crypto: qat - add measure clock frequency")
 Signed-off-by: Adam Guerin <adam.guerin@intel.com>
 Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/intel/qat/qat_common/adf_cnv_dbgfs.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/crypto/intel/qat/qat_common/adf_clock.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/crypto/intel/qat/qat_common/adf_cnv_dbgfs.c b/drivers/crypto/intel/qat/qat_common/adf_cnv_dbgfs.c
-index 07119c487da01..627953a72d478 100644
---- a/drivers/crypto/intel/qat/qat_common/adf_cnv_dbgfs.c
-+++ b/drivers/crypto/intel/qat/qat_common/adf_cnv_dbgfs.c
-@@ -16,7 +16,6 @@
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_clock.c b/drivers/crypto/intel/qat/qat_common/adf_clock.c
+index 01e0a389e462b..cf89f57de2a70 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_clock.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_clock.c
+@@ -83,6 +83,9 @@ static int measure_clock(struct adf_accel_dev *accel_dev, u32 *frequency)
+ 	}
  
- #define CNV_ERR_INFO_MASK		GENMASK(11, 0)
- #define CNV_ERR_TYPE_MASK		GENMASK(15, 12)
--#define CNV_SLICE_ERR_MASK		GENMASK(7, 0)
- #define CNV_SLICE_ERR_SIGN_BIT_INDEX	7
- #define CNV_DELTA_ERR_SIGN_BIT_INDEX	11
- 
+ 	delta_us = timespec_to_us(&ts3) - timespec_to_us(&ts1);
++	if (!delta_us)
++		return -EINVAL;
++
+ 	temp = (timestamp2 - timestamp1) * ME_CLK_DIVIDER * 10;
+ 	temp = DIV_ROUND_CLOSEST_ULL(temp, delta_us);
+ 	/*
 -- 
 2.43.0
 
