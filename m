@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-112912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57F1A887FB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:41:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDDAD887FB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:41:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 133302813E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:41:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A8551C21179
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1965245970;
-	Sun, 24 Mar 2024 22:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466636CDA7;
+	Sun, 24 Mar 2024 22:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uPohn6xB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEWWheiW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5788C5D8E1;
-	Sun, 24 Mar 2024 22:35:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763366BFBF;
+	Sun, 24 Mar 2024 22:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319723; cv=none; b=BgKzkS8y7yiGqJYzZpX/xfXJV/Lq8jXAu8VYY+2UFK3DPM4jD7d7vScXc53LfDS+teNMNKV+2//7uenEl5YdCA6i3LvPUZ9AwLa03l/63Er0VhpRyFZFMu/7O+UDfdYO9Snmn/dLfMmwR7Sq0abfiqxUZoqsXqUud38CwOQZ+FE=
+	t=1711319724; cv=none; b=khqTzxz5BG8Xb/XSgoNouS9nVA9Vk/oFtbG+cp5rJnBF560qaQSFeBTSCIkFsC/7I5nJ8YBzStem2BwvgfSn4QOGcXGJAIxhWkyH4PltVaB3mj4NEsPGulkA2tdjYRBQdDuHe0q9i/VbBjcFlFWlWGlUPvGhElUYAtGv7XriU08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319723; c=relaxed/simple;
-	bh=9ow4d0I8ykKepUEvPvrJCVgpBOAMKiYp+QNhUH5Nfv8=;
+	s=arc-20240116; t=1711319724; c=relaxed/simple;
+	bh=A9hhnNGKNJQvbzqjwj11sc2xcTjo7vfpsW+pBYyE2/k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fW7twq92qh4WjZKPTNwVLZ7F5hHXDA0RXz1obcHfLn5gTMGA5O29f8S7rqvDGYI4a9qE4Ta+v3JdxdywgMWr+8iByS69Woq7iJPamBUoBiWYB8e+3+H44JEMtl5B7oiCh/3Q1ScLoWxtcGdVXb7eRWktxjBRsaNvG5inZQrxUco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uPohn6xB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BF80C433B1;
-	Sun, 24 Mar 2024 22:35:22 +0000 (UTC)
+	 MIME-Version; b=I6jQiOr0DSdomLskWaBCj9zH1dT6XvmeY8kceHoK6MMsCwHIxTaK44J8YzGsPrIRPxJ541LaJB3AAHkK9Kwa9mFTucPVcSxt5YlpHpr9EnLsXt8IDLfiH0D/uqzoCJV1V8MPbbd7hwUORlBGEPcNUB5zRGZITDH4APYcbsLHGuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEWWheiW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9A7C433C7;
+	Sun, 24 Mar 2024 22:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319723;
-	bh=9ow4d0I8ykKepUEvPvrJCVgpBOAMKiYp+QNhUH5Nfv8=;
+	s=k20201202; t=1711319724;
+	bh=A9hhnNGKNJQvbzqjwj11sc2xcTjo7vfpsW+pBYyE2/k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uPohn6xBclq1NYKNUfcswXshr1jgGuSBPqmff3GMCPSYHEGQCGVnJsTsUBAGtT9aF
-	 vr1OtAeMPBRsycmJmsIScehY1GAXMg/ulwTnQaduGxvRIdTvkPUyeZgqG5kJiwEivv
-	 ixzuIfj8Tu7c9AnrV4eF+KDkrScHIN5poDNUFH3cqyE4yduoLe35Lu7D/F62nXY7xx
-	 K2JOWrzqkilr82Ic/MC9O+1l4C5fkbuX2KAQ9XVTaDDeodrIpGOm/qyAwSAs65JrfG
-	 yZdbtDcvToiUoEvdGqXtlj69xPUWfvEZT2Lbp7f4KX8N/RjScdQAMj02OLB3bFlgju
-	 C6axcDvfbPbdQ==
+	b=AEWWheiW6txc+xSEbVqe5FmchDSWK3vdqL2uDTRolvCrsJIXoylb2cXX7MX2d+qLI
+	 z5LCFL/shzVXyr0YBTsKfFW3YdQxY8wyha/drPADn/c/On1b63sIsW+oKBMZVDTfnT
+	 QRU0ODPP57sMuhZEHX4x5arbgw8QMXW9if04p1uo/9avDD5SFY1LfX6Qa3/aTzkHSI
+	 KwgloABaTjLko7dDJ/UEK8tWeByngqvVEecFrb/aMJQPE8e+4j0EEvbKG/odIrNYgJ
+	 XPajJ6MMnvr9VBFmcVHThz56facv2fINyCdEXsju8z/WwsJJc8qRpEdcWJ/F+rWn7W
+	 O5CXYjn1T/cmg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Li Nan <linan122@huawei.com>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Song Liu <song@kernel.org>,
+Cc: Maxime Ripard <mripard@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	David Gow <davidgow@google.com>,
+	Shuah Khan <skhan@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 025/715] md: Don't clear MD_CLOSING when the raid is about to stop
-Date: Sun, 24 Mar 2024 18:23:24 -0400
-Message-ID: <20240324223455.1342824-26-sashal@kernel.org>
+Subject: [PATCH 6.8 026/715] kunit: Setup DMA masks on the kunit device
+Date: Sun, 24 Mar 2024 18:23:25 -0400
+Message-ID: <20240324223455.1342824-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,71 +64,58 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Li Nan <linan122@huawei.com>
+From: Maxime Ripard <mripard@kernel.org>
 
-[ Upstream commit 9674f54e41fffaf06f6a60202e1fa4cc13de3cf5 ]
+[ Upstream commit c5215d54dc10e801a6cefef62445a00a4c28a515 ]
 
-The raid should not be opened anymore when it is about to be stopped.
-However, other processes can open it again if the flag MD_CLOSING is
-cleared before exiting. From now on, this flag will not be cleared when
-the raid will be stopped.
+Commit d393acce7b3f ("drm/tests: Switch to kunit devices") switched the
+DRM device creation helpers from an ad-hoc implementation to the new
+kunit device creation helpers introduced in commit d03c720e03bd ("kunit:
+Add APIs for managing devices").
 
-Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
-Signed-off-by: Li Nan <linan122@huawei.com>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Song Liu <song@kernel.org>
-Link: https://lore.kernel.org/r/20240226031444.3606764-6-linan666@huaweicloud.com
+However, while the DRM helpers were using a platform_device, the kunit
+helpers are using a dedicated bus and device type.
+
+That situation creates small differences in the initialisation, and one
+of them is that the kunit devices do not have the DMA masks setup. In
+turn, this means that we can't do any kind of DMA buffer allocation
+anymore, which creates a regression on some (downstream for now) tests.
+
+Let's set up a default DMA mask that should work on any platform to fix
+it.
+
+Fixes: d03c720e03bd ("kunit: Add APIs for managing devices")
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: David Gow <davidgow@google.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ lib/kunit/device.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index bfd04a9e80796..d344e6fa3b26f 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -6279,7 +6279,15 @@ static void md_clean(struct mddev *mddev)
- 	mddev->persistent = 0;
- 	mddev->level = LEVEL_NONE;
- 	mddev->clevel[0] = 0;
--	mddev->flags = 0;
-+	/*
-+	 * Don't clear MD_CLOSING, or mddev can be opened again.
-+	 * 'hold_active != 0' means mddev is still in the creation
-+	 * process and will be used later.
-+	 */
-+	if (mddev->hold_active)
-+		mddev->flags = 0;
-+	else
-+		mddev->flags &= BIT_ULL_MASK(MD_CLOSING);
- 	mddev->sb_flags = 0;
- 	mddev->ro = MD_RDWR;
- 	mddev->metadata_type[0] = 0;
-@@ -7625,7 +7633,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 	int err = 0;
- 	void __user *argp = (void __user *)arg;
- 	struct mddev *mddev = NULL;
--	bool did_set_md_closing = false;
+diff --git a/lib/kunit/device.c b/lib/kunit/device.c
+index 644a38a1f5b1c..9ea399049749e 100644
+--- a/lib/kunit/device.c
++++ b/lib/kunit/device.c
+@@ -10,6 +10,7 @@
+  */
  
- 	if (!md_ioctl_valid(cmd))
- 		return -ENOTTY;
-@@ -7709,7 +7716,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 			err = -EBUSY;
- 			goto out;
- 		}
--		did_set_md_closing = true;
- 		mutex_unlock(&mddev->open_mutex);
- 		sync_blockdev(bdev);
+ #include <linux/device.h>
++#include <linux/dma-mapping.h>
+ 
+ #include <kunit/test.h>
+ #include <kunit/device.h>
+@@ -133,6 +134,9 @@ static struct kunit_device *kunit_device_register_internal(struct kunit *test,
+ 		return ERR_PTR(err);
  	}
-@@ -7851,7 +7857,7 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 				     mddev_unlock(mddev);
  
- out:
--	if(did_set_md_closing)
-+	if (cmd == STOP_ARRAY_RO || (err && cmd == STOP_ARRAY))
- 		clear_bit(MD_CLOSING, &mddev->flags);
- 	return err;
- }
++	kunit_dev->dev.dma_mask = &kunit_dev->dev.coherent_dma_mask;
++	kunit_dev->dev.coherent_dma_mask = DMA_BIT_MASK(32);
++
+ 	kunit_add_action(test, device_unregister_wrapper, &kunit_dev->dev);
+ 
+ 	return kunit_dev;
 -- 
 2.43.0
 
