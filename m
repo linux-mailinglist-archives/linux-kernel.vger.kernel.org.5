@@ -1,53 +1,66 @@
-Return-Path: <linux-kernel+bounces-115256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7C4D889376
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:29:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F851889377
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:29:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0C0B29888E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:29:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 405751F3344D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD2AB3165E9;
-	Mon, 25 Mar 2024 01:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9A11CDE0F;
+	Mon, 25 Mar 2024 01:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a4CmaObg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqV+wOtY"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CEB22F4ED;
-	Sun, 24 Mar 2024 23:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD98A22F4F4;
+	Sun, 24 Mar 2024 23:52:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324371; cv=none; b=J21CZLaG0fb4kXK1SfYu0u1rEC+JslDoIS0NC5IfO4KANoV1UOV/zTdx24CIIWuc3Sq/bP9CraSyRovXpByvNtzrVmJc5rSt/p5i/EQWweZa8hE+9AfxrdD2goZBbC2q7nlzeY5A0/lSK4teRNF4QuImfp+STGVfagUfXa1jLug=
+	t=1711324372; cv=none; b=mYPCGqGoYd8fonViOLcvrm1AsHfw7jMbnZMeb3TMgGRlgTjtnJ6EJaPMBdpgjkF3hQn9ZWmh/PcWtBIfRim0ZlvtttTFMyBBlmMaOncQQwnb/G1zAnU4/+9xDUrl4VTJGVRGWESNZ/ms9PftC/YaGouxo47fVMlINVI++SA/4qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711324371; c=relaxed/simple;
-	bh=QUGCoymRcEaCqGNz+5TWFFGBLJK+0XjjHAOkdaWp5gM=;
+	s=arc-20240116; t=1711324372; c=relaxed/simple;
+	bh=jhQcHsM9X+UJssCBHLAu+ithg8EyBjUhqhmuoeH74BI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fb+ooUT2+b/jy8wU6du1YqDYup9vtChISfNokG+x3Uh2QhZg/PQtbdl1UH7ECyWKgdFIsk1mXAM88+bwCC784be1/UtDWcIqDPlDkQwraz4/7wm8oJXa781SxYujalukvjMyY+VPkmNz9vG+8YDv7oHvjfFqcX1yanvLR+qzU8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a4CmaObg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6A42C43390;
-	Sun, 24 Mar 2024 23:52:49 +0000 (UTC)
+	 MIME-Version; b=SaNV17eb0yv866zSqPMh9eFzVaGNAPxpOBfC7OzF7XSsV9pHsCe1kEZ7PnCmyD9CCzkSlxcPWSIXuSU7MMYLkb686pn60R93PTRJ9KPuPCagUi7Yd9o4lBztOcg5Hy38r6/eq4SoPnqzvw0wIjWzgnaJLeYY0VGBfJGUcddWaCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqV+wOtY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C051CC43394;
+	Sun, 24 Mar 2024 23:52:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324370;
-	bh=QUGCoymRcEaCqGNz+5TWFFGBLJK+0XjjHAOkdaWp5gM=;
+	s=k20201202; t=1711324372;
+	bh=jhQcHsM9X+UJssCBHLAu+ithg8EyBjUhqhmuoeH74BI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=a4CmaObgl2LSyn4hfglew4zgo4rnyfsgPUul/JezWfIsUecEMnpvLWsgzTYFkcxTW
-	 hf59F3MwrpfYzCwkwOkZXBEO5XKALIokvTwIdeP07L8yxzg0Yt5rlFm3KQJBzFox1L
-	 7+AJQBg1c87nzdzzGd3P3b0W+cwcP2fFQAnBPeqSY1ytK4s7xU7FVIO/Dz1dQlW3YR
-	 UMco5XzAn2UHMQpX8kDvSlRj7N0NMnphKG6pSaAByqY2Ixe27j2DVwjp3NgwCp/b12
-	 72GiQHgO9xUGRYoCMk/Sw4+BNixghDwiTw+WDuWjhRh3RlEL5v/eNCI/h+ZkR9++wE
-	 +A2oyDVsQHwkg==
+	b=oqV+wOtYRbfSXUKF3XwUhPj8a37YwiEMs0jHPSRrHdVz/GzKmRg/Uw57pAvv0F/5j
+	 4OhAc9BoMp+ZfFJ0AjhbtbYlB0r4TqINdHeMLNTUtNqEow1v/+dfd617HXFC8ByVg+
+	 VH8jpfzUNGzmgh7Q5renlNRz+J/iKP3N2QpRwuaPgUdAW+jjrHuj5yY0SZGM+fNaxN
+	 X1MTCvqcdV/BZGoOZjEkOaGuxMs70PjZzYs6VoigYtC+26CyckEupre/5JNymQnoFt
+	 sjANFqz0E8ZbJq7AhOX1TRWoWXS5D6FLk+o7bOioHMaYkUF+eYYgiAp2o/lh7y5/Jz
+	 LE0/yEadCxitQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Eddie Huang <eddie.huang@mediatek.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	linux-rtc@vger.kernel.org,
+	Marc Zyngier <maz@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Peter Rosin <peda@axentia.se>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 137/148] kconfig: fix infinite loop when expanding a macro at the end of file
-Date: Sun, 24 Mar 2024 19:50:01 -0400
-Message-ID: <20240324235012.1356413-138-sashal@kernel.org>
+Subject: [PATCH 4.19 138/148] rtc: mt6397: select IRQ_DOMAIN instead of depending on it
+Date: Sun, 24 Mar 2024 19:50:02 -0400
+Message-ID: <20240324235012.1356413-139-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -61,45 +74,57 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit af8bbce92044dc58e4cc039ab94ee5d470a621f5 ]
+[ Upstream commit 544c42f798e1651dcb04fb0395219bf0f1c2607e ]
 
-A macro placed at the end of a file with no newline causes an infinite
-loop.
+IRQ_DOMAIN is a hidden (not user visible) symbol. Users cannot set
+it directly thru "make *config", so drivers should select it instead
+of depending on it if they need it.
+Relying on it being set for a dependency is risky.
 
-[Test Kconfig]
-  $(info,hello)
-  \ No newline at end of file
+Consistently using "select" or "depends on" can also help reduce
+Kconfig circular dependency issues.
 
-I realized that flex-provided input() returns 0 instead of EOF when it
-reaches the end of a file.
+Therefore, change the use of "depends on" for IRQ_DOMAIN to
+"select" for RTC_DRV_MT6397.
 
-Fixes: 104daea149c4 ("kconfig: reference environment variables directly and remove 'option env='")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fixes: 04d3ba70a3c9 ("rtc: mt6397: add IRQ domain dependency")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Eddie Huang <eddie.huang@mediatek.com>
+Cc: Sean Wang <sean.wang@mediatek.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: linux-rtc@vger.kernel.org
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Peter Rosin <peda@axentia.se>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20240213050258.6167-1-rdunlap@infradead.org
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kconfig/zconf.l | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/rtc/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/kconfig/zconf.l b/scripts/kconfig/zconf.l
-index c2f577d719647..2a47ce9b219a0 100644
---- a/scripts/kconfig/zconf.l
-+++ b/scripts/kconfig/zconf.l
-@@ -292,8 +292,11 @@ static char *expand_token(const char *in, size_t n)
- 	new_string();
- 	append_string(in, n);
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index b5845f16a3a26..199cc39459198 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -1719,7 +1719,8 @@ config RTC_DRV_MOXART
  
--	/* get the whole line because we do not know the end of token. */
--	while ((c = input()) != EOF) {
-+	/*
-+	 * get the whole line because we do not know the end of token.
-+	 * input() returns 0 (not EOF!) when it reachs the end of file.
-+	 */
-+	while ((c = input()) != 0) {
- 		if (c == '\n') {
- 			unput(c);
- 			break;
+ config RTC_DRV_MT6397
+ 	tristate "MediaTek PMIC based RTC"
+-	depends on MFD_MT6397 || (COMPILE_TEST && IRQ_DOMAIN)
++	depends on MFD_MT6397 || COMPILE_TEST
++	select IRQ_DOMAIN
+ 	help
+ 	  This selects the MediaTek(R) RTC driver. RTC is part of MediaTek
+ 	  MT6397 PMIC. You should enable MT6397 PMIC MFD before select
 -- 
 2.43.0
 
