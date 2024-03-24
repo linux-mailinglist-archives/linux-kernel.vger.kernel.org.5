@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-116000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2554088991F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B52EC8890C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:27:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3F6D2A1803
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:01:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F749297B68
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C08839C1F9;
-	Mon, 25 Mar 2024 03:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F34C2BB67C;
+	Mon, 25 Mar 2024 00:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QbR/x1kK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nDxqRoPw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D95015FD1A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFD02152DF9;
 	Sun, 24 Mar 2024 23:19:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322367; cv=none; b=sMi21V34REgSf9z3KguQvgYHOYPGM5ndRFHPKQpzsOE0gZlNKxMPinf33cfoiZUTgm6lQWqg6wbZBQ/FJnTNNkHIcJYhpFBBrjcMVmj0nevFVjmsoriIYc1fXyVggEGOXLzegxvD7Q/ZHdVExNHm5wYRRtgTfn/4RPbb2SlEyOg=
+	t=1711322368; cv=none; b=EuTUDGcAyJ+qCJOc9aSZjJOn1iwkZv9xd/A6ozwRuhWg8CUCWwgye8p+6j+JKBgs4uVGCBfhsJQUGIyBY4FQYu5HnWX0wyjbsxX0Q4POlvUzl3rdTxdi6PhNMoUGbyYaRt7Q7BKJ8llvxABeLx2wGmO2vjCEcUTRkoOWHvZ425s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322367; c=relaxed/simple;
-	bh=R27CTNliboiG9ez/iXBakzPHknya3eT60HpHVzU5DHg=;
+	s=arc-20240116; t=1711322368; c=relaxed/simple;
+	bh=Zt1YcWJk2oY9V6XFY0hmrkQhTHqT8Z2fR3NfegnzwNc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BmITuE/kxP9pCN4eBJ5/sT7ooDTlNd5OH+V8heqjuO6Tlkja9+mawMxopB70bzhdCpa323ZUWl0KbdyVlzLvUt3p9ktPjdSn4wSwUKRh48+EMDe2HNlmk5AgmQbqRiZQ1zuJqTblNz52B9tiFLOvUXDNG+Mm9sJfTS31py76yvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QbR/x1kK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44D08C43394;
-	Sun, 24 Mar 2024 23:19:26 +0000 (UTC)
+	 MIME-Version; b=rlTkWmmT73fw6tXP43a9r2yBZs1mjgj50O7Dh/GLP2SGPyEDyYsNTzoLprqtyZq468gLmkguUaCAlOYPIB7Djiq/z+lCM10RJy9Tmt3mmvW2sDqcCiOzmy1oCClbXSCltt9bgi2pZDZb+9q+H1FWOMlcHtNZyw3unSltFvKNM7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nDxqRoPw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40484C433C7;
+	Sun, 24 Mar 2024 23:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711322367;
-	bh=R27CTNliboiG9ez/iXBakzPHknya3eT60HpHVzU5DHg=;
+	bh=Zt1YcWJk2oY9V6XFY0hmrkQhTHqT8Z2fR3NfegnzwNc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QbR/x1kKOHAEgW057aN9Jxyqj/1UEPV9DGUDCreVqr+eAhJmyinrx36fr8JLF+07H
-	 aZPfIW3xbl3xjVVB7KsSGjI8d0NqZan8zTf9rXBYk+sHAvCgR/Ze4S7WkDMCCpjuGd
-	 y2yhPMSZq/qojzeEXDcOgJhKmp+WASMabPeTBMxMCs5VC65pBB0Gl7mtahPpol2wbu
-	 3Bsbst4qBUKdEFot+LRjafIA63PnxvSo2JSDJjviIAC3H3+LFGTZhGAE6Rk/GrilVr
-	 vLgrRXXEcyyJ+kP7cOcUPcqqiBVJmhjmjJRHWVQPV1h33D49i5KH5OjTqwXKqcd+Eg
-	 WimPs74JhI5tg==
+	b=nDxqRoPw+QFhFDt2DjKbSCTsGb12vIdVcjFojs64rtfRy8krIkLAOFesEiaFQWNYR
+	 ptnKC2mc+oxphQGEY9UA73Uk2kVI3cYNP+oqve47YNONTnRa0paLkXWGi0vwYp/yMB
+	 +UktSn2hbrUDxTIQ8mf8p4qu9PS17Tmy9Oom0zeW5RD+OfFLRklODhqvvgXOQlvVTW
+	 YlaoBdeqa4ngRIRvApM8e8+jhB6uxLmcdgMWzvZXeAhjGhGVElo2F8q3TNZBZnV3Ku
+	 hBIMnwtu5rdrnbp505uI0hzHGC0FI/t8Fjh/U3ksSEfTguoU97pNFzhyGyVoSvN+A4
+	 Rog2+SS5Y7Q7g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>,
-	stable@kernel.org,
-	Radek Podgorny <radek@podgorny.cz>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 449/451] x86/efistub: Clear decompressor BSS in native EFI entrypoint
-Date: Sun, 24 Mar 2024 19:12:05 -0400
-Message-ID: <20240324231207.1351418-450-sashal@kernel.org>
+Subject: [PATCH 6.1 450/451] x86/efistub: Don't clear BSS twice in mixed mode
+Date: Sun, 24 Mar 2024 19:12:06 -0400
+Message-ID: <20240324231207.1351418-451-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -65,66 +63,39 @@ Content-Transfer-Encoding: 8bit
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit b3810c5a2cc4a6665f7a65bed5393c75ce3f3aa2 ]
+[ Upstream commit df7ecce842b846a04d087ba85fdb79a90e26a1b0 ]
 
-The EFI stub on x86 no longer invokes the decompressor as a subsequent
-boot stage, but calls into the decompression code directly while running
-in the context of the EFI boot services.
+Clearing BSS should only be done once, at the very beginning.
+efi_pe_entry() is the entrypoint from the firmware, which may not clear
+BSS and so it is done explicitly. However, efi_pe_entry() is also used
+as an entrypoint by the mixed mode startup code, in which case BSS will
+already have been cleared, and doing it again at this point will corrupt
+global variables holding the firmware's GDT/IDT and segment selectors.
 
-This means that when using the native EFI entrypoint (as opposed to the
-EFI handover protocol, which clears BSS explicitly), the firmware PE
-image loader is being relied upon to ensure that BSS is zeroed before
-the EFI stub is entered from the firmware.
+So make the memset() conditional on whether the EFI stub is running in
+native mode.
 
-As Radek's report proves, this is a bad idea. Not all loaders do this
-correctly, which means some global variables that should be statically
-initialized to 0x0 may have junk in them.
-
-So clear BSS explicitly when entering via efi_pe_entry(). Note that
-zeroing BSS from C code is not generally safe, but in this case, the
-following assignment and dereference of a global pointer variable
-ensures that the memset() cannot be deferred or reordered.
-
-Cc: <stable@kernel.org> # v6.1+
-Reported-by: Radek Podgorny <radek@podgorny.cz>
-Closes: https://lore.kernel.org/all/a99a831a-8ad5-4cb0-bff9-be637311f771@podgorny.cz
+Fixes: b3810c5a2cc4a666 ("x86/efistub: Clear decompressor BSS in native EFI entrypoint")
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/libstub/x86-stub.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/firmware/efi/libstub/x86-stub.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index 784e1b2ae5ccd..aa07051459f52 100644
+index aa07051459f52..dc50dda40239e 100644
 --- a/drivers/firmware/efi/libstub/x86-stub.c
 +++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -21,6 +21,8 @@
- #include "efistub.h"
- #include "x86-stub.h"
- 
-+extern char _bss[], _ebss[];
-+
- const efi_system_table_t *efi_system_table;
- const efi_dxe_services_table_t *efi_dxe_table;
- static efi_loaded_image_t *image = NULL;
-@@ -432,6 +434,8 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
+@@ -434,7 +434,8 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
  	efi_status_t status;
  	char *cmdline_ptr;
  
-+	memset(_bss, 0, _ebss - _bss);
-+
+-	memset(_bss, 0, _ebss - _bss);
++	if (efi_is_native())
++		memset(_bss, 0, _ebss - _bss);
+ 
  	efi_system_table = sys_table_arg;
  
- 	/* Check if we were booted by the EFI firmware */
-@@ -950,8 +954,6 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
- void efi_handover_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg,
- 			struct boot_params *boot_params)
- {
--	extern char _bss[], _ebss[];
--
- 	memset(_bss, 0, _ebss - _bss);
- 	efi_stub_entry(handle, sys_table_arg, boot_params);
- }
 -- 
 2.43.0
 
