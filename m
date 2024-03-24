@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23532888151
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:18:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B10F888154
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:18:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD6222850A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:18:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B8971C21657
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998B614E2E6;
-	Sun, 24 Mar 2024 22:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BA214E2FE;
+	Sun, 24 Mar 2024 22:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SUpmGfhF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fV0gYiMV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF554548E2;
-	Sun, 24 Mar 2024 22:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DC214E2E5;
+	Sun, 24 Mar 2024 22:38:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319890; cv=none; b=sUvE6/n5pxX30pt4Wn83CVANDzh5K/mcJkpzEV0skVbCW90q0NiCYWZt5AZ3DuJbruoqT8J5D6DAZxdSOo2tsckCI2yjeDWS4Sg3+2d9hD2N96a+YzhpGLLClnEMpQb0yEa0IOQKzwjPxoF+lnrOEjIUmCJ0lyw9dV150bv2+kE=
+	t=1711319891; cv=none; b=Snbmbvtv1IcQC3vX6wvjUUe2XRinJMNnOdo5tJfib8IR6ra0BqEY4xMgsuv7v1jDO6gWIIVPItRzp3eC0tN+Vce/bPuvrenUQ/s5A/QGMts74qmNhtttDcaYukv5NBXAN6f1bAub+f/y9LuyxyqLXDEAoHpHtMSzDuSGP4XSJIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319890; c=relaxed/simple;
-	bh=ZnrPdgvk06axdQ2YBtY3yByvM2uHKf4dwGAffJixHV0=;
+	s=arc-20240116; t=1711319891; c=relaxed/simple;
+	bh=nTdHPVEhp+m6EDgmRo0XGumx0slog8xFkDKuDFI+Krk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RHdlbV7i1VGJxVJHIh9178T+gjdDPcMCvx88u4tXuiXulPvXPPBT0qG9oO0HSFoqW+S4v7N1h8pAuGIsSHKlrRYClh1us1RXimxldWSohXwVzyP0qQ7QlsU5PtFb2RlJ775ELOtac0DWlQyOQonhUrYL5uMwqMjAlfi2fYe9Olc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SUpmGfhF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6881C433C7;
-	Sun, 24 Mar 2024 22:38:09 +0000 (UTC)
+	 MIME-Version; b=SvTvG5HG31nriMoDoU88cbOucuilV/1iju9NQSioOjCNvC3X4kY4HYBk3hPabXgfiXSMloHvM+Ua9cZixdpb7RTmtP9w1DGVmrj9A3g4Jekxb5QDUiGGK5Z4UKelM1FBNYl631iYB8nzjqc8HOsIkr+QIPP1o+gTFpqaRpat/7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fV0gYiMV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3CECC43390;
+	Sun, 24 Mar 2024 22:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319890;
-	bh=ZnrPdgvk06axdQ2YBtY3yByvM2uHKf4dwGAffJixHV0=;
+	s=k20201202; t=1711319891;
+	bh=nTdHPVEhp+m6EDgmRo0XGumx0slog8xFkDKuDFI+Krk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SUpmGfhF2yAQitpTRRopdZxZhHys5k8giWvVdnB6JeOYWwRNjrCH3omkjiaKEHibx
-	 bXhDEWGNhIi3qKBo6jZy6za9x+KwpEnSN8IssVX4wdta3XRnD3wnvmbp6ue9Yb3GY1
-	 7tZw6L13shMbBwaRaVS2mri9oL7vpOHsq7jwM1JF1kLc40K7PdLiNNFquT+lG8AoI0
-	 d7oY/noKDijCnTBUzEHw7tTrh2xYYMeZnwr406YDi7QKSHXSr2+ZOJ92dtNO5CkMuW
-	 dCVyYYmVl+DYAeU64tXegZ/YlS0znTTisNvuZVX5M2YDaedHvcns0x+eG7bA6ohnv9
-	 aNM8qs6RPqWWQ==
+	b=fV0gYiMVuDPpMUbBC5+ASAq3lH4Qv7Bng/CQTNTZNR1ekI9uPAmmrcpRoimSUnyFL
+	 Q6a/3tQDx95M7UgjfH9oojR+S8qUcbJOm22jPCyLYU0u3dAXgEBaSJXmP00u7c5PmU
+	 uvBxLyG96esaemRmAq9BLiXjkD/+myVoWmL8jbXflm3SC5YJEW8kKT4q0NMA1fHLzh
+	 tmXaHfkUioD1Dyz4Zs3TApibaiq1q4Ece91jEh3t0JbgW0kjIOzXIQ+twZOjIo2OMd
+	 5Msh4G6m0TtFB3mQdag52tOUcnvbMBiSERVo+DOe1yYEhE/RhfeEuLayMDFqqdZoKo
+	 pf9DdPKWXJDbQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 195/715] bpf: Mark bpf_spin_{lock,unlock}() helpers with notrace correctly
-Date: Sun, 24 Mar 2024 18:26:14 -0400
-Message-ID: <20240324223455.1342824-196-sashal@kernel.org>
+Subject: [PATCH 6.8 196/715] bpf: don't infer PTR_TO_CTX for programs with unnamed context type
+Date: Sun, 24 Mar 2024 18:26:15 -0400
+Message-ID: <20240324223455.1342824-197-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,131 +62,95 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Yonghong Song <yonghong.song@linux.dev>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 178c54666f9c4d2f49f2ea661d0c11b52f0ed190 ]
+[ Upstream commit 879bbe7aa4afa80acf72a1cad7f52416ea78c52d ]
 
-Currently tracing is supposed not to allow for bpf_spin_{lock,unlock}()
-helper calls. This is to prevent deadlock for the following cases:
-  - there is a prog (prog-A) calling bpf_spin_{lock,unlock}().
-  - there is a tracing program (prog-B), e.g., fentry, attached
-    to bpf_spin_lock() and/or bpf_spin_unlock().
-  - prog-B calls bpf_spin_{lock,unlock}().
-For such a case, when prog-A calls bpf_spin_{lock,unlock}(),
-a deadlock will happen.
+For program types that don't have named context type name (e.g., BPF
+iterator programs or tracepoint programs), ctx_tname will be a non-NULL
+empty string. For such programs it shouldn't be possible to have
+PTR_TO_CTX argument for global subprogs based on type name alone.
+arg:ctx tag is the only way to have PTR_TO_CTX passed into global
+subprog for such program types.
 
-The related source codes are below in kernel/bpf/helpers.c:
-  notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
-  notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
-notrace is supposed to prevent fentry prog from attaching to
-bpf_spin_{lock,unlock}().
+Fix this loophole, which currently would assume PTR_TO_CTX whenever
+user uses a pointer to anonymous struct as an argument to their global
+subprogs. This happens in practice with the following (quite common, in
+practice) approach:
 
-But actually this is not the case and fentry prog can successfully
-attached to bpf_spin_lock(). Siddharth Chintamaneni reported
-the issue in [1]. The following is the macro definition for
-above BPF_CALL_1:
-  #define BPF_CALL_x(x, name, ...)                                               \
-        static __always_inline                                                 \
-        u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));   \
-        typedef u64 (*btf_##name)(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__)); \
-        u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));         \
-        u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))          \
-        {                                                                      \
-                return ((btf_##name)____##name)(__BPF_MAP(x,__BPF_CAST,__BPF_N,__VA_ARGS__));\
-        }                                                                      \
-        static __always_inline                                                 \
-        u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
+typedef struct { /* anonymous */
+    int x;
+} my_type_t;
 
-  #define BPF_CALL_1(name, ...)   BPF_CALL_x(1, name, __VA_ARGS__)
+int my_subprog(my_type_t *arg) { ... }
 
-The notrace attribute is actually applied to the static always_inline function
-____bpf_spin_{lock,unlock}(). The actual callback function
-bpf_spin_{lock,unlock}() is not marked with notrace, hence
-allowing fentry prog to attach to two helpers, and this
-may cause the above mentioned deadlock. Siddharth Chintamaneni
-actually has a reproducer in [2].
+User's intent is to have PTR_TO_MEM argument for `arg`, but verifier
+will complain about expecting PTR_TO_CTX.
 
-To fix the issue, a new macro NOTRACE_BPF_CALL_1 is introduced which
-will add notrace attribute to the original function instead of
-the hidden always_inline function and this fixed the problem.
+This fix also closes unintended s390x-specific KPROBE handling of
+PTR_TO_CTX case. Selftest change is necessary to accommodate this.
 
-  [1] https://lore.kernel.org/bpf/CAE5sdEigPnoGrzN8WU7Tx-h-iFuMZgW06qp0KHWtpvoXxf1OAQ@mail.gmail.com/
-  [2] https://lore.kernel.org/bpf/CAE5sdEg6yUc_Jz50AnUXEEUh6O73yQ1Z6NV2srJnef0ZrQkZew@mail.gmail.com/
-
-Fixes: d83525ca62cf ("bpf: introduce bpf_spin_lock")
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Fixes: 91cc1a99740e ("bpf: Annotate context types")
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/bpf/20240207070102.335167-1-yonghong.song@linux.dev
+Link: https://lore.kernel.org/r/20240212233221.2575350-4-andrii@kernel.org
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/filter.h | 21 ++++++++++++---------
- kernel/bpf/helpers.c   |  4 ++--
- 2 files changed, 14 insertions(+), 11 deletions(-)
+ kernel/bpf/btf.c                              |  3 +++
+ .../bpf/progs/test_global_func_ctx_args.c     | 19 +++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 68fb6c8142fec..f537a394c42d0 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -547,24 +547,27 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
- 	__BPF_MAP(n, __BPF_DECL_ARGS, __BPF_N, u64, __ur_1, u64, __ur_2,       \
- 		  u64, __ur_3, u64, __ur_4, u64, __ur_5)
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 92aa3cf0396b8..9041848cf1a1b 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5685,6 +5685,9 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
+ 		bpf_log(log, "Please fix kernel include/linux/bpf_types.h\n");
+ 		return NULL;
+ 	}
++	/* program types without named context types work only with arg:ctx tag */
++	if (ctx_tname[0] == '\0')
++		return false;
+ 	/* only compare that prog's ctx type name is the same as
+ 	 * kernel expects. No need to compare field by field.
+ 	 * It's ok for bpf prog to do:
+diff --git a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+index 9a06e5eb1fbef..143c8a4852bfe 100644
+--- a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
++++ b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+@@ -26,6 +26,23 @@ int kprobe_typedef_ctx(void *ctx)
+ 	return kprobe_typedef_ctx_subprog(ctx);
+ }
  
--#define BPF_CALL_x(x, name, ...)					       \
-+#define BPF_CALL_x(x, attr, name, ...)					       \
- 	static __always_inline						       \
- 	u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));   \
- 	typedef u64 (*btf_##name)(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__)); \
--	u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));	       \
--	u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))	       \
-+	attr u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__));    \
-+	attr u64 name(__BPF_REG(x, __BPF_DECL_REGS, __BPF_N, __VA_ARGS__))     \
- 	{								       \
- 		return ((btf_##name)____##name)(__BPF_MAP(x,__BPF_CAST,__BPF_N,__VA_ARGS__));\
- 	}								       \
- 	static __always_inline						       \
- 	u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
- 
--#define BPF_CALL_0(name, ...)	BPF_CALL_x(0, name, __VA_ARGS__)
--#define BPF_CALL_1(name, ...)	BPF_CALL_x(1, name, __VA_ARGS__)
--#define BPF_CALL_2(name, ...)	BPF_CALL_x(2, name, __VA_ARGS__)
--#define BPF_CALL_3(name, ...)	BPF_CALL_x(3, name, __VA_ARGS__)
--#define BPF_CALL_4(name, ...)	BPF_CALL_x(4, name, __VA_ARGS__)
--#define BPF_CALL_5(name, ...)	BPF_CALL_x(5, name, __VA_ARGS__)
-+#define __NOATTR
-+#define BPF_CALL_0(name, ...)	BPF_CALL_x(0, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_1(name, ...)	BPF_CALL_x(1, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_2(name, ...)	BPF_CALL_x(2, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_3(name, ...)	BPF_CALL_x(3, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_4(name, ...)	BPF_CALL_x(4, __NOATTR, name, __VA_ARGS__)
-+#define BPF_CALL_5(name, ...)	BPF_CALL_x(5, __NOATTR, name, __VA_ARGS__)
++/* s390x defines:
++ *
++ * typedef user_pt_regs bpf_user_pt_regs_t;
++ * typedef struct { ... } user_pt_regs;
++ *
++ * And so "canonical" underlying struct type is anonymous.
++ * So on s390x only valid ways to have PTR_TO_CTX argument in global subprogs
++ * are:
++ *   - bpf_user_pt_regs_t *ctx (typedef);
++ *   - struct bpf_user_pt_regs_t *ctx (backwards compatible struct hack);
++ *   - void *ctx __arg_ctx (arg:ctx tag)
++ *
++ * Other architectures also allow using underlying struct types (e.g.,
++ * `struct pt_regs *ctx` for x86-64)
++ */
++#ifndef bpf_target_s390
 +
-+#define NOTRACE_BPF_CALL_1(name, ...)	BPF_CALL_x(1, notrace, name, __VA_ARGS__)
+ #define pt_regs_struct_t typeof(*(__PT_REGS_CAST((struct pt_regs *)NULL)))
  
- #define bpf_ctx_range(TYPE, MEMBER)						\
- 	offsetof(TYPE, MEMBER) ... offsetofend(TYPE, MEMBER) - 1
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index d19cd863d294e..b10092754dde3 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -334,7 +334,7 @@ static inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
- 	__this_cpu_write(irqsave_flags, flags);
+ __weak int kprobe_struct_ctx_subprog(pt_regs_struct_t *ctx)
+@@ -40,6 +57,8 @@ int kprobe_resolved_ctx(void *ctx)
+ 	return kprobe_struct_ctx_subprog(ctx);
  }
  
--notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
-+NOTRACE_BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
- {
- 	__bpf_spin_lock_irqsave(lock);
- 	return 0;
-@@ -357,7 +357,7 @@ static inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock)
- 	local_irq_restore(flags);
- }
++#endif
++
+ /* this is current hack to make this work on old kernels */
+ struct bpf_user_pt_regs_t {};
  
--notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
-+NOTRACE_BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
- {
- 	__bpf_spin_unlock_irqrestore(lock);
- 	return 0;
 -- 
 2.43.0
 
