@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E79A0888F5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:47:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA2B889CFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:33:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 869C71F21EA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:47:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 092801C34D27
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CDC724AE8F;
-	Sun, 24 Mar 2024 23:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F042E15A4B3;
+	Mon, 25 Mar 2024 02:51:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R+6+Jyff"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U1ABhZhr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0FC13342A;
-	Sun, 24 Mar 2024 23:05:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D301369B1;
+	Sun, 24 Mar 2024 23:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321504; cv=none; b=FoC+ruqiKfgtH5P8L5OKuibqhOtaZYbEeDgIlKgKx4hNLX4h7EJhG4LYttYl/JvdPZDO9EOpNdp6qco6rKE4+YmXHR7G1HkXli1utvDhpSs6tLvDfdm62E0hhPRa6hAgGEmHF8WNO4eIDQ22lUyIdjf1Bl4stMawtvfkcEfVwXE=
+	t=1711321505; cv=none; b=C7iYsqs1aEWxXZfspcoEmexeoBLqFeqe8GNXFi522NK4IBFXtSUm/IcXlc7s1lodGfupwiLiGgQsyR2k/IuE4UWry/Lwm+ou7hfO1AtviTxnKT06qiL1Nu0pU9GRKHF8FrGuof5KQazA5uIlyEZqiHx1rXP/2MOgYWdyTGxHzzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321504; c=relaxed/simple;
-	bh=+Hxhegior8++nnyBQf5i5t5oXEIt5a5o7CvmOj5jmnE=;
+	s=arc-20240116; t=1711321505; c=relaxed/simple;
+	bh=s8DB3y2ScShLzAashpDc6Sugwe2YJqP4n3GIiwjPC6s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NxxOf/w4jJFGoN3YS04iH/+9MDqk9oJpeAhp/H12IvX4K53ij4CzDxGCFHi4FFEPd+m6qOh5KTcrRgg9pUhzLQPR0vd9fJIkh1in2fQVyDjhg74YMRt0mfXhifYj8MRMth4Jl+hgCR1r3Q9puLN1ZUYg+zx6HonqeH1i4ZWbDhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R+6+Jyff; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 207FBC433C7;
-	Sun, 24 Mar 2024 23:05:02 +0000 (UTC)
+	 MIME-Version; b=MrjjKe/B6LEE+PJ0I4Ms32hvdmuX0HPBXd3Mjueq3u7/dNFmsJ5ZSSwtKCr2DsNqGCjLM7R7B8jisWJYLm3TyIZdtlD1xVRkJ7jaTgsjNPhcVgfD3iGHXQqLB70OCxaxlr+2SeDe1WT3dfTd5GmNYEVZiBeiBAtiMN36amHvlAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U1ABhZhr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CA51C43394;
+	Sun, 24 Mar 2024 23:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321502;
-	bh=+Hxhegior8++nnyBQf5i5t5oXEIt5a5o7CvmOj5jmnE=;
+	s=k20201202; t=1711321503;
+	bh=s8DB3y2ScShLzAashpDc6Sugwe2YJqP4n3GIiwjPC6s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R+6+JyffQRA/BTuE2GCHaOHCtLKpyv5VER9sTV5+J+S0GfQBlxHb/j7CnFBKrMjOt
-	 2OMQpAt5PwQp8T/2lSb+EbnaeWXes81xjrLiWREs7f1a+M4NRtmItqQ5kaoNVISimj
-	 wl4CWt6T8Wpv3qIIvTloehuQfAlcRNKUa7GC4xMvvGEUBZ9+yPNR2JG/SeoN0twpPh
-	 pkWrIvc5IJWLf+1yh8P/FKc5kAfVaHG2fxOGzzpg0hrwHKU775oz4ynbUA7mS38TS9
-	 5KFkaVU2vzpWljuAEZEVi3iHMXsOyekb36WJQUVZPPgNLkgPwTadopzmfrt2AdbnJM
-	 GvlJIK1SJzxRQ==
+	b=U1ABhZhrnn9p8+o5F7OgFOJWZz+q141uA6ovd462UCJfp+kej3WM/gRTFBNwLSLT7
+	 sJPhwHexDRRuJaY51h6NjnRsCzCyMwgziWrzimcvTT1zMcfv/dwslw3vVdVwmfjdx7
+	 FgbQUE2Zz1QpGli+78ubYsuyRLP/U2bpyKcsmC/MY019Xs3jtfr0Vgpg5cHvyfqnHM
+	 lLaAvS/5NPlAS7Sp+42yfKXxBzdMmgjRr2JxRahi7Yzxpy8Zx/09xpFTkFzMEFJeM1
+	 UhUaZ6V4rjz+zU0FZMgTpxvKUX4vJf4J+wEanGq2VqPBeq/BVVYy7xQelClVh/UJqJ
+	 5pm/9WRprIojA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peter Robinson <pbrobinson@gmail.com>,
-	Jon Hunter <jonathanh@nvidia.com>,
-	Thierry Reding <treding@nvidia.com>,
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Vasant Hegde <vasant.hegde@amd.com>,
+	Joerg Roedel <jroedel@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 228/638] bus: tegra-aconnect: Update dependency to ARCH_TEGRA
-Date: Sun, 24 Mar 2024 18:54:25 -0400
-Message-ID: <20240324230116.1348576-229-sashal@kernel.org>
+Subject: [PATCH 6.6 229/638] iommu/amd: Mark interrupt as managed
+Date: Sun, 24 Mar 2024 18:54:26 -0400
+Message-ID: <20240324230116.1348576-230-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,45 +63,67 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Peter Robinson <pbrobinson@gmail.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
 
-[ Upstream commit 4acd21a45c1446277e2abaece97d7fa7c2e692a9 ]
+[ Upstream commit 0feda94c868d396fac3b3cb14089d2d989a07c72 ]
 
-Update the architecture dependency to be the generic Tegra
-because the driver works on the four latest Tegra generations
-not just Tegra210, if you build a kernel with a specific
-ARCH_TEGRA_xxx_SOC option that excludes Tegra210 you don't get
-this driver.
+On many systems that have an AMD IOMMU the following sequence of
+warnings is observed during bootup.
 
-Fixes: 46a88534afb59 ("bus: Add support for Tegra ACONNECT")
-Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
-Cc: Jon Hunter <jonathanh@nvidia.com>
-Cc: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+```
+pci 0000:00:00.2  can't derive routing for PCI INT A
+pci 0000:00:00.2: PCI INT A: not connected
+```
+
+This series of events happens because of the IOMMU initialization
+sequence order and the lack of _PRT entries for the IOMMU.
+
+During initialization the IOMMU driver first enables the PCI device
+using pci_enable_device().  This will call acpi_pci_irq_enable()
+which will check if the interrupt is declared in a PCI routing table
+(_PRT) entry. According to the PCI spec [1] these routing entries
+are only required under PCI root bridges:
+	The _PRT object is required under all PCI root bridges
+
+The IOMMU is directly connected to the root complex, so there is no
+parent bridge to look for a _PRT entry. The first warning is emitted
+since no entry could be found in the hierarchy. The second warning is
+then emitted because the interrupt hasn't yet been configured to any
+value.  The pin was configured in pci_read_irq() but the byte in
+PCI_INTERRUPT_LINE return 0xff which means "Unknown".
+
+After that sequence of events pci_enable_msi() is called and this
+will allocate an interrupt.
+
+That is both of these warnings are totally harmless because the IOMMU
+uses MSI for interrupts.  To avoid even trying to probe for a _PRT
+entry mark the IOMMU as IRQ managed. This avoids both warnings.
+
+Link: https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/06_Device_Configuration/Device_Configuration.html?highlight=_prt#prt-pci-routing-table [1]
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Fixes: cffe0a2b5a34 ("x86, irq: Keep balance of IOAPIC pin reference count")
+Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
+Link: https://lore.kernel.org/r/20240122233400.1802-1-mario.limonciello@amd.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/iommu/amd/init.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
-index c98dd6ca26297..fab27506d945e 100644
---- a/drivers/bus/Kconfig
-+++ b/drivers/bus/Kconfig
-@@ -186,11 +186,12 @@ config SUNXI_RSB
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 45efb7e5d7254..a2ad2dbd04d92 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -2084,6 +2084,9 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
+ 	/* Prevent binding other PCI device drivers to IOMMU devices */
+ 	iommu->dev->match_driver = false;
  
- config TEGRA_ACONNECT
- 	tristate "Tegra ACONNECT Bus Driver"
--	depends on ARCH_TEGRA_210_SOC
-+	depends on ARCH_TEGRA
- 	depends on OF && PM
- 	help
- 	  Driver for the Tegra ACONNECT bus which is used to interface with
--	  the devices inside the Audio Processing Engine (APE) for Tegra210.
-+	  the devices inside the Audio Processing Engine (APE) for
-+	  Tegra210 and later.
++	/* ACPI _PRT won't have an IRQ for IOMMU */
++	iommu->dev->irq_managed = 1;
++
+ 	pci_read_config_dword(iommu->dev, cap_ptr + MMIO_CAP_HDR_OFFSET,
+ 			      &iommu->cap);
  
- config TEGRA_GMI
- 	tristate "Tegra Generic Memory Interface bus driver"
 -- 
 2.43.0
 
