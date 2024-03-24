@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-112962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46A11888017
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:53:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD701888018
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:53:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DABF8B227C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:53:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66A7D28127C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 22:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D1A126F25;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC321272B8;
 	Sun, 24 Mar 2024 22:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O0DFw21T"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYPer1z9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9757F127B6B;
-	Sun, 24 Mar 2024 22:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2E5127B7E;
+	Sun, 24 Mar 2024 22:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319774; cv=none; b=cpRvnrUWPHXTiPLWmivEE/B4KIq/da7SM9UFsBDRbKfakYM+y6X+tDlxzeLYBt/cVOn/qmLP/GbRfkXCPz/ODq1snaBi2e69AxeVFk/jFV/R0GsvewbIvh8bE//ywlE3S3/AcoT+EObNxwqvKD7M6PLSAXqES/EDv5ZWWHlcCdA=
+	t=1711319775; cv=none; b=MAMVUV1cDTEF1jltObZj2N0WIguzo23nph0dZUEqmfDyw90wDOyZb7BP2/f03N32049dT7MbokhpwgVDOrLgIu43tggmcMb7gh9Vg61xchsDDWZW9mOEiWG9uNfedJGrIdjzqU5+qUxsUpG3nr+DIo03bdrtE9tkwjqsKFQAivU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319774; c=relaxed/simple;
-	bh=BVUOlcZ0kGNiaGpte4w8wppOTrP2rpZwLft9Jy2ZPNE=;
+	s=arc-20240116; t=1711319775; c=relaxed/simple;
+	bh=Xck2m66cI9zOAz8cKRalWaRFNWvUQtCxJHs6BRohMG0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DiwHIAL3vcXUnNznPKH4z/E8MQkjoTbLO26LMaJUv4n6aF2wM4eEZHzaKUfVGqyBTzVbL88VBkL6vY3qwv6NVUcCzow6L4fIdQ/ykfYO6J+o0aacroRohf6zjbUNUJ2+6WJoWyLwO3ezHtoHem0L9UkEgV+VeHxkVLC/fxT1Dn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O0DFw21T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 622E4C433A6;
-	Sun, 24 Mar 2024 22:36:13 +0000 (UTC)
+	 MIME-Version; b=PozElwhd9zLJAlaebO9rwmQ82q8o3K0Mae8By/YApOWqhKHxlmAVh2YuAMAT+IDPykuM1urAQZ+qzG1aXoB0tLViAasJQbBaERXSkAoFdQSnuTkv+ZCeNwU3aQgX/iS0FdEmWR20ch+ZMjCX2HyyQuXbS8q0if7nZhnfrCeqjLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tYPer1z9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49234C433B2;
+	Sun, 24 Mar 2024 22:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711319774;
-	bh=BVUOlcZ0kGNiaGpte4w8wppOTrP2rpZwLft9Jy2ZPNE=;
+	bh=Xck2m66cI9zOAz8cKRalWaRFNWvUQtCxJHs6BRohMG0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O0DFw21T2V9vC7FcG5Guin2CxfW4Fr+mrVPcXISP7dexybbObQQIsA9u26W/3zolL
-	 VRn0JFjjcua/MtkUh+bE0yLDt7T3b3jsDaOlhGrAQLfLL2yPi/ceddtzz5cq/IiAp0
-	 l5Ble2PsBf0mI4guq7e8IT1yRVHXJ2XqmaWEuJ5PsJ6g3qhfG9T0+4TwZzQIH3843j
-	 uxuPbGhDBF+qeqkydFaiIdu8bAFw3e+3bZSCRaPySikJM3CkOiWYdngsYUJbWo9MNa
-	 /6XQ31el9F1JbtUitv7yDwYihRFuhFFvJJ7X6R4dXKwBEO92JQmy5GKAipEVIvSSQW
-	 1NJG2v8VUCztQ==
+	b=tYPer1z9Nb9w6QW6AL/uOSRjI9lO2T55iinMiHId/afWlseCb6J+81fpv3vakIaLB
+	 uKFcrU6LBBCqtbyV+0y0y25QkDKMkq9wrefT7FhhSteJTc+CF8yQtPeOvozP9E2RgO
+	 FOxBowhobcP4NyimsxapuLOYstFkf86+JNxkflIawti+xfyD8Fx0Kc4NWK7xpK8kAv
+	 kq3/AL2+Y4i+/rir7gQc69+PqfyYvAQxMexO9nss7rZSCPs3sw3ybHaxoGc5NlFHsb
+	 MEMyx/Kx0+xh4dtP7jeabieKMs4vpMITSiRQA2xR6L74INcM3KO+jyG0K8FUyyrU9M
+	 KU/TV4yOkYVVA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 075/715] arm64: dts: qcom: sc8180x: Don't hold MDP core clock at FMAX
-Date: Sun, 24 Mar 2024 18:24:14 -0400
-Message-ID: <20240324223455.1342824-76-sashal@kernel.org>
+Subject: [PATCH 6.8 076/715] arm64: dts: qcom: sc8180x: Require LOW_SVS vote for MMCX if DISPCC is on
+Date: Sun, 24 Mar 2024 18:24:15 -0400
+Message-ID: <20240324223455.1342824-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,36 +64,32 @@ Content-Transfer-Encoding: 8bit
 
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-[ Upstream commit 309b5774f45aafd002efdb2656673542419abd6f ]
+[ Upstream commit 6d9fb9e4c473cdfd2adca019b46d8e482105cae7 ]
 
-There's an OPP table to handle this, drop the permanent vote.
+To ensure the PLLs are getting enough power, cast a vote with DISPCC so
+that MMCX is at least at LOW_SVS.
 
 Fixes: 494dec9b6f54 ("arm64: dts: qcom: sc8180x: Add display and gpu nodes")
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20231230-topic-8180_more_fixes-v1-6-93b5c107ed43@linaro.org
+Link: https://lore.kernel.org/r/20231230-topic-8180_more_fixes-v1-7-93b5c107ed43@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc8180x.dtsi | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/qcom/sc8180x.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/sc8180x.dtsi b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
-index 8f7f5b74cdb9f..3bb9d25b1dec6 100644
+index 3bb9d25b1dec6..97c139d0399d4 100644
 --- a/arch/arm64/boot/dts/qcom/sc8180x.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
-@@ -2732,10 +2732,8 @@ mdss_mdp: mdp@ae01000 {
- 					      "rot",
- 					      "lut";
- 
--				assigned-clocks = <&dispcc DISP_CC_MDSS_MDP_CLK>,
--						  <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
--				assigned-clock-rates = <460000000>,
--						       <19200000>;
-+				assigned-clocks = <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-+				assigned-clock-rates = <19200000>;
- 
- 				operating-points-v2 = <&mdp_opp_table>;
- 				power-domains = <&rpmhpd SC8180X_MMCX>;
+@@ -3217,6 +3217,7 @@ dispcc: clock-controller@af00000 {
+ 				      "edp_phy_pll_link_clk",
+ 				      "edp_phy_pll_vco_div_clk";
+ 			power-domains = <&rpmhpd SC8180X_MMCX>;
++			required-opps = <&rpmhpd_opp_low_svs>;
+ 			#clock-cells = <1>;
+ 			#reset-cells = <1>;
+ 			#power-domain-cells = <1>;
 -- 
 2.43.0
 
