@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-115304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8373C8896C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67F9D889A90
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:31:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B58D31C2FD8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:58:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98ACF1C333DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82BD131E41;
-	Mon, 25 Mar 2024 02:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687831D5677;
+	Mon, 25 Mar 2024 02:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n9WEDvkF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A42dBByA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078247FBD4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E327FBD2;
 	Sun, 24 Mar 2024 22:48:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320497; cv=none; b=DA31F9ND8olypBoc9qdu37hxos7Wagn1GrjoP/3HoHCbZ2+36A706nit+5JXXTAgIg82Fdny84k0VeeA9X+ecRufCLAxZC5Zrnz7i3BbfKP4b9+C5mrve5BWtaV8fooRsPYh75aTmyo1Z0MYjZPI5TuS6/GeiU3gg9+vYnazO7U=
+	t=1711320498; cv=none; b=QLyFLWTe+lnZE2vDY9BwhiFzArPLxUblXQSsWJYJv3El0XhOljrcnFloa30Xe9CsY+Kf293FEspJHPA+kgxYjdiPURiIRUsWNPzohonukMgUl6YtB4MXdn6cbhOtMFI0Vi4vAZS0mtVWIvaxADiafgSlQdBsfpjfp082JvpAeVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320497; c=relaxed/simple;
-	bh=d+U/DMyqrJmz9isk37XQbdH4HzIhR5FvXPZ0QF5sqY0=;
+	s=arc-20240116; t=1711320498; c=relaxed/simple;
+	bh=S9i6rVDTLrc92ZdyKfg4Ixk7H6eGpB3PH6E05e+MPh0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aZ1lIL484fyrFHAu+JxbjG5jkaR7fBUTPK3tmYzRHDCYJRpo8rf7Ua4ntpgt14bLIHWswnFIaZv3r2RDMF4KcimQqJ6cnQUnANg3BZeC3W+13blLNBVi9eX/GyrWcVChHLXXmRNJ6jI8UjojQEDnSGNmqnM1QyPB1MdBPG6NI8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n9WEDvkF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45641C43394;
-	Sun, 24 Mar 2024 22:48:16 +0000 (UTC)
+	 MIME-Version; b=N++JXEKSteaggI7ej9qVLQvBFBjIAoI9/+Ad8OLlNM91BNs9kKOp35h+3AbP3mBPn4MmNvXk/jWrVGI+/ZM+3xrnRhPx9f6eettgNyYUO8cSzHcsqci5h3k9YdfFzZ/vrzwOFZhZsuaum1WI5f1CVsIEj1nQ/mBk6I1Uc38kArA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A42dBByA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DB92C433F1;
+	Sun, 24 Mar 2024 22:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320496;
-	bh=d+U/DMyqrJmz9isk37XQbdH4HzIhR5FvXPZ0QF5sqY0=;
+	s=k20201202; t=1711320497;
+	bh=S9i6rVDTLrc92ZdyKfg4Ixk7H6eGpB3PH6E05e+MPh0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n9WEDvkFgXAwys3Lht6ES1yXnFl/UwOG3Unq1nU0NxcUfJ+8wlNlZv8ud5c9zeuNm
-	 1W2pZfcOhdoO54AlZ1w8qp3/BgfiEOdkx9EBCaRGpEmfT2ZAMCkdU7Sg4oX/1qVFgn
-	 TZh2TxscAmQZMvDtekPdW4x2+KChsPTTIwKwor0D7PwX4NTLut/4hL4QWF11yHAQLX
-	 tAW7OdAUmlvg8M9szuqDPIeqQ2GtLzfAj1Uezqp3qvWCLcEVVH97+S+E5L1urIpDSj
-	 zf41RUnob/iPKwNMA+5whWcqTfkYtZKxDXYbJjcv6X5/LYB9wV/Zsdb+wqkLquM3az
-	 0tywKj4ObgsNQ==
+	b=A42dBByAGWn8aDqIx1S5EbWtO1GukNi3nlv+TQOOUKkpWjiO2uBMa5VYKqv7ZyVlz
+	 0YIbZHUXlfM+C7EcNta2DcuUejeJQgWT3MkTiAWe4Y9lNA6X84AyZC+aCkwBSiYi56
+	 fUtLWPIOgxpgzr/WYqhkkwoUpCQHlgoLzId71ztEQVrQ3oVCshuEE6ALUgLMThywhE
+	 xF0viWq+xMb04B7WETuiz1mE2z3CMcqJUb4Jiq5osrJFozz8oQQtm6iypt8pLnjKY8
+	 vVHeVHIsFsz7LnoU2ggqu3kMcqxePLn/jw3wpX9YtJUHymhGU04xyFS1kEf5PUB2Pg
+	 KbWFjGmHyjJEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andre Werner <andre.werner@systec-electronic.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Felix Fietkau <nbd@nbd.name>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 056/713] net: smsc95xx: add support for SYS TEC USB-SPEmodule1
-Date: Sun, 24 Mar 2024 18:36:22 -0400
-Message-ID: <20240324224720.1345309-57-sashal@kernel.org>
+Subject: [PATCH 6.7 057/713] wifi: mac80211: only call drv_sta_rc_update for uploaded stations
+Date: Sun, 24 Mar 2024 18:36:23 -0400
+Message-ID: <20240324224720.1345309-58-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,38 +62,37 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Andre Werner <andre.werner@systec-electronic.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit 45532b21dc2a692444b6ad5f71c253cca53e8103 ]
+[ Upstream commit 413dafc8170fcb925fb17af8842f06af305f8e0b ]
 
-This patch adds support for the SYS TEC USB-SPEmodule1 10Base-T1L
-ethernet device to the existing smsc95xx driver by adding the new
-USB VID/PID pair.
+When a station has not been uploaded yet, receiving SMPS or channel width
+notification action frames can lead to rate_control_rate_update calling
+drv_sta_rc_update with uninitialized driver private data.
+Fix this by adding a missing check for sta->uploaded.
 
-Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
-Link: https://lore.kernel.org/r/20240219053413.4732-1-andre.werner@systec-electronic.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Link: https://msgid.link/20240221140535.16102-1-nbd@nbd.name
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/smsc95xx.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/mac80211/rate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
-index a530f20ee2575..2fa46baa589e5 100644
---- a/drivers/net/usb/smsc95xx.c
-+++ b/drivers/net/usb/smsc95xx.c
-@@ -2104,6 +2104,11 @@ static const struct usb_device_id products[] = {
- 		USB_DEVICE(0x0424, 0x9E08),
- 		.driver_info = (unsigned long) &smsc95xx_info,
- 	},
-+	{
-+		/* SYSTEC USB-SPEmodule1 10BASE-T1L Ethernet Device */
-+		USB_DEVICE(0x0878, 0x1400),
-+		.driver_info = (unsigned long)&smsc95xx_info,
-+	},
- 	{
- 		/* Microchip's EVB-LAN8670-USB 10BASE-T1S Ethernet Device */
- 		USB_DEVICE(0x184F, 0x0051),
+diff --git a/net/mac80211/rate.c b/net/mac80211/rate.c
+index d5ea5f5bcf3a0..9d33fd2377c88 100644
+--- a/net/mac80211/rate.c
++++ b/net/mac80211/rate.c
+@@ -119,7 +119,8 @@ void rate_control_rate_update(struct ieee80211_local *local,
+ 		rcu_read_unlock();
+ 	}
+ 
+-	drv_sta_rc_update(local, sta->sdata, &sta->sta, changed);
++	if (sta->uploaded)
++		drv_sta_rc_update(local, sta->sdata, &sta->sta, changed);
+ }
+ 
+ int ieee80211_rate_control_register(const struct rate_control_ops *ops)
 -- 
 2.43.0
 
