@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55D308895E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:42:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 464528888A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58E97B381D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:54:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01F5728662F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5F534C558;
-	Mon, 25 Mar 2024 02:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B231241911;
+	Sun, 24 Mar 2024 23:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rsdsb9So"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cbk1ws4d"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198672036F2;
-	Sun, 24 Mar 2024 23:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16ACF132C1B;
+	Sun, 24 Mar 2024 23:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321450; cv=none; b=fBgYAbxsl2c6tPn4ttAeVUzVATTE+7jttB4ibFImjvz5NBjFJqlaeQKmo3EB1rTfxupQFDPknS8gIzL1Qs14qp7lP6simrDJwOppirVvPIf7Gqn0LZygErs+loCQRMxfnbWr/2uf+AlSDdw8RSZwuu6Rdk8Mi3svXi6+JartN2Y=
+	t=1711321451; cv=none; b=KZK8pt/DSg166v9d/+ZCo3BN+D8H8wuvkoUrv+PDrQyZocKTGPnOOqu9OdEdZ6eJqIljIXnKd3g4x4iZKjJYw+8iocJZNJqZo5SLQXfzPFuiTdVsQlWojxLu7CZV4P8gbhLz/eEpwDroqyRwuML7mf7vnsm6MnX4MroHnxAzbpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321450; c=relaxed/simple;
-	bh=EAxgTCF44cVnF3Vp3veA+A0OsIW9qVRQPO4GdFZe8i0=;
+	s=arc-20240116; t=1711321451; c=relaxed/simple;
+	bh=PR4e4+tENh3LjRnzHYHnM5a0gYdn00lyatdQN8TvQLI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ar3EHmkemNfgpvioQKD2hsjMVFRxSLbal2oqM1FQBeAPk4YQQc8xG3zJAeEqNS9IvhKAyqSzsem0vjwO25UDjIoUfrOt/LiJwp6f5UsAIRz0BPuYMVeTXVFvWfJUX8eoH2BDTpHtxi64gUGBu5OX0GScBFsG9HrMOKq+Zog9ibw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rsdsb9So; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4344CC43399;
-	Sun, 24 Mar 2024 23:04:08 +0000 (UTC)
+	 MIME-Version; b=KovMkpOotKiqvID7ND4oLhoesqsHH1ea700uY+CMqQEHBO1W752Y1mrJMW4Xw09a8+v1nosILVaKstWqndbvGpmfKpkxfdTRv6qoetwJKw33oa006cYs3zvbxwQfDnUFkRQTfgFqbHIVsMK6UrHv+3GrK7zq/OweGRP2s2MUCwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cbk1ws4d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F571C433C7;
+	Sun, 24 Mar 2024 23:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321449;
-	bh=EAxgTCF44cVnF3Vp3veA+A0OsIW9qVRQPO4GdFZe8i0=;
+	s=k20201202; t=1711321450;
+	bh=PR4e4+tENh3LjRnzHYHnM5a0gYdn00lyatdQN8TvQLI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rsdsb9SouxQFE4xt2azLLAwbsKrxU7dcjTABKRD5BtFltkCfBvIhyhjjdbK3m5fD+
-	 HLPeAm82+MAEIRtToFEOyT5R0r5aCssqXciM6IQmajf3Ilp/v003ocJTRkXOje92wu
-	 a9aOp9ioJi35qU1ufA/glPC+JOXXobYIzmWgHkv0FN+A3zX7fOVX1m0JsVVg5N1Xi7
-	 5YHotxDCWcdPmPEUOaAsNMvj7S6h5vMcGc8wA3OE0spyNp70g4S1eJ06gAVixyad8f
-	 RPfScPCXLYxINQfdofjESSjjvRG+X7bwAhqLF9GeV4/FDwqo5aMt01WJLW/JkX7eP8
-	 5scyw+LzBWDZg==
+	b=Cbk1ws4dKcdqOs5AH0eGP1HVgHyM/9yCpIDIStioJ8LkwvXF9Qf8orwqCEU+AZsb9
+	 DUYpeieOP0XUrHrEZkP5dP/Fo1rERMJrOYPxZQAuX846f3UfzhIXfNI58Ahx4ZIzH2
+	 cP8P6dJZXvdCVVsWFIWB9CzWfO2+PK0Wgr8m1R+vFdbMFJGS4U+N7aaR2ujd+93B4P
+	 cZwveoqytHHJyuUzdkUzYfGGgejrwA3kSSyjwseUl+Tf1AkeH3XCMMq48d2XzfLu6i
+	 6OGf8sAXq2u4tI9fLuXAH+ZNDGiJyX9GpGdkh9YNLHHhd6anCwA26SKPZT6OJNY+Yx
+	 xnfwZtL1D1VSA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Gregory Greenman <gregory.greenman@intel.com>,
+Cc: Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 173/638] wifi: iwlwifi: mvm: d3: fix IPN byte order
-Date: Sun, 24 Mar 2024 18:53:30 -0400
-Message-ID: <20240324230116.1348576-174-sashal@kernel.org>
+Subject: [PATCH 6.6 174/638] wifi: iwlwifi: mvm: fix the TLC command after ADD_STA
+Date: Sun, 24 Mar 2024 18:53:31 -0400
+Message-ID: <20240324230116.1348576-175-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,55 +63,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 
-[ Upstream commit 0c769cb6b9f364423c255f117774c9ecd5bf23ea ]
+[ Upstream commit 0fcdf55fced7121c43fa576433986f1c04115b73 ]
 
-The IPN is reported by the firmware in 6 bytes little endian,
-but mac80211 expects big endian so it can do memcmp() on it.
-We used to store this as a u64 which was filled in the right
-way, but never used. When implementing that it's used, we
-changed it to just be 6 bytes, but lost the conversion. Add
-it back.
+ADD_STA resets the link quality data inside the firmware. This is not
+supposed to happen and has been fixed for newer devices. For older
+devices (AX201 and down), this makes us send frames with rates that are
+not in the TLC table.
 
-Fixes: 04f78e242fff ("wifi: iwlwifi: mvm: Add support for IGTK in D3 resume flow")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Reviewed-by: Gregory Greenman <gregory.greenman@intel.com>
+Fixes: 5a86dcb4a908 ("wifi: iwlwifi: mvm: update station's MFP flag after association")
+Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Reviewed-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Link: https://msgid.link/20240129211905.138ed8a698e3.I1b66c386e45b5392696424ec636474bff86fd5ef@changeid
+Link: https://msgid.link/20240129211905.1deca7eaff14.I597abd7aab36fdab4aa8311a48c98a3d5bd433ba@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/d3.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/d3.c b/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-index be2602d8c5bfa..dcda7fbb5a7a5 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/d3.c
-@@ -2167,7 +2167,10 @@ static void iwl_mvm_convert_gtk_v3(struct iwl_wowlan_status_data *status,
- static void iwl_mvm_convert_igtk(struct iwl_wowlan_status_data *status,
- 				 struct iwl_wowlan_igtk_status *data)
- {
-+	int i;
-+
- 	BUILD_BUG_ON(sizeof(status->igtk.key) < sizeof(data->key));
-+	BUILD_BUG_ON(sizeof(status->igtk.ipn) != sizeof(data->ipn));
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+index 42da8e94900cf..ee6487af95f04 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
+@@ -3781,13 +3781,17 @@ iwl_mvm_sta_state_assoc_to_authorized(struct iwl_mvm *mvm,
  
- 	if (!data->key_len)
- 		return;
-@@ -2179,7 +2182,10 @@ static void iwl_mvm_convert_igtk(struct iwl_wowlan_status_data *status,
- 		+ WOWLAN_IGTK_MIN_INDEX;
+ 	mvm_sta->authorized = true;
  
- 	memcpy(status->igtk.key, data->key, sizeof(data->key));
--	memcpy(status->igtk.ipn, data->ipn, sizeof(data->ipn));
+-	iwl_mvm_rs_rate_init_all_links(mvm, vif, sta);
+-
+ 	/* MFP is set by default before the station is authorized.
+ 	 * Clear it here in case it's not used.
+ 	 */
+-	if (!sta->mfp)
+-		return callbacks->update_sta(mvm, vif, sta);
++	if (!sta->mfp) {
++		int ret = callbacks->update_sta(mvm, vif, sta);
 +
-+	/* mac80211 expects big endian for memcmp() to work, convert */
-+	for (i = 0; i < sizeof(data->ipn); i++)
-+		status->igtk.ipn[i] = data->ipn[sizeof(data->ipn) - i - 1];
++		if (ret)
++			return ret;
++	}
++
++	iwl_mvm_rs_rate_init_all_links(mvm, vif, sta);
+ 
+ 	return 0;
  }
- 
- static void iwl_mvm_parse_wowlan_info_notif(struct iwl_mvm *mvm,
 -- 
 2.43.0
 
