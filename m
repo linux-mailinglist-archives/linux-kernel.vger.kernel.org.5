@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A233D888A41
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:14:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BCBC88974E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:13:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C8E728B33B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:14:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD59A1C2D4BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3094021A826;
-	Sun, 24 Mar 2024 23:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90B7361341;
+	Mon, 25 Mar 2024 02:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="meo0qILL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TYayPjI8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AEB12197BB;
-	Sun, 24 Mar 2024 23:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615822197C8;
+	Sun, 24 Mar 2024 23:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321808; cv=none; b=BW1L0zWFuOshj8SMYsesOJzd0KIusvtQnkIXciHCAHF6uPXXNUvSoqx7rprPkqdT78F+5mvyhDEgqNDIvp/bq834ONX+xAZ0f/RAwzbyqfvfNkPUgRREBkgrA+0Wvq37xny/L+XnjvSeybaF458XLrN3eYcqHBbXHeMFpj2IA2I=
+	t=1711321809; cv=none; b=qJqKoEZ5ggWlB97Uql0kkvLkac3V62pwdkAh0tQpOYFFCVXrtRjf4lYPftGGtTSMG4hJLRDyq4lyC3RbqCnbIRRAN3KQWl/UG17bVCKc8gNOiCId/gxBRHe/xljBZs8l4Q5Mq58W/gLEj3aDH15JrZCfkvSPrNSPMbvFGSQnsgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321808; c=relaxed/simple;
-	bh=Vygp2TWkGLy0BzP36pH0XzONz44hyfZcDWMybmTjJT4=;
+	s=arc-20240116; t=1711321809; c=relaxed/simple;
+	bh=nEDO/0XGTNtem6HpiNI4+3w9EGHAwaFyTBbnA6UkIn4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T1WyKK9lA6zlf4xK76tMnRMEE19bzYoIjSwBerlMuJ4iEyUpc/n+na1/rIzMe+SDsWzji0xYnbZ1sUQnR/eZ0tg0xKAu0PlB90+FVLbN0zEYpDzDRbnQ5nG0WvUzuqzRZ5S0XEGv4zomSWJoCF1PDrFuhxluUYM13rFXZeZqq98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=meo0qILL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A004BC43394;
-	Sun, 24 Mar 2024 23:10:07 +0000 (UTC)
+	 MIME-Version; b=SEF0zyKyDK9xhZ+Ux3HU/KcNu7w+2Ebe7ZqvZWUJLZMEzUpbFSzo5l6f8zRV4Fj+ec9TrP5Sdw+OlLTCxpD3LecB/IN6kXCIEZEZylkfFpCS2/GXULYhWrzQT2C5LzTF4qkAb9gjhJSuOUO6S237eUIJ5AXHowXMSUyEPLb3Ffg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TYayPjI8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F66EC433C7;
+	Sun, 24 Mar 2024 23:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321808;
-	bh=Vygp2TWkGLy0BzP36pH0XzONz44hyfZcDWMybmTjJT4=;
+	s=k20201202; t=1711321809;
+	bh=nEDO/0XGTNtem6HpiNI4+3w9EGHAwaFyTBbnA6UkIn4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=meo0qILLCSrGesvDx6PxrmXKrpKEJPUHViklGfO9GdMWn7YctXh9Ojl66pUkCf8kZ
-	 /kmFI6y8UcDC2/EL9GCJ9MuuoninX+NjinMM5uH6/1RgY9dfpMuU6tVzb0cukgVOZb
-	 eWyBCzy3F2oKsgOIB4GJSX/1WSAyVt9rMoiQAhAmt4m9lpd6lkb1GzUwiqILyWO/ab
-	 OucPgeeCv/ke4f1Rx15C0HMiwAPF+yE0220VuxICAbAqOQKZmUwfooJZsbyFDeAFVT
-	 1umhusJ55u/Nr3eF1KbLiYIzqD38vcGSwjlmYACcsnGSH0MnuvXEy7e/zGC7c31Egf
-	 kcyAEpNN8um+w==
+	b=TYayPjI8POdFSItwQJE4C/a5X7FMRAHoK+ufgMyhaa/ctwvJGIsnnCVJ8xNg2/Gqc
+	 UgYNCM/z6z2krVrAEwrPpZMbyTxQSKGBI3M/7WS+fUW5uJm61LJyuFhqel0Provm5L
+	 g6N6TR6itWUzujRE7npFM1M6qXStvJS9mxKvxQsyp6QKlgYiHQchCprD+ZdC4mTHRg
+	 bZjkZBemkAh1U+IFwAPLo7woOmx0A9nuAV1onAqYafHBzcB8XKMs4Lj9/wlqJLZeFr
+	 44CISWLsUEzUvViRvSFAomx2ozr8hvkNmO0paMv4HnS1YexRkBqDlWDTOR6dmMW70Z
+	 vGlneU2FZ3wbQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ben Wolsieffer <ben.wolsieffer@hefring.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
+Cc: Chao Yu <chao@kernel.org>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 536/638] watchdog: stm32_iwdg: initialize default timeout
-Date: Sun, 24 Mar 2024 18:59:33 -0400
-Message-ID: <20240324230116.1348576-537-sashal@kernel.org>
+Subject: [PATCH 6.6 537/638] f2fs: fix to use correct segment type in f2fs_allocate_data_block()
+Date: Sun, 24 Mar 2024 18:59:34 -0400
+Message-ID: <20240324230116.1348576-538-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,57 +62,42 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit dbd7c0088b7f44aa0b9276ed3449df075a7b5b54 ]
+[ Upstream commit 7324858237829733dec9c670170df2377c5ca6e2 ]
 
-The driver never sets a default timeout value, therefore it is
-initialized to zero. When CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is
-enabled, the watchdog is started during probe. The kernel is supposed to
-automatically ping the watchdog from this point until userspace takes
-over, but this does not happen if the configured timeout is zero. A zero
-timeout causes watchdog_need_worker() to return false, so the heartbeat
-worker does not run and the system therefore resets soon after the
-driver is probed.
+@type in f2fs_allocate_data_block() indicates log header's type, it
+can be CURSEG_COLD_DATA_PINNED or CURSEG_ALL_DATA_ATGC, rather than
+type of data/node, however IS_DATASEG()/IS_NODESEG() only accept later
+one, fix it.
 
-This patch fixes this by setting an arbitrary non-zero default timeout.
-The default could be read from the hardware instead, but I didn't see
-any reason to add this complexity.
-
-This has been tested on an STM32F746.
-
-Fixes: 85fdc63fe256 ("drivers: watchdog: stm32_iwdg: set WDOG_HW_RUNNING at probe")
-Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20240228182723.12855-1-ben.wolsieffer@hefring.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/stm32_iwdg.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/f2fs/segment.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-index d9fd50df9802c..5404e03876202 100644
---- a/drivers/watchdog/stm32_iwdg.c
-+++ b/drivers/watchdog/stm32_iwdg.c
-@@ -20,6 +20,8 @@
- #include <linux/platform_device.h>
- #include <linux/watchdog.h>
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index e77591a0cc118..e995823d271f6 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -3490,12 +3490,12 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
+ 	locate_dirty_segment(sbi, GET_SEGNO(sbi, old_blkaddr));
+ 	locate_dirty_segment(sbi, GET_SEGNO(sbi, *new_blkaddr));
  
-+#define DEFAULT_TIMEOUT 10
-+
- /* IWDG registers */
- #define IWDG_KR		0x00 /* Key register */
- #define IWDG_PR		0x04 /* Prescaler Register */
-@@ -248,6 +250,7 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
- 	wdd->parent = dev;
- 	wdd->info = &stm32_iwdg_info;
- 	wdd->ops = &stm32_iwdg_ops;
-+	wdd->timeout = DEFAULT_TIMEOUT;
- 	wdd->min_timeout = DIV_ROUND_UP((RLR_MIN + 1) * PR_MIN, wdt->rate);
- 	wdd->max_hw_heartbeat_ms = ((RLR_MAX + 1) * wdt->data->max_prescaler *
- 				    1000) / wdt->rate;
+-	if (IS_DATASEG(type))
++	if (IS_DATASEG(curseg->seg_type))
+ 		atomic64_inc(&sbi->allocated_data_blocks);
+ 
+ 	up_write(&sit_i->sentry_lock);
+ 
+-	if (page && IS_NODESEG(type)) {
++	if (page && IS_NODESEG(curseg->seg_type)) {
+ 		fill_node_footer_blkaddr(page, NEXT_FREE_BLKADDR(sbi, curseg));
+ 
+ 		f2fs_inode_chksum_set(sbi, page);
 -- 
 2.43.0
 
