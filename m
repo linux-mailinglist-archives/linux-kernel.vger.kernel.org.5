@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-114065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DE46888831
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:21:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D38088A05A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:52:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC5AE28A4E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:21:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF2A0B633EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC74233160;
-	Sun, 24 Mar 2024 23:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114F5253973;
+	Mon, 25 Mar 2024 02:48:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AWJkyCvf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUZI2hqU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63BE1E6F5A;
-	Sun, 24 Mar 2024 23:02:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E96E130AD6;
+	Sun, 24 Mar 2024 23:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321353; cv=none; b=UhshCNo1hYSCiJ+AivorL9mKrRsNaxfoa0oPBnULUBgC0XWjlg3ZIMSlKxTDtDrNToQ4OtTHpPV+QRs2U03ZUgMzmdmOmE4UFqtOAIwK6mbgTX+MwhKlvY6G29u0jV3dFs4y4pvCo4Te8DTww/L3NICMTFEtW1l3vv9CiOHZsHg=
+	t=1711321354; cv=none; b=DzIsVTI9q1UhnPaoP95sX//jXv/gDR9uX8tgOzBqnx34+jJ502rBZkVNaSlzppnFtStclcV4AyrmXW9YO3GNSb3FCzUVjPP7Ak2Bh/BzB5DIGqjk60PXm+/UFtSE1h90DNM1ZTCtOGmAC8bnSCf1s678WsPpsZtHhRpbNMlVd9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321353; c=relaxed/simple;
-	bh=kM8YQXp6o/qYORoiPGCKnGbBby/uVMwI8X/vAzgwhGU=;
+	s=arc-20240116; t=1711321354; c=relaxed/simple;
+	bh=jtxf9O/jwcbFCCjmh74DlbdpYuDebk1mTbL4kpKOfUM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LkDgO8D5dK6wW7ujXnGnQEbs6fy5qvyjhs7pWZImwlmbjY0XxRcZYubuddycOFUPM65NT4VPT5EhFZJtOr4w4ZTKyp3r+JRPiNparQyB5PijR0kBCUgl8pIKKLwujD3BKSGMthoYAAqPW233UQXlpmqZNhS4xM7/NpkCGzDiHLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AWJkyCvf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB6CAC433F1;
-	Sun, 24 Mar 2024 23:02:31 +0000 (UTC)
+	 MIME-Version; b=MXtfhoNiV8WP0bI6s/CgC8bkeP4IAwiTX5Imyds2TyF3FwPHyTD2hRUGA6GepS2v3oiqwNckLuxPwv6zVs0QmutGaTx81HTmxeAwQlWWIUw6vHAaLWvdXIxaB+LHKyUaeOuipeuLLeqhhg9/4ZFR6ejoj5sGMtG6rg04Yffg2Q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RUZI2hqU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8B45C43390;
+	Sun, 24 Mar 2024 23:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321352;
-	bh=kM8YQXp6o/qYORoiPGCKnGbBby/uVMwI8X/vAzgwhGU=;
+	s=k20201202; t=1711321353;
+	bh=jtxf9O/jwcbFCCjmh74DlbdpYuDebk1mTbL4kpKOfUM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AWJkyCvftkYW4R6Z1rCp6UlvqTadMTP1x2BABH+8IJvAZUlkQSNjVlABaqNZp8Z1X
-	 vRGDnTzL25r8CNCODe6ACprHCCZIZOh5WORzSpeZRj0uRhGUmQYrIYk2xyYzZ0IaXZ
-	 qByUQX5CtSNRFGH0/jwheos75NW8lLiYwmvpj9MsSO8Zf25chNxyQiMOeOoz/43MPd
-	 kadirSTnB0v6lfTgd4CY6WBCf27q6qOg/ocBmd9KcwqZJBmyRhHHQPog4OCUBXPSDf
-	 SvLaos89dgg7fWschiybJ9BC4YPeKCZwau1U+M9ocrv9C1xzZ5wpVLJEewiCnmBGS5
-	 CmYAj0w9fqB3w==
+	b=RUZI2hqUONZUinqUSfBHl2R1pY3xEzgXGsxZChry6q1T3I4F6OzzdQKedZAF5lkej
+	 gInDjMNvOGCG/K282Fgl+uUnDziCmx55e5+Wtx+oBigp01yf9BfBe2w8t6wAc6FP89
+	 xk82vhXT3uqYy5q6b1iuVlWjiaZZlxfc/xFFmxSlP0kimTShN8RNqJQOhuuv9iVnLf
+	 m7NiOYa2bsfUiCJvmzEaP05hnvWDFmv6MmhOoFgS3OT22C6i7axqYcN87cJbInvPqN
+	 owPD977icRCL0d4moawCulcldAyfEQ0ffQiKbzlueJ3k/R+joEU2HvW1rNRMxcjnfy
+	 s+0GydgOC82uQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Nathan Chancellor <nathan@kernel.org>,
+Cc: Christoph Hellwig <hch@lst.de>,
+	Christian Brauner <brauner@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 077/638] workqueue: Don't call cpumask_test_cpu() with -1 CPU in wq_update_node_max_active()
-Date: Sun, 24 Mar 2024 18:51:54 -0400
-Message-ID: <20240324230116.1348576-78-sashal@kernel.org>
+Subject: [PATCH 6.6 078/638] iomap: clear the per-folio dirty bits on all writeback failures
+Date: Sun, 24 Mar 2024 18:51:55 -0400
+Message-ID: <20240324230116.1348576-79-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,58 +62,69 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Tejun Heo <tj@kernel.org>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 15930da42f8981dc42c19038042947b475b19f47 ]
+[ Upstream commit 7ea1d9b4a840c2dd01d1234663d4a8ef256cfe39 ]
 
-For wq_update_node_max_active(), @off_cpu of -1 indicates that no CPU is
-going down. The function was incorrectly calling cpumask_test_cpu() with -1
-CPU leading to oopses like the following on some archs:
+write_cache_pages always clear the page dirty bit before calling into the
+file systems, and leaves folios with a writeback failure without the
+dirty bit after return.  We also clear the per-block writeback bits for
+writeback failures unless no I/O has submitted, which will leave the
+folio in an inconsistent state where it doesn't have the folio dirty,
+but one or more per-block dirty bits.  This seems to be due the place
+where the iomap_clear_range_dirty call was inserted into the existing
+not very clearly structured code when adding per-block dirty bit support
+and not actually intentional.  Switch to always clearing the dirty on
+writeback failure.
 
-  Unable to handle kernel paging request at virtual address ffff0002100296e0
-  ..
-  pc : wq_update_node_max_active+0x50/0x1fc
-  lr : wq_update_node_max_active+0x1f0/0x1fc
-  ...
-  Call trace:
-    wq_update_node_max_active+0x50/0x1fc
-    apply_wqattrs_commit+0xf0/0x114
-    apply_workqueue_attrs_locked+0x58/0xa0
-    alloc_workqueue+0x5ac/0x774
-    workqueue_init_early+0x460/0x540
-    start_kernel+0x258/0x684
-    __primary_switched+0xb8/0xc0
-  Code: 9100a273 35000d01 53067f00 d0016dc1 (f8607a60)
-  ---[ end trace 0000000000000000 ]---
-  Kernel panic - not syncing: Attempted to kill the idle task!
-  ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
-
-Fix it.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Link: http://lkml.kernel.org/r/91eacde0-df99-4d5c-a980-91046f66e612@samsung.com
-Fixes: 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
+Fixes: 4ce02c679722 ("iomap: Add per-block dirty state tracking to improve performance")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20231207072710.176093-2-hch@lst.de
+Signed-off-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/iomap/buffered-io.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index b2975e44dffa9..7d231bbd16593 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1500,7 +1500,7 @@ static void wq_update_node_max_active(struct workqueue_struct *wq, int off_cpu)
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 2bc0aa23fde3b..1c63e48230aed 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -1830,16 +1830,10 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+ 	if (unlikely(error)) {
+ 		/*
+ 		 * Let the filesystem know what portion of the current page
+-		 * failed to map. If the page hasn't been added to ioend, it
+-		 * won't be affected by I/O completion and we must unlock it
+-		 * now.
++		 * failed to map.
+ 		 */
+ 		if (wpc->ops->discard_folio)
+ 			wpc->ops->discard_folio(folio, pos);
+-		if (!count) {
+-			folio_unlock(folio);
+-			goto done;
+-		}
+ 	}
  
- 	lockdep_assert_held(&wq->mutex);
+ 	/*
+@@ -1848,6 +1842,16 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+ 	 * all the dirty bits in the folio here.
+ 	 */
+ 	iomap_clear_range_dirty(folio, 0, folio_size(folio));
++
++	/*
++	 * If the page hasn't been added to the ioend, it won't be affected by
++	 * I/O completion and we must unlock it now.
++	 */
++	if (error && !count) {
++		folio_unlock(folio);
++		goto done;
++	}
++
+ 	folio_start_writeback(folio);
+ 	folio_unlock(folio);
  
--	if (!cpumask_test_cpu(off_cpu, effective))
-+	if (off_cpu >= 0 && !cpumask_test_cpu(off_cpu, effective))
- 		off_cpu = -1;
- 
- 	total_cpus = cpumask_weight_and(effective, cpu_online_mask);
 -- 
 2.43.0
 
