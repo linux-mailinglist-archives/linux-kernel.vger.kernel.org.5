@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-113814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A64C88886C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D5A8886C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60B9629135B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:41:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61F4E2912FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B09A1FDB25;
-	Sun, 24 Mar 2024 23:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9AC1FDB34;
+	Sun, 24 Mar 2024 23:02:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="isYAnDzo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LcsnJmfG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3C51E621C;
-	Sun, 24 Mar 2024 22:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3271E621F;
+	Sun, 24 Mar 2024 22:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320841; cv=none; b=Rvs1KvB0RfRdeuBWfu/n7YEqEwnt/X+7H62OnKZW21guKkoGCOq1TaX/80pt5Ul1CZvcc+9xfqI3iyslLqXsWX0wjga43CkXRX5pQydFX1qAM6wF/Je04rMfXydZvMZGfqC6iIQN9d6iiMy4c+zwKqXrNXGYPwTrEgPHis8fuDo=
+	t=1711320842; cv=none; b=Mv+8lCip0cmztXOSpsUZe+CJG38glQ2QWnhE0s3jk6rtDh7jdmCwuXqIYA7Ru3epbWVcXDwLXQzVl9JzQPT9ixoS+2z/EN6gLKIZETlCTAICUObVjn4rtL6oOpujiyYzz71tSSXKGFQOFRpYHhi7oTXy8QRg0X3pIFNNossdITo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320841; c=relaxed/simple;
-	bh=uxy3V+RQwm6GDIBtMAfPP7EnSHK32Sx43UE/yYHa5U0=;
+	s=arc-20240116; t=1711320842; c=relaxed/simple;
+	bh=Dk19BKliAWL8ndMZblXchMzHzw54IPJ5e8qxIK3ZQI4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EqJmG01c/Yi3AQH5pciyBCFMrwM+qxXWzSIxbwyt7aXqnPQfgUHLWrHBgusVUmUvKEF/qIKYfwpCG6QM7E2lX/UAnbDqr1ZDCxomQnPNkUsfv7UhT4pnCgONkFFriFReXDWEh3oERHEEbwrMFeyck+gS/5N/4QTzYZe9fY46T+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=isYAnDzo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B145C433C7;
-	Sun, 24 Mar 2024 22:53:59 +0000 (UTC)
+	 MIME-Version; b=MFb0Oz4GLvQLzoClGqp/nR5dp0WGtJQqibxXQIkQRv5js85o7RFZu+Qw+jqdbqb8nJaKoMZf4GvZqHXabV+wmZZk4LOi3cn8ZBzIe6LjpV0jLsjis8hfBdalT/Ev5AH43vrfX4gycyZ+zZ6QMu8OoKzXv/3cpTWuQgK0WNHNvEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LcsnJmfG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08E18C433F1;
+	Sun, 24 Mar 2024 22:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320840;
-	bh=uxy3V+RQwm6GDIBtMAfPP7EnSHK32Sx43UE/yYHa5U0=;
+	s=k20201202; t=1711320842;
+	bh=Dk19BKliAWL8ndMZblXchMzHzw54IPJ5e8qxIK3ZQI4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=isYAnDzoS+aQi2dUdbMHItYTCUxju21CumDa+YjGaFQo7hA9kIFSTIL9Klbm8PUS/
-	 OiNUCx8auxbb/bPJwumROx79GHxqvrfyN9UfIVf9R22yw2yM68mb/KNlkYv0EFKMcW
-	 e6R6mBCUJV/XZaFo33j3d18HSV9mYVpwkak7H8d5qgn9i/j0pIlfzbE2X753Kw8Uus
-	 9JAZygTSKB4NnQT9ztnMSVb5pIQe/ouYYt+ebLYJsWM1YW5rDWC/3vDYtrcEZnRAd1
-	 HBmXFlwDymRFElHgUXsKYGzRIId+9L7nB9h8Jvs/c+mSab2jAwGy8RgyTkZnX4N9Dj
-	 7SupLDmTXvWmA==
+	b=LcsnJmfGhe3SEhe2UEa2o9VDhoEZ1A2O7INw6Jnz4jch2OwPprw+ztZKauWj54gZR
+	 /oEmvVRXMf+k1hJmEzaLgnjngwxNG0PzgwKD65gm8EtUv0q2t8TyYQB1NK+oCg+loS
+	 bwB08zLmjVkKpCKIvmFygUBkOk5kYP4JuuFfu1SpPxWlJdVgCv87+26wjaHYTaBIha
+	 M2OWILKfRLVJCI9U2JSXHdGNRodd+Ei39THxZtb7eh+tii5Q3k6czq1JNfxyqTc5E6
+	 bASJ1UvinzNH6uTe98dqAWSH1wEPWWcRla5y3a4pEG/+xE62BjupX9FjjjP5P1G0fJ
+	 AQTt5KERSno9Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-	Emil Velikov <emil.velikov@collabora.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Peter Robinson <pbrobinson@gmail.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Thierry Reding <treding@nvidia.com>,
+	Sameer Pujar <spujar@nvidia.com>,
+	Laxman Dewangan <ldewangan@nvidia.com>,
+	Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 406/713] ASoC: SOF: amd: Fix memory leak in amd_sof_acp_probe()
-Date: Sun, 24 Mar 2024 18:42:12 -0400
-Message-ID: <20240324224720.1345309-407-sashal@kernel.org>
+Subject: [PATCH 6.7 407/713] dmaengine: tegra210-adma: Update dependency to ARCH_TEGRA
+Date: Sun, 24 Mar 2024 18:42:13 -0400
+Message-ID: <20240324224720.1345309-408-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,68 +66,58 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+From: Peter Robinson <pbrobinson@gmail.com>
 
-[ Upstream commit 222be59e5eed1554119294edc743ee548c2371d0 ]
+[ Upstream commit 33b7db45533af240fe44e809f9dc4d604cf82d07 ]
 
-Driver uses kasprintf() to initialize fw_{code,data}_bin members of
-struct acp_dev_data, but kfree() is never called to deallocate the
-memory, which results in a memory leak.
+Update the architecture dependency to be the generic Tegra
+because the driver works on the four latest Tegra generations
+not just T210, if you build a kernel with a specific
+ARCH_TEGRA_xxx_SOC option that excludes 210 you don't get
+this driver.
 
-Fix the issue by switching to devm_kasprintf(). Additionally, ensure the
-allocation was successful by checking the pointer validity.
-
-Fixes: f7da88003c53 ("ASoC: SOF: amd: Enable signed firmware image loading for Vangogh platform")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
-Link: https://msgid.link/r/20231219030728.2431640-6-cristian.ciocaltea@collabora.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 433de642a76c9 ("dmaengine: tegra210-adma: add support for Tegra186/Tegra194")
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+Cc: Jon Hunter <jonathanh@nvidia.com>
+Cc: Thierry Reding <treding@nvidia.com>
+Cc: Sameer Pujar <spujar@nvidia.com>
+Cc: Laxman Dewangan <ldewangan@nvidia.com>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Link: https://lore.kernel.org/r/20240112093310.329642-2-pbrobinson@gmail.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/amd/acp.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ drivers/dma/Kconfig | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 603ea5fc0d0d4..c6f637f298476 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -547,17 +547,27 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- 	adata->signed_fw_image = false;
- 	dmi_id = dmi_first_match(acp_sof_quirk_table);
- 	if (dmi_id && dmi_id->driver_data) {
--		adata->fw_code_bin = kasprintf(GFP_KERNEL, "%s/sof-%s-code.bin",
--					       plat_data->fw_filename_prefix,
--					       chip->name);
--		adata->fw_data_bin = kasprintf(GFP_KERNEL, "%s/sof-%s-data.bin",
--					       plat_data->fw_filename_prefix,
--					       chip->name);
--		adata->signed_fw_image = dmi_id->driver_data;
-+		adata->fw_code_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+						    "%s/sof-%s-code.bin",
-+						    plat_data->fw_filename_prefix,
-+						    chip->name);
-+		if (!adata->fw_code_bin) {
-+			ret = -ENOMEM;
-+			goto free_ipc_irq;
-+		}
-+
-+		adata->fw_data_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+						    "%s/sof-%s-data.bin",
-+						    plat_data->fw_filename_prefix,
-+						    chip->name);
-+		if (!adata->fw_data_bin) {
-+			ret = -ENOMEM;
-+			goto free_ipc_irq;
-+		}
+diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+index 70ba506dabab5..de6eb370d485d 100644
+--- a/drivers/dma/Kconfig
++++ b/drivers/dma/Kconfig
+@@ -629,16 +629,16 @@ config TEGRA20_APB_DMA
  
--		dev_dbg(sdev->dev, "fw_code_bin:%s, fw_data_bin:%s\n", adata->fw_code_bin,
--			adata->fw_data_bin);
-+		adata->signed_fw_image = dmi_id->driver_data;
- 	}
-+
- 	adata->enable_fw_debug = enable_fw_debug;
- 	acp_memory_init(sdev);
+ config TEGRA210_ADMA
+ 	tristate "NVIDIA Tegra210 ADMA support"
+-	depends on (ARCH_TEGRA_210_SOC || COMPILE_TEST)
++	depends on (ARCH_TEGRA || COMPILE_TEST)
+ 	select DMA_ENGINE
+ 	select DMA_VIRTUAL_CHANNELS
+ 	help
+-	  Support for the NVIDIA Tegra210 ADMA controller driver. The
+-	  DMA controller has multiple DMA channels and is used to service
+-	  various audio clients in the Tegra210 audio processing engine
+-	  (APE). This DMA controller transfers data from memory to
+-	  peripheral and vice versa. It does not support memory to
+-	  memory data transfer.
++	  Support for the NVIDIA Tegra210/Tegra186/Tegra194/Tegra234 ADMA
++	  controller driver. The DMA controller has multiple DMA channels
++	  and is used to service various audio clients in the Tegra210
++	  audio processing engine (APE). This DMA controller transfers
++	  data from memory to peripheral and vice versa. It does not
++	  support memory to memory data transfer.
  
+ config TIMB_DMA
+ 	tristate "Timberdale FPGA DMA support"
 -- 
 2.43.0
 
