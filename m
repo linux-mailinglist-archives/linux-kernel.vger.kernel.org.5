@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-113553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B9388853F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:02:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1CAF888541
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F23F284A0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:02:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EE8D1C24941
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F15171C42CF;
-	Sun, 24 Mar 2024 22:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134221C4AF8;
+	Sun, 24 Mar 2024 22:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hbHmVXw1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k+3TP6jl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1149B1C42EA;
-	Sun, 24 Mar 2024 22:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493AC1C3A18;
+	Sun, 24 Mar 2024 22:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320356; cv=none; b=dgNa6PyRdwSyQ56JHYY8ctH+Hi1ugwDJNePDQC9Gl1Hs1mQqqKNS0TbPrrPxKo0nl5RiteOnimxT63arPEWcQlPhDoki6CRPK53pHZ3fGGhwU8Q5+sj/sAIeccGBDGzxr1QqCnHiXC4mShEBduiFV1HHbifrPv0qxcESbTJec9A=
+	t=1711320357; cv=none; b=kRAz/0vNtgeIMxU71c8WvpzTkF1n2zOiiYq5SoaxfSn2ZDvACr+Ns/yrpkbq0HhiXfkuPrgYv/emOHKxmy9wgo+Nv1LWFLPTfGYgaIeRIjxqAcc+Y+1rRO2yKv4iy/aEupRUKvKye+hg+Bn3S6bQ6zQCxWM2rZ+3WLTCwesGDDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320356; c=relaxed/simple;
-	bh=MUD/L+E4Go/mAWKJhDeIwLthUhEDDbSwGLdfwXkCbZ4=;
+	s=arc-20240116; t=1711320357; c=relaxed/simple;
+	bh=8kKCXdsG1YuHVdxxCYC+5MupMtZMu+m8iBCDsAO3Pi4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EjCSzsU5O58yOmUGkuCbo6KmJQe72S6EkK6RwbKLtyToY+zhYaaibDsZlQZ6WWRtvFWAvt3AmSrWdCBNybsc/eBlM22zMLpuKjwFMaWW4azVq7UiHdWUGvQVgnORGj9WNuCjKJGAUkCkaMnt8ZSzBnocPfHraHXgjQ7EMiuIIMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hbHmVXw1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBAAAC433B1;
-	Sun, 24 Mar 2024 22:45:54 +0000 (UTC)
+	 MIME-Version; b=ASdfylORbXL97RaWao1PwA8NzLjXUiPJ4q1XO4KoUmu7InndB7FAsj3wbW3PRewuxdC58hNKVN4HhMUOS1qLKfP2oMOzAI6J/pulL46hsbR6qLAe6bdM6Tt7d9Wz1J44rdnvScsdHK9o9Y+0XmpkMwN8D+xv3bn7ShsM1gKyFvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k+3TP6jl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 079D9C433A6;
+	Sun, 24 Mar 2024 22:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320355;
-	bh=MUD/L+E4Go/mAWKJhDeIwLthUhEDDbSwGLdfwXkCbZ4=;
+	s=k20201202; t=1711320356;
+	bh=8kKCXdsG1YuHVdxxCYC+5MupMtZMu+m8iBCDsAO3Pi4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hbHmVXw1i6L7NzVt8MFF7/6NltC9IcJ5JY/3gGXkJ5WmAUzzgv2lhCPFlEi1pTJcf
-	 y6KmRaboLeEBLT0MfXSV1jXJwcaQtGnG1Xg2WOAnwfj2B0MgRfwRFTJSU/Y/5Eaa17
-	 CGfx87t4HN2qRGNpSgnwxu2OU4dFJ8CGi0t5heISWkGpoYOR+1/DyEps2Xr8r76bvZ
-	 YtdF8RNeSaNlAINa2UVA5zja7C/n8X3e+JDKg1BdoQoGxqPndqEaab2gb4zLHqZ04+
-	 nj1+NIjIcXoOucFgfxM0Ocrbl+MHq3HBs47mIYtpfDPONTbeXn9JFapZnNMOD6x/ke
-	 /mxj3dDIYM3aw==
+	b=k+3TP6jlhFKamzFfH9E57JjClS8qBdC6IQiPBlQwADiKQ0RhVCMX/2cdWPVDGrXuR
+	 /AG0y7fO4DEt/6HcwAH1kAmmFEkhe9nJ2j+6UT+SDEMg8ugfSUEFya93yAjXu/YE0S
+	 J/Myi0IW+3x3NIixs+NiXq3Je4dP19pDBXFBi92RXZBwS/zlvXFpxo0i/BWdilm3UF
+	 bFTVs1DN2ft1EgIB5QdFn/yyFDCcb0MJa9Jdax2kpaHNNi6YzRKQdygT50XCH8Hp07
+	 KkwVnLdhtisrfVEE3xMh92vUNGK3mX06UXOcjGxAov2sQ2m+pXwefZYzSd2X8nFnWQ
+	 GSDUmM9X/MvdQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-	Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	Mason-cw Chang <Mason-cw.Chang@mediatek.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 662/715] drm/xe: Skip VMAs pin when requesting signal to the last XE_EXEC
-Date: Sun, 24 Mar 2024 18:34:01 -0400
-Message-ID: <20240324223455.1342824-663-sashal@kernel.org>
+Subject: [PATCH 6.8 663/715] net: mediatek: mtk_eth_soc: clear MAC_MCR_FORCE_LINK only when MAC is up
+Date: Sun, 24 Mar 2024 18:34:02 -0400
+Message-ID: <20240324223455.1342824-664-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -60,100 +59,61 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: José Roberto de Souza <jose.souza@intel.com>
+From: Daniel Golle <daniel@makrotopia.org>
 
-[ Upstream commit dd8a07f06dfd946e0eea1a3323d52e7c28a6ed80 ]
+[ Upstream commit f1b85ef15a99f06ed48871ce933d591127d2dcc0 ]
 
-Doing a XE_EXEC with num_batch_buffer == 0 makes signals passed as
-argument to be signaled when the last real XE_EXEC is completed.
-But to do that it was first pinning all VMAs in drm_gpuvm_exec_lock(),
-this patch remove this pinning as it is not required.
+Clearing bit MAC_MCR_FORCE_LINK which forces the link down too early
+can result in MAC ending up in a broken/blocked state.
 
-This change also help Mesa implementing memory over-commiting recovery
-as it needs to unbind not needed VMAs when the whole VM can't fit
-in GPU memory but it can only do the unbiding when the last XE_EXEC
-is completed.
-So with this change Mesa can get the signal it want without getting
-out-of-memory errors.
+Fix this by handling this bit in the .mac_link_up and .mac_link_down
+calls instead of in .mac_finish.
 
-Fixes: eb9702ad2986 ("drm/xe: Allow num_batch_buffer / num_binds == 0 in IOCTLs")
-Cc: Thomas Hellstrom <thomas.hellstrom@linux.intel.com>
-Co-developed-by: Matthew Brost <matthew.brost@intel.com>
-Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
-Reviewed-by: Matthew Brost <matthew.brost@intel.com>
-Signed-off-by: Matthew Brost <matthew.brost@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240313171318.121066-1-jose.souza@intel.com
-(cherry picked from commit 58480c1c912ff8146d067301a0d04cca318b4a66)
-Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+Fixes: b8fc9f30821e ("net: ethernet: mediatek: Add basic PHYLINK support")
+Suggested-by: Mason-cw Chang <Mason-cw.Chang@mediatek.com>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/xe/xe_exec.c | 41 ++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 18 deletions(-)
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/xe/xe_exec.c b/drivers/gpu/drm/xe/xe_exec.c
-index 17f26952e6656..222209b0d6904 100644
---- a/drivers/gpu/drm/xe/xe_exec.c
-+++ b/drivers/gpu/drm/xe/xe_exec.c
-@@ -196,6 +196,29 @@ int xe_exec_ioctl(struct drm_device *dev, void *data, struct drm_file *file)
- 			goto err_unlock_list;
- 	}
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index de123350bd46b..caa13b9cedff0 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -677,8 +677,7 @@ static int mtk_mac_finish(struct phylink_config *config, unsigned int mode,
+ 	mcr_cur = mtk_r32(mac->hw, MTK_MAC_MCR(mac->id));
+ 	mcr_new = mcr_cur;
+ 	mcr_new |= MAC_MCR_IPG_CFG | MAC_MCR_FORCE_MODE |
+-		   MAC_MCR_BACKOFF_EN | MAC_MCR_BACKPR_EN | MAC_MCR_FORCE_LINK |
+-		   MAC_MCR_RX_FIFO_CLR_DIS;
++		   MAC_MCR_BACKOFF_EN | MAC_MCR_BACKPR_EN | MAC_MCR_RX_FIFO_CLR_DIS;
  
-+	if (!args->num_batch_buffer) {
-+		err = xe_vm_lock(vm, true);
-+		if (err)
-+			goto err_unlock_list;
-+
-+		if (!xe_vm_in_lr_mode(vm)) {
-+			struct dma_fence *fence;
-+
-+			fence = xe_sync_in_fence_get(syncs, num_syncs, q, vm);
-+			if (IS_ERR(fence)) {
-+				err = PTR_ERR(fence);
-+				goto err_unlock_list;
-+			}
-+			for (i = 0; i < num_syncs; i++)
-+				xe_sync_entry_signal(&syncs[i], NULL, fence);
-+			xe_exec_queue_last_fence_set(q, vm, fence);
-+			dma_fence_put(fence);
-+		}
-+
-+		xe_vm_unlock(vm);
-+		goto err_unlock_list;
-+	}
-+
- 	vm_exec.vm = &vm->gpuvm;
- 	vm_exec.num_fences = 1 + vm->xe->info.tile_count;
- 	vm_exec.flags = DRM_EXEC_INTERRUPTIBLE_WAIT;
-@@ -216,24 +239,6 @@ int xe_exec_ioctl(struct drm_device *dev, void *data, struct drm_file *file)
- 		goto err_exec;
- 	}
+ 	/* Only update control register when needed! */
+ 	if (mcr_new != mcr_cur)
+@@ -694,7 +693,7 @@ static void mtk_mac_link_down(struct phylink_config *config, unsigned int mode,
+ 					   phylink_config);
+ 	u32 mcr = mtk_r32(mac->hw, MTK_MAC_MCR(mac->id));
  
--	if (!args->num_batch_buffer) {
--		if (!xe_vm_in_lr_mode(vm)) {
--			struct dma_fence *fence;
--
--			fence = xe_sync_in_fence_get(syncs, num_syncs, q, vm);
--			if (IS_ERR(fence)) {
--				err = PTR_ERR(fence);
--				goto err_exec;
--			}
--			for (i = 0; i < num_syncs; i++)
--				xe_sync_entry_signal(&syncs[i], NULL, fence);
--			xe_exec_queue_last_fence_set(q, vm, fence);
--			dma_fence_put(fence);
--		}
--
--		goto err_exec;
--	}
--
- 	if (xe_exec_queue_is_lr(q) && xe_exec_queue_ring_full(q)) {
- 		err = -EWOULDBLOCK;	/* Aliased to -EAGAIN */
- 		skip_retry = true;
+-	mcr &= ~(MAC_MCR_TX_EN | MAC_MCR_RX_EN);
++	mcr &= ~(MAC_MCR_TX_EN | MAC_MCR_RX_EN | MAC_MCR_FORCE_LINK);
+ 	mtk_w32(mac->hw, mcr, MTK_MAC_MCR(mac->id));
+ }
+ 
+@@ -803,7 +802,7 @@ static void mtk_mac_link_up(struct phylink_config *config,
+ 	if (rx_pause)
+ 		mcr |= MAC_MCR_FORCE_RX_FC;
+ 
+-	mcr |= MAC_MCR_TX_EN | MAC_MCR_RX_EN;
++	mcr |= MAC_MCR_TX_EN | MAC_MCR_RX_EN | MAC_MCR_FORCE_LINK;
+ 	mtk_w32(mac->hw, mcr, MTK_MAC_MCR(mac->id));
+ }
+ 
 -- 
 2.43.0
 
