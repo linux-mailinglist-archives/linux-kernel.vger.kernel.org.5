@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-114580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 826F6889070
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:18:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E61888B96
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:53:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF3421C2C21F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:18:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B8E1B23BD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:41:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054B5186390;
-	Sun, 24 Mar 2024 23:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0266E2305F5;
+	Sun, 24 Mar 2024 23:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qQo7LEyl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSYdCTUX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78CB14AD34;
-	Sun, 24 Mar 2024 23:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4E112FF7F;
+	Sun, 24 Mar 2024 23:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711322224; cv=none; b=nqinudDSlr3MYqn4gb9rJGtxf0zM9oGgSCfgL1E/RWcxuvH+2dH47PboKp7snnT3SpM/Ox7lofjnUwFwXaZu8UZbsLUodRLKF39a8GqxBECtmb7ac3bq6QFr7YUpviriTsBZdqkSS5n4Ir+pcufz0El5wKYpaCOArwzbusut+m8=
+	t=1711322227; cv=none; b=Lzrzm3417WOlq9f3bxOUeMsgUFijdAIX9QQIHYUy4VaGelWK/+/2ib6mrfLISttB2SVBnWD49kuKzDIjDFhKEq/a6BxsoVc5fUQ3ZvrrPKHGHArA4L2LG9k9XHvjB1DfWDnv9l45rR/X8whDXkTr7m/SRYJXM8XjsPlF/wfoKtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711322224; c=relaxed/simple;
-	bh=bZsBnUnfKdFw2VCk5QyKwh671+Xs8KoP7fsGfnZBPpw=;
+	s=arc-20240116; t=1711322227; c=relaxed/simple;
+	bh=fQzw9Ensn/yxuDAqH33DJI5KVUcqZ4B1jPDe8wT5Nbw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sGLgOP2+wPqQxoB0+sOTR9t5FPr3xhdakquoNCvyNIsUinPsdJgMRNXyc+7ywEAiVFLWJ7XOnmsPI6b1l75TyxverltAudmWGcSRPsZUBenSavJ07+452oBpyxXBPhJ2GoljT8il+xn9WvIZlRYi6f5ip8axlbNPh9iBMeSiPI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qQo7LEyl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06BD2C43390;
-	Sun, 24 Mar 2024 23:17:03 +0000 (UTC)
+	 MIME-Version; b=RzGuMWV9Pqyqg6hPQy/4vdIW1lS782JUuTVt7WCo+spFY+gXGVmcEAZMUX5ZLlrfgFYqz25D3edY2LQwq3TfnX9OeTqdi+LA4EqyL2e37DMf4cpeVOL2FIiVCRh4cne/wj3WC52yXTXFo/R/odAzLVQ3rWpYDazreGWEsFnGCtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSYdCTUX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0821EC433C7;
+	Sun, 24 Mar 2024 23:17:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711322224;
-	bh=bZsBnUnfKdFw2VCk5QyKwh671+Xs8KoP7fsGfnZBPpw=;
+	s=k20201202; t=1711322225;
+	bh=fQzw9Ensn/yxuDAqH33DJI5KVUcqZ4B1jPDe8wT5Nbw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qQo7LEyl1lFuSfjrRcjeaqjtJS+Zb0N+0OMawBnm+U7iV8r/GO2Z9K+yJ48xzx4ED
-	 EM74VPxKnbgwLC9NQQXeCBs1vqEj/P35wIk3VPwEeNp6ys3d7DsmphsrczEQvojTN0
-	 SkBSwbBdqCnUdfJN4qx/pzZnKxouZ4RVVFF9nK2rOo/V/DCT3AXnGiUU0fKW6T4b9d
-	 bzXP9wEmUuqYGjwvv+H0mjRT0gJdt/AuoAYwHZFzQyzb+0WW9XBvm6j0KququXe+I/
-	 SBefGjUdZKSkyok7AeePuoXRH5rggvpmdVxW24ChNB8zytxJpJ70kCWVkmiZRZ55cT
-	 F+WBTPzEOiY8w==
+	b=fSYdCTUX+6Aj+pCzNcVCvpUeu71FZDfKMmSDbJVLdLWuNBDfQCQq516BkCw/Lg12t
+	 aj8QPZk+CZiEm3Zz9eVOKhp4UcFvdsvjr38nJor43wowktzdVoosqRJbQUjVMDY/ww
+	 UmO7C5Bm17dx3CsxHV/FOKLTi9ArS62+PFWe3L9r05VcbRE1F8327fR1HzS5h3t4eM
+	 dQknVo8rJTNQW0mwxLdvw3SiFqSNxTFGZtFf8uZuGxqaBb/C1SMz4YfDMwU9LsbSmj
+	 6lwkPuvwHvRV8U7yr7HvutxQyQXt6hQJhg75bFhIMP319Cz7oDjRUM4WU59WY1qpJu
+	 aE6ek6f+SiXbQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Caleb Connolly <caleb.connolly@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Alexandre Mergnat <amergnat@baylibre.com>,
+	CK Hu <ck.hu@mediatek.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 305/451] clk: qcom: dispcc-sdm845: Adjust internal GDSC wait times
-Date: Sun, 24 Mar 2024 19:09:41 -0400
-Message-ID: <20240324231207.1351418-306-sashal@kernel.org>
+Subject: [PATCH 6.1 306/451] drm/mediatek: dsi: Fix DSI RGB666 formats and definitions
+Date: Sun, 24 Mar 2024 19:09:42 -0400
+Message-ID: <20240324231207.1351418-307-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324231207.1351418-1-sashal@kernel.org>
 References: <20240324231207.1351418-1-sashal@kernel.org>
@@ -63,36 +64,76 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-[ Upstream commit 117e7dc697c2739d754db8fe0c1e2d4f1f5d5f82 ]
+[ Upstream commit fae6f815505301b92d9113764f4d76d0bfe45607 ]
 
-SDM845 downstream uses non-default values for GDSC internal waits.
-Program them accordingly to avoid surprises.
+The register bits definitions for RGB666 formats are wrong in multiple
+ways: first, in the DSI_PS_SEL bits region, the Packed 18-bits RGB666
+format is selected with bit 1, while the Loosely Packed one is bit 2,
+and second - the definition name "LOOSELY_PS_18BIT_RGB666" is wrong
+because the loosely packed format is 24 bits instead!
 
-Fixes: 81351776c9fb ("clk: qcom: Add display clock controller driver for SDM845")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Tested-by: Caleb Connolly <caleb.connolly@linaro.org> # OnePlus 6
-Link: https://lore.kernel.org/r/20240103-topic-845gdsc-v1-1-368efbe1a61d@linaro.org
-Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Either way, functions mtk_dsi_ps_control_vact() and mtk_dsi_ps_control()
+do not even agree on the DSI_PS_SEL bit to set in DSI_PSCTRL: one sets
+loosely packed (24) on RGB666, the other sets packed (18), and the other
+way around for RGB666_PACKED.
+
+Fixing this entire stack of issues is done in one go:
+ - Use the correct bit for the Loosely Packed RGB666 definition
+ - Rename LOOSELY_PS_18BIT_RGB666 to LOOSELY_PS_24BIT_RGB666
+ - Change ps_bpp_mode in mtk_dsi_ps_control_vact() to set:
+    - Loosely Packed, 24-bits for MIPI_DSI_FMT_RGB666
+    - Packed, 18-bits for MIPI_DSI_FMT_RGB666_PACKED
+
+Fixes: 2e54c14e310f ("drm/mediatek: Add DSI sub driver")
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://patchwork.kernel.org/project/dri-devel/patch/20240215085316.56835-3-angelogioacchino.delregno@collabora.com/
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/qcom/dispcc-sdm845.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/clk/qcom/dispcc-sdm845.c b/drivers/clk/qcom/dispcc-sdm845.c
-index 735adfefc3798..e792e0b130d33 100644
---- a/drivers/clk/qcom/dispcc-sdm845.c
-+++ b/drivers/clk/qcom/dispcc-sdm845.c
-@@ -759,6 +759,8 @@ static struct clk_branch disp_cc_mdss_vsync_clk = {
+diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+index 3e74c7c1b89fa..d871b1dba083d 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dsi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+@@ -70,8 +70,8 @@
+ #define DSI_PS_WC			0x3fff
+ #define DSI_PS_SEL			(3 << 16)
+ #define PACKED_PS_16BIT_RGB565		(0 << 16)
+-#define LOOSELY_PS_18BIT_RGB666		(1 << 16)
+-#define PACKED_PS_18BIT_RGB666		(2 << 16)
++#define PACKED_PS_18BIT_RGB666		(1 << 16)
++#define LOOSELY_PS_24BIT_RGB666		(2 << 16)
+ #define PACKED_PS_24BIT_RGB888		(3 << 16)
  
- static struct gdsc mdss_gdsc = {
- 	.gdscr = 0x3000,
-+	.en_few_wait_val = 0x6,
-+	.en_rest_wait_val = 0x5,
- 	.pd = {
- 		.name = "mdss_gdsc",
- 	},
+ #define DSI_VSA_NL		0x20
+@@ -366,10 +366,10 @@ static void mtk_dsi_ps_control_vact(struct mtk_dsi *dsi)
+ 		ps_bpp_mode |= PACKED_PS_24BIT_RGB888;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666:
+-		ps_bpp_mode |= PACKED_PS_18BIT_RGB666;
++		ps_bpp_mode |= LOOSELY_PS_24BIT_RGB666;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666_PACKED:
+-		ps_bpp_mode |= LOOSELY_PS_18BIT_RGB666;
++		ps_bpp_mode |= PACKED_PS_18BIT_RGB666;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB565:
+ 		ps_bpp_mode |= PACKED_PS_16BIT_RGB565;
+@@ -423,7 +423,7 @@ static void mtk_dsi_ps_control(struct mtk_dsi *dsi)
+ 		dsi_tmp_buf_bpp = 3;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666:
+-		tmp_reg = LOOSELY_PS_18BIT_RGB666;
++		tmp_reg = LOOSELY_PS_24BIT_RGB666;
+ 		dsi_tmp_buf_bpp = 3;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666_PACKED:
 -- 
 2.43.0
 
