@@ -1,117 +1,83 @@
-Return-Path: <linux-kernel+bounces-115379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 191F58896CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:59:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E3DF8881CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:30:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A7B31C30693
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:59:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3590B1F2187D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4035D1F73A1;
-	Mon, 25 Mar 2024 02:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LONUrSd7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A9316F8E5;
+	Sun, 24 Mar 2024 22:39:11 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D843F1D8BBC;
-	Sun, 24 Mar 2024 22:50:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBF916EC04;
+	Sun, 24 Mar 2024 22:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320645; cv=none; b=p+X2suZhtOP/UbAIV6YJO4WWGde6Vo3jtHopg3D3quypwoajsyUgsLgHkuJlE1cyU7krOgBZxlnqVZwrHoXMWO+1WQJJhVOVFZ2U3EtX9UgoC+M/zqltRUl/XM5Ekh8nATbohEyCFak5FddVmky1EpMmzyx8oA7EoK/PKf//iqw=
+	t=1711319951; cv=none; b=nS8U4+psogbVSQVJIyclIs9g3Frb0MxZ2NtnAvEtEPTpD7VWmiMQYHvyL903f1Yei1GDS5VAO4MmydoKb2p8ZkCPdtfohalCmKcJOJ8fEUW27sprFsA7H73x5eg1gnGRAkyiW8N4Vd6xvVDUHGkm38bzrZ+Dr0r3WNGXUjkbeLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320645; c=relaxed/simple;
-	bh=RQrolhc/4neGjp94YqluMsQFQZd5V1OjoECo2SmYWsM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gmjz5YCoywLd1/jFDnqJvtUDbk0Pd5JXB5c+3r+AxTlIw/u86aLjqBpgW1tZgLiOXE+dh6XHRi331CZ524HpV3g1jbYl/ictimJPqnLCaNQ/ItYF0BJZEptUkjPAsm2SPSKfXWVOuhLU+wXAVv21W23FlVSaZ+yTbqN+BU+BAZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LONUrSd7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23034C433C7;
-	Sun, 24 Mar 2024 22:50:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320644;
-	bh=RQrolhc/4neGjp94YqluMsQFQZd5V1OjoECo2SmYWsM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LONUrSd7d6pPoqBDP/ig0MCnFCnPvu8hBf9jWMFzWHkn4FbhmxQqSgp6AhI/HS7Pr
-	 CgDGUiAYvk/qlsVv5Ry2L6hLXQuGpey/a25dv3vfMexjY9jBtRhYJGLBKBA1AADfVX
-	 t8zmNeHaoZ7A1gHbyyqtATCe+RxuYFxCdMXwgtLAccg2X3wMVOVLIe3KMKMkbJINF3
-	 visNqmXLFlVGjgVPwaNzx5W1qsl1HT7yIBUOZeqPqeA96PHDMuVnKOm5Vu7rHSTy5t
-	 b7ZdOnSi7FqL/HgufA+X7+i7mPoQWr8kjh4PEdlayO2yiYOdfu0IOrTMeBdaqOwG3o
-	 1yCQUIY62Amag==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Zhipeng Lu <alexious@zju.edu.cn>,
-	Kalle Valo <kvalo@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 206/713] wifi: libertas: fix some memleaks in lbs_allocate_cmd_buffer()
-Date: Sun, 24 Mar 2024 18:38:52 -0400
-Message-ID: <20240324224720.1345309-207-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
-References: <20240324224720.1345309-1-sashal@kernel.org>
+	s=arc-20240116; t=1711319951; c=relaxed/simple;
+	bh=8a8yUbpxmH47E3+zw0R/B+Uv/KODFRMskQlpXkg9AKE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UNE/WnYM8tkEkVX9N22e1mtrsh4EVextQ62eN9SNEvHt5GbxpySOtZd/YBwxECdwXethPNJTP2iK7oFMa9OXcqOP2CmmWeDisB87rKNJHaYASGiZNZndMMg0JpyxYao/CPCd5ZS+r9IO9Ek+QTgoXfQbMyySUrNThaFsFj7qaNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i53875a9e.versanet.de ([83.135.90.158] helo=phil.lan)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1roWUV-0007sn-Gi; Sun, 24 Mar 2024 23:38:59 +0100
+From: Heiko Stuebner <heiko@sntech.de>
+To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Heiko Stuebner <heiko@sntech.de>,
+	linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	erkin.bozoglu@xeront.com,
+	mithat.guner@xeront.com
+Subject: Re: [PATCH] arm64: dts: rockchip: set PHY address of MT7531 switch to 0x1f
+Date: Sun, 24 Mar 2024 23:38:52 +0100
+Message-Id: <171131986741.918919.17715253575566956746.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240314-for-rockchip-mt7531-phy-address-v1-1-743b5873358f@arinc9.com>
+References: <20240314-for-rockchip-mt7531-phy-address-v1-1-743b5873358f@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-From: Zhipeng Lu <alexious@zju.edu.cn>
+On Thu, 14 Mar 2024 15:24:35 +0300, Arınç ÜNAL wrote:
+> The MT7531 switch listens on PHY address 0x1f on an MDIO bus. I've got two
+> findings that support this. There's no bootstrapping option to change the
+> PHY address of the switch. The Linux driver hardcodes 0x1f as the PHY
+> address of the switch. So the reg property on the device tree is currently
+> ignored by the Linux driver.
+> 
+> Therefore, describe the correct PHY address on Banana Pi BPI-R2 Pro that
+> has this switch.
+> 
+> [...]
 
-[ Upstream commit 5f0e4aede01cb01fa633171f0533affd25328c3a ]
+Applied, thanks!
 
-In the for statement of lbs_allocate_cmd_buffer(), if the allocation of
-cmdarray[i].cmdbuf fails, both cmdarray and cmdarray[i].cmdbuf needs to
-be freed. Otherwise, there will be memleaks in lbs_allocate_cmd_buffer().
+[1/1] arm64: dts: rockchip: set PHY address of MT7531 switch to 0x1f
+      commit: a2ac2a1b02590a22a236c43c455f421cdede45f5
 
-Fixes: 876c9d3aeb98 ("[PATCH] Marvell Libertas 8388 802.11b/g USB driver")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://msgid.link/20240126075336.2825608-1-alexious@zju.edu.cn
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/marvell/libertas/cmd.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/libertas/cmd.c b/drivers/net/wireless/marvell/libertas/cmd.c
-index 104d2b6dc9af6..5a525da434c28 100644
---- a/drivers/net/wireless/marvell/libertas/cmd.c
-+++ b/drivers/net/wireless/marvell/libertas/cmd.c
-@@ -1132,7 +1132,7 @@ int lbs_allocate_cmd_buffer(struct lbs_private *priv)
- 		if (!cmdarray[i].cmdbuf) {
- 			lbs_deb_host("ALLOC_CMD_BUF: ptempvirtualaddr is NULL\n");
- 			ret = -1;
--			goto done;
-+			goto free_cmd_array;
- 		}
- 	}
- 
-@@ -1140,8 +1140,17 @@ int lbs_allocate_cmd_buffer(struct lbs_private *priv)
- 		init_waitqueue_head(&cmdarray[i].cmdwait_q);
- 		lbs_cleanup_and_insert_cmd(priv, &cmdarray[i]);
- 	}
--	ret = 0;
-+	return 0;
- 
-+free_cmd_array:
-+	for (i = 0; i < LBS_NUM_CMD_BUFFERS; i++) {
-+		if (cmdarray[i].cmdbuf) {
-+			kfree(cmdarray[i].cmdbuf);
-+			cmdarray[i].cmdbuf = NULL;
-+		}
-+	}
-+	kfree(priv->cmd_array);
-+	priv->cmd_array = NULL;
- done:
- 	return ret;
- }
+Best regards,
 -- 
-2.43.0
-
+Heiko Stuebner <heiko@sntech.de>
 
