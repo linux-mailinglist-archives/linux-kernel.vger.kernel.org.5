@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-113446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B69E888465
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:38:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 257DE88846B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5E092851F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:38:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A54021F21C2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82E613AD3D;
-	Sun, 24 Mar 2024 22:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D381AE054;
+	Sun, 24 Mar 2024 22:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJdcxo2F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YfIXJATy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF3013AD34;
-	Sun, 24 Mar 2024 22:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1964B1AE02F;
+	Sun, 24 Mar 2024 22:44:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320248; cv=none; b=qViO1TI50aSSvrtj1ZHDPPh6P1UP5l2Qmh9xaXL7JyC6uRI9ZobNH7GK9EXrm2S8dqyoxq5mI8TuBjWcr+g6i32JQKbYWU34z72Q/hPI8dku8GDaVuqAjLcfI/F4XKD5Dji7PTXhh9Kqr4i0P27EPh4opKE/zJ5wp2qf+Nh0gGo=
+	t=1711320250; cv=none; b=GSSdqfuk/4sTdye5Uxp6MLzlgV5yaIGvT/HDCN2P2GV3f9pfynVn9xMKpVs7xEwFv0dDNngluswAgkkAnY4kfxBJd0wsaVKHzA/CyNVZiOBXMGPol5S9dP6E9QhIjCl4Pqzr1swomp8WQTjfpjsEGhn3HUYwmsV7LA9BPK2fuQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320248; c=relaxed/simple;
-	bh=9ObjapYVqvVQnhfvnn3+MTqwP2ZcRAUoO8UfIdlYbfI=;
+	s=arc-20240116; t=1711320250; c=relaxed/simple;
+	bh=XJdMnQgXD90zhNAK03LGBoZ6NzzvmlXp1ppP5ajCa6E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aJjzVmeZLmQIoz3Hub4YwF1z89HlbXDAgNDn3BBiot713pVM4WqabsOtz76LeHIHv0oq1XQ3BjB0HZJzHeOII/wxV1tc0yuOx+hBUSuNlq0Uyzaafe4UAN1Q1b2IxhH9lOAv32Ci2vC7osKcIjcw61Z695/94u2nbzVypW8HST4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJdcxo2F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C65BC433B2;
-	Sun, 24 Mar 2024 22:44:06 +0000 (UTC)
+	 MIME-Version; b=KzvetlzaupTxmAR/gWpFM1A5F1W8HSp/kYqpFG0V3v0e+veNsQNUqTw3rNtGHBFTOCN4n17w3C2aEs/SE8x0N2An9e54VUHN/n8cFEkBZVPiDcp5T7bw9XD3rufxYP6fQzV/4Daka8rgXdCtmGfiyU6zYyl3Go9SVhotZec72OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YfIXJATy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E1E5C43390;
+	Sun, 24 Mar 2024 22:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320247;
-	bh=9ObjapYVqvVQnhfvnn3+MTqwP2ZcRAUoO8UfIdlYbfI=;
+	s=k20201202; t=1711320248;
+	bh=XJdMnQgXD90zhNAK03LGBoZ6NzzvmlXp1ppP5ajCa6E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rJdcxo2FMEH7U5ZZf3fV1r8kMJk7uee3y+WrsCvb3IpxiUcN97YWYjI85Mpwq66aZ
-	 RgbI2JsMG2jUnB1PwkaV+pHVebF7Sf3Q+RtNHAUk2MAy58dGqDfIPxR1o5y8K63/vG
-	 zpYY3GE7XHvp8wqxYPFquu+jBaN2zJCXHOKG8NOoyKyOBRim6IB1kFu6IuHKIhPHn0
-	 f8SF/r6EJ4q2B7v+aYM8uJoBV2f+HZ83Ml0xD+Yg8p29RZYlVw0o66/csS80gZYX1o
-	 1/bwl9M5NGlzn4C/ZXwwFVGV400wyQhqmUacb35mSeVtJhL1US4KmXbkuprQTofifL
-	 jZoehmHihjSkw==
+	b=YfIXJATyS/CUwVRhUvw+jN52XJl1AgubkJ/RtHtCTUt4XRtSBnE+FcJDnuTkulpe+
+	 KhaxcmVjTwHvNYJcNnCAyO3oxnBJlCl+AKP8lG5MSnx6WuiyVvUSCcb2KF7ujBenXR
+	 cGCtFve+CL3vDB3V27UWkXm06Fx+JNjrdRHPOCltHS4tdqnjchJRDS1dcahscjYmiM
+	 wOUkL5ti2WCSuszTyrmPnhlS7kMc8ZFhoB8MFYzObGCPagGTRtMD8dcdT7X6JdhWgS
+	 XOrQ9Q+yCzUbQW3bWlAYHNG1grokW1jWF/vvlta72TAoKH7vbzngi0F8/qdcDZLN5g
+	 A0M3UnBIOvhVQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Jeffrey Hugo <quic_jhugo@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Vinod Koul <vkoul@kernel.org>,
+Cc: Yihang Li <liyihang9@huawei.com>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 555/715] phy: qcom: qmp-usbc: handle CLAMP register in a correct way
-Date: Sun, 24 Mar 2024 18:32:14 -0400
-Message-ID: <20240324223455.1342824-556-sashal@kernel.org>
+Subject: [PATCH 6.8 556/715] scsi: hisi_sas: Fix a deadlock issue related to automatic dump
+Date: Sun, 24 Mar 2024 18:32:15 -0400
+Message-ID: <20240324223455.1342824-557-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -64,155 +63,123 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Yihang Li <liyihang9@huawei.com>
 
-[ Upstream commit 01b086ccdeffac96f107228d581e0925e1c83f87 ]
+[ Upstream commit 3c4f53b2c341ec6428b98cb51a89a09b025d0953 ]
 
-The QMP USB PHYs on msm8998, qcm2290 and some other platforms don't have
-the PCS_MISC_CLAMP_ENABLE register. Instead they need to toggle the
-register in the TCSR space. Make the new phy-qcom-qmp-usbc driver
-correctly handle the clamp register.
+If we issue a disabling PHY command, the device attached with it will go
+offline, if a 2 bit ECC error occurs at the same time, a hung task may be
+found:
 
-Fixes: a51969fafc82 ("phy: qcom-qmp: Add QMP V3 USB3 PHY support for msm8998")
-Fixes: 8abe5e778b2c ("phy: qcom-qmp: Add QCM2290 USB3 PHY support")
-Cc: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20240117-usbc-phy-vls-clamp-v2-3-a950c223f10f@linaro.org
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+[ 4613.652388] INFO: task kworker/u256:0:165233 blocked for more than 120 seconds.
+[ 4613.666297] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[ 4613.674809] task:kworker/u256:0  state:D stack:    0 pid:165233 ppid:     2 flags:0x00000208
+[ 4613.683959] Workqueue: 0000:74:02.0_disco_q sas_revalidate_domain [libsas]
+[ 4613.691518] Call trace:
+[ 4613.694678]  __switch_to+0xf8/0x17c
+[ 4613.698872]  __schedule+0x660/0xee0
+[ 4613.703063]  schedule+0xac/0x240
+[ 4613.706994]  schedule_timeout+0x500/0x610
+[ 4613.711705]  __down+0x128/0x36c
+[ 4613.715548]  down+0x240/0x2d0
+[ 4613.719221]  hisi_sas_internal_abort_timeout+0x1bc/0x260 [hisi_sas_main]
+[ 4613.726618]  sas_execute_internal_abort+0x144/0x310 [libsas]
+[ 4613.732976]  sas_execute_internal_abort_dev+0x44/0x60 [libsas]
+[ 4613.739504]  hisi_sas_internal_task_abort_dev.isra.0+0xbc/0x1b0 [hisi_sas_main]
+[ 4613.747499]  hisi_sas_dev_gone+0x174/0x250 [hisi_sas_main]
+[ 4613.753682]  sas_notify_lldd_dev_gone+0xec/0x2e0 [libsas]
+[ 4613.759781]  sas_unregister_common_dev+0x4c/0x7a0 [libsas]
+[ 4613.765962]  sas_destruct_devices+0xb8/0x120 [libsas]
+[ 4613.771709]  sas_do_revalidate_domain.constprop.0+0x1b8/0x31c [libsas]
+[ 4613.778930]  sas_revalidate_domain+0x60/0xa4 [libsas]
+[ 4613.784716]  process_one_work+0x248/0x950
+[ 4613.789424]  worker_thread+0x318/0x934
+[ 4613.793878]  kthread+0x190/0x200
+[ 4613.797810]  ret_from_fork+0x10/0x18
+[ 4613.802121] INFO: task kworker/u256:4:316722 blocked for more than 120 seconds.
+[ 4613.816026] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[ 4613.824538] task:kworker/u256:4  state:D stack:    0 pid:316722 ppid:     2 flags:0x00000208
+[ 4613.833670] Workqueue: 0000:74:02.0 hisi_sas_rst_work_handler [hisi_sas_main]
+[ 4613.841491] Call trace:
+[ 4613.844647]  __switch_to+0xf8/0x17c
+[ 4613.848852]  __schedule+0x660/0xee0
+[ 4613.853052]  schedule+0xac/0x240
+[ 4613.856984]  schedule_timeout+0x500/0x610
+[ 4613.861695]  __down+0x128/0x36c
+[ 4613.865542]  down+0x240/0x2d0
+[ 4613.869216]  hisi_sas_controller_prereset+0x58/0x1fc [hisi_sas_main]
+[ 4613.876324]  hisi_sas_rst_work_handler+0x40/0x8c [hisi_sas_main]
+[ 4613.883019]  process_one_work+0x248/0x950
+[ 4613.887732]  worker_thread+0x318/0x934
+[ 4613.892204]  kthread+0x190/0x200
+[ 4613.896118]  ret_from_fork+0x10/0x18
+[ 4613.900423] INFO: task kworker/u256:1:348985 blocked for more than 121 seconds.
+[ 4613.914341] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[ 4613.922852] task:kworker/u256:1  state:D stack:    0 pid:348985 ppid:     2 flags:0x00000208
+[ 4613.931984] Workqueue: 0000:74:02.0_event_q sas_port_event_worker [libsas]
+[ 4613.939549] Call trace:
+[ 4613.942702]  __switch_to+0xf8/0x17c
+[ 4613.946892]  __schedule+0x660/0xee0
+[ 4613.951083]  schedule+0xac/0x240
+[ 4613.955015]  schedule_timeout+0x500/0x610
+[ 4613.959725]  wait_for_common+0x200/0x610
+[ 4613.964349]  wait_for_completion+0x3c/0x5c
+[ 4613.969146]  flush_workqueue+0x198/0x790
+[ 4613.973776]  sas_porte_broadcast_rcvd+0x1e8/0x320 [libsas]
+[ 4613.979960]  sas_port_event_worker+0x54/0xa0 [libsas]
+[ 4613.985708]  process_one_work+0x248/0x950
+[ 4613.990420]  worker_thread+0x318/0x934
+[ 4613.994868]  kthread+0x190/0x200
+[ 4613.998800]  ret_from_fork+0x10/0x18
+
+This is because when the device goes offline, we obtain the hisi_hba
+semaphore and send the ABORT_DEV command to the device. However, the
+internal abort timed out due to the 2 bit ECC error and triggers automatic
+dump. In addition, since the hisi_hba semaphore has been obtained, the dump
+cannot be executed and the controller cannot be reset.
+
+Therefore, the deadlocks occur on the following circular dependencies:
+hisi_sas_dev_gone() -> down() -> hisi_sas_internal_task_abort_dev() -> ...
+-> hisi_sas_internal_abort_timeout() -> down().
+
+The deadlock is triggered only when the timeout occurs during device goes
+offline. To fix this issue, use .rst_ha_timeout to distinguish the scenario
+where a device goes offline from other scenarios.
+
+Fixes: 2ff07b5c6fe9 ("scsi: hisi_sas: Directly call register snapshot instead of using workqueue")
+Signed-off-by: Yihang Li <liyihang9@huawei.com>
+Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
+Link: https://lore.kernel.org/r/1705904747-62186-2-git-send-email-chenxiang66@hisilicon.com
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/qualcomm/phy-qcom-qmp-usbc.c | 48 ++++++++++++++++++------
- 1 file changed, 37 insertions(+), 11 deletions(-)
+ drivers/scsi/hisi_sas/hisi_sas_main.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-usbc.c b/drivers/phy/qualcomm/phy-qcom-qmp-usbc.c
-index 214cf4203de41..3a4b4849db0f5 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-usbc.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-usbc.c
-@@ -10,11 +10,13 @@
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
-+#include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
- #include <linux/slab.h>
-@@ -56,9 +58,6 @@
- /* QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR register bits */
- #define IRQ_CLEAR				BIT(0)
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
+index bbb7b2d9ffcfb..1abc62b07d24c 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_main.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
+@@ -1962,9 +1962,17 @@ static bool hisi_sas_internal_abort_timeout(struct sas_task *task,
+ 	struct hisi_sas_internal_abort_data *timeout = data;
  
--/* QPHY_V3_PCS_MISC_CLAMP_ENABLE register bits */
--#define CLAMP_EN				BIT(0) /* enables i/o clamp_n */
--
- #define PHY_INIT_COMPLETE_TIMEOUT		10000
+ 	if (hisi_sas_debugfs_enable && hisi_hba->debugfs_itct[0].itct) {
+-		down(&hisi_hba->sem);
++		/*
++		 * If timeout occurs in device gone scenario, to avoid
++		 * circular dependency like:
++		 * hisi_sas_dev_gone() -> down() -> ... ->
++		 * hisi_sas_internal_abort_timeout() -> down().
++		 */
++		if (!timeout->rst_ha_timeout)
++			down(&hisi_hba->sem);
+ 		hisi_hba->hw->debugfs_snapshot_regs(hisi_hba);
+-		up(&hisi_hba->sem);
++		if (!timeout->rst_ha_timeout)
++			up(&hisi_hba->sem);
+ 	}
  
- struct qmp_phy_init_tbl {
-@@ -94,7 +93,6 @@ enum qphy_reg_layout {
- 	QPHY_PCS_AUTONOMOUS_MODE_CTRL,
- 	QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR,
- 	QPHY_PCS_POWER_DOWN_CONTROL,
--	QPHY_PCS_MISC_CLAMP_ENABLE,
- 	/* Keep last to ensure regs_layout arrays are properly initialized */
- 	QPHY_LAYOUT_SIZE
- };
-@@ -106,7 +104,6 @@ static const unsigned int qmp_v3_usb3phy_regs_layout[QPHY_LAYOUT_SIZE] = {
- 	[QPHY_PCS_AUTONOMOUS_MODE_CTRL]	= QPHY_V3_PCS_AUTONOMOUS_MODE_CTRL,
- 	[QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR] = QPHY_V3_PCS_LFPS_RXTERM_IRQ_CLEAR,
- 	[QPHY_PCS_POWER_DOWN_CONTROL]	= QPHY_V3_PCS_POWER_DOWN_CONTROL,
--	[QPHY_PCS_MISC_CLAMP_ENABLE]	= QPHY_V3_PCS_MISC_CLAMP_ENABLE,
- };
- 
- static const unsigned int qmp_v3_usb3phy_regs_layout_qcm2290[QPHY_LAYOUT_SIZE] = {
-@@ -369,6 +366,9 @@ struct qmp_usbc {
- 	void __iomem *tx2;
- 	void __iomem *rx2;
- 
-+	struct regmap *tcsr_map;
-+	u32 vls_clamp_reg;
-+
- 	struct clk *pipe_clk;
- 	struct clk_bulk_data *clks;
- 	int num_clks;
-@@ -691,7 +691,6 @@ static void qmp_usbc_enable_autonomous_mode(struct qmp_usbc *qmp)
- {
- 	const struct qmp_phy_cfg *cfg = qmp->cfg;
- 	void __iomem *pcs = qmp->pcs;
--	void __iomem *pcs_misc = qmp->pcs_misc;
- 	u32 intr_mask;
- 
- 	if (qmp->mode == PHY_MODE_USB_HOST_SS ||
-@@ -712,19 +711,18 @@ static void qmp_usbc_enable_autonomous_mode(struct qmp_usbc *qmp)
- 	qphy_setbits(pcs, cfg->regs[QPHY_PCS_AUTONOMOUS_MODE_CTRL], intr_mask);
- 
- 	/* Enable i/o clamp_n for autonomous mode */
--	if (pcs_misc && cfg->regs[QPHY_PCS_MISC_CLAMP_ENABLE])
--		qphy_clrbits(pcs_misc, cfg->regs[QPHY_PCS_MISC_CLAMP_ENABLE], CLAMP_EN);
-+	if (qmp->tcsr_map && qmp->vls_clamp_reg)
-+		regmap_write(qmp->tcsr_map, qmp->vls_clamp_reg, 1);
- }
- 
- static void qmp_usbc_disable_autonomous_mode(struct qmp_usbc *qmp)
- {
- 	const struct qmp_phy_cfg *cfg = qmp->cfg;
- 	void __iomem *pcs = qmp->pcs;
--	void __iomem *pcs_misc = qmp->pcs_misc;
- 
- 	/* Disable i/o clamp_n on resume for normal mode */
--	if (pcs_misc && cfg->regs[QPHY_PCS_MISC_CLAMP_ENABLE])
--		qphy_setbits(pcs_misc, cfg->regs[QPHY_PCS_MISC_CLAMP_ENABLE], CLAMP_EN);
-+	if (qmp->tcsr_map && qmp->vls_clamp_reg)
-+		regmap_write(qmp->tcsr_map, qmp->vls_clamp_reg, 0);
- 
- 	qphy_clrbits(pcs, cfg->regs[QPHY_PCS_AUTONOMOUS_MODE_CTRL],
- 		     ARCVR_DTCT_EN | ARCVR_DTCT_EVENT_SEL | ALFPS_DTCT_EN);
-@@ -1063,6 +1061,30 @@ static int qmp_usbc_parse_dt(struct qmp_usbc *qmp)
- 	return 0;
- }
- 
-+static int qmp_usbc_parse_vls_clamp(struct qmp_usbc *qmp)
-+{
-+	struct of_phandle_args tcsr_args;
-+	struct device *dev = qmp->dev;
-+	int ret;
-+
-+	/*  for backwards compatibility ignore if there is no property */
-+	ret = of_parse_phandle_with_fixed_args(dev->of_node, "qcom,tcsr-reg", 1, 0,
-+					       &tcsr_args);
-+	if (ret == -ENOENT)
-+		return 0;
-+	else if (ret < 0)
-+		return dev_err_probe(dev, ret, "Failed to parse qcom,tcsr-reg\n");
-+
-+	qmp->tcsr_map = syscon_node_to_regmap(tcsr_args.np);
-+	of_node_put(tcsr_args.np);
-+	if (IS_ERR(qmp->tcsr_map))
-+		return PTR_ERR(qmp->tcsr_map);
-+
-+	qmp->vls_clamp_reg = tcsr_args.args[0];
-+
-+	return 0;
-+}
-+
- static int qmp_usbc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -1093,6 +1115,10 @@ static int qmp_usbc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	ret = qmp_usbc_parse_vls_clamp(qmp);
-+	if (ret)
-+		return ret;
-+
- 	/* Check for legacy binding with child node. */
- 	np = of_get_child_by_name(dev->of_node, "phy");
- 	if (np) {
+ 	if (task->task_state_flags & SAS_TASK_STATE_DONE) {
 -- 
 2.43.0
 
