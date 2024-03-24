@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-115213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAD2F888DC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:57:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A736688935A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07C901C2A729
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:57:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478061F3016B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936FA30EF02;
-	Mon, 25 Mar 2024 01:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4E441CB69A;
+	Mon, 25 Mar 2024 01:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qpqjwLpb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X4kly8S/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EC3422E7E6;
-	Sun, 24 Mar 2024 23:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC72A22E7EE;
+	Sun, 24 Mar 2024 23:51:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711324302; cv=none; b=RSpBImAslAMk/jStax10anGeeeY0/m0MCc00Rh9cebkbHVVIVSbVwb+cYe4z9Eugm2LMkBjSdKoTSSaOIapyj3Ga654jVQYY78+unpMH0TqpJGjD7rwPb3NxcYXq6XrJ9MYVeMPOK1sL3ZfjxR7yebFlHkiKXv0EKZO4EcZrits=
+	t=1711324302; cv=none; b=VaKWmHC2K2KsJgEdqY240mNCmqJ9KF+f4Cpn8+c/637LemAs3xYEmzaW6SgiCQU69upkT/Cv4VgW7Tpf77BdZZn62AdLgN1n7VKlrSZDm+j4eZjx2K7DciJR2+G/UO5aBrI3fR47tm1BhNZNgM658EFLnRlRMna/EWPl4OYyFR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711324302; c=relaxed/simple;
-	bh=b1ImpgjqeU3iPayTihEvHsUtn/HigkooHHkmMme9Wzo=;
+	bh=C+/70BqqoyuoI5rGiAd0yfx6Jfh9xe8UtZavuyGWL7E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JJi9eLsCAr6UvqWZ6Op/5gCPgMC8EmponONlGk6HEpB/uEjnHSh8uZwqRGcMEcOToOB/udRynIG7HGl/Ji73fu2c0cc+kAgfNOzFKmXccNGAkHbpWHq+OKy0+uoAwAOBkb7Lq3qJ2zVYo9wBH9CbTExKy3MLkIVUm8QWcTUykd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qpqjwLpb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D61AFC43390;
-	Sun, 24 Mar 2024 23:51:39 +0000 (UTC)
+	 MIME-Version; b=aGlkpncpAmRySBmVRKLD8faMFb1CocjhUDE5PkC5DVk9nbrYPB8USPUJ3cnYWEj33xF9IgshVvg6ajdSJc0QgmBv20oY+4kIMNBwVgvv/yT/uRjdOmdbd9KrD4q97BrKagIpG+Q+LxVdUuI+3hBE5/mjZdyWT9PEOHN6Y6iPnAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X4kly8S/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAA5CC433C7;
+	Sun, 24 Mar 2024 23:51:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711324300;
-	bh=b1ImpgjqeU3iPayTihEvHsUtn/HigkooHHkmMme9Wzo=;
+	s=k20201202; t=1711324301;
+	bh=C+/70BqqoyuoI5rGiAd0yfx6Jfh9xe8UtZavuyGWL7E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qpqjwLpbsMnOQ0YugrrqOB1AfQjeRgTzrT6+/OX3VltmhqoDb0NmCfs+tnqPQk+Vz
-	 gJ73BUJpaig5BvjpWrMqtlMMqFKN363lwi7teND5e9tzfW2f6mFGDsZalZJzQ89ScM
-	 cxwsSm9jUB1NviF9EismtybaJIwQpdN2mE5C0ueEJaxdhcR2kciNumeY3Kdj2dVNO7
-	 i+2+BC91ZkEpbhwXIEC56NrQPH4w3v5SPdNtuSUYaFDjiiRKySwCJCXEOTBCUHAa9O
-	 O7jqTr/LneenG6/VHJSbdIVFrzc7lEPUu3/KzoCTUZc0rI/0eCC6w/l+EeCsaKXsbY
-	 00IEGLP3eG3bQ==
+	b=X4kly8S/Psnianm9om9dt9zjWpNyxNc9dRCpobL67lSivDB4daq2uAdkaE613sXx5
+	 53uXUw1ytRJqqkj9SZaB0wl9LhdDpddlVxSkFLLrKooQY5elfh/1n6VaWGWVxYpt+O
+	 5FoV6Z1UVkxVghIContedz2XKxCGwxAIlAbKj3Ew7gq3mloNFIpcDUBzzGu1QfTr/Y
+	 rFDqeRtP762lzHlp2yKr09OMtoD/iDddq6Ylxe25Xc+j3Z7zBZJnj1kEEoGVpE8SfN
+	 4pE62tiFixsFNzaLD9pXvvyKC8ToCsVMh37hJ/8HTEtW+qgKygkWV0hiKoRcSRimFL
+	 bgoqA7O9Xfu/Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-	Quentin Schulz <foss+kernel@0leil.net>,
-	Heiko Stuebner <heiko@sntech.de>,
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	Robert Foss <rfoss@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 074/148] drm/rockchip: lvds: do not print scary message when probing defer
-Date: Sun, 24 Mar 2024 19:48:58 -0400
-Message-ID: <20240324235012.1356413-75-sashal@kernel.org>
+Subject: [PATCH 4.19 075/148] media: tc358743: register v4l2 async device only after successful setup
+Date: Sun, 24 Mar 2024 19:48:59 -0400
+Message-ID: <20240324235012.1356413-76-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324235012.1356413-1-sashal@kernel.org>
 References: <20240324235012.1356413-1-sashal@kernel.org>
@@ -63,39 +62,48 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit 52d11c863ac92e36a0365249f7f6d27ac48c78bc ]
+[ Upstream commit 87399f1ff92203d65f1febf5919429f4bb613a02 ]
 
-This scary message can misled the user into thinking something bad has
-happened and needs to be fixed, however it could simply be part of a
-normal boot process where EPROBE_DEFER is taken into account. Therefore,
-let's use dev_err_probe so that this message doesn't get shown (by
-default) when the return code is EPROBE_DEFER.
+Ensure the device has been setup correctly before registering the v4l2
+async device, thus allowing userspace to access.
 
-Fixes: 34cc0aa25456 ("drm/rockchip: Add support for Rockchip Soc LVDS")
-Cc: Quentin Schulz <foss+kernel@0leil.net>
-Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231120-rk-lvds-defer-msg-v2-2-9c59a5779cf9@theobroma-systems.com
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Reviewed-by: Robert Foss <rfoss@kernel.org>
+Fixes: 4c5211a10039 ("[media] tc358743: register v4l2 asynchronous subdevice")
+Signed-off-by: Robert Foss <rfoss@kernel.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20240110090111.458115-1-alexander.stein@ew.tq-group.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rockchip/rockchip_lvds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/i2c/tc358743.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-index 215885c780759..39a17c46dbf11 100644
---- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-@@ -373,7 +373,7 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
- 		ret = -EINVAL;
- 		goto err_put_port;
- 	} else if (ret) {
--		DRM_DEV_ERROR(dev, "failed to find panel and bridge node\n");
-+		dev_err_probe(dev, ret, "failed to find panel and bridge node\n");
- 		goto err_put_port;
- 	}
- 	if (lvds->panel)
+diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+index 079b8db4bc48b..2650be358b027 100644
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -2107,9 +2107,6 @@ static int tc358743_probe(struct i2c_client *client,
+ 	state->mbus_fmt_code = MEDIA_BUS_FMT_RGB888_1X24;
+ 
+ 	sd->dev = &client->dev;
+-	err = v4l2_async_register_subdev(sd);
+-	if (err < 0)
+-		goto err_hdl;
+ 
+ 	mutex_init(&state->confctl_mutex);
+ 
+@@ -2167,6 +2164,10 @@ static int tc358743_probe(struct i2c_client *client,
+ 	if (err)
+ 		goto err_work_queues;
+ 
++	err = v4l2_async_register_subdev(sd);
++	if (err < 0)
++		goto err_work_queues;
++
+ 	v4l2_info(sd, "%s found @ 0x%x (%s)\n", client->name,
+ 		  client->addr << 1, client->adapter->name);
+ 
 -- 
 2.43.0
 
