@@ -1,55 +1,54 @@
-Return-Path: <linux-kernel+bounces-113313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73870888354
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:07:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 592F7888356
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13CC1B2289D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:07:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 106BF1F23599
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB98193169;
-	Sun, 24 Mar 2024 22:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC4B193861;
+	Sun, 24 Mar 2024 22:41:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qqnbX6ZV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tn8lX06L"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0E019314B;
-	Sun, 24 Mar 2024 22:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E056193175;
+	Sun, 24 Mar 2024 22:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320114; cv=none; b=j8tl+WK6Wi6WL7Nqim30xfb5JqAIKQNT0MEMxWRt4SNQUXw4QKJSl4JazwJE0cFvViatxWkMyuIpICpqJGdbItuzIOPsMUV1imXuXDKFN4LhinANeyXAe+wXhHY7SPrFlGA8ia45cqxBYbhOF0R3VFey0XV/r43b5ZV5Y+Iab2s=
+	t=1711320115; cv=none; b=J6SaU3Ficlt0bAPLGy56eILXaT0mwKiKnJdpN21RXwpERAIkOVgwCHTmL2/PZgfeM/5ubRyZDDNqzv/navEzC1g2glJwgilCCxQd/UlE84GCsxF5+Yphh6NXfj7+4vapu0OUK8SaN1NsLRaWeEhaSl74NGC1HwDoMlIoQYhw96Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320114; c=relaxed/simple;
-	bh=3VrZTWUZxOF3mjUB31yZJdGrFQ+8dvR97x19mZM3h6g=;
+	s=arc-20240116; t=1711320115; c=relaxed/simple;
+	bh=h8BdH7BljQ0FdEXcZo6/KF7jYRa7kna71QzsImwJywI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qYb+BWyBn7GIwPVhTDIa0xBBoAV2I+2Bz4MjSseFtEeTMnMtk3KLxCaEfHz6WnOqev06eKzqjviSl71p8zK+Z/3OEXweV88FIbKB5AoU6+6jC6khrOF0nwMe9fYAzH/It6mFopduPD8v8F5nlqrCHt7dv462EWHyKUN4anhHLEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qqnbX6ZV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B20FC43330;
-	Sun, 24 Mar 2024 22:41:53 +0000 (UTC)
+	 MIME-Version; b=EPnTTTbjh56JtqXcmMBvezUJaDeG/KhU0PUZ50SU2sv5O6Olv7cvgF2W26ckv1jJi4eLImIGOgyTrCiAaCZEL6SJWJHFGVuUNpBJUiPrtCymYg7ooMD2NPEN6gR4zAR/obimcAYmgRFQkgWXOcTIeanUP2snGi8sDbSboS2qkbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tn8lX06L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D5DBC43399;
+	Sun, 24 Mar 2024 22:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320113;
-	bh=3VrZTWUZxOF3mjUB31yZJdGrFQ+8dvR97x19mZM3h6g=;
+	s=k20201202; t=1711320114;
+	bh=h8BdH7BljQ0FdEXcZo6/KF7jYRa7kna71QzsImwJywI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qqnbX6ZVFTEuhg9X13O8ld1pnnMjd1NmP0+IFHLPV+tu9I0aFk4nkn1M2LN4fvfdU
-	 MlP7sbYQC6e+ZNvsbPMQUNWGqndW1TZFldgQ/puortBShs2oG4bZscw3Li1wKop6wm
-	 QMPGKJ2mJDm5ku16F8JqS5Is+6Ku/e3nelhY6ulLOH+YMledaHgLhDWOeiZpb8Y9QD
-	 onxYxVWOjhOziy2oN+DZhHeabMEtd+9wcEsmqv3aXsfAZ9TcLj1jfBBe16AmbTxTBw
-	 wV0+uzoT4ta5zsNfUsLRMB/ChCP7fK3h2Jsw4aucLLcqrMJjrGvLeyFosT6LCaKd9W
-	 BpKeEeY5KeUVw==
+	b=tn8lX06LMZ9bQyDbSSoabLn+JcFz3i7H3dzncMnnp4emIE4ugEdWFFAGunqgLnzPO
+	 LMfsemgNmJAvk1Vuc7x/V380BL933hBP4M4ucAULf0FKJy3We8+94a7bpQ2lp6gXpp
+	 6VZ/QYn/eDgcyc3pxCSf3FnwXsh1vj6SJg8IcA4OtpgtXjySYmScM/74LiUt5fBBJn
+	 s/LeTXyQ17MmZQo6oi9wPlPJrfZhoYwhCHN5BHZ+vAwqpWlBmu66EqkPcN816d7EFO
+	 /8g744XuuHHKVnLVFwuP+etoXtiJ/exf1iSjSlhuNDawT6AJIB5NvN6HvmY6H+Ic2F
+	 ZyexER8cdMSTQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Hien Huynh <hien.huynh.px@renesas.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Arnd Bergmann <arnd@arndb.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 422/715] clk: renesas: r9a07g04[34]: Use SEL_SDHI1_STS status configuration for SD1 mux
-Date: Sun, 24 Mar 2024 18:30:01 -0400
-Message-ID: <20240324223455.1342824-423-sashal@kernel.org>
+Subject: [PATCH 6.8 423/715] ALSA: seq: fix function cast warnings
+Date: Sun, 24 Mar 2024 18:30:02 -0400
+Message-ID: <20240324223455.1342824-424-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -63,50 +62,93 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 9b2a11c83859c06233049b134bd8ee974b284559 ]
+[ Upstream commit d7bf73809849463f76de42aad62c850305dd6c5d ]
 
-The status configuration for SD1 mux clock is SEL_SDHI1_STS. Fix it.
+clang-16 points out a control flow integrity (kcfi) issue when event
+callbacks get converted to incompatible types:
 
-Fixes: 16b86e5c03c5 ("clk: renesas: rzg2l: Refactor SD mux driver")
-Reported-by: Hien Huynh <hien.huynh.px@renesas.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20240131102930.1841901-2-claudiu.beznea.uj@bp.renesas.com
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+sound/core/seq/seq_midi.c:135:30: error: cast from 'int (*)(struct snd_rawmidi_substream *, const char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+  135 |                 snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
+      |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/core/seq/seq_virmidi.c:83:31: error: cast from 'int (*)(struct snd_rawmidi_substream *, const unsigned char *, int)' to 'snd_seq_dump_func_t' (aka 'int (*)(void *, void *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+   83 |                         snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
+      |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For addressing those errors, introduce wrapper functions that are used
+for callbacks and bridge to the actual function call with pointer
+cast.
+
+The code was originally added with the initial ALSA merge in linux-2.5.4.
+
+[ the patch description shamelessly copied from Arnd's original patch
+  -- tiwai ]
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20240213101020.459183-1-arnd@kernel.org
+Link: https://lore.kernel.org/r/20240213135343.16411-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/renesas/r9a07g043-cpg.c | 2 +-
- drivers/clk/renesas/r9a07g044-cpg.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/core/seq/seq_midi.c    | 8 +++++++-
+ sound/core/seq/seq_virmidi.c | 9 ++++++++-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/renesas/r9a07g043-cpg.c b/drivers/clk/renesas/r9a07g043-cpg.c
-index b70bb378ab469..075ade0925d45 100644
---- a/drivers/clk/renesas/r9a07g043-cpg.c
-+++ b/drivers/clk/renesas/r9a07g043-cpg.c
-@@ -138,7 +138,7 @@ static const struct cpg_core_clk r9a07g043_core_clks[] __initconst = {
- 	DEF_FIXED("SPI1", R9A07G043_CLK_SPI1, CLK_DIV_PLL3_C, 1, 4),
- 	DEF_SD_MUX("SD0", R9A07G043_CLK_SD0, SEL_SDHI0, SEL_SDHI0_STS, sel_shdi,
- 		   mtable_sdhi, 0, rzg2l_cpg_sd_clk_mux_notifier),
--	DEF_SD_MUX("SD1", R9A07G043_CLK_SD1, SEL_SDHI1, SEL_SDHI0_STS, sel_shdi,
-+	DEF_SD_MUX("SD1", R9A07G043_CLK_SD1, SEL_SDHI1, SEL_SDHI1_STS, sel_shdi,
- 		   mtable_sdhi, 0, rzg2l_cpg_sd_clk_mux_notifier),
- 	DEF_FIXED("SD0_DIV4", CLK_SD0_DIV4, R9A07G043_CLK_SD0, 1, 4),
- 	DEF_FIXED("SD1_DIV4", CLK_SD1_DIV4, R9A07G043_CLK_SD1, 1, 4),
-diff --git a/drivers/clk/renesas/r9a07g044-cpg.c b/drivers/clk/renesas/r9a07g044-cpg.c
-index 1047278c9079a..bc822b9fd7ce6 100644
---- a/drivers/clk/renesas/r9a07g044-cpg.c
-+++ b/drivers/clk/renesas/r9a07g044-cpg.c
-@@ -178,7 +178,7 @@ static const struct {
- 		DEF_FIXED("SPI1", R9A07G044_CLK_SPI1, CLK_DIV_PLL3_C, 1, 4),
- 		DEF_SD_MUX("SD0", R9A07G044_CLK_SD0, SEL_SDHI0, SEL_SDHI0_STS, sel_shdi,
- 			   mtable_sdhi, 0, rzg2l_cpg_sd_clk_mux_notifier),
--		DEF_SD_MUX("SD1", R9A07G044_CLK_SD1, SEL_SDHI1, SEL_SDHI0_STS, sel_shdi,
-+		DEF_SD_MUX("SD1", R9A07G044_CLK_SD1, SEL_SDHI1, SEL_SDHI1_STS, sel_shdi,
- 			   mtable_sdhi, 0, rzg2l_cpg_sd_clk_mux_notifier),
- 		DEF_FIXED("SD0_DIV4", CLK_SD0_DIV4, R9A07G044_CLK_SD0, 1, 4),
- 		DEF_FIXED("SD1_DIV4", CLK_SD1_DIV4, R9A07G044_CLK_SD1, 1, 4),
+diff --git a/sound/core/seq/seq_midi.c b/sound/core/seq/seq_midi.c
+index 18320a248aa7d..78dcb0ea15582 100644
+--- a/sound/core/seq/seq_midi.c
++++ b/sound/core/seq/seq_midi.c
+@@ -113,6 +113,12 @@ static int dump_midi(struct snd_rawmidi_substream *substream, const char *buf, i
+ 	return 0;
+ }
+ 
++/* callback for snd_seq_dump_var_event(), bridging to dump_midi() */
++static int __dump_midi(void *ptr, void *buf, int count)
++{
++	return dump_midi(ptr, buf, count);
++}
++
+ static int event_process_midi(struct snd_seq_event *ev, int direct,
+ 			      void *private_data, int atomic, int hop)
+ {
+@@ -132,7 +138,7 @@ static int event_process_midi(struct snd_seq_event *ev, int direct,
+ 			pr_debug("ALSA: seq_midi: invalid sysex event flags = 0x%x\n", ev->flags);
+ 			return 0;
+ 		}
+-		snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)dump_midi, substream);
++		snd_seq_dump_var_event(ev, __dump_midi, substream);
+ 		snd_midi_event_reset_decode(msynth->parser);
+ 	} else {
+ 		if (msynth->parser == NULL)
+diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
+index 1b9260108e482..1678737f11be7 100644
+--- a/sound/core/seq/seq_virmidi.c
++++ b/sound/core/seq/seq_virmidi.c
+@@ -62,6 +62,13 @@ static void snd_virmidi_init_event(struct snd_virmidi *vmidi,
+ /*
+  * decode input event and put to read buffer of each opened file
+  */
++
++/* callback for snd_seq_dump_var_event(), bridging to snd_rawmidi_receive() */
++static int dump_to_rawmidi(void *ptr, void *buf, int count)
++{
++	return snd_rawmidi_receive(ptr, buf, count);
++}
++
+ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
+ 					 struct snd_seq_event *ev,
+ 					 bool atomic)
+@@ -80,7 +87,7 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
+ 		if (ev->type == SNDRV_SEQ_EVENT_SYSEX) {
+ 			if ((ev->flags & SNDRV_SEQ_EVENT_LENGTH_MASK) != SNDRV_SEQ_EVENT_LENGTH_VARIABLE)
+ 				continue;
+-			snd_seq_dump_var_event(ev, (snd_seq_dump_func_t)snd_rawmidi_receive, vmidi->substream);
++			snd_seq_dump_var_event(ev, dump_to_rawmidi, vmidi->substream);
+ 			snd_midi_event_reset_decode(vmidi->parser);
+ 		} else {
+ 			len = snd_midi_event_decode(vmidi->parser, msg, sizeof(msg), ev);
 -- 
 2.43.0
 
