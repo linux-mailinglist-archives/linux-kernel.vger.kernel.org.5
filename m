@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-113184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4552888220
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:39:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47A4D888222
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 00:39:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8914728AC7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:39:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F149828AFB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 23:39:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982E21782F6;
-	Sun, 24 Mar 2024 22:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4C3178305;
+	Sun, 24 Mar 2024 22:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g854a91+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P6fZe28W"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7F85B200;
-	Sun, 24 Mar 2024 22:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FFC1782EE;
+	Sun, 24 Mar 2024 22:39:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711319987; cv=none; b=FIyLa6KyWEM8RZXeddcfTIVv8Z6mqs64lsc6GtwMXjkE6Jfe40j4dj+xsfCegkdMXGtmurdh2Mrjp7rv9M902vkMq3ppvKJYkpBBgSc1rKaCONWr6B2vlSmy87qOImlLD+sBNNaM/82IPS09O+R330Of9SjJTvK3ZjBqwPUB3hM=
+	t=1711319988; cv=none; b=PmUSsJFUX6paGYLpkAB00dPDIrzgmBrT7reCozorGd/ApaZi/UGupNUsTfBywuvU2CHHdmZnIhAC5NqKEYB3Wxg6B0IsHvqqrpIzLwBrDJueJpKR+tsK2ZAm0t2ygNJf7hZSM83qoBZV/ZKOEpCK17HdZG/Kjsq5TQ25ZsV3DSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711319987; c=relaxed/simple;
-	bh=QSg0BwiBsWtoiEiqW/O2B4tepHX3VVzHsoQPPHTYgJQ=;
+	s=arc-20240116; t=1711319988; c=relaxed/simple;
+	bh=vnNixpthKYaUbRxBV7EcjomeXWvZ98h49aXkBAsosKo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MlR8dOnOAWYbahtSrXyWF8YOeNcw+wSdcmtM7oYeFm3k7VNRhXX9u34DTNYcZeQW6zpqJRyWb5Z6d2fD+udhLYEBQNWWvwJee0cMyHcguAh50YsBZQYGnQEvH4kLil699NJUOhZZMTh6fx6iaTyW8S6nshgx+Zas7HEf7vqCSFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g854a91+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31FDCC43390;
-	Sun, 24 Mar 2024 22:39:46 +0000 (UTC)
+	 MIME-Version; b=b1ZOvIbTBnirlSYooXRC6t1fLy8wXoSUN15r3pnhii165grijph3cIrF3acGOECNkMeoFIu9+LGYP+gqlMUqtt1eCIq6Ua+LLrqgMjBjiagg5h4KXmHi8vmApoUdi8qSF/f34++dujJa0wlf5pwJOlrdoWY/cCePH254VEnXoWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P6fZe28W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AF2DC433A6;
+	Sun, 24 Mar 2024 22:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711319987;
-	bh=QSg0BwiBsWtoiEiqW/O2B4tepHX3VVzHsoQPPHTYgJQ=;
+	s=k20201202; t=1711319988;
+	bh=vnNixpthKYaUbRxBV7EcjomeXWvZ98h49aXkBAsosKo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=g854a91+HRICdAuMBsHMtwtRbhhx7OEqVRwhMKXTPKy2RPPYfCK1eOLFjJ1eKs4sa
-	 /fPPj4KabLVKnu0QxwJVQFXs+TbuxgAO2NnzHuu6GrUrdTaIwZUqyjTkupetWKi/bi
-	 N4qc5CMrMx2cymilJ1fVGN1UhblY6uh2bgQsf8kxuXBoUBWTFDc51fvuUYfXiJSOcc
-	 6Wr6G4ub8QwkoNVKjUuVF8qsppKh/jSALi5DhpsMW4AAJx0un1MlLW2ZyhoTwzaBXm
-	 YAoV+LsiEf5kjgfLFdIi7HTvkL5VGFR4LWO37zcRwBGq/rBe1f7k9jrxN1GgfvbTSZ
-	 EshSiJSdY7QwQ==
+	b=P6fZe28WUplYOGI4ocSg3aVbpGGGPiQZNoLcvwlJcmVDtODr3tG33hNzgV8SaO9H5
+	 nNyBz8fg+ZN589WtdJQ977yctW/46+zjGZ8q+YUR60l52QN/YoBxh3izZfUeatg6u1
+	 oXv2wlr6PjHUILiSQ7vD/oKtyFm8BrAonn7ZTBYyTL76QNUkbIAwc5hxpcXIL+VUHG
+	 BkR+d0lAvVbEWeQnTFU3dmpZYvqJjSFpHhIE5XnOLBY4WrZZ26TwK+whnXqskFnu1y
+	 rTDqTheQ3DFcJbBVFJdgef0jysxN6CEB0staiFLF2viF/O62/J5/lrYMi6j4SRC5h4
+	 vXTQkEdg0mipA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Haorong Ye <yehaorong@bytedance.com>,
-	Lu Baolu <baolu.lu@linux.intel.com>,
+Cc: Lu Baolu <baolu.lu@linux.intel.com>,
+	Huang Jiaqing <jiaqing.huang@intel.com>,
+	Jason Gunthorpe <jgg@nvidia.com>,
 	Joerg Roedel <jroedel@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.8 293/715] iommu/vt-d: Don't issue ATS Invalidation request when device is disconnected
-Date: Sun, 24 Mar 2024 18:27:52 -0400
-Message-ID: <20240324223455.1342824-294-sashal@kernel.org>
+Subject: [PATCH 6.8 294/715] iommu/vt-d: Use rbtree to track iommu probed devices
+Date: Sun, 24 Mar 2024 18:27:53 -0400
+Message-ID: <20240324223455.1342824-295-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324223455.1342824-1-sashal@kernel.org>
 References: <20240324223455.1342824-1-sashal@kernel.org>
@@ -65,200 +64,211 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+From: Lu Baolu <baolu.lu@linux.intel.com>
 
-[ Upstream commit 4fc82cd907ac075648789cc3a00877778aa1838b ]
+[ Upstream commit 1a75cc710b956010137b4fe1d1fa3282bfd8f86c ]
 
-For those endpoint devices connect to system via hotplug capable ports,
-users could request a hot reset to the device by flapping device's link
-through setting the slot's link control register, as pciehp_ist() DLLSC
-interrupt sequence response, pciehp will unload the device driver and
-then power it off. thus cause an IOMMU device-TLB invalidation (Intel
-VT-d spec, or ATS Invalidation in PCIe spec r6.1) request for non-existence
-target device to be sent and deadly loop to retry that request after ITE
-fault triggered in interrupt context.
+Use a red-black tree(rbtree) to track devices probed by the driver's
+probe_device callback. These devices need to be looked up quickly by
+a source ID when the hardware reports a fault, either recoverable or
+unrecoverable.
 
-That would cause following continuous hard lockup warning and system hang
+Fault reporting paths are critical. Searching a list in this scenario
+is inefficient, with an algorithm complexity of O(n). An rbtree is a
+self-balancing binary search tree, offering an average search time
+complexity of O(log(n)). This significant performance improvement
+makes rbtrees a better choice.
 
-[ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
-[ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
-[ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
-[ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
-         OE    kernel version xxxx
-[ 4223.822623] Hardware name: vendorname xxxx 666-106,
-BIOS 01.01.02.03.01 05/15/2023
-[ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
-[ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
- 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
-0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-[ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-[ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-[ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-[ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-[ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-[ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-[ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
-knlGS:0000000000000000
-[ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
-[ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-[ 4223.822628] PKRU: 55555554
-[ 4223.822628] Call Trace:
-[ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
-[ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
-[ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
-[ 4223.822629]  intel_iommu_release_device+0x1f/0x30
-[ 4223.822629]  iommu_release_device+0x33/0x60
-[ 4223.822629]  iommu_bus_notifier+0x7f/0x90
-[ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
-[ 4223.822630]  device_del+0x2e5/0x420
-[ 4223.822630]  pci_remove_bus_device+0x70/0x110
-[ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
-[ 4223.822631]  pciehp_disable_slot+0x6b/0x100
-[ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
-[ 4223.822631]  pciehp_ist+0x176/0x180
-[ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
-[ 4223.822632]  irq_thread_fn+0x19/0x50
-[ 4223.822632]  irq_thread+0x104/0x190
-[ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
-[ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
-[ 4223.822633]  kthread+0x114/0x130
-[ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
-[ 4223.822633]  ret_from_fork+0x1f/0x30
-[ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
-[ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
-         OE     kernel version xxxx
-[ 4223.822634] Hardware name: vendorname xxxx 666-106,
-BIOS 01.01.02.03.01 05/15/2023
-[ 4223.822634] Call Trace:
-[ 4223.822634]  <NMI>
-[ 4223.822635]  dump_stack+0x6d/0x88
-[ 4223.822635]  panic+0x101/0x2d0
-[ 4223.822635]  ? ret_from_fork+0x11/0x30
-[ 4223.822635]  nmi_panic.cold.14+0xc/0xc
-[ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
-[ 4223.822636]  __perf_event_overflow+0x4f/0xf0
-[ 4223.822636]  handle_pmi_common+0x1ef/0x290
-[ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
-[ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
-[ 4223.822637]  ? __native_set_fixmap+0x24/0x30
-[ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
-[ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
-[ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
-[ 4223.822638]  perf_event_nmi_handler+0x24/0x40
-[ 4223.822638]  nmi_handle+0x4d/0xf0
-[ 4223.822638]  default_do_nmi+0x49/0x100
-[ 4223.822638]  exc_nmi+0x134/0x180
-[ 4223.822639]  end_repeat_nmi+0x16/0x67
-[ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
-[ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
- 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
- 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-[ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-[ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-[ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-[ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-[ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-[ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-[ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
-[ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
-[ 4223.822642]  </NMI>
-[ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
-[ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
-[ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
-[ 4223.822643]  intel_iommu_release_device+0x1f/0x30
-[ 4223.822643]  iommu_release_device+0x33/0x60
-[ 4223.822643]  iommu_bus_notifier+0x7f/0x90
-[ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
-[ 4223.822644]  device_del+0x2e5/0x420
-[ 4223.822644]  pci_remove_bus_device+0x70/0x110
-[ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
-[ 4223.822644]  pciehp_disable_slot+0x6b/0x100
-[ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
-[ 4223.822645]  pciehp_ist+0x176/0x180
-[ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
-[ 4223.822645]  irq_thread_fn+0x19/0x50
-[ 4223.822646]  irq_thread+0x104/0x190
-[ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
-[ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
-[ 4223.822646]  kthread+0x114/0x130
-[ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
-[ 4223.822647]  ret_from_fork+0x1f/0x30
-[ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
-range: 0xffffffff80000000-0xffffffffbfffffff)
+Furthermore, rbtrees are implemented on a per-iommu basis, eliminating
+the need for global searches and further enhancing efficiency in
+critical fault paths. The rbtree is protected by a spin lock with
+interrupts disabled to ensure thread-safe access even within interrupt
+contexts.
 
-Such issue could be triggered by all kinds of regular surprise removal
-hotplug operation. like:
-
-1. pull EP(endpoint device) out directly.
-2. turn off EP's power.
-3. bring the link down.
-etc.
-
-this patch aims to work for regular safe removal and surprise removal
-unplug. these hot unplug handling process could be optimized for fix the
-ATS Invalidation hang issue by calling pci_dev_is_disconnected() in
-function devtlb_invalidation_with_pasid() to check target device state to
-avoid sending meaningless ATS Invalidation request to iommu when device is
-gone. (see IMPLEMENTATION NOTE in PCIe spec r6.1 section 10.3.1)
-
-For safe removal, device wouldn't be removed until the whole software
-handling process is done, it wouldn't trigger the hard lock up issue
-caused by too long ATS Invalidation timeout wait. In safe removal path,
-device state isn't set to pci_channel_io_perm_failure in
-pciehp_unconfigure_device() by checking 'presence' parameter, calling
-pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will return
-false there, wouldn't break the function.
-
-For surprise removal, device state is set to pci_channel_io_perm_failure in
-pciehp_unconfigure_device(), means device is already gone (disconnected)
-call pci_dev_is_disconnected() in devtlb_invalidation_with_pasid() will
-return true to break the function not to send ATS Invalidation request to
-the disconnected device blindly, thus avoid to trigger further ITE fault,
-and ITE fault will block all invalidation request to be handled.
-furthermore retry the timeout request could trigger hard lockup.
-
-safe removal (present) & surprise removal (not present)
-
-pciehp_ist()
-   pciehp_handle_presence_or_link_change()
-     pciehp_disable_slot()
-       remove_board()
-         pciehp_unconfigure_device(presence) {
-           if (!presence)
-                pci_walk_bus(parent, pci_dev_set_disconnected, NULL);
-           }
-
-this patch works for regular safe removal and surprise removal of ATS
-capable endpoint on PCIe switch downstream ports.
-
-Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table interface")
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-Tested-by: Haorong Ye <yehaorong@bytedance.com>
-Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
-Link: https://lore.kernel.org/r/20240301080727.3529832-3-haifeng.zhao@linux.intel.com
+Co-developed-by: Huang Jiaqing <jiaqing.huang@intel.com>
+Signed-off-by: Huang Jiaqing <jiaqing.huang@intel.com>
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Link: https://lore.kernel.org/r/20240220065939.121116-2-baolu.lu@linux.intel.com
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Stable-dep-of: 80a9b50c0b9e ("iommu/vt-d: Improve ITE fault handling if target device isn't present")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/pasid.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/iommu/intel/dmar.c  |  3 +-
+ drivers/iommu/intel/iommu.c | 88 ++++++++++++++++++++++++++++++++++++-
+ drivers/iommu/intel/iommu.h |  8 ++++
+ 3 files changed, 96 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 108158e2b907d..746c7abe2237d 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -214,6 +214,9 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
- 	if (!info || !info->ats_enabled)
- 		return;
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index 23cb80d62a9ab..f9b63c2875f71 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -1095,7 +1095,8 @@ static int alloc_iommu(struct dmar_drhd_unit *drhd)
+ 	iommu->agaw = agaw;
+ 	iommu->msagaw = msagaw;
+ 	iommu->segment = drhd->segment;
+-
++	iommu->device_rbtree = RB_ROOT;
++	spin_lock_init(&iommu->device_rbtree_lock);
+ 	iommu->node = NUMA_NO_NODE;
  
-+	if (pci_dev_is_disconnected(to_pci_dev(dev)))
-+		return;
+ 	ver = readl(iommu->reg + DMAR_VER_REG);
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 11652e0bcab3a..9e07e4425ff65 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -97,6 +97,81 @@ static phys_addr_t root_entry_uctp(struct root_entry *re)
+ 	return re->hi & VTD_PAGE_MASK;
+ }
+ 
++static int device_rid_cmp_key(const void *key, const struct rb_node *node)
++{
++	struct device_domain_info *info =
++		rb_entry(node, struct device_domain_info, node);
++	const u16 *rid_lhs = key;
 +
- 	sid = info->bus << 8 | info->devfn;
- 	qdep = info->ats_qdep;
- 	pfsid = info->pfsid;
++	if (*rid_lhs < PCI_DEVID(info->bus, info->devfn))
++		return -1;
++
++	if (*rid_lhs > PCI_DEVID(info->bus, info->devfn))
++		return 1;
++
++	return 0;
++}
++
++static int device_rid_cmp(struct rb_node *lhs, const struct rb_node *rhs)
++{
++	struct device_domain_info *info =
++		rb_entry(lhs, struct device_domain_info, node);
++	u16 key = PCI_DEVID(info->bus, info->devfn);
++
++	return device_rid_cmp_key(&key, rhs);
++}
++
++/*
++ * Looks up an IOMMU-probed device using its source ID.
++ *
++ * Returns the pointer to the device if there is a match. Otherwise,
++ * returns NULL.
++ *
++ * Note that this helper doesn't guarantee that the device won't be
++ * released by the iommu subsystem after being returned. The caller
++ * should use its own synchronization mechanism to avoid the device
++ * being released during its use if its possibly the case.
++ */
++struct device *device_rbtree_find(struct intel_iommu *iommu, u16 rid)
++{
++	struct device_domain_info *info = NULL;
++	struct rb_node *node;
++	unsigned long flags;
++
++	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
++	node = rb_find(&rid, &iommu->device_rbtree, device_rid_cmp_key);
++	if (node)
++		info = rb_entry(node, struct device_domain_info, node);
++	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
++
++	return info ? info->dev : NULL;
++}
++
++static int device_rbtree_insert(struct intel_iommu *iommu,
++				struct device_domain_info *info)
++{
++	struct rb_node *curr;
++	unsigned long flags;
++
++	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
++	curr = rb_find_add(&info->node, &iommu->device_rbtree, device_rid_cmp);
++	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
++	if (WARN_ON(curr))
++		return -EEXIST;
++
++	return 0;
++}
++
++static void device_rbtree_remove(struct device_domain_info *info)
++{
++	struct intel_iommu *iommu = info->iommu;
++	unsigned long flags;
++
++	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
++	rb_erase(&info->node, &iommu->device_rbtree);
++	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
++}
++
+ /*
+  * This domain is a statically identity mapping domain.
+  *	1. This domain creats a static 1:1 mapping to all usable memory.
+@@ -4330,25 +4405,34 @@ static struct iommu_device *intel_iommu_probe_device(struct device *dev)
+ 	}
+ 
+ 	dev_iommu_priv_set(dev, info);
++	ret = device_rbtree_insert(iommu, info);
++	if (ret)
++		goto free;
+ 
+ 	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev)) {
+ 		ret = intel_pasid_alloc_table(dev);
+ 		if (ret) {
+ 			dev_err(dev, "PASID table allocation failed\n");
+-			kfree(info);
+-			return ERR_PTR(ret);
++			goto clear_rbtree;
+ 		}
+ 	}
+ 
+ 	intel_iommu_debugfs_create_dev(info);
+ 
+ 	return &iommu->iommu;
++clear_rbtree:
++	device_rbtree_remove(info);
++free:
++	kfree(info);
++
++	return ERR_PTR(ret);
+ }
+ 
+ static void intel_iommu_release_device(struct device *dev)
+ {
+ 	struct device_domain_info *info = dev_iommu_priv_get(dev);
+ 
++	device_rbtree_remove(info);
+ 	dmar_remove_one_dev_info(dev);
+ 	intel_pasid_free_table(dev);
+ 	intel_iommu_debugfs_remove_dev(info);
+diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
+index 4145c04cb1c68..df00240ebe90b 100644
+--- a/drivers/iommu/intel/iommu.h
++++ b/drivers/iommu/intel/iommu.h
+@@ -722,6 +722,11 @@ struct intel_iommu {
+ 	struct q_inval  *qi;            /* Queued invalidation info */
+ 	u32 iommu_state[MAX_SR_DMAR_REGS]; /* Store iommu states between suspend and resume.*/
+ 
++	/* rb tree for all probed devices */
++	struct rb_root device_rbtree;
++	/* protect the device_rbtree */
++	spinlock_t device_rbtree_lock;
++
+ #ifdef CONFIG_IRQ_REMAP
+ 	struct ir_table *ir_table;	/* Interrupt remapping info */
+ 	struct irq_domain *ir_domain;
+@@ -755,6 +760,8 @@ struct device_domain_info {
+ 	struct intel_iommu *iommu; /* IOMMU used by this device */
+ 	struct dmar_domain *domain; /* pointer to domain */
+ 	struct pasid_table *pasid_table; /* pasid table */
++	/* device tracking node(lookup by PCI RID) */
++	struct rb_node node;
+ #ifdef CONFIG_INTEL_IOMMU_DEBUGFS
+ 	struct dentry *debugfs_dentry; /* pointer to device directory dentry */
+ #endif
+@@ -1081,6 +1088,7 @@ void free_pgtable_page(void *vaddr);
+ void iommu_flush_write_buffer(struct intel_iommu *iommu);
+ struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
+ 					       const struct iommu_user_data *user_data);
++struct device *device_rbtree_find(struct intel_iommu *iommu, u16 rid);
+ 
+ #ifdef CONFIG_INTEL_IOMMU_SVM
+ void intel_svm_check(struct intel_iommu *iommu);
 -- 
 2.43.0
 
