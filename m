@@ -1,136 +1,203 @@
-Return-Path: <linux-kernel+bounces-112723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5948B887D6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:08:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8D8A887D6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 16:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09C1B1F21332
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:08:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A68B1C20A74
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 15:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 136151864D;
-	Sun, 24 Mar 2024 15:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E358018639;
+	Sun, 24 Mar 2024 15:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CCaqs4Q0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="UeKm70/b"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AADB17BC7;
-	Sun, 24 Mar 2024 15:08:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E9E1426F;
+	Sun, 24 Mar 2024 15:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711292923; cv=none; b=qGXsEdQU6nlmHKVnN5X8wSZjlqplxD2FK+vVNVoKAO1m+jJu7T9Y+i0uS8wOkXgvWXcuNqKGTYqd/GphzX9xtIbutiAVd+DnWoiyhagEPIh94l7rbW+tu9vvvMxLUXj+gz8JYrLsl+pO89kwie77OtAswFFtuq4R6TBnINpMY9M=
+	t=1711293375; cv=none; b=BgQEVpnDAI5jB83n8awvnspYXv+19p+74TbRjxdAu0V2S9bOvo+9J/0X7osrPHEcgi9AJ6WohsKSroq0jwvW/Af2YrcRcuusL+81lbr280qpCMPszKKa45nFR2NawyrnXQgELFoS6k2/KMmN91NJLQX71oASTOz31xB/BUPJcis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711292923; c=relaxed/simple;
-	bh=jbSdBHS0w1eaicjduO3/4ltPjzKnV2+4/Gm18hBir+0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ijRQ4lNHlL173oHqBqQ71u+nL5SGXr/O+duF+MwDOia0Qu6RBmViSJOjmLidbjca2gomZpGR0c7pH1wvZQjAp+aZPP1Tb5IpTyLv9nhCQd5gS514DzTSy+NOvP4XSmL/pUxdEZhN3lsa4TWJEG0EyQ9WBT2c7flkKRhCw9bQrjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CCaqs4Q0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7ADC433C7;
-	Sun, 24 Mar 2024 15:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711292923;
-	bh=jbSdBHS0w1eaicjduO3/4ltPjzKnV2+4/Gm18hBir+0=;
-	h=Date:From:To:List-Id:Cc:Subject:In-Reply-To:References:From;
-	b=CCaqs4Q0v54OS/qibjDzeR5rnTLCeMB5BEWL9FOQOm8nUsrsP4agxz9UeijgZT7BG
-	 4MKSbYfhrQ29CGt+4vnpliHU74QTU5qGLG+bJ0dnax0OIzumnGe5d79tXGVUDVMCwA
-	 SUnGl4wT7Kx7SgjiwWQGT8hc1XE8NU7wy5/lvXLsYw1SyVT+Lk0Y7KoBDoIr+Sq5kz
-	 G3RLG4eMVQAo0e9iXkjKdxwniW2P5X8xhO9Ro3uHGyprv5IKfuJrfyJjlUyZ06toot
-	 J/zg4uC6SCjy+mHbaghEESneDQeaLg4J7rdI5mJb4e8SPi2cU5WxgujzdHnBylvUEu
-	 2BTwaVwc1gecg==
-Date: Sun, 24 Mar 2024 16:08:28 +0100
-From: Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Jonathan.Cameron@huawei.com, Laurent.pinchart@ideasonboard.com,
- airlied@gmail.com, andrzej.hajda@intel.com, arm@kernel.org, arnd@arndb.de,
- bamv2005@gmail.com, brgl@bgdev.pl, daniel@ffwll.ch, davem@davemloft.net,
- dianders@chromium.org, dri-devel@lists.freedesktop.org,
- eajames@linux.ibm.com, gaurav.jain@nxp.com, gregory.clement@bootlin.com,
- hdegoede@redhat.com, herbert@gondor.apana.org.au, horia.geanta@nxp.com,
- james.clark@arm.com, james@equiv.tech, jdelvare@suse.com,
- jernej.skrabec@gmail.com, jonas@kwiboo.se, linus.walleij@linaro.org,
- linux-crypto@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux@roeck-us.net, maarten.lankhorst@linux.intel.com,
- mazziesaccount@gmail.com, mripard@kernel.org, naresh.solanki@9elements.com,
- neil.armstrong@linaro.org, pankaj.gupta@nxp.com,
- patrick.rudolph@9elements.com, rfoss@kernel.org, soc@kernel.org,
- tzimmermann@suse.de
-Subject: Re: [PATCH v5 08/11] devm-helpers: Add resource managed version of
- debugfs directory create function
-Message-ID: <20240324160828.7f873a96@thinkpad>
-In-Reply-To: <69264f8a-a113-4d49-b8a6-fb9e858584e4@wanadoo.fr>
-References: <20240323164359.21642-1-kabel@kernel.org>
-	<20240323164359.21642-9-kabel__6885.49310886941$1711212291$gmane$org@kernel.org>
-	<f7c64a5a-2abc-4b7e-95db-7ca57b5427c0@wanadoo.fr>
-	<20240323222506.4ffbdd71@thinkpad>
-	<69264f8a-a113-4d49-b8a6-fb9e858584e4@wanadoo.fr>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.39; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711293375; c=relaxed/simple;
+	bh=/vVhyZaEb80l55hrvuHY1aJaeQ00mWkK1psLju4BvtQ=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=EGf4MpFhtOIZ0aNPoEtxhDVBk+3HDPGd1KegCOUC73u++qY/5Fy2YD4ocX1UTsXZlCB4K0Td8ZWEYRR1RRrpxPOV+5G1WS6MtnH6g+4Bt4FndFRzOzSItLRdstK5f2Xd7Wr6XuadZoTAssrFIYpY4HGAT0f5QRtJOWG5VABB+TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=UeKm70/b; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Message-ID:Date:Subject:To:From:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=zGy+MTIuQKj08FjWhGd/m2pfMqypqBovoRY5p/5r4AM=; t=1711293372; x=1711725372;
+	 b=UeKm70/bZJ7F7+A5UcWH1v+rixCBqX7ZNbZVUkrm+E/Uv9R7cHZSF2HYfMU3OKirREt9NFBCzL
+	oNjTma9Tp1UMfzFMVlk2B2pq4e0fmN3PvKf75i8+vSSyZF6hcEKj0HQeFAZ/M5m4vGVYATN28+FDj
+	OwRECOfUYIQq+8II+G7/h1M4pRDom5VzR2rk9Ywd9cjm/r1B2cJfU/+rwHcgSHNAhCr2cHSxwRpP/
+	kKkU7ML/2ZDXjKYameRAFeKE2xKBBEFyCebGBHYxqVDqW3U436psfE45CTnBcubz7DiX5AlLJrqyQ
+	8GDvDMi0Dx/RZEXnYsRA5uRKHGb+yQ9IPaygQ==;
+Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	id 1roPZy-0005NA-4s; Sun, 24 Mar 2024 16:16:10 +0100
+From: "Regzbot (on behalf of Thorsten Leemhuis)" <regressions@leemhuis.info>
+To: LKML <linux-kernel@vger.kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Linux regressions report  for mainline [2024-03-24]
+Date: Sun, 24 Mar 2024 15:16:08 +0000
+Message-ID: <171129332789.1915280.10544327663661648631@leemhuis.info>
+X-Mailer: git-send-email 2.44.0
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711293372;deb53a8e;
+X-HE-SMSGID: 1roPZy-0005NA-4s
 
-On Sun, 24 Mar 2024 10:21:28 +0100
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+Hi Linus, here is a quick regressions report. I already added a handful
+of regression from this cycle to the tracking (see below), but none of
+those are really worrying I'd say.
 
-> Le 23/03/2024 =C3=A0 22:25, Marek Beh=C3=BAn a =C3=A9crit=C2=A0:
-> > On Sat, 23 Mar 2024 22:10:40 +0100
-> > Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
-> >  =20
->=20
-> ...
->=20
-> >>>    static int pvt_ts_dbgfs_create(struct pvt_device *pvt, struct devi=
-ce *dev)
-> >>>    {
-> >>> -	pvt->dbgfs_dir =3D debugfs_create_dir(dev_name(dev), NULL);
-> >>> +	pvt->dbgfs_dir =3D devm_debugfs_create_dir(dev, dev_name(dev), NULL=
-);
-> >>> +	if (IS_ERR(pvt->dbgfs_dir))
-> >>> +		return PTR_ERR(pvt->dbgfs_dir); =20
-> >>
-> >> Not sure if the test and error handling should be added here.
-> >> *If I'm correct*, functions related to debugfs already handle this case
-> >> and just do nothing. And failure in debugfs related code is not
-> >> considered as something that need to be reported and abort a probe fun=
-ction.
-> >>
-> >> Maybe the same other (already existing) tests in this patch should be
-> >> removed as well, in a separated patch. =20
-> >=20
-> > Functions related to debugfs maybe do, but devm_ resource management
-> > functions may fail to allocate release structure, and those errors need
-> > to be handled, AFAIK. =20
->=20
-> I would say no.
-> If this memory allocation fails, then debugfs_create_dir() will not be=20
-> called, but that's not a really big deal if the driver itself can still=20
-> run normally without it.
+There is one more: a fix for a KASAN splat is already in next since
+Friday as 9ddd90c947da4e ("fs/9p: fix uaf in in
+v9fs_stat2inode_dotl")[1]. I had hoped Eric would have sent it to you by
+now because it apparently is somewhat annoying for the net
+maintainers[2] and maybe other kernel developers that use virtme -- but
+seems that it's not on the way to you yet. :-/ Sigh. This "regression
+fixes are ready at have been in next, but maintainers don't send them to
+Linus before the next -rc" is sometimes slightly annoying from my point
+of view...
 
-debugfs_create_dir() will always be called. Resource allocation is done
-afterwards, and if it fails, then the created dir will be removed.
+[1] https://lore.kernel.org/all/20240202121531.2550018-1-lizhi.xu@windriver.com/
+[2] https://lore.kernel.org/all/20240321182824.6f303e38@kernel.org/
 
-But now I don't know what to do, because yes, it seems that the debugfs
-errors are being ignored at many places...
+A few words on regressions from the 6.8 cycle that have an easy fix
+available and are kinda stalled, in case you are interested:
 
->=20
-> Up to you to leave it as-is or remove what I think is a useless error=20
-> handling.
-> At least, maybe it could be said in the commit log, so that maintainers=20
-> can comment on it, if they don't spot the error handling you introduce.
->=20
-> CJ
->=20
-> >=20
-> > Marek
-> >  =20
->=20
+* A change that came late in the previous cycle made Johan Hovold report
+yet another 6.8 regression with the Lenovo ThinkPad X13s, this time
+about a Bluetooth problem. He provided a revert to fix it - the BT
+people replied, but then nothing happened for 10 days now afaics; will
+prod tomorrow:
+https://lore.kernel.org/lkml/20240314100103.GC6100@craftyguy.net/
 
+* Two people reported CPU stalls on some Rockchip SOCs that a revert can
+fix, but so far I could not convince the developer to set things in motion: 
+https://lore.kernel.org/lkml/ZYhQ2-OnjDgoqjvt@wens.tw/
+https://lore.kernel.org/lkml/1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com/
+
+* A fix for bogus lockdep warnings in network driver stmmac also is
+making no progress, despite a Reviewed-by: from Eric and some prodding
+from my side:
+https://lore.kernel.org/lkml/20240306111157.29327-1-petr@tesarici.cz/
+
+Ciao, Thorsten
+
+---
+
+Hi, this is regzbot, the Linux kernel regression tracking bot.
+
+Currently I'm aware of 4 regressions in linux-mainline. Find the
+current status below and the latest on the web:
+
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
+
+Bye bye, hope to see you soon for the next report.
+   Regzbot (on behalf of Thorsten Leemhuis)
+
+
+========================================================
+current cycle (v6.8.. aka v6.8-post), culprit identified
+========================================================
+
+
+[ *NEW* ] x86/percpu: crashes in qemu with nosmp builds and Intel CPUs
+----------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/e20d88d0-5fb9-4307-be67-88b04ae9a188@roeck-us.net/
+https://lore.kernel.org/lkml/e20d88d0-5fb9-4307-be67-88b04ae9a188@roeck-us.net/
+
+By Guenter Roeck; 8 days ago; 34 activities, latest 1 days ago.
+Introduced in 71eb4893cfaf
+
+Fix incoming:
+* x86/cpu: Ensure that CPU info updates are propagated on UP
+  https://lore.kernel.org/regressions/07ba20d1-3c95-42b6-b566-f5c1980ffe16@leemhuis.info/
+
+
+[ *NEW* ] mm: vmalloc: persistent "spinlock bad magic" message when booting s390 images with spinlock debugging enabled
+-----------------------------------------------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/bbc242d5-3ab0-410f-a3b1-54a68e3e375f@roeck-us.net/
+https://lore.kernel.org/lkml/bbc242d5-3ab0-410f-a3b1-54a68e3e375f@roeck-us.net/
+
+By Guenter Roeck; 1 days ago; 3 activities, latest 1 days ago.
+Introduced in 72210662c5a2
+
+Recent activities from: Guenter Roeck (2), Uladzislau Rezki (1)
+
+One patch associated with this regression:
+* Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
+  https://lore.kernel.org/lkml/Zf3V6B9f5o0H1LnE@pc636/
+  1 days ago, by Uladzislau Rezki
+
+
+[ *NEW* ] Re: [PATCH] fs: Remove NTFS classic
+---------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/Zf2zPf5TO5oYt3I3@hovoldconsulting.com/
+https://lore.kernel.org/linux-fsdevel/Zf2zPf5TO5oYt3I3@hovoldconsulting.com/
+
+By Johan Hovold; 1 days ago; 1 activities, latest 1 days ago.
+Introduced in 7ffa8f3d3023
+
+Recent activities from: Johan Hovold (1)
+
+
+[ *NEW* ] SUNRPC: RFC 8009 encryption test fails
+------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZfxJZFwXqqurfet0@aion/
+https://lore.kernel.org/linux-nfs/ZfxJZFwXqqurfet0@aion/
+
+By Scott Mayhew; 3 days ago; 2 activities, latest 2 days ago.
+Introduced in 561141dd4943
+
+Recent activities from: Chuck Lever III (1), Scott Mayhew (1)
+
+
+=============
+End of report
+=============
+
+All regressions marked '[ *NEW* ]' were added since the previous report,
+which can be found here:
+https://lore.kernel.org/r/170947112079.436664.2969102323110743234@leemhuis.info
+
+Thanks for your attention, have a nice day!
+
+  Regzbot, your hard working Linux kernel regression tracking robot
+
+
+P.S.: Wanna know more about regzbot or how to use it to track regressions
+for your subsystem? Then check out the getting started guide or the
+reference documentation:
+
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The short version: if you see a regression report you want to see
+tracked, just send a reply to the report where you Cc
+regressions@lists.linux.dev with a line like this:
+
+#regzbot introduced: v5.13..v5.14-rc1
+
+If you want to fix a tracked regression, just do what is expected
+anyway: add a 'Link:' tag with the url to the report, e.g.:
+
+Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
 
