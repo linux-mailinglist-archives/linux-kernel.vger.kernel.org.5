@@ -1,54 +1,53 @@
-Return-Path: <linux-kernel+bounces-113611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE189888FA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:57:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A7E888E4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:14:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B031B2E9CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:06:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4C10B225C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914431CE99A;
-	Sun, 24 Mar 2024 22:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF218061F;
+	Sun, 24 Mar 2024 22:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SbAxdgMX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZNfuUV+y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13231CF8BD;
-	Sun, 24 Mar 2024 22:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09DA1CF8B6;
+	Sun, 24 Mar 2024 22:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320443; cv=none; b=TQpftWnv+tQtpwMPKArA1lpWgBKfh8fTOJ4ML3jlRSOhesYckSakjhcdR42fBKVgYQibCJizIrJEvE7jcqj7uxx/mXxBQb8MS7xbdQSjRVVfKPs7M+lQxTziXtUB9N9WErgfhUKznayIoNvsv8vzewsLcNUYuGAAljyClpr/EWk=
+	t=1711320445; cv=none; b=Ywq9/7Gxvc3f+yheNnTQow4flk/LyB2o4M1owhnH1PovgavuidIm9Ovi8/BWBsdPsVXH9ybw0j505AjJFk1JNlZQVgu6jadhe5+iCN4HTnaL0CtcMf10LxyfPJ0nRXlcMAiqAKs6WPXpwuvqlipykxGKKMiw254OikYUS+zIrVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711320443; c=relaxed/simple;
-	bh=69h97DXk3sezN9njqO4oxBgBj5oS7i0ELO2Bz6h1VXk=;
+	s=arc-20240116; t=1711320445; c=relaxed/simple;
+	bh=FbFa6wgDSvlU/O36o9QDzhEzhmNt5K9ijb5JDOBPrFo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sDXLT6iWExHbIyskGUG6sEdQU4T6iuNRhIrfQ4hGCRH/UI/J/2FpDecyuRpz9O483qUzRbNia4f0t6qc890jEYuWt3XFoQbKV5FZXadkJT2sW7D75iCr9PyyAzULBfQYBCTKngpkC4B5gjcLLLI32/u/55Ra5Aea4STBUVLKGg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SbAxdgMX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05EB3C43399;
-	Sun, 24 Mar 2024 22:47:22 +0000 (UTC)
+	 MIME-Version; b=oryhAt9IbzVvkySQ42YvbGnEMT6KePKJFCr2+zPO+WsCsJtmGyDq+A/JkLsS6C4fxxs9PgfOEgD703aLdkdbNknf4iG8+gHoQw5hWcq0ERK5aJ3W0ZKpYGOMt4xkde8jyES33bMXurJnvHjOK0DIPLHAHg/arfiIGUJzlL7oyFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZNfuUV+y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE880C433A6;
+	Sun, 24 Mar 2024 22:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320443;
-	bh=69h97DXk3sezN9njqO4oxBgBj5oS7i0ELO2Bz6h1VXk=;
+	s=k20201202; t=1711320444;
+	bh=FbFa6wgDSvlU/O36o9QDzhEzhmNt5K9ijb5JDOBPrFo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SbAxdgMXPcpWqWPwfmc2tYY/3G0Qn6iiyLi/tU43tjx/1p00RSOyHdqX0CuyzwCED
-	 nTpsWtkW33rV3NeiyffmWZIWCqgXxYlOqunR7Ccf42LXIjQjzhrBGL0IiNdPSq9Th4
-	 lwfRx+NMOeSQVVJLWsO2GdA1C2C8CNyv0p3C2qkS2PUPMnAvmj/i+vXvXyH7eKc+7h
-	 fBF9trOXnaQXgdlCzunVP4mfeiNZe1NSGf8t+zj2w5F08tOHttNc41NvuFGKXAzeQD
-	 xWuLm2mSOl5/Au3p8RNBBfWh0B+WLZz8SU0yb7Xm3QqZ7Rbxaeq57lbFb32cDkwtor
-	 TBfRTY0Y2HO4Q==
+	b=ZNfuUV+y04PlMQn+uVh9My6mNzGL501GwkernuELK0LwdMzoiwc8MoDMTGO9vOiO0
+	 8ConQUzVJmhfxLzVkACibTEfD5ytALHBn4KOgXoTmXmmj9g1jVTCZdEkFYmta9jnNK
+	 ZzsjOQ6yYV4UbDVsxPY782E5dfH6qtMz+lcR+vlvw/wI1ZSptDZsZSbnvixVS1PbDD
+	 BfO+UKW1TU/8SCVZEc58iZRhNl6QcCjTAY7PlDZvKYrWSR3Qtx0NNBa8EwmM9P7xlx
+	 X0F6RcLA+/enfZJupXKuDJpZa9a8HedMOWMnu7Er86+jnpR1wvUxfERJQV7KOCsEXQ
+	 iHwzdlxYW4Gnw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Danil Rybakov <danilrybakov249@gmail.com>,
+Cc: Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 001/713] platform/x86: p2sb: On Goldmont only cache P2SB and SPI devfn BAR
-Date: Sun, 24 Mar 2024 18:35:27 -0400
-Message-ID: <20240324224720.1345309-2-sashal@kernel.org>
+Subject: [PATCH 6.7 002/713] io_uring/unix: drop usage of io_uring socket
+Date: Sun, 24 Mar 2024 18:35:28 -0400
+Message-ID: <20240324224720.1345309-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,79 +61,127 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit aec7d25b497ce4a8d044e9496de0aa433f7f8f06 ]
+Commit a4104821ad651d8a0b374f0b2474c345bbb42f82 upstream.
 
-On Goldmont p2sb_bar() only ever gets called for 2 devices, the actual P2SB
-devfn 13,0 and the SPI controller which is part of the P2SB, devfn 13,2.
+Since we no longer allow sending io_uring fds over SCM_RIGHTS, move to
+using io_is_uring_fops() to detect whether this is a io_uring fd or not.
+With that done, kill off io_uring_get_socket() as nobody calls it
+anymore.
 
-But the current p2sb code tries to cache BAR0 info for all of
-devfn 13,0 to 13,7 . This involves calling pci_scan_single_device()
-for device 13 functions 0-7 and the hw does not seem to like
-pci_scan_single_device() getting called for some of the other hidden
-devices. E.g. on an ASUS VivoBook D540NV-GQ065T this leads to continuous
-ACPI errors leading to high CPU usage.
+This is in preparation to yanking out the rest of the core related to
+unix gc with io_uring.
 
-Fix this by only caching BAR0 info and thus only calling
-pci_scan_single_device() for the P2SB and the SPI controller.
-
-Fixes: 5913320eb0b3 ("platform/x86: p2sb: Allow p2sb_bar() calls during PCI device probe")
-Reported-by: Danil Rybakov <danilrybakov249@gmail.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218531
-Tested-by: Danil Rybakov <danilrybakov249@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20240304134356.305375-2-hdegoede@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/p2sb.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
+ include/linux/io_uring.h |  9 +++++----
+ io_uring/io_uring.c      | 13 -------------
+ io_uring/io_uring.h      |  1 -
+ net/core/scm.c           |  2 +-
+ net/unix/scm.c           |  4 +---
+ 5 files changed, 7 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/platform/x86/p2sb.c b/drivers/platform/x86/p2sb.c
-index 17cc4b45e0239..a64f56ddd4a44 100644
---- a/drivers/platform/x86/p2sb.c
-+++ b/drivers/platform/x86/p2sb.c
-@@ -20,9 +20,11 @@
- #define P2SBC_HIDE		BIT(8)
- 
- #define P2SB_DEVFN_DEFAULT	PCI_DEVFN(31, 1)
-+#define P2SB_DEVFN_GOLDMONT	PCI_DEVFN(13, 0)
-+#define SPI_DEVFN_GOLDMONT	PCI_DEVFN(13, 2)
- 
- static const struct x86_cpu_id p2sb_cpu_ids[] = {
--	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT,	PCI_DEVFN(13, 0)),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT, P2SB_DEVFN_GOLDMONT),
- 	{}
- };
- 
-@@ -98,21 +100,12 @@ static void p2sb_scan_and_cache_devfn(struct pci_bus *bus, unsigned int devfn)
- 
- static int p2sb_scan_and_cache(struct pci_bus *bus, unsigned int devfn)
+diff --git a/include/linux/io_uring.h b/include/linux/io_uring.h
+index aefb73eeeebff..b3a32687f5143 100644
+--- a/include/linux/io_uring.h
++++ b/include/linux/io_uring.h
+@@ -93,6 +93,7 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags);
+ void io_uring_cmd_mark_cancelable(struct io_uring_cmd *cmd,
+ 		unsigned int issue_flags);
+ struct task_struct *io_uring_cmd_get_task(struct io_uring_cmd *cmd);
++bool io_is_uring_fops(struct file *file);
+ #else
+ static inline int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
+ 			      struct iov_iter *iter, void *ioucmd)
+@@ -111,10 +112,6 @@ static inline void io_uring_cmd_do_in_task_lazy(struct io_uring_cmd *ioucmd,
+ 			void (*task_work_cb)(struct io_uring_cmd *, unsigned))
  {
--	unsigned int slot, fn;
--
--	if (PCI_FUNC(devfn) == 0) {
--		/*
--		 * When function number of the P2SB device is zero, scan it and
--		 * other function numbers, and if devices are available, cache
--		 * their BAR0s.
--		 */
--		slot = PCI_SLOT(devfn);
--		for (fn = 0; fn < NR_P2SB_RES_CACHE; fn++)
--			p2sb_scan_and_cache_devfn(bus, PCI_DEVFN(slot, fn));
--	} else {
--		/* Scan the P2SB device and cache its BAR0 */
--		p2sb_scan_and_cache_devfn(bus, devfn);
--	}
-+	/* Scan the P2SB device and cache its BAR0 */
-+	p2sb_scan_and_cache_devfn(bus, devfn);
-+
-+	/* On Goldmont p2sb_bar() also gets called for the SPI controller */
-+	if (devfn == P2SB_DEVFN_GOLDMONT)
-+		p2sb_scan_and_cache_devfn(bus, SPI_DEVFN_GOLDMONT);
+ }
+-static inline struct sock *io_uring_get_socket(struct file *file)
+-{
+-	return NULL;
+-}
+ static inline void io_uring_task_cancel(void)
+ {
+ }
+@@ -141,6 +138,10 @@ static inline struct task_struct *io_uring_cmd_get_task(struct io_uring_cmd *cmd
+ {
+ 	return NULL;
+ }
++static inline bool io_is_uring_fops(struct file *file)
++{
++	return false;
++}
+ #endif
  
- 	if (!p2sb_valid_resource(&p2sb_resources[PCI_FUNC(devfn)].res))
- 		return -ENOENT;
+ #endif
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index 59f5791c90c31..06bd8795a87d1 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -177,19 +177,6 @@ static struct ctl_table kernel_io_uring_disabled_table[] = {
+ };
+ #endif
+ 
+-struct sock *io_uring_get_socket(struct file *file)
+-{
+-#if defined(CONFIG_UNIX)
+-	if (io_is_uring_fops(file)) {
+-		struct io_ring_ctx *ctx = file->private_data;
+-
+-		return ctx->ring_sock->sk;
+-	}
+-#endif
+-	return NULL;
+-}
+-EXPORT_SYMBOL(io_uring_get_socket);
+-
+ static inline void io_submit_flush_completions(struct io_ring_ctx *ctx)
+ {
+ 	if (!wq_list_empty(&ctx->submit_state.compl_reqs) ||
+diff --git a/io_uring/io_uring.h b/io_uring/io_uring.h
+index c9992cd7f1385..0d66a7058dbe1 100644
+--- a/io_uring/io_uring.h
++++ b/io_uring/io_uring.h
+@@ -61,7 +61,6 @@ struct file *io_file_get_fixed(struct io_kiocb *req, int fd,
+ 			       unsigned issue_flags);
+ 
+ void __io_req_task_work_add(struct io_kiocb *req, unsigned flags);
+-bool io_is_uring_fops(struct file *file);
+ bool io_alloc_async_data(struct io_kiocb *req);
+ void io_req_task_queue(struct io_kiocb *req);
+ void io_queue_iowq(struct io_kiocb *req, struct io_tw_state *ts_dont_use);
+diff --git a/net/core/scm.c b/net/core/scm.c
+index 7dc47c17d8638..737917c7ac627 100644
+--- a/net/core/scm.c
++++ b/net/core/scm.c
+@@ -105,7 +105,7 @@ static int scm_fp_copy(struct cmsghdr *cmsg, struct scm_fp_list **fplp)
+ 		if (fd < 0 || !(file = fget_raw(fd)))
+ 			return -EBADF;
+ 		/* don't allow io_uring files */
+-		if (io_uring_get_socket(file)) {
++		if (io_is_uring_fops(file)) {
+ 			fput(file);
+ 			return -EINVAL;
+ 		}
+diff --git a/net/unix/scm.c b/net/unix/scm.c
+index 6ff628f2349f5..822ce0d0d7915 100644
+--- a/net/unix/scm.c
++++ b/net/unix/scm.c
+@@ -35,10 +35,8 @@ struct sock *unix_get_socket(struct file *filp)
+ 		/* PF_UNIX ? */
+ 		if (s && ops && ops->family == PF_UNIX)
+ 			u_sock = s;
+-	} else {
+-		/* Could be an io_uring instance */
+-		u_sock = io_uring_get_socket(filp);
+ 	}
++
+ 	return u_sock;
+ }
+ EXPORT_SYMBOL(unix_get_socket);
 -- 
 2.43.0
 
