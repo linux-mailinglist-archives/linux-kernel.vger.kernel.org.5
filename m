@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-115535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A79E5889C40
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:15:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DE61889088
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:20:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8F851C340D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:15:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B73FB2F20F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC4C245E2A;
-	Mon, 25 Mar 2024 02:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B516C1EEF05;
+	Sun, 24 Mar 2024 23:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qGZZKKtc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d/UJPF6a"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D7814A600;
-	Sun, 24 Mar 2024 22:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D061DF7A7;
+	Sun, 24 Mar 2024 22:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321021; cv=none; b=n/7aWlCtsjE3XW5vVrJS2VVsOcA24Ytg43CcvCwRJNYOVZmwy8Fv4hG7FlRYVecEoKPdRmcE0G2NkTSnIth0x+5Gb1cPvuLylcQ1WfP1mOchgRvYLqS5HvYO6m3pCrpm/GmlklLsmchHRx2PajQ9QvvxNzkhI25so1odpYQos1o=
+	t=1711321021; cv=none; b=Ck4Ykt/PiE9QseqOxP5sdGKZT15yTeHEZYzXMkCosJbsScdTkQFg/IlH/TcXeVFbgAdFMvhbeEKrYhRUvizcEW0CS/4l9+tMqrjwym/D+AdU37a/IvhqnCdrFcEXh3G/JOerloKUNuHva3m7ZfiiaocxRR/CRJZ2i6S9SUtHeYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321021; c=relaxed/simple;
-	bh=w9hTT74KPxpjUb9Jz1A1kgmJgCEjM1yGi+Xx/yRSAec=;
+	bh=DnIEbnQD9ob1MO8/v30ZkD/ZbTdidfNE4UviQRjCoEE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ne1t2k4cz8AmW/P0wsueM9DmGCcA1KwKjh+wDTjt52nMevRN7DMz/qVLFcRN7RnIRrVrdRdK8ovId4eWq21b8IYAzSqIaSKtNGCdKhD+QJMAVmqnRJ9tWgUCQR+notioiGW8LFqwZkECMlYlIhRfjneXO2dKGA5NDRbVls2AyvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qGZZKKtc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE96C433C7;
-	Sun, 24 Mar 2024 22:56:59 +0000 (UTC)
+	 MIME-Version; b=GGt+ucxNdK67tZrSm8EOk+yp/c+6gQjbN2uarrSg3dvV3ZlcGn6G/3XI3qBZVQ+T3el8afAbc+dtbeKHTCS2jNeF4EZ/XK1tgZB0u+57Jph5MHM+Rk1/7ykQvoOwuIcht1NrGDqnvOlJej1Eptd9iBngopk5Iirgz8t3WcDhKhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d/UJPF6a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9712C433F1;
+	Sun, 24 Mar 2024 22:57:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321020;
-	bh=w9hTT74KPxpjUb9Jz1A1kgmJgCEjM1yGi+Xx/yRSAec=;
+	s=k20201202; t=1711321021;
+	bh=DnIEbnQD9ob1MO8/v30ZkD/ZbTdidfNE4UviQRjCoEE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qGZZKKtcoe4Cj3gpJ+gUCRIW9L1AK8rpwmpkKsNkKOhlBNu6DXHrHd6iAqHpExIcH
-	 uQMZEVquVKhQErm8meHFE3atORbqmzt3zOwhobIVWFuVhI3Qz7kUpD7LzwbWRrl962
-	 I4hgkMoZZNoTxXKwNoBz3uiQStNbaBuC9lVApDPszVBpL7wo3D8qdKKgqaUvd45dY4
-	 5pSnakNNLnBDA87yK9pfbXgxeoWaGfi3rSJiK0/2ErDxTiFd19O/dl6f5/764kpFpZ
-	 V+6a/zgY9oo9qGZWD/UD/Id8c6Jn6Zs9/k+txBrG+FdR57y7Vw9dI+MBj7xqZaJu2i
-	 fAXj6A2G8ZI5A==
+	b=d/UJPF6aggbyvwY/hws/WfWqFudFI8et+5oqdmbLUeVjtiCdSJlqnZPahfzM5Zz3o
+	 QItexT1TbK2ZUjIUbf/dPwMna/bhxb/I22yex5yeDbnIArq5jFgomg1k0Jv94ZCBda
+	 QkGdDMVHrbjz2GtrILeBxBd2giS+GEpDgaNylU7nYGV6bbHGTvhv0ROyLr/KMpJVGe
+	 lxqxJ9x+eyXpZrrWZbAa/XNPQGI4XSJQnCnFa3erB5blNv20+/6dYnuLMiBrksEsjd
+	 cHAmXZgsik1Q6wt+aD8C/KUoD2Purfc2WVLvgSLeAzR5WZ9Dt0RU/gpRfC8ctZWSuA
+	 SCTvfzVAEFsgw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shifeng Li <lishifeng@sangfor.com.cn>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Jason Gunthorpe <jgg@nvidia.com>,
+Cc: Alexey Kodanev <aleksei.kodanev@bell-sw.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 583/713] RDMA/device: Fix a race between mad_client and cm_client init
-Date: Sun, 24 Mar 2024 18:45:09 -0400
-Message-ID: <20240324224720.1345309-584-sashal@kernel.org>
+Subject: [PATCH 6.7 584/713] RDMA/rtrs-clt: Check strnlen return len in sysfs mpath_policy_store()
+Date: Sun, 24 Mar 2024 18:45:10 -0400
+Message-ID: <20240324224720.1345309-585-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -63,131 +63,39 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Shifeng Li <lishifeng@sangfor.com.cn>
+From: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
 
-[ Upstream commit 7a8bccd8b29c321ac181369b42b04fecf05f98e2 ]
+[ Upstream commit 7a7b7f575a25aa68ee934ee8107294487efcb3fe ]
 
-The mad_client will be initialized in enable_device_and_get(), while the
-devices_rwsem will be downgraded to a read semaphore. There is a window
-that leads to the failed initialization for cm_client, since it can not
-get matched mad port from ib_mad_port_list, and the matched mad port will
-be added to the list after that.
+strnlen() may return 0 (e.g. for "\0\n" string), it's better to
+check the result of strnlen() before using 'len - 1' expression
+for the 'buf' array index.
 
-    mad_client    |                       cm_client
-------------------|--------------------------------------------------------
-ib_register_device|
-enable_device_and_get
-down_write(&devices_rwsem)
-xa_set_mark(&devices, DEVICE_REGISTERED)
-downgrade_write(&devices_rwsem)
-                  |
-                  |ib_cm_init
-                  |ib_register_client(&cm_client)
-                  |down_read(&devices_rwsem)
-                  |xa_for_each_marked (&devices, DEVICE_REGISTERED)
-                  |add_client_context
-                  |cm_add_one
-                  |ib_register_mad_agent
-                  |ib_get_mad_port
-                  |__ib_get_mad_port
-                  |list_for_each_entry(entry, &ib_mad_port_list, port_list)
-                  |return NULL
-                  |up_read(&devices_rwsem)
-                  |
-add_client_context|
-ib_mad_init_device|
-ib_mad_port_open  |
-list_add_tail(&port_priv->port_list, &ib_mad_port_list)
-up_read(&devices_rwsem)
-                  |
+Detected using the static analysis tool - Svace.
 
-Fix it by using down_write(&devices_rwsem) in ib_register_client().
-
-Fixes: d0899892edd0 ("RDMA/device: Provide APIs from the core code to help unregistration")
-Link: https://lore.kernel.org/r/20240203035313.98991-1-lishifeng@sangfor.com.cn
-Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: dc3b66a0ce70 ("RDMA/rtrs-clt: Add a minimum latency multipath policy")
+Signed-off-by: Alexey Kodanev <aleksei.kodanev@bell-sw.com>
+Link: https://lore.kernel.org/r/20240221113204.147478-1-aleksei.kodanev@bell-sw.com
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/device.c | 37 +++++++++++++++++++-------------
- 1 file changed, 22 insertions(+), 15 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 67bcea7a153c6..07cb6c5ffda00 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1730,7 +1730,7 @@ static int assign_client_id(struct ib_client *client)
- {
- 	int ret;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+index d3c436ead6946..4aa80c9388f05 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
+@@ -133,7 +133,7 @@ static ssize_t mpath_policy_store(struct device *dev,
  
--	down_write(&clients_rwsem);
-+	lockdep_assert_held(&clients_rwsem);
- 	/*
- 	 * The add/remove callbacks must be called in FIFO/LIFO order. To
- 	 * achieve this we assign client_ids so they are sorted in
-@@ -1739,14 +1739,11 @@ static int assign_client_id(struct ib_client *client)
- 	client->client_id = highest_client_id;
- 	ret = xa_insert(&clients, client->client_id, client, GFP_KERNEL);
- 	if (ret)
--		goto out;
-+		return ret;
+ 	/* distinguish "mi" and "min-latency" with length */
+ 	len = strnlen(buf, NAME_MAX);
+-	if (buf[len - 1] == '\n')
++	if (len && buf[len - 1] == '\n')
+ 		len--;
  
- 	highest_client_id++;
- 	xa_set_mark(&clients, client->client_id, CLIENT_REGISTERED);
--
--out:
--	up_write(&clients_rwsem);
--	return ret;
-+	return 0;
- }
- 
- static void remove_client_id(struct ib_client *client)
-@@ -1776,25 +1773,35 @@ int ib_register_client(struct ib_client *client)
- {
- 	struct ib_device *device;
- 	unsigned long index;
-+	bool need_unreg = false;
- 	int ret;
- 
- 	refcount_set(&client->uses, 1);
- 	init_completion(&client->uses_zero);
-+
-+	/*
-+	 * The devices_rwsem is held in write mode to ensure that a racing
-+	 * ib_register_device() sees a consisent view of clients and devices.
-+	 */
-+	down_write(&devices_rwsem);
-+	down_write(&clients_rwsem);
- 	ret = assign_client_id(client);
- 	if (ret)
--		return ret;
-+		goto out;
- 
--	down_read(&devices_rwsem);
-+	need_unreg = true;
- 	xa_for_each_marked (&devices, index, device, DEVICE_REGISTERED) {
- 		ret = add_client_context(device, client);
--		if (ret) {
--			up_read(&devices_rwsem);
--			ib_unregister_client(client);
--			return ret;
--		}
-+		if (ret)
-+			goto out;
- 	}
--	up_read(&devices_rwsem);
--	return 0;
-+	ret = 0;
-+out:
-+	up_write(&clients_rwsem);
-+	up_write(&devices_rwsem);
-+	if (need_unreg && ret)
-+		ib_unregister_client(client);
-+	return ret;
- }
- EXPORT_SYMBOL(ib_register_client);
- 
+ 	if (!strncasecmp(buf, "round-robin", 11) ||
 -- 
 2.43.0
 
