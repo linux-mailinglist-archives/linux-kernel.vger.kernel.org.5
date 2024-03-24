@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-116084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A066889592
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:31:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7380A8896B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E06D1F30D66
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:31:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294F71F321E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FB6181820;
-	Mon, 25 Mar 2024 03:30:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FBD33A59C6;
+	Mon, 25 Mar 2024 03:30:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bih9XjZF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aTuLqWqs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D558E1782E8;
-	Sun, 24 Mar 2024 23:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BCF5B208;
+	Sun, 24 Mar 2024 23:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323538; cv=none; b=WRMwmdM9s/KBDW2cFuwsOvsdHc+CjgayCJXA7+2k140aETuhRX0Ugwl1rWdwyKcsgIebVl2aHz0GQsymIK5pUaXxveYtir6HIsV+9kI2DE1oOVHPeW56xe1S4sK3YT8xw23RYR8JusZMcseTwfD4myZTGViPpluRdw/WBdT8Tvs=
+	t=1711323539; cv=none; b=S0iMRjX2GqeHZfSkPhfKxdbhmyTa6u1l536sUJbINGIPwvblnU/R3LTqVssHHMWrIDK6NLdbqrUKHCPUFEqtiA+Nozj2Xp3zcIHHhmqz/CeQvvCDUe9bZVi3nA5cobAJ1sDbgQczDOZ2o4q7yFc7v3jpYjNk5it0zzpXVJuvrdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711323538; c=relaxed/simple;
-	bh=sEYKigNfaix1DXTkbduGtVqUs9Nej6EnPx1x34vReh0=;
+	s=arc-20240116; t=1711323539; c=relaxed/simple;
+	bh=LYhPIjMpKEPwiaOA5bQCN6S1WNeGsEIjM6B9l315d1c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UtBrJKYZ+XNLM3V7ma0QCFu5cg8eEIqJvIA/nMldH8yU4MuiSwy18H+MP1BSjYsfjMef22FQIQCC1/H/ukCxkyGup0UqfNFJpQmLdkE5UN8NNLuD9ghKbVyYt5+tyQPgY5CJG2PhfMRjWCmeJRiYwiwTIx4K0/hcyWPz5hkv+YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bih9XjZF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C503DC43390;
-	Sun, 24 Mar 2024 23:38:57 +0000 (UTC)
+	 MIME-Version; b=ZvhPXSZJgnDvbfS2gV5ZTFkA8Jh2g6JJOu81x3EfO1ixvt1MISW05bNYKjROvvMdnrdwGV1vPOib37jLoGFlcMG7/QMF9F8jTPBrp0+wrUiu9xKK/SDoID/Scfp2tEg2ifMZL2fMhUQaYsPZcjvT9pD6VaqHB2iBrfBXB46ZxXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aTuLqWqs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A99A1C433A6;
+	Sun, 24 Mar 2024 23:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323538;
-	bh=sEYKigNfaix1DXTkbduGtVqUs9Nej6EnPx1x34vReh0=;
+	s=k20201202; t=1711323539;
+	bh=LYhPIjMpKEPwiaOA5bQCN6S1WNeGsEIjM6B9l315d1c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Bih9XjZFCs9adpcsTqPs/DzcLofUUgb51vm3RrrS7SMvlWgmFUpH7nzX6WG9rCl6G
-	 rGwurAzoawQxbjOrwnA572OM9PLduaQff9GVN3zXFyv9aGN4SkxTX7B1PjU6wzu8s5
-	 3gQiz/tAU8k+2D0piJ9WY/8sVcf/oI6NiI3z9vtl05EIaZOaI2m52SH8qVW9106bFd
-	 SYHw7xqIBQ1Mv0TYslV75uepp/cy2+yYSztqjr+juoP1q4vg7qRcuSnwVATLoSw9fi
-	 UC5dYWtNRFtxJsFBjlImsz9i7Vnouv9d+0IsR7feBenP9XrB+m7R4H2D9RoPd9jn1H
-	 k0UJiajbq3oWw==
+	b=aTuLqWqsz78aJAqZU08P4MsWSuhA3R9YzPnRL58FMXF2CsM5T0Z0leaHn3GEZeSm6
+	 OrfQL7SKbGE8wLkLnxxWnapw7BO/Hsvs8I+s0mDh9egxPlo0eOeWJYT7NNM1Tml8b1
+	 ZeZijETdi5IvIRraxbpHi+IMMUjG6a1Fb2CZpGwjlufMJLJeH80c1PDknGuVDg4YYj
+	 clum5qy/iSMSZkecs0ZLYvuq5LvbUuDJwFx7eeoUmH3JrA6u0qUE4T51AOr/3WUb1p
+	 hSNQYuSwsI6eyB3/sPu2WdKJFSgKPO0QMoIaZwto3lOY7WwsmIPs6pe/GSh0/YQrwQ
+	 1F3bCtn7U2mWw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Daniel Thompson <daniel.thompson@linaro.org>,
 	Lee Jones <lee@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 246/317] backlight: lm3639: Fully initialize backlight_properties during probe
-Date: Sun, 24 Mar 2024 19:33:46 -0400
-Message-ID: <20240324233458.1352854-247-sashal@kernel.org>
+Subject: [PATCH 5.15 247/317] backlight: lp8788: Fully initialize backlight_properties during probe
+Date: Sun, 24 Mar 2024 19:33:47 -0400
+Message-ID: <20240324233458.1352854-248-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -64,33 +64,33 @@ Content-Transfer-Encoding: 8bit
 
 From: Daniel Thompson <daniel.thompson@linaro.org>
 
-[ Upstream commit abb5a5d951fbea3feb5c4ba179b89bb96a1d3462 ]
+[ Upstream commit 392346827fbe8a7fd573dfb145170d7949f639a6 ]
 
 props is stack allocated and the fields that are not explcitly set
 by the probe function need to be zeroed or we'll get undefined behaviour
 (especially so power/blank states)!
 
-Fixes: 0f59858d5119 ("backlight: add new lm3639 backlight driver")
+Fixes: c5a51053cf3b ("backlight: add new lp8788 backlight driver")
 Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-Link: https://lore.kernel.org/r/20240220153532.76613-3-daniel.thompson@linaro.org
+Link: https://lore.kernel.org/r/20240220153532.76613-4-daniel.thompson@linaro.org
 Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/lm3639_bl.c | 1 +
+ drivers/video/backlight/lp8788_bl.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/video/backlight/lm3639_bl.c b/drivers/video/backlight/lm3639_bl.c
-index 48c04155a5f9d..bb617f4673e94 100644
---- a/drivers/video/backlight/lm3639_bl.c
-+++ b/drivers/video/backlight/lm3639_bl.c
-@@ -339,6 +339,7 @@ static int lm3639_probe(struct i2c_client *client,
- 	}
+diff --git a/drivers/video/backlight/lp8788_bl.c b/drivers/video/backlight/lp8788_bl.c
+index ba42f3fe0c739..d9b95dbd40d30 100644
+--- a/drivers/video/backlight/lp8788_bl.c
++++ b/drivers/video/backlight/lp8788_bl.c
+@@ -191,6 +191,7 @@ static int lp8788_backlight_register(struct lp8788_bl *bl)
+ 	int init_brt;
+ 	char *name;
  
- 	/* backlight */
 +	memset(&props, 0, sizeof(struct backlight_properties));
- 	props.type = BACKLIGHT_RAW;
- 	props.brightness = pdata->init_brt_led;
- 	props.max_brightness = pdata->max_brt_led;
+ 	props.type = BACKLIGHT_PLATFORM;
+ 	props.max_brightness = MAX_BRIGHTNESS;
+ 
 -- 
 2.43.0
 
