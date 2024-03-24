@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-114471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D71E2888AAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:24:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 227BF8896D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:00:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CF921F2619D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:24:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCC0CB34A21
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DCF17CF6B;
-	Sun, 24 Mar 2024 23:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F254F36827E;
+	Mon, 25 Mar 2024 02:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sCPuVmSZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g3G1zpWm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EECB156C6D;
-	Sun, 24 Mar 2024 23:11:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA7D156C6E;
+	Sun, 24 Mar 2024 23:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321899; cv=none; b=FbhAQJWt+kSgf8dq2GzHJfR6fBTipxPiZ+yU0Zm9moJHEzYfkfWB9UiWbU4NhRM/ba50LNpl+cf2TyXfu+6uhD1O22TNvRNgjusm7nMZXnmwQkIqW0MelFG9adzgFZ+7XOdknmI1Yy4O+FRfanKKnGgR4VSw/8lU1BY6bfgZ56g=
+	t=1711321899; cv=none; b=bRocXA4LU1brXfo1XI3CuL4f/d49gsBsOqLms3dPg0/HyLeVPc8DcpmTja26Bx90ti6Bfn8DQmrDWFCbrb+7d274M31nnsGgJdnBx6PuzcQ73zQk7TyG0apTDMfdxPEh61a0ESe4FLkPZhNRhNtHKKt8RMnzk225M00NX/235UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711321899; c=relaxed/simple;
-	bh=KfwDjXDxUaYF07I39Iz8WI9g83GqG4ln62S9uC3nKm4=;
+	bh=Lm58yLj4CP4NhjAUo2FqJTK/ATsFSEnj/2hVBaANo48=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OvkFIr2QRfYClTKA+7pFS6aEYbOj04vQNYfpe7n0kLras/1rtiUj+4O6+tRwJ54QRm34ILkCzvHNVhxEH+n+CTgGJTswY1U8U0RZ1g+BsaKeUYmd7G1unGTubDDvCP+L9DifsI6CyZxjfdb7CfgKUE7Q4ebciyAVxvFSjJtKg3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sCPuVmSZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9389FC433B1;
-	Sun, 24 Mar 2024 23:11:37 +0000 (UTC)
+	 MIME-Version; b=ckBTiO9gnxxWPj1EYm6puTTTGDY0zp6V1IIBoOlNGWX0BFJS9QEmFUkYBDl12HIBK5xTmgeEgeWx2kzsXB8sz+vcwx+9NvMMA1Y+EMsGK2mJ1IGjMNxuaezEfkGXp9URCDK5Y/wsTpXmDAL9a+ozVnN+luOT8cBwdSSbOZ4s9WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g3G1zpWm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3B00C433C7;
+	Sun, 24 Mar 2024 23:11:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321898;
-	bh=KfwDjXDxUaYF07I39Iz8WI9g83GqG4ln62S9uC3nKm4=;
+	s=k20201202; t=1711321899;
+	bh=Lm58yLj4CP4NhjAUo2FqJTK/ATsFSEnj/2hVBaANo48=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sCPuVmSZ4bOw5tLPBpF9Cbw/qdvsNwmPkCXw6JthSsp2Prd0RMEZ6Vbm/rj9ffFYA
-	 dExynvWvpjGgMR1YdE3szLTpm28FXz+Lo9HRYIj9T9hzPTkaG4V2xJdDoP+aWF7RZl
-	 eT0iNtpLKakj6OqmNa7G51cxowfF+LTJXGYxrNRHrjVdJrLIIU1+fqglmn3ZbKRd4W
-	 AV5/jYV91xEZAwSSLHuLNV/gItCDTx19d65zNiyxkHLic1xWITuwH1Dom86g66P9p8
-	 Lcnz7U3KQsyzdLUj9yhEIA2htGbmygWohjmXNRJLWutnP9cpsT0Hd/zgYrgvABJYIE
-	 tBOAUdqlFxcUg==
+	b=g3G1zpWmZSvpYGIKlJBMMzocw54S6v5LnVPAiybF+JEoaoFbyZYPVie/sJB6K7BsA
+	 vzAWTZJdwxtW858Uvry/eUBzP/l0nwC9Tds4wEyMTtPgGoLrhvOeByr5sQMbc3FKbT
+	 mIbX/XIzUIklT94RQHsI3G9WyPl3ZQfUIamCekhJIShNijyegI46NmwMCCJhKmU6XH
+	 FfIAxPRj/1SRss3IYFuRd6yGuTJ+VooWvyoSP8M0oL7qkIB1yuOZTc0xHn0ENuUXGV
+	 Ibb4iyVumnadd0r+KOdzTSHyMkNO6DPMIke8cjkfXb9mEOKYU8s5EMGZz4KRRy1ZjO
+	 vvapN88pE+xtg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: Yan Zhai <yan@cloudflare.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 627/638] net: report RCU QS on threaded NAPI repolling
-Date: Sun, 24 Mar 2024 19:01:04 -0400
-Message-ID: <20240324230116.1348576-628-sashal@kernel.org>
+Subject: [PATCH 6.6 628/638] bpf: report RCU QS in cpumap kthread
+Date: Sun, 24 Mar 2024 19:01:05 -0400
+Message-ID: <20240324230116.1348576-629-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -66,83 +66,51 @@ Content-Transfer-Encoding: 8bit
 
 From: Yan Zhai <yan@cloudflare.com>
 
-[ Upstream commit d6dbbb11247c71203785a2c9da474c36f4b19eae ]
+[ Upstream commit 00bf63122459e87193ee7f1bc6161c83a525569f ]
 
-NAPI threads can keep polling packets under load. Currently it is only
-calling cond_resched() before repolling, but it is not sufficient to
-clear out the holdout of RCU tasks, which prevent BPF tracing programs
-from detaching for long period. This can be reproduced easily with
-following set up:
+When there are heavy load, cpumap kernel threads can be busy polling
+packets from redirect queues and block out RCU tasks from reaching
+quiescent states. It is insufficient to just call cond_resched() in such
+context. Periodically raise a consolidated RCU QS before cond_resched
+fixes the problem.
 
-ip netns add test1
-ip netns add test2
-
-ip -n test1 link add veth1 type veth peer name veth2 netns test2
-
-ip -n test1 link set veth1 up
-ip -n test1 link set lo up
-ip -n test2 link set veth2 up
-ip -n test2 link set lo up
-
-ip -n test1 addr add 192.168.1.2/31 dev veth1
-ip -n test1 addr add 1.1.1.1/32 dev lo
-ip -n test2 addr add 192.168.1.3/31 dev veth2
-ip -n test2 addr add 2.2.2.2/31 dev lo
-
-ip -n test1 route add default via 192.168.1.3
-ip -n test2 route add default via 192.168.1.2
-
-for i in `seq 10 210`; do
- for j in `seq 10 210`; do
-    ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dport 5201
- done
-done
-
-ip netns exec test2 ethtool -K veth2 gro on
-ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threaded'
-ip netns exec test1 ethtool -K veth1 tso off
-
-Then run an iperf3 client/server and a bpftrace script can trigger it:
-
-ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
-ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g -t 100 >/dev/null&
-bpftrace -e 'kfunc:__napi_poll{@=count();} interval:s:1{exit();}'
-
-Report RCU quiescent states periodically will resolve the issue.
-
-Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop support")
+Fixes: 6710e1126934 ("bpf: introduce new bpf cpu map type BPF_MAP_TYPE_CPUMAP")
 Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
 Signed-off-by: Yan Zhai <yan@cloudflare.com>
 Acked-by: Paul E. McKenney <paulmck@kernel.org>
 Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Link: https://lore.kernel.org/r/4c3b0d3f32d3b18949d75b18e5e1d9f13a24f025.1710877680.git.yan@cloudflare.com
+Link: https://lore.kernel.org/r/c17b9f1517e19d813da3ede5ed33ee18496bb5d8.1710877680.git.yan@cloudflare.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c | 3 +++
+ kernel/bpf/cpumap.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 8ac8b5c561030..1f6c8945f2eca 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6689,6 +6689,8 @@ static int napi_threaded_poll(void *data)
- 	void *have;
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 9140b8bff9c04..df03e66a687c1 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -262,6 +262,7 @@ static int cpu_map_bpf_prog_run(struct bpf_cpu_map_entry *rcpu, void **frames,
+ static int cpu_map_kthread_run(void *data)
+ {
+ 	struct bpf_cpu_map_entry *rcpu = data;
++	unsigned long last_qs = jiffies;
  
- 	while (!napi_thread_wait(napi)) {
-+		unsigned long last_qs = jiffies;
-+
- 		for (;;) {
- 			bool repoll = false;
- 
-@@ -6713,6 +6715,7 @@ static int napi_threaded_poll(void *data)
- 			if (!repoll)
- 				break;
- 
+ 	complete(&rcpu->kthread_running);
+ 	set_current_state(TASK_INTERRUPTIBLE);
+@@ -287,10 +288,12 @@ static int cpu_map_kthread_run(void *data)
+ 			if (__ptr_ring_empty(rcpu->queue)) {
+ 				schedule();
+ 				sched = 1;
++				last_qs = jiffies;
+ 			} else {
+ 				__set_current_state(TASK_RUNNING);
+ 			}
+ 		} else {
 +			rcu_softirq_qs_periodic(last_qs);
- 			cond_resched();
+ 			sched = cond_resched();
  		}
- 	}
+ 
 -- 
 2.43.0
 
