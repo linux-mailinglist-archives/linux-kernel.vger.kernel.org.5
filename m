@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B859888F70
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:50:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BF6F888958
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:51:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E0EE28F9B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:50:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD2591C27CC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:51:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602F916ABE5;
-	Sun, 24 Mar 2024 23:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE65315A4B5;
+	Sun, 24 Mar 2024 23:24:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hMjx0sMH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GEo92aax"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA9613848E;
-	Sun, 24 Mar 2024 23:06:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47071138494;
+	Sun, 24 Mar 2024 23:06:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321589; cv=none; b=e9vnNnLbZDgCsTI0X2bI6Uu+XVai3z9P1UQ1E7sYPyqKPU4N30IuEfgysgd+gFymf+Zlz8b9ECipAGpJM5n4eAH8S9imbcrTKO3jZdeQBpQtUZ8JrFuWqEuHCqnDHeQlxW2a5sh0lCZg3fiAcAWxv7QF2CeGM6ubUBVu9n8Ua8s=
+	t=1711321590; cv=none; b=h1RQdpHpQDgnd30yKG4sGg2JTB08eTW6YbQkg/FW4AOwMETfQnEfP1GCYmDl8lYFc8RB59PFVWDBcCV+Mfu0PnIKDC/HtI3YI/P62pfq6ri/i7K3hQkvymJvHdtxxgtao4/gPmNbMgp2HGx6t4NjW9KUAUOTl+mmjwqeL/6YK40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321589; c=relaxed/simple;
-	bh=cw8A2LG6a4oZo0tYO+defptfQoLZHRPmb0Ms7zyq914=;
+	s=arc-20240116; t=1711321590; c=relaxed/simple;
+	bh=5IHzwXFEDLmKBoZe6jt3RYoOyPNjtFhnX/jOGOlGnzo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZnZthdzk37WPAJZ4zDQnpnsQnC0audWRHAIImZJw7K5lhGUqEC1+v90957y/7owuNzXrIDxbheNtb/Iz9BUM1wj6JMNgeexepGHBoYAjRFfbLDm88BaEG5dV9KeI/bN6RN7YZ0vaO1HPRr344dbM1GnToVz2klGONxpns/yzUpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hMjx0sMH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71C7AC43399;
-	Sun, 24 Mar 2024 23:06:27 +0000 (UTC)
+	 MIME-Version; b=MnJWAHmt/kjFactpOxFsu6ElGMEaBOhfaT/pe0Ewh0lZ6d5u0nNId3o+TRl028sKDJFFzjpeCcwW/KYbvcphfI9ZLEt4a6tU7E2h2pSAnc6fxMnPwOmtb++P10T/gE5xriRU6wj56ngrtc2cpcjVUeOwkFCULm7Z+pvCXrnKEoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GEo92aax; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EBEDC433C7;
+	Sun, 24 Mar 2024 23:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321588;
-	bh=cw8A2LG6a4oZo0tYO+defptfQoLZHRPmb0Ms7zyq914=;
+	s=k20201202; t=1711321589;
+	bh=5IHzwXFEDLmKBoZe6jt3RYoOyPNjtFhnX/jOGOlGnzo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hMjx0sMHGfUgVF2hwuMIEvindKN3+ftBzoDpti+9f3nYWnC8GkYMJIl39MmYvho7K
-	 1zjf5A7ykekY1itstk7vuSmBg0ycvNU7D61BfCgHXiWJ1chKOh54ZCoWp3O/ZHnA35
-	 jWHW4qm3e55vAl0KgtKG/3iW1wJl4aqlOSOv/ildHCD0UfQLgmpuXtzYDhz4SDHBbW
-	 L/0ps672fFlxEw5dzB76vj+ThYP1O09SLYtH5C10XuHgBATFwyFkzF5b6Uvc5DYdVg
-	 pUvG36CVrNyOJNYyCJDOycCcVwXlNCYLX0R3hrJ3fsBXhWabISZ3KI80cqZ/u6G5zT
-	 gZhsoxePiGfXw==
+	b=GEo92aaxd0UdlXAV00WMoM8g2lK24nwKFyV5Vi7CJCBavA9vOIinVT96zxDeU9gSH
+	 WIawAX/tivb/8TJKdXUafBFrMBa2dwGak/WnqF9UH7At3c6ODMWllvv8cSg8nzm4xj
+	 QkpSEHaLt/n+qWkVKQ0GLLVxYN9MdzrttGshmmEP/7Z8zyQnN88UwxI1s/YCtJg+Kr
+	 JPw1D7ehfutUp0H13W3TA1nnma0k6M8JnVBfN9Uzf2lPX8bpnuZaYlE1EYfk97UXKb
+	 1kzPUdcPoGQVizX3XO93wFJMWM+ZjPG274GJSXS4POn0cy71FOL/923v8f8dMFnvpd
+	 kY6+m8tfdybZA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Bui Quang Minh <minhquangbui99@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: Bert Karwatzki <spasswolf@web.de>,
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Joerg Roedel <jroedel@suse.de>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 318/638] bpf: Fix stackmap overflow check on 32-bit arches
-Date: Sun, 24 Mar 2024 18:55:55 -0400
-Message-ID: <20240324230116.1348576-319-sashal@kernel.org>
+Subject: [PATCH 6.6 319/638] iommu: Fix compilation without CONFIG_IOMMU_INTEL
+Date: Sun, 24 Mar 2024 18:55:56 -0400
+Message-ID: <20240324230116.1348576-320-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -59,61 +59,70 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Bert Karwatzki <spasswolf@web.de>
 
-[ Upstream commit 7a4b21250bf79eef26543d35bd390448646c536b ]
+[ Upstream commit 70bad345e622c23bb530016925c936ab04a646ac ]
 
-The stackmap code relies on roundup_pow_of_two() to compute the number
-of hash buckets, and contains an overflow check by checking if the
-resulting value is 0. However, on 32-bit arches, the roundup code itself
-can overflow by doing a 32-bit left-shift of an unsigned long value,
-which is undefined behaviour, so it is not guaranteed to truncate
-neatly. This was triggered by syzbot on the DEVMAP_HASH type, which
-contains the same check, copied from the hashtab code.
+When the kernel is comiled with CONFIG_IRQ_REMAP=y but without
+CONFIG_IOMMU_INTEL compilation fails since commit def054b01a8678 with an
+undefined reference to device_rbtree_find(). This patch makes sure that
+intel specific code is only compiled with CONFIG_IOMMU_INTEL=y.
 
-The commit in the fixes tag actually attempted to fix this, but the fix
-did not account for the UB, so the fix only works on CPUs where an
-overflow does result in a neat truncation to zero, which is not
-guaranteed. Checking the value before rounding does not have this
-problem.
-
-Fixes: 6183f4d3a0a2 ("bpf: Check for integer overflow when using roundup_pow_of_two()")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Reviewed-by: Bui Quang Minh <minhquangbui99@gmail.com>
-Message-ID: <20240307120340.99577-4-toke@redhat.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Bert Karwatzki <spasswolf@web.de>
+Fixes: 80a9b50c0b9e ("iommu/vt-d: Improve ITE fault handling if target  device isn't present")
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20240307194419.15801-1-spasswolf@web.de
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/stackmap.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/iommu/Kconfig         | 2 +-
+ drivers/iommu/intel/Makefile  | 2 ++
+ drivers/iommu/irq_remapping.c | 3 ++-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 36775c4bc33fb..a330f38ae7335 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -91,11 +91,14 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
- 	} else if (value_size / 8 > sysctl_perf_event_max_stack)
- 		return ERR_PTR(-EINVAL);
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index 2b12b583ef4b1..d57c5adf932e3 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -191,7 +191,7 @@ source "drivers/iommu/iommufd/Kconfig"
+ config IRQ_REMAP
+ 	bool "Support for Interrupt Remapping"
+ 	depends on X86_64 && X86_IO_APIC && PCI_MSI && ACPI
+-	select DMAR_TABLE
++	select DMAR_TABLE if INTEL_IOMMU
+ 	help
+ 	  Supports Interrupt remapping for IO-APIC and MSI devices.
+ 	  To use x2apic mode in the CPU's which support x2APIC enhancements or
+diff --git a/drivers/iommu/intel/Makefile b/drivers/iommu/intel/Makefile
+index 7af3b8a4f2a00..29d26a4371327 100644
+--- a/drivers/iommu/intel/Makefile
++++ b/drivers/iommu/intel/Makefile
+@@ -5,5 +5,7 @@ obj-$(CONFIG_DMAR_TABLE) += trace.o cap_audit.o
+ obj-$(CONFIG_DMAR_PERF) += perf.o
+ obj-$(CONFIG_INTEL_IOMMU_DEBUGFS) += debugfs.o
+ obj-$(CONFIG_INTEL_IOMMU_SVM) += svm.o
++ifdef CONFIG_INTEL_IOMMU
+ obj-$(CONFIG_IRQ_REMAP) += irq_remapping.o
++endif
+ obj-$(CONFIG_INTEL_IOMMU_PERF_EVENTS) += perfmon.o
+diff --git a/drivers/iommu/irq_remapping.c b/drivers/iommu/irq_remapping.c
+index 83314b9d8f38b..ee59647c20501 100644
+--- a/drivers/iommu/irq_remapping.c
++++ b/drivers/iommu/irq_remapping.c
+@@ -99,7 +99,8 @@ int __init irq_remapping_prepare(void)
+ 	if (disable_irq_remap)
+ 		return -ENOSYS;
  
--	/* hash table size must be power of 2 */
--	n_buckets = roundup_pow_of_two(attr->max_entries);
--	if (!n_buckets)
-+	/* hash table size must be power of 2; roundup_pow_of_two() can overflow
-+	 * into UB on 32-bit arches, so check that first
-+	 */
-+	if (attr->max_entries > 1UL << 31)
- 		return ERR_PTR(-E2BIG);
- 
-+	n_buckets = roundup_pow_of_two(attr->max_entries);
-+
- 	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
- 	smap = bpf_map_area_alloc(cost, bpf_map_attr_numa_node(attr));
- 	if (!smap)
+-	if (intel_irq_remap_ops.prepare() == 0)
++	if (IS_ENABLED(CONFIG_INTEL_IOMMU) &&
++	    intel_irq_remap_ops.prepare() == 0)
+ 		remap_ops = &intel_irq_remap_ops;
+ 	else if (IS_ENABLED(CONFIG_AMD_IOMMU) &&
+ 		 amd_iommu_irq_ops.prepare() == 0)
 -- 
 2.43.0
 
