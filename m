@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-115424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-115363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3CA1889B80
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:54:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85498893BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:36:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08D6029ECC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:54:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4692C1F2F397
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:36:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B1920AF9F;
-	Mon, 25 Mar 2024 02:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69DF6161928;
+	Mon, 25 Mar 2024 02:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H7QMaUtJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDww2BRE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699211D7917;
-	Sun, 24 Mar 2024 22:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0501D7918;
+	Sun, 24 Mar 2024 22:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320604; cv=none; b=NkmQnsowV54LNvnvxEEEPVfVWZZzQCAJcpSK4oseFdhtsxP88sBaQEPdosAPHm2lyqjANsCcVpyo6uf3t6/DkiEusp7j+o490tYPfhOVWf6qUD7ORWZ4a3SMekr1fcfURfKp4TEUmo+bAy9xLSTro7BMpiUZDamTU3vj4SqVWsU=
+	t=1711320604; cv=none; b=lQeAIgkSVKelaO/n79fzTkfbQyhDgAfE80nQ/DQ2BL/yZTEIGAv4FLqHlzXuzzeotU+YoxCwf2MLFhZYDgMtiS33/Rl2zwZUHRGKcw3NyrJL5dYG5/SKi+Oxzv3O7Or1azAl5kaiq2+7K/S2/+8aMx4lSJQXsWeFUsxJGO7fzMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320604; c=relaxed/simple;
-	bh=90XilqNwKsvj6KfNoaZh4D0UAY+EEfN938ceSpFwJeU=;
+	bh=8MlMsUXIAxi6EcUwJc1rCgwDpDQjngCF1q1kRo/oFOs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LcuHFlVEfxddJn29sa6oSwYzHxNGowZ772xNMOvLgSxTY+1CqtHux/aJtLdEYy+4KL2b6l0SifrflH+ixEJGhFBVTr2Tt82VlwY16yg1sdWmh/fN5bxD7DEqNrPiA5metpeGPyRs6qijSjjegcnlmIbfHjR5uqYKR+7aEE/oEKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H7QMaUtJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 798B7C433A6;
-	Sun, 24 Mar 2024 22:50:02 +0000 (UTC)
+	 MIME-Version; b=ADVl93y207ipuA2kSIGdQOClEb8N9kM9RpLMJwpT1CqbmIANyvba3uIZcTMVkcDbMHPwgBSqVZ+qdX9VkFRCYOJ70HX4p/FAOOPmP1pSIDWoikwKGSEKqPMU10kCxnEz7GR5eQxQRMEg02iHyWrK09knbRjNSEbkXlofPrMcf90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDww2BRE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D582C43394;
+	Sun, 24 Mar 2024 22:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320603;
-	bh=90XilqNwKsvj6KfNoaZh4D0UAY+EEfN938ceSpFwJeU=;
+	s=k20201202; t=1711320604;
+	bh=8MlMsUXIAxi6EcUwJc1rCgwDpDQjngCF1q1kRo/oFOs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H7QMaUtJ7jRGEr4yVYnBve39E5pQWg17FliMGoxA4o7XIEPUF9NPH5x2SHY8rsYf9
-	 Ke/HQltUWq8sntKWcrkOvGIF8hng9tjrfSDJ5rR2dMFv7I20rqPi/m2d386O8T4mhr
-	 pRSqlV0aSh0MAsIv/FVEr0B5eID8TYJc3PphMNq1EnVw5cDxn3RGTrM/6xmHYFnJng
-	 yjFT875Dnr3owccQ4vu69IlfKt2zYj5t4oI7iXPxifIFdrKN14S5As2CWRCscwE6p0
-	 yw04jTUXk0OOlkUqF+WN0zxnTnByYOiqYmapiRj01JzfCG4n9nI5JNABTlIWKERAvC
-	 RUlko8LLqza0Q==
+	b=sDww2BREgxb2ozVb/XZ4R/gf/170rUj0K9zm9fZUv7+ImXPBUtPFII5thrklfWBAV
+	 fs1Fdj7c/v54hgCFji6WZFjJLYrtQM5LANNtSloHTW4AUZBcEU3UR0YAmTnMUVdHwP
+	 FCGKaqGVsnAre+0yNYRUMZDn1sTnZ3CfY2aoAQ6OimvTcfmlGTpK+9QlaSYAh75nCD
+	 c4RzohHehnJjH2IJBdXI7fwboR/H92u46UeLJ3codrvJVisnXiyv/qFRyCdxkyI3bQ
+	 O9uM2d7FW+71jehf7DwcilGNjBM7Xo2KzurGXhoI+vJgSz7hb+jAuL9rfdVmltFOeq
+	 wxBNpJBE2NPZQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Georgi Djakov <djakov@kernel.org>,
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 164/713] arm64: dts: qcom: sm8450: Add missing interconnects to serial
-Date: Sun, 24 Mar 2024 18:38:10 -0400
-Message-ID: <20240324224720.1345309-165-sashal@kernel.org>
+Subject: [PATCH 6.7 165/713] soc: qcom: socinfo: rename PM2250 to PM4125
+Date: Sun, 24 Mar 2024 18:38:11 -0400
+Message-ID: <20240324224720.1345309-166-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -64,57 +63,52 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit 6e115b75b43bd12d4061e53c8ff175e387783d8a ]
+[ Upstream commit 5155e48128826d0c5999dc9f47aa746df54da448 ]
 
-The serial ports did not have their interconnect paths specified when
-they were first introduced. Fix that.
+It seems, the only actual mentions of PM2250 can be found are related to
+the Qualcomm RB1 platform. However even RB1 schematics use PM4125 as a
+PMIC name. Rename PM2250 to PM4125 to follow the documentation.
 
-Fixes: 5188049c9b36 ("arm64: dts: qcom: Add base SM8450 DTSI")
-Fixes: f5837418479a ("arm64: dts: qcom: sm8450: add uart20 node")
-Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Suggested-by: Georgi Djakov <djakov@kernel.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Tested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/r/20240116-topic-8450serial-v1-1-b685e6a5ad78@linaro.org
+Fixes: 082f9bc60f33 ("soc: qcom: spmi-pmic: add more PMIC SUBTYPE IDs")
+Fixes: 112d96fd2927 ("soc: qcom: socinfo: Add some PMICs")
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20240128-pm2250-pm4125-rename-v2-1-d51987e9f83a@linaro.org
 Signed-off-by: Bjorn Andersson <andersson@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sm8450.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/soc/qcom/socinfo.c        | 2 +-
+ include/soc/qcom/qcom-spmi-pmic.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-index f82480570d4b6..9d06fb0d4d1fd 100644
---- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-@@ -1026,6 +1026,12 @@ uart20: serial@894000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&qup_uart20_default>;
- 				interrupts = <GIC_SPI 587 IRQ_TYPE_LEVEL_HIGH>;
-+				interconnects = <&clk_virt MASTER_QUP_CORE_2 QCOM_ICC_TAG_ALWAYS
-+						 &clk_virt SLAVE_QUP_CORE_2 QCOM_ICC_TAG_ALWAYS>,
-+						<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
-+						 &config_noc SLAVE_QUP_2 QCOM_ICC_TAG_ALWAYS>;
-+				interconnect-names = "qup-core",
-+						     "qup-config";
- 				status = "disabled";
- 			};
+diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+index 51e05bec5bfce..9865964cf6dbf 100644
+--- a/drivers/soc/qcom/socinfo.c
++++ b/drivers/soc/qcom/socinfo.c
+@@ -114,7 +114,7 @@ static const char *const pmic_models[] = {
+ 	[50] = "PM8350B",
+ 	[51] = "PMR735A",
+ 	[52] = "PMR735B",
+-	[55] = "PM2250",
++	[55] = "PM4125",
+ 	[58] = "PM8450",
+ 	[65] = "PM8010",
+ 	[69] = "PM8550VS",
+diff --git a/include/soc/qcom/qcom-spmi-pmic.h b/include/soc/qcom/qcom-spmi-pmic.h
+index c47cc71a999ec..fdd462b295927 100644
+--- a/include/soc/qcom/qcom-spmi-pmic.h
++++ b/include/soc/qcom/qcom-spmi-pmic.h
+@@ -48,7 +48,7 @@
+ #define PMK8350_SUBTYPE		0x2f
+ #define PMR735B_SUBTYPE		0x34
+ #define PM6350_SUBTYPE		0x36
+-#define PM2250_SUBTYPE		0x37
++#define PM4125_SUBTYPE		0x37
  
-@@ -1418,6 +1424,12 @@ uart7: serial@99c000 {
- 				pinctrl-names = "default";
- 				pinctrl-0 = <&qup_uart7_tx>, <&qup_uart7_rx>;
- 				interrupts = <GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>;
-+				interconnects = <&clk_virt MASTER_QUP_CORE_2 QCOM_ICC_TAG_ALWAYS
-+						 &clk_virt SLAVE_QUP_CORE_2 QCOM_ICC_TAG_ALWAYS>,
-+						<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
-+						 &config_noc SLAVE_QUP_2 QCOM_ICC_TAG_ALWAYS>;
-+				interconnect-names = "qup-core",
-+						     "qup-config";
- 				status = "disabled";
- 			};
- 		};
+ #define PMI8998_FAB_ID_SMIC	0x11
+ #define PMI8998_FAB_ID_GF	0x30
 -- 
 2.43.0
 
