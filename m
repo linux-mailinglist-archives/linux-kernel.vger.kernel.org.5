@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-114333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C311F888FB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:58:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C81F8889D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 04:05:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 000171C2C013
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:58:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56C1D28CD96
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8758170A4C;
-	Sun, 24 Mar 2024 23:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA63129E8B;
+	Sun, 24 Mar 2024 23:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ulfllgwi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sg8xXOvQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41678212548;
-	Sun, 24 Mar 2024 23:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E1D212563;
+	Sun, 24 Mar 2024 23:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321718; cv=none; b=lAjDQ/F0iyC3wgYFoQ1B/nkdv4p43iF6z1o0n+iK/ynvI412Vsae1wzxwAfAxBImlFgCBLL/nKFw3Yw6gmSQx1b62Jnwx4/jUBgiG3NU/jdYeGcU3Nwr7zgepFDeqwoQ/psvn4nmSv4nDaOPwhMznlBvNeJNcNeq9ogqKRkyV9M=
+	t=1711321719; cv=none; b=SZ3ZivOjDpCXeh4uZTEyDaVYdyPiAX40413NQwk5h/NIKhTORZ1CUjIqcXsDdRCihK7uJhyk5K+IQ/zd9XOtka+F3kFtayeSLwaB+UvfqFp4wADVfnYXHmpKVd1o8GQdWhL+hRxx3tIhmmICCOnRnQIkx7mydOihM7fc9xoXjuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321718; c=relaxed/simple;
-	bh=tkufBR9raGvxU8c3aH3i6ldwN0hrm/x4DjtThUr85q8=;
+	s=arc-20240116; t=1711321719; c=relaxed/simple;
+	bh=sQRCYGzckSV5Jjd6wj71S1AaITF1DrtDPJ2/hsC37Q4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VV84yWdZf6v57W8+jLeb23hhRmlCbxmpiXNvQLZLQZHtILcyDgBG3pf6Ig5igVPzPMvSbj/xGLWnJpDrxJJkddkn3i1em2vvpoO9U5xitnLq6aEt9R59M667gxRRxmCIF3S0a31JFRIqoIBQhnLejvw8ewltu0DRJn0KXdEeC+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ulfllgwi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69454C43399;
-	Sun, 24 Mar 2024 23:08:36 +0000 (UTC)
+	 MIME-Version; b=JgYwdgfSzz6S7P9yuyGjIcOAfK1wBNwNvmYWRoyLQbHilK7ug08Ysz7/6s+J+AYo9e9VI7t9mJ0DT0akdQwZC1B2ArzqH+pcIhowbcMfHRXt6KeOjn//fmAcCvMA1l5uEjIBQ7WTkhUuSAJKJI6Uik8HdkbyI3bWBCIqbCvIM/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sg8xXOvQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63C57C433F1;
+	Sun, 24 Mar 2024 23:08:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321717;
-	bh=tkufBR9raGvxU8c3aH3i6ldwN0hrm/x4DjtThUr85q8=;
+	s=k20201202; t=1711321718;
+	bh=sQRCYGzckSV5Jjd6wj71S1AaITF1DrtDPJ2/hsC37Q4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UlfllgwiLHob+yd6ZhmEQEwb7tMA6TO/nJJJ2z4P/1zVrjWxoe9nNmLUlIoeSX3Zr
-	 ZGxkqZW5YGHWGmvs3Nx95Zq9NptmYNNJrVGdgga209kOcfk+aaYN7zppr3qwDn6d68
-	 Q0Vk5+jG7G27U/i2CjzBvSB1zv9qBmS4ZfzRsx1Z7PSPAec+HUReJSmpWhjm5xsAgq
-	 ixH1ZveaQzUmZ0/0XO+NUh/C/mCBt/srZBGUa67rZ4LmqL+eMtoTxCJqXJYs9q9z/9
-	 5hGvXS+rrc3Nr6b9nM3tpE8y3SeJXguPYFGdE+b7dhZ5ww96hzHDMYj9lyEDa4Bfuw
-	 a2yEWRhMZnGnA==
+	b=Sg8xXOvQFW5lBp9Ss2utk6j/dJKS3SqFBLTy7odT4tw5+W2F/hHEbVtrHqrjp791q
+	 /5a8opaFIgrcBeggWTFYtzQlD2kloG3mS7X6udXmREBijvCc3jbjM9cewR3Nre/zN7
+	 lKMpui7OUCLQLtAbT+6+Z554QXYSQx/ABmAG6dqHi0XcwwtPYcwju4M2CFTikQNDF5
+	 cxIt2/rqhfEEEyalHAx4FRqiJbYkjU6J1oiadcM8bNY1O0LH/Tk2CMqapxZPvflZ1v
+	 7qM/lzR3+3DKOngUPhaWqFZ52G4dgpGGHlKnyvGlqMNYDv9eMUQ0UmA+CXEhuGg3AW
+	 qhJdYEAPpNAwA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Tim Van Patten <timvp@google.com>,
+Cc: Adam Guerin <adam.guerin@intel.com>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 445/638] crypto: ccp - Avoid discarding errors in psp_send_platform_access_msg()
-Date: Sun, 24 Mar 2024 18:58:02 -0400
-Message-ID: <20240324230116.1348576-446-sashal@kernel.org>
+Subject: [PATCH 6.6 446/638] crypto: qat - avoid division by zero
+Date: Sun, 24 Mar 2024 18:58:03 -0400
+Message-ID: <20240324230116.1348576-447-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -63,53 +63,43 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Mario Limonciello <mario.limonciello@amd.com>
+From: Adam Guerin <adam.guerin@intel.com>
 
-[ Upstream commit 0e8fca2f12ceb77c3a6b6f210135031f264aa612 ]
+[ Upstream commit f99fb7d660f7c818105803f1f1915396a14d18ad ]
 
-Errors can potentially occur in the "processing" of PSP commands or
-commands can be processed successfully but still return an error code in
-the header.
+Check if delta_us is not zero and return -EINVAL if it is.
+delta_us is unlikely to be zero as there is a sleep between the reads of
+the two timestamps.
 
-This second case was being discarded because PSP communication worked but
-the command returned an error code in the payload header.
+This is to fix the following warning when compiling the QAT driver
+using clang scan-build:
+    drivers/crypto/intel/qat/qat_common/adf_clock.c:87:9: warning: Division by zero [core.DivideZero]
+       87 |         temp = DIV_ROUND_CLOSEST_ULL(temp, delta_us);
+          |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Capture both cases and return them to the caller as -EIO for the caller
-to investigate. The caller can detect the latter by looking at
-`req->header->status`.
-
-Reported-and-tested-by: Tim Van Patten <timvp@google.com>
-Fixes: 7ccc4f4e2e50 ("crypto: ccp - Add support for an interface for platform features")
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Fixes: e2980ba57e79 ("crypto: qat - add measure clock frequency")
+Signed-off-by: Adam Guerin <adam.guerin@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccp/platform-access.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/crypto/intel/qat/qat_common/adf_clock.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/crypto/ccp/platform-access.c b/drivers/crypto/ccp/platform-access.c
-index 94367bc49e35b..1b8ed33897332 100644
---- a/drivers/crypto/ccp/platform-access.c
-+++ b/drivers/crypto/ccp/platform-access.c
-@@ -118,9 +118,16 @@ int psp_send_platform_access_msg(enum psp_platform_access_msg msg,
- 		goto unlock;
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_clock.c b/drivers/crypto/intel/qat/qat_common/adf_clock.c
+index dc0778691eb0b..eae44969dc84f 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_clock.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_clock.c
+@@ -82,6 +82,9 @@ static int measure_clock(struct adf_accel_dev *accel_dev, u32 *frequency)
  	}
  
--	/* Store the status in request header for caller to investigate */
-+	/*
-+	 * Read status from PSP. If status is non-zero, it indicates an error
-+	 * occurred during "processing" of the command.
-+	 * If status is zero, it indicates the command was "processed"
-+	 * successfully, but the result of the command is in the payload.
-+	 * Return both cases to the caller as -EIO to investigate.
-+	 */
- 	cmd_reg = ioread32(cmd);
--	req->header.status = FIELD_GET(PSP_CMDRESP_STS, cmd_reg);
-+	if (FIELD_GET(PSP_CMDRESP_STS, cmd_reg))
-+		req->header.status = FIELD_GET(PSP_CMDRESP_STS, cmd_reg);
- 	if (req->header.status) {
- 		ret = -EIO;
- 		goto unlock;
+ 	delta_us = timespec_to_us(&ts3) - timespec_to_us(&ts1);
++	if (!delta_us)
++		return -EINVAL;
++
+ 	temp = (timestamp2 - timestamp1) * ME_CLK_DIVIDER * 10;
+ 	temp = DIV_ROUND_CLOSEST_ULL(temp, delta_us);
+ 	/*
 -- 
 2.43.0
 
