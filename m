@@ -1,114 +1,139 @@
-Return-Path: <linux-kernel+bounces-112547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EDCE887B60
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:11:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF04D887B63
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 03:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31961F2213B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:11:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41D8D1C20FCD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 02:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC2E28FC;
-	Sun, 24 Mar 2024 02:11:22 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184DC33F7;
+	Sun, 24 Mar 2024 02:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ItqIjY5L"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CA717C8;
-	Sun, 24 Mar 2024 02:11:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB08B81E;
+	Sun, 24 Mar 2024 02:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711246281; cv=none; b=tJKGz2jwVwj5tDyYc3Ibyc7HgBeYH8qpKaxbuwDWoimNyYMhogx7DUOhBi5rtbCnKyk8FXmS+WIFHSluSCZU2r6t18eui2kXP9fx763GXjopV3pbyGteKpeU/nk5YFSTecMCYr/mXQYLW7BYO0KpKVfQc72O7s0lpywPkJ+T/po=
+	t=1711246359; cv=none; b=EtjMgwHCs/jcnizINBnu+N93g6QAvCaoiKWOSAioyHZ0SzmJtmUqH4OGwFS4KAxshyqtiPM03Dic8sHACKGpRoRj4cvPmcHzv+LJ1o2Ziew7q72B+BrOqkhBmcCqa8pRs0Y44PXgByz1Pmv8KNP8XbJmtN5IMKPGBxN5D/w2rz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711246281; c=relaxed/simple;
-	bh=NDITpm+Io5eF73wa40dDzJ4n6hWGDX3M2JytLekCKDc=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=PCr8slMkFFMyVazJyhm6zzzyUPzs45weePZhse/4xwGj0XTZZRc9tstVd1urzYzM+aR3Ykaf7BQoUByfpojD/RcXoj7AHdlZ/q5zMhwtLxvniSmr2fPWkxE1Ck1LsnOotzzD/rsC9KUcZkilZKttsOnewwCRbSLcqMWe4MgZ+b0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V2KL63s7Sz4f3jYg;
-	Sun, 24 Mar 2024 10:11:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 7C7E91A0C00;
-	Sun, 24 Mar 2024 10:11:14 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxDAi_9l6YOUHw--.39150S3;
-	Sun, 24 Mar 2024 10:11:14 +0800 (CST)
-Subject: Re: [PATCH 2/2] block: remove blk_mq_in_flight() and
- blk_mq_in_flight_rw()
-To: Mike Snitzer <snitzer@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: ming.lei@redhat.com, hch@lst.de, bvanassche@acm.org, axboe@kernel.dk,
- mpatocka@redhat.com, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240323035959.1397382-1-yukuai1@huaweicloud.com>
- <20240323035959.1397382-3-yukuai1@huaweicloud.com>
- <Zf79w4Ip3fzSMCWh@redhat.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <abb0af09-e9bb-4781-176b-b4b98726c211@huaweicloud.com>
-Date: Sun, 24 Mar 2024 10:11:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1711246359; c=relaxed/simple;
+	bh=ovHUKz8Xzqtw0vfM9uEg01DKZBo+9/U+IEf7Cmmf4X0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gGTHHKGyKXdcd+HmlcrblBmjMAGwfyOp0zdJSQwE8iyCjElXeZkGQkPixs1J4axOZQMw/ealQs0DhzpkkguNP6MWzkeQGy0AQeE+ZvH/YF5PHM4KDUk3u2NFOdDuz5H9wD7ETc0C808r1+nWUH0Ky9BGIAY3tOnIWS2JrMZCf/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ItqIjY5L; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56bc753f58eso3991841a12.3;
+        Sat, 23 Mar 2024 19:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711246356; x=1711851156; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xHFyLHQgXPjbo6X2x+pg5cZRKKgfaicsQUJCH3BgxQg=;
+        b=ItqIjY5L9G4l/EolYckTAegP2/t89zzCBmoZYS2JG2KPkFKTFXRF6gvUG1NPdCOrM0
+         hevpKSPYg3En4sF6/YtVrpG9UtorMa7ub8sbE/HDC7fuuVYRugSr4HfFsOqHyhpKB922
+         U4XgmbQGLDKR5+//BIyuQNcDWcxWxa2ul+D47Mua1mlU6vnQg2GRhUGqjkkn87Garm50
+         PrWUO5qR62MtP7p6ZLZoex/SCIpo0sPOidsD0ETFB1CsNSHrL/wgP1idNLsclzn09GOB
+         MksMY7kk7j6klxs7W3/zmDXyo3WcI7qezvGwvVchcZFskxKzPdcDv9hc0eq3gkB06Qoq
+         HZxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711246356; x=1711851156;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xHFyLHQgXPjbo6X2x+pg5cZRKKgfaicsQUJCH3BgxQg=;
+        b=Xh9JSN11nGuc74Uz15ldRiU3/MPMaGy5N8GSZtPxC+o7y/hxtdy2GwTql8A+V5BplS
+         3h+nlEczCHQJ2KHPknnVmKWFhkDDeN/H+4jHIi/WG8xomraY2Hr6tTNfqZHHT8oiE2zc
+         GR1StWC/yRGhiKq5LqYX9E1VBNJTYmRsO+eJzT15clnRxjBhix2PL1TZmrov9Cw72NSh
+         s3nyHEVYGD9OYMn+PRn+JiGaRuRC537QVIFT/8AH1r/wlNrPhAoEhM3mKVy+eVuyhX1Q
+         rexoCxcD7vxj29YsQjKx/qkpCbERN/fkj5lBtHROjuUjLF9GVXGtyELr8rFt0z6zKTD6
+         lQ7w==
+X-Forwarded-Encrypted: i=1; AJvYcCUvRhbVe9nxlR4Iuc50vXNgQIXqBt8Ri/Ln6IO+RfGbt2pCxzHuWcrZk4ksYvV+CSWwcjgX6754gBRyifylS4twUHS8arwgpCiLOQva5qwCILGZTiX2k0rX4UBhZ5pcEhO7BPD7+Bi7LJrocBD/VsJIQUzMj0A2lyng
+X-Gm-Message-State: AOJu0YwXl3E0BkURQd9xzndrwj2a8H6uVZDx6xxKVo16ZAm9sDVlkEal
+	ibjDAnLHrGVhWOzcMAF1v4Q0mausLwIAQeZ+oefUuU0FYHI5wZ+4gTnlpCdv6+IFNcPIb03rEOp
+	3/pU2LHj8yhgS4+BVu0qUAhK/UxI=
+X-Google-Smtp-Source: AGHT+IE3n/ABSUmQrtfhds4VBheKUGJxl8W+GXZYl4WJsJsQR1l0p3vVcyqk0Xk5a+Al6NQVoeJTBbmKlDhWEPmrs30=
+X-Received: by 2002:a50:ab49:0:b0:56b:ed78:f58 with SMTP id
+ t9-20020a50ab49000000b0056bed780f58mr2235343edc.33.1711246355828; Sat, 23 Mar
+ 2024 19:12:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zf79w4Ip3fzSMCWh@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxDAi_9l6YOUHw--.39150S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4DGF4Dur17tryxAw4xJFb_yoW3AFX_ur
-	yv9a4UJ3W7JF1aq3WUGF1fZrZrG34fGrZxX3y7XFWUAr1kXFWSgFs5Kas7uF45Aa1jqF1S
-	k34ftF4xArW2gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+References: <0000000000003dc8e00614076ab6@google.com> <CAADnVQLORV5PT0iTAhRER+iLBTkByCYNBYyvBSgjN1T31K+gOw@mail.gmail.com>
+ <CABWLsetXQ8Xj-RECoyC7mp4YrdSsPwmSvkS36Eq2JKLfAYULuw@mail.gmail.com> <CAADnVQJAa1SREsqz9LY+-1OnbazWC-=O=TPuq-VEWkzp1ckH1Q@mail.gmail.com>
+In-Reply-To: <CAADnVQJAa1SREsqz9LY+-1OnbazWC-=O=TPuq-VEWkzp1ckH1Q@mail.gmail.com>
+From: Andrei Matei <andreimatei1@gmail.com>
+Date: Sat, 23 Mar 2024 22:12:23 -0400
+Message-ID: <CABWLseuLmAys-YuyFVeug+XR0_xjZROvgRTXz3U6cNiT+pBX0g@mail.gmail.com>
+Subject: Re: stack access issue. Re: [syzbot] [bpf?] UBSAN:
+ array-index-out-of-bounds in check_stack_range_initialized
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Edward Adam Davis <eadavis@qq.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Network Development <netdev@vger.kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sat, Mar 23, 2024 at 8:52=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sat, Mar 23, 2024 at 5:50=E2=80=AFPM Andrei Matei <andreimatei1@gmail.=
+com> wrote:
+> >
+> > + Edward
+> >
+> > On Thu, Mar 21, 2024 at 3:33=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > Hi Andrei,
+> > >
+> > > looks like the refactoring of stack access introduced a bug.
+> > > See the reproducer below.
+> > > positive offsets are not caught by check_stack_access_within_bounds()=
+.
+> >
+> > check_stack_access_within_bounds() tries to catch positive offsets;
+> > It does: [1]
+> >
+> > err =3D check_stack_slot_within_bounds(env, min_off, state, type);
+> > if (!err && max_off > 0)
+> >   err =3D -EINVAL; /* out of stack access into non-negative offsets */
+> >
+> > Notice the max_off > 0 in there.
+> > And we have various tests that seem to check that positive offsets are
+> > rejected. Do you know what the bug is?
+> > I'm thinking maybe there's some overflow going on, except that UBSAN
+> > reported an index of -1 as being the problem.
+> >
+> > Edward, I see that you've been tickling the robot trying to narrow the =
+issue;
+> > perhaps you've figured it out?
+> >
+> > If the bug is not immediately apparent to anyone, I would really apprec=
+iate a
+> > bit of tutoring around how to reproduce and get verifier logs.
+>
+> The repro is right there in the email I forwarded:
+>
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15c38711180=
+000
 
-ÔÚ 2024/03/24 0:05, Mike Snitzer Ð´µÀ:
-> On Fri, Mar 22 2024 at 11:59P -0400,
-> Yu Kuai <yukuai1@huaweicloud.com> wrote:
-> 
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Now that blk-mq also use per_cpu counter to trace inflight as bio-based
->> device, they can be replaced by part_in_flight() and part_in_flight_rw()
->> directly.
-> 
-> Please reference the commit that enabled this, e.g.:
-> 
-> With commit XXXXX ("commit subject") blk-mq was updated to use per_cpu
-> counters to track inflight IO same as bio-based devices, so replace
-> blk_mq_in_flight* with part_in_flight() and part_in_flight_rw()
-> accordingly.
-
-Patch 1 in this set do this, so there is no commit xxx yet.
-
-Thanks,
-Kuai
-
-> 
-> (I'm not seeing the commit in question, but I only took a quick look).
-> 
-> Mike
-> .
-> 
-
+I understand, but how does one go from this to either BPF assembly,
+or to running it in such a way that you also get verifier logs?
 
