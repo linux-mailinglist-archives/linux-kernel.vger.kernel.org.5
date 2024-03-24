@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-114721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429CC889220
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:59:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A11788921F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7D921F2D0AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:59:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 061AE292F0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AD219DF63;
-	Mon, 25 Mar 2024 00:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4A213BC1D;
+	Mon, 25 Mar 2024 00:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rt8uQE8V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nV0ezSB+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07E32720E8;
-	Sun, 24 Mar 2024 23:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07AA2720EA;
+	Sun, 24 Mar 2024 23:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323304; cv=none; b=hKCqiSZPQHbBrK86LQUX0Tyq9c9h+6rGkPPLW9x/v4PaWivbwHW9UmQaoND52dIJ4PeHGASATZhHSmCCQMW7UW/ekemGX7ZRvFOz26S80GvFiRJ9txtvwZhEOB8iDSVKBcUld+daFT9yENRmQgfJMdtUh+ShEjq/72lk4LKqkVs=
+	t=1711323304; cv=none; b=fvQ2j4SR57x2je+p/QL1XGyoiHVCvSvQRE59DK+CNrmyGhbuxWm2AoHtM745o5efl9LPsNDC8UhrJm47Oq2ent9OgCXUfjYpGPXIKoOpwPjG7oirQY/Nnkrcrpv63COfTaBduJUzajuJMeBb0tPtduYSK8HpO0fvFE0ylgRIDVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323304; c=relaxed/simple;
-	bh=XKTmuBbNGSq3qZq3k0AUkJ2Hx5fh0J1VoqUv/mzSn9U=;
+	bh=J4fhyG1iQ5vLe+pk9Wp2Byk5gpEXClLC4Qx6nixNZ7g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QrR+m8REJQRw7Otb0Qkfard3WNtOSR4oGkrnZP9oxfMoXv+L9UyeQp+DPiOkd3fRUNvLtjjXvsCymUuKlbfcq0ii1pAYrJjLTs+R6ZFBTgM/ChcRTVfJuixCyOZs5aUR8BHPidWEIGCgSN6b9WCED8Rke7mJQ5ltLoUofN7kna8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rt8uQE8V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66730C433F1;
-	Sun, 24 Mar 2024 23:35:02 +0000 (UTC)
+	 MIME-Version; b=AzQAEGShLhaAuA0UG/Ljd3An88FAUU23+ipaBy4+EaS41q+10Cu6gMg++xmDU8OWvd0WM8Rs0tuTXy//dH7z1I0NJdAhQcMLqAKIVTsLiZE8PSamezUcnTuXaAhFlvm9J9jN+0/3QeZLevriRSswa13ZaKBTOH65oljOedCR5ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nV0ezSB+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9016BC433C7;
+	Sun, 24 Mar 2024 23:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323303;
-	bh=XKTmuBbNGSq3qZq3k0AUkJ2Hx5fh0J1VoqUv/mzSn9U=;
+	s=k20201202; t=1711323304;
+	bh=J4fhyG1iQ5vLe+pk9Wp2Byk5gpEXClLC4Qx6nixNZ7g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rt8uQE8VRLnOPx4T9F9BoqD9BDPG3Ge6wtvgXYDAIofg93jfgMk+JVH3LJrbbvb4W
-	 xYqPOGP03LQoOZcG824h5iDGvjNM7AoHdw2OioAyliU1BJT7WRQkFMf8OvF502Snxc
-	 tOeRuUFfV5b2FEwVgJqFZtJb4JeTaCK4paiCRUnkz8Rak9DpvGI2CBciKZIYusA+mg
-	 pyW2Iu7qGXd0PYpXlHjbNHYAi4OSTmOxKXWYBDVnMT56PUBr2ooQQgFwwYmPjqGcqp
-	 ZCg7F1KsBWsRFH4eYXMSrcA827PGvIm0YiQPffYkWgRfcCC/asnRZ6FFug9kTobTZe
-	 mIscEe+ZduHJA==
+	b=nV0ezSB+wZvggWlddIcCMw/+fCmx+yI7Onju0GJT7HNGNEg/w2iEFzU57IWukPqn2
+	 63L7KRuVZB9DINhyuFxy4Wz+cwQ+BKJgZI5wgSwPT9T+Iq9VvLAoKF5toocqdvJ5Cq
+	 Ds0mT8ei98th5lOLO6qUZZVLtHZZ2vsIqRmpMeaqpURpzqJgiPlbj/K6HzUxUhHZK2
+	 LVhYD5DUlhmJ/wuOLuSu2aj7zKtGn7xqOYOHoOvXwc9wj4zA7wHj/VY7+Uivo8pgwp
+	 CmPnH7ZcoG5+PyCeQMmfhe1uRCAAMp4aGLH0XBb5eUW7YoUOgn8xOQkDJZITS49qQo
+	 SQ1pFWPbdt/xA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Hou Tao <houtao@huaweicloud.com>,
+Cc: Hou Tao <houtao1@huawei.com>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
 	Sasha Levin <sashal@kernel.org>,
 	Robert Kolchmeyer <rkolchmeyer@google.com>
-Subject: [PATCH 5.15 003/317] rcu-tasks: Provide rcu_trace_implies_rcu_gp()
-Date: Sun, 24 Mar 2024 19:29:43 -0400
-Message-ID: <20240324233458.1352854-4-sashal@kernel.org>
+Subject: [PATCH 5.15 004/317] bpf: Defer the free of inner map when necessary
+Date: Sun, 24 Mar 2024 19:29:44 -0400
+Message-ID: <20240324233458.1352854-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
 References: <20240324233458.1352854-1-sashal@kernel.org>
@@ -65,68 +63,131 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit e6c86c513f440bec5f1046539c7e3c6c653842da ]
+[ Upstream commit 876673364161da50eed6b472d746ef88242b2368 ]
 
-As an accident of implementation, an RCU Tasks Trace grace period also
-acts as an RCU grace period.  However, this could change at any time.
-This commit therefore creates an rcu_trace_implies_rcu_gp() that currently
-returns true to codify this accident.  Code relying on this accident
-must call this function to verify that this accident is still happening.
+When updating or deleting an inner map in map array or map htab, the map
+may still be accessed by non-sleepable program or sleepable program.
+However bpf_map_fd_put_ptr() decreases the ref-counter of the inner map
+directly through bpf_map_put(), if the ref-counter is the last one
+(which is true for most cases), the inner map will be freed by
+ops->map_free() in a kworker. But for now, most .map_free() callbacks
+don't use synchronize_rcu() or its variants to wait for the elapse of a
+RCU grace period, so after the invocation of ops->map_free completes,
+the bpf program which is accessing the inner map may incur
+use-after-free problem.
 
-Reported-by: Hou Tao <houtao@huaweicloud.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Link: https://lore.kernel.org/r/20221014113946.965131-2-houtao@huaweicloud.com
+Fix the free of inner map by invoking bpf_map_free_deferred() after both
+one RCU grace period and one tasks trace RCU grace period if the inner
+map has been removed from the outer map before. The deferment is
+accomplished by using call_rcu() or call_rcu_tasks_trace() when
+releasing the last ref-counter of bpf map. The newly-added rcu_head
+field in bpf_map shares the same storage space with work field to
+reduce the size of bpf_map.
+
+Fixes: bba1dc0b55ac ("bpf: Remove redundant synchronize_rcu.")
+Fixes: 638e4b825d52 ("bpf: Allows per-cpu maps and map-in-map in sleepable programs")
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/r/20231204140425.1480317-5-houtao@huaweicloud.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Stable-dep-of: 876673364161 ("bpf: Defer the free of inner map when necessary")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
-(cherry picked from commit 10108826191ab30388e8ae9d54505a628f78a7ec)
+(cherry picked from commit 62fca83303d608ad4fec3f7428c8685680bb01b0)
 Signed-off-by: Robert Kolchmeyer <rkolchmeyer@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/rcupdate.h | 12 ++++++++++++
- kernel/rcu/tasks.h       |  2 ++
- 2 files changed, 14 insertions(+)
+ include/linux/bpf.h     |  7 ++++++-
+ kernel/bpf/map_in_map.c | 11 ++++++++---
+ kernel/bpf/syscall.c    | 26 ++++++++++++++++++++++++--
+ 3 files changed, 38 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 13bddb841ceb1..e3b12de36e924 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -205,6 +205,18 @@ static inline void exit_tasks_rcu_stop(void) { }
- static inline void exit_tasks_rcu_finish(void) { }
- #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 97d94bcba1314..df15d4d445ddc 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -192,9 +192,14 @@ struct bpf_map {
+ 	 */
+ 	atomic64_t refcnt ____cacheline_aligned;
+ 	atomic64_t usercnt;
+-	struct work_struct work;
++	/* rcu is used before freeing and work is only used during freeing */
++	union {
++		struct work_struct work;
++		struct rcu_head rcu;
++	};
+ 	struct mutex freeze_mutex;
+ 	atomic64_t writecnt;
++	bool free_after_mult_rcu_gp;
+ };
  
-+/**
-+ * rcu_trace_implies_rcu_gp - does an RCU Tasks Trace grace period imply an RCU grace period?
-+ *
-+ * As an accident of implementation, an RCU Tasks Trace grace period also
-+ * acts as an RCU grace period.  However, this could change at any time.
-+ * Code relying on this accident must call this function to verify that
-+ * this accident is still happening.
-+ *
-+ * You have been warned!
-+ */
-+static inline bool rcu_trace_implies_rcu_gp(void) { return true; }
-+
- /**
-  * cond_resched_tasks_rcu_qs - Report potential quiescent states to RCU
-  *
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 28f628c702452..b24ef77325eed 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1098,6 +1098,8 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
+ static inline bool map_value_has_spin_lock(const struct bpf_map *map)
+diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
+index af0f15db1bf9a..4cf79f86bf458 100644
+--- a/kernel/bpf/map_in_map.c
++++ b/kernel/bpf/map_in_map.c
+@@ -110,10 +110,15 @@ void *bpf_map_fd_get_ptr(struct bpf_map *map,
  
- 	// Wait for late-stage exiting tasks to finish exiting.
- 	// These might have passed the call to exit_tasks_rcu_finish().
+ void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
+ {
+-	/* ptr->ops->map_free() has to go through one
+-	 * rcu grace period by itself.
++	struct bpf_map *inner_map = ptr;
 +
-+	// If you remove the following line, update rcu_trace_implies_rcu_gp()!!!
- 	synchronize_rcu();
- 	// Any tasks that exit after this point will set ->trc_reader_checked.
++	/* The inner map may still be used by both non-sleepable and sleepable
++	 * bpf program, so free it after one RCU grace period and one tasks
++	 * trace RCU grace period.
+ 	 */
+-	bpf_map_put(ptr);
++	if (need_defer)
++		WRITE_ONCE(inner_map->free_after_mult_rcu_gp, true);
++	bpf_map_put(inner_map);
  }
+ 
+ u32 bpf_map_fd_sys_lookup_elem(void *ptr)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 64206856a05c4..d4b4a47081b51 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -487,6 +487,25 @@ static void bpf_map_put_uref(struct bpf_map *map)
+ 	}
+ }
+ 
++static void bpf_map_free_in_work(struct bpf_map *map)
++{
++	INIT_WORK(&map->work, bpf_map_free_deferred);
++	schedule_work(&map->work);
++}
++
++static void bpf_map_free_rcu_gp(struct rcu_head *rcu)
++{
++	bpf_map_free_in_work(container_of(rcu, struct bpf_map, rcu));
++}
++
++static void bpf_map_free_mult_rcu_gp(struct rcu_head *rcu)
++{
++	if (rcu_trace_implies_rcu_gp())
++		bpf_map_free_rcu_gp(rcu);
++	else
++		call_rcu(rcu, bpf_map_free_rcu_gp);
++}
++
+ /* decrement map refcnt and schedule it for freeing via workqueue
+  * (unrelying map implementation ops->map_free() might sleep)
+  */
+@@ -496,8 +515,11 @@ static void __bpf_map_put(struct bpf_map *map, bool do_idr_lock)
+ 		/* bpf_map_free_id() must be called first */
+ 		bpf_map_free_id(map, do_idr_lock);
+ 		btf_put(map->btf);
+-		INIT_WORK(&map->work, bpf_map_free_deferred);
+-		schedule_work(&map->work);
++
++		if (READ_ONCE(map->free_after_mult_rcu_gp))
++			call_rcu_tasks_trace(&map->rcu, bpf_map_free_mult_rcu_gp);
++		else
++			bpf_map_free_in_work(map);
+ 	}
+ }
+ 
 -- 
 2.43.0
 
