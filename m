@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1D1A8892C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:12:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46C448899A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:14:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CBBC1C29A01
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 07:12:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F006929C979
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDED51BF536;
-	Mon, 25 Mar 2024 00:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C116C3B1196;
+	Mon, 25 Mar 2024 03:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DKtxDzV6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IMWQ0O80"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F67317A934;
-	Sun, 24 Mar 2024 23:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E4417A933;
+	Sun, 24 Mar 2024 23:41:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711323700; cv=none; b=RL26b7OceEpgaluUoccoD2pBUwbx68PvdEDmNLagaEsyUfOVQEtj1zgcosIOg5DJqDUDI77EJ1lo5dsTSiAZ6zYQGYZoZoq3GQszJQykhQILy+Zzly2sqfZHBOXtF0au71ZmXx/PQDl2sXDMtYdsIQkZPxJg/HkevrO0hcD7C6k=
+	t=1711323700; cv=none; b=W5f4YxpaHNpzEqcarUeJh13pwbgFBbVbpxYYvqzWvVz3zOkgjIWzS7KWZMF8Ulv6htlWXrOlsBM1f0fSPSskyvLq0O/ood2woKR5JgaU/mHdm6YBj6xUBsGrpudjKQHcGlTGfjdZbxv5WH9P+wCSSTqXu+zJaO0MIgdJWQpd+qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711323700; c=relaxed/simple;
-	bh=CoIP5bWI0VIjdjtDRBLAzqY0BhLzkg9Y4oXc5EsY1Hs=;
+	bh=c0uLUG+mhovqbPr9q1gR4533lawj4gn8WwbkQdk8jMs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Tc3uieJ/8EdA9i4sPPO+Sb/f97BWYf7LqJW51eK5Gv+63BcAnetMapEITY/ucwK4ruGing4PqdKrcPgeGh5rBtc5ZD2jMYIRxmp5GOs7wkXTy+DeFczIf0QTfplrHGeDsS/Ks18C6AZIC3B2XMnZt7IR/IfNjk5+6GjqHrb51L0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DKtxDzV6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF87EC43399;
-	Sun, 24 Mar 2024 23:41:38 +0000 (UTC)
+	 MIME-Version:Content-Type; b=AxwpGwzS7dSBkD76a/21q0m2x97y34zQIXhq7z+qfKBGhEj3arP9AY+s3WjlfVEMKKUh7f2fCeIkbfDkyeGrhYNQF0Y3m0d6YsDvMXlJ6niUEgR20SBOO8vhxUsguYX+CFGFGQqxY/+3+h2v0lH9cCKfCXpgBN+MVsBrZ/+/NSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IMWQ0O80; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C34E7C433F1;
+	Sun, 24 Mar 2024 23:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711323699;
-	bh=CoIP5bWI0VIjdjtDRBLAzqY0BhLzkg9Y4oXc5EsY1Hs=;
+	s=k20201202; t=1711323700;
+	bh=c0uLUG+mhovqbPr9q1gR4533lawj4gn8WwbkQdk8jMs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DKtxDzV6urA411T2SJQnde9dYn52igK688BFvI12qnu5DqyNOJQENJj/Tx6aO6mtV
-	 Z9vPeHuhO8XO9XmNhQCInm79rvj148jKvAlZ9yV4wMDhb4BU0Tc8Dvd8pr/pWNzgeO
-	 tziyDoDiV1ajLeZ+0NtJBqOFyEhCg7u1YPL6neEh4S6yne2vbeJ1YZxzlDNeiR9N7i
-	 CY+u0pS4e4rBbXq4PG9F+oE/wpvPab+I2V/O5qO6XJ5xosgvS/cC/hzPOtuc2FDKGz
-	 CaP/mO6CohMnyh1ej0UDayMfJHCF2/ecIwSINi9hhSBO99/1Fg44ld6lCp9lvHCk83
-	 bJVzzJBo+pfiw==
+	b=IMWQ0O80/Tq+h9iCYYGJ8XBV1ulVlKo1HpAg2Q41GRXiID5tObNSNdz9JLppl0rMg
+	 6C3iUVg8Q7ec5WsSfy5azd8ni3BgMSoh0BumchkIzzoqzgN8DIUTDx/g4oXsTrLjZs
+	 eTZw2lBJPMWJxUvBCCKXLOizEZ9M7HGhTCUp1d0yB7ZlAwdYVkE100ki27gg/1kxCj
+	 5+mVbdlqbs8wISk32hHStg93UHRHKH9e59dN7wVn+HloWg9hfN4xyFx5znebQC2PfF
+	 bYMaJIjXKHbxGEMR1GFmI/jMHZdeVMLRAIFfSPf9i0HwJ/Z2dpLSB2bF6QKJjTl9ZW
+	 76HsBb+qKFhqA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Linus Walleij <linus.walleij@linaro.org>,
+Cc: =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
+	Shawn Guo <shawnguo@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 072/238] ARM: dts: arm: realview: Fix development chip ROM compatible value
-Date: Sun, 24 Mar 2024 19:37:40 -0400
-Message-ID: <20240324234027.1354210-73-sashal@kernel.org>
+Subject: [PATCH 5.10 073/238] ARM: dts: imx6dl-yapp4: Move phy reset into switch node
+Date: Sun, 24 Mar 2024 19:37:41 -0400
+Message-ID: <20240324234027.1354210-74-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
 References: <20240324234027.1354210-1-sashal@kernel.org>
@@ -58,45 +58,47 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Michal Vokáč <michal.vokac@ysoft.com>
 
-[ Upstream commit 3baa4c5143d65ebab2de0d99a395e5f4f1f46608 ]
+[ Upstream commit 7da7b84fee58c85a6075022023d31edea40e81a1 ]
 
-When the development chip ROM was added, the "direct-mapped" compatible
-value was already obsolete.  In addition, the device node lacked the
-accompanying "probe-type" property, causing the old physmap_of_core
-driver to fall back to trying all available probe types.
-Unfortunately this fallback was lost when the DT and pdata cases were
-merged.
+Drop the phy-reset-duration and phy-reset-gpios deprecated properties and
+move reset-gpios under the switch node.
 
-Fix this by using the modern "mtd-rom" compatible value instead.
-
-Fixes: 5c3f5edbe0a1dff3 ("ARM: realview: add flash devices to the PB1176 DTS")
-Fixes: 642b1e8dbed7bbbf ("mtd: maps: Merge physmap_of.c into physmap-core.c")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Stable-dep-of: 023bd910d3ab ("ARM: dts: imx6dl-yapp4: Fix typo in the QCA switch register address")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/arm-realview-pb1176.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/arm-realview-pb1176.dts b/arch/arm/boot/dts/arm-realview-pb1176.dts
-index f925782f85604..f0be83eebb09d 100644
---- a/arch/arm/boot/dts/arm-realview-pb1176.dts
-+++ b/arch/arm/boot/dts/arm-realview-pb1176.dts
-@@ -435,7 +435,7 @@ pb1176_serial3: serial@1010f000 {
+diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+index ebc0892e37c7a..f18da2b70fdc9 100644
+--- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
++++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+@@ -103,8 +103,6 @@ &fec {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_enet>;
+ 	phy-mode = "rgmii-id";
+-	phy-reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+-	phy-reset-duration = <20>;
+ 	phy-supply = <&sw2_reg>;
+ 	status = "okay";
  
- 		/* Direct-mapped development chip ROM */
- 		pb1176_rom@10200000 {
--			compatible = "direct-mapped";
-+			compatible = "mtd-rom";
- 			reg = <0x10200000 0x4000>;
- 			bank-width = <1>;
- 		};
+@@ -128,6 +126,7 @@ phy_port3: phy@2 {
+ 		switch@10 {
+ 			compatible = "qca,qca8334";
+ 			reg = <10>;
++			reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+ 
+ 			switch_ports: ports {
+ 				#address-cells = <1>;
 -- 
 2.43.0
 
