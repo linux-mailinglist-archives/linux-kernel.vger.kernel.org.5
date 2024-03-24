@@ -1,187 +1,258 @@
-Return-Path: <linux-kernel+bounces-112594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BDAC887BC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:44:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21AA0887BCC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 06:47:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F7F51C20AFD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:44:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8229E282393
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Mar 2024 05:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A32E14012;
-	Sun, 24 Mar 2024 05:44:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CB815E86;
+	Sun, 24 Mar 2024 05:46:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S2PEyyg1"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="m2rWLvRP"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB3AE1A38FF
-	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:44:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4821C14AA9
+	for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 05:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711259050; cv=none; b=O2bVD49o7UXDnMdhwDMVuA8nuHKgL0D7EsEERG7/Ux16htHR/rvTa/d037sojWDUXgZB0ZsBL7EEenT5siwGlg68mWPQXN4xEQJHYTq7njSir9ReW6Jfgl+oArMNJRby4NWJzCxFo2ky8MDa9rRjaXSUfPeeSIDQx2ErOj0kHhw=
+	t=1711259208; cv=none; b=NQ6lyt4gqqKItaODrBIxhxYwlNIlnAA3HF7HH3amH2XIzGZV+qOA11QbGQt0l83BKhJaF1yjwk+6Wu86ptyOsMMVcWOofzKfpghpuQSRWQCQKrDSym7uUeuNmHc95sRu+tnFCmO/6x9SsCSC2nSsjDMpaB1YzDgJUjN+/5VFxhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711259050; c=relaxed/simple;
-	bh=LdjO/QYrhKr81Llv0MVW7fpPVq4jZelsRbEppyAP1tk=;
+	s=arc-20240116; t=1711259208; c=relaxed/simple;
+	bh=O0XldRplkMLNWV58ngQOMmBKvGWitMJyVzfI5WPr5Yg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=goiPrhoBNoFKFc7EEFbYZTa4n6rkc/cHN+QomiW9QID3m0VdR8QnGJcxGmSrivPPWz0pS5OoeeVzJTuBhWyCSqN7Phc8KX10jSO+EaVXFRhqQWuv/kK2aGmmgjkDLOVBNnZsNoym25UKioGcqWkqRFSm6UKwYfsw95Qv2xPNYBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S2PEyyg1; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d4360ab3daso56730991fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 22:44:08 -0700 (PDT)
+	 To:Cc:Content-Type; b=K8Dr3q7vW+m2ztraEZ2sbItQjeIAD4SuWrGb16EusGpGp55xdane4FTgeDQUHUQcKqCmPZ+zaTosZZkAJgW5rXRCzz7mJv4Z/KGCK/FYaVoX/N0RaeHKz1OhC66VUL1/afjVN/OueJIgZFvuw/M9LJ2AwbPPKbhbtsgcIoyvqXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=m2rWLvRP; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e062f3a47bso98195ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Mar 2024 22:46:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711259047; x=1711863847; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711259206; x=1711864006; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C2dDY0p618pqyS1EUCvDFefCsVtBhB9nXq24B4ycSUs=;
-        b=S2PEyyg17VAEoXBUQaYpKsUYClypReBVzhXejNuoVj7WaZA/lb0hcwIZ5pPXhA+TP7
-         3wktSJguNVKQbbc9pFxJRGtWEw93v8u4E3m8JRbkppgysVfbu0Py+Nq9nI+qTiIqUs3U
-         0+SOP4B+cg9usJCXlWxQ/7AhZBF3/qkNDLc4IzvTDI5i9dCPUN+PlXkeBn9Aoz3C6n78
-         P2oflhb0uZEtnpngZdMb7u2PnVcbrkUDDzYnk+f1iLcNJxLhHPYs0W7Y46OGNjtmt3XL
-         tHwEsTBt4NfTf9b1CcEiXzR8A+5zxrWokpeU7ncdAz5/ix1UZC7p5fXSwGmKGtnOKcgb
-         OqrQ==
+        bh=0dUARXd4gdSbPM+q5LS9OaBlde6RxChbJRkKpkQ0Eh8=;
+        b=m2rWLvRPMhkv6HOxec8LpjOsR77IpGpm9rjXx9wL+Ttq2ub4yAks4lCDa4ocWGuZpV
+         WTlvzHOFuQoF7TDhnImIyPgtuqPV5XH3Q3vBZmRqNSYeXZ5LH0P0XPnGhQrAcJC+9zhh
+         C7g3m5ZfCHv8Im55/XI/4IH2mjoAhvvcxH91s8JmbBMiyXD8dzdlBQeQZghiGICSspOA
+         T/W4jfBw8s4MTl1ndZxByIHTmeJTPGKthjSWOrhEmF9zeF+SPgpvM+jtZxCTBIDLot0J
+         29wnaJP367oKx1u/mAIlaSIkUve1l38bD4bmGrANqa92cD770AkrOoDAFtbTo/nyD+4D
+         SHtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711259047; x=1711863847;
+        d=1e100.net; s=20230601; t=1711259206; x=1711864006;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C2dDY0p618pqyS1EUCvDFefCsVtBhB9nXq24B4ycSUs=;
-        b=BNQ1zBpZCm0K3u7PHFVZuP7bIGQj8MXF1FqG73ZdZbME9MMd59wRwghsyfYwCKuRLF
-         zIUZnFDd5D0KMqHvr/3M15SBQrvZNbaYV4a0UeGQ6hF1gtuBhPlJaeJVFFPiap9PkXUk
-         P9LyN7gJP6WOJ0OqYDqqPsadNuzayIgIr7PQ6NISM7RtEBqYlNkh2Kf+UXk8jWExEIHv
-         kr0yiM590mL++RPrlJpn4m3cCkPgpbq60PyGNTu4k2ia9QbMGB4gf0vxDA6cUXtr38cK
-         t/BZzD/Je8eBjGCLtM5YbiUBri8XabGBRQL2jwF+tTvDQAnudZ/qTwK9kTWrxO46KGO9
-         gNiw==
-X-Forwarded-Encrypted: i=1; AJvYcCXrax7TI3yPv1ljCHwUoqvZIzVsskoslbCNIfE4iG4Jz7dR788g0tpKshKpyCaV5vV7d24w/iAbwiAseGYkhlABjxptuT7CEMQ8RmJt
-X-Gm-Message-State: AOJu0Yz3HQmmWamzzFoKjpgItibvNEZFykwbfFNyzn+v5zcvh0UEOz8p
-	uXRwH90qgcF6KQ8MFfVsI/LjTHYYgpynQVlMxxXz1ZSdUJSVMy/6axNRc3WHWYpd0P8BtINTcE8
-	h/bu88EiJ+oKt/TS03bRrjLpSkg==
-X-Google-Smtp-Source: AGHT+IGzC/9x0mJCIBN7WFQPxP2BJMGSDq9vBZ+aqI9LB1nghL9hQCsxDlrP2xgVqep1X3f6PcSgKqiPzPuoo73kGIo=
-X-Received: by 2002:a05:6512:e93:b0:515:a257:cbd with SMTP id
- bi19-20020a0565120e9300b00515a2570cbdmr2497707lfb.24.1711259046395; Sat, 23
- Mar 2024 22:44:06 -0700 (PDT)
+        bh=0dUARXd4gdSbPM+q5LS9OaBlde6RxChbJRkKpkQ0Eh8=;
+        b=ZL0FdcJGynaJVkCxRdtDCeBeK1zelPvduqZQtJ/JJLyrMQf455huc68iK5QSzDoPK4
+         2vt8f5f3J0LIsNBWKnhetZSyPUBxes9HxufgxvM9mZb7L5fcJAwF+MK2VZEe0DAguOZY
+         vcBDyGMNC7etpANWX5jxt9jp9SI4M4sxvG7XpUm9ymRfaHroePfO3/NOzoJPr2oKajoE
+         /6PpIWdyXNh9I0miZ/+pfgXSLLye9Qd33wVNA5rpiHj3JDF8+96wkv+Bpavap4McB+Ci
+         TGCh1OLci8UOFftbpolr+1rt+mzbs2QEnls2L+YZO9fSyTeiensI7f8Eo04lTS5LYUcR
+         qxgw==
+X-Forwarded-Encrypted: i=1; AJvYcCWeEFseFQ9FkPanNn8shqpXsdz0eIQK1dkEyvp8mrMVjgLhSgKcbdFKOZ/GjWYu7PNE+ZAEol1e/L4dAr/BUOmkHPRG43wKNWWb3Ai8
+X-Gm-Message-State: AOJu0Ywb9+fOb8ZjIz9cUcgozNPZ9XndggU0X6thseM5EtbuZkgRVGZL
+	Jtee6mvSxTPynK8IS0RcJmNSCB1MGDkJCZj27WkCd5cQDw0/nHm08Y91lyMdPm90Vbvqn3gSmiq
+	35wvVBOnt2YJquKkahBzzkNU8q4efiN0z+5x9
+X-Google-Smtp-Source: AGHT+IFOWExseneOH0bN94qKvv3VaKIFnz3HaXYyPDGXlocCZ9qQHN0NxvsWUK3ofddfUvEsNhuI35TweVOZtkNCWow=
+X-Received: by 2002:a17:902:ecc6:b0:1de:e36a:d3aa with SMTP id
+ a6-20020a170902ecc600b001dee36ad3aamr775557plh.6.1711259205866; Sat, 23 Mar
+ 2024 22:46:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322165233.71698-1-brgerst@gmail.com> <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
- <Zf+PIYP4TyF6ZRVy@gmail.com> <CAMzpN2htOit94c-M+zHqEcLcGPOU2zTS6wM-r7xWwd9Ku8h3-Q@mail.gmail.com>
- <Zf+mjy49dG5ly9ka@gmail.com>
-In-Reply-To: <Zf+mjy49dG5ly9ka@gmail.com>
-From: Brian Gerst <brgerst@gmail.com>
-Date: Sun, 24 Mar 2024 01:43:55 -0400
-Message-ID: <CAMzpN2go9mmyWRb9vsg7O1aAtSKrW=HqcZYmddkq7eZQQHuM1Q@mail.gmail.com>
-Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>, 
-	David.Laight@aculab.com, Linus Torvalds <torvalds@linux-foundation.org>
+References: <20240209031441.943012-1-weilin.wang@intel.com> <20240209031441.943012-14-weilin.wang@intel.com>
+In-Reply-To: <20240209031441.943012-14-weilin.wang@intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sat, 23 Mar 2024 22:46:33 -0700
+Message-ID: <CAP-5=fVEDik60cFZHevWDj4OdNynB+LF6r7jkuqc1x6M=4qyGg@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 13/15] perf stat: Code refactoring in hardware-grouping
+To: weilin.wang@intel.com
+Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
+	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
+	Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 24, 2024 at 12:05=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wro=
-te:
+On Thu, Feb 8, 2024 at 7:14=E2=80=AFPM <weilin.wang@intel.com> wrote:
 >
+> From: Weilin Wang <weilin.wang@intel.com>
 >
-> * Brian Gerst <brgerst@gmail.com> wrote:
+> Decouple the step to generate final grouping strings out from the
+> build_grouping step so that we could do single metric grouping and then
+> merge groups if needed later.
 >
-> > On Sat, Mar 23, 2024 at 10:25=E2=80=AFPM Ingo Molnar <mingo@kernel.org>=
- wrote:
-> > >
-> > >
-> > > * Uros Bizjak <ubizjak@gmail.com> wrote:
-> > >
-> > > > On Fri, Mar 22, 2024 at 5:52=E2=80=AFPM Brian Gerst <brgerst@gmail.=
-com> wrote:
-> > > > >
-> > > > > Currently, x86-64 uses an unusual percpu layout, where the percpu=
- section
-> > > > > is linked at absolute address 0.  The reason behind this is that =
-older GCC
-> > > > > versions placed the stack protector (if enabled) at a fixed offse=
-t from the
-> > > > > GS segment base.  Since the GS segement is also used for percpu v=
-ariables,
-> > > > > this forced the current layout.
-> > > > >
-> > > > > GCC since version 8.1 supports a configurable location for the st=
-ack
-> > > > > protector value, which allows removal of the restriction on how t=
-he percpu
-> > > > > section is linked.  This allows the percpu section to be linked n=
-ormally,
-> > > > > like other architectures.  In turn, this allows removal of code t=
-hat was
-> > > > > needed to support the zero-based percpu section.
-> > > >
-> > > > The number of simplifications throughout the code, enabled by this
-> > > > patch set, is really impressive, and it reflects the number of
-> > > > workarounds to enable the feature that was originally not designed =
-for
-> > > > the kernel usage. As noted above, this issue was recognized in the =
-GCC
-> > > > compiler and the stack protector support was generalized by adding
-> > > > configurable location for the stack protector value [1,2].
-> > > >
-> > > > The improved stack protector support was implemented in gcc-8.1,
-> > > > released on May 2, 2018, when linux 4.17 was in development. In lig=
-ht
-> > > > of this fact, and 5 (soon 6) GCC major releases later, I'd like to =
-ask
-> > > > if the objtool support to fixup earlier compilers is really necessa=
-ry.
-> > > > Please note that years ago x86_32 simply dropped stack protector
-> > > > support with earlier compilers and IMO, we should follow this examp=
-le
-> > > > also with x86_64, because:
-> > >
-> > > Ack on raising the minimum version requirement for x86-64
-> > > stackprotector to 8.1 or so - this causes no real pain on the distro
-> > > side: when *this* new kernel of ours is picked by a distro, it almost
-> > > always goes hand in hand with a compiler version upgrade.
-> > >
-> > > We should be careful with fixes marked for -stable backport, but othe=
-r
-> > > than that, new improvements like Brian's series are a fair game to
-> > > tweak compiler version requirements.
-> > >
-> > > But please emit a (single) prominent build-time warning if a feature =
-is
-> > > disabled though, even if there are no functional side-effects, such a=
-s
-> > > for hardening features.
-> >
-> > Disabled for any reason or only if the compiler lacks support?
->
-> Only if the user desires to have it enabled, but it's not possible due
-> to compiler (or other build environment) reasons. Ie. if something
-> unexpected happens from the user's perspective.
->
-> The .config option is preserved even if the compiler doesn't support
-> it, right?
->
-> I suspect this should also cover features that get select-ed by a
-> feature that the user enables. (Not sure about architecture level
-> select-ed options.)
->
-> Thanks,
->
->         Ingo
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 
-I could add something like:
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-comment "Stack protector is not supported by the architecture or compiler"
-       depends on !HAVE_STACKPROTECTOR
+Thanks,
+Ian
 
-But, "make oldconfig" will still silently disable stack protector if
-the compiler doesn't support the new options.  It does put the comment
-into the .config file though, so that may be enough.
-
-Brian Gerst
+> ---
+>  tools/perf/util/metricgroup.c | 50 +++++++++++++++++------------------
+>  1 file changed, 25 insertions(+), 25 deletions(-)
+>
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
+c
+> index f1eb73957765..cfdbb5f7fb77 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -1896,9 +1896,10 @@ static int find_and_set_counters(struct metricgrou=
+p__event_info *e,
+>  {
+>         int ret;
+>         unsigned long find_bit =3D 0;
+> -
+> -       if (e->taken_alone && current_group->taken_alone)
+> +       if (e->taken_alone && current_group->taken_alone) {
+> +               pr_debug("current group with taken alone event already\n"=
+);
+>                 return -ENOSPC;
+> +       }
+>         if (e->free_counter)
+>                 return 0;
+>         if (e->fixed_counter) {
+> @@ -2017,7 +2018,8 @@ static int assign_event_grouping(struct metricgroup=
+__event_info *e,
+>
+>         list_for_each_entry(g, groups, nd) {
+>                 if (!strcasecmp(g->pmu_name, e->pmu_name)) {
+> -                       pr_debug("found group for event %s in pmu %s\n", =
+e->name, g->pmu_name);
+> +                       pr_debug("found group header for event %s in pmu =
+%s\n",
+> +                               e->name, g->pmu_name);
+>                         pmu_group_head =3D g;
+>                         break;
+>                 }
+> @@ -2146,26 +2148,22 @@ static int hw_aware_metricgroup__build_event_stri=
+ng(struct list_head *group_strs
+>   */
+>  static int create_grouping(struct list_head *pmu_info_list,
+>                           struct list_head *event_info_list,
+> -                         struct list_head *groupings,
+> -                         const char *modifier)
+> +                         struct list_head *grouping)
+>  {
+>         int ret =3D 0;
+>         struct metricgroup__event_info *e;
+> -       LIST_HEAD(groups);
+>         char *bit_buf =3D malloc(NR_COUNTERS);
+>
+> -       //TODO: for each new core group, we should consider to add events=
+ that uses fixed counters
+> +       //TODO: for each new core group, we could consider to add events =
+that
+> +       //uses fixed counters
+>         list_for_each_entry(e, event_info_list, nd) {
+>                 bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_CO=
+UNTERS);
+>                 pr_debug("Event name %s, [pmu]=3D%s, [counters]=3D%s, [ta=
+ken_alone]=3D%d\n",
+>                         e->name, e->pmu_name, bit_buf, e->taken_alone);
+> -               ret =3D assign_event_grouping(e, pmu_info_list, &groups);
+> +               ret =3D assign_event_grouping(e, pmu_info_list, grouping)=
+;
+>                 if (ret)
+> -                       goto out;
+> +                       return ret;
+>         }
+> -       ret =3D hw_aware_metricgroup__build_event_string(groupings, modif=
+ier, &groups);
+> -out:
+> -       metricgroup__free_group_list(&groups);
+>         return ret;
+>  };
+>
+> @@ -2186,9 +2184,8 @@ static bool is_special_event(const char *id)
+>   * @groupings: header to the list of final event grouping.
+>   * @modifier: any modifiers added to the events.
+>   */
+> -static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_un=
+used,
+> -                                 struct list_head *groupings __maybe_unu=
+sed,
+> -                                 const char *modifier __maybe_unused)
+> +static int hw_aware_build_grouping(struct expr_parse_ctx *ctx,
+> +                                  struct list_head *grouping)
+>  {
+>         int ret =3D 0;
+>         struct hashmap_entry *cur;
+> @@ -2220,8 +2217,7 @@ static int hw_aware_build_grouping(struct expr_pars=
+e_ctx *ctx __maybe_unused,
+>         ret =3D get_pmu_counter_layouts(&pmu_info_list, ltable);
+>         if (ret)
+>                 goto err_out;
+> -       ret =3D create_grouping(&pmu_info_list, &event_info_list, groupin=
+gs,
+> -                            modifier);
+> +       ret =3D create_grouping(&pmu_info_list, &event_info_list, groupin=
+g);
+>
+>  err_out:
+>         metricgroup__free_event_info(&event_info_list);
+> @@ -2267,23 +2263,25 @@ static int hw_aware_parse_ids(struct perf_pmu *fa=
+ke_pmu,
+>  {
+>         struct parse_events_error parse_error;
+>         struct evlist *parsed_evlist;
+> -       LIST_HEAD(groupings);
+> +       LIST_HEAD(grouping_str);
+> +       LIST_HEAD(grouping);
+>         struct metricgroup__group_strs *group;
+>         int ret;
+>
+>         *out_evlist =3D NULL;
+> -       ret =3D hw_aware_build_grouping(ids, &groupings, modifier);
+> -       if (ret) {
+> -               metricgroup__free_grouping_strs(&groupings);
+> -               return ret;
+> -       }
+> +       ret =3D hw_aware_build_grouping(ids, &grouping);
+> +       if (ret)
+> +               goto out;
+> +       ret =3D hw_aware_metricgroup__build_event_string(&grouping_str, m=
+odifier, &grouping);
+> +       if (ret)
+> +               goto out;
+>
+>         parsed_evlist =3D evlist__new();
+>         if (!parsed_evlist) {
+>                 ret =3D -ENOMEM;
+>                 goto err_out;
+>         }
+> -       list_for_each_entry(group, &groupings, nd) {
+> +       list_for_each_entry(group, &grouping_str, nd) {
+>                 struct strbuf *events =3D &group->grouping_str;
+>
+>                 pr_debug("Parsing metric events '%s'\n", events->buf);
+> @@ -2303,7 +2301,9 @@ static int hw_aware_parse_ids(struct perf_pmu *fake=
+_pmu,
+>  err_out:
+>         parse_events_error__exit(&parse_error);
+>         evlist__delete(parsed_evlist);
+> -       metricgroup__free_grouping_strs(&groupings);
+> +out:
+> +       metricgroup__free_group_list(&grouping);
+> +       metricgroup__free_grouping_strs(&grouping_str);
+>         return ret;
+>  }
+>
+> --
+> 2.42.0
+>
 
