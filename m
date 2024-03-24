@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-113619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C638885BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:14:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6F2B888E1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:08:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 023D41C250AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 01:14:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80E0A296C8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17DE81D2AAF;
-	Sun, 24 Mar 2024 22:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BACC1422B2;
+	Sun, 24 Mar 2024 22:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ruebdpPE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ilHCmdxH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F32B763FF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0FC763FA;
 	Sun, 24 Mar 2024 22:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711320454; cv=none; b=lqZPHbVikXxFhFjyjrU+xujCpj/ql2Q7ngCKruBrHjmo1j934SzilBvry8RumS0y8GDAHiTwIAykFoQ1dClrh3M2O2ejQPK421hCOSPnzOdcl1Vm12trV76xS6YA4SgPRfulEl3Tngf6IwBCS2aioz6ac8hJkrNKaBtauAIMYxk=
+	t=1711320454; cv=none; b=ZfvUFTOW2fv4+gX1ojtoEgTqxC4QUMdoNB8s4YX1zRrFQrOCYEQqERMmz2GCreArMsh7U2jRM9+aEqz34kELQ9sdGvHB4huzeMDwDJN1+qgJXA9YuB+cEkYte9jFJqBxDmyffA4ZKUrQAkFGpMmRgEW6sFUVptiFNy+/OsVTtEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711320454; c=relaxed/simple;
-	bh=3W6dR8PdnATH3wLhgXePo6qAuvBQwrdOzzSzsfx9tTs=;
+	bh=W4RwcyHV3K6Low51NVIhVtApOG+DXghL1IwfkGZklV4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Haal0qxDFl+svp9TlRuYZiSnq0P03knyTbHMEK066hLTKGmGAkfsxHO3xX7stv6N20hHlyvkbFE+RfbPUVIOAbqRfJGuJMBaMkemwDYgZakemp6ZRL12QFPZ3hvSfp7NY/WJwKETAFJQPtZbJDHwthxwdLoqJPzSn9PIfqlZyv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ruebdpPE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41D4CC433F1;
-	Sun, 24 Mar 2024 22:47:33 +0000 (UTC)
+	 MIME-Version; b=lJpLIkwlcQL8GRmHENigMjVpLs/+UUzmPX+LhmASzDwbpQ6//VNtODkLgujsQV/ynTKM87UCb2EoeJXr+BVoPccxPThK3kzQG5R3cCCrdl4M0RFPT6wbj0IxyBPcNNFmzwLr6H83JaEt6V0wkXLEvcz6jNlnRhUS8cjdrCAf818=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ilHCmdxH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2600FC43390;
+	Sun, 24 Mar 2024 22:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711320453;
-	bh=3W6dR8PdnATH3wLhgXePo6qAuvBQwrdOzzSzsfx9tTs=;
+	s=k20201202; t=1711320454;
+	bh=W4RwcyHV3K6Low51NVIhVtApOG+DXghL1IwfkGZklV4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ruebdpPEXLyp17TN5P0ohiKq3+LgvMN5VJZR0bpcyzZBO9sJt/c0QHpkjVLbvIsof
-	 K4rYiEwqXr2p0A3sqrK7flgqP1es2gpeWb5vUndaUFeR/fx3OOBdYRO00NNWoFt5t6
-	 FrrHH3h4VVDTPL2SmM5O+O9ihXvbnBqzX4Gk+eMNSOtJKL0JpwUGaeMMQBCadNBFpc
-	 gENRDwgis+8pL10bKoqCD7Lv+IHLohbyVYawAFXLqH+fdiWDPZ75L9GOgXs3HQyY1u
-	 JyRKG9CWYAg1Lk9Ab9GYp/l2n+ewT/5wlJR5wXQ7bRz8UfFUGY90XTJJLaAu23LBqN
-	 cetA1/Od82Lzw==
+	b=ilHCmdxHzgpz1zNcJ0enSHS7iPYk7cDhi+E2IrQ/MtHCEgQY8RDgWU9hAvOuXtWZV
+	 TFwzdBfYQapbGn71pNi84r2ukzs4NT7nod5zr2ciFEv411UT9xLnPmaXYYCXQdWdFi
+	 Hc1G2PZEqmRy4rJGkZ2NEdwwKm9EiYhHVGYFI6ESN+V39/spaYIeThCfaGwYQBxbNu
+	 KoXb43hoRGNPl8Ck6V8W2yToGPR45W5axQ1v9KpuVPwnIY/fqQ66C9DSxYA+Iwct7R
+	 Q1DNglAbGUOaJUgSQBnaT3B5jVoD006JF44V1q99uI8aa3/rxQEPThJiUWNU8B9+Vf
+	 9Uvs8D5j+6K7w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.7 012/713] ASoC: rt5645: Make LattePanda board DMI match more precise
-Date: Sun, 24 Mar 2024 18:35:38 -0400
-Message-ID: <20240324224720.1345309-13-sashal@kernel.org>
+Subject: [PATCH 6.7 013/713] spi: intel-pci: Add support for Lunar Lake-M SPI serial flash
+Date: Sun, 24 Mar 2024 18:35:39 -0400
+Message-ID: <20240324224720.1345309-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324224720.1345309-1-sashal@kernel.org>
 References: <20240324224720.1345309-1-sashal@kernel.org>
@@ -62,61 +62,33 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-[ Upstream commit 551539a8606e28cb2a130f8ef3e9834235b456c4 ]
+[ Upstream commit 8f44e3808200c1434c26ef459722f88f48b306df ]
 
-The DMI strings used for the LattePanda board DMI quirks are very generic.
+Add Intel Lunar Lake-M PCI ID to the driver list of supported devices.
+This is the same controller found in previous generations.
 
-Using the dmidecode database from https://linux-hardware.org/ shows
-that the chosen DMI strings also match the following 2 laptops
-which also have a rt5645 codec:
-
-Insignia NS-P11W7100 https://linux-hardware.org/?computer=E092FFF8BA04
-Insignia NS-P10W8100 https://linux-hardware.org/?computer=AFB6C0BF7934
-
-All 4 hw revisions of the LattePanda board have "S70CR" in their BIOS
-version DMI strings:
-
-DF-BI-7-S70CR100-*
-DF-BI-7-S70CR110-*
-DF-BI-7-S70CR200-*
-LP-BS-7-S70CR700-*
-
-See e.g. https://linux-hardware.org/?computer=D98250A817C0
-
-Add a partial (non exact) DMI match on this string to make the LattePanda
-board DMI match more precise to avoid false-positive matches.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://msgid.link/r/20240211212736.179605-1-hdegoede@redhat.com
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Link: https://msgid.link/r/20240212082027.2462849-1-mika.westerberg@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/spi/spi-intel-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index ea08b7cfc31da..e0da151508309 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3829,6 +3829,16 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		  DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
- 		  DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
- 		  DMI_EXACT_MATCH(DMI_BOARD_VERSION, "Default string"),
-+		  /*
-+		   * Above strings are too generic, LattePanda BIOS versions for
-+		   * all 4 hw revisions are:
-+		   * DF-BI-7-S70CR100-*
-+		   * DF-BI-7-S70CR110-*
-+		   * DF-BI-7-S70CR200-*
-+		   * LP-BS-7-S70CR700-*
-+		   * Do a partial match for S70CR to avoid false positive matches.
-+		   */
-+		  DMI_MATCH(DMI_BIOS_VERSION, "S70CR"),
- 		},
- 		.driver_data = (void *)&lattepanda_board_platform_data,
- 	},
+diff --git a/drivers/spi/spi-intel-pci.c b/drivers/spi/spi-intel-pci.c
+index 07d20ca1164c3..4337ca51d7aa2 100644
+--- a/drivers/spi/spi-intel-pci.c
++++ b/drivers/spi/spi-intel-pci.c
+@@ -85,6 +85,7 @@ static const struct pci_device_id intel_spi_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0xa2a4), (unsigned long)&cnl_info },
+ 	{ PCI_VDEVICE(INTEL, 0xa324), (unsigned long)&cnl_info },
+ 	{ PCI_VDEVICE(INTEL, 0xa3a4), (unsigned long)&cnl_info },
++	{ PCI_VDEVICE(INTEL, 0xa823), (unsigned long)&cnl_info },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(pci, intel_spi_pci_ids);
 -- 
 2.43.0
 
