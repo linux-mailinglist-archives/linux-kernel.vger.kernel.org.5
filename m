@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-114039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-114025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AAA7888F25
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 06:38:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B418887F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 03:15:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9EBC28E6F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 05:38:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AB92B224A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 02:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7AD22D8AC;
-	Sun, 24 Mar 2024 23:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74EAB149E07;
+	Sun, 24 Mar 2024 23:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d3E1/dhe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wh+kRcmj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0582212F588;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF5D314EC41;
 	Sun, 24 Mar 2024 23:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711321318; cv=none; b=Mns85/67dgUInKYgpJO6vTGQ6imqxvNn/IPr2lCc+ritF4OXOispxPiPTSin4hRl9IltNnvOfpOaP/QpyAvOu5NQj2PA206xJb4ujpy5OzptKtNfkNOG6jEEYH2wcEAv+wbnnbSkyatC50fTNkh48nbkxQwgy0ntfmL21ERYNhg=
+	t=1711321320; cv=none; b=iCYlpDk9ru6OUVj2N5F/r9ghSQj2dxS3ikEqenai9A0a6DOXnwzrh7ubjSij8xhOEv0+Ej/zmmr27BEjxFZoVufJux3D4jrowweB4tdedEUHnjCtZcOYRT5l6iPjqMJUpZDKpugd3aq/OwweMDQurOWSnq3g48eUwDlWB0ODHa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711321318; c=relaxed/simple;
-	bh=+VkSfxLjq9zTh2Um2OakZb7sD8Gj8u1Q9eEf/0H2ymo=;
+	s=arc-20240116; t=1711321320; c=relaxed/simple;
+	bh=n6A4tUBhWX7HwegfEx4yiXj5Dlp8rAGYSamdvQLeZP0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FLuxAw2dOKMR35+t2tNPg5G9WWn1dp0ZkAAna774P1VNZpXC7gY7SmhKPuTg1NBsY8qfuhVORhK7N1kW2ZcM0nJyszgY/oQO3olNaRuln/f2l1J1iwAuS/ZWUc1ZjWV4uk7VM4KPnkQBwZsIbwE8RED7fqfFodVs1lcggE2DBls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d3E1/dhe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F461C433F1;
-	Sun, 24 Mar 2024 23:01:57 +0000 (UTC)
+	 MIME-Version; b=jBgmoUD4sNrI9vXOvbbkv24jVOkLEQKi0dcs/1WI3BSsRUxstDVmtoIU1iKNZhulUhtMCIs7xfnqpZ617rhz4WmIgxbntbJBM4uEY1rdGiN0Tr9uOieZ2gpBJRGznWLixCIsgmWleneTm26GnfnDorR9J2vr5/SUbg8OnDlBiaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wh+kRcmj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26116C43399;
+	Sun, 24 Mar 2024 23:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711321317;
-	bh=+VkSfxLjq9zTh2Um2OakZb7sD8Gj8u1Q9eEf/0H2ymo=;
+	s=k20201202; t=1711321318;
+	bh=n6A4tUBhWX7HwegfEx4yiXj5Dlp8rAGYSamdvQLeZP0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=d3E1/dheSAM/ztS54kBsTbCXI65COyxirTPgjHxnClFDROfvhGtUY3LNcyBfEcez7
-	 /253nlMhv8uo/37Xtg22+70ElfYkw5FR/g8+ZEVeLI5MSMbkrty0o/P38CBOWNMXEA
-	 UAJQDK15RxGfxBI2oqvE8v6gF44w1MiSGQgBRbUPwdfwdqS599FqNkcMPMbSl3zW78
-	 Nmt4tQ0vpslaqldRYxUpZyYTavkgIQo5bSCtKUAtqttQRzHOvX1ig76pYepGyChjOG
-	 OgaRhVe9eD3j5LEOhDrHEFasXVQO4W5PdkIwrV52NBk2vTQBrcDSa1zjFV+Mfvnbho
-	 MB9NXdx59otbg==
+	b=Wh+kRcmjqUNNbO5SOhE9nbB4dcMMwMSdwnxgOKR05nCPIamswDTieeg+fWgR3yNjw
+	 CI4WrQ2Muctr1+07K128RkqGOwv6GBSzLoEfvESf4NkgHCscq1gSOQG89MveVAMBdy
+	 wd9fET9tmGhc8aGbmAaA187ayvW91ZV5mApDRQM7m3YWzJPIuKt0+N/Je8UTG+juzm
+	 u5Hh8QaKxEvThxjNfCf/t7HE5VHlEGgmXLn9C2OjSrlA3P/jUbniIhLM7zSFUmwaoi
+	 k0vf/dmbTV/8dhu9b5PViNBQuWicyWjhVGYqG56YbtpY5EX9Rjsm4UVUkAU0pLt6a/
+	 mgXZoC7+naF/g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Rob Herring <robh@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Rob Herring <robh@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 040/638] arm64: dts: qcom: Fix interrupt-map cell sizes
-Date: Sun, 24 Mar 2024 18:51:17 -0400
-Message-ID: <20240324230116.1348576-41-sashal@kernel.org>
+Subject: [PATCH 6.6 041/638] ARM: dts: renesas: rcar-gen2: Add missing #interrupt-cells to DA9063 nodes
+Date: Sun, 24 Mar 2024 18:51:18 -0400
+Message-ID: <20240324230116.1348576-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
 References: <20240324230116.1348576-1-sashal@kernel.org>
@@ -62,84 +62,129 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 
-From: Rob Herring <robh@kernel.org>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 704dccec0d490f2ad06f3f16ebed254d81906c3a ]
+[ Upstream commit 8c987693dc2d292d777f1be63cb35233049ae25e ]
 
-The PCI node interrupt-map properties have the wrong size as #address-cells
-in the interrupt parent are not accounted for.
+make dtbs_check W=2:
 
-The dtc interrupt_map check catches this, but the warning is off because
-its dependency, interrupt_provider, is off by default.
+    arch/arm/boot/dts/renesas/r8a7790-lager.dts:444.11-458.5: Warning (interrupt_provider): /i2c-mux4/pmic@58: Missing '#interrupt-cells' in interrupt provider
+    ...
 
-Signed-off-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20240213-arm-dt-cleanups-v1-5-f2dee1292525@kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fix this by adding the missing #interrupt-cells properties.
+
+Reported-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/a351e503ea97fb1af68395843f513925ff1bdf26.1707922460.git.geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/ipq6018.dtsi |  8 ++++----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 16 ++++++++--------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ arch/arm/boot/dts/renesas/r8a7790-lager.dts   | 1 +
+ arch/arm/boot/dts/renesas/r8a7790-stout.dts   | 1 +
+ arch/arm/boot/dts/renesas/r8a7791-koelsch.dts | 1 +
+ arch/arm/boot/dts/renesas/r8a7791-porter.dts  | 1 +
+ arch/arm/boot/dts/renesas/r8a7792-blanche.dts | 1 +
+ arch/arm/boot/dts/renesas/r8a7793-gose.dts    | 1 +
+ arch/arm/boot/dts/renesas/r8a7794-alt.dts     | 1 +
+ arch/arm/boot/dts/renesas/r8a7794-silk.dts    | 1 +
+ 8 files changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index fc907afe5174c..4294a5405c012 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -767,10 +767,10 @@ pcie0: pci@20000000 {
+diff --git a/arch/arm/boot/dts/renesas/r8a7790-lager.dts b/arch/arm/boot/dts/renesas/r8a7790-lager.dts
+index 5ad5349a50dc9..ab7e9fa90b9fe 100644
+--- a/arch/arm/boot/dts/renesas/r8a7790-lager.dts
++++ b/arch/arm/boot/dts/renesas/r8a7790-lager.dts
+@@ -437,6 +437,7 @@ pmic@58 {
+ 			interrupt-parent = <&irqc0>;
+ 			interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 			interrupt-controller;
++			#interrupt-cells = <2>;
  
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map = <0 0 0 1 &intc 0 75 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
--					<0 0 0 2 &intc 0 78 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
--					<0 0 0 3 &intc 0 79 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
--					<0 0 0 4 &intc 0 83 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
-+			interrupt-map = <0 0 0 1 &intc 0 0 0 75 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
-+					<0 0 0 2 &intc 0 0 0 78 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
-+					<0 0 0 3 &intc 0 0 0 79 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
-+					<0 0 0 4 &intc 0 0 0 83 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
+ 			rtc {
+ 				compatible = "dlg,da9063-rtc";
+diff --git a/arch/arm/boot/dts/renesas/r8a7790-stout.dts b/arch/arm/boot/dts/renesas/r8a7790-stout.dts
+index fe14727eefe1e..25956661a8754 100644
+--- a/arch/arm/boot/dts/renesas/r8a7790-stout.dts
++++ b/arch/arm/boot/dts/renesas/r8a7790-stout.dts
+@@ -332,6 +332,7 @@ pmic@58 {
+ 		interrupt-parent = <&irqc0>;
+ 		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
  
- 			clocks = <&gcc GCC_SYS_NOC_PCIE0_AXI_CLK>,
- 				 <&gcc GCC_PCIE0_AXI_M_CLK>,
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 92fd924bbdbe5..5effd8180cc41 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -817,13 +817,13 @@ pcie1: pci@10000000 {
- 			interrupt-names = "msi";
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map = <0 0 0 1 &intc 0 142
-+			interrupt-map = <0 0 0 1 &intc 0 0 142
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
--					<0 0 0 2 &intc 0 143
-+					<0 0 0 2 &intc 0 0 143
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
--					<0 0 0 3 &intc 0 144
-+					<0 0 0 3 &intc 0 0 144
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
--					<0 0 0 4 &intc 0 145
-+					<0 0 0 4 &intc 0 0 145
- 					 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
+ 		onkey {
+ 			compatible = "dlg,da9063-onkey";
+diff --git a/arch/arm/boot/dts/renesas/r8a7791-koelsch.dts b/arch/arm/boot/dts/renesas/r8a7791-koelsch.dts
+index 26a40782cc899..4a76be68887b4 100644
+--- a/arch/arm/boot/dts/renesas/r8a7791-koelsch.dts
++++ b/arch/arm/boot/dts/renesas/r8a7791-koelsch.dts
+@@ -800,6 +800,7 @@ pmic@58 {
+ 		interrupt-parent = <&irqc0>;
+ 		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
  
- 			clocks = <&gcc GCC_SYS_NOC_PCIE1_AXI_CLK>,
-@@ -879,13 +879,13 @@ pcie0: pci@20000000 {
- 			interrupt-names = "msi";
- 			#interrupt-cells = <1>;
- 			interrupt-map-mask = <0 0 0 0x7>;
--			interrupt-map = <0 0 0 1 &intc 0 75
-+			interrupt-map = <0 0 0 1 &intc 0 0 75
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
--					<0 0 0 2 &intc 0 78
-+					<0 0 0 2 &intc 0 0 78
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
--					<0 0 0 3 &intc 0 79
-+					<0 0 0 3 &intc 0 0 79
- 					 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
--					<0 0 0 4 &intc 0 83
-+					<0 0 0 4 &intc 0 0 83
- 					 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
+ 		rtc {
+ 			compatible = "dlg,da9063-rtc";
+diff --git a/arch/arm/boot/dts/renesas/r8a7791-porter.dts b/arch/arm/boot/dts/renesas/r8a7791-porter.dts
+index ec0a20d5130d6..fcc9a2313e1df 100644
+--- a/arch/arm/boot/dts/renesas/r8a7791-porter.dts
++++ b/arch/arm/boot/dts/renesas/r8a7791-porter.dts
+@@ -389,6 +389,7 @@ pmic@5a {
+ 		interrupt-parent = <&irqc0>;
+ 		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
  
- 			clocks = <&gcc GCC_SYS_NOC_PCIE0_AXI_CLK>,
+ 		watchdog {
+ 			compatible = "dlg,da9063-watchdog";
+diff --git a/arch/arm/boot/dts/renesas/r8a7792-blanche.dts b/arch/arm/boot/dts/renesas/r8a7792-blanche.dts
+index 6a83923aa4612..20963c9bbf0ad 100644
+--- a/arch/arm/boot/dts/renesas/r8a7792-blanche.dts
++++ b/arch/arm/boot/dts/renesas/r8a7792-blanche.dts
+@@ -330,6 +330,7 @@ pmic@58 {
+ 		interrupt-parent = <&irqc>;
+ 		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
+ 
+ 		rtc {
+ 			compatible = "dlg,da9063-rtc";
+diff --git a/arch/arm/boot/dts/renesas/r8a7793-gose.dts b/arch/arm/boot/dts/renesas/r8a7793-gose.dts
+index 79b537b246426..9358fc7d0e9f6 100644
+--- a/arch/arm/boot/dts/renesas/r8a7793-gose.dts
++++ b/arch/arm/boot/dts/renesas/r8a7793-gose.dts
+@@ -735,6 +735,7 @@ pmic@58 {
+ 		interrupt-parent = <&irqc0>;
+ 		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
+ 
+ 		rtc {
+ 			compatible = "dlg,da9063-rtc";
+diff --git a/arch/arm/boot/dts/renesas/r8a7794-alt.dts b/arch/arm/boot/dts/renesas/r8a7794-alt.dts
+index 4d93319674c6e..3a9db455ddec9 100644
+--- a/arch/arm/boot/dts/renesas/r8a7794-alt.dts
++++ b/arch/arm/boot/dts/renesas/r8a7794-alt.dts
+@@ -458,6 +458,7 @@ pmic@58 {
+ 		interrupt-parent = <&gpio3>;
+ 		interrupts = <31 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
+ 
+ 		rtc {
+ 			compatible = "dlg,da9063-rtc";
+diff --git a/arch/arm/boot/dts/renesas/r8a7794-silk.dts b/arch/arm/boot/dts/renesas/r8a7794-silk.dts
+index b7af1befa126b..b825f2e25dd06 100644
+--- a/arch/arm/boot/dts/renesas/r8a7794-silk.dts
++++ b/arch/arm/boot/dts/renesas/r8a7794-silk.dts
+@@ -424,6 +424,7 @@ pmic@58 {
+ 		interrupt-parent = <&gpio3>;
+ 		interrupts = <31 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-controller;
++		#interrupt-cells = <2>;
+ 
+ 		onkey {
+ 			compatible = "dlg,da9063-onkey";
 -- 
 2.43.0
 
