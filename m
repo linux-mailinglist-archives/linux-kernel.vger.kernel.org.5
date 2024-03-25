@@ -1,87 +1,95 @@
-Return-Path: <linux-kernel+bounces-117548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A296F88AC72
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 32F5C88AC7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:53:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03633327CE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:53:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2D51301F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C9C1369BC;
-	Mon, 25 Mar 2024 17:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABDC13AA40;
+	Mon, 25 Mar 2024 17:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="cQ/ZhxNQ"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="miCwdgNM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78EA1369AD;
-	Mon, 25 Mar 2024 17:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF671369AD;
+	Mon, 25 Mar 2024 17:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711386545; cv=none; b=l78pZ09DAe3zcaJ311m+mq0kelUtN9C+Qfr5Gne1/+Y3VdeLflqCRDy8G2Z4OkbTasWplF5jrfb3eNszYweWaHHxSu8G/wZZeGckORjcvc/Uq1hlvNbL97q/uv0pr5nW6VcNWLXqudIKr1HS8V2FBSErZxhbaua6JzGxFSVkjY4=
+	t=1711386558; cv=none; b=P0/i4TInUxHvPkJGL+0MRsGA5jLfZQOIVqZKT71mO/DPvMpLh+FQGYlEJXgbbLGMq+rerLC10kwiPnSiiv4xlQhrtneUo7DhF9kyqYUXFPXQJzbIo3KwF0hKKT42Dz3a4XAlInL9vqArKAIHO1r9XYJ16J1eDnORLds0OO9saBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711386545; c=relaxed/simple;
-	bh=UYyk8goNTowWikjuMMKS6U8Bzza67VHqAbb7Yx2knn4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rwYt+wS7jjwBcWM7vwy7ZSwYMZgPtfxRQ81Zfo8wZ7alwG1pA0GZHRJXVM94bXMxWvg9ijBkfaev2y7w4FZmxZKJXyyz3uA6C3ZCbs+m/UyhPIDMKwLivkVLgO+f3RKkD5yiFWgO6y1IMdHpIbss8RvofmN7ifGWrSvsb74vUdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=cQ/ZhxNQ; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=/1vRIRCMcKep857REgOgnY61TxUx/MYY2ON/5+tnNIo=; t=1711386543;
-	x=1711818543; b=cQ/ZhxNQxjkQTacefYhl5aMZ4TdaVIOZZ9edbbiI93wSd2bpfyqrdHNk9g+xr
-	ioDfu3WLK2RBxxhHSBQutoPRtSZ3fsriDsyek1n15J/jSk/IohR1Dz+KAHDSi3WrTMc8HKiwB0wye
-	xYtKba4bIPrlLkfv+zUf14gKhJNmMVof4ayaQS+Zs3IE5VquYbIIRHqCdlINxFzS5u5Clv19ww0dq
-	yRSQGJxWkZytZlZmoq8RT8x5lAtqfTnA3u1JV7IEabo9H9yDAkGeDP/7b+hQl5/f3LftsO4NHtT84
-	kOgnBq6ZqqffTwZUsh6ikkK/icM4gaU/VeRiY2mMo6id14d14Q==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1ronoc-0004O2-Gt; Mon, 25 Mar 2024 18:08:54 +0100
-Message-ID: <b5749b25-7f1b-4933-9e72-87c3ef178c35@leemhuis.info>
-Date: Mon, 25 Mar 2024 18:08:53 +0100
+	s=arc-20240116; t=1711386558; c=relaxed/simple;
+	bh=FnwDoVmLdF/Lh4NDHXU1Feju53Qbi/Ir8xxAWKoRJoQ=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=TFcr2ccophhJBi2vjM0/QCKPYHha+YeAPL+OA+2VzVI6Y/UMQH7KrhafoflInshU1VL+rBkB4v1p488vwEhic9kWb0wCg/26rr7BFyFLGnIsycBbJzRH9J0a+0zPQ43NkMBTdyEcjij5JrTmzlQjnK7/CB0kPP7ffL99Y16H8do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=miCwdgNM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC9A7C433F1;
+	Mon, 25 Mar 2024 17:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711386557;
+	bh=FnwDoVmLdF/Lh4NDHXU1Feju53Qbi/Ir8xxAWKoRJoQ=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=miCwdgNMjir8pTrrial6fzzMWlyw0NCEIvQ2u+Y7kQeK+1kjfIQX4ADsdaKbTEF/C
+	 bwj09DvVp9bC1TVyUvFE3dN7dQrcLOKT4KxYh4+m73bvHY80leTDEhRX/SIZQhekDy
+	 PK+u24aLnkSeZrDLk0kM2gDsJyn3/lgsAa7/5lH3+MpAXE54qqIDK8Fst3UKQTBCDw
+	 256RRuQwPmNgGs+iMxmti0XR9TPRZpKbP3VqbVLngrC9T3mpHjRRC1OPA6XOTrUuQV
+	 OzUd/guIOg35Iwut2zQx/hawIsPfdsolRQncDUsYGfxNncwSjDm7jJ/0PRKIIV4uBw
+	 a5z2nYUa0vrkw==
+Message-ID: <9d0adc0b44b1f119ea6c65dd5c296b7b.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Recent-ish changes in binfmt_elf made my program segfault
-Content-Language: en-US, de-DE
-To: Kees Cook <keescook@chromium.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>, Jan Bujak <j@exia.io>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
- brauner@kernel.org, linux-fsdevel@vger.kernel.org
-References: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
- <874jf5co8g.fsf@email.froward.int.ebiederm.org>
- <202401221226.DAFA58B78@keescook>
- <87v87laxrh.fsf@email.froward.int.ebiederm.org>
- <202401221339.85DBD3931@keescook>
- <95eae92a-ecad-4e0e-b381-5835f370a9e7@leemhuis.info>
- <202402041526.23118AD@keescook>
- <51f61874-0567-4b4f-ab06-ecb3b27c9e41@leemhuis.info>
- <202403250949.3ED2F977@keescook>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <202403250949.3ED2F977@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711386543;9cf8b45d;
-X-HE-SMSGID: 1ronoc-0004O2-Gt
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=X13_5Kubq3A=y8gnz==6tt2bsfc0PiFAj06HX9V7_+mg@mail.gmail.com>
+References: <20240325054403.592298-1-sboyd@kernel.org> <20240325054403.592298-6-sboyd@kernel.org> <CAD=FV=X13_5Kubq3A=y8gnz==6tt2bsfc0PiFAj06HX9V7_+mg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] clk: Get runtime PM before walking tree for clk_summary
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, linux-arm-msm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>
+To: Doug Anderson <dianders@chromium.org>
+Date: Mon, 25 Mar 2024 10:09:15 -0700
+User-Agent: alot/0.10
 
-On 25.03.24 17:56, Kees Cook wrote:
+Quoting Doug Anderson (2024-03-25 09:19:51)
+> Hi,
+>=20
+> On Sun, Mar 24, 2024 at 10:44=E2=80=AFPM Stephen Boyd <sboyd@kernel.org> =
+wrote:
+> >
+> > Similar to the previous commit, we should make sure that all devices are
+> > runtime resumed before printing the clk_summary through debugfs. Failure
+> > to do so would result in a deadlock if the thread is resuming a device
+> > to print clk state and that device is also runtime resuming in another
+> > thread, e.g the screen is turning on and the display driver is starting
+> > up.
+> >
+> > Fixes: 1bb294a7981c ("clk: Enable/Disable runtime PM for clk_summary")
+> > Cc: Taniya Das <quic_tdas@quicinc.com>
+> > Cc: Douglas Anderson <dianders@chromium.org>
+> > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> > ---
+> >  drivers/clk/clk.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> Shouldn't this also squash in a revert of commit 1bb294a7981c ("clk:
+> Enable/Disable runtime PM for clk_summary")? As it is,
+> clk_summary_show_subtree() is left with an extra/unnecessary
+> clk_pm_runtime_get() / clk_pm_runtime_put(), right?
 
-> The original reporter hasn't responded to questions and no one else has
-> mentioned this issue, so I think we can remove this from the tracker.
-> 
-> #regzbot resolve: regression is not visible without manually constructing broken ELF headers
+Sure, it is superfluous now. I suppose it means we can remove
+clk_pm_runtime_get()/put() calls in
+clk_{disable,unprepare}_unused_subtree() as well.
 
-Ahh, that's how it is sometimes, thx for the update! Ciao Thorsten
+>=20
+> Other than that, this looks good to me:
+>=20
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
