@@ -1,163 +1,167 @@
-Return-Path: <linux-kernel+bounces-117898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5167788B10F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:14:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642AB88B115
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:14:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75DAB1C62806
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:14:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87B1F1C62847
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C105A0EF;
-	Mon, 25 Mar 2024 20:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8755B548F4;
+	Mon, 25 Mar 2024 20:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fujt8Pmp"
-Received: from mail-io1-f73.google.com (mail-io1-f73.google.com [209.85.166.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="epfcJMtT"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2125.outbound.protection.outlook.com [40.107.223.125])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4CD52F81
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.73
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397528; cv=none; b=dXTPoxm0T3Vu/DzcK6x0yz8RbnSlly2UGmzTeYQQiPi/PdQwKc+6iLPRZV/wvUzJPyqtrve4qxpC/pJL2ZWL02Am5iJvbfy1C8EcGHmsxL1hCyI66HR8moqsjgiAa78+L9x4vuYyLZC4XzWksQCSXU534R8vjKTvVZJor1y3EsM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397528; c=relaxed/simple;
-	bh=TS58LtBep+V3y21GNNI5AUCkkhJt90huKHWlMzlnjIk=;
-	h=Date:In-Reply-To:Mime-Version:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=ffbZAq5suExqzMt5MHfftyktiFAJkXMobKTyFxcCXowFeZsFNnnzwoZerpt0hV2XIZcNgiu7kXkFzBZTf8StNhfqLph2z5Z0MvtciX1Sz0zmXhkojipXQMUIzAWjSzF9VFceNJsLKjJviFxSjyXftpLuL/AtiXJC2y21C2GJgF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fujt8Pmp; arc=none smtp.client-ip=209.85.166.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com
-Received: by mail-io1-f73.google.com with SMTP id ca18e2360f4ac-7c8742bedd4so359500939f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:12:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711397526; x=1712002326; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=T2hv5W0oxITVtYMp7qscmbVqdlTYLfE2MA0LIJYCuQE=;
-        b=fujt8PmpE6IgP0LADa3B76CekvZwxzqx55wd5hzGfmvVtN3ZYvCqyFIO7yZYj3279v
-         QgN1NB4y28M4HqMmYzUvqEm7TJsnzLhHavlY2lbpiQB+cAjGM5sMz7MBhJSZ2SCtAEwp
-         Ct6PQQwadFQUZZAp5Kf89PeKPGbJtNIAK2McGRzGou+qdsT8I8aiYzwWbkhmb0spp3mK
-         rIw8lnDZrP6oMpc7fkmxHRB6rNIN6SJSSFLKs1kAlHibSRKBc+wAabrhBMSyl6Usn2a5
-         vbWZmaIn4wSTG9AwZeKiiuZtw7zZVsxQyz1v7vbhdG3cdQSlnd0gd8n8uj4BLLFRqt7x
-         ySbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711397526; x=1712002326;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T2hv5W0oxITVtYMp7qscmbVqdlTYLfE2MA0LIJYCuQE=;
-        b=j7vqtBs7CQujVLm3T55/YjHRAcPs7WDkG1DY+oZMiA5sKqtPdVjSvdqUOCijDSxoKg
-         C50DgIU+jxHmS3yacxD9u+7k61oJpOnPAYCRgKKCoy4bFP70HV1WkHI6PxEXG7SmuOth
-         qIB/C+4lEaKEhNyz4mkZ+Uklo5Mlwy1JdyFTwCI/D/8FLqHXH8Dks0wXwbTyWPaUzPZo
-         FfU7IyDM6m98QyNlT/X5I2wlV50w1xxLu6x2CZxHyN0eEnpWCC8vCNMMeKAG7MEJHkcE
-         LSLsiD3ekm7sgxJ6JzSNUyoFzRHJlaKB5ly0cIpGYOW5Ugg2mwksbe4iUwUpv5dlLTn/
-         y1FQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX76Ggcq3f3ACy8o3u/1YugAG+JD4olfobtpUpc74mnT5hV28B1S2fET8GzMFi1Rm2zD3E+7NZAeq2H9/2K0CAa5w+kxnB0wRDaC7ke
-X-Gm-Message-State: AOJu0YyL6HpRAS+iwWo12PED10Q+Zc1TuR+RIYDwNGhk0DIJJMZhlKR4
-	uaupP55es4hleKAXs30aKjyYOD38h2VpeEX8lZRPPVcni9V6w3YFEk/h8CnqFZEKemBzSQuI74r
-	FqaTnquy7fEjhLBW9fYwGYQ==
-X-Google-Smtp-Source: AGHT+IFCjgD983eCqYT6Ydi/m/c3Lfnobnc1zjBwoflNgQEaRbyw02u5gMlW85KgYgJ6uWEVFXJUhDbaLvXhfNn8rQ==
-X-Received: from coltonlewis-kvm.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:14ce])
- (user=coltonlewis job=sendgmr) by 2002:a05:6638:3724:b0:47c:125e:7f3e with
- SMTP id k36-20020a056638372400b0047c125e7f3emr304187jav.3.1711397526087; Mon,
- 25 Mar 2024 13:12:06 -0700 (PDT)
-Date: Mon, 25 Mar 2024 20:12:04 +0000
-In-Reply-To: <Zf2W-8duBlCk5LVm@google.com> (message from Quentin Perret on
- Fri, 22 Mar 2024 14:34:35 +0000)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B0B40BEE;
+	Mon, 25 Mar 2024 20:12:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.125
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711397551; cv=fail; b=fwRWrljdL3fVR1rZ3CDkNDpoKGhZvoa6EElfXZATRDpwY5IoaaZ2ws7QXK636Z9NiLGopnoH67NnLTAyVqNuQe7Vp5i+U28RLUrZQ6h13v6/u8lHgU1LACjWm6w2L2qqHhtPGgWcVmyQIJITtosljdLKnrt0m43W1W6rYHmN6KA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711397551; c=relaxed/simple;
+	bh=XXSr47lZuyPp0LvA6TwoNnosremqe9aik7Zltfx51L0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=okcnKbYcwxsbpfbhZWj19aVlcwdzRVSoyyLO5kwVOxUsvAHQgeoQTg/58cpJq8cm1/F4q4MiU63vUUu5wZcKQ4BeCGvdH/D+DXcdIo95+uikCc8N1pYRDQG5ZvJVwX1pYZ7o/PGKwKa7Q/2FuGl9HJ4xf6pcIdOCKHC9C57HUz4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=epfcJMtT; arc=fail smtp.client-ip=40.107.223.125
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Obd2Vov8HSBl35wZSC6csGHYwSnFNeV8WZtU4U0wPwMbb1Cs6Pj35caLY+WbOmg26s/WFL9Z5G5k99mH4ZuXqb85B+S6clktdUBAi3c7ChS8Bzj0SGhuGsRmqB7oUz/C/kDzuxV2JHah+J+jbEb3o1mxo9gREsOS54LFLjeYtgCjhVzxtCUf/CSoc5ZKfyqTKXlXhMMpHHgVt6RPAH1W1SsyNMGvz0VEgzgFASlPwRgh577GoHBfNVwGoHkh/mWSS/GvD4qhj8HXIR7ZmBPVKZ+k53lJU3OhSFLueGeooF33c7XFHLNkX1Zteh5zP8QvhjqcjpRB2wl8p51ytLGNZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KYuEwavJIzYwvNq0aLKMNvBleib425wGv8j5XBwP++U=;
+ b=m4F3Ca+8G1P5TH4aCrblY1nEFm6Va5ScHmTNYrgqyk6uUIiDZC/iVqj6+7renlex3KAMJtRc462I4oEj/2P2f9uDQmY+xPYBrsohZ497tvMNHxQdN/ZCa+7FzscTNhF2NcdMaXbJwk2WB2nFooL3JGQYDtotb39o5sRMMJyZwoLnDkiOixUaVdv8dMg7vcITOT26kFcVqzKWF1/0M0x5mmB4+MzCXNx7kYeN4GDuLM1sGfiwcEV5o4Nz0/wmdz1dDmKEq0WN0wq7l05akyoQeSkTxylIJMgHMw02sgwfO8FkG9FdOBHJyRBSsmYhkJ6uMwsSWv5RVZxfqLK8jGqS/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KYuEwavJIzYwvNq0aLKMNvBleib425wGv8j5XBwP++U=;
+ b=epfcJMtTBCeo3BwW2rwl+vY0UX2Bsuzz2iY9bIi4OIQKVg1fcGYI3Fa8yzi8PdOsRyPfvm0kWAQuhGGhpNZyUGg58Q+M3UxnVnZJBnFmtCy/xvUZltH7CTrg5pmEMaUJhnS12+ikkAJ2wYX5A+GkKobHcTLrl449jY5/RIBBqv4=
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
+ by CY8PR12MB7265.namprd12.prod.outlook.com (2603:10b6:930:57::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
+ 2024 20:12:23 +0000
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::aaa1:af99:e0e5:7f14]) by CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::aaa1:af99:e0e5:7f14%5]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
+ 20:12:23 +0000
+Message-ID: <9e68a369-2667-4dd4-b715-ca1e13948a8f@amd.com>
+Date: Mon, 25 Mar 2024 15:12:14 -0500
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH v3 0/2] Update mce_record tracepoint
+To: bp@alien8.de
+Cc: linux-trace-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+ tony.luck@intel.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+ yazen.ghannam@amd.com, Steven Rostedt <rostedt@goodmis.org>,
+ Avadhut Naik <avadhut.naik@amd.com>
+References: <20240126075800.1174583-1-avadhut.naik@amd.com>
+ <20240208121013.1946ef7f@rorschach.local.home>
+Content-Language: en-US
+From: "Naik, Avadhut" <avadnaik@amd.com>
+In-Reply-To: <20240208121013.1946ef7f@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7PR04CA0012.namprd04.prod.outlook.com
+ (2603:10b6:806:f2::17) To CH3PR12MB8403.namprd12.prod.outlook.com
+ (2603:10b6:610:133::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-ID: <gsntjzlqax63.fsf@coltonlewis-kvm.c.googlers.com>
-Subject: Re: [PATCH v2] KVM: arm64: Add KVM_CAP to control WFx trapping
-From: Colton Lewis <coltonlewis@google.com>
-To: Quentin Perret <qperret@google.com>
-Cc: kvm@vger.kernel.org, maz@kernel.org, oliver.upton@linux.dev, 
-	james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, 
-	catalin.marinas@arm.com, will@kernel.org, pbonzini@redhat.com, 
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|CY8PR12MB7265:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	5Ac7BxpOWpDUMyOdWGkPmekST4uqoBdGiaKv9di3IlIPzpOTx/+K2y1sZVcgVFHxnxlixm51a89OL7ayu8OrEUt6cEcd6OOXTjrWv25nF3F3KtoHbhZ8wQOZFiN0gurhW+H8K/YMHESBhMXFiKeWXVr/LJuw9o46sM3llcipzyrwvUIJUtuaqMw0FFv+13wBTUtd0ReYp1Q2dLNicn3xVn3Dhs0+DjIrcNRnjTASkzDZZabsiEhM8gmbJfx6Rccahimd1Yfmi0ILVUv9waDc5sD8/uIWorYIP5uMIFqRNRY7GvvOsvhzgQgKwyU7Rd9yuhHg4WVCLyNAYdaJJvXVmWJACmdScAOpilHNRsBnatP2TVommNgoYYzkFYphoQaCR0zjs57Vsw+pZh62FT9eYn+m8yIa56ZLPb4bIH4XKlRLCD63oMosXraByd7tcANbRaYZQ2C/23fvHDE2UdbmgM+nUkCdYo4aZcEO1kBmLTNn8JAJnKBdYOiKtFs6hIC1wYbHjomzHJO0hbkqhZQmPf9/KnrRa3TnQ1J4a9xKa4YMB3+MdcO8UgPYwE47ZsCn/cb5erwnckQxZzh4e2gqiPLRD5/3boYliH6wpBhvo1dMerlwWEsE0ZGFOIqMX0+TQuVzZtcnqFotXwO+iU+Ki9foJWQ0kZRsHudm/XPARv8=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UXRDcGtVdGNEME8rVkR1NEp6MjBJb2lzN2hMZ0dub0phaG9wTDBoWmRQK3VR?=
+ =?utf-8?B?VGs5ZE96bHlRTDR3dVlNWnQ0aWNGQWhUUE1aV29OVWkxSHFwbFdTSzZITnpO?=
+ =?utf-8?B?T0UvdDJzZjR6eERNanJnM1ZHTkpFdUpjNENKcXBhUUUxcjZHNmRxeWR5WnBX?=
+ =?utf-8?B?Y0ZPVXNLYVB5ZHd6R1NrNUtqQzUrbTcySG5YTkkrZU1zdnliT2kwc3JhQXd4?=
+ =?utf-8?B?QisvL0U5S1BIcXgyWUVmZ0N5MHJNSFdqSzNxRFV4YWUwQUtOWjdTZXVOSGJl?=
+ =?utf-8?B?RGFtdFZrWm1uckk1MHJ2anlsOEMzVzNYNVVreGR0aWs5eWZyUTVCcndGLzMr?=
+ =?utf-8?B?UDVLWlYvbmYrdVVjQXBreXU3Q2ozVnU0RmNQemtmMzdQTlVoL2xSQ0daK2xz?=
+ =?utf-8?B?UmpwQjVaNWZHVEY1OWhUckpKL3p3VmFrYTZ1TlJzVEN4T0hEcFNKcFZ5a0hm?=
+ =?utf-8?B?ZnVid2RDM0FNL3lIMHhOblQ1eHZleUtUQTExZkx3RTNwdHNtbkxRQ1k1amNK?=
+ =?utf-8?B?bHcyOUR4dXhkUUR1UDVMVnBRMTR4RVNMWmZJQVpLOEhWWmx4MGtsQTJ1UG5w?=
+ =?utf-8?B?TjE5MXdWVExkY0J6YWRMbEVXOUZwOVdjcmJXQkpKQVpjc1RuNzFqQkhZU1Va?=
+ =?utf-8?B?WlZzTklLcnV4VEZTQnMvQWRHbGdXdUlxUTZnRjdORDZzWWlSOE5pRDBWZDF6?=
+ =?utf-8?B?MHNxaFNZZlljNUx4eWNrSEdVc1ZHSWNQT3FOWUUybFlOb0VpSW01ZUxUOWZm?=
+ =?utf-8?B?eVVmQ0E0bHFOcEFzd1FMclZrZTQ1bHBtSW5MbWp1V0V5Mm5YMFFkeEg0TGcv?=
+ =?utf-8?B?ZGhtUldNUEFWbDdUcXNFNUJCT3d3ZFBZK3A5Ukc3T1BjRk9TWHR6enZ4QnZK?=
+ =?utf-8?B?dHpnVXdWNWU4eUpWelBCVzIvRHhYa29tTnIrVHFrYXI1ZWw2aFJKL2hPUFNP?=
+ =?utf-8?B?Uk5XUEtienp4d1gwVGh6czB4RzQ3djRteW1lZ0tCZ1R5dE1La2dhWW4ySEJ6?=
+ =?utf-8?B?TVJDMmRmTmZ2SlhHTWV6b1hpZ0JWdTcybjF4MmhtVHBqVDI5N3FlQVRicWtw?=
+ =?utf-8?B?MjRVQnoxSlprc1VpLytSNEVMSUYrOUVTM0xBRzZpdytmMEZ5WUYxMCtTTG1m?=
+ =?utf-8?B?T0JDSkxwa3Q5c0lVNXdEbnpGQTd3YUx0ZXoyNWRlRVUwcThreHB2a0VOZ2Ju?=
+ =?utf-8?B?dkpKTk1uRHZaWTRvV1FqZ3FNUUg3Q3FsYkhUd0xTTzExbVljOW9qeGN1NHV0?=
+ =?utf-8?B?aVZNRjlYWHNTekMyVTNrdVNUcnJBTlN2V3BwV29Mb2tIRmZicXI3NHBuVEh0?=
+ =?utf-8?B?b1BLMVc1cjNHTXlnOUZWdHlZZmE5K2hvNERLdlJPOU82TzRQRmtWMkozRmpM?=
+ =?utf-8?B?bTl2YTlaYUFuMEFYODBjVW1vNDlBbExOVlcvdzFySEZoR2FKRzFVOEN0MHJw?=
+ =?utf-8?B?OHZUM0sycFp4L0FSVE5jTkdXcWxXZzhLNHF6allvMkZEeURvdVo1b1Q5OHFQ?=
+ =?utf-8?B?ZEI0eGlrNGpDRkltdzhFMjBNM1hGSmE5U3ZzaDlZOE0xY2pqWTlsSG9wQWJI?=
+ =?utf-8?B?V0ZzWmxpeURObnZnZnNHSmxMNXhsODFTeTd4Njk1TDVhK3U0eU10TE1mR1Mz?=
+ =?utf-8?B?UDVGU2ZZUk1tL3RjNXRsTnN0NEhzcmNkY1BkNjRHaE1TZStDVXFkekpoZjZ5?=
+ =?utf-8?B?VDFZSkNVVjR3NlljOWFkZ1duS01qR0pHdmw0VG04Tyt5UVpZemlhWC9YRzJG?=
+ =?utf-8?B?YXhLek5TQ1AyTnI3RGtPNmxBRWxEWFJtV3FpYUNKS3JqV0I3RlFVSlVDUzNP?=
+ =?utf-8?B?UlVibUgyUCtjQ0c0M001d3h5VVdLUFQvalh1UUMyanU2NUNJSmlnalk5Tjh6?=
+ =?utf-8?B?bEFadFVSRjkzN0Z4TEx1WTd6NGJkQW85Z0FLbnB4VllnTFlCU1V2OGZlbFk3?=
+ =?utf-8?B?b0JDZU4yOC9LSGt0ZHNxYXVIbnFvWWszbnJzZ3VKdENWTUVMaU9tb0tKamdm?=
+ =?utf-8?B?QWtOeFdqNVNYZVk0L3hhZTZFUXZXYno0V25zV2tsaVZiaWVOSE5xUkMvKzZC?=
+ =?utf-8?B?QklxUUNBczVZSW42bk9pYXRmaUtVVG9aRXloYmFVL2xNYjFzWS9Sd2Z1V0tV?=
+ =?utf-8?Q?JYJ9N7su7Bem/0DFp5u/6HZsy?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a546452-6ea2-4561-7311-08dc4d07e1c8
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 20:12:23.2635
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mNsYOOug1swQAS2twUdDcy9Fh5y8obWuuvIrACJuopsafUrdzOnWukU6W25YQN0qk+hC1e7xu3RNxOvsrUHjhw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7265
 
-Thanks for the feedback.
+Hi Boris,
 
-Quentin Perret <qperret@google.com> writes:
+Can this patchset be merged in? Or would you prefer me sending out another
+revision with Steven's "Reviewed-by:" tag?
 
-> On Friday 22 Mar 2024 at 14:24:35 (+0000), Quentin Perret wrote:
->> On Tuesday 19 Mar 2024 at 16:43:41 (+0000), Colton Lewis wrote:
->> > Add a KVM_CAP to control WFx (WFI or WFE) trapping based on scheduler
->> > runqueue depth. This is so they can be passed through if the runqueue
->> > is shallow or the CPU has support for direct interrupt injection. They
->> > may be always trapped by setting this value to 0. Technically this
->> > means traps will be cleared when the runqueue depth is 0, but that
->> > implies nothing is running anyway so there is no reason to care. The
->> > default value is 1 to preserve previous behavior before adding this
->> > option.
+On 2/8/2024 11:10, Steven Rostedt wrote:
+> On Fri, 26 Jan 2024 01:57:58 -0600
+> Avadhut Naik <avadhut.naik@amd.com> wrote:
+> 
+>> This patchset updates the mce_record tracepoint so that the recently added
+>> fields of struct mce are exported through it to userspace.
+>>
+>> The first patch adds PPIN (Protected Processor Inventory Number) field to
+>> the tracepoint.
+>>
+>> The second patch adds the microcode field (Microcode Revision) to the
+>> tracepoint.
+> 
+> From a tracing POV only:
+> 
+> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> 
+> -- Steve
 
->> I recently discovered that this was enabled by default, but it's not
->> obvious to me everyone will want this enabled, so I'm in favour of
->> figuring out a way to turn it off (in fact we might want to make this
->> feature opt in as the status quo used to be to always trap).
-
-Setting the introduced threshold to zero will cause it to trap whenever
-something is running. Is there a problem with doing it that way?
-
-I'd also be interested to get more input before changing the current
-default behavior.
-
-
->> There are a few potential issues I see with having this enabled:
-
->>   - a lone vcpu thread on a CPU will completely screw up the host
->>     scheduler's load tracking metrics if the vCPU actually spends a
->>     significant amount of time in WFI (the PELT signal will no longer
->>     be a good proxy for "how much CPU time does this task need");
-
->>   - the scheduler's decision will impact massively the behaviour of the
->>     vcpu task itself. Co-scheduling a task with a vcpu task (or not) will
->>     impact massively the perceived behaviour of the vcpu task in a way
->>     that is entirely unpredictable to the scheduler;
-
->>   - while the above problems might be OK for some users, I don't think
->>     this will always be true, e.g. when running on big.LITTLE systems the
->>     above sounds nightmare-ish;
-
->>   - the guest spending long periods of time in WFI prevents the host from
->>     being able to enter deeper idle states, which will impact power very
->>     negatively;
-
->> And probably a whole bunch of other things.
-
->> > Think about his option as a threshold. The instruction will be trapped
->> > if the runqueue depth is higher than the threshold.
-
->> So talking about the exact interface, I'm not sure exposing this to
->> userspace is really appropriate. The current rq depth is next to
->> impossible for userspace to control well.
-
-Using runqueue depth is going off of a suggestion from Oliver [1], who I've
-also talked to internally at Google a few times about this.
-
-But hearing your comment makes me lean more towards having some
-enumeration of behaviors like TRAP_ALWAYS, TRAP_NEVER,
-TRAP_IF_MULTIPLE_TASKS.
-
->> My gut feeling tells me we might want to gate all of this on
->> PREEMPT_FULL instead, since PREEMPT_FULL is pretty much a way to say
->> "I'm willing to give up scheduler tracking accuracy to gain throughput
->> when I've got a task running alone on a CPU". Thoughts?
-
-> And obviously I meant s/PREEMPT_FULL/NOHZ_FULL, but hopefully that was
-> clear :-)
-
-Sounds good to me but I've not touched anything scheduling related before.
-
-[1] https://lore.kernel.org/kvmarm/Zbgx8hZgWCmtzMjH@linux.dev/
+-- 
+Thanks,
+Avadhut Naik
 
