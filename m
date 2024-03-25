@@ -1,51 +1,69 @@
-Return-Path: <linux-kernel+bounces-118025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2582188B285
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:19:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59A5F88B47C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF91D1F24C38
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:19:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B752FB3441F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 802516CDBD;
-	Mon, 25 Mar 2024 21:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1836D1BC;
+	Mon, 25 Mar 2024 21:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PCUvS7dy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VaJkyW3k"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88BF2F2D
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8088D6BFCC;
+	Mon, 25 Mar 2024 21:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711401557; cv=none; b=g3jxpGpCWOv4y3nNdEGK7qk2l1zViL7CVyjItsqU21NFbI4axR/584K1MHo3eJVAp1r6RtOAya1Ga2J86qt4aqZKTROVXlYAnqLkVvY6YElzwCIqVxaD3awPd6DVO2FtcNP2aEOXmMrbQRVoBHJYf9XB3q80atTdZed5+aTS7LE=
+	t=1711401585; cv=none; b=X+zM1oYHPCJjlPomL67TivPduJGHEESfVVFswkaSwIjpEW1QUohIwVTpZwoEJFTIgj38eZn6vniBz8lFQ+yhiBUqatgDdKOucXG0r+D8BWHy7+le6fsOw8+XayYrnduuRPfFZK9NS7TOgf3Ps6/uYLgWHVs5SBRl/oVDXqgXjm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711401557; c=relaxed/simple;
-	bh=OWs//vTe4wS6p+a5aX6Eb0sMmS8LssMRYRNf/R2WufQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=C5qQNfHk6KcKp4eBu0Q8HsI2pDPNmZE9MAPII5amYKcJsJbeY68sDUdw4YpkJbcr09rJgbkRFmje8pTE1vIkqYyHL3hOO21tKOCslddkdelg1qe1OhVDA7D47+T4vuXu0DXefRlEP/MrlKyNJR7o6KW9TcOG6jfuFtDkbQN9B2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PCUvS7dy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 227D5C433F1;
-	Mon, 25 Mar 2024 21:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711401557;
-	bh=OWs//vTe4wS6p+a5aX6Eb0sMmS8LssMRYRNf/R2WufQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=PCUvS7dyW/2AeNdrdsyijtGhpyFpUA7YtLIeWO8dp2TYi0i3meAJ51w77eQJKlrHc
-	 b2X8yNfOm3vt+/ANP49wEdMjxcQivsIM+mDdkv2NihWh6f+ndSVR1Tzyx6VZNRrFAJ
-	 aOBD34qaFwbyjlaYe4mxSTiS+Sj6cE8XOfeOxDDW/37VoNEc6geI0MaW/hTp2Cm3ov
-	 Efw2APjuODvMEoAIJRbxApM11vxQBeFptLgRJTSpETgl8wol6GlR/JlcQ5BExDgYtT
-	 2tJA9/RVoOHbUZ0q+huo4Vg6K+O+4p8xSAaxNyOpGA5HmRjcy6kKtbCyLCwVhwvufQ
-	 /niBZGccCeDqA==
-Date: Mon, 25 Mar 2024 16:19:15 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI interrupts
-Message-ID: <20240325211915.GA1449994@bhelgaas>
+	s=arc-20240116; t=1711401585; c=relaxed/simple;
+	bh=Qbas4ADbxxgE1Ks2CTqG0Srxpp+07yr4ueiXALqVkOo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G5DKu4/VifhLM4qujEybKYrvDqzJKr9alZ7KWUluyWk+q5HrrEezyjTd5x3EBdF1wJtO3odOaXuWnHDfFS424ktIOB6FjCf3VyDUGeXwQ37MUnGuZpkQEnKR634vqgCc03tQHHRr/LAK29sGgIugcDgbU4SwgYJgcoD6yYJFt1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VaJkyW3k; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711401583; x=1742937583;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Qbas4ADbxxgE1Ks2CTqG0Srxpp+07yr4ueiXALqVkOo=;
+  b=VaJkyW3k3NeYeNq3Bltry63kwfFVuV0tI335jPEBPXbsFAym3gpguSMU
+   uJPO3sNr7xX9yq5SDRQS/PINSCtYjWik5D+Lq71ZNoo1Bd+LyKe2NOjL8
+   XBZd7Iw2MLIFdPMjyTYjBj4ug7GpI55RoOWmOcrhJCQku3QEv8BZWV5hU
+   RkXYDokgrinGbzyyOsBVbV15eMQDRRxxGQGgJlByII5tG/tqMy9ajnPd4
+   R57Kc4BQJIko1q0xBhvO1QOUN/FbK3YkbfbhjKxl2sFVZATHrgp6jbFrQ
+   DRSf8+GCg9L9hhRU3DaSf+dmOkzcQEij+U0AFqQVGxEA2n4bb0DlSn/IY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="17824342"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="17824342"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 14:19:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="15641537"
+Received: from unknown (HELO mev-dev) ([10.237.112.144])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 14:19:40 -0700
+Date: Mon, 25 Mar 2024 22:19:35 +0100
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: Petr Oros <poros@redhat.com>
+Cc: netdev@vger.kernel.org, jesse.brandeburg@intel.com,
+	anthony.l.nguyen@intel.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	horms@kernel.org, wojciech.drewek@intel.com,
+	intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] ice: fix enabling RX VLAN filtering
+Message-ID: <ZgHqZ5ebaO9VkvYx@mev-dev>
+References: <20240325201901.39365-1-poros@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,68 +72,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240325201901.39365-1-poros@redhat.com>
 
-[+bcc Mateusz]
-
-On Tue, Mar 12, 2024 at 06:59:05PM +0200, Andy Shevchenko wrote:
-> Some devices support MSI interrupts. Let's at least try to use them in
-> platforms that provide MSI capability.
+On Mon, Mar 25, 2024 at 09:19:01PM +0100, Petr Oros wrote:
+> ice_port_vlan_on/off() was introduced in commit 2946204b3fa8 ("ice:
+> implement bridge port vlan"). But ice_port_vlan_on() incorrectly assigns
+> ena_rx_filtering to inner_vlan_ops in DVM mode.
+> This causes an error when rx_filtering cannot be enabled in legacy mode.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reproducer:
+>  echo 1 > /sys/class/net/$PF/device/sriov_numvfs
+>  ip link set $PF vf 0 spoofchk off trust on vlan 3
+> dmesg:
+>  ice 0000:41:00.0: failed to enable Rx VLAN filtering for VF 0 VSI 9 during VF rebuild, error -95
+> 
+> Fixes: 2946204b3fa8 ("ice: implement bridge port vlan")
+> Signed-off-by: Petr Oros <poros@redhat.com>
 > ---
->  drivers/mfd/intel-lpss-pci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../ethernet/intel/ice/ice_vf_vsi_vlan_ops.c   | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
-> index 8c00e0c695c5..c36a101df7be 100644
-> --- a/drivers/mfd/intel-lpss-pci.c
-> +++ b/drivers/mfd/intel-lpss-pci.c
-> @@ -54,7 +54,7 @@ static int intel_lpss_pci_probe(struct pci_dev *pdev,
->  	if (ret)
->  		return ret;
+> diff --git a/drivers/net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c b/drivers/net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c
+> index 80dc4bcdd3a41c..b3e1bdcb80f84d 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c
+> @@ -26,24 +26,22 @@ static void ice_port_vlan_on(struct ice_vsi *vsi)
+>  	struct ice_vsi_vlan_ops *vlan_ops;
+>  	struct ice_pf *pf = vsi->back;
 >  
-> -	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_LEGACY);
-> +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
->  	if (ret < 0)
->  		return ret;
+> -	if (ice_is_dvm_ena(&pf->hw)) {
+> -		vlan_ops = &vsi->outer_vlan_ops;
+> -
+> -		/* setup outer VLAN ops */
+> -		vlan_ops->set_port_vlan = ice_vsi_set_outer_port_vlan;
+> -		vlan_ops->clear_port_vlan = ice_vsi_clear_outer_port_vlan;
+> +	/* setup inner VLAN ops */
+> +	vlan_ops = &vsi->inner_vlan_ops;
+>  
+> -		/* setup inner VLAN ops */
+> -		vlan_ops = &vsi->inner_vlan_ops;
+> +	if (ice_is_dvm_ena(&pf->hw)) {
+>  		vlan_ops->add_vlan = noop_vlan_arg;
+>  		vlan_ops->del_vlan = noop_vlan_arg;
+>  		vlan_ops->ena_stripping = ice_vsi_ena_inner_stripping;
+>  		vlan_ops->dis_stripping = ice_vsi_dis_inner_stripping;
+>  		vlan_ops->ena_insertion = ice_vsi_ena_inner_insertion;
+>  		vlan_ops->dis_insertion = ice_vsi_dis_inner_insertion;
+> -	} else {
+> -		vlan_ops = &vsi->inner_vlan_ops;
+>  
+> +		/* setup outer VLAN ops */
+> +		vlan_ops = &vsi->outer_vlan_ops;
+> +		vlan_ops->set_port_vlan = ice_vsi_set_outer_port_vlan;
+> +		vlan_ops->clear_port_vlan = ice_vsi_clear_outer_port_vlan;
+> +	} else {
+>  		vlan_ops->set_port_vlan = ice_vsi_set_inner_port_vlan;
+>  		vlan_ops->clear_port_vlan = ice_vsi_clear_inner_port_vlan;
+>  	}
 
-I guess at least some of these devices do support INTx, since we
-always used INTx previously, right?
+Thanks for fixing it.
+Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 
-There are a bunch of bug reports complaining about a lack of _PRT
-entries for them, e.g., these from
-https://bugzilla.kernel.org/show_bug.cgi?id=212261#c24:
-
-  intel-lpss 0000:00:15.0: enabling device (0004 -> 0006)
-  intel-lpss 0000:00:15.0: can't derive routing for PCI INT A
-  intel-lpss 0000:00:15.0: PCI INT A: not connected
-  intel-lpss: probe of 0000:00:15.0 failed with error -22
-  intel-lpss 0000:00:15.2: enabling device (0004 -> 0006)
-  intel-lpss 0000:00:15.2: can't derive routing for PCI INT C
-  intel-lpss 0000:00:15.2: PCI INT C: not connected
-  intel-lpss: probe of 0000:00:15.2 failed with error -22
-  intel-lpss 0000:00:19.0: enabling device (0004 -> 0006)
-  intel-lpss 0000:00:19.0: can't derive routing for PCI INT A
-  intel-lpss 0000:00:19.0: PCI INT A: not connected
-  intel-lpss: probe of 0000:00:19.0 failed with error -22
-  intel-lpss 0000:00:19.1: enabling device (0004 -> 0006)
-  intel-lpss 0000:00:19.1: can't derive routing for PCI INT B
-  intel-lpss 0000:00:19.1: PCI INT B: not connected
-  intel-lpss: probe of 0000:00:19.1 failed with error -22
-  intel-lpss 0000:00:1e.0: enabling device (0004 -> 0006)
-  intel-lpss 0000:00:1e.0: can't derive routing for PCI INT A
-  intel-lpss 0000:00:1e.0: PCI INT A: not connected
-  intel-lpss: probe of 0000:00:1e.0 failed with error -22
-  intel-lpss 0000:00:1e.3: enabling device (0004 -> 0006)
-  intel-lpss 0000:00:1e.3: can't derive routing for PCI INT D
-  intel-lpss 0000:00:1e.3: PCI INT D: not connected
-  intel-lpss: probe of 0000:00:1e.3 failed with error -22
-
-I don't know if these are a _PRT bug (I think if a device advertises a
-non-zero Interrupt Pin, the _PRT should tell us how it is routed), or
-possibly a device bug (advertises Interrupt Pin == INTA when it should
-advertise "no INTx used"), or something else.
-
-Bjorn
+> -- 
+> 2.43.2
+> 
 
