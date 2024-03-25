@@ -1,146 +1,154 @@
-Return-Path: <linux-kernel+bounces-116373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB0A889922
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C94EA889923
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:02:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EC6A1F32897
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:02:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A9D21F2F31D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A7E4C63A;
-	Mon, 25 Mar 2024 05:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75BE3A8D0;
+	Mon, 25 Mar 2024 05:22:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Xeew8ES6"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H0AlS4FZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222F612DD83;
-	Mon, 25 Mar 2024 01:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5098130ACF
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711330569; cv=none; b=qk3N8t/rEf9YAtPFV4rQXLEBgGnqblCVqIPZq7MRVzClnL/az6o/ThH06LDQCxbpWW9vapMyejw6SzCunWzQfH41Y/85YNlWW+mKJvAIhpaWS32ZwtU3oTk39wrvFT9MR9wt7m3Llk3Bwg5AZuEEVEW3kaTaeUVQIPy5ncmwmjY=
+	t=1711330954; cv=none; b=szH9UxYj8MzhUPOHg+fB1wFIEG/zV3qhsFmI/gQiA8EAUBU0khjKpLr55+1UxDrLtBsexiY5Lc2cNNeVTwvoinulIyRrijfIUXN7QVdxxYkM0GP2u9hK8eFT4M6lK75RrawYCO9PgTw6B/GELK4Jhdu3Bk3fazGkc9UOr5h+iOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711330569; c=relaxed/simple;
-	bh=OS4+mR9MBUgdVBdHxvfGh2fZ2Z6lVEs+PKwWJnaxN2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=RJ8Pc68o6DjgD0ttr9+iRl7DDbwMweQGrhA9QZaz1YosiJJUe5An6eBbfeEeVIkBgShv/6+ataPAbCCu2QeFXGS5AJwsHe9V+hbos26M8W6YV4FTvVZzoMc7KRLeoZO93cH3CzjN+wybHUgTL/cQNiqo8fmhIVzDZzryVN4C5Po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Xeew8ES6; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711330564;
-	bh=aYWWUE/YcntQdPo68ayaa1Od+PPqM7hwIBB7pGsroCE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Xeew8ES6WKvi47Kjnd+h4WA4/xym1OiTaU0JugmfTwpvnFMu14pS6npycGoVA5MwJ
-	 JYKhVW1bAspbFqoNCwDsH/dNbmYQMmDDR9+xlIbwUciguBKAxso2ylUpniJqG9xG7I
-	 JipU3mVsXUJ7Foem6kpvV6/FFQUWuu8vD1zlWz3XDqxfVZsb7QvTxlT6DrSVLGbypr
-	 +7adOa6OoUY3Hax0fR+iocztCoOmMG0ueyLaG2qU1Hd/08mfvIVOBd3XbrqNkn2Vuf
-	 uf5YEIZxHrrByC2BsesakT/DzlYs/xQgIVv0oeGogB+pE4L0d14xlkcJVuhZmVI6fM
-	 NraCmmtxN0wmg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	s=arc-20240116; t=1711330954; c=relaxed/simple;
+	bh=6loy/0q04b6ayFmnbr9h3yiIa/DSXvoMTj2G28w1+7g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u/cKsK+k/BEkVu/cIMUB3ahIcfFfB9SRkcp7W49fqrWDSuOzkfp/eeK6gKdsI65ZElJqkAHGFnGKdeHNrdPkd0OiPqkiPBYuX/w4hX/PC8+eSdb9Tvf+IUVAPm4bZGJVzeO/ow5WmPhtUxnql9MWFUVWB0BoYsYUrgwJvTHeDYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H0AlS4FZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711330951;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HJ+1YtdvUOwXvTS2idsRTnR4T3Z82MELgPYzRzwYWno=;
+	b=H0AlS4FZ4O1r+A73I9eQo98R2xM2PWchOZvNipu+JlgF54n5yEVLDywDxGwDuPMaBtiyTX
+	pjMqY9rwGga3PYCCwx571+PBsNBvwz7TBnpXIHZNf4gBeqaIK8JPPMMQtRuzqV28OtAWhz
+	YCVvs1vzoruN5qT+bj2c8vECQjSmFOY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-467-7B4C85FnPf2LuTKx9ZHYvQ-1; Sun,
+ 24 Mar 2024 21:42:29 -0400
+X-MC-Unique: 7B4C85FnPf2LuTKx9ZHYvQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V2wW80Zf2z4wcd;
-	Mon, 25 Mar 2024 12:36:03 +1100 (AEDT)
-Date: Mon, 25 Mar 2024 12:36:03 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Suren Baghdasaryan
- <surenb@google.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the mm tree
-Message-ID: <20240325123603.1bdd6588@canb.auug.org.au>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3F2253802AC6;
+	Mon, 25 Mar 2024 01:42:29 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id BE7361121313;
+	Mon, 25 Mar 2024 01:42:27 +0000 (UTC)
+Date: Mon, 25 Mar 2024 09:42:20 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Ingo Molnar <mingo@kernel.org>
+Cc: kexec@lists.infradead.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+	akpm@linux-foundation.org, chenhuacai@loongson.cn,
+	dyoung@redhat.com, jbohac@suse.cz, lihuafei1@huawei.com,
+	chenhaixiang3@huawei.com
+Subject: Re: [PATCH] crash: use macro to add crashk_res into iomem early for
+ specific arch
+Message-ID: <ZgDWfMctnoLfAUa3@MiWiFi-R3L-srv>
+References: <20240324033513.1027427-1-bhe@redhat.com>
+ <Zf+m4YtKtmdrjw4Q@gmail.com>
+ <Zf/51a+QonYj6sI7@MiWiFi-R3L-srv>
+ <ZgAAIB6H+7+t7YpW@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CkkzL_1wpP/itmWLzgt7CyT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgAAIB6H+7+t7YpW@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
---Sig_/CkkzL_1wpP/itmWLzgt7CyT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 03/24/24 at 11:27am, Ingo Molnar wrote:
+> 
+> * Baoquan He <bhe@redhat.com> wrote:
+> 
+> > On 03/24/24 at 05:06am, Ingo Molnar wrote:
+> > > 
+> > > * Baoquan He <bhe@redhat.com> wrote:
+> > > 
+> > ......snip
+> > > > ---
+> > > >  arch/x86/include/asm/crash_reserve.h | 2 ++
+> > > >  kernel/crash_reserve.c               | 7 +++++++
+> > > >  2 files changed, 9 insertions(+)
+> > > > 
+> > > > diff --git a/arch/x86/include/asm/crash_reserve.h b/arch/x86/include/asm/crash_reserve.h
+> > > > index 152239f95541..4681a543eba3 100644
+> > > > --- a/arch/x86/include/asm/crash_reserve.h
+> > > > +++ b/arch/x86/include/asm/crash_reserve.h
+> > > > @@ -39,4 +39,6 @@ static inline unsigned long crash_low_size_default(void)
+> > > >  #endif
+> > > >  }
+> > > >  
+> > > > +# define HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY
+> > > > +
+> > > 
+> > > Any reason for that stray space?
+> > 
+> > No clear reason. I saw stray space was added for macro definning when my
+> > below patch was merged, not sure if this is preferred.
+> 
+> No, it's not preferred - and I don't see any stray spaces added in the 
+> code added by:
+> 
+> > commit 85fcde402db1 ("kexec: split crashkernel reservation code out from crash_core.c")
 
-Hi all,
+Ah, the stray spaces are added in below macros defining, I thought they
+are all the same. I didn't know nested/conditional defines and
+standalone defines are different. Thanks for careful checking and telling.
 
-After merging the mm tree, today's linux-next build (htmldocs) produced
-these warnings:
+arch/x86/include/asm/crash_reserve.h:
+#ifdef CONFIG_X86_32
+# define CRASH_ADDR_LOW_MAX     SZ_512M
+# define CRASH_ADDR_HIGH_MAX    SZ_512M
+#else
+# define CRASH_ADDR_LOW_MAX     SZ_4G
+# define CRASH_ADDR_HIGH_MAX    SZ_64T
+#endif
 
-include/linux/slab.h:545: warning: expecting prototype for kmem_cache_alloc=
-(). Prototype was for kmem_cache_alloc_noprof() instead
-include/linux/slab.h:652: warning: expecting prototype for kmalloc(). Proto=
-type was for kmalloc_noprof() instead
-include/linux/slab.h:692: warning: expecting prototype for kmalloc_array().=
- Prototype was for kmalloc_array_noprof() instead
-include/linux/slab.h:714: warning: expecting prototype for krealloc_array()=
- Prototype was for krealloc_array_noprof() instead
-include/linux/slab.h:730: warning: Function parameter or struct member '_n'=
- not described in 'kcalloc'
-include/linux/slab.h:730: warning: Function parameter or struct member '_si=
-ze' not described in 'kcalloc'
-include/linux/slab.h:730: warning: Function parameter or struct member '_fl=
-ags' not described in 'kcalloc'
-include/linux/slab.h:730: warning: Excess function parameter 'n' descriptio=
-n in 'kcalloc'
-include/linux/slab.h:730: warning: Excess function parameter 'size' descrip=
-tion in 'kcalloc'
-include/linux/slab.h:730: warning: Excess function parameter 'flags' descri=
-ption in 'kcalloc'
-include/linux/slab.h:774: warning: expecting prototype for kzalloc(). Proto=
-type was for kzalloc_noprof() instead
-mm/slab_common.c:1217: warning: expecting prototype for krealloc(). Prototy=
-pe was for krealloc_noprof() instead
-mm/util.c:751: warning: expecting prototype for __vcalloc(). Prototype was =
-for __vcalloc_noprof() instead
-mm/vmalloc.c:3897: warning: expecting prototype for vmalloc(). Prototype wa=
-s for vmalloc_noprof() instead
-mm/vmalloc.c:3916: warning: expecting prototype for vmalloc_huge(). Prototy=
-pe was for vmalloc_huge_noprof() instead
-mm/vmalloc.c:3953: warning: expecting prototype for vmalloc_user(). Prototy=
-pe was for vmalloc_user_noprof() instead
-mm/mempool.c:245: warning: expecting prototype for mempool_init(). Prototyp=
-e was for mempool_init_noprof() instead
-mm/mempool.c:271: warning: Function parameter or struct member 'gfp_mask' n=
-ot described in 'mempool_create_node_noprof'
-mm/mempool.c:271: warning: Function parameter or struct member 'node_id' no=
-t described in 'mempool_create_node_noprof'
-mm/mempool.c:271: warning: expecting prototype for mempool_create_node(). P=
-rototype was for mempool_create_node_noprof() instead
+> 
+> Anyway, please just remove it.
 
-Introduced by commits
+Sure, will update and v2.
 
-  c64e38ed88d1 ("mm/slab: enable slab allocation tagging for kmalloc and fr=
-iends")
-  ea7b8933f21b ("mempool: hook up to memory allocation profiling")
-  576477564ede ("mm: vmalloc: enable memory allocation profiling")
+> 
+> > And there are a lot of "# define " when searching with 'git grep "# 
+> > define " arch/x86/include/'.
+> 
+> The overwhelming majority of those are not standalone defines like 
+> yours, but nested/conditional defines where the space is justified:
+> 
+> #ifdef CONFIG_X86_32
+> # define MAX_IO_APICS 64
+> # define MAX_LOCAL_APIC 256
+> #else
+> # define MAX_IO_APICS 128
+> # define MAX_LOCAL_APIC 32768
+> #endif
+> 
+> Thanks,
+> 
+> 	Ingo
+> 
 
-from the mm-unstable branch of the mm tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/CkkzL_1wpP/itmWLzgt7CyT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYA1QMACgkQAVBC80lX
-0Gz2Mwf+LcOXyavbrekarP0OPRI+VR3y3nS7s+4FL9H5yryP+StHR1dwrAGaFsib
-iYCBtSvXDsTry5pafpLH8ZDXJ7bHZIj9E75KsxbOo0Tj7bYocqRm8+LDSyvbnnwu
-9lHkwXq2UBoBMAunkkDwTPe6eCai6eo2vK5XUkxGHwxTiqqfbSf4f/7LZo1O3LO2
-LHwO9/OZ+LGWmx/acrA5eZ77UG4AhUepzqyVusq11SefzW8AfOn2IXJqOLLkU3r/
-M0PX3CyWBtjKao7wmn3iAQZLbywBzFk8OZLFNwW6sAQFrteGRoBs+ro7W3iwX5nG
-ZgE2MvcAVpSX/3Y/aoJoU2ifZVS54A==
-=oI8R
------END PGP SIGNATURE-----
-
---Sig_/CkkzL_1wpP/itmWLzgt7CyT--
 
