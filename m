@@ -1,165 +1,113 @@
-Return-Path: <linux-kernel+bounces-116926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F1F988A52E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 341C588A53B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:51:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E02201F3B906
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:49:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEC991F3EBD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:51:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873811BAC5E;
-	Mon, 25 Mar 2024 11:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3308015B557;
+	Mon, 25 Mar 2024 11:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Nq+iUihF"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="a32WMOuD"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57A31BCFB5
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEEF15B559
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711365509; cv=none; b=OZ8wOB5oDBdGR6KUBUjEDeMdRmcWxGP7eevz2Or7WDTn2GfDH+UTJvGzIRRK0tPIjO0V68IpNY04+8V9HHUJZgdOtUOFh3y20UcOFjV7J92Z7YxzLPe0CfOKVKrttMBekUz6fOI8akP2G9ODZRmKngcmU3k2DbhwkZiDvBEzH5g=
+	t=1711365680; cv=none; b=Fi0LIbNNXkv4hq1Fyqsp419t7Ok3pDhEftilb/TsVe3bsJfl0CB1xCLCH506zCGzSVK2zGhxKcjoGBPZZwRgEF0W+VWW1gm8GDO/bwUJ2DkakbyAZ9uutKr/B/AoBf8DdEsdOInTFYNMmOtEyOr/TXtc+Z7p2kv9dc09dnN9UIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711365509; c=relaxed/simple;
-	bh=kfcSKsiNHTh7aM2utb6ONDctZpQO7DpatwSIZkd9iUM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=H1kwWjSZuQWBGbAszXZGWDa4GDQYOpGG5KZmPbl7/ss0YkYSjhjGkyRUEODbbervIEDIINp+f11CyBzOKjy/BciVxSIP/YwlBtRmjVIEtkqxiOz4U8I/MTN1sixrtp3dIx9X5QKhppGLoUxW0pl0xlTwQvH9/l3HulUr/O3aNEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Nq+iUihF; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4715d4c2cbso525705666b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:18:27 -0700 (PDT)
+	s=arc-20240116; t=1711365680; c=relaxed/simple;
+	bh=xudEe2YJTvWsBm8CpDg5lmI/tLcexD8Blm3Xdr2w+mc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B0WaxQItRMWYGTJ6PShkOjBR7d+BIdbsY4Cng463cc5fsCEE4wUnIknI1xRNVxaEriFfVMtKSighFzKnXoCOLZYrxNXTbggbvVwJiJE8KCcrkt+huDBI81vTBaasHRPd44L48fWzh5thEgnAw4KX9hw7Cs+D2guypy+OQ6Izfr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=a32WMOuD; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a44665605f3so482475366b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:21:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711365506; x=1711970306; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=bH8fKZbOuc+ulViiBKFMs5wlGyaD3xI9s7KfEBDkhW0=;
-        b=Nq+iUihFt5AgHBtlFB2JqMveBlm665GnN6gCX8XC3RzKDd+oRoWZWnCAVejkS25560
-         x1ifo7sDtCTFWrrk/6ySKG/QuTaN1dgfl76WzAobVwdr5UiysHVLLEn5igyqXNJYzTgX
-         6rX11MLAFEL35DD/HQ2jPGUv7TPsF/4Nf+JfWRrOzL53bDSZ88HIzWxg5lRhHFJS1H13
-         70tBLHYhHNi7vRmc39QObzEWWrGqm+4uWB2EGRmq18BHNNMK2/nqX8Q2S8WcG+ejJAyJ
-         aDmcCX3rzSBEbV04ufRsegnAQsF8FwPd7JTwAbVDz2WKyFtMMLIo7hEFwKBN4bK97vh+
-         ewsg==
+        d=szeredi.hu; s=google; t=1711365676; x=1711970476; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0c+XedPdeNuNXfU5mtLEzBWBIzV1dWjxq7xb3M/FhvM=;
+        b=a32WMOuDNG1J+K0+ytDniSg1jyeS8/N31C2c3T3jacOJYKcl3nZGpfPZgVB0ooFZxQ
+         ZKUtEDAIv8oJ0BQ9tx7Z3Dsb0IPFGBcSwPBpk0W7tTQrfrFYOgmRueY6wMlRYk1f77B5
+         L1LEQwta/ITK7LqJpJ+0nwzRFOff6DGga+z1I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711365506; x=1711970306;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711365676; x=1711970476;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bH8fKZbOuc+ulViiBKFMs5wlGyaD3xI9s7KfEBDkhW0=;
-        b=j2gjptM1rXCGe+wqZUui2Qs+qIUniSPdKfa4A3Sog5jrsDnTDyo5F0Q2wCHLKHPVmd
-         oKT870+fh8P7JY1RIlwddNo7OF1w6aUeacGg+8iwCu2GYhhHaBPcg8d5Swnr06eD7/3S
-         bFh8emRVBh3xK4NCTz6wFXyK5X5LMPlRBPITeGAYgn0EDXA//GJ8jKMHJO2zuOrH7R6Q
-         LUn2X6YkambMVO3EsTznMr+UVrX8WO6FORPAiIl9tYKYrTuYfmysZFagJdnsEt6FL9eg
-         ehgotXz5PjXfWciYsKUE1ISseLM/20+9lJ/eZ8rMAiepoDoT0n7DIPH4NrPWvE7AW5DH
-         VFKA==
-X-Forwarded-Encrypted: i=1; AJvYcCVkHO+HOguCgWVPWLR9jqJs4oUxKV1lGt9Dq8hvAKZiUwgnNfBX7ijt0gbfbbVhdq4ckhktKWcRWj/CCyIQqRfJyqO7bKQU82gifNTE
-X-Gm-Message-State: AOJu0YzWcTeYD2fmA8gRUzHDvg6vADcBU5NeXA7stbAXHhOz5ujtqiML
-	9QG22h3hwI8XZcz6eGNfvJU0rtsI+4U/+pUicrlk0k3yk0oRkp6Fuopii1EIb9A=
-X-Google-Smtp-Source: AGHT+IEXkiZSwutlTqPA8bIbq2xfxvdoWK8kN3ol6WJDmD9JkYhFEs2a16HfG50Okm88n7y6CcUNmA==
-X-Received: by 2002:a17:906:b015:b0:a47:3527:96d2 with SMTP id v21-20020a170906b01500b00a47352796d2mr4569133ejy.0.1711365506246;
-        Mon, 25 Mar 2024 04:18:26 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id kq1-20020a170906abc100b00a46a04d7dc4sm2946795ejb.61.2024.03.25.04.18.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 04:18:25 -0700 (PDT)
-Message-ID: <3fb87271-5d1e-465f-a7b5-06f9def0807d@linaro.org>
-Date: Mon, 25 Mar 2024 12:18:23 +0100
+        bh=0c+XedPdeNuNXfU5mtLEzBWBIzV1dWjxq7xb3M/FhvM=;
+        b=mHCXkVWlRsBwqrSvPvSpCAw+QApIbgbPMW/LeunOe585aeMzKPWtXbLqz0sfBWBgRh
+         PRt4yaI0bss8jYU992xsr3T1dMrUmYKbbUFlNgwYItdUp/snXKu0J2I9mbMTJeL/wbyf
+         vTDiqC4RP81bEJEZRgd1uiXc+f2ucCS3QS7plWNWOTBxZvV2+u5thSl3x1r/EDYEty89
+         NKVT5/1c6mSQA/utqEmK5vS3DTc3vIX18FpD5DWXCHuCuc65+zleJniZOHCuQi1O8Or7
+         gL9ubsKdH+k1fdrdQh6R/Bb8K6yweZ7Xadk4DV551eFFiVadSlGrwtd7BkdsBBHKE/+P
+         0Kng==
+X-Forwarded-Encrypted: i=1; AJvYcCU4wBBYZcV72tWP1rR8NFN/1gLlllc4JIgj1eUkwxEuFyz6kF0Q15rF7s9OzJZr7JKMe7U5A+B6Vhuom1jaKBGOQhRgz56qrLywWgfm
+X-Gm-Message-State: AOJu0YyBZLbkFPKReSgPTMqP9pFpYm+xYFoftqALxMhtzqa514mDwOSy
+	yY+GZ9twbe3AvgTz7o5eHIoET8XKUAhklEoo7+eo2ba1GT6x/mdEOWBl11F59AYGD1MkrSH2LIA
+	AVHEUX/FNVJ4oY5WGsvsfabTDdo/U8oB7KkjrUdmtJ7xNicEz
+X-Google-Smtp-Source: AGHT+IEHgtn80L49Skt3CEF+hTXCA3FdVG+hC9lS8i92+yyLZZ9XMCkOBIMmlhGWRtndIytDvEiwFaWaIbgkiRj6zl8=
+X-Received: by 2002:a17:906:b109:b0:a46:d978:bf02 with SMTP id
+ u9-20020a170906b10900b00a46d978bf02mr3970124ejy.34.1711365675733; Mon, 25 Mar
+ 2024 04:21:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 1/2] dt-bindings: arm: qcom,coresight-tpda: drop
- redundant type from ports
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Mike Leach
- <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Mao Jinlong <quic_jinlmao@quicinc.com>,
- Tao Zhang <quic_taozha@quicinc.com>, linux-arm-msm@vger.kernel.org,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240325104007.30723-1-krzysztof.kozlowski@linaro.org>
- <f3a1325b-4126-42d7-b777-9b511279251f@arm.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <f3a1325b-4126-42d7-b777-9b511279251f@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CABOYnLyevJeravW=QrH0JUPYEcDN160aZFb7kwndm-J2rmz0HQ@mail.gmail.com>
+ <CAJfpegu8qTARQBftZSaiif0E6dbRcbBvZvW7dQf8sf_ymoogCA@mail.gmail.com>
+ <c58a8dc8-5346-4247-9a0a-8b1be286e779@redhat.com> <CAJfpegt3UCsMmxd0taOY11Uaw5U=eS1fE5dn0wZX3HF0oy8-oQ@mail.gmail.com>
+ <620f68b0-4fe0-4e3e-856a-dedb4bcdf3a7@redhat.com> <CAJfpegub5Ny9kyX+dDbRwx7kd6ZdxtOeQ9RTK8n=LGGSzA9iOQ@mail.gmail.com>
+ <463612f2-5590-4fb3-8273-0d64c3fd3684@redhat.com> <a6632384-c186-4640-8b48-f40d6c4f7d1d@redhat.com>
+ <dd3e28b3-647c-4657-9c3f-9778bb046799@redhat.com> <b40eb0b7-7362-4d19-95b3-e06435e6e09c@redhat.com>
+In-Reply-To: <b40eb0b7-7362-4d19-95b3-e06435e6e09c@redhat.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Mon, 25 Mar 2024 12:21:04 +0100
+Message-ID: <CAJfpegtssacBQuV0J2cEFYOJQvg-p10thsMEq2W87SEonqLnkg@mail.gmail.com>
+Subject: Re: BUG: unable to handle kernel paging request in fuse_copy_do
+To: David Hildenbrand <david@redhat.com>
+Cc: xingwei lee <xrivendell7@gmail.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, samsun1006219@gmail.com, 
+	syzkaller-bugs@googlegroups.com, linux-mm <linux-mm@kvack.org>, 
+	Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 25/03/2024 12:07, Suzuki K Poulose wrote:
-> Hi Krzysztof
-> 
-> On 25/03/2024 10:40, Krzysztof Kozlowski wrote:
->> "in-ports" and "out-ports" are defined by graph schema, so defining its
->> type is redundant.
->>
->> Acked-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> Both patches look good to me. How would you like to pull this ? I could
-> queue them for v6.10 via coresight tree.
-> 
-> If you would like to take them,
-> 
-> Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+On Fri, 22 Mar 2024 at 22:56, David Hildenbrand <david@redhat.com> wrote:
 
-Please take them via coresight.
+>  From 85558a46d9f249f26bd77dd3b18d14f248464845 Mon Sep 17 00:00:00 2001
+> From: David Hildenbrand <david@redhat.com>
+> Date: Fri, 22 Mar 2024 22:45:36 +0100
+> Subject: [PATCH] mm/secretmem: fix GUP-fast succeeding on secretmem folios
+>
+> folio_is_secretmem() states that secretmem folios cannot be LRU folios:
+> so we may only exit early if we find an LRU folio. Yet, we exit early if
+> we find a folio that is not a secretmem folio.
+>
+> Consequently, folio_is_secretmem() fails to detect secretmem folios and,
+> therefore, we can succeed in grabbing a secretmem folio during GUP-fast,
+> crashing the kernel when we later try reading/writing to the folio, because
+> the folio has been unmapped from the directmap.
+>
+> Reported-by: xingwei lee <xrivendell7@gmail.com>
+> Reported-by: yue sun <samsun1006219@gmail.com>
+> Debugged-by: Miklos Szeredi <miklos@szeredi.hu>
+> Fixes: 1507f51255c9 ("mm: introduce memfd_secret system call to create "secret" memory areas")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Best regards,
-Krzysztof
+Verified that it's no longer crashing with the reproducers.
 
+Tested-by: Miklos Szeredi <mszeredi@redhat.com>
 
