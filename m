@@ -1,110 +1,128 @@
-Return-Path: <linux-kernel+bounces-117610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 129B488AD26
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 815E288AD34
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:11:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB40E1F28164
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:10:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 373FF1F624DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0E26E616;
-	Mon, 25 Mar 2024 17:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FBEA7F7E5;
+	Mon, 25 Mar 2024 17:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FCwGXHPw"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="lQsiruC+"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322C06139
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4251E534;
+	Mon, 25 Mar 2024 17:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711388124; cv=none; b=rxYOAqsjP6bTtaw4nMwhCVsDiRNX9guBKMKh7t+o8SuqXLgC1je253qvGqFkNjREoIi904ShGDkfnfl9jqVOqomfl7uzwT2VhhGQOm3gl1IJkCAPCfmQNtaPfhEQpaW0+Ye7vMRRTULnF//DXPbX7I4GYsC3de3j/kIjjGW2dPM=
+	t=1711388356; cv=none; b=GrvfWuhsK382Bnuyzb+qU6GMMDs4vqPQ6b1Lj+ahr4TRYMNCfk5v4Tx3CHEjQVWx87KodXGwlilKzJlVJXBxDb7LuuKYN6/gClLWfOfgYFzFXnqdLd8/2Kz5j/TawQ8fmj6P4RCGHVKm1omDqf3AxcAOoEAzzoMxGxlKmYf+KO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711388124; c=relaxed/simple;
-	bh=EhHuTIICMiNebrcaKBpJloOK+ZXkPyR3XTExpFvyj6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ISHrPbBCkbylDaA1lDyXivmxNfXQ+t1zr0buAHa5XYwQhA1W+iRUk3fp9t6LXXLMMi6bEGSZfiokhUju6opKEuG/Deb/3jC4x/X9/bsypWZVw+xDwcGZpuQWk6iXwITDrO8uPAvzwgho+XADMaH70YPn5RK/DnJ4SQHTTzfkgR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FCwGXHPw; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso1746498b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711388122; x=1711992922; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rzF+lgkb0ir28BnAp73sss6tn3/k0jKYv3IBew2dq8E=;
-        b=FCwGXHPwSgWyKCKGm4Udlj3ZSVQoNXyOQe68y6HJTO8qKWQSW8w402aslYxKW9Hubr
-         MlpO9PFslY5wApVntAQK9eynUbBQeL9ULCWE4cX6roGK9xoCAHgD4YlLOR6rgsT5Wo/3
-         x0Z4NmfWXRJ+wP3dK9KSFGDHxIGPxSaFU2TwdZ9NOeFNBfNHPDAi2p5km+MLLhLc0nVX
-         lMHZIjw3wcsxTmnpd6YZRZgNWCHOcPJzxMrOA0m12WGVyVWKEcgpFn+ZRdG9C3vYLWER
-         cP+cZXy2qpWX9dj0fpyhlLtIZN+8+nFQTzsTWLsqwLaXlaAiFT/VSC9kuO3lAQpt6j5C
-         DRvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711388122; x=1711992922;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rzF+lgkb0ir28BnAp73sss6tn3/k0jKYv3IBew2dq8E=;
-        b=vkDd/Vnp2eT+eLQmZZH+4grN9IQGAYXemaW8qS5CdpHUDzkLQgbqtPpm+tQ0GwjkEl
-         of4w40Oz9ouJemVzyVYR96Jgu43ZNhXpO2vHhd4g2pVCF63cPFbJoZuUwq1dIFXjEYOP
-         C8o9IjAW6nhgJzKslHhnMDIJDMCCSGpqzPqPaf9zdNAppY/dJwyMUuw1IM5bHmExbjJZ
-         NYamkfMxfs4BXAGkPGUQj5qW50Qodu8t/wE0e0oW7uP0j+PuNEpMJTn74lbwQrz6kvA9
-         3VKdziH2pYbXiMHUAY122VTK5AdFouDWPFAdUMGwxc/hdLOROHxVBOuQj3KbYiye9vMq
-         A5tw==
-X-Forwarded-Encrypted: i=1; AJvYcCVPRasu93R/VP+4s9ICCtzVKgNkNDGvRwnNUHfd58DPutQc/zpYpGjch+JxLu4R6U6zB6ZLaxx1hpaSKI9lyGtDGcM2tPcmz3bQD52t
-X-Gm-Message-State: AOJu0YzzGs+ox5mY3w78GoVDu1/5HnzeMh7YPnIIY++1+poA+4GT6d2J
-	vuEnWsdauPu82S02163JJrvzVWwrvMzHvQur5oJJz/cRJ9Zqf29Y
-X-Google-Smtp-Source: AGHT+IEte+NB9U4XeW2eanuOTyUmngFol3kns6MrJGPxJiZ7izDfdDa1LPP9idQCWzhEM9cDvDeoFw==
-X-Received: by 2002:a05:6a20:96da:b0:1a3:53e7:16da with SMTP id hq26-20020a056a2096da00b001a353e716damr5778817pzc.15.1711388122306;
-        Mon, 25 Mar 2024 10:35:22 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id t7-20020a625f07000000b006e6b3c4e70bsm4711620pfb.171.2024.03.25.10.35.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 10:35:22 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 25 Mar 2024 07:35:20 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Allen <allen.lkml@gmail.com>
-Cc: Allen Pais <apais@linux.microsoft.com>, jiangshanlai@gmail.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel: Introduce enable_and_queue_work() convenience
- function
-Message-ID: <ZgG12HiYSowiTtTy@slm.duckdns.org>
-References: <20240228181850.5895-1-apais@linux.microsoft.com>
- <Zd96XzRHI_jMOCip@slm.duckdns.org>
- <CAOMdWSK9_1LMA-ULLa-iZ26P75UCOrO4gScAqmYvqbrvJi7wSQ@mail.gmail.com>
- <ZfIIUyip4U-hGZ4l@slm.duckdns.org>
+	s=arc-20240116; t=1711388356; c=relaxed/simple;
+	bh=QPEBF84eE88+YdJFYseicHFa0CBVX+qcQXwPqlTEfGY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OfxdyXgiPF5ZdG+QeC19uD+tsExEo5d+FoIbEZQmeg0lBLRP9++OZjpCHIRRcu6RCTsH5iL/r3mC5rdLXCRy/nY0yuTjw7F67Ncc4wmg0LoTmgwmI+2k9hcoDFQMi6Rlb1pYhKzNknioHPP5MRyp4qW+CKJTZicksM16U4wxeXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=lQsiruC+; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=63cbUxYgirJ/YEr84TXKagJ5rL0dwPUYDKl8NOveKNg=; t=1711388355; x=1712597955; 
+	b=lQsiruC+mSHcuQqvWrBnJUmlWirkAGeOnoYRWmRE5sH0ATeRYTUJYRTOF1jJfsU3cdCf76XFhsY
+	yt/UzPRaZlEUhDOzkM21UjOwJ1Oy5OAX5ukrfK5vMUtnHN+HHXR79B9opsuEs1N6wwe7XMqryOJsz
+	hJkJPBB2gQhxS9Uh5GMsuBxfFyJSlqug2XEEh2+5e+mx/10KGOxZjYgi4bgpmrxNdua23fqFeNtTC
+	SBiPejYCd24NYQQENsFs6qTOnYUhVmw3fT0oaUZW6gtiy187AwVq1yEOgyLU5ovmTg31peEMJZZcd
+	o3eZj4wjW78yn6tm+6kvslDq1T7ZX1iYe59g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rooHu-0000000DzY9-2PtP;
+	Mon, 25 Mar 2024 18:39:10 +0100
+From: Johannes Berg <johannes@sipsolutions.net>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH v2] rcu: mollify sparse with RCU guard
+Date: Mon, 25 Mar 2024 18:39:08 +0100
+Message-ID: <20240325183907.7205bf36489a.Ic3ac66ff5d6a9bd8a610858060117e1364641a3f@changeid>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfIIUyip4U-hGZ4l@slm.duckdns.org>
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Johannes Berg <johannes.berg@intel.com>
 
-On Wed, Mar 13, 2024 at 10:10:59AM -1000, Tejun Heo wrote:
-> > > I'll apply this together with the rest of the series once v6.10-rc1 opens.
-> > >
-> > 
-> >  Could you please let me know once this is applied or point me to the branch.
-> > I have all the conversion based on this.
+When using "guard(rcu)();" sparse will complain, because even
+though it now understands the cleanup attribute, it doesn't
+evaluate the calls from it at function exit, and thus doesn't
+count the context correctly.
 
-The enable/disable patchset is applied to wq/for-6.10. I was going to apply
-the enable_and_queue_work() patch but you wrote that you were gonna update
-the documentation but I can't find the updated version. Can you please send
-the updated one?
+Given that there's a conditional in the resulting code:
 
-Thanks.
+  static inline void class_rcu_destructor(class_rcu_t *_T)
+  {
+      if (_T->lock) {
+          rcu_read_unlock();
+      }
+  }
 
+it seems that even trying to teach sparse to evalulate the
+cleanup attribute function it'd still be difficult to really
+make it understand the full context here.
+
+Suppress the sparse warning by just releasing the context in
+the acquisition part of the function, after all we know it's
+safe with the guard, that's the whole point of it.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+v2: add a comment after discussion with Boqun
+
+---
+ include/linux/rcupdate.h | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 0746b1b0b663..6a3c52b3c180 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -1059,6 +1059,18 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
+ extern int rcu_expedited;
+ extern int rcu_normal;
+ 
+-DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
++DEFINE_LOCK_GUARD_0(rcu,
++		    do {
++			rcu_read_lock();
++			/*
++			 * sparse doesn't call the cleanup function,
++			 * so just release immediately and don't track
++			 * the context. We don't need to anyway, since
++			 * the whole point of the guard is to not need
++			 * the explicit unlock.
++			 */
++			__release(RCU);
++		    } while(0),
++		    rcu_read_unlock())
+ 
+ #endif /* __LINUX_RCUPDATE_H */
 -- 
-tejun
+2.44.0
+
 
