@@ -1,149 +1,259 @@
-Return-Path: <linux-kernel+bounces-116444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3CDC889E70
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:09:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0828A889E72
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:09:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318601C35A2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:09:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 882F11F378F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C836912D20A;
-	Mon, 25 Mar 2024 07:31:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B0E7137914;
+	Mon, 25 Mar 2024 07:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nsD79n78"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="f+W+83Kz"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591B934E9CD;
-	Mon, 25 Mar 2024 02:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7001386D3
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711335067; cv=none; b=U8LT2meAU/M9oJUjAa87wMh31dT+akAC4pz4sTC71OLJJAappD48XZuWAAJU2t+sxdJE7DUgHjfjox1lWPmgmX4NYjQJMw8pmLgUWXkWXKPxaaUdVzEuem92SPRqM46cXfVI2LgiKvYpMwQzy97dva6ilT1z9S+yDS9T7zivuDk=
+	t=1711335195; cv=none; b=mdz/q9/MEjjMwuuRoGasjaabW206ZMHK6jZKIjHSXh6DiakVJJ2iVaaRWFFDATNOvNogd4Pc0+Mg86fP0+9iqEhSXG8z4HuhUs11XzE/vWwcl+5B4WjgPIAxcNiqJyjrSbnX6tszKMCd2qVXFbjPI2ka/7BUG8ZmerRA3Usp5a0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711335067; c=relaxed/simple;
-	bh=biRFDuDFFmrGcVhDFXnntAOosUY7GJSIQ9cbUZxbPus=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q01/3KzMjeF88gp4ZagzbpCib3MazW0J9ERRL92EkV91XwPVc9LDSFbeXExTKCRlBJKNHQEBceMzgHV8phze3FjbVpctqWKie7+DZHqAr1bSOC6WLgy46VuGeNrRHm+Wv1TMSWaYaOxXaYr5nPSuzvziQh3IlyqcDEXmf6CiZHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nsD79n78; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d687da75c4so46885011fa.0;
-        Sun, 24 Mar 2024 19:51:05 -0700 (PDT)
+	s=arc-20240116; t=1711335195; c=relaxed/simple;
+	bh=Iwy35WEKGQaZWaKUprvpCF3gybVRdIbsl3SsAExl21c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dde5srmqZrumkHoNne1TeRbmVTf8o0UlXhHcMsq0YxXY8Wcx9eYTKwuVvqb9N1ljFKXwiTVy/Y1fjJ7SnMDXlQK+6cjmnJhUv9HqEzVMbM3LHlqOO+mMxemsLnADl5/7Yj89EsUkLyh151NrXcNl/CpFOkWwi4bHBjc3bWukBDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=f+W+83Kz; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-34175878e30so2770746f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 19:53:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711335063; x=1711939863; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4LnrNtIij4Bn4X4TVnt4F69Di6fmhgYJ95GSudT4g/s=;
-        b=nsD79n78jjbGfEpAslqT6wW1qIR2qibW0xv8C767n6lfnsZ/wJ5lqKEMBSTx3yV4a6
-         hTCdQXhUTFPI7ibW1CHdAJJ6g7gtv2FHXy1jJPhQcNbW3EiaLPwkLyntUam5Km4jR9DJ
-         4vyiEtiQU0BKHfmtob+K93RAZr/TtKEIAovkAQq+EFnlhsyFtXtNaSkRYbgfNIDq74Pj
-         y6cdgtAJ0P8gOx01mj4vEF3ex5lzMAxWbUJpezdIzxxWxDI+s/ug+QEcMKUi7ELSmYT7
-         Q8UapWqkOK9yrUuPEtGCidXBc/ebeCxMMDHW98b2Zpgpd5a27wzEk69QTCeNQDU6diNX
-         y+dQ==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1711335190; x=1711939990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IQSoGNn9foRvk9xNgJy3vvfi1aDXWec9jix0W40tVdQ=;
+        b=f+W+83KzVcFgOnBIYaWOsLNSTXRgX51IOnmNuCNUJmS/2G7HN6h2q2KVBH81do868A
+         TOmAPiVO1AGVIF62bokjqbMA/KLKbR5PYslQgnzkLoBBrjOuTdHNvSWnQazK4Hu0Yvns
+         Tgwss8zuyfX7MPLtdKvSiwV9nP1+OIHceTc3cb2Zzno9rzb7PiCmTQDEqp8SatcPatLe
+         CtYkuXTESqoTwsnpSystKMCNBRpN0TOalAu965meiWNZ4LQOQYKTuDC298uBvHsaDBbJ
+         AHLPidWzdNIvUmy/EQMM3MW4rgPgcms49zh+u9gUAd6q9bOZ+fD/Unisf8TQb+TUEe1d
+         m3cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711335063; x=1711939863;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4LnrNtIij4Bn4X4TVnt4F69Di6fmhgYJ95GSudT4g/s=;
-        b=f1gCmHZr3qp8LkvN5c23M0+meYzO8sHaeybmugmpXfE1QD+g0KZyYmybwF4JtgNPSR
-         CaCdD2EyRE0BurItiyGnmtLVDeam+Zt3nha+IYqz111mFUd1aPSdjDHT4QVnTm8w825D
-         JG7Y+AlCGV08PqiyOY1VGO/8aIhObagrUI/bf7ZYGDXV+OYXmpmKqUp4bykWIHicW5Lw
-         G3ztostqfJ6smAGHhs9Wdm3PIC6VB5AVPVdtVNuVoF9lQyZKBPdoAgy61TninMcBz/ij
-         qsgE0zuGec44iLF/8z9H67Cr6ROzVDMkVRZCMkPkI4Q9b9OyQ+nbRsMxdSL53YSXStP9
-         XHKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVpMe6MYuctjDt9zes1j0uHMbYScasyLD90IeV6LXNgpPC9Ygmfc6wJMkW9MBugjGRl4w9TrbZksW3q6FMTkyAKvMmqju4XWEMxXKHICMSuJ9kZJW1xLNMKXQJicpnsNtdwwRla
-X-Gm-Message-State: AOJu0YyFStb2nWeMtzPBYkFDA8y1g2UbHDMD0j4Kj0hFRTTkJ8xKoCPM
-	7+6XxV/ZASf4u1PzJBMxra8LI8AMxz0dDDndfBhRe6cHhDoLOqor9+L4AiIzZqQPucSe5EQNzC8
-	fsIlMFI+7xOo8sZ7E8O1h2EYsoQ0=
-X-Google-Smtp-Source: AGHT+IEYeZivJLuYi6qTfbH9A+Steuz/SE2j9nSLFBiNGYXsF6GgH/e2x2XA5N89cjg8RRWrfD/hcIY0fJ++j665Jvw=
-X-Received: by 2002:a05:6512:3d22:b0:515:ab5c:4a2f with SMTP id
- d34-20020a0565123d2200b00515ab5c4a2fmr1675869lfv.26.1711335063232; Sun, 24
- Mar 2024 19:51:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711335190; x=1711939990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IQSoGNn9foRvk9xNgJy3vvfi1aDXWec9jix0W40tVdQ=;
+        b=G91PyOKj0//8lSrkl4z9frPRoi1zJiFdOPUzxrKESvBVYc0v/GgorHRdNXCRGKgZym
+         rn9u/KEBJc9UncTvY85Nx95UpjIBO25mAj1XKB3sqBDU45Ag9hrD3cq7/mpM5gf3c5qi
+         Lzcm7ZCVNZZq3rj9FKht8e1dvUz3+L/rve2FnjjGs8yRecm35GlT4ZBxpy520ic5guRj
+         RxUcEfBO7sTBf9BH4y/OAkz9lG5kKsDyfNLOFxOrl1Rkcfl1e5dzJEOS6YGmlLidD3ma
+         QB9E1H664/slCIq17f2gQi4HqPmbSbTo1Ri+/tEb952ftLdgNQjwyn0803CugD2+bGWM
+         QmBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXYGkjSS0cSJkgQ3JiY9OX2b5G9KPbPDwXOLaiBIQm+RXP4XH1j8UGg4OSMzACO4fbcG9ZRoWdd8/HZtX6e56zjfjuEpOwxOav/kxW
+X-Gm-Message-State: AOJu0YwgRdomlxxWb3gpHK8TIwM601dk/h0huYPvk+cXep4PoOanLUSP
+	QxoDkk9kO1tbaDm5M5gvjfMWyWhMuWaFkeIWbYs5V+R+jrmp00EepQGuhPHtziU=
+X-Google-Smtp-Source: AGHT+IG59/Ky716HurdeTVFpnSrvFsweZy84YJGoZ4Hi4NSc7jmRa3TENi3PZTobj8KmtDnOKAn23Q==
+X-Received: by 2002:a05:6000:d8c:b0:33e:7ae6:6f4a with SMTP id dv12-20020a0560000d8c00b0033e7ae66f4amr4380793wrb.23.1711335190261;
+        Sun, 24 Mar 2024 19:53:10 -0700 (PDT)
+Received: from airbuntu (host81-157-90-255.range81-157.btcentralplus.com. [81.157.90.255])
+        by smtp.gmail.com with ESMTPSA id t15-20020a5d690f000000b0033e95bf4796sm8123808wru.27.2024.03.24.19.53.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Mar 2024 19:53:09 -0700 (PDT)
+Date: Mon, 25 Mar 2024 02:53:08 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Christian Loehle <christian.loehle@arm.com>
+Cc: Bart Van Assche <bvanassche@acm.org>, linux-kernel@vger.kernel.org,
+	peterz@infradead.org, juri.lelli@redhat.com, mingo@redhat.com,
+	rafael@kernel.org, dietmar.eggemann@arm.com, vschneid@redhat.com,
+	vincent.guittot@linaro.org, Johannes.Thumshirn@wdc.com,
+	adrian.hunter@intel.com, ulf.hansson@linaro.org, andres@anarazel.de,
+	asml.silence@gmail.com, linux-pm@vger.kernel.org,
+	linux-block@vger.kernel.org, io-uring@vger.kernel.org,
+	linux-mmc@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
+Message-ID: <20240325025308.6uqkhpyba6moxntl@airbuntu>
+References: <20240304201625.100619-1-christian.loehle@arm.com>
+ <86f0af00-8765-4481-9245-1819fb2c6379@acm.org>
+ <0dc6a839-2922-40ac-8854-2884196da9b9@arm.com>
+ <c5b7fc1f-f233-4d25-952b-539607c2a0cc@acm.org>
+ <2784c093-eea1-4b73-87da-1a45f14013c8@arm.com>
+ <20240321123935.zqscwi2aom7lfhts@airbuntu>
+ <1ff973fc-66a4-446e-8590-ec655c686c90@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
- <20240310-realtek-led-v1-4-4d9813ce938e@gmail.com> <d064b1be-1004-487b-9944-b62d91b671c9@lunn.ch>
- <CAJq09z54+049aPL2LzAqAFigrvpchPhv_YQ6yJ5C9b9J7mngLQ@mail.gmail.com> <f76754f9-4141-4d48-81e8-f43aa2dfa90c@lunn.ch>
-In-Reply-To: <f76754f9-4141-4d48-81e8-f43aa2dfa90c@lunn.ch>
-From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Sun, 24 Mar 2024 23:50:51 -0300
-Message-ID: <CAJq09z6ZYpwYiqo-XvLG1=_JZeCM2APmHqBjhD4rBSdRP3ERYA@mail.gmail.com>
-Subject: Re: [PATCH net-next 4/4] net: dsa: realtek: add LED drivers for rtl8366rb
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
-	Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1ff973fc-66a4-446e-8590-ec655c686c90@arm.com>
 
-> > OK, I'll add _group_/_GROUP_ both to the enum name and macros. Led
-> > blink rate, for example, is global, used by all groups. However, it
-> > will be difficult to respect the 80 columns limit passing
-> > RTL8366RB_LED_GROUP_OFF to a rb8366rb_set_ledgroup_mode function with
-> > only two levels of indentation. Do you have any recommendations?
+On 03/21/24 17:57, Christian Loehle wrote:
 
-Hi Andrew,
+> > So you want the hardirq to move to the big core? Unlike softirq, there will be
+> > a single hardirq for the controller (to my limited knowledge), so if there are
+> > multiple requests I'm not sure we can easily match which one relates to which
+> > before it triggers. So we can end up waking up the wrong core.
+> 
+> It would be beneficial to move the hardirq to a big core if the IO task
+> is using it anyway.
+> I'm not sure I actually want to. There are quite a few pitfalls (like you
 
-> https://www.kernel.org/doc/html/v4.10/process/coding-style.html
->
->   Now, some people will claim that having 8-character indentations
->   makes the code move too far to the right, and makes it hard to read
->   on a 80-character terminal screen. The answer to that is that if you
->   need more than 3 levels of indentation, you=E2=80=99re screwed anyway, =
-and
->   should fix your program.
+I'm actually against it. I think it's too much complexity for not necessasrily
+a big gain. FWIW, one of the design request to get per task iowait boost so
+that we can *disable* it. It wastes power when only a handful of tasks actually
+care about perf.
 
-I need 3, not more than 3.
+Caring where the hardirq run for perf is unlikely a problem in practice.
+Softirq should follow the requester already when it matters.
 
->   Functions should be short and sweet, and do just one thing. They
->   should fit on one or two screenfuls of text (the ISO/ANSI screen
->   size is 80x24, as we all know), and do one thing and do that well.
->
-> Maybe you need to use more helper functions?
+> mentioned) that the scheduler really shouldn't be concerned about.
+> Moving the hardirq, if implemented in the kernel, would have to be done by the
+> host controller driver anyway, which would explode this series.
+> (host controller drivers are quite fragmented e.g. on mmc)
+> 
+> The fact that having a higher capacity CPU available ("running faster") for an
+> IO task doesn't (always) imply higher throughput because of the hardirq staying
+> on some LITTLE CPU is bothering (for this series), though.
+> 
+> > 
+> > Generally this should be a userspace policy. If there's a scenario where the
+> > throughput is that important they can easily move the hardirq to the big core
+> > unconditionally and move it back again once this high throughput scenario is no
+> > longer important.
+> 
+> It also feels wrong to let this be a userspace policy, as the hardirq must be
+> migrated to the perf domain of the task, which userspace isn't aware of.
+> Unless you expect userspace to do
 
-The call that violates (by 1) the limit is to
-rb8366rb_set_ledgroup_mode(). With its name (a little long), the now
-5-char longer macro/enum and 3 tabs, it has 81 columns when I align
-the argument to the opening parenthesis.
+irq balancer is a userspace policy. For kernel to make an automatic decision
+there are a lot of ifs must be present. Again, I don't see on such system
+maximizing throughput is a concern. And userspace can fix the problem simply
+- they know after all when the throughput really matters to the point where the
+hardirq runs is a bottleneck. In practice, I don't think it is a bottleneck.
+But this is my handwavy judgement. The experts know better. And note, I mean
+use cases that are not benchmarks ;-)
 
-static int rtl8366rb_setup(struct dsa_switch *ds)
-{
-       (...)
-       if (priv->leds_disabled) {
-               /* Turn everything off */
-               regmap_update_bits(priv->map,
-                                  RTL8366RB_INTERRUPT_CONTROL_REG,
-                                  RTL8366RB_P4_RGMII_LED,
-                                  0);
+> CPU_affinity_task=big_perf_domain_0 && hardirq_affinity=big_perf_domain_0
+> but then you could just as well ask them to set performance governor for
+> big_perf_domain_0 (or uclamp_min=1024) and need neither this series nor
+> any iowait boosting.
+> 
+> Furthermore you can't generally expect userspace to know if their IO will lead
+> to any interrupt at all, much less which one. They ideally don't even know if
+> the file IO they are doing is backed by any physical storage in the first place.
+> (Or even further, that they are doing file IO at all, they might just be
+> e.g. page-faulting.)
 
-               for (i =3D 0; i < RTL8366RB_NUM_LEDGROUPS; i++) {
-                       ret =3D rb8366rb_set_ledgroup_mode(priv, i,
-                                                        RTL8366RB_LEDGROUP_=
-OFF);
-                       if (ret)
-                               return ret;
-               }
-        }
-}
+The way I see it, it's like gigabit networking. The hardirq will matter once
+you reach such high throughput scenarios. Which are corner cases and not the
+norm?
 
-Should I rename the rb8366rb_set_ledgroup_mode function,
-RTL8366RB_LEDGROUP_OFF or is the violation here acceptable?
+> 
+> > 
+> > Or where you describing a different problem?
+> 
+> That is the problem I mentioned in the series and Bart and I were discussing.
+> It's a problem of the series as in "the numbers aren't that impressive".
+> Current iowait boosting on embedded/mobile systems will perform quite well by
+> chance, as the (low util) task will often be on the same perf domain the hardirq
+> will be run on. As can be seen in the cover letter the benefit of running the
+> task on a (2xLITTLE capacity) big CPU therefore are practically non-existent,
+> for tri-gear systems where big CPU is more like 10xLITTLE capacity the benefit
+> will be much greater.
+> I just wanted to point this out. We might just acknowledge the problem and say
+> "don't care" about the potential performance benefits of those scenarios that
+> would require hardirq moving.
 
-Can I use the double tab indentation here like it appears in
-https://elixir.bootlin.com/linux/latest/source/net/8021q/vlanproc.c#L120?
+I thought the softirq does the bulk of the work. hardirq being such
+a bottleneck is (naively maybe) a red flag for me that it's doing too much than
+a simple interrupt servicing.
 
-Regards,
+You don't boost when the task is sleeping, right? I think this is likely
+a cause of the problem where softirq is not running as fast - where before the
+series the CPU will be iowait boosted regardless the task is blocked or not.
 
-Luiz
+> In the long-term it looks like for UFS the problem will disappear as we are
+> expected to get one queue/hardirq per CPU (as Bart mentioned), on NVMe that
+> is already the case.
+> 
+> I CC'd Uffe and Adrian for mmc, to my knowledge the only subsystem where
+> 'fast' (let's say >10K IOPS) devices are common, but only one queue/hardirq
+> is available (and it doesn't look like this is changing anytime soon).
+> I would also love to hear what Bart or other UFS folks think about it.
+> Furthermore if I forgot any storage subsystem with the same behavior in that
+> regards do tell me.
+> 
+> Lastly, you could consider the IO workload:
+> IO task being in iowait very frequently [1] with just a single IO inflight [2]
+> and only very little time being spent on the CPU in-between iowaits[3],
+> therefore the interrupt handler being on the critical path for IO throughput
+> to a non-negligible degree, to be niche, but it's precisely the use-case where
+> iowait boosting shows it's biggest benefit.
+> 
+> Sorry for the abomination of a sentence, see footnotes for the reasons.
+> 
+> [1] If sugov doesn't see significantly more than 1 iowait per TICK_NSEC it
+> won't apply any significant boost currently.
+
+I CCed you to a patch where I fix this. I've been sleeping on it for too long.
+Maybe I should have split this fix out of the consolidation patch.
+
+> [2] If the storage devices has enough in-flight requests to serve, iowait
+> boosting is unnecessary/wasteful, see cover letter.
+> [3] If the task actually uses the CPU in-between iowaits, it will build up
+> utilization, iowait boosting benefit diminishes.
+
+The current mechanism is very aggressive. It needs to evolve for sure.
+
+> 
+> > 
+> > Glad to see your series by the way :-) I'll get a chance to review it over the
+> > weekend hopefully.
+> 
+> Thank you!
+> Apologies for not CCing you in the first place, I am curious about your opinion
+> on the concept!
+
+I actually had a patch that implements iowait boost per-task (on top of my
+remove uclamp max aggregation series) where I did actually take the extra step
+to remove iowait from intel_pstate. Can share the patches if you think you'll
+find them useful.
+
+Just want to note that this mechanism can end up waste power and this is an
+important direction to consider. It's not about perf only (which matters too).
+
+> 
+> FWIW I did mess up a last-minute, what was supposed to be, cosmetic change that
+> only received a quick smoke test, so 1/2 needs the following:
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 4aaf64023b03..2b6f521be658 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6824,7 +6824,7 @@ static void dequeue_io_boost(struct cfs_rq *cfs_rq, struct task_struct *p)
+>         } else if (p->io_boost_curr_ios < p->io_boost_threshold_down) {
+>                 /* Reduce boost */
+>                 if (p->io_boost_level > 1)
+> -                       io_boost_scale_interval(p, true);
+> +                       io_boost_scale_interval(p, false);
+>                 else
+>                         p->io_boost_level = 0;
+>         } else if (p->io_boost_level == IO_BOOST_LEVELS) {
+> 
+> 
+> I'll probably send a v2 rebased on 6.9 when it's out anyway, but so far the
+> changes are mostly cosmetic and addressing Bart's comments about the benchmark
+> numbers in the cover letter.
+
+I didn't spend a lot of time on the series, but I can see a number of problems.
+Let us discuss them first and plan a future direction. No need to v2 if it's
+just for this fix IMO.
 
