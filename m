@@ -1,120 +1,258 @@
-Return-Path: <linux-kernel+bounces-117198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC6B88A88E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:13:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8915388A8A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:14:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23F371F3C438
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:13:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46C28BE7350
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:13:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89641128398;
-	Mon, 25 Mar 2024 14:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53790128391;
+	Mon, 25 Mar 2024 14:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PInVnx/1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r2WztD+b"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C9714A8B;
-	Mon, 25 Mar 2024 14:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE865C89;
+	Mon, 25 Mar 2024 14:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711375376; cv=none; b=XtUmuo+Madrl3nYJhBfkaNoEMuiwCd+72JMJ4rvSPL1WQV+svCt2aAxLwnlC+McWf0fr435dBkRpXdjsEBy47023CHMxcJmFGGE8nXditbR/bi2QmxeS3LY2BBJNvDwZ018ybSTrLMjV3f7L+aHDpwbYMScbJk8wIQuBEnqmTY8=
+	t=1711375421; cv=none; b=AkbBsYbBPW7BzOITbn8enPCo9yj08aXF2EnK5OyUtMKxt4z+L6uhX2kPEpFC6ZNvMBGB0Rptkt9bOd5tAFbVjrcJSV+Hf+tS4deEGnnHQ1cd/tCHZPSd+oR37eEVs58BSfcfP5H04z8El7uqPQbpFNtTPoZmGZBtyFYorze8Fbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711375376; c=relaxed/simple;
-	bh=LK9smWuFEaz05Mp9x+m54fvpRDKiNeTfa5BBHlCzGmc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rnZ+dyz7hgrAFES0LzH6sknoG2e3Sw/AvUN28cVMEjJ1JRMK76t+m9qjdQTNHh1EFOuA+HtqtksyGZg++GpiIb7xWP93cTJ4SufW98/j6vibL3MVtl0VHv/5R3NttHf2a+5ZoOKp3QFqrdWcpe6TQ8Lg6tsP/Izmv36DdS74yMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PInVnx/1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 886A0C433F1;
-	Mon, 25 Mar 2024 14:02:55 +0000 (UTC)
+	s=arc-20240116; t=1711375421; c=relaxed/simple;
+	bh=c2zVS99udWyU0n1cfCGVbETc0ZiOOpdN9f8X1ASiXLc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jVDpnA217L4X8UvktAgnDOfntZkbw6Ctopc9BSEIgKJrJ87g62ixALid3dJUCT82vxuY52RTtn2HWpOyLtlftdh9JrAoLQI995J/bhFAm8ODH3IVKunx8lCl3l+QJDanz8hy8+GiS5p8MsiOVMmSM8YaHBsO89c/SJqhtRN3H4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r2WztD+b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D66CAC433C7;
+	Mon, 25 Mar 2024 14:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711375376;
-	bh=LK9smWuFEaz05Mp9x+m54fvpRDKiNeTfa5BBHlCzGmc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PInVnx/1wR5q2p6s1rAvd7TaCX+K8ktpCtuW0gLM/Kn1O1r4FnLG83UzhLEB5HclE
-	 rY+S2DUIfqXXEPGhl1g53LMhAwYz0FyqbMdFn4TtET3D4SK1/zlqtq6P48pfhMhJdi
-	 X9YWGgOYEP3r50Mf7reLFz/P14hTZlR9nKIUyTBwwELk9lwZXyw29LgyPV0BzC8Gak
-	 LzS4S9BtBisprlsuS9/XpCivHB3hGklkHQ7IqefIwAqu7G73Q0PvOi4/eEJBiOWf/M
-	 /pEuPlUGpwdjQUkQo0vni/gmlfWGMD0OMvt93XK0Sh/UdRzJCuknav2ktdLIE9YNlo
-	 CTOhy3QdaNCdA==
-Date: Mon, 25 Mar 2024 09:02:53 -0500
-From: Bjorn Andersson <andersson@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: qcom: gdsc: treat optional supplies as optional
-Message-ID: <jdnylcw35fofffszbtwd4pq3tltowmbzhugxeiuthjqnpnrjkw@bjfpfgrhk4p2>
-References: <20240325085835.26158-1-johan+linaro@kernel.org>
+	s=k20201202; t=1711375421;
+	bh=c2zVS99udWyU0n1cfCGVbETc0ZiOOpdN9f8X1ASiXLc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=r2WztD+baL87M550c1UgJ36bvvMKCmGBYxfsm+n69ymlThdRAPLD/+6pqeVAlaOTs
+	 VCHHkR1q+e8LJSOfjjPaeqYhk+b0FeJGPQ/i6e9nxXk+CsWRyl/66D6NbFUaBpVJ1N
+	 3vx+DUcTxY5lV7Du9WOysHkLy5I8YOrd388A/B4CRraWiiCBecCkeXa7V5uTNoEYr/
+	 TUi1kEYyx9LwvNJDg2gwMTwEzD8m3kjO44idP+7h/RNNQDznewPGc10JLjwvaC5lz8
+	 UajRRfpcMDEz0GAdLZDKOLW6cOQ7VXHLdU1f2o4bl9cvVxY8d2WJ7hl69KZtQwB9fM
+	 YEUft56eWTddw==
+Message-ID: <da4de4e0-6d13-4509-b288-a9d122d1c2d3@kernel.org>
+Date: Mon, 25 Mar 2024 23:03:37 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325085835.26158-1-johan+linaro@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scsi: libsas: Add SMP request allocation handler callback
+Content-Language: en-US
+To: Yihang Li <liyihang9@huawei.com>, jejb@linux.ibm.com,
+ martin.petersen@oracle.com, john.g.garry@oracle.com, yanaijie@huawei.com,
+ chenxiang66@hisilicon.com
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linuxarm@huawei.com, prime.zeng@huawei.com, yangxingui@huawei.com
+References: <20240325131751.1840329-1-liyihang9@huawei.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20240325131751.1840329-1-liyihang9@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 09:58:35AM +0100, Johan Hovold wrote:
-> Since commit deebc79b28d6 ("clk: qcom: gpucc-sc8280xp: Add external
-> supply for GX gdsc") the GDSC supply must be treated as optional to
-> avoid warnings like:
-> 
-> 	gpu_cc-sc8280xp 3d90000.clock-controller: supply vdd-gfx not found, using dummy regulator
-> 
-> on SC8280XP.
-> 
-> Fortunately, the driver is already prepared to handle this by checking
-> that the regulator pointer is non-NULL before use.
-> 
-> This also avoids triggering a potential deadlock on SC8280XP even if the
-> underlying issue still remains for the derivative platforms like SA8295P
-> that actually use the supply.
-> 
-> Fixes: deebc79b28d6 ("clk: qcom: gpucc-sc8280xp: Add external supply for GX gdsc")
-> Link: https://lore.kernel.org/lkml/Zf25Sv2x9WaCFuIH@hovoldconsulting.com/
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+On 3/25/24 22:17, Yihang Li wrote:
+> This series [1] reducing the kmalloc() minimum alignment on arm64 to 8
+> (from 128).
 
-Thanks for fixing this, it never made it off my todo list...
+And ? What is the point you are trying to convey here ?
 
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+> The hisi_sas has special requirements on the memory address alignment
+> (must be 16-byte-aligned) of the command request frame, so add a SMP
+> request allocation callback and fill it in for the hisi_sas driver.
 
-Regards,
-Bjorn
+128 is aligned to 16. So what is the problem you are trying to solve here ?
+Can you clarify ? I suspect this is all about memory allocation optimization ?
 
+> 
+> Link: https://lkml.kernel.org/r/20230612153201.554742-1-catalin.marinas@arm.com [1]
+> Signed-off-by: Yihang Li <liyihang9@huawei.com>
 > ---
->  drivers/clk/qcom/gdsc.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
+>  drivers/scsi/hisi_sas/hisi_sas_main.c | 14 ++++++++++++
+>  drivers/scsi/libsas/sas_expander.c    | 31 ++++++++++++++++++---------
+>  include/scsi/libsas.h                 |  3 +++
+>  3 files changed, 38 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> index e7a4068b9f39..df9618ab7eea 100644
-> --- a/drivers/clk/qcom/gdsc.c
-> +++ b/drivers/clk/qcom/gdsc.c
-> @@ -487,9 +487,14 @@ int gdsc_register(struct gdsc_desc *desc,
->  		if (!scs[i] || !scs[i]->supply)
->  			continue;
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
+> index 097dfe4b620d..40329558d435 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_main.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
+> @@ -2031,6 +2031,19 @@ static int hisi_sas_write_gpio(struct sas_ha_struct *sha, u8 reg_type,
+>  				reg_index, reg_count, write_data);
+>  }
 >  
-> -		scs[i]->rsupply = devm_regulator_get(dev, scs[i]->supply);
-> -		if (IS_ERR(scs[i]->rsupply))
-> -			return PTR_ERR(scs[i]->rsupply);
-> +		scs[i]->rsupply = devm_regulator_get_optional(dev, scs[i]->supply);
-> +		if (IS_ERR(scs[i]->rsupply)) {
-> +			ret = PTR_ERR(scs[i]->rsupply);
-> +			if (ret != -ENODEV)
-> +				return ret;
+> +static void *hisi_sas_alloc_smp_req(int size)
+> +{
+> +	u8 *p;
 > +
-> +			scs[i]->rsupply = NULL;
-> +		}
->  	}
+> +	/* The address must be 16-byte-aligned. */
+
+ARCH_DMA_MINALIGN is not always 16, right ?
+
+> +	size = ALIGN(size, ARCH_DMA_MINALIGN);
+> +	p = kzalloc(size, GFP_KERNEL);
+> +	if (p)
+> +		p[0] = SMP_REQUEST;
+> +
+> +	return p;
+> +}
+> +
+>  static void hisi_sas_phy_disconnected(struct hisi_sas_phy *phy)
+>  {
+>  	struct asd_sas_phy *sas_phy = &phy->sas_phy;
+> @@ -2130,6 +2143,7 @@ static struct sas_domain_function_template hisi_sas_transport_ops = {
+>  	.lldd_write_gpio	= hisi_sas_write_gpio,
+>  	.lldd_tmf_aborted	= hisi_sas_tmf_aborted,
+>  	.lldd_abort_timeout	= hisi_sas_internal_abort_timeout,
+> +	.lldd_alloc_smp_req	= hisi_sas_alloc_smp_req,
+
+Why this complexity ? Why not simply modify alloc_smp_req() to have the required
+alignment ? This will avoid a costly indirect function call.
+
+>  };
 >  
->  	data->num_domains = num;
-> -- 
-> 2.43.0
-> 
+>  void hisi_sas_init_mem(struct hisi_hba *hisi_hba)
+> diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
+> index a2204674b680..0fd0507f7fc6 100644
+> --- a/drivers/scsi/libsas/sas_expander.c
+> +++ b/drivers/scsi/libsas/sas_expander.c
+> @@ -141,6 +141,17 @@ static inline void *alloc_smp_req(int size)
+>  	return p;
+>  }
+>  
+> +static void *sas_alloc_smp_req(struct domain_device *dev, int size)
+> +{
+> +	struct sas_internal *i =
+> +		to_sas_internal(dev->port->ha->shost->transportt);
+> +
+> +	if (i->dft->lldd_alloc_smp_req)
+> +		return i->dft->lldd_alloc_smp_req(size);
+> +
+> +	return alloc_smp_req(size);
+> +}
+> +
+>  static inline void *alloc_smp_resp(int size)
+>  {
+>  	return kzalloc(size, GFP_KERNEL);
+> @@ -377,7 +388,7 @@ int sas_ex_phy_discover(struct domain_device *dev, int single)
+>  	u8   *disc_req;
+>  	struct smp_disc_resp *disc_resp;
+>  
+> -	disc_req = alloc_smp_req(DISCOVER_REQ_SIZE);
+> +	disc_req = sas_alloc_smp_req(dev, DISCOVER_REQ_SIZE);
+>  	if (!disc_req)
+>  		return -ENOMEM;
+>  
+> @@ -440,7 +451,7 @@ static int sas_ex_general(struct domain_device *dev)
+>  	int res;
+>  	int i;
+>  
+> -	rg_req = alloc_smp_req(RG_REQ_SIZE);
+> +	rg_req = sas_alloc_smp_req(dev, RG_REQ_SIZE);
+>  	if (!rg_req)
+>  		return -ENOMEM;
+>  
+> @@ -519,7 +530,7 @@ static int sas_ex_manuf_info(struct domain_device *dev)
+>  	u8 *mi_resp;
+>  	int res;
+>  
+> -	mi_req = alloc_smp_req(MI_REQ_SIZE);
+> +	mi_req = sas_alloc_smp_req(dev, MI_REQ_SIZE);
+>  	if (!mi_req)
+>  		return -ENOMEM;
+>  
+> @@ -560,7 +571,7 @@ int sas_smp_phy_control(struct domain_device *dev, int phy_id,
+>  	u8 *pc_resp;
+>  	int res;
+>  
+> -	pc_req = alloc_smp_req(PC_REQ_SIZE);
+> +	pc_req = sas_alloc_smp_req(dev, PC_REQ_SIZE);
+>  	if (!pc_req)
+>  		return -ENOMEM;
+>  
+> @@ -642,7 +653,7 @@ int sas_smp_get_phy_events(struct sas_phy *phy)
+>  	struct sas_rphy *rphy = dev_to_rphy(phy->dev.parent);
+>  	struct domain_device *dev = sas_find_dev_by_rphy(rphy);
+>  
+> -	req = alloc_smp_req(RPEL_REQ_SIZE);
+> +	req = sas_alloc_smp_req(dev, RPEL_REQ_SIZE);
+>  	if (!req)
+>  		return -ENOMEM;
+>  
+> @@ -682,7 +693,7 @@ int sas_get_report_phy_sata(struct domain_device *dev, int phy_id,
+>  			    struct smp_rps_resp *rps_resp)
+>  {
+>  	int res;
+> -	u8 *rps_req = alloc_smp_req(RPS_REQ_SIZE);
+> +	u8 *rps_req = sas_alloc_smp_req(dev, RPS_REQ_SIZE);
+>  	u8 *resp = (u8 *)rps_resp;
+>  
+>  	if (!rps_req)
+> @@ -1344,7 +1355,7 @@ static int sas_configure_present(struct domain_device *dev, int phy_id,
+>  	*present = 0;
+>  	*index = 0;
+>  
+> -	rri_req = alloc_smp_req(RRI_REQ_SIZE);
+> +	rri_req = sas_alloc_smp_req(dev, RRI_REQ_SIZE);
+>  	if (!rri_req)
+>  		return -ENOMEM;
+>  
+> @@ -1412,7 +1423,7 @@ static int sas_configure_set(struct domain_device *dev, int phy_id,
+>  	u8 *cri_req;
+>  	u8 *cri_resp;
+>  
+> -	cri_req = alloc_smp_req(CRI_REQ_SIZE);
+> +	cri_req = sas_alloc_smp_req(dev, CRI_REQ_SIZE);
+>  	if (!cri_req)
+>  		return -ENOMEM;
+>  
+> @@ -1627,7 +1638,7 @@ static int sas_get_phy_discover(struct domain_device *dev,
+>  	int res;
+>  	u8 *disc_req;
+>  
+> -	disc_req = alloc_smp_req(DISCOVER_REQ_SIZE);
+> +	disc_req = sas_alloc_smp_req(dev, DISCOVER_REQ_SIZE);
+>  	if (!disc_req)
+>  		return -ENOMEM;
+>  
+> @@ -1723,7 +1734,7 @@ static int sas_get_ex_change_count(struct domain_device *dev, int *ecc)
+>  	u8  *rg_req;
+>  	struct smp_rg_resp  *rg_resp;
+>  
+> -	rg_req = alloc_smp_req(RG_REQ_SIZE);
+> +	rg_req = sas_alloc_smp_req(dev, RG_REQ_SIZE);
+>  	if (!rg_req)
+>  		return -ENOMEM;
+>  
+> diff --git a/include/scsi/libsas.h b/include/scsi/libsas.h
+> index f5257103fdb6..2e6e5f6e50db 100644
+> --- a/include/scsi/libsas.h
+> +++ b/include/scsi/libsas.h
+> @@ -670,6 +670,9 @@ struct sas_domain_function_template {
+>  	/* GPIO support */
+>  	int (*lldd_write_gpio)(struct sas_ha_struct *, u8 reg_type,
+>  			       u8 reg_index, u8 reg_count, u8 *write_data);
+> +
+> +	/* Allocation for SMP request */
+> +	void *(*lldd_alloc_smp_req)(int size);
+>  };
+>  
+>  extern int sas_register_ha(struct sas_ha_struct *);
+
+-- 
+Damien Le Moal
+Western Digital Research
+
 
