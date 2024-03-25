@@ -1,181 +1,246 @@
-Return-Path: <linux-kernel+bounces-118196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90E9788B5A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:52:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3A188B5A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4842A1F2D4C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:52:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F00031C3CE42
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C6284FDA;
-	Mon, 25 Mar 2024 23:52:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D9A84D2A;
+	Mon, 25 Mar 2024 23:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jRzdO768"
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="R5ju2o7B"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41BC84D36
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213C8339BF;
+	Mon, 25 Mar 2024 23:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711410720; cv=none; b=rio5f/aO3WFlEjm6AdxQ29mtL/6G9KzpMc+ZBGv9Y53SyoQnmT3FBiACnV25ktsBK7z3M6WbdhDJTILbj3TpD5FElumAm4+OK+rl5qipDMzQgOaeTDiPCQtndpYloCDWFJERbznsWw932Jvr6g1brFgTtvrLYKqAh6m2FxLgJDM=
+	t=1711410871; cv=none; b=Nrjysbg6Xo7L3Qi8Ko3SQQrNY0LXbxVWmKQ3H6MrXNjGunVQto/9uhwkK2njUUYf7wMbAoM1HbmZzDUEKK6RLITBMfLINWVra5B6q8eTRxsLtjqpLZrLSkWRfWRcw543lPiBEiubWTJ7g8rKUxIjMo92jdZDRArctkOvoJG+y/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711410720; c=relaxed/simple;
-	bh=oxuzlqVOTLOpfh3OJSKBQ9Jx5FDcP7ZC2rMXAjAaBUA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y4jN4ahvhhtbpXfmSEzr5IdU4dr/ZWDxx5cU7iT/LcmYFxIEJVOaAV1wLhBtq8VC/WNRS9mxZSfdK1020QC53qIE3xl/6/dHHOHfr26QERxfjaaiqlAhUb/5CFAfWwfGXcI0rfm2E/5zyLYbTgavYO+91MEliEPfbYe4BM60bXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jRzdO768; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6e6d063e88bso1102070a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:51:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711410717; x=1712015517; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2MrRPD0X2P2h7H+3eSPulHbHlM+c9Z5ydkL4v8ZwLYc=;
-        b=jRzdO768CRVfKVfhtJEix8rxhkPca1DLyFnQxnfuydyc4+CtGpHoRJ1J4iZd6fEqpi
-         Z51ATzekFp/x4OPrnW7WWxao/xDB9XKgYiRjFymDkRmIouI/CSHKlwyH48xqQ//OJpdK
-         6is26eTnoO/5SHEBU4MHZHbM2b83Jg5S5opAA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711410717; x=1712015517;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2MrRPD0X2P2h7H+3eSPulHbHlM+c9Z5ydkL4v8ZwLYc=;
-        b=Yf8nMM2vhJ8MZwFQCJGyCEeK/rul/SG7t1WMOW8JlJLBLJkmxAWEBgwpW/pHS1JHpE
-         gx/q0R/HKRxwdOc4Y2DGHLdEJW0AQ5XsN5BaDT+/xAcbYGAKgWRfR/bAoKDQAgqWy+lB
-         AsRuXC/gqlerdbs3NAbRl5FFRTjphQ2EfEVYEPTn4rpSmak/01PDuntmgDWX9IdLUhH9
-         AdcynLzUg0VLd90sqZusouN1yWmo9snc26mhEJPWtndTn+boBjPb/lHrPYTRALAC4W8U
-         Tiirmxru1BqghOfpj2ad+Cg447N3LoEQPuQ/oXWUjAzKGER+8NS1NS4LeQXD4WCa1BZ2
-         t0mg==
-X-Forwarded-Encrypted: i=1; AJvYcCXecW54ivTUXMImVGDe2ERd3prqQHRpOCy2rQsUDu++AiHo5Xb7wXGwYwtbkq6AeYg49qjS4WlPkLH0NBMtThogPcA0jXIL2lBRvsck
-X-Gm-Message-State: AOJu0Yx4MMDT3Cj9G/KjtLgQxxog4+71hBHPv9WUDejPYMSW7wbBah/4
-	Jl6GWt6QeRyTrkqjUy/B2PEWmTFJKP0un8ehFyK3SNgYHHJ7ga3rEFmrEHQr1eE8SNCfmDEQoV4
-	EEp5UqaYfOM3gLfu2yZz2Pd4DmtIeCyznUCFG
-X-Google-Smtp-Source: AGHT+IGbekR0Vue1xLl0EWSZ1BWGHK5l2W7TtzXDw/0HDGKWhLS9f4FhS58OXOS/D2ImlTRUf5Ts6pGmcmOJBXePe+s=
-X-Received: by 2002:a05:6830:3103:b0:6e6:7d92:d5ab with SMTP id
- b3-20020a056830310300b006e67d92d5abmr1402055ots.10.1711410717736; Mon, 25 Mar
- 2024 16:51:57 -0700 (PDT)
+	s=arc-20240116; t=1711410871; c=relaxed/simple;
+	bh=e18u4Zx+/EJmVkR05i1wQWx/l3yrJ3WydzFhrZJeVEo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iIkDQqdhmbA0K9O7Zcql0IPlA2CLb7PgtKvf/wTFS5/XDrjnzJiQbbexBnGEUcuwifkRNoRdW3t69x85feC4cA2FjH3tsZXK+aiRD/Q8Toa/XNMF22rgqoUI1scNhXThj8d1NnfqBqqHaqmlT2PQhF1jEOY3N7laQYA7v4Om6Bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=R5ju2o7B; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 99E62120002;
+	Tue, 26 Mar 2024 02:54:21 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 99E62120002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1711410861;
+	bh=/VGhO9g3eLyI3DESf5O8GZK0vOI9FoBBKXuZ7OPsOuY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=R5ju2o7B45ahyVSiF39mcNRMAUqnPGpji4GHX/iajeG4RrqfujwqkOcymDjiyMR+D
+	 8Hl/clsCTydAowO3FflAD+m3faQW7+AQG1TAMj0LlJQ1UBehLETGdJ9Hrsyn0AUzBk
+	 BqEJploVZ7iNb/ealUhK2ublCUf0CfhMgDxQLwqoUHbM6gyw4X9qPp4okHt6M1trz9
+	 93WJejsLAbB2Zq7ox5f09jzThHyBGRyZQnEYrR052DkfuaEdnRdowWxwKjr2Xbz4D8
+	 yDWtlb9JDgneTuE0/Ba3D76wlftiymjKg+rva+EeY3rV6SnY7kQXZpHVK1aDQfrM6b
+	 uiRdsbYuYqjiA==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 26 Mar 2024 02:54:21 +0300 (MSK)
+Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 26 Mar 2024 02:54:20 +0300
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Jerome Brunet
+	<jbrunet@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+	<broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+	<tiwai@suse.com>, Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
+	<khilman@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, <alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH v2] ASoC: meson: g12a-toacodec: rework the definition of bits
+Date: Tue, 26 Mar 2024 02:53:11 +0300
+Message-ID: <20240325235311.411920-1-jan.dakinevich@salutedevices.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325215631.3804796-1-dianders@chromium.org> <20240325145626.1.I659b2517d9f619d09e804e071591ecab76335dfb@changeid>
-In-Reply-To: <20240325145626.1.I659b2517d9f619d09e804e071591ecab76335dfb@changeid>
-From: Hsin-Yi Wang <hsinyi@chromium.org>
-Date: Mon, 25 Mar 2024 16:51:32 -0700
-Message-ID: <CAJMQK-gcN06k2zFQoSYKZcxxoRvkXVqCFmFtQ0xUS=+1VG+92Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] drm/panel-edp: Abstract out function to set
- conservative timings
-To: Douglas Anderson <dianders@chromium.org>
-Cc: dri-devel@lists.freedesktop.org, Pin-yen Lin <treapking@chromium.org>, 
-	Prahlad Kilambi <prahladk@google.com>, Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184404 [Mar 25 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 11 0.3.11 5ecf9895443a5066245fcb91e8430edf92b1b594, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, salutedevices.com:7.1.1;lore.kernel.org:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_sender_alignment_int}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/25 23:10:00
+X-KSMG-LinksScanning: Clean, bases: 2024/03/25 23:09:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/25 18:32:00 #24438765
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Mon, Mar 25, 2024 at 2:56=E2=80=AFPM Douglas Anderson <dianders@chromium=
-org> wrote:
->
-> If we're using the generic "edp-panel" compatible string and we fail
-> to detect an eDP panel then we fall back to conservative timings for
-> powering up and powering down the panel. Abstract out the function for
-> setting these timings so it can be used in future patches.
->
-> No functional change expected--just code movement.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+There is a lot of defines, but almost all of them are not used. Lets
+rework them:
 
-Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
+ - keep separate the definition for different platforms to make easier
+   checking that they match documentation.
 
-> ---
->
->  drivers/gpu/drm/panel/panel-edp.c | 40 +++++++++++++++----------------
->  1 file changed, 20 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/pa=
-nel-edp.c
-> index c4f851200aa2..8a19fea90ddf 100644
-> --- a/drivers/gpu/drm/panel/panel-edp.c
-> +++ b/drivers/gpu/drm/panel/panel-edp.c
-> @@ -760,6 +760,25 @@ static void panel_edp_parse_panel_timing_node(struct=
- device *dev,
->
->  static const struct edp_panel_entry *find_edp_panel(u32 panel_id, const =
-struct drm_edid *edid);
->
-> +static void panel_edp_set_conservative_timings(struct panel_edp *panel, =
-struct panel_desc *desc)
-> +{
-> +       /*
-> +        * It's highly likely that the panel will work if we use very
-> +        * conservative timings, so let's do that.
-> +        *
-> +        * Nearly all panels have a "unprepare" delay of 500 ms though
-> +        * there are a few with 1000. Let's stick 2000 in just to be
-> +        * super conservative.
-> +        *
-> +        * An "enable" delay of 80 ms seems the most common, but we'll
-> +        * throw in 200 ms to be safe.
-> +        */
-> +       desc->delay.unprepare =3D 2000;
-> +       desc->delay.enable =3D 200;
-> +
-> +       panel->detected_panel =3D ERR_PTR(-EINVAL);
-> +}
-> +
->  static int generic_edp_panel_probe(struct device *dev, struct panel_edp =
-*panel)
->  {
->         struct panel_desc *desc;
-> @@ -816,26 +835,7 @@ static int generic_edp_panel_probe(struct device *de=
-v, struct panel_edp *panel)
->                 dev_warn(dev,
->                          "Unknown panel %s %#06x, using conservative timi=
-ngs\n",
->                          vend, product_id);
-> -
-> -               /*
-> -                * It's highly likely that the panel will work if we use =
-very
-> -                * conservative timings, so let's do that. We already kno=
-w that
-> -                * the HPD-related delays must have worked since we got t=
-his
-> -                * far, so we really just need the "unprepare" / "enable"
-> -                * delays. We don't need "prepare_to_enable" since that
-> -                * overlaps the "enable" delay anyway.
-> -                *
-> -                * Nearly all panels have a "unprepare" delay of 500 ms t=
-hough
-> -                * there are a few with 1000. Let's stick 2000 in just to=
- be
-> -                * super conservative.
-> -                *
-> -                * An "enable" delay of 80 ms seems the most common, but =
-we'll
-> -                * throw in 200 ms to be safe.
-> -                */
-> -               desc->delay.unprepare =3D 2000;
-> -               desc->delay.enable =3D 200;
-> -
-> -               panel->detected_panel =3D ERR_PTR(-EINVAL);
-> +               panel_edp_set_conservative_timings(panel, desc);
->         } else {
->                 dev_info(dev, "Detected %s %s (%#06x)\n",
->                          vend, panel->detected_panel->ident.name, product=
-_id);
-> --
-> 2.44.0.396.g6e790dbe36-goog
->
+ - use LSB/MSB sufixes for uniformity.
+
+ - don't use hard-coded values for already declared defines.
+
+Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+---
+Links:
+
+ [1] https://lore.kernel.org/lkml/20240314232201.2102178-1-jan.dakinevich@salutedevices.com/
+
+Changes v1 -> v2:
+ - Detached from v1's series (patch 7).
+ - Fixed my wrong understanding of SOC_SINGLE's input parameters.
+
+ sound/soc/meson/g12a-toacodec.c | 79 ++++++++++++++++++++-------------
+ 1 file changed, 49 insertions(+), 30 deletions(-)
+
+diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
+index 531bb8707a3e..22181f4bab72 100644
+--- a/sound/soc/meson/g12a-toacodec.c
++++ b/sound/soc/meson/g12a-toacodec.c
+@@ -20,26 +20,37 @@
+ #define G12A_TOACODEC_DRV_NAME "g12a-toacodec"
+ 
+ #define TOACODEC_CTRL0			0x0
+-#define  CTRL0_ENABLE_SHIFT		31
+-#define  CTRL0_DAT_SEL_SM1_MSB		19
+-#define  CTRL0_DAT_SEL_SM1_LSB		18
+-#define  CTRL0_DAT_SEL_MSB		15
+-#define  CTRL0_DAT_SEL_LSB		14
+-#define  CTRL0_LANE_SEL_SM1		16
+-#define  CTRL0_LANE_SEL			12
+-#define  CTRL0_LRCLK_SEL_SM1_MSB	14
+-#define  CTRL0_LRCLK_SEL_SM1_LSB	12
+-#define  CTRL0_LRCLK_SEL_MSB		9
+-#define  CTRL0_LRCLK_SEL_LSB		8
+-#define  CTRL0_LRCLK_INV_SM1		BIT(10)
+-#define  CTRL0_BLK_CAP_INV_SM1		BIT(9)
+-#define  CTRL0_BLK_CAP_INV		BIT(7)
+-#define  CTRL0_BCLK_O_INV_SM1		BIT(8)
+-#define  CTRL0_BCLK_O_INV		BIT(6)
+-#define  CTRL0_BCLK_SEL_SM1_MSB		6
+-#define  CTRL0_BCLK_SEL_MSB		5
+-#define  CTRL0_BCLK_SEL_LSB		4
+-#define  CTRL0_MCLK_SEL			GENMASK(2, 0)
++
++/* Common bits */
++#define CTRL0_ENABLE_SHIFT		31
++#define CTRL0_MCLK_SEL			GENMASK(2, 0)
++
++/* G12A bits */
++#define CTRL0_DAT_SEL_G12A_MSB		15
++#define CTRL0_DAT_SEL_G12A_LSB		14
++#define CTRL0_LANE_SEL_G12A_MSB		13
++#define CTRL0_LANE_SEL_G12A_LSB		12
++#define CTRL0_LANE_SEL_G12A_MAX		3
++#define CTRL0_LRCLK_SEL_G12A_MSB	9
++#define CTRL0_LRCLK_SEL_G12A_LSB	8
++#define CTRL0_BLK_CAP_INV_G12A		BIT(7)
++#define CTRL0_BCLK_O_INV_G12A		BIT(6)
++#define CTRL0_BCLK_SEL_G12A_MSB		5
++#define CTRL0_BCLK_SEL_G12A_LSB		4
++
++/* SM1 bits */
++#define CTRL0_DAT_SEL_SM1_MSB		19
++#define CTRL0_DAT_SEL_SM1_LSB		18
++#define CTRL0_LANE_SEL_SM1_MSB		17
++#define CTRL0_LANE_SEL_SM1_LSB		16
++#define CTRL0_LANE_SEL_SM1_MAX		3
++#define CTRL0_LRCLK_SEL_SM1_MSB		14
++#define CTRL0_LRCLK_SEL_SM1_LSB		12
++#define CTRL0_LRCLK_INV_SM1		BIT(10)
++#define CTRL0_BLK_CAP_INV_SM1		BIT(9)
++#define CTRL0_BCLK_O_INV_SM1		BIT(8)
++#define CTRL0_BCLK_SEL_SM1_MSB		6
++#define CTRL0_BCLK_SEL_SM1_LSB		4
+ 
+ #define TOACODEC_OUT_CHMAX		2
+ 
+@@ -108,7 +119,7 @@ static int g12a_toacodec_mux_put_enum(struct snd_kcontrol *kcontrol,
+ }
+ 
+ static SOC_ENUM_SINGLE_DECL(g12a_toacodec_mux_enum, TOACODEC_CTRL0,
+-			    CTRL0_DAT_SEL_LSB,
++			    CTRL0_DAT_SEL_G12A_LSB,
+ 			    g12a_toacodec_mux_texts);
+ 
+ static SOC_ENUM_SINGLE_DECL(sm1_toacodec_mux_enum, TOACODEC_CTRL0,
+@@ -210,7 +221,7 @@ static int g12a_toacodec_component_probe(struct snd_soc_component *c)
+ {
+ 	/* Initialize the static clock parameters */
+ 	return snd_soc_component_write(c, TOACODEC_CTRL0,
+-				       CTRL0_BLK_CAP_INV);
++				       CTRL0_BLK_CAP_INV_G12A);
+ }
+ 
+ static int sm1_toacodec_component_probe(struct snd_soc_component *c)
+@@ -229,11 +240,13 @@ static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
+ };
+ 
+ static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
+-	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 3, 0),
++	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_G12A_LSB,
++		   CTRL0_LANE_SEL_G12A_MAX, 0),
+ };
+ 
+ static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
+-	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 3, 0),
++	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1_LSB,
++		   CTRL0_LANE_SEL_SM1_MAX, 0),
+ };
+ 
+ static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
+@@ -266,16 +279,22 @@ static const struct regmap_config g12a_toacodec_regmap_cfg = {
+ 
+ static const struct g12a_toacodec_match_data g12a_toacodec_match_data = {
+ 	.component_drv	= &g12a_toacodec_component_drv,
+-	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, 14, 15),
+-	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, 8, 9),
+-	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, 4, 5),
++	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_G12A_LSB,
++				    CTRL0_DAT_SEL_G12A_MSB),
++	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_G12A_LSB,
++				     CTRL0_LRCLK_SEL_G12A_MSB),
++	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_G12A_LSB,
++				    CTRL0_BCLK_SEL_G12A_MSB),
+ };
+ 
+ static const struct g12a_toacodec_match_data sm1_toacodec_match_data = {
+ 	.component_drv	= &sm1_toacodec_component_drv,
+-	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, 18, 19),
+-	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, 12, 14),
+-	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, 4, 6),
++	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_SM1_LSB,
++				    CTRL0_DAT_SEL_SM1_MSB),
++	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_SM1_LSB,
++				     CTRL0_LRCLK_SEL_SM1_MSB),
++	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_SM1_LSB,
++				    CTRL0_BCLK_SEL_SM1_MSB),
+ };
+ 
+ static const struct of_device_id g12a_toacodec_of_match[] = {
+-- 
+2.34.1
+
 
