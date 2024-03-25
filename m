@@ -1,253 +1,397 @@
-Return-Path: <linux-kernel+bounces-117511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74A5C88AC1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:44:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0143288AC20
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F9822A6E3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:44:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C0E11F67626
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDF54DA19;
-	Mon, 25 Mar 2024 16:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504095A0F0;
+	Mon, 25 Mar 2024 16:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vqSN8ykM"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FzbCp7JI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1CE4DA0E
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A353DABF3;
+	Mon, 25 Mar 2024 16:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711385508; cv=none; b=lC6Z9HHkkDsLZ9Ssc58Z5R3cT9idNSu3kUiD9A8N17cl1JhLOV3MWr+rqdAzlM4GJIQRY2M6+ZQChZDJZCGIGx0FFGLiXMal18P2DeTRrC0n8vdJvHjHEQttALx6eNkA7a2iS0YbFzAMm1uMt04HrPbGFZ4YiPlLYCKHKFMHzCQ=
+	t=1711385589; cv=none; b=EbJjXYWpLEXmmXaVhOXsVGGEwBnoQsyc2CnlF3IDmTyuyAVvgHm11DuR0FBWtCbCRcZ77LH3emESr1LKa8HWAPR46ZUv0WpAVafKe8ojq6U41JE8eJU6xQlDKW7I2TUSXpSvwdrTwJyZ7BcbSHELgiEvFwd8msMi72mGfwEFJ9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711385508; c=relaxed/simple;
-	bh=R1UgrdHtX7NaBhIlzazKjCiPt8qDyKrwuHqMIduiCrA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Epx9o/ivGBhMZj0Isztahtg7uvWLNpP/hZq/X0xas1Yu9wgHyir5QYQOB0VbChWXMJXa7qS17APlcYOTM+TMqlx7oG3GLQyARpvLg4rwo9MUGUntCn9MjizQ8kkK/jkeLhnS0ly/N2tsI+hMWcXhMwYQq0aYUbBZfaaty0OXBKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vqSN8ykM; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e034607879so35610375ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711385506; x=1711990306; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pj8PTKVryqKwwdBoZ+0WnicFRNErWIn69RAMUd5IKdc=;
-        b=vqSN8ykMVrd2oHNvAGS9j0SG0p8EODHibAzv/GO+LRemaM7hMLCowpopYxNYTlQmVH
-         n7y5rZXwnx+5RAY+Gz/+NuYNk7Lm9ktAuVAQa9EXWRPb9W2xPKMvvlQq6qaFjz5SmqXl
-         CwSWRTKHM+DHoEAIz3Gkyy4BcOTyV5suZSdoEy0y8q3ffnviZfgiHoWcDZk8XEGJUawz
-         fWrg6DEixZQVpv2XRklgjQBM5Mz7JEhb9K+uN4UuhVxyPk6lygsocVWDicgvGX8KZKqL
-         nl3L8jnvLywG28l2P0X9ExdesLhCCplB8w8R50k/SDIsYdKp+KIXXXiGkNY8LTJ+G0Uv
-         UJEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711385506; x=1711990306;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pj8PTKVryqKwwdBoZ+0WnicFRNErWIn69RAMUd5IKdc=;
-        b=s2MJnfuvRVfHNp8MLQNWQG0VZg1hjfdLEffrR173YqW6OX6PxJtsSD43/QnlboADvO
-         uoUUuZPBKZzHUli9n48V7UB9QYGdMRdEhBdNV9z2X5oukeP2OqmPA1EbLPsC/cTIuBAE
-         pxZuix9UX2BnMSxJQal2diNPFO96TQFLJfBepmCp+VNcYxgz3CVMZDHgbMEkD8evTZtm
-         UyGDiVDSbPy1vL+m4QoNxnFDGUNT/Mt+4SrUH3/KBUmbklLNemF92B5BG4g+C70JCZeW
-         0E7Dm+/fEIhMrflwBBTXLerwbfI0uUhbjJziV67PBUmr3ZIxthyoS8t2Wh8IsrKNpRu9
-         XeQw==
-X-Forwarded-Encrypted: i=1; AJvYcCWg1d5QMz47mYzxFasfSROhIVR3INkMo6IhE5qgXPJuJPJkTIsry7dDLD/TmCZWjWh6+dzOirAjT5qw9RKA0NdJHGq8Txd3BqoK73rV
-X-Gm-Message-State: AOJu0Yy4xC/sQXDQVQHqnaqKgYWNOnyR8hgx6g0WrGOkYh0q/PGJ0v58
-	3KpHRiw3Ju5tRo2p/dZ5NEW52wz3p/Hyj1J1KL78UtBmkeX+6vwfcb/BkoI4/4sG9JJCHR7flm/
-	9
-X-Google-Smtp-Source: AGHT+IGoV4RhZKceQIINbyMVzRZ5e1HPuju79F8lHHNd/Bx3c+IjzhBFu/0IBlEFjOn25VeKI5qwIA==
-X-Received: by 2002:a17:902:f54c:b0:1de:ff81:f650 with SMTP id h12-20020a170902f54c00b001deff81f650mr12006579plf.10.1711385505732;
-        Mon, 25 Mar 2024 09:51:45 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:4a22:28de:eba3:89d1])
-        by smtp.gmail.com with ESMTPSA id j5-20020a170902da8500b001e0c568ae8fsm1517672plx.192.2024.03.25.09.51.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 09:51:45 -0700 (PDT)
-Date: Mon, 25 Mar 2024 10:51:42 -0600
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Jens Wiklander <jens.wiklander@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] remoteproc: stm32: Add support of an OP-TEE TA to
- load the firmware
-Message-ID: <ZgGrnkcebcIQQic6@p14s>
-References: <20240308144708.62362-1-arnaud.pouliquen@foss.st.com>
- <20240308144708.62362-5-arnaud.pouliquen@foss.st.com>
+	s=arc-20240116; t=1711385589; c=relaxed/simple;
+	bh=TZW0H+CTcVkomLGdlmekNLlyTQcENG1CcK5sCMi0Ouc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kXyFl/CYYaYMqwCmRf0WpkrTaZfWS660qxa+McQVMF+9ewpULpCSrFQOhvaM4TJ3KP/aD0ZEt0RyVj8i2NkK7K/QS1noF/TsDtwJgMEOWjlvGN9jzEu+k+pHND/WsLq/id5qmHv6l8yoFnyGnsuvYhgrfpYi9Jtmg/juqsTUDjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FzbCp7JI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37540C433F1;
+	Mon, 25 Mar 2024 16:53:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711385588;
+	bh=TZW0H+CTcVkomLGdlmekNLlyTQcENG1CcK5sCMi0Ouc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=FzbCp7JIpQUlk/jEi8/FT2aO38/Jm/82QV/sio3VJqVz8P+BPwa+jyIDZYzLbZ63D
+	 OtlFNovOAmkX9B1Gy7fKhQxxtwdZySq465C6d9yJMOCs8ZdC9Zwfsok+OHPVb2FR8O
+	 Q+xX56G09Q9N8egt7NtZhjmRYqdHVClrRsQYY7dve/9C81z2Ebq2DorwL1y1irnPDv
+	 KPLTs9wcdWY5TnC1vXOSum9pN6bWoVuu0+cX9xSCyb/JMMlhWE7n1CRTR7wz1Gh/Zg
+	 4xHm93FAARwhvo0u6nHwpZzRLSgVZfwQI74WPQscD85D7Y+l+ADZb8KXEF+pVXqFkx
+	 7Ut4EUjOndyVw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Luke Nelson
+ <luke.r.nels@gmail.com>, Xi Wang <xi.wang@gmail.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, bpf@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Pu Lehui
+ <pulehui@huaweicloud.com>
+Cc: puranjay12@gmail.com
+Subject: Re: [PATCH bpf-next v2 1/2] bpf,riscv: Implement PROBE_MEM32 pseudo
+ instructions
+In-Reply-To: <20240325155434.65589-2-puranjay12@gmail.com>
+References: <20240325155434.65589-1-puranjay12@gmail.com>
+ <20240325155434.65589-2-puranjay12@gmail.com>
+Date: Mon, 25 Mar 2024 17:53:04 +0100
+Message-ID: <875xxafe33.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308144708.62362-5-arnaud.pouliquen@foss.st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 08, 2024 at 03:47:08PM +0100, Arnaud Pouliquen wrote:
-> The new TEE remoteproc device is used to manage remote firmware in a
-> secure, trusted context. The 'st,stm32mp1-m4-tee' compatibility is
-> introduced to delegate the loading of the firmware to the trusted
-> execution context. In such cases, the firmware should be signed and
-> adhere to the image format defined by the TEE.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Puranjay Mohan <puranjay12@gmail.com> writes:
+
+> Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW]
+> instructions.  They are similar to PROBE_MEM instructions with the
+> following differences:
+> - PROBE_MEM32 supports store.
+> - PROBE_MEM32 relies on the verifier to clear upper 32-bit of the
+>   src/dst register
+> - PROBE_MEM32 adds 64-bit kern_vm_start address (which is stored in S7
+>   in the prologue). Due to bpf_arena constructions such S7 + reg +
+>   off16 access is guaranteed to be within arena virtual range, so no
+>   address check at run-time.
+> - S7 is a free callee-saved register, so it is used to store kern_vm_start
+> - PROBE_MEM32 allows STX and ST. If they fault the store is a nop. When
+>   LDX faults the destination register is zeroed.
+>
+> To support these on riscv, we do tmp =3D S7 + src/dst reg and then use
+> tmp2 as the new src/dst register. This allows us to reuse most of the
+> code for normal [LDX | STX | ST].
+
+Cool to see the RV BPF JIT keeping up with x86 features! ;-) Nice work!
+
+A couple of minor comments below.
+
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 > ---
-> Updates from V3:
-> - remove support of the attach use case. Will be addressed in a separate
->   thread,
-> - add st_rproc_tee_ops::parse_fw ops,
-> - inverse call of devm_rproc_alloc()and tee_rproc_register() to manage cross
->   reference between the rproc struct and the tee_rproc struct in tee_rproc.c.
-> ---
->  drivers/remoteproc/stm32_rproc.c | 60 +++++++++++++++++++++++++++++---
->  1 file changed, 56 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> index 8cd838df4e92..13df33c78aa2 100644
-> --- a/drivers/remoteproc/stm32_rproc.c
-> +++ b/drivers/remoteproc/stm32_rproc.c
-> @@ -20,6 +20,7 @@
->  #include <linux/remoteproc.h>
->  #include <linux/reset.h>
->  #include <linux/slab.h>
-> +#include <linux/tee_remoteproc.h>
->  #include <linux/workqueue.h>
->  
->  #include "remoteproc_internal.h"
-> @@ -49,6 +50,9 @@
->  #define M4_STATE_STANDBY	4
->  #define M4_STATE_CRASH		5
->  
-> +/* Remote processor unique identifier aligned with the Trusted Execution Environment definitions */
-
-Why is this the case?  At least from the kernel side it is possible to call
-tee_rproc_register() with any kind of value, why is there a need to be any
-kind of alignment with the TEE?
-
-> +#define STM32_MP1_M4_PROC_ID    0
-> +
->  struct stm32_syscon {
->  	struct regmap *map;
->  	u32 reg;
-> @@ -257,6 +261,19 @@ static int stm32_rproc_release(struct rproc *rproc)
->  	return 0;
->  }
->  
-> +static int stm32_rproc_tee_stop(struct rproc *rproc)
-> +{
-> +	int err;
-> +
-> +	stm32_rproc_request_shutdown(rproc);
-> +
-> +	err = tee_rproc_stop(rproc);
-> +	if (err)
-> +		return err;
-> +
-> +	return stm32_rproc_release(rproc);
-> +}
-> +
->  static int stm32_rproc_prepare(struct rproc *rproc)
->  {
->  	struct device *dev = rproc->dev.parent;
-> @@ -693,8 +710,19 @@ static const struct rproc_ops st_rproc_ops = {
->  	.get_boot_addr	= rproc_elf_get_boot_addr,
+>  arch/riscv/net/bpf_jit.h        |   1 +
+>  arch/riscv/net/bpf_jit_comp64.c | 193 +++++++++++++++++++++++++++++++-
+>  arch/riscv/net/bpf_jit_core.c   |   1 +
+>  3 files changed, 192 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+> index f4b6b3b9edda..8a47da08dd9c 100644
+> --- a/arch/riscv/net/bpf_jit.h
+> +++ b/arch/riscv/net/bpf_jit.h
+> @@ -81,6 +81,7 @@ struct rv_jit_context {
+>  	int nexentries;
+>  	unsigned long flags;
+>  	int stack_size;
+> +	u64 arena_vm_start;
 >  };
->  
-> +static const struct rproc_ops st_rproc_tee_ops = {
-> +	.prepare	= stm32_rproc_prepare,
-> +	.start		= tee_rproc_start,
-> +	.stop		= stm32_rproc_tee_stop,
-> +	.kick		= stm32_rproc_kick,
-> +	.load		= tee_rproc_load_fw,
-> +	.parse_fw	= tee_rproc_parse_fw,
-> +	.find_loaded_rsc_table = tee_rproc_find_loaded_rsc_table,
-> +};
-> +
->  static const struct of_device_id stm32_rproc_match[] = {
-> -	{ .compatible = "st,stm32mp1-m4" },
-> +	{.compatible = "st,stm32mp1-m4",},
-> +	{.compatible = "st,stm32mp1-m4-tee",},
->  	{},
->  };
->  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
-> @@ -853,6 +881,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct stm32_rproc *ddata;
->  	struct device_node *np = dev->of_node;
-> +	struct tee_rproc *trproc = NULL;
->  	struct rproc *rproc;
->  	unsigned int state;
->  	int ret;
-> @@ -861,9 +890,26 @@ static int stm32_rproc_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> -	rproc = devm_rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
-> -	if (!rproc)
-> -		return -ENOMEM;
-> +	if (of_device_is_compatible(np, "st,stm32mp1-m4-tee")) {
-> +		/*
-> +		 * Delegate the firmware management to the secure context.
-> +		 * The firmware loaded has to be signed.
-> +		 */
-> +		rproc = devm_rproc_alloc(dev, np->name, &st_rproc_tee_ops, NULL, sizeof(*ddata));
-> +		if (!rproc)
-> +			return -ENOMEM;
-> +
-> +		trproc = tee_rproc_register(dev, rproc, STM32_MP1_M4_PROC_ID);
-> +		if (IS_ERR(trproc)) {
-> +			dev_err_probe(dev, PTR_ERR(trproc),
-> +				      "signed firmware not supported by TEE\n");
-> +			return PTR_ERR(trproc);
-> +		}
-> +	} else {
-> +		rproc = devm_rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
-> +		if (!rproc)
-> +			return -ENOMEM;
+>=20=20
+>  /* Convert from ninsns to bytes. */
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index 1adf2f39ce59..0c0588e327af 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -255,6 +255,10 @@ static void __build_epilogue(bool is_tail_call, stru=
+ct rv_jit_context *ctx)
+>  		emit_ld(RV_REG_S6, store_offset, RV_REG_SP, ctx);
+>  		store_offset -=3D 8;
+>  	}
+> +	if (ctx->arena_vm_start) {
+> +		emit_ld(RV_REG_S7, store_offset, RV_REG_SP, ctx);
+> +		store_offset -=3D 8;
 > +	}
->  
->  	ddata = rproc->priv;
->  
-> @@ -915,6 +961,9 @@ static int stm32_rproc_probe(struct platform_device *pdev)
->  		dev_pm_clear_wake_irq(dev);
->  		device_init_wakeup(dev, false);
->  	}
-> +	if (trproc)
+>=20=20
+>  	emit_addi(RV_REG_SP, RV_REG_SP, stack_adjust, ctx);
+>  	/* Set return value. */
+> @@ -548,6 +552,7 @@ static void emit_atomic(u8 rd, u8 rs, s16 off, s32 im=
+m, bool is64,
+>=20=20
+>  #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+>  #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+> +#define DONT_CLEAR		17	/* RV_REG_A7 unused in pt_regmap */
 
-        if (rproc->tee_interface)
+Hmm, so this is just a a sentinel node, right? Isn't it more robust to
+use, say REG_ZERO which will never be used? Maybe REG_DONT_CLEAR_MARKER
+or smth, so it's obvious how it's used?
 
 
-I am done reviewing this set.
-
-Thanks,
-Mathieu
-
-> +		tee_rproc_unregister(trproc);
+>  bool ex_handler_bpf(const struct exception_table_entry *ex,
+>  		    struct pt_regs *regs)
+> @@ -555,7 +560,8 @@ bool ex_handler_bpf(const struct exception_table_entr=
+y *ex,
+>  	off_t offset =3D FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
+>  	int regs_offset =3D FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
+>=20=20
+> -	*(unsigned long *)((void *)regs + pt_regmap[regs_offset]) =3D 0;
+> +	if (regs_offset !=3D DONT_CLEAR)
+> +		*(unsigned long *)((void *)regs + pt_regmap[regs_offset]) =3D 0;
+>  	regs->epc =3D (unsigned long)&ex->fixup - offset;
+>=20=20
+>  	return true;
+> @@ -572,7 +578,8 @@ static int add_exception_handler(const struct bpf_ins=
+n *insn,
+>  	off_t fixup_offset;
+>=20=20
+>  	if (!ctx->insns || !ctx->ro_insns || !ctx->prog->aux->extable ||
+> -	    (BPF_MODE(insn->code) !=3D BPF_PROBE_MEM && BPF_MODE(insn->code) !=
+=3D BPF_PROBE_MEMSX))
+> +	    (BPF_MODE(insn->code) !=3D BPF_PROBE_MEM && BPF_MODE(insn->code) !=
+=3D BPF_PROBE_MEMSX &&
+> +	     BPF_MODE(insn->code) !=3D BPF_PROBE_MEM32))
+>  		return 0;
+>=20=20
+>  	if (WARN_ON_ONCE(ctx->nexentries >=3D ctx->prog->aux->num_exentries))
+> @@ -622,6 +629,9 @@ static int add_exception_handler(const struct bpf_ins=
+n *insn,
+>=20=20
+>  	ex->insn =3D ins_offset;
+>=20=20
+> +	if (BPF_CLASS(insn->code) !=3D BPF_LDX)
+> +		dst_reg =3D DONT_CLEAR;
 > +
->  	return ret;
->  }
->  
-> @@ -935,6 +984,9 @@ static void stm32_rproc_remove(struct platform_device *pdev)
->  		dev_pm_clear_wake_irq(dev);
->  		device_init_wakeup(dev, false);
->  	}
-> +	if (rproc->tee_interface)
-> +		tee_rproc_unregister(rproc->tee_interface);
+
+Instead of having a side-effect, and passing a dummy dst_reg for the
+probe_mem32, just explicitly add DONT_CLEAR when calling
+add_exception_handler(). It's more obvious to me at least.
+
+>  	ex->fixup =3D FIELD_PREP(BPF_FIXUP_OFFSET_MASK, fixup_offset) |
+>  		FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+>  	ex->type =3D EX_TYPE_BPF;
+> @@ -1063,7 +1073,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, =
+struct rv_jit_context *ctx,
+>  		    BPF_CLASS(insn->code) =3D=3D BPF_JMP;
+>  	int s, e, rvoff, ret, i =3D insn - ctx->prog->insnsi;
+>  	struct bpf_prog_aux *aux =3D ctx->prog->aux;
+> -	u8 rd =3D -1, rs =3D -1, code =3D insn->code;
+> +	u8 rd =3D -1, rs =3D -1, code =3D insn->code, reg_arena_vm_start =3D RV=
+_REG_S7;
+>  	s16 off =3D insn->off;
+>  	s32 imm =3D insn->imm;
+>=20=20
+> @@ -1539,6 +1549,11 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>  	case BPF_LDX | BPF_PROBE_MEMSX | BPF_B:
+>  	case BPF_LDX | BPF_PROBE_MEMSX | BPF_H:
+>  	case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
+> +	/* LDX | PROBE_MEM32: dst =3D *(unsigned size *)(src + S7 + off)*/
+> +	case BPF_LDX | BPF_PROBE_MEM32 | BPF_B:
+> +	case BPF_LDX | BPF_PROBE_MEM32 | BPF_H:
+> +	case BPF_LDX | BPF_PROBE_MEM32 | BPF_W:
+> +	case BPF_LDX | BPF_PROBE_MEM32 | BPF_DW:
+>  	{
+>  		int insn_len, insns_start;
+>  		bool sign_ext;
+> @@ -1546,6 +1561,11 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>  		sign_ext =3D BPF_MODE(insn->code) =3D=3D BPF_MEMSX ||
+>  			   BPF_MODE(insn->code) =3D=3D BPF_PROBE_MEMSX;
+>=20=20
+> +		if (BPF_MODE(insn->code) =3D=3D BPF_PROBE_MEM32) {
+> +			emit_add(RV_REG_T2, rs, reg_arena_vm_start, ctx);
+> +			rs =3D RV_REG_T2;
+> +		}
 > +
->  }
->  
->  static int stm32_rproc_suspend(struct device *dev)
-> -- 
-> 2.25.1
-> 
+>  		switch (BPF_SIZE(code)) {
+>  		case BPF_B:
+>  			if (is_12b_int(off)) {
+> @@ -1682,6 +1702,87 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>  		emit_sd(RV_REG_T2, 0, RV_REG_T1, ctx);
+>  		break;
+>=20=20
+> +	case BPF_ST | BPF_PROBE_MEM32 | BPF_B:
+> +	case BPF_ST | BPF_PROBE_MEM32 | BPF_H:
+> +	case BPF_ST | BPF_PROBE_MEM32 | BPF_W:
+> +	case BPF_ST | BPF_PROBE_MEM32 | BPF_DW:
+> +	{
+> +		int insn_len, insns_start;
+> +
+> +		emit_add(RV_REG_T3, rd, reg_arena_vm_start, ctx);
+> +		rd =3D RV_REG_T3;
+> +
+> +		/* Load imm to a register then store it */
+> +		emit_imm(RV_REG_T1, imm, ctx);
+> +
+> +		switch (BPF_SIZE(code)) {
+> +		case BPF_B:
+> +			if (is_12b_int(off)) {
+> +				insns_start =3D ctx->ninsns;
+> +				emit(rv_sb(rd, off, RV_REG_T1), ctx);
+> +				insn_len =3D ctx->ninsns - insns_start;
+> +				break;
+> +			}
+> +
+> +			emit_imm(RV_REG_T2, off, ctx);
+> +			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
+> +			insns_start =3D ctx->ninsns;
+> +			emit(rv_sb(RV_REG_T2, 0, RV_REG_T1), ctx);
+> +			insn_len =3D ctx->ninsns - insns_start;
+> +
+> +			break;
+> +
+> +		case BPF_H:
+> +			if (is_12b_int(off)) {
+> +				insns_start =3D ctx->ninsns;
+> +				emit(rv_sh(rd, off, RV_REG_T1), ctx);
+> +				insn_len =3D ctx->ninsns - insns_start;
+> +				break;
+> +			}
+> +
+> +			emit_imm(RV_REG_T2, off, ctx);
+> +			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
+> +			insns_start =3D ctx->ninsns;
+> +			emit(rv_sh(RV_REG_T2, 0, RV_REG_T1), ctx);
+> +			insn_len =3D ctx->ninsns - insns_start;
+> +			break;
+> +		case BPF_W:
+> +			if (is_12b_int(off)) {
+> +				insns_start =3D ctx->ninsns;
+> +				emit_sw(rd, off, RV_REG_T1, ctx);
+> +				insn_len =3D ctx->ninsns - insns_start;
+> +				break;
+> +			}
+> +
+> +			emit_imm(RV_REG_T2, off, ctx);
+> +			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
+> +			insns_start =3D ctx->ninsns;
+> +			emit_sw(RV_REG_T2, 0, RV_REG_T1, ctx);
+> +			insn_len =3D ctx->ninsns - insns_start;
+> +			break;
+> +		case BPF_DW:
+> +			if (is_12b_int(off)) {
+> +				insns_start =3D ctx->ninsns;
+> +				emit_sd(rd, off, RV_REG_T1, ctx);
+> +				insn_len =3D ctx->ninsns - insns_start;
+> +				break;
+> +			}
+> +
+> +			emit_imm(RV_REG_T2, off, ctx);
+> +			emit_add(RV_REG_T2, RV_REG_T2, rd, ctx);
+> +			insns_start =3D ctx->ninsns;
+> +			emit_sd(RV_REG_T2, 0, RV_REG_T1, ctx);
+> +			insn_len =3D ctx->ninsns - insns_start;
+> +			break;
+> +		}
+
+A lot of similar code, with emit of different sizes. Possible to move
+move out to a function, and wrap the emits? The main loop is hard read
+already!
+
+> +
+> +		ret =3D add_exception_handler(insn, ctx, rd, insn_len);
+> +		if (ret)
+> +			return ret;
+> +
+> +		break;
+> +	}
+> +
+>  	/* STX: *(size *)(dst + off) =3D src */
+>  	case BPF_STX | BPF_MEM | BPF_B:
+>  		if (is_12b_int(off)) {
+> @@ -1728,6 +1829,83 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>  		emit_atomic(rd, rs, off, imm,
+>  			    BPF_SIZE(code) =3D=3D BPF_DW, ctx);
+>  		break;
+> +
+> +	case BPF_STX | BPF_PROBE_MEM32 | BPF_B:
+> +	case BPF_STX | BPF_PROBE_MEM32 | BPF_H:
+> +	case BPF_STX | BPF_PROBE_MEM32 | BPF_W:
+> +	case BPF_STX | BPF_PROBE_MEM32 | BPF_DW:
+> +	{
+> +		int insn_len, insns_start;
+> +
+> +		emit_add(RV_REG_T2, rd, reg_arena_vm_start, ctx);
+> +		rd =3D RV_REG_T2;
+> +
+> +		switch (BPF_SIZE(code)) {
+> +		case BPF_B:
+> +			if (is_12b_int(off)) {
+> +				insns_start =3D ctx->ninsns;
+> +				emit(rv_sb(rd, off, rs), ctx);
+> +				insn_len =3D ctx->ninsns - insns_start;
+> +				break;
+> +			}
+> +
+> +			emit_imm(RV_REG_T1, off, ctx);
+> +			emit_add(RV_REG_T1, RV_REG_T1, rd, ctx);
+> +			insns_start =3D ctx->ninsns;
+> +			emit(rv_sb(RV_REG_T1, 0, rs), ctx);
+> +			insn_len =3D ctx->ninsns - insns_start;
+> +			break;
+> +		case BPF_H:
+> +			if (is_12b_int(off)) {
+> +				insns_start =3D ctx->ninsns;
+> +				emit(rv_sh(rd, off, rs), ctx);
+> +				insn_len =3D ctx->ninsns - insns_start;
+> +				break;
+> +			}
+> +
+> +			emit_imm(RV_REG_T1, off, ctx);
+> +			emit_add(RV_REG_T1, RV_REG_T1, rd, ctx);
+> +			insns_start =3D ctx->ninsns;
+> +			emit(rv_sh(RV_REG_T1, 0, rs), ctx);
+> +			insn_len =3D ctx->ninsns - insns_start;
+> +			break;
+> +		case BPF_W:
+> +			if (is_12b_int(off)) {
+> +				insns_start =3D ctx->ninsns;
+> +				emit_sw(rd, off, rs, ctx);
+> +				insn_len =3D ctx->ninsns - insns_start;
+> +				break;
+> +			}
+> +
+> +			emit_imm(RV_REG_T1, off, ctx);
+> +			emit_add(RV_REG_T1, RV_REG_T1, rd, ctx);
+> +			insns_start =3D ctx->ninsns;
+> +			emit_sw(RV_REG_T1, 0, rs, ctx);
+> +			insn_len =3D ctx->ninsns - insns_start;
+> +			break;
+> +		case BPF_DW:
+> +			if (is_12b_int(off)) {
+> +				insns_start =3D ctx->ninsns;
+> +				emit_sd(rd, off, rs, ctx);
+> +				insn_len =3D ctx->ninsns - insns_start;
+> +				break;
+> +			}
+> +
+> +			emit_imm(RV_REG_T1, off, ctx);
+> +			emit_add(RV_REG_T1, RV_REG_T1, rd, ctx);
+> +			insns_start =3D ctx->ninsns;
+> +			emit_sd(RV_REG_T1, 0, rs, ctx);
+> +			insn_len =3D ctx->ninsns - insns_start;
+> +			break;
+> +		}
+
+Same comment as above.
+
+
+Bj=C3=B6rn
 
