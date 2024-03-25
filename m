@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-117869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6C0688B2DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:34:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CCC388B09D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:57:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1340BE4051
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:57:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 411961C30D95
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6675F3EA7B;
-	Mon, 25 Mar 2024 19:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C295A10F;
+	Mon, 25 Mar 2024 19:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lrX0Ykgh"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gjy0GHxM"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A043758AA9;
-	Mon, 25 Mar 2024 19:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302685A10E;
+	Mon, 25 Mar 2024 19:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711396530; cv=none; b=t5l7iya5Ssim9HuUQy/toggQ654LHo6x6z7B+TRZoTrxBdL/CDr6mzWyZyTXwGd7hMCifsrJBCMfxxCt+4m6nh+oyh0tB/UF8Po6PXHiYBaExDJKcYn5kz9hlcAgp9I018N1n3gw5TGutt1I1by/bMvV0iMYas5iPhL3zXvWaH4=
+	t=1711396537; cv=none; b=MrV0P+YJL01DdscB9rLhRj6roZtMGEdIenVwjGpDQYkW4QZZu/MUq9hhHn6PTDbj+/TfH7J7qPNUcpR2cX6VHi8cM3KdzC94UWbCcc9hm5z2fHsjXLg8tzfB1wNZUVLoeIEt1bFW5G8GeNCs+1WmJXtqtvM62gDU7d4Bkwd4eNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711396530; c=relaxed/simple;
-	bh=4IrKKSKtiozNgd98UpWJR5xewJfO+Hu/zi9nHVNZzlE=;
+	s=arc-20240116; t=1711396537; c=relaxed/simple;
+	bh=qfUvhVsZHDJuAIKHfXYcq+IDYASCux9eMwTY/29DVgs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FBJmsXecO+HSXLndrjMt7mk9tJKSdIUDrjxrfsNTzYJWNURx/yk8sAlpgyDTCtQJgdB25HGSPEX3B3QG+UwGs9kYwu7NGCH0HE42Us9fexFOGIwjQGDIEGS/0OzIu48dberQ2o79oeUSonczfgeIXD0cc+pK+SlR9VxRDkWhJqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lrX0Ykgh; arc=none smtp.client-ip=209.85.214.179
+	 MIME-Version; b=jhDaW6mQg7XxHDCqCBhhBSaS9zWFQyVMWm0mZsUQ0HMHeOcQX8q8GGTZIbjC3drPDQ4tNrELuhNo8KxGnAolzmh0mG4WfUWAxKRmTp0D55p+otjQukUcPqZ4h/5aXpjKi3jKTUUZSMAnKsr+HN6RAmqkB5yOoxdyPnDanmu9reM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gjy0GHxM; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0ae065d24so14569645ad.1;
-        Mon, 25 Mar 2024 12:55:28 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e0411c0a52so34550535ad.0;
+        Mon, 25 Mar 2024 12:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711396528; x=1712001328; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711396535; x=1712001335; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xj2xWepv2M8X4xt2BulvEacjlpsCTBac7QzvQX5RaT8=;
-        b=lrX0Ykgh7t64RHdgsyVVyZYqqHrFUxMslP0j0GhQ0nWMQSSd8ugTA2Er4nOGgWBFrz
-         gaRg1Z7GXwinf45kGOGRxhbIokchXRvfp7DoFrqPfu+X28ETlRHPGZ7bXNplkNS3D2YM
-         Gyu0GLgm0VO7oGzKUPz0s3mY3QNe9BYfVuZH91tGDe8eNV+LTM1w6ae+IOInQrR7me4z
-         dyoeQYJQ9T47JJJdD3NfjZT0QCtlc5nRlElmUhUWdqZ/Px7Wvn835Mi7M3ukZmAuGv43
-         ZhM95w4THoTZusojC4PCHbxgwvoyVItGI4EvDkJYBqRzCS2bpowxd6UurfZ8XxMfyWY9
-         3vvg==
+        bh=gI2kRfLpfhjRGhNms5R9ytnJkN1V4VjwgCKV7cdzYX4=;
+        b=gjy0GHxMnf9zOGRi1dwhd8Ae7P5RSpcm1DsV6VDqtTfLi9JZEyBCKngmQxtUvN96Fa
+         aU1DgCAVkvvOuWYBPNr8mV+I3OyydkeEXLa/5H6J+UHrjYs0NwLO6mWaMwlecaaGu9+Q
+         0jYFbkatwDvpMnMtGSwZdqtkrDPlD2fqIIirt5u/pr6fnxNJu6O/z60DX+QTD88KNSyh
+         dxdEjIE2RmozRkO/T19bxXWScsJZRCEqR63RtrGMV3l/U+szKj1CWGZZ0N4pKgLkwzEQ
+         J3XKjDb6pqwq6G9He2md4Ulo6oX5kizeG5p78L2M2DX0swoy+IoPf+hL9HvgAKIfpPRr
+         FXGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711396528; x=1712001328;
+        d=1e100.net; s=20230601; t=1711396535; x=1712001335;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xj2xWepv2M8X4xt2BulvEacjlpsCTBac7QzvQX5RaT8=;
-        b=NquSulVJQpGqIezaAjJoc9IqsMR4TCTnAgF2N3BX7P5db0GMoy2ha4Kcx5ImSikeYb
-         qgbUh/r8MF3p1Fo7Zw2IiXEJrSW4GSSX7yYCqokyQPXgatbt+LJl+LOzXqpcOCpxZ083
-         XqQGNcZa4sQO+EWFdIKDfAfro7/munTSZPbr67VlBb1gAuXqnMyh71SSK8DvbPkkifmq
-         xmUfjLciGCrnoWtKALDSQ7erHa165RqzjcvsrJLJxhf/fMrf3DBZy0WYZKg5C4pxgjBK
-         4jLIe3gM9+E0XGAswffqtvE0CyUEKf8degzrOY3t9M3Sij3lnqOTfrYmHv46UnmH2rjB
-         VL3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWY87jPYaHzmaxQiyKGk8+jBN1qjUoT5Oau6uirHTU4rWv6xQUIAequ6u3+GeXJDKjKHr+SrSzHjkmZs4kUxt/OLJtAKShUwybsrDYO
-X-Gm-Message-State: AOJu0Yz97Qzzs/AyG82Pvsm80Df/Z3tThzMLHgDNXlNsEbjaejjXaIZi
-	TLW1+KJVIZqokhmAV2fE/C8R/Bh/jKgOpZ4U5UupBy2JfFi0wMLlOoxn+dJC
-X-Google-Smtp-Source: AGHT+IG2RZsN1L2TaPKNlpHhRz4u38sKTCwngUiUn2zhZNjUmG54rhouFw1Y6iTLZlg/zfo4UEm3bg==
-X-Received: by 2002:a17:902:d489:b0:1e0:c37d:cfb5 with SMTP id c9-20020a170902d48900b001e0c37dcfb5mr3207780plg.22.1711396527942;
-        Mon, 25 Mar 2024 12:55:27 -0700 (PDT)
+        bh=gI2kRfLpfhjRGhNms5R9ytnJkN1V4VjwgCKV7cdzYX4=;
+        b=gWDzZJAYaUX5zJOwtKWAzDCpsp0cK+xtATPUolaoStzPdbLxK30G2N0qnRN92lL5fl
+         sSWAjC58YwKSA9UuRhNtOgqtrP/xNFljZw5aIGpSdhuekuSoKznLLrvvNO21ClPbHb14
+         t7F3jMh5UVKB/YJluK0DbtK+6wJo8+bhHjE/3sFoJcl1v7frLBO7R1mAFijCUi8MwcIV
+         N9NUulqNVpDBIyRjDDhHkoEpC6krX3hV+0flCeLdxMsggoGpGstbfVafMowTrErxbS0Y
+         fncQDQe/p+WKUR5CzeSbPsqc9pkT/l50dlp+912riUHKmT5yOa4ScMeYG+tNbVmNystM
+         yKWw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXOFozXOH14nWRt3/CHofLp4S+oU5ehlxAebRc1ib6tN7HIXHIj5RlyqFS8iHuGy36YWJWnsqCKuEW9BQ2J4P+ALfUlR+FjtbAndLF
+X-Gm-Message-State: AOJu0YyENLReC6sWn8kB8f2ZXQ3nUybVXjhNa4utq916YbiITDKOqrRR
+	jG+NbmfQE6IgW2opUzz74Ytd44DgKfoel0aTQ8CVDC4kDu37vL1ltOuoHhGA
+X-Google-Smtp-Source: AGHT+IF0Q0gSH/jw64pDj9PcMzDY4vvHqL2ZaperkCg4fg4BoT6b8gbRNBj4/tf4EybZFUItzyTZfg==
+X-Received: by 2002:a17:902:ce8a:b0:1e0:ca47:4d9b with SMTP id f10-20020a170902ce8a00b001e0ca474d9bmr2353838plg.29.1711396535344;
+        Mon, 25 Mar 2024 12:55:35 -0700 (PDT)
 Received: from wedsonaf-dev.home.lan ([189.124.190.154])
-        by smtp.googlemail.com with ESMTPSA id q1-20020a170902dac100b001e06c1eee22sm5099585plx.74.2024.03.25.12.55.23
+        by smtp.googlemail.com with ESMTPSA id q1-20020a170902dac100b001e06c1eee22sm5099585plx.74.2024.03.25.12.55.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 12:55:27 -0700 (PDT)
+        Mon, 25 Mar 2024 12:55:35 -0700 (PDT)
 From: Wedson Almeida Filho <wedsonaf@gmail.com>
 To: rust-for-linux@vger.kernel.org
 Cc: Miguel Ojeda <ojeda@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Miguel Ojeda <ojeda@kernel.org>,
 	Alice Ryhl <aliceryhl@google.com>,
 	linux-kernel@vger.kernel.org,
 	Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: [PATCH 07/10] rust: alloc: update `VecExt` to take allocation flags
-Date: Mon, 25 Mar 2024 16:54:15 -0300
-Message-Id: <20240325195418.166013-8-wedsonaf@gmail.com>
+Subject: [PATCH 08/10] rust: sync: update `Arc` and `UniqueArc` to take allocation flags
+Date: Mon, 25 Mar 2024 16:54:16 -0300
+Message-Id: <20240325195418.166013-9-wedsonaf@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240325195418.166013-1-wedsonaf@gmail.com>
 References: <20240325195418.166013-1-wedsonaf@gmail.com>
@@ -94,240 +94,178 @@ Content-Transfer-Encoding: 8bit
 
 From: Wedson Almeida Filho <walmeida@microsoft.com>
 
-We also rename the methods by removing the `try_` prefix since the names
-are available due to our usage of the `no_global_oom_handling` config
-when building the `alloc` crate.
+We also remove the `try_` prefix to align with how `Box` and `Vec` are
+providing methods now.
+
+`init` is temporarily updated with uses of GFP_KERNEL. These will be
+updated in a subsequent patch to take flags as well.
 
 Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 ---
- rust/kernel/alloc/vecext.rs  | 106 ++++++++++++++++++++++++++++-------
- rust/kernel/lib.rs           |   1 -
- rust/kernel/str.rs           |   6 +-
- rust/kernel/types.rs         |   4 +-
- samples/rust/rust_minimal.rs |   6 +-
- 5 files changed, 95 insertions(+), 28 deletions(-)
+ rust/kernel/init.rs        |  4 ++--
+ rust/kernel/sync/arc.rs    | 28 ++++++++++++++--------------
+ samples/rust/rust_print.rs |  4 ++--
+ 3 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/rust/kernel/alloc/vecext.rs b/rust/kernel/alloc/vecext.rs
-index 59e92bab534e..1d4d51b45a49 100644
---- a/rust/kernel/alloc/vecext.rs
-+++ b/rust/kernel/alloc/vecext.rs
-@@ -2,51 +2,119 @@
- 
- //! Extensions to [`Vec`] for fallible allocations.
- 
--use alloc::{collections::TryReserveError, vec::Vec};
--use core::result::Result;
-+use super::Flags;
-+use alloc::{alloc::AllocError, vec::Vec};
-+use core::{mem::ManuallyDrop, result::Result};
- 
- /// Extensions to [`Vec`].
- pub trait VecExt<T>: Sized {
-     /// Creates a new [`Vec`] instance with at least the given capacity.
--    fn try_with_capacity(capacity: usize) -> Result<Self, TryReserveError>;
-+    fn with_capacity(capacity: usize, flags: Flags) -> Result<Self, AllocError>;
- 
-     /// Appends an element to the back of the [`Vec`] instance.
--    fn try_push(&mut self, v: T) -> Result<(), TryReserveError>;
-+    fn push(&mut self, v: T, flags: Flags) -> Result<(), AllocError>;
- 
-     /// Pushes clones of the elements of slice into the [`Vec`] instance.
--    fn try_extend_from_slice(&mut self, other: &[T]) -> Result<(), TryReserveError>
-+    fn extend_from_slice(&mut self, other: &[T], flags: Flags) -> Result<(), AllocError>
+diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+index 0d956934eaa4..c8b2f9774a39 100644
+--- a/rust/kernel/init.rs
++++ b/rust/kernel/init.rs
+@@ -1189,7 +1189,7 @@ fn try_pin_init<E>(init: impl PinInit<T, E>) -> Result<Pin<Self>, E>
      where
-         T: Clone;
-+
-+    /// Ensures that the capacity exceeds the length by at least `additional` elements.
-+    fn reserve(&mut self, additional: usize, flags: Flags) -> Result<(), AllocError>;
- }
- 
- impl<T> VecExt<T> for Vec<T> {
--    fn try_with_capacity(capacity: usize) -> Result<Self, TryReserveError> {
-+    fn with_capacity(capacity: usize, flags: Flags) -> Result<Self, AllocError> {
-         let mut v = Vec::new();
--        v.try_reserve(capacity)?;
-+        <Self as VecExt<_>>::reserve(&mut v, capacity, flags)?;
-         Ok(v)
-     }
- 
--    fn try_push(&mut self, v: T) -> Result<(), TryReserveError> {
--        if let Err(retry) = self.push_within_capacity(v) {
--            self.try_reserve(1)?;
--            let _ = self.push_within_capacity(retry);
--        }
-+    fn push(&mut self, v: T, flags: Flags) -> Result<(), AllocError> {
-+        <Self as VecExt<_>>::reserve(self, 1, flags)?;
-+        let (ptr, len, cap) = destructure(self);
-+        // SAFETY: ptr is valid for `cap` elements. And `cap` is greater (by at least 1) than
-+        // `len` because of the call to `reserve` above. So the pointer after offsetting by `len`
-+        // elements is valid for write.
-+        unsafe { ptr.wrapping_add(len).write(v) };
-+
-+        // SAFETY: The only difference from the values returned by `destructure` is that `length`
-+        // is incremented by 1, which is fine because we have just initialised the element at
-+        // offset `length`.
-+        unsafe { rebuild(self, ptr, len + 1, cap) };
-         Ok(())
-     }
- 
--    fn try_extend_from_slice(&mut self, other: &[T]) -> Result<(), TryReserveError>
-+    fn extend_from_slice(&mut self, other: &[T], flags: Flags) -> Result<(), AllocError>
-     where
-         T: Clone,
+         E: From<AllocError>,
      {
--        let extra_cap = self.capacity() - self.len();
--        if extra_cap > 0 {
--            self.try_reserve(extra_cap)?;
--        }
--
-+        <Self as VecExt<_>>::reserve(self, other.len(), flags)?;
-         for item in other {
--            self.try_push(item.clone())?;
-+            <Self as VecExt<_>>::push(self, item.clone(), flags)?;
-         }
-+        Ok(())
-+    }
+-        let mut this = UniqueArc::try_new_uninit()?;
++        let mut this = UniqueArc::new_uninit(GFP_KERNEL)?;
+         let slot = this.as_mut_ptr();
+         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
+         // slot is valid and will not be moved, because we pin it later.
+@@ -1203,7 +1203,7 @@ fn try_init<E>(init: impl Init<T, E>) -> Result<Self, E>
+     where
+         E: From<AllocError>,
+     {
+-        let mut this = UniqueArc::try_new_uninit()?;
++        let mut this = UniqueArc::new_uninit(GFP_KERNEL)?;
+         let slot = this.as_mut_ptr();
+         // SAFETY: When init errors/panics, slot will get deallocated but not dropped,
+         // slot is valid.
+diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
+index f0a5aed69693..077200f5350b 100644
+--- a/rust/kernel/sync/arc.rs
++++ b/rust/kernel/sync/arc.rs
+@@ -16,7 +16,7 @@
+ //! [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
  
-+    #[cfg(any(test, testlib))]
-+    fn reserve(&mut self, additional: usize, _flags: Flags) -> Result<(), AllocError> {
-+        Vec::reserve(self, additional);
-         Ok(())
-     }
-+
-+    #[cfg(not(any(test, testlib)))]
-+    fn reserve(&mut self, additional: usize, flags: Flags) -> Result<(), AllocError> {
-+        let len = self.len();
-+        let cap = self.capacity();
-+
-+        if cap - len >= additional {
-+            return Ok(());
-+        }
-+
-+        if core::mem::size_of::<T>() == 0 {
-+            // The capacity is already `usize::MAX` for SZTs, we can't go higher.
-+            return Err(AllocError);
-+        }
-+
-+        // We know cap is <= `isize::MAX` because `Layout::array` fails if the resulting byte size
-+        // is greater than `isize::MAX`. So the multiplication by two won't overflow.
-+        let new_cap = core::cmp::max(cap * 2, len.checked_add(additional).ok_or(AllocError)?);
-+        let layout = core::alloc::Layout::array::<T>(new_cap).map_err(|_| AllocError)?;
-+
-+        let (ptr, len, cap) = destructure(self);
-+
-+        // SAFETY: `ptr` is valid because it's either NULL or comes from a previous call to
-+        // `krealloc_aligned`. We also verified that the type is not a ZST.
-+        let new_ptr = unsafe { super::allocator::krealloc_aligned(ptr.cast(), layout, flags.0) };
-+        if new_ptr.is_null() {
-+            // SAFETY: We are just rebuilding the existing `Vec` with no changes.
-+            unsafe { rebuild(self, ptr, len, cap) };
-+            Err(AllocError)
-+        } else {
-+            // SAFETY: `ptr` has been reallocated with the layout for `new_cap` elements. New cap
-+            // is greater than `cap`, so it continues to be >= `len`.
-+            unsafe { rebuild(self, new_ptr.cast::<T>(), len, new_cap) };
-+            Ok(())
-+        }
-+    }
-+}
-+
-+fn destructure<T>(v: &mut Vec<T>) -> (*mut T, usize, usize) {
-+    let mut tmp = Vec::new();
-+    core::mem::swap(&mut tmp, v);
-+    let mut tmp = ManuallyDrop::new(tmp);
-+    let len = tmp.len();
-+    let cap = tmp.capacity();
-+    (tmp.as_mut_ptr(), len, cap)
-+}
-+
-+/// Rebuilds a `Vec` from a pointer, length, and capacity.
-+///
-+/// # Safety
-+///
-+/// The same as [`Vec::from_raw_parts`].
-+unsafe fn rebuild<T>(v: &mut Vec<T>, ptr: *mut T, len: usize, cap: usize) {
-+    // SAFETY: The safety requirements from this function satisfy those of `from_raw_parts`.
-+    let mut tmp = unsafe { Vec::from_raw_parts(ptr, len, cap) };
-+    core::mem::swap(&mut tmp, v);
- }
-diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index 7f2841a18d05..51f30e55bd00 100644
---- a/rust/kernel/lib.rs
-+++ b/rust/kernel/lib.rs
-@@ -19,7 +19,6 @@
- #![feature(offset_of)]
- #![feature(receiver_trait)]
- #![feature(unsize)]
--#![feature(vec_push_within_capacity)]
- 
- // Ensure conditional compilation based on the kernel configuration works;
- // otherwise we may silently break things like initcall handling.
-diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
-index 183748328d43..34dbc85b5220 100644
---- a/rust/kernel/str.rs
-+++ b/rust/kernel/str.rs
-@@ -2,7 +2,7 @@
- 
- //! String representations.
- 
--use crate::alloc::vecext::VecExt;
-+use crate::alloc::{flags::*, vecext::VecExt};
- use alloc::alloc::AllocError;
- use alloc::vec::Vec;
- use core::fmt::{self, Write};
-@@ -730,7 +730,7 @@ pub fn try_from_fmt(args: fmt::Arguments<'_>) -> Result<Self, Error> {
-         let size = f.bytes_written();
- 
-         // Allocate a vector with the required number of bytes, and write to it.
--        let mut buf = Vec::try_with_capacity(size)?;
-+        let mut buf = <Vec<_> as VecExt<_>>::with_capacity(size, GFP_KERNEL)?;
-         // SAFETY: The buffer stored in `buf` is at least of size `size` and is valid for writes.
-         let mut f = unsafe { Formatter::from_buffer(buf.as_mut_ptr(), size) };
-         f.write_fmt(args)?;
-@@ -771,7 +771,7 @@ impl<'a> TryFrom<&'a CStr> for CString {
-     fn try_from(cstr: &'a CStr) -> Result<CString, AllocError> {
-         let mut buf = Vec::new();
- 
--        buf.try_extend_from_slice(cstr.as_bytes_with_nul())
-+        <Vec<_> as VecExt<_>>::extend_from_slice(&mut buf, cstr.as_bytes_with_nul(), GFP_KERNEL)
-             .map_err(|_| AllocError)?;
- 
-         // INVARIANT: The `CStr` and `CString` types have the same invariants for
-diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-index aa77bad9bce4..8fad61268465 100644
---- a/rust/kernel/types.rs
-+++ b/rust/kernel/types.rs
-@@ -157,11 +157,11 @@ unsafe fn from_foreign(_: *const core::ffi::c_void) -> Self {}
- ///     let mut vec =
- ///         ScopeGuard::new_with_data(Vec::new(), |v| pr_info!("vec had {} elements\n", v.len()));
- ///
--///     vec.try_push(10u8)?;
-+///     vec.push(10u8, GFP_KERNEL)?;
- ///     if arg {
- ///         return Ok(());
- ///     }
--///     vec.try_push(20u8)?;
-+///     vec.push(20u8, GFP_KERNEL)?;
- ///     Ok(())
+ use crate::{
+-    alloc::{boxext::BoxExt, flags::*},
++    alloc::{boxext::BoxExt, Flags},
+     bindings,
+     error::{self, Error},
+     init::{self, InPlaceInit, Init, PinInit},
+@@ -58,7 +58,7 @@
  /// }
  ///
-diff --git a/samples/rust/rust_minimal.rs b/samples/rust/rust_minimal.rs
-index dc05f4bbe27e..2a9eaab62d1c 100644
---- a/samples/rust/rust_minimal.rs
-+++ b/samples/rust/rust_minimal.rs
-@@ -22,9 +22,9 @@ fn init(_module: &'static ThisModule) -> Result<Self> {
-         pr_info!("Am I built-in? {}\n", !cfg!(MODULE));
+ /// // Create a refcounted instance of `Example`.
+-/// let obj = Arc::try_new(Example { a: 10, b: 20 })?;
++/// let obj = Arc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?;
+ ///
+ /// // Get a new pointer to `obj` and increment the refcount.
+ /// let cloned = obj.clone();
+@@ -97,7 +97,7 @@
+ ///     }
+ /// }
+ ///
+-/// let obj = Arc::try_new(Example { a: 10, b: 20 })?;
++/// let obj = Arc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?;
+ /// obj.use_reference();
+ /// obj.take_over();
+ /// # Ok::<(), Error>(())
+@@ -120,7 +120,7 @@
+ /// impl MyTrait for Example {}
+ ///
+ /// // `obj` has type `Arc<Example>`.
+-/// let obj: Arc<Example> = Arc::try_new(Example)?;
++/// let obj: Arc<Example> = Arc::new(Example, GFP_KERNEL)?;
+ ///
+ /// // `coerced` has type `Arc<dyn MyTrait>`.
+ /// let coerced: Arc<dyn MyTrait> = obj;
+@@ -163,7 +163,7 @@ unsafe impl<T: ?Sized + Sync + Send> Sync for Arc<T> {}
  
-         let mut numbers = Vec::new();
--        numbers.try_push(72)?;
--        numbers.try_push(108)?;
--        numbers.try_push(200)?;
-+        numbers.push(72, GFP_KERNEL)?;
-+        numbers.push(108, GFP_KERNEL)?;
-+        numbers.push(200, GFP_KERNEL)?;
+ impl<T> Arc<T> {
+     /// Constructs a new reference counted instance of `T`.
+-    pub fn try_new(contents: T) -> Result<Self, AllocError> {
++    pub fn new(contents: T, flags: Flags) -> Result<Self, AllocError> {
+         // INVARIANT: The refcount is initialised to a non-zero value.
+         let value = ArcInner {
+             // SAFETY: There are no safety requirements for this FFI call.
+@@ -171,7 +171,7 @@ pub fn try_new(contents: T) -> Result<Self, AllocError> {
+             data: contents,
+         };
  
-         Ok(RustMinimal { numbers })
+-        let inner = <Box<_> as BoxExt<_>>::new(value, GFP_KERNEL)?;
++        let inner = <Box<_> as BoxExt<_>>::new(value, flags)?;
+ 
+         // SAFETY: We just created `inner` with a reference count of 1, which is owned by the new
+         // `Arc` object.
+@@ -388,7 +388,7 @@ fn from(item: Pin<UniqueArc<T>>) -> Self {
+ ///     e.into()
+ /// }
+ ///
+-/// let obj = Arc::try_new(Example)?;
++/// let obj = Arc::new(Example, GFP_KERNEL)?;
+ /// let cloned = do_something(obj.as_arc_borrow());
+ ///
+ /// // Assert that both `obj` and `cloned` point to the same underlying object.
+@@ -412,7 +412,7 @@ fn from(item: Pin<UniqueArc<T>>) -> Self {
+ ///     }
+ /// }
+ ///
+-/// let obj = Arc::try_new(Example { a: 10, b: 20 })?;
++/// let obj = Arc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?;
+ /// obj.as_arc_borrow().use_reference();
+ /// # Ok::<(), Error>(())
+ /// ```
+@@ -500,7 +500,7 @@ fn deref(&self) -> &Self::Target {
+ /// }
+ ///
+ /// fn test() -> Result<Arc<Example>> {
+-///     let mut x = UniqueArc::try_new(Example { a: 10, b: 20 })?;
++///     let mut x = UniqueArc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?;
+ ///     x.a += 1;
+ ///     x.b += 1;
+ ///     Ok(x.into())
+@@ -523,7 +523,7 @@ fn deref(&self) -> &Self::Target {
+ /// }
+ ///
+ /// fn test() -> Result<Arc<Example>> {
+-///     let x = UniqueArc::try_new_uninit()?;
++///     let x = UniqueArc::new_uninit(GFP_KERNEL)?;
+ ///     Ok(x.write(Example { a: 10, b: 20 }).into())
+ /// }
+ ///
+@@ -543,7 +543,7 @@ fn deref(&self) -> &Self::Target {
+ /// }
+ ///
+ /// fn test() -> Result<Arc<Example>> {
+-///     let mut pinned = Pin::from(UniqueArc::try_new(Example { a: 10, b: 20 })?);
++///     let mut pinned = Pin::from(UniqueArc::new(Example { a: 10, b: 20 }, GFP_KERNEL)?);
+ ///     // We can modify `pinned` because it is `Unpin`.
+ ///     pinned.as_mut().a += 1;
+ ///     Ok(pinned.into())
+@@ -557,15 +557,15 @@ pub struct UniqueArc<T: ?Sized> {
+ 
+ impl<T> UniqueArc<T> {
+     /// Tries to allocate a new [`UniqueArc`] instance.
+-    pub fn try_new(value: T) -> Result<Self, AllocError> {
++    pub fn new(value: T, flags: Flags) -> Result<Self, AllocError> {
+         Ok(Self {
+             // INVARIANT: The newly-created object has a refcount of 1.
+-            inner: Arc::try_new(value)?,
++            inner: Arc::new(value, flags)?,
+         })
      }
+ 
+     /// Tries to allocate a new [`UniqueArc`] instance whose contents are not initialised yet.
+-    pub fn try_new_uninit() -> Result<UniqueArc<MaybeUninit<T>>, AllocError> {
++    pub fn new_uninit(_flags: Flags) -> Result<UniqueArc<MaybeUninit<T>>, AllocError> {
+         // INVARIANT: The refcount is initialised to a non-zero value.
+         let inner = Box::try_init::<AllocError>(try_init!(ArcInner {
+             // SAFETY: There are no safety requirements for this FFI call.
+diff --git a/samples/rust/rust_print.rs b/samples/rust/rust_print.rs
+index 67ed8ebf8e8e..6eabb0d79ea3 100644
+--- a/samples/rust/rust_print.rs
++++ b/samples/rust/rust_print.rs
+@@ -18,8 +18,8 @@
+ fn arc_print() -> Result {
+     use kernel::sync::*;
+ 
+-    let a = Arc::try_new(1)?;
+-    let b = UniqueArc::try_new("hello, world")?;
++    let a = Arc::new(1, GFP_KERNEL)?;
++    let b = UniqueArc::new("hello, world", GFP_KERNEL)?;
+ 
+     // Prints the value of data in `a`.
+     pr_info!("{}", a);
 -- 
 2.34.1
 
