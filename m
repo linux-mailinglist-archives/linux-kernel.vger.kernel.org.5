@@ -1,198 +1,153 @@
-Return-Path: <linux-kernel+bounces-116684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE6D88AA11
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:50:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6209E88A171
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:18:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7B61B31097
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:40:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 174321F37BC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB62B58205;
-	Mon, 25 Mar 2024 10:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7BC14D2BF;
+	Mon, 25 Mar 2024 09:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="h+hSJkiV";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hus24AQd";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="h+hSJkiV";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hus24AQd"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Vz9d9D50"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6F3174979;
-	Mon, 25 Mar 2024 08:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF4B18AFD4
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711354576; cv=none; b=T5x54mKEE15WAUegRKXk86pE/bYrh4vnlF0TqjFRhrwRp250l3WRtHTH39+9F+jX4yOYVhyG42dJIc1feG4Csw0lGVgK41Pe8HpClodLZ+jHplKH5eJ5jSryEc5dY7xF3OfzaimGceKVg4PIYm/YOeX3ttkmTKKi41ANQxjjd3k=
+	t=1711354637; cv=none; b=gFcmPgl2sjZbtG+a3AL5smcSbWPSjQpxJB8nt4aTpjjWFaie+1sz1l+L9cKLUyBpIwmBxF7eC+QIjv4L9n1X/oehUlwXfjNy5TeWduRkQ08r8C8a09IJ3FejpK7erjy3F6v+NVIIk6VsjNHaU26MuIZWgpPYkQCbJFHznM0z1ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711354576; c=relaxed/simple;
-	bh=zrpt65om+iFNhdhCeiZbSfF3Jv4eME/tnsKBlV+Rodg=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GhjtVY/r3/14tlBBmQBWZ0sljnZSGmOFXaQfQeEW/jI1X1TKSxOALHiM8OVtXvnzdQ1LHzxxB9ATMBhlDTB64VOzNBzwVHaOuwB9GfhAnS+XJM6m1w8veJgy/8n/qAkuyhCCnxNlR+2AreVprfMuRw+hAJeRplyh2pB19EAj1n8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=h+hSJkiV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=hus24AQd; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=h+hSJkiV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=hus24AQd; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0C8A65C3F3;
-	Mon, 25 Mar 2024 08:16:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711354571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uPXGAo84hXrpIzyI362ELzciOl/SodbSHAdeHfFNjKc=;
-	b=h+hSJkiVvjXwku6P6oA6/VC+g9lTw7f4lNaYgy4ony4i60Wap/SkOGZsBHaAzBUCH92Dcz
-	hK+mDB9tR1ihmIyL4DWrXksknR3f5K3bniMgyB4B4gXO/otzI08SbeDbYM/dQ1984Fzn8/
-	qnkDAtPYDqoHVq4tGN6hXzt5ednjjzM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711354571;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uPXGAo84hXrpIzyI362ELzciOl/SodbSHAdeHfFNjKc=;
-	b=hus24AQdlUPGy0yA2MGxReqSDXRkzzagSOFvBTlU0h1d7ct0z9+oDNhtSCO9KZlqSMvUzO
-	72wkBkmPLi6ZD9DA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711354571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uPXGAo84hXrpIzyI362ELzciOl/SodbSHAdeHfFNjKc=;
-	b=h+hSJkiVvjXwku6P6oA6/VC+g9lTw7f4lNaYgy4ony4i60Wap/SkOGZsBHaAzBUCH92Dcz
-	hK+mDB9tR1ihmIyL4DWrXksknR3f5K3bniMgyB4B4gXO/otzI08SbeDbYM/dQ1984Fzn8/
-	qnkDAtPYDqoHVq4tGN6hXzt5ednjjzM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711354571;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uPXGAo84hXrpIzyI362ELzciOl/SodbSHAdeHfFNjKc=;
-	b=hus24AQdlUPGy0yA2MGxReqSDXRkzzagSOFvBTlU0h1d7ct0z9+oDNhtSCO9KZlqSMvUzO
-	72wkBkmPLi6ZD9DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C83E713503;
-	Mon, 25 Mar 2024 08:16:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pnlTLMoyAWZeHQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 25 Mar 2024 08:16:10 +0000
-Date: Mon, 25 Mar 2024 09:16:12 +0100
-Message-ID: <871q7yybeb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Duoming Zhou <duoming@zju.edu.cn>
-Cc: linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tiwai@suse.com,
-	perex@perex.cz
-Subject: Re: [PATCH] ALSA: sh: aica: reorder cleanup operations to avoid UAF bug
-In-Reply-To: <20240325033946.47052-1-duoming@zju.edu.cn>
-References: <20240325033946.47052-1-duoming@zju.edu.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1711354637; c=relaxed/simple;
+	bh=Cdc2lgu11HCTc3NOvQt4Wx11RtkZGRvsRmErAIMTOtA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BspLGAZ1Xpj0FU8MNef8TrGRXft7SwcqBapV/T73CwOOZx4A1qLduhn6O2lHlZKzk+kXf+OgWz7Y7cKciZkQcN935n3+ApybHDG5LhHwyeOg/BSbxmRVqTsgkKCMVwXAebeEjBySWYF9gmEo35MV/KOVG3gAYCEtiefhiTkYTxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Vz9d9D50; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7e101b8fed9so524226241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711354634; x=1711959434; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ut2Z7NylC1ZjYh0t1gpTkNMYaB0PuQ5lzXOkX20arzk=;
+        b=Vz9d9D509wJCjCcxF/b5OBrp4xTbEoTG3WTyVB32zgG2/i0AQPBnohnwSl7iN35geP
+         CuoIPfk5XMKtw3xz3WwVdvusNrQtDzeGhGnWh4ps2/Azdw/wYwzHO/e8qO9sC16ciGbb
+         BAmmldagosLTULCeEj06LCHyhVVVgZrLa+w298T6qyXCD2MVF4i3ocothKW1KpIM7MKu
+         ZPaJNWkcchmR18ZzBQSJfGl4IXaqjxf2VY1xtx4Rh4QlX8baF13hoVziHesrEH+MHWBm
+         tpW+qtxC35IwFIWw8qecthk75V5IWeh20tRBzEt64nvNmDKsLpkzHs/t/RNMCJL5B8aP
+         mT5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711354634; x=1711959434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ut2Z7NylC1ZjYh0t1gpTkNMYaB0PuQ5lzXOkX20arzk=;
+        b=BsIWLELM9uqEr7np3bYaLLriBDnOmGMw5rGtbiCcLatYccITfL5Vxonmi7QYsRoeUx
+         o+kFKozjvu3TrQ+omXKuSA/RPdfCNZTgBux2t4IcTCdpsUhZOisdVg4FJDax95/qCAiT
+         8IEvEmFpF49E3C8I4iZCpNVFHQQ1pfBjmbhpyn+ChSurDJDi8VxnqNQohRW4H0XmX2Bw
+         XNiRgegODGJ14+h5S+7OCqqgYuq1v5BNT5ozc9QIHR8N+a3QUK/SRKszy+P4O6AxNmTl
+         aohpzob4QAqI2JEQgRjL7ZsPfSHEey6IAdGUcSKJmwaTcNIEdvPdQBXMwj2Sv4NmK76K
+         EfeA==
+X-Gm-Message-State: AOJu0YyxO/toEO7jQsfNzrmmMl9dl6Y2z/jIJ8UUPHZvwvbxk/6jqVQ1
+	gK9xr5l4yi0kTSw4/V94t/7hk/HpdDjDfkisE00zNEP+1R0v8Z4HYfgWTIV1m5ZtfF1fpiMeOGx
+	6U9Y/XkwnBAoclLDYXcRF2vcRHWzDniuBDvHd7w==
+X-Google-Smtp-Source: AGHT+IHY0fAqHGBuW15a+0qMrjktrDhlfxmxsDUXlC9QCdnmnXZsac9XicGScXZlK0/6xd6Eba/2rMRPS4c5hleF/5Y=
+X-Received: by 2002:a05:6102:34ec:b0:476:de63:c6de with SMTP id
+ bi12-20020a05610234ec00b00476de63c6demr4404256vsb.24.1711354634277; Mon, 25
+ Mar 2024 01:17:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Score: -0.30
-X-Spamd-Result: default: False [-0.30 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[30.01%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[zju.edu.cn:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+MIME-Version: 1.0
+References: <20240324234027.1354210-1-sashal@kernel.org>
+In-Reply-To: <20240324234027.1354210-1-sashal@kernel.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Mon, 25 Mar 2024 13:47:02 +0530
+Message-ID: <CA+G9fYu33d-SfUuHcyxJQZdPXARYjBVUaqbTBc+5k9HZYFjUqg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/238] 5.10.214-rc1 review
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
+	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
+	florian.fainelli@broadcom.com, pavel@denx.de, 
+	=?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 25 Mar 2024 04:39:46 +0100,
-Duoming Zhou wrote:
-> 
-> The dreamcastcard->timer could schedule the spu_dma_work and the
-> spu_dma_work could also arm the dreamcastcard->timer.
-> 
-> When the Yamaha AICA card is closing, the dreamcastcard->channel
-> will be deallocated. But it could still be dereferenced in the
-> worker thread. The reason is that del_timer() will return directly
-> regardless of whether the timer handler is running or not and the
-> worker could be rescheduled in the timer handler. As a result, the
-> UAF bug will happen. The racy situation is shown below:
-> 
->       (Thread 1)                 |      (Thread 2)
-> snd_aicapcm_pcm_close()          |
->  ...                             |  run_spu_dma() //worker
->                                  |    mod_timer()
->   flush_work()                   |
->   del_timer()                    |  aica_period_elapsed() //timer
->   kfree(dreamcastcard->channel)  |    schedule_work()
->                                  |  run_spu_dma() //worker
->   ...                            |    dreamcastcard->channel-> //USE
-> 
-> In order to mitigate this bug, use timer_shutdown_sync() to shutdown
-> the timer and then use flush_work() to cancel the worker.
-> 
-> Fixes: 198de43d758c ("[ALSA] Add ALSA support for the SEGA Dreamcast PCM device")
-> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
-> ---
->  sound/sh/aica.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/sh/aica.c b/sound/sh/aica.c
-> index 320ac792c7f..bc68a3903f2 100644
-> --- a/sound/sh/aica.c
-> +++ b/sound/sh/aica.c
-> @@ -354,8 +354,8 @@ static int snd_aicapcm_pcm_close(struct snd_pcm_substream
->  				 *substream)
->  {
->  	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
-> +	timer_shutdown_sync(&dreamcastcard->timer);
+On Mon, 25 Mar 2024 at 05:10, Sasha Levin <sashal@kernel.org> wrote:
+>
+>
+> This is the start of the stable review cycle for the 5.10.214 release.
+> There are 238 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue Mar 26 11:40:23 PM UTC 2024.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git/patch/?id=3Dlinux-5.10.y&id2=3Dv5.10.213
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> Thanks,
+> Sasha
 
-I thought this call invalidates the timer object, hence it can't be
-used again; i.e. it breaks when the stream is re-opened, I suppose?
+We're seeing regressions while building PowerPC with GCC 8 and 12 with
+ ppc6xx_defconfig.
 
-In general timer_shutdown*() is used for the code path to clean up the
-driver (or the object the timer belongs to).  The PCM close is only
-about the PCM stream, and it's not the place.
+> Thomas Zimmermann (1):
+>   arch/powerpc: Remove <linux/fb.h> from backlight code
 
-A proper fix would be rather to implement two things:
-- Call mod_timer() conditionally in run_spu_dma()
-- Implement PCM sync_stop op to cancel/flush the work
+-----8<-----
+   /builds/linux/drivers/macintosh/via-pmu-backlight.c:22:20: error:
+'FB_BACKLIGHT_LEVELS' undeclared here (not in a function)
+      22 | static u8 bl_curve[FB_BACKLIGHT_LEVELS];
+         |                    ^~~~~~~~~~~~~~~~~~~
+   In file included from /builds/linux/include/linux/kernel.h:15,
+                    from /builds/linux/include/asm-generic/bug.h:20,
+                    from /builds/linux/arch/powerpc/include/asm/bug.h:109,
+                    from /builds/linux/include/linux/bug.h:5,
+                    from /builds/linux/include/linux/thread_info.h:12,
+                    from /builds/linux/arch/powerpc/include/asm/ptrace.h:26=
+4,
+                    from /builds/linux/drivers/macintosh/via-pmu-backlight.=
+c:11:
+----->8-----
 
-The former alone should suffice to fix the UAF in your scenario,
-though.  The latter will cover other possible corner cases.
+Bisection points to:
+
+   commit ee550f669e91c4cb0c884f38aa915497bc201585
+   Author: Thomas Zimmermann <tzimmermann@suse.de>
+   Date:   Wed Mar 6 13:28:20 2024 +0100
+       arch/powerpc: Remove <linux/fb.h> from backlight code
 
 
-thanks,
+Reverting that commit made the build pass again.
 
-Takashi
+Reproducer:
+
+   tuxmake --runtime podman --target-arch powerpc --toolchain gcc-12
+--kconfig ppc6xx_defconfig
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 
->  	flush_work(&(dreamcastcard->spu_dma_work));
-> -	del_timer(&dreamcastcard->timer);
->  	dreamcastcard->substream = NULL;
->  	kfree(dreamcastcard->channel);
->  	spu_disable();
-> -- 
-> 2.17.1
-> 
+Greetings!
+
+Daniel D=C3=ADaz
+daniel.diaz@linaro.org
 
