@@ -1,148 +1,90 @@
-Return-Path: <linux-kernel+bounces-117616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75F588AD49
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:12:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DED988AD4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:13:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 483191F68181
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:12:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F44C1C21015
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5181350E3;
-	Mon, 25 Mar 2024 17:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HSeRjP13"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7D4136E12;
+	Mon, 25 Mar 2024 17:42:12 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E95366B56;
-	Mon, 25 Mar 2024 17:42:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B59136660;
+	Mon, 25 Mar 2024 17:42:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711388521; cv=none; b=YO31o/Hpr/UDHM4AtYNVV+64Aodx8vMqdoF6MpD2kfNZ7R024VrqHIKQJ/odK18S+A0dpq2HI+QAw6ssjUMahTxMyMCJo571+2bMlH1QY7MAW4W/3UwhOh5LjsCVwGHf7fEvfzPt8tHueOz8f5DEUWCc2Tc5zoEjo8hqUxVeW1s=
+	t=1711388531; cv=none; b=P0UMyEmr8z4GmJKCp4EFXRMSfoO79gzVwxkAyhsjHFtlaVSgkWlFML/eFw8lrgoKrkl7QeLK/0xUxYnn1kbZyTwlhUkIrbhSuhdTwnS1uwVTCDaG99tDakdAWz4XN5AEzxKsBemRV/SBzfbgviVAlzi4vZqY9PXYDdGIP1zHjOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711388521; c=relaxed/simple;
-	bh=GkqZQTc6xFfq4AFBhSlQmqbD3gwDhQPGpPNr+/ScS3c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q+loJOktbGkCMdyPOZfjz30g0QKVyyouHGl1NlJwk97/WsUOlCPxwtPL1xQhcq21vARyGXGVksM3Z3nzKYvnJ5LBqTZUh+XbriJclSBzoc17/b1l45p+citiJ7doR3IqkgTWUXgnfBpj8kRRhEbPPNkvTe4rY6fW2FLzNjpQpLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HSeRjP13; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E6FC43390;
-	Mon, 25 Mar 2024 17:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711388520;
-	bh=GkqZQTc6xFfq4AFBhSlQmqbD3gwDhQPGpPNr+/ScS3c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=HSeRjP13D8igM+K0ns0ZSPPQJmz1R1xIkZ3P6MdrVlc5rO/ZAJ1Uq20y/giNfjuNw
-	 4I6ie7v3BzqjFxgYHcZuJ5GrzboQH/gZwTbGurzC2CgMACx/3v5yIsMPnJ0SXdFyXd
-	 HHMsr8SgV9FrPOQNd7KZFDG8uE9Af9/y3SfKcUoIXoZhltlEA8aCLTl1Wo4QS0EJY8
-	 pN8iCFZ0vFZd0liP/qz9S9aPDLS61WqkhDNIaufQaXzmExtS1oGDcy4JNgH0zpdEMD
-	 AFNzsHYv3w3cu8IkBPTjWEBzGxVCa8UOe2fXwMWU1RA01AdpwfD6twFI0aqiA6N3vj
-	 L9I6PKrkFeK5Q==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d48ba4d5ecso51267231fa.1;
-        Mon, 25 Mar 2024 10:42:00 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVT6SkbwRbZmDMy9p7LBqofibtXrh4BSuYyJ3OPW7DIYTR5vT6BQSxwK+TxhGUwjy1UjqH7pwANTZ6+1NOMtvO9A9iLRhXtQ+kVriB3qWF0CA2JuT7nmPmMrvYm3lBb8mNbr7GF7fFu
-X-Gm-Message-State: AOJu0YxodQiMz/v8WenUWXGrXwIjPQuUuangjhpY0Rs01+n2Qao6RrKJ
-	PEr/uRyFIhloW8ZZX+W9Ghn1fWXXjrTquip+quWUdksFGx3ONPWTNxpgiT18S5QHjiYurJSn1+o
-	hgMFeIm2uGWz+fZCS2vfzNNCloc8=
-X-Google-Smtp-Source: AGHT+IGV+kKuo+pA0XGm/aFf/KK2YAwYBlFP6cUVMlkA7svZ+a9Wq/iBXoxmfIi3k0dbFoN31aGa+FSSFU2X4fLWmTA=
-X-Received: by 2002:a2e:b0ef:0:b0:2d4:535a:e7a with SMTP id
- h15-20020a2eb0ef000000b002d4535a0e7amr2344870ljl.24.1711388519157; Mon, 25
- Mar 2024 10:41:59 -0700 (PDT)
+	s=arc-20240116; t=1711388531; c=relaxed/simple;
+	bh=yNAZklxO2mKYkFa7/REle+60mqoopmdEODD6dsLinrg=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ds/RWnxiz8HpnpH8sv28XOLlD6P5p2f9izDXbubv8MDf/fh75dUXYuVjB9VKDjVNk49sa814thM8HH1INhz+NGfZ6oPzY1Kr3gDbpa9NsUcQO5r7j/6ZLZytle2SHBJMhgHg+ptPfnLb5IJbIPJeXbiRFhrVqBJ4+9QeJQhv4+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V3Krk5hF8z6K6g0;
+	Tue, 26 Mar 2024 01:37:42 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4A5681400DC;
+	Tue, 26 Mar 2024 01:42:07 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 25 Mar
+ 2024 17:42:06 +0000
+Date: Mon, 25 Mar 2024 17:42:06 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 04/26] cxl/region: Add dynamic capacity decoder and
+ region modes
+Message-ID: <20240325174206.000064ad@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-4-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-4-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325083905.13163-2-ardb+git@google.com> <5b32b8c8-0a1b-44cf-aedf-cca1d6c83bd8@redhat.com>
- <20240325103912.GB6076@craftyguy.net>
-In-Reply-To: <20240325103912.GB6076@craftyguy.net>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Mon, 25 Mar 2024 19:41:47 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE5aunV5RkoDtpSxdmEi+EVB-7_SsdT7+naBwbYb2BxSA@mail.gmail.com>
-Message-ID: <CAMj1kXE5aunV5RkoDtpSxdmEi+EVB-7_SsdT7+naBwbYb2BxSA@mail.gmail.com>
-Subject: Re: [PATCH] x86/efistub: Add missing boot_params for mixed mode
- compat entry
-To: Clayton Craft <clayton@craftyguy.net>
-Cc: Hans de Goede <hdegoede@redhat.com>, Ard Biesheuvel <ardb+git@google.com>, linux-efi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, 25 Mar 2024 at 19:39, Clayton Craft <clayton@craftyguy.net> wrote:
->
-> On Mon, 25 Mar 2024 14:18:01 +0100 Hans de Goede <hdegoede@redhat.com> wrote:
-> > Hi,
-> >
-> > On 3/25/24 9:39 AM, Ard Biesheuvel wrote:
-> > > From: Ard Biesheuvel <ardb@kernel.org>
-> > >
-> > > The native EFI stub entry point does not take a struct boot_params from
-> > > the boot loader, but creates it from scratch, and populates only the
-> > > fields that still have meaning in this context (command line, initrd
-> > > base and size, etc)
-> > >
-> > > The original mixed mode implementation used the EFI handover protocol,
-> > > where the boot loader (i.e., GRUB) populates a struct boot_params and
-> > > passes it to a special EFI entry point that takes the struct boot_params
-> > > pointer as the third argument.
-> > >
-> > > When the new mixed mode implementation was introduced, using a special
-> > > 32-bit PE entrypoint in the 64-bit kernel, it adopted the usual
-> > > prototype, and relied on the EFI stub to create the struct boot_params
-> > > as usual. This is preferred because it makes the bootloader side much
-> > > easier to implement, as it does not need any x86-specific knowledge on
-> > > how struct boot_params and struct setup_header are put together.
-> > >
-> > > However, one thing was missed: EFI mixed mode goes through startup_32()
-> > > *before* entering the 64-bit EFI stub, which is difficult to avoid given
-> > > that 64-bit execution requires page tables, which can only be populated
-> > > using 32-bit code, and this piece is what the mixed mode EFI stub relies
-> > > on. startup_32() accesses a couple of struct boot_params fields to
-> > > decide where to place the page tables.
-> > >
-> > > startup_32() turns out to be quite tolerant to bogus struct boot_params,
-> > > given that ESI used to contain junk when entering via the new mixed mode
-> > > protocol. Only when commit
-> > >
-> > >   e2ab9eab324c ("x86/boot/compressed: Move 32-bit entrypoint code into .text section")
-> > >
-> > > started to zero ESI explicitly when entering via this boot path, boot
-> > > failures started to appear on some systems, presumably ones that unmap
-> > > page 0x0 or map it read-only.
-> > >
-> > > The solution is to pass a special, temporary struct boot_params to
-> > > startup_32() via ESI, one that is sufficient for getting it to create
-> > > the page tables correctly and is discarded right after. This means
-> > > setting a minimal alignment of 4k, only to get the statically allocated
-> > > page tables line up correctly, and setting init_size to the executable
-> > > image size (_end - startup_32). This ensures that the page tables are
-> > > covered by the static footprint of the PE image.
-> > >
-> > > Given that EFI boot no longer calls the decompressor and no longer pads
-> > > the image to permit the decompressor to execute in place, the same
-> > > temporary struct boot_params should be used in the EFI handover protocol
-> > > based mixed mode implementation as well, to prevent the page tables from
-> > > being placed outside of allocated memory.
-> > >
-> > > Cc: Hans de Goede <hdegoede@redhat.com>
-> > > Fixes: e2ab9eab324c ("x86/boot/compressed: Move 32-bit entrypoint code into .text section")
-> > > Closes: https://lore.kernel.org/all/20240321150510.GI8211@craftyguy.net/
-> > > Reported-by: Clayton Craft <clayton@craftyguy.net>
-> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> >
-> > I have given this a test run (on top of 6.9-rc1) on one of my
-> > Bay Trail mixed mode tablets and the tablet still boots fine:
->
-> I did the same test (with 6.9-rc1) on my Bay Trail tablet & NUC that failed
-> previously, and this fixes booting with EFI mixed mode on them.
->
-> Tested-by: Clayton Craft <clayton@craftyguy.net>
->
+On Sun, 24 Mar 2024 16:18:07 -0700
+ira.weiny@intel.com wrote:
 
-Thanks for testing again.
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> Region mode must reflect a general dynamic capacity type which is
+> associated with a specific Dynamic Capacity (DC) partitions in each
+> device decoder within the region.  DC partitions are also know as DC
+> regions per CXL 3.1.
+> 
+> Decoder mode reflects a specific DC partition.
+> 
+> Define the new modes to use in subsequent patches and the helper
+> functions required to make the association between these new modes.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-I'll get this to Linus in the next week or so, and the fix should make
-its way back through the stable trees in the following weeks.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
 
