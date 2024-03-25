@@ -1,99 +1,131 @@
-Return-Path: <linux-kernel+bounces-117920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC8F788B14B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:26:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96D0288B14E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EB1E1F65916
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:26:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 515D2303E11
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:26:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DDCC46450;
-	Mon, 25 Mar 2024 20:26:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A873B4AED0;
+	Mon, 25 Mar 2024 20:26:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m68b8oji"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="niXDmykL"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5E03DABEF;
-	Mon, 25 Mar 2024 20:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FDE433CA;
+	Mon, 25 Mar 2024 20:26:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711398367; cv=none; b=JhNuSBJVdeFzvyqiNnY8GaPQI+Hdu4O0w403QoYKOf1ZesqxEoKKzhdO1/SXWu4lhFTmaxGpDcspRZ+7js+D+DOdIEZqZZ/Gg1uTIg+jXM0kupB3u9pp3dMJRRAARa0N7DHujMFmfWpoHIgO4vswJy7rbdWiMFs8K+mSW7iUU/E=
+	t=1711398384; cv=none; b=dGisJD8panRHS3ot5ZUitGoKkTnXhQdBokhbJu1r9TwvclY4/zmh9S7ccNIROjDq7R8xQBqVOfWvgdJ1MovBX8kXZCaFOZ/u34o75qD0weB1wWyXv6MNwvHE+dtCyC1VSgAAt4R71z3T3WzFwjx7bj4i86ycx0VgS+6qjohbWX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711398367; c=relaxed/simple;
-	bh=ahuP5cTSDTyRzTCnReAUhrTSWcQzWcxEGNOUAM8m4TA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=csCbaT240JXQWB8z+bY8RXK8v+ujiHo6Rbv5fc93xs1J2bIiaa+jW0lum+ge0m5VPy95qT5l0aXBnVkx1ryn8XWQWil4pPmcq4Nv+SDvtPBJLjpYK0CcShKLO2ftzEozqcUwbsnqIKrcGAE4thrqeDsmaJskflBKQiTHv4rHFtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m68b8oji; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A6CBC433F1;
-	Mon, 25 Mar 2024 20:26:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711398367;
-	bh=ahuP5cTSDTyRzTCnReAUhrTSWcQzWcxEGNOUAM8m4TA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=m68b8ojiqR+8PDZ6qymfh7FmaXvPADImGLtI2PXySB+KB0IaF7v+jYxf+LX5y4uFL
-	 th0kQ3OykQe/xqFuAo03cMnWn4IkG0dpzXePKOWoecLeYgBvRSVvOdlCzXHP7RYFIA
-	 l39E9QGRbFmEvZb9uagJeo9uKNiKIOJUoPuBuKGKjvvbP9iRGXpmMWXnAm/DRjG4p3
-	 mq2jIhVLfRmYfCcAfJlpqmP7wvS8I/P+WEWYDACf3uZ87gEO8DTjOvMhYfKmCHrXVR
-	 bsrnUejZ13MW4YJqGIWmgQ0jQ9geE3cNCVlW2U+0/M2ycpc3ekGPw/DFqBxPsoJtuB
-	 +so7ZlFhX2qxA==
-Date: Mon, 25 Mar 2024 20:25:51 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>, Lars-Peter Clausen
- <lars@metafoo.de>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Matt Ranostay <matt@ranostay.sg>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: health: maxim,max30102: add
- max30101
-Message-ID: <20240325202551.08a8a877@jic23-huawei>
-In-Reply-To: <b37af0e0-c707-48e0-980d-4866b9a662db@linaro.org>
-References: <20240324-max30101-v2-0-611deb510c97@gmail.com>
-	<20240324-max30101-v2-1-611deb510c97@gmail.com>
-	<b37af0e0-c707-48e0-980d-4866b9a662db@linaro.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711398384; c=relaxed/simple;
+	bh=jmKUHFci2vuF+OaEjW1pVKxjDkIWXtyKZpuW9N4y/Js=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YcIe0G3mBJkOwk5UaFgSzuwVnIlkGvziJXtjGJTKwAUXrt8qROVSvvwY7hQZ56tpKVy/4DMBDf94GOQ53mc3XOpAy6ds3AK5Hlg+bA5Uz0Y3KaRoyqST8dVwlf04HUOG7ROMfR+8BraHi5unBT/lf/YAxSVyZyBguNZmY3ndjUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=niXDmykL; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so3112873a12.1;
+        Mon, 25 Mar 2024 13:26:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711398382; x=1712003182; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zM//w0ZQA39ATnyT3zYBHv3F+CzIiqRVQ67zJHzHQSE=;
+        b=niXDmykLrkOSN6dR4oKX4A7k175YIUV33NwdBbfuYyprhy8E5lujRFsbXPOQ5zvQ59
+         ca7zeVw05x9cNNIwPh2iBMCUPbpPW4ru9UNIVUqtciuJbRUyjj/F58/Xn8HXFFnvggDp
+         MG2kgOm0EJkne3/a5lnOU18gmtwPeWP2XmJiMwoH6UA5meyqN0Ne7aCqe3tfR7GnSvm6
+         GrLfi1ZhzG3guELIvA9EGxo7schQj32/nW1E8MHbiGbFjpcbM5mo33cHtLif5Hv06Efn
+         ge283dHccC0iCUKE8+GI3oR7utO/FXxpHyVKAeNSWppZNUJE/H8EqoAjYU2MH50YZwS/
+         QOTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711398382; x=1712003182;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zM//w0ZQA39ATnyT3zYBHv3F+CzIiqRVQ67zJHzHQSE=;
+        b=LC7McZdFbzAOF5/t5nERNLNDEEOVWLt7CeeMtPeLBFSi+ledxgH9+78F3hbJtxzcoe
+         /Zs1L8O/Xr9AjNkQHYxSb6a7pPD16EK5VP4ipHtQlJF3VCqt/pm4u4hphuWDvEs1jERq
+         ZfPAJXyJ39kiUfs1mT9AqgGqEFfhznQp2HSovGkXrsShZIhq+W8GqS8N1Wh1ct6w/HtT
+         DoGBPkhHWXYvaafPCK2CKBuxPOssdiI+ZaKaWZkHheqvZtWsYd6KIuxjM0z4m9Hmu3Rm
+         oxzweFIO/nwsKjQ5LxLdyZJQrvsAB/8ykSKsdQIrcIjV0mZZZ/+AcaPQC8EQlqu1VVxM
+         7D1g==
+X-Forwarded-Encrypted: i=1; AJvYcCW5IEHYj9q+4/ynquSLVEL7MhlqbKNCW4dq9rDGobBM1XCd2qpmvPgldi8lK6NZ02nas6/uNJ0qV6IgJjxKveBpYtr/9tjxoX4i7eApGzVNT7DO9rF8RITMGlNAOQ4Ktmx7KUbOqgQWWVJBpA==
+X-Gm-Message-State: AOJu0Yy0fAFxkgttClcC3et8JPqjuoQ0mXDbbJHFWVhTgqqzBSmsijNJ
+	mWJ3oLQ8a4/Zk5Dt2zWlFpzHfc1jAtDy09+TObYriwJPj4T+l3F3
+X-Google-Smtp-Source: AGHT+IHqnA5sag8cpZvLjrUVzMX6qB8fx+bXfLavgzLRsx+qy3P2PK8yQ/Q7PtCapn370eT44Sj9PQ==
+X-Received: by 2002:a17:90a:e392:b0:29d:fe34:fa16 with SMTP id b18-20020a17090ae39200b0029dfe34fa16mr6081228pjz.21.1711398381870;
+        Mon, 25 Mar 2024 13:26:21 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id ns21-20020a17090b251500b002a068485de6sm2704002pjb.3.2024.03.25.13.26.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 13:26:21 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 25 Mar 2024 10:26:20 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	willy@infradead.org, bfoster@redhat.com, jack@suse.cz,
+	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+	peterz@infradead.org
+Subject: Re: [PATCH 6/6] writeback: remove unneeded GDTC_INIT_NO_WB
+Message-ID: <ZgHd7GcUslrBEeoi@slm.duckdns.org>
+References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
+ <20240320110222.6564-7-shikemeng@huaweicloud.com>
+ <Zfr9my_tfxO-N6HS@mtj.duckdns.org>
+ <becdb16b-a318-ec05-61d2-d190541ae997@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <becdb16b-a318-ec05-61d2-d190541ae997@huaweicloud.com>
 
-On Mon, 25 Mar 2024 13:18:14 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-
-> On 24/03/2024 20:20, Javier Carrasco wrote:
-> > The Maxim max30101 is the replacement for the max30105, which is no
-> > longer recommended for future designs.
+On Thu, Mar 21, 2024 at 03:12:21PM +0800, Kemeng Shi wrote:
+> 
+> 
+> on 3/20/2024 11:15 PM, Tejun Heo wrote:
+> > Hello,
 > > 
-> > The max30101 does not require new properties, and it can be described
-> > with the existing ones for the max30105, which will be used as a
-> > fallback compatible.
+> > On Wed, Mar 20, 2024 at 07:02:22PM +0800, Kemeng Shi wrote:
+> >> We never use gdtc->dom set with GDTC_INIT_NO_WB, just remove unneeded
+> >> GDTC_INIT_NO_WB
+> >>
+> >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> > ...
+> >>  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
+> >>  {
+> >> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
+> >> +	struct dirty_throttle_control gdtc = { };
 > > 
-> > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> > ---
-> >  .../devicetree/bindings/iio/health/maxim,max30102.yaml       | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)  
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+> > Even if it's currently not referenced, wouldn't it still be better to always
+> > guarantee that a dtc's dom is always initialized? I'm not sure what we get
+> > by removing this.
+> As we explicitly use GDTC_INIT_NO_WB to set global_wb_domain before
+> calculating dirty limit with domain_dirty_limits, I intuitively think the dirty
+> limit calculation in domain_dirty_limits is related to global_wb_domain when
+> CONFIG_WRITEBACK_CGROUP is enabled while the truth is not. So this is a little
+> confusing to me.
+> Would it be acceptable to you that we keep useing GDTC_INIT_NO_WB but
+> define GDTC_INIT_NO_WB to null fow now and redefine GDTC_INIT_NO_WB when some
+> member of gdtc is really needed.
+> Of couse I'm not insistent on this. Would like to hear you suggestion. Thanks!
 
-Thanks,
+Ah, I see. In that case, the proposed change of removing GDTC_INIT_NO_WB
+looks good to me.
 
-Series applied to the togreg branch of iio.git and initially pushed out
-as testing to get it some build testing from 0-day.
+Thanks.
 
-Thanks,
-
-Jonathan
+-- 
+tejun
 
