@@ -1,86 +1,168 @@
-Return-Path: <linux-kernel+bounces-117196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3261288A889
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:12:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67CCB88A88B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 626C81C60388
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:12:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D11A1F3BCDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:12:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D5B142E82;
-	Mon, 25 Mar 2024 14:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3731514388C;
+	Mon, 25 Mar 2024 14:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="GxTPaohn"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X2KzY/lK"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76031487B0;
-	Mon, 25 Mar 2024 14:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0618A5C89;
+	Mon, 25 Mar 2024 14:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711375305; cv=none; b=Jg8CsoELbdmRoWMSlaigs9TVp4OQHiNlfqbtW6ccZNXbk1XEMlMCewjfRjPHb8ipn7oDjp/iyGvhLDJ8yZqg35kJLUWbcMM3+m+QGQf1jnHuoxJBKx3FvruQHg8P1bYdy6n76FPXcG5Yg1Os4SVMaJWaCl+97jGk9h1VzuA3C5Y=
+	t=1711375338; cv=none; b=lMUjdnZBPA3xhLfgsITWuuDq4CUI1+YJ6SBnG8u4lh+oARXLYIvvNtajIMURFPtC9n1erDanoE0ewIPhBczEz6LKyT7Ylw218gBlEYRmGMFBv8xNW7kNVFvuTKdhi1LblAdOZOWF1YzbMyupFhYUdD9ZL+OGr/XJ9+qlUq0dXms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711375305; c=relaxed/simple;
-	bh=jic4dEs8qGsio8MRj+nClTAlffSFOdO5OYSuzJb0Mk0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r8IDPI/lE3V/w5j7Hol8a4mcjqLvr9fw8Jnl3F+KXSyyQeUFeuGnxWY500rAt/Y8IQGqLvNUpZvgEUoj9eGYApIraVPI6nniTaxTTyt/Vv9FDGoyBvZWNu5dIOrZWGMaQAhoSsBj0+YicWF6L8YHgWqPV50w5lhrTDaB8wfY39w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=GxTPaohn; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=OMnmBgEXlYGv7NxzAxb6sjFL3aSygoBc4+Czs1kWAds=; b=GxTPaohnB/8VcBvkR5EJk4Sxfg
-	EJJ7gU7vLNXQuAmdpI6IobENPvd8RzUDq4lG/YyoFCB4XTkZhYsBsWQiIx6BlorK1v30Hc7zRNQiU
-	A1+T2F3lwJbapZ11ZSHJeDtgbRVDsu/gVuL/WGlcA9e7NU2T9NgC61lK0omv1MWmNPWU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1roktL-00B9zr-AO; Mon, 25 Mar 2024 15:01:35 +0100
-Date: Mon, 25 Mar 2024 15:01:35 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Parthiban.Veerasooran@microchip.com
-Cc: benjamin@bigler.one, netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	Horatiu.Vultur@microchip.com, Woojung.Huh@microchip.com,
-	Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, corbet@lwn.net, Steen.Hegelund@microchip.com,
-	rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com
-Subject: Re: [PATCH net-next v2 0/9] Add support for OPEN Alliance 10BASE-T1x
- MACPHY Serial Interface
-Message-ID: <b1e87ca5-f126-4381-a530-75217894cc4a@lunn.ch>
-References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
- <ea86159bb555336ae21311770e3a1a6374092e64.camel@bigler.one>
- <0596fce8-223b-494e-907e-f13d75f211cd@microchip.com>
+	s=arc-20240116; t=1711375338; c=relaxed/simple;
+	bh=eQs9r6QvBAImQCbz5fYZNfYhpIYk7o66WMO+5pFvG5A=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=mDOYT+3DUtz8SW4ERYEHGsmk2Z8ncJ4MUlIZuy8ra3iJpolLWSGjxHEngLOuMn7gxc3YKIvYsu3/11kRAZiBDCk6JS/QikEt+Z4jX0DP+op6B7XzlDWudCwG8lZLvbhZRf11AG6tjC1S0k+L70Vvb0MtTQuG74AiMsm5iOdo214=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X2KzY/lK; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711375337; x=1742911337;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=eQs9r6QvBAImQCbz5fYZNfYhpIYk7o66WMO+5pFvG5A=;
+  b=X2KzY/lKizxfrJgBC5a7NoiLadt0YFdywPInnn7xk/s7ajDMuIWkmaeI
+   SJMd647YlW6simFOZrUZWugmXmMgAg/A3pNhKlrBljxDG3cccyjGmTvFf
+   2+wRVS29lryy0LN2OdhRVIi9n9cYfdEzYLqfHkgevwqPLGaE2GEauUq6o
+   dzLBifEDOFZkO7N7I7r6lwI1ckUP+WM+EQKDcGqd2m0cWCbxPKjvDiqQn
+   qkW5FllqWGRg9XUIM6Inwl9UNk5xgzBK1o+glbQcOXoT1eViGuTBRvYjk
+   YuNuYwv4/x5BKTviuNCPK+NoYNo0Ldyyph+2HAwE775ubNCGZFK+E8dRz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17808961"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="17808961"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 07:02:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="15708691"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.19])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 07:02:11 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 25 Mar 2024 16:02:04 +0200 (EET)
+To: "Luke D. Jones" <luke@ljones.dev>
+cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/9] platform/x86: asus-wmi: support toggling POST
+ sound
+In-Reply-To: <20240325054938.489732-5-luke@ljones.dev>
+Message-ID: <88b7d5b0-23af-37e0-6122-fc790ae57053@linux.intel.com>
+References: <20240325054938.489732-1-luke@ljones.dev> <20240325054938.489732-5-luke@ljones.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0596fce8-223b-494e-907e-f13d75f211cd@microchip.com>
+Content-Type: text/plain; charset=US-ASCII
 
-> It looks like the IRQ is asserted on RESET completion and expects a data
-> chunk from host to deassert the IRQ. I used to test the driver in RPI 4
-> using iperf3. For some reason I never faced this issue, may be when the
-> network device is being registered there might be some packet 
-> transmission which leads to deliver a data chunk so that the IRQ is
-> deasserted.
+On Mon, 25 Mar 2024, Luke D. Jones wrote:
 
-If you have IPv6 enabled, the network stack will try to add a link
-local IPv6 address to the interface, which means performing a
-Duplicate Address Detection. That means sending a few packets.
+> Add support for toggling the BIOS POST sound on some ASUS laptops.
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  .../ABI/testing/sysfs-platform-asus-wmi       |  9 ++++
+>  drivers/platform/x86/asus-wmi.c               | 51 +++++++++++++++++++
+>  include/linux/platform_data/x86/asus-wmi.h    |  3 ++
+>  3 files changed, 63 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> index 61a745d2476f..5645dbac4ce8 100644
+> --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> @@ -194,3 +194,12 @@ Contact:	"Luke Jones" <luke@ljones.dev>
+>  Description:
+>  		Set the target temperature limit of the Nvidia dGPU:
+>  			* min=75, max=87
+> +
+> +What:		/sys/devices/platform/<platform>/boot_sound
+> +Date:		Jun 2023
+> +KernelVersion:	6.10
+> +Contact:	"Luke Jones" <luke@ljones.dev>
+> +Description:
+> +		Set if the BIOS POST sound is played on boot.
+> +			* 0 - False,
+> +			* 1 - True
+> \ No newline at end of file
+> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+> index 094a93f24667..6cac9c3eb8b2 100644
+> --- a/drivers/platform/x86/asus-wmi.c
+> +++ b/drivers/platform/x86/asus-wmi.c
+> @@ -2106,6 +2106,54 @@ static ssize_t panel_od_store(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RW(panel_od);
+>  
+> +/* Bootup sound ***************************************************************/
+> +
+> +static ssize_t boot_sound_show(struct device *dev,
+> +			     struct device_attribute *attr, char *buf)
+> +{
+> +	struct asus_wmi *asus = dev_get_drvdata(dev);
+> +	int result;
+> +
+> +	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_BOOT_SOUND);
+> +	if (result < 0)
+> +		return result;
+> +
+> +	return sysfs_emit(buf, "%d\n", result);
+> +}
+> +
+> +static ssize_t boot_sound_store(struct device *dev,
+> +			      struct device_attribute *attr,
+> +			      const char *buf, size_t count)
+> +{
+> +	int result, err;
+> +	u32 snd;
+> +
+> +	struct asus_wmi *asus = dev_get_drvdata(dev);
+> +
+> +	result = kstrtou32(buf, 10, &snd);
+> +	if (result)
+> +		return result;
+> +
+> +	if (snd > 1)
+> +		return -EINVAL;
+> +
+> +	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BOOT_SOUND, snd, &result);
+> +	if (err) {
+> +		pr_warn("Failed to set boot sound: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	if (result > 1) {
+> +		pr_warn("Failed to set panel boot sound (result): 0x%x\n", result);
+> +		return -EIO;
+> +	}
+> +
+> +	sysfs_notify(&asus->platform_device->dev.kobj, NULL, "boot_sound");
+> +
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RW(boot_sound);
 
-Try disabling IPv6 if you want to reproduce the problem.
+I started to think that perhaps these would be a way to create helper for 
+these sysfs functions to call as they are quite similar, only the wmi id, 
+strings and the range check change (the GPU functions do a few extra 
+checks and could remain standalone functions but the rest look very 
+similar to each other).
 
-	  Andrew
+-- 
+ i.
+
 
