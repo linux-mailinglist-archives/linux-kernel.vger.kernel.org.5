@@ -1,354 +1,433 @@
-Return-Path: <linux-kernel+bounces-116564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CBC388A0BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 358E288A0C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D1911C37E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:02:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 576ED1C3805E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 716F014E2CC;
-	Mon, 25 Mar 2024 08:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343991304B3;
+	Mon, 25 Mar 2024 08:23:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dK2GkPk9"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="m90WpsWx"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5A014EC65
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C034A14F9C1
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.65
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711346425; cv=fail; b=EOjgdlIlGllODCdoUblWRP/rTlpj6cOD5L5lklF6x5pSVd1kAi+6LcvKAUJAYP9Yn7Vt61uJ8MfrQHKhRTXHpWBKwaagk1t/k9KSskrIStb8ZkPFZ4ToMs9RrA9zJqCoUgm3pH+9kgkLv96ZP1JxaewBho+D6ON+C2dPA9CCy7I=
+	t=1711346566; cv=fail; b=hmWgC41WevosmbIlEUhz9bN+TDAzXKbYdp8MAIcp1oWRe1ihJUd8s0yyHU30SP7+1h7xbgMNd50Rbcu2eM3aLEdxO0fA79Vkx1SWY4GirrzCD82pZD1p5yQGam0ksgSsew7E3YxUlEKLQkSG8ykZl14TyRRVP9FWleLe0V82VVE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711346425; c=relaxed/simple;
-	bh=Muh7CMmlISBF+FNe9IK3v49u30+ZcKcUbaIb1A+jnXo=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=qPJW5ly4gjblOvSVssQ0qBHO/r+F7RidiZuBY+u5Unt08Xugis4olPRqSzHMKkHtOfPBc/ZZwtm79PmdzFGCU8BmWCivXT+B2qt0M9Kr6PLpeaptB+TfIeVE8o7cLSQ3p2j8owKsSqKKzhVSKXWgHKXs57NyUhsr+Sw8kS5aYCw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dK2GkPk9; arc=fail smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711346422; x=1742882422;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=Muh7CMmlISBF+FNe9IK3v49u30+ZcKcUbaIb1A+jnXo=;
-  b=dK2GkPk93OAqGsXXdpxoDyWstP2HRrnxf8MhTnFijDkptsStZP2dsw8f
-   MfSqkaqAUF1pgBCrS4c81DQyiTj3pREg86IJMWic+smE3N5SLxEXAVKDN
-   Rsvdx5QFDUt+ET1FPZ9Zg5MrM9hFHXab9o1NnoaU+DIKTLXaQLr8lZxQu
-   ExCl2KEPe5ZShzR9pILGaLQQ6LR+oeMFabhfxkG4rBp8fSWay60sMCqnR
-   PHbPpM3aL5wA6h1dCrMPTkqSFXC5hB+DnqZx1FTd9J/KMWulSKaT8mx9l
-   SmuW+HdmpLodBfsJI9xDP7N8CGG7C/854fcjx7tPpyeE2zIaFEafNuqvA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17764170"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="17764170"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:00:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="20188032"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Mar 2024 23:00:20 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 24 Mar 2024 23:00:20 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 24 Mar 2024 23:00:20 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 24 Mar 2024 23:00:20 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 24 Mar 2024 23:00:20 -0700
+	s=arc-20240116; t=1711346566; c=relaxed/simple;
+	bh=mrO7zEgCqwWwBp09YCei1cpQ+tFiwvOSQciGKjEe0Kw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mG8FmgOKLjkTiyjxPTPkrVh9sHnsu3uqWCifCzMoO6g72j9j54ScWs4fq4KE411VAmnGDfroCDADE1xN+zx1pUWeTigOHIGK+EWEiELZ76OcflVFckFrBAoqVI5S/7+rH9pp86K8PpfGKhCb2rqnl6D4AB81nQ3KTTexaS2UHlg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=m90WpsWx; arc=fail smtp.client-ip=40.107.220.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HkEWE9zwy3a6KNbXmsdRUxjzj2Ukd2lLrs92nuOxr89Ua3YXM9aKHv2D69TOEz/A5vKUz+8IZtYw6iG8md8kuWhdmwzjBwrCcVh0NlYaStGbW4MNAINaRU5oiF/hsNt5/ZOJ6ElCNobquSSlZKNKTd6JkC5sR5y2xMMhI8w8BcyE5LPFDxIk9Yq9aeqFXmWcJZ2/PlggRcok+bkk+/QUvuE3YOG3wiICADdMBT+LEvMOpp3tPyzyX8IrJ4p5Ae5W+xh9FtxxCbfH1vlbwL2brMws0XvYCIAzVoRU0Cosez9HXDlre8FcrgnlG73TCeUmR4A5JUJqmf/C2rLVMs92iQ==
+ b=CNQxg+H9WijXbdLuMd0nkLfgulEtFJvPRrgoM297Zudw/dV7G9xj1xcGmslst3jAB5f3aYNBFpCtyQe9I2tV8Zs3Mk+zZMD71zeFhAY278zavXQNKFGWbLpIDPBOZUM41NvGvACPS8VUNxX0DSDFIn/Oi42upxADdZTBVwpgaoza95U7uEsP9kUnJFaxOXyS6hLrUBZsDWVybj/xCnierkfJQSxuRsClpIZ+3TaV1lGvaajNcWUVbnbOHbXUsbqw+ugkdWbMr/mIxnIzfSxIMvcZsJjwdlGllXVhXOsuFO1T1XedBUssrz+nOuYTLdwiZDpaJm+fmviZbBE4tp67xQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yswaOh9jYsUSr7bwen5c5AfFhysW5cZ/wCKXq0R2qsQ=;
- b=Fpi4/1t3miEOdolEcGMj9V0YGHp3dXPFZ4OVGERnZHm9PNL1CfKw2wlTvXgbF0ZZ/cnA0oRGD/nvXjbsTLfxrrUdsZ+8PbEUnuY9U0qoHAs8iFbv/URi/dth78JSYBE34bf4YU8950IqA3Gw05p/TBcHWTnJ/iFJ4Xc6tBuEntnwpEJLCFpiDuaeoj1u81+m3Nn8KZEgJovHZAdVt+RG/YDPcO/kyQwYWIK3XmjLWfZLnRS+JSjnZhLiAXWWeyDmYho1Ch1ryK5e5fOMWdSK7i9DVCvxmFNd5mDuWR738k3j7r6OClAC2L0sevcVaqvIwIenmg7zpwcK9GdDqaxClA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by PH0PR11MB7657.namprd11.prod.outlook.com (2603:10b6:510:26c::21) with
+ bh=+de9s9cSu5Jy17IcMMVkzrU3eMcK5u/9Sc+11Idhl/8=;
+ b=U6RuyjLbyxLFjjaaZNu2kjrI8KwiE7607rInrRKsPNSiC/ZfCTNlPRY5OcnGKH0WC2b4lDRQONRoJ5xEehVdbTL+M1QkpRWggPpadr9EUzqjPBNSi1BkK2owcsfmUbBIo6Coei2dHVECBMyib8cFv/oaBr2365PFBmZU8a3+dKtRCCYoUlz3kDqWbizV+KzkxEhKcLBIF4aBu3cs635uP5jxtlCAPlpl8kJaDJmV5VdAbov6cHlXLH5E++8d4vlX+7Ek9LRCGtbFGmBGgkOowrdkDdsXJc86ENU4qbGW/F5S7flbRizCwQSDPReKoCkNgckxW7u2ZjET123W95fVMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+de9s9cSu5Jy17IcMMVkzrU3eMcK5u/9Sc+11Idhl/8=;
+ b=m90WpsWxygB+YDH7SrcLFbSAMoJRoff9OOH9B4Zbd++rrLMDApQ42mSifqrDdoBMFwICHjg5DHBIwIlitgNerWrESajP0SIuNfsAw2espqEHWPjTyuGRYHE2rw6OMjcWklPwrfU1ilh9gP/UATXoNM3/J7FyLPCQwiEnrZc5WDM=
+Received: from DM6PR21CA0021.namprd21.prod.outlook.com (2603:10b6:5:174::31)
+ by SJ1PR12MB6075.namprd12.prod.outlook.com (2603:10b6:a03:45e::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 06:00:18 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 06:00:17 +0000
-Date: Mon, 25 Mar 2024 14:00:06 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: Ingo Molnar <mingo@kernel.org>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, Andy Lutomirski
-	<luto@kernel.org>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin"
-	<hpa@zytor.com>, Linus Torvalds <torvalds@linux-foundation.org>, "Oleg
- Nesterov" <oleg@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Uros Bizjak <ubizjak@gmail.com>,
-	<linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>, Andrew
- Morton <akpm@linux-foundation.org>, Dave Hansen <dave@sr71.net>, Peter
- Zijlstra <peterz@infradead.org>, <oliver.sang@intel.com>
-Subject: Re: [PATCH 1/1] headers/deps: x86/fpu: Make task_struct::thread
- constant size
-Message-ID: <202403251006.3568d460-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240320131908.2708438-2-mingo@kernel.org>
-X-ClientProxiedBy: SI2PR01CA0014.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::17) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+ 2024 06:02:40 +0000
+Received: from DS2PEPF0000343F.namprd02.prod.outlook.com
+ (2603:10b6:5:174:cafe::2d) by DM6PR21CA0021.outlook.office365.com
+ (2603:10b6:5:174::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
+ Transport; Mon, 25 Mar 2024 06:02:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF0000343F.mail.protection.outlook.com (10.167.18.42) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Mon, 25 Mar 2024 06:02:39 +0000
+Received: from BLR5CG134614W.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 25 Mar
+ 2024 01:02:33 -0500
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
+	<vincent.guittot@linaro.org>
+CC: Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt
+	<rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman
+	<mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, "Valentin
+ Schneider" <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>, "Tobias
+ Huschle" <huschle@linux.ibm.com>, Luis Machado <luis.machado@arm.com>, Chen
+ Yu <yu.c.chen@intel.com>, Abel Wu <wuyun.abel@bytedance.com>, Tianchen Ding
+	<dtcccc@linux.alibaba.com>, Youssef Esmat <youssefesmat@chromium.org>,
+	"Xuewen Yan" <xuewen.yan94@gmail.com>, K Prateek Nayak
+	<kprateek.nayak@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+Subject: [RFC PATCH 0/1] sched/eevdf: Curb wakeup preemption further
+Date: Mon, 25 Mar 2024 11:32:25 +0530
+Message-ID: <20240325060226.1540-1-kprateek.nayak@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|PH0PR11MB7657:EE_
-X-MS-Office365-Filtering-Correlation-Id: dd1ad42c-b562-4342-274a-08dc4c90d8dc
+X-MS-TrafficTypeDiagnostic: DS2PEPF0000343F:EE_|SJ1PR12MB6075:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9125c5d3-e2f6-4def-acc3-08dc4c912daa
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: apdf5ckXbBFTEu96605W2B/yhgFam0pwgZZ+iICNtc63F+givt9ySNrrYgC7SV/+Z6w9ramKAoFnD5EqEN+N7LRLzNlv7Z88InHYtVOdTzeE4K/7+M+QKhVYfM+zG33tAUPI9qA9nT0lAt128/fp4rHf5AvmSbjIb5myI4tiVVyOoc2H0P4ixcpRD9GPyCoILF6KX6ArwZICsfavtqi+acPaBbJicGBC4x0GHUcCVz9M5jXe52qZ+xQwE44j7oPlErnxAg/Zv3ayO/izwq/dF5G4nxx8EwpfijMDrUbach5COa3MndIHrlCB4QTd0ry9hAcbgsoavkexL+wkDTRRmSi4+fnsY+XMK3A8sOCTtkHtorkv9LPyWvh2Ur02xoxSZBPy/bSYKweIg+i3URtIroFTVb1ic5gwhHqdqQo9OM8/jDRErI9gbr/Kk9+MspOgwJO65dE8U1gQ7pGo9yGZWiSXqtCqsIQoXefYWUv06Vlk2q37sANFGFgdUE4CaifgWXi3hymZKv71sK2kyBWLPyzuIn0zHYUgIcXOMTm9CtCcK0HR4OIp5U1XcO0nlo2sEkBU1bg1kJzxyLUV6ea9C4KCcZcMmXMuUay3Ny7dvLzwJIZTFq/HzqTYNDWPgUaQ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PP2dy1XzD6gnQBDj/iBppajEKZqZgqIHByTQ0ZtZtnYHlgXewSSAK7TDJcnl?=
- =?us-ascii?Q?qRgwEtGCm5N7tfcVmQnf+3aDBK2kkvDrNTb1+2euo09aQSGaBPdi4cie6ohi?=
- =?us-ascii?Q?eqODgGP978lDFJYXwlkgDMQahpP2nzRhOwfOu/aRsGaIbkZLNuj8+RpyfkbC?=
- =?us-ascii?Q?uW7YNludNjAVWaaJR8PYUnJTPrBqHFquWbOkcil3SnsxJAFPtdn9ZTfy+wb7?=
- =?us-ascii?Q?HvC8ABtDwkuaCsGE345UQWe9AleWA54cpOhGLzcV5lbxpqX0NKtZlMwC/VlG?=
- =?us-ascii?Q?RPJIFLm3UoL/fIkSVA4EDNMJN6sV/oMFvtMuD893E4ZA+9Z+0OXWQOoFf+4n?=
- =?us-ascii?Q?LfhqJwnsRGKX3/WSPX1//kMFLnji++rZmo63nR7AAIJICZylqdoZGtj3WBH7?=
- =?us-ascii?Q?8kuIHaOKhwai9RnhFclqeD0bDhdgMPuusf//2gL6O8vrEFUQwSexO62iE8nA?=
- =?us-ascii?Q?N7wWpDhvUj/zE5xtRVkLeQxAOaPZtB3pdfRxl9yiVy9DOo8qDNcHZTo6Plhb?=
- =?us-ascii?Q?KIHe+/WehtgjP/mcsc2r4Jid2dUSY2MJD6nPYAbG+XmyHOzI+446zFqEpOX2?=
- =?us-ascii?Q?XCKvE1wghpynI/SNKuJSDztXbujyc/YFtSOKTlNbH/DXnIkzYbFlvS4BoN69?=
- =?us-ascii?Q?MIrDDn3Dq6uc8fkIZJl3hBlmyWKW8XFCCSw/Mux0Dex3mZpXX+YD+uvRREyS?=
- =?us-ascii?Q?fqMuScJuT1MdoA4aLb25defb2rHUHtlBnsGImxtQeU+dxA0kdcSDlyFmVzAQ?=
- =?us-ascii?Q?S449MSRNDfVLVTeDAZokpS6rsXAVDT3NQ4dhSbcSlh2xhTcMyZq3/JAAF5VB?=
- =?us-ascii?Q?uNQCGJKYzSqgzjncfZuBDH7yE7015vAf4+wtVJ0G6zBlKW5Km60TydcVJBxT?=
- =?us-ascii?Q?ZF3XNbBft5cNgIRxcUPxhO8cVt4+BO5IvM+cntdGFt5uur/zXzyqh5MOB8df?=
- =?us-ascii?Q?0PVvD9A2IqFJsXSvnvRer//O9Fp+PYHik7w9Z1g7kOhNUHpXmbOO1bLGdb6D?=
- =?us-ascii?Q?xre/it5WRUL8SlsseP06IymgFOaHQ1d74qYXRphV4XJSa8DvmG38MEPineZe?=
- =?us-ascii?Q?DwT1Ua6oc2W/HT80G5n35WWKMN3Y4uca8sKQ2+7PmR82UjQKoVA4TN5VAbos?=
- =?us-ascii?Q?/i9zGw1zk6S5VXp0iyie6SyLklZCSU2HOa/+TFJGRH+tZbZLXnqiUlsQyqzD?=
- =?us-ascii?Q?yEOth7fYuW7HFGG4cmIe8D+JvNPzmINAKw0RP7cvhQQLJ8Xt4grDkgnN6rOb?=
- =?us-ascii?Q?PYB8Tp3TjhBzvRL9uZaICPopgvvqKuFWhQpMhqrnJ8ektPUVG4qXQJVxc3d5?=
- =?us-ascii?Q?hUfaYuI7yKNX4T8x7SHoi+wY7a0o6Y/oMI5CfgF1YjfcMQ2nsjP+05i1T4hw?=
- =?us-ascii?Q?A8lsvxYAfhscDUxeNh4PGwnkO5cXITgcNSiVjbqQRvCRoX7JYlH3dBcZDjXe?=
- =?us-ascii?Q?58t+boI2HacZCLYqdhqzGdjzyEI1dT2I/E8QW4RydsgA14fh66jNFf49Yau+?=
- =?us-ascii?Q?KPd2Z0CH50kK6H8xYoRDGY8jokkxqddB4rkvNMuYbb1JFiRMuKNwaolmL6JP?=
- =?us-ascii?Q?E+fwObz0o2ginZfXk0gC/rjqHm35rhtz/ZOGeZ1QU5npzt3YN9c8icSDdpgW?=
- =?us-ascii?Q?SA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd1ad42c-b562-4342-274a-08dc4c90d8dc
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 06:00:17.8583
+X-Microsoft-Antispam-Message-Info:
+	JV4e53TaC5gG5EUNWalLE/PXEg5Zc4jLqQEQWUwSr7eSJg8lZM/mJby9ZIpVp+0MCt0sNTsJuJSY0uwBt01GR026tN0BX35hDXACfzQ2jo+lkXx/TVVtx+y76bfy0Ber0EYLTIIMMwKGjKu0asF8K+3RqEtulfGZ108EqylvL303hi5HKZ8Z5zh3NSVulD3hvOZJHVWvWLbwlQw92uNiddDbm3EpG7lAn7sp6vFSGJolZKGhflWE0GFiDI+U96FhfARTB7u5yztBnz+JPtLXYwm36wmRiHdl6f6XDd6JlLWbiRuhrMlPYxlh1uvJCIBRvDcjesmG9m5TG2fv4/W/LR2jjrP4OvA8M9CzWtZ98BiUnPOIgkFa0H7wtlyiOtEsihjDIWyvyQ36fjqzsXRwqEFxAAmJs+Q5k3JnygsymQF//7YdTfmGCWM4jabf6law0tKNuFA//rqIc5y0ROZQcIIRucwzGmwqPYVMRLd69J6rD6JhcupVJPw3TGUyucQVuOuv1at0AnMXE3gzvLjFISoj5tgi+QH7yYrLXw+sKH/C34zCl9O8hK289IELoO/hPHZU2U04O24YdpjAf9Od5qAwF/wrhbBglEgtL7/jKubTGnXkKUA04+47Ffjm7lVI0poqfF1b8A5WC9my1HJe1VKaTqaZY8cMh0+pUzqPatjA33RYU4t/G0mMBrSjOuXU4+6Fnz62PGbuR4BhmOIEOw==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 06:02:39.9115
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UbTH6KHdqciGtbgP6JbvWw+KJJuoBSLux6+lPTMEtbj5sfd7qvExfK5wTjWnIYqHATW6Be0jPcnpfDDeH2Y3vQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7657
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9125c5d3-e2f6-4def-acc3-08dc4c912daa
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF0000343F.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6075
+
+Problem Statement
+=================
+
+Since EEVDF first landed, DeathStarBench [1] consistently saw a double
+digit drop in performance when all the services are running pinned on a
+single / multiple CCX(s).
+
+Bisection showed that the regression started at commit 147f3efaa241
+("sched/fair: Implement an EEVDF-like scheduling policy") and this was
+reported [2]. Further narrowing down than the commit is hard due to the
+extent of changes in the commit. EEVDF has seen extensive development
+since, but the regression persists.
 
 
+Narrowing down the problem
+==========================
 
-Hello,
+Commit 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling
+policy") also added a sched_feat to toggle between EEVDF and legacy CFS.
+It was noted that switching to CFS did not completely remedy the
+regression. Although some of it could be attributed to the plumbing of
+the sched_feat itself, the large enough regression led to audit of the
+common path between CFS and EEVDF added since commit 86bfbb7ce4f6
+("sched/fair: Add lag based placement"). It was discovered that the
+clamping of lag in the offending commit was enough to reproduce the
+regression. Specifically, the following change on top of commit
+86bfbb7ce4f6 ("sched/fair: Add lag based placement"):
 
-kernel test robot noticed "WARNING:at_arch/x86/mm/extable.c:#fixup_exception" on:
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index dd12ada69b12..93b5e606e8e5 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -715,13 +715,20 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+ 	return cfs_rq->min_vruntime + avg;
+ }
+ 
++static inline u64 calc_delta_fair(u64 delta, struct sched_entity *se);
++
+ /*
+  * lag_i = S - s_i = w_i * (V - v_i)
+  */
+ void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ {
++	s64 lag, limit;
++
+ 	SCHED_WARN_ON(!se->on_rq);
+-	se->vlag = avg_vruntime(cfs_rq) - se->vruntime;
++	lag = avg_vruntime(cfs_rq) - se->vruntime;
++
++	limit = calc_delta_fair(max_t(u64, 2 * sysctl_sched_min_granularity, TICK_NSEC), se);
++	se->vlag = clamp(lag, -limit, limit);
+ }
+ 
+ static u64 __update_min_vruntime(struct cfs_rq *cfs_rq, u64 vruntime)
+-- 
 
-commit: 9738bc8321cc5abbab8676f6c1eb1b8c7c3d172d ("[PATCH 1/1] headers/deps: x86/fpu: Make task_struct::thread constant size")
-url: https://github.com/intel-lab-lkp/linux/commits/Ingo-Molnar/headers-deps-x86-fpu-Make-task_struct-thread-constant-size/20240320-212236
-base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 35ce64922c8263448e58a2b9e8d15a64e11e9b2d
-patch link: https://lore.kernel.org/all/20240320131908.2708438-2-mingo@kernel.org/
-patch subject: [PATCH 1/1] headers/deps: x86/fpu: Make task_struct::thread constant size
-
-in testcase: boot
-
-compiler: gcc-12
-test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-+---------------------------------------------------------------------------+------------+------------+
-|                                                                           | 35ce64922c | 9738bc8321 |
-+---------------------------------------------------------------------------+------------+------------+
-| WARNING:at_arch/x86/mm/extable.c:#fixup_exception                         | 0          | 17         |
-| EIP:fixup_exception                                                       | 0          | 17         |
-| EIP:restore_fpregs_from_fpstate                                           | 0          | 17         |
-| WARNING:at_arch/x86/kernel/fpu/xstate.h:#os_xsave                         | 0          | 17         |
-| EIP:os_xsave                                                              | 0          | 17         |
-| kernel_BUG_at_mm/usercopy.c                                               | 0          | 17         |
-| invalid_opcode:#[##]                                                      | 0          | 17         |
-| EIP:usercopy_abort                                                        | 0          | 17         |
-| Kernel_panic-not_syncing:Fatal_exception                                  | 0          | 17         |
-+---------------------------------------------------------------------------+------------+------------+
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202403251006.3568d460-lkp@intel.com
-
-
-[    7.844011][   T58] ------------[ cut here ]------------
-[ 7.844665][ T58] Bad FPU state detected at restore_fpregs_from_fpstate+0x3d/0x88, reinitializing FPU registers. 
-[ 7.844686][ T58] WARNING: CPU: 0 PID: 58 at arch/x86/mm/extable.c:126 fixup_exception (arch/x86/mm/extable.c:126 arch/x86/mm/extable.c:275) 
-[    7.846556][   T58] Modules linked in:
-[    7.846556][   T58] CPU: 0 PID: 58 Comm: modprobe Tainted: G        W          6.8.0-rc4-00056-g9738bc8321cc #1
-[    7.846556][   T58] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[ 7.846556][ T58] EIP: fixup_exception (arch/x86/mm/extable.c:126 arch/x86/mm/extable.c:275) 
-[ 7.846556][ T58] Code: 88 0d a4 50 22 ce e8 9b 07 01 00 0f 0b e9 a8 fe ff ff 89 44 24 04 b2 01 c7 04 24 68 29 a9 cd 88 15 a6 50 22 ce e8 7c 07 01 00 <0f> 0b e9 c0 fe ff ff 0f 0b ba 88 f8 38 ce e9 e9 fe ff ff 8d 74 26
-All code
-========
-   0:	88 0d a4 50 22 ce    	mov    %cl,-0x31ddaf5c(%rip)        # 0xffffffffce2250aa
-   6:	e8 9b 07 01 00       	call   0x107a6
-   b:	0f 0b                	ud2
-   d:	e9 a8 fe ff ff       	jmp    0xfffffffffffffeba
-  12:	89 44 24 04          	mov    %eax,0x4(%rsp)
-  16:	b2 01                	mov    $0x1,%dl
-  18:	c7 04 24 68 29 a9 cd 	movl   $0xcda92968,(%rsp)
-  1f:	88 15 a6 50 22 ce    	mov    %dl,-0x31ddaf5a(%rip)        # 0xffffffffce2250cb
-  25:	e8 7c 07 01 00       	call   0x107a6
-  2a:*	0f 0b                	ud2		<-- trapping instruction
-  2c:	e9 c0 fe ff ff       	jmp    0xfffffffffffffef1
-  31:	0f 0b                	ud2
-  33:	ba 88 f8 38 ce       	mov    $0xce38f888,%edx
-  38:	e9 e9 fe ff ff       	jmp    0xffffffffffffff26
-  3d:	8d                   	.byte 0x8d
-  3e:	74 26                	je     0x66
-
-Code starting with the faulting instruction
-===========================================
-   0:	0f 0b                	ud2
-   2:	e9 c0 fe ff ff       	jmp    0xfffffffffffffec7
-   7:	0f 0b                	ud2
-   9:	ba 88 f8 38 ce       	mov    $0xce38f888,%edx
-   e:	e9 e9 fe ff ff       	jmp    0xfffffffffffffefc
-  13:	8d                   	.byte 0x8d
-  14:	74 26                	je     0x3c
-[    7.846556][   T58] EAX: 00000000 EBX: cdc38510 ECX: 00000000 EDX: 00000000
-[    7.846556][   T58] ESI: ea1abef0 EDI: 0000000d EBP: ea1abe5c ESP: ea1abde0
-[    7.846556][   T58] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010046
-[    7.846556][   T58] CR0: 80050033 CR2: bfda18db CR3: 29d1d000 CR4: 00040690
-[    7.846556][   T58] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-[    7.846556][   T58] DR6: fffe0ff0 DR7: 00000400
-[    7.846556][   T58] Call Trace:
-[ 7.846556][ T58] ? show_regs (arch/x86/kernel/dumpstack.c:479) 
-[ 7.846556][ T58] ? fixup_exception (arch/x86/mm/extable.c:126 arch/x86/mm/extable.c:275) 
-[ 7.846556][ T58] ? __warn (kernel/panic.c:677) 
-[ 7.846556][ T58] ? fixup_exception (arch/x86/mm/extable.c:126 arch/x86/mm/extable.c:275) 
-[ 7.846556][ T58] ? report_bug (lib/bug.c:180 lib/bug.c:219) 
-[ 7.846556][ T58] ? exc_overflow (arch/x86/kernel/traps.c:251) 
-[ 7.846556][ T58] ? handle_bug (arch/x86/kernel/traps.c:238) 
-[ 7.846556][ T58] ? exc_invalid_op (arch/x86/kernel/traps.c:259 (discriminator 1)) 
-[ 7.846556][ T58] ? handle_exception (arch/x86/entry/entry_32.S:1049) 
-[ 7.846556][ T58] ? rt_mutex_debug_task_free (kernel/locking/rtmutex_api.c:487 (discriminator 11)) 
-[ 7.846556][ T58] ? set_memory_global (arch/x86/mm/pat/set_memory.c:2298) 
-[ 7.846556][ T58] ? exc_overflow (arch/x86/kernel/traps.c:251) 
-[ 7.846556][ T58] ? fixup_exception (arch/x86/mm/extable.c:126 arch/x86/mm/extable.c:275) 
-[ 7.846556][ T58] ? set_memory_global (arch/x86/mm/pat/set_memory.c:2298) 
-[ 7.846556][ T58] ? exc_overflow (arch/x86/kernel/traps.c:251) 
-[ 7.846556][ T58] ? fixup_exception (arch/x86/mm/extable.c:126 arch/x86/mm/extable.c:275) 
-[ 7.846556][ T58] ? restore_fpregs_from_fpstate (arch/x86/kernel/fpu/core.c:188) 
-[ 7.846556][ T58] ? __lock_acquire (kernel/locking/lockdep.c:5137) 
-[ 7.846556][ T58] ? __delete_object (mm/kmemleak.c:798 (discriminator 3)) 
-[ 7.846556][ T58] ? kvm_sched_clock_read (arch/x86/kernel/kvmclock.c:91) 
-[ 7.846556][ T58] ? sched_clock_noinstr (arch/x86/kernel/tsc.c:267) 
-[ 7.846556][ T58] ? local_clock_noinstr (kernel/sched/clock.c:282 kernel/sched/clock.c:306) 
-[ 7.846556][ T58] ? exc_bounds (arch/x86/kernel/traps.c:643) 
-[ 7.846556][ T58] exc_general_protection (arch/x86/kernel/traps.c:617 arch/x86/kernel/traps.c:677 arch/x86/kernel/traps.c:643) 
-[ 7.846556][ T58] ? __delete_object (mm/kmemleak.c:798 (discriminator 3)) 
-[ 7.846556][ T58] ? exc_bounds (arch/x86/kernel/traps.c:643) 
-[ 7.846556][ T58] handle_exception (arch/x86/entry/entry_32.S:1049) 
-[ 7.846556][ T58] EIP: restore_fpregs_from_fpstate (arch/x86/kernel/fpu/core.c:188) 
-[ 7.846556][ T58] Code: eb 0a cc cc cc db e2 0f 77 db 45 f4 3e 8d 74 26 00 8b 3d ec f1 bc cd 8b 4d f4 8b 1d e8 f1 bc cd 21 fa 8d 79 40 21 d8 0f ae 2f <8b> 5d f8 8b 7d fc 89 ec 5d 31 c0 31 d2 31 c9 c3 8d 76 00 3e 8d 74
-All code
-========
-   0:	eb 0a                	jmp    0xc
-   2:	cc                   	int3
-   3:	cc                   	int3
-   4:	cc                   	int3
-   5:	db e2                	fnclex
-   7:	0f 77                	emms
-   9:	db 45 f4             	fildl  -0xc(%rbp)
-   c:	3e 8d 74 26 00       	ds lea 0x0(%rsi,%riz,1),%esi
-  11:	8b 3d ec f1 bc cd    	mov    -0x32430e14(%rip),%edi        # 0xffffffffcdbcf203
-  17:	8b 4d f4             	mov    -0xc(%rbp),%ecx
-  1a:	8b 1d e8 f1 bc cd    	mov    -0x32430e18(%rip),%ebx        # 0xffffffffcdbcf208
-  20:	21 fa                	and    %edi,%edx
-  22:	8d 79 40             	lea    0x40(%rcx),%edi
-  25:	21 d8                	and    %ebx,%eax
-  27:	0f ae 2f             	xrstor (%rdi)
-  2a:*	8b 5d f8             	mov    -0x8(%rbp),%ebx		<-- trapping instruction
-  2d:	8b 7d fc             	mov    -0x4(%rbp),%edi
-  30:	89 ec                	mov    %ebp,%esp
-  32:	5d                   	pop    %rbp
-  33:	31 c0                	xor    %eax,%eax
-  35:	31 d2                	xor    %edx,%edx
-  37:	31 c9                	xor    %ecx,%ecx
-  39:	c3                   	ret
-  3a:	8d 76 00             	lea    0x0(%rsi),%esi
-  3d:	3e                   	ds
-  3e:	8d                   	.byte 0x8d
-  3f:	74                   	.byte 0x74
-
-Code starting with the faulting instruction
-===========================================
-   0:	8b 5d f8             	mov    -0x8(%rbp),%ebx
-   3:	8b 7d fc             	mov    -0x4(%rbp),%edi
-   6:	89 ec                	mov    %ebp,%esp
-   8:	5d                   	pop    %rbp
-   9:	31 c0                	xor    %eax,%eax
-   b:	31 d2                	xor    %edx,%edx
-   d:	31 c9                	xor    %ecx,%ecx
-   f:	c3                   	ret
-  10:	8d 76 00             	lea    0x0(%rsi),%esi
-  13:	3e                   	ds
-  14:	8d                   	.byte 0x8d
-  15:	74                   	.byte 0x74
-[    7.846556][   T58] EAX: 00000007 EBX: 00000007 ECX: c2d836e0 EDX: 00000000
-[    7.846556][   T58] ESI: c2d836a0 EDI: c2d83720 EBP: ea1abf58 ESP: ea1abf4c
-[    7.846556][   T58] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010002
-[ 7.846556][ T58] ? exc_bounds (arch/x86/kernel/traps.c:643) 
-[ 7.846556][ T58] ? restore_fpregs_from_fpstate (arch/x86/kernel/fpu/core.c:179 arch/x86/kernel/fpu/core.c:181) 
-[ 7.846556][ T58] switch_fpu_return (arch/x86/include/asm/atomic.h:23 include/linux/atomic/atomic-arch-fallback.h:457 include/linux/jump_label.h:260 include/linux/jump_label.h:270 arch/x86/include/asm/trace/fpu.h:57 arch/x86/kernel/fpu/context.h:50 arch/x86/kernel/fpu/context.h:76 arch/x86/kernel/fpu/core.c:788) 
-[ 7.846556][ T58] syscall_exit_to_user_mode (arch/x86/include/asm/entry-common.h:58 include/linux/entry-common.h:330 kernel/entry/common.c:201 kernel/entry/common.c:212) 
-[ 7.846556][ T58] ? call_usermodehelper_exec_async (kernel/umh.c:114) 
-[ 7.846556][ T58] ? call_usermodehelper (kernel/umh.c:65) 
-[ 7.846556][ T58] ret_from_fork (arch/x86/kernel/process.c:157) 
-[ 7.846556][ T58] ? call_usermodehelper (kernel/umh.c:65) 
-[ 7.846556][ T58] ret_from_fork_asm (arch/x86/entry/entry_32.S:741) 
-[ 7.846556][ T58] entry_INT80_32 (arch/x86/entry/entry_32.S:947) 
-[    7.846556][   T58] EIP: 0xb7ee70b0
-[ 7.846556][ T58] Code: Unable to access opcode bytes at 0xb7ee7086.
-
-Code starting with the faulting instruction
-===========================================
+This turned the attention towards the wakeup path since lag was only
+used to determine the vruntime of the entity in place_entity() until
+then.
 
 
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20240325/202403251006.3568d460-lkp@intel.com
+sched-scoreboard analysis
+=========================
+
+When analyzing the per-task data from the sched-scoreboard [3], it was
+noticed that NGINX server and load-balancer accepting the incoming
+requests was being preempted very often. Following are the relative
+sched-switch numbers for both algorithms:
+
+				86bfbb7ce4f6 (CFS) 	147f3efaa241 (EEVDF)	%diff
+Sum of nr_voluntary_switches		1.00			0.02		-98%
+Sum of nr_involuntary_switches		1.00			3.20		220%
+
+Most of the other tasks within the chain of services invoked by the
+DeathStarBench workflow saw no significant changes in per-task
+statistics except for a drop in number of wakeups proportional to the
+drop in the benchmark throughput for the leaf service.
+
+Looking at pick_eevdf() called during wakeup preemption, the eligibility
+check for the current entity was identified as the reason for this large
+preemption.
 
 
+Wakeup preemption problem
+=========================
+
+With the curr entity's eligibility check, a wakeup preemption is very
+likely when an entity with positive lag joins the runqueue pushing the
+avg_vruntime of the runqueue backwards, making the vruntime of the
+current entity ineligible. This leads to aggressive wakeup preemption
+which was previously guarded by wakeup_granularity_ns in legacy CFS.
+Below figure depicts one such aggressive preemption scenario with EEVDF:
+
+				deadline for Nginx
+		   |
+	+-------+  |			|
+    /-- | Nginx | -|------------------> |
+    |	+-------+  |			|
+    |		   |
+    |	-----------|-------------------------------> vruntime timeline
+    |		   \--> rq->avg_vruntime
+    |
+    | 	wakes service on the same runqueue since system is busy
+    |
+    |	+---------+|
+    \-->| Service || (service has +ve lag pushes avg_vruntime backwards)
+	+---------+|
+	  |	   |
+   wakeup |	+--|-----+		|
+ preempts \---->| N|ginx | -----------> | {deadline for Nginx}
+		+--|-----+  		|
+	   (Nginx ineligible)
+	-----------|-------------------------------> vruntime timeline
+		   \--> rq->avg_vruntime
+
+When NGINX server is involuntarily switched out, it cannot accept any
+incoming request, leading to longer turn around time for the clients and
+thus loss in DeathStarBench throughput.
+
+    ==================================================================
+    Test          : DeathStarBench
+    Units         : Normalized latency
+    Interpretation: Lower is better
+    Statistic     : Mean
+    ==================================================================
+    tip		1.00
+    eevdf	1.14 (+14.61%)
+
+
+Proposed solution
+=================
+
+For current running task, skip eligibility check in pick_eevdf() if it
+has not exhausted the slice promised to it during selection despite the
+situation having changed since. With the proposed solution, the
+performance loss seen with the merge of EEVDF goes away. Following are
+the results from testing on a Dual Socket 3rd Generation EPYC server
+(2 x 64C/128T):
+
+    ==================================================================
+    Test          : DeathStarBench
+    Units         : Normalized throughput
+    Interpretation: Higher is better
+    Statistic     : Mean
+    ==================================================================
+    Pinning      scaling     tip            run-to-parity-wakeup(pct imp)
+     1CCD           1       1.00            1.16 (%diff: 16%)
+     2CCD           2       1.00            1.03 (%diff: 3%)
+     4CCD           4       1.00            1.12 (%diff: 12%)
+     8CCD           8       1.00            1.05 (%diff: 6%)
+
+With spec_rstack_overflow=off, the DeathStarBench performance with the
+proposed solution is same as the performance on v6.5 release before
+EEVDF was merged.
+
+
+Implication
+===========
+
+This may lead to newly waking task waiting longer for its turn on the
+CPU. However testing on a 3rd Generation Dual Socket EPYC system
+(2 x 64C/128T) did not reveal any consistent regressions with the
+standard benchmarks:
+
+    ==================================================================
+    Test          : hackbench
+    Units         : Normalized time in seconds
+    Interpretation: Lower is better
+    Statistic     : AMean
+    ==================================================================
+    Case:           tip[pct imp](CV)    run-to-parity-wakeup[pct imp](CV)
+     1-groups     1.00 [ -0.00]( 2.08)     0.98 [  2.29]( 3.19)
+     2-groups     1.00 [ -0.00]( 0.89)     1.02 [ -2.22]( 1.27)
+     4-groups     1.00 [ -0.00]( 0.81)     1.00 [  0.30]( 0.97)
+     8-groups     1.00 [ -0.00]( 0.78)     0.97 [  2.62]( 0.80)
+    16-groups     1.00 [ -0.00]( 1.60)     0.96 [  3.87]( 2.57)
+
+    ==================================================================
+    Test          : tbench
+    Units         : Normalized throughput
+    Interpretation: Higher is better
+    Statistic     : AMean
+    ==================================================================
+    Clients:    tip[pct imp](CV)    run-to-parity-wakeup[pct imp](CV)
+        1     1.00 [  0.00]( 0.71)     1.01 [  1.13]( 0.20)
+        2     1.00 [  0.00]( 0.25)     1.00 [ -0.42]( 0.32)
+        4     1.00 [  0.00]( 0.85)     1.00 [  0.07]( 0.41)
+        8     1.00 [  0.00]( 1.00)     0.99 [ -1.02]( 0.57)
+       16     1.00 [  0.00]( 1.25)     0.99 [ -1.13]( 1.90)
+       32     1.00 [  0.00]( 0.35)     0.98 [ -1.90]( 2.58)
+       64     1.00 [  0.00]( 0.71)     0.98 [ -2.20]( 1.33)
+      128     1.00 [  0.00]( 0.46)     0.98 [ -1.94]( 0.42)
+      256     1.00 [  0.00]( 0.24)     0.98 [ -2.19]( 0.24)
+      512     1.00 [  0.00]( 0.30)     0.99 [ -0.87]( 0.15)
+     1024     1.00 [  0.00]( 0.40)     1.00 [ -0.29]( 0.75)
+
+    ==================================================================
+    Test          : stream-10
+    Units         : Normalized Bandwidth, MB/s
+    Interpretation: Higher is better
+    Statistic     : HMean
+    ==================================================================
+    Test:       tip[pct imp](CV)    run-to-parity-wakeup[pct imp](CV)
+     Copy     1.00 [  0.00]( 9.73)     1.01 [  0.53]( 6.33)
+    Scale     1.00 [  0.00]( 5.57)     1.00 [ -0.17]( 3.89)
+      Add     1.00 [  0.00]( 5.43)     1.00 [  0.48]( 3.63)
+    Triad     1.00 [  0.00]( 5.50)     0.98 [ -1.90]( 6.31)
+
+    ==================================================================
+    Test          : stream-100
+    Units         : Normalized Bandwidth, MB/s
+    Interpretation: Higher is better
+    Statistic     : HMean
+    ==================================================================
+    Test:       tip[pct imp](CV)    run-to-parity-wakeup[pct imp](CV)
+     Copy     1.00 [  0.00]( 3.26)     0.99 [ -0.78]( 2.94)
+    Scale     1.00 [  0.00]( 1.26)     0.97 [ -2.86]( 6.48)
+      Add     1.00 [  0.00]( 1.47)     0.99 [ -1.34]( 4.20)
+    Triad     1.00 [  0.00]( 1.77)     1.01 [  0.53]( 2.23)
+
+    ==================================================================
+    Test          : netperf
+    Units         : Normalized Througput
+    Interpretation: Higher is better
+    Statistic     : AMean
+    ==================================================================
+    Clients:         tip[pct imp](CV)    run-to-parity-wakeup[pct imp](CV)
+     1-clients     1.00 [  0.00]( 0.22)     1.02 [  2.26]( 1.08)
+     2-clients     1.00 [  0.00]( 0.57)     1.02 [  2.02]( 1.03)
+     4-clients     1.00 [  0.00]( 0.43)     1.02 [  2.35]( 0.64)
+     8-clients     1.00 [  0.00]( 0.27)     1.02 [  2.32]( 0.72)
+    16-clients     1.00 [  0.00]( 0.46)     1.02 [  1.55]( 0.73)
+    32-clients     1.00 [  0.00]( 0.95)     1.00 [ -0.46]( 1.47)
+    64-clients     1.00 [  0.00]( 1.79)     0.97 [ -2.72]( 1.34)
+    128-clients    1.00 [  0.00]( 0.89)     1.00 [  0.25]( 0.89)
+    256-clients    1.00 [  0.00]( 8.68)     0.95 [ -4.96]( 7.11) *
+    512-clients    1.00 [  0.00](35.06)     1.00 [ -0.43](51.55)
+
+    ==================================================================
+    Test          : schbench
+    Units         : Normalized 99th percentile latency in us
+    Interpretation: Lower is better
+    Statistic     : Median
+    ==================================================================
+    #workers: tip[pct imp](CV)    run-to-parity-wakeup[pct imp](CV)
+      1     1.00 [ -0.00](27.28)     0.69 [ 31.25](41.89)
+      2     1.00 [ -0.00]( 3.85)     1.00 [ -0.00](11.47)
+      4     1.00 [ -0.00](14.00)     1.21 [-21.05]( 7.20) *
+      8     1.00 [ -0.00]( 4.68)     1.04 [ -4.17](13.10) *
+     16     1.00 [ -0.00]( 4.08)     0.98 [  1.61]( 1.64)
+     32     1.00 [ -0.00]( 6.68)     0.94 [  6.12]( 9.27)
+     64     1.00 [ -0.00]( 1.79)     0.98 [  1.53]( 2.36)
+    128     1.00 [ -0.00]( 6.30)     1.03 [ -3.16]( 8.92) *
+    256     1.00 [ -0.00](43.39)     1.36 [-35.94](12.43) *
+    512     1.00 [ -0.00]( 2.26)     0.78 [ 22.04]( 1.77)
+
+    ==================================================================
+    Test          : SPECjbb (Without any scheduler tunable fiddling) 
+    Units         : Throughput
+    Interpretation: Lower is better
+    Statistic     : Mean
+    ==================================================================
+    Metric		 tip	run-to-parity-wakeup
+    Max-jOPS		1.00	   1.01 (+1.21%)
+    Critical-jOPS	1.00	   1.01 (+1.05%)
+
+* Points of large regression also show large run-to-run variance on both
+  tip:sched/core and with the proposed solution.
+
+
+Future work and alternatives
+============================
+
+If wakeup latency is indeed a concern, this solution can be paired with
+"sched/eevdf: Allow shorter slices to wakeup-preempt" patch from Peter's
+EEVDF tree [4] to allow for latency sensitive tasks to preempt the
+current running task with "PREEMPT_SHORT" feat superseding
+"RUN_TO_PARITY_WAKEUP" decision for such tasks.
+
+If not "RUN_TO_PARITY_WAKEUP" a tunable, similar to
+"wakeup_granularity_ns" might need to be re-introduced to curb such
+scenarios with EEVDF.
+
+Tobias seems to be dealing with other side of the coin where a newly
+woken task is not being scheduled in fast enough on the CPU [5]. It'll
+be good to discuss how to keep both sides happy, or discover a middle
+ground where both are less unhappy :)
+
+
+References
+==========
+
+[1] https://github.com/delimitrou/DeathStarBench/
+[2] https://lore.kernel.org/all/18199afa-16e2-8e76-c96b-9507f92befdc@amd.com/
+[3] https://github.com/AMDESE/sched-scoreboard/
+[4] https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=sched/eevdf&id=c2594f33fb1e1f4a2a4d962c464cb63a27a8f3d9 (Prone to force-update)
+[5] https://lore.kernel.org/lkml/20240228161018.14253-1-huschle@linux.ibm.com/
+
+The patch applies cleanly on tip:sched/core at commit b9e6e2866392
+("sched/fair: Fix typos in comments")
+---
+K Prateek Nayak (1):
+  sched/eevdf: Skip eligibility check for current entity during wakeup
+    preemption
+
+ kernel/sched/fair.c     | 24 ++++++++++++++++++++----
+ kernel/sched/features.h |  1 +
+ 2 files changed, 21 insertions(+), 4 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
 
 
