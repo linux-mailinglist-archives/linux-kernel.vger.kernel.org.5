@@ -1,171 +1,158 @@
-Return-Path: <linux-kernel+bounces-116924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D64F88A535
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:49:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24BE788A536
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:49:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3150D1C3BBA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:49:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9A7C29FCEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC6417A374;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513F917A391;
 	Mon, 25 Mar 2024 11:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="OK/isPdT";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qv+awkv1"
-Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Z6Yzd1cB"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FD21BB063
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63C5145B21;
+	Mon, 25 Mar 2024 11:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711365336; cv=none; b=DLXacpNsVvHB9hYRmrru0IrKdzwl6JKLC9e5HacpTtHXd83IKcgFXqLBrxM6rfwatsXWRL7r5BRc/SVVR9Je/oQAGQ8/NfVv+mJNA+OWi61Zyui/B64CekNkV8zf8L5FQqPlUYlw2I8orX4GGhtE268uggShGk1syNqeOt386hY=
+	t=1711365454; cv=none; b=XqETfuTrNjSya53HMMihs3NQlO7Cfdd35iS7vSc5bsf2AeX/aIljM4+Wk7rYEiwzh6rNCp3DHUoJ/TAjSdr9MmFb6XMQvTpBb1u2o8ymG1U28i03OWQCsGdEWmkSywrRoqA3/MFtk0xENapUWyw+5+HuDLR/1mo+dTlEfYTlN2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711365336; c=relaxed/simple;
-	bh=opKIsZlMHtQnbJCvVr82tpAN2qU/VqAhSCB8KlJlM5M=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=ImG1wXXcb5T/QaZJ3258vm8A1M+xmwZmssxQzea1xs15d2q6gbkFHwjbUcRigFXy66USx5XTop5h8db0fgFGjg6ft4zsGeuccTtzdlhHk6aCDVNRh1tF0Xg/iouYoGNSI5zSCRvVa5USDCEYCWHOQ4U/09rwyFAu4l327WlLO2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=OK/isPdT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qv+awkv1; arc=none smtp.client-ip=64.147.123.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 0646718000B9;
-	Mon, 25 Mar 2024 07:15:31 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 25 Mar 2024 07:15:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1711365331; x=1711451731; bh=z4Kn3pYXpg
-	iAUzuK6QDRYyQRhLD9Dn62eTCOSq5cUP0=; b=OK/isPdTFrqQI/4cMYOrrqmGXY
-	50PVXN4faVpZIDcM+nQKPpcJsp8HKY6A9pBrXO25gQi+mYZ4l5Q4806IAHF61oe6
-	vYdvO37FtnvSCUNe5a/4Z1MNY7hoJeXyKtWc67mhdln7SQLItMMxArbqaU9LN4Kf
-	BTeyDytZXE798uApFj79OBg/0EAduNeiSLTZkWADUBGZyjLKzJ1eTOSDvo761KeS
-	iCJkRAEtxRB6m051iHakUQ5tVjstrcpLVuMHAVRuQQ7qPL6EPTmKGfFJ9x8dzq2w
-	jI9k6qR7nfTjEml7e8cc4AjeEwpv2ffj//ESIkh7r2OALMAelwzZC0gC7dKA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711365331; x=1711451731; bh=z4Kn3pYXpgiAUzuK6QDRYyQRhLD9
-	Dn62eTCOSq5cUP0=; b=qv+awkv1sbrET62JITAJj90ptP70MGbPz7R3Gjx4kMkc
-	cl2bPh7jZ8YuPY3qLCzYTTX/TzqNJjKeAP+eEBHzGfomJd6PcC0dLfEUUlaxui8l
-	gTK14QDH8bkmPJ7yk+LuZ8gRtpuX+8XnRBjI5AxvEJcIXJvrLvWfBVl1ZEUITyT5
-	/UmJ3BDZQHoNWi/WWcv9visDEDgFXxghMrfBH791hSWJlKGIFrEMci+d8/rNPb/P
-	Td6RUt9NUsKD4sKU8ybS8GiKybSzzr2K0pMKfMnbQ1Z+alinCTYDcTA/3Hh8BEhN
-	F4ruMTa6bkaZvYLcf+c7FIOkUb9gedPC+Buh2OTrVg==
-X-ME-Sender: <xms:0lwBZtFlkc1Qusdnb7X2qc5O0CWLEcLcEBVz8OlPKUaCbcGqsekPzw>
-    <xme:0lwBZiU8BIvpw8bBNAUhMi8oIO_Ic0R5pZdW6LgrSzenfIXwDAVYhzSfWSJd714kK
-    78uKdQlMT8eje1xaso>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddutddgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:0lwBZvIxU3418h9r7_7_YGXQCVYmdnfBlE3H_f4MCoT8-b-nocsmwA>
-    <xmx:0lwBZjEcR7SytizyU22xpbU8_2_DAUqKXq-Uarh7GAkD9xsFaFu8Cg>
-    <xmx:0lwBZjXLCl1abgLtHWhjhGIrmxqsqxmcUNBzteNe55B7idOBI1plJg>
-    <xmx:0lwBZuO_7Btlq_JCa03ENVLAqth5_XaUIJX8CVB7X5ZR7h7Nq75iUQ>
-    <xmx:01wBZla5cOtoDHFvE1nxDg54FdptwvAiX3FXDwD3x8cpjOZP958RLMOmAn8>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 8969FB6008D; Mon, 25 Mar 2024 07:15:30 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
+	s=arc-20240116; t=1711365454; c=relaxed/simple;
+	bh=WrEa33cBZx15hEBju/7B9wRVX0eMhydoPuVy5Q1YmdI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OeB0XAoTjYlgVGebOC2rhuhlBM7Y1W9DtceesGcmreuJ2rBkl412oKk9oKMIQK9UoANEdJnhP6gN/DjOQ+18bta11TXlQiXTOAuzQnhv46f8Bdaat+GQwixsjLtPhBRqfrimzehdKf3sBPDibGqXwsiHwhNfsb2RA05iaLW7gvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Z6Yzd1cB; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42PABpYj018665;
+	Mon, 25 Mar 2024 11:17:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=gnlObX30DW5far9dp1Z99mKsThU4aayO+Gtb5tKOmSI=;
+ b=Z6Yzd1cBtfCsA+QXnMdad8suUWDjqfS6kHIuWJHefO4QmTufqbLsVMMKn+g3dTk69wQ0
+ 1JRBa36VohbinjvUr69kB9bxqMX2lXO9YgiMTOfjPz0Fjx9Z5gdI9gZ3Y5BmjH/RSJzX
+ mk4fmWuchs4dO3zZkWzIHqMH0ZPTHHv5KSTOvSdvQoYZXa0P+mCfXbVYGdYoxS5KKbUl
+ ulj0k9se7l0i6KNxCvi2CDizfnA81CCuEBQ7EXZginqQirQrwijhrmdDK1cVgk+AQTo7
+ KY60o1/FReCzxVlL4ABo7R3S1yBnC0E8JnmyG4RzWHjoF7Swvk/9jww5cU05/7OERkoa uQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2g8f26c9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 11:16:59 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42PBGxxW020737;
+	Mon, 25 Mar 2024 11:16:59 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2g8f26c6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 11:16:59 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42PAUVRs016605;
+	Mon, 25 Mar 2024 11:16:58 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dts0yv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 11:16:58 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42PBGrdd49414524
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 25 Mar 2024 11:16:55 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EFB6D20049;
+	Mon, 25 Mar 2024 11:16:52 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0819120040;
+	Mon, 25 Mar 2024 11:16:52 +0000 (GMT)
+Received: from osiris (unknown [9.171.70.91])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 25 Mar 2024 11:16:51 +0000 (GMT)
+Date: Mon, 25 Mar 2024 12:16:50 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Baoquan He <bhe@redhat.com>
+Cc: Christoph Hellwig <hch@infradead.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>, Guenter Roeck <linux@roeck-us.net>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 1/1] mm: vmalloc: Bail out early in find_vmap_area() if
+ vmap is not init
+Message-ID: <20240325111650.16056-A-hca@linux.ibm.com>
+References: <20240323141544.4150-1-urezki@gmail.com>
+ <ZgC38GfEZYpYGUU9@infradead.org>
+ <20240325093959.9453-B-hca@linux.ibm.com>
+ <ZgFNVtp3EsJRaSN0@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <eaa73bca-1e81-4a6f-a89f-e63329d359f9@app.fastmail.com>
-In-Reply-To: <1883cf6b-7756-405b-a843-d8ae31e01d61@ghiti.fr>
-References: <20240313180010.295747-1-samuel.holland@sifive.com>
- <CAHVXubjLWZkjSapnsWJzimWg_2swEy7tQ-DQ6ri8yMk8-Qsc-A@mail.gmail.com>
- <88de4a1a-047e-4be9-b5b0-3e53434dc022@sifive.com>
- <b5624bba-9917-421b-8ef0-4515d442f80b@ghiti.fr>
- <b0a07878-a9f1-40aa-b177-423b05137d2e@app.fastmail.com>
- <1883cf6b-7756-405b-a843-d8ae31e01d61@ghiti.fr>
-Date: Mon, 25 Mar 2024 12:15:10 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Alexandre Ghiti" <alex@ghiti.fr>,
- "Samuel Holland" <samuel.holland@sifive.com>,
- "Alexandre Ghiti" <alexghiti@rivosinc.com>
-Cc: "Palmer Dabbelt" <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
- "Albert Ou" <aou@eecs.berkeley.edu>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Charlie Jenkins" <charlie@rivosinc.com>, guoren <guoren@kernel.org>,
- "Jisheng Zhang" <jszhang@kernel.org>,
- "Kemeng Shi" <shikemeng@huaweicloud.com>,
- "Matthew Wilcox" <willy@infradead.org>, "Mike Rapoport" <rppt@kernel.org>,
- "Paul Walmsley" <paul.walmsley@sifive.com>,
- "Xiao W Wang" <xiao.w.wang@intel.com>, "Yangyu Chen" <cyy@cyyself.name>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: Define TASK_SIZE_MAX for __access_ok()
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgFNVtp3EsJRaSN0@MiWiFi-R3L-srv>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EjOA8Cp1wiUgikrGT4ebHRtCz_cnePdL
+X-Proofpoint-ORIG-GUID: KiB6oDil0a2tliOO39RSi9iLVP9OPhLD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-25_08,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=475 spamscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 mlxscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403250062
 
-On Mon, Mar 25, 2024, at 08:25, Alexandre Ghiti wrote:
-> On 24/03/2024 23:05, Arnd Bergmann wrote:
->> On Tue, Mar 19, 2024, at 17:51, Alexandre Ghiti wrote:
->>>
->>> The use of alternatives allows to return right away if the buffer is
->>> beyond the usable user address space, and it's not just "slightly
->>> faster" for some cases (a very large buffer with only a few bytes being
->>> beyond the limit or someone could fault-in all the user pages and fail
->>> very late...etc). access_ok() is here to guarantee that such situations
->>> don't happen, so actually it makes more sense to use an alternative to
->>> avoid that.
->> The access_ok() function really wants a compile-time constant
->> value for TASK_SIZE_MAX so it can do constant folding for
->> repeated calls inside of one function, so for configurations
->> with a boot-time selected TASK_SIZE_64 it's already not ideal,
->> with or without alternatives.
->>
->> If I read the current code correctly, riscv doesn't even
->> have a way to build with a compile-time selected
->> VA_BITS/PGDIR_SIZE, which is probably a better place to
->> start optimizing, since this rarely needs to be selected
->> dynamically.
->
->
-> Indeed, we do not support compile-time fixed VA_BITS! We could, but that 
-> would only be used for custom kernels. I don't think distro kernels will 
-> ever (?) propose 3 different kernels for sv39, sv48 and sv57 because the 
-> cost of dynamically choosing the address space width is not big enough 
-> to me (and the burden of maintaining 3 different kernels is).
->
-> Let me know if I'm wrong, I'd be happy to work on that.
+On Mon, Mar 25, 2024 at 06:09:26PM +0800, Baoquan He wrote:
+> On 03/25/24 at 10:39am, Heiko Carstens wrote:
+> > On Sun, Mar 24, 2024 at 04:32:00PM -0700, Christoph Hellwig wrote:
+> > > On Sat, Mar 23, 2024 at 03:15:44PM +0100, Uladzislau Rezki (Sony) wrote:
+> ......snip
+> > > I guess this is ok as an urgend bandaid to get s390 booting again,
+> > > but calling find_vmap_area before the vmap area is initialized
+> > > seems an actual issue in the s390 mm init code.
+> > > 
+> > > Adding the s390 maintainers to see if they have and idea how this could
+> > > get fixed in a better way.
+> > 
+> > I'm going to push the patch below to the s390 git tree later. This is not a
+> > piece of art, but I wanted to avoid to externalize vmalloc's vmap_initialized,
+> > or come up with some s390 specific change_page_attr_alias_early() variant where
+> > sooner or later nobody remembers what "early" means.
+> > 
+> > So this seems to be "good enough".
+..
+> > Add a slab_is_available() check to change_page_attr_alias() in order to
+> > avoid early calls into vmalloc code. slab_is_available() is not exactly
+> > what is needed, but there is currently no other way to tell if the vmalloc
+> > code is initialized or not, and there is no reason to expose
+> > e.g. vmap_initialized from vmalloc to achieve the same.
+> 
+> If so, I would rather add a vmalloc_is_available() to achieve the same.
+> The added code and the code comment definitely will confuse people and
+> make people to dig why.
 
-My feeling is that in most cases, users are better off with a
-compile-time default, given that the addressable memory has
-a factor of 512 between each step. With sv39, I think you are
-limited to having all RAM in the first 128GB of physical
-address space, and each process is limited to 256GB virtual
-addressing, but this is already covers pretty much anything
-you want to do on small systems that run a custom kernel.
+So after having given this a bit more thought I think Uladzislau's patch is
+probably the best way to address this.
 
-On most desktop/server/cloud distros, hardwiring sv48 is
-probably sufficient if all general purpose machines support
-this, and it should be enough even for commercial databases
-that micro-optimize 100TB datasets through a permanent mmap(),
-as well as most NUMA systems with discontiguous memory.
-This adds a little cost over hardcoded sv39, but is still
-faster than a boot-time sv39/sv48 config that most users
-will not be aware of.
+It seems to be better that the vmalloc code would just do the right thing,
+regardless how early it is called, instead of adding yet another
+subsystem_xyz_is_available() call.
 
-Once enterprise distros certify systems beyond a few dozen
-TB of RAM, they probably need to enable the boot time
-detection, until then I think the few users with gigantic
-systems will probably be fine running a custom sv57
-kernel. At that point, that distro can start shipping a
-kernel with boot-time detected page table sizes.
-
-     Arnd
+Alternatively this could be addressed in s390 code with some sort of
+"early" calls, but as already stated, sooner or later nobody would remember
+what "early" means, and even if that would be remembered: would that
+restriction still be valid?
 
