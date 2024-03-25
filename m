@@ -1,265 +1,215 @@
-Return-Path: <linux-kernel+bounces-117956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CEDB88B1C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:42:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF8B88B1C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:42:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 123B5323F85
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:42:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC4661FA099E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1BF5A0EA;
-	Mon, 25 Mar 2024 20:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3190A5A103;
+	Mon, 25 Mar 2024 20:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YxSZEf10"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vc4FsdRa"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8F45339E;
-	Mon, 25 Mar 2024 20:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5871D12E55;
+	Mon, 25 Mar 2024 20:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399319; cv=none; b=T2i+gNNfXpplFhamEPPM3FC4AwGaptV+Nw1ZWUl5LrOTnPnXlOcaGZlw7ovFn3iyxG+7cdKdbiEEW45DGRboYK+Zi86E/9lI94BJYXXeS2LTUZvrBpJ2tMpA2vDFeL+t5YZMo0AX7H0MGYtLkNLtXvuO6j68PH1Purwrd80u268=
+	t=1711399335; cv=none; b=ddqgT/b4xzdhPimW5wrRLeUs897x1H6PIDPxIOgoyKrYZZKfq7WWgIsEU0qy5evObbbHatlS0B24pJNdB6P0hZ51hXxPfARBlDZ0e/o23bbjf6Hd39FUILRNOieAzP7a0RfXeq/4Rkqf67re9Il1nCx7gvoWQegOj+DFqBnz0tA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711399319; c=relaxed/simple;
-	bh=LDNB8MZMwXrL8S6ylSiuXJSNm5wf/KceWfNVqWIj7Ps=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r27VjjxLhc7WqXjvPDkaPAM3MTNJqvWrHO3Wo6JHFrdfTe9lnlJ95ZE/ihCGS8+iRvutCEg9r1+VJ40hOdM9fMqrurWANZZg7LGVKEHOnAOjRedNJg3P510Qb3rgHdK1UfDGuePuvCIrbfi2JW1YQUIvpydOgbRQqXL1x5uj5So=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YxSZEf10; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C18CC43390;
-	Mon, 25 Mar 2024 20:41:58 +0000 (UTC)
+	s=arc-20240116; t=1711399335; c=relaxed/simple;
+	bh=AjuVlS8tHlrZ6H8T3W+PPsoKeY8DgVuue/TCrjp0oDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=B8dGDZkp/8OGyOdRmQI7PxGCXsIyQIkkHBEsxcV2dWBUq4OOiSTRyXubQUKJky0qwkxTnYHB5LSxoctIIwNT1eL4jsBwuseMzzSSeYwCs1vOKogi5+Qcdud1avtiUEFrikuYyJa1mPrVVB5VAJxZb7S6ZVO02fYVEy0kvJC3Tdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vc4FsdRa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 312B9C433F1;
+	Mon, 25 Mar 2024 20:42:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711399318;
-	bh=LDNB8MZMwXrL8S6ylSiuXJSNm5wf/KceWfNVqWIj7Ps=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YxSZEf10DCNuFAJ+hBMCwedXbUZW4WhJp/a3TTsHgBsNZYlYI1lzW/Y+QTo7mB5e+
-	 5bl5rPQImyXVsKBOtzTB8qz9h+6bL34feN2H1OXaGaJUtq1eZ9QFttgpRAVgPH3FOP
-	 4ztHHtyUCvLd63KPjf9dmSH5klmQDhblZvfdOviUKT94DO4rO3XMZDNmUrEolVUPns
-	 +FjkvUTpAe7Yg82VzWUuFs7L98b7ZgPScdLFiQsL6842T1OeE3vr1QNLZFCYbBePpX
-	 0K25wcoCh0NBJj50smqScFbBloy63naxQqapwxKxsRroqhgTXBlw16lfSUHuUmnCa0
-	 0fLNy8vnvH5Qw==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-515ac73c516so896865e87.0;
-        Mon, 25 Mar 2024 13:41:58 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXvJ3pzI/tF7WEikt0wl+/2tLl5F3wYKJwOW6PER6v34W1CHG5O9lZRZ8YVV+9xk503E7b74AiZlFOKGiJtXz8vE8Wr6wnNwJhWKfjj6HAXqN3rlDP5l83QUAC4N0m1KMfPVv3cxDIfdg==
-X-Gm-Message-State: AOJu0YwyVJZ8lGJ45CW8/tpyc/G41DS9GhY0fOmDJvICaxuFqWPONq2q
-	zk7Em0TPktv3vScjnyReeFMwo78wAN3IfvDFGfKMUl/WctAYNm2P8pvsCRNm/brFOg4j5ngwtl9
-	1JMS6LZtVfO1K/krU9XuEWqJqOQ==
-X-Google-Smtp-Source: AGHT+IEwnbOvcIUeEmXjxX6ZWWANfgT/u+HKxY7xcgBOoOJIymf8Z3Vko5Ki1hkJTGTNTczZEZeHlY1OKBt3p6Coyd8=
-X-Received: by 2002:a19:7701:0:b0:513:d6d9:b0dc with SMTP id
- s1-20020a197701000000b00513d6d9b0dcmr2168645lfc.23.1711399316766; Mon, 25 Mar
- 2024 13:41:56 -0700 (PDT)
+	s=k20201202; t=1711399334;
+	bh=AjuVlS8tHlrZ6H8T3W+PPsoKeY8DgVuue/TCrjp0oDA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Vc4FsdRa6VxpKY8TH1xTCXyQ0Z6a5su1BES/BH9VU4okz6PHMM1CS4cdgTo8Gp0P0
+	 D9igYEcpttdH0Wl08EFCCifIagBnizhJklyh/WII1Y/HL65zJWEqmF+X0QMAUWf5Uv
+	 Mqh2GW2VC0aow06KZcV7lUR8pEYHlUumJgskuORGc7rVY+8l/z1To37GBA+fh1gJHk
+	 uWDM9O4iFlUVPPriMElCb/ty9p9nS0hBiBNhsoVj8EXKKrs+jbscyeaKTXjb6zOD0P
+	 pG4vPzbBFM6k1b4DuyLe16B26drQecc54Y/DPI8FTf7KaghBTCDKjhm30M3/ixeWhr
+	 ccRlvLrMKT71A==
+Date: Mon, 25 Mar 2024 20:42:00 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: George Stark <gnstark@salutedevices.com>
+Cc: Harald Geyer <harald@ccbib.org>, <lars@metafoo.de>,
+ <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <kernel@salutedevices.com>
+Subject: Re: [PATCH] iio: dht11: set debug log level for parsing error
+ messages
+Message-ID: <20240325204200.466ff642@jic23-huawei>
+In-Reply-To: <01ed720d-a990-40dd-8a59-a95ea960ecec@salutedevices.com>
+References: <20240325165406.226916-1-gnstark@salutedevices.com>
+	<c2fb93a5b2e6f437e2c92d0d797509c619cb63a8.camel@ccbib.org>
+	<01ed720d-a990-40dd-8a59-a95ea960ecec@salutedevices.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321025105.53210-1-sudanl@amazon.com> <20240321025105.53210-4-sudanl@amazon.com>
- <20240325150609.GA3477574-robh@kernel.org> <51403072-f5ca-450e-9206-19ca627ead11@amazon.co.uk>
-In-Reply-To: <51403072-f5ca-450e-9206-19ca627ead11@amazon.co.uk>
-From: Rob Herring <robh@kernel.org>
-Date: Mon, 25 Mar 2024 15:41:42 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKpp+J2a_+wmcaOX8RfTEEyZBESWBX7GWGa_u_5_=4gsg@mail.gmail.com>
-Message-ID: <CAL_JsqKpp+J2a_+wmcaOX8RfTEEyZBESWBX7GWGa_u_5_=4gsg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] dt-bindings: rng: Add vmgenid support
-To: "Landge, Sudan" <sudanl@amazon.co.uk>
-Cc: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, thomas.lendacky@amd.com, 
-	dan.j.williams@intel.com, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, graf@amazon.de, dwmw@amazon.co.uk, 
-	bchalios@amazon.es, xmarcalx@amazon.co.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 3:11=E2=80=AFPM Landge, Sudan <sudanl@amazon.co.uk>=
- wrote:
->
->
->
-> On 25/03/2024 15:06, Rob Herring wrote:
-> > CAUTION: This email originated from outside of the organization. Do not=
- click links or open attachments unless you can confirm the sender and know=
- the content is safe.
-> >
-> >
-> >
-> > On Thu, Mar 21, 2024 at 02:51:04AM +0000, Sudan Landge wrote:
-> >> Virtual Machine Generation ID driver was introduced in commit af6b54e2=
-b5ba
-> >> ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as =
-an
-> >> ACPI only device.
-> >>
-> >> VMGenID specification http://go.microsoft.com/fwlink/?LinkId=3D260709 =
-defines
-> >> a mechanism for the BIOS/hypervisors to communicate to the virtual mac=
-hine
-> >> that it is executed with a different configuration (e.g. snapshot exec=
-ution
-> >> or creation from a template).
-> >> The guest operating system can use the notification for various purpos=
-es
-> >> such as re-initializing its random number generator etc.
-> >>
-> >> As per the specs, hypervisor should provide a globally unique identifi=
-ed,
-> >> or GUID via ACPI.
-> >>
-> >> This patch tries to mimic the mechanism to provide the same functional=
-ity
-> >> which is for a hypervisor/BIOS to notify the virtual machine when it i=
-s
-> >> executed with a different configuration.
-> >>
-> >> As part of this support the devicetree bindings requires the hyperviso=
-rs or
-> >> BIOS to provide a memory address which holds the GUID and an IRQ which=
- is
-> >> used to notify when there is a change in the GUID.
-> >> The memory exposed in the DT should follow the rules defined in the
-> >> vmgenid spec mentioned above.
-> >>
-> >> *Reason for this change*:
-> >> Chosing ACPI or devicetree is an intrinsic part of an hypervisor desig=
-n.
-> >> Without going into details of why a hypervisor would chose DT over ACP=
-I,
-> >> we would like to highlight that the hypervisors that have chose device=
-tree
-> >> and now want to make use of the vmgenid functionality cannot do so tod=
-ay
-> >> because vmgenid is an ACPI only device.
-> >> This forces these hypervisors to change their design which could have
-> >> undesirable impacts on their use-cases, test-scenarios etc.
-> >>
-> >> The point of vmgenid is to provide a mechanism to discover a GUID when
-> >> the execution state of a virtual machine changes and the simplest
-> >> way to do it is pass a memory location and an interrupt via devicetree=
-.
-> >> It would complicate things unnecessarily if instead of using devicetre=
-e,
-> >> we try to implement a new protocol or modify other protocols to someho=
-w
-> >> provide the same functionility.
-> >>
-> >> We believe that adding a devicetree binding for vmgenid is a simpler,
-> >> better alternative to provide the same functionality and will allow
-> >> such hypervisors as mentioned above to continue using devicetree.
-> >>
-> >> More references to vmgenid specs:
-> >>   - https://www.qemu.org/docs/master/specs/vmgenid.html
-> >>   - https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-=
-machine-generation-identifier
-> >>
-> >> Signed-off-by: Sudan Landge <sudanl@amazon.com>
+On Mon, 25 Mar 2024 23:18:32 +0300
+George Stark <gnstark@salutedevices.com> wrote:
+
+> Hello Harald
+>=20
+> Thanks for the review.
+>=20
+>=20
+> On 3/25/24 21:48, Harald Geyer wrote:
+> > Hi George!
+> >=20
+> > I'm torn on this:
+> >=20
+> > Am Montag, dem 25.03.2024 um 19:54 +0300 schrieb George Stark: =20
+> >> Protocol parsing errors could happen due to several reasons like
+> >> noise
+> >> environment, heavy load on system etc. If to poll the sensor
+> >> frequently
+> >> and/or for a long period kernel log will become polluted with error
+> >> messages if their log level is err (i.e. on by default). =20
+> >=20
+> > Yes, these error are often recoverable. (As are many other HW errors,
+> > that typically are logged. Eg USB bus resets due to EMI)
+> >=20
+> > However they are still genuine errors of the HW.
+> >  =20
+> >>   Also some types
+> >> of those messages already have dbg level so use unified log level for
+> >> all such cases. =20
+> >=20
+> > My take so far has been: Debug level messages are for debugging the
+> > code (ie adding/testing support of new device variants etc). Users
+> > aren't expected to know about or enable debug output. OTOH anything
+> > actually going wrong is an error and should be logged as such.
+> >=20
+> > The idea is, that these messages help users understand issues with
+> > their HW (like too long cables, broken cables etc). But it is true,
+> > that they will slowly accumulate in many real world scenarios without
+> > anything being truly wrong. =20
+>=20
+> I agree with you that it's very convenient to just take a look to dmesg
+> and see device connection problems at once. But unlike e.g. usb user has
+> to actually start reading sensor to perform communication and read
+> errors will be propagated to the userspace and could be noticed \
+> handled.
+>=20
+> Anyway I believe we should use uniform approach for read errors -
+> currently in the driver there're already dbg messages:
+>=20
+> "lost synchronisation at edge %d\n"
+> "invalid checksum\n"
+>=20
+> I changed log level from err to dbg for the messages:
+>=20
+> "Only %d signal edges detected\n"
+> "Don't know how to decode data: %d %d %d %d\n"
+>=20
+> They all are from a single callback and say the same thing -
+> communication problem.
+>=20
+> If we make all those messages as errors it'd be great to have mechanism
+> to disable them e.g. thru module parameter or somehow without rebuilding
+> kernel. Those errors can be bypassed by increasing read rate.
+
+Don't use a parameter for this.  dev_dbg and dynamic debug is the
+way to go if this is the choice available.
+
+If Harald is comfortable with the change given this discussion, I'll pick
+up this patch.
+
+Jonathan
+
+>=20
+> >=20
+> > I don't consider the dmesg buffer being rotated after a month or two a
+> > bug. But I suppose this is a corner case. I'll happily accept whatever
+> > Jonathan thinks is reasonable.
+> >=20
+> > Best regards,
+> > Harald
+> >=20
+> >  =20
+> >> Signed-off-by: George Stark <gnstark@salutedevices.com>
 > >> ---
-> >>   .../devicetree/bindings/rng/vmgenid.yaml      | 57 +++++++++++++++++=
-++
-> >>   MAINTAINERS                                   |  1 +
-> >>   2 files changed, 58 insertions(+)
-> >>   create mode 100644 Documentation/devicetree/bindings/rng/vmgenid.yam=
-l
+> >> I use DHT22 sensor with Raspberry Pi Zero W as a simple home meteo
+> >> station.
+> >> Even if to poll the sensor once per tens of seconds after month or
+> >> two dmesg
+> >> may become full of useless parsing error messages. Anyway those
+> >> errors are caught
+> >> in the user software thru return values.
 > >>
-> >> diff --git a/Documentation/devicetree/bindings/rng/vmgenid.yaml b/Docu=
-mentation/devicetree/bindings/rng/vmgenid.yaml
-> >> new file mode 100644
-> >> index 000000000000..4b6ab62cc2ae
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/rng/vmgenid.yaml
-> >> @@ -0,0 +1,57 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/rng/vmgenid.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Virtual Machine Generation Counter ID device
-> >> +
-> >> +maintainers:
-> >> +  - Jason A. Donenfeld <Jason@zx2c4.com>
-> >> +
-> >> +description:
-> >> +  Firmwares or hypervisors can use this devicetree to describe
-> >> +  interrupts and the shared resources to inject a Virtual Machine Gen=
-eration
-> >> +  counter.
-> >> +
-> >> +properties:
-> >> +  compatible:
-> >> +    const: linux,vmgenctr
-> >
-> > Why 'linux'? It should be named for a particular host implementation
-> > (and that implementation's bugs/quirks). However, this thing is simple
-> > enough we can perhaps avoid that here. As the interface is defined by
-> > Microsoft, then perhaps they should be the vendor here.
-> >
-> We chose "linux" because the current implementation and usage of
-> devicetree was Linux specific. However, I think "virtual" would be a
-> better choice than "Microsoft" since this is a generic virtual device
-> that could be configured by any hypervisor or firmware not owned or
-> related to Microsoft. I have updated this as part of the new version if
-> it looks good. I don't have a strong opinion for "virtual" though so if
-> that is the right choice as per you I can update it.
+> >>  =C2=A0drivers/iio/humidity/dht11.c | 4 ++--
+> >>  =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/iio/humidity/dht11.c
+> >> b/drivers/iio/humidity/dht11.c
+> >> index c97e25448772..e2cbc442177b 100644
+> >> --- a/drivers/iio/humidity/dht11.c
+> >> +++ b/drivers/iio/humidity/dht11.c
+> >> @@ -156,7 +156,7 @@ static int dht11_decode(struct dht11 *dht11, int
+> >> offset)
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0dht11->temperature =3D temp_int * 1000;
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0dht11->humidity =3D hum_int * 1000;
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else {
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0dev_err(dht11->dev,
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0dev_dbg(dht11->dev,
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+"Don't know how to decode data: %d %d %d
+> >> %d\n",
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+hum_int, hum_dec, temp_int, temp_dec);
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0return -EIO;
+> >> @@ -239,7 +239,7 @@ static int dht11_read_raw(struct iio_dev
+> >> *iio_dev,
+> >>  =C2=A0#endif
+> >>
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret =3D=3D 0 && dht11->num_edges <
+> >> DHT11_EDGES_PER_READ - 1) {
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_er=
+r(dht11->dev, "Only %d signal edges
+> >> detected\n",
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_db=
+g(dht11->dev, "Only %d signal edges
+> >> detected\n",
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dht11->num_edges);
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ret =3D -ETIMEDOUT;
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> >> --
+> >> 2.25.1
+> >> =20
+> >  =20
+>=20
 
-I'm not really a fan of 'virtual' and its one and only existing use.
-Don't add to it.
-
-Someone has defined how to read a GUID from register(s). I can think
-of many ways that could be implemented. The data itself could be hex
-or ascii. You could read N times from one register or read from N
-sequential registers. And again, there's endianness and access sizes.
-Given the only source of any of that is a Microsoft spec, then that
-makes sense to me. Or just no vendor prefix is possible, but I prefer
-to avoid those cases.
-
-Also, consider 'vmgenctr' has basically 0 search results. 'vmgenid'
-returns some relevant results. Not that search results are a
-requirement for naming, but perhaps something to consider.
-
-> >> +
-> >> +  "#interrupt-cells":
-> >> +    const: 3
-> >> +    description: |
-> >> +      The 1st cell is the interrupt type.
-> >> +      The 2nd cell contains the interrupt number for the interrupt ty=
-pe.
-> >> +      The 3rd cell is for trigger type and level flags.
-> >> +
-> >> +  interrupt-controller: true
-> >
-> > Why is this device an interrupt controller?
-> >
-> My devicetree references I took initially were incorrect which led to
-> the addition of this, I have removed this in the next version. Sorry
-> about that.
-
-Try again...
-
-> >> +
-> >> +  reg:
-> >> +    description: |
-> >> +      specifies the base physical address and
-> >> +      size of the regions in memory which holds the VMGenID counter.
-> >
-> > Odd wrapping, but drop unless you have something specific to say about
-> > region like perhaps the layout of the registers. Or maybe thats defined
-> > somewhere else?
-> >
-> > Does the spec say anything about endianness or access size? DT assumes
-> > native endianness by default. We have properties to deal these, but
-> > would be better to be explicit if that's defined already.
-> >
-> The spec doesn't mention anything about the endianness but, I have
-> updated the description with some more data.
-
-Then what does your driver assume? Microsoft may not have thought
-about it because they don't care, but now you want to use DT so you
-have to because it is frequently used on BE systems. If we define
-something, then there's some hope. Otherwise, it's pretty much a
-guarantee folks will do the opposite.
-
-Rob
 
