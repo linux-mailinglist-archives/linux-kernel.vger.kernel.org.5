@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-117105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70F6688A728
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D3B688A72F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:43:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 946691C3D97A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:42:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B13301C3DD4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:43:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB841487DA;
-	Mon, 25 Mar 2024 13:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6171428E3;
+	Mon, 25 Mar 2024 13:17:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="VUqPhL5I"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="te5fwP3n"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E3D140391
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B554B142624
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711372627; cv=none; b=H6U/YqGeA2xSpmsx1HNxMxFp0KW/fuQm4HM0sqN4TxkeTRNbX9eUdTQ42XZQbGfB/QHZATY3oprRfECUajm2oTD9EKZFuzDIXgl4occTocHO594j7suI1TYA4s+v1TjDP6vdrODhVpo/l64gU1w1K4VvtejLwRXAwdf8YyeR2u8=
+	t=1711372629; cv=none; b=B7xtVVWdE9EWA/yXmeGz3p6g6tNt7GzqSfCym9ilwu2N3c2EShkBFSQX2ua7+kjw7uitcv/+pXOv3RglYQLHwFBT8Hi3R/thK8vwiJ1UZd1Z+P++Ts5fq8i4vmcOcyym6YhUq6t3+H0bt4k8OKEYRbhSgYuIJrncgatcP89Ipa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711372627; c=relaxed/simple;
-	bh=hfgHIMnmFRtgUtFw/WNES77oLFQa+HHCcDhOj+ME/vk=;
+	s=arc-20240116; t=1711372629; c=relaxed/simple;
+	bh=5+IC9NWduGMYDJwoz+M/P/TbE3TVb3XsldeZYp6QjIw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rf45u4/fwTl8Ctc3ioVebrEzahdaxHXVegwBtBKsrRb+62FS0Se3PAgu4UELQWr1EZH4f+RzQ5HxP1liY0mvthxv/9c5dbF3hYyR9Tnmcyz1Pg+FcZxoFw4td12V29GWkBDnMnpVC86TLLFsnoYRfdNzNXhIFuZS+tW7LnWq2II=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=VUqPhL5I; arc=none smtp.client-ip=209.85.128.52
+	 MIME-Version; b=H5GoUNr5vz0ewKIAhQChXyHahccyaC6xLEzWbOs3a0riaUHmQvU2h6qT6MgKP7FFmGAbPTBSf9pWD/d1CNm4LaBgkhOUd0m9+HcuRf2tgSvnPpwGHno4vN42VkcLlroBdMCF8v0EwQhQrQKca+GlaoC+gLImFau9xs3Rshq9gMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=te5fwP3n; arc=none smtp.client-ip=209.85.208.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4148c04396dso2023735e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:17:04 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d23114b19dso64180801fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711372623; x=1711977423; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711372625; x=1711977425; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SGOfh5Up2s4Hsb0xRVMMugzy1VQqOQKd6pFoEiLe/18=;
-        b=VUqPhL5I8BiB9qCPijxmso0QfhUJA6kqCUxzrs7jWb5qWPn6s8ZTyU5DCyw8eqPZYm
-         tl47Fcxm/PD4KefzYWfATuusl2WTQgiDV1249UrwnqkQ0p/o3aOGl35FOo9g1qDIzUmv
-         9GogrgpyYPZQNMis19K6XZxJ+Gv4RPWVgyRsoUBCEovHahW29SzLaptLSuUVHOv/cme5
-         jIdxO7hZMLxorF5ROk2ibQ5UbXbWXS1YBnmw+65RwpwGMhjvwx6xBQMyatIVYdenoqAW
-         fgGQJe7MloM4mp2EPHkgkzOjLO3CePYdJ611ZHmyQbpJ2k/SUu9kKHA4ilpWAxlGZY9z
-         6/Xg==
+        bh=waqbyPBy7PW/+wkBLTlsUUO+Lqndku73jazDU1uKB3A=;
+        b=te5fwP3nxqu1LtXMzimVk2xRDWG3qPuSArGJCi4MO5HGoR/gRY2KFQb8BUUpJdCo3M
+         Exi4kw55lcjMKE0OQN4CldHhZqtIbf3vJ9J9sFKJF5tUTRBK/sSC0PF5JQ/+E5VTw5jt
+         27DwZrtQI9yXw9jc5R6QdbMyvqt/ULTsbKk3B2rgkDjIEQSTsKJGTIB8i/Rxyq6BN9FP
+         6m6XnmYz6T/OwacH8a1FPIi1iofz9fC6smSShOzmgLt3SN9ahUaUl2F6+z2HPReEASAS
+         22+Zqqn7CjID0cLlWfuqf7u+HSs/LVfKJgDO+lShzFCJgU6eSXx8ujW7rB19k4S1Sdap
+         8kAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711372623; x=1711977423;
+        d=1e100.net; s=20230601; t=1711372625; x=1711977425;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SGOfh5Up2s4Hsb0xRVMMugzy1VQqOQKd6pFoEiLe/18=;
-        b=A7uw4LVUQ7Dqsw1JtU+s5YSyX8nsV3XfFKf8whDQBEHhy4ZhoIZH9sEhn3GR3OqBg2
-         ajMTHSEMSv1zWOnJimcXXltV5kOg6ueihB82SozMH6OddSsu9lU7mFv5oJlCILslO1Ky
-         DhTmZRKG36mz7IuNSOippempSHo11BnHK8/HNkYmun41RqN2PoAoIT/C97ekTvuKHPlm
-         DKeZ+18io1lF5DZ21dlYa9jxRhmsNPQAsl18ugKVvAhPP8qOstmXkV36V1J9Ta+Gtpg0
-         CkJ5TM/gB+tvT6e23x8btRKDGMvd4+/ZaV7fSt/gXVnaZscEN/j0FndVTZ4RoUiF1TlU
-         x6lg==
-X-Forwarded-Encrypted: i=1; AJvYcCWMGQAoY3Evh/8/NkmiVl0LeIQTJGq2NitP9g3hOl8MJYvXpUUtq4UhnbA03xRA+/IzLheUjozAO81QY05Tgtwd5IGbT3Ridkw5y1oQ
-X-Gm-Message-State: AOJu0YwEUKXekRlu8jmrRimVESH8sB7S/PiJ2PALYxbZmnnYzzFmTM/t
-	AZf4hVvAaw7Vl20e1IkGEx7SkiV1bP2WKHB0p7CaCsP9ofP/6B849MmgeblmDdY=
-X-Google-Smtp-Source: AGHT+IHZRY1QWKBr33rhlgymM9kBVbcL1shwEGnPH+sbwWy/MBO17W93kXESsMvT66cCBqV7Q+yhyA==
-X-Received: by 2002:a05:600c:4714:b0:414:7e73:1f8c with SMTP id v20-20020a05600c471400b004147e731f8cmr4727120wmo.37.1711372622673;
-        Mon, 25 Mar 2024 06:17:02 -0700 (PDT)
+        bh=waqbyPBy7PW/+wkBLTlsUUO+Lqndku73jazDU1uKB3A=;
+        b=a7cYatOSsQwmFGsnbwvkQI5Z+78vKGGNGu0sbHZuzZQxcTWxs30EIVhLTspi87RXKc
+         sgGu1HMtV6yOkhDp7r5NmF1S40P6cT8pvVQSfBibtqORBaeuBObcNpDG+f6rJY71EaKM
+         HMS1dsbOMLMWQup3Mlut1vTpYL33Wg7vdBEygWbHiPjRzj4Pb/CH/nFyAo6yO5hNSad4
+         vnTL5vkpBaqJoNhMzBxemLN7G2s9zDMzdCL/1Y78gzL+Cq48vwT+q5j5Htz+eWnXsvVL
+         EtyXaWE1unsTUz9MDDl7oBvMemv1y++KLQhlq5Nr8CwmioQr2mhLMyV1Af9kpfveojJF
+         Utew==
+X-Forwarded-Encrypted: i=1; AJvYcCXv8yaloYhNfD71C1vc0l5rGKKV22ixN3/sdvyOHz8ls2Xf2M9uT4itAm76JIENJmfFkUPkfBjvjtdp4ILqsUobqNEgz49fMs2kYePT
+X-Gm-Message-State: AOJu0Yx6rYfBN5Q8NwbH5Kw0KmFgoFy+lEuEidLXFZDzXEKQqXDd5g+m
+	mg+K0amJYoAA2E43F7jg1TVsUnwkLkLgcUS571je6xC7uH1DDYuub7AiwvIgcuA=
+X-Google-Smtp-Source: AGHT+IFgiUDvmg0zWPchJA4PbJqaWP5kuvnAdsXU3LI0ZosAYxjZT9VquQ4Zw59uesAhsuP/btzmyw==
+X-Received: by 2002:a2e:a443:0:b0:2d4:9201:d4ff with SMTP id v3-20020a2ea443000000b002d49201d4ffmr4712403ljn.5.1711372624633;
+        Mon, 25 Mar 2024 06:17:04 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:861d:8b72:a859:4ce9])
-        by smtp.gmail.com with ESMTPSA id p11-20020a056000018b00b0033e75e5f280sm9485245wrx.113.2024.03.25.06.17.01
+        by smtp.gmail.com with ESMTPSA id p11-20020a056000018b00b0033e75e5f280sm9485245wrx.113.2024.03.25.06.17.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 06:17:02 -0700 (PDT)
+        Mon, 25 Mar 2024 06:17:03 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Marcel Holtmann <marcel@holtmann.org>,
 	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
@@ -107,9 +107,9 @@ Cc: linux-bluetooth@vger.kernel.org,
 	linux-pci@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v6 04/16] dt-bindings: net: wireless: qcom,ath11k: describe the ath11k on QCA6390
-Date: Mon, 25 Mar 2024 14:16:12 +0100
-Message-Id: <20240325131624.26023-5-brgl@bgdev.pl>
+Subject: [PATCH v6 05/16] dt-bindings: net: wireless: describe the ath12k PCI module
+Date: Mon, 25 Mar 2024 14:16:13 +0100
+Message-Id: <20240325131624.26023-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240325131624.26023-1-brgl@bgdev.pl>
 References: <20240325131624.26023-1-brgl@bgdev.pl>
@@ -123,41 +123,57 @@ Content-Transfer-Encoding: 8bit
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Add a PCI compatible for the ATH11K module on QCA6390 and describe the
-power inputs from the PMU that it consumes.
+Add device-tree bindings for the ATH12K module found in the WCN7850
+package.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- .../net/wireless/qcom,ath11k-pci.yaml         | 46 +++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ .../bindings/net/wireless/qcom,ath12k.yaml    | 100 ++++++++++++++++++
+ 1 file changed, 100 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom,ath12k.yaml
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
-index 41d023797d7d..8675d7d0215c 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
-@@ -17,6 +17,7 @@ description: |
- properties:
-   compatible:
-     enum:
-+      - pci17cb,1101  # QCA6390
-       - pci17cb,1103  # WCN6855
- 
-   reg:
-@@ -28,10 +29,55 @@ properties:
-       string to uniquely identify variant of the calibration data for designs
-       with colliding bus and device ids
- 
-+  vddrfacmn-supply:
-+    description: VDD_RFA_CMN supply regulator handle
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath12k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath12k.yaml
+new file mode 100644
+index 000000000000..c0aad4815953
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath12k.yaml
+@@ -0,0 +1,100 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (c) 2024 Linaro Limited
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/wireless/qcom,ath12k.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies ath12k wireless devices (PCIe)
++
++maintainers:
++  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
++  - Jeff Johnson <quic_jjohnson@quicinc.com>
++  - Kalle Valo <kvalo@kernel.org>
++
++description:
++  Qualcomm Technologies IEEE 802.11ax PCIe devices.
++
++properties:
++  compatible:
++    enum:
++      - pci17cb,1107  # WCN7850
++
++  reg:
++    maxItems: 1
 +
 +  vddaon-supply:
 +    description: VDD_AON supply regulator handle
 +
 +  vddwlcx-supply:
-+    description: VDD_WL_CX supply regulator handle
++    description: VDD_WLCX supply regulator handle
 +
 +  vddwlmx-supply:
-+    description: VDD_WL_MX supply regulator handle
++    description: VDD_WLMX supply regulator handle
++
++  vddrfacmn-supply:
++    description: VDD_RFA_CMN supply regulator handle
 +
 +  vddrfa0p8-supply:
 +    description: VDD_RFA_0P8 supply regulator handle
@@ -165,8 +181,8 @@ index 41d023797d7d..8675d7d0215c 100644
 +  vddrfa1p2-supply:
 +    description: VDD_RFA_1P2 supply regulator handle
 +
-+  vddrfa1p7-supply:
-+    description: VDD_RFA_1P7 supply regulator handle
++  vddrfa1p8-supply:
++    description: VDD_RFA_1P8 supply regulator handle
 +
 +  vddpcie0p9-supply:
 +    description: VDD_PCIE_0P9 supply regulator handle
@@ -174,31 +190,54 @@ index 41d023797d7d..8675d7d0215c 100644
 +  vddpcie1p8-supply:
 +    description: VDD_PCIE_1P8 supply regulator handle
 +
- required:
-   - compatible
-   - reg
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: pci17cb,1101
-+    then:
-+      required:
-+        - vddrfacmn-supply
-+        - vddaon-supply
-+        - vddwlcx-supply
-+        - vddwlmx-supply
-+        - vddrfa0p8-supply
-+        - vddrfa1p2-supply
-+        - vddrfa1p7-supply
-+        - vddpcie0p9-supply
-+        - vddpcie1p8-supply
++required:
++  - compatible
++  - reg
++  - vddaon-supply
++  - vddwlcx-supply
++  - vddwlmx-supply
++  - vddrfacmn-supply
++  - vddrfa0p8-supply
++  - vddrfa1p2-supply
++  - vddrfa1p8-supply
++  - vddpcie0p9-supply
++  - vddpcie1p8-supply
 +
- additionalProperties: false
- 
- examples:
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,rpmh.h>
++    #include <dt-bindings/gpio/gpio.h>
++    pcie {
++        #address-cells = <3>;
++        #size-cells = <2>;
++
++        pcie@0 {
++            device_type = "pci";
++            reg = <0x0 0x0 0x0 0x0 0x0>;
++            #address-cells = <3>;
++            #size-cells = <2>;
++            ranges;
++
++            bus-range = <0x01 0xff>;
++
++            wifi@0 {
++                compatible = "pci17cb,1107";
++                reg = <0x10000 0x0 0x0 0x0 0x0>;
++
++                vddaon-supply = <&vreg_pmu_aon_0p59>;
++                vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
++                vddwlmx-supply = <&vreg_pmu_wlmx_0p85>;
++                vddrfacmn-supply = <&vreg_pmu_rfa_cmn>;
++                vddrfa0p8-supply = <&vreg_pmu_rfa_0p8>;
++                vddrfa1p2-supply = <&vreg_pmu_rfa_1p2>;
++                vddrfa1p8-supply = <&vreg_pmu_rfa_1p8>;
++                vddpcie0p9-supply = <&vreg_pmu_pcie_0p9>;
++                vddpcie1p8-supply = <&vreg_pmu_pcie_1p8>;
++            };
++        };
++    };
 -- 
 2.40.1
 
