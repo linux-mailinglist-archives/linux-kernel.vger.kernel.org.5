@@ -1,111 +1,125 @@
-Return-Path: <linux-kernel+bounces-117178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A26F88A876
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:10:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11C1688B519
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:15:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FD6C342BF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:07:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6596DC42BD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8DD137765;
-	Mon, 25 Mar 2024 13:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DA36F08B;
+	Mon, 25 Mar 2024 13:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="ItB557KN"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VgzynM+i"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 999EA6FBB7
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAA23DABFF;
+	Mon, 25 Mar 2024 13:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711374737; cv=none; b=hSFdaAZSLWZcfEfIOXLHW+NXM4ZeDnHc+TfHGJ+m6moO/m0LvY3D8t9kNkJ2sHBXlAI0oHRjWhCnQ9H6cZMjsOPI8Mb2ibRA56qXOWVBZ8rdN6YQu6vUzosVF3nxD/ohE+KswIjlkTY88pfHKkVoZMdZ2/Qho0XYJ1BPgwxSfiQ=
+	t=1711374703; cv=none; b=gvcdXfL5dJil+ES/NuHWyHr5LjRy0ZNEDoRTu3YNocsfHO+kcWWoQTHUd+SKwEInUrY29JSKoVqcDajYtGEwtVTrV7MaXeHAfxZZwuafXCxjUFIesHU2clx8BMJPNM88X3awwZvnDyQgiiA/PcwNYNLSpQbSlORoYfk30rXrpXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711374737; c=relaxed/simple;
-	bh=svPkrUsWc31u5PxOeTcURerKjA9TBu7K7e3w1kgsNqo=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=ce+i+75ISuJwS56ZyluR418HoTSoXRqKF+Nxk+xItqjG4v4DQoH5GdHR9VWTLZfNHpENKAFnNJgRMkGmMYvZ9VDvINOtUfphc0TgF/4SZKsZ5oSM6vMN5AYVLAbJIkn7GUOEhfp3KngJf+7GC0aQcB1GNCkK4zo0pvtOKN5URyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=ItB557KN; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a44f2d894b7so532582866b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1711374734; x=1711979534; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=svPkrUsWc31u5PxOeTcURerKjA9TBu7K7e3w1kgsNqo=;
-        b=ItB557KNcARm08KdTuyx10BNBt5q+1kn7Rn2lWbeemwIQBzkaWDPLCPNzm/cCgAaaj
-         IAGr0TS7y7XYQvcDUpk9Znl0/ez4l4ZNLjKX3J0tALTQ4UAO1Mtf2RCuPoDNgKLrTPUF
-         5E5JnAVLaLlF+MzdAVTzwZ4UtI6xfPUI+qZdM/ymwbvQe8h6OvrpkNXZY2gLH0NrxWkf
-         23tV+yUqmwOSKbGJEfSj2CxR6ETP0FIU5eLTRzT5jhM7CEQpBK9csY65hmramFPP7Hp1
-         iWb6KoK4x1sgEdJhV45B5HVjmbZ2Rzug6hrnJpQ+L5k1srqWKlqv1prrLhVzFC8zcJfR
-         PEjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711374734; x=1711979534;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=svPkrUsWc31u5PxOeTcURerKjA9TBu7K7e3w1kgsNqo=;
-        b=uwdxo7Jrr8pPIZo6yJ12D2BUJK3a98hmNEDd1fNgxYYdXMwerhLuFxZFGS/lTTSDcK
-         56A1p6w0wsoTCvs7O5eRm4TisMLeyUtibrYitLJFPWc3Be/m0pX9I6bJOmjhy+W/8Zym
-         5lviY+JCpNpRziqUlx0nHI+ZBV13RV7uRelS/MVKxhqAHf1KLR8p/4mTD5g4sTueM3kD
-         6atL8m+dPvWPDIhnvvLfNjhhFpqdH+So8WCwSkpFqZcp/Y0XbwSXHtGnPj0fQ7U5iip8
-         5CLTckIEh2N3hCqKA5V1XQj2ANQN2hnlTE+gXiXfXKw+f5tSr6WRlXKS/8fZ0xiPxr8l
-         AF+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWVZVfupn0l/KMDc6di6RZRtJBkkDa4YVTeNjvWvHJ8CMBli1rLKlvaMSvp3jzF4Qrvd8/Sn6x1+C6VG4wMDGZrTOsUFqvNlwR80iCl
-X-Gm-Message-State: AOJu0YzMTrME65km+laS/0jYKeOj4b4kmMDgcZA5ovyOipRQOwSmrrEK
-	dJEOXrX/GL30t3/YfrsmHCyNsdAeOZaqi8msPCRiNuyRU7qmTlAYR/T2LT2fZr4=
-X-Google-Smtp-Source: AGHT+IGmFzRBxjkHf31z6d3Lq36FFy7Enc6jBbimLiq65p2x3hU5JphLJecADC001IRmMLuW5xDSbw==
-X-Received: by 2002:a17:906:3b09:b0:a46:ba19:2e99 with SMTP id g9-20020a1709063b0900b00a46ba192e99mr4763483ejf.26.1711374733929;
-        Mon, 25 Mar 2024 06:52:13 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:1a6])
-        by smtp.gmail.com with ESMTPSA id i15-20020a170906090f00b00a46d9966ff8sm3114614ejd.147.2024.03.25.06.52.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 06:52:13 -0700 (PDT)
-References: <000000000000dc9aca0613ec855c@google.com>
- <tencent_F436364A347489774B677A3D13367E968E09@qq.com>
- <CAADnVQJQvcZOA_BbFxPqNyRbMdKTBSMnf=cKvW7NJ8LxxP54sA@mail.gmail.com>
- <87y1a6biie.fsf@cloudflare.com>
-User-agent: mu4e 1.6.10; emacs 29.2
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Edward Adam Davis
- <eadavis@qq.com>, John Fastabend <john.fastabend@gmail.com>
-Cc: syzbot+c4f4d25859c2e5859988@syzkaller.appspotmail.com,
- 42.hyeyoo@gmail.com, andrii@kernel.org, ast@kernel.org,
- bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
- edumazet@google.com, kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
- linux-kernel@vger.kernel.org, namhyung@kernel.org, netdev@vger.kernel.org,
- pabeni@redhat.com, peterz@infradead.org, songliubraving@fb.com,
- syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: [PATCH] bpf, sockmap: fix deadlock in rcu_report_exp_cpu_mult
-Date: Mon, 25 Mar 2024 14:49:19 +0100
-In-reply-to: <87y1a6biie.fsf@cloudflare.com>
-Message-ID: <87ttkuber7.fsf@cloudflare.com>
+	s=arc-20240116; t=1711374703; c=relaxed/simple;
+	bh=sWRUf5NqFmzvlkZmYGxNOda7857P8XXe2bjtpXWE5BU=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Rw7YSclNZ/88L2+ZZeN1vNENDrx0HC5ggBHpzm9WpRQBkkQeJx/wFYMH3rDMH2aIgwS22zIAolNnR78YZpkDlefFelzW1JaxCEBoM39nGIuS5o6EJkfeypMW9Mvbf0wkOoGH4ZdUmlOtq02rdYqxRf6k7WDTTAI7aloLjd4KF7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VgzynM+i; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711374702; x=1742910702;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=sWRUf5NqFmzvlkZmYGxNOda7857P8XXe2bjtpXWE5BU=;
+  b=VgzynM+ihXaEiPN0ezpiCRLDsd+C0IWGJDcvwR5n6i9VPXTMnsbo66qA
+   sEyD1hltun8m8rDMHXhw1E/uv2MglNuNmNbdbqRiCeCtXxo49HSHq+VsG
+   ydhVIX6q5MxGu/2J+qE5Etwuh3MkM+hr/97rBMeAPu1kRpuajyMfqgtSc
+   WWp3iBV/V9MEIz+phIrnFIqPtR4DMI57JfhfZ5Zt/LviCSG+vze2gNeK0
+   cK8FmDVjrZPK/RX28wX0C5MFp3q2PI6ZhPAvi/HLuh+3IW/m9JycSB5/j
+   Z8QsCdXeXKEwQHElt8DeN8/9CXzMm1R/ljoGUSYtsaXGn7ZxRZOzaTVV9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="9340313"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="9340313"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:51:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="38731615"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.19])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:51:39 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 25 Mar 2024 15:51:32 +0200 (EET)
+To: "Luke D. Jones" <luke@ljones.dev>
+cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/9] platform/x86: asus-wmi: support toggling POST
+ sound
+In-Reply-To: <20240325054938.489732-5-luke@ljones.dev>
+Message-ID: <4ed73fa3-0dfa-ae42-8f5f-b680dc49f782@linux.intel.com>
+References: <20240325054938.489732-1-luke@ljones.dev> <20240325054938.489732-5-luke@ljones.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/mixed; boundary="8323328-257940632-1711374692=:1020"
 
-On Mon, Mar 25, 2024 at 01:23 PM +01, Jakub Sitnicki wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-[...]
+--8323328-257940632-1711374692=:1020
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-> But we also need to cover sock_map_unref->sock_sock_map_del_link called
-> from sock_hash_delete_elem. It also grabs a spin lock.
+On Mon, 25 Mar 2024, Luke D. Jones wrote:
 
-On second look, no need to disable interrupts in
-sock_map_unref->sock_sock_map_del_link. Call is enclosed in the critical
-section in sock_hash_delete_elem that has been updated.
+> Add support for toggling the BIOS POST sound on some ASUS laptops.
+>=20
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  .../ABI/testing/sysfs-platform-asus-wmi       |  9 ++++
+>  drivers/platform/x86/asus-wmi.c               | 51 +++++++++++++++++++
+>  include/linux/platform_data/x86/asus-wmi.h    |  3 ++
+>  3 files changed, 63 insertions(+)
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Document=
+ation/ABI/testing/sysfs-platform-asus-wmi
+> index 61a745d2476f..5645dbac4ce8 100644
+> --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> @@ -194,3 +194,12 @@ Contact:=09"Luke Jones" <luke@ljones.dev>
+>  Description:
+>  =09=09Set the target temperature limit of the Nvidia dGPU:
+>  =09=09=09* min=3D75, max=3D87
+> +
+> +What:=09=09/sys/devices/platform/<platform>/boot_sound
+> +Date:=09=09Jun 2023
 
-I have a question, though, why are we patching sock_hash_free? It
-doesn't get called unless there are no more existing users of the BPF
-map. So nothing can mutate it from interrupt context.
+2024? :-)
 
-[...]
+> +KernelVersion:=096.10
+> +Contact:=09"Luke Jones" <luke@ljones.dev>
+> +Description:
+> +=09=09Set if the BIOS POST sound is played on boot.
+> +=09=09=09* 0 - False,
+> +=09=09=09* 1 - True
+> \ No newline at end of file
+
+Please add the new line.
+
+Once those are fixed:
+
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+
+--=20
+ i.
+
+--8323328-257940632-1711374692=:1020--
 
