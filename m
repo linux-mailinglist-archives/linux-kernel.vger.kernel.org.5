@@ -1,213 +1,443 @@
-Return-Path: <linux-kernel+bounces-117304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA69B88A9D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:44:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B0C488A9DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEAE91C21B57
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:44:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC0FF1F3CFF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D37E1703B7;
-	Mon, 25 Mar 2024 14:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE680170EAD;
+	Mon, 25 Mar 2024 14:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="YiAxN5CO"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bVQ6KI1n"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6ABA1703AB
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05D5170A42
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:56:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711378605; cv=none; b=h5N+K6uYAjYFFpSesn38lbMeLnbCrPW+aDiA4HZO9v4EiNg1bvnz6vhSZ6PVGW+l1L+xnXuvf4w31lvcYrmXTZQw3Yi3eYSSV8BV9Q0WUCRb9LXnPXU1mnfzfcY6Z9ci//9nGbeDL/boBxBirOVKL57JphaskeDai8ZDVePbFqg=
+	t=1711378613; cv=none; b=ix5EnSCT3x/MmlXAoQMP2yyqFxgT7zSxmPYHLfXANZK+UBDkMUUdNhIYv/nR6CgPIpcNI4b1sx2SmqalLQnTedyDh66/TU2fmeHAa0ZPDsmvnE1BcwrjctBf+uitMNm12TEsMS4MnsnONeeZJPSP8GXaVsgBHq4jsdBBBQHI46o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711378605; c=relaxed/simple;
-	bh=W001AFt7sODG/Tc/2JlSqu3+m3IKpZoo2XTEUmOez6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=P28NyoRa6DiXUmYbMEbpQUDv2wabVpDygsOSYH2NNW1zADCXiMUr3EO2MlUomDkTU4aEUiD9nJnb5E4tJh0xIfc+YlcsBiZl0lFt3GdM0szXjOsQl5XPh0SxwB4YkjxSpzd2eba3YlOyIehyZSdoPil34pc2jKcKmG0ZezCLvOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=YiAxN5CO; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711378601;
-	bh=W001AFt7sODG/Tc/2JlSqu3+m3IKpZoo2XTEUmOez6Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YiAxN5CO+jBpgG0mzyzVLDqRS+zBh/gWuaWUAdi+VKpgw+6YyH2fvVD0L6subOWwF
-	 4G457LTWuQK+TbeATvF+b0necHh/ve3PDjLZxuw4LOEKo6pbuJnvCH+YR/PWKJ0YWU
-	 H/oN7aM3AM+hQWpr6IamA1HGRn6KaF/nxLv879TNlVuGMDqsJXkK4a60QtenPHGy+A
-	 UU24POcEHE4L6uNAH7+6LDM6fGjSGpG1suvFy6qXJyrelOT+c84mW1k2hcX8MwOsjA
-	 hpSSIjkBqKtysl+rEhWbV2K84FHN66h9P9hIz89bwuWCyIp7BgvvBmhJxbdtHWWqUL
-	 JnZ6e0S2+uLgQ==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A36F03780EC6;
-	Mon, 25 Mar 2024 14:56:40 +0000 (UTC)
-Date: Mon, 25 Mar 2024 16:56:31 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: =?UTF-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Cc: Louis Chauvet <louis.chauvet@bootlin.com>, Rodrigo Siqueira
- <rodrigosiqueiramelo@gmail.com>, Melissa Wen <melissa.srw@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, arthurgrillo@riseup.net, Jonathan Corbet
- <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
- miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
- seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
-Subject: Re: [PATCH v5 10/16] drm/vkms: Re-introduce line-per-line
- composition algorithm
-Message-ID: <20240325165631.6953ad01.pekka.paalanen@collabora.com>
-In-Reply-To: <b661b8c2-552c-4256-ad0b-b8a7b9bbed34@igalia.com>
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-	<20240313-yuv-v5-10-e610cbd03f52@bootlin.com>
-	<b661b8c2-552c-4256-ad0b-b8a7b9bbed34@igalia.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711378613; c=relaxed/simple;
+	bh=D0IVRdUxb61cm78RULRVdS2jg7eEG5sG+EM9knh7xic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=T/AbN7+VC8S7dK7LLdMqgktVB9KmZYAakmfzCq3Nn/xW7nWMYm4+4j4+bPeP9YxImAzbwO1jY1cHt69ya378kIroS4yodWibvFUCJ/qoLithhdV1elNF0KFk4xv9dWl1h2VuGlKOYXjJ8IgaJK4GPWFtVVtjBsRNeU0QYh97bZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bVQ6KI1n; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711378610;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gx0yK0w5kM36eezq6+OwYyZsTKrvUFRREBPBGm2cUJQ=;
+	b=bVQ6KI1nuHV2MtXhKkt+Id/L5sWGOQLaBfky0CcfosH4NdYYt1/GZVpsyH9DAURImDKI1L
+	0ubcOg7JxAcB5B//FlBtBy5d53x7VJM5/Wjs6fjS3R0aBdp8TGll2P0KenJKmlSPAyKVuX
+	bb92nI1/KsUubfTxV1Rxt7r3nJ2onRs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-92-Dt3_eJrsODaZxfBt9p00-g-1; Mon, 25 Mar 2024 10:56:46 -0400
+X-MC-Unique: Dt3_eJrsODaZxfBt9p00-g-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a473ac9d263so226122866b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:56:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711378601; x=1711983401;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gx0yK0w5kM36eezq6+OwYyZsTKrvUFRREBPBGm2cUJQ=;
+        b=iCrtG7LM+ZtREMHVEY5fUMuk04Pua1wHao/XQsl0SD5/WMs8bN+S+2IG1eCO9RZgND
+         XytfigjtrfddlquRA5mfG1bFiGd7CHovWlW0bAsMBqbWSVTnm3xXryJVFDhuVerMVbdU
+         pslYThVX3E2dD8NneGqcKY50aHRm3Ofbispfk+6KJXIrM06MvFCKGQ3vFkm4zaR78g1z
+         5MqhBpoXHpLm6RfYX3a5u44UDHi4qPIfrNR4hYuBS32IxkT65/SSCOTCbXVlmhYMv8ZG
+         sZ7nFynBsUEsS46JOvDhb8XwSxwtKLu6GkdDSU1cqj0EkQM/j2TZ0ELtyFZYiuYWKPiC
+         dX0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVsXY9PG9Wwq11Nw/vHqq8So70gCx9nh8KoYglwcOuWkYZYH1LSubD7Pg4KKK3ZzJjDf7j2t9gCSPyTntvgz1aTljrSSHcx/3Wsi2lP
+X-Gm-Message-State: AOJu0Ywo8P0yeDhGrq7ZFC9qsv065Vt9o/OTBv+41d007OOKOVh+P66C
+	+ndd7DjGMy5AF+b8gVP7BwNtHbpKeZDx4lrt1TKWISEMxr5ibpJ9dGRaHqcQcMkLpo5PLzx3U2s
+	bFXLcpd6I3fQQGJnFNJoGL2Ga1ItUYoMw9BShtUS7iFs7jrWzCu2TAYdsseNXrA==
+X-Received: by 2002:a17:906:30d0:b0:a47:3632:d30b with SMTP id b16-20020a17090630d000b00a473632d30bmr5089225ejb.37.1711378601362;
+        Mon, 25 Mar 2024 07:56:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF55T1GoUanntAW5p1pLSM7rxO+GN2gxok61HVVPRpB3r2cJsrfTCkC0WKeFICO67DzAnAetA==
+X-Received: by 2002:a17:906:30d0:b0:a47:3632:d30b with SMTP id b16-20020a17090630d000b00a473632d30bmr5089204ejb.37.1711378600921;
+        Mon, 25 Mar 2024 07:56:40 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id q9-20020a170906a08900b00a46d001a259sm3140430ejy.52.2024.03.25.07.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 07:56:40 -0700 (PDT)
+Message-ID: <aff161d5-cf6e-421b-8250-35e724397dcf@redhat.com>
+Date: Mon, 25 Mar 2024 15:56:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GfCtEZXpb23dLFOhosWDRQd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/GfCtEZXpb23dLFOhosWDRQd
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] platform/surface: platform_profile: add fan
+ profile switching
+Content-Language: en-US, nl
+To: Ivor Wanders <ivor@iwanders.net>, Maximilian Luz
+ <luzmaximilian@gmail.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>, platform-driver-x86@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240314223733.6236-1-ivor@iwanders.net>
+ <20240314223733.6236-2-ivor@iwanders.net>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240314223733.6236-2-ivor@iwanders.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Mon, 25 Mar 2024 11:15:13 -0300
-Ma=C3=ADra Canal <mcanal@igalia.com> wrote:
+Hi,
 
-> On 3/13/24 14:45, Louis Chauvet wrote:
-> > Re-introduce a line-by-line composition algorithm for each pixel format.
-> > This allows more performance by not requiring an indirection per pixel
-> > read. This patch is focused on readability of the code.
-> >=20
-> > Line-by-line composition was introduced by [1] but rewritten back to
-> > pixel-by-pixel algorithm in [2]. At this time, nobody noticed the impact
-> > on performance, and it was merged.
-> >=20
-> > This patch is almost a revert of [2], but in addition efforts have been
-> > made to increase readability and maintainability of the rotation handli=
-ng.
-> > The blend function is now divided in two parts:
-> > - Transformation of coordinates from the output referential to the sour=
-ce
-> > referential
-> > - Line conversion and blending
-> >=20
-> > Most of the complexity of the rotation management is avoided by using
-> > drm_rect_* helpers. The remaining complexity is around the clipping, to
-> > avoid reading/writing outside source/destination buffers.
-> >=20
-> > The pixel conversion is now done line-by-line, so the read_pixel_t was
-> > replaced with read_pixel_line_t callback. This way the indirection is o=
-nly
-> > required once per line and per plane, instead of once per pixel and per
-> > plane.
-> >=20
-> > The read_line_t callbacks are very similar for most pixel format, but it
-> > is required to avoid performance impact. Some helpers for color
-> > conversion were introduced to avoid code repetition:
-> > - *_to_argb_u16: perform colors conversion. They should be inlined by t=
-he
-> >    compiler, and they are used to avoid repetition between multiple var=
-iants
-> >    of the same format (argb/xrgb and maybe in the future for formats li=
-ke
-> >    bgr formats).
-> >=20
-> > This new algorithm was tested with:
-> > - kms_plane (for color conversions)
-> > - kms_rotation_crc (for rotations of planes)
-> > - kms_cursor_crc (for translations of planes)
-> > - kms_rotation (for all rotations and formats combinations) [3]
-> > The performance gain was mesured with:
-> > - kms_fb_stress =20
->=20
-> Could you tell us what was the performance gain?
->=20
-> >=20
-> > [1]: commit 8ba1648567e2 ("drm: vkms: Refactor the plane composer to ac=
-cept
-> >       new formats")
-> >       https://lore.kernel.org/all/20220905190811.25024-7-igormtorrente@=
-gmail.com/
-> > [2]: commit 322d716a3e8a ("drm/vkms: isolate pixel conversion
-> >       functionality")
-> >       https://lore.kernel.org/all/20230418130525.128733-2-mcanal@igalia=
-com/
-> > [3]:
-> >=20
-> > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> > ---
-> >   drivers/gpu/drm/vkms/vkms_composer.c | 167 +++++++++++++++++++------
-> >   drivers/gpu/drm/vkms/vkms_drv.h      |  27 ++--
-> >   drivers/gpu/drm/vkms/vkms_formats.c  | 236 ++++++++++++++++++++++----=
----------
-> >   drivers/gpu/drm/vkms/vkms_formats.h  |   2 +-
-> >   drivers/gpu/drm/vkms/vkms_plane.c    |   5 +-
-> >   5 files changed, 292 insertions(+), 145 deletions(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkm=
-s/vkms_composer.c
-> > index 989bcf59f375..5d78c33dbf41 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> > +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+On 3/14/24 11:37 PM, Ivor Wanders wrote:
+> Change naming from tmp to platform profile to clarify the module may
+> interact with both the TMP and FAN subystems. Add functionality that
+> switches the fan profile when the platform profile is changed when
+> a fan is present.
+> 
+> Signed-off-by: Ivor Wanders <ivor@iwanders.net>
+> Link: https://github.com/linux-surface/kernel/pull/145
+> Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-..
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-> > @@ -215,34 +188,146 @@ static void blend(struct vkms_writeback_job *wb,
-> >   {
-> >   	struct vkms_plane_state **plane =3D crtc_state->active_planes;
-> >   	u32 n_active_planes =3D crtc_state->num_active_planes;
-> > -	int y_pos, x_dst, x_limit;
-> >  =20
-> >   	const struct pixel_argb_u16 background_color =3D { .a =3D 0xffff };
-> >  =20
-> > -	size_t crtc_y_limit =3D crtc_state->base.crtc->mode.vdisplay;
-> > +	int crtc_y_limit =3D crtc_state->base.crtc->mode.vdisplay;
-> > +	int crtc_x_limit =3D crtc_state->base.crtc->mode.hdisplay; =20
->=20
-> Shouldn't it be `unsigned int`?
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-No. It's not good to mix signed and unsigned variables in computations.
-I for sure would not remember all the implicit promotion rules that
-apply, and you'd probably be forced to add explicit signedness casts to
-get the correct behaviour. It causes much less surprises to "normalize"
-all variables to the same signedness before computing with them. Some
-values in this function can be negative.
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
 
 
-Thanks,
-pq
 
---Sig_/GfCtEZXpb23dLFOhosWDRQd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+> ---
+> Changes in v2:
+>   - Added link entry to commit message.
+>   - Use u8 instead of char for the argument of __sam_fan_profile_set.
+>   - Made profile and profile_le variable const.
+> ---
+> ---
+>  .../surface/surface_aggregator_registry.c     | 36 +++++---
+>  .../surface/surface_platform_profile.c        | 88 ++++++++++++++++---
+>  2 files changed, 100 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/platform/surface/surface_aggregator_registry.c b/drivers/platform/surface/surface_aggregator_registry.c
+> index 035d6b4105cd..79e52eddabd0 100644
+> --- a/drivers/platform/surface/surface_aggregator_registry.c
+> +++ b/drivers/platform/surface/surface_aggregator_registry.c
+> @@ -68,12 +68,26 @@ static const struct software_node ssam_node_bat_sb3base = {
+>  	.parent = &ssam_node_hub_base,
+>  };
+>  
+> -/* Platform profile / performance-mode device. */
+> -static const struct software_node ssam_node_tmp_pprof = {
+> +/* Platform profile / performance-mode device without a fan. */
+> +static const struct software_node ssam_node_tmp_perf_profile = {
+>  	.name = "ssam:01:03:01:00:01",
+>  	.parent = &ssam_node_root,
+>  };
+>  
+> +/* Platform profile / performance-mode device with a fan, such that
+> + * the fan controller profile can also be switched.
+> + */
+> +static const struct property_entry ssam_node_tmp_perf_profile_has_fan[] = {
+> +	PROPERTY_ENTRY_BOOL("has_fan"),
+> +	{ }
+> +};
+> +
+> +static const struct software_node ssam_node_tmp_perf_profile_with_fan = {
+> +	.name = "ssam:01:03:01:00:01",
+> +	.parent = &ssam_node_root,
+> +	.properties = ssam_node_tmp_perf_profile_has_fan,
+> +};
+> +
+>  /* Fan speed function. */
+>  static const struct software_node ssam_node_fan_speed = {
+>  	.name = "ssam:01:05:01:01:01",
+> @@ -208,7 +222,7 @@ static const struct software_node ssam_node_pos_tablet_switch = {
+>   */
+>  static const struct software_node *ssam_node_group_gen5[] = {
+>  	&ssam_node_root,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile,
+>  	NULL,
+>  };
+>  
+> @@ -219,7 +233,7 @@ static const struct software_node *ssam_node_group_sb3[] = {
+>  	&ssam_node_bat_ac,
+>  	&ssam_node_bat_main,
+>  	&ssam_node_bat_sb3base,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile,
+>  	&ssam_node_bas_dtx,
+>  	&ssam_node_hid_base_keyboard,
+>  	&ssam_node_hid_base_touchpad,
+> @@ -233,7 +247,7 @@ static const struct software_node *ssam_node_group_sl3[] = {
+>  	&ssam_node_root,
+>  	&ssam_node_bat_ac,
+>  	&ssam_node_bat_main,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile,
+>  	&ssam_node_hid_main_keyboard,
+>  	&ssam_node_hid_main_touchpad,
+>  	&ssam_node_hid_main_iid5,
+> @@ -245,7 +259,7 @@ static const struct software_node *ssam_node_group_sl5[] = {
+>  	&ssam_node_root,
+>  	&ssam_node_bat_ac,
+>  	&ssam_node_bat_main,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile,
+>  	&ssam_node_hid_main_keyboard,
+>  	&ssam_node_hid_main_touchpad,
+>  	&ssam_node_hid_main_iid5,
+> @@ -258,7 +272,7 @@ static const struct software_node *ssam_node_group_sls[] = {
+>  	&ssam_node_root,
+>  	&ssam_node_bat_ac,
+>  	&ssam_node_bat_main,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile,
+>  	&ssam_node_pos_tablet_switch,
+>  	&ssam_node_hid_sam_keyboard,
+>  	&ssam_node_hid_sam_penstash,
+> @@ -274,7 +288,7 @@ static const struct software_node *ssam_node_group_slg1[] = {
+>  	&ssam_node_root,
+>  	&ssam_node_bat_ac,
+>  	&ssam_node_bat_main,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile,
+>  	NULL,
+>  };
+>  
+> @@ -283,7 +297,7 @@ static const struct software_node *ssam_node_group_sp7[] = {
+>  	&ssam_node_root,
+>  	&ssam_node_bat_ac,
+>  	&ssam_node_bat_main,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile,
+>  	NULL,
+>  };
+>  
+> @@ -293,7 +307,7 @@ static const struct software_node *ssam_node_group_sp8[] = {
+>  	&ssam_node_hub_kip,
+>  	&ssam_node_bat_ac,
+>  	&ssam_node_bat_main,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile,
+>  	&ssam_node_kip_tablet_switch,
+>  	&ssam_node_hid_kip_keyboard,
+>  	&ssam_node_hid_kip_penstash,
+> @@ -310,7 +324,7 @@ static const struct software_node *ssam_node_group_sp9[] = {
+>  	&ssam_node_hub_kip,
+>  	&ssam_node_bat_ac,
+>  	&ssam_node_bat_main,
+> -	&ssam_node_tmp_pprof,
+> +	&ssam_node_tmp_perf_profile_with_fan,
+>  	&ssam_node_fan_speed,
+>  	&ssam_node_pos_tablet_switch,
+>  	&ssam_node_hid_kip_keyboard,
+> diff --git a/drivers/platform/surface/surface_platform_profile.c b/drivers/platform/surface/surface_platform_profile.c
+> index a5a3941b3f43..3de864bc6610 100644
+> --- a/drivers/platform/surface/surface_platform_profile.c
+> +++ b/drivers/platform/surface/surface_platform_profile.c
+> @@ -1,7 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0+
+>  /*
+>   * Surface Platform Profile / Performance Mode driver for Surface System
+> - * Aggregator Module (thermal subsystem).
+> + * Aggregator Module (thermal and fan subsystem).
+>   *
+>   * Copyright (C) 2021-2022 Maximilian Luz <luzmaximilian@gmail.com>
+>   */
+> @@ -14,6 +14,7 @@
+>  
+>  #include <linux/surface_aggregator/device.h>
+>  
+> +// Enum for the platform performance profile sent to the TMP module.
+>  enum ssam_tmp_profile {
+>  	SSAM_TMP_PROFILE_NORMAL             = 1,
+>  	SSAM_TMP_PROFILE_BATTERY_SAVER      = 2,
+> @@ -21,15 +22,26 @@ enum ssam_tmp_profile {
+>  	SSAM_TMP_PROFILE_BEST_PERFORMANCE   = 4,
+>  };
+>  
+> +// Enum for the fan profile sent to the FAN module. This fan profile is
+> +// only sent to the EC if the 'has_fan' property is set. The integers are
+> +// not a typo, they differ from the performance profile indices.
+> +enum ssam_fan_profile {
+> +	SSAM_FAN_PROFILE_NORMAL             = 2,
+> +	SSAM_FAN_PROFILE_BATTERY_SAVER      = 1,
+> +	SSAM_FAN_PROFILE_BETTER_PERFORMANCE = 3,
+> +	SSAM_FAN_PROFILE_BEST_PERFORMANCE   = 4,
+> +};
+> +
+>  struct ssam_tmp_profile_info {
+>  	__le32 profile;
+>  	__le16 unknown1;
+>  	__le16 unknown2;
+>  } __packed;
+>  
+> -struct ssam_tmp_profile_device {
+> +struct ssam_platform_profile_device {
+>  	struct ssam_device *sdev;
+>  	struct platform_profile_handler handler;
+> +	bool has_fan;
+>  };
+>  
+>  SSAM_DEFINE_SYNC_REQUEST_CL_R(__ssam_tmp_profile_get, struct ssam_tmp_profile_info, {
+> @@ -42,6 +54,13 @@ SSAM_DEFINE_SYNC_REQUEST_CL_W(__ssam_tmp_profile_set, __le32, {
+>  	.command_id      = 0x03,
+>  });
+>  
+> +SSAM_DEFINE_SYNC_REQUEST_W(__ssam_fan_profile_set, u8, {
+> +	.target_category = SSAM_SSH_TC_FAN,
+> +	.target_id = SSAM_SSH_TID_SAM,
+> +	.command_id = 0x0e,
+> +	.instance_id = 0x01,
+> +});
+> +
+>  static int ssam_tmp_profile_get(struct ssam_device *sdev, enum ssam_tmp_profile *p)
+>  {
+>  	struct ssam_tmp_profile_info info;
+> @@ -57,12 +76,19 @@ static int ssam_tmp_profile_get(struct ssam_device *sdev, enum ssam_tmp_profile
+>  
+>  static int ssam_tmp_profile_set(struct ssam_device *sdev, enum ssam_tmp_profile p)
+>  {
+> -	__le32 profile_le = cpu_to_le32(p);
+> +	const __le32 profile_le = cpu_to_le32(p);
+>  
+>  	return ssam_retry(__ssam_tmp_profile_set, sdev, &profile_le);
+>  }
+>  
+> -static int convert_ssam_to_profile(struct ssam_device *sdev, enum ssam_tmp_profile p)
+> +static int ssam_fan_profile_set(struct ssam_device *sdev, enum ssam_fan_profile p)
+> +{
+> +	const u8 profile = p;
+> +
+> +	return ssam_retry(__ssam_fan_profile_set, sdev->ctrl, &profile);
+> +}
+> +
+> +static int convert_ssam_tmp_to_profile(struct ssam_device *sdev, enum ssam_tmp_profile p)
+>  {
+>  	switch (p) {
+>  	case SSAM_TMP_PROFILE_NORMAL:
+> @@ -83,7 +109,8 @@ static int convert_ssam_to_profile(struct ssam_device *sdev, enum ssam_tmp_profi
+>  	}
+>  }
+>  
+> -static int convert_profile_to_ssam(struct ssam_device *sdev, enum platform_profile_option p)
+> +
+> +static int convert_profile_to_ssam_tmp(struct ssam_device *sdev, enum platform_profile_option p)
+>  {
+>  	switch (p) {
+>  	case PLATFORM_PROFILE_LOW_POWER:
+> @@ -105,20 +132,42 @@ static int convert_profile_to_ssam(struct ssam_device *sdev, enum platform_profi
+>  	}
+>  }
+>  
+> +static int convert_profile_to_ssam_fan(struct ssam_device *sdev, enum platform_profile_option p)
+> +{
+> +	switch (p) {
+> +	case PLATFORM_PROFILE_LOW_POWER:
+> +		return SSAM_FAN_PROFILE_BATTERY_SAVER;
+> +
+> +	case PLATFORM_PROFILE_BALANCED:
+> +		return SSAM_FAN_PROFILE_NORMAL;
+> +
+> +	case PLATFORM_PROFILE_BALANCED_PERFORMANCE:
+> +		return SSAM_FAN_PROFILE_BETTER_PERFORMANCE;
+> +
+> +	case PLATFORM_PROFILE_PERFORMANCE:
+> +		return SSAM_FAN_PROFILE_BEST_PERFORMANCE;
+> +
+> +	default:
+> +		/* This should have already been caught by platform_profile_store(). */
+> +		WARN(true, "unsupported platform profile");
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+>  static int ssam_platform_profile_get(struct platform_profile_handler *pprof,
+>  				     enum platform_profile_option *profile)
+>  {
+> -	struct ssam_tmp_profile_device *tpd;
+> +	struct ssam_platform_profile_device *tpd;
+>  	enum ssam_tmp_profile tp;
+>  	int status;
+>  
+> -	tpd = container_of(pprof, struct ssam_tmp_profile_device, handler);
+> +	tpd = container_of(pprof, struct ssam_platform_profile_device, handler);
+>  
+>  	status = ssam_tmp_profile_get(tpd->sdev, &tp);
+>  	if (status)
+>  		return status;
+>  
+> -	status = convert_ssam_to_profile(tpd->sdev, tp);
+> +	status = convert_ssam_tmp_to_profile(tpd->sdev, tp);
+>  	if (status < 0)
+>  		return status;
+>  
+> @@ -129,21 +178,32 @@ static int ssam_platform_profile_get(struct platform_profile_handler *pprof,
+>  static int ssam_platform_profile_set(struct platform_profile_handler *pprof,
+>  				     enum platform_profile_option profile)
+>  {
+> -	struct ssam_tmp_profile_device *tpd;
+> +	struct ssam_platform_profile_device *tpd;
+>  	int tp;
+>  
+> -	tpd = container_of(pprof, struct ssam_tmp_profile_device, handler);
+> +	tpd = container_of(pprof, struct ssam_platform_profile_device, handler);
+> +
+> +	tp = convert_profile_to_ssam_tmp(tpd->sdev, profile);
+> +	if (tp < 0)
+> +		return tp;
+>  
+> -	tp = convert_profile_to_ssam(tpd->sdev, profile);
+> +	tp = ssam_tmp_profile_set(tpd->sdev, tp);
+>  	if (tp < 0)
+>  		return tp;
+>  
+> -	return ssam_tmp_profile_set(tpd->sdev, tp);
+> +	if (tpd->has_fan) {
+> +		tp = convert_profile_to_ssam_fan(tpd->sdev, profile);
+> +		if (tp < 0)
+> +			return tp;
+> +		tp = ssam_fan_profile_set(tpd->sdev, tp);
+> +	}
+> +
+> +	return tp;
+>  }
+>  
+>  static int surface_platform_profile_probe(struct ssam_device *sdev)
+>  {
+> -	struct ssam_tmp_profile_device *tpd;
+> +	struct ssam_platform_profile_device *tpd;
+>  
+>  	tpd = devm_kzalloc(&sdev->dev, sizeof(*tpd), GFP_KERNEL);
+>  	if (!tpd)
+> @@ -154,6 +214,8 @@ static int surface_platform_profile_probe(struct ssam_device *sdev)
+>  	tpd->handler.profile_get = ssam_platform_profile_get;
+>  	tpd->handler.profile_set = ssam_platform_profile_set;
+>  
+> +	tpd->has_fan = device_property_read_bool(&sdev->dev, "has_fan");
+> +
+>  	set_bit(PLATFORM_PROFILE_LOW_POWER, tpd->handler.choices);
+>  	set_bit(PLATFORM_PROFILE_BALANCED, tpd->handler.choices);
+>  	set_bit(PLATFORM_PROFILE_BALANCED_PERFORMANCE, tpd->handler.choices);
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYBkJ8ACgkQI1/ltBGq
-qqfVyA//S0bMVVU0lfdlKghSq2BiGWy5B4acbSUlKhLXvQZnEtF60Y0XBvF8H9Z4
-3+Kf/6fdE1NvGncaBTKHnfZ0OCgXoa07JhIIRLv4PcaDMtCTikFX/AX1e9IozB9/
-ObWvtiXBMt2k4Q6DTz7bSG8Z9HjU8cBpqV9N1tKMXhIv8RTyMOKTRk8Duya99isU
-PeIKbyvVYKvrfGu2Y7EWv8oljLsHTrOvvIRWzHTssO57EwxPjRTwkMn/JuB+QLTA
-QBNeXoiztQmDiuTnrs5UyByncSICtORx1FLM6JAHSGwe9eecnixXW5orrWXtw2PD
-fb7SfHkXQNYGUoDikdIaDeTqXZQuhsAUwcwaRuHJ1goiAENNjrnhWd8fUDpc2oNL
-VJuYZmMlzSPFz3rbCIGXUlGYpl9BdP8SxGHUddVI/LvxeL/MQ8v5KaB0PZgcboMx
-jcl6RmJLAco+1vWOBrjR0tTBxbLWBOa9gX4ncNvrC/saltohZ/FrMi1oQm9gVdeU
-m3547QUfd8hvlhmAKy32tE9zizfs8dunLbQyWxGT6gqBW6O8dr5CD5MJ/k5CMdhj
-U3G4BQ7kgN5Afc73JPHiJrGDrWCDQPiyeTMFpLPA3b4hBiRLs1RxheC37OyHdI0v
-3cxf5ja6rFNLlGI4klBMr5R92gaes2wQkyUxk3v8IGxMaFefF9s=
-=ep0Y
------END PGP SIGNATURE-----
-
---Sig_/GfCtEZXpb23dLFOhosWDRQd--
 
