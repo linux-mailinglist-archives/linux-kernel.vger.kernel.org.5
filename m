@@ -1,157 +1,236 @@
-Return-Path: <linux-kernel+bounces-117345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71F1788AA3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:54:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37B3C88AC4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:49:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09EEB341998
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:54:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB3BDBA7F8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8386774E;
-	Mon, 25 Mar 2024 15:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4080682D8F;
+	Mon, 25 Mar 2024 15:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="phAxrXaO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A1U1RgMy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FCA3DAC19
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C02C28F5
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711379708; cv=none; b=lz4TO/hwtxpHTuXZASRgzC9pw7xGbrLrhUqYYqHlqbkB5/eDpm4tKWJ4d0870YaYdLsYV0qg1qd1bf7zNY5Zisumd++ReTzF8ndxMcanNwr5hah9d9QWCgD4757fnpYXeiUaSoAtwtPhVdLjldeTTcADdDm2HKtxaz3b/ubUSzw=
+	t=1711379733; cv=none; b=AVVaVmOmCrrrMB8Jk99nqpvaJohj++kofJHBVusUjKxcEYl5FLzMoxv24cg7gYo34/VN/eh/y8PJkkqtW0MrLH0UVbEsvSeMYmK8MY1KnL2eoguilemO1svOR/EQiBpAdJAWk4PHsenKH8i4GdkOinoL8mKGh6YGWkzkjimX4m4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711379708; c=relaxed/simple;
-	bh=5BLlb1WsYWJmK+oZT7FsKXb4sOeQvUD882nSbGqGyb0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YZSr7jS20JSIEA/E5vDpfvrAKYqEz7CGSspZaqwixbzQFPP5UW6blIs5fmgv6IdABXWWAcwG63bkC6ew965+SquJ6045KPI53L49ieChTCS0MBeth6+39zQvpxxC13jKFGKIUk62jROIS6CMykI/8yZmRKkx02Otxmk+vGd33mY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=phAxrXaO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46CFDC43390
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:15:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711379708;
-	bh=5BLlb1WsYWJmK+oZT7FsKXb4sOeQvUD882nSbGqGyb0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=phAxrXaOtEXGZoOTJbwp95NKyP9jTjuxq5k7pgxPNLKiRDsSMJ/a+cuhnqroUD+9M
-	 TL5Lpu5x8vzMFuP0uMm41yCHp0C7N6srqr0LQqpi2AAE09e3R1Qd4s9UpSRbcj4yEc
-	 787Z4kRn6MXmXSDV0YZKkNK1PLcoJuTa2qOmXRLcDt6Z9JToT8WRrJts4j+f2zJUZL
-	 FF86SUKUJyZnVGvCBedt4c0XBCyO/m6mfCUWGsspqAJvY4JGkgEj0qFMd9hU4vDAeK
-	 MScCgx2VoFFlWGOoCBKGMLiWK4IgGxehXMy4d2Ty9FSNFbYtOofao4VbNb3NXrUKGO
-	 NJnKtjkqdp6Pg==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d6c8d741e8so32042551fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:15:08 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWTzXKpn//NLDgUP3bvy1HPDW01/PdcUi2XvNAJrefG2Dm10my+n754oxCuCD3sqeAjlVIc2KdCjePL07/6wM1EAgPmjFpyc2Xdasn2
-X-Gm-Message-State: AOJu0YydbJvGLfrVWUJAj4tVkHX1LmX8opzsqJ3WNj2kqSzBX/423oZ+
-	H0UZ15pMxhe+nuFZpcbhU9zeOOprAApxWk3jUnaHtFcfAeWf+NnZ7s6PVxDJtzd5BDuNusxF/jO
-	PtjOj2Z5ADrhRgHvPNl+NUiuncUU=
-X-Google-Smtp-Source: AGHT+IFpisd6LgVDCNfYPykT/hY4ChG1b93iTIxrU0E5AXZ6ZR9ugciUs8cuK/EJl4N6N5z/iZrMGEyB38F5coNt3yU=
-X-Received: by 2002:a2e:9b83:0:b0:2d2:346a:f199 with SMTP id
- z3-20020a2e9b83000000b002d2346af199mr4662731lji.47.1711379706657; Mon, 25 Mar
- 2024 08:15:06 -0700 (PDT)
+	s=arc-20240116; t=1711379733; c=relaxed/simple;
+	bh=kPlMSaMqo39hTPJCm+rG6l2qBNgpVeSsC7Q20ufapqs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=QLLl4MQW944jEhrzRiaIUdqQafP14n12jDqjMAnaTiKvobMBCOLODfhKGQQPuwF85v+Te+DFUozqNmu/47Htph9NmFHi8ZQ1tcC3r3r2K50hwICknqoyAyC5isCG8yqMGyVeyb9GXkJaUuIETxCfSV23ezpsaZvlYDtfA5cIQbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A1U1RgMy; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711379730;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=k81rqq4hzeq4pWvLawuIvbOKMKqt9JCn+dSEFmJ+o2Q=;
+	b=A1U1RgMylqiE4tMU7/VgKDAfS6U48jUyixkq9fWaoqjJE7+fHP3G4ICShR9Eag1s/Ak/+f
+	ZpN49AHQig9it3i4pb6NKkobgVKiWSPP8Pd+JN0FF+ycIMSSZyCrMULjLLgBLBsoG5Zjia
+	yoo3n/2igAh0JCyUeN2D4/wpch2TJRc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-412-SkoXz3YhPkGyLjBf_Astqw-1; Mon, 25 Mar 2024 11:15:29 -0400
+X-MC-Unique: SkoXz3YhPkGyLjBf_Astqw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33ec826d427so431955f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:15:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711379727; x=1711984527;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k81rqq4hzeq4pWvLawuIvbOKMKqt9JCn+dSEFmJ+o2Q=;
+        b=r3cK6wdIGpaFF3jobZWsDBozWr81il9QSAoHgzWwjIHX8i7MkHSTgjSDPSJq9+HNgo
+         uu1PPgiaHdP8C9HpTALStL0KZKyS0tIiSYVXTbDzk3keV6EdozuRvdhSmaAtvsoxpofR
+         9w+bwtl4JpI5qlJP10WN3MB2iY7MnNT7aQIPv3rU/VFDr6CbJ3Y5I5WjecdfCX/HATk5
+         AtIzN5N3WiLOcMueK/7ArHbMX4QzvI5Uc5GYl/fPtdU1tnMBvDf1rRqe4liU9gLpKBM4
+         FcNpwizsTry1cZbO7mdXHNc7Y40aTuLi1zsgNaUHL5jYLkLb/bABp76kLfTIJRIM7LhT
+         QwNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUTPb/kzEQUF70FRzUuqhYjguAEMArvTretYcYcbwWQZNfHDMYdwLCxz7j1sMyHVh5WdJv12TJGkUaS2D+8yVIMJYcaT0GKG28Z8R1X
+X-Gm-Message-State: AOJu0YyMVVqAyH5gB3q6aOlR1LXQpu6mrPORjdkaKPMMHmF3QOB1NtQm
+	ExWfNMmFE0JAbCGGGVgWJFbXAkP1wHkRDb0KP7srPKCdZcjONhVSWp6/oA6W4q7yNCHimvY+b0W
+	MO+CTyrMgMH0BNOQWOvnch4cFFt4kfubWq5BWPcvT03f0dD1LNc4+RT3x/gx0oQ==
+X-Received: by 2002:a5d:6147:0:b0:33e:cf2f:b0 with SMTP id y7-20020a5d6147000000b0033ecf2f00b0mr4916004wrt.3.1711379727672;
+        Mon, 25 Mar 2024 08:15:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGrc5zYv8VaDd+lWJa2+ZgmiNoBLCeQqToQYtu3I9B/QwbhTDXB0KOTKHOwhAIon9Sw1JN/Fg==
+X-Received: by 2002:a5d:6147:0:b0:33e:cf2f:b0 with SMTP id y7-20020a5d6147000000b0033ecf2f00b0mr4915976wrt.3.1711379727276;
+        Mon, 25 Mar 2024 08:15:27 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-229-40.dyn.eolo.it. [146.241.229.40])
+        by smtp.gmail.com with ESMTPSA id df4-20020a5d5b84000000b0033e7b433498sm9747308wrb.111.2024.03.25.08.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 08:15:26 -0700 (PDT)
+Message-ID: <e06f2c8537347a861dc27d100155cb721f7cf079.camel@redhat.com>
+Subject: Re: [PATCH v3 1/1] tcp/dcpp: Un-pin tw_timer
+From: Paolo Abeni <pabeni@redhat.com>
+To: Valentin Schneider <vschneid@redhat.com>, Eric Dumazet
+ <edumazet@google.com>
+Cc: dccp@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux-rt-users@vger.kernel.org, "David S.
+ Miller" <davem@davemloft.net>,  Jakub Kicinski <kuba@kernel.org>,
+ mleitner@redhat.com, David Ahern <dsahern@kernel.org>, Juri Lelli
+ <juri.lelli@redhat.com>, Tomas Glozar <tglozar@redhat.com>, Sebastian
+ Andrzej Siewior <bigeasy@linutronix.de>, Thomas Gleixner
+ <tglx@linutronix.de>
+Date: Mon, 25 Mar 2024 16:15:25 +0100
+In-Reply-To: <xhsmh1q82c7bt.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+References: <20240219095729.2339914-1-vschneid@redhat.com>
+	 <20240219095729.2339914-2-vschneid@redhat.com>
+	 <CANn89i+3-zgAkWukFavu1wgf1XG+K9U4BhJWw7H+QKwsfYL4WA@mail.gmail.com>
+	 <xhsmho7cbf33q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	 <CANn89iJpwUpAROOq7+ttwTMCZu0=XhS4dgwcs44t-gb7-_ejRg@mail.gmail.com>
+	 <xhsmhjzmxg40f.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	 <47a0e30caff2a49d152aed521ef5e512fd11ae99.camel@redhat.com>
+	 <xhsmh1q82c7bt.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322165233.71698-1-brgerst@gmail.com> <CAFULd4bCufzKjaUyOcJ5MfsPBcVTj1zQiP3+FFCGo6SbxTpK2A@mail.gmail.com>
- <CAMzpN2gOZEddWUgncaLutVDihcEK-oEUdSVxsgaaX9xiMWfqPw@mail.gmail.com>
- <CAHk-=wi0arqxMFFdM+jGv1YXXhY+ehxsmcfv+iAndD_dmpYjMA@mail.gmail.com> <d82bebfc-3eaa-406d-8ea6-22113da30ed5@app.fastmail.com>
-In-Reply-To: <d82bebfc-3eaa-406d-8ea6-22113da30ed5@app.fastmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Mon, 25 Mar 2024 17:14:55 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFXh7xFOGKjUK=Fjc+YK=Zwni=LBVr_T2EUNUjRBBk2EA@mail.gmail.com>
-Message-ID: <CAMj1kXFXh7xFOGKjUK=Fjc+YK=Zwni=LBVr_T2EUNUjRBBk2EA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/16] x86-64: Stack protector and percpu improvements
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Brian Gerst <brgerst@gmail.com>, 
-	Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
-	"H. Peter Anvin" <hpa@zytor.com>, David Laight <David.Laight@aculab.com>, 
-	Kees Cook <keescook@chromium.org>, Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 24 Mar 2024 at 00:55, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Sat, Mar 23, 2024, at 17:16, Linus Torvalds wrote:
-> >
-..
-> > So there doesn't seem to be a major reason to up the versioning, since
-> > the stack protector thing can just be disabled for older versions.
-> >
-> > But maybe even enterprise distros have upgraded anyway, and we should
-> > be proactive.
-> >
-> > Cc'ing Arnd, who has historically been one of the people pushing this.
-> > He may no longer care because we haven't had huge issues.
->
-> I'm not aware of any major issues, but it keeps coming up and
-> a number of people have asked me about it because of smaller
-> ones. Unfortunately I didn't write down what the problems
-> were.
->
-> I think based on what compiler versions are shipped
-> by LTS distros, gcc-8.1 is the next logical step when we
-> do it, covering Debian 10, RHEL 8 and Ubuntu 20.04, which
-> are probably the oldest we still need to support.
->
-> RHEL 7 and SLES 12 are still technically supported distros
-> as well, but those shipped with gcc-4.8, so we dropped them
-> in 2020 with the move to gcc-4.9.
->
-> So in short, not a lot to gain or lose from raising the
-> minimum to 8.1, but it would be nice to reduce the possible
-> test matrix from 10 gcc versions back to the 7 we had in
-> the past, as well as clean up a few version dependencies.
-> Similarly we can probably raise the oldest binutils version
-> to 2.30, as that seems to be the earliest version that was
-> paired with gcc-8 (in RHEL-8).
->
+On Fri, 2024-03-22 at 21:58 +0100, Valentin Schneider wrote:
+> On 21/03/24 20:03, Paolo Abeni wrote:
+> > Something alike the following (completely untested!!!):
+> >=20
+> > WDYT?
+>=20
+> Thanks for the suggestion! I've been preempted by other things and haven'=
+t
+> had time to think more about this, so I really appreciate it :)
+>=20
+> > ---
+> > diff --git a/include/net/inet_timewait_sock.h b/include/net/inet_timewa=
+it_sock.h
+> > index f28da08a37b4..d696d10dc8ae 100644
+> > --- a/include/net/inet_timewait_sock.h
+> > +++ b/include/net/inet_timewait_sock.h
+> > @@ -93,8 +93,10 @@ struct inet_timewait_sock *inet_twsk_alloc(const str=
+uct sock *sk,
+> >  					   struct inet_timewait_death_row *dr,
+> >  					   const int state);
+> > =20
+> > -void inet_twsk_hashdance(struct inet_timewait_sock *tw, struct sock *s=
+k,
+> > -			 struct inet_hashinfo *hashinfo);
+> > +void inet_twsk_hashdance_schedule(struct inet_timewait_sock *tw,
+> > +				  struct sock *sk,
+> > +				  struct inet_hashinfo *hashinfo,
+> > +				  int timeo);
+> > =20
+> >  void __inet_twsk_schedule(struct inet_timewait_sock *tw, int timeo,
+> >  			  bool rearm);
+> > diff --git a/net/dccp/minisocks.c b/net/dccp/minisocks.c
+> > index 64d805b27add..8e108a89d8e4 100644
+> > --- a/net/dccp/minisocks.c
+> > +++ b/net/dccp/minisocks.c
+> > @@ -58,11 +58,10 @@ void dccp_time_wait(struct sock *sk, int state, int=
+ timeo)
+> >  		 * we complete the initialization.
+> >  		 */
+> >  		local_bh_disable();
+> > -		inet_twsk_schedule(tw, timeo);
+> >  		/* Linkage updates.
+> >  		 * Note that access to tw after this point is illegal.
+> >  		 */
+> > -		inet_twsk_hashdance(tw, sk, &dccp_hashinfo);
+> > +		inet_twsk_hashdance_schedule(tw, sk, &dccp_hashinfo, timeo);
+> >  		local_bh_enable();
+> >  	} else {
+> >  		/* Sorry, if we're out of memory, just CLOSE this
+> > diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_soc=
+k.c
+> > index e8de45d34d56..dd314b06c0cd 100644
+> > --- a/net/ipv4/inet_timewait_sock.c
+> > +++ b/net/ipv4/inet_timewait_sock.c
+> > @@ -97,8 +97,10 @@ static void inet_twsk_add_node_rcu(struct inet_timew=
+ait_sock *tw,
+> >   * Essentially we whip up a timewait bucket, copy the relevant info in=
+to it
+> >   * from the SK, and mess with hash chains and list linkage.
+> >   */
+> > -void inet_twsk_hashdance(struct inet_timewait_sock *tw, struct sock *s=
+k,
+> > -			   struct inet_hashinfo *hashinfo)
+> > +void inet_twsk_hashdance_schedule(struct inet_timewait_sock *tw,
+> > +				  struct sock *sk,
+> > +				  struct inet_hashinfo *hashinfo,
+> > +				  int timeo)
+> >  {
+> >  	const struct inet_sock *inet =3D inet_sk(sk);
+> >  	const struct inet_connection_sock *icsk =3D inet_csk(sk);
+> > @@ -135,6 +137,8 @@ void inet_twsk_hashdance(struct inet_timewait_sock =
+*tw, struct sock *sk,
+> >  	if (__sk_nulls_del_node_init_rcu(sk))
+> >  		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
+> > =20
+> > +	inet_twsk_schedule(tw, timeo);
+> > +
+> >  	spin_unlock(lock);
+> >=20
+>=20
+> That arms the timer before the refcounts are set up in the tail end of
+> the hashdance, which is what we have upstream ATM.
+>=20
+> Unfortunately this relies on the timer being TIMER_PINNED and having
+> softirqs disabled: the timer can only be enqueued on the local CPU, and i=
+t
+> can't fire until softirqs are enabled, so refcounts can safely be updated
+> after it is armed because it can't fire.
+>=20
+> For dynamic CPU isolation we want to make this timer not-pinned, so that =
+it
+> can be scheduled on housekeeping CPUs. However that means the
+> local_bh_disable() won't prevent the timer from firing, and that means th=
+e
+> refcounts need to be written to before it is armed.
 
-x86_64/SMP uses a pile of hacks to create a runtime relocatable
-kernel, one of which is a workaround for the offset based addressing
-of per-CPU variables. This requires RIP-relative per-CPU references,
-e.g.,
-
-  leal %gs:foo(%rip), %reg
-
-to be fixed up in the opposite direction (displacement subtracted
-rather than added) in the decompressor. This scheme is used because
-older GCCs can only access the stack protector cookie via a fixed
-offset of GS+40, and so GS must carry the address of the start of the
-per-CPU region rather than an arbitrary relative offset between the
-per-CPU region in vmlinux and the one belonging to a CPU.
-
-GCC 8.1 and later allow the cookie to be specified using a symbol, and
-this would allow us to revert to the ordinary per-CPU addressing,
-where the base is the vmlinux copy of a symbol, and each CPU carries a
-different offset in GS that produces the address of its respective
-private copy. [0]
-
-With that out of the way, we could get rid of the weird relocation
-format and just use the linker to link vmlinux in PIE mode (like other
-architectures), using the condensed RELR format which only takes a
-fraction of the space. Using PIC codegen and PIE linking also brings
-us closer to what toolchains expect, and so fewer quirks/surprises
-when moving to newer versions. (Currently on x86, we do a position
-dependent link of vmlinux, and rely on the static relocations produced
-by --emit-relocs to create the metadata we need to perform the
-relocation fixups. Static relocations cannot describe all the
-transformations and relaxations that the linker might apply, and so
-static relocations might go out of sync with the actual code.)
-
-Another minor cleanup is __GCC_ASM_FLAG_OUTPUTS__, which would always
-be supported if we require 8.1 or newer.
-
-None of this is high priority, though, so not a reason in itself to
-deprecate GCC 7 and older, more of a nice bonus when we do get there.
-
--- 
-Ard.
+Ouch, right you are, I underlooked that.
 
 
+> Using the ehash lock is clever though, and the first thing inet_twsk_kill=
+()
+> does is grabbing it... Maybe something like the below? It (should) preven=
+t
+> this interleaving race:
+>=20
+>                              tcp_time_wait()
+>                                inet_twsk_hashdance()
+>   inet_twsk_deschedule_put()
+>     del_timer_sync()
+>                                inet_twsk_schedule()
+>=20
+> whether it is sane is another thing :-)
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=x86-remove-absolute-percpu
+[...]
+
+That looks safe to me but, compared to the current code, will need an
+additional WMB in tcp_time_wait() and will take the hash lock
+unconditionally in inet_twsk_deschedule_put(). The latter should not be
+fast-path, I'm unsure if the whole thing be acceptable from performance
+perspective??? Eric WDYT?
+
+Thanks,
+
+Paolo
+
 
