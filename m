@@ -1,62 +1,61 @@
-Return-Path: <linux-kernel+bounces-117622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 864C088B1D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:45:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6F5F88AD6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:14:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9522B3C2DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:14:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1B3B363650
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD0744C73;
-	Mon, 25 Mar 2024 17:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06945137925;
+	Mon, 25 Mar 2024 17:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CM0olkc8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uleASsOJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B5213777F;
-	Mon, 25 Mar 2024 17:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486815C8E4;
+	Mon, 25 Mar 2024 17:44:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711388658; cv=none; b=m/COSO/C416d1pRJC0aZesqlB13jBAPXIZ4SKTlnPeoOPHD43hrx6xvJXo7HQjXsm1BCr6GNWI2Bff//u1yFY+hioX50uhU/4/BPzRCyk/lnAWswoQ7rBiu6RaKkp00jVH8VAk/KDHVnrXwkYvRig8Pn50ohIhqN0nqcB0vsY30=
+	t=1711388661; cv=none; b=VGhE7r8+8UVEB+Mqj4PnJTt+WH37kf39xNRPz6uGsomnjbKdO9WHS9X3LdRE4Q7UCBuX6LpOgDDOLRSiRQ2ID2NeAWB8W/oNxWg7+lT2VfXD8gyJTWiRc8yFUg39L3A02P6vrRKb3zu5kGNKX2iHB0kiyKn0bcgA1+t1t4t0pxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711388658; c=relaxed/simple;
-	bh=qb0iwJLbOS+LnSN4h1wK8br8fS0Emdh+02cjuu/+jmQ=;
+	s=arc-20240116; t=1711388661; c=relaxed/simple;
+	bh=3phOsfj299vReX13jBEsAZUiG0U9Ij11nDe4fUf1txA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=dwXUWSdFele+QiaVPGhsZutFhWGDJ09tXN/gCaztWTWd4DNUVE6Qp9Y/PQvLmnapDmwZtxlPvrkKOkSMu7R2oAqA6DPrnVZkJde3culSIwtiFdqG+hDa8NOb1/f0yYqJjUAfqElP5UT4hG4Fr503HEvgozEkePwMixIFbw6XMkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CM0olkc8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF51C433F1;
-	Mon, 25 Mar 2024 17:44:14 +0000 (UTC)
+	 MIME-Version:Content-Type; b=OjkWT5v6Fci6JQnK8Wiuv7QPwB+1yl8javZS3X9gJMcBzJqrCqTBgt98CNEwLvJAy3qxSNdk/1ydghzJ21N4P9kDczDCGiQZkGp8kBAQzi2J8O0Ha9vmjh7o/luB8pD9Lfq2eq/fWKSZQJUVGSYE7AjHF+v//X/G6YCV/fXzCKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uleASsOJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80035C433C7;
+	Mon, 25 Mar 2024 17:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711388658;
-	bh=qb0iwJLbOS+LnSN4h1wK8br8fS0Emdh+02cjuu/+jmQ=;
+	s=k20201202; t=1711388660;
+	bh=3phOsfj299vReX13jBEsAZUiG0U9Ij11nDe4fUf1txA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=CM0olkc8ABVp8KmSIRMh1EoZWuTErWkfpQ+hJU4vDTWnSETmZfbGeyRGVE4x9Nyxa
-	 27DwkyOdKYLCruQnOqbQHzR05Rp3BAE2hAyghZiJ8C137RVPkChKjQqD/PQV+L4ejY
-	 2reiR8/UxcV8rWkRIj9u0WCdGg5J1pte9EghB0pRGEYPKf2DtOoAsSQ5r4dGkgxqPZ
-	 eQTqsvSSW3FZK4OC3sMVhHKGAkLI2w3TT5ACE1yGocgfq9tUuug0T44ZD3bdxHFEZv
-	 f/WiEP9nvnZXMqXQbbBQSQZvSGXUeZyebHHHVztGIihBia+vYv1+x4Lhc0CHDh/WRj
-	 eV5x9HYl8IfSA==
+	b=uleASsOJVKH6GH5mbWkE7YCmO5mRO3FV8rlVA/9sTcBM5MnphiVvP8xSo0Wgt+yjk
+	 I4U/dnEpppcmTx5bkfN/HCSsafZL/4i6/PmGAzTyf2IEe81kEJhD5lH10cQ0mTAyKh
+	 4/Pd4vY1zFMrdyfTnIRCfQ63cqEIRmLJ10uRyKV3G1S8z7rNqAteLIwEa6ckQjjRAF
+	 cFfpJspRAWTHzAESj5+y77LbMD4bOS561sIneCO6H3pVzvaRm7EqgMInepw7cYCHES
+	 9jhE6Rm2TC3HBL5pZdTtv4ZLrs3XhM0pWPKdDngUp3UIaiJCXoUd1ep36evAdQ9iQN
+	 731RjYgye/JlA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, 
- linux-sound@vger.kernel.org, imx@lists.linux.dev, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, 
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, 
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, venkataprasad.potturu@amd.com, 
+ Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com, arnd@arndb.de, 
  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>
-In-Reply-To: <20240318200804.181516-1-andriy.shevchenko@linux.intel.com>
-References: <20240318200804.181516-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 1/1] ASoC: fsl: imx-es8328: Switch to using gpiod
- API
-Message-Id: <171138865464.327140.5568916833564730450.b4-ty@kernel.org>
-Date: Mon, 25 Mar 2024 17:44:14 +0000
+ Takashi Iwai <tiwai@suse.com>, 
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
+ Syed Saba Kareem <Syed.SabaKareem@amd.com>, 
+ "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, 
+ open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20240322112018.3063344-1-Vijendar.Mukunda@amd.com>
+References: <20240322112018.3063344-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [RESEND] ASoC: amd: simplify soundwire dependencies for legacy
+ stack
+Message-Id: <171138865825.327140.9353092446072557708.b4-ty@kernel.org>
+Date: Mon, 25 Mar 2024 17:44:18 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,9 +66,11 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Mon, 18 Mar 2024 22:07:56 +0200, Andy Shevchenko wrote:
-> This updates the driver to gpiod API, and removes yet another use of
-> of_get_named_gpio().
+On Fri, 22 Mar 2024 16:50:15 +0530, Vijendar Mukunda wrote:
+> The CONFIG_SOUNDWIRE_AMD is a user-visible option, it should be never
+> selected by another driver.
+> So replace the extra complexity with a normal Kconfig dependency in
+> SND_SOC_AMD_SOUNDWIRE.
 > 
 > 
 
@@ -79,8 +80,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: imx-es8328: Switch to using gpiod API
-      commit: 9855f05e553637f05494cf47a3154cbf9a5cfc67
+[1/1] ASoC: amd: simplify soundwire dependencies for legacy stack
+      commit: a806793f231e390510343837668d8f0eade75a72
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
