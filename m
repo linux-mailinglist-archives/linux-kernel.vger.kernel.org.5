@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-118184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3FE788B58F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:50:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E3D388B590
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:50:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 697AF1F63A9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:50:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FB7E1C3937A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105E284D3C;
-	Mon, 25 Mar 2024 23:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3EA8663E;
+	Mon, 25 Mar 2024 23:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kjRJCKjx"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Vp16IZDx"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6E884A26
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29CD284D3F
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711410624; cv=none; b=PzUptR7EonH+S4b7ro7XSbnW9Vn6OAHl6wPjcMVqgFvbe0RVy6HS1N99y+eOTgD9aZLZP+h/02fzPm6bHgxdG+M/vNPuA9Fr+NhB2XjXcmmE9h5nR4MY9LXoc/JfiM0wTt0MJ82rv/YkJSivojPQWJCj4wvubXReLBC5QimMmpo=
+	t=1711410626; cv=none; b=GTCVtWoPUrSXK6O2CxFlhWW2EvAAsBNaPf1vigbt1hcaAIA3zd+xAU0UAnqt6V8SZ2L6Y7wqwseVf0uZD5DTRUQwVxiXgtUAHc8BeJ56QnV8XUXj1/lHc8BwNyBAFfV+1cAaaDFI+Gaoh6DP6WZik+fP4qlk4L2goB4bgio3j9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711410624; c=relaxed/simple;
-	bh=6xxUCt1k7C+LwXDbzCekm9e6ZfMrsxua/6M5UyPsHns=;
+	s=arc-20240116; t=1711410626; c=relaxed/simple;
+	bh=N3EhBhoPx4G/jPI5J5rhJXw3XGLAmDgO8lD2yh8kUnA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=LgFjXUwKO2kp/U0wp5gfR8k99qpHqyRdPWB/mRWzYWlEL+LMZB91JfeFUukYIAYyFJf2Twa90qMNJhxW8pNhr6RFfJ2QHgEsgRUZjX8gmWENa5uKbaQ/H6yEoR+FknwFx0GQBh99WWFezMjdFLPKs0xdIAuBRRINevYk7g1yzZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kjRJCKjx; arc=none smtp.client-ip=209.85.128.201
+	 To:Cc:Content-Type; b=LLs4WW54tOkyLEuGC46DuEPR2lc7xqi1ZtfAB0xM10pjI2t4IHZ+c2xRm6hiHbbVR/EF8Zu0dBV0ZbzrpbdeG3GOnF1rMKG4JY1dZD7yCGfZTGS62RVNJqdym14ovTnXhxgmBeoTiWRp510DXpm8mYPQnH9Bl5ucNKQQoEFMSI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Vp16IZDx; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a03635590so99284487b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:50:22 -0700 (PDT)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60cd041665bso94042327b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711410622; x=1712015422; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711410623; x=1712015423; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u9fvbqW1pLtPErlE8l2YKQeiKLLE5wFNh7avewbFYWs=;
-        b=kjRJCKjxUN2aU1haa67W+vz+lyNDM3VM4OeLHTfKotzkn3jMo3uakiw2baap7rZ0Bw
-         EN4tb8BK9AaV1Kgpzh2/4PWKOdgnOyXu7gHZQOrn8RGOyH9h8k0Kt0VrBBEOi65PskXs
-         +KM3arrq/7cFfwMDFXFS2UgkzxKMTRe/Dyw00T+zcIrQu/DAk7fmFMQTLCPL6ApyOJ/c
-         Acm2aASX7xFDapHAauKyj7477grt++HAYeEp3H759KS55WxqvnK3bxSMwhd5XoHb5jHG
-         1c3Be2qgoM42YOAtwyPRcCiHLcePuAidbIfPGrvgBOiIJXxsmLb18j6RCfaarjmDab8o
-         0d2Q==
+        bh=ltPcwa62HBgtxDU26adJs5Ek9NcA4wCnN/irpaDy45s=;
+        b=Vp16IZDx2OImL9QaaZ0imlCmnw9vXM5OYNlINxsa4YnCWqmJ9xwV6d3k8naBoOR0ip
+         EisHnAx16oZV9zIj8JYHk96Cr+i2H9uHUnTeHMlZ79NN+7hs6gmXpCMiMWaZLZTQqFxu
+         AAtWf7dHc3DvIhfU906cRcwp8hEHXSSFAcGqbrkAsHD4FWOBK17hmkDNMXg0Ydpe/nF2
+         WBcwRWtOD3iNfOr4gQsHAJ4febC8g06uPAJBFWmphABqpx0puMnnuQUzpvRCiD/p64RH
+         qLGYnuCkQXBaNAG30R1CatkU/CFMawTO9u4ua+QtW9HAXxzdnfRXKy2D/lwh6RqCi/Pu
+         VULQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711410622; x=1712015422;
+        d=1e100.net; s=20230601; t=1711410623; x=1712015423;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u9fvbqW1pLtPErlE8l2YKQeiKLLE5wFNh7avewbFYWs=;
-        b=tFiM2ZzIqmr1RDPhDJUF0L6CZYjdYWE1icLNADF1MdcY0ewDkJSQ060OZ+OElYvfX2
-         Db8zU+eSlZF56NsF/0c37Z610IdvbItT9gxYbolLzc2n5u5SywUD0jkQZCr4llkmHdEx
-         gqlnC8AiKsETxH+hOlJ1mE0qHeR/uyO+SVCv/eSdxR4NHZvKJq6yytMbmvETfYNU9TF3
-         ObihNcuQRF9EYsRQzyQz5sW5BXOUJJJR0O+/PKyIcS37R9gGEP9jae+ZAFhDjPN5xa5z
-         7nw6GjqIuqf20lnFhsPak6TYISGUahxiJ8rome69WIh21uV3uysWByHrTperuUAbP/7e
-         WTgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWt9tYZ/99jf9cxGAk/hMveLz33tk8Tr7YTq07/7M2QHRxNoBysugPv3UZ75WU3mZkTU5ozgBj4aFmO57okx21G1GCVQaN0qTNmKEYE
-X-Gm-Message-State: AOJu0YyNPivweKkekyZB+VgN7y/b3hYIHF1J8GLqFlJUDLIVxYJCW/rF
-	CAPneKZZM3CqqcXRdw9peoS3+W9QH+twg8wZdRI2F9IpCj5W7dgsVWk8GFzfyMueyHDwaxdGanH
-	PeNNprfbpCaGKIcLn6g==
-X-Google-Smtp-Source: AGHT+IH+DXWV+vX4OULsfH+Uyq0gzOaLllxrZEK/FYDaAYjBCM9JZ11SOX35Q3oKMnkT3VL0MGvjY9eZ8pU6LA5R
+        bh=ltPcwa62HBgtxDU26adJs5Ek9NcA4wCnN/irpaDy45s=;
+        b=CyzH3Kt0MghGHSZBd70h1GogOqnh8DrFDlr2BEX7JfSMUwmEglt4TDb3Pbg3exwBB1
+         GnBSxerQ+JMzLM5YdkafBdBN5iDDg6UBv3LiyR3z8vn0dDd9CFRkozGu8qz+8wAuGcOy
+         ZpdfyK6qJs1RKq1RstMOKam74jmMdrHl36bmJ5yzA1OmunFMeCQgX4dGxZxv4N1eQ8OX
+         55qik2KAd2dmnnSgb1jstsLPCWlGIYF+5MEoOA1sQenyKu6T6FDU9pB4O1jDk71vCk2D
+         5DhVOKFWYDUmJeJOgJjm41lI1mUwG087SD/4jvdTvarCQvPBoBTkbYh2WyZL9aCAcD4X
+         BmfA==
+X-Forwarded-Encrypted: i=1; AJvYcCWcS2QVP9uRZBMgTSl3IpTdhqhBpQTrEhu9pPpOEhGgvdyHIRO1CaHqQ7VxpP7/VO240Ux55XjLKUbCMCcKOnPc50pEk2Q+WfXBdBqf
+X-Gm-Message-State: AOJu0Yz4rR/n6T4OOh0dgLm1PkCM2g5XrTtxNKA4pbnlFgDEb4wt4Iup
+	MUdcN4T7O9Wb5sxPYXBwhD+JPjAnW4o2xwzc/od/2wy2wWbb3VD8L1A9/NL+JOXosmwvPeMnVOK
+	xoo3dRDDy8nmaAcV/qw==
+X-Google-Smtp-Source: AGHT+IETdRLWcKvQU7ALPH/FxGMfk6VVMBGbdetkJernCRp2EMtMjfpphTVvqJ9nLnh8UXcxjIFAV/8JU9lCEqEU
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:2491:b0:dcb:e982:4e40 with
- SMTP id ds17-20020a056902249100b00dcbe9824e40mr2590953ybb.12.1711410621894;
- Mon, 25 Mar 2024 16:50:21 -0700 (PDT)
-Date: Mon, 25 Mar 2024 23:50:09 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a0d:eb04:0:b0:610:d0c9:696b with SMTP
+ id u4-20020a0deb04000000b00610d0c9696bmr2096495ywe.8.1711410623435; Mon, 25
+ Mar 2024 16:50:23 -0700 (PDT)
+Date: Mon, 25 Mar 2024 23:50:10 +0000
 In-Reply-To: <20240325235018.2028408-1-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240325235018.2028408-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240325235018.2028408-2-yosryahmed@google.com>
-Subject: [RFC PATCH 1/9] mm: zswap: always shrink in zswap_store() if zswap_pool_reached_full
+Message-ID: <20240325235018.2028408-3-yosryahmed@google.com>
+Subject: [RFC PATCH 2/9] mm: zswap: refactor storing to the tree out of zswap_store()
 From: Yosry Ahmed <yosryahmed@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
@@ -82,74 +82,86 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
 	Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-The cleanup code in zswap_store() is not pretty, particularly the
-'shrink' label at the bottom that ends up jumping between cleanup
-labels.
-
-Instead of having a dedicated label to shrink the pool, just use
-zswap_pool_reached_full directly to figure out if the pool needs
-shrinking. zswap_pool_reached_full should be true if and only if the
-pool needs shrinking.
-
-The only caveat is that the value of zswap_pool_reached_full may be
-changed by concurrent zswap_store() calls between checking the limit and
-testing zswap_pool_reached_full in the cleanup code. This is fine
-because:
-- If zswap_pool_reached_full was true during limit checking then became
-  false during the cleanup code, then someone else already took care of
-  shrinking the pool and there is no need to queue the worker. That
-  would be a good change.
-- If zswap_pool_reached_full was false during limit checking then became
-  true during the cleanup code, then someone else hit the limit
-  meanwhile. In this case, both threads will try to queue the worker,
-  but it never gets queued more than once anyway. Also, calling
-  queue_work() multiple times when the limit is hit could already happen
-  today, so this isn't a significant change in any way.
+Refactor the code that attempts storing to the xarray, handling erros,
+and freeing stale entries into a helper. This will be reused in a
+following patch to free other types of tree elements as well.
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- mm/zswap.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ mm/zswap.c | 42 ++++++++++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 16 deletions(-)
 
 diff --git a/mm/zswap.c b/mm/zswap.c
-index c4979c76d58e3..1cf3ab4b22e64 100644
+index 1cf3ab4b22e64..ff1975afb7e3d 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -1429,12 +1429,12 @@ bool zswap_store(struct folio *folio)
- 	if (cur_pages >= max_pages) {
- 		zswap_pool_limit_hit++;
- 		zswap_pool_reached_full = true;
--		goto shrink;
-+		goto reject;
- 	}
- 
- 	if (zswap_pool_reached_full) {
- 		if (cur_pages > zswap_accept_thr_pages())
--			goto shrink;
-+			goto reject;
- 		else
- 			zswap_pool_reached_full = false;
- 	}
-@@ -1540,6 +1540,8 @@ bool zswap_store(struct folio *folio)
- 	zswap_entry_cache_free(entry);
- reject:
- 	obj_cgroup_put(objcg);
-+	if (zswap_pool_reached_full)
-+		queue_work(shrink_wq, &zswap_shrink_work);
- check_old:
- 	/*
- 	 * If the zswap store fails or zswap is disabled, we must invalidate the
-@@ -1550,10 +1552,6 @@ bool zswap_store(struct folio *folio)
- 	if (entry)
- 		zswap_entry_free(entry);
- 	return false;
--
--shrink:
--	queue_work(shrink_wq, &zswap_shrink_work);
--	goto reject;
+@@ -827,6 +827,30 @@ static void zswap_entry_free(struct zswap_entry *entry)
+ 	atomic_dec(&zswap_stored_pages);
  }
  
- bool zswap_load(struct folio *folio)
++/*********************************
++* zswap tree functions
++**********************************/
++static int zswap_tree_store(struct xarray *tree, pgoff_t offset, void *new)
++{
++	void *old;
++	int err;
++
++	old = xa_store(tree, offset, new, GFP_KERNEL);
++	err = xa_is_err(old);
++	if (err) {
++		WARN_ONCE(err != -ENOMEM, "unexpected xarray error: %d\n", err);
++		zswap_reject_alloc_fail++;
++	} else if (old) {
++		/*
++		 * We may have had an existing entry that became stale when
++		 * the folio was redirtied and now the new version is being
++		 * swapped out. Get rid of the old.
++		 */
++		zswap_entry_free(old);
++	}
++	return err;
++}
++
+ /*********************************
+ * compressed storage functions
+ **********************************/
+@@ -1396,10 +1420,10 @@ bool zswap_store(struct folio *folio)
+ 	swp_entry_t swp = folio->swap;
+ 	pgoff_t offset = swp_offset(swp);
+ 	struct xarray *tree = swap_zswap_tree(swp);
+-	struct zswap_entry *entry, *old;
+ 	struct obj_cgroup *objcg = NULL;
+ 	struct mem_cgroup *memcg = NULL;
+ 	unsigned long max_pages, cur_pages;
++	struct zswap_entry *entry;
+ 
+ 	VM_WARN_ON_ONCE(!folio_test_locked(folio));
+ 	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
+@@ -1485,22 +1509,8 @@ bool zswap_store(struct folio *folio)
+ 	entry->swpentry = swp;
+ 	entry->objcg = objcg;
+ 
+-	old = xa_store(tree, offset, entry, GFP_KERNEL);
+-	if (xa_is_err(old)) {
+-		int err = xa_err(old);
+-
+-		WARN_ONCE(err != -ENOMEM, "unexpected xarray error: %d\n", err);
+-		zswap_reject_alloc_fail++;
++	if (zswap_tree_store(tree, offset, entry))
+ 		goto store_failed;
+-	}
+-
+-	/*
+-	 * We may have had an existing entry that became stale when
+-	 * the folio was redirtied and now the new version is being
+-	 * swapped out. Get rid of the old.
+-	 */
+-	if (old)
+-		zswap_entry_free(old);
+ 
+ 	if (objcg) {
+ 		obj_cgroup_charge_zswap(objcg, entry->length);
 -- 
 2.44.0.396.g6e790dbe36-goog
 
