@@ -1,132 +1,190 @@
-Return-Path: <linux-kernel+bounces-116691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C26EB88A18E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:20:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35C7D88A293
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CB552C4B93
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:20:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EAF91F3AE2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1EB21586E2;
-	Mon, 25 Mar 2024 10:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C65814C590;
+	Mon, 25 Mar 2024 10:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KPQTl6b7"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xzZ18pVo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gZ60F7px";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xzZ18pVo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gZ60F7px"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662CF18E0D3
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F6614EC54;
+	Mon, 25 Mar 2024 08:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711354822; cv=none; b=BcCTfjBB13ukNpG50cfjoFu+SohMm/RowF0qu5VVhaQ4Rs35OGzRLERLjyPw5sO5yB2f3iZB9bLVKjyQTbfas18UMJbUkqBItGZZRnNWDJE7E3nlFo0EXKb5CNmRyrOnIkHHCFHS5fEhVvVEjodvFFlZcoxb44dVOutjVoKb6Nk=
+	t=1711354870; cv=none; b=chM1ELC1b8iagtou/z4VYUpOQzIqSM6eYowq7zQMm4PkOvfVHDIYFnE6iaTab8y7XKhsYCrAEWazu28WDpZcZVWbC0bMNSpp8ac5Z3Jm7s14zLs/6dCZelP0Mr8Asif4N2oNYaxiB7aMM121vJneaM060xH3vxSj3T+txE466ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711354822; c=relaxed/simple;
-	bh=EOuiWs8du4z/j7Ah6vYpJvGj8hoJqJ0Goki/wN9yEK8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nKPI4NBDVAIyVia2CFxEldBRDEoG7SkpJWiHJPZRMdj1F0DdvCqjhRKTBd4bK4RT57aOahnFjsPFKxG8A5yLm07o/qrfY3XEy4kV9/bhibivWfUptOS9EY/TDEtyNTrNWwuj+Mz7LLY9LFgDhw5SU5idEsFUcEWGhRiomr9PET0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KPQTl6b7; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711354818;
-	bh=EOuiWs8du4z/j7Ah6vYpJvGj8hoJqJ0Goki/wN9yEK8=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=KPQTl6b7ci0hQ7vi0vQviWzjm9nl7bFBMvlPosICqpMG+lV4FPIlcLU1i49nF8Ot6
-	 //jOVs17GnLk2NA3HMrcuE8XjJ9dxEm0hKhRFgcDzRTyrM/NyniUog6xLA0z1ZMn9A
-	 IW4Gr/5cGk5efv0R0rd7eqO0tjtwCYGcSD1gn1mQJfN3rpIwDG5+nG+uuSE0856J2a
-	 GkSJGs40VnmRocBRxZytgIKaecMFRRkEq6bwxwr0cKgbYtl6Bdi+WhltTrDMihTRcP
-	 f0r6Z98V/xdXTXcZE+bIAraxbz/7B+MeoqcbbvDSidAYkLhnWuNPBJpyo84yTAxJue
-	 0VBP2vfoels2A==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	s=arc-20240116; t=1711354870; c=relaxed/simple;
+	bh=Do5RGFON79BZo5EODGYKbFfems4SE+esrkAYSwRAjn8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=aWhL8dPYr1W/8w+6zJXa/10m1m/zFbJiooGicny58eZqnnKrUTXY+c1zix+/oGQoBpz0Sa9ND87Fd04wPReQxkUeo9RK0BioJxZK2WdW7uAtaMQzrQp1APISVn44OLA1poKwZYqE4aZ59OByBvA2p/BX/LtFjZQ9UQDuOYeJJZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xzZ18pVo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gZ60F7px; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xzZ18pVo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gZ60F7px; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 047A637813B7;
-	Mon, 25 Mar 2024 08:20:17 +0000 (UTC)
-Message-ID: <45ef7d6e-d029-4b02-be9e-736dff3724af@collabora.com>
-Date: Mon, 25 Mar 2024 09:20:17 +0100
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6BA7E5C3FD;
+	Mon, 25 Mar 2024 08:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711354865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=RpfJF9YPIRTCVRvpa1RnbtB6JDDMaGcncw0S5jxMQ5g=;
+	b=xzZ18pVoNkcF9rE1+uQav0CXPCZ1fnp5OwpTyQzRJKpYVRcJ5ksdPyTtmXPcnNvCGunX74
+	+Ymxs2/P0Q5ICCBS3XzORaiE7Pyrq4EJaVNvHXqH/gE6xfH7KQC3Vg7uodykwLbwLkl5kC
+	hgbwFOkKrKavXvlqdQ5YuwMgdH6fizc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711354865;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=RpfJF9YPIRTCVRvpa1RnbtB6JDDMaGcncw0S5jxMQ5g=;
+	b=gZ60F7pxpMO8PzBei7Wx46WtPwjT9p0rwP2eVPLiBRxRa8C9BJkGM++P6tOOzeJbxBuRNq
+	tk7W2E5JqQDAdpCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711354865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=RpfJF9YPIRTCVRvpa1RnbtB6JDDMaGcncw0S5jxMQ5g=;
+	b=xzZ18pVoNkcF9rE1+uQav0CXPCZ1fnp5OwpTyQzRJKpYVRcJ5ksdPyTtmXPcnNvCGunX74
+	+Ymxs2/P0Q5ICCBS3XzORaiE7Pyrq4EJaVNvHXqH/gE6xfH7KQC3Vg7uodykwLbwLkl5kC
+	hgbwFOkKrKavXvlqdQ5YuwMgdH6fizc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711354865;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=RpfJF9YPIRTCVRvpa1RnbtB6JDDMaGcncw0S5jxMQ5g=;
+	b=gZ60F7pxpMO8PzBei7Wx46WtPwjT9p0rwP2eVPLiBRxRa8C9BJkGM++P6tOOzeJbxBuRNq
+	tk7W2E5JqQDAdpCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4105413503;
+	Mon, 25 Mar 2024 08:21:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tjxMD/EzAWZdHgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 25 Mar 2024 08:21:05 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v2 0/2] memcg_kmem hooks refactoring
+Date: Mon, 25 Mar 2024 09:20:31 +0100
+Message-Id: <20240325-slab-memcg-v2-0-900a458233a6@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panfrost: fix power transition timeout warnings
-To: Christian Hewitt <christianshewitt@gmail.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20240322164525.2617508-1-christianshewitt@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240322164525.2617508-1-christianshewitt@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAM8zAWYC/03Myw6CMBCF4Vchs7amTKFSV76HYVHqCE3kko42K
+ um7W3Hj8j/J+VZgCp4YjsUKgaJnP085cFeAG+zUk/CX3IASK4loBN9sJ0YaXS8s6U4dGuMMVpA
+ PS6Crf27Yuc09eL7P4bXZsfyuP0bJ8p+JpZBC1UZhYytdG33iB9PevaFNKX0Aet5RfaIAAAA=
+To: Linus Torvalds <torvalds@linux-foundation.org>, 
+ Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
+ Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>, 
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Roman Gushchin <roman.gushchin@linux.dev>, 
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+ Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+ Shakeel Butt <shakeel.butt@linux.dev>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ Vlastimil Babka <vbabka@suse.cz>, Chengming Zhou <chengming.zhou@linux.dev>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1147; i=vbabka@suse.cz;
+ h=from:subject:message-id; bh=Do5RGFON79BZo5EODGYKbFfems4SE+esrkAYSwRAjn8=;
+ b=owEBbQGS/pANAwAIAbvgsHXSRYiaAcsmYgBmATPZX3NtjLD+0T3mwtrWkT3/UFdtMA8OxHXmv
+ 8xLDTlJutGJATMEAAEIAB0WIQR7u8hBFZkjSJZITfG74LB10kWImgUCZgEz2QAKCRC74LB10kWI
+ mo/GB/0aRHVq8/FkwfqNxC442Q7bc8rhp0GrFMU27CQMBmm8mkvvB8z14B7XXk8P64wJhQgq477
+ 5jA+T8c/SiwvK3HSBiLgH5ZLnkzT7pjw0xkH453d5+biJCaGaPOnekC39H+7oRVMTNfYNLppHag
+ x5ChJ1NkXKo8XTVutsY9ZYjPLD6vW9B0JOAcm08F6z5AYslOYk92Hc1F6jADx4rPv+m8kGSB6SW
+ VfuPvE1fBxDCMcvApyARzetmpzJiZ8NGCrLl8E6a0B6jAzZiWQLndm2vxQ96Ccopp8vV8b6Zgme
+ LWKuSW7YvMAvSWiJleKgvpfJQk9aXAduDBtHMqYYVqc2/JcV
+X-Developer-Key: i=vbabka@suse.cz; a=openpgp;
+ fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.19
+X-Spamd-Result: default: False [0.19 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-0.01)[48.92%];
+	 R_RATELIMIT(0.00)[to_ip_from(RL8ogcagzi1y561i1mcnzpnkwh)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[25];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,oracle.com,linux.com,google.com,lge.com,linux.dev,gmail.com,cmpxchg.org,zeniv.linux.org.uk,suse.cz];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-Il 22/03/24 17:45, Christian Hewitt ha scritto:
-> Increase the timeout value to prevent system logs on Amlogic boards flooding
-> with power transition warnings:
-> 
-> [   13.047638] panfrost ffe40000.gpu: shader power transition timeout
-> [   13.048674] panfrost ffe40000.gpu: l2 power transition timeout
-> [   13.937324] panfrost ffe40000.gpu: shader power transition timeout
-> [   13.938351] panfrost ffe40000.gpu: l2 power transition timeout
-> ...
-> [39829.506904] panfrost ffe40000.gpu: shader power transition timeout
-> [39829.507938] panfrost ffe40000.gpu: l2 power transition timeout
-> [39949.508369] panfrost ffe40000.gpu: shader power transition timeout
-> [39949.509405] panfrost ffe40000.gpu: l2 power transition timeout
-> 
-> The 2000 value has been found through trial and error testing with devices
-> using G52 and G31 GPUs.
-> 
-> Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> ---
->   drivers/gpu/drm/panfrost/panfrost_gpu.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> index 9063ce254642..fd8e44992184 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
-> @@ -441,19 +441,19 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->   
->   	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
->   	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
-> -					 val, !val, 1, 1000);
-> +					 val, !val, 1, 2000);
->   	if (ret)
->   		dev_err(pfdev->dev, "shader power transition timeout");
->   
->   	gpu_write(pfdev, TILER_PWROFF_LO, pfdev->features.tiler_present);
->   	ret = readl_relaxed_poll_timeout(pfdev->iomem + TILER_PWRTRANS_LO,
-> -					 val, !val, 1, 1000);
-> +					 val, !val, 1, 2000);
+Hi,
 
-Are you sure that you need to raise the timeout for TILER as well?
+this is v2 of the memcg_kmem hooks refactoring (RFC/v1 link at the end).
+This just rebases the refactoring patches 1 and 2 so they can start to
+be exposed to -next and other work on can base on that.  I'm not
+including the kmem_cache_charge() patch here until we have a more
+finished user than my previous unfinished attempt.
 
-Cheers,
-Angelo
+Vlastimil
 
->   	if (ret)
->   		dev_err(pfdev->dev, "tiler power transition timeout");
->   
->   	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
->   	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
-> -				 val, !val, 0, 1000);
-> +				 val, !val, 0, 2000);
->   	if (ret)
->   		dev_err(pfdev->dev, "l2 power transition timeout");
->   }
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+Changes in v2:
+- rebase to v6.9-rc1
+- add reviewed-by's to patches 1+2
+- drop patches 3+4 (kmem_cache_charge() and usage in vfs)
+- Link to v1: https://lore.kernel.org/r/20240301-slab-memcg-v1-0-359328a46596@suse.cz
 
+---
+Vlastimil Babka (2):
+      mm, slab: move memcg charging to post-alloc hook
+      mm, slab: move slab_memcg hooks to mm/memcontrol.c
+
+ mm/memcontrol.c |  90 +++++++++++++++++++++++++
+ mm/slab.h       |  10 +++
+ mm/slub.c       | 202 +++++++++++---------------------------------------------
+ 3 files changed, 138 insertions(+), 164 deletions(-)
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240229-slab-memcg-ae6b3789c924
+
+Best regards,
+-- 
+Vlastimil Babka <vbabka@suse.cz>
 
 
