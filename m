@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-116544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D86088A086
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:57:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B25888A08E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:58:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E09811F39049
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:57:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C3A31C37055
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:58:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FDF1411F5;
-	Mon, 25 Mar 2024 07:57:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5471C1474C6;
+	Mon, 25 Mar 2024 07:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rwUwJwMF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XTThkeOH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4931411F7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF94E1411F8;
 	Mon, 25 Mar 2024 05:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711345445; cv=none; b=bYtCv73T4wesbsmU/JbKHYBlxDGDjhbux/ziB2RX1il/72W70LUXi97Rq1H8H44vZ7Ce0YBrSnXshWjEATjTKu9fnBLBx0HD2w2MiNDRwZLj+KpCYNUoTXLvJVH6XQJxrCxkw52Mx2J8vT1Loevdq7zGXD+unaiEL8AVgsuZg0w=
+	t=1711345445; cv=none; b=R6AXgi9qi2ywj+3fCz1G5XrC8KvGVNxsVtrEF7qlrN/ymEdk1DT2iILVhhTmu5eMbks4RkOXvImtlhThQKlUsbG7ssVmYb2yG6w1B/diCZis2JRNQi6HYEYRvbttXTlHYW8rPtovEDDLSC0wjafNbA04KPqR6ioNrxHF2+5owlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711345445; c=relaxed/simple;
-	bh=S6KN9NZ86rsgC3JbJzRsAdTxPonS8+fxlmqhl9tZ1yg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lS8YKp20fDs6SLZAlVpja/YX5UZzMU3bKGv3wFXfigYIhLuC8hcvhGN/G/9prEfI2fM+zCK/yDFl7K/3CxKlfbBfU2+J2MD22MxL7/GXL6pCDasGAXzlG81/eE5MRqyDumNEHpGcL+4uXh/OGiMMbrYTVoH7UmEHRuvEFtmx7qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rwUwJwMF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75841C433C7;
-	Mon, 25 Mar 2024 05:44:04 +0000 (UTC)
+	bh=HBI+Gf+zyj89/JIgSSOwlpZAPa/EE8Nn6UlvurY0Z5Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=M//o8P5fO1vrwMTpRpwcJQsSAHql1C0uHk3b8wMo2a+J2rQA4aOdMU8gpgzGfhTh3ja+N8ctd0T/5110dUBQ8bZQn9ZN1VOn0O9FlsHK+fTwld9rO4mGRL8dBZTjPp8XemFKXIdueD5fCN6Pg1Hf4z5XEe/0rYkHeuBM96+G2Cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XTThkeOH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26616C433F1;
+	Mon, 25 Mar 2024 05:44:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711345445;
-	bh=S6KN9NZ86rsgC3JbJzRsAdTxPonS8+fxlmqhl9tZ1yg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=rwUwJwMFeRA31ZENhBOdCiysC+P6+e/hadizGOz4gmwvM4riRhQSW8seRjHUBUoTC
-	 CGUcZ7DGUVR1iLCIDuKnEBn6iReIvWPbD6XLAJuXrtUhv6Ow+a2l+9hvOZavJzoVR3
-	 n7xd07fbPWA77PhEBtup8DXBOTbPqeov3fE4Bha8INIG4S3dehxvCLnC292LP8CgrS
-	 h8Igu7BDaaPCt2CzvmPxvEvm5r/R8+CXBvZCcb7RVVJOKVWUtkDRWPqJbHLo8xgWMN
-	 QfDYl4o5wHBXUX3WTdaGnJ9g7A3nBcgzg9v3AAFWi0AX/fna+fYzPnhlKjVYMgz3YT
-	 tKzvSk6aHK1vA==
+	bh=HBI+Gf+zyj89/JIgSSOwlpZAPa/EE8Nn6UlvurY0Z5Y=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=XTThkeOHfPQCOIB0JsWYniYn3zGCVag7AQoAX+3ReCt0+zf3H1hWM3mkDqdU22UYw
+	 RDrHRdw4v7vTCFeGUj5sXSyy43ycTtEa3W7MwZ1dgqxDdiBau8j2tcilzUql7YdC2v
+	 opvLa4RCA6uQZbUSIJogCKO1IoH+Py6Xx+1Gi7irAtakozBSVeXKkXaRhn6YRCsp3x
+	 C/U3GNG7JdrwEH9oLj3BrjJZlHDin1KK56wPM0+KmoCFgbFaSxgU+ONfZJ2QDhMp3c
+	 0+J+iAtodLB8fbVb8I8rDH5jnq5NjySJNhNc1Vp7sEpdp12LfvRy3u4b+FDm93WFQt
+	 95SMZEDjyYPDg==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Michael Turquette <mturquette@baylibre.com>,
 	Stephen Boyd <sboyd@kernel.org>
@@ -46,15 +47,14 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	patches@lists.linux.dev,
 	linux-arm-msm@vger.kernel.org,
-	Douglas Anderson <dianders@chromium.org>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Taniya Das <quic_tdas@quicinc.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 0/5] Fix a deadlock with clk_pm_runtime_get()
-Date: Sun, 24 Mar 2024 22:43:57 -0700
-Message-ID: <20240325054403.592298-1-sboyd@kernel.org>
+	Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH 1/5] clk: Remove prepare_lock hold assertion in __clk_release()
+Date: Sun, 24 Mar 2024 22:43:58 -0700
+Message-ID: <20240325054403.592298-2-sboyd@kernel.org>
 X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
+In-Reply-To: <20240325054403.592298-1-sboyd@kernel.org>
+References: <20240325054403.592298-1-sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,49 +63,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series fixes a deadlock reported[1] on ChromeOS devices
-(Qualcomm sc7180 Trogdor). To get there, we allow __clk_release() to run
-without the prepare_lock held. Then we add runtime PM enabled clk_core
-structs to a list that we iterate and enable runtime PM for each entry
-before grabbing the prepare_lock to walk the clk tree. The details are
-in patch #4.
+Removing this assertion lets us move the kref_put() call outside the
+prepare_lock section. We don't need to hold the prepare_lock here to
+free memory and destroy the clk_core structure. We've already unlinked
+the clk from the clk tree and by the time the release function runs
+nothing holds a reference to the clk_core anymore so anything with the
+pointer can't access the memory that's being freed anyway. Way back in
+commit 496eadf821c2 ("clk: Use lockdep asserts to find missing hold of
+prepare_lock") we didn't need to have this assertion either.
 
-The patch after that is based on the analysis in the disable unused
-patch. We similarly resume devices from runtime suspend when walking the
-clk tree for the debugfs clk_summary.
-
-Unfortunately this doesn't fix all problems with the usage of runtime PM
-in the clk framework. We still have a problem if preparing a clk happens
-in parallel to the device providing that clk runtime resuming or
-suspending. In that case, the task will go to sleep waiting for the
-runtime PM state to change, and we'll deadlock. This is primarily a
-problem with the global prepare_lock. I suspect we'll be able to fix
-this by implementing per-clk locking, because then we will be able to
-split up the big prepare_lock into smaller locks that don't deadlock on
-some device runtime PM transitions.
-
-I'll start working on that problem in earnest now because I'm worried
-we're going to run into that problem very soon.
-
-Stephen Boyd (5):
-  clk: Remove prepare_lock hold assertion in __clk_release()
-  clk: Don't hold prepare_lock when calling kref_put()
-  clk: Initialize struct clk_core kref earlier
-  clk: Get runtime PM before walking tree during disable_unused
-  clk: Get runtime PM before walking tree for clk_summary
-
- drivers/clk/clk.c | 142 +++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 115 insertions(+), 27 deletions(-)
-
-Cc: Douglas Anderson <dianders@chromium.org>
+Fixes: 496eadf821c2 ("clk: Use lockdep asserts to find missing hold of prepare_lock")
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Taniya Das <quic_tdas@quicinc.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+ drivers/clk/clk.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-[1] https://lore.kernel.org/all/20220922084322.RFC.2.I375b6b9e0a0a5348962f004beb3dafee6a12dfbb@changeid/
-
-base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 2253c154a824..44e71736477d 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -4353,8 +4353,6 @@ static void __clk_release(struct kref *ref)
+ {
+ 	struct clk_core *core = container_of(ref, struct clk_core, ref);
+ 
+-	lockdep_assert_held(&prepare_lock);
+-
+ 	clk_core_free_parent_map(core);
+ 	kfree_const(core->name);
+ 	kfree(core);
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
