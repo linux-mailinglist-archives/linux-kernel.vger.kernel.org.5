@@ -1,111 +1,151 @@
-Return-Path: <linux-kernel+bounces-117885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD47588B0D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:06:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D726B88B0DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:06:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 883A52E325C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:06:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91F562E4372
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7C73FBA0;
-	Mon, 25 Mar 2024 20:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0004F41231;
+	Mon, 25 Mar 2024 20:06:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="Qstw1Oc6"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oCq/30nk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837FB219E5
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABB43E468;
+	Mon, 25 Mar 2024 20:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397160; cv=none; b=Re4wgzVfCOzGuFltE+NYUI+/rxhudGGGDz/6kdBAHcKAxyFFG6Nd4rFLstzlgkTKlvLJOkKT4pZltl/GBj7wpDrFhuRfZ4VnCS7rWdnzGBgPGPHTjukyjA+sTz9gRsDreUJhVyiHO0Oz0oPwyu/3fUWBV4YOnyh01Roeu9ucPKE=
+	t=1711397203; cv=none; b=tPd1ZBkKWy+2bHebBbHJRRGwY0y3ADpk0xsbKGt2mRKnRthI8yn0yUZMW6sSyOci7HBKuQJlsiIMznBu7G14AGrxXz0Be2CiY5/0koPHtTUbUjehIfnwlmIP8CnBWBVmIWwizTj9SC2csnuwC3hW7x03v2e6ETlX3JcivN8X5w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397160; c=relaxed/simple;
-	bh=UjrUvFUa0XDyVul18UUTRk6viKLJkQaQh7vx2mOVQvs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VJ0kIum3x5A6b5RnZjj8o5uwLzNw0lWzumlBi0XMOVGh55C1bAlKiDWqNyIwTQAXSVgdqvBdKjICBiL+O5Gao7wBIcBV3IELBjob/AbC0nbDOewmJsohMi9emStvsKB92m6smAN/Rd8fftfKMrShd4/TNXO/+AzJozL8MH/2ovw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=linuxtx.org; dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b=Qstw1Oc6; arc=none smtp.client-ip=209.85.210.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxtx.org
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e6a9e2e2b6so2604040a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1711397156; x=1712001956; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0s4wc3i/rfC3/kxPVkBRBN3/JL52yC7W1Cjubckw3aI=;
-        b=Qstw1Oc6PeGe7QTXrkhKhbfHA/q8M3FNDYbOEOPwiwUBvwAgOdHeljJUGVkgeor2YD
-         TGf6MEaDWhhhpZgLVaOYrieSDF2c6qjDKdhsVYO27aMZzmAYaRLEO/OKc5o/7WbIhnfr
-         iT0quJTZ9rPRKyxDVZCPEsqork5YDfAtVT60Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711397156; x=1712001956;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0s4wc3i/rfC3/kxPVkBRBN3/JL52yC7W1Cjubckw3aI=;
-        b=MlKpgeElpSAy62Ee0+YZ9ifYuV2ega8Jy1ewTR6+H5kIZmzq0XDbj2UD/Uk85d3QzN
-         U06QF+M2bvaJXx1wGJZCyOpf2R19XKBhsxlxKTvU+07Gqum7jdyMArKgnTpWtKENrXev
-         AXweNdgb4pPOVkCLDWGFQ7RaF9L6vsVrh9rHKtl8vL9kvDfb75TO9+bu7yGjUfZAhsrB
-         11BRsiEobo8p2NWhL1O8/EBDOSh41wfOxP2kr7MXWp2C+3IYaWQP4NbI4CfrRJyh2eeg
-         vUtlhQvauvzu9lXqUYkewb4Q7biQQ7tiTU2iq/FZ7lyqoG3BekstcFktDq7J285ygpKX
-         qk5A==
-X-Gm-Message-State: AOJu0Yz5RbgG08Y5iGD8m60Wj2D9EQQzIyAHu/NpxXXnjzwDTJvBnUWE
-	uqNgwGT/P1+8vGQzOGbAnpo/7CJIidh8COiNGaZU8+1Dcr8j18oEcMYXf7M7bluxL+P+pQB0hpc
-	ofg==
-X-Google-Smtp-Source: AGHT+IEz2C6ZNyFMQGJcw/HWcHLsyuzCTD2CcJ7kx+2L35Lrd7WJVLF0L9DJWnDMbuCXNFX6SJqKrw==
-X-Received: by 2002:a05:6870:55cd:b0:229:fd96:1e40 with SMTP id qk13-20020a05687055cd00b00229fd961e40mr9859382oac.44.1711397156561;
-        Mon, 25 Mar 2024 13:05:56 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id pn17-20020a0568704d1100b0022a56a9dc6csm246922oab.10.2024.03.25.13.05.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 13:05:56 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date: Mon, 25 Mar 2024 15:05:54 -0500
-From: Justin Forbes <jforbes@fedoraproject.org>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com,
-	pavel@denx.de
-Subject: Re: [PATCH 6.7 000/707] 6.7.11-rc2 review
-Message-ID: <ZgHZIpmQ5pWcrG-h@fedora64.linuxtx.org>
-References: <20240325120003.1767691-1-sashal@kernel.org>
+	s=arc-20240116; t=1711397203; c=relaxed/simple;
+	bh=TFyc7t7zAjF14Ku+RI2u7lJnCT2d4Wt2C2Ahw/P8HW0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZA503o6Sjtf+4PpQ5OY/uWXKtQj/9HynDDXksveRihUvlhSn3T9Z/WlJRMQdlTyMQ2+P/opCPkwVTqjh2eqh5hVXCvGrrxIk+lwL3wSx+7zp+38QecNGy7SEpPuqGxKg6r6WYeKdHbL+kI1CYxHlAnh05ifKCMJAs0uUPTpRPhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oCq/30nk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 855F5C433F1;
+	Mon, 25 Mar 2024 20:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711397202;
+	bh=TFyc7t7zAjF14Ku+RI2u7lJnCT2d4Wt2C2Ahw/P8HW0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=oCq/30nkbitp5TaP/65h2LjOGxDs81MCvMY3Fqo3I76+1/BGnWdq1gGTuRLBUCZXi
+	 X22nB5Re7Rh3xEiZjLVqGBglCDSW1TPVhHfIVXmOhIr47oiANLUt0gkHGJbCefGE0J
+	 VckK+PFUZEWc4kxwZ6P+XYX9zPE/Pmc1Z857yQm4L8V//8XlRfoz0IK1mw5B/KsaJt
+	 9Q5ZHatW8UI//Xcqvcole458xy8oeNpa5pkBnHOp97cD2WhxiyytGxj6rW75JTrQfh
+	 BGXCoY+hZsdt1Xam8ElbM4GqJ0nYzISvggIcey4++RpLlU68TZttccJzIc4UAX2ckX
+	 i0h+4XsZyaJJg==
+Date: Mon, 25 Mar 2024 20:06:25 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: David Lechner <dlechner@baylibre.com>, Mark Brown <broonie@kernel.org>
+Cc: Julien Stephan <jstephan@baylibre.com>, Lars-Peter Clausen
+ <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, Nuno
+ =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v5 4/7] iio: adc: ad7380: add support for
+ pseudo-differential parts
+Message-ID: <20240325200625.5a07cec4@jic23-huawei>
+In-Reply-To: <CAMknhBGmM7yt1JR1tW4SS5RLGpN9PtnMrf0WvZ-bhU-gSv3YUQ@mail.gmail.com>
+References: <20240319-adding-new-ad738x-driver-v5-0-ce7df004ceb3@baylibre.com>
+	<20240319-adding-new-ad738x-driver-v5-4-ce7df004ceb3@baylibre.com>
+	<20240324130135.35f4b0eb@jic23-huawei>
+	<CAMknhBGmM7yt1JR1tW4SS5RLGpN9PtnMrf0WvZ-bhU-gSv3YUQ@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325120003.1767691-1-sashal@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 08:00:03AM -0400, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 6.7.11 release.
-> There are 707 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed Mar 27 12:00:02 PM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.7.y&id2=v6.7.10
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
 
-Tested rc2 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+> > > +     /*
+> > > +      * pseudo-differential chips have common mode supplies for the negative
+> > > +      * input pin.
+> > > +      */
+> > > +     for (i = 0; i < st->chip_info->num_vcm_supplies; i++) {
+> > > +             struct regulator *vcm;
+> > > +
+> > > +             vcm = devm_regulator_get_optional(&spi->dev,  
+> >
+> > Why optional?
+> >  
+> > > +                                               st->chip_info->vcm_supplies[i]);
+> > > +             if (IS_ERR(vcm))  
+> >
+> > This will fail if it's not there, so I'm guessing you are using this to avoid
+> > getting to the regulator_get_voltage?  If it's not present I'd rely on that
+> > failing rather than the confusing handling here.
+> >
+> > When the read of voltage wasn't in probe this would have resulted in a problem
+> > much later than initial setup, now it is, we are just pushing it down a few lines.
+> >
+> > Arguably we could have a devm_regulator_get_not_dummy()
+> > that had same implementation to as get_optional() but whilst it's called that
+> > I think it's confusing to use like this.  
+> 
+> Despite the misleading naming, I guess I am used to
+> devm_regulator_get_optional() by now having used it enough times.
+> Since it fails either way though, technically both ways seem fine so I
+> can't really argue for one over the other.
+> 
+> But given that this is a common pattern in many IIO drivers, maybe we
+> make a devm_regulator_get_enable_get_voltage()? This would return the
+> voltage on success or an error code. (If the regulator subsystem
+> doesn't want this maybe we could have
+> devm_iio_regulator_get_enable_get_voltage()).
+> 
+> If the dev_err_probe() calls were included in
+> devm_regulator_get_enable_get_voltage(), then the 10+ lines of code
+> here and in many other drivers to get the regulator, enable it, add
+> the reset action and get the voltage could be reduced to 3 lines.
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+I like this proposal a lot. RFC, so it's visible outside the depths
+of this thread?
+Particularly good as it will keep the regulator opaque in the same
+fashion as devm_regulator_get_enabled()
+
+As you say, we have a 'lot' of instances of this (quick grep
+suggests > 50 in IIO alone and smaller numbers elsewhere).
+
+Jonathan
+
+
+> 
+> >  
+> > > +                     return dev_err_probe(&spi->dev, PTR_ERR(vcm),
+> > > +                                          "Failed to get %s regulator\n",
+> > > +                                          st->chip_info->vcm_supplies[i]);
+> > > +
+> > > +             ret = regulator_enable(vcm);
+> > > +             if (ret)
+> > > +                     return ret;
+> > > +
+> > > +             ret = devm_add_action_or_reset(&spi->dev,
+> > > +                                            ad7380_regulator_disable, vcm);
+> > > +             if (ret)
+> > > +                     return ret;
+> > > +
+> > > +             ret = regulator_get_voltage(vcm);  
+> >
+> > I'd let this fail if we have a dummy regulator.
+> >  
+> > > +             if (ret < 0)
+> > > +                     return ret;
+> > > +
+> > > +             st->vcm_mv[i] = ret / 1000;
+> > > +     }
+> > > +  
+> 
+
 
