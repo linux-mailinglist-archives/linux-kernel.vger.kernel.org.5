@@ -1,105 +1,209 @@
-Return-Path: <linux-kernel+bounces-117400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6B4788B284
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:18:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D38388AADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:10:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E317EB3F43F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:10:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38E17344226
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F7513D50B;
-	Mon, 25 Mar 2024 15:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hs3sMEGP"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419A456452;
+	Mon, 25 Mar 2024 15:42:00 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4239D13D2BF
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B3140BE7
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711381340; cv=none; b=rc9rwy+MuhhdeIiUYGAOcGqxkaNeh8nAh4Tuem0OiNIXq9XjKPFzPF1Sg6/2NkMixnoHpvV8fVLwQHYg4FTOqx/N9ZzWjcNn46e/8QQHxhMJWXtH3aOodw9nXYlil8rMsqW9crq7ZLOxAo4cUVs+4t/xL4nzRCf8MmsQpI37QLI=
+	t=1711381319; cv=none; b=hkr79BB7uY8amuCrkXRt0KCOovOm/Ltzl/6XVfLDFK0X3JijiJILZfmBX1P/XFFXdqiC1e+zjoKGXNlapFdIhiPP1xZ5/1aYN/ZKKTEy9TqiGnqqyHnH4jXvgkK2jgFLsb+eOmWl8WE+GpMhqyFDmO8MpCHWo79bE1Yt63/Pg+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711381340; c=relaxed/simple;
-	bh=KcgY73DDippwTtUzWOvcJOeO8SjdhHQhBOlxrmtlBug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZKDF2Smr5NXDAN3grol6Pg5l02bI76tVq7pkZcEOYREQtcU0WUSzjv7b5/6TpPl+4U15degTwTwElyeAIjuswnP6UvIZB0RN7uCOK5oSINgi1GmRKpUmxqlZuC8HLRIAOz6bje8yvBIznLFNee6QGidj2GyAFWgcAlPnelJ08Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hs3sMEGP; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711381339; x=1742917339;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KcgY73DDippwTtUzWOvcJOeO8SjdhHQhBOlxrmtlBug=;
-  b=Hs3sMEGP59oFiFDXAgCVSMPaLCNkGZU3igs9GJ7rccbQNH04kG4O+YIc
-   9Aod6W9Xca38f1Nx9zhXaVgcCD6f0JIlX9KYOU/nx7wr4+clMwjasI17o
-   KixDLCsqjOjS4TG0VqPE6Ip8tP1MLPFS46cN3sSLNAWZ8Pj+7mcB0KN4L
-   JB5/p8Y7IvHqhmFA8aBohmgm/Q6LVTV14n5/82ROvGf9Xyvgqkv46uTj4
-   mFsqA0oKY4EyY8WU71Ci+kP3lni1RL9GtzOWUyrp3K6WZ5eKbQdJvDlKS
-   GuXywBabN4gPclcdn7hILTrDBOjftzxgYCSLPOOa5I47d2L7XsAw89opZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="31828842"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="31828842"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:41:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="914846903"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="914846903"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:41:36 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1romS5-0000000G1lm-1KA9;
-	Mon, 25 Mar 2024 17:41:33 +0200
-Date: Mon, 25 Mar 2024 17:41:33 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Maxim Korotkov <korotkov.maxim.s@gmail.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Hector Palacios <hector.palacios@digi.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: Re: [PATCH] mtd: rawnand: hynix: fixed typo
-Message-ID: <ZgGbLe4XTy1FUP0C@smile.fi.intel.com>
-References: <20240313102721.1991299-1-korotkov.maxim.s@gmail.com>
+	s=arc-20240116; t=1711381319; c=relaxed/simple;
+	bh=bicn3bt3Rvxfh/ao16vucJTlRZS/v7dDzolUZTqTn28=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ha1s1yS7FrbIHNBfFE9QVfakUpBo2F7R2/D8ApEX/tuAbPtigb8qdXqX9Tlw53RCpZ+CMIYXYUhp07TTYqNmHq8dqrUXELh3AXVmMxlIEZp2Yk+nb/NTjw2KEzlrA/8kTdUs6y/uKLKMzxJ/9mXehuogWUuo02vvEG3gmj6GtaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V3H9z469xz6K9T0;
+	Mon, 25 Mar 2024 23:37:27 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 01EF9140B39;
+	Mon, 25 Mar 2024 23:41:52 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 25 Mar
+ 2024 15:41:51 +0000
+Date: Mon, 25 Mar 2024 15:41:50 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Shimrra Shai <shimmyshai00@gmail.com>
+CC: <heiko@sntech.de>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-rockchip@lists.infradead.org>,
+	<max.schwarz@online.de>, <niyas.sait@huawei.com>
+Subject: Re: [PATCH 0/0] (proposed?) Add ACPI binding to Rockchip RK3xxx I2C
+ bus
+Message-ID: <20240325154150.00003bde@Huawei.com>
+In-Reply-To: <20240322155146.22755-1-shimmyshai00@gmail.com>
+References: <20240322103521.00001a12@Huawei.com>
+	<20240322155146.22755-1-shimmyshai00@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313102721.1991299-1-korotkov.maxim.s@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, Mar 13, 2024 at 01:27:20PM +0300, Maxim Korotkov wrote:
-> The function hynix_nand_rr_init() should probably return an error code.
-> Judging by the usage, it seems that the return code is passed up 
-> the call stack.
-> Right now, it always returns 0 and the function hynix_nand_cleanup()
-> in hynix_nand_init() has never been called.
+On Fri, 22 Mar 2024 10:51:46 -0500
+Shimrra Shai <shimmyshai00@gmail.com> wrote:
+
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 > 
-> Found by RASU JSC and Linux Verification Center (linuxtesting.org)
-
-> Fixes: 626994e07480 ("mtd: nand: hynix: Add read-retry support for 1x nm MLC NANDs")
+> For
 > 
-> Signed-off-by: Maxim Korotkov <korotkov.maxim.s@gmail.com>
+> > It would be good to highlight in this description what is missing for
+> > doing a standard ACPI binding and not using any specific hacks in the
+> > driver (get clocks as normal etc).
+> > 
+> > There are ACPI clock bindings, but Linux doesn't support the yet (I think?)
+> > See ACPICA commit
+> > https://github.com/acpica/acpica/commit/661feab5ee01a34af95a389a18c82e79f1aba05a
+> > 
+> > I've seen prototype code but was a while back.  I'd like to see that
+> > work compled rather than having every driver need to paper over the hole.
+> > 
+> > The alias is a different question that needs to be addressed.
+> > If this is a common pattern, push it up in to the i2c core, not
+> > a specific driver.  I see there is already code related to that
+> > in i2c_add_adapter - that just wants an ACPI option.
+> > 
+> > Jonathan  
+> 
+> and
+> 
+> > That implies that the kernel can cope with the device tree wrapped up in
+> > ACPI path.  If that's the case, why do you need RKCP3001 as you can
+> > match on the compatible?  
+> 
+> This was all based on how the people working on the firmware project wrote
+> the ACPI binding. That said, since I've got a foot in it too I can 
+> definitely submit them an updated binding. The binding for the I2C in the
+> project looks like this:
+> 
+>   Device (I2C1) {
+>     Name (_HID, "RKCP3001")
+>     Name (_CID, "PRP0001")
+>     Name (_UID, 1)
+>     Name (_CCA, 0)
+> 
+>     Method (_CRS, 0x0, Serialized) {
+>       Name (RBUF, ResourceTemplate() {
+>         Memory32Fixed (ReadWrite, 0xfea90000, 0x1000)
+>         Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { 350 }
+>       })
+>       Return (RBUF)
+>     }
+>     Name (_DSD, Package () {
+>       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+>       Package () {
+>         Package (2) { "i2c,clk-rate", 198000000 },
+>         Package (2) { "rockchip,bclk", 198000000 },
+>         Package (2) { "#address-cells", 1 },
+>         Package (2) { "#size-cells", 0 },
+>       }
+>     })
+>   }
+>   
+> (there are others, e.g. I2C2, I2C3, etc. one for each I2C bus, with
+> correspondingly different _UID and some different numbers for interrupts
+> etc.)
+> 
+> From what I'm gathering from reading the documentation at
+> https://uefi.org/specs/ACPI/6.5/19_ASL_Reference.html
+> which is admittedly quite terse and doesn't provide nearly enough examples
+> for my liking, and given I have not been able to find a "in the wild" ACPI
+> using ClockInput, I presume a better binding would be like this, correct?:
 
-FWIW, the tag block shouldn't have blank lines.
+Niyas is in the CC but is OoO for next few days I think.
+He wrote the ACPICA patches for this and can provide better answers than me.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+>   Device (I2C1) {
+>     Name (_HID, "RKCP3001")
+>     /* _CID is gone now because we are no longer assuming mirror of DT */
+>     Name (_UID, 1)
+>     Name (_CCA, 0)
+> 
+>     Method (_CRS, 0x0, Serialized) {
+>       Name (RBUF, ResourceTemplate() {
+>         Memory32Fixed (ReadWrite, 0xfea90000, 0x1000)
+>         Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { 350 }
+>         ClockInput (198000000, 1, Hz, Fixed, "PCLK", 0)
+>         ClockInput (198000000, 1, Hz, Fixed, "BCLK", 0)
+>       })
+>       Return (RBUF)
+>     }
+>     Name (_DSD, Package () {
+>       ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+>       Package () {
+>         Package (2) { "#address-cells", 1 },
+>         Package (2) { "#size-cells", 0 },
+>       }
+>     })
+> 
+>     Device (PCLK) {
+>       Name (_ADR, 0x0)
+>     }
+> 
+>     Device (BCLK) {
+>       Name (_ADR, 0x1)
+>     }
+>   }
+> 
+> Note now I added two device nodes for the clocks and use ClockInput to
+> describe the frequencies. I'm unsure though about the device node part,
+> however; I know that the .DTB has a central node for the CRU (the actual
+> clock generator on the RK3588), so should we instead have a top-level
+> Device node "CRU_" and reference the ClockInputs to that, e.g. something
+> like
+> 
+>         ClockInput (198000000, 1, Hz, Fixed, "CRU_", I2C1_PCLK)
+>         ClockInput (198000000, 1, Hz, Fixed, "CRU_", I2C1_BCLK)
+> 
+> ? (Note the obvious analogy to rk3588s.dtsi for the labels, which would be
+> #defined constants.) Though in this case I'd ask if someone here would be
+> kind enough to supply the structure for the top-level CRU binding so that I
+> don't have to guess the "best" form for the kernel like the makers of the
+> firmware were doing which is what led to this disagreement in the first
+> place.
+> 
+> FWIW, I'd also be willing to help lend a hand to finish out the support for
+> the ClockInput binding in the ACPI reader subsystem. There already seems to
+> be some support, e.g. in drivers/acpi/acpica/rsinfo.c and a few other
+> places, but I'm not sure what else is needed to get it going and would need
+> to study that subsystem in much more depth.
 
+That would be great. It's been on my backlog to take a better look at this, but
+it won't happen any time soon.
+
+Niyas, could you forward what you had to Shimrra? (I can find
+it if you don't have it any more).
+
+Thanks,
+
+Jonathan
+
+> 
+> - Shimmy
+> 
 
 
