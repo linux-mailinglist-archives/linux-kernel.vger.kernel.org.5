@@ -1,144 +1,163 @@
-Return-Path: <linux-kernel+bounces-117132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40F4788A7B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:53:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BB0A88A7AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB26D3238A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:52:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C11A81F674ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CB613B7B3;
-	Mon, 25 Mar 2024 13:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F081741C1;
+	Mon, 25 Mar 2024 13:19:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HltJQNYA"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Sn/DIG2l"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22AE13B7AF
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2C813B7AA
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:19:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711372767; cv=none; b=q60YreONWehM3TkvjgzbeliLTXmgOdoohvoJJ5CTn6WHwc5MsEUsrnJLc/WGwnPExypIDBduUQXk/7xw7gKgIWm7DWzyecRUA5t0AivMixjDdOS7tH4Q+YS8huN3SKKRsrM3ZuX0c7Na1Zu92O9awFi0ZcTuTrSUr3oJ/K/EqU0=
+	t=1711372778; cv=none; b=FwD8i3H+ZvzJfhC/I/Qo8P8Ni+GdG347OTXf48Q2/xKQBgEqoaWmWX3AJfTIgYscOTfBupsILRl+d1Fi/xPpoBle2kKKf50jB7DKgWTNpGiywOIP7BGxtFsw+0j4YmN2xWAb7rLvoEDDdOHpRaRed5yQwV0/rpJP6xGWmYs3ykk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711372767; c=relaxed/simple;
-	bh=4GQ/Ylb2FAdVLwbqTrN8fDxpWE6cYSu4yrX6gxUbEvY=;
+	s=arc-20240116; t=1711372778; c=relaxed/simple;
+	bh=d6CmeaRPtDfAafVHQJdPQOuU2Zhm/5dS96jiCyZA9+8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WWT/ZE0M8+0R4R1KM9akjNf2urdW3AH2+XtGhfR1wZObrmm7VDQ5KVVFCEMMMn9ED5zonEiKrdddfnJ5dLd5PtimOUsZTKz7+HfsK9e0OzdzMrEQ0S7GoNrGp9RFrTnThLAf8revJ2Nj/7EwQOijLjIXy2Nta4a+OmWwz1BSf2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HltJQNYA; arc=none smtp.client-ip=209.85.219.182
+	 To:Cc:Content-Type; b=iM8mNa1wEK4hCDkkcnd0HRHBQJlZfuqU3TYAukqu901fCcKk4VlZXP5wpqXir2G5CHrPwrc0YDk5Ag7mWLaCtiLcRISWFQmBbz1fu0mDKy+B00uOz2Cwm7Es91WogaP7I1/h1ZAUcQHWDGGxmEF3eNd9dIMRLAcueCfAB2eo5jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Sn/DIG2l; arc=none smtp.client-ip=209.85.219.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3870928276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:19:24 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso4226947276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:19:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711372764; x=1711977564; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711372776; x=1711977576; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CoulX7BQpsTOmyIdZQqRavCOlGmEyy57qcbpihkH62Y=;
-        b=HltJQNYA9TVjxtCnpDxj1n8RV0zHicIHy4HWWycnSapxLlYgRsvJvw6Z7nd3/RAKB+
-         oLwDbHXi4Wa/tqqAeDardvh7pqmUAlecjQ2GM1idOrGDZs7M6A3So1x0iZ3llEL1DnqJ
-         6PMKkVPqoOqzsbmgi/413NCAaHXNUSStoxobtCD08fTxEjF9gcaab52J6TAc4jRF8nP+
-         /Je7x3zHp0Bteg3jEVObchC38sxazNchdZuX7mDy3/+G/hOjUo0XTFZxbyHuf0KhTef9
-         r7aAT+L/4qbbjhhi4CjIZoC8XItMcTEJQIptFNQU+BhAx2Lv5ostxEOUXLhrG7S0QrOE
-         31Mg==
+        bh=fT3MwGhMSQjWwd4oFtTdyz27PE3Zek9X7Wj5Tr9LaAI=;
+        b=Sn/DIG2lLNhL7/pyEI667ZEvu7ZD87BaQbzGVRUSU5XiJI9wolb8pD0JAJ3I1k7eoX
+         iHeBz0/iPl5fv6sKOGiOYVvX2UFOxQZzdipTll9pFmRV75TUfcpTkUBshw9sNop6vRSV
+         gmecNV9ibzGH9U7BI4RRPUoQw+HZ9GIp7t3tdYQ+cOxqovlh4zkEC8f8xxbzSHgHIMrU
+         78NTmqDaWgJBf43OOYNc7Le9/7NLmod2VFXRdyhS++PM8FHRxEfn7XSitbj4Oo/xnWKR
+         gjgPEpwqqQ2CL71No57aSzJ0YEt8KXTaNJLyEj6tOwDfC1DZ8mLCOJASSzjU1Xsn/3h3
+         jEvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711372764; x=1711977564;
+        d=1e100.net; s=20230601; t=1711372776; x=1711977576;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CoulX7BQpsTOmyIdZQqRavCOlGmEyy57qcbpihkH62Y=;
-        b=N4Fb0Q2FeMPM6aQFvt0pbWSdRn21yuUEq/4PEoC+6xhCdfkegueayONPcncGBtuQP1
-         j4pAnZMjfHZkF9tfLQjz6Z9OsnG0KP2WYIJj+7mnveQXqckXYtmi1P5+80v66rVqU3mb
-         4w78oXML/5nburCiv5CmWQgg1gloKKp+Fh9z1SPsEInJY3HWJ4Iimt9SXTlf/yITBvNF
-         kR2wf2s4rwHzGSZB4ZseXan6ge7whtpT+2gbeFflRZzbNVUx3v0JstFLBhYrcFqQ8nlh
-         K6C0CfLGatL1tFTkkcyIwvzAqzOyqQ/k7UNgKXk1zbP79xaghVwaG8L7JrGefF+QZ7Fk
-         XtHQ==
-X-Gm-Message-State: AOJu0YyFL7E++402qREpIpW5/hUxmqkK+iw3UZYgsIRz1Rn4EXXqwdb8
-	s4j1j5j7nYab9ET2eD1l5ugL7pCX8VWLXslWEvbxvRfNa34NyhNxrrHKI386g6vGDW+wpdHSpgA
-	ovRZhLsb27qgpRHWWXDuHO7PfZhT4t4tiEDOu7w==
-X-Google-Smtp-Source: AGHT+IG4OvqTknR9DVrYyeqEXmiomNARQe3hEQWymLFVrJHFKfkQfsJL+lxdF5P7pIC5YjMQJ4trm2o+KsiTYahSeZI=
-X-Received: by 2002:a25:4d03:0:b0:dc7:48f8:ce2e with SMTP id
- a3-20020a254d03000000b00dc748f8ce2emr3956500ybb.37.1711372763830; Mon, 25 Mar
- 2024 06:19:23 -0700 (PDT)
+        bh=fT3MwGhMSQjWwd4oFtTdyz27PE3Zek9X7Wj5Tr9LaAI=;
+        b=uEFexp/Tfrfavho10M0iBwBNtb5oKoR83Y6DbrSdVUQDchYZoEW00a3EJVtSHhrocV
+         OMr4Qiwo+zvxKsiSgBWoQfsJ3TUcNTj8FTTO435+DIkknOLqIJdtGfnCWA98RlNgYhnQ
+         la/yEPHYyCfD0AJJcjkyR+9C4URtiVZTl4i27hQtYVFeRlWNz2Ow9zvkhdShQ+8y0FSV
+         +6gXPVPeKSw5OqoD88qqYYeGp9YNK9cCPjd0ayZEs7aU3z8eDdkr6x0Jw9PzBIQdfgNY
+         86rpGb8COQzGR4nDphF6FuqOmizI+M/TimBdmTPRAECSK0zh8QaxTLydyP1h6N4l38ew
+         ok2g==
+X-Forwarded-Encrypted: i=1; AJvYcCWqL4vIwfb4XAPexbSqMP5mEAhhOHw1EL93Be/kQw+Dy5cpInBeWoBJ/b1RHB5YNFJ+90m6ZZnhKn+tnI0RTRHBxdZQ98qF3heFpXC1
+X-Gm-Message-State: AOJu0YzzPLUxbyaOA1cDNzMgniYizz/x2W3vY71FGNIqjEWTw0jl0Kqb
+	SaFEANmxj1MbPaZGDF++317gYvtxqiUpYWyDS/kEnjmgjAsi6wiQzNsfkkEn2pmNOBPY4gcx+70
+	w/vqyA09MYRhNp4lKCWJtCSlQjBip3RO4a/k5nQ==
+X-Google-Smtp-Source: AGHT+IGop6/PziXzCUHyTzYVdpvfKrK2/d+Evvn7C0ucdixP/Ox6Bjp4p3x8N/Ob7pmc2czLNFvZwPfs0rT/HDH5swQ=
+X-Received: by 2002:a25:aea0:0:b0:dda:c5ca:c21b with SMTP id
+ b32-20020a25aea0000000b00ddac5cac21bmr3876267ybj.37.1711372776266; Mon, 25
+ Mar 2024 06:19:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314091512.1323650-1-lizhijian@fujitsu.com>
-In-Reply-To: <20240314091512.1323650-1-lizhijian@fujitsu.com>
+References: <b9155963ffb12d18375002bf9ac9a3f98b727fc8.1710854108.git.limings@nvidia.com>
+In-Reply-To: <b9155963ffb12d18375002bf9ac9a3f98b727fc8.1710854108.git.limings@nvidia.com>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Mon, 25 Mar 2024 14:18:47 +0100
-Message-ID: <CAPDyKFo_D7cCoMMr3LQ6c=G-fVnaCU==_v0n9Dq_0biAaytqhg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Convert sprintf/snprintf to sysfs_emit
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+Date: Mon, 25 Mar 2024 14:19:00 +0100
+Message-ID: <CAPDyKFrFA2vMbP6Nxt9egxK8-Mk9Td9+Cz73tNEF8mQpQJ_DPA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] sdhci-of-dwcmshc: disable PM runtime in dwcmshc_remove()
+To: Liming Sun <limings@nvidia.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, David Thompson <davthompson@nvidia.com>, 
+	Shawn Lin <shawn.lin@rock-chips.com>, linux-mmc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 14 Mar 2024 at 10:15, Li Zhijian <lizhijian@fujitsu.com> wrote:
+On Tue, 19 Mar 2024 at 17:16, Liming Sun <limings@nvidia.com> wrote:
 >
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
-> or sysfs_emit_at() when formatting the value to be returned to user space.
+> This commit disables PM runtime in dwcmshc_remove() to avoid the
+> error message below when reloading the sdhci-of-dwcmshc.ko
 >
-> coccinelle complains that there are still a couple of functions that use
-> snprintf(). Convert them to sysfs_emit().
+>   sdhci-dwcmshc MLNXBF30:00: Unbalanced pm_runtime_enable!
 >
-> sprintf() will be converted as weel if they have.
->
-> Generally, this patch is generated by
-> make coccicheck M=<path/to/file> MODE=patch \
-> COCCI=scripts/coccinelle/api/device_attr_show.cocci
->
-> No functional change intended
->
-> CC: Ulf Hansson <ulf.hansson@linaro.org>
-> CC: linux-mmc@vger.kernel.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> Fixes: 48fe8fadbe5e ("mmc: sdhci-of-dwcmshc: Add runtime PM operations")
+> Reviewed-by: David Thompson <davthompson@nvidia.com>
+> Signed-off-by: Liming Sun <limings@nvidia.com>
 
-Applied for next, thanks!
+Applied for fixes and by adding a stable tag, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
-> This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
-> Split them per subsystem so that the maintainer can review it easily
-> [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
-> ---
->  drivers/mmc/core/block.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 28 +++++++++++++++++-----------
+>  1 file changed, 17 insertions(+), 11 deletions(-)
 >
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 64a3492e8002..1e1e136d9e72 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -234,7 +234,7 @@ static ssize_t power_ro_lock_show(struct device *dev,
->         else if (card->ext_csd.boot_ro_lock & EXT_CSD_BOOT_WP_B_PWR_WP_EN)
->                 locked = 1;
->
-> -       ret = snprintf(buf, PAGE_SIZE, "%d\n", locked);
-> +       ret = sysfs_emit(buf, "%d\n", locked);
->
->         mmc_blk_put(md);
->
-> @@ -296,9 +296,9 @@ static ssize_t force_ro_show(struct device *dev, struct device_attribute *attr,
->         int ret;
->         struct mmc_blk_data *md = mmc_blk_get(dev_to_disk(dev));
->
-> -       ret = snprintf(buf, PAGE_SIZE, "%d\n",
-> -                      get_disk_ro(dev_to_disk(dev)) ^
-> -                      md->read_only);
-> +       ret = sysfs_emit(buf, "%d\n",
-> +                        get_disk_ro(dev_to_disk(dev)) ^
-> +                        md->read_only);
->         mmc_blk_put(md);
->         return ret;
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index ab4b964d4058..1d8f5a76096a 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -999,6 +999,17 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>         return err;
 >  }
+>
+> +static void dwcmshc_disable_card_clk(struct sdhci_host *host)
+> +{
+> +       u16 ctrl;
+> +
+> +       ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +       if (ctrl & SDHCI_CLOCK_CARD_EN) {
+> +               ctrl &= ~SDHCI_CLOCK_CARD_EN;
+> +               sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
+> +       }
+> +}
+> +
+>  static void dwcmshc_remove(struct platform_device *pdev)
+>  {
+>         struct sdhci_host *host = platform_get_drvdata(pdev);
+> @@ -1006,8 +1017,14 @@ static void dwcmshc_remove(struct platform_device *pdev)
+>         struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
+>         struct rk35xx_priv *rk_priv = priv->priv;
+>
+> +       pm_runtime_get_sync(&pdev->dev);
+> +       pm_runtime_disable(&pdev->dev);
+> +       pm_runtime_put_noidle(&pdev->dev);
+> +
+>         sdhci_remove_host(host, 0);
+>
+> +       dwcmshc_disable_card_clk(host);
+> +
+>         clk_disable_unprepare(pltfm_host->clk);
+>         clk_disable_unprepare(priv->bus_clk);
+>         if (rk_priv)
+> @@ -1099,17 +1116,6 @@ static void dwcmshc_enable_card_clk(struct sdhci_host *host)
+>         }
+>  }
+>
+> -static void dwcmshc_disable_card_clk(struct sdhci_host *host)
+> -{
+> -       u16 ctrl;
+> -
+> -       ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> -       if (ctrl & SDHCI_CLOCK_CARD_EN) {
+> -               ctrl &= ~SDHCI_CLOCK_CARD_EN;
+> -               sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
+> -       }
+> -}
+> -
+>  static int dwcmshc_runtime_suspend(struct device *dev)
+>  {
+>         struct sdhci_host *host = dev_get_drvdata(dev);
 > --
-> 2.29.2
+> 2.30.1
 >
 
