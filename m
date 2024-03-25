@@ -1,119 +1,123 @@
-Return-Path: <linux-kernel+bounces-117403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD8E888B133
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:21:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77DFC88AAED
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:11:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24B86BC5B88
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:11:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A72011C3B8F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F8313E05A;
-	Mon, 25 Mar 2024 15:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="PYdCrYRP"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DDBD140391;
+	Mon, 25 Mar 2024 15:46:53 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6147512FF60;
-	Mon, 25 Mar 2024 15:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6A913E8BF;
+	Mon, 25 Mar 2024 15:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711381486; cv=none; b=kivwfxdCRwX5RtTNnYrDAlqb1BEUx3nkL7hP0cW+rfI7+tg6zW9652e8UFwXBbXnbYIuhekc5tqQ7NIJ5kWd233cRcaeJlRxz24N4fIg6LCk/ERQcB6aw5D5vsEI5sbVUZP4kziaygFahPmVhpopS9YLTx/wurgWILj2R2pEh9M=
+	t=1711381612; cv=none; b=mtNQeHaOcepL3ocX67vPqH0whnWw5fViBf4Lds2aNBZhKVEmkyul7QrMT6anHjAfgW6cM/Ljgdc6DLZ/aknd1S9tQ0/tipN1bH3TMXY4LOQUT/mStUJCFByvLWSuzotBIdWA1Dzk1ISnf6kEwTAtwJY63aGN3gczSWdQF2g14Ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711381486; c=relaxed/simple;
-	bh=p6elCi+U91QoAFAv5OeSOQpHEUSS0AUEz76zcbg2hA0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FCr0NM2ElTrx+v+ZovLXjQrQIduOFqioRsLae5/adllPUxeJ/1gRXnaCkHv+hi2M8zvUcidF71HvHyvJHClaCFNBcxYRSZzqV/zWiEJhM7ZV14v90cbbkHM+zhoUjjn3QBvI4g1XcMJgWXh1MGAQjSdyUW08QiYEvVY67y4YjPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=PYdCrYRP; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711381484;
-	bh=p6elCi+U91QoAFAv5OeSOQpHEUSS0AUEz76zcbg2hA0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=PYdCrYRPfIizad0x8XJj4QyrkCvECXuEjXXWbP0AvprmmFOzPOap5u9xcrwYZDysS
-	 yPpSyA85aJfTBU4XzfhA+CJDo3mX2S4aiNSlZdVEBhua1kJhCmLEJoXOJotemXE6gm
-	 OHtw1pGPBMTfl+Mp38Fv7BFU7jwPEaAbbb9O6g+r2JdXsMtZLFtAOEzUvjglnlw5rp
-	 lF0ysROvSqj4yonmLH2KAknuStT9vGsOB2LkHK0HDFbdn9A97TnWVcvZ+GWPH7Lk78
-	 vgnSN0Zr61wN3O7/eCyX1XD2x1EMW6WIaFQkkGWgektmkkCQZBYqK3s/IACjsJINrO
-	 h4YbokDZkcmaQ==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6617A37813B7;
-	Mon, 25 Mar 2024 15:44:43 +0000 (UTC)
-Date: Mon, 25 Mar 2024 16:44:41 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com
-Subject: Re: [PATCH v1 3/4] arm64: dts: rockchip: rk3588-rock5b: Enable GPU
-Message-ID: <20240325164441.1dab4018@collabora.com>
-In-Reply-To: <20240325153850.189128-4-sebastian.reichel@collabora.com>
-References: <20240325153850.189128-1-sebastian.reichel@collabora.com>
-	<20240325153850.189128-4-sebastian.reichel@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1711381612; c=relaxed/simple;
+	bh=GzSXXAtn+MG9MXEBydJA28ph4fycU10z4qRFnMd2PPg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f0UA+8jHgSaJssZqSmpm77krzrTugaU/1e27IlVe9WSSpMcE9R5lP/zrT1g4VfhC2BmJ2+g117YtIoWmrXDkYs4OrTDMBFV4m0e1U0oHa0T0oEzYnfLR6XISKcmoxXnN4rxjcL5mec8Oa+LnU04E6wkfTE5pmXDXrqxL9iopprg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1romWj-0002mZ-1Y;
+	Mon, 25 Mar 2024 15:46:21 +0000
+Date: Mon, 25 Mar 2024 15:46:17 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
+	Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Li Lingfeng <lilingfeng3@huawei.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Christian Heusel <christian@heusel.eu>,
+	Min Li <min15.li@samsung.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
+	Christian Loehle <CLoehle@hyperstone.com>,
+	Bean Huo <beanhuo@micron.com>, Yeqi Fu <asuk4.q@gmail.com>,
+	Victor Shih <victor.shih@genesyslogic.com.tw>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Dominique Martinet <dominique.martinet@atmark-techno.com>,
+	"Ricardo B. Marliere" <ricardo@marliere.net>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 0/8] block: implement NVMEM provider
+Message-ID: <ZgGcSclcPMlXiPLV@makrotopia.org>
+References: <cover.1711048433.git.daniel@makrotopia.org>
+ <20240325151259.GB3591150-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240325151259.GB3591150-robh@kernel.org>
 
-On Mon, 25 Mar 2024 16:37:20 +0100
-Sebastian Reichel <sebastian.reichel@collabora.com> wrote:
-
-> From: Boris Brezillon <boris.brezillon@collabora.com>
+On Mon, Mar 25, 2024 at 10:12:59AM -0500, Rob Herring wrote:
+> On Thu, Mar 21, 2024 at 07:31:48PM +0000, Daniel Golle wrote:
+> > On embedded devices using an eMMC it is common that one or more (hw/sw)
+> > partitions on the eMMC are used to store MAC addresses and Wi-Fi
+> > calibration EEPROM data.
+> > 
+> > Implement an NVMEM provider backed by a block device as typically the
+> > NVMEM framework is used to have kernel drivers read and use binary data
+> > from EEPROMs, efuses, flash memory (MTD), ...
+> > 
+> > In order to be able to reference hardware partitions on an eMMC, add code
+> > to bind each hardware partition to a specific firmware subnode.
+> > 
+> > Overall, this enables uniform handling across practially all flash
+> > storage types used for this purpose (MTD, UBI, and now also MMC).
+> > 
+> > As part of this series it was necessary to define a device tree schema
+> > for block devices and partitions on them, which (similar to how it now
+> > works also for UBI volumes) can be matched by one or more properties.
+> > 
+> > ---
+> > This series has previously been submitted as RFC on July 19th 2023[1]
+> > and most of the basic idea did not change since. Another round of RFC
+> > was submitted on March 5th 2024[2] which has received overall positive
+> > feedback and only minor corrections have been done since (see
+> > changelog below).
 > 
-> Enable the Mali GPU in the Rock 5B.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Also, please version your patches. 'RFC' is a tag, not a version. v1 was
+> July. v2 was March 5th. This is v3.
 
-I don't remember writing this patch ;-), maybe I screwed authorship at
-some point, dunno.
+According to "Submitting patches: the essential guide to getting your
+code into the kernel" [1] a version is also a tag.
 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-> index 1fe8b2a0ed75..096ee7a98b89 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-> @@ -180,6 +180,11 @@ &cpu_l3 {
->  	cpu-supply = <&vdd_cpu_lit_s0>;
->  };
->  
-> +&gpu {
-> +	mali-supply = <&vdd_gpu_s0>;
-> +	status = "okay";
-> +};
-> +
->  &i2c0 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&i2c0m2_xfer>;
-> @@ -470,6 +475,7 @@ rk806_dvs3_null: dvs3-null-pins {
->  
->  		regulators {
->  			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
-> +				regulator-always-on;
+Quote:
+ Common tags might include a version descriptor if the [sic] multiple
+ versions of the patch have been sent out in response to comments
+ (i.e., “v1, v2, v3”), or “RFC” to indicate a request for comments.
 
-Hm, should we mention why the regulator is always on here?
+Maybe this should be clarified, exclusive or inclusive "or" is up to
+the reader to interpret at this point, and I've often seen RFC, RFCv2,
+v1, v2, ... as a sequence of tags applied for the same series, which
+is why I followed what I used to believe was the most common
+interpretation of the guidelines.
 
->  				regulator-boot-on;
->  				regulator-min-microvolt = <550000>;
->  				regulator-max-microvolt = <950000>;
+In any way, thank you for pointing it out, I assume the next iteration
+should then be v4.
 
+[1]: https://docs.kernel.org/process/submitting-patches.html
 
