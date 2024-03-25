@@ -1,111 +1,129 @@
-Return-Path: <linux-kernel+bounces-116903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84F5488A4F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:44:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9122588B073
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E53E2E5ED8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CD09C045CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D76142E9B;
-	Mon, 25 Mar 2024 11:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC5E15664F;
+	Mon, 25 Mar 2024 11:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Lu6/fIHa"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O/stS8ao"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F7E1552F6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B0915AAC3
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711364264; cv=none; b=BO/iSeR+TA+7+mPrM2l58xiv1JnKUSp+wn/bvw15oMgR1pMMwTZ1D3JzbsHKCVjTPlGkCKnv56V+DIoDAJVRWPiAZpOkb6FqCyU2Dt+sXj2/DbltDAvvpdkhWZ6GyTyvIcG4jDo++NsNGhDBW4mOaxod6S+1HK++P6+/DnvTgF8=
+	t=1711365099; cv=none; b=LK+YItdSVq3taq9Te/+Q7cjR0jzR9JXuMRvLjnA3kcG6iJYVEmApMwKqPtL3hFnPG5Bj1MSJj+TjOXlwSFepOszx1fBg8JM9Eb0PtrOM7k2VexkobfiLtq61UaIGjmIVQU8SSGY/p78APiqxM0BfhODlgGe8csp+vVF4dwyDTHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711364264; c=relaxed/simple;
-	bh=aUNv3OeOJulW7HjCmCxEUuggib7O+wj7HO00r4boY1Y=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=Q+TxnEcC8v6fZ4tUGwCLYYr0wXPEKzYdHOMZPSXFgrtPZZspKEW4vbLnzqmkALyx8Fa0ub86JgZgHeu0KFj6gn7B6xOvkWJgahWBLk6qfytD3fjfgh40Z5PtNxBFrllzPbR/gYWrMCpS3t6+jj1tw97zmIrSZ6jc6DyWynf+Xpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Lu6/fIHa; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a468004667aso570357066b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:57:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711364261; x=1711969061; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0rBY+ZtgTThSfYH8TveS+n2X3mT42fwW+fusHRaeCz0=;
-        b=Lu6/fIHamNXviwvHPbUxBN8amDGOOoElLMJXRTOIxidzo57lxF4SdALMWBacNEQbGH
-         fXWTf82xjrfP3T9Ux0+XSGo4P1ot+YxMS0cIFuftW0h++QR9m1jYU9sg6s5qH01QKahx
-         qomOvuYTbFcnTBxRtcA0FWGgDc028q1Kqz7fqLgBj3hvsUWRSZWaTgT82xivCcGVk4HS
-         DolNeMP7se0ZDICemEdYP9hKFtf5nRgBg7Uj1DcGaM7ejZU7aZjfSAH53qqTEpz8wvS5
-         6z8/zm0BU56l2p5PEbw62IKwf3yNzL3K5JSZPpnKoOpHP25qiu0UvNE99E1ahjnSjcQD
-         yyWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711364261; x=1711969061;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0rBY+ZtgTThSfYH8TveS+n2X3mT42fwW+fusHRaeCz0=;
-        b=ws+lsQHigaKfL3sDARY9gGXiRXeUQNMg0gWrw66za9mhr/LUuc/pyYkMXWIa8Oa80q
-         +mHSyewQBf23YAe4VN1NKt2AaUxTxJaSwDKOEzefQHw1VTwVh5wCOq7+fdberQjRplOH
-         v2TDeTE9iXxTHhDoTYEDuGoRSLhUMmOCcV+sJCMun1AsYvUQsUPP/YO7NWHU0NJFJoAs
-         QyHkU0ljsnrqYukdrwOvoNIiOBmByPk99nn7iKYx2Ap+tCFprrEWkLr60ZCSnvMQqk8W
-         RtSwuJbwGHnql7UByeX3RV+pggZfIyHOtSFvnWDhCxDWVbfXjfTt/GkKXhNPGnVrt9rZ
-         8Ncw==
-X-Forwarded-Encrypted: i=1; AJvYcCXwCpX33/MrJGhf3LSa0RLuq0Zvn6woMdijUjO6XAoYQcxq31RIKtEmzWtwK/hyE7VxoRbwGoACkFiyCrq50UK3U+Atlk1zj0sEdqIM
-X-Gm-Message-State: AOJu0YxqLK37A64G3kmsONAjoSjopt8kL4pwnTR1p60S0oqaKZhPl4EW
-	Xdn8NT7vhpf+1c3fGos9itSkf0anK0Vw9uelH/MwaWWHoHljJuQAH8igOnDeUf0=
-X-Google-Smtp-Source: AGHT+IFOdFMAv/TvuONST61JGK36DDt/76G+ofjqWazIMNco/I15j6i+NV4Y90Z4Ah54tJDj2etb5g==
-X-Received: by 2002:a17:906:474d:b0:a46:69f2:5219 with SMTP id j13-20020a170906474d00b00a4669f25219mr4114184ejs.65.1711364261290;
-        Mon, 25 Mar 2024 03:57:41 -0700 (PDT)
-Received: from [127.0.1.1] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id c19-20020a1709060fd300b00a45ff5a30cesm2940522ejk.183.2024.03.25.03.57.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 03:57:40 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240313191148.21792-1-krzysztof.kozlowski@linaro.org>
-References: <20240313191148.21792-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/2] ARM: dts: samsung: s5pv210: align onenand node
- name with bindings
-Message-Id: <171136425952.35431.17492812389315210011.b4-ty@linaro.org>
-Date: Mon, 25 Mar 2024 11:57:39 +0100
+	s=arc-20240116; t=1711365099; c=relaxed/simple;
+	bh=akb0Xkda4VBBWXx+01f2VRfBJMybL/xPYRcZVbT0RVE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lWUHx+b4uwhDZlZQ8MABRy6KAVUm+UtJrSYSMYx5lu+3pGYsAPGjen+QjPwS0J6teK5qSEdSowgshiOH3cIjg9VB69JZSBAa/30hzoCx56LYRurgR8yUSqSkiiWZQ/exoROhTecAh1tSp4lvNCXevr7z+cj6g628sicNlnS1yYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O/stS8ao; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2FD3C433C7;
+	Mon, 25 Mar 2024 11:11:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711365098;
+	bh=akb0Xkda4VBBWXx+01f2VRfBJMybL/xPYRcZVbT0RVE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=O/stS8ao4dr5RdcoD4k0KOBnLcHUDvYt9Cuu2EZpewlYVEZxvx9z4k8CvwcBT2TFV
+	 wQ7s73BYayarwRGmiEEV0Q7zmZEF2mz7SsMZ56BJ4U+rj6vn6Zrb/p0xk2a4kK1l6d
+	 uILbXVAsRM3oiigJ7PbdxTyCz6OhpUS82NkAYnI6zbEJcnirMHz4D6v5XsdP6I45qn
+	 MMbcvz8ZmhSFY3jITAaxki2mLXOPk9ZksLkX+shs97VsKcn/jOWmji9arhuUMOTKTd
+	 nKJNf6sIB0WC/GwHFLm53hBvkXQww/NCiKiM8I8B68GZllVWRXZ3nJM4GplivGrgVH
+	 5XoDP6nHfcSEQ==
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Cc: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH v3 RESEND] riscv: select ARCH_HAS_FAST_MULTIPLIER
+Date: Mon, 25 Mar 2024 18:58:23 +0800
+Message-ID: <20240325105823.1483-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
+Content-Transfer-Encoding: 8bit
 
+Currently, riscv linux requires at least IMA, so all platforms have a
+multiplier. And I assume the 'mul' efficiency is comparable or better
+than a sequence of five or so register-dependent arithmetic
+instructions. Select ARCH_HAS_FAST_MULTIPLIER to get slightly nicer
+codegen. Refer to commit f9b4192923fa ("[PATCH] bitops: hweight()
+speedup") for more details.
 
-On Wed, 13 Mar 2024 20:11:47 +0100, Krzysztof Kozlowski wrote:
-> Bindings expect NAND controllers to match certain pattern:
-> 
->   s5pv210-fascinate4g.dtb: onenand@b0600000: $nodename:0: 'onenand@b0600000' does not match '^nand-controller(@.*)?'
-> 
-> 
+In a simple benchmark test calling hweight64() in a loop, it got:
+about 14% performance improvement on JH7110, tested on Milkv Mars.
 
-Applied, thanks!
+about 23% performance improvement on TH1520 and SG2042, tested on
+Sipeed LPI4A and SG2042 platform.
 
-[1/2] ARM: dts: samsung: s5pv210: align onenand node name with bindings
-      https://git.kernel.org/krzk/linux/c/e8b41d201f82127b05bee204db92e7f97c65cf8e
-[2/2] ARM: dts: samsung: s5pv210: correct onenand size-cells
-      https://git.kernel.org/krzk/linux/c/3a64e95e1a64a2d4c63c4df28b61cd3cbb63cd92
+a slight performance drop on CV1800B, tested on milkv duo. Among all
+riscv platforms in my hands, this is the only one which sees a slight
+performance drop. It means the 'mul' isn't quick enough. However, the
+situation exists on x86 too, for example, P4 doesn't have fast
+integer multiplies as said in the above commit, x86 also selects
+ARCH_HAS_FAST_MULTIPLIER. So let's select ARCH_HAS_FAST_MULTIPLIER
+which can benefit almost riscv platforms.
 
-Best regards,
+Samuel also provided some performance numbers:
+On Unmatched: 20% speedup for __sw_hweight32 and 30% speedup for
+__sw_hweight64.
+On D1: 8% speedup for __sw_hweight32 and 8% slowdown for
+__sw_hweight64.
+
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/riscv/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+Hi Palmer,
+
+Similar as the pgprot_nx patch, this patch missed two merge window too.
+Feel free to ask me questions if there's something need to be done from
+my side.
+
+Thanks
+
+since v2:
+ - rebase on v6.8-rc1
+ - collect Reviewed-by and Tested-by tag
+
+since v1:
+ - fix typo in commit msg
+ - add some performance numbers provided by Samuel
+ - collect Reviewed-by and Tested-by tag
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index be09c8836d56..aba42b2bf660 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -23,6 +23,7 @@ config RISCV
+ 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
+ 	select ARCH_HAS_DEBUG_VM_PGTABLE
+ 	select ARCH_HAS_DEBUG_WX
++	select ARCH_HAS_FAST_MULTIPLIER
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_GIGANTIC_PAGE
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+2.43.0
 
 
