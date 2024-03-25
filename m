@@ -1,81 +1,80 @@
-Return-Path: <linux-kernel+bounces-117973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA26288B1EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 477CB88B1F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:48:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FAF21F38BC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:48:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2A4B1F3DE02
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98037839EB;
-	Mon, 25 Mar 2024 20:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759FC83CBC;
+	Mon, 25 Mar 2024 20:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ml2qq5G5"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LS473dpv"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DE482D9A;
-	Mon, 25 Mar 2024 20:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D006CDDB;
+	Mon, 25 Mar 2024 20:45:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399520; cv=none; b=TCXR+GMW91/WqjJmrY97NbWRlM1Cxk8p8Skg5v40QiPsXH5vc3prE7r9DVUj/VuT7R3WigvnIBi61MfJm/vn+7yxIqiHUkbjbJbUBNbQP9tJziK9+VKw2h8z5njSIxtcPCuyv5TQGtAJD0IxPENls2/m5vZqUE+IuJOX5e0mmw4=
+	t=1711399524; cv=none; b=jyOQ0ywWXqewBsj+cM+gkR6w12DOB36g4azqGeaXnpEXN3ENS8dYiqnznjUZxi0HjTlqcGJ3bZCCqVYGvhoKLabCHFZkqqXZTGoljHhlIcwcVVhu9UNVlcVLQJb0o5Oo/jNFallWJb6+h/ipwLdCC0b5FWuLMuygJMkM532vmhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711399520; c=relaxed/simple;
-	bh=DDE/rUmOMNE04KTgH51pZZVtXb9QkzU4zP3jG4SK+6M=;
+	s=arc-20240116; t=1711399524; c=relaxed/simple;
+	bh=3Fh9/szZaGY/QRjbESlj6Atfhm3pzShy88grtilyhi8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EgWrwaxS2/OzyK+vsRQX7GcHGuVRGW7ATbec5BXjraW9NPkb/bkRh7+69Q1t+Yxac7g7yygyYeEJ5nBGrwaMXBdFGXJaOFYubebiJrE7At2ICzCjEKH3Ao7G33JEB+mLlfxKWyUmcoMlJsFGRRCpFVf1FumDSon6TQrWYlLokRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ml2qq5G5; arc=none smtp.client-ip=209.85.208.49
+	 MIME-Version; b=SCXUiMK5hY/lyEfDLIVRGNWY6yTS63bv9QNej1Rg0qxdMHVmrxgyiFvQla0SjqFOn0V+0XriF7ZLAqwvZuxbsqdmhMy7IP1iqkofOUbU96ViJoX8d/9vuss7rEdqWjrZS1+bULedss8N2rnRC3XBDR4oMTyiYu+sF90Tg2Orh1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LS473dpv; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56a2bb1d84eso8507670a12.1;
-        Mon, 25 Mar 2024 13:45:18 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-566e869f631so5143989a12.0;
+        Mon, 25 Mar 2024 13:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711399517; x=1712004317; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711399521; x=1712004321; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VwxiH5lx/9RYIz3hxmE1liFC9ih5JE9dAbG25/LF7X4=;
-        b=Ml2qq5G5lthLobtLP7auQ3nfVVfexDAxpfro1HstXyaIXAE5bD2ZxAIsBTUUafmLSU
-         thzno4knsqqPP/xPMLR6NmAyDcNH5SGsaTaVNo0ic98ktDhhlY9vOEVDmsv6YSwDXzbj
-         +QDsZWvPZv/EJvIhoRyiCv5Ic0Q/yNrB9QBVN6nzcUXRTLzbQ686KLIExrU5vZtxBffz
-         nC0BZ/cd/gnrkGn0m6JOWVFbbd4xkAEqkpsAwTEfFS/NOux05SEiG9g8inuaRL3ehAID
-         xrF3qCJh/CTTDUnhmj/vpOvIwRGTkxn1I0gwCeOjsR4uvfFU17PYoFDaiKpaNdIP9T1b
-         AxQw==
+        bh=u5ygUCJTE280Q0jyVNdLwABcw296Un0BHN6laP6hkL0=;
+        b=LS473dpvNTUHuzafn41U7/jP5VyDRbyT8Qw6IEcUWoVh6XGwTS3nshi9LFBhkKV0Zt
+         BcXhANiKuxmx2ZMUdXQCAr69/96Ec6f13/B4xBnQhD9D0AcPdACaFP7qz9qo0t5oLltA
+         EK+KAk3rr6/Xjg8HZsE/HZMJD8fEIM/RGKvGnHLboIK23pm8InxFPGP45q17UtgLC4so
+         dk/AQ09kXJCLxSU6iSuge3FL4qRoHlPIIlXeBE9XirJQPZW2TyNJvd5K9CKKWllXt5X2
+         HoxqSWAUZ0LNukY6Wsm/jHu+SYStjwDXdlfOQ+AMJgIAvTJ/3jo/xIM91+KpESWJoO09
+         MCCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711399517; x=1712004317;
+        d=1e100.net; s=20230601; t=1711399521; x=1712004321;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VwxiH5lx/9RYIz3hxmE1liFC9ih5JE9dAbG25/LF7X4=;
-        b=Im7CF1bIhFC8kSXEvcqoMzIY0Vz1kiUofEsadI4GMD1eJIPRJuXQJjBS361nbDvw5q
-         TeC9yjd3t9X/bY1Z4QzAqgDC7TavDpNWhdM5DBYQkk+B5xoNXmhvzELqpomjDiYhqm2l
-         aJlM8ch8Bsg4ta9s9TzJ8iD+IRQqHvA8N0IdzvC2d2bbJRzayoO3049/YGJodMR5l4hm
-         dyVnd5VikKaDB13o8ujswBC0DAizP4GBNLuxyKw4U4ECv6bW8eFVTAzmqaFhhRCkWarA
-         CeV/a9YKsXWf83QFFH1qBJYGBp1TAkH1t+/kEjUExXXISyJWfu0GkAsIPQMiBxavt877
-         cy6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWoZCyG3XGtKbgazsOd1oXR5Avv8OR92sd8iRyuQ8iKPpMis4dz3AGVXxXwvfCnLADgyuO+fEQg6YcuZqtY/A6J2AVug7TvtczXDxeZ
-X-Gm-Message-State: AOJu0YzPoNjTqtAxyw7j/fQeLp6VsLWpIb+sUOsg/NUlpFFBDuzmp5j6
-	L4X23jvbai/XBpoM0zWtWltTedSAa2z39pphi956zdFxSu29xRz0xd3LuJuu3To=
-X-Google-Smtp-Source: AGHT+IEOyXmmLJ+2J9G9+2hc82emBh9qRqtI0xxLgMGVpLHaah44v69/KJ43kgxuOjD/Jze4eg103g==
-X-Received: by 2002:a50:8e1c:0:b0:567:800c:f6c6 with SMTP id 28-20020a508e1c000000b00567800cf6c6mr6352731edw.15.1711399517099;
-        Mon, 25 Mar 2024 13:45:17 -0700 (PDT)
+        bh=u5ygUCJTE280Q0jyVNdLwABcw296Un0BHN6laP6hkL0=;
+        b=V6ApvFnJpwkVwTF/EB0uoOLVDdmheJr0TWs3mp864mbqMBNRjN8iLi5I129K+zytgJ
+         TEH9I9G0o96deIKbKy8Rf7KJpSPjTF8eBj2v0pjhp179ZiGSVbDbgugcKUQPaO0FkmLl
+         vjl2RZg9KVePxmaeF/dinwEej/+qaICFwPLnCbi57rYOCbsK34ZW0lFFM7m3OWP56HMt
+         YXyzIYQt5G88UIc5H8bCaUK+jKpOxxoXcrgBasu7j4BYImS4aMhHB8wvLib+D817dIVy
+         Pp9DgPvYIpUrzWr6CUFo2XbOjEolMBiFgremeiuuNH0UCLdjsm0pbNr9R0kQRZeUYcMR
+         ksjw==
+X-Forwarded-Encrypted: i=1; AJvYcCX2rFt9TjHCV9ljfF/MD1Uo67aMFuV70jtKI4suV5wcpmvpaz9sGnib12lemG6LAbxuVzKW9WhAlQCXILOZbWlq8TJofSaxxhmkryiZ
+X-Gm-Message-State: AOJu0YzrzX7qSP/BEtG369bAJ8anEAUfR9rd2SW3loQ+wUQG6qUMbzsQ
+	jdk6yscl41wDnN8LUX5/n9seP0Bz8y/rIueE4NcW7Ay856Ysn3U2NLcH/us1Xxs=
+X-Google-Smtp-Source: AGHT+IEiCF4cyRSybGOjT3TE1zij1G7XxONjgXRCWhfmXwEzzKNGWo8UGxFxPMW7N+db2WpY9qEvcg==
+X-Received: by 2002:a50:8e41:0:b0:56b:a03c:4eb with SMTP id 1-20020a508e41000000b0056ba03c04ebmr6554817edx.31.1711399521127;
+        Mon, 25 Mar 2024 13:45:21 -0700 (PDT)
 Received: from WBEC325.dom.lan ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id k18-20020a056402049200b0056c1cba8480sm591751edv.25.2024.03.25.13.45.16
+        by smtp.gmail.com with ESMTPSA id k18-20020a056402049200b0056c1cba8480sm591751edv.25.2024.03.25.13.45.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 13:45:16 -0700 (PDT)
+        Mon, 25 Mar 2024 13:45:20 -0700 (PDT)
 From: Pawel Dembicki <paweldembicki@gmail.com>
 To: netdev@vger.kernel.org
 Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Simon Horman <horms@kernel.org>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
 	Pawel Dembicki <paweldembicki@gmail.com>,
 	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
 	Andrew Lunn <andrew@lunn.ch>,
 	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
@@ -85,9 +84,9 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	UNGLinuxDriver@microchip.com,
 	Russell King <linux@armlinux.org.uk>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v7 11/16] net: dsa: tag_sja1105: refactor skb->dev assignment to dsa_tag_8021q_find_user()
-Date: Mon, 25 Mar 2024 21:43:36 +0100
-Message-Id: <20240325204344.2298241-12-paweldembicki@gmail.com>
+Subject: [PATCH net-next v7 12/16] net: dsa: vsc73xx: introduce tag 8021q for vsc73xx
+Date: Mon, 25 Mar 2024 21:43:37 +0100
+Message-Id: <20240325204344.2298241-13-paweldembicki@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240325204344.2298241-1-paweldembicki@gmail.com>
 References: <20240325204344.2298241-1-paweldembicki@gmail.com>
@@ -99,118 +98,156 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+This commit introduces a new tagger based on 802.1q tagging.
+It's designed for the vsc73xx driver. The VSC73xx family doesn't have
+any tag support for the RGMII port, but it could be based on VLANs.
 
-A new tagging protocol implementation based on tag_8021q is on the
-horizon, and it appears that it also has to open-code the complicated
-logic of finding a source port based on a VLAN header.
-
-Create a single dsa_tag_8021q_find_user() and make sja1105 call it.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 ---
 v7:
-  - added 'Reviewed-by' only
-v6, v5:
-  - resend only
+  - replace netdev_warn by dev_warn_ratelimited
+v6:
+  - added missing MODULE_DESCRIPTION()
+v5:
+  - removed skb_vlan_tag_present(skb) checking
+  - use 80 characters per line limit
 v4:
-  - introduce patch and change from master to conduit and slave to user
+  - rebase to net-next/main
+v3:
+  - Introduce a patch after the tagging patch split
 
- net/dsa/tag_8021q.c   | 19 ++++++++++++++++---
- net/dsa/tag_8021q.h   |  5 +++--
- net/dsa/tag_sja1105.c | 17 +++++------------
- 3 files changed, 24 insertions(+), 17 deletions(-)
+ include/net/dsa.h           |  2 ++
+ net/dsa/Kconfig             |  6 ++++
+ net/dsa/Makefile            |  1 +
+ net/dsa/tag_vsc73xx_8021q.c | 68 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 77 insertions(+)
+ create mode 100644 net/dsa/tag_vsc73xx_8021q.c
 
-diff --git a/net/dsa/tag_8021q.c b/net/dsa/tag_8021q.c
-index 332b0ae02645..454d36c84671 100644
---- a/net/dsa/tag_8021q.c
-+++ b/net/dsa/tag_8021q.c
-@@ -468,8 +468,8 @@ struct sk_buff *dsa_8021q_xmit(struct sk_buff *skb, struct net_device *netdev,
- }
- EXPORT_SYMBOL_GPL(dsa_8021q_xmit);
+diff --git a/include/net/dsa.h b/include/net/dsa.h
+index 7c0da9effe4e..b79e136e4c41 100644
+--- a/include/net/dsa.h
++++ b/include/net/dsa.h
+@@ -56,6 +56,7 @@ struct phylink_link_state;
+ #define DSA_TAG_PROTO_RTL8_4T_VALUE		25
+ #define DSA_TAG_PROTO_RZN1_A5PSW_VALUE		26
+ #define DSA_TAG_PROTO_LAN937X_VALUE		27
++#define DSA_TAG_PROTO_VSC73XX_8021Q_VALUE	28
  
--struct net_device *dsa_tag_8021q_find_port_by_vbid(struct net_device *conduit,
--						   int vbid)
-+static struct net_device *
-+dsa_tag_8021q_find_port_by_vbid(struct net_device *conduit, int vbid)
- {
- 	struct dsa_port *cpu_dp = conduit->dsa_ptr;
- 	struct dsa_switch_tree *dst = cpu_dp->dst;
-@@ -495,7 +495,20 @@ struct net_device *dsa_tag_8021q_find_port_by_vbid(struct net_device *conduit,
+ enum dsa_tag_protocol {
+ 	DSA_TAG_PROTO_NONE		= DSA_TAG_PROTO_NONE_VALUE,
+@@ -86,6 +87,7 @@ enum dsa_tag_protocol {
+ 	DSA_TAG_PROTO_RTL8_4T		= DSA_TAG_PROTO_RTL8_4T_VALUE,
+ 	DSA_TAG_PROTO_RZN1_A5PSW	= DSA_TAG_PROTO_RZN1_A5PSW_VALUE,
+ 	DSA_TAG_PROTO_LAN937X		= DSA_TAG_PROTO_LAN937X_VALUE,
++	DSA_TAG_PROTO_VSC73XX_8021Q	= DSA_TAG_PROTO_VSC73XX_8021Q_VALUE,
+ };
  
- 	return NULL;
- }
--EXPORT_SYMBOL_GPL(dsa_tag_8021q_find_port_by_vbid);
+ struct dsa_switch;
+diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
+index 8e698bea99a3..e59360071c67 100644
+--- a/net/dsa/Kconfig
++++ b/net/dsa/Kconfig
+@@ -166,6 +166,12 @@ config NET_DSA_TAG_TRAILER
+ 	  Say Y or M if you want to enable support for tagging frames at
+ 	  with a trailed. e.g. Marvell 88E6060.
+ 
++config NET_DSA_TAG_VSC73XX_8021Q
++	tristate "Tag driver for Microchip/Vitesse VSC73xx family of switches, using VLAN"
++	help
++	  Say Y or M if you want to enable support for tagging frames with a
++	  custom VLAN-based header.
 +
-+struct net_device *dsa_tag_8021q_find_user(struct net_device *conduit,
-+					   int source_port, int switch_id,
-+					   int vid, int vbid)
+ config NET_DSA_TAG_XRS700X
+ 	tristate "Tag driver for XRS700x switches"
+ 	help
+diff --git a/net/dsa/Makefile b/net/dsa/Makefile
+index 8a1894a42552..555c07cfeb71 100644
+--- a/net/dsa/Makefile
++++ b/net/dsa/Makefile
+@@ -37,6 +37,7 @@ obj-$(CONFIG_NET_DSA_TAG_RTL8_4) += tag_rtl8_4.o
+ obj-$(CONFIG_NET_DSA_TAG_RZN1_A5PSW) += tag_rzn1_a5psw.o
+ obj-$(CONFIG_NET_DSA_TAG_SJA1105) += tag_sja1105.o
+ obj-$(CONFIG_NET_DSA_TAG_TRAILER) += tag_trailer.o
++obj-$(CONFIG_NET_DSA_TAG_VSC73XX_8021Q) += tag_vsc73xx_8021q.o
+ obj-$(CONFIG_NET_DSA_TAG_XRS700X) += tag_xrs700x.o
+ 
+ # for tracing framework to find trace.h
+diff --git a/net/dsa/tag_vsc73xx_8021q.c b/net/dsa/tag_vsc73xx_8021q.c
+new file mode 100644
+index 000000000000..af121a9aff7f
+--- /dev/null
++++ b/net/dsa/tag_vsc73xx_8021q.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: GPL-2.0 OR MIT
++/* Copyright (C) 2024 Pawel Dembicki <paweldembicki@gmail.com>
++ */
++#include <linux/dsa/8021q.h>
++
++#include "tag.h"
++#include "tag_8021q.h"
++
++#define VSC73XX_8021Q_NAME "vsc73xx-8021q"
++
++static struct sk_buff *
++vsc73xx_xmit(struct sk_buff *skb, struct net_device *netdev)
 +{
-+	/* Always prefer precise source port information, if available */
-+	if (source_port != -1 && switch_id != -1)
-+		return dsa_conduit_find_user(conduit, switch_id, source_port);
-+	else if (vbid >= 1)
-+		return dsa_tag_8021q_find_port_by_vbid(conduit, vbid);
++	struct dsa_port *dp = dsa_user_to_port(netdev);
++	u16 queue_mapping = skb_get_queue_mapping(skb);
++	u16 tx_vid = dsa_tag_8021q_standalone_vid(dp);
++	u8 pcp;
 +
-+	return dsa_find_designated_bridge_port_by_vid(conduit, vid);
++	if (skb->offload_fwd_mark) {
++		unsigned int bridge_num = dsa_port_bridge_num_get(dp);
++		struct net_device *br = dsa_port_bridge_dev_get(dp);
++
++		if (br_vlan_enabled(br))
++			return skb;
++
++		tx_vid = dsa_tag_8021q_bridge_vid(bridge_num);
++	}
++
++	pcp = netdev_txq_to_tc(netdev, queue_mapping);
++
++	return dsa_8021q_xmit(skb, netdev, ETH_P_8021Q,
++			      ((pcp << VLAN_PRIO_SHIFT) | tx_vid));
 +}
-+EXPORT_SYMBOL_GPL(dsa_tag_8021q_find_user);
- 
- /**
-  * dsa_8021q_rcv - Decode source information from tag_8021q header
-diff --git a/net/dsa/tag_8021q.h b/net/dsa/tag_8021q.h
-index 0c6671d7c1c2..27b8906f99ec 100644
---- a/net/dsa/tag_8021q.h
-+++ b/net/dsa/tag_8021q.h
-@@ -16,8 +16,9 @@ struct sk_buff *dsa_8021q_xmit(struct sk_buff *skb, struct net_device *netdev,
- void dsa_8021q_rcv(struct sk_buff *skb, int *source_port, int *switch_id,
- 		   int *vbid, int *vid);
- 
--struct net_device *dsa_tag_8021q_find_port_by_vbid(struct net_device *conduit,
--						   int vbid);
-+struct net_device *dsa_tag_8021q_find_user(struct net_device *conduit,
-+					   int source_port, int switch_id,
-+					   int vid, int vbid);
- 
- int dsa_switch_tag_8021q_vlan_add(struct dsa_switch *ds,
- 				  struct dsa_notifier_tag_8021q_vlan_info *info);
-diff --git a/net/dsa/tag_sja1105.c b/net/dsa/tag_sja1105.c
-index 35a6346549f2..3e902af7eea6 100644
---- a/net/dsa/tag_sja1105.c
-+++ b/net/dsa/tag_sja1105.c
-@@ -509,12 +509,8 @@ static struct sk_buff *sja1105_rcv(struct sk_buff *skb,
- 		 */
- 		return NULL;
- 
--	if (source_port != -1 && switch_id != -1)
--		skb->dev = dsa_conduit_find_user(netdev, switch_id, source_port);
--	else if (vbid >= 1)
--		skb->dev = dsa_tag_8021q_find_port_by_vbid(netdev, vbid);
--	else
--		skb->dev = dsa_find_designated_bridge_port_by_vid(netdev, vid);
-+	skb->dev = dsa_tag_8021q_find_user(netdev, source_port, switch_id,
-+					   vid, vbid);
- 	if (!skb->dev) {
- 		netdev_warn(netdev, "Couldn't decode source port\n");
- 		return NULL;
-@@ -652,12 +648,9 @@ static struct sk_buff *sja1110_rcv(struct sk_buff *skb,
- 	if (likely(sja1105_skb_has_tag_8021q(skb)))
- 		dsa_8021q_rcv(skb, &source_port, &switch_id, &vbid, &vid);
- 
--	if (source_port != -1 && switch_id != -1)
--		skb->dev = dsa_conduit_find_user(netdev, switch_id, source_port);
--	else if (vbid >= 1)
--		skb->dev = dsa_tag_8021q_find_port_by_vbid(netdev, vbid);
--	else
--		skb->dev = dsa_find_designated_bridge_port_by_vid(netdev, vid);
-+	skb->dev = dsa_tag_8021q_find_user(netdev, source_port, switch_id,
-+					   vid, vbid);
 +
- 	if (!skb->dev) {
- 		netdev_warn(netdev, "Couldn't decode source port\n");
- 		return NULL;
++static struct sk_buff *
++vsc73xx_rcv(struct sk_buff *skb, struct net_device *netdev)
++{
++	int src_port = -1, switch_id = -1, vbid = -1, vid = -1;
++
++	dsa_8021q_rcv(skb, &src_port, &switch_id, &vbid, &vid);
++
++	skb->dev = dsa_tag_8021q_find_user(netdev, src_port, switch_id,
++					   vid, vbid);
++	if (!skb->dev) {
++		dev_warn_ratelimited(&netdev->dev,
++				     "Couldn't decode source port\n");
++		return NULL;
++	}
++
++	dsa_default_offload_fwd_mark(skb);
++
++	return skb;
++}
++
++static const struct dsa_device_ops vsc73xx_8021q_netdev_ops = {
++	.name			= VSC73XX_8021Q_NAME,
++	.proto			= DSA_TAG_PROTO_VSC73XX_8021Q,
++	.xmit			= vsc73xx_xmit,
++	.rcv			= vsc73xx_rcv,
++	.needed_headroom	= VLAN_HLEN,
++	.promisc_on_conduit	= true,
++};
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("DSA tag driver for VSC73XX family of switches, using VLAN");
++MODULE_ALIAS_DSA_TAG_DRIVER(DSA_TAG_PROTO_VSC73XX_8021Q, VSC73XX_8021Q_NAME);
++
++module_dsa_tag_driver(vsc73xx_8021q_netdev_ops);
 -- 
 2.34.1
 
