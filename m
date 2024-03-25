@@ -1,107 +1,126 @@
-Return-Path: <linux-kernel+bounces-117831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EA4088B035
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:40:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 451C888B036
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE72F306DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:40:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 769751C3F8B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A450733CFC;
-	Mon, 25 Mar 2024 19:39:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651DA1C29F;
+	Mon, 25 Mar 2024 19:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HqQ7RdWG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iA/LUXns"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02232224DB;
-	Mon, 25 Mar 2024 19:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20ECB1B978
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711395589; cv=none; b=tIOayVXut9KE/NYDUZcSvyTjAUdAlNKUepz8h3pwoMmawbQghj1W2LklMsrITmu8yUBDAyr865I3blXkQsZOXyRY1VF+6kH7p2oBCJ0mASP+2Sq2LqqrC1ItRPOudgmkOTnF+EQxXnlSj9RsoPKBsYLICl37vgzkNMryi4Yge6o=
+	t=1711395610; cv=none; b=R2P9lxHxGOTVJh2QXMTV7PivwJLEN5Lt99gRel1USfWVsqA8NP0d9IWkVpiG7IJD4PHTxo6wLV5TCvermaoxJzGf4m9dPbqi9/OCJeELN6mSmx+TVR9Wnf7wFJKnROojMRAvOibmo2YryNRdH0Ad1d7Omt+pO+zvBhoCGxjFNUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711395589; c=relaxed/simple;
-	bh=D6MfnrEFK0/vmjnJEcjSthiQ8tmUlQRWp4661t4UP/k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MwsJk27hpF2ClJvmWBeP+Kp+0rwh8ljR9mxXu4RuSJ36/nzsE/2DMAse0NuByJ1Dbdj5UmoVnkB6Xj3BKT7Ms69vnjvz4+DiiMb+AOnnjeBN1RhEKG3Hk6XLieehai55/qp/y3KoDM4yXbxtDGUe5j468vpASCtFBaHx4zPuG/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HqQ7RdWG; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711395587; x=1742931587;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=D6MfnrEFK0/vmjnJEcjSthiQ8tmUlQRWp4661t4UP/k=;
-  b=HqQ7RdWG+Lw1MCIjj21cTC1fwXcPU9/EMfx1ROyiBYbmE8eU38GdtPpH
-   YAjxZUCHoA+2MGA1Ui4aMl0u3s9RbcHeXqr5LNUX4n9cH0sEnSz6Y/7PL
-   Un7RgwCxyAWzDNw1MXQOjI3aebAj4Z4BYwKxInG6ciJOn/ra6ZdqoosCx
-   9zVX3W0fAu1teOrPKsy1hG0wLtoIpd7JXhmqMj2DpoyPtfT6kbvw37AMM
-   vjwYlMzlKrnJMvn7768pvnqK7+Qp8boyfYwwjpYufYlgjRYHagdzDmClg
-   imcLLoZmnEwfvDgbulyq927hXSJxo/2uwjubjmjcTipch8Fs5rjyiBGou
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6601587"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="6601587"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 12:39:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="914852875"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="914852875"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 12:39:42 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1roqAU-0000000G7FV-4928;
-	Mon, 25 Mar 2024 21:39:38 +0200
-Date: Mon, 25 Mar 2024 21:39:38 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Damien Le Moal <dlemoal@kernel.org>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-	Manivannan Sadhasivami <manivannan.sadhasivam@linaro.org>,
-	linux-scsi@vger.kernel.org,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Jaroslav Kysela <perex@perex.cz>, linux-sound@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org, linux-serial@vger.kernel.org,
-	Hans de Goede <hdegoede@redhat.com>,
-	platform-driver-x86@vger.kernel.org, ntb@lists.linux.dev,
-	Lee Jones <lee@kernel.org>, David Airlie <airlied@gmail.com>,
-	amd-gfx@lists.freedesktop.org, Jason Gunthorpe <jgg@ziepe.ca>,
-	linux-rdma@vger.kernel.org,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/28] mfd: intel-lpss-pci: Use PCI_IRQ_INTX
-Message-ID: <ZgHS-qZliVyFD5xh@smile.fi.intel.com>
-References: <20240325070944.3600338-1-dlemoal@kernel.org>
- <20240325070944.3600338-10-dlemoal@kernel.org>
+	s=arc-20240116; t=1711395610; c=relaxed/simple;
+	bh=KlDcReSHkzr3q7MI7ZjcywQz9k72vldHzd9nToqdlAU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V9JSNL0NXfrvAo6Dy4lE74NYMlGr87rfUh6I9E9LTtxGN384JbpKoCbTREHCvuvEsPqseAXKzWMztloH3ARw4z1ZViNpr6p7Co31Vc1EFfOZr9axn6B/bRsb8lX3JG61+TqzmHqI7QKzhPPBvES9BOdn3TTeEgufP/QGV8bq0Nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iA/LUXns; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-789db18e169so367398385a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711395607; x=1712000407; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rCSW8ugAsHBM7+R2hVkV4HgvR3WEY/XblW4OKhzKjhs=;
+        b=iA/LUXnsU+cF2FQLrvvD8o1D0KazyIqqobie89ph4jpmh4YifsNqZ9lugcML6p9uRc
+         at3vNU7gL35Kt+S+r4OmiwIOFhp4pnXJKRVSRIfbp/Awevw3UM1fY/P/NgUgpsim/W9B
+         dVk378yrxWeNdJ8mTf3v/CgV75X/2/U9apPpI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711395607; x=1712000407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rCSW8ugAsHBM7+R2hVkV4HgvR3WEY/XblW4OKhzKjhs=;
+        b=l5Q+id9ElezqFaKlDoIPcrnjf3HqkbzZyPcUuT5RE5n+eQEg4/aJnETUQHNrWDkGUi
+         HusnMdSL38dBBYoCCJGrtsncE2NmIu9to9uIwFaEOiPZKnnySiTF6ILViZZwr/iF2d3f
+         VBnEpxukNRUlXQy+T8BXt12tCaoctQgpSIxLMerwYtM0NcBWaxX0zvZsbTVRmn2pOA8Y
+         FchTW69utdrSBCmoottFmobtDrBIOY+8uJfUEom79OcT2bShWNrlYmx2cyJqrnqsyP2b
+         KqUwxIGaHySTo8KU3lXwsXAv4bP+BrbRCkEpeYPfkYzdvnyJsDrHxFXQm962U0g4W6qg
+         4fqg==
+X-Forwarded-Encrypted: i=1; AJvYcCWqGxJna6KFp675L0pTvb01QVglZZPqsQoFozofcRePns0ZrRE2CCekPJRlsC63zPR5IuyJpM8ykOc+g7iX0uwkGkkM+NpkASNRs60L
+X-Gm-Message-State: AOJu0YyebW5S2/eJEFZ4Bis9UStM79STP1ohQWED/e9yPlVqaRc21fNK
+	QlXtqLCKUa8xp8BmRSRMteU579bR34I0bDZRqv3Bd52ZiCdo1Aam44PDZ7wWwqqlpj978gPEwZk
+	=
+X-Google-Smtp-Source: AGHT+IGth+FcJCehzT2OtRbzRFjofUxKqpdevD3KyF9MOpCv6QRI7QLltanjcQ19DtBlInzESfd6oA==
+X-Received: by 2002:a05:620a:2ec:b0:788:2e47:b290 with SMTP id a12-20020a05620a02ec00b007882e47b290mr8401211qko.73.1711395607052;
+        Mon, 25 Mar 2024 12:40:07 -0700 (PDT)
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com. [209.85.160.178])
+        by smtp.gmail.com with ESMTPSA id vz15-20020a05620a494f00b0078821519902sm2388855qkn.20.2024.03.25.12.40.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 12:40:06 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42ee0c326e8so3061cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:40:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVDiQbN+Tp8K6YUGApTHx5CVRLg2e70TG906+zZrpJfOEMUVSeHV+E+RrIgbXGi+LR1WifkW90W8ayg09PGxzFdAR0OWTy75EzN7NwH
+X-Received: by 2002:a05:622a:553:b0:430:b590:e88c with SMTP id
+ m19-20020a05622a055300b00430b590e88cmr1295243qtx.6.1711395605673; Mon, 25 Mar
+ 2024 12:40:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325070944.3600338-10-dlemoal@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240325184204.745706-1-sboyd@kernel.org> <20240325184204.745706-6-sboyd@kernel.org>
+In-Reply-To: <20240325184204.745706-6-sboyd@kernel.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 25 Mar 2024 12:39:49 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=URo0V1JGJ=sOz4i7hW9EqrCHyEwW4Bc1P7hsoxdw5tAA@mail.gmail.com>
+Message-ID: <CAD=FV=URo0V1JGJ=sOz4i7hW9EqrCHyEwW4Bc1P7hsoxdw5tAA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] clk: Get runtime PM before walking tree for clk_summary
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
+	linux-arm-msm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 04:09:20PM +0900, Damien Le Moal wrote:
-> Use the macro PCI_IRQ_INTX instead of the deprecated PCI_IRQ_LEGACY
-> macro.
+Hi,
 
-Not needed anymore. MFD subsystem has a patch moving this to MSI support.
-But you need to coordinate with Lee how to proceed (in case of conflicts MFD
-version should be taken).
+On Mon, Mar 25, 2024 at 11:42=E2=80=AFAM Stephen Boyd <sboyd@kernel.org> wr=
+ote:
+>
+> Similar to the previous commit, we should make sure that all devices are
+> runtime resumed before printing the clk_summary through debugfs. Failure
+> to do so would result in a deadlock if the thread is resuming a device
+> to print clk state and that device is also runtime resuming in another
+> thread, e.g the screen is turning on and the display driver is starting
+> up. We remove the calls to clk_pm_runtime_{get,put}() in this path
+> because they're superfluous now that we know the devices are runtime
+> resumed. This also squashes a bug where the return value of
+> clk_pm_runtime_get() wasn't checked, leading to an RPM count underflow
+> on error paths.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Ah, interesting. Thinking about this, I guess it means that a single
+device that returns an error from its pm_runtime_get() will fully
+disable the entire system's unused clock disabling as well as the
+entire clk_summary. Crossing my fingers that doesn't show up in
+practice...
 
 
+> Fixes: 1bb294a7981c ("clk: Enable/Disable runtime PM for clk_summary")
+> Cc: Taniya Das <quic_tdas@quicinc.com>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  drivers/clk/clk.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
