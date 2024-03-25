@@ -1,74 +1,54 @@
-Return-Path: <linux-kernel+bounces-116693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DBE888A29E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:41:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45AEE88A2A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:41:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717701C38EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:41:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9DD21F2CB2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:41:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD91814EC69;
-	Mon, 25 Mar 2024 10:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56E214F118;
+	Mon, 25 Mar 2024 10:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iPeMlSMx"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="k0TiPAfG"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAE8A5A103
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3029614F9E6;
+	Mon, 25 Mar 2024 08:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711354985; cv=none; b=MBrG4uL1ovQwCTR/XAHCmaT1RVeWW7m3z5mltjua5xzGle6XTiOVDGVe26/IPRwyf8XlciPZQzeY+UkSdW8I/KU9VRc1XCCXYMODEIbgGJEWEQfATemVez/521WUSRchJWYqr8mw2pHF4EHszVdIP7D0FGMsUo7nKv4tN1MgXDs=
+	t=1711355043; cv=none; b=PqGCtrePjrt+Ien+QUVPpEi8ddRlB6B0lo9EjMQAbO3iEsBv7fGFxs/2frWjTx4bfRsexbxXgBXF0aa3C6bgQNxIiux1gMtgp2u8w6GB13Tus9hrLTd8uHBXrA9xBhnkPUNjfmXM0+qwDspYxZvj6uysLq5nrDxZ+LKRim60DM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711354985; c=relaxed/simple;
-	bh=ijxk0tKRhwDiFDaof0PwkqnS6IfxiZILFA8DV9dkKEI=;
+	s=arc-20240116; t=1711355043; c=relaxed/simple;
+	bh=FxeJBW8SRhWP/KtNW8MieDakXdayiD+/WVoSml7b8l0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ROquVeN5e8n7q31c/p8jp2rZ8chXsEQl+gypOFsuEie7e+bepK2W84kSSP8ZK3dq9JiOdwOVNtj9OLAPzsSncNFc5LQtZIJX+BHk8omP/xNuRFjUpjCyJefTif03EQtGNfdBzeWxWVVNnJ3b75t+/ry8TdAcYkwJVkXCceMUXQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iPeMlSMx; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5148ea935b8so4636691e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711354982; x=1711959782; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=HMQJ/okPtBULpef79IGqedhpXloJdTUeROtXqmnf/p8=;
-        b=iPeMlSMxS/CWYb42zB97f5NvYw3VvbQXnREM3W/XLexDQ2j9T3ogudwo4b/QSX5QWm
-         MtzzCOuiN88FfxJ19zUrJHhJgDQC+T4CHsfkRe1XRJkTWoB0sNU0lDJNZrVHKurTQPYb
-         JQlwQg6Wx0zkiEkr+6evZiFhbR1QkLs5DKknq/FEFO4nycLcN4OqZ0pok0EoZtpd+Xaf
-         Bbo20wYhqPCzy3UyHh3V5r5eDv6o1ph+IlBDeyNbyQI7mg6N45nTMmH+dcB6U1RgvNvU
-         VKMZswZ8/3V8G8tSy2gcmdS4S9R1WUozHSb0FDI77Wg82vBdlvu1fPBJ5EeLdWoitU5z
-         pOfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711354982; x=1711959782;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HMQJ/okPtBULpef79IGqedhpXloJdTUeROtXqmnf/p8=;
-        b=fApfM/60gDorwhKdxlbtMsqE8skH6bVLlEdXSYeALmoQIf9ncyKujIHZKZobwKG/eV
-         HOIYZZ+c/fyGYm+yRGPOPKx3dpbUG+fMI0ypk1N/CR9sUvUAsmXSGz4q0a/g2SgxPXsO
-         4VJ8Ps79cjLCbZb8FNTVMMHcnr4J3JsOq+IOLv5SAtsLxTSLpM1e8mkoZLMU6YLBx2pd
-         F3KbmFhFRdnP7EwqbOxl1OFE/wHukNtleLbPjRsnWXtpFGl1vDtHN2AIy+MJip0PhWx7
-         L4P2VlZiWTNPH3FER3jx76CY2DjVDsA6QlYqZanM68MKlV0a8mt0ntXMVwvNHWmBizSd
-         Urhw==
-X-Forwarded-Encrypted: i=1; AJvYcCUz+iSmjXWOCsu4w50V2Vnqicfp6UwqDZqo6foDlcpNXRcF6F0LDft7v9gok6dmNWGIfVGCQ5hritEEXAgUlSRsie2Mi6PYhpKxMCkm
-X-Gm-Message-State: AOJu0Yw5V7IA/jfiTVW5m237kkuw2xerRvkevqDB7zdatPvFk6eL1at+
-	zOuNAHgFSfuvbAkbw243U4rYE9ICOrtJ26etibgAhtncl+zhzsMhXDVG8gjZmmc=
-X-Google-Smtp-Source: AGHT+IFdGvMO0JyTBK8+IQdjNO3yWH2O2uD959pWJuRDd6A/NJku8pyRlXBpCotrzi2yhfTeFIOEQQ==
-X-Received: by 2002:a05:6512:3b1f:b0:513:c9a6:46ce with SMTP id f31-20020a0565123b1f00b00513c9a646cemr5154347lfv.9.1711354981966;
-        Mon, 25 Mar 2024 01:23:01 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id bk3-20020a0560001d8300b00341c9956dc9sm3710731wrb.68.2024.03.25.01.22.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 01:23:00 -0700 (PDT)
-Message-ID: <3b38abb9-c3ac-4b55-889a-424396f1113d@linaro.org>
-Date: Mon, 25 Mar 2024 09:22:59 +0100
+	 In-Reply-To:Content-Type; b=N3RM9DMarAruIaoLDviKnvrjAZA65qAnqJyujONcZCK+FtuJEIyxCkS7lxsdniO82pymaHdac59xu7Km6KxAuFGEyWM030hsprasHZRA/5wGwHq9N4Dt8KVpQg6r4LhbikPm8v6h5Kg1PHOBQ0D4xYZsgqlpfY2AIxmD6nmc8qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=k0TiPAfG; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711355040;
+	bh=FxeJBW8SRhWP/KtNW8MieDakXdayiD+/WVoSml7b8l0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=k0TiPAfGSgiIx1WnbJvOpKq7uVHspIBm69VBmNfa1dmMUr+dkN4zSASKiw5MtDD7z
+	 WXmrj/V2LsPSU73F6+W9xs9Q5U9H3/KJLunK8SHalbg9SX/gocuDwGqhAerUohj2Fk
+	 nZaucggQ1R0vO+Dn0USpHSFWw6B/taFk9/NJea9uUHYioH/aGW1/uIgj4Cs6JU3VYC
+	 w2Ie/hTHkOcstcEWRy0L9DIK5b5wIGXxMyYBvQhcHfPoYlm4Lp21jz9uBZPD3frbkj
+	 1zuyVO38akjU8l1lxCzTiwV/NDzvrWN/YBH1PBOKlzHedu3br1JN4YHg7i/GvHwbHo
+	 G6xjvlMmSis2A==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3F0E137813B7;
+	Mon, 25 Mar 2024 08:23:59 +0000 (UTC)
+Message-ID: <f90b2c8b-6eb3-46dc-abcc-600248218b4e@collabora.com>
+Date: Mon, 25 Mar 2024 09:23:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,112 +56,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: exynos: gs101: define all PERIC USI nodes
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, andre.draszik@linaro.org,
- willmcvicker@google.com, kernel-team@android.com
-References: <20240307135912.163996-1-tudor.ambarus@linaro.org>
- <073e5ef5-2a2e-4300-93d6-e25552276e13@linaro.org>
- <73ba6104-aa54-444e-b6c5-7f89d1fa0060@linaro.org>
+Subject: Re: [PATCH 1/4] dt-bindings: soc: mediatek: Add support for MT8188
+ VPPSYS
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-media@vger.kernel.org, mchehab@kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, amergnat@baylibre.com, moudy.ho@mediatek.com,
+ hverkuil-cisco@xs4all.nl, sebastian.fricke@collabora.com,
+ u.kleine-koenig@pengutronix.de, chunkuang.hu@kernel.org,
+ p.zabel@pengutronix.de, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, kernel@collabora.com
+References: <20240322092845.381313-1-angelogioacchino.delregno@collabora.com>
+ <20240322092845.381313-2-angelogioacchino.delregno@collabora.com>
+ <20240322-lugged-tabloid-3d5a85dc58d0@spud>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <73ba6104-aa54-444e-b6c5-7f89d1fa0060@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20240322-lugged-tabloid-3d5a85dc58d0@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 22/03/2024 14:39, Tudor Ambarus wrote:
+Il 22/03/24 18:42, Conor Dooley ha scritto:
+> On Fri, Mar 22, 2024 at 10:28:42AM +0100, AngeloGioacchino Del Regno wrote:
+>> Add compatible for MT8188 VPP mutex.
 >>
->>> +				#address-cells = <1>;
->>> +				#size-cells = <0>;
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > 
-> I'd like to respin this patch. Any preference on coding style for
-> #address-cells and #size-cells? I guess they shall be above ranges
-> property if present.
+> You should at least mention the difference between this any anything
+> else.
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-No, ranges should be just after reg, because it encodes often the same
-or similar information (see also DTS Coding Style). I don't have
-guideline, can be anywhere before vendor properties.
+It's exactly always the same difference for MuteX blocks: different bits to
+activate mute for some IP ... but yeah, you're right, I'll shoot a word about
+this in the commit description on v2 (waiting a bit before doing that anyway).
+
+Thank you!
+
+Cheers,
+Angelo
 
 > 
->>> +				pinctrl-names = "default";
->>> +				pinctrl-0 = <&hsi2c1_bus>;
+> Thanks,
+> Conor.
+> 
+>> ---
+>>   .../devicetree/bindings/soc/mediatek/mediatek,mutex.yaml         | 1 +
+>>   1 file changed, 1 insertion(+)
 >>
->> Please reverse two lines, first pinctrl-0 then pinctrl-names. I know we
-> 
-> Ok.
-> 
->> did not follow this convention till now, but at least new code can be
->> correct. Also clocks should be before pinctrl, so we keep some sort of
->> alphabetical order.
-> 
-> Ok.
-> 
-> I guess the order shall be:
-> 
-> 1. compatible
-> 2. reg
+>> diff --git a/Documentation/devicetree/bindings/soc/mediatek/mediatek,mutex.yaml b/Documentation/devicetree/bindings/soc/mediatek/mediatek,mutex.yaml
+>> index ba2014a8725c..a10326a9683d 100644
+>> --- a/Documentation/devicetree/bindings/soc/mediatek/mediatek,mutex.yaml
+>> +++ b/Documentation/devicetree/bindings/soc/mediatek/mediatek,mutex.yaml
+>> @@ -33,6 +33,7 @@ properties:
+>>         - mediatek,mt8186-disp-mutex
+>>         - mediatek,mt8186-mdp3-mutex
+>>         - mediatek,mt8188-disp-mutex
+>> +      - mediatek,mt8188-vpp-mutex
+>>         - mediatek,mt8192-disp-mutex
+>>         - mediatek,mt8195-disp-mutex
+>>         - mediatek,mt8195-vpp-mutex
+>> -- 
+>> 2.44.0
+>>
 
-3. ranges
-
-> 3. #address-cells (if applicable)
->    #size-cells (if applicable)
-
-> 5. Standard/common properties ordered alphabetically (ex. clocks,
->    interrupts, pinctrl)
-> 6. vendor-specific properties
-> 7. status (if applicable)
-> 
-
-Rest looks fine, thanks.
-
-Best regards,
-Krzysztof
 
 
