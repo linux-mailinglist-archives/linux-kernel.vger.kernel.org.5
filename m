@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-116381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FAA88899E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:18:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F8008899EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C08961C327F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:18:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 410481C32CAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1A412B144;
-	Mon, 25 Mar 2024 05:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827C0133408;
+	Mon, 25 Mar 2024 05:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UgoRuOdI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h9k94xcb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CD414A60C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4927D14A602;
 	Mon, 25 Mar 2024 01:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711331664; cv=none; b=sSuaLpwRfNybwqx9rJC1y3PEoMeMB6zwNkyidL6r8PV9r4JekYmRqhqQX2IMfp+ae2NQ6xXeCnNbknxo7or44MiJ3GMv4b/uIZEVmskBpx+SXTiZL3ZIlafuQxxwF8SiQntapoC7pXvBxtZZI7rdZFwd1RDFGP1Fk9Ef3PsndJ8=
+	t=1711331663; cv=none; b=s+Og1v+sz5Cu9YYB0bLFQFGIEh86DhtXeRa9mQCECeHyMoHfnjupBsbvGG/8lEezaoabwLfrMYKqyz1fbaTFw9QxOLtX2V3DT+TGupkf6fcgcP9/j8kFsKwOz3iq/lfpeTyxMLN4D0bGedNhcKMcILHaejPQXhhBVWGYX8vOS+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711331664; c=relaxed/simple;
-	bh=rcdcVMOwAqKdq7n5jkVq5QjE+E4mBd0LmLt5lwYal+k=;
+	s=arc-20240116; t=1711331663; c=relaxed/simple;
+	bh=3uYZHwDwMvbZsbPB9A8Yw6hlzifQeyqRpNoGZWbsN+k=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Yj+QdkRr4y9q5QpB65Dp07l27AOF503LHG04+ujNLmAQ3O6GaKctmL5H3lC8y30l3l7j4Tmo6FTGn+yZLajytTRLkUqGGy5xUsyg9WQ1uCKow2xsuZ+RzP1I6dUwKzTboXn1D4SiNerLzx/9jpQt13y65UFGvU4h5g2vrmT9JGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UgoRuOdI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A08FAC4166A;
+	 In-Reply-To:To:Cc; b=pE4r8+7RgNIwwOAOSnVOTmtLdX2uDbmura8OZtnoAHM2kSNPjfXpRn0wE6aVzrZe4oa04rx1pVdBKCYfOfPXJB+zUdQ1AJBxEhE0mPOfaj6ssu5vrc10LzySpsXTRhTQnVkRsTD5lF9GCAsgwrRfe5badSZ2DSJAFewOmk4+goA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h9k94xcb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 92EA7C43141;
 	Mon, 25 Mar 2024 01:54:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711331662;
-	bh=rcdcVMOwAqKdq7n5jkVq5QjE+E4mBd0LmLt5lwYal+k=;
+	bh=3uYZHwDwMvbZsbPB9A8Yw6hlzifQeyqRpNoGZWbsN+k=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=UgoRuOdIKc1atcNCSy+fGMyIxd2EIL85aFzdiUP5IhrVwfyLuX4y1UYA/UQBPsAMD
-	 3sCV/0MeXlbM7sefeRf+lmdvdlgZ0TKvCfmEeGYkPwifpZb/yub4hlREVfgCNhRtZz
-	 ZiY0yetiX2oMC1bHns3loNE8fmm9pIIDXR7KvrkZSK4WdOtTGUmUud3p6vcyL60zKX
-	 9BjSBTkapaueuWOl6AMlmsqrYlvbxlrUS29IKX7go0Y/Tq8wfA4UxOJ9FCpuAE+CY5
-	 CxMUxLEonlCV+T0zvdc8MGEzb5H247rE1FolcBQONxia7RxxTo1NzWXjR86IfgfIYv
-	 gVtR4ZEqxDVIw==
+	b=h9k94xcbzJ8umZuKaQRlTjbGGULOk4jiUy+LTnqdw+5V0UeEaeG2CccGQ5FoT6wmp
+	 Bc7nwkoDuWl2JWkhsNf8c/jAhkXnsvmpwuAhNnCI7Syw0XkmEo6fiLXTkHnbtCUBpP
+	 +lCVm3kgaGGxFz0w+K3m0jDpgzeE96ybpByO+uvG+Yu8GN10by+bQJkUBtUPPc4SSA
+	 qd0I6OD9ZsUXcTvjDA+kNSOCHOwWyGVt5rxFDpNZSgmpPnfRoCL4Rm9Nt937fcnz0o
+	 WMTcuCiC5uQ7lecp/2nEZh3Cc0ZYcITDSjLAENZxAyzgMJ99vP3lJhLY6IwtsLhHc4
+	 BwNKmpQAXlfAQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 886E5D2D0E3;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7E659D2D0E6;
 	Mon, 25 Mar 2024 01:54:22 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,69 +51,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 00/32] spi: get rid of some legacy macros
+Subject: Re: [PATCH v2] gpio: Add ChromeOS EC GPIO driver
 From: patchwork-bot+chrome-platform@kernel.org
 Message-Id: 
- <171133166255.9916.6727664409114778134.git-patchwork-notify@kernel.org>
+ <171133166251.9916.2499455576829331445.git-patchwork-notify@kernel.org>
 Date: Mon, 25 Mar 2024 01:54:22 +0000
-References: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
-In-Reply-To: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
-To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig_=3Cu=2Ekleine-koenig=40pengutronix=2Ede=3E?=@codeaurora.org
-Cc: broonie@kernel.org, kernel@pengutronix.de, mdf@kernel.org,
- hao.wu@intel.com, yilun.xu@intel.com, trix@redhat.com,
- linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
- alex.aring@gmail.com, stefan@datenfreihafen.org, miquel.raynal@bootlin.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- linux-wpan@vger.kernel.org, netdev@vger.kernel.org, lars@metafoo.de,
- Michael.Hennerich@analog.com, jic23@kernel.org, linux-iio@vger.kernel.org,
- dmitry.torokhov@gmail.com, Jonathan.Cameron@huawei.com,
- linux-input@vger.kernel.org, gregkh@linuxfoundation.org,
- andriy.shevchenko@linux.intel.com, ulf.hansson@linaro.org,
- martin.tuma@digiteqautomotive.com, mchehab@kernel.org,
- linux-media@vger.kernel.org, serjk@netup.ru, arnd@arndb.de,
- yangyingliang@huawei.com, linux-mmc@vger.kernel.org, richard@nod.at,
- vigneshr@ti.com, robh@kernel.org, amit.kumar-mahapatra@amd.com,
- alsa-devel@alsa-project.org, linux-mtd@lists.infradead.org, horms@kernel.org,
- ronald.wahl@raritan.com, bleung@chromium.org, tzungbi@kernel.org,
- groeck@chromium.org, chrome-platform@lists.linux.dev, michal.simek@amd.com,
- jcmvbkbc@gmail.com, linux-spi@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, andersson@kernel.org,
- konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- linux-mediatek@lists.infradead.org, tzimmermann@suse.de, javierm@redhat.com,
- sam@ravnborg.org, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
- vireshk@kernel.org, rmfrfs@gmail.com, johan@kernel.org, elder@kernel.org,
- greybus-dev@lists.linaro.org, peterhuewe@gmx.de, jarkko@kernel.org,
- jgg@ziepe.ca, linux-integrity@vger.kernel.org, herve.codina@bootlin.com,
- krzysztof.kozlowski@linaro.org, linux-usb@vger.kernel.org, deller@gmx.de,
- dario.binacchi@amarulasolutions.com, kvalo@kernel.org, dmantipov@yandex.ru,
- libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
- corbet@lwn.net, bhelgaas@google.com, james.clark@arm.com,
- linux-doc@vger.kernel.org
+References: <20240220045230.2852640-1-swboyd@chromium.org>
+In-Reply-To: <20240220045230.2852640-1-swboyd@chromium.org>
+To: Stephen Boyd <swboyd@chromium.org>
+Cc: linus.walleij@linaro.org, brgl@bgdev.pl, linux-kernel@vger.kernel.org,
+ patches@lists.linux.dev, devicetree@vger.kernel.org,
+ chrome-platform@lists.linux.dev, dianders@chromium.org,
+ treapking@chromium.org, linux-gpio@vger.kernel.org, lee@kernel.org,
+ bleung@chromium.org, groeck@chromium.org
 
 Hello:
 
 This patch was applied to chrome-platform/linux.git (for-kernelci)
-by Mark Brown <broonie@kernel.org>:
+by Bartosz Golaszewski <bartosz.golaszewski@linaro.org>:
 
-On Wed,  7 Feb 2024 19:40:14 +0100 you wrote:
-> Changes since v2
-> (https://lore.kernel.org/linux-spi/cover.1705944943.git.u.kleine-koenig@pengutronix.de):
+On Mon, 19 Feb 2024 20:52:27 -0800 you wrote:
+> The ChromeOS embedded controller (EC) supports setting the state of
+> GPIOs when the system is unlocked, and getting the state of GPIOs in all
+> cases. The GPIOs are on the EC itself, so the EC acts similar to a GPIO
+> expander. Add a driver to get and set the GPIOs on the EC through the
+> host command interface.
 > 
->  - Drop patch "mtd: rawnand: fsl_elbc: Let .probe retry if local bus is
->    missing" which doesn't belong into this series.
->  - Fix a build failure noticed by the kernel build bot in
->    drivers/spi/spi-au1550.c. (I failed to catch this because this driver
->    is mips only, but not enabled in a mips allmodconfig. That's a bit
->    unfortunate, but not easily fixable.)
->  - Add the Reviewed-by: and Acked-by: tags I received for v2.
+> Cc: Lee Jones <lee@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: <linux-gpio@vger.kernel.org>
+> Cc: <chrome-platform@lists.linux.dev>
+> Cc: Pin-yen Lin <treapking@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > 
 > [...]
 
 Here is the summary with links:
-  - [v3,15/32] platform/chrome: cros_ec_spi: Follow renaming of SPI "master" to "controller"
-    https://git.kernel.org/chrome-platform/c/85ad0ec049a7
+  - [v2] gpio: Add ChromeOS EC GPIO driver
+    https://git.kernel.org/chrome-platform/c/f837fe1bffe6
 
 You are awesome, thank you!
 -- 
