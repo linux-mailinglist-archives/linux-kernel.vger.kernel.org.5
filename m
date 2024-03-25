@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-116592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AAEF88A0F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:07:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F36C88A0F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B99B1F3A2B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:07:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECB002C3A1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C0E14AD07;
-	Mon, 25 Mar 2024 08:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51E50146585;
+	Mon, 25 Mar 2024 08:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZedpXBTo"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="alPU62rn"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFED15FA84;
-	Mon, 25 Mar 2024 06:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E659515FCED;
+	Mon, 25 Mar 2024 06:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711348913; cv=none; b=rHfSodhmCvGI5R8dMRuUXN3o6X6ftDMHgvy3N7WnXUvT6rcc4zboBm8qvFcaZyAVrDC6eeEN6EVZf1aeOEvD8IndHNUp3bHqCzJaAaow/JSjNXVzt0OZ+SPR1roiVPioKaTEiVvfT4vrAdnn5IVS/EKwXXH31Tbb6sIZ/7LyEsk=
+	t=1711348919; cv=none; b=PUeJ1IEJ5KsVyAjBojIuXGYzOxxp1gx4ovqSaSdEjrAO6If5GRCSWg3+2NkpRfSC64npQfFTyaAMvnFj9xcDHF3EobjfVKRCg5ccSw5nBClpTOJpUnC+6hXv/Xs/7lxeheJDHPNXAC8R2NJmx78HI6uAzRAu7p6z/jU2xyLVsuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711348913; c=relaxed/simple;
-	bh=EgUgzUoucqqDqOU2t7gKumIS3qm9Toh3D3HqJIoc9lY=;
+	s=arc-20240116; t=1711348919; c=relaxed/simple;
+	bh=ul0hfPOmfS7i90s07MvVRoTCajL4zQDIAp9Wq9nGTHo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HzcSeeZRLydl2iH7T23mYB4QzM4x63aWkpjb5lxL55zquB0eAjiWpSVQP2vzc9R8wFoJIqM/K4Y3VWsZgPNnEPHvMGvAWPcLQ+tWfLuXcWQJM72foJr+pw4E1+Iefq/uuknLj6PQ++Qi2ZLhVn0Vki/wnmVIxQNoyTzK6ICTIpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZedpXBTo; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version; b=WsrXdA9TkyWaeCsctnev+XxOXq7C/lpx1U23JTmDnIyVyW8snol5GiLo+fzxJZBOIjLXyySnmSCTOm2ynICcbg66g8Jyyzko2PsEgEyEYT+gACk4XQj+0q5oEnxEvYlOGv5gquwdI4TXhqN2q+0IFss3ubRP1DzmoWYRUcm2WOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=alPU62rn; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711348912; x=1742884912;
+  t=1711348918; x=1742884918;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=EgUgzUoucqqDqOU2t7gKumIS3qm9Toh3D3HqJIoc9lY=;
-  b=ZedpXBToNbQxuBmTYxz2khw+RLO14UlpptIQnSBqowq6QkIUPcafPRG5
-   6VmtzfMV4yW0bnXVF/cu+OmPw5IumhCjkKSAl7gbc0OotQJz3pIhFs6KE
-   Wmz12j3g6oNv4x11IK7Hk1uw+6yES9k5h+Nv5uVo+YM8EDvjgHTLvAn/3
-   czaS+/XZRnH8XqQGri8We/DAVuC5QGaTwg7+/5yfQg5X1Aq8+5+KVrJSW
-   Use67OcpXIo1+a+s4pGE4+UvzOT9E+jmtBbWkvPj+ecxytriEjjjQh2De
-   zB2fZGlPLveIizGQG1X7vRIYPdhtmQkPporrhNvkXQJkNTNB3Oeug4L2k
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17065310"
+  bh=ul0hfPOmfS7i90s07MvVRoTCajL4zQDIAp9Wq9nGTHo=;
+  b=alPU62rn9qVu1yt3kG5Uiop0cXCzhPb0lBkiE7x2bAMlTGr0BQKfiVVr
+   qVpmo2CUQilDIzajd4EN+ZEFld7xbl15W3/xYL9zzCfPJAjxVb6l4BYfz
+   yTDuPH3g6l7pDHti7RSkJ9zzL50m8ad8CxaCnMOTVTjThRQgi4yI4HCMQ
+   cRidxz6QGGXSp2wqua/q26pLJN5wzc7sAA8ytybpnF8huLv38aDYhwn8n
+   Zp8cDuS6Fv4jOxvq9sFjTBwv7EfFeG9tnQqEq9DghedEGCm4I1nyeZ9eX
+   MlOg/nYtNbCfMihg4ZhY7WKWjkDiv9S40IXfErYyUJZaXMr8Y6G9I6SgX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17065335"
 X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="17065310"
+   d="scan'208";a="17065335"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:41:50 -0700
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:41:57 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="38629637"
+   d="scan'208";a="38629647"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.211.155])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:41:44 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 23:41:51 -0700
 From: Adrian Hunter <adrian.hunter@intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: Michael Ellerman <mpe@ellerman.id.au>,
@@ -82,9 +82,9 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH V2 11/19] timekeeping: Tidy timekeeping_cycles_to_ns() slightly
-Date: Mon, 25 Mar 2024 08:40:15 +0200
-Message-Id: <20240325064023.2997-12-adrian.hunter@intel.com>
+Subject: [PATCH V2 12/19] timekeeping: Reuse timekeeping_cycles_to_ns()
+Date: Mon, 25 Mar 2024 08:40:16 +0200
+Message-Id: <20240325064023.2997-13-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240325064023.2997-1-adrian.hunter@intel.com>
 References: <20240325064023.2997-1-adrian.hunter@intel.com>
@@ -97,31 +97,30 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
 
-Put together declaration and initialization of the local variable 'delta'.
+Simplify __timekeeping_get_ns() by reusing timekeeping_cycles_to_ns().
 
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- kernel/time/timekeeping.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ kernel/time/timekeeping.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 63061332a75c..c698219b152d 100644
+index c698219b152d..f81d675291e0 100644
 --- a/kernel/time/timekeeping.c
 +++ b/kernel/time/timekeeping.c
-@@ -383,10 +383,9 @@ static inline u64 timekeeping_delta_to_ns(const struct tk_read_base *tkr, u64 de
+@@ -391,10 +391,7 @@ static inline u64 timekeeping_cycles_to_ns(const struct tk_read_base *tkr, u64 c
  
- static inline u64 timekeeping_cycles_to_ns(const struct tk_read_base *tkr, u64 cycles)
+ static __always_inline u64 __timekeeping_get_ns(const struct tk_read_base *tkr)
  {
--	u64 delta;
-+	/* Calculate the delta since the last update_wall_time() */
-+	u64 delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
- 
--	/* calculate the delta since the last update_wall_time */
+-	u64 delta, cycles = tk_clock_read(tkr);
+-
 -	delta = clocksource_delta(cycles, tkr->cycle_last, tkr->mask);
- 	return timekeeping_delta_to_ns(tkr, delta);
+-	return timekeeping_delta_to_ns(tkr, delta);
++	return timekeeping_cycles_to_ns(tkr, tk_clock_read(tkr));
  }
  
+ static inline u64 timekeeping_get_ns(const struct tk_read_base *tkr)
 -- 
 2.34.1
 
