@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-117934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65DB588B588
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:46:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C2C88B5FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:23:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A10DAC46B86
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:32:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DDD0C45D17
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7456DCE8;
-	Mon, 25 Mar 2024 20:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680E15BAFA;
+	Mon, 25 Mar 2024 20:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NzaQpG3J"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ry2DyffB"
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06D94E1C1;
-	Mon, 25 Mar 2024 20:31:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163FF524B4;
+	Mon, 25 Mar 2024 20:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711398698; cv=none; b=jl7VsSPWP5xo0fIXFg9HFy5qdnSDuCiP186SqM+4wQPEuXdaRG7AIKInFY8S15OlMxW8PhdJ7erAac68XnV6fx/97gDS4q6Cx5UaqyY1QZqiC+FtiEUpJ1bcUz3OxEym4MNVd8whavJQvKFeBexPCKAzVqr7ObdlUYlAhzNkkko=
+	t=1711398697; cv=none; b=CJRNaP/dCub0+BEzb2BL0WGbsXFb2pbjMDa1aaKJm17F1/A9ZNviyD0D7uFWYgDIaM/3D1ChEGDU5cb+c4tseMf+Q6nPPnX0Eg6TslexZggC7NQQV87sk/q9brbQ5Cm+PTzE2gpveWk9FJvu63DYNpQ8BGBuo4kH370Kz/JCh2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711398698; c=relaxed/simple;
-	bh=Unc05eMPVoAqms/FvEGJL04OOPSn9KeRoFE0X3BN2Tk=;
+	s=arc-20240116; t=1711398697; c=relaxed/simple;
+	bh=ib27D1WDbl2uIi4POR7MmfTkKZ9dpPi28dK+vAPHHuw=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oflY7JtNpXgQWwt+T3sKLQGBysPbxYxWZGrfIxHJp9UD+WUjwwN8cKyiVQ32fcfZ3CNfz/fIJURMl7Bot1bdhce5xfoCFFpRJbypPw49wxRzB5sAz7oGNJhzHZTJe3dwNPX0qNfasr70diqpaPqn3VoRXTyf9HtGbQ6GCnC4enY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NzaQpG3J; arc=none smtp.client-ip=198.47.19.142
+	 MIME-Version:Content-Type; b=R7ghI/jLJOduw3soZNNfW3dRUjLi2mV7oR9frbp84ty/l+8Hu6AhvXNyEhZjtTNcuZ8cICTjQPZEYPpzzsH2M+sElFOzwf0GeXPGZbfEs+Ykq0HI4lzVv1ejrmCBYD8tbyGFJEGTI5saAusDt+WuLLCOztQEWVeRaqiLy0tCTFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ry2DyffB; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42PKVWKX062139;
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42PKVWwh062143;
 	Mon, 25 Mar 2024 15:31:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1711398692;
-	bh=a13e89s4Pbtq2HVyNW5w8C2tltN6lgPl0Yh6XBZGCZs=;
+	bh=I5LRNzLxsZsIRTc5pfXoIv0jOyNKWzMyWuv24BZ0nQ0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=NzaQpG3JfnLF8LR081dx9gtx53xW28+63rW40zbCeioNreBWlTNaVpo01IpWKq7X3
-	 hF9+LxHbyL9OJvxiVaQ4OAIi/IqhlW+GF3sZbMuDX6jQ5XhZMoEjjAV04Fy+C4jsn/
-	 2Zl0pu4fmAmSjHkZHhdKsNCnG+LNJGLpn5mIhDPM=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42PKVVhv067474
+	b=ry2DyffBx9Xb7PhO9ceHJ8LLpZZps2RPHyIFHIcMF1ynRoVI/FLQggS+Pg5zNd3cq
+	 OaR2uknvwxBpxKESdla3Swc8NCS2LlIQPEbBO0AK/lrEn8Y04C5pfko6dcKo+vgGsm
+	 mdBWt12tX17SG5KupeQf7QrKJMvnkTfv/gXBGkcE=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42PKVWmj115357
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 25 Mar 2024 15:31:31 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 25 Mar 2024 15:31:32 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Mar 2024 15:31:31 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2024 15:31:32 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Mon, 25 Mar 2024 15:31:31 -0500
 Received: from lelvsmtp6.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42PKVUHe004442;
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42PKVUHf004442;
 	Mon, 25 Mar 2024 15:31:31 -0500
 From: Andrew Davis <afd@ti.com>
 To: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
@@ -62,9 +62,9 @@ To: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
 CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Andrew Davis
 	<afd@ti.com>
-Subject: [PATCH 3/6] power: supply: bq27xxx: Move charge reading out of update loop
-Date: Mon, 25 Mar 2024 15:31:26 -0500
-Message-ID: <20240325203129.150030-3-afd@ti.com>
+Subject: [PATCH 4/6] power: supply: bq27xxx: Move energy reading out of update loop
+Date: Mon, 25 Mar 2024 15:31:27 -0500
+Message-ID: <20240325203129.150030-4-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240325203129.150030-1-afd@ti.com>
 References: <20240325203129.150030-1-afd@ti.com>
@@ -79,116 +79,74 @@ Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
 Most of the functions that read values return a status and put the value
-itself in an a function parameter. Update charge reading to match.
+itself in an a function parameter. Update energy reading to match.
 
-As charge state is not checked for changes as part of the update loop,
+As energy is not checked for changes as part of the update loop,
 remove the read of this from the periodic update loop. This saves
 I2C/1W bandwidth. It also means we do not have to cache it, fresh
 values are read when requested.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/power/supply/bq27xxx_battery.c | 29 +++++++++++++++-----------
+ drivers/power/supply/bq27xxx_battery.c | 11 ++++++-----
  include/linux/power/bq27xxx_battery.h  |  1 -
- 2 files changed, 17 insertions(+), 13 deletions(-)
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
-index dcfe3c10e7ed3..799ee0aa9ef79 100644
+index 799ee0aa9ef79..eae2b9a60f407 100644
 --- a/drivers/power/supply/bq27xxx_battery.c
 +++ b/drivers/power/supply/bq27xxx_battery.c
-@@ -1545,7 +1545,8 @@ static int bq27xxx_battery_read_soc(struct bq27xxx_device_info *di)
-  * Return a battery charge value in µAh
+@@ -1639,7 +1639,8 @@ static int bq27xxx_battery_read_dcap(struct bq27xxx_device_info *di,
+  * Return the battery Available energy in µWh
   * Or < 0 if something fails.
   */
--static int bq27xxx_battery_read_charge(struct bq27xxx_device_info *di, u8 reg)
-+static int bq27xxx_battery_read_charge(struct bq27xxx_device_info *di, u8 reg,
+-static int bq27xxx_battery_read_energy(struct bq27xxx_device_info *di)
++static int bq27xxx_battery_read_energy(struct bq27xxx_device_info *di,
 +				       union power_supply_propval *val)
  {
- 	int charge;
+ 	int ae;
  
-@@ -1561,34 +1562,39 @@ static int bq27xxx_battery_read_charge(struct bq27xxx_device_info *di, u8 reg)
+@@ -1654,7 +1655,9 @@ static int bq27xxx_battery_read_energy(struct bq27xxx_device_info *di)
  	else
- 		charge *= 1000;
+ 		ae *= 1000;
  
--	return charge;
-+	val->intval = charge;
+-	return ae;
++	val->intval = ae;
 +
 +	return 0;
  }
  
  /*
-  * Return the battery Nominal available capacity in µAh
-  * Or < 0 if something fails.
-  */
--static inline int bq27xxx_battery_read_nac(struct bq27xxx_device_info *di)
-+static inline int bq27xxx_battery_read_nac(struct bq27xxx_device_info *di,
-+					   union power_supply_propval *val)
- {
--	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_NAC);
-+	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_NAC, val);
- }
- 
- /*
-  * Return the battery Remaining Capacity in µAh
-  * Or < 0 if something fails.
-  */
--static inline int bq27xxx_battery_read_rc(struct bq27xxx_device_info *di)
-+static inline int bq27xxx_battery_read_rc(struct bq27xxx_device_info *di,
-+					  union power_supply_propval *val)
- {
--	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_RC);
-+	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_RC, val);
- }
- 
- /*
-  * Return the battery Full Charge Capacity in µAh
-  * Or < 0 if something fails.
-  */
--static inline int bq27xxx_battery_read_fcc(struct bq27xxx_device_info *di)
-+static inline int bq27xxx_battery_read_fcc(struct bq27xxx_device_info *di,
-+					   union power_supply_propval *val)
- {
--	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_FCC);
-+	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_FCC, val);
- }
- 
- /*
-@@ -1860,7 +1866,6 @@ static void bq27xxx_battery_update_unlocked(struct bq27xxx_device_info *di)
- 	if ((cache.flags & 0xff) == 0xff)
+@@ -1867,8 +1870,6 @@ static void bq27xxx_battery_update_unlocked(struct bq27xxx_device_info *di)
  		cache.flags = -1; /* read error */
  	if (cache.flags >= 0) {
--		cache.charge_full = bq27xxx_battery_read_fcc(di);
  		cache.capacity = bq27xxx_battery_read_soc(di);
- 		if (di->regs[BQ27XXX_REG_AE] != INVALID_REG_ADDR)
- 			cache.energy = bq27xxx_battery_read_energy(di);
-@@ -2058,12 +2063,12 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+-		if (di->regs[BQ27XXX_REG_AE] != INVALID_REG_ADDR)
+-			cache.energy = bq27xxx_battery_read_energy(di);
+ 		di->cache.flags = cache.flags;
+ 		cache.health = bq27xxx_battery_read_health(di);
+ 		if (di->regs[BQ27XXX_REG_CYCT] != INVALID_REG_ADDR)
+@@ -2084,7 +2085,7 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+ 		ret = bq27xxx_simple_value(di->cache.cycle_count, val);
  		break;
- 	case POWER_SUPPLY_PROP_CHARGE_NOW:
- 		if (di->regs[BQ27XXX_REG_NAC] != INVALID_REG_ADDR)
--			ret = bq27xxx_simple_value(bq27xxx_battery_read_nac(di), val);
-+			ret = bq27xxx_battery_read_nac(di, val);
- 		else
--			ret = bq27xxx_simple_value(bq27xxx_battery_read_rc(di), val);
-+			ret = bq27xxx_battery_read_rc(di, val);
+ 	case POWER_SUPPLY_PROP_ENERGY_NOW:
+-		ret = bq27xxx_simple_value(di->cache.energy, val);
++		ret = bq27xxx_battery_read_energy(di, val);
  		break;
- 	case POWER_SUPPLY_PROP_CHARGE_FULL:
--		ret = bq27xxx_simple_value(di->cache.charge_full, val);
-+		ret = bq27xxx_battery_read_fcc(di, val);
- 		break;
- 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
- 		ret = bq27xxx_battery_read_dcap(di, val);
+ 	case POWER_SUPPLY_PROP_POWER_AVG:
+ 		ret = bq27xxx_battery_pwr_avg(di, val);
 diff --git a/include/linux/power/bq27xxx_battery.h b/include/linux/power/bq27xxx_battery.h
-index e89ef989a5752..1c67fa46013b3 100644
+index 1c67fa46013b3..5c75abf3cf069 100644
 --- a/include/linux/power/bq27xxx_battery.h
 +++ b/include/linux/power/bq27xxx_battery.h
-@@ -47,7 +47,6 @@ struct bq27xxx_access_methods {
- };
- 
+@@ -49,7 +49,6 @@ struct bq27xxx_access_methods {
  struct bq27xxx_reg_cache {
--	int charge_full;
  	int cycle_count;
  	int capacity;
- 	int energy;
+-	int energy;
+ 	int flags;
+ 	int health;
+ };
 -- 
 2.39.2
 
