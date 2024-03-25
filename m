@@ -1,357 +1,229 @@
-Return-Path: <linux-kernel+bounces-116414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB6D4889AE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1610888966F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 09:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 380CC1F33FF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:38:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 953521F31C4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 08:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693091494DB;
-	Mon, 25 Mar 2024 05:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF6E14B07A;
+	Mon, 25 Mar 2024 05:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CCX9zIIi"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="WILBVUsc"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C3E15539B
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3597614D43E
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711333116; cv=none; b=M2b4DazPcazh762IRRt24Z1Qb57kJAVztpXd2AqD4xT+JpGIe78rZv7eR5WjGmNDC6CG69n2/zTsiXxiVkQHJpL6iWL3O0YFOg0rJ9wuq/JMUEMCjhtXCOE9PDgTAmZhvWI0L0le1Z4ce7R3CRrRQWuMFHh+XJ7gPbfYWk2NWy0=
+	t=1711333257; cv=none; b=r3ur78bbcK9bmWJWSRiWoyVKJqwIYybOEjIObROv6/eKL856juXeRRyBQ0mN+ChjJO4VvtneYgiNeRC09+W+NmidT4F8Xe5l61iktoTkG4kbNS0ZZxzJOyY3sThAKIiMd/8ZZfCxAjk3ET54Fgmk/FX2qNsvHdervgnI7Odel7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711333116; c=relaxed/simple;
-	bh=jEIymX71O072SVGexRyBOj25jZMdFHRVH49ILGdL1mc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NAz/4NxtwBNyExMnl8xlKx1CGwEwo+xHs9qPPdWRkU3uLn08jVtse71PCYTSvcOLBZUOi+OqaWW6Z/8P4yWA1+37r3xDyAFFB6GYInWk+X3wmuWCPczSFv2JDpyT7kQHIGzlGENn9DMCcbFpTBTNb/CRUUnptIz/rT9R2BUI7cE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CCX9zIIi; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711333115; x=1742869115;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=jEIymX71O072SVGexRyBOj25jZMdFHRVH49ILGdL1mc=;
-  b=CCX9zIIi5CuY8zBKCyoimnSa6JssG9tjzaQQTBewjfrJXgV9fcSGJ4yt
-   Ss2c7Q2laBKLa2mM+v1kBjdUbjsNRTcblEbOFDolOxLqExtSgRMtwj+wQ
-   MYyV6yKADW2UY3A/xQnncpm1hVGrKsmJ6PrNm30bQYa6OYOhsSvbdHWJo
-   1HR0WdYEzcQdDACbs40OWdysihhzMqSCyyDrc3EaxzM0nvS8PvbcVEfOt
-   5VVNTptVp9YHnhRa9WvyeuOAtgaIywGPLkDSEsS8Z02AIbEv4ExwpCxJy
-   yDL7rmTUi5vWUz0RNQhYknDkytn6CjkOcTTP2UzjgaK5UJYlqoygzBlAV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="9271479"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="9271479"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 19:18:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="15354019"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orviesa010.jf.intel.com with ESMTP; 24 Mar 2024 19:18:32 -0700
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Tina Zhang <tina.zhang@intel.com>,
-	Yi Liu <yi.l.liu@intel.com>,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 12/12] iommu/vt-d: Retire struct intel_svm
-Date: Mon, 25 Mar 2024 10:17:05 +0800
-Message-Id: <20240325021705.249769-13-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240325021705.249769-1-baolu.lu@linux.intel.com>
-References: <20240325021705.249769-1-baolu.lu@linux.intel.com>
+	s=arc-20240116; t=1711333257; c=relaxed/simple;
+	bh=a+5IO4bzkKk2FkrhKzrSPkAfIMWaw9+PBv6OhA8Vg0Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f9CM3xYnsxT6hf4VAK994GvVt1JSaYCI5YGTprcpA4CrZMEk08a4Tohx1cSXdUQbJ/xrKIDL9P0lTBv1LxaTs6e567SNmO4dF56PYOKpdS7LVx3mTMYylxsgaRW/vNmAUEm/93LwJRiZAPfboMIWeBTyPRTf7HF6uXj6SepEPgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=WILBVUsc; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e285a33bdso2061179f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 19:20:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1711333253; x=1711938053; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3KYX5sN4/DQ0Ca+C7M+8tiNgEQ0vWfJgF6O4xHUhDV4=;
+        b=WILBVUschp4CuVlN7IxfSSbcekKRUxY843c89N9f2TXzUAxcWfnvMLRYTeQyhll7UU
+         fCEgVNTdjGNu3DzFmMDtsctqbTWpbgMTn73fXjf0alNQEHwUD41hmK3tVxa4UYRJOUo+
+         m/jg4z0sXsuTfv4Cipozh/mGU8iH2flLHKj5ivZ7iiFqKTN9oZGGDupI7GTCaF3AsQKD
+         d/WpSTOTL8kgJDsYCm7gB8gAlVcLID3ax6mFZVt/g0/v3Os0fepbMdbVh1OWrTCwlP9T
+         2Ze4VF067ykKFmEdba6UQSixO1BJ2zZ7/f2bY11gN9fFq8DU60UYMiz1wQ98k12imiTs
+         ijYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711333253; x=1711938053;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3KYX5sN4/DQ0Ca+C7M+8tiNgEQ0vWfJgF6O4xHUhDV4=;
+        b=CutLYpC/Mi3+FR5LqT7MnMRCqB0LQ83UuHpQLIGdsp9XulmFL7euElPDwXpUD+LnQx
+         C1t1WWyAWfIyTMHvuBz1zbVi+4ymTsnoIVHTXuCND77A7NqPyHKggpVkjMm+/zas2pVD
+         aUBQjyLLwod/o6IVwU9g4eUeWwtYRLp+VYQlYt41bEXAKZDIcppvL/g0hWsOPQXIC3GK
+         4fGyodKBOIglxQBs56yXqaHbMNZolKyAYe2KJqSlDRJEb842aHH6lUzLe51W+rzZAHzF
+         d/dyYbCsJaprR4LswJWoj86hdO5lfl0nsLiKQgwT2dy3n2v9tVlcc3KUyvuqFKPvJJ/k
+         dXkw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVa+UI7lemDqV+nCNGO2XeySG6CTtOIHe9FYfWWfKU3fpQd+m10gMntKojXpUXLwH1OaA0M1scgqaqZenF5wrJYBWgi29KapxOI3Ht
+X-Gm-Message-State: AOJu0Yw1qEqlAklw8j+SsJWPzQRdTrlezarCrCByzO6GYptzVa8abTvD
+	bmsjnCH/rM+baJeH63jBz5+oWU8CRnbCspS+U1pRwXJjun8NNTMLPXo6Cxcljss=
+X-Google-Smtp-Source: AGHT+IEGylOZLmAkTa4hEo69V3BZPeCBsFyo1QAQu5pjIFuYSIkRj6IiZDL9UF3nVTOfhI5RA3UbGw==
+X-Received: by 2002:adf:f241:0:b0:33e:78c4:3738 with SMTP id b1-20020adff241000000b0033e78c43738mr3519996wrp.54.1711333253412;
+        Sun, 24 Mar 2024 19:20:53 -0700 (PDT)
+Received: from airbuntu (host81-157-90-255.range81-157.btcentralplus.com. [81.157.90.255])
+        by smtp.gmail.com with ESMTPSA id t17-20020a0560001a5100b0033dd2c3131fsm8095566wry.65.2024.03.24.19.20.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Mar 2024 19:20:52 -0700 (PDT)
+Date: Mon, 25 Mar 2024 02:20:51 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Christian Loehle <christian.loehle@arm.com>,
+	linux-kernel@vger.kernel.org, peterz@infradead.org,
+	juri.lelli@redhat.com, mingo@redhat.com, rafael@kernel.org,
+	dietmar.eggemann@arm.com, vschneid@redhat.com,
+	Johannes.Thumshirn@wdc.com, adrian.hunter@intel.com,
+	ulf.hansson@linaro.org, andres@anarazel.de, asml.silence@gmail.com,
+	linux-pm@vger.kernel.org, linux-block@vger.kernel.org,
+	io-uring@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
+Message-ID: <20240325022051.73mfzap7hlwpsydx@airbuntu>
+References: <20240304201625.100619-1-christian.loehle@arm.com>
+ <CAKfTPtDcTXBosFpu6vYW_cXLGwnqJqYCUW19XyxRmAc233irqA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDcTXBosFpu6vYW_cXLGwnqJqYCUW19XyxRmAc233irqA@mail.gmail.com>
 
-The struct intel_svm was used for keeping attached devices info for sva
-domain. Since sva domain is a kind of iommu_domain, the struct
-dmar_domain should centralize all info of a sva domain, including the
-info of attached devices. Therefore, retire struct intel_svm to clean up
-the code.
+(piggy backing on this reply)
 
-Besides, allocate sva domain in domain_alloc_sva() callback which allows
-the memory management notifier lifetime to follow the lifetime of the
-iommu_domain.
+On 03/22/24 19:08, Vincent Guittot wrote:
+> Hi Christian,
+> 
+> On Mon, 4 Mar 2024 at 21:17, Christian Loehle <christian.loehle@arm.com> wrote:
+> >
+> > There is a feature inside of both schedutil and intel_pstate called
+> > iowait boosting which tries to prevent selecting a low frequency
+> > during IO workloads when it impacts throughput.
+> > The feature is implemented by checking for task wakeups that have
+> > the in_iowait flag set and boost the CPU of the rq accordingly
+> > (implemented through cpufreq_update_util(rq, SCHED_CPUFREQ_IOWAIT)).
+> >
+> > The necessity of the feature is argued with the potentially low
+> > utilization of a task being frequently in_iowait (i.e. most of the
+> > time not enqueued on any rq and cannot build up utilization).
+> >
+> > The RFC focuses on the schedutil implementation.
+> > intel_pstate frequency selection isn't touched for now, suggestions are
+> > very welcome.
+> > Current schedutil iowait boosting has several issues:
+> > 1. Boosting happens even in scenarios where it doesn't improve
+> > throughput. [1]
+> > 2. The boost is not accounted for in EAS: a) feec() will only consider
+> >  the actual utilization for task placement, but another CPU might be
+> >  more energy-efficient at that capacity than the boosted one.)
+> >  b) When placing a non-IO task while a CPU is boosted compute_energy()
+> >  will not consider the (potentially 'free') boosted capacity, but the
+> >  one it would have without the boost (since the boost is only applied
+> >  in sugov).
+> > 3. Actual IO heavy workloads are hardly distinguished from infrequent
+> > in_iowait wakeups.
+> > 4. The boost isn't associated with a task, it therefore isn't considered
+> > for task placement, potentially missing out on higher capacity CPUs on
+> > heterogeneous CPU topologies.
+> > 5. The boost isn't associated with a task, it therefore lingers on the
+> > rq even after the responsible task has migrated / stopped.
+> > 6. The boost isn't associated with a task, it therefore needs to ramp
+> > up again when migrated.
+> > 7. Since schedutil doesn't know which task is getting woken up,
+> > multiple unrelated in_iowait tasks might lead to boosting.
 
-Co-developed-by: Tina Zhang <tina.zhang@intel.com>
-Signed-off-by: Tina Zhang <tina.zhang@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.h | 26 ++++------
- drivers/iommu/intel/iommu.c |  9 +---
- drivers/iommu/intel/svm.c   | 94 +++++++++----------------------------
- 3 files changed, 32 insertions(+), 97 deletions(-)
+You forgot an important problem which what was the main request from Android
+when this first came up few years back. iowait boost is a power hungry
+feature and not all tasks require iowait boost. By having it per task we want
+to be able to prevent tasks from causing frequency spikes due to iowait boost
+when it is not warranted.
 
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index 5dcced6f3634..7a4645e06bb7 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -649,8 +649,12 @@ struct dmar_domain {
- 			/* link to parent domain siblings */
- 			struct list_head s2_link;
- 		};
-+
-+		/* SVA domain */
-+		struct {
-+			struct mmu_notifier notifier;
-+		};
- 	};
--	struct intel_svm *svm;
- 
- 	struct iommu_domain domain;	/* generic domain data structure for
- 					   iommu core */
-@@ -1131,26 +1135,16 @@ int intel_svm_enable_prq(struct intel_iommu *iommu);
- int intel_svm_finish_prq(struct intel_iommu *iommu);
- void intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
- 			     struct iommu_page_response *msg);
--struct iommu_domain *intel_svm_domain_alloc(void);
--void intel_svm_remove_dev_pasid(struct iommu_domain *domain);
-+struct iommu_domain *intel_svm_domain_alloc(struct device *dev,
-+					    struct mm_struct *mm);
- void intel_drain_pasid_prq(struct device *dev, u32 pasid);
--
--struct intel_svm {
--	struct mmu_notifier notifier;
--	struct mm_struct *mm;
--	u32 pasid;
--	struct dmar_domain *domain;
--};
- #else
- static inline void intel_svm_check(struct intel_iommu *iommu) {}
- static inline void intel_drain_pasid_prq(struct device *dev, u32 pasid) {}
--static inline struct iommu_domain *intel_svm_domain_alloc(void)
--{
--	return NULL;
--}
--
--static inline void intel_svm_remove_dev_pasid(struct iommu_domain *domain)
-+static inline struct iommu_domain *intel_svm_domain_alloc(struct device *dev,
-+							  struct mm_struct *mm)
- {
-+	return ERR_PTR(-ENODEV);
- }
- #endif
- 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 2ac1fc041333..cdf7882f58f3 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -3687,8 +3687,6 @@ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
- 		return domain;
- 	case IOMMU_DOMAIN_IDENTITY:
- 		return &si_domain->domain;
--	case IOMMU_DOMAIN_SVA:
--		return intel_svm_domain_alloc();
- 	default:
- 		return NULL;
- 	}
-@@ -4395,14 +4393,8 @@ static void intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
- 	WARN_ON_ONCE(!dev_pasid);
- 	spin_unlock_irqrestore(&dmar_domain->lock, flags);
- 
--	/*
--	 * The SVA implementation needs to handle its own stuffs like the mm
--	 * notification. Before consolidating that code into iommu core, let
--	 * the intel sva code handle it.
--	 */
- 	if (domain->type == IOMMU_DOMAIN_SVA) {
- 		cache_tag_unassign_domain(dmar_domain, FLPT_DEFAULT_DID, dev, pasid);
--		intel_svm_remove_dev_pasid(domain);
- 	} else {
- 		did = domain_id_iommu(dmar_domain, iommu);
- 		cache_tag_unassign_domain(dmar_domain, did, dev, pasid);
-@@ -4631,6 +4623,7 @@ const struct iommu_ops intel_iommu_ops = {
- 	.hw_info		= intel_iommu_hw_info,
- 	.domain_alloc		= intel_iommu_domain_alloc,
- 	.domain_alloc_user	= intel_iommu_domain_alloc_user,
-+	.domain_alloc_sva	= intel_svm_domain_alloc,
- 	.probe_device		= intel_iommu_probe_device,
- 	.probe_finalize		= intel_iommu_probe_finalize,
- 	.release_device		= intel_iommu_release_device,
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 0b767d16fb71..47e475f67046 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -26,23 +26,6 @@
- 
- static irqreturn_t prq_event_thread(int irq, void *d);
- 
--static DEFINE_XARRAY_ALLOC(pasid_private_array);
--static int pasid_private_add(ioasid_t pasid, void *priv)
--{
--	return xa_alloc(&pasid_private_array, &pasid, priv,
--			XA_LIMIT(pasid, pasid), GFP_ATOMIC);
--}
--
--static void pasid_private_remove(ioasid_t pasid)
--{
--	xa_erase(&pasid_private_array, pasid);
--}
--
--static void *pasid_private_find(ioasid_t pasid)
--{
--	return xa_load(&pasid_private_array, pasid);
--}
--
- int intel_svm_enable_prq(struct intel_iommu *iommu)
- {
- 	struct iopf_queue *iopfq;
-@@ -156,8 +139,7 @@ static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
- 					struct mm_struct *mm,
- 					unsigned long start, unsigned long end)
- {
--	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
--	struct dmar_domain *domain = svm->domain;
-+	struct dmar_domain *domain = container_of(mn, struct dmar_domain, notifier);
- 
- 	if (start == 0 && end == -1UL) {
- 		cache_tag_flush_all(domain);
-@@ -169,8 +151,7 @@ static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
- 
- static void intel_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- {
--	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
--	struct dmar_domain *domain = svm->domain;
-+	struct dmar_domain *domain = container_of(mn, struct dmar_domain, notifier);
- 	struct dev_pasid_info *dev_pasid;
- 	struct device_domain_info *info;
- 	unsigned long flags;
-@@ -210,41 +191,13 @@ static int intel_svm_set_dev_pasid(struct iommu_domain *domain,
- 	struct intel_iommu *iommu = info->iommu;
- 	struct mm_struct *mm = domain->mm;
- 	struct dev_pasid_info *dev_pasid;
--	struct intel_svm *svm;
- 	unsigned long sflags;
- 	unsigned long flags;
- 	int ret = 0;
- 
--	svm = pasid_private_find(pasid);
--	if (!svm) {
--		svm = kzalloc(sizeof(*svm), GFP_KERNEL);
--		if (!svm)
--			return -ENOMEM;
--
--		svm->pasid = pasid;
--		svm->mm = mm;
--
--		svm->notifier.ops = &intel_mmuops;
--		svm->domain = to_dmar_domain(domain);
--		ret = mmu_notifier_register(&svm->notifier, mm);
--		if (ret) {
--			kfree(svm);
--			return ret;
--		}
--
--		ret = pasid_private_add(svm->pasid, svm);
--		if (ret) {
--			mmu_notifier_unregister(&svm->notifier, mm);
--			kfree(svm);
--			return ret;
--		}
--	}
--
--	dmar_domain->svm = svm;
--
- 	dev_pasid = kzalloc(sizeof(*dev_pasid), GFP_KERNEL);
- 	if (!dev_pasid)
--		goto free_svm;
-+		return -ENOMEM;
- 
- 	dev_pasid->dev = dev;
- 	dev_pasid->pasid = pasid;
-@@ -272,30 +225,10 @@ static int intel_svm_set_dev_pasid(struct iommu_domain *domain,
- 				  FLPT_DEFAULT_DID, dev, pasid);
- free_dev_pasid:
- 	kfree(dev_pasid);
--free_svm:
--	if (list_empty(&dmar_domain->dev_pasids)) {
--		mmu_notifier_unregister(&svm->notifier, mm);
--		pasid_private_remove(pasid);
--		kfree(svm);
--	}
- 
- 	return ret;
- }
- 
--void intel_svm_remove_dev_pasid(struct iommu_domain *domain)
--{
--	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
--	struct intel_svm *svm = dmar_domain->svm;
--	struct mm_struct *mm = domain->mm;
--
--	if (list_empty(&dmar_domain->dev_pasids)) {
--		if (svm->notifier.ops)
--			mmu_notifier_unregister(&svm->notifier, mm);
--		pasid_private_remove(svm->pasid);
--		kfree(svm);
--	}
--}
--
- /* Page request queue descriptor */
- struct page_req_dsc {
- 	union {
-@@ -663,7 +596,12 @@ void intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
- 
- static void intel_svm_domain_free(struct iommu_domain *domain)
- {
--	kfree(to_dmar_domain(domain));
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+
-+	if (dmar_domain->notifier.ops)
-+		mmu_notifier_unregister(&dmar_domain->notifier, domain->mm);
-+
-+	kfree(dmar_domain);
- }
- 
- static const struct iommu_domain_ops intel_svm_domain_ops = {
-@@ -671,13 +609,16 @@ static const struct iommu_domain_ops intel_svm_domain_ops = {
- 	.free			= intel_svm_domain_free
- };
- 
--struct iommu_domain *intel_svm_domain_alloc(void)
-+struct iommu_domain *intel_svm_domain_alloc(struct device *dev,
-+					    struct mm_struct *mm)
- {
- 	struct dmar_domain *domain;
-+	int ret;
- 
- 	domain = kzalloc(sizeof(*domain), GFP_KERNEL);
- 	if (!domain)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
-+
- 	domain->domain.ops = &intel_svm_domain_ops;
- 	domain->use_first_level = true;
- 	INIT_LIST_HEAD(&domain->dev_pasids);
-@@ -685,5 +626,12 @@ struct iommu_domain *intel_svm_domain_alloc(void)
- 	spin_lock_init(&domain->cache_lock);
- 	spin_lock_init(&domain->lock);
- 
-+	domain->notifier.ops = &intel_mmuops;
-+	ret = mmu_notifier_register(&domain->notifier, mm);
-+	if (ret) {
-+		kfree(domain);
-+		return ERR_PTR(ret);
-+	}
-+
- 	return &domain->domain;
- }
--- 
-2.34.1
+> >
+> > We attempt to mitigate all of the above by reworking the way the
+> > iowait boosting (io boosting from here on) works in two major ways:
+> > - Carry the boost in task_struct, so it is a per-task attribute and
+> > behaves similar to utilization of the task in some ways.
+> > - Employ a counting-based tracking strategy that only boosts as long
+> > as it sees benefits and returns to no boosting dynamically.
+> 
+> Thanks for working on improving IO boosting. I have started to read
+> your patchset and have few comments about your proposal:
+> 
+> The main one is that the io boosting decision should remain a cpufreq
+> governor decision and so the io boosting value should be applied by
+> the governor like in sugov_effective_cpu_perf() as an example instead
+> of everywhere in the scheduler code.
 
+I have similar thoughts.
+
+I think we want the scheduler to treat iowait boost like uclamp_min, but
+requested by block subsystem rather than by the user.
+
+I think we should create a new task_min/max_perf() and replace all current
+callers in scheduler to uclamp_eff_value() with task_min/max_perf() where
+task_min/max_perf()
+
+unsigned long task_min_perf(struct task_struct *p)
+{
+	return max(uclamp_eff_value(p, UCLAMP_MIN), p->iowait_boost);
+}
+
+unsigned long task_max_perf(struct task_struct *p)
+{
+	return uclamp_eff_value(p, UCLAMP_MAX);
+}
+
+then all users of uclamp_min in the scheduler will see the request for boost
+from iowait and do the correct task placement decision. Including under thermal
+pressure and ensuring that they don't accidentally escape uclamp_max which I am
+not sure if your series caters for with the open coding it. You're missing the
+load balancer paths from what I see.
+
+It will also solve the problem I mention above. The tasks that should not use
+iowait boost are likely restricted with uclamp_max already. If we treat iowait
+boost as an additional source of min_perf request, then uclamp_max will prevent
+it from going above a certain perf level and give us the desired impact without
+any additional hint. I don't think it is important to disable it completely but
+rather have a way to prevent tasks from consuming too much resources when not
+needed, which we already have from uclamp_max.
+
+I am not sure it makes sense to have a separate control where a task can run
+fast due to util but can't have iowait boost or vice versa. I think existing
+uclamp_max should be enough to restrict tasks from exceeding a performance
+limit.
+
+> 
+> Then, the algorithm to track the right interval bucket and the mapping
+> of intervals into utilization really looks like a policy which has
+> been defined with heuristics and as a result further seems to be a
+> governor decision
+
+Hmm do you think this should not be a per-task value then Vincent?
+
+Or oh, I think I see what you mean. Make effective_cpu_util() set min parameter
+correctly. I think that would work too, yes. iowait boost is just another min
+perf request and as long as it is treated as such, it is good for me. We'll
+just need to add a new parameter for the task like I did in remove uclamp max
+aggregation serires.
+
+Generally I think it's better to split the patches so that the conversion to
+iowait boost with current algorithm to being per-task as a separate patch. And
+then look at improving the algorithm logic on top. These are two different
+problems IMHO.
+
+One major problem and big difference in per-task iowait that I see Christian
+alluded to is that the CPU will no longer be boosted when the task is sleeping.
+I think there will be cases out there where some users relied on that for the
+BLOCK softirq to run faster too. We need an additional way to ensure that the
+softirq runs at a similar performance level to the task that initiated the
+request. So we need a way to hold the cpufreq policy's min perf until the
+softirq is serviced. Or just keep the CPU boosted until the task is migrated.
+I'm not sure what is better yet.
+
+> 
+> Finally adding some atomic operation in the fast path is not really desirable
+
+Yes I was thinking if we can apply the value when we set the p->in_iowait flag
+instead?
 
