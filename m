@@ -1,227 +1,249 @@
-Return-Path: <linux-kernel+bounces-117029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB1888A64D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4596788A651
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:23:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A937A1F61DD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:22:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB0271F2F515
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B594FEEDB;
-	Mon, 25 Mar 2024 12:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148A41C68A;
+	Mon, 25 Mar 2024 12:45:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="afW4OEpc"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="XTxu/E//"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BDE46AF;
-	Mon, 25 Mar 2024 12:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711370688; cv=none; b=pcwkwqvfezUmvxE8z01JsP+vEzKZAJFW9TbNaN9Pr4phiGY4Cn/g0R9ksaTTqT1/PBV5iGx7BAmI8zjrJPbOmcQkfpMYmRi1OqkijeV4KQvFMLU0l4V7PdXgMP5DlhnZrdgx1WKVLlZRk3E8Ayf+RTkZYH7IdIuCG6U/pJq6Wf4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711370688; c=relaxed/simple;
-	bh=/0c5YATi0wBoNSQaUbscPwIqGzPt6PDUNsLJXqr3t4c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f5w3AAyvu/nkZfOfoynScS+b4P3TtxgmPURiPy5yer+p4D2G8u7exjROkudIETzBUMU95AJAqBrWqPe3I38pCWiMAcs5aDWC6zgquUcd7dL/rgX10hCudgnHULitZOK5btiEX5UVsp5nf41gwprh/dSGUgY36KZa/rnp+9xT8Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=afW4OEpc; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d4541bf57eso59288621fa.2;
-        Mon, 25 Mar 2024 05:44:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711370684; x=1711975484; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MzYr053l09e/3RIxhJmMgbVh55W1tuz1CI+cV74GXOw=;
-        b=afW4OEpcrYkDmR26ZhgoG1N4yGQLAH3+v3fZYOhu8hIArziVTgkzEbQhV2k7hxxOTq
-         XgLRfq/VENqd6knX6Q7DGgZY9Oyx7Y6qScHpL1dC3dgzOiSPSy042vrrOjh/uNqLlfkR
-         GR6aukIsIMTjaIzVDC3hV1As1UxTteSWvF+LMNN33KmjTVQwgwEgrSHioMhJaxnSn2M/
-         FsAiZpiCTI35AErPwR1FaRh4y9poEyu976OBw9iNc8aeXN1RKOJlq2vX+EsRyDH5Rvf1
-         PriHzrfXHzGzLcHJQd/3mD/Ug7vXQO+vjj5AEnQeq/hJ/GnSIFENC2U3nMHe9i9yL3Nb
-         hymg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711370684; x=1711975484;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MzYr053l09e/3RIxhJmMgbVh55W1tuz1CI+cV74GXOw=;
-        b=wB3V8PpiWU98uPOHfuliN4CxBmI3srV/t+KSQvseQX0W72ktfF4GxJProJMvk8QW3l
-         Rei4ASm+q7Wwxz0pjnUI5fhUdt4XTRApb79UDPefHRGnrut/G+wASntX6BTwntp7GenQ
-         aGC7wfwnEf5IG8vvCRRJMhc5W0HopHpNslW+FOmKOLgUnsdBXaW6pBdLuBpdcSwf7A7e
-         gUqgsKQys4oNYtI1SWGYQTjY9XJecw1BeJ8mA84A5JulmlS7CvAlWqj5/nXLc3qtQ8Ul
-         ZhmkMf2LW+5bnJO234V7EPj8nWas44UwqGFyHArpwsOUocBjuFjPRWG81oF71XW3wDuG
-         amSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWiANDJQqNo62F5YjggtDhXzwPFYt1oZgYnRC0Y7aiCRuwNpQWU5C5BcWGvRmWYPjwTTNV2HpMfsD04gpP6xlnT6yxjOCPy6lUmw1pTMAlVkppxuntjqVWRRUT82mY1PozMJeOuyghXlw==
-X-Gm-Message-State: AOJu0YwxLjPjw/UWuDQ4gzHYhQEkHg1g54nVSZ0wvKKa7Ez+Bhv4gmOb
-	meaPuRNzLctMTrWi1c2VuDd8U3BjfyxaOEc4lP/dKCDf/Wi984P/U/VW7ah8
-X-Google-Smtp-Source: AGHT+IEjQ+Bn0nPMrrVMKJnoSv6m7e+kPRqkDHwuPIBzpSeOd0b1YvwEsvE7hPPcpoIia4NzkR1SDQ==
-X-Received: by 2002:a05:651c:685:b0:2d3:e0ec:36c7 with SMTP id x5-20020a05651c068500b002d3e0ec36c7mr3886653ljb.43.1711370684178;
-        Mon, 25 Mar 2024 05:44:44 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:7426:df00::6? (drtxq0yyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:7426:df00::6])
-        by smtp.gmail.com with ESMTPSA id s4-20020a05651c200400b002d4678aee97sm1427032ljo.108.2024.03.25.05.44.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 05:44:43 -0700 (PDT)
-Message-ID: <81bf6604-9160-4bae-8da6-7034f8aa3f92@gmail.com>
-Date: Mon, 25 Mar 2024 14:44:43 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715AA134A8;
+	Mon, 25 Mar 2024 12:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711370700; cv=fail; b=WtanbrUvlLCtQJGMMY49qw3f9nIA/0U6mLg3xtf5c1Yb4zSop3rYaAGVNml3Di8pOgxlTjzOKmEV7A5v+00uNfbEwJhkXgTk2FJGNky82bhQ/Vs6jdOBAP3XUYuQ+tJ0fQjOfjTMtSFcS3YKuJAol+7PWYKzZPv9eF6HFRk77Zg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711370700; c=relaxed/simple;
+	bh=mM2jqFPzzVLqCXMdSpX/YoMyaANeZe078MDPCVl3GtY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GVXj/9RM8nN+460rer3LQQx7V926z3uLfW7zrP1c6oWaf2Co9AHFH+0LteQO4fOfUbjcqYHNM7WAvgmwP1SnYdyhE1o+beNry3JdvV6k+EQkxGjTu6GDS9Pckwdql438KLLKPrTPDJbRxO5oaOWo2a5ikbiS7AA41NoyCYBM2VY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=XTxu/E//; arc=fail smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42PBjrWL001608;
+	Mon, 25 Mar 2024 05:44:48 -0700
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x38pbr805-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 05:44:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PTtEi1zFrxkO3B9eGqMVnIor8c4KMN9qjMqe1Nf2YiRBGB2mCBT5OAtRcQHk7G/BFlokoyGiQ92ZKnoceAeKpbYpfPgC06L+R4b/AOJBCPNI7hjSZhG9p6//6v61xVYCj2aErxBCS//i7Pjsk8kSLy5Eix8L/clncbzN0EaZ4goSPMXENwzFDr98BVO3RfRCgEBXnLa57aO6eD1DSnJtaZoBFduiXYX9MObx949xYSmgIIpULik1zUYZjP+HOCJ2d9xDTDHNvapY8KI9xDlb8oGgmm6vyrVB6DRY4eU0dmGtz5RkXfq7ups7VAfrowr5pmOpiUbu9JYSoPL0n0mZlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Mw4/dt0u5H1qRNWbp7Zi3g+c3c4Ar6HTDjyxK6JFkXs=;
+ b=B663aqjquP0t2hCj8Zyr8585Ia5wXkoOM9ESbI/EY4ZZefB741Ga3HM/jArflb58S1Jnnv7PRRBitWo3UiWrQ25lWvXSdF/1qxvt3dvNqNPe3Ou5w1bljzhhrwxQ6T+UlOIzN/gQck0AVewW8Zw5MWltTGPUuc+/u7OwKajHNSiQZ1D0NxY+1AYR9hKh20vnzPvOsT+LaiKtC/CUKCjZsKBBBxouiP0oDXHzG0MpzN/orj56ox3ayPS2d2d/j15m9y9rX5La8b7YKm8rVEaKs8J7hmYhNHzaxcAxc6yBzsCpgxFNFtFn1bOWyMA9ENitLdHnWQPAO2YuPcu0fqLlAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mw4/dt0u5H1qRNWbp7Zi3g+c3c4Ar6HTDjyxK6JFkXs=;
+ b=XTxu/E//C2GSYvrYobfDjsnwDTFplF5T2QP6MyPmYD87ISE9QVyAadIT6LTJgJn2sVgiI+L86R506TuQTBzf2oBM4ThJHk4vQyM10P5KyW6XqIAF2YUMy2CelpIYuNGsgo+g6uQ6G2I2SgHKjAmapv2XBFNa4kpwq5xP8UjKfrY=
+Received: from CO1PR18MB4666.namprd18.prod.outlook.com (2603:10b6:303:e5::24)
+ by MN0PR18MB6094.namprd18.prod.outlook.com (2603:10b6:208:4a5::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.28; Mon, 25 Mar
+ 2024 12:44:44 +0000
+Received: from CO1PR18MB4666.namprd18.prod.outlook.com
+ ([fe80::5087:a566:c473:1fef]) by CO1PR18MB4666.namprd18.prod.outlook.com
+ ([fe80::5087:a566:c473:1fef%7]) with mapi id 15.20.7409.031; Mon, 25 Mar 2024
+ 12:44:44 +0000
+From: Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+To: Su Hui <suhui@nfschina.com>, Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Hariprasad Kelam
+	<hkelam@marvell.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org"
+	<kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "ndesaulniers@google.com"
+	<ndesaulniers@google.com>,
+        "morbo@google.com" <morbo@google.com>,
+        "justinstitt@google.com" <justinstitt@google.com>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [EXTERNAL] [PATCH 2/2] octeontx2-pf: remove unused variables
+ req_hdr and rsp_hdr
+Thread-Topic: [EXTERNAL] [PATCH 2/2] octeontx2-pf: remove unused variables
+ req_hdr and rsp_hdr
+Thread-Index: AQHafocf78zPvIoQlUeZgrhxSP5MI7FIZsYg
+Date: Mon, 25 Mar 2024 12:44:44 +0000
+Message-ID: 
+ <CO1PR18MB466675E232FA99415D766F68A1362@CO1PR18MB4666.namprd18.prod.outlook.com>
+References: <20240325073549.823832-1-suhui@nfschina.com>
+ <20240325073549.823832-2-suhui@nfschina.com>
+In-Reply-To: <20240325073549.823832-2-suhui@nfschina.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CO1PR18MB4666:EE_|MN0PR18MB6094:EE_
+x-ms-office365-filtering-correlation-id: c40ca516-c6da-4b72-913a-08dc4cc958cd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ 8WK896y5K7OwLc9ywROB95bFX2InDZc4K1O8IWjo+ugSao99GMAgyWTLe/7eAQXNaJ911Sis+uqjuEDtBCBcl887fgXDVpJXgdYPp3TBD5wPPaXuRjND+MpZMlFKYvb5JKEjrrsGiu3ZbW11PMtpVkD8fWW0+uNpTtLpzr4pmZTxxYOBDEQcnrzPg0ce4XhuX4FFvqiQjDT430wN1MqLT9mx13sJZ6K2rJY43UmnHiBb3rCpUltIbrTWXCKP3yCdaddKPlN7U13EeE8Xc81zSEB2G6wICBEuwyF/TkJpv9zf6kFoisZ6vaO4fLaKwwgMYKYgtQLJRGGPgDnhd5lVfsLk5pczCkBDzF5o9XXb3qGA6q5syXLS0b62eepijlTJM1ximW4uV7gUII7ex/tAAZHbmq6/E3Y//raPuvP3b0gbR7KJhU6aAVGX1Ie7zrwGUzCLeYfrEWmfq2+GKIxckNsYP4flPFdzrdCqbyEtZElmtsRibsNQXNEJrcLx981ThcTfM3eEHZEwkhWgsj3bYKEWdWFa3Tt4mYGQNtZ9ZNDxAoBO/Q02itjSQJ4Xwg9N1zQcYPMnmJsGv3EmjNbspgIzR/NZ6gbJvpHwG3T74a4ljAyRIjMOk1k7qs5E283XCbW+uJEKO7gIIdkSsm44cZOsR0sJck+QcBIgTDLtuCXu7H5m0x13266f509BSu5y6rAZALPwR3TDkcMNcAn/ePyMXJJpp5+SZsrX8v7jrXw=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR18MB4666.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007)(38070700009)(921011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?I6SekxjjCyfpSx9/L1CZMNb11pj4fUKTT+/IkIubtA/QP01Gb1qSIH7UY2pW?=
+ =?us-ascii?Q?Jvn6JuofNnNe1hmQo5dCJo3nOIrpdF4pu6uO235Llm5qKdCwYXJ6bknqqA0O?=
+ =?us-ascii?Q?xhid/ZepJLKjK45gja0c9dIW+B6EyOIYT0rgRX72qJfFzfDMHnYjBi++KIEv?=
+ =?us-ascii?Q?wY/brkOVnzACFV3iPNZkVcEA31LA4YGWQOtRUGWrnO1LFRBj82CHJgZcD/Ec?=
+ =?us-ascii?Q?b4tNfEU/LD+7FqfdAqxe9hEoUG6XUyxfYZ+ruD5++/SeL11ZrYMLrpDBagWY?=
+ =?us-ascii?Q?IO3lqQs3dESk60ETGJFVIoDO5bYi5rr50uYQ20Pa72qcrMPkz5gZSVcf5GOt?=
+ =?us-ascii?Q?1YhPWCjF7tkvJKoKTRILc4zjcM1KEeKziYYGrfK6ASgJTG1sJe+45H1R4yZW?=
+ =?us-ascii?Q?hN1G7m2hKI/pi4UwOWRrTJZ92ApFafg1StvN26Cgbj5Ks0C8M+Ul/nNhm+sM?=
+ =?us-ascii?Q?1bcXG/esscefyeeKwgHzwMRTKDy36baOZkgOtMIvFFzA68LMFq/qWgagR70T?=
+ =?us-ascii?Q?tM49hpR0H7Umdx2n0VH3wsBI+PHqalblfJWC6mCi4AktigFUUAJ6M0JyMz5q?=
+ =?us-ascii?Q?vX3FIZ6xr88SzVJm4tZpHhCR+xwCtk8aNh0qkz3SWHuq0mnc0v2CcUdt2lfW?=
+ =?us-ascii?Q?GeUboI/QR3lzr2Nny7lv+OZM2BoFAAw3vgoc4iRqiYNZTWv9lcowyPPdert6?=
+ =?us-ascii?Q?qE7QgohJ3aPUH3RUzfaMMFbHdopO8GKb0SmUk5QCcyalOUOpg/Y9bc1FZ7on?=
+ =?us-ascii?Q?JUPt0Chs5qZLY7FI5MHAjRD9WBCJYy1fPFecKOn/WDZdT5/YbgWN39BP61GC?=
+ =?us-ascii?Q?Iv1T9slm1+mDiMo1SGglpW7HKQ6lZ08m5bZvkvDxYM1APwP9nb+A/EQYYkYu?=
+ =?us-ascii?Q?7NVOO8muE9yySyoZMLtS/lojVloaD3TF/fdaUBshdA8nrjtFSVTa0x7LlNyn?=
+ =?us-ascii?Q?J/MxRVm4/UB1IyONHi0mymtdUOvZwIZScPWqeXoJcvWNmZdmndTh+4UOlMSg?=
+ =?us-ascii?Q?fQxp42qkqvRDfTDhYkBRzPUuTi/mSEwliK+EqQmQbxbadqhYXL2Nf7eWwPXS?=
+ =?us-ascii?Q?K7PFvzmeftD3oi4rd0Ub87c6FRcL0BrSon1PKpYc/D4aIGWrTgAfT9fEGGUH?=
+ =?us-ascii?Q?8amiyZplKir7CYXh9VxyNPrk+M6SfxP9XCNdoRsW1uKis267xAp8+iC+XE+O?=
+ =?us-ascii?Q?Zn2Fb139KyapiL0PeDRk18lL+sbjPdQiIUp37EJnDpfxoC7suKPXcK65lB08?=
+ =?us-ascii?Q?UZ00MWaLp1/+17S8i3n0Ift2iT3ECT9iE9B25gNaDCP1zMUDGQeh53HEB1nf?=
+ =?us-ascii?Q?REIroaDCGSeREqmTtVMs/+3gC3Ll9kru1seQ2V2RwEQs4jmJN6+mQ4NyIOjS?=
+ =?us-ascii?Q?xiZHudfxdSr7Qgnoyf/7BCiimjtd/unXu9kpGDbmgXx05uy4NMX1TlrXVR4K?=
+ =?us-ascii?Q?XqtQKDxKdEZvyq96yjkXmolyMsgb1VqOVBdfodXAE4pTUn13XwXP6fRgDRSm?=
+ =?us-ascii?Q?biAXDRFeB6K3qjh+mswE94Q0y4xTbkcyO2+phtyKK3HnSHnwHR2Ies9VvA?=
+ =?us-ascii?Q?=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/2] mfd: rohm-bd71828: Add power off functionality
-To: Andreas Kemnade <andreas@kemnade.info>
-Cc: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, imx@lists.linux.dev
-References: <20240324201210.232301-1-andreas@kemnade.info>
- <20240324201210.232301-3-andreas@kemnade.info>
- <472c6eaf-6cbc-484c-bc94-571d115176aa@gmail.com>
- <20240325131605.6607b778@aktux>
-Content-Language: en-US, en-GB
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20240325131605.6607b778@aktux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR18MB4666.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c40ca516-c6da-4b72-913a-08dc4cc958cd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 12:44:44.1300
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +ExFDZN/crwUVsOVhjcXPUxWWiDpitW8l+URUosXJFidjZ81It27Nuv1uWXeQcAi9UqRD4GRqPSIKrujLJLQjg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR18MB6094
+X-Proofpoint-GUID: qcN6x61j4SekXdjO-AfvbLUS4zgtGHiI
+X-Proofpoint-ORIG-GUID: qcN6x61j4SekXdjO-AfvbLUS4zgtGHiI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-25_08,2024-03-21_02,2023-05-22_02
 
-Hi Andreas,
+Hi,
 
-On 3/25/24 14:16, Andreas Kemnade wrote:
-> On Mon, 25 Mar 2024 13:31:15 +0200
-> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> 
->> On 3/24/24 22:12, Andreas Kemnade wrote:
->>> Since the chip can power off the system, add the corresponding
->>> functionality.
->>> Based on https://github.com/kobolabs/Kobo-Reader/raw/master/hw/imx6sll-clara2e/kernel.tar.bz2
->>> No information source about the magic numbers found.
->>
->> Oh, interesting repository :) Thanks for linking to it! I didn't know
->> someone had reworked this driver...
->>
-> which btw: contains this interesting snippet (output from fdtdump)
->    bd71828-i2c@4b {
->                      reg = <0x0000004b>;
->                      compatible = "rohm,bd71828";
->                      gpio_int = <0x00000008 0x00000013 0x00000001>;
->                      gpio_wdogb = <0x00000039 0x00000018 0x00000001>;
->                      #address-cells = <0x00000001>;
->                      #size-cells = <0x00000000>;
->                      pmic@4b {
->                          compatible = "rohm,bd71828";
->               	        regulators {
->                          	BUCK1 {
->                              		regulator-name = "buck1";
-> 
-> 
-> and to make it work since basically no regulators are registered
-> instead just some regmap_write()s are done to configure something
-> in probe(). It is a pitfall to think that the information below pmic@4b
-> is used, especially since it is not that obvious in the source.
+>-----Original Message-----
+>From: Su Hui <suhui@nfschina.com>
+>Sent: Monday, March 25, 2024 1:06 PM
+>To: Sunil Kovvuri Goutham <sgoutham@marvell.com>; Geethasowjanya Akula
+><gakula@marvell.com>; Subbaraya Sundeep Bhatta <sbhatta@marvell.com>;
+>Hariprasad Kelam <hkelam@marvell.com>; davem@davemloft.net;
+>edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
+>nathan@kernel.org; ndesaulniers@google.com; morbo@google.com;
+>justinstitt@google.com
+>Cc: Su Hui <suhui@nfschina.com>; netdev@vger.kernel.org; linux-
+>kernel@vger.kernel.org; llvm@lists.linux.dev; kernel-janitors@vger.kernel.=
+org
+>Subject: [PATCH 2/2] octeontx2-pf: remove unused variables
+>req_hdr and rsp_hdr
+>
+>Clang static checker(scan-buid):
+>drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c:503:2: warning:
+>Value stored to 'rsp_hdr' is never read [deadcode.DeadStores]
+>
+Consider this also as a fix and add Fixes tag. Also please add "net" in sub=
+ject to
+easily identify whether this patch as net or net-next material.
 
-Just to ensure there will be no misunderstanding - I have not authored 
-the modifications seen in "Kobo-Reader" repository. Upstream driver does 
-register the regulators - and it does not use the oddly named gpio_int 
-or the gpio_wdogb:
+Thanks,
+Sundeep
 
-https://elixir.bootlin.com/linux/v6.9-rc1/source/drivers/regulator/bd71828-regulator.c#L750
-
->> I have access to the data-sheets so I also have some pieces of
->> information. I hope I can clarify part of the puzzle. Unfortunately I
->> have no information about the magic delays. I guess I could try asking
->> though.
->>
->> Oh, it seems to me this handler is only working on BD71828, not on
->> BD71815. So, it should be tied to the ROHM_CHIP_TYPE_BD71828.
->>
->>> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
->>> ---
->>>    drivers/mfd/rohm-bd71828.c | 31 ++++++++++++++++++++++++++++++-
->>>    1 file changed, 30 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
->>> index 594718f7e8e1..5a55aa3620d0 100644
->>> --- a/drivers/mfd/rohm-bd71828.c
->>> +++ b/drivers/mfd/rohm-bd71828.c
->>> @@ -464,6 +464,24 @@ static int set_clk_mode(struct device *dev, struct regmap *regmap,
->>>    				  OUT32K_MODE_CMOS);
->>>    }
->>>    
->>> +static struct i2c_client *bd71828_dev;
->>
->> I'm not sure why to store pointer to the device and not a pointer to the
->> regmap?
->>
->>> +static void bd71828_power_off(void)
->>> +{
->>> +	i2c_smbus_write_byte_data(bd71828_dev, 0x03, 0xff);
->>
->> 0x03 is a "reset reason" - register. Spec I have states that the
->> register should clear when a reset occurs - but it also says the bits
->> are "write '1' to clear". So, for some reason(?), this clears the
->> previous reset reason.
-> 
-> well, so just check in bootloader what the reset reason is and check if
-> there is anything odd.
-
-I understand why bootloader would check this register - but I don't 
-understand why the driver would clear it as it should be cleared by 
-reset (unless I missread the spec).
-
->> I am unsure why i2c_smbus_write_byte_data() and
->> not regmap()?
->>
-> regmap involves mutex_lock() and we are not allowed to sleep here.
-
-Right. It makes perfect sense now. Thanks! (Do you think it's worth a 
-comment?)
-
->>> +	mdelay(500);
->>> +	i2c_smbus_write_byte_data(bd71828_dev, BD71828_REG_INT_DCIN2, 0x02);
->>
->> This clears the DCIN monitoring status bit from the IRQ status register.
->> I don't understand the purpose though.
->>
-> so maybe something to prevent power on by just plugging a usb cable? Will
-> experiment a bit with it.
-
-I still think this is odd because, if I read it right, this is an IRQ 
-status and not a mask register. Well, wouldn't be a first undocumented 
-"feature" I see...
-
->>> +	mdelay(500);
->>> +	while (true) {
->>> +		i2c_smbus_write_byte_data(bd71828_dev, BD71828_REG_PS_CTRL_1, 0x02);
->>
->> This write to PS_CTRL_1 initiates a state transition. 0x2 equals to HBNT
->> state. Eg, in usual cases this should be a start of the power-off sequence.
->>
->>> +		mdelay(500);
->>> +	}
->>> +}
->>
->> If you have the hardware to test this on, then it'd be great to see if
->> clearing the reset reason and IRQ status could be dropped. I can't
->> immediately think of a reason for those.
->>
-> I will to so. That will also remove the need for all those delays.
-
-Thanks :) Very much appreciated!
-
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+>Remove these unused variables to save some space.
+>
+>Signed-off-by: Su Hui <suhui@nfschina.com>
+>---
+> drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 8 ++------
+> 1 file changed, 2 insertions(+), 6 deletions(-)
+>
+>diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+>b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+>index 3f46d5e0fb2e..637b05c79c42 100644
+>--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+>+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+>@@ -450,7 +450,6 @@ static void otx2_pfvf_mbox_handler(struct
+>work_struct *work)
+> 	struct mbox_msghdr *msg =3D NULL;
+> 	int offset, vf_idx, id, err;
+> 	struct otx2_mbox_dev *mdev;
+>-	struct mbox_hdr *req_hdr;
+> 	struct otx2_mbox *mbox;
+> 	struct mbox *vf_mbox;
+> 	struct otx2_nic *pf;
+>@@ -461,9 +460,8 @@ static void otx2_pfvf_mbox_handler(struct
+>work_struct *work)
+>
+> 	mbox =3D &pf->mbox_pfvf[0].mbox;
+> 	mdev =3D &mbox->dev[vf_idx];
+>-	req_hdr =3D (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
+>
+>-	offset =3D ALIGN(sizeof(*req_hdr), MBOX_MSG_ALIGN);
+>+	offset =3D ALIGN(sizeof(struct mbox_hdr), MBOX_MSG_ALIGN);
+>
+> 	for (id =3D 0; id < vf_mbox->num_msgs; id++) {
+> 		msg =3D (struct mbox_msghdr *)(mdev->mbase + mbox->rx_start
+>+
+>@@ -494,7 +492,6 @@ static void otx2_pfvf_mbox_up_handler(struct
+>work_struct *work)
+> 	struct otx2_nic *pf =3D vf_mbox->pfvf;
+> 	struct otx2_mbox_dev *mdev;
+> 	int offset, id, vf_idx =3D 0;
+>-	struct mbox_hdr *rsp_hdr;
+> 	struct mbox_msghdr *msg;
+> 	struct otx2_mbox *mbox;
+>
+>@@ -502,8 +499,7 @@ static void otx2_pfvf_mbox_up_handler(struct
+>work_struct *work)
+> 	mbox =3D &pf->mbox_pfvf[0].mbox_up;
+> 	mdev =3D &mbox->dev[vf_idx];
+>
+>-	rsp_hdr =3D (struct mbox_hdr *)(mdev->mbase + mbox->rx_start);
+>-	offset =3D mbox->rx_start + ALIGN(sizeof(*rsp_hdr),
+>MBOX_MSG_ALIGN);
+>+	offset =3D mbox->rx_start + ALIGN(sizeof(struct mbox_hdr),
+>MBOX_MSG_ALIGN);
+>
+> 	for (id =3D 0; id < vf_mbox->up_num_msgs; id++) {
+> 		msg =3D mdev->mbase + offset;
+>--
+>2.30.2
 
 
