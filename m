@@ -1,83 +1,94 @@
-Return-Path: <linux-kernel+bounces-116460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF886889F23
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:26:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A5688A158
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:16:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BE6F2C69C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:26:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B80B22C72D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7154D15EFD1;
-	Mon, 25 Mar 2024 07:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B2A16E893;
+	Mon, 25 Mar 2024 09:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CgXcy4Wb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="a5fTqiDr"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AFCE3C81F6;
-	Mon, 25 Mar 2024 03:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896C83D0104;
+	Mon, 25 Mar 2024 03:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711337839; cv=none; b=HTd63cuIlWc071IgFq7Veydxqjg0Wq21+nGQ6g/05bhZ9QGadsSA/4YOqlJZr1P80Hx8cuTLmMRz+XbHVTjsuhM3HhstyrGqHSPUtxZgKHySR6rkJDvrhU3CNtFhZk3ryL/gpVHcVmqlFVGciZaOOn9wcBXHsrbBGwSvCFIIYGw=
+	t=1711337966; cv=none; b=ek6OAC1HdhGSw2dfRBN101Q3+B2HeXAubFfmKGgET9VwphPukDJNwabIvb7nDGOCy1lxJ9tF3ijOkU14YhJRervC33ffC63P8l5IbUCcfGiGbSVw58lL/NUNJevp8TIdauLJ2umAOARBIuPcsJqeft7laLtP1R/0nObbIgjpd5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711337839; c=relaxed/simple;
-	bh=YDbgTqnH3ZuZ8lakJVvTchqikQuDSP9tFa66V0AUlmY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s9zz1lYA6iW/Se/nMQbrUBSxfIEzdol8ujReRJqWlfz6S0Hcrr6mcgJMekUQAEKNDkWC81WiBAPKsGkyHI9BQ+Y3Jpmh48KuMIbqPZhaj7JTYeykoO059L6omqK5exrbLjvBCvmqj6DfM9e1we0aFNSl9rDM6gIBnrTVuk1DlfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CgXcy4Wb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC6D5C433F1;
-	Mon, 25 Mar 2024 03:37:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711337838;
-	bh=YDbgTqnH3ZuZ8lakJVvTchqikQuDSP9tFa66V0AUlmY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CgXcy4Wb9aJjAn0Yru7/j3RpuPqYk/qYIAodfpTNbUkRtlf06kBmkpzTXk6fHZDdv
-	 iMRk3adCHKDFpIEiwK4cxek7gFOl+vpVrAyefEhcw0iGcUMmwcV1AWfKd/UyR2Bz19
-	 TyRN/52zovAhnr4x6/HGrF7eLgt/dP9ZapG5Eu2F3eLQWmEkDPezwrQuW5V1HBhqLS
-	 Z579pSOgOGy04KaQ0bwpCWIOQ68B2K5ysnwWlnZi33KsQ76PujXKgx1VJJBA5VjzVm
-	 zgtvzWXndKw7ps9XOlzw/uJO/IH3MI6Hcr0Pow7qxL5RKoPM1giOYd9h2pi9pVVlv/
-	 WqDJlCNGFTkjQ==
-Date: Sun, 24 Mar 2024 20:37:17 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH 5.15 032/317] f2fs: implement iomap operations
-Message-ID: <20240325033717.GA37260@sol.localdomain>
-References: <20240324233458.1352854-1-sashal@kernel.org>
- <20240324233458.1352854-33-sashal@kernel.org>
+	s=arc-20240116; t=1711337966; c=relaxed/simple;
+	bh=sGIaBtqVxcSLEcbO/RNerhsBc2VftFecwlYKnFirhZo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hlrWkBRiQv659ZB0qOhrQ+6Mjcmrfbllnwcmn1Cx5Q2tu9kz1Vwsj8YzoH0RqI30MZLpCQnOQnZh2pajgBKMWNnCb+iV59CvvxO3vMD4+agtETr3+KsiRNnzvKhcCn1GF9kvs00jhj1uy/EeKF2boAtf1qUQbxGyFL5G4cr3gtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=a5fTqiDr; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42OMRRkr029557;
+	Sun, 24 Mar 2024 20:39:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=pfpt0220; bh=dLzwhtfNCY+WZdFgx7FUWY
+	HfsiEqYHSRJavE1/2Ss+M=; b=a5fTqiDrpA0T1ZmjU2PMOmBJB2FcHW7C0Tjo+V
+	8dDQaoocLvjlafShe1irRqA5oyXhmjs+aTV0qYJJ2sp7IivaJac4kU4zePReXHDO
+	+q9iN/9rSjzGo4kGZ8l8qOmg93lnXrO40VfYIGeB1UxqeZ9iBRasOUbHPxJlLaLf
+	txKEWYPO37rMU1eu7D+ia6R3znvtFWXaANr5XuYP1mc/Pv2DrH1XZ1fBRdyj/9eD
+	oOwqtYXg+y1Jv1YuW/n/t/ECHXFuaEwSo+bB3y2BaxtWiG3jyjt/TjCHcmF2lVDG
+	eRVXr2O2JSfGBRGP7N1MQoq81sm34csHF5w5JqTrWI88MHbA==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x1vekpkuw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 24 Mar 2024 20:39:09 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Sun, 24 Mar 2024 20:39:09 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Sun, 24 Mar 2024 20:39:09 -0700
+Received: from IPBU-BLR-SERVER1 (IPBU-BLR-SERVER1.marvell.com [10.28.8.41])
+	by maili.marvell.com (Postfix) with SMTP id 409353F709D;
+	Sun, 24 Mar 2024 20:39:07 -0700 (PDT)
+Date: Mon, 25 Mar 2024 09:09:06 +0530
+From: George Cherian <george.cherian@marvell.com>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+CC: <linux-i2c@vger.kernel.org>, George Cherian <gcherian@marvell.com>,
+        "Andi
+ Shyti" <andi.shyti@kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 62/64] i2c: xlp9xx: reword according to newest
+ specification
+Message-ID: <20240325033906.GA987833@IPBU-BLR-SERVER1>
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
+ <20240322132619.6389-63-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240324233458.1352854-33-sashal@kernel.org>
+In-Reply-To: <20240322132619.6389-63-wsa+renesas@sang-engineering.com>
+X-Proofpoint-ORIG-GUID: laSvIC-wDHN7I7_Z6uaFHRIXYG_fl0DB
+X-Proofpoint-GUID: laSvIC-wDHN7I7_Z6uaFHRIXYG_fl0DB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-24_18,2024-03-21_02,2023-05-22_02
 
-On Sun, Mar 24, 2024 at 07:30:12PM -0400, Sasha Levin wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On 2024-03-22 at 18:55:55, Wolfram Sang (wsa+renesas@sang-engineering.com) wrote:
+> Match the wording of this driver wrt. the newest I2C v7, SMBus 3.2, I3C
+> specifications and replace "master/slave" with more appropriate terms.
+> They are also more specific because we distinguish now between a remote
+> entity ("client") and a local one ("target").
 > 
-> [ Upstream commit 1517c1a7a4456f080fabc4ac9853930e4b880d14 ]
-> 
-> Implement 'struct iomap_ops' for f2fs, in preparation for making f2fs
-> use iomap for direct I/O.
-> 
-> Note that this may be used for other things besides direct I/O in the
-> future; however, for now I've only tested it for direct I/O.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> Stable-dep-of: ec16b147a55b ("fs: Fix rw_hint validation")
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Nacked-by: Eric Biggers <ebiggers@google.com>
-
-No reason to backport this, and the f2fs mailing list wasn't even Cc'ed...
-
-- Eric
+Acked-by: George Cherian <george.cherian@marvell.com>
 
