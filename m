@@ -1,205 +1,217 @@
-Return-Path: <linux-kernel+bounces-117095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0B6388B157
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:28:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ABA688A6DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2C98C41169
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:39:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 865961F22B5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260DB1311A7;
-	Mon, 25 Mar 2024 13:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A2C13B5BE;
+	Mon, 25 Mar 2024 13:13:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="i4Ze7Gi9"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="tB1HegEw"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE0B4779D
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:13:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A425B202;
+	Mon, 25 Mar 2024 13:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711372435; cv=none; b=VPJt+umiakwHKnU1sk96ZEp680K23pRbGM9KMsb6CWTzBqpEYELYo7gR/ejbVADJIooFzsdE2UrABDuoKXoPxlfp4hE+7D4vRhnfVMQrqV2raFSvbSaolhfVKX+pWfrIIbAPpVjgIQTiUnmAi9+BocCVtpQkpul8v+Af1yrPjLQ=
+	t=1711372414; cv=none; b=sWxnAGyh0yuVrz0+9fnqaKsl5wHTwD+Nkx84KlDxY3IiCDhwHOw4FZPJZdtM1fSC4C9MIGR1LM3J0nRzWMlQKxyRMDqNIHTj+JDz2f54fAQWG2+xJxFB4nJXOuGIPfumObnYUdRTOc11LnZFDtxgoScTnKgZQCwH863sabSmpS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711372435; c=relaxed/simple;
-	bh=HHojtjcoZd6Q92y03PdxY4XWhtuABkdvaPBeZKDCoIU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LDRoYtFJOjQy/jZ+iddrwp/kRHSQ0M5Ui1k1aPodmwLjnHKyx0Uldwoy/JJ0HQ36X3tW2EHV+J8iU7P1JJn/srXwMCOt57zoB1ZzY6E1CM6DqaLVHkxkKF7ugCXxsEg0qPsJ931NTS3z5Tb1Nfx94Z6FvUGcTWXQSRk2nZ+Oxx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=i4Ze7Gi9; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GcBGVLj2NcFTwaJ3wGR3716q37F9N27/ERujNnx/sdk=; b=i4Ze7Gi9i97w6QoI5KITzD7bbf
-	1BNC5gzeTHM7hUDOI/4sd5ungwm8OX6/I5VU5k0sff1cBRttPd1z+z3E1LIl3Zn7NhTscAQv5Tv9K
-	vn3GZFzf2zud+QXY7lx9R45jJ4t/LgR9/M+lS3I7u9B55iYCdOlxrnRUn+F+s4PxWM3FGhyBoPn9y
-	5vZ2x/I8pkWM+5LWUT5Nd1/N5zCBPsa6ql5SNsdFvjPRobUbcpINzNgDDlv+gydCBbcSANonctgTU
-	LZF/nxZRL1oDSrqyg8PRKSFrnPWJMtRT1kG+KmQqDajupDI1kL6DqD1Uy4ZH1ExZxG+anRUTpC6w4
-	5cay/iPQ==;
-Received: from [177.34.169.255] (helo=[192.168.0.139])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rok8U-00F4Ot-3f; Mon, 25 Mar 2024 14:13:10 +0100
-Message-ID: <780d7dfb-3a91-4cd7-95a7-528877c9ad33@igalia.com>
-Date: Mon, 25 Mar 2024 10:13:01 -0300
+	s=arc-20240116; t=1711372414; c=relaxed/simple;
+	bh=f4k9sHdrlUE0I/X6HCMiQ/5bB02l6Yrf35Q/qOgIGNQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fyxYLEs/UWSBEiC9P/olTF1BawBe55zXZulyCGb7FhGyVpAa9MyD84rKMXHM/fqpe9g3dK/rKxeMA5M9nmWrExBY/Wi37u61RAR16oC6y8i5VtJa3QkV7gQArvoK06Ur0XJ3TzM+9nNAQhxL+ta6+EL4lBy62pd0xNnaVkGkCno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=tB1HegEw reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 267e81775931a2da; Mon, 25 Mar 2024 14:13:29 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 091B366BCC0;
+	Mon, 25 Mar 2024 14:13:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1711372409;
+	bh=f4k9sHdrlUE0I/X6HCMiQ/5bB02l6Yrf35Q/qOgIGNQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=tB1HegEwrtE+z4rEU68P0wqk6myq9lkCIA0M5hIQ5IYMxX5uuOBayvnjdnXJ7CXIz
+	 LezfpatRnnLCzS0XIzw+oHZL3uja+gNxlLT5JeCfB4frqCmg1s6eVfpMpOyXSwE9xq
+	 QP5BF1Nk0+VHI06TBZdthZn+vmN1r8/LjJTvm7Kp5H877a5AF50heWsPTjUoHb9bZU
+	 Qa0EIkd6AgVKX9gtk0/Z+IygNvcB/SyUf+FNm/wR3zAceFmfj7iTCD7yHfWDeLZL7i
+	 n4rcqAs8pIu6fCtoZXbnhPahlx4Se78EsDx9K76EsEWerjDwq8BCUJnTzlu4ZQ15Dg
+	 Y0V6CknffMQ7w==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject:
+ [PATCH v2 3/3] thermal: core: Sort trip point crossing notifications by
+ temperature
+Date: Mon, 25 Mar 2024 14:13:20 +0100
+Message-ID: <3294585.aeNJFYEL58@kreacher>
+In-Reply-To: <2331888.ElGaqSPkdT@kreacher>
+References: <2331888.ElGaqSPkdT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 01/16] drm/vkms: Code formatting
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
- Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
- <20240313-yuv-v5-1-e610cbd03f52@bootlin.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240313-yuv-v5-1-e610cbd03f52@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledruddutddgvdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepfeduudeutdeugfelffduieegiedtueefledvjeegffdttefhhffhtefhleejgfetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehs
+ thgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
 
-On 3/13/24 14:44, Louis Chauvet wrote:
-> Few no-op changes to remove double spaces and fix wrong alignments.
-> 
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Reviewed-by: Maíra Canal <mcanal@igalia.com>
+If multiple trip points are crossed in one go and the trips table in
+the thermal zone device object is not sorted, the corresponding trip
+point crossing notifications sent to user space will not be ordered
+either.
 
-Best Regards,
-- Maíra
+Moreover, if the trips table is sorted by trip temperature in ascending
+order, the trip crossing notifications on the way up will be sent in that
+order too, but the trip crossing notifications on the way down will be
+sent in the reverse order.
 
-> ---
->   drivers/gpu/drm/vkms/vkms_composer.c | 10 +++++-----
->   drivers/gpu/drm/vkms/vkms_crtc.c     |  6 ++----
->   drivers/gpu/drm/vkms/vkms_drv.c      |  3 +--
->   drivers/gpu/drm/vkms/vkms_plane.c    |  8 ++++----
->   4 files changed, 12 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> index e7441b227b3c..c6d9b4a65809 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -96,7 +96,7 @@ static u16 lerp_u16(u16 a, u16 b, s64 t)
->   	s64 a_fp = drm_int2fixp(a);
->   	s64 b_fp = drm_int2fixp(b);
->   
-> -	s64 delta = drm_fixp_mul(b_fp - a_fp,  t);
-> +	s64 delta = drm_fixp_mul(b_fp - a_fp, t);
->   
->   	return drm_fixp2int(a_fp + delta);
->   }
-> @@ -302,8 +302,8 @@ static int compose_active_planes(struct vkms_writeback_job *active_wb,
->   void vkms_composer_worker(struct work_struct *work)
->   {
->   	struct vkms_crtc_state *crtc_state = container_of(work,
-> -						struct vkms_crtc_state,
-> -						composer_work);
-> +							  struct vkms_crtc_state,
-> +							  composer_work);
->   	struct drm_crtc *crtc = crtc_state->base.crtc;
->   	struct vkms_writeback_job *active_wb = crtc_state->active_writeback;
->   	struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
-> @@ -328,7 +328,7 @@ void vkms_composer_worker(struct work_struct *work)
->   		crtc_state->gamma_lut.base = (struct drm_color_lut *)crtc->state->gamma_lut->data;
->   		crtc_state->gamma_lut.lut_length =
->   			crtc->state->gamma_lut->length / sizeof(struct drm_color_lut);
-> -		max_lut_index_fp = drm_int2fixp(crtc_state->gamma_lut.lut_length  - 1);
-> +		max_lut_index_fp = drm_int2fixp(crtc_state->gamma_lut.lut_length - 1);
->   		crtc_state->gamma_lut.channel_value2index_ratio = drm_fixp_div(max_lut_index_fp,
->   									       u16_max_fp);
->   
-> @@ -367,7 +367,7 @@ void vkms_composer_worker(struct work_struct *work)
->   		drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
->   }
->   
-> -static const char * const pipe_crc_sources[] = {"auto"};
-> +static const char *const pipe_crc_sources[] = { "auto" };
->   
->   const char *const *vkms_get_crc_sources(struct drm_crtc *crtc,
->   					size_t *count)
-> diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-> index 61e500b8c9da..7586ae2e1dd3 100644
-> --- a/drivers/gpu/drm/vkms/vkms_crtc.c
-> +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-> @@ -191,8 +191,7 @@ static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
->   		return ret;
->   
->   	drm_for_each_plane_mask(plane, crtc->dev, crtc_state->plane_mask) {
-> -		plane_state = drm_atomic_get_existing_plane_state(crtc_state->state,
-> -								  plane);
-> +		plane_state = drm_atomic_get_existing_plane_state(crtc_state->state, plane);
->   		WARN_ON(!plane_state);
->   
->   		if (!plane_state->visible)
-> @@ -208,8 +207,7 @@ static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
->   
->   	i = 0;
->   	drm_for_each_plane_mask(plane, crtc->dev, crtc_state->plane_mask) {
-> -		plane_state = drm_atomic_get_existing_plane_state(crtc_state->state,
-> -								  plane);
-> +		plane_state = drm_atomic_get_existing_plane_state(crtc_state->state, plane);
->   
->   		if (!plane_state->visible)
->   			continue;
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-> index dd0af086e7fa..83e6c9b9ff46 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> @@ -81,8 +81,7 @@ static void vkms_atomic_commit_tail(struct drm_atomic_state *old_state)
->   	drm_atomic_helper_wait_for_flip_done(dev, old_state);
->   
->   	for_each_old_crtc_in_state(old_state, crtc, old_crtc_state, i) {
-> -		struct vkms_crtc_state *vkms_state =
-> -			to_vkms_crtc_state(old_crtc_state);
-> +		struct vkms_crtc_state *vkms_state = to_vkms_crtc_state(old_crtc_state);
->   
->   		flush_work(&vkms_state->composer_work);
->   	}
-> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
-> index e5c625ab8e3e..5a8d295e65f2 100644
-> --- a/drivers/gpu/drm/vkms/vkms_plane.c
-> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
-> @@ -117,10 +117,10 @@ static void vkms_plane_atomic_update(struct drm_plane *plane,
->   	memcpy(&frame_info->map, &shadow_plane_state->data, sizeof(frame_info->map));
->   	drm_framebuffer_get(frame_info->fb);
->   	frame_info->rotation = drm_rotation_simplify(new_state->rotation, DRM_MODE_ROTATE_0 |
-> -						     DRM_MODE_ROTATE_90 |
-> -						     DRM_MODE_ROTATE_270 |
-> -						     DRM_MODE_REFLECT_X |
-> -						     DRM_MODE_REFLECT_Y);
-> +									  DRM_MODE_ROTATE_90 |
-> +									  DRM_MODE_ROTATE_270 |
-> +									  DRM_MODE_REFLECT_X |
-> +									  DRM_MODE_REFLECT_Y);
->   
->   	drm_rect_rotate(&frame_info->rotated, drm_rect_width(&frame_info->rotated),
->   			drm_rect_height(&frame_info->rotated), frame_info->rotation);
-> 
+This is generally confusing and it is better to make the kernel send the
+notifications in the order of growing (on the way up) or falling (on the
+way down) trip temperature.
+
+To achieve that, instead of sending a trip crossing notification right
+away from handle_thermal_trip(), put the trip in question on a list that
+will be sorted by __thermal_zone_device_update() after processing all of
+the trips and before sending the notifications.
+
+Do the same with the debugfs recording of trip crossing events.
+
+Link: https://lore.kernel.org/linux-pm/20240306085428.88011-1-daniel.lezcano@linaro.org/
+Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org> 
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/thermal_core.c |   39 +++++++++++++++++++++++++++++++++------
+ drivers/thermal/thermal_core.h |    1 +
+ 2 files changed, 34 insertions(+), 6 deletions(-)
+
+Index: linux-pm/drivers/thermal/thermal_core.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -15,6 +15,7 @@
+ #include <linux/slab.h>
+ #include <linux/kdev_t.h>
+ #include <linux/idr.h>
++#include <linux/list_sort.h>
+ #include <linux/thermal.h>
+ #include <linux/reboot.h>
+ #include <linux/string.h>
+@@ -361,7 +362,9 @@ static void handle_critical_trips(struct
+ }
+ 
+ static void handle_thermal_trip(struct thermal_zone_device *tz,
+-				struct thermal_trip_desc *td)
++				struct thermal_trip_desc *td,
++				struct list_head *way_up_list,
++				struct list_head *way_down_list)
+ {
+ 	const struct thermal_trip *trip = &td->trip;
+ 
+@@ -382,8 +385,7 @@ static void handle_thermal_trip(struct t
+ 		 * the threshold and the trip temperature will be equal.
+ 		 */
+ 		if (tz->temperature >= trip->temperature) {
+-			thermal_notify_tz_trip_up(tz, trip);
+-			thermal_debug_tz_trip_up(tz, trip);
++			list_add_tail(&td->notify_list_node, way_up_list);
+ 			td->threshold = trip->temperature - trip->hysteresis;
+ 		} else {
+ 			td->threshold = trip->temperature;
+@@ -400,8 +402,7 @@ static void handle_thermal_trip(struct t
+ 		 * the trip.
+ 		 */
+ 		if (tz->temperature < trip->temperature - trip->hysteresis) {
+-			thermal_notify_tz_trip_down(tz, trip);
+-			thermal_debug_tz_trip_down(tz, trip);
++			list_add(&td->notify_list_node, way_down_list);
+ 			td->threshold = trip->temperature;
+ 		} else {
+ 			td->threshold = trip->temperature - trip->hysteresis;
+@@ -457,10 +458,24 @@ static void thermal_zone_device_init(str
+ 		pos->initialized = false;
+ }
+ 
++static int thermal_trip_notify_cmp(void *ascending, const struct list_head *a,
++				   const struct list_head *b)
++{
++	struct thermal_trip_desc *tda = container_of(a, struct thermal_trip_desc,
++						     notify_list_node);
++	struct thermal_trip_desc *tdb = container_of(b, struct thermal_trip_desc,
++						     notify_list_node);
++	int ret = tdb->trip.temperature - tda->trip.temperature;
++
++	return ascending ? ret : -ret;
++}
++
+ void __thermal_zone_device_update(struct thermal_zone_device *tz,
+ 				  enum thermal_notify_event event)
+ {
+ 	struct thermal_trip_desc *td;
++	LIST_HEAD(way_down_list);
++	LIST_HEAD(way_up_list);
+ 
+ 	if (tz->suspended)
+ 		return;
+@@ -475,7 +490,19 @@ void __thermal_zone_device_update(struct
+ 	tz->notify_event = event;
+ 
+ 	for_each_trip_desc(tz, td)
+-		handle_thermal_trip(tz, td);
++		handle_thermal_trip(tz, td, &way_up_list, &way_down_list);
++
++	list_sort((void *)true, &way_up_list, thermal_trip_notify_cmp);
++	list_for_each_entry(td, &way_up_list, notify_list_node) {
++		thermal_notify_tz_trip_up(tz, &td->trip);
++		thermal_debug_tz_trip_up(tz, &td->trip);
++	}
++
++	list_sort(NULL, &way_down_list, thermal_trip_notify_cmp);
++	list_for_each_entry(td, &way_down_list, notify_list_node) {
++		thermal_notify_tz_trip_down(tz, &td->trip);
++		thermal_debug_tz_trip_down(tz, &td->trip);
++	}
+ 
+ 	monitor_thermal_zone(tz);
+ }
+Index: linux-pm/drivers/thermal/thermal_core.h
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.h
++++ linux-pm/drivers/thermal/thermal_core.h
+@@ -17,6 +17,7 @@
+ 
+ struct thermal_trip_desc {
+ 	struct thermal_trip trip;
++	struct list_head notify_list_node;
+ 	int threshold;
+ };
+ 
+
+
+
 
