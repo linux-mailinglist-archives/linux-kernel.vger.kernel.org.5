@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-117803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72BFE88AFB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:20:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3465288AFB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1DF31F675D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:20:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 664CB1C61E9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9748168A8;
-	Mon, 25 Mar 2024 19:20:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C4A17995;
+	Mon, 25 Mar 2024 19:21:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="JdtwoMPw"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aSJvs0IV"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDB1134B6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774E8134B6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711394450; cv=none; b=RdyDR53vxOnug4jBbzQ9yB1m/U+weR2qBJMgAI0nLhpcvoJU/93JEnNkx/6pgdkuVWhBColqWM89uf2X5tpAKNoGkdE53H6+hTYnbLTtrwUhauBMQonH7axQqpgaQj0tphEWnPSxa3BSK1QM8NhsfSECbgyXPRY4GP2FQxTNVj4=
+	t=1711394490; cv=none; b=OBTrV6JOYD+LCVUmhvDsO+fifqFREhnUmuFU1J3lQPGSbvMR8wXWafIVM5v88GbgRtZDyWaVmuBMojcWVVyHgwHq0ufjkN/ShJ65jzUQshMPfonqjpjccRoSUvj0PjUsfjVIKd5sXp1eg1qefvsfpEnWVi90Y42rTcFXgeWWBok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711394450; c=relaxed/simple;
-	bh=wLFkOCGASg5q0HXPd8AmjzvxhLR2hmPLfVfM1Dt9m+I=;
+	s=arc-20240116; t=1711394490; c=relaxed/simple;
+	bh=VYRIildENsaBXvR73Y1yIYCKG+Egv5wNELgCKWLzyUI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lXoC3VStqs1Vb23kjkn0HUibKXdesEYU8VCvaye+xAYAr7+G+Zt/YwU8DJ9O1GLQMC1I/Fs/biaHjMavZ8SmNTYEnePJCo3uNU1QtPznWnpdwfxyc+hDW6f9JYBHPJZjo+wQWRjzS6EFhsUKmemxw0906mQDjwR4xvTRkXyctbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=JdtwoMPw; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7d0486cf91aso75164939f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:20:49 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=NgK66cDEKVRM/uM2fGFLxBh5OLFm1nFCr153GOTOw4tzxX3MAPMre5c61G5z42JgIRvUasnWF///VHDFhOfsZsJzOuOPncL3/XRu8PJumU4kxoURLCFWQo9HkXdmG9Ek3BSv5qPHlkW5K2YMVP/zisv1LhK9b6Bkqoi7yKDmAyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aSJvs0IV; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513d4559fb4so6375345e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:21:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711394448; x=1711999248; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Sv+dTeEhRx84ZTiMETbHHNzVA6gJg2UXSOcI57+q+UU=;
-        b=JdtwoMPwdvu/IMeTI9qOrAA4SjFVMGfo1PMg9Z0EF2I2xNXsyWTOwsJgICLr+GdCXV
-         WqmHvwNNdVU/ZhPNU4u14s/F+OXwMlSwIE2lZeUizZmI89IkBP6IKLfLepjqVN+f4c9n
-         Uo/aMka8q5ejQPAeHl5zLUMxGC5YPFUcJ11YwUanjOh1MU8juq/lzGXO3Dtlmq8EbtdT
-         XgGOTitEfm9UW7VOHZ85nThGp8XoB+TdovGf91T65J3Lg686/9UcnHzBxMu/BAEX2NQA
-         S+7GOFBc6PpZLRqpnkUd+st0YdtJhyMgJeN3hJxqAlAspR9BCVzDE263icC1lvHHJnLB
-         lNBQ==
+        d=linaro.org; s=google; t=1711394487; x=1711999287; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=7aRdVW7qgX5bNi5oK/bW7TDpJ2AMVEjlX5d8Z7H+qH8=;
+        b=aSJvs0IV/g9UFspWMEOVVg4EVdV307eripfZBG6FHJ/LgDFtDnyHyer8K+n4WEVe9U
+         En2TzRJszJDRkVRWZ3A8uuh0gDbW2kRz3QL9u+n3RRDJ/5T8Vgn++0ECmWiigB0M2Ldb
+         3fjFMKF1gSCJKPCHJ69cPKcNn46j4WkGOwZqKT/cTWVJKh/sYsMemVBTtocdFK721ty3
+         GLfJ7gl5ThPAJZP4SNhpluP9DmrqvZM/lQrADq25i76Zq6FOErS8vxlHo4BIgTZ41FrQ
+         pHfS67pWHkNOoWUxksCEO0kouXHqzgwj1ItrmFtWyFVx+1jUNoakYyVhmK29n4WRhnGN
+         VMSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711394448; x=1711999248;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sv+dTeEhRx84ZTiMETbHHNzVA6gJg2UXSOcI57+q+UU=;
-        b=QHwiGazJWwz8xs/kVzTPxS7vq6pPX3Z96OiVFwN8T0rnNgqqdF5KEQlhBJL9oLud9a
-         RaCDiCixJXhC4KiXs5qhjz5hV8CnmBEgvuoMET7dTOMIOR+fvovmDOmqjNW2uKkPg8Y1
-         d40W8mo9loXfXQHAwIAr9xnWF749tTaNtxzc2FNho8Lkb8lQVQHLiq9j8pNCAbLUoqsx
-         a5gymMJdFVKimcwx8zmvFcnN/eNT3Qa/FivAouzD3xModVHRRttBDhVfq4h5gbb7VYMt
-         c/m6GzV0exNdWtTv/V/dmmaJW3t3wgqe0ch1B9PKht9IO1zHZ0fp0KgTEV67eBBiGT4V
-         al7w==
-X-Forwarded-Encrypted: i=1; AJvYcCXcwztF45nwnzWGTJobUFCvOEJGAODu8ZX3yuQz0sw4OZt7jQ2a8PnELsMfbtUbcQDykVWGldyeChNlBt8ewUTKrFlBMpf1w1hNn1au
-X-Gm-Message-State: AOJu0YwxzKEeUQlJdQJPdLdyJNn7XBTXzdY0GOWSWGlJbZcHwrTODLKg
-	vlTb3MqBBYc6fRKKbx4Vr/zk8HEVpu0nwU+ET1hP6fJWFWrsQQZNlG6+QMmz7vs=
-X-Google-Smtp-Source: AGHT+IGgMqUl4sRDrJG66cYxeIJMFjP1ZhvADblr9V63c5aanNrfT587vEs2VxCiJVrrEMzfdd4+Lg==
-X-Received: by 2002:a05:6602:4f11:b0:7c8:bbdc:ebed with SMTP id gl17-20020a0566024f1100b007c8bbdcebedmr8382717iob.6.1711394448046;
-        Mon, 25 Mar 2024 12:20:48 -0700 (PDT)
-Received: from [100.64.0.1] ([136.226.86.189])
-        by smtp.gmail.com with ESMTPSA id j11-20020a02a68b000000b0047c1f2e4960sm749632jam.56.2024.03.25.12.20.46
+        d=1e100.net; s=20230601; t=1711394487; x=1711999287;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7aRdVW7qgX5bNi5oK/bW7TDpJ2AMVEjlX5d8Z7H+qH8=;
+        b=SzXr/7a0+8WnIhvdQcGlUjQ2IbkLT3CfocYNrZiuh96rDji+HcswaDdoIbSFnsnu6Q
+         nxVQAUmQvC6/i+xKZ7IEziMEHx647bzhdLoEylzmQAPeaeJYI7N+C2fFcoSdgyYrUc84
+         WGuD+kMALVOXv79j30yhA77DCfiTDYPweZdVYS/7kyUOyElXnJvZS4GL/WwaxiGvdHTu
+         6Wf8iPN/NZjJ+rYeV58aokDVbfZLh9qw7VdqZIYn77ucsNkjEePeKgsiJW3oVZbvJLV4
+         rf77w2U4RGniTmCK5JSZ8lDRGnN21fj8+t1Dbd/kybxDMf2Yxzb+y2KHJgOx6aaVvJqj
+         8bFA==
+X-Forwarded-Encrypted: i=1; AJvYcCXZFlkHfRDfRrYWC3N2FZ/3CTRGurypQzDO0c7hAHkGUJFD3zgCFumVDTJ2LC0IaGmCYjO+mJ9Wpmj/cWEbETzHfAHOU8P+oHjmqwei
+X-Gm-Message-State: AOJu0YybFXfsX7Wj/RV3lrfbR8BUU4o/2o/screI+BkiHBLirIqCBzQw
+	adpBOBBkauPU7ZoiMvTny6gOJd/W6nb/Az1jx16KECO9tvw9R17igonTxgT83xs=
+X-Google-Smtp-Source: AGHT+IEyItUn9hdMpAk8rPYqPH5OSZ8RVw98PyI0tvTq+a/OYosBp+4XMzaXdqBEC6fwQvPpHMe5aQ==
+X-Received: by 2002:a05:6512:6d3:b0:515:8653:80d9 with SMTP id u19-20020a05651206d300b00515865380d9mr6475912lff.57.1711394486439;
+        Mon, 25 Mar 2024 12:21:26 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id b4-20020a170906708400b00a46da83f7fdsm3368114ejk.145.2024.03.25.12.21.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 12:20:47 -0700 (PDT)
-Message-ID: <757b0f1c-b8ff-4a1a-8edc-8dc651a348fb@sifive.com>
-Date: Mon, 25 Mar 2024 14:20:46 -0500
+        Mon, 25 Mar 2024 12:21:26 -0700 (PDT)
+Message-ID: <bf2c507d-2320-425e-8bc2-8a2858281559@linaro.org>
+Date: Mon, 25 Mar 2024 20:21:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,89 +76,81 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Define TASK_SIZE_MAX for __access_ok()
-To: Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>
-Cc: Alexandre Ghiti <alex@ghiti.fr>, David Laight <David.Laight@aculab.com>,
- Alexandre Ghiti <alexghiti@rivosinc.com>, Palmer Dabbelt
- <palmer@dabbelt.com>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- Albert Ou <aou@eecs.berkeley.edu>, Andrew Morton
- <akpm@linux-foundation.org>, Charlie Jenkins <charlie@rivosinc.com>,
- guoren <guoren@kernel.org>, Jisheng Zhang <jszhang@kernel.org>,
- Kemeng Shi <shikemeng@huaweicloud.com>, Matthew Wilcox
- <willy@infradead.org>, Mike Rapoport <rppt@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Xiao W Wang
- <xiao.w.wang@intel.com>, Yangyu Chen <cyy@cyyself.name>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240313180010.295747-1-samuel.holland@sifive.com>
- <CAHVXubjLWZkjSapnsWJzimWg_2swEy7tQ-DQ6ri8yMk8-Qsc-A@mail.gmail.com>
- <88de4a1a-047e-4be9-b5b0-3e53434dc022@sifive.com>
- <b5624bba-9917-421b-8ef0-4515d442f80b@ghiti.fr>
- <f786e02245424e02b38f55ae6b29d14a@AcuMS.aculab.com>
- <d323eb10-c79b-49cb-94db-9b135e6fd280@ghiti.fr>
- <ZgGosOiW6mTeSnTL@FVFF77S0Q05N>
- <eeccbc9f-7544-42c9-964f-2b4c924c2b2f@app.fastmail.com>
- <ZgHCpgHh1ypSyrtv@FVFF77S0Q05N>
-From: Samuel Holland <samuel.holland@sifive.com>
+Subject: Re: [PATCH] clk: qcom: gdsc: treat optional supplies as optional
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Mark Brown <broonie@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240325081957.10946-1-johan+linaro@kernel.org>
+ <9b2a7e9f-dbb2-4acb-91a7-fcc64d5cfabd@sirena.org.uk>
+ <CAA8EJpqvYYCFRJVr732VORyHgpU-H2nif+n6hB6pJbXsqCH3_Q@mail.gmail.com>
 Content-Language: en-US
-In-Reply-To: <ZgHCpgHh1ypSyrtv@FVFF77S0Q05N>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <CAA8EJpqvYYCFRJVr732VORyHgpU-H2nif+n6hB6pJbXsqCH3_Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2024-03-25 1:30 PM, Mark Rutland wrote:
-> On Mon, Mar 25, 2024 at 07:02:13PM +0100, Arnd Bergmann wrote:
->> On Mon, Mar 25, 2024, at 17:39, Mark Rutland wrote:
+On 25.03.2024 3:10 PM, Dmitry Baryshkov wrote:
+> On Mon, 25 Mar 2024 at 16:01, Mark Brown <broonie@kernel.org> wrote:
 >>
->>> Using a compile-time constant TASK_SIZE_MAX allows the compiler to generate
->>> much better code for access_ok(), and on arm64 we use a compile-time constant
->>> even when our page table depth can change at runtime (and when native/compat
->>> task sizes differ). The only abosolute boundary that needs to be maintained is
->>> that access_ok() fails for kernel addresses.
+>> On Mon, Mar 25, 2024 at 09:19:57AM +0100, Johan Hovold wrote:
+>>> Since commit deebc79b28d6 ("clk: qcom: gpucc-sc8280xp: Add external
+>>> supply for GX gdsc") the GDSC supply must be treated as optional to
+>>> avoid warnings like:
+>>>
+>>>       gpu_cc-sc8280xp 3d90000.clock-controller: supply vdd-gfx not found, using dummy regulator
+>>>
+>>> on SC8280XP.
 >>
->> As I understand, this works on arm64 and x86 because the kernel
->> mapping starts on negative 64-bit addresses, so the highest user
->> address (TASK_SIZE = 0x000fffffffffffff) is still smaller than the
->> lowest kernel address (PAGE_OFFSET = 0xfff0000000000000).
+>> Can this device actually run with the supply physically disconnected?
 > 
-> Yep; the highest posible user address is always below the lowest possible
-> kernel address, and any "non-canonical" address between the two ranges faults.
-> There's some fun with TBI (Top Byte Ignore) and MTE, but that only affects how
-> to mangle the pointer before the check, and doesn't affect the definition of
-> the VA boundary.
-> 
-> In general, so long as TASK_SIZE_MAX is <= the lowest possible kernel address
-> and TASK_SIZE_MAX > the highest possible user address, it all works out.
-> 
->> If an architecture ignores all the top bits of a virtual address,
->> the largest TASK_SIZE would be higher than the smallest (positive,
->> unsigned) PAGE_OFFSET, so you need TASK_SIZE_MAX to be dynamic.
-> 
-> Agreed, but do we even support such architectures within Linux?
-> 
->> It doesn't look like this is the case on riscv, but I'm not sure
->> about this part.
-> 
-> It looks like riscv is in the same bucket as arm64 and x86 per:
-> 
->   https://www.kernel.org/doc/html/next/riscv/vm-layout.html
-> 
-> ... which says:
-> 
-> | The RISC-V privileged architecture document states that the 64bit addresses
-> | "must have bits 63-48 all equal to bit 47, or else a page-fault exception
-> | will occur.": that splits the virtual address space into 2 halves separated
-> | by a very big hole, the lower half is where the userspace resides, the upper
-> | half is where the RISC-V Linux Kernel resides.
+> On SC8280XP this is supplied via power-domain instead of the supply.
 
-Right, and while RISC-V has a pointer masking extension[1] similar to arm64's
-TBI, it will be handled[2] the same way: by sign extending the address prior to
-checking against TASK_SIZE_MAX. So we maintain the property that userspace
-addresses are always "positive" and kernel addresses are always "negative".
+I think Dmitry is asking about this bit:
 
-Regards,
-Samuel
+if (ret != -ENODEV)
+	return ret;
 
-[1]: https://github.com/riscv/riscv-j-extension/raw/a1e68469c60/zjpm-spec.pdf
-[2]:
-https://lore.kernel.org/linux-riscv/20240319215915.832127-1-samuel.holland@sifive.com/
+which is basically repeating the difference that _optional makes
+
+Konrad
 
