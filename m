@@ -1,158 +1,124 @@
-Return-Path: <linux-kernel+bounces-117667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B0B88AE41
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC84488AE43
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 795271F6786B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:29:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 822131F3D4F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1CE127B5F;
-	Mon, 25 Mar 2024 17:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121AC129A89;
+	Mon, 25 Mar 2024 18:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fftc+ZYk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CFHHkLtK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B4358109;
-	Mon, 25 Mar 2024 17:59:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5258A8665D;
+	Mon, 25 Mar 2024 18:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711389584; cv=none; b=k8MILfWEPXJElGPYSJTA9MIbUT1csKgGk7VL4YFeguCcWDw7Z2NHdoVcABzTXJxQewkzGgwU0WSxZzF6wNpBVORiIAhk5q+ZZXawEL59HcEp5fJ1C9s4gn1irXD3VlLitlWDmoe7YbFBSnz1hcH0i4E+HK1FPFK1P3qNuWiYQ54=
+	t=1711389600; cv=none; b=VIZy0XVE6Yw/GHnv4lDF+I37XGFLmFdvQoDmnUQj0dfxKwoijUU/P8L1hoccnaZx5zCh06vUQDKxSOJNoYdj9xt52k/oeQUoWvxPAP455IMqUf0LS1IvSpUQtt0lRzkV4pKe81pK9N8ZavL6M5QRn0ZR53h9bioR6QDUm6kO4r4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711389584; c=relaxed/simple;
-	bh=wXPwR8AWQ/l5POkeyRm4pjnxElVQugxHc5xn97XdOt8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=mwSWCal1ciRKVbKK1fL+kXJeF/cgGfRZHGrVsDw1g6YRjBYR6QH05A5jE/xYsoUk1gDVeDiQGNP0RiLH2/kn8mwCVE08GtOxxAS9suifmW/w7oxKZ2zf9RcVPrmkvWZQTwXNfWKr/LcImQKuNtL+DKqFdfH9giZUWKnvt/dGViA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fftc+ZYk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BB4DC433C7;
-	Mon, 25 Mar 2024 17:59:43 +0000 (UTC)
+	s=arc-20240116; t=1711389600; c=relaxed/simple;
+	bh=b7IDzaWT6uTJU6g7eRyocNkJQUp3OphZOZR1xJLUO38=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ub9ezzUoU/HBqKe5bDNiM2TmnsZJ5AgZWBPOnIg2XDRoYMFHpbJpOV6/DR86A+fXdN3AkMUf49vH5Y/JxtIdkJ7ZK/vgJPVs/b1g0+WyAN++FwwvRzowNjmNNADEEFKimGIj4jLKo8jGdnSQ6lnVK2bwr6Trkv9Oks03aP5tE00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CFHHkLtK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FECBC43390;
+	Mon, 25 Mar 2024 17:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711389583;
-	bh=wXPwR8AWQ/l5POkeyRm4pjnxElVQugxHc5xn97XdOt8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=fftc+ZYkkbAwFHlbCa37SyMisbtr/6H45opy0Mf+j5xkS4yQN6nnqvgzKIwN5cMkS
-	 JGU7aXj8A44g1kqohrtMvyr8BQtkUKYBcOayA6qCJgtTMwTf/kelwo9pOgN/8QnLsu
-	 UIE6DWfAS1/sVyHXWVKOrMu+RyfOd97ka0hzS3t6wyaEXAFGZi62fjzM3UJynqbbgU
-	 H0lYPyz92L3C3sMx1f4eQH4DhoUNr+56b45xuwEGRsR2xenSlkm1nQPE1Iz9puf+bD
-	 H1LGwlI9nP2qDWP/0zv6RAwWAEhOMg0Ubz9A62rXnjwgOVqq9DoYLXgjg373B75r7y
-	 KgU8mvhg/2W5A==
-Date: Mon, 25 Mar 2024 12:59:41 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Damien Le Moal <dlemoal@kernel.org>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-	Manivannan Sadhasivami <manivannan.sadhasivam@linaro.org>,
-	linux-scsi@vger.kernel.org,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Jaroslav Kysela <perex@perex.cz>, linux-sound@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org, linux-serial@vger.kernel.org,
-	Hans de Goede <hdegoede@redhat.com>,
-	platform-driver-x86@vger.kernel.org, ntb@lists.linux.dev,
-	Lee Jones <lee@kernel.org>, David Airlie <airlied@gmail.com>,
-	amd-gfx@lists.freedesktop.org, Jason Gunthorpe <jgg@ziepe.ca>,
-	linux-rdma@vger.kernel.org,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/28] Remove PCI_IRQ_LEGACY
-Message-ID: <20240325175941.GA1443646@bhelgaas>
+	s=k20201202; t=1711389600;
+	bh=b7IDzaWT6uTJU6g7eRyocNkJQUp3OphZOZR1xJLUO38=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=CFHHkLtK0iqzTrNEuYBrrPTak21KVQUboVe3FJY6KPE5A4jjRIUG9LZSJ+xM3IEVH
+	 x//eB9RmYyniy5zHYIrLU1NmVqE9BG0a7qXhjOxxnq9J4MZDLKkhU8a69K41H+krDG
+	 QTwed3DQGN7ETpmW+JSNywKrK+q8XScD1pbVoRliqDbDPnCPkmleN7rpNRKoFjqCLF
+	 Iu/ZYoJxEgb4xRGOhXETGRFSi5NOhZlSSdoSsP+WFM6BIuiCwI8gqml/dwTi2Rbxh9
+	 6p8UDU72yrDsFLEBIquZZhZ1a9Hfre4BnquVXD+1G3PFB0CZ1H9byEnUc7IldwFQsi
+	 WxaF+1CQi02TA==
+From: SeongJae Park <sj@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	florian.fainelli@broadcom.com,
+	pavel@denx.de,
+	damon@lists.linux.dev
+Subject: Re: [PATCH 5.15 000/309] 5.15.153-rc2 review
+Date: Mon, 25 Mar 2024 10:59:57 -0700
+Message-Id: <20240325175957.233640-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240325115928.1765766-1-sashal@kernel.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325070944.3600338-1-dlemoal@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 04:09:11PM +0900, Damien Le Moal wrote:
-> This patch series removes the use of the depracated PCI_IRQ_LEGACY macro
-> and replace it with PCI_IRQ_INTX. No functional change.
+Hello,
+
+On Mon, 25 Mar 2024 07:59:28 -0400 Sasha Levin <sashal@kernel.org> wrote:
+
 > 
-> Damien Le Moal (28):
->   PCI: msi: Use PCI_IRQ_INTX
->   PCI: portdrv: Use PCI_IRQ_INTX
->   PCI: documentation: Use PCI_IRQ_INTX
->   sound: intel: Use PCI_IRQ_INTX
->   usb: hcd-pci: Use PCI_IRQ_INTX
->   tty: 8250_pci: Use PCI_IRQ_INTX
->   platform: intel_ips: Use PCI_IRQ_INTX
->   ntb: Use PCI_IRQ_INTX
->   mfd: intel-lpss-pci: Use PCI_IRQ_INTX
->   drm: amdgpu: Use PCI_IRQ_INTX
->   infiniband: qib: Use PCI_IRQ_INTX
->   infiniband: vmw_pvrdma: Use PCI_IRQ_INTX
->   misc: vmci_guest: Use PCI_IRQ_ALL_TYPES
->   net: xgbe: Use PCI_IRQ_INTX
->   net: aquantia atlantic: Use PCI_IRQ_INTX
->   net: atheros: alx: Use PCI_IRQ_INTX
->   net: realtek: r8169: Use PCI_IRQ_INTX
->   net: wangxun: Use PCI_IRQ_INTX
->   net: wireless: ath10k: Use references to INTX instead of LEGACY
->   net wireless; realtec: Use PCI_IRQ_INTX
->   scsi: arcmsr: Use PCI_IRQ_INTX
->   scsi: hpsa: Use PCI_IRQ_INTX
->   scsi: ipr: Use PCI_IRQ_INTX
->   scsi: megaraid: Use PCI_IRQ_INTX
->   scsi: mpt3sas: Use PCI_IRQ_INTX
->   scsi: pmcraid: Use PCI_IRQ_INTX
->   scsi: vmw_pvscsi: Do not use PCI_IRQ_LEGACY
->   PCI: Remove PCI_IRQ_LEGACY
+> This is the start of the stable review cycle for the 5.15.153 release.
+> There are 309 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
->  Documentation/PCI/msi-howto.rst               |  2 +-
->  Documentation/PCI/pci.rst                     |  2 +-
->  .../translations/zh_CN/PCI/msi-howto.rst      |  2 +-
->  Documentation/translations/zh_CN/PCI/pci.rst  |  2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c       |  2 +-
->  drivers/infiniband/hw/qib/qib_iba7220.c       |  2 +-
->  drivers/infiniband/hw/qib/qib_iba7322.c       |  5 ++-
->  drivers/infiniband/hw/qib/qib_pcie.c          |  2 +-
->  .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |  2 +-
->  drivers/mfd/intel-lpss-pci.c                  |  2 +-
->  drivers/misc/vmw_vmci/vmci_guest.c            |  3 +-
->  drivers/net/ethernet/amd/xgbe/xgbe-pci.c      |  2 +-
->  .../net/ethernet/aquantia/atlantic/aq_cfg.h   |  2 +-
->  .../net/ethernet/aquantia/atlantic/aq_hw.h    |  2 +-
->  .../net/ethernet/aquantia/atlantic/aq_nic.c   |  2 +-
->  .../ethernet/aquantia/atlantic/aq_pci_func.c  |  9 ++---
->  .../aquantia/atlantic/hw_atl/hw_atl_a0.c      |  2 +-
->  .../aquantia/atlantic/hw_atl/hw_atl_b0.c      |  2 +-
->  .../aquantia/atlantic/hw_atl2/hw_atl2.c       |  2 +-
->  drivers/net/ethernet/atheros/alx/main.c       |  2 +-
->  drivers/net/ethernet/realtek/r8169_main.c     |  2 +-
->  drivers/net/ethernet/wangxun/libwx/wx_lib.c   |  8 ++---
->  drivers/net/wireless/ath/ath10k/ahb.c         | 18 +++++-----
->  drivers/net/wireless/ath/ath10k/pci.c         | 36 +++++++++----------
->  drivers/net/wireless/ath/ath10k/pci.h         |  6 ++--
->  drivers/net/wireless/realtek/rtw88/pci.c      |  2 +-
->  drivers/net/wireless/realtek/rtw89/pci.c      |  2 +-
->  drivers/ntb/hw/idt/ntb_hw_idt.c               |  2 +-
->  drivers/pci/msi/api.c                         |  8 ++---
->  drivers/pci/pcie/portdrv.c                    |  8 ++---
->  drivers/platform/x86/intel_ips.c              |  2 +-
->  drivers/scsi/arcmsr/arcmsr_hba.c              |  2 +-
->  drivers/scsi/hpsa.c                           |  2 +-
->  drivers/scsi/ipr.c                            |  2 +-
->  drivers/scsi/megaraid/megaraid_sas_base.c     |  4 +--
->  drivers/scsi/mpt3sas/mpt3sas_base.c           |  2 +-
->  drivers/scsi/pmcraid.c                        |  2 +-
->  drivers/scsi/vmw_pvscsi.c                     |  2 +-
->  drivers/tty/serial/8250/8250_pci.c            |  2 +-
->  drivers/usb/core/hcd-pci.c                    |  3 +-
->  include/linux/pci.h                           |  7 ++--
->  sound/soc/intel/avs/core.c                    |  2 +-
->  42 files changed, 84 insertions(+), 91 deletions(-)
+> Responses should be made by Wed Mar 27 11:59:27 AM UTC 2024.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.15.y&id2=v5.15.152
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 
-I applied all these to pci/enumeration for v6.10, thanks!
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-I added acks and reviewed-by and will update if we receive more, and
-adjusted subject lines to add "... instead of PCI_IRQ_LEGACY" and in
-some cases to match history of the file.
+Tested-by: SeongJae Park <sj@kernel.org>
 
-Bjorn
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] d978081b2581 ("Linux 5.15.153-rc2")
+
+Thanks,
+SJ
+
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_m68k.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
 
