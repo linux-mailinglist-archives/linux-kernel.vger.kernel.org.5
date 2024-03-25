@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-116437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1BF2889D48
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:41:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8A61889F05
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:22:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DC0528CEB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:41:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C829289BF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FCE8179FBB;
-	Mon, 25 Mar 2024 07:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0BA5A0FC;
+	Mon, 25 Mar 2024 07:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="aGobPE2d"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2083.outbound.protection.outlook.com [40.107.94.83])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ossEOfsx"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2067.outbound.protection.outlook.com [40.107.93.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A256222AB83;
-	Mon, 25 Mar 2024 03:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1ED9268034;
+	Mon, 25 Mar 2024 03:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.67
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711335874; cv=fail; b=HZBU/ruhaPEYvPoF7jut6Pv+OtTURMoJjgcv3caktXI2su0MovRinL/aevneLAJK9jCxS/EwL7vgXTdoaA/rhK55bJxZfjGZg1qiKwlkr1ll+8fL0wZCjCVy7rFn8nam2ENeWzfandxSvm7YsyK3PTGlyFGvX21Jb2ekKdUHrgo=
+	t=1711335878; cv=fail; b=Y3KuHERX0LfOkTbCmVW8sH7X5gAbc0bGtkY+o6KJsaTgMJhgrSfNlbUKZKqVg1zbK775KUWKoe9m5H0o2gmzV6dxWRkZNYnm6Sgzs13MWOFQSJ9DUs2U7CaR3j6LryL7hQHkTXli1rcxy/y2O5iCDMqJf3FeBg/0LG8dwtOJ2co=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711335874; c=relaxed/simple;
-	bh=Um0+J0yaMX/a9vnllsb5rMCBX3DIXBTPnJJjMnw/pIg=;
+	s=arc-20240116; t=1711335878; c=relaxed/simple;
+	bh=/ORMEDvJlElLdwB05bjjkZ49ZILNK/sXF+PMdCPic2U=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z8G9x3CiRwVNxcTPhIPjxadXiKQpXg+c9KOTBcGRSrniwHhRkuRIp+xYaiWPiN3dpB/aF99sMT9KQzy1KyeBILlmbqkYGzj9a1UUuC6af/TWip9Ha2D1a3XTSeaU2ohRylmCW3Xwhlliqe2pv5ztL9exzlrnhhnTOCddgVX8IPg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=aGobPE2d; arc=fail smtp.client-ip=40.107.94.83
+	 MIME-Version:Content-Type; b=Q2EY49tdg587gOFpDK60YAnGVppEUqSBbss7cGRQ4HAtsLd1MWv2Gs36oEoX9jFIZ1KsLF57iMb3xmDc8NwjYIr1rNczSkdMw8jOw3p+lXVXPh41bI3TgU/6B7CiL6KTSEu+wu5O6a37CYpJL0/dpKOZVUkmsY947bTUoOSgpUs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ossEOfsx; arc=fail smtp.client-ip=40.107.93.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D20dMr1QzRbf+DFE54ou3qnDBbNnme3LG9IfspIlkyoiRI5aL0vBmQNeC7BzyKVzaxz7D77X0aOxIii+bK0eazFSI2m8LfUGPl8xMHeRUG3iWdpEXrTr3y6TElcl+WS5KFDmy440eE3XBFkp8oyZLq6cG2OxNczqVnOl2zHuireaPs+ZnZHF0dTtxTtoQzqqPOH1/Urpy58p4fY4IlYuLWSA+XbwSRiTE24RzSWq3FsgaQmjPX2cd9ap+kJogTFKUaANR1YtyRkCd/87G9tCieYMKtJsZyZhosWspLcjYh9SpBWn/3W6CmhbKKsZWFmULszDkLVtKPTkAESIYTOgMQ==
+ b=AxN0QtOEEVcAAHG4Dtgaa8B6vFfZOpM0RsrcZnOK3hAbaR4ZefwowPtxg4wNhKttHVu3Db5621gavaFntj9zHV8kmMNIdrBTgZf2fvqtmp4a0W5vFHCd1OdgOdUkTpffSGgijUEkyWBvU1nJ2utWDjT7BLg5DFX3X2YJli4ISy2PdWVqq0vOS47hOp7nTRY3VwbqSk2BUr2ZjGwoDjvTFDzTiSfaX7lTPhxfLvcRcJZjvV+DI8l+tkh56RKSsgHbyzfCvX2pg6Ndsjty5jVE5r2aYga180VSHubpSnsRW52gNLzv2eL8y99/4aCGMwBlFsbiwseeH8YhWBoIC0dBBA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RdGCKabVOMgWeX9gozE3KU+RrIAHicqm0uU9ff238Uo=;
- b=JvO2M9RH7ZyLKImCAIYE+c0AgsLSKNRyIyWUfQgjYkgZbYE33pBwcaAL9CvMebjmd1PYJKq2a2kvXWvi1+7eveRt8edR4lW6vXvW+Jf0KvQByVqFdzeTVEZLjO2zVgD3fLFe8ORsBxZLXjD0Lv1SYRD3rqUskzW7PTw8m3rhC8kkGvYzxtCLxe5atl5moC3YCcoYT7hNBIA2Pd1Tn6MF+rQBrOjUnMiLB68R/Li2e5GozP+ZE/FaVw7dAkEsDNu7J5uvJMtOtUH6Tdd4rdoeMs43vq2ZHQR1+kKd1eYNB6i/eea45RxvDvTWI6HzcR7NhPkrFvaPV/1coRILqmE2Ng==
+ bh=PJa5bG1XvdZh5o3Op4pc5qeNVIcfvEHxqfawH8yvlgk=;
+ b=NYNGr4UWvWuRzfx0EZO57FANYA1PltM2ulikWkpwKs7GGUgjr/Znn+YaWeXO1asECqvqCr3fru4u4++WVOS0GrsdxVpyq+uGUBIV+IIXQnWNS5znlu/96ZUy+AIq1sQO/2+b94QCOcx8AF9hMgFkTg1AOI0A5LZlKhlCcR7jNQ2IYE+o4GIuNZINTmEn+v1fWFfeltg7SP36f8AML/Zrb1HrkJn/Th9wfMoF51yHMAD5VtthA/lyXcmmWFoSR1GowxlKbPlzrepb+ow7XTQ1FmXbTOazTpEjvLzUltbKospLyiN7YfXw3xAXn58LPy8c2X61D5B3WlmYMzAr+sudLg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RdGCKabVOMgWeX9gozE3KU+RrIAHicqm0uU9ff238Uo=;
- b=aGobPE2d8p7D+0VOVDtJEOIeU1AIzVe2Asv6CfT5Cs1tErPb+75IMwHncpG8YBMK1xhaVrbvUkbYL3mqAKxxgThj8UyZvXJCoj6bgs2yj3DsuHOq9Wvo4Ux+EVP90LNQnqPbTIj9opb3LQRN/RDRKi5iqyFaERFNwDPpD4z8hLc=
-Received: from CYXPR02CA0091.namprd02.prod.outlook.com (2603:10b6:930:ce::6)
- by CH3PR12MB7522.namprd12.prod.outlook.com (2603:10b6:610:142::17) with
+ bh=PJa5bG1XvdZh5o3Op4pc5qeNVIcfvEHxqfawH8yvlgk=;
+ b=ossEOfsxROwf6o+0iMhp8lvzC3+db0CNBY53ggRlGgbSL4GKLEjwHA3PSsDPfvRXtZg4zmBYuqxRVrwpIrfftm1yrzdW9ou4s5/AnZnIfw+Jy1q1Zefe66U0QVH/0mQYzcPvypKGG17N8t5EjvvSujPNn1gBrPC7W1Qzt6E/uyc=
+Received: from DM6PR08CA0062.namprd08.prod.outlook.com (2603:10b6:5:1e0::36)
+ by PH7PR12MB6585.namprd12.prod.outlook.com (2603:10b6:510:213::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 03:04:28 +0000
-Received: from CY4PEPF0000EDD5.namprd03.prod.outlook.com
- (2603:10b6:930:ce:cafe::98) by CYXPR02CA0091.outlook.office365.com
- (2603:10b6:930:ce::6) with Microsoft SMTP Server (version=TLS1_2,
+ 2024 03:04:32 +0000
+Received: from CY4PEPF0000EDD6.namprd03.prod.outlook.com
+ (2603:10b6:5:1e0:cafe::99) by DM6PR08CA0062.outlook.office365.com
+ (2603:10b6:5:1e0::36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Mon, 25 Mar 2024 03:04:28 +0000
+ Transport; Mon, 25 Mar 2024 03:04:31 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EDD5.mail.protection.outlook.com (10.167.241.209) with Microsoft
+ CY4PEPF0000EDD6.mail.protection.outlook.com (10.167.241.210) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Mon, 25 Mar 2024 03:04:28 +0000
+ 15.20.7409.10 via Frontend Transport; Mon, 25 Mar 2024 03:04:31 +0000
 Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 24 Mar 2024 22:04:24 -0500
+ 15.1.2507.35; Sun, 24 Mar 2024 22:04:28 -0500
 From: Perry Yuan <perry.yuan@amd.com>
 To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
 	<viresh.kumar@linaro.org>, <gautham.shenoy@amd.com>,
@@ -76,9 +76,9 @@ To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
 CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
 	<oleksandr@natalenko.name>, <Xiaojian.Du@amd.com>, <Li.Meng@amd.com>,
 	<linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v10 7/8] cppc_acpi: print error message if CPPC is unsupported
-Date: Mon, 25 Mar 2024 11:03:27 +0800
-Message-ID: <bb32631f684446ae6380bdac0260ccd66290e222.1711335714.git.perry.yuan@amd.com>
+Subject: [PATCH v10 8/8] cpufreq: amd-pstate: Add quirk for the pstate CPPC capabilities missing
+Date: Mon, 25 Mar 2024 11:03:28 +0800
+Message-ID: <31afd5ae23f8b1d7c6a2f0efe593a368dee61224.1711335714.git.perry.yuan@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1711335714.git.perry.yuan@amd.com>
 References: <cover.1711335714.git.perry.yuan@amd.com>
@@ -94,61 +94,152 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD5:EE_|CH3PR12MB7522:EE_
-X-MS-Office365-Filtering-Correlation-Id: dbc67aae-c4d8-45ea-d4b5-08dc4c7848fd
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD6:EE_|PH7PR12MB6585:EE_
+X-MS-Office365-Filtering-Correlation-Id: c72a93e9-aa4b-4e48-f57e-08dc4c784b0c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	4v47AhT8o4IciJxaWLAc0B8LWrL2ur3f4VWgM4GGHyZwHMYDAO/Mi27OqUPZy2UGYAM9z0q2h0cOKxQB8KYJ48j0rTTgifKqC5UEreZ6r8eCSBBAjPqIcuUfq37cmWKIMlyOun30Q1SJLRZhZ3+ROCA8P4m/nbqxFudcHuKjYejrA/bfR2LSi1zo/Igysb6m22oZhOEmV7d43rQm3zyGRu20k1LgYX6fFtOOf/coXkyGUmlxeUmag35y/UPtpuZfbMVGrWEeyxFUcfa/GN8oVfKX8cVXrJ7Wih+8/1VAkCvhqfkPNFTPp87jGZO0LaLwX6AU2AIpyzjxJMLa93zKmFev7nkzNFv0lBJose+oaXUBAB1Z0iaqtbL/oFZHpRK9s1f2qSqCCmMAPMj1BLlAZW6NvoKtkzu+sA8jkPa3CVCvXUIyhWyk/4F1IiYz1k930YhfbnoLenJY1P1DdLtNPrRwDlH92TZu3IT44SNDmHoVb/qjVBMcAhDs0lw80k3Lqj5WFQEjOx/xzoQ7ta9DBXZ6JONtLjDZvbXDXij2SJfkdmpp2BLgS+m/Sd/MSNC+331QSzPK3Krq6HJVJh8p4sI7pIxRxF4DHK5tWUhz8jo1xZU9BzjCY1cX0OVY60XrrXgbM5cqbp2mg/M74JbhGZ8yJDXU510R115e+yEfG74hgGVNt02/h/dodOX/7bC7Ajf0HT+zVWkMZ4dX+ctlutGU/ZLU+LJ0TdF08r7ezfh4hgA+JkoHfTmF2tTC24vR
+	fyviQYKepQ+Q/w5GRI4RABCs11GBVLLOl8hwKptTG/Ve6NSpY4+f3Fx29I5GX3AOaL0PYNUtjKC5oF7xA1+Z5mDFA/suP6dhHADmovUsTHnq4DqwzK8uGxB7VbZsFjmxp529MsQbYc5Moc7cw+MFRmekMrnGYMYkZr4kKiq1kkkfjX2ZdCPVp3AEvpB+tnrKt2NBUHkww2ELTV58lOtDzlUbQo/LaUN3lCLyyTURJT50YK/4MWp58uLLvybhADBseZx4mNQVrBp7enkbvrqAtFPqzarBz54WkDN1yN0HPxfeBopalE8bVijFbv1iFsYBPEtIPtfhyDhgGhNkN2SwOzXtrBhQPEoGR66oW7bjqUPe0rWSh6kzetbZgt9Wu4p84/FSAdjHnPe1xSryr9TOBr99lYSS/D3hBMn4S10I1jgdPVT8Vur5P/MVeQvj6SO1mL7psyL8Qe63YHFEQL0o9jDRR2WVvgx/CP4oq/XLBNSBdv8vN6wDqifzVJAxgPlp0+gnHaqSRqdxLJHwJcd0UEi/INgJv/rQLXTnhTZXTNsTHlzvGIcgrAFsuXLiiZf4IoUmr4pqQ4ixHXa7zFu6Op4/RaawMAanMejpa+7evS0b/2GA4TXlQZGum25oVIh0Axutu2jBHhJA149ELpgcJ2CVeNjlIssywQo2slaBH4O9a9JlunDkQnaBWF3v5oGEsfhHQxbyQGTx7s9VZoW5QKL4ajFveCXeJyWr8tkkL/+n5YnKTyLD5ZsSYinDRBUZ
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(36860700004)(376005);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 03:04:28.3055
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 03:04:31.7444
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dbc67aae-c4d8-45ea-d4b5-08dc4c7848fd
+X-MS-Exchange-CrossTenant-Network-Message-Id: c72a93e9-aa4b-4e48-f57e-08dc4c784b0c
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EDD5.namprd03.prod.outlook.com
+	CY4PEPF0000EDD6.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7522
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6585
 
-The amd-pstate driver can fail when _CPC objects are not supported by
-the CPU. However, the current error message is ambiguous (see below) and
-there is no clear way for attributing the failure of the amd-pstate
-driver to the lack of CPPC support.
+Add quirks table to get CPPC capabilities issue fixed by providing
+correct perf or frequency values while driver loading.
 
-[    0.477523] amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
+If CPPC capabilities are not defined in the ACPI tables or wrongly
+defined by platform firmware, it needs to use quick to get those
+issues fixed with correct workaround values to make pstate driver
+can be loaded even though there are CPPC capabilities errors.
 
-Fix this by adding an debug message to notify the user if the amd-pstate
-driver failed to load due to CPPC not be supported by the CPU
+The workaround will match the broken BIOS which lack of CPPC capabilities
+nominal_freq and lowest_freq definition in the ACPI table.
+
+$ cat /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
+0
+$ cat /sys/devices/system/cpu/cpu0/acpi_cppc/nominal_freq
+0
 
 Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
 Tested-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
 Signed-off-by: Perry Yuan <perry.yuan@amd.com>
 ---
- drivers/acpi/cppc_acpi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/cpufreq/amd-pstate.c | 53 ++++++++++++++++++++++++++++++++++--
+ include/linux/amd-pstate.h   |  6 ++++
+ 2 files changed, 57 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 4bfbe55553f4..3134101f31b6 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -686,8 +686,10 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+index ec049b62b366..59a2db225d98 100644
+--- a/drivers/cpufreq/amd-pstate.c
++++ b/drivers/cpufreq/amd-pstate.c
+@@ -67,6 +67,7 @@ static struct cpufreq_driver amd_pstate_epp_driver;
+ static int cppc_state = AMD_PSTATE_UNDEFINED;
+ static bool cppc_enabled;
+ static bool amd_pstate_prefcore = true;
++static struct quirk_entry *quirks;
  
- 	if (!osc_sb_cppc2_support_acked) {
- 		pr_debug("CPPC v2 _OSC not acked\n");
--		if (!cpc_supported_by_cpu())
-+		if (!cpc_supported_by_cpu()) {
-+			pr_debug("CPPC is not supported by the CPU\n");
- 			return -ENODEV;
-+		}
- 	}
+ /*
+  * AMD Energy Preference Performance (EPP)
+@@ -111,6 +112,41 @@ static unsigned int epp_values[] = {
  
- 	/* Parse the ACPI _CPC table for this CPU. */
+ typedef int (*cppc_mode_transition_fn)(int);
+ 
++static struct quirk_entry quirk_amd_7k62 = {
++	.nominal_freq = 2600,
++	.lowest_freq = 550,
++};
++
++static int __init dmi_matched_7k62_bios_bug(const struct dmi_system_id *dmi)
++{
++	/**
++	 * match the broken bios for family 17h processor support CPPC V2
++	 * broken BIOS lack of nominal_freq and lowest_freq capabilities
++	 * definition in ACPI tables
++	 */
++	if (boot_cpu_has(X86_FEATURE_ZEN2)) {
++		quirks = dmi->driver_data;
++		pr_info("Overriding nominal and lowest frequencies for %s\n", dmi->ident);
++		return 1;
++	}
++
++	return 0;
++}
++
++static const struct dmi_system_id amd_pstate_quirks_table[] __initconst = {
++	{
++		.callback = dmi_matched_7k62_bios_bug,
++		.ident = "AMD EPYC 7K62",
++		.matches = {
++			DMI_MATCH(DMI_BIOS_VERSION, "5.14"),
++			DMI_MATCH(DMI_BIOS_RELEASE, "12/12/2019"),
++		},
++		.driver_data = &quirk_amd_7k62,
++	},
++	{}
++};
++MODULE_DEVICE_TABLE(dmi, amd_pstate_quirks_table);
++
+ static inline int get_mode_idx_from_str(const char *str, size_t size)
+ {
+ 	int i;
+@@ -812,8 +848,16 @@ static int amd_pstate_init_freq(struct amd_cpudata *cpudata)
+ 	if (ret)
+ 		return ret;
+ 
+-	min_freq = cppc_perf.lowest_freq * 1000;
+-	nominal_freq = cppc_perf.nominal_freq * 1000;
++	if (quirks && quirks->lowest_freq)
++		min_freq = quirks->lowest_freq * 1000;
++	else
++		min_freq = cppc_perf.lowest_freq * 1000;
++
++	if (quirks && quirks->nominal_freq)
++		nominal_freq = quirks->nominal_freq * 1000;
++	else
++		nominal_freq = cppc_perf.nominal_freq * 1000;
++
+ 	nominal_perf = READ_ONCE(cpudata->nominal_perf);
+ 
+ 	highest_perf = READ_ONCE(cpudata->highest_perf);
+@@ -1662,6 +1706,11 @@ static int __init amd_pstate_init(void)
+ 	if (cpufreq_get_current_driver())
+ 		return -EEXIST;
+ 
++	quirks = NULL;
++
++	/* check if this machine need CPPC quirks */
++	dmi_check_system(amd_pstate_quirks_table);
++
+ 	switch (cppc_state) {
+ 	case AMD_PSTATE_UNDEFINED:
+ 		/* Disable on the following configs by default:
+diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
+index ab7e82533718..6b832153a126 100644
+--- a/include/linux/amd-pstate.h
++++ b/include/linux/amd-pstate.h
+@@ -128,4 +128,10 @@ static const char * const amd_pstate_mode_string[] = {
+ 	[AMD_PSTATE_GUIDED]      = "guided",
+ 	NULL,
+ };
++
++struct quirk_entry {
++	u32 nominal_freq;
++	u32 lowest_freq;
++};
++
+ #endif /* _LINUX_AMD_PSTATE_H */
 -- 
 2.34.1
 
