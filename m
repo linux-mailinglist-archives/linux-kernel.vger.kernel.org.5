@@ -1,161 +1,142 @@
-Return-Path: <linux-kernel+bounces-117814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4208F88AFD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:25:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3279788AFDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 741061C617A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:25:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54C631C613E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D089224DB;
-	Mon, 25 Mar 2024 19:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24DF118E1A;
+	Mon, 25 Mar 2024 19:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2GIPcWj"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AMN8378x"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABE51946C;
-	Mon, 25 Mar 2024 19:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBF014A9D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:25:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711394685; cv=none; b=unkn2fX76BRsSjVl3mfXMcL+IETbMYwXFH4lsU4xKZrr4/QnetbM9k6midWUo+NFSS9brc07bZQqKPVnS1oOceioPFruQ3V9CwvEaOrEaxfrGZOkzIBXaPTu72sq5G2WNLDuBrq65Ng+o0WurMUt3PWxvGi035cTiFbpEr3bK84=
+	t=1711394713; cv=none; b=HBd2zEdypsOLfKR3Di4UCJXpr+fAN93IMw566oQOJOkcHKO1ZYa5fEFK3qf7JMetPB9pylFj9BAU7XC1dpI0EdJyxlovhM3MuY7LnjIV4k41ljyL2sD4PL6Du1tAeTsYhBcZHDvyTJR0+I9crjR18Uuq7R5fCVBfxj2jHpiglP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711394685; c=relaxed/simple;
-	bh=TkGuL+w7G+3t6UUem74ucq9Zu8Hv0WBY2IBJlQ7xZQE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MEI9kccaAzouUrU/fbFbh0x2blCh+FJUS9EYj/WLgu51ksfTYBxH+n/w0AU5ZQPE+eSuLCpvU4SNInVSfLTJXgMNdVLNHX7nDF/LkdeaBzGTPQxae7DyN+/p3+OWwZXPm4RFkJwdfLILyfdTVfWolqWicFN+4icIAx4sx9vxzk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g2GIPcWj; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dcc4076c13so2943607a12.0;
-        Mon, 25 Mar 2024 12:24:43 -0700 (PDT)
+	s=arc-20240116; t=1711394713; c=relaxed/simple;
+	bh=w3QXnaTJuW/Efbl25UkF7wqu/APitQdvlop2brptunU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rq4ki7zDchVKT6c1T2gKpR8r3XEVrr2D/gO9tPEfyh6ZOE8FJNq832S0XkIqP2bE+VNsdlYRguxdqeJUrpon7SiXtgBiLnX4f6S++UCsSms2PcKgWOGo1kFfAGiOwwLcHGGNVNGw66El0ogdiU8c/zJWAtc2yC48ORKN86L4WzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AMN8378x; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a474d26fb41so219200466b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:25:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711394683; x=1711999483; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P8SlcQVDmaEWiOte6mDmefSXrzEKVOFtuPmb7V2Kzic=;
-        b=g2GIPcWjYhY/TKBekNp9G3RH5zQW7HWUWyWjU4a3NA2BwZXYGkWMZyla6Wf2JfAzKb
-         sOtkpvEqQWhnzvSloidpzBmsOg1T4T/oVm4/JZorkq0Ublr1neanl0p5cZEqWmEjkgKm
-         DxYu27nZx63MzMH4zEOnk0ocQ3jyGfMyWiuRBCR7WhEKp3WEJYRYJAJyX5FvrkNEVZKD
-         GrUNZOCBCOWk1aRCW8jtTi+HAMdFCCHxHF+f0pMOqcs6q4S8dSJg8piRQSaycYHfgN1u
-         fDzuTBAS1FmQx2bxKD9LfP/dFBiFMtfG3WFNXGB8MjhVkbYvxyUkh8fSR8pN7PfmxVUP
-         Ms+g==
+        d=linaro.org; s=google; t=1711394710; x=1711999510; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=UIctYBDjNcVi7Hr0/+0MyF/aF6Y/JpYFokueqrrlBd8=;
+        b=AMN8378xMKOmrpFeLSIRPFIgLgC+QiPvLuxbsNjgxk7DD2rHVO4TMEXvr7w8HQm6X8
+         A9fMw56W5llmSl548nkmKfUfeowmG+V+belIWmbcR7Sm9oYWG6+qyjaiYECicI/CTIQs
+         gFM/2mc6WY8su/glpb+kk2DNYKDSyTOQuJHF00E5Pj2xpzcSvuBGDJHtXsKewpqLkyeq
+         NAGW34geZX40LvOP65iyUKG1S+frRDEm82y99sfwmvHcgnLBiIOktDKR32Lijua5gVy3
+         dEt4tAz5/ML168UQSgw7TnCYaGJL8WdCJSknfIDzEZ0YYjuiPToWAkdTQwozlRKePGmG
+         UxMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711394683; x=1711999483;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P8SlcQVDmaEWiOte6mDmefSXrzEKVOFtuPmb7V2Kzic=;
-        b=T6nS/EGiTlpRiWfsOHFs/2J2DIm14wqkdhHh/IPKGKXCXs1Odogds9Af0QdDbrD2JF
-         pc31kz7YSBpsZfoTQ3GtO4EkTx6uS/0/ITaZUFsJ/B1BmBnyFtJ2oiaxxDtH3bd8eqJ6
-         8kfE6GNbU+FK2hmRpLZPzG+XrFlHwMWlRpHW6PKxaWPSrsg505aYPprL3zXRIsAawiN8
-         BRHOk8pyCW0sbxOQuG1E7U9/MOo8aUDH4eow9e1yHnDzOCXUo5cJPEZacDRrO8mDJKBL
-         5jj+nxOsRSNnCodxYHYXoE6wUrEvCENvceBZjWkBPBqy0Jaj16Q8u1XFH0HxcGAVS9HL
-         o0Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCXMy/W6KhwZlJyibe2OWrqOcpOBJzHsiL2ZFW8elCXMrf1qkNEiqJq++TcL0E/wqPtW3flV3bmmoSN6Zk5iQDejpNIr/4Uy/JWKK95c8ZRFtCQpGBuhnhHr9bp2jDi/19j1RRBT5vLX2qim1iNkdhGFZ3L0jaK6Tay4QuUOSR9JlHuOVX5qRkeHg3xAFlbytamlXSXBG7jzWFapYI1039vgSgsGt0TtvXmTBoOYIik53pLrBHGxVR+RuIOu+vc3FNcrAAIIsH2YzPErQKmrX1QxeUnqrU4iXCAr5vcsfQA9OEqQYf+vgWp/L23fnWnMJg==
-X-Gm-Message-State: AOJu0YxEp602xXjjpoxl8bSxu0JSd33jAmTr0DefPzeT8QPqG36LVK+8
-	pTQGOPdkUUa00fXuoL+ypps9ZVUHM7hCs0oweuMUs3kUx6d2jyLI
-X-Google-Smtp-Source: AGHT+IFwrImv53xAJXZaDSLJtn5nAAXYRWdj5wAShxC6nIYkDeejlGCGK79rEKa0DnGROBP9wWQclw==
-X-Received: by 2002:a17:90b:3d8:b0:29b:a345:620a with SMTP id go24-20020a17090b03d800b0029ba345620amr10896738pjb.20.1711394683229;
-        Mon, 25 Mar 2024 12:24:43 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q7-20020a17090a304700b0029bf9969afbsm10113710pjl.53.2024.03.25.12.24.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 12:24:42 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Mon, 25 Mar 2024 12:24:40 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: =?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>
-Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Kees Cook <keescook@chromium.org>,
-	Daniel Diaz <daniel.diaz@linaro.org>,
-	David Gow <davidgow@google.com>,
-	Arthur Grillo <arthurgrillo@riseup.net>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org,
-	Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: Re: [PATCH v2 05/14] drm: Suppress intentional warning backtraces in
- scaling unit tests
-Message-ID: <e880828b-552e-488e-9f31-3989bec276ae@roeck-us.net>
-References: <20240325175248.1499046-1-linux@roeck-us.net>
- <20240325175248.1499046-6-linux@roeck-us.net>
- <0729b218-53f1-4139-b165-a324794a9abd@igalia.com>
+        d=1e100.net; s=20230601; t=1711394710; x=1711999510;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UIctYBDjNcVi7Hr0/+0MyF/aF6Y/JpYFokueqrrlBd8=;
+        b=XRZ/hn26gIcqHu/krhBXt83wKWtFTR6/0BX2XTzP3U/1nngok1nl/DCHEEoAsJTyRN
+         /xiA+yeZg3Na2kocFfcZz3r0GG++F5lPoOG8zPuHCuqc3wQkzpIfP/AlZHlqGlDjTI4V
+         iZfPmKH7l97WP7Q+poiZTb48gxDzUubvQZlvfDsNrikyVWMUwBeF+MwOm6AMn+ym9vcR
+         EopE3SIVOIS4y4HOYwGHijM/+K7dN9JuO3VlGas+f+QSoefMa3qT8EcVGT0FPohkYPNf
+         oEJObYLKNV4tlEiIx0hRL5GtbB3P6XVBCC2QChWr7gcVx+22VxNwoig8/VyaLIc4JlEy
+         mQug==
+X-Forwarded-Encrypted: i=1; AJvYcCUWJk0WTP85prf0yV5nN/lX1R4Tt6yuM7A58iz/T6TjACFlBuYJkGfwXiGp8lgwUpl8wFsGXmEmweeJC0ewktXjjEDsOE+Fxux7Ize3
+X-Gm-Message-State: AOJu0YwTGWmoTPYD0p3Hx+NRs01huO9yRyw5mb02GK+kNvAz8mBx867O
+	wx6XZwQ2oI/aywKXuylQX37XLbvjyeX6z8V0OUpL42SUJ7iv1yUwoMeGPosijl8=
+X-Google-Smtp-Source: AGHT+IG7ii6adj5Axsf7U57rtZ6AAQ+V61xVzuov+kR52qdv36JS9kFhtzgz5FdV84cMs11DrLAyMw==
+X-Received: by 2002:a17:906:ca55:b0:a47:df55:cf6c with SMTP id jx21-20020a170906ca5500b00a47df55cf6cmr3471526ejb.63.1711394709879;
+        Mon, 25 Mar 2024 12:25:09 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id lv16-20020a170906bc9000b00a464f709687sm3342977ejb.59.2024.03.25.12.25.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 12:25:09 -0700 (PDT)
+Message-ID: <22993de7-ebe0-40ae-b756-81dcbbd82db1@linaro.org>
+Date: Mon, 25 Mar 2024 20:25:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0729b218-53f1-4139-b165-a324794a9abd@igalia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sm8250-xiaomi-elish: set pm8150b_vbus
+ regulator-min-microamp and regulator-max-microamp
+To: Jianhua Lu <lujianhua000@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240323100443.2478-1-lujianhua000@gmail.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240323100443.2478-1-lujianhua000@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
-
-On Mon, Mar 25, 2024 at 04:05:06PM -0300, Maíra Canal wrote:
-> Hi Guenter,
+On 23.03.2024 11:04 AM, Jianhua Lu wrote:
+> Fix the dtb check warnings:
+>   sm8250-xiaomi-elish-boe.dtb: usb-vbus-regulator@1100: 'regulator-min-microamp' is a required property
+>   sm8250-xiaomi-elish-boe.dtb: usb-vbus-regulator@1100: 'regulator-max-microamp' is a required property
 > 
-> On 3/25/24 14:52, Guenter Roeck wrote:
-> > The drm_test_rect_calc_hscale and drm_test_rect_calc_vscale unit tests
-> > intentionally trigger warning backtraces by providing bad parameters to
-> > the tested functions. What is tested is the return value, not the existence
-> > of a warning backtrace. Suppress the backtraces to avoid clogging the
-> > kernel log.
-> > 
-> > Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > Acked-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> > - Rebased to v6.9-rc1
-> > - Added Tested-by:, Acked-by:, and Reviewed-by: tags
-> > 
-> >   drivers/gpu/drm/tests/drm_rect_test.c | 6 ++++++
-> >   1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/tests/drm_rect_test.c b/drivers/gpu/drm/tests/drm_rect_test.c
-> > index 76332cd2ead8..75614cb4deb5 100644
-> > --- a/drivers/gpu/drm/tests/drm_rect_test.c
-> > +++ b/drivers/gpu/drm/tests/drm_rect_test.c
-> > @@ -406,22 +406,28 @@ KUNIT_ARRAY_PARAM(drm_rect_scale, drm_rect_scale_cases, drm_rect_scale_case_desc
-> >   static void drm_test_rect_calc_hscale(struct kunit *test)
-> >   {
-> > +	DEFINE_SUPPRESSED_WARNING(drm_calc_scale);
-> >   	const struct drm_rect_scale_case *params = test->param_value;
-> >   	int scaling_factor;
-> > +	START_SUPPRESSED_WARNING(drm_calc_scale);
-> 
-> I'm not sure if it is not that obvious only to me, but it would be nice
-> to have a comment here, remembering that we provide bad parameters in
-> some test cases.
+> Fixes: 69652787279d ("arm64: dts: qcom: sm8250-xiaomi-elish: Add pm8150b type-c node and enable usb otg")
+> Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
+> ---
 
-Sure. Something like this ?
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-        /*
-         * drm_rect_calc_hscale() generates a warning backtrace whenever bad
-         * parameters are passed to it. This affects all unit tests with an
-         * error code in expected_scaling_factor.
-         */
-
-Thanks,
-Guenter
+Konrad
 
