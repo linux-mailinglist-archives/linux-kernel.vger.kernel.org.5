@@ -1,159 +1,205 @@
-Return-Path: <linux-kernel+bounces-117264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD2188A969
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:32:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A162F88A96C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:33:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DDE81F3F85F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:32:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A19B1F6388F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:33:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D17F114A0B4;
-	Mon, 25 Mar 2024 14:34:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9477E144300;
+	Mon, 25 Mar 2024 14:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gQ4C3N0h"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="r6Hadb3M"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A84E84047
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7484317B;
+	Mon, 25 Mar 2024 14:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711377279; cv=none; b=j0YmdyrMrx9QKzHZvf2gyJf6pLZHkXgPYuXaopYo0RIm4bfQzLcn5fkrNP6pBojEyU6xFiZnSih/Qfb2QQl75HjhIwTiK7D6s9Aj2oFgGgxvX7rMhRZ3YAYjE3WZBEOGNQ8kTdyhIyWVRYsos3ux1hFccz7IfloZmHlvJO061r4=
+	t=1711377355; cv=none; b=MZ/Z3+9VyiXxmRmNUcgXrKU+8VxTA9liEsu2SPiGfU5H3rbo/sim3mWwuWSDB6YxIa7aalT0TyUj9N49HqNsKqwb+baUBLWQ86U3T11hqOXMHhYhVVPJqSsC5G4O2MK9kvlf8APSniAjKUQufAxOy8Y3+7Mpr8DTsnkcKO/WBRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711377279; c=relaxed/simple;
-	bh=FSU8nxuLRZyEBR/sJUxs+lckFjB8qs8rRlLhFigJQpw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FjOBG0TGZ9Nr1mOhjsLEq4SOt7nOxUzUlw2jv2e2gshFNnfDU6LTybw5MJNO1dL6f7GYDHJxtHInCGz4WCI6bA6QNlmDixBPZmiVDk5fFpCx4/VbFLOKaBED667UY+AB/OpRlUV9Zm7wouPABO6JkQRHyoPBybeHXvrT1BSHYeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gQ4C3N0h; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e058b9e479so232505ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711377277; x=1711982077; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+8YEj37U1dlb1vZbCBV1T/aHB6t0dDPgqa1lum+Wmfs=;
-        b=gQ4C3N0hzzoyTpZ6jmCL2FRwBVDyi/d2ksDO88M1MMOvjLg5L9mVLhnHlrZBwVRAUR
-         Nxe6m7a8l59KFny6qqqfwTY0hSLD7f2SeY0nvzVl5vTfeltrgroW0KtqI2jDmkBhQwef
-         XMij6colOFOzjScm3aeZORc/LdYnRXTirULC8DO7K5hMnxhvU/kZVENgtv9XMZ9dBuKU
-         ibwPEKghuLALJTr9/bJL+i1nW92LQS/STp4P3v8EmPgiSfE7TMXMs1ziEtHHuB16Yp4g
-         YkwRzoXYtA00VhhOlhA/UHQZzynqVln/3XY4wlfetBb/yjk5I9FumZ5TDTUfzs4tsKck
-         3HIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711377277; x=1711982077;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+8YEj37U1dlb1vZbCBV1T/aHB6t0dDPgqa1lum+Wmfs=;
-        b=SZWCn9rj5fWMegodq1dkKaRSIeOSLLLBEPNLAfA+zE14+kiDwVD3LgnfNQ/BbHqkdQ
-         Ealiqb91nprXbwqHZXmcMpGcz9MXX5cZSqiLOFDly1lIg9o3c82OGjFDrmA6t6wwC+YP
-         FqyFqHJn1pilP8cnltGwi4gvJpWZyA0grOofSbhhoddUBPYyc3Apzj5y/w25kNso1xLM
-         FRFDN1Wa07SE8TT30YOeT81MGFGkkJZvkCeupqXYV2HnPfdQ1o6KZDYphX2V6d1R41sh
-         ih34KIFbUm0UWtOVa4su552Bfb8nxwO8RkYSPN049RaXwCCcD3TJ6tY6LBgkx/ye3PY1
-         3aHg==
-X-Forwarded-Encrypted: i=1; AJvYcCVx7uVFs6Gc5YK4J4IFmYpHQ8G29RUXzxG1z+5PRUgrV6HDUGur9CqUVADVHOeCE0m26uh4IZ0uYriiW5qw0397fzbtasJQ//JVY79A
-X-Gm-Message-State: AOJu0YzNZYJi8tm8FiEgXgcLPPZN7Qvkcpq+rto3AOOWynH5bLTNKpTW
-	gwJQch42iKreZOt/vlYDe2xzBLL/POCUwvWaCQPjpwDxYyChT7EWFpvYXs342ce2OZMBlH17Ly7
-	iQiHx9AIfd4Sun9XCSgSwBlv6JprHzl2CCkZF
-X-Google-Smtp-Source: AGHT+IHfIEpWY+UKyTJL5tlGScYFz/Ub+0+iS/aQY1imXrFMJtf8Ch/4u/JV4rS68dYWgcSOP1FOln6Z+3nL9aj/iBQ=
-X-Received: by 2002:a17:903:2284:b0:1e0:bc64:a37e with SMTP id
- b4-20020a170903228400b001e0bc64a37emr162922plh.21.1711377276556; Mon, 25 Mar
- 2024 07:34:36 -0700 (PDT)
+	s=arc-20240116; t=1711377355; c=relaxed/simple;
+	bh=an7bqbwd3dY5kDiijgoOPRJOOMJxM2nrHUHfTXZHSt8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Qys6w/D49gRH+IwVK58UCqIHl943u5FL7/lZNlaTtqictSAXoBpLcHLbpICgh/3Teg/99IgeGmpnRK8nDrXksOqSNq3vJUuzCnYp9S14Og4V14lBLslXSFSvoF3OO63M7pJJRdQQ1DkWG7cjNCqd4boWyMd1TqkEusxqj1XKcT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=r6Hadb3M; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42PEZHj4096694;
+	Mon, 25 Mar 2024 09:35:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711377318;
+	bh=7VEN6CcVqpXAQcxkPxLacRLhJ2Mwhs7ycVWHGNp2PWc=;
+	h=From:To:CC:Subject:Date;
+	b=r6Hadb3Mzd9RT7DjjHyHu87dy1VsmLa829oiL2IZjr4Z6GD37k4Idfho3+wcSYnIT
+	 Mkz4nce/E1S4QFxxOxT0hdVG7hTLrWqdSD/umeoeHPfhwIeyXu+CbFvg85w+AE25di
+	 aTWH12SA2j/I3tfIKBaRjvfdvCfN/mEehrYQhuWA=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42PEZHtG011013
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 25 Mar 2024 09:35:17 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
+ Mar 2024 09:35:17 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 25 Mar 2024 09:35:17 -0500
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42PEZHLf123147;
+	Mon, 25 Mar 2024 09:35:17 -0500
+From: Nishanth Menon <nm@ti.com>
+To: Tero Kristo <kristo@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>
+CC: Robert Nelson <robertcnelson@gmail.com>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        Shengyu Qu <wiagn233@outlook.com>,
+        Sukrut Bellary <sukrut.bellary@linux.com>,
+        Javier Martinez Canillas
+	<javierm@redhat.com>,
+        Bill Mills <bill.mills@linaro.org>
+Subject: [PATCH V2] arm64: dts: ti: k3-am625-beagleplay: Use mmc-pwrseq for wl18xx enable
+Date: Mon, 25 Mar 2024 09:35:10 -0500
+Message-ID: <20240325143511.2144768-1-nm@ti.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1711352180.git.sandipan.das@amd.com> <03d7fc8fa2a28f9be732116009025bdec1b3ec97.1711352180.git.sandipan.das@amd.com>
-In-Reply-To: <03d7fc8fa2a28f9be732116009025bdec1b3ec97.1711352180.git.sandipan.das@amd.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 25 Mar 2024 07:34:23 -0700
-Message-ID: <CAP-5=fVLWMnT4TV2nvbOUTTkWHYowbEOFDYqAvf1hkUEDpkKfw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf/x86/amd/core: Update stalled-cycles-* events for
- Zen 2 and later
-To: Sandipan Das <sandipan.das@amd.com>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, peterz@infradead.org, mingo@kernel.org, acme@kernel.org, 
-	namhyung@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, adrian.hunter@intel.com, tglx@linutronix.de, bp@alien8.de, 
-	eranian@google.com, ravi.bangoria@amd.com, ananth.narayan@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Organization: Texas Instruments, Inc.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, Mar 25, 2024 at 12:48=E2=80=AFAM Sandipan Das <sandipan.das@amd.com=
-> wrote:
->
-> AMD processors based on Zen 2 and later microarchitectures do not
-> support PMCx087 (instruction pipe stalls) which is used as the backing
-> event for "stalled-cycles-frontend" and "stalled-cycles-backend". Use
-> PMCx0A9 (cycles where micro-op queue is empty) instead to count frontend
-> stalls and remove the entry for backend stalls since there is no direct
-> replacement.
->
-> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+From: Sukrut Bellary <sukrut.bellary@linux.com>
 
-This looks good to me. Should there be a Fixes tag for the sake of backport=
-s?
+BeaglePlay SBC[1] has Texas Instrument's WL18xx WiFi chipset[2].
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Currently, WLAN_EN is configured as regulator and regulator-always-on.
+However, the timing and wlan_en sequencing is not correctly modelled.
 
-Thanks,
-Ian
+This causes the sdio access to fail during runtime-pm power operations
+saving or during system suspend/resume/hibernation/freeze operations.
+This is because the WLAN_EN line is not deasserted to low '0' to power
+down the WiFi. So during restore, the WiFi driver tries to load the FW
+without following correct power sequence. WLAN_EN => '1'/assert (high)
+to power-up the chipset.
 
-> ---
->  arch/x86/events/amd/core.c | 20 +++++++++++++++++---
->  1 file changed, 17 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-> index aec16e581f5b..afe4a809f2ed 100644
-> --- a/arch/x86/events/amd/core.c
-> +++ b/arch/x86/events/amd/core.c
-> @@ -250,7 +250,7 @@ static const u64 amd_perfmon_event_map[PERF_COUNT_HW_=
-MAX] =3D
->  /*
->   * AMD Performance Monitor Family 17h and later:
->   */
-> -static const u64 amd_f17h_perfmon_event_map[PERF_COUNT_HW_MAX] =3D
-> +static const u64 amd_zen1_perfmon_event_map[PERF_COUNT_HW_MAX] =3D
->  {
->         [PERF_COUNT_HW_CPU_CYCLES]              =3D 0x0076,
->         [PERF_COUNT_HW_INSTRUCTIONS]            =3D 0x00c0,
-> @@ -262,10 +262,24 @@ static const u64 amd_f17h_perfmon_event_map[PERF_CO=
-UNT_HW_MAX] =3D
->         [PERF_COUNT_HW_STALLED_CYCLES_BACKEND]  =3D 0x0187,
->  };
->
-> +static const u64 amd_zen2_perfmon_event_map[PERF_COUNT_HW_MAX] =3D
-> +{
-> +       [PERF_COUNT_HW_CPU_CYCLES]              =3D 0x0076,
-> +       [PERF_COUNT_HW_INSTRUCTIONS]            =3D 0x00c0,
-> +       [PERF_COUNT_HW_CACHE_REFERENCES]        =3D 0xff60,
-> +       [PERF_COUNT_HW_CACHE_MISSES]            =3D 0x0964,
-> +       [PERF_COUNT_HW_BRANCH_INSTRUCTIONS]     =3D 0x00c2,
-> +       [PERF_COUNT_HW_BRANCH_MISSES]           =3D 0x00c3,
-> +       [PERF_COUNT_HW_STALLED_CYCLES_FRONTEND] =3D 0x00a9,
-> +};
-> +
->  static u64 amd_pmu_event_map(int hw_event)
->  {
-> -       if (boot_cpu_data.x86 >=3D 0x17)
-> -               return amd_f17h_perfmon_event_map[hw_event];
-> +       if (cpu_feature_enabled(X86_FEATURE_ZEN2) || boot_cpu_data.x86 >=
-=3D 0x19)
-> +               return amd_zen2_perfmon_event_map[hw_event];
-> +
-> +       if (cpu_feature_enabled(X86_FEATURE_ZEN1))
-> +               return amd_zen1_perfmon_event_map[hw_event];
->
->         return amd_perfmon_event_map[hw_event];
->  }
-> --
-> 2.34.1
->
+Use mmc-pwrseq-simple to drive TI's WiFi (WL18xx) chipset enable
+'WLAN_EN'. mmc-pwrseq-simple provides power sequence flexibility with
+support for post power-on and power-off delays.
+
+Typical log signature that indicates this bug is:
+wl1271_sdio mmc2:0001:2: sdio write failed (-110)
+
+Followed by possibly a kernel warning (depending on firmware present):
+WARNING: CPU: 1 PID: 45 at drivers/net/wireless/ti/wlcore/sdio.c:123 wl12xx_sdio_raw_write+0xe4/0x168 [wlcore_sdio]
+
+[1] https://www.beagleboard.org/boards/beagleplay
+[2] https://www.ti.com/lit/ds/symlink/wl1807mod.pdf
+
+Fixes: f5a731f0787f ("arm64: dts: ti: Add k3-am625-beagleplay")
+Suggested-by: Shengyu Qu <wiagn233@outlook.com>
+Signed-off-by: Sukrut Bellary <sukrut.bellary@linux.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+Picking this patch up since Sukrut was not able to refresh the patch in
+the list and it does'nt make much sense to hold off this critical fixup.
+
+Boot log:
+https://gist.github.com/nmenon/a34abd03a6aaf84a39ffa569df248285
+(includes defconfig change to make iwd work)
+
+Changes Since v1:
+* Update the power-on-time to 10ms (same as used in:
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
+	arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts
+  )
+* Add in-code documentation pointing at timing diagram for the values
+  used.
+* Fixup fail log and commit message and make it generic to indicate
+  various other usecases of failure.
+* Re-test on v6.9-rc1
+
+V1: https://lore.kernel.org/all/20231213213219.566369-1-sukrut.bellary@linux.com/
+
+ .../arm64/boot/dts/ti/k3-am625-beagleplay.dts | 27 +++++++++----------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+index a34e0df2ab86..ffc613543968 100644
+--- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
++++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+@@ -82,6 +82,17 @@ wkup_r5fss0_core0_dma_memory_region: r5f-dma-memory@9db00000 {
+ 		};
+ 	};
+ 
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_en_pins_default>;
++		/* Interal power on time(Figure 8-3) * 2 */
++		post-power-on-delay-ms = <10>;
++		/* Re-enable time(Figure 8-2) + 20uS */
++		power-off-delay-us = <80>;
++		reset-gpios = <&main_gpio0 38 GPIO_ACTIVE_LOW>;
++	};
++
+ 	vsys_5v0: regulator-1 {
+ 		bootph-all;
+ 		compatible = "regulator-fixed";
+@@ -104,20 +115,6 @@ vdd_3v3: regulator-2 {
+ 		regulator-boot-on;
+ 	};
+ 
+-	wlan_en: regulator-3 {
+-		/* OUTPUT of SN74AVC2T244DQMR */
+-		compatible = "regulator-fixed";
+-		regulator-name = "wlan_en";
+-		regulator-min-microvolt = <1800000>;
+-		regulator-max-microvolt = <1800000>;
+-		enable-active-high;
+-		regulator-always-on;
+-		vin-supply = <&vdd_3v3>;
+-		gpio = <&main_gpio0 38 GPIO_ACTIVE_HIGH>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&wifi_en_pins_default>;
+-	};
+-
+ 	vdd_3v3_sd: regulator-4 {
+ 		/* output of TPS22918DBVR-U21 */
+ 		bootph-all;
+@@ -839,13 +836,13 @@ &sdhci1 {
+ };
+ 
+ &sdhci2 {
+-	vmmc-supply = <&wlan_en>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&wifi_pins_default>, <&wifi_32k_clk>;
+ 	non-removable;
+ 	ti,fails-without-test-cd;
+ 	cap-power-off-card;
+ 	keep-power-in-suspend;
++	mmc-pwrseq = <&sdio_pwrseq>;
+ 	assigned-clocks = <&k3_clks 157 158>;
+ 	assigned-clock-parents = <&k3_clks 157 160>;
+ 	#address-cells = <1>;
+
+base-commit: 4cece764965020c22cff7665b18a012006359095
+-- 
+2.43.0
+
 
