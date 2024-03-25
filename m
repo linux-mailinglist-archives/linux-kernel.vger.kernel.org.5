@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-117965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0811D88B1DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:46:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E6188B3C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BC4A1F670FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:46:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98550B68285
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DC86FE15;
-	Mon, 25 Mar 2024 20:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94B1745C2;
+	Mon, 25 Mar 2024 20:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KVk5gxma"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQHE09Uv"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579AE6F51D;
-	Mon, 25 Mar 2024 20:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2304B6EB52;
+	Mon, 25 Mar 2024 20:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399496; cv=none; b=GIQAAh7FJ9/yXzi0fwsI8X3R4Xf1nSKmJZ0rBbvVvWHEVNNJPLtV+agxs5KersnbE9bJ1h2+q6LXm/xLhg5XfFze4E6Sv+k1PSTmedrEJAVefRmqUTp2pe0dZrVfAgA5911sEOv+xCmC33tOAcLxPCW5/JIhXyUOzgdOWaenN6I=
+	t=1711399499; cv=none; b=DvonoDHM1ZGfe6x/+P5Juk10oxLS+TXLTW5ZX/bdPbDnVrFYGyf9dcXqq6qUhcjFbN2ZzHikjh2JozXqivLLQJMaf/V2rN41Osi9ndoxKZURRWZviVlqzi3O/yP+OazuFwTfwPSD9Z+xwBXLquFinCyM1AsGIJb0IvJmjgdx1xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711399496; c=relaxed/simple;
-	bh=LN4dT4d7P8qQBwedPyFT2jT5dVKTs6A7A2F7zwpITOc=;
+	s=arc-20240116; t=1711399499; c=relaxed/simple;
+	bh=MNy4a9LrRLFB9UFbrtc1jj60lgKwWYTXEKysX0ELC+U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=k05N8UxtkdGy5sxOsq/Rj0gCetrZZiMae1F6G4zDYTeWnQWFKY7F9g5S+pENvvi16+YC4wFrMxPm0jKIqbsVOrDFy6iOX9+FANoasINM6GoOuZUQyMZdjl65DM97tJ/T3aRQxpU7W01DTA27HYUxzIZ30oJzc201e91sDnplz3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KVk5gxma; arc=none smtp.client-ip=209.85.167.49
+	 MIME-Version; b=uKYwdKTmaABhVQCpwGsPnXkj99Et2eLdcBbAzp3zHtdSiaTCYDI+mgDWxihb8+PtEKMpg3e6cyeR0ZjQiMb5LT5OsWaRZSXfEWXIKHQb7SdTpfFgRy7UbmrFfrB8M/fIYIkl/PjziOe5zZkfdeLJJBfdXVZqiUyeMC10lN50scg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQHE09Uv; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-515a86daf09so2438341e87.3;
-        Mon, 25 Mar 2024 13:44:54 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56c1a520659so1204813a12.1;
+        Mon, 25 Mar 2024 13:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711399492; x=1712004292; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711399496; x=1712004296; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kdX7GSsZnXTSylOv9Y3Ibi+HXBYjvkvffIzYw5Muc/4=;
-        b=KVk5gxmaOVB/NIwEAAcFSgfbxyXza7T6cOeCiNR6fMVCg57F5+Onh5vLv/77ZAUXi9
-         BzS2tRSGpFyOUtCdMwzS2eB6WzYYk1wB2FQhSaakI1Kp6th1Inu+Op8AY9vn7P2HYRhV
-         /UZ9EY6wwUqp8xnQCpbgnTMCu0lmQGfUdvhEFdHSvSIcvcT3fTtaRltOVPCK9/1UmVaI
-         QEf1eSPWsKsKarahnxx6WkwED6mccvdwzGK0P6j+wTy/ZXKrLqXDfGy4iDjO2rMDUK6E
-         vaSHkMiTD7+4eF50KLgIoQXCSkFffuBnJ4nGZK07mkF9xLNx6dHPvdfvf0xn6SdyM7Qm
-         BB6A==
+        bh=nJOhT/NhfBRNemKHQ4KsvY/IdcyTqEthLWerBC7um4A=;
+        b=IQHE09UvMtYS/4bgybSW88yoXmivpvAm7SnMObYPvZdAkJKxvMvGdwGZGLrQt1DURi
+         iirLh6pvvHvOr+T7ZD0ZfRu7KpC+qi3i1cH7kxFY7wGYK072zCJxXRwMezEh0P3nQ8L/
+         JN/FuindBVgToUt6xhDOrCBkRAS7MTpFCapzORE45hsUeKca4y8tsRqwgK/YMo1yqHlZ
+         glRVeRZdBbnJ/vozb6gaI5fpYUTbS5rFeCdommw0lv8QvYFabd05CT47uALkx0k4XsE6
+         2rVCJ4Xb4yR8Ls2JFVtOQXT3+QE0k0iXaEsp0bkK8wmGm+xC5F1SR+ao/7Ce6Qh3/qua
+         qBvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711399492; x=1712004292;
+        d=1e100.net; s=20230601; t=1711399496; x=1712004296;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kdX7GSsZnXTSylOv9Y3Ibi+HXBYjvkvffIzYw5Muc/4=;
-        b=AQDKu0Aj/Zk2Ak3hpCsLHGw9FK2An2bzRlvunwHoKRnaMIO+5CNLxy27TC88ZBMARA
-         AbWId058r/y3kt1VM1z9NqBFQRL11WSoBla4Zq0WpPSXn9mzyijKNZhckPcDmF5CykwU
-         Ty13TZhUtPzurFcKDZJkAXVCwzcUnheBgMWFfRRQAfw8STQVUv8Dqf+XNh6NTazlM0iJ
-         K3WgcYSQYf9GuALwSrOQaTc+DWwQYpN2MxBAaehT38h2FVTCJxYSIdgiaZoxKHSJ9KLB
-         X69Py+yYsVzlCIz8iECLshD8MN1zi2O4b/qG6kxtz/N7GuFUc3Hp4eRk6zm1Xy92VkVM
-         m0qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXtdVzpe2kaPAfNC1NP7nTWOGz8CaPNgjUmE/U5uGEb6R9AvaZ5gkpkI/SUurBeIG8iLHkIkKhGmIQeBN9DacXFibYXi9YA/5x7Yk69
-X-Gm-Message-State: AOJu0YwmE1HOXW7vCHf6+PzFXkailr9dsBaaHdz1pjF/D1mRFZHOQKRq
-	n5H2wkm0vxIQV1/Ps97hwofpYFrsbZOYff9Entk+1Fkx2wZ0ICbITqyEHN5VLko=
-X-Google-Smtp-Source: AGHT+IGR99AwEcs60I5LaFb36uz4ABm53DTgzPKYSJ5bOBquRnnhOw0ax9pVqsAi3sbZ2H26EjFTGA==
-X-Received: by 2002:a05:6512:535:b0:515:a58e:82e with SMTP id o21-20020a056512053500b00515a58e082emr5233083lfc.62.1711399492034;
-        Mon, 25 Mar 2024 13:44:52 -0700 (PDT)
+        bh=nJOhT/NhfBRNemKHQ4KsvY/IdcyTqEthLWerBC7um4A=;
+        b=GeTkQBixSMGY4sDFI+e9kmtzccZOJ4rwQcV/q2f+04rC8Zf1USMiaoQnKtZeZtI0cc
+         tDob8+qqtYrsmiQVrC3MFM52NJjbLi0asCCxFWLvkOTgvVu/g500BeSKEJWt5YkWO6hX
+         bKK7oFb+Lm70K6bdzqfyDRcDfWzQK1q4Ib340gNvwW8luGU1CDC4C7Mp6bo4d6LUj4Gj
+         Ayw3bBoG8zDnsOnaXS71CSuCvKwO0CXhLJN6Qi1i0/cA0sOvrBy83qfZQCyJJCQcFPEv
+         CKBuZRP9nKl4oRALK89RDAgzhcIBqXhx5ZtfywR53fXy4I0Hd+2JYYIKsAUbEYrwjDnO
+         DU6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUUuZRnLDYUHcjLHo6LAmUz/3am/tueUpEauJn00sci3Tl+iOuvFa+lmXEJUGyPCKSFdxfuM8wcBT2GOamHq0iLZlJsj6T0cV8dna8E
+X-Gm-Message-State: AOJu0YyiPahc7bvw4Vh3nKC2suj+kZE3jA1lz7TPRFahhEOu0Q+dAU5T
+	T0gd1z4ktcrqYByE5izmpcOhgllbG1AoE2WhgAPcSpHBJEfZfioX1baz85u6JAk=
+X-Google-Smtp-Source: AGHT+IF4lQcHa60qMNikZp1uI7bqrjqUR285+MuN34xZ5raHk3YF2hJBkuhX5/FosFIJ/JWubDlfrg==
+X-Received: by 2002:a50:9eea:0:b0:56b:dcdc:6fad with SMTP id a97-20020a509eea000000b0056bdcdc6fadmr625842edf.13.1711399496230;
+        Mon, 25 Mar 2024 13:44:56 -0700 (PDT)
 Received: from WBEC325.dom.lan ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id k18-20020a056402049200b0056c1cba8480sm591751edv.25.2024.03.25.13.44.51
+        by smtp.gmail.com with ESMTPSA id k18-20020a056402049200b0056c1cba8480sm591751edv.25.2024.03.25.13.44.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 13:44:51 -0700 (PDT)
+        Mon, 25 Mar 2024 13:44:55 -0700 (PDT)
 From: Pawel Dembicki <paweldembicki@gmail.com>
 To: netdev@vger.kernel.org
 Cc: Linus Walleij <linus.walleij@linaro.org>,
 	Simon Horman <horms@kernel.org>,
 	Pawel Dembicki <paweldembicki@gmail.com>,
 	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
 	Andrew Lunn <andrew@lunn.ch>,
 	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
@@ -84,9 +84,9 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	UNGLinuxDriver@microchip.com,
 	Russell King <linux@armlinux.org.uk>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v7 05/16] net: dsa: vsc73xx: add structure descriptions
-Date: Mon, 25 Mar 2024 21:43:30 +0100
-Message-Id: <20240325204344.2298241-6-paweldembicki@gmail.com>
+Subject: [PATCH net-next v7 06/16] net: dsa: vsc73xx: add port_stp_state_set function
+Date: Mon, 25 Mar 2024 21:43:31 +0100
+Message-Id: <20240325204344.2298241-7-paweldembicki@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240325204344.2298241-1-paweldembicki@gmail.com>
 References: <20240325204344.2298241-1-paweldembicki@gmail.com>
@@ -98,57 +98,178 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds updates to the documentation describing the structures
-used in vsc73xx. This will help prevent kdoc-related issues in the future.
+This isn't a fully functional implementation of 802.1D, but
+port_stp_state_set is required for a future tag8021q operations.
+
+This implementation handles properly all states, but vsc73xx doesn't
+forward STP packets.
 
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 ---
-v7,v6:
-  - resend only
+v7:
+  - implement 'vsc73xx_refresh_fwd_map' simplification
+v6:
+  - fix inconsistent indenting
 v5:
-  - improved description and stick to 80 characters per line
+  - remove unneeded 'RECVMASK' operations
+  - reorganise vsc73xx_refresh_fwd_map function
 v4:
-  - introduced patch
+  - fully reworked port_stp_state_set
+v3:
+  - use 'VSC73XX_MAX_NUM_PORTS' define
+  - add 'state == BR_STATE_DISABLED' condition
+  - fix style issues
+v2:
+  - fix kdoc
 
- drivers/net/dsa/vitesse-vsc73xx.h | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/net/dsa/vitesse-vsc73xx-core.c | 96 +++++++++++++++++++++++---
+ 1 file changed, 85 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/dsa/vitesse-vsc73xx.h b/drivers/net/dsa/vitesse-vsc73xx.h
-index fee1378508b5..e7b08599a625 100644
---- a/drivers/net/dsa/vitesse-vsc73xx.h
-+++ b/drivers/net/dsa/vitesse-vsc73xx.h
-@@ -15,7 +15,16 @@
- #define VSC73XX_MAX_NUM_PORTS	8
+diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
+index 425999d7bf41..07f982cf62dd 100644
+--- a/drivers/net/dsa/vitesse-vsc73xx-core.c
++++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
+@@ -164,6 +164,10 @@
+ #define VSC73XX_AGENCTRL	0xf0
+ #define VSC73XX_CAPRST		0xff
  
- /**
-- * struct vsc73xx - VSC73xx state container
-+ * struct vsc73xx - VSC73xx state container: main data structure
-+ * @dev: The device pointer
-+ * @reset: The descriptor for the GPIO line tied to the reset pin
-+ * @ds: Pointer to the DSA core structure
-+ * @gc: Main structure of the GPIO controller
-+ * @chipid: Storage for the Chip ID value read from the CHIPID register of the
-+ *	sswitch
-+ * @addr: MAC address used in flow control frames
-+ * @ops: Structure with hardware-dependent operations
-+ * @priv: Pointer to the configuration interface structure
-  */
- struct vsc73xx {
- 	struct device			*dev;
-@@ -28,6 +37,11 @@ struct vsc73xx {
- 	void				*priv;
++#define VSC73XX_SRCMASKS_CPU_COPY		BIT(27)
++#define VSC73XX_SRCMASKS_MIRROR			BIT(26)
++#define VSC73XX_SRCMASKS_PORTS_MASK		GENMASK(7, 0)
++
+ #define VSC73XX_MACACCESS_CPU_COPY		BIT(14)
+ #define VSC73XX_MACACCESS_FWD_KILL		BIT(13)
+ #define VSC73XX_MACACCESS_IGNORE_VLAN		BIT(12)
+@@ -623,9 +627,6 @@ static int vsc73xx_setup(struct dsa_switch *ds)
+ 	vsc73xx_write(vsc, VSC73XX_BLOCK_SYSTEM, 0, VSC73XX_GMIIDELAY,
+ 		      VSC73XX_GMIIDELAY_GMII0_GTXDELAY_2_0_NS |
+ 		      VSC73XX_GMIIDELAY_GMII0_RXDELAY_2_0_NS);
+-	/* Enable reception of frames on all ports */
+-	vsc73xx_write(vsc, VSC73XX_BLOCK_ANALYZER, 0, VSC73XX_RECVMASK,
+-		      0x5f);
+ 	/* IP multicast flood mask (table 144) */
+ 	vsc73xx_write(vsc, VSC73XX_BLOCK_ANALYZER, 0, VSC73XX_IFLODMSK,
+ 		      0xff);
+@@ -785,10 +786,6 @@ static void vsc73xx_phylink_mac_link_down(struct dsa_switch *ds, int port,
+ 	/* Allow backward dropping of frames from this port */
+ 	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ARBITER, 0,
+ 			    VSC73XX_SBACKWDROP, BIT(port), BIT(port));
+-
+-	/* Receive mask (disable forwarding) */
+-	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+-			    VSC73XX_RECVMASK, BIT(port), 0);
+ }
+ 
+ static void vsc73xx_phylink_mac_link_up(struct dsa_switch *ds, int port,
+@@ -841,10 +838,6 @@ static void vsc73xx_phylink_mac_link_up(struct dsa_switch *ds, int port,
+ 	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ARBITER, 0,
+ 			    VSC73XX_ARBDISC, BIT(port), 0);
+ 
+-	/* Enable port (forwarding) in the receieve mask */
+-	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+-			    VSC73XX_RECVMASK, BIT(port), BIT(port));
+-
+ 	/* Disallow backward dropping of frames from this port */
+ 	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ARBITER, 0,
+ 			    VSC73XX_SBACKWDROP, BIT(port), 0);
+@@ -1036,6 +1029,86 @@ static void vsc73xx_phylink_get_caps(struct dsa_switch *dsa, int port,
+ 	config->mac_capabilities = MAC_SYM_PAUSE | MAC_10 | MAC_100 | MAC_1000;
+ }
+ 
++static void vsc73xx_refresh_fwd_map(struct dsa_switch *ds, int port, u8 state)
++{
++	struct dsa_port *other_dp, *dp = dsa_to_port(ds, port);
++	struct vsc73xx *vsc = ds->priv;
++	u16 mask;
++
++	if (state != BR_STATE_FORWARDING) {
++		/* Ports that aren't in the forwarding state must not
++		 * forward packets anywhere.
++		 */
++		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++				    VSC73XX_SRCMASKS + port,
++				    VSC73XX_SRCMASKS_PORTS_MASK, 0);
++
++		dsa_switch_for_each_available_port(other_dp, ds) {
++			if (other_dp == dp)
++				continue;
++			vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++					    VSC73XX_SRCMASKS + other_dp->index,
++					    BIT(port), 0);
++		}
++
++		return;
++	}
++
++	/* Forwarding ports must forward to the CPU and to other ports
++	 * in the same bridge
++	 */
++	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++			    VSC73XX_SRCMASKS + CPU_PORT, BIT(port), BIT(port));
++
++	mask = BIT(CPU_PORT);
++
++	dsa_switch_for_each_user_port(other_dp, ds) {
++		int other_port = other_dp->index;
++
++		if (port == other_port || !dsa_port_bridge_same(dp, other_dp) ||
++		    other_dp->stp_state != BR_STATE_FORWARDING)
++			continue;
++
++		mask |= BIT(other_port);
++
++		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++				    VSC73XX_SRCMASKS + other_port,
++				    BIT(port), BIT(port));
++	}
++
++	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++			    VSC73XX_SRCMASKS + port,
++			    VSC73XX_SRCMASKS_PORTS_MASK, mask);
++}
++
++/* FIXME: STP frames aren't forwarded at this moment. BPDU frames are
++ * forwarded only from and to PI/SI interface. For more info see chapter
++ * 2.7.1 (CPU Forwarding) in datasheet.
++ * This function is required for tag_8021q operations.
++ */
++static void vsc73xx_port_stp_state_set(struct dsa_switch *ds, int port,
++				       u8 state)
++{
++	struct vsc73xx *vsc = ds->priv;
++	u32 val;
++
++	val = (state == BR_STATE_BLOCKING || state == BR_STATE_DISABLED) ?
++	      0 : BIT(port);
++	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++			    VSC73XX_RECVMASK, BIT(port), val);
++
++	val = (state == BR_STATE_LEARNING || state == BR_STATE_FORWARDING) ?
++	      BIT(port) : 0;
++	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++			    VSC73XX_LEARNMASK, BIT(port), val);
++
++	/* CPU Port should always forward packets when user ports are forwarding
++	 * so let's configure it from other ports only.
++	 */
++	if (port != CPU_PORT)
++		vsc73xx_refresh_fwd_map(ds, port, state);
++}
++
+ static const struct dsa_switch_ops vsc73xx_ds_ops = {
+ 	.get_tag_protocol = vsc73xx_get_tag_protocol,
+ 	.setup = vsc73xx_setup,
+@@ -1051,6 +1124,7 @@ static const struct dsa_switch_ops vsc73xx_ds_ops = {
+ 	.port_disable = vsc73xx_port_disable,
+ 	.port_change_mtu = vsc73xx_change_mtu,
+ 	.port_max_mtu = vsc73xx_get_max_mtu,
++	.port_stp_state_set = vsc73xx_port_stp_state_set,
+ 	.phylink_get_caps = vsc73xx_phylink_get_caps,
  };
  
-+/**
-+ * struct vsc73xx_ops - VSC73xx methods container
-+ * @read: Method for register reading over the hardware-dependent interface
-+ * @write: Method for register writing over the hardware-dependent interface
-+ */
- struct vsc73xx_ops {
- 	int (*read)(struct vsc73xx *vsc, u8 block, u8 subblock, u8 reg,
- 		    u32 *val);
 -- 
 2.34.1
 
