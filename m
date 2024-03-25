@@ -1,147 +1,167 @@
-Return-Path: <linux-kernel+bounces-116895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DB1C88A67D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:28:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 737B888A4F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DC08B35A78
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:43:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E11851F3D1D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C63A12C80D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC43B15B0FC;
 	Mon, 25 Mar 2024 11:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xGpnpF/U"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b="ajmH/3hz"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2136.outbound.protection.outlook.com [40.107.117.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE0B19D1B7
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711363970; cv=none; b=MIqApujnWzwL8MrV3b/3fyVA7sDhUKiKVUomF71rO8BvHwLy4l+A71MHevsHX+sie0BMf8Ii82qbi25sIBENop/lZoi8zKNS4HyEEo8pULvphxDVJsPSssyhmmbTGCsRd7BOIf5ZCSmhZY/RxLOV5cwDudK17a7jIjeGgS8rqQQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711363970; c=relaxed/simple;
-	bh=krCHL+qxAQ4SQ2psaIH85lNezKIzeTKZh1ZNAsaTRY4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sN7fS4lraJ2ZIZnhLLvWExAdqAhKOBFrCjOpC7ckaoJ9oCRgDTSyEKZkCmeqQPcsoZCksW0ctYqMZj67ohg7TTpjN43a79S3nP/C1aRWmf7vnIq63r577u1sT9qPhgbUt1sUL1krL3bVDjXayTvcLvV8s4C0xRtKdz22mOEHT1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xGpnpF/U; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-515a81928a1so1744249e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711363967; x=1711968767; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=B/45gkU1OW/Fa6jqiOKHWiKJTgLo8h9uP7u3dIPIa2Y=;
-        b=xGpnpF/UIQYWQY/gDMIz6KBG+snbPIYjkMDxZrK3B8rFRKledvnifIcno/7ZY2naNc
-         oNTvJcFyuU22bbKFpTbAat4bOnE3EUWH1CvVAWs+cxakG1yod4lTwpnNx6yFfBmT7KLP
-         APQGNjGQdYCdqQrBjTDYAqB3ZB2P+ix5fobRRWoyVCXVOuzzateS7Ep+dPIuxfXdcVBu
-         6mmASZF8vdhe1aQa8QudENDJUtbZGIKaRS3axCItweI9RxlYee7HIlPSzx3Njk7nK5zl
-         PX87ihlyNetTCK5K2Y6ZHTX57Ka6plQR8Gg9dJwd7eS+qXhOkseaWp5ClRTxdbVftJcr
-         bpvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711363967; x=1711968767;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B/45gkU1OW/Fa6jqiOKHWiKJTgLo8h9uP7u3dIPIa2Y=;
-        b=lDnl/iD8gfc6JQ23uly9sPDqKGZydQHHPFMJrcL2ruWI2OVmlBkCNoINMPWlEPnmuh
-         5XblSHD77KbVk0hwELk+sC9fthjHwMgx2g//vSoPgLLAB45lG2MMHyysPbgtM0baOGRT
-         a+sUaZFRwO2WFq5UZb31GfVVXhlb7lrMC5mMcsBeEoOn3ZKQJkFHOfqdI/5aDIkpAcxF
-         2erxZNFi0jRdn29U0ChHaVO6vbGGWOB79EISlKogDP5yoHEJQcDjTZaIxQmFZ+3Q/pex
-         QKDa76/6DF49hKVNdGqm81P6e5WSZ+AH2pdI79EL7TAkAUaarPOl2WGTz9hjDvH21QGw
-         xNOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW4XfWOHiRHT+PEh48641Z7Mxjw0AKzwycbFUbJv5kY9HEgyaWQ1M/wBY+a1a0PteTexvgbondqOre8e56skyzXzmfh3ljxdSthzQsA
-X-Gm-Message-State: AOJu0Yx8AViAjND/K03PIz0CdweV1kFIXpalk0YoI5ih7suSfMghk542
-	VZX1yAR46a8H00nSW6WRvL8+nC+wpZbBVwSJFnC7lgbCxwNvL21wfcXMIpTgcVI=
-X-Google-Smtp-Source: AGHT+IEclAfbiEIquW9pL3ASZRMHbyWd/lIOzT5bu64XepiQ3fVd79XZUHfg0x/tT73njuoHcmQwYA==
-X-Received: by 2002:a05:6512:1590:b0:515:a9d5:aab6 with SMTP id bp16-20020a056512159000b00515a9d5aab6mr3848775lfb.18.1711363966528;
-        Mon, 25 Mar 2024 03:52:46 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id kj9-20020a170907764900b00a4636d9d28dsm2903246ejc.69.2024.03.25.03.52.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 03:52:45 -0700 (PDT)
-Date: Mon, 25 Mar 2024 13:52:42 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>, linux-gpio@vger.kernel.org,
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88DB139561
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.136
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711364119; cv=fail; b=XstBHSDwI0LTlZ9wvnfeRNMG0XKdNq8EO9JiiA+ryQFljlahJ+n7/99Gu07AzSoGx6Sbs0j8WcMOIyHU8wEHiqganr78XuGxcLtlY6zuR+cnT0nuRgDiTZCziEfoPKwooJ96pjxl0X1/oFG+0cGsTNcyw2MQgXJ2kOkuCN4wAs4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711364119; c=relaxed/simple;
+	bh=uwLAFG3YtlQs8DzdJy7AVwMYReJK/uIC2RWLXRef93s=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=CZx/o15TiAuqf9X3WwZjsExxU6Tz2oaf9wQ+/AKsqVV2hVE98SWKjFy+NdpVNY9a/2ATGa4Y0Ons8AlAQr4wWi5x703jiMmYZV6OSLqDQIpmfMbBN9opnJyInHmGIqnsDpcpY4KpSfTLr/DFJ3fpDpDGJ+0PsLLtwEkci14k4Mw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com; spf=pass smtp.mailfrom=jaguarmicro.com; dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b=ajmH/3hz; arc=fail smtp.client-ip=40.107.117.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jaguarmicro.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZhQYOAKNOrXK0rc0gMC78ZzIQjzTnh+r++ctJJKlc4Iugx2FAGFxX876yExUUSzc/JFOJ5oDBI18vo/X/xfpRoRdsfEikfNqlAKXKaAcecoUa3cxgJAaduErhLW6uyYpDv9nGZ3T8LCfrBABlPLF80fNX+yhB5GKY1vnyvYaapt5SUTrcfmBQB1QqslnAzdZFywneS6vHuUEeKD7CKT8B3XNFf43sVMSJC835pN/mN2EABgJrLhqUBNbfdkrlMJfONtCcYK+BD0OK8oWTgOSPDeHF1arMdx2sLbndRSgTEnRlkH0uoejT2byScA25okNQLO9CAjFyQh22+2A/Hq3pQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tG7VTbd0cEGa9QCWFI9+pgRa/zqNboFBoSDZAj5VLGQ=;
+ b=MN1NeFjdsZxwBWjrq595FkFYKYe5UA/5jhdiX4xMkoNKGwKDCVGvyQu2YaARbFJO6euHLrcQ2d/0KaJyze4nCYyJxNeOcG/WdT7JJ7iFwwVcgUmTDw6FaUY/f6YcPpmBlrJYbG/jb8Cmfwh+CQL435Py9sG09OKE6lsSaUJPqAWNnq7wAIVuN/e7C6pwR6+yJS16Cs27PlZSj/NGAM1eGGDA+LSJmlqcKWe7u4PH/hZlIDhF84Sxr5b4yVy65J3GMOMTPg7i3xN+Nei+jFst2u04NqmbxC/uE6HDU2RrJ5dlEnZQSL1L9mNc7lCfEaOPPZEMirOwOpeXW0gkfwzOjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
+ header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tG7VTbd0cEGa9QCWFI9+pgRa/zqNboFBoSDZAj5VLGQ=;
+ b=ajmH/3hzt8gmRvDjwbdbMAI0waOJV7inCkggvML8IMcT6uZ1a9UUHc4A1kQLcEjfKbuSt9JTdnP0MjTELoFGXT8OxffgzYr+iLDQYkLnMav1xGLnAp7n9ldn6hwD0amlmRfMY/HWuNJiCI3MIlIZZNukJhKrLGG2mSJ4bazBjXKWU0ZE98aQF73/3eokaiN45CLybm9rAK2j0RlJ2GtXCFv8CztFXweXP4Eg41wEXSvPBsTJpjyuTpYAm198tMIlAqwGUIEZ3GjCDHI3AdQy4tl0kxGHTrkCmXaWM2Jz4CbXdNS8lM4oJgzf7msaM9q8chlsBkifFHZyD1pXp27C8w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=jaguarmicro.com;
+Received: from SEYPR06MB6756.apcprd06.prod.outlook.com (2603:1096:101:165::11)
+ by PUZPR06MB6224.apcprd06.prod.outlook.com (2603:1096:301:116::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
+ 2024 10:55:09 +0000
+Received: from SEYPR06MB6756.apcprd06.prod.outlook.com
+ ([fe80::ce49:84ce:23db:8b8]) by SEYPR06MB6756.apcprd06.prod.outlook.com
+ ([fe80::ce49:84ce:23db:8b8%6]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
+ 10:55:09 +0000
+From: "gavin.liu" <gavin.liu@jaguarmicro.com>
+To: jasowang@redhat.com,
+	mst@redhat.com
+Cc: xuanzhuo@linux.alibaba.com,
+	virtualization@lists.linux.dev,
+	yuxue.liu@jaguarmicro.com,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 05/11] riscv: Kconfig.socs: Split ARCH_CANAAN and
- SOC_CANAAN_K210
-Message-ID: <e255a964-27bf-4eb9-8e9a-4f60d1ccd12b@moroto.mountain>
-References: <tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com>
- <tencent_F208A26B5338C6E14AC6648730368AF0FD0A@qq.com>
+Subject: [PATCH v2] vp_vdpa: Fix return value check vp_vdpa_request_irq
+Date: Mon, 25 Mar 2024 18:54:47 +0800
+Message-Id: <20240325105448.235-1-gavin.liu@jaguarmicro.com>
+X-Mailer: git-send-email 2.33.0.windows.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGXP274CA0017.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::29)
+ To SEYPR06MB6756.apcprd06.prod.outlook.com (2603:1096:101:165::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_F208A26B5338C6E14AC6648730368AF0FD0A@qq.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEYPR06MB6756:EE_|PUZPR06MB6224:EE_
+X-MS-Office365-Filtering-Correlation-Id: dd3be308-a907-4deb-4c72-08dc4cba09a0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	r/TvFwV47lGwADZYOy1byU5Z/LegKcHX8VIvq3UdH3up5E3pvgItlLJ2L4U5uvBAy+5YXfLLtfRbJZ0Rfc56h0YVERwiW8fFkIdlQPNM9KfV8w8yHOjvVroPwaMXjcsySNGNtNWXQBa7pdQC0FKRTPtHgvV5fjOdanuzp4q0e4zp62S8gAgFZdtfAaGy5uNsAaZQj1d1usQuWEnjZHFtcmR33HEt5sROzMn/8mAUPT8BNZ6SdYP77F+IiVV7Mk4HZWX34/le/LdKFGxz8ZwrP8GcA4RWGo9o6Q6Va8GuEsyOYDXOhiX6NpEdfEDGJ8N2B56BuPH0DdSTB2cM2IBmySzGM02WbVA9mtv/dbcacVrXjefsYqv3pCvjcXtjXTys9smwWvmOPE3N/0wDADt4Tnxlx29zx9G7TpW3nMqevl2jNfe33O/HGCeU884dE6MZtEmv2VJnqGE5ttE7KP7qBheK3mLx1ZGttEfrcS/F2+oojhMXb5UjGRnuBPjr9uLO3wwZ/9m+MGuQP80E2aC6Tu6mwKJSLxhr7iiYeLGBo6kZaUJuvrQyQ+lrlpdW6aO9++UVXV5vy23Wd9GJd43cTYk7Z3pqprZ61+O1+txaDYWn8AdVjFLoLOD6/528C25nNWtWRMua4n492PB4S4j3cjwhIup5TUl8tTSmrIiepMM=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB6756.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?y6KI6QsVXoVIKaryFxdpuEgpDoN47pP4nZTm/UC140NNJdG2VEy0gXCNLaa9?=
+ =?us-ascii?Q?GXpjSDkFR+bituhEx7IFB5B+TZKI5U9sVqoQzOSYwX4a/UCyJFNPR00cYpQm?=
+ =?us-ascii?Q?3nLluokkLalcUZlG5QEugLLWGH3kVWJywc2HTUUMyqTJ7AYwm7C6BWDZJrNS?=
+ =?us-ascii?Q?rZ3SrEGHjqyXhUAhooP+t5lYJO6qKTPfKjDAkERkAk+Ci6qNwVbQlOC4ok6V?=
+ =?us-ascii?Q?NSvb+7t8sz3TaqaMw4bMf67B+yGCB9AxwYSP0+LETj3dJle4XmfnfH0pbc6+?=
+ =?us-ascii?Q?6p7TrSxYXb5Gqg7dQ+7SeJVA0KWEl7fMfC9cu8LLsr9gYukpRQd6r0XssAfW?=
+ =?us-ascii?Q?HJuB7rlxxCdqK0FczS6q/KOGDBE3oIin+nOVAK1VueM9ooOomw7OZmk4P/4p?=
+ =?us-ascii?Q?g3b+q+le7+ACsSD4p2tksoedkSz7RuZVWkxcd/I1Nxtl1k8ASxazhkqZ4Tqd?=
+ =?us-ascii?Q?S0dSJm6LL5fHk76cfGWTi4hvcOuWX6NNxG/ranA9sB1PDxDvkXKwd7IXh3Ja?=
+ =?us-ascii?Q?l9kKq2/4zbrdy9QSBW2ePjvN4W+4l3uE5ETSdnzJUHuO/VlvBiEOog0gdfIz?=
+ =?us-ascii?Q?GSjGlG+5gXg3XQamRrzeH81m5D6W2MODoINR00YuCK4Xow595z40F0cmKqnp?=
+ =?us-ascii?Q?K+1lNd4gaJQ9+slEUv/57BtY9mMVbyVw0Y3eazjZZimhiZeBeTKxRIrZN6lW?=
+ =?us-ascii?Q?SrijJS6GLJvgGGgdsc3QWRy5VrXVWcRFGSgrPCQOcrtUNo5zxENuFL608BrG?=
+ =?us-ascii?Q?GMwoLY5d38mWatmGt2uA0h0LRJPO/U1rb4DBFgP4TwWEExLPhkmEZtnDFPXk?=
+ =?us-ascii?Q?jlwovPCVXjTlho9JnqKPDo9Abmxi2K7FxFuS+yfQSsM9M7ivuqgTGMW67KeG?=
+ =?us-ascii?Q?rGTc6a8qxcpXbS54dpZLcrNfZVZQPwgjws3BobgJlcE0CNXxxPiisVJWpfDE?=
+ =?us-ascii?Q?wHhtObnhKcu1bTfzD9pjXi7JtiVGogWSUoilkfbSDZ9k3IQhKE3bpM72OpQV?=
+ =?us-ascii?Q?lYmsnwXrveQsmHFMo1X5r4YJMFP9ARdTTmRdaAcyc7HyV0tiQ1voapY0kXEZ?=
+ =?us-ascii?Q?tGb0lmbgl5JiO0rCJajtn1kTgZU/HAeJHv9cFy/IQrRX9XiMtGT/4edlaJPu?=
+ =?us-ascii?Q?rdyd3WzyVgViNrHwm3mPYkjTUgL4qeFfU1hcRG6qR6DxTSL15WHbs+5YVcnp?=
+ =?us-ascii?Q?yM1T4VOr/NBm9BNNiAnOpsmV61QoKng6viiiIcSwF5SKMjyk0amW9la9jHCt?=
+ =?us-ascii?Q?GxsJ9sXGm+hNZwifXbr9D5ihNMTJGJ/c20wrxJYoC9bepJ+fq+BoBcQuaNVD?=
+ =?us-ascii?Q?hN8JsNHxr+t/969cUlxXiRLZ0oqKr5ncUAdsG4MA3MpS6m4+6U9PtmbL6Yl5?=
+ =?us-ascii?Q?N2ujNvtpfCNhGmNOm10BQpHbsvwmyUWKIlW/RVJXksuvy2pk8AWE9dDTugzN?=
+ =?us-ascii?Q?9ji3AVRw2pxVcomyaHbmokiHuTueVXf0kfaoxuIINWvIGHkQWRop/8BF8lXn?=
+ =?us-ascii?Q?21lIjb0H+sU6ZRfJS19a3VERaUV11ClJTV4UUIyxdZJSi+DSZqhF8Z8C+r/c?=
+ =?us-ascii?Q?yKlpO3Ug7paxFU2MBUAzX3x5GfRXyR0zbbA717uN5d5jQQJDm2CcfzJrsxMd?=
+ =?us-ascii?Q?Jw=3D=3D?=
+X-OriginatorOrg: jaguarmicro.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd3be308-a907-4deb-4c72-08dc4cba09a0
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB6756.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 10:55:09.1516
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O6x+UGY19wMo6saDZBHNV2ge66NrrtFkTr7LPZ2mVheONcnSKLP3pQx4HJkuYx53pcdj5EavX4jy9yinBNkU0UfBcQ8ed/wRj+YImLX7YsA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB6224
 
-On Sat, Mar 23, 2024 at 08:12:17PM +0800, Yangyu Chen wrote:
-> Since SOC_FOO should be deprecated from patch [1], and cleanup for other
-> SoCs is already on the mailing list [2,3,4], we remove the use of
-> SOC_CANAAN and use ARCH_CANAAN for SoCs vendored by Canaan instead from
-> now on. And allows ARCH_CANAAN to be selected for other Canaan SoCs.
-> 
-> Then, since we have Canaan Kendryte K230 with MMU now, the use of
-> SOC_CANAAN is no longer only referred to K210. Thus, we introduce a new
-> symbol SOC_CANAAN_K210 for any conditional code or driver selection
-> specific to the K210, so users will not try to build some K210-specific
-> things when MMU is enabled and see it fails to boot on K210.
-> 
-> [1] https://lore.kernel.org/linux-riscv/20221121221414.109965-1-conor@kernel.org/
-> [2] https://lore.kernel.org/linux-riscv/20240305-praying-clad-c4fbcaa7ed0a@spud/
-> [3] https://lore.kernel.org/linux-riscv/20240305-fled-undrilled-41dc0c46bb29@spud/
-> [4] https://lore.kernel.org/linux-riscv/20240305-stress-earflap-d7ddb8655a4d@spud/
-> 
-> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
-> ---
->  arch/riscv/Kconfig.socs                        | 8 +++++---
->  arch/riscv/Makefile                            | 2 +-
->  arch/riscv/configs/nommu_k210_defconfig        | 3 ++-
->  arch/riscv/configs/nommu_k210_sdcard_defconfig | 3 ++-
->  4 files changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> index 623de5f8a208..5710aee456ac 100644
-> --- a/arch/riscv/Kconfig.socs
-> +++ b/arch/riscv/Kconfig.socs
-> @@ -72,11 +72,13 @@ config SOC_VIRT
->  	  This enables support for QEMU Virt Machine.
->  
->  config ARCH_CANAAN
-> -	def_bool SOC_CANAAN
-> +	bool "Canaan Kendryte SoC"
-> +	help
-> +	  This enables support for Canaan Kendryte SoC platform hardware.
->  
-> -config SOC_CANAAN
-> +config SOC_CANAAN_K210
+From: Yuxue Liu <yuxue.liu@jaguarmicro.com>
 
-This breaks git bisect, right?  There are references to SOC_CANAAN that
-are get updated later in the patch series.  You can't delete SOC_CANAAN
-and leave the other references dangling.
+In the vp_vdpa_set_status function, when setting the device status to
+VIRTIO_CONFIG_S_DRIVER_OK, the vp_vdpa_request_irq function may fail.
+In such cases, the device status should not be set to DRIVER_OK. Add
+exception printing to remind the user.
 
-regards,
-dan carpenter
+Signed-off-by: Yuxue Liu <yuxue.liu@jaguarmicro.com>
+---
+
+V1 -> V2: Remove redundant printouts
+V1: https://lore.kernel.org/all/20240315102857.1803-1-gavin.liu@jaguarmicro.com/
+
+---
+ drivers/vdpa/virtio_pci/vp_vdpa.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
+index df5f4a3bccb5..4caca0517cad 100644
+--- a/drivers/vdpa/virtio_pci/vp_vdpa.c
++++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+@@ -216,7 +216,10 @@ static void vp_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
+ 
+ 	if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
+ 	    !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
+-		vp_vdpa_request_irq(vp_vdpa);
++		if (vp_vdpa_request_irq(vp_vdpa)) {
++			WARN_ON(1);
++			return;
++		}
+ 	}
+ 
+ 	vp_modern_set_status(mdev, status);
+-- 
+2.43.0
 
 
