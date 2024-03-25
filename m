@@ -1,87 +1,75 @@
-Return-Path: <linux-kernel+bounces-116448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8A61889F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:22:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C821889F13
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:24:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C829289BF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:22:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2954B1F38524
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0BA5A0FC;
-	Mon, 25 Mar 2024 07:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F138812A153;
+	Mon, 25 Mar 2024 07:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ossEOfsx"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2067.outbound.protection.outlook.com [40.107.93.67])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="axL0tOEJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1ED9268034;
-	Mon, 25 Mar 2024 03:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711335878; cv=fail; b=Y3KuHERX0LfOkTbCmVW8sH7X5gAbc0bGtkY+o6KJsaTgMJhgrSfNlbUKZKqVg1zbK775KUWKoe9m5H0o2gmzV6dxWRkZNYnm6Sgzs13MWOFQSJ9DUs2U7CaR3j6LryL7hQHkTXli1rcxy/y2O5iCDMqJf3FeBg/0LG8dwtOJ2co=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711335878; c=relaxed/simple;
-	bh=/ORMEDvJlElLdwB05bjjkZ49ZILNK/sXF+PMdCPic2U=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q2EY49tdg587gOFpDK60YAnGVppEUqSBbss7cGRQ4HAtsLd1MWv2Gs36oEoX9jFIZ1KsLF57iMb3xmDc8NwjYIr1rNczSkdMw8jOw3p+lXVXPh41bI3TgU/6B7CiL6KTSEu+wu5O6a37CYpJL0/dpKOZVUkmsY947bTUoOSgpUs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ossEOfsx; arc=fail smtp.client-ip=40.107.93.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AxN0QtOEEVcAAHG4Dtgaa8B6vFfZOpM0RsrcZnOK3hAbaR4ZefwowPtxg4wNhKttHVu3Db5621gavaFntj9zHV8kmMNIdrBTgZf2fvqtmp4a0W5vFHCd1OdgOdUkTpffSGgijUEkyWBvU1nJ2utWDjT7BLg5DFX3X2YJli4ISy2PdWVqq0vOS47hOp7nTRY3VwbqSk2BUr2ZjGwoDjvTFDzTiSfaX7lTPhxfLvcRcJZjvV+DI8l+tkh56RKSsgHbyzfCvX2pg6Ndsjty5jVE5r2aYga180VSHubpSnsRW52gNLzv2eL8y99/4aCGMwBlFsbiwseeH8YhWBoIC0dBBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PJa5bG1XvdZh5o3Op4pc5qeNVIcfvEHxqfawH8yvlgk=;
- b=NYNGr4UWvWuRzfx0EZO57FANYA1PltM2ulikWkpwKs7GGUgjr/Znn+YaWeXO1asECqvqCr3fru4u4++WVOS0GrsdxVpyq+uGUBIV+IIXQnWNS5znlu/96ZUy+AIq1sQO/2+b94QCOcx8AF9hMgFkTg1AOI0A5LZlKhlCcR7jNQ2IYE+o4GIuNZINTmEn+v1fWFfeltg7SP36f8AML/Zrb1HrkJn/Th9wfMoF51yHMAD5VtthA/lyXcmmWFoSR1GowxlKbPlzrepb+ow7XTQ1FmXbTOazTpEjvLzUltbKospLyiN7YfXw3xAXn58LPy8c2X61D5B3WlmYMzAr+sudLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PJa5bG1XvdZh5o3Op4pc5qeNVIcfvEHxqfawH8yvlgk=;
- b=ossEOfsxROwf6o+0iMhp8lvzC3+db0CNBY53ggRlGgbSL4GKLEjwHA3PSsDPfvRXtZg4zmBYuqxRVrwpIrfftm1yrzdW9ou4s5/AnZnIfw+Jy1q1Zefe66U0QVH/0mQYzcPvypKGG17N8t5EjvvSujPNn1gBrPC7W1Qzt6E/uyc=
-Received: from DM6PR08CA0062.namprd08.prod.outlook.com (2603:10b6:5:1e0::36)
- by PH7PR12MB6585.namprd12.prod.outlook.com (2603:10b6:510:213::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 03:04:32 +0000
-Received: from CY4PEPF0000EDD6.namprd03.prod.outlook.com
- (2603:10b6:5:1e0:cafe::99) by DM6PR08CA0062.outlook.office365.com
- (2603:10b6:5:1e0::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Mon, 25 Mar 2024 03:04:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EDD6.mail.protection.outlook.com (10.167.241.210) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Mon, 25 Mar 2024 03:04:31 +0000
-Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 24 Mar 2024 22:04:28 -0500
-From: Perry Yuan <perry.yuan@amd.com>
-To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
-	<viresh.kumar@linaro.org>, <gautham.shenoy@amd.com>,
-	<Borislav.Petkov@amd.com>, <Ray.Huang@amd.com>
-CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
-	<oleksandr@natalenko.name>, <Xiaojian.Du@amd.com>, <Li.Meng@amd.com>,
-	<linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v10 8/8] cpufreq: amd-pstate: Add quirk for the pstate CPPC capabilities missing
-Date: Mon, 25 Mar 2024 11:03:28 +0800
-Message-ID: <31afd5ae23f8b1d7c6a2f0efe593a368dee61224.1711335714.git.perry.yuan@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B03E1782F6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711337002; cv=none; b=JO4zGdrv/P9DxcHd1lWzyEcSqw5y62qmbqmjp4EBY3RTqh0wrgC/wZrIGW/z0qqahofgkkpky1SUWPxEg4LEe5JUXjurxodkV8kaA0RgTzvADDtzfXbA5UGKTzIua9bKg1pDV9awvF1Z2Fc3NPyfTA9cx6cPAtPothoqkuVJ8hM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711337002; c=relaxed/simple;
+	bh=pfOJDXNeeVg0d9vmPU/3Wutw7T8t/uvx+uuhxmN2RFM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m1YbnS1a+3Ejabcga9BrQYEfBIwzwrE2i9JNUZfhXBnth243X0nAoRyVomecl/rzGdlV8/gP87+EFemExuf8Ici8c4VrjOY3lRAHvfFF8NrkWYONmyfz4YKSAYaa9NQhgUbR29RFll/RnpryVBnr9lVpBwBWBFJMXVIRaXWu6hE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=axL0tOEJ; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711337000; x=1742873000;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pfOJDXNeeVg0d9vmPU/3Wutw7T8t/uvx+uuhxmN2RFM=;
+  b=axL0tOEJ/U2Gkdmzh1EZtUSXuON6xgiw6N8gre4sz4bWnr8C5XpA0BgN
+   fT+K//vq9BuM0r21mEjvtSaADBnRAThwpxgnzs56NBQt5cwcaoN1PHC09
+   jUHeEHuK9V6AmoffyGp/g4BrsRqFprUnxadKO7FKJUBTmciBhtZ32hsRu
+   EULDLK0OYTAqU7hfnAkiBoFGpMP77Dv2I+gxKriRNSKg1aHIKP/PsQd0C
+   0XWVF903jfGzP6i9Mlz6ajPSUT/h3SbEdiZzAvpXkDbmmbkZWEBMGJPga
+   /H4tCQGn4lQVSTI8Qwa42Xgc+E5nge1weeU4mFNhB6iBkzkhldmDqWusV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="23806548"
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="23806548"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 20:23:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="38587050"
+Received: from feng-clx.sh.intel.com ([10.239.159.50])
+  by fmviesa002.fm.intel.com with ESMTP; 24 Mar 2024 20:23:16 -0700
+From: Feng Tang <feng.tang@intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	x86@kernel.org,
+	paulmck@kernel.org,
+	rui.zhang@intel.com,
+	Waiman Long <longman@redhat.com>,
+	linux-kernel@vger.kernel.org
+Cc: Feng Tang <feng.tang@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH v2] x86/tsc: Use topology_max_packages() to get package number
+Date: Mon, 25 Mar 2024 11:09:28 +0800
+Message-Id: <20240325030928.4190408-1-feng.tang@intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1711335714.git.perry.yuan@amd.com>
-References: <cover.1711335714.git.perry.yuan@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,157 +77,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD6:EE_|PH7PR12MB6585:EE_
-X-MS-Office365-Filtering-Correlation-Id: c72a93e9-aa4b-4e48-f57e-08dc4c784b0c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fyviQYKepQ+Q/w5GRI4RABCs11GBVLLOl8hwKptTG/Ve6NSpY4+f3Fx29I5GX3AOaL0PYNUtjKC5oF7xA1+Z5mDFA/suP6dhHADmovUsTHnq4DqwzK8uGxB7VbZsFjmxp529MsQbYc5Moc7cw+MFRmekMrnGYMYkZr4kKiq1kkkfjX2ZdCPVp3AEvpB+tnrKt2NBUHkww2ELTV58lOtDzlUbQo/LaUN3lCLyyTURJT50YK/4MWp58uLLvybhADBseZx4mNQVrBp7enkbvrqAtFPqzarBz54WkDN1yN0HPxfeBopalE8bVijFbv1iFsYBPEtIPtfhyDhgGhNkN2SwOzXtrBhQPEoGR66oW7bjqUPe0rWSh6kzetbZgt9Wu4p84/FSAdjHnPe1xSryr9TOBr99lYSS/D3hBMn4S10I1jgdPVT8Vur5P/MVeQvj6SO1mL7psyL8Qe63YHFEQL0o9jDRR2WVvgx/CP4oq/XLBNSBdv8vN6wDqifzVJAxgPlp0+gnHaqSRqdxLJHwJcd0UEi/INgJv/rQLXTnhTZXTNsTHlzvGIcgrAFsuXLiiZf4IoUmr4pqQ4ixHXa7zFu6Op4/RaawMAanMejpa+7evS0b/2GA4TXlQZGum25oVIh0Axutu2jBHhJA149ELpgcJ2CVeNjlIssywQo2slaBH4O9a9JlunDkQnaBWF3v5oGEsfhHQxbyQGTx7s9VZoW5QKL4ajFveCXeJyWr8tkkL/+n5YnKTyLD5ZsSYinDRBUZ
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 03:04:31.7444
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c72a93e9-aa4b-4e48-f57e-08dc4c784b0c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EDD6.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6585
 
-Add quirks table to get CPPC capabilities issue fixed by providing
-correct perf or frequency values while driver loading.
+Commit b50db7095fe0 ("x86/tsc: Disable clocksource watchdog for TSC
+on qualified platorms") was introduced to solve problem that
+sometimes TSC clocksource is wrongly judged as unstable by watchdog
+like 'jiffies', HPET, etc.
 
-If CPPC capabilities are not defined in the ACPI tables or wrongly
-defined by platform firmware, it needs to use quick to get those
-issues fixed with correct workaround values to make pstate driver
-can be loaded even though there are CPPC capabilities errors.
+In it, the hardware package number is a key factor for judging whether
+to disable the watchdog for TSC, and 'nr_online_nodes' was chosen due
+to it is available in early boot phase before registering 'tsc-early'
+clocksource, where all non-boot CPUs are not brought up yet.
 
-The workaround will match the broken BIOS which lack of CPPC capabilities
-nominal_freq and lowest_freq definition in the ACPI table.
+Dave and Rui pointed out there are many cases in which 'nr_online_nodes'
+is cheated and not accurate, like:
 
-$ cat /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
-0
-$ cat /sys/devices/system/cpu/cpu0/acpi_cppc/nominal_freq
-0
+* numa emulation (numa=fake=8 etc.)
+* numa=off
+* platforms with CPU-less HBM nodes, CPU-less Optane memory nodes.
+* SNC (sub-numa cluster) mode enabled
+* 'maxcpus=' cmdline setup, where chopped CPUs could be onlined later
+* 'nr_cpus=', 'possible_cpus=' cmdline setup, where chopped CPUs can
+  not be onlined after boot
 
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-Tested-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+Thomas' recent patchset of refactoring x86 topology code improves
+topology_max_packages(), by making it more accurate and available in
+early boot phase, which works well in most of the above cases.
+
+The only exceptions are 'nr_cpus=' and 'possible_cpus=' setup.  And
+the reason is, during topology setup, the boot CPU iterates through
+all enumerated APIC ids and either accepts or rejects the APIC id.
+For accepted ids, it figures out which bits of the id map to the
+package number.  It tracks which package numbers have been seen in a
+bitmap.  topology_max_packages() just returns the number of bits set
+in that bitmap.
+
+'nr_cpus=' and 'possible_cpus=' can cause more APIC ids to be rejected
+and can artificially lower the number of bits in the package bitmap
+and thus topology_max_packages().  This means that, for example, a
+system with 8 physical packages might reject all the CPUs on 6 of those
+packages and be left with only 2 packages and 2 bits set in the package
+bitmap. It needs the TSC watchdog, but would disable it anyway.  This
+isn't ideal, but this only happens for debug-oriented options. This is
+fixable by tracking the package numbers for rejected CPUs.  But it's
+not worth the trouble for debugging.
+
+So use topology_max_packages() to replace nr_online_nodes().
+
+Reported-by: Dave Hansen <dave.hansen@linux.intel.com>
+Closes: https://lore.kernel.org/lkml/a4860054-0f16-6513-f121-501048431086@intel.com/
+Signed-off-by: Feng Tang <feng.tang@intel.com>
 ---
- drivers/cpufreq/amd-pstate.c | 53 ++++++++++++++++++++++++++++++++++--
- include/linux/amd-pstate.h   |  6 ++++
- 2 files changed, 57 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-index ec049b62b366..59a2db225d98 100644
---- a/drivers/cpufreq/amd-pstate.c
-+++ b/drivers/cpufreq/amd-pstate.c
-@@ -67,6 +67,7 @@ static struct cpufreq_driver amd_pstate_epp_driver;
- static int cppc_state = AMD_PSTATE_UNDEFINED;
- static bool cppc_enabled;
- static bool amd_pstate_prefcore = true;
-+static struct quirk_entry *quirks;
+Hi all,
+
+For warning about possible compromise due to 'nr_cpus=' and 'possible_cpus=',
+another alternative could be checking whether these has been setup in cmdline
+inside tsc.c and warn there.
+
+Changelog:
+
+  Since v1:
+
+  * Use Dave's detailed elaboration about 'nr_cpus=', 'possible_cpus='
+    possibly compromising '__max_logical_packages' in commit log
+  * Fix typos and inaccuracy pointed out by Rui and Longman
+
+ arch/x86/kernel/cpu/topology.c | 5 ++++-
+ arch/x86/kernel/tsc.c          | 7 ++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+index 3259b1d4fefe..2db03b00e29b 100644
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -460,8 +460,11 @@ void __init topology_init_possible_cpus(void)
+ 	pr_info("Num. threads per package: %3u\n", __num_threads_per_package);
  
- /*
-  * AMD Energy Preference Performance (EPP)
-@@ -111,6 +112,41 @@ static unsigned int epp_values[] = {
- 
- typedef int (*cppc_mode_transition_fn)(int);
- 
-+static struct quirk_entry quirk_amd_7k62 = {
-+	.nominal_freq = 2600,
-+	.lowest_freq = 550,
-+};
-+
-+static int __init dmi_matched_7k62_bios_bug(const struct dmi_system_id *dmi)
-+{
-+	/**
-+	 * match the broken bios for family 17h processor support CPPC V2
-+	 * broken BIOS lack of nominal_freq and lowest_freq capabilities
-+	 * definition in ACPI tables
-+	 */
-+	if (boot_cpu_has(X86_FEATURE_ZEN2)) {
-+		quirks = dmi->driver_data;
-+		pr_info("Overriding nominal and lowest frequencies for %s\n", dmi->ident);
-+		return 1;
+ 	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
+-	if (topo_info.nr_rejected_cpus)
++	if (topo_info.nr_rejected_cpus) {
+ 		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
++		if (__max_logical_packages <= 4)
++			pr_warn("TSC might be buggered due to the rejected CPUs\n");
 +	}
-+
-+	return 0;
-+}
-+
-+static const struct dmi_system_id amd_pstate_quirks_table[] __initconst = {
-+	{
-+		.callback = dmi_matched_7k62_bios_bug,
-+		.ident = "AMD EPYC 7K62",
-+		.matches = {
-+			DMI_MATCH(DMI_BIOS_VERSION, "5.14"),
-+			DMI_MATCH(DMI_BIOS_RELEASE, "12/12/2019"),
-+		},
-+		.driver_data = &quirk_amd_7k62,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(dmi, amd_pstate_quirks_table);
-+
- static inline int get_mode_idx_from_str(const char *str, size_t size)
- {
- 	int i;
-@@ -812,8 +848,16 @@ static int amd_pstate_init_freq(struct amd_cpudata *cpudata)
- 	if (ret)
- 		return ret;
  
--	min_freq = cppc_perf.lowest_freq * 1000;
--	nominal_freq = cppc_perf.nominal_freq * 1000;
-+	if (quirks && quirks->lowest_freq)
-+		min_freq = quirks->lowest_freq * 1000;
-+	else
-+		min_freq = cppc_perf.lowest_freq * 1000;
-+
-+	if (quirks && quirks->nominal_freq)
-+		nominal_freq = quirks->nominal_freq * 1000;
-+	else
-+		nominal_freq = cppc_perf.nominal_freq * 1000;
-+
- 	nominal_perf = READ_ONCE(cpudata->nominal_perf);
+ 	init_cpu_present(cpumask_of(0));
+ 	init_cpu_possible(cpumask_of(0));
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 5a69a49acc96..d00f88f16eb1 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1252,15 +1252,12 @@ static void __init check_system_tsc_reliable(void)
+ 	 *  - TSC which does not stop in C-States
+ 	 *  - the TSC_ADJUST register which allows to detect even minimal
+ 	 *    modifications
+-	 *  - not more than two sockets. As the number of sockets cannot be
+-	 *    evaluated at the early boot stage where this has to be
+-	 *    invoked, check the number of online memory nodes as a
+-	 *    fallback solution which is an reasonable estimate.
++	 *  - not more than four packages
+ 	 */
+ 	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
+ 	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
+ 	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
+-	    nr_online_nodes <= 4)
++	    topology_max_packages() <= 4)
+ 		tsc_disable_clocksource_watchdog();
+ }
  
- 	highest_perf = READ_ONCE(cpudata->highest_perf);
-@@ -1662,6 +1706,11 @@ static int __init amd_pstate_init(void)
- 	if (cpufreq_get_current_driver())
- 		return -EEXIST;
- 
-+	quirks = NULL;
-+
-+	/* check if this machine need CPPC quirks */
-+	dmi_check_system(amd_pstate_quirks_table);
-+
- 	switch (cppc_state) {
- 	case AMD_PSTATE_UNDEFINED:
- 		/* Disable on the following configs by default:
-diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
-index ab7e82533718..6b832153a126 100644
---- a/include/linux/amd-pstate.h
-+++ b/include/linux/amd-pstate.h
-@@ -128,4 +128,10 @@ static const char * const amd_pstate_mode_string[] = {
- 	[AMD_PSTATE_GUIDED]      = "guided",
- 	NULL,
- };
-+
-+struct quirk_entry {
-+	u32 nominal_freq;
-+	u32 lowest_freq;
-+};
-+
- #endif /* _LINUX_AMD_PSTATE_H */
 -- 
 2.34.1
 
