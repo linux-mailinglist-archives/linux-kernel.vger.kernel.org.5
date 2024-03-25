@@ -1,204 +1,146 @@
-Return-Path: <linux-kernel+bounces-116709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B60CB88A5B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 443FE88ABBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 225A9B4665D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:45:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 723F1BC40E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134FD155309;
-	Mon, 25 Mar 2024 10:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W4eP0lvl"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F29E153BF4;
+	Mon, 25 Mar 2024 10:28:08 +0000 (UTC)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC3613C9D9;
-	Mon, 25 Mar 2024 08:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711356234; cv=fail; b=SycEjyXpvgdKZtoguDdB8kkgDbFAoIjIknHtnEV8bI8+hdMFT4E1hxxBx6bLouf14MwDNAq7L8jWIwWSUkmbVnfmgBvry/TmNDXUQ7rjMxXkp6FD3n+KsuGDTzqBeKxrbCAslF1eoZ+axzEPzPCyLqw6ErBdVP4CWudhBVhdn3E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711356234; c=relaxed/simple;
-	bh=mVqfa7pUT/8B5X5DhVDSF5ndS3J8opj0KV122sKLAxU=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Horc+nDfDu2b4xktwEwIsNidxyk3IF9VdfaOMLplGjJPQ1uo9TdQ8dFh/UA8hFn/TscRDBQcN1KxAiurAekuKP1V9UIYa05u3srSGEd9FMnhcmLQ1cuQfyi5aFDXuQw3DdwMIkqKclDETpXrTy8L3ishqmpdvoN3yU+Bw+ctUHY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W4eP0lvl; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711356232; x=1742892232;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=mVqfa7pUT/8B5X5DhVDSF5ndS3J8opj0KV122sKLAxU=;
-  b=W4eP0lvlVCLbshQoHuq6qhutJU8mWCyU8/er7v8vkjBxRYJJQsjuVMT3
-   J0yL5TIgDU7vXsLOn809rtPWiFHVUdDkPE43kjsmeNzr2MWtVeFnBK+SK
-   rD1EkZf8N/khiu/jdz/2XDVgztsjpY0KZ8AXOtlVnx0PeJPsd4013sAEc
-   +TB4LinkrWM9krt/vdy/dCdJRInYAv8bHcpnBLDkDw3Px1p1fqVLn+UY+
-   SmIN/MTzOueqAhHshGG0M8xzgzsumGpYEhsRznWsH+b1k2wsWaqTyQJbV
-   psFU7iAP7yKdUpNerW2La++gXbW9zUAxIZdw0oD1uHyKByIQE4xZpIx6N
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="10142176"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="10142176"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 01:43:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="15631758"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Mar 2024 01:43:51 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 25 Mar 2024 01:43:50 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 25 Mar 2024 01:43:50 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 25 Mar 2024 01:43:50 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 25 Mar 2024 01:43:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZrHVdXFvu9Pnn2GKNHed4dAsGw8Z71uwVZbbcK+nc7ea2o/vsJQHYgtkymzxgxugje7Ny8mGLDthIcee/n1Kp6AHWaIWjaQflNUjA4XHW3hBhaSKwS0tGjRWQmzmplsvJi0igOwN2Oq/SDLup+MXARiDGK6MpbriAXyiB9VnuQjjVoZeksv2D79uMu9cN3XBmD0yNfALXrFuWiT7iERabOTdhfKZ/XKRqXDlFrYlfCOkH6ew9UXBBXoWan2m+96x2HyuYEwFJ5JYCu0pvYMTJrwJwv74keb/jaL75iGKy8CcH0WuAGjdxz3OCd5nWpj7t8CKPafWJ1EOpYSjcOjrNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xpvETG1xXCaOEO60Qq1P4C3eYhVbpi/3owfh3Egl1wM=;
- b=ocJrql/uzZ4PQcMeBbqfWbfYdS+YNYnMa0Xm13b9DwzH8xEqYaX389dVnUhLtFRDwo4CxqoEWwdLHBPyWRFeU2BAQhYdHC36UuzGjufW0oVODM9KPJntJaAhFhX3hybIZRTQwCqalefS+DzwGm/NjJWBlPPgt1kX0crMTxdbnQxRmnLCxZ/4w6MVOkhOU37SyWEHOoFzQj5OaLNinM8vSBJKGAXmd4nnUjpsUUD+J2vhfSL21JsHZyUIUO7ZTkyHK3EjzOwEBp8Hy/3+IaEGJ1mrH6ryvuzBTFO0UHXfkCi7U9qoTLnZFWWrPToMtn7iSrzlz6tvI+2deqehNnOgyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by MN2PR11MB4663.namprd11.prod.outlook.com (2603:10b6:208:26f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 08:43:47 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 08:43:47 +0000
-Message-ID: <d4014bb8-168e-4147-9554-bab22b0f4afe@intel.com>
-Date: Mon, 25 Mar 2024 21:43:31 +1300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 037/130] KVM: TDX: Make KVM_CAP_MAX_VCPUS backend
- specific
-To: "Yamahata, Isaku" <isaku.yamahata@intel.com>
-CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, Paolo Bonzini
-	<pbonzini@redhat.com>, "Aktas, Erdem" <erdemaktas@google.com>, "Sean
- Christopherson" <seanjc@google.com>, Sagi Shahar <sagis@google.com>, "Chen,
- Bo2" <chen.bo@intel.com>, "Yuan, Hang" <hang.yuan@intel.com>, "Zhang, Tina"
-	<tina.zhang@intel.com>, "isaku.yamahata@linux.intel.com"
-	<isaku.yamahata@linux.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <9bd868a287599eb2a854f6983f13b4500f47d2ae.1708933498.git.isaku.yamahata@intel.com>
- <a0155c6f-918b-47cd-9979-693118f896fc@intel.com>
- <20240323011335.GC2357401@ls.amr.corp.intel.com>
-Content-Language: en-US
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <20240323011335.GC2357401@ls.amr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW2PR16CA0023.namprd16.prod.outlook.com (2603:10b6:907::36)
- To BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 064E3156886;
+	Mon, 25 Mar 2024 08:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711356228; cv=none; b=WnbAOqZ9aTF73KuwYosTU+4VqOgRpPjcoub0OiTLjVLXAaRdJputEFIZQ4uWAH+0FXRa07vra2ygGaYvR1PThxyffypY4QBb4blhlcYd/IFlGoO2D/I1XedCJCaaGRqXHk3LUcui21ulh1Iugr39AfKKdv0ZC7jWj0YmmM8qzgw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711356228; c=relaxed/simple;
+	bh=hcxg4In4aK2uslPZ2l3j/imsw9p/42fA3ITh/yE+w40=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Sdt5BLYczjyle8HuMo6wHCGk6vCoElaOWOCslC9b/SlliY0cR8PKCytbhnflFaT3wz7lbKx08Nn8OBhcGc8+VS60v7OyGV8s5Rtkdj86ZbQXpnXDSW0L+vHgsnTso7W9ZIVUM9sjhyWn0Ut/s3lHRmu75idRmyZDE/q77X1AWz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-61149e50602so7363337b3.0;
+        Mon, 25 Mar 2024 01:43:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711356225; x=1711961025;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ChuSgVYGVBf5BrY9y1MgsrXyLyHWL1icjbpaJ35NYnU=;
+        b=wFQmJTOlQU4L2QJR2RBpAPSBFfLYYcsiSa7yVEGracaneA0SsjEVkjBsAaBYPEt8wy
+         Mb8G/VS1ZDR69ZUWD+7MOivHQoL5ORufkE4PNrcSCmPCs5DB3+AHhybnAJCfWAhVHKCF
+         15Do61pRHSiwpGUYbVZhX4OYcWBW/xE3PDXlgZ9I+mid2NahC1+8a1BY+GJ3uRzI6eT8
+         E82bIiWKmf8YXF5baysXrV3X//CXNdFsxdBNO4GlcdT1ZfV7puqfzb6D2xEPEcWw/1Mh
+         I2xXgI6SS8ozjOcOGetaZfPNIrrXYKDPnabU6WoEi/6N2JZMIrLUQ2I6yVVj4FPGYequ
+         djLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWsJ5eDMmbkJ/wRTigcEtXPtXex8FWLFo9qwIXZZCbIeghGFTO+f0hJZSm0HebT7eHTcLFdyNUdcs5kX1BJ/Xurpgbcg9uD3a00xvw/W5WNhhnNDWxmklRI6VBKEkjDt7W+x2OgiJ9kh6g=
+X-Gm-Message-State: AOJu0YzrSq/eqpLiY1y/gntTY+FhF8zObAB7i/1yGp3yeSQmS6rulRWG
+	NkP5p8D0yeSx+cOjZ2P1NCIfER3SiMjk8C94xq/p+M7VxZjpFPmJpQjGS/TOMOE=
+X-Google-Smtp-Source: AGHT+IHX/d0PCCB3xpz7d90wwLNQ/zZqtXcuLMyLgTpTDJh7/2lbd6aJn80oJYR7CWp3CZsSibfkuA==
+X-Received: by 2002:a05:690c:610f:b0:610:e891:838c with SMTP id hi15-20020a05690c610f00b00610e891838cmr3162495ywb.7.1711356224199;
+        Mon, 25 Mar 2024 01:43:44 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id v141-20020a814893000000b0060a109ae2b2sm959230ywa.26.2024.03.25.01.43.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 01:43:44 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so3133376276.1;
+        Mon, 25 Mar 2024 01:43:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUY8vlUl8Wd5rFweNWKFzzddpWkA9mrx1LV8i1fHjYOShpS90Giv2G4eLuhnSROuXdrE2eZHGRliY9mH9TZGlokdeuxeDu+J3ASb0Edxxtn3gf4lj2wGHdoI088sVH/7yXmLteC5Gp3JOw=
+X-Received: by 2002:a25:6cc3:0:b0:dcb:b072:82d8 with SMTP id
+ h186-20020a256cc3000000b00dcbb07282d8mr2843159ybc.15.1711356223761; Mon, 25
+ Mar 2024 01:43:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|MN2PR11MB4663:EE_
-X-MS-Office365-Filtering-Correlation-Id: 030d6a5b-acad-45ac-5518-08dc4ca7afab
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YtsSwDZzhtd6kGY4qTuOUDTw2cx+/2nlqyZOTSHQ2QaKQtlZQT3f3xj3nIRwVwK0/nTGAbxcrMlmI6rie6dwXd/sulhkbvubk/8BzDcY+lNFuXsm8jO5YhPGpY+KZI+vxD8Jm61iCQHkXSwdhjIeEQNDif5fIld8BFT4KZ0xuPB+6g94wJZyuwYwmkHKUkdpCcVrJhM4fIJXKgrxy/wqET3YiVn4niJSrTRHWHMvXkqVVCMP2oI22+C0nTT3ggGGDOJjbrNKEirhYfHeB0bE3Tr+MigpM7mDQcTrby8/kDAQeX2Osfe8W7fGgCfq2dtsDcl43jHZSDsOZQxkBDghc4g+KIhixcN4hyfVcupAAfndPu8Ib6RjMag96r3ENDgVLRxvap8nXTrggApYhcrl77O/g8qY6VLRKXfEhBPZIeuVh454oQC2vjk1fG4TPBRoEF+hBLNJcdqS3t8QTukiQ2ro50JFnfoRGE2BY3ZYRzkhtCuaViP7POCaNzt149j1ydTUCLAD6DRKgUpBFpNxVKUrIEmyLN9ussGO6hrK+7u6c+FhztFwh+67feouP+Nwosb/vsqo1LBfOCM+N43eC/bPURLxjUUdV+H4RR14xnpNypY33YdWZBHdpPAduC12mO0FXjMVNPL5NbwTAnApY9j+YKYA1SMr7sxlgFVDNVw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RjU0SGhROGlhb1d6cXNMUitmVGVWSjNGbHo5TTR3YTZLTUYwNmhMWHZBdUlD?=
- =?utf-8?B?MkpTODdFbDRmck1XUjNmUURXMW5XVm5BMDF6RktpcldpdTl3blNWbjEyMllm?=
- =?utf-8?B?ZXFOVTlwbTcrMVRWWmFwNnZDbW82R05FcFMvMngrL2NuWjV4Vmx5emw4YklE?=
- =?utf-8?B?cG02WDArM3o2N2U0Qk53SDhlbU9KSDhQeWNBQno0RXhCVVYzSmtCcWZLczFC?=
- =?utf-8?B?aFJyaGVrN0liYmcrVXUyc2pCSS9rUFBjMkR2MG54bW9lKzFFZ2crTHUyOUkz?=
- =?utf-8?B?T3JnYjhhem9hUnBWM05vTU81VU5vTkVlZmozWXJoU3p5NFlJbS9ZbnNQWWNQ?=
- =?utf-8?B?RXNESTBKaFFwTmlGNEJRMHVpa2JRc05vcVB1a0Q3aERKNWlZMkxST0hTbGxH?=
- =?utf-8?B?WFVXaDFibTAzSFNweVRrK2NXN091YjEvaW1kM0dpTW8xRGs0SUV3SWx1Q3NC?=
- =?utf-8?B?UE1rTXFUZTY3a2U3NEhSL1paUGljN3dBYnZqdVlFQWdLdnAvNmFmWUl6ZnVL?=
- =?utf-8?B?d2YwbG94TjlOaDhpRUpMa1NRQlN5T2gyS3NTNnRieDNqcEZ4eFFucy93RHZz?=
- =?utf-8?B?M25XenJ2clpIVDJSV0JxQS9haHloZHpibmszU0QrMVNXbGs4OE1IMFRGcGJQ?=
- =?utf-8?B?RUZWeWQrNEsza1d6S3BVbFFwRFN3RHZFVGtYdjVKaXBwMHlPTGhPRHJudkpo?=
- =?utf-8?B?cUFYdDQzVzN3SlZMMmczZXlRWHJFM3hLK3Zsc2hKa0RvdXJkWkZCWkRTdFhv?=
- =?utf-8?B?UU9MbmFOSXAwR25aOVVkY0Jncy9meFBJUW8raXM1VUIrM0NGSHJkVDIvVW1k?=
- =?utf-8?B?M3lDMUlLSUNLV2dwKzRrT25BaTVRRjFwQjNRZTdyZEhrSnlDYmR5SWdGZm9R?=
- =?utf-8?B?ZXV4N2NwOGNXUWh2K1NDVTJZaGd2NjRBVVo5Z2krZWtWRXd1byt4S25oKytV?=
- =?utf-8?B?MlBhbDdOK2lGdHVVaFh0SkpENXBCLzdhRVZFYTYxbW9hM1h5am4rekZ3Z01v?=
- =?utf-8?B?V3J2NDFOUlk4T2tkTThFb3Z2T21YWUhJNVJyZ092THpOVmNhUEh6bzQ4VllU?=
- =?utf-8?B?emFkZDUvRXoveHFPQ3BIYUExbXdQN0svUnd3NHk1L0RuOFJVd28yTzlaVnU3?=
- =?utf-8?B?LzNydURKOTAzS1c2V3V3WnJ5Tm1aTW1mRCt0VUF6alZmKzQ4dnFBVGg1Zk1R?=
- =?utf-8?B?ZjdERXZzeGM2UmhGRDZ0TW1iSUxRYU96dWdxaU9qU3NMcisxQzBkblRYc0RX?=
- =?utf-8?B?eFJkYlNvMDdsZis4ZzBkb2FOOVRKOEpOK1c4VTRZREQzaWxacmxmYzJSOTN5?=
- =?utf-8?B?eFZRU1ZLd0l1OGRQUzlFSmxlbGw3bjhOeXNOeE9WNlhBQ0pZazRNZHNaV1c3?=
- =?utf-8?B?UkIvSFgrVGZpNE5iWXcxRDhKLzhrL1B0NFdGOEViWU5raGxJUWVwa3RMcnBi?=
- =?utf-8?B?bm8zb05qN0FsZm9BcGJzUjg3QzRkT09ldzI4ZVYxeHZMSTEyazNLUTMzODhC?=
- =?utf-8?B?cjUwdWFUeHhkNG82RUtFUmt1dU5ZVjM4TXdLa2Y2VTVXSTN0bExaeXJ5VWRD?=
- =?utf-8?B?VWVtYTdUNE9zM3NsNzJpZXVUZVlJWWNzS1RialU5YldzcWZsZUxBUnFxa05a?=
- =?utf-8?B?cy83Z29sM3pGaWhyWEx5aDFwL216eHNMR0lrVllKRk9nMTAwNUxtRzFmdWw0?=
- =?utf-8?B?MWx4RXlkOXY5K3RhK2xtS0ZIeUdidWplS2pIanc1VGxZM1hMMzJuM0JrU29I?=
- =?utf-8?B?cjhveG1LRnRNRjMzY05YZ0Yxa29oV2dqTVltYUlXYkVVS0VabVgzdFhTRndh?=
- =?utf-8?B?MHRzaHg5ZzAyUUxLWk1WZmdZN2pQOFdraExLQWRLSHRZY3dqbGpvSGp3TE0x?=
- =?utf-8?B?TUErcGxkcUdpeVdraUhOVTBBcGRmSno0WWFBL2FCRzBZZnlxekk2dTBsQWY1?=
- =?utf-8?B?bDR1RkxKTjY5TXZ5b2RrRkw4R1A1TWRqandqOFduNnYvVWl5K3ZPazR6bWE4?=
- =?utf-8?B?ZS85T24rcGQyRlZFSCtZOE9saWlzWnFjY3cxdFpLNmlpaHViWG1CWStxbDhj?=
- =?utf-8?B?K0V5ZU5JVVdqc053SE40Ym9McmVFNzdkYUR0T0pZbGxhK29lREVNNEFWUnh5?=
- =?utf-8?Q?KUQezkQV8fB00J3oTXqBr3SQ9?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 030d6a5b-acad-45ac-5518-08dc4ca7afab
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 08:43:47.2110
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8iD4/n5wUu+duipxJuKq8HwFsSpTT3D8nojoHVF0b89Q2OxKoxTsbYLnmIMGFNmEdSyoOaLJVNf3ckbTWmzoyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4663
-X-OriginatorOrg: intel.com
+References: <20240324233458.1352854-1-sashal@kernel.org> <20240324233458.1352854-111-sashal@kernel.org>
+In-Reply-To: <20240324233458.1352854-111-sashal@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 25 Mar 2024 09:43:31 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUK0YYELTN=JQDtGuYg03Em6c7kskpqUR0Y6NbNuR7hfQ@mail.gmail.com>
+Message-ID: <CAMuHMdUK0YYELTN=JQDtGuYg03Em6c7kskpqUR0Y6NbNuR7hfQ@mail.gmail.com>
+Subject: Re: [PATCH 5.15 110/317] arm64: dts: renesas: r8a779a0: Update to
+ R-Car Gen4 compatible values
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Sasha,
 
->> Currently, the KVM x86 always reports KVM_MAX_VCPUS for all VMs but doesn't
->> allow to enable KVM_CAP_MAX_VCPUS to configure the number of maximum vcpus
->                                                       maximum number of vcpus
->> on VM-basis.
->>
->> Add "per-VM maximum vcpus" to KVM x86/TDX to accommodate TDX's needs.
->>
->> The userspace-configured value then can be verified when KVM is actually
->                                               used
->> creating the TDX guest.
->> "
+On Mon, Mar 25, 2024 at 12:36=E2=80=AFAM Sasha Levin <sashal@kernel.org> wr=
+ote:
+> From: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> [ Upstream commit a1721bbbdb5c6687d157f8b8714bba837f6028ac ]
+>
+> Despite the name, R-Car V3U is the first member of the R-Car Gen4
+> family.  Hence update the compatible properties in various device nodes
+> to include family-specific compatible values for R-Car Gen4 instead of
+> R-Car Gen3:
+>   - DMAC,
+>   - (H)SCIF,
+>   - I2C,
+>   - IPMMU,
+>   - WDT.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Link: https://lore.kernel.org/r/73cea9d5e1a6639422c67e4df4285042e31c9fd5.=
+1651497071.git.geert+renesas@glider.be
+> Stable-dep-of: 0c51912331f8 ("arm64: dts: renesas: r8a779a0: Correct avb[=
+01] reg sizes")
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 24 +++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/=
+dts/renesas/r8a779a0.dtsi
+> index 26899fb768a73..c7d1b79692c11 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> @@ -583,7 +583,7 @@ hscif3: serial@e66a0000 {
+>
+>                 avb0: ethernet@e6800000 {
+>                         compatible =3D "renesas,etheravb-r8a779a0",
+> -                                    "renesas,etheravb-rcar-gen3";
+> +                                    "renesas,etheravb-rcar-gen4";
 
-I think we still have two options regarding to how 'max_vcpus' is 
-handled in ioctl() to do TDH.MNG.INIT:
+This change will break Ethernet, as the Renesas EtherAVB driver in
+v5.15.x does not handle "renesas,etheravb-rcar-gen4" yet.
 
-1) Just use the 'max_vcpus' done in KVM_ENABLE_CAP(KVM_CAP_MAX_VCPUS),
-2) Still pass the 'max_vcpus' as input, but KVM verifies it against the 
-value that is saved in KVM_ENABLE_CAP(KVM_CAP_MAX_VCPUS).
+That can be fixed by also backporting commit 949f252a8594a860
+("net: ravb: Add R-Car Gen4 support") in v6.1.
 
-2) seems unnecessary, so I don't have objection to use 1).  But it seems 
-we could still mention it in the changelog in that patch?
+>                         reg =3D <0 0xe6800000 0 0x800>;
+>                         interrupts =3D <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>,
+>                                      <GIC_SPI 257 IRQ_TYPE_LEVEL_HIGH>,
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
