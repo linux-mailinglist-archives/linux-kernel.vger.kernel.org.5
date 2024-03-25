@@ -1,108 +1,128 @@
-Return-Path: <linux-kernel+bounces-117946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B03888B1A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6422888B1AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA656320141
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:37:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B2FD2E3985
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D695339E;
-	Mon, 25 Mar 2024 20:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE7459B70;
+	Mon, 25 Mar 2024 20:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="eeG3wfkz"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IuQiuik9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993251BF31;
-	Mon, 25 Mar 2024 20:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26317524DC;
+	Mon, 25 Mar 2024 20:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399053; cv=none; b=HzNiHIq7/1kV3E1aG+j4pC0wtDQgUWAOJtb7ZGkjemSSreKlp69l865+MdH0tseFmoud4KVxp5zx3xqQFXE+cD2ap3yRpIqmtwpHeo6yepZlJJWhpu29OI6w3yBUmJ4C5ivrx02zYXf01iuavr09Qmq4IjvTx77dbySIWK3+Rto=
+	t=1711399083; cv=none; b=MiKRTcShcbcjWTUTgBviaGFoYwtKxX/yabEd2xapAQ57XEZhjXw2Rb3xvgFhsFOwdTBpJssQb7SBLX0Zg+KWLxVn1qfYyi6EqlkwCO+jMyC/IYOczijP84mkzQWXZX1BLiXAGi7ymV/9kG7Szkb5WVMidCjfBk88kbuBfXAL0B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711399053; c=relaxed/simple;
-	bh=VVdQBIh0vlq9StzgBVjD7qCHwBE7R/5l6ZifiUQINeU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g54eeuU8yIVryZqV8J/akWGW2Vt+YYjpIZwKjN0B0XmdTDmAD44z5CqOTW7wWb3tKQ+mp2XqDadRmOwwE6hR5fTdbnOI2V5qMN36LqQDjyZz6Qle+H1m3CmpQwGf4ujTpZfQZ8acgusJIqXUnTGDtQEB3BeuQeYn7sJJ6TQQjnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=eeG3wfkz; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6BC2140E024C;
-	Mon, 25 Mar 2024 20:37:28 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Vo3ELXsGEisO; Mon, 25 Mar 2024 20:37:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711399045; bh=U0G1eMa6Cvy7/sunjtYCvGXSPvh8B0E6dDV8JnTaH1E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eeG3wfkzBYG+9uJzmka8Da6RCICi5rC529Bbuh1aqh0NOV11kJAVJdjpif4LY0c3m
-	 QsI9wVDEwA+c4BZ8Hvgnaplrsn0x7/lj+rXS9KSm8Wlj7uFtcY8ZL4qQNXMfkjcNDh
-	 Kxcxbo9UlIsTJ3fW2SCSg1bvqTVxzJy1y2omch5rc9BbpaAGZJQLlPw8Z+BqvncbE0
-	 XFL+RiX4/h9nzbfEFBiQn2hKdzkHKGioEXqIstzhbAN1frJDFX+taBaiEW4rMFgjMF
-	 Guh3Hfo43JA6JiLrGyiiQBDXcTbkiduG+55XX0WJGzXtO/hlYOiT0MBOtJK1hKe7a4
-	 QgdUJ56Cg/2NGZciGAte1v4dyQbjdMzBA6gKgNQZN61mAJbznaq7gu2zoo3NMXx3af
-	 9kEASC/DLRx/WIT5z5bEydvTlExyxWZjC0VjQimdWRtG4JLgqUauFMxMfPdTCaMPbm
-	 RRJOG+5F6nDDFRDYSD3TtqCYRDZ1G5oUp1aES3jchJdJSIwSUNqGgq436pc8UGtXEs
-	 xozEr20AqlbwUuYAuwomA4Z8UdGV6TeYVvhUxO8O8fUE7kmTq300UmHAa49OkLXOEX
-	 QInykCpxtvs2FS8xU7cX+pf02Mfxk7Zq6S/qVEiq0h3mgr8Rl7S68CMlsqG4wnVVva
-	 2sVlSioM75+0pPJe3x2tcqWQ=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3771840E016C;
-	Mon, 25 Mar 2024 20:37:15 +0000 (UTC)
-Date: Mon, 25 Mar 2024 21:37:14 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "V, Narasimhan" <Narasimhan.V@amd.com>,
-	"linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"Aithal, Srikanth" <Srikanth.Aithal@amd.com>,
-	Dawei Li <dawei.li@shingroup.cn>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Yury Norov <yury.norov@gmail.com>,
-	lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Boot failure with kernel BUG at mm/usercopy.c on next-20240325
-Message-ID: <20240325203714.GJZgHgem2TR1aVAVlU@fat_crate.local>
-References: <DM4PR12MB5086E76CF24A39017DA8567189362@DM4PR12MB5086.namprd12.prod.outlook.com>
- <20240325125017.GBZgFzCXVxeF50uGVE@fat_crate.local>
- <20240325113433.e04c2b508ac325630cd113c8@linux-foundation.org>
+	s=arc-20240116; t=1711399083; c=relaxed/simple;
+	bh=ZGe6Xs4141t4oUDmliNKaBZx4hbKcfvShq8EAjkgEDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=D/t2aXZep+kh6Ub5CrK3ghcd3sMNyr4ouAs3BgwVfT7TBcEs80pL561UksrIqkhyT68CS83grjytyHEtM2zee+g5/DGvnq5maCYeDGT3FvDUCkIirjmNIray9MjkwGEikAW5lODsF58lwVRaR4jRU05PpAEDM7hFhohyMcKQYyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IuQiuik9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D5BBC43390;
+	Mon, 25 Mar 2024 20:37:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711399082;
+	bh=ZGe6Xs4141t4oUDmliNKaBZx4hbKcfvShq8EAjkgEDA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IuQiuik9FgDUG+61NoxGuXx1PE3g3FgiocqMLwVuV4qmySD/w6KWwiNMlUnRAObtm
+	 +d2UZ39haAiK4PFeM5VLpJQzmr/IZe4JyrKxaX7quazNgUBqfwOpe7yOCECdIK3b3K
+	 TDs137LY3Vn9P0KBRM76lnvWLQ7EUGbWRRdPdUiC9Dm0x8xttAb0gKzjtA8G4wk2wf
+	 vwyWTwsaCDcoI9iN7/hgTY9P1oBzbgwBnNCdWrc1F8Qwrx2S0/bp66Z7xiTwYx/T21
+	 1Q6+0dB7s1SFdxVsCQurJJS1RPKOF+QPxkHmT/+0NYmYaTDv+xpKuCAQacPK/n27RW
+	 qRbX+0bH6wnPg==
+Date: Mon, 25 Mar 2024 20:37:46 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Lothar Rubusch <l.rubusch@gmail.com>
+Cc: lars@metafoo.de, Michael.Hennerich@analog.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, eraretuya@gmail.com
+Subject: Re: [PATCH v4 7/7] iio: accel: adxl345: Add spi-3wire option
+Message-ID: <20240325203746.01e834e9@jic23-huawei>
+In-Reply-To: <20240325153356.46112-8-l.rubusch@gmail.com>
+References: <20240325153356.46112-1-l.rubusch@gmail.com>
+	<20240325153356.46112-8-l.rubusch@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240325113433.e04c2b508ac325630cd113c8@linux-foundation.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 11:34:33AM -0700, Andrew Morton wrote:
-> Thanks, I'll just drop the patch.  It didn't receive a very favorable
-> review reception anyway.
+On Mon, 25 Mar 2024 15:33:56 +0000
+Lothar Rubusch <l.rubusch@gmail.com> wrote:
 
-See here:
+> Add a setup function implementation to the spi module to enable
+> spi-3wire as option when specified in the device-tree.
+> 
+> Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+> ---
+>  drivers/iio/accel/adxl345.h     |  1 +
+>  drivers/iio/accel/adxl345_spi.c | 12 +++++++++++-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
+> index 620a2e0f0..55a72ca38 100644
+> --- a/drivers/iio/accel/adxl345.h
+> +++ b/drivers/iio/accel/adxl345.h
+> @@ -36,6 +36,7 @@
+>  #define ADXL345_DATA_FORMAT_8G		2
+>  #define ADXL345_DATA_FORMAT_16G		3
+>  #define ADXL345_DATA_FORMAT_MSK		~((u8) BIT(6)) /* ignore spi-3wire */
+> +#define ADXL345_DATA_FORMAT_SPI_3WIRE	BIT(6)
+If you argue in favour of keeping the MSK as negation of this bit, then
+reorder these two and define FORMAT_MSK in terms of SPI_3WIRE.
 
-https://lore.kernel.org/all/DM4PR12MB5086B9BDBF32D53DF226CBF489362@DM4PR12MB5086.namprd12.prod.outlook.com/
+Note the name of FORMAT_MASK is also an issue now you actually write the 3wire bit.
+So I'd get rid of that define in favour of positive defines of all the fields that
+make it up used inline as it's only accessed in one place anyway.
+That avoids the need for a mask of 'not' something.
 
-folks still need to learn email. :-)
+>  
+>  #define ADXL345_DEVID			0xE5
+>  
+> diff --git a/drivers/iio/accel/adxl345_spi.c b/drivers/iio/accel/adxl345_spi.c
+> index 1c0513bd3..f145d5c1d 100644
+> --- a/drivers/iio/accel/adxl345_spi.c
+> +++ b/drivers/iio/accel/adxl345_spi.c
+> @@ -20,6 +20,16 @@ static const struct regmap_config adxl345_spi_regmap_config = {
+>  	.read_flag_mask = BIT(7) | BIT(6),
+>  };
+>  
+> +static int adxl345_spi_setup(struct device *dev, struct regmap *regmap)
+> +{
+> +	struct spi_device *spi = container_of(dev, struct spi_device, dev);
+> +
+> +	if (spi->mode & SPI_3WIRE)
+> +		return regmap_write(regmap, ADXL345_REG_DATA_FORMAT,
+> +				    ADXL345_DATA_FORMAT_SPI_3WIRE); 
+> +	return 0;
+> +}
+> +
+>  static int adxl345_spi_probe(struct spi_device *spi)
+>  {
+>  	struct regmap *regmap;
+> @@ -33,7 +43,7 @@ static int adxl345_spi_probe(struct spi_device *spi)
+>  	if (IS_ERR(regmap))
+>  		return dev_err_probe(&spi->dev, PTR_ERR(regmap), "Error initializing regmap\n");
+>  
+> -	return adxl345_core_probe(&spi->dev, regmap, NULL);
+> +	return adxl345_core_probe(&spi->dev, regmap, adxl345_spi_setup);
+>  }
+>  
+>  static const struct adxl345_chip_info adxl345_spi_info = {
 
-Anyway, apparently there's some fix there.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
