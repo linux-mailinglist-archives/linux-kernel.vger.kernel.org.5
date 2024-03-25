@@ -1,144 +1,171 @@
-Return-Path: <linux-kernel+bounces-118091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8138888B3D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:18:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D506D88B3E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:22:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BC6C2E2855
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:18:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B6752E23C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:22:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C0775805;
-	Mon, 25 Mar 2024 22:18:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DC474C1B;
+	Mon, 25 Mar 2024 22:22:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i2JBh3og"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CSLHW7Cy"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF50370CC2;
-	Mon, 25 Mar 2024 22:18:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7A26CDD6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:22:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711405119; cv=none; b=igWmmv9hZk0eJDMLoenBsWIXUdzNb9QHxs0X/yCW+taQNEdXbc2ctiznTSJCVFj+JagIuSddMVup1lKLrcvPjZtrHLHtVys1bPM/Tgm3WtXOKCQCuXWWVV8OKse+gnjjt/UigaBqtAkZG2HkHf0azBBXYZA3DV+1iPVmrBXimCM=
+	t=1711405346; cv=none; b=Sd8PAs85IzPCTrarETGtBc4R1jF+4fIgxMfuJseATA2Dhx4KWzaQwUG5DgsIm1+IV764SatQm2UOjK1krONFklFp9PfidwLikKCOqkxawFmBMvfqUFgkVztdiSUYe3W0Xd+EpJpRfxje+0Ke8xuV51xv58jXZgWeDR8EcUm5XQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711405119; c=relaxed/simple;
-	bh=feUQgOvzcNlvP1Ks242aVU3gOvHsb8SG3N7apTriglg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OMWSEo1ZCirmWOStMRsS9dge+R1u7aQH5LePUeJ+Wc9xIwCH6zzQ/M2oClwzkNhtfCdtXG+eg4jhAkBHXSFXBphcAXPTsn0iZRPlmLbtGf7V8hbVMKqepImzW3Vay70KWNAlMR+sNgaUoNy6r1j4VmmWf35xL9aGj/7EFS09BI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i2JBh3og; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711405118; x=1742941118;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=feUQgOvzcNlvP1Ks242aVU3gOvHsb8SG3N7apTriglg=;
-  b=i2JBh3ogKEvpyxNaMbsRpnJwqTkKq6wXi62vTyfprG1jFMijpLHwRuLS
-   BDFqSG8mmrcbb01s6Yg04ptYRXn5splQdSwAyyU7ph436SHgP1XefpIZl
-   dOrh/e1263u31J6ynvtzlFp5u0sC6JVkCk5uGL58yin83CIj2h2M8cjrv
-   AZe3IfkZzENqfkt2hYW9etDM/KA46X2xitUFT33aGYsYL3uUD2U9/kShw
-   ovipwz+MupBMTUM5sQwLWrOhGh/DfcHsknvWkaTpdW1+lNeFlIKv/B1BE
-   HvldIn8jL78bYKdQg9f0YQNqZWomo1Q5cEL2jqyHLdURYnzwxO4eUhksL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6372056"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="6372056"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 15:18:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="15845759"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 15:18:37 -0700
-Date: Mon, 25 Mar 2024 15:18:36 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
-	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
- for unsupported cases
-Message-ID: <20240325221836.GO2357401@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <1ed955a44cd81738b498fe52823766622d8ad57f.1708933498.git.isaku.yamahata@intel.com>
- <618614fa6c62a232d95da55546137251e1847f48.camel@intel.com>
- <20240319235654.GC1994522@ls.amr.corp.intel.com>
- <1c2283aab681bd882111d14e8e71b4b35549e345.camel@intel.com>
- <f63d19a8fe6d14186aecc8fcf777284879441ef6.camel@intel.com>
- <20240321225910.GU1994522@ls.amr.corp.intel.com>
- <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
- <20240325190525.GG2357401@ls.amr.corp.intel.com>
- <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
+	s=arc-20240116; t=1711405346; c=relaxed/simple;
+	bh=vKW+xoILl2neQcke3VqWqq0fiJGp/n972RtgGuEHtnQ=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=e8Y+t2sfAZLVk21NyHFExxU0QblN5aG6bUfvZR+a2IUxByBwvjOsV3zcFY5ySg49/d9E323Fq+iqZDsVzd6pnnOAeChdd5wS5d28UI2tUpzzzWLIH6SfxjspyHqCgCWlzrqTPhC6lGe/jj6go4jp0Lcf6MwhghpmC2xSsmGnsJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CSLHW7Cy; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1def3340682so39882315ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711405344; x=1712010144; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=txLs5NtImA2VWZlBubPwip9xSO6gMvbeKarQ47jfmgc=;
+        b=CSLHW7CyyT6U7UQKHXBoMso6EG/UdMwqHhLX3dvQMqVvUoBb8N9y/a7WZYlXYS0w8J
+         lZZxcbgONlYWDY+FpYD95u06UWXol+sD9B+Txemckhg65cQr4RNM8REAkNnSZfatyMwg
+         ZSL1X79HtsEihrrWkHGysemYVR/JEmAQ+1Un/GQbMLFqB92Z2iivH7eVDaUQBgO9uwYb
+         H5JfqbQkTWot1Xrfto5/ZcsRiTkW3y8vJESYovBd7Z9sLz0BydwA6XxG2h4qQtLxspY+
+         kniRpYw8mxM1xTaGFeeY7Z7CGA8VFLlAM21FZLI/3lnjTrlZli3Be3Ai9+abdsDkVaYS
+         wXrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711405344; x=1712010144;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=txLs5NtImA2VWZlBubPwip9xSO6gMvbeKarQ47jfmgc=;
+        b=ue0/VoqTlATj6P7BdJM2Os7rAIxzgK18toHVFivVV80/ERqz6hpIA7qdF8+3xMYGGX
+         ub2Q7fpDuTaWsugrGYqTF5UTNw0gvEyy0GKt7bnpz1yN882z4eNHRbstiTjZQzOe8zfL
+         d7tffXa5Knb7csaSrFxFKLdqw7XPBOK69rd2xS2yZKf/0MZ0fUyb81H2PXyA7/3z3iJB
+         Hq3r1p+e2Nb7+BETDhgG9Yr/dj00xF69e5zE08XK01w6Fh/izDppiINV+LIvaD1qQPd3
+         aQkYMCMKlN9ozC2QDO+JRKveKIndyN8IbaXdHyb6Q9+jafIb+VV7OoOClA7k3plKbg1t
+         bLgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvEfFsgbtF5BMZVoyxPSHCBC4qGMTkSX+SzXrdvF2aFvJXuPbCNXVFhVd4NfMuQByYSviLONzwirdxednfDtzsKSt2aUI4/UngC3qc
+X-Gm-Message-State: AOJu0Yw6+P7bxJUvNFwVjmw6RANLoakSxLuEBBzrR2F/Qy1EQE7mbPYj
+	3dW1kYKTSjuLAbU2TgD7q7upJ9xwFW1hj+Z4RqlNcmxXAmHJG9Nk51t1WE80GhQ=
+X-Google-Smtp-Source: AGHT+IGXh5MDhzVnvBPuf+JgibFces6iZpq1uyXY9Jf9I5RUf7oMVvK7FiCeSP1XrC9SZEzJ5qR4rw==
+X-Received: by 2002:a17:902:d344:b0:1e0:d0b:25a2 with SMTP id l4-20020a170902d34400b001e00d0b25a2mr9752931plk.41.1711405343855;
+        Mon, 25 Mar 2024 15:22:23 -0700 (PDT)
+Received: from [192.168.0.13] ([172.92.174.232])
+        by smtp.gmail.com with ESMTPSA id u6-20020a17090341c600b001dddaa7d046sm5247951ple.29.2024.03.25.15.22.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 15:22:23 -0700 (PDT)
+Subject: Re: [PATCH 5/5] clocksource/drivers/timer-clint: Add T-Head C9xx
+ clint support
+To: Jisheng Zhang <jszhang@kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240325164021.3229-1-jszhang@kernel.org>
+ <20240325164021.3229-6-jszhang@kernel.org>
+From: Bo Gan <ganboing@gmail.com>
+Message-ID: <72eac56e-61d4-e42f-cfbd-8bcc35ed7bb6@gmail.com>
+Date: Mon, 25 Mar 2024 15:22:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
+In-Reply-To: <20240325164021.3229-6-jszhang@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 07:55:04PM +0000,
-"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+On 3/25/24 9:40 AM, Jisheng Zhang wrote:
+> The mtimecmp in T-Head C9xx clint only supports 32bit read/write,
+> implement such support.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>   drivers/clocksource/timer-clint.c | 24 ++++++++++++++++++++++++
+>   1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
+> index 4537c77e623c..71188732e8a3 100644
+> --- a/drivers/clocksource/timer-clint.c
+> +++ b/drivers/clocksource/timer-clint.c
+> @@ -34,6 +34,7 @@ static unsigned int clint_ipi_irq;
+>   static u64 __iomem *clint_timer_cmp;
+>   static unsigned long clint_timer_freq;
+>   static unsigned int clint_timer_irq;
+> +static bool is_c900_clint;
+>   
+>   #ifdef CONFIG_SMP
+>   static void clint_send_ipi(unsigned int cpu)
+> @@ -88,6 +89,19 @@ static int clint_clock_next_event(unsigned long delta,
+>   	return 0;
+>   }
+>   
+> +static int c900_clint_clock_next_event(unsigned long delta,
+> +				       struct clock_event_device *ce)
+> +{
+> +	void __iomem *r = clint_timer_cmp +
+> +			  cpuid_to_hartid_map(smp_processor_id());
+> +	u64 val = clint_get_cycles64() + delta;
+> +
+> +	csr_set(CSR_IE, IE_TIE);
+Perhaps you should do a writel_relaxed(-1, r) here. just like openSBI, because the update
+to mtimecmp is now split into 2 parts.
+https://github.com/riscv-software-src/opensbi/blob/v1.4/lib/utils/timer/aclint_mtimer.c#L54
 
-> On Mon, 2024-03-25 at 12:05 -0700, Isaku Yamahata wrote:
-> > Right, the guest has to accept it on VE.  If the unmap was intentional by guest,
-> > that's fine.  The unmap is unintentional (with vMTRR), the guest doesn't expect
-> > VE with the GPA.
-> > 
-> > 
-> > > But, I guess we should punt to userspace is the guest tries to use
-> > > MTRRs, not that userspace can handle it happening in a TD...  But it
-> > > seems cleaner and safer then skipping zapping some pages inside the
-> > > zapping code.
-> > > 
-> > > I'm still not sure if I understand the intention and constraints fully.
-> > > So please correct. This (the skipping the zapping for some operations)
-> > > is a theoretical correctness issue right? It doesn't resolve a TD
-> > > crash?
-> > 
-> > For lapic, it's safe guard. Because TDX KVM disables APICv with
-> > APICV_INHIBIT_REASON_TDX, apicv won't call kvm_zap_gfn_range().
-> Ah, I see it:
-> https://lore.kernel.org/lkml/38e2f8a77e89301534d82325946eb74db3e47815.1708933498.git.isaku.yamahata@intel.com/
+> +	writel_relaxed(val, r);
+> +	writel_relaxed(val >> 32, r + 4);
+> +	return 0;
+> +}
+> +>   static DEFINE_PER_CPU(struct clock_event_device, clint_clock_event) = {
+>   	.name		= "clint_clockevent",
+>   	.features	= CLOCK_EVT_FEAT_ONESHOT,
+> @@ -99,6 +113,9 @@ static int clint_timer_starting_cpu(unsigned int cpu)
+>   {
+>   	struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
+>   
+> +	if (is_c900_clint)
+> +		ce->set_next_event = c900_clint_clock_next_event;
+> +
+>   	ce->cpumask = cpumask_of(cpu);
+>   	clockevents_config_and_register(ce, clint_timer_freq, 100, ULONG_MAX);
+>   
+> @@ -233,5 +250,12 @@ static int __init clint_timer_init_dt(struct device_node *np)
+>   	return rc;
+>   }
+>   
+> +static int __init c900_clint_timer_init_dt(struct device_node *np)
+> +{
+> +	is_c900_clint = true;
+> +	return clint_timer_init_dt(np);
+> +}
+> +
+>   TIMER_OF_DECLARE(clint_timer, "riscv,clint0", clint_timer_init_dt);
+>   TIMER_OF_DECLARE(clint_timer1, "sifive,clint0", clint_timer_init_dt);
+> +TIMER_OF_DECLARE(clint_timer2, "thead,c900-clint", clint_timer_init_dt);
 > 
-> Then it seems a warning would be more appropriate if we are worried there might be a way to still
-> call it. If we are confident it can't, then we can just ignore this case.
-> 
-> > 
-> > For MTRR, the purpose is to make the guest boot (without the guest kernel
-> > command line like clearcpuid=mtrr) .
-> > If we can assume the guest won't touch MTRR registers somehow, KVM can return an
-> > error to TDG.VP.VMCALL<RDMSR, WRMSR>(MTRR registers). So it doesn't call
-> > kvm_zap_gfn_range(). Or we can use KVM_EXIT_X86_{RDMSR, WRMSR} as you suggested.
-> 
-> My understanding is that Sean prefers to exit to userspace when KVM can't handle something, versus
-> making up behavior that keeps known guests alive. So I would think we should change this patch to
-> only be about not using the zapping roots optimization. Then a separate patch should exit to
-> userspace on attempt to use MTRRs. And we ignore the APIC one.
-> 
-> This is trying to guess what maintainers would want here. I'm less sure what Paolo prefers.
+Better use a more generic term to describe the fact that mtimecmp doesn't support
+64-bit mmio, just like what openSBI is currently doing, instead of making it c900 specific:
 
-When we hit KVM_MSR_FILTER, the current implementation ignores it and makes it
-error to guest.  Surely we should make it KVM_EXIT_X86_{RDMSR, WRMSR}, instead.
-It's aligns with the existing implementation(default VM and SW-protected) and
-more flexible.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+https://github.com/riscv-software-src/opensbi/blob/v1.4/lib/utils/timer/fdt_timer_mtimer.c#L152
+
+Then your `is_c900_clint` becomes something like `timecmp_64bit_mmio`.
+
+Bo
 
