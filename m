@@ -1,60 +1,76 @@
-Return-Path: <linux-kernel+bounces-117852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B8888B076
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:51:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 146B288B079
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:51:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 017AA1C3FA4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:51:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B14F52E305A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA132233A;
-	Mon, 25 Mar 2024 19:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED5591CD2C;
+	Mon, 25 Mar 2024 19:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QCZOzQHf"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LgkksWaM"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D191B1BDD5;
-	Mon, 25 Mar 2024 19:50:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668091BDD5
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711396256; cv=none; b=ejesSFg8+wkcdksGikR/8stoTyu9SQRxQyyjXywyGYsSSFvVQ5R5mNrgKKBR0dLKKT461Iy3bhaZb41grhre41PmbEfgodUewCVMgyra4CZkkVnh4q/mFQpJLY/aCCe5U6AHW/S+vH9Y3zyxYhHgS1lzWMC8wnO/tNpswBfgzHk=
+	t=1711396295; cv=none; b=XfWwPgbsxsskY5I8UZns0J0FnDDioNNItElQTIw2fv7XTJQXjgbp/tovQ8n0HeplMNqjdOvMFNAHvwIaCa7qNT/vPZn1lM78EtBhtcHtJXvR5crQ3tVpAXXDI+TmyH5/Se8OZi5v6Q8kCaxxGrdLuMSGOz4hWZ8BPYM0dA18K4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711396256; c=relaxed/simple;
-	bh=iKEO/xHVQKEIQC9/JG8R79bO8RfQOLSdfjZGGmqdSAg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bnkEkPni6r5CEN/OnHTcGnwYb2HvXmJucYAAPe3cEtu7ZUyLSGzkCKYt9oNqXWu8ZnmnkMrs6dFy2BK0dPrJnteIJyJR/zWZ6O8qDDPIoqbMJ3zKyhyhJHjHtCXr32rzx86D5rX0FBNTaNDSkX6GnTbLuTbFndHP18M/QutyQUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QCZOzQHf; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Ba3ZQVoyv35CFpCd52xhNCuIr1OdeaIrpW35R7rzWJs=; b=QCZOzQHf2X0CYDknK1bY5HgaG/
-	H6lXEdEM6BopZrOfi7w51aSU8qo/IAuEe+928IY1r4NKWnf4L15+2155zMGDbynqvMFvErfrfJ9Ad
-	Z1BnZnIXsRmkzIBLIFoyhDyk8JsWMIGGDcCa1pkNDJUcl+kaW2AW3hi7rGY0pLicORirqfVALPg8b
-	D1GlEjN2r+V43yuis6oNEkLFLt4cxToPCDqFg7LEKsusCgkRGGHqUGyUgfVdx0dQALJRRXrEan3Jl
-	eeyG8AsDtNmcadHl155TrXxwFtRFFCS/lnp/ubYOhqAsMUeHwiS8bnV0qxeLy7m3jxzAbNfY/6NTK
-	qp9udYDA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1roqLJ-0000000HChy-3lo4;
-	Mon, 25 Mar 2024 19:50:49 +0000
-Date: Mon, 25 Mar 2024 19:50:49 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>, linux-aio@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Benjamin LaHaise <bcrl@kvack.org>, Jan Kara <jack@suse.cz>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] fs: aio: more folio conversion
-Message-ID: <ZgHVmbIj80R7GZq6@casper.infradead.org>
-References: <20240321131640.948634-1-wangkefeng.wang@huawei.com>
- <20240322-rangfolge-teilnahm-9815a419610d@brauner>
+	s=arc-20240116; t=1711396295; c=relaxed/simple;
+	bh=Qwaj8ekRhEcPsYZvlwMeK0PTOIIhmyF4czA7mdpKkgo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=hZgJX2sjCQ+PM0KvhXt0fB/ayRnt8/SmghlkZOVP3Fpmyd10JaI26z4zOumjVZTVbivg7d1i7Eqne8TlwGxOcjBhlCxlHCf9Cw/I6hPEPfJTBoZqiUNYzYjc0MFzOmWrXebbfRDLpplqHsItd++xcdMSNVKK1c5GQa0XH317kjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LgkksWaM; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33e9115d501so1545064f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711396277; x=1712001077; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cJAQQVo7hA/x8FzjU1xza960vsQT/AXGZ3qOl6MIN1k=;
+        b=LgkksWaMj09x8pp2Wx/uAIg3j8lW5Dh6+YEMAxL2or/vKrHxAOd4x2TS3+bGvoHvWJ
+         UPbCShYr52i6oPO2PCW37jGo+8y8b1nm/w4vPFzIeCcl7s8wHzbqpQCAWs3pfolD8xi/
+         DP8hsgoujrXY2FGurJfZkBCuxYaWAm74lEnAd/A2pXEO0KR90++flS3VlwrTqn0eXRjE
+         UvWyrKX2nr8lwznpD/W4hXBs9eHaPZk+U6YVFfVmX4V4+O2H4uhDzghH4kEhGMecF0zm
+         wmefzSuUqjnFcMpU9XVvszLxq+vCseF4B/wWy211J46gQQGbK7/51mC6CRzMM1UkVZE2
+         5YGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711396277; x=1712001077;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cJAQQVo7hA/x8FzjU1xza960vsQT/AXGZ3qOl6MIN1k=;
+        b=u/vwmEfbRYVZ4C/NoWWNaEeOtzxMVkeh9q0j/MqLmsnhXku4aE8vbzjrr1ggfCUFOe
+         dI1FJ694r2bvNGlSU/LVxKmTFNCRvo56QE5MK3jDr2Y97aOJmzyMiuetYHOVCznq+Fef
+         ekTIg2CD2e3CgpilpyHJNLEV+zYbEtrivDnq+pm/17P9l4oeVQ+ulF//6eULIcZ7Lq8E
+         zwUEeB9gejSNGZldaH55kJ0/Db7tQPCpdu4SRTI5WE6ANckNCG4HvBxY412GPq8jG5P/
+         b0D/uuzR0rghJI59FDQsvlV3I1zwyZEA+SPYTltRZxYVHix86fcB8rxN8mOZS+/zD9qD
+         235g==
+X-Forwarded-Encrypted: i=1; AJvYcCUqDX7FXyJYkXUz3E8CGY+r83tD+bAGW+oklGJkufYRK6XauhOoiVKg4TE5CRnfeA9+2xa2IwRbnR4wPleI0VHFPqeJyDzoH54stRDC
+X-Gm-Message-State: AOJu0YwqJCxJDsRz3VPGvaRNmEA9254hEXjEJ73o6RLRS7iUqbEwbQ/o
+	bHp2HaYS9JGyc31Z5G3gKkWfeFuLsg8/wXIMUKpsDnLYSh46Q5h1
+X-Google-Smtp-Source: AGHT+IFfguskrNmz4u0Nx7uDefHqaDqFMPKh5Tp4/0S4TSP8m7a85BsjPc5KsaaEYo3FdJGGVYQcig==
+X-Received: by 2002:a05:600c:3b0e:b0:414:8889:5a60 with SMTP id m14-20020a05600c3b0e00b0041488895a60mr3418166wms.0.1711396275562;
+        Mon, 25 Mar 2024 12:51:15 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id bf12-20020a0560001ccc00b0033e745b8bcfsm10269016wrb.88.2024.03.25.12.51.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 12:51:14 -0700 (PDT)
+Date: Mon, 25 Mar 2024 20:51:12 +0100
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH] staging: wlan-ng: Remove broken driver prism2_usb
+Message-ID: <20240325195112.GA17878@matrix-ESPRIMO-P710>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,25 +79,15446 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240322-rangfolge-teilnahm-9815a419610d@brauner>
 
-On Fri, Mar 22, 2024 at 03:12:42PM +0100, Christian Brauner wrote:
-> On Thu, 21 Mar 2024 21:16:37 +0800, Kefeng Wang wrote:
-> > Convert to use folio throughout aio.
-> > 
-> > v2:
-> > - fix folio check returned from __filemap_get_folio()
-> > - use folio_end_read() suggested by Matthew
-> > 
-> > Kefeng Wang (3):
-> >   fs: aio: use a folio in aio_setup_ring()
-> >   fs: aio: use a folio in aio_free_ring()
-> >   fs: aio: convert to ring_folios and internal_folios
-> > 
-> > [...]
-> 
-> @Willy, can I get your RVB, please?
+Tests on wlan-ng hardware have shown that this driver is broken since
+April 2021. Remove broken driver. Find fix for bug in link.
 
-For the series:
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lore.kernel.org/linux-staging/5fa18cb8-3c51-4ac6-811e-63ae74f82f17@gmail.com/
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+Checked for artifacts of wlan-ng and prism2_usb in MAINTAINERS.
+Removed artifacts in Makefile.
+Used the following hardware for tests: D-Link DWL-122 and Sinus 111
+Tested with build and make clean to ensure that all is OK.
+With above fix inserted, non encrypted transmission is working.
+Throughput is 200 to 800kByte/s. WEP would need further investigation.
+---
+ drivers/staging/Kconfig                    |    2 -
+ drivers/staging/Makefile                   |    1 -
+ drivers/staging/wlan-ng/Kconfig            |   13 -
+ drivers/staging/wlan-ng/Makefile           |    8 -
+ drivers/staging/wlan-ng/README             |    8 -
+ drivers/staging/wlan-ng/TODO               |   16 -
+ drivers/staging/wlan-ng/cfg80211.c         |  718 ----
+ drivers/staging/wlan-ng/hfa384x.h          | 1236 -------
+ drivers/staging/wlan-ng/hfa384x_usb.c      | 3880 --------------------
+ drivers/staging/wlan-ng/p80211conv.c       |  643 ----
+ drivers/staging/wlan-ng/p80211conv.h       |  141 -
+ drivers/staging/wlan-ng/p80211hdr.h        |  189 -
+ drivers/staging/wlan-ng/p80211ioctl.h      |   69 -
+ drivers/staging/wlan-ng/p80211metadef.h    |  227 --
+ drivers/staging/wlan-ng/p80211metastruct.h |  236 --
+ drivers/staging/wlan-ng/p80211mgmt.h       |  199 -
+ drivers/staging/wlan-ng/p80211msg.h        |   39 -
+ drivers/staging/wlan-ng/p80211netdev.c     |  988 -----
+ drivers/staging/wlan-ng/p80211netdev.h     |  212 --
+ drivers/staging/wlan-ng/p80211req.c        |  223 --
+ drivers/staging/wlan-ng/p80211req.h        |   33 -
+ drivers/staging/wlan-ng/p80211types.h      |  292 --
+ drivers/staging/wlan-ng/p80211wep.c        |  207 --
+ drivers/staging/wlan-ng/prism2fw.c         | 1213 ------
+ drivers/staging/wlan-ng/prism2mgmt.c       | 1315 -------
+ drivers/staging/wlan-ng/prism2mgmt.h       |   89 -
+ drivers/staging/wlan-ng/prism2mib.c        |  742 ----
+ drivers/staging/wlan-ng/prism2sta.c        | 1945 ----------
+ drivers/staging/wlan-ng/prism2usb.c        |  299 --
+ 29 files changed, 15183 deletions(-)
+ delete mode 100644 drivers/staging/wlan-ng/Kconfig
+ delete mode 100644 drivers/staging/wlan-ng/Makefile
+ delete mode 100644 drivers/staging/wlan-ng/README
+ delete mode 100644 drivers/staging/wlan-ng/TODO
+ delete mode 100644 drivers/staging/wlan-ng/cfg80211.c
+ delete mode 100644 drivers/staging/wlan-ng/hfa384x.h
+ delete mode 100644 drivers/staging/wlan-ng/hfa384x_usb.c
+ delete mode 100644 drivers/staging/wlan-ng/p80211conv.c
+ delete mode 100644 drivers/staging/wlan-ng/p80211conv.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211hdr.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211ioctl.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211metadef.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211metastruct.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211mgmt.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211msg.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211netdev.c
+ delete mode 100644 drivers/staging/wlan-ng/p80211netdev.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211req.c
+ delete mode 100644 drivers/staging/wlan-ng/p80211req.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211types.h
+ delete mode 100644 drivers/staging/wlan-ng/p80211wep.c
+ delete mode 100644 drivers/staging/wlan-ng/prism2fw.c
+ delete mode 100644 drivers/staging/wlan-ng/prism2mgmt.c
+ delete mode 100644 drivers/staging/wlan-ng/prism2mgmt.h
+ delete mode 100644 drivers/staging/wlan-ng/prism2mib.c
+ delete mode 100644 drivers/staging/wlan-ng/prism2sta.c
+ delete mode 100644 drivers/staging/wlan-ng/prism2usb.c
+
+diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+index 5175b1c4f161..8e0e9ab37302 100644
+--- a/drivers/staging/Kconfig
++++ b/drivers/staging/Kconfig
+@@ -24,8 +24,6 @@ menuconfig STAGING
+ 
+ if STAGING
+ 
+-source "drivers/staging/wlan-ng/Kconfig"
+-
+ source "drivers/staging/olpc_dcon/Kconfig"
+ 
+ source "drivers/staging/rtl8192e/Kconfig"
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index 67399c0ad871..471b483e9042 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -2,7 +2,6 @@
+ # Makefile for staging directory
+ 
+ obj-y				+= media/
+-obj-$(CONFIG_PRISM2_USB)	+= wlan-ng/
+ obj-$(CONFIG_FB_OLPC_DCON)	+= olpc_dcon/
+ obj-$(CONFIG_RTL8192E)		+= rtl8192e/
+ obj-$(CONFIG_RTL8723BS)		+= rtl8723bs/
+diff --git a/drivers/staging/wlan-ng/Kconfig b/drivers/staging/wlan-ng/Kconfig
+deleted file mode 100644
+index 082c16a31616..000000000000
+--- a/drivers/staging/wlan-ng/Kconfig
++++ /dev/null
+@@ -1,13 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-config PRISM2_USB
+-	tristate "Prism2.5/3 USB driver"
+-	depends on WLAN && USB && CFG80211
+-	select WIRELESS_EXT
+-	select WEXT_PRIV
+-	select CRC32
+-	help
+-	  This is the wlan-ng prism 2.5/3 USB driver for a wide range of
+-	  old USB wireless devices.
+-
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called prism2_usb.
+diff --git a/drivers/staging/wlan-ng/Makefile b/drivers/staging/wlan-ng/Makefile
+deleted file mode 100644
+index 1d24b0f86eee..000000000000
+--- a/drivers/staging/wlan-ng/Makefile
++++ /dev/null
+@@ -1,8 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-obj-$(CONFIG_PRISM2_USB) += prism2_usb.o
+-
+-prism2_usb-y := prism2usb.o \
+-		p80211conv.o \
+-		p80211req.o \
+-		p80211wep.o \
+-		p80211netdev.o
+diff --git a/drivers/staging/wlan-ng/README b/drivers/staging/wlan-ng/README
+deleted file mode 100644
+index d0621f827c01..000000000000
+--- a/drivers/staging/wlan-ng/README
++++ /dev/null
+@@ -1,8 +0,0 @@
+-TODO:
+-	- checkpatch.pl cleanups
+-	- sparse warnings
+-	- move to use the in-kernel wireless stack
+-
+-Please send any patches or complaints about this driver to Greg
+-Kroah-Hartman <greg@kroah.com> and don't bother the upstream wireless
+-kernel developers about it, they want nothing to do with it.
+diff --git a/drivers/staging/wlan-ng/TODO b/drivers/staging/wlan-ng/TODO
+deleted file mode 100644
+index ab9d5d145b3b..000000000000
+--- a/drivers/staging/wlan-ng/TODO
++++ /dev/null
+@@ -1,16 +0,0 @@
+-To-do list:
+-
+-* Correct the coding style according to Linux guidelines; please read the document
+-  at https://www.kernel.org/doc/html/latest/process/coding-style.html.
+-* Remove unnecessary debugging/printing macros; for those that are still needed
+-  use the proper kernel API (pr_debug(), dev_dbg(), netdev_dbg()).
+-* Remove dead code such as unusued functions, variables, fields, etc..
+-* Use in-kernel API and remove unnecessary wrappers where possible.
+-* Fix bugs due to code that sleeps in atomic context.
+-* Remove the HAL layer and migrate its functionality into the relevant parts of
+-  the driver.
+-* Switch to use LIB80211.
+-* Switch to use MAC80211.
+-* Switch to use CFG80211.
+-* Improve the error handling of various functions, particularly those that use
+-  existing kernel APIs.
+diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
+deleted file mode 100644
+index 471bb310176f..000000000000
+--- a/drivers/staging/wlan-ng/cfg80211.c
++++ /dev/null
+@@ -1,718 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* cfg80211 Interface for prism2_usb module */
+-#include "hfa384x.h"
+-#include "prism2mgmt.h"
+-
+-/* Prism2 channel/frequency/bitrate declarations */
+-static const struct ieee80211_channel prism2_channels[] = {
+-	{ .center_freq = 2412 },
+-	{ .center_freq = 2417 },
+-	{ .center_freq = 2422 },
+-	{ .center_freq = 2427 },
+-	{ .center_freq = 2432 },
+-	{ .center_freq = 2437 },
+-	{ .center_freq = 2442 },
+-	{ .center_freq = 2447 },
+-	{ .center_freq = 2452 },
+-	{ .center_freq = 2457 },
+-	{ .center_freq = 2462 },
+-	{ .center_freq = 2467 },
+-	{ .center_freq = 2472 },
+-	{ .center_freq = 2484 },
+-};
+-
+-static const struct ieee80211_rate prism2_rates[] = {
+-	{ .bitrate = 10 },
+-	{ .bitrate = 20 },
+-	{ .bitrate = 55 },
+-	{ .bitrate = 110 }
+-};
+-
+-#define PRISM2_NUM_CIPHER_SUITES 2
+-static const u32 prism2_cipher_suites[PRISM2_NUM_CIPHER_SUITES] = {
+-	WLAN_CIPHER_SUITE_WEP40,
+-	WLAN_CIPHER_SUITE_WEP104
+-};
+-
+-/* prism2 device private data */
+-struct prism2_wiphy_private {
+-	struct wlandevice *wlandev;
+-
+-	struct ieee80211_supported_band band;
+-	struct ieee80211_channel channels[ARRAY_SIZE(prism2_channels)];
+-	struct ieee80211_rate rates[ARRAY_SIZE(prism2_rates)];
+-
+-	struct cfg80211_scan_request *scan_request;
+-};
+-
+-static const void * const prism2_wiphy_privid = &prism2_wiphy_privid;
+-
+-/* Helper Functions */
+-static int prism2_result2err(int prism2_result)
+-{
+-	int err = 0;
+-
+-	switch (prism2_result) {
+-	case P80211ENUM_resultcode_invalid_parameters:
+-		err = -EINVAL;
+-		break;
+-	case P80211ENUM_resultcode_implementation_failure:
+-		err = -EIO;
+-		break;
+-	case P80211ENUM_resultcode_not_supported:
+-		err = -EOPNOTSUPP;
+-		break;
+-	default:
+-		err = 0;
+-		break;
+-	}
+-
+-	return err;
+-}
+-
+-static int prism2_domibset_uint32(struct wlandevice *wlandev,
+-				  u32 did, u32 data)
+-{
+-	struct p80211msg_dot11req_mibset msg;
+-	struct p80211item_uint32 *mibitem =
+-			(struct p80211item_uint32 *)&msg.mibattribute.data;
+-
+-	msg.msgcode = DIDMSG_DOT11REQ_MIBSET;
+-	mibitem->did = did;
+-	mibitem->data = data;
+-
+-	return p80211req_dorequest(wlandev, (u8 *)&msg);
+-}
+-
+-static int prism2_domibset_pstr32(struct wlandevice *wlandev,
+-				  u32 did, u8 len, const u8 *data)
+-{
+-	struct p80211msg_dot11req_mibset msg;
+-	struct p80211item_pstr32 *mibitem =
+-			(struct p80211item_pstr32 *)&msg.mibattribute.data;
+-
+-	msg.msgcode = DIDMSG_DOT11REQ_MIBSET;
+-	mibitem->did = did;
+-	mibitem->data.len = len;
+-	memcpy(mibitem->data.data, data, len);
+-
+-	return p80211req_dorequest(wlandev, (u8 *)&msg);
+-}
+-
+-/* The interface functions, called by the cfg80211 layer */
+-static int prism2_change_virtual_intf(struct wiphy *wiphy,
+-				      struct net_device *dev,
+-				      enum nl80211_iftype type,
+-				      struct vif_params *params)
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-	u32 data;
+-	int result;
+-	int err = 0;
+-
+-	switch (type) {
+-	case NL80211_IFTYPE_ADHOC:
+-		if (wlandev->macmode == WLAN_MACMODE_IBSS_STA)
+-			goto exit;
+-		wlandev->macmode = WLAN_MACMODE_IBSS_STA;
+-		data = 0;
+-		break;
+-	case NL80211_IFTYPE_STATION:
+-		if (wlandev->macmode == WLAN_MACMODE_ESS_STA)
+-			goto exit;
+-		wlandev->macmode = WLAN_MACMODE_ESS_STA;
+-		data = 1;
+-		break;
+-	default:
+-		netdev_warn(dev, "Operation mode: %d not support\n", type);
+-		return -EOPNOTSUPP;
+-	}
+-
+-	/* Set Operation mode to the PORT TYPE RID */
+-	result = prism2_domibset_uint32(wlandev,
+-					DIDMIB_P2_STATIC_CNFPORTTYPE,
+-					data);
+-
+-	if (result)
+-		err = -EFAULT;
+-
+-	dev->ieee80211_ptr->iftype = type;
+-
+-exit:
+-	return err;
+-}
+-
+-static int prism2_add_key(struct wiphy *wiphy, struct net_device *dev,
+-			  int link_id, u8 key_index, bool pairwise,
+-			  const u8 *mac_addr, struct key_params *params)
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-	u32 did;
+-
+-	if (key_index >= NUM_WEPKEYS)
+-		return -EINVAL;
+-
+-	if (params->cipher != WLAN_CIPHER_SUITE_WEP40 &&
+-	    params->cipher != WLAN_CIPHER_SUITE_WEP104) {
+-		pr_debug("Unsupported cipher suite\n");
+-		return -EFAULT;
+-	}
+-
+-	if (prism2_domibset_uint32(wlandev,
+-				   DIDMIB_DOT11SMT_PRIVACYTABLE_WEPDEFAULTKEYID,
+-				   key_index))
+-		return -EFAULT;
+-
+-	/* send key to driver */
+-	did = didmib_dot11smt_wepdefaultkeystable_key(key_index + 1);
+-
+-	if (prism2_domibset_pstr32(wlandev, did, params->key_len, params->key))
+-		return -EFAULT;
+-	return 0;
+-}
+-
+-static int prism2_get_key(struct wiphy *wiphy, struct net_device *dev,
+-			  int link_id, u8 key_index, bool pairwise,
+-			  const u8 *mac_addr, void *cookie,
+-			  void (*callback)(void *cookie, struct key_params*))
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-	struct key_params params;
+-	int len;
+-
+-	if (key_index >= NUM_WEPKEYS)
+-		return -EINVAL;
+-
+-	len = wlandev->wep_keylens[key_index];
+-	memset(&params, 0, sizeof(params));
+-
+-	if (len == 13)
+-		params.cipher = WLAN_CIPHER_SUITE_WEP104;
+-	else if (len == 5)
+-		params.cipher = WLAN_CIPHER_SUITE_WEP104;
+-	else
+-		return -ENOENT;
+-	params.key_len = len;
+-	params.key = wlandev->wep_keys[key_index];
+-	params.seq_len = 0;
+-
+-	callback(cookie, &params);
+-
+-	return 0;
+-}
+-
+-static int prism2_del_key(struct wiphy *wiphy, struct net_device *dev,
+-			  int link_id, u8 key_index, bool pairwise,
+-			  const u8 *mac_addr)
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-	u32 did;
+-	int err = 0;
+-	int result = 0;
+-
+-	/* There is no direct way in the hardware (AFAIK) of removing
+-	 * a key, so we will cheat by setting the key to a bogus value
+-	 */
+-
+-	if (key_index >= NUM_WEPKEYS)
+-		return -EINVAL;
+-
+-	/* send key to driver */
+-	did = didmib_dot11smt_wepdefaultkeystable_key(key_index + 1);
+-	result = prism2_domibset_pstr32(wlandev, did, 13, "0000000000000");
+-
+-	if (result)
+-		err = -EFAULT;
+-
+-	return err;
+-}
+-
+-static int prism2_set_default_key(struct wiphy *wiphy, struct net_device *dev,
+-				  int link_id, u8 key_index, bool unicast,
+-				  bool multicast)
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-
+-	return  prism2_domibset_uint32(wlandev,
+-				       DIDMIB_DOT11SMT_PRIVACYTABLE_WEPDEFAULTKEYID,
+-				       key_index);
+-}
+-
+-static int prism2_get_station(struct wiphy *wiphy, struct net_device *dev,
+-			      const u8 *mac, struct station_info *sinfo)
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-	struct p80211msg_lnxreq_commsquality quality;
+-	int result;
+-
+-	memset(sinfo, 0, sizeof(*sinfo));
+-
+-	if (!wlandev || (wlandev->msdstate != WLAN_MSD_RUNNING))
+-		return -EOPNOTSUPP;
+-
+-	/* build request message */
+-	quality.msgcode = DIDMSG_LNXREQ_COMMSQUALITY;
+-	quality.dbm.data = P80211ENUM_truth_true;
+-	quality.dbm.status = P80211ENUM_msgitem_status_data_ok;
+-
+-	/* send message to nsd */
+-	if (!wlandev->mlmerequest)
+-		return -EOPNOTSUPP;
+-
+-	result = wlandev->mlmerequest(wlandev, (struct p80211msg *)&quality);
+-
+-	if (result == 0) {
+-		sinfo->txrate.legacy = quality.txrate.data;
+-		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
+-		sinfo->signal = quality.level.data;
+-		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_SIGNAL);
+-	}
+-
+-	return result;
+-}
+-
+-static int prism2_scan(struct wiphy *wiphy,
+-		       struct cfg80211_scan_request *request)
+-{
+-	struct net_device *dev;
+-	struct prism2_wiphy_private *priv = wiphy_priv(wiphy);
+-	struct wlandevice *wlandev;
+-	struct p80211msg_dot11req_scan msg1;
+-	struct p80211msg_dot11req_scan_results *msg2;
+-	struct cfg80211_bss *bss;
+-	struct cfg80211_scan_info info = {};
+-
+-	int result;
+-	int err = 0;
+-	int numbss = 0;
+-	int i = 0;
+-	u8 ie_buf[46];
+-	int ie_len;
+-
+-	if (!request)
+-		return -EINVAL;
+-
+-	dev = request->wdev->netdev;
+-	wlandev = dev->ml_priv;
+-
+-	if (priv->scan_request && priv->scan_request != request)
+-		return -EBUSY;
+-
+-	if (wlandev->macmode == WLAN_MACMODE_ESS_AP) {
+-		netdev_err(dev, "Can't scan in AP mode\n");
+-		return -EOPNOTSUPP;
+-	}
+-
+-	msg2 = kzalloc(sizeof(*msg2), GFP_KERNEL);
+-	if (!msg2)
+-		return -ENOMEM;
+-
+-	priv->scan_request = request;
+-
+-	memset(&msg1, 0x00, sizeof(msg1));
+-	msg1.msgcode = DIDMSG_DOT11REQ_SCAN;
+-	msg1.bsstype.data = P80211ENUM_bsstype_any;
+-
+-	memset(&msg1.bssid.data.data, 0xFF, sizeof(msg1.bssid.data.data));
+-	msg1.bssid.data.len = 6;
+-
+-	if (request->n_ssids > 0) {
+-		msg1.scantype.data = P80211ENUM_scantype_active;
+-		msg1.ssid.data.len = request->ssids->ssid_len;
+-		memcpy(msg1.ssid.data.data,
+-		       request->ssids->ssid, request->ssids->ssid_len);
+-	} else {
+-		msg1.scantype.data = 0;
+-	}
+-	msg1.probedelay.data = 0;
+-
+-	for (i = 0;
+-		(i < request->n_channels) && i < ARRAY_SIZE(prism2_channels);
+-		i++)
+-		msg1.channellist.data.data[i] =
+-			ieee80211_frequency_to_channel(request->channels[i]->center_freq);
+-	msg1.channellist.data.len = request->n_channels;
+-
+-	msg1.maxchanneltime.data = 250;
+-	msg1.minchanneltime.data = 200;
+-
+-	result = p80211req_dorequest(wlandev, (u8 *)&msg1);
+-	if (result) {
+-		err = prism2_result2err(msg1.resultcode.data);
+-		goto exit;
+-	}
+-	/* Now retrieve scan results */
+-	numbss = msg1.numbss.data;
+-
+-	for (i = 0; i < numbss; i++) {
+-		int freq;
+-
+-		msg2->msgcode = DIDMSG_DOT11REQ_SCAN_RESULTS;
+-		msg2->bssindex.data = i;
+-
+-		result = p80211req_dorequest(wlandev, (u8 *)&msg2);
+-		if ((result != 0) ||
+-		    (msg2->resultcode.data != P80211ENUM_resultcode_success)) {
+-			break;
+-		}
+-
+-		ie_buf[0] = WLAN_EID_SSID;
+-		ie_buf[1] = msg2->ssid.data.len;
+-		ie_len = ie_buf[1] + 2;
+-		memcpy(&ie_buf[2], &msg2->ssid.data.data, msg2->ssid.data.len);
+-		freq = ieee80211_channel_to_frequency(msg2->dschannel.data,
+-						      NL80211_BAND_2GHZ);
+-		bss = cfg80211_inform_bss(wiphy,
+-					  ieee80211_get_channel(wiphy, freq),
+-					  CFG80211_BSS_FTYPE_UNKNOWN,
+-					  (const u8 *)&msg2->bssid.data.data,
+-					  msg2->timestamp.data, msg2->capinfo.data,
+-					  msg2->beaconperiod.data,
+-					  ie_buf,
+-					  ie_len,
+-					  (msg2->signal.data - 65536) * 100, /* Conversion to signed type */
+-					  GFP_KERNEL);
+-
+-		if (!bss) {
+-			err = -ENOMEM;
+-			goto exit;
+-		}
+-
+-		cfg80211_put_bss(wiphy, bss);
+-	}
+-
+-	if (result)
+-		err = prism2_result2err(msg2->resultcode.data);
+-
+-exit:
+-	info.aborted = !!(err);
+-	cfg80211_scan_done(request, &info);
+-	priv->scan_request = NULL;
+-	kfree(msg2);
+-	return err;
+-}
+-
+-static int prism2_set_wiphy_params(struct wiphy *wiphy, u32 changed)
+-{
+-	struct prism2_wiphy_private *priv = wiphy_priv(wiphy);
+-	struct wlandevice *wlandev = priv->wlandev;
+-	u32 data;
+-	int result;
+-	int err = 0;
+-
+-	if (changed & WIPHY_PARAM_RTS_THRESHOLD) {
+-		if (wiphy->rts_threshold == -1)
+-			data = 2347;
+-		else
+-			data = wiphy->rts_threshold;
+-
+-		result = prism2_domibset_uint32(wlandev,
+-						DIDMIB_DOT11MAC_OPERATIONTABLE_RTSTHRESHOLD,
+-						data);
+-		if (result) {
+-			err = -EFAULT;
+-			goto exit;
+-		}
+-	}
+-
+-	if (changed & WIPHY_PARAM_FRAG_THRESHOLD) {
+-		if (wiphy->frag_threshold == -1)
+-			data = 2346;
+-		else
+-			data = wiphy->frag_threshold;
+-
+-		result = prism2_domibset_uint32(wlandev,
+-						DIDMIB_DOT11MAC_OPERATIONTABLE_FRAGMENTATIONTHRESHOLD,
+-						data);
+-		if (result) {
+-			err = -EFAULT;
+-			goto exit;
+-		}
+-	}
+-
+-exit:
+-	return err;
+-}
+-
+-static int prism2_connect(struct wiphy *wiphy, struct net_device *dev,
+-			  struct cfg80211_connect_params *sme)
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-	struct ieee80211_channel *channel = sme->channel;
+-	struct p80211msg_lnxreq_autojoin msg_join;
+-	u32 did;
+-	int length = sme->ssid_len;
+-	int chan = -1;
+-	int is_wep = (sme->crypto.cipher_group == WLAN_CIPHER_SUITE_WEP40) ||
+-	    (sme->crypto.cipher_group == WLAN_CIPHER_SUITE_WEP104);
+-	int result;
+-	int err = 0;
+-
+-	/* Set the channel */
+-	if (channel) {
+-		chan = ieee80211_frequency_to_channel(channel->center_freq);
+-		result = prism2_domibset_uint32(wlandev,
+-						DIDMIB_DOT11PHY_DSSSTABLE_CURRENTCHANNEL,
+-						chan);
+-		if (result)
+-			goto exit;
+-	}
+-
+-	/* Set the authorization */
+-	if ((sme->auth_type == NL80211_AUTHTYPE_OPEN_SYSTEM) ||
+-	    ((sme->auth_type == NL80211_AUTHTYPE_AUTOMATIC) && !is_wep))
+-		msg_join.authtype.data = P80211ENUM_authalg_opensystem;
+-	else if ((sme->auth_type == NL80211_AUTHTYPE_SHARED_KEY) ||
+-		 ((sme->auth_type == NL80211_AUTHTYPE_AUTOMATIC) && is_wep))
+-		msg_join.authtype.data = P80211ENUM_authalg_sharedkey;
+-	else
+-		netdev_warn(dev,
+-			    "Unhandled authorisation type for connect (%d)\n",
+-			    sme->auth_type);
+-
+-	/* Set the encryption - we only support wep */
+-	if (is_wep) {
+-		if (sme->key) {
+-			if (sme->key_idx >= NUM_WEPKEYS)
+-				return -EINVAL;
+-
+-			result = prism2_domibset_uint32(wlandev,
+-							DIDMIB_DOT11SMT_PRIVACYTABLE_WEPDEFAULTKEYID,
+-				sme->key_idx);
+-			if (result)
+-				goto exit;
+-
+-			/* send key to driver */
+-			did = didmib_dot11smt_wepdefaultkeystable_key(sme->key_idx + 1);
+-			result = prism2_domibset_pstr32(wlandev,
+-							did, sme->key_len,
+-							(u8 *)sme->key);
+-			if (result)
+-				goto exit;
+-		}
+-
+-		/* Assume we should set privacy invoked and exclude unencrypted
+-		 * We could possible use sme->privacy here, but the assumption
+-		 * seems reasonable anyways
+-		 */
+-		result = prism2_domibset_uint32(wlandev,
+-						DIDMIB_DOT11SMT_PRIVACYTABLE_PRIVACYINVOKED,
+-						P80211ENUM_truth_true);
+-		if (result)
+-			goto exit;
+-
+-		result = prism2_domibset_uint32(wlandev,
+-						DIDMIB_DOT11SMT_PRIVACYTABLE_EXCLUDEUNENCRYPTED,
+-						P80211ENUM_truth_true);
+-		if (result)
+-			goto exit;
+-
+-	} else {
+-		/* Assume we should unset privacy invoked
+-		 * and exclude unencrypted
+-		 */
+-		result = prism2_domibset_uint32(wlandev,
+-						DIDMIB_DOT11SMT_PRIVACYTABLE_PRIVACYINVOKED,
+-						P80211ENUM_truth_false);
+-		if (result)
+-			goto exit;
+-
+-		result = prism2_domibset_uint32(wlandev,
+-						DIDMIB_DOT11SMT_PRIVACYTABLE_EXCLUDEUNENCRYPTED,
+-						P80211ENUM_truth_false);
+-		if (result)
+-			goto exit;
+-	}
+-
+-	/* Now do the actual join. Note there is no way that I can
+-	 * see to request a specific bssid
+-	 */
+-	msg_join.msgcode = DIDMSG_LNXREQ_AUTOJOIN;
+-
+-	memcpy(msg_join.ssid.data.data, sme->ssid, length);
+-	msg_join.ssid.data.len = length;
+-
+-	result = p80211req_dorequest(wlandev, (u8 *)&msg_join);
+-
+-exit:
+-	if (result)
+-		err = -EFAULT;
+-
+-	return err;
+-}
+-
+-static int prism2_disconnect(struct wiphy *wiphy, struct net_device *dev,
+-			     u16 reason_code)
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-	struct p80211msg_lnxreq_autojoin msg_join;
+-	int result;
+-	int err = 0;
+-
+-	/* Do a join, with a bogus ssid. Thats the only way I can think of */
+-	msg_join.msgcode = DIDMSG_LNXREQ_AUTOJOIN;
+-
+-	memcpy(msg_join.ssid.data.data, "---", 3);
+-	msg_join.ssid.data.len = 3;
+-
+-	result = p80211req_dorequest(wlandev, (u8 *)&msg_join);
+-
+-	if (result)
+-		err = -EFAULT;
+-
+-	return err;
+-}
+-
+-static int prism2_join_ibss(struct wiphy *wiphy, struct net_device *dev,
+-			    struct cfg80211_ibss_params *params)
+-{
+-	return -EOPNOTSUPP;
+-}
+-
+-static int prism2_leave_ibss(struct wiphy *wiphy, struct net_device *dev)
+-{
+-	return -EOPNOTSUPP;
+-}
+-
+-static int prism2_set_tx_power(struct wiphy *wiphy, struct wireless_dev *wdev,
+-			       enum nl80211_tx_power_setting type, int mbm)
+-{
+-	struct prism2_wiphy_private *priv = wiphy_priv(wiphy);
+-	struct wlandevice *wlandev = priv->wlandev;
+-	u32 data;
+-	int result;
+-	int err = 0;
+-
+-	if (type == NL80211_TX_POWER_AUTOMATIC)
+-		data = 30;
+-	else
+-		data = MBM_TO_DBM(mbm);
+-
+-	result = prism2_domibset_uint32(wlandev,
+-					DIDMIB_DOT11PHY_TXPOWERTABLE_CURRENTTXPOWERLEVEL,
+-		data);
+-
+-	if (result) {
+-		err = -EFAULT;
+-		goto exit;
+-	}
+-
+-exit:
+-	return err;
+-}
+-
+-static int prism2_get_tx_power(struct wiphy *wiphy, struct wireless_dev *wdev,
+-			       int *dbm)
+-{
+-	struct prism2_wiphy_private *priv = wiphy_priv(wiphy);
+-	struct wlandevice *wlandev = priv->wlandev;
+-	struct p80211msg_dot11req_mibget msg;
+-	struct p80211item_uint32 *mibitem;
+-	int result;
+-	int err = 0;
+-
+-	mibitem = (struct p80211item_uint32 *)&msg.mibattribute.data;
+-	msg.msgcode = DIDMSG_DOT11REQ_MIBGET;
+-	mibitem->did = DIDMIB_DOT11PHY_TXPOWERTABLE_CURRENTTXPOWERLEVEL;
+-
+-	result = p80211req_dorequest(wlandev, (u8 *)&msg);
+-
+-	if (result) {
+-		err = -EFAULT;
+-		goto exit;
+-	}
+-
+-	*dbm = mibitem->data;
+-
+-exit:
+-	return err;
+-}
+-
+-/* Interface callback functions, passing data back up to the cfg80211 layer */
+-void prism2_connect_result(struct wlandevice *wlandev, u8 failed)
+-{
+-	u16 status = failed ?
+-		     WLAN_STATUS_UNSPECIFIED_FAILURE : WLAN_STATUS_SUCCESS;
+-
+-	cfg80211_connect_result(wlandev->netdev, wlandev->bssid,
+-				NULL, 0, NULL, 0, status, GFP_KERNEL);
+-}
+-
+-void prism2_disconnected(struct wlandevice *wlandev)
+-{
+-	cfg80211_disconnected(wlandev->netdev, 0, NULL,
+-			      0, false, GFP_KERNEL);
+-}
+-
+-void prism2_roamed(struct wlandevice *wlandev)
+-{
+-	struct cfg80211_roam_info roam_info = {
+-		.links[0].bssid = wlandev->bssid,
+-	};
+-
+-	cfg80211_roamed(wlandev->netdev, &roam_info, GFP_KERNEL);
+-}
+-
+-/* Structures for declaring wiphy interface */
+-static const struct cfg80211_ops prism2_usb_cfg_ops = {
+-	.change_virtual_intf = prism2_change_virtual_intf,
+-	.add_key = prism2_add_key,
+-	.get_key = prism2_get_key,
+-	.del_key = prism2_del_key,
+-	.set_default_key = prism2_set_default_key,
+-	.get_station = prism2_get_station,
+-	.scan = prism2_scan,
+-	.set_wiphy_params = prism2_set_wiphy_params,
+-	.connect = prism2_connect,
+-	.disconnect = prism2_disconnect,
+-	.join_ibss = prism2_join_ibss,
+-	.leave_ibss = prism2_leave_ibss,
+-	.set_tx_power = prism2_set_tx_power,
+-	.get_tx_power = prism2_get_tx_power,
+-};
+-
+-/* Functions to create/free wiphy interface */
+-static struct wiphy *wlan_create_wiphy(struct device *dev,
+-				       struct wlandevice *wlandev)
+-{
+-	struct wiphy *wiphy;
+-	struct prism2_wiphy_private *priv;
+-
+-	wiphy = wiphy_new(&prism2_usb_cfg_ops, sizeof(*priv));
+-	if (!wiphy)
+-		return NULL;
+-
+-	priv = wiphy_priv(wiphy);
+-	priv->wlandev = wlandev;
+-	memcpy(priv->channels, prism2_channels, sizeof(prism2_channels));
+-	memcpy(priv->rates, prism2_rates, sizeof(prism2_rates));
+-	priv->band.channels = priv->channels;
+-	priv->band.n_channels = ARRAY_SIZE(prism2_channels);
+-	priv->band.bitrates = priv->rates;
+-	priv->band.n_bitrates = ARRAY_SIZE(prism2_rates);
+-	priv->band.band = NL80211_BAND_2GHZ;
+-	priv->band.ht_cap.ht_supported = false;
+-	wiphy->bands[NL80211_BAND_2GHZ] = &priv->band;
+-
+-	set_wiphy_dev(wiphy, dev);
+-	wiphy->privid = prism2_wiphy_privid;
+-	wiphy->max_scan_ssids = 1;
+-	wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION)
+-				 | BIT(NL80211_IFTYPE_ADHOC);
+-	wiphy->signal_type = CFG80211_SIGNAL_TYPE_MBM;
+-	wiphy->n_cipher_suites = PRISM2_NUM_CIPHER_SUITES;
+-	wiphy->cipher_suites = prism2_cipher_suites;
+-
+-	if (wiphy_register(wiphy) < 0) {
+-		wiphy_free(wiphy);
+-		return NULL;
+-	}
+-
+-	return wiphy;
+-}
+-
+-static void wlan_free_wiphy(struct wiphy *wiphy)
+-{
+-	wiphy_unregister(wiphy);
+-	wiphy_free(wiphy);
+-}
+diff --git a/drivers/staging/wlan-ng/hfa384x.h b/drivers/staging/wlan-ng/hfa384x.h
+deleted file mode 100644
+index a4799589e469..000000000000
+--- a/drivers/staging/wlan-ng/hfa384x.h
++++ /dev/null
+@@ -1,1236 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * Defines the constants and data structures for the hfa384x
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- *   [Implementation and usage notes]
+- *
+- *   [References]
+- *	CW10 Programmer's Manual v1.5
+- *	IEEE 802.11 D10.0
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _HFA384x_H
+-#define _HFA384x_H
+-
+-#define HFA384x_FIRMWARE_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + (c))
+-
+-#include <linux/if_ether.h>
+-#include <linux/usb.h>
+-
+-/*--- Mins & Maxs -----------------------------------*/
+-#define	HFA384x_PORTID_MAX		((u16)7)
+-#define	HFA384x_NUMPORTS_MAX		((u16)(HFA384x_PORTID_MAX + 1))
+-#define	HFA384x_PDR_LEN_MAX		((u16)512) /* in bytes, from EK */
+-#define	HFA384x_PDA_RECS_MAX		((u16)200) /* a guess */
+-#define	HFA384x_PDA_LEN_MAX		((u16)1024) /* in bytes, from EK*/
+-#define	HFA384x_SCANRESULT_MAX		((u16)31)
+-#define	HFA384x_HSCANRESULT_MAX		((u16)31)
+-#define	HFA384x_CHINFORESULT_MAX	((u16)16)
+-#define	HFA384x_RID_GUESSING_MAXLEN	2048	/* I'm not really sure */
+-#define	HFA384x_RIDDATA_MAXLEN		HFA384x_RID_GUESSING_MAXLEN
+-#define	HFA384x_USB_RWMEM_MAXLEN	2048
+-
+-/*--- Support Constants -----------------------------*/
+-#define		HFA384x_PORTTYPE_IBSS			((u16)0)
+-#define		HFA384x_PORTTYPE_BSS			((u16)1)
+-#define		HFA384x_PORTTYPE_PSUEDOIBSS		((u16)3)
+-#define		HFA384x_WEPFLAGS_PRIVINVOKED		((u16)BIT(0))
+-#define		HFA384x_WEPFLAGS_EXCLUDE		((u16)BIT(1))
+-#define		HFA384x_WEPFLAGS_DISABLE_TXCRYPT	((u16)BIT(4))
+-#define		HFA384x_WEPFLAGS_DISABLE_RXCRYPT	((u16)BIT(7))
+-#define		HFA384x_ROAMMODE_HOSTSCAN_HOSTROAM	((u16)3)
+-#define		HFA384x_PORTSTATUS_DISABLED		((u16)1)
+-#define		HFA384x_RATEBIT_1			((u16)1)
+-#define		HFA384x_RATEBIT_2			((u16)2)
+-#define		HFA384x_RATEBIT_5dot5			((u16)4)
+-#define		HFA384x_RATEBIT_11			((u16)8)
+-
+-/*--- MAC Internal memory constants and macros ------*/
+-/* masks and macros used to manipulate MAC internal memory addresses. */
+-/* MAC internal memory addresses are 23 bit quantities.  The MAC uses
+- * a paged address space where the upper 16 bits are the page number
+- * and the lower 7 bits are the offset.  There are various Host API
+- * elements that require two 16-bit quantities to specify a MAC
+- * internal memory address.  Unfortunately, some of the API's use a
+- * page/offset format where the offset value is JUST the lower seven
+- * bits and the page is  the remaining 16 bits.  Some of the API's
+- * assume that the 23 bit address has been split at the 16th bit.  We
+- * refer to these two formats as AUX format and CMD format.  The
+- * macros below help handle some of this.
+- */
+-
+-/* Mask bits for discarding unwanted pieces in a flat address */
+-#define		HFA384x_ADDR_FLAT_AUX_PAGE_MASK	(0x007fff80)
+-#define		HFA384x_ADDR_FLAT_AUX_OFF_MASK	(0x0000007f)
+-#define		HFA384x_ADDR_FLAT_CMD_PAGE_MASK	(0xffff0000)
+-#define		HFA384x_ADDR_FLAT_CMD_OFF_MASK	(0x0000ffff)
+-
+-/* Mask bits for discarding unwanted pieces in AUX format
+- * 16-bit address parts
+- */
+-#define		HFA384x_ADDR_AUX_PAGE_MASK	(0xffff)
+-#define		HFA384x_ADDR_AUX_OFF_MASK	(0x007f)
+-
+-/* Make a 32-bit flat address from AUX format 16-bit page and offset */
+-#define		HFA384x_ADDR_AUX_MKFLAT(p, o)	\
+-		((((u32)(((u16)(p)) & HFA384x_ADDR_AUX_PAGE_MASK)) << 7) | \
+-		((u32)(((u16)(o)) & HFA384x_ADDR_AUX_OFF_MASK)))
+-
+-/* Make CMD format offset and page from a 32-bit flat address */
+-#define		HFA384x_ADDR_CMD_MKPAGE(f) \
+-		((u16)((((u32)(f)) & HFA384x_ADDR_FLAT_CMD_PAGE_MASK) >> 16))
+-#define		HFA384x_ADDR_CMD_MKOFF(f) \
+-		((u16)(((u32)(f)) & HFA384x_ADDR_FLAT_CMD_OFF_MASK))
+-
+-/*--- Controller Memory addresses -------------------*/
+-#define		HFA3842_PDA_BASE	(0x007f0000UL)
+-#define		HFA3841_PDA_BASE	(0x003f0000UL)
+-#define		HFA3841_PDA_BOGUS_BASE	(0x00390000UL)
+-
+-/*--- Driver Download states  -----------------------*/
+-#define		HFA384x_DLSTATE_DISABLED		0
+-#define		HFA384x_DLSTATE_RAMENABLED		1
+-#define		HFA384x_DLSTATE_FLASHENABLED		2
+-
+-/*--- Register Field Masks --------------------------*/
+-#define		HFA384x_CMD_AINFO		((u16)GENMASK(14, 8))
+-#define		HFA384x_CMD_MACPORT		((u16)GENMASK(10, 8))
+-#define		HFA384x_CMD_PROGMODE		((u16)GENMASK(9, 8))
+-#define		HFA384x_CMD_CMDCODE		((u16)GENMASK(5, 0))
+-#define		HFA384x_STATUS_RESULT		((u16)GENMASK(14, 8))
+-
+-/*--- Command Code Constants --------------------------*/
+-/*--- Controller Commands --------------------------*/
+-#define		HFA384x_CMDCODE_INIT		((u16)0x00)
+-#define		HFA384x_CMDCODE_ENABLE		((u16)0x01)
+-#define		HFA384x_CMDCODE_DISABLE		((u16)0x02)
+-
+-/*--- Regulate Commands --------------------------*/
+-#define		HFA384x_CMDCODE_INQ		((u16)0x11)
+-
+-/*--- Configure Commands --------------------------*/
+-#define		HFA384x_CMDCODE_DOWNLD		((u16)0x22)
+-
+-/*--- Debugging Commands -----------------------------*/
+-#define		HFA384x_CMDCODE_MONITOR		((u16)(0x38))
+-#define		HFA384x_MONITOR_ENABLE		((u16)(0x0b))
+-#define		HFA384x_MONITOR_DISABLE		((u16)(0x0f))
+-
+-/*--- Result Codes --------------------------*/
+-#define		HFA384x_CMD_ERR			((u16)(0x7F))
+-
+-/*--- Programming Modes --------------------------
+- *	MODE 0: Disable programming
+- *	MODE 1: Enable volatile memory programming
+- *	MODE 2: Enable non-volatile memory programming
+- *	MODE 3: Program non-volatile memory section
+- *-------------------------------------------------
+- */
+-#define		HFA384x_PROGMODE_DISABLE	((u16)0x00)
+-#define		HFA384x_PROGMODE_RAM		((u16)0x01)
+-#define		HFA384x_PROGMODE_NV		((u16)0x02)
+-#define		HFA384x_PROGMODE_NVWRITE	((u16)0x03)
+-
+-/*--- Record ID Constants --------------------------*/
+-/*--------------------------------------------------------------------
+- * Configuration RIDs: Network Parameters, Static Configuration Entities
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_CNFPORTTYPE		((u16)0xFC00)
+-#define		HFA384x_RID_CNFOWNMACADDR	((u16)0xFC01)
+-#define		HFA384x_RID_CNFDESIREDSSID	((u16)0xFC02)
+-#define		HFA384x_RID_CNFOWNCHANNEL	((u16)0xFC03)
+-#define		HFA384x_RID_CNFOWNSSID		((u16)0xFC04)
+-#define		HFA384x_RID_CNFMAXDATALEN	((u16)0xFC07)
+-
+-/*--------------------------------------------------------------------
+- * Configuration RID lengths: Network Params, Static Config Entities
+- * This is the length of JUST the DATA part of the RID (does not
+- * include the len or code fields)
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_CNFOWNMACADDR_LEN	((u16)6)
+-#define		HFA384x_RID_CNFDESIREDSSID_LEN	((u16)34)
+-#define		HFA384x_RID_CNFOWNSSID_LEN	((u16)34)
+-
+-/*--------------------------------------------------------------------
+- * Configuration RIDs: Network Parameters, Dynamic Configuration Entities
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_CREATEIBSS		((u16)0xFC81)
+-#define		HFA384x_RID_FRAGTHRESH		((u16)0xFC82)
+-#define		HFA384x_RID_RTSTHRESH		((u16)0xFC83)
+-#define		HFA384x_RID_TXRATECNTL		((u16)0xFC84)
+-#define		HFA384x_RID_PROMISCMODE		((u16)0xFC85)
+-
+-/*----------------------------------------------------------------------
+- * Information RIDs: NIC Information
+- *----------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_MAXLOADTIME		((u16)0xFD00)
+-#define		HFA384x_RID_DOWNLOADBUFFER	((u16)0xFD01)
+-#define		HFA384x_RID_PRIIDENTITY		((u16)0xFD02)
+-#define		HFA384x_RID_PRISUPRANGE		((u16)0xFD03)
+-#define		HFA384x_RID_PRI_CFIACTRANGES	((u16)0xFD04)
+-#define		HFA384x_RID_NICSERIALNUMBER	((u16)0xFD0A)
+-#define		HFA384x_RID_NICIDENTITY		((u16)0xFD0B)
+-#define		HFA384x_RID_MFISUPRANGE		((u16)0xFD0C)
+-#define		HFA384x_RID_CFISUPRANGE		((u16)0xFD0D)
+-#define		HFA384x_RID_STAIDENTITY		((u16)0xFD20)
+-#define		HFA384x_RID_STASUPRANGE		((u16)0xFD21)
+-#define		HFA384x_RID_STA_MFIACTRANGES	((u16)0xFD22)
+-#define		HFA384x_RID_STA_CFIACTRANGES	((u16)0xFD23)
+-
+-/*----------------------------------------------------------------------
+- * Information RID Lengths: NIC Information
+- * This is the length of JUST the DATA part of the RID (does not
+- * include the len or code fields)
+- *---------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_NICSERIALNUMBER_LEN		((u16)12)
+-
+-/*--------------------------------------------------------------------
+- * Information RIDs:  MAC Information
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_PORTSTATUS		((u16)0xFD40)
+-#define		HFA384x_RID_CURRENTSSID		((u16)0xFD41)
+-#define		HFA384x_RID_CURRENTBSSID	((u16)0xFD42)
+-#define		HFA384x_RID_CURRENTTXRATE	((u16)0xFD44)
+-#define		HFA384x_RID_SHORTRETRYLIMIT	((u16)0xFD48)
+-#define		HFA384x_RID_LONGRETRYLIMIT	((u16)0xFD49)
+-#define		HFA384x_RID_MAXTXLIFETIME	((u16)0xFD4A)
+-#define		HFA384x_RID_PRIVACYOPTIMP	((u16)0xFD4F)
+-#define		HFA384x_RID_DBMCOMMSQUALITY	((u16)0xFD51)
+-
+-/*--------------------------------------------------------------------
+- * Information RID Lengths:  MAC Information
+- * This is the length of JUST the DATA part of the RID (does not
+- * include the len or code fields)
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_DBMCOMMSQUALITY_LEN	 \
+-	((u16)sizeof(struct hfa384x_dbmcommsquality))
+-#define		HFA384x_RID_JOINREQUEST_LEN \
+-	((u16)sizeof(struct hfa384x_join_request_data))
+-
+-/*--------------------------------------------------------------------
+- * Information RIDs:  Modem Information
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_CURRENTCHANNEL	((u16)0xFDC1)
+-
+-/*--------------------------------------------------------------------
+- * API ENHANCEMENTS (NOT ALREADY IMPLEMENTED)
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_RID_CNFWEPDEFAULTKEYID	((u16)0xFC23)
+-#define		HFA384x_RID_CNFWEPDEFAULTKEY0	((u16)0xFC24)
+-#define		HFA384x_RID_CNFWEPDEFAULTKEY1	((u16)0xFC25)
+-#define		HFA384x_RID_CNFWEPDEFAULTKEY2	((u16)0xFC26)
+-#define		HFA384x_RID_CNFWEPDEFAULTKEY3	((u16)0xFC27)
+-#define		HFA384x_RID_CNFWEPFLAGS		((u16)0xFC28)
+-#define		HFA384x_RID_CNFAUTHENTICATION	((u16)0xFC2A)
+-#define		HFA384x_RID_CNFROAMINGMODE	((u16)0xFC2D)
+-#define		HFA384x_RID_CNFAPBCNINT		((u16)0xFC33)
+-#define		HFA384x_RID_CNFDBMADJUST	((u16)0xFC46)
+-#define		HFA384x_RID_CNFWPADATA		((u16)0xFC48)
+-#define		HFA384x_RID_CNFBASICRATES	((u16)0xFCB3)
+-#define		HFA384x_RID_CNFSUPPRATES	((u16)0xFCB4)
+-#define		HFA384x_RID_CNFPASSIVESCANCTRL	((u16)0xFCBA)
+-#define		HFA384x_RID_TXPOWERMAX		((u16)0xFCBE)
+-#define		HFA384x_RID_JOINREQUEST		((u16)0xFCE2)
+-#define		HFA384x_RID_AUTHENTICATESTA	((u16)0xFCE3)
+-#define		HFA384x_RID_HOSTSCAN		((u16)0xFCE5)
+-
+-#define		HFA384x_RID_CNFWEPDEFAULTKEY_LEN	((u16)6)
+-#define		HFA384x_RID_CNFWEP128DEFAULTKEY_LEN	((u16)14)
+-
+-/*--------------------------------------------------------------------
+- * PD Record codes
+- *--------------------------------------------------------------------
+- */
+-#define HFA384x_PDR_PCB_PARTNUM		((u16)0x0001)
+-#define HFA384x_PDR_PDAVER		((u16)0x0002)
+-#define HFA384x_PDR_NIC_SERIAL		((u16)0x0003)
+-#define HFA384x_PDR_MKK_MEASUREMENTS	((u16)0x0004)
+-#define HFA384x_PDR_NIC_RAMSIZE		((u16)0x0005)
+-#define HFA384x_PDR_MFISUPRANGE		((u16)0x0006)
+-#define HFA384x_PDR_CFISUPRANGE		((u16)0x0007)
+-#define HFA384x_PDR_NICID		((u16)0x0008)
+-#define HFA384x_PDR_MAC_ADDRESS		((u16)0x0101)
+-#define HFA384x_PDR_REGDOMAIN		((u16)0x0103)
+-#define HFA384x_PDR_ALLOWED_CHANNEL	((u16)0x0104)
+-#define HFA384x_PDR_DEFAULT_CHANNEL	((u16)0x0105)
+-#define HFA384x_PDR_TEMPTYPE		((u16)0x0107)
+-#define HFA384x_PDR_IFR_SETTING		((u16)0x0200)
+-#define HFA384x_PDR_RFR_SETTING		((u16)0x0201)
+-#define HFA384x_PDR_HFA3861_BASELINE	((u16)0x0202)
+-#define HFA384x_PDR_HFA3861_SHADOW	((u16)0x0203)
+-#define HFA384x_PDR_HFA3861_IFRF	((u16)0x0204)
+-#define HFA384x_PDR_HFA3861_CHCALSP	((u16)0x0300)
+-#define HFA384x_PDR_HFA3861_CHCALI	((u16)0x0301)
+-#define HFA384x_PDR_MAX_TX_POWER	((u16)0x0302)
+-#define HFA384x_PDR_MASTER_CHAN_LIST	((u16)0x0303)
+-#define HFA384x_PDR_3842_NIC_CONFIG	((u16)0x0400)
+-#define HFA384x_PDR_USB_ID		((u16)0x0401)
+-#define HFA384x_PDR_PCI_ID		((u16)0x0402)
+-#define HFA384x_PDR_PCI_IFCONF		((u16)0x0403)
+-#define HFA384x_PDR_PCI_PMCONF		((u16)0x0404)
+-#define HFA384x_PDR_RFENRGY		((u16)0x0406)
+-#define HFA384x_PDR_USB_POWER_TYPE      ((u16)0x0407)
+-#define HFA384x_PDR_USB_MAX_POWER	((u16)0x0409)
+-#define HFA384x_PDR_USB_MANUFACTURER	((u16)0x0410)
+-#define HFA384x_PDR_USB_PRODUCT		((u16)0x0411)
+-#define HFA384x_PDR_ANT_DIVERSITY	((u16)0x0412)
+-#define HFA384x_PDR_HFO_DELAY		((u16)0x0413)
+-#define HFA384x_PDR_SCALE_THRESH	((u16)0x0414)
+-
+-#define HFA384x_PDR_HFA3861_MANF_TESTSP	((u16)0x0900)
+-#define HFA384x_PDR_HFA3861_MANF_TESTI	((u16)0x0901)
+-#define HFA384x_PDR_END_OF_PDA		((u16)0x0000)
+-
+-/*--- Register Test/Get/Set Field macros ------------------------*/
+-
+-#define		HFA384x_CMD_AINFO_SET(value)	((u16)((u16)(value) << 8))
+-#define		HFA384x_CMD_MACPORT_SET(value)	\
+-			((u16)HFA384x_CMD_AINFO_SET(value))
+-#define		HFA384x_CMD_PROGMODE_SET(value)	\
+-			((u16)HFA384x_CMD_AINFO_SET((u16)value))
+-#define		HFA384x_CMD_CMDCODE_SET(value)		((u16)(value))
+-
+-#define		HFA384x_STATUS_RESULT_SET(value)	(((u16)(value)) << 8)
+-
+-/* Host Maintained State Info */
+-#define HFA384x_STATE_PREINIT	0
+-#define HFA384x_STATE_INIT	1
+-#define HFA384x_STATE_RUNNING	2
+-
+-/*-------------------------------------------------------------*/
+-/* Commonly used basic types */
+-struct hfa384x_bytestr {
+-	__le16 len;
+-	u8 data[];
+-} __packed;
+-
+-struct hfa384x_bytestr32 {
+-	__le16 len;
+-	u8 data[32];
+-} __packed;
+-
+-/*--------------------------------------------------------------------
+- * Configuration Record Structures:
+- *	Network Parameters, Static Configuration Entities
+- *--------------------------------------------------------------------
+- */
+-
+-/*-- Hardware/Firmware Component Information ----------*/
+-struct hfa384x_compident {
+-	u16 id;
+-	u16 variant;
+-	u16 major;
+-	u16 minor;
+-} __packed;
+-
+-struct hfa384x_caplevel {
+-	u16 role;
+-	u16 id;
+-	u16 variant;
+-	u16 bottom;
+-	u16 top;
+-} __packed;
+-
+-/*-- Configuration Record: cnfAuthentication --*/
+-#define HFA384x_CNFAUTHENTICATION_OPENSYSTEM	0x0001
+-#define HFA384x_CNFAUTHENTICATION_SHAREDKEY	0x0002
+-#define HFA384x_CNFAUTHENTICATION_LEAP		0x0004
+-
+-/*--------------------------------------------------------------------
+- * Configuration Record Structures:
+- *	Network Parameters, Dynamic Configuration Entities
+- *--------------------------------------------------------------------
+- */
+-
+-#define HFA384x_CREATEIBSS_JOINCREATEIBSS          0
+-
+-/*-- Configuration Record: HostScanRequest (data portion only) --*/
+-struct hfa384x_host_scan_request_data {
+-	__le16 channel_list;
+-	__le16 tx_rate;
+-	struct hfa384x_bytestr32 ssid;
+-} __packed;
+-
+-/*-- Configuration Record: JoinRequest (data portion only) --*/
+-struct hfa384x_join_request_data {
+-	u8 bssid[WLAN_BSSID_LEN];
+-	u16 channel;
+-} __packed;
+-
+-/*-- Configuration Record: authenticateStation (data portion only) --*/
+-struct hfa384x_authenticate_station_data {
+-	u8 address[ETH_ALEN];
+-	__le16 status;
+-	__le16 algorithm;
+-} __packed;
+-
+-/*-- Configuration Record: WPAData       (data portion only) --*/
+-struct hfa384x_wpa_data {
+-	__le16 datalen;
+-	u8 data[];		/* max 80 */
+-} __packed;
+-
+-/*--------------------------------------------------------------------
+- * Information Record Structures: NIC Information
+- *--------------------------------------------------------------------
+- */
+-
+-/*-- Information Record: DownLoadBuffer --*/
+-/* NOTE: The page and offset are in AUX format */
+-struct hfa384x_downloadbuffer {
+-	u16 page;
+-	u16 offset;
+-	u16 len;
+-} __packed;
+-
+-/*--------------------------------------------------------------------
+- * Information Record Structures: NIC Information
+- *--------------------------------------------------------------------
+- */
+-
+-#define HFA384x_PSTATUS_CONN_IBSS	((u16)3)
+-
+-/*-- Information Record: commsquality --*/
+-struct hfa384x_commsquality {
+-	__le16 cq_curr_bss;
+-	__le16 asl_curr_bss;
+-	__le16 anl_curr_fc;
+-} __packed;
+-
+-/*-- Information Record: dmbcommsquality --*/
+-struct hfa384x_dbmcommsquality {
+-	u16 cq_dbm_curr_bss;
+-	u16 asl_dbm_curr_bss;
+-	u16 anl_dbm_curr_fc;
+-} __packed;
+-
+-/*--------------------------------------------------------------------
+- * FRAME STRUCTURES: Communication Frames
+- *--------------------------------------------------------------------
+- * Communication Frames: Transmit Frames
+- *--------------------------------------------------------------------
+- */
+-/*-- Communication Frame: Transmit Frame Structure --*/
+-struct hfa384x_tx_frame {
+-	u16 status;
+-	u16 reserved1;
+-	u16 reserved2;
+-	u32 sw_support;
+-	u8 tx_retrycount;
+-	u8 tx_rate;
+-	u16 tx_control;
+-
+-	/*-- 802.11 Header Information --*/
+-	struct p80211_hdr hdr;
+-	__le16 data_len;		/* little endian format */
+-
+-	/*-- 802.3 Header Information --*/
+-
+-	u8 dest_addr[6];
+-	u8 src_addr[6];
+-	u16 data_length;	/* big endian format */
+-} __packed;
+-/*--------------------------------------------------------------------
+- * Communication Frames: Field Masks for Transmit Frames
+- *--------------------------------------------------------------------
+- */
+-/*-- Status Field --*/
+-#define		HFA384x_TXSTATUS_ACKERR			((u16)BIT(5))
+-#define		HFA384x_TXSTATUS_FORMERR		((u16)BIT(3))
+-#define		HFA384x_TXSTATUS_DISCON			((u16)BIT(2))
+-#define		HFA384x_TXSTATUS_AGEDERR		((u16)BIT(1))
+-#define		HFA384x_TXSTATUS_RETRYERR		((u16)BIT(0))
+-/*-- Transmit Control Field --*/
+-#define		HFA384x_TX_MACPORT			((u16)GENMASK(10, 8))
+-#define		HFA384x_TX_STRUCTYPE			((u16)GENMASK(4, 3))
+-#define		HFA384x_TX_TXEX				((u16)BIT(2))
+-#define		HFA384x_TX_TXOK				((u16)BIT(1))
+-/*--------------------------------------------------------------------
+- * Communication Frames: Test/Get/Set Field Values for Transmit Frames
+- *--------------------------------------------------------------------
+- */
+-/*-- Status Field --*/
+-#define HFA384x_TXSTATUS_ISERROR(v)	\
+-	(((u16)(v)) & \
+-	(HFA384x_TXSTATUS_ACKERR | HFA384x_TXSTATUS_FORMERR | \
+-	HFA384x_TXSTATUS_DISCON | HFA384x_TXSTATUS_AGEDERR | \
+-	HFA384x_TXSTATUS_RETRYERR))
+-
+-#define	HFA384x_TX_SET(v, m, s)		((((u16)(v)) << ((u16)(s))) & ((u16)(m)))
+-
+-#define	HFA384x_TX_MACPORT_SET(v)	HFA384x_TX_SET(v, HFA384x_TX_MACPORT, 8)
+-#define	HFA384x_TX_STRUCTYPE_SET(v)	HFA384x_TX_SET(v, \
+-						HFA384x_TX_STRUCTYPE, 3)
+-#define	HFA384x_TX_TXEX_SET(v)		HFA384x_TX_SET(v, HFA384x_TX_TXEX, 2)
+-#define	HFA384x_TX_TXOK_SET(v)		HFA384x_TX_SET(v, HFA384x_TX_TXOK, 1)
+-/*--------------------------------------------------------------------
+- * Communication Frames: Receive Frames
+- *--------------------------------------------------------------------
+- */
+-/*-- Communication Frame: Receive Frame Structure --*/
+-struct hfa384x_rx_frame {
+-	/*-- MAC rx descriptor (hfa384x byte order) --*/
+-	u16 status;
+-	u32 time;
+-	u8 silence;
+-	u8 signal;
+-	u8 rate;
+-	u8 rx_flow;
+-	u16 reserved1;
+-	u16 reserved2;
+-
+-	/*-- 802.11 Header Information (802.11 byte order) --*/
+-	struct p80211_hdr hdr;
+-	__le16 data_len;		/* hfa384x (little endian) format */
+-
+-	/*-- 802.3 Header Information --*/
+-	u8 dest_addr[6];
+-	u8 src_addr[6];
+-	u16 data_length;	/* IEEE? (big endian) format */
+-} __packed;
+-/*--------------------------------------------------------------------
+- * Communication Frames: Field Masks for Receive Frames
+- *--------------------------------------------------------------------
+- */
+-
+-/*-- Status Fields --*/
+-#define		HFA384x_RXSTATUS_MACPORT		((u16)GENMASK(10, 8))
+-#define		HFA384x_RXSTATUS_FCSERR			((u16)BIT(0))
+-/*--------------------------------------------------------------------
+- * Communication Frames: Test/Get/Set Field Values for Receive Frames
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_RXSTATUS_MACPORT_GET(value)	((u16)((((u16)(value)) \
+-					    & HFA384x_RXSTATUS_MACPORT) >> 8))
+-#define		HFA384x_RXSTATUS_ISFCSERR(value)	((u16)(((u16)(value)) \
+-						  & HFA384x_RXSTATUS_FCSERR))
+-/*--------------------------------------------------------------------
+- * FRAME STRUCTURES: Information Types and Information Frame Structures
+- *--------------------------------------------------------------------
+- * Information Types
+- *--------------------------------------------------------------------
+- */
+-#define		HFA384x_IT_HANDOVERADDR			((u16)0xF000UL)
+-#define		HFA384x_IT_COMMTALLIES			((u16)0xF100UL)
+-#define		HFA384x_IT_SCANRESULTS			((u16)0xF101UL)
+-#define		HFA384x_IT_CHINFORESULTS		((u16)0xF102UL)
+-#define		HFA384x_IT_HOSTSCANRESULTS		((u16)0xF103UL)
+-#define		HFA384x_IT_LINKSTATUS			((u16)0xF200UL)
+-#define		HFA384x_IT_ASSOCSTATUS			((u16)0xF201UL)
+-#define		HFA384x_IT_AUTHREQ			((u16)0xF202UL)
+-#define		HFA384x_IT_PSUSERCNT			((u16)0xF203UL)
+-#define		HFA384x_IT_KEYIDCHANGED			((u16)0xF204UL)
+-#define		HFA384x_IT_ASSOCREQ			((u16)0xF205UL)
+-#define		HFA384x_IT_MICFAILURE			((u16)0xF206UL)
+-
+-/*--------------------------------------------------------------------
+- * Information Frames Structures
+- *--------------------------------------------------------------------
+- * Information Frames: Notification Frame Structures
+- *--------------------------------------------------------------------
+- */
+-
+-/*--  Inquiry Frame, Diagnose: Communication Tallies --*/
+-struct hfa384x_comm_tallies_16 {
+-	__le16 txunicastframes;
+-	__le16 txmulticastframes;
+-	__le16 txfragments;
+-	__le16 txunicastoctets;
+-	__le16 txmulticastoctets;
+-	__le16 txdeferredtrans;
+-	__le16 txsingleretryframes;
+-	__le16 txmultipleretryframes;
+-	__le16 txretrylimitexceeded;
+-	__le16 txdiscards;
+-	__le16 rxunicastframes;
+-	__le16 rxmulticastframes;
+-	__le16 rxfragments;
+-	__le16 rxunicastoctets;
+-	__le16 rxmulticastoctets;
+-	__le16 rxfcserrors;
+-	__le16 rxdiscardsnobuffer;
+-	__le16 txdiscardswrongsa;
+-	__le16 rxdiscardswepundecr;
+-	__le16 rxmsginmsgfrag;
+-	__le16 rxmsginbadmsgfrag;
+-} __packed;
+-
+-struct hfa384x_comm_tallies_32 {
+-	__le32 txunicastframes;
+-	__le32 txmulticastframes;
+-	__le32 txfragments;
+-	__le32 txunicastoctets;
+-	__le32 txmulticastoctets;
+-	__le32 txdeferredtrans;
+-	__le32 txsingleretryframes;
+-	__le32 txmultipleretryframes;
+-	__le32 txretrylimitexceeded;
+-	__le32 txdiscards;
+-	__le32 rxunicastframes;
+-	__le32 rxmulticastframes;
+-	__le32 rxfragments;
+-	__le32 rxunicastoctets;
+-	__le32 rxmulticastoctets;
+-	__le32 rxfcserrors;
+-	__le32 rxdiscardsnobuffer;
+-	__le32 txdiscardswrongsa;
+-	__le32 rxdiscardswepundecr;
+-	__le32 rxmsginmsgfrag;
+-	__le32 rxmsginbadmsgfrag;
+-} __packed;
+-
+-/*--  Inquiry Frame, Diagnose: Scan Results & Subfields--*/
+-struct hfa384x_scan_result_sub {
+-	u16 chid;
+-	u16 anl;
+-	u16 sl;
+-	u8 bssid[WLAN_BSSID_LEN];
+-	u16 bcnint;
+-	u16 capinfo;
+-	struct hfa384x_bytestr32 ssid;
+-	u8 supprates[10];	/* 802.11 info element */
+-	u16 proberesp_rate;
+-} __packed;
+-
+-struct hfa384x_scan_result {
+-	u16 rsvd;
+-	u16 scanreason;
+-	struct hfa384x_scan_result_sub result[HFA384x_SCANRESULT_MAX];
+-} __packed;
+-
+-/*--  Inquiry Frame, Diagnose: ChInfo Results & Subfields--*/
+-struct hfa384x_ch_info_result_sub {
+-	u16 chid;
+-	u16 anl;
+-	u16 pnl;
+-	u16 active;
+-} __packed;
+-
+-#define HFA384x_CHINFORESULT_BSSACTIVE	BIT(0)
+-#define HFA384x_CHINFORESULT_PCFACTIVE	BIT(1)
+-
+-struct hfa384x_ch_info_result {
+-	u16 scanchannels;
+-	struct hfa384x_ch_info_result_sub result[HFA384x_CHINFORESULT_MAX];
+-} __packed;
+-
+-/*--  Inquiry Frame, Diagnose: Host Scan Results & Subfields--*/
+-struct hfa384x_hscan_result_sub {
+-	__le16 chid;
+-	__le16 anl;
+-	__le16 sl;
+-	u8 bssid[WLAN_BSSID_LEN];
+-	__le16 bcnint;
+-	__le16 capinfo;
+-	struct hfa384x_bytestr32 ssid;
+-	u8 supprates[10];	/* 802.11 info element */
+-	u16 proberesp_rate;
+-	__le16 atim;
+-} __packed;
+-
+-struct hfa384x_hscan_result {
+-	u16 nresult;
+-	u16 rsvd;
+-	struct hfa384x_hscan_result_sub result[HFA384x_HSCANRESULT_MAX];
+-} __packed;
+-
+-/*--  Unsolicited Frame, MAC Mgmt: LinkStatus --*/
+-
+-#define HFA384x_LINK_NOTCONNECTED	((u16)0)
+-#define HFA384x_LINK_CONNECTED		((u16)1)
+-#define HFA384x_LINK_DISCONNECTED	((u16)2)
+-#define HFA384x_LINK_AP_CHANGE		((u16)3)
+-#define HFA384x_LINK_AP_OUTOFRANGE	((u16)4)
+-#define HFA384x_LINK_AP_INRANGE		((u16)5)
+-#define HFA384x_LINK_ASSOCFAIL		((u16)6)
+-
+-struct hfa384x_link_status {
+-	__le16 linkstatus;
+-} __packed;
+-
+-/*--  Unsolicited Frame, MAC Mgmt: AssociationStatus (--*/
+-
+-#define HFA384x_ASSOCSTATUS_STAASSOC	((u16)1)
+-#define HFA384x_ASSOCSTATUS_REASSOC	((u16)2)
+-#define HFA384x_ASSOCSTATUS_AUTHFAIL	((u16)5)
+-
+-struct hfa384x_assoc_status {
+-	u16 assocstatus;
+-	u8 sta_addr[ETH_ALEN];
+-	/* old_ap_addr is only valid if assocstatus == 2 */
+-	u8 old_ap_addr[ETH_ALEN];
+-	u16 reason;
+-	u16 reserved;
+-} __packed;
+-
+-/*--  Unsolicited Frame, MAC Mgmt: AuthRequest (AP Only) --*/
+-
+-struct hfa384x_auth_request {
+-	u8 sta_addr[ETH_ALEN];
+-	__le16 algorithm;
+-} __packed;
+-
+-/*--  Unsolicited Frame, MAC Mgmt: PSUserCount (AP Only) --*/
+-
+-struct hfa384x_ps_user_count {
+-	__le16 usercnt;
+-} __packed;
+-
+-struct hfa384x_key_id_changed {
+-	u8 sta_addr[ETH_ALEN];
+-	u16 keyid;
+-} __packed;
+-
+-/*--  Collection of all Inf frames ---------------*/
+-union hfa384x_infodata {
+-	struct hfa384x_comm_tallies_16 commtallies16;
+-	struct hfa384x_comm_tallies_32 commtallies32;
+-	struct hfa384x_scan_result scanresult;
+-	struct hfa384x_ch_info_result chinforesult;
+-	struct hfa384x_hscan_result hscanresult;
+-	struct hfa384x_link_status linkstatus;
+-	struct hfa384x_assoc_status assocstatus;
+-	struct hfa384x_auth_request authreq;
+-	struct hfa384x_ps_user_count psusercnt;
+-	struct hfa384x_key_id_changed keyidchanged;
+-} __packed;
+-
+-struct hfa384x_inf_frame {
+-	u16 framelen;
+-	u16 infotype;
+-	union hfa384x_infodata info;
+-} __packed;
+-
+-/*--------------------------------------------------------------------
+- * USB Packet structures and constants.
+- *--------------------------------------------------------------------
+- */
+-
+-/* Should be sent to the bulkout endpoint */
+-#define HFA384x_USB_TXFRM	0
+-#define HFA384x_USB_CMDREQ	1
+-#define HFA384x_USB_WRIDREQ	2
+-#define HFA384x_USB_RRIDREQ	3
+-#define HFA384x_USB_WMEMREQ	4
+-#define HFA384x_USB_RMEMREQ	5
+-
+-/* Received from the bulkin endpoint */
+-#define HFA384x_USB_ISTXFRM(a)	(((a) & 0x9000) == 0x1000)
+-#define HFA384x_USB_ISRXFRM(a)	(!((a) & 0x9000))
+-#define HFA384x_USB_INFOFRM	0x8000
+-#define HFA384x_USB_CMDRESP	0x8001
+-#define HFA384x_USB_WRIDRESP	0x8002
+-#define HFA384x_USB_RRIDRESP	0x8003
+-#define HFA384x_USB_WMEMRESP	0x8004
+-#define HFA384x_USB_RMEMRESP	0x8005
+-#define HFA384x_USB_BUFAVAIL	0x8006
+-#define HFA384x_USB_ERROR	0x8007
+-
+-/*------------------------------------*/
+-/* Request (bulk OUT) packet contents */
+-
+-struct hfa384x_usb_txfrm {
+-	struct hfa384x_tx_frame desc;
+-	u8 data[WLAN_DATA_MAXLEN];
+-} __packed;
+-
+-struct hfa384x_usb_cmdreq {
+-	__le16 type;
+-	__le16 cmd;
+-	__le16 parm0;
+-	__le16 parm1;
+-	__le16 parm2;
+-	u8 pad[54];
+-} __packed;
+-
+-struct hfa384x_usb_wridreq {
+-	__le16 type;
+-	__le16 frmlen;
+-	__le16 rid;
+-	u8 data[HFA384x_RIDDATA_MAXLEN];
+-} __packed;
+-
+-struct hfa384x_usb_rridreq {
+-	__le16 type;
+-	__le16 frmlen;
+-	__le16 rid;
+-	u8 pad[58];
+-} __packed;
+-
+-struct hfa384x_usb_wmemreq {
+-	__le16 type;
+-	__le16 frmlen;
+-	__le16 offset;
+-	__le16 page;
+-	u8 data[HFA384x_USB_RWMEM_MAXLEN];
+-} __packed;
+-
+-struct hfa384x_usb_rmemreq {
+-	__le16 type;
+-	__le16 frmlen;
+-	__le16 offset;
+-	__le16 page;
+-	u8 pad[56];
+-} __packed;
+-
+-/*------------------------------------*/
+-/* Response (bulk IN) packet contents */
+-
+-struct hfa384x_usb_rxfrm {
+-	struct hfa384x_rx_frame desc;
+-	u8 data[WLAN_DATA_MAXLEN];
+-} __packed;
+-
+-struct hfa384x_usb_infofrm {
+-	u16 type;
+-	struct hfa384x_inf_frame info;
+-} __packed;
+-
+-struct hfa384x_usb_statusresp {
+-	u16 type;
+-	__le16 status;
+-	__le16 resp0;
+-	__le16 resp1;
+-	__le16 resp2;
+-} __packed;
+-
+-struct hfa384x_usb_rridresp {
+-	u16 type;
+-	__le16 frmlen;
+-	__le16 rid;
+-	u8 data[HFA384x_RIDDATA_MAXLEN];
+-} __packed;
+-
+-struct hfa384x_usb_rmemresp {
+-	u16 type;
+-	u16 frmlen;
+-	u8 data[HFA384x_USB_RWMEM_MAXLEN];
+-} __packed;
+-
+-struct hfa384x_usb_bufavail {
+-	u16 type;
+-	u16 frmlen;
+-} __packed;
+-
+-struct hfa384x_usb_error {
+-	u16 type;
+-	u16 errortype;
+-} __packed;
+-
+-/*----------------------------------------------------------*/
+-/* Unions for packaging all the known packet types together */
+-
+-union hfa384x_usbout {
+-	__le16 type;
+-	struct hfa384x_usb_txfrm txfrm;
+-	struct hfa384x_usb_cmdreq cmdreq;
+-	struct hfa384x_usb_wridreq wridreq;
+-	struct hfa384x_usb_rridreq rridreq;
+-	struct hfa384x_usb_wmemreq wmemreq;
+-	struct hfa384x_usb_rmemreq rmemreq;
+-} __packed;
+-
+-union hfa384x_usbin {
+-	__le16 type;
+-	struct hfa384x_usb_rxfrm rxfrm;
+-	struct hfa384x_usb_txfrm txfrm;
+-	struct hfa384x_usb_infofrm infofrm;
+-	struct hfa384x_usb_statusresp cmdresp;
+-	struct hfa384x_usb_statusresp wridresp;
+-	struct hfa384x_usb_rridresp rridresp;
+-	struct hfa384x_usb_statusresp wmemresp;
+-	struct hfa384x_usb_rmemresp rmemresp;
+-	struct hfa384x_usb_bufavail bufavail;
+-	struct hfa384x_usb_error usberror;
+-	u8 boguspad[3000];
+-} __packed;
+-
+-/*--------------------------------------------------------------------
+- * PD record structures.
+- *--------------------------------------------------------------------
+- */
+-
+-struct hfa384x_pdr_mfisuprange {
+-	u16 id;
+-	u16 variant;
+-	u16 bottom;
+-	u16 top;
+-} __packed;
+-
+-struct hfa384x_pdr_cfisuprange {
+-	u16 id;
+-	u16 variant;
+-	u16 bottom;
+-	u16 top;
+-} __packed;
+-
+-struct hfa384x_pdr_nicid {
+-	u16 id;
+-	u16 variant;
+-	u16 major;
+-	u16 minor;
+-} __packed;
+-
+-struct hfa384x_pdrec {
+-	__le16 len;		/* in words */
+-	__le16 code;
+-	union pdr {
+-		struct hfa384x_pdr_mfisuprange mfisuprange;
+-		struct hfa384x_pdr_cfisuprange cfisuprange;
+-		struct hfa384x_pdr_nicid nicid;
+-
+-	} data;
+-} __packed;
+-
+-#ifdef __KERNEL__
+-/*--------------------------------------------------------------------
+- * ---  MAC state structure, argument to all functions --
+- * ---  Also, a collection of support types --
+- *--------------------------------------------------------------------
+- */
+-struct hfa384x_cmdresult {
+-	u16 status;
+-	u16 resp0;
+-	u16 resp1;
+-	u16 resp2;
+-};
+-
+-/* USB Control Exchange (CTLX):
+- *  A queue of the structure below is maintained for all of the
+- *  Request/Response type USB packets supported by Prism2.
+- */
+-/* The following hfa384x_* structures are arguments to
+- * the usercb() for the different CTLX types.
+- */
+-struct hfa384x_rridresult {
+-	u16 rid;
+-	const void *riddata;
+-	unsigned int riddata_len;
+-};
+-
+-enum ctlx_state {
+-	CTLX_START = 0,		/* Start state, not queued */
+-
+-	CTLX_COMPLETE,		/* CTLX successfully completed */
+-	CTLX_REQ_FAILED,	/* OUT URB completed w/ error */
+-
+-	CTLX_PENDING,		/* Queued, data valid */
+-	CTLX_REQ_SUBMITTED,	/* OUT URB submitted */
+-	CTLX_REQ_COMPLETE,	/* OUT URB complete */
+-	CTLX_RESP_COMPLETE	/* IN URB received */
+-};
+-
+-struct hfa384x_usbctlx;
+-struct hfa384x;
+-
+-typedef void (*ctlx_cmdcb_t) (struct hfa384x *, const struct hfa384x_usbctlx *);
+-
+-typedef void (*ctlx_usercb_t) (struct hfa384x *hw,
+-			       void *ctlxresult, void *usercb_data);
+-
+-struct hfa384x_usbctlx {
+-	struct list_head list;
+-
+-	size_t outbufsize;
+-	union hfa384x_usbout outbuf;	/* pkt buf for OUT */
+-	union hfa384x_usbin inbuf;	/* pkt buf for IN(a copy) */
+-
+-	enum ctlx_state state;	/* Tracks running state */
+-
+-	struct completion done;
+-	int reapable;		/* Food for the reaper task */
+-
+-	ctlx_cmdcb_t cmdcb;	/* Async command callback */
+-	ctlx_usercb_t usercb;	/* Async user callback, */
+-	void *usercb_data;	/*  at CTLX completion  */
+-};
+-
+-struct hfa384x_usbctlxq {
+-	spinlock_t lock;
+-	struct list_head pending;
+-	struct list_head active;
+-	struct list_head completing;
+-	struct list_head reapable;
+-};
+-
+-struct hfa384x_metacmd {
+-	u16 cmd;
+-
+-	u16 parm0;
+-	u16 parm1;
+-	u16 parm2;
+-
+-	struct hfa384x_cmdresult result;
+-};
+-
+-#define	MAX_GRP_ADDR		32
+-#define WLAN_COMMENT_MAX	80  /* Max. length of user comment string. */
+-
+-#define WLAN_AUTH_MAX           60  /* Max. # of authenticated stations. */
+-#define WLAN_ACCESS_MAX		60  /* Max. # of stations in an access list. */
+-#define WLAN_ACCESS_NONE	0   /* No stations may be authenticated. */
+-#define WLAN_ACCESS_ALL		1   /* All stations may be authenticated. */
+-#define WLAN_ACCESS_ALLOW	2   /* Authenticate only "allowed" stations. */
+-#define WLAN_ACCESS_DENY	3   /* Do not authenticate "denied" stations. */
+-
+-/* XXX These are going away ASAP */
+-struct prism2sta_authlist {
+-	unsigned int cnt;
+-	u8 addr[WLAN_AUTH_MAX][ETH_ALEN];
+-	u8 assoc[WLAN_AUTH_MAX];
+-};
+-
+-struct prism2sta_accesslist {
+-	unsigned int modify;
+-	unsigned int cnt;
+-	u8 addr[WLAN_ACCESS_MAX][ETH_ALEN];
+-	unsigned int cnt1;
+-	u8 addr1[WLAN_ACCESS_MAX][ETH_ALEN];
+-};
+-
+-struct hfa384x {
+-	/* USB support data */
+-	struct usb_device *usb;
+-	struct urb rx_urb;
+-	struct sk_buff *rx_urb_skb;
+-	struct urb tx_urb;
+-	struct urb ctlx_urb;
+-	union hfa384x_usbout txbuff;
+-	struct hfa384x_usbctlxq ctlxq;
+-	struct timer_list reqtimer;
+-	struct timer_list resptimer;
+-
+-	struct timer_list throttle;
+-
+-	struct work_struct reaper_bh;
+-	struct work_struct completion_bh;
+-
+-	struct work_struct usb_work;
+-
+-	unsigned long usb_flags;
+-#define THROTTLE_RX	0
+-#define THROTTLE_TX	1
+-#define WORK_RX_HALT	2
+-#define WORK_TX_HALT	3
+-#define WORK_RX_RESUME	4
+-#define WORK_TX_RESUME	5
+-
+-	unsigned short req_timer_done:1;
+-	unsigned short resp_timer_done:1;
+-
+-	int endp_in;
+-	int endp_out;
+-
+-	int sniff_fcs;
+-	int sniff_channel;
+-	int sniff_truncate;
+-	int sniffhdr;
+-
+-	wait_queue_head_t cmdq;	/* wait queue itself */
+-
+-	/* Controller state */
+-	u32 state;
+-	u32 isap;
+-	u8 port_enabled[HFA384x_NUMPORTS_MAX];
+-
+-	/* Download support */
+-	unsigned int dlstate;
+-	struct hfa384x_downloadbuffer bufinfo;
+-	u16 dltimeout;
+-
+-	int scanflag;		/* to signal scan complete */
+-	int join_ap;		/* are we joined to a specific ap */
+-	int join_retries;	/* number of join retries till we fail */
+-	struct hfa384x_join_request_data joinreq;/* join request saved data */
+-
+-	struct wlandevice *wlandev;
+-	/* Timer to allow for the deferred processing of linkstatus messages */
+-	struct work_struct link_bh;
+-
+-	struct work_struct commsqual_bh;
+-	struct hfa384x_commsquality qual;
+-	struct timer_list commsqual_timer;
+-
+-	u16 link_status;
+-	u16 link_status_new;
+-	struct sk_buff_head authq;
+-
+-	u32 txrate;
+-
+-	/* And here we have stuff that used to be in priv */
+-
+-	/* State variables */
+-	unsigned int presniff_port_type;
+-	u16 presniff_wepflags;
+-	u32 dot11_desired_bss_type;
+-
+-	int dbmadjust;
+-
+-	/* Group Addresses - right now, there are up to a total
+-	 * of MAX_GRP_ADDR group addresses
+-	 */
+-	u8 dot11_grp_addr[MAX_GRP_ADDR][ETH_ALEN];
+-	unsigned int dot11_grpcnt;
+-
+-	/* Component Identities */
+-	struct hfa384x_compident ident_nic;
+-	struct hfa384x_compident ident_pri_fw;
+-	struct hfa384x_compident ident_sta_fw;
+-	struct hfa384x_compident ident_ap_fw;
+-	u16 mm_mods;
+-
+-	/* Supplier compatibility ranges */
+-	struct hfa384x_caplevel cap_sup_mfi;
+-	struct hfa384x_caplevel cap_sup_cfi;
+-	struct hfa384x_caplevel cap_sup_pri;
+-	struct hfa384x_caplevel cap_sup_sta;
+-	struct hfa384x_caplevel cap_sup_ap;
+-
+-	/* Actor compatibility ranges */
+-	struct hfa384x_caplevel cap_act_pri_cfi; /*
+-						  * pri f/w to controller
+-						  * interface
+-						  */
+-
+-	struct hfa384x_caplevel cap_act_sta_cfi; /*
+-						  * sta f/w to controller
+-						  * interface
+-						  */
+-
+-	struct hfa384x_caplevel cap_act_sta_mfi; /*
+-						  * sta f/w to modem interface
+-						  */
+-
+-	struct hfa384x_caplevel cap_act_ap_cfi;	/*
+-						 * ap f/w to controller
+-						 * interface
+-						 */
+-
+-	struct hfa384x_caplevel cap_act_ap_mfi;	/* ap f/w to modem interface */
+-
+-	u32 psusercount;	/* Power save user count. */
+-	struct hfa384x_comm_tallies_32 tallies;	/* Communication tallies. */
+-	u8 comment[WLAN_COMMENT_MAX + 1];	/* User comment */
+-
+-	/* Channel Info request results (AP only) */
+-	struct {
+-		atomic_t done;
+-		u8 count;
+-		struct hfa384x_ch_info_result results;
+-	} channel_info;
+-
+-	struct hfa384x_inf_frame *scanresults;
+-
+-	struct prism2sta_authlist authlist;	/*
+-						 * Authenticated station list.
+-						 */
+-	unsigned int accessmode;		/* Access mode. */
+-	struct prism2sta_accesslist allow;	/* Allowed station list. */
+-	struct prism2sta_accesslist deny;	/* Denied station list. */
+-
+-};
+-
+-void hfa384x_create(struct hfa384x *hw, struct usb_device *usb);
+-void hfa384x_destroy(struct hfa384x *hw);
+-
+-int hfa384x_corereset(struct hfa384x *hw, int holdtime, int settletime,
+-		      int genesis);
+-int hfa384x_drvr_disable(struct hfa384x *hw, u16 macport);
+-int hfa384x_drvr_enable(struct hfa384x *hw, u16 macport);
+-int hfa384x_drvr_flashdl_enable(struct hfa384x *hw);
+-int hfa384x_drvr_flashdl_disable(struct hfa384x *hw);
+-int hfa384x_drvr_flashdl_write(struct hfa384x *hw, u32 daddr, void *buf,
+-			       u32 len);
+-int hfa384x_drvr_getconfig(struct hfa384x *hw, u16 rid, void *buf, u16 len);
+-int hfa384x_drvr_ramdl_enable(struct hfa384x *hw, u32 exeaddr);
+-int hfa384x_drvr_ramdl_disable(struct hfa384x *hw);
+-int hfa384x_drvr_ramdl_write(struct hfa384x *hw, u32 daddr, void *buf, u32 len);
+-int hfa384x_drvr_readpda(struct hfa384x *hw, void *buf, unsigned int len);
+-int hfa384x_drvr_setconfig(struct hfa384x *hw, u16 rid, void *buf, u16 len);
+-
+-static inline int
+-hfa384x_drvr_getconfig16(struct hfa384x *hw, u16 rid, void *val)
+-{
+-	int result = 0;
+-
+-	result = hfa384x_drvr_getconfig(hw, rid, val, sizeof(u16));
+-	if (result == 0)
+-		le16_to_cpus(val);
+-	return result;
+-}
+-
+-static inline int hfa384x_drvr_setconfig16(struct hfa384x *hw, u16 rid, u16 val)
+-{
+-	__le16 value = cpu_to_le16(val);
+-
+-	return hfa384x_drvr_setconfig(hw, rid, &value, sizeof(value));
+-}
+-
+-int
+-hfa384x_drvr_setconfig_async(struct hfa384x *hw,
+-			     u16 rid,
+-			     void *buf,
+-			     u16 len, ctlx_usercb_t usercb, void *usercb_data);
+-
+-static inline int
+-hfa384x_drvr_setconfig16_async(struct hfa384x *hw, u16 rid, u16 val)
+-{
+-	__le16 value = cpu_to_le16(val);
+-
+-	return hfa384x_drvr_setconfig_async(hw, rid, &value, sizeof(value),
+-					    NULL, NULL);
+-}
+-
+-int hfa384x_drvr_start(struct hfa384x *hw);
+-int hfa384x_drvr_stop(struct hfa384x *hw);
+-int
+-hfa384x_drvr_txframe(struct hfa384x *hw, struct sk_buff *skb,
+-		     struct p80211_hdr *p80211_hdr,
+-		     struct p80211_metawep *p80211_wep);
+-void hfa384x_tx_timeout(struct wlandevice *wlandev);
+-
+-int hfa384x_cmd_initialize(struct hfa384x *hw);
+-int hfa384x_cmd_enable(struct hfa384x *hw, u16 macport);
+-int hfa384x_cmd_disable(struct hfa384x *hw, u16 macport);
+-int hfa384x_cmd_allocate(struct hfa384x *hw, u16 len);
+-int hfa384x_cmd_monitor(struct hfa384x *hw, u16 enable);
+-int
+-hfa384x_cmd_download(struct hfa384x *hw,
+-		     u16 mode, u16 lowaddr, u16 highaddr, u16 codelen);
+-
+-#endif /*__KERNEL__ */
+-
+-#endif /*_HFA384x_H */
+diff --git a/drivers/staging/wlan-ng/hfa384x_usb.c b/drivers/staging/wlan-ng/hfa384x_usb.c
+deleted file mode 100644
+index 35650f911ebc..000000000000
+--- a/drivers/staging/wlan-ng/hfa384x_usb.c
++++ /dev/null
+@@ -1,3880 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/*
+- *
+- * Functions that talk to the USB variant of the Intersil hfa384x MAC
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file implements functions that correspond to the prism2/hfa384x
+- * 802.11 MAC hardware and firmware host interface.
+- *
+- * The functions can be considered to represent several levels of
+- * abstraction.  The lowest level functions are simply C-callable wrappers
+- * around the register accesses.  The next higher level represents C-callable
+- * prism2 API functions that match the Intersil documentation as closely
+- * as is reasonable.  The next higher layer implements common sequences
+- * of invocations of the API layer (e.g. write to bap, followed by cmd).
+- *
+- * Common sequences:
+- * hfa384x_drvr_xxx	Highest level abstractions provided by the
+- *			hfa384x code.  They are driver defined wrappers
+- *			for common sequences.  These functions generally
+- *			use the services of the lower levels.
+- *
+- * hfa384x_drvr_xxxconfig  An example of the drvr level abstraction. These
+- *			functions are wrappers for the RID get/set
+- *			sequence. They call copy_[to|from]_bap() and
+- *			cmd_access(). These functions operate on the
+- *			RIDs and buffers without validation. The caller
+- *			is responsible for that.
+- *
+- * API wrapper functions:
+- * hfa384x_cmd_xxx	functions that provide access to the f/w commands.
+- *			The function arguments correspond to each command
+- *			argument, even command arguments that get packed
+- *			into single registers.  These functions _just_
+- *			issue the command by setting the cmd/parm regs
+- *			& reading the status/resp regs.  Additional
+- *			activities required to fully use a command
+- *			(read/write from/to bap, get/set int status etc.)
+- *			are implemented separately.  Think of these as
+- *			C-callable prism2 commands.
+- *
+- * Lowest Layer Functions:
+- * hfa384x_docmd_xxx	These functions implement the sequence required
+- *			to issue any prism2 command.  Primarily used by the
+- *			hfa384x_cmd_xxx functions.
+- *
+- * hfa384x_bap_xxx	BAP read/write access functions.
+- *			Note: we usually use BAP0 for non-interrupt context
+- *			 and BAP1 for interrupt context.
+- *
+- * hfa384x_dl_xxx	download related functions.
+- *
+- * Driver State Issues:
+- * Note that there are two pairs of functions that manage the
+- * 'initialized' and 'running' states of the hw/MAC combo.  The four
+- * functions are create(), destroy(), start(), and stop().  create()
+- * sets up the data structures required to support the hfa384x_*
+- * functions and destroy() cleans them up.  The start() function gets
+- * the actual hardware running and enables the interrupts.  The stop()
+- * function shuts the hardware down.  The sequence should be:
+- * create()
+- * start()
+- *  .
+- *  .  Do interesting things w/ the hardware
+- *  .
+- * stop()
+- * destroy()
+- *
+- * Note that destroy() can be called without calling stop() first.
+- * --------------------------------------------------------------------
+- */
+-
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/types.h>
+-#include <linux/slab.h>
+-#include <linux/wireless.h>
+-#include <linux/netdevice.h>
+-#include <linux/timer.h>
+-#include <linux/io.h>
+-#include <linux/delay.h>
+-#include <asm/byteorder.h>
+-#include <linux/bitops.h>
+-#include <linux/list.h>
+-#include <linux/usb.h>
+-#include <linux/byteorder/generic.h>
+-
+-#include "p80211types.h"
+-#include "p80211hdr.h"
+-#include "p80211mgmt.h"
+-#include "p80211conv.h"
+-#include "p80211msg.h"
+-#include "p80211netdev.h"
+-#include "p80211req.h"
+-#include "p80211metadef.h"
+-#include "p80211metastruct.h"
+-#include "hfa384x.h"
+-#include "prism2mgmt.h"
+-
+-enum cmd_mode {
+-	DOWAIT = 0,
+-	DOASYNC
+-};
+-
+-#define THROTTLE_JIFFIES	(HZ / 8)
+-#define URB_ASYNC_UNLINK 0
+-#define USB_QUEUE_BULK 0
+-
+-#define ROUNDUP64(a) (((a) + 63) & ~63)
+-
+-#ifdef DEBUG_USB
+-static void dbprint_urb(struct urb *urb);
+-#endif
+-
+-static void hfa384x_int_rxmonitor(struct wlandevice *wlandev,
+-				  struct hfa384x_usb_rxfrm *rxfrm);
+-
+-static void hfa384x_usb_defer(struct work_struct *data);
+-
+-static int submit_rx_urb(struct hfa384x *hw, gfp_t flags);
+-
+-static int submit_tx_urb(struct hfa384x *hw, struct urb *tx_urb, gfp_t flags);
+-
+-/*---------------------------------------------------*/
+-/* Callbacks */
+-static void hfa384x_usbout_callback(struct urb *urb);
+-static void hfa384x_ctlxout_callback(struct urb *urb);
+-static void hfa384x_usbin_callback(struct urb *urb);
+-
+-static void
+-hfa384x_usbin_txcompl(struct wlandevice *wlandev, union hfa384x_usbin *usbin);
+-
+-static void hfa384x_usbin_rx(struct wlandevice *wlandev, struct sk_buff *skb);
+-
+-static void hfa384x_usbin_info(struct wlandevice *wlandev,
+-			       union hfa384x_usbin *usbin);
+-
+-static void hfa384x_usbin_ctlx(struct hfa384x *hw, union hfa384x_usbin *usbin,
+-			       int urb_status);
+-
+-/*---------------------------------------------------*/
+-/* Functions to support the prism2 usb command queue */
+-
+-static void hfa384x_usbctlxq_run(struct hfa384x *hw);
+-
+-static void hfa384x_usbctlx_reqtimerfn(struct timer_list *t);
+-
+-static void hfa384x_usbctlx_resptimerfn(struct timer_list *t);
+-
+-static void hfa384x_usb_throttlefn(struct timer_list *t);
+-
+-static void hfa384x_usbctlx_completion_task(struct work_struct *work);
+-
+-static void hfa384x_usbctlx_reaper_task(struct work_struct *work);
+-
+-static int hfa384x_usbctlx_submit(struct hfa384x *hw,
+-				  struct hfa384x_usbctlx *ctlx);
+-
+-static void unlocked_usbctlx_complete(struct hfa384x *hw,
+-				      struct hfa384x_usbctlx *ctlx);
+-
+-struct usbctlx_completor {
+-	int (*complete)(struct usbctlx_completor *completor);
+-};
+-
+-static int
+-hfa384x_usbctlx_complete_sync(struct hfa384x *hw,
+-			      struct hfa384x_usbctlx *ctlx,
+-			      struct usbctlx_completor *completor);
+-
+-static int
+-unlocked_usbctlx_cancel_async(struct hfa384x *hw, struct hfa384x_usbctlx *ctlx);
+-
+-static void hfa384x_cb_status(struct hfa384x *hw,
+-			      const struct hfa384x_usbctlx *ctlx);
+-
+-static int
+-usbctlx_get_status(const struct hfa384x_usb_statusresp *cmdresp,
+-		   struct hfa384x_cmdresult *result);
+-
+-static void
+-usbctlx_get_rridresult(const struct hfa384x_usb_rridresp *rridresp,
+-		       struct hfa384x_rridresult *result);
+-
+-/*---------------------------------------------------*/
+-/* Low level req/resp CTLX formatters and submitters */
+-static inline int
+-hfa384x_docmd(struct hfa384x *hw,
+-	      struct hfa384x_metacmd *cmd);
+-
+-static int
+-hfa384x_dorrid(struct hfa384x *hw,
+-	       enum cmd_mode mode,
+-	       u16 rid,
+-	       void *riddata,
+-	       unsigned int riddatalen,
+-	       ctlx_cmdcb_t cmdcb, ctlx_usercb_t usercb, void *usercb_data);
+-
+-static int
+-hfa384x_dowrid(struct hfa384x *hw,
+-	       enum cmd_mode mode,
+-	       u16 rid,
+-	       void *riddata,
+-	       unsigned int riddatalen,
+-	       ctlx_cmdcb_t cmdcb, ctlx_usercb_t usercb, void *usercb_data);
+-
+-static int
+-hfa384x_dormem(struct hfa384x *hw,
+-	       u16 page,
+-	       u16 offset,
+-	       void *data,
+-	       unsigned int len);
+-
+-static int
+-hfa384x_dowmem(struct hfa384x *hw,
+-	       u16 page,
+-	       u16 offset,
+-	       void *data,
+-	       unsigned int len);
+-
+-static int hfa384x_isgood_pdrcode(u16 pdrcode);
+-
+-static inline const char *ctlxstr(enum ctlx_state s)
+-{
+-	static const char * const ctlx_str[] = {
+-		"Initial state",
+-		"Complete",
+-		"Request failed",
+-		"Request pending",
+-		"Request packet submitted",
+-		"Request packet completed",
+-		"Response packet completed"
+-	};
+-
+-	return ctlx_str[s];
+-};
+-
+-static inline struct hfa384x_usbctlx *get_active_ctlx(struct hfa384x *hw)
+-{
+-	return list_entry(hw->ctlxq.active.next, struct hfa384x_usbctlx, list);
+-}
+-
+-#ifdef DEBUG_USB
+-void dbprint_urb(struct urb *urb)
+-{
+-	pr_debug("urb->pipe=0x%08x\n", urb->pipe);
+-	pr_debug("urb->status=0x%08x\n", urb->status);
+-	pr_debug("urb->transfer_flags=0x%08x\n", urb->transfer_flags);
+-	pr_debug("urb->transfer_buffer=0x%08x\n",
+-		 (unsigned int)urb->transfer_buffer);
+-	pr_debug("urb->transfer_buffer_length=0x%08x\n",
+-		 urb->transfer_buffer_length);
+-	pr_debug("urb->actual_length=0x%08x\n", urb->actual_length);
+-	pr_debug("urb->setup_packet(ctl)=0x%08x\n",
+-		 (unsigned int)urb->setup_packet);
+-	pr_debug("urb->start_frame(iso/irq)=0x%08x\n", urb->start_frame);
+-	pr_debug("urb->interval(irq)=0x%08x\n", urb->interval);
+-	pr_debug("urb->error_count(iso)=0x%08x\n", urb->error_count);
+-	pr_debug("urb->context=0x%08x\n", (unsigned int)urb->context);
+-	pr_debug("urb->complete=0x%08x\n", (unsigned int)urb->complete);
+-}
+-#endif
+-
+-/*----------------------------------------------------------------
+- * submit_rx_urb
+- *
+- * Listen for input data on the BULK-IN pipe. If the pipe has
+- * stalled then schedule it to be reset.
+- *
+- * Arguments:
+- *	hw		device struct
+- *	memflags	memory allocation flags
+- *
+- * Returns:
+- *	error code from submission
+- *
+- * Call context:
+- *	Any
+- *----------------------------------------------------------------
+- */
+-static int submit_rx_urb(struct hfa384x *hw, gfp_t memflags)
+-{
+-	struct sk_buff *skb;
+-	int result;
+-
+-	skb = dev_alloc_skb(sizeof(union hfa384x_usbin));
+-	if (!skb) {
+-		result = -ENOMEM;
+-		goto done;
+-	}
+-
+-	/* Post the IN urb */
+-	usb_fill_bulk_urb(&hw->rx_urb, hw->usb,
+-			  hw->endp_in,
+-			  skb->data, sizeof(union hfa384x_usbin),
+-			  hfa384x_usbin_callback, hw->wlandev);
+-
+-	hw->rx_urb_skb = skb;
+-
+-	result = -ENOLINK;
+-	if (!hw->wlandev->hwremoved &&
+-	    !test_bit(WORK_RX_HALT, &hw->usb_flags)) {
+-		result = usb_submit_urb(&hw->rx_urb, memflags);
+-
+-		/* Check whether we need to reset the RX pipe */
+-		if (result == -EPIPE) {
+-			netdev_warn(hw->wlandev->netdev,
+-				    "%s rx pipe stalled: requesting reset\n",
+-				    hw->wlandev->netdev->name);
+-			if (!test_and_set_bit(WORK_RX_HALT, &hw->usb_flags))
+-				schedule_work(&hw->usb_work);
+-		}
+-	}
+-
+-	/* Don't leak memory if anything should go wrong */
+-	if (result != 0) {
+-		dev_kfree_skb(skb);
+-		hw->rx_urb_skb = NULL;
+-	}
+-
+-done:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * submit_tx_urb
+- *
+- * Prepares and submits the URB of transmitted data. If the
+- * submission fails then it will schedule the output pipe to
+- * be reset.
+- *
+- * Arguments:
+- *	hw		device struct
+- *	tx_urb		URB of data for transmission
+- *	memflags	memory allocation flags
+- *
+- * Returns:
+- *	error code from submission
+- *
+- * Call context:
+- *	Any
+- *----------------------------------------------------------------
+- */
+-static int submit_tx_urb(struct hfa384x *hw, struct urb *tx_urb, gfp_t memflags)
+-{
+-	struct net_device *netdev = hw->wlandev->netdev;
+-	int result;
+-
+-	result = -ENOLINK;
+-	if (netif_running(netdev)) {
+-		if (!hw->wlandev->hwremoved &&
+-		    !test_bit(WORK_TX_HALT, &hw->usb_flags)) {
+-			result = usb_submit_urb(tx_urb, memflags);
+-
+-			/* Test whether we need to reset the TX pipe */
+-			if (result == -EPIPE) {
+-				netdev_warn(hw->wlandev->netdev,
+-					    "%s tx pipe stalled: requesting reset\n",
+-					    netdev->name);
+-				set_bit(WORK_TX_HALT, &hw->usb_flags);
+-				schedule_work(&hw->usb_work);
+-			} else if (result == 0) {
+-				netif_stop_queue(netdev);
+-			}
+-		}
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa394x_usb_defer
+- *
+- * There are some things that the USB stack cannot do while
+- * in interrupt context, so we arrange this function to run
+- * in process context.
+- *
+- * Arguments:
+- *	hw	device structure
+- *
+- * Returns:
+- *	nothing
+- *
+- * Call context:
+- *	process (by design)
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usb_defer(struct work_struct *data)
+-{
+-	struct hfa384x *hw = container_of(data, struct hfa384x, usb_work);
+-	struct net_device *netdev = hw->wlandev->netdev;
+-
+-	/* Don't bother trying to reset anything if the plug
+-	 * has been pulled ...
+-	 */
+-	if (hw->wlandev->hwremoved)
+-		return;
+-
+-	/* Reception has stopped: try to reset the input pipe */
+-	if (test_bit(WORK_RX_HALT, &hw->usb_flags)) {
+-		int ret;
+-
+-		usb_kill_urb(&hw->rx_urb); /* Cannot be holding spinlock! */
+-
+-		ret = usb_clear_halt(hw->usb, hw->endp_in);
+-		if (ret != 0) {
+-			netdev_err(hw->wlandev->netdev,
+-				   "Failed to clear rx pipe for %s: err=%d\n",
+-				   netdev->name, ret);
+-		} else {
+-			netdev_info(hw->wlandev->netdev, "%s rx pipe reset complete.\n",
+-				    netdev->name);
+-			clear_bit(WORK_RX_HALT, &hw->usb_flags);
+-			set_bit(WORK_RX_RESUME, &hw->usb_flags);
+-		}
+-	}
+-
+-	/* Resume receiving data back from the device. */
+-	if (test_bit(WORK_RX_RESUME, &hw->usb_flags)) {
+-		int ret;
+-
+-		ret = submit_rx_urb(hw, GFP_KERNEL);
+-		if (ret != 0) {
+-			netdev_err(hw->wlandev->netdev,
+-				   "Failed to resume %s rx pipe.\n",
+-				   netdev->name);
+-		} else {
+-			clear_bit(WORK_RX_RESUME, &hw->usb_flags);
+-		}
+-	}
+-
+-	/* Transmission has stopped: try to reset the output pipe */
+-	if (test_bit(WORK_TX_HALT, &hw->usb_flags)) {
+-		int ret;
+-
+-		usb_kill_urb(&hw->tx_urb);
+-		ret = usb_clear_halt(hw->usb, hw->endp_out);
+-		if (ret != 0) {
+-			netdev_err(hw->wlandev->netdev,
+-				   "Failed to clear tx pipe for %s: err=%d\n",
+-				   netdev->name, ret);
+-		} else {
+-			netdev_info(hw->wlandev->netdev, "%s tx pipe reset complete.\n",
+-				    netdev->name);
+-			clear_bit(WORK_TX_HALT, &hw->usb_flags);
+-			set_bit(WORK_TX_RESUME, &hw->usb_flags);
+-
+-			/* Stopping the BULK-OUT pipe also blocked
+-			 * us from sending any more CTLX URBs, so
+-			 * we need to re-run our queue ...
+-			 */
+-			hfa384x_usbctlxq_run(hw);
+-		}
+-	}
+-
+-	/* Resume transmitting. */
+-	if (test_and_clear_bit(WORK_TX_RESUME, &hw->usb_flags))
+-		netif_wake_queue(hw->wlandev->netdev);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_create
+- *
+- * Sets up the struct hfa384x data structure for use.  Note this
+- * does _not_ initialize the actual hardware, just the data structures
+- * we use to keep track of its state.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	irq		device irq number
+- *	iobase		i/o base address for register access
+- *	membase		memory base address for register access
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-void hfa384x_create(struct hfa384x *hw, struct usb_device *usb)
+-{
+-	hw->usb = usb;
+-
+-	/* Set up the waitq */
+-	init_waitqueue_head(&hw->cmdq);
+-
+-	/* Initialize the command queue */
+-	spin_lock_init(&hw->ctlxq.lock);
+-	INIT_LIST_HEAD(&hw->ctlxq.pending);
+-	INIT_LIST_HEAD(&hw->ctlxq.active);
+-	INIT_LIST_HEAD(&hw->ctlxq.completing);
+-	INIT_LIST_HEAD(&hw->ctlxq.reapable);
+-
+-	/* Initialize the authentication queue */
+-	skb_queue_head_init(&hw->authq);
+-
+-	INIT_WORK(&hw->reaper_bh, hfa384x_usbctlx_reaper_task);
+-	INIT_WORK(&hw->completion_bh, hfa384x_usbctlx_completion_task);
+-	INIT_WORK(&hw->link_bh, prism2sta_processing_defer);
+-	INIT_WORK(&hw->usb_work, hfa384x_usb_defer);
+-
+-	timer_setup(&hw->throttle, hfa384x_usb_throttlefn, 0);
+-
+-	timer_setup(&hw->resptimer, hfa384x_usbctlx_resptimerfn, 0);
+-
+-	timer_setup(&hw->reqtimer, hfa384x_usbctlx_reqtimerfn, 0);
+-
+-	usb_init_urb(&hw->rx_urb);
+-	usb_init_urb(&hw->tx_urb);
+-	usb_init_urb(&hw->ctlx_urb);
+-
+-	hw->link_status = HFA384x_LINK_NOTCONNECTED;
+-	hw->state = HFA384x_STATE_INIT;
+-
+-	INIT_WORK(&hw->commsqual_bh, prism2sta_commsqual_defer);
+-	timer_setup(&hw->commsqual_timer, prism2sta_commsqual_timer, 0);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_destroy
+- *
+- * Partner to hfa384x_create().  This function cleans up the hw
+- * structure so that it can be freed by the caller using a simple
+- * kfree.  Currently, this function is just a placeholder.  If, at some
+- * point in the future, an hw in the 'shutdown' state requires a 'deep'
+- * kfree, this is where it should be done.  Note that if this function
+- * is called on a _running_ hw structure, the drvr_stop() function is
+- * called.
+- *
+- * Arguments:
+- *	hw		device structure
+- *
+- * Returns:
+- *	nothing, this function is not allowed to fail.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-void hfa384x_destroy(struct hfa384x *hw)
+-{
+-	struct sk_buff *skb;
+-
+-	if (hw->state == HFA384x_STATE_RUNNING)
+-		hfa384x_drvr_stop(hw);
+-	hw->state = HFA384x_STATE_PREINIT;
+-
+-	kfree(hw->scanresults);
+-	hw->scanresults = NULL;
+-
+-	/* Now to clean out the auth queue */
+-	while ((skb = skb_dequeue(&hw->authq)))
+-		dev_kfree_skb(skb);
+-}
+-
+-static struct hfa384x_usbctlx *usbctlx_alloc(void)
+-{
+-	struct hfa384x_usbctlx *ctlx;
+-
+-	ctlx = kzalloc(sizeof(*ctlx),
+-		       in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
+-	if (ctlx)
+-		init_completion(&ctlx->done);
+-
+-	return ctlx;
+-}
+-
+-static int
+-usbctlx_get_status(const struct hfa384x_usb_statusresp *cmdresp,
+-		   struct hfa384x_cmdresult *result)
+-{
+-	result->status = le16_to_cpu(cmdresp->status);
+-	result->resp0 = le16_to_cpu(cmdresp->resp0);
+-	result->resp1 = le16_to_cpu(cmdresp->resp1);
+-	result->resp2 = le16_to_cpu(cmdresp->resp2);
+-
+-	pr_debug("cmdresult:status=0x%04x resp0=0x%04x resp1=0x%04x resp2=0x%04x\n",
+-		 result->status, result->resp0, result->resp1, result->resp2);
+-
+-	return result->status & HFA384x_STATUS_RESULT;
+-}
+-
+-static void
+-usbctlx_get_rridresult(const struct hfa384x_usb_rridresp *rridresp,
+-		       struct hfa384x_rridresult *result)
+-{
+-	result->rid = le16_to_cpu(rridresp->rid);
+-	result->riddata = rridresp->data;
+-	result->riddata_len = ((le16_to_cpu(rridresp->frmlen) - 1) * 2);
+-}
+-
+-/*----------------------------------------------------------------
+- * Completor object:
+- * This completor must be passed to hfa384x_usbctlx_complete_sync()
+- * when processing a CTLX that returns a struct hfa384x_cmdresult structure.
+- *----------------------------------------------------------------
+- */
+-struct usbctlx_cmd_completor {
+-	struct usbctlx_completor head;
+-
+-	const struct hfa384x_usb_statusresp *cmdresp;
+-	struct hfa384x_cmdresult *result;
+-};
+-
+-static inline int usbctlx_cmd_completor_fn(struct usbctlx_completor *head)
+-{
+-	struct usbctlx_cmd_completor *complete;
+-
+-	complete = (struct usbctlx_cmd_completor *)head;
+-	return usbctlx_get_status(complete->cmdresp, complete->result);
+-}
+-
+-static inline struct usbctlx_completor *
+-init_cmd_completor(struct usbctlx_cmd_completor *completor,
+-		   const struct hfa384x_usb_statusresp *cmdresp,
+-		   struct hfa384x_cmdresult *result)
+-{
+-	completor->head.complete = usbctlx_cmd_completor_fn;
+-	completor->cmdresp = cmdresp;
+-	completor->result = result;
+-	return &completor->head;
+-}
+-
+-/*----------------------------------------------------------------
+- * Completor object:
+- * This completor must be passed to hfa384x_usbctlx_complete_sync()
+- * when processing a CTLX that reads a RID.
+- *----------------------------------------------------------------
+- */
+-struct usbctlx_rrid_completor {
+-	struct usbctlx_completor head;
+-
+-	const struct hfa384x_usb_rridresp *rridresp;
+-	void *riddata;
+-	unsigned int riddatalen;
+-};
+-
+-static int usbctlx_rrid_completor_fn(struct usbctlx_completor *head)
+-{
+-	struct usbctlx_rrid_completor *complete;
+-	struct hfa384x_rridresult rridresult;
+-
+-	complete = (struct usbctlx_rrid_completor *)head;
+-	usbctlx_get_rridresult(complete->rridresp, &rridresult);
+-
+-	/* Validate the length, note body len calculation in bytes */
+-	if (rridresult.riddata_len != complete->riddatalen) {
+-		pr_warn("RID len mismatch, rid=0x%04x hlen=%d fwlen=%d\n",
+-			rridresult.rid,
+-			complete->riddatalen, rridresult.riddata_len);
+-		return -ENODATA;
+-	}
+-
+-	memcpy(complete->riddata, rridresult.riddata, complete->riddatalen);
+-	return 0;
+-}
+-
+-static inline struct usbctlx_completor *
+-init_rrid_completor(struct usbctlx_rrid_completor *completor,
+-		    const struct hfa384x_usb_rridresp *rridresp,
+-		    void *riddata,
+-		    unsigned int riddatalen)
+-{
+-	completor->head.complete = usbctlx_rrid_completor_fn;
+-	completor->rridresp = rridresp;
+-	completor->riddata = riddata;
+-	completor->riddatalen = riddatalen;
+-	return &completor->head;
+-}
+-
+-/*----------------------------------------------------------------
+- * Completor object:
+- * Interprets the results of a synchronous RID-write
+- *----------------------------------------------------------------
+- */
+-#define init_wrid_completor  init_cmd_completor
+-
+-/*----------------------------------------------------------------
+- * Completor object:
+- * Interprets the results of a synchronous memory-write
+- *----------------------------------------------------------------
+- */
+-#define init_wmem_completor  init_cmd_completor
+-
+-/*----------------------------------------------------------------
+- * Completor object:
+- * Interprets the results of a synchronous memory-read
+- *----------------------------------------------------------------
+- */
+-struct usbctlx_rmem_completor {
+-	struct usbctlx_completor head;
+-
+-	const struct hfa384x_usb_rmemresp *rmemresp;
+-	void *data;
+-	unsigned int len;
+-};
+-
+-static int usbctlx_rmem_completor_fn(struct usbctlx_completor *head)
+-{
+-	struct usbctlx_rmem_completor *complete =
+-		(struct usbctlx_rmem_completor *)head;
+-
+-	pr_debug("rmemresp:len=%d\n", complete->rmemresp->frmlen);
+-	memcpy(complete->data, complete->rmemresp->data, complete->len);
+-	return 0;
+-}
+-
+-static inline struct usbctlx_completor *
+-init_rmem_completor(struct usbctlx_rmem_completor *completor,
+-		    struct hfa384x_usb_rmemresp *rmemresp,
+-		    void *data,
+-		    unsigned int len)
+-{
+-	completor->head.complete = usbctlx_rmem_completor_fn;
+-	completor->rmemresp = rmemresp;
+-	completor->data = data;
+-	completor->len = len;
+-	return &completor->head;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_cb_status
+- *
+- * Ctlx_complete handler for async CMD type control exchanges.
+- * mark the hw struct as such.
+- *
+- * Note: If the handling is changed here, it should probably be
+- *       changed in docmd as well.
+- *
+- * Arguments:
+- *	hw		hw struct
+- *	ctlx		completed CTLX
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_cb_status(struct hfa384x *hw,
+-			      const struct hfa384x_usbctlx *ctlx)
+-{
+-	if (ctlx->usercb) {
+-		struct hfa384x_cmdresult cmdresult;
+-
+-		if (ctlx->state != CTLX_COMPLETE) {
+-			memset(&cmdresult, 0, sizeof(cmdresult));
+-			cmdresult.status =
+-			    HFA384x_STATUS_RESULT_SET(HFA384x_CMD_ERR);
+-		} else {
+-			usbctlx_get_status(&ctlx->inbuf.cmdresp, &cmdresult);
+-		}
+-
+-		ctlx->usercb(hw, &cmdresult, ctlx->usercb_data);
+-	}
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_cmd_initialize
+- *
+- * Issues the initialize command and sets the hw->state based
+- * on the result.
+- *
+- * Arguments:
+- *	hw		device structure
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_cmd_initialize(struct hfa384x *hw)
+-{
+-	int result = 0;
+-	int i;
+-	struct hfa384x_metacmd cmd;
+-
+-	cmd.cmd = HFA384x_CMDCODE_INIT;
+-	cmd.parm0 = 0;
+-	cmd.parm1 = 0;
+-	cmd.parm2 = 0;
+-
+-	result = hfa384x_docmd(hw, &cmd);
+-
+-	pr_debug("cmdresp.init: status=0x%04x, resp0=0x%04x, resp1=0x%04x, resp2=0x%04x\n",
+-		 cmd.result.status,
+-		 cmd.result.resp0, cmd.result.resp1, cmd.result.resp2);
+-	if (result == 0) {
+-		for (i = 0; i < HFA384x_NUMPORTS_MAX; i++)
+-			hw->port_enabled[i] = 0;
+-	}
+-
+-	hw->link_status = HFA384x_LINK_NOTCONNECTED;
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_cmd_disable
+- *
+- * Issues the disable command to stop communications on one of
+- * the MACs 'ports'.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	macport		MAC port number (host order)
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported failure - f/w status code
+- *	<0		driver reported error (timeout|bad arg)
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_cmd_disable(struct hfa384x *hw, u16 macport)
+-{
+-	struct hfa384x_metacmd cmd;
+-
+-	cmd.cmd = HFA384x_CMD_CMDCODE_SET(HFA384x_CMDCODE_DISABLE) |
+-	    HFA384x_CMD_MACPORT_SET(macport);
+-	cmd.parm0 = 0;
+-	cmd.parm1 = 0;
+-	cmd.parm2 = 0;
+-
+-	return hfa384x_docmd(hw, &cmd);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_cmd_enable
+- *
+- * Issues the enable command to enable communications on one of
+- * the MACs 'ports'.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	macport		MAC port number
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported failure - f/w status code
+- *	<0		driver reported error (timeout|bad arg)
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_cmd_enable(struct hfa384x *hw, u16 macport)
+-{
+-	struct hfa384x_metacmd cmd;
+-
+-	cmd.cmd = HFA384x_CMD_CMDCODE_SET(HFA384x_CMDCODE_ENABLE) |
+-	    HFA384x_CMD_MACPORT_SET(macport);
+-	cmd.parm0 = 0;
+-	cmd.parm1 = 0;
+-	cmd.parm2 = 0;
+-
+-	return hfa384x_docmd(hw, &cmd);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_cmd_monitor
+- *
+- * Enables the 'monitor mode' of the MAC.  Here's the description of
+- * monitor mode that I've received thus far:
+- *
+- *  "The "monitor mode" of operation is that the MAC passes all
+- *  frames for which the PLCP checks are correct. All received
+- *  MPDUs are passed to the host with MAC Port = 7, with a
+- *  receive status of good, FCS error, or undecryptable. Passing
+- *  certain MPDUs is a violation of the 802.11 standard, but useful
+- *  for a debugging tool."  Normal communication is not possible
+- *  while monitor mode is enabled.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	enable		a code (0x0b|0x0f) that enables/disables
+- *			monitor mode. (host order)
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported failure - f/w status code
+- *	<0		driver reported error (timeout|bad arg)
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_cmd_monitor(struct hfa384x *hw, u16 enable)
+-{
+-	struct hfa384x_metacmd cmd;
+-
+-	cmd.cmd = HFA384x_CMD_CMDCODE_SET(HFA384x_CMDCODE_MONITOR) |
+-	    HFA384x_CMD_AINFO_SET(enable);
+-	cmd.parm0 = 0;
+-	cmd.parm1 = 0;
+-	cmd.parm2 = 0;
+-
+-	return hfa384x_docmd(hw, &cmd);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_cmd_download
+- *
+- * Sets the controls for the MAC controller code/data download
+- * process.  The arguments set the mode and address associated
+- * with a download.  Note that the aux registers should be enabled
+- * prior to setting one of the download enable modes.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	mode		0 - Disable programming and begin code exec
+- *			1 - Enable volatile mem programming
+- *			2 - Enable non-volatile mem programming
+- *			3 - Program non-volatile section from NV download
+- *			    buffer.
+- *			(host order)
+- *	lowaddr
+- *	highaddr	For mode 1, sets the high & low order bits of
+- *			the "destination address".  This address will be
+- *			the execution start address when download is
+- *			subsequently disabled.
+- *			For mode 2, sets the high & low order bits of
+- *			the destination in NV ram.
+- *			For modes 0 & 3, should be zero. (host order)
+- *			NOTE: these are CMD format.
+- *	codelen		Length of the data to write in mode 2,
+- *			zero otherwise. (host order)
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported failure - f/w status code
+- *	<0		driver reported error (timeout|bad arg)
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_cmd_download(struct hfa384x *hw, u16 mode, u16 lowaddr,
+-			 u16 highaddr, u16 codelen)
+-{
+-	struct hfa384x_metacmd cmd;
+-
+-	pr_debug("mode=%d, lowaddr=0x%04x, highaddr=0x%04x, codelen=%d\n",
+-		 mode, lowaddr, highaddr, codelen);
+-
+-	cmd.cmd = (HFA384x_CMD_CMDCODE_SET(HFA384x_CMDCODE_DOWNLD) |
+-		   HFA384x_CMD_PROGMODE_SET(mode));
+-
+-	cmd.parm0 = lowaddr;
+-	cmd.parm1 = highaddr;
+-	cmd.parm2 = codelen;
+-
+-	return hfa384x_docmd(hw, &cmd);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_corereset
+- *
+- * Perform a reset of the hfa38xx MAC core.  We assume that the hw
+- * structure is in its "created" state.  That is, it is initialized
+- * with proper values.  Note that if a reset is done after the
+- * device has been active for awhile, the caller might have to clean
+- * up some leftover cruft in the hw structure.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	holdtime	how long (in ms) to hold the reset
+- *	settletime	how long (in ms) to wait after releasing
+- *			the reset
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_corereset(struct hfa384x *hw, int holdtime,
+-		      int settletime, int genesis)
+-{
+-	int result;
+-
+-	result = usb_reset_device(hw->usb);
+-	if (result < 0) {
+-		netdev_err(hw->wlandev->netdev, "usb_reset_device() failed, result=%d.\n",
+-			   result);
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbctlx_complete_sync
+- *
+- * Waits for a synchronous CTLX object to complete,
+- * and then handles the response.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	ctlx		CTLX ptr
+- *	completor	functor object to decide what to
+- *			do with the CTLX's result.
+- *
+- * Returns:
+- *	0		Success
+- *	-ERESTARTSYS	Interrupted by a signal
+- *	-EIO		CTLX failed
+- *	-ENODEV		Adapter was unplugged
+- *	???		Result from completor
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-static int hfa384x_usbctlx_complete_sync(struct hfa384x *hw,
+-					 struct hfa384x_usbctlx *ctlx,
+-					 struct usbctlx_completor *completor)
+-{
+-	unsigned long flags;
+-	int result;
+-
+-	result = wait_for_completion_interruptible(&ctlx->done);
+-
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	/*
+-	 * We can only handle the CTLX if the USB disconnect
+-	 * function has not run yet ...
+-	 */
+-cleanup:
+-	if (hw->wlandev->hwremoved) {
+-		spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-		result = -ENODEV;
+-	} else if (result != 0) {
+-		int runqueue = 0;
+-
+-		/*
+-		 * We were probably interrupted, so delete
+-		 * this CTLX asynchronously, kill the timers
+-		 * and the URB, and then start the next
+-		 * pending CTLX.
+-		 *
+-		 * NOTE: We can only delete the timers and
+-		 *       the URB if this CTLX is active.
+-		 */
+-		if (ctlx == get_active_ctlx(hw)) {
+-			spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-
+-			del_timer_sync(&hw->reqtimer);
+-			del_timer_sync(&hw->resptimer);
+-			hw->req_timer_done = 1;
+-			hw->resp_timer_done = 1;
+-			usb_kill_urb(&hw->ctlx_urb);
+-
+-			spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-			runqueue = 1;
+-
+-			/*
+-			 * This scenario is so unlikely that I'm
+-			 * happy with a grubby "goto" solution ...
+-			 */
+-			if (hw->wlandev->hwremoved)
+-				goto cleanup;
+-		}
+-
+-		/*
+-		 * The completion task will send this CTLX
+-		 * to the reaper the next time it runs. We
+-		 * are no longer in a hurry.
+-		 */
+-		ctlx->reapable = 1;
+-		ctlx->state = CTLX_REQ_FAILED;
+-		list_move_tail(&ctlx->list, &hw->ctlxq.completing);
+-
+-		spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-
+-		if (runqueue)
+-			hfa384x_usbctlxq_run(hw);
+-	} else {
+-		if (ctlx->state == CTLX_COMPLETE) {
+-			result = completor->complete(completor);
+-		} else {
+-			netdev_warn(hw->wlandev->netdev, "CTLX[%d] error: state(%s)\n",
+-				    le16_to_cpu(ctlx->outbuf.type),
+-				    ctlxstr(ctlx->state));
+-			result = -EIO;
+-		}
+-
+-		list_del(&ctlx->list);
+-		spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-		kfree(ctlx);
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_docmd
+- *
+- * Constructs a command CTLX and submits it.
+- *
+- * NOTE: Any changes to the 'post-submit' code in this function
+- *       need to be carried over to hfa384x_cbcmd() since the handling
+- *       is virtually identical.
+- *
+- * Arguments:
+- *	hw		device structure
+- *       cmd             cmd structure.  Includes all arguments and result
+- *                       data points.  All in host order. in host order
+- *
+- * Returns:
+- *	0		success
+- *	-EIO		CTLX failure
+- *	-ERESTARTSYS	Awakened on signal
+- *	>0		command indicated error, Status and Resp0-2 are
+- *			in hw structure.
+- *
+- * Side effects:
+- *
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-static inline int
+-hfa384x_docmd(struct hfa384x *hw,
+-	      struct hfa384x_metacmd *cmd)
+-{
+-	int result;
+-	struct hfa384x_usbctlx *ctlx;
+-
+-	ctlx = usbctlx_alloc();
+-	if (!ctlx) {
+-		result = -ENOMEM;
+-		goto done;
+-	}
+-
+-	/* Initialize the command */
+-	ctlx->outbuf.cmdreq.type = cpu_to_le16(HFA384x_USB_CMDREQ);
+-	ctlx->outbuf.cmdreq.cmd = cpu_to_le16(cmd->cmd);
+-	ctlx->outbuf.cmdreq.parm0 = cpu_to_le16(cmd->parm0);
+-	ctlx->outbuf.cmdreq.parm1 = cpu_to_le16(cmd->parm1);
+-	ctlx->outbuf.cmdreq.parm2 = cpu_to_le16(cmd->parm2);
+-
+-	ctlx->outbufsize = sizeof(ctlx->outbuf.cmdreq);
+-
+-	pr_debug("cmdreq: cmd=0x%04x parm0=0x%04x parm1=0x%04x parm2=0x%04x\n",
+-		 cmd->cmd, cmd->parm0, cmd->parm1, cmd->parm2);
+-
+-	ctlx->reapable = DOWAIT;
+-	ctlx->cmdcb = NULL;
+-	ctlx->usercb = NULL;
+-	ctlx->usercb_data = NULL;
+-
+-	result = hfa384x_usbctlx_submit(hw, ctlx);
+-	if (result != 0) {
+-		kfree(ctlx);
+-	} else {
+-		struct usbctlx_cmd_completor cmd_completor;
+-		struct usbctlx_completor *completor;
+-
+-		completor = init_cmd_completor(&cmd_completor,
+-					       &ctlx->inbuf.cmdresp,
+-					       &cmd->result);
+-
+-		result = hfa384x_usbctlx_complete_sync(hw, ctlx, completor);
+-	}
+-
+-done:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_dorrid
+- *
+- * Constructs a read rid CTLX and issues it.
+- *
+- * NOTE: Any changes to the 'post-submit' code in this function
+- *       need to be carried over to hfa384x_cbrrid() since the handling
+- *       is virtually identical.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	mode		DOWAIT or DOASYNC
+- *	rid		Read RID number (host order)
+- *	riddata		Caller supplied buffer that MAC formatted RID.data
+- *			record will be written to for DOWAIT calls. Should
+- *			be NULL for DOASYNC calls.
+- *	riddatalen	Buffer length for DOWAIT calls. Zero for DOASYNC calls.
+- *	cmdcb		command callback for async calls, NULL for DOWAIT calls
+- *	usercb		user callback for async calls, NULL for DOWAIT calls
+- *	usercb_data	user supplied data pointer for async calls, NULL
+- *			for DOWAIT calls
+- *
+- * Returns:
+- *	0		success
+- *	-EIO		CTLX failure
+- *	-ERESTARTSYS	Awakened on signal
+- *	-ENODATA	riddatalen != macdatalen
+- *	>0		command indicated error, Status and Resp0-2 are
+- *			in hw structure.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt (DOASYNC)
+- *	process (DOWAIT or DOASYNC)
+- *----------------------------------------------------------------
+- */
+-static int
+-hfa384x_dorrid(struct hfa384x *hw,
+-	       enum cmd_mode mode,
+-	       u16 rid,
+-	       void *riddata,
+-	       unsigned int riddatalen,
+-	       ctlx_cmdcb_t cmdcb, ctlx_usercb_t usercb, void *usercb_data)
+-{
+-	int result;
+-	struct hfa384x_usbctlx *ctlx;
+-
+-	ctlx = usbctlx_alloc();
+-	if (!ctlx) {
+-		result = -ENOMEM;
+-		goto done;
+-	}
+-
+-	/* Initialize the command */
+-	ctlx->outbuf.rridreq.type = cpu_to_le16(HFA384x_USB_RRIDREQ);
+-	ctlx->outbuf.rridreq.frmlen =
+-	    cpu_to_le16(sizeof(ctlx->outbuf.rridreq.rid));
+-	ctlx->outbuf.rridreq.rid = cpu_to_le16(rid);
+-
+-	ctlx->outbufsize = sizeof(ctlx->outbuf.rridreq);
+-
+-	ctlx->reapable = mode;
+-	ctlx->cmdcb = cmdcb;
+-	ctlx->usercb = usercb;
+-	ctlx->usercb_data = usercb_data;
+-
+-	/* Submit the CTLX */
+-	result = hfa384x_usbctlx_submit(hw, ctlx);
+-	if (result != 0) {
+-		kfree(ctlx);
+-	} else if (mode == DOWAIT) {
+-		struct usbctlx_rrid_completor completor;
+-
+-		result =
+-		    hfa384x_usbctlx_complete_sync(hw, ctlx,
+-						  init_rrid_completor
+-						  (&completor,
+-						   &ctlx->inbuf.rridresp,
+-						   riddata, riddatalen));
+-	}
+-
+-done:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_dowrid
+- *
+- * Constructs a write rid CTLX and issues it.
+- *
+- * NOTE: Any changes to the 'post-submit' code in this function
+- *       need to be carried over to hfa384x_cbwrid() since the handling
+- *       is virtually identical.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	enum cmd_mode	DOWAIT or DOASYNC
+- *	rid		RID code
+- *	riddata		Data portion of RID formatted for MAC
+- *	riddatalen	Length of the data portion in bytes
+- *       cmdcb           command callback for async calls, NULL for DOWAIT calls
+- *	usercb		user callback for async calls, NULL for DOWAIT calls
+- *	usercb_data	user supplied data pointer for async calls
+- *
+- * Returns:
+- *	0		success
+- *	-ETIMEDOUT	timed out waiting for register ready or
+- *			command completion
+- *	>0		command indicated error, Status and Resp0-2 are
+- *			in hw structure.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt (DOASYNC)
+- *	process (DOWAIT or DOASYNC)
+- *----------------------------------------------------------------
+- */
+-static int
+-hfa384x_dowrid(struct hfa384x *hw,
+-	       enum cmd_mode mode,
+-	       u16 rid,
+-	       void *riddata,
+-	       unsigned int riddatalen,
+-	       ctlx_cmdcb_t cmdcb, ctlx_usercb_t usercb, void *usercb_data)
+-{
+-	int result;
+-	struct hfa384x_usbctlx *ctlx;
+-
+-	ctlx = usbctlx_alloc();
+-	if (!ctlx) {
+-		result = -ENOMEM;
+-		goto done;
+-	}
+-
+-	/* Initialize the command */
+-	ctlx->outbuf.wridreq.type = cpu_to_le16(HFA384x_USB_WRIDREQ);
+-	ctlx->outbuf.wridreq.frmlen = cpu_to_le16((sizeof
+-						   (ctlx->outbuf.wridreq.rid) +
+-						   riddatalen + 1) / 2);
+-	ctlx->outbuf.wridreq.rid = cpu_to_le16(rid);
+-	memcpy(ctlx->outbuf.wridreq.data, riddata, riddatalen);
+-
+-	ctlx->outbufsize = sizeof(ctlx->outbuf.wridreq.type) +
+-	    sizeof(ctlx->outbuf.wridreq.frmlen) +
+-	    sizeof(ctlx->outbuf.wridreq.rid) + riddatalen;
+-
+-	ctlx->reapable = mode;
+-	ctlx->cmdcb = cmdcb;
+-	ctlx->usercb = usercb;
+-	ctlx->usercb_data = usercb_data;
+-
+-	/* Submit the CTLX */
+-	result = hfa384x_usbctlx_submit(hw, ctlx);
+-	if (result != 0) {
+-		kfree(ctlx);
+-	} else if (mode == DOWAIT) {
+-		struct usbctlx_cmd_completor completor;
+-		struct hfa384x_cmdresult wridresult;
+-
+-		result = hfa384x_usbctlx_complete_sync(hw,
+-						       ctlx,
+-						       init_wrid_completor
+-						       (&completor,
+-							&ctlx->inbuf.wridresp,
+-							&wridresult));
+-	}
+-
+-done:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_dormem
+- *
+- * Constructs a readmem CTLX and issues it.
+- *
+- * NOTE: Any changes to the 'post-submit' code in this function
+- *       need to be carried over to hfa384x_cbrmem() since the handling
+- *       is virtually identical.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	page		MAC address space page (CMD format)
+- *	offset		MAC address space offset
+- *	data		Ptr to data buffer to receive read
+- *	len		Length of the data to read (max == 2048)
+- *
+- * Returns:
+- *	0		success
+- *	-ETIMEDOUT	timed out waiting for register ready or
+- *			command completion
+- *	>0		command indicated error, Status and Resp0-2 are
+- *			in hw structure.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process (DOWAIT)
+- *----------------------------------------------------------------
+- */
+-static int
+-hfa384x_dormem(struct hfa384x *hw,
+-	       u16 page,
+-	       u16 offset,
+-	       void *data,
+-	       unsigned int len)
+-{
+-	int result;
+-	struct hfa384x_usbctlx *ctlx;
+-
+-	ctlx = usbctlx_alloc();
+-	if (!ctlx) {
+-		result = -ENOMEM;
+-		goto done;
+-	}
+-
+-	/* Initialize the command */
+-	ctlx->outbuf.rmemreq.type = cpu_to_le16(HFA384x_USB_RMEMREQ);
+-	ctlx->outbuf.rmemreq.frmlen =
+-	    cpu_to_le16(sizeof(ctlx->outbuf.rmemreq.offset) +
+-			sizeof(ctlx->outbuf.rmemreq.page) + len);
+-	ctlx->outbuf.rmemreq.offset = cpu_to_le16(offset);
+-	ctlx->outbuf.rmemreq.page = cpu_to_le16(page);
+-
+-	ctlx->outbufsize = sizeof(ctlx->outbuf.rmemreq);
+-
+-	pr_debug("type=0x%04x frmlen=%d offset=0x%04x page=0x%04x\n",
+-		 ctlx->outbuf.rmemreq.type,
+-		 ctlx->outbuf.rmemreq.frmlen,
+-		 ctlx->outbuf.rmemreq.offset, ctlx->outbuf.rmemreq.page);
+-
+-	pr_debug("pktsize=%zd\n", ROUNDUP64(sizeof(ctlx->outbuf.rmemreq)));
+-
+-	ctlx->reapable = DOWAIT;
+-	ctlx->cmdcb = NULL;
+-	ctlx->usercb = NULL;
+-	ctlx->usercb_data = NULL;
+-
+-	result = hfa384x_usbctlx_submit(hw, ctlx);
+-	if (result != 0) {
+-		kfree(ctlx);
+-	} else {
+-		struct usbctlx_rmem_completor completor;
+-
+-		result =
+-		    hfa384x_usbctlx_complete_sync(hw, ctlx,
+-						  init_rmem_completor
+-						  (&completor,
+-						   &ctlx->inbuf.rmemresp, data,
+-						   len));
+-	}
+-
+-done:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_dowmem
+- *
+- * Constructs a writemem CTLX and issues it.
+- *
+- * NOTE: Any changes to the 'post-submit' code in this function
+- *       need to be carried over to hfa384x_cbwmem() since the handling
+- *       is virtually identical.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	page		MAC address space page (CMD format)
+- *	offset		MAC address space offset
+- *	data		Ptr to data buffer containing write data
+- *	len		Length of the data to read (max == 2048)
+- *
+- * Returns:
+- *	0		success
+- *	-ETIMEDOUT	timed out waiting for register ready or
+- *			command completion
+- *	>0		command indicated error, Status and Resp0-2 are
+- *			in hw structure.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt (DOWAIT)
+- *	process (DOWAIT)
+- *----------------------------------------------------------------
+- */
+-static int
+-hfa384x_dowmem(struct hfa384x *hw,
+-	       u16 page,
+-	       u16 offset,
+-	       void *data,
+-	       unsigned int len)
+-{
+-	int result;
+-	struct hfa384x_usbctlx *ctlx;
+-
+-	pr_debug("page=0x%04x offset=0x%04x len=%d\n", page, offset, len);
+-
+-	ctlx = usbctlx_alloc();
+-	if (!ctlx) {
+-		result = -ENOMEM;
+-		goto done;
+-	}
+-
+-	/* Initialize the command */
+-	ctlx->outbuf.wmemreq.type = cpu_to_le16(HFA384x_USB_WMEMREQ);
+-	ctlx->outbuf.wmemreq.frmlen =
+-	    cpu_to_le16(sizeof(ctlx->outbuf.wmemreq.offset) +
+-			sizeof(ctlx->outbuf.wmemreq.page) + len);
+-	ctlx->outbuf.wmemreq.offset = cpu_to_le16(offset);
+-	ctlx->outbuf.wmemreq.page = cpu_to_le16(page);
+-	memcpy(ctlx->outbuf.wmemreq.data, data, len);
+-
+-	ctlx->outbufsize = sizeof(ctlx->outbuf.wmemreq.type) +
+-	    sizeof(ctlx->outbuf.wmemreq.frmlen) +
+-	    sizeof(ctlx->outbuf.wmemreq.offset) +
+-	    sizeof(ctlx->outbuf.wmemreq.page) + len;
+-
+-	ctlx->reapable = DOWAIT;
+-	ctlx->cmdcb = NULL;
+-	ctlx->usercb = NULL;
+-	ctlx->usercb_data = NULL;
+-
+-	result = hfa384x_usbctlx_submit(hw, ctlx);
+-	if (result != 0) {
+-		kfree(ctlx);
+-	} else {
+-		struct usbctlx_cmd_completor completor;
+-		struct hfa384x_cmdresult wmemresult;
+-
+-		result = hfa384x_usbctlx_complete_sync(hw,
+-						       ctlx,
+-						       init_wmem_completor
+-						       (&completor,
+-							&ctlx->inbuf.wmemresp,
+-							&wmemresult));
+-	}
+-
+-done:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_disable
+- *
+- * Issues the disable command to stop communications on one of
+- * the MACs 'ports'.  Only macport 0 is valid  for stations.
+- * APs may also disable macports 1-6.  Only ports that have been
+- * previously enabled may be disabled.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	macport		MAC port number (host order)
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported failure - f/w status code
+- *	<0		driver reported error (timeout|bad arg)
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_disable(struct hfa384x *hw, u16 macport)
+-{
+-	int result = 0;
+-
+-	if ((!hw->isap && macport != 0) ||
+-	    (hw->isap && !(macport <= HFA384x_PORTID_MAX)) ||
+-	    !(hw->port_enabled[macport])) {
+-		result = -EINVAL;
+-	} else {
+-		result = hfa384x_cmd_disable(hw, macport);
+-		if (result == 0)
+-			hw->port_enabled[macport] = 0;
+-	}
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_enable
+- *
+- * Issues the enable command to enable communications on one of
+- * the MACs 'ports'.  Only macport 0 is valid  for stations.
+- * APs may also enable macports 1-6.  Only ports that are currently
+- * disabled may be enabled.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	macport		MAC port number
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported failure - f/w status code
+- *	<0		driver reported error (timeout|bad arg)
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_enable(struct hfa384x *hw, u16 macport)
+-{
+-	int result = 0;
+-
+-	if ((!hw->isap && macport != 0) ||
+-	    (hw->isap && !(macport <= HFA384x_PORTID_MAX)) ||
+-	    (hw->port_enabled[macport])) {
+-		result = -EINVAL;
+-	} else {
+-		result = hfa384x_cmd_enable(hw, macport);
+-		if (result == 0)
+-			hw->port_enabled[macport] = 1;
+-	}
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_flashdl_enable
+- *
+- * Begins the flash download state.  Checks to see that we're not
+- * already in a download state and that a port isn't enabled.
+- * Sets the download state and retrieves the flash download
+- * buffer location, buffer size, and timeout length.
+- *
+- * Arguments:
+- *	hw		device structure
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_flashdl_enable(struct hfa384x *hw)
+-{
+-	int result = 0;
+-	int i;
+-
+-	/* Check that a port isn't active */
+-	for (i = 0; i < HFA384x_PORTID_MAX; i++) {
+-		if (hw->port_enabled[i]) {
+-			pr_debug("called when port enabled.\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	/* Check that we're not already in a download state */
+-	if (hw->dlstate != HFA384x_DLSTATE_DISABLED)
+-		return -EINVAL;
+-
+-	/* Retrieve the buffer loc&size and timeout */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_DOWNLOADBUFFER,
+-					&hw->bufinfo, sizeof(hw->bufinfo));
+-	if (result)
+-		return result;
+-
+-	le16_to_cpus(&hw->bufinfo.page);
+-	le16_to_cpus(&hw->bufinfo.offset);
+-	le16_to_cpus(&hw->bufinfo.len);
+-	result = hfa384x_drvr_getconfig16(hw, HFA384x_RID_MAXLOADTIME,
+-					  &hw->dltimeout);
+-	if (result)
+-		return result;
+-
+-	le16_to_cpus(&hw->dltimeout);
+-
+-	pr_debug("flashdl_enable\n");
+-
+-	hw->dlstate = HFA384x_DLSTATE_FLASHENABLED;
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_flashdl_disable
+- *
+- * Ends the flash download state.  Note that this will cause the MAC
+- * firmware to restart.
+- *
+- * Arguments:
+- *	hw		device structure
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_flashdl_disable(struct hfa384x *hw)
+-{
+-	/* Check that we're already in the download state */
+-	if (hw->dlstate != HFA384x_DLSTATE_FLASHENABLED)
+-		return -EINVAL;
+-
+-	pr_debug("flashdl_enable\n");
+-
+-	/* There isn't much we can do at this point, so I don't */
+-	/*  bother  w/ the return value */
+-	hfa384x_cmd_download(hw, HFA384x_PROGMODE_DISABLE, 0, 0, 0);
+-	hw->dlstate = HFA384x_DLSTATE_DISABLED;
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_flashdl_write
+- *
+- * Performs a FLASH download of a chunk of data. First checks to see
+- * that we're in the FLASH download state, then sets the download
+- * mode, uses the aux functions to 1) copy the data to the flash
+- * buffer, 2) sets the download 'write flash' mode, 3) readback and
+- * compare.  Lather rinse, repeat as many times an necessary to get
+- * all the given data into flash.
+- * When all data has been written using this function (possibly
+- * repeatedly), call drvr_flashdl_disable() to end the download state
+- * and restart the MAC.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	daddr		Card address to write to. (host order)
+- *	buf		Ptr to data to write.
+- *	len		Length of data (host order).
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_flashdl_write(struct hfa384x *hw, u32 daddr,
+-			       void *buf, u32 len)
+-{
+-	int result = 0;
+-	u32 dlbufaddr;
+-	int nburns;
+-	u32 burnlen;
+-	u32 burndaddr;
+-	u16 burnlo;
+-	u16 burnhi;
+-	int nwrites;
+-	u8 *writebuf;
+-	u16 writepage;
+-	u16 writeoffset;
+-	u32 writelen;
+-	int i;
+-	int j;
+-
+-	pr_debug("daddr=0x%08x len=%d\n", daddr, len);
+-
+-	/* Check that we're in the flash download state */
+-	if (hw->dlstate != HFA384x_DLSTATE_FLASHENABLED)
+-		return -EINVAL;
+-
+-	netdev_info(hw->wlandev->netdev,
+-		    "Download %d bytes to flash @0x%06x\n", len, daddr);
+-
+-	/* Convert to flat address for arithmetic */
+-	/* NOTE: dlbuffer RID stores the address in AUX format */
+-	dlbufaddr =
+-	    HFA384x_ADDR_AUX_MKFLAT(hw->bufinfo.page, hw->bufinfo.offset);
+-	pr_debug("dlbuf.page=0x%04x dlbuf.offset=0x%04x dlbufaddr=0x%08x\n",
+-		 hw->bufinfo.page, hw->bufinfo.offset, dlbufaddr);
+-	/* Calculations to determine how many fills of the dlbuffer to do
+-	 * and how many USB wmemreq's to do for each fill.  At this point
+-	 * in time, the dlbuffer size and the wmemreq size are the same.
+-	 * Therefore, nwrites should always be 1.  The extra complexity
+-	 * here is a hedge against future changes.
+-	 */
+-
+-	/* Figure out how many times to do the flash programming */
+-	nburns = len / hw->bufinfo.len;
+-	nburns += (len % hw->bufinfo.len) ? 1 : 0;
+-
+-	/* For each flash program cycle, how many USB wmemreq's are needed? */
+-	nwrites = hw->bufinfo.len / HFA384x_USB_RWMEM_MAXLEN;
+-	nwrites += (hw->bufinfo.len % HFA384x_USB_RWMEM_MAXLEN) ? 1 : 0;
+-
+-	/* For each burn */
+-	for (i = 0; i < nburns; i++) {
+-		/* Get the dest address and len */
+-		burnlen = (len - (hw->bufinfo.len * i)) > hw->bufinfo.len ?
+-		    hw->bufinfo.len : (len - (hw->bufinfo.len * i));
+-		burndaddr = daddr + (hw->bufinfo.len * i);
+-		burnlo = HFA384x_ADDR_CMD_MKOFF(burndaddr);
+-		burnhi = HFA384x_ADDR_CMD_MKPAGE(burndaddr);
+-
+-		netdev_info(hw->wlandev->netdev, "Writing %d bytes to flash @0x%06x\n",
+-			    burnlen, burndaddr);
+-
+-		/* Set the download mode */
+-		result = hfa384x_cmd_download(hw, HFA384x_PROGMODE_NV,
+-					      burnlo, burnhi, burnlen);
+-		if (result) {
+-			netdev_err(hw->wlandev->netdev,
+-				   "download(NV,lo=%x,hi=%x,len=%x) cmd failed, result=%d. Aborting d/l\n",
+-				   burnlo, burnhi, burnlen, result);
+-			goto exit_proc;
+-		}
+-
+-		/* copy the data to the flash download buffer */
+-		for (j = 0; j < nwrites; j++) {
+-			writebuf = buf +
+-			    (i * hw->bufinfo.len) +
+-			    (j * HFA384x_USB_RWMEM_MAXLEN);
+-
+-			writepage = HFA384x_ADDR_CMD_MKPAGE(dlbufaddr +
+-						(j * HFA384x_USB_RWMEM_MAXLEN));
+-			writeoffset = HFA384x_ADDR_CMD_MKOFF(dlbufaddr +
+-						(j * HFA384x_USB_RWMEM_MAXLEN));
+-
+-			writelen = burnlen - (j * HFA384x_USB_RWMEM_MAXLEN);
+-			writelen = writelen > HFA384x_USB_RWMEM_MAXLEN ?
+-			    HFA384x_USB_RWMEM_MAXLEN : writelen;
+-
+-			result = hfa384x_dowmem(hw,
+-						writepage,
+-						writeoffset,
+-						writebuf, writelen);
+-		}
+-
+-		/* set the download 'write flash' mode */
+-		result = hfa384x_cmd_download(hw,
+-					      HFA384x_PROGMODE_NVWRITE,
+-					      0, 0, 0);
+-		if (result) {
+-			netdev_err(hw->wlandev->netdev,
+-				   "download(NVWRITE,lo=%x,hi=%x,len=%x) cmd failed, result=%d. Aborting d/l\n",
+-				   burnlo, burnhi, burnlen, result);
+-			goto exit_proc;
+-		}
+-
+-		/* TODO: We really should do a readback and compare. */
+-	}
+-
+-exit_proc:
+-
+-	/* Leave the firmware in the 'post-prog' mode.  flashdl_disable will */
+-	/*  actually disable programming mode.  Remember, that will cause the */
+-	/*  the firmware to effectively reset itself. */
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_getconfig
+- *
+- * Performs the sequence necessary to read a config/info item.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	rid		config/info record id (host order)
+- *	buf		host side record buffer.  Upon return it will
+- *			contain the body portion of the record (minus the
+- *			RID and len).
+- *	len		buffer length (in bytes, should match record length)
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *	-ENODATA	length mismatch between argument and retrieved
+- *			record.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_getconfig(struct hfa384x *hw, u16 rid, void *buf, u16 len)
+-{
+-	return hfa384x_dorrid(hw, DOWAIT, rid, buf, len, NULL, NULL, NULL);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_setconfig_async
+- *
+- * Performs the sequence necessary to write a config/info item.
+- *
+- * Arguments:
+- *       hw              device structure
+- *       rid             config/info record id (in host order)
+- *       buf             host side record buffer
+- *       len             buffer length (in bytes)
+- *       usercb          completion callback
+- *       usercb_data     completion callback argument
+- *
+- * Returns:
+- *       0               success
+- *       >0              f/w reported error - f/w status code
+- *       <0              driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *       process
+- *----------------------------------------------------------------
+- */
+-int
+-hfa384x_drvr_setconfig_async(struct hfa384x *hw,
+-			     u16 rid,
+-			     void *buf,
+-			     u16 len, ctlx_usercb_t usercb, void *usercb_data)
+-{
+-	return hfa384x_dowrid(hw, DOASYNC, rid, buf, len, hfa384x_cb_status,
+-			      usercb, usercb_data);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_ramdl_disable
+- *
+- * Ends the ram download state.
+- *
+- * Arguments:
+- *	hw		device structure
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_ramdl_disable(struct hfa384x *hw)
+-{
+-	/* Check that we're already in the download state */
+-	if (hw->dlstate != HFA384x_DLSTATE_RAMENABLED)
+-		return -EINVAL;
+-
+-	pr_debug("ramdl_disable()\n");
+-
+-	/* There isn't much we can do at this point, so I don't */
+-	/*  bother  w/ the return value */
+-	hfa384x_cmd_download(hw, HFA384x_PROGMODE_DISABLE, 0, 0, 0);
+-	hw->dlstate = HFA384x_DLSTATE_DISABLED;
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_ramdl_enable
+- *
+- * Begins the ram download state.  Checks to see that we're not
+- * already in a download state and that a port isn't enabled.
+- * Sets the download state and calls cmd_download with the
+- * ENABLE_VOLATILE subcommand and the exeaddr argument.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	exeaddr		the card execution address that will be
+- *                       jumped to when ramdl_disable() is called
+- *			(host order).
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_ramdl_enable(struct hfa384x *hw, u32 exeaddr)
+-{
+-	int result = 0;
+-	u16 lowaddr;
+-	u16 hiaddr;
+-	int i;
+-
+-	/* Check that a port isn't active */
+-	for (i = 0; i < HFA384x_PORTID_MAX; i++) {
+-		if (hw->port_enabled[i]) {
+-			netdev_err(hw->wlandev->netdev,
+-				   "Can't download with a macport enabled.\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	/* Check that we're not already in a download state */
+-	if (hw->dlstate != HFA384x_DLSTATE_DISABLED) {
+-		netdev_err(hw->wlandev->netdev,
+-			   "Download state not disabled.\n");
+-		return -EINVAL;
+-	}
+-
+-	pr_debug("ramdl_enable, exeaddr=0x%08x\n", exeaddr);
+-
+-	/* Call the download(1,addr) function */
+-	lowaddr = HFA384x_ADDR_CMD_MKOFF(exeaddr);
+-	hiaddr = HFA384x_ADDR_CMD_MKPAGE(exeaddr);
+-
+-	result = hfa384x_cmd_download(hw, HFA384x_PROGMODE_RAM,
+-				      lowaddr, hiaddr, 0);
+-
+-	if (result == 0) {
+-		/* Set the download state */
+-		hw->dlstate = HFA384x_DLSTATE_RAMENABLED;
+-	} else {
+-		pr_debug("cmd_download(0x%04x, 0x%04x) failed, result=%d.\n",
+-			 lowaddr, hiaddr, result);
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_ramdl_write
+- *
+- * Performs a RAM download of a chunk of data. First checks to see
+- * that we're in the RAM download state, then uses the [read|write]mem USB
+- * commands to 1) copy the data, 2) readback and compare.  The download
+- * state is unaffected.  When all data has been written using
+- * this function, call drvr_ramdl_disable() to end the download state
+- * and restart the MAC.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	daddr		Card address to write to. (host order)
+- *	buf		Ptr to data to write.
+- *	len		Length of data (host order).
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_ramdl_write(struct hfa384x *hw, u32 daddr, void *buf, u32 len)
+-{
+-	int result = 0;
+-	int nwrites;
+-	u8 *data = buf;
+-	int i;
+-	u32 curraddr;
+-	u16 currpage;
+-	u16 curroffset;
+-	u16 currlen;
+-
+-	/* Check that we're in the ram download state */
+-	if (hw->dlstate != HFA384x_DLSTATE_RAMENABLED)
+-		return -EINVAL;
+-
+-	netdev_info(hw->wlandev->netdev, "Writing %d bytes to ram @0x%06x\n",
+-		    len, daddr);
+-
+-	/* How many dowmem calls?  */
+-	nwrites = len / HFA384x_USB_RWMEM_MAXLEN;
+-	nwrites += len % HFA384x_USB_RWMEM_MAXLEN ? 1 : 0;
+-
+-	/* Do blocking wmem's */
+-	for (i = 0; i < nwrites; i++) {
+-		/* make address args */
+-		curraddr = daddr + (i * HFA384x_USB_RWMEM_MAXLEN);
+-		currpage = HFA384x_ADDR_CMD_MKPAGE(curraddr);
+-		curroffset = HFA384x_ADDR_CMD_MKOFF(curraddr);
+-		currlen = len - (i * HFA384x_USB_RWMEM_MAXLEN);
+-		if (currlen > HFA384x_USB_RWMEM_MAXLEN)
+-			currlen = HFA384x_USB_RWMEM_MAXLEN;
+-
+-		/* Do blocking ctlx */
+-		result = hfa384x_dowmem(hw,
+-					currpage,
+-					curroffset,
+-					data + (i * HFA384x_USB_RWMEM_MAXLEN),
+-					currlen);
+-
+-		if (result)
+-			break;
+-
+-		/* TODO: We really should have a readback. */
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_readpda
+- *
+- * Performs the sequence to read the PDA space.  Note there is no
+- * drvr_writepda() function.  Writing a PDA is
+- * generally implemented by a calling component via calls to
+- * cmd_download and writing to the flash download buffer via the
+- * aux regs.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	buf		buffer to store PDA in
+- *	len		buffer length
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *	-ETIMEDOUT	timeout waiting for the cmd regs to become
+- *			available, or waiting for the control reg
+- *			to indicate the Aux port is enabled.
+- *	-ENODATA	the buffer does NOT contain a valid PDA.
+- *			Either the card PDA is bad, or the auxdata
+- *			reads are giving us garbage.
+- *
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process or non-card interrupt.
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_readpda(struct hfa384x *hw, void *buf, unsigned int len)
+-{
+-	int result = 0;
+-	__le16 *pda = buf;
+-	int pdaok = 0;
+-	int morepdrs = 1;
+-	int currpdr = 0;	/* word offset of the current pdr */
+-	size_t i;
+-	u16 pdrlen;		/* pdr length in bytes, host order */
+-	u16 pdrcode;		/* pdr code, host order */
+-	u16 currpage;
+-	u16 curroffset;
+-	struct pdaloc {
+-		u32 cardaddr;
+-		u16 auxctl;
+-	} pdaloc[] = {
+-		{
+-		HFA3842_PDA_BASE, 0}, {
+-		HFA3841_PDA_BASE, 0}, {
+-		HFA3841_PDA_BOGUS_BASE, 0}
+-	};
+-
+-	/* Read the pda from each known address.  */
+-	for (i = 0; i < ARRAY_SIZE(pdaloc); i++) {
+-		/* Make address */
+-		currpage = HFA384x_ADDR_CMD_MKPAGE(pdaloc[i].cardaddr);
+-		curroffset = HFA384x_ADDR_CMD_MKOFF(pdaloc[i].cardaddr);
+-
+-		/* units of bytes */
+-		result = hfa384x_dormem(hw, currpage, curroffset, buf,
+-					len);
+-
+-		if (result) {
+-			netdev_warn(hw->wlandev->netdev,
+-				    "Read from index %zd failed, continuing\n",
+-				    i);
+-			continue;
+-		}
+-
+-		/* Test for garbage */
+-		pdaok = 1;	/* initially assume good */
+-		morepdrs = 1;
+-		while (pdaok && morepdrs) {
+-			pdrlen = le16_to_cpu(pda[currpdr]) * 2;
+-			pdrcode = le16_to_cpu(pda[currpdr + 1]);
+-			/* Test the record length */
+-			if (pdrlen > HFA384x_PDR_LEN_MAX || pdrlen == 0) {
+-				netdev_err(hw->wlandev->netdev,
+-					   "pdrlen invalid=%d\n", pdrlen);
+-				pdaok = 0;
+-				break;
+-			}
+-			/* Test the code */
+-			if (!hfa384x_isgood_pdrcode(pdrcode)) {
+-				netdev_err(hw->wlandev->netdev, "pdrcode invalid=%d\n",
+-					   pdrcode);
+-				pdaok = 0;
+-				break;
+-			}
+-			/* Test for completion */
+-			if (pdrcode == HFA384x_PDR_END_OF_PDA)
+-				morepdrs = 0;
+-
+-			/* Move to the next pdr (if necessary) */
+-			if (morepdrs) {
+-				/* note the access to pda[], need words here */
+-				currpdr += le16_to_cpu(pda[currpdr]) + 1;
+-			}
+-		}
+-		if (pdaok) {
+-			netdev_info(hw->wlandev->netdev,
+-				    "PDA Read from 0x%08x in %s space.\n",
+-				    pdaloc[i].cardaddr,
+-				    pdaloc[i].auxctl == 0 ? "EXTDS" :
+-				    pdaloc[i].auxctl == 1 ? "NV" :
+-				    pdaloc[i].auxctl == 2 ? "PHY" :
+-				    pdaloc[i].auxctl == 3 ? "ICSRAM" :
+-				    "<bogus auxctl>");
+-			break;
+-		}
+-	}
+-	result = pdaok ? 0 : -ENODATA;
+-
+-	if (result)
+-		pr_debug("Failure: pda is not okay\n");
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_setconfig
+- *
+- * Performs the sequence necessary to write a config/info item.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	rid		config/info record id (in host order)
+- *	buf		host side record buffer
+- *	len		buffer length (in bytes)
+- *
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_setconfig(struct hfa384x *hw, u16 rid, void *buf, u16 len)
+-{
+-	return hfa384x_dowrid(hw, DOWAIT, rid, buf, len, NULL, NULL, NULL);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_start
+- *
+- * Issues the MAC initialize command, sets up some data structures,
+- * and enables the interrupts.  After this function completes, the
+- * low-level stuff should be ready for any/all commands.
+- *
+- * Arguments:
+- *	hw		device structure
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_start(struct hfa384x *hw)
+-{
+-	int result, result1, result2;
+-	u16 status;
+-
+-	might_sleep();
+-
+-	/* Clear endpoint stalls - but only do this if the endpoint
+-	 * is showing a stall status. Some prism2 cards seem to behave
+-	 * badly if a clear_halt is called when the endpoint is already
+-	 * ok
+-	 */
+-	result =
+-	    usb_get_std_status(hw->usb, USB_RECIP_ENDPOINT, hw->endp_in,
+-			       &status);
+-	if (result < 0) {
+-		netdev_err(hw->wlandev->netdev, "Cannot get bulk in endpoint status.\n");
+-		goto done;
+-	}
+-	if ((status == 1) && usb_clear_halt(hw->usb, hw->endp_in))
+-		netdev_err(hw->wlandev->netdev, "Failed to reset bulk in endpoint.\n");
+-
+-	result =
+-	    usb_get_std_status(hw->usb, USB_RECIP_ENDPOINT, hw->endp_out,
+-			       &status);
+-	if (result < 0) {
+-		netdev_err(hw->wlandev->netdev, "Cannot get bulk out endpoint status.\n");
+-		goto done;
+-	}
+-	if ((status == 1) && usb_clear_halt(hw->usb, hw->endp_out))
+-		netdev_err(hw->wlandev->netdev, "Failed to reset bulk out endpoint.\n");
+-
+-	/* Synchronous unlink, in case we're trying to restart the driver */
+-	usb_kill_urb(&hw->rx_urb);
+-
+-	/* Post the IN urb */
+-	result = submit_rx_urb(hw, GFP_KERNEL);
+-	if (result != 0) {
+-		netdev_err(hw->wlandev->netdev,
+-			   "Fatal, failed to submit RX URB, result=%d\n",
+-			   result);
+-		goto done;
+-	}
+-
+-	/* Call initialize twice, with a 1 second sleep in between.
+-	 * This is a nasty work-around since many prism2 cards seem to
+-	 * need time to settle after an init from cold. The second
+-	 * call to initialize in theory is not necessary - but we call
+-	 * it anyway as a double insurance policy:
+-	 * 1) If the first init should fail, the second may well succeed
+-	 *    and the card can still be used
+-	 * 2) It helps ensures all is well with the card after the first
+-	 *    init and settle time.
+-	 */
+-	result1 = hfa384x_cmd_initialize(hw);
+-	msleep(1000);
+-	result = hfa384x_cmd_initialize(hw);
+-	result2 = result;
+-	if (result1 != 0) {
+-		if (result2 != 0) {
+-			netdev_err(hw->wlandev->netdev,
+-				   "cmd_initialize() failed on two attempts, results %d and %d\n",
+-				   result1, result2);
+-			usb_kill_urb(&hw->rx_urb);
+-			goto done;
+-		} else {
+-			pr_debug("First cmd_initialize() failed (result %d),\n",
+-				 result1);
+-			pr_debug("but second attempt succeeded. All should be ok\n");
+-		}
+-	} else if (result2 != 0) {
+-		netdev_warn(hw->wlandev->netdev, "First cmd_initialize() succeeded, but second attempt failed (result=%d)\n",
+-			    result2);
+-		netdev_warn(hw->wlandev->netdev,
+-			    "Most likely the card will be functional\n");
+-		goto done;
+-	}
+-
+-	hw->state = HFA384x_STATE_RUNNING;
+-
+-done:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_stop
+- *
+- * Shuts down the MAC to the point where it is safe to unload the
+- * driver.  Any subsystem that may be holding a data or function
+- * ptr into the driver must be cleared/deinitialized.
+- *
+- * Arguments:
+- *	hw		device structure
+- * Returns:
+- *	0		success
+- *	>0		f/w reported error - f/w status code
+- *	<0		driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_stop(struct hfa384x *hw)
+-{
+-	int i;
+-
+-	might_sleep();
+-
+-	/* There's no need for spinlocks here. The USB "disconnect"
+-	 * function sets this "removed" flag and then calls us.
+-	 */
+-	if (!hw->wlandev->hwremoved) {
+-		/* Call initialize to leave the MAC in its 'reset' state */
+-		hfa384x_cmd_initialize(hw);
+-
+-		/* Cancel the rxurb */
+-		usb_kill_urb(&hw->rx_urb);
+-	}
+-
+-	hw->link_status = HFA384x_LINK_NOTCONNECTED;
+-	hw->state = HFA384x_STATE_INIT;
+-
+-	del_timer_sync(&hw->commsqual_timer);
+-
+-	/* Clear all the port status */
+-	for (i = 0; i < HFA384x_NUMPORTS_MAX; i++)
+-		hw->port_enabled[i] = 0;
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_drvr_txframe
+- *
+- * Takes a frame from prism2sta and queues it for transmission.
+- *
+- * Arguments:
+- *	hw		device structure
+- *	skb		packet buffer struct.  Contains an 802.11
+- *			data frame.
+- *       p80211_hdr      points to the 802.11 header for the packet.
+- * Returns:
+- *	0		Success and more buffs available
+- *	1		Success but no more buffs
+- *	2		Allocation failure
+- *	4		Buffer full or queue busy
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-int hfa384x_drvr_txframe(struct hfa384x *hw, struct sk_buff *skb,
+-			 struct p80211_hdr *p80211_hdr,
+-			 struct p80211_metawep *p80211_wep)
+-{
+-	int usbpktlen = sizeof(struct hfa384x_tx_frame);
+-	int result;
+-	int ret;
+-	char *ptr;
+-
+-	if (hw->tx_urb.status == -EINPROGRESS) {
+-		netdev_warn(hw->wlandev->netdev, "TX URB already in use\n");
+-		result = 3;
+-		goto exit;
+-	}
+-
+-	/* Build Tx frame structure */
+-	/* Set up the control field */
+-	memset(&hw->txbuff.txfrm.desc, 0, sizeof(hw->txbuff.txfrm.desc));
+-
+-	/* Setup the usb type field */
+-	hw->txbuff.type = cpu_to_le16(HFA384x_USB_TXFRM);
+-
+-	/* Set up the sw_support field to identify this frame */
+-	hw->txbuff.txfrm.desc.sw_support = 0x0123;
+-
+-/* Tx complete and Tx exception disable per dleach.  Might be causing
+- * buf depletion
+- */
+-/* #define DOEXC  SLP -- doboth breaks horribly under load, doexc less so. */
+-#if defined(DOBOTH)
+-	hw->txbuff.txfrm.desc.tx_control =
+-	    HFA384x_TX_MACPORT_SET(0) | HFA384x_TX_STRUCTYPE_SET(1) |
+-	    HFA384x_TX_TXEX_SET(1) | HFA384x_TX_TXOK_SET(1);
+-#elif defined(DOEXC)
+-	hw->txbuff.txfrm.desc.tx_control =
+-	    HFA384x_TX_MACPORT_SET(0) | HFA384x_TX_STRUCTYPE_SET(1) |
+-	    HFA384x_TX_TXEX_SET(1) | HFA384x_TX_TXOK_SET(0);
+-#else
+-	hw->txbuff.txfrm.desc.tx_control =
+-	    HFA384x_TX_MACPORT_SET(0) | HFA384x_TX_STRUCTYPE_SET(1) |
+-	    HFA384x_TX_TXEX_SET(0) | HFA384x_TX_TXOK_SET(0);
+-#endif
+-	cpu_to_le16s(&hw->txbuff.txfrm.desc.tx_control);
+-
+-	/* copy the header over to the txdesc */
+-	hw->txbuff.txfrm.desc.hdr = *p80211_hdr;
+-
+-	/* if we're using host WEP, increase size by IV+ICV */
+-	if (p80211_wep->data) {
+-		hw->txbuff.txfrm.desc.data_len = cpu_to_le16(skb->len + 8);
+-		usbpktlen += 8;
+-	} else {
+-		hw->txbuff.txfrm.desc.data_len = cpu_to_le16(skb->len);
+-	}
+-
+-	usbpktlen += skb->len;
+-
+-	/* copy over the WEP IV if we are using host WEP */
+-	ptr = hw->txbuff.txfrm.data;
+-	if (p80211_wep->data) {
+-		memcpy(ptr, p80211_wep->iv, sizeof(p80211_wep->iv));
+-		ptr += sizeof(p80211_wep->iv);
+-		memcpy(ptr, p80211_wep->data, skb->len);
+-	} else {
+-		memcpy(ptr, skb->data, skb->len);
+-	}
+-	/* copy over the packet data */
+-	ptr += skb->len;
+-
+-	/* copy over the WEP ICV if we are using host WEP */
+-	if (p80211_wep->data)
+-		memcpy(ptr, p80211_wep->icv, sizeof(p80211_wep->icv));
+-
+-	/* Send the USB packet */
+-	usb_fill_bulk_urb(&hw->tx_urb, hw->usb,
+-			  hw->endp_out,
+-			  &hw->txbuff, ROUNDUP64(usbpktlen),
+-			  hfa384x_usbout_callback, hw->wlandev);
+-	hw->tx_urb.transfer_flags |= USB_QUEUE_BULK;
+-
+-	result = 1;
+-	ret = submit_tx_urb(hw, &hw->tx_urb, GFP_ATOMIC);
+-	if (ret != 0) {
+-		netdev_err(hw->wlandev->netdev,
+-			   "submit_tx_urb() failed, error=%d\n", ret);
+-		result = 3;
+-	}
+-
+-exit:
+-	return result;
+-}
+-
+-void hfa384x_tx_timeout(struct wlandevice *wlandev)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	if (!hw->wlandev->hwremoved) {
+-		int sched;
+-
+-		sched = !test_and_set_bit(WORK_TX_HALT, &hw->usb_flags);
+-		sched |= !test_and_set_bit(WORK_RX_HALT, &hw->usb_flags);
+-		if (sched)
+-			schedule_work(&hw->usb_work);
+-	}
+-
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbctlx_reaper_task
+- *
+- * Deferred work callback to delete dead CTLX objects
+- *
+- * Arguments:
+- *	work	contains ptr to a struct hfa384x
+- *
+- * Returns:
+- *
+- * Call context:
+- *      Task
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbctlx_reaper_task(struct work_struct *work)
+-{
+-	struct hfa384x *hw = container_of(work, struct hfa384x, reaper_bh);
+-	struct hfa384x_usbctlx *ctlx, *temp;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	/* This list is guaranteed to be empty if someone
+-	 * has unplugged the adapter.
+-	 */
+-	list_for_each_entry_safe(ctlx, temp, &hw->ctlxq.reapable, list) {
+-		list_del(&ctlx->list);
+-		kfree(ctlx);
+-	}
+-
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbctlx_completion_task
+- *
+- * Deferred work callback to call completion handlers for returned CTLXs
+- *
+- * Arguments:
+- *	work	contains ptr to a struct hfa384x
+- *
+- * Returns:
+- *	Nothing
+- *
+- * Call context:
+- *      Task
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbctlx_completion_task(struct work_struct *work)
+-{
+-	struct hfa384x *hw = container_of(work, struct hfa384x, completion_bh);
+-	struct hfa384x_usbctlx *ctlx, *temp;
+-	unsigned long flags;
+-
+-	int reap = 0;
+-
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	/* This list is guaranteed to be empty if someone
+-	 * has unplugged the adapter ...
+-	 */
+-	list_for_each_entry_safe(ctlx, temp, &hw->ctlxq.completing, list) {
+-		/* Call the completion function that this
+-		 * command was assigned, assuming it has one.
+-		 */
+-		if (ctlx->cmdcb) {
+-			spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-			ctlx->cmdcb(hw, ctlx);
+-			spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-			/* Make sure we don't try and complete
+-			 * this CTLX more than once!
+-			 */
+-			ctlx->cmdcb = NULL;
+-
+-			/* Did someone yank the adapter out
+-			 * while our list was (briefly) unlocked?
+-			 */
+-			if (hw->wlandev->hwremoved) {
+-				reap = 0;
+-				break;
+-			}
+-		}
+-
+-		/*
+-		 * "Reapable" CTLXs are ones which don't have any
+-		 * threads waiting for them to die. Hence they must
+-		 * be delivered to The Reaper!
+-		 */
+-		if (ctlx->reapable) {
+-			/* Move the CTLX off the "completing" list (hopefully)
+-			 * on to the "reapable" list where the reaper task
+-			 * can find it. And "reapable" means that this CTLX
+-			 * isn't sitting on a wait-queue somewhere.
+-			 */
+-			list_move_tail(&ctlx->list, &hw->ctlxq.reapable);
+-			reap = 1;
+-		}
+-
+-		complete(&ctlx->done);
+-	}
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-
+-	if (reap)
+-		schedule_work(&hw->reaper_bh);
+-}
+-
+-/*----------------------------------------------------------------
+- * unlocked_usbctlx_cancel_async
+- *
+- * Mark the CTLX dead asynchronously, and ensure that the
+- * next command on the queue is run afterwards.
+- *
+- * Arguments:
+- *	hw	ptr to the struct hfa384x structure
+- *	ctlx	ptr to a CTLX structure
+- *
+- * Returns:
+- *	0	the CTLX's URB is inactive
+- * -EINPROGRESS	the URB is currently being unlinked
+- *
+- * Call context:
+- *	Either process or interrupt, but presumably interrupt
+- *----------------------------------------------------------------
+- */
+-static int unlocked_usbctlx_cancel_async(struct hfa384x *hw,
+-					 struct hfa384x_usbctlx *ctlx)
+-{
+-	int ret;
+-
+-	/*
+-	 * Try to delete the URB containing our request packet.
+-	 * If we succeed, then its completion handler will be
+-	 * called with a status of -ECONNRESET.
+-	 */
+-	hw->ctlx_urb.transfer_flags |= URB_ASYNC_UNLINK;
+-	ret = usb_unlink_urb(&hw->ctlx_urb);
+-
+-	if (ret != -EINPROGRESS) {
+-		/*
+-		 * The OUT URB had either already completed
+-		 * or was still in the pending queue, so the
+-		 * URB's completion function will not be called.
+-		 * We will have to complete the CTLX ourselves.
+-		 */
+-		ctlx->state = CTLX_REQ_FAILED;
+-		unlocked_usbctlx_complete(hw, ctlx);
+-		ret = 0;
+-	}
+-
+-	return ret;
+-}
+-
+-/*----------------------------------------------------------------
+- * unlocked_usbctlx_complete
+- *
+- * A CTLX has completed.  It may have been successful, it may not
+- * have been. At this point, the CTLX should be quiescent.  The URBs
+- * aren't active and the timers should have been stopped.
+- *
+- * The CTLX is migrated to the "completing" queue, and the completing
+- * work is scheduled.
+- *
+- * Arguments:
+- *	hw		ptr to a struct hfa384x structure
+- *	ctlx		ptr to a ctlx structure
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	Either, assume interrupt
+- *----------------------------------------------------------------
+- */
+-static void unlocked_usbctlx_complete(struct hfa384x *hw,
+-				      struct hfa384x_usbctlx *ctlx)
+-{
+-	/* Timers have been stopped, and ctlx should be in
+-	 * a terminal state. Retire it from the "active"
+-	 * queue.
+-	 */
+-	list_move_tail(&ctlx->list, &hw->ctlxq.completing);
+-	schedule_work(&hw->completion_bh);
+-
+-	switch (ctlx->state) {
+-	case CTLX_COMPLETE:
+-	case CTLX_REQ_FAILED:
+-		/* This are the correct terminating states. */
+-		break;
+-
+-	default:
+-		netdev_err(hw->wlandev->netdev, "CTLX[%d] not in a terminating state(%s)\n",
+-			   le16_to_cpu(ctlx->outbuf.type),
+-			   ctlxstr(ctlx->state));
+-		break;
+-	}			/* switch */
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbctlxq_run
+- *
+- * Checks to see if the head item is running.  If not, starts it.
+- *
+- * Arguments:
+- *	hw	ptr to struct hfa384x
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	any
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbctlxq_run(struct hfa384x *hw)
+-{
+-	unsigned long flags;
+-
+-	/* acquire lock */
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	/* Only one active CTLX at any one time, because there's no
+-	 * other (reliable) way to match the response URB to the
+-	 * correct CTLX.
+-	 *
+-	 * Don't touch any of these CTLXs if the hardware
+-	 * has been removed or the USB subsystem is stalled.
+-	 */
+-	if (!list_empty(&hw->ctlxq.active) ||
+-	    test_bit(WORK_TX_HALT, &hw->usb_flags) || hw->wlandev->hwremoved)
+-		goto unlock;
+-
+-	while (!list_empty(&hw->ctlxq.pending)) {
+-		struct hfa384x_usbctlx *head;
+-		int result;
+-
+-		/* This is the first pending command */
+-		head = list_entry(hw->ctlxq.pending.next,
+-				  struct hfa384x_usbctlx, list);
+-
+-		/* We need to split this off to avoid a race condition */
+-		list_move_tail(&head->list, &hw->ctlxq.active);
+-
+-		/* Fill the out packet */
+-		usb_fill_bulk_urb(&hw->ctlx_urb, hw->usb,
+-				  hw->endp_out,
+-				  &head->outbuf, ROUNDUP64(head->outbufsize),
+-				  hfa384x_ctlxout_callback, hw);
+-		hw->ctlx_urb.transfer_flags |= USB_QUEUE_BULK;
+-
+-		/* Now submit the URB and update the CTLX's state */
+-		result = usb_submit_urb(&hw->ctlx_urb, GFP_ATOMIC);
+-		if (result == 0) {
+-			/* This CTLX is now running on the active queue */
+-			head->state = CTLX_REQ_SUBMITTED;
+-
+-			/* Start the OUT wait timer */
+-			hw->req_timer_done = 0;
+-			hw->reqtimer.expires = jiffies + HZ;
+-			add_timer(&hw->reqtimer);
+-
+-			/* Start the IN wait timer */
+-			hw->resp_timer_done = 0;
+-			hw->resptimer.expires = jiffies + 2 * HZ;
+-			add_timer(&hw->resptimer);
+-
+-			break;
+-		}
+-
+-		if (result == -EPIPE) {
+-			/* The OUT pipe needs resetting, so put
+-			 * this CTLX back in the "pending" queue
+-			 * and schedule a reset ...
+-			 */
+-			netdev_warn(hw->wlandev->netdev,
+-				    "%s tx pipe stalled: requesting reset\n",
+-				    hw->wlandev->netdev->name);
+-			list_move(&head->list, &hw->ctlxq.pending);
+-			set_bit(WORK_TX_HALT, &hw->usb_flags);
+-			schedule_work(&hw->usb_work);
+-			break;
+-		}
+-
+-		if (result == -ESHUTDOWN) {
+-			netdev_warn(hw->wlandev->netdev, "%s urb shutdown!\n",
+-				    hw->wlandev->netdev->name);
+-			break;
+-		}
+-
+-		netdev_err(hw->wlandev->netdev, "Failed to submit CTLX[%d]: error=%d\n",
+-			   le16_to_cpu(head->outbuf.type), result);
+-		unlocked_usbctlx_complete(hw, head);
+-	}			/* while */
+-
+-unlock:
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbin_callback
+- *
+- * Callback for URBs on the BULKIN endpoint.
+- *
+- * Arguments:
+- *	urb		ptr to the completed urb
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbin_callback(struct urb *urb)
+-{
+-	struct wlandevice *wlandev = urb->context;
+-	struct hfa384x *hw;
+-	union hfa384x_usbin *usbin;
+-	struct sk_buff *skb = NULL;
+-	int result;
+-	int urb_status;
+-	u16 type;
+-
+-	enum USBIN_ACTION {
+-		HANDLE,
+-		RESUBMIT,
+-		ABORT
+-	} action;
+-
+-	if (!wlandev || !wlandev->netdev || wlandev->hwremoved)
+-		goto exit;
+-
+-	hw = wlandev->priv;
+-	if (!hw)
+-		goto exit;
+-
+-	skb = hw->rx_urb_skb;
+-	if (!skb || (skb->data != urb->transfer_buffer)) {
+-		WARN_ON(1);
+-		return;
+-	}
+-
+-	hw->rx_urb_skb = NULL;
+-
+-	/* Check for error conditions within the URB */
+-	switch (urb->status) {
+-	case 0:
+-		action = HANDLE;
+-
+-		/* Check for short packet */
+-		if (urb->actual_length == 0) {
+-			wlandev->netdev->stats.rx_errors++;
+-			wlandev->netdev->stats.rx_length_errors++;
+-			action = RESUBMIT;
+-		}
+-		break;
+-
+-	case -EPIPE:
+-		netdev_warn(hw->wlandev->netdev, "%s rx pipe stalled: requesting reset\n",
+-			    wlandev->netdev->name);
+-		if (!test_and_set_bit(WORK_RX_HALT, &hw->usb_flags))
+-			schedule_work(&hw->usb_work);
+-		wlandev->netdev->stats.rx_errors++;
+-		action = ABORT;
+-		break;
+-
+-	case -EILSEQ:
+-	case -ETIMEDOUT:
+-	case -EPROTO:
+-		if (!test_and_set_bit(THROTTLE_RX, &hw->usb_flags) &&
+-		    !timer_pending(&hw->throttle)) {
+-			mod_timer(&hw->throttle, jiffies + THROTTLE_JIFFIES);
+-		}
+-		wlandev->netdev->stats.rx_errors++;
+-		action = ABORT;
+-		break;
+-
+-	case -EOVERFLOW:
+-		wlandev->netdev->stats.rx_over_errors++;
+-		action = RESUBMIT;
+-		break;
+-
+-	case -ENODEV:
+-	case -ESHUTDOWN:
+-		pr_debug("status=%d, device removed.\n", urb->status);
+-		action = ABORT;
+-		break;
+-
+-	case -ENOENT:
+-	case -ECONNRESET:
+-		pr_debug("status=%d, urb explicitly unlinked.\n", urb->status);
+-		action = ABORT;
+-		break;
+-
+-	default:
+-		pr_debug("urb status=%d, transfer flags=0x%x\n",
+-			 urb->status, urb->transfer_flags);
+-		wlandev->netdev->stats.rx_errors++;
+-		action = RESUBMIT;
+-		break;
+-	}
+-
+-	/* Save values from the RX URB before reposting overwrites it. */
+-	urb_status = urb->status;
+-	usbin = (union hfa384x_usbin *)urb->transfer_buffer;
+-
+-	if (action != ABORT) {
+-		/* Repost the RX URB */
+-		result = submit_rx_urb(hw, GFP_ATOMIC);
+-
+-		if (result != 0) {
+-			netdev_err(hw->wlandev->netdev,
+-				   "Fatal, failed to resubmit rx_urb. error=%d\n",
+-				   result);
+-		}
+-	}
+-
+-	/* Handle any USB-IN packet */
+-	/* Note: the check of the sw_support field, the type field doesn't
+-	 *       have bit 12 set like the docs suggest.
+-	 */
+-	type = le16_to_cpu(usbin->type);
+-	if (HFA384x_USB_ISRXFRM(type)) {
+-		if (action == HANDLE) {
+-			if (usbin->txfrm.desc.sw_support == 0x0123) {
+-				hfa384x_usbin_txcompl(wlandev, usbin);
+-			} else {
+-				skb_put(skb, sizeof(*usbin));
+-				hfa384x_usbin_rx(wlandev, skb);
+-				skb = NULL;
+-			}
+-		}
+-		goto exit;
+-	}
+-	if (HFA384x_USB_ISTXFRM(type)) {
+-		if (action == HANDLE)
+-			hfa384x_usbin_txcompl(wlandev, usbin);
+-		goto exit;
+-	}
+-	switch (type) {
+-	case HFA384x_USB_INFOFRM:
+-		if (action == ABORT)
+-			goto exit;
+-		if (action == HANDLE)
+-			hfa384x_usbin_info(wlandev, usbin);
+-		break;
+-
+-	case HFA384x_USB_CMDRESP:
+-	case HFA384x_USB_WRIDRESP:
+-	case HFA384x_USB_RRIDRESP:
+-	case HFA384x_USB_WMEMRESP:
+-	case HFA384x_USB_RMEMRESP:
+-		/* ALWAYS, ALWAYS, ALWAYS handle this CTLX!!!! */
+-		hfa384x_usbin_ctlx(hw, usbin, urb_status);
+-		break;
+-
+-	case HFA384x_USB_BUFAVAIL:
+-		pr_debug("Received BUFAVAIL packet, frmlen=%d\n",
+-			 usbin->bufavail.frmlen);
+-		break;
+-
+-	case HFA384x_USB_ERROR:
+-		pr_debug("Received USB_ERROR packet, errortype=%d\n",
+-			 usbin->usberror.errortype);
+-		break;
+-
+-	default:
+-		pr_debug("Unrecognized USBIN packet, type=%x, status=%d\n",
+-			 usbin->type, urb_status);
+-		break;
+-	}			/* switch */
+-
+-exit:
+-
+-	if (skb)
+-		dev_kfree_skb(skb);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbin_ctlx
+- *
+- * We've received a URB containing a Prism2 "response" message.
+- * This message needs to be matched up with a CTLX on the active
+- * queue and our state updated accordingly.
+- *
+- * Arguments:
+- *	hw		ptr to struct hfa384x
+- *	usbin		ptr to USB IN packet
+- *	urb_status	status of this Bulk-In URB
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbin_ctlx(struct hfa384x *hw, union hfa384x_usbin *usbin,
+-			       int urb_status)
+-{
+-	struct hfa384x_usbctlx *ctlx;
+-	int run_queue = 0;
+-	unsigned long flags;
+-
+-retry:
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	/* There can be only one CTLX on the active queue
+-	 * at any one time, and this is the CTLX that the
+-	 * timers are waiting for.
+-	 */
+-	if (list_empty(&hw->ctlxq.active))
+-		goto unlock;
+-
+-	/* Remove the "response timeout". It's possible that
+-	 * we are already too late, and that the timeout is
+-	 * already running. And that's just too bad for us,
+-	 * because we could lose our CTLX from the active
+-	 * queue here ...
+-	 */
+-	if (del_timer(&hw->resptimer) == 0) {
+-		if (hw->resp_timer_done == 0) {
+-			spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-			goto retry;
+-		}
+-	} else {
+-		hw->resp_timer_done = 1;
+-	}
+-
+-	ctlx = get_active_ctlx(hw);
+-
+-	if (urb_status != 0) {
+-		/*
+-		 * Bad CTLX, so get rid of it. But we only
+-		 * remove it from the active queue if we're no
+-		 * longer expecting the OUT URB to complete.
+-		 */
+-		if (unlocked_usbctlx_cancel_async(hw, ctlx) == 0)
+-			run_queue = 1;
+-	} else {
+-		const __le16 intype = (usbin->type & ~cpu_to_le16(0x8000));
+-
+-		/*
+-		 * Check that our message is what we're expecting ...
+-		 */
+-		if (ctlx->outbuf.type != intype) {
+-			netdev_warn(hw->wlandev->netdev,
+-				    "Expected IN[%d], received IN[%d] - ignored.\n",
+-				    le16_to_cpu(ctlx->outbuf.type),
+-				    le16_to_cpu(intype));
+-			goto unlock;
+-		}
+-
+-		/* This URB has succeeded, so grab the data ... */
+-		memcpy(&ctlx->inbuf, usbin, sizeof(ctlx->inbuf));
+-
+-		switch (ctlx->state) {
+-		case CTLX_REQ_SUBMITTED:
+-			/*
+-			 * We have received our response URB before
+-			 * our request has been acknowledged. Odd,
+-			 * but our OUT URB is still alive...
+-			 */
+-			pr_debug("Causality violation: please reboot Universe\n");
+-			ctlx->state = CTLX_RESP_COMPLETE;
+-			break;
+-
+-		case CTLX_REQ_COMPLETE:
+-			/*
+-			 * This is the usual path: our request
+-			 * has already been acknowledged, and
+-			 * now we have received the reply too.
+-			 */
+-			ctlx->state = CTLX_COMPLETE;
+-			unlocked_usbctlx_complete(hw, ctlx);
+-			run_queue = 1;
+-			break;
+-
+-		default:
+-			/*
+-			 * Throw this CTLX away ...
+-			 */
+-			netdev_err(hw->wlandev->netdev,
+-				   "Matched IN URB, CTLX[%d] in invalid state(%s). Discarded.\n",
+-				   le16_to_cpu(ctlx->outbuf.type),
+-				   ctlxstr(ctlx->state));
+-			if (unlocked_usbctlx_cancel_async(hw, ctlx) == 0)
+-				run_queue = 1;
+-			break;
+-		}		/* switch */
+-	}
+-
+-unlock:
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-
+-	if (run_queue)
+-		hfa384x_usbctlxq_run(hw);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbin_txcompl
+- *
+- * At this point we have the results of a previous transmit.
+- *
+- * Arguments:
+- *	wlandev		wlan device
+- *	usbin		ptr to the usb transfer buffer
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbin_txcompl(struct wlandevice *wlandev,
+-				  union hfa384x_usbin *usbin)
+-{
+-	u16 status;
+-
+-	status = le16_to_cpu(usbin->type); /* yeah I know it says type... */
+-
+-	/* Was there an error? */
+-	if (HFA384x_TXSTATUS_ISERROR(status))
+-		netdev_dbg(wlandev->netdev, "TxExc status=0x%x.\n", status);
+-	else
+-		prism2sta_ev_tx(wlandev, status);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbin_rx
+- *
+- * At this point we have a successful received a rx frame packet.
+- *
+- * Arguments:
+- *	wlandev		wlan device
+- *	usbin		ptr to the usb transfer buffer
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbin_rx(struct wlandevice *wlandev, struct sk_buff *skb)
+-{
+-	union hfa384x_usbin *usbin = (union hfa384x_usbin *)skb->data;
+-	struct hfa384x *hw = wlandev->priv;
+-	int hdrlen;
+-	struct p80211_rxmeta *rxmeta;
+-	u16 data_len;
+-	u16 fc;
+-	u16 status;
+-
+-	/* Byte order convert once up front. */
+-	le16_to_cpus(&usbin->rxfrm.desc.status);
+-	le32_to_cpus(&usbin->rxfrm.desc.time);
+-
+-	/* Now handle frame based on port# */
+-	status = HFA384x_RXSTATUS_MACPORT_GET(usbin->rxfrm.desc.status);
+-
+-	switch (status) {
+-	case 0:
+-		fc = le16_to_cpu(usbin->rxfrm.desc.hdr.frame_control);
+-
+-		/* If exclude and we receive an unencrypted, drop it */
+-		if ((wlandev->hostwep & HOSTWEP_EXCLUDEUNENCRYPTED) &&
+-		    !WLAN_GET_FC_ISWEP(fc)) {
+-			break;
+-		}
+-
+-		data_len = le16_to_cpu(usbin->rxfrm.desc.data_len);
+-
+-		/* How much header data do we have? */
+-		hdrlen = p80211_headerlen(fc);
+-
+-		/* Pull off the descriptor */
+-		skb_pull(skb, sizeof(struct hfa384x_rx_frame));
+-
+-		/* Now shunt the header block up against the data block
+-		 * with an "overlapping" copy
+-		 */
+-		memmove(skb_push(skb, hdrlen),
+-			&usbin->rxfrm.desc.hdr, hdrlen);
+-
+-		skb->dev = wlandev->netdev;
+-
+-		/* And set the frame length properly */
+-		skb_trim(skb, data_len + hdrlen);
+-
+-		/* The prism2 series does not return the CRC */
+-		memset(skb_put(skb, WLAN_CRC_LEN), 0xff, WLAN_CRC_LEN);
+-
+-		skb_reset_mac_header(skb);
+-
+-		/* Attach the rxmeta, set some stuff */
+-		p80211skb_rxmeta_attach(wlandev, skb);
+-		rxmeta = p80211skb_rxmeta(skb);
+-		rxmeta->mactime = usbin->rxfrm.desc.time;
+-		rxmeta->rxrate = usbin->rxfrm.desc.rate;
+-		rxmeta->signal = usbin->rxfrm.desc.signal - hw->dbmadjust;
+-		rxmeta->noise = usbin->rxfrm.desc.silence - hw->dbmadjust;
+-
+-		p80211netdev_rx(wlandev, skb);
+-
+-		break;
+-
+-	case 7:
+-		if (!HFA384x_RXSTATUS_ISFCSERR(usbin->rxfrm.desc.status)) {
+-			/* Copy to wlansnif skb */
+-			hfa384x_int_rxmonitor(wlandev, &usbin->rxfrm);
+-			dev_kfree_skb(skb);
+-		} else {
+-			pr_debug("Received monitor frame: FCSerr set\n");
+-		}
+-		break;
+-
+-	default:
+-		netdev_warn(hw->wlandev->netdev,
+-			    "Received frame on unsupported port=%d\n",
+-			    status);
+-		break;
+-	}
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_int_rxmonitor
+- *
+- * Helper function for int_rx.  Handles monitor frames.
+- * Note that this function allocates space for the FCS and sets it
+- * to 0xffffffff.  The hfa384x doesn't give us the FCS value but the
+- * higher layers expect it.  0xffffffff is used as a flag to indicate
+- * the FCS is bogus.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	rxfrm		rx descriptor read from card in int_rx
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *	Allocates an skb and passes it up via the PF_PACKET interface.
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_int_rxmonitor(struct wlandevice *wlandev,
+-				  struct hfa384x_usb_rxfrm *rxfrm)
+-{
+-	struct hfa384x_rx_frame *rxdesc = &rxfrm->desc;
+-	unsigned int hdrlen = 0;
+-	unsigned int datalen = 0;
+-	unsigned int skblen = 0;
+-	u8 *datap;
+-	u16 fc;
+-	struct sk_buff *skb;
+-	struct hfa384x *hw = wlandev->priv;
+-
+-	/* Remember the status, time, and data_len fields are in host order */
+-	/* Figure out how big the frame is */
+-	fc = le16_to_cpu(rxdesc->hdr.frame_control);
+-	hdrlen = p80211_headerlen(fc);
+-	datalen = le16_to_cpu(rxdesc->data_len);
+-
+-	/* Allocate an ind message+framesize skb */
+-	skblen = sizeof(struct p80211_caphdr) + hdrlen + datalen + WLAN_CRC_LEN;
+-
+-	/* sanity check the length */
+-	if (skblen >
+-	    (sizeof(struct p80211_caphdr) +
+-	     WLAN_HDR_A4_LEN + WLAN_DATA_MAXLEN + WLAN_CRC_LEN)) {
+-		pr_debug("overlen frm: len=%zd\n",
+-			 skblen - sizeof(struct p80211_caphdr));
+-
+-		return;
+-	}
+-
+-	skb = dev_alloc_skb(skblen);
+-	if (!skb)
+-		return;
+-
+-	/* only prepend the prism header if in the right mode */
+-	if ((wlandev->netdev->type == ARPHRD_IEEE80211_PRISM) &&
+-	    (hw->sniffhdr != 0)) {
+-		struct p80211_caphdr *caphdr;
+-		/* The NEW header format! */
+-		datap = skb_put(skb, sizeof(struct p80211_caphdr));
+-		caphdr = (struct p80211_caphdr *)datap;
+-
+-		caphdr->version = htonl(P80211CAPTURE_VERSION);
+-		caphdr->length = htonl(sizeof(struct p80211_caphdr));
+-		caphdr->mactime = __cpu_to_be64(rxdesc->time * 1000);
+-		caphdr->hosttime = __cpu_to_be64(jiffies);
+-		caphdr->phytype = htonl(4);	/* dss_dot11_b */
+-		caphdr->channel = htonl(hw->sniff_channel);
+-		caphdr->datarate = htonl(rxdesc->rate);
+-		caphdr->antenna = htonl(0);	/* unknown */
+-		caphdr->priority = htonl(0);	/* unknown */
+-		caphdr->ssi_type = htonl(3);	/* rssi_raw */
+-		caphdr->ssi_signal = htonl(rxdesc->signal);
+-		caphdr->ssi_noise = htonl(rxdesc->silence);
+-		caphdr->preamble = htonl(0);	/* unknown */
+-		caphdr->encoding = htonl(1);	/* cck */
+-	}
+-
+-	/* Copy the 802.11 header to the skb
+-	 * (ctl frames may be less than a full header)
+-	 */
+-	skb_put_data(skb, &rxdesc->hdr.frame_control, hdrlen);
+-
+-	/* If any, copy the data from the card to the skb */
+-	if (datalen > 0) {
+-		datap = skb_put_data(skb, rxfrm->data, datalen);
+-
+-		/* check for unencrypted stuff if WEP bit set. */
+-		if (*(datap - hdrlen + 1) & 0x40)	/* wep set */
+-			if ((*(datap) == 0xaa) && (*(datap + 1) == 0xaa))
+-				/* clear wep; it's the 802.2 header! */
+-				*(datap - hdrlen + 1) &= 0xbf;
+-	}
+-
+-	if (hw->sniff_fcs) {
+-		/* Set the FCS */
+-		datap = skb_put(skb, WLAN_CRC_LEN);
+-		memset(datap, 0xff, WLAN_CRC_LEN);
+-	}
+-
+-	/* pass it back up */
+-	p80211netdev_rx(wlandev, skb);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbin_info
+- *
+- * At this point we have a successful received a Prism2 info frame.
+- *
+- * Arguments:
+- *	wlandev		wlan device
+- *	usbin		ptr to the usb transfer buffer
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbin_info(struct wlandevice *wlandev,
+-			       union hfa384x_usbin *usbin)
+-{
+-	le16_to_cpus(&usbin->infofrm.info.framelen);
+-	prism2sta_ev_info(wlandev, &usbin->infofrm.info);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbout_callback
+- *
+- * Callback for URBs on the BULKOUT endpoint.
+- *
+- * Arguments:
+- *	urb		ptr to the completed urb
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbout_callback(struct urb *urb)
+-{
+-	struct wlandevice *wlandev = urb->context;
+-
+-#ifdef DEBUG_USB
+-	dbprint_urb(urb);
+-#endif
+-
+-	if (wlandev && wlandev->netdev) {
+-		switch (urb->status) {
+-		case 0:
+-			prism2sta_ev_alloc(wlandev);
+-			break;
+-
+-		case -EPIPE: {
+-			struct hfa384x *hw = wlandev->priv;
+-
+-			netdev_warn(hw->wlandev->netdev,
+-				    "%s tx pipe stalled: requesting reset\n",
+-				    wlandev->netdev->name);
+-			if (!test_and_set_bit(WORK_TX_HALT, &hw->usb_flags))
+-				schedule_work(&hw->usb_work);
+-			wlandev->netdev->stats.tx_errors++;
+-			break;
+-		}
+-
+-		case -EPROTO:
+-		case -ETIMEDOUT:
+-		case -EILSEQ: {
+-			struct hfa384x *hw = wlandev->priv;
+-
+-			if (!test_and_set_bit(THROTTLE_TX, &hw->usb_flags) &&
+-			    !timer_pending(&hw->throttle)) {
+-				mod_timer(&hw->throttle,
+-					  jiffies + THROTTLE_JIFFIES);
+-			}
+-			wlandev->netdev->stats.tx_errors++;
+-			netif_stop_queue(wlandev->netdev);
+-			break;
+-		}
+-
+-		case -ENOENT:
+-		case -ESHUTDOWN:
+-			/* Ignorable errors */
+-			break;
+-
+-		default:
+-			netdev_info(wlandev->netdev, "unknown urb->status=%d\n",
+-				    urb->status);
+-			wlandev->netdev->stats.tx_errors++;
+-			break;
+-		}		/* switch */
+-	}
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_ctlxout_callback
+- *
+- * Callback for control data on the BULKOUT endpoint.
+- *
+- * Arguments:
+- *	urb		ptr to the completed urb
+- *
+- * Returns:
+- * nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- * interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_ctlxout_callback(struct urb *urb)
+-{
+-	struct hfa384x *hw = urb->context;
+-	int delete_resptimer = 0;
+-	int timer_ok = 1;
+-	int run_queue = 0;
+-	struct hfa384x_usbctlx *ctlx;
+-	unsigned long flags;
+-
+-	pr_debug("urb->status=%d\n", urb->status);
+-#ifdef DEBUG_USB
+-	dbprint_urb(urb);
+-#endif
+-	if ((urb->status == -ESHUTDOWN) ||
+-	    (urb->status == -ENODEV) || !hw)
+-		return;
+-
+-retry:
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	/*
+-	 * Only one CTLX at a time on the "active" list, and
+-	 * none at all if we are unplugged. However, we can
+-	 * rely on the disconnect function to clean everything
+-	 * up if someone unplugged the adapter.
+-	 */
+-	if (list_empty(&hw->ctlxq.active)) {
+-		spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-		return;
+-	}
+-
+-	/*
+-	 * Having something on the "active" queue means
+-	 * that we have timers to worry about ...
+-	 */
+-	if (del_timer(&hw->reqtimer) == 0) {
+-		if (hw->req_timer_done == 0) {
+-			/*
+-			 * This timer was actually running while we
+-			 * were trying to delete it. Let it terminate
+-			 * gracefully instead.
+-			 */
+-			spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-			goto retry;
+-		}
+-	} else {
+-		hw->req_timer_done = 1;
+-	}
+-
+-	ctlx = get_active_ctlx(hw);
+-
+-	if (urb->status == 0) {
+-		/* Request portion of a CTLX is successful */
+-		switch (ctlx->state) {
+-		case CTLX_REQ_SUBMITTED:
+-			/* This OUT-ACK received before IN */
+-			ctlx->state = CTLX_REQ_COMPLETE;
+-			break;
+-
+-		case CTLX_RESP_COMPLETE:
+-			/* IN already received before this OUT-ACK,
+-			 * so this command must now be complete.
+-			 */
+-			ctlx->state = CTLX_COMPLETE;
+-			unlocked_usbctlx_complete(hw, ctlx);
+-			run_queue = 1;
+-			break;
+-
+-		default:
+-			/* This is NOT a valid CTLX "success" state! */
+-			netdev_err(hw->wlandev->netdev,
+-				   "Illegal CTLX[%d] success state(%s, %d) in OUT URB\n",
+-				   le16_to_cpu(ctlx->outbuf.type),
+-				   ctlxstr(ctlx->state), urb->status);
+-			break;
+-		}		/* switch */
+-	} else {
+-		/* If the pipe has stalled then we need to reset it */
+-		if ((urb->status == -EPIPE) &&
+-		    !test_and_set_bit(WORK_TX_HALT, &hw->usb_flags)) {
+-			netdev_warn(hw->wlandev->netdev,
+-				    "%s tx pipe stalled: requesting reset\n",
+-				    hw->wlandev->netdev->name);
+-			schedule_work(&hw->usb_work);
+-		}
+-
+-		/* If someone cancels the OUT URB then its status
+-		 * should be either -ECONNRESET or -ENOENT.
+-		 */
+-		ctlx->state = CTLX_REQ_FAILED;
+-		unlocked_usbctlx_complete(hw, ctlx);
+-		delete_resptimer = 1;
+-		run_queue = 1;
+-	}
+-
+-delresp:
+-	if (delete_resptimer) {
+-		timer_ok = del_timer(&hw->resptimer);
+-		if (timer_ok != 0)
+-			hw->resp_timer_done = 1;
+-	}
+-
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-
+-	if (!timer_ok && (hw->resp_timer_done == 0)) {
+-		spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-		goto delresp;
+-	}
+-
+-	if (run_queue)
+-		hfa384x_usbctlxq_run(hw);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbctlx_reqtimerfn
+- *
+- * Timer response function for CTLX request timeouts.  If this
+- * function is called, it means that the callback for the OUT
+- * URB containing a Prism2.x XXX_Request was never called.
+- *
+- * Arguments:
+- *	data		a ptr to the struct hfa384x
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbctlx_reqtimerfn(struct timer_list *t)
+-{
+-	struct hfa384x *hw = from_timer(hw, t, reqtimer);
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	hw->req_timer_done = 1;
+-
+-	/* Removing the hardware automatically empties
+-	 * the active list ...
+-	 */
+-	if (!list_empty(&hw->ctlxq.active)) {
+-		/*
+-		 * We must ensure that our URB is removed from
+-		 * the system, if it hasn't already expired.
+-		 */
+-		hw->ctlx_urb.transfer_flags |= URB_ASYNC_UNLINK;
+-		if (usb_unlink_urb(&hw->ctlx_urb) == -EINPROGRESS) {
+-			struct hfa384x_usbctlx *ctlx = get_active_ctlx(hw);
+-
+-			ctlx->state = CTLX_REQ_FAILED;
+-
+-			/* This URB was active, but has now been
+-			 * cancelled. It will now have a status of
+-			 * -ECONNRESET in the callback function.
+-			 *
+-			 * We are cancelling this CTLX, so we're
+-			 * not going to need to wait for a response.
+-			 * The URB's callback function will check
+-			 * that this timer is truly dead.
+-			 */
+-			if (del_timer(&hw->resptimer) != 0)
+-				hw->resp_timer_done = 1;
+-		}
+-	}
+-
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbctlx_resptimerfn
+- *
+- * Timer response function for CTLX response timeouts.  If this
+- * function is called, it means that the callback for the IN
+- * URB containing a Prism2.x XXX_Response was never called.
+- *
+- * Arguments:
+- *	data		a ptr to the struct hfa384x
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usbctlx_resptimerfn(struct timer_list *t)
+-{
+-	struct hfa384x *hw = from_timer(hw, t, resptimer);
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	hw->resp_timer_done = 1;
+-
+-	/* The active list will be empty if the
+-	 * adapter has been unplugged ...
+-	 */
+-	if (!list_empty(&hw->ctlxq.active)) {
+-		struct hfa384x_usbctlx *ctlx = get_active_ctlx(hw);
+-
+-		if (unlocked_usbctlx_cancel_async(hw, ctlx) == 0) {
+-			spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-			hfa384x_usbctlxq_run(hw);
+-			return;
+-		}
+-	}
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usb_throttlefn
+- *
+- *
+- * Arguments:
+- *	data	ptr to hw
+- *
+- * Returns:
+- *	Nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	Interrupt
+- *----------------------------------------------------------------
+- */
+-static void hfa384x_usb_throttlefn(struct timer_list *t)
+-{
+-	struct hfa384x *hw = from_timer(hw, t, throttle);
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	pr_debug("flags=0x%lx\n", hw->usb_flags);
+-	if (!hw->wlandev->hwremoved) {
+-		bool rx_throttle = test_and_clear_bit(THROTTLE_RX, &hw->usb_flags) &&
+-				   !test_and_set_bit(WORK_RX_RESUME, &hw->usb_flags);
+-		bool tx_throttle = test_and_clear_bit(THROTTLE_TX, &hw->usb_flags) &&
+-				   !test_and_set_bit(WORK_TX_RESUME, &hw->usb_flags);
+-		/*
+-		 * We need to check BOTH the RX and the TX throttle controls,
+-		 * so we use the bitwise OR instead of the logical OR.
+-		 */
+-		if (rx_throttle | tx_throttle)
+-			schedule_work(&hw->usb_work);
+-	}
+-
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_usbctlx_submit
+- *
+- * Called from the doxxx functions to submit a CTLX to the queue
+- *
+- * Arguments:
+- *	hw		ptr to the hw struct
+- *	ctlx		ctlx structure to enqueue
+- *
+- * Returns:
+- *	-ENODEV if the adapter is unplugged
+- *	0
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process or interrupt
+- *----------------------------------------------------------------
+- */
+-static int hfa384x_usbctlx_submit(struct hfa384x *hw,
+-				  struct hfa384x_usbctlx *ctlx)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-	if (hw->wlandev->hwremoved) {
+-		spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-		return -ENODEV;
+-	}
+-
+-	ctlx->state = CTLX_PENDING;
+-	list_add_tail(&ctlx->list, &hw->ctlxq.pending);
+-	spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-	hfa384x_usbctlxq_run(hw);
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * hfa384x_isgood_pdrcore
+- *
+- * Quick check of PDR codes.
+- *
+- * Arguments:
+- *	pdrcode		PDR code number (host order)
+- *
+- * Returns:
+- *	zero		not good.
+- *	one		is good.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *----------------------------------------------------------------
+- */
+-static int hfa384x_isgood_pdrcode(u16 pdrcode)
+-{
+-	switch (pdrcode) {
+-	case HFA384x_PDR_END_OF_PDA:
+-	case HFA384x_PDR_PCB_PARTNUM:
+-	case HFA384x_PDR_PDAVER:
+-	case HFA384x_PDR_NIC_SERIAL:
+-	case HFA384x_PDR_MKK_MEASUREMENTS:
+-	case HFA384x_PDR_NIC_RAMSIZE:
+-	case HFA384x_PDR_MFISUPRANGE:
+-	case HFA384x_PDR_CFISUPRANGE:
+-	case HFA384x_PDR_NICID:
+-	case HFA384x_PDR_MAC_ADDRESS:
+-	case HFA384x_PDR_REGDOMAIN:
+-	case HFA384x_PDR_ALLOWED_CHANNEL:
+-	case HFA384x_PDR_DEFAULT_CHANNEL:
+-	case HFA384x_PDR_TEMPTYPE:
+-	case HFA384x_PDR_IFR_SETTING:
+-	case HFA384x_PDR_RFR_SETTING:
+-	case HFA384x_PDR_HFA3861_BASELINE:
+-	case HFA384x_PDR_HFA3861_SHADOW:
+-	case HFA384x_PDR_HFA3861_IFRF:
+-	case HFA384x_PDR_HFA3861_CHCALSP:
+-	case HFA384x_PDR_HFA3861_CHCALI:
+-	case HFA384x_PDR_3842_NIC_CONFIG:
+-	case HFA384x_PDR_USB_ID:
+-	case HFA384x_PDR_PCI_ID:
+-	case HFA384x_PDR_PCI_IFCONF:
+-	case HFA384x_PDR_PCI_PMCONF:
+-	case HFA384x_PDR_RFENRGY:
+-	case HFA384x_PDR_HFA3861_MANF_TESTSP:
+-	case HFA384x_PDR_HFA3861_MANF_TESTI:
+-		/* code is OK */
+-		return 1;
+-	default:
+-		if (pdrcode < 0x1000) {
+-			/* code is OK, but we don't know exactly what it is */
+-			pr_debug("Encountered unknown PDR#=0x%04x, assuming it's ok.\n",
+-				 pdrcode);
+-			return 1;
+-		}
+-		break;
+-	}
+-	/* bad code */
+-	pr_debug("Encountered unknown PDR#=0x%04x, (>=0x1000), assuming it's bad.\n",
+-		 pdrcode);
+-	return 0;
+-}
+diff --git a/drivers/staging/wlan-ng/p80211conv.c b/drivers/staging/wlan-ng/p80211conv.c
+deleted file mode 100644
+index 8336435eccc2..000000000000
+--- a/drivers/staging/wlan-ng/p80211conv.c
++++ /dev/null
+@@ -1,643 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/*
+- *
+- * Ether/802.11 conversions and packet buffer routines
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file defines the functions that perform Ethernet to/from
+- * 802.11 frame conversions.
+- *
+- * --------------------------------------------------------------------
+- *
+- *================================================================
+- */
+-
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/types.h>
+-#include <linux/skbuff.h>
+-#include <linux/slab.h>
+-#include <linux/wireless.h>
+-#include <linux/netdevice.h>
+-#include <linux/etherdevice.h>
+-#include <linux/if_ether.h>
+-#include <linux/byteorder/generic.h>
+-
+-#include <asm/byteorder.h>
+-
+-#include "p80211types.h"
+-#include "p80211hdr.h"
+-#include "p80211conv.h"
+-#include "p80211mgmt.h"
+-#include "p80211msg.h"
+-#include "p80211netdev.h"
+-#include "p80211ioctl.h"
+-#include "p80211req.h"
+-
+-static const u8 oui_rfc1042[] = { 0x00, 0x00, 0x00 };
+-static const u8 oui_8021h[] = { 0x00, 0x00, 0xf8 };
+-
+-/*----------------------------------------------------------------
+- * p80211pb_ether_to_80211
+- *
+- * Uses the contents of the ether frame and the etherconv setting
+- * to build the elements of the 802.11 frame.
+- *
+- * We don't actually set
+- * up the frame header here.  That's the MAC's job.  We're only handling
+- * conversion of DIXII or 802.3+LLC frames to something that works
+- * with 802.11.
+- *
+- * Note -- 802.11 header is NOT part of the skb.  Likewise, the 802.11
+- *         FCS is also not present and will need to be added elsewhere.
+- *
+- * Arguments:
+- *	ethconv		Conversion type to perform
+- *	skb		skbuff containing the ether frame
+- *       p80211_hdr      802.11 header
+- *
+- * Returns:
+- *	0 on success, non-zero otherwise
+- *
+- * Call context:
+- *	May be called in interrupt or non-interrupt context
+- *----------------------------------------------------------------
+- */
+-int skb_ether_to_p80211(struct wlandevice *wlandev, u32 ethconv,
+-			struct sk_buff *skb, struct p80211_hdr *p80211_hdr,
+-			struct p80211_metawep *p80211_wep)
+-{
+-	__le16 fc;
+-	u16 proto;
+-	struct wlan_ethhdr e_hdr;
+-	struct wlan_llc *e_llc;
+-	struct wlan_snap *e_snap;
+-	int foo;
+-
+-	memcpy(&e_hdr, skb->data, sizeof(e_hdr));
+-
+-	if (skb->len <= 0) {
+-		pr_debug("zero-length skb!\n");
+-		return 1;
+-	}
+-
+-	if (ethconv == WLAN_ETHCONV_ENCAP) {	/* simplest case */
+-		pr_debug("ENCAP len: %d\n", skb->len);
+-		/* here, we don't care what kind of ether frm. Just stick it */
+-		/*  in the 80211 payload */
+-		/* which is to say, leave the skb alone. */
+-	} else {
+-		/* step 1: classify ether frame, DIX or 802.3? */
+-		proto = ntohs(e_hdr.type);
+-		if (proto <= ETH_DATA_LEN) {
+-			pr_debug("802.3 len: %d\n", skb->len);
+-			/* codes <= 1500 reserved for 802.3 lengths */
+-			/* it's 802.3, pass ether payload unchanged,  */
+-
+-			/* trim off ethernet header */
+-			skb_pull(skb, ETH_HLEN);
+-
+-			/*   leave off any PAD octets.  */
+-			skb_trim(skb, proto);
+-		} else {
+-			pr_debug("DIXII len: %d\n", skb->len);
+-			/* it's DIXII, time for some conversion */
+-
+-			/* trim off ethernet header */
+-			skb_pull(skb, ETH_HLEN);
+-
+-			/* tack on SNAP */
+-			e_snap = skb_push(skb, sizeof(struct wlan_snap));
+-			e_snap->type = htons(proto);
+-			if (ethconv == WLAN_ETHCONV_8021h &&
+-			    p80211_stt_findproto(proto)) {
+-				memcpy(e_snap->oui, oui_8021h,
+-				       WLAN_IEEE_OUI_LEN);
+-			} else {
+-				memcpy(e_snap->oui, oui_rfc1042,
+-				       WLAN_IEEE_OUI_LEN);
+-			}
+-
+-			/* tack on llc */
+-			e_llc = skb_push(skb, sizeof(struct wlan_llc));
+-			e_llc->dsap = 0xAA;	/* SNAP, see IEEE 802 */
+-			e_llc->ssap = 0xAA;
+-			e_llc->ctl = 0x03;
+-		}
+-	}
+-
+-	/* Set up the 802.11 header */
+-	/* It's a data frame */
+-	fc = cpu_to_le16(WLAN_SET_FC_FTYPE(WLAN_FTYPE_DATA) |
+-			 WLAN_SET_FC_FSTYPE(WLAN_FSTYPE_DATAONLY));
+-
+-	switch (wlandev->macmode) {
+-	case WLAN_MACMODE_IBSS_STA:
+-		memcpy(p80211_hdr->address1, &e_hdr.daddr, ETH_ALEN);
+-		memcpy(p80211_hdr->address2, wlandev->netdev->dev_addr, ETH_ALEN);
+-		memcpy(p80211_hdr->address3, wlandev->bssid, ETH_ALEN);
+-		break;
+-	case WLAN_MACMODE_ESS_STA:
+-		fc |= cpu_to_le16(WLAN_SET_FC_TODS(1));
+-		memcpy(p80211_hdr->address1, wlandev->bssid, ETH_ALEN);
+-		memcpy(p80211_hdr->address2, wlandev->netdev->dev_addr, ETH_ALEN);
+-		memcpy(p80211_hdr->address3, &e_hdr.daddr, ETH_ALEN);
+-		break;
+-	case WLAN_MACMODE_ESS_AP:
+-		fc |= cpu_to_le16(WLAN_SET_FC_FROMDS(1));
+-		memcpy(p80211_hdr->address1, &e_hdr.daddr, ETH_ALEN);
+-		memcpy(p80211_hdr->address2, wlandev->bssid, ETH_ALEN);
+-		memcpy(p80211_hdr->address3, &e_hdr.saddr, ETH_ALEN);
+-		break;
+-	default:
+-		netdev_err(wlandev->netdev,
+-			   "Error: Converting eth to wlan in unknown mode.\n");
+-		return 1;
+-	}
+-
+-	p80211_wep->data = NULL;
+-
+-	if ((wlandev->hostwep & HOSTWEP_PRIVACYINVOKED) &&
+-	    (wlandev->hostwep & HOSTWEP_ENCRYPT)) {
+-		/* XXXX need to pick keynum other than default? */
+-
+-		p80211_wep->data = kmalloc(skb->len, GFP_ATOMIC);
+-		if (!p80211_wep->data)
+-			return -ENOMEM;
+-		foo = wep_encrypt(wlandev, skb->data, p80211_wep->data,
+-				  skb->len,
+-				  wlandev->hostwep & HOSTWEP_DEFAULTKEY_MASK,
+-				  p80211_wep->iv, p80211_wep->icv);
+-		if (foo) {
+-			netdev_warn(wlandev->netdev,
+-				    "Host en-WEP failed, dropping frame (%d).\n",
+-				    foo);
+-			kfree(p80211_wep->data);
+-			return 2;
+-		}
+-		fc |= cpu_to_le16(WLAN_SET_FC_ISWEP(1));
+-	}
+-
+-	/*      skb->nh.raw = skb->data; */
+-
+-	p80211_hdr->frame_control = fc;
+-	p80211_hdr->duration_id = 0;
+-	p80211_hdr->sequence_control = 0;
+-
+-	return 0;
+-}
+-
+-/* jkriegl: from orinoco, modified */
+-static void orinoco_spy_gather(struct wlandevice *wlandev, char *mac,
+-			       struct p80211_rxmeta *rxmeta)
+-{
+-	int i;
+-
+-	/* Gather wireless spy statistics: for each packet, compare the
+-	 * source address with out list, and if match, get the stats...
+-	 */
+-
+-	for (i = 0; i < wlandev->spy_number; i++) {
+-		if (!memcmp(wlandev->spy_address[i], mac, ETH_ALEN)) {
+-			wlandev->spy_stat[i].level = rxmeta->signal;
+-			wlandev->spy_stat[i].noise = rxmeta->noise;
+-			wlandev->spy_stat[i].qual =
+-			    (rxmeta->signal >
+-			     rxmeta->noise) ? (rxmeta->signal -
+-					       rxmeta->noise) : 0;
+-			wlandev->spy_stat[i].updated = 0x7;
+-		}
+-	}
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211pb_80211_to_ether
+- *
+- * Uses the contents of a received 802.11 frame and the etherconv
+- * setting to build an ether frame.
+- *
+- * This function extracts the src and dest address from the 802.11
+- * frame to use in the construction of the eth frame.
+- *
+- * Arguments:
+- *	ethconv		Conversion type to perform
+- *	skb		Packet buffer containing the 802.11 frame
+- *
+- * Returns:
+- *	0 on success, non-zero otherwise
+- *
+- * Call context:
+- *	May be called in interrupt or non-interrupt context
+- *----------------------------------------------------------------
+- */
+-int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+-			struct sk_buff *skb)
+-{
+-	struct net_device *netdev = wlandev->netdev;
+-	u16 fc;
+-	unsigned int payload_length;
+-	unsigned int payload_offset;
+-	u8 daddr[ETH_ALEN];
+-	u8 saddr[ETH_ALEN];
+-	struct p80211_hdr *w_hdr;
+-	struct wlan_ethhdr *e_hdr;
+-	struct wlan_llc *e_llc;
+-	struct wlan_snap *e_snap;
+-
+-	int foo;
+-
+-	payload_length = skb->len - WLAN_HDR_A3_LEN - WLAN_CRC_LEN;
+-	payload_offset = WLAN_HDR_A3_LEN;
+-
+-	w_hdr = (struct p80211_hdr *)skb->data;
+-
+-	/* setup some vars for convenience */
+-	fc = le16_to_cpu(w_hdr->frame_control);
+-	if ((WLAN_GET_FC_TODS(fc) == 0) && (WLAN_GET_FC_FROMDS(fc) == 0)) {
+-		ether_addr_copy(daddr, w_hdr->address1);
+-		ether_addr_copy(saddr, w_hdr->address2);
+-	} else if ((WLAN_GET_FC_TODS(fc) == 0) &&
+-		   (WLAN_GET_FC_FROMDS(fc) == 1)) {
+-		ether_addr_copy(daddr, w_hdr->address1);
+-		ether_addr_copy(saddr, w_hdr->address3);
+-	} else if ((WLAN_GET_FC_TODS(fc) == 1) &&
+-		   (WLAN_GET_FC_FROMDS(fc) == 0)) {
+-		ether_addr_copy(daddr, w_hdr->address3);
+-		ether_addr_copy(saddr, w_hdr->address2);
+-	} else {
+-		payload_offset = WLAN_HDR_A4_LEN;
+-		if (payload_length < WLAN_HDR_A4_LEN - WLAN_HDR_A3_LEN) {
+-			netdev_err(netdev, "A4 frame too short!\n");
+-			return 1;
+-		}
+-		payload_length -= (WLAN_HDR_A4_LEN - WLAN_HDR_A3_LEN);
+-		ether_addr_copy(daddr, w_hdr->address3);
+-		ether_addr_copy(saddr, w_hdr->address4);
+-	}
+-
+-	/* perform de-wep if necessary.. */
+-	if ((wlandev->hostwep & HOSTWEP_PRIVACYINVOKED) &&
+-	    WLAN_GET_FC_ISWEP(fc) &&
+-	    (wlandev->hostwep & HOSTWEP_DECRYPT)) {
+-		if (payload_length <= 8) {
+-			netdev_err(netdev,
+-				   "WEP frame too short (%u).\n", skb->len);
+-			return 1;
+-		}
+-		foo = wep_decrypt(wlandev, skb->data + payload_offset + 4,
+-				  payload_length - 8, -1,
+-				  skb->data + payload_offset,
+-				  skb->data + payload_offset +
+-				  payload_length - 4);
+-		if (foo) {
+-			/* de-wep failed, drop skb. */
+-			netdev_dbg(netdev, "Host de-WEP failed, dropping frame (%d).\n",
+-				   foo);
+-			wlandev->rx.decrypt_err++;
+-			return 2;
+-		}
+-
+-		/* subtract the IV+ICV length off the payload */
+-		payload_length -= 8;
+-		/* chop off the IV */
+-		skb_pull(skb, 4);
+-		/* chop off the ICV. */
+-		skb_trim(skb, skb->len - 4);
+-
+-		wlandev->rx.decrypt++;
+-	}
+-
+-	e_hdr = (struct wlan_ethhdr *)(skb->data + payload_offset);
+-
+-	e_llc = (struct wlan_llc *)(skb->data + payload_offset);
+-	e_snap =
+-	    (struct wlan_snap *)(skb->data + payload_offset +
+-		sizeof(struct wlan_llc));
+-
+-	/* Test for the various encodings */
+-	if ((payload_length >= sizeof(struct wlan_ethhdr)) &&
+-	    (e_llc->dsap != 0xaa || e_llc->ssap != 0xaa) &&
+-	    ((!ether_addr_equal_unaligned(daddr, e_hdr->daddr)) ||
+-	     (!ether_addr_equal_unaligned(saddr, e_hdr->saddr)))) {
+-		netdev_dbg(netdev, "802.3 ENCAP len: %d\n", payload_length);
+-		/* 802.3 Encapsulated */
+-		/* Test for an overlength frame */
+-		if (payload_length > (netdev->mtu + ETH_HLEN)) {
+-			/* A bogus length ethfrm has been encap'd. */
+-			/* Is someone trying an oflow attack? */
+-			netdev_err(netdev, "ENCAP frame too large (%d > %d)\n",
+-				   payload_length, netdev->mtu + ETH_HLEN);
+-			return 1;
+-		}
+-
+-		/* Chop off the 802.11 header.  it's already sane. */
+-		skb_pull(skb, payload_offset);
+-		/* chop off the 802.11 CRC */
+-		skb_trim(skb, skb->len - WLAN_CRC_LEN);
+-
+-	} else if ((payload_length >= sizeof(struct wlan_llc) +
+-		sizeof(struct wlan_snap)) &&
+-		(e_llc->dsap == 0xaa) &&
+-		(e_llc->ssap == 0xaa) &&
+-		(e_llc->ctl == 0x03) &&
+-		   (((memcmp(e_snap->oui, oui_rfc1042,
+-		   WLAN_IEEE_OUI_LEN) == 0) &&
+-		   (ethconv == WLAN_ETHCONV_8021h) &&
+-		   (p80211_stt_findproto(be16_to_cpu(e_snap->type)))) ||
+-		   (memcmp(e_snap->oui, oui_rfc1042, WLAN_IEEE_OUI_LEN) !=
+-			0))) {
+-		netdev_dbg(netdev, "SNAP+RFC1042 len: %d\n", payload_length);
+-		/* it's a SNAP + RFC1042 frame && protocol is in STT */
+-		/* build 802.3 + RFC1042 */
+-
+-		/* Test for an overlength frame */
+-		if (payload_length > netdev->mtu) {
+-			/* A bogus length ethfrm has been sent. */
+-			/* Is someone trying an oflow attack? */
+-			netdev_err(netdev, "SNAP frame too large (%d > %d)\n",
+-				   payload_length, netdev->mtu);
+-			return 1;
+-		}
+-
+-		/* chop 802.11 header from skb. */
+-		skb_pull(skb, payload_offset);
+-
+-		/* create 802.3 header at beginning of skb. */
+-		e_hdr = skb_push(skb, ETH_HLEN);
+-		ether_addr_copy(e_hdr->daddr, daddr);
+-		ether_addr_copy(e_hdr->saddr, saddr);
+-		e_hdr->type = htons(payload_length);
+-
+-		/* chop off the 802.11 CRC */
+-		skb_trim(skb, skb->len - WLAN_CRC_LEN);
+-
+-	} else if ((payload_length >= sizeof(struct wlan_llc) +
+-		sizeof(struct wlan_snap)) &&
+-		(e_llc->dsap == 0xaa) &&
+-		(e_llc->ssap == 0xaa) &&
+-		(e_llc->ctl == 0x03)) {
+-		netdev_dbg(netdev, "802.1h/RFC1042 len: %d\n", payload_length);
+-		/* it's an 802.1h frame || (an RFC1042 && protocol not in STT)
+-		 * build a DIXII + RFC894
+-		 */
+-
+-		/* Test for an overlength frame */
+-		if ((payload_length - sizeof(struct wlan_llc) -
+-			sizeof(struct wlan_snap))
+-			> netdev->mtu) {
+-			/* A bogus length ethfrm has been sent. */
+-			/* Is someone trying an oflow attack? */
+-			netdev_err(netdev, "DIXII frame too large (%ld > %d)\n",
+-				   (long)(payload_length -
+-				   sizeof(struct wlan_llc) -
+-				   sizeof(struct wlan_snap)), netdev->mtu);
+-			return 1;
+-		}
+-
+-		/* chop 802.11 header from skb. */
+-		skb_pull(skb, payload_offset);
+-
+-		/* chop llc header from skb. */
+-		skb_pull(skb, sizeof(struct wlan_llc));
+-
+-		/* chop snap header from skb. */
+-		skb_pull(skb, sizeof(struct wlan_snap));
+-
+-		/* create 802.3 header at beginning of skb. */
+-		e_hdr = skb_push(skb, ETH_HLEN);
+-		e_hdr->type = e_snap->type;
+-		ether_addr_copy(e_hdr->daddr, daddr);
+-		ether_addr_copy(e_hdr->saddr, saddr);
+-
+-		/* chop off the 802.11 CRC */
+-		skb_trim(skb, skb->len - WLAN_CRC_LEN);
+-	} else {
+-		netdev_dbg(netdev, "NON-ENCAP len: %d\n", payload_length);
+-		/* any NON-ENCAP */
+-		/* it's a generic 80211+LLC or IPX 'Raw 802.3' */
+-		/*  build an 802.3 frame */
+-		/* allocate space and setup hostbuf */
+-
+-		/* Test for an overlength frame */
+-		if (payload_length > netdev->mtu) {
+-			/* A bogus length ethfrm has been sent. */
+-			/* Is someone trying an oflow attack? */
+-			netdev_err(netdev, "OTHER frame too large (%d > %d)\n",
+-				   payload_length, netdev->mtu);
+-			return 1;
+-		}
+-
+-		/* Chop off the 802.11 header. */
+-		skb_pull(skb, payload_offset);
+-
+-		/* create 802.3 header at beginning of skb. */
+-		e_hdr = skb_push(skb, ETH_HLEN);
+-		ether_addr_copy(e_hdr->daddr, daddr);
+-		ether_addr_copy(e_hdr->saddr, saddr);
+-		e_hdr->type = htons(payload_length);
+-
+-		/* chop off the 802.11 CRC */
+-		skb_trim(skb, skb->len - WLAN_CRC_LEN);
+-	}
+-
+-	/*
+-	 * Note that eth_type_trans() expects an skb w/ skb->data pointing
+-	 * at the MAC header, it then sets the following skb members:
+-	 * skb->mac_header,
+-	 * skb->data, and
+-	 * skb->pkt_type.
+-	 * It then _returns_ the value that _we're_ supposed to stuff in
+-	 * skb->protocol.  This is nuts.
+-	 */
+-	skb->protocol = eth_type_trans(skb, netdev);
+-
+-	/* jkriegl: process signal and noise as set in hfa384x_int_rx() */
+-	/* jkriegl: only process signal/noise if requested by iwspy */
+-	if (wlandev->spy_number)
+-		orinoco_spy_gather(wlandev, eth_hdr(skb)->h_source,
+-				   p80211skb_rxmeta(skb));
+-
+-	/* Free the metadata */
+-	p80211skb_rxmeta_detach(skb);
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211_stt_findproto
+- *
+- * Searches the 802.1h Selective Translation Table for a given
+- * protocol.
+- *
+- * Arguments:
+- *	proto	protocol number (in host order) to search for.
+- *
+- * Returns:
+- *	1 - if the table is empty or a match is found.
+- *	0 - if the table is non-empty and a match is not found.
+- *
+- * Call context:
+- *	May be called in interrupt or non-interrupt context
+- *----------------------------------------------------------------
+- */
+-int p80211_stt_findproto(u16 proto)
+-{
+-	/* Always return found for now.  This is the behavior used by the */
+-	/* Zoom Win95 driver when 802.1h mode is selected */
+-	/* TODO: If necessary, add an actual search we'll probably
+-	 * need this to match the CMAC's way of doing things.
+-	 * Need to do some testing to confirm.
+-	 */
+-
+-	if (proto == ETH_P_AARP)	/* APPLETALK */
+-		return 1;
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211skb_rxmeta_detach
+- *
+- * Disconnects the frmmeta and rxmeta from an skb.
+- *
+- * Arguments:
+- *	wlandev		The wlandev this skb belongs to.
+- *	skb		The skb we're attaching to.
+- *
+- * Returns:
+- *	0 on success, non-zero otherwise
+- *
+- * Call context:
+- *	May be called in interrupt or non-interrupt context
+- *----------------------------------------------------------------
+- */
+-void p80211skb_rxmeta_detach(struct sk_buff *skb)
+-{
+-	struct p80211_rxmeta *rxmeta;
+-	struct p80211_frmmeta *frmmeta;
+-
+-	/* Sanity checks */
+-	if (!skb) {	/* bad skb */
+-		pr_debug("Called w/ null skb.\n");
+-		return;
+-	}
+-	frmmeta = p80211skb_frmmeta(skb);
+-	if (!frmmeta) {	/* no magic */
+-		pr_debug("Called w/ bad frmmeta magic.\n");
+-		return;
+-	}
+-	rxmeta = frmmeta->rx;
+-	if (!rxmeta) {	/* bad meta ptr */
+-		pr_debug("Called w/ bad rxmeta ptr.\n");
+-		return;
+-	}
+-
+-	/* Free rxmeta */
+-	kfree(rxmeta);
+-
+-	/* Clear skb->cb */
+-	memset(skb->cb, 0, sizeof(skb->cb));
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211skb_rxmeta_attach
+- *
+- * Allocates a p80211rxmeta structure, initializes it, and attaches
+- * it to an skb.
+- *
+- * Arguments:
+- *	wlandev		The wlandev this skb belongs to.
+- *	skb		The skb we're attaching to.
+- *
+- * Returns:
+- *	0 on success, non-zero otherwise
+- *
+- * Call context:
+- *	May be called in interrupt or non-interrupt context
+- *----------------------------------------------------------------
+- */
+-int p80211skb_rxmeta_attach(struct wlandevice *wlandev, struct sk_buff *skb)
+-{
+-	int result = 0;
+-	struct p80211_rxmeta *rxmeta;
+-	struct p80211_frmmeta *frmmeta;
+-
+-	/* If these already have metadata, we error out! */
+-	if (p80211skb_rxmeta(skb)) {
+-		netdev_err(wlandev->netdev,
+-			   "%s: RXmeta already attached!\n", wlandev->name);
+-		result = 0;
+-		goto exit;
+-	}
+-
+-	/* Allocate the rxmeta */
+-	rxmeta = kzalloc(sizeof(*rxmeta), GFP_ATOMIC);
+-
+-	if (!rxmeta) {
+-		result = 1;
+-		goto exit;
+-	}
+-
+-	/* Initialize the rxmeta */
+-	rxmeta->wlandev = wlandev;
+-	rxmeta->hosttime = jiffies;
+-
+-	/* Overlay a frmmeta_t onto skb->cb */
+-	memset(skb->cb, 0, sizeof(struct p80211_frmmeta));
+-	frmmeta = (struct p80211_frmmeta *)(skb->cb);
+-	frmmeta->magic = P80211_FRMMETA_MAGIC;
+-	frmmeta->rx = rxmeta;
+-exit:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211skb_free
+- *
+- * Frees an entire p80211skb by checking and freeing the meta struct
+- * and then freeing the skb.
+- *
+- * Arguments:
+- *	wlandev		The wlandev this skb belongs to.
+- *	skb		The skb we're attaching to.
+- *
+- * Returns:
+- *	0 on success, non-zero otherwise
+- *
+- * Call context:
+- *	May be called in interrupt or non-interrupt context
+- *----------------------------------------------------------------
+- */
+-void p80211skb_free(struct wlandevice *wlandev, struct sk_buff *skb)
+-{
+-	struct p80211_frmmeta *meta;
+-
+-	meta = p80211skb_frmmeta(skb);
+-	if (meta && meta->rx)
+-		p80211skb_rxmeta_detach(skb);
+-	else
+-		netdev_err(wlandev->netdev,
+-			   "Freeing an skb (%p) w/ no frmmeta.\n", skb);
+-	dev_kfree_skb(skb);
+-}
+diff --git a/drivers/staging/wlan-ng/p80211conv.h b/drivers/staging/wlan-ng/p80211conv.h
+deleted file mode 100644
+index 45234769f45d..000000000000
+--- a/drivers/staging/wlan-ng/p80211conv.h
++++ /dev/null
+@@ -1,141 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * Ether/802.11 conversions and packet buffer routines
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file declares the functions, types and macros that perform
+- * Ethernet to/from 802.11 frame conversions.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _LINUX_P80211CONV_H
+-#define _LINUX_P80211CONV_H
+-
+-#define WLAN_IEEE_OUI_LEN	3
+-
+-#define WLAN_ETHCONV_ENCAP	1
+-#define WLAN_ETHCONV_8021h	3
+-
+-#define P80211CAPTURE_VERSION	0x80211001
+-
+-#define	P80211_FRMMETA_MAGIC	0x802110
+-
+-struct p80211_rxmeta {
+-	struct wlandevice *wlandev;
+-
+-	u64 mactime;		/* Hi-rez MAC-supplied time value */
+-	u64 hosttime;		/* Best-rez host supplied time value */
+-
+-	unsigned int rxrate;	/* Receive data rate in 100kbps */
+-	unsigned int priority;	/* 0-15, 0=contention, 6=CF */
+-	int signal;		/* An SSI, see p80211netdev.h */
+-	int noise;		/* An SSI, see p80211netdev.h */
+-	unsigned int channel;	/* Receive channel (mostly for snifs) */
+-	unsigned int preamble;	/* P80211ENUM_preambletype_* */
+-	unsigned int encoding;	/* P80211ENUM_encoding_* */
+-
+-};
+-
+-struct p80211_frmmeta {
+-	unsigned int magic;
+-	struct p80211_rxmeta *rx;
+-};
+-
+-void p80211skb_free(struct wlandevice *wlandev, struct sk_buff *skb);
+-int p80211skb_rxmeta_attach(struct wlandevice *wlandev, struct sk_buff *skb);
+-void p80211skb_rxmeta_detach(struct sk_buff *skb);
+-
+-static inline struct p80211_frmmeta *p80211skb_frmmeta(struct sk_buff *skb)
+-{
+-	struct p80211_frmmeta *frmmeta = (struct p80211_frmmeta *)skb->cb;
+-
+-	return frmmeta->magic == P80211_FRMMETA_MAGIC ? frmmeta : NULL;
+-}
+-
+-static inline struct p80211_rxmeta *p80211skb_rxmeta(struct sk_buff *skb)
+-{
+-	struct p80211_frmmeta *frmmeta = p80211skb_frmmeta(skb);
+-
+-	return frmmeta ? frmmeta->rx : NULL;
+-}
+-
+-/*
+- * Frame capture header.  (See doc/capturefrm.txt)
+- */
+-struct p80211_caphdr {
+-	__be32 version;
+-	__be32 length;
+-	__be64 mactime;
+-	__be64 hosttime;
+-	__be32 phytype;
+-	__be32 channel;
+-	__be32 datarate;
+-	__be32 antenna;
+-	__be32 priority;
+-	__be32 ssi_type;
+-	__be32 ssi_signal;
+-	__be32 ssi_noise;
+-	__be32 preamble;
+-	__be32 encoding;
+-};
+-
+-struct p80211_metawep {
+-	void *data;
+-	u8 iv[4];
+-	u8 icv[4];
+-};
+-
+-/* local ether header type */
+-struct wlan_ethhdr {
+-	u8 daddr[ETH_ALEN];
+-	u8 saddr[ETH_ALEN];
+-	__be16 type;
+-} __packed;
+-
+-/* local llc header type */
+-struct wlan_llc {
+-	u8 dsap;
+-	u8 ssap;
+-	u8 ctl;
+-} __packed;
+-
+-/* local snap header type */
+-struct wlan_snap {
+-	u8 oui[WLAN_IEEE_OUI_LEN];
+-	__be16 type;
+-} __packed;
+-
+-/* Circular include trick */
+-struct wlandevice;
+-
+-int skb_p80211_to_ether(struct wlandevice *wlandev, u32 ethconv,
+-			struct sk_buff *skb);
+-int skb_ether_to_p80211(struct wlandevice *wlandev, u32 ethconv,
+-			struct sk_buff *skb, struct p80211_hdr *p80211_hdr,
+-			struct p80211_metawep *p80211_wep);
+-
+-int p80211_stt_findproto(u16 proto);
+-
+-#endif
+diff --git a/drivers/staging/wlan-ng/p80211hdr.h b/drivers/staging/wlan-ng/p80211hdr.h
+deleted file mode 100644
+index 7ea1c8ec05ed..000000000000
+--- a/drivers/staging/wlan-ng/p80211hdr.h
++++ /dev/null
+@@ -1,189 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * Macros, types, and functions for handling 802.11 MAC headers
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file declares the constants and types used in the interface
+- * between a wlan driver and the user mode utilities.
+- *
+- * Note:
+- *  - Constant values are always in HOST byte order.  To assign
+- *    values to multi-byte fields they _must_ be converted to
+- *    ieee byte order.  To retrieve multi-byte values from incoming
+- *    frames, they must be converted to host order.
+- *
+- * All functions declared here are implemented in p80211.c
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _P80211HDR_H
+-#define _P80211HDR_H
+-
+-#include <linux/if_ether.h>
+-
+-/*--- Sizes -----------------------------------------------*/
+-#define WLAN_CRC_LEN			4
+-#define WLAN_BSSID_LEN			6
+-#define WLAN_HDR_A3_LEN			24
+-#define WLAN_HDR_A4_LEN			30
+-#define WLAN_SSID_MAXLEN		32
+-#define WLAN_DATA_MAXLEN		2312
+-#define WLAN_WEP_IV_LEN			4
+-#define WLAN_WEP_ICV_LEN		4
+-
+-/*--- Frame Control Field -------------------------------------*/
+-/* Frame Types */
+-#define WLAN_FTYPE_MGMT			0x00
+-#define WLAN_FTYPE_CTL			0x01
+-#define WLAN_FTYPE_DATA			0x02
+-
+-/* Frame subtypes */
+-/* Management */
+-#define WLAN_FSTYPE_ASSOCREQ		0x00
+-#define WLAN_FSTYPE_ASSOCRESP		0x01
+-#define WLAN_FSTYPE_REASSOCREQ		0x02
+-#define WLAN_FSTYPE_REASSOCRESP		0x03
+-#define WLAN_FSTYPE_PROBEREQ		0x04
+-#define WLAN_FSTYPE_PROBERESP		0x05
+-#define WLAN_FSTYPE_BEACON		0x08
+-#define WLAN_FSTYPE_ATIM		0x09
+-#define WLAN_FSTYPE_DISASSOC		0x0a
+-#define WLAN_FSTYPE_AUTHEN		0x0b
+-#define WLAN_FSTYPE_DEAUTHEN		0x0c
+-
+-/* Control */
+-#define WLAN_FSTYPE_BLOCKACKREQ		0x8
+-#define WLAN_FSTYPE_BLOCKACK		0x9
+-#define WLAN_FSTYPE_PSPOLL		0x0a
+-#define WLAN_FSTYPE_RTS			0x0b
+-#define WLAN_FSTYPE_CTS			0x0c
+-#define WLAN_FSTYPE_ACK			0x0d
+-#define WLAN_FSTYPE_CFEND		0x0e
+-#define WLAN_FSTYPE_CFENDCFACK		0x0f
+-
+-/* Data */
+-#define WLAN_FSTYPE_DATAONLY		0x00
+-#define WLAN_FSTYPE_DATA_CFACK		0x01
+-#define WLAN_FSTYPE_DATA_CFPOLL		0x02
+-#define WLAN_FSTYPE_DATA_CFACK_CFPOLL	0x03
+-#define WLAN_FSTYPE_NULL		0x04
+-#define WLAN_FSTYPE_CFACK		0x05
+-#define WLAN_FSTYPE_CFPOLL		0x06
+-#define WLAN_FSTYPE_CFACK_CFPOLL	0x07
+-
+-/*--- FC Macros ----------------------------------------------*/
+-/* Macros to get/set the bitfields of the Frame Control Field */
+-/*  GET_FC_??? - takes the host byte-order value of an FC     */
+-/*               and retrieves the value of one of the        */
+-/*               bitfields and moves that value so its lsb is */
+-/*               in bit 0.                                    */
+-/*  SET_FC_??? - takes a host order value for one of the FC   */
+-/*               bitfields and moves it to the proper bit     */
+-/*               location for ORing into a host order FC.     */
+-/*               To send the FC produced from SET_FC_???,     */
+-/*               one must put the bytes in IEEE order.        */
+-/*  e.g.                                                      */
+-/*     printf("the frame subtype is %x",                      */
+-/*                 GET_FC_FTYPE( ieee2host( rx.fc )))         */
+-/*                                                            */
+-/*     tx.fc = host2ieee( SET_FC_FTYPE(WLAN_FTYP_CTL) |       */
+-/*                        SET_FC_FSTYPE(WLAN_FSTYPE_RTS) );   */
+-/*------------------------------------------------------------*/
+-
+-#define WLAN_GET_FC_FTYPE(n)	((((u16)(n)) & GENMASK(3, 2)) >> 2)
+-#define WLAN_GET_FC_FSTYPE(n)	((((u16)(n)) & GENMASK(7, 4)) >> 4)
+-#define WLAN_GET_FC_TODS(n)	((((u16)(n)) & (BIT(8))) >> 8)
+-#define WLAN_GET_FC_FROMDS(n)	((((u16)(n)) & (BIT(9))) >> 9)
+-#define WLAN_GET_FC_ISWEP(n)	((((u16)(n)) & (BIT(14))) >> 14)
+-
+-#define WLAN_SET_FC_FTYPE(n)	(((u16)(n)) << 2)
+-#define WLAN_SET_FC_FSTYPE(n)	(((u16)(n)) << 4)
+-#define WLAN_SET_FC_TODS(n)	(((u16)(n)) << 8)
+-#define WLAN_SET_FC_FROMDS(n)	(((u16)(n)) << 9)
+-#define WLAN_SET_FC_ISWEP(n)	(((u16)(n)) << 14)
+-
+-#define DOT11_RATE5_ISBASIC_GET(r)     (((u8)(r)) & BIT(7))
+-
+-/* Generic 802.11 Header types */
+-
+-struct p80211_hdr {
+-	__le16	frame_control;
+-	u16	duration_id;
+-	u8	address1[ETH_ALEN];
+-	u8	address2[ETH_ALEN];
+-	u8	address3[ETH_ALEN];
+-	u16	sequence_control;
+-	u8	address4[ETH_ALEN];
+-} __packed;
+-
+-/* Frame and header length macros */
+-
+-static inline u16 wlan_ctl_framelen(u16 fstype)
+-{
+-	switch (fstype)	{
+-	case WLAN_FSTYPE_BLOCKACKREQ:
+-		return 24;
+-	case WLAN_FSTYPE_BLOCKACK:
+-		return 152;
+-	case WLAN_FSTYPE_PSPOLL:
+-	case WLAN_FSTYPE_RTS:
+-	case WLAN_FSTYPE_CFEND:
+-	case WLAN_FSTYPE_CFENDCFACK:
+-		return 20;
+-	case WLAN_FSTYPE_CTS:
+-	case WLAN_FSTYPE_ACK:
+-		return 14;
+-	default:
+-		return 4;
+-	}
+-}
+-
+-#define WLAN_FCS_LEN			4
+-
+-/* ftcl in HOST order */
+-static inline u16 p80211_headerlen(u16 fctl)
+-{
+-	u16 hdrlen = 0;
+-
+-	switch (WLAN_GET_FC_FTYPE(fctl)) {
+-	case WLAN_FTYPE_MGMT:
+-		hdrlen = WLAN_HDR_A3_LEN;
+-		break;
+-	case WLAN_FTYPE_DATA:
+-		hdrlen = WLAN_HDR_A3_LEN;
+-		if (WLAN_GET_FC_TODS(fctl) && WLAN_GET_FC_FROMDS(fctl))
+-			hdrlen += ETH_ALEN;
+-		break;
+-	case WLAN_FTYPE_CTL:
+-		hdrlen = wlan_ctl_framelen(WLAN_GET_FC_FSTYPE(fctl)) -
+-		    WLAN_FCS_LEN;
+-		break;
+-	default:
+-		hdrlen = WLAN_HDR_A3_LEN;
+-	}
+-
+-	return hdrlen;
+-}
+-
+-#endif /* _P80211HDR_H */
+diff --git a/drivers/staging/wlan-ng/p80211ioctl.h b/drivers/staging/wlan-ng/p80211ioctl.h
+deleted file mode 100644
+index 176e327a45bc..000000000000
+--- a/drivers/staging/wlan-ng/p80211ioctl.h
++++ /dev/null
+@@ -1,69 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * Declares constants and types for the p80211 ioctls
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- *  While this file is called 'ioctl' is purpose goes a little beyond
+- *  that.  This file defines the types and contants used to implement
+- *  the p80211 request/confirm/indicate interfaces on Linux.  The
+- *  request/confirm interface is, in fact, normally implemented as an
+- *  ioctl.  The indicate interface on the other hand, is implemented
+- *  using the Linux 'netlink' interface.
+- *
+- *  The reason I say that request/confirm is 'normally' implemented
+- *  via ioctl is that we're reserving the right to be able to send
+- *  request commands via the netlink interface.  This will be necessary
+- *  if we ever need to send request messages when there aren't any
+- *  wlan network devices present (i.e. sending a message that only p80211
+- *  cares about.
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _P80211IOCTL_H
+-#define _P80211IOCTL_H
+-
+-/* p80211 ioctl "request" codes.  See argument 2 of ioctl(2). */
+-
+-#define P80211_IFTEST		(SIOCDEVPRIVATE + 0)
+-#define P80211_IFREQ		(SIOCDEVPRIVATE + 1)
+-
+-/*----------------------------------------------------------------*/
+-/* Magic number, a quick test to see we're getting the desired struct */
+-
+-#define P80211_IOCTL_MAGIC	(0x4a2d464dUL)
+-
+-/*----------------------------------------------------------------*/
+-/* A ptr to the following structure type is passed as the third */
+-/*  argument to the ioctl system call when issuing a request to */
+-/*  the p80211 module. */
+-
+-struct p80211ioctl_req {
+-	char name[WLAN_DEVNAMELEN_MAX];
+-	char __user *data;
+-	u32 magic;
+-	u16 len;
+-	u32 result;
+-} __packed;
+-
+-#endif /* _P80211IOCTL_H */
+diff --git a/drivers/staging/wlan-ng/p80211metadef.h b/drivers/staging/wlan-ng/p80211metadef.h
+deleted file mode 100644
+index 1cbb4b67a9a6..000000000000
+--- a/drivers/staging/wlan-ng/p80211metadef.h
++++ /dev/null
+@@ -1,227 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* --------------------------------------------------------------------
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _P80211MKMETADEF_H
+-#define _P80211MKMETADEF_H
+-
+-#define DIDMSG_DOT11REQ_MIBGET \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(1))
+-#define DIDMSG_DOT11REQ_MIBGET_MIBATTRIBUTE \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(1) | 0x00000000)
+-#define DIDMSG_DOT11REQ_MIBGET_RESULTCODE \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(2) | 0x00000000)
+-#define DIDMSG_DOT11REQ_MIBSET \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(2))
+-#define DIDMSG_DOT11REQ_MIBSET_MIBATTRIBUTE \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(2) | \
+-			P80211DID_MKITEM(1) | 0x00000000)
+-#define DIDMSG_DOT11REQ_MIBSET_RESULTCODE \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(2) | \
+-			P80211DID_MKITEM(2) | 0x00000000)
+-#define DIDMSG_DOT11REQ_SCAN \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(4))
+-#define DIDMSG_DOT11REQ_SCAN_RESULTS \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(5))
+-#define DIDMSG_DOT11REQ_START \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(13))
+-#define DIDMSG_DOT11IND_AUTHENTICATE \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(1))
+-#define DIDMSG_DOT11IND_ASSOCIATE \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(3))
+-#define DIDMSG_LNXREQ_IFSTATE \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(1))
+-#define DIDMSG_LNXREQ_WLANSNIFF \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(2))
+-#define DIDMSG_LNXREQ_HOSTWEP \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(3))
+-#define DIDMSG_LNXREQ_COMMSQUALITY \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(4))
+-#define DIDMSG_LNXREQ_AUTOJOIN \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(5))
+-#define DIDMSG_P2REQ_READPDA \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(2))
+-#define DIDMSG_P2REQ_READPDA_PDA \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(2) | \
+-			P80211DID_MKITEM(1) | 0x00000000)
+-#define DIDMSG_P2REQ_READPDA_RESULTCODE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(2) | \
+-			P80211DID_MKITEM(2) | 0x00000000)
+-#define DIDMSG_P2REQ_RAMDL_STATE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(11))
+-#define DIDMSG_P2REQ_RAMDL_STATE_ENABLE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(11) | \
+-			P80211DID_MKITEM(1) | 0x00000000)
+-#define DIDMSG_P2REQ_RAMDL_STATE_EXEADDR \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(11) | \
+-			P80211DID_MKITEM(2) | 0x00000000)
+-#define DIDMSG_P2REQ_RAMDL_STATE_RESULTCODE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(11) | \
+-			P80211DID_MKITEM(3) | 0x00000000)
+-#define DIDMSG_P2REQ_RAMDL_WRITE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(12))
+-#define DIDMSG_P2REQ_RAMDL_WRITE_ADDR \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(12) | \
+-			P80211DID_MKITEM(1) | 0x00000000)
+-#define DIDMSG_P2REQ_RAMDL_WRITE_LEN \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(12) | \
+-			P80211DID_MKITEM(2) | 0x00000000)
+-#define DIDMSG_P2REQ_RAMDL_WRITE_DATA \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(12) | \
+-			P80211DID_MKITEM(3) | 0x00000000)
+-#define DIDMSG_P2REQ_RAMDL_WRITE_RESULTCODE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(12) | \
+-			P80211DID_MKITEM(4) | 0x00000000)
+-#define DIDMSG_P2REQ_FLASHDL_STATE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(13))
+-#define DIDMSG_P2REQ_FLASHDL_WRITE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(14))
+-#define DIDMIB_CAT_DOT11SMT \
+-			P80211DID_MKSECTION(1)
+-#define DIDMIB_DOT11SMT_WEPDEFAULTKEYSTABLE \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(4))
+-#define didmib_dot11smt_wepdefaultkeystable_key(_i) \
+-			(DIDMIB_DOT11SMT_WEPDEFAULTKEYSTABLE | \
+-			P80211DID_MKITEM(_i) | 0x0c000000)
+-#define DIDMIB_DOT11SMT_PRIVACYTABLE \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(6))
+-#define DIDMIB_DOT11SMT_PRIVACYTABLE_PRIVACYINVOKED \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(6) | \
+-			P80211DID_MKITEM(1) | 0x18000000)
+-#define DIDMIB_DOT11SMT_PRIVACYTABLE_WEPDEFAULTKEYID \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(6) | \
+-			P80211DID_MKITEM(2) | 0x18000000)
+-#define DIDMIB_DOT11SMT_PRIVACYTABLE_EXCLUDEUNENCRYPTED \
+-			(P80211DID_MKSECTION(1) | \
+-			P80211DID_MKGROUP(6) | \
+-			P80211DID_MKITEM(4) | 0x18000000)
+-#define DIDMIB_DOT11MAC_OPERATIONTABLE \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(1))
+-#define DIDMIB_DOT11MAC_OPERATIONTABLE_MACADDRESS \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(1) | 0x18000000)
+-#define DIDMIB_DOT11MAC_OPERATIONTABLE_RTSTHRESHOLD \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(2) | 0x18000000)
+-#define DIDMIB_DOT11MAC_OPERATIONTABLE_SHORTRETRYLIMIT \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(3) | 0x10000000)
+-#define DIDMIB_DOT11MAC_OPERATIONTABLE_LONGRETRYLIMIT \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(4) | 0x10000000)
+-#define DIDMIB_DOT11MAC_OPERATIONTABLE_FRAGMENTATIONTHRESHOLD \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(5) | 0x18000000)
+-#define DIDMIB_DOT11MAC_OPERATIONTABLE_MAXTRANSMITMSDULIFETIME \
+-			(P80211DID_MKSECTION(2) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(6) | 0x10000000)
+-#define DIDMIB_CAT_DOT11PHY \
+-			P80211DID_MKSECTION(3)
+-#define DIDMIB_DOT11PHY_OPERATIONTABLE \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(1))
+-#define DIDMIB_DOT11PHY_TXPOWERTABLE_CURRENTTXPOWERLEVEL \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(3) | \
+-			P80211DID_MKITEM(10) | 0x18000000)
+-#define DIDMIB_DOT11PHY_DSSSTABLE \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(5))
+-#define DIDMIB_DOT11PHY_DSSSTABLE_CURRENTCHANNEL \
+-			(P80211DID_MKSECTION(3) | \
+-			P80211DID_MKGROUP(5) | \
+-			P80211DID_MKITEM(1) | 0x10000000)
+-#define DIDMIB_CAT_LNX \
+-			P80211DID_MKSECTION(4)
+-#define DIDMIB_LNX_CONFIGTABLE \
+-			(P80211DID_MKSECTION(4) | \
+-			P80211DID_MKGROUP(1))
+-#define DIDMIB_LNX_CONFIGTABLE_RSNAIE \
+-			(P80211DID_MKSECTION(4) | \
+-			P80211DID_MKGROUP(1) | \
+-			P80211DID_MKITEM(1) | 0x18000000)
+-#define DIDMIB_CAT_P2 \
+-			P80211DID_MKSECTION(5)
+-#define DIDMIB_P2_STATIC \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(2))
+-#define DIDMIB_P2_STATIC_CNFPORTTYPE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(2) | \
+-			P80211DID_MKITEM(1) | 0x18000000)
+-#define DIDMIB_P2_NIC_PRISUPRANGE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(5) | \
+-			P80211DID_MKITEM(6) | 0x10000000)
+-#define DIDMIB_P2_MAC \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(6))
+-#define DIDMIB_P2_MAC_CURRENTTXRATE \
+-			(P80211DID_MKSECTION(5) | \
+-			P80211DID_MKGROUP(6) | \
+-			P80211DID_MKITEM(12) | 0x10000000)
+-#endif
+diff --git a/drivers/staging/wlan-ng/p80211metastruct.h b/drivers/staging/wlan-ng/p80211metastruct.h
+deleted file mode 100644
+index a52217c9b953..000000000000
+--- a/drivers/staging/wlan-ng/p80211metastruct.h
++++ /dev/null
+@@ -1,236 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/* --------------------------------------------------------------------
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _P80211MKMETASTRUCT_H
+-#define _P80211MKMETASTRUCT_H
+-
+-struct p80211msg_dot11req_mibget {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_unk392 mibattribute;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_dot11req_mibset {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_unk392 mibattribute;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_dot11req_scan {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 bsstype;
+-	struct p80211item_pstr6 bssid;
+-	u8 pad_0C[1];
+-	struct p80211item_pstr32 ssid;
+-	u8 pad_1D[3];
+-	struct p80211item_uint32 scantype;
+-	struct p80211item_uint32 probedelay;
+-	struct p80211item_pstr14 channellist;
+-	u8 pad_2C[1];
+-	struct p80211item_uint32 minchanneltime;
+-	struct p80211item_uint32 maxchanneltime;
+-	struct p80211item_uint32 resultcode;
+-	struct p80211item_uint32 numbss;
+-	struct p80211item_uint32 append;
+-} __packed;
+-
+-struct p80211msg_dot11req_scan_results {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 bssindex;
+-	struct p80211item_uint32 resultcode;
+-	struct p80211item_uint32 signal;
+-	struct p80211item_uint32 noise;
+-	struct p80211item_pstr6 bssid;
+-	u8 pad_3C[1];
+-	struct p80211item_pstr32 ssid;
+-	u8 pad_4D[3];
+-	struct p80211item_uint32 bsstype;
+-	struct p80211item_uint32 beaconperiod;
+-	struct p80211item_uint32 dtimperiod;
+-	struct p80211item_uint32 timestamp;
+-	struct p80211item_uint32 localtime;
+-	struct p80211item_uint32 fhdwelltime;
+-	struct p80211item_uint32 fhhopset;
+-	struct p80211item_uint32 fhhoppattern;
+-	struct p80211item_uint32 fhhopindex;
+-	struct p80211item_uint32 dschannel;
+-	struct p80211item_uint32 cfpcount;
+-	struct p80211item_uint32 cfpperiod;
+-	struct p80211item_uint32 cfpmaxduration;
+-	struct p80211item_uint32 cfpdurremaining;
+-	struct p80211item_uint32 ibssatimwindow;
+-	struct p80211item_uint32 cfpollable;
+-	struct p80211item_uint32 cfpollreq;
+-	struct p80211item_uint32 privacy;
+-	struct p80211item_uint32 capinfo;
+-	struct p80211item_uint32 basicrate[8];
+-	struct p80211item_uint32 supprate[8];
+-} __packed;
+-
+-struct p80211msg_dot11req_start {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_pstr32 ssid;
+-	u8 pad_12D[3];
+-	struct p80211item_uint32 bsstype;
+-	struct p80211item_uint32 beaconperiod;
+-	struct p80211item_uint32 dtimperiod;
+-	struct p80211item_uint32 cfpperiod;
+-	struct p80211item_uint32 cfpmaxduration;
+-	struct p80211item_uint32 fhdwelltime;
+-	struct p80211item_uint32 fhhopset;
+-	struct p80211item_uint32 fhhoppattern;
+-	struct p80211item_uint32 dschannel;
+-	struct p80211item_uint32 ibssatimwindow;
+-	struct p80211item_uint32 probedelay;
+-	struct p80211item_uint32 cfpollable;
+-	struct p80211item_uint32 cfpollreq;
+-	struct p80211item_uint32 basicrate1;
+-	struct p80211item_uint32 basicrate2;
+-	struct p80211item_uint32 basicrate3;
+-	struct p80211item_uint32 basicrate4;
+-	struct p80211item_uint32 basicrate5;
+-	struct p80211item_uint32 basicrate6;
+-	struct p80211item_uint32 basicrate7;
+-	struct p80211item_uint32 basicrate8;
+-	struct p80211item_uint32 operationalrate1;
+-	struct p80211item_uint32 operationalrate2;
+-	struct p80211item_uint32 operationalrate3;
+-	struct p80211item_uint32 operationalrate4;
+-	struct p80211item_uint32 operationalrate5;
+-	struct p80211item_uint32 operationalrate6;
+-	struct p80211item_uint32 operationalrate7;
+-	struct p80211item_uint32 operationalrate8;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_lnxreq_ifstate {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 ifstate;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_lnxreq_wlansniff {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 enable;
+-	struct p80211item_uint32 channel;
+-	struct p80211item_uint32 prismheader;
+-	struct p80211item_uint32 wlanheader;
+-	struct p80211item_uint32 keepwepflags;
+-	struct p80211item_uint32 stripfcs;
+-	struct p80211item_uint32 packet_trunc;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_lnxreq_hostwep {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 resultcode;
+-	struct p80211item_uint32 decrypt;
+-	struct p80211item_uint32 encrypt;
+-} __packed;
+-
+-struct p80211msg_lnxreq_commsquality {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 resultcode;
+-	struct p80211item_uint32 dbm;
+-	struct p80211item_uint32 link;
+-	struct p80211item_uint32 level;
+-	struct p80211item_uint32 noise;
+-	struct p80211item_uint32 txrate;
+-} __packed;
+-
+-struct p80211msg_lnxreq_autojoin {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_pstr32 ssid;
+-	u8 pad_19D[3];
+-	struct p80211item_uint32 authtype;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_p2req_readpda {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_unk1024 pda;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_p2req_ramdl_state {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 enable;
+-	struct p80211item_uint32 exeaddr;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_p2req_ramdl_write {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 addr;
+-	struct p80211item_uint32 len;
+-	struct p80211item_unk4096 data;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_p2req_flashdl_state {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 enable;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-struct p80211msg_p2req_flashdl_write {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-	struct p80211item_uint32 addr;
+-	struct p80211item_uint32 len;
+-	struct p80211item_unk4096 data;
+-	struct p80211item_uint32 resultcode;
+-} __packed;
+-
+-#endif
+diff --git a/drivers/staging/wlan-ng/p80211mgmt.h b/drivers/staging/wlan-ng/p80211mgmt.h
+deleted file mode 100644
+index 7ffc202d9007..000000000000
+--- a/drivers/staging/wlan-ng/p80211mgmt.h
++++ /dev/null
+@@ -1,199 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * Macros, types, and functions to handle 802.11 mgmt frames
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file declares the constants and types used in the interface
+- * between a wlan driver and the user mode utilities.
+- *
+- * Notes:
+- *  - Constant values are always in HOST byte order.  To assign
+- *    values to multi-byte fields they _must_ be converted to
+- *    ieee byte order.  To retrieve multi-byte values from incoming
+- *    frames, they must be converted to host order.
+- *
+- *  - The len member of the frame structure does NOT!!! include
+- *    the MAC CRC.  Therefore, the len field on rx'd frames should
+- *    have 4 subtracted from it.
+- *
+- * All functions declared here are implemented in p80211.c
+- *
+- * The types, macros, and functions defined here are primarily
+- * used for encoding and decoding management frames.  They are
+- * designed to follow these patterns of use:
+- *
+- * DECODE:
+- * 1) a frame of length len is received into buffer b
+- * 2) using the hdr structure and macros, we determine the type
+- * 3) an appropriate mgmt frame structure, mf, is allocated and zeroed
+- * 4) mf.hdr = b
+- *    mf.buf = b
+- *    mf.len = len
+- * 5) call mgmt_decode( mf )
+- * 6) the frame field pointers in mf are now set.  Note that any
+- *    multi-byte frame field values accessed using the frame field
+- *    pointers are in ieee byte order and will have to be converted
+- *    to host order.
+- *
+- * ENCODE:
+- * 1) Library client allocates buffer space for maximum length
+- *    frame of the desired type
+- * 2) Library client allocates a mgmt frame structure, called mf,
+- *    of the desired type
+- * 3) Set the following:
+- *    mf.type = <desired type>
+- *    mf.buf = <allocated buffer address>
+- * 4) call mgmt_encode( mf )
+- * 5) all of the fixed field pointers and fixed length information element
+- *    pointers in mf are now set to their respective locations in the
+- *    allocated space (fortunately, all variable length information elements
+- *    fall at the end of their respective frames).
+- * 5a) The length field is set to include the last of the fixed and fixed
+- *     length fields.  It may have to be updated for optional or variable
+- *	length information elements.
+- * 6) Optional and variable length information elements are special cases
+- *    and must be handled individually by the client code.
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _P80211MGMT_H
+-#define _P80211MGMT_H
+-
+-#ifndef _P80211HDR_H
+-#include "p80211hdr.h"
+-#endif
+-
+-/*-- Information Element IDs --------------------*/
+-#define WLAN_EID_SSID		0
+-#define WLAN_EID_SUPP_RATES	1
+-#define WLAN_EID_FH_PARMS	2
+-#define WLAN_EID_DS_PARMS	3
+-#define WLAN_EID_CF_PARMS	4
+-#define WLAN_EID_TIM		5
+-#define WLAN_EID_IBSS_PARMS	6
+-/*-- values 7-15 reserved --*/
+-#define WLAN_EID_CHALLENGE	16
+-/*-- values 17-31 reserved for challenge text extension --*/
+-/*-- values 32-255 reserved --*/
+-
+-/*-- Reason Codes -------------------------------*/
+-#define WLAN_MGMT_REASON_RSVD			0
+-#define WLAN_MGMT_REASON_UNSPEC			1
+-#define WLAN_MGMT_REASON_PRIOR_AUTH_INVALID	2
+-#define WLAN_MGMT_REASON_DEAUTH_LEAVING		3
+-#define WLAN_MGMT_REASON_DISASSOC_INACTIVE	4
+-#define WLAN_MGMT_REASON_DISASSOC_AP_BUSY	5
+-#define WLAN_MGMT_REASON_CLASS2_NONAUTH		6
+-#define WLAN_MGMT_REASON_CLASS3_NONASSOC	7
+-#define WLAN_MGMT_REASON_DISASSOC_STA_HASLEFT	8
+-#define WLAN_MGMT_REASON_CANT_ASSOC_NONAUTH	9
+-
+-/*-- Status Codes -------------------------------*/
+-#define WLAN_MGMT_STATUS_SUCCESS		0
+-#define WLAN_MGMT_STATUS_UNSPEC_FAILURE		1
+-#define WLAN_MGMT_STATUS_CAPS_UNSUPPORTED	10
+-#define WLAN_MGMT_STATUS_REASSOC_NO_ASSOC	11
+-#define WLAN_MGMT_STATUS_ASSOC_DENIED_UNSPEC	12
+-#define WLAN_MGMT_STATUS_UNSUPPORTED_AUTHALG	13
+-#define WLAN_MGMT_STATUS_RX_AUTH_NOSEQ		14
+-#define WLAN_MGMT_STATUS_CHALLENGE_FAIL		15
+-#define WLAN_MGMT_STATUS_AUTH_TIMEOUT		16
+-#define WLAN_MGMT_STATUS_ASSOC_DENIED_BUSY	17
+-#define WLAN_MGMT_STATUS_ASSOC_DENIED_RATES	18
+-  /* p80211b additions */
+-#define WLAN_MGMT_STATUS_ASSOC_DENIED_NOSHORT	19
+-#define WLAN_MGMT_STATUS_ASSOC_DENIED_NOPBCC	20
+-#define WLAN_MGMT_STATUS_ASSOC_DENIED_NOAGILITY	21
+-
+-/*-- Auth Algorithm Field ---------------------------*/
+-#define WLAN_AUTH_ALG_OPENSYSTEM		0
+-#define WLAN_AUTH_ALG_SHAREDKEY			1
+-
+-/*-- Management Frame Field Offsets -------------*/
+-/* Note: Not all fields are listed because of variable lengths,   */
+-/*       see the code in p80211.c to see how we search for fields */
+-/* Note: These offsets are from the start of the frame data       */
+-
+-#define WLAN_BEACON_OFF_TS			0
+-#define WLAN_BEACON_OFF_BCN_int			8
+-#define WLAN_BEACON_OFF_CAPINFO			10
+-#define WLAN_BEACON_OFF_SSID			12
+-
+-#define WLAN_DISASSOC_OFF_REASON		0
+-
+-#define WLAN_ASSOCREQ_OFF_CAP_INFO		0
+-#define WLAN_ASSOCREQ_OFF_LISTEN_int		2
+-#define WLAN_ASSOCREQ_OFF_SSID			4
+-
+-#define WLAN_ASSOCRESP_OFF_CAP_INFO		0
+-#define WLAN_ASSOCRESP_OFF_STATUS		2
+-#define WLAN_ASSOCRESP_OFF_AID			4
+-#define WLAN_ASSOCRESP_OFF_SUPP_RATES		6
+-
+-#define WLAN_REASSOCREQ_OFF_CAP_INFO		0
+-#define WLAN_REASSOCREQ_OFF_LISTEN_int		2
+-#define WLAN_REASSOCREQ_OFF_CURR_AP		4
+-#define WLAN_REASSOCREQ_OFF_SSID		10
+-
+-#define WLAN_REASSOCRESP_OFF_CAP_INFO		0
+-#define WLAN_REASSOCRESP_OFF_STATUS		2
+-#define WLAN_REASSOCRESP_OFF_AID		4
+-#define WLAN_REASSOCRESP_OFF_SUPP_RATES		6
+-
+-#define WLAN_PROBEREQ_OFF_SSID			0
+-
+-#define WLAN_PROBERESP_OFF_TS			0
+-#define WLAN_PROBERESP_OFF_BCN_int		8
+-#define WLAN_PROBERESP_OFF_CAP_INFO		10
+-#define WLAN_PROBERESP_OFF_SSID			12
+-
+-#define WLAN_AUTHEN_OFF_AUTH_ALG		0
+-#define WLAN_AUTHEN_OFF_AUTH_SEQ		2
+-#define WLAN_AUTHEN_OFF_STATUS			4
+-#define WLAN_AUTHEN_OFF_CHALLENGE		6
+-
+-#define WLAN_DEAUTHEN_OFF_REASON		0
+-
+-/*-- Capability Field ---------------------------*/
+-#define WLAN_GET_MGMT_CAP_INFO_ESS(n)		((n) & BIT(0))
+-#define WLAN_GET_MGMT_CAP_INFO_IBSS(n)		(((n) & BIT(1)) >> 1)
+-#define WLAN_GET_MGMT_CAP_INFO_CFPOLLABLE(n)	(((n) & BIT(2)) >> 2)
+-#define WLAN_GET_MGMT_CAP_INFO_CFPOLLREQ(n)	(((n) & BIT(3)) >> 3)
+-#define WLAN_GET_MGMT_CAP_INFO_PRIVACY(n)	(((n) & BIT(4)) >> 4)
+-  /* p80211b additions */
+-#define WLAN_GET_MGMT_CAP_INFO_SHORT(n)		(((n) & BIT(5)) >> 5)
+-#define WLAN_GET_MGMT_CAP_INFO_PBCC(n)		(((n) & BIT(6)) >> 6)
+-#define WLAN_GET_MGMT_CAP_INFO_AGILITY(n)	(((n) & BIT(7)) >> 7)
+-
+-#define WLAN_SET_MGMT_CAP_INFO_ESS(n)		(n)
+-#define WLAN_SET_MGMT_CAP_INFO_IBSS(n)		((n) << 1)
+-#define WLAN_SET_MGMT_CAP_INFO_CFPOLLABLE(n)	((n) << 2)
+-#define WLAN_SET_MGMT_CAP_INFO_CFPOLLREQ(n)	((n) << 3)
+-#define WLAN_SET_MGMT_CAP_INFO_PRIVACY(n)	((n) << 4)
+-  /* p80211b additions */
+-#define WLAN_SET_MGMT_CAP_INFO_SHORT(n)		((n) << 5)
+-#define WLAN_SET_MGMT_CAP_INFO_PBCC(n)		((n) << 6)
+-#define WLAN_SET_MGMT_CAP_INFO_AGILITY(n)	((n) << 7)
+-
+-#endif /* _P80211MGMT_H */
+diff --git a/drivers/staging/wlan-ng/p80211msg.h b/drivers/staging/wlan-ng/p80211msg.h
+deleted file mode 100644
+index d56bc6079ed4..000000000000
+--- a/drivers/staging/wlan-ng/p80211msg.h
++++ /dev/null
+@@ -1,39 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * Macros, constants, types, and funcs for req and ind messages
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _P80211MSG_H
+-#define _P80211MSG_H
+-
+-#define WLAN_DEVNAMELEN_MAX	16
+-
+-struct p80211msg {
+-	u32 msgcode;
+-	u32 msglen;
+-	u8 devname[WLAN_DEVNAMELEN_MAX];
+-} __packed;
+-
+-#endif /* _P80211MSG_H */
+diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
+deleted file mode 100644
+index 8634fc89a6c2..000000000000
+--- a/drivers/staging/wlan-ng/p80211netdev.c
++++ /dev/null
+@@ -1,988 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/*
+- *
+- * Linux Kernel net device interface
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * The functions required for a Linux network device are defined here.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/types.h>
+-#include <linux/skbuff.h>
+-#include <linux/slab.h>
+-#include <linux/proc_fs.h>
+-#include <linux/interrupt.h>
+-#include <linux/netdevice.h>
+-#include <linux/kmod.h>
+-#include <linux/if_arp.h>
+-#include <linux/wireless.h>
+-#include <linux/sockios.h>
+-#include <linux/etherdevice.h>
+-#include <linux/if_ether.h>
+-#include <linux/byteorder/generic.h>
+-#include <linux/bitops.h>
+-#include <linux/uaccess.h>
+-#include <asm/byteorder.h>
+-
+-#ifdef SIOCETHTOOL
+-#include <linux/ethtool.h>
+-#endif
+-
+-#include <net/iw_handler.h>
+-#include <net/net_namespace.h>
+-#include <net/cfg80211.h>
+-
+-#include "p80211types.h"
+-#include "p80211hdr.h"
+-#include "p80211conv.h"
+-#include "p80211mgmt.h"
+-#include "p80211msg.h"
+-#include "p80211netdev.h"
+-#include "p80211ioctl.h"
+-#include "p80211req.h"
+-#include "p80211metastruct.h"
+-#include "p80211metadef.h"
+-
+-#include "cfg80211.c"
+-
+-/* netdevice method functions */
+-static int p80211knetdev_init(struct net_device *netdev);
+-static int p80211knetdev_open(struct net_device *netdev);
+-static int p80211knetdev_stop(struct net_device *netdev);
+-static netdev_tx_t p80211knetdev_hard_start_xmit(struct sk_buff *skb,
+-						 struct net_device *netdev);
+-static void p80211knetdev_set_multicast_list(struct net_device *dev);
+-static int p80211knetdev_siocdevprivate(struct net_device *dev, struct ifreq *ifr,
+-					void __user *data, int cmd);
+-static int p80211knetdev_set_mac_address(struct net_device *dev, void *addr);
+-static void p80211knetdev_tx_timeout(struct net_device *netdev, unsigned int txqueue);
+-static int p80211_rx_typedrop(struct wlandevice *wlandev, u16 fc);
+-
+-int wlan_watchdog = 5000;
+-module_param(wlan_watchdog, int, 0644);
+-MODULE_PARM_DESC(wlan_watchdog, "transmit timeout in milliseconds");
+-
+-int wlan_wext_write = 1;
+-module_param(wlan_wext_write, int, 0644);
+-MODULE_PARM_DESC(wlan_wext_write, "enable write wireless extensions");
+-
+-/*----------------------------------------------------------------
+- * p80211knetdev_init
+- *
+- * Init method for a Linux netdevice.  Called in response to
+- * register_netdev.
+- *
+- * Arguments:
+- *	none
+- *
+- * Returns:
+- *	nothing
+- *----------------------------------------------------------------
+- */
+-static int p80211knetdev_init(struct net_device *netdev)
+-{
+-	/* Called in response to register_netdev */
+-	/* This is usually the probe function, but the probe has */
+-	/* already been done by the MSD and the create_kdev */
+-	/* function.  All we do here is return success */
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211knetdev_open
+- *
+- * Linux netdevice open method.  Following a successful call here,
+- * the device is supposed to be ready for tx and rx.  In our
+- * situation that may not be entirely true due to the state of the
+- * MAC below.
+- *
+- * Arguments:
+- *	netdev		Linux network device structure
+- *
+- * Returns:
+- *	zero on success, non-zero otherwise
+- *----------------------------------------------------------------
+- */
+-static int p80211knetdev_open(struct net_device *netdev)
+-{
+-	int result = 0;		/* success */
+-	struct wlandevice *wlandev = netdev->ml_priv;
+-
+-	/* Check to make sure the MSD is running */
+-	if (wlandev->msdstate != WLAN_MSD_RUNNING)
+-		return -ENODEV;
+-
+-	/* Tell the MSD to open */
+-	if (wlandev->open) {
+-		result = wlandev->open(wlandev);
+-		if (result == 0) {
+-			netif_start_queue(wlandev->netdev);
+-			wlandev->state = WLAN_DEVICE_OPEN;
+-		}
+-	} else {
+-		result = -EAGAIN;
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211knetdev_stop
+- *
+- * Linux netdevice stop (close) method.  Following this call,
+- * no frames should go up or down through this interface.
+- *
+- * Arguments:
+- *	netdev		Linux network device structure
+- *
+- * Returns:
+- *	zero on success, non-zero otherwise
+- *----------------------------------------------------------------
+- */
+-static int p80211knetdev_stop(struct net_device *netdev)
+-{
+-	int result = 0;
+-	struct wlandevice *wlandev = netdev->ml_priv;
+-
+-	if (wlandev->close)
+-		result = wlandev->close(wlandev);
+-
+-	netif_stop_queue(wlandev->netdev);
+-	wlandev->state = WLAN_DEVICE_CLOSED;
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211netdev_rx
+- *
+- * Frame receive function called by the mac specific driver.
+- *
+- * Arguments:
+- *	wlandev		WLAN network device structure
+- *	skb		skbuff containing a full 802.11 frame.
+- * Returns:
+- *	nothing
+- * Side effects:
+- *
+- *----------------------------------------------------------------
+- */
+-void p80211netdev_rx(struct wlandevice *wlandev, struct sk_buff *skb)
+-{
+-	/* Enqueue for post-irq processing */
+-	skb_queue_tail(&wlandev->nsd_rxq, skb);
+-	tasklet_schedule(&wlandev->rx_bh);
+-}
+-
+-#define CONV_TO_ETHER_SKIPPED	0x01
+-#define CONV_TO_ETHER_FAILED	0x02
+-
+-/**
+- * p80211_convert_to_ether - conversion from 802.11 frame to ethernet frame
+- * @wlandev: pointer to WLAN device
+- * @skb: pointer to socket buffer
+- *
+- * Returns: 0 if conversion succeeded
+- *	    CONV_TO_ETHER_FAILED if conversion failed
+- *	    CONV_TO_ETHER_SKIPPED if frame is ignored
+- */
+-static int p80211_convert_to_ether(struct wlandevice *wlandev,
+-				   struct sk_buff *skb)
+-{
+-	struct p80211_hdr *hdr;
+-
+-	hdr = (struct p80211_hdr *)skb->data;
+-	if (p80211_rx_typedrop(wlandev, le16_to_cpu(hdr->frame_control)))
+-		return CONV_TO_ETHER_SKIPPED;
+-
+-	/* perform mcast filtering: allow my local address through but reject
+-	 * anything else that isn't multicast
+-	 */
+-	if (wlandev->netdev->flags & IFF_ALLMULTI) {
+-		if (!ether_addr_equal_unaligned(wlandev->netdev->dev_addr,
+-						hdr->address1)) {
+-			if (!is_multicast_ether_addr(hdr->address1))
+-				return CONV_TO_ETHER_SKIPPED;
+-		}
+-	}
+-
+-	if (skb_p80211_to_ether(wlandev, wlandev->ethconv, skb) == 0) {
+-		wlandev->netdev->stats.rx_packets++;
+-		wlandev->netdev->stats.rx_bytes += skb->len;
+-		netif_rx(skb);
+-		return 0;
+-	}
+-
+-	netdev_dbg(wlandev->netdev, "%s failed.\n", __func__);
+-	return CONV_TO_ETHER_FAILED;
+-}
+-
+-/**
+- * p80211netdev_rx_bh - deferred processing of all received frames
+- *
+- * @t: pointer to the tasklet associated with this handler
+- */
+-static void p80211netdev_rx_bh(struct tasklet_struct *t)
+-{
+-	struct wlandevice *wlandev = from_tasklet(wlandev, t, rx_bh);
+-	struct sk_buff *skb = NULL;
+-	struct net_device *dev = wlandev->netdev;
+-
+-	/* Let's empty our queue */
+-	while ((skb = skb_dequeue(&wlandev->nsd_rxq))) {
+-		if (wlandev->state == WLAN_DEVICE_OPEN) {
+-			if (dev->type != ARPHRD_ETHER) {
+-				/* RAW frame; we shouldn't convert it */
+-				/* XXX Append the Prism Header here instead. */
+-
+-				/* set up various data fields */
+-				skb->dev = dev;
+-				skb_reset_mac_header(skb);
+-				skb->ip_summed = CHECKSUM_NONE;
+-				skb->pkt_type = PACKET_OTHERHOST;
+-				skb->protocol = htons(ETH_P_80211_RAW);
+-
+-				dev->stats.rx_packets++;
+-				dev->stats.rx_bytes += skb->len;
+-				netif_rx(skb);
+-				continue;
+-			} else {
+-				if (!p80211_convert_to_ether(wlandev, skb))
+-					continue;
+-			}
+-		}
+-		dev_kfree_skb(skb);
+-	}
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211knetdev_hard_start_xmit
+- *
+- * Linux netdevice method for transmitting a frame.
+- *
+- * Arguments:
+- *	skb	Linux sk_buff containing the frame.
+- *	netdev	Linux netdevice.
+- *
+- * Side effects:
+- *	If the lower layers report that buffers are full. netdev->tbusy
+- *	will be set to prevent higher layers from sending more traffic.
+- *
+- *	Note: If this function returns non-zero, higher layers retain
+- *	      ownership of the skb.
+- *
+- * Returns:
+- *	zero on success, non-zero on failure.
+- *----------------------------------------------------------------
+- */
+-static netdev_tx_t p80211knetdev_hard_start_xmit(struct sk_buff *skb,
+-						 struct net_device *netdev)
+-{
+-	int result = 0;
+-	int txresult;
+-	struct wlandevice *wlandev = netdev->ml_priv;
+-	struct p80211_hdr p80211_hdr;
+-	struct p80211_metawep p80211_wep;
+-
+-	p80211_wep.data = NULL;
+-
+-	if (!skb)
+-		return NETDEV_TX_OK;
+-
+-	if (wlandev->state != WLAN_DEVICE_OPEN) {
+-		result = 1;
+-		goto failed;
+-	}
+-
+-	memset(&p80211_hdr, 0, sizeof(p80211_hdr));
+-	memset(&p80211_wep, 0, sizeof(p80211_wep));
+-
+-	if (netif_queue_stopped(netdev)) {
+-		netdev_dbg(netdev, "called when queue stopped.\n");
+-		result = 1;
+-		goto failed;
+-	}
+-
+-	netif_stop_queue(netdev);
+-
+-	/* Check to see that a valid mode is set */
+-	switch (wlandev->macmode) {
+-	case WLAN_MACMODE_IBSS_STA:
+-	case WLAN_MACMODE_ESS_STA:
+-	case WLAN_MACMODE_ESS_AP:
+-		break;
+-	default:
+-		/* Mode isn't set yet, just drop the frame
+-		 * and return success .
+-		 * TODO: we need a saner way to handle this
+-		 */
+-		if (be16_to_cpu(skb->protocol) != ETH_P_80211_RAW) {
+-			netif_start_queue(wlandev->netdev);
+-			netdev_notice(netdev, "Tx attempt prior to association, frame dropped.\n");
+-			netdev->stats.tx_dropped++;
+-			result = 0;
+-			goto failed;
+-		}
+-		break;
+-	}
+-
+-	/* Check for raw transmits */
+-	if (be16_to_cpu(skb->protocol) == ETH_P_80211_RAW) {
+-		if (!capable(CAP_NET_ADMIN)) {
+-			result = 1;
+-			goto failed;
+-		}
+-		/* move the header over */
+-		memcpy(&p80211_hdr, skb->data, sizeof(p80211_hdr));
+-		skb_pull(skb, sizeof(p80211_hdr));
+-	} else {
+-		if (skb_ether_to_p80211
+-		    (wlandev, wlandev->ethconv, skb, &p80211_hdr,
+-		     &p80211_wep) != 0) {
+-			/* convert failed */
+-			netdev_dbg(netdev, "ether_to_80211(%d) failed.\n",
+-				   wlandev->ethconv);
+-			result = 1;
+-			goto failed;
+-		}
+-	}
+-	if (!wlandev->txframe) {
+-		result = 1;
+-		goto failed;
+-	}
+-
+-	netif_trans_update(netdev);
+-
+-	netdev->stats.tx_packets++;
+-	/* count only the packet payload */
+-	netdev->stats.tx_bytes += skb->len;
+-
+-	txresult = wlandev->txframe(wlandev, skb, &p80211_hdr, &p80211_wep);
+-
+-	if (txresult == 0) {
+-		/* success and more buf */
+-		/* avail, re: hw_txdata */
+-		netif_wake_queue(wlandev->netdev);
+-		result = NETDEV_TX_OK;
+-	} else if (txresult == 1) {
+-		/* success, no more avail */
+-		netdev_dbg(netdev, "txframe success, no more bufs\n");
+-		/* netdev->tbusy = 1;  don't set here, irqhdlr */
+-		/*   may have already cleared it */
+-		result = NETDEV_TX_OK;
+-	} else if (txresult == 2) {
+-		/* alloc failure, drop frame */
+-		netdev_dbg(netdev, "txframe returned alloc_fail\n");
+-		result = NETDEV_TX_BUSY;
+-	} else {
+-		/* buffer full or queue busy, drop frame. */
+-		netdev_dbg(netdev, "txframe returned full or busy\n");
+-		result = NETDEV_TX_BUSY;
+-	}
+-
+-failed:
+-	/* Free up the WEP buffer if it's not the same as the skb */
+-	if ((p80211_wep.data) && (p80211_wep.data != skb->data))
+-		kfree_sensitive(p80211_wep.data);
+-
+-	/* we always free the skb here, never in a lower level. */
+-	if (!result)
+-		dev_kfree_skb(skb);
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211knetdev_set_multicast_list
+- *
+- * Called from higher layers whenever there's a need to set/clear
+- * promiscuous mode or rewrite the multicast list.
+- *
+- * Arguments:
+- *	none
+- *
+- * Returns:
+- *	nothing
+- *----------------------------------------------------------------
+- */
+-static void p80211knetdev_set_multicast_list(struct net_device *dev)
+-{
+-	struct wlandevice *wlandev = dev->ml_priv;
+-
+-	/* TODO:  real multicast support as well */
+-
+-	if (wlandev->set_multicast_list)
+-		wlandev->set_multicast_list(wlandev, dev);
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211knetdev_siocdevprivate
+- *
+- * Handle an ioctl call on one of our devices.  Everything Linux
+- * ioctl specific is done here.  Then we pass the contents of the
+- * ifr->data to the request message handler.
+- *
+- * Arguments:
+- *	dev	Linux kernel netdevice
+- *	ifr	Our private ioctl request structure, typed for the
+- *		generic struct ifreq so we can use ptr to func
+- *		w/o cast.
+- *
+- * Returns:
+- *	zero on success, a negative errno on failure.  Possible values:
+- *		-ENETDOWN Device isn't up.
+- *		-EBUSY	cmd already in progress
+- *		-ETIME	p80211 cmd timed out (MSD may have its own timers)
+- *		-EFAULT memory fault copying msg from user buffer
+- *		-ENOMEM unable to allocate kernel msg buffer
+- *		-EINVAL	bad magic, it the cmd really for us?
+- *		-EintR	sleeping on cmd, awakened by signal, cmd cancelled.
+- *
+- * Call Context:
+- *	Process thread (ioctl caller).  TODO: SMP support may require
+- *	locks.
+- *----------------------------------------------------------------
+- */
+-static int p80211knetdev_siocdevprivate(struct net_device *dev,
+-					struct ifreq *ifr,
+-					void __user *data, int cmd)
+-{
+-	int result = 0;
+-	struct p80211ioctl_req *req = (struct p80211ioctl_req *)ifr;
+-	struct wlandevice *wlandev = dev->ml_priv;
+-	u8 *msgbuf;
+-
+-	netdev_dbg(dev, "rx'd ioctl, cmd=%d, len=%d\n", cmd, req->len);
+-
+-	if (in_compat_syscall())
+-		return -EOPNOTSUPP;
+-
+-	/* Test the magic, assume ifr is good if it's there */
+-	if (req->magic != P80211_IOCTL_MAGIC) {
+-		result = -EINVAL;
+-		goto bail;
+-	}
+-
+-	if (cmd == P80211_IFTEST) {
+-		result = 0;
+-		goto bail;
+-	} else if (cmd != P80211_IFREQ) {
+-		result = -EINVAL;
+-		goto bail;
+-	}
+-
+-	msgbuf = memdup_user(data, req->len);
+-	if (IS_ERR(msgbuf)) {
+-		result = PTR_ERR(msgbuf);
+-		goto bail;
+-	}
+-
+-	result = p80211req_dorequest(wlandev, msgbuf);
+-
+-	if (result == 0) {
+-		if (copy_to_user(data, msgbuf, req->len))
+-			result = -EFAULT;
+-	}
+-	kfree(msgbuf);
+-
+-bail:
+-	/* If allocate,copyfrom or copyto fails, return errno */
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211knetdev_set_mac_address
+- *
+- * Handles the ioctl for changing the MACAddress of a netdevice
+- *
+- * references: linux/netdevice.h and drivers/net/net_init.c
+- *
+- * NOTE: [MSM] We only prevent address changes when the netdev is
+- * up.  We don't control anything based on dot11 state.  If the
+- * address is changed on a STA that's currently associated, you
+- * will probably lose the ability to send and receive data frames.
+- * Just be aware.  Therefore, this should usually only be done
+- * prior to scan/join/auth/assoc.
+- *
+- * Arguments:
+- *	dev	netdevice struct
+- *	addr	the new MACAddress (a struct)
+- *
+- * Returns:
+- *	zero on success, a negative errno on failure.  Possible values:
+- *		-EBUSY	device is bussy (cmd not possible)
+- *		-and errors returned by: p80211req_dorequest(..)
+- *
+- * by: Collin R. Mulliner <collin@mulliner.org>
+- *----------------------------------------------------------------
+- */
+-static int p80211knetdev_set_mac_address(struct net_device *dev, void *addr)
+-{
+-	struct sockaddr *new_addr = addr;
+-	struct p80211msg_dot11req_mibset dot11req;
+-	struct p80211item_unk392 *mibattr;
+-	struct p80211item_pstr6 *macaddr;
+-	struct p80211item_uint32 *resultcode;
+-	int result;
+-
+-	/* If we're running, we don't allow MAC address changes */
+-	if (netif_running(dev))
+-		return -EBUSY;
+-
+-	/* Set up some convenience pointers. */
+-	mibattr = &dot11req.mibattribute;
+-	macaddr = (struct p80211item_pstr6 *)&mibattr->data;
+-	resultcode = &dot11req.resultcode;
+-
+-	/* Set up a dot11req_mibset */
+-	memset(&dot11req, 0, sizeof(dot11req));
+-	dot11req.msgcode = DIDMSG_DOT11REQ_MIBSET;
+-	dot11req.msglen = sizeof(dot11req);
+-	memcpy(dot11req.devname,
+-	       ((struct wlandevice *)dev->ml_priv)->name,
+-	       WLAN_DEVNAMELEN_MAX - 1);
+-
+-	/* Set up the mibattribute argument */
+-	mibattr->did = DIDMSG_DOT11REQ_MIBSET_MIBATTRIBUTE;
+-	mibattr->status = P80211ENUM_msgitem_status_data_ok;
+-	mibattr->len = sizeof(mibattr->data);
+-
+-	macaddr->did = DIDMIB_DOT11MAC_OPERATIONTABLE_MACADDRESS;
+-	macaddr->status = P80211ENUM_msgitem_status_data_ok;
+-	macaddr->len = sizeof(macaddr->data);
+-	macaddr->data.len = ETH_ALEN;
+-	memcpy(&macaddr->data.data, new_addr->sa_data, ETH_ALEN);
+-
+-	/* Set up the resultcode argument */
+-	resultcode->did = DIDMSG_DOT11REQ_MIBSET_RESULTCODE;
+-	resultcode->status = P80211ENUM_msgitem_status_no_value;
+-	resultcode->len = sizeof(resultcode->data);
+-	resultcode->data = 0;
+-
+-	/* now fire the request */
+-	result = p80211req_dorequest(dev->ml_priv, (u8 *)&dot11req);
+-
+-	/* If the request wasn't successful, report an error and don't
+-	 * change the netdev address
+-	 */
+-	if (result != 0 || resultcode->data != P80211ENUM_resultcode_success) {
+-		netdev_err(dev, "Low-level driver failed dot11req_mibset(dot11MACAddress).\n");
+-		result = -EADDRNOTAVAIL;
+-	} else {
+-		/* everything's ok, change the addr in netdev */
+-		eth_hw_addr_set(dev, new_addr->sa_data);
+-	}
+-
+-	return result;
+-}
+-
+-static const struct net_device_ops p80211_netdev_ops = {
+-	.ndo_init = p80211knetdev_init,
+-	.ndo_open = p80211knetdev_open,
+-	.ndo_stop = p80211knetdev_stop,
+-	.ndo_start_xmit = p80211knetdev_hard_start_xmit,
+-	.ndo_set_rx_mode = p80211knetdev_set_multicast_list,
+-	.ndo_siocdevprivate = p80211knetdev_siocdevprivate,
+-	.ndo_set_mac_address = p80211knetdev_set_mac_address,
+-	.ndo_tx_timeout = p80211knetdev_tx_timeout,
+-	.ndo_validate_addr = eth_validate_addr,
+-};
+-
+-/*----------------------------------------------------------------
+- * wlan_setup
+- *
+- * Roughly matches the functionality of ether_setup.  Here
+- * we set up any members of the wlandevice structure that are common
+- * to all devices.  Additionally, we allocate a linux 'struct device'
+- * and perform the same setup as ether_setup.
+- *
+- * Note: It's important that the caller have setup the wlandev->name
+- *	ptr prior to calling this function.
+- *
+- * Arguments:
+- *	wlandev		ptr to the wlandev structure for the
+- *			interface.
+- *	physdev		ptr to usb device
+- * Returns:
+- *	zero on success, non-zero otherwise.
+- * Call Context:
+- *	Should be process thread.  We'll assume it might be
+- *	interrupt though.  When we add support for statically
+- *	compiled drivers, this function will be called in the
+- *	context of the kernel startup code.
+- *----------------------------------------------------------------
+- */
+-int wlan_setup(struct wlandevice *wlandev, struct device *physdev)
+-{
+-	int result = 0;
+-	struct net_device *netdev;
+-	struct wiphy *wiphy;
+-	struct wireless_dev *wdev;
+-
+-	/* Set up the wlandev */
+-	wlandev->state = WLAN_DEVICE_CLOSED;
+-	wlandev->ethconv = WLAN_ETHCONV_8021h;
+-	wlandev->macmode = WLAN_MACMODE_NONE;
+-
+-	/* Set up the rx queue */
+-	skb_queue_head_init(&wlandev->nsd_rxq);
+-	tasklet_setup(&wlandev->rx_bh, p80211netdev_rx_bh);
+-
+-	/* Allocate and initialize the wiphy struct */
+-	wiphy = wlan_create_wiphy(physdev, wlandev);
+-	if (!wiphy) {
+-		dev_err(physdev, "Failed to alloc wiphy.\n");
+-		return 1;
+-	}
+-
+-	/* Allocate and initialize the struct device */
+-	netdev = alloc_netdev(sizeof(struct wireless_dev), "wlan%d",
+-			      NET_NAME_UNKNOWN, ether_setup);
+-	if (!netdev) {
+-		dev_err(physdev, "Failed to alloc netdev.\n");
+-		wlan_free_wiphy(wiphy);
+-		result = 1;
+-	} else {
+-		wlandev->netdev = netdev;
+-		netdev->ml_priv = wlandev;
+-		netdev->netdev_ops = &p80211_netdev_ops;
+-		wdev = netdev_priv(netdev);
+-		wdev->wiphy = wiphy;
+-		wdev->iftype = NL80211_IFTYPE_STATION;
+-		netdev->ieee80211_ptr = wdev;
+-		netdev->min_mtu = 68;
+-		/* 2312 is max 802.11 payload, 20 is overhead,
+-		 * (ether + llc + snap) and another 8 for wep.
+-		 */
+-		netdev->max_mtu = (2312 - 20 - 8);
+-
+-		netif_stop_queue(netdev);
+-		netif_carrier_off(netdev);
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * wlan_unsetup
+- *
+- * This function is paired with the wlan_setup routine.  It should
+- * be called after unregister_wlandev.  Basically, all it does is
+- * free the 'struct device' that's associated with the wlandev.
+- * We do it here because the 'struct device' isn't allocated
+- * explicitly in the driver code, it's done in wlan_setup.  To
+- * do the free in the driver might seem like 'magic'.
+- *
+- * Arguments:
+- *	wlandev		ptr to the wlandev structure for the
+- *			interface.
+- * Call Context:
+- *	Should be process thread.  We'll assume it might be
+- *	interrupt though.  When we add support for statically
+- *	compiled drivers, this function will be called in the
+- *	context of the kernel startup code.
+- *----------------------------------------------------------------
+- */
+-void wlan_unsetup(struct wlandevice *wlandev)
+-{
+-	struct wireless_dev *wdev;
+-
+-	tasklet_kill(&wlandev->rx_bh);
+-
+-	if (wlandev->netdev) {
+-		wdev = netdev_priv(wlandev->netdev);
+-		if (wdev->wiphy)
+-			wlan_free_wiphy(wdev->wiphy);
+-		free_netdev(wlandev->netdev);
+-		wlandev->netdev = NULL;
+-	}
+-}
+-
+-/*----------------------------------------------------------------
+- * register_wlandev
+- *
+- * Roughly matches the functionality of register_netdev.  This function
+- * is called after the driver has successfully probed and set up the
+- * resources for the device.  It's now ready to become a named device
+- * in the Linux system.
+- *
+- * First we allocate a name for the device (if not already set), then
+- * we call the Linux function register_netdevice.
+- *
+- * Arguments:
+- *	wlandev		ptr to the wlandev structure for the
+- *			interface.
+- * Returns:
+- *	zero on success, non-zero otherwise.
+- * Call Context:
+- *	Can be either interrupt or not.
+- *----------------------------------------------------------------
+- */
+-int register_wlandev(struct wlandevice *wlandev)
+-{
+-	return register_netdev(wlandev->netdev);
+-}
+-
+-/*----------------------------------------------------------------
+- * unregister_wlandev
+- *
+- * Roughly matches the functionality of unregister_netdev.  This
+- * function is called to remove a named device from the system.
+- *
+- * First we tell linux that the device should no longer exist.
+- * Then we remove it from the list of known wlan devices.
+- *
+- * Arguments:
+- *	wlandev		ptr to the wlandev structure for the
+- *			interface.
+- * Returns:
+- *	zero on success, non-zero otherwise.
+- * Call Context:
+- *	Can be either interrupt or not.
+- *----------------------------------------------------------------
+- */
+-int unregister_wlandev(struct wlandevice *wlandev)
+-{
+-	struct sk_buff *skb;
+-
+-	unregister_netdev(wlandev->netdev);
+-
+-	/* Now to clean out the rx queue */
+-	while ((skb = skb_dequeue(&wlandev->nsd_rxq)))
+-		dev_kfree_skb(skb);
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211netdev_hwremoved
+- *
+- * Hardware removed notification. This function should be called
+- * immediately after an MSD has detected that the underlying hardware
+- * has been yanked out from under us.  The primary things we need
+- * to do are:
+- *   - Mark the wlandev
+- *   - Prevent any further traffic from the knetdev i/f
+- *   - Prevent any further requests from mgmt i/f
+- *   - If there are any waitq'd mgmt requests or mgmt-frame exchanges,
+- *     shut them down.
+- *   - Call the MSD hwremoved function.
+- *
+- * The remainder of the cleanup will be handled by unregister().
+- * Our primary goal here is to prevent as much tickling of the MSD
+- * as possible since the MSD is already in a 'wounded' state.
+- *
+- * TODO: As new features are added, this function should be
+- *       updated.
+- *
+- * Arguments:
+- *	wlandev		WLAN network device structure
+- * Returns:
+- *	nothing
+- * Side effects:
+- *
+- * Call context:
+- *	Usually interrupt.
+- *----------------------------------------------------------------
+- */
+-void p80211netdev_hwremoved(struct wlandevice *wlandev)
+-{
+-	wlandev->hwremoved = 1;
+-	if (wlandev->state == WLAN_DEVICE_OPEN)
+-		netif_stop_queue(wlandev->netdev);
+-
+-	netif_device_detach(wlandev->netdev);
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211_rx_typedrop
+- *
+- * Classifies the frame, increments the appropriate counter, and
+- * returns 0|1|2 indicating whether the driver should handle, ignore, or
+- * drop the frame
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	fc		frame control field
+- *
+- * Returns:
+- *	zero if the frame should be handled by the driver,
+- *       one if the frame should be ignored
+- *       anything else means we drop it.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-static int p80211_rx_typedrop(struct wlandevice *wlandev, u16 fc)
+-{
+-	u16 ftype;
+-	u16 fstype;
+-	int drop = 0;
+-	/* Classify frame, increment counter */
+-	ftype = WLAN_GET_FC_FTYPE(fc);
+-	fstype = WLAN_GET_FC_FSTYPE(fc);
+-	switch (ftype) {
+-	case WLAN_FTYPE_MGMT:
+-		if ((wlandev->netdev->flags & IFF_PROMISC) ||
+-		    (wlandev->netdev->flags & IFF_ALLMULTI)) {
+-			drop = 1;
+-			break;
+-		}
+-		netdev_dbg(wlandev->netdev, "rx'd mgmt:\n");
+-		wlandev->rx.mgmt++;
+-		switch (fstype) {
+-		case WLAN_FSTYPE_ASSOCREQ:
+-			wlandev->rx.assocreq++;
+-			break;
+-		case WLAN_FSTYPE_ASSOCRESP:
+-			wlandev->rx.assocresp++;
+-			break;
+-		case WLAN_FSTYPE_REASSOCREQ:
+-			wlandev->rx.reassocreq++;
+-			break;
+-		case WLAN_FSTYPE_REASSOCRESP:
+-			wlandev->rx.reassocresp++;
+-			break;
+-		case WLAN_FSTYPE_PROBEREQ:
+-			wlandev->rx.probereq++;
+-			break;
+-		case WLAN_FSTYPE_PROBERESP:
+-			wlandev->rx.proberesp++;
+-			break;
+-		case WLAN_FSTYPE_BEACON:
+-			wlandev->rx.beacon++;
+-			break;
+-		case WLAN_FSTYPE_ATIM:
+-			wlandev->rx.atim++;
+-			break;
+-		case WLAN_FSTYPE_DISASSOC:
+-			wlandev->rx.disassoc++;
+-			break;
+-		case WLAN_FSTYPE_AUTHEN:
+-			wlandev->rx.authen++;
+-			break;
+-		case WLAN_FSTYPE_DEAUTHEN:
+-			wlandev->rx.deauthen++;
+-			break;
+-		default:
+-			wlandev->rx.mgmt_unknown++;
+-			break;
+-		}
+-		drop = 2;
+-		break;
+-
+-	case WLAN_FTYPE_CTL:
+-		if ((wlandev->netdev->flags & IFF_PROMISC) ||
+-		    (wlandev->netdev->flags & IFF_ALLMULTI)) {
+-			drop = 1;
+-			break;
+-		}
+-		netdev_dbg(wlandev->netdev, "rx'd ctl:\n");
+-		wlandev->rx.ctl++;
+-		switch (fstype) {
+-		case WLAN_FSTYPE_PSPOLL:
+-			wlandev->rx.pspoll++;
+-			break;
+-		case WLAN_FSTYPE_RTS:
+-			wlandev->rx.rts++;
+-			break;
+-		case WLAN_FSTYPE_CTS:
+-			wlandev->rx.cts++;
+-			break;
+-		case WLAN_FSTYPE_ACK:
+-			wlandev->rx.ack++;
+-			break;
+-		case WLAN_FSTYPE_CFEND:
+-			wlandev->rx.cfend++;
+-			break;
+-		case WLAN_FSTYPE_CFENDCFACK:
+-			wlandev->rx.cfendcfack++;
+-			break;
+-		default:
+-			wlandev->rx.ctl_unknown++;
+-			break;
+-		}
+-		drop = 2;
+-		break;
+-
+-	case WLAN_FTYPE_DATA:
+-		wlandev->rx.data++;
+-		switch (fstype) {
+-		case WLAN_FSTYPE_DATAONLY:
+-			wlandev->rx.dataonly++;
+-			break;
+-		case WLAN_FSTYPE_DATA_CFACK:
+-			wlandev->rx.data_cfack++;
+-			break;
+-		case WLAN_FSTYPE_DATA_CFPOLL:
+-			wlandev->rx.data_cfpoll++;
+-			break;
+-		case WLAN_FSTYPE_DATA_CFACK_CFPOLL:
+-			wlandev->rx.data__cfack_cfpoll++;
+-			break;
+-		case WLAN_FSTYPE_NULL:
+-			netdev_dbg(wlandev->netdev, "rx'd data:null\n");
+-			wlandev->rx.null++;
+-			break;
+-		case WLAN_FSTYPE_CFACK:
+-			netdev_dbg(wlandev->netdev, "rx'd data:cfack\n");
+-			wlandev->rx.cfack++;
+-			break;
+-		case WLAN_FSTYPE_CFPOLL:
+-			netdev_dbg(wlandev->netdev, "rx'd data:cfpoll\n");
+-			wlandev->rx.cfpoll++;
+-			break;
+-		case WLAN_FSTYPE_CFACK_CFPOLL:
+-			netdev_dbg(wlandev->netdev, "rx'd data:cfack_cfpoll\n");
+-			wlandev->rx.cfack_cfpoll++;
+-			break;
+-		default:
+-			wlandev->rx.data_unknown++;
+-			break;
+-		}
+-
+-		break;
+-	}
+-	return drop;
+-}
+-
+-static void p80211knetdev_tx_timeout(struct net_device *netdev, unsigned int txqueue)
+-{
+-	struct wlandevice *wlandev = netdev->ml_priv;
+-
+-	if (wlandev->tx_timeout) {
+-		wlandev->tx_timeout(wlandev);
+-	} else {
+-		netdev_warn(netdev, "Implement tx_timeout for %s\n",
+-			    wlandev->nsdname);
+-		netif_wake_queue(wlandev->netdev);
+-	}
+-}
+diff --git a/drivers/staging/wlan-ng/p80211netdev.h b/drivers/staging/wlan-ng/p80211netdev.h
+deleted file mode 100644
+index 485f2c697f5f..000000000000
+--- a/drivers/staging/wlan-ng/p80211netdev.h
++++ /dev/null
+@@ -1,212 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * WLAN net device structure and functions
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file declares the structure type that represents each wlan
+- * interface.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _LINUX_P80211NETDEV_H
+-#define _LINUX_P80211NETDEV_H
+-
+-#include <linux/interrupt.h>
+-#include <linux/wireless.h>
+-#include <linux/netdevice.h>
+-
+-#define WLAN_RELEASE	"0.3.0-staging"
+-
+-#define WLAN_DEVICE_CLOSED	0
+-#define WLAN_DEVICE_OPEN	1
+-
+-#define WLAN_MACMODE_NONE	0
+-#define WLAN_MACMODE_IBSS_STA	1
+-#define WLAN_MACMODE_ESS_STA	2
+-#define WLAN_MACMODE_ESS_AP	3
+-
+-/* MSD States */
+-#define WLAN_MSD_HWPRESENT_PENDING	1
+-#define WLAN_MSD_HWFAIL			2
+-#define WLAN_MSD_HWPRESENT		3
+-#define WLAN_MSD_FWLOAD_PENDING		4
+-#define WLAN_MSD_FWLOAD			5
+-#define WLAN_MSD_RUNNING_PENDING	6
+-#define WLAN_MSD_RUNNING		7
+-
+-#ifndef ETH_P_ECONET
+-#define ETH_P_ECONET   0x0018	/* needed for 2.2.x kernels */
+-#endif
+-
+-#define ETH_P_80211_RAW        (ETH_P_ECONET + 1)
+-
+-#ifndef ARPHRD_IEEE80211
+-#define ARPHRD_IEEE80211 801	/* kernel 2.4.6 */
+-#endif
+-
+-#ifndef ARPHRD_IEEE80211_PRISM	/* kernel 2.4.18 */
+-#define ARPHRD_IEEE80211_PRISM 802
+-#endif
+-
+-/*--- NSD Capabilities Flags ------------------------------*/
+-#define P80211_NSDCAP_HARDWAREWEP           0x01  /* hardware wep engine */
+-#define P80211_NSDCAP_SHORT_PREAMBLE        0x10  /* hardware supports */
+-#define P80211_NSDCAP_HWFRAGMENT            0x80  /* nsd handles frag/defrag */
+-#define P80211_NSDCAP_AUTOJOIN              0x100 /* nsd does autojoin */
+-#define P80211_NSDCAP_NOSCAN                0x200 /* nsd can scan */
+-
+-/* Received frame statistics */
+-struct p80211_frmrx {
+-	u32 mgmt;
+-	u32 assocreq;
+-	u32 assocresp;
+-	u32 reassocreq;
+-	u32 reassocresp;
+-	u32 probereq;
+-	u32 proberesp;
+-	u32 beacon;
+-	u32 atim;
+-	u32 disassoc;
+-	u32 authen;
+-	u32 deauthen;
+-	u32 mgmt_unknown;
+-	u32 ctl;
+-	u32 pspoll;
+-	u32 rts;
+-	u32 cts;
+-	u32 ack;
+-	u32 cfend;
+-	u32 cfendcfack;
+-	u32 ctl_unknown;
+-	u32 data;
+-	u32 dataonly;
+-	u32 data_cfack;
+-	u32 data_cfpoll;
+-	u32 data__cfack_cfpoll;
+-	u32 null;
+-	u32 cfack;
+-	u32 cfpoll;
+-	u32 cfack_cfpoll;
+-	u32 data_unknown;
+-	u32 decrypt;
+-	u32 decrypt_err;
+-};
+-
+-/* WEP stuff */
+-#define NUM_WEPKEYS 4
+-#define MAX_KEYLEN 32
+-
+-#define HOSTWEP_DEFAULTKEY_MASK GENMASK(1, 0)
+-#define HOSTWEP_SHAREDKEY BIT(3)
+-#define HOSTWEP_DECRYPT  BIT(4)
+-#define HOSTWEP_ENCRYPT  BIT(5)
+-#define HOSTWEP_PRIVACYINVOKED BIT(6)
+-#define HOSTWEP_EXCLUDEUNENCRYPTED BIT(7)
+-
+-extern int wlan_watchdog;
+-extern int wlan_wext_write;
+-
+-/* WLAN device type */
+-struct wlandevice {
+-	void *priv;		/* private data for MSD */
+-
+-	/* Subsystem State */
+-	char name[WLAN_DEVNAMELEN_MAX];	/* Dev name, from register_wlandev() */
+-	char *nsdname;
+-
+-	u32 state;		/* Device I/F state (open/closed) */
+-	u32 msdstate;		/* state of underlying driver */
+-	u32 hwremoved;		/* Has the hw been yanked out? */
+-
+-	/* Hardware config */
+-	unsigned int irq;
+-	unsigned int iobase;
+-	unsigned int membase;
+-	u32 nsdcaps;		/* NSD Capabilities flags */
+-
+-	/* Config vars */
+-	unsigned int ethconv;
+-
+-	/* device methods (init by MSD, used by p80211 */
+-	int (*open)(struct wlandevice *wlandev);
+-	int (*close)(struct wlandevice *wlandev);
+-	void (*reset)(struct wlandevice *wlandev);
+-	int (*txframe)(struct wlandevice *wlandev, struct sk_buff *skb,
+-		       struct p80211_hdr *p80211_hdr,
+-		       struct p80211_metawep *p80211_wep);
+-	int (*mlmerequest)(struct wlandevice *wlandev, struct p80211msg *msg);
+-	int (*set_multicast_list)(struct wlandevice *wlandev,
+-				  struct net_device *dev);
+-	void (*tx_timeout)(struct wlandevice *wlandev);
+-
+-	/* 802.11 State */
+-	u8 bssid[WLAN_BSSID_LEN];
+-	struct p80211pstr32 ssid;
+-	u32 macmode;
+-	int linkstatus;
+-
+-	/* WEP State */
+-	u8 wep_keys[NUM_WEPKEYS][MAX_KEYLEN];
+-	u8 wep_keylens[NUM_WEPKEYS];
+-	int hostwep;
+-
+-	/* Request/Confirm i/f state (used by p80211) */
+-	unsigned long request_pending;	/* flag, access atomically */
+-
+-	/* netlink socket */
+-	/* queue for indications waiting for cmd completion */
+-	/* Linux netdevice and support */
+-	struct net_device *netdev;	/* ptr to linux netdevice */
+-
+-	/* Rx bottom half */
+-	struct tasklet_struct rx_bh;
+-
+-	struct sk_buff_head nsd_rxq;
+-
+-	/* 802.11 device statistics */
+-	struct p80211_frmrx rx;
+-
+-	struct iw_statistics wstats;
+-
+-	/* jkriegl: iwspy fields */
+-	u8 spy_number;
+-	char spy_address[IW_MAX_SPY][ETH_ALEN];
+-	struct iw_quality spy_stat[IW_MAX_SPY];
+-};
+-
+-/* WEP stuff */
+-int wep_change_key(struct wlandevice *wlandev, int keynum, u8 *key, int keylen);
+-int wep_decrypt(struct wlandevice *wlandev, u8 *buf, u32 len, int key_override,
+-		u8 *iv, u8 *icv);
+-int wep_encrypt(struct wlandevice *wlandev, u8 *buf, u8 *dst, u32 len,
+-		int keynum, u8 *iv, u8 *icv);
+-
+-int wlan_setup(struct wlandevice *wlandev, struct device *physdev);
+-void wlan_unsetup(struct wlandevice *wlandev);
+-int register_wlandev(struct wlandevice *wlandev);
+-int unregister_wlandev(struct wlandevice *wlandev);
+-void p80211netdev_rx(struct wlandevice *wlandev, struct sk_buff *skb);
+-void p80211netdev_hwremoved(struct wlandevice *wlandev);
+-#endif
+diff --git a/drivers/staging/wlan-ng/p80211req.c b/drivers/staging/wlan-ng/p80211req.c
+deleted file mode 100644
+index 6ec559ffd2f9..000000000000
+--- a/drivers/staging/wlan-ng/p80211req.c
++++ /dev/null
+@@ -1,223 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/*
+- *
+- * Request/Indication/MacMgmt interface handling functions
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file contains the functions, types, and macros to support the
+- * MLME request interface that's implemented via the device ioctls.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/types.h>
+-#include <linux/skbuff.h>
+-#include <linux/wireless.h>
+-#include <linux/netdevice.h>
+-#include <linux/etherdevice.h>
+-#include <net/sock.h>
+-#include <linux/netlink.h>
+-
+-#include "p80211types.h"
+-#include "p80211hdr.h"
+-#include "p80211mgmt.h"
+-#include "p80211conv.h"
+-#include "p80211msg.h"
+-#include "p80211netdev.h"
+-#include "p80211ioctl.h"
+-#include "p80211metadef.h"
+-#include "p80211metastruct.h"
+-#include "p80211req.h"
+-
+-static void p80211req_handlemsg(struct wlandevice *wlandev,
+-				struct p80211msg *msg);
+-static void p80211req_mibset_mibget(struct wlandevice *wlandev,
+-				    struct p80211msg_dot11req_mibget *mib_msg,
+-				    int isget);
+-
+-static void p80211req_handle_action(struct wlandevice *wlandev, u32 *data,
+-				    int isget, u32 flag)
+-{
+-	if (isget) {
+-		if (wlandev->hostwep & flag)
+-			*data = P80211ENUM_truth_true;
+-		else
+-			*data = P80211ENUM_truth_false;
+-	} else {
+-		wlandev->hostwep &= ~flag;
+-		if (*data == P80211ENUM_truth_true)
+-			wlandev->hostwep |= flag;
+-	}
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211req_dorequest
+- *
+- * Handles an MLME request/confirm message.
+- *
+- * Arguments:
+- *	wlandev		WLAN device struct
+- *	msgbuf		Buffer containing a request message
+- *
+- * Returns:
+- *	0 on success, an errno otherwise
+- *
+- * Call context:
+- *	Potentially blocks the caller, so it's a good idea to
+- *	not call this function from an interrupt context.
+- *----------------------------------------------------------------
+- */
+-int p80211req_dorequest(struct wlandevice *wlandev, u8 *msgbuf)
+-{
+-	struct p80211msg *msg = (struct p80211msg *)msgbuf;
+-
+-	/* Check to make sure the MSD is running */
+-	if (!((wlandev->msdstate == WLAN_MSD_HWPRESENT &&
+-	       msg->msgcode == DIDMSG_LNXREQ_IFSTATE) ||
+-	      wlandev->msdstate == WLAN_MSD_RUNNING ||
+-	      wlandev->msdstate == WLAN_MSD_FWLOAD)) {
+-		return -ENODEV;
+-	}
+-
+-	/* Check Permissions */
+-	if (!capable(CAP_NET_ADMIN) &&
+-	    (msg->msgcode != DIDMSG_DOT11REQ_MIBGET)) {
+-		netdev_err(wlandev->netdev,
+-			   "%s: only dot11req_mibget allowed for non-root.\n",
+-			   wlandev->name);
+-		return -EPERM;
+-	}
+-
+-	/* Check for busy status */
+-	if (test_and_set_bit(1, &wlandev->request_pending))
+-		return -EBUSY;
+-
+-	/* Allow p80211 to look at msg and handle if desired. */
+-	/* So far, all p80211 msgs are immediate, no waitq/timer necessary */
+-	/* This may change. */
+-	p80211req_handlemsg(wlandev, msg);
+-
+-	/* Pass it down to wlandev via wlandev->mlmerequest */
+-	if (wlandev->mlmerequest)
+-		wlandev->mlmerequest(wlandev, msg);
+-
+-	clear_bit(1, &wlandev->request_pending);
+-	return 0;	/* if result==0, msg->status still may contain an err */
+-}
+-
+-/*----------------------------------------------------------------
+- * p80211req_handlemsg
+- *
+- * p80211 message handler.  Primarily looks for messages that
+- * belong to p80211 and then dispatches the appropriate response.
+- * TODO: we don't do anything yet.  Once the linuxMIB is better
+- *	defined we'll need a get/set handler.
+- *
+- * Arguments:
+- *	wlandev		WLAN device struct
+- *	msg		message structure
+- *
+- * Returns:
+- *	nothing (any results are set in the status field of the msg)
+- *
+- * Call context:
+- *	Process thread
+- *----------------------------------------------------------------
+- */
+-static void p80211req_handlemsg(struct wlandevice *wlandev,
+-				struct p80211msg *msg)
+-{
+-	switch (msg->msgcode) {
+-	case DIDMSG_LNXREQ_HOSTWEP: {
+-		struct p80211msg_lnxreq_hostwep *req =
+-			(struct p80211msg_lnxreq_hostwep *)msg;
+-		wlandev->hostwep &=
+-				~(HOSTWEP_DECRYPT | HOSTWEP_ENCRYPT);
+-		if (req->decrypt.data == P80211ENUM_truth_true)
+-			wlandev->hostwep |= HOSTWEP_DECRYPT;
+-		if (req->encrypt.data == P80211ENUM_truth_true)
+-			wlandev->hostwep |= HOSTWEP_ENCRYPT;
+-
+-		break;
+-	}
+-	case DIDMSG_DOT11REQ_MIBGET:
+-	case DIDMSG_DOT11REQ_MIBSET: {
+-		int isget = (msg->msgcode == DIDMSG_DOT11REQ_MIBGET);
+-		struct p80211msg_dot11req_mibget *mib_msg =
+-			(struct p80211msg_dot11req_mibget *)msg;
+-		p80211req_mibset_mibget(wlandev, mib_msg, isget);
+-		break;
+-	}
+-	}			/* switch msg->msgcode */
+-}
+-
+-static void p80211req_mibset_mibget(struct wlandevice *wlandev,
+-				    struct p80211msg_dot11req_mibget *mib_msg,
+-				    int isget)
+-{
+-	struct p80211itemd *mibitem =
+-		(struct p80211itemd *)mib_msg->mibattribute.data;
+-	struct p80211pstrd *pstr = (struct p80211pstrd *)mibitem->data;
+-	u8 *key = mibitem->data + sizeof(struct p80211pstrd);
+-
+-	switch (mibitem->did) {
+-	case didmib_dot11smt_wepdefaultkeystable_key(1):
+-	case didmib_dot11smt_wepdefaultkeystable_key(2):
+-	case didmib_dot11smt_wepdefaultkeystable_key(3):
+-	case didmib_dot11smt_wepdefaultkeystable_key(4):
+-		if (!isget)
+-			wep_change_key(wlandev,
+-				       P80211DID_ITEM(mibitem->did) - 1,
+-				       key, pstr->len);
+-		break;
+-
+-	case DIDMIB_DOT11SMT_PRIVACYTABLE_WEPDEFAULTKEYID: {
+-		u32 *data = (u32 *)mibitem->data;
+-
+-		if (isget) {
+-			*data = wlandev->hostwep & HOSTWEP_DEFAULTKEY_MASK;
+-		} else {
+-			wlandev->hostwep &= ~(HOSTWEP_DEFAULTKEY_MASK);
+-			wlandev->hostwep |= (*data & HOSTWEP_DEFAULTKEY_MASK);
+-		}
+-		break;
+-	}
+-	case DIDMIB_DOT11SMT_PRIVACYTABLE_PRIVACYINVOKED: {
+-		u32 *data = (u32 *)mibitem->data;
+-
+-		p80211req_handle_action(wlandev, data, isget,
+-					HOSTWEP_PRIVACYINVOKED);
+-		break;
+-	}
+-	case DIDMIB_DOT11SMT_PRIVACYTABLE_EXCLUDEUNENCRYPTED: {
+-		u32 *data = (u32 *)mibitem->data;
+-
+-		p80211req_handle_action(wlandev, data, isget,
+-					HOSTWEP_EXCLUDEUNENCRYPTED);
+-		break;
+-	}
+-	}
+-}
+diff --git a/drivers/staging/wlan-ng/p80211req.h b/drivers/staging/wlan-ng/p80211req.h
+deleted file mode 100644
+index 39213f73913c..000000000000
+--- a/drivers/staging/wlan-ng/p80211req.h
++++ /dev/null
+@@ -1,33 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * Request handling functions
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#ifndef _LINUX_P80211REQ_H
+-#define _LINUX_P80211REQ_H
+-
+-int p80211req_dorequest(struct wlandevice *wlandev, u8 *msgbuf);
+-
+-#endif
+diff --git a/drivers/staging/wlan-ng/p80211types.h b/drivers/staging/wlan-ng/p80211types.h
+deleted file mode 100644
+index 5e4ea5f92058..000000000000
+--- a/drivers/staging/wlan-ng/p80211types.h
++++ /dev/null
+@@ -1,292 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- *
+- * Macros, constants, types, and funcs for p80211 data types
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file declares some of the constants and types used in various
+- * parts of the linux-wlan system.
+- *
+- * Notes:
+- *   - Constant values are always in HOST byte order.
+- *
+- * All functions and statics declared here are implemented in p80211types.c
+- *   --------------------------------------------------------------------
+- */
+-
+-#ifndef _P80211TYPES_H
+-#define _P80211TYPES_H
+-
+-/*----------------------------------------------------------------*/
+-/* The following constants are indexes into the Mib Category List */
+-/* and the Message Category List */
+-
+-/* Mib Category List */
+-#define P80211_MIB_CAT_DOT11SMT		1
+-#define P80211_MIB_CAT_DOT11MAC		2
+-#define P80211_MIB_CAT_DOT11PHY		3
+-
+-#define P80211SEC_DOT11SMT		P80211_MIB_CAT_DOT11SMT
+-#define P80211SEC_DOT11MAC		P80211_MIB_CAT_DOT11MAC
+-#define P80211SEC_DOT11PHY		P80211_MIB_CAT_DOT11PHY
+-
+-/* Message Category List */
+-#define P80211_MSG_CAT_DOT11REQ		1
+-#define P80211_MSG_CAT_DOT11IND		2
+-
+-/*----------------------------------------------------------------*/
+-/* p80211 enumeration constants.  The value to text mappings for */
+-/*  these is in p80211types.c.  These defines were generated */
+-/*  from the mappings. */
+-
+-/* error codes for lookups */
+-
+-#define P80211ENUM_truth_false			0
+-#define P80211ENUM_truth_true			1
+-#define P80211ENUM_ifstate_disable		0
+-#define P80211ENUM_ifstate_fwload		1
+-#define P80211ENUM_ifstate_enable		2
+-#define P80211ENUM_bsstype_infrastructure	1
+-#define P80211ENUM_bsstype_independent		2
+-#define P80211ENUM_bsstype_any			3
+-#define P80211ENUM_authalg_opensystem		1
+-#define P80211ENUM_authalg_sharedkey		2
+-#define P80211ENUM_scantype_active		1
+-#define P80211ENUM_resultcode_success		1
+-#define P80211ENUM_resultcode_invalid_parameters	2
+-#define P80211ENUM_resultcode_not_supported	3
+-#define P80211ENUM_resultcode_refused		6
+-#define P80211ENUM_resultcode_cant_set_readonly_mib	10
+-#define P80211ENUM_resultcode_implementation_failure	11
+-#define P80211ENUM_resultcode_cant_get_writeonly_mib	12
+-#define P80211ENUM_status_successful		0
+-#define P80211ENUM_status_unspec_failure	1
+-#define P80211ENUM_status_ap_full		17
+-#define P80211ENUM_msgitem_status_data_ok		0
+-#define P80211ENUM_msgitem_status_no_value		1
+-
+-/*----------------------------------------------------------------*/
+-/* p80211 max length constants for the different pascal strings. */
+-
+-#define MAXLEN_PSTR6		(6)	/* pascal array of 6 bytes */
+-#define MAXLEN_PSTR14		(14)	/* pascal array of 14 bytes */
+-#define MAXLEN_PSTR32		(32)	/* pascal array of 32 bytes */
+-#define MAXLEN_PSTR255		(255)	/* pascal array of 255 bytes */
+-#define MAXLEN_MIBATTRIBUTE	(392)	/* maximum mibattribute */
+-					/* where the size of the DATA itself */
+-					/* is a DID-LEN-DATA triple */
+-					/* with a max size of 4+4+384 */
+-
+-/*----------------------------------------------------------------
+- * The following constants and macros are used to construct and
+- * deconstruct the Data ID codes.  The coding is as follows:
+- *
+- *     ...rwtnnnnnnnniiiiiiggggggssssss      s - Section
+- *                                           g - Group
+- *                                           i - Item
+- *                                           n - Index
+- *                                           t - Table flag
+- *                                           w - Write flag
+- *                                           r - Read flag
+- *                                           . - Unused
+- */
+-
+-#define P80211DID_LSB_SECTION		(0)
+-#define P80211DID_LSB_GROUP		(6)
+-#define P80211DID_LSB_ITEM		(12)
+-#define P80211DID_LSB_INDEX		(18)
+-#define P80211DID_LSB_ISTABLE		(26)
+-#define P80211DID_LSB_ACCESS		(27)
+-
+-#define P80211DID_MASK_SECTION		(0x0000003fUL)
+-#define P80211DID_MASK_GROUP		(0x0000003fUL)
+-#define P80211DID_MASK_ITEM		(0x0000003fUL)
+-#define P80211DID_MASK_INDEX		(0x000000ffUL)
+-#define P80211DID_MASK_ISTABLE		(0x00000001UL)
+-#define P80211DID_MASK_ACCESS		(0x00000003UL)
+-
+-#define P80211DID_MK(a, m, l)	((((u32)(a)) & (m)) << (l))
+-
+-#define P80211DID_MKSECTION(a)	P80211DID_MK(a, \
+-					P80211DID_MASK_SECTION, \
+-					P80211DID_LSB_SECTION)
+-#define P80211DID_MKGROUP(a)	P80211DID_MK(a, \
+-					P80211DID_MASK_GROUP, \
+-					P80211DID_LSB_GROUP)
+-#define P80211DID_MKITEM(a)	P80211DID_MK(a, \
+-					P80211DID_MASK_ITEM, \
+-					P80211DID_LSB_ITEM)
+-#define P80211DID_MKINDEX(a)	P80211DID_MK(a, \
+-					P80211DID_MASK_INDEX, \
+-					P80211DID_LSB_INDEX)
+-#define P80211DID_MKISTABLE(a)	P80211DID_MK(a, \
+-					P80211DID_MASK_ISTABLE, \
+-					P80211DID_LSB_ISTABLE)
+-
+-#define P80211DID_MKID(s, g, i, n, t, a)	(P80211DID_MKSECTION(s) | \
+-					P80211DID_MKGROUP(g) | \
+-					P80211DID_MKITEM(i) | \
+-					P80211DID_MKINDEX(n) | \
+-					P80211DID_MKISTABLE(t) | \
+-					(a))
+-
+-#define P80211DID_GET(a, m, l)	((((u32)(a)) >> (l)) & (m))
+-
+-#define P80211DID_SECTION(a)	P80211DID_GET(a, \
+-					P80211DID_MASK_SECTION, \
+-					P80211DID_LSB_SECTION)
+-#define P80211DID_GROUP(a)	P80211DID_GET(a, \
+-					P80211DID_MASK_GROUP, \
+-					P80211DID_LSB_GROUP)
+-#define P80211DID_ITEM(a)	P80211DID_GET(a, \
+-					P80211DID_MASK_ITEM, \
+-					P80211DID_LSB_ITEM)
+-#define P80211DID_INDEX(a)	P80211DID_GET(a, \
+-					P80211DID_MASK_INDEX, \
+-					P80211DID_LSB_INDEX)
+-#define P80211DID_ISTABLE(a)	P80211DID_GET(a, \
+-					P80211DID_MASK_ISTABLE, \
+-					P80211DID_LSB_ISTABLE)
+-#define P80211DID_ACCESS(a)	P80211DID_GET(a, \
+-					P80211DID_MASK_ACCESS, \
+-					P80211DID_LSB_ACCESS)
+-
+-/*----------------------------------------------------------------*/
+-/* The following structure types are used to store data items in */
+-/*  messages. */
+-
+-/* Template pascal string */
+-struct p80211pstr {
+-	u8 len;
+-} __packed;
+-
+-struct p80211pstrd {
+-	u8 len;
+-	u8 data[];
+-} __packed;
+-
+-/* Maximum pascal string */
+-struct p80211pstr255 {
+-	u8 len;
+-	u8 data[MAXLEN_PSTR255];
+-} __packed;
+-
+-/* pascal string for macaddress and bssid */
+-struct p80211pstr6 {
+-	u8 len;
+-	u8 data[MAXLEN_PSTR6];
+-} __packed;
+-
+-/* pascal string for channel list */
+-struct p80211pstr14 {
+-	u8 len;
+-	u8 data[MAXLEN_PSTR14];
+-} __packed;
+-
+-/* pascal string for ssid */
+-struct p80211pstr32 {
+-	u8 len;
+-	u8 data[MAXLEN_PSTR32];
+-} __packed;
+-
+-/* prototype template */
+-struct p80211item {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-} __packed;
+-
+-/* prototype template w/ data item */
+-struct p80211itemd {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	u8 data[];
+-} __packed;
+-
+-/* message data item for int, BOUNDEDINT, ENUMINT */
+-struct p80211item_uint32 {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	u32 data;
+-} __packed;
+-
+-/* message data item for OCTETSTR, DISPLAYSTR */
+-struct p80211item_pstr6 {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	struct p80211pstr6 data;
+-} __packed;
+-
+-/* message data item for OCTETSTR, DISPLAYSTR */
+-struct p80211item_pstr14 {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	struct p80211pstr14 data;
+-} __packed;
+-
+-/* message data item for OCTETSTR, DISPLAYSTR */
+-struct p80211item_pstr32 {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	struct p80211pstr32 data;
+-} __packed;
+-
+-/* message data item for OCTETSTR, DISPLAYSTR */
+-struct p80211item_pstr255 {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	struct p80211pstr255 data;
+-} __packed;
+-
+-/* message data item for UNK 392, namely mib items */
+-struct p80211item_unk392 {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	u8 data[MAXLEN_MIBATTRIBUTE];
+-} __packed;
+-
+-/* message data item for UNK 1025, namely p2 pdas */
+-struct p80211item_unk1024 {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	u8 data[1024];
+-} __packed;
+-
+-/* message data item for UNK 4096, namely p2 download chunks */
+-struct p80211item_unk4096 {
+-	u32 did;
+-	u16 status;
+-	u16 len;
+-	u8 data[4096];
+-} __packed;
+-
+-#endif /* _P80211TYPES_H */
+diff --git a/drivers/staging/wlan-ng/p80211wep.c b/drivers/staging/wlan-ng/p80211wep.c
+deleted file mode 100644
+index e7b26b057124..000000000000
+--- a/drivers/staging/wlan-ng/p80211wep.c
++++ /dev/null
+@@ -1,207 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/*
+- *
+- * WEP encode/decode for P80211.
+- *
+- * Copyright (C) 2002 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-/*================================================================*/
+-/* System Includes */
+-
+-#include <linux/crc32.h>
+-#include <linux/netdevice.h>
+-#include <linux/wireless.h>
+-#include <linux/random.h>
+-#include <linux/kernel.h>
+-#include "p80211hdr.h"
+-#include "p80211types.h"
+-#include "p80211msg.h"
+-#include "p80211conv.h"
+-#include "p80211netdev.h"
+-
+-#define WEP_KEY(x)       (((x) & 0xC0) >> 6)
+-
+-/* keylen in bytes! */
+-
+-int wep_change_key(struct wlandevice *wlandev, int keynum, u8 *key, int keylen)
+-{
+-	if (keylen < 0)
+-		return -1;
+-	if (keylen >= MAX_KEYLEN)
+-		return -1;
+-	if (!key)
+-		return -1;
+-	if (keynum < 0)
+-		return -1;
+-	if (keynum >= NUM_WEPKEYS)
+-		return -1;
+-
+-	wlandev->wep_keylens[keynum] = keylen;
+-	memcpy(wlandev->wep_keys[keynum], key, keylen);
+-
+-	return 0;
+-}
+-
+-/*
+- * 4-byte IV at start of buffer, 4-byte ICV at end of buffer.
+- * if successful, buf start is payload begin, length -= 8;
+- */
+-int wep_decrypt(struct wlandevice *wlandev, u8 *buf, u32 len, int key_override,
+-		u8 *iv, u8 *icv)
+-{
+-	u32 i, j, k, crc, keylen;
+-	u8 s[256], key[64], c_crc[4];
+-	u8 keyidx;
+-
+-	/* Needs to be at least 8 bytes of payload */
+-	if (len <= 0)
+-		return -1;
+-
+-	/* initialize the first bytes of the key from the IV */
+-	key[0] = iv[0];
+-	key[1] = iv[1];
+-	key[2] = iv[2];
+-	keyidx = WEP_KEY(iv[3]);
+-
+-	if (key_override >= 0)
+-		keyidx = key_override;
+-
+-	if (keyidx >= NUM_WEPKEYS)
+-		return -2;
+-
+-	keylen = wlandev->wep_keylens[keyidx];
+-
+-	if (keylen == 0)
+-		return -3;
+-
+-	/* copy the rest of the key over from the designated key */
+-	memcpy(key + 3, wlandev->wep_keys[keyidx], keylen);
+-
+-	keylen += 3;		/* add in IV bytes */
+-
+-	/* set up the RC4 state */
+-	for (i = 0; i < 256; i++)
+-		s[i] = i;
+-	j = 0;
+-	for (i = 0; i < 256; i++) {
+-		j = (j + s[i] + key[i % keylen]) & 0xff;
+-		swap(i, j);
+-	}
+-
+-	/* Apply the RC4 to the data, update the CRC32 */
+-	i = 0;
+-	j = 0;
+-	for (k = 0; k < len; k++) {
+-		i = (i + 1) & 0xff;
+-		j = (j + s[i]) & 0xff;
+-		swap(i, j);
+-		buf[k] ^= s[(s[i] + s[j]) & 0xff];
+-	}
+-	crc = ~crc32_le(~0, buf, len);
+-
+-	/* now let's check the crc */
+-	c_crc[0] = crc;
+-	c_crc[1] = crc >> 8;
+-	c_crc[2] = crc >> 16;
+-	c_crc[3] = crc >> 24;
+-
+-	for (k = 0; k < 4; k++) {
+-		i = (i + 1) & 0xff;
+-		j = (j + s[i]) & 0xff;
+-		swap(i, j);
+-		if ((c_crc[k] ^ s[(s[i] + s[j]) & 0xff]) != icv[k])
+-			return -(4 | (k << 4));	/* ICV mismatch */
+-	}
+-
+-	return 0;
+-}
+-
+-/* encrypts in-place. */
+-int wep_encrypt(struct wlandevice *wlandev, u8 *buf,
+-		u8 *dst, u32 len, int keynum, u8 *iv, u8 *icv)
+-{
+-	u32 i, j, k, crc, keylen;
+-	u8 s[256], key[64];
+-
+-	/* no point in WEPping an empty frame */
+-	if (len <= 0)
+-		return -1;
+-
+-	/* we need to have a real key.. */
+-	if (keynum >= NUM_WEPKEYS)
+-		return -2;
+-	keylen = wlandev->wep_keylens[keynum];
+-	if (keylen <= 0)
+-		return -3;
+-
+-	/* use a random IV.  And skip known weak ones. */
+-	get_random_bytes(iv, 3);
+-	while ((iv[1] == 0xff) && (iv[0] >= 3) && (iv[0] < keylen))
+-		get_random_bytes(iv, 3);
+-
+-	iv[3] = (keynum & 0x03) << 6;
+-
+-	key[0] = iv[0];
+-	key[1] = iv[1];
+-	key[2] = iv[2];
+-
+-	/* copy the rest of the key over from the designated key */
+-	memcpy(key + 3, wlandev->wep_keys[keynum], keylen);
+-
+-	keylen += 3;		/* add in IV bytes */
+-
+-	/* set up the RC4 state */
+-	for (i = 0; i < 256; i++)
+-		s[i] = i;
+-	j = 0;
+-	for (i = 0; i < 256; i++) {
+-		j = (j + s[i] + key[i % keylen]) & 0xff;
+-		swap(i, j);
+-	}
+-
+-	/* Update CRC32 then apply RC4 to the data */
+-	i = 0;
+-	j = 0;
+-	for (k = 0; k < len; k++) {
+-		i = (i + 1) & 0xff;
+-		j = (j + s[i]) & 0xff;
+-		swap(i, j);
+-		dst[k] = buf[k] ^ s[(s[i] + s[j]) & 0xff];
+-	}
+-	crc = ~crc32_le(~0, buf, len);
+-
+-	/* now let's encrypt the crc */
+-	icv[0] = crc;
+-	icv[1] = crc >> 8;
+-	icv[2] = crc >> 16;
+-	icv[3] = crc >> 24;
+-
+-	for (k = 0; k < 4; k++) {
+-		i = (i + 1) & 0xff;
+-		j = (j + s[i]) & 0xff;
+-		swap(i, j);
+-		icv[k] ^= s[(s[i] + s[j]) & 0xff];
+-	}
+-
+-	return 0;
+-}
+diff --git a/drivers/staging/wlan-ng/prism2fw.c b/drivers/staging/wlan-ng/prism2fw.c
+deleted file mode 100644
+index 3ccd11041646..000000000000
+--- a/drivers/staging/wlan-ng/prism2fw.c
++++ /dev/null
+@@ -1,1213 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/* from src/prism2/download/prism2dl.c
+- *
+- * utility for downloading prism2 images moved into kernelspace
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-/*================================================================*/
+-/* System Includes */
+-#include <linux/ihex.h>
+-#include <linux/slab.h>
+-
+-/*================================================================*/
+-/* Local Constants */
+-
+-#define PRISM2_USB_FWFILE	"prism2_ru.fw"
+-MODULE_FIRMWARE(PRISM2_USB_FWFILE);
+-
+-#define S3DATA_MAX		5000
+-#define S3PLUG_MAX		200
+-#define S3CRC_MAX		200
+-#define S3INFO_MAX		50
+-
+-#define S3ADDR_PLUG		(0xff000000UL)
+-#define S3ADDR_CRC		(0xff100000UL)
+-#define S3ADDR_INFO		(0xff200000UL)
+-#define S3ADDR_START		(0xff400000UL)
+-
+-#define CHUNKS_MAX		100
+-
+-#define WRITESIZE_MAX		4096
+-
+-/*================================================================*/
+-/* Local Types */
+-
+-struct s3datarec {
+-	u32 len;
+-	u32 addr;
+-	u8 checksum;
+-	u8 *data;
+-};
+-
+-struct s3plugrec {
+-	u32 itemcode;
+-	u32 addr;
+-	u32 len;
+-};
+-
+-struct s3crcrec {
+-	u32 addr;
+-	u32 len;
+-	unsigned int dowrite;
+-};
+-
+-struct s3inforec {
+-	u16 len;
+-	u16 type;
+-	union {
+-		struct hfa384x_compident version;
+-		struct hfa384x_caplevel compat;
+-		u16 buildseq;
+-		struct hfa384x_compident platform;
+-	} info;
+-};
+-
+-struct pda {
+-	u8 buf[HFA384x_PDA_LEN_MAX];
+-	struct hfa384x_pdrec *rec[HFA384x_PDA_RECS_MAX];
+-	unsigned int nrec;
+-};
+-
+-struct imgchunk {
+-	u32 addr;	/* start address */
+-	u32 len;	/* in bytes */
+-	u16 crc;	/* CRC value (if it falls at a chunk boundary) */
+-	u8 *data;
+-};
+-
+-/*================================================================*/
+-/* Local Static Definitions */
+-
+-/*----------------------------------------------------------------*/
+-/* s-record image processing */
+-
+-/* Data records */
+-static unsigned int ns3data;
+-static struct s3datarec *s3data;
+-
+-/* Plug records */
+-static unsigned int ns3plug;
+-static struct s3plugrec s3plug[S3PLUG_MAX];
+-
+-/* CRC records */
+-static unsigned int ns3crc;
+-static struct s3crcrec s3crc[S3CRC_MAX];
+-
+-/* Info records */
+-static unsigned int ns3info;
+-static struct s3inforec s3info[S3INFO_MAX];
+-
+-/* S7 record (there _better_ be only one) */
+-static u32 startaddr;
+-
+-/* Load image chunks */
+-static unsigned int nfchunks;
+-static struct imgchunk fchunk[CHUNKS_MAX];
+-
+-/* Note that for the following pdrec_t arrays, the len and code */
+-/*   fields are stored in HOST byte order. The mkpdrlist() function */
+-/*   does the conversion.  */
+-/*----------------------------------------------------------------*/
+-/* PDA, built from [card|newfile]+[addfile1+addfile2...] */
+-
+-static struct pda pda;
+-static struct hfa384x_compident nicid;
+-static struct hfa384x_caplevel rfid;
+-static struct hfa384x_caplevel macid;
+-static struct hfa384x_caplevel priid;
+-
+-/*================================================================*/
+-/* Local Function Declarations */
+-
+-static int prism2_fwapply(const struct ihex_binrec *rfptr,
+-			  struct wlandevice *wlandev);
+-
+-static int read_fwfile(const struct ihex_binrec *rfptr);
+-
+-static int mkimage(struct imgchunk *clist, unsigned int *ccnt);
+-
+-static int read_cardpda(struct pda *pda, struct wlandevice *wlandev);
+-
+-static int mkpdrlist(struct pda *pda);
+-
+-static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
+-		     struct s3plugrec *s3plug, unsigned int ns3plug,
+-		     struct pda *pda);
+-
+-static int crcimage(struct imgchunk *fchunk, unsigned int nfchunks,
+-		    struct s3crcrec *s3crc, unsigned int ns3crc);
+-
+-static int writeimage(struct wlandevice *wlandev, struct imgchunk *fchunk,
+-		      unsigned int nfchunks);
+-
+-static void free_chunks(struct imgchunk *fchunk, unsigned int *nfchunks);
+-
+-static void free_srecs(void);
+-
+-static int validate_identity(void);
+-
+-/*================================================================*/
+-/* Function Definitions */
+-
+-/*----------------------------------------------------------------
+- * prism2_fwtry
+- *
+- * Try and get firmware into memory
+- *
+- * Arguments:
+- *	udev	usb device structure
+- *	wlandev wlan device structure
+- *
+- * Returns:
+- *	0	- success
+- *	~0	- failure
+- *----------------------------------------------------------------
+- */
+-static int prism2_fwtry(struct usb_device *udev, struct wlandevice *wlandev)
+-{
+-	const struct firmware *fw_entry = NULL;
+-
+-	netdev_info(wlandev->netdev, "prism2_usb: Checking for firmware %s\n",
+-		    PRISM2_USB_FWFILE);
+-	if (request_ihex_firmware(&fw_entry,
+-				  PRISM2_USB_FWFILE, &udev->dev) != 0) {
+-		netdev_info(wlandev->netdev,
+-			    "prism2_usb: Firmware not available, but not essential\n");
+-		netdev_info(wlandev->netdev,
+-			    "prism2_usb: can continue to use card anyway.\n");
+-		return 1;
+-	}
+-
+-	netdev_info(wlandev->netdev,
+-		    "prism2_usb: %s will be processed, size %zu\n",
+-		    PRISM2_USB_FWFILE, fw_entry->size);
+-	prism2_fwapply((const struct ihex_binrec *)fw_entry->data, wlandev);
+-
+-	release_firmware(fw_entry);
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2_fwapply
+- *
+- * Apply the firmware loaded into memory
+- *
+- * Arguments:
+- *	rfptr	firmware image in kernel memory
+- *	wlandev device
+- *
+- * Returns:
+- *	0	- success
+- *	~0	- failure
+- *----------------------------------------------------------------
+- */
+-static int prism2_fwapply(const struct ihex_binrec *rfptr,
+-			  struct wlandevice *wlandev)
+-{
+-	signed int result = 0;
+-	struct p80211msg_dot11req_mibget getmsg;
+-	struct p80211itemd *item;
+-	u32 *data;
+-
+-	/* Initialize the data structures */
+-	ns3data = 0;
+-	s3data = kcalloc(S3DATA_MAX, sizeof(*s3data), GFP_KERNEL);
+-	if (!s3data) {
+-		result = -ENOMEM;
+-		goto out;
+-	}
+-
+-	ns3plug = 0;
+-	memset(s3plug, 0, sizeof(s3plug));
+-	ns3crc = 0;
+-	memset(s3crc, 0, sizeof(s3crc));
+-	ns3info = 0;
+-	memset(s3info, 0, sizeof(s3info));
+-	startaddr = 0;
+-
+-	nfchunks = 0;
+-	memset(fchunk, 0, sizeof(fchunk));
+-	memset(&nicid, 0, sizeof(nicid));
+-	memset(&rfid, 0, sizeof(rfid));
+-	memset(&macid, 0, sizeof(macid));
+-	memset(&priid, 0, sizeof(priid));
+-
+-	/* clear the pda and add an initial END record */
+-	memset(&pda, 0, sizeof(pda));
+-	pda.rec[0] = (struct hfa384x_pdrec *)pda.buf;
+-	pda.rec[0]->len = cpu_to_le16(2);	/* len in words */
+-	pda.rec[0]->code = cpu_to_le16(HFA384x_PDR_END_OF_PDA);
+-	pda.nrec = 1;
+-
+-	/*-----------------------------------------------------*/
+-	/* Put card into fwload state */
+-	prism2sta_ifstate(wlandev, P80211ENUM_ifstate_fwload);
+-
+-	/* Build the PDA we're going to use. */
+-	if (read_cardpda(&pda, wlandev)) {
+-		netdev_err(wlandev->netdev, "load_cardpda failed, exiting.\n");
+-		result = 1;
+-		goto out;
+-	}
+-
+-	/* read the card's PRI-SUP */
+-	memset(&getmsg, 0, sizeof(getmsg));
+-	getmsg.msgcode = DIDMSG_DOT11REQ_MIBGET;
+-	getmsg.msglen = sizeof(getmsg);
+-	strscpy(getmsg.devname, wlandev->name, sizeof(getmsg.devname));
+-
+-	getmsg.mibattribute.did = DIDMSG_DOT11REQ_MIBGET_MIBATTRIBUTE;
+-	getmsg.mibattribute.status = P80211ENUM_msgitem_status_data_ok;
+-	getmsg.resultcode.did = DIDMSG_DOT11REQ_MIBGET_RESULTCODE;
+-	getmsg.resultcode.status = P80211ENUM_msgitem_status_no_value;
+-
+-	item = (struct p80211itemd *)getmsg.mibattribute.data;
+-	item->did = DIDMIB_P2_NIC_PRISUPRANGE;
+-	item->status = P80211ENUM_msgitem_status_no_value;
+-
+-	data = (u32 *)item->data;
+-
+-	/* DIDmsg_dot11req_mibget */
+-	prism2mgmt_mibset_mibget(wlandev, &getmsg);
+-	if (getmsg.resultcode.data != P80211ENUM_resultcode_success)
+-		netdev_err(wlandev->netdev, "Couldn't fetch PRI-SUP info\n");
+-
+-	/* Already in host order */
+-	priid.role = *data++;
+-	priid.id = *data++;
+-	priid.variant = *data++;
+-	priid.bottom = *data++;
+-	priid.top = *data++;
+-
+-	/* Read the S3 file */
+-	result = read_fwfile(rfptr);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "Failed to read the data exiting.\n");
+-		goto out;
+-	}
+-
+-	result = validate_identity();
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Incompatible firmware image.\n");
+-		goto out;
+-	}
+-
+-	if (startaddr == 0x00000000) {
+-		netdev_err(wlandev->netdev,
+-			   "Can't RAM download a Flash image!\n");
+-		result = 1;
+-		goto out;
+-	}
+-
+-	/* Make the image chunks */
+-	result = mkimage(fchunk, &nfchunks);
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to make image chunk.\n");
+-		goto free_chunks;
+-	}
+-
+-	/* Do any plugging */
+-	result = plugimage(fchunk, nfchunks, s3plug, ns3plug, &pda);
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to plug data.\n");
+-		goto free_chunks;
+-	}
+-
+-	/* Insert any CRCs */
+-	result = crcimage(fchunk, nfchunks, s3crc, ns3crc);
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to insert all CRCs\n");
+-		goto free_chunks;
+-	}
+-
+-	/* Write the image */
+-	result = writeimage(wlandev, fchunk, nfchunks);
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to ramwrite image data.\n");
+-		goto free_chunks;
+-	}
+-
+-	netdev_info(wlandev->netdev, "prism2_usb: firmware loading finished.\n");
+-
+-free_chunks:
+-	/* clear any allocated memory */
+-	free_chunks(fchunk, &nfchunks);
+-	free_srecs();
+-
+-out:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * crcimage
+- *
+- * Adds a CRC16 in the two bytes prior to each block identified by
+- * an S3 CRC record.  Currently, we don't actually do a CRC we just
+- * insert the value 0xC0DE in hfa384x order.
+- *
+- * Arguments:
+- *	fchunk		Array of image chunks
+- *	nfchunks	Number of image chunks
+- *	s3crc		Array of crc records
+- *	ns3crc		Number of crc records
+- *
+- * Returns:
+- *	0	success
+- *	~0	failure
+- *----------------------------------------------------------------
+- */
+-static int crcimage(struct imgchunk *fchunk, unsigned int nfchunks,
+-		    struct s3crcrec *s3crc, unsigned int ns3crc)
+-{
+-	int result = 0;
+-	int i;
+-	int c;
+-	u32 crcstart;
+-	u32 cstart = 0;
+-	u32 cend;
+-	u8 *dest;
+-	u32 chunkoff;
+-
+-	for (i = 0; i < ns3crc; i++) {
+-		if (!s3crc[i].dowrite)
+-			continue;
+-		crcstart = s3crc[i].addr;
+-		/* Find chunk */
+-		for (c = 0; c < nfchunks; c++) {
+-			cstart = fchunk[c].addr;
+-			cend = fchunk[c].addr + fchunk[c].len;
+-			/* the line below does an address & len match search */
+-			/* unfortunately, I've found that the len fields of */
+-			/* some crc records don't match with the length of */
+-			/* the actual data, so we're not checking right now */
+-			/* if (crcstart-2 >= cstart && crcend <= cend) break; */
+-
+-			/* note the -2 below, it's to make sure the chunk has */
+-			/* space for the CRC value */
+-			if (crcstart - 2 >= cstart && crcstart < cend)
+-				break;
+-		}
+-		if (c >= nfchunks) {
+-			pr_err("Failed to find chunk for crcrec[%d], addr=0x%06x len=%d , aborting crc.\n",
+-			       i, s3crc[i].addr, s3crc[i].len);
+-			return 1;
+-		}
+-
+-		/* Insert crc */
+-		pr_debug("Adding crc @ 0x%06x\n", s3crc[i].addr - 2);
+-		chunkoff = crcstart - cstart - 2;
+-		dest = fchunk[c].data + chunkoff;
+-		*dest = 0xde;
+-		*(dest + 1) = 0xc0;
+-	}
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * free_chunks
+- *
+- * Clears the chunklist data structures in preparation for a new file.
+- *
+- * Arguments:
+- *	none
+- *
+- * Returns:
+- *	nothing
+- *----------------------------------------------------------------
+- */
+-static void free_chunks(struct imgchunk *fchunk, unsigned int *nfchunks)
+-{
+-	int i;
+-
+-	for (i = 0; i < *nfchunks; i++)
+-		kfree(fchunk[i].data);
+-
+-	*nfchunks = 0;
+-	memset(fchunk, 0, sizeof(*fchunk));
+-}
+-
+-/*----------------------------------------------------------------
+- * free_srecs
+- *
+- * Clears the srec data structures in preparation for a new file.
+- *
+- * Arguments:
+- *	none
+- *
+- * Returns:
+- *	nothing
+- *----------------------------------------------------------------
+- */
+-static void free_srecs(void)
+-{
+-	ns3data = 0;
+-	kfree(s3data);
+-	ns3plug = 0;
+-	memset(s3plug, 0, sizeof(s3plug));
+-	ns3crc = 0;
+-	memset(s3crc, 0, sizeof(s3crc));
+-	ns3info = 0;
+-	memset(s3info, 0, sizeof(s3info));
+-	startaddr = 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * mkimage
+- *
+- * Scans the currently loaded set of S records for data residing
+- * in contiguous memory regions.  Each contiguous region is then
+- * made into a 'chunk'.  This function assumes that we're building
+- * a new chunk list.  Assumes the s3data items are in sorted order.
+- *
+- * Arguments:	none
+- *
+- * Returns:
+- *	0	- success
+- *	~0	- failure (probably an errno)
+- *----------------------------------------------------------------
+- */
+-static int mkimage(struct imgchunk *clist, unsigned int *ccnt)
+-{
+-	int result = 0;
+-	int i;
+-	int j;
+-	int currchunk = 0;
+-	u32 nextaddr = 0;
+-	u32 s3start;
+-	u32 s3end;
+-	u32 cstart = 0;
+-	u32 cend;
+-	u32 coffset;
+-
+-	/* There may already be data in the chunklist */
+-	*ccnt = 0;
+-
+-	/* Establish the location and size of each chunk */
+-	for (i = 0; i < ns3data; i++) {
+-		if (s3data[i].addr == nextaddr) {
+-			/* existing chunk, grow it */
+-			clist[currchunk].len += s3data[i].len;
+-			nextaddr += s3data[i].len;
+-		} else {
+-			/* New chunk */
+-			(*ccnt)++;
+-			currchunk = *ccnt - 1;
+-			clist[currchunk].addr = s3data[i].addr;
+-			clist[currchunk].len = s3data[i].len;
+-			nextaddr = s3data[i].addr + s3data[i].len;
+-			/* Expand the chunk if there is a CRC record at */
+-			/* their beginning bound */
+-			for (j = 0; j < ns3crc; j++) {
+-				if (s3crc[j].dowrite &&
+-				    s3crc[j].addr == clist[currchunk].addr) {
+-					clist[currchunk].addr -= 2;
+-					clist[currchunk].len += 2;
+-				}
+-			}
+-		}
+-	}
+-
+-	/* We're currently assuming there aren't any overlapping chunks */
+-	/*  if this proves false, we'll need to add code to coalesce. */
+-
+-	/* Allocate buffer space for chunks */
+-	for (i = 0; i < *ccnt; i++) {
+-		clist[i].data = kzalloc(clist[i].len, GFP_KERNEL);
+-		if (!clist[i].data)
+-			return 1;
+-
+-		pr_debug("chunk[%d]: addr=0x%06x len=%d\n",
+-			 i, clist[i].addr, clist[i].len);
+-	}
+-
+-	/* Copy srec data to chunks */
+-	for (i = 0; i < ns3data; i++) {
+-		s3start = s3data[i].addr;
+-		s3end = s3start + s3data[i].len - 1;
+-		for (j = 0; j < *ccnt; j++) {
+-			cstart = clist[j].addr;
+-			cend = cstart + clist[j].len - 1;
+-			if (s3start >= cstart && s3end <= cend)
+-				break;
+-		}
+-		if (((unsigned int)j) >= (*ccnt)) {
+-			pr_err("s3rec(a=0x%06x,l=%d), no chunk match, exiting.\n",
+-			       s3start, s3data[i].len);
+-			return 1;
+-		}
+-		coffset = s3start - cstart;
+-		memcpy(clist[j].data + coffset, s3data[i].data, s3data[i].len);
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * mkpdrlist
+- *
+- * Reads a raw PDA and builds an array of pdrec_t structures.
+- *
+- * Arguments:
+- *	pda	buffer containing raw PDA bytes
+- *	pdrec	ptr to an array of pdrec_t's.  Will be filled on exit.
+- *	nrec	ptr to a variable that will contain the count of PDRs
+- *
+- * Returns:
+- *	0	- success
+- *	~0	- failure (probably an errno)
+- *----------------------------------------------------------------
+- */
+-static int mkpdrlist(struct pda *pda)
+-{
+-	__le16 *pda16 = (__le16 *)pda->buf;
+-	int curroff;		/* in 'words' */
+-
+-	pda->nrec = 0;
+-	curroff = 0;
+-	while (curroff < (HFA384x_PDA_LEN_MAX / 2 - 1) &&
+-	       le16_to_cpu(pda16[curroff + 1]) != HFA384x_PDR_END_OF_PDA) {
+-		pda->rec[pda->nrec] = (struct hfa384x_pdrec *)&pda16[curroff];
+-
+-		if (le16_to_cpu(pda->rec[pda->nrec]->code) ==
+-		    HFA384x_PDR_NICID) {
+-			memcpy(&nicid, &pda->rec[pda->nrec]->data.nicid,
+-			       sizeof(nicid));
+-			le16_to_cpus(&nicid.id);
+-			le16_to_cpus(&nicid.variant);
+-			le16_to_cpus(&nicid.major);
+-			le16_to_cpus(&nicid.minor);
+-		}
+-		if (le16_to_cpu(pda->rec[pda->nrec]->code) ==
+-		    HFA384x_PDR_MFISUPRANGE) {
+-			memcpy(&rfid, &pda->rec[pda->nrec]->data.mfisuprange,
+-			       sizeof(rfid));
+-			le16_to_cpus(&rfid.id);
+-			le16_to_cpus(&rfid.variant);
+-			le16_to_cpus(&rfid.bottom);
+-			le16_to_cpus(&rfid.top);
+-		}
+-		if (le16_to_cpu(pda->rec[pda->nrec]->code) ==
+-		    HFA384x_PDR_CFISUPRANGE) {
+-			memcpy(&macid, &pda->rec[pda->nrec]->data.cfisuprange,
+-			       sizeof(macid));
+-			le16_to_cpus(&macid.id);
+-			le16_to_cpus(&macid.variant);
+-			le16_to_cpus(&macid.bottom);
+-			le16_to_cpus(&macid.top);
+-		}
+-
+-		(pda->nrec)++;
+-		curroff += le16_to_cpu(pda16[curroff]) + 1;
+-	}
+-	if (curroff >= (HFA384x_PDA_LEN_MAX / 2 - 1)) {
+-		pr_err("no end record found or invalid lengths in PDR data, exiting. %x %d\n",
+-		       curroff, pda->nrec);
+-		return 1;
+-	}
+-	pda->rec[pda->nrec] = (struct hfa384x_pdrec *)&pda16[curroff];
+-	(pda->nrec)++;
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * plugimage
+- *
+- * Plugs the given image using the given plug records from the given
+- * PDA and filename.
+- *
+- * Arguments:
+- *	fchunk		Array of image chunks
+- *	nfchunks	Number of image chunks
+- *	s3plug		Array of plug records
+- *	ns3plug		Number of plug records
+- *	pda		Current pda data
+- *
+- * Returns:
+- *	0	success
+- *	~0	failure
+- *----------------------------------------------------------------
+- */
+-static int plugimage(struct imgchunk *fchunk, unsigned int nfchunks,
+-		     struct s3plugrec *s3plug, unsigned int ns3plug,
+-		     struct pda *pda)
+-{
+-	int result = 0;
+-	int i;			/* plug index */
+-	int j;			/* index of PDR or -1 if fname plug */
+-	int c;			/* chunk index */
+-	u32 pstart;
+-	u32 pend;
+-	u32 cstart = 0;
+-	u32 cend;
+-	u32 chunkoff;
+-	u8 *dest;
+-
+-	/* for each plug record */
+-	for (i = 0; i < ns3plug; i++) {
+-		pstart = s3plug[i].addr;
+-		pend = s3plug[i].addr + s3plug[i].len;
+-		j = -1;
+-		/* find the matching PDR (or filename) */
+-		if (s3plug[i].itemcode != 0xffffffffUL) { /* not filename */
+-			for (j = 0; j < pda->nrec; j++) {
+-				if (s3plug[i].itemcode ==
+-				    le16_to_cpu(pda->rec[j]->code))
+-					break;
+-			}
+-		}
+-		if (j >= pda->nrec && j != -1) { /*  if no matching PDR, fail */
+-			pr_warn("warning: Failed to find PDR for plugrec 0x%04x.\n",
+-				s3plug[i].itemcode);
+-			continue;	/* and move on to the next PDR */
+-
+-			/* MSM: They swear that unless it's the MAC address,
+-			 * the serial number, or the TX calibration records,
+-			 * then there's reasonable defaults in the f/w
+-			 * image.  Therefore, missing PDRs in the card
+-			 * should only be a warning, not fatal.
+-			 * TODO: add fatals for the PDRs mentioned above.
+-			 */
+-		}
+-
+-		/* Validate plug len against PDR len */
+-		if (j != -1 && s3plug[i].len < le16_to_cpu(pda->rec[j]->len)) {
+-			pr_err("error: Plug vs. PDR len mismatch for plugrec 0x%04x, abort plugging.\n",
+-			       s3plug[i].itemcode);
+-			result = 1;
+-			continue;
+-		}
+-
+-		/*
+-		 * Validate plug address against
+-		 * chunk data and identify chunk
+-		 */
+-		for (c = 0; c < nfchunks; c++) {
+-			cstart = fchunk[c].addr;
+-			cend = fchunk[c].addr + fchunk[c].len;
+-			if (pstart >= cstart && pend <= cend)
+-				break;
+-		}
+-		if (c >= nfchunks) {
+-			pr_err("error: Failed to find image chunk for plugrec 0x%04x.\n",
+-			       s3plug[i].itemcode);
+-			result = 1;
+-			continue;
+-		}
+-
+-		/* Plug data */
+-		chunkoff = pstart - cstart;
+-		dest = fchunk[c].data + chunkoff;
+-		pr_debug("Plugging item 0x%04x @ 0x%06x, len=%d, cnum=%d coff=0x%06x\n",
+-			 s3plug[i].itemcode, pstart, s3plug[i].len,
+-			 c, chunkoff);
+-
+-		if (j == -1) {	/* plug the filename */
+-			memset(dest, 0, s3plug[i].len);
+-			strscpy(dest, PRISM2_USB_FWFILE, s3plug[i].len);
+-		} else {	/* plug a PDR */
+-			memcpy(dest, &pda->rec[j]->data, s3plug[i].len);
+-		}
+-	}
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * read_cardpda
+- *
+- * Sends the command for the driver to read the pda from the card
+- * named in the device variable.  Upon success, the card pda is
+- * stored in the "cardpda" variables.  Note that the pda structure
+- * is considered 'well formed' after this function.  That means
+- * that the nrecs is valid, the rec array has been set up, and there's
+- * a valid PDAEND record in the raw PDA data.
+- *
+- * Arguments:
+- *	pda		pda structure
+- *	wlandev		device
+- *
+- * Returns:
+- *	0	- success
+- *	~0	- failure (probably an errno)
+- *----------------------------------------------------------------
+- */
+-static int read_cardpda(struct pda *pda, struct wlandevice *wlandev)
+-{
+-	int result = 0;
+-	struct p80211msg_p2req_readpda *msg;
+-
+-	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
+-	if (!msg)
+-		return -ENOMEM;
+-
+-	/* set up the msg */
+-	msg->msgcode = DIDMSG_P2REQ_READPDA;
+-	msg->msglen = sizeof(msg);
+-	strscpy(msg->devname, wlandev->name, sizeof(msg->devname));
+-	msg->pda.did = DIDMSG_P2REQ_READPDA_PDA;
+-	msg->pda.len = HFA384x_PDA_LEN_MAX;
+-	msg->pda.status = P80211ENUM_msgitem_status_no_value;
+-	msg->resultcode.did = DIDMSG_P2REQ_READPDA_RESULTCODE;
+-	msg->resultcode.len = sizeof(u32);
+-	msg->resultcode.status = P80211ENUM_msgitem_status_no_value;
+-
+-	if (prism2mgmt_readpda(wlandev, msg) != 0) {
+-		/* prism2mgmt_readpda prints an errno if appropriate */
+-		result = -1;
+-	} else if (msg->resultcode.data == P80211ENUM_resultcode_success) {
+-		memcpy(pda->buf, msg->pda.data, HFA384x_PDA_LEN_MAX);
+-		result = mkpdrlist(pda);
+-	} else {
+-		/* resultcode must've been something other than success */
+-		result = -1;
+-	}
+-
+-	kfree(msg);
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * read_fwfile
+- *
+- * Reads the given fw file which should have been compiled from an srec
+- * file. Each record in the fw file will either be a plain data record,
+- * a start address record, or other records used for plugging.
+- *
+- * Note that data records are expected to be sorted into
+- * ascending address order in the fw file.
+- *
+- * Note also that the start address record, originally an S7 record in
+- * the srec file, is expected in the fw file to be like a data record but
+- * with a certain address to make it identifiable.
+- *
+- * Here's the SREC format that the fw should have come from:
+- * S[37]nnaaaaaaaaddd...dddcc
+- *
+- *       nn - number of bytes starting with the address field
+- * aaaaaaaa - address in readable (or big endian) format
+- * dd....dd - 0-245 data bytes (two chars per byte)
+- *       cc - checksum
+- *
+- * The S7 record's (there should be only one) address value gets
+- * converted to an S3 record with address of 0xff400000, with the
+- * start address being stored as a 4 byte data word. That address is
+- * the start execution address used for RAM downloads.
+- *
+- * The S3 records have a collection of subformats indicated by the
+- * value of aaaaaaaa:
+- *   0xff000000 - Plug record, data field format:
+- *                xxxxxxxxaaaaaaaassssssss
+- *                x - PDR code number (little endian)
+- *                a - Address in load image to plug (little endian)
+- *                s - Length of plug data area (little endian)
+- *
+- *   0xff100000 - CRC16 generation record, data field format:
+- *                aaaaaaaassssssssbbbbbbbb
+- *                a - Start address for CRC calculation (little endian)
+- *                s - Length of data to  calculate over (little endian)
+- *                b - Boolean, true=write crc, false=don't write
+- *
+- *   0xff200000 - Info record, data field format:
+- *                ssssttttdd..dd
+- *                s - Size in words (little endian)
+- *                t - Info type (little endian), see #defines and
+- *                    struct s3inforec for details about types.
+- *                d - (s - 1) little endian words giving the contents of
+- *                    the given info type.
+- *
+- *   0xff400000 - Start address record, data field format:
+- *                aaaaaaaa
+- *                a - Address in load image to plug (little endian)
+- *
+- * Arguments:
+- *	record	firmware image (ihex record structure) in kernel memory
+- *
+- * Returns:
+- *	0	- success
+- *	~0	- failure (probably an errno)
+- *----------------------------------------------------------------
+- */
+-static int read_fwfile(const struct ihex_binrec *record)
+-{
+-	int		i;
+-	int		rcnt = 0;
+-	u16		*tmpinfo;
+-	u16		*ptr16;
+-	u32		*ptr32, len, addr;
+-
+-	pr_debug("Reading fw file ...\n");
+-
+-	while (record) {
+-		rcnt++;
+-
+-		len = be16_to_cpu(record->len);
+-		addr = be32_to_cpu(record->addr);
+-
+-		/* Point into data for different word lengths */
+-		ptr32 = (u32 *)record->data;
+-		ptr16 = (u16 *)record->data;
+-
+-		/* parse what was an S3 srec and put it in the right array */
+-		switch (addr) {
+-		case S3ADDR_START:
+-			startaddr = *ptr32;
+-			pr_debug("  S7 start addr, record=%d addr=0x%08x\n",
+-				 rcnt,
+-				 startaddr);
+-			break;
+-		case S3ADDR_PLUG:
+-			s3plug[ns3plug].itemcode = *ptr32;
+-			s3plug[ns3plug].addr = *(ptr32 + 1);
+-			s3plug[ns3plug].len = *(ptr32 + 2);
+-
+-			pr_debug("  S3 plugrec, record=%d itemcode=0x%08x addr=0x%08x len=%d\n",
+-				 rcnt,
+-				 s3plug[ns3plug].itemcode,
+-				 s3plug[ns3plug].addr,
+-				 s3plug[ns3plug].len);
+-
+-			ns3plug++;
+-			if (ns3plug == S3PLUG_MAX) {
+-				pr_err("S3 plugrec limit reached - aborting\n");
+-				return 1;
+-			}
+-			break;
+-		case S3ADDR_CRC:
+-			s3crc[ns3crc].addr = *ptr32;
+-			s3crc[ns3crc].len = *(ptr32 + 1);
+-			s3crc[ns3crc].dowrite = *(ptr32 + 2);
+-
+-			pr_debug("  S3 crcrec, record=%d addr=0x%08x len=%d write=0x%08x\n",
+-				 rcnt,
+-				 s3crc[ns3crc].addr,
+-				 s3crc[ns3crc].len,
+-				 s3crc[ns3crc].dowrite);
+-			ns3crc++;
+-			if (ns3crc == S3CRC_MAX) {
+-				pr_err("S3 crcrec limit reached - aborting\n");
+-				return 1;
+-			}
+-			break;
+-		case S3ADDR_INFO:
+-			s3info[ns3info].len = *ptr16;
+-			s3info[ns3info].type = *(ptr16 + 1);
+-
+-			pr_debug("  S3 inforec, record=%d len=0x%04x type=0x%04x\n",
+-				 rcnt,
+-				 s3info[ns3info].len,
+-				 s3info[ns3info].type);
+-			if (((s3info[ns3info].len - 1) * sizeof(u16)) >
+-			   sizeof(s3info[ns3info].info)) {
+-				pr_err("S3 inforec length too long - aborting\n");
+-				return 1;
+-			}
+-
+-			tmpinfo = (u16 *)&s3info[ns3info].info.version;
+-			pr_debug("            info=");
+-			for (i = 0; i < s3info[ns3info].len - 1; i++) {
+-				tmpinfo[i] = *(ptr16 + 2 + i);
+-				pr_debug("%04x ", tmpinfo[i]);
+-			}
+-			pr_debug("\n");
+-
+-			ns3info++;
+-			if (ns3info == S3INFO_MAX) {
+-				pr_err("S3 inforec limit reached - aborting\n");
+-				return 1;
+-			}
+-			break;
+-		default:	/* Data record */
+-			s3data[ns3data].addr = addr;
+-			s3data[ns3data].len = len;
+-			s3data[ns3data].data = (uint8_t *)record->data;
+-			ns3data++;
+-			if (ns3data == S3DATA_MAX) {
+-				pr_err("S3 datarec limit reached - aborting\n");
+-				return 1;
+-			}
+-			break;
+-		}
+-		record = ihex_next_binrec(record);
+-	}
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * writeimage
+- *
+- * Takes the chunks, builds p80211 messages and sends them down
+- * to the driver for writing to the card.
+- *
+- * Arguments:
+- *	wlandev		device
+- *	fchunk		Array of image chunks
+- *	nfchunks	Number of image chunks
+- *
+- * Returns:
+- *	0	success
+- *	~0	failure
+- *----------------------------------------------------------------
+- */
+-static int writeimage(struct wlandevice *wlandev, struct imgchunk *fchunk,
+-		      unsigned int nfchunks)
+-{
+-	int result = 0;
+-	struct p80211msg_p2req_ramdl_state *rstmsg;
+-	struct p80211msg_p2req_ramdl_write *rwrmsg;
+-	u32 resultcode;
+-	int i;
+-	int j;
+-	unsigned int nwrites;
+-	u32 curroff;
+-	u32 currlen;
+-	u32 currdaddr;
+-
+-	rstmsg = kzalloc(sizeof(*rstmsg), GFP_KERNEL);
+-	rwrmsg = kzalloc(sizeof(*rwrmsg), GFP_KERNEL);
+-	if (!rstmsg || !rwrmsg) {
+-		netdev_err(wlandev->netdev,
+-			   "%s: no memory for firmware download, aborting download\n",
+-			   __func__);
+-		result = -ENOMEM;
+-		goto free_result;
+-	}
+-
+-	/* Initialize the messages */
+-	strscpy(rstmsg->devname, wlandev->name, sizeof(rstmsg->devname));
+-	rstmsg->msgcode = DIDMSG_P2REQ_RAMDL_STATE;
+-	rstmsg->msglen = sizeof(*rstmsg);
+-	rstmsg->enable.did = DIDMSG_P2REQ_RAMDL_STATE_ENABLE;
+-	rstmsg->exeaddr.did = DIDMSG_P2REQ_RAMDL_STATE_EXEADDR;
+-	rstmsg->resultcode.did = DIDMSG_P2REQ_RAMDL_STATE_RESULTCODE;
+-	rstmsg->enable.status = P80211ENUM_msgitem_status_data_ok;
+-	rstmsg->exeaddr.status = P80211ENUM_msgitem_status_data_ok;
+-	rstmsg->resultcode.status = P80211ENUM_msgitem_status_no_value;
+-	rstmsg->enable.len = sizeof(u32);
+-	rstmsg->exeaddr.len = sizeof(u32);
+-	rstmsg->resultcode.len = sizeof(u32);
+-
+-	strscpy(rwrmsg->devname, wlandev->name, sizeof(rwrmsg->devname));
+-	rwrmsg->msgcode = DIDMSG_P2REQ_RAMDL_WRITE;
+-	rwrmsg->msglen = sizeof(*rwrmsg);
+-	rwrmsg->addr.did = DIDMSG_P2REQ_RAMDL_WRITE_ADDR;
+-	rwrmsg->len.did = DIDMSG_P2REQ_RAMDL_WRITE_LEN;
+-	rwrmsg->data.did = DIDMSG_P2REQ_RAMDL_WRITE_DATA;
+-	rwrmsg->resultcode.did = DIDMSG_P2REQ_RAMDL_WRITE_RESULTCODE;
+-	rwrmsg->addr.status = P80211ENUM_msgitem_status_data_ok;
+-	rwrmsg->len.status = P80211ENUM_msgitem_status_data_ok;
+-	rwrmsg->data.status = P80211ENUM_msgitem_status_data_ok;
+-	rwrmsg->resultcode.status = P80211ENUM_msgitem_status_no_value;
+-	rwrmsg->addr.len = sizeof(u32);
+-	rwrmsg->len.len = sizeof(u32);
+-	rwrmsg->data.len = WRITESIZE_MAX;
+-	rwrmsg->resultcode.len = sizeof(u32);
+-
+-	/* Send xxx_state(enable) */
+-	pr_debug("Sending dl_state(enable) message.\n");
+-	rstmsg->enable.data = P80211ENUM_truth_true;
+-	rstmsg->exeaddr.data = startaddr;
+-
+-	result = prism2mgmt_ramdl_state(wlandev, rstmsg);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "%s state enable failed w/ result=%d, aborting download\n",
+-			   __func__, result);
+-		goto free_result;
+-	}
+-	resultcode = rstmsg->resultcode.data;
+-	if (resultcode != P80211ENUM_resultcode_success) {
+-		netdev_err(wlandev->netdev,
+-			   "%s()->xxxdl_state msg indicates failure, w/ resultcode=%d, aborting download.\n",
+-			   __func__, resultcode);
+-		result = 1;
+-		goto free_result;
+-	}
+-
+-	/* Now, loop through the data chunks and send WRITESIZE_MAX data */
+-	for (i = 0; i < nfchunks; i++) {
+-		nwrites = fchunk[i].len / WRITESIZE_MAX;
+-		nwrites += (fchunk[i].len % WRITESIZE_MAX) ? 1 : 0;
+-		curroff = 0;
+-		for (j = 0; j < nwrites; j++) {
+-			/* TODO Move this to a separate function */
+-			int lenleft = fchunk[i].len - (WRITESIZE_MAX * j);
+-
+-			if (fchunk[i].len > WRITESIZE_MAX)
+-				currlen = WRITESIZE_MAX;
+-			else
+-				currlen = lenleft;
+-			curroff = j * WRITESIZE_MAX;
+-			currdaddr = fchunk[i].addr + curroff;
+-			/* Setup the message */
+-			rwrmsg->addr.data = currdaddr;
+-			rwrmsg->len.data = currlen;
+-			memcpy(rwrmsg->data.data,
+-			       fchunk[i].data + curroff, currlen);
+-
+-			/* Send flashdl_write(pda) */
+-			pr_debug
+-			    ("Sending xxxdl_write message addr=%06x len=%d.\n",
+-			     currdaddr, currlen);
+-
+-			result = prism2mgmt_ramdl_write(wlandev, rwrmsg);
+-
+-			/* Check the results */
+-			if (result) {
+-				netdev_err(wlandev->netdev,
+-					   "%s chunk write failed w/ result=%d, aborting download\n",
+-					   __func__, result);
+-				goto free_result;
+-			}
+-			resultcode = rstmsg->resultcode.data;
+-			if (resultcode != P80211ENUM_resultcode_success) {
+-				pr_err("%s()->xxxdl_write msg indicates failure, w/ resultcode=%d, aborting download.\n",
+-				       __func__, resultcode);
+-				result = 1;
+-				goto free_result;
+-			}
+-		}
+-	}
+-
+-	/* Send xxx_state(disable) */
+-	pr_debug("Sending dl_state(disable) message.\n");
+-	rstmsg->enable.data = P80211ENUM_truth_false;
+-	rstmsg->exeaddr.data = 0;
+-
+-	result = prism2mgmt_ramdl_state(wlandev, rstmsg);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "%s state disable failed w/ result=%d, aborting download\n",
+-			   __func__, result);
+-		goto free_result;
+-	}
+-	resultcode = rstmsg->resultcode.data;
+-	if (resultcode != P80211ENUM_resultcode_success) {
+-		netdev_err(wlandev->netdev,
+-			   "%s()->xxxdl_state msg indicates failure, w/ resultcode=%d, aborting download.\n",
+-			   __func__, resultcode);
+-		result = 1;
+-		goto free_result;
+-	}
+-
+-free_result:
+-	kfree(rstmsg);
+-	kfree(rwrmsg);
+-	return result;
+-}
+-
+-static int validate_identity(void)
+-{
+-	int i;
+-	int result = 1;
+-	int trump = 0;
+-
+-	pr_debug("NIC ID: %#x v%d.%d.%d\n",
+-		 nicid.id, nicid.major, nicid.minor, nicid.variant);
+-	pr_debug("MFI ID: %#x v%d %d->%d\n",
+-		 rfid.id, rfid.variant, rfid.bottom, rfid.top);
+-	pr_debug("CFI ID: %#x v%d %d->%d\n",
+-		 macid.id, macid.variant, macid.bottom, macid.top);
+-	pr_debug("PRI ID: %#x v%d %d->%d\n",
+-		 priid.id, priid.variant, priid.bottom, priid.top);
+-
+-	for (i = 0; i < ns3info; i++) {
+-		switch (s3info[i].type) {
+-		case 1:
+-			pr_debug("Version:  ID %#x %d.%d.%d\n",
+-				 s3info[i].info.version.id,
+-				 s3info[i].info.version.major,
+-				 s3info[i].info.version.minor,
+-				 s3info[i].info.version.variant);
+-			break;
+-		case 2:
+-			pr_debug("Compat: Role %#x Id %#x v%d %d->%d\n",
+-				 s3info[i].info.compat.role,
+-				 s3info[i].info.compat.id,
+-				 s3info[i].info.compat.variant,
+-				 s3info[i].info.compat.bottom,
+-				 s3info[i].info.compat.top);
+-
+-			/* MAC compat range */
+-			if ((s3info[i].info.compat.role == 1) &&
+-			    (s3info[i].info.compat.id == 2)) {
+-				if (s3info[i].info.compat.variant !=
+-				    macid.variant) {
+-					result = 2;
+-				}
+-			}
+-
+-			/* PRI compat range */
+-			if ((s3info[i].info.compat.role == 1) &&
+-			    (s3info[i].info.compat.id == 3)) {
+-				if ((s3info[i].info.compat.bottom >
+-				     priid.top) ||
+-				    (s3info[i].info.compat.top <
+-				     priid.bottom)) {
+-					result = 3;
+-				}
+-			}
+-			/* SEC compat range */
+-			if ((s3info[i].info.compat.role == 1) &&
+-			    (s3info[i].info.compat.id == 4)) {
+-				/* FIXME: isn't something missing here? */
+-			}
+-
+-			break;
+-		case 3:
+-			pr_debug("Seq: %#x\n", s3info[i].info.buildseq);
+-
+-			break;
+-		case 4:
+-			pr_debug("Platform:  ID %#x %d.%d.%d\n",
+-				 s3info[i].info.version.id,
+-				 s3info[i].info.version.major,
+-				 s3info[i].info.version.minor,
+-				 s3info[i].info.version.variant);
+-
+-			if (nicid.id != s3info[i].info.version.id)
+-				continue;
+-			if (nicid.major != s3info[i].info.version.major)
+-				continue;
+-			if (nicid.minor != s3info[i].info.version.minor)
+-				continue;
+-			if ((nicid.variant != s3info[i].info.version.variant) &&
+-			    (nicid.id != 0x8008))
+-				continue;
+-
+-			trump = 1;
+-			break;
+-		case 0x8001:
+-			pr_debug("name inforec len %d\n", s3info[i].len);
+-
+-			break;
+-		default:
+-			pr_debug("Unknown inforec type %d\n", s3info[i].type);
+-		}
+-	}
+-	/* walk through */
+-
+-	if (trump && (result != 2))
+-		result = 0;
+-	return result;
+-}
+diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
+deleted file mode 100644
+index d5737166564e..000000000000
+--- a/drivers/staging/wlan-ng/prism2mgmt.c
++++ /dev/null
+@@ -1,1315 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/*
+- *
+- * Management request handler functions.
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * The functions in this file handle management requests sent from
+- * user mode.
+- *
+- * Most of these functions have two separate blocks of code that are
+- * conditional on whether this is a station or an AP.  This is used
+- * to separate out the STA and AP responses to these management primitives.
+- * It's a choice (good, bad, indifferent?) to have the code in the same
+- * place so it's clear that the same primitive is implemented in both
+- * cases but has different behavior.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#include <linux/if_arp.h>
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/wait.h>
+-#include <linux/sched.h>
+-#include <linux/types.h>
+-#include <linux/wireless.h>
+-#include <linux/netdevice.h>
+-#include <linux/delay.h>
+-#include <linux/io.h>
+-#include <asm/byteorder.h>
+-#include <linux/random.h>
+-#include <linux/usb.h>
+-#include <linux/bitops.h>
+-
+-#include "p80211types.h"
+-#include "p80211hdr.h"
+-#include "p80211mgmt.h"
+-#include "p80211conv.h"
+-#include "p80211msg.h"
+-#include "p80211netdev.h"
+-#include "p80211metadef.h"
+-#include "p80211metastruct.h"
+-#include "hfa384x.h"
+-#include "prism2mgmt.h"
+-
+-/* Converts 802.11 format rate specifications to prism2 */
+-static inline u16 p80211rate_to_p2bit(u32 rate)
+-{
+-	switch (rate & ~BIT(7)) {
+-	case 2:
+-		return BIT(0);
+-	case 4:
+-		return BIT(1);
+-	case 11:
+-		return BIT(2);
+-	case 22:
+-		return BIT(3);
+-	default:
+-		return 0;
+-	}
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_scan
+- *
+- * Initiate a scan for BSSs.
+- *
+- * This function corresponds to MLME-scan.request and part of
+- * MLME-scan.confirm.  As far as I can tell in the standard, there
+- * are no restrictions on when a scan.request may be issued.  We have
+- * to handle in whatever state the driver/MAC happen to be.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_scan(struct wlandevice *wlandev, void *msgp)
+-{
+-	int result = 0;
+-	struct hfa384x *hw = wlandev->priv;
+-	struct p80211msg_dot11req_scan *msg = msgp;
+-	u16 roamingmode, word;
+-	int i, timeout;
+-	int istmpenable = 0;
+-
+-	struct hfa384x_host_scan_request_data scanreq;
+-
+-	/* gatekeeper check */
+-	if (HFA384x_FIRMWARE_VERSION(hw->ident_sta_fw.major,
+-				     hw->ident_sta_fw.minor,
+-				     hw->ident_sta_fw.variant) <
+-	    HFA384x_FIRMWARE_VERSION(1, 3, 2)) {
+-		netdev_err(wlandev->netdev,
+-			   "HostScan not supported with current firmware (<1.3.2).\n");
+-		result = 1;
+-		msg->resultcode.data = P80211ENUM_resultcode_not_supported;
+-		goto exit;
+-	}
+-
+-	memset(&scanreq, 0, sizeof(scanreq));
+-
+-	/* save current roaming mode */
+-	result = hfa384x_drvr_getconfig16(hw,
+-					  HFA384x_RID_CNFROAMINGMODE,
+-					  &roamingmode);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "getconfig(ROAMMODE) failed. result=%d\n", result);
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		goto exit;
+-	}
+-
+-	/* drop into mode 3 for the scan */
+-	result = hfa384x_drvr_setconfig16(hw,
+-					  HFA384x_RID_CNFROAMINGMODE,
+-					  HFA384x_ROAMMODE_HOSTSCAN_HOSTROAM);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "setconfig(ROAMINGMODE) failed. result=%d\n",
+-			   result);
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		goto exit;
+-	}
+-
+-	/* active or passive? */
+-	if (HFA384x_FIRMWARE_VERSION(hw->ident_sta_fw.major,
+-				     hw->ident_sta_fw.minor,
+-				     hw->ident_sta_fw.variant) >
+-	    HFA384x_FIRMWARE_VERSION(1, 5, 0)) {
+-		if (msg->scantype.data != P80211ENUM_scantype_active)
+-			word = msg->maxchanneltime.data;
+-		else
+-			word = 0;
+-
+-		result =
+-		    hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFPASSIVESCANCTRL,
+-					     word);
+-		if (result) {
+-			netdev_warn(wlandev->netdev,
+-				    "Passive scan not supported with current firmware.  (<1.5.1)\n");
+-		}
+-	}
+-
+-	/* set up the txrate to be 2MBPS. Should be fastest basicrate... */
+-	word = HFA384x_RATEBIT_2;
+-	scanreq.tx_rate = cpu_to_le16(word);
+-
+-	/* set up the channel list */
+-	word = 0;
+-	for (i = 0; i < msg->channellist.data.len; i++) {
+-		u8 channel = msg->channellist.data.data[i];
+-
+-		if (channel > 14)
+-			continue;
+-		/* channel 1 is BIT 0 ... channel 14 is BIT 13 */
+-		word |= (1 << (channel - 1));
+-	}
+-	scanreq.channel_list = cpu_to_le16(word);
+-
+-	/* set up the ssid, if present. */
+-	scanreq.ssid.len = cpu_to_le16(msg->ssid.data.len);
+-	memcpy(scanreq.ssid.data, msg->ssid.data.data, msg->ssid.data.len);
+-
+-	/* Enable the MAC port if it's not already enabled  */
+-	result = hfa384x_drvr_getconfig16(hw, HFA384x_RID_PORTSTATUS, &word);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "getconfig(PORTSTATUS) failed. result=%d\n", result);
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		goto exit;
+-	}
+-	if (word == HFA384x_PORTSTATUS_DISABLED) {
+-		__le16 wordbuf[17];
+-
+-		result = hfa384x_drvr_setconfig16(hw,
+-						  HFA384x_RID_CNFROAMINGMODE,
+-						  HFA384x_ROAMMODE_HOSTSCAN_HOSTROAM);
+-		if (result) {
+-			netdev_err(wlandev->netdev,
+-				   "setconfig(ROAMINGMODE) failed. result=%d\n",
+-				   result);
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			goto exit;
+-		}
+-		/* Construct a bogus SSID and assign it to OwnSSID and
+-		 * DesiredSSID
+-		 */
+-		wordbuf[0] = cpu_to_le16(WLAN_SSID_MAXLEN);
+-		get_random_bytes(&wordbuf[1], WLAN_SSID_MAXLEN);
+-		result = hfa384x_drvr_setconfig(hw, HFA384x_RID_CNFOWNSSID,
+-						wordbuf,
+-						HFA384x_RID_CNFOWNSSID_LEN);
+-		if (result) {
+-			netdev_err(wlandev->netdev, "Failed to set OwnSSID.\n");
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			goto exit;
+-		}
+-		result = hfa384x_drvr_setconfig(hw, HFA384x_RID_CNFDESIREDSSID,
+-						wordbuf,
+-						HFA384x_RID_CNFDESIREDSSID_LEN);
+-		if (result) {
+-			netdev_err(wlandev->netdev,
+-				   "Failed to set DesiredSSID.\n");
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			goto exit;
+-		}
+-		/* bsstype */
+-		result = hfa384x_drvr_setconfig16(hw,
+-						  HFA384x_RID_CNFPORTTYPE,
+-						  HFA384x_PORTTYPE_IBSS);
+-		if (result) {
+-			netdev_err(wlandev->netdev,
+-				   "Failed to set CNFPORTTYPE.\n");
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			goto exit;
+-		}
+-		/* ibss options */
+-		result = hfa384x_drvr_setconfig16(hw,
+-						  HFA384x_RID_CREATEIBSS,
+-						  HFA384x_CREATEIBSS_JOINCREATEIBSS);
+-		if (result) {
+-			netdev_err(wlandev->netdev,
+-				   "Failed to set CREATEIBSS.\n");
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			goto exit;
+-		}
+-		result = hfa384x_drvr_enable(hw, 0);
+-		if (result) {
+-			netdev_err(wlandev->netdev,
+-				   "drvr_enable(0) failed. result=%d\n",
+-				   result);
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			goto exit;
+-		}
+-		istmpenable = 1;
+-	}
+-
+-	/* Figure out our timeout first Kus, then HZ */
+-	timeout = msg->channellist.data.len * msg->maxchanneltime.data;
+-	timeout = (timeout * HZ) / 1000;
+-
+-	/* Issue the scan request */
+-	hw->scanflag = 0;
+-
+-	result = hfa384x_drvr_setconfig(hw,
+-					HFA384x_RID_HOSTSCAN, &scanreq,
+-					sizeof(scanreq));
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "setconfig(SCANREQUEST) failed. result=%d\n",
+-			   result);
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		goto exit;
+-	}
+-
+-	/* sleep until info frame arrives */
+-	wait_event_interruptible_timeout(hw->cmdq, hw->scanflag, timeout);
+-
+-	msg->numbss.status = P80211ENUM_msgitem_status_data_ok;
+-	if (hw->scanflag == -1)
+-		hw->scanflag = 0;
+-
+-	msg->numbss.data = hw->scanflag;
+-
+-	hw->scanflag = 0;
+-
+-	/* Disable port if we temporarily enabled it. */
+-	if (istmpenable) {
+-		result = hfa384x_drvr_disable(hw, 0);
+-		if (result) {
+-			netdev_err(wlandev->netdev,
+-				   "drvr_disable(0) failed. result=%d\n",
+-				   result);
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			goto exit;
+-		}
+-	}
+-
+-	/* restore original roaming mode */
+-	result = hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFROAMINGMODE,
+-					  roamingmode);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "setconfig(ROAMMODE) failed. result=%d\n", result);
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		goto exit;
+-	}
+-
+-	result = 0;
+-	msg->resultcode.data = P80211ENUM_resultcode_success;
+-
+-exit:
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_scan_results
+- *
+- * Retrieve the BSS description for one of the BSSs identified in
+- * a scan.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_scan_results(struct wlandevice *wlandev, void *msgp)
+-{
+-	int result = 0;
+-	struct p80211msg_dot11req_scan_results *req;
+-	struct hfa384x *hw = wlandev->priv;
+-	struct hfa384x_hscan_result_sub *item = NULL;
+-
+-	int count;
+-
+-	req = msgp;
+-
+-	req->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-
+-	if (!hw->scanresults) {
+-		netdev_err(wlandev->netdev,
+-			   "dot11req_scan_results can only be used after a successful dot11req_scan.\n");
+-		result = 2;
+-		req->resultcode.data = P80211ENUM_resultcode_invalid_parameters;
+-		goto exit;
+-	}
+-
+-	count = (hw->scanresults->framelen - 3) / 32;
+-	if (count > HFA384x_SCANRESULT_MAX)
+-		count = HFA384x_SCANRESULT_MAX;
+-
+-	if (req->bssindex.data >= count) {
+-		netdev_dbg(wlandev->netdev,
+-			   "requested index (%d) out of range (%d)\n",
+-			   req->bssindex.data, count);
+-		result = 2;
+-		req->resultcode.data = P80211ENUM_resultcode_invalid_parameters;
+-		goto exit;
+-	}
+-
+-	item = &hw->scanresults->info.hscanresult.result[req->bssindex.data];
+-	/* signal and noise */
+-	req->signal.status = P80211ENUM_msgitem_status_data_ok;
+-	req->noise.status = P80211ENUM_msgitem_status_data_ok;
+-	req->signal.data = le16_to_cpu(item->sl);
+-	req->noise.data = le16_to_cpu(item->anl);
+-
+-	/* BSSID */
+-	req->bssid.status = P80211ENUM_msgitem_status_data_ok;
+-	req->bssid.data.len = WLAN_BSSID_LEN;
+-	memcpy(req->bssid.data.data, item->bssid, WLAN_BSSID_LEN);
+-
+-	/* SSID */
+-	req->ssid.status = P80211ENUM_msgitem_status_data_ok;
+-	req->ssid.data.len = le16_to_cpu(item->ssid.len);
+-	req->ssid.data.len = min_t(u16, req->ssid.data.len, WLAN_SSID_MAXLEN);
+-	memcpy(req->ssid.data.data, item->ssid.data, req->ssid.data.len);
+-
+-	/* supported rates */
+-	for (count = 0; count < 10; count++)
+-		if (item->supprates[count] == 0)
+-			break;
+-
+-	for (int i = 0; i < 8; i++) {
+-		if (count > i &&
+-		    DOT11_RATE5_ISBASIC_GET(item->supprates[i])) {
+-			req->basicrate[i].data = item->supprates[i];
+-			req->basicrate[i].status =
+-				P80211ENUM_msgitem_status_data_ok;
+-		}
+-	}
+-
+-	for (int i = 0; i < 8; i++) {
+-		if (count > i) {
+-			req->supprate[i].data = item->supprates[i];
+-			req->supprate[i].status =
+-				P80211ENUM_msgitem_status_data_ok;
+-		}
+-	}
+-
+-	/* beacon period */
+-	req->beaconperiod.status = P80211ENUM_msgitem_status_data_ok;
+-	req->beaconperiod.data = le16_to_cpu(item->bcnint);
+-
+-	/* timestamps */
+-	req->timestamp.status = P80211ENUM_msgitem_status_data_ok;
+-	req->timestamp.data = jiffies;
+-	req->localtime.status = P80211ENUM_msgitem_status_data_ok;
+-	req->localtime.data = jiffies;
+-
+-	/* atim window */
+-	req->ibssatimwindow.status = P80211ENUM_msgitem_status_data_ok;
+-	req->ibssatimwindow.data = le16_to_cpu(item->atim);
+-
+-	/* Channel */
+-	req->dschannel.status = P80211ENUM_msgitem_status_data_ok;
+-	req->dschannel.data = le16_to_cpu(item->chid);
+-
+-	/* capinfo bits */
+-	count = le16_to_cpu(item->capinfo);
+-	req->capinfo.status = P80211ENUM_msgitem_status_data_ok;
+-	req->capinfo.data = count;
+-
+-	/* privacy flag */
+-	req->privacy.status = P80211ENUM_msgitem_status_data_ok;
+-	req->privacy.data = WLAN_GET_MGMT_CAP_INFO_PRIVACY(count);
+-
+-	/* cfpollable */
+-	req->cfpollable.status = P80211ENUM_msgitem_status_data_ok;
+-	req->cfpollable.data = WLAN_GET_MGMT_CAP_INFO_CFPOLLABLE(count);
+-
+-	/* cfpollreq */
+-	req->cfpollreq.status = P80211ENUM_msgitem_status_data_ok;
+-	req->cfpollreq.data = WLAN_GET_MGMT_CAP_INFO_CFPOLLREQ(count);
+-
+-	/* bsstype */
+-	req->bsstype.status = P80211ENUM_msgitem_status_data_ok;
+-	req->bsstype.data = (WLAN_GET_MGMT_CAP_INFO_ESS(count)) ?
+-	    P80211ENUM_bsstype_infrastructure : P80211ENUM_bsstype_independent;
+-
+-	result = 0;
+-	req->resultcode.data = P80211ENUM_resultcode_success;
+-
+-exit:
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_start
+- *
+- * Start a BSS.  Any station can do this for IBSS, only AP for ESS.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_start(struct wlandevice *wlandev, void *msgp)
+-{
+-	int result = 0;
+-	struct hfa384x *hw = wlandev->priv;
+-	struct p80211msg_dot11req_start *msg = msgp;
+-
+-	struct p80211pstrd *pstr;
+-	u8 bytebuf[80];
+-	struct hfa384x_bytestr *p2bytestr = (struct hfa384x_bytestr *)bytebuf;
+-	u16 word;
+-
+-	wlandev->macmode = WLAN_MACMODE_NONE;
+-
+-	/* Set the SSID */
+-	memcpy(&wlandev->ssid, &msg->ssid.data, sizeof(msg->ssid.data));
+-
+-	/*** ADHOC IBSS ***/
+-	/* see if current f/w is less than 8c3 */
+-	if (HFA384x_FIRMWARE_VERSION(hw->ident_sta_fw.major,
+-				     hw->ident_sta_fw.minor,
+-				     hw->ident_sta_fw.variant) <
+-	    HFA384x_FIRMWARE_VERSION(0, 8, 3)) {
+-		/* Ad-Hoc not quite supported on Prism2 */
+-		msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-		msg->resultcode.data = P80211ENUM_resultcode_not_supported;
+-		goto done;
+-	}
+-
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-
+-	/*** STATION ***/
+-	/* Set the REQUIRED config items */
+-	/* SSID */
+-	pstr = (struct p80211pstrd *)&msg->ssid.data;
+-	prism2mgmt_pstr2bytestr(p2bytestr, pstr);
+-	result = hfa384x_drvr_setconfig(hw, HFA384x_RID_CNFOWNSSID,
+-					bytebuf, HFA384x_RID_CNFOWNSSID_LEN);
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to set CnfOwnSSID\n");
+-		goto failed;
+-	}
+-	result = hfa384x_drvr_setconfig(hw, HFA384x_RID_CNFDESIREDSSID,
+-					bytebuf,
+-					HFA384x_RID_CNFDESIREDSSID_LEN);
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to set CnfDesiredSSID\n");
+-		goto failed;
+-	}
+-
+-	/* bsstype - we use the default in the ap firmware */
+-	/* IBSS port */
+-	hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFPORTTYPE, 0);
+-
+-	/* beacon period */
+-	word = msg->beaconperiod.data;
+-	result = hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFAPBCNINT, word);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "Failed to set beacon period=%d.\n", word);
+-		goto failed;
+-	}
+-
+-	/* dschannel */
+-	word = msg->dschannel.data;
+-	result = hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFOWNCHANNEL, word);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "Failed to set channel=%d.\n", word);
+-		goto failed;
+-	}
+-	/* Basic rates */
+-	word = p80211rate_to_p2bit(msg->basicrate1.data);
+-	if (msg->basicrate2.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->basicrate2.data);
+-
+-	if (msg->basicrate3.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->basicrate3.data);
+-
+-	if (msg->basicrate4.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->basicrate4.data);
+-
+-	if (msg->basicrate5.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->basicrate5.data);
+-
+-	if (msg->basicrate6.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->basicrate6.data);
+-
+-	if (msg->basicrate7.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->basicrate7.data);
+-
+-	if (msg->basicrate8.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->basicrate8.data);
+-
+-	result = hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFBASICRATES, word);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "Failed to set basicrates=%d.\n", word);
+-		goto failed;
+-	}
+-
+-	/* Operational rates (supprates and txratecontrol) */
+-	word = p80211rate_to_p2bit(msg->operationalrate1.data);
+-	if (msg->operationalrate2.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->operationalrate2.data);
+-
+-	if (msg->operationalrate3.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->operationalrate3.data);
+-
+-	if (msg->operationalrate4.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->operationalrate4.data);
+-
+-	if (msg->operationalrate5.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->operationalrate5.data);
+-
+-	if (msg->operationalrate6.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->operationalrate6.data);
+-
+-	if (msg->operationalrate7.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->operationalrate7.data);
+-
+-	if (msg->operationalrate8.status == P80211ENUM_msgitem_status_data_ok)
+-		word |= p80211rate_to_p2bit(msg->operationalrate8.data);
+-
+-	result = hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFSUPPRATES, word);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "Failed to set supprates=%d.\n", word);
+-		goto failed;
+-	}
+-
+-	result = hfa384x_drvr_setconfig16(hw, HFA384x_RID_TXRATECNTL, word);
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to set txrates=%d.\n",
+-			   word);
+-		goto failed;
+-	}
+-
+-	/* Set the macmode so the frame setup code knows what to do */
+-	if (msg->bsstype.data == P80211ENUM_bsstype_independent) {
+-		wlandev->macmode = WLAN_MACMODE_IBSS_STA;
+-		/* lets extend the data length a bit */
+-		hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFMAXDATALEN, 2304);
+-	}
+-
+-	/* Enable the Port */
+-	result = hfa384x_drvr_enable(hw, 0);
+-	if (result) {
+-		netdev_err(wlandev->netdev,
+-			   "Enable macport failed, result=%d.\n", result);
+-		goto failed;
+-	}
+-
+-	msg->resultcode.data = P80211ENUM_resultcode_success;
+-
+-	goto done;
+-failed:
+-	netdev_dbg(wlandev->netdev,
+-		   "Failed to set a config option, result=%d\n", result);
+-	msg->resultcode.data = P80211ENUM_resultcode_invalid_parameters;
+-
+-done:
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_readpda
+- *
+- * Collect the PDA data and put it in the message.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_readpda(struct wlandevice *wlandev, void *msgp)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	struct p80211msg_p2req_readpda *msg = msgp;
+-	int result;
+-
+-	/* We only support collecting the PDA when in the FWLOAD
+-	 * state.
+-	 */
+-	if (wlandev->msdstate != WLAN_MSD_FWLOAD) {
+-		netdev_err(wlandev->netdev,
+-			   "PDA may only be read in the fwload state.\n");
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	} else {
+-		/*  Call drvr_readpda(), it handles the auxport enable
+-		 *  and validating the returned PDA.
+-		 */
+-		result = hfa384x_drvr_readpda(hw,
+-					      msg->pda.data,
+-					      HFA384x_PDA_LEN_MAX);
+-		if (result) {
+-			netdev_err(wlandev->netdev,
+-				   "hfa384x_drvr_readpda() failed, result=%d\n",
+-				   result);
+-
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			msg->resultcode.status =
+-			    P80211ENUM_msgitem_status_data_ok;
+-			return 0;
+-		}
+-		msg->pda.status = P80211ENUM_msgitem_status_data_ok;
+-		msg->resultcode.data = P80211ENUM_resultcode_success;
+-		msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	}
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_ramdl_state
+- *
+- * Establishes the beginning/end of a card RAM download session.
+- *
+- * It is expected that the ramdl_write() function will be called
+- * one or more times between the 'enable' and 'disable' calls to
+- * this function.
+- *
+- * Note: This function should not be called when a mac comm port
+- *       is active.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_ramdl_state(struct wlandevice *wlandev, void *msgp)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	struct p80211msg_p2req_ramdl_state *msg = msgp;
+-
+-	if (wlandev->msdstate != WLAN_MSD_FWLOAD) {
+-		netdev_err(wlandev->netdev,
+-			   "ramdl_state(): may only be called in the fwload state.\n");
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-		return 0;
+-	}
+-
+-	/*
+-	 ** Note: Interrupts are locked out if this is an AP and are NOT
+-	 ** locked out if this is a station.
+-	 */
+-
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	if (msg->enable.data == P80211ENUM_truth_true) {
+-		if (hfa384x_drvr_ramdl_enable(hw, msg->exeaddr.data)) {
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-		} else {
+-			msg->resultcode.data = P80211ENUM_resultcode_success;
+-		}
+-	} else {
+-		hfa384x_drvr_ramdl_disable(hw);
+-		msg->resultcode.data = P80211ENUM_resultcode_success;
+-	}
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_ramdl_write
+- *
+- * Writes a buffer to the card RAM using the download state.  This
+- * is for writing code to card RAM.  To just read or write raw data
+- * use the aux functions.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_ramdl_write(struct wlandevice *wlandev, void *msgp)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	struct p80211msg_p2req_ramdl_write *msg = msgp;
+-	u32 addr;
+-	u32 len;
+-	u8 *buf;
+-
+-	if (wlandev->msdstate != WLAN_MSD_FWLOAD) {
+-		netdev_err(wlandev->netdev,
+-			   "ramdl_write(): may only be called in the fwload state.\n");
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-		return 0;
+-	}
+-
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	/* first validate the length */
+-	if (msg->len.data > sizeof(msg->data.data)) {
+-		msg->resultcode.status =
+-		    P80211ENUM_resultcode_invalid_parameters;
+-		return 0;
+-	}
+-	/* call the hfa384x function to do the write */
+-	addr = msg->addr.data;
+-	len = msg->len.data;
+-	buf = msg->data.data;
+-	if (hfa384x_drvr_ramdl_write(hw, addr, buf, len))
+-		msg->resultcode.data = P80211ENUM_resultcode_refused;
+-
+-	msg->resultcode.data = P80211ENUM_resultcode_success;
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_flashdl_state
+- *
+- * Establishes the beginning/end of a card Flash download session.
+- *
+- * It is expected that the flashdl_write() function will be called
+- * one or more times between the 'enable' and 'disable' calls to
+- * this function.
+- *
+- * Note: This function should not be called when a mac comm port
+- *       is active.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_flashdl_state(struct wlandevice *wlandev, void *msgp)
+-{
+-	int result = 0;
+-	struct hfa384x *hw = wlandev->priv;
+-	struct p80211msg_p2req_flashdl_state *msg = msgp;
+-
+-	if (wlandev->msdstate != WLAN_MSD_FWLOAD) {
+-		netdev_err(wlandev->netdev,
+-			   "flashdl_state(): may only be called in the fwload state.\n");
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-		return 0;
+-	}
+-
+-	/*
+-	 ** Note: Interrupts are locked out if this is an AP and are NOT
+-	 ** locked out if this is a station.
+-	 */
+-
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	if (msg->enable.data == P80211ENUM_truth_true) {
+-		if (hfa384x_drvr_flashdl_enable(hw)) {
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-		} else {
+-			msg->resultcode.data = P80211ENUM_resultcode_success;
+-		}
+-	} else {
+-		hfa384x_drvr_flashdl_disable(hw);
+-		msg->resultcode.data = P80211ENUM_resultcode_success;
+-		/* NOTE: At this point, the MAC is in the post-reset
+-		 * state and the driver is in the fwload state.
+-		 * We need to get the MAC back into the fwload
+-		 * state.  To do this, we set the nsdstate to HWPRESENT
+-		 * and then call the ifstate function to redo everything
+-		 * that got us into the fwload state.
+-		 */
+-		wlandev->msdstate = WLAN_MSD_HWPRESENT;
+-		result = prism2sta_ifstate(wlandev, P80211ENUM_ifstate_fwload);
+-		if (result != P80211ENUM_resultcode_success) {
+-			netdev_err(wlandev->netdev,
+-				   "prism2sta_ifstate(fwload) failed, P80211ENUM_resultcode=%d\n",
+-				   result);
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-			result = -1;
+-		}
+-	}
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_flashdl_write
+- *
+- *
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_flashdl_write(struct wlandevice *wlandev, void *msgp)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	struct p80211msg_p2req_flashdl_write *msg = msgp;
+-	u32 addr;
+-	u32 len;
+-	u8 *buf;
+-
+-	if (wlandev->msdstate != WLAN_MSD_FWLOAD) {
+-		netdev_err(wlandev->netdev,
+-			   "flashdl_write(): may only be called in the fwload state.\n");
+-		msg->resultcode.data =
+-		    P80211ENUM_resultcode_implementation_failure;
+-		msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-		return 0;
+-	}
+-
+-	/*
+-	 ** Note: Interrupts are locked out if this is an AP and are NOT
+-	 ** locked out if this is a station.
+-	 */
+-
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	/* first validate the length */
+-	if (msg->len.data > sizeof(msg->data.data)) {
+-		msg->resultcode.status =
+-		    P80211ENUM_resultcode_invalid_parameters;
+-		return 0;
+-	}
+-	/* call the hfa384x function to do the write */
+-	addr = msg->addr.data;
+-	len = msg->len.data;
+-	buf = msg->data.data;
+-	if (hfa384x_drvr_flashdl_write(hw, addr, buf, len))
+-		msg->resultcode.data = P80211ENUM_resultcode_refused;
+-
+-	msg->resultcode.data = P80211ENUM_resultcode_success;
+-
+-	return 0;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_autojoin
+- *
+- * Associate with an ESS.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_autojoin(struct wlandevice *wlandev, void *msgp)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	int result = 0;
+-	u16 reg;
+-	u16 port_type;
+-	struct p80211msg_lnxreq_autojoin *msg = msgp;
+-	struct p80211pstrd *pstr;
+-	u8 bytebuf[256];
+-	struct hfa384x_bytestr *p2bytestr = (struct hfa384x_bytestr *)bytebuf;
+-
+-	wlandev->macmode = WLAN_MACMODE_NONE;
+-
+-	/* Set the SSID */
+-	memcpy(&wlandev->ssid, &msg->ssid.data, sizeof(msg->ssid.data));
+-
+-	/* Disable the Port */
+-	hfa384x_drvr_disable(hw, 0);
+-
+-	/*** STATION ***/
+-	/* Set the TxRates */
+-	hfa384x_drvr_setconfig16(hw, HFA384x_RID_TXRATECNTL, 0x000f);
+-
+-	/* Set the auth type */
+-	if (msg->authtype.data == P80211ENUM_authalg_sharedkey)
+-		reg = HFA384x_CNFAUTHENTICATION_SHAREDKEY;
+-	else
+-		reg = HFA384x_CNFAUTHENTICATION_OPENSYSTEM;
+-
+-	hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFAUTHENTICATION, reg);
+-
+-	/* Set the ssid */
+-	memset(bytebuf, 0, 256);
+-	pstr = (struct p80211pstrd *)&msg->ssid.data;
+-	prism2mgmt_pstr2bytestr(p2bytestr, pstr);
+-	result = hfa384x_drvr_setconfig(hw, HFA384x_RID_CNFDESIREDSSID,
+-					bytebuf,
+-					HFA384x_RID_CNFDESIREDSSID_LEN);
+-	port_type = HFA384x_PORTTYPE_BSS;
+-	/* Set the PortType */
+-	hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFPORTTYPE, port_type);
+-
+-	/* Enable the Port */
+-	hfa384x_drvr_enable(hw, 0);
+-
+-	/* Set the resultcode */
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	msg->resultcode.data = P80211ENUM_resultcode_success;
+-
+-	return result;
+-}
+-
+-/*----------------------------------------------------------------
+- * prism2mgmt_wlansniff
+- *
+- * Start or stop sniffing.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *	interrupt
+- *----------------------------------------------------------------
+- */
+-int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+-{
+-	int result = 0;
+-	struct p80211msg_lnxreq_wlansniff *msg = msgp;
+-
+-	struct hfa384x *hw = wlandev->priv;
+-	u16 word;
+-
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	switch (msg->enable.data) {
+-	case P80211ENUM_truth_false:
+-		/* Confirm that we're in monitor mode */
+-		if (wlandev->netdev->type == ARPHRD_ETHER) {
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_invalid_parameters;
+-			return 0;
+-		}
+-		/* Disable monitor mode */
+-		result = hfa384x_cmd_monitor(hw, HFA384x_MONITOR_DISABLE);
+-		if (result) {
+-			netdev_dbg(wlandev->netdev,
+-				   "failed to disable monitor mode, result=%d\n",
+-				   result);
+-			goto failed;
+-		}
+-		/* Disable port 0 */
+-		result = hfa384x_drvr_disable(hw, 0);
+-		if (result) {
+-			netdev_dbg
+-			(wlandev->netdev,
+-			     "failed to disable port 0 after sniffing, result=%d\n",
+-			     result);
+-			goto failed;
+-		}
+-		/* Clear the driver state */
+-		wlandev->netdev->type = ARPHRD_ETHER;
+-
+-		/* Restore the wepflags */
+-		result = hfa384x_drvr_setconfig16(hw,
+-						  HFA384x_RID_CNFWEPFLAGS,
+-						  hw->presniff_wepflags);
+-		if (result) {
+-			netdev_dbg
+-			    (wlandev->netdev,
+-			     "failed to restore wepflags=0x%04x, result=%d\n",
+-			     hw->presniff_wepflags, result);
+-			goto failed;
+-		}
+-
+-		/* Set the port to its prior type and enable (if necessary) */
+-		if (hw->presniff_port_type != 0) {
+-			word = hw->presniff_port_type;
+-			result = hfa384x_drvr_setconfig16(hw,
+-							  HFA384x_RID_CNFPORTTYPE,
+-							  word);
+-			if (result) {
+-				netdev_dbg
+-				    (wlandev->netdev,
+-				     "failed to restore porttype, result=%d\n",
+-				     result);
+-				goto failed;
+-			}
+-
+-			/* Enable the port */
+-			result = hfa384x_drvr_enable(hw, 0);
+-			if (result) {
+-				netdev_dbg(wlandev->netdev,
+-					   "failed to enable port to presniff setting, result=%d\n",
+-					   result);
+-				goto failed;
+-			}
+-		} else {
+-			result = hfa384x_drvr_disable(hw, 0);
+-		}
+-
+-		netdev_info(wlandev->netdev, "monitor mode disabled\n");
+-		msg->resultcode.data = P80211ENUM_resultcode_success;
+-		return 0;
+-	case P80211ENUM_truth_true:
+-		/* Disable the port (if enabled), only check Port 0 */
+-		if (hw->port_enabled[0]) {
+-			if (wlandev->netdev->type == ARPHRD_ETHER) {
+-				/* Save macport 0 state */
+-				result = hfa384x_drvr_getconfig16(hw,
+-								  HFA384x_RID_CNFPORTTYPE,
+-								  &hw->presniff_port_type);
+-				if (result) {
+-					netdev_dbg
+-					(wlandev->netdev,
+-					     "failed to read porttype, result=%d\n",
+-					     result);
+-					goto failed;
+-				}
+-				/* Save the wepflags state */
+-				result = hfa384x_drvr_getconfig16(hw,
+-								  HFA384x_RID_CNFWEPFLAGS,
+-								  &hw->presniff_wepflags);
+-				if (result) {
+-					netdev_dbg
+-					(wlandev->netdev,
+-					     "failed to read wepflags, result=%d\n",
+-					     result);
+-					goto failed;
+-				}
+-				hfa384x_drvr_stop(hw);
+-				result = hfa384x_drvr_start(hw);
+-				if (result) {
+-					netdev_dbg(wlandev->netdev,
+-						   "failed to restart the card for sniffing, result=%d\n",
+-						   result);
+-					goto failed;
+-				}
+-			} else {
+-				/* Disable the port */
+-				result = hfa384x_drvr_disable(hw, 0);
+-				if (result) {
+-					netdev_dbg(wlandev->netdev,
+-						   "failed to enable port for sniffing, result=%d\n",
+-						   result);
+-					goto failed;
+-				}
+-			}
+-		} else {
+-			hw->presniff_port_type = 0;
+-		}
+-
+-		/* Set the channel we wish to sniff  */
+-		word = msg->channel.data;
+-		result = hfa384x_drvr_setconfig16(hw,
+-						  HFA384x_RID_CNFOWNCHANNEL,
+-						  word);
+-		hw->sniff_channel = word;
+-
+-		if (result) {
+-			netdev_dbg(wlandev->netdev,
+-				   "failed to set channel %d, result=%d\n",
+-				   word, result);
+-			goto failed;
+-		}
+-
+-		/* Now if we're already sniffing, we can skip the rest */
+-		if (wlandev->netdev->type != ARPHRD_ETHER) {
+-			/* Set the port type to pIbss */
+-			word = HFA384x_PORTTYPE_PSUEDOIBSS;
+-			result = hfa384x_drvr_setconfig16(hw,
+-							  HFA384x_RID_CNFPORTTYPE,
+-							  word);
+-			if (result) {
+-				netdev_dbg
+-				    (wlandev->netdev,
+-				     "failed to set porttype %d, result=%d\n",
+-				     word, result);
+-				goto failed;
+-			}
+-			if ((msg->keepwepflags.status ==
+-			     P80211ENUM_msgitem_status_data_ok) &&
+-			    (msg->keepwepflags.data != P80211ENUM_truth_true)) {
+-				/* Set the wepflags for no decryption */
+-				word = HFA384x_WEPFLAGS_DISABLE_TXCRYPT |
+-				    HFA384x_WEPFLAGS_DISABLE_RXCRYPT;
+-				result =
+-				    hfa384x_drvr_setconfig16(hw,
+-							     HFA384x_RID_CNFWEPFLAGS,
+-							     word);
+-			}
+-
+-			if (result) {
+-				netdev_dbg
+-				  (wlandev->netdev,
+-				   "failed to set wepflags=0x%04x, result=%d\n",
+-				   word, result);
+-				goto failed;
+-			}
+-		}
+-
+-		/* Do we want to strip the FCS in monitor mode? */
+-		if ((msg->stripfcs.status ==
+-		     P80211ENUM_msgitem_status_data_ok) &&
+-		    (msg->stripfcs.data == P80211ENUM_truth_true)) {
+-			hw->sniff_fcs = 0;
+-		} else {
+-			hw->sniff_fcs = 1;
+-		}
+-
+-		/* Do we want to truncate the packets? */
+-		if (msg->packet_trunc.status ==
+-		    P80211ENUM_msgitem_status_data_ok) {
+-			hw->sniff_truncate = msg->packet_trunc.data;
+-		} else {
+-			hw->sniff_truncate = 0;
+-		}
+-
+-		/* Enable the port */
+-		result = hfa384x_drvr_enable(hw, 0);
+-		if (result) {
+-			netdev_dbg
+-			    (wlandev->netdev,
+-			     "failed to enable port for sniffing, result=%d\n",
+-			     result);
+-			goto failed;
+-		}
+-		/* Enable monitor mode */
+-		result = hfa384x_cmd_monitor(hw, HFA384x_MONITOR_ENABLE);
+-		if (result) {
+-			netdev_dbg(wlandev->netdev,
+-				   "failed to enable monitor mode, result=%d\n",
+-				   result);
+-			goto failed;
+-		}
+-
+-		if (wlandev->netdev->type == ARPHRD_ETHER)
+-			netdev_info(wlandev->netdev, "monitor mode enabled\n");
+-
+-		/* Set the driver state */
+-		/* Do we want the prism2 header? */
+-		if ((msg->prismheader.status ==
+-		     P80211ENUM_msgitem_status_data_ok) &&
+-		    (msg->prismheader.data == P80211ENUM_truth_true)) {
+-			hw->sniffhdr = 0;
+-			wlandev->netdev->type = ARPHRD_IEEE80211_PRISM;
+-		} else if ((msg->wlanheader.status ==
+-			    P80211ENUM_msgitem_status_data_ok) &&
+-			   (msg->wlanheader.data == P80211ENUM_truth_true)) {
+-			hw->sniffhdr = 1;
+-			wlandev->netdev->type = ARPHRD_IEEE80211_PRISM;
+-		} else {
+-			wlandev->netdev->type = ARPHRD_IEEE80211;
+-		}
+-
+-		msg->resultcode.data = P80211ENUM_resultcode_success;
+-		return 0;
+-	default:
+-		msg->resultcode.data = P80211ENUM_resultcode_invalid_parameters;
+-		return 0;
+-	}
+-
+-failed:
+-	msg->resultcode.data = P80211ENUM_resultcode_refused;
+-	return 0;
+-}
+diff --git a/drivers/staging/wlan-ng/prism2mgmt.h b/drivers/staging/wlan-ng/prism2mgmt.h
+deleted file mode 100644
+index 17222516e85e..000000000000
+--- a/drivers/staging/wlan-ng/prism2mgmt.h
++++ /dev/null
+@@ -1,89 +0,0 @@
+-/* SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1) */
+-/*
+- *
+- * Declares the mgmt command handler functions
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file contains the constants and data structures for interaction
+- * with the hfa384x Wireless LAN (WLAN) Media Access Controller (MAC).
+- * The hfa384x is a portion of the Harris PRISM(tm) WLAN chipset.
+- *
+- * [Implementation and usage notes]
+- *
+- * [References]
+- *   CW10 Programmer's Manual v1.5
+- *   IEEE 802.11 D10.0
+- *
+- *    --------------------------------------------------------------------
+- */
+-
+-#ifndef _PRISM2MGMT_H
+-#define _PRISM2MGMT_H
+-
+-extern int prism2_reset_holdtime;
+-extern int prism2_reset_settletime;
+-
+-u32 prism2sta_ifstate(struct wlandevice *wlandev, u32 ifstate);
+-
+-void prism2sta_ev_info(struct wlandevice *wlandev, struct hfa384x_inf_frame *inf);
+-void prism2sta_ev_tx(struct wlandevice *wlandev, u16 status);
+-void prism2sta_ev_alloc(struct wlandevice *wlandev);
+-
+-int prism2mgmt_mibset_mibget(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_scan(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_scan_results(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_start(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_readpda(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_ramdl_state(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_ramdl_write(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_flashdl_state(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_flashdl_write(struct wlandevice *wlandev, void *msgp);
+-int prism2mgmt_autojoin(struct wlandevice *wlandev, void *msgp);
+-
+-/*---------------------------------------------------------------
+- * conversion functions going between wlan message data types and
+- * Prism2 data types
+- *---------------------------------------------------------------
+- */
+-
+-/* byte area conversion functions*/
+-void prism2mgmt_bytearea2pstr(u8 *bytearea, struct p80211pstrd *pstr, int len);
+-
+-/* byte string conversion functions*/
+-void prism2mgmt_pstr2bytestr(struct hfa384x_bytestr *bytestr,
+-			     struct p80211pstrd *pstr);
+-void prism2mgmt_bytestr2pstr(struct hfa384x_bytestr *bytestr,
+-			     struct p80211pstrd *pstr);
+-
+-void prism2sta_processing_defer(struct work_struct *data);
+-
+-void prism2sta_commsqual_defer(struct work_struct *data);
+-void prism2sta_commsqual_timer(struct timer_list *t);
+-
+-/* Interface callback functions, passing data back up to the cfg80211 layer */
+-void prism2_connect_result(struct wlandevice *wlandev, u8 failed);
+-void prism2_disconnected(struct wlandevice *wlandev);
+-void prism2_roamed(struct wlandevice *wlandev);
+-
+-#endif
+diff --git a/drivers/staging/wlan-ng/prism2mib.c b/drivers/staging/wlan-ng/prism2mib.c
+deleted file mode 100644
+index 4346b90c1a77..000000000000
+--- a/drivers/staging/wlan-ng/prism2mib.c
++++ /dev/null
+@@ -1,742 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/*
+- *
+- * Management request for mibset/mibget
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * The functions in this file handle the mibset/mibget management
+- * functions.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/types.h>
+-#include <linux/wireless.h>
+-#include <linux/netdevice.h>
+-#include <linux/io.h>
+-#include <linux/delay.h>
+-#include <asm/byteorder.h>
+-#include <linux/usb.h>
+-#include <linux/bitops.h>
+-
+-#include "p80211types.h"
+-#include "p80211hdr.h"
+-#include "p80211mgmt.h"
+-#include "p80211conv.h"
+-#include "p80211msg.h"
+-#include "p80211netdev.h"
+-#include "p80211metadef.h"
+-#include "p80211metastruct.h"
+-#include "hfa384x.h"
+-#include "prism2mgmt.h"
+-
+-#define MIB_TMP_MAXLEN    200	/* Max length of RID record (in bytes). */
+-
+-#define  F_STA        0x1	/* MIB is supported on stations. */
+-#define  F_READ       0x2	/* MIB may be read. */
+-#define  F_WRITE      0x4	/* MIB may be written. */
+-
+-struct mibrec {
+-	u32 did;
+-	u16 flag;
+-	u16 parm1;
+-	u16 parm2;
+-	u16 parm3;
+-	int (*func)(struct mibrec *mib,
+-		    int isget,
+-		    struct wlandevice *wlandev,
+-		    struct hfa384x *hw,
+-		    struct p80211msg_dot11req_mibset *msg, void *data);
+-};
+-
+-static int prism2mib_bytearea2pstr(struct mibrec *mib,
+-				   int isget,
+-				   struct wlandevice *wlandev,
+-				   struct hfa384x *hw,
+-				   struct p80211msg_dot11req_mibset *msg,
+-				   void *data);
+-
+-static int prism2mib_uint32(struct mibrec *mib,
+-			    int isget,
+-			    struct wlandevice *wlandev,
+-			    struct hfa384x *hw,
+-			    struct p80211msg_dot11req_mibset *msg, void *data);
+-
+-static int prism2mib_flag(struct mibrec *mib,
+-			  int isget,
+-			  struct wlandevice *wlandev,
+-			  struct hfa384x *hw,
+-			  struct p80211msg_dot11req_mibset *msg, void *data);
+-
+-static int prism2mib_wepdefaultkey(struct mibrec *mib,
+-				   int isget,
+-				   struct wlandevice *wlandev,
+-				   struct hfa384x *hw,
+-				   struct p80211msg_dot11req_mibset *msg,
+-				   void *data);
+-
+-static int prism2mib_privacyinvoked(struct mibrec *mib,
+-				    int isget,
+-				    struct wlandevice *wlandev,
+-				    struct hfa384x *hw,
+-				    struct p80211msg_dot11req_mibset *msg,
+-				    void *data);
+-
+-static int
+-prism2mib_fragmentationthreshold(struct mibrec *mib,
+-				 int isget,
+-				 struct wlandevice *wlandev,
+-				 struct hfa384x *hw,
+-				 struct p80211msg_dot11req_mibset *msg,
+-				 void *data);
+-
+-static int prism2mib_priv(struct mibrec *mib,
+-			  int isget,
+-			  struct wlandevice *wlandev,
+-			  struct hfa384x *hw,
+-			  struct p80211msg_dot11req_mibset *msg, void *data);
+-
+-static struct mibrec mibtab[] = {
+-	/* dot11smt MIB's */
+-	{didmib_dot11smt_wepdefaultkeystable_key(1),
+-	 F_STA | F_WRITE,
+-	 HFA384x_RID_CNFWEPDEFAULTKEY0, 0, 0,
+-	 prism2mib_wepdefaultkey},
+-	{didmib_dot11smt_wepdefaultkeystable_key(2),
+-	 F_STA | F_WRITE,
+-	 HFA384x_RID_CNFWEPDEFAULTKEY1, 0, 0,
+-	 prism2mib_wepdefaultkey},
+-	{didmib_dot11smt_wepdefaultkeystable_key(3),
+-	 F_STA | F_WRITE,
+-	 HFA384x_RID_CNFWEPDEFAULTKEY2, 0, 0,
+-	 prism2mib_wepdefaultkey},
+-	{didmib_dot11smt_wepdefaultkeystable_key(4),
+-	 F_STA | F_WRITE,
+-	 HFA384x_RID_CNFWEPDEFAULTKEY3, 0, 0,
+-	 prism2mib_wepdefaultkey},
+-	{DIDMIB_DOT11SMT_PRIVACYTABLE_PRIVACYINVOKED,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_CNFWEPFLAGS, HFA384x_WEPFLAGS_PRIVINVOKED, 0,
+-	 prism2mib_privacyinvoked},
+-	{DIDMIB_DOT11SMT_PRIVACYTABLE_WEPDEFAULTKEYID,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_CNFWEPDEFAULTKEYID, 0, 0,
+-	 prism2mib_uint32},
+-	{DIDMIB_DOT11SMT_PRIVACYTABLE_EXCLUDEUNENCRYPTED,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_CNFWEPFLAGS, HFA384x_WEPFLAGS_EXCLUDE, 0,
+-	 prism2mib_flag},
+-
+-	/* dot11mac MIB's */
+-
+-	{DIDMIB_DOT11MAC_OPERATIONTABLE_MACADDRESS,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_CNFOWNMACADDR, HFA384x_RID_CNFOWNMACADDR_LEN, 0,
+-	 prism2mib_bytearea2pstr},
+-	{DIDMIB_DOT11MAC_OPERATIONTABLE_RTSTHRESHOLD,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_RTSTHRESH, 0, 0,
+-	 prism2mib_uint32},
+-	{DIDMIB_DOT11MAC_OPERATIONTABLE_SHORTRETRYLIMIT,
+-	 F_STA | F_READ,
+-	 HFA384x_RID_SHORTRETRYLIMIT, 0, 0,
+-	 prism2mib_uint32},
+-	{DIDMIB_DOT11MAC_OPERATIONTABLE_LONGRETRYLIMIT,
+-	 F_STA | F_READ,
+-	 HFA384x_RID_LONGRETRYLIMIT, 0, 0,
+-	 prism2mib_uint32},
+-	{DIDMIB_DOT11MAC_OPERATIONTABLE_FRAGMENTATIONTHRESHOLD,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_FRAGTHRESH, 0, 0,
+-	 prism2mib_fragmentationthreshold},
+-	{DIDMIB_DOT11MAC_OPERATIONTABLE_MAXTRANSMITMSDULIFETIME,
+-	 F_STA | F_READ,
+-	 HFA384x_RID_MAXTXLIFETIME, 0, 0,
+-	 prism2mib_uint32},
+-
+-	/* dot11phy MIB's */
+-
+-	{DIDMIB_DOT11PHY_DSSSTABLE_CURRENTCHANNEL,
+-	 F_STA | F_READ,
+-	 HFA384x_RID_CURRENTCHANNEL, 0, 0,
+-	 prism2mib_uint32},
+-	{DIDMIB_DOT11PHY_TXPOWERTABLE_CURRENTTXPOWERLEVEL,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_TXPOWERMAX, 0, 0,
+-	 prism2mib_uint32},
+-
+-	/* p2Static MIB's */
+-
+-	{DIDMIB_P2_STATIC_CNFPORTTYPE,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_CNFPORTTYPE, 0, 0,
+-	 prism2mib_uint32},
+-
+-	/* p2MAC MIB's */
+-
+-	{DIDMIB_P2_MAC_CURRENTTXRATE,
+-	 F_STA | F_READ,
+-	 HFA384x_RID_CURRENTTXRATE, 0, 0,
+-	 prism2mib_uint32},
+-
+-	/* And finally, lnx mibs */
+-	{DIDMIB_LNX_CONFIGTABLE_RSNAIE,
+-	 F_STA | F_READ | F_WRITE,
+-	 HFA384x_RID_CNFWPADATA, 0, 0,
+-	 prism2mib_priv},
+-	{0, 0, 0, 0, 0, NULL}
+-};
+-
+-/*
+- * prism2mgmt_mibset_mibget
+- *
+- * Set the value of a mib item.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	0	success and done
+- *	<0	success, but we're waiting for something to finish.
+- *	>0	an error occurred while handling the message.
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *	interrupt
+- */
+-
+-int prism2mgmt_mibset_mibget(struct wlandevice *wlandev, void *msgp)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	int result, isget;
+-	struct mibrec *mib;
+-
+-	u16 which;
+-
+-	struct p80211msg_dot11req_mibset *msg = msgp;
+-	struct p80211itemd *mibitem;
+-
+-	msg->resultcode.status = P80211ENUM_msgitem_status_data_ok;
+-	msg->resultcode.data = P80211ENUM_resultcode_success;
+-
+-	/*
+-	 ** Determine if this is an Access Point or a station.
+-	 */
+-
+-	which = F_STA;
+-
+-	/*
+-	 ** Find the MIB in the MIB table.  Note that a MIB may be in the
+-	 ** table twice...once for an AP and once for a station.  Make sure
+-	 ** to get the correct one.  Note that DID=0 marks the end of the
+-	 ** MIB table.
+-	 */
+-
+-	mibitem = (struct p80211itemd *)msg->mibattribute.data;
+-
+-	for (mib = mibtab; mib->did != 0; mib++)
+-		if (mib->did == mibitem->did && (mib->flag & which))
+-			break;
+-
+-	if (mib->did == 0) {
+-		msg->resultcode.data = P80211ENUM_resultcode_not_supported;
+-		goto done;
+-	}
+-
+-	/*
+-	 ** Determine if this is a "mibget" or a "mibset".  If this is a
+-	 ** "mibget", then make sure that the MIB may be read.  Otherwise,
+-	 ** this is a "mibset" so make sure that the MIB may be written.
+-	 */
+-
+-	isget = (msg->msgcode == DIDMSG_DOT11REQ_MIBGET);
+-
+-	if (isget) {
+-		if (!(mib->flag & F_READ)) {
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_cant_get_writeonly_mib;
+-			goto done;
+-		}
+-	} else {
+-		if (!(mib->flag & F_WRITE)) {
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_cant_set_readonly_mib;
+-			goto done;
+-		}
+-	}
+-
+-	/*
+-	 ** Execute the MIB function.  If things worked okay, then make
+-	 ** sure that the MIB function also worked okay.  If so, and this
+-	 ** is a "mibget", then the status value must be set for both the
+-	 ** "mibattribute" parameter and the mib item within the data
+-	 ** portion of the "mibattribute".
+-	 */
+-
+-	result = mib->func(mib, isget, wlandev, hw, msg, (void *)mibitem->data);
+-
+-	if (msg->resultcode.data == P80211ENUM_resultcode_success) {
+-		if (result != 0) {
+-			pr_debug("get/set failure, result=%d\n", result);
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_implementation_failure;
+-		} else {
+-			if (isget) {
+-				msg->mibattribute.status =
+-				    P80211ENUM_msgitem_status_data_ok;
+-				mibitem->status =
+-				    P80211ENUM_msgitem_status_data_ok;
+-			}
+-		}
+-	}
+-
+-done:
+-	return 0;
+-}
+-
+-/*
+- * prism2mib_bytearea2pstr
+- *
+- * Get/set pstr data to/from a byte area.
+- *
+- * MIB record parameters:
+- *       parm1    Prism2 RID value.
+- *       parm2    Number of bytes of RID data.
+- *       parm3    Not used.
+- *
+- * Arguments:
+- *       mib      MIB record.
+- *       isget    MIBGET/MIBSET flag.
+- *       wlandev  wlan device structure.
+- *       priv     "priv" structure.
+- *       hw       "hw" structure.
+- *       msg      Message structure.
+- *       data     Data buffer.
+- *
+- * Returns:
+- *       0   - Success.
+- *       ~0  - Error.
+- *
+- */
+-
+-static int prism2mib_bytearea2pstr(struct mibrec *mib,
+-				   int isget,
+-				   struct wlandevice *wlandev,
+-				   struct hfa384x *hw,
+-				   struct p80211msg_dot11req_mibset *msg,
+-				   void *data)
+-{
+-	int result;
+-	struct p80211pstrd *pstr = data;
+-	u8 bytebuf[MIB_TMP_MAXLEN];
+-
+-	if (isget) {
+-		result =
+-		    hfa384x_drvr_getconfig(hw, mib->parm1, bytebuf, mib->parm2);
+-		prism2mgmt_bytearea2pstr(bytebuf, pstr, mib->parm2);
+-	} else {
+-		memset(bytebuf, 0, mib->parm2);
+-		memcpy(bytebuf, pstr->data, pstr->len);
+-		result =
+-		    hfa384x_drvr_setconfig(hw, mib->parm1, bytebuf, mib->parm2);
+-	}
+-
+-	return result;
+-}
+-
+-/*
+- * prism2mib_uint32
+- *
+- * Get/set uint32 data.
+- *
+- * MIB record parameters:
+- *       parm1    Prism2 RID value.
+- *       parm2    Not used.
+- *       parm3    Not used.
+- *
+- * Arguments:
+- *       mib      MIB record.
+- *       isget    MIBGET/MIBSET flag.
+- *       wlandev  wlan device structure.
+- *       priv     "priv" structure.
+- *       hw       "hw" structure.
+- *       msg      Message structure.
+- *       data     Data buffer.
+- *
+- * Returns:
+- *       0   - Success.
+- *       ~0  - Error.
+- *
+- */
+-
+-static int prism2mib_uint32(struct mibrec *mib,
+-			    int isget,
+-			    struct wlandevice *wlandev,
+-			    struct hfa384x *hw,
+-			    struct p80211msg_dot11req_mibset *msg, void *data)
+-{
+-	int result;
+-	u32 *uint32 = data;
+-	u8 bytebuf[MIB_TMP_MAXLEN];
+-	u16 *wordbuf = (u16 *)bytebuf;
+-
+-	if (isget) {
+-		result = hfa384x_drvr_getconfig16(hw, mib->parm1, wordbuf);
+-		*uint32 = *wordbuf;
+-	} else {
+-		*wordbuf = *uint32;
+-		result = hfa384x_drvr_setconfig16(hw, mib->parm1, *wordbuf);
+-	}
+-
+-	return result;
+-}
+-
+-/*
+- * prism2mib_flag
+- *
+- * Get/set a flag.
+- *
+- * MIB record parameters:
+- *       parm1    Prism2 RID value.
+- *       parm2    Bit to get/set.
+- *       parm3    Not used.
+- *
+- * Arguments:
+- *       mib      MIB record.
+- *       isget    MIBGET/MIBSET flag.
+- *       wlandev  wlan device structure.
+- *       priv     "priv" structure.
+- *       hw       "hw" structure.
+- *       msg      Message structure.
+- *       data     Data buffer.
+- *
+- * Returns:
+- *       0   - Success.
+- *       ~0  - Error.
+- *
+- */
+-
+-static int prism2mib_flag(struct mibrec *mib,
+-			  int isget,
+-			  struct wlandevice *wlandev,
+-			  struct hfa384x *hw,
+-			  struct p80211msg_dot11req_mibset *msg, void *data)
+-{
+-	int result;
+-	u32 *uint32 = data;
+-	u8 bytebuf[MIB_TMP_MAXLEN];
+-	u16 *wordbuf = (u16 *)bytebuf;
+-	u32 flags;
+-
+-	result = hfa384x_drvr_getconfig16(hw, mib->parm1, wordbuf);
+-	if (result == 0) {
+-		flags = *wordbuf;
+-		if (isget) {
+-			*uint32 = (flags & mib->parm2) ?
+-			    P80211ENUM_truth_true : P80211ENUM_truth_false;
+-		} else {
+-			if ((*uint32) == P80211ENUM_truth_true)
+-				flags |= mib->parm2;
+-			else
+-				flags &= ~mib->parm2;
+-			*wordbuf = flags;
+-			result =
+-			    hfa384x_drvr_setconfig16(hw, mib->parm1, *wordbuf);
+-		}
+-	}
+-
+-	return result;
+-}
+-
+-/*
+- * prism2mib_wepdefaultkey
+- *
+- * Get/set WEP default keys.
+- *
+- * MIB record parameters:
+- *       parm1    Prism2 RID value.
+- *       parm2    Number of bytes of RID data.
+- *       parm3    Not used.
+- *
+- * Arguments:
+- *       mib      MIB record.
+- *       isget    MIBGET/MIBSET flag.
+- *       wlandev  wlan device structure.
+- *       priv     "priv" structure.
+- *       hw       "hw" structure.
+- *       msg      Message structure.
+- *       data     Data buffer.
+- *
+- * Returns:
+- *       0   - Success.
+- *       ~0  - Error.
+- *
+- */
+-
+-static int prism2mib_wepdefaultkey(struct mibrec *mib,
+-				   int isget,
+-				   struct wlandevice *wlandev,
+-				   struct hfa384x *hw,
+-				   struct p80211msg_dot11req_mibset *msg,
+-				   void *data)
+-{
+-	int result;
+-	struct p80211pstrd *pstr = data;
+-	u8 bytebuf[MIB_TMP_MAXLEN];
+-	u16 len;
+-
+-	if (isget) {
+-		result = 0;	/* Should never happen. */
+-	} else {
+-		len = (pstr->len > 5) ? HFA384x_RID_CNFWEP128DEFAULTKEY_LEN :
+-		    HFA384x_RID_CNFWEPDEFAULTKEY_LEN;
+-		memset(bytebuf, 0, len);
+-		memcpy(bytebuf, pstr->data, pstr->len);
+-		result = hfa384x_drvr_setconfig(hw, mib->parm1, bytebuf, len);
+-	}
+-
+-	return result;
+-}
+-
+-/*
+- * prism2mib_privacyinvoked
+- *
+- * Get/set the dot11PrivacyInvoked value.
+- *
+- * MIB record parameters:
+- *       parm1    Prism2 RID value.
+- *       parm2    Bit value for PrivacyInvoked flag.
+- *       parm3    Not used.
+- *
+- * Arguments:
+- *       mib      MIB record.
+- *       isget    MIBGET/MIBSET flag.
+- *       wlandev  wlan device structure.
+- *       priv     "priv" structure.
+- *       hw       "hw" structure.
+- *       msg      Message structure.
+- *       data     Data buffer.
+- *
+- * Returns:
+- *       0   - Success.
+- *       ~0  - Error.
+- *
+- */
+-
+-static int prism2mib_privacyinvoked(struct mibrec *mib,
+-				    int isget,
+-				    struct wlandevice *wlandev,
+-				    struct hfa384x *hw,
+-				    struct p80211msg_dot11req_mibset *msg,
+-				    void *data)
+-{
+-	if (wlandev->hostwep & HOSTWEP_DECRYPT) {
+-		if (wlandev->hostwep & HOSTWEP_DECRYPT)
+-			mib->parm2 |= HFA384x_WEPFLAGS_DISABLE_RXCRYPT;
+-		if (wlandev->hostwep & HOSTWEP_ENCRYPT)
+-			mib->parm2 |= HFA384x_WEPFLAGS_DISABLE_TXCRYPT;
+-	}
+-
+-	return prism2mib_flag(mib, isget, wlandev, hw, msg, data);
+-}
+-
+-/*
+- * prism2mib_fragmentationthreshold
+- *
+- * Get/set the fragmentation threshold.
+- *
+- * MIB record parameters:
+- *       parm1    Prism2 RID value.
+- *       parm2    Not used.
+- *       parm3    Not used.
+- *
+- * Arguments:
+- *       mib      MIB record.
+- *       isget    MIBGET/MIBSET flag.
+- *       wlandev  wlan device structure.
+- *       priv     "priv" structure.
+- *       hw       "hw" structure.
+- *       msg      Message structure.
+- *       data     Data buffer.
+- *
+- * Returns:
+- *       0   - Success.
+- *       ~0  - Error.
+- *
+- */
+-
+-static int
+-prism2mib_fragmentationthreshold(struct mibrec *mib,
+-				 int isget,
+-				 struct wlandevice *wlandev,
+-				 struct hfa384x *hw,
+-				 struct p80211msg_dot11req_mibset *msg,
+-				 void *data)
+-{
+-	u32 *uint32 = data;
+-
+-	if (!isget)
+-		if ((*uint32) % 2) {
+-			netdev_warn(wlandev->netdev,
+-				    "Attempt to set odd number FragmentationThreshold\n");
+-			msg->resultcode.data =
+-			    P80211ENUM_resultcode_not_supported;
+-			return 0;
+-		}
+-
+-	return prism2mib_uint32(mib, isget, wlandev, hw, msg, data);
+-}
+-
+-/*
+- * prism2mib_priv
+- *
+- * Get/set values in the "priv" data structure.
+- *
+- * MIB record parameters:
+- *       parm1    Not used.
+- *       parm2    Not used.
+- *       parm3    Not used.
+- *
+- * Arguments:
+- *       mib      MIB record.
+- *       isget    MIBGET/MIBSET flag.
+- *       wlandev  wlan device structure.
+- *       priv     "priv" structure.
+- *       hw       "hw" structure.
+- *       msg      Message structure.
+- *       data     Data buffer.
+- *
+- * Returns:
+- *       0   - Success.
+- *       ~0  - Error.
+- *
+- */
+-
+-static int prism2mib_priv(struct mibrec *mib,
+-			  int isget,
+-			  struct wlandevice *wlandev,
+-			  struct hfa384x *hw,
+-			  struct p80211msg_dot11req_mibset *msg, void *data)
+-{
+-	struct p80211pstrd *pstr = data;
+-
+-	switch (mib->did) {
+-	case DIDMIB_LNX_CONFIGTABLE_RSNAIE: {
+-		/*
+-		 * This can never work: wpa is on the stack
+-		 * and has no bytes allocated in wpa.data.
+-		 */
+-		struct hfa384x_wpa_data wpa;
+-
+-		if (isget) {
+-			hfa384x_drvr_getconfig(hw,
+-					       HFA384x_RID_CNFWPADATA,
+-					       (u8 *)&wpa,
+-					       sizeof(wpa));
+-			pstr->len = 0;
+-		} else {
+-			wpa.datalen = 0;
+-
+-			hfa384x_drvr_setconfig(hw,
+-					       HFA384x_RID_CNFWPADATA,
+-					       (u8 *)&wpa,
+-					       sizeof(wpa));
+-		}
+-		break;
+-	}
+-	default:
+-		netdev_err(wlandev->netdev, "Unhandled DID 0x%08x\n", mib->did);
+-	}
+-
+-	return 0;
+-}
+-
+-/*
+- * prism2mgmt_pstr2bytestr
+- *
+- * Convert the pstr data in the WLAN message structure into an hfa384x
+- * byte string format.
+- *
+- * Arguments:
+- *	bytestr		hfa384x byte string data type
+- *	pstr		wlan message data
+- *
+- * Returns:
+- *	Nothing
+- *
+- */
+-
+-void prism2mgmt_pstr2bytestr(struct hfa384x_bytestr *bytestr,
+-			     struct p80211pstrd *pstr)
+-{
+-	bytestr->len = cpu_to_le16((u16)(pstr->len));
+-	memcpy(bytestr->data, pstr->data, pstr->len);
+-}
+-
+-/*
+- * prism2mgmt_bytestr2pstr
+- *
+- * Convert the data in an hfa384x byte string format into a
+- * pstr in the WLAN message.
+- *
+- * Arguments:
+- *	bytestr		hfa384x byte string data type
+- *	msg		wlan message
+- *
+- * Returns:
+- *	Nothing
+- *
+- */
+-
+-void prism2mgmt_bytestr2pstr(struct hfa384x_bytestr *bytestr,
+-			     struct p80211pstrd *pstr)
+-{
+-	pstr->len = (u8)(le16_to_cpu(bytestr->len));
+-	memcpy(pstr->data, bytestr->data, pstr->len);
+-}
+-
+-/*
+- * prism2mgmt_bytearea2pstr
+- *
+- * Convert the data in an hfa384x byte area format into a pstr
+- * in the WLAN message.
+- *
+- * Arguments:
+- *	bytearea	hfa384x byte area data type
+- *	msg		wlan message
+- *
+- * Returns:
+- *	Nothing
+- *
+- */
+-
+-void prism2mgmt_bytearea2pstr(u8 *bytearea, struct p80211pstrd *pstr, int len)
+-{
+-	pstr->len = (u8)len;
+-	memcpy(pstr->data, bytearea, len);
+-}
+diff --git a/drivers/staging/wlan-ng/prism2sta.c b/drivers/staging/wlan-ng/prism2sta.c
+deleted file mode 100644
+index cb6c7a9fb8f3..000000000000
+--- a/drivers/staging/wlan-ng/prism2sta.c
++++ /dev/null
+@@ -1,1945 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MPL-1.1)
+-/*
+- *
+- * Implements the station functionality for prism2
+- *
+- * Copyright (C) 1999 AbsoluteValue Systems, Inc.  All Rights Reserved.
+- * --------------------------------------------------------------------
+- *
+- * linux-wlan
+- *
+- * --------------------------------------------------------------------
+- *
+- * Inquiries regarding the linux-wlan Open Source project can be
+- * made directly to:
+- *
+- * AbsoluteValue Systems Inc.
+- * info@linux-wlan.com
+- * http://www.linux-wlan.com
+- *
+- * --------------------------------------------------------------------
+- *
+- * Portions of the development of this software were funded by
+- * Intersil Corporation as part of PRISM(R) chipset product development.
+- *
+- * --------------------------------------------------------------------
+- *
+- * This file implements the module and linux pcmcia routines for the
+- * prism2 driver.
+- *
+- * --------------------------------------------------------------------
+- */
+-
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/types.h>
+-#include <linux/slab.h>
+-#include <linux/wireless.h>
+-#include <linux/netdevice.h>
+-#include <linux/workqueue.h>
+-#include <linux/byteorder/generic.h>
+-#include <linux/etherdevice.h>
+-
+-#include <linux/io.h>
+-#include <linux/delay.h>
+-#include <asm/byteorder.h>
+-#include <linux/if_arp.h>
+-#include <linux/if_ether.h>
+-#include <linux/bitops.h>
+-
+-#include "p80211types.h"
+-#include "p80211hdr.h"
+-#include "p80211mgmt.h"
+-#include "p80211conv.h"
+-#include "p80211msg.h"
+-#include "p80211netdev.h"
+-#include "p80211req.h"
+-#include "p80211metadef.h"
+-#include "p80211metastruct.h"
+-#include "hfa384x.h"
+-#include "prism2mgmt.h"
+-
+-static char *dev_info = "prism2_usb";
+-static struct wlandevice *create_wlan(void);
+-
+-int prism2_reset_holdtime = 30;	/* Reset hold time in ms */
+-int prism2_reset_settletime = 100;	/* Reset settle time in ms */
+-
+-static int prism2_doreset;	/* Do a reset at init? */
+-
+-module_param(prism2_doreset, int, 0644);
+-MODULE_PARM_DESC(prism2_doreset, "Issue a reset on initialization");
+-
+-module_param(prism2_reset_holdtime, int, 0644);
+-MODULE_PARM_DESC(prism2_reset_holdtime, "reset hold time in ms");
+-module_param(prism2_reset_settletime, int, 0644);
+-MODULE_PARM_DESC(prism2_reset_settletime, "reset settle time in ms");
+-
+-MODULE_LICENSE("Dual MPL/GPL");
+-
+-static int prism2sta_open(struct wlandevice *wlandev);
+-static int prism2sta_close(struct wlandevice *wlandev);
+-static void prism2sta_reset(struct wlandevice *wlandev);
+-static int prism2sta_txframe(struct wlandevice *wlandev, struct sk_buff *skb,
+-			     struct p80211_hdr *p80211_hdr,
+-			     struct p80211_metawep *p80211_wep);
+-static int prism2sta_mlmerequest(struct wlandevice *wlandev,
+-				 struct p80211msg *msg);
+-static int prism2sta_getcardinfo(struct wlandevice *wlandev);
+-static int prism2sta_globalsetup(struct wlandevice *wlandev);
+-static int prism2sta_setmulticast(struct wlandevice *wlandev,
+-				  struct net_device *dev);
+-static void prism2sta_inf_tallies(struct wlandevice *wlandev,
+-				  struct hfa384x_inf_frame *inf);
+-static void prism2sta_inf_hostscanresults(struct wlandevice *wlandev,
+-					  struct hfa384x_inf_frame *inf);
+-static void prism2sta_inf_scanresults(struct wlandevice *wlandev,
+-				      struct hfa384x_inf_frame *inf);
+-static void prism2sta_inf_chinforesults(struct wlandevice *wlandev,
+-					struct hfa384x_inf_frame *inf);
+-static void prism2sta_inf_linkstatus(struct wlandevice *wlandev,
+-				     struct hfa384x_inf_frame *inf);
+-static void prism2sta_inf_assocstatus(struct wlandevice *wlandev,
+-				      struct hfa384x_inf_frame *inf);
+-static void prism2sta_inf_authreq(struct wlandevice *wlandev,
+-				  struct hfa384x_inf_frame *inf);
+-static void prism2sta_inf_authreq_defer(struct wlandevice *wlandev,
+-					struct hfa384x_inf_frame *inf);
+-static void prism2sta_inf_psusercnt(struct wlandevice *wlandev,
+-				    struct hfa384x_inf_frame *inf);
+-
+-/*
+- * prism2sta_open
+- *
+- * WLAN device open method.  Called from p80211netdev when kernel
+- * device open (start) method is called in response to the
+- * SIOCSIIFFLAGS ioctl changing the flags bit IFF_UP
+- * from clear to set.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *
+- * Returns:
+- *	0	success
+- *	>0	f/w reported error
+- *	<0	driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process thread
+- */
+-static int prism2sta_open(struct wlandevice *wlandev)
+-{
+-	/* We don't currently have to do anything else.
+-	 * The setup of the MAC should be subsequently completed via
+-	 * the mlme commands.
+-	 * Higher layers know we're ready from dev->start==1 and
+-	 * dev->tbusy==0.  Our rx path knows to pass up received/
+-	 * frames because of dev->flags&IFF_UP is true.
+-	 */
+-
+-	return 0;
+-}
+-
+-/*
+- * prism2sta_close
+- *
+- * WLAN device close method.  Called from p80211netdev when kernel
+- * device close method is called in response to the
+- * SIOCSIIFFLAGS ioctl changing the flags bit IFF_UP
+- * from set to clear.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *
+- * Returns:
+- *	0	success
+- *	>0	f/w reported error
+- *	<0	driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process thread
+- */
+-static int prism2sta_close(struct wlandevice *wlandev)
+-{
+-	/* We don't currently have to do anything else.
+-	 * Higher layers know we're not ready from dev->start==0 and
+-	 * dev->tbusy==1.  Our rx path knows to not pass up received
+-	 * frames because of dev->flags&IFF_UP is false.
+-	 */
+-
+-	return 0;
+-}
+-
+-/*
+- * prism2sta_reset
+- *
+- * Currently not implemented.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	none
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process thread
+- */
+-static void prism2sta_reset(struct wlandevice *wlandev)
+-{
+-}
+-
+-/*
+- * prism2sta_txframe
+- *
+- * Takes a frame from p80211 and queues it for transmission.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	pb		packet buffer struct.  Contains an 802.11
+- *			data frame.
+- *       p80211_hdr      points to the 802.11 header for the packet.
+- * Returns:
+- *	0		Success and more buffs available
+- *	1		Success but no more buffs
+- *	2		Allocation failure
+- *	4		Buffer full or queue busy
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process thread
+- */
+-static int prism2sta_txframe(struct wlandevice *wlandev, struct sk_buff *skb,
+-			     struct p80211_hdr *p80211_hdr,
+-			     struct p80211_metawep *p80211_wep)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-
+-	/* If necessary, set the 802.11 WEP bit */
+-	if ((wlandev->hostwep & (HOSTWEP_PRIVACYINVOKED | HOSTWEP_ENCRYPT)) ==
+-	    HOSTWEP_PRIVACYINVOKED) {
+-		p80211_hdr->frame_control |= cpu_to_le16(WLAN_SET_FC_ISWEP(1));
+-	}
+-
+-	return hfa384x_drvr_txframe(hw, skb, p80211_hdr, p80211_wep);
+-}
+-
+-/*
+- * prism2sta_mlmerequest
+- *
+- * wlan command message handler.  All we do here is pass the message
+- * over to the prism2sta_mgmt_handler.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msg		wlan command message
+- * Returns:
+- *	0		success
+- *	<0		successful acceptance of message, but we're
+- *			waiting for an async process to finish before
+- *			we're done with the msg.  When the asynch
+- *			process is done, we'll call the p80211
+- *			function p80211req_confirm() .
+- *	>0		An error occurred while we were handling
+- *			the message.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process thread
+- */
+-static int prism2sta_mlmerequest(struct wlandevice *wlandev,
+-				 struct p80211msg *msg)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-
+-	int result = 0;
+-
+-	switch (msg->msgcode) {
+-	case DIDMSG_DOT11REQ_MIBGET:
+-		netdev_dbg(wlandev->netdev, "Received mibget request\n");
+-		result = prism2mgmt_mibset_mibget(wlandev, msg);
+-		break;
+-	case DIDMSG_DOT11REQ_MIBSET:
+-		netdev_dbg(wlandev->netdev, "Received mibset request\n");
+-		result = prism2mgmt_mibset_mibget(wlandev, msg);
+-		break;
+-	case DIDMSG_DOT11REQ_SCAN:
+-		netdev_dbg(wlandev->netdev, "Received scan request\n");
+-		result = prism2mgmt_scan(wlandev, msg);
+-		break;
+-	case DIDMSG_DOT11REQ_SCAN_RESULTS:
+-		netdev_dbg(wlandev->netdev, "Received scan_results request\n");
+-		result = prism2mgmt_scan_results(wlandev, msg);
+-		break;
+-	case DIDMSG_DOT11REQ_START:
+-		netdev_dbg(wlandev->netdev, "Received mlme start request\n");
+-		result = prism2mgmt_start(wlandev, msg);
+-		break;
+-		/*
+-		 * Prism2 specific messages
+-		 */
+-	case DIDMSG_P2REQ_READPDA:
+-		netdev_dbg(wlandev->netdev, "Received mlme readpda request\n");
+-		result = prism2mgmt_readpda(wlandev, msg);
+-		break;
+-	case DIDMSG_P2REQ_RAMDL_STATE:
+-		netdev_dbg(wlandev->netdev,
+-			   "Received mlme ramdl_state request\n");
+-		result = prism2mgmt_ramdl_state(wlandev, msg);
+-		break;
+-	case DIDMSG_P2REQ_RAMDL_WRITE:
+-		netdev_dbg(wlandev->netdev,
+-			   "Received mlme ramdl_write request\n");
+-		result = prism2mgmt_ramdl_write(wlandev, msg);
+-		break;
+-	case DIDMSG_P2REQ_FLASHDL_STATE:
+-		netdev_dbg(wlandev->netdev,
+-			   "Received mlme flashdl_state request\n");
+-		result = prism2mgmt_flashdl_state(wlandev, msg);
+-		break;
+-	case DIDMSG_P2REQ_FLASHDL_WRITE:
+-		netdev_dbg(wlandev->netdev,
+-			   "Received mlme flashdl_write request\n");
+-		result = prism2mgmt_flashdl_write(wlandev, msg);
+-		break;
+-		/*
+-		 * Linux specific messages
+-		 */
+-	case DIDMSG_LNXREQ_HOSTWEP:
+-		break;		/* ignore me. */
+-	case DIDMSG_LNXREQ_IFSTATE: {
+-		struct p80211msg_lnxreq_ifstate *ifstatemsg;
+-
+-		netdev_dbg(wlandev->netdev, "Received mlme ifstate request\n");
+-		ifstatemsg = (struct p80211msg_lnxreq_ifstate *)msg;
+-		result = prism2sta_ifstate(wlandev,
+-					   ifstatemsg->ifstate.data);
+-		ifstatemsg->resultcode.status =
+-			P80211ENUM_msgitem_status_data_ok;
+-		ifstatemsg->resultcode.data = result;
+-		result = 0;
+-		break;
+-	}
+-	case DIDMSG_LNXREQ_WLANSNIFF:
+-		netdev_dbg(wlandev->netdev,
+-			   "Received mlme wlansniff request\n");
+-		result = prism2mgmt_wlansniff(wlandev, msg);
+-		break;
+-	case DIDMSG_LNXREQ_AUTOJOIN:
+-		netdev_dbg(wlandev->netdev, "Received mlme autojoin request\n");
+-		result = prism2mgmt_autojoin(wlandev, msg);
+-		break;
+-	case DIDMSG_LNXREQ_COMMSQUALITY: {
+-		struct p80211msg_lnxreq_commsquality *qualmsg;
+-
+-		netdev_dbg(wlandev->netdev, "Received commsquality request\n");
+-
+-		qualmsg = (struct p80211msg_lnxreq_commsquality *)msg;
+-
+-		qualmsg->link.status = P80211ENUM_msgitem_status_data_ok;
+-		qualmsg->level.status = P80211ENUM_msgitem_status_data_ok;
+-		qualmsg->noise.status = P80211ENUM_msgitem_status_data_ok;
+-
+-		qualmsg->link.data = le16_to_cpu(hw->qual.cq_curr_bss);
+-		qualmsg->level.data = le16_to_cpu(hw->qual.asl_curr_bss);
+-		qualmsg->noise.data = le16_to_cpu(hw->qual.anl_curr_fc);
+-		qualmsg->txrate.data = hw->txrate;
+-
+-		break;
+-	}
+-	default:
+-		netdev_warn(wlandev->netdev,
+-			    "Unknown mgmt request message 0x%08x",
+-			    msg->msgcode);
+-		break;
+-	}
+-
+-	return result;
+-}
+-
+-/*
+- * prism2sta_ifstate
+- *
+- * Interface state.  This is the primary WLAN interface enable/disable
+- * handler.  Following the driver/load/deviceprobe sequence, this
+- * function must be called with a state of "enable" before any other
+- * commands will be accepted.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	msgp		ptr to msg buffer
+- *
+- * Returns:
+- *	A p80211 message resultcode value.
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process thread  (usually)
+- *	interrupt
+- */
+-u32 prism2sta_ifstate(struct wlandevice *wlandev, u32 ifstate)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	u32 result;
+-
+-	result = P80211ENUM_resultcode_implementation_failure;
+-
+-	netdev_dbg(wlandev->netdev, "Current MSD state(%d), requesting(%d)\n",
+-		   wlandev->msdstate, ifstate);
+-	switch (ifstate) {
+-	case P80211ENUM_ifstate_fwload:
+-		switch (wlandev->msdstate) {
+-		case WLAN_MSD_HWPRESENT:
+-			wlandev->msdstate = WLAN_MSD_FWLOAD_PENDING;
+-			/*
+-			 * Initialize the device+driver sufficiently
+-			 * for firmware loading.
+-			 */
+-			result = hfa384x_drvr_start(hw);
+-			if (result) {
+-				netdev_err(wlandev->netdev,
+-					   "hfa384x_drvr_start() failed,result=%d\n",
+-					   (int)result);
+-				result =
+-				 P80211ENUM_resultcode_implementation_failure;
+-				wlandev->msdstate = WLAN_MSD_HWPRESENT;
+-				break;
+-			}
+-			wlandev->msdstate = WLAN_MSD_FWLOAD;
+-			result = P80211ENUM_resultcode_success;
+-			break;
+-		case WLAN_MSD_FWLOAD:
+-			hfa384x_cmd_initialize(hw);
+-			result = P80211ENUM_resultcode_success;
+-			break;
+-		case WLAN_MSD_RUNNING:
+-			netdev_warn(wlandev->netdev,
+-				    "Cannot enter fwload state from enable state, you must disable first.\n");
+-			result = P80211ENUM_resultcode_invalid_parameters;
+-			break;
+-		case WLAN_MSD_HWFAIL:
+-		default:
+-			/* probe() had a problem or the msdstate contains
+-			 * an unrecognized value, there's nothing we can do.
+-			 */
+-			result = P80211ENUM_resultcode_implementation_failure;
+-			break;
+-		}
+-		break;
+-	case P80211ENUM_ifstate_enable:
+-		switch (wlandev->msdstate) {
+-		case WLAN_MSD_HWPRESENT:
+-		case WLAN_MSD_FWLOAD:
+-			wlandev->msdstate = WLAN_MSD_RUNNING_PENDING;
+-			/* Initialize the device+driver for full
+-			 * operation. Note that this might me an FWLOAD
+-			 * to RUNNING transition so we must not do a chip
+-			 * or board level reset.  Note that on failure,
+-			 * the MSD state is set to HWPRESENT because we
+-			 * can't make any assumptions about the state
+-			 * of the hardware or a previous firmware load.
+-			 */
+-			result = hfa384x_drvr_start(hw);
+-			if (result) {
+-				netdev_err(wlandev->netdev,
+-					   "hfa384x_drvr_start() failed,result=%d\n",
+-					   (int)result);
+-				result =
+-				  P80211ENUM_resultcode_implementation_failure;
+-				wlandev->msdstate = WLAN_MSD_HWPRESENT;
+-				break;
+-			}
+-
+-			result = prism2sta_getcardinfo(wlandev);
+-			if (result) {
+-				netdev_err(wlandev->netdev,
+-					   "prism2sta_getcardinfo() failed,result=%d\n",
+-					   (int)result);
+-				result =
+-				  P80211ENUM_resultcode_implementation_failure;
+-				hfa384x_drvr_stop(hw);
+-				wlandev->msdstate = WLAN_MSD_HWPRESENT;
+-				break;
+-			}
+-			result = prism2sta_globalsetup(wlandev);
+-			if (result) {
+-				netdev_err(wlandev->netdev,
+-					   "prism2sta_globalsetup() failed,result=%d\n",
+-					   (int)result);
+-				result =
+-				  P80211ENUM_resultcode_implementation_failure;
+-				hfa384x_drvr_stop(hw);
+-				wlandev->msdstate = WLAN_MSD_HWPRESENT;
+-				break;
+-			}
+-			wlandev->msdstate = WLAN_MSD_RUNNING;
+-			hw->join_ap = 0;
+-			hw->join_retries = 60;
+-			result = P80211ENUM_resultcode_success;
+-			break;
+-		case WLAN_MSD_RUNNING:
+-			/* Do nothing, we're already in this state. */
+-			result = P80211ENUM_resultcode_success;
+-			break;
+-		case WLAN_MSD_HWFAIL:
+-		default:
+-			/* probe() had a problem or the msdstate contains
+-			 * an unrecognized value, there's nothing we can do.
+-			 */
+-			result = P80211ENUM_resultcode_implementation_failure;
+-			break;
+-		}
+-		break;
+-	case P80211ENUM_ifstate_disable:
+-		switch (wlandev->msdstate) {
+-		case WLAN_MSD_HWPRESENT:
+-			/* Do nothing, we're already in this state. */
+-			result = P80211ENUM_resultcode_success;
+-			break;
+-		case WLAN_MSD_FWLOAD:
+-		case WLAN_MSD_RUNNING:
+-			wlandev->msdstate = WLAN_MSD_HWPRESENT_PENDING;
+-			/*
+-			 * TODO: Shut down the MAC completely. Here a chip
+-			 * or board level reset is probably called for.
+-			 * After a "disable" _all_ results are lost, even
+-			 * those from a fwload.
+-			 */
+-			if (!wlandev->hwremoved)
+-				netif_carrier_off(wlandev->netdev);
+-
+-			hfa384x_drvr_stop(hw);
+-
+-			wlandev->macmode = WLAN_MACMODE_NONE;
+-			wlandev->msdstate = WLAN_MSD_HWPRESENT;
+-			result = P80211ENUM_resultcode_success;
+-			break;
+-		case WLAN_MSD_HWFAIL:
+-		default:
+-			/* probe() had a problem or the msdstate contains
+-			 * an unrecognized value, there's nothing we can do.
+-			 */
+-			result = P80211ENUM_resultcode_implementation_failure;
+-			break;
+-		}
+-		break;
+-	default:
+-		result = P80211ENUM_resultcode_invalid_parameters;
+-		break;
+-	}
+-
+-	return result;
+-}
+-
+-/*
+- * prism2sta_getcardinfo
+- *
+- * Collect the NICID, firmware version and any other identifiers
+- * we'd like to have in host-side data structures.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *
+- * Returns:
+- *	0	success
+- *	>0	f/w reported error
+- *	<0	driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	Either.
+- */
+-static int prism2sta_getcardinfo(struct wlandevice *wlandev)
+-{
+-	int result = 0;
+-	struct hfa384x *hw = wlandev->priv;
+-	u16 temp;
+-	u8 snum[HFA384x_RID_NICSERIALNUMBER_LEN];
+-	u8 addr[ETH_ALEN];
+-
+-	/* Collect version and compatibility info */
+-	/*  Some are critical, some are not */
+-	/* NIC identity */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_NICIDENTITY,
+-					&hw->ident_nic,
+-					sizeof(struct hfa384x_compident));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve NICIDENTITY\n");
+-		goto failed;
+-	}
+-
+-	/* get all the nic id fields in host byte order */
+-	le16_to_cpus(&hw->ident_nic.id);
+-	le16_to_cpus(&hw->ident_nic.variant);
+-	le16_to_cpus(&hw->ident_nic.major);
+-	le16_to_cpus(&hw->ident_nic.minor);
+-
+-	netdev_info(wlandev->netdev, "ident: nic h/w: id=0x%02x %d.%d.%d\n",
+-		    hw->ident_nic.id, hw->ident_nic.major,
+-		    hw->ident_nic.minor, hw->ident_nic.variant);
+-
+-	/* Primary f/w identity */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_PRIIDENTITY,
+-					&hw->ident_pri_fw,
+-					sizeof(struct hfa384x_compident));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve PRIIDENTITY\n");
+-		goto failed;
+-	}
+-
+-	/* get all the private fw id fields in host byte order */
+-	le16_to_cpus(&hw->ident_pri_fw.id);
+-	le16_to_cpus(&hw->ident_pri_fw.variant);
+-	le16_to_cpus(&hw->ident_pri_fw.major);
+-	le16_to_cpus(&hw->ident_pri_fw.minor);
+-
+-	netdev_info(wlandev->netdev, "ident: pri f/w: id=0x%02x %d.%d.%d\n",
+-		    hw->ident_pri_fw.id, hw->ident_pri_fw.major,
+-		    hw->ident_pri_fw.minor, hw->ident_pri_fw.variant);
+-
+-	/* Station (Secondary?) f/w identity */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_STAIDENTITY,
+-					&hw->ident_sta_fw,
+-					sizeof(struct hfa384x_compident));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve STAIDENTITY\n");
+-		goto failed;
+-	}
+-
+-	if (hw->ident_nic.id < 0x8000) {
+-		netdev_err(wlandev->netdev,
+-			   "FATAL: Card is not an Intersil Prism2/2.5/3\n");
+-		result = -1;
+-		goto failed;
+-	}
+-
+-	/* get all the station fw id fields in host byte order */
+-	le16_to_cpus(&hw->ident_sta_fw.id);
+-	le16_to_cpus(&hw->ident_sta_fw.variant);
+-	le16_to_cpus(&hw->ident_sta_fw.major);
+-	le16_to_cpus(&hw->ident_sta_fw.minor);
+-
+-	/* strip out the 'special' variant bits */
+-	hw->mm_mods = hw->ident_sta_fw.variant & GENMASK(15, 14);
+-	hw->ident_sta_fw.variant &= ~((u16)GENMASK(15, 14));
+-
+-	if (hw->ident_sta_fw.id == 0x1f) {
+-		netdev_info(wlandev->netdev,
+-			    "ident: sta f/w: id=0x%02x %d.%d.%d\n",
+-			    hw->ident_sta_fw.id, hw->ident_sta_fw.major,
+-			    hw->ident_sta_fw.minor, hw->ident_sta_fw.variant);
+-	} else {
+-		netdev_info(wlandev->netdev,
+-			    "ident:  ap f/w: id=0x%02x %d.%d.%d\n",
+-			    hw->ident_sta_fw.id, hw->ident_sta_fw.major,
+-			    hw->ident_sta_fw.minor, hw->ident_sta_fw.variant);
+-		netdev_err(wlandev->netdev, "Unsupported Tertiary AP firmware loaded!\n");
+-		goto failed;
+-	}
+-
+-	/* Compatibility range, Modem supplier */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_MFISUPRANGE,
+-					&hw->cap_sup_mfi,
+-					sizeof(struct hfa384x_caplevel));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve MFISUPRANGE\n");
+-		goto failed;
+-	}
+-
+-	/* get all the Compatibility range, modem interface supplier
+-	 * fields in byte order
+-	 */
+-	le16_to_cpus(&hw->cap_sup_mfi.role);
+-	le16_to_cpus(&hw->cap_sup_mfi.id);
+-	le16_to_cpus(&hw->cap_sup_mfi.variant);
+-	le16_to_cpus(&hw->cap_sup_mfi.bottom);
+-	le16_to_cpus(&hw->cap_sup_mfi.top);
+-
+-	netdev_info(wlandev->netdev,
+-		    "MFI:SUP:role=0x%02x:id=0x%02x:var=0x%02x:b/t=%d/%d\n",
+-		    hw->cap_sup_mfi.role, hw->cap_sup_mfi.id,
+-		    hw->cap_sup_mfi.variant, hw->cap_sup_mfi.bottom,
+-		    hw->cap_sup_mfi.top);
+-
+-	/* Compatibility range, Controller supplier */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_CFISUPRANGE,
+-					&hw->cap_sup_cfi,
+-					sizeof(struct hfa384x_caplevel));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve CFISUPRANGE\n");
+-		goto failed;
+-	}
+-
+-	/* get all the Compatibility range, controller interface supplier
+-	 * fields in byte order
+-	 */
+-	le16_to_cpus(&hw->cap_sup_cfi.role);
+-	le16_to_cpus(&hw->cap_sup_cfi.id);
+-	le16_to_cpus(&hw->cap_sup_cfi.variant);
+-	le16_to_cpus(&hw->cap_sup_cfi.bottom);
+-	le16_to_cpus(&hw->cap_sup_cfi.top);
+-
+-	netdev_info(wlandev->netdev,
+-		    "CFI:SUP:role=0x%02x:id=0x%02x:var=0x%02x:b/t=%d/%d\n",
+-		    hw->cap_sup_cfi.role, hw->cap_sup_cfi.id,
+-		    hw->cap_sup_cfi.variant, hw->cap_sup_cfi.bottom,
+-		    hw->cap_sup_cfi.top);
+-
+-	/* Compatibility range, Primary f/w supplier */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_PRISUPRANGE,
+-					&hw->cap_sup_pri,
+-					sizeof(struct hfa384x_caplevel));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve PRISUPRANGE\n");
+-		goto failed;
+-	}
+-
+-	/* get all the Compatibility range, primary firmware supplier
+-	 * fields in byte order
+-	 */
+-	le16_to_cpus(&hw->cap_sup_pri.role);
+-	le16_to_cpus(&hw->cap_sup_pri.id);
+-	le16_to_cpus(&hw->cap_sup_pri.variant);
+-	le16_to_cpus(&hw->cap_sup_pri.bottom);
+-	le16_to_cpus(&hw->cap_sup_pri.top);
+-
+-	netdev_info(wlandev->netdev,
+-		    "PRI:SUP:role=0x%02x:id=0x%02x:var=0x%02x:b/t=%d/%d\n",
+-		    hw->cap_sup_pri.role, hw->cap_sup_pri.id,
+-		    hw->cap_sup_pri.variant, hw->cap_sup_pri.bottom,
+-		    hw->cap_sup_pri.top);
+-
+-	/* Compatibility range, Station f/w supplier */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_STASUPRANGE,
+-					&hw->cap_sup_sta,
+-					sizeof(struct hfa384x_caplevel));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve STASUPRANGE\n");
+-		goto failed;
+-	}
+-
+-	/* get all the Compatibility range, station firmware supplier
+-	 * fields in byte order
+-	 */
+-	le16_to_cpus(&hw->cap_sup_sta.role);
+-	le16_to_cpus(&hw->cap_sup_sta.id);
+-	le16_to_cpus(&hw->cap_sup_sta.variant);
+-	le16_to_cpus(&hw->cap_sup_sta.bottom);
+-	le16_to_cpus(&hw->cap_sup_sta.top);
+-
+-	if (hw->cap_sup_sta.id == 0x04) {
+-		netdev_info(wlandev->netdev,
+-			    "STA:SUP:role=0x%02x:id=0x%02x:var=0x%02x:b/t=%d/%d\n",
+-			    hw->cap_sup_sta.role, hw->cap_sup_sta.id,
+-			    hw->cap_sup_sta.variant, hw->cap_sup_sta.bottom,
+-			    hw->cap_sup_sta.top);
+-	} else {
+-		netdev_info(wlandev->netdev,
+-			    "AP:SUP:role=0x%02x:id=0x%02x:var=0x%02x:b/t=%d/%d\n",
+-			    hw->cap_sup_sta.role, hw->cap_sup_sta.id,
+-			    hw->cap_sup_sta.variant, hw->cap_sup_sta.bottom,
+-			    hw->cap_sup_sta.top);
+-	}
+-
+-	/* Compatibility range, primary f/w actor, CFI supplier */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_PRI_CFIACTRANGES,
+-					&hw->cap_act_pri_cfi,
+-					sizeof(struct hfa384x_caplevel));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve PRI_CFIACTRANGES\n");
+-		goto failed;
+-	}
+-
+-	/* get all the Compatibility range, primary f/w actor, CFI supplier
+-	 * fields in byte order
+-	 */
+-	le16_to_cpus(&hw->cap_act_pri_cfi.role);
+-	le16_to_cpus(&hw->cap_act_pri_cfi.id);
+-	le16_to_cpus(&hw->cap_act_pri_cfi.variant);
+-	le16_to_cpus(&hw->cap_act_pri_cfi.bottom);
+-	le16_to_cpus(&hw->cap_act_pri_cfi.top);
+-
+-	netdev_info(wlandev->netdev,
+-		    "PRI-CFI:ACT:role=0x%02x:id=0x%02x:var=0x%02x:b/t=%d/%d\n",
+-		    hw->cap_act_pri_cfi.role, hw->cap_act_pri_cfi.id,
+-		    hw->cap_act_pri_cfi.variant, hw->cap_act_pri_cfi.bottom,
+-		    hw->cap_act_pri_cfi.top);
+-
+-	/* Compatibility range, sta f/w actor, CFI supplier */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_STA_CFIACTRANGES,
+-					&hw->cap_act_sta_cfi,
+-					sizeof(struct hfa384x_caplevel));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve STA_CFIACTRANGES\n");
+-		goto failed;
+-	}
+-
+-	/* get all the Compatibility range, station f/w actor, CFI supplier
+-	 * fields in byte order
+-	 */
+-	le16_to_cpus(&hw->cap_act_sta_cfi.role);
+-	le16_to_cpus(&hw->cap_act_sta_cfi.id);
+-	le16_to_cpus(&hw->cap_act_sta_cfi.variant);
+-	le16_to_cpus(&hw->cap_act_sta_cfi.bottom);
+-	le16_to_cpus(&hw->cap_act_sta_cfi.top);
+-
+-	netdev_info(wlandev->netdev,
+-		    "STA-CFI:ACT:role=0x%02x:id=0x%02x:var=0x%02x:b/t=%d/%d\n",
+-		    hw->cap_act_sta_cfi.role, hw->cap_act_sta_cfi.id,
+-		    hw->cap_act_sta_cfi.variant, hw->cap_act_sta_cfi.bottom,
+-		    hw->cap_act_sta_cfi.top);
+-
+-	/* Compatibility range, sta f/w actor, MFI supplier */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_STA_MFIACTRANGES,
+-					&hw->cap_act_sta_mfi,
+-					sizeof(struct hfa384x_caplevel));
+-	if (result) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve STA_MFIACTRANGES\n");
+-		goto failed;
+-	}
+-
+-	/* get all the Compatibility range, station f/w actor, MFI supplier
+-	 * fields in byte order
+-	 */
+-	le16_to_cpus(&hw->cap_act_sta_mfi.role);
+-	le16_to_cpus(&hw->cap_act_sta_mfi.id);
+-	le16_to_cpus(&hw->cap_act_sta_mfi.variant);
+-	le16_to_cpus(&hw->cap_act_sta_mfi.bottom);
+-	le16_to_cpus(&hw->cap_act_sta_mfi.top);
+-
+-	netdev_info(wlandev->netdev,
+-		    "STA-MFI:ACT:role=0x%02x:id=0x%02x:var=0x%02x:b/t=%d/%d\n",
+-		    hw->cap_act_sta_mfi.role, hw->cap_act_sta_mfi.id,
+-		    hw->cap_act_sta_mfi.variant, hw->cap_act_sta_mfi.bottom,
+-		    hw->cap_act_sta_mfi.top);
+-
+-	/* Serial Number */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_NICSERIALNUMBER,
+-					snum, HFA384x_RID_NICSERIALNUMBER_LEN);
+-	if (!result) {
+-		netdev_info(wlandev->netdev, "Prism2 card SN: %*pE\n",
+-			    HFA384x_RID_NICSERIALNUMBER_LEN, snum);
+-	} else {
+-		netdev_err(wlandev->netdev, "Failed to retrieve Prism2 Card SN\n");
+-		goto failed;
+-	}
+-
+-	/* Collect the MAC address */
+-	result = hfa384x_drvr_getconfig(hw, HFA384x_RID_CNFOWNMACADDR,
+-					addr, ETH_ALEN);
+-	if (result != 0) {
+-		netdev_err(wlandev->netdev, "Failed to retrieve mac address\n");
+-		goto failed;
+-	}
+-	eth_hw_addr_set(wlandev->netdev, addr);
+-
+-	/* short preamble is always implemented */
+-	wlandev->nsdcaps |= P80211_NSDCAP_SHORT_PREAMBLE;
+-
+-	/* find out if hardware wep is implemented */
+-	hfa384x_drvr_getconfig16(hw, HFA384x_RID_PRIVACYOPTIMP, &temp);
+-	if (temp)
+-		wlandev->nsdcaps |= P80211_NSDCAP_HARDWAREWEP;
+-
+-	/* get the dBm Scaling constant */
+-	hfa384x_drvr_getconfig16(hw, HFA384x_RID_CNFDBMADJUST, &temp);
+-	hw->dbmadjust = temp;
+-
+-	/* Only enable scan by default on newer firmware */
+-	if (HFA384x_FIRMWARE_VERSION(hw->ident_sta_fw.major,
+-				     hw->ident_sta_fw.minor,
+-				     hw->ident_sta_fw.variant) <
+-	    HFA384x_FIRMWARE_VERSION(1, 5, 5)) {
+-		wlandev->nsdcaps |= P80211_NSDCAP_NOSCAN;
+-	}
+-
+-	/* TODO: Set any internally managed config items */
+-
+-	goto done;
+-failed:
+-	netdev_err(wlandev->netdev, "Failed, result=%d\n", result);
+-done:
+-	return result;
+-}
+-
+-/*
+- * prism2sta_globalsetup
+- *
+- * Set any global RIDs that we want to set at device activation.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *
+- * Returns:
+- *	0	success
+- *	>0	f/w reported error
+- *	<0	driver reported error
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	process thread
+- */
+-static int prism2sta_globalsetup(struct wlandevice *wlandev)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-
+-	/* Set the maximum frame size */
+-	return hfa384x_drvr_setconfig16(hw, HFA384x_RID_CNFMAXDATALEN,
+-					WLAN_DATA_MAXLEN);
+-}
+-
+-static int prism2sta_setmulticast(struct wlandevice *wlandev,
+-				  struct net_device *dev)
+-{
+-	int result = 0;
+-	struct hfa384x *hw = wlandev->priv;
+-
+-	u16 promisc;
+-
+-	/* If we're not ready, what's the point? */
+-	if (hw->state != HFA384x_STATE_RUNNING)
+-		goto exit;
+-
+-	if ((dev->flags & (IFF_PROMISC | IFF_ALLMULTI)) != 0)
+-		promisc = P80211ENUM_truth_true;
+-	else
+-		promisc = P80211ENUM_truth_false;
+-
+-	result =
+-	    hfa384x_drvr_setconfig16_async(hw, HFA384x_RID_PROMISCMODE,
+-					   promisc);
+-exit:
+-	return result;
+-}
+-
+-/*
+- * prism2sta_inf_tallies
+- *
+- * Handles the receipt of a CommTallies info frame.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-static void prism2sta_inf_tallies(struct wlandevice *wlandev,
+-				  struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	__le16 *src16;
+-	u32 *dst;
+-	__le32 *src32;
+-	int i;
+-	int cnt;
+-
+-	/*
+-	 * Determine if these are 16-bit or 32-bit tallies, based on the
+-	 * record length of the info record.
+-	 */
+-
+-	cnt = sizeof(struct hfa384x_comm_tallies_32) / sizeof(u32);
+-	if (inf->framelen > 22) {
+-		dst = (u32 *)&hw->tallies;
+-		src32 = (__le32 *)&inf->info.commtallies32;
+-		for (i = 0; i < cnt; i++, dst++, src32++)
+-			*dst += le32_to_cpu(*src32);
+-	} else {
+-		dst = (u32 *)&hw->tallies;
+-		src16 = (__le16 *)&inf->info.commtallies16;
+-		for (i = 0; i < cnt; i++, dst++, src16++)
+-			*dst += le16_to_cpu(*src16);
+-	}
+-}
+-
+-/*
+- * prism2sta_inf_scanresults
+- *
+- * Handles the receipt of a Scan Results info frame.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-static void prism2sta_inf_scanresults(struct wlandevice *wlandev,
+-				      struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	int nbss;
+-	struct hfa384x_scan_result *sr = &inf->info.scanresult;
+-	int i;
+-	struct hfa384x_join_request_data joinreq;
+-	int result;
+-
+-	/* Get the number of results, first in bytes, then in results */
+-	nbss = (inf->framelen * sizeof(u16)) -
+-	    sizeof(inf->infotype) - sizeof(inf->info.scanresult.scanreason);
+-	nbss /= sizeof(struct hfa384x_scan_result_sub);
+-
+-	/* Print em */
+-	netdev_dbg(wlandev->netdev, "rx scanresults, reason=%d, nbss=%d:\n",
+-		   inf->info.scanresult.scanreason, nbss);
+-	for (i = 0; i < nbss; i++) {
+-		netdev_dbg(wlandev->netdev, "chid=%d anl=%d sl=%d bcnint=%d\n",
+-			   sr->result[i].chid, sr->result[i].anl,
+-			   sr->result[i].sl, sr->result[i].bcnint);
+-		netdev_dbg(wlandev->netdev,
+-			   "  capinfo=0x%04x proberesp_rate=%d\n",
+-			   sr->result[i].capinfo, sr->result[i].proberesp_rate);
+-	}
+-	/* issue a join request */
+-	joinreq.channel = sr->result[0].chid;
+-	memcpy(joinreq.bssid, sr->result[0].bssid, WLAN_BSSID_LEN);
+-	result = hfa384x_drvr_setconfig(hw,
+-					HFA384x_RID_JOINREQUEST,
+-					&joinreq, HFA384x_RID_JOINREQUEST_LEN);
+-	if (result) {
+-		netdev_err(wlandev->netdev, "setconfig(joinreq) failed, result=%d\n",
+-			   result);
+-	}
+-}
+-
+-/*
+- * prism2sta_inf_hostscanresults
+- *
+- * Handles the receipt of a Scan Results info frame.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-static void prism2sta_inf_hostscanresults(struct wlandevice *wlandev,
+-					  struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	int nbss;
+-
+-	nbss = (inf->framelen - 3) / 32;
+-	netdev_dbg(wlandev->netdev, "Received %d hostscan results\n", nbss);
+-
+-	if (nbss > 32)
+-		nbss = 32;
+-
+-	kfree(hw->scanresults);
+-
+-	hw->scanresults = kmemdup(inf, sizeof(*inf), GFP_ATOMIC);
+-
+-	if (nbss == 0)
+-		nbss = -1;
+-
+-	/* Notify/wake the sleeping caller. */
+-	hw->scanflag = nbss;
+-	wake_up_interruptible(&hw->cmdq);
+-};
+-
+-/*
+- * prism2sta_inf_chinforesults
+- *
+- * Handles the receipt of a Channel Info Results info frame.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-static void prism2sta_inf_chinforesults(struct wlandevice *wlandev,
+-					struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	unsigned int i, n;
+-
+-	hw->channel_info.results.scanchannels =
+-	    inf->info.chinforesult.scanchannels;
+-
+-	for (i = 0, n = 0; i < HFA384x_CHINFORESULT_MAX; i++) {
+-		struct hfa384x_ch_info_result_sub *result;
+-		struct hfa384x_ch_info_result_sub *chinforesult;
+-		int chan;
+-
+-		if (!(hw->channel_info.results.scanchannels & (1 << i)))
+-			continue;
+-
+-		result = &inf->info.chinforesult.result[n];
+-		chan = result->chid - 1;
+-
+-		if (chan < 0 || chan >= HFA384x_CHINFORESULT_MAX)
+-			continue;
+-
+-		chinforesult = &hw->channel_info.results.result[chan];
+-		chinforesult->chid = chan;
+-		chinforesult->anl = result->anl;
+-		chinforesult->pnl = result->pnl;
+-		chinforesult->active = result->active;
+-
+-		netdev_dbg(wlandev->netdev,
+-			   "chinfo: channel %d, %s level (avg/peak)=%d/%d dB, pcf %d\n",
+-			   chan + 1,
+-			   (chinforesult->active & HFA384x_CHINFORESULT_BSSACTIVE) ?
+-			   "signal" : "noise",
+-			   chinforesult->anl,
+-			   chinforesult->pnl,
+-			   (chinforesult->active & HFA384x_CHINFORESULT_PCFACTIVE) ? 1 : 0);
+-		n++;
+-	}
+-	atomic_set(&hw->channel_info.done, 2);
+-
+-	hw->channel_info.count = n;
+-}
+-
+-void prism2sta_processing_defer(struct work_struct *data)
+-{
+-	struct hfa384x *hw = container_of(data, struct hfa384x, link_bh);
+-	struct wlandevice *wlandev = hw->wlandev;
+-	struct hfa384x_bytestr32 ssid;
+-	int result;
+-
+-	/* First let's process the auth frames */
+-	{
+-		struct sk_buff *skb;
+-		struct hfa384x_inf_frame *inf;
+-
+-		while ((skb = skb_dequeue(&hw->authq))) {
+-			inf = (struct hfa384x_inf_frame *)skb->data;
+-			prism2sta_inf_authreq_defer(wlandev, inf);
+-		}
+-	}
+-
+-	/* Now let's handle the linkstatus stuff */
+-	if (hw->link_status == hw->link_status_new)
+-		return;
+-
+-	hw->link_status = hw->link_status_new;
+-
+-	switch (hw->link_status) {
+-	case HFA384x_LINK_NOTCONNECTED:
+-		/* I'm currently assuming that this is the initial link
+-		 * state.  It should only be possible immediately
+-		 * following an Enable command.
+-		 * Response:
+-		 * Block Transmits, Ignore receives of data frames
+-		 */
+-		netif_carrier_off(wlandev->netdev);
+-
+-		netdev_info(wlandev->netdev, "linkstatus=NOTCONNECTED (unhandled)\n");
+-		break;
+-
+-	case HFA384x_LINK_CONNECTED:
+-		/* This one indicates a successful scan/join/auth/assoc.
+-		 * When we have the full MLME complement, this event will
+-		 * signify successful completion of both mlme_authenticate
+-		 * and mlme_associate.  State management will get a little
+-		 * ugly here.
+-		 * Response:
+-		 * Indicate authentication and/or association
+-		 * Enable Transmits, Receives and pass up data frames
+-		 */
+-
+-		netif_carrier_on(wlandev->netdev);
+-
+-		/* If we are joining a specific AP, set our
+-		 * state and reset retries
+-		 */
+-		if (hw->join_ap == 1)
+-			hw->join_ap = 2;
+-		hw->join_retries = 60;
+-
+-		/* Don't call this in monitor mode */
+-		if (wlandev->netdev->type == ARPHRD_ETHER) {
+-			u16 portstatus;
+-
+-			netdev_info(wlandev->netdev, "linkstatus=CONNECTED\n");
+-
+-			/* For non-usb devices, we can use the sync versions */
+-			/* Collect the BSSID, and set state to allow tx */
+-
+-			result = hfa384x_drvr_getconfig(hw,
+-							HFA384x_RID_CURRENTBSSID,
+-							wlandev->bssid,
+-							WLAN_BSSID_LEN);
+-			if (result) {
+-				netdev_dbg(wlandev->netdev,
+-					   "getconfig(0x%02x) failed, result = %d\n",
+-					   HFA384x_RID_CURRENTBSSID, result);
+-				return;
+-			}
+-
+-			result = hfa384x_drvr_getconfig(hw,
+-							HFA384x_RID_CURRENTSSID,
+-							&ssid, sizeof(ssid));
+-			if (result) {
+-				netdev_dbg(wlandev->netdev,
+-					   "getconfig(0x%02x) failed, result = %d\n",
+-					   HFA384x_RID_CURRENTSSID, result);
+-				return;
+-			}
+-			prism2mgmt_bytestr2pstr((struct hfa384x_bytestr *)&ssid,
+-						(struct p80211pstrd *)&wlandev->ssid);
+-
+-			/* Collect the port status */
+-			result = hfa384x_drvr_getconfig16(hw,
+-							  HFA384x_RID_PORTSTATUS,
+-							  &portstatus);
+-			if (result) {
+-				netdev_dbg(wlandev->netdev,
+-					   "getconfig(0x%02x) failed, result = %d\n",
+-					   HFA384x_RID_PORTSTATUS, result);
+-				return;
+-			}
+-			wlandev->macmode =
+-			    (portstatus == HFA384x_PSTATUS_CONN_IBSS) ?
+-			    WLAN_MACMODE_IBSS_STA : WLAN_MACMODE_ESS_STA;
+-
+-			/* signal back up to cfg80211 layer */
+-			prism2_connect_result(wlandev, P80211ENUM_truth_false);
+-
+-			/* Get the ball rolling on the comms quality stuff */
+-			prism2sta_commsqual_defer(&hw->commsqual_bh);
+-		}
+-		break;
+-
+-	case HFA384x_LINK_DISCONNECTED:
+-		/* This one indicates that our association is gone.  We've
+-		 * lost connection with the AP and/or been disassociated.
+-		 * This indicates that the MAC has completely cleared it's
+-		 * associated state.  We * should send a deauth indication
+-		 * (implying disassoc) up * to the MLME.
+-		 * Response:
+-		 * Indicate Deauthentication
+-		 * Block Transmits, Ignore receives of data frames
+-		 */
+-		if (wlandev->netdev->type == ARPHRD_ETHER)
+-			netdev_info(wlandev->netdev,
+-				    "linkstatus=DISCONNECTED (unhandled)\n");
+-		wlandev->macmode = WLAN_MACMODE_NONE;
+-
+-		netif_carrier_off(wlandev->netdev);
+-
+-		/* signal back up to cfg80211 layer */
+-		prism2_disconnected(wlandev);
+-
+-		break;
+-
+-	case HFA384x_LINK_AP_CHANGE:
+-		/* This one indicates that the MAC has decided to and
+-		 * successfully completed a change to another AP.  We
+-		 * should probably implement a reassociation indication
+-		 * in response to this one.  I'm thinking that the
+-		 * p80211 layer needs to be notified in case of
+-		 * buffering/queueing issues.  User mode also needs to be
+-		 * notified so that any BSS dependent elements can be
+-		 * updated.
+-		 * associated state.  We * should send a deauth indication
+-		 * (implying disassoc) up * to the MLME.
+-		 * Response:
+-		 * Indicate Reassociation
+-		 * Enable Transmits, Receives and pass up data frames
+-		 */
+-		netdev_info(wlandev->netdev, "linkstatus=AP_CHANGE\n");
+-
+-		result = hfa384x_drvr_getconfig(hw,
+-						HFA384x_RID_CURRENTBSSID,
+-						wlandev->bssid, WLAN_BSSID_LEN);
+-		if (result) {
+-			netdev_dbg(wlandev->netdev,
+-				   "getconfig(0x%02x) failed, result = %d\n",
+-				   HFA384x_RID_CURRENTBSSID, result);
+-			return;
+-		}
+-
+-		result = hfa384x_drvr_getconfig(hw,
+-						HFA384x_RID_CURRENTSSID,
+-						&ssid, sizeof(ssid));
+-		if (result) {
+-			netdev_dbg(wlandev->netdev,
+-				   "getconfig(0x%02x) failed, result = %d\n",
+-				   HFA384x_RID_CURRENTSSID, result);
+-			return;
+-		}
+-		prism2mgmt_bytestr2pstr((struct hfa384x_bytestr *)&ssid,
+-					(struct p80211pstrd *)&wlandev->ssid);
+-
+-		hw->link_status = HFA384x_LINK_CONNECTED;
+-		netif_carrier_on(wlandev->netdev);
+-
+-		/* signal back up to cfg80211 layer */
+-		prism2_roamed(wlandev);
+-
+-		break;
+-
+-	case HFA384x_LINK_AP_OUTOFRANGE:
+-		/* This one indicates that the MAC has decided that the
+-		 * AP is out of range, but hasn't found a better candidate
+-		 * so the MAC maintains its "associated" state in case
+-		 * we get back in range.  We should block transmits and
+-		 * receives in this state.  Do we need an indication here?
+-		 * Probably not since a polling user-mode element would
+-		 * get this status from p2PortStatus(FD40). What about
+-		 * p80211?
+-		 * Response:
+-		 * Block Transmits, Ignore receives of data frames
+-		 */
+-		netdev_info(wlandev->netdev, "linkstatus=AP_OUTOFRANGE (unhandled)\n");
+-
+-		netif_carrier_off(wlandev->netdev);
+-
+-		break;
+-
+-	case HFA384x_LINK_AP_INRANGE:
+-		/* This one indicates that the MAC has decided that the
+-		 * AP is back in range.  We continue working with our
+-		 * existing association.
+-		 * Response:
+-		 * Enable Transmits, Receives and pass up data frames
+-		 */
+-		netdev_info(wlandev->netdev, "linkstatus=AP_INRANGE\n");
+-
+-		hw->link_status = HFA384x_LINK_CONNECTED;
+-		netif_carrier_on(wlandev->netdev);
+-
+-		break;
+-
+-	case HFA384x_LINK_ASSOCFAIL:
+-		/* This one is actually a peer to CONNECTED.  We've
+-		 * requested a join for a given SSID and optionally BSSID.
+-		 * We can use this one to indicate authentication and
+-		 * association failures.  The trick is going to be
+-		 * 1) identifying the failure, and 2) state management.
+-		 * Response:
+-		 * Disable Transmits, Ignore receives of data frames
+-		 */
+-		if (hw->join_ap && --hw->join_retries > 0) {
+-			struct hfa384x_join_request_data joinreq;
+-
+-			joinreq = hw->joinreq;
+-			/* Send the join request */
+-			hfa384x_drvr_setconfig(hw,
+-					       HFA384x_RID_JOINREQUEST,
+-					       &joinreq,
+-					       HFA384x_RID_JOINREQUEST_LEN);
+-			netdev_info(wlandev->netdev,
+-				    "linkstatus=ASSOCFAIL (re-submitting join)\n");
+-		} else {
+-			netdev_info(wlandev->netdev, "linkstatus=ASSOCFAIL (unhandled)\n");
+-		}
+-
+-		netif_carrier_off(wlandev->netdev);
+-
+-		/* signal back up to cfg80211 layer */
+-		prism2_connect_result(wlandev, P80211ENUM_truth_true);
+-
+-		break;
+-
+-	default:
+-		/* This is bad, IO port problems? */
+-		netdev_warn(wlandev->netdev,
+-			    "unknown linkstatus=0x%02x\n", hw->link_status);
+-		return;
+-	}
+-
+-	wlandev->linkstatus = (hw->link_status == HFA384x_LINK_CONNECTED);
+-}
+-
+-/*
+- * prism2sta_inf_linkstatus
+- *
+- * Handles the receipt of a Link Status info frame.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-static void prism2sta_inf_linkstatus(struct wlandevice *wlandev,
+-				     struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-
+-	hw->link_status_new = le16_to_cpu(inf->info.linkstatus.linkstatus);
+-
+-	schedule_work(&hw->link_bh);
+-}
+-
+-/*
+- * prism2sta_inf_assocstatus
+- *
+- * Handles the receipt of an Association Status info frame. Should
+- * be present in APs only.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-static void prism2sta_inf_assocstatus(struct wlandevice *wlandev,
+-				      struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	struct hfa384x_assoc_status rec;
+-	int i;
+-
+-	memcpy(&rec, &inf->info.assocstatus, sizeof(rec));
+-	le16_to_cpus(&rec.assocstatus);
+-	le16_to_cpus(&rec.reason);
+-
+-	/*
+-	 * Find the address in the list of authenticated stations.
+-	 * If it wasn't found, then this address has not been previously
+-	 * authenticated and something weird has happened if this is
+-	 * anything other than an "authentication failed" message.
+-	 * If the address was found, then set the "associated" flag for
+-	 * that station, based on whether the station is associating or
+-	 * losing its association.  Something weird has also happened
+-	 * if we find the address in the list of authenticated stations
+-	 * but we are getting an "authentication failed" message.
+-	 */
+-
+-	for (i = 0; i < hw->authlist.cnt; i++)
+-		if (ether_addr_equal(rec.sta_addr, hw->authlist.addr[i]))
+-			break;
+-
+-	if (i >= hw->authlist.cnt) {
+-		if (rec.assocstatus != HFA384x_ASSOCSTATUS_AUTHFAIL)
+-			netdev_warn(wlandev->netdev,
+-				    "assocstatus info frame received for non-authenticated station.\n");
+-	} else {
+-		hw->authlist.assoc[i] =
+-		    (rec.assocstatus == HFA384x_ASSOCSTATUS_STAASSOC ||
+-		     rec.assocstatus == HFA384x_ASSOCSTATUS_REASSOC);
+-
+-		if (rec.assocstatus == HFA384x_ASSOCSTATUS_AUTHFAIL)
+-			netdev_warn(wlandev->netdev,
+-				    "authfail assocstatus info frame received for authenticated station.\n");
+-	}
+-}
+-
+-/*
+- * prism2sta_inf_authreq
+- *
+- * Handles the receipt of an Authentication Request info frame. Should
+- * be present in APs only.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- *
+- */
+-static void prism2sta_inf_authreq(struct wlandevice *wlandev,
+-				  struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	struct sk_buff *skb;
+-
+-	skb = dev_alloc_skb(sizeof(*inf));
+-	if (skb) {
+-		skb_put(skb, sizeof(*inf));
+-		memcpy(skb->data, inf, sizeof(*inf));
+-		skb_queue_tail(&hw->authq, skb);
+-		schedule_work(&hw->link_bh);
+-	}
+-}
+-
+-static void prism2sta_inf_authreq_defer(struct wlandevice *wlandev,
+-					struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-	struct hfa384x_authenticate_station_data rec;
+-
+-	int i, added, result, cnt;
+-	u8 *addr;
+-
+-	/*
+-	 * Build the AuthenticateStation record.  Initialize it for denying
+-	 * authentication.
+-	 */
+-
+-	ether_addr_copy(rec.address, inf->info.authreq.sta_addr);
+-	rec.status = cpu_to_le16(P80211ENUM_status_unspec_failure);
+-
+-	/*
+-	 * Authenticate based on the access mode.
+-	 */
+-
+-	switch (hw->accessmode) {
+-	case WLAN_ACCESS_NONE:
+-
+-		/*
+-		 * Deny all new authentications.  However, if a station
+-		 * is ALREADY authenticated, then accept it.
+-		 */
+-
+-		for (i = 0; i < hw->authlist.cnt; i++)
+-			if (ether_addr_equal(rec.address,
+-					     hw->authlist.addr[i])) {
+-				rec.status = cpu_to_le16(P80211ENUM_status_successful);
+-				break;
+-			}
+-
+-		break;
+-
+-	case WLAN_ACCESS_ALL:
+-
+-		/*
+-		 * Allow all authentications.
+-		 */
+-
+-		rec.status = cpu_to_le16(P80211ENUM_status_successful);
+-		break;
+-
+-	case WLAN_ACCESS_ALLOW:
+-
+-		/*
+-		 * Only allow the authentication if the MAC address
+-		 * is in the list of allowed addresses.
+-		 *
+-		 * Since this is the interrupt handler, we may be here
+-		 * while the access list is in the middle of being
+-		 * updated.  Choose the list which is currently okay.
+-		 * See "prism2mib_priv_accessallow()" for details.
+-		 */
+-
+-		if (hw->allow.modify == 0) {
+-			cnt = hw->allow.cnt;
+-			addr = hw->allow.addr[0];
+-		} else {
+-			cnt = hw->allow.cnt1;
+-			addr = hw->allow.addr1[0];
+-		}
+-
+-		for (i = 0; i < cnt; i++, addr += ETH_ALEN)
+-			if (ether_addr_equal(rec.address, addr)) {
+-				rec.status = cpu_to_le16(P80211ENUM_status_successful);
+-				break;
+-			}
+-
+-		break;
+-
+-	case WLAN_ACCESS_DENY:
+-
+-		/*
+-		 * Allow the authentication UNLESS the MAC address is
+-		 * in the list of denied addresses.
+-		 *
+-		 * Since this is the interrupt handler, we may be here
+-		 * while the access list is in the middle of being
+-		 * updated.  Choose the list which is currently okay.
+-		 * See "prism2mib_priv_accessdeny()" for details.
+-		 */
+-
+-		if (hw->deny.modify == 0) {
+-			cnt = hw->deny.cnt;
+-			addr = hw->deny.addr[0];
+-		} else {
+-			cnt = hw->deny.cnt1;
+-			addr = hw->deny.addr1[0];
+-		}
+-
+-		rec.status = cpu_to_le16(P80211ENUM_status_successful);
+-
+-		for (i = 0; i < cnt; i++, addr += ETH_ALEN)
+-			if (ether_addr_equal(rec.address, addr)) {
+-				rec.status = cpu_to_le16(P80211ENUM_status_unspec_failure);
+-				break;
+-			}
+-
+-		break;
+-	}
+-
+-	/*
+-	 * If the authentication is okay, then add the MAC address to the
+-	 * list of authenticated stations.  Don't add the address if it
+-	 * is already in the list. (802.11b does not seem to disallow
+-	 * a station from issuing an authentication request when the
+-	 * station is already authenticated. Does this sort of thing
+-	 * ever happen?  We might as well do the check just in case.)
+-	 */
+-
+-	added = 0;
+-
+-	if (rec.status == cpu_to_le16(P80211ENUM_status_successful)) {
+-		for (i = 0; i < hw->authlist.cnt; i++)
+-			if (ether_addr_equal(rec.address,
+-					     hw->authlist.addr[i]))
+-				break;
+-
+-		if (i >= hw->authlist.cnt) {
+-			if (hw->authlist.cnt >= WLAN_AUTH_MAX) {
+-				rec.status = cpu_to_le16(P80211ENUM_status_ap_full);
+-			} else {
+-				ether_addr_copy(hw->authlist.addr[hw->authlist.cnt],
+-						rec.address);
+-				hw->authlist.cnt++;
+-				added = 1;
+-			}
+-		}
+-	}
+-
+-	/*
+-	 * Send back the results of the authentication.  If this doesn't work,
+-	 * then make sure to remove the address from the authenticated list if
+-	 * it was added.
+-	 */
+-
+-	rec.algorithm = inf->info.authreq.algorithm;
+-
+-	result = hfa384x_drvr_setconfig(hw, HFA384x_RID_AUTHENTICATESTA,
+-					&rec, sizeof(rec));
+-	if (result) {
+-		if (added)
+-			hw->authlist.cnt--;
+-		netdev_err(wlandev->netdev,
+-			   "setconfig(authenticatestation) failed, result=%d\n",
+-			   result);
+-	}
+-}
+-
+-/*
+- * prism2sta_inf_psusercnt
+- *
+- * Handles the receipt of a PowerSaveUserCount info frame. Should
+- * be present in APs only.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to info frame (contents in hfa384x order)
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-static void prism2sta_inf_psusercnt(struct wlandevice *wlandev,
+-				    struct hfa384x_inf_frame *inf)
+-{
+-	struct hfa384x *hw = wlandev->priv;
+-
+-	hw->psusercount = le16_to_cpu(inf->info.psusercnt.usercnt);
+-}
+-
+-/*
+- * prism2sta_ev_info
+- *
+- * Handles the Info event.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	inf		ptr to a generic info frame
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-void prism2sta_ev_info(struct wlandevice *wlandev,
+-		       struct hfa384x_inf_frame *inf)
+-{
+-	le16_to_cpus(&inf->infotype);
+-	/* Dispatch */
+-	switch (inf->infotype) {
+-	case HFA384x_IT_HANDOVERADDR:
+-		netdev_dbg(wlandev->netdev,
+-			   "received infoframe:HANDOVER (unhandled)\n");
+-		break;
+-	case HFA384x_IT_COMMTALLIES:
+-		prism2sta_inf_tallies(wlandev, inf);
+-		break;
+-	case HFA384x_IT_HOSTSCANRESULTS:
+-		prism2sta_inf_hostscanresults(wlandev, inf);
+-		break;
+-	case HFA384x_IT_SCANRESULTS:
+-		prism2sta_inf_scanresults(wlandev, inf);
+-		break;
+-	case HFA384x_IT_CHINFORESULTS:
+-		prism2sta_inf_chinforesults(wlandev, inf);
+-		break;
+-	case HFA384x_IT_LINKSTATUS:
+-		prism2sta_inf_linkstatus(wlandev, inf);
+-		break;
+-	case HFA384x_IT_ASSOCSTATUS:
+-		prism2sta_inf_assocstatus(wlandev, inf);
+-		break;
+-	case HFA384x_IT_AUTHREQ:
+-		prism2sta_inf_authreq(wlandev, inf);
+-		break;
+-	case HFA384x_IT_PSUSERCNT:
+-		prism2sta_inf_psusercnt(wlandev, inf);
+-		break;
+-	case HFA384x_IT_KEYIDCHANGED:
+-		netdev_warn(wlandev->netdev, "Unhandled IT_KEYIDCHANGED\n");
+-		break;
+-	case HFA384x_IT_ASSOCREQ:
+-		netdev_warn(wlandev->netdev, "Unhandled IT_ASSOCREQ\n");
+-		break;
+-	case HFA384x_IT_MICFAILURE:
+-		netdev_warn(wlandev->netdev, "Unhandled IT_MICFAILURE\n");
+-		break;
+-	default:
+-		netdev_warn(wlandev->netdev,
+-			    "Unknown info type=0x%02x\n", inf->infotype);
+-		break;
+-	}
+-}
+-
+-/*
+- * prism2sta_ev_tx
+- *
+- * Handles the Tx event.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *	status		tx frame status word
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-void prism2sta_ev_tx(struct wlandevice *wlandev, u16 status)
+-{
+-	netdev_dbg(wlandev->netdev, "Tx Complete, status=0x%04x\n", status);
+-	/* update linux network stats */
+-	wlandev->netdev->stats.tx_packets++;
+-}
+-
+-/*
+- * prism2sta_ev_alloc
+- *
+- * Handles the Alloc event.
+- *
+- * Arguments:
+- *	wlandev		wlan device structure
+- *
+- * Returns:
+- *	nothing
+- *
+- * Side effects:
+- *
+- * Call context:
+- *	interrupt
+- */
+-void prism2sta_ev_alloc(struct wlandevice *wlandev)
+-{
+-	netif_wake_queue(wlandev->netdev);
+-}
+-
+-/*
+- * create_wlan
+- *
+- * Called at module init time.  This creates the struct wlandevice structure
+- * and initializes it with relevant bits.
+- *
+- * Arguments:
+- *	none
+- *
+- * Returns:
+- *	the created struct wlandevice structure.
+- *
+- * Side effects:
+- *	also allocates the priv/hw structures.
+- *
+- * Call context:
+- *	process thread
+- *
+- */
+-static struct wlandevice *create_wlan(void)
+-{
+-	struct wlandevice *wlandev = NULL;
+-	struct hfa384x *hw = NULL;
+-
+-	/* Alloc our structures */
+-	wlandev = kzalloc(sizeof(*wlandev), GFP_KERNEL);
+-	hw = kzalloc(sizeof(*hw), GFP_KERNEL);
+-
+-	if (!wlandev || !hw) {
+-		kfree(wlandev);
+-		kfree(hw);
+-		return NULL;
+-	}
+-
+-	/* Initialize the network device object. */
+-	wlandev->nsdname = dev_info;
+-	wlandev->msdstate = WLAN_MSD_HWPRESENT_PENDING;
+-	wlandev->priv = hw;
+-	wlandev->open = prism2sta_open;
+-	wlandev->close = prism2sta_close;
+-	wlandev->reset = prism2sta_reset;
+-	wlandev->txframe = prism2sta_txframe;
+-	wlandev->mlmerequest = prism2sta_mlmerequest;
+-	wlandev->set_multicast_list = prism2sta_setmulticast;
+-	wlandev->tx_timeout = hfa384x_tx_timeout;
+-
+-	wlandev->nsdcaps = P80211_NSDCAP_HWFRAGMENT | P80211_NSDCAP_AUTOJOIN;
+-
+-	/* Initialize the device private data structure. */
+-	hw->dot11_desired_bss_type = 1;
+-
+-	return wlandev;
+-}
+-
+-void prism2sta_commsqual_defer(struct work_struct *data)
+-{
+-	struct hfa384x *hw = container_of(data, struct hfa384x, commsqual_bh);
+-	struct wlandevice *wlandev = hw->wlandev;
+-	struct hfa384x_bytestr32 ssid;
+-	struct p80211msg_dot11req_mibget msg;
+-	struct p80211item_uint32 *mibitem = (struct p80211item_uint32 *)
+-						&msg.mibattribute.data;
+-	int result = 0;
+-
+-	if (hw->wlandev->hwremoved)
+-		return;
+-
+-	/* we don't care if we're in AP mode */
+-	if ((wlandev->macmode == WLAN_MACMODE_NONE) ||
+-	    (wlandev->macmode == WLAN_MACMODE_ESS_AP)) {
+-		return;
+-	}
+-
+-	/* It only makes sense to poll these in non-IBSS */
+-	if (wlandev->macmode != WLAN_MACMODE_IBSS_STA) {
+-		result = hfa384x_drvr_getconfig(hw, HFA384x_RID_DBMCOMMSQUALITY,
+-						&hw->qual, HFA384x_RID_DBMCOMMSQUALITY_LEN);
+-
+-		if (result) {
+-			netdev_err(wlandev->netdev, "error fetching commsqual\n");
+-			return;
+-		}
+-
+-		netdev_dbg(wlandev->netdev, "commsqual %d %d %d\n",
+-			   le16_to_cpu(hw->qual.cq_curr_bss),
+-			   le16_to_cpu(hw->qual.asl_curr_bss),
+-			   le16_to_cpu(hw->qual.anl_curr_fc));
+-	}
+-
+-	/* Get the signal rate */
+-	msg.msgcode = DIDMSG_DOT11REQ_MIBGET;
+-	mibitem->did = DIDMIB_P2_MAC_CURRENTTXRATE;
+-	result = p80211req_dorequest(wlandev, (u8 *)&msg);
+-
+-	if (result) {
+-		netdev_dbg(wlandev->netdev,
+-			   "get signal rate failed, result = %d\n", result);
+-		return;
+-	}
+-
+-	switch (mibitem->data) {
+-	case HFA384x_RATEBIT_1:
+-		hw->txrate = 10;
+-		break;
+-	case HFA384x_RATEBIT_2:
+-		hw->txrate = 20;
+-		break;
+-	case HFA384x_RATEBIT_5dot5:
+-		hw->txrate = 55;
+-		break;
+-	case HFA384x_RATEBIT_11:
+-		hw->txrate = 110;
+-		break;
+-	default:
+-		netdev_dbg(wlandev->netdev, "Bad ratebit (%d)\n",
+-			   mibitem->data);
+-	}
+-
+-	/* Lastly, we need to make sure the BSSID didn't change on us */
+-	result = hfa384x_drvr_getconfig(hw,
+-					HFA384x_RID_CURRENTBSSID,
+-					wlandev->bssid, WLAN_BSSID_LEN);
+-	if (result) {
+-		netdev_dbg(wlandev->netdev,
+-			   "getconfig(0x%02x) failed, result = %d\n",
+-			   HFA384x_RID_CURRENTBSSID, result);
+-		return;
+-	}
+-
+-	result = hfa384x_drvr_getconfig(hw,
+-					HFA384x_RID_CURRENTSSID,
+-					&ssid, sizeof(ssid));
+-	if (result) {
+-		netdev_dbg(wlandev->netdev,
+-			   "getconfig(0x%02x) failed, result = %d\n",
+-			   HFA384x_RID_CURRENTSSID, result);
+-		return;
+-	}
+-	prism2mgmt_bytestr2pstr((struct hfa384x_bytestr *)&ssid,
+-				(struct p80211pstrd *)&wlandev->ssid);
+-
+-	/* Reschedule timer */
+-	mod_timer(&hw->commsqual_timer, jiffies + HZ);
+-}
+-
+-void prism2sta_commsqual_timer(struct timer_list *t)
+-{
+-	struct hfa384x *hw = from_timer(hw, t, commsqual_timer);
+-
+-	schedule_work(&hw->commsqual_bh);
+-}
+diff --git a/drivers/staging/wlan-ng/prism2usb.c b/drivers/staging/wlan-ng/prism2usb.c
+deleted file mode 100644
+index 0e0ccef4871e..000000000000
+--- a/drivers/staging/wlan-ng/prism2usb.c
++++ /dev/null
+@@ -1,299 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include "hfa384x_usb.c"
+-#include "prism2mgmt.c"
+-#include "prism2mib.c"
+-#include "prism2sta.c"
+-#include "prism2fw.c"
+-
+-#define PRISM_DEV(vid, pid, name)		\
+-	{ USB_DEVICE(vid, pid),			\
+-	.driver_info = (unsigned long)name }
+-
+-static const struct usb_device_id usb_prism_tbl[] = {
+-	PRISM_DEV(0x04bb, 0x0922, "IOData AirPort WN-B11/USBS"),
+-	PRISM_DEV(0x07aa, 0x0012, "Corega USB Wireless LAN Stick-11"),
+-	PRISM_DEV(0x09aa, 0x3642, "Prism2.x 11Mbps USB WLAN Adapter"),
+-	PRISM_DEV(0x1668, 0x0408, "Actiontec Prism2.5 11Mbps USB WLAN Adapter"),
+-	PRISM_DEV(0x1668, 0x0421, "Actiontec Prism2.5 11Mbps USB WLAN Adapter"),
+-	PRISM_DEV(0x1915, 0x2236, "Linksys WUSB11v3.0 11Mbps USB WLAN Adapter"),
+-	PRISM_DEV(0x066b, 0x2212, "Linksys WUSB11v2.5 11Mbps USB WLAN Adapter"),
+-	PRISM_DEV(0x066b, 0x2213, "Linksys WUSB12v1.1 11Mbps USB WLAN Adapter"),
+-	PRISM_DEV(0x0411, 0x0016, "Melco WLI-USB-S11 11Mbps WLAN Adapter"),
+-	PRISM_DEV(0x08de, 0x7a01, "PRISM25 USB IEEE 802.11 Mini Adapter"),
+-	PRISM_DEV(0x8086, 0x1111, "Intel PRO/Wireless 2011B USB LAN Adapter"),
+-	PRISM_DEV(0x0d8e, 0x7a01, "PRISM25 IEEE 802.11 Mini USB Adapter"),
+-	PRISM_DEV(0x045e, 0x006e, "Microsoft MN510 USB Wireless Adapter"),
+-	PRISM_DEV(0x0967, 0x0204, "Acer Warplink USB Adapter"),
+-	PRISM_DEV(0x0cde, 0x0002, "Z-Com 725/726 Prism2.5 USB/USB Integrated"),
+-	PRISM_DEV(0x0cde, 0x0005, "Z-Com Xl735 USB Wireless 802.11b Adapter"),
+-	PRISM_DEV(0x413c, 0x8100, "Dell TrueMobile 1180 USB Wireless Adapter"),
+-	PRISM_DEV(0x0b3b, 0x1601, "ALLNET 0193 11Mbps USB WLAN Adapter"),
+-	PRISM_DEV(0x0b3b, 0x1602, "ZyXEL ZyAIR B200 USB Wireless Adapter"),
+-	PRISM_DEV(0x0baf, 0x00eb, "USRobotics USR1120 USB Wireless Adapter"),
+-	PRISM_DEV(0x0411, 0x0027, "Melco WLI-USB-KS11G 11Mbps WLAN Adapter"),
+-	PRISM_DEV(0x04f1, 0x3009, "JVC MP-XP7250 Builtin USB WLAN Adapter"),
+-	PRISM_DEV(0x0846, 0x4110, "NetGear MA111"),
+-	PRISM_DEV(0x03f3, 0x0020, "Adaptec AWN-8020 USB WLAN Adapter"),
+-	PRISM_DEV(0x2821, 0x3300, "ASUS-WL140 / Hawking HighDB USB Wireless Adapter"),
+-	PRISM_DEV(0x2001, 0x3700, "DWL-122 USB Wireless Adapter"),
+-	PRISM_DEV(0x2001, 0x3702, "DWL-120 Rev F USB Wireless Adapter"),
+-	PRISM_DEV(0x50c2, 0x4013, "Averatec USB WLAN Adapter"),
+-	PRISM_DEV(0x2c02, 0x14ea, "Planex GW-US11H USB WLAN Adapter"),
+-	PRISM_DEV(0x124a, 0x168b, "Airvast PRISM3 USB WLAN Adapter"),
+-	PRISM_DEV(0x083a, 0x3503, "T-Sinus 111 USB WLAN Adapter"),
+-	PRISM_DEV(0x0411, 0x0044, "Melco WLI-USB-KB11 11Mbps WLAN Adapter"),
+-	PRISM_DEV(0x1668, 0x6106, "ROPEX FreeLan USB 802.11b Adapter"),
+-	PRISM_DEV(0x124a, 0x4017, "Pheenet WL-503IA USB 802.11b Adapter"),
+-	PRISM_DEV(0x0bb2, 0x0302, "Ambit Microsystems Corp."),
+-	PRISM_DEV(0x9016, 0x182d, "Sitecom WL-022 USB 802.11b Adapter"),
+-	PRISM_DEV(0x0543, 0x0f01,
+-		  "ViewSonic Airsync USB Adapter 11Mbps (Prism2.5)"),
+-	PRISM_DEV(0x067c, 0x1022,
+-		  "Siemens SpeedStream 1022 11Mbps USB WLAN Adapter"),
+-	PRISM_DEV(0x049f, 0x0033,
+-		  "Compaq/Intel W100 PRO/Wireless 11Mbps multiport WLAN Adapter"),
+-	{ } /* terminator */
+-};
+-MODULE_DEVICE_TABLE(usb, usb_prism_tbl);
+-
+-static int prism2sta_probe_usb(struct usb_interface *interface,
+-			       const struct usb_device_id *id)
+-{
+-	struct usb_device *dev;
+-	struct usb_endpoint_descriptor *bulk_in, *bulk_out;
+-	struct usb_host_interface *iface_desc = interface->cur_altsetting;
+-	struct wlandevice *wlandev = NULL;
+-	struct hfa384x *hw = NULL;
+-	int result = 0;
+-
+-	result = usb_find_common_endpoints(iface_desc, &bulk_in, &bulk_out, NULL, NULL);
+-	if (result)
+-		goto failed;
+-
+-	dev = interface_to_usbdev(interface);
+-	wlandev = create_wlan();
+-	if (!wlandev) {
+-		dev_err(&interface->dev, "Memory allocation failure.\n");
+-		result = -EIO;
+-		goto failed;
+-	}
+-	hw = wlandev->priv;
+-
+-	if (wlan_setup(wlandev, &interface->dev) != 0) {
+-		dev_err(&interface->dev, "wlan_setup() failed.\n");
+-		result = -EIO;
+-		goto failed;
+-	}
+-
+-	/* Initialize the hw data */
+-	hw->endp_in = usb_rcvbulkpipe(dev, bulk_in->bEndpointAddress);
+-	hw->endp_out = usb_sndbulkpipe(dev, bulk_out->bEndpointAddress);
+-	hfa384x_create(hw, dev);
+-	hw->wlandev = wlandev;
+-
+-	/* Register the wlandev, this gets us a name and registers the
+-	 * linux netdevice.
+-	 */
+-	SET_NETDEV_DEV(wlandev->netdev, &interface->dev);
+-
+-	/* Do a chip-level reset on the MAC */
+-	if (prism2_doreset) {
+-		result = hfa384x_corereset(hw,
+-					   prism2_reset_holdtime,
+-					   prism2_reset_settletime, 0);
+-		if (result != 0) {
+-			result = -EIO;
+-			dev_err(&interface->dev,
+-				"hfa384x_corereset() failed.\n");
+-			goto failed_reset;
+-		}
+-	}
+-
+-	usb_get_dev(dev);
+-
+-	wlandev->msdstate = WLAN_MSD_HWPRESENT;
+-
+-	/* Try and load firmware, then enable card before we register */
+-	prism2_fwtry(dev, wlandev);
+-	prism2sta_ifstate(wlandev, P80211ENUM_ifstate_enable);
+-
+-	if (register_wlandev(wlandev) != 0) {
+-		dev_err(&interface->dev, "register_wlandev() failed.\n");
+-		result = -EIO;
+-		goto failed_register;
+-	}
+-
+-	goto done;
+-
+-failed_register:
+-	usb_put_dev(dev);
+-failed_reset:
+-	wlan_unsetup(wlandev);
+-failed:
+-	kfree(wlandev);
+-	kfree(hw);
+-	wlandev = NULL;
+-
+-done:
+-	usb_set_intfdata(interface, wlandev);
+-	return result;
+-}
+-
+-static void prism2sta_disconnect_usb(struct usb_interface *interface)
+-{
+-	struct wlandevice *wlandev;
+-
+-	wlandev = usb_get_intfdata(interface);
+-	if (wlandev) {
+-		LIST_HEAD(cleanlist);
+-		struct hfa384x_usbctlx *ctlx, *temp;
+-		unsigned long flags;
+-
+-		struct hfa384x *hw = wlandev->priv;
+-
+-		if (!hw)
+-			goto exit;
+-
+-		spin_lock_irqsave(&hw->ctlxq.lock, flags);
+-
+-		p80211netdev_hwremoved(wlandev);
+-		list_splice_init(&hw->ctlxq.reapable, &cleanlist);
+-		list_splice_init(&hw->ctlxq.completing, &cleanlist);
+-		list_splice_init(&hw->ctlxq.pending, &cleanlist);
+-		list_splice_init(&hw->ctlxq.active, &cleanlist);
+-
+-		spin_unlock_irqrestore(&hw->ctlxq.lock, flags);
+-
+-		/* There's no hardware to shutdown, but the driver
+-		 * might have some tasks that must be stopped before
+-		 * we can tear everything down.
+-		 */
+-		prism2sta_ifstate(wlandev, P80211ENUM_ifstate_disable);
+-
+-		timer_shutdown_sync(&hw->throttle);
+-		timer_shutdown_sync(&hw->reqtimer);
+-		timer_shutdown_sync(&hw->resptimer);
+-
+-		/* Unlink all the URBs. This "removes the wheels"
+-		 * from the entire CTLX handling mechanism.
+-		 */
+-		usb_kill_urb(&hw->rx_urb);
+-		usb_kill_urb(&hw->tx_urb);
+-		usb_kill_urb(&hw->ctlx_urb);
+-
+-		cancel_work_sync(&hw->completion_bh);
+-		cancel_work_sync(&hw->reaper_bh);
+-
+-		cancel_work_sync(&hw->link_bh);
+-		cancel_work_sync(&hw->commsqual_bh);
+-		cancel_work_sync(&hw->usb_work);
+-
+-		/* Now we complete any outstanding commands
+-		 * and tell everyone who is waiting for their
+-		 * responses that we have shut down.
+-		 */
+-		list_for_each_entry(ctlx, &cleanlist, list)
+-			complete(&ctlx->done);
+-
+-		/* Give any outstanding synchronous commands
+-		 * a chance to complete. All they need to do
+-		 * is "wake up", so that's easy.
+-		 * (I'd like a better way to do this, really.)
+-		 */
+-		msleep(100);
+-
+-		/* Now delete the CTLXs, because no-one else can now. */
+-		list_for_each_entry_safe(ctlx, temp, &cleanlist, list)
+-			kfree(ctlx);
+-
+-		/* Unhook the wlandev */
+-		unregister_wlandev(wlandev);
+-		wlan_unsetup(wlandev);
+-
+-		usb_put_dev(hw->usb);
+-
+-		hfa384x_destroy(hw);
+-		kfree(hw);
+-
+-		kfree(wlandev);
+-	}
+-
+-exit:
+-	usb_set_intfdata(interface, NULL);
+-}
+-
+-#ifdef CONFIG_PM
+-static int prism2sta_suspend(struct usb_interface *interface,
+-			     pm_message_t message)
+-{
+-	struct hfa384x *hw = NULL;
+-	struct wlandevice *wlandev;
+-
+-	wlandev = usb_get_intfdata(interface);
+-	if (!wlandev)
+-		return -ENODEV;
+-
+-	hw = wlandev->priv;
+-	if (!hw)
+-		return -ENODEV;
+-
+-	prism2sta_ifstate(wlandev, P80211ENUM_ifstate_disable);
+-
+-	usb_kill_urb(&hw->rx_urb);
+-	usb_kill_urb(&hw->tx_urb);
+-	usb_kill_urb(&hw->ctlx_urb);
+-
+-	return 0;
+-}
+-
+-static int prism2sta_resume(struct usb_interface *interface)
+-{
+-	int result = 0;
+-	struct hfa384x *hw = NULL;
+-	struct wlandevice *wlandev;
+-
+-	wlandev = usb_get_intfdata(interface);
+-	if (!wlandev)
+-		return -ENODEV;
+-
+-	hw = wlandev->priv;
+-	if (!hw)
+-		return -ENODEV;
+-
+-	/* Do a chip-level reset on the MAC */
+-	if (prism2_doreset) {
+-		result = hfa384x_corereset(hw,
+-					   prism2_reset_holdtime,
+-					   prism2_reset_settletime, 0);
+-		if (result != 0) {
+-			unregister_wlandev(wlandev);
+-			hfa384x_destroy(hw);
+-			dev_err(&interface->dev, "hfa384x_corereset() failed.\n");
+-			kfree(wlandev);
+-			kfree(hw);
+-			wlandev = NULL;
+-			return -ENODEV;
+-		}
+-	}
+-
+-	prism2sta_ifstate(wlandev, P80211ENUM_ifstate_enable);
+-
+-	return 0;
+-}
+-#else
+-#define prism2sta_suspend NULL
+-#define prism2sta_resume NULL
+-#endif /* CONFIG_PM */
+-
+-static struct usb_driver prism2_usb_driver = {
+-	.name = "prism2_usb",
+-	.probe = prism2sta_probe_usb,
+-	.disconnect = prism2sta_disconnect_usb,
+-	.id_table = usb_prism_tbl,
+-	.suspend = prism2sta_suspend,
+-	.resume = prism2sta_resume,
+-	.reset_resume = prism2sta_resume,
+-	/* fops, minor? */
+-};
+-
+-module_usb_driver(prism2_usb_driver);
+-- 
+2.43.2
+
 
