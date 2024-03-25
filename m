@@ -1,223 +1,244 @@
-Return-Path: <linux-kernel+bounces-117204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B223E88A8A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:14:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D8388B262
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:11:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F2071F66E8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:14:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5E93C450A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7482412837C;
-	Mon, 25 Mar 2024 14:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C3F1411F8;
+	Mon, 25 Mar 2024 14:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="kNi/YcM8"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="QFsoV7l4"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449CC6D1D2
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FA412839D
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711375651; cv=none; b=FwWlSj9FSMOo3AEE4DXRsBBKf9MdpMCI9yiYyO1iBuSojEAusIpHMqqaf1bF0EN9DNjHtNx61dP02VI3ZoGvqzmJnQ6qNgF5CFjvuIT8NYez+w6L3tu+D7eVfEUzUoZldpDkeQGy7RYLUkEmfJoOJQQUDxlghJrvZLEWZuMObr0=
+	t=1711375723; cv=none; b=AB2Yn4dXxzSEEPPyvbuTb++Var6St/G4MDQDyog9/4q6p+CWiAwLXXVDFqr3G7BOiqARCHFWtBNo3qjgFPEIHnzQhUaoZSjuVB/Q7ha26aRqQgrZpPq2V51LNTCJwrgmvYSzWAndOAakCWGjNojgs/tESNrWSX8ICdS4CZNcuTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711375651; c=relaxed/simple;
-	bh=Ink/2BscmiKlDhlTWbHjHvB+RPygPPtsUUeS7CTpqh4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=scGqx1+IxQ6iKybUxkJ8JyCJWEGjJ2uVt50qjFPjbk18DpNzFFXwnoANDEl3Z2Lc2Xf+QZfCvj+lQ1+Ae5nnVSAcs3k8AF4FewrcIMz3rPaGItW+GiR5Dd8Ke+5wzvTD1aTXvOVRYdYrXAqrFg9EJ1IzQhQZ0ljHVMPQks1lJB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=kNi/YcM8; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Yd9+S3XxenHqQanmkoRWCDO8d3X3+DCs7dRSrWF3pvk=; b=kNi/YcM8gsGT02869qrcozocD9
-	0tdtdl2SMnXU50FgZnNk9MUPj4deYmQWRt1MYa2bkGIsW6q7VpTYRUq9cr9oC5TRG6jqcs8nC6ZVc
-	vOstY/fooRU32lPrefNsfF8Ds21+ZNiYV23EmmtVL4hPXqgjzwI1M1ht6AhwScQSrJ2e1wXoh57qc
-	GSHPEfTbIJO6tTiDI/bRs4LEABafq/Cx61xyA9ype2dglSagTOL3wkpxSh18hKeTfdQZ5iPJLqUYF
-	6qvOwYMW9GnJv4SX1OnSj0hC/jA5JK49SuH7U3GprlQYMm8Jo3TV1CxRAAJUOVECcmQHwvRbLOLPM
-	xV02CkjA==;
-Received: from [177.34.169.255] (helo=[192.168.0.139])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rokyn-00F5UY-S2; Mon, 25 Mar 2024 15:07:14 +0100
-Message-ID: <ecffe7bd-98bc-444a-bf5b-d8f3ff933a34@igalia.com>
-Date: Mon, 25 Mar 2024 11:07:04 -0300
+	s=arc-20240116; t=1711375723; c=relaxed/simple;
+	bh=OxCqtQVpFOuTtdqfzmdtYyBMioRTbETJ+YVhNovAZhA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SxJlo2hzkuP5f/BdXH1UQeKBOTQPDYAFDSeA5YUuEfT/d4G+cyI9zc1MyictlS1fbqnccbYcl1J1+gboCHFPEOAJ4m+ZDxAM7Z9G/hPZ6ZAKT/BQEqYl248KKG6R6mM/JqcCAIqZgEHLakLkg+DAhe8KH7wddwf9NUWjOQNus/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=QFsoV7l4; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d109e82bd0so60327831fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711375719; x=1711980519; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oFWGgnNqSnGHrWUWocmZy6YK/dw2hXbl8LIbQZaVaus=;
+        b=QFsoV7l4msJ1BSv84qKYZCh1XrcfPx9SPts9lKoRoRI3tYu47Sh76Z+uHqktEH7GUJ
+         U6D2b2RM/lDmQ5an92vtpg1yW9YWp6Scsb/aE51D/FzBtMreKrE+NS5zwZFe+YalO6F1
+         asUMuipg7gGViE4ZEYtHkOBSqvPjCi1XLcZ1L+5LuzXBb6urN001LbwoKu3FPPnPlbVx
+         txy4hehMZfTKKircHo5+nzoDtYh3lG3TeEPdpUhwtTRyGcdfItJ7PH9A9eI3W01nArLy
+         y6pMmwODnUfiVK23BdoTjvr0509pA/wiUeYH2UWq+Ic9db4MkisgHGxJaB6xeK+n55I0
+         zFvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711375719; x=1711980519;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oFWGgnNqSnGHrWUWocmZy6YK/dw2hXbl8LIbQZaVaus=;
+        b=f1svpBou9dU5By26MPhDYmE6KSdkwGnFwbK3JT3CZFU+DPrlY8Twr3KN1dIXZxIkP9
+         vjxP0w9vsQGX6QboDKjNwkbAMPyavAYwGt0MZBps2IrMGp5Nz326dRXnf57xlgxND/ya
+         HmZ4qeAnnInVuLeremziwfZws31vu9DiJfmm6fv2EKEC5xRi5HBbxhgJ9OnSDECNsSFd
+         H5lEhRs8tXXAqK8psFoTA97bGx65iYxhzi547gChbSgF0jnZmjjpm5Hy7jW4yhIhUFZr
+         PYm1N1Exe9LF7yUDYJQjYq1VY/5YH7ykSpijAlCIS7AeKmZVQSfFHB1egyFYq8BsKQ2y
+         2u5w==
+X-Forwarded-Encrypted: i=1; AJvYcCXg+CZFdxi4qkRTCBdZFwKYG53jTYVGzM34rDxWv7HLI5ZrPtvQTLVPmVlh0UVd6PunEIjctxNvCf51ff3f3SgA9tVNrx/QmIqEvujp
+X-Gm-Message-State: AOJu0Yzc+vI6yDErUSUoeaukVZo8PKehOOE4+A1ecRaw0HieN9IzYone
+	V8E1PnukW6JjxsWQwZ+VrL2qpP+KKFBx4Rr+ZeubopdJC1jZnJ6WhQB5dI0bqpZU6sBWvP0vJ3i
+	faVicdcov99tXhrz6/W+mEi4jURuUsUCicbjXMg==
+X-Google-Smtp-Source: AGHT+IFXJTugPxOd1SjsFqmPOD0Aur7rPUGaGzR3jjwtIDR508eJqX8kU1m3OUZjS3P0PLy57Ad5InV6xaj5ZqCXKAE=
+X-Received: by 2002:a2e:8806:0:b0:2d4:49d2:a3d1 with SMTP id
+ x6-20020a2e8806000000b002d449d2a3d1mr5146126ljh.1.1711375718894; Mon, 25 Mar
+ 2024 07:08:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 09/16] drm/vkms: Introduce pixel_read_direction enum
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
- Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com
-References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
- <20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240313-yuv-v5-9-e610cbd03f52@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240319-adding-new-ad738x-driver-v5-0-ce7df004ceb3@baylibre.com>
+ <20240319-adding-new-ad738x-driver-v5-4-ce7df004ceb3@baylibre.com> <20240324130135.35f4b0eb@jic23-huawei>
+In-Reply-To: <20240324130135.35f4b0eb@jic23-huawei>
+From: David Lechner <dlechner@baylibre.com>
+Date: Mon, 25 Mar 2024 09:08:27 -0500
+Message-ID: <CAMknhBGmM7yt1JR1tW4SS5RLGpN9PtnMrf0WvZ-bhU-gSv3YUQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/7] iio: adc: ad7380: add support for
+ pseudo-differential parts
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Julien Stephan <jstephan@baylibre.com>, Lars-Peter Clausen <lars@metafoo.de>, 
+	Michael Hennerich <Michael.Hennerich@analog.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/13/24 14:45, Louis Chauvet wrote:
-> The pixel_read_direction enum is useful to describe the reading direction
-> in a plane. It avoids using the rotation property of DRM, which not
-> practical to know the direction of reading.
-> This patch also introduce two helpers, one to compute the
-> pixel_read_direction from the DRM rotation property, and one to compute
-> the step, in byte, between two successive pixel in a specific direction.
-> 
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->   drivers/gpu/drm/vkms/vkms_composer.c | 36 ++++++++++++++++++++++++++++++++++++
->   drivers/gpu/drm/vkms/vkms_drv.h      | 11 +++++++++++
->   drivers/gpu/drm/vkms/vkms_formats.c  | 30 ++++++++++++++++++++++++++++++
->   3 files changed, 77 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> index 9254086f23ff..989bcf59f375 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -159,6 +159,42 @@ static void apply_lut(const struct vkms_crtc_state *crtc_state, struct line_buff
->   	}
->   }
->   
-> +/**
-> + * direction_for_rotation() - Get the correct reading direction for a given rotation
-> + *
-> + * This function will use the @rotation setting of a source plane to compute the reading
-> + * direction in this plane which correspond to a "left to right writing" in the CRTC.
-> + * For example, if the buffer is reflected on X axis, the pixel must be read from right to left
-> + * to be written from left to right on the CRTC.
-> + *
-> + * @rotation: Rotation to analyze. It correspond the field @frame_info.rotation.
+On Sun, Mar 24, 2024 at 8:01=E2=80=AFAM Jonathan Cameron <jic23@kernel.org>=
+ wrote:
+>
+> On Tue, 19 Mar 2024 11:11:25 +0100
+> Julien Stephan <jstephan@baylibre.com> wrote:
+>
+> > From: David Lechner <dlechner@baylibre.com>
+> >
+> > Add support for AD7383, AD7384 pseudo-differential compatible parts.
+> > Pseudo differential parts require common mode voltage supplies so add
+> > the support for them and add the support of IIO_CHAN_INFO_OFFSET to
+> > retrieve the offset
+> >
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > Signed-off-by: Julien Stephan <jstephan@baylibre.com>
+>
+> Hi Julien,
+>
+> A few aditional comments inline.  The one about
+> optional regulators may be something others disagree with.
+> Mark, perhaps you have time to comment.
+> Is this usage of devm_regulator_get_optional() to check a real regulator
+> is supplied (as we are going to get the voltage) sensible?  Feels wrong
+> given the regulator is the exact opposite of optional.
+>
+> Jonathan
+>
+> >  struct ad7380_state {
+> >       const struct ad7380_chip_info *chip_info;
+> >       struct spi_device *spi;
+> >       struct regmap *regmap;
+> >       unsigned int vref_mv;
+> > +     unsigned int vcm_mv[2];
+> >       /*
+> >        * DMA (thus cache coherency maintenance) requires the
+> >        * transfer buffers to live in their own cache lines.
+> > @@ -304,6 +333,11 @@ static int ad7380_read_raw(struct iio_dev *indio_d=
+ev,
+> >               *val2 =3D chan->scan_type.realbits;
+> >
+> >               return IIO_VAL_FRACTIONAL_LOG2;
+> > +     case IIO_CHAN_INFO_OFFSET:
+> > +             *val =3D st->vcm_mv[chan->channel] * (1 << chan->scan_typ=
+e.realbits)
+> > +                     / st->vref_mv;
+>
+> So this maths seems to be right to me, but it took me a while to figure i=
+t out.
+> Perhaps a comment would help along the lines of this is transforming
+>
+>         (raw * scale) + vcm_mv
+> to
+>         (raw + vcm_mv / scale) * scale
+> as IIO ABI says offset is applied before scale.
+>
+> > +
+> > +             return IIO_VAL_INT;
+> >       }
+> >
+> >       return -EINVAL;
+> > @@ -350,7 +384,7 @@ static int ad7380_probe(struct spi_device *spi)
+> >       struct iio_dev *indio_dev;
+> >       struct ad7380_state *st;
+> >       struct regulator *vref;
+> > -     int ret;
+> > +     int ret, i;
+> >
+> >       indio_dev =3D devm_iio_device_alloc(&spi->dev, sizeof(*st));
+> >       if (!indio_dev)
+> > @@ -394,6 +428,40 @@ static int ad7380_probe(struct spi_device *spi)
+> >               st->vref_mv =3D AD7380_INTERNAL_REF_MV;
+> >       }
+> >
+> > +     if (st->chip_info->num_vcm_supplies > ARRAY_SIZE(st->vcm_mv))
+> > +             return dev_err_probe(&spi->dev, -EINVAL,
+> > +                                  "invalid number of VCM supplies\n");
+> > +
+> > +     /*
+> > +      * pseudo-differential chips have common mode supplies for the ne=
+gative
+> > +      * input pin.
+> > +      */
+> > +     for (i =3D 0; i < st->chip_info->num_vcm_supplies; i++) {
+> > +             struct regulator *vcm;
+> > +
+> > +             vcm =3D devm_regulator_get_optional(&spi->dev,
+>
+> Why optional?
+>
+> > +                                               st->chip_info->vcm_supp=
+lies[i]);
+> > +             if (IS_ERR(vcm))
+>
+> This will fail if it's not there, so I'm guessing you are using this to a=
+void
+> getting to the regulator_get_voltage?  If it's not present I'd rely on th=
+at
+> failing rather than the confusing handling here.
+>
+> When the read of voltage wasn't in probe this would have resulted in a pr=
+oblem
+> much later than initial setup, now it is, we are just pushing it down a f=
+ew lines.
+>
+> Arguably we could have a devm_regulator_get_not_dummy()
+> that had same implementation to as get_optional() but whilst it's called =
+that
+> I think it's confusing to use like this.
 
-A bit unusual to see arguments after the description.
+Despite the misleading naming, I guess I am used to
+devm_regulator_get_optional() by now having used it enough times.
+Since it fails either way though, technically both ways seem fine so I
+can't really argue for one over the other.
 
-> + */
-> +static enum pixel_read_direction direction_for_rotation(unsigned int rotation)
-> +{
-> +	if (rotation & DRM_MODE_ROTATE_0) {
-> +		if (rotation & DRM_MODE_REFLECT_X)
-> +			return READ_RIGHT_TO_LEFT;
-> +		else
-> +			return READ_LEFT_TO_RIGHT;
-> +	} else if (rotation & DRM_MODE_ROTATE_90) {
-> +		if (rotation & DRM_MODE_REFLECT_Y)
-> +			return READ_BOTTOM_TO_TOP;
-> +		else
-> +			return READ_TOP_TO_BOTTOM;
-> +	} else if (rotation & DRM_MODE_ROTATE_180) {
-> +		if (rotation & DRM_MODE_REFLECT_X)
-> +			return READ_LEFT_TO_RIGHT;
-> +		else
-> +			return READ_RIGHT_TO_LEFT;
-> +	} else if (rotation & DRM_MODE_ROTATE_270) {
-> +		if (rotation & DRM_MODE_REFLECT_Y)
-> +			return READ_TOP_TO_BOTTOM;
-> +		else
-> +			return READ_BOTTOM_TO_TOP;
-> +	}
-> +	return READ_LEFT_TO_RIGHT;
-> +}
-> +
->   /**
->    * blend - blend the pixels from all planes and compute crc
->    * @wb: The writeback frame buffer metadata
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index 3ead8b39af4a..985e7a92b7bc 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -69,6 +69,17 @@ struct vkms_writeback_job {
->   	pixel_write_t pixel_write;
->   };
->   
-> +/**
-> + * enum pixel_read_direction - Enum used internaly by VKMS to represent a reading direction in a
-> + * plane.
-> + */
-> +enum pixel_read_direction {
-> +	READ_BOTTOM_TO_TOP,
-> +	READ_TOP_TO_BOTTOM,
-> +	READ_RIGHT_TO_LEFT,
-> +	READ_LEFT_TO_RIGHT
-> +};
-> +
->   /**
->    * typedef pixel_read_t - These functions are used to read a pixel in the source frame,
->    * convert it to `struct pixel_argb_u16` and write it to @out_pixel.
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> index 649d75d05b1f..743b6fd06db5 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -75,6 +75,36 @@ static void packed_pixels_addr(const struct vkms_frame_info *frame_info,
->   	*addr = (u8 *)frame_info->map[0].vaddr + offset;
->   }
->   
-> +/**
-> + * get_step_next_block() - Common helper to compute the correct step value between each pixel block
-> + * to read in a certain direction.
-> + *
-> + * As the returned offset is the number of bytes between two consecutive blocks in a direction,
-> + * the caller may have to read multiple pixel before using the next one (for example, to read from
-> + * left to right in a DRM_FORMAT_R1 plane, each block contains 8 pixels, so the step must be used
-> + * only every 8 pixels.
-> + *
-> + * @fb: Framebuffer to iter on
-> + * @direction: Direction of the reading
-> + * @plane_index: Plane to get the step from
+But given that this is a common pattern in many IIO drivers, maybe we
+make a devm_regulator_get_enable_get_voltage()? This would return the
+voltage on success or an error code. (If the regulator subsystem
+doesn't want this maybe we could have
+devm_iio_regulator_get_enable_get_voltage()).
 
-Same.
+If the dev_err_probe() calls were included in
+devm_regulator_get_enable_get_voltage(), then the 10+ lines of code
+here and in many other drivers to get the regulator, enable it, add
+the reset action and get the voltage could be reduced to 3 lines.
 
-Best Regards,
-- Maíra
-
-> + */
-> +static int get_step_next_block(struct drm_framebuffer *fb, enum pixel_read_direction direction,
-> +			       int plane_index)
-> +{
-> +	switch (direction) {
-> +	case READ_LEFT_TO_RIGHT:
-> +		return fb->format->char_per_block[plane_index];
-> +	case READ_RIGHT_TO_LEFT:
-> +		return -fb->format->char_per_block[plane_index];
-> +	case READ_TOP_TO_BOTTOM:
-> +		return (int)fb->pitches[plane_index];
-> +	case READ_BOTTOM_TO_TOP:
-> +		return -(int)fb->pitches[plane_index];
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   static void *get_packed_src_addr(const struct vkms_frame_info *frame_info, int y,
->   				 int plane_index)
->   {
-> 
+>
+> > +                     return dev_err_probe(&spi->dev, PTR_ERR(vcm),
+> > +                                          "Failed to get %s regulator\=
+n",
+> > +                                          st->chip_info->vcm_supplies[=
+i]);
+> > +
+> > +             ret =3D regulator_enable(vcm);
+> > +             if (ret)
+> > +                     return ret;
+> > +
+> > +             ret =3D devm_add_action_or_reset(&spi->dev,
+> > +                                            ad7380_regulator_disable, =
+vcm);
+> > +             if (ret)
+> > +                     return ret;
+> > +
+> > +             ret =3D regulator_get_voltage(vcm);
+>
+> I'd let this fail if we have a dummy regulator.
+>
+> > +             if (ret < 0)
+> > +                     return ret;
+> > +
+> > +             st->vcm_mv[i] =3D ret / 1000;
+> > +     }
+> > +
 
