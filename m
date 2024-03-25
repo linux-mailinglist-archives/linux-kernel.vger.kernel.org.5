@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-116519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F9588A0BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:02:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD41388A04C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:51:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55808B62070
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:51:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ACBE1C37406
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5D713E6A8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332B113E415;
 	Mon, 25 Mar 2024 07:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hyW3I9qa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DhmNMN2t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE8413E6CC
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EEDB13E6CF;
+	Mon, 25 Mar 2024 04:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711341755; cv=none; b=agXZzeP6VA0Y8PwR4l6r4kCgACtzbB7dFda11vQhep3Chh/rv80dYafGpKo567k3sI1XrB0oew93FCWNIyKzHrFXGGQL19aZWPQzEOcFbTLw02nmPhNa5q8ZB8rT3V0DgKIemmGA2Bcci6Lg00f/P1wxykH58nkKe2V+MYgK8vQ=
+	t=1711341755; cv=none; b=GDFh5XHwg9ZS2TuHlYos9RCEtapuV7tfj6/WABJ1W/heT97e5uRMSp1O6H9PPlx5EgWHhb95+AVX94MZ3+1mTLU8o1IyRve8beWYsdjTWFZXgVMbY8DrP2oqiY/WC0EI3VEIe1HFkANAEqdPuKqtE9LTkOVDM2wsHsJyBnXPTaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711341755; c=relaxed/simple;
-	bh=YdL2mOIr3NlfgP6sy3cQZt2wKvb73NuUct/fQ8gw+wo=;
+	bh=983c2mSpRtzHZd3RX0FbvmlLGvQpO2bWYGuEJVdPXiM=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=JDEANK0emFs8sXBxDNq+m7MScfVjcpShdpY2W+nYK++O5BelzNrQMlwYc4b9McszErAVMo0XXEsx+GNQuTV0MrIAr8uf5UFmpRYOuXJL2d4RoGOv8G71h8zShYYYwoVVARQQ6KZDRXXj8mBB8uFLGTIjl02wyIdd1f9G1dJmXo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hyW3I9qa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A81F4C433F1;
+	 In-Reply-To:To:Cc; b=SHYG8//jYNw4N4uYX1WYDxaK/LMWrEAdSoqOu7olXWxiTGn5XJhqcQI6BXTV+su30Np+1NWD0UtksNGqkjI9cDm0JAL0IOHT3vmK8pKAH03j6PjlC0RzVVV2TUe0X/N2VSAxeq1gzzMn6KPFaeMyK8mqARDJC+miQiPgxgEJ4xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DhmNMN2t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 92948C43394;
 	Mon, 25 Mar 2024 04:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711341754;
-	bh=YdL2mOIr3NlfgP6sy3cQZt2wKvb73NuUct/fQ8gw+wo=;
+	bh=983c2mSpRtzHZd3RX0FbvmlLGvQpO2bWYGuEJVdPXiM=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hyW3I9qaDGbspbhpix74t7gfdEo1sveTew3DjnMt0ZAq3sY/coVNVi6/3u55HLXNK
-	 vzByJhq3ut4mAzLPPWqIk24QB0wfqD1HnBCIH5lCGVkWJ7aJWYTwwPC31Kab+vkenA
-	 SEBh3Iu5z4JRfGHgpDEq51ruoTZ+llxyXps4ld4DBTWqp1s5v51z48Vmlv3m/ILTFp
-	 xikKVbaAsWz03cvxujv1VNVjWDf6zQYQzQfSPV/KocEjuHmR00tmZHCNjzR8deIi63
-	 1Dx+FsMSafpFQZvqqg7MUbkSKlRROuQfZDvHV4SjINKFWq6x5BCLXm9BtnhIZmPl80
-	 qwz+3RUCSNIKA==
+	b=DhmNMN2tF/acZiHHFVovBVnZwiaO1oB814vBKArondxj3E1Byyz1qqTWxsohjhYg6
+	 +gI7iq0jLQCxC9L57FIwH5krZFrHzIQMVBnYaoXC4vKu59wvi0mNYTQJvad+gSMoAp
+	 5aO1xde4w9zblgHpuzrJ7ndoEMK/drH1yiaqc5EZnMC0J0Zxf3FrYFIGQQ/KYzW8sM
+	 y7ugrQNZYbu3t0noHgiLkMX8Ie1VIkarzj05tC/ONvktMIOf9+Ru2uSf9InpLcX7IS
+	 0qts8mBqdqFKCakLJw0lmbLK39TOQHEOzIalOU4A/6VUzfyJEreK9Ue9aPfxudRl5h
+	 M4d8b/4W3VvWg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8F525D8BD1C;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 857A0D2D0E0;
 	Mon, 25 Mar 2024 04:42:34 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,36 +51,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [GIT PULL] RISC-V Patches for the 6.9 Merge Window
+Subject: Re: [PATCH v3 0/4] riscv: sophgo: add reset support for SG2042
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <171134175458.18749.15620721210284247678.git-patchwork-notify@kernel.org>
+ <171134175454.18749.13038964057011467100.git-patchwork-notify@kernel.org>
 Date: Mon, 25 Mar 2024 04:42:34 +0000
-References: <mhng-105d6a21-7483-4a20-a9e7-8e72770737d8@palmer-ri-x1c9>
-In-Reply-To: <mhng-105d6a21-7483-4a20-a9e7-8e72770737d8@palmer-ri-x1c9>
-To: Palmer Dabbelt <palmer@rivosinc.com>
-Cc: linux-riscv@lists.infradead.org, torvalds@linux-foundation.org,
- linux-kernel@vger.kernel.org
+References: <cover.1706577450.git.unicorn_wang@outlook.com>
+In-Reply-To: <cover.1706577450.git.unicorn_wang@outlook.com>
+To: Chen Wang <unicornxw@gmail.com>
+Cc: linux-riscv@lists.infradead.org, aou@eecs.berkeley.edu,
+ chao.wei@sophgo.com, conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ palmer@dabbelt.com, paul.walmsley@sifive.com, p.zabel@pengutronix.de,
+ robh+dt@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, guoren@kernel.org,
+ jszhang@kernel.org, inochiama@outlook.com, unicorn_wang@outlook.com
 
 Hello:
 
-This pull request was applied to riscv/linux.git (fixes)
-by Linus Torvalds <torvalds@linux-foundation.org>:
+This series was applied to riscv/linux.git (fixes)
+by Inochi Amaoto <inochiama@outlook.com>:
 
-On Fri, 22 Mar 2024 07:22:06 -0700 (PDT) you wrote:
-> The following changes since commit e0fe5ab4192c171c111976dbe90bbd37d3976be0:
+On Tue, 30 Jan 2024 09:49:08 +0800 you wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
 > 
->   riscv: Fix pte_leaf_size() for NAPOT (2024-02-29 10:21:23 -0800)
+> This series adds reset controller support for Sophgo SG2042 using
+> reset-simple driver.
 > 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.9-mw2
+> Thanks,
+> Chen
 > 
 > [...]
 
 Here is the summary with links:
-  - [GIT,PULL] RISC-V Patches for the 6.9 Merge Window
-    https://git.kernel.org/riscv/c/c150b809f7de
+  - [v3,1/4] dt-bindings: reset: sophgo: support SG2042
+    (no matching commit)
+  - [v3,2/4] reset: simple: add support for Sophgo SG2042
+    (no matching commit)
+  - [v3,3/4] riscv: dts: add reset generator for Sophgo SG2042 SoC
+    https://git.kernel.org/riscv/c/1ce7587e507e
+  - [v3,4/4] riscv: dts: add resets property for uart node
+    https://git.kernel.org/riscv/c/08573ba006ab
 
 You are awesome, thank you!
 -- 
