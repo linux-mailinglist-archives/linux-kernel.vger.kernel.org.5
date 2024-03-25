@@ -1,273 +1,212 @@
-Return-Path: <linux-kernel+bounces-116567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ABE988A283
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:39:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 063F388A0C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:02:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6195B655A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:02:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EBC128D8BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8F6130A4B;
-	Mon, 25 Mar 2024 08:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1105B5B3;
+	Mon, 25 Mar 2024 08:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="h2Y+lL6Y"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2066.outbound.protection.outlook.com [40.107.220.66])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="McD66DBg"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E0D914F9DA
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711346592; cv=fail; b=urIqpOP01iHbiwVIaYyYl2nY5uhfNSpX/Fstuy0itjSa31iQl9rxfvUoHxbr9PLVn7H4izd0/zIrGmWyx6tEmTTozm/JyqPQHaK2C9cHhMHiqnIdQIFoDF6MTmbNZYMXhA8opau/nSB08WJ3cbHzkJ04J+QDS97HgKTXbecC8fM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711346592; c=relaxed/simple;
-	bh=KppJr2cFPnpDKrHgeJ3BJFqUIF78sDWVBLdPhbVUJw4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lkA2M6qerbbQ1IkHZyZT6EMEAgdmDm8NkHlUSczWDsDNtDbNzp3awZvBZtTwBY6FzWnNjNhKsLZe9kuAkxnQ0TtqJnic6QdZTU7DJzI3cDMgUE/OxCU13vd1XYSg87L976T3yT4PV4/C/XgvXw85mL5Ay+IA2/akE1qhRpy5RfQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=h2Y+lL6Y; arc=fail smtp.client-ip=40.107.220.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f+1KJ+JEq3eddfGaMFXteHm1qUx262/C66ttJokYDr/usO/VIgP+IBvODSWMp8/wU8ylbMb8SgKFNfk6RAZAnjZdiHRcfuW2VdVmDDnuluq+yQa4UReUmzKuMm2ShaBEr6xOB+eJNbUzO41Vnnp86zHfLEMpcwgLmb+PnZWlSTsfW5oec3Da/pUf5xw3zSKvKE5X6AkOKBaNa6inhg7Vaa1e2s5NcPEDo+HmXsM7SR8KPGHMtVb7UHPMMqU3hCowQniutkm4NHWrXVTj06wFfHHYAEuarWDccTdK0SJrw0l8+9cVUJ5P6Rj1Dh7N10VvPdEQKmzx/Tral/cfhLZKRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4+BjYygwpm4SowN6ieUl25I5iLteAS3WhB9SLrPo4pA=;
- b=QH9xQ03QZYxS3hTvFm0hsxTMini9Jul8gLtHVnDMBimVMkcxdLAfNZq1AmGJMhOK9/ryyf53/ngIQ95oqKLbMtlgg2l/mLj5jtHsiQzQzRWmG+aezIHbV9C9VD9sEmrpNZ6Av4mQllkjwMbLy5RjlKDOac5Tx2dhTfUhiRIBI/sweUJUXBXjpsuVO9+FsmjP4n3N8A/6Sgb2sVfunpoZqJ+gPA/y/iiQXDpM/n/ARevOu2kMUHP4yD1gDt0jns3QyhMTpRaQDk5exr+d36aeOa6RshWCSmMfuOyFWXiJGT/oAyRENe0tLpoYpn8mmCby03NhP9l9Zlw0EbkVOhagnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4+BjYygwpm4SowN6ieUl25I5iLteAS3WhB9SLrPo4pA=;
- b=h2Y+lL6Y/k3LfKp+rB/+WPt+Y23zIYWrFVOmjxN8L8sc+paU2i/7LTk/hanwvhAhBAeyN4qxBcHSRllOdUIDy8XgRYQQ3MIJCmrRTiFKA3cUbdm4O+A58VmQmNFaUEMUA3aWh5rHmMTfDOncmz2wguyI/Sx+LDClnCUPdj2yJJw=
-Received: from SJ0PR03CA0042.namprd03.prod.outlook.com (2603:10b6:a03:33e::17)
- by CH3PR12MB8909.namprd12.prod.outlook.com (2603:10b6:610:179::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 06:03:07 +0000
-Received: from DS2PEPF00003440.namprd02.prod.outlook.com
- (2603:10b6:a03:33e:cafe::51) by SJ0PR03CA0042.outlook.office365.com
- (2603:10b6:a03:33e::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Mon, 25 Mar 2024 06:03:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003440.mail.protection.outlook.com (10.167.18.43) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Mon, 25 Mar 2024 06:03:06 +0000
-Received: from BLR5CG134614W.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 25 Mar
- 2024 01:02:57 -0500
-From: K Prateek Nayak <kprateek.nayak@amd.com>
-To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>
-CC: Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt
-	<rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman
-	<mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, "Valentin
- Schneider" <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>, "Tobias
- Huschle" <huschle@linux.ibm.com>, Luis Machado <luis.machado@arm.com>, Chen
- Yu <yu.c.chen@intel.com>, Abel Wu <wuyun.abel@bytedance.com>, Tianchen Ding
-	<dtcccc@linux.alibaba.com>, Youssef Esmat <youssefesmat@chromium.org>,
-	"Xuewen Yan" <xuewen.yan94@gmail.com>, K Prateek Nayak
-	<kprateek.nayak@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-Subject: [RFC PATCH 1/1] sched/eevdf: Skip eligibility check for current entity during wakeup preemption
-Date: Mon, 25 Mar 2024 11:32:26 +0530
-Message-ID: <20240325060226.1540-2-kprateek.nayak@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240325060226.1540-1-kprateek.nayak@amd.com>
-References: <20240325060226.1540-1-kprateek.nayak@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E627F152191;
+	Mon, 25 Mar 2024 06:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711346916; cv=none; b=u98omzRprvgdqw6x7/fUHQXA9ljbXoISihov298B0Ihwy/iFOICMAPKaxkcl5tlvNJgzN2iyrBtIKwfn0fupeLusN2gdzregMeoHbrb5v6ewKU9JPju4GD0MbNubkO6ocguppSABORtsxIdy7OK8/BY204YoBWmziO7WxBHCGkM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711346916; c=relaxed/simple;
+	bh=Yag/GmL+iks+hAEilxwHzv1y/IG9X+DScY72ID0EE5o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=USlWvsbF59CLiq3RA0Rpd9/dR2BpQSIqpf8Afgf7l8SGloqYJNyqoRUYDgP1TnNuTTSA4VEKwxCY9ku3sfd7xusE65sLjUFvbtZoWSs5exQy28yhknZoPElRZ+v6rgO4IG1xpJzy849Ohte7EEfpW81S6onFPQb3jYcb8LpTG2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=McD66DBg; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42P62fuZ010813;
+	Mon, 25 Mar 2024 06:08:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=OhPCQYg2/myYUoLSKnbrt/7cFvjxXml/wAWhy8l/zCE=; b=Mc
+	D66DBgtx7Ihe8Bhquf+oNb37UqxDBwAQHt0vwjY63RAUyw8Pa+4DewssBpsPLzzt
+	oOL3hPoNFM9JMXCeUiIxF3KEMOWMHrhjQtHR3B1dPmUlj/1XThP6zzV7G4DvbqRz
+	Nq6E/AKhXoREdTChi3Hmi9oTRmIJo2hznNOV+gZOrk0kdB6RiMniu42kXo9+kQpp
+	7SrirlGfnrwSZXUqQVW8abUWFAkve2HCBu0fMXp99X00DqDdZAZbcv9JIAUDJhlD
+	b6f1wuXSr0YG6ADKXsaCE/0Hju0zPLO+mU9Cnz29KHntJagsA0VYsQWICq3bGuB2
+	zfP50m0BzZNiafEOivEw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x1pdpx8yc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 06:08:30 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42P68SQX018068
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 06:08:28 GMT
+Received: from [10.216.57.55] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 24 Mar
+ 2024 23:08:22 -0700
+Message-ID: <725471b1-46a9-43b0-bede-33f01c953d51@quicinc.com>
+Date: Mon, 25 Mar 2024 11:37:51 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|CH3PR12MB8909:EE_
-X-MS-Office365-Filtering-Correlation-Id: f4d9d9c7-f668-4cf7-444e-08dc4c913dcf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	G9ZQY6+pelqMVSCfL6KM5OT7OhIZvZhHECpSRGhOcJtCoSOQLfHg+y69JNpYsz2E6xVopEeqeDv6z0iPrAToLNJ9+9B7f3kRpPR7nnkLX7WPRYjEWwsNkVpZQepu9q6ebqX9FO/hy85bCWb8ku7O+UGfOrOn+vY/Nr2n8XclufdDFoZIUkjShBiM6F/h95YBS1yzLMDELJn/LzlkFoHdf2zQMV5MtiEbnYeKtUrBUV8UnXKI8pOgf+xFcRY//yz2YQA9m623Jx4hTJ7P0FBODHrph31qTBljf0708EUmoFfCIaEdt8drWpkXt0yr56ExxrFJH7blekGb8lPlm89ZrQk/OHa0nG8qamaF1MPQTq620nPiFHOxXPbDoCm0/iTmSYu2i77aR0xz2ytiE0ou3AQsk7+rcHqgR5LFP4DHHjAXn4YWLhCX1hN6fXHIUUu8FEfk8p9eYqpJvgv0nvd3n17RT2tCvuXOL/6UuCCQPh2pxQkZ/M+YkH+ytDQN6tUFtoA49VyywYKlHpKSgWwLvQ5A0PgWgblHdr7fFJx2RHXF0lUnfZN9Uab1ULs2ZuFapO9h2kBy+WHhmEQmlGFt8IarJ3OFBu66iwgH7UUnG8wkO+XshwVPwjRCSH71GtRPTuqLloQ/+V/QiXS76jhvFWbtnWm4HdeudxZjTe2BFGOm3rn0PST4bFZJUGQyu29xrh+Y880AAeRVJIlaG0pL/Q==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(82310400014)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 06:03:06.9791
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4d9d9c7-f668-4cf7-444e-08dc4c913dcf
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003440.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8909
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 RESEND 1/6] dt-bindings: clock: qcom: Add SM8650 video
+ clock controller
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Taniya Das
+	<quic_tdas@quicinc.com>,
+        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Imran Shaik
+	<quic_imrashai@quicinc.com>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>
+References: <20240321092529.13362-1-quic_jkona@quicinc.com>
+ <20240321092529.13362-2-quic_jkona@quicinc.com>
+ <CAA8EJppsMchthssctEgUf9q45j84cSLQ78Ur+vaA0Z7GEQi8+g@mail.gmail.com>
+From: Jagadeesh Kona <quic_jkona@quicinc.com>
+In-Reply-To: <CAA8EJppsMchthssctEgUf9q45j84cSLQ78Ur+vaA0Z7GEQi8+g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZPKEMIv6Og3jftBAbkOP7KbfC7NKGCb_
+X-Proofpoint-ORIG-GUID: ZPKEMIv6Og3jftBAbkOP7KbfC7NKGCb_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-25_03,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 adultscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403210001 definitions=main-2403250031
 
-With the curr entity's eligibility check, a wakeup preemption is very
-likely when an entity with positive lag joins the runqueue pushing the
-avg_vruntime of the runqueue backwards, making the vruntime of the
-current entity ineligible. This leads to aggressive wakeup preemption
-which was previously guarded by wakeup_granularity_ns in legacy CFS.
-Below figure depicts one such aggressive preemption scenario with EEVDF
-in DeathStarBench [1]:
 
-				deadline for Nginx
-		   |
-	+-------+  |			|
-    /-- | Nginx | -|------------------> |
-    |	+-------+  |			|
-    |		   |
-    |	-----------|-------------------------------> vruntime timeline
-    |		   \--> rq->avg_vruntime
-    |
-    | 	wakes service on the same runqueue since system is busy
-    |
-    |	+---------+|
-    \-->| Service || (service has +ve lag pushes avg_vruntime backwards)
-	+---------+|
-	  |	   |
-   wakeup |	+--|-----+			 |
- preempts \---->| N|ginx | --------------------> | {deadline for Nginx}
-		+--|-----+  			 |
-	   (Nginx ineligible)
-	-----------|-------------------------------> vruntime timeline
-		   \--> rq->avg_vruntime
 
-When NGINX server is involuntarily switched out, it cannot accept any
-incoming request, leading to longer turn around time for the clients and
-thus loss in DeathStarBench throughput.
+On 3/21/2024 6:42 PM, Dmitry Baryshkov wrote:
+> On Thu, 21 Mar 2024 at 11:26, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+>>
+>> Extend device tree bindings of SM8450 videocc to add support
+>> for SM8650 videocc. While it at, fix the incorrect header
+>> include in sm8450 videocc yaml documentation.
+>>
+>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> ---
+>>   .../devicetree/bindings/clock/qcom,sm8450-videocc.yaml    | 4 +++-
+>>   include/dt-bindings/clock/qcom,sm8450-videocc.h           | 8 +++++++-
+>>   2 files changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
+>> index bad8f019a8d3..79f55620eb70 100644
+>> --- a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
+>> +++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
+>> @@ -8,18 +8,20 @@ title: Qualcomm Video Clock & Reset Controller on SM8450
+>>
+>>   maintainers:
+>>     - Taniya Das <quic_tdas@quicinc.com>
+>> +  - Jagadeesh Kona <quic_jkona@quicinc.com>
+>>
+>>   description: |
+>>     Qualcomm video clock control module provides the clocks, resets and power
+>>     domains on SM8450.
+>>
+>> -  See also:: include/dt-bindings/clock/qcom,videocc-sm8450.h
+>> +  See also:: include/dt-bindings/clock/qcom,sm8450-videocc.h
+> 
+> This almost pleads to go to a separate patch. Fixes generally should
+> be separated from the rest of the changes.
+> 
 
-    ==================================================================
-    Test          : DeathStarBench
-    Units         : Normalized latency
-    Interpretation: Lower is better
-    Statistic     : Mean
-    ==================================================================
-    tip		1.00
-    eevdf	1.14 (+14.61%)
+Thanks Dmitry for your review.
 
-For current running task, skip eligibility check in pick_eevdf() if it
-has not exhausted the slice promised to it during selection despite the
-situation having changed since. The behavior is guarded by
-RUN_TO_PARITY_WAKEUP sched_feat to simplify testing. With
-RUN_TO_PARITY_WAKEUP enabled, performance loss seen with DeathStarBench
-since the merge of EEVDF disappears. Following are the results from
-testing on a Dual Socket 3rd Generation EPYC server (2 x 64C/128T):
+Sure, will separate this into a separate patch in next series.
 
-    ==================================================================
-    Test          : DeathStarBench
-    Units         : Normalized throughput
-    Interpretation: Higher is better
-    Statistic     : Mean
-    ==================================================================
-    Pinning      scaling     tip            run-to-parity-wakeup(pct imp)
-     1CCD           1       1.00            1.16 (%diff: 16%)
-     2CCD           2       1.00            1.03 (%diff: 3%)
-     4CCD           4       1.00            1.12 (%diff: 12%)
-     8CCD           8       1.00            1.05 (%diff: 6%)
+>>
+>>   properties:
+>>     compatible:
+>>       enum:
+>>         - qcom,sm8450-videocc
+>>         - qcom,sm8550-videocc
+>> +      - qcom,sm8650-videocc
+>>
+>>     reg:
+>>       maxItems: 1
+>> diff --git a/include/dt-bindings/clock/qcom,sm8450-videocc.h b/include/dt-bindings/clock/qcom,sm8450-videocc.h
+>> index 9d795adfe4eb..ecfebe52e4bb 100644
+>> --- a/include/dt-bindings/clock/qcom,sm8450-videocc.h
+>> +++ b/include/dt-bindings/clock/qcom,sm8450-videocc.h
+>> @@ -1,6 +1,6 @@
+>>   /* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+>>   /*
+>> - * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
+>>    */
+>>
+>>   #ifndef _DT_BINDINGS_CLK_QCOM_VIDEO_CC_SM8450_H
+>> @@ -19,6 +19,11 @@
+>>   #define VIDEO_CC_MVS1C_DIV2_DIV_CLK_SRC                                9
+>>   #define VIDEO_CC_PLL0                                          10
+>>   #define VIDEO_CC_PLL1                                          11
+>> +#define VIDEO_CC_MVS0_SHIFT_CLK                                        12
+>> +#define VIDEO_CC_MVS0C_SHIFT_CLK                               13
+>> +#define VIDEO_CC_MVS1_SHIFT_CLK                                        14
+>> +#define VIDEO_CC_MVS1C_SHIFT_CLK                               15
+>> +#define VIDEO_CC_XO_CLK_SRC                                    16
+> 
+> Are these values applicable to sm8450?
+> 
 
-With spec_rstack_overflow=off, the DeathStarBench performance with the
-proposed solution is same as the performance on v6.5 release before
-EEVDF was merged.
+No, the shift clocks above are part of SM8650 only. To reuse the 
+existing SM8550 videocc driver for SM8650 and to register these shift 
+clocks for SM8650, I added them here.
 
-This may lead to newly waking task waiting longer for its turn on the
-CPU, however, testing on the same system did not reveal any consistent
-regressions with the standard benchmarks.
+Thanks,
+Jagadeesh
 
-Link: https://github.com/delimitrou/DeathStarBench/ [1]
-Signed-off-by: K Prateek Nayak <kprateek.nayak@amd.com>
----
- kernel/sched/fair.c     | 24 ++++++++++++++++++++----
- kernel/sched/features.h |  1 +
- 2 files changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6a16129f9a5c..a9b145a4eab0 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -875,7 +875,7 @@ struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
-  *
-  * Which allows tree pruning through eligibility.
-  */
--static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-+static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq, bool wakeup_preempt)
- {
- 	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
- 	struct sched_entity *se = __pick_first_entity(cfs_rq);
-@@ -889,7 +889,23 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 	if (cfs_rq->nr_running == 1)
- 		return curr && curr->on_rq ? curr : se;
- 
--	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
-+	if (curr && !curr->on_rq)
-+		curr = NULL;
-+
-+	/*
-+	 * When an entity with positive lag wakes up, it pushes the
-+	 * avg_vruntime of the runqueue backwards. This may causes the
-+	 * current entity to be ineligible soon into its run leading to
-+	 * wakeup preemption.
-+	 *
-+	 * To prevent such aggressive preemption of the current running
-+	 * entity during task wakeups, skip the eligibility check if the
-+	 * slice promised to the entity since its selection has not yet
-+	 * elapsed.
-+	 */
-+	if (curr &&
-+	    !(sched_feat(RUN_TO_PARITY_WAKEUP) && wakeup_preempt && curr->vlag == curr->deadline) &&
-+	    !entity_eligible(cfs_rq, curr))
- 		curr = NULL;
- 
- 	/*
-@@ -5460,7 +5476,7 @@ pick_next_entity(struct cfs_rq *cfs_rq)
- 	    cfs_rq->next && entity_eligible(cfs_rq, cfs_rq->next))
- 		return cfs_rq->next;
- 
--	return pick_eevdf(cfs_rq);
-+	return pick_eevdf(cfs_rq, false);
- }
- 
- static bool check_cfs_rq_runtime(struct cfs_rq *cfs_rq);
-@@ -8340,7 +8356,7 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
- 	/*
- 	 * XXX pick_eevdf(cfs_rq) != se ?
- 	 */
--	if (pick_eevdf(cfs_rq) == pse)
-+	if (pick_eevdf(cfs_rq, true) == pse)
- 		goto preempt;
- 
- 	return;
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 143f55df890b..027bab5b4031 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -7,6 +7,7 @@
- SCHED_FEAT(PLACE_LAG, true)
- SCHED_FEAT(PLACE_DEADLINE_INITIAL, true)
- SCHED_FEAT(RUN_TO_PARITY, true)
-+SCHED_FEAT(RUN_TO_PARITY_WAKEUP, true)
- 
- /*
-  * Prefer to schedule the task we woke last (assuming it failed
--- 
-2.34.1
-
+>>
+>>   /* VIDEO_CC power domains */
+>>   #define VIDEO_CC_MVS0C_GDSC                                    0
+>> @@ -34,5 +39,6 @@
+>>   #define CVP_VIDEO_CC_MVS1C_BCR                                 4
+>>   #define VIDEO_CC_MVS0C_CLK_ARES                                        5
+>>   #define VIDEO_CC_MVS1C_CLK_ARES                                        6
+>> +#define VIDEO_CC_XO_CLK_ARES                                   7
+>>
+>>   #endif
+>> --
+>> 2.43.0
+>>
+>>
+> 
+> 
 
