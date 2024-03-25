@@ -1,99 +1,84 @@
-Return-Path: <linux-kernel+bounces-118082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0787E88B36A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:06:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DCAF88B36C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:07:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FE241F64EEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:06:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19CF230595E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BDF73506;
-	Mon, 25 Mar 2024 22:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+aSTtFZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A89D71747;
+	Mon, 25 Mar 2024 22:07:12 +0000 (UTC)
+Received: from fgw22-7.mail.saunalahti.fi (fgw22-7.mail.saunalahti.fi [62.142.5.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD29271B39;
-	Mon, 25 Mar 2024 22:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 987BD71739
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711404397; cv=none; b=QOeG5Lk5uozF6O8X0gZQi0OtJORQjUOyIBnDSW/mOgzMZ1tUjo8PmrgPypafOQ+2Zvcd5+1o2xFSfwWy1IO2hzkqhxLjFNNWP9N9u31kuGjU2eW2Xd5Clia1Uo7KfXW+IvLXvPCJpOXOVoOobNnzLBnAJ/GSyah/bp9ne9QjvyI=
+	t=1711404432; cv=none; b=C0CcwqTTf+CEUA0R83ms6YLn8KyvvrCrWCy28D5YoAdP0bng+RjZMw6FG/kJGrRIuBHDbV2l57TPsdH3NChwt10BwzRp7VTy0tzGXsOpL1WHrU8CbczO5hvXsdPMz2QzWjiqw+vMr4A/dVHEYQnEFgSa0o52mvs370rvvJ3fUxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711404397; c=relaxed/simple;
-	bh=++5tZW3zuXGvT6hS7Mqh8whM8yX+K95vZmsamxvflek=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cguLwMO0oU3nieGdBW8A8bl7FRPiMTo4AKYOv+rQ7hVUIdPxUFRhktXRmpPOF/9GcLvguFxW88j3NRN7LtdRY7COd1447m20PFfM525Qk9dUgoytt/wozLd0vMlQUbn4oXunsD73EsghzE75seAX8g5ICN6MOnyj8zHhSvKFoCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e+aSTtFZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22740C43390;
-	Mon, 25 Mar 2024 22:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711404397;
-	bh=++5tZW3zuXGvT6hS7Mqh8whM8yX+K95vZmsamxvflek=;
-	h=From:To:Cc:Subject:Date:From;
-	b=e+aSTtFZ/A2aUOwkehWvStANDFdMiOTDFYR9aGLl7GRRD2mWvPw74d2rco3Js8Ph5
-	 rx5Si1xhWA+eelgVFBsg7FL5HCNadud+wt6RgeZK2QDsSKMPNv7cou7kDWpt0AzMN0
-	 Grxh9zaSkS/fjKyN2wV3WDm5B7VrukjOK2Q2X8BbLR5u/Q5JtY8IX3WRVFWYAeiYxH
-	 N6okH1isRxgLSMmPp4Um0pcl026P81MW8HWjTpcCvoygKOpmRz7CJIHGyOqGK7RPNf
-	 r/er89QqdcXX2GaF50tLdqrHgkHzCsc3QUxB2ezMbYOIohc6PszS4D4jXYMp/w5VBR
-	 UEa8P9j3oFYyw==
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH] net: amd8111e: Drop unused copy of pm_cap
-Date: Mon, 25 Mar 2024 17:06:33 -0500
-Message-Id: <20240325220633.1453180-1-helgaas@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711404432; c=relaxed/simple;
+	bh=EMiOVf45ss87dGK9cVe/o5M2xwdQcFYlhgc0G6qx4T8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MIZlAjHep9T2eel5oQfSJhaB56V+9Vd80A5Skc7vVsbyozmRQGspy9K5F/txVxUsl+WhUFX/We4NxFVeVt68pV+rKB+hOs5rgBUPo17nMZ0GU/bs+DAzN5Ay9hDafwRE7we88kH33VzOOnBQ7GU4onedqmhXcbyxiHnvzco9sg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
+	by fgw22.mail.saunalahti.fi (Halon) with ESMTP
+	id 01746dfc-eaf4-11ee-a9de-005056bdf889;
+	Tue, 26 Mar 2024 00:07:02 +0200 (EET)
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 26 Mar 2024 00:07:01 +0200
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Gergo Koteles <soyer@irl.hu>, Shenghao Ding <shenghao-ding@ti.com>,
+	Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] ALSA: hda/tas2781: add debug statements to kcontrols
+Message-ID: <ZgH1hVH_1-7kFbgp@surfacebook.localdomain>
+References: <cover.1711401621.git.soyer@irl.hu>
+ <cbdc337b911bee0f80f805b936041fd59c1db54a.1711401621.git.soyer@irl.hu>
+ <377e0f33-697c-4baf-ac48-baff6199dd53@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <377e0f33-697c-4baf-ac48-baff6199dd53@linux.intel.com>
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+Mon, Mar 25, 2024 at 05:01:18PM -0500, Pierre-Louis Bossart kirjoitti:
 
-The copy of pdev->pm_cap in struct amd8111e_priv is never used.  Drop it.
+..
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/net/ethernet/amd/amd8111e.c | 1 -
- drivers/net/ethernet/amd/amd8111e.h | 1 -
- 2 files changed, 2 deletions(-)
+> > +	dev_dbg(tas_priv->dev, "%s: %d\n", __func__,
+> 
+> Nit-pick: you don't need to add __func__ to dev_dbg logs, the user can
+> add the information with the dyndbg parameter, e.g.
+> 
+> options snd_intel_dspcfg dyndbg=+pmf
+> 
+> dev_err/warn don't have this functionality though so in those cases
+> there's no replacement for __func__
 
-diff --git a/drivers/net/ethernet/amd/amd8111e.c b/drivers/net/ethernet/amd/amd8111e.c
-index ea6cfc2095e1..c1b5e9a94308 100644
---- a/drivers/net/ethernet/amd/amd8111e.c
-+++ b/drivers/net/ethernet/amd/amd8111e.c
-@@ -1796,7 +1796,6 @@ static int amd8111e_probe_one(struct pci_dev *pdev,
- 	lp = netdev_priv(dev);
- 	lp->pci_dev = pdev;
- 	lp->amd8111e_net_dev = dev;
--	lp->pm_cap = pdev->pm_cap;
- 
- 	spin_lock_init(&lp->lock);
- 
-diff --git a/drivers/net/ethernet/amd/amd8111e.h b/drivers/net/ethernet/amd/amd8111e.h
-index 9d570adb295b..305232f5476d 100644
---- a/drivers/net/ethernet/amd/amd8111e.h
-+++ b/drivers/net/ethernet/amd/amd8111e.h
-@@ -764,7 +764,6 @@ struct amd8111e_priv{
- 	u32 ext_phy_id;
- 
- 	struct amd8111e_link_config link_config;
--	int pm_cap;
- 
- 	struct net_device *next;
- 	int mii;
+You beat me up to it, I just downloaded the email thread to say the same.
+
+Since I'm here, I think __func__ in dev_err()/dev_warn() usually says about
+poorly written message itself (that it's not unique enough to distinguish
+taking into account that this has device instance name as well). While pr_*()
+ones indeed may benefit from having it.
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
