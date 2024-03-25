@@ -1,210 +1,136 @@
-Return-Path: <linux-kernel+bounces-117654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E78988AE04
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:24:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3423788ADA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A5741F6233C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:24:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD3D81FA27B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B584413F44F;
-	Mon, 25 Mar 2024 17:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFAE7175E;
+	Mon, 25 Mar 2024 17:52:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bn3+zbKh"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b7hxQi1+"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F2A13B794;
-	Mon, 25 Mar 2024 17:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C09E1B5B1
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:52:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711389197; cv=none; b=sBakY9DxXHCI3NFYSQR6avtH40eAjsj0RrDoD/ujUfjkEJXWgvO8VBGoB3uqMp5/mL4HO4HQUspAiJ0Xl34CxtR5V0dk/io73H5/Paac7I49pMBtiOPJzOdcZEgaZc+FJMkuDMWhsny98CvPyWbIb7KzbBLdxwr/yeagf/F6IKY=
+	t=1711389174; cv=none; b=QsDINjneOb/A1mcGfri+H+TkC3Bu0zo9HYrf9PAUB8ajRev2psKJ20mFKV/Y+zWeZi1A9mr4XOUJ6IJX8XuQKfWUiyTpiPnuIyMaGOoZk5VxJV0ZE0lT/SLi+3Q9E7J+oUr3EjzBZ4k0FgUE/w2QLL5CRBnfktoZa72ZLbrTSes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711389197; c=relaxed/simple;
-	bh=qdStSeM+VJCbqbzuADj4lChWMSBHWJ8X0eHOGVaPa9o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=O/tnPmbwikNfKOrV7ZzOZkj0FKmAVE64CIx2GcJ9JhmjYEwWrjXXam8xBdTTnQgmlybJbo9v5At0v/LkwT+v8nD9moiQEQuTZSdgxH/l6iO9NhUHow89gotmCchv3/NVzihEboepKvCtSIRgBfZ3LfG1DI58zUI+9zLBX7YAHXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bn3+zbKh; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1711389174; c=relaxed/simple;
+	bh=+e0it607tIg+b2rZM2w/eJragbno58DdtfRWyRwQ1f8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hDQ9O21jncp0CQ/RofJwSHPnNAqBTv6GJA4+d74ulvLRrKYA89ZcHXLgM6WNGRqzCGft1BMW6y0jfZl3jFb6zu2YTAdLV1GkUK6hFKwVzD1xZuFrb/xaN+7ooSXYTYEHdn16Il9Xkp6Nc7y18C4p0yuSiNynldnDU6uWKkMBzBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b7hxQi1+; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e0189323b4so34638625ad.1;
-        Mon, 25 Mar 2024 10:53:15 -0700 (PDT)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5d8b519e438so2636475a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:52:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711389194; x=1711993994; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/YzJYq0fkceHof/EPazly4M40tZRXgMzxd6Hp1cFk9M=;
-        b=Bn3+zbKhWji2FwFKDH//yuXeYz8EpRWrhcGQCv/jVRfgAhqUJ3U+k8WOOmjHb0U+nR
-         5m7WTaG1BLp5gqTVZ/OWhOI9ovgbj47j5OGUqvc/aiJoQN28dCOD7xFZRnzHNXUEymh9
-         1jS2SuyasViwcd4a43dCn3we4aLQDELxDTndNc48L1Bkf58hpYoFhKnBb4/yJWkJiGMh
-         zqv+FG2e7kMZb+OE8gU990Wye38bTqXdrHi13HxEtPQh8Pw1vhiM/yasksuw/mKAPOGH
-         YNfTo9m6fc6p+wNHAu9DzcP7zIVEh6sL5y0Wu59+l/Jpz3chgOWnzNgFZQPbMtWtygI6
-         1ojA==
+        d=gmail.com; s=20230601; t=1711389172; x=1711993972; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gdkP92/Ym8fhO2N2bPQUMgG774O7zzPSnF71mNNVTm0=;
+        b=b7hxQi1+pT3OUZA3vRwEG/g2gYiJhsm218O2adxZLKK1TQr6Vyfo21yrxPwa7tAFWz
+         emlran3GBdtzQyr2VJSfOP7eGyYnD0vOG0OXZuIiNHqR6BF4KnyoAHvw2kmUubFY/6OA
+         i13yMMAygWgbSuwS2QdWZHbPnFTJ4Y3E6G6JeiXRoKcwICYtVYc3L67iP8DmG6xxZzBg
+         WQA9ZRAigbzatRh98c5+zSoNTJ5h24GqrIY+ZVsrZR26iK+wArWNIrglCi0vWuHi9wdi
+         DAEvDEuV7M95irFBmcyGsf6VW+p04Esis+IaDrRMhleeryC3fOMKN0Gb1EA1vnAfC7I7
+         jzYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711389194; x=1711993994;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=/YzJYq0fkceHof/EPazly4M40tZRXgMzxd6Hp1cFk9M=;
-        b=Jj6zXNFP7PemDH9ydWDWpb1EEbaMHnrNJweRqCoznOOmgeY++E/Aohq7QtNd25aCWC
-         2lqdt+5SzLbQxQXSu44/Uku92XM4bccHLuZqiVBo1K0t4QI06YKxx55RoFGL5+aX/Gwi
-         uY3ZEZ7RP7eJQfyPeqzILkjQoM4yedBEDLzkvQMTAuHXJeBhFHmS41Uz2DO9vlnDBzBK
-         9Cnjxcr3GaT4JzxTDBjsBVX6Jwj3l4sG8FrAQTqkvOmEqIQiIlo9tiWz2/j+Iij1c9vJ
-         u5MysLw/UJXwq/us9Xu0ULlvgQGlTJ41HuLD16bZu9mpkxReqbOcVyQgzWCZJqm0bi0M
-         smyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUfKBNUy5k6JkmVoJn7PUdWoafwQ7dyWSBNMhbA5xaXLWON7MKBgboPDjABd35up9urvDzkBcIrCXvv1/cKB7uvg1FH+QT5rzqgT/c9uqkShgu+ZxnSLzw3W0zOvxyebUB/Bc7rMn6zUe1IpT4ZyP6jVjexS8avJAD+hL6o7mBpSASj2vhA6WXgIWXwOqMbaBel8LyPqz9P9fwxeK2vlQMJ5vMS5tn16VKnQEKpsDBDNnCHdPNX0lM+7LNWWjdgdG8CzknACSso/ACElDF0208DsrYyKM+ZVAkjUbuCiVF79YzgXU6ZGjs7L1i2+m20bQ==
-X-Gm-Message-State: AOJu0YxXuhTLIb2+OUWZqYSjyqBWyPZ77JpPCBAJBs2h6IawppJbcXRj
-	cNT5yvADLUkwSi/IL2rl8oNDKmcom8TbSYmkaRqCmRvwJJ7x9+c48dNsz8Vy
-X-Google-Smtp-Source: AGHT+IH4L5pCyOM7/NriCMnotw9B9wTRd/QlGQsY00iVlUfB3rIc/3hcXxQD6OWxPS5Q16CPFVorBg==
-X-Received: by 2002:a17:902:b495:b0:1de:faa5:552 with SMTP id y21-20020a170902b49500b001defaa50552mr8062370plr.56.1711389194428;
-        Mon, 25 Mar 2024 10:53:14 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 1-20020a170902c10100b001db8a5ea0a3sm4986539pli.94.2024.03.25.10.53.13
+        d=1e100.net; s=20230601; t=1711389173; x=1711993973;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gdkP92/Ym8fhO2N2bPQUMgG774O7zzPSnF71mNNVTm0=;
+        b=UXhAX8ABxCzKDEDZNLaThpwMQqTYopBdOUROT3tg0TxJIqg6SS4l4RLjVs84zNjlX7
+         xVHXyw7HtC00AY1JvMFYyeWKhSpfVEb6Xef6wMAtHRIzhEPxZ0c2P6lgQq04RQ5P/I9x
+         CbTEEbiCB0WE7aWdvEyIdKuhjMVe1G1+0FjIxpOqQqjGi514KfHZ5ZKkW1bZRXRsqYuP
+         g0kFHSpD4pKndvIQmELMOQdfzqHkq32brhYNfycXVIOM/V4mT6keDox71QSQvd5sC0mn
+         JDaw8Az6pXaa7++Wd9g7xrCQp8xN0sV2lLPzPnHi6rvi977szfXGAN++SmM2h03infOD
+         /YiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcQuHOfeRlYb/BW2XKg1T6xSHhVs50tBDkxGf3CaEW9cUERzKqWqQtAtCZUGICIUULp/WfeSyBGyJPvpMTkZLEHhDmYRdW/MD0qZwp
+X-Gm-Message-State: AOJu0YwjS82FEPeQTe+QeS6ivx7CHKEf2uFyYe7MsJfls+bv4Lh1Fd5W
+	O5as4zPANFSqkvQF9PuRvoKfTwC7Mdtf0RlYVdExB6LDUZm/9h9/kWZR/ZhajlU=
+X-Google-Smtp-Source: AGHT+IH7l6Nr3jgLuzR+uEEpfWCStVS9T4WpcYVGab+dpXtZY5JWh6SKJ3eaUaCdiYBw58Jmk6rK9A==
+X-Received: by 2002:a17:90a:e542:b0:29f:ce37:50d8 with SMTP id ei2-20020a17090ae54200b0029fce3750d8mr5423211pjb.17.1711389172525;
+        Mon, 25 Mar 2024 10:52:52 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.65])
+        by smtp.gmail.com with ESMTPSA id e1-20020a17090a9a8100b0029e077a9fe6sm10348086pjp.27.2024.03.25.10.52.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 10:53:14 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: linux-kselftest@vger.kernel.org
-Cc: David Airlie <airlied@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	=?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Kees Cook <keescook@chromium.org>,
-	Daniel Diaz <daniel.diaz@linaro.org>,
-	David Gow <davidgow@google.com>,
-	Arthur Grillo <arthurgrillo@riseup.net>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org,
-	kunit-dev@googlegroups.com,
-	linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	netdev@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: [PATCH v2 12/14] sh: Add support for suppressing warning backtraces
-Date: Mon, 25 Mar 2024 10:52:46 -0700
-Message-Id: <20240325175248.1499046-13-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240325175248.1499046-1-linux@roeck-us.net>
-References: <20240325175248.1499046-1-linux@roeck-us.net>
+        Mon, 25 Mar 2024 10:52:52 -0700 (PDT)
+Date: Mon, 25 Mar 2024 23:22:47 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH v4 3/3] staging: rtl8712: rename backupTKIPCountermeasure to
+ backup_TKIP_countermeasure
+Message-ID: <3fd64e6671d3f86c49fd8c6ba9ef64c4f0e0b75e.1711388443.git.ayushtiw0110@gmail.com>
+References: <cover.1711388443.git.ayushtiw0110@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1711388443.git.ayushtiw0110@gmail.com>
 
-Add name of functions triggering warning backtraces to the __bug_table
-object section to enable support for suppressing WARNING backtraces.
+Rename variable backupTKIPCountermeasure to backup_TKIP_countermeasure
+to address checkpatch warning 'Avoid Camelcase' and to ensure
+adherence to coding style guidelines.
 
-To limit image size impact, the pointer to the function name is only added
-to the __bug_table section if both CONFIG_KUNIT_SUPPRESS_BACKTRACE and
-CONFIG_DEBUG_BUGVERBOSE are enabled. Otherwise, the __func__ assembly
-parameter is replaced with a (dummy) NULL parameter to avoid an image size
-increase due to unused __func__ entries (this is necessary because __func__
-is not a define but a virtual variable).
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Acked-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 ---
-- Rebased to v6.9-rc1
-- Added Tested-by:, Acked-by:, and Reviewed-by: tags
-- Introduced KUNIT_SUPPRESS_BACKTRACE configuration option
 
- arch/sh/include/asm/bug.h | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+Changes in v4: No change
+Changes in v3: No change
+Changes in v2: No change
 
-diff --git a/arch/sh/include/asm/bug.h b/arch/sh/include/asm/bug.h
-index 05a485c4fabc..470ce6567d20 100644
---- a/arch/sh/include/asm/bug.h
-+++ b/arch/sh/include/asm/bug.h
-@@ -24,21 +24,36 @@
-  * The offending file and line are encoded in the __bug_table section.
-  */
- #ifdef CONFIG_DEBUG_BUGVERBOSE
-+
-+#ifdef CONFIG_KUNIT_SUPPRESS_BACKTRACE
-+# define HAVE_BUG_FUNCTION
-+# define __BUG_FUNC_PTR	"\t.long %O2\n"
-+#else
-+# define __BUG_FUNC_PTR
-+#endif /* CONFIG_KUNIT_SUPPRESS_BACKTRACE */
-+
- #define _EMIT_BUG_ENTRY				\
- 	"\t.pushsection __bug_table,\"aw\"\n"	\
- 	"2:\t.long 1b, %O1\n"			\
--	"\t.short %O2, %O3\n"			\
--	"\t.org 2b+%O4\n"			\
-+	__BUG_FUNC_PTR				\
-+	"\t.short %O3, %O4\n"			\
-+	"\t.org 2b+%O5\n"			\
- 	"\t.popsection\n"
- #else
- #define _EMIT_BUG_ENTRY				\
- 	"\t.pushsection __bug_table,\"aw\"\n"	\
- 	"2:\t.long 1b\n"			\
--	"\t.short %O3\n"			\
--	"\t.org 2b+%O4\n"			\
-+	"\t.short %O4\n"			\
-+	"\t.org 2b+%O5\n"			\
- 	"\t.popsection\n"
- #endif
+ drivers/staging/rtl8712/mlme_linux.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/rtl8712/mlme_linux.c b/drivers/staging/rtl8712/mlme_linux.c
+index ac8196d24ce0..436816d14cdf 100644
+--- a/drivers/staging/rtl8712/mlme_linux.c
++++ b/drivers/staging/rtl8712/mlme_linux.c
+@@ -88,7 +88,7 @@ static struct RT_PMKID_LIST backup_PMKID_list[NUM_PMKID_CACHE];
+ void r8712_os_indicate_disconnect(struct _adapter *adapter)
+ {
+ 	u8 backup_PMKID_index = 0;
+-	u8 backupTKIPCountermeasure = 0x00;
++	u8 backup_TKIP_countermeasure = 0x00;
  
-+#ifdef HAVE_BUG_FUNCTION
-+# define __BUG_FUNC	__func__
-+#else
-+# define __BUG_FUNC	NULL
-+#endif
-+
- #define BUG()						\
- do {							\
- 	__asm__ __volatile__ (				\
-@@ -47,6 +62,7 @@ do {							\
- 		 :					\
- 		 : "n" (TRAPA_BUG_OPCODE),		\
- 		   "i" (__FILE__),			\
-+		   "i" (__BUG_FUNC),			\
- 		   "i" (__LINE__), "i" (0),		\
- 		   "i" (sizeof(struct bug_entry)));	\
- 	unreachable();					\
-@@ -60,6 +76,7 @@ do {							\
- 		 :					\
- 		 : "n" (TRAPA_BUG_OPCODE),		\
- 		   "i" (__FILE__),			\
-+		   "i" (__BUG_FUNC),			\
- 		   "i" (__LINE__),			\
- 		   "i" (BUGFLAG_WARNING|(flags)),	\
- 		   "i" (sizeof(struct bug_entry)));	\
-@@ -85,6 +102,7 @@ do {							\
- 		 :					\
- 		 : "n" (TRAPA_BUG_OPCODE),		\
- 		   "i" (__FILE__),			\
-+		   "i" (__BUG_FUNC),			\
- 		   "i" (__LINE__),			\
- 		   "i" (BUGFLAG_UNWINDER),		\
- 		   "i" (sizeof(struct bug_entry)));	\
+ 	r8712_indicate_wx_disassoc_event(adapter);
+ 	netif_carrier_off(adapter->pnetdev);
+@@ -103,7 +103,7 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter)
+ 		       &adapter->securitypriv.PMKIDList[0],
+ 		       sizeof(struct RT_PMKID_LIST) * NUM_PMKID_CACHE);
+ 		backup_PMKID_index = adapter->securitypriv.PMKIDIndex;
+-		backupTKIPCountermeasure =
++		backup_TKIP_countermeasure =
+ 			adapter->securitypriv.btkip_countermeasure;
+ 		memset((unsigned char *)&adapter->securitypriv, 0,
+ 		       sizeof(struct security_priv));
+@@ -117,7 +117,7 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter)
+ 		       sizeof(struct RT_PMKID_LIST) * NUM_PMKID_CACHE);
+ 		adapter->securitypriv.PMKIDIndex = backup_PMKID_index;
+ 		adapter->securitypriv.btkip_countermeasure =
+-					 backupTKIPCountermeasure;
++					 backup_TKIP_countermeasure;
+ 	} else { /*reset values in securitypriv*/
+ 		struct security_priv *sec_priv = &adapter->securitypriv;
+ 
 -- 
-2.39.2
+2.40.1
 
 
