@@ -1,116 +1,150 @@
-Return-Path: <linux-kernel+bounces-117543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA2EE88AC65
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:51:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE4DB88AC3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:48:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13700326D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:51:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91EBF1C382B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B29812C552;
-	Mon, 25 Mar 2024 17:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A436E2BE;
+	Mon, 25 Mar 2024 17:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="ll/4bPUp"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gVz2Sfb3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5804B839E6;
-	Mon, 25 Mar 2024 17:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899EF6D1B0;
+	Mon, 25 Mar 2024 17:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711386394; cv=none; b=PMqr5uQt7Sl0g8MBIVTuBaRjK4MSGPAhRVnT135whyvd5B+8Jq84TLBlU9Y5r8RdxwCTorSaKoQaoOeb5GD/pBeqO0KEuXY25bB3iI7Enaf81v64QN8vXMgW5Mh8tE2srvJhoDh+pUmxkD6DXDVWcSURvpmxkpbpB6ugkhAKvpw=
+	t=1711386065; cv=none; b=KbYWIIBRVu9oel/Ty1I/g+dpLb1ioDLYXmgpk+FG3Uonu9gH+F9lSOgwHyRpTdzuIwOsWPlEmsqBsCU6aWyV1z44RYYHirzMU8UlVRz0H0K4l7pQKWF4Mt2PalzA2V0VcJlS9Los6wi+gZvpjQtAH2hzmPgzlitGQlVAxtiZlFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711386394; c=relaxed/simple;
-	bh=GSajnlwWrqE+p7NlosQIl9nO0bwgqStfgwiwvKUF4Po=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LlMjPsUpqIXhqfXiktAtacYhTfEDiQrKudC+ZjfJ1IiqW8D8RUdW+SJUWdiqbRwn1VXgeOnTva0rwFKo6japGCqPE/G0NX3x3Wlb3PxGjFZvME3whFdyq1ZBVbMZX1wuEyyx9CdGUo6U21ymRyHE+j5FcC5rurgv8UdV+4W/elQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=ll/4bPUp; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 47c27d20224fbfad; Mon, 25 Mar 2024 18:06:30 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id CBC0266BCFE;
-	Mon, 25 Mar 2024 18:06:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1711386390;
-	bh=GSajnlwWrqE+p7NlosQIl9nO0bwgqStfgwiwvKUF4Po=;
-	h=From:To:Cc:Subject:Date;
-	b=ll/4bPUprboo9BWu6U3lYYSuvA2WNlvCupNif2Kxtne/ziT6D+78kXluhF1wIxMHe
-	 PYzhMdZTGKdnC+6qqTGqLeQe046uKdZKKZNo7MOXcyxBIAoMU2DGx4LumBDNpbP5Zc
-	 yUhNQ0r34P90UU/u6Cj5ldDJ9XGObC4TMLv8CRNFUoDs3VZTOmilWzdLn3za4dPLNN
-	 ylcG/RNQ9Btji0+w1wcgpQoTaKGbNw+ehCPY7AorfcnLFd+20eMoIHMrUdXiI6JuxR
-	 6PQMk5ZF65WT7AncT+HZDOaW4DG2LtUhy/WikHJ9GCZeTxN4oJhTY6atLkYPKrTt6B
-	 ODpP/nLjZEtEw==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v1 0/6] intel_pstate: Turbo disabled handling rework
-Date: Mon, 25 Mar 2024 18:00:45 +0100
-Message-ID: <13494237.uLZWGnKmhe@kreacher>
+	s=arc-20240116; t=1711386065; c=relaxed/simple;
+	bh=Lci6nEV6lFRNgmbj/19OAFVfKuyN4Cyp2jW6qAIWwrw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ZBUKmdiiFk0B7tqIVRbZSx3P3VCXuKiRWqgkomn7gPQujAS0ZE7ldo//NGlL5PwGSz0uuU6n8/UfacixmWHt21Z2jFRRJiE8nyZJXVOjeH5ldTV9Ndw24YtL/XOsoSBCiOVfrvZyHh/idIAQPZoEN1EgtUJPovIPLR8iccFWnAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gVz2Sfb3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B52F5C433F1;
+	Mon, 25 Mar 2024 17:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711386065;
+	bh=Lci6nEV6lFRNgmbj/19OAFVfKuyN4Cyp2jW6qAIWwrw=;
+	h=From:Date:Subject:To:Cc:From;
+	b=gVz2Sfb3dxNAPIRfEUU4KRbK+JBb+s401KhAbTDA+73+4XwqDdv3Do8557ra+Xl9h
+	 XqbewdaTKW2o9M7vVNS4ZtB3EP7Cm2Ki+2kmQ18daSyzzsrF4e2lVWaRkO6ycSKQfx
+	 9X8UJuQP84WIilg6liE4exqQQU++5+ZkgBV5BIaTBzvAiwfXVPERG1UcxUJksWflpR
+	 csT+PHXCmn2CkOnIEAj53DtpcxTQLIbu8RkykAkhFm7u6MS9l3N83LLXwMThjHl5Av
+	 pioNKHrNtAv2fkz3bOxVLI1JLh1WXp5miBpDo1qBurccsbHSvPvEE84uG4o8R9Gu+v
+	 8AnVbpSZLdbfg==
+From: Mark Brown <broonie@kernel.org>
+Date: Mon, 25 Mar 2024 17:00:57 +0000
+Subject: [PATCH v2] gpiolib: Add stubs for GPIO lookup functions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudduuddgfeehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeefpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240325-gpiolib-find-by-fwnode-stub-v2-1-c843288cb01f@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAMmtAWYC/43NQQ6CMBCF4auQWTumHcQYV96DsKAwhYmkJS2ih
+ PTuVk7g8nuL/+0QOQhHuBc7BF4lincZdCqgG1s3MEqfDaTookoiHGbxkxi04no0G9q38z1jXF4
+ Gq2tlqb2RUdxBLsyBrXyOet1kjxIXH7bjbNW/9b/uqlGjqlrVMTNpKh9PDo6nsw8DNCmlL3bZc
+ zHHAAAA
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2883; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=Lci6nEV6lFRNgmbj/19OAFVfKuyN4Cyp2jW6qAIWwrw=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBmAa3OAuQV7uRj36Qg09JExspAdtoyMZZkLpqLiguh
+ CtqGMmGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZgGtzgAKCRAk1otyXVSH0J97B/
+ 9NmR2soPhHawJZpBXD0I7oRYHT7pNiK04Fo0Slr1PJsarihwQGN6LAzJaQyN10KjOOnsZGKtlyc0s8
+ ao+jEn/EKLJkyyU2MarGVmBHqf99hFzsCfuHOKttezItn8zgD3dhWgDkQSeDXTj9MU5XDxTrtU1nOW
+ pmQEKVExhoTboKZgBt1TDTE1NLbYZw/A/K/P8f8Ehi9vbHNHycoDs+72/Xy5qfI7sPfG5sy9WnolDp
+ 4+QVD5V02PrfdDzSFcJy3FWcvnEXL3eBOdooz/nIONJwiIU93+QhuhH/RqK+1/qhI4+ET26/nDY61i
+ AU9q23NKtVl59n0F0deXobBDNAojBm
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-Hi Everyone,
+The gpio_device_find_by_() functions do not have stubs which means that if
+they are referenced from code with an optiona dependency on gpiolib then
+the code will fail to link. Add stubs for lookups via fwnode and label. I
+have not added a stub for plain gpio_device_find() since it seems harder to
+see a use case for that which does not depend on gpiolib.
 
-This series reworks the handling of disabling turbo in intel_pstate
-on top of the previous series of cleanups
+With the addition of the GPIO reset controller (which lacks a gpiolib
+dependency) to the arm64 defconfig this is causing build breaks for arm64
+virtconfig in -next:
 
-https://lore.kernel.org/linux-pm/12409658.O9o76ZdvQC@kreacher/
+aarch64-linux-gnu-ld: drivers/reset/core.o: in function `__reset_add_reset_gpio_lookup':
+ /build/stage/linux/drivers/reset/core.c:861:(.text+0xccc): undefined reference to `gpio_device_find_by_fwnode'
 
-The underlying problem is that disabling turbo is handled quite consistently
-in intel_pstate and basically it can get disabled at any time (through
-MSR_IA32_MISC_ENABLE_TURBO_DISABLE) without much coordination with the
-cpufreq core or anything else.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Changes in v2:
+- Rebase onto v6.9-rc1.
+- Link to v1: https://lore.kernel.org/r/20240322-gpiolib-find-by-fwnode-stub-v1-1-05a0ceee2123@kernel.org
+---
+ include/linux/gpio/driver.h | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-Disabling turbo through the "no_turbo" sysfs attribute is more consistent,
-but it has issues too (for example, if turbo is disabled via "no_turbo",
-the frequency-invariance code gets notified on the turbo status change,
-but the actual maximum frequency of the CPU is only updated if the
-MSR_IA32_MISC_ENABLE_TURBO_DISABLE value changes either, which need not
-happen at the same time or even at all).
+diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+index dc75f802e284..f8617eaf08ba 100644
+--- a/include/linux/gpio/driver.h
++++ b/include/linux/gpio/driver.h
+@@ -646,8 +646,6 @@ int devm_gpiochip_add_data_with_key(struct device *dev, struct gpio_chip *gc,
+ struct gpio_device *gpio_device_find(const void *data,
+ 				int (*match)(struct gpio_chip *gc,
+ 					     const void *data));
+-struct gpio_device *gpio_device_find_by_label(const char *label);
+-struct gpio_device *gpio_device_find_by_fwnode(const struct fwnode_handle *fwnode);
+ 
+ struct gpio_device *gpio_device_get(struct gpio_device *gdev);
+ void gpio_device_put(struct gpio_device *gdev);
+@@ -814,6 +812,9 @@ struct gpio_device *gpiod_to_gpio_device(struct gpio_desc *desc);
+ int gpio_device_get_base(struct gpio_device *gdev);
+ const char *gpio_device_get_label(struct gpio_device *gdev);
+ 
++struct gpio_device *gpio_device_find_by_label(const char *label);
++struct gpio_device *gpio_device_find_by_fwnode(const struct fwnode_handle *fwnode);
++
+ #else /* CONFIG_GPIOLIB */
+ 
+ #include <asm/bug.h>
+@@ -843,6 +844,18 @@ static inline const char *gpio_device_get_label(struct gpio_device *gdev)
+ 	return NULL;
+ }
+ 
++static inline struct gpio_device *gpio_device_find_by_label(const char *label)
++{
++	WARN_ON(1);
++	return NULL;
++}
++
++static inline struct gpio_device *gpio_device_find_by_fwnode(const struct fwnode_handle *fwnode)
++{
++	WARN_ON(1);
++	return NULL;
++}
++
+ static inline int gpiochip_lock_as_irq(struct gpio_chip *gc,
+ 				       unsigned int offset)
+ {
 
-The first patch is not really related to the rest of the series, it's
-just a cleanup and can be applied separately.
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240322-gpiolib-find-by-fwnode-stub-565f2a82b0ec
 
-Patch [2/6] uses the observation that it should be necessary to read
-MSR_IA32_MISC_ENABLE_TURBO_DISABLE after driver initialization to remove
-in-flight reads on that MSR and turbo state updates related to them.
-
-Patch [3/6] builds on top of the previous one to adjust the "no_turbo"
-attribute "store" and "show" callbacks.
-
-Patch [4/6] adds READ_ONCE() annotations to global.no_turbo accesses and
-makes some related simplifications.
-
-Patch [5/6] replaces the cached MSR_IA32_MISC_ENABLE_TURBO_DISABLE
-value in some checks with global.no_turbo for consistency.
-
-Patch [6/6] makes all of the code paths where the maximum CPU frequency
-can change to do that consistently by using the same set of functions.
-
-Details are described in the individual patch changelogs.
-
-Thanks!
-
-
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
 
