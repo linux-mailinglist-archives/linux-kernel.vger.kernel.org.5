@@ -1,182 +1,271 @@
-Return-Path: <linux-kernel+bounces-116992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93CA88A863
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:09:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9B5B88A7E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:58:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F35AB2CC2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:10:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C835B473AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6877F7DE;
-	Mon, 25 Mar 2024 12:23:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE51128380;
+	Mon, 25 Mar 2024 12:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="elyGre4R"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Lo7pH32E"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4F558AC5
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:23:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7CE128377
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711369388; cv=none; b=l74EqwFNDjD7gSI5vE+EDuAr9Pi/pafMOd3YUk5CIq6sF6lb+S2Go7vB4hzefYnWZNTlM/a3BfhF+S7Ppk/tsjE54wG8W/MwKxtbpPQfqHXIyNE0MHati06K6wlQeV92UGRuhhPzyDt33G9y2bDijqeMVCHfugQkZcD6XDX3VQo=
+	t=1711369871; cv=none; b=BKXmVNFWWhrS9Q5174Tm8LXllKseRdze1gPp/u6qDzgV3E2JMDh87SB/e+8ZhT3hF4Stxx1/KxLAFzSWBrSxm5qeQDV8eSY6U3pP/7R97wIrJ0+dkc413RrWYzwb4NWE+JFD8M048UWQnxY0oyx8WrDkgq0IbeBgC4U87XsLP5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711369388; c=relaxed/simple;
-	bh=Twb2snY/3F4lbKNfDJVPc78mWoAOfrQSWRoXdsnS2oc=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=uaAnh7M7VEVw2YBy8I1KoHwSCwbGS4WAJtQgJihW/Mev2W+56+HDq4Y/tF4PsTlObxy86Clq4XaV6RMpBpir8tmA7HwvlsCXU8BVQ4ETm5kJeCqQSljHbjL7/cqUx3VFnAv3ChlHuF9iswGWiqoJ1HiLkaqhsr/4fYlo5/a2uZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=elyGre4R; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711369386;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yzIgO84X7s3kibZ20Fhx+86zvMP8Parlw1wYFhjpBhU=;
-	b=elyGre4RuGKJMcB6OOgR3vqTmVW8QDGa1SaEApij2UDIeIgYNIsNXZ36qxuO65DFqwOl99
-	EYsijG06UMxZKvXKsjsbyy+i+iL6EE+4HFu+YA8pBVwCUCqzGM4T3dA2rZdTv0EZrAA+K4
-	l9DpVAqplJ5OZX1kXfNgfuOD+7qzARs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-435-3fgJQE6BP2KLaF5Q6qGEQg-1; Mon,
- 25 Mar 2024 08:23:03 -0400
-X-MC-Unique: 3fgJQE6BP2KLaF5Q6qGEQg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0D9DD2803633;
-	Mon, 25 Mar 2024 12:23:01 +0000 (UTC)
-Received: from RHTPC1VM0NT (unknown [10.22.32.207])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 811D7492BE8;
-	Mon, 25 Mar 2024 12:23:00 +0000 (UTC)
-From: Aaron Conole <aconole@redhat.com>
-To: Eelco Chaudron <echaudro@redhat.com>
-Cc: netdev@vger.kernel.org,  Pravin B Shelar <pshelar@ovn.org>,  "David S.
- Miller" <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>,  Jakub
- Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,
-  dev@openvswitch.org,  linux-kernel@vger.kernel.org,  Numan Siddique
- <nusiddiq@redhat.com>
-Subject: Re: [PATCH net] openvswitch: Set the skbuff pkt_type for proper
- pmtud support.
-References: <20240322190603.251831-1-aconole@redhat.com>
-	<7AFF5D6D-568C-449B-83CF-9436DE97CA91@redhat.com>
-Date: Mon, 25 Mar 2024 08:22:56 -0400
-In-Reply-To: <7AFF5D6D-568C-449B-83CF-9436DE97CA91@redhat.com> (Eelco
-	Chaudron's message of "Mon, 25 Mar 2024 09:44:16 +0100")
-Message-ID: <f7t5xxawlen.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.3 (gnu/linux)
+	s=arc-20240116; t=1711369871; c=relaxed/simple;
+	bh=aVlbCxffNsImE8sHfAMIWvGJXmWurPG4VbYMHdhQLEE=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=FnhX6fWPtIqbEjG4Q4QEQdrWVC0cYfoML2hblIm19mSUPTmAwT5IPMwdiUUaSr1tw4t8Yx+S8cOdwywaPAPp/u3uefRJMnKrKoEpzljRSIj25zIYUeuoWrT0lGqDh3OWOOiSxrG4UGjjLn23CTVCy/20wx6ePcsz5Byzej3tqu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Lo7pH32E; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a4751063318so156783766b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:31:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1711369867; x=1711974667; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jcU8rzfT1XiiKbhTkgktGjNuFns7iqoHulhoe5/hqUA=;
+        b=Lo7pH32EDvtGcPXVKvcXC+oWlGIjaAtwHInzgo+vICN0fCBF5+04BkcBeaOvTmQxcl
+         hPflHKv1GW3bKNd07k+pu5qQjP1/Vm2r9IEbXIw06l+1buF/Xkw9u+HKtiRoN5wHc3J9
+         Unhhk5DOtoIHgg1bWFAev59Tr8LiHsFUQAs729DIWEVRWznHomIAXdHppKm3bUfSLyAm
+         cV/UgI3t88mz0sFUnyhjw3DvZrF2h+ulC047pqZ4gijZPgENHmjOyfD9ld3XnX+Of5IV
+         4ofFS4167n0xFNx6QiDDtsftGtxgN/3rsUbHbvjm2FNMvVtzk/Ra+Et7il5Z6u77QIC5
+         CTww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711369867; x=1711974667;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jcU8rzfT1XiiKbhTkgktGjNuFns7iqoHulhoe5/hqUA=;
+        b=SQT3lyzPLqjq88xIY5jyV9S/ANfqLOdgiZ4+8/dKGw//ec5VC82/+9pynwK5HN9pI6
+         0C+plXSFazh1S+j53zf76QKCqf3ogtz2JvCywC3vDiSmjNr60eF8EYPpQ+PVlNctcBir
+         E1+Gc5vodJ7W+thxD6VHRtiL9AkHkcsk9kPtJPF6sosymVbOyRTm+YLeBGmfOenrsjUk
+         m6G9DzXLZcA0cntTq+p1GPYBx6R58BIq1bTdR8AbIHjw0q5RY06quV8NKhxUt+nAjYe1
+         InMT88wqqiKz4Dsl0l+eNAk7MnYx9qkmZbUCHYfmJCIXNZEuPsEDM9FivSoHH4lQMg3v
+         DNkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWlUwnxRdgARedCms5WY99tqDFsfW5Gsv2/f7oZGoLTio5TUYcpi9jHVTUvG6etpDyCeYYypcNPAw1MQuuqZUqkGNOA8t+mjNgyq8g+
+X-Gm-Message-State: AOJu0YxjnEoCYecCVopZgDWQ61GmbnqZ4BijbdkloAtqPD/TXY2nsZ0m
+	q6zvDjvIBYgh2DnaywcytRAZQ99VFY/+eDCq4PuJwXLCEdcKRYXs8TWHdO7M9BU=
+X-Google-Smtp-Source: AGHT+IGsrHcYCvS/Zb86Okam1T7FEifHPpoDZSR+RYzLLEafipL8a0Eaa2hp5duWV+Ok7DmwELZZtA==
+X-Received: by 2002:a17:906:d0d7:b0:a47:5265:9aac with SMTP id bq23-20020a170906d0d700b00a4752659aacmr2438772ejb.55.1711369867358;
+        Mon, 25 Mar 2024 05:31:07 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:1a6])
+        by smtp.gmail.com with ESMTPSA id w17-20020a170906385100b00a46d8e5a031sm2988980ejc.209.2024.03.25.05.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 05:31:06 -0700 (PDT)
+References: <000000000000dc9aca0613ec855c@google.com>
+ <tencent_F436364A347489774B677A3D13367E968E09@qq.com>
+ <CAADnVQJQvcZOA_BbFxPqNyRbMdKTBSMnf=cKvW7NJ8LxxP54sA@mail.gmail.com>
+User-agent: mu4e 1.6.10; emacs 29.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Edward Adam Davis
+ <eadavis@qq.com>, John Fastabend <john.fastabend@gmail.com>
+Cc: syzbot+c4f4d25859c2e5859988@syzkaller.appspotmail.com,
+ 42.hyeyoo@gmail.com, andrii@kernel.org, ast@kernel.org,
+ bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+ edumazet@google.com, kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+ linux-kernel@vger.kernel.org, namhyung@kernel.org, netdev@vger.kernel.org,
+ pabeni@redhat.com, peterz@infradead.org, songliubraving@fb.com,
+ syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: [PATCH] bpf, sockmap: fix deadlock in rcu_report_exp_cpu_mult
+Date: Mon, 25 Mar 2024 13:23:07 +0100
+In-reply-to: <CAADnVQJQvcZOA_BbFxPqNyRbMdKTBSMnf=cKvW7NJ8LxxP54sA@mail.gmail.com>
+Message-ID: <87y1a6biie.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Eelco Chaudron <echaudro@redhat.com> writes:
+On Sat, Mar 23, 2024 at 12:08 AM -07, Alexei Starovoitov wrote:
+> John,
+> please review.
+> It seems this bug was causing multiple syzbot reports.
 
-> On 22 Mar 2024, at 20:06, Aaron Conole wrote:
->
->> Open vSwitch is originally intended to switch at layer 2, only dealing with
->> Ethernet frames.  With the introduction of l3 tunnels support, it crossed
->> into the realm of needing to care a bit about some routing details when
->> making forwarding decisions.  If an oversized packet would need to be
->> fragmented during this forwarding decision, there is a chance for pmtu
->> to get involved and generate a routing exception.  This is gated by the
->> skbuff->pkt_type field.
->>
->> When a flow is already loaded into the openvswitch module this field is
->> set up and transitioned properly as a packet moves from one port to
->> another.  In the case that a packet execute is invoked after a flow is
->> newly installed this field is not properly initialized.  This causes the
->> pmtud mechanism to omit sending the required exception messages across
->> the tunnel boundary and a second attempt needs to be made to make sure
->> that the routing exception is properly setup.  To fix this, we set the
->> outgoing packet's pkt_type to PACKET_OUTGOING, since it can only get
->> to the openvswitch module via a port device or packet command.
->
-> Is this not a problem when the packet comes from the bridge port in the kernel?
+Any chance we could disallow mutating sockhash from interrupt context?
 
-It very well may be an issue there as well, but the recommendation is to
-operate with the bridge port down as far as I know, so I don't know if
-this issue has been observed happening from the bridge port.
+If that is not an option, then this looks like a good start of a fix.
+But we also need to cover sock_map_unref->sock_sock_map_del_link called
+from sock_hash_delete_elem. It also grabs a spin lock.
 
-Since I will spin a v2 with a comment, do you want me to mention
-something about the bridge port?
+Also, sockhash is not the only affected map type. I see we're grabbing a
+spin lock in ->map_delete_elem without disabling interrupts as well in:
 
->> This issue is periodically encountered in complex setups, such as large
->> openshift deployments, where multiple sets of tunnel traversal occurs.
->> A way to recreate this is with the ovn-heater project that can setup
->> a networking environment which mimics such large deployments.  In that
->> environment, without this patch, we can see:
+- sock_map_delete_elem
+- reuseport_array_delete_elem
+- xsk_map_delete_elem
+
+> On Fri, Mar 22, 2024 at 10:42=E2=80=AFPM Edward Adam Davis <eadavis@qq.co=
+m> wrote:
 >>
->>   ./ovn_cluster.sh start
->>   podman exec ovn-chassis-1 ip r a 170.168.0.5/32 dev eth1 mtu 1200
->>   podman exec ovn-chassis-1 ip netns exec sw01p1  ip r flush cache
->>   podman exec ovn-chassis-1 ip netns exec sw01p1 ping 21.0.0.3 -M do -s 1300 -c2
->>   PING 21.0.0.3 (21.0.0.3) 1300(1328) bytes of data.
->>   From 21.0.0.3 icmp_seq=2 Frag needed and DF set (mtu = 1142)
+>> [Syzbot reported]
+>> WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
+>> 6.8.0-syzkaller-05221-gea80e3ed09ab #0 Not tainted
+>> -----------------------------------------------------
+>> rcu_exp_gp_kthr/18 [HC0[0]:SC0[2]:HE0:SE0] is trying to acquire:
+>> ffff88802b5ab020 (&htab->buckets[i].lock){+...}-{2:2}, at: spin_lock_bh =
+include/linux/spinlock.h:356 [inline]
+>> ffff88802b5ab020 (&htab->buckets[i].lock){+...}-{2:2}, at: sock_hash_del=
+ete_elem+0xb0/0x300 net/core/sock_map.c:939
 >>
->>   --- 21.0.0.3 ping statistics ---
->>   2 packets transmitted, 0 received, +1 errors, 100% packet loss, time 1017ms
+>> and this task is already holding:
+>> ffffffff8e136558 (rcu_node_0){-.-.}-{2:2}, at: sync_rcu_exp_done_unlocke=
+d+0xe/0x140 kernel/rcu/tree_exp.h:169
+>> which would create a new lock dependency:
+>>  (rcu_node_0){-.-.}-{2:2} -> (&htab->buckets[i].lock){+...}-{2:2}
 >>
->> Using tcpdump, we can also see the expected ICMP FRAG_NEEDED message is not
->> sent into the server.
+>> but this new dependency connects a HARDIRQ-irq-safe lock:
+>>  (rcu_node_0){-.-.}-{2:2}
 >>
->> With this patch, setting the pkt_type, we see the following:
+>> ... which became HARDIRQ-irq-safe at:
+>>   lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+>>   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+>>   _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+>>   rcu_report_exp_cpu_mult+0x27/0x2f0 kernel/rcu/tree_exp.h:238
+>>   csd_do_func kernel/smp.c:133 [inline]
+>>   __flush_smp_call_function_queue+0xb2e/0x15b0 kernel/smp.c:542
+>>   __sysvec_call_function_single+0xa8/0x3e0 arch/x86/kernel/smp.c:271
+>>   instr_sysvec_call_function_single arch/x86/kernel/smp.c:266 [inline]
+>>   sysvec_call_function_single+0x9e/0xc0 arch/x86/kernel/smp.c:266
+>>   asm_sysvec_call_function_single+0x1a/0x20 arch/x86/include/asm/idtentr=
+y.h:709
+>>   __sanitizer_cov_trace_switch+0x90/0x120
+>>   update_event_printk kernel/trace/trace_events.c:2750 [inline]
+>>   trace_event_eval_update+0x311/0xf90 kernel/trace/trace_events.c:2922
+>>   process_one_work kernel/workqueue.c:3254 [inline]
+>>   process_scheduled_works+0xa00/0x1770 kernel/workqueue.c:3335
+>>   worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
+>>   kthread+0x2f0/0x390 kernel/kthread.c:388
+>>   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+>>   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
 >>
->>   podman exec ovn-chassis-1 ip netns exec sw01p1 ping 21.0.0.3 -M do -s 1300 -c2
->>   PING 21.0.0.3 (21.0.0.3) 1300(1328) bytes of data.
->>   From 21.0.0.3 icmp_seq=1 Frag needed and DF set (mtu = 1222)
->>   ping: local error: message too long, mtu=1222
+>> to a HARDIRQ-irq-unsafe lock:
+>>  (&htab->buckets[i].lock){+...}-{2:2}
 >>
->>   --- 21.0.0.3 ping statistics ---
->>   2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 1061ms
+>> ... which became HARDIRQ-irq-unsafe at:
+>> ...
+>>   lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+>>   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+>>   _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+>>   spin_lock_bh include/linux/spinlock.h:356 [inline]
+>>   sock_hash_delete_elem+0xb0/0x300 net/core/sock_map.c:939
+>>   0xffffffffa0001b0e
+>>   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>>   __bpf_prog_run include/linux/filter.h:657 [inline]
+>>   bpf_prog_run include/linux/filter.h:664 [inline]
+>>   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+>>   bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+>>   trace_contention_end+0xd7/0x100 include/trace/events/lock.h:122
+>>   __mutex_lock_common kernel/locking/mutex.c:617 [inline]
+>>   __mutex_lock+0x2e5/0xd70 kernel/locking/mutex.c:752
+>>   futex_cleanup_begin kernel/futex/core.c:1091 [inline]
+>>   futex_exit_release+0x34/0x1f0 kernel/futex/core.c:1143
+>>   exit_mm_release+0x1a/0x30 kernel/fork.c:1652
+>>   exit_mm+0xb0/0x310 kernel/exit.c:542
+>>   do_exit+0x99e/0x27e0 kernel/exit.c:865
+>>   do_group_exit+0x207/0x2c0 kernel/exit.c:1027
+>>   __do_sys_exit_group kernel/exit.c:1038 [inline]
+>>   __se_sys_exit_group kernel/exit.c:1036 [inline]
+>>   __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1036
+>>   do_syscall_64+0xfb/0x240
+>>   entry_SYSCALL_64_after_hwframe+0x6d/0x75
 >>
->> In this case, the first ping request receives the FRAG_NEEDED message and
->> a local routing exception is created.
+>> other info that might help us debug this:
 >>
->> Reported-at: https://issues.redhat.com/browse/FDP-164
->> Fixes: 58264848a5a7 ("openvswitch: Add vxlan tunneling support.")
->> Signed-off-by: Aaron Conole <aconole@redhat.com>
+>>  Possible interrupt unsafe locking scenario:
+>>
+>>        CPU0                    CPU1
+>>        ----                    ----
+>>   lock(&htab->buckets[i].lock);
+>>                                local_irq_disable();
+>>                                lock(rcu_node_0);
+>>                                lock(&htab->buckets[i].lock);
+>>   <Interrupt>
+>>     lock(rcu_node_0);
+>>
+>>  *** DEADLOCK ***
+>> [Fix]
+>> Ensure that the context interrupt state is the same before and after usi=
+ng the
+>> bucket->lock.
+>>
+>> Reported-and-tested-by: syzbot+c4f4d25859c2e5859988@syzkaller.appspotmai=
+l.com
+>> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 >> ---
->> NOTE: An alternate approach would be to add a netlink attribute to preserve
->>       pkt_type across the kernel->user boundary, but that does require some
->>       userspace cooperation.
->
-> I prefer the method in this patch, as it requires no userspace change,
-> i.e. it will work even with older versions of OVS without the need for
-> backports.
-
-Yes - that was my thinking as well.
-
->>  net/openvswitch/actions.c | 2 ++
->>  1 file changed, 2 insertions(+)
+>>  net/core/sock_map.c | 10 ++++++----
+>>  1 file changed, 6 insertions(+), 4 deletions(-)
 >>
->> diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
->> index 6fcd7e2ca81fe..952c6292100d0 100644
->> --- a/net/openvswitch/actions.c
->> +++ b/net/openvswitch/actions.c
->> @@ -936,6 +936,8 @@ static void do_output(struct datapath *dp, struct sk_buff *skb, int out_port,
->>  				pskb_trim(skb, ovs_mac_header_len(key));
->>  		}
+>> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+>> index 27d733c0f65e..ae8f81b26e16 100644
+>> --- a/net/core/sock_map.c
+>> +++ b/net/core/sock_map.c
+>> @@ -932,11 +932,12 @@ static long sock_hash_delete_elem(struct bpf_map *=
+map, void *key)
+>>         struct bpf_shtab_bucket *bucket;
+>>         struct bpf_shtab_elem *elem;
+>>         int ret =3D -ENOENT;
+>> +       unsigned long flags;
 >>
->> +		skb->pkt_type = PACKET_OUTGOING;
->> +
->
-> Maybe add a comment based on the large explanation above?
-
-Okay - I can add one.
-
->>  		if (likely(!mru ||
->>  		           (skb->len <= mru + vport->dev->hard_header_len))) {
->>  			ovs_vport_send(vport, skb, ovs_key_mac_proto(key));
->> -- 
->> 2.41.0
+>>         hash =3D sock_hash_bucket_hash(key, key_size);
+>>         bucket =3D sock_hash_select_bucket(htab, hash);
+>>
+>> -       spin_lock_bh(&bucket->lock);
+>> +       spin_lock_irqsave(&bucket->lock, flags);
+>>         elem =3D sock_hash_lookup_elem_raw(&bucket->head, hash, key, key=
+_size);
+>>         if (elem) {
+>>                 hlist_del_rcu(&elem->node);
+>> @@ -944,7 +945,7 @@ static long sock_hash_delete_elem(struct bpf_map *ma=
+p, void *key)
+>>                 sock_hash_free_elem(htab, elem);
+>>                 ret =3D 0;
+>>         }
+>> -       spin_unlock_bh(&bucket->lock);
+>> +       spin_unlock_irqrestore(&bucket->lock, flags);
+>>         return ret;
+>>  }
+>>
+>> @@ -1136,6 +1137,7 @@ static void sock_hash_free(struct bpf_map *map)
+>>         struct bpf_shtab_elem *elem;
+>>         struct hlist_node *node;
+>>         int i;
+>> +       unsigned long flags;
+>>
+>>         /* After the sync no updates or deletes will be in-flight so it
+>>          * is safe to walk map and remove entries without risking a race
+>> @@ -1151,11 +1153,11 @@ static void sock_hash_free(struct bpf_map *map)
+>>                  * exists, psock exists and holds a ref to socket. That
+>>                  * lets us to grab a socket ref too.
+>>                  */
+>> -               spin_lock_bh(&bucket->lock);
+>> +               spin_lock_irqsave(&bucket->lock, flags);
+>>                 hlist_for_each_entry(elem, &bucket->head, node)
+>>                         sock_hold(elem->sk);
+>>                 hlist_move_list(&bucket->head, &unlink_list);
+>> -               spin_unlock_bh(&bucket->lock);
+>> +               spin_unlock_irqrestore(&bucket->lock, flags);
+>>
+>>                 /* Process removed entries out of atomic context to
+>>                  * block for socket lock before deleting the psock's
+>> --
+>> 2.43.0
+>>
 
 
