@@ -1,217 +1,167 @@
-Return-Path: <linux-kernel+bounces-117091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ABA688A6DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:38:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68DCB88A6E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:39:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 865961F22B5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:38:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EB522E283E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A2C13B5BE;
-	Mon, 25 Mar 2024 13:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD07574C1B;
+	Mon, 25 Mar 2024 13:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="tB1HegEw"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RjyVlKlw"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A425B202;
-	Mon, 25 Mar 2024 13:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E7C47A52;
+	Mon, 25 Mar 2024 13:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711372414; cv=none; b=sWxnAGyh0yuVrz0+9fnqaKsl5wHTwD+Nkx84KlDxY3IiCDhwHOw4FZPJZdtM1fSC4C9MIGR1LM3J0nRzWMlQKxyRMDqNIHTj+JDz2f54fAQWG2+xJxFB4nJXOuGIPfumObnYUdRTOc11LnZFDtxgoScTnKgZQCwH863sabSmpS0=
+	t=1711372467; cv=none; b=gh0TodPxIfll/3J9hTGlscRFym4uAY0/lr1x6Ugzw/AQCO/+LlueUv+O06K6Hc+8KDYhVOR5bKP8c70JNUPe3JYVowSmrtfZ2dryokq+ZuykTfbfR7+jA9KZjew5Rvcj9JCeKORxFE0Xdmf2RpJw8+gdh3cnrMF4szyL6JmPq1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711372414; c=relaxed/simple;
-	bh=f4k9sHdrlUE0I/X6HCMiQ/5bB02l6Yrf35Q/qOgIGNQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fyxYLEs/UWSBEiC9P/olTF1BawBe55zXZulyCGb7FhGyVpAa9MyD84rKMXHM/fqpe9g3dK/rKxeMA5M9nmWrExBY/Wi37u61RAR16oC6y8i5VtJa3QkV7gQArvoK06Ur0XJ3TzM+9nNAQhxL+ta6+EL4lBy62pd0xNnaVkGkCno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=tB1HegEw reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 267e81775931a2da; Mon, 25 Mar 2024 14:13:29 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 091B366BCC0;
-	Mon, 25 Mar 2024 14:13:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1711372409;
-	bh=f4k9sHdrlUE0I/X6HCMiQ/5bB02l6Yrf35Q/qOgIGNQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=tB1HegEwrtE+z4rEU68P0wqk6myq9lkCIA0M5hIQ5IYMxX5uuOBayvnjdnXJ7CXIz
-	 LezfpatRnnLCzS0XIzw+oHZL3uja+gNxlLT5JeCfB4frqCmg1s6eVfpMpOyXSwE9xq
-	 QP5BF1Nk0+VHI06TBZdthZn+vmN1r8/LjJTvm7Kp5H877a5AF50heWsPTjUoHb9bZU
-	 Qa0EIkd6AgVKX9gtk0/Z+IygNvcB/SyUf+FNm/wR3zAceFmfj7iTCD7yHfWDeLZL7i
-	 n4rcqAs8pIu6fCtoZXbnhPahlx4Se78EsDx9K76EsEWerjDwq8BCUJnTzlu4ZQ15Dg
-	 Y0V6CknffMQ7w==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject:
- [PATCH v2 3/3] thermal: core: Sort trip point crossing notifications by
- temperature
-Date: Mon, 25 Mar 2024 14:13:20 +0100
-Message-ID: <3294585.aeNJFYEL58@kreacher>
-In-Reply-To: <2331888.ElGaqSPkdT@kreacher>
-References: <2331888.ElGaqSPkdT@kreacher>
+	s=arc-20240116; t=1711372467; c=relaxed/simple;
+	bh=paNEJwhjSuKW21GSgQhTXiZKf5ZqX9Zxj5ICBM/xyCM=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=V+uWIadURHsqpvz4H1P7oBBkmB1LRTWYJoRKLCUnqcl0wL2NswINjob1ydZL2HvnzFRK/quFYjJN+OUK9uPMkzNz/bNybnwb82FjZWwkibEXaUG6XSgv1D8rkZ3fZqSK0JXsTkNMXs6DSIYUiauA8n2tXTZyxCamyPvh4LWLOz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RjyVlKlw; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711372465; x=1742908465;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=paNEJwhjSuKW21GSgQhTXiZKf5ZqX9Zxj5ICBM/xyCM=;
+  b=RjyVlKlwufgsYqCYHNBzmoV4kUZt9BYKaEMMCxcshrcHUHLtrsvISYBP
+   ILYlRsX0OB2RsBK8Thc3gkE8+32yhlm/c2TL4l309eByHTtetYlZ8CFkc
+   +HU0EKNDaT8/7mK+XMTGG3PA5jfwHY63npcMS11rlVQpybb5JIF8oPzoS
+   9CC4rfxUfbEHT6eDg2GpTj6aQIzBOVRBL3lPr5ZrfwABxOT+aBgQyz5CD
+   Vhu0XLMQO1/89gZl3WuD2USB2MbZleJfd5Y0ZG3xU3cfSFmf6ujwPR80n
+   2GFwWadkIGr/aenrTLUCoPnU5EzMJGgedKj/zs5oMhEKRp09Uf1rqnEoo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6268136"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="6268136"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:14:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="20148591"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.19])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:14:22 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 25 Mar 2024 15:14:16 +0200 (EET)
+To: Reinette Chatre <reinette.chatre@intel.com>
+cc: linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
+    Babu Moger <babu.moger@amd.com>, 
+    =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= <maciej.wieczor-retman@intel.com>, 
+    Fenghua Yu <fenghua.yu@intel.com>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 11/13] selftests/resctrl: Convert ctrlgrp & mongrp to
+ pointers
+In-Reply-To: <8964b621-657d-4f9c-aeb0-3d3ed8c62c3f@intel.com>
+Message-ID: <32c9f2ca-a483-97f3-25d1-8e16e2fdf042@linux.intel.com>
+References: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com> <20240311135230.7007-12-ilpo.jarvinen@linux.intel.com> <578d0b55-c51a-49d1-8f54-989215a3a4b8@intel.com> <93e4f096-47df-9eba-095f-e8a8c3cd04f5@linux.intel.com>
+ <8964b621-657d-4f9c-aeb0-3d3ed8c62c3f@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledruddutddgvdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepfeduudeutdeugfelffduieegiedtueefledvjeegffdttefhhffhtefhleejgfetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehs
- thgrnhhishhlrgifrdhgrhhushiikhgrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+Content-Type: multipart/mixed; boundary="8323328-152287454-1711372456=:1020"
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-If multiple trip points are crossed in one go and the trips table in
-the thermal zone device object is not sorted, the corresponding trip
-point crossing notifications sent to user space will not be ordered
-either.
+--8323328-152287454-1711372456=:1020
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Moreover, if the trips table is sorted by trip temperature in ascending
-order, the trip crossing notifications on the way up will be sent in that
-order too, but the trip crossing notifications on the way down will be
-sent in the reverse order.
+On Fri, 22 Mar 2024, Reinette Chatre wrote:
+> On 3/22/2024 5:30 AM, Ilpo J=C3=A4rvinen wrote:
+> > On Wed, 20 Mar 2024, Reinette Chatre wrote:
+> >> On 3/11/2024 6:52 AM, Ilpo J=C3=A4rvinen wrote:
+> >>> The struct resctrl_val_param has control and monitor groups as char
+> >>> arrays but they are not supposed to be mutated within resctrl_val().
+> >>>
+> >>> Convert the ctrlgrp and mongrp char array within resctrl_val_param to
+> >>> plain const char pointers and adjust the strlen() based checks to
+> >>> check NULL instead.
+> >>>
+> >>> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> >>> ---
+> >>>  tools/testing/selftests/resctrl/resctrl.h   | 4 ++--
+> >>>  tools/testing/selftests/resctrl/resctrlfs.c | 8 ++++----
+> >>>  2 files changed, 6 insertions(+), 6 deletions(-)
+> >>>
+> >>> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testin=
+g/selftests/resctrl/resctrl.h
+> >>> index 52769b075233..54e5bce4c698 100644
+> >>> --- a/tools/testing/selftests/resctrl/resctrl.h
+> >>> +++ b/tools/testing/selftests/resctrl/resctrl.h
+> >>> @@ -89,8 +89,8 @@ struct resctrl_test {
+> >>>   */
+> >>>  struct resctrl_val_param {
+> >>>  =09char=09=09*resctrl_val;
+> >>> -=09char=09=09ctrlgrp[64];
+> >>> -=09char=09=09mongrp[64];
+> >>> +=09const char=09*ctrlgrp;
+> >>> +=09const char=09*mongrp;
+> >>>  =09char=09=09filename[64];
+> >>>  =09unsigned long=09mask;
+> >>>  =09int=09=09num_of_runs;
+> >>> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/test=
+ing/selftests/resctrl/resctrlfs.c
+> >>> index 79cf1c593106..dbe0cc6d74fa 100644
+> >>> --- a/tools/testing/selftests/resctrl/resctrlfs.c
+> >>> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
+> >>> @@ -469,7 +469,7 @@ static int create_grp(const char *grp_name, char =
+*grp, const char *parent_grp)
+> >>>  =09 * length of grp_name =3D=3D 0, it means, user wants to use root =
+con_mon
+> >>>  =09 * grp, so do nothing
+> >>>  =09 */
+> >>
+> >> Could you please confirm that the comments are still accurate?
+> >=20
+> > It's not, I missed it.
+> >=20
+> >>> -=09if (strlen(grp_name) =3D=3D 0)
+> >>> +=09if (!grp_name)
+> >>>  =09=09return 0;
+> >=20
+> > But now when looking into the surrounding code, to me it looks the corr=
+ect=20
+> > action here is to remove the comment and return -1 instead of 0. It mak=
+es
+> > this just an internal sanity check that grp_name is provided by the=20
+> > caller.
+> >=20
+>=20
+> hmmm ... this should not be an error because the caller is not required
+> to provide grp_name. Not providing grp_name has a specific meaning
+> of this operating on the CON_MON group and a failure would break flows
+> operating on the CON_MON group.
 
-This is generally confusing and it is better to make the kernel send the
-notifications in the order of growing (on the way up) or falling (on the
-way down) trip temperature.
+write_bm_pid_to_resctrl() checks for non-NULL mongrp before it calls into=
+=20
+create_grp() so with current code, I don't think it changes anything. And=
+=20
+param->ctrlgrp is always non-NULL too so I don't think the return ever=20
+triggers with the current codebase.
 
-To achieve that, instead of sending a trip crossing notification right
-away from handle_thermal_trip(), put the trip in question on a list that
-will be sorted by __thermal_zone_device_update() after processing all of
-the trips and before sending the notifications.
+However, I was more talking from API point of view. It feels more natural=
+=20
+for "create group" function to return error if the caller is inconsistent
+with itself by asking to create a group but doesn't want to create a=20
+group.
 
-Do the same with the debugfs recording of trip crossing events.
+--=20
+ i.
 
-Link: https://lore.kernel.org/linux-pm/20240306085428.88011-1-daniel.lezcano@linaro.org/
-Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org> 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/thermal_core.c |   39 +++++++++++++++++++++++++++++++++------
- drivers/thermal/thermal_core.h |    1 +
- 2 files changed, 34 insertions(+), 6 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- #include <linux/kdev_t.h>
- #include <linux/idr.h>
-+#include <linux/list_sort.h>
- #include <linux/thermal.h>
- #include <linux/reboot.h>
- #include <linux/string.h>
-@@ -361,7 +362,9 @@ static void handle_critical_trips(struct
- }
- 
- static void handle_thermal_trip(struct thermal_zone_device *tz,
--				struct thermal_trip_desc *td)
-+				struct thermal_trip_desc *td,
-+				struct list_head *way_up_list,
-+				struct list_head *way_down_list)
- {
- 	const struct thermal_trip *trip = &td->trip;
- 
-@@ -382,8 +385,7 @@ static void handle_thermal_trip(struct t
- 		 * the threshold and the trip temperature will be equal.
- 		 */
- 		if (tz->temperature >= trip->temperature) {
--			thermal_notify_tz_trip_up(tz, trip);
--			thermal_debug_tz_trip_up(tz, trip);
-+			list_add_tail(&td->notify_list_node, way_up_list);
- 			td->threshold = trip->temperature - trip->hysteresis;
- 		} else {
- 			td->threshold = trip->temperature;
-@@ -400,8 +402,7 @@ static void handle_thermal_trip(struct t
- 		 * the trip.
- 		 */
- 		if (tz->temperature < trip->temperature - trip->hysteresis) {
--			thermal_notify_tz_trip_down(tz, trip);
--			thermal_debug_tz_trip_down(tz, trip);
-+			list_add(&td->notify_list_node, way_down_list);
- 			td->threshold = trip->temperature;
- 		} else {
- 			td->threshold = trip->temperature - trip->hysteresis;
-@@ -457,10 +458,24 @@ static void thermal_zone_device_init(str
- 		pos->initialized = false;
- }
- 
-+static int thermal_trip_notify_cmp(void *ascending, const struct list_head *a,
-+				   const struct list_head *b)
-+{
-+	struct thermal_trip_desc *tda = container_of(a, struct thermal_trip_desc,
-+						     notify_list_node);
-+	struct thermal_trip_desc *tdb = container_of(b, struct thermal_trip_desc,
-+						     notify_list_node);
-+	int ret = tdb->trip.temperature - tda->trip.temperature;
-+
-+	return ascending ? ret : -ret;
-+}
-+
- void __thermal_zone_device_update(struct thermal_zone_device *tz,
- 				  enum thermal_notify_event event)
- {
- 	struct thermal_trip_desc *td;
-+	LIST_HEAD(way_down_list);
-+	LIST_HEAD(way_up_list);
- 
- 	if (tz->suspended)
- 		return;
-@@ -475,7 +490,19 @@ void __thermal_zone_device_update(struct
- 	tz->notify_event = event;
- 
- 	for_each_trip_desc(tz, td)
--		handle_thermal_trip(tz, td);
-+		handle_thermal_trip(tz, td, &way_up_list, &way_down_list);
-+
-+	list_sort((void *)true, &way_up_list, thermal_trip_notify_cmp);
-+	list_for_each_entry(td, &way_up_list, notify_list_node) {
-+		thermal_notify_tz_trip_up(tz, &td->trip);
-+		thermal_debug_tz_trip_up(tz, &td->trip);
-+	}
-+
-+	list_sort(NULL, &way_down_list, thermal_trip_notify_cmp);
-+	list_for_each_entry(td, &way_down_list, notify_list_node) {
-+		thermal_notify_tz_trip_down(tz, &td->trip);
-+		thermal_debug_tz_trip_down(tz, &td->trip);
-+	}
- 
- 	monitor_thermal_zone(tz);
- }
-Index: linux-pm/drivers/thermal/thermal_core.h
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.h
-+++ linux-pm/drivers/thermal/thermal_core.h
-@@ -17,6 +17,7 @@
- 
- struct thermal_trip_desc {
- 	struct thermal_trip trip;
-+	struct list_head notify_list_node;
- 	int threshold;
- };
- 
-
-
-
+--8323328-152287454-1711372456=:1020--
 
