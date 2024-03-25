@@ -1,92 +1,112 @@
-Return-Path: <linux-kernel+bounces-118052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E1AD88B664
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:52:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 072C688B30F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A52F4B2E41C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:41:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0C391F35CAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAC66EB69;
-	Mon, 25 Mar 2024 21:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="bhO9fU9G"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A127870CC2;
+	Mon, 25 Mar 2024 21:46:11 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682F633995
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DD059B52;
+	Mon, 25 Mar 2024 21:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711402905; cv=none; b=ID9IBaM2LcA7oC/Jw35KsLR1O7Isa21j2e+63SGdQUtx+l2941SG/wz3iWBcxYeS7wa03L+R7PilYoVppBxwQTIWNI8qnIgKuux1vTC+9Jp902h6HhViGnZHYFg5J2/GYiEbHx+j+JGRTvNl/OOgl5wbODLylxOHWhxxtp96JSM=
+	t=1711403171; cv=none; b=pf1Wjknr0u2XK8aMG+JBKqC6Xg8Po/OLZmPboS/dDnAVS/K2/V1nsJAyCVUKUfjnZVvprP1JLmBPgSrXmFk97gdPSpcXSLZlHOesSnRT45i7bzIPeg6RRwwtanY7DMN9rwexbMiQmHKJaPHft5P+flIKCAcgkgYN2YITOFUHeU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711402905; c=relaxed/simple;
-	bh=Yukuaoa5zcDGAtUDFuTzHk2qar+UNWcKKdsAlD0PyVU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fStDeh77xvo2fn4KeW7NBeAoH0J/hTLAXINijerLxCd9vNM9dfukJ0yk0Me1In1yyAHhbJjzquLfj5GG8ITIUIujG422lAkA7v1HoKNkmQ8UzhtkzBv5VUtzq5d0I9BJEuIdROMqDEDyOnKo4B7iSSULd/QfYaF5bRBh9/9gPbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=bhO9fU9G; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1711402903;
-	bh=Yukuaoa5zcDGAtUDFuTzHk2qar+UNWcKKdsAlD0PyVU=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=bhO9fU9G/zTnI472vhTUUEQT51sHDeCZswpc0aNd9UhkPYV1MZb9yjvQZL6oR7P+P
-	 cnn9xjGAeW+96wBYSlEbW3su9+MqIRqXe9paDECbMd6VWo0QqMuhAzUA0JV/e2j0lj
-	 wDILSimLoDBEQgMr6F7B0GS0pDwg10t+yd7MJeBI=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 9FEB767076;
-	Mon, 25 Mar 2024 17:41:41 -0400 (EDT)
-Message-ID: <177f14cee291788df618a22398fdb027afe0f6c6.camel@xry111.site>
-Subject: Re: [PATCH v2] x86/mm: Don't disable INVLPG if "incomplete Global
- INVLPG flushes" is fixed by microcode
-From: Xi Ruoyao <xry111@xry111.site>
-To: Michael Kelley <mhklinux@outlook.com>, Dave Hansen
-	 <dave.hansen@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>,  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin"
- <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dexuan Cui
- <decui@microsoft.com>
-Date: Tue, 26 Mar 2024 05:41:40 +0800
-In-Reply-To: <SN6PR02MB4157E96FB6980EC52134C830D4362@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240324190503.116160-1-xry111@xry111.site>
-	 <SN6PR02MB41576028614CB7FE9A11EBEBD4362@SN6PR02MB4157.namprd02.prod.outlook.com>
-	 <c8dfca5f964701ce614d364ed7b18fa930aa2f61.camel@xry111.site>
-	 <SN6PR02MB4157E96FB6980EC52134C830D4362@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1711403171; c=relaxed/simple;
+	bh=E354mpbtl7kB5B4qPT1fMZPDLn9W0lVPSKhkrego21I=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ZGZz1HdZN0lnc+Z0jw1wXuDQjS7AHtIXWhqByDZ4L+2Clfo3xcv7Uxg9UxES0wBNH8cvMC2CABW8o4xk+n2hBOxFkwp7e/mGPRxFMFssh65QCm2VANpuFm/xT1Zz0NO9hKeCdhV8WPgguVykQB3UA8OaOFQGw2Q1MLo0/epfb/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B3D0C433F1;
+	Mon, 25 Mar 2024 21:46:10 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id 9F6BA106074E; Mon, 25 Mar 2024 22:46:07 +0100 (CET)
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH 0/3] Convert MIPI HSI DT bindings to YAML
+Date: Mon, 25 Mar 2024 22:45:26 +0100
+Message-Id: <20240325-hsi-dt-binding-v1-0-88e8e97c3aae@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHbwAWYC/x3MPQqAMAxA4atIZgP90Q5eRRyqiW2WKq2IIL27x
+ fEb3nuhcBYuMHUvZL6lyJEadN/BFn0KjELNYJQZlDUjxiJIF66SSFJAP5Jzhi05paFFZ+Zdnn8
+ 4L7V+ubWWK2AAAAA=
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Sebastian Reichel <sre@kernel.org>
+Cc: Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org, 
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1417;
+ i=sebastian.reichel@collabora.com; h=from:subject:message-id;
+ bh=E354mpbtl7kB5B4qPT1fMZPDLn9W0lVPSKhkrego21I=;
+ b=owEBbQKS/ZANAwAKAdju1/PIO/qaAcsmYgBmAfCYhr4JPtRZI9EAxNbkBGBIU58nfKmG25qAd
+ z/QFgY6yr+JAjMEAAEKAB0WIQTvZg0HRj+Lcmp5VBPY7tfzyDv6mgUCZgHwmAAKCRDY7tfzyDv6
+ mrb4D/44btPAOUN0pSUAJF4d7iQ2w4CbsYI8nS9gZ2sh3Ume3mFxrQ/HmQr252gorf8Ph0KJz1/
+ erKejy7NjTZqn9Iw4gjRpo122m0NCUN0p28hmAijlWfjfsVbgdyEKPN3xUg55qBaspKAXYQsLtc
+ p63IImKGOjwbiKWCBxopJJxm8N8VaMoM7zD8a0JKwnjq8IsG+sKPsvWN6YpZhOTQV0v1I1vcohP
+ MobEiIO/DmjWaWLGtSvR1BdVxJ6LbnZoYqWcMq9Q9IbzV/orGTwavEskBFr7ipBzEjjOM6Mzhdz
+ nkbVd4NcYAo4dHrFxjVLjv08TaVetrRYcfqwSLtUrXdL9iKSX5mXQ6890uL61ex0wyOG0+f+ebi
+ Z5EkEuevbJrng3NXRry00rsJD3+DdmfV254QU3xAeMsQRZnKM2otfQXonTcvhi+h4wWq3XjJyq+
+ d9n/1AiPnQWwRf9+APxY2jXNH9OQf8CT6JcgDa/3hRxkGxss1r6RD25zfyOr43pxUhGy2SWDLW4
+ LQCmoTitq/BuZ5tMGEkdl3aLxDJoGodUjO3OepyVtfQ6CIapsIU9roUHlpSAhBqrHnOZy87Frhe
+ JRKZ6bNGUbR8ziqb6xr6tZ5UYJK+GrOJRCl2LDlfE5XkFFKxPrTkfDUtTH1txQa6WqMdqhIr2Pj
+ L/cyRLH6/5RK2gQ==
+X-Developer-Key: i=sebastian.reichel@collabora.com; a=openpgp;
+ fpr=EF660D07463F8B726A795413D8EED7F3C83BFA9A
 
-On Mon, 2024-03-25 at 20:06 +0000, Michael Kelley wrote:
+Hi,
 
-/* snip */
+This converts all MIPI HSI subystem DT bindings to YAML.
+I ran the following tests:
 
-> I haven't done a complete census, but there don't seem to be
-> that many places in x86 code where the microcode version is
-> checked. Several (most?) already have some kind of "out" when
-> running on a hypervisor -- like bad_spectre_microcode(), and
-> apic_validate_deadline_timer().
+1. Check binding files
+   make -j$(nproc) dt_binding_check DT_SCHEMA_FILES=/hsi/
+2. Check OMAP3 and nokia-modem DT
+   make -j$(nproc) CHECK_DTBS=y ti/omap/omap3-n900.dtb ti/omap/omap3-n950.dtb ti/omap/omap3-n9.dtb
+3. Check OMAP4 DT (OMAP4 HSI is not used upstream, so one is enough)
+   make -j$(nproc) CHECK_DTBS=y ti/omap/omap4-droid4-xt894.dtb
 
-So I've sent V3 as
-https://lore.kernel.org/all/20240325212818.125053-1-xry111@xry111.site/
-with the check added.
+FWIW I noticed a lots of warnings for OMAP3 & OMAP4, but
+none related to HSI/SSI.
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+Greetings,
+
+-- Sebastian
+
+---
+Sebastian Reichel (3):
+      dt-bindings: hsi: hsi-client: convert to YAML
+      dt-bindings: hsi: nokia-modem: convert to YAML
+      dt-bindings: hsi: omap-ssi: convert to YAML
+
+ .../devicetree/bindings/hsi/client-devices.txt     |  44 -----
+ .../devicetree/bindings/hsi/hsi-client.yaml        |  84 +++++++++
+ .../devicetree/bindings/hsi/nokia-modem.txt        |  59 -------
+ .../devicetree/bindings/hsi/nokia-modem.yaml       | 101 +++++++++++
+ Documentation/devicetree/bindings/hsi/omap-ssi.txt | 102 -----------
+ .../devicetree/bindings/hsi/ti,omap-ssi.yaml       | 196 +++++++++++++++++++++
+ 6 files changed, 381 insertions(+), 205 deletions(-)
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240325-hsi-dt-binding-a5d662e3d601
+
+Best regards,
+-- 
+Sebastian Reichel <sebastian.reichel@collabora.com>
+
 
