@@ -1,115 +1,219 @@
-Return-Path: <linux-kernel+bounces-116506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A333288A20D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C93288A61D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:17:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F18EB66AAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:45:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00C6DBC1513
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F43335D3;
-	Mon, 25 Mar 2024 07:32:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FE26E5FD;
+	Mon, 25 Mar 2024 07:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W+I63U7l"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5107315ECC1
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Cnp4fQnZ"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786FF1B81F;
+	Mon, 25 Mar 2024 03:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711339091; cv=none; b=g0mjMZK1ZYCTyhs5Vb3L4rR9SchP7gV3Gy0B6DieBVfrRyY4HLBPS2SicENjuZK9ro+oAOGVVwr1GG1KNq9kHnXSfuoXrNpVig5OJ17JZgbi+1PGB2nJ2S1YvNx0olXrufCH7Y8RGeQOBvwH81xsayqaEdZVqyb1pUZRPcMeebM=
+	t=1711339154; cv=none; b=Klb6nIkmv8xzJTlVgi+JBopevSuQ4md29nqzDRDGacREVjS2fj8+4UuGpJxObo1dQNM2NIDGyMR5uobTuPnD9yeyH5tJ9s0TwDCKFtLcRXb7fB6QISbNPdfolOJ5/JnayKPTxx9e4qhaNK/juxkaIegqmLsyCFWXPrXqsak6SZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711339091; c=relaxed/simple;
-	bh=qmHtWDM22Y7Pif9OF/b0d7AyT0SLY8IGS1SO0qYxiss=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=O7VloOFY09XTYr/xaAgw0N/7bLxi/7Y0g7O1CrLfRECqxOTgJpHcDAzVmjKNdscrFgf3629ZX0tPmJgXEfLx/Lu+35W9QBMv9azFBaYgaUgs+fFYoDw0Fkv+KtdbPxASaADwuGjqe8RIQsKi2mGcBnjw7b+XEnOc2rsBc1Laefs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W+I63U7l; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711339090; x=1742875090;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qmHtWDM22Y7Pif9OF/b0d7AyT0SLY8IGS1SO0qYxiss=;
-  b=W+I63U7l/Xf48kqbhgMmcDLBCpOjAnZkJZldJERZZ+DjH3mRsFoNyA6F
-   G4ScFR1SrBpFv3g4GXNWB76ZjRqHmAJHrvvdJa3Q7x9ZqmdImB8qoHrIn
-   xn92vL7d6x35LVblpNWVt7lj1+sI+2e9DKHHUhgb5kH2CvnoLnXLRRbqB
-   3LQO47ib6O+J/xKHtW3TRa7CFWzEC2De8w0FLeeNh4L54WS4S1eyN5anp
-   j5pnbSS0iqPDVH7+LMrad2VosuhbbJwmNfMNPvQAe/Vp9dUl1HvFj7mwf
-   Ahjud2u0hL75pGZ2ObC19i/i1bDFFvTDdwi1J/qEsR808IHoPD6uRHRMG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="10094402"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="10094402"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2024 20:58:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="16147457"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa008.jf.intel.com with ESMTP; 24 Mar 2024 20:58:06 -0700
-Message-ID: <2ddd01fb-ec7d-4a7e-984b-31da78211f91@linux.intel.com>
-Date: Mon, 25 Mar 2024 11:57:15 +0800
+	s=arc-20240116; t=1711339154; c=relaxed/simple;
+	bh=dhSk9xYlvB9BWrRcYumZmtBULUH7LFBv69V2VOhVP2o=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Ef/NKi5rrpl1BK/TBb6GbYIQ7UEf7J537CDrsZRBQ4Uqgji1XCIrzjbvkKgfeRTQaSPDp0tdxkzqlXbj1BVeY4HS4xMoRIXbiGJ9GbPdeZqqV0C/4CSXvcu+kOYu5Dl6LLd6GzqTnkIDcGLywZh/0wA1C5s/uL+Fq9XBt/ZPueI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Cnp4fQnZ; arc=none smtp.client-ip=45.254.50.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=lPX/M
+	9qGGRnZuiwR3wscgK7y8VnR6FNWSaY4LI0hbT8=; b=Cnp4fQnZYB1ZdADCshVLN
+	WW+DHNyLyR5Y3lbyQut6Yyxfy3cadSwszv9vzrU9xkSTM/0QuVxKEojnzZMkov28
+	AQcYahqI8+hYGvFkBIsz9uyHTGcT6/OxFr3qc7WG76v/s8E7gmXBNaHRL7rF0Ieb
+	OnIwWSPZh4q9x7z5mZXsMc=
+Received: from localhost.localdomain (unknown [193.203.214.57])
+	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wD3_0ov9gBmL4gpBg--.1652S2;
+	Mon, 25 Mar 2024 11:57:37 +0800 (CST)
+From: Peilin He <peilinhe2020@163.com>
+To: kerneljasonxing@gmail.com
+Cc: davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	he.peilin@zte.com.cn,
+	jiang.xuexin@zte.com.cn,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	liu.chun2@zte.com.cn,
+	mhiramat@kernel.org,
+	netdev@vger.kernel.org,
+	rostedt@goodmis.org,
+	xu.xin16@zte.com.cn,
+	yang.yang29@zte.com.cn,
+	zhang.yunkai@zte.com.cn
+Subject: Re: Re: [PATCH v3 resend] net/ipv4: add tracepoint for icmp_send
+Date: Mon, 25 Mar 2024 03:57:35 +0000
+Message-Id: <20240325035735.3776104-1-peilinhe2020@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAL+tcoDT01EL7g_73Whrz753oEBuRtBrfmo2PHvTdifXKP4fhQ@mail.gmail.com>
+References: <CAL+tcoDT01EL7g_73Whrz753oEBuRtBrfmo2PHvTdifXKP4fhQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
- Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>,
- Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
- Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
- virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/8] iommufd: Add fault and response message
- definitions
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
- <20240122073903.24406-4-baolu.lu@linux.intel.com>
- <20240308175007.GW9225@ziepe.ca>
- <43ef5e3f-8a8e-4765-8025-b8207fd05f91@linux.intel.com>
- <20240322170410.GH66976@ziepe.ca>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240322170410.GH66976@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3_0ov9gBmL4gpBg--.1652S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3WF1fAr17try7tr1rCw13CFg_yoW7Xr4rpF
+	yDAF1rKrWktrsrCw1fZw42qr15uayrGryUJr1Iqw4xCr1Dtr1Dt3y2gr1YkF95Zrs8K34a
+	v3WYk3s8Cwn8XaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jwkucUUUUU=
+X-CM-SenderInfo: xshlzxhqkhjiisq6il2tof0z/1tbiZRWssWXAkuWgygAAsV
 
-On 3/23/24 1:04 AM, Jason Gunthorpe wrote:
->>>> +struct iommu_hwpt_pgfault {
->>>> +	__u32 size;
->>>> +	__u32 flags;
->>>> +	__u32 dev_id;
->>>> +	__u32 pasid;
->>>> +	__u32 grpid;
->>>> +	__u32 perm;
->>>> +	__u64 addr;
->>>> +};
->>> Do we need an addr + size here? I've seen a few things where I wonder
->>> if that might become an enhancment someday.
->> I am not sure. The page size is not part of ATS/PRI. Can you please
->> elaborate a bit about how the size could be used? Perhaps I
->> misunderstood here?
-> size would be an advice how much data the requestor is expecting to
-> fetch. Eg of the PRI initiator knows it is going to do a 10MB transfer
-> it could fill in 10MB and the OS could pre-fault in 10MB of IOVA.
-> 
-> It is not in the spec, it may never be in the spec, but it seems like
-> it would be good to consider it, at least make sure we have
-> compatability to add it later.
+>>
+>> Introduce a tracepoint for icmp_send, which can help users to get more
+>> detail information conveniently when icmp abnormal events happen.
+>>
+>> 1. Giving an usecase example:
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+>=3D=3D=3D=3D=3D
+>> When an application experiences packet loss due to an unreachable UDP
+>> destination port, the kernel will send an exception message through the
+>> icmp_send function. By adding a trace point for icmp_send, developers or
+>> system administrators can obtain detailed information about the UDP
+>> packet loss, including the type, code, source address, destination addres=
+>s,
+>> source port, and destination port. This facilitates the trouble-shooting
+>> of UDP packet loss issues especially for those network-service
+>> applications.
+>>
+>> 2. Operation Instructions:
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+>=3D=3D
+>> Switch to the tracing directory.
+>>         cd /sys/kernel/tracing
+>> Filter for destination port unreachable.
+>>         echo "type=3D=3D3 && code=3D=3D3" > events/icmp/icmp_send/filter
+>> Enable trace event.
+>>         echo 1 > events/icmp/icmp_send/enable
+>>
+>> 3. Result View:
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>  udp_client_erro-11370   [002] ...s.12   124.728002:
+>>  icmp_send: icmp_send: type=3D3, code=3D3.
+>>  From 127.0.0.1:41895 to 127.0.0.1:6666 ulen=3D23
+>>  skbaddr=3D00000000589b167a
+>>
+>> Changelog
+>> ---------
+>> v2->v3:
+>> Some fixes according to
+>> https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.home/
+>> 1. Change the tracking directory to/sys/kernel/tracking.
+>> 2. Adjust the layout of the TP-STRUCT_entry parameter structure.
+>>
+>> v1->v2:
+>> Some fixes according to
+>> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=3DsZtRnKRu_tnUwqHuFQTJvJsv=
+>-nz1xPDw@mail.gmail.com/
+>> 1. adjust the trace_icmp_send() to more protocols than UDP.
+>> 2. move the calling of trace_icmp_send after sanity checks
+>> in __icmp_send().
+>>
+>> Signed-off-by: Peilin He<he.peilin@zte.com.cn>
+>> Reviewed-by: xu xin <xu.xin16@zte.com.cn>
+>> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
+>> Cc: Yang Yang <yang.yang29@zte.com.cn>
+>> Cc: Liu Chun <liu.chun2@zte.com.cn>
+>> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
+>> ---
+>>  include/trace/events/icmp.h | 64 +++++++++++++++++++++++++++++++++++++
+>>  net/ipv4/icmp.c             |  4 +++
+>>  2 files changed, 68 insertions(+)
+>>  create mode 100644 include/trace/events/icmp.h
+>>
+>> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
+>> new file mode 100644
+>> index 000000000000..2098d4b1b12e
+>> --- /dev/null
+>> +++ b/include/trace/events/icmp.h
+>> @@ -0,0 +1,64 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#undef TRACE_SYSTEM
+>> +#define TRACE_SYSTEM icmp
+>> +
+>> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
+>> +#define _TRACE_ICMP_H
+>> +
+>> +#include <linux/icmp.h>
+>> +#include <linux/tracepoint.h>
+>> +
+>> +TRACE_EVENT(icmp_send,
+>> +
+>> +               TP_PROTO(const struct sk_buff *skb, int type, int code),
+>> +
+>> +               TP_ARGS(skb, type, code),
+>> +
+>> +               TP_STRUCT__entry(
+>> +                       __field(const void *, skbaddr)
+>> +                       __field(int, type)
+>> +                       __field(int, code)
+>> +                       __array(__u8, saddr, 4)
+>> +                       __array(__u8, daddr, 4)
+>> +                       __field(__u16, sport)
+>> +                       __field(__u16, dport)
+>> +                       __field(unsigned short, ulen)
+>> +               ),
+>> +
+>> +               TP_fast_assign(
+>> +                       struct iphdr *iph =3D ip_hdr(skb);
+>> +                       int proto_4 =3D iph->protocol;
+>> +                       __be32 *p32;
+>> +
+>> +                       __entry->skbaddr =3D skb;
+>> +                       __entry->type =3D type;
+>> +                       __entry->code =3D code;
+>> +
+>> +                       if (proto_4 =3D=3D IPPROTO_UDP) {
+>> +                               struct udphdr *uh =3D udp_hdr(skb);
+>> +                               __entry->sport =3D ntohs(uh->source);
+>> +                               __entry->dport =3D ntohs(uh->dest);
+>> +                               __entry->ulen =3D ntohs(uh->len);
+>
+>This is completely bogus.
+>
+>Adding tracepoints is ok if there are no side effects like bugs :/
+>
+>At this point there is no guarantee the UDP header is complete/present
+>in skb->head
+>
+>Look at the existing checks between lines 619 and 623
+>
+>Then audit all icmp_send() callers, and ask yourself if UDP packets
+>can not be malicious (like with a truncated UDP header)
+Yeah, you are correct. Directly parsing udphdr through the sdk may
+conceal bugs, such as illegal skb. To handle such exceptional scenarios,
+we can determine the legitimacy of skb by checking whether the position
+of the uh pointer is out of bounds. The modifications in the patch are
+as follows:	
+	struct udphdr *uh = udp_hdr(skb);
+	
+	if (proto_4 != IPPROTO_UDP || (u8 *)uh < skb->head ||
+		(u8 *)uh + sizeof(struct udphdr) > skb_tail_pointer(skb)) {
+		__entry->sport = 0;
+		__entry->dport = 0;
+		__entry->ulen = 0;
+	} else {
+		__entry->sport = ntohs(uh->source);
+		__entry->dport = ntohs(uh->dest);
+		__entry->ulen = ntohs(uh->len);
+	}
+	
+Additionally, the validity of all parameters in the current patch has been
+confirmed without any issues. Thank you once again for your reminder.
 
-Thanks for the explanation. It sounds reasonable. I will take it and add
-some comments to explain the motivation as you described above.
-
-Best regards,
-baolu
 
