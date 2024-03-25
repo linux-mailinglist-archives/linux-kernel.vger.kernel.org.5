@@ -1,107 +1,83 @@
-Return-Path: <linux-kernel+bounces-116459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2052A88A413
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:17:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF886889F23
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:26:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 957DEBA4D86
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:26:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BE6F2C69C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2916215EFB4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7154D15EFD1;
 	Mon, 25 Mar 2024 07:31:47 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CgXcy4Wb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B55184322;
-	Mon, 25 Mar 2024 03:36:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AFCE3C81F6;
+	Mon, 25 Mar 2024 03:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711337815; cv=none; b=ZeEbhrSB2Of45wZ+qZm7sA6gjMOMiub9UIh0kplosLpg/rEFJqQslPf3KxXV0zqZtZbltQwkkjGTg59p1wz7NxF+u2q2qXlvZIyR9tLBiePi50tgg0/qhBWNiZnl+5I0cvo9MpdfJ5BcfdoiBV95Nrt85K1mnOUsuxjWOIvo4Ug=
+	t=1711337839; cv=none; b=HTd63cuIlWc071IgFq7Veydxqjg0Wq21+nGQ6g/05bhZ9QGadsSA/4YOqlJZr1P80Hx8cuTLmMRz+XbHVTjsuhM3HhstyrGqHSPUtxZgKHySR6rkJDvrhU3CNtFhZk3ryL/gpVHcVmqlFVGciZaOOn9wcBXHsrbBGwSvCFIIYGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711337815; c=relaxed/simple;
-	bh=4lL5XnMf7GNTkV3kYDbLRsz5MXFmRO+PFX0TJ+76mGg=;
-	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=U+ge3BOIP2afoy0/rd/dw/sF+ReGya2AYNsN5MsCOTvoedJQwM6KWHFyRFXjlPZ+5TDByXOtmdzpiSUHPh/W6hRTZzzweQ2IwENQKmAXtvSjlFZOU242sDjUwmVRbjiD9fvvY9XTKtwJ2vWyluiTd07in+KRIh39ZD7kTZ1ezfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V2z7S5nsKz1h3fw;
-	Mon, 25 Mar 2024 11:34:12 +0800 (CST)
-Received: from dggpemd200004.china.huawei.com (unknown [7.185.36.141])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2A3421A016C;
-	Mon, 25 Mar 2024 11:36:50 +0800 (CST)
-Received: from [10.174.179.24] (10.174.179.24) by
- dggpemd200004.china.huawei.com (7.185.36.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 25 Mar 2024 11:36:49 +0800
-Subject: Re: [PATCH stable-5.10] mm/memory-failure: fix an incorrect use of
- tail pages
-To: Matthew Wilcox <willy@infradead.org>, <stable@vger.kernel.org>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240307124841.2838010-1-liushixin2@huawei.com>
-CC: Andrew Morton <akpm@linux-foundation.org>, Sasha Levin
-	<sashal@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Naoya Horiguchi
-	<n-horiguchi@ah.jp.nec.com>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>
-From: Liu Shixin <liushixin2@huawei.com>
-Message-ID: <026db58d-feea-8191-616a-3e6dca592786@huawei.com>
-Date: Mon, 25 Mar 2024 11:36:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+	s=arc-20240116; t=1711337839; c=relaxed/simple;
+	bh=YDbgTqnH3ZuZ8lakJVvTchqikQuDSP9tFa66V0AUlmY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s9zz1lYA6iW/Se/nMQbrUBSxfIEzdol8ujReRJqWlfz6S0Hcrr6mcgJMekUQAEKNDkWC81WiBAPKsGkyHI9BQ+Y3Jpmh48KuMIbqPZhaj7JTYeykoO059L6omqK5exrbLjvBCvmqj6DfM9e1we0aFNSl9rDM6gIBnrTVuk1DlfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CgXcy4Wb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC6D5C433F1;
+	Mon, 25 Mar 2024 03:37:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711337838;
+	bh=YDbgTqnH3ZuZ8lakJVvTchqikQuDSP9tFa66V0AUlmY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CgXcy4Wb9aJjAn0Yru7/j3RpuPqYk/qYIAodfpTNbUkRtlf06kBmkpzTXk6fHZDdv
+	 iMRk3adCHKDFpIEiwK4cxek7gFOl+vpVrAyefEhcw0iGcUMmwcV1AWfKd/UyR2Bz19
+	 TyRN/52zovAhnr4x6/HGrF7eLgt/dP9ZapG5Eu2F3eLQWmEkDPezwrQuW5V1HBhqLS
+	 Z579pSOgOGy04KaQ0bwpCWIOQ68B2K5ysnwWlnZi33KsQ76PujXKgx1VJJBA5VjzVm
+	 zgtvzWXndKw7ps9XOlzw/uJO/IH3MI6Hcr0Pow7qxL5RKoPM1giOYd9h2pi9pVVlv/
+	 WqDJlCNGFTkjQ==
+Date: Sun, 24 Mar 2024 20:37:17 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH 5.15 032/317] f2fs: implement iomap operations
+Message-ID: <20240325033717.GA37260@sol.localdomain>
+References: <20240324233458.1352854-1-sashal@kernel.org>
+ <20240324233458.1352854-33-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240307124841.2838010-1-liushixin2@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemd200004.china.huawei.com (7.185.36.141)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240324233458.1352854-33-sashal@kernel.org>
 
-Hi,
+On Sun, Mar 24, 2024 at 07:30:12PM -0400, Sasha Levin wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> [ Upstream commit 1517c1a7a4456f080fabc4ac9853930e4b880d14 ]
+> 
+> Implement 'struct iomap_ops' for f2fs, in preparation for making f2fs
+> use iomap for direct I/O.
+> 
+> Note that this may be used for other things besides direct I/O in the
+> future; however, for now I've only tested it for direct I/O.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> Stable-dep-of: ec16b147a55b ("fs: Fix rw_hint validation")
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-After backport commit c79c5a0a00a9 ("mm/memory-failure: check the mapcount of the precise page"),
+Nacked-by: Eric Biggers <ebiggers@google.com>
 
-I got an error message as written on the patch. The problem can be fixed by the patch or just revert.
+No reason to backport this, and the f2fs mailing list wasn't even Cc'ed...
 
-Now I prefer to revert because I think it is related to folio and no impact in stable, or maybe I'm wrong.
-
-
-Thanks,
-
-
-On 2024/3/7 20:48, Liu Shixin wrote:
-> When backport commit c79c5a0a00a9 to 5.10-stable, there is a mistake change.
-> The head page instead of tail page should be passed to try_to_unmap(),
-> otherwise unmap will failed as follows.
->
->  Memory failure: 0x121c10: failed to unmap page (mapcount=1)
->  Memory failure: 0x121c10: recovery action for unmapping failed page: Ignored
->
-> Fixes: 70168fdc743b ("mm/memory-failure: check the mapcount of the precise page")
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  mm/memory-failure.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index f320ff02cc19..dba2936292cf 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1075,7 +1075,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
->  				unmap_success = false;
->  			}
->  		} else {
-> -			unmap_success = try_to_unmap(p, ttu);
-> +			unmap_success = try_to_unmap(hpage, ttu);
->  		}
->  	}
->  	if (!unmap_success)
-
+- Eric
 
