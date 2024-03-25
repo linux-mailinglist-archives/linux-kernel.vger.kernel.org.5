@@ -1,55 +1,86 @@
-Return-Path: <linux-kernel+bounces-116886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56D9B88A4D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:41:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0ABC88A4FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12A33300627
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:41:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FAEF1F3708D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB2581BAC48;
-	Mon, 25 Mar 2024 11:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BFE131BB5;
+	Mon, 25 Mar 2024 11:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b/hKpDDf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GNQmhMTm"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100681BAC21
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86FCD131BB8
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711365231; cv=none; b=RzodYVjXy9a2NxqPduficj+tDheoHhYu1OOZLFEgaYcS7Ik1UQXW/0/VFxEyj5rA3iaI8UBLyDMWTD2nCytSy8krZ/1SHgwnv5oJony+vsREQotEXex7xxzQ6YOrbwc33rsp0VNi3lykQONzt4gIAO+XbdV+UiULwk3JYrGHbbw=
+	t=1711364496; cv=none; b=V61aN6VTZOhRHOR67hEp4M/SfwPfVrK8fU0XJgS4T4KuTVv1xr12/pbw+OQ+G7l4IEqsO1G1q8juze5GZGXh8hrTgFLQKIUXPEXD9Tehjbpk7pPw2tp9jZVUCEO25CDx2BXMYrZ3zU+c8tt2SPMN1oswW2HNad+CsN/cCr4Xnm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711365231; c=relaxed/simple;
-	bh=sf6mJcuyNikMRdduR4UQlk6A2RQlNed9frvcHXQotOo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ht293Pexmbq+B2s8BTwurXu1EPQQJOKzMKyJmTkupTTPAI538Ncnxbnz4nbVf59xK/QW8bWfSmJAUJxqSg4rqLlJAbl/dkEC+cw+GZb/Ht9Lk3muDdnJY3pEpyj4V3nKpHIH8bXEvEw7cIRJUZ4MDIpr+ekskszWKxk6mh3vKt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b/hKpDDf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 655F0C433C7;
-	Mon, 25 Mar 2024 11:13:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711365230;
-	bh=sf6mJcuyNikMRdduR4UQlk6A2RQlNed9frvcHXQotOo=;
-	h=From:To:Cc:Subject:Date:From;
-	b=b/hKpDDf2yVvm7N4rbZtQBjtnrHFpaBGU1tuIUV3FJrPb+AzjmE8ksDN3KwvvZBNK
-	 rpjeuG8OYc0tAjZWSaqBai301lcOAGUOb/kKtkvvSapOkRqniavt6XXBfwCv1efMWW
-	 zj/z0cvYEh87mR18EsFoD55kJ9kevJuUwm3r5UE5Wf7MACpyuBGPPZVxWuoHbcxHUZ
-	 b9BCFopMO010/aVJYK9pSef+Kmzb4vH3wjCyhp5vKCME7LO/esuThbCG+utkHfeY5w
-	 kdhDdrMCQdzr/6xCYMEdrWaES2E3qT6DttCFSDEgSs+jXE2HQJ56+GvLALTekJkiiG
-	 RItNXxDm++hKA==
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH v3 RESEND] riscv: mm: still create swiotlb buffer for kmalloc() bouncing if required
-Date: Mon, 25 Mar 2024 19:00:36 +0800
-Message-ID: <20240325110036.1564-1-jszhang@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711364496; c=relaxed/simple;
+	bh=w+tFws1Bi1xV3hntGpTyALeY+3d+ukcMl4+G4jlt5Zc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ERAaqYV15Te8yDZ6UR4NBRexKY7yI3dsOjJZw5Sw2wZtFgiNhr8UC+Lov+HQFW39E9vnSi36XHOGqnUe1Oc4Ws7FBV2gcLpifoMJ7RhUFht9KPAQQ3FkQ3ZNhJ7rYjieje24+6T9epEi7B5J7Co37J3g6gLgbPd9KMbF8tSM39Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GNQmhMTm; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56c0d1bddc1so1018069a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711364492; x=1711969292; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zToQ2s3VZ1f9ao1pi2MnYEMv2dwpUwcL76sBj0wUmpc=;
+        b=GNQmhMTm3SDKGbKL0NDUCTWaoxlTgYWa1r1FQGkpHxLgS2eULuUNyXHPf1fRwna42c
+         SBGJYqoMN0Qju9isQbLxvOJQAAIbgIcRTSmlZNpZsTOaXf2edilFl0n1waMte4b6zZYP
+         zhJqwsBJd+SiytEkZ5NOkK8BpcE6lIRaPsqWokJGS5o0Tt1+V99wL+rr+Jbrcg8b8V/v
+         5pMmjr9Dg9skE4/QcLIneKQrm45XeQbRKXpYfY8ugzB83PrGwmh0Ykys5p+/33CB1ISW
+         wBdtv1Xf+U7XkIhlXubDNe/s2MmX8iSBi+B5bqihs3XHUAt+6v9u4puVyO/pz1wvGAb5
+         3Jog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711364492; x=1711969292;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zToQ2s3VZ1f9ao1pi2MnYEMv2dwpUwcL76sBj0wUmpc=;
+        b=fn1SaLhY4Qe8cP9cVHwX4sZ/2YORaJLuBnD5TbTjAnmgmrWmbRxBwyymw52O0wXjWF
+         peVI7nWs2OEFylmm2iWQVHwimsw2m66uU1WagRlIGDuTlkBm9tsmZEjEmsodu4CkYjOe
+         tFTtA26StSqxi4V8l+GePxv1JYLzSztPMIoSN32TRJdPecwzCynMGpCZBpQ0JmVZJEA/
+         k/VvKdwJIj8NNzQzE+bXKhAcScz2+12bTVLA3Y76pCwO3eCGYs6s7fmbM0wUqwAFAYoX
+         fju+6dseX8+kR/eAtTYsHM1h2yBCmtNuaMcokmFNDAd0oGfu5gMJiMxdLIKq5IwLH0D+
+         X8Sw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwvraVBd2NsQJGpCYmgoQDPZiYhQ2jFO3zi3iVFqbvY2V6Ounce7T0Hokx+pqXx8HJLNLedxkbwMpeubzwiAlrM+wZ9c3JQ3+NJMQ2
+X-Gm-Message-State: AOJu0YxkFxARpRrPzr05i6RVEOwk2R/8aOdlv7LCWzTM4dH76RSt2weu
+	oYzSeNelFse+SC9xBVU1UX3iKcuHzh9ZpoxGVDCl/IbkXQTaP9MU75EFDJSe7aN4Ng==
+X-Google-Smtp-Source: AGHT+IHiPDCwvlzf2VtcAn3yr7PW/gRpWwYiJT0EbMof00PUJPWFxJ95qrebJTL4OYsS3Upd4MXIow==
+X-Received: by 2002:a50:9341:0:b0:566:e3c7:921f with SMTP id n1-20020a509341000000b00566e3c7921fmr5580729eda.22.1711364491654;
+        Mon, 25 Mar 2024 04:01:31 -0700 (PDT)
+Received: from fedora.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id y17-20020aa7c251000000b00569a2f698d7sm2891787edo.49.2024.03.25.04.01.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 04:01:31 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	kernel test robot <oliver.sang@intel.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Brian Gerst <brgerst@gmail.com>,
+	Denys Vlasenko <dvlasenk@redhat.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] x86/percpu: Disable named address spaces for KCSAN
+Date: Mon, 25 Mar 2024 12:01:09 +0100
+Message-ID: <20240325110128.615933-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,79 +89,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-After commit f51f7a0fc2f4 ("riscv: enable DMA_BOUNCE_UNALIGNED_KMALLOC
-for !dma_coherent"), for non-coherent platforms with less than 4GB
-memory, we rely on users to pass "swiotlb=mmnn,force" kernel parameters
-to enable DMA bouncing for unaligned kmalloc() buffers. Now let's go
-further: If no bouncing needed for ZONE_DMA, let kernel automatically
-allocate 1MB swiotlb buffer per 1GB of RAM for kmalloc() bouncing on
-non-coherent platforms, so that no need to pass "swiotlb=mmnn,force"
-any more.
+-fsanitize=thread (KCSAN) is at the moment incompatible
+with named address spaces in a similar way as KASAN -
+see GCC PR sanitizer/111736:
 
-The math of "1MB swiotlb buffer per 1GB of RAM for kmalloc() bouncing"
-is taken from arm64. Users can still force smaller swiotlb buffer by
-passing "swiotlb=mmnn".
+  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=111736
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+The patch disables named address spaces with KCSAN.
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+
+Closes: https://lore.kernel.org/oe-lkp/202403251658.8e92a8bc-lkp@intel.com
 ---
-since v2:
- - rebase on v6.8-rc1
- - collect Reviewed-by tag
+ arch/x86/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-since v1
- - fix build error if CONFIG_RISCV_DMA_NONCOHERENT=n
-
- arch/riscv/include/asm/cache.h |  2 +-
- arch/riscv/mm/init.c           | 16 +++++++++++++++-
- 2 files changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
-index 2174fe7bac9a..570e9d8acad1 100644
---- a/arch/riscv/include/asm/cache.h
-+++ b/arch/riscv/include/asm/cache.h
-@@ -26,8 +26,8 @@
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 39886bab943a..4fff6ed46e90 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2439,6 +2439,8 @@ config USE_X86_SEG_SUPPORT
+ 	# with named address spaces - see GCC PR sanitizer/111736.
+ 	#
+ 	depends on !KASAN
++	# -fsanitize=thread (KCSAN) is also incompatible.
++	depends on !KCSAN
  
- #ifndef __ASSEMBLY__
- 
--#ifdef CONFIG_RISCV_DMA_NONCOHERENT
- extern int dma_cache_alignment;
-+#ifdef CONFIG_RISCV_DMA_NONCOHERENT
- #define dma_get_cache_alignment dma_get_cache_alignment
- static inline int dma_get_cache_alignment(void)
- {
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index fe8e159394d8..ac5e7f64c05c 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -161,11 +161,25 @@ static void print_vm_layout(void) { }
- 
- void __init mem_init(void)
- {
-+	bool swiotlb = max_pfn > PFN_DOWN(dma32_phys_limit);
- #ifdef CONFIG_FLATMEM
- 	BUG_ON(!mem_map);
- #endif /* CONFIG_FLATMEM */
- 
--	swiotlb_init(max_pfn > PFN_DOWN(dma32_phys_limit), SWIOTLB_VERBOSE);
-+	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) && !swiotlb &&
-+	    dma_cache_alignment != 1) {
-+		/*
-+		 * If no bouncing needed for ZONE_DMA, allocate 1MB swiotlb
-+		 * buffer per 1GB of RAM for kmalloc() bouncing on
-+		 * non-coherent platforms.
-+		 */
-+		unsigned long size =
-+			DIV_ROUND_UP(memblock_phys_mem_size(), 1024);
-+		swiotlb_adjust_size(min(swiotlb_size_or_default(), size));
-+		swiotlb = true;
-+	}
-+
-+	swiotlb_init(swiotlb, SWIOTLB_VERBOSE);
- 	memblock_free_all();
- 
- 	print_vm_layout();
+ config CC_HAS_SLS
+ 	def_bool $(cc-option,-mharden-sls=all)
 -- 
-2.43.0
+2.44.0
 
 
