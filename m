@@ -1,81 +1,56 @@
-Return-Path: <linux-kernel+bounces-118079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4F3188B360
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:05:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC4888B364
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:06:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0827A1C3D0C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:05:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8C9F3056AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C559E71756;
-	Mon, 25 Mar 2024 22:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FDD71756;
+	Mon, 25 Mar 2024 22:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZyX6lYvU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="OVRRyW8T"
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187F56D1C8;
-	Mon, 25 Mar 2024 22:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E77670CA7
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711404301; cv=none; b=KDgQSqid7tIrG+gNlp1zT2jjZj9pL3eVH7PU/8t+lfN2hngcKa8M/mCA8lMAw5NgwnvudBycBTXrjY+aXfy2LV9E3+sXp0Yi6AAfmwC9/BcHIFCJaKF6KblZQ0WWnVWainT0wZOJSgBt3Dwt/crU3GxrBLWhZL3OA2yxNqToDbk=
+	t=1711404358; cv=none; b=VQ69FPLaerlZwlLmvrhbmoCUU9HjyCS16RK5vKY3XUzh6cV3+jW7D7N6Hi/qUq9emICcX2ft3k9R3xxyDIE3V+gmxCLq1Xll7DiaUpr+B98pjmml6WUzNTFgknTNXY727sN7TOrUAJr3YNAljU298Mkgqm6lxxES7D+6R+joFSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711404301; c=relaxed/simple;
-	bh=+ovNKGBLi1gXj1YmUYOIgIN0QJaeJZCivM4A+DNQztk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=npuioVY/Z9gyVgcl0uHGkTgkEZpjmJ2Xkf80k7L3nwjSmyR6MWpC16d8alImk3qNaltwOiFG0OxFHzZkORC6YYBrhp2uHxKl70nlU9bLjCjKX6vbeWk3ZOVrJaL5SKpK/OJbwTcBhMZX3zu6LksPL8/Z0lfPwLigjKjlGXNHn0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZyX6lYvU; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711404299; x=1742940299;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+ovNKGBLi1gXj1YmUYOIgIN0QJaeJZCivM4A+DNQztk=;
-  b=ZyX6lYvUjE851fFzzkwZAqpTAhonAWVuvhjXJ4OjFtyMD5tIlXwbb9Uw
-   M4ISFQL8RuEjzLXIFAuJybNAjV+y30jdV0v3USn4tmmU3OlpmOOYqwU73
-   4Vcr5o1xNpJrJFAj62iRXdCxymFo7Fo7HgBwQXG7c+TMEM2NXNvsKpv+n
-   7LPge4M60oY1N20B/j6rBYrga1D+0Odo9DsCcJeXYR0xovh5Ni+o4/3ch
-   zjgVO7e0N69uqlKxzDnXeEUsUrmX0VjNFpxWY7lzciE/52IdB1kSC9XeM
-   QcAfB7+2OuB2Mwb77ugJD4pBOdnuIxu1X1Y/dPka3THRg3pjDd1rEin9U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6561311"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="6561311"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 15:04:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="20222690"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 15:04:58 -0700
-Date: Mon, 25 Mar 2024 15:04:57 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"Li, Xiaoyao" <xiaoyao.li@intel.com>,
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
-Subject: Re: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
- parameters
-Message-ID: <20240325220457.GN2357401@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <5eca97e6a3978cf4dcf1cff21be6ec8b639a66b9.1708933498.git.isaku.yamahata@intel.com>
- <5f0c798cf242bafe9810556f711b703e9efec304.camel@intel.com>
- <20240323012224.GD2357401@ls.amr.corp.intel.com>
- <59fbe690d1765337b4b1785b4cef900415bd5df2.camel@intel.com>
+	s=arc-20240116; t=1711404358; c=relaxed/simple;
+	bh=ZFvuyhlVXgsXqn+uiOPjOuC5HwV1VdVaF4Yn0pW8M4M=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pzCnFedfnLvOdRSHs08lcklWmq/uKadinmx6OP6VxviOzRrjv+qHVhGg7PODZjcwjY+oK47WGlVdTbiRMuveJRts2Ovt1Auia0tqa+jjYE60ovBb6Irc1v4Wj9BcA37xbhnKHNRrvXB3VA8tX+P6Ric6eSWof9ahzp5/BRA3mf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=OVRRyW8T; arc=none smtp.client-ip=185.70.40.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711404348; x=1711663548;
+	bh=tN0+ubZJmKVdLvvMpKN2/OFQiM5GjH39Al+PCbsrl/Q=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=OVRRyW8ThiI6rpDGKa5zg2dheAWiiV3l53xdA7onmobWe3rTmsBn0Nv9qOAdBtg0P
+	 LGGHI3L5/P17Z4lPpvted5S2vyYAZSBhwNKdzufXNXjCRh4B8fHkZm25dlSsgoCkWi
+	 ZsNCntOaYlPIqcTwtYpeFRQ+qT0mYBQX1SuUJ48wzrNUFlRFPL06afTtH7ZaM/bcLC
+	 INMudYDgzCAyPXDyXQf3B7jMTi8q5QmF1a0amvwd7+151Vdz6hNS1ETdK97OWVHZYS
+	 vThx9PsvTTllKWXrYyGccU8CUjpXwky4c0RIV01HhPb4TyK0SxAr/2mAk94+rwxgBP
+	 Ke6JzxBiF+8mg==
+Date: Mon, 25 Mar 2024 22:05:33 +0000
+To: Wedson Almeida Filho <wedsonaf@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 02/10] rust: alloc: introduce the `VecExt` trait
+Message-ID: <g2iK91tWPKM5kXi-N6Nn3tn5jG4qvB6txrpq0ejLnQYgRNZJE1OO__SDANkSNP0JjMrqhEdc0m6YyxNlicxqzGr4hEsLAxPgCyPeyRoXLq0=@proton.me>
+In-Reply-To: <20240325195418.166013-3-wedsonaf@gmail.com>
+References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-3-wedsonaf@gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,68 +58,140 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <59fbe690d1765337b4b1785b4cef900415bd5df2.camel@intel.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 10:39:10AM +0000,
-"Huang, Kai" <kai.huang@intel.com> wrote:
+On 25.03.24 20:54, Wedson Almeida Filho wrote:> From: Wedson Almeida Filho =
+<walmeida@microsoft.com>
+>=20
+> Make `try_with_capacity`, `try_push`, and `try_extend_from_slice`
+> methods available in `Vec` even though it doesn't implement them. It is
+> implemented with `try_reserve` and `push_within_capacity`.
+>=20
+> This is in preparation for switching to the upstream `alloc` crate.
+>=20
+> Suggested-by: Gary Guo <gary@garyguo.net>
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> ---
+>   rust/kernel/alloc.rs        |  1 +
+>   rust/kernel/alloc/vecext.rs | 52 +++++++++++++++++++++++++++++++++++++
+>   rust/kernel/lib.rs          |  1 +
+>   rust/kernel/prelude.rs      |  2 ++
+>   4 files changed, 56 insertions(+)
+>   create mode 100644 rust/kernel/alloc/vecext.rs
+>=20
+> diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
+> index ccd4149932c3..8ad57a2e693e 100644
+> --- a/rust/kernel/alloc.rs
+> +++ b/rust/kernel/alloc.rs
+> @@ -5,3 +5,4 @@
+>   #[cfg(not(test))]
+>   #[cfg(not(testlib))]
+>   mod allocator;
+> +pub mod vecext;
+> diff --git a/rust/kernel/alloc/vecext.rs b/rust/kernel/alloc/vecext.rs
+> new file mode 100644
+> index 000000000000..59e92bab534e
+> --- /dev/null
+> +++ b/rust/kernel/alloc/vecext.rs
+> @@ -0,0 +1,52 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +//! Extensions to [`Vec`] for fallible allocations.
+> +
+> +use alloc::{collections::TryReserveError, vec::Vec};
+> +use core::result::Result;
+> +
+> +/// Extensions to [`Vec`].
+> +pub trait VecExt<T>: Sized {
+> +    /// Creates a new [`Vec`] instance with at least the given capacity.
+> +    fn try_with_capacity(capacity: usize) -> Result<Self, TryReserveErro=
+r>;
+> +
+> +    /// Appends an element to the back of the [`Vec`] instance.
+> +    fn try_push(&mut self, v: T) -> Result<(), TryReserveError>;
+> +
+> +    /// Pushes clones of the elements of slice into the [`Vec`] instance=
+.
+> +    fn try_extend_from_slice(&mut self, other: &[T]) -> Result<(), TryRe=
+serveError>
+> +    where
+> +        T: Clone;
 
-> On Fri, 2024-03-22 at 18:22 -0700, Yamahata, Isaku wrote:
-> > On Fri, Mar 22, 2024 at 11:20:01AM +0000,
-> > "Huang, Kai" <kai.huang@intel.com> wrote:
-> > 
-> > > On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
-> > > > +struct kvm_tdx_init_vm {
-> > > > +	__u64 attributes;
-> > > > +	__u64 mrconfigid[6];	/* sha384 digest */
-> > > > +	__u64 mrowner[6];	/* sha384 digest */
-> > > > +	__u64 mrownerconfig[6];	/* sha384 digest */
-> > > > +	/*
-> > > > +	 * For future extensibility to make sizeof(struct kvm_tdx_init_vm) = 8KB.
-> > > > +	 * This should be enough given sizeof(TD_PARAMS) = 1024.
-> > > > +	 * 8KB was chosen given because
-> > > > +	 * sizeof(struct kvm_cpuid_entry2) * KVM_MAX_CPUID_ENTRIES(=256) = 8KB.
-> > > > +	 */
-> > > > +	__u64 reserved[1004];
-> > > 
-> > > This is insane.
-> > > 
-> > > You said you want to reserve 8K for CPUID entries, but how can these 1004 * 8
-> > > bytes be used for CPUID entries since ...
-> > 
-> > I tried to overestimate it. It's too much, how about to make it
-> > 1024, reserved[109]?
-> > 
+All of the non `try_` prefix functions require=20
+`not(no_global_oom_handling)`, so we could also drop the `try_` prefix
+here.
+What do you think?
+
+> +}
+> +
+> +impl<T> VecExt<T> for Vec<T> {
+> +    fn try_with_capacity(capacity: usize) -> Result<Self, TryReserveErro=
+r> {
+> +        let mut v =3D Vec::new();
+> +        v.try_reserve(capacity)?;
+> +        Ok(v)
+> +    }
+> +
+> +    fn try_push(&mut self, v: T) -> Result<(), TryReserveError> {
+> +        if let Err(retry) =3D self.push_within_capacity(v) {
+> +            self.try_reserve(1)?;
+> +            let _ =3D self.push_within_capacity(retry);
+> +        }
+> +        Ok(())
+> +    }
+> +
+> +    fn try_extend_from_slice(&mut self, other: &[T]) -> Result<(), TryRe=
+serveError>
+> +    where
+> +        T: Clone,
+> +    {
+> +        let extra_cap =3D self.capacity() - self.len();
+> +        if extra_cap > 0 {
+> +            self.try_reserve(extra_cap)?;
+> +        }
+
+I am confused, why are you doing this? Did you mean to do this?:
+    let extra_cap =3D self.capacity() - self.len() - other.len();
+
+--=20
+Cheers,
+Benno
+
+> +
+> +        for item in other {
+> +            self.try_push(item.clone())?;
+> +        }
+> +
+> +        Ok(())
+> +    }
+> +}
+> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> index 51f30e55bd00..7f2841a18d05 100644
+> --- a/rust/kernel/lib.rs
+> +++ b/rust/kernel/lib.rs
+> @@ -19,6 +19,7 @@
+>   #![feature(offset_of)]
+>   #![feature(receiver_trait)]
+>   #![feature(unsize)]
+> +#![feature(vec_push_within_capacity)]
+>=20
+>   // Ensure conditional compilation based on the kernel configuration wor=
+ks;
+>   // otherwise we may silently break things like initcall handling.
+> diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
+> index ae21600970b3..a0177f195dec 100644
+> --- a/rust/kernel/prelude.rs
+> +++ b/rust/kernel/prelude.rs
+> @@ -14,6 +14,8 @@
+>   #[doc(no_inline)]
+>   pub use core::pin::Pin;
+>=20
+> +pub use crate::alloc::vecext::VecExt;
+> +
+>   #[doc(no_inline)]
+>   pub use alloc::{boxed::Box, vec::Vec};
+>=20
+> --
+> 2.34.1
 > 
-> I am not sure why we need 1024B either.
-> 
-> IIUC, the inputs here in 'kvm_tdx_init_vm' should be a subset of the members in
-> TD_PARAMS.  This IOCTL() isn't intended to carry any additional input besides
-> these defined in TD_PARAMS, right?
-> 
-> If so, then it seems to me you "at most" only need to reserve the space for the
-> members excluding the CPUID entries, because for the CPUID entries we will
-> always pass them as a flexible array at the end of the structure.
-> 
-> Based on the spec, the "non-CPUID-entry" part only occupies 256 bytes.  To me it
-> seems we have no reason to reserve more space than 256 bytes.
-
-Ok, I'll make it 256 bytes.
-
-The alternative is to use key-value.  The user space loops to set all necessary
-parameters.  Something like as follows.
-
-KVM_TDX_SET_VM_PARAM
-
-struct kvm_tdx_vm_param {
-        /* TDCS metadata field. */
-        __u64 field_id;
-        /*
-         * value for attributes or data less or qeual to __u64.
-         * pointer for sha384, cpuid, or data larger than __u64.
-         */
-        __u64 value_or_ptr;
-};
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
 
