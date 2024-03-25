@@ -1,224 +1,210 @@
-Return-Path: <linux-kernel+bounces-116759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E9D088A709
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:41:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A3D988A37E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14A33B22A0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:01:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 951EC1F3D815
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988A276058;
-	Mon, 25 Mar 2024 10:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ADAA159904;
+	Mon, 25 Mar 2024 10:37:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gDPgmlkW"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kNbIrp1B"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E0476045;
-	Mon, 25 Mar 2024 09:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8075176023
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711359639; cv=none; b=X6CGTfOOCWoGZgISgGzg+G8d38DoYtWl2WtDOR3HmWZ4D9Q6xVeqwtNw3LqKKQffUkUOvlFEsQVg7MXKgoso5yHD0NXiAPTILmow/6JpvDlMuBHKtZDPmyO2NAUnWuHeDpXvBcyYKFoSt8V0/6+ktkvxHHDm5jjX+y6xwENeCLM=
+	t=1711359649; cv=none; b=NV3TI0T+WYrHETx4zXcV/wXugc/788A8rHRZdbz2+p7dfn/Psz6UnkImtHVBiULVRMM5eU3y+rjVuzC6OIX+9s4WIL3ANObjWdq4fuZeBXczF91gD9HlaRCXnCjEaW6x5xfK2lwwS9kntk8k6ME4sHu+5OGj3F8YxOVU7Jt1ubo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711359639; c=relaxed/simple;
-	bh=XTa/O56XTWdw5ZF7TMRdkm4wmKncpZtw2pKiTC9UVyI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lLRssnuxrUn2ztRUW3TCQ6jt/WYsKntAzT6rXudUinU6w8UGERjXB+wRGEQ3z2tlgBVQ4e0G3MwSDo8cBZVnlPxYqH43VxpedtwGRyPnPsSdrfy5aaViolQJ5ZQ+LyB5twhJ7/uilJT7zmeA2eCLoVbAoIY4lSmSxk+e0MSvfnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gDPgmlkW; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42P5ua6K001614;
-	Mon, 25 Mar 2024 09:40:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=lbLk1l291cRpU9S2Tsbm27SJWoB+hUfjrtZd/Xy3feI=;
- b=gDPgmlkWNRs6tmUokyl+eLPZ0a2jRGDPaWEEPatE9xDpYmhLwmeEuPJ1lppcoBxVhEaB
- wPz3wtBJO2JsB0dmBs28JVcK1mPiA3DbjynMs1X0bzbVIpDxNgVGxUXcEVyI0OEJgi4E
- YCKrGTZt/qNVKGaGZ1rC4DdOmda7pdYXQ0X9idpnSR0ECD7Tf3Ga9ct+FPlUI6EidrTM
- cZ8By8BlnJL9udeRRtbMHX5MsaV6yEH6x+aEZOOHLAZ4eh7lQOXE4qx13hWvi2GI7AVg
- RqI6eC0ycdgh3Cb2+ghPwJxoSggmdzmfMtOGmTT37DZ1Dofn9kNTajYm4sCkJaRuAXXU 0g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2hh69x12-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 09:40:08 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42P9ZRcQ008400;
-	Mon, 25 Mar 2024 09:40:08 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2hh69x0x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 09:40:07 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42P7Zx2Y016410;
-	Mon, 25 Mar 2024 09:40:07 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dtrhms-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 09:40:06 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42P9e1KP22544922
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 25 Mar 2024 09:40:03 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9C6872004E;
-	Mon, 25 Mar 2024 09:40:01 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CED8520040;
-	Mon, 25 Mar 2024 09:40:00 +0000 (GMT)
-Received: from osiris (unknown [9.171.70.91])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 25 Mar 2024 09:40:00 +0000 (GMT)
-Date: Mon, 25 Mar 2024 10:39:59 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>, Guenter Roeck <linux@roeck-us.net>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: Re: [PATCH 1/1] mm: vmalloc: Bail out early in find_vmap_area() if
- vmap is not init
-Message-ID: <20240325093959.9453-B-hca@linux.ibm.com>
-References: <20240323141544.4150-1-urezki@gmail.com>
- <ZgC38GfEZYpYGUU9@infradead.org>
+	s=arc-20240116; t=1711359649; c=relaxed/simple;
+	bh=k/kvwbqjuI6Biup2Czt4MRAGfiEuJJwavDIry0t7w5c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ETNNIgQlG3VDaehG2uJCqpmdLAhimQX3JUM0zfq/RNSB9P9RTd5SknKAE7KPn+46GVlxhOtMjNdVV6QB6oatoOlC06h1+7dqhijAuwNjkxToleIB0rVPtFKiY0Y9/zTD/Vu+wDggB2O8QBuIedgELKhDcAP5pkw97pl2XyDLDnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kNbIrp1B; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4644bde1d4so549431766b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:40:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711359646; x=1711964446; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pWb0tkOtTuLiN7G14PNBlPOOupfOoAoEKqcNpPczYPU=;
+        b=kNbIrp1BFBssP3quaFLNHjy77OhxL5ceqzOC9dmrsVmE4fTj3Pw1D8ELMWr25Phafm
+         bvPqspS97t+z9iv2tiaXGiB+Xy0Q3bAiGiyRxpph7ZPtEwxuXqEHpFUIFjUQgTZPhBn2
+         fhXe10IijG+07dMlgKaJhDqjURzKCsdyAc3z/daL1T8IOCAINGGC6sVDGS1N5Wx8ZmIm
+         6RR+N9yhtg4pWRvioPGsaCzt62m/OIMVDRIklsfajRyRRoQIfIL8rA4h51phcF1Tn20e
+         yMeSLAfrdWoXpAIFuYkLpeFj0OHgbSf1d79wrkyvY27FRyo7ALWwKG3+iu1vARZOTHvY
+         +F8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711359646; x=1711964446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pWb0tkOtTuLiN7G14PNBlPOOupfOoAoEKqcNpPczYPU=;
+        b=TOim3DqdRPzxDgDLCKhvPIHBkIrmJQgnIs77bO/dy0kJj3n7WxFnPXd+M15ukHVcB3
+         wMCH96u5cw4zyxLhA1Oq98//OnGLp8ylTlIO3zL7P54AxcTvKPcn/axuEJf6JPMhMCUs
+         r6xVCrmzRp15TdgbRo/rq5MmBe5loMIpAP/EKTOebl177w8/2aUwhsoj3hsZDMO6R7Lp
+         AIvYiWAFPoJ2LvKqytX72rLzLvAiYqsZDamtD8MOtlQYRHDT6sFCbRBkGU2ryMueFD3j
+         h2o6wQeobA6hoUN6h3u1PIKbww9AG+GBRW2GKYtz4epnk5y5HBTXPpKOSME3J4I8cPIE
+         lb1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXhAMk6+NqgQseF6TUWAtA0jw0X6xw6nF0FpL9bu4NsaTDwexUYVwIJkX3jVP3xVYEOIpMHDO3caL93ptx26uWZL21l3RXoo6GGHa5M
+X-Gm-Message-State: AOJu0Yxw1lIiqNglSPtBadWHnhExjNu5+q43V7DB6L8EbkQWtiI2awMg
+	hzN6GfzF5voKmEb6dwFbrfyVbkgvs9+9wtkZGzzHGyGswZpCsVmdiSUDZogd0k8k2bqhNop60c5
+	TefoWRGozv2GgbSz0yHWj2p9CWvs6mR8Mw8a5
+X-Google-Smtp-Source: AGHT+IEtlmX9IKU2k8X3a1hYN0MJCPSuOw+XaYGopOCUJ55JbRETnjldqTB1OByt1d/JtBkryLPJzQYYGn9eqeZ6m1k=
+X-Received: by 2002:a17:906:dfcf:b0:a46:9ae2:1927 with SMTP id
+ jt15-20020a170906dfcf00b00a469ae21927mr4464655ejc.67.1711359645679; Mon, 25
+ Mar 2024 02:40:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgC38GfEZYpYGUU9@infradead.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: _9711NiWy7-EsEOQcdt74z12AqRCg_ZC
-X-Proofpoint-GUID: cWCtJLwizTW0fQFZ-RczZfodSfAwtBtC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-25_07,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=778 spamscore=0
- phishscore=0 clxscore=1011 impostorscore=0 suspectscore=0 malwarescore=0
- adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403250052
+References: <20240324210447.956973-1-hannes@cmpxchg.org> <CAJD7tkaWQAV=X1pzYG=VkWe7Ue9ZFbjt9uQ5m1NJujtLspWJTA@mail.gmail.com>
+ <CAGsJ_4yeBmNsMGXEWwC+1Hs5zJUP+becq4wG+6CpU7V1=EOvhg@mail.gmail.com>
+ <CAJD7tka5K69q20bxTsBk38JC7mdPr3UsxXpsnggDO_iQA=qxug@mail.gmail.com>
+ <1e7ce417-b9dd-4d62-9f54-0adf1ccdae35@linux.dev> <CAJD7tkYc3oFho5eEkS1zmr_+CC-Ag1HucUTyAy2RJbEb4SqRoQ@mail.gmail.com>
+ <d556ec84-da6a-4486-a68e-5982baf46879@linux.dev>
+In-Reply-To: <d556ec84-da6a-4486-a68e-5982baf46879@linux.dev>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 25 Mar 2024 02:40:09 -0700
+Message-ID: <CAJD7tkbNWeoNnkB7Q1z9-XdrE1L4_2okdjFGvLjnuwoXT9XmwA@mail.gmail.com>
+Subject: Re: [PATCH] mm: zswap: fix data loss on SWP_SYNCHRONOUS_IO devices
+To: Chengming Zhou <chengming.zhou@linux.dev>
+Cc: Barry Song <21cnbao@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Zhongkun He <hezhongkun.hzk@bytedance.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Chris Li <chrisl@kernel.org>, 
+	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Kairui Song <kasong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 24, 2024 at 04:32:00PM -0700, Christoph Hellwig wrote:
-> On Sat, Mar 23, 2024 at 03:15:44PM +0100, Uladzislau Rezki (Sony) wrote:
-> > During the boot the s390 system triggers "spinlock bad magic" messages
-> > if the spinlock debugging is enabled:
-> > 
-> > [    0.465445] BUG: spinlock bad magic on CPU#0, swapper/0
-> > [    0.465490]  lock: single+0x1860/0x1958, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-> > [    0.466067] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-12955-g8e938e398669 #1
-> > [    0.466188] Hardware name: QEMU 8561 QEMU (KVM/Linux)
-> > [    0.466270] Call Trace:
-> > [    0.466470]  [<00000000011f26c8>] dump_stack_lvl+0x98/0xd8
-> > [    0.466516]  [<00000000001dcc6a>] do_raw_spin_lock+0x8a/0x108
-> > [    0.466545]  [<000000000042146c>] find_vmap_area+0x6c/0x108
-> > [    0.466572]  [<000000000042175a>] find_vm_area+0x22/0x40
-> > [    0.466597]  [<000000000012f152>] __set_memory+0x132/0x150
-> > [    0.466624]  [<0000000001cc0398>] vmem_map_init+0x40/0x118
-> > [    0.466651]  [<0000000001cc0092>] paging_init+0x22/0x68
-> > [    0.466677]  [<0000000001cbbed2>] setup_arch+0x52a/0x708
-> > [    0.466702]  [<0000000001cb6140>] start_kernel+0x80/0x5c8
-> > [    0.466727]  [<0000000000100036>] startup_continue+0x36/0x40
-..
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 22aa63f4ef63..0d77d171b5d9 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -2343,6 +2343,9 @@ struct vmap_area *find_vmap_area(unsigned long addr)
-> >  	struct vmap_area *va;
-> >  	int i, j;
-> >  
-> > +	if (unlikely(!vmap_initialized))
-> > +		return NULL;
-> > +
+On Mon, Mar 25, 2024 at 2:22=E2=80=AFAM Chengming Zhou <chengming.zhou@linu=
+x.dev> wrote:
 >
-> I guess this is ok as an urgend bandaid to get s390 booting again,
-> but calling find_vmap_area before the vmap area is initialized
-> seems an actual issue in the s390 mm init code.
-> 
-> Adding the s390 maintainers to see if they have and idea how this could
-> get fixed in a better way.
+> On 2024/3/25 16:38, Yosry Ahmed wrote:
+> > On Mon, Mar 25, 2024 at 12:33=E2=80=AFAM Chengming Zhou
+> > <chengming.zhou@linux.dev> wrote:
+> >>
+> >> On 2024/3/25 15:06, Yosry Ahmed wrote:
+> >>> On Sun, Mar 24, 2024 at 9:54=E2=80=AFPM Barry Song <21cnbao@gmail.com=
+> wrote:
+> >>>>
+> >>>> On Mon, Mar 25, 2024 at 10:23=E2=80=AFAM Yosry Ahmed <yosryahmed@goo=
+gle.com> wrote:
+> >>>>>
+> >>>>> On Sun, Mar 24, 2024 at 2:04=E2=80=AFPM Johannes Weiner <hannes@cmp=
+xchg.org> wrote:
+> >>>>>>
+> >>>>>> Zhongkun He reports data corruption when combining zswap with zram=
+.
+> >>>>>>
+> >>>>>> The issue is the exclusive loads we're doing in zswap. They assume
+> >>>>>> that all reads are going into the swapcache, which can assume
+> >>>>>> authoritative ownership of the data and so the zswap copy can go.
+> >>>>>>
+> >>>>>> However, zram files are marked SWP_SYNCHRONOUS_IO, and faults will=
+ try
+> >>>>>> to bypass the swapcache. This results in an optimistic read of the
+> >>>>>> swap data into a page that will be dismissed if the fault fails du=
+e to
+> >>>>>> races. In this case, zswap mustn't drop its authoritative copy.
+> >>>>>>
+> >>>>>> Link: https://lore.kernel.org/all/CACSyD1N+dUvsu8=3DzV9P691B9bVq33=
+erwOXNTmEaUbi9DrDeJzw@mail.gmail.com/
+> >>>>>> Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> >>>>>> Fixes: b9c91c43412f ("mm: zswap: support exclusive loads")
+> >>>>>> Cc: stable@vger.kernel.org      [6.5+]
+> >>>>>> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> >>>>>> Tested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> >>>>
+> >>>> Acked-by: Barry Song <baohua@kernel.org>
+> >>>>
+> >>>>>
+> >>>>> Do we also want to mention somewhere (commit log or comment) that
+> >>>>> keeping the entry in the tree is fine because we are still protecte=
+d
+> >>>>> from concurrent loads/invalidations/writeback by swapcache_prepare(=
+)
+> >>>>> setting SWAP_HAS_CACHE or so?
+> >>>>
+> >>>> It seems that Kairui's patch comprehensively addresses the issue at =
+hand.
+> >>>> Johannes's solution, on the other hand, appears to align zswap behav=
+ior
+> >>>> more closely with that of a traditional swap device, only releasing =
+an entry
+> >>>> when the corresponding swap slot is freed, particularly in the sync-=
+io case.
+> >>>
+> >>> It actually worked out quite well that Kairui's fix landed shortly
+> >>> before this bug was reported, as this fix wouldn't have been possible
+> >>> without it as far as I can tell.
+> >>>
+> >>>>
+> >>>> Johannes' patch has inspired me to consider whether zRAM could achie=
+ve
+> >>>> a comparable outcome by immediately releasing objects in swap cache
+> >>>> scenarios.  When I have the opportunity, I plan to experiment with z=
+RAM.
+> >>>
+> >>> That would be interesting. I am curious if it would be as
+> >>> straightforward in zram to just mark the folio as dirty in this case
+> >>> like zswap does, given its implementation as a block device.
+> >>>
+> >>
+> >> This makes me wonder who is responsible for marking folio dirty in thi=
+s swapcache
+> >> bypass case? Should we call folio_mark_dirty() after the swap_read_fol=
+io()?
+> >
+> > In shrink_folio_list(), we try to add anonymous folios to the
+> > swapcache if they are not there before checking if they are dirty.
+> > add_to_swap() calls folio_mark_dirty(), so this should take care of
+>
+> Right, thanks for your clarification, so should be no problem here.
+> Although it was a fix just for MADV_FREE case.
+>
+> > it. There is an interesting comment there though. It says that PTE
+> > should be dirty, so unmapping the folio should have already marked it
+> > as dirty by the time we are adding it to the swapcache, except for the
+> > MADV_FREE case.
+>
+> It seems to say the folio will be dirtied when unmap later, supposing the
+> PTE is dirty.
 
-I'm going to push the patch below to the s390 git tree later. This is not a
-piece of art, but I wanted to avoid to externalize vmalloc's vmap_initialized,
-or come up with some s390 specific change_page_attr_alias_early() variant where
-sooner or later nobody remembers what "early" means.
+Oh yeah it could mean that the folio will be dirted later.
 
-So this seems to be "good enough".
+>
+> >
+> > However, I think we actually unmap the folio after we add it to the
+> > swapcache in shrink_folio_list(). Also, I don't immediately see why
+> > the PTE would be dirty. In do_swap_page(), making the PTE dirty seems
+>
+> If all anon pages on LRU list are faulted by write, it should be true.
+> We could just use the zero page if faulted by read, right?
 
-From 0308cd304fa3b01904c6060e2115234101811e48 Mon Sep 17 00:00:00 2001
-From: Heiko Carstens <hca@linux.ibm.com>
-Date: Thu, 21 Mar 2024 09:41:20 +0100
-Subject: [PATCH] s390/mm,pageattr: avoid early calls into vmalloc code
+This applies for the initial fault that creates the folio, but this is
+a swap fault. It could be a read fault and in that case we still need
+to make the folio dirty because it's not in the swapcache and we need
+to write it out if it's reclaimed, right?
 
-The vmalloc code got changed and doesn't have the global statically
-initialized vmap_area_lock spinlock anymore. This leads to the following
-lockdep splat when find_vm_area() is called before the vmalloc code is
-initialized:
-
-BUG: spinlock bad magic on CPU#0, swapper/0
- lock: single+0x1868/0x1978, .magic: 00000000, .owner: swapper/0, .owner_cpu: 0
-
-CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-11767-g23956900041d #1
-Hardware name: IBM 3931 A01 701 (KVM/Linux)
-Call Trace:
- [<00000000010d840a>] dump_stack_lvl+0xba/0x148
- [<00000000001fdf5c>] do_raw_spin_unlock+0x7c/0xd0
- [<000000000111d848>] _raw_spin_unlock+0x38/0x68
- [<0000000000485830>] find_vmap_area+0xb0/0x108
- [<0000000000485ada>] find_vm_area+0x22/0x40
- [<0000000000132bbc>] __set_memory+0xbc/0x140
- [<0000000001a7f048>] vmem_map_init+0x40/0x158
- [<0000000001a7edc8>] paging_init+0x28/0x80
- [<0000000001a7a6e2>] setup_arch+0x4b2/0x6d8
- [<0000000001a74438>] start_kernel+0x98/0x4b0
- [<0000000000100036>] startup_continue+0x36/0x40
-INFO: lockdep is turned off.
-
-Add a slab_is_available() check to change_page_attr_alias() in order to
-avoid early calls into vmalloc code. slab_is_available() is not exactly
-what is needed, but there is currently no other way to tell if the vmalloc
-code is initialized or not, and there is no reason to expose
-e.g. vmap_initialized from vmalloc to achieve the same.
-
-The fixes tag does not mean that the referenced commit is broken, but that
-there is a dependency to this commit if the vmalloc commit should be
-backported.
-
-Fixes: d093602919ad ("mm: vmalloc: remove global vmap_area_root rb-tree")
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
----
- arch/s390/mm/pageattr.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/s390/mm/pageattr.c b/arch/s390/mm/pageattr.c
-index 01bc8fad64d6..b6c6453d66e2 100644
---- a/arch/s390/mm/pageattr.c
-+++ b/arch/s390/mm/pageattr.c
-@@ -344,6 +344,9 @@ static int change_page_attr_alias(unsigned long addr, unsigned long end,
- 	struct vm_struct *area;
- 	int rc = 0;
- 
-+	/* Avoid early calls into not initialized vmalloc code. */
-+	if (!slab_is_available())
-+		return 0;
- 	/*
- 	 * Changes to read-only permissions on kernel VA mappings are also
- 	 * applied to the kernel direct mapping. Execute permissions are
--- 
-2.40.1
-
+>
+> > to be conditional on the fault being a write fault, but I didn't look
+> > thoroughly, maybe I missed it. It is also possible that the comment is
+> > just outdated.
+>
+> Yeah, dirty is only marked on write fault.
+>
+> Thanks.
 
