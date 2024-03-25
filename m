@@ -1,247 +1,187 @@
-Return-Path: <linux-kernel+bounces-117275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1BD88A989
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:36:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E8288B366
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C9ED1F317BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:36:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 114AFC464F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D2F136666;
-	Mon, 25 Mar 2024 14:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F13A153BE5;
+	Mon, 25 Mar 2024 14:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDldw1pq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cCEucwcI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1B12F56;
-	Mon, 25 Mar 2024 14:41:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54B613AD0E
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711377712; cv=none; b=GJnQoymePnW0yFpehQktLYd1PEhXRH03Sxdap3P3vjKPwaDF73DVPEoOzOKD1D0QrSoYZ2JbefBGDXYFTI4yJ19vZYicai8yJijtDBHjMX2y2b3AcDEAIIjvS/vOXZaefoyXz93SVlI11z6TtETn4yxgtX9dCJOphenM4uLRiSY=
+	t=1711377739; cv=none; b=k8LStQUaKN9KRjXuZMm7HiqzpFHDxf2EQbKvjrY1T5nNu1dZPleU1L9mSlzhklNFwnex9rAGxh1q0xJfZGkhdpth7MOcX1qD/87yTfxzXDeLlyxWMSjYh6dyHmI6i4b7hM7U5LZpiC43szh90WvWmeWuRgo7tACehN1YkS+nrKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711377712; c=relaxed/simple;
-	bh=j9NwLowIWSYXRI35sgGnXd8ywTxXOvOBVs6xYZrY6Vc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Z91A3kfQqKPGk6J4HbYX5qj/gIjbKTLP95i+X+viw25JfxZeCCGRBuTpusnmuYJr34AtR99C4YgESas0/g2+fpTyu9CgZ8l0eyy/hKi40+99/OXrcox3TF7gTTMQS78xmTk53PRTvwg4bJ0ADeAYPRI+iGbwTDvP/NdI8A0hB7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDldw1pq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57536C433F1;
-	Mon, 25 Mar 2024 14:41:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711377711;
-	bh=j9NwLowIWSYXRI35sgGnXd8ywTxXOvOBVs6xYZrY6Vc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=kDldw1pqzNM33IlDFNQhRjNbCultKp4HAmVxTYhP+bmcEdrKNq4THK/cd8YdYRix5
-	 0bBqeGATVIRSYP1YRnEJwZ4cBhczswdQBATSmwWGR6fOaLAhwswrfXIIc2baWZnVKH
-	 SsGlnWz5BLsKQ2C1vpVB3vWtfcGhBlocxpE44lv39JMOvmwpRycH0Cj4G5pdRS6vEd
-	 smh06yMmJLqCDb0XZiLIjVNmFUDx1yCiuoCQo1OMFVZnwBfKLfC6ZtnlHOG9PTNK6u
-	 PW5onCxvqi1O9WCC7ZZ14ixXZAgtJvl3DLdI4ONDFNyjcAQ7hucv5ce5TzF5goAjYE
-	 boAr151b13ZBg==
-Date: Mon, 25 Mar 2024 09:41:49 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, edmund.raile@proton.me
-Subject: Re: [PATCH v2] PCI: Mark LSI FW643 to avoid bus reset
-Message-ID: <20240325144149.GA1432902@bhelgaas>
+	s=arc-20240116; t=1711377739; c=relaxed/simple;
+	bh=H6GWCzUr4bu05tZUPxWIonNRb0KF+giuYdstauoVwsQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=UaLE8QkT12faqeaHzvBh/42YC1JE4neeaZ7arckHEANpa2Uf7hwaV4waarH/yfZbC+Wemzn26pwtGPdEAYqcrnnRKsCSktNML2T1DLryTRYgfBy+mLVo5TeEYeS6uPeNpwRSgGNo4gz/OdgQy0EgYsLN7kCuIP97ZAGk0cxRIHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cCEucwcI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711377736;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VLrR2JlfX0S1p3aWe4A7fE+XaM/6X9zPvy49Bs4Sz1M=;
+	b=cCEucwcIcX6/3xivHR456S6RdDBNNvK0edlMonIw7kuuZsVxgd9pwX3flbmuw7yeMXvDbB
+	Bj4z+n25Z8fNOL8iVumcacb/dcRW4lEKF09GDFhMINP2SEHURfqCVOKW5OkQ9QCxy6OK1G
+	7hwYfwPcSVqZfrcST+jT3hrZ7ZNbqZw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-657-CYqdIhpHMbOAyS7VJyLIGg-1; Mon, 25 Mar 2024 10:42:14 -0400
+X-MC-Unique: CYqdIhpHMbOAyS7VJyLIGg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-568a9f3ba97so2583360a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:42:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711377733; x=1711982533;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VLrR2JlfX0S1p3aWe4A7fE+XaM/6X9zPvy49Bs4Sz1M=;
+        b=qCb2gjXcvZm7Xu+WUUjfWpRci8Kqia4wLNjdpm0C7wZlipWFMMRAyZOFbhXVHbeAfm
+         1czSICWA2wbg7QvYleIwPqnmLn3gZBrteRs8UOgC03iz5fccrLzbezu0tUeoKlvyRofi
+         Jg1nagbXKUjk5YM3CQ33hou3x+L1fsq0mchTOstqwmV7XQDZutUeT8Fn9BDJGxJ0zTSO
+         MeDD0qpZlNCOr6gUCv+V7Y9/CeIkCakYYHNHU9XHc64wOyvjBJynn5yZLUQ7RC1czuv0
+         nCl37ezaHgjg+K/EXi9DHQ2OfXCwkrnlygGwi1SPBPFiYso18iUql0tVnBPagJZ+z+ar
+         TPew==
+X-Forwarded-Encrypted: i=1; AJvYcCWOFyU+gAlvVsTdLPA3KpASHsNxToD6k/YfQMzj8gAYD06uoGaKA9BEhK9E/HWPcfUHVlo5buQOIVoPErSrYwGG4o1GIpM2urEIICm4
+X-Gm-Message-State: AOJu0Yy0D3eaEjQIQsoEkWKmVgsAzCYhDCODnwKhKj8XKSh9Js3/xB7S
+	WMexw7LMBf9xBaHFToyHVbCYvMRwTYnQC7vPQ6eTJoRxbAl8MI1OtwcQha4/yacSBG7MjTP2bKT
+	Dc639yf9N/xEkgtosuv8MDy8ugMHwZaJU64fMAIlTVGF6QtPmz7GYcsTLGigdfQ==
+X-Received: by 2002:a50:aac9:0:b0:56b:dd0e:9efc with SMTP id r9-20020a50aac9000000b0056bdd0e9efcmr4998305edc.38.1711377733505;
+        Mon, 25 Mar 2024 07:42:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGRLQNhiRa8ppxcfMI72+lnofbjam8B8WE2Ycdl8Cxt1uXmB5QRGI2z4FzNFqxon5LflPMetg==
+X-Received: by 2002:a50:aac9:0:b0:56b:dd0e:9efc with SMTP id r9-20020a50aac9000000b0056bdd0e9efcmr4998287edc.38.1711377733144;
+        Mon, 25 Mar 2024 07:42:13 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id g7-20020a056402320700b0056c0996bf72sm1794239eda.83.2024.03.25.07.42.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 07:42:12 -0700 (PDT)
+Message-ID: <7307a54e-b18c-497c-90d2-9c272f6e634e@redhat.com>
+Date: Mon, 25 Mar 2024 15:42:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325012135.36861-1-o-takashi@sakamocchi.jp>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] platform/x86: hp-wmi: use sysfs_emit() instead of
+ sprintf()
+Content-Language: en-US, nl
+To: Ai Chao <aichao@kylinos.cn>, ilpo.jarvinen@linux.intel.com,
+ u.kleine-koenig@pengutronix.de, mario.limonciello@amd.com, jes965@nyu.edu,
+ alexbelm48@gmail.com, onenowy@gmail.com,
+ platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240314063703.315841-1-aichao@kylinos.cn>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240314063703.315841-1-aichao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 10:21:35AM +0900, Takashi Sakamoto wrote:
-> Hi Bjorn Helgaas,
+Hi,
+
+On 3/14/24 7:37 AM, Ai Chao wrote:
+> Follow the advice in Documentation/filesystems/sysfs.rst:
+> show() should only use sysfs_emit() or sysfs_emit_at() when formatting
+> the value to be returned to user space.
 > 
-> (C.C.ed to linux1394-devel@lists.sourceforge.net)
+> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/platform/x86/hp/hp-wmi.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> I have an objection to applying the change.
+> diff --git a/drivers/platform/x86/hp/hp-wmi.c b/drivers/platform/x86/hp/hp-wmi.c
+> index 630519c08617..5fa553023842 100644
+> --- a/drivers/platform/x86/hp/hp-wmi.c
+> +++ b/drivers/platform/x86/hp/hp-wmi.c
+> @@ -681,7 +681,7 @@ static ssize_t display_show(struct device *dev, struct device_attribute *attr,
+>  
+>  	if (value < 0)
+>  		return value;
+> -	return sprintf(buf, "%d\n", value);
+> +	return sysfs_emit(buf, "%d\n", value);
+>  }
+>  
+>  static ssize_t hddtemp_show(struct device *dev, struct device_attribute *attr,
+> @@ -691,7 +691,7 @@ static ssize_t hddtemp_show(struct device *dev, struct device_attribute *attr,
+>  
+>  	if (value < 0)
+>  		return value;
+> -	return sprintf(buf, "%d\n", value);
+> +	return sysfs_emit(buf, "%d\n", value);
+>  }
+>  
+>  static ssize_t als_show(struct device *dev, struct device_attribute *attr,
+> @@ -701,7 +701,7 @@ static ssize_t als_show(struct device *dev, struct device_attribute *attr,
+>  
+>  	if (value < 0)
+>  		return value;
+> -	return sprintf(buf, "%d\n", value);
+> +	return sysfs_emit(buf, "%d\n", value);
+>  }
+>  
+>  static ssize_t dock_show(struct device *dev, struct device_attribute *attr,
+> @@ -711,7 +711,7 @@ static ssize_t dock_show(struct device *dev, struct device_attribute *attr,
+>  
+>  	if (value < 0)
+>  		return value;
+> -	return sprintf(buf, "%d\n", value);
+> +	return sysfs_emit(buf, "%d\n", value);
+>  }
+>  
+>  static ssize_t tablet_show(struct device *dev, struct device_attribute *attr,
+> @@ -721,7 +721,7 @@ static ssize_t tablet_show(struct device *dev, struct device_attribute *attr,
+>  
+>  	if (value < 0)
+>  		return value;
+> -	return sprintf(buf, "%d\n", value);
+> +	return sysfs_emit(buf, "%d\n", value);
+>  }
+>  
+>  static ssize_t postcode_show(struct device *dev, struct device_attribute *attr,
+> @@ -732,7 +732,7 @@ static ssize_t postcode_show(struct device *dev, struct device_attribute *attr,
+>  
+>  	if (value < 0)
+>  		return value;
+> -	return sprintf(buf, "0x%x\n", value);
+> +	return sysfs_emit(buf, "0x%x\n", value);
+>  }
+>  
+>  static ssize_t als_store(struct device *dev, struct device_attribute *attr,
 
-This patch appeared in v6.9-rc1 as 29a43dc130ce ("PCI: Mark LSI FW643
-to avoid bus reset").
-
-> I've been using the issued 1394 OHCI hardware in my development for recent
-> years, while I have never faced the reported trouble. I think there are
-> any misunderstanding or misjudge somwhow in the review process to apply it.
-> 
-> Would I ask your precise advice to regenerate the reported issue in my
-> local?
-
-So even without this patch, you are able to pass the FW643 to a VM
-with VFIO, and you don't see any issues caused by VFIO resetting the
-device?
-
-Can you collect the output of:
-
-  $ find /sys/devices -name reset_method | xargs grep .
-
-You should be able to manually reset the device with something like
-this (I don't know your topology, so you might have to replace "1d.6"
-with the bridge leading to 06:00.0):
-
-  # sudo echo 1 > # /sys/devices/pci0000:00/0000:00:1d.6/0000:06:00.0/reset
-
-I don't *know* of a reason why a Secondary Bus Reset would work
-correctly on your hardware but not on a Mac, but there could be
-something weird going on.
-
-Does the patch cause a problem for you?  (Other than the fact that the
-device leaks state between VMs?)
-
-> This is my 1394 OHCI hardware.
-> 
-> ```
-> $ sudo lspci -vvvnns 06:00.0
-> 06:00.0 FireWire (IEEE 1394) [0c00]: LSI Corporation FW643 [TrueFire] PCIe 1394b Controller [11c1:5901] (rev 06) (prog-if 10 [OHCI])
->         Subsystem: LSI Corporation FW643 [TrueFire] PCIe 1394b Controller [11c1:5900]
->         Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
->         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
->         Interrupt: pin A routed to IRQ 255
->         IOMMU group: 17
->         Region 0: Memory at fc700000 (64-bit, non-prefetchable) [disabled] [size=4K]
->         Capabilities: [44] Power Management version 3
->                 Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA PME(D0+,D1+,D2+,D3hot+,D3cold+)
->                 Status: D3 NoSoftRst- PME-Enable+ DSel=0 DScale=0 PME-
->         Capabilities: [4c] MSI: Enable- Count=1/1 Maskable- 64bit+
->                 Address: 0000000000000000  Data: 0000
->         Capabilities: [60] Express (v1) Endpoint, MSI 00
->                 DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s <4us, L1 <64us
->                         ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 0W
->                 DevCtl: CorrErr+ NonFatalErr+ FatalErr+ UnsupReq+
->                         RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
->                         MaxPayload 128 bytes, MaxReadReq 512 bytes
->                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr+ TransPend-
->                 LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1, Exit Latency L0s <512ns, L1 <64us
->                         ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp-
->                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
->                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
->                 LnkSta: Speed 2.5GT/s, Width x1
->                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
->         Capabilities: [100 v1] Advanced Error Reporting
->                 UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
->                 UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
->                 UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
->                 CESta:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
->                 CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
->                 AERCap: First Error Pointer: 00, ECRCGenCap+ ECRCGenEn- ECRCChkCap+ ECRCChkEn-
->                         MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
->                 HeaderLog: 00000000 00000000 00000000 00000000
->         Capabilities: [140 v1] Virtual Channel
->                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
->                 Arb:    Fixed- WRR32- WRR64- WRR128-
->                 Ctrl:   ArbSelect=Fixed
->                 Status: InProgress-
->                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
->                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
->                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
->                         Status: NegoPending- InProgress-
->                 VC1:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
->                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
->                         Ctrl:   Enable- ID=1 ArbSelect=Fixed TC/VC=00
->                         Status: NegoPending- InProgress-
->         Capabilities: [170 v1] Device Serial Number 12-34-56-10-12-30-00-86
->         Kernel driver in use: vfio-pci
->         Kernel modules: firewire_ohci
-> ```
-> 
-> I use it in the following environment at present:
-> 
-> * Host system
->     * AMD Ryzen 5 2400G
->     * TUF GAMING X570-PLUS with BIOS 5003 (AGESA ComboV2PI 1.2.0.B)
->         * SMT enabled
->         * SVM enabled
->         * IOMMU enabled
->         * Secure boot disabled
->     * Ubuntu 24.04 LTS amd64
->         * linux-image-6.8.0-11-generic (6.8.0-11.11)
->             * default kernel cmdline
->         * QEMU 8.2.1 (1:8.2.1+ds-1ubuntu1)
->         * Libvert 10.0.0 (10.0.0-2ubuntu1)
-> * Guest system
->     * UEFI using OVMF
->         * Seecure boot enabled
->     * Ubuntu 24.04 LTS amd64 (the same as above)
->         * default kernel cmdline
-> 
-> > Using LSI / Agere FW643 with vfio-pci will exhaust all
-> > pci_reset_fn_methods, the bus reset at the end causes a broken link
-> > only recoverable by removing power
-> > (power-off / suspend + rescan).
-> > Prevent this bus reset.
-> > With this change, the device can be assigned to VMs with VFIO.
-> > Note that it will not be reset, resulting in leaking state between VMs
-> > and host.
-> > 
-> > Signed-off-by: Edmund Raile <edmund.raile@proton.me>
-> > 
-> > I sincerely thank you for your patience and explaining
-> > the background of pci resets which I lacked.
-> > The commit message and comment now describe it correctly.
-> > The comment on leaking states was added.
-> > 
-> > Usefulness:
-> > 
-> > The LSI FW643 PCIe->FireWire 800 interface may be EOL but it is
-> > the only one that does not use a PCIe->PCI bridge.
-> > It is reliable and enables FireWire audio interfaces to be used
-> > on modern machines.
-> > 
-> > Virtualization allows for flexible access to professional audio
-> > software.
-> > 
-> > It has been used in at least the following Apple machines:
-> > MacBookPro10,1
-> > MacBookPro9,2
-> > MacBookPro6,2
-> > MacBookPro5,1
-> > Macmini6,1
-> > Macmini3,1
-> > iMac12,2
-> > iMac9,1
-> > iMac8,1
-> > 
-> > Implementation:
-> > 
-> > PCI_VENDOR_ID_ATT was reused as they are identical.
-> > 
-> >  drivers/pci/quirks.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> > 
-> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > index d797df6e5f3e..e0e4ad9e6d50 100644
-> > --- a/drivers/pci/quirks.c
-> > +++ b/drivers/pci/quirks.c
-> > @@ -3765,6 +3765,19 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
-> >   */
-> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
-> >  
-> > +/*
-> > + * Using LSI / Agere FW643 with vfio-pci will exhaust all
-> > + * pci_reset_fn_methods, the bus reset at the end causes a broken link
-> > + * only recoverable by removing power
-> > + * (power-off / suspend + rescan).
-> > + * Prevent this bus reset.
-> > + * With this change, the device can be assigned to VMs with VFIO.
-> > + * Note that it will not be reset, resulting in leaking state between VMs
-> > + * and host.
-> > + */
-> > +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5900, quirk_no_bus_reset);
-> > +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATT, 0x5901, quirk_no_bus_reset);
-> > +
-> >  /*
-> >   * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
-> >   * automatically disables LTSSM when Secondary Bus Reset is received and
-> 
-> 
-> Regards
-> 
-> Takashi Sakamoto
 
