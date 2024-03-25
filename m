@@ -1,134 +1,129 @@
-Return-Path: <linux-kernel+bounces-118022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7270B88B27F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:16:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E15888B282
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:17:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DA4D2E8301
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:16:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 701621C2DD42
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:17:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6EB6D1CC;
-	Mon, 25 Mar 2024 21:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106086CDDB;
+	Mon, 25 Mar 2024 21:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="x2FyTEI2"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D8gI9Afh"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BAB5B669
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4226CDA8;
+	Mon, 25 Mar 2024 21:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711401404; cv=none; b=BJRV+1l+Iz69GoFa2QzeK13USmR9tgyJXOljzkSXwlhqol9NkQiHtrAnlYJOJfjzSiNth6OvLoTtknAtsNu9nE4/rJEXPU3/Lbo6TISRtvIfUR/iPB1c1x11BT7dnA0PYMvsSX15lMla2+ut8H1zqLUt80Llny3a+C8hFMicREg=
+	t=1711401447; cv=none; b=XrrQ4s3QoD1QPNcTuf4JkBG/Bpb2T2qB9tkYUSrevUa+Mc6Baf1pxLO87uJvdrD3EuXu+0Cvn0tV5na2Dyz66gWMKilyB5rTy/lNNKsWALECNHMcxtz57FCoAJ/Yn9fFY9tR8E6htJ0ZawrWQ2D0ZFVEaPN6X64bshS2Os1MnEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711401404; c=relaxed/simple;
-	bh=8Nahw41+JrrFLaowDhNTSh/QV4VstGtS4camkBglTlQ=;
+	s=arc-20240116; t=1711401447; c=relaxed/simple;
+	bh=liQpZznPmxJSTYEPb0Eg7dXTRfDNwgyeGuWMxlxmPcI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hhIVEhsf2Hm0u6CsQCw54XsLweT2LDTSSZ01kaQ6Ad2Ws+fq2vgR6QNc2LmMpscThfb8o+4a5UZVJf5etMELGogZxpsBgYPsruGlneomEEatsU8K43Mdlmqno1Bn8SJG0AVGYVRsDVO7BivIEohCRuK9xcGw2OazbGvxTo3V4sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=x2FyTEI2; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dddb160a37so31729335ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:16:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1711401403; x=1712006203; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BJrOzTRRAIet2df0BwTVFrV7spSvPuh97bPmsvwqkus=;
-        b=x2FyTEI2tToUByfFt7qKLvwH6awcBpMAiCyErhR1qqeN1b8LBOgLdBjEF4jUree7ye
-         MRWJ/2fiSemc9wHcehmo4dnnqaGcBvVvxxm92+vXymegzRA8vhX82RR1+3X0W/JoZOpH
-         MlmfVEgXG0qUXeMhZvBdlgEMBblIIDhQc2dEbH1BSwjeewOs0lxZfqN3WtZoaSOxVnWf
-         4/uqoZIcvl5zSxRriMsYwQCxoGRC7M2aS8KlDjs5HcCojImKFSJsojZv4Arnr+bx1Z+D
-         5KYWvST4qbQHhMt1M6ocNfQs+ptr1h9wRFecMoLOfEKpNUqT889iAJixpq5/Ah+SyMvv
-         hLUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711401403; x=1712006203;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BJrOzTRRAIet2df0BwTVFrV7spSvPuh97bPmsvwqkus=;
-        b=tieG2RmHpm15UFgqGBe4GLjGrCy46tq/ziohmcEKjUqWAm8JREvtV+Px7SDOAxvjzM
-         j2M4VBhylskwmbbr2hCh3CsNSVUxCSsr1gLC9xVCrMYGVU9HM/FYl/vUPE42cnfr+WCv
-         N6cqadgy8qOUzFktlSNoiGJnrQmk6r4WoO2dIc3Gz4MzH03j8cbQPAImIZBwr2jqakyT
-         pcmpvuT8JdgmFx6UX1w4OKbmZ8EtcrJnx7Mr5ksSVYwnmPsECjrLaikLJnnD3iXycwBP
-         1FjjsiMnS7TeU9W8HIOOotrK+PSOt4h7rYTJyhAmoOiPGBE4YYZxtO4l+Vmk7rS2AzRg
-         biRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXc2+X9d0/3CEsKnWWOngQQzvC8gPj59Y5aFW4rXbGTphewtc1Sde+4kSKVpP+8q7Fay7ftY1tyTgAYJw3fF7z2qmCRr10mmdvsToyn
-X-Gm-Message-State: AOJu0YxXC1SMGb3lrcU/vgvhA+CHAU7syiervftz3oHbYlKCjkxwEmca
-	SK9778sTQ/T2r2cwuUaUejU22su/3I/apvh/n2xn7Ze3jL+ytH7Fz3d3CqkDzHBWvbN1D4DjuWZ
-	C
-X-Google-Smtp-Source: AGHT+IE1T64RzY6SQAo/CoKesHPLNU5CSm34ZOwtFdyydPV2JaPr1t8PQjxBRzakKMKeng0mK2DfzQ==
-X-Received: by 2002:a17:903:186:b0:1dd:7df8:9ed7 with SMTP id z6-20020a170903018600b001dd7df89ed7mr11960029plg.15.1711401402537;
-        Mon, 25 Mar 2024 14:16:42 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
-        by smtp.gmail.com with ESMTPSA id z10-20020a170902708a00b001e0d9daa927sm759086plk.49.2024.03.25.14.16.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 14:16:41 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rorgN-009yrN-0Y;
-	Tue, 26 Mar 2024 08:16:39 +1100
-Date: Tue, 26 Mar 2024 08:16:39 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: syzbot <syzbot+fa52b47267f5cac8c654@syzkaller.appspotmail.com>
-Cc: chandan.babu@oracle.com, djwong@kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [xfs?] possible deadlock in xfs_qm_dqget
-Message-ID: <ZgHptxp5Bc4tf3Wc@dread.disaster.area>
-References: <0000000000007b5ec50614821d6f@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iwdftf8vc89cVnsG16GVY2xgx4p5PAOId++DpMcIQfAD1wPtFpYZ5onfTyuy1rDqImdqn+ARcXZcmbjNOq2YGM9ERktC4NZVhNSpe1e6MKJORMbik9pk86cBBTAhpR9LqVtUomqAGnice/XRvnbDrNpwCztAJuKwsipb8fQS+Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D8gI9Afh; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711401445; x=1742937445;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=liQpZznPmxJSTYEPb0Eg7dXTRfDNwgyeGuWMxlxmPcI=;
+  b=D8gI9AfhAvJTPQnUMYgW/FQXaFICf6MPbVnGfPt7W5+Eq3v+/x0Hh+9T
+   6InSd0s1BX97Fyq16we5C6totFA+gR2x8p1Ftyx/iZb628f5hQMnMI53x
+   Oomdi9bY55Cd15Cm5sXlfMaH3/0douN7E2ReS2ZnS15vYbEI7yQdn+oVD
+   6yqYbEEhUWbyOKf/EUl8Qv14GM+42TvCSxRcBTzprwztmOZunQLHcNIqv
+   swxm8ACDcLMnQhTCjziGSf4Q4c5KV0K0tebk7AzUSlAUF3Sdhc8hEyFJS
+   NtnMYpBxByXofV6SbjDoIgnADKhMrJlBdVgfGvEnCIcgjpl3JnOeCDh0B
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="17161036"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="17161036"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 14:17:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="16129744"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 14:17:23 -0700
+Date: Mon, 25 Mar 2024 14:17:23 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 130/130] RFC: KVM: x86, TDX: Add check for
+ KVM_SET_CPUID2
+Message-ID: <20240325211723.GJ2357401@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <d394938197044b40bbe6d9ce2402f72a66a99e80.1708933498.git.isaku.yamahata@intel.com>
+ <e1eb51e258138cd145ec9a461677304cb404cc43.camel@intel.com>
+ <cfe0def93375acf0459f891cc77cb68d779bd08c.camel@intel.com>
+ <f019df484b2fb636b34f64b1126afa7d2b086c88.camel@intel.com>
+ <bea6cb485ba67f0160c6455c77cf75e5b6f8eaf8.camel@intel.com>
+ <1f463eb3ae517ee8f68986ee4781a29dea3c5a89.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0000000000007b5ec50614821d6f@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f463eb3ae517ee8f68986ee4781a29dea3c5a89.camel@intel.com>
 
-On Mon, Mar 25, 2024 at 01:35:33PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=102618b1180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=fa52b47267f5cac8c654
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/disk-fe46a7dd.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinux-fe46a7dd.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/bzImage-fe46a7dd.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+fa52b47267f5cac8c654@syzkaller.appspotmail.com
-> 
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
-> ------------------------------------------------------
-> syz-executor.5/6047 is trying to acquire lock:
-> ffffffff8e21f720 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:303 [inline]
-> ffffffff8e21f720 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3746 [inline]
-> ffffffff8e21f720 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3827 [inline]
-> ffffffff8e21f720 (fs_reclaim){+.+.}-{0:0}, at: kmem_cache_alloc+0x48/0x340 mm/slub.c:3852
-> 
-> but task is already holding lock:
-> ffff88801f58d958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqget_cache_insert fs/xfs/xfs_dquot.c:825 [inline]
-> ffff88801f58d958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqget+0x2c4/0x640 fs/xfs/xfs_dquot.c:901
-> 
-> which lock already depends on the new lock.
+On Mon, Mar 25, 2024 at 03:32:59PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-#syz dup: possible deadlock in xfs_qm_dqget_cache_insert
+> On Mon, 2024-03-25 at 11:14 +0000, Huang, Kai wrote:
+> > To confirm, I mean you want to simply make KVM_SET_CPUID2 return error for TDX
+> > guest?
+> > 
+> > It is acceptable to me, and I don't see any conflict with Sean's comments.
+> > 
+> > But I don't know Sean's perference.  As he said, I think  the consistency
+> > checking is quite straight-forward:
+> > 
+> > "
+> > It's not complicated at all.  Walk through the leafs defined during
+> > TDH.MNG.INIT, reject KVM_SET_CPUID if a leaf isn't present or doesn't match
+> > exactly.
+> > "
+> > 
+> Yea, I'm just thinking if we could take two patches down to one small one it might be a way to
+> essentially break off this work to another series without affecting the ability to boot a TD. It
+> *seems* to be the way things are going.
+> 
+> > So to me it's not a big deal. 
+> > 
+> > Either way, we need a patch to handle SET_CPUID2:
+> > 
+> > 1) if we go option 1) -- that is reject SET_CPUID2 completely -- we need to make
+> > vcpu's CPUID point to KVM's saved CPUID during TDH.MNG.INIT.
+> 
+> Ah, I missed this part. Can you elaborate? By dropping these two patches it doesn't prevent a TD
+> boot. If we then reject SET_CPUID, this will break things unless we make other changes? And they are
+> not small?
+
+If we go forthis, the extended topology enumeration (cpuid[0xb or 0x1f]) would
+need special handling because it's per-vcpu. not TD wide.
 -- 
-Dave Chinner
-david@fromorbit.com
+Isaku Yamahata <isaku.yamahata@intel.com>
 
