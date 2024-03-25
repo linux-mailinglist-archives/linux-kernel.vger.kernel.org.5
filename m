@@ -1,166 +1,119 @@
-Return-Path: <linux-kernel+bounces-117169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045A188A829
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC8DF88A82B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:04:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AED1B1F66A08
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:04:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 803981F66D66
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E52F5DF23;
-	Mon, 25 Mar 2024 13:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OMf5Mp3A"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F19B7172D;
+	Mon, 25 Mar 2024 13:46:45 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F74418E06;
-	Mon, 25 Mar 2024 13:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A363DAC01
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711374315; cv=none; b=SNM7PFsefZfi7jozshWWnGukbasfUlfatcS4hjpC7o8Y04x7241mcfkM4bfjBsFUXg12E/qxpWhfDVNwqgjC3Ku5f+Dq5UM6o2n7tEoLSCOOm//eEbMph3xJq8YE3bScQBNyYpTR1OeNb7tHeaR9olc7eKDgZhZz9JVOSFy8XCk=
+	t=1711374405; cv=none; b=h5ypvpXkn5gdvKn0QPOaI0VAnygxKc256josYKt6esNw4Jjfo1rDx7bR74MXdsfClB7rDFbXw5uOvBIxj3US6O91i36r7f7RSA4xABi9TuhOT4XOWQgxpUwmATUcNeTqvfj0xuHB8frYWde4Po9i5r38aDoRN6YGsjVccuTX8ZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711374315; c=relaxed/simple;
-	bh=90Iz9iyrvW8Dl1oS3Fv68W9xqNcVjqXw7FwBwxU9Ewo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=if9ouedcJ3csT85xVplcefeD6Q1cOFZWm6mGeGE0NkURb2RHYFPJ7iC7SG1/6xf4Rygk4TOb9uomlI3HJYmRJCzdh7KM1mrFjYvm59RYiLlgU+3/nU7OYyf9QI+rQ7SqQDesUNfAjB3mSoyzP++hvXcEj46tFTXQKeRePt0n188=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OMf5Mp3A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D87BC433C7;
-	Mon, 25 Mar 2024 13:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711374315;
-	bh=90Iz9iyrvW8Dl1oS3Fv68W9xqNcVjqXw7FwBwxU9Ewo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OMf5Mp3AFZOQGWZyqAgvH2/qFFGURd1eoGZRSmzifZNNO83wi2vaP8EzZGXVN5tWC
-	 hLvRWOLGv6OecYkuZ7VQp/wcauHKCv83nCgJyqPInfaifVBn5x2xPZvA1jgvrGfr5e
-	 lVqDOp/NMaYejmj6pjvGEZJwusxtfCp97fB1P0AFvovFagB0Syydpi0H1wvOMcb/rs
-	 Mmrnz6hG80YNA+nF/MwFkDvkSkcYtRd/7IACuVgVgur4r0NidOtaJDbJ4YWlQv8PBY
-	 4IVa8nxuuVzDpxRlgt+x3mhKCnIDmXpIZv1WexIwdyR3CEU1cRiN6Vik+Tx8/kaxgW
-	 6o+4jYxTmT+vw==
-Date: Mon, 25 Mar 2024 14:45:09 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-	bhelgaas@google.com, manivannan.sadhasivam@linaro.org,
-	fancer.lancer@gmail.com, u.kleine-koenig@pengutronix.de,
-	dlemoal@kernel.org, yoshihiro.shimoda.uh@renesas.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, srk@ti.com
-Subject: Re: [PATCH v4] PCI: keystone: Fix pci_ops for AM654x SoC
-Message-ID: <ZgF_5fYsI5lOFjOv@ryzen>
-References: <20240325053722.1955433-1-s-vadapalli@ti.com>
- <ZgFemQ8gHpB8yMef@ryzen>
- <ea0294d4-85d1-4784-acd7-dd247165f69b@ti.com>
+	s=arc-20240116; t=1711374405; c=relaxed/simple;
+	bh=CH/dCXWNi2/KMcpRzScslB9UiE4F2GrOGvUbtKluF50=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ZkiL+OZtXGF6WV6/LK0rwGw7sF1NLoS9J6rztAy7JXttHLOZ3+s3r8byGj57CeKlLPIiXbpW1h0AUPCt5pRYbFOHeHZwJTG+79npd6hhifZGAfiI/wj/F1632ybN/ASHAHG0JaoWujEdeOg+yHsEdNVBxPFW/1EXOyr0YKUDzGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4V3Dfx0HVszXjks;
+	Mon, 25 Mar 2024 21:43:53 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4ED3B140258;
+	Mon, 25 Mar 2024 21:46:37 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 25 Mar 2024 21:46:36 +0800
+Subject: Re: [PATCH V2] ubifs: correct UBIFS_DFS_DIR_LEN macro definition and
+ improve code clarity
+To: ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
+	<miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>
+References: <20240325125713.95035-1-wangzhaolong1@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <3fce4fde-0163-4fd4-feb0-2a68aa785e2f@huawei.com>
+Date: Mon, 25 Mar 2024 21:46:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ea0294d4-85d1-4784-acd7-dd247165f69b@ti.com>
+In-Reply-To: <20240325125713.95035-1-wangzhaolong1@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-Hello Siddharth,
-
-On Mon, Mar 25, 2024 at 05:52:28PM +0530, Siddharth Vadapalli wrote:
-> On Mon, Mar 25, 2024 at 12:23:05PM +0100, Niklas Cassel wrote:
-> > On Mon, Mar 25, 2024 at 11:07:22AM +0530, Siddharth Vadapalli wrote:
-> > > @@ -822,6 +788,23 @@ static int __init ks_pcie_host_init(struct dw_pcie_rp *pp)
-> > >  	if (ret < 0)
-> > >  		return ret;
-> > >
-> > 
-> > > +	if (!ks_pcie->is_am6) {
-> > 
-> > Perhaps add a comment here stating WHY this is needed for v3.65a (!is_am6).
-> > 
-> > From reading the old threads, it appears that v3.65a:
-> > -Has no support for iATUs. iATU-specific resource handling code is to be
-> >  bypassed for v3.65 h/w. Thus v3.65a has it's own .child_ops implementation,
-> >  so that pcie-designware-host.c does not configure the iATUs.
-> > -v3.65a has it's own .msi_init implementation, so that pcie-designware-host.c
-> >  does not call dw_pcie_msi_host_init() to configure the MSI controller.
-> > 
-> > While 4.90a:
-> > -Does have iATU support.
-> > -Does use the generic dw_pcie_msi_host_init().
-> > 
-> > Considering the major differences (with v3.65a being the outlier) here,
-> > I think it would have been a much wiser idea to have two different glue
-> > drivers for these two compatibles (ti,keystone-pcie and ti,am654-pcie-rc).
-> > 
-> > Right now the driver is quite hard to read, most of the functions in this
-> > driver exist because v3.65a does not have an iATU and does not use the
-> > generic DWC way to handle MSIs. Additionally, you have "if (!ks_pcie->is_am6)"
-> > spread out all over the driver, to control quite major things, like if you
-> > should overload .child_ops, or if you should set up inbound translation without
-> > an iATU. This makes is even harder to see which code is actually used for
-> > am654... like the fact that it actually uses the generic way to handle MSIs...
-> > 
-> > The driver for am654 would be much nicer since many of the functions in
-> > this driver would not be needed (and the fact that you have only implemented
-> > EP support for am654 and not for v3.65a). All EP related stuff would be in
-> > the am654 file/driver.
-> > You could keep the quirky stuff for v3.65a in the existing pci-keystone.c
-> > driver.
-> > 
-> > (I guess if there is a function that is identical between the twos, you could
-> > have a pci-keystone-common.{c,h}  that can be used by both drivers, but from
-> > the looks of it, they seem to share very little code.
+ÔÚ 2024/3/25 20:57, ZhaoLong Wang Ð´µÀ:
+> The UBIFS_DFS_DIR_LEN macro, which defines the maximum length of the UBIFS
+> debugfs directory name, has an incorrect formula and misleading comments.
+> The current formula is (3 + 1 + 2*2 + 1), which assumes that both UBI device
+> number and volume ID are limited to 2 characters. However, UBI device number
+> ranges from 0 to 37 (2 characters), and volume ID ranges from 0 to 127 (up
+> to 3 characters).
 > 
-> Thank you for reviewing the patch. I agree that two drivers will be
-> better considering the !ks_pcie->is_am6 present throughout the driver.
-> However, I hope you notice the fact that commit:
-> 6ab15b5e7057 PCI: dwc: keystone: Convert .scan_bus() callback to use add_bus
-> introduced a regression in a driver which was working prior to that
-> commit for AM654. While there are flaws in the driver and it needs to be
-> split to handle v3.65a and other versions in a cleaner manner, I am
-> unable to understand why that is a precursor to fixing the regression.
+> Although the current code works due to the cancellation of mathematical
+> errors (9 + 1 = 10, which matches the correct UBIFS_DFS_DIR_LEN value), it
+> can lead to confusion and potential issues in the future.
 > 
-> If splitting the driver is the only way to fix this regression, please
-> let me know and I will work on that instead, though it will take up more
-> time.
+> This patch aims to improve the code clarity and maintainability by making
+> the following changes:
+> 
+> 1. Corrects the UBIFS_DFS_DIR_LEN macro definition to (3 + 1 + 2 + 3 + 1),
+>     accommodating the maximum lengths of both UBI device number and volume ID,
+>     plus the separators and null terminator.
+> 2. Updates the snprintf calls to use UBIFS_DFS_DIR_LEN instead of
+>     UBIFS_DFS_DIR_LEN + 1, removing the unnecessary +1.
+> 3. Modifies the error checks to compare against UBIFS_DFS_DIR_LEN using >=
+>     instead of >, aligning with the corrected macro definition.
+> 4. Removes the redundant +1 in the dfs_dir_name array definitions in ubi.h
+>     and debug.h.
+> 5. Renames the duplicated UBIFS_DFS_DIR_LEN and UBIFS_DFS_DIR_NAME macros in
+>     the sysfs-related code (sysfs.c and ubifs.h) to UBIFS_SYSFS_DIR_LEN and
+>     UBIFS_SYSFS_DIR_NAME, respectively, to differentiate their usage from the
+>     debugfs constants.
+> 
+[...]
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index 1f3ea879d93a..549e147c5ce5 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -159,10 +159,11 @@
+>   
+>   /*
+>    * The UBIFS sysfs directory name pattern and maximum name length (3 for "ubi"
+> - * + 1 for "_" and plus 2x2 for 2 UBI numbers and 1 for the trailing zero byte.
+> + * + 1 for "_" and 2 for UBI device numbers and 3 for volume number and 1 for
+> + * the trailing zero byte.
+>    */
+> -#define UBIFS_DFS_DIR_NAME "ubi%d_%d"
+> -#define UBIFS_DFS_DIR_LEN  (3 + 1 + 2*2 + 1)
+> +#define UBIFS_SYSFS_DIR_NAME "ubi%d_%d"
+> +#define UBIFS_SYSFS_DIR_LEN  (3 + 1 + 2 + 3 + 1)
 
-I think you are misunderstanding me.
+I don't thinks this renaming is necessary, just remove it from "ubifs.h" 
+like v1 does.
+>   
+>   /*
+>    * Lockdep classes for UBIFS inode @ui_mutex.
+> 
 
-I think this patch is fine, except for the comment that I gave:
-"Perhaps add a comment here stating WHY this is needed for v3.65a (!is_am6)."
-
-Like:
-
-/*
- * This is only needed for !am654 since it has its own msi_irq_chip
- * implementation. (am654 uses the generic msi_irq_chip implementation.)
- */
-if (!ks_pcie->is_am6) {
-	...
-}
-
-
-In fact, if you move this code to ks_pcie_msi_host_init(), instead of
-ks_pcie_host_init(), you would not need a comment (or a if (!ks_pcie->is_am6)),
-since ks_pcie_msi_host_init() is only executed by !am654.
-
-
-
-
-My suggestion to split this driver to two different drivers is just because
-I noticed how different they are (am654 has iATUs, uses generic msi_irq_chip
-implementation and has EP-mode support. !am654 has no iATUs, its own MSI
-implementation and no EP-mode support.)
-
-So the am654 driver would look like most other DWC glue drivers.
-The non-am654 driver would look mostly like it looks today, except you would
-remove the EP-mode support.
-
-However, this suggestion can of course be implemented sometime in the future
-and should not be a blocker for the patch in $subject.
-
-
-Kind regards,
-Niklas
 
