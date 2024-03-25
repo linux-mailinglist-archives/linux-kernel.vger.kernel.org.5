@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-116964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC10D88A5BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:05:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8D0488AFB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:21:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 433CA320660
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5FE6CC1966
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38FDC153827;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396EC153828;
 	Mon, 25 Mar 2024 12:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JxLzE8B1"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="U+ZkKw88"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C54901586E7
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6EB013C9BF
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711368248; cv=none; b=om05rZsFoWGBbOgl8kvPRIeehlrbUhsbUk4ymRReUZrMjrVAeDaDn3vEij6J0J1QMDAAQCFReP16pUlLijWgIR68JRRTKewUwd5TEtunz1xfcl3ktvE2ZkweQiHYu+d83tQLK4woTC4xwncvFU4vHneoKsge1ggRoZ8imShhKW0=
+	t=1711368255; cv=none; b=QPwC5Zpe0LwGN+4n0ptjFuU9IjWJNKnwFJ5r6wm3UkGKaeQpf/44uMGNkIeFKlMZOT0JlWV9rkHXK1RhGfeb6kh6ynNaOoD1yls+dj3dYDNDRJJeBB6bE6clsgXX0RwDET/DNbQZXlEykFcWpimj/l/yxPgLniO7J4IBd68BQR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711368248; c=relaxed/simple;
-	bh=7jHHqk7qDzRtTMvU3NTL2HuDw9jtVH01ZEEZaWVafZc=;
+	s=arc-20240116; t=1711368255; c=relaxed/simple;
+	bh=7ZDq4vMz8hEt475zSnnbMd2h1vZxeifEWmL6TiXipU0=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lw5+UO3G+p61Ob8BD1q6xCkULiBc1+E0HHpsRMl/CSVMid8bg1g8z+11StcRElf5g3Scv+jTCZiJuyU3e65s4VcOxd1ca3UIXSnnSHmWh31Wt1MwMGptj5d5bVvaJyaB6TNGUl+xB7Jp8zLFfgvkMGpxScpj61JSWjmYqS3UPw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JxLzE8B1; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version:Content-Type; b=uOnrLw3BUyoxbL1hDzX+1e3dCt83ovesmR0g4cPVYOV8Swuv9NOyS30TLlG0Uzf4TrFQybUXxVIRu+Ng0wEYI5lwI6WE90HeBfrg0C1LMrGZxBO1sMRl4tRN6xU5bgVQOUCgLjcfVuw/iFuEFv142q/WdtZk77yRuOIsLcDc3Tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=U+ZkKw88; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711368244;
-	bh=7jHHqk7qDzRtTMvU3NTL2HuDw9jtVH01ZEEZaWVafZc=;
+	s=mail; t=1711368252;
+	bh=7ZDq4vMz8hEt475zSnnbMd2h1vZxeifEWmL6TiXipU0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JxLzE8B1wPUWYNm5jcR9LHyMaPzypsrKPOukIUZkUH9ZXYZwwp7c77MUlfHIcP2m9
-	 DIN221kxLve2nEpsZXv/r9YYpS6pjoE8Y11qhvf7rMytxi6/S3xEkHk5x/Q5fpeR79
-	 djaqsmArB9Er2JSukPj/F2LNRCnVPk2Bq7SvnRIvYRcFUf55PlpCuhoOM2MLzAv9Rd
-	 9P09LEy59POFl5ugledseZIhSNFc6p3sy/0ynUWAc9iZ0Cy+7E2YNC+IsYKbWRPsFo
-	 G9zTRnCpZXV9m7ZMU3CBaRHhjbmJ3//yfusk6PCQjYRz7+kPcNlHTV6YkiiRkRHZ7w
-	 VJYwPnIBYtsEw==
+	b=U+ZkKw88hWgf6e7+d+rfdeVwpxy/kRuHvDapcAJZ/r+WpJhUaXTU7K4Kp2wqd2mRD
+	 kfyABD3ud/8uSasKSARthRDIUszaPi+d4ZPlOtVMIBvCb6LnBd/ilIlhZacswtIiof
+	 acXmDrJQAKDufiptGuQpigE/jLgFJs+gKnv0pYZc5eSHC1u21O43d+w1vQ8CZn+Do1
+	 cOLnviHyS09qJ3YLKIcLxJ3xg+IlRbWkRsNfM9s6tl+O20R3HUflzIQ3dgTBhSqn5p
+	 xwUd95757v817So371NtHEYtE8v/TRFofexThKyEO42oFgb50SHHOIL4w0cLbD3Odd
+	 90aJTMWW+Rw7A==
 Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 89D9837810C0;
-	Mon, 25 Mar 2024 12:04:03 +0000 (UTC)
-Date: Mon, 25 Mar 2024 14:03:45 +0200
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 25C9B3780626;
+	Mon, 25 Mar 2024 12:04:11 +0000 (UTC)
+Date: Mon, 25 Mar 2024 14:04:09 +0200
 From: Pekka Paalanen <pekka.paalanen@collabora.com>
 To: Louis Chauvet <louis.chauvet@bootlin.com>
 Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
@@ -61,11 +61,11 @@ Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
  jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
  thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
  nicolejadeyee@google.com
-Subject: Re: [PATCH v5 01/16] drm/vkms: Code formatting
-Message-ID: <20240325140345.4734f165.pekka.paalanen@collabora.com>
-In-Reply-To: <20240313-yuv-v5-1-e610cbd03f52@bootlin.com>
+Subject: Re: [PATCH v5 02/16] drm/vkms: Use drm_frame directly
+Message-ID: <20240325140409.654c2eb3.pekka.paalanen@collabora.com>
+In-Reply-To: <20240313-yuv-v5-2-e610cbd03f52@bootlin.com>
 References: <20240313-yuv-v5-0-e610cbd03f52@bootlin.com>
-	<20240313-yuv-v5-1-e610cbd03f52@bootlin.com>
+	<20240313-yuv-v5-2-e610cbd03f52@bootlin.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,174 +73,160 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fpgQUd5yCj7yHb9c/ZPh1yJ";
+Content-Type: multipart/signed; boundary="Sig_/BdJf3z6sTnXQ19u=UnJwhMw";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 
---Sig_/fpgQUd5yCj7yHb9c/ZPh1yJ
+--Sig_/BdJf3z6sTnXQ19u=UnJwhMw
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 13 Mar 2024 18:44:55 +0100
+On Wed, 13 Mar 2024 18:44:56 +0100
 Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 
-> Few no-op changes to remove double spaces and fix wrong alignments.
+> From: Arthur Grillo <arthurgrillo@riseup.net>
 >=20
+> Remove intermidiary variables and access the variables directly from
+> drm_frame. These changes should be noop.
+>=20
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
 > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> ---
 
-Reviewed-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
 
 Thanks,
 pq
 
 
-> ---
->  drivers/gpu/drm/vkms/vkms_composer.c | 10 +++++-----
->  drivers/gpu/drm/vkms/vkms_crtc.c     |  6 ++----
->  drivers/gpu/drm/vkms/vkms_drv.c      |  3 +--
->  drivers/gpu/drm/vkms/vkms_plane.c    |  8 ++++----
->  4 files changed, 12 insertions(+), 15 deletions(-)
+
+>  drivers/gpu/drm/vkms/vkms_drv.h       |  3 ---
+>  drivers/gpu/drm/vkms/vkms_formats.c   | 12 +++++++-----
+>  drivers/gpu/drm/vkms/vkms_plane.c     |  3 ---
+>  drivers/gpu/drm/vkms/vkms_writeback.c |  5 -----
+>  4 files changed, 7 insertions(+), 16 deletions(-)
 >=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/=
-vkms_composer.c
-> index e7441b227b3c..c6d9b4a65809 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -96,7 +96,7 @@ static u16 lerp_u16(u16 a, u16 b, s64 t)
->  	s64 a_fp =3D drm_int2fixp(a);
->  	s64 b_fp =3D drm_int2fixp(b);
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
+drv.h
+> index 8f5710debb1e..b4b357447292 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -31,9 +31,6 @@ struct vkms_frame_info {
+>  	struct drm_rect rotated;
+>  	struct iosys_map map[DRM_FORMAT_MAX_PLANES];
+>  	unsigned int rotation;
+> -	unsigned int offset;
+> -	unsigned int pitch;
+> -	unsigned int cpp;
+>  };
 > =20
-> -	s64 delta =3D drm_fixp_mul(b_fp - a_fp,  t);
-> +	s64 delta =3D drm_fixp_mul(b_fp - a_fp, t);
+>  struct pixel_argb_u16 {
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
+kms_formats.c
+> index 36046b12f296..172830a3936a 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> @@ -11,8 +11,10 @@
 > =20
->  	return drm_fixp2int(a_fp + delta);
->  }
-> @@ -302,8 +302,8 @@ static int compose_active_planes(struct vkms_writebac=
-k_job *active_wb,
->  void vkms_composer_worker(struct work_struct *work)
+>  static size_t pixel_offset(const struct vkms_frame_info *frame_info, int=
+ x, int y)
 >  {
->  	struct vkms_crtc_state *crtc_state =3D container_of(work,
-> -						struct vkms_crtc_state,
-> -						composer_work);
-> +							  struct vkms_crtc_state,
-> +							  composer_work);
->  	struct drm_crtc *crtc =3D crtc_state->base.crtc;
->  	struct vkms_writeback_job *active_wb =3D crtc_state->active_writeback;
->  	struct vkms_output *out =3D drm_crtc_to_vkms_output(crtc);
-> @@ -328,7 +328,7 @@ void vkms_composer_worker(struct work_struct *work)
->  		crtc_state->gamma_lut.base =3D (struct drm_color_lut *)crtc->state->ga=
-mma_lut->data;
->  		crtc_state->gamma_lut.lut_length =3D
->  			crtc->state->gamma_lut->length / sizeof(struct drm_color_lut);
-> -		max_lut_index_fp =3D drm_int2fixp(crtc_state->gamma_lut.lut_length  - =
-1);
-> +		max_lut_index_fp =3D drm_int2fixp(crtc_state->gamma_lut.lut_length - 1=
-);
->  		crtc_state->gamma_lut.channel_value2index_ratio =3D drm_fixp_div(max_l=
-ut_index_fp,
->  									       u16_max_fp);
-> =20
-> @@ -367,7 +367,7 @@ void vkms_composer_worker(struct work_struct *work)
->  		drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
+> -	return frame_info->offset + (y * frame_info->pitch)
+> -				  + (x * frame_info->cpp);
+> +	struct drm_framebuffer *fb =3D frame_info->fb;
+> +
+> +	return fb->offsets[0] + (y * fb->pitches[0])
+> +			      + (x * fb->format->cpp[0]);
 >  }
 > =20
-> -static const char * const pipe_crc_sources[] =3D {"auto"};
-> +static const char *const pipe_crc_sources[] =3D { "auto" };
+>  /*
+> @@ -131,12 +133,12 @@ void vkms_compose_row(struct line_buffer *stage_buf=
+fer, struct vkms_plane_state
+>  	u8 *src_pixels =3D get_packed_src_addr(frame_info, y);
+>  	int limit =3D min_t(size_t, drm_rect_width(&frame_info->dst), stage_buf=
+fer->n_pixels);
 > =20
->  const char *const *vkms_get_crc_sources(struct drm_crtc *crtc,
->  					size_t *count)
-> diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms=
-_crtc.c
-> index 61e500b8c9da..7586ae2e1dd3 100644
-> --- a/drivers/gpu/drm/vkms/vkms_crtc.c
-> +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-> @@ -191,8 +191,7 @@ static int vkms_crtc_atomic_check(struct drm_crtc *cr=
-tc,
->  		return ret;
+> -	for (size_t x =3D 0; x < limit; x++, src_pixels +=3D frame_info->cpp) {
+> +	for (size_t x =3D 0; x < limit; x++, src_pixels +=3D frame_info->fb->fo=
+rmat->cpp[0]) {
+>  		int x_pos =3D get_x_position(frame_info, limit, x);
 > =20
->  	drm_for_each_plane_mask(plane, crtc->dev, crtc_state->plane_mask) {
-> -		plane_state =3D drm_atomic_get_existing_plane_state(crtc_state->state,
-> -								  plane);
-> +		plane_state =3D drm_atomic_get_existing_plane_state(crtc_state->state,=
- plane);
->  		WARN_ON(!plane_state);
+>  		if (drm_rotation_90_or_270(frame_info->rotation))
+>  			src_pixels =3D get_packed_src_addr(frame_info, x + frame_info->rotate=
+d.y1)
+> -				+ frame_info->cpp * y;
+> +				+ frame_info->fb->format->cpp[0] * y;
 > =20
->  		if (!plane_state->visible)
-> @@ -208,8 +207,7 @@ static int vkms_crtc_atomic_check(struct drm_crtc *cr=
-tc,
-> =20
->  	i =3D 0;
->  	drm_for_each_plane_mask(plane, crtc->dev, crtc_state->plane_mask) {
-> -		plane_state =3D drm_atomic_get_existing_plane_state(crtc_state->state,
-> -								  plane);
-> +		plane_state =3D drm_atomic_get_existing_plane_state(crtc_state->state,=
- plane);
-> =20
->  		if (!plane_state->visible)
->  			continue;
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_=
-drv.c
-> index dd0af086e7fa..83e6c9b9ff46 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> @@ -81,8 +81,7 @@ static void vkms_atomic_commit_tail(struct drm_atomic_s=
-tate *old_state)
->  	drm_atomic_helper_wait_for_flip_done(dev, old_state);
-> =20
->  	for_each_old_crtc_in_state(old_state, crtc, old_crtc_state, i) {
-> -		struct vkms_crtc_state *vkms_state =3D
-> -			to_vkms_crtc_state(old_crtc_state);
-> +		struct vkms_crtc_state *vkms_state =3D to_vkms_crtc_state(old_crtc_sta=
-te);
-> =20
->  		flush_work(&vkms_state->composer_work);
+>  		plane->pixel_read(src_pixels, &out_pixels[x_pos]);
 >  	}
+> @@ -223,7 +225,7 @@ void vkms_writeback_row(struct vkms_writeback_job *wb,
+>  	struct pixel_argb_u16 *in_pixels =3D src_buffer->pixels;
+>  	int x_limit =3D min_t(size_t, drm_rect_width(&frame_info->dst), src_buf=
+fer->n_pixels);
+> =20
+> -	for (size_t x =3D 0; x < x_limit; x++, dst_pixels +=3D frame_info->cpp)
+> +	for (size_t x =3D 0; x < x_limit; x++, dst_pixels +=3D frame_info->fb->=
+format->cpp[0])
+>  		wb->pixel_write(dst_pixels, &in_pixels[x]);
+>  }
+> =20
 > diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkm=
 s_plane.c
-> index e5c625ab8e3e..5a8d295e65f2 100644
+> index 5a8d295e65f2..21b5adfb44aa 100644
 > --- a/drivers/gpu/drm/vkms/vkms_plane.c
 > +++ b/drivers/gpu/drm/vkms/vkms_plane.c
-> @@ -117,10 +117,10 @@ static void vkms_plane_atomic_update(struct drm_pla=
-ne *plane,
->  	memcpy(&frame_info->map, &shadow_plane_state->data, sizeof(frame_info->=
-map));
->  	drm_framebuffer_get(frame_info->fb);
->  	frame_info->rotation =3D drm_rotation_simplify(new_state->rotation, DRM=
-_MODE_ROTATE_0 |
-> -						     DRM_MODE_ROTATE_90 |
-> -						     DRM_MODE_ROTATE_270 |
-> -						     DRM_MODE_REFLECT_X |
-> -						     DRM_MODE_REFLECT_Y);
-> +									  DRM_MODE_ROTATE_90 |
-> +									  DRM_MODE_ROTATE_270 |
-> +									  DRM_MODE_REFLECT_X |
-> +									  DRM_MODE_REFLECT_Y);
-> =20
+> @@ -125,9 +125,6 @@ static void vkms_plane_atomic_update(struct drm_plane=
+ *plane,
 >  	drm_rect_rotate(&frame_info->rotated, drm_rect_width(&frame_info->rotat=
 ed),
 >  			drm_rect_height(&frame_info->rotated), frame_info->rotation);
+> =20
+> -	frame_info->offset =3D fb->offsets[0];
+> -	frame_info->pitch =3D fb->pitches[0];
+> -	frame_info->cpp =3D fb->format->cpp[0];
+>  	vkms_plane_state->pixel_read =3D get_pixel_conversion_function(fmt);
+>  }
+> =20
+> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms=
+/vkms_writeback.c
+> index bc724cbd5e3a..c8582df1f739 100644
+> --- a/drivers/gpu/drm/vkms/vkms_writeback.c
+> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
+> @@ -149,11 +149,6 @@ static void vkms_wb_atomic_commit(struct drm_connect=
+or *conn,
+>  	crtc_state->active_writeback =3D active_wb;
+>  	crtc_state->wb_pending =3D true;
+>  	spin_unlock_irq(&output->composer_lock);
+> -
+> -	wb_frame_info->offset =3D fb->offsets[0];
+> -	wb_frame_info->pitch =3D fb->pitches[0];
+> -	wb_frame_info->cpp =3D fb->format->cpp[0];
+> -
+>  	drm_writeback_queue_job(wb_conn, connector_state);
+>  	active_wb->pixel_write =3D get_pixel_write_function(wb_format);
+>  	drm_rect_init(&wb_frame_info->src, 0, 0, crtc_width, crtc_height);
 >=20
 
 
---Sig_/fpgQUd5yCj7yHb9c/ZPh1yJ
+--Sig_/BdJf3z6sTnXQ19u=UnJwhMw
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYBaCIACgkQI1/ltBGq
-qqeR7A//ZP3P4O6DhcAZt6lM343JU/XK0AmkWgZEUE6sN5F1PVm8E5F5mxEIHqYX
-vq8BrK9FZTILnbsY09ebfxDDvY3BKAbuUmbnsw0P3qgaJU5cs7JBq72Z7Qi8iTUP
-qCCqDGEhWJO0Z2I67dgN/vx3h62Di1IK8xaZTL9NwIxshK2CtDCkDmR0FvVwM69X
-D/pWMXmEw4xmzWK/Gh8C+/avdqVY+MG2Gm26/0/DPuo4rKvj7ZFneNX+qjUivIpj
-lr0eADvZWfCuVqh/ro/SrDKcbFUzw7pOxTVkEqkMzZYbX6DIcYbd6d6pyu5dBapv
-xiPAlLTlEe+5TZyzcXtfhLmp4WPBydlJt2Ktar4FUNEmAJLwcduS1ouhSu/ONCMw
-WP55MaqBlloC14dAgFNDMhQXd8AZ/FWsPt3PsAeVPNL9jH2gsA1mdxW5h79yroWX
-LBW1KOjRRiHK+vPTIvx41MdITn/eJmBn8L7B/aLoYHON9798OSBX9KHYGw43jtEU
-8MOdgIoRKYxx+fyr6zauRX2vJ5ST7tY+xTuXzlnR4yyOAyi3yKmo4K+nh0FBZ+yS
-IVUlP6UquGQ4rMtxIq4EdQ5ZPnxuO6cE2G3cGlAsx0wWpN83zhLOdmAx+9Gm+90I
-iWxd8XhrsihiGUDDOUOUh+z3V30ftQEyhBpq1og7QlKvtF4I3qA=
-=Hb0E
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYBaDkACgkQI1/ltBGq
+qqe1Aw//Wn9n1vIBqbsxjE914w2DpwuU5EDI3PNSERhY76qxWZQd2qqyCV9+01/b
+d/0o6j8TDuTUUwLxFPrzVBez0ksJFkBDfPHQ9ZjEHzamMh2sjk271tXv5wPxMAJO
+NaVQv2DCyELFBrLEtVn2yA8i8EiUtRfxa8/T7vFZr7sxLSmd6nISi8nNkhiQqSZC
+RfXE5c0RAptCF0xGS1QdCtx6W20A5QzP/edO+93gxL/ubC7OxuWF53RdBxnqjWlf
+OxN/350Td9hljK7jnhOPkGvrLCunFuIMaygmKhJleRR7tSWyqzaYglptfXmgHPUA
+r/uHk9adHCJMHDnTCRFj4n/9Qy8W23GBYXADZs8jTJGC489efDP7LW1oZv9PgaBr
+ym9m6PYFTcx6/AgsdkO8p/1u7XAsYOOC2uziWkrBKoi7OwQy4QcOij+/VLcimm68
+NzuP3spvs5MHWX4aaDFvUSC6RcUZQ7nGC2wQyLRd+wck4aCllsH0Tora+4lB31JB
+HN3HDOC2XHNcodlgmfJJ6P2+vMBizq9LJSFDtOpfcbp/PeisqiBjEJ8i7afgM4Ir
+Kmhwvntlba2KNL+6AYhj6Zo34jVss7WztDYn04J3qSax7avozzZzTOkqZVo2XIrh
+itzLB9nPVrBkh2rFVDJ3A8QAQM/5qTlsnnNx6CDMxV9LQQ8VQGE=
+=5MUp
 -----END PGP SIGNATURE-----
 
---Sig_/fpgQUd5yCj7yHb9c/ZPh1yJ--
+--Sig_/BdJf3z6sTnXQ19u=UnJwhMw--
 
