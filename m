@@ -1,171 +1,93 @@
-Return-Path: <linux-kernel+bounces-118092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D506D88B3E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:22:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6B688B3F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B6752E23C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:22:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D52A61F657B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DC474C1B;
-	Mon, 25 Mar 2024 22:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6C37F7DD;
+	Mon, 25 Mar 2024 22:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CSLHW7Cy"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="FmR5WWpA"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F7A26CDD6
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB74F1CAA5
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711405346; cv=none; b=Sd8PAs85IzPCTrarETGtBc4R1jF+4fIgxMfuJseATA2Dhx4KWzaQwUG5DgsIm1+IV764SatQm2UOjK1krONFklFp9PfidwLikKCOqkxawFmBMvfqUFgkVztdiSUYe3W0Xd+EpJpRfxje+0Ke8xuV51xv58jXZgWeDR8EcUm5XQ0=
+	t=1711405481; cv=none; b=Jmo7SJ+uPCFfAZNT2ENBHpYmTPoFJhm9pE6GWxT0nz5F0gPt7LglCt6zXdiwDVzMNLaAnbfVDnsHYV1HLfacUGJkgSERAmckYRzRA/gIKGbapNsuSOAx9J4KIuvz9IQJ+1q/xFBwuFojuYZpN4IDZEuyzp2pEcPyzunt70qThHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711405346; c=relaxed/simple;
-	bh=vKW+xoILl2neQcke3VqWqq0fiJGp/n972RtgGuEHtnQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=e8Y+t2sfAZLVk21NyHFExxU0QblN5aG6bUfvZR+a2IUxByBwvjOsV3zcFY5ySg49/d9E323Fq+iqZDsVzd6pnnOAeChdd5wS5d28UI2tUpzzzWLIH6SfxjspyHqCgCWlzrqTPhC6lGe/jj6go4jp0Lcf6MwhghpmC2xSsmGnsJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CSLHW7Cy; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1def3340682so39882315ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:22:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711405344; x=1712010144; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=txLs5NtImA2VWZlBubPwip9xSO6gMvbeKarQ47jfmgc=;
-        b=CSLHW7CyyT6U7UQKHXBoMso6EG/UdMwqHhLX3dvQMqVvUoBb8N9y/a7WZYlXYS0w8J
-         lZZxcbgONlYWDY+FpYD95u06UWXol+sD9B+Txemckhg65cQr4RNM8REAkNnSZfatyMwg
-         ZSL1X79HtsEihrrWkHGysemYVR/JEmAQ+1Un/GQbMLFqB92Z2iivH7eVDaUQBgO9uwYb
-         H5JfqbQkTWot1Xrfto5/ZcsRiTkW3y8vJESYovBd7Z9sLz0BydwA6XxG2h4qQtLxspY+
-         kniRpYw8mxM1xTaGFeeY7Z7CGA8VFLlAM21FZLI/3lnjTrlZli3Be3Ai9+abdsDkVaYS
-         wXrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711405344; x=1712010144;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=txLs5NtImA2VWZlBubPwip9xSO6gMvbeKarQ47jfmgc=;
-        b=ue0/VoqTlATj6P7BdJM2Os7rAIxzgK18toHVFivVV80/ERqz6hpIA7qdF8+3xMYGGX
-         ub2Q7fpDuTaWsugrGYqTF5UTNw0gvEyy0GKt7bnpz1yN882z4eNHRbstiTjZQzOe8zfL
-         d7tffXa5Knb7csaSrFxFKLdqw7XPBOK69rd2xS2yZKf/0MZ0fUyb81H2PXyA7/3z3iJB
-         Hq3r1p+e2Nb7+BETDhgG9Yr/dj00xF69e5zE08XK01w6Fh/izDppiINV+LIvaD1qQPd3
-         aQkYMCMKlN9ozC2QDO+JRKveKIndyN8IbaXdHyb6Q9+jafIb+VV7OoOClA7k3plKbg1t
-         bLgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvEfFsgbtF5BMZVoyxPSHCBC4qGMTkSX+SzXrdvF2aFvJXuPbCNXVFhVd4NfMuQByYSviLONzwirdxednfDtzsKSt2aUI4/UngC3qc
-X-Gm-Message-State: AOJu0Yw6+P7bxJUvNFwVjmw6RANLoakSxLuEBBzrR2F/Qy1EQE7mbPYj
-	3dW1kYKTSjuLAbU2TgD7q7upJ9xwFW1hj+Z4RqlNcmxXAmHJG9Nk51t1WE80GhQ=
-X-Google-Smtp-Source: AGHT+IGXh5MDhzVnvBPuf+JgibFces6iZpq1uyXY9Jf9I5RUf7oMVvK7FiCeSP1XrC9SZEzJ5qR4rw==
-X-Received: by 2002:a17:902:d344:b0:1e0:d0b:25a2 with SMTP id l4-20020a170902d34400b001e00d0b25a2mr9752931plk.41.1711405343855;
-        Mon, 25 Mar 2024 15:22:23 -0700 (PDT)
-Received: from [192.168.0.13] ([172.92.174.232])
-        by smtp.gmail.com with ESMTPSA id u6-20020a17090341c600b001dddaa7d046sm5247951ple.29.2024.03.25.15.22.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 15:22:23 -0700 (PDT)
-Subject: Re: [PATCH 5/5] clocksource/drivers/timer-clint: Add T-Head C9xx
- clint support
-To: Jisheng Zhang <jszhang@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240325164021.3229-1-jszhang@kernel.org>
- <20240325164021.3229-6-jszhang@kernel.org>
-From: Bo Gan <ganboing@gmail.com>
-Message-ID: <72eac56e-61d4-e42f-cfbd-8bcc35ed7bb6@gmail.com>
-Date: Mon, 25 Mar 2024 15:22:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+	s=arc-20240116; t=1711405481; c=relaxed/simple;
+	bh=qUf/lMSFpgM0OC3FLLVNDJ1XXx/LnvanuJ2KlOt+NpY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JiGnl/9MrrK/5FMkzz0VFiSxKPCoz55Q2Rek2SLiKzUmXWFSulr5QirycSl8dFRgC1HGktWmFKbvpLkUUGBTXlJwNsk9AC62mbwTgKb9iZm7DBklQmS1lPCVdYUtLWSLzjjWHMvR/CEWrH9xQu+5tLKOIwOjmHnN5L2gPPuoucg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=FmR5WWpA; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711405476; x=1711664676;
+	bh=aWrPyMoWRF/FgF4vWS28ZEGuUYCg1AOjVlZZ0z+Ar/c=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=FmR5WWpA+o96aczwdkg7XsKnr+OTQHtJg7NUcSFnY5nnl8emjH6NvP0exW0ZnleOk
+	 ZFmd08um2plFm/fLPmV9ojikLkHo+Gm5MybYvhibbcESKYAsIX8Lg31E0QNpYXxiAq
+	 0sKYrxWU637AMzJmUa7ovPbh+qccQQWfioSVzujtSLDX8MDk6fTaYHxjXL3BLlgSAS
+	 uXZFw6T6geRStSTKQfpLwD8v/u4FyQ/I+FW6mllmOKUpgU38aLECU1Q3K571gegmqK
+	 KHZdFVD0m5IttqO+qARPFGJt7YOdUr7OcBVinnF7WtKgRtF9rcqWIBJVfJQns2w13Z
+	 Lzboy2KWUQRag==
+Date: Mon, 25 Mar 2024 22:24:20 +0000
+To: Wedson Almeida Filho <wedsonaf@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 04/10] rust: alloc: remove our fork of the `alloc` crate
+Message-ID: <B_2mY6rCanHqb2TTjBPjW3caOJDXHH47O96PklhDUac3opxQSIf7U5O-neiOPYIX1gYGt5hPvrkj8oGAyDkeotYKYiNYmSxnQ7A3rmlZS7c=@proton.me>
+In-Reply-To: <20240325195418.166013-5-wedsonaf@gmail.com>
+References: <20240325195418.166013-1-wedsonaf@gmail.com> <20240325195418.166013-5-wedsonaf@gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240325164021.3229-6-jszhang@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 3/25/24 9:40 AM, Jisheng Zhang wrote:
-> The mtimecmp in T-Head C9xx clint only supports 32bit read/write,
-> implement such support.
-> 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+On 25.03.24 20:54, Wedson Almeida Filho wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
+>=20
+> It is not used anymore as `VecExt` now provides the functionality we
+> depend on.
+>=20
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 > ---
->   drivers/clocksource/timer-clint.c | 24 ++++++++++++++++++++++++
->   1 file changed, 24 insertions(+)
-> 
-> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-> index 4537c77e623c..71188732e8a3 100644
-> --- a/drivers/clocksource/timer-clint.c
-> +++ b/drivers/clocksource/timer-clint.c
-> @@ -34,6 +34,7 @@ static unsigned int clint_ipi_irq;
->   static u64 __iomem *clint_timer_cmp;
->   static unsigned long clint_timer_freq;
->   static unsigned int clint_timer_irq;
-> +static bool is_c900_clint;
->   
->   #ifdef CONFIG_SMP
->   static void clint_send_ipi(unsigned int cpu)
-> @@ -88,6 +89,19 @@ static int clint_clock_next_event(unsigned long delta,
->   	return 0;
->   }
->   
-> +static int c900_clint_clock_next_event(unsigned long delta,
-> +				       struct clock_event_device *ce)
-> +{
-> +	void __iomem *r = clint_timer_cmp +
-> +			  cpuid_to_hartid_map(smp_processor_id());
-> +	u64 val = clint_get_cycles64() + delta;
-> +
-> +	csr_set(CSR_IE, IE_TIE);
-Perhaps you should do a writel_relaxed(-1, r) here. just like openSBI, because the update
-to mtimecmp is now split into 2 parts.
-https://github.com/riscv-software-src/opensbi/blob/v1.4/lib/utils/timer/aclint_mtimer.c#L54
+>   rust/alloc/README.md              |   36 -
+>   rust/alloc/alloc.rs               |  452 ----
+>   rust/alloc/boxed.rs               | 2463 -------------------
+>   rust/alloc/collections/mod.rs     |  160 --
+>   rust/alloc/lib.rs                 |  288 ---
+>   rust/alloc/raw_vec.rs             |  611 -----
+>   rust/alloc/slice.rs               |  890 -------
+>   rust/alloc/vec/drain.rs           |  255 --
+>   rust/alloc/vec/extract_if.rs      |  115 -
+>   rust/alloc/vec/into_iter.rs       |  454 ----
+>   rust/alloc/vec/is_zero.rs         |  204 --
+>   rust/alloc/vec/mod.rs             | 3683 -----------------------------
+>   rust/alloc/vec/partial_eq.rs      |   49 -
+>   rust/alloc/vec/set_len_on_drop.rs |   35 -
+>   rust/alloc/vec/spec_extend.rs     |  119 -
+>   15 files changed, 9814 deletions(-)
 
-> +	writel_relaxed(val, r);
-> +	writel_relaxed(val >> 32, r + 4);
-> +	return 0;
-> +}
-> +>   static DEFINE_PER_CPU(struct clock_event_device, clint_clock_event) = {
->   	.name		= "clint_clockevent",
->   	.features	= CLOCK_EVT_FEAT_ONESHOT,
-> @@ -99,6 +113,9 @@ static int clint_timer_starting_cpu(unsigned int cpu)
->   {
->   	struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
->   
-> +	if (is_c900_clint)
-> +		ce->set_next_event = c900_clint_clock_next_event;
-> +
->   	ce->cpumask = cpumask_of(cpu);
->   	clockevents_config_and_register(ce, clint_timer_freq, 100, ULONG_MAX);
->   
-> @@ -233,5 +250,12 @@ static int __init clint_timer_init_dt(struct device_node *np)
->   	return rc;
->   }
->   
-> +static int __init c900_clint_timer_init_dt(struct device_node *np)
-> +{
-> +	is_c900_clint = true;
-> +	return clint_timer_init_dt(np);
-> +}
-> +
->   TIMER_OF_DECLARE(clint_timer, "riscv,clint0", clint_timer_init_dt);
->   TIMER_OF_DECLARE(clint_timer1, "sifive,clint0", clint_timer_init_dt);
-> +TIMER_OF_DECLARE(clint_timer2, "thead,c900-clint", clint_timer_init_dt);
-> 
-Better use a more generic term to describe the fact that mtimecmp doesn't support
-64-bit mmio, just like what openSBI is currently doing, instead of making it c900 specific:
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 
-https://github.com/riscv-software-src/opensbi/blob/v1.4/lib/utils/timer/fdt_timer_mtimer.c#L152
-
-Then your `is_c900_clint` becomes something like `timecmp_64bit_mmio`.
-
-Bo
+--=20
+Cheers,
+Benno
 
