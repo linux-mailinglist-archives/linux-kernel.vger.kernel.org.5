@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-118003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A5188B233
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D62888B237
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:02:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BDDF1F67308
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:02:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1AF01FA07D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:02:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C11770CB2;
-	Mon, 25 Mar 2024 21:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD737317B;
+	Mon, 25 Mar 2024 21:01:02 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919916F085;
-	Mon, 25 Mar 2024 21:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFFC71732;
+	Mon, 25 Mar 2024 21:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711400459; cv=none; b=nAeoFjgG8YSl62mWnv+vZ4gReJUyHQ0S+Tt2rrhGLXp0CD+yXmgToTtLee2E6sUSNWmyxgr8aQKSVeS5WC9MD3yqtg6bmJmGF9H/SteVkqVDB1HFyDRlhjDP0fIcuHSbo1IRIJkWycpbmJiarqPcl/nZC3Z675b0wiQLmZh6eTI=
+	t=1711400462; cv=none; b=YvWdkIaN83GL3jLu5Yqk9S2Zw2rmhoH8iTGrAu1T9YamB5VRJd9gSbNQ2sIPP4hVA1lw3cWtDtWmmqaIhF7fm+3dBNbH4ZDVaqgGotRTzfhMXR9ipjeovqVwDv+E3Bmxx8hUWc0NdtT3/tYhILKF+SdLI7Y7l/odxc/G6rhDu9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711400459; c=relaxed/simple;
-	bh=4SiRoeD6bB8DFgQrOsAZsx4BXqwPKBOWJLo8r/Mu7Y4=;
+	s=arc-20240116; t=1711400462; c=relaxed/simple;
+	bh=Kh7/2pNWHN+bMKCPsHFaHNTHCq1l8WYfgz9x9QJkawU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nPBifP2YAf9JHdn9gPNEL1PizsC7n8prGpvG/kyJNi48j6jlZ1cFsyE1yZ5aAV15FRqY/e+vx41eQ1FH6BY74V5feXAMU2WDd0neMMoMrmiom55pwCHfMHXdFzBcYdPj/RbeZaBmixz+DXoTaQs7NSfWcvzc98pgiqCkVeddP/E=
+	 MIME-Version; b=Y35Tnfp15D/R7VrQx+VgUhUSf1WX3DlTzMlskqNizi+5IOtyuDxiFNBJTjz0/772ec0ZfsWmNYxPz61jLzGScHjZ56TFimDEiLfgV9zkixYOOmWkT2rT0kfec5uZ7c37jDH/yhGbvwVJX3yNb/c1jEImxY8XQLWNLKko+CbXPQw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D8D21595;
-	Mon, 25 Mar 2024 14:01:31 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E35EC2F4;
+	Mon, 25 Mar 2024 14:01:33 -0700 (PDT)
 Received: from pluto.fritz.box (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 003D53F694;
-	Mon, 25 Mar 2024 14:00:55 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 496C23F694;
+	Mon, 25 Mar 2024 14:00:58 -0700 (PDT)
 From: Cristian Marussi <cristian.marussi@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -48,9 +48,9 @@ Cc: sudeep.holla@arm.com,
 	mturquette@baylibre.com,
 	sboyd@kernel.org,
 	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v2 4/5] clk: scmi: Add support for re-parenting restricted clocks
-Date: Mon, 25 Mar 2024 21:00:24 +0000
-Message-ID: <20240325210025.1448717-5-cristian.marussi@arm.com>
+Subject: [PATCH v2 5/5] clk: scmi: Add support for get/set duty_cycle operations
+Date: Mon, 25 Mar 2024 21:00:25 +0000
+Message-ID: <20240325210025.1448717-6-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240325210025.1448717-1-cristian.marussi@arm.com>
 References: <20240325210025.1448717-1-cristian.marussi@arm.com>
@@ -62,47 +62,94 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some exposed SCMI Clocks could be marked as non-supporting re-parenting
-changes.
-Configure a clk_ops descriptor which does not provide the re-parenting
-callbacks for such clocks when registering with CLK framework.
+Provide the CLK framework callbacks related to get/set clock duty cycle if
+the related SCMI clock supports OEM extended configurations.
 
 CC: Michael Turquette <mturquette@baylibre.com>
 CC: Stephen Boyd <sboyd@kernel.org>
 CC: linux-clk@vger.kernel.org
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/clk/clk-scmi.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/clk/clk-scmi.c | 49 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index d20dcc60f9d1..87e968b6c095 100644
+index 87e968b6c095..86ef7c553ddd 100644
 --- a/drivers/clk/clk-scmi.c
 +++ b/drivers/clk/clk-scmi.c
-@@ -20,6 +20,7 @@ enum scmi_clk_feats {
- 	SCMI_CLK_ATOMIC_SUPPORTED,
+@@ -21,6 +21,7 @@ enum scmi_clk_feats {
  	SCMI_CLK_STATE_CTRL_FORBIDDEN,
  	SCMI_CLK_RATE_CTRL_FORBIDDEN,
-+	SCMI_CLK_PARENT_CTRL_FORBIDDEN,
+ 	SCMI_CLK_PARENT_CTRL_FORBIDDEN,
++	SCMI_CLK_DUTY_CYCLE_SUPPORTED,
  	SCMI_CLK_MAX_FEATS
  };
  
-@@ -254,7 +255,8 @@ scmi_clk_ops_alloc(struct device *dev, unsigned long feats_key)
+@@ -169,6 +170,45 @@ static int scmi_clk_atomic_is_enabled(struct clk_hw *hw)
+ 	return !!enabled;
+ }
  
- 	/* Parent ops */
- 	ops->get_parent = scmi_clk_get_parent;
--	ops->set_parent = scmi_clk_set_parent;
-+	if (!(feats_key & BIT(SCMI_CLK_PARENT_CTRL_FORBIDDEN)))
-+		ops->set_parent = scmi_clk_set_parent;
++static int scmi_clk_get_duty_cycle(struct clk_hw *hw, struct clk_duty *duty)
++{
++	int ret;
++	u32 val;
++	struct scmi_clk *clk = to_scmi_clk(hw);
++
++	ret = scmi_proto_clk_ops->config_oem_get(clk->ph, clk->id,
++						 SCMI_CLOCK_CFG_DUTY_CYCLE,
++						 &val, NULL, false);
++	if (!ret) {
++		duty->num = val;
++		duty->den = 100;
++	} else {
++		dev_warn(clk->dev,
++			 "Failed to get duty cycle for clock ID %d\n", clk->id);
++	}
++
++	return ret;
++}
++
++static int scmi_clk_set_duty_cycle(struct clk_hw *hw, struct clk_duty *duty)
++{
++	int ret;
++	u32 val;
++	struct scmi_clk *clk = to_scmi_clk(hw);
++
++	/* SCMI OEM Duty Cycle is expressed as a percentage */
++	val = (duty->num * 100) / duty->den;
++	ret = scmi_proto_clk_ops->config_oem_set(clk->ph, clk->id,
++						 SCMI_CLOCK_CFG_DUTY_CYCLE,
++						 val, false);
++	if (ret)
++		dev_warn(clk->dev,
++			 "Failed to set duty cycle(%u/%u) for clock ID %d\n",
++			 duty->num, duty->den, clk->id);
++
++	return ret;
++}
++
+ static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
+ 			     const struct clk_ops *scmi_ops)
+ {
+@@ -258,6 +298,12 @@ scmi_clk_ops_alloc(struct device *dev, unsigned long feats_key)
+ 	if (!(feats_key & BIT(SCMI_CLK_PARENT_CTRL_FORBIDDEN)))
+ 		ops->set_parent = scmi_clk_set_parent;
  
++	/* Duty cycle */
++	if (feats_key & BIT(SCMI_CLK_DUTY_CYCLE_SUPPORTED)) {
++		ops->get_duty_cycle = scmi_clk_get_duty_cycle;
++		ops->set_duty_cycle = scmi_clk_set_duty_cycle;
++	}
++
  	return ops;
  }
-@@ -301,6 +303,9 @@ scmi_clk_ops_select(struct scmi_clk *sclk, bool atomic_capable,
- 	if (ci->rate_ctrl_forbidden)
- 		feats_key |= BIT(SCMI_CLK_RATE_CTRL_FORBIDDEN);
  
-+	if (ci->parent_ctrl_forbidden)
-+		feats_key |= BIT(SCMI_CLK_PARENT_CTRL_FORBIDDEN);
+@@ -306,6 +352,9 @@ scmi_clk_ops_select(struct scmi_clk *sclk, bool atomic_capable,
+ 	if (ci->parent_ctrl_forbidden)
+ 		feats_key |= BIT(SCMI_CLK_PARENT_CTRL_FORBIDDEN);
+ 
++	if (ci->extended_config)
++		feats_key |= BIT(SCMI_CLK_DUTY_CYCLE_SUPPORTED);
 +
  	/* Lookup previously allocated ops */
  	ops = clk_ops_db[feats_key];
