@@ -1,114 +1,115 @@
-Return-Path: <linux-kernel+bounces-117272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C86988A980
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:35:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3138588A981
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:35:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02EAD1F21E01
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:35:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF8B5322532
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:35:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACDE130E38;
-	Mon, 25 Mar 2024 14:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F78161909;
+	Mon, 25 Mar 2024 14:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WH5TJY26"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RkpAcbia"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE76A58135
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD6E58135;
+	Mon, 25 Mar 2024 14:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711377579; cv=none; b=L0vq7o1tlpiaZckJSPx3z6ZOea6XP0H4J/ue/6EAdgFvUkzAzI7HqqudwW3zc6zQ4omns1jxQP9PaaUhSxy14tfldH7X1F6UU/uulMbOceYD4pwC8C9RgY7LsYfmt9RXwwKBjsDCTrsuIDyaKukoPn4xou9AUKCQEkEk6yLXQ90=
+	t=1711377583; cv=none; b=stPgsTdePX/DMFUfbgaUSHKObh2t0Yy5+uFkutCKCG28XZJNxD8qJAqAcHuM9HMbSJ9yq7nsihuXFD+AEvsKWGMtpWuNWHNpucZ7/zoalxKyMat+TpfC+sRB8nmTZwWdgDVKHYAhaqxYv/L2IWodv3F9Kp7eWfsVOhoYItWvHOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711377579; c=relaxed/simple;
-	bh=PZs0rghxCeYopxbWbw9MtO4OhtjlQGpnCDFbcAELFfE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OUjr5bWhz6HxMkNmELcLfF2TRZFLsiif1764HdFsNM1fdssLo/F2WkPQXEngXIjON+V0Kx2K30FrkZs2vdZNEO4YZGEZ3vLkyECzJiB8miciO55Slsl0pUVCKB0OoIoPerScLgIV6JpdPWTpiZLHWBB+K6KaT2OJqUKlMzl3F3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WH5TJY26; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ED77C433F1
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:39:39 +0000 (UTC)
+	s=arc-20240116; t=1711377583; c=relaxed/simple;
+	bh=FjnS44ng3NPsn9900ILtiMh5uro5/JiC38NCbn+WTYw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P+QJrwnRELQgDJPapey3vg9dEFwBMb05Dprv/GA3s9yJ2QTsu9Wtpyl7C1DuV9KoVYaOnylenrpRiLct2rWorKgp1pEzVZi6YVatbTwKo3TfBBGi8TwYx4IO0EszEs2Vpx1a6S4YWlCNb9FePtckyHD+l/PwTI8kazrSResj+AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RkpAcbia; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DE25C41674;
+	Mon, 25 Mar 2024 14:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711377579;
-	bh=PZs0rghxCeYopxbWbw9MtO4OhtjlQGpnCDFbcAELFfE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=WH5TJY26+0r6af4PCB3nC8dtbN+CiM/zxpxYd3TrNv0IQOlfeie5r7m4xlD5DgJZH
-	 qtyp4yrdJFbG9Q0zQcSxnn1BVB0zmWluyZABlreoMDsCQz16A9FjyG/g7lc4irqEYU
-	 3cJ51nKFUJ3XpWSnD55ZCBEgHExZ/vEM8njiehkxc5ZifPUVbhhIkgOhG6T3JauR3g
-	 stttZqJjYGDvqerngylxCCpvKKJEokwAIX7eUuqVxy2MyHmOm6sXJGo6F9fOAhREIe
-	 r9w+YY5PYnX86qN4sjk8UPXMaBycOd/915XTt+a13oZAAjwDDO6qduAEDh5AsMRFnZ
-	 1CrcjuGadibsA==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d28051376eso83958311fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:39:39 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX9VHfYKsVO/iLVaQ/V/4CECpAYTxF9wkKOF9nJQ055Gaz2fXtfMz/qY/C92SpP01sPhMVG3XrZLzyqWSbjYCQYh+kzNCMs0WvMUs12
-X-Gm-Message-State: AOJu0YzMXvmEmHGeHpUXoU6n/NW++aWYmzur6hP3NyZjgHXNnBfSVF6i
-	72NmBM0MruhTLVyRXo3qTRlraBymtz6klU0Jrxce70Yjctt9kcPQDZLvKFhNd550Koi+EZfbVAh
-	QyDkqI3ZphmfkO8/mTia6FtXt4vo=
-X-Google-Smtp-Source: AGHT+IHH26cHmmV9SSXvercnOW3q4Z3IV8TeJsgM4tS6cTt2iQbN68nCt0arJtH4KDnq7tOk1RLaXmAqJ/1c9CQYySE=
-X-Received: by 2002:a05:651c:2108:b0:2d6:cd05:1899 with SMTP id
- a8-20020a05651c210800b002d6cd051899mr5202179ljq.17.1711377577590; Mon, 25 Mar
- 2024 07:39:37 -0700 (PDT)
+	s=k20201202; t=1711377582;
+	bh=FjnS44ng3NPsn9900ILtiMh5uro5/JiC38NCbn+WTYw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RkpAcbiawu2zrTNsSnZevVXPSjwCNl7i9z7hG0I0A/7jZ6i6zvL1/9OrDI9MBg6LE
+	 x3udYirwdM7/VCWp6qcMvNWE//aqcmEUyrqKaVfZpGKkz9UjuF11Z+pNo1WTfsaWUQ
+	 uo9BQwFdP6Uxigvupxzgwmvw7CGjVbJS1DbF/TYibY7UZTSNDknpt9CCA7WnQVw96T
+	 eLw+ezpKL6ilfx4tTV/QsDBPtSRmybf/pUAMb3H/MjyFORS24NISod0DZiGqQMg8ew
+	 IfKIE1b/Rq8pksjUMb/+xqE3NcFUTUM2gmhHQI/YtsIni3oz5aomYN4d9LqyHZrol+
+	 GWNbUFuNmPf7Q==
+Date: Mon, 25 Mar 2024 09:39:40 -0500
+From: Rob Herring <robh@kernel.org>
+To: Dharma Balasubiramani <dharma.b@microchip.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Maxime Ripard <mripard@kernel.org>,
+	linux-kernel@vger.kernel.org, David Airlie <airlied@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	dri-devel@lists.freedesktop.org, Conor Dooley <conor+dt@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v4] dt-bindings: display: atmel,lcdc: convert to dtschema
+Message-ID: <171137757831.3350156.9187326461669491839.robh@kernel.org>
+References: <20240318-lcdc-fb-v4-1-c533c7c2c706@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202403221630.2692c998-oliver.sang@intel.com> <20240324142532.GAZgA33M_u1lW_E_1n@fat_crate.local>
-In-Reply-To: <20240324142532.GAZgA33M_u1lW_E_1n@fat_crate.local>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Mon, 25 Mar 2024 16:39:26 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE97o_T61AJ6wRAOpUvzon-45fnsT2dGB0GBP1x7bfGaw@mail.gmail.com>
-Message-ID: <CAMj1kXE97o_T61AJ6wRAOpUvzon-45fnsT2dGB0GBP1x7bfGaw@mail.gmail.com>
-Subject: Re: [linus:master] [x86/sme] 48204aba80: BUG:kernel_failed_in_early-boot_stage,last_printk:Booting_the_kernel(entry_offset:#)
-To: Borislav Petkov <bp@alien8.de>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318-lcdc-fb-v4-1-c533c7c2c706@microchip.com>
 
-On Sun, 24 Mar 2024 at 16:26, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Fri, Mar 22, 2024 at 05:03:18PM +0800, kernel test robot wrote:
-> >
-> >
-> > Hello,
-> >
-> > kernel test robot noticed "BUG:kernel_failed_in_early-boot_stage,last_printk:Booting_the_kernel(entry_offset:#)" on:
-> >
-> > commit: 48204aba801f1b512b3abed10b8e1a63e03f3dd1 ("x86/sme: Move early SME kernel encryption handling into .head.text")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> >
-> > [test failed on linus/master 741e9d668aa50c91e4f681511ce0e408d55dd7ce]
-> > [test failed on linux-next/master a1e7655b77e3391b58ac28256789ea45b1685abb]
-> >
-> > in testcase: boot
-> >
-> > compiler: gcc-12
-> > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
->
-> My guest boots with your .config and SNB as CPU model:
->
-> ...
-> [    0.373770][    T1] smpboot: CPU0: Intel Xeon E312xx (Sandy Bridge) (family: 0x6, model: 0x2a, stepping: 0x1)
->
-> Artefacts like:
->
-> -initrd initrd-vm-meta-180.cgz
->
-> or
->
-> RESULT_ROOT=/result/boot/1/vm-snb/quantal-x86_64-core-20190426.cgz/x86_64-rhel-8.3-bpf/gcc-12/48204aba801f1b512b3abed10b8e1a63e03f3dd1/3
->
-> I don't have and don't know how to generate here so I can't run your
-> exact reproducer.
->
 
-I ran the reproducer using the instructions, and things seem to work fine.
+On Mon, 18 Mar 2024 11:10:13 +0530, Dharma Balasubiramani wrote:
+> Convert the atmel,lcdc bindings to DT schema.
+> Changes during conversion: add missing clocks and clock-names properties.
+> 
+> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+> ---
+> This patch converts the existing lcdc display text binding to JSON schema.
+> The binding is split into two namely
+> lcdc.yaml
+> - Holds the frame buffer properties
+> lcdc-display.yaml
+> - Holds the display panel properties which is a phandle to the display
+> property in lcdc fb node.
+> 
+> These bindings are tested using the following command.
+> 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> ---
+> Changes in v4:
+> - Add maximum for atmel,guard-time property.
+> - Add constraints for bits-per-pixel property.
+> - Update the atmel,lcd-wiring-mode property's ref to point single string
+>   rather than an array.
+> - Add constraints for atmel,lcd-wiring-mode property.
+> - Add maxItems to the atmel,power-control-gpio property.
+> - Link to v3: https://lore.kernel.org/r/20240304-lcdc-fb-v3-1-8b616fbb0199@microchip.com
+> 
+> Changes in v3:
+> - Remove the generic property "bits-per-pixel"
+> - Link to v2: https://lore.kernel.org/r/20240304-lcdc-fb-v2-1-a14b463c157a@microchip.com
+> 
+> Changes in v2:
+> - Run checkpatch and remove whitespace errors.
+> - Add the standard interrupt flags.
+> - Split the binding into two, namely lcdc.yaml and lcdc-display.yaml.
+> - Link to v1: https://lore.kernel.org/r/20240223-lcdc-fb-v1-1-4c64cb6277df@microchip.com
+> ---
+>  .../bindings/display/atmel,lcdc-display.yaml       | 103 +++++++++++++++++++++
+>  .../devicetree/bindings/display/atmel,lcdc.txt     |  87 -----------------
+>  .../devicetree/bindings/display/atmel,lcdc.yaml    |  70 ++++++++++++++
+>  3 files changed, 173 insertions(+), 87 deletions(-)
+> 
 
-https://paste.debian.net/1311951/
+Applied, thanks!
 
-Could you provide any information regarding the QEMU version and its
-BIOS implementation?
 
