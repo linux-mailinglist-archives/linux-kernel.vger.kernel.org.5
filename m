@@ -1,68 +1,56 @@
-Return-Path: <linux-kernel+bounces-116456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33349889F1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:25:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0D8A889F19
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:25:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E19AD2C4FD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:25:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E5F11C35E2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB21315AAA2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4FB159574;
 	Mon, 25 Mar 2024 07:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TOkzjnL6"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WMsc1e3w"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0661311AA
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50DB178891;
+	Mon, 25 Mar 2024 03:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711336960; cv=none; b=iJhcF5rMPVVq8OVsc9T0Zg/3EvMJph0b9EGrG8MxVm8lKh6YgLHCSze3tlytbFENscfVeGOxuyNi5fUXc+K5Y4G3ctKhupLtTevvYhnMtCl/y2FH7MIwaqW3IgwLAXD5P78j/3/mLASfqJu0c6lKHXbiSRgKSNPitGmoAFcJxqg=
+	t=1711337099; cv=none; b=rFia1D1Ii2+pYkOZkLCn3hlPc99ll0riCFBBJ/uAiJJhY2SQ/O3W7oS3tnQmH36SKDm6ilj3m9L24oMHsfjK6DD9B6L4fciwP344W0tUMJ/nZ+S7BLCm3GcmozrvYxJVznebx4MFX1tHVZF00dtLUkQhAcIytvhxueTjIQy2nPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711336960; c=relaxed/simple;
-	bh=i80VoZMqBoYXLl9VuHTIymeFBZ6nqwDeIFzNjjVljJA=;
+	s=arc-20240116; t=1711337099; c=relaxed/simple;
+	bh=GakVguLw7Lf5f5Bnjeick8QQQVW5ZbSnjq4ik2Jrhtg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rZTTmgxEFyv7FXsobNBvtmeCbFae2g733muSS1MpUvdjYiRmjrTYFGdtZLY6gZRE3fZkkavwTdXoIFbkM8M/aDk6L8rmfwU1QCGKutgrQvJ3V+v1tv7462wIptEYRxNT7XHUfDbRGareZIHj2J9e2UxzOSZvVCXWcIxwkUwfYhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TOkzjnL6; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=iqc52fNCJobqUzERbW40WnlDTkGcB7WwGc1zVlyZKvQ=; b=TOkzjnL6BUv7T92lJO5XntAlUY
-	KsDq4bgdcc08zQCTrImHMntACEY4Wg1uzkw4ZyBude71X+tFe9pNWd5tIewIriDl/MPkVDG9FQ8KF
-	kEwc42NZDXGkM+Yizn5h6IZ87AIt61Y9lNeSJ7IvwF83GoGrNK4UL10MSISSo0hl2k9M6U3WcMaKD
-	pi+cF81QoD63cqjDpj5x3KC5YVi343PdsYXlSlbObk1SSnOIlM21k4OzDtCrmTxxLS1+1jlZZa0CR
-	3u4JcxK8uA5e6qPgVIA39JEAVlsHNHgdSn6PGQENQRSi5b4hlC289YznYRMQcjWtueOjqB8f5VnRy
-	SHA6Dccg==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1roaut-0000000FYNr-0Ljl;
-	Mon, 25 Mar 2024 03:22:31 +0000
-Date: Mon, 25 Mar 2024 03:22:30 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
-Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
- mm: fix a race scenario in folio_isolate_lru
-Message-ID: <ZgDt9mwN-Py5Y-xr@casper.infradead.org>
-References: <be75859d7e4245939d825da5e881902c@BJMBX01.spreadtrum.com>
- <Zfg0WLrcOmCtdn_M@casper.infradead.org>
- <CAGWkznGhiuzkqfeewNq-ykKehvFTBjH2v_==xAS2_7iFqsFk5A@mail.gmail.com>
- <Zfj_-LbiIsAVWcPX@casper.infradead.org>
- <CAGWkznHOWVPpKHOuvvDF2zppkTT0_x4WyJ5S75j+EghhZmEDdg@mail.gmail.com>
- <ZfwpuRjAZV07_lc3@casper.infradead.org>
- <CAGWkznFtez1fj2L2CtFnA5k-Tn4WtxmDOw=fjOWPg-ZGJX=VWw@mail.gmail.com>
- <Zfz4_GJAHRInB8ul@casper.infradead.org>
- <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cLnvYO6w0Cu9UtuspORNz4l8Fo98Jmhz/WsF2c7WukkF2SOfpnSSQjQuOr+kKLwA8sjr/H4qFnv/ZIluxaVPQ7bh4yruSNFgjCbyr+gy4pqPblVfIyNwJogQR/dR3hPAxRzsd82zFjVP8cwH/+U0TDF4Y30SWNECLQD3+QQfjOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WMsc1e3w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 246EBC433F1;
+	Mon, 25 Mar 2024 03:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711337099;
+	bh=GakVguLw7Lf5f5Bnjeick8QQQVW5ZbSnjq4ik2Jrhtg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WMsc1e3wpuTRL3x0WYjsA3UoiisjhwQyJtQPJoqpSZnM+1GvokBtbQ20vuSLEGHlp
+	 wh5NZaQE75OEYKu+O0gro1bHzs/CRzer2IWoS9NIV2eVZyGUJHJU3fDX5KUjGVv8xL
+	 CgYBD+QQ01bsCyZSXzcETKuv8Sm4fw9wPG9TLp8V0JgA7yAnzILTk6llYbZmdRImsF
+	 ZvdOmHxCFy4gUOju0YyYsBc1qMl6f5tmUbIxswIpkfeAumFNZiXg9fVt26FvFvjfQp
+	 dvUR2SmtCrcmkt2O+Mxdp8/YoRFwA82eKqUx56+1ku+hnVojIyCKTo2v/AicAUGJu9
+	 GZj7Vx7MdZfCg==
+Date: Mon, 25 Mar 2024 11:24:56 +0800
+From: Tzung-Bi Shih <tzungbi@kernel.org>
+To: Stephen Horvath <s.horvath@outlook.com.au>
+Cc: Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] platform/chrome: cros_kbd_led_backlight:
+ Automatically enable keyboard backlight control if feature present in EC
+Message-ID: <ZgDuiEYcgMTuZAeA@google.com>
+References: <20240322102800.1322022-1-s.horvath@outlook.com.au>
+ <SY4P282MB306333469B31348E4A25A1A5C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,84 +59,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGWkznEzpcWi4oXVn_WFahnQj3dHcwc_4VW6m1Ss-KJ8mD3F3Q@mail.gmail.com>
+In-Reply-To: <SY4P282MB306333469B31348E4A25A1A5C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
 
-On Sun, Mar 24, 2024 at 07:14:27PM +0800, Zhaoyang Huang wrote:
-> ok. It seems like madvise is robust enough to leave no BUGs. I presume
-> another two scenarios which call folio_isloate_lru by any other ways
-> but PTE. Besides, scenario 2 reminds me of a previous bug reported by
-> me as find_get_entry entered in a livelock where the folio's refcnt ==
-> 0 but remains at xarray which causes the reset->retry loops forever. I
-> would like to reply in that thread for more details.
-> 
-> Scenario 1:
-> 0. Thread_bad gets the folio by find_get_entry and preempted before
-> folio_lock (could be the second round scan of
-> truncate_inode_pages_range)
->     refcnt == 2(page_cache, fbatch_bad), PG_lru == true, PG_lock == false
->         folio = find_get_entry
->         folio_try_get_rcu
->         <preempted>
->         folio_try_lock
-> 
-> 1. Thread_truncate get the folio via
-> truncate_inode_pages_range->find_lock_entries
->     refcnt == 3(page_cache, fbatch_bad, fbatch_truncate), PG_lru ==
-> true, PG_lock == true
+On Fri, Mar 22, 2024 at 08:27:58PM +1000, Stephen Horvath wrote:
+> I also fixed a bug that seemed like there was some confusion between
+> `cros_ec_dev` and `cros_ec_device`, so I'm not sure if this module even
+> worked until now.
 
-Hang on, you can't have two threads in truncate_inode_pages_range()
-at the same time.  I appreciate that we don't have any documentation
-of that, but if it were possible, we'd see other crashes.  Removing
-the folio from the page cache sets folio->mapping to NULL.  And
-__filemap_remove_folio() uses folio->mapping in
-filemap_unaccount_folio() and page_cache_delete(), so we'd get NULL
-pointer dereferences.
+If they aren't part of commit message, please put them after "---".  Please
+separate to an independent patch if they fix different things.
 
-I see a hint in the DAX code that it's an fs-dependent lock:
+> diff --git a/drivers/platform/chrome/cros_kbd_led_backlight.c b/drivers/platform/chrome/cros_kbd_led_backlight.c
+> index 793fd3f1015d..06e9a57536af 100644
+> --- a/drivers/platform/chrome/cros_kbd_led_backlight.c
+> +++ b/drivers/platform/chrome/cros_kbd_led_backlight.c
+> @@ -171,12 +171,15 @@ static int keyboard_led_init_ec_pwm(struct platform_device *pdev)
+>  {
+>  	struct keyboard_led *keyboard_led = platform_get_drvdata(pdev);
+>  
+> -	keyboard_led->ec = dev_get_drvdata(pdev->dev.parent);
+> -	if (!keyboard_led->ec) {
+> +	struct cros_ec_dev *parent_ec = dev_get_drvdata(pdev->dev.parent);
 
-        /*
-         * This gets called from truncate / punch_hole path. As such, the caller
-         * must hold locks protecting against concurrent modifications of the
-         * page cache (usually fs-private i_mmap_sem for writing). Since the
-         * caller has seen a DAX entry for this index, we better find it
-         * at that index as well...
-         */
+I'm not sure if it really fixes anything.  See [1] or [2].
 
-so maybe that's why there's no lockdep_assert() in
-truncate_inode_pages_range(), but there should be a comment.
+[1]: https://elixir.bootlin.com/linux/v6.8/source/drivers/platform/chrome/cros_ec_lpc.c#L417
+[2]: https://elixir.bootlin.com/linux/v6.8/source/drivers/platform/chrome/cros_ec_spi.c#L759
 
-> Scenario 2:
-> 0. Thread_bad gets the folio by find_get_entry and preempted before
-> folio_lock (could be the second round scan of
-> truncate_inode_pages_range)
->     refcnt == 2(page_cache, fbatch_bad), PG_lru == true, PG_lock == false
->         folio = find_get_entry
->         folio_try_get_rcu
->         <preempted>
->         folio_try_lock
-> 
-> 1. Thread_readahead remove the folio from page cache and drop one
-> refcnt by filemap_remove_folio(get rid of the folios which failed to
-> launch IO during readahead)
->     refcnt == 1(fbatch_bad), PG_lru == true, PG_lock == true
+> @@ -200,8 +203,10 @@ static int keyboard_led_probe(struct platform_device *pdev)
+>  	int error;
+>  
+>  	drvdata = device_get_match_data(&pdev->dev);
+> -	if (!drvdata)
+> -		return -EINVAL;
+> +	if (!drvdata) {
+> +		/* Assume EC if no match data is provided */
+> +		drvdata = &keyboard_led_drvdata_ec_pwm;
+> +	}
 
-So readaahead inserts the folio locked, and then calls
-filemap_remove_folio() without having unlocked it.
-filemap_remove_folio() sets folio->mapping to NULL in
-page_cache_delete().  When "Thread_bad" wakes up, it gets the
-folio lock, calls truncate_inode_folio() and sees that
-folio->mapping != mapping, so it doesn't call filemap_remove_folio().
+By current design, the `drvdata` should be provided by either ACPI or OF match.
 
-> 4. Thread_bad schedule back from step 0 and clear one refcnt wrongly
-> when doing truncate_inode_folio->filemap_remove_folio as it take this
-> refcnt as the page cache one
->     refcnt == 1'(thread_isolate), PG_lru == false, PG_lock == false
->         find_get_entries
->             folio = find_get_entry
->             folio_try_get_rcu
->         folio_lock
->         <no check as folio->mapping != mapping as folio_lock_entries does>
->         truncate_inode_folio
->             filemap_remove_folio
->             <preempted>
+> @@ -236,22 +241,10 @@ static const struct acpi_device_id keyboard_led_acpi_match[] = {
+>  MODULE_DEVICE_TABLE(acpi, keyboard_led_acpi_match);
+>  #endif
+>  
+> -#ifdef CONFIG_OF
+> -static const struct of_device_id keyboard_led_of_match[] = {
+> -	{
+> -		.compatible = "google,cros-kbd-led-backlight",
+> -		.data = &keyboard_led_drvdata_ec_pwm,
+> -	},
+> -	{}
+> -};
+> -MODULE_DEVICE_TABLE(of, keyboard_led_of_match);
+> -#endif
+> -
+>  static struct platform_driver keyboard_led_driver = {
+>  	.driver		= {
+>  		.name	= "chromeos-keyboard-leds",
+>  		.acpi_match_table = ACPI_PTR(keyboard_led_acpi_match),
+> -		.of_match_table = of_match_ptr(keyboard_led_of_match),
+
+The patch is ruining the use cases in OF world (e.g. [3]).
+
+[3]: https://elixir.bootlin.com/linux/v6.8/source/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi#L1154
 
