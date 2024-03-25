@@ -1,121 +1,181 @@
-Return-Path: <linux-kernel+bounces-117744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25A7A88AF00
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:52:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B50B88AF1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:57:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 574151C37710
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:52:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0640E2E422B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C42CDA50;
-	Mon, 25 Mar 2024 18:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E67124A0A;
+	Mon, 25 Mar 2024 18:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="W+KwXKLn"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=ccbib.org header.i=@ccbib.org header.b="M0p8rRvh"
+Received: from mail.multiname.org (h4.multiname.org [94.130.68.253])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5A51BC4C
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC4D63C7;
+	Mon, 25 Mar 2024 18:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.130.68.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711392334; cv=none; b=MjSGxABGAxgJhjvEZDHxUNedQlgLWg+e+bMDu1BIBGh38Z9BT5C+IBL0twNBlLUu7SWRhXPpxWoVvOTLMGmFGqPpjRR5g+8t5n8hZXrofkNaof3wyy9RnTEzKg7GVCO6Onh3f6575LrJMp/KB8A1/xjhgq5Dhc5MKQNxrpvlcm4=
+	t=1711393033; cv=none; b=BJp3FSuAggNSW8lu+cVGENcPZd4wWt9NeRxA/97JkbFj7HnqDxsL68ldqG4M0kRGp3xSlkNOJmtkbZ5LST12JIjnqgxv4uey1VmIdGg4JEvWe41WhzVN0Voi+MGuXNzGPVWZcRSbDFTfAiwdxzt6RX2xbYgrz1gbixsQ0cvr3w4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711392334; c=relaxed/simple;
-	bh=hqfeXNrriRE+vaPKUWSarAmC5GZL1ffLl1p6HZH7H0Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bMH9dEddos+kfmICtu55HdvgXPGpOkhOFnMyWBJIr0I8g8nEGvW1vMH2c9tLnkaZWE9u74yhwqtrVdE4ldV+rrFs/NtjT0xWyGOB/ZrGp5JnxAWOC7i1Wsc0l+y1L0u3CASOaOjzC83WJmfMlVzVhew2dsxSAv8MQ8tyKvOBDPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=W+KwXKLn; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56c1922096cso1227802a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711392330; x=1711997130; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hqfeXNrriRE+vaPKUWSarAmC5GZL1ffLl1p6HZH7H0Y=;
-        b=W+KwXKLnHiVB5ug13vVAKueIrf7naLnnSsrWb5f+JU/97ZTL9XMi03rSJw5OqWgGBb
-         9X10PgLACVkvlh6H147qAh/cFDVALhPuAgRWcygMCTSimGKo5LjUughh7Cd12EOmH88Z
-         pyLnjx5dNficG34mlCiBUBL5XZPXPvOmb9kJU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711392330; x=1711997130;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hqfeXNrriRE+vaPKUWSarAmC5GZL1ffLl1p6HZH7H0Y=;
-        b=xMMf5+gURZHSPSqhhaE+VUG5+qlhfD5oUwUEkgrZzsaA1kbu5VdKEbmYc8E66suKdE
-         gou6a/WcQU83pUu3EBax/YVzs1gS9i3OeNZaqsyRyzucFXlfRkJZL9Q45I5tLrBFqkZS
-         utrcoI9dDqtidFeYYpSw4UpPEyF8idYK35dYDVPAIF3Wxb+7+Ah3iTy3EZM/X/JNC2gT
-         UNNEc3MlJg2WOcxb7zwTNxHt6cdRlUUm3WJTdvXhyjtz/5z7bXFU2Tydn3Z60YlRX78m
-         vBuCHIK8hN0Lzt7T/Sl2SfdZmgeV0+8bI1IWdbSDBUitlxMaOY9M43jLRpQroLAoy3xh
-         Dg1g==
-X-Forwarded-Encrypted: i=1; AJvYcCUAe8TkGRyr8fqeUh4uqcHMgZAdGayz6chr+NSJtRFc5z1o+7OSpqq5XHha5XpqttW7ZHsjlMF9jCB5zdcZsVvyJWD52Rt0oszK8ziA
-X-Gm-Message-State: AOJu0YzgJpNsufRdN59inisun0/nQJp67/xNND8JrMMh0tHqlVbVwCr2
-	8YFdeSAz6rIQG28gkQHT9+aFo50LmIa+Y1xJVWoTw8aozS3DdUXew1JCLMtjgG5QfF/Lkk0aipo
-	=
-X-Google-Smtp-Source: AGHT+IHKXb3FSb4AaUiqxYIeDQgFYp7CilhAq1HHDuJ203RlzKIJSjk2Leso9/mi24xT2cH67WdmEg==
-X-Received: by 2002:a17:906:f90e:b0:a47:31c8:81f5 with SMTP id lc14-20020a170906f90e00b00a4731c881f5mr5165473ejb.47.1711392330423;
-        Mon, 25 Mar 2024 11:45:30 -0700 (PDT)
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
-        by smtp.gmail.com with ESMTPSA id c19-20020a1709060fd300b00a45ff5a30cesm3339324ejk.183.2024.03.25.11.45.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 11:45:29 -0700 (PDT)
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4148c04396dso4399025e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:45:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV4HAG5k1iV91IwrfNZM+eRpCLxetI3kA3B+aXblDtSipZg14Spq4OjL5Dy/kvCAHYPAAdSq1JcfimAaovcA0DS1itkOCeavVJ4AI/+
-X-Received: by 2002:a7b:c4cb:0:b0:414:24b:2f4e with SMTP id
- g11-20020a7bc4cb000000b00414024b2f4emr5741343wmk.39.1711392329122; Mon, 25
- Mar 2024 11:45:29 -0700 (PDT)
+	s=arc-20240116; t=1711393033; c=relaxed/simple;
+	bh=iKrKQs6gu/1W/XFPp5YwYP46/FGNk4CUHMBRezq0H+A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WLug3uxMuFI4zH7ouV7bYlBvtiw9wR7PqUSoclZYQKDqp3Ff/hspZVU8QaukzDQBLAVNrHAUSdymPuTuVhB4vxRoRhtzt8i9aCI0IY7FWijv5Sd1jzaFfX8IebR5uUpV4pIIdKbdzONjwi4QBTyUPCQ+AM88AvDPbSYo3XMFVm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ccbib.org; spf=pass smtp.mailfrom=ccbib.org; dkim=pass (4096-bit key) header.d=ccbib.org header.i=@ccbib.org header.b=M0p8rRvh; arc=none smtp.client-ip=94.130.68.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ccbib.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ccbib.org
+Received: from raab.fritz.box (unknown [IPv6:2a02:1748:dd5c:fec0:221:9bff:fe61:eebd])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by mail.multiname.org (Postfix) with ESMTPSA id 4V3MPs0dmlzPLsB2;
+	Mon, 25 Mar 2024 19:48:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ccbib.org; s=20220806;
+	t=1711392481;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NyyAZJSSGrCTUFGc9OJFG4mJqS6OcJzmjq75LpNVV7Q=;
+	b=M0p8rRvh6Z0cducA4rEuwCBqh/QKRN1jAjjXmeYDOoa7jsrf7+lSqLhDl8aSFJrELbv1++
+	YdUiLbEfHOePypk9OyqZgnfrYrKd7D/LJ7wB68s4EhysCV0kwHAGWhEsvSKtd0wcy6UTyS
+	FDgESpH8ov5k0cznyHZdMDuV+Zcbuq5UzKD2E23OhKzk4O7+5tZeBKAlvGaFCLiy3vITWg
+	Xnfcko66v+MdJoSwAWkHCPYQ8Hpn3YPN0+cUY8SeA0WlX5k8o61d8et2b2G9HBaf9Vc3+5
+	zuWQsc3eCCCfvpTUeap1XhdbPTulMlLxq3/UL0+noXGvYJyPCp/OVhmzhGv1/dNBjzOvpA
+	EsNG/z8Nlou6ZuuV1DyC0GtsqmcSWrimnwuRK7w7rqFrLYHK8pYxoOX7REJ4YMw1Cq3Kdj
+	Ej5ygeCtRK1Heurn7HrGjs7ZGms3N/47QQ0kWFt4V2SbsxV88B4fc/s4Je0nkwWbYxNMOp
+	krcsMA24kMS3p0KvPdUyW0UQHZujheRFC6j8PE+drvbxY6KtRrnjU4T/6I2KACZ3BqnHRk
+	0VxDEtM6nKRGOqbSW2B1tK/79nW6o3Nyv/dS8Q5KBe9tpGn5o6jscZZm2LoC2hwvkzrVbA
+	PHTohzP+iX/SjVwvCK7hMfgnT/iozjiM059A0C+qcCmkivt9cNDQU=
+Message-ID: <c2fb93a5b2e6f437e2c92d0d797509c619cb63a8.camel@ccbib.org>
+Subject: Re: [PATCH] iio: dht11: set debug log level for parsing error
+ messages
+From: Harald Geyer <harald@ccbib.org>
+To: George Stark <gnstark@salutedevices.com>, jic23@kernel.org,
+ lars@metafoo.de
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel@salutedevices.com
+Date: Mon, 25 Mar 2024 19:48:00 +0100
+In-Reply-To: <20240325165406.226916-1-gnstark@salutedevices.com>
+References: <20240325165406.226916-1-gnstark@salutedevices.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322102800.1322022-1-s.horvath@outlook.com.au> <SY4P282MB3063D447DA09D35F5FBD4721C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
-In-Reply-To: <SY4P282MB3063D447DA09D35F5FBD4721C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
-From: Brian Norris <briannorris@chromium.org>
-Date: Mon, 25 Mar 2024 11:45:13 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXM9=0jQA=MWpBOttUT7k67wmEDFGoOObQfYm=ca_HL8GQ@mail.gmail.com>
-Message-ID: <CA+ASDXM9=0jQA=MWpBOttUT7k67wmEDFGoOObQfYm=ca_HL8GQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] platform/chrome: cros_kbd_led_backlight: Remove
- obsolete commands (EC_CMD_PWM_*_KEYBOARD_BACKLIGHT)
-To: Stephen Horvath <s.horvath@outlook.com.au>
-Cc: Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>, 
-	Guenter Roeck <groeck@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 3:34=E2=80=AFAM Stephen Horvath
-<s.horvath@outlook.com.au> wrote:
->
-> EC_CMD_PWM_GET_KEYBOARD_BACKLIGHT and EC_CMD_PWM_SET_KEYBOARD_BACKLIGHT
-> are marked as obsolete in `cros_ec_commands.h`, this patch removes the
-> usage of these commands from the driver.
+Hi George!
 
-Just because the EC firmware repository marks these as obsolete (and
-yes, we copy that header mostly as-is into the kernel repository ...
-but it's still a firmware header) doesn't mean it's truly ready to be
-removed. I believe the intention is to direct *firmware* developers
-not to use them -- any new developments should be using the new
-commands.
+I'm torn on this:
 
-From a kernel perspective, we could still be supporting old firmware
-on old devices, and so we may want/need to continue to support these
-commands.
+Am Montag, dem 25.03.2024 um 19:54 +0300 schrieb George Stark:
+> Protocol parsing errors could happen due to several reasons like
+> noise
+> environment, heavy load on system etc. If to poll the sensor
+> frequently
+> and/or for a long period kernel log will become polluted with error
+> messages if their log level is err (i.e. on by default).
 
-I don't know off the top of my head which firmware branches support
-which commands, on devices that have such keyboard backlights. (The
-Chromium EC repository is open source though, with various firmware-*
-branches still around, so this information is available.) But without
-a better explanation as to why these are truly ready to be removed,
-I'll say "NAK."
+Yes, these error are often recoverable. (As are many other HW errors,
+that typically are logged. Eg USB bus resets due to EMI)
 
-Brian
+However they are still genuine errors of the HW.
+
+>  Also some types
+> of those messages already have dbg level so use unified log level for
+> all such cases.
+
+My take so far has been: Debug level messages are for debugging the
+code (ie adding/testing support of new device variants etc). Users
+aren't expected to know about or enable debug output. OTOH anything
+actually going wrong is an error and should be logged as such.
+
+The idea is, that these messages help users understand issues with
+their HW (like too long cables, broken cables etc). But it is true,
+that they will slowly accumulate in many real world scenarios without
+anything being truly wrong.
+
+I don't consider the dmesg buffer being rotated after a month or two a
+bug. But I suppose this is a corner case. I'll happily accept whatever
+Jonathan thinks is reasonable.
+
+Best regards,
+Harald
+
+
+> Signed-off-by: George Stark <gnstark@salutedevices.com>
+> ---
+> I use DHT22 sensor with Raspberry Pi Zero W as a simple home meteo
+> station.
+> Even if to poll the sensor once per tens of seconds after month or
+> two dmesg
+> may become full of useless parsing error messages. Anyway those
+> errors are caught
+> in the user software thru return values.
+>=20
+> =C2=A0drivers/iio/humidity/dht11.c | 4 ++--
+> =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/iio/humidity/dht11.c
+> b/drivers/iio/humidity/dht11.c
+> index c97e25448772..e2cbc442177b 100644
+> --- a/drivers/iio/humidity/dht11.c
+> +++ b/drivers/iio/humidity/dht11.c
+> @@ -156,7 +156,7 @@ static int dht11_decode(struct dht11 *dht11, int
+> offset)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0dht11->temperature =3D temp_int * 1000;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0dht11->humidity =3D hum_int * 1000;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else {
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0dev_err(dht11->dev,
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0dev_dbg(dht11->dev,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0"Do=
+n't know how to decode data: %d %d %d
+> %d\n",
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0hum=
+_int, hum_dec, temp_int, temp_dec);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0return -EIO;
+> @@ -239,7 +239,7 @@ static int dht11_read_raw(struct iio_dev
+> *iio_dev,
+> =C2=A0#endif
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0if (ret =3D=3D 0 && dht11->num_edges <
+> DHT11_EDGES_PER_READ - 1) {
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_err(d=
+ht11->dev, "Only %d signal edges
+> detected\n",
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_dbg(d=
+ht11->dev, "Only %d signal edges
+> detected\n",
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dht11->num_edges);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret=
+ =3D -ETIMEDOUT;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0}
+> --
+> 2.25.1
+>=20
+
 
