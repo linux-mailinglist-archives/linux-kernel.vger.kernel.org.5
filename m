@@ -1,472 +1,234 @@
-Return-Path: <linux-kernel+bounces-116986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A44088A5D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:08:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD54788A681
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:28:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D67D1C39809
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:08:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CA6EB4839F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:09:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B141147C6F;
-	Mon, 25 Mar 2024 12:21:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="cmjLs/AX"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB7F147C91;
+	Mon, 25 Mar 2024 12:21:01 +0000 (UTC)
+Received: from mail.actia.se (mail.actia.se [212.181.117.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1013146D46;
-	Mon, 25 Mar 2024 12:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A9E13FD9D;
+	Mon, 25 Mar 2024 12:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.181.117.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711369166; cv=none; b=ajHR/L7YRfHFnwDJLHOfr7f7lfinSXTqg55ZGj73Z/m/GvcFo4XM1itvsvxJy/aWetAM9SAUCpJJ8Btg1VqPDvLyZZh0Zw263eiaGx7gPb10k/UF4XEjfwebG+N+uvhmOBJ0ctaKhZ3HivxKPYk5LATsJP+wtyZETIukcjFRprE=
+	t=1711369238; cv=none; b=fhSOj77RCMx7X/IhCBFu4w8jwtQbCNl0v6HgDC3PQVatK3rOicpd3S4j+gQIZLEZHuR6PIi8HEZpcdx1QeWTVpb9cWBh+Sxim4Kf7l5NlrjM+TO9ZIulbwBIz61I71fT82D9cQoL2+CX9/HevQA26abUbzZKXJ1KkiF/i6vWmZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711369166; c=relaxed/simple;
-	bh=R1JXzbStYXKW0W8uATT6sTW8gpZYe1Hs2sTYq2U3Q00=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tpAyM3bANKZd04cwSAGnLjzN80FOo658fQwz6Sa5dUy0tSXacLijXKZ0EmgpQst5Jqt0aPxyAAdDsgnEg4/MwScBmPMa0btxSrXbhtvANMiuXSXeUZb39Fg6xUknfhInhDTFND/iUllxe8q9JZy4GRwAF/8WgdFMRuHQ8+1lBZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=cmjLs/AX; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: e5ded32ceaa111eeb8927bc1f75efef4-20240325
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=4sLEnPsFPQ4wRaWZ5jE/hfeLE57gwcIPemTYqqxv+Ik=;
-	b=cmjLs/AXLI33dXZdzctoCP5twdaFbIZkm8d0aEJCC1EbEGo3LibDJbQtHsk1VJvPCn+JXAapcKBR1RsYRmy+LaWdcdPkgmpsRE+57hHwFrkg3Ri35Vtaqw9Q/MYavjKu18eE77zEvVkB4+8Vx+pbO+TEocj0Das9y8UfyI4p4tU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:0fb6ecfc-14d3-43f8-a62d-bc5eb3666fca,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:4306cf90-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: e5ded32ceaa111eeb8927bc1f75efef4-20240325
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
-	(envelope-from <yu-chang.lee@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 745035205; Mon, 25 Mar 2024 20:19:16 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 25 Mar 2024 20:19:14 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 25 Mar 2024 20:19:14 +0800
-From: yu-chang.lee <yu-chang.lee@mediatek.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	<mandyjh.liu@mediatek.com>, <fan.chen@mediatek.com>,
-	<xiufeng.li@mediatek.com>, <yu-chang.lee@mediatek.com>
-Subject: [PATCH 2/2] soc: mediatek: pm-domains: support smi clamp protection
-Date: Mon, 25 Mar 2024 20:19:08 +0800
-Message-ID: <20240325121908.3958-3-yu-chang.lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240325121908.3958-1-yu-chang.lee@mediatek.com>
-References: <20240325121908.3958-1-yu-chang.lee@mediatek.com>
+	s=arc-20240116; t=1711369238; c=relaxed/simple;
+	bh=Rg9Dkjqh2+4xyVRxCQJZZ2VbWGmyVffXWW8+QSjaDBo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jqPrAV82oetY/O2fEA1dO0jtdZ7UDNkFyD5ZLL2pTTO3DP0qAlas2oxXuDYREzf4By8czV647bWhcgFvEZ3hXqN1YPdVLbEeaY1/mKYhp2nvRsjfSkti6pCm33/FycFJtR2j54EGtvUzZLDwAD8Dtx1JVNpcRtOew9F23ltsLdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=actia.se; spf=pass smtp.mailfrom=actia.se; arc=none smtp.client-ip=212.181.117.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=actia.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=actia.se
+Received: from S036ANL.actianordic.se (10.12.31.117) by S036ANL.actianordic.se
+ (10.12.31.117) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.37; Mon, 25 Mar
+ 2024 13:20:25 +0100
+Received: from S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69]) by
+ S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69%4]) with mapi id
+ 15.01.2507.037; Mon, 25 Mar 2024 13:20:25 +0100
+From: John Ernberg <john.ernberg@actia.se>
+To: Florian Fainelli <f.fainelli@gmail.com>, "Russell King (Oracle)"
+	<linux@armlinux.org.uk>
+CC: Maxime Chevallier <maxime.chevallier@bootlin.com>, Wei Fang
+	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Heiner Kallweit
+	<hkallweit1@gmail.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Lunn
+	<andrew@lunn.ch>
+Subject: Re: [PATCH net v3 2/2] net: fec: Suspend the PHY on probe
+Thread-Topic: [PATCH net v3 2/2] net: fec: Suspend the PHY on probe
+Thread-Index: AQHab8t46xO1JP3Hxke5Lu7SCFbkbbEq8XCAgBPPogCAAAPagIACAISAgAAYuQCAAAV2gIAAKfWAgAFUdICAAAMfgIAGCB+A
+Date: Mon, 25 Mar 2024 12:20:25 +0000
+Message-ID: <ed6da286-eba7-4fae-882b-bb960a613dac@actia.se>
+References: <20240306133734.4144808-1-john.ernberg@actia.se>
+ <20240306133734.4144808-3-john.ernberg@actia.se>
+ <20240306190539.4ab9f369@device-28.home>
+ <9490ed31-dede-4a14-9c62-5ef83e30593a@actia.se>
+ <ZflSE8AaYLE3Ri8L@shell.armlinux.org.uk>
+ <f89bec78-0dae-4518-a461-2e64a3dfb9fc@actia.se>
+ <ZfsUvm9YC5O7il3h@shell.armlinux.org.uk>
+ <7f0e5f8b-fb85-4f2b-8d77-4170366a1b55@gmail.com>
+ <Zfs8hWo/aVbvuAgm@shell.armlinux.org.uk>
+ <efffa6e6-f519-4424-8d58-0951e7c68f27@actia.se>
+ <27453913-d4a3-4535-8cf5-2f5f3eb6c7b7@gmail.com>
+In-Reply-To: <27453913-d4a3-4535-8cf5-2f5f3eb6c7b7@gmail.com>
+Accept-Language: en-US, sv-SE
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-esetresult: clean, is OK
+x-esetid: 37303A2958D729556C7166
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4D39503E4B285940B69F7EBCEAD034A6@actia.se>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--6.232700-8.000000
-X-TMASE-MatchedRID: 82HXDiODsmMPv5/+N9RjEodlc1JaOB1TSjyMfjCRfaPfUZT83lbkEN6M
-	yUV+2+DZ23e6ga05Tae8t+v2unSIfNYOxuVS5w3+98sqn8kK3uEOPDBPSvoRdKvM+zzl/BSTmtc
-	Q2r1onEyw2nks2gP6QWjT8PQAXOh+Fn6miqL6+G1c/msUC5wFQT4H4hoqLeJJfmHrLgoJIlxQqT
-	fsthoSXC3czQwuDa9VvU52Vy7HkdYfE8yM4pjsDwtuKBGekqUpOlxBO2IcOBbySgIkk90zzqHh9
-	ol1FR9sR7VEdXK04ughltD7NXKg1VD0eWBFH1w4
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--6.232700-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	02B601C143082A5EB99CE72FF1848A917E984C747259A9787E86FEA6106D85A62000:8
-X-MTK: N
 
-In order to avoid power glitch, this patch use smi clamp
-to disable/enable smi common port.
-
-Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
----
- drivers/pmdomain/mediatek/mt8188-pm-domains.h |  41 ++++-
- drivers/pmdomain/mediatek/mtk-pm-domains.c    | 147 ++++++++++++++----
- drivers/pmdomain/mediatek/mtk-pm-domains.h    |   1 +
- 3 files changed, 156 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/pmdomain/mediatek/mt8188-pm-domains.h b/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-index 7bbba4d56a77..39f057dca92c 100644
---- a/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-+++ b/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-@@ -573,6 +573,18 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 		.pwr_sta2nd_offs = 0x170,
- 		.sram_pdn_bits = BIT(8),
- 		.sram_pdn_ack_bits = BIT(12),
-+		.bp_cfg = {
-+			BUS_PROT_WR(SMI,
-+				    MT8188_SMI_COMMON_SMI_CLAMP_DIP_TO_VDO0,
-+				    MT8188_SMI_COMMON_CLAMP_EN_SET,
-+				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
-+				    MT8188_SMI_COMMON_CLAMP_EN_STA),
-+			BUS_PROT_WR(SMI,
-+				    MT8188_SMI_COMMON_SMI_CLAMP_DIP_TO_VPP1,
-+				    MT8188_SMI_COMMON_CLAMP_EN_SET,
-+				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
-+				    MT8188_SMI_COMMON_CLAMP_EN_STA),
-+		},
- 		.reset_smi = {
- 			SMI_RESET_WR(MT8188_SMI_LARB10_RESET,
- 				     MT8188_SMI_LARB10_RESET_ADDR),
-@@ -585,7 +597,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 			SMI_RESET_WR(MT8188_SMI_LARB15_RESET,
- 				     MT8188_SMI_LARB15_RESET_ADDR),
- 		},
--		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
-+		.caps = MTK_SCPD_KEEP_DEFAULT_OFF | MTK_SCPD_CLAMP_PROTECTION,
- 	},
- 	[MT8188_POWER_DOMAIN_IPE] = {
- 		.name = "ipe",
-@@ -595,11 +607,18 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 		.pwr_sta2nd_offs = 0x170,
- 		.sram_pdn_bits = BIT(8),
- 		.sram_pdn_ack_bits = BIT(12),
-+		.bp_cfg = {
-+			BUS_PROT_WR(SMI,
-+				    MT8188_SMI_COMMON_SMI_CLAMP_IPE_TO_VPP1,
-+				    MT8188_SMI_COMMON_CLAMP_EN_SET,
-+				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
-+				    MT8188_SMI_COMMON_CLAMP_EN_STA),
-+		},
- 		.reset_smi = {
- 			SMI_RESET_WR(MT8188_SMI_LARB12_RESET,
- 				     MT8188_SMI_LARB12_RESET_ADDR),
- 		},
--		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
-+		.caps = MTK_SCPD_KEEP_DEFAULT_OFF | MTK_SCPD_CLAMP_PROTECTION,
- 	},
- 	[MT8188_POWER_DOMAIN_CAM_VCORE] = {
- 		.name = "cam_vcore",
-@@ -676,13 +695,20 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 		.pwr_sta2nd_offs = 0x170,
- 		.sram_pdn_bits = BIT(8),
- 		.sram_pdn_ack_bits = BIT(12),
-+		.bp_cfg = {
-+			BUS_PROT_WR(SMI,
-+				    MT8188_SMI_COMMON_SMI_CLAMP_IPE_TO_VPP1,
-+				    MT8188_SMI_COMMON_CLAMP_EN_SET,
-+				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
-+				    MT8188_SMI_COMMON_CLAMP_EN_STA),
-+		},
- 		.reset_smi = {
- 			SMI_RESET_WR(MT8188_SMI_LARB16A_RESET,
- 				     MT8188_SMI_LARB16A_RESET_ADDR),
- 			SMI_RESET_WR(MT8188_SMI_LARB17A_RESET,
- 				     MT8188_SMI_LARB17A_RESET_ADDR),
- 		},
--		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
-+		.caps = MTK_SCPD_KEEP_DEFAULT_OFF | MTK_SCPD_CLAMP_PROTECTION,
- 	},
- 	[MT8188_POWER_DOMAIN_CAM_SUBB] = {
- 		.name = "cam_subb",
-@@ -692,13 +718,20 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
- 		.pwr_sta2nd_offs = 0x170,
- 		.sram_pdn_bits = BIT(8),
- 		.sram_pdn_ack_bits = BIT(12),
-+		.bp_cfg = {
-+			BUS_PROT_WR(SMI,
-+				    MT8188_SMI_COMMON_SMI_CLAMP_CAM_SUBB_TO_VDO0,
-+				    MT8188_SMI_COMMON_CLAMP_EN_SET,
-+				    MT8188_SMI_COMMON_CLAMP_EN_CLR,
-+				    MT8188_SMI_COMMON_CLAMP_EN_STA),
-+		},
- 		.reset_smi = {
- 			SMI_RESET_WR(MT8188_SMI_LARB16B_RESET,
- 				     MT8188_SMI_LARB16B_RESET_ADDR),
- 			SMI_RESET_WR(MT8188_SMI_LARB17B_RESET,
- 				     MT8188_SMI_LARB17B_RESET_ADDR),
- 		},
--		.caps = MTK_SCPD_KEEP_DEFAULT_OFF,
-+		.caps = MTK_SCPD_KEEP_DEFAULT_OFF | MTK_SCPD_CLAMP_PROTECTION,
- 	},
- };
- 
-diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.c b/drivers/pmdomain/mediatek/mtk-pm-domains.c
-index 9ab6fa105c8c..3c797e136c0e 100644
---- a/drivers/pmdomain/mediatek/mtk-pm-domains.c
-+++ b/drivers/pmdomain/mediatek/mtk-pm-domains.c
-@@ -47,9 +47,10 @@ struct scpsys_domain {
- 	struct clk_bulk_data *subsys_clks;
- 	struct regmap *infracfg_nao;
- 	struct regmap *infracfg;
--	struct regmap *smi;
-+	struct regmap **smi;
- 	struct regmap **larb;
- 	int num_larb;
-+	int num_smi;
- 	struct regulator *supply;
- };
- 
-@@ -122,29 +123,19 @@ static int scpsys_sram_disable(struct scpsys_domain *pd)
- 					MTK_POLL_TIMEOUT);
- }
- 
--static struct regmap *scpsys_bus_protect_get_regmap(struct scpsys_domain *pd,
--						    const struct scpsys_bus_prot_data *bpd)
--{
--	if (bpd->flags & BUS_PROT_COMPONENT_SMI)
--		return pd->smi;
--	else
--		return pd->infracfg;
--}
--
- static struct regmap *scpsys_bus_protect_get_sta_regmap(struct scpsys_domain *pd,
- 							const struct scpsys_bus_prot_data *bpd)
- {
- 	if (bpd->flags & BUS_PROT_STA_COMPONENT_INFRA_NAO)
- 		return pd->infracfg_nao;
- 	else
--		return scpsys_bus_protect_get_regmap(pd, bpd);
-+		return pd->infracfg;
- }
- 
- static int scpsys_bus_protect_clear(struct scpsys_domain *pd,
--				    const struct scpsys_bus_prot_data *bpd)
-+				    const struct scpsys_bus_prot_data *bpd,
-+					struct regmap *sta_regmap, struct regmap *regmap)
- {
--	struct regmap *sta_regmap = scpsys_bus_protect_get_sta_regmap(pd, bpd);
--	struct regmap *regmap = scpsys_bus_protect_get_regmap(pd, bpd);
- 	u32 sta_mask = bpd->bus_prot_sta_mask;
- 	u32 expected_ack;
- 	u32 val;
-@@ -165,10 +156,9 @@ static int scpsys_bus_protect_clear(struct scpsys_domain *pd,
- }
- 
- static int scpsys_bus_protect_set(struct scpsys_domain *pd,
--				  const struct scpsys_bus_prot_data *bpd)
-+				  const struct scpsys_bus_prot_data *bpd,
-+				  struct regmap *sta_regmap, struct regmap *regmap)
- {
--	struct regmap *sta_regmap = scpsys_bus_protect_get_sta_regmap(pd, bpd);
--	struct regmap *regmap = scpsys_bus_protect_get_regmap(pd, bpd);
- 	u32 sta_mask = bpd->bus_prot_sta_mask;
- 	u32 val;
- 
-@@ -182,19 +172,32 @@ static int scpsys_bus_protect_set(struct scpsys_domain *pd,
- 					MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
- }
- 
--static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
-+static int _scpsys_clamp_bus_protection_enable(struct scpsys_domain *pd, bool is_smi)
- {
-+	int smi_count = 0;
-+
- 	for (int i = 0; i < SPM_MAX_BUS_PROT_DATA; i++) {
- 		const struct scpsys_bus_prot_data *bpd = &pd->data->bp_cfg[i];
-+		struct regmap *sta_regmap, *regmap;
-+		bool is_smi = bpd->flags & BUS_PROT_COMPONENT_SMI;
- 		int ret;
- 
- 		if (!bpd->bus_prot_set_clr_mask)
- 			break;
- 
-+		if (is_smi) {
-+			sta_regmap = pd->smi[smi_count];
-+			regmap = pd->smi[smi_count];
-+			smi_count++;
-+		} else {
-+			sta_regmap = scpsys_bus_protect_get_sta_regmap(pd, bpd);
-+			regmap = pd->infracfg;
-+		}
-+
- 		if (bpd->flags & BUS_PROT_INVERTED)
--			ret = scpsys_bus_protect_clear(pd, bpd);
-+			ret = scpsys_bus_protect_clear(pd, bpd, sta_regmap, regmap);
- 		else
--			ret = scpsys_bus_protect_set(pd, bpd);
-+			ret = scpsys_bus_protect_set(pd, bpd, sta_regmap, regmap);
- 		if (ret)
- 			return ret;
- 	}
-@@ -202,19 +205,32 @@ static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
- 	return 0;
- }
- 
--static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
-+static int _scpsys_clamp_bus_protection_disable(struct scpsys_domain *pd, bool is_smi)
- {
-+	int smi_count = pd->num_smi - 1;
-+
- 	for (int i = SPM_MAX_BUS_PROT_DATA - 1; i >= 0; i--) {
- 		const struct scpsys_bus_prot_data *bpd = &pd->data->bp_cfg[i];
-+		struct regmap *sta_regmap, *regmap;
-+		bool is_smi = bpd->flags & BUS_PROT_COMPONENT_SMI;
- 		int ret;
- 
- 		if (!bpd->bus_prot_set_clr_mask)
- 			continue;
- 
-+		if (is_smi) {
-+			sta_regmap = pd->smi[smi_count];
-+			regmap = pd->smi[smi_count];
-+			smi_count--;
-+		} else {
-+			sta_regmap = scpsys_bus_protect_get_sta_regmap(pd, bpd);
-+			regmap = pd->infracfg;
-+		}
-+
- 		if (bpd->flags & BUS_PROT_INVERTED)
--			ret = scpsys_bus_protect_set(pd, bpd);
-+			ret = scpsys_bus_protect_set(pd, bpd, sta_regmap, regmap);
- 		else
--			ret = scpsys_bus_protect_clear(pd, bpd);
-+			ret = scpsys_bus_protect_clear(pd, bpd, sta_regmap, regmap);
- 		if (ret)
- 			return ret;
- 	}
-@@ -222,6 +238,50 @@ static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
- 	return 0;
- }
- 
-+static int scpsys_clamp_protection(struct scpsys_domain *pd)
-+{
-+	int ret;
-+
-+	ret = _scpsys_clamp_bus_protection_enable(pd, true);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int scpsys_clamp_protection_disable(struct scpsys_domain *pd)
-+{
-+	int ret;
-+
-+	ret = _scpsys_clamp_bus_protection_disable(pd, true);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
-+{
-+	int ret;
-+
-+	ret = _scpsys_clamp_bus_protection_enable(pd, false);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
-+{
-+	int ret;
-+
-+	ret = _scpsys_clamp_bus_protection_disable(pd, false);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static int scpsys_regulator_enable(struct regulator *supply)
- {
- 	return supply ? regulator_enable(supply) : 0;
-@@ -272,6 +332,12 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
- 	bool tmp;
- 	int ret;
- 
-+	if (MTK_SCPD_CAPS(pd, MTK_SCPD_CLAMP_PROTECTION)) {
-+		ret = scpsys_clamp_protection(pd);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	ret = scpsys_regulator_enable(pd->supply);
- 	if (ret)
- 		return ret;
-@@ -318,6 +384,12 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
- 	if (ret < 0)
- 		goto err_disable_subsys_clks;
- 
-+	if (MTK_SCPD_CAPS(pd, MTK_SCPD_CLAMP_PROTECTION)) {
-+		ret = scpsys_clamp_protection_disable(pd);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	ret = scpsys_bus_protect_disable(pd);
- 	if (ret < 0)
- 		goto err_disable_sram;
-@@ -353,6 +425,12 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
- 	bool tmp;
- 	int ret;
- 
-+	if (MTK_SCPD_CAPS(pd, MTK_SCPD_CLAMP_PROTECTION)) {
-+		ret = scpsys_clamp_protection(pd);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	ret = scpsys_bus_protect_enable(pd);
- 	if (ret < 0)
- 		return ret;
-@@ -450,12 +528,23 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
- 	if (IS_ERR(pd->infracfg))
- 		return ERR_CAST(pd->infracfg);
- 
--	smi_node = of_parse_phandle(node, "mediatek,smi", 0);
--	if (smi_node) {
--		pd->smi = device_node_to_regmap(smi_node);
--		of_node_put(smi_node);
--		if (IS_ERR(pd->smi))
--			return ERR_CAST(pd->smi);
-+	pd->num_smi = of_count_phandle_with_args(node, "mediatek,smi", NULL);
-+	if (pd->num_smi > 0) {
-+		pd->smi = devm_kcalloc(scpsys->dev, pd->num_smi, sizeof(*pd->smi), GFP_KERNEL);
-+		if (!pd->smi)
-+			return ERR_PTR(-ENOMEM);
-+
-+		for (i = 0; i < pd->num_smi; i++) {
-+			smi_node = of_parse_phandle(node, "mediatek,smi", i);
-+			if (!smi_node)
-+				return ERR_PTR(-EINVAL);
-+
-+			pd->smi[i] = device_node_to_regmap(smi_node);
-+			if (IS_ERR(pd->smi[i]))
-+				return ERR_CAST(pd->smi[i]);
-+		}
-+	} else {
-+		pd->num_smi = 0;
- 	}
- 
- 	pd->num_larb = of_count_phandle_with_args(node, "mediatek,larb", NULL);
-diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.h b/drivers/pmdomain/mediatek/mtk-pm-domains.h
-index 31c2a1bb500f..e0eb7214719e 100644
---- a/drivers/pmdomain/mediatek/mtk-pm-domains.h
-+++ b/drivers/pmdomain/mediatek/mtk-pm-domains.h
-@@ -13,6 +13,7 @@
- #define MTK_SCPD_EXT_BUCK_ISO		BIT(6)
- #define MTK_SCPD_HAS_INFRA_NAO		BIT(7)
- #define MTK_SCPD_STRICT_BUS_PROTECTION	BIT(8)
-+#define MTK_SCPD_CLAMP_PROTECTION	BIT(9)
- #define MTK_SCPD_CAPS(_scpd, _x)	((_scpd)->data->caps & (_x))
- 
- #define SPM_VDE_PWR_CON			0x0210
--- 
-2.18.0
-
+SGkgRmxvcmlhbiwNCg0KT24gMy8yMS8yNCAxNzoxMywgRmxvcmlhbiBGYWluZWxsaSB3cm90ZToN
+Cj4gT24gMy8yMS8yNCAwOTowMiwgSm9obiBFcm5iZXJnIHdyb3RlOg0KPj4gSGkgUnVzc2VsbCwN
+Cj4+DQo+PiBPbiAzLzIwLzI0IDIwOjQ0LCBSdXNzZWxsIEtpbmcgKE9yYWNsZSkgd3JvdGU6DQo+
+Pj4gT24gV2VkLCBNYXIgMjAsIDIwMjQgYXQgMTA6MTM6NTVBTSAtMDcwMCwgRmxvcmlhbiBGYWlu
+ZWxsaSB3cm90ZToNCj4+Pj4NCj4+Pj4NCj4+Pj4gT24gMy8yMC8yMDI0IDk6NTQgQU0sIFJ1c3Nl
+bGwgS2luZyAoT3JhY2xlKSB3cm90ZToNCj4+Pj4+IE9uIFdlZCwgTWFyIDIwLCAyMDI0IGF0IDAz
+OjI1OjU0UE0gKzAwMDAsIEpvaG4gRXJuYmVyZyB3cm90ZToNCj4+Pj4+PiBIaSBSdXNzZWwsDQo+
+Pj4+Pg0KPj4+Pj4gR3Jvd2wuIEhpIFBldGVyLg0KPj4+Pj4NCj4+Pj4+PiBXaGF0IHdlIHJlYWxs
+eSB3YW50IGlzIHRoZSBQSFkgdG8gYmUgc3VzcGVuZGVkIG9uIHN1c3BlbmQgdG8gUkFNDQo+Pj4+
+Pj4gcmVnYXJkbGVzcyBvZiB1cyBoYXZpbmcgaGFkIGFuIGluaXRpYWwgbGluayB1cCBvciBub3Qu
+DQo+Pj4+Pg0KPj4+Pj4gU28gd2hhdCB5b3UncmUgYXNraW5nIGlzIGZvciB0aGUgUEhZIHRvIGJl
+IHN1c3BlbmRlZCB3aGVuIHRoZSBzeXN0ZW0NCj4+Pj4+IGlzIGVudGVyaW5nIHN1c3BlbmQsIHdo
+aWNoIGlzIGEgbG9uZyB0aW1lIGFmdGVyIHRoZSBzeXN0ZW0gYm9vdGVkIGFuZA0KPj4+Pj4gdGh1
+cyBwaHlfcHJvYmUoKSB3YXMgY2FsbGVkLCBhbmQgY291bGQgYmUgc29tZSB0aW1lIGJlZm9yZSB0
+aGUgc3lzdGVtDQo+Pj4+PiByZXN1bWVzLg0KPj4+Pj4NCj4+Pj4+IEknbSBub3Qgc3VyZSB3aGF0
+IHRoZSByZWxldmFuY2UgaXMgb2YgcGh5X3Byb2JlKCkgdGhhdCB3YXMgYnJvdWdodCB1cA0KPj4+
+Pj4gcHJldmlvdXNseSB0aGVuLg0KPj4+Pj4NCj4+Pj4+PiBUaGlzIHdvcmtlZCBwcmlvciB0byA0
+YzBkMmU5NmJhMDUgKCJuZXQ6IHBoeTogY29uc2lkZXIgdGhhdCANCj4+Pj4+PiBzdXNwZW5kMnJh
+bQ0KPj4+Pj4+IG1heSBjdXQNCj4+Pj4+PiBvZmYgUEhZIHBvd2VyIikgd2hpY2ggd2FzIGFkZGVk
+IGluIExpbnV4IDUuMTEsIGFuZCA1NTdkNWRjODNmNjggDQo+Pj4+Pj4gKCJuZXQ6DQo+Pj4+Pj4g
+ZmVjOiB1c2UNCj4+Pj4+PiBtYWMtbWFuYWdlZCBQSFkgUE0iKSB3aGljaCB3YXMgYWRkZWQgaW4g
+TGludXggNS4xMi4NCj4+Pj4+DQo+Pj4+PiBMb29raW5nIGF0IHRoZSBmb3JtZXIgY29tbWl0LCB0
+aGF0IGxvb2tzIHRvIG1lIGxpa2UgaXQgaXMgb25seQ0KPj4+Pj4gYWZmZWN0aW5nIHRoZSByZXN1
+bWUgcGF0aHMsIG5vdCB0aGUgc3VzcGVuZCBwYXRocywgc28gd291bGRuJ3QgaGF2ZQ0KPj4+Pj4g
+YW55IGltcGFjdCBpdHNlbGYgb24gd2hhdCBoYXBwZW5zIHdoZW4gc3VzcGVuZCBoYXBwZW5zLg0K
+Pj4+Pj4NCj4+Pj4+IFRoZSBsYXR0ZXIgY29tbWl0IHN0YXRlcyB0aGF0IGl0IGlzIGEgd29yayBh
+cm91bmQgZm9yIGFuIGlzc3VlIHdpdGggYQ0KPj4+Pj4gcGFydGljdWxhciBQSFkuIFdoYXQgaGFw
+cGVucyBpZiB5b3UgcmV2ZXJ0IGp1c3QgdGhpcyBjb21taXQsIGRvZXMgeW91cg0KPj4+Pj4gcHJv
+YmxlbSB0aGVuIGdvIGF3YXk/DQo+Pg0KPj4gT3VyIFBIWSBkb2VzIG5vdCBiZWdpbiB3b3JraW5n
+IGFnYWluIHdpdGhvdXQgcmV2ZXJ0aW5nIGJvdGguIA0KPj4gcGh5X2luaXRfaHcoKQ0KPj4gd2ls
+bCByZW1haW4gYW4gaXNzdWUgaWYgaXQgb2NjdXJzIGFmdGVyIHBoeV9zdGFydCgpLg0KPj4NCj4+
+IFRoZSBjb21taXQgbWVzc2FnZSBpbiA1NTdkNWRjODNmNjggaXMgbm90IGV4cGxhaW5pbmcgbmVh
+cmx5IGVub3VnaCwgSQ0KPj4gc3BlbnQgYQ0KPj4gZmV3IGRheXMgb24gaXQgYmVmb3JlIEkgcHJv
+dmVkIHRoYXQgY29tbWl0IHRvIGJlIG5lYXJseSBjb3JyZWN0IChTZWUgDQo+PiB3aG9sZQ0KPj4g
+dGhyZWFkIGF0IFsxXSksIGl0IGhhcHBlbmVkIHRvIGp1c3QgZXhwbG9kZSB3aXRoIHRoYXQgUEhZ
+LiBUaGUgaXNzdWUgaXMgYQ0KPj4gc2VxdWVuY2luZyBpc3N1ZSB0aGF0IHdhcyBtYWRlIG1vcmUg
+cHJvbWluZW50IGJ5IDRjMGQyZTk2YmEwNSwgYnV0IGl0DQo+PiBleGlzdGVkDQo+PiBzaW5jZSBh
+cm91bmQgMjAwOC4gQmVjYXVzZSBGRUMgaXMgYm90aCBNRElPIGNvbnRyb2xsZXIgYW5kIE1BQywg
+DQo+PiBtZWFuaW5nIHRoZQ0KPj4gcmVzdW1lIG9mIHRoZSBsaW5rIGluIGEgbGluayB1cCBjYXNl
+IHJ1bnMgcGh5X3N0YXJ0KCkgaW4gdGhlIEZFQyByZXN1bWUNCj4+IGZ1bmN0aW9uLCB3aGljaCB3
+aWxsIHRyaWdnZXIgYSBtZGlvIGJ1cyByZXN1bWUgd2hlbiBpdCBjb21wbGV0ZXMsIGluIHR1cm4N
+Cj4+IGNhbGxpbmcgcGh5X2luaXRfaHcoKSAoYmVmb3JlIDRjMGQyZTk2YmEwNSBpdCB3YXMgcGh5
+X3Jlc3VtZSgpIHdoaWNoDQo+PiB3YXNuJ3QgYQ0KPj4gcHJvYmxlbSBidXQgc3RpbGwgd3Jvbmcg
+c2VxdWVuY2Ugd2lzZSkuDQo+Pg0KPj4+Pj4NCj4+Pj4+IEFsc28sIHBsZWFzZSBjbGFyaWZ5LiBJ
+dCBzZWVtcyB0aGF0IHlvdSBhcmUgcmVwb3J0aW5nIGEgcmVncmVzc2lvbiAtDQo+Pj4+PiBpdCB1
+c2VkIHRvIHdvcmsgZm9yIHlvdSBwcmlvciB0byA1NTdkNWRjODNmNjgsIGJ1dCA1NTdkNWRjODNm
+Njggc3RvcHMNCj4+Pj4+IGl0IHdvcmtpbmcgZm9yIHlvdT8NCj4+Pj4+DQo+Pj4+Pj4gU2luY2Ug
+RkVDIHJlcXVpcmVzIG1hY19tYW5hZ2VkX3BtIHRoZSBnZW5lcmljIFBNIHN1c3BlbmQtcmVzdW1l
+IHBhdGhzDQo+Pj4+Pj4gYXJlIG5vdA0KPj4+Pj4+IHRha2VuLiBUaGUgcmVzdW1lIHNlcXVlbmNp
+bmcgd2l0aCBnZW5lcmljIFBNIGhhcyBiZWVuIGJyb2tlbiB3aXRoIHRoZQ0KPj4+Pj4+IEZFQyBz
+aW5jZQ0KPj4+Pj4+IGdlbmVyaWMgUE0gb2YgdGhlIG1kaW8gYnVzIHdhcyBhZGRlZCwgYXMgdGhl
+IEZFQyB3aWxsIGRvIHBoeV9zdGFydCgpDQo+Pj4+Pj4gKHZpYSBGRUMNCj4+Pj4+PiByZXN1bWUp
+IGFuZCB0aGVuIGdlbmVyaWMgUE0gcnVucyBwaHlfaW5pdF9odygpIHZpYSBtZGlvIGJ1cyByZXN1
+bWUNCj4+Pj4+PiAocHJldmlvdXNseToNCj4+Pj4+PiBsZXNzIGRhbWFnaW5nIHBoeV9yZXN1bWUo
+KSkgZHVlIHRvIGhvdyB0aGUgRkVDIElQIGJsb2NrIHdvcmtzLg0KPj4+Pj4NCj4+Pj4+IFRoYXQg
+c3VnZ2VzdHMgdGhhdCBldmVuIHdpdGggNTU3ZDVkYzgzZjY4IHJldmVydGVkLCBpdCdzIGJyb2tl
+bi4NCj4+Pj4+IERpZ2dpbmcgaW50byB0aGUgaGlzdG9yeSwgd2hhdCB5b3UncmUgcmVmZXJyaW5n
+IHRvIGRhdGVzIGZyb20gSmFudWFyeQ0KPj4+Pj4gMjAxNiwgc28gYXJlIHlvdSByZXBvcnRpbmcg
+YSByZWdyZXNzaW9uIHRoYXQgb2NjdXJlZCA4IF95ZWFyc18gYWdvLA0KPj4+Pj4gYXQgd2hpY2gg
+cG9pbnQgSSdkIHF1ZXN0aW9uIHdoeSBpdCdzIHRha2VuIDggeWVhcnMuDQo+Pg0KPj4gQSByZXZl
+cnQgb2YgdGhvc2UgaXMgYWJzb2x1dGVseSB3cm9uZy4gVGhvc2UgY29tbWl0cyBhcmUgZml4aW5n
+IGJpZ2dlcg0KPj4gaXNzdWVzLg0KPj4NCj4+Pj4+DQo+Pj4+PiBHaXZlbiB0aGUgdGltZSB0aGF0
+IGhhcyBwYXNzZWQsIEkgZG9uJ3QgdGhpbmsgcmV2ZXJ0aW5nIGNvbW1pdHMgaXMNCj4+Pj4+IGEg
+c2FuZSBhcHByb2FjaC4gUXVpdGUgd2hhdCB0aGUgcmlnaHQgc29sdXRpb24gaXMgdGhvdWdoLCBJ
+J20gbm90DQo+Pj4+PiBzdXJlLg0KPj4+Pj4NCj4+Pj4+IMKgwqAgRnJvbSB0aGUgZGVzY3JpcHRp
+b24gYW5kIHRoZSBjb21taXRzIHBvaW50ZWQgdG8sIEkganVzdCBkb24ndCBzZWUNCj4+Pj4+IHRo
+YXQgdGhlcmUgaXMgYW55dGhpbmcgdGhhdCBjb3VsZCd2ZSBjaGFuZ2VkIHdpdGggcmVzcGVjdCB0
+byB0aGUgZmlyc3QNCj4+Pj4+IGJvb3QgLSBpZiB0aGF0IGhhcyBjaGFuZ2VkLCB0aGVuIEkgdGhp
+bmsgbW9yZSByZXNlYXJjaCBpbnRvIHdoYXQgDQo+Pj4+PiBjYXVzZWQNCj4+Pj4+IGl0IGlzIG5l
+ZWRlZC4NCj4+Pj4+DQo+Pj4+PiBJZiBpdCdzIHRoZSBzdWJzZXF1ZW50IHN0YXRlIGFmdGVyIGEg
+c3VzcGVuZC1yZXN1bWUgY3ljbGUsIHRoZW4geWVzLA0KPj4+Pj4gSSB3b3VsZCBhZ3JlZSB0aGF0
+IGl0cyBwb3NzaWJsZSB0aGF0IHRoZXNlIGNoYW5nZXMgYnJva2UgdGhpcyBmb3IgeW91Lg0KPj4+
+Pj4gV291bGQgY2xlYXJpbmcgbmRldi0+cGh5ZGV2LT5tYWNfbWFuYWdlZF9wbSBqdXN0IGJlZm9y
+ZQ0KPj4+Pj4gcGh5X2Rpc2Nvbm5lY3QoKSBpbiBmZWNfZW5ldF9jbG9zZSgpIGZpeCBpdCBmb3Ig
+eW91LCBzbyB0aGUgc3VzcGVuZC8NCj4+Pj4+IHJlc3VtZSBwYXRocyBmb3IgdGhlIFBIWSBnZXQg
+dXNlZCB3aGVuIHRoZSBuZXR3b3JrIGludGVyZmFjZSBpcyBkb3duPw0KPj4+Pj4NCj4+Pj4+IE1h
+eWJlLCBob3dldmVyLCB0aGF0J3Mgc29tZXRoaW5nIHRoYXQgc2hvdWxkIGhhcHBlbiBpbiBhbnkg
+Y2FzZSBpbnNpZGUNCj4+Pj4+IHBoeWxpYiBvbiBwaHlfZGlzY29ubmVjdCgpIGFzIGEgbWF0dGVy
+IG9mIGNvdXJzZSwgc2luY2UgdGhlIFBIWSB3aWxsDQo+Pj4+PiBhdCB0aGF0IHBvaW50IGJlIG5v
+IGxvbmdlciB1bmRlciB0aGUgY29udHJvbCBvZiB0aGUgbmV0d29yayBkcml2ZXIgZm9yDQo+Pj4+
+PiBQTSBwdXJwb3Nlcy4gQ291bGQgeW91IGdpdmUgdGhpcyBpZGVhIGEgdHJ5IHBsZWFzZT8NCj4+
+Pj4+DQo+Pj4+DQo+Pj4+IE9uIHBoeV9kaXNjb25uZWN0KCkgd2Ugd2lsbCBkbyBhIHBoeV9kZXRh
+Y2goKSB3aGljaCBjYWxscyANCj4+Pj4gcGh5X3N1c3BlbmQoKS4NCj4+Pj4gR2l2ZW4gdGhhdCBw
+aHlfZGlzY29ubmVjdCgpIGlzIGNhbGxlZCBmcm9tIGZlY19lbmV0X2Nsb3NlKCksIHdlIA0KPj4+
+PiBzdGlsbCBoYXZlIGENCj4+Pj4gTURJTyBidXMgcmVnaXN0ZXJlZCBhbmQgd2UgYXJlIG5vdCB0
+cnlpbmcgdG8gc3VzcGVuZCB0aGUgTURJTyBidXMsIA0KPj4+PiBzbyB3ZQ0KPj4+PiBzaG91bGQg
+aGF2ZSBhbiBlZmZlY3RpdmUgcGh5X3N1c3BlbmQoKSBjYWxsIGhlcmUsIHdoYXQgYW0gSSBtaXNz
+aW5nPw0KPj4+DQo+Pj4gSSBkaWRuJ3QgbG9vayB0aGVyZSwgYnV0IGlmIHRoYXQgaXMgdGhlIGNh
+c2UsIHRoZW4gd2hhdCBpcyBKb2huJ3MNCj4+PiBwcm9ibGVtIC0gSSBjYW4ndCBmaWd1cmUgaXQg
+b3V0LCBzb21ldGhpbmcgaXNuJ3QgYWRkaW5nIHVwIGhlcmUuDQo+Pj4NCj4+DQo+PiBJIGNvdWxk
+IGluc3RlYWQgYWRkIGV4dHJhIHBoeV9zdXNwZW5kKCkgaW4gdGhlIHN1c3BlbmQgcGF0aCBpZiB0
+aGUgDQo+PiBsaW5rIGlzDQo+PiBkb3duIGFuZCB0aGUgRkVDIGlzIHVwIGFuZCBydW5uaW5nLiBJ
+IHJlamVjdGVkIGl0IG9yaWdpbmFsbHkgdGhpbmtpbmcgDQo+PiBpdCB3YXMNCj4+IGEgbXVjaCBk
+aXJ0aWVyIGZpeCwgYnV0IG1heWJlIHRoYXQgaXMgdGhlIG1vcmUgY29ycmVjdCB0aGluZyB0byBk
+bz8NCj4gDQo+IFRoaXMgZG9lcyBub3Qgc2VlbSBsaWtlIHRoZSBwcm9wZXIgc29sdXRpb24sIHRo
+ZSBvbmx5IHRpbWUgd2hlcmUgYW4gDQo+IGV4cGxpY2l0IHBoeV9zdXNwZW5kKCkgc2hvdWxkIGJl
+IGRvbmUgaW4gdGhlIEV0aGVybmV0IE1BQydzIC0+c3VzcGVuZCgpIA0KPiByb3V0aW5lIGlzIGlm
+IHRoZSBuZXR3b3JrIGRldmljZSB3YXMgYnJvdWdodCB1cCBhdCB0aGUgdGltZSANCj4gKG5ldGlm
+X3J1bm5pbm5nKCkgcmV0dXJucyB0cnVlKSAqYW5kKiB5b3Ugc2V0IG1hY19tYW5hZ2VkX3BtID0g
+dHJ1ZSANCj4gYmVjYXVzZSB5b3UgbXVzdCBwcmVjaXNlbHkgY29udHJvbCB0aGUgb3JkZXIgaW4g
+d2hpY2ggdGhlIE1BQyBhbmQgdGhlIA0KPiBQSFkgZ2V0IHN1c3BlbmRlZCB3aXRoIHJlc3BlY3Qg
+dG8gZWFjaCBvdGhlciAodHlwaWNhbGx5IGJlY2F1c2UgdGhlIFBIWSANCj4gc3VwcGxpZXMgYSBS
+WCBjbG9jayBiYWNrIHRvIHRoZSBNQUMsIGFuZCBzb21lIG9mIHRoZSBNQUMgbG9naWMgZGVwZW5k
+cyANCj4gdXBvbiBpdCB0byBvcGVyYXRlIHByb3Blcmx5LCBlLmcuOiBwZXJmb3JtIGEgcHJvcGVy
+IEZJRk8gZmx1c2ggZXRjLikuDQoNCkknbSBoYXZpbmcgc29tZSB0cm91YmxlIHVuZGVyc3RhbmRp
+bmcgeW91ciBtZXNzYWdlIGluIGNvbnRleHQgb2YgbXkgbW9zdCANCnJlY2VudCByZXBseSB0byBS
+dXNzZWxsLCBzbyBwbGVhc2UgYmVhciB3aXRoIG1lIGhlcmUgYXMgSSB3aWxsIA0KcG90ZW50aWFs
+bHkgYXNrIGEgcmVhbGx5IGR1bWIgcXVlc3Rpb246DQoNCkRvIEkgdW5kZXJzdGFuZCB0aGlzIGNv
+cnJlY3RseSBhcyB3aGF0IHVzZWQgdG8gd29yayBpbiA1LjEwIHdhcyBuZXZlciANCm1lYW50IHRv
+IHdvcmsgYW5kIHRoZSBiZWhhdmlvciBub3cgaXMgdGhlIGNvcnJlY3Qgb25lIGluIHRoZSBGRUMg
+Y2FzZT8gDQpNZWFuaW5nIHRoYXQgaWYgdGhlIGxpbmsgaGFzIG5ldmVyIGJlZW4gdXAgdGhlIFBI
+WSBtdXN0IG5ldmVyIGJlIGhhbmRsZWQgDQpmcm9tIGEgcG93ZXIgbWFuYWdlbWVudCBwZXJzcGVj
+dGl2ZT8NCg0KVGhlIG9ubHkgUEhZIGV4YW1wbGVzIEkgaGF2ZSBjb21lIGFjcm9zcyAodGhvdWdo
+IG5vdCBtYW55IGluIHRvdGFsKSB0aGUgDQpQSFkgaGFzIGRvbmUgc29tZSBpbml0aWFsIGNvbmZp
+Z3VyYXRpb24gb2YgaXRzZWxmIGFmdGVyIFBPUiBvciByZWxlYXNlIA0Kb2YgdGhlIHJlc2V0IGxp
+bmUuDQoNCj4gDQo+ICBGcm9tIHRoZXJlLCBJIHNlZSB0d28gZGlzdGluY3QgY2FzZXM6DQo+IA0K
+PiAtIHRoZSBuZXR3b3JrIGRldmljZSBkcml2ZXIgcHJvYmVkLCBidXQgdGhlIG5ldHdvcmsgZGV2
+aWNlIHdhcyBuZXZlciANCj4gYnJvdWdodCB1cCBpbiB0aGUgZmlyc3QgcGxhY2UgaW4gdGhhdCBj
+YXNlLCBJIGRvIG5vdCBzZWUgYSBwYXRoIHdoZXJlYnkgDQo+IHRoZSBQSFkgd291bGQgaGF2ZSBi
+ZWVuIHN1c3BlbmRlZCwgdW5sZXNzIHRoZSBib290IGZpcm13YXJlIGFscmVhZHkgdG9vayANCj4g
+Y2FyZSBvZiB0aGF0ICh3aGljaCBhcmd1YWJseSBpdCBzaG91bGQgaWYgeW91IGFyZSB0cnlpbmcg
+dG8gYmUgYXMgcG93ZXIgDQo+IGVmZmljaWVudCBhcyBwb3NzaWJsZSksIGFsdGhvdWdoIGFyZ3Vh
+Ymx5IHRoZXJlIGNvdWxkIGJlIGEgcGF0aCB3aXRoaW4gDQo+IHRoZSBrZXJuZWwgd2hlcmUgdGhp
+cyBpcyBhbHNvIGRvbmUuIEl0IGNvdWxkIGdldCByZWFsbHkgY29tcGxpY2F0ZWQgaG93ZXZlcg0K
+DQpHZW5lcmljIFBNIHZpYSBtZGlvX2J1c19waHlfc3VzcGVuZCgpIHdpbGwgc3VzcGVuZCB0aGUg
+UEhZIGlmIGl0IGhhcyBhIA0KLnN1c3BlbmQgY2FsbGJhY2sgYW5kIG1hY19tYW5hZ2VkX3BtIGlz
+bid0IHNldC4NCg0KbWRpb19idXNfcGh5X21heV9zdXNwZW5kKCkgd2lsbCBzZWUgdGhhdCBuZXRk
+ZXYgaXMgTlVMTCwgd2hpY2ggbWVhbnMgaXQgDQpyZXR1cm5zIHRoZSBpbnZlcnNlIG9mIHBoeS0+
+c3VzcGVuZGVkICh3aGljaCBpcyBmYWxzZSksIG1lYW5pbmcgdGhlIA0KZnVuY3Rpb24gcmV0dXJu
+cyB0cnVlLiBUaHVzIHBoeV9zdXNwZW5kKCkgaXMgY2FsbGVkLg0KDQo+IA0KPiAtIHRoZSBuZXR3
+b3JrIGRldmljZSBkcml2ZXIgcHJvYmVkLCBhbmQgdGhlIG5ldHdvcmsgZGV2aWNlIHdhcyBicm91
+Z2h0IA0KPiB1cCBhdCBsZWFzdCBvbmNlIChyZWdhcmRsZXNzIG9mIHdoZXRoZXIgYSBsaW5rIHN0
+YXRlIHdhcyBkZXRlY3RlZCBvciANCj4gbm90KSwgc3VjaCB0aGF0IHRoZSBQSFkgaGFzIGdvbmUg
+dGhyb3VnaCBhIHBoeV9zdGFydCgpL3BoeV9zdG9wKCkgY3ljbGUsIA0KPiBhbmQgdXBvbiBwaHlf
+c3RvcCgpIGEgcGh5X3N1c3BlbmQoKSBoYXMgYmVlbiBjYWxsZWQNCj4gDQo+IEl0IGlzIHNhZmUg
+dG8gYXNzdW1lIHlvdSBmYWxsIGluIHRoZSBmaXJzdCBjYXNlIG9ubHksIG9yIGRvIHlvdSBhbHNv
+IHNlZSANCj4gYSBwcm9ibGVtIGluIHRoZSBzZWNvbmQgY2FzZSBhcyB3ZWxsPw0KDQpUaGVyZSBp
+cyBvbmx5IGEgcHJvYmxlbSBpbiB0aGUgZmlyc3QgY2FzZS4gVGhlIHNlY29uZCBjYXNlIGlzIHdv
+cmtpbmcgYXMgDQpleHBlY3RlZC4NCg0KPiANCj4gSWYgdGhlIGZpcnN0IGNhc2UsIEkgYW0gYSBi
+aXQgdG9ybiBhcyB0byBob3cgdG8gYmVzdCBnbyBhYm91dCBpdC4gVGhlIA0KPiBpbml0aWFsIHN0
+YXRlIG9mIHRoZSBQSFkgdXBvbiBrZXJuZWwgYm9vdCBjYW4gYmUgYSB0YWQgZGlmZmljdWx0IHRv
+IHdvcmsgDQo+IHdpdGg6DQo+IA0KPiAtIHNvbWUgcGVvcGxlIHdhbnQgdG8gY29uc2VydmUgcG93
+ZXIgYXMgbXVjaCBhcyBwb3NzaWJsZSAobGlrZSB5b3UsIGxpa2UgDQo+IG1lKSBhbmQgd291bGQg
+bm90IG1pbmQgc2VlaW5nIGEgbGluayBicmVhayB0byBhY2hpZXZlIHRoYXQgc3RhdGUsIG5vciBk
+byANCj4gdGhleSBtaW5kIGEgcGFydGlhbCBvciBmdWxsIHJlY29uZmlndXJhdGlvbiBvZiB0aGUg
+UEhZIGJ5IGl0cyBkcml2ZXINCg0KRm9yIHRoZXNlIGRldmljZXMgd2hlcmUgd2Ugc2VlIHdoYXQg
+d2UgY29uc2lkZXIgYW4gaXNzdWUgd2Ugb25seSByZWFsbHkgDQpjYXJlIGFib3V0IHBvd2VyIGNv
+bnN1bXB0aW9uIGluIHN1c3BlbmQgdG8gUkFNLg0KDQo+IA0KPiAtIHNvbWUgcGVvcGxlIHdhbnQg
+dG8gYXZvaWQgYSBsaW5rIGJyZWFrIGFuZCBqdXN0IGluaGVyaXQgdGhlIGV4aXN0aW5nIA0KPiBv
+cGVyYXRpb25hbCBtb2RlIG9mIHRoZSBQSFkgc3VjaCB0aGF0IHRoZXkgY2FuIGhhdmUgYSB3b3Jr
+aW5nIGxpbmsgYXMgDQo+IHF1aWNrbHkgYXMgcG9zc2libGUNCg0KVGhhbmtzISAvLyBKb2huIEVy
+bmJlcmc=
 
