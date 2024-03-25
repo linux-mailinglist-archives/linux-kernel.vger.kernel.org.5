@@ -1,74 +1,85 @@
-Return-Path: <linux-kernel+bounces-117397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C35788B522
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:19:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C162888AADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC07EB2EB8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:09:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3E062E7D70
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513875A0F9;
-	Mon, 25 Mar 2024 15:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB36A56B72;
+	Mon, 25 Mar 2024 15:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="K9UQGaXS"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Omr2Ug9q"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F50745C2;
-	Mon, 25 Mar 2024 15:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF1F1CD10
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711381176; cv=none; b=sPB4EdEXtWpKszhpM3XV1cSa5uQ+Adj+lBSH1dG2x/eroO6xyldVpFuUOwwRUaxOaHmpYPqKDZ+mICvVLNNy0JwjwEJCmSI1X/MkDd6BANsonluNjRtos19vx9uvnYC/jEjNwhD03V0BON8EjFG+xyhxl2/BEWouhyAPOpjBTNQ=
+	t=1711381229; cv=none; b=hpOXCd8FMJqcX+BdVaMDIZyD+aKG3LuEEaFzxB/etTv58qvURQcOreBqIBw0EYjreZjF8DmtUizr0HFRL8psKLSXkN/r7SJpAiQOTMc/eWukNtxWJ0nVnmT0dAHIabD+ur1O8sD0zG6ohSmTBH7XMUAy0UGuA1TfUFyf3+wyv9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711381176; c=relaxed/simple;
-	bh=x9wwd1SZ4t/1SiLNINI5SYgdvu+Rc2H7HPms0m8bZsI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LtrozjXbMMYjgQ2Djf0ZFdf9/SI8X34YvFNsQVLkJC6Rir4C8RQ4XYNbN7tj5yjZIeWHPkXlFi1WE5TuqYe2xZpC+MZ97EdYswBOc+IPDtIGNeaXMMM6NmOwvCVNSnePctyCqrjMltL61AoHtT3HXSadzQ0y1ysfoNdyq3UhBEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=K9UQGaXS; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id C890E1BF207;
-	Mon, 25 Mar 2024 15:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711381172;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d4Y4TNaj1xi0aYzulhoQsLssE442tEhfmgHSUvRZqvI=;
-	b=K9UQGaXS/zZtuoKlZI3CPRw8oAWdiSpcetOjfqb2b772p7/pOVch9Djb/qlCAM7zsPboBO
-	vbPGrXZKJ+gdYp0XEI/1gCFgofEFauVfu2uXCJeEqZamrK7BRurVlXnkkqFaS3t5Ut815y
-	iadbhPWT9YJBhfI07fkyipsKdCPqnwmZ2Us+457HyaxLHPxA2oBTc6Gq1bLA50M8GahN7l
-	Gc2gShgKwWbYKNCf3eu9LNEBzks+jjfZmSaOywqHNbSjSJIInwaIM0b4k6Wq+1SAWYvvpy
-	tOiX1s5ZHsYL+hpE+0CcP93lvQ8XjfSN0/N7+XBPovneR1CH4a1GtHmFllKW6g==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lizhi Hou <lizhi.hou@amd.com>,
-	Rob Herring <robh@kernel.org>
-Cc: Max Zhen <max.zhen@amd.com>,
-	Sonal Santan <sonal.santan@amd.com>,
-	Stefano Stabellini <stefano.stabellini@xilinx.com>,
-	Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	Allan Nielsen <allan.nielsen@microchip.com>,
-	Horatiu Vultur <horatiu.vultur@microchip.com>,
-	Steen Hegelund <steen.hegelund@microchip.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v3 2/2] PCI: of: Attach created of_node to existing device
-Date: Mon, 25 Mar 2024 16:39:15 +0100
-Message-ID: <20240325153919.199337-3-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240325153919.199337-1-herve.codina@bootlin.com>
-References: <20240325153919.199337-1-herve.codina@bootlin.com>
+	s=arc-20240116; t=1711381229; c=relaxed/simple;
+	bh=RDTj58u2L6pJY0yAT+AAilYBkhFN6j8jun4h7jQVqi8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z9DqwEj7z2B4aX99Q30mN8+ihAbvYSENWppDWFnDeEZ7WQiUbmKem6mIVgEaA9sxz713Gr+V8+IaNbvwnWu4h01YpnqhpGX1W7lhowR8ap1ixFE3cR893p8vGbhX+SqVpo/4veCHKxnDeKdF6rFAa1eEI2NqQa3je/CrSjn8qSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Omr2Ug9q; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42PBxpXd009469;
+	Mon, 25 Mar 2024 15:40:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=BKxuORmBP5BftCyYrw5/0i1OlyrwAxyjIee01hLjLb8=;
+ b=Omr2Ug9qAWUEAJIRcAbLfotN1oEy2Kz6Bo+vQjIPkAqYmQUAAAZ2qTuMiQkw34lkxMps
+ Lda2Jhw5JkxPWIPFv35JyX2j/pAzIx8DIM5Vi+4Stzn8KaVVtKbaT0wbj/+yNSThqd6s
+ y2DtNXyi8bXQt5YZUJGVS6tKykrMEprI4UOX5xppm5O0jinsrDrE4EZgXGU4rfvkLJ9W
+ KcrnlBk+L4vEIqn0rNEf+Sky2GoXxMQDwnV9QiaOBIDecI4LrjA4Ic4LxDxhL0vryUj3
+ TRJ8/ZhdjrBCYGy5S/fjx4JRYJB6ZHTZTNHYA861uNxp9+atEOMCqwfy5Bz/2XLFUidY HQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2bhyb8b1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 15:40:04 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42PFe4jd002792;
+	Mon, 25 Mar 2024 15:40:04 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2bhyb8aw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 15:40:03 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42PDV0wl016605;
+	Mon, 25 Mar 2024 15:40:03 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dttc0g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 15:40:02 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42PFdx7W15204838
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 25 Mar 2024 15:40:01 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 23D862004D;
+	Mon, 25 Mar 2024 15:39:59 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 424032004B;
+	Mon, 25 Mar 2024 15:39:57 +0000 (GMT)
+Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.195.43.175])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 25 Mar 2024 15:39:57 +0000 (GMT)
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+To: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org
+Cc: sshegde@linux.ibm.com, dietmar.eggemann@arm.com, qyousef@layalina.io,
+        linux-kernel@vger.kernel.org, vschneid@redhat.com, joshdon@google.com,
+        riel@surriel.com
+Subject: [PATCH] sched/fair: Simplify continue_balancing for newidle
+Date: Mon, 25 Mar 2024 21:09:26 +0530
+Message-Id: <20240325153926.274284-1-sshegde@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,81 +87,75 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: VwDaHz06k9uYDzAlQZtBxE7VYE_B-gAU
+X-Proofpoint-ORIG-GUID: CJZUCqEYRSW8N7LHfFIifIFsFaMzlq-N
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-25_12,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
+ adultscore=0 phishscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403250086
 
-The commit 407d1a51921e ("PCI: Create device tree node for bridge")
-creates of_node for PCI devices.
+newidle(CPU_NEWLY_IDLE) balancing doesn't stop the load balancing if the
+continue_balancing flag is reset. Other two balancing (IDLE, BUSY) do
+that. newidle balance stops the load balancing if rq has a task or there
+is wakeup pending. The same checks are present in should_we_balance for
+newidle. Hence use the return value and simplify continue_balancing
+mechanism for newidle. Update the comment surrounding it as well.
 
-During the insertion handling of these new DT nodes done by of_platform,
-new devices (struct device) are created. For each PCI devices a struct
-device is already present (created and handled by the PCI core).
-Having a second struct device to represent the exact same PCI device is
-not correct.
+No change in functionality intended.
 
-On the of_node creation:
-- tell the of_platform that there is no need to create a device for this
-  node (OF_POPULATED flag),
-- link this newly created of_node to the already present device,
-- tell fwnode that the device attached to this of_node is ready using
-  fwnode_dev_initialized().
-
-With this fix, the of_node are available in the sysfs device tree:
-/sys/devices/platform/soc/d0070000.pcie/
-+ of_node -> .../devicetree/base/soc/pcie@d0070000
-+ pci0000:00
-  + 0000:00:00.0
-    + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0
-    + 0000:01:00.0
-      + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0/dev@0,0
-
-On the of_node removal, revert the operations.
-
-Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
-Cc: stable@vger.kernel.org
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
 ---
- drivers/pci/of.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-index 51e3dd0ea5ab..5afd2731e876 100644
---- a/drivers/pci/of.c
-+++ b/drivers/pci/of.c
-@@ -615,7 +615,8 @@ void of_pci_remove_node(struct pci_dev *pdev)
- 	np = pci_device_to_OF_node(pdev);
- 	if (!np || !of_node_check_flag(np, OF_DYNAMIC))
- 		return;
--	pdev->dev.of_node = NULL;
-+
-+	device_remove_of_node(&pdev->dev);
- 
- 	of_changeset_revert(np->data);
- 	of_changeset_destroy(np->data);
-@@ -668,12 +669,22 @@ void of_pci_make_dev_node(struct pci_dev *pdev)
- 	if (ret)
- 		goto out_free_node;
- 
-+	/*
-+	 * This of_node will be added to an existing device.
-+	 * Avoid any device creation and use the existing device
-+	 */
-+	of_node_set_flag(np, OF_POPULATED);
-+	np->fwnode.dev = &pdev->dev;
-+	fwnode_dev_initialized(&np->fwnode, true);
-+
- 	ret = of_changeset_apply(cset);
- 	if (ret)
- 		goto out_free_node;
- 
- 	np->data = cset;
--	pdev->dev.of_node = np;
-+
-+	/* Add the of_node to the existing device */
-+	device_add_of_node(&pdev->dev, np);
- 	kfree(name);
- 
- 	return;
--- 
-2.44.0
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f00cb66cc479..d80535df8f03 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -12307,6 +12307,7 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
+ {
+ 	unsigned long next_balance = jiffies + HZ;
+ 	int this_cpu = this_rq->cpu;
++	int continue_balancing = 1;
+ 	u64 t0, t1, curr_cost = 0;
+ 	struct sched_domain *sd;
+ 	int pulled_task = 0;
+@@ -12321,8 +12322,9 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
+ 		return 0;
+
+ 	/*
+-	 * We must set idle_stamp _before_ calling idle_balance(), such that we
+-	 * measure the duration of idle_balance() as idle time.
++	 * We must set idle_stamp _before_ calling sched_balance_rq()
++	 * for CPU_NEWLY_IDLE, such that we measure the this duration
++	 * as idle time.
+ 	 */
+ 	this_rq->idle_stamp = rq_clock(this_rq);
+
+@@ -12361,7 +12363,6 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
+
+ 	rcu_read_lock();
+ 	for_each_domain(this_cpu, sd) {
+-		int continue_balancing = 1;
+ 		u64 domain_cost;
+
+ 		update_next_balance(sd, &next_balance);
+@@ -12387,8 +12388,7 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
+ 		 * Stop searching for tasks to pull if there are
+ 		 * now runnable tasks on this rq.
+ 		 */
+-		if (pulled_task || this_rq->nr_running > 0 ||
+-		    this_rq->ttwu_pending)
++		if (pulled_task || !continue_balancing)
+ 			break;
+ 	}
+ 	rcu_read_unlock();
+--
+2.39.3
 
 
