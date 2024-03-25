@@ -1,114 +1,155 @@
-Return-Path: <linux-kernel+bounces-116932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B3A88A542
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:51:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63D5988A517
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EDC0288E1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:51:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF37C1F2AAC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D211BCFC0;
-	Mon, 25 Mar 2024 11:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC33A19F53A;
+	Mon, 25 Mar 2024 11:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jO7CNTxY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UXek09c6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC60D157498
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:23:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4289815664F;
+	Mon, 25 Mar 2024 11:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711365838; cv=none; b=Vu16PHBciOyID56y0l1ez2lIWzldE9pG7KFDkNz1XBoJAGgUPA3OXj+9FGRT/QRi8l/egno9sHx8CsTXfx5SeSkeBr1s3ddOB1/D5usv080mVP3wEVF/zpty6THyhlpUVZpuhox8Z2ZrMzh0IHOs0/7vXljn5McRFmbhARmOkjk=
+	t=1711365061; cv=none; b=kN1aGVkHYg5HU2+M9gKRwBEts5oVM4jzI8yR1nFiveAwS6WgGICS790kkk77l6lTK28b3LBnLT+Xw9+p9hZBYOU/LroUvH5Tm6519aLYbLZzXDuSSN4BLbX68NRc/IsUEbtZmqygT+QnWpiDeUQg22+u0vENn0Ls+eJMDW6ueGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711365838; c=relaxed/simple;
-	bh=Hcvo8TwKTObsbxJiMa+DCZVgn0Ppw92GI2jy5pNrT8U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BI1eaBORYwU6ju/f2xMNM2eML5hk1yM5FFiRUlHKvMgxdhbaiMMDG1XCf+E4f06Ll2tikbef39co25DOO3RqzMOv5COiWm7R608pUlP+2+Pv4Ka0dN0g2+2FBhWJQMCZk/IgWORb7tGKjN4iGBPqHClltsz8MAPZYvuza5KjWeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jO7CNTxY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A096BC43390;
-	Mon, 25 Mar 2024 11:23:56 +0000 (UTC)
+	s=arc-20240116; t=1711365061; c=relaxed/simple;
+	bh=nM8sx42xDx95HRJ1wPccausmC0pYy6OVh8wnJGrVyxw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t8IjNvAJfNhojIqY+o2/dbekQMsRBSoj9h9eCB7RvoAIDP10QrE+yM+ZSnzZGN9oPcWsq2uSpMBBAQliYiVfW3HhUDwpfFZzS6dO1/cTbCDBx/k13fVjmcE+1TiPLTJnv87k4BkCMokKL+UggBkPvIAeFYD7oMJ1T99PIR3UGFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UXek09c6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3897CC433F1;
+	Mon, 25 Mar 2024 11:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711365838;
-	bh=Hcvo8TwKTObsbxJiMa+DCZVgn0Ppw92GI2jy5pNrT8U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jO7CNTxYsgsZN0RpxKG0TpN4fr1dM9M9yxv+ojbrGrYYXRCbxXahb8xuDan7vP8sv
-	 WZyGX8W3kdx6Sxf8n/Z4HZurOBXMK+LrW4JFiFNZmBOFzKzLm6Y+42MyT6FMGmF1fk
-	 Z4AzEMBU5CArTOI6LXvuNA7YziuXIF6N0YwuTB/vevJAcO9LNJ1TXwdeOvrXoKYkyk
-	 mvUEqRJG9njKVzoKQ6AEE2XMd8qCvc3/TwmTk3Ad5CsAAPU13aPUHfPI4yoTpIEagU
-	 XjpT785o1D9K11kj7r5hzg5D287Bfzs5kdqvojZ0NEF0zfwweC6jBN/aGINOws2wxp
-	 B/O4bxQ5adlbg==
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
+	s=k20201202; t=1711365060;
+	bh=nM8sx42xDx95HRJ1wPccausmC0pYy6OVh8wnJGrVyxw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UXek09c6cW+G+x6iB1Jv6w5GUQmW9OLkvmUdoL+mdCU1yXcp6oJfVVuTBUC3Q/Cyk
+	 NX3khylkoegm4UxLO1a0/ubyu6hdMd3PDa2CfU6mEA6W8YvYR2h2XJjTTef1YDIHYc
+	 mj7rziUUjF9kvF6abIm7GB1Lkb2WOZcIWmrns4EPMTsA3YoWh8H3yKDJzFLRQ+F2fJ
+	 O4/4Vo2/eaChhs1clAYhDWr1XbaTG0p6zqKNeO9LefMbklD84RICylMiSLMkmnU+CI
+	 C9l6dyDXhurJtzLvruf9J7nlugslgxzuiSkKw2UtQdbuwZ6hPXXVhDMvw0RAyfJQ5A
+	 8tKoT0ncUKN/g==
+Date: Mon, 25 Mar 2024 11:10:55 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Yangyu Chen <cyy@cyyself.name>, linux-riscv@lists.infradead.org,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Andrea Parri <parri.andrea@gmail.com>
-Subject: [PATCH v3 RESEND 2/2] riscv: cmpxchg: implement arch_cmpxchg64_{relaxed|acquire|release}
-Date: Mon, 25 Mar 2024 19:10:38 +0800
-Message-ID: <20240325111038.1700-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240325111038.1700-1-jszhang@kernel.org>
-References: <20240325111038.1700-1-jszhang@kernel.org>
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, linux-gpio@vger.kernel.org,
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 05/11] riscv: Kconfig.socs: Split ARCH_CANAAN and
+ SOC_CANAAN_K210
+Message-ID: <20240325-slept-collie-9cdb65f2a94c@spud>
+References: <tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com>
+ <tencent_F208A26B5338C6E14AC6648730368AF0FD0A@qq.com>
+ <e255a964-27bf-4eb9-8e9a-4f60d1ccd12b@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wGBS4mUdIPIRsN3V"
+Content-Disposition: inline
+In-Reply-To: <e255a964-27bf-4eb9-8e9a-4f60d1ccd12b@moroto.mountain>
 
-After selecting ARCH_USE_CMPXCHG_LOCKREF, one straight futher
-optimization is implementing the arch_cmpxchg64_relaxed() because the
-lockref code does not need the cmpxchg to have barrier semantics. At
-the same time, implement arch_cmpxchg64_acquire and
-arch_cmpxchg64_release as well.
 
-However, on both TH1520 and JH7110 platforms, I didn't see obvious
-performance improvement with Linus' test case [1]. IMHO, this may
-be related with the fence and lr.d/sc.d hw implementations. In theory,
-lr/sc without fence could give performance improvement over lr/sc plus
-fence, so add the code here to leave performance improvement room on
-newer HW platforms.
+--wGBS4mUdIPIRsN3V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Link: http://marc.info/?l=linux-fsdevel&m=137782380714721&w=4 [1]
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
----
- arch/riscv/include/asm/cmpxchg.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+On Mon, Mar 25, 2024 at 01:52:42PM +0300, Dan Carpenter wrote:
+> On Sat, Mar 23, 2024 at 08:12:17PM +0800, Yangyu Chen wrote:
+> > Since SOC_FOO should be deprecated from patch [1], and cleanup for other
+> > SoCs is already on the mailing list [2,3,4], we remove the use of
+> > SOC_CANAAN and use ARCH_CANAAN for SoCs vendored by Canaan instead from
+> > now on. And allows ARCH_CANAAN to be selected for other Canaan SoCs.
+> >=20
+> > Then, since we have Canaan Kendryte K230 with MMU now, the use of
+> > SOC_CANAAN is no longer only referred to K210. Thus, we introduce a new
+> > symbol SOC_CANAAN_K210 for any conditional code or driver selection
+> > specific to the K210, so users will not try to build some K210-specific
+> > things when MMU is enabled and see it fails to boot on K210.
+> >=20
+> > [1] https://lore.kernel.org/linux-riscv/20221121221414.109965-1-conor@k=
+ernel.org/
+> > [2] https://lore.kernel.org/linux-riscv/20240305-praying-clad-c4fbcaa7e=
+d0a@spud/
+> > [3] https://lore.kernel.org/linux-riscv/20240305-fled-undrilled-41dc0c4=
+6bb29@spud/
+> > [4] https://lore.kernel.org/linux-riscv/20240305-stress-earflap-d7ddb86=
+55a4d@spud/
+> >=20
+> > Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+> > ---
+> >  arch/riscv/Kconfig.socs                        | 8 +++++---
+> >  arch/riscv/Makefile                            | 2 +-
+> >  arch/riscv/configs/nommu_k210_defconfig        | 3 ++-
+> >  arch/riscv/configs/nommu_k210_sdcard_defconfig | 3 ++-
+> >  4 files changed, 10 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> > index 623de5f8a208..5710aee456ac 100644
+> > --- a/arch/riscv/Kconfig.socs
+> > +++ b/arch/riscv/Kconfig.socs
+> > @@ -72,11 +72,13 @@ config SOC_VIRT
+> >  	  This enables support for QEMU Virt Machine.
+> > =20
+> >  config ARCH_CANAAN
+> > -	def_bool SOC_CANAAN
+> > +	bool "Canaan Kendryte SoC"
+> > +	help
+> > +	  This enables support for Canaan Kendryte SoC platform hardware.
+> > =20
+> > -config SOC_CANAAN
+> > +config SOC_CANAAN_K210
+>=20
+> This breaks git bisect, right?  There are references to SOC_CANAAN that
+> are get updated later in the patch series.  You can't delete SOC_CANAAN
+> and leave the other references dangling.
 
-diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-index 2fee65cc8443..f1c8271c66f8 100644
---- a/arch/riscv/include/asm/cmpxchg.h
-+++ b/arch/riscv/include/asm/cmpxchg.h
-@@ -359,4 +359,22 @@
- 	arch_cmpxchg_relaxed((ptr), (o), (n));				\
- })
- 
-+#define arch_cmpxchg64_relaxed(ptr, o, n)				\
-+({									\
-+	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
-+	arch_cmpxchg_relaxed((ptr), (o), (n));				\
-+})
-+
-+#define arch_cmpxchg64_acquire(ptr, o, n)				\
-+({									\
-+	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
-+	arch_cmpxchg_acquire((ptr), (o), (n));				\
-+})
-+
-+#define arch_cmpxchg64_release(ptr, o, n)				\
-+({									\
-+	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
-+	arch_cmpxchg_release((ptr), (o), (n));				\
-+})
-+
- #endif /* _ASM_RISCV_CMPXCHG_H */
--- 
-2.43.0
+Right. I thought that I had said to resend the patch from v5 and solicit
+acks to take it via the soc tree [1]. Splitting it out like this means you
+have to introduce a symbol that shadows the original one and then switch
+only once all references have been removed. If this series went into 6.10,
+which it should, the switch would be in 6.11. I think the chances of a
+meaningful conflict are low with the treewide swap so it should be safe
+to do.
 
+
+1 - https://lore.kernel.org/all/20240320-ideology-pasty-d3aea07cc519@spud/
+
+--wGBS4mUdIPIRsN3V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgFbvwAKCRB4tDGHoIJi
+0uSwAP95G4FiQlISuzAR9Fwa0rZx0NdUZQm9zCWUnZVjAvWBpwD/TRvaSY/ZlNhe
+Uuf98Lvqw1twNosFPzpGll8glXobsQ4=
+=Ztlu
+-----END PGP SIGNATURE-----
+
+--wGBS4mUdIPIRsN3V--
 
