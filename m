@@ -1,107 +1,102 @@
-Return-Path: <linux-kernel+bounces-117433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E423B88AD27
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:10:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5341888AB5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00A3FC0077D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:20:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E593306A92
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5008012C540;
-	Mon, 25 Mar 2024 16:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZTvTGA1E"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893C46CDC0;
-	Mon, 25 Mar 2024 16:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEC6EED6;
+	Mon, 25 Mar 2024 16:06:15 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B9B3DAC07
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711382554; cv=none; b=cK50XSdWGjgmp2bBRvHChdTocztaVqw+Lir+cwksKC4J8e2MrpoHQMhz89HpquzDb0hK2TbXDlSyqdCwrd7vnXFAYjSAX2XW8Ftse7M23otnLUOhXN3Y+DFU+xl1/dauu8AoyjlMl4sQJR0qJRV36HpNzmSEFi101grj98EjX9E=
+	t=1711382775; cv=none; b=WSZxbF0bZW2aSSJvOywtczTna+4v6g5qPd75uW/sdPWSdwmWbRvupDvH2nwV/zHO1lHjuDxJ6wBoM2+Z+sFFR91/dILmFZ+eOozWVbftAe2Y2SAc6Dhgu+kdXKzE/XCN/mXoHrHggXRpZV/OcpaVzPC73vWIX7y1WllU+Knk8fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711382554; c=relaxed/simple;
-	bh=JJbCkZzEeycIyoj0urV1Upiq1UUSkSdddBASm4fPN0M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZGBUtmjKiWoomo/dl9Vjte4aFrSzOFTKL8j3pike8lAt5sI0xAVGqHfMVr5fknn4MEtxRt5iIkym2cHIqy+X7LnqtZpfZPhpbuHZfjofInCCFHjv0agKefBG14SMytTbyIsHhuJEP/VmtOrgifr42gv+dQa9nDeQv+iG9mglgbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZTvTGA1E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC5EFC433C7;
-	Mon, 25 Mar 2024 16:02:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711382554;
-	bh=JJbCkZzEeycIyoj0urV1Upiq1UUSkSdddBASm4fPN0M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZTvTGA1E9BKCJpr3ZAlylSmsQXO03Fx0lP70d90iIXHmNw0NaNlJfaf+U1o/ATU5Q
-	 66xMybd1UghWaAftZYlXsGWehYRqWNsV5pcHmv7YgUvhgxH5U492A4CH4fXpYGEHC9
-	 fsLRL3Vdxv+LVpD3W+oKpLBTYKAdB/yrxpkWDpqi+3JUHVgw0zTKRqE6cDBwgRzYKc
-	 ARHP7Gq40d1KFtR35r/PVGg4OmPAgIAwB8A55OY9bYbWz9E2xl8OxJEvX/FdA6JrTe
-	 iKKNwU8LNkQhBgKpDy3hL8E50ii6DsoyFijxFx6vHhVCwJHIx5hWe5XoADfw3h/cK+
-	 CVxNKg6qquCLw==
-Date: Mon, 25 Mar 2024 11:02:31 -0500
-From: Rob Herring <robh@kernel.org>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Baruch Siach <baruch@tkos.co.il>, linux-rtc@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/4] dt-bindings: rtc: armada-380-rtc: convert to dtschema
-Message-ID: <20240325160231.GB4035876-robh@kernel.org>
-References: <20240323-rtc-yaml-v1-0-0c5d12b1b89d@gmail.com>
- <20240323-rtc-yaml-v1-1-0c5d12b1b89d@gmail.com>
- <20240323233742bfb9ba4a@mail.local>
- <6e68e0ca-2f3e-41a7-bb96-00fbdadc4436@gmail.com>
+	s=arc-20240116; t=1711382775; c=relaxed/simple;
+	bh=VYZtV6thwjwwEkTb6GZoyHZjuHcMnwx1ia7zeKk3aLE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=esVkPgfmrXtpDyH2kVDv7h3HPwdqjAnIY8t+59umbiEFQOeyDcnwjOosa6E5WSV+UcBZw5i2q5f3/LarF7u4HZBUyCM1qEZK/KLdrbE/X0IaTp8+0E6IRDtnM38aCoQvtZ/m/6TWmpR0IBs4tr5SXPTaRSPyCLW6V2SU1+2DNU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3F8B2F4;
+	Mon, 25 Mar 2024 09:06:45 -0700 (PDT)
+Received: from [10.57.15.178] (unknown [10.57.15.178])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0DBC3F64C;
+	Mon, 25 Mar 2024 09:06:09 -0700 (PDT)
+Message-ID: <cbc9e585-0515-449a-a83c-931c9b1d53e2@arm.com>
+Date: Mon, 25 Mar 2024 16:06:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e68e0ca-2f3e-41a7-bb96-00fbdadc4436@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Only display fdinfo's engine and cycle tags
+ when profiling is on
+Content-Language: en-GB
+To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Rob Herring <robh@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: kernel@collabora.com, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240316231306.293817-1-adrian.larumbe@collabora.com>
+From: Steven Price <steven.price@arm.com>
+In-Reply-To: <20240316231306.293817-1-adrian.larumbe@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Mar 24, 2024 at 01:02:31AM +0100, Javier Carrasco wrote:
-> On 3/24/24 00:37, Alexandre Belloni wrote:
-> > On 23/03/2024 23:46:13+0100, Javier Carrasco wrote:
-> >> Convert existing binding to dtschema to support validation.
-> >>
-> >> +required:
-> >> +  - compatible
-> >> +  - reg
-> >> +  - reg-names
-> >> +  - interrupts
-> >> +
-> >> +additionalProperties: false
-> > 
-> > This is not correct because at least start-year is supported. Please
-> > check for all your other submissions too.
-> > 
+On 16/03/2024 23:13, Adrián Larumbe wrote:
+> If job accounting is disabled, then both fdinfo's drm-engine and drm-cycle
+> key values will remain immutable. In that case, it makes more sense not to
+> display them at all to avoid confusing user space profiling tools.
 > 
-> allOf:
->   - $ref: rtc.yaml#
-> 
-> is missing, and then
-> 
-> unvealuatedProperties: false
-> 
-> to account for that.
-> 
-> "start-year" is read in the RTC base class, so I wonder why so many RTC
-> bindings add a reference to rtc.yaml, but then use
-> 
-> additionalProperties: false
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
 
-They may have pre-dated support for 'unevaluatedProperties', or you can 
-list out which properties are used from a referenced schema which 
-disallows unlisted properties. There's no hard rule here. Either way is 
-fine.
+Pushed to drm-misc-next
 
-Other than this and my 1 other comment, this series looks fine to me.
+Thanks,
 
-Rob
+Steve
+
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_drv.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> index eec250114114..ef9f6c0716d5 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -550,10 +550,12 @@ static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
+>  	BUILD_BUG_ON(ARRAY_SIZE(engine_names) != NUM_JOB_SLOTS);
+>  
+>  	for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
+> -		drm_printf(p, "drm-engine-%s:\t%llu ns\n",
+> -			   engine_names[i], panfrost_priv->engine_usage.elapsed_ns[i]);
+> -		drm_printf(p, "drm-cycles-%s:\t%llu\n",
+> -			   engine_names[i], panfrost_priv->engine_usage.cycles[i]);
+> +		if (pfdev->profile_mode) {
+> +			drm_printf(p, "drm-engine-%s:\t%llu ns\n",
+> +				   engine_names[i], panfrost_priv->engine_usage.elapsed_ns[i]);
+> +			drm_printf(p, "drm-cycles-%s:\t%llu\n",
+> +				   engine_names[i], panfrost_priv->engine_usage.cycles[i]);
+> +		}
+>  		drm_printf(p, "drm-maxfreq-%s:\t%lu Hz\n",
+>  			   engine_names[i], pfdev->pfdevfreq.fast_rate);
+>  		drm_printf(p, "drm-curfreq-%s:\t%lu Hz\n",
+> 
+> base-commit: 97252d0a4bfbb07079503d059f7522d305fe0f7a
+
 
