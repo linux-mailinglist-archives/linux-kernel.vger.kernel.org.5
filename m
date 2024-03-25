@@ -1,153 +1,105 @@
-Return-Path: <linux-kernel+bounces-116990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CE6A88A5DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:09:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8DC188A5EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:11:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20E8C1F61CA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:09:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 058771C3B8F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90B85156C59;
-	Mon, 25 Mar 2024 12:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="m94wRtYy"
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE02D3DABFE;
+	Mon, 25 Mar 2024 12:28:20 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BD113BACB;
-	Mon, 25 Mar 2024 12:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.143.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1B51C36
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711369282; cv=none; b=rDFQ/lYsu6H276MfCNwsUnG2Fa6qNe1vsr611X9hcwXqPRydoUj/keVdjVkG5FSVqW/AqrO+wQH3bhEf0/6aLTixYWeBLXnbSx+3ydo+Iyumv6+OW9lIJbP7BdsEwK6/Ai8e4PJIqaymLE8zgMjp74fh+UHM3cwadod4FRR3jRI=
+	t=1711369700; cv=none; b=on7OPA2cCGvzUPuotqZ2yF/Yj974UmxoVq8HL9Quo08x48AFwkGU6a17flXJcNA/azu6grxIInsVT4b8xJkYd9oRi8sIiFAy3l4a+yixIZqKfcM5iNh0n9B00JGNjQbylN0iVMV3UGVke+zeoY0ANoJMZLIXahb7zBR5dPuUNwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711369282; c=relaxed/simple;
-	bh=YPO2WL6qypUgdkyYCnkzqyLMD/CgYwEAAIRUoFlpBGg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qCbSz6aBX+3zPtD0yCj85V2aRm8umc3oG00cK8MGlLRoybEr9sa8KkMUDdzwY1O6eLJaYKd74ZjQczzgNmbeLyLFcqH7Rzmt2N9h6+d23jblFt4EmyKhJHczhQo0aFcQOx2wlrgRK95yBVHaZ4KAtzwmFUr1Il0oylNhFP2Fbgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=m94wRtYy; arc=none smtp.client-ip=148.163.143.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
-Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
-	by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42PAFnfk019869;
-	Mon, 25 Mar 2024 12:20:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=afp8tIN3gWCl7bSWhWw+40+8io7o5i4DQAiMbDPfbuY=;
- b=m94wRtYycklXwZW7cBCP6SIlP8FfESx6OE4dtbUZZYaHcmdt0AQbS+tJMyFlUQzQ3pZz
- L7am7bvZiPYv65jDipbbQWRju60zEh+vQMmZnjjTEOxLdGXOAvRnsyoCjdSx5HHW7ADq
- NPYunHRPIisKhVerLAnhfwEXixNC6CZnpI1RPZT12GlXNRYBIkwbk5+0qs7qADVpXB1u
- G4pKCb3PjOuv3mdne4vpUjpTYc7cLFw5EmBKErlw7zxr+0pvQ9k8SVroGCcMyHmiEsL9
- olgtC83YK6R+eJVqUqrW/Fp9UK/4EmKsCTm1+vqiq/gmyHGMrwyHy5wAbjxQvuz3zPLy BQ== 
-Received: from p1lg14879.it.hpe.com ([16.230.97.200])
-	by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3x37c4rxny-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 12:20:44 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by p1lg14879.it.hpe.com (Postfix) with ESMTPS id 3BE7D12B5C;
-	Mon, 25 Mar 2024 12:20:43 +0000 (UTC)
-Received: from hpe.com (unknown [16.231.227.36])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id 6A52F806B55;
-	Mon, 25 Mar 2024 12:20:40 +0000 (UTC)
-Date: Mon, 25 Mar 2024 07:20:37 -0500
-From: Dimitri Sivanich <sivanich@hpe.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: Re: [PATCH] Allocate DMAR fault interrupts locally
-Message-ID: <ZgFsFWlGxClzgGEb@hpe.com>
-References: <Ze9r47riIq9ovBCY@hpe.com>
- <87plvjfl9s.ffs@tglx>
+	s=arc-20240116; t=1711369700; c=relaxed/simple;
+	bh=pVQ4C4YTtp5rFp83Ly0FdisDcQMQ7N/FhVjm3Tit5BM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BoHdPIIc9aqDhHhyerGS++0L6GCwvEZ0NIfAfJDmfxoz3pjU5tFx69cjACFpm90z+ox1CAFpkJ5jnVHiKmGzscbC8XxpOo+9M269Hi+d9qov+X0EpOB3WUxTuKARPLUp3Kdp2A8BX2FaO42bLlLph6QhGz6zdOz7kcUSgoX4uHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V3BzT12sGz4f3jq6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:28:05 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 2669B1A0B61
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:28:09 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.67.174.26])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RHXbQFmlg4nIA--.47806S4;
+	Mon, 25 Mar 2024 20:28:08 +0800 (CST)
+From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
+To: cl@linux.com,
+	penberg@kernel.org,
+	rientjes@google.com,
+	iamjoonsoo.kim@lge.com,
+	akpm@linux-foundation.org,
+	vbabka@suse.cz,
+	roman.gushchin@linux.dev,
+	42.hyeyoo@gmail.com
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	xiujianfeng@huawei.com
+Subject: [PATCH -next] mm/slub: correct comment in do_slab_free()
+Date: Mon, 25 Mar 2024 12:22:17 +0000
+Message-Id: <20240325122217.273978-1-xiujianfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87plvjfl9s.ffs@tglx>
-X-Proofpoint-ORIG-GUID: 0o_zeOy2hiSmRC-D5lD2ShvuDsboQijw
-X-Proofpoint-GUID: 0o_zeOy2hiSmRC-D5lD2ShvuDsboQijw
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-25_08,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=836
- impostorscore=0 suspectscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 phishscore=0 clxscore=1015 lowpriorityscore=0
- spamscore=0 adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2403210000 definitions=main-2403250068
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RHXbQFmlg4nIA--.47806S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF43GrWDtw1fZFyUCF43trb_yoWxCFX_C3
+	W8XFWxZw18AFn7KrZ8AFs7XrnIkw4kWryYkF4fC345Jw17trWkJws7Wr1fArW8ZrW7t3s8
+	CanF9rZI9rsF9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+	0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+	0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAI
+	cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
+	CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+	aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
 
-Thomas!
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-On Sun, Mar 24, 2024 at 09:05:35PM +0100, Thomas Gleixner wrote:
-> Dimitri!
-> 
-> On Mon, Mar 11 2024 at 15:38, Dimitri Sivanich wrote:
-> > On Thu, Feb 29, 2024 at 11:18:37PM +0100, Thomas Gleixner wrote:
-> >> What you really want is a cpu hotplug state in the CPUHP_BP_PREPARE_DYN
-> >> space which enables the interrupt for the node _before_ the first AP of
-> >> the node is brought up. That will solve the problem nicely w/o any of
-> >> the above issues.
-> >>
-> >
-> > Initially this sounds like a good approach.  As things currently stand, however,
-> > there are (at least) several problems with attempting to allocate interrupts on
-> > cpus that are not running yet via the existing dmar_set_interrupt path.
-> >
-> > - The code relies on node_to_cpumask_map (cpumask_of_node()), which has been
-> >   allocated, but not populated at the CPUHP_BP_PREPARE_DYN stage.
-> >
-> > - The irq_matrix cpumaps do not indicate being online or initialized yet, except
-> >   for the boot cpu instance, of course.
-> >
-> > So things still revert to boot cpu allocation, until we exhaust the
-> > vectors.
-> 
-> I thought about the following:
-> 
->     CPUHP_BP_PREPARE_DYN allocates the hardware interrupt on the control
->     CPU (the boot CPU during early boot).
->     
->     CPUHP_AP_ONLINE_DYN moves it over to the AP. This needs to set
->     affinity and then retrigger the interrupt so that the horrible
->     non-remapped MSI migration logic is invoked.
-> 
-> Though that does not work for parallel bringup as then the prepare stage
-> is invoked for all CPUs before any of them gets to the online phase,
-> which obviously ends up with the same problem.
-> 
-> > Of course, running the dmar_set_interrupt code from a CPUHP_AP_ONLINE_DYN state
-> > does work (although I believe there is a concurrency issue that could show up
-> > with the current dmar_set_interrupt path).
-> 
-> Which concurrency issue? CPU hotplug is fully serialized.
+slab_alloc_node() should be __slab_alloc_node().
 
-Yes, which allowed a simpler iplementation for V2 of this patch than I first
-thought.
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+---
+ mm/slub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> > So the code seems to have been designed based on the assumption that it will be
-> > run on an already active (though not necessarily fully onlined?) cpu.  To make
-> > this work, any code based on that assumption would need to be fixed.  Otherwise,
-> > a different approach is needed.
-> 
-> Yes, the interrupt vector code it is designed that way and for the
-> general case this is absolutely the right thing to do.
-> 
-> Thanks,
-> 
->         tglx
+diff --git a/mm/slub.c b/mm/slub.c
+index 7b68a3451eb9..33ac769a69b9 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4446,7 +4446,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+ 	c = raw_cpu_ptr(s->cpu_slab);
+ 	tid = READ_ONCE(c->tid);
+ 
+-	/* Same with comment on barrier() in slab_alloc_node() */
++	/* Same with comment on barrier() in __slab_alloc_node() */
+ 	barrier();
+ 
+ 	if (unlikely(slab != c->slab)) {
+-- 
+2.34.1
+
 
