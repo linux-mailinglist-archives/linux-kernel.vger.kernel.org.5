@@ -1,110 +1,120 @@
-Return-Path: <linux-kernel+bounces-117905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CDFE88B11C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C1A688B11F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:16:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 597F41C62941
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:16:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DE521C62905
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091D546450;
-	Mon, 25 Mar 2024 20:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3F64F1E2;
+	Mon, 25 Mar 2024 20:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="J9OjiBv8"
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="iuCw32tm"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60FC72233A
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9204C637
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397622; cv=none; b=SjzdQpkt+DCosNO9OTuXJesJQhjAB8vT5E46JkN/pt5vW1onkN9gdNgAOU9eR6OPmbeaqYVwOCbdASbD60NsT0D8B8pNgiW90AW1iO2qDk2txwGTZttJOb3x7wjNfPSHjS9xNgY3hMRF/YhZP0ZZRvEGY3COkLGOJHO/kI7EmaQ=
+	t=1711397675; cv=none; b=u7ZQP3AdMprOv9PigQSoZoqlERgYE3h5flAynmbxXKHoGYPgHG1LjIGB+zIEcZVhoC7zxSQ0am4rlrfN5vuwfkIKsVYRDWs7prR7v3JU146Ypebd/mhp9RJb5Rjdk2N05uSzA4B1q4CRWs+1ZzNkdOszcvvN6bzjxU8iAKrxYM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397622; c=relaxed/simple;
-	bh=2GSynMfQlWPEYmmMwEWyYBd32soX6drKAt4Jc4GY5nc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GbvxQ3rOzzlun3Y++R8poRuA2WHekyGtgwJxDCwvvOIPGeUmnG0n3tCEGgX+6i+CUoj18YVsYMdaPIlEN6ezMI8lFgfd9OMZIQvcyJbaj97RCFYe2OHZuqJ/VHZah3xTzQnH39mjYuepBPa1rHjUd7W4G19zF7GzPqa5S+pKoCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=linuxtx.org; dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b=J9OjiBv8; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxtx.org
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-2222b96e4d2so2781007fac.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:13:40 -0700 (PDT)
+	s=arc-20240116; t=1711397675; c=relaxed/simple;
+	bh=y/Copnmio+r4JHJn7cH1SHr0SKFHmhJFbDXHchbZThs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X/vey5XF6im0g1IeWHkbysCeHYvtvX/gLUu9Z/5rP3Bzl8aAuzRgue/BrqIvF2+VEqdvDi8l4BAuyfPq1EtZUEFeSEKuFusNibvKbSEahbTcR6Ml15bLMQ2X2EhGfR3ZvTpC8CZ300okpEY+Lq2yTugVp1b1NM7H2IHmLgMs7uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=iuCw32tm; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d6dda3adb9so11226971fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:14:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1711397619; x=1712002419; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x5MRZLBOe60pVxfq+JGemFNyckt0tyihI28+0Lv7YxQ=;
-        b=J9OjiBv8/T5ocMJDd/5wJvUXzMs8u3YHJsOsFtK7aZEATajUMTEf/ZiNit9GXGq5mI
-         vi9YmwAQaAMPlYwNwB1En/hSAePenDYeHPAHyLeyW1MwNTmayE/YGQRzl0lUgdO9DNqB
-         0bLT2Z853bAEEqAIpo7o5ZN1i494sBxalLoJ4=
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711397671; x=1712002471; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y/Copnmio+r4JHJn7cH1SHr0SKFHmhJFbDXHchbZThs=;
+        b=iuCw32tmWhnvpIewveu6AYiYQem76Mvuok28exwJhKuuVd9PPE3un09zFyzpvWdRCI
+         TZAgsWjtKBs9iUKm9xLnRdpCeXrwLHmzTQ12WFULfOw+pLRcf7IpcXjAmu1DzvQqeWJa
+         s8H0kNyJtbA4e3VwLQPNXDk32TUumk7eYDBv/2xA0aYs71xBTurLoZfCp838PSBMSuTv
+         Oo5XXzKCJ5hoknalahHv1ODni1grES9CSg6/6j+6Tx8jrdqkaynTSv7IwSTKM0eowuw2
+         aGtWqxcOV8O7XK07cWN8s+HEZF58qR1/aQAeA65XXbZSlyXcWWJaH/snXMGk23zF4h/w
+         x6kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711397619; x=1712002419;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711397671; x=1712002471;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=x5MRZLBOe60pVxfq+JGemFNyckt0tyihI28+0Lv7YxQ=;
-        b=wVnG8qG69SC7rWBHAIdPt8VwhYeeGk7UofjW7mVV/zVBP6nDj0ndyxsN/Ck54Ifmbt
-         +ZUgBtBPga8Knki1PJLKhiv3jI8Riv0Oc5mWrzxdEmKoBUV/1rREk1/QGGOaghCXXmQj
-         9g6kh3uuQQWhZ1rUgV8IO1p3Fl3HXG532DuQSX+7BsDaJ2heBNUp4SAD/yQdGCX22c0A
-         hgl4J6v0HBp1JjsIAkjPZXTmT66gY9EvFIZ2HMKzwPK+pYKU6igf67vlOosEkhLG2cKb
-         L4omF7fl05o0fvI4zLb9QpDWu1m/3Wp05sPSU5k+MWqCkDpFT84ES03aWGTOHSzUpHZK
-         pFig==
-X-Gm-Message-State: AOJu0YzziDBKciH5DYZ5UgmIAvBeDBFZnfBHUMPIOs5EiS9jcBXHI6kN
-	s8mqFHdut7ulROJn9ypqGFAuVxq+Hqt/tCd1+p0R9DUPpBoebxiEdLVpzNwdsw==
-X-Google-Smtp-Source: AGHT+IH5MILjTlLT4XjELr9ZSTY0NYuaahWY+8R6aTQhpg+l1C2xqghpFtR7CSPKI3vDqSz/Q/RNiA==
-X-Received: by 2002:a05:6870:4205:b0:229:8236:ae9 with SMTP id u5-20020a056870420500b0022982360ae9mr8470126oac.59.1711397619514;
-        Mon, 25 Mar 2024 13:13:39 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id n20-20020a9d4d14000000b006e67e27fd71sm1271489otf.28.2024.03.25.13.13.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 13:13:39 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date: Mon, 25 Mar 2024 15:13:37 -0500
-From: Justin Forbes <jforbes@fedoraproject.org>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com,
-	pavel@denx.de
-Subject: Re: [PATCH 6.8 000/710] 6.8.2-rc2 review
-Message-ID: <ZgHa8SsZfpNR2r6L@fedora64.linuxtx.org>
-References: <20240325120018.1768449-1-sashal@kernel.org>
+        bh=y/Copnmio+r4JHJn7cH1SHr0SKFHmhJFbDXHchbZThs=;
+        b=NXzVj+NEm2j0f7Kb6IJNNg3VHDkxaWe7O/ySKhWmibkUO8izWg/+Fw5c7QjX7xnbiP
+         qVVg5KtED5ThtP51PozmzHnhzbDQo/ZUtpVh8SFW+b0sbwVqrFQnlQ/q3LEV9gn62K2S
+         C5ySykau0+UoZymBpU9rOWXcH7vdOVfYMF7cU34xcxij+1njqwO7mtHx4cD9ewSsS6n+
+         6P6UqrLSo7jmXBfsGKlT/d967YipLRUgrxH0xsfhjnHr33o9D52ffggmItH5OI/jMbnI
+         LhTpQYdD2aDb4LfgnN1XMzKsTthFpi1DVnrf4iuUp3JihFVzC1KS77ku1JVAVn13Oie/
+         6UZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVjS/P/Y3KkPyZVUk8vGNBGnL0XGoEnU/Xt3GfltMoaEQzICY4NCtfgTLNabbicY/5E8WqsXKw9xBTWaeUJrCQPdSjR8fna2h7MWd7N
+X-Gm-Message-State: AOJu0YzvoE7ZwaClDbGhvX7ytYs79CwG87c6wQuUG6jDA2iLDc6hm22G
+	Z572DSmP+DoOvsbdZTvi+CAzkKWq7UqnmGnZyhn5Ph3y8fpTX/9eMFUBk6OlTg9eKkl5gwRHhcS
+	aDGQks/VyO873SB9aZjdjbrP8uTV+NHMVR8KIOQ==
+X-Google-Smtp-Source: AGHT+IFxfzGP4GDD9D61DOApZnzJcZ5mRVakIzo2HcSyu+da0kxkxSHBt5x0XHbve5H0YnB5oZP4U6ETJVrQilfX3uE=
+X-Received: by 2002:a05:651c:b0f:b0:2d6:a2cd:bb8c with SMTP id
+ b15-20020a05651c0b0f00b002d6a2cdbb8cmr657809ljr.10.1711397670501; Mon, 25 Mar
+ 2024 13:14:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325120018.1768449-1-sashal@kernel.org>
+References: <20240319-adding-new-ad738x-driver-v5-0-ce7df004ceb3@baylibre.com>
+ <20240319-adding-new-ad738x-driver-v5-4-ce7df004ceb3@baylibre.com>
+ <20240324130135.35f4b0eb@jic23-huawei> <CAMknhBGmM7yt1JR1tW4SS5RLGpN9PtnMrf0WvZ-bhU-gSv3YUQ@mail.gmail.com>
+ <20240325200625.5a07cec4@jic23-huawei>
+In-Reply-To: <20240325200625.5a07cec4@jic23-huawei>
+From: David Lechner <dlechner@baylibre.com>
+Date: Mon, 25 Mar 2024 15:14:19 -0500
+Message-ID: <CAMknhBHNhL62A8KY3vnNqQm+c+5M-0=w3qAWN=54FxYGjicUQw@mail.gmail.com>
+Subject: Re: [PATCH v5 4/7] iio: adc: ad7380: add support for
+ pseudo-differential parts
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Julien Stephan <jstephan@baylibre.com>, 
+	Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, 
+	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 08:00:18AM -0400, Sasha Levin wrote:
-> 
-> This is the start of the stable review cycle for the 6.8.2 release.
-> There are 710 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed Mar 27 12:00:13 PM UTC 2024.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.8.y&id2=v6.8.1
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
-> and the diffstat can be found below.
-> 
-> Thanks,
-> Sasha
+On Mon, Mar 25, 2024 at 3:06=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
+ wrote:
+>
+> >
+> > But given that this is a common pattern in many IIO drivers, maybe we
+> > make a devm_regulator_get_enable_get_voltage()? This would return the
+> > voltage on success or an error code. (If the regulator subsystem
+> > doesn't want this maybe we could have
+> > devm_iio_regulator_get_enable_get_voltage()).
+> >
+> > If the dev_err_probe() calls were included in
+> > devm_regulator_get_enable_get_voltage(), then the 10+ lines of code
+> > here and in many other drivers to get the regulator, enable it, add
+> > the reset action and get the voltage could be reduced to 3 lines.
+>
+> I like this proposal a lot. RFC, so it's visible outside the depths
+> of this thread?
 
-Tested rc2 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+Yes, I can send an RFC separately so it doesn't hold up this patch/series.
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> Particularly good as it will keep the regulator opaque in the same
+> fashion as devm_regulator_get_enabled()
+>
+> As you say, we have a 'lot' of instances of this (quick grep
+> suggests > 50 in IIO alone and smaller numbers elsewhere).
+>
 
