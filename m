@@ -1,116 +1,139 @@
-Return-Path: <linux-kernel+bounces-117057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BDC888A683
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BFD888A687
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:29:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C51261F61F1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:29:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2003C1F3DF04
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505E01F5F3;
-	Mon, 25 Mar 2024 12:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DA47175D;
+	Mon, 25 Mar 2024 12:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jNycyUXg"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="a4TNHSkf"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0550116A1F4
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B608616B43B
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711371009; cv=none; b=HBNtzhsV8zr7ismiltmu38/BdFBkzH8SrTGbNXxjvfX3JKKGgX9IxDjtkZ6+NjSzZmy/hf46Hnj+Lq8Heohhz8grFxda1NO4funG34IU/y4JZ9Qxcw2KyAZ5qFF2LYZbvdhMW0OLGpLeqfcmrb+VklgU5dImM2w0ApZDuVyp5g0=
+	t=1711371025; cv=none; b=Gs39fSsbyeomM5aSHHi+MUtIC27HnlcBm/DIwowVJ3N155K94ZJ+n/Nv5nxFZDfD600eyH/r5UC8Enb98fAwK0JoSZfmrQFKJQZlVZbFJiiIBbmcFyFEo55MVNHcoQszRhAnznulaaiqz2Lu5971phe80gRlIL4QDq2Od3v2oHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711371009; c=relaxed/simple;
-	bh=vAHtlz7EdInjfZGeFUSgT85zxEWB2RvrCTuxA66VMhI=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=TgBxp8YCl/HBtk6/sV5c32CWrRz1ZDayqJR1EUhemn80+ZSOgfPz6kN7QcmOAk2ItyxLDE1NcsaGLSb2bBIH76+KP4++X1/IXZF6OYr+YlMlY5SVXsgGveHdHOQwTSbQuDq3iqjwAZEOlXenChR5iLQA2XfV/Odnqu5fKvZYCmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jNycyUXg; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711371007;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=FQeTg2MSrh+5DBiDfsa1lDw6CBQxljCXYQRwjVGNh/g=;
-	b=jNycyUXgRRUKPx5LUdRpQz2iYW/u4vT6Fx8ZwpAVYllUsq7LdNHpso+/mzXcp1aPWGIA/w
-	WMo8qY0VDZYQazctyX25cznf7MZsqFuicnp1AcT1wiNsMFbtqK7Fi7hlt84MKyRYR5z3jG
-	SoxMhId4gEutkKqYP7+4Ny1lvXm0IQM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-275-5I4bICssOvSChRNKzHocTA-1; Mon, 25 Mar 2024 08:50:03 -0400
-X-MC-Unique: 5I4bICssOvSChRNKzHocTA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 019EC8F1F15;
-	Mon, 25 Mar 2024 12:50:02 +0000 (UTC)
-Received: from localhost (unknown [10.22.8.120])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2D3F81074E;
-	Mon, 25 Mar 2024 12:50:02 +0000 (UTC)
-Date: Mon, 25 Mar 2024 09:49:57 -0300
-From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To: LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>,
-	stable-rt <stable-rt@vger.kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Carsten Emde <C.Emde@osadl.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Daniel Wagner <daniel.wagner@suse.com>,
-	Tom Zanussi <tom.zanussi@linux.intel.com>,
-	Clark Williams <williams@redhat.com>,
-	Mark Gross <markgross@kernel.org>, Pavel Machek <pavel@denx.de>,
-	Jeff Brady <jeffreyjbrady@gmail.com>,
-	Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 5.10.213-rt105
-Message-ID: <ZgFy9au0Gvkzr6gZ@uudg.org>
+	s=arc-20240116; t=1711371025; c=relaxed/simple;
+	bh=5RyxoVFw8iV/PhK2kQZFnetLsvcimHQCr4aKA83CIbw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LuLtJooVEwEulmLIgehlxlPcGuCXiry46uyP3/juVlY8l7CtaMmrEHoN2/XaOnwoEhJOwIbkYY2/PZlrrIQkAWnDx/JqGDZI8JkDC0qTQ3p/fB7YXxKxvVqYzwtRh1tKO0l7XEbZf2l7ApyLZzDKVdeyH7+BhUqD5wimJ0Ws07s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=a4TNHSkf; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d8b519e438so2394479a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711371023; x=1711975823; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5RyxoVFw8iV/PhK2kQZFnetLsvcimHQCr4aKA83CIbw=;
+        b=a4TNHSkf345sgU+AhOU4z07DoeTKHgfhTOtCntVFlL5JUPIJD/s/wbEYk8XiPkG5nT
+         eRFKk/ZWgWFH2CzOAStB5sGfJQbQoRmqsv9dUgBiS9bz9s8u02qszMcDF90mG9m7JOX8
+         ilAaOOg16Ec8Ky13yUBtua2gFPSRhLWISNT6X4Hu23ivWGSsYc6nx2+nGOgpKk8CDD6E
+         kSLSVTFKpttG3ROgenDsIv3lXFgwQMEnDCvKn0NJcOSePd9jovd9u3TXBMvFBRyyYBey
+         659DD7xK7+6xGDbySP5Z5MzwVGainNWCQtMukMKLXSFNAloigdk76z4/arVERypC4FrW
+         YnHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711371023; x=1711975823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5RyxoVFw8iV/PhK2kQZFnetLsvcimHQCr4aKA83CIbw=;
+        b=VDpoesLIOKH/1MXQdGw6QuRAWja2iAS53lRDqgGG2KY2E8s4yb4GENMRJHM/hnax3q
+         m2u4cEfkGMaVJ9iXY5Xcs13YL/Qr9za/GWMizJBG06q3uHnAyQygjHiO2ieqjGen1Uvy
+         wD5VcqEsHkX8GGjZTwXM06vEi7prlgTeKYorfACXKq0XqLN0f0SFdlVXYYFvY0vvRQw0
+         sZWFlF/4Gjx4ilWpj8bY3pplcm7NrZugFh/rksZjFZM8CQlmzlEQ3ZOz7vRAyZ8QnQCC
+         k2kIRb3Yvtin8YzUudxj19Klwv8b9rjTaaJWz6Xwb4RST14FNUQZtmisPiT09bArNxz9
+         bibg==
+X-Forwarded-Encrypted: i=1; AJvYcCVk7uYfh/+aaVm4EBsop7Sw5l5Cpi7Pe2K70ZrifjmKmiTAmW8p753Q6pitmgppTvldI5PTNkZMTusR6sIpJaNwN5rkasy14Xp9tQ6s
+X-Gm-Message-State: AOJu0YyBF8CABMzd5OzjY+hBS12Iw+yy16b4hrAYWh2C7ilyQMWwO3st
+	06O1hhsiHXVgUo6+r+MdFWBy+dmvpTDN8WomqDpZf3YNwoNKigIW6HjjMI+2wDqYMyiEvl78nSa
+	IEODFBFB8Pm5oDjPvB/4bFEoFswKYGdktH9fJIg==
+X-Google-Smtp-Source: AGHT+IFavvihRisV9kCaSJXWkP5NlMeM+2ciaavifWQ9HNV1hzqkvuSD7eRB5OdriFQR916iQBclkPwrahehtGboVyQ=
+X-Received: by 2002:a17:90a:b30c:b0:29c:5c56:ffea with SMTP id
+ d12-20020a17090ab30c00b0029c5c56ffeamr4730905pjr.6.1711371023055; Mon, 25 Mar
+ 2024 05:50:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+References: <20240306165904.108141-1-puranjay12@gmail.com> <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
+ <ZfBbxPDd0rz6FN2T@FVFF77S0Q05N> <8734suqsth.fsf@all.your.base.are.belong.to.us>
+ <mb61pplvw6grf.fsf@gmail.com> <87zfv0onre.fsf@all.your.base.are.belong.to.us>
+ <87il1oedx8.fsf@all.your.base.are.belong.to.us> <CABgGipWPuvwi43v1+60-=0_MN_q_CD0ZGasxHHVWJ37cig5MmA@mail.gmail.com>
+ <87msqsotr8.fsf@all.your.base.are.belong.to.us> <CABgGipUayONdvaH0nexBJUai=qT3yqURhinTbDWxORfMDQ_5pw@mail.gmail.com>
+In-Reply-To: <CABgGipUayONdvaH0nexBJUai=qT3yqURhinTbDWxORfMDQ_5pw@mail.gmail.com>
+From: Robbin Ehn <rehn@rivosinc.com>
+Date: Mon, 25 Mar 2024 13:50:11 +0100
+Message-ID: <CAEEvPLB0eVXwRxucKDtc4mG11BwueV4pk4g9Zi82MPeTaP41uw@mail.gmail.com>
+Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
+To: Andy Chiu <andy.chiu@sifive.com>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Puranjay Mohan <puranjay12@gmail.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
+	Guo Ren <guoren@kernel.org>, Ley Foon Tan <leyfoon.tan@starfivetech.com>, 
+	Deepak Gupta <debug@rivosinc.com>, Sia Jee Heng <jeeheng.sia@starfivetech.com>, 
+	Bjorn Topel <bjorn@rivosinc.com>, Song Shuai <suagrfillet@gmail.com>, 
+	"Cl'ement L'eger" <cleger@rivosinc.com>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Jisheng Zhang <jszhang@kernel.org>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Brendan Sweeney <brs@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello RT-list!
+Hey,
 
-I'm pleased to announce the 5.10.213-rt105 stable release.
+> <index-in-dispatch-list>
+> func_symbol:
+> auipc t0, common_dispatch:high <=3D> j actual_func:
+> jalr t0, common_dispatch:low(t0)
+>
 
-This release is an update to the new stable 5.10.213 version and no extra
-changes have been performed.
+If you are patching in a jump, I don't see why you wouldn't jump over
+ld+jalr? (no need for common dispatch)
+Patching jalr with nop, and keeping auipc, addresses the issue with
+having to jump in the disabled case.
+But needs either common dispatch or per func dispatch.
 
-You can get this release via the git tree at:
+Thanks, Robbin
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.10-rt
-  Head SHA1: 200d9bf140d7c6c9fde6f7d1ab6d8d973fd47910
-
-Or to build 5.10.213-rt105 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.213.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.213-rt105.patch.xz
-
-Signing key fingerprint:
-
-  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
-
-All keys used for the above files and repositories can be found on the
-following git repository:
-
-   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
-
-Enjoy!
-Luis
-
+> common_dispatch:
+> load t1, index + dispatch-list
+> ld t1, 0(t1)
+> jr t1
+>
+>
+> >
+> > > However, one thing I am not very sure is: do we need a destination
+> > > address in a "per-function" manner? It seems like most of the time th=
+e
+> > > destination address can only be ftrace_call, or ftrace_regs_call. If
+> > > the number of destination addresses is very few, then we could
+> > > potentially reduce the size of
+> > > <func_trace_target_data_8B_per_function>.
+> >
+> > Yes, we do need a per-function manner. BPF, e.g., uses
+> > dynamically/JIT:ed trampolines/targets.
+> >
+> >
+> >
+> > Bj=C3=B6rn
+>
+> Cheers,
+> Andy
 
