@@ -1,155 +1,204 @@
-Return-Path: <linux-kernel+bounces-117159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F05C88A810
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:01:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC9CD88A83B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:05:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DB0B1C6056C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:01:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76CBD344583
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C118405B;
-	Mon, 25 Mar 2024 13:41:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2353112F384;
+	Mon, 25 Mar 2024 13:41:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RLAOkfIb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="LzQ0HQfa"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510D659B7F;
-	Mon, 25 Mar 2024 13:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA53312EBED;
+	Mon, 25 Mar 2024 13:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711374088; cv=none; b=mj6xNoUUneCA3SVSbe73scE+qgno7TKnoKb9ti+I7HaPckNGIP8DMiqu1VXfaQP0MkyhO3wXV61t1+fcBpe7xk9XYR3UCeuua2prfEbTnAe3SyXNiG3I14gEX4J0cui7Rk4dm1Onq2Z55Flrfq+eZGDhGKDtyi6BZk5/F6qKe10=
+	t=1711374098; cv=none; b=ND19ZasKcvxm6vbUA54upef6zj6RcwjFsvJkBqN++DTAUmt6Hn1P3COm+gBR1A20RQhf1bK5s1kDyFozm9GYe2Cse7n0bPttqJBkJ91I3IU/QymHtMXj9QaRRfzgSkAaByOC9ECqFNuI4WlMBWz+OrgOY4sqm8XLcBzaoH5osX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711374088; c=relaxed/simple;
-	bh=rXc6zCv7Edh3plk8DVy9yN3hG/WFZbqbbOYMv5uOJvU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jdccam2h53UmRqH0kk7y03Jhx2yMkgZo016Y2U3c+/NzUVBFWr+u/0rjEUXAncd+Qa2qEq16YI3w4cYuouyXAIqdt6kqSqKkmCwsnU6Ffr+KsdL8Y6V3ORjQaLVqbGyocf9WjQw+LSv0E6/eKxRLc3dvtUOhKYjWXgnLNC30Tck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RLAOkfIb; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711374086; x=1742910086;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rXc6zCv7Edh3plk8DVy9yN3hG/WFZbqbbOYMv5uOJvU=;
-  b=RLAOkfIb07MNuopAmgBi4t2Re5lg7Y23z8tPb8WbVGF/83XQbD6+4J6l
-   Z4RYX0XjfbCpwcpCUUMau+lV8FTvmwQjFdQGz++8cKUSYBic/shlYR8n4
-   fUMFVUUBBxvcvxPop9as8FQKtqlVFleU/zvVFjsK5Svv2Sw3MPpM1y+l9
-   xZsLINq+JQ6WjzqEI/iJ1t5sFZfCyQ6w7rLexOz3xkSG8U+I0JzDGyGhS
-   U9mZ+JngxPB8Tvn+qVv984uQ9J7Y2H1A0yJUciw5gc0Ista8QC4TpHHg6
-   ETn8IrT0LH2+ZAQmtwarKC2ltfwzUGwKtgKzEHVg8cz3OYfVQ4ayEgK2G
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="23860642"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="23860642"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:41:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="914843820"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="914843820"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 06:41:22 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rokZj-0000000Fzr9-3BeR;
-	Mon, 25 Mar 2024 15:41:19 +0200
-Date: Mon, 25 Mar 2024 15:41:19 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Sui Jingfeng <sui.jingfeng@linux.dev>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Implementation of fwnode_operations :: device_get_match_data()
- for software nodes?
-Message-ID: <ZgF-_ww5k3h9pvEm@smile.fi.intel.com>
-References: <Y/0uC1LgeWR0V0ts@smile.fi.intel.com>
- <20230227234411.jqmwshzkeyx6iqyo@skbuf>
- <Y/9iLBWAO37y6lZZ@smile.fi.intel.com>
- <20230301143625.7kdnzujlv4psbhla@skbuf>
- <Y/9qtT0vckSikOKJ@smile.fi.intel.com>
- <20230301152527.khyzifds4w3rkebt@skbuf>
- <Y/9wlDkuh39auAgF@smile.fi.intel.com>
- <20230301171845.oliqbso7v2vmyqr3@skbuf>
- <Y/+MaRO4vrCRFXE8@smile.fi.intel.com>
- <20230301174309.5nqul7vg5uygwtpy@skbuf>
+	s=arc-20240116; t=1711374098; c=relaxed/simple;
+	bh=XbNLABVh9jtieEIF3rMA+VdHU3DSTOM1Wa7ymCxMQ+8=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=uO5tzqQF0NUKnSl2ynFacAnDgoJu7pGzJbDYUgj6DRofeU8d+N5Wuguo7fBC70FQ+fofz1RgISh3h/wdvuFCYhAU1awD5hV/0wsJwjTaHylZJCTb/NMq5BLXzTAHmdLq3UropEpotRPUA1ATyxs9HhKv8jrHXjimcIHSJ8dENa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=LzQ0HQfa; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=vTyf7kkkncV2/E51pIKJiakcPODngVbk8+n0YOr1FvY=; t=1711374095;
+	x=1711806095; b=LzQ0HQfaxMv3g7wgCdKzWcrgwQCALbXlhPGTloh1jMQkkmN2954apR+OB1TGt
+	ncZVc9LxUFd1ew5tZqE+JgRFFr6Hg7PrZNBLo8cyM00TU0S057RQZSB85iSQVbcnfrsv8K7konc6A
+	6v+a0EUPffEiQaVYZ8Eo+nAryYt8OptJbzFNYIMezTIrw6/yAL0anfmbaG8W1+8A+1K1ZtShwx71w
+	sHlzkU+LNAJEmoSTZpdvWDk1stsi6u/eChvNGtuKxJk5yrz4mHT809yLXBn8M5dmuEdW+A/8qaBIK
+	UK7UswQJ0W4l4/pGLz+IswIe/mKL0qPrheIkmJGTGQ/oh28tfg==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rokZs-0000pR-GD; Mon, 25 Mar 2024 14:41:28 +0100
+Message-ID: <b192a639-6651-42da-bb6f-fa496acb7188@leemhuis.info>
+Date: Mon, 25 Mar 2024 14:41:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230301174309.5nqul7vg5uygwtpy@skbuf>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.8 119/715] libbpf: Add bpf_token_create() API
+Content-Language: en-US, de-DE
+From: Thorsten Leemhuis <linux@leemhuis.info>
+To: Jiri Slaby <jirislaby@kernel.org>, Sasha Levin <sashal@kernel.org>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>
+References: <20240324223455.1342824-1-sashal@kernel.org>
+ <20240324223455.1342824-120-sashal@kernel.org>
+ <e35cc021-7f17-479c-bd7c-ea6df836a04b@kernel.org>
+ <c89f9cc6-9676-46a4-8f8e-01d8dbf41aa8@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <c89f9cc6-9676-46a4-8f8e-01d8dbf41aa8@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1711374095;fe4061b2;
+X-HE-SMSGID: 1rokZs-0000pR-GD
 
-+Cc: people who might be also interested in this topic.
+On 25.03.24 12:17, Thorsten Leemhuis wrote:
+> A quick "me too" from my side below:
 
-On Wed, Mar 01, 2023 at 07:43:09PM +0200, Vladimir Oltean wrote:
-> On Wed, Mar 01, 2023 at 07:33:29PM +0200, Andy Shevchenko wrote:
+Mainly for the record: 6.8.2-rc2 failed to compile for me in the same way:
 
-Sorry for really late reply. I somehow forgot to answer.
+https://download.copr.fedorainfracloud.org/results/@kernel-vanilla/stable-rc/fedora-39-x86_64/07211803-stablerc-stablerc-releases/builder-live.log.gz
 
-> > Yes, that's why I remember overlays approach and FPGA case.
-> > 
-> > I guess you have very similar requirements to get this done: your case is a
-> > particular one for FPGA, i.e. (re-)loading the same HW layout over and over.
-> > 
-> > I believe it should be discussed with them being involved. We don't want to
-> > have two approaches of similar things in the kernel.
+Ciao, Thorsten
+
+> On 25.03.24 06:40, Jiri Slaby wrote:
+>> On 24. 03. 24, 23:24, Sasha Levin wrote:
+>>> From: Andrii Nakryiko <andrii@kernel.org>
+>>>
+>>> [ Upstream commit 639ecd7d6247c48a0175f5b458b648f5d4b6dc34 ]
+>>>
+>>> Add low-level wrapper API for BPF_TOKEN_CREATE command in bpf() syscall.
+>>>
+>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>>> Link:
+>>> https://lore.kernel.org/bpf/20240124022127.2379740-13-andrii@kernel.org
+>>> Stable-dep-of: c81a8ab196b5 ("libbpf: Add btf__new_split() API that
+>>> was declared but not implemented")
+>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>> ---
+>>>   tools/lib/bpf/bpf.c      | 17 +++++++++++++++++
+>>>   tools/lib/bpf/bpf.h      | 24 ++++++++++++++++++++++++
+>>>   tools/lib/bpf/libbpf.map |  1 +
+>>>   3 files changed, 42 insertions(+)
+>>>
+>>> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+>>> index 9dc9625651dcf..d4019928a8646 100644
+>>> --- a/tools/lib/bpf/bpf.c
+>>> +++ b/tools/lib/bpf/bpf.c
+>>> @@ -1287,3 +1287,20 @@ int bpf_prog_bind_map(int prog_fd, int map_fd,
+>>>       ret = sys_bpf(BPF_PROG_BIND_MAP, &attr, attr_sz);
+>>>       return libbpf_err_errno(ret);
+>>>   }
+>>> +
+>>> +int bpf_token_create(int bpffs_fd, struct bpf_token_create_opts *opts)
+>>> +{
+>>> +    const size_t attr_sz = offsetofend(union bpf_attr, token_create);
+>>> +    union bpf_attr attr;
+>>> +    int fd;
+>>> +
+>>> +    if (!OPTS_VALID(opts, bpf_token_create_opts))
+>>> +        return libbpf_err(-EINVAL);
+>>> +
+>>> +    memset(&attr, 0, attr_sz);
+>>> +    attr.token_create.bpffs_fd = bpffs_fd;
+>>> +    attr.token_create.flags = OPTS_GET(opts, flags, 0);
+>>
+>> With openSUSE config [1], I see:
+>> bpf.c:1293:60: error: ‘union bpf_attr’ has no member named
+>> ‘token_create’; did you mean ‘iter_create’?
+>> bpf.c:1293:60: error: ‘union bpf_attr’ has no member named
+>> ‘token_create’; did you mean ‘iter_create’?
+>> bpf.c:1301:14: error: ‘union bpf_attr’ has no member named
+>> ‘token_create’; did you mean ‘iter_create’?
+>> bpf.c:1302:14: error: ‘union bpf_attr’ has no member named
+>> ‘token_create’; did you mean ‘iter_create’?
+>>
+>>
+>> [1]
+>> https://github.com/openSUSE/kernel-source/blob/master/config/x86_64/default
+>>
+>>> +    fd = sys_bpf_fd(BPF_TOKEN_CREATE, &attr, attr_sz);
+>>
+>> And:
+>>
+>> bpf.c:1304:25: error: ‘BPF_TOKEN_CREATE’ undeclared (first use in this
+>> function); did you mean ‘BPF_ITER_CREATE’?
+>>
+>> They are added by:
+>> commit 35f96de04127d332a5c5e8a155d31f452f88c76d
+>> Author: Andrii Nakryiko <andrii@kernel.org>
+>> Date:   Tue Jan 23 18:21:00 2024 -0800
+>>
+>>     bpf: Introduce BPF token object
+>>
+>>
+>> But if you should take it or drop this all, I don't know...
 > 
-> I don't think comparisons with the denatured case are helpful.
-> Is "ax + b = 0" a quadratic equation? Well, yes, if you consider it to
-> be a particular case where the coefficient of x^2 is 0. Do you use
-> quadratic equation techniques to solve it? No.
+> I ran into the same problems while building 6.8.2-rc1 for Fedora using
+> the Fedora 39 config and its RPM spec file (with minor modifications):
 > 
-> I agree we don't want to have multiple approaches of doing the same thing,
-> but I debate whether I am really doing the same thing?
+> https://download.copr.fedorainfracloud.org/results/@kernel-vanilla/stable-rc/fedora-39-x86_64/07210895-stablerc-stablerc-releases/builder-live.log.gz
 > 
-> If software nodes are not designed to be a good fit for my kind of use
-> case, then what are they designed for?
-
-I think the hardware should be described in the respective format. Yet, you
-have a point that it's too verbose to the cases when we know the layout of
-the attached (not-hotpluggable) devices.
-
-There are discussions [1,2] on how to enable DT for the cases when
-non-discoverable HW needs to be detected and enumerated.
-
-I don't know which solution will eventually be accepted, but my personal
-opinion here that we would like to distantiate from board files as much
-as possible.
-
-Btw, for the internal (board files) code we may also use property to
-go with (see how spi-pxa2xx uses that) to distinguish configurations.
-But it might be not that straight as with driver data.
-
-So far, I haven't seen the code (am I mistaken?) which makes use of driver data
-for software nodes.
-
-[1]: https://lore.kernel.org/lkml/20231128084236.157152-1-wenst@chromium.org/
-[2]: https://lore.kernel.org/lkml/1692120000-46900-1-git-send-email-lizhi.hou@amd.com/
-
-Aux topics which might not directly be related (in order of declining relevance
-from my p.o.v.):
-https://lore.kernel.org/lkml/20231130165700.685764-1-herve.codina@bootlin.com/
-https://lore.kernel.org/lkml/DM6PR12MB3993D5ECA50B27682AEBE19FCD67A@DM6PR12MB3993.namprd12.prod.outlook.com/
-https://lore.kernel.org/lkml/20240217010557.2381548-1-sboyd@kernel.org/
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> Ciao, Thorsten
 
