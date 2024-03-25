@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-116533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD7888A106
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:10:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6223889F2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:28:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D59BEBC3397
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:54:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7D981C33E86
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A8680C18;
-	Mon, 25 Mar 2024 07:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741F652F6F;
+	Mon, 25 Mar 2024 07:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eFwZh5Zu"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RtSmV9og"
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941AD82C71
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:03:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0842C1292C4
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:12:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711342996; cv=none; b=Tx3DmZlBg6pfjBLowsQv4jtyouHgG4N874una/59TVbM1abGa3fNhfUCq+a86E/ekfDW/4XKgTMCDVziX4eXAc48BEAusxwqyoNlCcvfk5/PIc2IUY7AM2x4tu805CFh1SJFjsUbH3NOZi1fri62t/kmsUrsPqJnZXOTSRRfmg0=
+	t=1711343547; cv=none; b=n05JkIxIRrv7dK9EFel6kTQ9hcYoeBzKru2RLz/5szculwTxi36JT0c7WbwwUDFtIQjdHeoGIkkPdTLNr3XsKPlMpCL3+2ZBDf23cAarHUPp98VUhjwOuVArV/N1ZeZdT9+qeIbl/F/YlMBYB9G8HNJbKuRmio7SOd6V/CpSzhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711342996; c=relaxed/simple;
-	bh=bzcb9J1zOIuRE+mdB4zKLyWN6R25h6DJb00PiUbZ5EU=;
+	s=arc-20240116; t=1711343547; c=relaxed/simple;
+	bh=vNoEyKnp0XNLjr8zfpvmBh18zHPMtXvwf6EdNq+m0Qw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YQDj/Zuc2PRf03FUpe2zaKYx3F5zoZK2HEBDWIvvyfwl5aJwDrVl9nRrQ6A51yRyL7oiCAuFxXdryzWiL+eyb/jDHGkMwW0+t3KTwi8ASHcD4vdVHkbPUDF0BpjBGgJnscm60lwK5cxXiVljEVN6n2p6NfmmRnH2HLUf6zpQQx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eFwZh5Zu; arc=none smtp.client-ip=148.163.158.5
+	 In-Reply-To:Content-Type; b=jFWrVXHEp4gs/V9yBrIU6Uqb4R5UefXkqVIhKOizcdUXhKh9lKivwy+PMpsKdY/pdVVUSiM4HlxILhOR+J54Eh+zeHYvmpcMoPpeaG+O8x9G2fyhU2nH/VrnfnRK/l1qrxihbnkZ7dpucI5Xo8SG8W0KU1VW3TlXNkDjbyWvi34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RtSmV9og; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42P4jXjk000871;
-	Mon, 25 Mar 2024 05:02:30 GMT
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42P4x8C4014876;
+	Mon, 25 Mar 2024 05:12:14 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
  mime-version : subject : to : cc : references : from : in-reply-to :
  content-type : content-transfer-encoding; s=pp1;
- bh=qgEOJHHINd6gVGciNHxGiBy5AgfGlWmbQJemalMcRNo=;
- b=eFwZh5ZuO9jpVW8ovfjsaNj9hGOMHZcC6XrLUtUU+OYtpMDxEUspH5ItkdKc0jnoJlqb
- lz8ZbqIx/gLW7quDO6mILVVkp797WzmGhtHLk8oTeqyZ9bynd6CtXCH64GnFMhfLWbVy
- johlwWIAwoD+CXyjlFRlC5bhWFM/AuwkX97qOX7B6GaOC2tCQyTSQMZfvYn5yKmBPrgd
- xqTVHofgEdJwaIV7IN/OSmkIutd000dFjCErD1H99EZWTFYKR7UGqPDhObK5B+BD7IXD
- iFaOil008VTAt/quS+Ec4ZHAjGSJuskwN9MiSVcQsnhUYhYqnG3kfvnjJwTlesMUpEGo wg== 
+ bh=sy1iP2H7Z6mMOmvoxKSAWOB06oq7j8GbeRiGtH9T2Zw=;
+ b=RtSmV9ognkyJm/vll7hI78vccArMZ0Qk0xW7kgYZcZO7vkwqZPq0+KrVkW1jEP1re9TG
+ DvPOosbrG1lb8TGwog/vDI+XChwE5jsKFmCnngJVyupYFqJSkTDy06olNStcTdVImN8s
+ 6qgaGwLhJLB56DKrWSD3QeUECwboQBKvZraI2+Led965thtSdDdeptBRFtWXgl9sr0ch
+ bGjgt1f9jCOKT7lgo1qae7h5rYHuCqwXYRRI/k9miy2FMGHj0noLa8sIiK0tx1rMrQ4+
+ RiZzm+r8G0haGpIt85SU03NGyc3a4W5Dak3mAFTNEYbK0YQW8kaVw8mgUlRq/p5ciGL8 vw== 
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2h6t1feg-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2vxr0g16-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 05:02:30 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42P52TvA027023;
-	Mon, 25 Mar 2024 05:02:29 GMT
+	Mon, 25 Mar 2024 05:12:13 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42P5CDwN003802;
+	Mon, 25 Mar 2024 05:12:13 GMT
 Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2h6t1fef-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x2vxr0g12-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 05:02:29 +0000
+	Mon, 25 Mar 2024 05:12:13 +0000
 Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42P4JnWZ016410;
-	Mon, 25 Mar 2024 05:02:28 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dtq6u7-1
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42P4WWCI016409;
+	Mon, 25 Mar 2024 05:12:12 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x29dtq89d-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 25 Mar 2024 05:02:28 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42P52Qi527460312
+	Mon, 25 Mar 2024 05:12:12 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42P5C9nr24904246
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 25 Mar 2024 05:02:28 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0ACF258079;
-	Mon, 25 Mar 2024 05:02:26 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6B0B45807D;
-	Mon, 25 Mar 2024 05:02:19 +0000 (GMT)
-Received: from [9.109.245.191] (unknown [9.109.245.191])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 25 Mar 2024 05:02:19 +0000 (GMT)
-Message-ID: <61054afa-9f18-45f1-987d-e6f242012096@linux.ibm.com>
-Date: Mon, 25 Mar 2024 10:32:18 +0530
+	Mon, 25 Mar 2024 05:12:11 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 848E458056;
+	Mon, 25 Mar 2024 05:12:09 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1DC5B58052;
+	Mon, 25 Mar 2024 05:12:07 +0000 (GMT)
+Received: from [9.124.31.56] (unknown [9.124.31.56])
+	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 25 Mar 2024 05:12:06 +0000 (GMT)
+Message-ID: <59224c52-1864-4920-8bac-9da308d257db@linux.ibm.com>
+Date: Mon, 25 Mar 2024 10:42:05 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,152 +82,87 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] mm/numa_balancing:Allow migrate on protnone
- reference with MPOL_PREFERRED_MANY policy
+Subject: Re: [PATCH v2 2/2] sched/fair: Use helper functions to access
+ rd->overload
+To: Qais Yousef <qyousef@layalina.io>
+Cc: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        vschneid@redhat.com, qperret@google.com
+References: <20240322141632.28654-1-sshegde@linux.ibm.com>
+ <20240322141632.28654-3-sshegde@linux.ibm.com>
+ <20240324011620.f3mmywh44htvlb5m@airbuntu>
 Content-Language: en-US
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Aneesh Kumar <aneesh.kumar@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Mel Gorman <mgorman@suse.de>, Feng Tang <feng.tang@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>, Vlastimil Babka <vbabka@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>
-References: <cover.1711002865.git.donettom@linux.ibm.com>
- <b1599085e1d2f3e48dc71c7991283b8aaa0fe00c.1711002865.git.donettom@linux.ibm.com>
- <87h6gyr7jf.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <e65b4e89-e8a9-475d-abc7-c63db8af435e@linux.ibm.com>
- <875xxbqb51.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Donet Tom <donettom@linux.ibm.com>
-In-Reply-To: <875xxbqb51.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+In-Reply-To: <20240324011620.f3mmywh44htvlb5m@airbuntu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: bJuITvuynOeSBj7ytHw3NgXcX9j_qAd2
-X-Proofpoint-ORIG-GUID: u5B-9gb0OMzVfbP0MrJAZF2rGbuMzj1H
+X-Proofpoint-ORIG-GUID: FKqsdZJVIGDZrd7MNagkz52Fii323nvt
+X-Proofpoint-GUID: eJ9BfbFP_vdRx9wKz1EleH_Up7cgWi7F
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-25_02,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 malwarescore=0 adultscore=0 suspectscore=0
- clxscore=1015 phishscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403250026
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 clxscore=1011
+ mlxlogscore=780 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403250027
 
 
-On 3/25/24 08:18, Huang, Ying wrote:
-> Donet Tom <donettom@linux.ibm.com> writes:
->
->> On 3/22/24 14:02, Huang, Ying wrote:
->>> Donet Tom <donettom@linux.ibm.com> writes:
->>>
->>>> commit bda420b98505 ("numa balancing: migrate on fault among multiple bound
->>>> nodes") added support for migrate on protnone reference with MPOL_BIND
->>>> memory policy. This allowed numa fault migration when the executing node
->>>> is part of the policy mask for MPOL_BIND. This patch extends migration
->>>> support to MPOL_PREFERRED_MANY policy.
->>>>
->>>> Currently, we cannot specify MPOL_PREFERRED_MANY with the mempolicy flag
->>>> MPOL_F_NUMA_BALANCING. This causes issues when we want to use
->>>> NUMA_BALANCING_MEMORY_TIERING. To effectively use the slow memory tier,
->>>> the kernel should not allocate pages from the slower memory tier via
->>>> allocation control zonelist fallback. Instead, we should move cold pages
->>>> from the faster memory node via memory demotion. For a page allocation,
->>>> kswapd is only woken up after we try to allocate pages from all nodes in
->>>> the allocation zone list. This implies that, without using memory
->>>> policies, we will end up allocating hot pages in the slower memory tier.
->>>>
->>>> MPOL_PREFERRED_MANY was added by commit b27abaccf8e8 ("mm/mempolicy: add
->>>> MPOL_PREFERRED_MANY for multiple preferred nodes") to allow better
->>>> allocation control when we have memory tiers in the system. With
->>>> MPOL_PREFERRED_MANY, the user can use a policy node mask consisting only
->>>> of faster memory nodes. When we fail to allocate pages from the faster
->>>> memory node, kswapd would be woken up, allowing demotion of cold pages
->>>> to slower memory nodes.
->>>>
->>>> With the current kernel, such usage of memory policies implies we can't
->>>> do page promotion from a slower memory tier to a faster memory tier
->>>> using numa fault. This patch fixes this issue.
->>>>
->>>> For MPOL_PREFERRED_MANY, if the executing node is in the policy node
->>>> mask, we allow numa migration to the executing nodes. If the executing
->>>> node is not in the policy node mask, we do not allow numa migration.
->>> Can we provide more information about this?  I suggest to use an
->>> example, for instance, pages may be distributed among multiple sockets
->>> unexpectedly.
->> Thank you for your suggestion. However, this commit message explains all the scenarios.
-> Yes.  The commit message is correct and covers many cases.  What I
-> suggested is to describe why we do that?  An examples can not covers all
-> possibility, but it is easy to be understood.  For example, something as
-> below?
->
-> For example, on a 2-sockets system, there are N0, N1, N2 in socket 0, N3
-> in socket 1.  N0, N1, N3 have fast memory and CPU, while N2 has slow
-> memory and no CPU.  For a workload, we may use MPOL_PREFERRED_MANY with
-> nodemask with N0 and N1 set because the workload runs on CPUs of socket
-> 0 at most times.  Then, even if the workload runs on CPUs of N3
-> occasionally, we will not try to migrate the workload pages from N2 to
-> N3 because users may want to avoid cross-socket access as much as
-> possible in the long term.
->
->> For example, Consider a system with 3 numa nodes (N0,N1 and N6).
->> N0 and N1 are tier1 DRAM nodes  and N6 is tier 2 PMEM node.
+
+On 3/24/24 6:46 AM, Qais Yousef wrote:
+> On 03/22/24 19:46, Shrikanth Hegde wrote:
+
 >>
->> Scenario 1: The process is executing on N1,
->>              If the executing node is in the policy node mask,
->>              Curr Loc Pages - The numa node where page present(folio node)
->> ==================================================================================
->> Process      Policy          Curr Loc Pages                 Observations
->> -----------------------------------------------------------------------------------
->> N1           N0 N1 N6              N0                   Pages Migrated from N0 to N1
->> N1           N0 N1 N6              N6                   Pages Migrated from N6 to N1
->> N1           N0 N1                 N1                   Pages Migrated from N1 to N6
-> Pages are not Migrating ?
+>>  	if (!env->sd->parent) {
+>>  		/* update overload indicator if we are at root domain */
+>> -		if (READ_ONCE(env->dst_rq->rd->overload) != (sg_status & SG_OVERLOAD))
+>> -			WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
+>> +		if (is_rd_overloaded(env->dst_rq->rd) != (sg_status & SG_OVERLOAD))
+>> +			set_rd_overload_status(env->dst_rq->rd,
+>> +					       sg_status & SG_OVERLOAD);
+> 
+> A bit picky, but..
+> 
+> Wouldn't it be better to encapsulate the check of whether we're writing a new
+> value inside set_rd_overload_status()? Only write if it the value changed and
+> all future users wouldn't care then.
+> 
+> I think no need to wrap the line too.
+> 
 
-Sorry .This is a mistake. In this case Pages are not migrating.
+Yes. Makes sense all the places do the check and update, can be wrapped. 
+I will send out v3.  
 
-Thanks
-Donet.
+>>
+>>  		/* Update over-utilization (tipping point, U >= 0) indicator */
+>>  		set_rd_overutilized_status(env->dst_rq->rd,
+>> @@ -12344,7 +12345,7 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
+>>  	rcu_read_lock();
+>>  	sd = rcu_dereference_check_sched_domain(this_rq->sd);
+>>
+>> -	if (!READ_ONCE(this_rq->rd->overload) ||
+>> +	if (!is_rd_overloaded(this_rq->rd) ||
+>>  	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
+>>
+>>  		if (sd)
+>> @@ -2518,8 +2528,8 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+>>
+>>  #ifdef CONFIG_SMP
+>>  	if (prev_nr < 2 && rq->nr_running >= 2) {
+>> -		if (!READ_ONCE(rq->rd->overload))
+>> -			WRITE_ONCE(rq->rd->overload, 1);
+>> +		if (!is_rd_overloaded(rq->rd))
+>> +			set_rd_overload_status(rq->rd, 1);
+> 
+> While at it, could you write SG_OVERLOAD instead of 1? 
+Done.  
+> 
+> Both patches LGTM otherwise
+> 
+> Reviewed-by: Qais Yousef <qyousef@layalina.io>
+> 
+> 
 
->
->> N1           N0 N1                 N6                   Pages Migrated from N6 to N1
->> ------------------------------------------------------------------------------------
->> Scenario 2:  The process is executing on N1,
->>               If the executing node is NOT in the policy node mask,
->>               Curr Loc Pages - The numa node where page present(folio node)
->> ===================================================================================
->> Process       Policy       Curr Loc Pages       Observations
->> -----------------------------------------------------------------------------------
->> N1            N0 N6             N0              Pages are not Migrating
->> N1            N0 N6             N6              Pages are not migration,
->> N1            N0                N0              Pages are not Migrating
->> ------------------------------------------------------------------------------------
->>
->> Scenario 3: The process is executing on N1,
->>              If the executing node and folio nodes are  NOT in the policy node mask,
->>              Curr Loc Pages - The numa node where page present (folio node)
->> ====================================================================================
->> Thread    Policy       Curr Loc Pages           Observations
->> ------------------------------------------------------------------------------------
->> N1          N0               N6                 Pages are not Migrating
->> N1          N6               N0                 Pages are not Migrating
->> ------------------------------------------------------------------------------------
->>
->> We can conclude that even if the pages are distributed among multiple sockets,
->> if the executing node is in the policy node mask, we allow numa migration to the
->> executing nodes. If the executing node is not in the policy node mask,
->> we do not allow numa migration.
->>
-> [snip]
->
-> --
-> Best Regards,
-> Huang, Ying
+
 
