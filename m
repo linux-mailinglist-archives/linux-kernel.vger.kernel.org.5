@@ -1,167 +1,134 @@
-Return-Path: <linux-kernel+bounces-116894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 737B888A4F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE8688A4F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:44:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E11851F3D1D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A352B1F3D671
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC43B15B0FC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F172A17A37C;
 	Mon, 25 Mar 2024 11:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b="ajmH/3hz"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2136.outbound.protection.outlook.com [40.107.117.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CLzj6vyl"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88DB139561
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.136
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711364119; cv=fail; b=XstBHSDwI0LTlZ9wvnfeRNMG0XKdNq8EO9JiiA+ryQFljlahJ+n7/99Gu07AzSoGx6Sbs0j8WcMOIyHU8wEHiqganr78XuGxcLtlY6zuR+cnT0nuRgDiTZCziEfoPKwooJ96pjxl0X1/oFG+0cGsTNcyw2MQgXJ2kOkuCN4wAs4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711364119; c=relaxed/simple;
-	bh=uwLAFG3YtlQs8DzdJy7AVwMYReJK/uIC2RWLXRef93s=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=CZx/o15TiAuqf9X3WwZjsExxU6Tz2oaf9wQ+/AKsqVV2hVE98SWKjFy+NdpVNY9a/2ATGa4Y0Ons8AlAQr4wWi5x703jiMmYZV6OSLqDQIpmfMbBN9opnJyInHmGIqnsDpcpY4KpSfTLr/DFJ3fpDpDGJ+0PsLLtwEkci14k4Mw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com; spf=pass smtp.mailfrom=jaguarmicro.com; dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b=ajmH/3hz; arc=fail smtp.client-ip=40.107.117.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jaguarmicro.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZhQYOAKNOrXK0rc0gMC78ZzIQjzTnh+r++ctJJKlc4Iugx2FAGFxX876yExUUSzc/JFOJ5oDBI18vo/X/xfpRoRdsfEikfNqlAKXKaAcecoUa3cxgJAaduErhLW6uyYpDv9nGZ3T8LCfrBABlPLF80fNX+yhB5GKY1vnyvYaapt5SUTrcfmBQB1QqslnAzdZFywneS6vHuUEeKD7CKT8B3XNFf43sVMSJC835pN/mN2EABgJrLhqUBNbfdkrlMJfONtCcYK+BD0OK8oWTgOSPDeHF1arMdx2sLbndRSgTEnRlkH0uoejT2byScA25okNQLO9CAjFyQh22+2A/Hq3pQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tG7VTbd0cEGa9QCWFI9+pgRa/zqNboFBoSDZAj5VLGQ=;
- b=MN1NeFjdsZxwBWjrq595FkFYKYe5UA/5jhdiX4xMkoNKGwKDCVGvyQu2YaARbFJO6euHLrcQ2d/0KaJyze4nCYyJxNeOcG/WdT7JJ7iFwwVcgUmTDw6FaUY/f6YcPpmBlrJYbG/jb8Cmfwh+CQL435Py9sG09OKE6lsSaUJPqAWNnq7wAIVuN/e7C6pwR6+yJS16Cs27PlZSj/NGAM1eGGDA+LSJmlqcKWe7u4PH/hZlIDhF84Sxr5b4yVy65J3GMOMTPg7i3xN+Nei+jFst2u04NqmbxC/uE6HDU2RrJ5dlEnZQSL1L9mNc7lCfEaOPPZEMirOwOpeXW0gkfwzOjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
- header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tG7VTbd0cEGa9QCWFI9+pgRa/zqNboFBoSDZAj5VLGQ=;
- b=ajmH/3hzt8gmRvDjwbdbMAI0waOJV7inCkggvML8IMcT6uZ1a9UUHc4A1kQLcEjfKbuSt9JTdnP0MjTELoFGXT8OxffgzYr+iLDQYkLnMav1xGLnAp7n9ldn6hwD0amlmRfMY/HWuNJiCI3MIlIZZNukJhKrLGG2mSJ4bazBjXKWU0ZE98aQF73/3eokaiN45CLybm9rAK2j0RlJ2GtXCFv8CztFXweXP4Eg41wEXSvPBsTJpjyuTpYAm198tMIlAqwGUIEZ3GjCDHI3AdQy4tl0kxGHTrkCmXaWM2Jz4CbXdNS8lM4oJgzf7msaM9q8chlsBkifFHZyD1pXp27C8w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=jaguarmicro.com;
-Received: from SEYPR06MB6756.apcprd06.prod.outlook.com (2603:1096:101:165::11)
- by PUZPR06MB6224.apcprd06.prod.outlook.com (2603:1096:301:116::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 10:55:09 +0000
-Received: from SEYPR06MB6756.apcprd06.prod.outlook.com
- ([fe80::ce49:84ce:23db:8b8]) by SEYPR06MB6756.apcprd06.prod.outlook.com
- ([fe80::ce49:84ce:23db:8b8%6]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 10:55:09 +0000
-From: "gavin.liu" <gavin.liu@jaguarmicro.com>
-To: jasowang@redhat.com,
-	mst@redhat.com
-Cc: xuanzhuo@linux.alibaba.com,
-	virtualization@lists.linux.dev,
-	yuxue.liu@jaguarmicro.com,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD97219F529
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711364101; cv=none; b=on4vzZu6k21hN16er2t+QTGKgv+sH44zozixrBg6flBrL6D8RiO5ph+eZBH45fDzInCjtXMcIoXW9TbPvRTlUsiPMwFG3a3jPD0g3OyJQ8751pmP1kW3HZQy82PZCfY3Xl/fc4TLVsnTtq6CvAaG6PYXPmXyjHolkhiArG0FXyk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711364101; c=relaxed/simple;
+	bh=UzyidwSIDUNATQV9Wm0Ut6BdNvIpkTtmBKV1epvsvH4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ivkjpln6v7wpUhDYRVB3Yfb9bc1Sx39Ty4oRaBFh/gcCUt2n1khpWmNOuLI789FR2BX163N5vf9Ndf0PXz/vX2hLxYoVHAtbMdm2cp1oC3mME9aJuvCj3tuyX3LxB1A7wVIHvYeflfzN4T26ekhtEioiEQsUpUPf79LJbOOMbc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=CLzj6vyl; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-513cf9bacf1so5702712e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711364097; x=1711968897; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XTAS3N78+eEvzc9y/KOpFGYpe/3uK9ebe/5f/RJ6Ot8=;
+        b=CLzj6vyloG1wzskVblbWnm3ddVKrzzEfekNOkbnHvQ0+wq54cCVysq1glE35VPbjcF
+         Bevhgl/e7ZYRm5avjTkUPoUDF6EnhC7jhOM66xqiNXV6JDMHSSOpcyzIi5a1HerqNkN/
+         OZw6bdwhflAYASQ6McGlT5so2faD4jDG5D79E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711364097; x=1711968897;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XTAS3N78+eEvzc9y/KOpFGYpe/3uK9ebe/5f/RJ6Ot8=;
+        b=SRRWyguGvr63oA+n6fC0YmMcW2ycGNrWavHOQEJAjlk3WBYZs5Xos19iMNqL9LLhUr
+         aFJFFntBxHHKaHe0noF6YXe2ge9fyyF48akm1joqxajLjq89Dc6Qde4JQ0BcufQe84UM
+         aGzMphMPpKatJi1jL3PfxJlullBarMEqWqwKFRhHlwmmNQkau4TowW9SHNl5NJyHnb1A
+         bSj3aVPMoSiCEdJYtUa/FV+tEIhIRSVlooaYphRejmejslTOqIisRPqxTwn07JY810QO
+         D474gJpBgvMjFt9kWjDdGjpGDG5nJds4mzGLK+8r18NEoQzOSYHng4G3O3GG1cT9IOOD
+         LdHw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5pfVzHYlLgwPydS7b++xHdzRd4hN5eeM5p7y8hOwJhGoElSFMZD7NhCnvMb88maIyHJuWZVSMWf0Eylo09Eo4DlXu2vLEoKCvHURl
+X-Gm-Message-State: AOJu0YyA8rAd70fizocT0Z09SF+tnr+x1kuwT/Hk6kOPLiFmaVXGGUgA
+	lG0tmXcNV+te89lQlHV1/i76S7UDegLkzYggb+euJ45EFQmiyMrL6Yx7f2O5HQ==
+X-Google-Smtp-Source: AGHT+IHVwSUZiFYY4NBhuItMUBGjJl/jpX/5a9saFTj0ty03NNDiNEz6BwkZcnHA9EP2utUK7LjgQw==
+X-Received: by 2002:a19:4312:0:b0:513:cb74:9ffe with SMTP id q18-20020a194312000000b00513cb749ffemr4230298lfa.50.1711364096852;
+        Mon, 25 Mar 2024 03:54:56 -0700 (PDT)
+Received: from cracow.c.googlers.com.com (38.165.88.34.bc.googleusercontent.com. [34.88.165.38])
+        by smtp.gmail.com with ESMTPSA id f20-20020a05651232d400b00515b08c7397sm93489lfg.67.2024.03.25.03.54.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 03:54:56 -0700 (PDT)
+From: Lukasz Majczak <lma@chromium.org>
+To: Jiri Kosina <jikos@kernel.org>,
+	Dmitry Torokhov <dtor@chromium.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	linux-input@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] vp_vdpa: Fix return value check vp_vdpa_request_irq
-Date: Mon, 25 Mar 2024 18:54:47 +0800
-Message-Id: <20240325105448.235-1-gavin.liu@jaguarmicro.com>
-X-Mailer: git-send-email 2.33.0.windows.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SGXP274CA0017.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::29)
- To SEYPR06MB6756.apcprd06.prod.outlook.com (2603:1096:101:165::11)
+Cc: Lukasz Majczak <lma@chromium.org>,
+	Radoslaw Biernacki <rad@chromium.org>
+Subject: [PATCH] HID: i2c-hid: wait for i2c touchpad deep-sleep to power-up transition
+Date: Mon, 25 Mar 2024 10:54:52 +0000
+Message-ID: <20240325105452.529921-1-lma@chromium.org>
+X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEYPR06MB6756:EE_|PUZPR06MB6224:EE_
-X-MS-Office365-Filtering-Correlation-Id: dd3be308-a907-4deb-4c72-08dc4cba09a0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	r/TvFwV47lGwADZYOy1byU5Z/LegKcHX8VIvq3UdH3up5E3pvgItlLJ2L4U5uvBAy+5YXfLLtfRbJZ0Rfc56h0YVERwiW8fFkIdlQPNM9KfV8w8yHOjvVroPwaMXjcsySNGNtNWXQBa7pdQC0FKRTPtHgvV5fjOdanuzp4q0e4zp62S8gAgFZdtfAaGy5uNsAaZQj1d1usQuWEnjZHFtcmR33HEt5sROzMn/8mAUPT8BNZ6SdYP77F+IiVV7Mk4HZWX34/le/LdKFGxz8ZwrP8GcA4RWGo9o6Q6Va8GuEsyOYDXOhiX6NpEdfEDGJ8N2B56BuPH0DdSTB2cM2IBmySzGM02WbVA9mtv/dbcacVrXjefsYqv3pCvjcXtjXTys9smwWvmOPE3N/0wDADt4Tnxlx29zx9G7TpW3nMqevl2jNfe33O/HGCeU884dE6MZtEmv2VJnqGE5ttE7KP7qBheK3mLx1ZGttEfrcS/F2+oojhMXb5UjGRnuBPjr9uLO3wwZ/9m+MGuQP80E2aC6Tu6mwKJSLxhr7iiYeLGBo6kZaUJuvrQyQ+lrlpdW6aO9++UVXV5vy23Wd9GJd43cTYk7Z3pqprZ61+O1+txaDYWn8AdVjFLoLOD6/528C25nNWtWRMua4n492PB4S4j3cjwhIup5TUl8tTSmrIiepMM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB6756.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?y6KI6QsVXoVIKaryFxdpuEgpDoN47pP4nZTm/UC140NNJdG2VEy0gXCNLaa9?=
- =?us-ascii?Q?GXpjSDkFR+bituhEx7IFB5B+TZKI5U9sVqoQzOSYwX4a/UCyJFNPR00cYpQm?=
- =?us-ascii?Q?3nLluokkLalcUZlG5QEugLLWGH3kVWJywc2HTUUMyqTJ7AYwm7C6BWDZJrNS?=
- =?us-ascii?Q?rZ3SrEGHjqyXhUAhooP+t5lYJO6qKTPfKjDAkERkAk+Ci6qNwVbQlOC4ok6V?=
- =?us-ascii?Q?NSvb+7t8sz3TaqaMw4bMf67B+yGCB9AxwYSP0+LETj3dJle4XmfnfH0pbc6+?=
- =?us-ascii?Q?6p7TrSxYXb5Gqg7dQ+7SeJVA0KWEl7fMfC9cu8LLsr9gYukpRQd6r0XssAfW?=
- =?us-ascii?Q?HJuB7rlxxCdqK0FczS6q/KOGDBE3oIin+nOVAK1VueM9ooOomw7OZmk4P/4p?=
- =?us-ascii?Q?g3b+q+le7+ACsSD4p2tksoedkSz7RuZVWkxcd/I1Nxtl1k8ASxazhkqZ4Tqd?=
- =?us-ascii?Q?S0dSJm6LL5fHk76cfGWTi4hvcOuWX6NNxG/ranA9sB1PDxDvkXKwd7IXh3Ja?=
- =?us-ascii?Q?l9kKq2/4zbrdy9QSBW2ePjvN4W+4l3uE5ETSdnzJUHuO/VlvBiEOog0gdfIz?=
- =?us-ascii?Q?GSjGlG+5gXg3XQamRrzeH81m5D6W2MODoINR00YuCK4Xow595z40F0cmKqnp?=
- =?us-ascii?Q?K+1lNd4gaJQ9+slEUv/57BtY9mMVbyVw0Y3eazjZZimhiZeBeTKxRIrZN6lW?=
- =?us-ascii?Q?SrijJS6GLJvgGGgdsc3QWRy5VrXVWcRFGSgrPCQOcrtUNo5zxENuFL608BrG?=
- =?us-ascii?Q?GMwoLY5d38mWatmGt2uA0h0LRJPO/U1rb4DBFgP4TwWEExLPhkmEZtnDFPXk?=
- =?us-ascii?Q?jlwovPCVXjTlho9JnqKPDo9Abmxi2K7FxFuS+yfQSsM9M7ivuqgTGMW67KeG?=
- =?us-ascii?Q?rGTc6a8qxcpXbS54dpZLcrNfZVZQPwgjws3BobgJlcE0CNXxxPiisVJWpfDE?=
- =?us-ascii?Q?wHhtObnhKcu1bTfzD9pjXi7JtiVGogWSUoilkfbSDZ9k3IQhKE3bpM72OpQV?=
- =?us-ascii?Q?lYmsnwXrveQsmHFMo1X5r4YJMFP9ARdTTmRdaAcyc7HyV0tiQ1voapY0kXEZ?=
- =?us-ascii?Q?tGb0lmbgl5JiO0rCJajtn1kTgZU/HAeJHv9cFy/IQrRX9XiMtGT/4edlaJPu?=
- =?us-ascii?Q?rdyd3WzyVgViNrHwm3mPYkjTUgL4qeFfU1hcRG6qR6DxTSL15WHbs+5YVcnp?=
- =?us-ascii?Q?yM1T4VOr/NBm9BNNiAnOpsmV61QoKng6viiiIcSwF5SKMjyk0amW9la9jHCt?=
- =?us-ascii?Q?GxsJ9sXGm+hNZwifXbr9D5ihNMTJGJ/c20wrxJYoC9bepJ+fq+BoBcQuaNVD?=
- =?us-ascii?Q?hN8JsNHxr+t/969cUlxXiRLZ0oqKr5ncUAdsG4MA3MpS6m4+6U9PtmbL6Yl5?=
- =?us-ascii?Q?N2ujNvtpfCNhGmNOm10BQpHbsvwmyUWKIlW/RVJXksuvy2pk8AWE9dDTugzN?=
- =?us-ascii?Q?9ji3AVRw2pxVcomyaHbmokiHuTueVXf0kfaoxuIINWvIGHkQWRop/8BF8lXn?=
- =?us-ascii?Q?21lIjb0H+sU6ZRfJS19a3VERaUV11ClJTV4UUIyxdZJSi+DSZqhF8Z8C+r/c?=
- =?us-ascii?Q?yKlpO3Ug7paxFU2MBUAzX3x5GfRXyR0zbbA717uN5d5jQQJDm2CcfzJrsxMd?=
- =?us-ascii?Q?Jw=3D=3D?=
-X-OriginatorOrg: jaguarmicro.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd3be308-a907-4deb-4c72-08dc4cba09a0
-X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB6756.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 10:55:09.1516
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O6x+UGY19wMo6saDZBHNV2ge66NrrtFkTr7LPZ2mVheONcnSKLP3pQx4HJkuYx53pcdj5EavX4jy9yinBNkU0UfBcQ8ed/wRj+YImLX7YsA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB6224
+Content-Transfer-Encoding: 8bit
 
-From: Yuxue Liu <yuxue.liu@jaguarmicro.com>
+This patch extends the early bailout for probing procedure introduced in
+commit: b3a81b6c4fc6730ac49e20d789a93c0faabafc98, in order to cover devices
+based on STM microcontrollers. For touchpads based on STM uC,
+the probe sequence needs to take into account the increased response time
+for i2c transaction if the device already entered a deep power state.
+STM specify the wakeup time as 400us between positive strobe of
+the clock line. Deep sleep is controlled by Touchpad FW,
+though some devices enter it pretty early to conserve power
+in case of lack of activity on the i2c bus.
+Failing to follow this requirement will result in touchpad device not being
+detected due initial transaction being dropped by STM i2c slave controller.
+By adding additional try, first transaction will wake up the touchpad
+STM controller, and the second will produce proper detection response.
 
-In the vp_vdpa_set_status function, when setting the device status to
-VIRTIO_CONFIG_S_DRIVER_OK, the vp_vdpa_request_irq function may fail.
-In such cases, the device status should not be set to DRIVER_OK. Add
-exception printing to remind the user.
-
-Signed-off-by: Yuxue Liu <yuxue.liu@jaguarmicro.com>
+Signed-off-by: Lukasz Majczak <lma@chromium.org>
+Signed-off-by: Radoslaw Biernacki <rad@chromium.org>
 ---
+ drivers/hid/i2c-hid/i2c-hid-core.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-V1 -> V2: Remove redundant printouts
-V1: https://lore.kernel.org/all/20240315102857.1803-1-gavin.liu@jaguarmicro.com/
-
----
- drivers/vdpa/virtio_pci/vp_vdpa.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
-index df5f4a3bccb5..4caca0517cad 100644
---- a/drivers/vdpa/virtio_pci/vp_vdpa.c
-+++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
-@@ -216,7 +216,10 @@ static void vp_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index 2df1ab3c31cc..69af0fad4f41 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -1013,9 +1013,15 @@ static int __i2c_hid_core_probe(struct i2c_hid *ihid)
+ 	struct i2c_client *client = ihid->client;
+ 	struct hid_device *hid = ihid->hid;
+ 	int ret;
++	int tries = 2;
++
++	do {
++		/* Make sure there is something at this address */
++		ret = i2c_smbus_read_byte(client);
++		if (tries > 0 && ret < 0)
++			usleep_range(400, 400);
++	} while (tries-- > 0 && ret < 0);
  
- 	if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
- 	    !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
--		vp_vdpa_request_irq(vp_vdpa);
-+		if (vp_vdpa_request_irq(vp_vdpa)) {
-+			WARN_ON(1);
-+			return;
-+		}
- 	}
- 
- 	vp_modern_set_status(mdev, status);
+-	/* Make sure there is something at this address */
+-	ret = i2c_smbus_read_byte(client);
+ 	if (ret < 0) {
+ 		i2c_hid_dbg(ihid, "nothing at this address: %d\n", ret);
+ 		return -ENXIO;
 -- 
-2.43.0
+2.44.0.396.g6e790dbe36-goog
 
 
