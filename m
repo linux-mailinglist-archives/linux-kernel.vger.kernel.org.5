@@ -1,127 +1,164 @@
-Return-Path: <linux-kernel+bounces-116391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 072748899F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:20:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D27D888998A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:12:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B08592A6B1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:20:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87DA91F2CBB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E384DA1C;
-	Mon, 25 Mar 2024 05:35:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545E94DA18;
+	Mon, 25 Mar 2024 05:27:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="lEQLBH0G"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X3MgSBoG"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF0213AA47
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BF01384B6
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711331795; cv=none; b=u0BvkkSSuNzgWbS2xr5lot94Vomq++QEyzdCGr+ypubhQ1ug/08hWYf4EUHhNudLoqHRfWng2NLToJdV+DhVPesVWx1hnIW5aVOAETWtQaABc8BrVyy7cKWsVUur/7NQra2S5z1wTL8riFRdXiLB/EhExjaCpLPooivaJPrt73U=
+	t=1711331465; cv=none; b=fq9o7l0pP2T1H+6Bu7eWZphX7tPCWY6JG+r44V4X4VvoX7R+8zXlaslz6magJBM6tbz2FF3IV1Hek+9WaFcjpOld6MDcA9IocnWihvhJnCSKN1eiFnTNAmOOomLqQcSdobyiNKfRYSWq5kJmsxyv6DmEs63i3SMG33lHKJ+5yz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711331795; c=relaxed/simple;
-	bh=mx/VdD1hq7cRmoLLUg9zTXrB6nghO0otx5ehOvo8wJU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OYl03y7WJsnnw2hboaRnwcBqsPbm2STcBT28WjNhaKe+Btp1R/VI5oZqketZKbW5xJmMjzaJmeUDjs5etoY3cQ98b0SwdgocVzcW+2NQ2aCy8a3/wEHGAu/pjP90j8VGOyFf9GxNdkFgRnezX/yt0OYx293Wml2eAmr/ZI92OJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=lEQLBH0G; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	s=arc-20240116; t=1711331465; c=relaxed/simple;
+	bh=GmcfUuZNdVqcGJwtOQS12FjSh6lYxIaUMNt7zwU4Puc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BI6Urpu1RjmYICdLFYaU5HPHTG8KW3JcGd2ghxcweq3CTM8sTORMYlYiTXHIhE17UDGO71p06rgTJeAD7p3yTHzxneCF7id/+HzN52K5jh2jbalqFdJ+t2gmSSpW2R9GxsoqT/VnEqGURX/6R6mn81ttG9sUgd1sapZpJj7s7KM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X3MgSBoG; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711331462;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=86VbXPThTUyKHsQjCJ3kt+4p36TFqj+xB9/jS6S0RvE=;
+	b=X3MgSBoGB5a3fAtnvOcTNnnofCfy9hONnmoyVpL2XGJio+l8Bgm5vdwrZBH6zdFk9b4I8u
+	XZjqXX35l2TxUI0r7TXOVRgti7JlVk1mF/tlqKIPicMFb+PlW9dODG4zbwZLZlG/KQ9XBB
+	zhns9KZOtMsdHkoRRVgnuIuKpXX7Jlc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-455-BGjv1GpmNs-HwBMKhPUwbQ-1; Sun, 24 Mar 2024 21:50:59 -0400
+X-MC-Unique: BGjv1GpmNs-HwBMKhPUwbQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 42D7F2C00C6;
-	Mon, 25 Mar 2024 14:50:49 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1711331449;
-	bh=UvZ22nbi3oBrveYANpJX+eOm9E/q+JnPTDDNwgaPVZ0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lEQLBH0G0p5FfWe/jQ+cXxHsyUp3lqtUIqVcbjwtkWaB9OV5q+2B6GtUFautBhvaF
-	 6Hm2H2VJMpUJ6U8VAcITw39qpvXEBWIkJwoi1d/bjj3p6MpptOD2pMLKn4yG8Gbb3Z
-	 x37wgkYLfck9N0JSToTqGF2zTA+wO0vW7HhiegChBUxQMkDDJQjeVOcysvMIrlViTX
-	 y3iW1457iQlK4O1tWztSthdXAD5Rb3H7ZDqm9n4BQxR3DJ1lwMooPtADa4yiC2osb6
-	 tQ23RTRNzZ1yOHk7+VpgYSoumYI/gGNM0904kbe2N18Jz+QRLZtjEBsUQ61Y3+100j
-	 vGOunsPO0fjFw==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B6600d8790000>; Mon, 25 Mar 2024 14:50:49 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 11EED13ED7B;
-	Mon, 25 Mar 2024 14:50:49 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 0CC26280A41; Mon, 25 Mar 2024 14:50:49 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH] uio_pdrv_genirq: convert to use device_property APIs
-Date: Mon, 25 Mar 2024 14:50:45 +1300
-Message-ID: <20240325015045.778718-1-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.43.2
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CB06A101A552;
+	Mon, 25 Mar 2024 01:50:58 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id DEC251C060A4;
+	Mon, 25 Mar 2024 01:50:57 +0000 (UTC)
+Date: Mon, 25 Mar 2024 09:50:50 +0800
+From: Baoquan He <bhe@redhat.com>
+To: kexec@lists.infradead.org, mingo@kernel.org
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, akpm@linux-foundation.org,
+	chenhuacai@loongson.cn, dyoung@redhat.com, jbohac@suse.cz,
+	lihuafei1@huawei.com, chenhaixiang3@huawei.com
+Subject: [PATCH v2] crash: use macro to add crashk_res into iomem early for
+ specific arch
+Message-ID: <ZgDYemRQ2jxjLkq+@MiWiFi-R3L-srv>
+References: <20240324033513.1027427-1-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=KIH5D0Fo c=1 sm=1 tr=0 ts=6600d879 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=K6JAEmCyrfEA:10 a=kuWcMSrzkGJfJYRAjKUA:9 a=3ZKOabzyN94A:10
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240324033513.1027427-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-Convert the uio_pdrv_genirq driver to use the device_property_* APIs
-instead of the of_property_* ones. This allows UIO interrupts to be
-defined via an ACPI overlay using the Device Tree namespace linkage.
+There are regression reports[1][2] that crashkernel region on x86_64 can't
+be added into iomem tree sometime. This causes the later failure of kdump
+loading.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+This happened after commit 4a693ce65b18 ("kdump: defer the insertion of
+crashkernel resources") was merged.
+
+Even though, these reported issues are proved to be related to other
+component, they are just exposed after above commmit applied, I still
+would like to keep crashk_res and crashk_low_res being added into iomem
+early as before because the early adding has been always there on x86_64
+and working very well. For safety of kdump, Let's change it back.
+
+Here, add a macro HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY to limit that
+only ARCH defining the macro can have the early adding
+crashk_res/_low_res into iomem. Then define
+HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY on x86 to enable it.
+
+Note: In reserve_crashkernel_low(), there's a remnant of crashk_low_res
+hanlding which was mistakenly added back in commit 85fcde402db1 ("kexec:
+split crashkernel reservation code out from crash_core.c").
+
+[1]
+[PATCH V2] x86/kexec: do not update E820 kexec table for setup_data
+https://lore.kernel.org/all/Zfv8iCL6CT2JqLIC@darkstar.users.ipa.redhat.com/T/#u
+
+[2]
+Question about Address Range Validation in Crash Kernel Allocation
+https://lore.kernel.org/all/4eeac1f733584855965a2ea62fa4da58@huawei.com/T/#u
+
+Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- drivers/uio/uio_pdrv_genirq.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+v1->v2:
+- Remove the stray space before 'define' when defining
+  HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY in asm/crash_reserve.h of x86.
+  This is not suggested for standalone macro defines. Thanks to Ingo.
 
-diff --git a/drivers/uio/uio_pdrv_genirq.c b/drivers/uio/uio_pdrv_genirq.=
-c
-index 63258b6accc4..772ab42a3ba1 100644
---- a/drivers/uio/uio_pdrv_genirq.c
-+++ b/drivers/uio/uio_pdrv_genirq.c
-@@ -23,8 +23,8 @@
- #include <linux/irq.h>
-=20
- #include <linux/of.h>
--#include <linux/of_platform.h>
--#include <linux/of_address.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/property.h>
-=20
- #define DRIVER_NAME "uio_pdrv_genirq"
-=20
-@@ -110,7 +110,7 @@ static void uio_pdrv_genirq_cleanup(void *data)
- static int uio_pdrv_genirq_probe(struct platform_device *pdev)
- {
- 	struct uio_info *uioinfo =3D dev_get_platdata(&pdev->dev);
--	struct device_node *node =3D pdev->dev.of_node;
-+	struct fwnode_handle *node =3D dev_fwnode(&pdev->dev);
- 	struct uio_pdrv_genirq_platdata *priv;
- 	struct uio_mem *uiomem;
- 	int ret =3D -EINVAL;
-@@ -127,11 +127,12 @@ static int uio_pdrv_genirq_probe(struct platform_de=
-vice *pdev)
- 			return -ENOMEM;
- 		}
-=20
--		if (!of_property_read_string(node, "linux,uio-name", &name))
+ arch/x86/include/asm/crash_reserve.h | 2 ++
+ kernel/crash_reserve.c               | 7 +++++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/arch/x86/include/asm/crash_reserve.h b/arch/x86/include/asm/crash_reserve.h
+index 152239f95541..7835b2cdff04 100644
+--- a/arch/x86/include/asm/crash_reserve.h
++++ b/arch/x86/include/asm/crash_reserve.h
+@@ -39,4 +39,6 @@ static inline unsigned long crash_low_size_default(void)
+ #endif
+ }
+ 
++#define HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY
 +
-+		if (!device_property_read_string(&pdev->dev, "linux,uio-name", &name))
- 			uioinfo->name =3D devm_kstrdup(&pdev->dev, name, GFP_KERNEL);
- 		else
- 			uioinfo->name =3D devm_kasprintf(&pdev->dev, GFP_KERNEL,
--						       "%pOFn", node);
-+						       "%pfwP", node);
-=20
- 		uioinfo->version =3D "devicetree";
- 		/* Multiple IRQs are not supported */
---=20
-2.43.2
+ #endif /* _X86_CRASH_RESERVE_H */
+diff --git a/kernel/crash_reserve.c b/kernel/crash_reserve.c
+index bbb6c3cb00e4..066668799f75 100644
+--- a/kernel/crash_reserve.c
++++ b/kernel/crash_reserve.c
+@@ -366,7 +366,9 @@ static int __init reserve_crashkernel_low(unsigned long long low_size)
+ 
+ 	crashk_low_res.start = low_base;
+ 	crashk_low_res.end   = low_base + low_size - 1;
++#ifdef HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY
+ 	insert_resource(&iomem_resource, &crashk_low_res);
++#endif
+ #endif
+ 	return 0;
+ }
+@@ -448,8 +450,12 @@ void __init reserve_crashkernel_generic(char *cmdline,
+ 
+ 	crashk_res.start = crash_base;
+ 	crashk_res.end = crash_base + crash_size - 1;
++#ifdef HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY
++	insert_resource(&iomem_resource, &crashk_res);
++#endif
+ }
+ 
++#ifndef HAVE_ARCH_ADD_CRASH_RES_TO_IOMEM_EARLY
+ static __init int insert_crashkernel_resources(void)
+ {
+ 	if (crashk_res.start < crashk_res.end)
+@@ -462,3 +468,4 @@ static __init int insert_crashkernel_resources(void)
+ }
+ early_initcall(insert_crashkernel_resources);
+ #endif
++#endif
+-- 
+2.41.0
 
 
