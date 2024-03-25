@@ -1,163 +1,112 @@
-Return-Path: <linux-kernel+bounces-117890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC16288B0F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC5C88B104
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:12:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEE7D1C3A390
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:11:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51C031C60517
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:12:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEDB41C79;
-	Mon, 25 Mar 2024 20:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82A955798;
+	Mon, 25 Mar 2024 20:11:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Q2AwBBDB"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2062.outbound.protection.outlook.com [40.92.19.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="htJqKgRZ"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B51011CFAF
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.19.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397453; cv=fail; b=Orif0dLXklB11E2SFPttzPwepwk8PhbhNAyc/1HlW4NZ9wgAJMt4Qck+bELwgj0V3OEuruwI6nbh22FSvdBB7/VZjiOtYmV8Q3uURv70AFJQz/KhxXU82BrAKaCDuJJ03NnqfN0TE7zWCdNXmhdd1ReGpxaOrl4RqyK3r6UN4v4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397453; c=relaxed/simple;
-	bh=YrU0XYUvyoe2ertzpajLqMYVfJ3BULs/yakzwyFye5A=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=BHvve0vtnCWVREg4PeBdI0QiZsL/37gl/BQMGNorJqM/C3LFc2hoBJJOeypZwIGWsWRpzV0pFCP4Ad2gOyjSRplBNdGIokP9Pu9afon1sJJ8dGAT28napji/8r/QQ9Dm7ugy39dPg0bSGUx1N243CMn1dDfKZ4/2OtOxuz/tn3E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Q2AwBBDB; arc=fail smtp.client-ip=40.92.19.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hh3SnZ/ekA9mw89SBSVplU+y2pNbi+ep8URzsYXHY2n1K0JMxBrYaiHbA50q5zl53faSPV8grXypWQAwGY+MZ0cFaT3WKGp6dHUr+kPNOv/VWGnuCDNPQxtK42lZ4Vdje2wttX4YXcSU57Mn6S0T6mZ7pMGujGx885Jq26F/Qc3dewXMvH2kPCzQ94oLJpHjt8vmEvLfdwb3nIUxCfBIEVPXIktJtm0zqe3nvf8hI3h8XTCDzxwjRWHhv2iJzXO27ej7ahprTZum7Z2kbvgy1ooPNuGIAw1CS9Ds76OdLrExtYWPbcl0YnNmNP3Y6f4WhPq0UdNCHo+k8nygHj0ETg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wMyDKbheXEM5DPOywjJn40rkxzd4VU4M8Z9IXJXzpK4=;
- b=Jytlz1YwZSFtSwSVsEza4DmJ/9Avyj574J15JgOeAzny0Tn2Vym54DN5nzvXn4HkogO2SXHfqbGXgrHrmjArNFh7IkPZGb/EigWJ/hr8eYH4fRnkttvh047mVPgZgPZjImZXr8BvgycIeVwn8a7DYXm9q+AGuNeOCGsgQ0QhXFu5E37/HjkYVd0OqFEwdLnHmICGZwWUyBC6WLGr1WrqyEBn9c1Xfmxr3oWbQjTsE0EuaOqtbDnlFivP92Jfgo6BrufHhtzxXT+2zYQg12ZFl8qmtysAOdOxbu8iTsDLfL3sDU7VFJYW3m2O9qvngfAsy3L3UgAw2RQM67FTzP0sQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wMyDKbheXEM5DPOywjJn40rkxzd4VU4M8Z9IXJXzpK4=;
- b=Q2AwBBDBLUtsvozQ8OgV3RghKoVKzqrHEUzBDdKMvRyk4atyl0z3IDLLHjzxW1b9kBjhy9bJP/sH2foG7aM7ecjLzRgVxqliF8YIEGSCSBIiCsYOUQ1+RANF3Y1lx7UHHF5ZBMqciDzAg8z4EDSz4s2zG/8G0dsczPHdMD73fHHET+F653OqOJZ+Pqrq21u3gTcsLnuVHMM8CzWjroI3udlGSZ7xU+LphfsUbjn1KGRXrqJhvdIhaWtAVPU5Yp2gDiFeq5lM+cjWb/NuohmRvRR7LSoQ4cUlOMb/UMDmnGvdEuuFpMZKA7l8jsX91Oj7UQJVeQeg6Gds0vUCz17bgw==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by BL3PR02MB8866.namprd02.prod.outlook.com (2603:10b6:208:3b1::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 20:10:49 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 20:10:49 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: =?iso-8859-2?Q?Petr_Tesa=F8=EDk?= <petr@tesarici.cz>, Petr Tesarik
-	<petrtesarik@huaweicloud.com>
-CC: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
-	<m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, open list
-	<linux-kernel@vger.kernel.org>, "open list:DMA MAPPING HELPERS"
-	<iommu@lists.linux.dev>, Will Deacon <will@kernel.org>, Roberto Sassu
-	<roberto.sassu@huaweicloud.com>
-Subject: RE: [PATCH 1/1] swiotlb: add a KUnit test suite
-Thread-Topic: [PATCH 1/1] swiotlb: add a KUnit test suite
-Thread-Index: AQHadSjFkQAbswHN/0CHWY8wcxBdj7FIkQCAgABlAWA=
-Date: Mon, 25 Mar 2024 20:10:49 +0000
-Message-ID:
- <SN6PR02MB4157992232ED1362C41804DED4362@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240313092740.192-1-petrtesarik@huaweicloud.com>
- <20240325150641.0c7b2d73@meshulam.tesarici.cz>
-In-Reply-To: <20240325150641.0c7b2d73@meshulam.tesarici.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [YWHbQo7uZJnkbbLcFcWg+7mzx77NrFni]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|BL3PR02MB8866:EE_
-x-ms-office365-filtering-correlation-id: 688f9820-ee56-45ff-bd0b-08dc4d07aa14
-x-ms-exchange-slblob-mailprops:
- igNrEvV8uhFs9rO1mK5NDxwqkoYDlhzR1mFl43RjkvymBBhaPV4h1HZXp1Z8o2jRABreDrmKGXyd5JZPjWMbHIZ+SMFhET0/r/zpGAmzWTWrfm+b2WR1gvxgrXRzrlp1M64pKDwEcEHcsFzxmJRFWYcIBFBomF/QJmJFx7Mu57ZnxIhtBJJeuQw7OxOG9zQ6sBYo55DCKZDcG7tcul41kBbDQy0QmZkmUabmmyvghzVntHkFFo8FaHmKlvtjK3nKQdFDWLh5PrEwJIfSOYlQEngbIlEHTr94gQKcyUW41w6JcgSjCB6OVmGC/Ep1RmW62Ke9maWyKnm1H33X/CrcDzvCrPE/ddyhYG7ZYvsteWsU8wZy2ztnlZXeCd07SEyQuXlheQyjaKtILbFhxqyS0pfRtqfg/QJbFec7nidg46ic0P4EBP6OKDhby7BGlwvGyH11xYlyB7ADEcim2mY3ZpOVUHBLB70k9d5bFq8+lFGSj+Q6ocCUfV4HTTnOsCGDa/0KWoeq/o8zPiF4q2CvWrybyFNtH0YxQeS22yGglCKNBPKeMm4EMfgLcmcckUO3cCsGB1zPFGcshnClVSQoPa1xNvWY+nmNQNXGGdL9a2drpT8coA0N+J+VuRGj9CoEfg1x9+4suGn5e8cajTO78YD++pxl6I6OYdQRzcqjqp/DO4VOjYDo/WnbmLIyY9EZl3QoXlfQebQ=
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- mEDaFvQPyeENTLV9wpwQYDzM9vfyQPbEIP4IDVXyBqgcbnzdObrkh9Mv7qHRRg9gYRraqkhXR9F4eIXMbE1W9m+u8kppLj2jb93CY8PbaeFfCJrEU7ckeRqOnb7FgX0AIIx6Vic+2caudqaBTAzEzkd/5CJzMQkJ59BO8aSk9ZeSLR1KUrFaz3ehC17m+qjuXJQLStOIYzhYsYOC6emfKmT0989RcSY/wDKkIZCizwVVndlYoj7oNfJN0UpvSfhgUW35bEIMyQXgkYXfk8h63NSJ4zvS5FrJ8RavpanvahQDYunkHzGIqcbP2Vmw7MovzjPxAH6V+A9Azk02rCpmQrJ+rf29fQXwlKT1cG7wg1HCab845C51B4R7F26EMEoo4f6cKtzzQCd8ZnyZrhq4eJyuA2RPkZK8e5J5pn7T4fDdSBwjiaYQUIKMKmL4Zsb0gTC1ECo41Jeqt4MNIDeePYRJw5Gv5C6FOhwmgx3f+sVaQbbJm1Mi+D1M95Gvvfs5RNDkuq2P6DaknMBjnawrpsseoAcFBXyBIwxd3pLzE8edozEyYwHxghlLLJQ3F46x
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-2?Q?xpF3ORWm31U/f+j7Po8q2Fr0fk+jGtOLD5oSNjf3gEEFkvurl2bcmbFUWB?=
- =?iso-8859-2?Q?njNZAF5tfvrHXM9NfLJYVUZnSoCWfCc7AL++temLI2SpaeSmnhlzTcFfeA?=
- =?iso-8859-2?Q?Lh8YxQSmCmP8R/DXt5PxR1+wUoinrivPtGtdxlaielNVgMAKWXe5jhpn9x?=
- =?iso-8859-2?Q?9MwrON0hkp8ehhphgOPKTRqIaFwO9mVp6Yr0WaaBX5P0P48vdmEfLXNrZj?=
- =?iso-8859-2?Q?yZmvUvQSMsBylOtK2XJxTmB7kmY33RfbVsfWP+7ZiwyHfXhtQCvhHEsBPK?=
- =?iso-8859-2?Q?5LnUexpkOIEF/97Yf+X6SxqjH7GrKU11zZcmabknB5VmonP5ADHtvJadKd?=
- =?iso-8859-2?Q?Phs8N2Z0mmfX3N/WhRr73YcSSyEiAN/7jAopYFXczwDgMS4YC+svLcte7x?=
- =?iso-8859-2?Q?kAs7QJ6BNDAb/h2tWxmNqhJ2R0+P7lgWe8R65X7DGgjwhPXAFNv22Qd6Do?=
- =?iso-8859-2?Q?UFZANJbyy5+de58nHw4YeFJsJEmPWTsD0yktch/Ztt8CKCgzqkxqNpkrrF?=
- =?iso-8859-2?Q?U3ouK31zw8VhwCKwY3LM4tapRSnnCIO8N96jCgAa2bKXVjJcccO8q5F4o3?=
- =?iso-8859-2?Q?wL7iQkr0PzmSRXJhdY08sdC3Gf0GHiEdKJDf4miHvlUR2m/bOWGoXbbvAI?=
- =?iso-8859-2?Q?ohjv45rnV2FdT2frR40MKRWNbDAtnXsdMgkT+KbCrFZWMiNb/rIhEHCrkT?=
- =?iso-8859-2?Q?Wvv+ELPsnGfnXp3Hko4tizCxw+lbNMyiB/tRmXbT2rDR1+IliDZeYuoYql?=
- =?iso-8859-2?Q?geKQc7EoDx6CEI5g9PGT7mFf5y4iJB4qlk4e8bjgo0L37P/iZ8DKNjHkwl?=
- =?iso-8859-2?Q?VohOgE5YwCzy4924Xe47iqHKDlLCoql8ch3B6kG8vIAKD9HRxpOYIT91aT?=
- =?iso-8859-2?Q?kuFOYN+2rlbLa2+Dj7mSl4Kyz9y6RMOE6KTqSQetUetMWG26MJvb3FQxVm?=
- =?iso-8859-2?Q?oze+tTVLo8hF7neITBqIEgoGe9t0lyV7IoSwAWpIs0Aqlnw3qfUrry2FYs?=
- =?iso-8859-2?Q?+4ik855X838s3nv4SzX8gO3rphZl7PYHGZTA22M/JFG2w6ueXp3/ipTLr3?=
- =?iso-8859-2?Q?nZATCb+Ea3CuX4caXxV3nm4JbKK4+M1WpHl92HpWd2giKldtQzEm4W0meA?=
- =?iso-8859-2?Q?Av4uvgVxroRuXU5vnUD4pxcEJLRhiyUub2Xjzc7qiuvcaLhP+hJBTDBB63?=
- =?iso-8859-2?Q?/7efgYr9PmwRcRodtZJagoAayU3s+Ey0Z0yZJLmwsbmrRZZB0nVoHEr+4R?=
- =?iso-8859-2?Q?tsVqMxTigGf+mcPj2l0g=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1F14CB54;
+	Mon, 25 Mar 2024 20:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711397463; cv=none; b=RCZxZEtKljvmLortnzit262z666ZovgTqxIFhSGUt3ZlcPTv9UV6xx4UjcZeAWaUDGPfHVhlXzIVBh6gTAKhjYZaDpW1RSMVOGWDzGQMmfK7gmaj51o4j+zz4lz/UjQF5Fm5xiLS1yGydnKruXCPnRRRML76yHKKbUAagKmtF1g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711397463; c=relaxed/simple;
+	bh=PNkdq8pr+5/0BOac7guOZWZ/0739SWPnMQvt5yz3G5k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AOO+nMlIWfMaq4WsHm7PuatKZfmuRH2BxwgwbGKm1NAxrIXSb8em7CGpFg6h1tHIt+sXFlqVmZ5XArltXK/4JcfG10wdEDfR89XaYdXGURsDZD81Qq2WLY773dPjJr+I6/UfArhD+3v792175t9Go+2hX4hgg/wXf9CYTXi00zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=htJqKgRZ; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ea9a60f7f5so1760774b3a.3;
+        Mon, 25 Mar 2024 13:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711397461; x=1712002261; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OJoOIB0fogtvrTT+C8zAsHm4ytpCrvGQJ9GOYtKix3E=;
+        b=htJqKgRZx3V1DGh5I/fzR1tNWFFdfVqhk/3Gd/ynlpye879RmXXoObSGauZoyVkS4P
+         PmoHrOJgH6AuGyXYYFjNcYKElP+Z0MbyfX5wa0ywA9sVMhhItKxxntiq6j7z0qxcS13w
+         bxpWLvexHuL0MvTTnUpyNBa1itUMSeG9Gxd2EzB8Tactst5CXA/zWZEjOdNy9YVQHtAy
+         JKcgne4Adx3IlLPkwMOtKrGbVFL7fELhqRN1W2wf955O3VikPCJ83KGU/WEef070jVh9
+         Zui1lAWcbK+go3SQE11dLs3HPc76gLtxhtieoLEck83NXnWUemG12yhpY+D+mJ/Zui+x
+         3P9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711397461; x=1712002261;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OJoOIB0fogtvrTT+C8zAsHm4ytpCrvGQJ9GOYtKix3E=;
+        b=D6Gk0Nf9w8cmZNCXCDnavJgTm1zPb/zQaXHukYsjINCkI5jpS2bVHanumf1z3/J1Vl
+         zSzyTcWvMp2xLaC6rZgl4LzEQ7uWKIltdxG9KaO3sZrlrSeclEbsrSoL8eMYaQoCn6vD
+         xGH/G2h6U/Uk9qqHW4CAk1GNm+KqUrQmWwfiHcAm+7AhYKZdZRyGXU/SMO2yT276pEyk
+         qmQpVihpwd1D8SWXcxNsvYY+ogYtXgL/fO3Sv1ArOyKNZgp1v01DIWSBsfLkKXf1p8vH
+         JlVIzxMSqMAU89qO29sbX9AI/wDkSvAlYWZQrpuQ+dDc4kXp66Kz4hsPd9uXVGjXhuum
+         TpFw==
+X-Forwarded-Encrypted: i=1; AJvYcCWa55PeQxgxSaRTH8LgulHVcleNoiZlLqHqJgWNvad5oR+vN8kXaZOVeS8iGt430QM1aBW7+ic8C6Svxh1rGYTC7MuLo0i4DNzYdmHXlpoftBACVy5go6Eo87kL7x6a4vxvk6Gz1xUQqLtmlTR5MOw6EcZ2S4hWtDZQ15o3ik9/DA==
+X-Gm-Message-State: AOJu0YzQrfvZqTVBEk6hppqL1feYPfBmaAA4rUpW/JOJtJ6DQ36EtOj5
+	6yLRjpeBmCBHUzlNa0DiZAmkeNtpetFW5nWeKGVGGgPoehAJvUAy
+X-Google-Smtp-Source: AGHT+IG6+23l+DCHgviNH8KCgnuW/5vBLq+wX6KAos6vs6ZBRaL8uWkZFNVZAIOAqs4YRBdPtwvOWQ==
+X-Received: by 2002:a05:6a20:3ca2:b0:1a3:6dbb:f072 with SMTP id b34-20020a056a203ca200b001a36dbbf072mr7584599pzj.8.1711397460946;
+        Mon, 25 Mar 2024 13:11:00 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id o18-20020a639a12000000b005cfc1015befsm6146297pge.89.2024.03.25.13.11.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 13:11:00 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 25 Mar 2024 10:10:59 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Brent Rowsell <browsell@redhat.com>,
+	Mrunal Patel <mpatel@redhat.com>, Peter Hunt <pehunt@redhat.com>
+Subject: Re: [PATCH] cgroup, docs: Clarify limitation of RT processes with
+ cgroup v2 cpu controller
+Message-ID: <ZgHaUyeIcS0w_udY@slm.duckdns.org>
+References: <20240320142302.1790171-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 688f9820-ee56-45ff-bd0b-08dc4d07aa14
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 20:10:49.3139
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR02MB8866
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320142302.1790171-1-longman@redhat.com>
 
-From: Petr Tesa=F8=EDk <petr@tesarici.cz> Sent: Monday, March 25, 2024 7:07=
- AM
->=20
-> On Wed, 13 Mar 2024 10:27:40 +0100
-> Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
->=20
-> > From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> >
-> > Add unit tests to help avoid regressions in the SWIOTLB code.
-> >
-> > These features are covered by the test suite:
-> >
-> > * basic functionality (map, sync)
-> > * alignment based on mapping size
-> > * alignment based on min_align_mask
-> > * explicit alignment with alloc_align_mask
-> > * combination of alignment constraints
-> >
-> > Select CONFIG_SWIOTLB rather than depend on it, because it allows to ru=
-n
-> > the test with UML (default KUnit target).
->=20
-> Hi all,
->=20
-> I know it's not super-urgent, but I'm just curious: Has anyone had time
-> to try out this patch? Did it work for you?
->=20
+On Wed, Mar 20, 2024 at 10:23:02AM -0400, Waiman Long wrote:
+> The limitation that all RT processes have to be in the root cgroup
+> before enabling cpu controller only applies if the CONFIG_RT_GROUP_SCHED
+> option is enabled in the running kernel. If a kernel does not have
+> CONFIG_RT_GROUP_SCHED enabled, RT processes can exist in a non-root
+> cgroup even when cpu controller is enabled. CPU sharing of RT processes
+> will not be under cgroup control, but other resources like memory can be.
+> 
+> Clarify this limitation to avoid confusion to users that are using
+> cgroup v2.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-I've read through the patch code, but I haven't run it.  I'll need to
-do some reading on Kunit as it's not something I've used before.
-I'm not sure when/if I will get to it.
+Applied to cgroup/for-6.10.
 
-Michael
+Thanks.
+
+-- 
+tejun
 
