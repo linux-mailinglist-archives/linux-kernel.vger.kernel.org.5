@@ -1,104 +1,111 @@
-Return-Path: <linux-kernel+bounces-117360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34ED88AA6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:58:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3227988AA6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73C0B1F62435
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:58:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCDA11F62B9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE284CB3D;
-	Mon, 25 Mar 2024 15:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C19A65CDE6;
+	Mon, 25 Mar 2024 15:27:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="jwIJzb33"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GBjHiojb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 146BF45972;
-	Mon, 25 Mar 2024 15:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 146546BB29
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711380423; cv=none; b=lil4uv8m9G0byL/L1bgVwQsvoSPww895775lk7y4q5cu/gAMlDrsVESUvX118H9jqMGjpwYGyMcB+z/rP4aUSN/hB7XLUkU+eeNWH4DdMzkFWP2ZvSmGfMRi8gQjewSjJK336hpKn9HrmpRkUoUFpDqFo2zRsVxS0XPxSwvAJ8U=
+	t=1711380457; cv=none; b=lUpXseidjNqvlGz1OpwfMiCmn89EpwTaHkmIsfc7o9EycYpCUplY8X3sQWtYZZWcyZE5fFAaBXxBcfXvhgy2pDkT4tdzDljIW4fHYqT+xk8qE6plO/iklqQzQuYvgvBi4tYJ7l68AXowJmRlvHib/wSdldPeHiYSYgSooDAWpcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711380423; c=relaxed/simple;
-	bh=VjNYehxlmh1shv4CW0beIj0KEq/sDFzAXT2PbPSslUE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wr0I+wiGOyfiihpp9WSpxy6oH0RxuLoo1LYTQTll1+mC3Ry8o5l32VzGIdbJvEnfwKRwdTYYl801TfabmPhaHjF2P0inaAVQpnjuqXJ1ggPbTH0hoTlXxG0nUUhUSoM3/VoRZuV7KWVufms4XGgzIPfHESNXudXyzXx0DP8FImc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=jwIJzb33; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=iRDq92pBNpigRTqyv8LxBk6SO4hteY9NpbgiSySDAF0=;
-	t=1711380421; x=1711812421; b=jwIJzb33MZPSWDcPxriGLfzhqBgOFiQlejq0KuKi7LhsvFV
-	37Nhb4O6yUAJWmzdUkKn4/cxTwho6Ks8u9yRjLotV3qUnockYgCIRaHH/DoANhy7vyd8bmnNVs/mr
-	tdTsrJpzdADQ+TGALbf3s5qUwoHT6mMrnLwXxfeBR2HF5R9yjtS1k9OnJf+OrU1ZydUA70PC3YrOx
-	wt0qwBa8kPPIPTJqMSpjLfGaau6CFeEpnQWFwnGHDCtU6odvbWL/Zx30oUSCym5xNTbVjtAJpUhcM
-	QhjhOEyUr09BegbO+6hE+Y7BQWVNn6YtsL6v8NqcKB+uXP4XhevoNsoC9iNTMk0w==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1romDx-0007ED-C7; Mon, 25 Mar 2024 16:26:57 +0100
-Message-ID: <51f61874-0567-4b4f-ab06-ecb3b27c9e41@leemhuis.info>
-Date: Mon, 25 Mar 2024 16:26:56 +0100
+	s=arc-20240116; t=1711380457; c=relaxed/simple;
+	bh=bYZG5pNg1OWqiulIpBARahqIyHHQkI5zrD80VoIQK0Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UJjOJykVH730gUgB9PccpQlSNZLZ3HMODYFmzHvCHByJM7cFDp62UcLExpvR6GzWilfAVwi0vJQ8Ahr71sL+R3p04BNatEdxLRaijx90y3E8oayD62kb2d7KboFZ7bs01f8oHlbw7juXqgs3fLFTJjtpVOIWTYgKYeinmSLteDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GBjHiojb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E30A5C433C7;
+	Mon, 25 Mar 2024 15:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711380456;
+	bh=bYZG5pNg1OWqiulIpBARahqIyHHQkI5zrD80VoIQK0Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GBjHiojbSc3MWX4fAZuZ2TnKpEkMthvhxaoCec4169pTA63MnK8Wl6PIBiPALq0t9
+	 ziS1E8AxNvudgpkOGpY7VIO+OHKo3lWjqjVt/q1nH7906H8RzWD0F1Pk+zUtaxSznw
+	 Me180qDYEg1eSICiOC261/dfJGqmGpEM2gdScfa+69N2QGDFT9oWqYepausBiUDo0s
+	 3a72LRom7rt5dDMYFMOjSSWX+yXdi0w4tZB/eKkZCmjb0EiKYHQ4mawf9XmkeuEJkv
+	 yUuHVXIy8X3JAjBvia+glNKr2QGk4eUlt1DWBVaQ/jXszZ+MdnQ5zUihwTdkuGErsI
+	 VnbLu+QYGXVOw==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH 1/2] f2fs: introduce map_is_mergeable() for cleanup
+Date: Mon, 25 Mar 2024 23:27:25 +0800
+Message-Id: <20240325152726.797423-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Recent-ish changes in binfmt_elf made my program segfault
-Content-Language: en-US, de-DE
-To: Kees Cook <keescook@chromium.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>, Jan Bujak <j@exia.io>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
- brauner@kernel.org, linux-fsdevel@vger.kernel.org
-References: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
- <874jf5co8g.fsf@email.froward.int.ebiederm.org>
- <202401221226.DAFA58B78@keescook>
- <87v87laxrh.fsf@email.froward.int.ebiederm.org>
- <202401221339.85DBD3931@keescook>
- <95eae92a-ecad-4e0e-b381-5835f370a9e7@leemhuis.info>
- <202402041526.23118AD@keescook>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <202402041526.23118AD@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711380421;1d762f29;
-X-HE-SMSGID: 1romDx-0007ED-C7
+Content-Transfer-Encoding: 8bit
 
-On 05.02.24 00:27, Kees Cook wrote:
-> On Thu, Feb 01, 2024 at 11:47:02AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
->> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
->> for once, to make this easily accessible to everyone.
->>
->> Eric, what's the status wrt. to this regression? Things from here look
->> stalled, but I might be missing something.
->>
->> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> 
-> If Eric doesn't beat me to it, I'm hoping to look at this more this
-> coming week.
+No logic changes.
 
-Friendly reminder: that was quite a while ago by now and it seems
-neither you nor Eric looked into this. Or was there some progress and I
-just missed it?
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/f2fs/data.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
-#regzbot poke
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 5ef1874b572a..9c000ca4f808 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1507,6 +1507,23 @@ static bool f2fs_map_blocks_cached(struct inode *inode,
+ 	return true;
+ }
+ 
++static bool map_is_mergeable(struct f2fs_sb_info *sbi,
++				struct f2fs_map_blocks *map,
++				block_t blkaddr, int flag, int bidx,
++				int ofs)
++{
++	if (map->m_multidev_dio && map->m_bdev != FDEV(bidx).bdev)
++		return false;
++	if (map->m_pblk != NEW_ADDR &&
++		blkaddr == (map->m_pblk + ofs))
++		return true;
++	if (map->m_pblk == NEW_ADDR && blkaddr == NEW_ADDR)
++		return true;
++	if (flag == F2FS_GET_BLOCK_PRE_DIO)
++		return true;
++	return false;
++}
++
+ /*
+  * f2fs_map_blocks() tries to find or build mapping relationship which
+  * maps continuous logical blocks to physical blocks, and return such
+@@ -1653,12 +1670,7 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+ 
+ 		if (map->m_multidev_dio)
+ 			map->m_bdev = FDEV(bidx).bdev;
+-	} else if ((map->m_pblk != NEW_ADDR &&
+-			blkaddr == (map->m_pblk + ofs)) ||
+-			(map->m_pblk == NEW_ADDR && blkaddr == NEW_ADDR) ||
+-			flag == F2FS_GET_BLOCK_PRE_DIO) {
+-		if (map->m_multidev_dio && map->m_bdev != FDEV(bidx).bdev)
+-			goto sync_out;
++	} else if (map_is_mergeable(sbi, map, blkaddr, flag, bidx, ofs)) {
+ 		ofs++;
+ 		map->m_len++;
+ 	} else {
+-- 
+2.40.1
 
 
