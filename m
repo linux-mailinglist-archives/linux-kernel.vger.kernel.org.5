@@ -1,103 +1,108 @@
-Return-Path: <linux-kernel+bounces-116470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67548889F78
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:30:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 807B3889ED4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:17:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9871E1C36444
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:30:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A85321C2DEC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E0C1386D2;
-	Mon, 25 Mar 2024 07:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rvgUnoWh"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BAD814D43B;
+	Mon, 25 Mar 2024 08:17:30 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E9214AD1C
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:52:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB6D14D441
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711345962; cv=none; b=VtW9JzfAEYYIGLTc4cEEJTXrr8ymUGBg6mhKh9YbUJrCpz6UFnctGz5qgVSUGcnKpgKTYvbKkdD/V5bsMQK1X1/v//uPBBUxHp54iXzWQ7upFjpMlwK4gylzwCc8RnU0ypxBQCEAFkLR/spyuj9A4/lE8cERTkAwcXCFpkeRBcU=
+	t=1711346253; cv=none; b=oT35Y8a9rVnLlVyjx1ERUCe1gain54FrlEbypDGzogi+UqLDjRN9G2E/m/9R09nhOQNPt8porvlsB5StzuWH+Ae9l9MHcAQLUOUwQm9r6AAlnQv3FesYmXZJRYGEiWvC7tF4ijlBY81FIMfWmCWxOolxJH0jaCaP0ogMdaUUbRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711345962; c=relaxed/simple;
-	bh=Ca+XvmlXKeGYPksLbW1qY3T/nyJfcNvs3uDjLng276o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UQ325qgiy+u2nc9tZZiVb2zuwGZ5wvb47K+VjA/ttRZHntZ8k+moTGyJ3eIPNbtioqiNVmyh2SNiGwkxuLF7N3C1FweC+aTJUKNEuumlkv78pJnJvGw4RlWfyMg9rH6x8cgWPIZYHf+4GSwcRME3MK29Raikz1J2/K9qyKJyz7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rvgUnoWh; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a46a7208eedso541120866b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Mar 2024 22:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711345959; x=1711950759; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KQMqHnlXbBG6D/HNGUsVRBxdn6P40gz4MCzg880daGs=;
-        b=rvgUnoWhnl62wMVlwyoUIZisp+Axa53VGkZvIX1W6RnLIgeWac+y1GzIO5azdgH6MN
-         T3hh0xzSaOUYvFAupoK6Ve0WfG4eXNEVuH7tjHtJCvNzLqsOlgEWytn+fharD36oqAux
-         8w+EZjluNppFVQO/qZMvjCdKNTcpQRq8XXZK3HE8PZrYG9gSyArmH35NQK4NH1W1MBWz
-         vYelHQk+CeFBWxWhRe4+h88ielVSHOLcQPZDH5gTPc8euQ49CQFsm+wK8aO9E0k3qHBt
-         aWF/OLjyyvn/USogRJo8zsLjb7auH39WJ8fH8sd5fUTlVhC7hUcUT3R0tcxSK+n9DOJh
-         fu1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711345959; x=1711950759;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KQMqHnlXbBG6D/HNGUsVRBxdn6P40gz4MCzg880daGs=;
-        b=mtnO3PxTCqz6k6iZUhsTRlYL1sR5Cfg0KGIn4LO9npA4DW5zyHeyRT8kX0N5AbCCOG
-         btc2yg0YHJmHKpxTJzbt4oFjm2oBi3W8ps/VjZZuJPMLSMstsMJXPy+tseUTJfGiS+Rc
-         ZXFiU4pU02CvHa6qW11GkCnlmZ/GljWpGGTqE0iixug1J9z2mTSSF8Y5xXiLQuCII3EP
-         1HpuDydFiPorrZAZf30RoPw6Ezq6Cv0STw2Cr4zPAPpV5NjSHv3eRXC4WdZ0FUsBYejm
-         MHGZC0bJ8qayVI2NFcQ95N3WzOhSQX/uqCu89yMBRhBfWhZMx+uLn62dQUDcyzefaBc5
-         iFbg==
-X-Forwarded-Encrypted: i=1; AJvYcCVXMhQ+exHCq00BlihRDiyMtBKdbHRKM6VpTn040nUDh8VXGRnO6m8aUnbVA2jy+2DvuHqeoGTuelsgr5Or4pBk0nLXgkqu0Gvd/Ty1
-X-Gm-Message-State: AOJu0Yzn0ft5xhhEvYshZrj4NHGiaHKPc/rRg/qacoDjviZ8aLFOltAI
-	vL2P/8GWCZbuoeKbJXzPAGUW0l9WEJG+S2AO7YSNAcJYki/AcCCSVaQ5HkMAVj0=
-X-Google-Smtp-Source: AGHT+IE+RzKFPbfOR436dI+w5MSweWdPphLKMDQVzXF5JvnyobxPPFXdyQ/VwDYCB4hZSUuYQrE7NQ==
-X-Received: by 2002:a17:906:a28a:b0:a46:8d93:6c4d with SMTP id i10-20020a170906a28a00b00a468d936c4dmr3137486ejz.25.1711345958573;
-        Sun, 24 Mar 2024 22:52:38 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id v22-20020a1709061dd600b00a466fccbe96sm2644067ejh.122.2024.03.24.22.52.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Mar 2024 22:52:38 -0700 (PDT)
-Date: Mon, 25 Mar 2024 08:52:34 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Shahar Avidar <ikobh7@gmail.com>
-Cc: gregkh@linuxfoundation.org, elder@linaro.org,
-	andriy.shevchenko@linux.intel.com, robh@kernel.org,
-	parthiban.veerasooran@microchip.com, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] staging: pi433: Reduce N_PI433_MINORS to conform
- with N_SPI_MINORS.
-Message-ID: <662306a0-1544-4f16-81cc-68324a0c3172@moroto.mountain>
-References: <20240324093201.793485-1-ikobh7@gmail.com>
- <20240324093201.793485-3-ikobh7@gmail.com>
+	s=arc-20240116; t=1711346253; c=relaxed/simple;
+	bh=hct+CG+K49mQ7e/gs5Egxa90nVS7OdjNK08fkPwVO7E=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ciH92jGgEXBWdqifSj8CmRbEcAzU6q3uO631LQbxZbJLMv8ZQN7YucAImsn3WymEKchy+kHYKdCy5N9sgiYCGmbEQXKqZcGstxiJS5VhCsVrAzRyZ8OnvR1tyrVUoEOFKUrmLnAn7tm2o2Tz1/xj17SBFvjtDtFyHtkl6i2M7UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 42P5uic2078365;
+	Mon, 25 Mar 2024 13:56:44 +0800 (+08)
+	(envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4V32G14BRMz2KXJwC;
+	Mon, 25 Mar 2024 13:55:05 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Mon, 25 Mar 2024 13:56:42 +0800
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+To: <jaegeuk@kernel.org>, <chao@kernel.org>
+CC: <linux-f2fs-devel@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
+        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>, <ke.wang@unisoc.com>,
+        <hongyu.jin@unisoc.com>
+Subject: [PATCH V2] f2fs: fix to adjust appropirate defragment pg_end
+Date: Mon, 25 Mar 2024 13:56:35 +0800
+Message-ID: <1711346195-24555-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324093201.793485-3-ikobh7@gmail.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 42P5uic2078365
 
-On Sun, Mar 24, 2024 at 11:32:00AM +0200, Shahar Avidar wrote:
-> The driver can't actually support 2^20 devices.
-> Current RasPis GPIO pins can actually support only 1 device.
-> Other or future platforms might support more.
-> 
+A length that exceeds the real size of the inode may be
+specified from user, although these out-of-range areas
+are not mapped, but they still need to be check in
+while loop, which is unnecessary.
 
-Why are you doing this?  Is it just a clean up or does it have some
-effect on runtime?  And if it does have an effect on runtime, what does
-that look like to the user?  This all needs to be in the commit message.
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+---
+v2: check i_size within inode lock according to Chao's suggestions
+---
+---
+ fs/f2fs/file.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-regards,
-dan carpenter
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 128e53d..cf63db7 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -2608,9 +2608,6 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+ 	bool fragmented = false;
+ 	int err;
+ 
+-	pg_start = range->start >> PAGE_SHIFT;
+-	pg_end = (range->start + range->len) >> PAGE_SHIFT;
+-
+ 	f2fs_balance_fs(sbi, true);
+ 
+ 	inode_lock(inode);
+@@ -2629,10 +2626,16 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+ 
+ 	/* writeback all dirty pages in the range */
+ 	err = filemap_write_and_wait_range(inode->i_mapping, range->start,
+-						range->start + range->len - 1);
++						min_t(loff_t, range->start + range->len - 1,
++						i_size_read(inode) - 1));
+ 	if (err)
+ 		goto out;
+ 
++	pg_start = range->start >> PAGE_SHIFT;
++	pg_end = min_t(pgoff_t,
++				(range->start + range->len) >> PAGE_SHIFT,
++				DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE));
++
+ 	/*
+ 	 * lookup mapping info in extent cache, skip defragmenting if physical
+ 	 * block addresses are continuous.
+-- 
+1.9.1
 
 
