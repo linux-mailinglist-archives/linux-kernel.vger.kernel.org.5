@@ -1,177 +1,126 @@
-Return-Path: <linux-kernel+bounces-118051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C09B588B53E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:24:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8DD588B2FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA18EBA1987
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:40:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8778E1F65BAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C94A33995;
-	Mon, 25 Mar 2024 21:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830916FE27;
+	Mon, 25 Mar 2024 21:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="bihn7DHA"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jYIp0by4"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0BF6E611;
-	Mon, 25 Mar 2024 21:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6E06F525
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711402842; cv=none; b=iKElFwqO1Xignk7E54Wnf10jhZBhNQVXLWgrrM7x2qOHshmzR+PHqp6SbkqaBWtJob44Lra3zMEQI2QuIzQ1dD3ckNF1AP2hCaS7UqJlYCsvsQP4DPycVkq5J0YQ7bRkV/2Ma2W9lmdaao74OWF32I5QWO+D9TUD18QqpEl+R8g=
+	t=1711402909; cv=none; b=FICbrH45W4E+xrOnrhV9V3kcyl4yypOJh/CEqkCHLHsi2Of8jwUOvvd8vBwXK37RGTKjpQmGmPSzCM2EdVtKswIl+3pdSW4xySYiWHQ/MPIaIXJEnSuYvkuoe/GPQTunKKgV8vrPB4AG8GklaAXdHburYnwIp8zyvc9T5ZEzrjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711402842; c=relaxed/simple;
-	bh=SfhDpy1gBjb0secvYDmVDcNH0yEOBTw0RQ+3z7mvlJc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=UAe83fG7IUWNuwGODnyN9Aj2INapt7N+Y1+Cz5GWBlA1VzRw2nBSKrgaNTK4cuPsqalai9ztfLYaySzW9Uf/1GlWPcHLugIX7jD0r+CF2qEoe8+GxqxOfFrEeDEl3IL6XyqRPUt9fG2gUEllPjUoLtVjSJ5E8A+3PGWrK7FXky8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=bihn7DHA; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1711402838;
-	bh=SfhDpy1gBjb0secvYDmVDcNH0yEOBTw0RQ+3z7mvlJc=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=bihn7DHAYDcY37C5lrOcOftrxdZ1EPXXSiq6fBsNAcsPIyrwVsVgYHDc8fYgwn0T+
-	 SzHj5CmEzoByIzE+O5BHN3D1riTfQAEsX20mZy66cJK9vEc0NUIWvduk07JG3NEoNM
-	 9ve7gzfAMQbokgSDNw01wRs+EYu7IoTUG4YXlSgU=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 3D21A67071;
-	Mon, 25 Mar 2024 17:40:35 -0400 (EDT)
-Message-ID: <70e3b9cac305d157396c99355339008e8cf97c62.camel@xry111.site>
-Subject: Re: [PATCHv3 pci-next 1/2] PCI/AER: correctable error message as
- KERN_INFO
-From: Xi Ruoyao <xry111@xry111.site>
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>, Bjorn Helgaas
-	 <helgaas@kernel.org>
-Cc: Grant Grundler <grundler@chromium.org>, bhelgaas@google.com, 
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, mahesh@linux.ibm.com, oohall@gmail.com, 
-	rajat.khandelwal@linux.intel.com, rajatja@chromium.org
-Date: Tue, 26 Mar 2024 05:40:34 +0800
-In-Reply-To: <ba78805af8b39237b22a0ff87c4ba3c614a43910.camel@xry111.site>
-References: <20230918193913.GA203601@bhelgaas>
-	 <0a44fd663e93ac5b36865b0080da52d94252791a.camel@xry111.site>
-	 <38601aef-b082-463f-8e41-f73a4307de21@linux.intel.com>
-	 <ba78805af8b39237b22a0ff87c4ba3c614a43910.camel@xry111.site>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1711402909; c=relaxed/simple;
+	bh=hD9XsIBzAV/bPhZwOQmQep3NyRgaTjUJYFuVVNQO7Yw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UDiRcJs+nmLRZWK1Phv5YET7ryYgLRFZW4a5nj0iacE4hEUFSiWKXWmNmAQJGrRcvlawVIM+xV8WtUCCXlENUI6GtdF3NmF+D0QDpeBzKnRFJq+dOGGXMw0iJshKWhs8Ifb/9nb0OpXlFYqsnDEns8h8H+Vms4bDW3Jklu1cVbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jYIp0by4; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56c1a50b004so2651a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711402906; x=1712007706; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O/KboFRJyODJZyWJydsADn20bl4YX3uVsNj1S+g1jiA=;
+        b=jYIp0by4RD9yx8iqDLdDhq7bozzs5ImXfzfVIyurahnTYqKNA8NpOkkwK5Ih7jS5WN
+         a/KKp5qwN+tfCs4eWb2XgEQpw3G4zzFwF71mEQS2++87NKl+x709eq3esV1HxbwrzFnG
+         gTWACJXfsjJ27HeH5sfcBbFt9TI37vdZqaP8bo4aIuhINPlCjxNl09va5SprMhvGBf+i
+         +gNbsv8J8p1VTXM4S9yrFjtq+VG4l2jH35/6nmk0MS/KsDdKYqKQV2o3k8tmEs1pl0bw
+         tSG6O/aQ0nzUqXkL6XD0X8O1jLtiJwypqHNfJmo+jC1BSIpCT9eLFVBI/3+YXcqkK/7I
+         9oLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711402906; x=1712007706;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O/KboFRJyODJZyWJydsADn20bl4YX3uVsNj1S+g1jiA=;
+        b=DW+4p9R9Irqcy0chiszMjHRnoUw8aO+q7GDKw1A5lY1YpxOq35KVq6mQGngawQZ91T
+         1pdoq8vwTmXematoHyKEmcNzbf5aMKDocrXD2XFjdOU4KGDtZQfhrlkyApHdXRfp9vym
+         BgCW0qJaDFBPu1BAg3Vmj4hoMzKDrt3ZbKgA1D+5ENNwL0wWNjbQr6gc4WAq+wbhIP61
+         ozB6+V59g6MfenDBa2O39+Xbc7Qsa1jcNbFk4UHAoZ3FgQPXeWBI8wgntTISUI/Rq7/n
+         4KTmVV3Bw62KIYQPobc/7wTZYqf750A2jf7yqL4+xJfOkw7CUp5seiQ9gbnVQk0y/nso
+         0JRw==
+X-Forwarded-Encrypted: i=1; AJvYcCUOq3wHFl9AiY/g4/abxUV1/GZgxsBOVQKoqp9FcyNvxvnk4BrS85NNmSF+kb4nZ9FYpNLlXRwElt6WzwZpdBS6CXhPAN0zDGMor/Ps
+X-Gm-Message-State: AOJu0Yy4rApSMzDDsIdkrkvYJMx5GbKFs33bIq+cWjudNQcGmWJmQ5aL
+	QNEyHxCEpHhoQkQjFo36GHgmL1SSmqk1eRJYOhyXflmVPl/4dD177MqvHyflUCI74rYwqgRfmqP
+	tR86nO4iEe3oC47sNj8+V+bu32obXYubak/6y
+X-Google-Smtp-Source: AGHT+IHgkwX8y9U03a0Hq2u9cOn7hIzoMZsLqoGAIZkeovc4m2XkeHedXDRkFuGzeQSfjLbAnvGesQj0WAvl+cOCr+U=
+X-Received: by 2002:aa7:c44d:0:b0:568:7767:14fd with SMTP id
+ n13-20020aa7c44d000000b00568776714fdmr27919edr.7.1711402906313; Mon, 25 Mar
+ 2024 14:41:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com> <20240103031409.2504051-3-dapeng1.mi@linux.intel.com>
+In-Reply-To: <20240103031409.2504051-3-dapeng1.mi@linux.intel.com>
+From: Jim Mattson <jmattson@google.com>
+Date: Mon, 25 Mar 2024 14:41:31 -0700
+Message-ID: <CALMp9eSsF22203ZR6o+qMxySDrPpjVNYe-nBRjf1vSRq9aBLDA@mail.gmail.com>
+Subject: Re: [kvm-unit-tests Patch v3 02/11] x86: pmu: Enlarge cnt[] length to
+ 64 in check_counters_many()
+To: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Cc: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>, 
+	Zhang Xiong <xiong.y.zhang@intel.com>, Mingwei Zhang <mizhang@google.com>, 
+	Like Xu <like.xu.linux@gmail.com>, Jinrong Liang <cloudliang@tencent.com>, 
+	Dapeng Mi <dapeng1.mi@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-03-25 at 18:15 +0800, Xi Ruoyao wrote:
-> On Mon, 2024-03-25 at 16:45 +0800, Ethan Zhao wrote:
-> > On 3/25/2024 1:19 AM, Xi Ruoyao wrote:
-> > > On Mon, 2023-09-18 at 14:39 -0500, Bjorn Helgaas wrote:
-> > > > On Mon, Sep 18, 2023 at 07:42:30PM +0800, Xi Ruoyao wrote:
-> > > > > ...
-> > > > > My workstation suffers from too much correctable AER reporting as=
- well
-> > > > > (related to Intel's errata "RPL013: Incorrectly Formed PCIe Packe=
-ts May
-> > > > > Generate Correctable Errors" and/or the motherboard design, I gue=
-ss).
-> > > > We should rate-limit correctable error reporting so it's not
-> > > > overwhelming.
-> > > >=20
-> > > > At the same time, I'm *also* interested in the cause of these error=
-s,
-> > > > in case there's a Linux defect or a hardware erratum that we can wo=
-rk
-> > > > around.=C2=A0 Do you have a bug report with any more details, e.g.,=
- a dmesg
-> > > > log and "sudo lspci -vv" output?
-> > > Hi Bjorn,
-> > >=20
-> > > Sorry for the *very* late reply (somehow I didn't see the reply at al=
-l
-> > > before it was removed by my cron job, and now I just savaged it from
-> > > lore.kernel.org...)
-> > >=20
-> > > The dmesg is like:
-> > >=20
-> > > [=C2=A0 882.456994] pcieport 0000:00:1c.1: AER: Multiple Correctable =
-error message received from 0000:00:1c.1
-> > > [=C2=A0 882.457002] pcieport 0000:00:1c.1: AER: found no error detail=
-s for 0000:00:1c.1
-> > > [=C2=A0 882.457003] pcieport 0000:00:1c.1: AER: Multiple Correctable =
-error message received from 0000:06:00.0
-> > > [=C2=A0 883.545763] pcieport 0000:00:1c.1: AER: Multiple Correctable =
-error message received from 0000:00:1c.1
-> > > [=C2=A0 883.545789] pcieport 0000:00:1c.1: PCIe Bus Error: severity=
-=3DCorrectable, type=3DPhysical Layer, (Receiver ID)
-> > > [=C2=A0 883.545790] pcieport 0000:00:1c.1:=C2=A0=C2=A0 device [8086:7=
-a39] error status/mask=3D00000001/00002000
-> > > [=C2=A0 883.545792] pcieport 0000:00:1c.1:=C2=A0=C2=A0=C2=A0 [ 0] RxE=
-rr=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (First)
-> > > [=C2=A0 883.545794] pcieport 0000:00:1c.1: AER:=C2=A0=C2=A0 Error of =
-this Agent is reported first
-> > > [=C2=A0 883.545798] r8169 0000:06:00.0: PCIe Bus Error: severity=3DCo=
-rrectable, type=3DPhysical Layer, (Transmitter ID)
-> > > [=C2=A0 883.545799] r8169 0000:06:00.0:=C2=A0=C2=A0 device [10ec:8125=
-] error status/mask=3D00001101/0000e000
-> > > [=C2=A0 883.545800] r8169 0000:06:00.0:=C2=A0=C2=A0=C2=A0 [ 0] RxErr=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 (First)
-> > > [=C2=A0 883.545801] r8169 0000:06:00.0:=C2=A0=C2=A0=C2=A0 [ 8] Rollov=
-er
-> > > [=C2=A0 883.545802] r8169 0000:06:00.0:=C2=A0=C2=A0=C2=A0 [12] Timeou=
-t
-> > > [=C2=A0 883.545815] pcieport 0000:00:1c.1: AER: Correctable error mes=
-sage received from 0000:00:1c.1
-> > > [=C2=A0 883.545823] pcieport 0000:00:1c.1: AER: found no error detail=
-s for 0000:00:1c.1
-> > > [=C2=A0 883.545824] pcieport 0000:00:1c.1: AER: Multiple Correctable =
-error message received from 0000:06:00.0
-> > >=20
-> > > lspci output attached.
-> > >=20
-> > > Intel has issued an errata "RPL013" saying:
-> > >=20
-> > > "Under complex microarchitectural conditions, the PCIe controller may
-> > > transmit an incorrectly formed Transaction Layer Packet (TLP), which
-> > > will fail CRC checks.=C2=A0When this erratum occurs, the PCIe end poi=
-nt may
-> > > record correctable errors resulting in either a NAK or link recovery.
-> > > Intel=C2=AE has not observed any functional impact due to this erratu=
-m."
-> > >=20
-> > > But I'm really unsure if it describes my issue.
-> > >=20
-> > > Do you think I have some broken hardware and I should replace the CPU
-> > > and/or the motherboard (where the r8169 is soldered)?=C2=A0 I've noti=
-ced that
-> > > my 13900K is almost impossible to overclock (despite it's a K), but I=
-'ve
-> > > not encountered any issue other than these AER reporting so far after=
- I
-> > > gave up overclocking.
-> >=20
-> > Seems there are two r8169 nics on your board, only 0000:06:00.0 reports
-> > aer errors, how about another one the 0000:07:00.0 nic ?
->=20
-> It never happens to 0000:07:00.0, even if I plug the ethernet cable into
-> it instead of 0000:06:00.0.
->=20
-> Maybe I should just use 0000:07:00.0 and blacklist 0000:06:00.0 as I
-> don't need two NICs?
+On Tue, Jan 2, 2024 at 7:09=E2=80=AFPM Dapeng Mi <dapeng1.mi@linux.intel.co=
+m> wrote:
+>
+> Considering there are already 8 GP counters and 4 fixed counters on
+> latest Intel processors, like Sapphire Rapids. The original cnt[] array
+> length 10 is definitely not enough to cover all supported PMU counters on=
+ these
+> new processors even through currently KVM only supports 3 fixed counters
+> at most. This would cause out of bound memory access and may trigger
+> false alarm on PMU counter validation
+>
+> It's probably more and more GP and fixed counters are introduced in the
+> future and then directly extends the cnt[] array length to 64 once and
+> for all.
+>
+> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+> ---
+>  x86/pmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/x86/pmu.c b/x86/pmu.c
+> index 0def28695c70..a13b8a8398c6 100644
+> --- a/x86/pmu.c
+> +++ b/x86/pmu.c
+> @@ -254,7 +254,7 @@ static void check_fixed_counters(void)
+>
+>  static void check_counters_many(void)
+>  {
+> -       pmu_counter_t cnt[10];
+> +       pmu_counter_t cnt[64];
 
-Plugging the ethernet cable into 0000:07:00.0 and then
-"echo 1 > /sys/bus/pci/devices/0000:00:1c.1/remove" work for me...
+I think 48 should be sufficient, based on the layout of
+IA32_PERF_GLOBAL_CTRL and IA32_PERF_GLOBAL_STATUS.
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+In any event, let's bump this up!
+
+Reviewed-by: Jim Mattson <jmattson@google.com>
 
