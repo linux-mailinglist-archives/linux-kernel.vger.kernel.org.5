@@ -1,138 +1,297 @@
-Return-Path: <linux-kernel+bounces-118019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E315E88B273
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E5E288B275
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99F902E82B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:15:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C39242E8332
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35A06D1B9;
-	Mon, 25 Mar 2024 21:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FBF6CDA8;
+	Mon, 25 Mar 2024 21:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uiEgXaX1"
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UvTS3y/O"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFFE5A7A8
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 21:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2613C5B669;
+	Mon, 25 Mar 2024 21:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711401292; cv=none; b=teYLScT0b4Gnlwht4QgPb3F7fprYpd25hR2Tv74rZsimUzbC62ph5XU1b5Jo78Gq9kLiDipFhESQuikBfZPJ1VGP3faCZxWYD1U2y6PkGVZH0OzZLPH4IHKIq4m8wzCNUh9Q6t+WVg/r13/ZhhCHGPdV/MoVXw1sH8RTEpmZuGA=
+	t=1711401345; cv=none; b=jkbApwdguS44WNX2j+MPNvY8SlNupQy9yuH4H2Y8+EysCk3ZKXz0t323JzDjY6L2IU3q3HDjmrAOx/Zfcy4VrWn5PrXd6pAi/xqWS14ItnLaB8yMXrnc5S8utzBSjiKDzDbGUN5l6F1shjb7dVEmXFOEZB5pwedRXtocSO7wkls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711401292; c=relaxed/simple;
-	bh=W1hWRjm3jNJ351RXmnzHe0zzrwx7OW190ghWMHNY1Mw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UYJL6Hca8a7AG5fntF7lKP47EwF7DrvnXIKjgJaroX3VenabH0hw8uivnD4PuKoPkZZIOXkoqQrovRW/nHzIzwYdTQk4t9Wfkfj9JnKyB/PTJGjHgj4J3UbDwFWah5CVrROUMBAriZMeTjkVYqyVrbO+NfdqYO59a4s/FFuGvDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uiEgXaX1; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 25 Mar 2024 17:14:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711401287;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=llHHasdPTnE564yAWRIEDlb7QeNB14A4Flfy8lgEg5U=;
-	b=uiEgXaX1EP5tHiPl9/JxgOTwnEkgEqLTkBqdn1FGdGdStYBsEYrfnHyG72l2Ygm0omugkq
-	hspjjqtAH5hNoEQrqWg0Akg1oKhMqTHMnJCEQrJ5aIv4gYjmjaqTT2aN19dl9XREDZdahI
-	RBHeMDIwoVU+fqu2uBvmz9Gzn2npmts=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Philipp Stanner <pstanner@redhat.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
-	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
-	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
-	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-Message-ID: <gewmacbbjxwsn4h54w2jfvbiq5iwr2zdm56pc3pv3rctxyd4lt@sqqa544ezmez>
-References: <20240322233838.868874-1-boqun.feng@gmail.com>
- <s2jeqq22n5ef5jknaps37mfdjvuqrns4w7i22qp2r7r4bzjqs2@my3eyxoa3pl3>
- <CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
- <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
- <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
- <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
- <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
- <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
- <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
+	s=arc-20240116; t=1711401345; c=relaxed/simple;
+	bh=7W133Ux0RsHxHw8IXw3YQXo6JLt4/MeiMxma+qtxrnA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iaA3+MVsBL5mAY01o3shBkoN+pas6jJUnCXdZ/6tepmNgxvp8twXKSw8JRmJDbDWx/QV2evpmVl4Gc8qjN0+SIoSOeBPm+eSXb1hmJ6Y6T8t8Bh6wpdfsdce1Oyxpvb2lYOjg6JOzo5D7u2Py/7OlvMloLnXQcAL/MUkbvMnKPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UvTS3y/O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 158E9C433C7;
+	Mon, 25 Mar 2024 21:15:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711401344;
+	bh=7W133Ux0RsHxHw8IXw3YQXo6JLt4/MeiMxma+qtxrnA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=UvTS3y/OXg8OWVvDhtEFGIJXymk6OKrgYpK68H2OeLGbMbDfgxUayT4yUqaKIOJ85
+	 5AeE/n/HnrQJ7mF7jkVCo+wNlLpPWUl+0m5K4svjtGBh0RfKwC7JoKBudn6HgXOn3y
+	 5+ozGsaV/b+CAU2NwRlncQMbcX61i/Rp4mlmjNMtiktsFOkgy9P6LAKJkmwti6JCYS
+	 3BvzgySRvkANSuN1ovcwxkw9Q7pbA2jeuxdyYFwEm48oYD6EdmHAhSoGAKcS14Me95
+	 sAx+yV/o6cmfN7IzvYEK5eUaHRJjH25A0xTx1idHXE/iRFtsXV9BMQCmFObwL7oFtj
+	 +PxlZVP5hOXtQ==
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: linux-riscv@lists.infradead.org
+Cc: Jarkko Sakkinen <jarkko@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-kernel@vger.kernel.org,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	linux-modules@vger.kernel.org,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	"David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v4 1/2] kprobes: textmem API
+Date: Mon, 25 Mar 2024 23:15:34 +0200
+Message-ID: <20240325211535.25142-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 12:44:34PM -0700, Linus Torvalds wrote:
-> On Mon, 25 Mar 2024 at 11:59, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > To be fair, "volatile" dates from an era when we didn't have the haziest
-> > understanding of what a working memory model for C would look like or
-> > why we'd even want one.
-> 
-> I don't disagree, but I find it very depressing that now that we *do*
-> know about memory models etc, the C++ memory model basically doubled
-> down on the same "object" model.
-> 
-> > The way the kernel uses volatile in e.g. READ_ONCE() is fully in line
-> > with modern thinking, just done with the tools available at the time. A
-> > more modern version would be just
-> >
-> > __atomic_load_n(ptr, __ATOMIC_RELAXED)
-> 
-> Yes. Again, that's the *right* model in many ways, where you mark the
-> *access*, not the variable. You make it completely and utterly clear
-> that this is a very explicit access to memory.
-> 
-> But that's not what C++ actually did. They went down the same old
-> "volatile object" road, and instead of marking the access, they mark
-> the object, and the way you do the above is
-> 
->     std::atomic_int value;
-> 
-> and then you just access 'value' and magic happens.
-> 
-> EXACTLY the same way that
-> 
->    volatile int value;
-> 
-> works, in other words. With exactly the same downsides.
+Tracing with kprobes while running a monolithic kernel is currently
+impossible because CONFIG_KPROBES depends on CONFIG_MODULES because it uses
+the kernel module allocator.
 
-Yeah that's crap. Unfortunate too, because this does need to be a type
-system thing and we have all the tools to do it correctly now.
+Introduce alloc_textmem() and free_textmem() for allocating executable
+memory. If an arch implements these functions, it can mark this up with
+the HAVE_ALLOC_EXECMEM kconfig flag.
 
-What we need is for loads and stores to be explict, and that absolutely
-can and should be a type system thing.
+At first this feature will be used for enabling kprobes without
+modules support for arch/riscv.
 
-In Rust terminology, what we want is
+Link: https://lore.kernel.org/all/20240325115632.04e37297491cadfbbf382767@kernel.org/
+Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v4:
+- Squashed a couple of unrequired CONFIG_MODULES checks.
+- See https://lore.kernel.org/all/D034M18D63EC.2Y11D954YSZYK@kernel.org/
+v3:
+- A new patch added.
+- For IS_DEFINED() I need advice as I could not really find that many
+  locations where it would be applicable.
+---
+ arch/Kconfig                | 16 +++++++++++++++-
+ include/linux/execmem.h     | 13 +++++++++++++
+ kernel/kprobes.c            | 17 ++++++++++++++---
+ kernel/trace/trace_kprobe.c |  8 ++++++++
+ 4 files changed, 50 insertions(+), 4 deletions(-)
+ create mode 100644 include/linux/execmem.h
 
-  Volatile<T>
+diff --git a/arch/Kconfig b/arch/Kconfig
+index a5af0edd3eb8..33ba68b7168f 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -52,8 +52,8 @@ config GENERIC_ENTRY
+ 
+ config KPROBES
+ 	bool "Kprobes"
+-	depends on MODULES
+ 	depends on HAVE_KPROBES
++	select ALLOC_EXECMEM
+ 	select KALLSYMS
+ 	select TASKS_RCU if PREEMPTION
+ 	help
+@@ -215,6 +215,20 @@ config HAVE_OPTPROBES
+ config HAVE_KPROBES_ON_FTRACE
+ 	bool
+ 
++config HAVE_ALLOC_EXECMEM
++	bool
++	help
++	  Architectures that select this option are capable of allocating executable
++	  memory, which can be used by subsystems but is not dependent of any of its
++	  clients.
++
++config ALLOC_EXECMEM
++	bool "Executable (trampoline) memory allocation"
++	depends on MODULES || HAVE_ALLOC_EXECMEM
++	help
++	  Select this for executable (trampoline) memory. Can be enabled when either
++	  module allocator or arch-specific allocator is available.
++
+ config ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+ 	bool
+ 	help
+diff --git a/include/linux/execmem.h b/include/linux/execmem.h
+new file mode 100644
+index 000000000000..ae2ff151523a
+--- /dev/null
++++ b/include/linux/execmem.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_EXECMEM_H
++#define _LINUX_EXECMEM_H
++
++#ifdef CONFIG_HAVE_ALLOC_EXECMEM
++void *alloc_execmem(unsigned long size, gfp_t gfp);
++void free_execmem(void *region);
++#else
++#define alloc_execmem(size, gfp)	module_alloc(size)
++#define free_execmem(region)		module_memfree(region)
++#endif
++
++#endif /* _LINUX_EXECMEM_H */
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 9d9095e81792..a1a547723c3c 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -44,6 +44,7 @@
+ #include <asm/cacheflush.h>
+ #include <asm/errno.h>
+ #include <linux/uaccess.h>
++#include <linux/execmem.h>
+ 
+ #define KPROBE_HASH_BITS 6
+ #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
+@@ -113,17 +114,17 @@ enum kprobe_slot_state {
+ void __weak *alloc_insn_page(void)
+ {
+ 	/*
+-	 * Use module_alloc() so this page is within +/- 2GB of where the
++	 * Use alloc_execmem() so this page is within +/- 2GB of where the
+ 	 * kernel image and loaded module images reside. This is required
+ 	 * for most of the architectures.
+ 	 * (e.g. x86-64 needs this to handle the %rip-relative fixups.)
+ 	 */
+-	return module_alloc(PAGE_SIZE);
++	return alloc_execmem(PAGE_SIZE);
+ }
+ 
+ static void free_insn_page(void *page)
+ {
+-	module_memfree(page);
++	free_execmem(page);
+ }
+ 
+ struct kprobe_insn_cache kprobe_insn_slots = {
+@@ -1580,6 +1581,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 		goto out;
+ 	}
+ 
++#ifdef CONFIG_MODULES
+ 	/* Check if 'p' is probing a module. */
+ 	*probed_mod = __module_text_address((unsigned long) p->addr);
+ 	if (*probed_mod) {
+@@ -1603,6 +1605,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 			ret = -ENOENT;
+ 		}
+ 	}
++#endif
++
+ out:
+ 	preempt_enable();
+ 	jump_label_unlock();
+@@ -2482,6 +2486,7 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_MODULES
+ /* Remove all symbols in given area from kprobe blacklist */
+ static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+ {
+@@ -2499,6 +2504,7 @@ static void kprobe_remove_ksym_blacklist(unsigned long entry)
+ {
+ 	kprobe_remove_area_blacklist(entry, entry + 1);
+ }
++#endif /* CONFIG_MODULES */
+ 
+ int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+ 				   char *type, char *sym)
+@@ -2564,6 +2570,7 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+ 	return ret ? : arch_populate_kprobe_blacklist();
+ }
+ 
++#ifdef CONFIG_MODULES
+ static void add_module_kprobe_blacklist(struct module *mod)
+ {
+ 	unsigned long start, end;
+@@ -2665,6 +2672,7 @@ static struct notifier_block kprobe_module_nb = {
+ 	.notifier_call = kprobes_module_callback,
+ 	.priority = 0
+ };
++#endif /* CONFIG_MODULES */
+ 
+ void kprobe_free_init_mem(void)
+ {
+@@ -2724,8 +2732,11 @@ static int __init init_kprobes(void)
+ 	err = arch_init_kprobes();
+ 	if (!err)
+ 		err = register_die_notifier(&kprobe_exceptions_nb);
++
++#ifdef CONFIG_MODULES
+ 	if (!err)
+ 		err = register_module_notifier(&kprobe_module_nb);
++#endif
+ 
+ 	kprobes_initialized = (err == 0);
+ 	kprobe_sysctls_init();
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index c4c6e0e0068b..af70bb1e9c3a 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+ 	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
+ }
+ 
++#ifdef CONFIG_MODULES
+ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ {
+ 	char *p;
+@@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ 
+ 	return ret;
+ }
++#else
++#define trace_kprobe_module_exist(tk) false /* aka a module never exists */
++#endif /* CONFIG_MODULES */
+ 
+ static bool trace_kprobe_is_busy(struct dyn_event *ev)
+ {
+@@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_MODULES
+ /* Module notifier call back, checking event on the module */
+ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 				       unsigned long val, void *data)
+@@ -704,6 +709,7 @@ static struct notifier_block trace_kprobe_module_nb = {
+ 	.notifier_call = trace_kprobe_module_callback,
+ 	.priority = 1	/* Invoked after kprobe module callback */
+ };
++#endif /* CONFIG_MODULES */
+ 
+ static int count_symbols(void *data, unsigned long unused)
+ {
+@@ -1897,8 +1903,10 @@ static __init int init_kprobe_trace_early(void)
+ 	if (ret)
+ 		return ret;
+ 
++#ifdef CONFIG_MODULES
+ 	if (register_module_notifier(&trace_kprobe_module_nb))
+ 		return -EINVAL;
++#endif /* CONFIG_MODULES */
+ 
+ 	return 0;
+ }
+-- 
+2.44.0
 
-where T is any type that fits in a machine word, and the only operations
-it supports are get(), set(), xchg() and cmpxchG().
-
-You DO NOT want it to be possible to transparantly use Volatile<T> in
-place of a regular T - in exactly the same way as an atomic_t can't be
-used in place of a regular integer.
 
