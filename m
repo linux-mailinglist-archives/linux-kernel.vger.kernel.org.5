@@ -1,54 +1,58 @@
-Return-Path: <linux-kernel+bounces-116930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6D8888A544
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:51:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EA4488A546
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:52:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 985071F24AB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:51:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8D1528FCFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C23515AD9D;
-	Mon, 25 Mar 2024 11:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7761B1BCFCA;
+	Mon, 25 Mar 2024 11:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eiBSWOIG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WDstMSAU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A08153BD3
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9914515ADB0
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:23:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711365834; cv=none; b=guzMXryiSfOvmQnMWUzDzP9+02FgbtV9bQ7S3NVFt+sFWchALXsmBQlZuUIluk+CISJpLml+1yB/EetC31tplTfRgytLMV0o9LLQwFG6Y1VCrye1hsNqqNVVaCaVZ3m3r0uP59y4d8azXywfJiFAWQ/7Jezo8hUZHAMjLHZXY9I=
+	t=1711365836; cv=none; b=kvJw9+/ohXgJCS7BLkEv7SvTO41VIMFe3wbrI426yw3BTmMVMGIw9wqhvng9ahrIqj3ov/XQT6qGdei3eJMOAUtt1bDicVmIsjAov3216JLHr7YQm/kF19+G65k2bXrJWF7PfMNyTsErXYua3rQ4GiwUBw42WxjZRfndswTYAS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711365834; c=relaxed/simple;
-	bh=qqT5s5v8kHRYnSn/7vdNCIRU1OWwV2sCCtz6w1JM1Uc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MuzapkAZdQbpqiFm2B14R18HRplbFxLxWAPcrjscD76aGJxpP1383MKh8SvqdBpYCjDXMwTM1TUIivr/plo6LHGp3+Bw2IkPwXvsdfH0+nHpFapatzQ5XqYky2ubYjx5ILz5GN5Ech9kQ8C9Ktdd4IhEQifZphNxGE5+kv/g9sM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eiBSWOIG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34608C433C7;
-	Mon, 25 Mar 2024 11:23:51 +0000 (UTC)
+	s=arc-20240116; t=1711365836; c=relaxed/simple;
+	bh=TkQFAl0y/SHZ/rPLxSlv1JjtbvVld+zmq7CDJ3afisw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=O/fS0858dJqqdJ2ThJ4Qeldx6joFou/ydtpwz+nXmgzpvreHSO+QBsd745kUkyh1QHeirss7qyZU96Lx05bkXTqRw39QKpk7sSDkcNzePt2fhN3bxSOPhnyLjYT8oWzoO7cNE3+5rO9Q0VhoaCgnSy/kguMkI4SVy8SJJUX71Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WDstMSAU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D14AC433F1;
+	Mon, 25 Mar 2024 11:23:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711365833;
-	bh=qqT5s5v8kHRYnSn/7vdNCIRU1OWwV2sCCtz6w1JM1Uc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=eiBSWOIG2pSRASD6PO69pP2hPiCQKWE+AVg6i3TV6bCwHMH0ewGmYQ5ChxBRots+j
-	 xacNlooNv1+qpgk4aXRe7X7q/Xtp0lmkwDmQa2xDL5MCgekHdADjWqmisgwY+eq8kR
-	 dKhEY8AejhTpwQ+aup/+I78sGVjl0prRB3+f7UZuZrWuYi9140owjxaW2EibMAt/V/
-	 JGVdl75CbIyxVe1lYaVyF7w3/YGvOrgN7XraaaW/J5Y3QW88ByToMWLYLGj9H5kLbd
-	 QIJR5zGm7tUotSa7Q5Zycx/pu3mw9zqKtEN+DnQjddKKAP9ZLHTo8qeSebTVJlFuT0
-	 evMHazH1Sj2Gw==
+	s=k20201202; t=1711365836;
+	bh=TkQFAl0y/SHZ/rPLxSlv1JjtbvVld+zmq7CDJ3afisw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=WDstMSAUtMz3dbEcVm+KLj1GR9k7r52hnpVzlF2STimuRRvPFMDaOrFV7Ov/86urM
+	 zkXfEq9MVCWVOD9OWWqn7Drl8ilkELX/EqjZG6TzDk7LfjGKaAs+wfBGaUDX3u2v5i
+	 KeSkxzv2cEv+9KJbpqxro/uYf9da5AiVxCu71SIB86Fx2MsLQI3kZDailyNKwl1VIl
+	 BT++7eVE+OcTA6uRxlJuy3a5oLyc8cTSBl6kJ0AEkSYOp4+4pkwrdvzfJgv9eGXoQ3
+	 1HCQ4zA7BRYic/5jofv/E1MRs15h7yHC0sJZZdCB1JdpRT4JkkZZJ2FWTZzQRLlsES
+	 41Wunpx0FrcUg==
 From: Jisheng Zhang <jszhang@kernel.org>
 To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Albert Ou <aou@eecs.berkeley.edu>
 Cc: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 RESEND 0/2] riscv: enable lockless lockref implementation
-Date: Mon, 25 Mar 2024 19:10:36 +0800
-Message-ID: <20240325111038.1700-1-jszhang@kernel.org>
+	linux-kernel@vger.kernel.org,
+	Andrea Parri <parri.andrea@gmail.com>
+Subject: [PATCH v3 RESEND 1/2] riscv: select ARCH_USE_CMPXCHG_LOCKREF
+Date: Mon, 25 Mar 2024 19:10:37 +0800
+Message-ID: <20240325111038.1700-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240325111038.1700-1-jszhang@kernel.org>
+References: <20240325111038.1700-1-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,39 +61,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series selects ARCH_USE_CMPXCHG_LOCKREF to enable the
-cmpxchg-based lockless lockref implementation for riscv. Then,
-implement arch_cmpxchg64_{relaxed|acquire|release}.
+Select ARCH_USE_CMPXCHG_LOCKREF to enable the cmpxchg-based lockless
+lockref implementation for riscv.
 
-After patch1:
 Using Linus' test case[1] on TH1520 platform, I see a 11.2% improvement.
 On JH7110 platform, I see 12.0% improvement.
 
-After patch2:
-on both TH1520 and JH7110 platforms, I didn't see obvious
-performance improvement with Linus' test case [1]. IMHO, this may
-be related with the fence and lr.d/sc.d hw implementations. In theory,
-lr/sc without fence could give performance improvement over lr/sc plus
-fence, so add the code here to leave performance improvement room on
-newer HW platforms.
-
 Link: http://marc.info/?l=linux-fsdevel&m=137782380714721&w=4 [1]
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+---
+ arch/riscv/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Since v2:
-  - rebase on v6.8-rc1
-  - collect Reviewed-by tag
-
-Since v1:
-  - only select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
-
-Jisheng Zhang (2):
-  riscv: select ARCH_USE_CMPXCHG_LOCKREF
-  riscv: cmpxchg: implement arch_cmpxchg64_{relaxed|acquire|release}
-
- arch/riscv/Kconfig               |  1 +
- arch/riscv/include/asm/cmpxchg.h | 18 ++++++++++++++++++
- 2 files changed, 19 insertions(+)
-
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index aba42b2bf660..7895c77545f1 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -58,6 +58,7 @@ config RISCV
+ 	select ARCH_SUPPORTS_PAGE_TABLE_CHECK if MMU
+ 	select ARCH_SUPPORTS_PER_VMA_LOCK if MMU
+ 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if HAVE_SHADOW_CALL_STACK
++	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USES_CFI_TRAPS if CFI_CLANG
 -- 
 2.43.0
 
