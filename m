@@ -1,206 +1,111 @@
-Return-Path: <linux-kernel+bounces-117553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71AAE88AC89
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:54:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56D5988AC3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:48:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1C181FA3578
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:54:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED3512E75DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BB9130AF6;
-	Mon, 25 Mar 2024 17:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71EA6CDBE;
+	Mon, 25 Mar 2024 17:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TQ+WBpum"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="rREXc2X4"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DAA13D240
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68DDE6BB45
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711386773; cv=none; b=fSdXKDYq2QuVh13kxacsSc3iX3HGYanHMJNDtIwlEpkLqm2LmXtACUr54XaI8CvXYe9bTTxt+DlYw/QSZt3mNHhfXgBe8JgB0XYlRoIKpPVd5yjUQpGArqF2Eo+xwvpTFLa8bxbGfMO4qL5B1acMOAKOz+NcdwPVbLZnBy5xbyk=
+	t=1711386039; cv=none; b=Dr0CvfG2bypTszAiyupV15D4j9xqoh+YT1waeeFPKmXQv5ABwj6w+jEd4/EvIA7p/IZD/f4F3V6l3Z/iqip6i0jS9WfJrMxrueI8fWyq6+SKCcnTxiOVcZ/aAC8p51jXYJkTdgu+TRT6A/183iHobHtAx3TPIL+8V9TWy1BiG00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711386773; c=relaxed/simple;
-	bh=6kxZZe2jQujXEDPEQbHAt6J0i1f2MJreMDen8kiVG8I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f8S3Yd0TQHjbPBnH+d34hMs1dPCOJWKAdAZaYt0hyzevpQX+HcedQm9Pf6oyRLQxj0CJSJIu53SxAsbIqDPpjzC/cCtOCAi3bWwCAGOI8/OLeBoOqcatnx+HsAInGDER3/ppK8Ck9lBQRPfUBmJnUt29JZieKKBJJ/9u1b1QPlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TQ+WBpum; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ADB5C43390;
-	Mon, 25 Mar 2024 17:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711386772;
-	bh=6kxZZe2jQujXEDPEQbHAt6J0i1f2MJreMDen8kiVG8I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TQ+WBpumBVD8K/CKCkNr376WPLmMmiK/2m4YVb5Zdd/F8HMZdohWMaUteUiK0l2R7
-	 ipYhBJR0kJUIwNQHyLR2GnYNwryGRAmcwobThmRKB5bEgGlacC/PIin64HkSTE8bzT
-	 7PPX5BMLFU5sbuh2hk+iEBL5RFCICTWAgmnWtQ6h0XVFXCOnbCMvoeKk2JH5bJWMzi
-	 dOCBih5nmdH69Ao+yRhcFhqUxBw8gsqMbdJeehSuK9MutIE+db5OTp9TeOoMKYv2uT
-	 Jl/8Jje53jQUW8qgBuec/QCxZsP+y2VZfCLgNr+tErlrOaO0r0seLbgWLb8r5MMphb
-	 A3YV2kmk45QXg==
-Date: Tue, 26 Mar 2024 00:59:36 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: cleger@rivosinc.com, lohr85@gmail.com, Conor Dooley <conor@kernel.org>,
-	samuel.holland@sifive.com, Paul Walmsley <paul.walmsley@sifive.com>,
-	aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>, ajones@ventanamicro.com,
-	dlemoal@kernel.org, Bjorn Topel <bjorn@rivosinc.com>,
-	Atish Patra <atishp@rivosinc.com>
-Subject: Re: [PATCH] riscv: deprecate CONFIG_MMU=n
-Message-ID: <ZgGteKG_a3KGn5wV@xhacker>
-References: <a49546e8-6749-4458-98da-67fd37b7df18@rivosinc.com>
- <mhng-a3b495e6-aca6-4137-a3c1-8fcacafd8596@palmer-ri-x1c9a>
- <ZfLxip96o5MVjHAF@xhacker>
- <ZfL1buKdDI-p5b9X@xhacker>
+	s=arc-20240116; t=1711386039; c=relaxed/simple;
+	bh=7zx8nMq8KGqHj7jDtWixIxCbZWOIEZBEwuQCfPP3n30=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=s6Yo9JvDXTdxHYTsZ64nWKNXItdOaSdy+yKdc8knxEILwarHW9BD39FHyaX3dD1PwwksI3WdzZ7IrWRk27pXC2RW4LDFyo59dgyZEPhYLycomsFWIqfaKVJiXHQ0+SBzhW7vhccnyQ3Ixyw9naDpw1XJct6ayqtsIX869w7h4Ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=rREXc2X4; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=OmH/+e2Fjmgqpw97wDc7uUt4UReDSV3J7Dkv6kUBSXM=;
+	t=1711386037; x=1712595637; b=rREXc2X4l+vWTMd0xUXBhNSly5LuUTXec7JPC2ZX1znBfw+
+	w8AAm73k1iwC1h6HIcj7CNt/SnvbzyKUhNYGNMvpHY83+XnramRhvxWksnlf3cKCFbdCDPou2DGYs
+	9XsIyzHFK+fwy5hi08Qbncfdiv8M4v5IHhWQV13lmYv0LrXT8MoENooEoqaNFdfnzk0zLMIMoFB+0
+	bfdPQfVMx2a4pn5Fof84//S+l/7GCgjneuu+gL2DSDwdBwKR4vFLOvgK4eqLqU0iGaX3owa9v5cri
+	lH0sCQRlIrXdHsb3lm1y8TMSGuf1FFaFfcWJXL59yRoljSrCYpa3pK9vF3OAEtkw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rongX-0000000Dy0B-3sYf;
+	Mon, 25 Mar 2024 18:00:34 +0100
+Message-ID: <50c40ce746f1497cbc36ad82d6d0d3ca3ac28547.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 2/4] devcoredump: Add dev_coredumpm_timeout()
+From: Johannes Berg <johannes@sipsolutions.net>
+To: =?ISO-8859-1?Q?Jos=E9?= Roberto de Souza <jose.souza@intel.com>, 
+	linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>, Mukesh Ojha
+ <quic_mojha@quicinc.com>,  Jonathan Cavitt <jonathan.cavitt@intel.com>,
+ Lucas De Marchi <lucas.demarchi@intel.com>
+Date: Mon, 25 Mar 2024 18:00:32 +0100
+In-Reply-To: <20240304143905.52740-2-jose.souza@intel.com>
+References: <20240304143905.52740-1-jose.souza@intel.com>
+	 <20240304143905.52740-2-jose.souza@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZfL1buKdDI-p5b9X@xhacker>
+X-malware-bazaar: not-scanned
 
-On Thu, Mar 14, 2024 at 09:02:43PM +0800, Jisheng Zhang wrote:
-> On Thu, Mar 14, 2024 at 08:46:21PM +0800, Jisheng Zhang wrote:
-> > On Tue, Feb 27, 2024 at 08:38:50AM -0800, Palmer Dabbelt wrote:
-> > > On Tue, 27 Feb 2024 01:11:41 PST (-0800), cleger@rivosinc.com wrote:
-> > > > 
-> > > > 
-> > > > On 26/02/2024 20:00, Charles Lohr wrote:
-> > > > > WOAH! Please DO NOT deprecate NOMMU. I use the NOMMU build constantly
-> > > > > and NOMMU Linux on RISC-V is the avenue used by many FPGA soft cores
-> > > > > for Linux, as well as some limited systems.
-> > > 
-> > > OK.
-> > > 
-> > > I just build test this stuff, as I don't really have a use for it
-> > > personally.  I figured if nobody's reporting bugs then probably it's broken
-> > > and nobody's noticed because nobody's using it.
-> > > 
-> > > > > I get new copies of the kernel when there are releases and test them
-> > > > > frequently to make sure everything is still working as expected.
-> > > 
-> > > I'd actually expected it to be broken, but I guess we managed to avoid
-> > > screwing things up ;)
-> > > 
-> > > > > For us we just don't care about XIP. I mean if someone did push it
-> > 
-> > I don't care XIP either, and IMHO the XIP's maintenance effort is much
-> > bigger than NOMMU(just check the various XIP_FIXUP* or CONFIG_XIP_KERNEL
-> > macros around lowlevel pgtable.h, page.h). If we can remove XIP, the
-> > code readability will be much better.
-> > 
-> > Or sending out a similar XIP deprecation patch to see whether there's
-> > any complain ? ;)
-> > 
-> > > > > through to fruition, I'd also test and use it, but I urge you please
-> > > > > do not deprecate this.  While it's sometimes needed a bit of a
-> > 
-> > +1 for urge the upstream please do not deprecate NOMMU.
-> > 
-> > Besides the soft(FPGA) core mentioned by Charles, here is another real
-> 
-> And I'd like to write more about soft core: riscv is a free and open
-> ISA, this make it really good for education, for simple riscv
-> implementation or emulator. Once riscv IMA is implemented(even if MMU,
-> cache, TLB stuff don't exist), it's not far away from making linux
-> running on the FPGA or emulator. If the gain is larger than the maintenance
-> effort, I'd like to urge keeping the NOMMU support.
-> 
-> Thanks a lot
-> 
-> > usage case: As is known, Sophgo CV1800B platforms such as Milk Duo
-> > contains two C906 core, one(a.k.a big core) with MMU another(a.k.a small
-> > core)w/o MMU. The vendor sdk runs freertos on the small core, but it
-> > doesn't prevent users to run other OS such as threadx, zephyr or nommu
-> > linux on the small core. In fact, I sucessfully brought up nommu linux
-> > on the small core. I didn't just send out the patches in time during this
-> > dev window duo to my personal career reason(I spent the time on hunting
-> > for a new job)
-> > 
-> > I plan to send out NOMMU related patches once 6.9-rc1 is out.
+On Mon, 2024-03-04 at 06:39 -0800, Jos=C3=A9 Roberto de Souza wrote:
+> Add function to set a custom coredump timeout.
+>=20
+> Current 5-minute timeout may be too short for users to search and
+> understand what needs to be done to capture coredump to report bugs.
 
-As is promised, the NOMMU improvement patches are sent out
-https://lore.kernel.org/linux-riscv/20240325164021.3229-1-jszhang@kernel.org/T/#t
+> + */
+> +static inline void dev_coredumpm(struct device *dev, struct module *owne=
+r,
+> +				 void *data, size_t datalen, gfp_t gfp,
+> +				 ssize_t (*read)(char *buffer, loff_t offset, size_t count,
+> +						 void *data, size_t datalen),
+> +				void (*free)(void *data))
 
-Thanks
+nit: looks like you missed a space on the 'free' line
 
-> > 
-> > > > > creative build to get everything working, I've never needed to patch
-> > > > > anything in the kernel beyond patching in a custom console for serial
-> > > > > output.
-> > > > > 
-> > > > 
-> > > > Hey Charles,
-> > > > 
-> > > > No worries, we actually did not expected NOMMU to have *so many* users.
-> > > > I guess deprecating stuff is a good way to have immediate feedback ;).
-> > > > Having FDPIC psABI to be merged upstream could also probably be a
-> > > > positive point toward a better NOMMU support.
-> > > 
-> > > Ya, that's probably the right way to do it.  Touching anything in the psABI
-> > > is pretty miserable, though, so I don't really want to force people to do
-> > > it...
-> > > 
-> > > > > I am happy to discuss the possibility of me and or one of the other
-> > > > > RISC-V soft (FPGA) core people stepping up to try to be more active,
-> > > > > but so far we've just been very well serviced by the current NOMMU
-> > > > > Linux setup.
-> > > > 
-> > > > It could probably be nice to have some feedback/Tested-by: from NOMMU
-> > > > users for new releases then.
-> > > 
-> > > Having more upstream interaction from users is always appreciated, that's
-> > > the best way to prove people are using the code.  If you guys have the time
-> > > it'd be great to get this into some sort of CI, ideally running on some real
-> > > platform.
-> > 
-> > As above, I'd also like to step up on the NOMMU stuff, at least test
-> > nommu on milkv duo's small core. And can be seen from my git commit
-> > histotry, I was active, and I belive I will still be active on riscv linux
-> > kernel development.
-> > 
-> > > 
-> > > > Thanks,
-> > > > 
-> > > > Clément
-> > > > 
-> > > > > 
-> > > > > Charles
-> > > > > 
-> > > > > 
-> > > > > On Mon, Feb 26, 2024 at 8:03 AM Conor Dooley <conor@kernel.org> wrote:
-> > > > > > 
-> > > > > > On Mon, Feb 26, 2024 at 04:25:24PM +0100, Clément Léger wrote:
-> > > > > > > I guess I could also mark XIP as deprecated.
-> > > > > > 
-> > > > > > I'm not so sure, people recently added XIP support to QEMU (and sent
-> > > > > > kernel fixes in December). XIP is also not nearly as much of a problem
-> > > > > > to support, there's far less that it does differently, the main barrier
-> > > > > > was the inability to test it which is no longer the case.
-> > > > > > That said, XIP is gonna kill itself off I feel as it does not support
-> > > > > > runtime patching and therefore is extremely limited on extensions, given
-> > > > > > we use alternatives for all of that (although I suppose if someone has a
-> > > > > > usecase they could make nasty macros worse and implement a compiletime
-> > > > > > switch in the alternatives too).
-> > > > > > 
-> > > > > > Cheers,
-> > > > > > Conor.
-> > > > > > 
-> > > > > > _______________________________________________
-> > > > > > linux-riscv mailing list
-> > > > > > linux-riscv@lists.infradead.org
-> > > > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> > > 
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+I don't think we'll actually _solve_ the discussion of whether or not
+this makes sense.
+
+I still think it's a bad idea to hang on to the dumps in core kernel
+memory since they can be big (I would've said ath12k is big with 55MB,
+but Rodrigo said graphics could be up to 2GB!), without being able to
+page it out, etc. That's just a waste of memory, for what I don't think
+is even a good reason.
+
+So dunno.
+
+However, I also don't like to exercise any power that I might randomly
+hold just because I happened to write the code in the first place... And
+if you want to shoot yourselves in the foot with any of this, should I
+really disagree? I feel I've voiced my objections enough, and Lucas has
+also tried to find ways of making a userspace implementation work for
+you.
+
+I'd perhaps argue that the documentation for the functions should be
+more opinionated and actually recommend against using a large timeout
+(like you want) for all these reasons, but other than that, the code
+looks fine to me.
+
+johannes
 
