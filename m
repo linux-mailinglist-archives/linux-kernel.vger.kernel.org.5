@@ -1,166 +1,160 @@
-Return-Path: <linux-kernel+bounces-117683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA40C88AE61
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:33:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8CCB88AE65
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7495F1FA2625
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:33:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 790CA2A494E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC9873163;
-	Mon, 25 Mar 2024 18:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294C55B5A6;
+	Mon, 25 Mar 2024 18:14:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="cYD3LThD"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dtM7z5lh"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8F262A02
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:13:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7DE29A0
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 18:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711390385; cv=none; b=WuMF2ZvS49CjE+s48qXLOzwdriIqOCjkS5S2V9TEN9Plqh21uD0IbIKcP4il6ur1cywtWucdAE6QGXBHSLJYFAefuyxRl1OWfB7rJt5+pGGM2ISbIAVu4feOlW1Ggt4hxfttDHx8ibztEetC+3xs/YFtFiN14f7Vb3+Iy8zWpeo=
+	t=1711390458; cv=none; b=fGZk3lSQxoxRqTe4Mp3ZcXSVZ9ugwIq3KqQS7tIoucKz7lLaVQj5v8NPCG7pjyp0JZgee/dSyQr0/Nnhjoh0bkDfc4pTxU3xKKVvI+KTWkcvFYX+gbuJSQnDmbYbHWSoSR5bH+PIr/vA9URMTWqCNLf0RQY5MQHXrsaz85hrznE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711390385; c=relaxed/simple;
-	bh=WjGma3kLFLe5YvQWuoHM/Ro3EyqnqLh5sSD/9vJovxg=;
+	s=arc-20240116; t=1711390458; c=relaxed/simple;
+	bh=6xj3eREHMBqw87b1bb5FAQJ7E59vrPblQ8gdNkMRsgY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HlJj/NKrICc7ZLp0xYl1unh3qoL7VRvHcnuRtiekqMxsgP1j0ZhyUZZ4hc99+hC99BrMc7Y8vYpqbHu5BQri4cHNvD6OyNDP0iJG3pDMBLdJiq1vamfWb8qArO9qG9F1Be+lRAyU39ApTfD7acC89Jisxv79PQ2h5MmYFotgUV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=cYD3LThD; arc=none smtp.client-ip=209.85.166.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7cc133f431fso196508539f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:13:02 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=iLSTvb4wdosYeG2fcLYa0h6kwVKaCGw1ZjaOv6NBxozDbpF2VKWstpm7Bg9f/MCd1QTVsTUq2tA/rxsKM5YVoXAEeQJwY9qQvTiE9AdgHEw+In8pUESksvBI9YizNCHoQDirxVG2E9y+wIUXrFEy5xgNij5A3mfwZItt61qee84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dtM7z5lh; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0d82d441bso4695375ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:14:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1711390382; x=1711995182; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wSAZR9Vt2Q5o0+5V5RZYkh5l63Ssoo3HvBsqSbE2JvY=;
-        b=cYD3LThDCY2HRZ4XaJl0qb5/m7/UuUArsxk7q6HSklIa4h77pe6mgREU3xTLq48iLm
-         n0RkZJEO8WKHvNoRK6BwbAtA1p3w/2VSTQzzCDb6k8NN3yXadttYWDOjCjbPfASV4mN/
-         xE4qsdH0N0oIpsyCbvpT4JR4fMH1I9xnDSs5RgBsFSKtLTwszfCTnKRsCFbHWnwkeKEm
-         9n6xY9YxEoFhVNldSNBjQLU7yZ47xgec2937a68Av/BeRKMYU7QudJuXMSRDO1uqZFXM
-         OQfhhvXfHomS7zLGX3XHPy/aOqI0N28+/nLIcvCIWF0UHuAz95awwW4efJUnUPvPhSeK
-         EzmQ==
+        d=google.com; s=20230601; t=1711390456; x=1711995256; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lFLinlW0ir8IPFTfjDbZ7GfnDQ36jMrfkiPSgIoDlfU=;
+        b=dtM7z5lh2z0fqC4DU4zNBJmf+ebmQL8b07Ohoe8uqgD/vLXG0kx8/06IqKMPbF2SL/
+         hPC5kKJDo+UdbjQ7nHqzcGcIy6SCC9CJ48N361+Ap/Mu52F17vjCWyqLxbuZRkrkW+t4
+         U/cJNWw+Xzy/If6kNkADAklY/2+zUeQIqnvIgObqa9nEXQd+1jCMcNEsdW86sUAQjQ6U
+         xr25yy4XycDEcsKwKJPXMWUqTEh7HZ27xRzpLCrA06Shro9yterf9HXAkU5WYLM8gaaY
+         jtT3l0UsPlJDcEX3M1bRD5jfzUDo7yZ6TwR84Qti9/z7V8tylF/uAVDtOSKoMNwy0GxY
+         Ljfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711390382; x=1711995182;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wSAZR9Vt2Q5o0+5V5RZYkh5l63Ssoo3HvBsqSbE2JvY=;
-        b=aMTjzE8Nye2a7tn+PikY/S3UbpNxHmQnrsULQo65I0z85t+NUZLjv7eTsZBUJAe/lG
-         JCBdQW7m4F3ipoEfMYw5eFI0LN0JGeg7nD3OguFKKK33snrXdlZjF0bb8woFNZFebfC2
-         ssi90TSst3SBxPQMoEFtbbiNDeh6iqcC2stHf8PAxcXe4AM5wXzBV2q3Ol0bRBVVAmo5
-         Sq+ubY5ZzZfVg35SfuUvIewVb6p59r0w+UURtfI9BEdDpvfg/ooP4lNTwcPYjAZ4+JJE
-         xWmuMt68RR1Z5jrxZaC/Ad7xyIC/l9536IO/TcUEWdP2htv8ycIdrstA1P8Ahy1/kggH
-         /Afw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQXD2MRfoeDkigb0QO2lto+0n95iBsiwyn/FwR+zeiw5vgeO2injJ0dXfeugem3WuHsHFEURaRGPDA3/4Rmqf4KS2+57ZsbBp1Yx6w
-X-Gm-Message-State: AOJu0YxA+26zMSkVBZSwYM4EF4KXvOZ2KFB8zpLUCKlUYJtJWPfVjB80
-	ERFlyihw4NXcl1VN2WlJBDzsMysnPNErtvWaI7bqk86mE3G7nIpheSbyY1eXnlc=
-X-Google-Smtp-Source: AGHT+IG9xwHF3fNymQJbxJun7y4cLuwksrTJ9sJhMxnIaoGig5IF3zdZeyGfbkfQJnnpy4r1l1tvQQ==
-X-Received: by 2002:a6b:7b0c:0:b0:7cb:f395:47a8 with SMTP id l12-20020a6b7b0c000000b007cbf39547a8mr9179021iop.16.1711390382256;
-        Mon, 25 Mar 2024 11:13:02 -0700 (PDT)
-Received: from CMGLRV3 ([2a09:bac5:9478:4be::79:22])
-        by smtp.gmail.com with ESMTPSA id r14-20020a056638100e00b0047d69cc97d1sm173364jab.40.2024.03.25.11.13.01
+        d=1e100.net; s=20230601; t=1711390456; x=1711995256;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lFLinlW0ir8IPFTfjDbZ7GfnDQ36jMrfkiPSgIoDlfU=;
+        b=GhyaQu/mM72JwkRIYHv48AZMo9mSbm7mxa6eTEeWk3YSr+Tr4Nf0cDk86BxYYCoaF2
+         HXH+r2oaE/MnE9dIYPCWrvdAjk4sUvHYBYvz9etBma57MfXpQcVoJDz3SLhOP96F1e2F
+         L1NRx1n2YUhw+WRas2djw+a+ec6kIQDZKEexa49uJVenvWrhCjHEhIF7KzFJMdMSQQgB
+         kKm/xukukXxpyXVw1LHh90KkeN4g+hyztsEkGSlb9bSr02DLnpgGdU/kJyUBoYP+Lhfp
+         BPnfKhQk3AXDibaIrciinbOIggriCPD+i2ljD2usyBe/V+gdMD0FuE2C5ue+CrOUD9kt
+         78Hg==
+X-Forwarded-Encrypted: i=1; AJvYcCXd92a/HRPxeWKldKiJL9NChqFF9pHUaN2sBcx0aGGPQm7ayRQaf0VKVrqj7M0p57jmenwxyJhWpFs5DR0ALdy1yKGwEPlXZHxERbvn
+X-Gm-Message-State: AOJu0YzBK6b5OOJwsy2UviJcd/hG1T7VWQ/h0utSF0lBesSTukoFXhFN
+	31hCwKdsesTOEKtJXPRbeJBDjhz54PqbEeMZoDsmPn/7BPM24SCesKfWdCOCfw==
+X-Google-Smtp-Source: AGHT+IH1Q0j9FLcWxX/yBRNNnxq6h37S48bdtQ+O3PZdJqg/oaidTl7D5R/z1SlHaHzX6l1Rib60PQ==
+X-Received: by 2002:a17:902:e746:b0:1e0:b54d:8ca5 with SMTP id p6-20020a170902e74600b001e0b54d8ca5mr6637708plf.66.1711390455573;
+        Mon, 25 Mar 2024 11:14:15 -0700 (PDT)
+Received: from google.com ([2620:0:1000:2510:216e:aba9:9550:56ab])
+        by smtp.gmail.com with ESMTPSA id x20-20020a170902821400b001ddd0ff99c6sm4968255pln.139.2024.03.25.11.14.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 11:13:01 -0700 (PDT)
-Date: Mon, 25 Mar 2024 13:12:59 -0500
-From: Frederick Lawler <fred@cloudflare.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-	glandvador@yahoo.com, bugzilla@eyal.emu.id.au,
-	kernel-team@cloudflare.com
-Subject: Re: [PATCH 0/1] Fix for recent bugzilla reports related to long
- halts during block allocation
-Message-ID: <ZgG+q0dujYQR8/0q@CMGLRV3>
-References: <cover.1702455010.git.ojaswin@linux.ibm.com>
- <170476879011.637731.13228432208887255974.b4-ty@mit.edu>
- <ZfsUaicHDpOtkkVv@CMGLRV3>
- <Zf1B1cPj/aO21pjZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+        Mon, 25 Mar 2024 11:14:15 -0700 (PDT)
+Date: Mon, 25 Mar 2024 11:14:10 -0700
+From: Sami Tolvanen <samitolvanen@google.com>
+To: Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org,
+	florian.fainelli@broadcom.com, pavel@denx.de
+Subject: Re: [PATCH 6.7 000/707] 6.7.11-rc2 review
+Message-ID: <20240325181410.GA4122244@google.com>
+References: <20240325120003.1767691-1-sashal@kernel.org>
+ <56d3285a-ed22-44bd-8c22-ce51ad159a81@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <Zf1B1cPj/aO21pjZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <56d3285a-ed22-44bd-8c22-ce51ad159a81@linaro.org>
 
-On Fri, Mar 22, 2024 at 02:01:17PM +0530, Ojaswin Mujoo wrote:
-> On Wed, Mar 20, 2024 at 11:52:58AM -0500, Frederick Lawler wrote:
-> > Hi Theodore and Ojaswin,
-> > 
-> > On Mon, Jan 08, 2024 at 09:53:18PM -0500, Theodore Ts'o wrote:
-> > > 
-> > > On Fri, 15 Dec 2023 16:49:49 +0530, Ojaswin Mujoo wrote:
-> > > > This patch intends to fix the recent bugzilla [1] report where the
-> > > > kworker flush thread seemed to be taking 100% CPU utilizationa and was
-> > > > slowing down the whole system. The backtrace indicated that we were
-> > > > stuck in mballoc allocation path. The issue was only seen kernel 6.5+
-> > > > and when ext4 was mounted with -o stripe (or stripe option was
-> > > > implicitly added due us mkfs flags used).
-> > > > 
-> > > > [...]
-> > > 
-> > > Applied, thanks!
-> > 
-> > I backported this patch to at least 6.6 and tested on our fleet of
-> > software RAID 0 NVME SSD nodes. This change worked very nicely
-> > for us. We're interested in backporting this to at least 6.6.
-> > 
-> > I tried looking at xfstests, and didn't really see a good match
-> > (user error?) to validate the fix via that. So I'm a little unclear what
-> > the path forward here is.
-> > 
-> > Although we experienced this issue in 6.1, I didn't backport to 6.1 and
-> > test to verify this also works there, however, setting stripe to 0 did in
-> > the 6.1 case.
-> > 
-> > Best,
-> > Fred
+On Mon, Mar 25, 2024 at 11:43:48AM -0600, Daniel Díaz wrote:
+> Hello!
 > 
-> Hi Fred,
+> On 25/03/24 6:00 a. m., Sasha Levin wrote:
+> > This is the start of the stable review cycle for the 6.7.11 release.
+> > There are 707 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed Mar 27 12:00:02 PM UTC 2024.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> >          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.7.y&id2=v6.7.10
+> > or in the git tree and branch at:
+> >          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> > and the diffstat can be found below.
+> > 
+> > Thanks,
+> > Sasha
 > 
-> If I understand correctly, you are looking for a test case which you
-> could use to confirm if the issue exists and if the backport is solving
-> it, right?
+> We see *lots* of new warnings in RISC-V with Clang 17. Here's one:
+> 
+> -----8<-----
+>   /builds/linux/mm/oom_kill.c:1195:1: warning: unused function '___se_sys_process_mrelease' [-Wunused-function]
+>    1195 | SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+>         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /builds/linux/include/linux/syscalls.h:221:36: note: expanded from macro 'SYSCALL_DEFINE2'
+>     221 | #define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
+>         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /builds/linux/include/linux/syscalls.h:231:2: note: expanded from macro 'SYSCALL_DEFINEx'
+>     231 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /builds/linux/arch/riscv/include/asm/syscall_wrapper.h:81:2: note: expanded from macro '__SYSCALL_DEFINEx'
+>      81 |         __SYSCALL_SE_DEFINEx(x, sys, name, __VA_ARGS__)                         \
+>         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   /builds/linux/arch/riscv/include/asm/syscall_wrapper.h:40:14: note: expanded from macro '__SYSCALL_SE_DEFINEx'
+>      40 |         static long ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__))
+>         |                     ^~~~~~~~~~~~~~~~~~~~
+>   <scratch space>:30:1: note: expanded from here
+>      30 | ___se_sys_process_mrelease
+>         | ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>   1 warning generated.
+> ----->8-----
 
-Not quite. I made an assumption that having a test was a requirement
-for backporting the patch. I know some other file systems prefer a few
-loops of kdevops to backport patches, and was curious if that's a similar
-flow for ext4. I only backported the patch to 6.6 and ensured that our
-affected nodes perform as expected with it.
+Yup, I can reproduce this with ToT Clang. It looks like the alias
+isn't sufficient for Clang and we need to add an explicit __used
+attribute. Can you confirm if this patch fixes the issue for you?
 
-> 
-> Actually, I was never able to replicate this at my end so I had to rely
-> on people hitting the bug to confirm if it works. I did set out to write
-> a testcase that could help us reliably replicate this issue but it needs
-> a very specially crafted FS that is a bit difficult to achieve from user
-> space. I was using debugfs to create an FS that could hit it but I kept 
-> running into issues where it won't mount etc. Maybe there's a better 
-> way to craft such an FS that I'm not aware of.
-> 
-> One more option is that maybe we can have KUnit test for this in the
-> mballoc code but I'd need to read some more about the kunit
-> infrastructure to see if it's possible/feasible.
-> 
+diff --git a/arch/riscv/include/asm/syscall_wrapper.h b/arch/riscv/include/asm/syscall_wrapper.h
+index 980094c2e976..ac80216549ff 100644
+--- a/arch/riscv/include/asm/syscall_wrapper.h
++++ b/arch/riscv/include/asm/syscall_wrapper.h
+@@ -36,7 +36,8 @@ asmlinkage long __riscv_sys_ni_syscall(const struct pt_regs *);
+                                        ulong)                                          \
+                        __attribute__((alias(__stringify(___se_##prefix##name))));      \
+        __diag_pop();                                                                   \
+-       static long noinline ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__));      \
++       static long noinline ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__))       \
++                       __used;                                                         \
+        static long ___se_##prefix##name(__MAP(x,__SC_LONG,__VA_ARGS__))
 
-I think kunit is an interesting idea. One thing to keep in mind is that
-mocking is going to be the real problem with that approach. And with
-more mocking may mean more brittle tests.
 
-> Regards,
-> ojaswin
-> > 
-> > > 
-> > > [1/1] ext4: fallback to complex scan if aligned scan doesn't work
-> > >       commit: a26b6faf7f1c9c1ba6edb3fea9d1390201f2ed50
-> > > 
-> > > Best regards,
-> > > -- 
-> > > Theodore Ts'o <tytso@mit.edu>
+Palmer, how do you want to handle the fix? Should I send this as a
+proper patch?
+
+Sami
 
