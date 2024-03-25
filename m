@@ -1,193 +1,157 @@
-Return-Path: <linux-kernel+bounces-117075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B43488A6B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:33:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4A2588A66B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:27:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E5631F61844
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:33:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F26D91C3CC09
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16FA839E0;
-	Mon, 25 Mar 2024 12:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE9514F62;
+	Mon, 25 Mar 2024 12:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=g.clemson.edu header.i=@g.clemson.edu header.b="vvsgXy/O"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C29CeIVl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2CE8548E7
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0117D1EB3F
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:47:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711371483; cv=none; b=Fkr0Otd78davCecG5SOqtMresiqFmXbiMDsTsyOwIpIgIPsFmBe+xxw4nfAuAInCRpNeoHm0BHImctjYlijlaeLnAKeyTMNlr5pF7APLrP0ZKwzkMAVykwiTfKUXJ0D2nzhrxAndU5hatOOV1t0TbJJvXRizcjbmFI77ZWvW8ZY=
+	t=1711370852; cv=none; b=tXxjc4xz57At340f3LnIPMgeomY0Prnl4u6LGMIthxO7KbUZLU/2MDi64+qjvkhKHjF7+glwn9QEO+QtMjIPw21h+y/kaAB0RY9LOBoD8fF8n6xI/aPLWBR/rPZnxHP2Rbn1yTLQfvUzQebv4n+Y0HkFfhAhPgLorobjJGHQ/Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711371483; c=relaxed/simple;
-	bh=B1wAbk/C+LPupcyaL1z2b3SMb+zNDqBRInZ6t+t6piM=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RmBuAc2h78SnNz1MagrUQ4EUAyBP87P7x2PfdyaGc2hevWZ9cQtCQPU3zP6c2Xs2wVTFN3gZHblLKUhhphQUtgVokJScOHMxNtLinbrNleZFVwP+ShwnEkvolUOI6a3Uu1JYjc+f6QSU4jUuznBMFJzqpvz63X+PUkMMK+xm6rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=g.clemson.edu; spf=pass smtp.mailfrom=g.clemson.edu; dkim=pass (2048-bit key) header.d=g.clemson.edu header.i=@g.clemson.edu header.b=vvsgXy/O; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=g.clemson.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=g.clemson.edu
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61149e50602so8969727b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=g.clemson.edu; s=google; t=1711371480; x=1711976280; darn=vger.kernel.org;
-        h=mime-version:references:in-reply-to:message-id:date:subject:to:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eMQfXtIqVS/OIi7oM+IRMIhVPPKoKmf2XqobljSQq3U=;
-        b=vvsgXy/Ohglq+g5g9mz7GBJIupEgGCu/XPOj2pBxC96sgulxmsqI7QqZomdbSjh1kn
-         xtOElnZLmuXQexDpHL0EQ+RbvammSpLtzb5bGPN9yJJg2cesvYknw/Uf7ZYqVzcaBQOm
-         Nk7NNC9mv5jsFQ+c2eoQj4VmLXyGpFFNvb/23+eUeBDDETPrwTnZZGeRyP5N6nZsHJ5x
-         6EV05aHGsXfmP7UH8NShGfftfqA6vJazsz577mVCRoC4HhshcxDBd2FLXGma4oUhaSPL
-         eARfiKnzK+4paRWvNbc3vE89QY6dQQ6DHALhJvU4ZayeynfPznhj9ePtpRFX/TBpGluk
-         4ZLA==
+	s=arc-20240116; t=1711370852; c=relaxed/simple;
+	bh=9Nhu/W85iNh7LeLfmZogdX0bx42XcCNVxCMQuel1Iqo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=AnxoQBR1/xR1KQrTZzoWlZTCYTp6xMcOhcvCxQ+b6z6o390jJboHl4CST7K7/+OMmemqNk3AJZ91QNW1T9zbvgn7N7UdE7pdwcKc57Ix3YPQ8yFkrPnVIoG3wiwQQk4AKg/TM1L7VCkX8WHDe5BE/E6pxmsGDDXbFYopP2LKUqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C29CeIVl; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711370849;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qo6+PxOnmyBa4a2d7NdsfVWnqRVFLZqh5ghWLkNm1aU=;
+	b=C29CeIVleSDWlM+Zp1g2AdJM9RhtjqsHGNQjikqQCxd1x1zdF/sGOQi/cnjGDMXK8c4Q4c
+	zoPqWmg0cUxpWWpNGYbHRrqUQwSoKuQgnFEyjNNxGWubuT7MBC1H5l8MDWo1zNFjTmNAvA
+	83JnVGxyasFFBhCnVAYNk2Do/MWk4/M=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-421-YRDUow39PNO7s5cYg_RlNw-1; Mon, 25 Mar 2024 08:47:28 -0400
+X-MC-Unique: YRDUow39PNO7s5cYg_RlNw-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d298d601adso30649141fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 05:47:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711371480; x=1711976280;
-        h=mime-version:references:in-reply-to:message-id:date:subject:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eMQfXtIqVS/OIi7oM+IRMIhVPPKoKmf2XqobljSQq3U=;
-        b=SYmEOCGzFMCDCc3JKPjorUDqIOdKGJzswPdf/G81HurCeMzF/ACZ5tGVCOVKo8FwDU
-         mGvCSfYzWo6eSyhpO/46r7grCO/JwIVZVCrmi7l7B15AVmBYbI6QF5j7ROnoaN/fjDdU
-         1YYVD4qRiucwDUvgxCHMHdgeBe8krbq1Vw2JWbWsoUZkxx5vJAD/wrg55+SIFG1RLGfp
-         p+LTcj4UzmjBWZM8g6ifUtWfJkMCqwRhzTTavxh+HpXCN9HqXphWA5C2eiebtD4R5Tno
-         FOciNQgyNNcwEYEStEjfRTajuzz3ZXAc1dBxo2lKdKYMTX4uytvXuatm3L+MPxTMJOJc
-         +NJg==
-X-Forwarded-Encrypted: i=1; AJvYcCUqoAPNyItAkmfmS8fueNquZy8rNc62OfRqawiA0gWGEX3rGLVSqSSYUIf1EaNz3bk9F9rP2aTsJ8rAE52S+Ko94gQsyDhmY2YocevX
-X-Gm-Message-State: AOJu0Yxd1kvKs3OPrtcZIzUA7Zs8GcQeKa59JNYmvZsNRFYytHLWts9Q
-	R8ztCDMxKQWvVV7SRBAYxXNP7oLn08Ln3hcVEnS60yi2nn9UiSpzQGtZ/HQM2g==
-X-Google-Smtp-Source: AGHT+IFfODCE2okzJ0vPa5cn4qJeVHB9Ae+diOJbKfyd4XdyvwQoc+pXmNnBaMsgdpG+d9wZFVbs9A==
-X-Received: by 2002:a81:8903:0:b0:611:967e:1d45 with SMTP id z3-20020a818903000000b00611967e1d45mr570030ywf.15.1711371480503;
-        Mon, 25 Mar 2024 05:58:00 -0700 (PDT)
-Received: from mephi-laptop.localnet (47.177.21.198.tigernet.wifi.dyn.clemson.edu. [198.21.177.47])
-        by smtp.gmail.com with ESMTPSA id ep18-20020a05690c2c9200b00610c63ce18dsm998924ywb.65.2024.03.25.05.57.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 05:58:00 -0700 (PDT)
-From: Emilio Mendoza Reyes <emendoz@g.clemson.edu>
-To: neil.armstrong@linaro.org, dianders@chromium.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Jani Nikula <jani.nikula@linux.intel.com>
-Subject:
- Re: [PATCH 2/2] drm/panel: Promote warn_dev to WARN for invalid calls in
- drm_panel.c
-Date: Mon, 25 Mar 2024 08:46:16 -0400
-Message-ID: <4878769.GXAFRqVoOG@mephi-laptop>
-In-Reply-To: <87jzlqk5xr.fsf@intel.com>
-References: <2388112.ElGaqSPkdT@mephi-laptop> <87jzlqk5xr.fsf@intel.com>
+        d=1e100.net; s=20230601; t=1711370847; x=1711975647;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qo6+PxOnmyBa4a2d7NdsfVWnqRVFLZqh5ghWLkNm1aU=;
+        b=uDVwecrNQDdbe5OscJXyy2olUXj8e8MlvrswWeJ0IFYWFAcJN5y/0tXdW+wSR5OA9r
+         Su28PxRrxwr/La0YrbIH+iIHjfYGvFERvQ0VTEZGPGaxVjx8GmFz5c3tPXzjvvIueTXy
+         lf/Jo+LvUSR8QHsVy6A9AANGC//0mOU1xnZeLzU6GHnutIElrexWVwKNqy7U5msr1YL6
+         VzwrFtU5e9pDp3l6vhHNt0vKzNB8LKnABIv4/MEQWT+Fi0xRYURjRJTjR0wSwBCE818q
+         cO78R5CHsJYIMmA07YTG4A8nrUnTU7DU2Qo6RWN3hsOy66LaK/QbROW38riRZGSEelHh
+         4jHg==
+X-Forwarded-Encrypted: i=1; AJvYcCVZJJiCPB7ByvxONR+/u3q8UDoB3fNz8GdHHoZ5V5EgkUx7i8XCpPCVx5jpSoNjODCVJbRa5+4ytvlFhcMbKmS/NGWwnxR0tN0rlURP
+X-Gm-Message-State: AOJu0YzpHiq1ugRRx4oyQT9Axrcxy+uJK0VQPwlngushf7B8U0BPcjx1
+	bUxcCJOV2qLKLMA6a+8rJS+sGam0xYUg5PlXTvzwu6Yk6sR8Be5Z+wBKTu3KXSCYcstOOcV3ZmH
+	WKNce53rPCpGF7GsJ+fa2rh6egPlkXdA2GMfCza+lOp1vH1idHv8RMZzuxkzCTA==
+X-Received: by 2002:a2e:7816:0:b0:2d6:8ce2:87d5 with SMTP id t22-20020a2e7816000000b002d68ce287d5mr4502431ljc.18.1711370846884;
+        Mon, 25 Mar 2024 05:47:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGudUqzGUS7EwXIrkaH4nLD+XpgO1q7KDTuI18MwEVbgqHHvixPHZxneJHRWAGETOYG1zB9AA==
+X-Received: by 2002:a2e:7816:0:b0:2d6:8ce2:87d5 with SMTP id t22-20020a2e7816000000b002d68ce287d5mr4502415ljc.18.1711370846465;
+        Mon, 25 Mar 2024 05:47:26 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c738:b400:6a82:1eac:2b5:8fca? (p200300cbc738b4006a821eac02b58fca.dip0.t-ipconnect.de. [2003:cb:c738:b400:6a82:1eac:2b5:8fca])
+        by smtp.gmail.com with ESMTPSA id j1-20020adff001000000b0033e7e9c8657sm9406873wro.45.2024.03.25.05.47.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 05:47:26 -0700 (PDT)
+Message-ID: <2aba5fdf-7a9a-4a9a-bea2-b0d816a6aa19@redhat.com>
+Date: Mon, 25 Mar 2024 13:47:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1881631.tdWV9SEqCh";
- micalg="pgp-sha512"; protocol="application/pgp-signature"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/14] transfer page to folio in KSM
+Content-Language: en-US
+To: alexs@kernel.org, Matthew Wilcox <willy@infradead.org>,
+ Andrea Arcangeli <aarcange@redhat.com>,
+ Izik Eidus <izik.eidus@ravellosystems.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, ryncsn@gmail.com
+References: <20240325124904.398913-1-alexs@kernel.org>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240325124904.398913-1-alexs@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---nextPart1881631.tdWV9SEqCh
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
-From: Emilio Mendoza Reyes <emendoz@g.clemson.edu>
-Date: Mon, 25 Mar 2024 08:46:16 -0400
-Message-ID: <4878769.GXAFRqVoOG@mephi-laptop>
-In-Reply-To: <87jzlqk5xr.fsf@intel.com>
-MIME-Version: 1.0
+On 25.03.24 13:48, alexs@kernel.org wrote:
+> From: "Alex Shi (tencent)" <alexs@kernel.org>
+> 
+> This is the first part of page to folio transfer on KSM. Since only
+> single page could be stored in KSM, we could safely transfer stable tree
+> pages to folios.
 
-On Monday, March 25, 2024 5:37:52=E2=80=AFAM EDT Jani Nikula wrote:
-> Please use git format-patch and/or send-email to send patches, without
-> the inline PGP.
-Yeah, sorry about that. I only noticed it was inline PGP after I sent the
-patches. I didn't know if it would be okay to resend right after since I
-didn't want to email spam. Sorry!
+You should slow down a bit with new versions.
 
-> Please use dev_WARN() which will handle the device specific warns for
-> you, including dev_name().
-Alright I changed my patch to use dev_WARN. The new version is at the
-end of this email. Thank you for your time. Let me know if I there is
-anything else to change.
+-- 
+Cheers,
 
-Thanks,
-EMR
-
-
-Subject: [PATCH] drm/panel: Promote warn_dev to dev_WARN for invalid calls =
-in
- drm_panel.c
-
-Partially solve todo in kernel doc by promoting dev_warn calls to
-dev_WARN.
-Link: https://www.kernel.org/doc/html/v6.8/gpu/todo.html#clean-up-checks-fo=
-r-already-prepared-enabled-in-panels
-
-Signed-off-by: Emilio Mendoza Reyes <emendoz@clemson.edu>
-=2D--
- drivers/gpu/drm/drm_panel.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
-index cfbe020de54e..4459f4f5fe66 100644
-=2D-- a/drivers/gpu/drm/drm_panel.c
-+++ b/drivers/gpu/drm/drm_panel.c
-@@ -114,7 +114,7 @@ int drm_panel_prepare(struct drm_panel *panel)
- 		return -EINVAL;
-=20
- 	if (panel->prepared) {
-=2D		dev_warn(panel->dev, "Skipping prepare of already prepared panel\n");
-+		dev_WARN(panel->dev, "Unexpected attempt to prepare an already prepared =
-panel\n");
- 		return 0;
- 	}
-=20
-@@ -162,7 +162,7 @@ int drm_panel_unprepare(struct drm_panel *panel)
- 		return -EINVAL;
-=20
- 	if (!panel->prepared) {
-=2D		dev_warn(panel->dev, "Skipping unprepare of already unprepared panel\n=
-");
-+		dev_WARN(panel->dev, "Unexpected attempt to unprepare an already unprepa=
-red panel\n");
- 		return 0;
- 	}
-=20
-@@ -208,7 +208,7 @@ int drm_panel_enable(struct drm_panel *panel)
- 		return -EINVAL;
-=20
- 	if (panel->enabled) {
-=2D		dev_warn(panel->dev, "Skipping enable of already enabled panel\n");
-+		dev_WARN(panel->dev, "Unexpected attempt to enable an already enabled pa=
-nel\n");
- 		return 0;
- 	}
-=20
-@@ -246,7 +246,7 @@ int drm_panel_disable(struct drm_panel *panel)
- 		return -EINVAL;
-=20
- 	if (!panel->enabled) {
-=2D		dev_warn(panel->dev, "Skipping disable of already disabled panel\n");
-+		dev_WARN(panel->dev, "Unexpected attempt to disable an already disabled =
-panel\n");
- 		return 0;
- 	}
-=20
-=2D-=20
-2.44.0
-
-
---nextPart1881631.tdWV9SEqCh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTcaZbABwnECYA0cZI0LAN3EqikFgUCZgFyGAAKCRA0LAN3Eqik
-FpFuAP4/1QuAz/TJZuulntE7Vh0B9fC++3b8IMjZjxBRd369WwEAxeqpvHwRFFmN
-3W4H7asKnWDJeQl2nAz8RswSfucKgg4=
-=Lpy8
------END PGP SIGNATURE-----
-
---nextPart1881631.tdWV9SEqCh--
-
-
+David / dhildenb
 
 
