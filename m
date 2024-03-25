@@ -1,161 +1,200 @@
-Return-Path: <linux-kernel+bounces-117550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BBE688AC83
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:53:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7FB588AC87
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A7151FA2F6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:53:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CB1B322A27
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE1F1327E4;
-	Mon, 25 Mar 2024 17:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2D813C68D;
+	Mon, 25 Mar 2024 17:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUILsgNC"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B53U9hgr"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E86131197
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 17:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638D4131197;
+	Mon, 25 Mar 2024 17:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711386591; cv=none; b=gn405DGIBQOTjEWUpKD7n1B9eMfdx+YlLpBKzWSaZNxoEJiXpYjGvTmIoQwYo8YPWxn+6EZVd37WVrDkoKnorPtQNxRM4W2bt1Fn6K1n1YLP+PtxGESrm3GYPAeesRHF3g1eJJ5KpAzfIfsy78cW/2ccT3i7mjJRUqzd9gfxrn0=
+	t=1711386600; cv=none; b=nen3fWbmUTkKJ+61WrlJy357m+8mWw4b9UfTP4Gvc5/1KjINz9bsOWqWhGcg6NWoXkFEpjEJ6oT/Ham+xL2vr5PrhkR2iusZ50rbISWEL6I6vXgiR1uKzVwAOt0/1wsThzZwVE6yZf2NXTqaAWhddoRIk2quyG/ZqVQyfFcSI7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711386591; c=relaxed/simple;
-	bh=MI4oK6lulMzBqe0OFiDFxTAWlxqvLvxfa6VGDIuFswg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WopQwncJlbGg9zud4oOq7YfwG8SNDKfUucgLt1Rv7UJwbjDBpTPt+Q/zeYzkGE3aJ1WVsPqlB4NEPZydZb4UhxomfvcNu24RabV1MspHJJw741sPG2QCIaaWognN1iVB49G4IXzCnXarP8OY8OS6LbbjosXDxRoH8xhUPXKQP4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUILsgNC; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711386600; c=relaxed/simple;
+	bh=YYsUWM/tc5SeUoHr4SM7DaEmyCrtZcmNDHBKWCAyVKw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ffUm3VXerFfX4Cp96ZK7zpLYYOcM+Sbsp30LAJXneAPZc8J+Y0NhGqCAythPNpN5SFN3VlvWChL52D5gADprPNNEm/yzD6/a94MsWFpUVFlhLsS3Xs7nOSH/A8sYYvRJbTvnTjwVFF/joASVxvt+qLWOU1FWcHjt5D+2PuDdJJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B53U9hgr; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78a01a3012aso326807785a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:09:49 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1def3340682so37418155ad.1;
+        Mon, 25 Mar 2024 10:09:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711386589; x=1711991389; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VYjqm/1NdDhDA4E1plMxFxGv/E29PMV9umo4qLhPFZY=;
-        b=AUILsgNCGEEMKQIXS2e3eMISKDt2ctipcqyCkea7kfWcHYEJj1okq0pNWnIMfP/jeF
-         IgtrPeVe49/54YmkXDyBzUyxgvk/sRJNetlO4Drfvn78bg9m1XM0TGVde6gFFafu8+r0
-         Qr1/izXRCPBdiMh2CBk4e3Iwzns4sLhp7o2cNbUFhzgYXeBSZo8g0pKRH3lvTeIKnO8b
-         CBIUFmeK9mtLvlekyo+BWY3IhjMRP4hqnARKlLVk3ZHmg3D2NXK6J7c3jITZEwpPFshY
-         zIL3J7/PO8BG2KOsecW34UdV9Lf9bWYf7aosRjtGIe5TbDwt2xIhexgS6Gidh+SaQ3FQ
-         9D5g==
+        d=gmail.com; s=20230601; t=1711386598; x=1711991398; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=wjUCJkKZuv4QABVruZUXU7AMHix+bUA6P/btPvQspXM=;
+        b=B53U9hgrdy65Yw49U73DUH2hIm3taNps8ajYoR2KbZ4KrbtK/6G+19fjYrwRM8Qgrl
+         5p3r62qVXqTafxtkHKo8oJxH6OuQLuLwr95mCtX4jHQufZPBgNnH247JChebFADQJKPG
+         FruT9S+edf/MaO/m0L29yTggxBVlOKBoXji+qwFH6+FqHcg+ovG3KFIka5U06QaqMCW6
+         x0dfPaqsmKO9fwoHVXgycIWZ6ux2q4idfxJU0Ohwb+QY15v/Ctp8LK1+IC2zKSB35hvy
+         mpgLJIVY/FrTRGdqMnm3o/ePL8+OvJYcjDacGVvz2baKIoGYNme+VkjCIpzEO/xDYIW6
+         EoJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711386589; x=1711991389;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VYjqm/1NdDhDA4E1plMxFxGv/E29PMV9umo4qLhPFZY=;
-        b=AYzqlhVj2KecRCV2TwiKVLBK5cFsg9EghCZ4N4jH+cmn5Qog3fx4mztuh5I6518Oel
-         w6xUqqR2itY9xWqDmxXJBDAsDXxF2oGJwoHLpYrKAucB2cRomgvRDs0hbCoLWVmxmi35
-         x2NdnamPpL76XWmslQ0Oyr1Po54DA+vHlZSvjvsw13n8CyTnjlp6ImbpH6xnayBPbhH3
-         OE55P38GX2ZioPSavDaTr2fkkIgHJ02Q/B0RdfcpJQA+dVdTYbG0Fl39WDuxpYRgm63P
-         GySzDgMrzgfGyeqJTC+v64xlFyEthp04Z7WDB5zmdVwiBskYFqYtsQISdWj6FZtdO7tj
-         6r7g==
-X-Forwarded-Encrypted: i=1; AJvYcCXMd6BYXOGzraFp1vq3m8ILQSyFU5KpTLrZtWf1WWQvf1AvB22ydYONQZB9F2QJKpeJkQHIw7Wir+m7VWh2zbQSUawdHcRNSoWWNltx
-X-Gm-Message-State: AOJu0YySCjMRKYiRRegQxDS6biDDFvBIpEdaDWpkSJ0zY98AKEsof9NH
-	6dRAKmG0HOJpmMT+V0VA7QvzVf6mIDNBmWyTUu0VJ6gXFwdGfP522n3zbfOpGBn6faV3daRIfIY
-	vijTq/pJJ4BNklWcuc2nm+hnfd4w=
-X-Google-Smtp-Source: AGHT+IGfq12zKT1PPjPcEbfjPvQzo3NpeJjnbT1HJh4i4YahabfVLlS4mvDswjzBry9WP/zm4+Ht56Pq9U7sfG8SNw4=
-X-Received: by 2002:a05:6214:f23:b0:696:45c1:4c7c with SMTP id
- iw3-20020a0562140f2300b0069645c14c7cmr442408qvb.35.1711386588678; Mon, 25 Mar
- 2024 10:09:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711386598; x=1711991398;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wjUCJkKZuv4QABVruZUXU7AMHix+bUA6P/btPvQspXM=;
+        b=bu124fMsqEWrGcJ2qgBOaOcwopZNaeybB520YtkAHcXw2MUpz7B/c6OVyC5PjGl+LW
+         xO5bllHYX2gpy9tpqcSGaXxQi+X5JVGJmvRpm9b4LNvT6wMJ9tfQyoR9rl5Xgv02ootK
+         WewWBRjuCpHsr/40Yrqxl3jOFMWlmOIHKiMh7C4+mzocvAx1Ukhs8nIa4EHhTkBpN8vu
+         WKiWfYDCvbnusssv0HqcrQKQlhsy5nXvSytG3eS+xN3zWjcYPZ9FXIkf4/am0vQR3WAY
+         JkDbLtYqqb/E8fxgnlyLsOJcBynVza+LrVeggbYarQDz81Up8asxYp1jRa+rDmq6lckV
+         zkNw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3H81q658CbVNJTnwXkIIUBtS+MGQOuGjXxVY7eLXcqY83yYsYq2BdmUrWcS1ibCDQnebHkYmzuwaVt77Oy07E/OJLeVd8/JHqA2tXl+myKjVz4bP9x1huBFt3DsjwCX0zlY1yWrWYoOfNFwHR50kTuxXRXeRBj9cGTFsJh6V+0Haa1w==
+X-Gm-Message-State: AOJu0Yz+1NsK8PeMPIw0Z6lmGToD6a5WHZfl84PN75IVaPy7HMMBPMhg
+	pGnQhy4MGbhk9EDBq1/aeQ1NxxPCauzwAWr56ugIBD1fEgd64pF/
+X-Google-Smtp-Source: AGHT+IEDaLeDy0kRHXxCSaq6QWBKsSlojalNjSSiXu+JQvzdRSJOsl90GPyDIO89QxgnGaatm41OIw==
+X-Received: by 2002:a17:903:50b:b0:1e0:2344:e8fa with SMTP id jn11-20020a170903050b00b001e02344e8famr7768437plb.66.1711386597546;
+        Mon, 25 Mar 2024 10:09:57 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id mo12-20020a1709030a8c00b001db717d2dbbsm4927085plb.210.2024.03.25.10.09.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 10:09:56 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <22fcad13-dd9b-4e9a-90aa-d20fb78e6a0d@roeck-us.net>
+Date: Mon, 25 Mar 2024 10:09:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324210447.956973-1-hannes@cmpxchg.org>
-In-Reply-To: <20240324210447.956973-1-hannes@cmpxchg.org>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Mon, 25 Mar 2024 10:09:37 -0700
-Message-ID: <CAKEwX=MBXXB3QvX2Qa=1n=y3CD8bfhyeCzt98gEjLxfHEQAr=g@mail.gmail.com>
-Subject: Re: [PATCH] mm: zswap: fix data loss on SWP_SYNCHRONOUS_IO devices
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Zhongkun He <hezhongkun.hzk@bytedance.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	Barry Song <21cnbao@gmail.com>, Chris Li <chrisl@kernel.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/2] dt-bindings: hwmon: Add NCT7363Y documentation
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>, baneric926@gmail.com
+Cc: linux-hwmon@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ robh+dt@kernel.org, conor+dt@kernel.org, corbet@lwn.net, jdelvare@suse.com,
+ kwliu@nuvoton.com, kcfeng0@nuvoton.com, Paul Menzel <pmenzel@molgen.mpg.de>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Bonnie_Lo@wiwynn.com, linux-doc@vger.kernel.org, DELPHINE_CHIU@wiwynn.com,
+ openbmc@lists.ozlabs.org
+References: <20240322081158.4106326-1-kcfeng0@nuvoton.com>
+ <20240322081158.4106326-2-kcfeng0@nuvoton.com>
+ <171109961635.307786.7810067768607811171.robh@kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <171109961635.307786.7810067768607811171.robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Mar 24, 2024 at 2:04=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> Zhongkun He reports data corruption when combining zswap with zram.
->
-> The issue is the exclusive loads we're doing in zswap. They assume
-> that all reads are going into the swapcache, which can assume
-> authoritative ownership of the data and so the zswap copy can go.
->
-> However, zram files are marked SWP_SYNCHRONOUS_IO, and faults will try
-> to bypass the swapcache. This results in an optimistic read of the
-> swap data into a page that will be dismissed if the fault fails due to
-> races. In this case, zswap mustn't drop its authoritative copy.
->
-> Link: https://lore.kernel.org/all/CACSyD1N+dUvsu8=3DzV9P691B9bVq33erwOXNT=
-mEaUbi9DrDeJzw@mail.gmail.com/
-> Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
-> Fixes: b9c91c43412f ("mm: zswap: support exclusive loads")
-> Cc: stable@vger.kernel.org      [6.5+]
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Tested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
-> ---
->  mm/zswap.c | 23 +++++++++++++++++++----
->  1 file changed, 19 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 535c907345e0..41a1170f7cfe 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1622,6 +1622,7 @@ bool zswap_load(struct folio *folio)
->         swp_entry_t swp =3D folio->swap;
->         pgoff_t offset =3D swp_offset(swp);
->         struct page *page =3D &folio->page;
-> +       bool swapcache =3D folio_test_swapcache(folio);
->         struct zswap_tree *tree =3D swap_zswap_tree(swp);
->         struct zswap_entry *entry;
->         u8 *dst;
-> @@ -1634,7 +1635,20 @@ bool zswap_load(struct folio *folio)
->                 spin_unlock(&tree->lock);
->                 return false;
->         }
-> -       zswap_rb_erase(&tree->rbroot, entry);
-> +       /*
-> +        * When reading into the swapcache, invalidate our entry. The
-> +        * swapcache can be the authoritative owner of the page and
-> +        * its mappings, and the pressure that results from having two
-> +        * in-memory copies outweighs any benefits of caching the
-> +        * compression work.
-> +        *
-> +        * (Most swapins go through the swapcache. The notable
-> +        * exception is the singleton fault on SWP_SYNCHRONOUS_IO
-> +        * files, which reads into a private page and may free it if
-> +        * the fault fails. We remain the primary owner of the entry.)
-> +        */
-> +       if (swapcache)
-> +               zswap_rb_erase(&tree->rbroot, entry);
->         spin_unlock(&tree->lock);
->
->         if (entry->length)
-> @@ -1649,9 +1663,10 @@ bool zswap_load(struct folio *folio)
->         if (entry->objcg)
->                 count_objcg_event(entry->objcg, ZSWPIN);
->
-> -       zswap_entry_free(entry);
-> -
-> -       folio_mark_dirty(folio);
-> +       if (swapcache) {
-> +               zswap_entry_free(entry);
-> +               folio_mark_dirty(folio);
-> +       }
+On 3/22/24 02:26, Rob Herring wrote:
+> 
+> On Fri, 22 Mar 2024 16:11:57 +0800, baneric926@gmail.com wrote:
+>> From: Ban Feng <kcfeng0@nuvoton.com>
+>>
+>> Add bindings for the Nuvoton NCT7363Y Fan Controller
+>>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+>> Signed-off-by: Ban Feng <kcfeng0@nuvoton.com>
+>> ---
+>>   .../bindings/hwmon/nuvoton,nct7363.yaml       | 66 +++++++++++++++++++
+>>   MAINTAINERS                                   |  6 ++
+>>   2 files changed, 72 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml
+>>
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml:
+> Error in referenced schema matching $id: http://devicetree.org/schemas/hwmon/fan-common.yaml
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.example.dtb: hwmon@22: fan-0: False schema does not allow {'pwms': [[1, 0, 50000]], 'tach-ch': ['']}
+> 	from schema $id: http://devicetree.org/schemas/hwmon/nuvoton,nct7363.yaml#
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.example.dtb: hwmon@22: fan-0: Unevaluated properties are not allowed ('pwms', 'tach-ch' were unexpected)
+> 	from schema $id: http://devicetree.org/schemas/hwmon/nuvoton,nct7363.yaml#
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.example.dtb: hwmon@22: fan-1: False schema does not allow {'pwms': [[1, 1, 50000]], 'tach-ch': b'\x01'}
+> 	from schema $id: http://devicetree.org/schemas/hwmon/nuvoton,nct7363.yaml#
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.example.dtb: hwmon@22: fan-1: Unevaluated properties are not allowed ('pwms', 'tach-ch' were unexpected)
+> 	from schema $id: http://devicetree.org/schemas/hwmon/nuvoton,nct7363.yaml#
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.example.dtb: fan-1: tach-ch: b'\x01' is not of type 'object', 'array', 'boolean', 'null'
+> 	from schema $id: http://devicetree.org/schemas/dt-core.yaml#
+> 
+> doc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240322081158.4106326-2-kcfeng0@nuvoton.com
+> 
+> The base for the series is generally the latest rc1. A different dependency
+> should be noted in *this* patch.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your schema.
+> 
 
-This LGTM!
+I am a bit puzzled by this one. The patch has a Reviewed-by: tag from Rob,
+but then Rob's bot complains about errors. hat am I missing ?
 
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Thanks,
+Guenter
+
 
