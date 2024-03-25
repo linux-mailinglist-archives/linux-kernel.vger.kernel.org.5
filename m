@@ -1,176 +1,114 @@
-Return-Path: <linux-kernel+bounces-118141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB37488B482
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:50:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B80EC88B485
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 644A11F656D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:50:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 388FC300A7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1CDC80030;
-	Mon, 25 Mar 2024 22:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742D47FBC4;
+	Mon, 25 Mar 2024 22:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BZ9lbj8s"
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d/PgK3S+"
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4997B7F7DF
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324B93398B
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 22:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711407023; cv=none; b=I/Gt/x0AdUEpzV4BUxEtXSdZ8w6gzxhjJmqtEL9PV5F+soqpFgUTw0SA+AspC1mWDnXwp188/WSsL5J6g3pCZZ3VjY/r6d+Q581u8rWjWJ0Uk5C7poajAv463ca8G9Yj2Fo8I6b01TsyQpeouneUj15qtFzExMFqbDkoQ1w8+sM=
+	t=1711407043; cv=none; b=W1WB49CQkz/VusDaYCprZ9WMRkEG6kuNFTufwU0bOccO3LnhF5RCoHHg0O9S5Kvg4+Mqme5QjbtSP1raCL31/dWwCBpDldGjxsqVMzcHYWY4yz4cTtfGZN+mJZUw9UL5DYzbhleVxrKcrqqIrLLyHMenJhO8MkY6Y8SsO+UZgN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711407023; c=relaxed/simple;
-	bh=CPQo4U3neeVYvpscRpNTGn7MkPpc75PWWbiOuiCgEOg=;
+	s=arc-20240116; t=1711407043; c=relaxed/simple;
+	bh=fdj5WC4WczRnsrMDwrvmZ5LSi6FYFmAloHkmxhIb2Is=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tjPqlkl94vNeC482hh1Bg3bzxLeub9epYZ48bo5wXCAcSb2IlmrWJqimbaUNEPzwjjQQsrI8X0MaPKx0lve/+NdT2kkY/Jc/TLc5UhGFZHMjzb7IkH2DS+hva3punUY5O+bkk3d4/ic4q1FhreZyFo1JEMfd+/EBbKCq2P/kYvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BZ9lbj8s; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42ee0c326e8so44651cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:50:22 -0700 (PDT)
+	 To:Cc:Content-Type; b=HsEvyJ6jLUw78k8mnR3omf8+f+9IY5lZSkCmbyYfcbsMybuaL5rFU3TRk66BmRnuMQzqk+7ClrK7o682XyliPGnXwhRYpnQksxrIo2364iz8olKeSW66BKaZws3uaNuutrzNLotZNGGCtLYnFr26EW71nDh8zModvZ8H7fWScGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=d/PgK3S+; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-789e2bf854dso293335885a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:50:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711407021; x=1712011821; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1711407038; x=1712011838; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V9uiPc2CXK0rh4vlRTmKReFu4D/t2JCY05B9NWh6jZ4=;
-        b=BZ9lbj8sSS3aKWGwbQAaOFVXE6eYl0oltnkrMjdD/7ZLhqh9/g7KiOmMmSAmhERDgb
-         B4gelXEMxFzVwgWjq8X0cPOiZFpxd0kSgMr43cKA38EVDM4aQE7/svBeNq5Ht91lsc0+
-         hrp2gaTQe7CpCGlbXrv/eIWNE+9EIrHt/+Mj/ov81qrEafGZniBJq6erJEI80w3X/1A0
-         cbbAysjWklgQMDyklybIukVYeqmHtB5bPdGj1KQNhr0TU1ZsGU03QxKLrKrgmAHU6Th2
-         2dKqHB/PtmTCQoaMRrKz1mqBncfh1HvOLmZIhYvWx5N7RWRyUg+oXTnXXCwuFbmSDkD4
-         gnLA==
+        bh=yawrovRasVBRHceCsqRRDcxsuqGTGGt+XKEa9F3SZL8=;
+        b=d/PgK3S+LsssiW7CzMOFh7iSzpkdJilMdKCHXcH9iUTWj+TV29UKWEHncjdF4NOmPp
+         kSHX98sYCj4Sx/RKY5oVGE31Siu5jNEkpXhL3pibu3bPe/7WA02ov0JtKV13hPXjokbH
+         zFDEyN/c5AWUFWaRzdKJTlH09NyWDwi+vhnCo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711407021; x=1712011821;
+        d=1e100.net; s=20230601; t=1711407038; x=1712011838;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V9uiPc2CXK0rh4vlRTmKReFu4D/t2JCY05B9NWh6jZ4=;
-        b=UeiH7cbT2eiuKOTZWv4KYNE6DxEs7scAbk0hWZCeLhKrQKhxf7xBOJjfYZi19gjR2c
-         85zV0wW+K8e5sJ7VtVmTFdkSjxDHJg9YD9FvS7kF2f7EB57yQKi9YdeiMoYZfjcC075E
-         ea5BKoz3jpOGCYCEuMYulbMw/e/mzaMq4Dv8Pb+6i/kFqoObml1ypkMDaNyI0O/iQCyB
-         rb1ef0nPj7l/+bco5hdX0tPxvPex9cj7K45Aft3vHqcCM048RdiIsRdYXRA6O3sphv1Y
-         Wo3nt/uNNiTnmtkwCIsKE/CzmxG7wphFJOA5UHmkLUMecy6ROJu/BRvNYhaIKTgqdAOd
-         ZW3g==
-X-Forwarded-Encrypted: i=1; AJvYcCV1c4p7DJbVtFaI31A/eiuim+y34HYubMG9i6/z0O5VpGZ6RD1go6GLB7HYXsJYKGxtXXFDLwL6dZcyZmFRSu1JtcBHG5UQH+cZxunl
-X-Gm-Message-State: AOJu0Yx971k7JbEds4Al644KNqoMgvtr/L5Dohh9VesF+7VEfCJa+3H0
-	VVm/AVwlaoQrgLBSXGVF/HNk41e0EKm0SwAEXNNlKyOgOMyihd6yc6EfDFr0TuV4IkzEAalImde
-	tt0b4Y5imxpX+ZuuTfasZBx8+0A/KmJHeE47B
-X-Google-Smtp-Source: AGHT+IESv3d0bJqCxKfN5Ct2QrJ0e+2U26WAOijsthnoOFCRawVLwk1AgyIZaLEyfrF5guSwUhXe7HEsE9lSU4E9/DU=
-X-Received: by 2002:a05:622a:1c0f:b0:431:5dd4:a67e with SMTP id
- bq15-20020a05622a1c0f00b004315dd4a67emr56115qtb.14.1711407021008; Mon, 25 Mar
- 2024 15:50:21 -0700 (PDT)
+        bh=yawrovRasVBRHceCsqRRDcxsuqGTGGt+XKEa9F3SZL8=;
+        b=PL62YJnM+hAU8gyaksXU1585Y5p7NWyFb81lfiRp/8Iyc/xI7Du0Pe+fURSHTKrFVs
+         ytfM9WCho9DVkslBjwmkEeS3LG8dC6PIcof4y++SAK/rTvi/N0z5qBi4QykSalbSuiTs
+         aT6Jd43/xGEjB5BZHotJ0lwTfDNVe6wZYjLnfMFMpayu9wEhWeVaN/xomIhS/3pUGjoS
+         GOdjgvoTH6h2nrHF7HpNgRQzhawRACspRdt5qAX++q2B1copc61Bs78uB5b6VYIERJFA
+         OJtzKG0JfSRY2g7vHbYsX1az5pTPImHKYCasgLxW6iP9tpIUOueOxwtQ3qO1lVaiXdd5
+         /z2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXq7O278KRTiK1nL5wKI6f8GyiwTIIQO6g2AmURa9gU0Wt50Wk+uBHONHtsEGnvKdO/viBZBOZfost6DaDowpr4Dsny4No0CDYgHnpS
+X-Gm-Message-State: AOJu0YwQeY9f0Sd4SKGDt0r0s/RXVOtf77Xjd+D7Ov+ZplGarqAzZRCx
+	WvrgLgvU2xXVR11Kb/rHbn/ayE5AYNS12ZYWnX/BruanXuUVivpKDytWQcGTd2NqYwznv+vS4Eg
+	=
+X-Google-Smtp-Source: AGHT+IHMBAWz6bdkR+o35I5aGInvKYHGfNZlwkazLTQ3d3bXhAUZsLF1XX1fMCoYIyekN+dPYTNtrw==
+X-Received: by 2002:a05:620a:1375:b0:789:e6cc:5f7b with SMTP id d21-20020a05620a137500b00789e6cc5f7bmr8087605qkl.48.1711407038567;
+        Mon, 25 Mar 2024 15:50:38 -0700 (PDT)
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
+        by smtp.gmail.com with ESMTPSA id bl18-20020a05620a1a9200b0078a5de83e15sm524064qkb.30.2024.03.25.15.50.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 15:50:37 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-430d3fcc511so56771cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:50:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUwmdOL4dDBdjbCh9k8qHM7Y1nWz4g0j2kVqe2FDl74VRHKf9kUlUQMlHzF0S66GyLVZ+YZUKsMpFWtyHP/KVILBuwM+lKW30ux7zv/
+X-Received: by 2002:a05:622a:22a5:b0:431:3887:ace6 with SMTP id
+ ay37-20020a05622a22a500b004313887ace6mr57851qtb.26.1711407037327; Mon, 25 Mar
+ 2024 15:50:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240224052436.3552333-1-saravanak@google.com>
- <ZfvN5jDrftG-YRG4@titan> <CAGETcx8+vw0Vr0NWzjOAvxAZ07M4U7BWPAgO9avCngW0-9e_kA@mail.gmail.com>
- <Zf7I65PiOR2wX1Uo@titan>
-In-Reply-To: <Zf7I65PiOR2wX1Uo@titan>
-From: Saravana Kannan <saravanak@google.com>
-Date: Mon, 25 Mar 2024 15:49:44 -0700
-Message-ID: <CAGETcx_=MmfgDajM16iJ4Of9Yr2Sy6ZpU=MyhYgnmOJFUTD_oA@mail.gmail.com>
-Subject: Re: [PATCH] of: property: fw_devlink: Fix stupid bug in
- remote-endpoint parsing
-To: John Watts <contact@jookia.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	=?UTF-8?Q?Herv=C3=A9_Codina?= <herve.codina@bootlin.com>, 
-	Luca Ceresoli <luca.ceresoli@bootlin.com>, kernel-team@android.com, 
-	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240325125901.2524752-1-treapking@chromium.org>
+In-Reply-To: <20240325125901.2524752-1-treapking@chromium.org>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 25 Mar 2024 15:50:21 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WcYZEpOkKL=7EsPKvo-Adfwx8kqrZWPJuwjk5TyTHGvQ@mail.gmail.com>
+Message-ID: <CAD=FV=WcYZEpOkKL=7EsPKvo-Adfwx8kqrZWPJuwjk5TyTHGvQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel-edp: Add AUO B120XAN01.0
+To: Pin-yen Lin <treapking@chromium.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org, 
+	Hsin-Te Yuan <yuanhsinte@chromium.org>, dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 23, 2024 at 5:20=E2=80=AFAM John Watts <contact@jookia.org> wro=
-te:
+Hi,
+
+On Mon, Mar 25, 2024 at 5:59=E2=80=AFAM Pin-yen Lin <treapking@chromium.org=
+> wrote:
 >
-> Hello again,
+> Add support for the AUO B120XAN01.0 panel.
 >
-> On Fri, Mar 22, 2024 at 06:53:57PM -0700, Saravana Kannan wrote:
-> > Hmmm.... cycle detection should work here and not enforce probe
-> > ordering. I'd appreciate help with debugging that. Let me look at it
-> > on Monday. Can you enabled all the debug logs in drivers/base/core.c
-> > and tell me what cycle detection is telling about these nodes?
+> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> ---
 >
-> Hmm. It's not saying anything more than what I've already sent.
+>  drivers/gpu/drm/panel/panel-edp.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Sorry, I was asking for the logs. But now I'm looking at this again, I
-think I understand what's going on.
+Looks fine.
 
-> I think this is because /sound/multi isn't a device, it's just a
-> subnode used in audio-graph-card2.
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Ok, I think I understand now what's going on. fw_devlink does not know
-that "sound" device will not populate "multi" as a child device.
-Typically in such situations, "sound" would probe as a device and add
-its child DT nodes devices. At that point, the cycle is only between
-"multi" and "test_codec" and fw_devlink will detect that and not
-enforce any ordering. However, in this case, "sound" doesn't have any
-child devices and just depends on the remote endpoints directly.
+Applied to drm-misc-next:
 
-We already have "ports", "in-ports" and "out-ports". Is there a reason
-none of them will work for your use case and it has to be "multi"?
-When you use one of those 3 recognized node names, things are handled
-correctly.
-
-Btw, between "test_codec" and "sound", which one is supposed to probe
-first? I'm guessing "test_codec" needs to probe first for "sound" to
-probe?
-
-> Removing the multi { } section and using direct graph connections
-> 'fixes' this.
-
-I think the right fix is the use of post-init-providers. Because even
-if you do the above, all it does is let fw_devlink see that there's a
-cyclic dependency in DT. And it'll stop enforcing the probe and
-suspend/resume ordering. Ideally we want to enforce a specific order
-here. test_codec first and then sound.
-
-> I think this might be because usually in a graph each node containing
-> ports is a device, such as a display panel, a bridge, an LCD
-> controller. These kind of form a dependency chain.
->
-> In this case all the ports in multi act as a way to glue multiple
-> ports together for the audio-graph-card2.
->
-> Does that help?
-
-Maybe. But the logs would be more helpful.
-
->
-> > But the better fix would be to use the new "post-init-providers"
-> > property. See below.
-> >
-> > >
-> > > / {
-> > >         ...
-> > >
-> > >
-> > >         test_codec {
-> > >                 compatible =3D "test-codec";
-> > >                 prefix =3D "Test codec";
-> > >                 #sound-dai-cells =3D <0>;
-> >
-> > post-init-provider =3D <&multi>;
-
-Did you try this? Did it help?
-
--Saravana
-
-> >
-> > Right now there's a cyclic dependency between test_codec and multi and
-> > this tells the kernel that test codec needs to probe first.
-> >
-> > Similar additions to the other nodes blocked on multi.
-> >
-> > Thanks,
-> > Saravana
->
-> John.
+1864c45deb77 drm/panel-edp: Add AUO B120XAN01.0
 
