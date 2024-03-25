@@ -1,143 +1,150 @@
-Return-Path: <linux-kernel+bounces-116714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7F5C88A1A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:22:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3EED88A1A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A208E28B65D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:22:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 504511F3A675
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD9915666B;
-	Mon, 25 Mar 2024 10:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB83815574B;
+	Mon, 25 Mar 2024 10:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y6esWeq/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="qJ/zhvel"
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EC40156C4E;
-	Mon, 25 Mar 2024 08:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936F43DABED
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 08:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711356332; cv=none; b=juGrcGJcdSEbqNTiFza+F3y6EH8Ctf/o6yBb3HZ6OY+MpA9x0oTAyQr+JTTamezxaRpUBuKYs7nHuRvcPbXfPsbPXKDBcbE07HoHW6z4BN1d8rgBVirWuzxhA4XgYZ0WuUe2P3kQR3qde71qxMY6ZVHT6gG+1IVXfQ4GnNobdtw=
+	t=1711356356; cv=none; b=iWIRsl+0l2ke1bnnWMGWx7XQzsi3l8yxN/QVAoXI8K2BJPvkwWhddvJW81fqgbeQlU4z0QlGKCEgemW0x8zhWBnQvth4RyfkcWH5sVsOt8Er/r+was6AXtmfd+HzYtV1uyrcd+SoyqJ6nj1dECHgrk/PiU7kmyZ0TUlj3pxaxds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711356332; c=relaxed/simple;
-	bh=knUdCX/JOXqL4snKEL002fjNHL5rz0BFYkaGhcfpTvA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=inB2YfXiFArquK4+DBviCWFifZ2UvViaYUUwXtygeLU9uoDolPwAE1vThszhIjjWKo3znwurm/y5yxrVnjiDdoktMK8xU3Aon94BU1PlX+LgJIhGC4kaSyT4l9q5RtEDoS1sdi70+0pF19bU7E9wMgpVwcSGMOqW5UreY/At/U0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y6esWeq/; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711356331; x=1742892331;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=knUdCX/JOXqL4snKEL002fjNHL5rz0BFYkaGhcfpTvA=;
-  b=Y6esWeq/YL90tUTozZ0miM+/Ui38kyaC33sZrPsi1t0Sjk2JPv84OCo3
-   ZGX7CZhQ7W7g4Ji1WsXOK0KE9/ieHOsnIaFoJaLZCvIQ/4ozOiTAJWADx
-   PLeqhR9XfqutylNOxerrAA3SQMgWzSnouKYEPO2jlO9z6P6mvgC3xAeCm
-   6QxhOLZta1SmIlsWi4UcC7OsMt7fm88D+tb/vAnoQIHTrZl6D3SXm23MD
-   dQSEl2jhlHMb/xZRsHdswcjEjsU3GCvHL/vVzgPkAXlqTVPRdkEMBHvKh
-   qlogBT+9a89eL8TXObBUz37Q5VarXFk0jR+nG9pyAMkcw6sgOkOnpkso2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="10139249"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="10139249"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 01:45:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="15601892"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.254.215.245]) ([10.254.215.245])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 01:45:27 -0700
-Message-ID: <38601aef-b082-463f-8e41-f73a4307de21@linux.intel.com>
-Date: Mon, 25 Mar 2024 16:45:08 +0800
+	s=arc-20240116; t=1711356356; c=relaxed/simple;
+	bh=fO1r3ga0JBx751mFkNBSV+bA60NgEtVq6JELHzFB+jE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q6ZxImHOif8T8RBBWW8SAvoyhylIACnoGjItbxF4pLC6MDcaRVvz7H6mI6utmHbPJrbN0KwNJmaorx63O5OyyWBEw6fIYFd3RKVvi04Ch8y9Y6Lue32pq7jvw3MqWGnMUD21YQIZjYEoQf4nHxD9jWgkN8YUIupPf7eB//pHCm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=qJ/zhvel; arc=none smtp.client-ip=209.85.166.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3688676cc70so5561525ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 01:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1711356353; x=1711961153; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mAJj9egrVyRikkG0RKQceibcTBuLJH9YKNRRgrENxgU=;
+        b=qJ/zhveltvzZ1dy0tj5EosPrq6kX8avnMBJsc+ZW7iRUqfiZovHGCG6I7Di+XjsY4c
+         ITMVf9Dr9BXOqvNyGNipW/h4ackSA5L4kkvnrH/WgkenECqv5G00DLwQvxoHwi2Zx+wi
+         CtYRihtWqX2bie+DDmk09/mAUBQ4H3+/Svb0jbsKoI4qw6Ivgg0qmlPyPAky1o9mM9zH
+         HDlX4Bsln6E+FiYO33Xb+6kjUOC/G0w4SCNlfLXvn8if4hepBqRX0okMIrlpGH3C6Up/
+         7vWyi9byhaiTFJ9fapfAuuTKBYejZPj8Vtd5aqnzPJ4zfJgc0uvVvOtOCseGKU3qAjDO
+         v4ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711356353; x=1711961153;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mAJj9egrVyRikkG0RKQceibcTBuLJH9YKNRRgrENxgU=;
+        b=aevaffPJWOQfDsC+Kvao289xnyPYmHY+6CHvIL1klXHi6XquCtFXTn96Tgosqo1edy
+         XzKxDVTimregKqK2f6EGMQ3I543O1oPgL2ljwFXw7ofeZokEbKX0nvZ+K2P1zmmg0CW2
+         gw3nXzRaa/drb0/FmhqJ3w88wJ7zbhWITalzNxU8KX/C2SqvC6DCKSYFWCAENL1lR4Gf
+         HHQVfz+fbJxgvR1cWS/Fql+MnnMQlh9AJdczah/SyGavAnPpBZZgG2zfjZPQ1NW8VTHa
+         18W2EOfp1BDSjvRgOvKoRW1HT1CQNMtQcGMquLSCVWcl2k+Unh2SCDEL8AdnpKUcsJkJ
+         X4ng==
+X-Forwarded-Encrypted: i=1; AJvYcCWUW6i+HCHL4L2O6wzXoLSWGySeJonCawKEAx7Dy/umyEoWmGdj+cDHHfHl+bQGmNs2MQ0ad04MiJ0aencM0ZLZOJRnNwrXgv5ZEsAv
+X-Gm-Message-State: AOJu0Yz4FIFBYKzSWJng3omV4KvlbnDIVDzB4i5cMQgCF7a0Pe0Kd4ih
+	HZ0/oB6hzYiWTn6iPExeRS/r/+DUaAA+p2Rqo+v2wytU+wjP6tpxwQU2SPf5ze3GiT0OeMpZzD4
+	Su0YaKcH6xAtJnXz3vKeEFJw5xxPrN+94Tb0Exw==
+X-Google-Smtp-Source: AGHT+IFVuCUCa9T26qI8wOCmAKjs5jQ0HPi7rCqnQz+zQAp9mUrZiWSUVy4an898YpR/XXTQ+Vy8tiAEK/p3ABMeQm0=
+X-Received: by 2002:a92:ce04:0:b0:368:4766:ad75 with SMTP id
+ b4-20020a92ce04000000b003684766ad75mr7623231ilo.10.1711356351275; Mon, 25 Mar
+ 2024 01:45:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv3 pci-next 1/2] PCI/AER: correctable error message as
- KERN_INFO
-To: Xi Ruoyao <xry111@xry111.site>, Bjorn Helgaas <helgaas@kernel.org>
-Cc: Grant Grundler <grundler@chromium.org>, bhelgaas@google.com,
- linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, mahesh@linux.ibm.com, oohall@gmail.com,
- rajat.khandelwal@linux.intel.com, rajatja@chromium.org
-References: <20230918193913.GA203601@bhelgaas>
- <0a44fd663e93ac5b36865b0080da52d94252791a.camel@xry111.site>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <0a44fd663e93ac5b36865b0080da52d94252791a.camel@xry111.site>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240307081951.1954830-1-colin.i.king@gmail.com>
+In-Reply-To: <20240307081951.1954830-1-colin.i.king@gmail.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Mon, 25 Mar 2024 14:15:40 +0530
+Message-ID: <CAAhSdy2zg4dD6_hKOWDuXxxcpiiu1RwpeL_h6-hvm+Y2B1hEeQ@mail.gmail.com>
+Subject: Re: [PATCH][next] KVM: selftests: Fix spelling mistake "trigged" -> "triggered"
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Zenghui Yu <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, Atish Patra <atishp@atishpatra.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kvm-riscv@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/25/2024 1:19 AM, Xi Ruoyao wrote:
-> On Mon, 2023-09-18 at 14:39 -0500, Bjorn Helgaas wrote:
->> On Mon, Sep 18, 2023 at 07:42:30PM +0800, Xi Ruoyao wrote:
->>> ...
->>> My workstation suffers from too much correctable AER reporting as well
->>> (related to Intel's errata "RPL013: Incorrectly Formed PCIe Packets May
->>> Generate Correctable Errors" and/or the motherboard design, I guess).
->> We should rate-limit correctable error reporting so it's not
->> overwhelming.
->>
->> At the same time, I'm *also* interested in the cause of these errors,
->> in case there's a Linux defect or a hardware erratum that we can work
->> around.  Do you have a bug report with any more details, e.g., a dmesg
->> log and "sudo lspci -vv" output?
-> Hi Bjorn,
+On Thu, Mar 7, 2024 at 1:49=E2=80=AFPM Colin Ian King <colin.i.king@gmail.c=
+om> wrote:
 >
-> Sorry for the *very* late reply (somehow I didn't see the reply at all
-> before it was removed by my cron job, and now I just savaged it from
-> lore.kernel.org...)
+> There are spelling mistakes in __GUEST_ASSERT messages. Fix them.
 >
-> The dmesg is like:
->
-> [  882.456994] pcieport 0000:00:1c.1: AER: Multiple Correctable error message received from 0000:00:1c.1
-> [  882.457002] pcieport 0000:00:1c.1: AER: found no error details for 0000:00:1c.1
-> [  882.457003] pcieport 0000:00:1c.1: AER: Multiple Correctable error message received from 0000:06:00.0
-> [  883.545763] pcieport 0000:00:1c.1: AER: Multiple Correctable error message received from 0000:00:1c.1
-> [  883.545789] pcieport 0000:00:1c.1: PCIe Bus Error: severity=Correctable, type=Physical Layer, (Receiver ID)
-> [  883.545790] pcieport 0000:00:1c.1:   device [8086:7a39] error status/mask=00000001/00002000
-> [  883.545792] pcieport 0000:00:1c.1:    [ 0] RxErr                  (First)
-> [  883.545794] pcieport 0000:00:1c.1: AER:   Error of this Agent is reported first
-> [  883.545798] r8169 0000:06:00.0: PCIe Bus Error: severity=Correctable, type=Physical Layer, (Transmitter ID)
-> [  883.545799] r8169 0000:06:00.0:   device [10ec:8125] error status/mask=00001101/0000e000
-> [  883.545800] r8169 0000:06:00.0:    [ 0] RxErr                  (First)
-> [  883.545801] r8169 0000:06:00.0:    [ 8] Rollover
-> [  883.545802] r8169 0000:06:00.0:    [12] Timeout
-> [  883.545815] pcieport 0000:00:1c.1: AER: Correctable error message received from 0000:00:1c.1
-> [  883.545823] pcieport 0000:00:1c.1: AER: found no error details for 0000:00:1c.1
-> [  883.545824] pcieport 0000:00:1c.1: AER: Multiple Correctable error message received from 0000:06:00.0
->
-> lspci output attached.
->
-> Intel has issued an errata "RPL013" saying:
->
-> "Under complex microarchitectural conditions, the PCIe controller may
-> transmit an incorrectly formed Transaction Layer Packet (TLP), which
-> will fail CRC checks. When this erratum occurs, the PCIe end point may
-> record correctable errors resulting in either a NAK or link recovery.
-> Intel® has not observed any functional impact due to this erratum."
->
-> But I'm really unsure if it describes my issue.
->
-> Do you think I have some broken hardware and I should replace the CPU
-> and/or the motherboard (where the r8169 is soldered)?  I've noticed that
-> my 13900K is almost impossible to overclock (despite it's a K), but I've
-> not encountered any issue other than these AER reporting so far after I
-> gave up overclocking.
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-Seems there are two r8169 nics on your board, only 0000:06:00.0 reports
-aer errors, how about another one the 0000:07:00.0 nic ?
-
+Queued this patch for Linux-6.9 fixes.
 
 Thanks,
-Ethan
+Anup
 
+> ---
+>  tools/testing/selftests/kvm/aarch64/arch_timer.c | 2 +-
+>  tools/testing/selftests/kvm/riscv/arch_timer.c   | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/tes=
+ting/selftests/kvm/aarch64/arch_timer.c
+> index ddba2c2fb5de..16ac74d07d68 100644
+> --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> @@ -136,7 +136,7 @@ static void guest_run_stage(struct test_vcpu_shared_d=
+ata *shared_data,
+>                 irq_iter =3D READ_ONCE(shared_data->nr_iter);
+>                 __GUEST_ASSERT(config_iter + 1 =3D=3D irq_iter,
+>                                 "config_iter + 1 =3D 0x%lx, irq_iter =3D =
+0x%lx.\n"
+> -                               "  Guest timer interrupt was not trigged =
+within the specified\n"
+> +                               "  Guest timer interrupt was not triggere=
+d within the specified\n"
+>                                 "  interval, try to increase the error ma=
+rgin by [-e] option.\n",
+>                                 config_iter + 1, irq_iter);
+>         }
+> diff --git a/tools/testing/selftests/kvm/riscv/arch_timer.c b/tools/testi=
+ng/selftests/kvm/riscv/arch_timer.c
+> index e22848f747c0..0f9cabd99fd4 100644
+> --- a/tools/testing/selftests/kvm/riscv/arch_timer.c
+> +++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
+> @@ -60,7 +60,7 @@ static void guest_run(struct test_vcpu_shared_data *sha=
+red_data)
+>                 irq_iter =3D READ_ONCE(shared_data->nr_iter);
+>                 __GUEST_ASSERT(config_iter + 1 =3D=3D irq_iter,
+>                                 "config_iter + 1 =3D 0x%x, irq_iter =3D 0=
+x%x.\n"
+> -                               "  Guest timer interrupt was not trigged =
+within the specified\n"
+> +                               "  Guest timer interrupt was not triggere=
+d within the specified\n"
+>                                 "  interval, try to increase the error ma=
+rgin by [-e] option.\n",
+>                                 config_iter + 1, irq_iter);
+>         }
+> --
+> 2.39.2
+>
 
