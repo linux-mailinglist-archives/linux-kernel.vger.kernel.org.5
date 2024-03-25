@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-116796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9928588A36B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:59:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B53D88A3F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 504DB2E15AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:59:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F35E1C3AB39
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D3F183BA9;
-	Mon, 25 Mar 2024 10:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC589181817;
+	Mon, 25 Mar 2024 10:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="zpBD4ilH"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="F6F4BGRf"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6AF19669E
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779CC1966A4
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711361059; cv=none; b=EfxaVT0xFHRPOa/NcXUICdkqPdbgYuFVVuL+ynQ1Tv4Gd4dk8DR3cfOurDqklYH6VGke552n/tz9QXSMFAfqSBihWaNIhyRSkGaspIVfaLeNOAnL0GGuMdcwq8VvTjoy6tvVkWBeCBt3jcIgGtGc4Ayz2jWqiRKlUhFX0oA7YiA=
+	t=1711361061; cv=none; b=jdQ/hi+GAmK+6pl2G3tzdablIHeSLsqogK/2LgNgzpcdHbDupaOQyHekYc+PLHlqdG+caEyhh0mY/t0Sb4FpnVOAHs3iyRZsSKZKVHQC50XJsoypT0yjlgeWtf5oe3cRcEGorGwOi5Rs/z2iNu7Zzec4zyOhKerqczJnAC6BvJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711361059; c=relaxed/simple;
-	bh=pnUfGJ3bPKimmOuPRCBCPhxkg+N6CLAxmi+aNOvymxQ=;
+	s=arc-20240116; t=1711361061; c=relaxed/simple;
+	bh=lSgjcgnvH6aUwQLw5EoB/MQVa1YpVl7Vq0vuihO2tqo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VPCij52J5nSXipTxGdLr4PnrVOGLARbSwsJH1k2qhV3eEpm/Gl2XA7eZOMyqTvmX/bXOn1u3IsVOwlHMm01714nWEVLa/piZHfE2KbdYn/wGQHijLxe6MfYjESsU2q0fy4LObWSjud8mBbI/tC4MxZsNsXZLnbAOvGDbuSxVBDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=zpBD4ilH; arc=none smtp.client-ip=209.85.221.43
+	 MIME-Version; b=aMLpM2dwW5RvaaT30XuiSWWvlzvyVhfZQFxGEWHCg6EOja/+7uKp28Xme47FxSoWQz4IUBtypiv98tMKX1N55m0MqauYS2mzSzeLEbSYOEwLfMRRZbNP/c2riKzqsR9IUb5rDe8gMH5bS/w5QvN1ZQa+R1QlEjydQs9KYo5naOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=F6F4BGRf; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ecb04e018so2910342f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:04:17 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-341cce3e5f0so795802f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711361056; x=1711965856; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711361057; x=1711965857; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ozfFeJyXaUD6FQQEli0mm3wcSChIOoojk249rH7ELtY=;
-        b=zpBD4ilHIak4iVrfRhplyJF4AKtdZ+29USg7Oqq0DsYeVo1M4vIjKPc+21n8XKQBv8
-         a5jCDFHVL+gtP5rXu2ElxZ01Pq6jrHz+0YkuFyeWr45FBj76GpBSUqneq76qnVERo6kj
-         GSObQizWixVAqZFlBtFIRwRut6NuafzZjyYnsgfUXJLakrTS/V8iX8s+vbkKi7Hm4CF5
-         bYlae0BYkPECsasJPBTKJqTYRWH4Dlgd+Brl2Xz8mbjcfYcp7DKOj++tSMlIaXYk03vy
-         MzbXdeSSsbP/IeW4+fd0DlMa1VjZOfXVxoCbN4GHgQJzYIrQQKI5NwM3LR069/LcAK+h
-         4OcQ==
+        bh=+4+dJf6arGYhNMNbnDj3J5bx1sPusy2X6VNsV11mqig=;
+        b=F6F4BGRflLydi5oF0hw0lB9gXq8sZGByqAQO7PgZHIICm1QJroPUN3uCktzlvkDM6Z
+         gp29seOQvuucQeVIYx9oCSEMtMXzmW3KmmOfRZC1yYnsFarp0JSFg8J2gJ8AUXAEXsad
+         s7XyYcnLER3t1UMyQVvQBQQLz8fGPR4s9ACTpL6jiXZTV1LsGwUbdAC40b7WjPavZULV
+         BQJpczIxJiSaeYS6q6gI+Gbi2JAYXJ8xXS7xZiVKU0p9V4LeETEJ5pV23+PKxOz1dd4t
+         2XhYqsBubP7fXjopGKPkG+j1SOL4FjszQ5t/vLST+FUDe/TOkhrNAdPBcPvqSag44oUm
+         F2tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711361056; x=1711965856;
+        d=1e100.net; s=20230601; t=1711361057; x=1711965857;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ozfFeJyXaUD6FQQEli0mm3wcSChIOoojk249rH7ELtY=;
-        b=nyE2F6m8A67Tw3pMX+gLMZyFEYUNono4e+YtEOREXUwwCam2EfrmwrdsdWWVGtb0I6
-         GccEKQLcu78X2J4vgz3Dkq6ewClX+9Znubw6rFp7xiXrPCW51idwdrWDNYLjLku7+s6Z
-         T2S785W12HL0Kx1XjmNZUPAFz9ltemjUJ8rig/HQivtzWGE1PpiSXCWvB2toAXG9Xec3
-         PCGllCIk0oWTygCqPBphh6Ny7cT9zs3g/CMi24RjYURoxfMOTnzBBJioXSgm+l3HZzDa
-         NIDVgtfQT1WjqDch0I1Hd8oZNHWaZT9slyiy2yDEpilfuEiHKZ+t0aaeTLvhO0i4rvO+
-         XScQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXxD5Gu9KMucTmuczyYhJVvv60uKKosHhdoJ7VfJpLaSlDlFRfyd/8Hd2pXRYJTnga1NZmlNIGULtgln7QewMzdL/74AgqUiWPL6J0e
-X-Gm-Message-State: AOJu0Ywg+tmb1am5HKzE7D6so8AYRVSWhZ4sAzZM0qbWBrpSdrccOg47
-	xQzGhi+rYoe5CNfjKWi5zEAKF3GsRb9kJ1h3LtyPMvCY8XmMq+lHxBAUSgA/4tE=
-X-Google-Smtp-Source: AGHT+IG5oeeUmNjJm+e6PyXNNlgVwD4/ExZy6L7LCkX9nZWS0361na1GOzWnhUYhyhO9dtvSAa29gA==
-X-Received: by 2002:adf:edd2:0:b0:33e:720e:4a4e with SMTP id v18-20020adfedd2000000b0033e720e4a4emr4442835wro.19.1711361055954;
-        Mon, 25 Mar 2024 03:04:15 -0700 (PDT)
+        bh=+4+dJf6arGYhNMNbnDj3J5bx1sPusy2X6VNsV11mqig=;
+        b=IeflROKI1dDeBw1tcuHBiX1V4xq1M+jm2N+2pL/na5APE3x0MbPsaSVcvRHUSpRmoH
+         vDrwUZM7PTvUxxnSaJMBQSZY5pUbCuagWPTwGPH6yNBgFXEC7boesNdE9TcTAPB4SHv9
+         PAGnMG/m8Sqkcq84+sVoInD63XPqMYJbK6MHByfmSQTSwvBKRvnp7bJDnwRgGtYV9nfR
+         0kUanE5Mifng0ESoAAlQved3RjaI7nd+SxQzdhoCAklhu5jlsZ+SzKbWEuVtFOFAq4ui
+         0en46xeHO0r7WaCS4Zu+UQRIw99IlRA/6G5U5LldnfgMx7N+FvO7zoKGoggeGVE638KJ
+         w2OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVhI0WbO43jC0EiM5uI4aDky+XdgoGWfCa6kIQVY1u/Q2p/odt3f+QtcN10ohtYTCnT+fmRJjC0NYho+R7DNwr90P9y+6qFVoOznW33
+X-Gm-Message-State: AOJu0Yz53ORG2K9EAhwD/7XpI+3rMrOYxM3+mRnlocgTcw/s3BZ4xL/Z
+	M1DWkFtWxEBrp2jFt0QVQpoM2UlPzobvcWq0mBA4ziezPIVvCMCpOlEcxW+lcds=
+X-Google-Smtp-Source: AGHT+IEkkZsBnp0pP6MAMwtPkvyKZCO/XD4p9hpMGTvLyBcd5Wa7WEDbnL4tGVoZ/jFZI8OhjLph3Q==
+X-Received: by 2002:adf:cd0b:0:b0:33e:72f4:2ae with SMTP id w11-20020adfcd0b000000b0033e72f402aemr5064875wrm.68.1711361056958;
+        Mon, 25 Mar 2024 03:04:16 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:861d:8b72:a859:4ce9])
-        by smtp.gmail.com with ESMTPSA id dv13-20020a0560000d8d00b0033e25c39ac3sm9086874wrb.80.2024.03.25.03.04.14
+        by smtp.gmail.com with ESMTPSA id dv13-20020a0560000d8d00b0033e25c39ac3sm9086874wrb.80.2024.03.25.03.04.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 03:04:14 -0700 (PDT)
+        Mon, 25 Mar 2024 03:04:16 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -82,10 +82,11 @@ Cc: linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	kernel@quicinc.com,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v9 09/13] firmware: qcom: qseecom: convert to using the TZ allocator
-Date: Mon, 25 Mar 2024 11:03:55 +0100
-Message-Id: <20240325100359.17001-10-brgl@bgdev.pl>
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Deepti Jaggi <quic_djaggi@quicinc.com>
+Subject: [PATCH v9 10/13] firmware: qcom: scm: add support for SHM bridge operations
+Date: Mon, 25 Mar 2024 11:03:56 +0100
+Message-Id: <20240325100359.17001-11-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240325100359.17001-1-brgl@bgdev.pl>
 References: <20240325100359.17001-1-brgl@bgdev.pl>
@@ -99,240 +100,126 @@ Content-Transfer-Encoding: 8bit
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Drop the DMA mapping operations from qcom_scm_qseecom_app_send() and
-convert all users of it in the qseecom module to using the TZ allocator
-for creating SCM call buffers. As this is largely a module separate from
-the SCM driver, let's use a separate memory pool. Set the initial size to
-4K and - if we run out - add twice the current amount to the pool.
+SHM Bridge is a safety mechanism allowing to limit the amount of memory
+shared between the kernel and the TrustZone to regions explicitly marked
+as such.
+
+Add low-level primitives for enabling SHM bridge support as well as
+creating and destroying SHM bridges to qcom-scm.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Acked-by: Andrew Halaney <ahalaney@redhat.com>
+Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
+Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
+Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- .../firmware/qcom/qcom_qseecom_uefisecapp.c   | 47 ++++++++++++-------
- drivers/firmware/qcom/qcom_scm.c              | 30 +++---------
- include/linux/firmware/qcom/qcom_qseecom.h    |  4 +-
- 3 files changed, 39 insertions(+), 42 deletions(-)
+ drivers/firmware/qcom/qcom_scm.c       | 60 ++++++++++++++++++++++++++
+ drivers/firmware/qcom/qcom_scm.h       |  3 ++
+ include/linux/firmware/qcom/qcom_scm.h |  6 +++
+ 3 files changed, 69 insertions(+)
 
-diff --git a/drivers/firmware/qcom/qcom_qseecom_uefisecapp.c b/drivers/firmware/qcom/qcom_qseecom_uefisecapp.c
-index 1f8c5efc2b5a..0bb13c8225c2 100644
---- a/drivers/firmware/qcom/qcom_qseecom_uefisecapp.c
-+++ b/drivers/firmware/qcom/qcom_qseecom_uefisecapp.c
-@@ -14,11 +14,14 @@
- #include <linux/mutex.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/sizes.h>
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/ucs2_string.h>
- 
- #include <linux/firmware/qcom/qcom_qseecom.h>
-+#include <linux/firmware/qcom/qcom_scm.h>
-+#include <linux/firmware/qcom/qcom_tzmem.h>
- 
- /* -- Qualcomm "uefisecapp" interface definitions. -------------------------- */
- 
-@@ -254,6 +257,7 @@ struct qsee_rsp_uefi_query_variable_info {
- struct qcuefi_client {
- 	struct qseecom_client *client;
- 	struct efivars efivars;
-+	struct qcom_tzmem_pool *mempool;
- };
- 
- static struct device *qcuefi_dev(struct qcuefi_client *qcuefi)
-@@ -273,8 +277,8 @@ static efi_status_t qsee_uefi_get_variable(struct qcuefi_client *qcuefi, const e
- 					   const efi_guid_t *guid, u32 *attributes,
- 					   unsigned long *data_size, void *data)
- {
--	struct qsee_req_uefi_get_variable *req_data __free(kfree) = NULL;
--	struct qsee_rsp_uefi_get_variable *rsp_data __free(kfree) = NULL;
-+	struct qsee_req_uefi_get_variable *req_data __free(qcom_tzmem) = NULL;
-+	struct qsee_rsp_uefi_get_variable *rsp_data __free(qcom_tzmem) = NULL;
- 	unsigned long buffer_size = *data_size;
- 	unsigned long name_length;
- 	efi_status_t efi_status;
-@@ -305,11 +309,11 @@ static efi_status_t qsee_uefi_get_variable(struct qcuefi_client *qcuefi, const e
- 		__array(u8, buffer_size)
- 	);
- 
--	req_data = kzalloc(req_size, GFP_KERNEL);
-+	req_data = qcom_tzmem_alloc(qcuefi->mempool, req_size, GFP_KERNEL);
- 	if (!req_data)
- 		return EFI_OUT_OF_RESOURCES;
- 
--	rsp_data = kzalloc(rsp_size, GFP_KERNEL);
-+	rsp_data = qcom_tzmem_alloc(qcuefi->mempool, rsp_size, GFP_KERNEL);
- 	if (!rsp_data)
- 		return EFI_OUT_OF_RESOURCES;
- 
-@@ -394,8 +398,8 @@ static efi_status_t qsee_uefi_set_variable(struct qcuefi_client *qcuefi, const e
- 					   const efi_guid_t *guid, u32 attributes,
- 					   unsigned long data_size, const void *data)
- {
--	struct qsee_req_uefi_set_variable *req_data __free(kfree) = NULL;
--	struct qsee_rsp_uefi_set_variable *rsp_data __free(kfree) = NULL;
-+	struct qsee_req_uefi_set_variable *req_data __free(qcom_tzmem) = NULL;
-+	struct qsee_rsp_uefi_set_variable *rsp_data __free(qcom_tzmem) = NULL;
- 	unsigned long name_length;
- 	size_t name_offs;
- 	size_t guid_offs;
-@@ -425,11 +429,11 @@ static efi_status_t qsee_uefi_set_variable(struct qcuefi_client *qcuefi, const e
- 		__array_offs(u8, data_size, &data_offs)
- 	);
- 
--	req_data = kzalloc(req_size, GFP_KERNEL);
-+	req_data = qcom_tzmem_alloc(qcuefi->mempool, req_size, GFP_KERNEL);
- 	if (!req_data)
- 		return EFI_OUT_OF_RESOURCES;
- 
--	rsp_data = kzalloc(sizeof(*rsp_data), GFP_KERNEL);
-+	rsp_data = qcom_tzmem_alloc(qcuefi->mempool, sizeof(*rsp_data), GFP_KERNEL);
- 	if (!rsp_data)
- 		return EFI_OUT_OF_RESOURCES;
- 
-@@ -476,8 +480,8 @@ static efi_status_t qsee_uefi_get_next_variable(struct qcuefi_client *qcuefi,
- 						unsigned long *name_size, efi_char16_t *name,
- 						efi_guid_t *guid)
- {
--	struct qsee_req_uefi_get_next_variable *req_data __free(kfree) = NULL;
--	struct qsee_rsp_uefi_get_next_variable *rsp_data __free(kfree) = NULL;
-+	struct qsee_req_uefi_get_next_variable *req_data __free(qcom_tzmem) = NULL;
-+	struct qsee_rsp_uefi_get_next_variable *rsp_data __free(qcom_tzmem) = NULL;
- 	efi_status_t efi_status;
- 	size_t guid_offs;
- 	size_t name_offs;
-@@ -503,11 +507,11 @@ static efi_status_t qsee_uefi_get_next_variable(struct qcuefi_client *qcuefi,
- 		__array(*name, *name_size / sizeof(*name))
- 	);
- 
--	req_data = kzalloc(req_size, GFP_KERNEL);
-+	req_data = qcom_tzmem_alloc(qcuefi->mempool, req_size, GFP_KERNEL);
- 	if (!req_data)
- 		return EFI_OUT_OF_RESOURCES;
- 
--	rsp_data = kzalloc(rsp_size, GFP_KERNEL);
-+	rsp_data = qcom_tzmem_alloc(qcuefi->mempool, rsp_size, GFP_KERNEL);
- 	if (!rsp_data)
- 		return EFI_OUT_OF_RESOURCES;
- 
-@@ -587,15 +591,15 @@ static efi_status_t qsee_uefi_query_variable_info(struct qcuefi_client *qcuefi,
- 						  u64 *storage_space, u64 *remaining_space,
- 						  u64 *max_variable_size)
- {
--	struct qsee_req_uefi_query_variable_info *req_data __free(kfree) = NULL;
--	struct qsee_rsp_uefi_query_variable_info *rsp_data __free(kfree) = NULL;
-+	struct qsee_req_uefi_query_variable_info *req_data __free(qcom_tzmem) = NULL;
-+	struct qsee_rsp_uefi_query_variable_info *rsp_data __free(qcom_tzmem) = NULL;
- 	int status;
- 
--	req_data = kzalloc(sizeof(*req_data), GFP_KERNEL);
-+	req_data = qcom_tzmem_alloc(qcuefi->mempool, sizeof(*req_data), GFP_KERNEL);
- 	if (!req_data)
- 		return EFI_OUT_OF_RESOURCES;
- 
--	rsp_data = kzalloc(sizeof(*rsp_data), GFP_KERNEL);
-+	rsp_data = qcom_tzmem_alloc(qcuefi->mempool, sizeof(*rsp_data), GFP_KERNEL);
- 	if (!rsp_data)
- 		return EFI_OUT_OF_RESOURCES;
- 
-@@ -740,6 +744,7 @@ static const struct efivar_operations qcom_efivar_ops = {
- static int qcom_uefisecapp_probe(struct auxiliary_device *aux_dev,
- 				 const struct auxiliary_device_id *aux_dev_id)
- {
-+	struct qcom_tzmem_pool_config pool_config;
- 	struct qcuefi_client *qcuefi;
- 	int status;
- 
-@@ -758,6 +763,16 @@ static int qcom_uefisecapp_probe(struct auxiliary_device *aux_dev,
- 	if (status)
- 		qcuefi_set_reference(NULL);
- 
-+	memset(&pool_config, 0, sizeof(pool_config));
-+	pool_config.initial_size = SZ_4K;
-+	pool_config.policy = QCOM_TZMEM_POLICY_MULTIPLIER;
-+	pool_config.increment = 2;
-+	pool_config.max_size = SZ_256K;
-+
-+	qcuefi->mempool = devm_qcom_tzmem_pool_new(&aux_dev->dev, &pool_config);
-+	if (IS_ERR(qcuefi->mempool))
-+		return PTR_ERR(qcuefi->mempool);
-+
- 	return status;
- }
- 
 diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index d9b189632e61..f871af4af829 100644
+index f871af4af829..7a8d67c7b71c 100644
 --- a/drivers/firmware/qcom/qcom_scm.c
 +++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -1570,9 +1570,9 @@ EXPORT_SYMBOL_GPL(qcom_scm_qseecom_app_get_id);
- /**
-  * qcom_scm_qseecom_app_send() - Send to and receive data from a given QSEE app.
-  * @app_id:   The ID of the target app.
-- * @req:      Request buffer sent to the app (must be DMA-mappable).
-+ * @req:      Request buffer sent to the app (must be TZ memory)
-  * @req_size: Size of the request buffer.
-- * @rsp:      Response buffer, written to by the app (must be DMA-mappable).
-+ * @rsp:      Response buffer, written to by the app (must be TZ memory)
-  * @rsp_size: Size of the response buffer.
-  *
-  * Sends a request to the QSEE app associated with the given ID and read back
-@@ -1588,26 +1588,12 @@ int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
+@@ -1326,6 +1326,66 @@ bool qcom_scm_lmh_dcvsh_available(void)
+ }
+ EXPORT_SYMBOL_GPL(qcom_scm_lmh_dcvsh_available);
+ 
++int qcom_scm_shm_bridge_enable(void)
++{
++	struct qcom_scm_desc desc = {
++		.svc = QCOM_SCM_SVC_MP,
++		.cmd = QCOM_SCM_MP_SHM_BRIDGE_ENABLE,
++		.owner = ARM_SMCCC_OWNER_SIP
++	};
++
++	struct qcom_scm_res res;
++
++	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_MP,
++					  QCOM_SCM_MP_SHM_BRIDGE_ENABLE))
++		return -EOPNOTSUPP;
++
++	return qcom_scm_call(__scm->dev, &desc, &res) ?: res.result[0];
++}
++EXPORT_SYMBOL_GPL(qcom_scm_shm_bridge_enable);
++
++int qcom_scm_shm_bridge_create(struct device *dev, u64 pfn_and_ns_perm_flags,
++			       u64 ipfn_and_s_perm_flags, u64 size_and_flags,
++			       u64 ns_vmids, u64 *handle)
++{
++	struct qcom_scm_desc desc = {
++		.svc = QCOM_SCM_SVC_MP,
++		.cmd = QCOM_SCM_MP_SHM_BRIDGE_CREATE,
++		.owner = ARM_SMCCC_OWNER_SIP,
++		.args[0] = pfn_and_ns_perm_flags,
++		.args[1] = ipfn_and_s_perm_flags,
++		.args[2] = size_and_flags,
++		.args[3] = ns_vmids,
++		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_VAL, QCOM_SCM_VAL,
++					 QCOM_SCM_VAL, QCOM_SCM_VAL),
++	};
++
++	struct qcom_scm_res res;
++	int ret;
++
++	ret = qcom_scm_call(__scm->dev, &desc, &res);
++
++	if (handle && !ret)
++		*handle = res.result[1];
++
++	return ret ?: res.result[0];
++}
++EXPORT_SYMBOL_GPL(qcom_scm_shm_bridge_create);
++
++int qcom_scm_shm_bridge_delete(struct device *dev, u64 handle)
++{
++	struct qcom_scm_desc desc = {
++		.svc = QCOM_SCM_SVC_MP,
++		.cmd = QCOM_SCM_MP_SHM_BRIDGE_DELETE,
++		.owner = ARM_SMCCC_OWNER_SIP,
++		.args[0] = handle,
++		.arginfo = QCOM_SCM_ARGS(1, QCOM_SCM_VAL),
++	};
++
++	return qcom_scm_call(__scm->dev, &desc, NULL);
++}
++EXPORT_SYMBOL_GPL(qcom_scm_shm_bridge_delete);
++
+ int qcom_scm_lmh_profile_change(u32 profile_id)
  {
- 	struct qcom_scm_qseecom_resp res = {};
- 	struct qcom_scm_desc desc = {};
--	dma_addr_t req_phys;
--	dma_addr_t rsp_phys;
-+	phys_addr_t req_phys;
-+	phys_addr_t rsp_phys;
- 	int status;
+ 	struct qcom_scm_desc desc = {
+diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
+index aa7d06939f8e..cb7273aa0a5e 100644
+--- a/drivers/firmware/qcom/qcom_scm.h
++++ b/drivers/firmware/qcom/qcom_scm.h
+@@ -116,6 +116,9 @@ struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void);
+ #define QCOM_SCM_MP_IOMMU_SET_CP_POOL_SIZE	0x05
+ #define QCOM_SCM_MP_VIDEO_VAR			0x08
+ #define QCOM_SCM_MP_ASSIGN			0x16
++#define QCOM_SCM_MP_SHM_BRIDGE_ENABLE		0x1c
++#define QCOM_SCM_MP_SHM_BRIDGE_DELETE		0x1d
++#define QCOM_SCM_MP_SHM_BRIDGE_CREATE		0x1e
  
--	/* Map request buffer */
--	req_phys = dma_map_single(__scm->dev, req, req_size, DMA_TO_DEVICE);
--	status = dma_mapping_error(__scm->dev, req_phys);
--	if (status) {
--		dev_err(__scm->dev, "qseecom: failed to map request buffer\n");
--		return status;
--	}
--
--	/* Map response buffer */
--	rsp_phys = dma_map_single(__scm->dev, rsp, rsp_size, DMA_FROM_DEVICE);
--	status = dma_mapping_error(__scm->dev, rsp_phys);
--	if (status) {
--		dma_unmap_single(__scm->dev, req_phys, req_size, DMA_TO_DEVICE);
--		dev_err(__scm->dev, "qseecom: failed to map response buffer\n");
--		return status;
--	}
-+	req_phys = qcom_tzmem_to_phys(req);
-+	rsp_phys = qcom_tzmem_to_phys(rsp);
+ #define QCOM_SCM_SVC_OCMEM		0x0f
+ #define QCOM_SCM_OCMEM_LOCK_CMD		0x01
+diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
+index ccaf28846054..9b6054813f59 100644
+--- a/include/linux/firmware/qcom/qcom_scm.h
++++ b/include/linux/firmware/qcom/qcom_scm.h
+@@ -115,6 +115,12 @@ int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
+ int qcom_scm_lmh_profile_change(u32 profile_id);
+ bool qcom_scm_lmh_dcvsh_available(void);
  
- 	/* Set up SCM call data */
- 	desc.owner = QSEECOM_TZ_OWNER_TZ_APPS;
-@@ -1625,10 +1611,6 @@ int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
- 	/* Perform call */
- 	status = qcom_scm_qseecom_call(&desc, &res);
++int qcom_scm_shm_bridge_enable(void);
++int qcom_scm_shm_bridge_create(struct device *dev, u64 pfn_and_ns_perm_flags,
++			       u64 ipfn_and_s_perm_flags, u64 size_and_flags,
++			       u64 ns_vmids, u64 *handle);
++int qcom_scm_shm_bridge_delete(struct device *dev, u64 handle);
++
+ #ifdef CONFIG_QCOM_QSEECOM
  
--	/* Unmap buffers */
--	dma_unmap_single(__scm->dev, rsp_phys, rsp_size, DMA_FROM_DEVICE);
--	dma_unmap_single(__scm->dev, req_phys, req_size, DMA_TO_DEVICE);
--
- 	if (status)
- 		return status;
- 
-diff --git a/include/linux/firmware/qcom/qcom_qseecom.h b/include/linux/firmware/qcom/qcom_qseecom.h
-index 5c28298a98be..e868fac55675 100644
---- a/include/linux/firmware/qcom/qcom_qseecom.h
-+++ b/include/linux/firmware/qcom/qcom_qseecom.h
-@@ -27,9 +27,9 @@ struct qseecom_client {
- /**
-  * qcom_qseecom_app_send() - Send to and receive data from a given QSEE app.
-  * @client:   The QSEECOM client associated with the target app.
-- * @req:      Request buffer sent to the app (must be DMA-mappable).
-+ * @req:      Request buffer sent to the app (must be TZ memory).
-  * @req_size: Size of the request buffer.
-- * @rsp:      Response buffer, written to by the app (must be DMA-mappable).
-+ * @rsp:      Response buffer, written to by the app (must be TZ memory).
-  * @rsp_size: Size of the response buffer.
-  *
-  * Sends a request to the QSEE app associated with the given client and read
+ int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id);
 -- 
 2.40.1
 
