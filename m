@@ -1,212 +1,113 @@
-Return-Path: <linux-kernel+bounces-118047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E2F688B2ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C29588B2F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:39:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0C5F1C3CA18
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:38:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D15E1C3DDC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9C16EB70;
-	Mon, 25 Mar 2024 21:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A4D6EB5F;
+	Mon, 25 Mar 2024 21:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="kti1ijWf"
-Received: from toucan.tulip.relay.mailchannels.net (toucan.tulip.relay.mailchannels.net [23.83.218.254])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pis1j0nd"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B896E611;
-	Mon, 25 Mar 2024 21:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.254
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711402727; cv=pass; b=k5AxNpI3hhY+B7aQNT5Y2HLzFRFMlL2l5JKOlgAz/rzFzGX0ATJFjnPFZ71Is5LPotz+e646MfE6s37tPusmL7tAtdXyq2HxJqMPTAFZr4GYWi1+yV/XjKG8sn6SLN7yo1epM8l5eDD88v2FO6Qtk/TT5unfNCYJKIalL0yYhzU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711402727; c=relaxed/simple;
-	bh=BfrzovaPTYaILJssWn7Nx3MRnvGgWgiVAjq8TUTlxVo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IpRGK1FjSlI/vN9B1m6k3VKZxYAarSiKIx9CmlgO3BalGohvzjmwUuf7/aTb+tHHNgN4xSmgOm8LD4uWp7xKBc18sTwhnNPE11EOPF5WXYTSR11z7PPiT4r/zEQCQ/ek1bscI+OY87zgqVdkklD+CnG8Ufyglran7aU6Aj1Y+1A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=kti1ijWf; arc=pass smtp.client-ip=23.83.218.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 0B75A8028C2;
-	Mon, 25 Mar 2024 21:38:38 +0000 (UTC)
-Received: from pdx1-sub0-mail-a262.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 53B7F802C11;
-	Mon, 25 Mar 2024 21:38:36 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1711402716; a=rsa-sha256;
-	cv=none;
-	b=i5bITHOKqnVTANPsw49tZ57giJYI+BYyApaK4/xvMagW2Juff9HvvLpVEyTRClHeCbBaiS
-	LSL4Fuuhj4YAMnc2owh5c4tZN9SnZXtAPBkjZnG/dyEfUOHBmWqUQ4EgoIx4dl/AwxH9z7
-	XiREcygxgTGpMXwYtvM8rKABo5jO66JljT1OIL0aWoJNBCj+E6CcoyDoVtMW4vr4ngZqOX
-	uOb0TGk+702D3YfiXuPbUoJY6S5sTISB1W41CCFxx2ZiBuQ5QTywbospLigSNNMBZ5HFkb
-	wxzjVjrfLXvqE/pEqieCtKdvv1P7UmmdwZT9v1xCVtMPRi7XySNouDfNyHtlAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1711402716;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=tGiXBBfXzTceW9Ljl6Rv6G/RrkyUx/LLQsKTU8/y7os=;
-	b=SgrGv7iShKvm6soic3/LQ3WvJcGjBi0d6MBegsNxx7hY9FUJwkZac99rnxITeH9yZQ/8xg
-	wTSAvQeVQr6AWC9pmGeAukrZWzMDhHtvyc68k9KdVzY1+fhkqIWYbZlW/Iu7rj4H2FxcSM
-	cPR2N6Y8t8FDqpO00mZyALrLMwMYPZu2HFFvdbrNcyrY7HGbD6av6LhGwefOwYVvwoQfPV
-	xyXrfT381mifkAU6ANOiuNg0z3ogtc5HGQXqRqoqEdDkgbkp0va245NUvx/6nH+Y33a2QM
-	ohxgCPeLP4j9Bu26kDQdUGI8G5QruoUBVc5SCMPcVVR9pithv30YvlM7rZVpFQ==
-ARC-Authentication-Results: i=1;
-	rspamd-dbbfdf895-ljm6h;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Lyrical-Lettuce: 72d0b04e04bf5627_1711402717849_4055661056
-X-MC-Loop-Signature: 1711402717848:1809582852
-X-MC-Ingress-Time: 1711402717848
-Received: from pdx1-sub0-mail-a262.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.123.121.28 (trex/6.9.2);
-	Mon, 25 Mar 2024 21:38:37 +0000
-Received: from offworld (unknown [108.175.208.151])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a262.dreamhost.com (Postfix) with ESMTPSA id 4V3RBg3ghDzNp;
-	Mon, 25 Mar 2024 14:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1711402716;
-	bh=tGiXBBfXzTceW9Ljl6Rv6G/RrkyUx/LLQsKTU8/y7os=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=kti1ijWf5x4DWhuiZZ4asypF67MJzo8S+vRjxKsozYDMz44zIgKp5f8uQOcOsMUxy
-	 4Fzx6rcVkI7aQOB9H/sBcAmCq0Z1OPOKPc7DSbbSh2Etjq+FeEQfcTaOyLjJo9MgLd
-	 l9mhf31ezB5NWye/vpHgN2ueYtNnd5yZHbomrrqDzSZWRiRjadsqWoRSysxVFIVbxy
-	 7JuytwMVxMnEGn96MKOwwije30H4ddsii+ig0KJ0wMq4qEQnFtfOcNm8pS2dK1WIw2
-	 mwPxUNgktHsXkYPWoE95iSEvL995qNBLYgrF5UscBmqR7bPqgh7a0XBuIJgthWRM7Z
-	 h2dukTrWj4L2A==
-Date: Mon, 25 Mar 2024 14:38:32 -0700
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Navneet Singh <navneet.singh@intel.com>, 
-	Dan Williams <dan.j.williams@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/26] cxl/core: Simplify cxl_dpa_set_mode()
-Message-ID: <zmcr2lththfsr2zvmgksmmbaupfss2lmgjkyegpvqokynnaknq@ssp2xxvyl222>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DC733995;
+	Mon, 25 Mar 2024 21:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711402763; cv=none; b=nsuR88cZRIZ1CuKh/zJjRnMOZS8RGYCwJ0Wr+zhDYE1v16/OUMbKuFT/8nl7BS2u9oLJeJ6vSWObXck61f7LxjV1cXCj3WOBRhTl7c7R/gGGZ1RAMEUrArQUH7MSrS/PFLv+OeCBoaip1udcOs0dYCy/MH81OyFSEMZ7dQccKfg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711402763; c=relaxed/simple;
+	bh=C2sNYIaC01kmO3LHkAq7V6ASMBF5rWFrTRg9atwYGx8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qbw1KYGfOsIJGI8jynm4kZmofXTTjNDQnRL28y1WIfI9oVjg5UMgSJchJkkcnkHZ8NeAxlZ9mh+Jyols6jpetXSD2ZFKEn6eZK7FJssfzTWmqQCepLlG0IWVkA/ycivRv2bpgT5UHFqvDCgS8WFwKGeuYrKvV+fCthbVOydQLdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pis1j0nd; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42PLNbd4012736;
+	Mon, 25 Mar 2024 21:39:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=0jLGL4SMuqDxWHqmlXOEG0WE44DYRZawG79sF/kR754=; b=pi
+	s1j0ndkzxZgqgS56A7sv42VCkAaU8tBoR/bhLQXBXLclpGP7YJYL1rOqUIhNoJN4
+	TSGuOJK40x2SXnFB2uhoCcXcL3YLAqOJTmDYWmO4GKdiViqq9aCbh1bU6HIv65+A
+	70Yxt1uS2hAV5xAbWqPWlNvij4MwBBINmhq1FD+0ckkXFeQBO5UD/mguc2oPDzQV
+	UZVFo8haUXOYHbDi6P4Epn/SG4pAy7zl0X5X6CJsT3YSXq6eyEX8bPbux1moB5Gj
+	JOhxzZMoCO2RmkrvLtXA2PEnAtmCTQioV9CZPO6emNMJtPAoqAvxAri79PCeY+kR
+	veOO/OZzd3K3QC+vTk2w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x3h52r0s7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 21:39:18 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42PLdGLx018575
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 25 Mar 2024 21:39:16 GMT
+Received: from [10.110.56.183] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 25 Mar
+ 2024 14:39:14 -0700
+Message-ID: <6220c995-5893-9da3-e7c6-e1f8d292be64@quicinc.com>
+Date: Mon, 25 Mar 2024 14:39:12 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
-User-Agent: NeoMutt/20231221
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/msm: Add newlines to some debug prints
+Content-Language: en-US
+To: Stephen Boyd <swboyd@chromium.org>, Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>
+References: <20240325210810.1340820-1-swboyd@chromium.org>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240325210810.1340820-1-swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 26ruocLNZy91ePL63B0oOr9hcAWZJxyH
+X-Proofpoint-GUID: 26ruocLNZy91ePL63B0oOr9hcAWZJxyH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-25_21,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ suspectscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=898
+ malwarescore=0 spamscore=0 lowpriorityscore=0 phishscore=0 clxscore=1011
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403250134
 
-On Sun, 24 Mar 2024, Ira Weiny wrote:
 
->cxl_dpa_set_mode() checks the mode for validity two times, once outside
->of the DPA RW semaphore and again within.  The function is not in a
->critical path.  Prior to Dynamic Capacity the extra check was not much
->of an issue.  The addition of DC modes increases the complexity of
->the check.
 
-I agree (also to pick this up regardless of dcd work).
+On 3/25/2024 2:08 PM, Stephen Boyd wrote:
+> These debug prints are missing newlines, leading to multiple messages
+> being printed on one line and hard to read logs. Add newlines to have
+> the debug prints on separate lines. The DBG macro used to add a newline,
+> but I missed that while migrating to drm_dbg wrappers.
+> 
+> Fixes: 7cb017db1896 ("drm/msm: Move FB debug prints to drm_dbg_state()")
+> Fixes: 721c6e0c6aed ("drm/msm: Move vblank debug prints to drm_dbg_vbl()")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>   drivers/gpu/drm/msm/msm_fb.c  | 6 +++---
+>   drivers/gpu/drm/msm/msm_kms.c | 4 ++--
+>   2 files changed, 5 insertions(+), 5 deletions(-)
+> 
 
->
->Simplify the mode check before adding the more complex DC modes.
-
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-
->Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->
->---
->Changes for v1:
->[iweiny: new patch]
->[Jonathan: based on getting rid of the loop in cxl_dpa_set_mode]
->[Jonathan: standardize on resource_size() == 0]
->---
-> drivers/cxl/core/hdm.c | 45 ++++++++++++++++++---------------------------
-> 1 file changed, 18 insertions(+), 27 deletions(-)
->
->diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
->index 7d97790b893d..66b8419fd0c3 100644
->--- a/drivers/cxl/core/hdm.c
->+++ b/drivers/cxl/core/hdm.c
->@@ -411,44 +411,35 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
->	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
->	struct cxl_dev_state *cxlds = cxlmd->cxlds;
->	struct device *dev = &cxled->cxld.dev;
->-	int rc;
->
->+	guard(rwsem_write)(&cxl_dpa_rwsem);
->+	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
->+		return -EBUSY;
->+
->+	/*
->+	 * Check that the mode is supported by the current partition
->+	 * configuration
->+	 */
->	switch (mode) {
->	case CXL_DECODER_RAM:
->+		if (!resource_size(&cxlds->ram_res)) {
->+			dev_dbg(dev, "no available ram capacity\n");
->+			return -ENXIO;
->+		}
->+		break;
->	case CXL_DECODER_PMEM:
->+		if (!resource_size(&cxlds->pmem_res)) {
->+			dev_dbg(dev, "no available pmem capacity\n");
->+			return -ENXIO;
->+		}
->		break;
->	default:
->		dev_dbg(dev, "unsupported mode: %d\n", mode);
->		return -EINVAL;
->	}
->
->-	down_write(&cxl_dpa_rwsem);
->-	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE) {
->-		rc = -EBUSY;
->-		goto out;
->-	}
->-
->-	/*
->-	 * Only allow modes that are supported by the current partition
->-	 * configuration
->-	 */
->-	if (mode == CXL_DECODER_PMEM && !resource_size(&cxlds->pmem_res)) {
->-		dev_dbg(dev, "no available pmem capacity\n");
->-		rc = -ENXIO;
->-		goto out;
->-	}
->-	if (mode == CXL_DECODER_RAM && !resource_size(&cxlds->ram_res)) {
->-		dev_dbg(dev, "no available ram capacity\n");
->-		rc = -ENXIO;
->-		goto out;
->-	}
->-
->	cxled->mode = mode;
->-	rc = 0;
->-out:
->-	up_write(&cxl_dpa_rwsem);
->-
->-	return rc;
->+	return 0;
-> }
->
-> int cxl_dpa_alloc(struct cxl_endpoint_decoder *cxled, unsigned long long size)
->
->--
->2.44.0
->
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
