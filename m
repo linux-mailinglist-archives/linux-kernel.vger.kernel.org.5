@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-117386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C6D588AABF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:07:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CF8588AABE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74FA02C7016
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:07:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 405381C392F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 027DD130A54;
-	Mon, 25 Mar 2024 15:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110256E61D;
+	Mon, 25 Mar 2024 15:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d3qeQ5ot"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eCpXN8qz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970121304AD
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8327F1304AD
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 15:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711381017; cv=none; b=K744/741lbUH77LEOqEwpGjYOUxvlnCvcNQsB7u4NTz8qTcVsHrF7qOLHgnibpr98vDHr79SR+nuKWGqKEfgRMo7OUddeOloB0LTD5wGIdn0X80XRhXHeLD0ZXvjdf6nXDPBmhWFBmFNkvKQ/pl0LpSE59w2DYcc1iHq2dtr9nE=
+	t=1711381023; cv=none; b=hikvVHxyIuZGonjCot+zwXc/uCxrDJd6PICYIs9viHN+in7/QgXOgE/25iS+hik3QjKVPE+JESiqVnr0vjjlQhG0qz4qIwoCf+RbZt62TKDimg+Cmb78Y54NDHxGAlV9ABYDrzd1qwW9dghfGvI8s34g6fk3p/ZYmKi6ofeCWHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711381017; c=relaxed/simple;
-	bh=wMsPr5Ua8rI3QCm1XRXIe808ikAt5n5DeLEZcsm/1xw=;
+	s=arc-20240116; t=1711381023; c=relaxed/simple;
+	bh=wb4kr08JDH+NnZLnT1A79izRE8BGA+Rpd9wAnH4wDR8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jTKKfI8tSE1UtTnavcx33x+od+7X7RhWH5ArhDEGpdyQWWO6s1gpcewI0BV3eRziMmY2zJJJzLE2xToZlVkMkOWVxIIIKGpm9tEFmaGAKk8peponm3ixw54rvU7iE8J9bEMi93/MYkOHLNmhyIYW91Yvca4iX0y5FZ+MO8tkxV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d3qeQ5ot; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version; b=ZGN9KUxf80VkhZlu8Jc9AyiZjr0XIyKAq3krlLVNIzF7yMwMo5D+eG+z1FjmURdK/37LIyVfYaVDUVd3h6a3eBSWfuZr6GthnNs5EMBNJLWj++KdVYhk/6GvXTzOxt2lq4VLRTIKXV5G1/MjD69Wm872C1Q+gZ0Wpek3RazWa68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eCpXN8qz; arc=none smtp.client-ip=192.198.163.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711381016; x=1742917016;
+  t=1711381021; x=1742917021;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=wMsPr5Ua8rI3QCm1XRXIe808ikAt5n5DeLEZcsm/1xw=;
-  b=d3qeQ5otQonddW59pMPvmNTbyLB3gP4pu06TfJVzuKFZRH7djIo0GJYI
-   rBJ/+on70+vtjduzL79AveoZC57Y25POFGzGcB3+B+OZikIdR9GJiMAyB
-   /sH7AblbBKgPhcwqgRsjh8OIZRozpB+7sjed5CD1BnV7kvdUjfP7Z6cCn
-   QiAIe9cCyf98TIWdz76LwSL05+d4vg/iSdOvAx8YyqZJAhGoextnD5jpt
-   tP8/xB/HIX4MDOn+qpsoYGlIgcwPsae3ayy9JNasMu/6Ipn5kLUG+HU1m
-   OPnHD2DDqx2FfU2y773ycFSFtGd4AYgxYPOj/LYGKQQuuK7Oyb9JLq6jU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17125100"
+  bh=wb4kr08JDH+NnZLnT1A79izRE8BGA+Rpd9wAnH4wDR8=;
+  b=eCpXN8qzYwjjjQdWacQxyybs6iu3GBIE3pUnuThRqotjYRyiwMb5QEvY
+   e11B5Da38PQ5m95E11bLmIYTxslyorBGgs8Dz1iYsES4J0uDweBG9eYpm
+   M6N7VZ/4hCce+eFMwnFmUmy+W3FIJY75Ts2pFGpEUI1EqHrqqtTNoxJFB
+   Xze0bJpwDxTvX/hN7v1zoiQAanj3SA7vlhWIh7OQy2o/GwWsE9n6zUL1M
+   dL/QZrzTJucAYutVWZ28NlElll6SJE0emdj5ZNJybJO/C3946Xnkwn4Sl
+   3uU4CKSGG3y7AUPr8x2iLayRtc1SNQA5lGc0G9+zx9S/ncctARqH2Rqkz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6221664"
 X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="17125100"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:36:56 -0700
+   d="scan'208";a="6221664"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:37:00 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="15523966"
+   d="scan'208";a="38758551"
 Received: from idirlea-mobl.ger.corp.intel.com (HELO localhost) ([10.252.55.171])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:36:53 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 08:36:59 -0700
 From: Jani Nikula <jani.nikula@intel.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Greg KH <gregkh@linuxfoundation.org>,
 	linux-kernel@vger.kernel.org
 Cc: jani.nikula@intel.com
-Subject: [RFC 3/4] kernel/panic: initialize taint_flags[] using a macro
-Date: Mon, 25 Mar 2024 17:36:34 +0200
-Message-Id: <aa0bc2c9c23debf78b6319e3d7bc73f96385125c.1711380724.git.jani.nikula@intel.com>
+Subject: [RFC 4/4] kernel/panic: add verbose logging of kernel taints in backtraces
+Date: Mon, 25 Mar 2024 17:36:35 +0200
+Message-Id: <e0d275c30e97ddf943c2d797c4004673fbc82002.1711380724.git.jani.nikula@intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1711380724.git.jani.nikula@intel.com>
 References: <cover.1711380724.git.jani.nikula@intel.com>
@@ -73,79 +73,147 @@ MIME-Version: 1.0
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Content-Transfer-Encoding: 8bit
 
-Make it easier to extend struct taint_flags in follow-up.
+With nearly 20 taint flags and respective characters, it's getting a bit
+difficult to remember what each taint flag character means. Add verbose
+logging of the set taints in the format:
+
+Tainted: [P]=PROPRIETARY_MODULE, [W]=WARN
+
+in dump_stack_print_info() when there are taints.
+
+Note that the "negative flag" G is not included.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Greg KH <gregkh@linuxfoundation.org>
 Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 ---
- kernel/panic.c | 46 +++++++++++++++++++++++++++-------------------
- 1 file changed, 27 insertions(+), 19 deletions(-)
+ include/linux/panic.h |  8 +++++---
+ kernel/panic.c        | 45 ++++++++++++++++++++++++++++++++-----------
+ lib/dump_stack.c      |  3 +++
+ 3 files changed, 42 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/panic.c b/kernel/panic.c
-index d2d5f0a4b514..e1f87ba51ba1 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -473,32 +473,40 @@ void panic(const char *fmt, ...)
+diff --git a/include/linux/panic.h b/include/linux/panic.h
+index 6717b15e798c..3130e0b5116b 100644
+--- a/include/linux/panic.h
++++ b/include/linux/panic.h
+@@ -77,9 +77,10 @@ static inline void set_arch_panic_timeout(int timeout, int arch_default_timeout)
+ #define TAINT_FLAGS_MAX			((1UL << TAINT_FLAGS_COUNT) - 1)
  
- EXPORT_SYMBOL(panic);
- 
-+#define TAINT_FLAG(taint, _c_true, _c_false, _module)			\
-+	[ TAINT_##taint ] = {						\
-+		.c_true = _c_true, .c_false = _c_false,			\
-+		.module = _module,					\
-+	}
-+
- /*
-  * TAINT_FORCED_RMMOD could be a per-module flag but the module
-  * is being removed anyway.
-  */
- const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
--	[ TAINT_PROPRIETARY_MODULE ]	= { 'P', 'G', true },
--	[ TAINT_FORCED_MODULE ]		= { 'F', ' ', true },
--	[ TAINT_CPU_OUT_OF_SPEC ]	= { 'S', ' ', false },
--	[ TAINT_FORCED_RMMOD ]		= { 'R', ' ', false },
--	[ TAINT_MACHINE_CHECK ]		= { 'M', ' ', false },
--	[ TAINT_BAD_PAGE ]		= { 'B', ' ', false },
--	[ TAINT_USER ]			= { 'U', ' ', false },
--	[ TAINT_DIE ]			= { 'D', ' ', false },
--	[ TAINT_OVERRIDDEN_ACPI_TABLE ]	= { 'A', ' ', false },
--	[ TAINT_WARN ]			= { 'W', ' ', false },
--	[ TAINT_CRAP ]			= { 'C', ' ', true },
--	[ TAINT_FIRMWARE_WORKAROUND ]	= { 'I', ' ', false },
--	[ TAINT_OOT_MODULE ]		= { 'O', ' ', true },
--	[ TAINT_UNSIGNED_MODULE ]	= { 'E', ' ', true },
--	[ TAINT_SOFTLOCKUP ]		= { 'L', ' ', false },
--	[ TAINT_LIVEPATCH ]		= { 'K', ' ', true },
--	[ TAINT_AUX ]			= { 'X', ' ', true },
--	[ TAINT_RANDSTRUCT ]		= { 'T', ' ', true },
--	[ TAINT_TEST ]			= { 'N', ' ', true },
-+	TAINT_FLAG(PROPRIETARY_MODULE,		'P', 'G', true),
-+	TAINT_FLAG(FORCED_MODULE,		'F', ' ', true),
-+	TAINT_FLAG(CPU_OUT_OF_SPEC,		'S', ' ', false),
-+	TAINT_FLAG(FORCED_RMMOD,		'R', ' ', false),
-+	TAINT_FLAG(MACHINE_CHECK,		'M', ' ', false),
-+	TAINT_FLAG(BAD_PAGE,			'B', ' ', false),
-+	TAINT_FLAG(USER,			'U', ' ', false),
-+	TAINT_FLAG(DIE,				'D', ' ', false),
-+	TAINT_FLAG(OVERRIDDEN_ACPI_TABLE,	'A', ' ', false),
-+	TAINT_FLAG(WARN,			'W', ' ', false),
-+	TAINT_FLAG(CRAP,			'C', ' ', true),
-+	TAINT_FLAG(FIRMWARE_WORKAROUND,		'I', ' ', false),
-+	TAINT_FLAG(OOT_MODULE,			'O', ' ', true),
-+	TAINT_FLAG(UNSIGNED_MODULE,		'E', ' ', true),
-+	TAINT_FLAG(SOFTLOCKUP,			'L', ' ', false),
-+	TAINT_FLAG(LIVEPATCH,			'K', ' ', true),
-+	TAINT_FLAG(AUX,				'X', ' ', true),
-+	TAINT_FLAG(RANDSTRUCT,			'T', ' ', true),
-+	TAINT_FLAG(TEST,			'N', ' ', true),
+ struct taint_flag {
+-	char c_true;	/* character printed when tainted */
+-	char c_false;	/* character printed when not tainted */
+-	bool module;	/* also show as a per-module taint flag */
++	char c_true;		/* character printed when tainted */
++	char c_false;		/* character printed when not tainted */
++	bool module;		/* also show as a per-module taint flag */
++	const char *desc;	/* verbose description of the set taint flag */
  };
  
-+#undef TAINT_FLAG
-+
- static void print_tainted_seq(struct seq_buf *s)
+ extern const struct taint_flag taint_flags[TAINT_FLAGS_COUNT];
+@@ -90,6 +91,7 @@ enum lockdep_ok {
+ };
+ 
+ extern const char *print_tainted(void);
++extern const char *print_tainted_verbose(void);
+ extern void add_taint(unsigned flag, enum lockdep_ok);
+ extern int test_taint(unsigned flag);
+ extern unsigned long get_taint(void);
+diff --git a/kernel/panic.c b/kernel/panic.c
+index e1f87ba51ba1..ed270d3b5f2b 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -477,6 +477,7 @@ EXPORT_SYMBOL(panic);
+ 	[ TAINT_##taint ] = {						\
+ 		.c_true = _c_true, .c_false = _c_false,			\
+ 		.module = _module,					\
++		.desc = #taint,						\
+ 	}
+ 
+ /*
+@@ -507,8 +508,9 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
+ 
+ #undef TAINT_FLAG
+ 
+-static void print_tainted_seq(struct seq_buf *s)
++static void print_tainted_seq(struct seq_buf *s, bool verbose)
  {
++	const char *sep = "";
  	int i;
+ 
+ 	if (!tainted_mask) {
+@@ -522,10 +524,32 @@ static void print_tainted_seq(struct seq_buf *s)
+ 		bool is_set = test_bit(i, &tainted_mask);
+ 		char c = is_set ? t->c_true : t->c_false;
+ 
+-		seq_buf_putc(s, c);
++		if (verbose) {
++			if (is_set) {
++				seq_buf_printf(s, "%s[%c]=%s", sep, c, t->desc);
++				sep = ", ";
++			}
++		} else {
++			seq_buf_putc(s, c);
++		}
+ 	}
+ }
+ 
++static const char *_print_tainted(bool verbose)
++{
++	/* FIXME: what should the size be? */
++	static char buf[sizeof(taint_flags)];
++	struct seq_buf s;
++
++	BUILD_BUG_ON(ARRAY_SIZE(taint_flags) != TAINT_FLAGS_COUNT);
++
++	seq_buf_init(&s, buf, sizeof(buf));
++
++	print_tainted_seq(&s, verbose);
++
++	return seq_buf_str(&s);
++}
++
+ /**
+  * print_tainted - return a string to represent the kernel taint state.
+  *
+@@ -536,16 +560,15 @@ static void print_tainted_seq(struct seq_buf *s)
+  */
+ const char *print_tainted(void)
+ {
+-	static char buf[TAINT_FLAGS_COUNT + sizeof("Tainted: ")];
+-	struct seq_buf s;
+-
+-	BUILD_BUG_ON(ARRAY_SIZE(taint_flags) != TAINT_FLAGS_COUNT);
+-
+-	seq_buf_init(&s, buf, sizeof(buf));
+-
+-	print_tainted_seq(&s);
++	return _print_tainted(false);
++}
+ 
+-	return seq_buf_str(&s);
++/**
++ * print_tainted_verbose - A more verbose version of print_tainted()
++ */
++const char *print_tainted_verbose(void)
++{
++	return _print_tainted(true);
+ }
+ 
+ int test_taint(unsigned flag)
+diff --git a/lib/dump_stack.c b/lib/dump_stack.c
+index 222c6d6c8281..8b6b70eaf949 100644
+--- a/lib/dump_stack.c
++++ b/lib/dump_stack.c
+@@ -62,6 +62,9 @@ void dump_stack_print_info(const char *log_lvl)
+ 	       (int)strcspn(init_utsname()->version, " "),
+ 	       init_utsname()->version, BUILD_ID_VAL);
+ 
++	if (get_taint())
++		printk("%s%s\n", log_lvl, print_tainted_verbose());
++
+ 	if (dump_stack_arch_desc_str[0] != '\0')
+ 		printk("%sHardware name: %s\n",
+ 		       log_lvl, dump_stack_arch_desc_str);
 -- 
 2.39.2
 
