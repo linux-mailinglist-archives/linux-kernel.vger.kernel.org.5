@@ -1,129 +1,110 @@
-Return-Path: <linux-kernel+bounces-117904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF2E88B11B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CDFE88B11C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0E491C62918
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:15:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 597F41C62941
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04945D747;
-	Mon, 25 Mar 2024 20:13:06 +0000 (UTC)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091D546450;
+	Mon, 25 Mar 2024 20:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="J9OjiBv8"
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAF1FC01
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:13:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60FC72233A
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397586; cv=none; b=VeLefgMsy5PFtEMPoLCXvsDAplKmdXb9t99reYSIrry1T7TGuX1TJ//paHK3SH2vZTSNdWr43E4UIehGMyy4vPJrg1CBOFnuqwvl49jghN7uAevEchZtGdlXRqA5P12KYdMVuNPruNxuE5sLMlVXL7XZ9NBXccJMiDolpYZxt1E=
+	t=1711397622; cv=none; b=SjzdQpkt+DCosNO9OTuXJesJQhjAB8vT5E46JkN/pt5vW1onkN9gdNgAOU9eR6OPmbeaqYVwOCbdASbD60NsT0D8B8pNgiW90AW1iO2qDk2txwGTZttJOb3x7wjNfPSHjS9xNgY3hMRF/YhZP0ZZRvEGY3COkLGOJHO/kI7EmaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397586; c=relaxed/simple;
-	bh=SfZG6A8b7DawFMujLgpCe+RcXvJsAKzCUr+HoUNG97o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j+q2sMgHEV13iSe/RDLRIAd+eGMOJAlJ5tTlmzI0IXztxhnf3Qnm+qG7yNZKlSbaSURkZIBz87LF8F9wpGgylp00Sgj5kWVKzMUuGWKxb5ujuz6jUCQnD7LskSF1SNzSPyvYPR12BH0+u1I3kOl/XvMvnxU1iKtJ/+96mbAzBcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7D366240003;
-	Mon, 25 Mar 2024 20:12:55 +0000 (UTC)
-Message-ID: <5bf9b76a-8f1a-4a53-b550-f4f2ad775cd8@ghiti.fr>
-Date: Mon, 25 Mar 2024 21:12:54 +0100
+	s=arc-20240116; t=1711397622; c=relaxed/simple;
+	bh=2GSynMfQlWPEYmmMwEWyYBd32soX6drKAt4Jc4GY5nc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GbvxQ3rOzzlun3Y++R8poRuA2WHekyGtgwJxDCwvvOIPGeUmnG0n3tCEGgX+6i+CUoj18YVsYMdaPIlEN6ezMI8lFgfd9OMZIQvcyJbaj97RCFYe2OHZuqJ/VHZah3xTzQnH39mjYuepBPa1rHjUd7W4G19zF7GzPqa5S+pKoCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=linuxtx.org; dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b=J9OjiBv8; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxtx.org
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-2222b96e4d2so2781007fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1711397619; x=1712002419; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x5MRZLBOe60pVxfq+JGemFNyckt0tyihI28+0Lv7YxQ=;
+        b=J9OjiBv8/T5ocMJDd/5wJvUXzMs8u3YHJsOsFtK7aZEATajUMTEf/ZiNit9GXGq5mI
+         vi9YmwAQaAMPlYwNwB1En/hSAePenDYeHPAHyLeyW1MwNTmayE/YGQRzl0lUgdO9DNqB
+         0bLT2Z853bAEEqAIpo7o5ZN1i494sBxalLoJ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711397619; x=1712002419;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x5MRZLBOe60pVxfq+JGemFNyckt0tyihI28+0Lv7YxQ=;
+        b=wVnG8qG69SC7rWBHAIdPt8VwhYeeGk7UofjW7mVV/zVBP6nDj0ndyxsN/Ck54Ifmbt
+         +ZUgBtBPga8Knki1PJLKhiv3jI8Riv0Oc5mWrzxdEmKoBUV/1rREk1/QGGOaghCXXmQj
+         9g6kh3uuQQWhZ1rUgV8IO1p3Fl3HXG532DuQSX+7BsDaJ2heBNUp4SAD/yQdGCX22c0A
+         hgl4J6v0HBp1JjsIAkjPZXTmT66gY9EvFIZ2HMKzwPK+pYKU6igf67vlOosEkhLG2cKb
+         L4omF7fl05o0fvI4zLb9QpDWu1m/3Wp05sPSU5k+MWqCkDpFT84ES03aWGTOHSzUpHZK
+         pFig==
+X-Gm-Message-State: AOJu0YzziDBKciH5DYZ5UgmIAvBeDBFZnfBHUMPIOs5EiS9jcBXHI6kN
+	s8mqFHdut7ulROJn9ypqGFAuVxq+Hqt/tCd1+p0R9DUPpBoebxiEdLVpzNwdsw==
+X-Google-Smtp-Source: AGHT+IH5MILjTlLT4XjELr9ZSTY0NYuaahWY+8R6aTQhpg+l1C2xqghpFtR7CSPKI3vDqSz/Q/RNiA==
+X-Received: by 2002:a05:6870:4205:b0:229:8236:ae9 with SMTP id u5-20020a056870420500b0022982360ae9mr8470126oac.59.1711397619514;
+        Mon, 25 Mar 2024 13:13:39 -0700 (PDT)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id n20-20020a9d4d14000000b006e67e27fd71sm1271489otf.28.2024.03.25.13.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 13:13:39 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Date: Mon, 25 Mar 2024 15:13:37 -0500
+From: Justin Forbes <jforbes@fedoraproject.org>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, florian.fainelli@broadcom.com,
+	pavel@denx.de
+Subject: Re: [PATCH 6.8 000/710] 6.8.2-rc2 review
+Message-ID: <ZgHa8SsZfpNR2r6L@fedora64.linuxtx.org>
+References: <20240325120018.1768449-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Define TASK_SIZE_MAX for __access_ok()
-Content-Language: en-US
-To: Mark Rutland <mark.rutland@arm.com>,
- David Laight <David.Laight@aculab.com>
-Cc: Samuel Holland <samuel.holland@sifive.com>,
- Alexandre Ghiti <alexghiti@rivosinc.com>, Palmer Dabbelt
- <palmer@dabbelt.com>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- Albert Ou <aou@eecs.berkeley.edu>, Andrew Morton
- <akpm@linux-foundation.org>, Charlie Jenkins <charlie@rivosinc.com>,
- Guo Ren <guoren@kernel.org>, Jisheng Zhang <jszhang@kernel.org>,
- Kemeng Shi <shikemeng@huaweicloud.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- "Mike Rapoport (IBM)" <rppt@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Xiao Wang <xiao.w.wang@intel.com>,
- Yangyu Chen <cyy@cyyself.name>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240313180010.295747-1-samuel.holland@sifive.com>
- <CAHVXubjLWZkjSapnsWJzimWg_2swEy7tQ-DQ6ri8yMk8-Qsc-A@mail.gmail.com>
- <88de4a1a-047e-4be9-b5b0-3e53434dc022@sifive.com>
- <b5624bba-9917-421b-8ef0-4515d442f80b@ghiti.fr>
- <f786e02245424e02b38f55ae6b29d14a@AcuMS.aculab.com>
- <d323eb10-c79b-49cb-94db-9b135e6fd280@ghiti.fr>
- <ZgGosOiW6mTeSnTL@FVFF77S0Q05N>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <ZgGosOiW6mTeSnTL@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325120018.1768449-1-sashal@kernel.org>
 
-Hi David, Mark,
+On Mon, Mar 25, 2024 at 08:00:18AM -0400, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 6.8.2 release.
+> There are 710 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed Mar 27 12:00:13 PM UTC 2024.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.8.y&id2=v6.8.1
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
 
-On 25/03/2024 17:39, Mark Rutland wrote:
-> On Mon, Mar 25, 2024 at 08:30:37AM +0100, Alexandre Ghiti wrote:
->> Hi David,
->>
->> On 24/03/2024 20:42, David Laight wrote:
->>> ...
->>>> The use of alternatives allows to return right away if the buffer is
->>>> beyond the usable user address space, and it's not just "slightly
->>>> faster" for some cases (a very large buffer with only a few bytes being
->>>> beyond the limit or someone could fault-in all the user pages and fail
->>>> very late...etc). access_ok() is here to guarantee that such situations
->>>> don't happen, so actually it makes more sense to use an alternative to
->>>> avoid that.
->>> Is it really worth doing ANY optimisations for the -EFAULT path?
->>> They really don't happen.
->>>
->>> The only fault path that matters is the one that has to page in
->>> data from somewhere.
->> Which is completely avoided with a strict definition of access_ok(). I see
->> access_ok() as an already existing optimization of fault paths by avoiding
->> them entirely when they are bound to happen.
-> I think the point that David is making is that address+size pairs that'd fail
-> access_ok() *should* be rare, and hence it's a better trade-off to occasionally
-> handle faults for those if it makes the common case of successful access_ok()
-> smaller or faster. For any well-behaved userspace applications, access_ok()
-> should practically never fail, since userspace should be passing good
-> address+size pairs as arguments to syscalls.
->
-> Using a compile-time constant TASK_SIZE_MAX allows the compiler to generate
-> much better code for access_ok(), and on arm64 we use a compile-time constant
-> even when our page table depth can change at runtime (and when native/compat
-> task sizes differ). The only abosolute boundary that needs to be maintained is
-> that access_ok() fails for kernel addresses.
+Tested rc2 against the Fedora build system (aarch64, ppc64le, s390x,
+x86_64), and boot tested x86_64. No regressions noted.
 
-
-Hmm indeed I had completely misunderstood David's point, but actually 
-not really since I disagreed with what he actually meant :)
-
-But I had not realized access_ok() was so performance-sensitive and also 
-missed the point that it was to protect the kernel more than making sure 
-the userspace address is correct, so I guess we are good to go with 
-Samuel's patch.
-
-Thanks David and Mark,
-
-Alex
-
-
->
-> Mark.
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
 
