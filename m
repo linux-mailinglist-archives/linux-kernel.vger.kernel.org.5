@@ -1,162 +1,186 @@
-Return-Path: <linux-kernel+bounces-116741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A8BB88A335
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:54:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8504188A33B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:55:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4C052E239E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:54:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26AAF1F3D0EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18760158205;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 937A715884E;
 	Mon, 25 Mar 2024 10:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iUaRKlNS"
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="KegD/lyp"
+Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A072D1581ED
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F9316FF45;
+	Mon, 25 Mar 2024 09:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711358568; cv=none; b=Oo+EFK0wlwU9PVfnSDyLti0sokILRMrGYikYYbutWE4x/HExKP6atTIQa3R3d7AtZQm6J7wa41TmF6xoxOjRMB/rdSWfh507+5+tXUBFXuzUSiFm9Uwkx609JgkvBUKQblQFNik92noo4IB14MVvNVowFaacKAJLyhp7ObstMDc=
+	t=1711358608; cv=none; b=MWlRt1jvXKVH/6nKGuOftnBnbCWBQbCXA1NXwYsvfEoWPL48J+hMnBKojHtI1RsotTufvB8zNbWlrjsTOWdVQ3I14KHurgYLBzvAphksOsFk5BrbWQ9nVIVSPnQajxThkIRFQaR5sdy+wwDEoqSlkdO7S3U0u3LRE+PIHS1QKJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711358568; c=relaxed/simple;
-	bh=NUq6l92k3z6+MavqfTyLMHgevvGnDis+wYiPtoA46pA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e2Fk9QoBHSzdKPI6E3pPZTdtBW1wpDsBnzDuEXirSf34j89MY0KXRfIUXRGopQCGoi/eciHbe43nIcUWgkxc0v9hCNTbpSguhBUoUriq3fS7K9Tzkz99d0oFGVRY2Aw+SGGvUAftoqkDblYCkrfWZvMTq1uLDspjjgXoXQcXQdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iUaRKlNS; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d556ec84-da6a-4486-a68e-5982baf46879@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711358563;
+	s=arc-20240116; t=1711358608; c=relaxed/simple;
+	bh=3Q6d0awRn/5rq006A03kM9rdEFFKW+5OGEOZySjvGew=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=u3GWI9rqSc5LyKxEiH2/KCaHjP5vONO0c+Rx8tbyhYJGqy1kjX2hmxxsBb1wLXBNubeRHYhuldHrwRathqBHa07EogwpLvd/TOuKNE8hP3anvk59XyMDJDWaU9sxmUBJA69mJTTkhvtXk2jifnFzpm3G3uIl6LwvaxIaZ9GG6Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=KegD/lyp; arc=none smtp.client-ip=199.247.17.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
+Received: from spock.localnet (unknown [94.142.239.106])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by prime.voidband.net (Postfix) with ESMTPSA id E08916346550;
+	Mon, 25 Mar 2024 10:23:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+	s=dkim-20170712; t=1711358593;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eOlZm0+5XlJcPzDimS2ld8aXFCHL2fRhCLxa+S5e368=;
-	b=iUaRKlNSkeZqVpQBNnWAM8JvB4mvcqL9WsD9sTLOx62VlXRPwbRfz0wOYGYQyTqbsBg6jG
-	FhFVtjvuIJFv/Q3a2J6GxDPC79M19bffV9YEN8L54jK8O5kXK6O55bKVjmnHxZPvt8zzb3
-	KYbBB6abu5qZhUZueEtLBSOgsxnzI3c=
-Date: Mon, 25 Mar 2024 17:22:25 +0800
+	bh=3Q6d0awRn/5rq006A03kM9rdEFFKW+5OGEOZySjvGew=;
+	b=KegD/lypESKOUC6MOy/GT2VvR+37bLyTc9DaYUrEaaCcK48IDKshxaJOT0mATs72VNXZlM
+	JzxsCKduDWYQKRUB2bdvmLlkGbXp7tuUsYgkvQ+/pEm/aefjD52ItZD6VaeLxSx/qTIbI+
+	1xiCGsPG61sIfBKLUGVJ0kMCvZHKSb0=
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>,
+ Hans Verkuil <hverkuil@xs4all.nl>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject:
+ Re: [PATCH v10 3/6] media: uvcvideo: Quirk for invalid dev_sof in Logitech
+ C922
+Date: Mon, 25 Mar 2024 10:23:00 +0100
+Message-ID: <12403186.O9o76ZdvQC@natalenko.name>
+In-Reply-To:
+ <CANiDSCsnOdTaW0Eg68+-niPXwPhYc3Br6cWoGiHytZrFOGmcZA@mail.gmail.com>
+References:
+ <20240323-resend-hwtimestamp-v10-0-b08e590d97c7@chromium.org>
+ <2722561.mvXUDI8C0e@natalenko.name>
+ <CANiDSCsnOdTaW0Eg68+-niPXwPhYc3Br6cWoGiHytZrFOGmcZA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mm: zswap: fix data loss on SWP_SYNCHRONOUS_IO devices
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Barry Song <21cnbao@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Zhongkun He <hezhongkun.hzk@bytedance.com>,
- Chengming Zhou <zhouchengming@bytedance.com>, Chris Li <chrisl@kernel.org>,
- Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Kairui Song <kasong@tencent.com>
-References: <20240324210447.956973-1-hannes@cmpxchg.org>
- <CAJD7tkaWQAV=X1pzYG=VkWe7Ue9ZFbjt9uQ5m1NJujtLspWJTA@mail.gmail.com>
- <CAGsJ_4yeBmNsMGXEWwC+1Hs5zJUP+becq4wG+6CpU7V1=EOvhg@mail.gmail.com>
- <CAJD7tka5K69q20bxTsBk38JC7mdPr3UsxXpsnggDO_iQA=qxug@mail.gmail.com>
- <1e7ce417-b9dd-4d62-9f54-0adf1ccdae35@linux.dev>
- <CAJD7tkYc3oFho5eEkS1zmr_+CC-Ag1HucUTyAy2RJbEb4SqRoQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <CAJD7tkYc3oFho5eEkS1zmr_+CC-Ag1HucUTyAy2RJbEb4SqRoQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; boundary="nextPart5764187.DvuYhMxLoT";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 
-On 2024/3/25 16:38, Yosry Ahmed wrote:
-> On Mon, Mar 25, 2024 at 12:33 AM Chengming Zhou
-> <chengming.zhou@linux.dev> wrote:
->>
->> On 2024/3/25 15:06, Yosry Ahmed wrote:
->>> On Sun, Mar 24, 2024 at 9:54 PM Barry Song <21cnbao@gmail.com> wrote:
->>>>
->>>> On Mon, Mar 25, 2024 at 10:23 AM Yosry Ahmed <yosryahmed@google.com> wrote:
->>>>>
->>>>> On Sun, Mar 24, 2024 at 2:04 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->>>>>>
->>>>>> Zhongkun He reports data corruption when combining zswap with zram.
->>>>>>
->>>>>> The issue is the exclusive loads we're doing in zswap. They assume
->>>>>> that all reads are going into the swapcache, which can assume
->>>>>> authoritative ownership of the data and so the zswap copy can go.
->>>>>>
->>>>>> However, zram files are marked SWP_SYNCHRONOUS_IO, and faults will try
->>>>>> to bypass the swapcache. This results in an optimistic read of the
->>>>>> swap data into a page that will be dismissed if the fault fails due to
->>>>>> races. In this case, zswap mustn't drop its authoritative copy.
->>>>>>
->>>>>> Link: https://lore.kernel.org/all/CACSyD1N+dUvsu8=zV9P691B9bVq33erwOXNTmEaUbi9DrDeJzw@mail.gmail.com/
->>>>>> Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
->>>>>> Fixes: b9c91c43412f ("mm: zswap: support exclusive loads")
->>>>>> Cc: stable@vger.kernel.org      [6.5+]
->>>>>> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
->>>>>> Tested-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
->>>>
->>>> Acked-by: Barry Song <baohua@kernel.org>
->>>>
->>>>>
->>>>> Do we also want to mention somewhere (commit log or comment) that
->>>>> keeping the entry in the tree is fine because we are still protected
->>>>> from concurrent loads/invalidations/writeback by swapcache_prepare()
->>>>> setting SWAP_HAS_CACHE or so?
->>>>
->>>> It seems that Kairui's patch comprehensively addresses the issue at hand.
->>>> Johannes's solution, on the other hand, appears to align zswap behavior
->>>> more closely with that of a traditional swap device, only releasing an entry
->>>> when the corresponding swap slot is freed, particularly in the sync-io case.
->>>
->>> It actually worked out quite well that Kairui's fix landed shortly
->>> before this bug was reported, as this fix wouldn't have been possible
->>> without it as far as I can tell.
->>>
->>>>
->>>> Johannes' patch has inspired me to consider whether zRAM could achieve
->>>> a comparable outcome by immediately releasing objects in swap cache
->>>> scenarios.  When I have the opportunity, I plan to experiment with zRAM.
->>>
->>> That would be interesting. I am curious if it would be as
->>> straightforward in zram to just mark the folio as dirty in this case
->>> like zswap does, given its implementation as a block device.
->>>
->>
->> This makes me wonder who is responsible for marking folio dirty in this swapcache
->> bypass case? Should we call folio_mark_dirty() after the swap_read_folio()?
-> 
-> In shrink_folio_list(), we try to add anonymous folios to the
-> swapcache if they are not there before checking if they are dirty.
-> add_to_swap() calls folio_mark_dirty(), so this should take care of
+--nextPart5764187.DvuYhMxLoT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Date: Mon, 25 Mar 2024 10:23:00 +0100
+Message-ID: <12403186.O9o76ZdvQC@natalenko.name>
+MIME-Version: 1.0
 
-Right, thanks for your clarification, so should be no problem here.
-Although it was a fix just for MADV_FREE case.
+Hello.
 
-> it. There is an interesting comment there though. It says that PTE
-> should be dirty, so unmapping the folio should have already marked it
-> as dirty by the time we are adding it to the swapcache, except for the
-> MADV_FREE case.
+On pond=C4=9Bl=C3=AD 25. b=C5=99ezna 2024 8:52:57, CET Ricardo Ribalda wrot=
+e:
+> Hi Oleksandr
+>=20
+> On Sat, 23 Mar 2024 at 13:16, Oleksandr Natalenko
+> <oleksandr@natalenko.name> wrote:
+>=20
+> >
+> > How do I check whether C920 (046d:082d) is affected too? I have got one=
+, I can run tests on it as long as those will not blow the webcam up.
+> >
+> > Thanks.
+> >
+>=20
+> First of all you need to enable the hwtimestamps in the driver. You
+> could do that with
+>=20
+> ```
+> rmmod uvcvideo; modprobe uvcvideo hwtimestamps=3D1
+> ```
 
-It seems to say the folio will be dirtied when unmap later, supposing the
-PTE is dirty.
+```
+$ cat /sys/module/uvcvideo/parameters/hwtimestamps
+1
+```
 
-> 
-> However, I think we actually unmap the folio after we add it to the
-> swapcache in shrink_folio_list(). Also, I don't immediately see why
-> the PTE would be dirty. In do_swap_page(), making the PTE dirty seems
+> Then capture some frames with yavta
+> ```
+> yavta -c /dev/video0
+> ```
+>=20
+> After around 5 seconds all the frames should have a stable fps, the
+> fps is not stable then your camera is affected with this bug.
 
-If all anon pages on LRU list are faulted by write, it should be true.
-We could just use the zero page if faulted by read, right?
+```
+$ ./yavta -c /dev/video1
+Device /dev/video1 opened.
+Device `HD Pro Webcam C920' on `usb-0000:0f:00.3-3.4' (driver 'uvcvideo') s=
+upports video, capture, without mplanes.
+Video format: MJPEG (47504a4d) 1920x1080 (stride 0) field none buffer size =
+4147200
+=E2=80=A6
+100 (4) [-] none 100 200717 B 212.919114 213.079004 33.727 fps ts mono/SoE
+101 (5) [-] none 101 200889 B 213.003703 213.114996 11.822 fps ts mono/SoE
+102 (6) [-] none 102 200926 B 213.035571 213.146999 31.379 fps ts mono/SoE
+103 (7) [-] none 103 200839 B 213.067424 213.179003 31.394 fps ts mono/SoE
+104 (0) [-] none 104 200692 B 213.293180 213.214991 4.430 fps ts mono/SoE
+105 (1) [-] none 105 200937 B 213.322374 213.247001 34.254 fps ts mono/SoE
+106 (2) [-] none 106 201013 B 213.352228 213.279005 33.496 fps ts mono/SoE
+=E2=80=A6
+168 (0) [-] none 168 200914 B 215.183707 215.347066 33.676 fps ts mono/SoE
+169 (1) [-] none 169 201141 B 215.271693 215.379066 11.365 fps ts mono/SoE
+170 (2) [-] none 170 201005 B 215.303449 215.415057 31.490 fps ts mono/SoE
+171 (3) [-] none 171 201195 B 215.335295 215.447062 31.401 fps ts mono/SoE
+172 (4) [-] none 172 200933 B 215.557731 215.479072 4.496 fps ts mono/SoE
+173 (5) [-] none 173 200973 B 215.587033 215.515063 34.127 fps ts mono/SoE
+174 (6) [-] none 174 200698 B 215.616811 215.547063 33.582 fps ts mono/SoE
+175 (7) [-] none 175 201290 B 215.646196 215.579075 34.031 fps ts mono/SoE
+176 (0) [-] none 176 200807 B 215.675857 215.615073 33.714 fps ts mono/SoE
+=E2=80=A6
+```
 
-> to be conditional on the fault being a write fault, but I didn't look
-> thoroughly, maybe I missed it. It is also possible that the comment is
-> just outdated.
+Does the above mean the webcam is affected?
 
-Yeah, dirty is only marked on write fault.
+Thank you.
 
-Thanks.
+>=20
+>=20
+> Thanks!
+>=20
+
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart5764187.DvuYhMxLoT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmYBQnQACgkQil/iNcg8
+M0tJ5hAA2/2MfH760f37fFEr2GY0ERSMacRe6SX/GADkgvTF2Z7N2/s5EBWQBdSZ
+wRC/7uZfFpuEjj7rPqRVZczxEhZRYhL/w5aiBPw7pRGTZwhP4bX4Ue+cnTBLo5JQ
+i8Hdodc8CfNHb9YInvW1JcICHMr0FRZ4VzJTcowsFsIUwLL0nr0CZcOPRMRmfttr
+Z4TSoeNb9pcLbRo7qiD5IPVr1Hy1+yuFLRe9O+V72vX3TJkxlYozj8Arl83SBaGL
+CsNYb/unCiIQXhWitLt+6/i0RVdR+brn9Qxevc7qdglMD9dUe37SftWQJwedZeZ1
+MA/D3K44VQ0lvTzdzMUbeDkU+GlKfqvK2KQ+7BeDy0oPbfJIO4DcmL3bEYvuYJrv
+EypIZv8vOtCGJ3xaDXUCi2ZOtpAaiSYrmpM6KvLjVASZNRAhBL6QULwamGTv+DHT
+OBfR7ROIimImbW8aNdyggsKjb72M18Z4I55Ps4wM3ElQ0YSxMkJIKuHEbTu1bMRh
+sR7QOpPThabvzgw6hhyoD+FlstYswZwmLGAqz+Z5VlaWxBUbJHTtquZixScpBoAs
+x9AQ/Gwvt4Ejwi6gK/5FMkjHWG3XojOQG73BClRA8jhkk14rlw1+ZUWJqIERSkDu
+NIYZxi/hiYWf04o/JQuNA6wcNMJUjL6ecWy6VYUIdCS+5Djh+o8=
+=4YOZ
+-----END PGP SIGNATURE-----
+
+--nextPart5764187.DvuYhMxLoT--
+
+
+
 
