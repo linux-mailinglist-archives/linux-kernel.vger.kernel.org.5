@@ -1,136 +1,135 @@
-Return-Path: <linux-kernel+bounces-117367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0277E88AA7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:00:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFFAE88A7E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:57:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACD461F66C75
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E5E01FA039D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9DE713A3E0;
-	Mon, 25 Mar 2024 15:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3A4482FA;
+	Mon, 25 Mar 2024 13:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="zn/PDYW9"
-Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YDkKtaQm"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890A2139CF7;
-	Mon, 25 Mar 2024 15:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96DB3DAC18;
+	Mon, 25 Mar 2024 13:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711380500; cv=none; b=BKkliYx2N5m5/fZNllz24h6VgGk272n2Z+PJ+CmK13lvmZkuVDGjDt5895RqB1/czz3fB5AxG/Kxtd83UK6LyCBymzZtcWyJN7ND1BnX1+VrN03PSsY+r4fdbdZDhd8lqYo2VwC5Z5ceNPtKH5C9G+DIkhyGcq3aYryT+REa3Uw=
+	t=1711373415; cv=none; b=aa8f3ibiDyOtoT6f78/j7mZOaEqxxTXZFGSOahdvAj8QQiF8U6vEhxN1ZMM92z4DwofYDuCkTzkzUhjF2UvvAy5fhgEA9FxUkJufanHbwxw9WuuJobXN5YEdTD741e3k07RJWTucdRWWslq57UTqDO/r9iRSGUiPxnB7bHkHHJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711380500; c=relaxed/simple;
-	bh=l7Iq42t4OAqPVcaUphs8qOzZizq2Dfx1SufCIbfsbEg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nO//MaZ9/zZNacMwmSCrgQi9JtRIjMZq4jfPGsiQVJHSVG5AQXablJyVC4BSH8N/c/XZdxltOAHib5aGqg1IDQbL2Jp7wkX9E2QzKWNp+j35pgo7Pt+t9+Nu+z1JIir4xZpDQ1r2CLAPoRG9gz7qZ9B1+9b1iDt4OnAL5BkEMX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=zn/PDYW9; arc=none smtp.client-ip=161.97.139.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
-Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
-	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1roltB-003KDz-1Q;
-	Mon, 25 Mar 2024 16:05:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=a9zvtfL5+zzdZaDVQ7s7ROa8rd+QCuJZiFyI2UwPWgI=; b=zn/PDYW9I2AYu+Ff5oOniCVSPe
-	7awjFoLWzNrlxAU4tlQglV0nOUv2RFpWqQIk+9JP6cojXfxPXQGBpJyk7iIba8wz9Jc3xuCfHSWtl
-	5tofDJqG2ZmLwxPO4wYNt8yYAAc+w15fv5s51sTRcQsqHF8n2T2RL11VuF8NDOXXTglwgihB1WU9Q
-	RDlHXSKEyUeZ8qAJN6z9s1iO9h7mMQ6Kq6iuhATVrq7GuxZpvDGoVV5MxhEVenSMbx04t3gXBOyaM
-	DEkSrwW2PgzHBLdSkx5EkuJgAtkDgHhQYiAQUYK/cxh7FpkfYb9cb3PQUMdha3NAObVHtHodkGrGU
-	KEEVSQWA==;
-Received: from p2003010777026a001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7702:6a00:1a3d:a2ff:febf:d33a] helo=aktux)
-	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <andreas@kemnade.info>)
-	id 1rokNR-000Zp7-4z; Mon, 25 Mar 2024 14:28:36 +0100
-Date: Mon, 25 Mar 2024 14:28:33 +0100
-From: Andreas Kemnade <andreas@kemnade.info>
-To: Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, imx@lists.linux.dev
-Subject: Re: [RFC PATCH 2/2] mfd: rohm-bd71828: Add power off functionality
-Message-ID: <20240325142833.538993c2@aktux>
-In-Reply-To: <81bf6604-9160-4bae-8da6-7034f8aa3f92@gmail.com>
-References: <20240324201210.232301-1-andreas@kemnade.info>
-	<20240324201210.232301-3-andreas@kemnade.info>
-	<472c6eaf-6cbc-484c-bc94-571d115176aa@gmail.com>
-	<20240325131605.6607b778@aktux>
-	<81bf6604-9160-4bae-8da6-7034f8aa3f92@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711373415; c=relaxed/simple;
+	bh=hrZPseZ/aDtrhN7KU2wrYjtCnetz/cj9YzDAAtIWeAs=;
+	h=Content-Type:Mime-Version:Date:Message-Id:Subject:From:To:
+	 References:In-Reply-To; b=jifvBOyXk49jy7ElEIZLEbFOlMS8I1Q9fJvlA0W1ABeCxxQpQflX12UwyIAgRAa1rRX4Ya9UflxAa5+QWPtLuSpTJZcK926sXA4ANjrdguN8uviHjxsMK/oLJvxuuFQwatSB8cavNJCCrwxLd6MtsY68gPh43GfheZdKdKcSRyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YDkKtaQm; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56c12c73ed8so1193505a12.2;
+        Mon, 25 Mar 2024 06:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711373412; x=1711978212; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:message-id:date:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XD4ew/GHYtcG3hjg8Rw1ArwLrYnutWTTiSTIVtBubr0=;
+        b=YDkKtaQmGy7niTGGqp51Rf6fC1UU0yEGoFzp2lNEQ/kw6Cx5aD8asXH0rqsuXJI4nC
+         f350IdRXVgFbTxT4/elt+1gBw1HcBQP7qNULPVWD3khOw13WoXpYkzKAXMuSTCHCuw0T
+         JNkyXqmN6k8DJ0K4WCzeJaWmOxEGaMuoTS0i4SOPim36lsix6oW3gEwu0CzNJEqB4PRK
+         ecqAPAS3liVd3zW4nhkcOuera+3VNPvEmSpO+WHHrBgVkhsohSea6+Ru27Z7wQCkqypF
+         DXBEjBI8OME5OPWXqVhYSDyU5WsP3KEt4H8G1Xhue92VnLlN2q3R8ssPScpPfkwvvCqq
+         8XHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711373412; x=1711978212;
+        h=in-reply-to:references:to:from:subject:message-id:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XD4ew/GHYtcG3hjg8Rw1ArwLrYnutWTTiSTIVtBubr0=;
+        b=A5+KgNBC2uXzYJ87tux29hu0xmu2JsFcn0X2EdJFT108svZDPUy0ghHLdedTpg0w9A
+         vxo+1WEMIIQhVGtHgNZMEtqMZRul4Jls9lqVld2KhCn2FguVhBFtE9IhVVMV1kvFcnC6
+         S7JM8jeeB9E/h2iz0j0iUXnaQP8xN++5R8588dXuAZAYMj4aM2OGAogHhKB2QLWribUY
+         5N4W9LBvkiTiudht2kYhTePGj97C6u+ENQCKhdzQbytSAL7MnUQvrk6ynzYWBeElZsrb
+         AZb7CPPgqG3KxVYIj004Yk/y0sQq4IAYVsSsdpeYTHAncW33Cqfr1SJcDMUfQT3Rk0Fy
+         ojAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUXmLgNL0FqZvLs2uN4TsoTT3KC0GsYfSsU0QIdYmLmH81xSzSj84aIUF4C0tBnJ6XJsU4NQjCvVPdliFtpos8lXhz8l++42pimicPfTp8WhIplU2zuO0Ob1ul5+1zOEYWVCZEgIxCZeqQfUAoqYrJC3F3TvYiQNrs8fbJ57+enTq0vLPI=
+X-Gm-Message-State: AOJu0YzAs1zn//L7hRPiOu869pfPx6TAJfDzEyMSll/J0vAOAqyRTYCf
+	r0fZ8y69LIKBSPGFooqbipI2mCnoMfPubio4rQaQ5DczDHDZKQihnNo1snak
+X-Google-Smtp-Source: AGHT+IHMpffUHcFawHydrS+vWRoqBc9bV74qfpHVrxOZK745LGlf96m7BGzz87O4DVTYDVSUiI4XGw==
+X-Received: by 2002:a17:907:f84:b0:a48:7cbd:8b24 with SMTP id kb4-20020a1709070f8400b00a487cbd8b24mr2311144ejc.17.1711373411541;
+        Mon, 25 Mar 2024 06:30:11 -0700 (PDT)
+Received: from localhost (p200300e41f162000f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f16:2000:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id c27-20020a170906171b00b00a44936527b5sm3064853eje.99.2024.03.25.06.30.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 06:30:10 -0700 (PDT)
+Content-Type: multipart/signed;
+ boundary=55f459f7e54beefef07011c1d824c0093225f2bd4123168eb5e41c29c511;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Date: Mon, 25 Mar 2024 14:30:10 +0100
+Message-Id: <D02V8R59Y6I3.13XIQDA5L6QCK@gmail.com>
+Subject: Re: [PATCH v2 RESEND] dmaengine: tegra186: Fix residual calculation
+From: "Thierry Reding" <thierry.reding@gmail.com>
+To: "Akhil R" <akhilrajeev@nvidia.com>, <ldewangan@nvidia.com>,
+ <jonathanh@nvidia.com>, <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+ <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
+References: <20240315124411.17582-1-akhilrajeev@nvidia.com>
+In-Reply-To: <20240315124411.17582-1-akhilrajeev@nvidia.com>
 
-Hi Matti,
+--55f459f7e54beefef07011c1d824c0093225f2bd4123168eb5e41c29c511
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-On Mon, 25 Mar 2024 14:44:43 +0200
-Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+On Fri Mar 15, 2024 at 1:44 PM CET, Akhil R wrote:
+> The existing residual calculation returns an incorrect value when
+> bytes_xfer =3D=3D bytes_req. This scenario occurs particularly with drive=
+rs
+> like UART where DMA is scheduled for maximum number of bytes and is
+> terminated when the bytes inflow stops. At higher baud rates, it could
+> request the tx_status while there is no bytes left to transfer. This will
+> lead to incorrect residual being set. Hence return residual as '0' when
+> bytes transferred equals to the bytes requested.
+>
+> Fixes: ee17028009d4 ("dmaengine: tegra: Add tegra gpcdma driver")
+> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+> v1->v2:
+> * corrected typo - s/exisiting/existing/
+>
+>  drivers/dma/tegra186-gpc-dma.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-> Hi Andreas,
-> 
-> On 3/25/24 14:16, Andreas Kemnade wrote:
-> > On Mon, 25 Mar 2024 13:31:15 +0200
-> > Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> >   
-> >> On 3/24/24 22:12, Andreas Kemnade wrote:  
-> >>> Since the chip can power off the system, add the corresponding
-> >>> functionality.
-> >>> Based on https://github.com/kobolabs/Kobo-Reader/raw/master/hw/imx6sll-clara2e/kernel.tar.bz2
-> >>> No information source about the magic numbers found.  
-> >>
-> >> Oh, interesting repository :) Thanks for linking to it! I didn't know
-> >> someone had reworked this driver...
-> >>  
-> > which btw: contains this interesting snippet (output from fdtdump)
-> >    bd71828-i2c@4b {
-> >                      reg = <0x0000004b>;
-> >                      compatible = "rohm,bd71828";
-> >                      gpio_int = <0x00000008 0x00000013 0x00000001>;
-> >                      gpio_wdogb = <0x00000039 0x00000018 0x00000001>;
-> >                      #address-cells = <0x00000001>;
-> >                      #size-cells = <0x00000000>;
-> >                      pmic@4b {
-> >                          compatible = "rohm,bd71828";
-> >               	        regulators {
-> >                          	BUCK1 {
-> >                              		regulator-name = "buck1";
-> > 
-> > 
-> > and to make it work since basically no regulators are registered
-> > instead just some regmap_write()s are done to configure something
-> > in probe(). It is a pitfall to think that the information below pmic@4b
-> > is used, especially since it is not that obvious in the source.  
-> 
-> Just to ensure there will be no misunderstanding - I have not authored 
-> the modifications seen in "Kobo-Reader" repository. Upstream driver does 
-> register the regulators - and it does not use the oddly named gpio_int 
-> or the gpio_wdogb:
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-yes, I know it is not from you and I know the general quality in those repos.
-But I feel not well pointing to those repositories without issuing the warning
-that regulator information in dtb is not an authoritative source for required
-regulator settings. Not that someone enables the smoke-generator
-functionality...
+--55f459f7e54beefef07011c1d824c0093225f2bd4123168eb5e41c29c511
+Content-Type: application/pgp-signature; name="signature.asc"
 
-But lets not go too much offtopic.
+-----BEGIN PGP SIGNATURE-----
 
-Regards,
-Andreas
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmYBfGIACgkQ3SOs138+
+s6FBeg//RL9qtORpLwtTvaMi2BCM4joMkUMECQ4qDz4nES1pm+wqVl0w+l7VpTJf
+j7DrpS1DkUBYSA4cEnkqzrdbrWwT1iSOZNiIrVVjrg7YYdIifacKHDWodCK712Ri
+xb3mENbUy6Ljj4rOAIe8D1t7IF1ufUBFAdikQLMYaPOGy2Oqe58VslwwTgneFMp1
+ca/v2altcEQ/POZJypoJC+zQoJPMMoNezg1RRt6NAiaD51862o66doKHBmHzBGFH
+BS3kcs5jf1tbn3R7ZSK0qmyFP0aiWOVHivRFABR6yGaI5gz0AP6QsVQYLCYrfJEo
+3e80vIn4VQEXdYNPT6rmJF7PFqnjPbse0bHJYY/ltlwVYCgJX40JX0J2hgRVGKxN
+XctliKSlQ23HR3aZpaATYwIUHwyKoRSjowzeVF0ZuoDX+ZkWkuml7cqChvbwh5Pm
+tWqGw4E9oKY+n9sXEm1d3J4dVEhby/vY67nCHDOD9Lj0xRy/C9di6t8AiHayZiY8
+WboA1JCbJ5GcNn1eCoI6YJ35Hn3J5Il6d3O+QfTOqzRSckVNLgfuCATnaiRwdAwe
+CY6NwH2+T1eNYIZ2KsIKS3G9Ilq8XH1/yMdhV0+dagm93/WHvKvHpy2V1Iedk2XH
+tX9HjGDLEnqs5Oc1iNdRJoVIVorCu/3yAICONU2coMSNWgaG7pw=
+=Heur
+-----END PGP SIGNATURE-----
 
+--55f459f7e54beefef07011c1d824c0093225f2bd4123168eb5e41c29c511--
 
