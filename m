@@ -1,97 +1,144 @@
-Return-Path: <linux-kernel+bounces-118090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5E9B88B3CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8138888B3D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:18:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF2EA305B5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:17:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BC6C2E2855
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6284C768EC;
-	Mon, 25 Mar 2024 22:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C0775805;
+	Mon, 25 Mar 2024 22:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UxDMNdWQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i2JBh3og"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B8B76026;
-	Mon, 25 Mar 2024 22:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF50370CC2;
+	Mon, 25 Mar 2024 22:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711405011; cv=none; b=prJy7OvHmEd/sQJr0tC9C73VL73R4NFyrbzMhRkFpsyyCvyyH0vQ6kTnpmoueC3hBJnq8JUopFAsfNh4nu31e5Iac/Gg0BR7O0AW+DZ4NDwa313302u8Nkxbj8nXuVf6zPujdV+iQxRc0pYLv/PPgvQxRXL6Ja2/hp9GnR1lFwo=
+	t=1711405119; cv=none; b=igWmmv9hZk0eJDMLoenBsWIXUdzNb9QHxs0X/yCW+taQNEdXbc2ctiznTSJCVFj+JagIuSddMVup1lKLrcvPjZtrHLHtVys1bPM/Tgm3WtXOKCQCuXWWVV8OKse+gnjjt/UigaBqtAkZG2HkHf0azBBXYZA3DV+1iPVmrBXimCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711405011; c=relaxed/simple;
-	bh=OXhGVZPdG3D/LddT2Wq1BEL14paCWK/DFyKMWaLrsZA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=Upv95FVvxoCPKXAh3B3VBhyZ2ZXBT3rd0Fr3JWP8sBim/0ZsHrnutSbZQ/zksvu9Dblg7z+uyvL7kfbemtVuoCaNnriO/Slbr+LB2p72aGIIbTzCltf3Op0qq6rn0wYkpwHASejyVe8YycR9/A4AWCjVMzfE0g7QzTM+kODbCOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UxDMNdWQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3090C433C7;
-	Mon, 25 Mar 2024 22:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711405011;
-	bh=OXhGVZPdG3D/LddT2Wq1BEL14paCWK/DFyKMWaLrsZA=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=UxDMNdWQkRpfuq/NE9RO36csB0eXkWTvW9/ekSSg/CAUrs1oVq1JezifL7/4ZMVy/
-	 NL3vHYHuOyNkfWTwOn9oYOiyjQmOPWg6Iqx5LJZhshKTUJLpnow6aK4MlG/l29Th7a
-	 x44I1AaMRFq3AQYlaThm1A2FWuqpEBXw4QlusUwsAMyMd6nFjcaPX446CZZtqz7pDr
-	 dk6MHakJDWI9VAx3n3tYIlqn8bnQ6H2qGd4hxekUHuch/XJnvBQVDeskPB3Pzo+IY1
-	 HRxizaNEivdeN0OvdCOHeZPJlpWDIkQjqLhFoC0PYehzOQMC3lWoNIoDbUBmJAYnAl
-	 4z7N0ASHEujjQ==
+	s=arc-20240116; t=1711405119; c=relaxed/simple;
+	bh=feUQgOvzcNlvP1Ks242aVU3gOvHsb8SG3N7apTriglg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OMWSEo1ZCirmWOStMRsS9dge+R1u7aQH5LePUeJ+Wc9xIwCH6zzQ/M2oClwzkNhtfCdtXG+eg4jhAkBHXSFXBphcAXPTsn0iZRPlmLbtGf7V8hbVMKqepImzW3Vay70KWNAlMR+sNgaUoNy6r1j4VmmWf35xL9aGj/7EFS09BI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i2JBh3og; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711405118; x=1742941118;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=feUQgOvzcNlvP1Ks242aVU3gOvHsb8SG3N7apTriglg=;
+  b=i2JBh3ogKEvpyxNaMbsRpnJwqTkKq6wXi62vTyfprG1jFMijpLHwRuLS
+   BDFqSG8mmrcbb01s6Yg04ptYRXn5splQdSwAyyU7ph436SHgP1XefpIZl
+   dOrh/e1263u31J6ynvtzlFp5u0sC6JVkCk5uGL58yin83CIj2h2M8cjrv
+   AZe3IfkZzENqfkt2hYW9etDM/KA46X2xitUFT33aGYsYL3uUD2U9/kShw
+   ovipwz+MupBMTUM5sQwLWrOhGh/DfcHsknvWkaTpdW1+lNeFlIKv/B1BE
+   HvldIn8jL78bYKdQg9f0YQNqZWomo1Q5cEL2jqyHLdURYnzwxO4eUhksL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="6372056"
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="6372056"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 15:18:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
+   d="scan'208";a="15845759"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 15:18:37 -0700
+Date: Mon, 25 Mar 2024 15:18:36 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
+ for unsupported cases
+Message-ID: <20240325221836.GO2357401@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <1ed955a44cd81738b498fe52823766622d8ad57f.1708933498.git.isaku.yamahata@intel.com>
+ <618614fa6c62a232d95da55546137251e1847f48.camel@intel.com>
+ <20240319235654.GC1994522@ls.amr.corp.intel.com>
+ <1c2283aab681bd882111d14e8e71b4b35549e345.camel@intel.com>
+ <f63d19a8fe6d14186aecc8fcf777284879441ef6.camel@intel.com>
+ <20240321225910.GU1994522@ls.amr.corp.intel.com>
+ <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
+ <20240325190525.GG2357401@ls.amr.corp.intel.com>
+ <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 26 Mar 2024 00:16:46 +0200
-Message-Id: <D036FYBQUMIX.L5TL0SUCAO49@kernel.org>
-Cc: "Masami Hiramatsu" <mhiramat@kernel.org>, "Paul Walmsley"
- <paul.walmsley@sifive.com>, "Palmer Dabbelt" <palmer@dabbelt.com>, "Albert
- Ou" <aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>, "Luis
- Chamberlain" <mcgrof@kernel.org>, <linux-modules@vger.kernel.org>, "Naveen
- N . Rao" <naveen.n.rao@linux.ibm.com>, "Anil S Keshavamurthy"
- <anil.s.keshavamurthy@intel.com>, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 1/2] kprobes: textmem API
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, <linux-riscv@lists.infradead.org>
-X-Mailer: aerc 0.17.0
-References: <20240325215502.660-1-jarkko@kernel.org>
- <D036AJAEAOUF.34494O217N0RI@kernel.org>
-In-Reply-To: <D036AJAEAOUF.34494O217N0RI@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5917c0ee26cf2bb82a4ff14d35e46c219b40a13f.camel@intel.com>
 
-On Tue Mar 26, 2024 at 12:09 AM EET, Jarkko Sakkinen wrote:
-> On Mon Mar 25, 2024 at 11:55 PM EET, Jarkko Sakkinen wrote:
-> > +#ifdef CONFIG_MODULES
-> >  	if (register_module_notifier(&trace_kprobe_module_nb))
-> >  		return -EINVAL;
-> > +#endif /* CONFIG_MODULES */
->
-> register_module_notifier() does have "dummy" version but what
-> would I pass to it. It makes more mess than it cleans to declare
-> also a "dummy" version of trace_kprobe_module_nb.
->
-> The callback itself has too tight module subsystem bindings so
-> that they could be simply flagged with IS_DEFINED() (or correct
-> if I'm mistaken, this the conclusion I've ended up with).
+On Mon, Mar 25, 2024 at 07:55:04PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-One way to clean that up would be to create trace_kprobe_module.c and
-move kernel module specific code over there and then change
-kernel/trace/Makefile as follows:
+> On Mon, 2024-03-25 at 12:05 -0700, Isaku Yamahata wrote:
+> > Right, the guest has to accept it on VE.  If the unmap was intentional by guest,
+> > that's fine.  The unmap is unintentional (with vMTRR), the guest doesn't expect
+> > VE with the GPA.
+> > 
+> > 
+> > > But, I guess we should punt to userspace is the guest tries to use
+> > > MTRRs, not that userspace can handle it happening in a TD...  But it
+> > > seems cleaner and safer then skipping zapping some pages inside the
+> > > zapping code.
+> > > 
+> > > I'm still not sure if I understand the intention and constraints fully.
+> > > So please correct. This (the skipping the zapping for some operations)
+> > > is a theoretical correctness issue right? It doesn't resolve a TD
+> > > crash?
+> > 
+> > For lapic, it's safe guard. Because TDX KVM disables APICv with
+> > APICV_INHIBIT_REASON_TDX, apicv won't call kvm_zap_gfn_range().
+> Ah, I see it:
+> https://lore.kernel.org/lkml/38e2f8a77e89301534d82325946eb74db3e47815.1708933498.git.isaku.yamahata@intel.com/
+> 
+> Then it seems a warning would be more appropriate if we are worried there might be a way to still
+> call it. If we are confident it can't, then we can just ignore this case.
+> 
+> > 
+> > For MTRR, the purpose is to make the guest boot (without the guest kernel
+> > command line like clearcpuid=mtrr) .
+> > If we can assume the guest won't touch MTRR registers somehow, KVM can return an
+> > error to TDG.VP.VMCALL<RDMSR, WRMSR>(MTRR registers). So it doesn't call
+> > kvm_zap_gfn_range(). Or we can use KVM_EXIT_X86_{RDMSR, WRMSR} as you suggested.
+> 
+> My understanding is that Sean prefers to exit to userspace when KVM can't handle something, versus
+> making up behavior that keeps known guests alive. So I would think we should change this patch to
+> only be about not using the zapping roots optimization. Then a separate patch should exit to
+> userspace on attempt to use MTRRs. And we ignore the APIC one.
+> 
+> This is trying to guess what maintainers would want here. I'm less sure what Paolo prefers.
 
-ifeq ($(CONFIG_PERF_EVENTS),y)
-obj-y +=3D trace_kprobe.o
-obj-$(CONFIG_MODULES) +=3D trace_kprobe_module.o
-endif
-
-and define trace_kprobe_module_init() or similar to do all the dance
-with notifiers etc.
-
-This crossed my mind but did not want to do it without feedback.
-
-BR, Jarkko
+When we hit KVM_MSR_FILTER, the current implementation ignores it and makes it
+error to guest.  Surely we should make it KVM_EXIT_X86_{RDMSR, WRMSR}, instead.
+It's aligns with the existing implementation(default VM and SW-protected) and
+more flexible.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
