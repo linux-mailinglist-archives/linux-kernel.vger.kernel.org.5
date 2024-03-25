@@ -1,131 +1,111 @@
-Return-Path: <linux-kernel+bounces-117238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547DA88A8FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A26F88A876
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3F1C3672D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:23:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FD6C342BF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6A512FB39;
-	Mon, 25 Mar 2024 14:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8DD137765;
+	Mon, 25 Mar 2024 13:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="niS8Okqv"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="ItB557KN"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FD17F7C1
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 999EA6FBB7
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 13:52:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711376443; cv=none; b=QSrcQhMJvnbUsXenmRfpbEOgR2zWH6NohpJj+SOCR7Dmf43ZmQRBdxgY2fFyJ9uLWgFq7Mb9iiW7Ixus9hsyOAQvAEQhkD5O1tB3UUaXDu0RwQSjFQhHOHkEcVmcU5QvqX6sLwrx9Z00fpUKEB8fru+Ull9UMP2zsiY0RZwoYn0=
+	t=1711374737; cv=none; b=hSFdaAZSLWZcfEfIOXLHW+NXM4ZeDnHc+TfHGJ+m6moO/m0LvY3D8t9kNkJ2sHBXlAI0oHRjWhCnQ9H6cZMjsOPI8Mb2ibRA56qXOWVBZ8rdN6YQu6vUzosVF3nxD/ohE+KswIjlkTY88pfHKkVoZMdZ2/Qho0XYJ1BPgwxSfiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711376443; c=relaxed/simple;
-	bh=63TCN/grSYA1rWAH+qH7a+lfvhQsFmLttF5pjeCdXLk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VW3hfbdaIRAjycQlUADPT7YClohD5QJ0WD8W0mtw+/920Ldz/VPGdq3BrHah4HwQik+/1oA/gqHKyZnBKly5sOl/aDQ3yMccDzm8x87B3ql3VzogWbKtRDp/Ohtjz/E893SyQzLsBVX9WAR10MnvuQayXJAFIP+L/EUQh9A+Oc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=niS8Okqv; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78a3bccc420so209021285a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:20:41 -0700 (PDT)
+	s=arc-20240116; t=1711374737; c=relaxed/simple;
+	bh=svPkrUsWc31u5PxOeTcURerKjA9TBu7K7e3w1kgsNqo=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=ce+i+75ISuJwS56ZyluR418HoTSoXRqKF+Nxk+xItqjG4v4DQoH5GdHR9VWTLZfNHpENKAFnNJgRMkGmMYvZ9VDvINOtUfphc0TgF/4SZKsZ5oSM6vMN5AYVLAbJIkn7GUOEhfp3KngJf+7GC0aQcB1GNCkK4zo0pvtOKN5URyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=ItB557KN; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a44f2d894b7so532582866b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 06:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1711376441; x=1711981241; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o4khMi8YsL4x6qQRj8U1+7HQEKktCZ8TqyaiPDmkbrE=;
-        b=niS8OkqvREAy5sfkqblXb7DquNydE4CioXOa7hGbfZQF1yxQ4qltJ+ByyKehTHMvPC
-         8efjoZk/dQ3NrIbSJM6+TNMXxQiE2IcgKLuFwckAwk9eoJ/7X1cfVHwbCVcXy4C4RH1k
-         Fd6kETk7w19wS0Mlv+PdT2qSsWyZGfoMUyeS1baiVjVIKgMDf7cgU/Fkgf8MNlhzTPc4
-         Y8CgLv1oxcXBw/olWk0d480abcrQZtVx7XA0TDZMTJx4DZYEkpSX7Bjps46UlaCwRk3Y
-         VXQ6sLZKy9kPdBIEAR/YITwBDpgqTOUUmVOYKfPqjxSuzwvaguOPCaOuKMDzMJZYBjrP
-         YbAA==
+        d=cloudflare.com; s=google09082023; t=1711374734; x=1711979534; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=svPkrUsWc31u5PxOeTcURerKjA9TBu7K7e3w1kgsNqo=;
+        b=ItB557KNcARm08KdTuyx10BNBt5q+1kn7Rn2lWbeemwIQBzkaWDPLCPNzm/cCgAaaj
+         IAGr0TS7y7XYQvcDUpk9Znl0/ez4l4ZNLjKX3J0tALTQ4UAO1Mtf2RCuPoDNgKLrTPUF
+         5E5JnAVLaLlF+MzdAVTzwZ4UtI6xfPUI+qZdM/ymwbvQe8h6OvrpkNXZY2gLH0NrxWkf
+         23tV+yUqmwOSKbGJEfSj2CxR6ETP0FIU5eLTRzT5jhM7CEQpBK9csY65hmramFPP7Hp1
+         iWb6KoK4x1sgEdJhV45B5HVjmbZ2Rzug6hrnJpQ+L5k1srqWKlqv1prrLhVzFC8zcJfR
+         PEjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711376441; x=1711981241;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1711374734; x=1711979534;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o4khMi8YsL4x6qQRj8U1+7HQEKktCZ8TqyaiPDmkbrE=;
-        b=uZqMwcVLuEJDR2d6f9zbcZLYEUAQxIHmx4LjYP3p50X43cd4gx4JQ+xnqyxYnGoSji
-         tbiK/p2L3TIPSFg0umONu6oieNN+mdW53a/YAGLGdQ88aMMj7X3UJjKHSSKNSMC5wU+P
-         cpJHf+Wx463S5QC7b2oAal3KSqI6adJGl4JNE6tw2NRYcGKQWmX9R1T2fOpy2bZdDdEt
-         XY+IJ7Cc7OObIANbC7+SRgFa5Ljg0rL3HwNmwI8LzvlrCM0nnsht20loCnFva13rojVs
-         cFHXoN2ORacR91D5I784eOkn0H+4tUk75c1TVrE3OhD+YM24NX8gK+Q9WJwnRaNJEkrE
-         xYMA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxzRfwqMRCVyCCDcRlFMtcfjn/U9CWRpdQ67plk/FfX45P6kTmvov9fh0ud/1hzFeyjvkZ9YHaDG2L1XrzQYngQef+Z9otKQYtIsnk
-X-Gm-Message-State: AOJu0YyKy2Udj87gyP6bIg7ZFOIfIK1httAWCzJd1wwZhDLng2r8D0ZU
-	FaId6l2FKw+oBZC8PkABwI+Gt6s4cd8puhK9MTsQKzR3LTN6Z4RcnWu450VQqFY=
-X-Google-Smtp-Source: AGHT+IEIDvH4aJX0QxV4yhRacQicWFP/ioH96fdSaZc4HTl73ipKGoKLrbARimpUoqXo7Z7Mj3Cjjg==
-X-Received: by 2002:ae9:e64a:0:b0:789:e917:ac8d with SMTP id x10-20020ae9e64a000000b00789e917ac8dmr12632qkl.71.1711376440895;
-        Mon, 25 Mar 2024 07:20:40 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id ou8-20020a05620a620800b007882e204d45sm2170804qkn.37.2024.03.25.07.20.39
+        bh=svPkrUsWc31u5PxOeTcURerKjA9TBu7K7e3w1kgsNqo=;
+        b=uwdxo7Jrr8pPIZo6yJ12D2BUJK3a98hmNEDd1fNgxYYdXMwerhLuFxZFGS/lTTSDcK
+         56A1p6w0wsoTCvs7O5eRm4TisMLeyUtibrYitLJFPWc3Be/m0pX9I6bJOmjhy+W/8Zym
+         5lviY+JCpNpRziqUlx0nHI+ZBV13RV7uRelS/MVKxhqAHf1KLR8p/4mTD5g4sTueM3kD
+         6atL8m+dPvWPDIhnvvLfNjhhFpqdH+So8WCwSkpFqZcp/Y0XbwSXHtGnPj0fQ7U5iip8
+         5CLTckIEh2N3hCqKA5V1XQj2ANQN2hnlTE+gXiXfXKw+f5tSr6WRlXKS/8fZ0xiPxr8l
+         AF+g==
+X-Forwarded-Encrypted: i=1; AJvYcCWVZVfupn0l/KMDc6di6RZRtJBkkDa4YVTeNjvWvHJ8CMBli1rLKlvaMSvp3jzF4Qrvd8/Sn6x1+C6VG4wMDGZrTOsUFqvNlwR80iCl
+X-Gm-Message-State: AOJu0YzMTrME65km+laS/0jYKeOj4b4kmMDgcZA5ovyOipRQOwSmrrEK
+	dJEOXrX/GL30t3/YfrsmHCyNsdAeOZaqi8msPCRiNuyRU7qmTlAYR/T2LT2fZr4=
+X-Google-Smtp-Source: AGHT+IGmFzRBxjkHf31z6d3Lq36FFy7Enc6jBbimLiq65p2x3hU5JphLJecADC001IRmMLuW5xDSbw==
+X-Received: by 2002:a17:906:3b09:b0:a46:ba19:2e99 with SMTP id g9-20020a1709063b0900b00a46ba192e99mr4763483ejf.26.1711374733929;
+        Mon, 25 Mar 2024 06:52:13 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:1a6])
+        by smtp.gmail.com with ESMTPSA id i15-20020a170906090f00b00a46d9966ff8sm3114614ejd.147.2024.03.25.06.52.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 07:20:40 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rokgy-000ME6-0a;
-	Mon, 25 Mar 2024 10:48:48 -0300
-Date: Mon, 25 Mar 2024 10:48:48 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>,
-	Bixuan Cui <cuibixuan@huawei.com>,
-	linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH 3/3] iommu/arm-smmu-v3: support suspend/resume
-Message-ID: <20240325134848.GA8419@ziepe.ca>
-References: <20240324-smmu-v3-v1-0-11bc96e156a5@nxp.com>
- <20240324-smmu-v3-v1-3-11bc96e156a5@nxp.com>
+        Mon, 25 Mar 2024 06:52:13 -0700 (PDT)
+References: <000000000000dc9aca0613ec855c@google.com>
+ <tencent_F436364A347489774B677A3D13367E968E09@qq.com>
+ <CAADnVQJQvcZOA_BbFxPqNyRbMdKTBSMnf=cKvW7NJ8LxxP54sA@mail.gmail.com>
+ <87y1a6biie.fsf@cloudflare.com>
+User-agent: mu4e 1.6.10; emacs 29.2
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Edward Adam Davis
+ <eadavis@qq.com>, John Fastabend <john.fastabend@gmail.com>
+Cc: syzbot+c4f4d25859c2e5859988@syzkaller.appspotmail.com,
+ 42.hyeyoo@gmail.com, andrii@kernel.org, ast@kernel.org,
+ bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+ edumazet@google.com, kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+ linux-kernel@vger.kernel.org, namhyung@kernel.org, netdev@vger.kernel.org,
+ pabeni@redhat.com, peterz@infradead.org, songliubraving@fb.com,
+ syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: [PATCH] bpf, sockmap: fix deadlock in rcu_report_exp_cpu_mult
+Date: Mon, 25 Mar 2024 14:49:19 +0100
+In-reply-to: <87y1a6biie.fsf@cloudflare.com>
+Message-ID: <87ttkuber7.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324-smmu-v3-v1-3-11bc96e156a5@nxp.com>
+Content-Type: text/plain
 
-On Sun, Mar 24, 2024 at 08:29:00PM +0800, Peng Fan (OSS) wrote:
+On Mon, Mar 25, 2024 at 01:23 PM +01, Jakub Sitnicki wrote:
 
-> +static void arm_smmu_resume_unique_irqs(struct arm_smmu_device *smmu)
-> +{
-> +	struct device *dev = smmu->dev;
-> +	struct msi_desc *desc;
-> +	struct msi_msg msg;
-> +
-> +	if (!dev->msi.domain)
-> +		return;
-> +
-> +	desc = irq_get_msi_desc(smmu->evtq.q.irq);
-> +	if (desc) {
-> +		get_cached_msi_msg(smmu->evtq.q.irq, &msg);
-> +		arm_smmu_write_msi_msg(desc, &msg);
-> +	}
-> +
-> +	desc = irq_get_msi_desc(smmu->gerr_irq);
-> +	if (desc) {
-> +		get_cached_msi_msg(smmu->gerr_irq, &msg);
-> +		arm_smmu_write_msi_msg(desc, &msg);
-> +	}
-> +
-> +	if (smmu->features & ARM_SMMU_FEAT_PRI) {
-> +		desc = irq_get_msi_desc(smmu->priq.q.irq);
-> +		if (desc) {
-> +			get_cached_msi_msg(smmu->priq.q.irq, &msg);
-> +			arm_smmu_write_msi_msg(desc, &msg);
-> +		}
-> +	}
-> +}
+[...]
 
-I wonder if this should be done instead by converting the driver away
-from platform MSI to the new MSI mechanism?
+> But we also need to cover sock_map_unref->sock_sock_map_del_link called
+> from sock_hash_delete_elem. It also grabs a spin lock.
 
-Jason
+On second look, no need to disable interrupts in
+sock_map_unref->sock_sock_map_del_link. Call is enclosed in the critical
+section in sock_hash_delete_elem that has been updated.
+
+I have a question, though, why are we patching sock_hash_free? It
+doesn't get called unless there are no more existing users of the BPF
+map. So nothing can mutate it from interrupt context.
+
+[...]
 
