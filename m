@@ -1,114 +1,207 @@
-Return-Path: <linux-kernel+bounces-116740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E59488A32F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:54:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F37E88B0D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:05:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 354981F3CD24
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:54:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78099B334D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7212C145336;
-	Mon, 25 Mar 2024 10:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D11115821B;
+	Mon, 25 Mar 2024 10:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kp8pD+1Q"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jtqSLe7T"
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEAB1EB2A;
-	Mon, 25 Mar 2024 09:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD75384D1E
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711358595; cv=none; b=LZNuvjoUVpQksM2IUDFNgh1ANmRd/ir+i1a6VQ1KTpxHrq/1oLG43X5yfrAn7I4txRQ+t5mluB/kIfYLzJ4OOaGBagcIkJ1YtbalUPYLUQc+3AR/uUFyg6noyUUEjNgzNQn0tvXBr3I2sg7JmXh+30dgCq1ywF/MVpM7zcVTEJw=
+	t=1711358770; cv=none; b=k+qRqTIqWxz9ZeeW1tYPSf9+GFum2x+jtMSDPXQ/Y2uNr+ehFs5Wqi4XCqJbtKSLKhy4XgaxPlDOKIcIxUOXe3xDOiTAztDW1pffQj77MyWQOjPSvTeoyi9gKgzGEa627tC4hWxWy/0QlC/C0CyPkmLLMJNH9am1ZB1R+A+Ryag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711358595; c=relaxed/simple;
-	bh=+Rntwbb4YW9HjwZqjkH2HwaBZOT1e6Wg4co+NigZDyo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C4aYrSy4js/LbnrDM+YX414UpM9QoWrJTac/K8BFjlbo9LwVsOu+BxHRRcB1hTsdqurnNL+vX1DOo8rpFwjad+jpGyKOdkani4ggupYAfeBkAls4P9CdsMcsR1aHTMpnXRkbcxJvltSjxKfJmJKpinm24pfeswbYWX9OXD+yJyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kp8pD+1Q; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711358594; x=1742894594;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+Rntwbb4YW9HjwZqjkH2HwaBZOT1e6Wg4co+NigZDyo=;
-  b=Kp8pD+1QQVc0bxOc72i6QGVpMyLh0TmLJxawJlcCptezf77RdMbY3DBy
-   6WVLHwKt4X3t11e+wJHm7b3jdtplysF3rF32oCGla3JwA3hcg9jTQWB7g
-   J/2csaferj9H+KDHhRwDqk4H56toy2tapXjTrhCMM6yvSi2FuyU7ogrcs
-   NVZ8wirrJ4cTld/bPTAMUBheZS851J26K0gNz1OnF5fTpFvXk4pXoV6hZ
-   BQo03AFMVPcbz4ipAOKtI7gJLKL+eElgdbskTo52eG+gFvDnc5Plt7lTt
-   Wy4oun4vDQXDe9P95JgAFnl8sJztKTZoUeRX2nCd87I5XBhy6vAgUrM6V
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6533060"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="6533060"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 02:23:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="914837483"
-X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="914837483"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 02:23:10 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rogXr-0000000Fvfn-1Ds7;
-	Mon, 25 Mar 2024 11:23:07 +0200
-Date: Mon, 25 Mar 2024 11:23:07 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	kernel test robot <lkp@intel.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] net: wan: framer: Add missing static inline qualifiers
-Message-ID: <ZgFCe39GJEARc9g4@smile.fi.intel.com>
-References: <20240325082505.29385-1-herve.codina@bootlin.com>
+	s=arc-20240116; t=1711358770; c=relaxed/simple;
+	bh=+UtR0NT011zyBW6pNpHFzKilg63ytC5qO0zyrg10zGA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L/BgEIaS/0QTx+ZbHk2YztCvxhvBjNduPhFnd8n52fbPlYjQJJN84xUgWSOYSoKV4lg4I4tAtnDjR6mhhmMnAYrwrCd0Me61IlJvC+LAcvzrtwNtjjpieBD80xHZXpyxd1Yw9LFayqE2eMJjmC3YOsK9KRhzAdsNli6wyyLQgHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jtqSLe7T; arc=none smtp.client-ip=209.85.222.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78a4708a557so124487785a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711358767; x=1711963567; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+UtR0NT011zyBW6pNpHFzKilg63ytC5qO0zyrg10zGA=;
+        b=jtqSLe7TaoJ/+V95xYpsB2A0CsojuHZsyifgC9A1KziLR5q8QBrJ1FVCnDwjC2nNkt
+         R/tYmPSHVlKm9qfWolfVippLSDsEDgnynRbQiX7cQEwnlbawMOqKKzMYC0R/ubkNkZ1y
+         PldBya+Wu/dXmMZOUMbrgzZSu0ePeU6j3y8i8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711358767; x=1711963567;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+UtR0NT011zyBW6pNpHFzKilg63ytC5qO0zyrg10zGA=;
+        b=aP05ec65OVirWQtdOr89IPiNaEgPgVHFNkizCRA+DbBECJ5585+hQxcVdZ8xFCiitz
+         9pU27txNa5QO0vZGlq25xvRUuWEQrwrmsF4kMwoCgzQMXp0zES91QAu7s+pnEW2kYZ+f
+         pgDeBcJaO3VGmTzoGRA6emOiATnkMGe7BL/Xj1871D86n2GPDsWj0xqJmeLzxSmTfpB/
+         VV9eb07Sj/IbZu1OexfHYDPle0Vd3X3atmDkqEoqpltt+8QjbAk0kl8Em+tyO9ypQTSc
+         +BwJJdQMA3iSvG586uQz8aCsWVny81Js6fjR2CJynbGp0ZRXV6WkMoW9UiSL3fYoOR9k
+         zcfw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5yqcg69exT/I2nSuGoLHyp3JfCPNxV4u4mQx6ls1YJlvq/ToSQjrG87oFMzPYge3sVWuh2BEGQcmdtOQvm17G2ZFJBo8kg6wYO5f5
+X-Gm-Message-State: AOJu0YwXOGi1Fenjpfp4APuxK0rczTEM2bZ8q354m14VC1rAtmJqtVsn
+	zmYNiy5VOPZdTqANELrG/3RvygmsJzKpDrrlv9f6YbLQKtAUhjNW9ZKYDOgqSpXEVPrXyIB7u7H
+	qxw==
+X-Google-Smtp-Source: AGHT+IGk819OfMzhnUCGtilf6jGWlK72Dfm4MyeBcL4Fcw/aWH+7PkAiQ/mj1HdR5Ey43ZqwcVOhZg==
+X-Received: by 2002:a05:6214:3002:b0:696:8e81:77bb with SMTP id ke2-20020a056214300200b006968e8177bbmr3277183qvb.32.1711358767211;
+        Mon, 25 Mar 2024 02:26:07 -0700 (PDT)
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com. [209.85.219.53])
+        by smtp.gmail.com with ESMTPSA id eh12-20020a056214186c00b0069183a8de64sm3898362qvb.75.2024.03.25.02.26.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Mar 2024 02:26:06 -0700 (PDT)
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-690c1747c3cso31436586d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:26:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXsVPuLjWukVzc05fAS6LwPtsY7lA1+00QytqYxa77YXBOFGG+IzHy8wnplmcbByGCsjpnIO7UCHx+149sCXmQLr2j3roKReegB5BuU
+X-Received: by 2002:a05:6214:2465:b0:68f:f859:ee06 with SMTP id
+ im5-20020a056214246500b0068ff859ee06mr11514858qvb.12.1711358765850; Mon, 25
+ Mar 2024 02:26:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325082505.29385-1-herve.codina@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240323-resend-hwtimestamp-v10-0-b08e590d97c7@chromium.org>
+ <2722561.mvXUDI8C0e@natalenko.name> <CANiDSCsnOdTaW0Eg68+-niPXwPhYc3Br6cWoGiHytZrFOGmcZA@mail.gmail.com>
+ <12403186.O9o76ZdvQC@natalenko.name>
+In-Reply-To: <12403186.O9o76ZdvQC@natalenko.name>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Mon, 25 Mar 2024 10:25:51 +0100
+X-Gmail-Original-Message-ID: <CANiDSCuma7aGxq7T2uYMgn_JEW223LdR4as83UT2Aj3QmVu4ig@mail.gmail.com>
+Message-ID: <CANiDSCuma7aGxq7T2uYMgn_JEW223LdR4as83UT2Aj3QmVu4ig@mail.gmail.com>
+Subject: Re: [PATCH v10 3/6] media: uvcvideo: Quirk for invalid dev_sof in
+ Logitech C922
+To: Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>, 
+	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Senozhatsky <senozhatsky@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 25, 2024 at 09:25:05AM +0100, Herve Codina wrote:
-> Compilation with CONFIG_GENERIC_FRAMER disabled lead to the following
-> warnings:
->   framer.h:184:16: warning: no previous prototype for function 'framer_get' [-Wmissing-prototypes]
->   184 | struct framer *framer_get(struct device *dev, const char *con_id)
->   framer.h:184:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->   184 | struct framer *framer_get(struct device *dev, const char *con_id)
->   framer.h:189:6: warning: no previous prototype for function 'framer_put' [-Wmissing-prototypes]
->   189 | void framer_put(struct device *dev, struct framer *framer)
->   framer.h:189:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->   189 | void framer_put(struct device *dev, struct framer *framer)
+Hi Oleksandr
 
-Always try to minimize the warnings/backtraces/etc to the point. In this case
-it's enough to have:
+On Mon, 25 Mar 2024 at 10:23, Oleksandr Natalenko
+<oleksandr@natalenko.name> wrote:
+>
+> Hello.
+>
+> On pond=C4=9Bl=C3=AD 25. b=C5=99ezna 2024 8:52:57, CET Ricardo Ribalda wr=
+ote:
+> > Hi Oleksandr
+> >
+> > On Sat, 23 Mar 2024 at 13:16, Oleksandr Natalenko
+> > <oleksandr@natalenko.name> wrote:
+> >
+> > >
+> > > How do I check whether C920 (046d:082d) is affected too? I have got o=
+ne, I can run tests on it as long as those will not blow the webcam up.
+> > >
+> > > Thanks.
+> > >
+> >
+> > First of all you need to enable the hwtimestamps in the driver. You
+> > could do that with
+> >
+> > ```
+> > rmmod uvcvideo; modprobe uvcvideo hwtimestamps=3D1
+> > ```
+>
+> ```
+> $ cat /sys/module/uvcvideo/parameters/hwtimestamps
+> 1
+> ```
+>
+> > Then capture some frames with yavta
+> > ```
+> > yavta -c /dev/video0
+> > ```
+> >
+> > After around 5 seconds all the frames should have a stable fps, the
+> > fps is not stable then your camera is affected with this bug.
+>
+> ```
+> $ ./yavta -c /dev/video1
+> Device /dev/video1 opened.
+> Device `HD Pro Webcam C920' on `usb-0000:0f:00.3-3.4' (driver 'uvcvideo')=
+ supports video, capture, without mplanes.
+> Video format: MJPEG (47504a4d) 1920x1080 (stride 0) field none buffer siz=
+e 4147200
+> =E2=80=A6
+> 100 (4) [-] none 100 200717 B 212.919114 213.079004 33.727 fps ts mono/So=
+E
+> 101 (5) [-] none 101 200889 B 213.003703 213.114996 11.822 fps ts mono/So=
+E
+> 102 (6) [-] none 102 200926 B 213.035571 213.146999 31.379 fps ts mono/So=
+E
+> 103 (7) [-] none 103 200839 B 213.067424 213.179003 31.394 fps ts mono/So=
+E
+> 104 (0) [-] none 104 200692 B 213.293180 213.214991 4.430 fps ts mono/SoE
+> 105 (1) [-] none 105 200937 B 213.322374 213.247001 34.254 fps ts mono/So=
+E
+> 106 (2) [-] none 106 201013 B 213.352228 213.279005 33.496 fps ts mono/So=
+E
+> =E2=80=A6
+> 168 (0) [-] none 168 200914 B 215.183707 215.347066 33.676 fps ts mono/So=
+E
+> 169 (1) [-] none 169 201141 B 215.271693 215.379066 11.365 fps ts mono/So=
+E
+> 170 (2) [-] none 170 201005 B 215.303449 215.415057 31.490 fps ts mono/So=
+E
+> 171 (3) [-] none 171 201195 B 215.335295 215.447062 31.401 fps ts mono/So=
+E
+> 172 (4) [-] none 172 200933 B 215.557731 215.479072 4.496 fps ts mono/SoE
+> 173 (5) [-] none 173 200973 B 215.587033 215.515063 34.127 fps ts mono/So=
+E
+> 174 (6) [-] none 174 200698 B 215.616811 215.547063 33.582 fps ts mono/So=
+E
+> 175 (7) [-] none 175 201290 B 215.646196 215.579075 34.031 fps ts mono/So=
+E
+> 176 (0) [-] none 176 200807 B 215.675857 215.615073 33.714 fps ts mono/So=
+E
+> =E2=80=A6
+> ```
+>
+> Does the above mean the webcam is affected?
 
-  warning: no previous prototype for function 'framer_get' [-Wmissing-prototypes]
-  warning: no previous prototype for function 'framer_put' [-Wmissing-prototypes]
+Looks like it.... could you try applying this patch and run with
 
-> Add missing 'static inline' qualifiers for these functions.
+rmmod uvcvideo; modprobe uvcvideo hwtimestamps=3D1 quirks=3D0x4000
 
-Code wise looks good,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+to see if that fixes it for you?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks!
+
+>
+> Thank you.
+>
+> >
+> >
+> > Thanks!
+> >
+>
+>
+> --
+> Oleksandr Natalenko (post-factum)
 
 
+
+--=20
+Ricardo Ribalda
 
