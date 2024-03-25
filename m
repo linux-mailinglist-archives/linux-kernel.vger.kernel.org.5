@@ -1,105 +1,96 @@
-Return-Path: <linux-kernel+bounces-117056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 300C688A680
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:28:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A5C088A656
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2EFF2E24DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:28:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B91A1C3C32D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CD513DDB4;
-	Mon, 25 Mar 2024 12:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B745E12B77;
+	Mon, 25 Mar 2024 12:45:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YFdVOqmg"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c1AJXD1u"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A4213D281
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0941D46B9B
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711370932; cv=none; b=LChNZEkoUxRIh6kXpOaAlkdkfhkkdGZyOWP8u0y/zfSigi7IlLGDiwQSskGdatxwN5CVeAqg6CooMcdqCfVqXjkT7i2HVvVyEyh8iIgDPb9BPSVQu+7WJdqzh0aehKb92rYh33caL/P/r5Y9EKx69QIgC4JRXLMI26RMWOzAUcA=
+	t=1711370745; cv=none; b=PWX32rRlDX9qyMp+uJEj0z4Xfxp70XMWPDxlOLQT4DYbIKcPtqDSHKEhynHipL+xuksO/I9Orhw3yT2g4r9d6XzPCzMnJph7cXNgGyo2ycfh8lPCMEu+jtKXXpp+GjjB37mcQiTNRyRfOdnkZIed3xPIxAm9NynDZPZLkRAeioQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711370932; c=relaxed/simple;
-	bh=kBexTpdznufB8h8lB8GWs078OsFkYjqj8luVRzOqmnc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UT4IJF1Kh0DCmcCYoieeozivby05G+L8ViTSdoo9r1EAGfNoIBCfcpwFRCuvFUMrFveaFc/214+Q/i3x568qzE/Tfl3JorQnktvNqJaS/swQDdzwCahqi4JcjLxWN/3DuGAz476f3POn9uJNLXDx9kZxieyHqtb6aliuzjRW5Eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YFdVOqmg; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711370931; x=1742906931;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kBexTpdznufB8h8lB8GWs078OsFkYjqj8luVRzOqmnc=;
-  b=YFdVOqmg9SulhOoNQC9j2fcF4JJLmJCR1MJcRSzFdLUY9f5xZLSlEFIx
-   tpcUuY157Cmij3tdPFdw/9sy1Q+LyySYvuUNDPXbpEI68AZKf0XMVTCsZ
-   wW9owFUW+cvRlH1/+KzftTbGoMiyCpxy0QsZXO6hbdmXjyKGM2JKUhvEn
-   fG48Z6u21ZNqNnLhqHFl7ifDBt2UJtu+0LvcziQWoe1QBVIVnY/1igWIZ
-   na3KJUlFzgqkYoowfGJIVdZfaq7gYXzWbXgsQd3mBGJQjHpI9jx/Evr6I
-   BhQOSO2pbNou73F6SWu/HC43W3vOWVmfEV9fkVJOTpg6Cf4JvHRI+T4B7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6198768"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="6198768"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 05:48:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="914842445"
-X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
-   d="scan'208";a="914842445"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 05:48:47 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rojkq-0000000FywC-2sqU;
-	Mon, 25 Mar 2024 14:48:44 +0200
-Date: Mon, 25 Mar 2024 14:48:44 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v1 1/1] x86/rtc: Remove unused intel-mid.h
-Message-ID: <ZgFyrHCzVlwCn1gn@smile.fi.intel.com>
-References: <20240305161024.1364098-1-andriy.shevchenko@linux.intel.com>
- <14750023-e5fb-45f7-9c28-9510ce5a5994@intel.com>
- <ZedI9vCoCf9KtHcr@smile.fi.intel.com>
- <0c7c00c0-3b4a-41b3-8664-9ea6ee7e0814@intel.com>
- <ZedKGoPoTgWfOVNO@smile.fi.intel.com>
+	s=arc-20240116; t=1711370745; c=relaxed/simple;
+	bh=6S1jpM8cRjal0ma04kQFc9hgNF7SQSqnoGDvQZoxzUA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N5wvCrt30RDjm8ARgGUTx6FIBQ9VzYVn9eKxldhq9atvbcWNn+TDxcGw6QO5f8xVn95cOyrnPbblWwib0kQb+3mACm55etNXKa2G8iJ4O2kKNWosEnjalbkvvZ+01xyMKa8yHiG7gQx6hmwIHD5G9lK0uCjUuqqeD2ZuV1bmQew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c1AJXD1u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C154BC43399;
+	Mon, 25 Mar 2024 12:45:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711370744;
+	bh=6S1jpM8cRjal0ma04kQFc9hgNF7SQSqnoGDvQZoxzUA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=c1AJXD1uJxo0/HCChDVUYuM+YaNpjXA5bpAV6DV/h2IDgJpbREmcfv4+oXFnOrFIy
+	 d1We1AV3bqL+RhTjJCiDHTH4YfzHWpxd31KIvvGMbVidqh1obvpEPLymxNPIVomFDs
+	 Y52v/+fm2dy7E1LHyjNEAnAOLSZkLB1Bj9uNUEVczkKWvEPzKrH4IZJ7wCYvK6MQ3H
+	 XeTfFJJk8WKOzOIzaqvFowEJ71Azh6RUdOr7N++V2mYRJGuW4NmvQQ3iRf5M+UwG47
+	 1btU0QcIJjwT0uonQst7dpUcB7I/en2EFPGSIjebAPxJiUtSOc0Yz+vnKEtrGmdwls
+	 UFl04zznNZ6CQ==
+From: alexs@kernel.org
+To: Matthew Wilcox <willy@infradead.org>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Izik Eidus <izik.eidus@ravellosystems.com>,
+	david@redhat.com,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	ryncsn@gmail.com
+Cc: "Alex Shi (tencent)" <alexs@kernel.org>
+Subject: [PATCH v2 00/14] transfer page to folio in KSM 
+Date: Mon, 25 Mar 2024 20:48:47 +0800
+Message-ID: <20240325124904.398913-1-alexs@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZedKGoPoTgWfOVNO@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 05, 2024 at 06:36:43PM +0200, Andy Shevchenko wrote:
-> On Tue, Mar 05, 2024 at 08:34:59AM -0800, Dave Hansen wrote:
-> > On 3/5/24 08:31, Andy Shevchenko wrote:
+From: "Alex Shi (tencent)" <alexs@kernel.org>
 
-..
+This is the first part of page to folio transfer on KSM. Since only
+single page could be stored in KSM, we could safely transfer stable tree
+pages to folios. 
+This patchset could reduce ksm.o 81kbytes from 2570760 bytes on latest
+akpm/mm-stable branch with CONFIG_DEBUG_VM enabled. It pass the KSM testing
+in LTP and kernel selftest.
 
-> > I'll stick this in the x86 queue.
-> 
-> Thank you!
+Alex Shi (tencent) (14):
+  mm/ksm: add ksm_get_folio
+  mm/ksm: use folio in remove_rmap_item_from_tree
+  mm/ksm: add folio_set_stable_node
+  mm/ksm: use folio in remove_stable_node
+  mm/ksm: use folio in stable_node_dup
+  mm/ksm: use ksm_get_folio in scan_get_next_rmap_item
+  mm/ksm: use folio in write_protect_page
+  mm/ksm: Convert chain series funcs to use folio
+  mm/ksm: Convert stable_tree_insert to use folio
+  mm/ksm: Convert stable_tree_search to use folio
+  mm/ksm: return folio for chain series funcs
+  mm/ksm: remove get_ksm_page and related info
+  mm/ksm: use folio_set_stable_node in try_to_merge_one_page
+  mm/ksm: remove set_page_stable_node
 
-Any updates here?
+ mm/ksm.c     | 259 ++++++++++++++++++++++++++-------------------------
+ mm/migrate.c |   2 +-
+ 2 files changed, 131 insertions(+), 130 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.43.0
 
 
