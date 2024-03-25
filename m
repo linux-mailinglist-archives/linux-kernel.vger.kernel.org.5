@@ -1,68 +1,90 @@
-Return-Path: <linux-kernel+bounces-116842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8605288A470
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0771888A3C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:11:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BCF12E4F60
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:27:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D0932E2945
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79535143875;
-	Mon, 25 Mar 2024 11:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648E414430F;
+	Mon, 25 Mar 2024 11:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="hVeUkH1Z"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oyyvSCR4"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8AB143867;
-	Mon, 25 Mar 2024 10:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0728016F829
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711362866; cv=none; b=NlKOLHKHMaTEwTcEKoC/U6RxRbFhTQOwhNBMJhRo1iC8/mT8daUXZLFC3ibv0JioYv1vundcV1tvOyMMITNKL1vp6UXUgfkGklvii7HSdiuLR6sOslQ8mG9eHZqnpIENQLCzs3ehCo+W8rkf0E43PXnTV8qM44pr0aWphRPeLEU=
+	t=1711362979; cv=none; b=Zpup5fijx6Pl7U++5OsWFWrGYcoICnSNe51zyQLdYLtIbGNSLzlPgWDGYeWh4BPio41MejYYyYBuAqbdPvmfObP755BlN5O3Oam7/qhq/iR02Xs6UlQxaeHKisA1070zC+pNxG0icm6TqRpAFY2S0uD42JD3QlEjx9MqlVaZp0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711362866; c=relaxed/simple;
-	bh=0iNVx8Jzuei+t2Arv/gUH0iqVqglcoWVyc4RGWKsV3E=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iG29aD2wm5AiWHl1GfZ22KwwM20zf8a1wDGP0gOF+rQ9aiNEuFWrw/tZefj/istTafc9TUpDi3znvK3t2jykjbZgXRWcKWBSC3094j9DtlWVcklFfRUjErfY3cF+mFd5ZhXP7k0oDXWWnT7On4ADWAm0OyoSCBvcMmI/uo19agE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=hVeUkH1Z; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42PAYAoI085942;
-	Mon, 25 Mar 2024 05:34:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711362850;
-	bh=KnYfVum1Y9tijG92Yx6yRaXnOvhRxG3WBuusOzf8vv8=;
-	h=From:To:CC:Subject:Date;
-	b=hVeUkH1ZMTQqChdFSuCKspkXvYSXF29Rl2LHIAn95BX8vbWZT+xdBEBaQMRLHpvU2
-	 yr7hUtASPcIGixWxxjRdVfAC3hooYS51HaUaUW9A8ohfBLnoX4ls/dnQK1qNBQtWi4
-	 HJY8F0oAnAAedeNdrvCtu2Ri/kRl/37wZkYQghPQ=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42PAYA9X012975
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 25 Mar 2024 05:34:10 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 25
- Mar 2024 05:34:09 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 25 Mar 2024 05:34:09 -0500
-Received: from uda0510294.dhcp.ti.com (uda0510294.dhcp.ti.com [10.24.69.66])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42PAY5YR109320;
-	Mon, 25 Mar 2024 05:34:06 -0500
-From: Beleswar Padhi <b-padhi@ti.com>
-To: <nm@ti.com>
-CC: <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <b-kapoor@ti.com>, <u-kumar1@ti.com>
-Subject: [PATCH v2] arm64: dts: ti: k3-j721e-sk: Add support for multiple CAN instances
-Date: Mon, 25 Mar 2024 16:04:05 +0530
-Message-ID: <20240325103405.182692-1-b-padhi@ti.com>
+	s=arc-20240116; t=1711362979; c=relaxed/simple;
+	bh=jqvU3Y2sBVXpLMRkDMJYk9Nm5Kg4ldvtAjFdlImDn3k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SzSdEO9O5kJSK0qbNRrctsfbGS2Lxx6pl8GQe9b4RonC4KUAwbDs+b5lcWbOfJukD2RvUkLgpg9/3vaM99DOVwyds01uVCSsdAEvsG8/tvrXbef4P7CVQXtzj42MhRq0G5nsxkC7ovvBv0HmFqsOszEeyw4wf+hXVtlQLzqZtOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oyyvSCR4; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a465ddc2c09so231969266b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:36:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711362974; x=1711967774; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9sOPezhldmxSnr8OT7bAHjF4t98n/YFRx58g6GLuW1s=;
+        b=oyyvSCR4onxuZ5WG3yDM3NZKytDqtmFRVbIBEHpGrgxbLccCUF+vAoFQgcKlehRMT4
+         6Xx7dsnoSY6AjQhQ50nS7vG92eynCwz0r2yskCLi75Dh5gTQzUwZ/pcEZo/F+p7k20Qa
+         PubTvMCGTobjcqOWjWNddyO7eP4dEcrnI+eNFKNyIixxxTxbXWAEFJ5XmpXRomDW80ol
+         ubeLYROG/gf99pUY8diaxrn7uB/Klz4oxya5L2u91yh2FC1diujmh39SJS/Hb4mTN6m+
+         BO1TIlHe8Yd7FjfDJjiu5X01bBaexh1T9Dt2U7OJcWxQ46uT/IHTZbXMcHQPr53D83Gn
+         V6Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711362974; x=1711967774;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9sOPezhldmxSnr8OT7bAHjF4t98n/YFRx58g6GLuW1s=;
+        b=sfuZLjK44YI0Ulo/cQUMIWMOLKgDhpi7bQR88vRq+92YZUSQy1dlus46Yf7vWOqOwq
+         GiJy7O3Gtft5iVU2TmQuDACx6VA+00UogfzhnXtroje2eSvqqb/WmgXLNTdCfIrdtVyv
+         NyB1mCj/tiB2I0Uw7dtf53wsJq6GTfrAVR4T3MLc0Wk09UCf/KWr3iUMu2ko3aEMKbhb
+         9FmSSIsM2EEd4XkEm4H0psg+o+pSLokjgejWVK8pNYr+YsAidwrVH12w97DL2q8EPoWl
+         U+MrPJvoGfJ4mWh7esNyGUTGxuPZaEOL0Gjw7iwlxaVH630FV472s9bnJNB0jHk0Sd/k
+         1UgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWc1/BRSJKzEuHdPgVsgTsBVUzX9ZJKyL4DMeOVliE8zJAKD986514oOlZ7H8NT4nOZBBqJSey5vf3JEdLDI1kcedpVBjGrEHEEKBKb
+X-Gm-Message-State: AOJu0YzJNsKxzj0f1KJ9kfLpdxc8+DcAbPm8eki8Zv+SoUFT3vYRWWdV
+	qLe6BRU9lKCvS6beymuHX1he0Jwvzl0u35FP1SBkPRpEcvsQnl6MhV4PEBCRPn4=
+X-Google-Smtp-Source: AGHT+IGxM8s228b1XWbE+SeGTrM1fDdyMya66yBrGFVuE7WBvD2ok2jlRcn2B1rUDQ1HBTx/Bvze3Q==
+X-Received: by 2002:a50:9e44:0:b0:568:d19e:7ab0 with SMTP id z62-20020a509e44000000b00568d19e7ab0mr5606866ede.36.1711362974289;
+        Mon, 25 Mar 2024 03:36:14 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id dm28-20020a05640222dc00b0056b7ed75a46sm2827319edb.27.2024.03.25.03.36.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 03:36:13 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jianhua Lu <lujianhua000@gmail.com>,
+	Del Regno <angelogioacchino.delregno@somainline.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Rob Herring <robh@kernel.org>
+Subject: [RESEND PATCH v4 1/3] dt-bindings: display: panel: add common dual-link schema
+Date: Mon, 25 Mar 2024 11:36:09 +0100
+Message-Id: <20240325103611.28240-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,180 +93,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-CAN instance 0 in the mcu domain is brought on the j721e-sk board
-through header J1. Thus, add its respective transceiver 1 dt node to add
-support for this CAN instance.
+Add schema with common properties shared among dual-link panel ICs.
 
-CAN instances 0, 5 and 9 in the main domain are brought on the j721e-sk
-board through headers J5, J6 and J2 respectively. Thus, add their
-respective transceivers 2, 3 and 4 dt nodes to add support for these CAN
-instances.
-
-Signed-off-by: Beleswar Padhi <b-padhi@ti.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-Test logs: https://gist.github.com/3V3RYONE/d60192fa2ccdf523f303e9904fbe8e17
 
-v2: Changelog:
-1) Re-ordered status = "okay" property to the end of all applicable dt
-nodes following kernel documentation
+Changes since v3:
+1. Re-phrase description of binding and ports (Laurent)
+v3: https://lore.kernel.org/all/20230823081500.84005-1-krzysztof.kozlowski@linaro.org/
 
-Link to v1:
-https://lore.kernel.org/linux-arm-kernel/20240315124728.490331-1-b-padhi@ti.com/
+Changes since v2:
+1. New Patch
+v2: https://lore.kernel.org/all/20230502120036.47165-1-krzysztof.kozlowski@linaro.org/
+v1: https://lore.kernel.org/all/20230416153929.356330-1-krzysztof.kozlowski@linaro.org/
+---
+ .../display/panel/panel-common-dual.yaml      | 47 +++++++++++++++++++
+ 1 file changed, 47 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/panel-common-dual.yaml
 
- arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 116 +++++++++++++++++++++++++
- 1 file changed, 116 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-index 0c4575ad8d7c..7170f0220afd 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-@@ -210,6 +210,42 @@ vdd_sd_dv_alt: gpio-regulator-tps659411 {
- 			 <3300000 0x1>;
- 	};
- 
-+	transceiver1: can-phy0 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
-+		standby-gpios = <&wkup_gpio0 3 GPIO_ACTIVE_HIGH>;
-+	};
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-common-dual.yaml b/Documentation/devicetree/bindings/display/panel/panel-common-dual.yaml
+new file mode 100644
+index 000000000000..cc7ea3c35c77
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/panel-common-dual.yaml
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/panel-common-dual.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	transceiver2: can-phy1 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&main_mcan0_gpio_pins_default>;
-+		standby-gpios = <&main_gpio0 65 GPIO_ACTIVE_HIGH>;
-+	};
++title: Common Properties for Dual-Link Display Panels
 +
-+	transceiver3: can-phy2 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&main_mcan5_gpio_pins_default>;
-+		standby-gpios = <&main_gpio0 66 GPIO_ACTIVE_HIGH>;
-+	};
++maintainers:
++  - Thierry Reding <thierry.reding@gmail.com>
++  - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 +
-+	transceiver4: can-phy3 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&main_mcan9_gpio_pins_default>;
-+		standby-gpios = <&main_gpio0 67 GPIO_ACTIVE_HIGH>;
-+	};
++description:
++  Properties common for Panel IC supporting dual link panels.  Devices might
++  support also single link.
 +
- 	dp_pwr_3v3: fixedregulator-dp-prw {
- 		compatible = "regulator-fixed";
- 		regulator-name = "dp-pwr";
-@@ -367,6 +403,45 @@ J721E_IOPAD(0x164, PIN_OUTPUT, 7) /* (V29) RGMII5_TD2 */
- 		>;
- 	};
- 
-+	main_mcan0_pins_default: main-mcan0-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x208, PIN_INPUT, 0) /* (W5) MCAN0_RX */
-+			J721E_IOPAD(0x20c, PIN_OUTPUT, 0) /* (W6) MCAN0_TX */
-+		>;
-+	};
++allOf:
++  - $ref: panel-common.yaml#
 +
-+	main_mcan0_gpio_pins_default: main-mcan0-gpio-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x108, PIN_INPUT, 7) /* (AD27) PRG0_PRU1_GPO2.GPIO0_65 */
-+		>;
-+	};
++properties:
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    additionalProperties: false
 +
-+	main_mcan5_pins_default: main-mcan5-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x050, PIN_INPUT, 6) /* (AE21) PRG1_PRU0_GPO18.MCAN5_RX */
-+			J721E_IOPAD(0x04c, PIN_OUTPUT, 6) /* (AJ21) PRG1_PRU0_GPO17.MCAN5_TX */
-+		>;
-+	};
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: First link
 +
-+	main_mcan5_gpio_pins_default: main-mcan5-gpio-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x10c, PIN_INPUT, 7) /* (AC25) PRG0_PRU1_GPO3.GPIO0_66 */
-+		>;
-+	};
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: Second link
 +
-+	main_mcan9_pins_default: main-mcan9-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x0d0, PIN_INPUT, 6) /* (AC27) PRG0_PRU0_GPO8.MCAN9_RX */
-+			J721E_IOPAD(0x0cc, PIN_OUTPUT, 6) /* (AC28) PRG0_PRU0_GPO7.MCAN9_TX */
-+		>;
-+	};
++      "#address-cells": true
++      "#size-cells": true
 +
-+	main_mcan9_gpio_pins_default: main-mcan9-gpio-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_IOPAD(0x110, PIN_INPUT, 7) /* (AD29) PRG0_PRU1_GPO4.GPIO0_67 */
-+		>;
-+	};
++    required:
++      - port@0
 +
- 	dp0_pins_default: dp0-default-pins {
- 		pinctrl-single,pins = <
- 			J721E_IOPAD(0x1c4, PIN_INPUT, 5) /* SPI0_CS1.DP0_HPD */
-@@ -555,6 +630,19 @@ J721E_WKUP_IOPAD(0xfc, PIN_INPUT_PULLUP, 0) /* (H24) WKUP_I2C0_SDA */
- 		>;
- 	};
- 
-+	mcu_mcan0_pins_default: mcu-mcan0-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x0ac, PIN_INPUT, 0) /* (C29) MCU_MCAN0_RX */
-+			J721E_WKUP_IOPAD(0x0a8, PIN_OUTPUT, 0) /* (D29) MCU_MCAN0_TX */
-+		>;
-+	};
++# Single-panel setups are still allowed.
++oneOf:
++  - required:
++      - ports
++  - required:
++      - port
 +
-+	mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x0bc, PIN_INPUT, 7) /* (F27) WKUP_GPIO0_3 */
-+		>;
-+	};
-+
- 	/* Reset for M.2 M Key slot on PCIe1  */
- 	mkey_reset_pins_default: mkey-reset-pns-default-pins {
- 		pinctrl-single,pins = <
-@@ -1108,6 +1196,34 @@ &pcie1_rc {
- 	num-lanes = <2>;
- };
- 
-+&mcu_mcan0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_mcan0_pins_default>;
-+	phys = <&transceiver1>;
-+	status = "okay";
-+};
-+
-+&main_mcan0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan0_pins_default>;
-+	phys = <&transceiver2>;
-+	status = "okay";
-+};
-+
-+&main_mcan5 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan5_pins_default>;
-+	phys = <&transceiver3>;
-+	status = "okay";
-+};
-+
-+&main_mcan9 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan9_pins_default>;
-+	phys = <&transceiver4>;
-+	status = "okay";
-+};
-+
- &ufs_wrapper {
- 	status = "disabled";
- };
++additionalProperties: true
 -- 
 2.34.1
 
