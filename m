@@ -1,203 +1,236 @@
-Return-Path: <linux-kernel+bounces-118145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F8D88B491
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:55:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4BE88B4E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:02:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B95B302DC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 22:55:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02C951F29F75
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C81380612;
-	Mon, 25 Mar 2024 22:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C43C823DB;
+	Mon, 25 Mar 2024 23:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YvXgsTBc";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Qu12Pwuo"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="kIu89AHQ"
+Received: from rusty.tulip.relay.mailchannels.net (rusty.tulip.relay.mailchannels.net [23.83.218.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F327640A;
-	Mon, 25 Mar 2024 22:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E3680C00;
+	Mon, 25 Mar 2024 23:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.83.218.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711407326; cv=none; b=TWgTuphqbtDTUA2+3qn7aCmbICLzYXZvHdwxjK6C3wI8kqbBtaSsIK/hZ0uM3LptZGE9/d32u6NOFjaJxmjRw1MOX+kJB8hgKRf/IwF4yTA7rXauVI6mr3ZZm/3d//m0ZAb3vqsQmYPiyjKSC9zeH0LVRwQWmTfCd2fgSPueXYI=
+	t=1711407715; cv=none; b=okP44X73wRGB/3/LOo5S8ijaUpil6wlpQPRiZBtkt7tkyIEsptxMBfIk0/Jabu4u/h0O8TR7Zik85FscrPaLeNc71KUkYpo295Vnx3xMVAbQdLKvYGAt0lW2Xm12OmfWZ3QUmmO0uw9dfbCeEpttD+GbNKAoibOOu+ZeQ9B2hgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711407326; c=relaxed/simple;
-	bh=3r1y31v3XTJVbXsuNyo5JrJSvUfosXKWdLpQPsBInmU=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ufAVHcSlUrlDKv52FibX3JPs+cLbcsdmxYVP5TTt6e0LwWbU+3ySGsYeLagNccbZn98D0i7ZO9USOm3vUrhtCPsxiXGgAgDHsWRfd4G1eNAWLFUvNHbFrL/1By653SMVpc/I+2eHbZLuFAa9ZtN8WpxiPswBvnfcNW1761M5RaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YvXgsTBc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Qu12Pwuo; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 25 Mar 2024 22:55:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711407322;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VduUBxZAYZw86rW/+SYoj/g0yoJ8Q2ZF+JCtK4WaCKE=;
-	b=YvXgsTBcPYeDxtIB0/qQOHBYRo3nYyk1JcCuQttXEm3AqsHP01Zjw2RAtN8pWAN4wm7Enn
-	sIxWxS7PebED335ecJvwOyA7cVlDiQfJs9PKO9W9jSFovQCwKwlgDqKqAakg4e4cTA4zZ8
-	HppDCsnI8oSD48XYm8i9fFq8XAmri/O58H8h3vrKlgfGW9DdTBNKq1I31bfO+dyh08iquB
-	2S3f+0Jd0lxxNyD15ySSwruLSk4g4Gnr8QYaByeR0Z6LJq89pNv67HIRxsWp0n63OJIxOS
-	i1DW5+KD+bQiiXDQM1Rwcgv/iYm8ZjvixAb2WzskDLZ4IUgQ15z3MceM1oDMBA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711407322;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VduUBxZAYZw86rW/+SYoj/g0yoJ8Q2ZF+JCtK4WaCKE=;
-	b=Qu12Pwuoitv961SrVQ/9du4ndKDOCIcATQq/V/cvmAXvHlCilOqZv+2Qf6TBrWai3pw1HX
-	KE1oqAecZgfI2hCg==
-From: "tip-bot2 for Rafael J. Wysocki" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] genirq: Introduce IRQF_COND_ONESHOT and use it in
- pinctrl-amd
-Cc: Francisco Ayala Le Brun <francisco@videowindow.eu>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Linus Walleij <linus.walleij@linaro.org>, "6.8+" <stable@vger.kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <12417336.O9o76ZdvQC@kreacher>
-References: <12417336.O9o76ZdvQC@kreacher>
+	s=arc-20240116; t=1711407715; c=relaxed/simple;
+	bh=pGelYWSesGbNVG/XxXeoAsq3pYrN4VEi9EG/XhDcCCw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IkVZj4s/ukPeEInwno5Vm0QOsH9ICNc/4MNVP/bQfby4I37kcnPO4jsWDUpIw1KCkodbDdLAzzPylBljqSGCzYQ2Joco/AaGINBJlHanrEYFQcwCdpOLRa70ZDQsXbfj1Ru2MXjMxo2EYoNIzrb1iFLVfEv89/NMHs4BESsNbk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=kIu89AHQ; arc=none smtp.client-ip=23.83.218.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 143072C1855;
+	Mon, 25 Mar 2024 22:56:20 +0000 (UTC)
+Received: from pdx1-sub0-mail-a262.dreamhost.com (unknown [127.0.0.6])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id B467D2C3A47;
+	Mon, 25 Mar 2024 22:56:19 +0000 (UTC)
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Bottle-Madly: 630645f44f809046_1711407379945_2575901930
+X-MC-Loop-Signature: 1711407379945:2338995249
+X-MC-Ingress-Time: 1711407379945
+Received: from pdx1-sub0-mail-a262.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.123.121.28 (trex/6.9.2);
+	Mon, 25 Mar 2024 22:56:19 +0000
+Received: from offworld (unknown [108.175.208.151])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dave@stgolabs.net)
+	by pdx1-sub0-mail-a262.dreamhost.com (Postfix) with ESMTPSA id 4V3SwL6Zw5z49;
+	Mon, 25 Mar 2024 15:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+	s=dreamhost; t=1711407379;
+	bh=yns6TRenEI0BrHKQHDVuKFZ63algNuE6vnQKEMLKhbQ=;
+	h=Date:From:To:Cc:Subject:Content-Type;
+	b=kIu89AHQSAuj20+il8QKkPjfIKfaMO99Yvs13+s7U3jApyfI6v+oeJtGql5gk+ZTx
+	 Wc2l+PfY9ez0xKcUzfUy1g8auNl45COEKm0W3XzYX59s2W8W0p4lCtkmXCSnwt5y7t
+	 BhXrWoT3byG1vmFDER+RgqsdvQ7II6NjA2w2roA9iaAdFlWkmQQhvLMgCpz99KMz+h
+	 D6q014ATT/34xHZl5OF9pNmzsUOGHt7nulgxz2CE4FurrdqaG2/f3Lw7c15G99runi
+	 zDkjBkp51WvOJ+mLPSbHgYvCi1JiETVrN1Qel1AikrT/yIcdCSKm79kfppnrAZV5Wo
+	 Mu/esq8fXhVew==
+Date: Mon, 25 Mar 2024 15:56:15 -0700
+From: Davidlohr Bueso <dave@stgolabs.net>
+To: ira.weiny@intel.com
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Navneet Singh <navneet.singh@intel.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
+	Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/26] cxl/mbox: Flag support for Dynamic Capacity
+ Devices (DCD)
+Message-ID: <aczotz4a2xv6x4cse3hh5vpk57ekuwqii67pu46okdvdciae7i@qsopoigqhvw5>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171140732104.10875.14515495184452517144.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
+User-Agent: NeoMutt/20231221
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Sun, 24 Mar 2024, ira.weiny@intel.com wrote:
 
-Commit-ID:     c2ddeb29612f7ca84ed10c6d4f3ac99705135447
-Gitweb:        https://git.kernel.org/tip/c2ddeb29612f7ca84ed10c6d4f3ac99705135447
-Author:        Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-AuthorDate:    Mon, 25 Mar 2024 13:58:08 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 25 Mar 2024 23:45:21 +01:00
+>From: Navneet Singh <navneet.singh@intel.com>
+>
+>Per the CXL 3.1 specification software must check the Command Effects
+>Log (CEL) to know if a device supports dynamic capacity (DC).  If the
+>device does support DC the specifics of the DC Regions (0-7) are read
+>through the mailbox.
 
-genirq: Introduce IRQF_COND_ONESHOT and use it in pinctrl-amd
+I vote to fold this into patch 3, favoring reduced patch count in the
+series to trvially enlarging that particular patch.
 
-There is a problem when a driver requests a shared interrupt line to run a
-threaded handler on it without IRQF_ONESHOT set if that flag has been set
-already for the IRQ in question by somebody else.  Namely, the request
-fails which usually leads to a probe failure even though the driver might
-have worked just fine with IRQF_ONESHOT, but it does not want to use it by
-default.  Currently, the only way to handle this is to try to request the
-IRQ without IRQF_ONESHOT, but with IRQF_PROBE_SHARED set and if this fails,
-try again with IRQF_ONESHOT set.  However, this is a bit cumbersome and not
-very clean.
+>Flag DC Device (DCD) commands in a device if they are supported.
+>Subsequent patches will key off these bits to configure DCD.
 
-When commit 7a36b901a6eb ("ACPI: OSL: Use a threaded interrupt handler for
-SCI") switched the ACPI subsystem over to using a threaded interrupt
-handler for the SCI, it had to use IRQF_ONESHOT for it because that's
-required due to the way the SCI handler works (it needs to walk all of the
-enabled GPEs before the interrupt line can be unmasked). The SCI interrupt
-line is not shared with other users very often due to the SCI handling
-overhead, but on sone systems it is shared and when the other user of it
-attempts to install a threaded handler, a flags mismatch related to
-IRQF_ONESHOT may occur.
+It would be good to mention these here explicitly (if this patch will
+live on). For example, that config will be the driver's way of telling
+if dcd is enabled or disabled - we could have cases of that zeroed bit
+but the rest enabled.
 
-As it turned out, that happened to the pinctrl-amd driver and so commit
-4451e8e8415e ("pinctrl: amd: Add IRQF_ONESHOT to the interrupt request")
-attempted to address the issue by adding IRQF_ONESHOT to the interrupt
-flags in that driver, but this is now causing an IRQF_ONESHOT-related
-mismatch to occur on another system which cannot boot as a result of it.
+lgtm otherwise.
 
-Clearly, pinctrl-amd can work with IRQF_ONESHOT if need be, but it should
-not set that flag by default, so it needs a way to indicate that to the
-interrupt subsystem.
+Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
 
-To that end, introdcuce a new interrupt flag, IRQF_COND_ONESHOT, which will
-only have effect when the IRQ line is shared and IRQF_ONESHOT has been set
-for it already, in which case it will be promoted to the latter.
-
-This is sufficient for drivers sharing the interrupt line with the SCI as
-it is requested by the ACPI subsystem before any drivers are probed, so
-they will always see IRQF_ONESHOT set for the interrupt in question.
-
-Fixes: 4451e8e8415e ("pinctrl: amd: Add IRQF_ONESHOT to the interrupt request")
-Reported-by: Francisco Ayala Le Brun <francisco@videowindow.eu>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Cc: 6.8+ <stable@vger.kernel.org> # 6.8+
-Closes: https://lore.kernel.org/lkml/CAN-StX1HqWqi+YW=t+V52-38Mfp5fAz7YHx4aH-CQjgyNiKx3g@mail.gmail.com/
-Link: https://lore.kernel.org/r/12417336.O9o76ZdvQC@kreacher
-
----
- drivers/pinctrl/pinctrl-amd.c |  2 +-
- include/linux/interrupt.h     |  3 +++
- kernel/irq/manage.c           |  9 +++++++--
- 3 files changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-index 49f89b7..7f66ec7 100644
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -1159,7 +1159,7 @@ static int amd_gpio_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_request_irq(&pdev->dev, gpio_dev->irq, amd_gpio_irq_handler,
--			       IRQF_SHARED | IRQF_ONESHOT, KBUILD_MODNAME, gpio_dev);
-+			       IRQF_SHARED | IRQF_COND_ONESHOT, KBUILD_MODNAME, gpio_dev);
- 	if (ret)
- 		goto out2;
- 
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 76121c2..5c9bdd3 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -67,6 +67,8 @@
-  *                later.
-  * IRQF_NO_DEBUG - Exclude from runnaway detection for IPI and similar handlers,
-  *		   depends on IRQF_PERCPU.
-+ * IRQF_COND_ONESHOT - Agree to do IRQF_ONESHOT if already set for a shared
-+ *                 interrupt.
-  */
- #define IRQF_SHARED		0x00000080
- #define IRQF_PROBE_SHARED	0x00000100
-@@ -82,6 +84,7 @@
- #define IRQF_COND_SUSPEND	0x00040000
- #define IRQF_NO_AUTOEN		0x00080000
- #define IRQF_NO_DEBUG		0x00100000
-+#define IRQF_COND_ONESHOT	0x00200000
- 
- #define IRQF_TIMER		(__IRQF_TIMER | IRQF_NO_SUSPEND | IRQF_NO_THREAD)
- 
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index ad3eaf2..bf9ae8a 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1643,8 +1643,13 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
- 		}
- 
- 		if (!((old->flags & new->flags) & IRQF_SHARED) ||
--		    (oldtype != (new->flags & IRQF_TRIGGER_MASK)) ||
--		    ((old->flags ^ new->flags) & IRQF_ONESHOT))
-+		    (oldtype != (new->flags & IRQF_TRIGGER_MASK)))
-+			goto mismatch;
-+
-+		if ((old->flags & IRQF_ONESHOT) &&
-+		    (new->flags & IRQF_COND_ONESHOT))
-+			new->flags |= IRQF_ONESHOT;
-+		else if ((old->flags ^ new->flags) & IRQF_ONESHOT)
- 			goto mismatch;
- 
- 		/* All handlers must agree on per-cpuness */
+>Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+>Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+>Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+>---
+>Changes for v1
+>[iweiny: update to latest master]
+>[iweiny: update commit message]
+>[iweiny: Based on the fix:
+>	https://lore.kernel.org/all/20230903-cxl-cel-fix-v1-1-e260c9467be3@intel.com/
+>[jonathan: remove unneeded format change]
+>[jonathan: don't split security code in mbox.c]
+>---
+> drivers/cxl/core/mbox.c | 33 +++++++++++++++++++++++++++++++++
+> drivers/cxl/cxlmem.h    | 15 +++++++++++++++
+> 2 files changed, 48 insertions(+)
+>
+>diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+>index 9adda4795eb7..ed4131c6f50b 100644
+>--- a/drivers/cxl/core/mbox.c
+>+++ b/drivers/cxl/core/mbox.c
+>@@ -161,6 +161,34 @@ static void cxl_set_security_cmd_enabled(struct cxl_security_state *security,
+>	}
+> }
+>
+>+static bool cxl_is_dcd_command(u16 opcode)
+>+{
+>+#define CXL_MBOX_OP_DCD_CMDS 0x48
+>+
+>+	return (opcode >> 8) == CXL_MBOX_OP_DCD_CMDS;
+>+}
+>+
+>+static void cxl_set_dcd_cmd_enabled(struct cxl_memdev_state *mds,
+>+					u16 opcode)
+>+{
+>+	switch (opcode) {
+>+	case CXL_MBOX_OP_GET_DC_CONFIG:
+>+		set_bit(CXL_DCD_ENABLED_GET_CONFIG, mds->dcd_cmds);
+>+		break;
+>+	case CXL_MBOX_OP_GET_DC_EXTENT_LIST:
+>+		set_bit(CXL_DCD_ENABLED_GET_EXTENT_LIST, mds->dcd_cmds);
+>+		break;
+>+	case CXL_MBOX_OP_ADD_DC_RESPONSE:
+>+		set_bit(CXL_DCD_ENABLED_ADD_RESPONSE, mds->dcd_cmds);
+>+		break;
+>+	case CXL_MBOX_OP_RELEASE_DC:
+>+		set_bit(CXL_DCD_ENABLED_RELEASE, mds->dcd_cmds);
+>+		break;
+>+	default:
+>+		break;
+>+	}
+>+}
+>+
+> static bool cxl_is_poison_command(u16 opcode)
+> {
+> #define CXL_MBOX_OP_POISON_CMDS 0x43
+>@@ -733,6 +761,11 @@ static void cxl_walk_cel(struct cxl_memdev_state *mds, size_t size, u8 *cel)
+>			enabled++;
+>		}
+>
+>+		if (cxl_is_dcd_command(opcode)) {
+>+			cxl_set_dcd_cmd_enabled(mds, opcode);
+>+			enabled++;
+>+		}
+>+
+>		dev_dbg(dev, "Opcode 0x%04x %s\n", opcode,
+>			enabled ? "enabled" : "unsupported by driver");
+>	}
+>diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+>index 20fb3b35e89e..79a67cff9143 100644
+>--- a/drivers/cxl/cxlmem.h
+>+++ b/drivers/cxl/cxlmem.h
+>@@ -238,6 +238,15 @@ struct cxl_event_state {
+>	struct mutex log_lock;
+> };
+>
+>+/* Device enabled DCD commands */
+>+enum dcd_cmd_enabled_bits {
+>+	CXL_DCD_ENABLED_GET_CONFIG,
+>+	CXL_DCD_ENABLED_GET_EXTENT_LIST,
+>+	CXL_DCD_ENABLED_ADD_RESPONSE,
+>+	CXL_DCD_ENABLED_RELEASE,
+>+	CXL_DCD_ENABLED_MAX
+>+};
+>+
+> /* Device enabled poison commands */
+> enum poison_cmd_enabled_bits {
+>	CXL_POISON_ENABLED_LIST,
+>@@ -454,6 +463,7 @@ struct cxl_dev_state {
+>  *                (CXL 2.0 8.2.9.5.1.1 Identify Memory Device)
+>  * @mbox_mutex: Mutex to synchronize mailbox access.
+>  * @firmware_version: Firmware version for the memory device.
+>+ * @dcd_cmds: List of DCD commands implemented by memory device
+>  * @enabled_cmds: Hardware commands found enabled in CEL.
+>  * @exclusive_cmds: Commands that are kernel-internal only
+>  * @total_bytes: sum of all possible capacities
+>@@ -481,6 +491,7 @@ struct cxl_memdev_state {
+>	size_t lsa_size;
+>	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
+>	char firmware_version[0x10];
+>+	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
+>	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
+>	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
+>	u64 total_bytes;
+>@@ -551,6 +562,10 @@ enum cxl_opcode {
+>	CXL_MBOX_OP_UNLOCK		= 0x4503,
+>	CXL_MBOX_OP_FREEZE_SECURITY	= 0x4504,
+>	CXL_MBOX_OP_PASSPHRASE_SECURE_ERASE	= 0x4505,
+>+	CXL_MBOX_OP_GET_DC_CONFIG	= 0x4800,
+>+	CXL_MBOX_OP_GET_DC_EXTENT_LIST	= 0x4801,
+>+	CXL_MBOX_OP_ADD_DC_RESPONSE	= 0x4802,
+>+	CXL_MBOX_OP_RELEASE_DC		= 0x4803,
+>	CXL_MBOX_OP_MAX			= 0x10000
+> };
+>
+>
+>--
+>2.44.0
+>
 
