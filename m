@@ -1,441 +1,215 @@
-Return-Path: <linux-kernel+bounces-116868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54BAA88A489
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:31:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4775C88A48B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74B571C3B6BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:31:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F161E28C594
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1826F149C71;
-	Mon, 25 Mar 2024 11:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE8615B13A;
+	Mon, 25 Mar 2024 11:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aVnFetFA"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZW6u7ZrL"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B80514A4C3
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 10:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711363226; cv=none; b=NkhAGIxD/+JAwI1INKF3SLAFRXwHQEKqqCet1+yDpxf+iD295J/oqYlp5+NNY9qKqShMU5ML4PJJl8zU96hEAAyYqiJJR2QMPMmfUVzjr1hSp2FC2c3BKlomk3dMrqKjEa/fAyWEcXvApG16Aiqk3FcpOPq1fuvnHjjA9u4aFis=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711363226; c=relaxed/simple;
-	bh=txRUFpMSxXg5LAXaF41EiCvBKfa8Uy7Uc4euvd58Ye4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zeib5NZxHryZs2FuZOjQFhcrn2pIuBTfC8JtRyaYY6sEVNcuBj5r6QVY7lRbzeqP267g9DgPKI4ZnVIVlG6M9RAknmFCw/shGiHDsUGBJFLEIbTQgWMVwFZWsUx5/B64iXLdzIQPawkNIHaFCp9OeD7f9oEOVhmYVyRbxC5djKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aVnFetFA; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A24FC16F849;
+	Mon, 25 Mar 2024 10:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711363169; cv=fail; b=kjIfDd88NlVa7qBmoUJ2L/IPBvcJ2L3cuQFc/Muz7QLwTzuJBMjMNqTMNc0iKlMtHiUtQgp5yydtebkfJv/UJO/GYPdW+i3+wITzBoAVs/S07JrZSNHxT2HGtb/0DzMbS7Vo87zwJpFtGiCcD5kbxduKxfkAwxzbn0X/KgrkzxM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711363169; c=relaxed/simple;
+	bh=ycroRIzv2+sNlHVF8X3AnFa1S0o7aA5vGlZtjDQs8nY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=I7vKmHUUnpKVx6xvvrDo3kZ5ZaHFFHR7xoN3IXAG0RvdrxdElbLBvRGaHuyf4bDWMCTNhNkj7J7Fq1c4cX4Mgm3UEN8SSEbZ9r1ZDsJBcuvwQEy4Py6rF0KES97gW7xoc2xzkZiskXYPqFlCoI7pzqLOiyqmO9qOlULBnDpN6gw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZW6u7ZrL; arc=fail smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711363224; x=1742899224;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=txRUFpMSxXg5LAXaF41EiCvBKfa8Uy7Uc4euvd58Ye4=;
-  b=aVnFetFAv66SSgc/+x5ZJ8rbE445R/wBiAZWH24lroMIhiZJmejxxP6s
-   VOWLHOGtNoM9X4nBCyghC5e+1phRSj+FUqEXYtXjzEhTU7KEq2hOKCFJn
-   ld7OOET9+H790wPbY1N4IxpQbZCLp1gEKAyFcgjCSI+K5kVFDYY/pZJiO
-   IBEkhubMSdPhpzTnlAF9THE5XLM6ohCd55XhMChgXx9pM8ze7DNlETqqk
-   5uL6fQjNDwCFx3rnQCflM42S067t0HbSzSkCiDiOHRpZbEHHt/6jS6npm
-   SouXzdAvviLyBeApoRwMoAW5T4pAwT0mchc6b9u+S+YIx2G8ThJ6nTPtA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6561469"
+  t=1711363167; x=1742899167;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=ycroRIzv2+sNlHVF8X3AnFa1S0o7aA5vGlZtjDQs8nY=;
+  b=ZW6u7ZrLTnnqrKljAy7QPgE05CBQnNldXSvm0wPNReydDbbFRAOy1K6z
+   ZgT7YahHfu5ZD5yCl/we06twEJq5COLyLXDG6+JbEva0EGl5bWdZghbCq
+   6B1Mm/upMMDH/lCuHQ5RlBx2PqpMpQ7ZFprB6ka3gnouwPrXbzcspy1ga
+   wVCvcf86kQ0YMOIehrLQJGaomVws+0FeaWc1KEbEbDBOuz2jJVqyDi71J
+   3Of1yC6aqKf88dVtjEIftypb8ckdcsivtR6p+nFLGX9BIxHioj8QWUK9u
+   zADAJ8AlJlijh5ynJ6LFJmtk/mvduWkC4F22Qeu7ln2JFdEo1RnwoG4GC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6211779"
 X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="6561469"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 03:40:21 -0700
+   d="scan'208";a="6211779"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 03:39:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="937070172"
 X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
-   d="scan'208";a="937070172"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Mar 2024 03:40:16 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id BD02A10A0; Mon, 25 Mar 2024 12:40:05 +0200 (EET)
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	Jun Nakajima <jun.nakajima@intel.com>,
-	Rick Edgecombe  <rick.p.edgecombe@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>,
-	Baoquan He <bhe@redhat.com>,
-	kexec@lists.infradead.org,
-	linux-coco@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv9 16/17] x86/acpi: Add support for CPU offlining for ACPI MADT wakeup method
-Date: Mon, 25 Mar 2024 12:39:10 +0200
-Message-ID: <20240325103911.2651793-17-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
-References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
+   d="scan'208";a="53037048"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Mar 2024 03:39:14 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 25 Mar 2024 03:39:13 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 25 Mar 2024 03:39:13 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 25 Mar 2024 03:39:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O8LVoQRIRg+gzoV1AlBdumxbxUW9PMg+nR8ILktEpTX1xmF95IRfLZCDUupguRVVkt9CM0POqn5M42KmreEbv2dUGnyMyQKK6T7L9PFM0LcWMa1SmQ/9qVeCDQMHwDlT+eUNy5xFktXuFJvq9JB8rpqtnXoCBVdAzNMB9RxnYHFVvloPLscusvAFkQDFxam3WW6lq0W6X9XX6LNUGU48EHK/HPBLv2XpeeoNRQCR+BUMlaRXQPuiMWBLWUR/8dlD2lHGvwKsvjQWYCxi/worBgMv1ANu0nYkFjdqK9vgHqPKStyDsplS6z8BeIjVjv6piASlhZw4kOmPigFLpbI22g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ycroRIzv2+sNlHVF8X3AnFa1S0o7aA5vGlZtjDQs8nY=;
+ b=k/mNyV//agexWs/rmpH1udR54kO1OxzuSokbt5ZuOJLp3UCRqDYtC43GWi9E8ankrDGZL9Bo+OehHHy2xedldsDb092wkXkGjTmEAEBEbVDZzV7+eRysA7lYV/Ez7S9poFQrGoYcNGNOMN/c1ukZ+Rv0rtKno5MHzgORZRrkh+Hcdn/k81S5LqqO4e8TcVi/5FFVo/BzcxiRW3Wv6cyQicYGOIOF/+DRmSayDisBcamd7Eqm2ELP4cnQxEwiTKCo4PL3Ze9HPwalQBF71DmTuoQhPZ5jtMFzKaMQAmpa8GXEErHktrsFe/AtSD8OWPUsyKS/caRYu3Tyk5afX2DNsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by SN7PR11MB6653.namprd11.prod.outlook.com (2603:10b6:806:26f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Mon, 25 Mar
+ 2024 10:39:10 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
+ 10:39:10 +0000
+From: "Huang, Kai" <kai.huang@intel.com>
+To: "Yamahata, Isaku" <isaku.yamahata@intel.com>
+CC: "Zhang, Tina" <tina.zhang@intel.com>, "seanjc@google.com"
+	<seanjc@google.com>, "Yuan, Hang" <hang.yuan@intel.com>, "Chen, Bo2"
+	<chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Aktas, Erdem"
+	<erdemaktas@google.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "Li, Xiaoyao"
+	<xiaoyao.li@intel.com>, "isaku.yamahata@linux.intel.com"
+	<isaku.yamahata@linux.intel.com>
+Subject: Re: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
+ parameters
+Thread-Topic: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
+ parameters
+Thread-Index: AQHaaI27+nW2+xDcBUuwRQ1CzA45brFDxKKAgADrYQCAA8A0AA==
+Date: Mon, 25 Mar 2024 10:39:10 +0000
+Message-ID: <59fbe690d1765337b4b1785b4cef900415bd5df2.camel@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+	 <5eca97e6a3978cf4dcf1cff21be6ec8b639a66b9.1708933498.git.isaku.yamahata@intel.com>
+	 <5f0c798cf242bafe9810556f711b703e9efec304.camel@intel.com>
+	 <20240323012224.GD2357401@ls.amr.corp.intel.com>
+In-Reply-To: <20240323012224.GD2357401@ls.amr.corp.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|SN7PR11MB6653:EE_
+x-ms-office365-filtering-correlation-id: bab44910-2dbb-48f9-701b-08dc4cb7ce35
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: A/tCJ8FbkDbIyCjcjG6Ozz6oqNn9+OS0tcefDysfu0sMlmVu+o/zTpaKxzOyXnFaOR1c6b0vgMOerokYrvnBdNmSvlEJB5eWdNZyThDh2nG8s1+V3ABC5lZFbIr/WvW+lgNWS/wdVnzDANpHVEDViIofxNDwovZIK1wEBrcK6Wgk9Rw15gAJBOLzCpevAeTdcQ1KyVxqCyBKIB8Z6cct15rIHYhgJ0Xnhj7k0TzYiQo2d8fOVnDS8N1Oyo0Rt2kcOViOSMHc3frdGOiX2E8RmHbq4K7e207LDCDyNOPxx3uYV9haUaMGkuZW+uCp49i9mt+0Sm4gg3d3O7lofsKxzVsmpJQy90YjUFsVItTuBjsPWD6ssjOWHWKhxZzqhDOFaw3QbhBYsPfhjFkcLLXMgireKCo0SHfTAQsM4MSmJzUWWMoikcWODt8pVmR2fi5r+Jy5Pf+t4XyagdqfS0aOz31gA6T5eOF7oBsJltgEtw7ztt25S4im2e6HqTmWeQeE6KFwKNLUyxijrKC08oZsLMNfz32EPr2/XtWQKs8MAsrNK4/nchPaAobhWTtzBVGKX2PF2sNP6dOyn9x+gVge4Vl0cSJuilEo1ZBYYjmbfLKVNg+T2RI3ghws+QNAVpRPSu3Fz6qzrQIaRIrzbPT6miCld3AgxNkZ0uL8GO0e+l6lpSBIW+u5+d5/HqR8lRfUjPnBDH78L6dZL7ZYDAIMzLmBeEbS0YATrdBH6JGkFt4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YVlsbzg3ekFxWG83UUZXSkt5UmhHWXBnMkFzMWNFdlpDUWptOUF4WWI3STNK?=
+ =?utf-8?B?V0hYbzc4azlqR0pXdnFmRnV0YTh1NGpOVml4Z00rZEIyTlhBUjlCWU91dnJj?=
+ =?utf-8?B?aktDSDFQNUJNak11M3lTYnVVMHI2UVQ4czJtdmJvY2lMcmpVV1dvRUx6TEI5?=
+ =?utf-8?B?TDhSandnS1loRmpQd2dIeERUaXpuSFdIWEVTZXYxZVYyMDl1eFlMT1oxR1hQ?=
+ =?utf-8?B?aEsrQjZ2WkdvdVJnV0pjcFl2VW5GTWZQVWkxYmR0MU1tMWRLM0trSkl6c0VL?=
+ =?utf-8?B?SHhucXc0U0tFWkhuVDdQc0x3c2kyNmoxQjhFZ0U0Mk1FOWNEMzFDMFhFVUZy?=
+ =?utf-8?B?U21tQUhtREV2dWlZb3kvSzRzSXNvQXl0OTc2Y3h1aTlONXVUWVVTVnJRU2FQ?=
+ =?utf-8?B?bkplN3RidElFSCs0dE5PZkswNGp5MUJmWm54YXUybVNCQWVleGJiR1ZuTFdL?=
+ =?utf-8?B?T1gvb2E4bmRHUGlleWpYNDVpbE9PL3BWSkNzY1Vqckg2OWNvSDVzQ2lNak0v?=
+ =?utf-8?B?L0ZOdlREUU5OR01RSXFpTVdld01NWG9DM0gxTjVQTmVTQTN1U1ltMHJUbHVl?=
+ =?utf-8?B?R05tRDFqdWR5MHdIZjF2dVFQZDZONGxhS2hnUTdwQjI2a0pkRnNGdWxERVZn?=
+ =?utf-8?B?NEFUeGJkbHBEWnhoNW5BRmhZMmw2QkVaRDhkbkxCeVZlVERNbVNaa1hyekxp?=
+ =?utf-8?B?aG1KTHE3bUpqZWNwSkNNOG1POWVZWnZVNHkzNTR2UXRWMjYyeVg2ZktvUUtz?=
+ =?utf-8?B?UDEzRDdoVTVSZW5SR0wzMFN6am9GK2o3ZWpMRGFXc3dOdzVua3A5Vy9HNkhy?=
+ =?utf-8?B?ZDBPQjcreVBpSXdiT1kxcWdMNkdmd3hhdVZrdHBSUHFPSWVqOGFVY3VCbVN5?=
+ =?utf-8?B?b1RuMGFJVnZ5cGhHM3V0ajUvOHRFNEdOYXRWbFY1Z1NCVWxNREtSYThHd2Zy?=
+ =?utf-8?B?a2JkNHoxWFdIRkNRck9Wa2VhS0s4UlhBcm02cm8yUnJ1ZDdpQVRvb2lKSTNL?=
+ =?utf-8?B?SjN1VkM5Vm01dmQ4TDA2WkV6OWJFOWIwdURtYjN2d1FSc0tnOFQ5cGNDVXh6?=
+ =?utf-8?B?QU5YZ21jTDJ2Y1VJdzRjU0U0OHo4eWlsU3VnSnBwUng5eUtWN0JiczNqNGdY?=
+ =?utf-8?B?K1dZd3cxMkY1T1Znc2FBNFFyQ1p4WkYzODd4RzBwdjlmRHI0aWtIQ3hwZUlr?=
+ =?utf-8?B?YnNuZ0wzdlQrOEdRaFljVHgyQWFkKzQrZnJUQjNDOGZudjMzMHdBL25rRDVC?=
+ =?utf-8?B?QU5OY25JTENQS1Y0VGN3M0lMRlVweGVlSnlhSHY0N2VKTS9vNWgvaVU4RFVO?=
+ =?utf-8?B?Z2tkbUlQaVA5UlhHdUczREU4TG9YV2huWHJqZUN5Z3A1aTZNb0h6UTh4WVRI?=
+ =?utf-8?B?czBBM1BRL0JIb1JvV1M3WDJHSExscVpmeGxwc1REVlVqWTF3UnhUeE5WYUp0?=
+ =?utf-8?B?bU94d1d2STlHK1J4d05meVBOR3g1dWdQdWFWaDRNN0V1K3NzODNIN09ycTdj?=
+ =?utf-8?B?N2pQYTZsODhpQ1F5SDBsTHJnVFoyYkNTeWNmeFZCcXc5c1IxbnIvL2d4V2d1?=
+ =?utf-8?B?MFVtYkNqS0s0dCtFL1YvQjY1ZGp4U25rM3BvVjhDOEgwUTRIc291WWc2aWdt?=
+ =?utf-8?B?YTdDSEx2cU5oTThXVy9yMGdEZ2lhNlhWN0J5VmVsOHRNRGRmWWNBZHdzYmVy?=
+ =?utf-8?B?R1loTHE5MGt2TVVZTHVlT2JyTzY4VmppUTZXc2Z1MFN6YlBzWTF1Y2wrdXRm?=
+ =?utf-8?B?ZkpjRE1sVHZXeFloRUpuZjRRS3RSdWM3OHJjeSsvcFRIWkplVUFnRWZ6MSti?=
+ =?utf-8?B?N09nQW84RTlCa1NPYzlIdll5aU15WDhScUtKUFZuakNwYVMweENBUllWekNL?=
+ =?utf-8?B?QjJGSllLMnFxNS9tdlY4b0ZMNjZGZnhmUkZlU2xQQnhpZDlhMGNkUWUyUzE5?=
+ =?utf-8?B?S1ZXYkZIdW4vQ0M5QWZHRDc3UHRUT1JpYXc5dStpWW0rYWNKTnc0b3kvOTBk?=
+ =?utf-8?B?SnlHWERSL1ZXbmNBTTVBQnFOdFFsY2dKS29rMnJCd1g4NG5qVVZlQXYxV1Nx?=
+ =?utf-8?B?bk0weHFZL1NWL3k3N2xxcVpyK29DMmZGeldja3JuTmFFUWw5VGhWZE9BTE9q?=
+ =?utf-8?B?Nk1XdGpaOU8vajRwa0tpTFR1MGdLakFjL1ZzTDFScVhneitRcHRJTncwN01J?=
+ =?utf-8?B?S1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5C002E862C31264DA269968B65FFA8B8@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bab44910-2dbb-48f9-701b-08dc4cb7ce35
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 10:39:10.1477
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CU7gcuqOIpel6XUzKkTGopBEDHFOTChbFmCKCXunNo7nW5v6fsz5vXipnCam9iQYK3zNl6IJeS/yzTlFEANWzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6653
+X-OriginatorOrg: intel.com
 
-MADT Multiprocessor Wakeup structure version 1 brings support of CPU
-offlining: BIOS provides a reset vector where the CPU has to jump to
-for offlining itself. The new TEST mailbox command can be used to test
-whether the CPU offlined itself which means the BIOS has control over
-the CPU and can online it again via the ACPI MADT wakeup method.
-
-Add CPU offling support for the ACPI MADT wakeup method by implementing
-custom cpu_die(), play_dead() and stop_this_cpu() SMP operations.
-
-CPU offlining makes is possible to hand over secondary CPUs over kexec,
-not limiting the second kernel to a single CPU.
-
-The change conforms to the approved ACPI spec change proposal. See the
-Link.
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Link: https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
-Acked-by: Kai Huang <kai.huang@intel.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/include/asm/acpi.h          |   2 +
- arch/x86/kernel/acpi/Makefile        |   2 +-
- arch/x86/kernel/acpi/madt_playdead.S |  28 ++++
- arch/x86/kernel/acpi/madt_wakeup.c   | 184 ++++++++++++++++++++++++++-
- include/acpi/actbl2.h                |  15 ++-
- 5 files changed, 227 insertions(+), 4 deletions(-)
- create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
-
-diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-index 2625b915ae7f..021cafa214c2 100644
---- a/arch/x86/include/asm/acpi.h
-+++ b/arch/x86/include/asm/acpi.h
-@@ -81,6 +81,8 @@ union acpi_subtable_headers;
- int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
- 			      const unsigned long end);
- 
-+void asm_acpi_mp_play_dead(u64 reset_vector, u64 pgd_pa);
-+
- /*
-  * Check if the CPU can handle C2 and deeper
-  */
-diff --git a/arch/x86/kernel/acpi/Makefile b/arch/x86/kernel/acpi/Makefile
-index 8c7329c88a75..37b1f28846de 100644
---- a/arch/x86/kernel/acpi/Makefile
-+++ b/arch/x86/kernel/acpi/Makefile
-@@ -4,7 +4,7 @@ obj-$(CONFIG_ACPI)			+= boot.o
- obj-$(CONFIG_ACPI_SLEEP)		+= sleep.o wakeup_$(BITS).o
- obj-$(CONFIG_ACPI_APEI)			+= apei.o
- obj-$(CONFIG_ACPI_CPPC_LIB)		+= cppc.o
--obj-$(CONFIG_X86_ACPI_MADT_WAKEUP)	+= madt_wakeup.o
-+obj-$(CONFIG_X86_ACPI_MADT_WAKEUP)	+= madt_wakeup.o madt_playdead.o
- 
- ifneq ($(CONFIG_ACPI_PROCESSOR),)
- obj-y					+= cstate.o
-diff --git a/arch/x86/kernel/acpi/madt_playdead.S b/arch/x86/kernel/acpi/madt_playdead.S
-new file mode 100644
-index 000000000000..4e498d28cdc8
---- /dev/null
-+++ b/arch/x86/kernel/acpi/madt_playdead.S
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <linux/linkage.h>
-+#include <asm/nospec-branch.h>
-+#include <asm/page_types.h>
-+#include <asm/processor-flags.h>
-+
-+	.text
-+	.align PAGE_SIZE
-+
-+/*
-+ * asm_acpi_mp_play_dead() - Hand over control of the CPU to the BIOS
-+ *
-+ * rdi: Address of the ACPI MADT MPWK ResetVector
-+ * rsi: PGD of the identity mapping
-+ */
-+SYM_FUNC_START(asm_acpi_mp_play_dead)
-+	/* Turn off global entries. Following CR3 write will flush them. */
-+	movq	%cr4, %rdx
-+	andq	$~(X86_CR4_PGE), %rdx
-+	movq	%rdx, %cr4
-+
-+	/* Switch to identity mapping */
-+	movq	%rsi, %cr3
-+
-+	/* Jump to reset vector */
-+	ANNOTATE_RETPOLINE_SAFE
-+	jmp	*%rdi
-+SYM_FUNC_END(asm_acpi_mp_play_dead)
-diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
-index 30820f9de5af..6cfe762be28b 100644
---- a/arch/x86/kernel/acpi/madt_wakeup.c
-+++ b/arch/x86/kernel/acpi/madt_wakeup.c
-@@ -1,10 +1,19 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- #include <linux/acpi.h>
- #include <linux/cpu.h>
-+#include <linux/delay.h>
- #include <linux/io.h>
-+#include <linux/kexec.h>
-+#include <linux/memblock.h>
-+#include <linux/pgtable.h>
-+#include <linux/sched/hotplug.h>
- #include <asm/apic.h>
- #include <asm/barrier.h>
-+#include <asm/init.h>
-+#include <asm/intel_pt.h>
-+#include <asm/nmi.h>
- #include <asm/processor.h>
-+#include <asm/reboot.h>
- 
- /* Physical address of the Multiprocessor Wakeup Structure mailbox */
- static u64 acpi_mp_wake_mailbox_paddr __ro_after_init;
-@@ -12,6 +21,154 @@ static u64 acpi_mp_wake_mailbox_paddr __ro_after_init;
- /* Virtual address of the Multiprocessor Wakeup Structure mailbox */
- static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox __ro_after_init;
- 
-+static u64 acpi_mp_pgd __ro_after_init;
-+static u64 acpi_mp_reset_vector_paddr __ro_after_init;
-+
-+static void acpi_mp_stop_this_cpu(void)
-+{
-+	asm_acpi_mp_play_dead(acpi_mp_reset_vector_paddr, acpi_mp_pgd);
-+}
-+
-+static void acpi_mp_play_dead(void)
-+{
-+	play_dead_common();
-+	asm_acpi_mp_play_dead(acpi_mp_reset_vector_paddr, acpi_mp_pgd);
-+}
-+
-+static void acpi_mp_cpu_die(unsigned int cpu)
-+{
-+	u32 apicid = per_cpu(x86_cpu_to_apicid, cpu);
-+	unsigned long timeout;
-+
-+	/*
-+	 * Use TEST mailbox command to prove that BIOS got control over
-+	 * the CPU before declaring it dead.
-+	 *
-+	 * BIOS has to clear 'command' field of the mailbox.
-+	 */
-+	acpi_mp_wake_mailbox->apic_id = apicid;
-+	smp_store_release(&acpi_mp_wake_mailbox->command,
-+			  ACPI_MP_WAKE_COMMAND_TEST);
-+
-+	/* Don't wait longer than a second. */
-+	timeout = USEC_PER_SEC;
-+	while (READ_ONCE(acpi_mp_wake_mailbox->command) && --timeout)
-+		udelay(1);
-+
-+	if (!timeout)
-+		pr_err("Failed to hand over CPU %d to BIOS\n", cpu);
-+}
-+
-+/* The argument is required to match type of x86_mapping_info::alloc_pgt_page */
-+static void __init *alloc_pgt_page(void *dummy)
-+{
-+	return memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-+}
-+
-+static void __init free_pgt_page(void *pgt, void *dummy)
-+{
-+	return memblock_free(pgt, PAGE_SIZE);
-+}
-+
-+/*
-+ * Make sure asm_acpi_mp_play_dead() is present in the identity mapping at
-+ * the same place as in the kernel page tables. asm_acpi_mp_play_dead() switches
-+ * to the identity mapping and the function has be present at the same spot in
-+ * the virtual address space before and after switching page tables.
-+ */
-+static int __init init_transition_pgtable(pgd_t *pgd)
-+{
-+	pgprot_t prot = PAGE_KERNEL_EXEC_NOENC;
-+	unsigned long vaddr, paddr;
-+	p4d_t *p4d;
-+	pud_t *pud;
-+	pmd_t *pmd;
-+	pte_t *pte;
-+
-+	vaddr = (unsigned long)asm_acpi_mp_play_dead;
-+	pgd += pgd_index(vaddr);
-+	if (!pgd_present(*pgd)) {
-+		p4d = (p4d_t *)alloc_pgt_page(NULL);
-+		if (!p4d)
-+			return -ENOMEM;
-+		set_pgd(pgd, __pgd(__pa(p4d) | _KERNPG_TABLE));
-+	}
-+	p4d = p4d_offset(pgd, vaddr);
-+	if (!p4d_present(*p4d)) {
-+		pud = (pud_t *)alloc_pgt_page(NULL);
-+		if (!pud)
-+			return -ENOMEM;
-+		set_p4d(p4d, __p4d(__pa(pud) | _KERNPG_TABLE));
-+	}
-+	pud = pud_offset(p4d, vaddr);
-+	if (!pud_present(*pud)) {
-+		pmd = (pmd_t *)alloc_pgt_page(NULL);
-+		if (!pmd)
-+			return -ENOMEM;
-+		set_pud(pud, __pud(__pa(pmd) | _KERNPG_TABLE));
-+	}
-+	pmd = pmd_offset(pud, vaddr);
-+	if (!pmd_present(*pmd)) {
-+		pte = (pte_t *)alloc_pgt_page(NULL);
-+		if (!pte)
-+			return -ENOMEM;
-+		set_pmd(pmd, __pmd(__pa(pte) | _KERNPG_TABLE));
-+	}
-+	pte = pte_offset_kernel(pmd, vaddr);
-+
-+	paddr = __pa(vaddr);
-+	set_pte(pte, pfn_pte(paddr >> PAGE_SHIFT, prot));
-+
-+	return 0;
-+}
-+
-+static int __init acpi_mp_setup_reset(u64 reset_vector)
-+{
-+	struct x86_mapping_info info = {
-+		.alloc_pgt_page = alloc_pgt_page,
-+		.free_pgt_page	= free_pgt_page,
-+		.page_flag      = __PAGE_KERNEL_LARGE_EXEC,
-+		.kernpg_flag    = _KERNPG_TABLE_NOENC,
-+	};
-+	pgd_t *pgd;
-+
-+	pgd = alloc_pgt_page(NULL);
-+	if (!pgd)
-+		return -ENOMEM;
-+
-+	for (int i = 0; i < nr_pfn_mapped; i++) {
-+		unsigned long mstart, mend;
-+
-+		mstart = pfn_mapped[i].start << PAGE_SHIFT;
-+		mend   = pfn_mapped[i].end << PAGE_SHIFT;
-+		if (kernel_ident_mapping_init(&info, pgd, mstart, mend)) {
-+			kernel_ident_mapping_free(&info, pgd);
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	if (kernel_ident_mapping_init(&info, pgd,
-+				      PAGE_ALIGN_DOWN(reset_vector),
-+				      PAGE_ALIGN(reset_vector + 1))) {
-+		kernel_ident_mapping_free(&info, pgd);
-+		return -ENOMEM;
-+	}
-+
-+	if (init_transition_pgtable(pgd)) {
-+		kernel_ident_mapping_free(&info, pgd);
-+		return -ENOMEM;
-+	}
-+
-+	smp_ops.play_dead = acpi_mp_play_dead;
-+	smp_ops.stop_this_cpu = acpi_mp_stop_this_cpu;
-+	smp_ops.cpu_die = acpi_mp_cpu_die;
-+
-+	acpi_mp_reset_vector_paddr = reset_vector;
-+	acpi_mp_pgd = __pa(pgd);
-+
-+	return 0;
-+}
-+
- static int acpi_wakeup_cpu(u32 apicid, unsigned long start_ip)
- {
- 	if (!acpi_mp_wake_mailbox_paddr) {
-@@ -97,14 +254,37 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
- 	struct acpi_madt_multiproc_wakeup *mp_wake;
- 
- 	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
--	if (BAD_MADT_ENTRY(mp_wake, end))
-+
-+	/*
-+	 * Cannot use the standard BAD_MADT_ENTRY() to sanity check the @mp_wake
-+	 * entry.  'sizeof (struct acpi_madt_multiproc_wakeup)' can be larger
-+	 * than the actual size of the MP wakeup entry in ACPI table because the
-+	 * 'reset_vector' is only available in the V1 MP wakeup structure.
-+	 */
-+	if (!mp_wake)
-+		return -EINVAL;
-+	if (end - (unsigned long)mp_wake < ACPI_MADT_MP_WAKEUP_SIZE_V0)
-+		return -EINVAL;
-+	if (mp_wake->header.length < ACPI_MADT_MP_WAKEUP_SIZE_V0)
- 		return -EINVAL;
- 
- 	acpi_table_print_madt_entry(&header->common);
- 
- 	acpi_mp_wake_mailbox_paddr = mp_wake->mailbox_address;
- 
--	acpi_mp_disable_offlining(mp_wake);
-+	if (mp_wake->version >= ACPI_MADT_MP_WAKEUP_VERSION_V1 &&
-+	    mp_wake->header.length >= ACPI_MADT_MP_WAKEUP_SIZE_V1) {
-+		if (acpi_mp_setup_reset(mp_wake->reset_vector)) {
-+			pr_warn("Failed to setup MADT reset vector\n");
-+			acpi_mp_disable_offlining(mp_wake);
-+		}
-+	} else {
-+		/*
-+		 * CPU offlining requires version 1 of the ACPI MADT wakeup
-+		 * structure.
-+		 */
-+		acpi_mp_disable_offlining(mp_wake);
-+	}
- 
- 	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
- 
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index e1a395af7591..2aedda70ef88 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -1120,8 +1120,20 @@ struct acpi_madt_multiproc_wakeup {
- 	u16 version;
- 	u32 reserved;		/* reserved - must be zero */
- 	u64 mailbox_address;
-+	u64 reset_vector;
- };
- 
-+/* Values for Version field above */
-+
-+enum acpi_madt_multiproc_wakeup_version {
-+	ACPI_MADT_MP_WAKEUP_VERSION_NONE = 0,
-+	ACPI_MADT_MP_WAKEUP_VERSION_V1 = 1,
-+	ACPI_MADT_MP_WAKEUP_VERSION_RESERVED = 2, /* 2 and greater are reserved */
-+};
-+
-+#define ACPI_MADT_MP_WAKEUP_SIZE_V0	16
-+#define ACPI_MADT_MP_WAKEUP_SIZE_V1	24
-+
- #define ACPI_MULTIPROC_WAKEUP_MB_OS_SIZE        2032
- #define ACPI_MULTIPROC_WAKEUP_MB_FIRMWARE_SIZE  2048
- 
-@@ -1134,7 +1146,8 @@ struct acpi_madt_multiproc_wakeup_mailbox {
- 	u8 reserved_firmware[ACPI_MULTIPROC_WAKEUP_MB_FIRMWARE_SIZE];	/* reserved for firmware use */
- };
- 
--#define ACPI_MP_WAKE_COMMAND_WAKEUP    1
-+#define ACPI_MP_WAKE_COMMAND_WAKEUP	1
-+#define ACPI_MP_WAKE_COMMAND_TEST	2
- 
- /* 17: CPU Core Interrupt Controller (ACPI 6.5) */
- 
--- 
-2.43.0
-
+T24gRnJpLCAyMDI0LTAzLTIyIGF0IDE4OjIyIC0wNzAwLCBZYW1haGF0YSwgSXNha3Ugd3JvdGU6
+DQo+IE9uIEZyaSwgTWFyIDIyLCAyMDI0IGF0IDExOjIwOjAxQU0gKzAwMDAsDQo+ICJIdWFuZywg
+S2FpIiA8a2FpLmh1YW5nQGludGVsLmNvbT4gd3JvdGU6DQo+IA0KPiA+IE9uIE1vbiwgMjAyNC0w
+Mi0yNiBhdCAwMDoyNSAtMDgwMCwgaXNha3UueWFtYWhhdGFAaW50ZWwuY29tIHdyb3RlOg0KPiA+
+ID4gK3N0cnVjdCBrdm1fdGR4X2luaXRfdm0gew0KPiA+ID4gKwlfX3U2NCBhdHRyaWJ1dGVzOw0K
+PiA+ID4gKwlfX3U2NCBtcmNvbmZpZ2lkWzZdOwkvKiBzaGEzODQgZGlnZXN0ICovDQo+ID4gPiAr
+CV9fdTY0IG1yb3duZXJbNl07CS8qIHNoYTM4NCBkaWdlc3QgKi8NCj4gPiA+ICsJX191NjQgbXJv
+d25lcmNvbmZpZ1s2XTsJLyogc2hhMzg0IGRpZ2VzdCAqLw0KPiA+ID4gKwkvKg0KPiA+ID4gKwkg
+KiBGb3IgZnV0dXJlIGV4dGVuc2liaWxpdHkgdG8gbWFrZSBzaXplb2Yoc3RydWN0IGt2bV90ZHhf
+aW5pdF92bSkgPSA4S0IuDQo+ID4gPiArCSAqIFRoaXMgc2hvdWxkIGJlIGVub3VnaCBnaXZlbiBz
+aXplb2YoVERfUEFSQU1TKSA9IDEwMjQuDQo+ID4gPiArCSAqIDhLQiB3YXMgY2hvc2VuIGdpdmVu
+IGJlY2F1c2UNCj4gPiA+ICsJICogc2l6ZW9mKHN0cnVjdCBrdm1fY3B1aWRfZW50cnkyKSAqIEtW
+TV9NQVhfQ1BVSURfRU5UUklFUyg9MjU2KSA9IDhLQi4NCj4gPiA+ICsJICovDQo+ID4gPiArCV9f
+dTY0IHJlc2VydmVkWzEwMDRdOw0KPiA+IA0KPiA+IFRoaXMgaXMgaW5zYW5lLg0KPiA+IA0KPiA+
+IFlvdSBzYWlkIHlvdSB3YW50IHRvIHJlc2VydmUgOEsgZm9yIENQVUlEIGVudHJpZXMsIGJ1dCBo
+b3cgY2FuIHRoZXNlIDEwMDQgKiA4DQo+ID4gYnl0ZXMgYmUgdXNlZCBmb3IgQ1BVSUQgZW50cmll
+cyBzaW5jZSAuLi4NCj4gDQo+IEkgdHJpZWQgdG8gb3ZlcmVzdGltYXRlIGl0LiBJdCdzIHRvbyBt
+dWNoLCBob3cgYWJvdXQgdG8gbWFrZSBpdA0KPiAxMDI0LCByZXNlcnZlZFsxMDldPw0KPiANCg0K
+SSBhbSBub3Qgc3VyZSB3aHkgd2UgbmVlZCAxMDI0QiBlaXRoZXIuDQoNCklJVUMsIHRoZSBpbnB1
+dHMgaGVyZSBpbiAna3ZtX3RkeF9pbml0X3ZtJyBzaG91bGQgYmUgYSBzdWJzZXQgb2YgdGhlIG1l
+bWJlcnMgaW4NClREX1BBUkFNUy4gIFRoaXMgSU9DVEwoKSBpc24ndCBpbnRlbmRlZCB0byBjYXJy
+eSBhbnkgYWRkaXRpb25hbCBpbnB1dCBiZXNpZGVzDQp0aGVzZSBkZWZpbmVkIGluIFREX1BBUkFN
+UywgcmlnaHQ/DQoNCklmIHNvLCB0aGVuIGl0IHNlZW1zIHRvIG1lIHlvdSAiYXQgbW9zdCIgb25s
+eSBuZWVkIHRvIHJlc2VydmUgdGhlIHNwYWNlIGZvciB0aGUNCm1lbWJlcnMgZXhjbHVkaW5nIHRo
+ZSBDUFVJRCBlbnRyaWVzLCBiZWNhdXNlIGZvciB0aGUgQ1BVSUQgZW50cmllcyB3ZSB3aWxsDQph
+bHdheXMgcGFzcyB0aGVtIGFzIGEgZmxleGlibGUgYXJyYXkgYXQgdGhlIGVuZCBvZiB0aGUgc3Ry
+dWN0dXJlLg0KDQpCYXNlZCBvbiB0aGUgc3BlYywgdGhlICJub24tQ1BVSUQtZW50cnkiIHBhcnQg
+b25seSBvY2N1cGllcyAyNTYgYnl0ZXMuICBUbyBtZSBpdA0Kc2VlbXMgd2UgaGF2ZSBubyByZWFz
+b24gdG8gcmVzZXJ2ZSBtb3JlIHNwYWNlIHRoYW4gMjU2IGJ5dGVzLg0K
 
