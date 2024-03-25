@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-118185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-118186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E3D388B590
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4607C88B591
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 00:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FB7E1C3937A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:50:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 778B21C3BDF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 23:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3EA8663E;
-	Mon, 25 Mar 2024 23:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB6C84A26;
+	Mon, 25 Mar 2024 23:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Vp16IZDx"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VxI7pGjc"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29CD284D3F
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19EA8529B
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 23:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711410626; cv=none; b=GTCVtWoPUrSXK6O2CxFlhWW2EvAAsBNaPf1vigbt1hcaAIA3zd+xAU0UAnqt6V8SZ2L6Y7wqwseVf0uZD5DTRUQwVxiXgtUAHc8BeJ56QnV8XUXj1/lHc8BwNyBAFfV+1cAaaDFI+Gaoh6DP6WZik+fP4qlk4L2goB4bgio3j9M=
+	t=1711410627; cv=none; b=ne0jXDpCCgUJyv5qGt1IDXr7zmscQ1MzXD4l5cexhPwIsPnRL+25uK+M0dx731FGYtangESIvdeEC7uflixPG8sNeIiPHt5C4rIhj2HmCwsTQT/EO8GpQ/iZ2duwJjH+kXwsL7h7AJXYn/nO5+iXVPGoZDo44Hwz5lnXU0IBSBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711410626; c=relaxed/simple;
-	bh=N3EhBhoPx4G/jPI5J5rhJXw3XGLAmDgO8lD2yh8kUnA=;
+	s=arc-20240116; t=1711410627; c=relaxed/simple;
+	bh=etnStzb5dr7nTQEyqbOx6RG6Z1pSCvmhvSaa+izLU2U=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=LLs4WW54tOkyLEuGC46DuEPR2lc7xqi1ZtfAB0xM10pjI2t4IHZ+c2xRm6hiHbbVR/EF8Zu0dBV0ZbzrpbdeG3GOnF1rMKG4JY1dZD7yCGfZTGS62RVNJqdym14ovTnXhxgmBeoTiWRp510DXpm8mYPQnH9Bl5ucNKQQoEFMSI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Vp16IZDx; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=H+XG/9sAvxoPykaYXndY42QRlk+ctdnPeFfWPZ20fseks0SvEXPqwAD2NzZyGZd4ohbbI6eNbB8GG5xl2A7IfkeknBj4hUEQcPjkgnARRZ5Rzza1KHL98yETiX12ZbNhtI8n8mkjYVGgizQgXArHHzGhIrKAQxcbrlOIthiqwHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VxI7pGjc; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60cd041665bso94042327b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:50:24 -0700 (PDT)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60cd073522cso90178107b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:50:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711410623; x=1712015423; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711410625; x=1712015425; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ltPcwa62HBgtxDU26adJs5Ek9NcA4wCnN/irpaDy45s=;
-        b=Vp16IZDx2OImL9QaaZ0imlCmnw9vXM5OYNlINxsa4YnCWqmJ9xwV6d3k8naBoOR0ip
-         EisHnAx16oZV9zIj8JYHk96Cr+i2H9uHUnTeHMlZ79NN+7hs6gmXpCMiMWaZLZTQqFxu
-         AAtWf7dHc3DvIhfU906cRcwp8hEHXSSFAcGqbrkAsHD4FWOBK17hmkDNMXg0Ydpe/nF2
-         WBcwRWtOD3iNfOr4gQsHAJ4febC8g06uPAJBFWmphABqpx0puMnnuQUzpvRCiD/p64RH
-         qLGYnuCkQXBaNAG30R1CatkU/CFMawTO9u4ua+QtW9HAXxzdnfRXKy2D/lwh6RqCi/Pu
-         VULQ==
+        bh=Dd0Yn1LXqAraa72sbpCkcMKeXtgN9BdSqsW0A73YyKg=;
+        b=VxI7pGjcjYhioSrcG2qVE/9DFD6rkzzKii1IIJyxUhqeeDn/zxovXsPm0NSL6LYHxl
+         O3upUhYB9CAj81qc0pPHosgD5xB7VzP0bprB3lF1FG31d6hDgJ6oaFmgDj3uoLxR70hb
+         O4gldPeGSVo9hapDHQbvsH3ulgLki/AwOolj5J8Rrq1u4qm4xH/smhN95jBMXGPyzHPA
+         VGSrOwAf3lLAgf3smZKOCYbEiN0CxNHa2ZV3lh1feRMTUy5E9OHWNYuy3nOi0+H/Cfb9
+         Lh6xVO5urrBCpWU3VA+0EPlsucF0TNq/ef7Dj22WxPP0nR4elw58voywjZotUh+ynH8h
+         6W2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711410623; x=1712015423;
+        d=1e100.net; s=20230601; t=1711410625; x=1712015425;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ltPcwa62HBgtxDU26adJs5Ek9NcA4wCnN/irpaDy45s=;
-        b=CyzH3Kt0MghGHSZBd70h1GogOqnh8DrFDlr2BEX7JfSMUwmEglt4TDb3Pbg3exwBB1
-         GnBSxerQ+JMzLM5YdkafBdBN5iDDg6UBv3LiyR3z8vn0dDd9CFRkozGu8qz+8wAuGcOy
-         ZpdfyK6qJs1RKq1RstMOKam74jmMdrHl36bmJ5yzA1OmunFMeCQgX4dGxZxv4N1eQ8OX
-         55qik2KAd2dmnnSgb1jstsLPCWlGIYF+5MEoOA1sQenyKu6T6FDU9pB4O1jDk71vCk2D
-         5DhVOKFWYDUmJeJOgJjm41lI1mUwG087SD/4jvdTvarCQvPBoBTkbYh2WyZL9aCAcD4X
-         BmfA==
-X-Forwarded-Encrypted: i=1; AJvYcCWcS2QVP9uRZBMgTSl3IpTdhqhBpQTrEhu9pPpOEhGgvdyHIRO1CaHqQ7VxpP7/VO240Ux55XjLKUbCMCcKOnPc50pEk2Q+WfXBdBqf
-X-Gm-Message-State: AOJu0Yz4rR/n6T4OOh0dgLm1PkCM2g5XrTtxNKA4pbnlFgDEb4wt4Iup
-	MUdcN4T7O9Wb5sxPYXBwhD+JPjAnW4o2xwzc/od/2wy2wWbb3VD8L1A9/NL+JOXosmwvPeMnVOK
-	xoo3dRDDy8nmaAcV/qw==
-X-Google-Smtp-Source: AGHT+IETdRLWcKvQU7ALPH/FxGMfk6VVMBGbdetkJernCRp2EMtMjfpphTVvqJ9nLnh8UXcxjIFAV/8JU9lCEqEU
+        bh=Dd0Yn1LXqAraa72sbpCkcMKeXtgN9BdSqsW0A73YyKg=;
+        b=eaMa5ldOXc6zuDEHiE0M2sM/7lyI8l4XP+6FXUUFBCDRwAqimcdeHP8qU1YFdMqGrn
+         LX+ikQqRCcipFxXTY0/dM2KrDbJ2msZW9ZXPTMkeEQXfjP/pVRgSHdnKs+BvSIR7OvRM
+         rBirIz+JO/xilIyWPdd9ukyJw/Dqk25wX9NattIe9SOdJ8Hp9VxaEsg0NFEEESTWlrYX
+         S7b2gdDUAE4L8DnPaGUNoK4+fWfF8Bm5gVNAigbkXDJqy0/7ueMo0JxvY6q81cfYl5cR
+         UKcIo6v/79O/MTJ154RM0xjCaTNrsNh3I51VJ4Wz8IaZXPMt/+QjrO9DshYmYzWw4ugT
+         XvWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXovWg+wVnLrIbrO6Raf5sKIZbpgIIhrseIEDSIan5wnCHVRHjEO4ql4BHadJhxwa5L/FFc9q+1Sn+wmHcTYlGG24wlYiL4vsRZTFiz
+X-Gm-Message-State: AOJu0YzhyG7xVk12F8EgG53nOwXKMhO4sDtAbdfB0JEO3N6oBJ2Xrrif
+	2FBffV+sWP1a7KkpOgdlN8yPscR05ESE1IhBvBD4Bwpcf2gcknnDlav5FWG0NAxu61PSGouvgUF
+	vADSkOusIPoDap7mFQw==
+X-Google-Smtp-Source: AGHT+IHM4PjIMqVasHvxcW/NHELy1n3EZw0GsOSiULCSozqmucZP5yLYhHluyhz301rMxFhkk5EZKcifeTwjvilx
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a0d:eb04:0:b0:610:d0c9:696b with SMTP
- id u4-20020a0deb04000000b00610d0c9696bmr2096495ywe.8.1711410623435; Mon, 25
- Mar 2024 16:50:23 -0700 (PDT)
-Date: Mon, 25 Mar 2024 23:50:10 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a0d:fe44:0:b0:611:a84c:fef2 with SMTP
+ id o65-20020a0dfe44000000b00611a84cfef2mr165827ywf.10.1711410624906; Mon, 25
+ Mar 2024 16:50:24 -0700 (PDT)
+Date: Mon, 25 Mar 2024 23:50:11 +0000
 In-Reply-To: <20240325235018.2028408-1-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240325235018.2028408-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240325235018.2028408-3-yosryahmed@google.com>
-Subject: [RFC PATCH 2/9] mm: zswap: refactor storing to the tree out of zswap_store()
+Message-ID: <20240325235018.2028408-4-yosryahmed@google.com>
+Subject: [RFC PATCH 3/9] mm: zswap: refactor limit checking from zswap_store()
 From: Yosry Ahmed <yosryahmed@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
@@ -82,86 +82,73 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
 	Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Refactor the code that attempts storing to the xarray, handling erros,
-and freeing stale entries into a helper. This will be reused in a
-following patch to free other types of tree elements as well.
+Refactor limit and acceptance threshold checking outside of
+zswap_store(). This code will be moved around in a following patch, so
+it would be cleaner to move a function call around.
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- mm/zswap.c | 42 ++++++++++++++++++++++++++----------------
- 1 file changed, 26 insertions(+), 16 deletions(-)
+ mm/zswap.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/mm/zswap.c b/mm/zswap.c
-index 1cf3ab4b22e64..ff1975afb7e3d 100644
+index ff1975afb7e3d..6b890c8590ef7 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -827,6 +827,30 @@ static void zswap_entry_free(struct zswap_entry *entry)
- 	atomic_dec(&zswap_stored_pages);
+@@ -1415,6 +1415,21 @@ static void zswap_fill_page(void *ptr, unsigned long value)
+ 	memset_l(page, value, PAGE_SIZE / sizeof(unsigned long));
  }
  
-+/*********************************
-+* zswap tree functions
-+**********************************/
-+static int zswap_tree_store(struct xarray *tree, pgoff_t offset, void *new)
++static bool zswap_check_limit(void)
 +{
-+	void *old;
-+	int err;
++	unsigned long cur_pages = zswap_total_pages();
++	unsigned long thr = zswap_accept_thr_pages();
++	unsigned long max_pages = zswap_max_pages();
 +
-+	old = xa_store(tree, offset, new, GFP_KERNEL);
-+	err = xa_is_err(old);
-+	if (err) {
-+		WARN_ONCE(err != -ENOMEM, "unexpected xarray error: %d\n", err);
-+		zswap_reject_alloc_fail++;
-+	} else if (old) {
-+		/*
-+		 * We may have had an existing entry that became stale when
-+		 * the folio was redirtied and now the new version is being
-+		 * swapped out. Get rid of the old.
-+		 */
-+		zswap_entry_free(old);
++	if (cur_pages >= max_pages) {
++		zswap_pool_limit_hit++;
++		zswap_pool_reached_full = true;
++	} else if (zswap_pool_reached_full && cur_pages <= thr) {
++		zswap_pool_reached_full = false;
 +	}
-+	return err;
++	return !zswap_pool_reached_full;
 +}
 +
- /*********************************
- * compressed storage functions
- **********************************/
-@@ -1396,10 +1420,10 @@ bool zswap_store(struct folio *folio)
+ bool zswap_store(struct folio *folio)
+ {
  	swp_entry_t swp = folio->swap;
- 	pgoff_t offset = swp_offset(swp);
+@@ -1422,7 +1437,6 @@ bool zswap_store(struct folio *folio)
  	struct xarray *tree = swap_zswap_tree(swp);
--	struct zswap_entry *entry, *old;
  	struct obj_cgroup *objcg = NULL;
  	struct mem_cgroup *memcg = NULL;
- 	unsigned long max_pages, cur_pages;
-+	struct zswap_entry *entry;
+-	unsigned long max_pages, cur_pages;
+ 	struct zswap_entry *entry;
  
  	VM_WARN_ON_ONCE(!folio_test_locked(folio));
- 	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
-@@ -1485,22 +1509,8 @@ bool zswap_store(struct folio *folio)
- 	entry->swpentry = swp;
- 	entry->objcg = objcg;
+@@ -1446,22 +1460,8 @@ bool zswap_store(struct folio *folio)
+ 		mem_cgroup_put(memcg);
+ 	}
  
--	old = xa_store(tree, offset, entry, GFP_KERNEL);
--	if (xa_is_err(old)) {
--		int err = xa_err(old);
+-	/* Check global limits */
+-	cur_pages = zswap_total_pages();
+-	max_pages = zswap_max_pages();
 -
--		WARN_ONCE(err != -ENOMEM, "unexpected xarray error: %d\n", err);
--		zswap_reject_alloc_fail++;
-+	if (zswap_tree_store(tree, offset, entry))
- 		goto store_failed;
+-	if (cur_pages >= max_pages) {
+-		zswap_pool_limit_hit++;
+-		zswap_pool_reached_full = true;
++	if (!zswap_check_limit())
+ 		goto reject;
 -	}
 -
--	/*
--	 * We may have had an existing entry that became stale when
--	 * the folio was redirtied and now the new version is being
--	 * swapped out. Get rid of the old.
--	 */
--	if (old)
--		zswap_entry_free(old);
+-	if (zswap_pool_reached_full) {
+-		if (cur_pages > zswap_accept_thr_pages())
+-			goto reject;
+-		else
+-			zswap_pool_reached_full = false;
+-	}
  
- 	if (objcg) {
- 		obj_cgroup_charge_zswap(objcg, entry->length);
+ 	/* allocate entry */
+ 	entry = zswap_entry_cache_alloc(GFP_KERNEL, folio_nid(folio));
 -- 
 2.44.0.396.g6e790dbe36-goog
 
