@@ -1,233 +1,267 @@
-Return-Path: <linux-kernel+bounces-117895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16FAD88B10A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 524F088B10C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95C631FA4A1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:13:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5DEA1FA59BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E249D4C637;
-	Mon, 25 Mar 2024 20:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D194E1DB;
+	Mon, 25 Mar 2024 20:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GNmBVJtB";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="z39Iw7u0"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="MiiCoAhb"
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195424502E;
-	Mon, 25 Mar 2024 20:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397499; cv=fail; b=n+UDLIWlWvuVANM3zFSdUNfcnt0xy2u3Q0METig3M9XXAOxBtQ47mSMkSeKs1YeylLezkkXTz3FMHsjbNI3HAVtJs/SyC39wxTSudn9z9mhQHQRiYvH193aG049HAqpBqz3bthcgsaPHIjynJlvx+s2i/ekqkvw9Of8Y8nbPGlo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397499; c=relaxed/simple;
-	bh=95hOL1FdDpjqG0bDTCW9zeq+v8yAw9/zAKx/Bf9+ClY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=L8uFqAm1cmVbzhFzJIWjIa+qlNK+bOdwVh+vnUELEiOsYR+ATV3XiZxRV81xfwzRUMCFjADPDffL8EWtmd2SSRs8+0H+GV21HyUrc4CekvBV9e5nn6/bjtTNm4myGeVocsUjc/ENRIrbrg1P5V7c8EOK0Gue1pkml01aelOeODA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GNmBVJtB; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=z39Iw7u0; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42PHUhrX025664;
-	Mon, 25 Mar 2024 20:11:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=95hOL1FdDpjqG0bDTCW9zeq+v8yAw9/zAKx/Bf9+ClY=;
- b=GNmBVJtBkAocTt2qkzVcBjfLwGUGY6yS1O2DYUq2/DnVO7JRZJyq8hnWkjRfFPfkw2Ly
- iVjlBqUV1u4fyvwrHXybpDYgzE53cbW9crQ7BvjBahszqDyjeuQwUGj17tJY9Dm/B/ln
- ppTNnwCVXuWHepW0of0EjoussE0cSf9tsxMB4eE0PtUlnm0mqVWbViIpQkNihVfq/Qo8
- Osv2We22+gCh/krRwWkxWeIZv5ovtgb8lXNnYr6WLeCEr0MPyV7+v5VDkTDB4lRHGGEh
- CPgruEpr7Y4bvpQveDC40Df6+7ndaYriy1OInwdFGIHRtpJ3SApfz3UU2MZc5RUrHr2T HQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x2s9gt1dm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 25 Mar 2024 20:11:26 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42PIKblu024409;
-	Mon, 25 Mar 2024 20:11:25 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x1nh68ssg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 25 Mar 2024 20:11:25 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hWhBC45pkddyB8/hlDkPEQfgLghNr01sAyyd//CctR64EI9t3cZh/di+u9ToFZn0vzsAZOyY12DQip/ZUDNlKVtuKGtmpEi9DLFr/rrUqpSnxH4yZjK67AX/q6e8/2ESXCL9/5GlEKdoHyq6tfCAdZV8U7pSJW9AW3qX/V46c/WBEUw8RJdskJAoxS2GojO8WkO3ufpdfZjz/1uqWS+s40eB5MY9hKZtZ/2CB0LRrG0R6zy6xHoLKTKwxb998bEivsauZcDiojFlZ5TyF6UyhEo+8pxppNBOGm/d34EEx8IhrqTM8eOlrsefi5h5mDNQCarDddVWoUT2LtigpcINgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=95hOL1FdDpjqG0bDTCW9zeq+v8yAw9/zAKx/Bf9+ClY=;
- b=niFusG/5qYKVvnfITxAmf8qmHVZ3cCu71s7NRHQ0AlvOhyqufvmWb7vUF9fTmG8ucDLK4QFAsM3DIbCpMAqO2/UHuljpY0aMd3lNkHXk7imsnc/k3gkCQGC/02Mz2NKyp+4NBjxr+vnMWD9yJQWkRU3tqZAYgI08pzjDxu3xBVU15pJFd9U47YOK4btRRDj1y95hb+qxBEg2YrV6iSVBdm74QN5pHKZVn5p5tamvVMivQxdx0UgKkS4eAIPT9i2EbASragYD/z/OgovGM0tnL645DD3QrTuKVq5Uy19YNsaFHot5bhJRiKxvZliFgOlnyKFBIvHrUrxD6hMPXMjQrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436F55812B;
+	Mon, 25 Mar 2024 20:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711397511; cv=none; b=lZeBX/L9AK1c+HIh/HrshEFAn/84s02XXWjw7Lxc6wpM4o4GVPhBk8EvgXqWO4vmEzr3lcLp0KBoGMPGR+onM4pO5LcSJUvH/g/gdxUgI+BsFCFAlgvyryjANRhvWuwE109oTzcLgKVoq3WOo3Stwr/jdmEEoNIQ2oE2sbRCOTk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711397511; c=relaxed/simple;
+	bh=3iDIgOlyvuqyioJ6WS6fsqOQ5p353dXrtDE8Wlpcxlc=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=sJGNj81PsyQIpOjFnuMISrkrltfw4mG8NJADXvDSeHTH2TiSVKIoN41ixO9U+G5LogF8cpE3/49sc5eH/4J5RHwanADdBycxsZGKHIEb6IypgvChnaQvb86oFelfXdWOnMGBedfzWqR53qCE37+WwVGpSNSzmv7ZrI8tzVSCiFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=MiiCoAhb; arc=none smtp.client-ip=99.78.197.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=95hOL1FdDpjqG0bDTCW9zeq+v8yAw9/zAKx/Bf9+ClY=;
- b=z39Iw7u0FAQiBWbBz4xTRj5uNEfkAV++T74efNZZkxDRRrgEAiN+3T/Mwy2fXACc7dp42AZ4Ew4TTFMK2fsxD3eLigCUatYZ3sa6KDpf14T6xgu49pC9Z29m6ewQO2aewHVROK+ky9deEe6m57AJ+/Bl5mOVhhkxeYYH9zotnKE=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by PH0PR10MB4680.namprd10.prod.outlook.com (2603:10b6:510:3e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 20:11:23 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ad12:a809:d789:a25b]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ad12:a809:d789:a25b%4]) with mapi id 15.20.7409.031; Mon, 25 Mar 2024
- 20:11:23 +0000
-From: Chuck Lever III <chuck.lever@oracle.com>
-To: Jan Schunk <scpcom@gmx.de>
-CC: Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga
- Kornievskaia <kolga@netapp.com>, Dai Ngo <dai.ngo@oracle.com>,
-        Tom Talpey
-	<tom@talpey.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [External] : nfsd: memory leak when client does many file
- operations
-Thread-Topic: [External] : nfsd: memory leak when client does many file
- operations
-Thread-Index: AQHafvCbZLwyekZnbUWR/5F7PVBngw==
-Date: Mon, 25 Mar 2024 20:11:23 +0000
-Message-ID: <088D9CC3-C5B0-4646-A85D-B3B9ACE8C532@oracle.com>
-References: 
- <trinity-068f55c9-6088-418d-bf3a-c2778a871e98-1711310237802@msvc-mesg-gmx120>
- <E3109CAA-8261-4F66-9D1B-3546E8B797DF@oracle.com>
- <trinity-bfafb9db-d64f-4cad-8cb1-40dac0a2c600-1711313314331@msvc-mesg-gmx105>
- <567BBF54-D104-432C-99C0-1A7EE7939090@oracle.com>
- <trinity-66047013-4d84-4eef-b5d3-d710fe6be805-1711316386382@msvc-mesg-gmx005>
- <6F16BCCE-3000-4BCB-A3B4-95B4767E3577@oracle.com>
- <trinity-ad0037c0-1060-4541-a8ca-15f826a5b5a2-1711396545958@msvc-mesg-gmx024>
-In-Reply-To: 
- <trinity-ad0037c0-1060-4541-a8ca-15f826a5b5a2-1711396545958@msvc-mesg-gmx024>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3774.400.31)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|PH0PR10MB4680:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- c1Ou0NP+z+3FIDu7a8eCZ/uCR4bDI94PQSsjj+xY1pLmLy1I6ZVKAy0ineAi4J8C2vY+Dg7qX4ILSDx0awDYwqSgxM23BWVT2okzJoS/zDlMR6HrzzcIlfpdgDOHw1eQ761KhyK6ioJCV3gicz9y8NfHnnM7uHc14ij/XDZzd+M4I+3D8a0oMvJIUzE9lIVuY0LsjVMiFZ9q9+DDXPzr0SE65rznYiCNdrcueAjQd7gDCDy9fbX+xLnRyCEAkcgvLpAhyEJLJK3NDJzsicSJmMBO/gmX1lFtyf4gfezeiBuY6dqU9SeJzMbDRdCcgz6h+gydUW5YB4Ek+SgBoMcXmhW8Q57taZtCxzuA9xYSIm8iwJuIdhUqUrJb4gyIbf5UAgHmPXV/6+hgVddYa2vmoh51AmlsbxH5DenCtLrJ+PW+J8FTVQcU5pp306/HXj7c6HCkEOzChF5QkaUCuJ/JhPjRtg0bsLGpLRDPEwxzL5ckT0NPd5sMgfr+ucS2D/4Nh1fLSyX1ZCptpGhrnJeRMt0yxN8BW7ZaN6hvksOMjPSWpNck88pLW/TIRk3yGxFjFVEKwmWNNvUA3iGlYRIQ0jp9EWTiuGPTU156OM65ThfSfORS0e2hF6ohoqkopqbGDLWFxA+UdT7VDA+6EPk/M3NNZTws0sZ1HNH57um5+Do=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?QS9NN0cvNUw0RDBBRkNkakp1NDRaa3ZpZFZVbUFvbUdqZi81WktzUW1JbEx1?=
- =?utf-8?B?dXhKaHBrWm0yQVhHbVpOTEtOSi9NYWk5UEFJUXhZKy84cy9WRUdVdW5uRENa?=
- =?utf-8?B?ZTNuR05WTHcxclgxVmVMZk9ONnEyWExSd0lLanFzQVh3SC85MDJiZ01KNXZx?=
- =?utf-8?B?SUxBOTVBclZKWjdpa1hQNmgyNWlEeDV4cG5MS1VUYkN2L2JwNGZURzBTVDlv?=
- =?utf-8?B?dlNpRU04eUhycnVCNVpPL3NxVDBpa2tZcmpFSUdKTDNSVzF2MTNEZ2FQUERl?=
- =?utf-8?B?VCtIejc3ZVFvTWV2MVZCT0hvYnFwSXorcTF3OUdnZW1SM3VpelY2ejZQS0lI?=
- =?utf-8?B?NVROYWswQWFoL3JuWHA2T0xZajE3aXZBQUl2V3g4aDY5NTdralFST2tKLzdz?=
- =?utf-8?B?UGg5M1BRVS9DUFJONy9vTG9tMmpyc2Q1dWRpRUpLbXBxUERkdXFrTVExU1NY?=
- =?utf-8?B?bHdKS2JWNk1LWEszM3ZVb1J4eGMzOC8ra0ZZTS91VVFnTGhOU012VkdXN2ND?=
- =?utf-8?B?NDJXMVNNcTIwbkVLU1J0ZkJqTjMzSkMxMGEyNEhyNTJNTWhpTU4yY3lMbER6?=
- =?utf-8?B?eDVvOGN1VU1xdUxxNGxwcW15eVIvQnl6Mm1RZEpRVUQwbms2K1lVUFFKd3Fx?=
- =?utf-8?B?dzhzbHhWcEZPVTc4cFd4VjAxQldrZU41UmJ6OEM3QWZZVUw1SVdaeVRYcmlQ?=
- =?utf-8?B?TkdhTmFJZHFicHdnWkNpcm10SDNabE1uYU9LVU9ROHAzR1FZNWNHbmU3eW1J?=
- =?utf-8?B?NXJDR1R0OVFPMDJiSUUxdW5XckIvNENVVnBQaVczdSs2NGhzb1p2V2JuZ3gr?=
- =?utf-8?B?cm9hQXpGQUFmSHcxVnVObHV6QUNSSFFvU0JKSzRsVlVkdFhqY281V1VPWW1h?=
- =?utf-8?B?STV1b2MxOG5qUmg5NzkwUEpYcHExOVRtbldEdXZOVEoyUUxseGRGMnF2VkY5?=
- =?utf-8?B?N00rS3BWQjV6S0ZvWGJFN1NzLzBaV1ZLQnJlelVxeUVlSmhlaFJSQWRleXlX?=
- =?utf-8?B?L3htSks3aXp5Yk0wVUxMdlZ0RGFpTEZGN1NrZXpYV29GMEtrekp3RVlDSXg5?=
- =?utf-8?B?ODJCUXJ5K05SRmIvZ0QrYVRXZG5NWEVCY3N0MDlwZnpwNTZsb0FhNkdxK0p5?=
- =?utf-8?B?V3FEYzNDcEs3YTJNb3YrU0JrMmNNRVJPYThNRzBPZU9qL1JlSGk3NVpzTFIw?=
- =?utf-8?B?Z2tHanpNMzZaNmlQeG5pYmR2MGhvNURoamhmMnNNdnZuQWx0elVQQVRFa0dE?=
- =?utf-8?B?WjBLQnVtOEhyeTFYdC83MkJaQk1NbkZFcW5DRSttUDVHVGFjbWJLTFlKeGo2?=
- =?utf-8?B?YzF0K2IzaGovYTVudlBGdXV6elRCRytNWnR3V20vaFpTVW9EUWY3WGM1bXpM?=
- =?utf-8?B?eHFLakVlMFB4QlMwc09xMUtlOXpZenBtRFVGYlAyZitLZlV5YXNNcER6SjAy?=
- =?utf-8?B?clBZWlpDYmhVQlp2Yk40VGJOTXpCMVBrRzJjS29wSUVXay9xOUpiOHlScklu?=
- =?utf-8?B?QWlyWW4wRjdUV1N4UHUrVThlQWR5MDJpVXRTVm94MUZMTHBPUGoyRXU2OHVY?=
- =?utf-8?B?bmNxQVI4LzIxWUY0Y2R3WVVPYjlmV2JVOWdxSzhpbURUSTdtS01CTmJ0Y1Fj?=
- =?utf-8?B?T0hKcTk2dE4ra3MrZ2kyUWpmb0dZck91L294V1hqajA5MGZtdGdvcjQ1VkhJ?=
- =?utf-8?B?bzFhQkxBNmpNRjMxekJTVVQxVCs0TlRKbGp4cEV3QU9Ka203dXhEVTM4OGd6?=
- =?utf-8?B?eFZjY293bHlmYXloK2tDUUxmMGxTaWdWaUtIK0Y3SkhpR09JbVg1dWtrV3hF?=
- =?utf-8?B?RFFXQk4xTVF6NUhtRUZIZCsrRm9mZ3c0QmJBWXFhdjdobzJ4TlNUUnQ1dGZu?=
- =?utf-8?B?TDkwZUJrby85ZlAxWVRSbTRac01qYVNhV3Y1SzZaYTliZjYwYkNHampndXh1?=
- =?utf-8?B?NVhDdDZJMFNXRy9yNUw4MEpEOS9Ma3cwTG8wWGV3bmFCU2srTnA5V1BEajg5?=
- =?utf-8?B?MkVoemtGaTdLbjdMS2ZnK2szK3ZCMU9DcFZWOTd4cEg1TE8zUFZGakFOdTdX?=
- =?utf-8?B?SHBrbnIwTDJCaGxsaEh4cGVFclBRTnJMeU92dUxUSUswQVN6b1o3cy9sa0Vq?=
- =?utf-8?B?a0lnRFJ5Zlpzb1hqMXlUUWphd29CVFdVYVo4YlpLWEpTdGpXbWN4YVFxbjYy?=
- =?utf-8?B?a1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CC08D5C8843D91459DF345336EF2640A@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1711397509; x=1742933509;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=nZm0+TOxnLlCiQwpuMtOZy0/rA/EOQRcZGUJenN26Hk=;
+  b=MiiCoAhbdKP7nuGoAgzFFKxNN/c45HRRF89/hA8i4T6yGfsCadI+hgXx
+   AbTaDmHzZmXC7l5dGW0XeqhCWBLhKJww/8aOAxGz/vadwuC0QAxaCLz7I
+   taG2GDIqpTm8rWinePZ/kdAalUcbMyxJrHX7MRgf8GP0kn9Z6BYsIhIFG
+   c=;
+X-IronPort-AV: E=Sophos;i="6.07,154,1708387200"; 
+   d="scan'208";a="283719456"
+Subject: Re: [PATCH v2 3/4] dt-bindings: rng: Add vmgenid support
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 20:11:46 +0000
+Received: from EX19MTAEUB002.ant.amazon.com [10.0.43.254:17780]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.21.21:2525] with esmtp (Farcaster)
+ id a0177e7f-73dc-4400-8ccb-89bba7ceadee; Mon, 25 Mar 2024 20:11:44 +0000 (UTC)
+X-Farcaster-Flow-ID: a0177e7f-73dc-4400-8ccb-89bba7ceadee
+Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
+ EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 25 Mar 2024 20:11:41 +0000
+Received: from [192.168.17.104] (10.106.83.11) by
+ EX19D036EUC002.ant.amazon.com (10.252.61.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 25 Mar 2024 20:11:36 +0000
+Message-ID: <51403072-f5ca-450e-9206-19ca627ead11@amazon.co.uk>
+Date: Mon, 25 Mar 2024 20:11:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	SuOj0Dd9Wv39xTXQacmeWtFPAjCjICNv8kQMAfcsHTIsrtM7PMhtoBW+nDrIQaHz+JL8lUtpguve5Ah6vi7h6kT6zuH0qtyLBzlP6vXj8vkhsbXQ3r0REo/aGDIjK73wd0o/Z/AQcWgMEqcZJ7D1mDozYnT/2XImYCDDR6YIwAsn9Bt0lqbVwzviWQkEXuQJF661rFNvZx61xEHNLymxfxKyyD0TgEfZtZz+IXFNyjLmxTT/2fv1UDcYBDPKgKd1ZYmKJaGZNShc/vShjk9jJPe+SuGVRh+fqqM/EeiO2amPKA6mbuIQr1+fvDg+OoG7kwJGBuZwQ8arkqRILhgEdV0+/h4wRD2zHSZnNGbYOb7csmO6YoOV39k6xDxz9roVNGvxQU7WdXRigmmo8rqNGJMbQu4v7QeElelnICTsJR4r1LatqwEoREfPNvER7SmdlmKybc171ElUF9ZLYHPf87TJqffzu9+D/DwsoshAlT6RlxI8bOLwZ3o0EKSydODJPuEvZLg3K+HqJsmKdu8pTXXznPoP6PsrI5iJGI9lVJSjpht4y/ecmW9zJy//LsfhAD+5wdWIAht6VxiRL0+8PKDGMRWIr6Pf4Gwu+VkDn/E=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a59792a-3380-4462-8e50-08dc4d07be46
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 20:11:23.1900
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0yDmdG1NaxR8JFF32XUXG1W265XdHePvJWrQOaQ+1dyoNEc+9aEBsbQF46IJNmMpYiSrLO/fTpa5eq5LUQAtow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4680
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-25_18,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403250123
-X-Proofpoint-GUID: gITzvji3jk6qRrri9GHe9suO2S_q3IKO
-X-Proofpoint-ORIG-GUID: gITzvji3jk6qRrri9GHe9suO2S_q3IKO
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>, Sudan Landge <sudanl@amazon.com>
+CC: <tytso@mit.edu>, <Jason@zx2c4.com>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	<thomas.lendacky@amd.com>, <dan.j.williams@intel.com>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<graf@amazon.de>, <dwmw@amazon.co.uk>, <bchalios@amazon.es>,
+	<xmarcalx@amazon.co.uk>
+References: <20240321025105.53210-1-sudanl@amazon.com>
+ <20240321025105.53210-4-sudanl@amazon.com>
+ <20240325150609.GA3477574-robh@kernel.org>
+From: "Landge, Sudan" <sudanl@amazon.co.uk>
+In-Reply-To: <20240325150609.GA3477574-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D033UWA003.ant.amazon.com (10.13.139.42) To
+ EX19D036EUC002.ant.amazon.com (10.252.61.191)
 
-DQoNCj4gT24gTWFyIDI1LCAyMDI0LCBhdCAzOjU14oCvUE0sIEphbiBTY2h1bmsgPHNjcGNvbUBn
-bXguZGU+IHdyb3RlOg0KPiANCj4gVGhlIFZNIGlzIG5vdyBydW5uaW5nIDIwIGhvdXJzIHdpdGgg
-NTEyTUIgUkFNLCBubyBkZXNrdG9wLCB3aXRob3V0IHRoZSAibm9hdGltZSIgbW91bnQgb3B0aW9u
-IGFuZCB3aXRob3V0IHRoZSAiYXN5bmMiIGV4cG9ydCBvcHRpb24uDQo+IA0KPiBDdXJyZW50bHkg
-dGhlcmUgaXMgbm8gaXNzdWUsIGJ1dCB0aGUgbWVtb3J5IHVzYWdlIGlzIHN0aWxsIGNvbnRhbnRs
-eSBncm93aW5nLiBJdCBtYXkganVzdCB0YWtlIGxvbmdlciBiZWZvcmUgc29tZXRoaW5nIGhhcHBl
-bnMuDQo+IA0KPiB0b3AgLSAwMDo0OTo0OSB1cCAzIG1pbiwgIDEgdXNlciwgIGxvYWQgYXZlcmFn
-ZTogMCwyMSwgMCwxOSwgMCwwOQ0KPiBUYXNrczogMTExIHRvdGFsLCAgIDEgcnVubmluZywgMTEw
-IHNsZWVwaW5nLCAgIDAgc3RvcHBlZCwgICAwIHpvbWJpZQ0KPiAlQ1BVKHMpOiAgMCwyIHVzLCAg
-MCwzIHN5LCAgMCwwIG5pLCA5OSw1IGlkLCAgMCwwIHdhLCAgMCwwIGhpLCAgMCwwIHNpLCAgMCww
-IHN0IA0KPiBNaUIgU3BjaDogICAgNDY3LDAgdG90YWwsICAgIDMwMiwzIGZyZWUsICAgICA4OSwz
-IHVzZWQsICAgICA4OCwxIGJ1ZmYvY2FjaGUgICAgIA0KPiBNaUIgU3dhcDogICAgOTc1LDAgdG90
-YWwsICAgIDk3NSwwIGZyZWUsICAgICAgMCwwIHVzZWQuICAgIDM3Nyw3IGF2YWlsIFNwY2gNCj4g
-DQo+IHRvcCAtIDE1OjA1OjM5IHVwIDE0OjE5LCAgMSB1c2VyLCAgbG9hZCBhdmVyYWdlOiAxLDg3
-LCAxLDcyLCAxLDY1DQo+IFRhc2tzOiAxMDQgdG90YWwsICAgMSBydW5uaW5nLCAxMDMgc2xlZXBp
-bmcsICAgMCBzdG9wcGVkLCAgIDAgem9tYmllDQo+ICVDUFUocyk6ICAwLDIgdXMsICA0LDkgc3ks
-ICAwLDAgbmksIDUzLDMgaWQsIDM5LDAgd2EsICAwLDAgaGksICAyLDYgc2ksICAwLDAgc3QgDQo+
-IE1pQiBTcGNoOiAgICA0NjcsMCB0b3RhbCwgICAgIDIxLDIgZnJlZSwgICAgMTQ3LDEgdXNlZCwg
-ICAgMzEwLDkgYnVmZi9jYWNoZSAgICAgDQo+IE1pQiBTd2FwOiAgICA5NzUsMCB0b3RhbCwgICAg
-OTUyLDkgZnJlZSwgICAgIDIyLDEgdXNlZC4gICAgMzE5LDkgYXZhaWwgU3BjaA0KPiANCj4gdG9w
-IC0gMjA6NDg6MTYgdXAgMjA6MDEsICAxIHVzZXIsICBsb2FkIGF2ZXJhZ2U6IDUsMDIsIDIsNzIs
-IDIsMDgNCj4gVGFza3M6IDEwNCB0b3RhbCwgICA1IHJ1bm5pbmcsICA5OSBzbGVlcGluZywgICAw
-IHN0b3BwZWQsICAgMCB6b21iaWUNCj4gJUNQVShzKTogIDAsMiB1cywgNDYsNCBzeSwgIDAsMCBu
-aSwgMTEsOSBpZCwgIDIsMyB3YSwgIDAsMCBoaSwgMzksMiBzaSwgIDAsMCBzdCANCj4gTWlCIFNw
-Y2g6ICAgIDQ2NywwIHRvdGFsLCAgICAgMTYsOSBmcmVlLCAgICAxOTAsOCB1c2VkLCAgICAyNzEs
-NiBidWZmL2NhY2hlICAgICANCj4gTWlCIFN3YXA6ICAgIDk3NSwwIHRvdGFsLCAgICA5NTIsOSBm
-cmVlLCAgICAgMjIsMSB1c2VkLiAgICAyNzYsMiBhdmFpbCBTcGNoDQoNCkkgZG9uJ3Qgc2VlIGFu
-eXRoaW5nIGluIHlvdXIgb3JpZ2luYWwgbWVtb3J5IGR1bXAgdGhhdA0KbWlnaHQgYWNjb3VudCBm
-b3IgdGhpcy4gQnV0IEknbSBhdCBhIGxvc3MgYmVjYXVzZSBJJ20NCmEga2VybmVsIGRldmVsb3Bl
-ciwgbm90IGEgc3VwcG9ydCBndXkgLS0gSSBkb24ndCBoYXZlDQphbnkgdG9vbHMgb3IgZXhwZXJ0
-aXNlIHRoYXQgY2FuIHRyb3VibGVzaG9vdCBhIHN5c3RlbQ0Kd2l0aG91dCByZWJ1aWxkaW5nIGEg
-a2VybmVsIHdpdGggaW5zdHJ1bWVudGF0aW9uLiBNeQ0KZmlyc3QgaW5zdGluY3QgaXMgdG8gdGVs
-bCB5b3UgdG8gYmlzZWN0IGJldHdlZW4gdjYuMw0KYW5kIHY2LjQsIG9yIGF0IGxlYXN0IGVuYWJs
-ZSBrbWVtbGVhaywgYnV0IEknbSBndWVzc2luZw0KeW91IGRvbid0IGJ1aWxkIHlvdXIgb3duIGtl
-cm5lbHMuDQoNCk15IG9ubHkgcmVjb3Vyc2UgYXQgdGhpcyBwb2ludCB3b3VsZCBiZSB0byB0cnkg
-dG8NCnJlcHJvZHVjZSBpdCBteXNlbGYsIGJ1dCB1bmZvcnR1bmF0ZWx5IEkndmUganVzdA0KdXBn
-cmFkZWQgbXkgd2hvbGUgbGFiIHRvIEZlZG9yYSAzOSwgYW5kIHRoZXJlJ3MgYSBncnViDQpidWcg
-dGhhdCBwcmV2ZW50cyBib290aW5nIGFueSBjdXN0b20tYnVpbHQga2VybmVsDQpvbiBteSBoYXJk
-d2FyZS4NCg0KU28gSSdtIHN0dWNrIHVudGlsIEkgY2FuIG5haWwgdGhhdCBkb3duLiBBbnlvbmUg
-ZWxzZQ0KY2FyZSB0byBoZWxwIG91dD8NCg0KDQotLQ0KQ2h1Y2sgTGV2ZXINCg0KDQo=
+
+
+On 25/03/2024 15:06, Rob Herring wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> 
+> 
+> 
+> On Thu, Mar 21, 2024 at 02:51:04AM +0000, Sudan Landge wrote:
+>> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
+>> ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as an
+>> ACPI only device.
+>>
+>> VMGenID specification http://go.microsoft.com/fwlink/?LinkId=260709 defines
+>> a mechanism for the BIOS/hypervisors to communicate to the virtual machine
+>> that it is executed with a different configuration (e.g. snapshot execution
+>> or creation from a template).
+>> The guest operating system can use the notification for various purposes
+>> such as re-initializing its random number generator etc.
+>>
+>> As per the specs, hypervisor should provide a globally unique identified,
+>> or GUID via ACPI.
+>>
+>> This patch tries to mimic the mechanism to provide the same functionality
+>> which is for a hypervisor/BIOS to notify the virtual machine when it is
+>> executed with a different configuration.
+>>
+>> As part of this support the devicetree bindings requires the hypervisors or
+>> BIOS to provide a memory address which holds the GUID and an IRQ which is
+>> used to notify when there is a change in the GUID.
+>> The memory exposed in the DT should follow the rules defined in the
+>> vmgenid spec mentioned above.
+>>
+>> *Reason for this change*:
+>> Chosing ACPI or devicetree is an intrinsic part of an hypervisor design.
+>> Without going into details of why a hypervisor would chose DT over ACPI,
+>> we would like to highlight that the hypervisors that have chose devicetree
+>> and now want to make use of the vmgenid functionality cannot do so today
+>> because vmgenid is an ACPI only device.
+>> This forces these hypervisors to change their design which could have
+>> undesirable impacts on their use-cases, test-scenarios etc.
+>>
+>> The point of vmgenid is to provide a mechanism to discover a GUID when
+>> the execution state of a virtual machine changes and the simplest
+>> way to do it is pass a memory location and an interrupt via devicetree.
+>> It would complicate things unnecessarily if instead of using devicetree,
+>> we try to implement a new protocol or modify other protocols to somehow
+>> provide the same functionility.
+>>
+>> We believe that adding a devicetree binding for vmgenid is a simpler,
+>> better alternative to provide the same functionality and will allow
+>> such hypervisors as mentioned above to continue using devicetree.
+>>
+>> More references to vmgenid specs:
+>>   - https://www.qemu.org/docs/master/specs/vmgenid.html
+>>   - https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-machine-generation-identifier
+>>
+>> Signed-off-by: Sudan Landge <sudanl@amazon.com>
+>> ---
+>>   .../devicetree/bindings/rng/vmgenid.yaml      | 57 +++++++++++++++++++
+>>   MAINTAINERS                                   |  1 +
+>>   2 files changed, 58 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/rng/vmgenid.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/rng/vmgenid.yaml b/Documentation/devicetree/bindings/rng/vmgenid.yaml
+>> new file mode 100644
+>> index 000000000000..4b6ab62cc2ae
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/rng/vmgenid.yaml
+>> @@ -0,0 +1,57 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/rng/vmgenid.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Virtual Machine Generation Counter ID device
+>> +
+>> +maintainers:
+>> +  - Jason A. Donenfeld <Jason@zx2c4.com>
+>> +
+>> +description:
+>> +  Firmwares or hypervisors can use this devicetree to describe
+>> +  interrupts and the shared resources to inject a Virtual Machine Generation
+>> +  counter.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: linux,vmgenctr
+> 
+> Why 'linux'? It should be named for a particular host implementation
+> (and that implementation's bugs/quirks). However, this thing is simple
+> enough we can perhaps avoid that here. As the interface is defined by
+> Microsoft, then perhaps they should be the vendor here.
+> 
+We chose "linux" because the current implementation and usage of 
+devicetree was Linux specific. However, I think "virtual" would be a 
+better choice than "Microsoft" since this is a generic virtual device 
+that could be configured by any hypervisor or firmware not owned or 
+related to Microsoft. I have updated this as part of the new version if 
+it looks good. I don't have a strong opinion for "virtual" though so if 
+that is the right choice as per you I can update it.
+
+>> +
+>> +  "#interrupt-cells":
+>> +    const: 3
+>> +    description: |
+>> +      The 1st cell is the interrupt type.
+>> +      The 2nd cell contains the interrupt number for the interrupt type.
+>> +      The 3rd cell is for trigger type and level flags.
+>> +
+>> +  interrupt-controller: true
+> 
+> Why is this device an interrupt controller?
+> 
+My devicetree references I took initially were incorrect which led to 
+the addition of this, I have removed this in the next version. Sorry 
+about that.
+
+>> +
+>> +  reg:
+>> +    description: |
+>> +      specifies the base physical address and
+>> +      size of the regions in memory which holds the VMGenID counter.
+> 
+> Odd wrapping, but drop unless you have something specific to say about
+> region like perhaps the layout of the registers. Or maybe thats defined
+> somewhere else?
+> 
+> Does the spec say anything about endianness or access size? DT assumes
+> native endianness by default. We have properties to deal these, but
+> would be better to be explicit if that's defined already.
+> 
+The spec doesn't mention anything about the endianness but, I have 
+updated the description with some more data.
+
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    description: |
+> 
+> Don't need '|' if no formatting.
+> 
+>> +      interrupt used to notify that a new VMGenID counter is available.
+>> +      The interrupt should be Edge triggered.
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupts
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    rng@80000000 {
+>> +      compatible = "linux,vmgenctr";
+>> +      reg = <0x80000000 0x1000>;
+>> +      interrupts = <0x00 0x23 0x01>;
+>> +    };
+>> +
+>> +...
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 43b39956694a..cf4b2e10fb49 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -18431,6 +18431,7 @@ M:    "Theodore Ts'o" <tytso@mit.edu>
+>>   M:   Jason A. Donenfeld <Jason@zx2c4.com>
+>>   S:   Maintained
+>>   T:   git https://git.kernel.org/pub/scm/linux/kernel/git/crng/random.git
+>> +F:   Documentation/devicetree/bindings/rng/vmgenid.yaml
+>>   F:   drivers/char/random.c
+>>   F:   drivers/virt/vmgenid.c
+>>
+>> --
+>> 2.40.1
+>>
+>>
+Thank you for the feedback, I have pushed a new version of the patch to 
+address the review comments.
 
