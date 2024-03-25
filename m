@@ -1,222 +1,102 @@
-Return-Path: <linux-kernel+bounces-117324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F8A888AA03
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:49:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF3788AA04
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:49:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83CE71F683CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:49:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94F2E1F68AC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:49:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD6713BC2D;
-	Mon, 25 Mar 2024 15:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D376B13C9CB;
+	Mon, 25 Mar 2024 15:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rO1guDMr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K/zf+7yE";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Uto49Jc5"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65B61386AA;
-	Mon, 25 Mar 2024 15:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD04F5CDE7;
+	Mon, 25 Mar 2024 15:06:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711379172; cv=none; b=kDqqkEnKc9INdCexLPLd5FMwKSnkCwaqApoWZBIpugbZAdd60/PYs/KZelOSIrejsH35EF5mSEpAHAPkizQH1gGvOFe7/u8C3vh9bCSVYB7iuDnjnj+DXNSk5IrnyMwxZdWZeANbev7cPuaKxenu2eF3lesRLEEbVpyd1Cg/6zk=
+	t=1711379212; cv=none; b=qpChTm7ivPjC7XwelIS662MpAjqkgdV1CaJ/mPs9yEqKhbomQRyIWxP6NZO+sPklCJvcJV9PSsUoHtos2z1IfLHQ8W8clZukgMFZd8RIwqHts2I7LRpby5maBzUJBG+kmAH0ug9iUFqLl1/C9HhxUDWomIowCr1wBd3Dd3y9SxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711379172; c=relaxed/simple;
-	bh=XzL2EPuo80gTaTjOKJ5O1h54N1xpp8OnrwD3hF9mTqE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rz9d7ePcx0IiEj3f+E30KgG3624rtBDqgCIEc0jNLSkwNFzrIui40+Eei/AcTS9b1G1TAYVJMQPa0IHJmofXh755JVKrWpVQLGE4dkSc0aHzlR29RjTeRHD2fGrh66PMqkx0BCZJbv+v7UnWpC7grdQOkyLEtQM8yj9YdFiRvCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rO1guDMr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12377C433C7;
-	Mon, 25 Mar 2024 15:06:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711379172;
-	bh=XzL2EPuo80gTaTjOKJ5O1h54N1xpp8OnrwD3hF9mTqE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rO1guDMrW0qeIRhrGSgOb2PIA2ign9tsPDLC8TgculSQ547kJuyGrJ4KLf5jS2oBN
-	 XFn2+KjZfbhtXUBT7AYgpc9yxTavVD0n3Lyelis2VDyKR0n1cKJnE/3xTwNWxblySr
-	 F53oUzvq6DB0mD1YYd23Vo0U95GryW7VVnpNnwgh0meJ+cfVTMYNi7TFFTzU+OUaJ4
-	 pX9gWryDlu9+TqBxeJ9blSxTdr7zliUshZKPBH5Ikq8Qm6FyHwZKgTqeOrB6xJZXQL
-	 Od8FxVsnQ0edqAZYiIfKs9EMM2yYSWT0HT3wz7+SO6Vklx2XfA44eu9X5bwwihlkM1
-	 cDoHrm1jIMpxw==
-Date: Mon, 25 Mar 2024 10:06:09 -0500
-From: Rob Herring <robh@kernel.org>
-To: Sudan Landge <sudanl@amazon.com>
-Cc: tytso@mit.edu, Jason@zx2c4.com, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, sathyanarayanan.kuppuswamy@linux.intel.com,
-	thomas.lendacky@amd.com, dan.j.williams@intel.com,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	graf@amazon.de, dwmw@amazon.co.uk, bchalios@amazon.es,
-	xmarcalx@amazon.co.uk
-Subject: Re: [PATCH v2 3/4] dt-bindings: rng: Add vmgenid support
-Message-ID: <20240325150609.GA3477574-robh@kernel.org>
-References: <20240321025105.53210-1-sudanl@amazon.com>
- <20240321025105.53210-4-sudanl@amazon.com>
+	s=arc-20240116; t=1711379212; c=relaxed/simple;
+	bh=5BTm+AGtRn0RP7HkBKn2D2EUDTxHWeNLkYOLk56BiQI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ko9Ddc391Z09uL1gg1rjmfq542MGg7d+mkImJxyxk5nrPUgtkkjFNT2xO3GqdPaUR/Zb2VyFimU5Ft0eI7Sz0JolPc2joMHVvxLtJcqVftQvbvqvc/dQZ8+D8i5kyPA5oiM8mHOSCOy8JxzOvMzuVt3GIWsSZVgwZ74F44xfZew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K/zf+7yE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Uto49Jc5; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711379202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UY2viGttd52QxBSAE5FTUmjPJkhh6vniD/bPyOg5248=;
+	b=K/zf+7yEttbmmljaw/cQWo9WAyKD9MR79Gt9zl4U9jYzGLa+bxe0UpmzKnUUp3jKz9/Mpd
+	dHTm8hc6jnBwM59WgNaWv7Mufdv8DRyEh7JgwhYw8JOKNg6jR5E41pZm6C0AbRkbuvltFF
+	pDJ6Rq/LPDtJ6VkntoKm9XVySGq+qeiHHORJcrNg3/F0q1MyVqcdnRdeu1yFO8bKQA84sz
+	yoQcdYiOmqLNlUoSGFK2GN+hQZBCYMfZyfJ7Q1B/0lcLJ9hDxegaSwlw4r3enAXkTNgUuY
+	mNOYYCEdmPkner/XQjmcle5QEpNKAkTMhvn6v77X8GBX8Yu3vAVM9ee4Z3fBTg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711379202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UY2viGttd52QxBSAE5FTUmjPJkhh6vniD/bPyOg5248=;
+	b=Uto49Jc52SeDUanLBSWBcfzXubKk4aZAk6vJBB2cIRUYRwuQ36qNXfGvVvNphTCt1DMPO1
+	Nzp+d7ahvuFMFyDg==
+To: Nipun Gupta <nipun.gupta@amd.com>, alex.williamson@redhat.com,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: maz@kernel.org, git@amd.com, harpreet.anand@amd.com,
+ pieter.jansen-van-vuuren@amd.com, nikhil.agarwal@amd.com,
+ michal.simek@amd.com, abhijit.gangurde@amd.com, srivatsa@csail.mit.edu,
+ Nipun Gupta <nipun.gupta@amd.com>
+Subject: Re: [PATCH v4 1/2] genirq/msi: add wrapper msi allocation API and
+ export msi functions
+In-Reply-To: <20240305043040.224127-1-nipun.gupta@amd.com>
+References: <20240305043040.224127-1-nipun.gupta@amd.com>
+Date: Mon, 25 Mar 2024 16:06:42 +0100
+Message-ID: <87edbyfj0d.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321025105.53210-4-sudanl@amazon.com>
+Content-Type: text/plain
 
-On Thu, Mar 21, 2024 at 02:51:04AM +0000, Sudan Landge wrote:
-> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
-> ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as an
-> ACPI only device.
-> 
-> VMGenID specification http://go.microsoft.com/fwlink/?LinkId=260709 defines
-> a mechanism for the BIOS/hypervisors to communicate to the virtual machine
-> that it is executed with a different configuration (e.g. snapshot execution
-> or creation from a template).
-> The guest operating system can use the notification for various purposes
-> such as re-initializing its random number generator etc.
-> 
-> As per the specs, hypervisor should provide a globally unique identified,
-> or GUID via ACPI.
-> 
-> This patch tries to mimic the mechanism to provide the same functionality
-> which is for a hypervisor/BIOS to notify the virtual machine when it is
-> executed with a different configuration.
-> 
-> As part of this support the devicetree bindings requires the hypervisors or
-> BIOS to provide a memory address which holds the GUID and an IRQ which is
-> used to notify when there is a change in the GUID.
-> The memory exposed in the DT should follow the rules defined in the
-> vmgenid spec mentioned above.
-> 
-> *Reason for this change*:
-> Chosing ACPI or devicetree is an intrinsic part of an hypervisor design.
-> Without going into details of why a hypervisor would chose DT over ACPI,
-> we would like to highlight that the hypervisors that have chose devicetree
-> and now want to make use of the vmgenid functionality cannot do so today
-> because vmgenid is an ACPI only device.
-> This forces these hypervisors to change their design which could have
-> undesirable impacts on their use-cases, test-scenarios etc.
-> 
-> The point of vmgenid is to provide a mechanism to discover a GUID when
-> the execution state of a virtual machine changes and the simplest
-> way to do it is pass a memory location and an interrupt via devicetree.
-> It would complicate things unnecessarily if instead of using devicetree,
-> we try to implement a new protocol or modify other protocols to somehow
-> provide the same functionility.
-> 
-> We believe that adding a devicetree binding for vmgenid is a simpler,
-> better alternative to provide the same functionality and will allow
-> such hypervisors as mentioned above to continue using devicetree.
-> 
-> More references to vmgenid specs:
->  - https://www.qemu.org/docs/master/specs/vmgenid.html
->  - https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-machine-generation-identifier
-> 
-> Signed-off-by: Sudan Landge <sudanl@amazon.com>
-> ---
->  .../devicetree/bindings/rng/vmgenid.yaml      | 57 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/rng/vmgenid.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/rng/vmgenid.yaml b/Documentation/devicetree/bindings/rng/vmgenid.yaml
-> new file mode 100644
-> index 000000000000..4b6ab62cc2ae
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rng/vmgenid.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/rng/vmgenid.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Virtual Machine Generation Counter ID device
-> +
-> +maintainers:
-> +  - Jason A. Donenfeld <Jason@zx2c4.com>
-> +
-> +description:
-> +  Firmwares or hypervisors can use this devicetree to describe
-> +  interrupts and the shared resources to inject a Virtual Machine Generation
-> +  counter.
-> +
-> +properties:
-> +  compatible:
-> +    const: linux,vmgenctr
+On Tue, Mar 05 2024 at 10:00, Nipun Gupta wrote:
 
-Why 'linux'? It should be named for a particular host implementation 
-(and that implementation's bugs/quirks). However, this thing is simple 
-enough we can perhaps avoid that here. As the interface is defined by 
-Microsoft, then perhaps they should be the vendor here.
+  Subject: genirq/msi: Add MSI allocation helper and export MSI functions
 
-> +
-> +  "#interrupt-cells":
-> +    const: 3
-> +    description: |
-> +      The 1st cell is the interrupt type.
-> +      The 2nd cell contains the interrupt number for the interrupt type.
-> +      The 3rd cell is for trigger type and level flags.
-> +
-> +  interrupt-controller: true
+> MSI functions can be for allocation and free can be directly
+> used by the device drivers without any wrapper provided by
+> bus drivers. So export these MSI functions.
 
-Why is this device an interrupt controller?
+s/can be for/for/ otherwise the sentence dos not make sense.
 
-> +
-> +  reg:
-> +    description: |
-> +      specifies the base physical address and
-> +      size of the regions in memory which holds the VMGenID counter.
+> Also, add a wrapper API to allocate MSIs providing only the
+> number of IRQ's rather than range for simpler driver usage.
 
-Odd wrapping, but drop unless you have something specific to say about 
-region like perhaps the layout of the registers. Or maybe thats defined 
-somewhere else?
+s/IRQ's/interrupts/ 
 
-Does the spec say anything about endianness or access size? DT assumes 
-native endianness by default. We have properties to deal these, but 
-would be better to be explicit if that's defined already.
+> Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
 
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: |
+Other than that:
 
-Don't need '|' if no formatting.
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
-> +      interrupt used to notify that a new VMGenID counter is available.
-> +      The interrupt should be Edge triggered.
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    rng@80000000 {
-> +      compatible = "linux,vmgenctr";
-> +      reg = <0x80000000 0x1000>;
-> +      interrupts = <0x00 0x23 0x01>;
-> +    };
-> +
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 43b39956694a..cf4b2e10fb49 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18431,6 +18431,7 @@ M:	"Theodore Ts'o" <tytso@mit.edu>
->  M:	Jason A. Donenfeld <Jason@zx2c4.com>
->  S:	Maintained
->  T:	git https://git.kernel.org/pub/scm/linux/kernel/git/crng/random.git
-> +F:	Documentation/devicetree/bindings/rng/vmgenid.yaml
->  F:	drivers/char/random.c
->  F:	drivers/virt/vmgenid.c
->  
-> -- 
-> 2.40.1
-> 
-> 
+Alex, feel free to pick this up with the nitpicks resolved and route it
+through your tree together with the VFIO driver.
+
+Thanks,
+
+        tglx
 
