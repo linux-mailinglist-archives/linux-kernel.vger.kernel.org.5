@@ -1,137 +1,117 @@
-Return-Path: <linux-kernel+bounces-116736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3505D88A31A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:52:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8811988A333
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:54:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE76C1F3CB7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:52:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 426002E216C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B51113CFB6;
-	Mon, 25 Mar 2024 10:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1198C170EA4;
+	Mon, 25 Mar 2024 10:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S5w5+4O5"
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dBaMxLRU"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F553171085
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:10:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172B915B971
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711357839; cv=none; b=iWaGN7aY4OeQhvw8+W49Jtw/JfzcEsAot3nDbY3qzYg3PLrO9dVrEq1VsjJg2aHb/N9JoY9Hf2NbNmwFFq5FKoiDaNpuHniTYZjk+meZTP+bWRreLRY9DKCcdkl+IRHrQynEB+ZHm9BGSpujwB1o4A5lM++SLaL0VBT4MrPiUWs=
+	t=1711357906; cv=none; b=L9AkZHu3ajwVz8OWt38Vkz2Jpcjtdyb6KleHp6RhKTjHzpQPCJD3aVetq2OM6XIH2J3dE/GG0rvfp9wcYcHV0D3+UU8UokVZmpTGB3bujbtEyiqfm/vPQ6ZtMh3swRhG4ZnV/1V66TXxFztqvznpI/wDS24djHIzpsoyxj2dnxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711357839; c=relaxed/simple;
-	bh=4g9y7fWZZhKWcfjGK7AMAe4W9UEiPvX33kC4Qx/w7GI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O3s9Eg4Y1MUHWwuLJLVcvXzBSZ160L1EDIDX/RvQK2VzmX96im61q13gn8v0iFKzHUWOol37FPFCBb9kql+Am0kSjoER93gl7MsL1a3s955m4/u6C7qYqjvMKa7NSskF+YaOwb64VfoHeS3qCCi2rG1p7AECKSeNpM7b45Aj6NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S5w5+4O5; arc=none smtp.client-ip=209.85.217.50
+	s=arc-20240116; t=1711357906; c=relaxed/simple;
+	bh=3IyQ0IHUZedUd4BUZemr8PwrT1edFjZ7/8DR77OpHPo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JniBBv70nD/sc2BjMyx/6RTWZKHV9FWGNeOnlDmL19c4bGn11GE9x23pg4HTE1g+CY8TCUCWNO8cX4znJzH2XhUCZ1GcfpG83v9Mbh68pU3sT2J5NAuMbFV6jcgwP20eBd3/zVZSEmmF7HcREWhdjbSopydPnvyLx5HOuo8jTic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dBaMxLRU; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-47603a066daso1341708137.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:10:37 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-515a68d45faso1362098e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:11:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711357836; x=1711962636; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gWKcgBymVfcMGzSPm2nkofpFZCVMFh18a6+Ovp4P0c0=;
-        b=S5w5+4O50/Ud1LzT9ztDJFEquObFK0K42w+4TkaW1obVCz03NeGnNHVfxiG7Pq5MiL
-         Jg734gNbVvFzLz3IJwUeE3L9A0OcLH2T7pPA/wqwDD8AGJ/qDDz0i8Galv0D1XkNAvQR
-         jvvVfWs2Vccu52HQsekbbj5o1pbw6/r4htV3x1o0Jm0AcsHOfGqsCJC7NV7jFBJaPUrj
-         lbuNC8zOjqYMqlPrysXNkEbjAbz7p+LOvLXDOqxoxHJuCXAQF/uRVwr/VseRFPPoumBH
-         PGTFglivW3zMsJpVpL0YGCK5P6Ohg0g4Y+dSAr/UsUI8GUQskfLIed66hhFi8qnGkxUj
-         9jZw==
+        d=linaro.org; s=google; t=1711357903; x=1711962703; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RoF9SKtcQIDNK7kNazTEQf3Z7HNt40P18vhcuuLiprE=;
+        b=dBaMxLRUhAxqUsFozVzhlMzEUymdFHCE/FgMhvC4G/aoNxZG6EiLmIDh0LZ6XH3mH9
+         d+nr3RZESJtW2oz6tWOM5yI9kAkRzI7uzvZgZQgz3tEL0UNnS542KzIRg8Tdqgc/IHHU
+         Phzvi+C//lYWijy45XIEfk162SpfIPfG/8HncoJNk+XCC92yxxXu4WrNTIfyiiK6lXcn
+         ynLXu4xz5CyB67Vd17uEzrZkEgjlVbi5Ob04WUa9p4/VUBi9nD2cHrMQgL+v5HTejmUS
+         9qLiJSW3hpTXYIBmlEZHw0RaREjqRLd5HJfa5tlAhfnfB5bSDzyYJ1NjSv+vikY1UnTY
+         KUrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711357836; x=1711962636;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711357903; x=1711962703;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gWKcgBymVfcMGzSPm2nkofpFZCVMFh18a6+Ovp4P0c0=;
-        b=P8t0ip/mseI6FZja3QzldhMQ5jOTKC1xDt2RobLtYiZstzjZsTgpASDznOJ2ycBfoH
-         JGnZet8JgyCgpl/js1bIS4jPl33kSXRh0gh/j8YyEikvusoNXKWgqzFDi6tOxKoGHZID
-         zDqFdPeOekeOr35k3/Y0F+dAQrTY6dKq936v7PSIQ+mDcj6xfqQTq6M/iLLTWbC+EWoz
-         aVSjKzJL+Nbbrpq3N5Ab5wsUqvsqorWb2bi0zaM64OkUWcF7VMUlpuAx1TlrI1aeOIFX
-         6CMZdGHM7PyBWT5HtEe9Xd2XkGJOoUfLolu4OgDQ+noENdbtn3pFRQPXkjWoeIh60uFm
-         6gPA==
-X-Gm-Message-State: AOJu0YwG+JCGmP2gmBzFpesapZpyPxrZUhC2pDB8o3X5DzOYvoFAuLf0
-	reNd26XuaiRd9yxekui+5tcxTihvGM4OaCUAN5SuJ74kqt7dCWcE5W70vnLKD6kBj9xYHm4P2X8
-	FDEw3FnqavHOtmF/nu+a+Hhjo7aFQovGUkKkW4g==
-X-Google-Smtp-Source: AGHT+IG0YZib+WB/NMmxynOCM60coYyDxh5w6Q78maFdEwJWHWlRmqdd5blGlH9z7xzmvrRh5ffusZFxKDkeqsjx6EM=
-X-Received: by 2002:a05:6102:3592:b0:476:c65b:10a1 with SMTP id
- h18-20020a056102359200b00476c65b10a1mr5149223vsu.2.1711357836117; Mon, 25 Mar
- 2024 02:10:36 -0700 (PDT)
+        bh=RoF9SKtcQIDNK7kNazTEQf3Z7HNt40P18vhcuuLiprE=;
+        b=ZtRKk7xzfxGRjvDJsSQZTGRhqy7fLPgfYzn7Z8ktF+sDiP9+awrQNUjeVoaiu1E9w+
+         DT4ijjpf7WPaciJ2RRUPksGoxxwUxrl8KJCgVO/wv2hXYPNlHmLToDn829pNQj+F/5Lx
+         bPboEdt+rqPhgeUGMzXywzw9fpAFbYZH67/vENosjqXOKOso94Q/PR1HBNoH/mlaADYd
+         xzshYYmSi2bdmu9vB7msrm+tFT2Qcwd1MO/XFf0RhZd/NDkGi9Prq+gcqSwBhaBG/crP
+         pvjZiBsd/H8tzFKc0CHrKB/bojjS7NA22mDy1WkB0tuy4seloqTws96WNPxb2gTaP7I3
+         NoEA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcau1ZEg5zHav8NefbqpZ2qEnrkgwPudHm2XLOLZJ7y5yBfntfOCGHCKixXoSw8tswQvR1gFJCsILBT8bG0iJ7BKPHr94Lw54CbzuT
+X-Gm-Message-State: AOJu0Yx4CqLOTiaMBuBK5QnknrKUOYjI0/93UEMookTysPGFyxPhnh2T
+	QZUcaJtO0rAQbjDxSvNxjRGJhzeLIh9SqHxGwH8J/JstZ43n6hNsSTgUWQI3c6k=
+X-Google-Smtp-Source: AGHT+IEyPfn3dgbloCj+TwQHEGcc6B6s6dmgZhFHmd8I5jGWzU+1BzuI3rvwBpuZn9wcIqv58h4rqg==
+X-Received: by 2002:ac2:4643:0:b0:513:4705:a4f3 with SMTP id s3-20020ac24643000000b005134705a4f3mr4317389lfo.65.1711357903118;
+        Mon, 25 Mar 2024 02:11:43 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.44])
+        by smtp.gmail.com with ESMTPSA id t15-20020a5d690f000000b0033e95bf4796sm8947000wru.27.2024.03.25.02.11.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 02:11:42 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH] docs: dt-bindings: add missing address/size-cells to example
+Date: Mon, 25 Mar 2024 10:11:39 +0100
+Message-Id: <20240325091139.18602-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324233458.1352854-1-sashal@kernel.org>
-In-Reply-To: <20240324233458.1352854-1-sashal@kernel.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 25 Mar 2024 14:40:24 +0530
-Message-ID: <CA+G9fYvzw6_Rp-hH2f=S-xVT-TM8waqJ0F5Fg607YZqcGNYh-Q@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/317] 5.15.153-rc1 review
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
-	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
-	florian.fainelli@broadcom.com, pavel@denx.de, 
-	Anastasia Belova <abelova@astralinux.ru>, Viresh Kumar <viresh.kumar@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 25 Mar 2024 at 05:05, Sasha Levin <sashal@kernel.org> wrote:
->
->
-> This is the start of the stable review cycle for the 5.15.153 release.
-> There are 317 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Tue Mar 26 11:34:43 PM UTC 2024.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-5.15.y&id2=v5.15.152
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> Thanks,
-> Sasha
+Complete the example of recommended order of properties by adding
+missing address/size-cells.  They are not necessary to illustrate the
+style, but lack of them us bit really correct DTS code which might
+confuse readers.
 
-The regression detected while building allmodconfig builds with
-gcc-12 and clang-17 failed on all the architectures.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> Anastasia Belova (1):
->   cpufreq: brcmstb-avs-cpufreq: add check for cpufreq_cpu_get's return
->     value
+---
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ Documentation/devicetree/bindings/dts-coding-style.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Build error:
-------------
-drivers/cpufreq/brcmstb-avs-cpufreq.c: In function 'brcm_avs_cpufreq_get':
-drivers/cpufreq/brcmstb-avs-cpufreq.c:486:9: error: ISO C90 forbids
-mixed declarations and code [-Werror=declaration-after-statement]
-  486 |         struct private_data *priv = policy->driver_data;
-      |         ^~~~~~
-cc1: all warnings being treated as errors
+diff --git a/Documentation/devicetree/bindings/dts-coding-style.rst b/Documentation/devicetree/bindings/dts-coding-style.rst
+index a9bdd2b59dca..8a68331075a0 100644
+--- a/Documentation/devicetree/bindings/dts-coding-style.rst
++++ b/Documentation/devicetree/bindings/dts-coding-style.rst
+@@ -144,6 +144,8 @@ Example::
+ 		#dma-cells = <1>;
+ 		clocks = <&clock_controller 0>, <&clock_controller 1>;
+ 		clock-names = "bus", "host";
++		#address-cells = <1>;
++		#size-cells = <1>;
+ 		vendor,custom-property = <2>;
+ 		status = "disabled";
+ 
+-- 
+2.34.1
 
-
-Steps to reproduce:
- # tuxmake --runtime podman --target-arch arm64 --toolchain gcc-12
---kconfig allmodconfig
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.152-317-g6f6f22f11928/testrun/23155933/suite/build/test/gcc-12-allmodconfig/log
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.152-317-g6f6f22f11928/testrun/23155933/suite/build/test/gcc-12-allmodconfig/details/
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15.152-317-g6f6f22f11928/testrun/23155933/suite/build/test/gcc-12-allmodconfig/history/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2eAPAG6nyiRjJbnJJ0JGiVy4otR/
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
