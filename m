@@ -1,142 +1,164 @@
-Return-Path: <linux-kernel+bounces-117237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91BA88A8F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:22:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40E7C88A901
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:23:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 753BA366A12
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:22:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8D7C1F66D3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 16:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0548155311;
-	Mon, 25 Mar 2024 14:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC00412FB35;
+	Mon, 25 Mar 2024 14:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RB5vHCsX"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KFfeCClY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D58112FB14
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 14:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31ADE84FD8;
+	Mon, 25 Mar 2024 14:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711376401; cv=none; b=IUF0bHK47lB4MhbqyjcStJZ8cLS69PWToGWbAC91qfRRPEwATZlrdBMEi0UGgrc1fubrfyLTiUyfFpZvtELCnTmseWK8A3g9rZLyYy3H2rJsaNBl0gUgxCMeBPdCLafcPk4k8fkSME6poNMVZMXy8OLdUC07QFLecsqVD23DMZw=
+	t=1711376484; cv=none; b=oP7wb1BNrnaKAWnWs6tMgTkx7gkstM9bWUo8aZMAKJXMXw9JVVjSOLn1kxE7uw+GNWnMTbo01NSBJUUUfGirB6BRNEZ0Vi2Z7QNE+CY9qSSS1a/G5d3ALYIHs8M2xzdZZcrecm7IsAgQpwWnLzjF5sF19ppNtEgHYvCHCAbH20c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711376401; c=relaxed/simple;
-	bh=u7jspQ3Aev3XJQiTO8vdl6msbbnJu1QvF4iX1a51EjA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=oeTzoupCMasI73fDnzMXypS03ihaca054Wi7OAqD4ERydHd3B3F+kIrGDPKf4CJNTOjzAQ0Qdq23QQvhyDT2QrtYS+/0EiZC+WXE1mWbGbpQOwQTrvMtNnYO2ELuQnPYxWD0U7qEzmntCb/jaGDIQcIE0K24iE1bkzMpWEf78BA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RB5vHCsX; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c3ca4f939fso1011588b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 07:19:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711376398; x=1711981198; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nxSMnfcXo9eH24y0bZB1VjxXV/n6bBssF/qdkJ/8rO0=;
-        b=RB5vHCsXeJQPDsX+7xtNvbzCW3xKQ555NM6Zy0cGCvBPID21EIiJ4z3pKU220Z+qO2
-         9ioq1PxHXvQYTj9/+pyu2b3l3mI8W3VFRn7UzSkMR1RbdrAP6HzUHeOzfNJSQlQjoF6M
-         s9qy8XEEochHe0t9LCq6Ww0AwjRwRrU8vnM8E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711376398; x=1711981198;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nxSMnfcXo9eH24y0bZB1VjxXV/n6bBssF/qdkJ/8rO0=;
-        b=LrbQwMrYejxvsx0P78b0luXmoi6hZtwvV9ZVNdnHLAo6nuLt2cBlMvW6YNaLQPFNb/
-         tYQowvmuE1z6NWvMma+M94oRKYGESF0IJNrmSYcaxUiBi8pLSk+/ptBANjFz0kqpysrb
-         l3Vxkgy7PuDKnfDVhepuXPukbqBxR1hXBl7hEGo3+nutXX8C8k1tqHNpopXyqU5q5M4w
-         VgSKdWNttD4/Dgk6oR/+FnAjspQSf6sx92DzRbGqRAW4A+nUs3Xw8EwNO9lUzuHRiUT6
-         daL2i9TBDiIIY5Pn8E6afoOL6EwrNEEWTrHitA1ruzIxgPhOfb+SlkKipGauIfFeD09x
-         GT6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXl4glo1YE2NNhonvCksGcuPB9II3CyDwdXL2f3RhOtUIg0OplsganIVuN/Mm0UNqiz43iTDlOQCg0Bl+5ZhiYb1EA0prvNnhtN3Jrp
-X-Gm-Message-State: AOJu0Yze1hJ28LeMz7sdq6UfESKjg9EuSXXDicZPG4yxu7CtMN6XPgrP
-	qg5Pvab4HkfdvNAkEC1NTD9NzPjcDVlS2yC39a+qvCkefoJJc101QFSVytNGKQ==
-X-Google-Smtp-Source: AGHT+IFXDkHwTGNUZBxyMK2jzEutUrDBtNUTzl+YFRneAkQppTPw7jEE9XRF/qu3laG74FPOuty29Q==
-X-Received: by 2002:a05:6808:15a0:b0:3c3:c923:4f03 with SMTP id t32-20020a05680815a000b003c3c9234f03mr6512221oiw.19.1711376398398;
-        Mon, 25 Mar 2024 07:19:58 -0700 (PDT)
-Received: from denia.c.googlers.com (188.173.86.34.bc.googleusercontent.com. [34.86.173.188])
-        by smtp.gmail.com with ESMTPSA id br11-20020a05622a1e0b00b00430a9b20a55sm2618759qtb.69.2024.03.25.07.19.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 07:19:57 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 25 Mar 2024 14:19:55 +0000
-Subject: [PATCH v2 3/3] media: dvbdev: Initialize sbuf
+	s=arc-20240116; t=1711376484; c=relaxed/simple;
+	bh=zO/SdrfhF6UzSZrQoEGUuyMdVnlo03Kah+CLPwIYCrw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Y3o334FF1vtAXS/sqMh8ReMfKT61il375JBXXScmMXAUg44s5Un9R2gK+jgabmFIcVfKsAgFj6AFc5cRj9rWLCAHWu6S/GI2ODm3HhFDRBvSSrWDYR3PppcYRozd2Q1JsJEWmGVGN08nCflYFGDSxaeBTA4S4yZb9G+DX1GtF3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KFfeCClY; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711376482; x=1742912482;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zO/SdrfhF6UzSZrQoEGUuyMdVnlo03Kah+CLPwIYCrw=;
+  b=KFfeCClY4cllCbsPNoA/ViAXc54hJbixiiaX1rOjopN4H2EkG69lP/P/
+   X4KtcnpCAsmsTmJe8JolX+5eavNqeNADAAIFHQLVDoJKg8aJA9b0QrZYb
+   vKV/DtsS7i3OOQetNZ2sZGO4k4SGevs65XRHS1dQsdiQWHT0aUpahs9i7
+   sWJM/iyxn6OkgO4cD7Lp9jkGD6Y6wuABC4TjaMTBtx4HxctVNPFtKJOYv
+   dbrArNlu19rx6IW4L+6UfwCJeSlUgocx4dvg280BblzHAAtJpwk4ow3lZ
+   WlSWaF8igPsRLYICGuEbOxy5Cy1WUgslA6DhUdX9F6SgbcFT9kkcqGvf2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="6210318"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="6210318"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 07:21:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="937070498"
+X-IronPort-AV: E=Sophos;i="6.07,153,1708416000"; 
+   d="scan'208";a="937070498"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Mar 2024 07:21:20 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 2BA37101; Mon, 25 Mar 2024 16:21:19 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: [PATCH v2 1/1] spi: rspi: Get rid of unused struct rspi_plat_data
+Date: Mon, 25 Mar 2024 16:20:04 +0200
+Message-ID: <20240325142118.3210915-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240325-gcc-arm-warnings-v2-3-47523cf5c8ca@chromium.org>
-References: <20240325-gcc-arm-warnings-v2-0-47523cf5c8ca@chromium.org>
-In-Reply-To: <20240325-gcc-arm-warnings-v2-0-47523cf5c8ca@chromium.org>
-To: Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Sowjanya Komatineni <skomatineni@nvidia.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Hans Verkuil <hverkuil@xs4all.nl>
-Cc: linux-media@vger.kernel.org, linux-tegra@vger.kernel.org, 
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
 
-Because the size passed to copy_from_user() cannot be known beforehand,
-it needs to be checked during runtime with check_object_size. That makes
-gcc believe that the content of sbuf can be used before init.
+No in-kernel users of struct rspi_plat_data. If required,
+the software nodes should be used for such users. For now
+just get rid of it.
 
-Fix:
-/include/linux/thread_info.h:215:17: warning: ‘sbuf’ may be used uninitialized [-Wmaybe-uninitialized]
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/media/dvb-core/dvbdev.c             | 2 +-
- drivers/staging/media/tegra-video/tegra20.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+v2: fixed compilation error (Mark)
+ drivers/spi/spi-rspi.c   | 12 +-----------
+ include/linux/spi/rspi.h | 18 ------------------
+ 2 files changed, 1 insertion(+), 29 deletions(-)
+ delete mode 100644 include/linux/spi/rspi.h
 
-diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index 733d0bc4b4cc3..b43695bc51e75 100644
---- a/drivers/media/dvb-core/dvbdev.c
-+++ b/drivers/media/dvb-core/dvbdev.c
-@@ -956,7 +956,7 @@ int dvb_usercopy(struct file *file,
- 		 int (*func)(struct file *file,
- 			     unsigned int cmd, void *arg))
+diff --git a/drivers/spi/spi-rspi.c b/drivers/spi/spi-rspi.c
+index 8e81f1a8623f..7f95d22fb1ac 100644
+--- a/drivers/spi/spi-rspi.c
++++ b/drivers/spi/spi-rspi.c
+@@ -24,7 +24,6 @@
+ #include <linux/reset.h>
+ #include <linux/sh_dma.h>
+ #include <linux/spi/spi.h>
+-#include <linux/spi/rspi.h>
+ #include <linux/spinlock.h>
+ 
+ #define RSPI_SPCR		0x00	/* Control Register */
+@@ -1131,16 +1130,12 @@ static struct dma_chan *rspi_request_dma_chan(struct device *dev,
+ static int rspi_request_dma(struct device *dev, struct spi_controller *ctlr,
+ 			    const struct resource *res)
  {
--	char    sbuf[128];
-+	char    sbuf[128] = {};
- 	void    *mbuf = NULL;
- 	void    *parg = NULL;
- 	int     err  = -EINVAL;
-diff --git a/drivers/staging/media/tegra-video/tegra20.c b/drivers/staging/media/tegra-video/tegra20.c
-index c39b52d0e4447..630e2ff987a37 100644
---- a/drivers/staging/media/tegra-video/tegra20.c
-+++ b/drivers/staging/media/tegra-video/tegra20.c
-@@ -164,6 +164,7 @@ static void tegra20_vi_get_input_formats(struct tegra_vi_channel *chan,
- 	unsigned int input_mbus_code = chan->fmtinfo->code;
+-	const struct rspi_plat_data *rspi_pd = dev_get_platdata(dev);
+ 	unsigned int dma_tx_id, dma_rx_id;
  
- 	(*main_input_format) = VI_INPUT_INPUT_FORMAT_YUV422;
-+	(*yuv_input_format) = VI_INPUT_YUV_INPUT_FORMAT_UYVY;
+ 	if (dev->of_node) {
+ 		/* In the OF case we will get the slave IDs from the DT */
+ 		dma_tx_id = 0;
+ 		dma_rx_id = 0;
+-	} else if (rspi_pd && rspi_pd->dma_tx_id && rspi_pd->dma_rx_id) {
+-		dma_tx_id = rspi_pd->dma_tx_id;
+-		dma_rx_id = rspi_pd->dma_rx_id;
+ 	} else {
+ 		/* The driver assumes no error. */
+ 		return 0;
+@@ -1290,7 +1285,6 @@ static int rspi_probe(struct platform_device *pdev)
+ 	struct spi_controller *ctlr;
+ 	struct rspi_data *rspi;
+ 	int ret;
+-	const struct rspi_plat_data *rspi_pd;
+ 	const struct spi_ops *ops;
+ 	unsigned long clksrc;
  
- 	switch (input_mbus_code) {
- 	case MEDIA_BUS_FMT_UYVY8_2X8:
-@@ -176,7 +177,6 @@ static void tegra20_vi_get_input_formats(struct tegra_vi_channel *chan,
- 		(*yuv_input_format) = VI_INPUT_YUV_INPUT_FORMAT_YUYV;
- 		break;
- 	case MEDIA_BUS_FMT_YVYU8_2X8:
--	default:
- 		(*yuv_input_format) = VI_INPUT_YUV_INPUT_FORMAT_YVYU;
- 		break;
+@@ -1305,11 +1299,7 @@ static int rspi_probe(struct platform_device *pdev)
+ 			goto error1;
+ 	} else {
+ 		ops = (struct spi_ops *)pdev->id_entry->driver_data;
+-		rspi_pd = dev_get_platdata(&pdev->dev);
+-		if (rspi_pd && rspi_pd->num_chipselect)
+-			ctlr->num_chipselect = rspi_pd->num_chipselect;
+-		else
+-			ctlr->num_chipselect = 2; /* default */
++		ctlr->num_chipselect = 2; /* default */
  	}
-
+ 
+ 	rspi = spi_controller_get_devdata(ctlr);
+diff --git a/include/linux/spi/rspi.h b/include/linux/spi/rspi.h
+deleted file mode 100644
+index dbdfcc7a3db2..000000000000
+--- a/include/linux/spi/rspi.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Renesas SPI driver
+- *
+- * Copyright (C) 2012  Renesas Solutions Corp.
+- */
+-
+-#ifndef __LINUX_SPI_RENESAS_SPI_H__
+-#define __LINUX_SPI_RENESAS_SPI_H__
+-
+-struct rspi_plat_data {
+-	unsigned int dma_tx_id;
+-	unsigned int dma_rx_id;
+-
+-	u16 num_chipselect;
+-};
+-
+-#endif
 -- 
-2.44.0.396.g6e790dbe36-goog
+2.43.0.rc1.1.gbec44491f096
 
 
