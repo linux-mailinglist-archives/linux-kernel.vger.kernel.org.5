@@ -1,114 +1,124 @@
-Return-Path: <linux-kernel+bounces-116876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B83288B138
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:22:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF2B88A4B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:36:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89FF3C04092
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:36:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85E991C23B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFCED1B7CD8;
-	Mon, 25 Mar 2024 11:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043217173A;
+	Mon, 25 Mar 2024 11:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xOj+/INo"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yybf2YRz"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BDC1B7F48
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816BB1B7F52
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 11:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711364724; cv=none; b=N9tLiwqUSAqQDE0GrbjaDA0+z49VHpgxuFzdbGSzI4bdi3UAQswUSV76jigYAg63jj2aGKWg9HXY/4LSU7YY9ILW8ArUGVw2iKLWLp90N3Qib7xWmkFJLa2BMhjhSEEHWZFxljphSJTWWny6iyjBEiN9zDfCpBvLgCEh3fsYq8w=
+	t=1711364738; cv=none; b=Zcx1cjCxPuTgl9E2G5B0x+Ck/LDN9NTg4tO0gcFs3u7scN4KEXrOLs0u+Pybu2W9CrsMfKiLVaesD9QqJE9U9jmwkYvOWSLKBu4rWocN/eVGzqQPYCTxQ+5AmDMrOxPhZktVrObYD/mMsY2YSiHU7eW8cjOQqh0JnDTly3Txqk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711364724; c=relaxed/simple;
-	bh=Y2nmC+14ezRMy2mustue2MVUzVXwhFpv6ampXT6eUHg=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qe/DJQAu+O1/ysFWxlhGPIg7e0e/Zka/k4gf0vEglenXUKzXYD47u2wORmtwzKZo86PVkxGEOT9L6rc9WlsesWMPZCCi45hW5pa2XpeoRWpJXialrlwBWze4hI9hiRXCe2h2PcFSKnhaWJQjK9UWeerCnDrVyYU6ugFWVE15en4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xOj+/INo; arc=none smtp.client-ip=209.85.128.48
+	s=arc-20240116; t=1711364738; c=relaxed/simple;
+	bh=7iS7PHbquIUiCrCMtkBdkxuqi/jTqc2cY3j9OhS1Ij4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=amU6HUlogVnGZnlNMmPLVRu/SXceIq/Lhf1WTSIviQJTNix1anVqWdyvAHkENvWP/kgIQVJXY/XHdiuPlBw3lY7wVLbH2m/5NPZj4GCsuGgD0yxqR4+/w7/oda4CfYW1b35FhgefcXB629xna+jsakP7Jkqg5RoksPfi5L8ehx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yybf2YRz; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-41489d59523so4036765e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:05:21 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso5143789a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 04:05:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711364720; x=1711969520; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wsjoNh+K8kiEw/9D4H6Eni8rIjOxLmAIKVvEa2HpqNg=;
-        b=xOj+/INoYkyS4CfUNaK387Z4RrUDm/SPaTVARPxeFGeiizHmt8LbuK7UJ2rOEJV2R5
-         DsxC+BBv2ffiw22F7BqLSwEAANP/zmu7NUtuRRXdijV+8c4Ur7C+92x7tS4lNIb/vc26
-         76S+w8+/WhEJrAbIpZ90U2fCmdlLLRtxEFXvhxIg3SddXWnYLusdBxijD83aLa57TNS9
-         7SbYtlc6qo1AdCjznK7LhVUy7eWY3DXd9vM8wX1RhgJFCgw+bwIGhSuiQ3GlTp9j0x7d
-         n44gfqyHZQ22d2dbeZ6IIm+nDchUQnAxr1+2TV7KmmRBWk3hXfeDjhjouFi42r9TrJnH
-         Y4qA==
+        d=linaro.org; s=google; t=1711364734; x=1711969534; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FRILSzvwAIpvZwjiJmtXP3wS29AHppU0XGaszbPtEV8=;
+        b=yybf2YRz6BdziJvnzuIzK0mlybWc0quywKx9lFEYwuMGpFGMwwuqd7rGVqTcWiCUW3
+         u5Kf50ZmAXMWjZ+GVzGk7heO5znoRwDrB6jvIcukzzUm1eWgU/RVzCjnJRZpXBPLjo43
+         CbKYaS4g1qIH+LPfFB38T6MPWDJbOo4WmrVcnpSb/pIB+LM7ftlKQxhZbjK6zezpxki1
+         7QjLFn6ob9ipuRMF1uSgmuzp1bi2pqdlYVKXrfX+BqC3/qy0OfUiQfbvkVC2H6BEvZ7e
+         v9aU1GJeto8AgaSTqYR1GBG2achbjMQBRMacmqkej2SVzjOfSuomr/GiDtspIxppE8gD
+         f3Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711364720; x=1711969520;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wsjoNh+K8kiEw/9D4H6Eni8rIjOxLmAIKVvEa2HpqNg=;
-        b=hZYo9ecxR0yzGvYLV/uX1m7TY2D/8v3Dm5TFAcADg2WhJHrRmkhILip7T+S6dqqHWG
-         rjzl5W+IullnKb0Y08tgOVgRzK6zQa8fM3frxiOCeVqBrl8/TSBAmRyLpsWeUWv0Vbgu
-         l6FYhCbPhSfttM9DmIguzCAIubtjTSa4WLKlMNrpY0CPQ1e+kKY4qRTK5gmCISGFvUOB
-         jO1FISZK+9lkQQQDkOaUodbpxtYJnXjIU+20hxNcToap+Nk8cZfsdQCtgzgz2MWofh39
-         BGZb4rNScyrVtyf+QGsUOwTekmP66ZV5ec3puxSci31rF/V+e/4Yhvbhahc0WyCWSKhv
-         cfwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ9LX7oNxh8Q0iMBJ6uEMjuOfQq572mVTseeiUUcOWHxnCn/HorT3PFEotIsHMl2OxCtSSB6MpC7UYEsk38XVIzFgCefkU+6azZOxI
-X-Gm-Message-State: AOJu0YzkliAfu0yTGAsT84KkfioLE1AWAymSFFDS/LhkQssn3Imv44MX
-	UrNnoo6PQb1RfLHsbOXdQ0cTnNGIxfhmW6vFIfJ+nQ8t2rK3fKotXobSPXUvKaY=
-X-Google-Smtp-Source: AGHT+IFf2BzSEVIyACoTBERhcHBMEiFMPo7KU1PU5LY5EETHIWOeFxhfF8SpIWBWaQEdNiEhHW38zw==
-X-Received: by 2002:a05:600c:1389:b0:414:64d3:f33f with SMTP id u9-20020a05600c138900b0041464d3f33fmr4665364wmf.23.1711364720697;
-        Mon, 25 Mar 2024 04:05:20 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id gw8-20020a05600c850800b004146dd6bfe2sm8053538wmb.47.2024.03.25.04.05.19
+        d=1e100.net; s=20230601; t=1711364734; x=1711969534;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FRILSzvwAIpvZwjiJmtXP3wS29AHppU0XGaszbPtEV8=;
+        b=eJU/hr6Ydma0LwbKZOMLzvvzXKu2CDKP9VhNSdWPvmYDcXshl62n0cDDujM4cQgQER
+         eUbG/0Jle9NzTHKfC5zdcdP7RKB1AY/2lCjw7LHjLM60EVnNJLO67VJ2/1EdzE18Mmr0
+         USa0/9Wo6o9cGodhhpG+lHQJwstojsPyhtC7zpZAqm4cUxS271mtdMYA0vtKYcvyntDP
+         9HjC6EUfN5Yz9XwTs4vkIYwT7nJLV8XTj0m8OZHk/k0/lCeQowFCgTEBtIO++iz4JAXD
+         A+aNDug6CYY3sArbNo/ayY/iAWGgMXUVoXtn8mRKlBRjSugQdLZyToOWd7Z64M3vc3wy
+         xRUw==
+X-Forwarded-Encrypted: i=1; AJvYcCWm2d/uYHLA3orl4oVkIcSJsJ/fE4HJpgrlHQwKcExgEhYNWap5LeE8RcKA6gnW4eYP4J1P3KH3fxJgL9UTahOWzlwJ7wJwSiF2yKPj
+X-Gm-Message-State: AOJu0YxIO/N+RKTKq3NenJuIpCZ2VBZZD90HOiQJYfNRBdmz+zZuJDjm
+	dszDWN/EdMmW90axP009O/r1xI1hyzu3rOAG0btrjghVozxq7eBXQzAB/PCqKM0=
+X-Google-Smtp-Source: AGHT+IEhtdf7x6x6qjqq4K75Nxdbj/nJMl44w91CE9A41I8PB9hLaFhw4s15oV2TjS9l0ZLDyPjoIA==
+X-Received: by 2002:a17:906:40ca:b0:a47:206b:5951 with SMTP id a10-20020a17090640ca00b00a47206b5951mr4770720ejk.59.1711364733579;
+        Mon, 25 Mar 2024 04:05:33 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id m3-20020a1709061ec300b00a449026672esm2901792ejj.81.2024.03.25.04.05.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 04:05:20 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Brad Larson <blarson@amd.com>,
-	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] arm64: dts: amd: use capital "OR" for multiple licenses in SPDX
-Date: Mon, 25 Mar 2024 12:05:15 +0100
-Message-Id: <171136466537.36729.48377468659514562.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240208105314.129095-1-krzysztof.kozlowski@linaro.org>
-References: <20240208105314.129095-1-krzysztof.kozlowski@linaro.org>
+        Mon, 25 Mar 2024 04:05:33 -0700 (PDT)
+Date: Mon, 25 Mar 2024 14:05:29 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	Jonathan.Cameron@huawei.com, Laurent.pinchart@ideasonboard.com,
+	airlied@gmail.com, andrzej.hajda@intel.com, arm@kernel.org,
+	arnd@arndb.de, bamv2005@gmail.com, brgl@bgdev.pl, daniel@ffwll.ch,
+	davem@davemloft.net, dianders@chromium.org,
+	dri-devel@lists.freedesktop.org, eajames@linux.ibm.com,
+	gaurav.jain@nxp.com, gregory.clement@bootlin.com,
+	hdegoede@redhat.com, herbert@gondor.apana.org.au,
+	horia.geanta@nxp.com, james.clark@arm.com, james@equiv.tech,
+	jdelvare@suse.com, jernej.skrabec@gmail.com, jonas@kwiboo.se,
+	linus.walleij@linaro.org, linux-crypto@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux@roeck-us.net,
+	maarten.lankhorst@linux.intel.com, mazziesaccount@gmail.com,
+	mripard@kernel.org, naresh.solanki@9elements.com,
+	neil.armstrong@linaro.org, pankaj.gupta@nxp.com,
+	patrick.rudolph@9elements.com, rfoss@kernel.org, soc@kernel.org,
+	tzimmermann@suse.de
+Subject: Re: [PATCH v5 08/11] devm-helpers: Add resource managed version of
+ debugfs directory create function
+Message-ID: <486947a7-98fc-4884-a5fd-354677fa66ce@moroto.mountain>
+References: <20240323164359.21642-1-kabel@kernel.org>
+ <20240323164359.21642-9-kabel__6885.49310886941$1711212291$gmane$org@kernel.org>
+ <f7c64a5a-2abc-4b7e-95db-7ca57b5427c0@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7c64a5a-2abc-4b7e-95db-7ca57b5427c0@wanadoo.fr>
 
-
-On Thu, 08 Feb 2024 11:53:14 +0100, Krzysztof Kozlowski wrote:
-> Documentation/process/license-rules.rst and checkpatch expect the SPDX
-> identifier syntax for multiple licenses to use capital "OR".  Correct it
-> to keep consistent format and avoid copy-paste issues.
+On Sat, Mar 23, 2024 at 10:10:40PM +0100, Christophe JAILLET wrote:
+> >   static int pvt_ts_dbgfs_create(struct pvt_device *pvt, struct device *dev)
+> >   {
+> > -	pvt->dbgfs_dir = debugfs_create_dir(dev_name(dev), NULL);
+> > +	pvt->dbgfs_dir = devm_debugfs_create_dir(dev, dev_name(dev), NULL);
+> > +	if (IS_ERR(pvt->dbgfs_dir))
+> > +		return PTR_ERR(pvt->dbgfs_dir);
 > 
-> 
+> Not sure if the test and error handling should be added here.
 
-Applied, thanks!
+Yep.  debugfs_create_dir() is not supposed to be checked here.  It
+breaks the driver if CONFIG_DEBUGFS is disabled.  I have written a blog
+about this:
 
-This was waiting on the lists for some time and no one picked it up, so... let
-me know if I should drop it from my tree.
+https://staticthinking.wordpress.com/2023/07/24/debugfs-functions-are-not-supposed-to-be-checked/
 
-[1/1] arm64: dts: amd: use capital "OR" for multiple licenses in SPDX
-      https://git.kernel.org/krzk/linux-dt/c/0ee41698e633d5d370fad06284cfa9b693937499
+regards,
+dan carpenter
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
