@@ -1,167 +1,202 @@
-Return-Path: <linux-kernel+bounces-116777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7687B88A3D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:12:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E9B88A3D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 15:13:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C5551F39904
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:12:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36CCA1C3A531
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF38D14D43D;
-	Mon, 25 Mar 2024 10:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB5E129E99;
+	Mon, 25 Mar 2024 10:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fekZIf+e"
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eOdHQFDX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11D618C9EC
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498B018E0E4;
+	Mon, 25 Mar 2024 09:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711360696; cv=none; b=oAArLM5KnxQZ2OH7maz+kUIJmNhqR1Ja+vLwWrxBbf83XLFAdqaI3xhBUxPLDm4rXGmYapENStivMoxQxyEALHNFqlchZ0A73Lxatwj6fgkifZ+vFmT3noYIMG/qkBNcuyYuXEB6nqI0voMUXkRD32UQStpnL5blTGE9vYB/2lQ=
+	t=1711360736; cv=none; b=psLAYzFt3wkJr9IfXigVM1P5tPYXmmtpA9R4oxNx/7+gqQBBAt4r3s/J7aPmyxmiA8DNeW+w71KdgMG1+2W6XSEGC5iOmAET8iQ6BTxYOlIq1/VwY7zc24MDyseDizLInUNKMKYYiiGkO8eAPJWBnAilih6UojV06o4ABx5Pxb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711360696; c=relaxed/simple;
-	bh=NqK30dWvMkhMRQos+zh5Gvc0n9gWQPd9IHznIn2q9gg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j9rVjnSVfXlKdf0suc6prD3nhNH2Ci3W8vwRolZoOq4CCJDcpBGXCPA4vy0dKPl+MMBdVcumW4sM0ccY9++u9PRPjdXYMhVNLUYRWqN6YRm04lN5afXYvDdEbeogTaSFGJ4B/xh6uyPVJbcS0uYEcstgIn0cukUOkFFs/3Fp8j0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fekZIf+e; arc=none smtp.client-ip=209.85.222.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7dfacd39b9eso2765525241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711360693; x=1711965493; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kyd2fUcre4Z3NgmLnaLMJzBCVzXb0Ngoj6fneWetwoo=;
-        b=fekZIf+eTMoIADWtxEEnssf42KVI+8wW08HN+gUZaFMvoYZLt+KGaRUfA8f3CwBKRR
-         /FYl6YnP+2Cn+chYSyiwJz7elP0P6EOU0XpYHVBSVQpWtazWzmyewrdZkFFqPLbFstgC
-         NZJtYr72wxQIdxHMeBhUgE2y4peQphvEfEQa4ry7Is67KknfClDOJ27DM2cfDqQdhto5
-         riuCV42LVF1rud54rqBxn75LyZ/Ib/gYEsmlHp1uXcnsevJne0RS4dopVk/ZJ204tENn
-         BYDM7CxLUjUIJ9o3uPmY0R0cd+yYddPwVMAw91lwJxYN0/0JaeqRNRUtUpCjRnAyzZDr
-         twlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711360693; x=1711965493;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Kyd2fUcre4Z3NgmLnaLMJzBCVzXb0Ngoj6fneWetwoo=;
-        b=DSOPMKSZTEqFy97QrQgfCqQD399h7TA6C0dUPXJ155bDEBvGE1bd6tfUoULjD2368g
-         SUNSwB5VwF1vagGAFZtG1QfxmHR4vxHjzrL38DMW2mD2z2YrpXlQX7WR4bkSZbIahnIG
-         COzNKL4m36dNhxucW2/oKHelGJjX6gS1fqKsulgvZuqc10WEeYzeuwFrxcNhKRpHYE93
-         EC3nI8Eo66gf5sZQ5HLyIDyqEBqHIcQLqkLXj9V7AlYAjEX8jC94eeSmtUAO9ydT/rpD
-         Ca+oPSO4Wc4iadK3RHFld40tvCD3jFIGYacHPcWrGgPDyeOuqNVDYm0ICx19H9sWY7KA
-         NUmw==
-X-Gm-Message-State: AOJu0YxGO+6uoi3v+nm5ysMPufy1byrw2JlQS8SLvIUv9GhhJq8nDgvp
-	piTjBojlvmVwBcohbzL5kpvOANv3TN65dVd/xli9JTsVH1sUGxFmcXnR9Xi73zuJU/ChdcBHFkc
-	d4b/j6+To0lOsjIDwaEYkMCDu1AKmL/x2gwq94A==
-X-Google-Smtp-Source: AGHT+IH/LXe+pZI6T4dYPbrCnIOWYVWHu5aykoWck8P1W1r3msju/rhgAo9E+tewJPXWPjjlSAuDIOssGzyy23FEb/U=
-X-Received: by 2002:a67:fd67:0:b0:476:71f:dc62 with SMTP id
- h7-20020a67fd67000000b00476071fdc62mr2935823vsa.9.1711360692786; Mon, 25 Mar
- 2024 02:58:12 -0700 (PDT)
+	s=arc-20240116; t=1711360736; c=relaxed/simple;
+	bh=ugri9IdhvbgQiiHtwIt5j6DpjMT2Yzmc1v7CVG2wUZ4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f6dtJp4sHKO51rIZxp+BS+93YFM/VUQ8sxvzF0ykxh7JkGbEYul2mPXlh/dyD1+kJzgYQu9e6dAlbZtO+ziqn7HIiZtDG6DlOB3m8iGmfPJCtI4R5GijKD2JmLYWZjG4+SVnK1MQgu5MTXWVG+ReU0UkjjgN+6H+HNNNlaMi8PQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eOdHQFDX; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711360734; x=1742896734;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ugri9IdhvbgQiiHtwIt5j6DpjMT2Yzmc1v7CVG2wUZ4=;
+  b=eOdHQFDXog4groP9nRZdrc8aNErbnvUgXYXySMs4X/MPK/zcjL5mNWvJ
+   MM9jFWSQJt4xl0B+dOUcQuE3mVIYLo6RxoAJqEg29QhRQ46Wfyd04wzCt
+   zjQP78GDFbmkD69Bsm3gfGIiysptVItdkf1nIXuAnB4OmTi2QP6ZiEW0b
+   Q9OB5jtTPVbNcgpS2+zCx1VE53DN6GBo+ssgIRmFiYlrm6LZ0qhj3gwdR
+   8bsp8fknD2x92OOdOYMte0i6WiRP5ZOKOU88uks0lad6afeEMjWO7qocj
+   BZDgC29ABv9E8vamfnUMA9nvRo5ZyT7+MpE1+VhhCXVji0ebCm5WCskou
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="17495130"
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="17495130"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 02:58:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="15969992"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.0.234]) ([10.238.0.234])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 02:58:50 -0700
+Message-ID: <ba217de2-cdcb-4f50-80cc-c61a0e8255b2@linux.intel.com>
+Date: Mon, 25 Mar 2024 17:58:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324230116.1348576-1-sashal@kernel.org>
-In-Reply-To: <20240324230116.1348576-1-sashal@kernel.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 25 Mar 2024 15:28:01 +0530
-Message-ID: <CA+G9fYueiBdV-uRVbX+JB2_nt831_+8fnyoQ6v62rAsyLQne6g@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/638] 6.6.23-rc1 review
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
-	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
-	florian.fainelli@broadcom.com, pavel@denx.de, 
-	Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>, Nicolin Chen <nicolinc@nvidia.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+ Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 25 Mar 2024 at 04:31, Sasha Levin <sashal@kernel.org> wrote:
+
+
+On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 >
+> As the first step to create TDX guest, create/destroy VM struct.  Assign
+> TDX private Host Key ID (HKID) to the TDX guest for memory encryption and
+> allocate extra pages for the TDX guest. On destruction, free allocated
+> pages, and HKID.
 >
-> This is the start of the stable review cycle for the 6.6.23 release.
-> There are 638 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Before tearing down private page tables, TDX requires some resources of the
+> guest TD to be destroyed (i.e. HKID must have been reclaimed, etc).  Add
+> mmu notifier release callback
+
+It seems not accurate to say "Add mmu notifier release callback", since the
+interface has already been there. This patch extends the cache flush 
+function,
+i.e, kvm_flush_shadow_all() to do TDX specific thing.
+
+> before tearing down private page tables for
+> it.
 >
-> Responses should be made by Tue Mar 26 11:01:10 PM UTC 2024.
-> Anything received after that time might be too late.
+> Add vm_free() of kvm_x86_ops hook at the end of kvm_arch_destroy_vm()
+> because some per-VM TDX resources, e.g. TDR, need to be freed after other
+> TDX resources, e.g. HKID, were freed.
 >
-> The whole patch series can be found in one patch at:
->         https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.6.y&id2=v6.6.22
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+> Co-developed-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 >
-> Thanks,
-> Sasha
+> ---
+> v19:
+> - fix check error code of TDH.PHYMEM.PAGE.RECLAIM. RCX and TDR.
+>
+> v18:
+> - Use TDH.SYS.RD() instead of struct tdsysinfo_struct.
+> - Rename tdx_reclaim_td_page() to tdx_reclaim_control_page()
+> - return -EAGAIN on TDX_RND_NO_ENTROPY of TDH.MNG.CREATE(), TDH.MNG.ADDCX()
+> - fix comment to remove extra the.
+> - use true instead of 1 for boolean.
+> - remove an extra white line.
+>
+> v16:
+> - Simplified tdx_reclaim_page()
+> - Reorganize the locking of tdx_release_hkid(), and use smp_call_mask()
+>    instead of smp_call_on_cpu() to hold spinlock to race with invalidation
+>    on releasing guest memfd
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/include/asm/kvm-x86-ops.h |   2 +
+>   arch/x86/include/asm/kvm_host.h    |   2 +
+>   arch/x86/kvm/Kconfig               |   3 +-
+>   arch/x86/kvm/mmu/mmu.c             |   7 +
+>   arch/x86/kvm/vmx/main.c            |  26 +-
+>   arch/x86/kvm/vmx/tdx.c             | 475 ++++++++++++++++++++++++++++-
+>   arch/x86/kvm/vmx/tdx.h             |   6 +-
+>   arch/x86/kvm/vmx/x86_ops.h         |   6 +
+>   arch/x86/kvm/x86.c                 |   1 +
+>   9 files changed, 520 insertions(+), 8 deletions(-)
+>
+[...]
+> +
+> +static void tdx_clear_page(unsigned long page_pa)
+> +{
+> +	const void *zero_page = (const void *) __va(page_to_phys(ZERO_PAGE(0)));
+> +	void *page = __va(page_pa);
+> +	unsigned long i;
+> +
+> +	/*
+> +	 * When re-assign one page from old keyid to a new keyid, MOVDIR64B is
+> +	 * required to clear/write the page with new keyid to prevent integrity
+> +	 * error when read on the page with new keyid.
+> +	 *
+> +	 * clflush doesn't flush cache with HKID set.  The cache line could be
+> +	 * poisoned (even without MKTME-i), clear the poison bit.
+> +	 */
+> +	for (i = 0; i < PAGE_SIZE; i += 64)
+> +		movdir64b(page + i, zero_page);
+> +	/*
+> +	 * MOVDIR64B store uses WC buffer.  Prevent following memory reads
+> +	 * from seeing potentially poisoned cache.
+> +	 */
+> +	__mb();
 
+Is __wmb() sufficient for this case?
 
-The regression detected while building allmodconfig builds with clang-17
-failed on all the architectures.
+> +}
+> +
+[...]
 
-> Andrii Nakryiko (3):
->   libbpf: Fix faccessat() usage on Android
->   libbpf: Add missing LIBBPF_API annotation to libbpf_set_memlock_rlim
->     API
->   bpf: don't infer PTR_TO_CTX for programs with unnamed context type
+> +
+> +static int tdx_do_tdh_mng_key_config(void *param)
+> +{
+> +	hpa_t *tdr_p = param;
+> +	u64 err;
+> +
+> +	do {
+> +		err = tdh_mng_key_config(*tdr_p);
+> +
+> +		/*
+> +		 * If it failed to generate a random key, retry it because this
+> +		 * is typically caused by an entropy error of the CPU's random
 
-arm64 gcc-13 - FAILED (other architectures passed)
-arm64 clang-17 - FAILED (All other architectures failed))
+Here you say "typically", is there other cause and is it safe to loop on 
+retry?
 
-The 2 errors are only noticed on arm64.
+> +		 * number generator.
+> +		 */
+> +	} while (err == TDX_KEY_GENERATION_FAILED);
+> +
+> +	if (WARN_ON_ONCE(err)) {
+> +		pr_tdx_error(TDH_MNG_KEY_CONFIG, err, NULL);
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+[...]
 
-> Jason Gunthorpe (1):
->   iommu/arm-smmu-v3: Check that the RID domain is S1 in SVA
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Build error:
-------------
-kernel/bpf/btf.c:5660:10: error: expression which evaluates to zero
-treated as a null pointer constant of type 'const struct btf_member *'
-[-Werror,-Wnon-literal-null-conversion]
- 5660 |                 return false;
-      |                        ^~~~~
-1 error generated.
-
-<trim>
-
-drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c:358:10: error:
-incompatible integer to pointer conversion returning 'int' from a
-function with result type 'struct iommu_sva *' [-Wint-conversion]
-  358 |                 return -ENODEV;
-      |                        ^~~~~~~
-drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c:361:10: error:
-incompatible integer to pointer conversion returning 'int' from a
-function with result type 'struct iommu_sva *' [-Wint-conversion]
-  361 |                 return -ENODEV;
-      |                        ^~~~~~~
-2 errors generated.
-
-
-Steps to reproduce:
- # tuxmake --runtime podman --target-arch arm64 --toolchain clang-17
---kconfig allmodconfig LLVM=1 LLVM_IAS=1
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.22-638-ga02ac18a4590/testrun/23156094/suite/build/test/gcc-13-allmodconfig/log
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.22-638-ga02ac18a4590/testrun/23156063/suite/build/test/gcc-13-allmodconfig/history/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2eAPALK4lPo78E8K7ZPm0ayDbfA/
-
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.22-638-ga02ac18a4590/testrun/23156063/suite/build/test/clang-17-allmodconfig/history/
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.22-638-ga02ac18a4590/testrun/23156063/suite/build/test/clang-17-allmodconfig/details/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2eAPANvCAoQEpSXaT8nzxKxI0Ft/
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
