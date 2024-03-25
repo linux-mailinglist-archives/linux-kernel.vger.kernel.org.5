@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-117738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B44BB88AEF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:51:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D56E88AEF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDB6D1C3DF93
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:51:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF1181C3E517
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 18:51:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFD280C0D;
-	Mon, 25 Mar 2024 18:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9125F82D90;
+	Mon, 25 Mar 2024 18:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cXTm7SFx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jxx7Yn6f"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDE0757E3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE61180606;
 	Mon, 25 Mar 2024 18:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711392127; cv=none; b=HQ6efbuJnrOQi+ELX4z66jsf2BAMv1P/h8K470G8qYZJEklCUrKV+RCNkV+XC7OjGS3x4VCua86NA5P0RmQxPJX9clRdgjruyvX4EtIsrA4uDoRzlECuYlRj/jd48IwrOr9mI+c4U+PuXtLZSLh0vXDp2PTYGXw156tuTv8x36k=
+	t=1711392127; cv=none; b=XPJL3kTHJ1QCTanV4Ib5CCQ/hRdAtzNwp3QtAYH4lonXk5DhmyuajumDksFzYkhGveGktJbIMVQqO9wkQfKLN4QFUu0EgYRja9ejmdqSwvSFGm5KJOdQ/vW9+quG5L9rmgiiB8BoZ6HsuQoqyk9b2TJ6Ubknre7zA0Q1YmQnbuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711392127; c=relaxed/simple;
-	bh=Oc5kvRHq0ucUhQzYgSZ1NBEHxsfc22nR4S713LRmA5U=;
+	bh=onaeBFADTWFzOVhM/6B/QEw4squGRUq4bVkj4JHF800=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AMGa/9NP3jMUg94kiQ1sFcLSr0LJPVCQhhATcHk1UYdBx/BIfh0EYFQjjRuiO4nGhl8beJ7BQtxTTgk84rxHJ1xbfv5G6TZEN7xMk+G8FDdL2w7HNmyeOuTfPbHlXoZ75IiAs+AeVwNT9h9Mn6sytcGziQNXSaWMGQVMeyuzqU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cXTm7SFx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85DEAC433A6;
+	 MIME-Version; b=I5Dp0QPFcFr4yCn/e2vgjXT3tnapJQ5ia1z9GBli7FflHxKoTz3jv1Tuo6iDQQqTZ3ObUWZtXzX6bDBaOGhQbVAMJYJRdTpVd4M78XhBmErYs5Or0Gm9y6/fWemmPgkw270PQKxGsc8WaU3YWIM3LcgdQ4cfN+kou/lV4TZ+2FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jxx7Yn6f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05BC7C43390;
 	Mon, 25 Mar 2024 18:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711392126;
-	bh=Oc5kvRHq0ucUhQzYgSZ1NBEHxsfc22nR4S713LRmA5U=;
+	s=k20201202; t=1711392127;
+	bh=onaeBFADTWFzOVhM/6B/QEw4squGRUq4bVkj4JHF800=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cXTm7SFxCYGify3bM7fX8aO2vfYdDaF5JHeOV6tCOA1wOh+OHIsj8W0u2lrJz6/7C
-	 M7FCyTcIdQMBFura6GHFNJ4J59wMLYDYA+381tUcy3azG1/4/KZpRObBmsoYKlbatr
-	 Y0y+eE+T9idqWTqwWT1Wy1uFYzTBfYtcdZQviFVJUmad+Kga3BUTocAHL4XoiSsZ3K
-	 w1WKDJ1MhluUB470BueWlPLE+kE1xHHQ9BYsMzRbSHU+z9Nd1pALCcTGi240ssTCRJ
-	 1rFgASajzvAL4TtGmOA5l/E3D1/TURpKBRQUTy5VXT//Y3m70imlVWi3bQ1kRY3sfz
-	 FPq2xt4nfKfdQ==
+	b=Jxx7Yn6f/cCx9ADdM8gdrESUSJzfJ5yfUPe6uOY0+pU8x1g2EGhAqSwxaTs6AtE7n
+	 qh1ytg94dDA4/hxm0hccmOF5lPivxZF3on2HRvVYDnHOhJE77hufAZXfPvqpJLQimw
+	 CmOp23v6C6qCBHhCS48us7x1XAvK9rsdKyweNzhGTmHGHs4a9/ZhzKOSw7zcjX3voY
+	 QlRg9RKIWcX3Bnw/c+A5HHWZVTsDvMbQD53MqRTRdJ8OImcBxZVaUBagi26SUKze8t
+	 tDMp65TZaUcbzho1Nx8JgWdKv3VzFoY7PjK0lGncva2yzRExn1uTHxo7nrAN8pni3+
+	 ewTySS50JcF0A==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Michael Turquette <mturquette@baylibre.com>,
 	Stephen Boyd <sboyd@kernel.org>
@@ -48,9 +48,9 @@ Cc: linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev,
 	linux-arm-msm@vger.kernel.org,
 	Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH v2 2/5] clk: Don't hold prepare_lock when calling kref_put()
-Date: Mon, 25 Mar 2024 11:41:56 -0700
-Message-ID: <20240325184204.745706-3-sboyd@kernel.org>
+Subject: [PATCH v2 3/5] clk: Initialize struct clk_core kref earlier
+Date: Mon, 25 Mar 2024 11:41:57 -0700
+Message-ID: <20240325184204.745706-4-sboyd@kernel.org>
 X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
 In-Reply-To: <20240325184204.745706-1-sboyd@kernel.org>
 References: <20240325184204.745706-1-sboyd@kernel.org>
@@ -62,63 +62,89 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We don't need to hold the prepare_lock when dropping a ref on a struct
-clk_core. The release function is only freeing memory and any code with
-a pointer reference has already unlinked anything pointing to the
-clk_core. This reduces the holding area of the prepare_lock a bit.
-
-Note that we also don't call free_clk() with the prepare_lock held.
-There isn't any reason to do that.
+Initialize this kref once we allocate memory for the struct clk_core so
+that we can reuse the release function to free any memory associated
+with the structure. This mostly consolidates code, but also clarifies
+that the kref lifetime exists once the container structure (struct
+clk_core) is allocated instead of leaving it in a half-baked state for
+most of __clk_core_init().
 
 Reviewed-by: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
- drivers/clk/clk.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/clk/clk.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 44e71736477d..9fc522c26de8 100644
+index 9fc522c26de8..ee80b21f2824 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -4448,7 +4448,8 @@ void clk_unregister(struct clk *clk)
- 	if (ops == &clk_nodrv_ops) {
- 		pr_err("%s: unregistered clock: %s\n", __func__,
- 		       clk->core->name);
--		goto unlock;
-+		clk_prepare_unlock();
-+		return;
+@@ -3959,8 +3959,6 @@ static int __clk_core_init(struct clk_core *core)
  	}
- 	/*
- 	 * Assign empty clock ops for consumers that might still hold
-@@ -4482,11 +4483,10 @@ void clk_unregister(struct clk *clk)
- 	if (clk->core->protect_count)
- 		pr_warn("%s: unregistering protected clock: %s\n",
- 					__func__, clk->core->name);
-+	clk_prepare_unlock();
  
- 	kref_put(&clk->core->ref, __clk_release);
- 	free_clk(clk);
--unlock:
--	clk_prepare_unlock();
- }
- EXPORT_SYMBOL_GPL(clk_unregister);
- 
-@@ -4645,13 +4645,11 @@ void __clk_put(struct clk *clk)
- 	if (clk->min_rate > 0 || clk->max_rate < ULONG_MAX)
- 		clk_set_rate_range_nolock(clk, 0, ULONG_MAX);
- 
--	owner = clk->core->owner;
--	kref_put(&clk->core->ref, __clk_release);
+ 	clk_core_reparent_orphans_nolock();
 -
- 	clk_prepare_unlock();
- 
-+	owner = clk->core->owner;
-+	kref_put(&clk->core->ref, __clk_release);
- 	module_put(owner);
--
- 	free_clk(clk);
+-	kref_init(&core->ref);
+ out:
+ 	clk_pm_runtime_put(core);
+ unlock:
+@@ -4189,6 +4187,16 @@ static void clk_core_free_parent_map(struct clk_core *core)
+ 	kfree(core->parents);
  }
  
++/* Free memory allocated for a struct clk_core */
++static void __clk_release(struct kref *ref)
++{
++	struct clk_core *core = container_of(ref, struct clk_core, ref);
++
++	clk_core_free_parent_map(core);
++	kfree_const(core->name);
++	kfree(core);
++}
++
+ static struct clk *
+ __clk_register(struct device *dev, struct device_node *np, struct clk_hw *hw)
+ {
+@@ -4209,6 +4217,8 @@ __clk_register(struct device *dev, struct device_node *np, struct clk_hw *hw)
+ 		goto fail_out;
+ 	}
+ 
++	kref_init(&core->ref);
++
+ 	core->name = kstrdup_const(init->name, GFP_KERNEL);
+ 	if (!core->name) {
+ 		ret = -ENOMEM;
+@@ -4263,12 +4273,10 @@ __clk_register(struct device *dev, struct device_node *np, struct clk_hw *hw)
+ 	hw->clk = NULL;
+ 
+ fail_create_clk:
+-	clk_core_free_parent_map(core);
+ fail_parents:
+ fail_ops:
+-	kfree_const(core->name);
+ fail_name:
+-	kfree(core);
++	kref_put(&core->ref, __clk_release);
+ fail_out:
+ 	return ERR_PTR(ret);
+ }
+@@ -4348,16 +4356,6 @@ int of_clk_hw_register(struct device_node *node, struct clk_hw *hw)
+ }
+ EXPORT_SYMBOL_GPL(of_clk_hw_register);
+ 
+-/* Free memory allocated for a clock. */
+-static void __clk_release(struct kref *ref)
+-{
+-	struct clk_core *core = container_of(ref, struct clk_core, ref);
+-
+-	clk_core_free_parent_map(core);
+-	kfree_const(core->name);
+-	kfree(core);
+-}
+-
+ /*
+  * Empty clk_ops for unregistered clocks. These are used temporarily
+  * after clk_unregister() was called on a clock and until last clock
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
