@@ -1,217 +1,251 @@
-Return-Path: <linux-kernel+bounces-116733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56FB388A2EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:50:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1633D88A2F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 14:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C4022E10A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:50:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3903A1C39736
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CBA7161B4D;
-	Mon, 25 Mar 2024 10:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFABA16ABC7;
+	Mon, 25 Mar 2024 10:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="bUZNBQWa"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Sy604nBw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qgOtZyUf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a+1EawY2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QMoknTVc"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C417116D320
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 741E916D9C6;
+	Mon, 25 Mar 2024 09:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711357368; cv=none; b=DaXAB9tf1mPsp4CbARsNHpXqpFwKqa/LGwqlixeFpx3JIArtncabNEhwGNpz/YkZEbhgL1VQCXE/jgFN3vPJnioV0gFUthWLRJYW2kVRCLNJf6AgH5WZ3KVhcE7adJzt9f5lJzHpKTBIAtrjYI0d/9ylRhJ5lgrumyTZ9N43hm4=
+	t=1711357410; cv=none; b=WZLDKo7OL61BZaKoA8Xq+HH0H3m0S50yxPyGz4pG4g91YTWHLqflIsfRa+ohUhj/vHnhR47kmESA2Kr+hEzJNMCYBd1ui4VHLRQfmau9c436wacwcaBDJEGQoORF31aGIb3OBs4s3cffSdmY511R74gGHGlTyaFHrf5aWhg0KZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711357368; c=relaxed/simple;
-	bh=4reNKSpGjyBIo1QKCNeXq82qEbRTN2WkDpD7rdLXG1k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PsXi7EQji5qMUrTgHXw1lHZwyBp3S/WbzXPBqg4e4SnpjtlXe1OfjNfXNsWxwA3wp2jB7pnRiZOKJYqWv+qzMVbsGxB2zwrAd5g1gDssaaOy0h0ivrITznpAc1vKRE6Emvm64WZcqltQyLLb+Y1HRaAYYJaAJarIw9yniELnHZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=bUZNBQWa; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33edbc5932bso2938436f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 02:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711357365; x=1711962165; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mIHhZHaPF09JSvWfnC/4E/kXpaEgooxUhhCxFC4Dwcg=;
-        b=bUZNBQWaXpD3R7eXgaMy7tHsuOF+YVhh799NnUv9B95kkV+zIlw4dT+0u2FyTtILcR
-         WgKPZpra3rGvPGpVWV54ZM29qX20S/P7swv2irYIz5WVwqkrKAcBhZC09HW7+msjPRPj
-         1MqTqWhs8OEGyvfEZLjo1KIEw7tHrOluV3caav/4znavDfWMzAOlTNqnzW0MZ2pKvgRL
-         kFdbCMtmEKU68yPPVWclUkDPS0BdYk70W5OOhA87LdG94U1sA16ygOs3eEbkMEyqSMh1
-         Z1ZmQLQIx54Xg1puJyZ6lc5OJ3dpAu6pMFp/yCkxyWkCuqQuNZlkwMWOAdwa/uTB957K
-         0Ylw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711357365; x=1711962165;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mIHhZHaPF09JSvWfnC/4E/kXpaEgooxUhhCxFC4Dwcg=;
-        b=pt1vAElj/eAUxPRmRBHHVD4SW6PQCzMxjgRhqLdJd/JO21V2c69WtsvYAcyYwORA69
-         RLkb+2MZnOahs+KUeGrYcHexWtE6MZXdfhAfvCoTr0LRO3AForlaXw1SXKuPYDcsK5W0
-         3CgSTHWvAhLkNxfE8PRn1Yz4Y3e0h8G9ekmcf6wTRCMLLZh2epp3GEuqfIxp0WeaPEOM
-         XmJczR8nxXSY//V9M8zIUdhemCPsqnKHxaVLUJhXiYk/vwXKQtcZxzHanX50RBhuo35Z
-         Q7CkKOpV+8kiMTYbf8XXxN+RQG1DgTBVc3VkyFA9LQxNvNLyDgJYifki+xIuObg89smr
-         ZZgg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3DeJPQRu62ra/LB3qnNRuhyQSS8GtTM4Z6/ppun6KTR1omI5HGD3WybUj3JPH3ikCq5AB2VHETMkjH843UV4UKpI7bNV758Z95n69
-X-Gm-Message-State: AOJu0YzN0o5ZYc5buDNpxaMUaslVYCvn9blfv1U6HK22XpyzP9LKfTft
-	zMRq0VAxmVuUCAgjNNkbqalRYZW5mB/WZQUDsJ3eJWZ4bLKxC++a+oGy7UupBvw=
-X-Google-Smtp-Source: AGHT+IHDlz4isXhhoQy3pXxXewf4UkN2hExgZfZbPLaUh2ZrJEcYOgtowcRZAMbhNO/2LSamS/cA2g==
-X-Received: by 2002:adf:f58a:0:b0:33e:7ae7:29fa with SMTP id f10-20020adff58a000000b0033e7ae729famr4109722wro.1.1711357365035;
-        Mon, 25 Mar 2024 02:02:45 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:861d:8b72:a859:4ce9])
-        by smtp.gmail.com with ESMTPSA id bn22-20020a056000061600b00341d2604a35sm458458wrb.98.2024.03.25.02.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 02:02:44 -0700 (PDT)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Kent Gibson <warthog618@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	stable@vger.kernel.org,
-	Stefan Wahren <wahrenst@gmx.net>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3] gpio: cdev: sanitize the label before requesting the interrupt
-Date: Mon, 25 Mar 2024 10:02:42 +0100
-Message-Id: <20240325090242.14281-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1711357410; c=relaxed/simple;
+	bh=ZLgf5k9dYFpuYV92qIDT8jX5N1PKaunEPFjINTt8igE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rz+6AF8QnBMQ6lWhUowHge0ZNppMDk/qdkaSISyqWhZNCgi3yoSAcZ3nWnSGP+o79AtDwl7DRGfs7e78gFOiu5hK5PU0vd1/N+kKUNfcwbZcHgNG+xM4dJR06F9KayjFPpfyZxXANjh87hKa057osp/aaI9NRaBG1CEJJ0ynIOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Sy604nBw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qgOtZyUf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a+1EawY2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QMoknTVc; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 92C0020A18;
+	Mon, 25 Mar 2024 09:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711357404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=USYfYpVzCaTHzXO8m+V03aFdxTBKJIoKjS9fav42aOk=;
+	b=Sy604nBwxOBrz2uqOVlqI3hgloSv11CVfJac3oNh9PyzYcjTRkbkorelJ6W3hj+bUUN0pI
+	NbGlitsEOVrn4ot5TFuzqgNR6VDx0n/h+B7kDeklARO4eCchjJ56bCYUbgcAnmYcihazsz
+	hvND0g3ltxvUh6S5P9i4HCpSBjK9ShA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711357404;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=USYfYpVzCaTHzXO8m+V03aFdxTBKJIoKjS9fav42aOk=;
+	b=qgOtZyUfpPVvTc6okdCBphjfsltfyDCzJX2aYYzwbEgTsa2UYRfCVItyMhvyrpOBitX42S
+	r8XsmFkmc7K5sgBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711357403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=USYfYpVzCaTHzXO8m+V03aFdxTBKJIoKjS9fav42aOk=;
+	b=a+1EawY2oVwpJZ5JNMNd03zI/AHxA7oebEGtXLSha2XivURqmxlo9g2gqFbsBNA+lUqLNV
+	L62RwjomdN+HgcThQAkkrQT+oFSfYeDWxNvdN8mZ4GYPv/12luiT3tXaO8r94LxTMIeJF1
+	dYrDb+jFoeofPbYqz2jl2+4WrieXdwc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711357403;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=USYfYpVzCaTHzXO8m+V03aFdxTBKJIoKjS9fav42aOk=;
+	b=QMoknTVcZXz/DCtE4PAXlE9wD8BuGfEtgORa87I2XgD1WhJnKhCgBbBvxyQKl7go2b1nms
+	ZoF7XUiDKV+yesCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6931C13503;
+	Mon, 25 Mar 2024 09:03:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id duPQGNs9AWY9KQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 25 Mar 2024 09:03:23 +0000
+Message-ID: <5e1571de-2c5a-4be4-93f4-01582094ee96@suse.cz>
+Date: Mon, 25 Mar 2024 10:03:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/9] slab: Introduce dedicated bucket allocator
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, "GONG, Ruiqi"
+ <gongruiqi@huaweicloud.com>, Xiu Jianfeng <xiujianfeng@huawei.com>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Kent Overstreet <kent.overstreet@linux.dev>, Jann Horn <jannh@google.com>,
+ Matteo Rizzo <matteorizzo@google.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, linux-hardening@vger.kernel.org,
+ jvoisin <julien.voisin@dustri.org>
+References: <20240305100933.it.923-kees@kernel.org>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240305100933.it.923-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -3.00
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 R_RATELIMIT(0.00)[to_ip_from(RLpoh6j7ozpkb3cnstoapfqm8c)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.com,kernel.org,google.com,lge.com,linux.dev,gmail.com,huaweicloud.com,huawei.com,vger.kernel.org,kvack.org,dustri.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=a+1EawY2;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QMoknTVc
+X-Rspamd-Queue-Id: 92C0020A18
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 3/5/24 11:10 AM, Kees Cook wrote:
+> Hi,
+> 
+> Repeating the commit logs for patch 4 here:
+> 
+>     Dedicated caches are available For fixed size allocations via
+>     kmem_cache_alloc(), but for dynamically sized allocations there is only
+>     the global kmalloc API's set of buckets available. This means it isn't
+>     possible to separate specific sets of dynamically sized allocations into
+>     a separate collection of caches.
+> 
+>     This leads to a use-after-free exploitation weakness in the Linux
+>     kernel since many heap memory spraying/grooming attacks depend on using
+>     userspace-controllable dynamically sized allocations to collide with
+>     fixed size allocations that end up in same cache.
+> 
+>     While CONFIG_RANDOM_KMALLOC_CACHES provides a probabilistic defense
+>     against these kinds of "type confusion" attacks, including for fixed
+>     same-size heap objects, we can create a complementary deterministic
+>     defense for dynamically sized allocations.
+> 
+>     In order to isolate user-controllable sized allocations from system
+>     allocations, introduce kmem_buckets_create(), which behaves like
+>     kmem_cache_create(). (The next patch will introduce kmem_buckets_alloc(),
+>     which behaves like kmem_cache_alloc().)
+> 
+>     Allows for confining allocations to a dedicated set of sized caches
+>     (which have the same layout as the kmalloc caches).
+> 
+>     This can also be used in the future once codetag allocation annotations
+>     exist to implement per-caller allocation cache isolation[0] even for
+>     dynamic allocations.
+> 
+>     Link: https://lore.kernel.org/lkml/202402211449.401382D2AF@keescook [0]
+> 
+> After the implemetation are 2 example patches of how this could be used
+> for some repeat "offenders" that get used in exploits. There are more to
+> be isolated beyond just these. Repeating the commit log for patch 8 here:
+> 
+>     The msg subsystem is a common target for exploiting[1][2][3][4][5][6]
+>     use-after-free type confusion flaws in the kernel for both read and
+>     write primitives. Avoid having a user-controlled size cache share the
+>     global kmalloc allocator by using a separate set of kmalloc buckets.
+> 
+>     Link: https://blog.hacktivesecurity.com/index.php/2022/06/13/linux-kernel-exploit-development-1day-case-study/ [1]
+>     Link: https://hardenedvault.net/blog/2022-11-13-msg_msg-recon-mitigation-ved/ [2]
+>     Link: https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html [3]
+>     Link: https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html [4]
+>     Link: https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html [5]
+>     Link: https://zplin.me/papers/ELOISE.pdf [6]
 
-When an interrupt is requested, a procfs directory is created under
-"/proc/irq/<irqnum>/<label>" where <label> is the string passed to one of
-the request_irq() variants.
+Hi Kees,
 
-What follows is that the string must not contain the "/" character or
-the procfs mkdir operation will fail. We don't have such constraints for
-GPIO consumer labels which are used verbatim as interrupt labels for
-GPIO irqs. We must therefore sanitize the consumer string before
-requesting the interrupt.
+after reading [1] I think the points should be addressed, mainly about the
+feasibility of converting users manually. On a related technical note I
+worry what will become of /proc/slabinfo when we convert non-trivial amounts
+of users.
 
-Let's replace all "/" with ":".
+Also would interested to hear Jann Horn et al.'s opinion, and whether the
+SLAB_VIRTUAL effort will continue?
 
-Cc: stable@vger.kernel.org
-Reported-by: Stefan Wahren <wahrenst@gmx.net>
-Closes: https://lore.kernel.org/linux-gpio/39fe95cb-aa83-4b8b-8cab-63947a726754@gmx.net/
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
-v2 -> v3:
-- fix a memory leak in error path
+Thanks,
+Vlastimil
 
-v1 -> v2:
-- use ':' as the delimiter instead of '-'
-- return -ENOMEM if creating the label fails
 
- drivers/gpio/gpiolib-cdev.c | 38 +++++++++++++++++++++++++++++++------
- 1 file changed, 32 insertions(+), 6 deletions(-)
+[1]
+https://dustri.org/b/notes-on-the-slab-introduce-dedicated-bucket-allocator-series.html
 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index f384fa278764..fa9635610251 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -1083,10 +1083,20 @@ static u32 gpio_v2_line_config_debounce_period(struct gpio_v2_line_config *lc,
- 	return 0;
- }
- 
-+static inline char *make_irq_label(const char *orig)
-+{
-+	return kstrdup_and_replace(orig, '/', ':', GFP_KERNEL);
-+}
-+
-+static inline void free_irq_label(const char *label)
-+{
-+	kfree(label);
-+}
-+
- static void edge_detector_stop(struct line *line)
- {
- 	if (line->irq) {
--		free_irq(line->irq, line);
-+		free_irq_label(free_irq(line->irq, line));
- 		line->irq = 0;
- 	}
- 
-@@ -1110,6 +1120,7 @@ static int edge_detector_setup(struct line *line,
- 	unsigned long irqflags = 0;
- 	u64 eflags;
- 	int irq, ret;
-+	char *label;
- 
- 	eflags = edflags & GPIO_V2_LINE_EDGE_FLAGS;
- 	if (eflags && !kfifo_initialized(&line->req->events)) {
-@@ -1146,11 +1157,17 @@ static int edge_detector_setup(struct line *line,
- 			IRQF_TRIGGER_RISING : IRQF_TRIGGER_FALLING;
- 	irqflags |= IRQF_ONESHOT;
- 
-+	label = make_irq_label(line->req->label);
-+	if (!label)
-+		return -ENOMEM;
-+
- 	/* Request a thread to read the events */
- 	ret = request_threaded_irq(irq, edge_irq_handler, edge_irq_thread,
--				   irqflags, line->req->label, line);
--	if (ret)
-+				   irqflags, label, line);
-+	if (ret) {
-+		free_irq_label(label);
- 		return ret;
-+	}
- 
- 	line->irq = irq;
- 	return 0;
-@@ -1973,7 +1990,7 @@ static void lineevent_free(struct lineevent_state *le)
- 		blocking_notifier_chain_unregister(&le->gdev->device_notifier,
- 						   &le->device_unregistered_nb);
- 	if (le->irq)
--		free_irq(le->irq, le);
-+		free_irq_label(free_irq(le->irq, le));
- 	if (le->desc)
- 		gpiod_free(le->desc);
- 	kfree(le->label);
-@@ -2114,6 +2131,7 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
- 	int fd;
- 	int ret;
- 	int irq, irqflags = 0;
-+	char *label;
- 
- 	if (copy_from_user(&eventreq, ip, sizeof(eventreq)))
- 		return -EFAULT;
-@@ -2198,15 +2216,23 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
- 	if (ret)
- 		goto out_free_le;
- 
-+	label = make_irq_label(le->label);
-+	if (!label) {
-+		ret = -ENOMEM;
-+		goto out_free_le;
-+	}
-+
- 	/* Request a thread to read the events */
- 	ret = request_threaded_irq(irq,
- 				   lineevent_irq_handler,
- 				   lineevent_irq_thread,
- 				   irqflags,
--				   le->label,
-+				   label,
- 				   le);
--	if (ret)
-+	if (ret) {
-+		free_irq_label(label);
- 		goto out_free_le;
-+	}
- 
- 	le->irq = irq;
- 
--- 
-2.40.1
+> -Kees
+> 
+>  v2: significant rewrite, generalized the buckets type, added kvmalloc style
+>  v1: https://lore.kernel.org/lkml/20240304184252.work.496-kees@kernel.org/
+> 
+> Kees Cook (9):
+>   slab: Introduce kmem_buckets typedef
+>   slub: Plumb kmem_buckets into __do_kmalloc_node()
+>   util: Introduce __kvmalloc_node() that can take kmem_buckets argument
+>   slab: Introduce kmem_buckets_create()
+>   slab: Introduce kmem_buckets_alloc()
+>   slub: Introduce kmem_buckets_alloc_track_caller()
+>   slab: Introduce kmem_buckets_valloc()
+>   ipc, msg: Use dedicated slab buckets for alloc_msg()
+>   mm/util: Use dedicated slab buckets for memdup_user()
+> 
+>  include/linux/slab.h | 50 +++++++++++++++++++++-------
+>  ipc/msgutil.c        | 13 +++++++-
+>  lib/fortify_kunit.c  |  2 +-
+>  mm/slab.h            |  6 ++--
+>  mm/slab_common.c     | 77 ++++++++++++++++++++++++++++++++++++++++++--
+>  mm/slub.c            | 14 ++++----
+>  mm/util.c            | 23 +++++++++----
+>  7 files changed, 154 insertions(+), 31 deletions(-)
+> 
 
 
