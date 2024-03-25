@@ -1,172 +1,246 @@
-Return-Path: <linux-kernel+bounces-117817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD88388AFEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:26:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1802088AFEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:27:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 823433469AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:26:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EB181F64B16
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40E917BAB;
-	Mon, 25 Mar 2024 19:25:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F66A18E1A;
+	Mon, 25 Mar 2024 19:27:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="L/7cYmFu"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="lJ4iiPCa"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2129.outbound.protection.outlook.com [40.107.243.129])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45BCB14AB8
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 19:25:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711394754; cv=none; b=rzqt1hpxHoKNRfB5USKNbPtMKRUskZI1XT86MGCcv6xgdGvYwOf8Nv5yWk7BXqSqtdLLQrgCe9LQfjoQsd/DBtEzP3el85HUJhRUNzHn4AeEmrHiNy6T8492zy0WazbHhQ5mMoeEC9RWJTzc+DiNgIs4kK22LHifvGFgnzStA3c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711394754; c=relaxed/simple;
-	bh=5DbOdJAImQwBDGYJfLIXIMetxlpVfavR4QpR0eimEmQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kjUJaHGqpZq+2SOsXEOiwWq7ytQhueZqJNbuPsYOtWHpgCtCrqh4q3Pik7js6xXDFc/Qxw/nN1uzYMBXmrydyjtkgm9yye82PYnwjWAzPvd//WNE6ertuuNkSlZThX12T8tpnEr7IdF3z3WlGa+6rzUV4rqo1XOpaQxPWsZL/No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=L/7cYmFu; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56c0d1bddc1so1735724a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 12:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711394751; x=1711999551; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhzd9oDRoCpoYTYiG4L0KvJM6D9VmTbt9+sBGbPl95g=;
-        b=L/7cYmFuNINQ6/Ux4o+Pqz4tw36r2MyyDArPIJXu8uGDWUIzcTr6PX/dYVaMawjO/6
-         qMorpZL0P5+FXjDYmqeH5jFKeLFl1RPJ4RIPflMeuIbASZc/4YwlktHbxm5MJVJoMOvO
-         lN0IlfN9+twmx/yAYJjb3arfBdmRGS5pjHSo1LVPwxh6fIihbMW3RYTLKiQRxGsjdS+Y
-         3+rhX+3Bw7+joZLWIfBYFKWRva3RkDDr/wWgtjqaYuqg/Uku0RvdHMAqJWTYbXHc9QQO
-         u+4h9b6azfBgDuf/X+jQqzo1guZqqnl575oReDp9F0jIX36QYw26Yd261BWqynh8y1+W
-         z92w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711394751; x=1711999551;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zhzd9oDRoCpoYTYiG4L0KvJM6D9VmTbt9+sBGbPl95g=;
-        b=MSfERSb2xh2PySrTH9fcESo1emRU23s/Y91egvCjxRU9SuNQBGUtRvp9LwclIncUMV
-         y+iiZvOp3Rtj17gvJIywjFkFhIxXGfTK0h6lCBLGrdMllGGmvekfjmY7P1y1SpPN+a0c
-         +ACuVVmJ2lG9bx7l2zLf8tXs0ARGqc4sgcMe2A1OPGvJMro2l0KK6KCR1Sf5qf0mJ1wc
-         /GBsPo/wMO0ci4AXdCzuejzNV6EHEEXAIyQSOUwQZNclmv4S/RAkYRn/PkF4OJPHshC6
-         kXrYseGWHaluMF4inPdVbbzmnUaTz9AEzkcvqJNP4Z4c+7O5kyJ8YumAg8Isf1js2BTn
-         OZAg==
-X-Forwarded-Encrypted: i=1; AJvYcCUs+LOGm6Uauek8GzHyBD3v5MPkwSclJaFuwEOMB/Z7VfsLzTPkGQeRHcnT9BVEZxFM95v3cVnaLORv02xuZ3KmrAK6UsjqvKnGc5oU
-X-Gm-Message-State: AOJu0YyfMqnbIl8LGfdf5vGhvLen6UhPmOZgf1kqiw2mBdB7fNLuUreZ
-	MlMZ9B1ciOhvjgS9poh440uaaIftOLtVQbhQnm5N/hmBhhroxbt1lb/6iTHZ1Dc=
-X-Google-Smtp-Source: AGHT+IGaqEwapwXOwuuWbSZJHdyAehHC7lud1KUaHHtdE9INmIa0bsatP/OKlSb+Xk/tqkfY5PNvpQ==
-X-Received: by 2002:a50:99d8:0:b0:568:3378:8fd4 with SMTP id n24-20020a5099d8000000b0056833788fd4mr6233029edb.11.1711394750684;
-        Mon, 25 Mar 2024 12:25:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.44])
-        by smtp.gmail.com with ESMTPSA id p24-20020a05640210d800b0056baacff45csm3250222edu.69.2024.03.25.12.25.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 12:25:50 -0700 (PDT)
-Message-ID: <d3770f5e-f3cc-40fd-a211-b229be46d974@linaro.org>
-Date: Mon, 25 Mar 2024 20:25:48 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5148E1798C;
+	Mon, 25 Mar 2024 19:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.129
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711394836; cv=fail; b=guecfbXCxvqWVyETajwgpWtFh+MzIMk3+oYUeQzWjUcVJAWIzBf2uZUHaVIv0L/ZJv4WseMUrVqWUWgsgoz0BCG39jCv0yu2o38n3jam+SsEsBSLJ/xckmmqES1q3Ji65Olh6P/Xna9Famik/P8o+lOlPrsxSXVmh3c2p2nvecU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711394836; c=relaxed/simple;
+	bh=RcC6rLjCC5aA41bT0Cgh2TxwBV8fvLMUFTGVwudwCTw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=MjHrKPE3bjVFUuNKubqFUt3JjERTN6S3Fobkb9x8X75gbwn3RQKBVICfVBZa13g2NYUPLwAoa+36jeBC6EBTC3G3UktaPDW3j/AaJP5rqGdP9xD5fvu3DhAJoEZBrATF5luxHjOrHooN2j7d9inEFi1oasoIkNOJ/hprKU1X/hc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=lJ4iiPCa; arc=fail smtp.client-ip=40.107.243.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=neyYPf1XqXCMr67tcLbiw3odVBrUfdT3Ea3JNMRvaXWI53HLnWCsq7Ok9dY0K835q6e8Fu+nscamsDHqDj4Ip/g5boBGDY9/RTT217z42Xuol/V8k+ElEDZ42mFLO04JCtCJ2PtH0y6Ap7Nf24uDHK/G9gyVRrGegs/JMJdhX4E0gGNVCBUf5K+SL9Qqjz2IE1x6LtuP8cRlAV0/kgK+661RhXDd3bdcrSYxn6sVMiotYQaHL+qQBvTOWQZ/3ITRIegswCHiDVtI/KOc4uz52Lr2IiZIT5eCcuskNqRy3AtiWjQH27RRrN0VmDo+YoHrsSr5GmlOQT0IrBOS9+wQlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TwtFEpBxPcOhdcE0cXY8LkNtFQzcyWNlGNcKd0Ypr4k=;
+ b=fqqQO4BR2vOnTWzO2f3/PcLyDkBL3Zp8nCICD3cCC/5Uy2Rp59mGtlH/2PjMtxiaKCww8b2yBkxlv8gIudxJiW+whvBC8tTrRP/iWAuDFqBQXF3rJZpvMTbl6DXQ64PfIyOGTcqsPd2zylkNfTGsCI5H1+DAMJ3HfDU5NmY0BN+JSwR/xBvHafz9pjF7shwd4MN9orDZHTmo2dAOD9n3S1TRyLtKsjl5uGHSHXoKdRjX+vCSGqlGA/k7r5PVy6HyKd8dr+J1HsFso2Vehmqc9yaSvVK4mqeqN9dhp562qR445JYl+M7hrlWxnYZnrmpK9fbMBS0VIN6B2/SPNKPW2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TwtFEpBxPcOhdcE0cXY8LkNtFQzcyWNlGNcKd0Ypr4k=;
+ b=lJ4iiPCaqgRktkyV59KoTr1GA4paO9C1xbYFemnhhtpHWlcP8ienVmI5mTnVQAlIhTwxmEQOP9x+WsHZ1jaPNITf6jsrhF1uv5RjHdGKXYnmZQoA0mJ32zm/opp81sLsLSE3SmAMDXYZQCnb7i1Wtqcj0qfncLZsLE55vMLP9Mk=
+Received: from BL1PR12MB5995.namprd12.prod.outlook.com (2603:10b6:208:39b::20)
+ by SJ2PR12MB7845.namprd12.prod.outlook.com (2603:10b6:a03:4ce::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
+ 2024 19:27:11 +0000
+Received: from BL1PR12MB5995.namprd12.prod.outlook.com
+ ([fe80::319f:fe56:89b9:4638]) by BL1PR12MB5995.namprd12.prod.outlook.com
+ ([fe80::319f:fe56:89b9:4638%6]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
+ 19:27:11 +0000
+Date: Mon, 25 Mar 2024 14:27:03 -0500
+From: John Allen <john.allen@amd.com>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: bp@alien8.de, linux-edac@vger.kernel.org, tony.luck@intel.com,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	muralidhara.mk@amd.com
+Subject: Re: [PATCH 2/4] RAS: ATL: Expand helpers for adding and removing
+ base and hole
+Message-ID: <ZgHQB2yasP1DeLcy@AUS-L1-JOHALLEN.amd.com>
+References: <20240314163527.63321-1-john.allen@amd.com>
+ <20240314163527.63321-3-john.allen@amd.com>
+ <ff9e4658-18c4-4a36-962a-373c15c337a2@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ff9e4658-18c4-4a36-962a-373c15c337a2@amd.com>
+X-ClientProxiedBy: BY5PR20CA0032.namprd20.prod.outlook.com
+ (2603:10b6:a03:1f4::45) To BL1PR12MB5995.namprd12.prod.outlook.com
+ (2603:10b6:208:39b::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/4] clk: imx: add i.MX95 BLK CTL clk driver
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Abel Vesa <abelvesa@kernel.org>
-Cc: linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-References: <20240324-imx95-blk-ctl-v5-0-7a706174078a@nxp.com>
- <20240324-imx95-blk-ctl-v5-4-7a706174078a@nxp.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240324-imx95-blk-ctl-v5-4-7a706174078a@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5995:EE_|SJ2PR12MB7845:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	h1Vau9xjpCPNfFkWETgaOOLo33+VxcyV49Fy2CX8KMFkh51cPjLm2Xs2bII8cW4r87hhr7kzaK88TzRH7RS2QMqwjsOMcp59qpyL9zfJBUcq65PDgoxSaUcg+vhOe8mnNB45VVBYtLlT85QAFwjsfvPY7cmyUw7dgMXkNiP9Cjvt+VBtL0B6PYrZSpdvwmABw8DALSdMuVxG/A87WQB+qBWRHV1nT9Gi2gk8htnpXBC+JGxsmit7he7+0o0TVJtqWT6bgMjpi7sw0aDIDBzH6r8B66Vcddqr5RqWqiumO7yzdH726ODYsK12w5I/VxMOYle2FMSvv54oM06hny+CU/5vkBhNqv3mBt43YWJfeekrFr18fr+UjvpBIJS9t2zVyZTRdCrxPkoF0G70+xCve+1Xpdwf3gzhXnNVn6ss8BwSgUaM3mSsuEp3/hSfdfjfw2qIltHVgd6e082pYQRdgFm4EjZKEgz65wnnaAhVEuLK7/dZwd+cKvcSby1+qZcKEfqf4mFsEucGchRK/JjjTE+lnTSM/zagr8RokSlIS2KPlnFmBzgbiyivBxwgEQ5oXMYGiDJ9k6lkHzAjUofc4lPkfWaV5fMhZpB5mVwl3Vv8N/u+hc+kHo16AN3SVErRBK6PximXGRbdPvSNQVnPTdg8d60ODJoZ3ggc/j1Hjxc=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5995.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?NbsEjxtMLpSLLdzks0xTP9/podk36f31kjsht5Z141V8VXE70hWZVRBzKlaP?=
+ =?us-ascii?Q?t5VtW1gG2CtjIBiklLuCv8CO4Py8pABC/rg4Fd2PRyPx3xYTlDgoJowl672R?=
+ =?us-ascii?Q?kW26SKmN98slOqtri6i9xDOqaG/OJ+bed6GPt4oeNa1J5YSPzHD07cWo2sZt?=
+ =?us-ascii?Q?bVxkEr0H221GrJPuJj1J8Jov2dww+1gU0WrwElYgnLZWGapLtlGZcVaJqxDP?=
+ =?us-ascii?Q?D+9sh5+9JQxSMUt222C0da2P3UOAzJ01F2xaPJABG9wUEbGqavMWuNs9R5TU?=
+ =?us-ascii?Q?UJM70mh4N5x1jZLHU0CirLo/8JvQdUyeoZj9Byndkm1MXndJGPaZn8zuRj54?=
+ =?us-ascii?Q?e6czlvivVIO1gNY+UjRVamtFc6LAt21ob7LiY9Y5ctrUkATLzjRHtVfY6uEH?=
+ =?us-ascii?Q?dH0IDwZDyIxEpj8hVwR7HXti8xVfjFNo8PyGcZERikWXPas4eKsggWVhqPwL?=
+ =?us-ascii?Q?+TlyNBci8M7urhc/yRGrZFWZC0lcAE6/ZPNC9Tdoe+yW11KZa2ert5RVnkPI?=
+ =?us-ascii?Q?Ol5c/kgIZC75sL0GlxWBz6MG9y0uKBoBcwHUEGnW2iEh/DMzLpDbenjtvFfk?=
+ =?us-ascii?Q?t1hlwb0XrjkjkcJx5vEyrfrL4EZvUGiCjkXgHwENO+yfENwq5GF3DjmEYyhD?=
+ =?us-ascii?Q?zlbIEqVV+b6xAeg8vk8lZE1g29brMzPFzApwVdsOAXfFwygZ47IVREZBQH3u?=
+ =?us-ascii?Q?6aoUF02eDzAf8jRMDVrs2uEt0lUZ1iGXa/iBIKlnsKjtTChWDAgp4dgRNZR0?=
+ =?us-ascii?Q?6ISdROY43DeSd8BjuVwkhTHnT5vfiA7Wigqsrb/fHBkr5mUt8MQu0ojX5233?=
+ =?us-ascii?Q?vj9Li2/XY8RUcaVc8zvMwHWCAObtNK/kBNSDKXchcQAct5DLNmeDC2rgW7yq?=
+ =?us-ascii?Q?mXPV1JL1ctQCXknAgw75mMqMHDWLP3qlsBfPM600iP7fRnQdRKCRBL6ROoDD?=
+ =?us-ascii?Q?fxPctVwJVLaHLEBp7o42W3KJUmqCKvgdYYsnyvoQZzg0RlAFxwge7GHryf4N?=
+ =?us-ascii?Q?SH3u41J6N8epyGJwZSAUuh11UKjkI/vkQxeGc2Ca51tzTFklnVKXGcF5QXxP?=
+ =?us-ascii?Q?vZyqK7dtks0woJ3bmYqpZDlGXsj/E9ofb3c2uYcyy1be9hq32WYBPfODaAsb?=
+ =?us-ascii?Q?+9GMe7E25I8BuAuxAIIb1TgjMhqXd18rpyg6tmEdM7mfe0XYJK6/W1T3Ge7Z?=
+ =?us-ascii?Q?F8wLSD/L9OvDnrmDB8PDigVwn65MF4gLcxstAcPa0grFynTC2bbBDYRdMp75?=
+ =?us-ascii?Q?EJQu8oYgT949wJtE13YqVEHcBW9o9n8F77PriFdmBck32RMSG+0TxhZnNDTe?=
+ =?us-ascii?Q?bQNxhj2lVGJmpHcrG3s2PCNzXzp/YlFbIsmBtSBF+XsXaSoENZgulxsh9VFw?=
+ =?us-ascii?Q?uyCRpU4n7fRhpBL5EeTEJl9Iuzk1EW0E6VxAMlwuYHbJU0rTBFNyA/Y/WxsK?=
+ =?us-ascii?Q?ZQNGJnHATeuKYLGyaoYHy3EKClpS8M8tjWClImUOQDhw9IyHo6dSN6GK5sOy?=
+ =?us-ascii?Q?sRLfk6HkBE12PG5H9fKtlp0WKy4GosA6SCdZ1XdS+1TjoWQaAajuzZoq/7Fl?=
+ =?us-ascii?Q?tba36tUub4F6au3ys0TPsxLBNx8nI8Fgq1nCLmn8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a474303-8424-455d-f05c-08dc4d019186
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5995.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 19:27:11.3490
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eMMJ/b5GxHM/FqHp48NpchLaoWkOfWGP1eUBB+T8uMR0H29P8vWor2DWpUKvwTyO9fESKxss3Ld41vvIRy/k5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7845
 
-On 24/03/2024 08:52, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Mon, Mar 18, 2024 at 11:28:48AM -0400, Yazen Ghannam wrote:
+> On 3/14/24 12:35, John Allen wrote:
+> > Data fabric 4.5 denormalization will need to frequently add and remove
 > 
+> More specifically, the non-power-of-2 cases will need this.
+> 
+> > the base and the legacy MMIO hole. Modify existing helpers to improve DF
+> > 4.5 denormalization flow and add helper to remove the base and hole.
+> 
+> Please write the what/context, why/issue, and how/fix information as
+> separate paragraphs even if they're just a single sentence each. I think
+> this helps to find the details more easily.
+> 
+> > 
+> > Signed-off-by: John Allen <john.allen@amd.com>
+> > ---
+> >   drivers/ras/amd/atl/core.c     | 43 ++++++++++++++++++++++------------
+> >   drivers/ras/amd/atl/internal.h |  3 +++
+> >   2 files changed, 31 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/drivers/ras/amd/atl/core.c b/drivers/ras/amd/atl/core.c
+> > index c1710d233adb..cafdfc57d929 100644
+> > --- a/drivers/ras/amd/atl/core.c
+> > +++ b/drivers/ras/amd/atl/core.c
+> > @@ -49,15 +49,26 @@ static bool legacy_hole_en(struct addr_ctx *ctx)
+> >   	return FIELD_GET(DF_LEGACY_MMIO_HOLE_EN, reg);
+> >   }
+> > -static int add_legacy_hole(struct addr_ctx *ctx)
+> > +static u64 add_legacy_hole(struct addr_ctx *ctx, u64 addr)
+> >   {
+> >   	if (!legacy_hole_en(ctx))
+> > -		return 0;
+> > +		return addr;
+> > -	if (ctx->addr >= df_cfg.dram_hole_base)
+> > -		ctx->addr += (BIT_ULL(32) - df_cfg.dram_hole_base);
+> > +	if (addr >= df_cfg.dram_hole_base)
+> > +		addr += (BIT_ULL(32) - df_cfg.dram_hole_base);
+> > -	return 0;
+> > +	return addr;
+> > +}
+> > +
+> > +static u64 remove_legacy_hole(struct addr_ctx *ctx, u64 addr)
+> > +{
+> > +	if (!legacy_hole_en(ctx))
+> > +		return addr;
+> > +
+> > +	if (addr >= df_cfg.dram_hole_base)
+> > +		addr -= (BIT_ULL(32) - df_cfg.dram_hole_base);
+> > +
+> > +	return addr;
+> >   }
+> >   static u64 get_base_addr(struct addr_ctx *ctx)
+> > @@ -72,14 +83,16 @@ static u64 get_base_addr(struct addr_ctx *ctx)
+> >   	return base_addr << DF_DRAM_BASE_LIMIT_LSB;
+> >   }
+> > -static int add_base_and_hole(struct addr_ctx *ctx)
+> > +u64 add_base_and_hole(struct addr_ctx *ctx, u64 addr)
+> >   {
+> > -	ctx->ret_addr += get_base_addr(ctx);
+> > -
+> > -	if (add_legacy_hole(ctx))
+> > -		return -EINVAL;
+> > +	addr += get_base_addr(ctx);
+> > +	return add_legacy_hole(ctx, addr);
+> > +}
+> > -	return 0;
+> > +u64 remove_base_and_hole(struct addr_ctx *ctx, u64 addr)
+> > +{
+> > +	addr -= get_base_addr(ctx);
+> > +	return remove_legacy_hole(ctx, addr);
+> 
+> This should be the inverse of the "add" operation, I think. So remove
+> the legacy hole first, then remove the base address.
+> 
+> >   }
+> >   static bool late_hole_remove(struct addr_ctx *ctx)
+> > @@ -123,14 +136,14 @@ unsigned long norm_to_sys_addr(u8 socket_id, u8 die_id, u8 coh_st_inst_id, unsig
+> >   	if (denormalize_address(&ctx))
+> >   		return -EINVAL;
+> > -	if (!late_hole_remove(&ctx) && add_base_and_hole(&ctx))
+> > -		return -EINVAL;
+> > +	if (!late_hole_remove(&ctx))
+> > +		ctx.ret_addr = add_base_and_hole(&ctx, ctx.ret_addr);
+> >   	if (dehash_address(&ctx))
+> >   		return -EINVAL;
+> > -	if (late_hole_remove(&ctx) && add_base_and_hole(&ctx))
+> > -		return -EINVAL;
+> > +	if (late_hole_remove(&ctx))
+> > +		ctx.ret_addr = add_base_and_hole(&ctx, ctx.ret_addr);
+> >   	if (addr_over_limit(&ctx))
+> >   		return -EINVAL;
+> > diff --git a/drivers/ras/amd/atl/internal.h b/drivers/ras/amd/atl/internal.h
+> > index 1413c8ddc6c5..05b870fcb24e 100644
+> > --- a/drivers/ras/amd/atl/internal.h
+> > +++ b/drivers/ras/amd/atl/internal.h
+> > @@ -236,6 +236,9 @@ int dehash_address(struct addr_ctx *ctx);
+> >   unsigned long norm_to_sys_addr(u8 socket_id, u8 die_id, u8 coh_st_inst_id, unsigned long addr);
+> >   unsigned long convert_umc_mca_addr_to_sys_addr(struct atl_err *err);
+> > +u64 add_base_and_hole(struct addr_ctx *ctx, u64 addr);
+> > +u64 remove_base_and_hole(struct addr_ctx *ctx, u64 addr);
+> 
+> remove_base_and_hole() is only used in denormalize.c, correct? So why
+> not define it there as static? Other than trying to keep the code
+> together and symmetrical, I mean.
 
-..
+In addition to keeping the two inverse functions together,
+remove_base_and_hole depends on other functions in core.c. So if we
+don't expose remove_base_and_hole in the header, then we would need to
+expose get_base_addr and remove_legacy_hole in the header.
+Alternatively, we could move remove_legacy_hole to denormalize.c and
+expose get_base_addr and legacy_hole_en in the header instead. So
+exposing one function that's the inverse of the other just looks better
+to me than exposing two.
 
-> +
-> +static const struct of_device_id imx95_bc_of_match[] = {
-> +	{ .compatible = "nxp,imx95-camera-csr", .data = &camblk_dev_data },
-> +	{ .compatible = "nxp,imx95-display-master-csr", },
-> +	{ .compatible = "nxp,imx95-lvds-csr", .data = &lvds_csr_dev_data },
-> +	{ .compatible = "nxp,imx95-display-csr", .data = &dispmix_csr_dev_data },
-> +	{ .compatible = "nxp,imx95-vpu-csr", .data = &vpublk_dev_data },
-> +	{ /* Sentinel */ },
-> +};
-> +MODULE_DEVICE_TABLE(of, imx95_bc_of_match);
-> +
-> +static struct platform_driver imx95_bc_driver = {
-> +	.probe = imx95_bc_probe,
-> +	.driver = {
-> +		.name = "imx95-blk-ctl",
-> +		.of_match_table = of_match_ptr(imx95_bc_of_match),
-
-Drop of_match_ptr(), causes warnings. From where did you copy such code?
-Which mainline driver has such pattern?
-
-Best regards,
-Krzysztof
-
+Thanks,
+John
 
