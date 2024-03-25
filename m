@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-116394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A88E5889A4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 11:28:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD45F889E74
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA4E31C32F55
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 10:27:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91D3E1F37A25
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E00B113BAF9;
-	Mon, 25 Mar 2024 05:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9025A44C73;
+	Mon, 25 Mar 2024 07:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+7IyK7y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oXKzRGUZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46E5229D68;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4780229D69;
 	Mon, 25 Mar 2024 02:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711334429; cv=none; b=Vo1zlzb/1+sossaHMXnt0rhBjl0BnHvzO7oNh3v5loMlrND9rrQf9u4zl3E1UymnS3aQ8wvzuBjdenbpCJlJvXTZfJtugE1F7tQhiZjH9ArClfwJokfKfLfmIMnPdw8QTsDrv7A/IqJ3yvzNX00uY3gQ39JpRJtCOUUzjAIqkas=
+	t=1711334429; cv=none; b=VnFs+MrpLAvZgjcsqUQRwsdOhTva/qCaaFRvWIwfaHsVC0nFonreB0ZKt/bdqmeolH/XKn2p84RFOBi2wlx6PnKwppM0v9Ps753DV6uSVAmigEWfM/WPxmr3XLhibKVpFN8FB1OXq3vaUiD+17RRMJXAUh/Xg8OaXUQdPRclwjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711334429; c=relaxed/simple;
-	bh=zo7xBI0RIUOEwUmjoqhSEKwU6zdd9SPVoCL14vmhqFQ=;
+	bh=a6o0x0cn8UUWF8IiBFE8IjvcWmSjhyg4QzAPtf+k3zQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=sdHAc7iQAJI3JKEvp1+4qqomX2VewbfydTy72cMo8p+d1xAST0bAvLcVIKuphojeT6NvZzk3fgEYWvQpkKYY6wLcMnPcUkHAAEBVhA6ithwAAkQTDgITuxSw2aeC4kh4TQ7V0KZvuIgMMeO8hmW3WJxtLMdYmD8c8Bicyw+WzrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y+7IyK7y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 30AEDC43390;
+	 In-Reply-To:To:Cc; b=MHZRQA9FYfQxyC5fdvT4/Ce9vob51Q6ITLAx+pipcqi40i0R8Arim19tafa7A3GD3vfs6WIuzNEhAUWvhHLYZhorPVJPJ4WskJ6wv6Yr9nYolhb/DP/LIm7Wf9PDdwUmdyx8ZfbJVtaXbPFkDhEwRUE1KpkZ+JbpE3uUpbynDMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oXKzRGUZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4FB0AC43394;
 	Mon, 25 Mar 2024 02:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1711334428;
-	bh=zo7xBI0RIUOEwUmjoqhSEKwU6zdd9SPVoCL14vmhqFQ=;
+	bh=a6o0x0cn8UUWF8IiBFE8IjvcWmSjhyg4QzAPtf+k3zQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Y+7IyK7y+e2YJezyDzZUGgaZWhvwU6/ltC0dwIpBOo24dYfEiSbpuChHGeD0yabT5
-	 5+59K44D9m2klxqpmNv54DC1FB9YPO4t+NRVz+d+qzBN6uySIlJhsfgu+NWfKOuSQX
-	 ARzc4Xyb49G72AV5H081/fGjp6FtpucXPcjInd8NVNfmWMiH/L6+XJpOe2U3ej9DwH
-	 L+PXrUnciO8fFYr4ihpvnpIxDvi2Xl5XCGRjC+C0XD5r40ls0mLdWyY0lwXYGWIC4+
-	 WG4zfHYgII63eGqre8EcKi+r+QxrSzq3Mgbksq4cxXjWHabOFH5651dlxv8XmscJkU
-	 G+vSbYb4olomA==
+	b=oXKzRGUZrsUezrRY4ojSaktWJPd4nySZTX249T7fZxdNxmseFhGvYQ+NhGylQDtU+
+	 1hIsl7EPRQbo50YQcRZ6BW/Opwij8Rt07l7G0czrcM/FgDW4daUPiBnP/rn06A7rn0
+	 z0sNJqpc4j69ys3BqI1k/CY9RmH+Zz5l8v2xUTviPRloRZB+UaFixm311YKRzDCha4
+	 SBj4Jn3jADBN4DqRqw7uo7Dsl+IjawOFvO9RK/PdC50kG1a364a6I2bW5J8GmY2NxQ
+	 vWLBjFE414DMKZrL4CM4UFGgKNWZyihy/19i7rDgtsMXK+EPzqFgEhPLewDLy5cY+M
+	 ax2Ub3wGxte8A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 12408D2D0EB;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 42100D2D0EC;
 	Mon, 25 Mar 2024 02:40:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -54,7 +54,7 @@ Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH v1] platform/chrome: use sysfs_emit() instead of sprintf()
 From: patchwork-bot+chrome-platform@kernel.org
 Message-Id: 
- <171133442807.31480.12835456312162773473.git-patchwork-notify@kernel.org>
+ <171133442826.31480.17940865345620526235.git-patchwork-notify@kernel.org>
 Date: Mon, 25 Mar 2024 02:40:28 +0000
 References: <20240314052828.186924-1-aichao@kylinos.cn>
 In-Reply-To: <20240314052828.186924-1-aichao@kylinos.cn>
@@ -64,7 +64,7 @@ Cc: bleung@chromium.org, tzungbi@kernel.org, chrome-platform@lists.linux.dev,
 
 Hello:
 
-This patch was applied to chrome-platform/linux.git (for-kernelci)
+This patch was applied to chrome-platform/linux.git (for-next)
 by Tzung-Bi Shih <tzungbi@kernel.org>:
 
 On Thu, 14 Mar 2024 13:28:28 +0800 you wrote:
