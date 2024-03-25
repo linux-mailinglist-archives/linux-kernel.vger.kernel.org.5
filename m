@@ -1,89 +1,91 @@
-Return-Path: <linux-kernel+bounces-116463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-116536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62454889F24
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:27:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23DE188A072
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 13:55:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DC3E1C2CD5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:27:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 552B81C3756E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 12:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6C56774E;
-	Mon, 25 Mar 2024 07:31:48 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5266548CDC;
+	Mon, 25 Mar 2024 07:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="Cr8F266c"
+Received: from mail-m603.netease.com (mail-m603.netease.com [210.79.60.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C442187655
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 03:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810CF82D8A;
+	Mon, 25 Mar 2024 05:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.79.60.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711338271; cv=none; b=ShE6vL3z0ev5QpvsYL4gB3i8zAd3NHBXHnyFxyV/OroehoLuECooTbWqAfEGZbN4wYukmMIxnbGVknGgCPdozF4f0BZN+N2Gp6oI5G23A/Shfno1+2zp7iGV1Z8pvl+TGsoDxCy+0iVcCHWVJr30RLEV3XAUav8sr0F+K25rgt4=
+	t=1711343528; cv=none; b=nEhwOSeDv7maXCRu1oUyoj1O+dwvb8weMXgG0b1XjewrsD1U7i1Bcu0F6x1OoQutImmvrhAIlIv14jSC19S5kUVy0uHmqyV46eTcW8JHGTyoo/2xHlaD9mcBpqBUBOonlcX9jzBJELbpAgX9nAu574bvPD+FWuzqJrwelj0vY9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711338271; c=relaxed/simple;
-	bh=sgje5sEOE8XBsmqgTdTVqNM6zkfECGgBmoRAE8rZUYM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gpbiVyQ/fPMfWj/W+0Bt0XT/8Dlp2pvsPNcwaAC+nAFiDEYJ9lW21oXyxn5cZSIdhsKwe6WsTD7kSPIZs3Nr2hb3etqPxmqJRJJUPL1r3Akd0rSkt1gDbMH/F9hDcbY9OAyrbV1bK0qZgJDz0bpyXPpUscr2YZN4dPn0O3a6I90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4V2zJv5Z4QzNmJC;
-	Mon, 25 Mar 2024 11:42:23 +0800 (CST)
-Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 33006140F7B;
-	Mon, 25 Mar 2024 11:44:22 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 25 Mar 2024 11:44:21 +0800
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
-To: Jan Kara <jack@suse.com>, Dennis Zhou <dennis@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH] fs: quota: use group allocation of per-cpu counters API
-Date: Mon, 25 Mar 2024 12:12:40 +0800
-Message-ID: <20240325041240.53537-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.41.0
+	s=arc-20240116; t=1711343528; c=relaxed/simple;
+	bh=/0L7xsGt62dkaztuu5tiwX1KwkzZV+OEKc1C03nGwrY=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Pr+vtfcDx1NMZn1PU+4xiOQzM00M8xwgPhbPlCJ+9Q8jxKicrvoPY3/6JKe5viSNovzsZWQdgQ5OFB5Ef9lr2g1UYaH4EZVK7Kk5Lk3Rx2Ixi3fE2k5AhyLN+N1NbAaVv3ORfvkN+VaEmxgNlIy6pG76GauPj43KnVzGOgp9PvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=Cr8F266c; arc=none smtp.client-ip=210.79.60.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+DKIM-Signature: a=rsa-sha256;
+	b=Cr8F266cslnVeJPW43tYw1VZzCe+7ZQ8hKsz6tY+cx1mPkbzRjP3mTNbcbKX7AkkrrxPqn0nn/ttQVFoeH0pe1msroUelpJjilWcQls+p0Xk9dT2Zxq8xWIFsy2xqWEj4jxu3SeC0MDDEQyUs22KZFIyu4s5YDW6C6Fy6ET6h1I=;
+	c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+	bh=YBEeTq7OGXH4yuF3fO8G/YM9YDxHqOm8d/+z2DqcRk0=;
+	h=date:mime-version:subject:message-id:from;
+Received: from localhost.localdomain (unknown [58.22.7.114])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 15AA57C0487;
+	Mon, 25 Mar 2024 12:16:44 +0800 (CST)
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+To: heiko@sntech.de
+Cc: linux-rockchip@lists.infradead.org,
+	Sugar Zhang <sugar.zhang@rock-chips.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Rob Herring <robh@kernel.org>,
+	Stephen Boyd <sboyd@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] Patches for rockchip clk input / output switch
+Date: Mon, 25 Mar 2024 12:16:28 +0800
+Message-Id: <1711340191-69588-1-git-send-email-sugar.zhang@rock-chips.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ0lMS1YfQk1DSE8eSU4YSx5VEwETFh
+	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
+	tLWQY+
+X-HM-Tid: 0a8e73d3328609d2kunm15aa57c0487
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pzo6TRw6PjMQAg0uMw4BNAoC
+	AhgKFDlVSlVKTEpKSE9LSUtOS09IVTMWGhIXVQgOHBoJVQETGhUcOwkUGBBWGBMSCwhVGBQWRVlX
+	WRILWUFZTkNVSUlVTFVKSk9ZV1kIAVlBSUtPQjcG
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm100001.china.huawei.com (7.185.36.93)
 
-Use group allocation of per-cpu counters api to accelerate
-dquot_init() and simplify code.
+These patches add support for rockchip clk input / output switch.
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- fs/quota/dquot.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index dacbee455c03..808544f74e5e 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -3016,11 +3016,10 @@ static int __init dquot_init(void)
- 	if (!dquot_hash)
- 		panic("Cannot create dquot hash table");
- 
--	for (i = 0; i < _DQST_DQSTAT_LAST; i++) {
--		ret = percpu_counter_init(&dqstats.counter[i], 0, GFP_KERNEL);
--		if (ret)
--			panic("Cannot create dquot stat counters");
--	}
-+	ret = percpu_counter_init_many(dqstats.counter, 0, GFP_KERNEL,
-+				       _DQST_DQSTAT_LAST);
-+	if (ret)
-+		panic("Cannot create dquot stat counters");
- 
- 	/* Find power-of-two hlist_heads which can fit into allocation */
- 	nr_hash = (1UL << order) * PAGE_SIZE / sizeof(struct hlist_head);
+Sugar Zhang (2):
+  clk: rockchip: Add support for clk input / output switch
+  dt-bindings: clock: rockchip: Add support for clk input / output
+    switch
+
+ .../bindings/clock/rockchip,clk-out.yaml           | 107 +++++++++++++++++++++
+ drivers/clk/rockchip/Kconfig                       |   6 ++
+ drivers/clk/rockchip/Makefile                      |   2 +
+ drivers/clk/rockchip/clk-out.c                     |  99 +++++++++++++++++++
+ 4 files changed, 214 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/rockchip,clk-out.yaml
+ create mode 100644 drivers/clk/rockchip/clk-out.c
+
 -- 
-2.41.0
+2.7.4
 
 
