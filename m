@@ -1,181 +1,176 @@
-Return-Path: <linux-kernel+bounces-117451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2461D88B0D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF7DE88ADC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:21:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A80EC60C0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:26:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D6ABC60AC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 17:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81CB12F38E;
-	Mon, 25 Mar 2024 16:19:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ABCD12F363;
+	Mon, 25 Mar 2024 16:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="STs4OBDC"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Y0rTuQ/b"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2069.outbound.protection.outlook.com [40.107.244.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9793D12F38A
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711383580; cv=none; b=N1O8HWdtdO6sK9YdESIq4opG0dTH3rTgctsY9BpPsa84LjbdPuXHGCW20xprLT9fi2ZZDE85s2YXjyRuntPvLntGbk86L+iS66jR1IYnpq2f0df39HC4wml6LT35hYRpPgFKZ9Dm6TvY1p6iraLKgr7zF5yLfhd/UvBFOt3K5y8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711383580; c=relaxed/simple;
-	bh=uh9WFKIeWkaAivfeZSQMhbdOFpPDb/6h8qrwur73QbE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fxRz99dr7FTyT+wGr0zFhCve6v/Y37S+HfaUJcJLtQrSW+glK6aP/Ul8Pwz2NufP7GztA82kaA8a2FrG5/GYYa8YE6IRinI+8wzW1uf7/g1BJlUQ6cBtYmRKxNi0ezYkFuGMnla0Hi0D0MJBKt78OSFiLbgz81ouyXoVvmyVMak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=STs4OBDC; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-430a25ed4e7so30690021cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711383577; x=1711988377; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ipKnULZuL+tAFscQ7D07riaZRlX7/8LgeP9Tufvdjpg=;
-        b=STs4OBDCWDClnS/Zqy5enQa3IEG5Ipm/B+t5l4qjnnmnjuSveCkLwkZsjdlsaBtJ//
-         b+fdjDrNc2cGlauNRhPSjEM7pGHauKXmieF59d1eAhEXvX9Qw4uQogBg4FQSmbvMw/zF
-         dgBlGvGI4vZcvxnzfYYGar4GOcckqxoUOylsI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711383577; x=1711988377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ipKnULZuL+tAFscQ7D07riaZRlX7/8LgeP9Tufvdjpg=;
-        b=gh0V+zOuJk8iIURnamxZghM/mIO5qINnT7IiXD+orF0sZ2P0rcrRt4jVFB98BF74hk
-         9bLNmyxEdFaTwp8hiyVGrjRynKMYAst95ZhRrEWBwukry0/wzunHj+iUTUV0s+rgmAKE
-         wy955IiOIBVPDiDGHg+Elv/d9shWvc+4gQUyj40kBBrqbbYDOc82ugNurV4Bcvdw3TmL
-         nbsVZNCDgvOcHrVFoPGwk13uYPHcgl+S8ahBxRlhKPegpqnsckToTU9UsCeMd8aP+cA+
-         LUkmyBAlDYmWdhjw5y6GnNuVWGjAC8+iSoqwlE/IkQ7N3sEU6TXNZWfHKP20NoF2S68h
-         cjhg==
-X-Forwarded-Encrypted: i=1; AJvYcCWva5L9PcnmjHTKFYq5jeXhoUlmW2WEqlEkQ43Q9uu3/RLf84SASZmroI039wcMbLV00PYyXVYDuqrUx5lG84dXvYJmcvzjFjGHZsBL
-X-Gm-Message-State: AOJu0YzQMN6fICRjFnC2pUpMoTf6q3YW9pE5rAoojUBOYy9WlWOoGgrR
-	oHwRNERsZc+zM3KqKCBRWWxs1zMRhH0aJRfMOdU2WB5PSnh54wokPm8VVfRD1EkA0iYNtjaVhqQ
-	=
-X-Google-Smtp-Source: AGHT+IFVD365XuFYIF3sL5YfGWDTo0uWWSLjMy/Trrm4bYE5GZG9zdvv02zxFpDmLp6QCcqsuzjcjw==
-X-Received: by 2002:a05:6214:2aa5:b0:696:97f4:aee with SMTP id js5-20020a0562142aa500b0069697f40aeemr812302qvb.47.1711383575283;
-        Mon, 25 Mar 2024 09:19:35 -0700 (PDT)
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com. [209.85.160.179])
-        by smtp.gmail.com with ESMTPSA id gy6-20020a056214242600b0069046d929a3sm4209555qvb.145.2024.03.25.09.19.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 09:19:34 -0700 (PDT)
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-428405a0205so535281cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 09:19:34 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX1GpiR72RyUQs7ZiBumstvMmpP27Oi8jiAx6kDNzCQWyjUdOgSXQYI92xK5lZzHps8pi1i5PssXTDOdBq6VG1c49UwHNSHOV5y0hZf
-X-Received: by 2002:ac8:5c0f:0:b0:431:1e00:996a with SMTP id
- i15-20020ac85c0f000000b004311e00996amr1088763qti.27.1711383574002; Mon, 25
- Mar 2024 09:19:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DF012DDA1
+	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 16:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.69
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711383565; cv=fail; b=nIEqF81vlw22ytQ/eb6AfptMpLgc2uYQh/Ini0B8W36nlKVKcQAJRW0QHfjB0HYrNB7oxH19PT/KOcjSlUAwfqRchtWlpB/6tGUmf36vRibw9C0tJOnGbodLt9KBoc4cQ2my+w/82L6BxL6dCO6LhalTzAc+SojnNwD4ipfDquE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711383565; c=relaxed/simple;
+	bh=AwH0Ys9LvT/wfzOEMv7xSfclCrWJ20o59XmJqUUlqF8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=AXKPhHbtbC/DkjKifJajtAhkdUofBAMJbfOoMU5/wONv6DK4rpVr1gTv1Ll3pP+rS9atF4BXABVQ3ypVsbqMdAHCQTCbuzSHqQrr+rjZen8OXHO3o+cY8EsjPBbtxgBviB4gqHd0ipjKlu2vgbhqkD1OP3ciSMarIOUJXyrvXGI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Y0rTuQ/b; arc=fail smtp.client-ip=40.107.244.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c3yz4fm4kouV49ZUxOW6Xv+STx9qmIhgWhS29OJjSq3dGU6F37hdb+UTXLgnX1WY8OocLdmCCM1WlPH1fIhvrEQN/PYhWqG9n+l2uf0soBsZpZIyTCe4fmEHafKBwbJGZ4B2ixlirfx5SzRcqZcla/FOlexFm2PTOQ3+cVcqX34Xbt/huY4SZIw4rcKx4liI24FqtSp0IIwVKmnAYuyOQEmX7ZfKwg499iVoA0KgTp9XBJLyY9YigD85dz2+81fkJf2h2mbqTjscc7ab3iORoEH1qSHXszfQzmqOCE9pLDnMgPeUGPEpibWGzSvZtHSDarrcm8/hTFX/yWqrAp0Yiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5Kuzz4kAM0MmNLkTr7po/cfNPtpIyN31iuXORLVdAbY=;
+ b=IGpaOtubglcYyGOrbWONC21/euCu1c//Uk98rDoGnm+M66dn0CtXRzYvPZ5hlWZSGZ+bNw0kAnCuuLlq0rg2Ey6Kb0CVbmbXAdpV1ZOF80qDdWhJbcrzlZ1TecX/hk4K8FFylcaDcFx0NHRtaFlA3Bu+xtje/XQUq8eeL3F6RTyS8Kuc/RrtX1xFMVOXz4ZKIZ2JeXm/uK+2onefgYQe7mjY8ogRj87Qmdid/vze82CTVc6xMNzIcHUe9I/uXxz2ewWA/jVYz4QPhorB9YTkDcztRYxdh1X+t6OLjz8+EIc74K3Q4y85xU3NN3fLnuXs8uFhYGkQU7fVF8wFxx8lbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Kuzz4kAM0MmNLkTr7po/cfNPtpIyN31iuXORLVdAbY=;
+ b=Y0rTuQ/b4Q6Deo0IDbYR5V40pu7rmJaLx3ccmHj6nyBov3/EHBB2dNd3lmUQhF+SboZThA7+noWJnXKa9obBGgRS+f/sCBseRTNcXzUdlXYN9nCKyfScap+oclk8tGLxs1eAAnmlkjkl6lDCXuUolj/jU9xBEm1dxPTNtf2LrfvWsJmVtfwouC65ANq5i736xV+s9zajNUnbJhAcBX09BHp80mnnH4csGp/031/EBKhE69Vdaa/ntAXJ9eOvAEVIQFKyuUA35w0jucvMfX4NXWdut3JaF6gOtCdUa+fOB8nacSCQz1Stik2L24bBKdSeLW1XWIdhkpLsAkXBUpeLeg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by LV3PR12MB9142.namprd12.prod.outlook.com (2603:10b6:408:198::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Mon, 25 Mar
+ 2024 16:19:20 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
+ 16:19:20 +0000
+Date: Mon, 25 Mar 2024 13:19:19 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Peter Xu <peterx@redhat.com>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: Re: [RFC PATCH 1/8] mm: Provide pagesize to pmd_populate()
+Message-ID: <20240325161919.GD6245@nvidia.com>
+References: <cover.1711377230.git.christophe.leroy@csgroup.eu>
+ <54d78f1b7e7f1c671e40b7c0c637380bcb834326.1711377230.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54d78f1b7e7f1c671e40b7c0c637380bcb834326.1711377230.git.christophe.leroy@csgroup.eu>
+X-ClientProxiedBy: BLAPR03CA0158.namprd03.prod.outlook.com
+ (2603:10b6:208:32f::24) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325054403.592298-1-sboyd@kernel.org> <20240325054403.592298-4-sboyd@kernel.org>
-In-Reply-To: <20240325054403.592298-4-sboyd@kernel.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 25 Mar 2024 09:19:18 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Vc-oe=JVJmg4w50VB_-AyxNoWe5KotnXPzrXUfgqhpkQ@mail.gmail.com>
-Message-ID: <CAD=FV=Vc-oe=JVJmg4w50VB_-AyxNoWe5KotnXPzrXUfgqhpkQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] clk: Initialize struct clk_core kref earlier
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
-	linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|LV3PR12MB9142:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7d3e14c6-94cc-4aa2-404f-08dc4ce753b7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	v5/IRBsIVBObxqY06oC9Upim19yMjJxziQgnNAZpFrCNhbntcDh+7hegYCZKNjYcBMXAaUCiDqFOEI/J+2biiJFD6C9h8VmNBvhcc0YY7L3YyMmr08Cc4dZaX7Ox+LvmYBqT7MVkQ/fPvnB4EJ4Z1ISg0xV3k4P/yMlxi1JUlmxfoU+mWnZ12THe9PI/6IELMNLKQ2+wjprrnzcZo6h7iekfovwJ1N6IVqiF+wdbyu0VKkRcCm95tXY6WJTqMQG4CtgmMV1bx6HEIGX6lT3mzO3MS/8Zhmni7woylBVp9uplAdZCFMJQU+aSNWahpqqZ3mWbgxWiyjiSXBtLL+4MG9AfDTaWOq3mmA9YlvQ920EYYzGcXWzDRz0aDMN8EAySYN1CQJjSmWubBhGKX1b7vhpyg0DIega+ajCKYd0tqEghHkNGvwYDBkEDGv1H5B1/xww0Dt6skA3QEGPSLviJSiUZxOoEpU8mu6rjlG5lrZhvLraDBr2FfyBDk3Pp3mXELmX/DO2OPxkUDkTtO4QN89GGrQYnXtYWaIotoCx6M5ylTidvH8kHzb/40B4vDmxtqlQ3iec42xuOOUVSC+8KE+o/hzRdx+JayCXVrrAmTPS7IlDP2e4OsAQhZbhugyCqqgHa1GzUEuL95gi/Pwblfw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?CMpPP9T7RoE9moXFQG/wI96fAFoieYr6X82dNxspzDMW+sHu1JmL+buMDMCC?=
+ =?us-ascii?Q?4yzTNXtA89zWPSKHjlCsp+uCCZGc83tYHI7gNh5eGZD/C4hWq/7zfTs4PE+H?=
+ =?us-ascii?Q?FLKSLiXVFIImnlaOTkVD6krCP41pMBkzL8sLJZ+aM79sE1+bFyzbW5yr24L/?=
+ =?us-ascii?Q?hF/R11X+ACCO1vX/yEtmzuR2GCVwCfkK9aNUZINNhEJlR9HyoAuRtqA49mYR?=
+ =?us-ascii?Q?rlmT/DBio5rW3LC8BYyOuVgzNEqsavHaRoaEhS6yFosUuURTGmFI0eLARQzP?=
+ =?us-ascii?Q?ZwCm1Mn++jfETaedUesKgwyYqUYndsK5VVn74WL0rUh7RpuZ4I9IUCwbMSCY?=
+ =?us-ascii?Q?FqM7OL6Jr/4SZ30exAwDvlZ/Slsu3VN3GvkRI2tt+DNYQBxgQUdKUKtPID8/?=
+ =?us-ascii?Q?cB9tCnyJRLTb0NhAvboM5wQrM/wLe31YI+WEMXEhHZl65lpo/fLkiFlnBhPA?=
+ =?us-ascii?Q?oD7wU/C/1PVM1F9TILz8iSRGrwvhCVPlgV/CHSHpfw0kmo9gYVCEw/GjRryu?=
+ =?us-ascii?Q?qDoYi2ag7s1p83bVUt/TUaylHzHgg1Z0jOvE58PbxfE9O2BhMEXR7KIG7Obf?=
+ =?us-ascii?Q?/xyFeYXWlTasoODkLslBphCrEu7DIZSc5RqAEiAVSFU4EHCHy6Z63clBi+BW?=
+ =?us-ascii?Q?40VDSVyy3veKpU5I9/SCI946T50zsbgeu0SVy647JBt3LB7UG6LpFF34687u?=
+ =?us-ascii?Q?V/RYpPzJcQPMNQuc/ELT4IMnTVrZE1HYE7KCIllPV+FaBA4wvIvp1PUgsMZt?=
+ =?us-ascii?Q?tjT22e5ecKCjMqfBovOaL+2YpnBEsNYBgxwGfYtfVK7spzeQIVUOewbgklk3?=
+ =?us-ascii?Q?h51B+b2bysBORYILx/YSCMR1vsln97aVs2MhFw/3qYC1qgQww63OqQg798Xr?=
+ =?us-ascii?Q?FrK8d+6fPblUqgnUou3m2ljs/SLQgK5sCLYhnJGQ8WJYsOYAPwN1pnFsPGYR?=
+ =?us-ascii?Q?wqHqC8f7qryPfWCKOX6G7N0ZiirvxzjCj2RLkPQvmhJ1l5FZ+rRN4oa3/PO7?=
+ =?us-ascii?Q?5cKjrNEkyBu+8Jmk3xxku172/gl/HJ/IYVIm97seuU8jmCJBIMWYWquDVPwD?=
+ =?us-ascii?Q?IRbIkpIWEriWoC4hE16KleDx+nwbX2TrvHZRjncTLgH5BRNHdomvgHecY3i7?=
+ =?us-ascii?Q?h/8SDSZ/ozDE2wRTz9D7RWiUkrKLhErqmOJ6PzovZgDAD414aJyFyaF9gpyg?=
+ =?us-ascii?Q?AWyyJhVNKzcalyGMVr3TejoAKI9Sv2tx1XWGTsQ5ovXTrMDf7t0V+CtNmJxU?=
+ =?us-ascii?Q?Y7qMrRa5jI6KolnJVkSlo05LteFqSfUbxqyFSQpVJaqOvxuC72Lei+qCmLKX?=
+ =?us-ascii?Q?NKRYW7jzBk5ZNj3/iCVEaI72yUjwt8Y70I75+phAraPrGxToxUO5o6f2TR+g?=
+ =?us-ascii?Q?Hk5g8VESNJCGZVgeofvbmy6+dlnnyUZF0VgLRed8Qw9qDpP7f2chfAe44u7E?=
+ =?us-ascii?Q?sS9F406tVRq5/Ss/Jo/czceiwpRJw4YMwhVn4AfXuToVlFoqiYlvBlJpMPxR?=
+ =?us-ascii?Q?uOwnbzkEAQhkO4BtzzFKiFqNdZT77TQmOj+hA1Wg3jIDNztgGvls0LUoxWho?=
+ =?us-ascii?Q?Nc+wjTVfmZaXzSmlr/gdEQseHLHeMIupvAKgPwN7?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d3e14c6-94cc-4aa2-404f-08dc4ce753b7
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 16:19:20.6531
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3+Zz9A2j1imQG0SR1EXhFKxsNHL36k6WaNoume3wUwr1/SmG1quGVFXxnBsOpTUm
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9142
 
-Hik
+On Mon, Mar 25, 2024 at 03:55:54PM +0100, Christophe Leroy wrote:
+> Unlike many architectures, powerpc 8xx hardware tablewalk requires
+> a two level process for all page sizes, allthough second level only
+> has one entry when pagesize is 8M.
+> 
+> To fit with Linux page table topology and without requiring special
+> page directory layout like hugepd, the page entry will be replicated
+> 1024 times in the standard page table. However for large pages it is
+> necessary to set bits in the level-1 (PMD) entry. At the time being,
+> for 512k pages the flag is kept in the PTE and inserted in the PMD
+> entry at TLB miss exception, that is necessary because we can have
+> pages of different sizes in a page table. However the 12 PTE bits are
+> fully used and there is no room for an additional bit for page size.
+> 
+> For 8M pages, there will be only one page per PMD entry, it is
+> therefore possible to flag the pagesize in the PMD entry, with the
+> advantage that the information will already be at the right place for
+> the hardware.
+> 
+> To do so, add a new helper called pmd_populate_size() which takes the
+> page size as an additional argument, and modify __pte_alloc() to also
+> take that argument. pte_alloc() is left unmodified in order to
+> reduce churn on callers, and a pte_alloc_size() is added for use by
+> pte_alloc_huge().
+> 
+> When an architecture doesn't provide pmd_populate_size(),
+> pmd_populate() is used as a fallback.
 
-On Sun, Mar 24, 2024 at 10:44=E2=80=AFPM Stephen Boyd <sboyd@kernel.org> wr=
-ote:
->
-> Initialize this kref once we allocate memory for the struct clk_core so
-> that we can reuse the release function to free any memory associated
-> with the structure. This mostly consolidates code, but also clarifies
-> that the kref lifetime exists once the container structure (struct
-> clk_core) is allocated instead of leaving it in a half-baked state for
-> most of __clk_core_init().
->
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> ---
->  drivers/clk/clk.c | 28 +++++++++++++---------------
->  1 file changed, 13 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index 9fc522c26de8..ee80b21f2824 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -3959,8 +3959,6 @@ static int __clk_core_init(struct clk_core *core)
->         }
->
->         clk_core_reparent_orphans_nolock();
-> -
-> -       kref_init(&core->ref);
->  out:
->         clk_pm_runtime_put(core);
->  unlock:
-> @@ -4189,6 +4187,16 @@ static void clk_core_free_parent_map(struct clk_co=
-re *core)
->         kfree(core->parents);
->  }
->
-> +/* Free memory allocated for a struct clk_core */
-> +static void __clk_release(struct kref *ref)
-> +{
-> +       struct clk_core *core =3D container_of(ref, struct clk_core, ref)=
-;
-> +
-> +       clk_core_free_parent_map(core);
-> +       kfree_const(core->name);
-> +       kfree(core);
-> +}
-> +
->  static struct clk *
->  __clk_register(struct device *dev, struct device_node *np, struct clk_hw=
- *hw)
->  {
-> @@ -4209,6 +4217,8 @@ __clk_register(struct device *dev, struct device_no=
-de *np, struct clk_hw *hw)
->                 goto fail_out;
->         }
->
-> +       kref_init(&core->ref);
-> +
->         core->name =3D kstrdup_const(init->name, GFP_KERNEL);
->         if (!core->name) {
->                 ret =3D -ENOMEM;
-> @@ -4263,12 +4273,10 @@ __clk_register(struct device *dev, struct device_=
-node *np, struct clk_hw *hw)
->         hw->clk =3D NULL;
->
->  fail_create_clk:
-> -       clk_core_free_parent_map(core);
->  fail_parents:
->  fail_ops:
-> -       kfree_const(core->name);
->  fail_name:
-> -       kfree(core);
-> +       kref_put(&core->ref, __clk_release);
->  fail_out:
->         return ERR_PTR(ret);
+I think it would be a good idea to document what the semantic is
+supposed to be for sz?
 
-If it were me, I probably would have:
+Just a general remark, probably nothing for this, but with these new
+arguments the historical naming seems pretty tortured for
+pte_alloc_size().. Something like pmd_populate_leaf(size) as a naming
+scheme would make this more intuitive. Ie pmd_populate_leaf() gives
+you a PMD entry where the entry points to a leaf page table able to
+store folios of at least size.
 
-* Removed "fail_out" and turned the one "goto fail_out" to just return
-the error.
+Anyhow, I thought the edits to the mm helpers were fine, certainly
+much nicer than hugepd. Do you see a path to remove hugepd entirely
+from here?
 
-* Consolidated the rest of the labels into a single "fail" label.
-
-That's definitely just a style opinion though, and IMO the patch is
-fine as-is and overall cleans up the code.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Thanks,
+Jason
 
