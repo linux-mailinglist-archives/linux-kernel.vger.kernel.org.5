@@ -1,119 +1,139 @@
-Return-Path: <linux-kernel+bounces-117979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A492988B1FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:50:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D15D388B1FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 21:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA03B1C62E87
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:50:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89035306AB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7F55C60D;
-	Mon, 25 Mar 2024 20:46:09 +0000 (UTC)
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6BC6F506;
+	Mon, 25 Mar 2024 20:46:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="lSEECYU3"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024625C613
-	for <linux-kernel@vger.kernel.org>; Mon, 25 Mar 2024 20:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07EA6EB67;
+	Mon, 25 Mar 2024 20:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711399568; cv=none; b=LESjkKtQ/gM7GUOhN4lkm9As3hioB8lAd7anLvS8YWnKpj5IxAWBeJ09CSSrMZnEZO3jxdiJUFgM7APK+jKR7t3iOeCyht9m4rfQGYkNQDys8XygcJjg4t8hEIP5j/y6mlG6x6R5pO3v6AMMfbU1vG74gAiRdYOsVjX+BYHEkQw=
+	t=1711399579; cv=none; b=LydA+DRq5WlgtiARx1KixhFL4/T8JqvveQsoRTQ0tTC+uVRfRkmL0H01A6IcyNXsiexuGwImKCPOCI4gNcmguXdj+ItZsl2339QsJYZt8C+ngXr5qS749BwH1d5mfLziiErf9rM7dy7NaESMm0iPu5uXQ7LVHGBn3OD8j97iIeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711399568; c=relaxed/simple;
-	bh=VFo1mOaMAwLKVHt9nXePQ0nAnhVGcTNZ8psz1WZuNgA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=rVlFKAgq/YJun/QF74pyPGqIlYreb1PLg5D/ttCaIKnia+foVTja/NXI54INfpZ4rR1ajztppFf5rJdprqrgjMGt+If7Wk5aUPQJiJGjZWPAeuiGsSTNtuD4Mlx6YobBy7zhEdG44LbD9fiEY52vyfBqlezq/T0szB/l5c+C6X4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 612F2E0004;
-	Mon, 25 Mar 2024 20:45:59 +0000 (UTC)
-Message-ID: <0eeb142e-1c74-44f8-9f58-365bee3a670f@ghiti.fr>
-Date: Mon, 25 Mar 2024 21:45:59 +0100
+	s=arc-20240116; t=1711399579; c=relaxed/simple;
+	bh=Wv7VhIdeUJHPXBsBYbD7ljp3ZdS46aqAD9sFXeifFa0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q/ouA6HwpM8qbHxxzIaPzNosoUWJd6V+TjmRtCfZQhwhcLFBWkNsdXsJ4i5GhlS8YwSmsxDZKlSQrUMJjHHERjHFS0Vh+Lm96Yqb2BNKFB2uGz73jv+FhTMP2+zVb5C8noTX28FPccjhJgMcN/QJaTP+Rai5cl2Dv+UmFmPRG5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=lSEECYU3; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=JnI6XuHiHhiKwlcQJZJOfCWTvngxEvdDS+1Es7Phmhw=; b=lSEECYU3VyvlwAFJYt0OtziTzj
+	dCNMTREbLqOswCvNJADcu0ds0hYDV6QHjRqkt8DCRPFUyAeCoBWXxhnq0pXYUmI7ibDbWBVr2Sybk
+	zSdzUNF+cWsAVljrHPQ8VzGEV6acRRROh4/RdXJoPPB+77whcUms8cnXV5FwrnVErhq7lcZnilYGH
+	yKswlE+2KoEc78bE8/s0DPOcbm2memmkMQhi2pfQE9PHV7UZP2SlJ5Uvmbu74Si/BCT+FZEMjbMCW
+	hAVqEdev4sCNuEl7Rqd5Cu7sWNQ4/MWYE5CTGUSK466bVih5DzgCbZgYTgisC//9dcVCSAowLzZTP
+	xvDN6PjQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rorCp-00GZcD-2W;
+	Mon, 25 Mar 2024 20:46:08 +0000
+Date: Mon, 25 Mar 2024 20:46:07 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Steve French <smfrench@gmail.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	CIFS <linux-cifs@vger.kernel.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Christian Brauner <christian@brauner.io>,
+	Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>,
+	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>
+Subject: Re: kernel crash in mknod
+Message-ID: <20240325204607.GX538574@ZenIV>
+References: <CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com>
+ <20240324054636.GT538574@ZenIV>
+ <3441a4a1140944f5b418b70f557bca72@huawei.com>
+ <20240325-beugen-kraftvoll-1390fd52d59c@brauner>
+ <CAH2r5muL4NEwLxq_qnPOCTHunLB_vmDA-1jJ152POwBv+aTcXg@mail.gmail.com>
+ <20240325195413.GW538574@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] irqchip/sifive-plic: Fix error handling of
- of_property_read_u32
-Content-Language: en-US
-From: Alexandre Ghiti <alex@ghiti.fr>
-To: Qingfang Deng <dqfext@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Atish Patra <atishp@atishpatra.org>, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org
-Cc: Christoph Hellwig <hch@lst.de>,
- Qingfang Deng <qingfang.deng@siflower.com.cn>
-References: <20240322090002.311645-1-dqfext@gmail.com>
- <0a1e9afc-e999-451f-8d4f-670f7c15e609@ghiti.fr>
-In-Reply-To: <0a1e9afc-e999-451f-8d4f-670f7c15e609@ghiti.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240325195413.GW538574@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hi Qingfang,
+On Mon, Mar 25, 2024 at 07:54:13PM +0000, Al Viro wrote:
 
-On 22/03/2024 18:08, Alexandre Ghiti wrote:
-> Hi Qingfang,
->
-> On 22/03/2024 10:00, Qingfang Deng wrote:
->> From: Qingfang Deng <qingfang.deng@siflower.com.cn>
->>
->> nr_irqs will not be initialized if of_property_read_u32 returns an
->> error. Check the error first.
->>
->> Fixes: 8237f8bc4f6e ("irqchip: add a SiFive PLIC driver")
->> Signed-off-by: Qingfang Deng <qingfang.deng@siflower.com.cn>
->> ---
->>   drivers/irqchip/irq-sifive-plic.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/irqchip/irq-sifive-plic.c 
->> b/drivers/irqchip/irq-sifive-plic.c
->> index 5b7bc4fd9517..f436b61d74b0 100644
->> --- a/drivers/irqchip/irq-sifive-plic.c
->> +++ b/drivers/irqchip/irq-sifive-plic.c
->> @@ -428,8 +428,11 @@ static int __init __plic_init(struct device_node 
->> *node,
->>           goto out_free_priv;
->>       }
->>   +    error = of_property_read_u32(node, "riscv,ndev", &nr_irqs);
->> +    if (error)
->> +        goto out_iounmap;
->> +
->>       error = -EINVAL;
->> -    of_property_read_u32(node, "riscv,ndev", &nr_irqs);
->>       if (WARN_ON(!nr_irqs))
->>           goto out_iounmap;
->
+> Note that cifs_sfu_make_node() is the only case in CIFS where that happens -
+> other codepaths (both in cifs_make_node() and in smb2_make_node()) will
+> instantiate.  How painful would it be for cifs_sfu_make_node()?
+> AFAICS, you do open/sync_write/close there; would it be hard to do
+> an eqiuvalent of fstat and set the inode up?  No need to reread the
+> file contents (as cifs_sfu_type() does), and you do have full path
+> anyway, so it's less work than for full ->lookup() even if you need
+> a path-based protocol operations...
+> 
+> Does that thing have an equivalent of fstat() that would return the
+> metadata of opened file?
 
-So this is actually already fixed in 6.9-rc1 by this commit: 
-956521064780 ("irqchip/sifive-plic: Parse number of interrupts and 
-contexts early in plic_probe()").
+You do have a FID there, so doing ->query_file_info() just before close,
+using the result to build inode (with type and ->i_rdev taken from what
+you've been given by the caller) and passing it to d_instantiate() looks
+not entirely implausible, but I'm really not familiar with the codebase,
+so take that with a cartload of salt.
 
-Thanks,
+mknod() usually is followed by lookup of some sort pretty soon, and your
+lookup would have to do at least open/sync_read/close just to decode the
+device number.  So if anything, *not* setting an inode up during mknod()
+is likely to be a pessimization...
 
-Alex
+If we did it in vfs_mknod() callers, that would be something along the
+lines of
+	err = vfs_mknod(..., dir, dentry, ...)
+	if (err)
+		fuck off
+	if (unlikely(!dentry->d_inode)) {
+		if (d_unhashed(dentry)) {
+			struct dentry *d = dir->i_op->lookup(dir, dentry, 0);
+			if (unlikely(d)) {
+				if (IS_ERR(d)) {
+					fuck off, lookup failed
+				} else {
+					// ->lookup returns a pointer to existing
+					// alias *ONLY* for directories; WTF is
+					// going on?
+					dput(d);
+					fuck off, wrong thing created there
+				}
+			}
+			if (!dentry->d_inode)
+				fuck off, it hasn't been created
+			if (wrong type of dentry->d_inode))
+				fuck off, wrong thing created there
+			OK, there we go
+		} else {
+			complain about bogus ->mknod() behavior
+			fuck off - it hasn't been created, apparently
+		}
+	}
+at least in net/unix/af_unix.c:unix_bind().  So the minimal change
+would be to have your d_drop(dentry) in that codepath followed by
+cifs_lookup(<parent inode>, dentry, 0) and checking the result.
 
-
->
-> You can add:
->
-> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
->
-> Thanks,
->
-> Alex
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+But I would very much suspect that fetching metadata by fid before
+you close the file would be cheaper than full-blown cifs_lookup()
+there.
 
