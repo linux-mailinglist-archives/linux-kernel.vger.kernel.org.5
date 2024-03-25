@@ -1,152 +1,79 @@
-Return-Path: <linux-kernel+bounces-117768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07F8B88AF56
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:06:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7842488AF66
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B70E1F618F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:06:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3138A2E306C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:07:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF75E1B59A;
-	Mon, 25 Mar 2024 19:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0464A182A0;
+	Mon, 25 Mar 2024 19:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZmWfaYEO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UlQwFWfx"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8551B80F;
-	Mon, 25 Mar 2024 19:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F999DDBC;
+	Mon, 25 Mar 2024 19:06:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711393529; cv=none; b=o8z40Gd8bG5byqCckKd2TErCR61ORRpz6SntK//ylS3AqU8tEkeVvWdRe+Xk0V7NavpoBg9Dht+RJFcNaufreEvv6WVO39xNhNr4CypchNFboFrKHB1XbwQiAtbyAtaCq4tGlV6djW763xIGlZrLF+OjxlT9IcS6YQKzQ3aWGbk=
+	t=1711393571; cv=none; b=CjCt3nC5ZkLv3cI+n6924dVRU/O5sctUyJgbloGqfUb74OTl1O/6DQqSEXtai7NmVQbajJwTzy4yOIYUdD5/LEoicpXLJeKgO/lwqAwVByEkn+kGYh+FM+dC21zBfxZREhsf02/Lz3e+iVOYZY7CZAjc2ZdUwYWYVCLCHnRthRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711393529; c=relaxed/simple;
-	bh=ZgYazPeTafdm9oC34JiziT0P9rS4Rvc4pczqufKqjXQ=;
+	s=arc-20240116; t=1711393571; c=relaxed/simple;
+	bh=jwz4Guifdf4DVGICfDOmo/2GnJ02m5fob7+pPJ05kZA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aVR3x5XrQmnPxbiCL6JpYcVBWMYbk6ASoPWxJ9c1PLW5BL+NOGsHc7sjNzGJSAT77L0+sqzN9Hc53v+M+zXOymSyjIUIXLVjUn1pKN4xEZwLsUxSkZuVyMPVGRQiKKYejz1lqYBv5FujF/xskHGNaBLEt3oDaq6G6jMbGscM5L4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZmWfaYEO; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711393527; x=1742929527;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZgYazPeTafdm9oC34JiziT0P9rS4Rvc4pczqufKqjXQ=;
-  b=ZmWfaYEO5p2TfsSf+mCNj2VAbTP3WTgXAqVdudhG4NiiyqGZJTgpyac6
-   VUo5jPAl+r1RkOPgZZQFxn3LH9PU/MCHxuRzkvRTxtgaoPjR89JyAqxVI
-   L/MmxaOTiqqh2fdNnlQ2oeK6TEw7OQEXiiXMg99D/5RoEsfQdn27Hnz0j
-   tZv+0HX8LCE9eVRSll1mMkrh0ta+0PvkuDGSLOvcKsn8S5Iy2Cve36SX5
-   ZFvESitAfICDc+XBuuXhihSDNsBgou/VkJ4f38QTaogoYPMtZM3dCryL/
-   E5gcCLM+Up+08OF5s02+ejHN1Ipi2bhCiI77kcGZgRazr8VUPKR2n3ePF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11024"; a="17557571"
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="17557571"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 12:05:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,154,1708416000"; 
-   d="scan'208";a="20388398"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 12:05:26 -0700
-Date: Mon, 25 Mar 2024 12:05:25 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
- for unsupported cases
-Message-ID: <20240325190525.GG2357401@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <1ed955a44cd81738b498fe52823766622d8ad57f.1708933498.git.isaku.yamahata@intel.com>
- <618614fa6c62a232d95da55546137251e1847f48.camel@intel.com>
- <20240319235654.GC1994522@ls.amr.corp.intel.com>
- <1c2283aab681bd882111d14e8e71b4b35549e345.camel@intel.com>
- <f63d19a8fe6d14186aecc8fcf777284879441ef6.camel@intel.com>
- <20240321225910.GU1994522@ls.amr.corp.intel.com>
- <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CoL2qXDxy4EcjCe6EgRzKyTIh6IWOJ8nyJZEd+VXzF7orLNGt0qZK1+c8EMbq7muNQjsz6TAYeetMLAKeL1ekBs2+dLKTupB08bgneTxs1GOuKneAEU+AOzuZqXZ50LYnWtskuMMonvlKdxjHN86awJ2zTlAODO0u2ebPq9oMkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=UlQwFWfx; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=dcd40kK2ong+ZU27Mi0hJpX7j3R5bDGXjjZigB4ZdqM=; b=UlQwFWfxYxuB+qq4RNafJxY6nx
+	v9V5gb7tQGvnSafmEpNobANBmUZNkhoDvWNEe4uF30p88zenNBQkDIUXWAM2qQLDYgM1MEIbHO3az
+	gc2i1vF3SHtg+xktVxYrQ0AnStgkcWu2Ct1s3p3pgP769eoExsai1ZxSgmLDWyqw7+xb5EzNWaZRV
+	brQEOj1oNz47JoR18Nn68dKx2gWghcnN7pgQe8XK2Dvnalzuvd7/BBR90gwu8kyG82oVZ2UiXDQPn
+	dZU2Hcg/4rPiOPoipMij19WX3h1PruxZp5SoberAXaUES6UkcEimylBmEZg/ZRugJbYq84ny8dFJn
+	GMZmOFuA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rope0-0000000H8IP-2NtX;
+	Mon, 25 Mar 2024 19:06:04 +0000
+Date: Mon, 25 Mar 2024 19:06:04 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de,
+	mcgrof@kernel.org, djwong@kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, david@fromorbit.com,
+	akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH v3 07/11] mm: do not split a folio if it has minimum
+ folio order requirement
+Message-ID: <ZgHLHNYdK-kU3UAi@casper.infradead.org>
+References: <20240313170253.2324812-1-kernel@pankajraghav.com>
+ <20240313170253.2324812-8-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <96fcb59cd53ece2c0d269f39c424d087876b3c73.camel@intel.com>
+In-Reply-To: <20240313170253.2324812-8-kernel@pankajraghav.com>
 
-On Fri, Mar 22, 2024 at 12:40:12AM +0000,
-"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
-
-> On Thu, 2024-03-21 at 15:59 -0700, Isaku Yamahata wrote:
-> > > 
-> > > Ok, I see now how this works. MTRRs and APIC zapping happen to use
-> > > the
-> > > same function: kvm_zap_gfn_range(). So restricting that function
-> > > from
-> > > zapping private pages has the desired affect. I think it's not
-> > > ideal
-> > > that kvm_zap_gfn_range() silently skips zapping some ranges. I
-> > > wonder
-> > > if we could pass something in, so it's more clear to the caller.
-> > > 
-> > > But can these code paths even get reaches in TDX? It sounded like
-> > > MTRRs
-> > > basically weren't supported.
-> > 
-> > We can make the code paths so with the (new) assumption that guest
-> > MTRR can
-> > be disabled cleanly.
+On Wed, Mar 13, 2024 at 06:02:49PM +0100, Pankaj Raghav (Samsung) wrote:
+> From: Pankaj Raghav <p.raghav@samsung.com>
 > 
-> So the situation is (please correct):
-> KVM has a no "making up architectural behavior" rule, which is an
-> important one. But TDX module doesn't support MTRRs. So TD guests can't
-> have architectural behavior for MTRRs. So this patch is trying as best
-> as possible to match what MTRR behavior it can (not crash the guest if
-> someone tries).
->
-> First of all, if the guest unmaps the private memory, doesn't it have
-> to accept it again when gets re-added? So will the guest not crash
-> anyway?
+> As we don't have a way to split a folio to a any given lower folio
+> order yet, avoid splitting the folio in split_huge_page_to_list() if it
+> has a minimum folio order requirement.
 
-Right, the guest has to accept it on VE.  If the unmap was intentional by guest,
-that's fine.  The unmap is unintentional (with vMTRR), the guest doesn't expect
-VE with the GPA.
-
-
-> But, I guess we should punt to userspace is the guest tries to use
-> MTRRs, not that userspace can handle it happening in a TD...  But it
-> seems cleaner and safer then skipping zapping some pages inside the
-> zapping code.
-> 
-> I'm still not sure if I understand the intention and constraints fully.
-> So please correct. This (the skipping the zapping for some operations)
-> is a theoretical correctness issue right? It doesn't resolve a TD
-> crash?
-
-For lapic, it's safe guard. Because TDX KVM disables APICv with
-APICV_INHIBIT_REASON_TDX, apicv won't call kvm_zap_gfn_range().
-
-For MTRR, the purpose is to make the guest boot (without the guest kernel
-command line like clearcpuid=mtrr) .
-If we can assume the guest won't touch MTRR registers somehow, KVM can return an
-error to TDG.VP.VMCALL<RDMSR, WRMSR>(MTRR registers). So it doesn't call
-kvm_zap_gfn_range(). Or we can use KVM_EXIT_X86_{RDMSR, WRMSR} as you suggested.
--- 
-isaku Yamahata <isaku.yamahata@intel.com>
+FYI, Zi Yan's patch to do that is now in Andrew's tree.
+c010d47f107f609b9f4d6a103b6dfc53889049e9 in current linux-next (dated
+Feb 26)
 
