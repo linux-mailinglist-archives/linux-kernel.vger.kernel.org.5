@@ -1,150 +1,164 @@
-Return-Path: <linux-kernel+bounces-117829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-117830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F32E88B02A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 20:37:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC05A88B5F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Mar 2024 01:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2E6A1C3ABCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:37:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59AD2B2CF94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Mar 2024 19:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AD01BC3C;
-	Mon, 25 Mar 2024 19:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C7D1C68A;
+	Mon, 25 Mar 2024 19:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Gr2SJQ88"
-Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11021006.outbound.protection.outlook.com [52.101.85.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j+UlkKyz"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E683DAC18;
-	Mon, 25 Mar 2024 19:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.6
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711395461; cv=fail; b=PiA2/XIXqHXWqp3STB0QBQUYw/y7yYsmzWaXBGDM/dyj+ipqbwkkEnignd/Ziad6jAjS3q5cefoJuphyKyznZsNbd0WCASxRA6fOMUWZPxesLnPHwRCUY+VqF1FGiAiQmdU3brGxbH02LnRketQabVDBGHPj2J183xLipbMXolE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711395461; c=relaxed/simple;
-	bh=lAMxxgF+u4TJZNHH02UAXAIQ0Hts2AmZqLnvyAbC0Wg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=V05kc03RqA+QDNZ+/jmd2hvQiWpIId95ctgUg6aDF3vuTr1k4tCeb12sU8tD5y8fXxzyA6HxJrM2pDm5IzrpMFbfJSHYq3VWom6DaqUs1rDRmvgRpE07jBNXWvcAqLzlqmauqtvUI2AdQBvjhG/E2KVX77RYzM3JvtDx16avRWI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Gr2SJQ88; arc=fail smtp.client-ip=52.101.85.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YkWZspZjzZ7JS7Jqn5w83zqqjgj0Yns1glnaMi2DlXyasWCkj0YQIqk13oKoVK2COwX+TU3vggt+OkI6nsnZLjnibbgitiIvXFxNVxdjqzvEyS6duN347aWfjMq8hYMP4tUNdWKZ4u7ZK4zLFlgFqjJpcNhATLcxZseKxVLffEeZRCuYh++CGtsgyo7BmuS+8a29v+55HvOYr5DDGduTz8XwNywfuqlkEAmwNQvNn2sxY50hMOCWAhbJfSlxrDnN3xc/i+j9fqtycDVZ7iWWa6N0+RnbKrnwdjcRXd9CS2eq6T8j3n38+PxeZTHc4t7P3GofXrdY9GeLQSnxbG2lmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lAMxxgF+u4TJZNHH02UAXAIQ0Hts2AmZqLnvyAbC0Wg=;
- b=ONq/vVi1Dxm1a1VTII0XQb6dJYIdNwQ+3Zjf67wtVKkktRZMGG4LOH4RVgQbpf8AtTDOnhsUqlsVBZfxGX+/ojiiJ0G8/VuR8yrqQ1eQUHDh5rfNeWHpn9O0QH7dg2KeRKfbvQP6AXvDavU2WNP7quBl6w61J7+IZ17+zA9guT9rQeCLrZJl+BDKqAxY7tZP16CqQ0UwqNXfzFiokG/b4m0+9cWYxoE7zc/TRW8NiT21BRkobSJC2Xo3YrSviE6ojE+7u16YHpRb0GuhhJ2AfEIkA6HxAHvgTzqpVgKgzans8Vg3xNzo0zzkXhASR9RyOVpXU/FhCk3gyXZQiTSJAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lAMxxgF+u4TJZNHH02UAXAIQ0Hts2AmZqLnvyAbC0Wg=;
- b=Gr2SJQ88v/kkAX27Zvu75ACNS2CCjPgc77a90Zj5YxjFT1Y5/+meOyofIhHVJFh6aLr+jCoOYcdsFx+R/rqb3YS9diPSeD44x+Vn1MseSLp4hMQRZHddt9Lxtq2SRs57GY/8geOBKKwRLjGkfMR7jtXPom1nu0zjeCBXbYFq5WM=
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com (2603:10b6:a03:453::5)
- by BYAPR21MB1319.namprd21.prod.outlook.com (2603:10b6:a03:115::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7430.20; Mon, 25 Mar
- 2024 19:37:37 +0000
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::70f:687e:92e6:45b7]) by SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::70f:687e:92e6:45b7%4]) with mapi id 15.20.7430.017; Mon, 25 Mar 2024
- 19:37:37 +0000
-From: Long Li <longli@microsoft.com>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
-	<kotaranov@microsoft.com>, "sharmaajay@microsoft.com"
-	<sharmaajay@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org"
-	<leon@kernel.org>
-CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH rdma-next v2 3/4] RDMA/mana_ib: Use struct mana_ib_queue
- for WQs
-Thread-Topic: [PATCH rdma-next v2 3/4] RDMA/mana_ib: Use struct mana_ib_queue
- for WQs
-Thread-Index: AQHaeh7zqLhHzozrgkqlV+gPDddvD7FI428g
-Date: Mon, 25 Mar 2024 19:37:37 +0000
-Message-ID:
- <SJ1PR21MB345799416085338BEACCD452CE362@SJ1PR21MB3457.namprd21.prod.outlook.com>
-References: <1710867613-4798-1-git-send-email-kotaranov@linux.microsoft.com>
- <1710867613-4798-4-git-send-email-kotaranov@linux.microsoft.com>
-In-Reply-To: <1710867613-4798-4-git-send-email-kotaranov@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=38259e53-b95f-43ce-b6be-809e3db5a8f2;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-25T19:37:14Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR21MB3457:EE_|BYAPR21MB1319:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- czpdeLucfnulSewI2PUCv1qPnpONwFIYqr+oG8xCPo4jLmNGpaqmSj2ioY0VutBKyvgySlYkDa3m2hhXz1Jy/JzdKPeu1ph2944+KhEYG5Bu27Bn7xgzU82SbNYxPG/StAGC9QmN/3QxEGsyn1Dgygl5TQj9EmeYi0No9+Fa+MwB4VhT9Z0K+5v/ef3vYSNEOAjLUGU4tzBD7AIgRE/xaXAdn4tsW9GBjjO3HjA5lK/6du2u8Jqp8jzznsddflmNRwcMwUoOxZUwb5V9r7kY8+feh7qyJ29yhoA9bJoinplNVe4n79Scbk+3m5UDw2wslcecQ41Blx/Hdj6v80yg/DDh2I83xVGn+5Gr7aI+uIzTEgFXm59Tr8xqSBb6BSMa6nxhoFRxvYZWV21T1QreXXcXb/DfybCy1sZRgnePIwCWsmiwCAJ8KkVKg5W9rZZrwZO+pbZmERbrsCg0JQ1bxIjnPj+yeHzdgByQqBbo0iiuIONbTLSvCqL4PxSLQgjg2Cn/yfMy7NmVyQvngbsFkEzcYANC4qrg3iuFHKbsIFxqNI2AVhLxvBJgutAXTSiNJO3zcyKu4Psfqyjco9SRTZ2bX2raaAOGMTAB9Y1J8oe6SFgwVU+vYVohexIHPqmqqZP4NhN2yRocUJZ4msrCukFrRi1OiCtHpfDM3dS7E5Y=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR21MB3457.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?NnqeLR94l31vhUNeoBanhEojitZLoT+/XUlI4FLe5JyXqWRbbguNKrX1g0oF?=
- =?us-ascii?Q?O2VkZBiebvY6AgVJZ1hKwCM5lb07JblmGVzZlLNsfjN5MBwyRpEQBmvkhth9?=
- =?us-ascii?Q?JrW6rzaecZFs28a/z0YavZj7AxMNJRCZWC2XAYZVnm9FhzdPl9b+B5LFAIYQ?=
- =?us-ascii?Q?bk1K5Vlp1896begB+fNstQYbZF5UnFzxeSRtoVbp2dFNblYxnwn95L18KSYK?=
- =?us-ascii?Q?HKkIPLIUB7diz2zUsPLLJYZWGPsML4amWvjQTc+bJwBAoqXguofxNm+5qKOr?=
- =?us-ascii?Q?IIL5ejVjfcjiskL+/bQzCxuRJ4hd7IVKP61Em7P7el4eEAgttMdviNtkqtYW?=
- =?us-ascii?Q?2f9unTabWROJZl+yTF+mJhXX3OT1yLK7DjtrQAwU+b6a1s1gg/5h9qHl8KY9?=
- =?us-ascii?Q?/dOmceGyhoUEndgI+d9cyqtKWpkjSWx59paHZF+QYY2VJ8jcCmqJNU0fMAiZ?=
- =?us-ascii?Q?ZdEJoZjh5AR4peiGIQPSC85R9RXiBz9/1z/CEQ5xLtvmD4ZF8HS0rk6fLPed?=
- =?us-ascii?Q?kvPBdGxjZjzRihmgFuRJCIOfBI51nh1qTk9ViHfSLVMUu84DzZyCmMWl732C?=
- =?us-ascii?Q?3S9Y0tgD992evEMNDJ2nxPYh2wttuhrOpKgJeDrjBCw8Qg6lSCC1HGVzX3SC?=
- =?us-ascii?Q?CZ08aruxfeIsEXc09jjLEn+42a7ZcPNhF74X0m1unUgRbJRVcj0P/IIVyWak?=
- =?us-ascii?Q?iQ0DPuC9cgsR84kZ32UhytEppSiQSGMDeni4cATSVbmeUW72PCyGo41N+eV3?=
- =?us-ascii?Q?mAOELUMob32t7MrUKiZYxBjrNVgfJLdqbjxQp+S6wdlks/E/r6NFFrVcEm9O?=
- =?us-ascii?Q?QpsmmKYLb4LerRbn5Xu3aKfGXE9+7uxKiL0D7KM3cmdHhBM92WLk6ZFefcU3?=
- =?us-ascii?Q?fjId0skvJhmMyLqIOb/OyIdT1aqTyub9iPKINfAmWbfJDlTuoQYkuohFp8VF?=
- =?us-ascii?Q?lvul/h34WuCDXbEMpr9XMVmLC9J6CAM2upvHpH4W6+3ImFXzqBVNOHfwoquj?=
- =?us-ascii?Q?Twi3Y06gqyoUHDsckcDScMPQBA+ojsBzqMqDXFYgqSqwcoZaSYuo5GQCjqHH?=
- =?us-ascii?Q?mhOF/lc6/JR60MraSxvJgZeneqg9yUihwSinhEGKzMFvJBrGBijMHK5JV2vh?=
- =?us-ascii?Q?lcz5Ip390p9lX1iFVGknawA6GHnM5XaKGmXyeCfSJGizH2zgbdDFK9k49w6r?=
- =?us-ascii?Q?zkSbY4MB2yavt0BF7YTZofowc4Ftuud2AdS1IejOycwGBH9/LKj9R6ys/Ohe?=
- =?us-ascii?Q?6xXi6urzlrgUo5jaH6WulkyOy9dKHwsoO86rz1fOla0OWR97Xsy4zGZnVpa4?=
- =?us-ascii?Q?UwZczQtfYv4PVn+a+6HYy3wYLLFvl3JT0NCJDkfeMqLxPcnz/1n9Qjpi1JPD?=
- =?us-ascii?Q?1dxHq43KJC72OizqcEnv+u2+TGk4RtxFQvLQkirsDF4qcqDY+Nk3cUxRIyLH?=
- =?us-ascii?Q?BDEEK7LyZsY0j3JXzpmwjGzdkF6WrI0jr/knXVj/B6BLn9ap/nN5n6hq238i?=
- =?us-ascii?Q?uTKGXwiFtGvSQYuSRJ2M+LQVISHR3od7geutThpP0feWSEK4z8VuvNmIHN9O?=
- =?us-ascii?Q?/NRFfEpDCTOYYJlo9rMbLP3AYKsKj/0+wkYP7iyP?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72ECD1946C;
+	Mon, 25 Mar 2024 19:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711395560; cv=none; b=Hkn1mT8Xx9tTFYxTdt7sZjdyaNy7EDmbOFp6MNvsEJ7II0SFOYGNNU51piuDkDhrLgPnq3c1ASnp2I6dN8HOpu4DYCp7XQHNwqy9dlsh9++O9zSuO3y92m06VAe6nAoK+V8T/j66TWsqIA5AzWylCd9DNUoeCcUUThJOKkjXS+Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711395560; c=relaxed/simple;
+	bh=CsVUf50sObcUku/mroVotClxV0W8lcZ0puo+cGBDLrk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VQCafsbMXivNaDfNTRScS/stvuEphcTFPiMi12H22p1/+drodkwr4nF3hVh99m25MhlGlDIacxZgOiEAv0TT8BQhnClr2VLA7cOjGkY//BfTuQT5nsEjShNZcrizXRX7a5M1aP4v2ELtHKuV07ht1KNGh4IslZa13hndBY3BWqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j+UlkKyz; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d4886a1cb4so62765271fa.0;
+        Mon, 25 Mar 2024 12:39:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711395556; x=1712000356; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NCiFMH0263F/w1Boz/4ACSdzIpxCPhV2O6OirjCh0B0=;
+        b=j+UlkKyzdKkiScGAeDI+RgtrBEyKcHPSuRhxUFAEEjRimySNRdiJG8GYK8CyRPL3UC
+         mcj8PEFeEqII3+K1uTLqqsur/s6ouCNqiODCofqJCGEV+sUGEVrWCBeTcXLGayw6Dqmm
+         VmJf/NUvlv0ZH0WBIPEkPvMtElmTlbkX4xuX/hI1jMp8+YGNQHC8na61VDv2CEX+qVQX
+         15rpB91WUwWWp2BigLic0WqoU+hEa48bsuL4qGHn9jDrbvi4ZutqjVQnrcXW61G3kT3k
+         5qrM4QUbJIFLAcf/tIj+MyNPrqkWHXLe1Ys1RkIF8uDQ9q/5psz0r52MFpUS8ErDTd6B
+         vBCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711395556; x=1712000356;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NCiFMH0263F/w1Boz/4ACSdzIpxCPhV2O6OirjCh0B0=;
+        b=ou+wZa9ILVEHpNW26MYQd3xftQ6HVTviGGWU4j8X6AHL1F36H45IPIx+TjDDr0iCwn
+         tnNx+XpO/T/Y/zw+94Dc/8kwro5sOKZuM0Usv8If4fls0H062UZ94UFDTVsaH0w7+Ufg
+         RZVido5I6OzP4ySSS7lppbQnO5sSaHQ0XjkwPFHrPx8oNFZDWO/BXz8mOwTz8FmDFZQL
+         KWAaO2EThOwddYID/ZudlL3OmAIScYGhAAOSsOy1o/KZwcqjr9Tjws696x1jo9Xiy+Rn
+         /Ap4GQ5aBHCZ0LtqDb7E1gPb5jfBHv4GPwccPU3yqCid8TD351f3xiP6FeIlUC5rRDDN
+         73pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNiDxMh3rCVbK6mp2H+TKHRoN3z3USH2wJxWLiE4UWNYCKHm8DOlF7Ig+mPl28b2NtwNSHEpHZ+7qmPCbTkfemMvfAQyFXGssWUjJZXB9gXh4k7f4VP4yF4mHR0lMXLL9ddo6g51IPrzVhG9PBNh4CZhfo02JnAW7ZogWRmGKN1+8VMsE4
+X-Gm-Message-State: AOJu0Ywjw1tbnHGJEkOReIBKUAfDqHTmE5SH3v5kSw/PwlsSaWFFYw5I
+	60w8ehNaQncD9pPbOBi+DAJU7Bfa+CCq0bsrvpspXzv4VCnRdtV/fpPru/1bPC/k2dSyQe9IH36
+	c1LaO2CP0ZFyl5e2g3E8FDvQIoCQ=
+X-Google-Smtp-Source: AGHT+IEO0HQYH0RAUefHQ88oKPd8VrLRPkmE6nkd2e0YQtTaamD6D0keaaFiiiGRD8g+GOmhBLFR4FTEiV/wSwncUdI=
+X-Received: by 2002:a2e:8e86:0:b0:2d4:8fd0:b5f2 with SMTP id
+ z6-20020a2e8e86000000b002d48fd0b5f2mr5556267ljk.7.1711395556273; Mon, 25 Mar
+ 2024 12:39:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR21MB3457.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f172bd43-5c64-47b7-942a-08dc4d0306b9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 19:37:37.2297
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Bfzm7IQizeZ48N+66XYUf9V8vSV8UEaKwmn6yH9PlSvFKkzo0EyG+tzvou/TRBmkTL1KsPCzrpDUfeuybmFVRg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1319
+References: <20240314084412.1127-1-johan+linaro@kernel.org>
+ <CABBYNZJV1htg46Gyu=7_iUWdukM+rHLitsLjxmWWYFGXty3tVw@mail.gmail.com>
+ <ZfMStHjwtCT1SW3z@hovoldconsulting.com> <964131ff-293d-47d1-8119-a389fa21f385@leemhuis.info>
+ <CABBYNZJ0ukd_8=SFzy8CEwgP7hV5unodca0NZ2zDZh+jPJsEFQ@mail.gmail.com> <ZgGzWWV4Lh2Nal--@hovoldconsulting.com>
+In-Reply-To: <ZgGzWWV4Lh2Nal--@hovoldconsulting.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Mon, 25 Mar 2024 15:39:03 -0400
+Message-ID: <CABBYNZJaXUhu1A+NyVT-TAJw49zcV6TMdGeVy2F+AVKWBOVC-g@mail.gmail.com>
+Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
+ exists in DT"
+To: Johan Hovold <johan@kernel.org>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>, Johan Hovold <johan+linaro@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Subject: [PATCH rdma-next v2 3/4] RDMA/mana_ib: Use struct mana_ib_queue
-> for WQs
->=20
-> From: Konstantin Taranov <kotaranov@microsoft.com>
->=20
-> Use struct mana_ib_queue and its helpers for WQs
->=20
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+Hi Johan
 
-Reviewed-by: Long Li <longli@microsoft.com>
+On Mon, Mar 25, 2024 at 1:24=E2=80=AFPM Johan Hovold <johan@kernel.org> wro=
+te:
+>
+> On Mon, Mar 25, 2024 at 01:10:13PM -0400, Luiz Augusto von Dentz wrote:
+> > On Mon, Mar 25, 2024 at 9:57=E2=80=AFAM Linux regression tracking (Thor=
+sten
+> > Leemhuis) <regressions@leemhuis.info> wrote:
+> > > On 14.03.24 16:07, Johan Hovold wrote:
+> > > > On Thu, Mar 14, 2024 at 10:30:36AM -0400, Luiz Augusto von Dentz wr=
+ote:
+> > > >> On Thu, Mar 14, 2024 at 4:44=E2=80=AFAM Johan Hovold <johan+linaro=
+@kernel.org> wrote:
+> > > >
+> > > >>> This reverts commit 7dcd3e014aa7faeeaf4047190b22d8a19a0db696.
+> > > >>>
+> > > >>> Qualcomm Bluetooth controllers like WCN6855 do not have persisten=
+t
+> > > >>> storage for the Bluetooth address and must therefore start as
+> > > >>> unconfigured to allow the user to set a valid address unless one =
+has
+> > > >>> been provided by the boot firmware in the devicetree.
+> > > >>>
+> > > >>> A recent change snuck into v6.8-rc7 and incorrectly started marki=
+ng the
+> > > >>> default (non-unique) address as valid. This specifically also bre=
+aks the
+> > > >>> Bluetooth setup for some user of the Lenovo ThinkPad X13s.
+> > > >>>
+> > > >>> Note that this is the second time Qualcomm breaks the driver this=
+ way
+> > > >>> and that this was fixed last year by commit 6945795bc81a ("Blueto=
+oth:
+> > > >>> fix use-bdaddr-property quirk"), which also has some further deta=
+ils.
+> > > >>>
+> > > >>> Fixes: 7dcd3e014aa7 ("Bluetooth: hci_qca: Set BDA quirk bit if fw=
+node exists in DT")
+> > > >>> Cc: stable@vger.kernel.org      # 6.8
+> > > >>> Cc: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+> > > >>> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+>
+> > > ...the plan forward here? This to me sounds like a case where a quick
+> > > revert is the right (interim?) solution, but nevertheless nothing
+> > > happened for ~10 days now afaics. Or am I missing something?
+>
+> > I guess the following is the latest version:
+> >
+> > https://patchwork.kernel.org/project/bluetooth/list/?series=3D836664
+> >
+> > Or are you working on a v5?
+>
+> This patch (revert) fixes a separate issue than the series you link to
+> above, but it is also a prerequisite for that series.
+>
+> v4 is indeed the latest version, and it has been acked by Rob and Bjorn
+> so you can take it all through the Bluetooth tree. Just remember to
+> apply this patch (the revert) first.
 
+Doesn't seem to apply cleanly:
+
+Applying: Bluetooth: qca: fix device-address endianness
+error: patch failed: drivers/bluetooth/hci_qca.c:1904
+error: drivers/bluetooth/hci_qca.c: patch does not apply
+Patch failed at 0004 Bluetooth: qca: fix device-address endianness
+
+> Johan
+
+
+
+--=20
+Luiz Augusto von Dentz
 
